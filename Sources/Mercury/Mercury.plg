@@ -1,0 +1,29 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: Mercury - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP171.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /Fp"Debug/Mercury.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\_danae\Mercury\Mercury_global.c"
+"C:\_danae\Mercury\Mercury_Main.c"
+]
+Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP171.tmp" 
+Creating command line "link.exe -lib /nologo /out:"..\lib\MERCURY_debug.lib"  .\Debug\Mercury_global.obj .\Debug\Mercury_Main.obj "
+<h3>Output Window</h3>
+Compiling...
+Mercury_global.c
+Mercury_Main.c
+Creating library...
+
+
+
+<h3>Results</h3>
+MERCURY_debug.lib - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

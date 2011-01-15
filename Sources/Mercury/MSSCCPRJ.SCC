@@ -1,0 +1,5 @@
+SCC = This is a source code control file
+
+[Mercury.vcproj]
+SCC_Aux_Path = "P4SCC#arkaneserver3:1666##seb##Poulpy_ArxSteam"
+SCC_Project_Name = Perforce Project
