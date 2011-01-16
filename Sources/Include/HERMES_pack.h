@@ -62,7 +62,7 @@ public:
 	~EVE_REPERTOIRE();
 
 	void AddSousRepertoire(EVE_U8 *sname);
-	BOOL DelSousRepertoire(EVE_U8 *sname);
+	bool DelSousRepertoire(EVE_U8 *sname);
 	EVE_TFILE* AddFileToSousRepertoire(EVE_U8 *sname,EVE_U8 *name);
  
 	EVE_REPERTOIRE * GetSousRepertoire(EVE_U8 *sname);
