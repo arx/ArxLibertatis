@@ -526,7 +526,7 @@ void ComputeFog(D3DTLVERTEX * v, long to)
 			}
 }
 
-__forceinline void ManageLavaWater(EERIEPOLY * ep, const long to, const unsigned long tim)
+void ManageLavaWater(EERIEPOLY * ep, const long to, const unsigned long tim)
 {
 	if ((ep->type & POLY_WATER) || (ep->type & POLY_LAVA) )
 	{
@@ -636,7 +636,7 @@ void specialEE_RTP2(D3DTLVERTEX *in,D3DTLVERTEX *out)
 	
 }
 
-__forceinline long EERIERTPPoly2(EERIEPOLY *ep)
+long EERIERTPPoly2(EERIEPOLY *ep)
 {
 	specialEE_RTP2(&ep->v[0],&ep->tv[0]);	
 	specialEE_RTP2(&ep->v[1],&ep->tv[1]);

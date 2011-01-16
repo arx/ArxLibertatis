@@ -129,7 +129,7 @@ inline	static	void	Cedric_ResetBoundingBox(INTERACTIVE_OBJ * io)
 
 //-----------------------------------------------------------------------------
 
-__forceinline float GetMaxManhattanDistance(const EERIE_3D * _e1, const EERIE_3D * _e2)
+float GetMaxManhattanDistance(const EERIE_3D * _e1, const EERIE_3D * _e2)
 {
 	return 0;
 
@@ -1199,7 +1199,7 @@ void Cedric_PrepareHalo(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE_
 }
 
 //-----------------------------------------------------------------------------
-__forceinline void ARX_ClippZ(D3DTLVERTEX * _pD3DA, D3DTLVERTEX * _pD3DB, EERIE_VERTEX * _pVertexA, EERIE_VERTEX * _pVertexB, D3DTLVERTEX * _pOut)
+void ARX_ClippZ(D3DTLVERTEX * _pD3DA, D3DTLVERTEX * _pD3DB, EERIE_VERTEX * _pVertexA, EERIE_VERTEX * _pVertexB, D3DTLVERTEX * _pOut)
 {
 	EERIE_3D e3dTemp;
 
