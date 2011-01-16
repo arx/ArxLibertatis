@@ -44,7 +44,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIETYPES_H
 #define EERIETYPES_H
 
-//#define D3D_OVERLOADS
+#include <math.h>
+#define D3D_OVERLOADS
 //#include <d3d.h>
 //#include <ARX_Common.h>
 #include <d3d.h>

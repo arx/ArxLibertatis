@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Updates: (date) (person) (update)
 //
-// Code: Sébastien Scieux
+// Code: Sï¿½bastien Scieux
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
@@ -58,8 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef HERMES_PAK_H
 #define HERMES_PAK_H
 
-#include "hermes_pack_public.h"
 #include <vector>
+#include "HERMES_pack_public.h"
 using namespace std;
 
 extern char PAK_WORKDIR[256];

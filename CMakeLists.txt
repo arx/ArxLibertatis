@@ -5,6 +5,7 @@ set(SRC_DIR Sources)
 
 include_directories(
 	Sources/Include
+	Sources/Include/OtherLibs
 	/usr/include/wine/windows
 	#/usr/include/wine/msvcrt
 )

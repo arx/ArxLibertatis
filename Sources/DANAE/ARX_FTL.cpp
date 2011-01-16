@@ -64,9 +64,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_FTL.h"
 #include "HERMESMain.h"
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-
 //***********************************************************************************************
 //	FTL FILE Structure:
 //***********************************************************************************************
@@ -504,7 +501,7 @@ long MCache_Get(char * file)
 	File_Standardize(file, fic);
 
 	for (long i = 0; i < MCache_Number; i++)
-		if (!stricmp(MCache[i].name, fic)) return i;
+		if (!strcasecmp(MCache[i].name, fic)) return i;
 
 	return -1;
 }

@@ -27,9 +27,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //-----------------------------------------------------------------------------
 #include <windows.h>
 #include <tchar.h>
-#include "danae.h"
-#include "arx_menu.h"
-#include "arx_menu2.h"
+#include "Danae.h"
+#include "ARX_Menu.h"
+#include "ARX_Menu2.h"
 #include "ARX_MenuPublic.h"
 #include "ARX_Sound.h"
 #include "ARX_Loc.h"
@@ -38,14 +38,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Interface.h"
 
 #include "Mercury_dx_input.h"
-#include "arx_time.h"
+#include "ARX_Time.h"
 
-#include "eerietexture.h"
-#include "eeriepoly.h"
-#include "eeriedraw.h"
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+#include "EERIETexture.h"
+#include "EERIEPoly.h"
+#include "EERIEDraw.h"
 
 #define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
@@ -2074,7 +2071,7 @@ static void CalculAverageWidth( HDC& _hDC )
 //Use to extract string info from src buffer
 static void ExtractAllCreditsTextInformations(HDC& _hDC)
 {
-	//Recupere les lignes à afficher
+	//Recupere les lignes ï¿½ afficher
 	wistringstream iss(ARXmenu.mda->str_cre_credits);
 	wstring phrase;
 
@@ -6620,7 +6617,7 @@ void CMenuPanel::Move(int _iX, int _iY)
 }
 
 //-----------------------------------------------------------------------------
-// patch on ajoute à droite en ligne
+// patch on ajoute ï¿½ droite en ligne
 void CMenuPanel::AddElement(CMenuElement* _pElem)
 {
 	vElement.insert(vElement.end(), _pElem);
@@ -6643,7 +6640,7 @@ void CMenuPanel::AddElement(CMenuElement* _pElem)
 }
 
 //-----------------------------------------------------------------------------
-// patch on ajoute à droite en ligne
+// patch on ajoute ï¿½ droite en ligne
 void CMenuPanel::AddElementNoCenterIn(CMenuElement* _pElem)
 {
 	vElement.insert(vElement.end(), _pElem);
@@ -7807,7 +7804,7 @@ int iDTime;
 		}
 	}
 
-	if(bTouch)	//priorité des touches
+	if(bTouch)	//prioritï¿½ des touches
 	{
 		switch(iKeyId)
 		{
