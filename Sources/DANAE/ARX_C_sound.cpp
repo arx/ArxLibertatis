@@ -171,9 +171,9 @@ int ExistSound(char * dir, char * name)
 		if ((cs->actif) &&
 		        ((cs->actif & 0xFF00) == LSoundChoose))
 		{
-			if (!stricmp(dir, cs->dir))
+			if (!strcasecmp(dir, cs->dir))
 			{
-				if (!stricmp(name, cs->name))
+				if (!strcasecmp(name, cs->name))
 				{
 					return MAX_SOUND - nb;
 				}

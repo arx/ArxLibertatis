@@ -1282,7 +1282,7 @@ void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, char * temp)
 	{
 		if (io->usemesh == NULL)
 			io->usemesh = (char *)malloc(256);
-		else if (!stricmp(io->usemesh, tex)) return; //already tweaked with this mesh !
+		else if (!strcasecmp(io->usemesh, tex)) return; //already tweaked with this mesh !
 
 		strcpy(io->usemesh, tex);
 
@@ -2198,13 +2198,13 @@ long GetTargetByNameTarget(char * name)
 
 	if (name == NULL) return -1;
 
-	if (!stricmp(name, "self"))		return -2;
+	if (!strcasecmp(name, "self"))		return -2;
 
-	if (!stricmp(name, "none"))		return -1;
+	if (!strcasecmp(name, "none"))		return -1;
 
-	if (!stricmp(name, "me"))		return -2;
+	if (!strcasecmp(name, "me"))		return -2;
 
-	if (!stricmp(name, "player"))	return 0;     ///player is now an io with index 0
+	if (!strcasecmp(name, "player"))	return 0;     ///player is now an io with index 0
 
 	for (long i = 0 ; i < inter.nbmax ; i++)
 	{
@@ -2213,7 +2213,7 @@ long GetTargetByNameTarget(char * name)
 		{
 			sprintf(temp, "%s_%04d", GetName(inter.iobj[i]->filename), inter.iobj[i]->ident);
 
-			if (!stricmp(name, temp)) return i;
+			if (!strcasecmp(name, temp)) return i;
 		}
 	}
 
@@ -3313,7 +3313,7 @@ BOOL ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t)
 				char name2[256];
 				strcpy(name2, GetName(inter.iobj[i]->filename));
 
-				if (!stricmp(name1, name2))
+				if (!strcasecmp(name1, name2))
 				{
 					return TRUE;
 				}
@@ -4756,7 +4756,7 @@ BOOL IsSameObject(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 {
 	if ((io == NULL)
 	        ||	(ioo == NULL)
-	        ||	(stricmp(io->filename, ioo->filename))
+	        ||	(strcasecmp(io->filename, ioo->filename))
 	        ||	(io->ioflags & IO_UNIQUE)
 	        ||	(io->durability != ioo->durability)
 	        ||	(io->max_durability != ioo->max_durability))
@@ -4786,7 +4786,7 @@ BOOL HaveCommonGroup(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 	{
 		for (long k = 0; k < ioo->nb_iogroups; k++)
 		{
-			if (!stricmp(io->iogroups[i].name, ioo->iogroups[k].name))
+			if (!strcasecmp(io->iogroups[i].name, ioo->iogroups[k].name))
 				return TRUE;
 		}
 	}

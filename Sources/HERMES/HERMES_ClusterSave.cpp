@@ -467,7 +467,7 @@ bool CSaveBlock::Save(char * _pcFileName, void * _pDatas, int _iSize)
 
 	while (_iI--)
 	{
-		if (!stricmp((const char *)_pInfoFile->pcFileName, (const char *)_pcFileName))
+		if (!strcasecmp((const char *)_pInfoFile->pcFileName, (const char *)_pcFileName))
 		{
 			_bFound = true;
 			break;
@@ -618,7 +618,7 @@ int CSaveBlock::GetSize(char * _pcFileName)
 
 		while (_iI--)
 		{
-			if (!stricmp((const char *)_pInfoFile->pcFileName, (const char *)_pcFileName))
+			if (!strcasecmp((const char *)_pInfoFile->pcFileName, (const char *)_pcFileName))
 			{
 				_bFound = true;
 				break;
@@ -661,7 +661,7 @@ bool CSaveBlock::ExistFile(char * _pcFileName)
 
 		while (_iI--)
 		{
-			if (!stricmp((const char *)_pInfoFile->pcFileName, (const char *)_pcFileName))
+			if (!strcasecmp((const char *)_pInfoFile->pcFileName, (const char *)_pcFileName))
 			{
 				return true;
 			}

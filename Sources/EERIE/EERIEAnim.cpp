@@ -310,7 +310,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(char * path)
 {
 	for (long i=0;i<MAX_ANIMATIONS;i++)
 	{
-		if (!stricmp(animations[i].path,path))
+		if (!strcasecmp(animations[i].path,path))
 		{
 			return &animations[i];
 		}

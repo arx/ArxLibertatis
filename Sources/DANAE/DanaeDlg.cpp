@@ -761,7 +761,7 @@ void InterTreeSelectObject(HTREEITEM hitem)
 		{
 			if (tvv[i]->hti == hitem)
 			{
-				if (!stricmp(tvv[i]->text, "player"))
+				if (!strcasecmp(tvv[i]->text, "player"))
 				{
 					if (inter.iobj[0])
 					{
@@ -891,7 +891,7 @@ void InterTreeViewDisplayInfo(HTREEITEM hitem)
 		{
 			if (tvv[i]->hti == hitem)
 			{
-				if (!stricmp(tvv[i]->text, "player"))
+				if (!strcasecmp(tvv[i]->text, "player"))
 				{
 					sprintf(texx, "%s", tvv[i]->text);
 					SetDlgItemText(InterObjDlg, IDC_INTERTEXT, texx);
@@ -983,7 +983,7 @@ void RemoveIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, char * name, long type)
 			{
 				if (tvv[i] != NULL)
 				{
-					if (!stricmp(name, tvv[i]->text))
+					if (!strcasecmp(name, tvv[i]->text))
 					{
 						TreeView_DeleteItem(tvhwnd, tvv[i]->hti);
 						free(tvv[i]);

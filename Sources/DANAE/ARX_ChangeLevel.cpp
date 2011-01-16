@@ -279,7 +279,7 @@ INTERACTIVE_OBJ * ConvertToValidIO(char * str)
 
 	if (t < 0)
 	{
-		if ((NEED_LOG) && (stricmp(str, "none")))
+		if ((NEED_LOG) && (strcasecmp(str, "none")))
 		{
 			char temp[256];
 			sprintf(temp, "Call to ConvertToValidIO(%s)", str);
@@ -2370,7 +2370,7 @@ extern long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io);
 //-----------------------------------------------------------------------------
 long ARX_CHANGELEVEL_Pop_IO(char * ident)
 {
-	if (!stricmp(ident, "NONE")) return -1;
+	if (!strcasecmp(ident, "NONE")) return -1;
 
 	char loadfile[256];
 	ARX_CHANGELEVEL_IO_SAVE * ais;
@@ -3337,9 +3337,9 @@ long ARX_CHANGELEVEL_PopAllIO_FINISH(ARX_CHANGELEVEL_INDEX * asi, long reloadfla
 							else SetWeapon_Back(io);
 						}
 
-						if (!stricmp(aids->targetinfo, "NONE")) io->targetinfo = -1;
-						else if (!stricmp(aids->targetinfo, "SELF")) io->targetinfo = -2;
-						else if (!stricmp(aids->targetinfo, "PLAYER")) io->targetinfo = 0;
+						if (!strcasecmp(aids->targetinfo, "NONE")) io->targetinfo = -1;
+						else if (!strcasecmp(aids->targetinfo, "SELF")) io->targetinfo = -2;
+						else if (!strcasecmp(aids->targetinfo, "PLAYER")) io->targetinfo = 0;
 						else
 							io->targetinfo = GetInterNum(ConvertToValidIO(aids->targetinfo));
 
@@ -3347,9 +3347,9 @@ long ARX_CHANGELEVEL_PopAllIO_FINISH(ARX_CHANGELEVEL_INDEX * asi, long reloadfla
 						{
 							for (long iii = 0; iii < MAX_STACKED_BEHAVIOR; iii++)
 							{
-								if (!stricmp(aids->stackedtarget[iii], "NONE")) io->_npcdata->stacked[iii].target = -1;
-								else if (!stricmp(aids->stackedtarget[iii], "SELF")) io->_npcdata->stacked[iii].target = -2;
-								else if (!stricmp(aids->stackedtarget[iii], "PLAYER")) io->_npcdata->stacked[iii].target = 0;
+								if (!strcasecmp(aids->stackedtarget[iii], "NONE")) io->_npcdata->stacked[iii].target = -1;
+								else if (!strcasecmp(aids->stackedtarget[iii], "SELF")) io->_npcdata->stacked[iii].target = -2;
+								else if (!strcasecmp(aids->stackedtarget[iii], "PLAYER")) io->_npcdata->stacked[iii].target = 0;
 								else
 									io->_npcdata->stacked[iii].target = GetInterNum(ConvertToValidIO(aids->stackedtarget[iii]));
 							}

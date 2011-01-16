@@ -679,7 +679,7 @@ sakActionDefaultKey[CONTROLS_CUST_BOOKQUEST].iPage=1;
 
 CMenuConfig::CMenuConfig(char *_pName)
 {
-	if(!stricmp((const char*)"cfg",(const char*)_pName))
+	if(!strcasecmp((const char*)"cfg",(const char*)_pName))
 	{
 		pcName=strdup("cfg.ini");
 	}
@@ -1352,8 +1352,8 @@ bool CMenuConfig::ReadAll()
 				pcText=ReadConfigString("LANGUAGE","string");
 
 				if( pcText&&
-					(stricmp(pcText,"francais")&&
-					stricmp(pcText,"deutsch")) )
+					(strcasecmp(pcText,"francais")&&
+					strcasecmp(pcText,"deutsch")) )
 				{
 					free(pcText);
 					pcText = strdup("Francais");
@@ -1382,7 +1382,7 @@ bool CMenuConfig::ReadAll()
 
 	bool bWarningGore=false;
 
-	if (!stricmp(Project.localisationpath, "Deutsch"))
+	if (!strcasecmp(Project.localisationpath, "Deutsch"))
 	{
 		//no gore
 		GERMAN_VERSION=1;

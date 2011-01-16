@@ -472,7 +472,7 @@ void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, char * newevent)
 
 
 
-	if (!stricmp(newevent, "MAIN"))
+	if (!strcasecmp(newevent, "MAIN"))
 		io->mainevent[0] = 0;
 	else strcpy(io->mainevent, newevent);
 }
@@ -705,11 +705,11 @@ void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT * es)
 			char dest[256];
 			GetNextWord(es, es->shortcut[j], dest);
 
-			if (!stricmp(dest, "{"))
+			if (!strcasecmp(dest, "{"))
 			{
 				GetNextWord(es, es->shortcut[j], dest);
 
-				if (!stricmp(dest, "ACCEPT"))
+				if (!strcasecmp(dest, "ACCEPT"))
 				{
 					es->shortcut[j] = -1;
 				}
@@ -1140,102 +1140,102 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 			{
 				char * temp = &name[6];
 
-				if (!stricmp(temp, "AAM"))
+				if (!strcasecmp(temp, "AAM"))
 				{
 					*lcontent = player.rune_flags & FLAG_AAM;
 					return TYPE_LONG;
 				}
-				else if (!stricmp(temp, "CETRIUS"))
+				else if (!strcasecmp(temp, "CETRIUS"))
 				{
 					*lcontent = player.rune_flags & FLAG_CETRIUS;
 					return TYPE_LONG;
 				}
-				else if (!stricmp(temp, "COMUNICATUM"))
+				else if (!strcasecmp(temp, "COMUNICATUM"))
 				{
 					*lcontent = player.rune_flags & FLAG_COMUNICATUM;
 					return TYPE_LONG;
 				}
-				else if (!stricmp(temp, "COSUM"))
+				else if (!strcasecmp(temp, "COSUM"))
 				{
 					*lcontent = player.rune_flags & FLAG_COSUM;
 					return TYPE_LONG;
 				}
-				else if (!stricmp(temp, "FOLGORA"))
+				else if (!strcasecmp(temp, "FOLGORA"))
 				{
 					*lcontent = player.rune_flags & FLAG_FOLGORA;
 					return TYPE_LONG;
 				}
-				else if (!stricmp(temp, "FRIDD"))
+				else if (!strcasecmp(temp, "FRIDD"))
 				{
 					*lcontent = player.rune_flags & FLAG_FRIDD;
 					return TYPE_LONG;
 				}
-				else if (!stricmp(temp, "KAOM"))
+				else if (!strcasecmp(temp, "KAOM"))
 				{
 					*lcontent = player.rune_flags & FLAG_KAOM;
 					return TYPE_LONG;
 				}
-				else if (!stricmp(temp, "MEGA"))
+				else if (!strcasecmp(temp, "MEGA"))
 				{
 					*lcontent = player.rune_flags & FLAG_MEGA;
 					return TYPE_LONG;
 				}
-				else if (!stricmp(temp, "MORTE"))
+				else if (!strcasecmp(temp, "MORTE"))
 				{
 					*lcontent = player.rune_flags & FLAG_MORTE;
 					return TYPE_LONG;
 				}
-				else if (!stricmp(temp, "MOVIS"))
+				else if (!strcasecmp(temp, "MOVIS"))
 				{
 					*lcontent = player.rune_flags & FLAG_MOVIS;
 					return TYPE_LONG;
 				}
-				else if (!stricmp(temp, "NHI"))
+				else if (!strcasecmp(temp, "NHI"))
 				{
 					*lcontent = player.rune_flags & FLAG_NHI;
 					return TYPE_LONG;
 				}
-				else if (!stricmp(temp, "RHAA"))
+				else if (!strcasecmp(temp, "RHAA"))
 				{
 					*lcontent = player.rune_flags & FLAG_RHAA;
 					return TYPE_LONG;
 				}
-				else if (!stricmp(temp, "SPACIUM"))
+				else if (!strcasecmp(temp, "SPACIUM"))
 				{
 					*lcontent = player.rune_flags & FLAG_SPACIUM;
 					return TYPE_LONG;
 				}
-				else if (!stricmp(temp, "STREGUM"))
+				else if (!strcasecmp(temp, "STREGUM"))
 				{
 					*lcontent = player.rune_flags & FLAG_STREGUM;
 					return TYPE_LONG;
 				}
-				else if (!stricmp(temp, "TAAR"))
+				else if (!strcasecmp(temp, "TAAR"))
 				{
 					*lcontent = player.rune_flags & FLAG_TAAR;
 					return TYPE_LONG;
 				}
-				else if (!stricmp(temp, "TEMPUS"))
+				else if (!strcasecmp(temp, "TEMPUS"))
 				{
 					*lcontent = player.rune_flags & FLAG_TEMPUS;
 					return TYPE_LONG;
 				}
-				else if (!stricmp(temp, "TERA"))
+				else if (!strcasecmp(temp, "TERA"))
 				{
 					*lcontent = player.rune_flags & FLAG_TERA;
 					return TYPE_LONG;
 				}
-				else if (!stricmp(temp, "VISTA"))
+				else if (!strcasecmp(temp, "VISTA"))
 				{
 					*lcontent = player.rune_flags & FLAG_VISTA;
 					return TYPE_LONG;
 				}
-				else if (!stricmp(temp, "VITAE"))
+				else if (!strcasecmp(temp, "VITAE"))
 				{
 					*lcontent = player.rune_flags & FLAG_VITAE;
 					return TYPE_LONG;
 				}
-				else if (!stricmp(temp, "YOK"))
+				else if (!strcasecmp(temp, "YOK"))
 				{
 					*lcontent = player.rune_flags & FLAG_YOK;
 					return TYPE_LONG;
@@ -1836,7 +1836,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 					}
 				}
 
-				if (!stricmp(name, "^PLAYERSPELL_INVISIBILITY"))
+				if (!strcasecmp(name, "^PLAYERSPELL_INVISIBILITY"))
 				{
 					if (inter.iobj[0]->invisibility > 0.3f)
 					{
@@ -2050,7 +2050,7 @@ SCRIPT_VAR * GetVarAddress(SCRIPT_VAR * svf, long * nb, char * name)
 	{
 		if (svf[i].type != 0)
 		{
-			if (!stricmp(name, svf[i].name))
+			if (!strcasecmp(name, svf[i].name))
 				return &svf[i];
 		}
 	}
@@ -2398,355 +2398,355 @@ long GetNumAnim(char * name)
 	{
 		case 'W':
 
-			if (!stricmp(name, "WAIT"))		return ANIM_WAIT;
+			if (!strcasecmp(name, "WAIT"))		return ANIM_WAIT;
 
-			if (!stricmp(name, "WAIT2"))		return ANIM_WAIT2;
+			if (!strcasecmp(name, "WAIT2"))		return ANIM_WAIT2;
 
-			if (!stricmp(name, "WALK"))		return ANIM_WALK;
+			if (!strcasecmp(name, "WALK"))		return ANIM_WALK;
 
-			if (!stricmp(name, "WALK1"))		return ANIM_WALK;
+			if (!strcasecmp(name, "WALK1"))		return ANIM_WALK;
 
-			if (!stricmp(name, "WALK2"))		return ANIM_WALK2;
+			if (!strcasecmp(name, "WALK2"))		return ANIM_WALK2;
 
-			if (!stricmp(name, "WALK3"))		return ANIM_WALK3;
+			if (!strcasecmp(name, "WALK3"))		return ANIM_WALK3;
 
-			if (!stricmp(name, "WALK_BACKWARD"))				return ANIM_WALK_BACKWARD;
+			if (!strcasecmp(name, "WALK_BACKWARD"))				return ANIM_WALK_BACKWARD;
 
-			if (!stricmp(name, "WALK_MINISTEP"))			return ANIM_WALK_MINISTEP;
+			if (!strcasecmp(name, "WALK_MINISTEP"))			return ANIM_WALK_MINISTEP;
 
-			if (!stricmp(name, "WAIT_SHORT"))			return ANIM_WAIT_SHORT;
+			if (!strcasecmp(name, "WAIT_SHORT"))			return ANIM_WAIT_SHORT;
 
-			if (!stricmp(name, "WALK_SNEAK"))			return ANIM_WALK_SNEAK;
+			if (!strcasecmp(name, "WALK_SNEAK"))			return ANIM_WALK_SNEAK;
 
 			break;
 		case 'A':
 
-			if (!stricmp(name, "ACTION"))		return ANIM_ACTION;
-			else if (!stricmp(name, "ACTION1"))	return ANIM_ACTION;
-			else if (!stricmp(name, "ACTION2"))	return ANIM_ACTION2;
-			else if (!stricmp(name, "ACTION3"))	return ANIM_ACTION3;
-			else if (!stricmp(name, "ACTION4"))	return ANIM_ACTION4;
-			else if (!stricmp(name, "ACTION5"))	return ANIM_ACTION5;
-			else if (!stricmp(name, "ACTION6"))	return ANIM_ACTION6;
-			else if (!stricmp(name, "ACTION7"))	return ANIM_ACTION7;
-			else if (!stricmp(name, "ACTION8"))	return ANIM_ACTION8;
-			else if (!stricmp(name, "ACTION9"))	return ANIM_ACTION9;
-			else if (!stricmp(name, "ACTION10"))	return ANIM_ACTION10;
+			if (!strcasecmp(name, "ACTION"))		return ANIM_ACTION;
+			else if (!strcasecmp(name, "ACTION1"))	return ANIM_ACTION;
+			else if (!strcasecmp(name, "ACTION2"))	return ANIM_ACTION2;
+			else if (!strcasecmp(name, "ACTION3"))	return ANIM_ACTION3;
+			else if (!strcasecmp(name, "ACTION4"))	return ANIM_ACTION4;
+			else if (!strcasecmp(name, "ACTION5"))	return ANIM_ACTION5;
+			else if (!strcasecmp(name, "ACTION6"))	return ANIM_ACTION6;
+			else if (!strcasecmp(name, "ACTION7"))	return ANIM_ACTION7;
+			else if (!strcasecmp(name, "ACTION8"))	return ANIM_ACTION8;
+			else if (!strcasecmp(name, "ACTION9"))	return ANIM_ACTION9;
+			else if (!strcasecmp(name, "ACTION10"))	return ANIM_ACTION10;
 
 			break;
 		case 'H':
 
-			if (!stricmp(name, "HIT1"))		return ANIM_HIT1;
+			if (!strcasecmp(name, "HIT1"))		return ANIM_HIT1;
 
-			if (!stricmp(name, "HIT"))		return ANIM_HIT1;
+			if (!strcasecmp(name, "HIT"))		return ANIM_HIT1;
 
-			if (!stricmp(name, "HOLD_TORCH"))			return ANIM_HOLD_TORCH;
+			if (!strcasecmp(name, "HOLD_TORCH"))			return ANIM_HOLD_TORCH;
 
-			if (!stricmp(name, "HIT_SHORT"))				return ANIM_HIT_SHORT;
+			if (!strcasecmp(name, "HIT_SHORT"))				return ANIM_HIT_SHORT;
 
 			break;
 		case 'S':
 
-			if (!stricmp(name, "STRIKE1"))	return ANIM_STRIKE1;
+			if (!strcasecmp(name, "STRIKE1"))	return ANIM_STRIKE1;
 
-			if (!stricmp(name, "STRIKE"))	return ANIM_STRIKE1;
+			if (!strcasecmp(name, "STRIKE"))	return ANIM_STRIKE1;
 
-			if (!stricmp(name, "SHIELD_START"))			return ANIM_SHIELD_START;
+			if (!strcasecmp(name, "SHIELD_START"))			return ANIM_SHIELD_START;
 
-			if (!stricmp(name, "SHIELD_CYCLE"))			return ANIM_SHIELD_CYCLE;
+			if (!strcasecmp(name, "SHIELD_CYCLE"))			return ANIM_SHIELD_CYCLE;
 
-			if (!stricmp(name, "SHIELD_HIT"))			return ANIM_SHIELD_HIT;
+			if (!strcasecmp(name, "SHIELD_HIT"))			return ANIM_SHIELD_HIT;
 
-			if (!stricmp(name, "SHIELD_END"))			return ANIM_SHIELD_END;
+			if (!strcasecmp(name, "SHIELD_END"))			return ANIM_SHIELD_END;
 
-			if (!stricmp(name, "STRAFE_RIGHT"))			return ANIM_STRAFE_RIGHT;
+			if (!strcasecmp(name, "STRAFE_RIGHT"))			return ANIM_STRAFE_RIGHT;
 
-			if (!stricmp(name, "STRAFE_LEFT"))			return ANIM_STRAFE_LEFT;
+			if (!strcasecmp(name, "STRAFE_LEFT"))			return ANIM_STRAFE_LEFT;
 
-			if (!stricmp(name, "STRAFE_RUN_LEFT"))		return ANIM_STRAFE_RUN_LEFT;
+			if (!strcasecmp(name, "STRAFE_RUN_LEFT"))		return ANIM_STRAFE_RUN_LEFT;
 
-			if (!stricmp(name, "STRAFE_RUN_RIGHT"))		return ANIM_STRAFE_RUN_RIGHT;
+			if (!strcasecmp(name, "STRAFE_RUN_RIGHT"))		return ANIM_STRAFE_RUN_RIGHT;
 
 			break;
 		case 'D':
 
-			if (!stricmp(name, "DIE"))		return ANIM_DIE;
+			if (!strcasecmp(name, "DIE"))		return ANIM_DIE;
 
-			if (!stricmp(name, "DAGGER_READY_PART_1"))		return ANIM_DAGGER_READY_PART_1;
+			if (!strcasecmp(name, "DAGGER_READY_PART_1"))		return ANIM_DAGGER_READY_PART_1;
 
-			if (!stricmp(name, "DAGGER_READY_PART_2"))		return ANIM_DAGGER_READY_PART_2;
+			if (!strcasecmp(name, "DAGGER_READY_PART_2"))		return ANIM_DAGGER_READY_PART_2;
 
-			if (!stricmp(name, "DAGGER_UNREADY_PART_1"))		return ANIM_DAGGER_UNREADY_PART_1;
+			if (!strcasecmp(name, "DAGGER_UNREADY_PART_1"))		return ANIM_DAGGER_UNREADY_PART_1;
 
-			if (!stricmp(name, "DAGGER_UNREADY_PART_2"))		return ANIM_DAGGER_UNREADY_PART_2;
+			if (!strcasecmp(name, "DAGGER_UNREADY_PART_2"))		return ANIM_DAGGER_UNREADY_PART_2;
 
-			if (!stricmp(name, "DAGGER_WAIT"))				return ANIM_DAGGER_WAIT;
+			if (!strcasecmp(name, "DAGGER_WAIT"))				return ANIM_DAGGER_WAIT;
 
-			if (!stricmp(name, "DAGGER_STRIKE_LEFT_START"))	return ANIM_DAGGER_STRIKE_LEFT_START;
+			if (!strcasecmp(name, "DAGGER_STRIKE_LEFT_START"))	return ANIM_DAGGER_STRIKE_LEFT_START;
 
-			if (!stricmp(name, "DAGGER_STRIKE_LEFT_CYCLE"))	return ANIM_DAGGER_STRIKE_LEFT_CYCLE;
+			if (!strcasecmp(name, "DAGGER_STRIKE_LEFT_CYCLE"))	return ANIM_DAGGER_STRIKE_LEFT_CYCLE;
 
-			if (!stricmp(name, "DAGGER_STRIKE_LEFT"))		return ANIM_DAGGER_STRIKE_LEFT;
+			if (!strcasecmp(name, "DAGGER_STRIKE_LEFT"))		return ANIM_DAGGER_STRIKE_LEFT;
 
-			if (!stricmp(name, "DAGGER_STRIKE_RIGHT_START"))	return ANIM_DAGGER_STRIKE_RIGHT_START;
+			if (!strcasecmp(name, "DAGGER_STRIKE_RIGHT_START"))	return ANIM_DAGGER_STRIKE_RIGHT_START;
 
-			if (!stricmp(name, "DAGGER_STRIKE_RIGHT_CYCLE"))	return ANIM_DAGGER_STRIKE_RIGHT_CYCLE;
+			if (!strcasecmp(name, "DAGGER_STRIKE_RIGHT_CYCLE"))	return ANIM_DAGGER_STRIKE_RIGHT_CYCLE;
 
-			if (!stricmp(name, "DAGGER_STRIKE_RIGHT"))		return ANIM_DAGGER_STRIKE_RIGHT;
+			if (!strcasecmp(name, "DAGGER_STRIKE_RIGHT"))		return ANIM_DAGGER_STRIKE_RIGHT;
 
-			if (!stricmp(name, "DAGGER_STRIKE_TOP_START"))	return ANIM_DAGGER_STRIKE_TOP_START;
+			if (!strcasecmp(name, "DAGGER_STRIKE_TOP_START"))	return ANIM_DAGGER_STRIKE_TOP_START;
 
-			if (!stricmp(name, "DAGGER_STRIKE_TOP_CYCLE"))	return ANIM_DAGGER_STRIKE_TOP_CYCLE;
+			if (!strcasecmp(name, "DAGGER_STRIKE_TOP_CYCLE"))	return ANIM_DAGGER_STRIKE_TOP_CYCLE;
 
-			if (!stricmp(name, "DAGGER_STRIKE_TOP"))			return ANIM_DAGGER_STRIKE_TOP;
+			if (!strcasecmp(name, "DAGGER_STRIKE_TOP"))			return ANIM_DAGGER_STRIKE_TOP;
 
-			if (!stricmp(name, "DAGGER_STRIKE_BOTTOM_START")) return ANIM_DAGGER_STRIKE_BOTTOM_START;
+			if (!strcasecmp(name, "DAGGER_STRIKE_BOTTOM_START")) return ANIM_DAGGER_STRIKE_BOTTOM_START;
 
-			if (!stricmp(name, "DAGGER_STRIKE_BOTTOM_CYCLE")) return ANIM_DAGGER_STRIKE_BOTTOM_CYCLE;
+			if (!strcasecmp(name, "DAGGER_STRIKE_BOTTOM_CYCLE")) return ANIM_DAGGER_STRIKE_BOTTOM_CYCLE;
 
-			if (!stricmp(name, "DAGGER_STRIKE_BOTTOM"))		return ANIM_DAGGER_STRIKE_BOTTOM;
+			if (!strcasecmp(name, "DAGGER_STRIKE_BOTTOM"))		return ANIM_DAGGER_STRIKE_BOTTOM;
 
-			if (!stricmp(name, "DEATH_CRITICAL"))		return ANIM_DEATH_CRITICAL;
+			if (!strcasecmp(name, "DEATH_CRITICAL"))		return ANIM_DEATH_CRITICAL;
 
 			break;
 		case 'R':
 
-			if (!stricmp(name, "RUN"))		return ANIM_RUN;
+			if (!strcasecmp(name, "RUN"))		return ANIM_RUN;
 
-			if (!stricmp(name, "RUN1"))		return ANIM_RUN;
+			if (!strcasecmp(name, "RUN1"))		return ANIM_RUN;
 
-			if (!stricmp(name, "RUN2"))		return ANIM_RUN2;
+			if (!strcasecmp(name, "RUN2"))		return ANIM_RUN2;
 
-			if (!stricmp(name, "RUN3"))		return ANIM_RUN3;
+			if (!strcasecmp(name, "RUN3"))		return ANIM_RUN3;
 
-			if (!stricmp(name, "RUN_BACKWARD"))		return ANIM_RUN_BACKWARD;
+			if (!strcasecmp(name, "RUN_BACKWARD"))		return ANIM_RUN_BACKWARD;
 
 			break;
 		case 'T':
 
-			if (!stricmp(name, "TALK_NEUTRAL"))		return ANIM_TALK_NEUTRAL;
+			if (!strcasecmp(name, "TALK_NEUTRAL"))		return ANIM_TALK_NEUTRAL;
 
-			if (!stricmp(name, "TALK_ANGRY"))		return ANIM_TALK_ANGRY;
+			if (!strcasecmp(name, "TALK_ANGRY"))		return ANIM_TALK_ANGRY;
 
-			if (!stricmp(name, "TALK_HAPPY"))		return ANIM_TALK_HAPPY;
+			if (!strcasecmp(name, "TALK_HAPPY"))		return ANIM_TALK_HAPPY;
 
-			if (!stricmp(name, "TALK_NEUTRAL_HEAD"))		return ANIM_TALK_NEUTRAL_HEAD;
+			if (!strcasecmp(name, "TALK_NEUTRAL_HEAD"))		return ANIM_TALK_NEUTRAL_HEAD;
 
-			if (!stricmp(name, "TALK_ANGRY_HEAD"))		return ANIM_TALK_ANGRY_HEAD;
+			if (!strcasecmp(name, "TALK_ANGRY_HEAD"))		return ANIM_TALK_ANGRY_HEAD;
 
-			if (!stricmp(name, "TALK_HAPPY_HEAD"))		return ANIM_TALK_HAPPY_HEAD;
+			if (!strcasecmp(name, "TALK_HAPPY_HEAD"))		return ANIM_TALK_HAPPY_HEAD;
 
 			break;
 		case 'B':
 
-			if (!stricmp(name, "BARE_READY"))				return ANIM_BARE_READY;
+			if (!strcasecmp(name, "BARE_READY"))				return ANIM_BARE_READY;
 
-			if (!stricmp(name, "BARE_UNREADY"))				return ANIM_BARE_UNREADY;
+			if (!strcasecmp(name, "BARE_UNREADY"))				return ANIM_BARE_UNREADY;
 
-			if (!stricmp(name, "BARE_WAIT"))					return ANIM_BARE_WAIT;
+			if (!strcasecmp(name, "BARE_WAIT"))					return ANIM_BARE_WAIT;
 
-			if (!stricmp(name, "BARE_STRIKE_LEFT_START"))	return ANIM_BARE_STRIKE_LEFT_START;
+			if (!strcasecmp(name, "BARE_STRIKE_LEFT_START"))	return ANIM_BARE_STRIKE_LEFT_START;
 
-			if (!stricmp(name, "BARE_STRIKE_LEFT_CYCLE"))	return ANIM_BARE_STRIKE_LEFT_CYCLE;
+			if (!strcasecmp(name, "BARE_STRIKE_LEFT_CYCLE"))	return ANIM_BARE_STRIKE_LEFT_CYCLE;
 
-			if (!stricmp(name, "BARE_STRIKE_LEFT"))			return ANIM_BARE_STRIKE_LEFT;
+			if (!strcasecmp(name, "BARE_STRIKE_LEFT"))			return ANIM_BARE_STRIKE_LEFT;
 
-			if (!stricmp(name, "BARE_STRIKE_RIGHT_START"))	return ANIM_BARE_STRIKE_RIGHT_START;
+			if (!strcasecmp(name, "BARE_STRIKE_RIGHT_START"))	return ANIM_BARE_STRIKE_RIGHT_START;
 
-			if (!stricmp(name, "BARE_STRIKE_RIGHT_CYCLE"))	return ANIM_BARE_STRIKE_RIGHT_CYCLE;
+			if (!strcasecmp(name, "BARE_STRIKE_RIGHT_CYCLE"))	return ANIM_BARE_STRIKE_RIGHT_CYCLE;
 
-			if (!stricmp(name, "BARE_STRIKE_RIGHT"))			return ANIM_BARE_STRIKE_RIGHT;
+			if (!strcasecmp(name, "BARE_STRIKE_RIGHT"))			return ANIM_BARE_STRIKE_RIGHT;
 
-			if (!stricmp(name, "BARE_STRIKE_TOP_START"))		return ANIM_BARE_STRIKE_TOP_START;
+			if (!strcasecmp(name, "BARE_STRIKE_TOP_START"))		return ANIM_BARE_STRIKE_TOP_START;
 
-			if (!stricmp(name, "BARE_STRIKE_TOP_CYCLE"))		return ANIM_BARE_STRIKE_TOP_CYCLE;
+			if (!strcasecmp(name, "BARE_STRIKE_TOP_CYCLE"))		return ANIM_BARE_STRIKE_TOP_CYCLE;
 
-			if (!stricmp(name, "BARE_STRIKE_TOP"))			return ANIM_BARE_STRIKE_TOP;
+			if (!strcasecmp(name, "BARE_STRIKE_TOP"))			return ANIM_BARE_STRIKE_TOP;
 
-			if (!stricmp(name, "BARE_STRIKE_BOTTOM_START"))	return ANIM_BARE_STRIKE_BOTTOM_START;
+			if (!strcasecmp(name, "BARE_STRIKE_BOTTOM_START"))	return ANIM_BARE_STRIKE_BOTTOM_START;
 
-			if (!stricmp(name, "BARE_STRIKE_BOTTOM_CYCLE"))	return ANIM_BARE_STRIKE_BOTTOM_CYCLE;
+			if (!strcasecmp(name, "BARE_STRIKE_BOTTOM_CYCLE"))	return ANIM_BARE_STRIKE_BOTTOM_CYCLE;
 
-			if (!stricmp(name, "BARE_STRIKE_BOTTOM"))		return ANIM_BARE_STRIKE_BOTTOM;
+			if (!strcasecmp(name, "BARE_STRIKE_BOTTOM"))		return ANIM_BARE_STRIKE_BOTTOM;
 
 			break;
 		case '1':
 
-			if (!stricmp(name, "1H_READY_PART_1"))			return ANIM_1H_READY_PART_1;
+			if (!strcasecmp(name, "1H_READY_PART_1"))			return ANIM_1H_READY_PART_1;
 
-			if (!stricmp(name, "1H_READY_PART_2"))			return ANIM_1H_READY_PART_2;
+			if (!strcasecmp(name, "1H_READY_PART_2"))			return ANIM_1H_READY_PART_2;
 
-			if (!stricmp(name, "1H_UNREADY_PART_1"))			return ANIM_1H_UNREADY_PART_1;
+			if (!strcasecmp(name, "1H_UNREADY_PART_1"))			return ANIM_1H_UNREADY_PART_1;
 
-			if (!stricmp(name, "1H_UNREADY_PART_2"))			return ANIM_1H_UNREADY_PART_2;
+			if (!strcasecmp(name, "1H_UNREADY_PART_2"))			return ANIM_1H_UNREADY_PART_2;
 
-			if (!stricmp(name, "1H_WAIT"))					return ANIM_1H_WAIT;
+			if (!strcasecmp(name, "1H_WAIT"))					return ANIM_1H_WAIT;
 
-			if (!stricmp(name, "1H_STRIKE_LEFT_START"))		return ANIM_1H_STRIKE_LEFT_START;
+			if (!strcasecmp(name, "1H_STRIKE_LEFT_START"))		return ANIM_1H_STRIKE_LEFT_START;
 
-			if (!stricmp(name, "1H_STRIKE_LEFT_CYCLE"))		return ANIM_1H_STRIKE_LEFT_CYCLE;
+			if (!strcasecmp(name, "1H_STRIKE_LEFT_CYCLE"))		return ANIM_1H_STRIKE_LEFT_CYCLE;
 
-			if (!stricmp(name, "1H_STRIKE_LEFT"))			return ANIM_1H_STRIKE_LEFT;
+			if (!strcasecmp(name, "1H_STRIKE_LEFT"))			return ANIM_1H_STRIKE_LEFT;
 
-			if (!stricmp(name, "1H_STRIKE_RIGHT_START"))		return ANIM_1H_STRIKE_RIGHT_START;
+			if (!strcasecmp(name, "1H_STRIKE_RIGHT_START"))		return ANIM_1H_STRIKE_RIGHT_START;
 
-			if (!stricmp(name, "1H_STRIKE_RIGHT_CYCLE"))		return ANIM_1H_STRIKE_RIGHT_CYCLE;
+			if (!strcasecmp(name, "1H_STRIKE_RIGHT_CYCLE"))		return ANIM_1H_STRIKE_RIGHT_CYCLE;
 
-			if (!stricmp(name, "1H_STRIKE_RIGHT"))			return ANIM_1H_STRIKE_RIGHT;
+			if (!strcasecmp(name, "1H_STRIKE_RIGHT"))			return ANIM_1H_STRIKE_RIGHT;
 
-			if (!stricmp(name, "1H_STRIKE_TOP_START"))		return ANIM_1H_STRIKE_TOP_START;
+			if (!strcasecmp(name, "1H_STRIKE_TOP_START"))		return ANIM_1H_STRIKE_TOP_START;
 
-			if (!stricmp(name, "1H_STRIKE_TOP_CYCLE"))		return ANIM_1H_STRIKE_TOP_CYCLE;
+			if (!strcasecmp(name, "1H_STRIKE_TOP_CYCLE"))		return ANIM_1H_STRIKE_TOP_CYCLE;
 
-			if (!stricmp(name, "1H_STRIKE_TOP"))				return ANIM_1H_STRIKE_TOP;
+			if (!strcasecmp(name, "1H_STRIKE_TOP"))				return ANIM_1H_STRIKE_TOP;
 
-			if (!stricmp(name, "1H_STRIKE_BOTTOM_START"))	return ANIM_1H_STRIKE_BOTTOM_START;
+			if (!strcasecmp(name, "1H_STRIKE_BOTTOM_START"))	return ANIM_1H_STRIKE_BOTTOM_START;
 
-			if (!stricmp(name, "1H_STRIKE_BOTTOM_CYCLE"))	return ANIM_1H_STRIKE_BOTTOM_CYCLE;
+			if (!strcasecmp(name, "1H_STRIKE_BOTTOM_CYCLE"))	return ANIM_1H_STRIKE_BOTTOM_CYCLE;
 
-			if (!stricmp(name, "1H_STRIKE_BOTTOM"))			return ANIM_1H_STRIKE_BOTTOM;
+			if (!strcasecmp(name, "1H_STRIKE_BOTTOM"))			return ANIM_1H_STRIKE_BOTTOM;
 
 			break;
 		case '2':
 
-			if (!stricmp(name, "2H_READY_PART_1"))			return ANIM_2H_READY_PART_1;
+			if (!strcasecmp(name, "2H_READY_PART_1"))			return ANIM_2H_READY_PART_1;
 
-			if (!stricmp(name, "2H_READY_PART_2"))			return ANIM_2H_READY_PART_2;
+			if (!strcasecmp(name, "2H_READY_PART_2"))			return ANIM_2H_READY_PART_2;
 
-			if (!stricmp(name, "2H_UNREADY_PART_1"))			return ANIM_2H_UNREADY_PART_1;
+			if (!strcasecmp(name, "2H_UNREADY_PART_1"))			return ANIM_2H_UNREADY_PART_1;
 
-			if (!stricmp(name, "2H_UNREADY_PART_2"))			return ANIM_2H_UNREADY_PART_2;
+			if (!strcasecmp(name, "2H_UNREADY_PART_2"))			return ANIM_2H_UNREADY_PART_2;
 
-			if (!stricmp(name, "2H_WAIT"))					return ANIM_2H_WAIT;
+			if (!strcasecmp(name, "2H_WAIT"))					return ANIM_2H_WAIT;
 
-			if (!stricmp(name, "2H_STRIKE_LEFT_START"))		return ANIM_2H_STRIKE_LEFT_START;
+			if (!strcasecmp(name, "2H_STRIKE_LEFT_START"))		return ANIM_2H_STRIKE_LEFT_START;
 
-			if (!stricmp(name, "2H_STRIKE_LEFT_CYCLE"))		return ANIM_2H_STRIKE_LEFT_CYCLE;
+			if (!strcasecmp(name, "2H_STRIKE_LEFT_CYCLE"))		return ANIM_2H_STRIKE_LEFT_CYCLE;
 
-			if (!stricmp(name, "2H_STRIKE_LEFT"))			return ANIM_2H_STRIKE_LEFT;
+			if (!strcasecmp(name, "2H_STRIKE_LEFT"))			return ANIM_2H_STRIKE_LEFT;
 
-			if (!stricmp(name, "2H_STRIKE_RIGHT_START"))		return ANIM_2H_STRIKE_RIGHT_START;
+			if (!strcasecmp(name, "2H_STRIKE_RIGHT_START"))		return ANIM_2H_STRIKE_RIGHT_START;
 
-			if (!stricmp(name, "2H_STRIKE_RIGHT_CYCLE"))		return ANIM_2H_STRIKE_RIGHT_CYCLE;
+			if (!strcasecmp(name, "2H_STRIKE_RIGHT_CYCLE"))		return ANIM_2H_STRIKE_RIGHT_CYCLE;
 
-			if (!stricmp(name, "2H_STRIKE_RIGHT"))			return ANIM_2H_STRIKE_RIGHT;
+			if (!strcasecmp(name, "2H_STRIKE_RIGHT"))			return ANIM_2H_STRIKE_RIGHT;
 
-			if (!stricmp(name, "2H_STRIKE_TOP_START"))		return ANIM_2H_STRIKE_TOP_START;
+			if (!strcasecmp(name, "2H_STRIKE_TOP_START"))		return ANIM_2H_STRIKE_TOP_START;
 
-			if (!stricmp(name, "2H_STRIKE_TOP_CYCLE"))		return ANIM_2H_STRIKE_TOP_CYCLE;
+			if (!strcasecmp(name, "2H_STRIKE_TOP_CYCLE"))		return ANIM_2H_STRIKE_TOP_CYCLE;
 
-			if (!stricmp(name, "2H_STRIKE_TOP"))				return ANIM_2H_STRIKE_TOP;
+			if (!strcasecmp(name, "2H_STRIKE_TOP"))				return ANIM_2H_STRIKE_TOP;
 
-			if (!stricmp(name, "2H_STRIKE_BOTTOM_START"))	return ANIM_2H_STRIKE_BOTTOM_START;
+			if (!strcasecmp(name, "2H_STRIKE_BOTTOM_START"))	return ANIM_2H_STRIKE_BOTTOM_START;
 
-			if (!stricmp(name, "2H_STRIKE_BOTTOM_CYCLE"))	return ANIM_2H_STRIKE_BOTTOM_CYCLE;
+			if (!strcasecmp(name, "2H_STRIKE_BOTTOM_CYCLE"))	return ANIM_2H_STRIKE_BOTTOM_CYCLE;
 
-			if (!stricmp(name, "2H_STRIKE_BOTTOM"))			return ANIM_2H_STRIKE_BOTTOM;
+			if (!strcasecmp(name, "2H_STRIKE_BOTTOM"))			return ANIM_2H_STRIKE_BOTTOM;
 
 			break;
 		case 'M':
 
-			if (!stricmp(name, "MISSILE_READY_PART_1"))		return ANIM_MISSILE_READY_PART_1;
+			if (!strcasecmp(name, "MISSILE_READY_PART_1"))		return ANIM_MISSILE_READY_PART_1;
 
-			if (!stricmp(name, "MISSILE_READY_PART_2"))		return ANIM_MISSILE_READY_PART_2;
+			if (!strcasecmp(name, "MISSILE_READY_PART_2"))		return ANIM_MISSILE_READY_PART_2;
 
-			if (!stricmp(name, "MISSILE_UNREADY_PART_1"))	return ANIM_MISSILE_UNREADY_PART_1;
+			if (!strcasecmp(name, "MISSILE_UNREADY_PART_1"))	return ANIM_MISSILE_UNREADY_PART_1;
 
-			if (!stricmp(name, "MISSILE_UNREADY_PART_2"))	return ANIM_MISSILE_UNREADY_PART_2;
+			if (!strcasecmp(name, "MISSILE_UNREADY_PART_2"))	return ANIM_MISSILE_UNREADY_PART_2;
 
-			if (!stricmp(name, "MISSILE_WAIT"))				return ANIM_MISSILE_WAIT;
+			if (!strcasecmp(name, "MISSILE_WAIT"))				return ANIM_MISSILE_WAIT;
 
-			if (!stricmp(name, "MISSILE_STRIKE_PART_1"))		return ANIM_MISSILE_STRIKE_PART_1;
+			if (!strcasecmp(name, "MISSILE_STRIKE_PART_1"))		return ANIM_MISSILE_STRIKE_PART_1;
 
-			if (!stricmp(name, "MISSILE_STRIKE_PART_2"))		return ANIM_MISSILE_STRIKE_PART_2;
+			if (!strcasecmp(name, "MISSILE_STRIKE_PART_2"))		return ANIM_MISSILE_STRIKE_PART_2;
 
-			if (!stricmp(name, "MISSILE_STRIKE_CYCLE"))		return ANIM_MISSILE_STRIKE_CYCLE;
+			if (!strcasecmp(name, "MISSILE_STRIKE_CYCLE"))		return ANIM_MISSILE_STRIKE_CYCLE;
 
-			if (!stricmp(name, "MISSILE_STRIKE"))			return ANIM_MISSILE_STRIKE;
+			if (!strcasecmp(name, "MISSILE_STRIKE"))			return ANIM_MISSILE_STRIKE;
 
-			if (!stricmp(name, "MEDITATION"))			return ANIM_MEDITATION;
+			if (!strcasecmp(name, "MEDITATION"))			return ANIM_MEDITATION;
 
 			break;
 		case 'C':
 
-			if (!stricmp(name, "CAST_START"))			return ANIM_CAST_START;
+			if (!strcasecmp(name, "CAST_START"))			return ANIM_CAST_START;
 
-			if (!stricmp(name, "CAST_CYCLE"))			return ANIM_CAST_CYCLE;
+			if (!strcasecmp(name, "CAST_CYCLE"))			return ANIM_CAST_CYCLE;
 
-			if (!stricmp(name, "CAST"))					return ANIM_CAST;
+			if (!strcasecmp(name, "CAST"))					return ANIM_CAST;
 
-			if (!stricmp(name, "CAST_END"))				return ANIM_CAST_END;
+			if (!strcasecmp(name, "CAST_END"))				return ANIM_CAST_END;
 
-			if (!stricmp(name, "CROUCH"))				return ANIM_CROUCH;
+			if (!strcasecmp(name, "CROUCH"))				return ANIM_CROUCH;
 
-			if (!stricmp(name, "CROUCH_WALK"))			return ANIM_CROUCH_WALK;
+			if (!strcasecmp(name, "CROUCH_WALK"))			return ANIM_CROUCH_WALK;
 
-			if (!stricmp(name, "CROUCH_WALK_BACKWARD"))	return ANIM_CROUCH_WALK_BACKWARD;
+			if (!strcasecmp(name, "CROUCH_WALK_BACKWARD"))	return ANIM_CROUCH_WALK_BACKWARD;
 
-			if (!stricmp(name, "CROUCH_STRAFE_LEFT"))	return ANIM_CROUCH_STRAFE_LEFT;
+			if (!strcasecmp(name, "CROUCH_STRAFE_LEFT"))	return ANIM_CROUCH_STRAFE_LEFT;
 
-			if (!stricmp(name, "CROUCH_STRAFE_RIGHT"))	return ANIM_CROUCH_STRAFE_RIGHT;
+			if (!strcasecmp(name, "CROUCH_STRAFE_RIGHT"))	return ANIM_CROUCH_STRAFE_RIGHT;
 
-			if (!stricmp(name, "CROUCH_START"))			return ANIM_CROUCH_START;
+			if (!strcasecmp(name, "CROUCH_START"))			return ANIM_CROUCH_START;
 
-			if (!stricmp(name, "CROUCH_WAIT"))			return ANIM_CROUCH_WAIT;
+			if (!strcasecmp(name, "CROUCH_WAIT"))			return ANIM_CROUCH_WAIT;
 
-			if (!stricmp(name, "CROUCH_END"))			return ANIM_CROUCH_END;
+			if (!strcasecmp(name, "CROUCH_END"))			return ANIM_CROUCH_END;
 
 			break;
 		case 'L':
 
-			if (!stricmp(name, "LEAN_RIGHT"))			return ANIM_LEAN_RIGHT;
+			if (!strcasecmp(name, "LEAN_RIGHT"))			return ANIM_LEAN_RIGHT;
 
-			if (!stricmp(name, "LEAN_LEFT"))				return ANIM_LEAN_LEFT;
+			if (!strcasecmp(name, "LEAN_LEFT"))				return ANIM_LEAN_LEFT;
 
-			if (!stricmp(name, "LEVITATE"))				return ANIM_LEVITATE;
+			if (!strcasecmp(name, "LEVITATE"))				return ANIM_LEVITATE;
 
 			break;
 		case 'J':
 
-			if (!stricmp(name, "JUMP"))					return ANIM_JUMP;
+			if (!strcasecmp(name, "JUMP"))					return ANIM_JUMP;
 
-			if (!stricmp(name, "JUMP_ANTICIPATION"))		return ANIM_JUMP_ANTICIPATION;
+			if (!strcasecmp(name, "JUMP_ANTICIPATION"))		return ANIM_JUMP_ANTICIPATION;
 
-			if (!stricmp(name, "JUMP_UP"))				return ANIM_JUMP_UP;
+			if (!strcasecmp(name, "JUMP_UP"))				return ANIM_JUMP_UP;
 
-			if (!stricmp(name, "JUMP_CYCLE"))			return ANIM_JUMP_CYCLE;
+			if (!strcasecmp(name, "JUMP_CYCLE"))			return ANIM_JUMP_CYCLE;
 
-			if (!stricmp(name, "JUMP_END"))				return ANIM_JUMP_END;
+			if (!strcasecmp(name, "JUMP_END"))				return ANIM_JUMP_END;
 
-			if (!stricmp(name, "JUMP_END_PART2"))		return ANIM_JUMP_END_PART2;
+			if (!strcasecmp(name, "JUMP_END_PART2"))		return ANIM_JUMP_END_PART2;
 
 			break;
 		case 'F':
 
-			if (!stricmp(name, "FIGHT_WALK_FORWARD"))	return ANIM_FIGHT_WALK_FORWARD;
+			if (!strcasecmp(name, "FIGHT_WALK_FORWARD"))	return ANIM_FIGHT_WALK_FORWARD;
 
-			if (!stricmp(name, "FIGHT_WALK_BACKWARD"))	return ANIM_FIGHT_WALK_BACKWARD;
+			if (!strcasecmp(name, "FIGHT_WALK_BACKWARD"))	return ANIM_FIGHT_WALK_BACKWARD;
 
-			if (!stricmp(name, "FIGHT_WALK_MINISTEP"))	return ANIM_FIGHT_WALK_MINISTEP;
+			if (!strcasecmp(name, "FIGHT_WALK_MINISTEP"))	return ANIM_FIGHT_WALK_MINISTEP;
 
-			if (!stricmp(name, "FIGHT_STRAFE_RIGHT"))	return ANIM_FIGHT_STRAFE_RIGHT;
+			if (!strcasecmp(name, "FIGHT_STRAFE_RIGHT"))	return ANIM_FIGHT_STRAFE_RIGHT;
 
-			if (!stricmp(name, "FIGHT_STRAFE_LEFT"))		return ANIM_FIGHT_STRAFE_LEFT;
+			if (!strcasecmp(name, "FIGHT_STRAFE_LEFT"))		return ANIM_FIGHT_STRAFE_LEFT;
 
-			if (!stricmp(name, "FIGHT_WAIT"))			return ANIM_FIGHT_WAIT;
+			if (!strcasecmp(name, "FIGHT_WAIT"))			return ANIM_FIGHT_WAIT;
 
 			break;
 		case 'G':
 
-			if (!stricmp(name, "GRUNT"))					return ANIM_GRUNT;
+			if (!strcasecmp(name, "GRUNT"))					return ANIM_GRUNT;
 
 			break;
 		case 'U':
 
-			if (!stricmp(name, "U_TURN_LEFT"))			return ANIM_U_TURN_LEFT;
+			if (!strcasecmp(name, "U_TURN_LEFT"))			return ANIM_U_TURN_LEFT;
 
-			if (!stricmp(name, "U_TURN_RIGHT"))			return ANIM_U_TURN_RIGHT;
+			if (!strcasecmp(name, "U_TURN_RIGHT"))			return ANIM_U_TURN_RIGHT;
 
-			if (!stricmp(name, "U_TURN_LEFT_FIGHT"))		return ANIM_U_TURN_LEFT_FIGHT;
+			if (!strcasecmp(name, "U_TURN_LEFT_FIGHT"))		return ANIM_U_TURN_LEFT_FIGHT;
 
-			if (!stricmp(name, "U_TURN_RIGHT_FIGHT"))	return ANIM_U_TURN_RIGHT_FIGHT;
+			if (!strcasecmp(name, "U_TURN_RIGHT_FIGHT"))	return ANIM_U_TURN_RIGHT_FIGHT;
 
 			break;
 	}
@@ -3830,7 +3830,7 @@ long ARX_SCRIPT_Timer_Exist(char * texx)
 		{
 			if (scr_timer[i].name)
 			{
-				if (!stricmp(scr_timer[i].name, texx))
+				if (!strcasecmp(scr_timer[i].name, texx))
 				{
 					return i;
 				}
@@ -3927,7 +3927,7 @@ void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(char * timername, INTERACTIVE_OBJ * i
 		if (scr_timer[i].exist)
 		{
 			if ((scr_timer[i].io == io) &&
-			        (!stricmp(timername, scr_timer[i].name)))
+			        (!strcasecmp(timername, scr_timer[i].name)))
 				ARX_SCRIPT_Timer_ClearByNum(i);
 		}
 	}
@@ -4028,7 +4028,7 @@ long ARX_SCRIPT_GetSystemIOScript(INTERACTIVE_OBJ * io, char * name)
 		{
 			if (scr_timer[i].exist)
 			{
-				if ((scr_timer[i].io == io) && (!stricmp(scr_timer[i].name, name)))
+				if ((scr_timer[i].io == io) && (!strcasecmp(scr_timer[i].name, name)))
 				{
 					return i;
 				}
@@ -4122,7 +4122,7 @@ void ARX_SCRIPT_Timer_Check()
 
 					if (!es)
 					{
-						if (!stricmp(st->name, "_R_A_T_"))
+						if (!strcasecmp(st->name, "_R_A_T_"))
 						{
 							if (Manage_Specific_RAT_Timer(st)) continue;
 						}
@@ -4361,13 +4361,13 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if (!stricmp(temp, "STACK"))
+					if (!strcasecmp(temp, "STACK"))
 					{
 					}
-					else if (!stricmp(temp, "UNSTACK"))
+					else if (!strcasecmp(temp, "UNSTACK"))
 					{
 					}
-					else if (!stricmp(temp, "UNSTACKALL"))
+					else if (!strcasecmp(temp, "UNSTACKALL"))
 					{
 					}
 					else
@@ -4377,13 +4377,13 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 							pos = GetNextWord(es, pos, temp);
 						}
 
-						if (!stricmp(temp, "FLEE"))
+						if (!strcasecmp(temp, "FLEE"))
 							pos = GetNextWord(es, pos, temp);
-						else if (!stricmp(temp, "LOOK_FOR"))
+						else if (!strcasecmp(temp, "LOOK_FOR"))
 							pos = GetNextWord(es, pos, temp);
-						else if (!stricmp(temp, "HIDE"))
+						else if (!strcasecmp(temp, "HIDE"))
 							pos = GetNextWord(es, pos, temp);
-						else if (!stricmp(temp, "WANDER_AROUND"))
+						else if (!strcasecmp(temp, "WANDER_AROUND"))
 							pos = GetNextWord(es, pos, temp);
 					}
 				}
@@ -4438,7 +4438,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 					pos = GetNextWord(es, pos, temp);
 					pos = GetNextWord(es, pos, temp);
 
-					if (stricmp(temp, "OFF"))
+					if (strcasecmp(temp, "OFF"))
 					{
 						pos = GetNextWord(es, pos, temp);
 					}
@@ -4713,7 +4713,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if (!stricmp(temp, "KILLALL"))
+					if (!strcasecmp(temp, "KILLALL"))
 					{
 					}
 					else if (temp[0] == '-')
@@ -4722,7 +4722,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 						{
 							pos = GetNextWord(es, pos, temp2);
 
-							if (!stricmp(temp2, "ZOOM"))
+							if (!strcasecmp(temp2, "ZOOM"))
 							{
 								pos = GetNextWord(es, pos, temp2);
 								pos = GetNextWord(es, pos, temp2);
@@ -4731,23 +4731,23 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 								pos = GetNextWord(es, pos, temp2);
 								pos = GetNextWord(es, pos, temp2);
 							}
-							else if ((!stricmp(temp2, "CCCTALKER_L"))
-							         || (!stricmp(temp2, "CCCTALKER_R")))
+							else if ((!strcasecmp(temp2, "CCCTALKER_L"))
+							         || (!strcasecmp(temp2, "CCCTALKER_R")))
 							{
 								pos = GetNextWord(es, pos, temp2);
 								pos = GetNextWord(es, pos, temp2);
 								pos = GetNextWord(es, pos, temp2);
 							}
-							else if ((!stricmp(temp2, "CCCLISTENER_L"))
-							         || (!stricmp(temp2, "CCCLISTENER_R")))
+							else if ((!strcasecmp(temp2, "CCCLISTENER_L"))
+							         || (!strcasecmp(temp2, "CCCLISTENER_R")))
 							{
 								pos = GetNextWord(es, pos, temp2);
 								pos = GetNextWord(es, pos, temp2);
 								pos = GetNextWord(es, pos, temp2);
 							}
-							else if ((!stricmp(temp2, "SIDE"))
-							         || (!stricmp(temp2, "SIDE_L"))
-							         || (!stricmp(temp2, "SIDE_R")))
+							else if ((!strcasecmp(temp2, "SIDE"))
+							         || (!strcasecmp(temp2, "SIDE_L"))
+							         || (!strcasecmp(temp2, "SIDE_R")))
 							{
 								pos = GetNextWord(es, pos, temp2);
 								pos = GetNextWord(es, pos, temp2);
@@ -4858,7 +4858,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if (!stricmp(temp, "SKIN"))
+					if (!strcasecmp(temp, "SKIN"))
 						pos = GetNextWord(es, pos, temp);
 
 					pos = GetNextWord(es, pos, temp);
@@ -4925,7 +4925,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 
 					if (temp3[0] == '-')
 					{
-						if (!stricmp(temp3, "-r")) { }
+						if (!strcasecmp(temp3, "-r")) { }
 						else
 						{
 							pos = GetNextWord(es, pos, temp);
@@ -5142,7 +5142,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if (!stricmp(temp, "PLAYER_APPEARS"))
+					if (!strcasecmp(temp, "PLAYER_APPEARS"))
 					{
 					}
 					else if (!strcmp(temp, "HEAL"))
@@ -5199,10 +5199,10 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if (!stricmp(temp, "STACK"))
+					if (!strcasecmp(temp, "STACK"))
 					{
 					}
-					else if (!stricmp(temp, "UNSTACK"))
+					else if (!strcasecmp(temp, "UNSTACK"))
 					{
 					}
 					else
@@ -5212,17 +5212,17 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 							pos = GetNextWord(es, pos, temp);
 						}
 
-						if (!stricmp(temp, "RGB"))
+						if (!strcasecmp(temp, "RGB"))
 						{
 							pos = GetNextWord(es, pos, temp);
 							pos = GetNextWord(es, pos, temp);
 							pos = GetNextWord(es, pos, temp);
 						}
-						else if (!stricmp(temp, "ZCLIP"))
+						else if (!strcasecmp(temp, "ZCLIP"))
 						{
 							pos = GetNextWord(es, pos, temp);
 						}
-						else if (!stricmp(temp, "AMBIANCE"))
+						else if (!strcasecmp(temp, "AMBIANCE"))
 						{
 							pos = GetNextWord(es, pos, temp);
 						}
@@ -5379,12 +5379,12 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 					else if (!strcmp(temp2, "<"))	{}
 					else if (!strcmp(temp2, ">="))	{}
 					else if (!strcmp(temp2, ">"))	{}
-					else if	(!stricmp(temp2, "isclass"))	{}
-					else if	(!stricmp(temp2, "isgroup"))	{}
-					else if	(!stricmp(temp2, "!isgroup"))	{}
-					else if	(!stricmp(temp2, "iselement"))	{}
-					else if	(!stricmp(temp2, "isin"))	{}
-					else if	(!stricmp(temp2, "istype"))	{}
+					else if	(!strcasecmp(temp2, "isclass"))	{}
+					else if	(!strcasecmp(temp2, "isgroup"))	{}
+					else if	(!strcasecmp(temp2, "!isgroup"))	{}
+					else if	(!strcasecmp(temp2, "iselement"))	{}
+					else if	(!strcasecmp(temp2, "isin"))	{}
+					else if	(!strcasecmp(temp2, "istype"))	{}
 					else
 					{
 						sprintf(tem, "Line %04d - Error: 'IF': Unknown Operator %s found.\n-- %s", currentline, temp2, curlinetext);
@@ -5491,7 +5491,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 
 					pos = GetNextWord(es, pos, temp);
 
-					if (0 != stricmp(temp, "behind"))
+					if (0 != strcasecmp(temp, "behind"))
 					{
 						char temp2[256];
 
@@ -5596,7 +5596,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 					pos = GetNextWord(es, pos, temp);
 					pos = GetNextWord(es, pos, temp1);
 
-					if (!stricmp(temp, "OUT"))
+					if (!strcasecmp(temp, "OUT"))
 					{
 						pos = GetNextWord(es, pos, temp1);
 						pos = GetNextWord(es, pos, temp2);
@@ -5670,7 +5670,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if ((!stricmp(temp, "remove")) || (!stricmp(temp, "-r")))
+					if ((!strcasecmp(temp, "remove")) || (!strcasecmp(temp, "-r")))
 					{
 						pos = GetNextWord(es, pos, temp);
 					}
@@ -5859,7 +5859,7 @@ BOOL IsIOGroup(INTERACTIVE_OBJ * io, char * group)
 	for (long i = 0; i < io->nb_iogroups; i++)
 	{
 		if ((io->iogroups[i].name)
-		        &&	(!stricmp(group, io->iogroups[i].name)))
+		        &&	(!strcasecmp(group, io->iogroups[i].name)))
 			return TRUE;
 	}
 
@@ -5884,7 +5884,7 @@ void ARX_IOGROUP_Remove(INTERACTIVE_OBJ * io, char * group)
 	for (long i = 0; i < io->nb_iogroups; i++)
 	{
 		if ((io->iogroups[i].name)
-		        &&	(!stricmp(group, io->iogroups[i].name)))
+		        &&	(!strcasecmp(group, io->iogroups[i].name)))
 			toremove = i;
 	}
 
@@ -6409,15 +6409,15 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 #endif
 
-					if (!stricmp(temp, "STACK"))
+					if (!strcasecmp(temp, "STACK"))
 					{
 						ARX_NPC_Behaviour_Stack(io);
 					}
-					else if (!stricmp(temp, "UNSTACK"))
+					else if (!strcasecmp(temp, "UNSTACK"))
 					{
 						ARX_NPC_Behaviour_UnStack(io);
 					}
-					else if (!stricmp(temp, "UNSTACKALL"))
+					else if (!strcasecmp(temp, "UNSTACKALL"))
 					{
 						ARX_NPC_Behaviour_Reset(io);
 					}
@@ -6465,21 +6465,21 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 						}
 
 
-						if (!stricmp(temp, "GO_HOME"))
+						if (!strcasecmp(temp, "GO_HOME"))
 							behavior |= BEHAVIOUR_GO_HOME;
-						else if (!stricmp(temp, "FRIENDLY"))
+						else if (!strcasecmp(temp, "FRIENDLY"))
 						{
 							if ((io) && (io->ioflags & IO_NPC)) io->_npcdata->movemode = NOMOVEMODE;
 
 							behavior |= BEHAVIOUR_FRIENDLY;
 						}
-						else if (!stricmp(temp, "MOVE_TO"))
+						else if (!strcasecmp(temp, "MOVE_TO"))
 						{
 							if ((io) && (io->ioflags & IO_NPC)) io->_npcdata->movemode = WALKMODE;
 
 							behavior |= BEHAVIOUR_MOVE_TO;
 						}
-						else if (!stricmp(temp, "FLEE"))
+						else if (!strcasecmp(temp, "FLEE"))
 						{
 							behavior |= BEHAVIOUR_FLEE;
 							pos = GetNextWord(es, pos, temp);
@@ -6487,7 +6487,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 							if ((io) && (io->ioflags & IO_NPC)) io->_npcdata->movemode = RUNMODE;
 						}
-						else if (!stricmp(temp, "LOOK_FOR"))
+						else if (!strcasecmp(temp, "LOOK_FOR"))
 						{
 							behavior |= BEHAVIOUR_LOOK_FOR;
 							pos = GetNextWord(es, pos, temp);
@@ -6495,7 +6495,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 							if ((io) && (io->ioflags & IO_NPC)) io->_npcdata->movemode = WALKMODE;
 						}
-						else if (!stricmp(temp, "HIDE"))
+						else if (!strcasecmp(temp, "HIDE"))
 						{
 							behavior |= BEHAVIOUR_HIDE;
 							pos = GetNextWord(es, pos, temp);
@@ -6503,7 +6503,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 							if ((io) && (io->ioflags & IO_NPC)) io->_npcdata->movemode = WALKMODE;
 						}
-						else if (!stricmp(temp, "WANDER_AROUND"))
+						else if (!strcasecmp(temp, "WANDER_AROUND"))
 						{
 							behavior |= BEHAVIOUR_WANDER_AROUND;
 							pos = GetNextWord(es, pos, temp);
@@ -6511,7 +6511,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 							if ((io) && (io->ioflags & IO_NPC)) io->_npcdata->movemode = WALKMODE;
 						}
-						else if (!stricmp(temp, "GUARD"))
+						else if (!strcasecmp(temp, "GUARD"))
 						{
 							behavior |= BEHAVIOUR_GUARD;
 
@@ -6552,11 +6552,11 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 						pos = GetNextWord(es, pos, temp);
 					}
 
-					if (!stricmp(temp, "OPEN"))
+					if (!strcasecmp(temp, "OPEN"))
 					{
 						ARX_INTERFACE_BookOpenClose(1);
 					}
-					else if (!stricmp(temp, "CLOSE"))
+					else if (!strcasecmp(temp, "CLOSE"))
 					{
 						ARX_INTERFACE_BookOpenClose(2);
 					}
@@ -6643,7 +6643,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 					float val = 0.f;
 					float val2 = 0.f;
 
-					if (stricmp(temp, "OFF"))
+					if (strcasecmp(temp, "OFF"))
 					{
 						val = GetVarValueInterpretedAsFloat(temp, esss, io);
 						pos = GetNextWord(es, pos, temp);
@@ -6778,7 +6778,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 #endif
 						}
 					}
-					else if (!stricmp(temp, "KILL"))
+					else if (!strcasecmp(temp, "KILL"))
 						ARX_SOUND_KillAmbiances();
 					else
 						ARX_SOUND_PlayScriptAmbiance(temp);
@@ -6789,7 +6789,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 					if (io)
 					{
-						if ((!stricmp(temp, "ON")) || (!stricmp(temp, "YES")))
+						if ((!strcasecmp(temp, "ON")) || (!strcasecmp(temp, "YES")))
 						{
 							ANCHOR_BLOCK_By_IO(io, 1);
 						}
@@ -7187,107 +7187,107 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 						ARX_CHECK_NO_ENTRY(); //add used without being initialized, remove rune
 					}
 
-					if (!stricmp(temp, "AAM"))
+					if (!strcasecmp(temp, "AAM"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_AAM);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_AAM);
 					}
-					else if (!stricmp(temp, "CETRIUS"))
+					else if (!strcasecmp(temp, "CETRIUS"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_CETRIUS);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_CETRIUS);
 					}
-					else if (!stricmp(temp, "COMUNICATUM"))
+					else if (!strcasecmp(temp, "COMUNICATUM"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_COMUNICATUM);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_COMUNICATUM);
 					}
-					else if (!stricmp(temp, "COSUM"))
+					else if (!strcasecmp(temp, "COSUM"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_COSUM);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_COSUM);
 					}
-					else if (!stricmp(temp, "FOLGORA"))
+					else if (!strcasecmp(temp, "FOLGORA"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_FOLGORA);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_FOLGORA);
 					}
-					else if (!stricmp(temp, "FRIDD"))
+					else if (!strcasecmp(temp, "FRIDD"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_FRIDD);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_FRIDD);
 					}
-					else if (!stricmp(temp, "KAOM"))
+					else if (!strcasecmp(temp, "KAOM"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_KAOM);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_KAOM);
 					}
-					else if (!stricmp(temp, "MEGA"))
+					else if (!strcasecmp(temp, "MEGA"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_MEGA);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_MEGA);
 					}
-					else if (!stricmp(temp, "MORTE"))
+					else if (!strcasecmp(temp, "MORTE"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_MORTE);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_MORTE);
 					}
-					else if (!stricmp(temp, "MOVIS"))
+					else if (!strcasecmp(temp, "MOVIS"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_MOVIS);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_MOVIS);
 					}
-					else if (!stricmp(temp, "NHI"))
+					else if (!strcasecmp(temp, "NHI"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_NHI);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_NHI);
 					}
-					else if (!stricmp(temp, "RHAA"))
+					else if (!strcasecmp(temp, "RHAA"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_RHAA);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_RHAA);
 					}
-					else if (!stricmp(temp, "SPACIUM"))
+					else if (!strcasecmp(temp, "SPACIUM"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_SPACIUM);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_SPACIUM);
 					}
-					else if (!stricmp(temp, "STREGUM"))
+					else if (!strcasecmp(temp, "STREGUM"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_STREGUM);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_STREGUM);
 					}
-					else if (!stricmp(temp, "TAAR"))
+					else if (!strcasecmp(temp, "TAAR"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_TAAR);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_TAAR);
 					}
-					else if (!stricmp(temp, "TEMPUS"))
+					else if (!strcasecmp(temp, "TEMPUS"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_TEMPUS);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_TEMPUS);
 					}
-					else if (!stricmp(temp, "TERA"))
+					else if (!strcasecmp(temp, "TERA"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_TERA);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_TERA);
 					}
-					else if (!stricmp(temp, "VISTA"))
+					else if (!strcasecmp(temp, "VISTA"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_VISTA);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_VISTA);
 					}
-					else if (!stricmp(temp, "VITAE"))
+					else if (!strcasecmp(temp, "VITAE"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_VITAE);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_VITAE);
 					}
-					else if (!stricmp(temp, "YOK"))
+					else if (!strcasecmp(temp, "YOK"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_YOK);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_YOK);
 					}
-					else if (!stricmp(temp, "ALL"))
+					else if (!strcasecmp(temp, "ALL"))
 						ARX_PLAYER_Rune_Add_All();
 
 #ifdef NEEDING_DEBUG
@@ -7329,11 +7329,11 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 						pos = GetNextWord(es, pos, temp);
 					}
 
-					if (!stricmp(temp, "KILL"))
+					if (!strcasecmp(temp, "KILL"))
 					{
 						DANAE_KillCinematic();
 					}
-					else if (!stricmp(temp, "PLAY"))
+					else if (!strcasecmp(temp, "PLAY"))
 					{
 						PLAY_LOADED_CINEMATIC = 1;
 						ARX_TIME_Pause();
@@ -7372,7 +7372,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 					if (io)
 					{
-						if ((!stricmp(temp, "ON")) || (!stricmp(temp, "YES")))
+						if ((!strcasecmp(temp, "ON")) || (!strcasecmp(temp, "YES")))
 						{
 							if (io->ioflags & IO_NO_COLLISIONS)
 							{
@@ -7423,7 +7423,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 #endif
 
-					if (!stricmp(temp, "ON")) CAMERACONTROLLER = io;
+					if (!strcasecmp(temp, "ON")) CAMERACONTROLLER = io;
 					else CAMERACONTROLLER = NULL;
 				}
 				else if (!strcmp(temp, "CONVERSATION"))
@@ -7531,7 +7531,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 #endif
 
-					if (!stricmp(temp, "NONE"))
+					if (!strcasecmp(temp, "NONE"))
 					{
 						MasterCamera.exist = 0;
 					}
@@ -7611,7 +7611,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 #endif
 					}
 
-					if (!stricmp(temp, "ON"))
+					if (!strcasecmp(temp, "ON"))
 					{
 						ARX_INTERFACE_SetCinemascope(1, smooth);
 					}
@@ -7748,13 +7748,13 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 					ARX_INTERFACE_NOTE_TYPE type = NOTE_TYPE_UNDEFINED;
 					pos = GetNextWord(es, pos, temp);
 
-					if (!stricmp(temp, "NOTE"))
+					if (!strcasecmp(temp, "NOTE"))
 						type = NOTE_TYPE_NOTE;
 
-					if (!stricmp(temp, "NOTICE"))
+					if (!strcasecmp(temp, "NOTICE"))
 						type = NOTE_TYPE_NOTICE;
 
-					if (!stricmp(temp, "BOOK"))
+					if (!strcasecmp(temp, "BOOK"))
 						type = NOTE_TYPE_BOOK;
 
 					pos = GetNextWord(es, pos, temp);
@@ -7907,7 +7907,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 					long unbreakable	=	0;
 					MakeUpcase(temp2);
 
-					if (!stricmp(temp2, "KILLALL"))
+					if (!strcasecmp(temp2, "KILLALL"))
 					{
 						ARX_SPEECH_Reset();
 					}
@@ -7939,7 +7939,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 								FRAME_COUNT	=	0;
 								pos			=	GetNextWord(es, pos, temp2);
 
-								if (!stricmp(temp2, "KEEP"))
+								if (!strcasecmp(temp2, "KEEP"))
 								{
 									acs.type	=	ARX_CINE_SPEECH_KEEP;
 									acs.pos1.x	=	LASTCAMPOS.x;
@@ -7950,7 +7950,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 									acs.pos2.g	=	LASTCAMANGLE.g;
 								}
 
-								if (!stricmp(temp2, "ZOOM"))
+								if (!strcasecmp(temp2, "ZOOM"))
 								{
 									acs.type			=	ARX_CINE_SPEECH_ZOOM;
 									pos					=	GetNextWord(es, pos, temp2);
@@ -7979,10 +7979,10 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 										ComputeACSPos(&acs, inter.iobj[0], acs.ionum);
 									else ComputeACSPos(&acs, io, -1);
 								}
-								else if ((!stricmp(temp2, "CCCTALKER_L"))
-								         || (!stricmp(temp2, "CCCTALKER_R")))
+								else if ((!strcasecmp(temp2, "CCCTALKER_L"))
+								         || (!strcasecmp(temp2, "CCCTALKER_R")))
 								{
-									if (!stricmp(temp2, "CCCTALKER_R"))
+									if (!strcasecmp(temp2, "CCCTALKER_R"))
 										acs.type = ARX_CINE_SPEECH_CCCTALKER_R;
 									else acs.type = ARX_CINE_SPEECH_CCCTALKER_L;
 
@@ -8000,10 +8000,10 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 										ComputeACSPos(&acs, inter.iobj[0], acs.ionum);
 									else ComputeACSPos(&acs, io, acs.ionum);
 								}
-								else if ((!stricmp(temp2, "CCCLISTENER_L"))
-								         || (!stricmp(temp2, "CCCLISTENER_R")))
+								else if ((!strcasecmp(temp2, "CCCLISTENER_L"))
+								         || (!strcasecmp(temp2, "CCCLISTENER_R")))
 								{
-									if (!stricmp(temp2, "CCCLISTENER_R"))
+									if (!strcasecmp(temp2, "CCCLISTENER_R"))
 										acs.type = ARX_CINE_SPEECH_CCCLISTENER_R;
 									else acs.type = ARX_CINE_SPEECH_CCCLISTENER_L;
 
@@ -8021,11 +8021,11 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 										ComputeACSPos(&acs, inter.iobj[0], acs.ionum);
 									else ComputeACSPos(&acs, io, acs.ionum);
 								}
-								else if ((!stricmp(temp2, "SIDE"))
-								         || (!stricmp(temp2, "SIDE_L"))
-								         || (!stricmp(temp2, "SIDE_R")))
+								else if ((!strcasecmp(temp2, "SIDE"))
+								         || (!strcasecmp(temp2, "SIDE_L"))
+								         || (!strcasecmp(temp2, "SIDE_R")))
 								{
-									if (!stricmp(temp2, "SIDE_L"))
+									if (!strcasecmp(temp2, "SIDE_L"))
 										acs.type = ARX_CINE_SPEECH_SIDE_LEFT;
 									else acs.type = ARX_CINE_SPEECH_SIDE;
 
@@ -8163,7 +8163,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if (!stricmp(temp, "ON"))
+					if (!strcasecmp(temp, "ON"))
 					{
 						io->GameFlags |= GFLAG_PLATFORM;
 					}
@@ -8173,7 +8173,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if (!stricmp(temp, "ON"))
+					if (!strcasecmp(temp, "ON"))
 					{
 						io->GameFlags &= ~GFLAG_NOGORE;
 					}
@@ -8183,7 +8183,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if (!stricmp(temp, "ON"))
+					if (!strcasecmp(temp, "ON"))
 					{
 						io->ioflags |= IO_UNIQUE;
 					}
@@ -8193,7 +8193,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if (!stricmp(temp, "ON"))
+					if (!strcasecmp(temp, "ON"))
 					{
 						io->ioflags |= IO_BLACKSMITH;
 					}
@@ -8203,7 +8203,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if (!stricmp(temp, "ON"))
+					if (!strcasecmp(temp, "ON"))
 					{
 						io->GameFlags |= GFLAG_ELEVATOR;
 					}
@@ -8215,7 +8215,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 					if ((io) && (io->ioflags & IO_FIX))
 					{
-						if (!stricmp(temp, "off"))
+						if (!strcasecmp(temp, "off"))
 						{
 							io->_fixdata->trapvalue = -1;
 						}
@@ -8235,7 +8235,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 					if ((io) && (io->ioflags & IO_FIX))
 					{
-						if (!stricmp(temp, "off"))
+						if (!strcasecmp(temp, "off"))
 						{
 							io->secretvalue = -1;
 						}
@@ -8255,7 +8255,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 					if ((io) && (io->ioflags & IO_NPC))
 					{
-						if (!stricmp(temp, "off"))
+						if (!strcasecmp(temp, "off"))
 						{
 							io->_npcdata->fDetect = -1;
 						}
@@ -8275,7 +8275,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 					if ((io) && (io->ioflags & IO_ITEM))
 					{
-						if (!stricmp(temp, "off"))
+						if (!strcasecmp(temp, "off"))
 						{
 							io->_itemdata->stealvalue = -1;
 						}
@@ -8297,7 +8297,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 					if ((io) && (io->ioflags & IO_ITEM))
 					{
-						if (!stricmp(temp, "off"))
+						if (!strcasecmp(temp, "off"))
 						{
 							io->_itemdata->stealvalue = -1;
 						}
@@ -8401,13 +8401,13 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 					if (remove)
 					{
-						if (!stricmp(temp1, "DOOR")) io->GameFlags &= ~GFLAG_DOOR;
+						if (!strcasecmp(temp1, "DOOR")) io->GameFlags &= ~GFLAG_DOOR;
 
 						ARX_IOGROUP_Remove(io, temp1);
 					}
 					else
 					{
-						if (!stricmp(temp1, "DOOR")) io->GameFlags |= GFLAG_DOOR;
+						if (!strcasecmp(temp1, "DOOR")) io->GameFlags |= GFLAG_DOOR;
 
 						ARX_IOGROUP_Add(io, temp1);
 					}
@@ -8485,7 +8485,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 						}
 					}
 
-					if (!stricmp(temp, "SKIN"))
+					if (!strcasecmp(temp, "SKIN"))
 					{
 						char temp2[256];
 						pos = GetNextWord(es, pos, temp);
@@ -8808,12 +8808,12 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if (!stricmp(temp, "NONE"))
+					if (!strcasecmp(temp, "NONE"))
 					{
 						io->GameFlags &= ~GFLAG_INTERACTIVITY;
 						io->GameFlags &= ~GFLAG_INTERACTIVITYHIDE;
 					}
-					else if (!stricmp(temp, "HIDE"))
+					else if (!strcasecmp(temp, "HIDE"))
 					{
 						io->GameFlags &= ~GFLAG_INTERACTIVITY;
 						io->GameFlags |= GFLAG_INTERACTIVITYHIDE;
@@ -8848,7 +8848,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 					if (temp3[0] == '-')
 					{
-						if (!stricmp(temp3, "-r"))  ARX_EQUIPMENT_Remove_All_Special(io);
+						if (!strcasecmp(temp3, "-r"))  ARX_EQUIPMENT_Remove_All_Special(io);
 						else
 						{
 							pos = GetNextWord(es, pos, temp);
@@ -8996,7 +8996,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 					if (io != NULL)
 					{
 
-						if (!stricmp(temp, "NONE"))
+						if (!strcasecmp(temp, "NONE"))
 						{
 							if (io->usepath != NULL)
 							{
@@ -9105,7 +9105,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 								old_target = -12;
 						}
 
-						if (!stricmp(temp, "OBJECT"))
+						if (!strcasecmp(temp, "OBJECT"))
 						{
 							pos = GetNextWord(es, pos, temp);
 #ifdef NEEDING_DEBUG
@@ -9138,12 +9138,12 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							GetTargetPos(io);
 						}
 
-						if (!stricmp(temp1, "PATH"))
+						if (!strcasecmp(temp1, "PATH"))
 						{
 							io->targetinfo = TARGET_PATH;
 							GetTargetPos(io);
 						}
-						else if (!stricmp(temp1, "NONE"))
+						else if (!strcasecmp(temp1, "NONE"))
 						{
 							io->targetinfo = TARGET_NONE;
 						}
@@ -9565,7 +9565,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if (!stricmp(temp, "ON"))	io->ioflags |= IO_ANGULAR;
+					if (!strcasecmp(temp, "ON"))	io->ioflags |= IO_ANGULAR;
 					else	io->ioflags &= ~IO_ANGULAR;
 				}
 				else if (!strcmp(temp, "SETPLAYERCOLLISION"))
@@ -10035,11 +10035,11 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 #endif
 
-					if (!stricmp(temp1, "YLSIDE_DEATH"))
+					if (!strcasecmp(temp1, "YLSIDE_DEATH"))
 					{
 						SetYlsideDeath(io);
 					}
-					else if (!stricmp(temp1, "PLAYER_APPEARS"))
+					else if (!strcasecmp(temp1, "PLAYER_APPEARS"))
 					{
 						MakePlayerAppearsFX(io);
 					}
@@ -10136,7 +10136,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if (!stricmp(temp, "ON"))
+					if (!strcasecmp(temp, "ON"))
 					{
 						io->ioflags |= IO_BUMP;
 #ifdef NEEDING_DEBUG
@@ -10145,7 +10145,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 #endif
 					}
-					else if (!stricmp(temp, "OFF"))
+					else if (!strcasecmp(temp, "OFF"))
 					{
 						io->ioflags &= ~IO_BUMP;
 #ifdef NEEDING_DEBUG
@@ -10159,7 +10159,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if (!stricmp(temp, "ON"))
+					if (!strcasecmp(temp, "ON"))
 					{
 						io->ioflags |= IO_ZMAP;
 #ifdef NEEDING_DEBUG
@@ -10168,7 +10168,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 #endif
 					}
-					else if (!stricmp(temp, "OFF"))
+					else if (!strcasecmp(temp, "OFF"))
 					{
 						io->ioflags &= ~IO_ZMAP;
 #ifdef NEEDING_DEBUG
@@ -10195,11 +10195,11 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 #endif
 
-					if (!stricmp(temp, "STACK"))
+					if (!strcasecmp(temp, "STACK"))
 					{
 						ARX_GLOBALMODS_Stack();
 					}
-					else if (!stricmp(temp, "UNSTACK"))
+					else if (!strcasecmp(temp, "UNSTACK"))
 					{
 						ARX_GLOBALMODS_UnStack();
 					}
@@ -10219,7 +10219,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 #endif
 						}
 
-						if (!stricmp(temp, "RGB"))
+						if (!strcasecmp(temp, "RGB"))
 						{
 							pos = GetNextWord(es, pos, temp);
 							desired.depthcolor.r = GetVarValueInterpretedAsFloat(temp, esss, io);
@@ -10256,7 +10256,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 #endif
 							desired.flags |= GMOD_DCOLOR;
 						}
-						else if (!stricmp(temp, "ZCLIP"))
+						else if (!strcasecmp(temp, "ZCLIP"))
 						{
 							pos = GetNextWord(es, pos, temp);
 							desired.zclip = GetVarValueInterpretedAsFloat(temp, esss, io);
@@ -10271,7 +10271,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 #endif
 							desired.flags |= GMOD_ZCLIP;
 						}
-						else if (!stricmp(temp, "AMBIANCE"))
+						else if (!strcasecmp(temp, "AMBIANCE"))
 						{
 							pos = GetNextWord(es, pos, temp);
 #ifdef NEEDING_DEBUG
@@ -10499,7 +10499,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if (!stricmp(temp, "ON"))
+					if (!strcasecmp(temp, "ON"))
 						player.playerflags &= ~PLAYERFLAGS_NO_MANA_DRAIN;
 					else
 						player.playerflags |= PLAYERFLAGS_NO_MANA_DRAIN;
@@ -10571,7 +10571,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 #endif
 					}
 
-					if (!stricmp(temp2, "NONE"))
+					if (!strcasecmp(temp2, "NONE"))
 					{
 						if (iot != NULL)
 						{
@@ -10664,10 +10664,10 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 #endif
 					}
 
-					if (!stricmp(temp2, "HIDE"))
+					if (!strcasecmp(temp2, "HIDE"))
 						ARX_INTERFACE_PlayerInterfaceModify(0, smooth);
 
-					if (!stricmp(temp2, "SHOW"))
+					if (!strcasecmp(temp2, "SHOW"))
 						ARX_INTERFACE_PlayerInterfaceModify(1, smooth);
 
 				}
@@ -10798,7 +10798,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 					char temp2[64];
 					pos = GetNextWord(es, pos, temp);
 
-					if (!stricmp(temp, "ON"))
+					if (!strcasecmp(temp, "ON"))
 					{
 						io->ioflags &= ~IO_PHYSICAL_OFF;
 #ifdef NEEDING_DEBUG
@@ -10807,7 +10807,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 #endif
 					}
-					else if (!stricmp(temp, "OFF"))
+					else if (!strcasecmp(temp, "OFF"))
 					{
 						io->ioflags |= IO_PHYSICAL_OFF;
 #ifdef NEEDING_DEBUG
@@ -10821,7 +10821,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 						pos = GetNextWord(es, pos, temp2);
 						float fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 
-						if (!stricmp(temp, "HEIGHT"))
+						if (!strcasecmp(temp, "HEIGHT"))
 						{
 							if (io)
 							{
@@ -10834,7 +10834,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 								io->physics.cyl.height = io->original_height * io->scale;
 							}
 						}
-						else if (!stricmp(temp, "RADIUS"))
+						else if (!strcasecmp(temp, "RADIUS"))
 						{
 							if (io)
 							{
@@ -10998,12 +10998,12 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 					else if (!strcmp(temp3, "<"))			oper = OPER_INFERIOR;
 					else if (!strcmp(temp3, ">="))			oper = OPER_SUPEQUAL;
 					else if (!strcmp(temp3, ">"))			oper = OPER_SUPERIOR;
-					else if	(!stricmp(temp3, "ISCLASS"))	oper = OPER_INCLASS;
-					else if	(!stricmp(temp3, "ISELEMENT"))	oper = OPER_ISELEMENT;
-					else if	(!stricmp(temp3, "ISIN"))		oper = OPER_ISIN;
-					else if	(!stricmp(temp3, "ISTYPE"))		oper = OPER_ISTYPE;
-					else if	(!stricmp(temp3, "ISGROUP"))	oper = OPER_ISGROUP;
-					else if	(!stricmp(temp3, "!ISGROUP"))	oper = OPER_NOTISGROUP;
+					else if	(!strcasecmp(temp3, "ISCLASS"))	oper = OPER_INCLASS;
+					else if	(!strcasecmp(temp3, "ISELEMENT"))	oper = OPER_ISELEMENT;
+					else if	(!strcasecmp(temp3, "ISIN"))		oper = OPER_ISIN;
+					else if	(!strcasecmp(temp3, "ISTYPE"))		oper = OPER_ISTYPE;
+					else if	(!strcasecmp(temp3, "ISGROUP"))	oper = OPER_ISGROUP;
+					else if	(!strcasecmp(temp3, "!ISGROUP"))	oper = OPER_NOTISGROUP;
 
 
 					pos = GetNextWord(es, pos, temp3);
@@ -11513,7 +11513,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 						pos = GetNextWord(es, pos, temp);
 					}
 
-					if (!stricmp(temp, "ON"))
+					if (!strcasecmp(temp, "ON"))
 					{
 						if (player)
 							ARX_PLAYER_Invulnerability(1);
@@ -11532,7 +11532,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if (!stricmp(temp, "ON"))
+					if (!strcasecmp(temp, "ON"))
 					{
 						io->ioflags |= IO_INVERTED;
 					}
@@ -11582,7 +11582,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 					ion = GetInterNum(io);
 
 					if ((io != NULL) && (ion != -1))
-						if (!stricmp(temp, "CREATE"))
+						if (!strcasecmp(temp, "CREATE"))
 						{
 							if (inter.iobj[ion]->inventory != NULL)
 							{
@@ -11950,7 +11950,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 					{
 						inter.iobj[t]->GameFlags &= ~GFLAG_MEGAHIDE;
 
-						if ((!stricmp(temp1, "ON")) || (!stricmp(temp1, "YES")))
+						if ((!strcasecmp(temp1, "ON")) || (!strcasecmp(temp1, "YES")))
 						{
 							if (megahide)
 							{
@@ -12115,7 +12115,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 #endif
 
-					if (!stricmp(temp, "behind"))
+					if (!strcasecmp(temp, "behind"))
 					{
 						ARX_INTERACTIVE_TeleportBehindTarget(io);
 					}
@@ -12325,7 +12325,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 						long tw;
 
-						if (!stricmp(temp, "SKIN"))
+						if (!strcasecmp(temp, "SKIN"))
 						{
 							char temp1[256];
 							pos = GetNextWord(es, pos, temp);
@@ -12355,7 +12355,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 								EERIE_MESH_TWEAK_Skin(io->obj, temp, temp1);
 							}
 						}
-						else if (!stricmp(temp, "ICON"))
+						else if (!strcasecmp(temp, "ICON"))
 						{
 							pos = GetNextWord(es, pos, temp);
 #ifdef NEEDING_DEBUG
@@ -12378,7 +12378,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 						{
 							tw = TWEAK_ERROR;
 
-							if (!stricmp(temp, "HEAD"))
+							if (!strcasecmp(temp, "HEAD"))
 							{
 								if (io->ident == 33)
 								{
@@ -12387,20 +12387,20 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 								tw = TWEAK_HEAD;
 							}
-							else if (!stricmp(temp, "TORSO"))
+							else if (!strcasecmp(temp, "TORSO"))
 								tw = TWEAK_TORSO;
-							else if (!stricmp(temp, "LEGS"))
+							else if (!strcasecmp(temp, "LEGS"))
 								tw = TWEAK_LEGS;
-							else if (!stricmp(temp, "ALL"))
+							else if (!strcasecmp(temp, "ALL"))
 								tw = TWEAK_ALL;
-							else if (!stricmp(temp, "UPPER"))
+							else if (!strcasecmp(temp, "UPPER"))
 								tw = TWEAK_UPPER;
-							else if (!stricmp(temp, "LOWER"))
+							else if (!strcasecmp(temp, "LOWER"))
 								tw = TWEAK_LOWER;
-							else if (!stricmp(temp, "UP_LO"))
+							else if (!strcasecmp(temp, "UP_LO"))
 								tw = TWEAK_UP_LO;
 
-							if (!stricmp(temp, "REMOVE"))
+							if (!strcasecmp(temp, "REMOVE"))
 							{
 								tw = TWEAK_REMOVE;
 								ARX_INTERACTIVE_MEMO_TWEAK(io, tw, NULL, NULL);
@@ -12479,7 +12479,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 					// We start by clearing instances of this timer. (Timers are unique by
 					// a combination of name & IO).
-					if (!stricmp(temp2, "KILL_LOCAL"))
+					if (!strcasecmp(temp2, "KILL_LOCAL"))
 					{
 						ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(io);
 					}
@@ -12489,7 +12489,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 						long idle = 0;
 						ARX_SCRIPT_Timer_Clear_By_Name_And_IO(timername, io);
 
-						if (stricmp(temp2, "OFF"))
+						if (strcasecmp(temp2, "OFF"))
 						{
 							if (temp2[0] == '-')
 							{
@@ -12571,7 +12571,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 					if (io)
 					{
-						if (!stricmp(temp, "ON"))
+						if (!strcasecmp(temp, "ON"))
 						{
 							io->GameFlags |= GFLAG_VIEW_BLOCKER;
 						}
@@ -12590,7 +12590,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 					F2L(GetVarValueInterpretedAsFloat(temp1, esss, io), &FADEDURATION);
 					FADESTART = ARX_TIME_GetUL();
 
-					if (!stricmp(temp, "OUT"))
+					if (!strcasecmp(temp, "OUT"))
 					{
 
 						char temp2[64];
@@ -12621,7 +12621,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 					if ((io) && (io->ioflags & IO_NPC))
 					{
-						if ((!stricmp(temp, "DRAW")) || (!stricmp(temp, "ON")))
+						if ((!strcasecmp(temp, "DRAW")) || (!strcasecmp(temp, "ON")))
 						{
 							if (io->_npcdata->weaponinhand == 0)
 							{
@@ -13001,7 +13001,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if (!stricmp(temp, "OFF"))
+					if (!strcasecmp(temp, "OFF"))
 						GLOBAL_MAGIC_MODE = 0;
 					else
 						GLOBAL_MAGIC_MODE = 1;
@@ -13013,7 +13013,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 					pos = GetNextWord(es, pos, temp);
 
-					if ((!stricmp(temp, "remove")) || (!stricmp(temp, "-r")))
+					if ((!strcasecmp(temp, "remove")) || (!strcasecmp(temp, "-r")))
 					{
 						pos = GetNextWord(es, pos, temp);
 						ARX_MAPMARKER_Remove(temp);

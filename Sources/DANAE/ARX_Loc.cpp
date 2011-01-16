@@ -511,7 +511,7 @@ void ParseCurFile(EVE_TFILE * _e)
 {
 	if (!_e) return;
 
-	if (stricmp((char *)_e->name, "utext") > 0)
+	if (strcasecmp((char *)_e->name, "utext") > 0)
 	{
 		char * t = strdup((char *)_e->name);
 

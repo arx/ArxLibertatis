@@ -1993,7 +1993,7 @@ long GetIdent(char * ident)
 {
 	for (long n = 0; n < dlfcount; n++)
 	{
-		if (!stricmp(dlfcheck[n].ident, ident))
+		if (!strcasecmp(dlfcheck[n].ident, ident))
 			return n;
 	}
 

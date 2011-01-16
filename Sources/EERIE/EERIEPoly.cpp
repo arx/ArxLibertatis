@@ -3779,7 +3779,7 @@ BOOL FastSceneLoad(char * partial_path)
 	UNIQUE_HEADER * uh = (UNIQUE_HEADER *)dat;
 	pos += sizeof(UNIQUE_HEADER);
 
-	if (!NOCHECKSUM) if (stricmp(uh->path, path)) goto release;
+	if (!NOCHECKSUM) if (strcasecmp(uh->path, path)) goto release;
 
 	if (uh->version != UNIQUE_VERSION) goto release;
 
@@ -3797,7 +3797,7 @@ BOOL FastSceneLoad(char * partial_path)
 	{
 		do
 		{
-			if (!(fd.attrib & _A_SUBDIR) && (!stricmp(GetExt(fd.name), ".scn")))
+			if (!(fd.attrib & _A_SUBDIR) && (!strcasecmp(GetExt(fd.name), ".scn")))
 			{
 				c_count++;
 			}
@@ -4336,7 +4336,7 @@ BOOL FastSceneSave(char * partial_path, EERIE_MULTI3DSCENE * ms)
 			{
 				text = GetExt(fd.name);
 
-				if (!stricmp(text, ".SCN"))
+				if (!strcasecmp(text, ".SCN"))
 				{
 					sprintf(path3, "%s%s%s", Project.workingdir, partial_path, fd.name);
 					SetExt(path3, ".scn");

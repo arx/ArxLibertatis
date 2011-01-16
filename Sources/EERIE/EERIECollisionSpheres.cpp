@@ -217,7 +217,7 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, EERIE_3D * center, EERIE_3D * d
 
 	for (long i = 0; i < obj->nbselections; i++)
 	{
-		if (!stricmp(obj->selections[i].name, "mou"))
+		if (!strcasecmp(obj->selections[i].name, "mou"))
 		{
 			sel = i;
 			break;
