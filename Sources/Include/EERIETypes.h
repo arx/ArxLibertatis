@@ -48,6 +48,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //#include <d3d.h>
 #include <ARX_Common.h>
 #include <wine/windows/d3dtypes.h>
+#include <wine/windows/d3d.h>
+#include <wine/windows/tchar.h>
 
 #pragma inline_depth (255)
 #pragma inline_recursion (on)
