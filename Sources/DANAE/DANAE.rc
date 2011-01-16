@@ -1,0 +1,1369 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "Danae_resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_MUTLIPLAYER_GAMES DIALOG DISCARDABLE  0, 0, 262, 101
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Multiplayer Games"
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "Select Game To Join:",IDC_STATIC,70,5,69,8
+    LISTBOX         IDC_GAMES_LIST,5,15,185,80,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Join",IDC_JOIN,195,46,55,14
+    DEFPUSHBUTTON   "Create",IDC_CREATE,195,60,55,14
+    PUSHBUTTON      "Cancel",IDC_BACK,195,80,55,14
+    CONTROL         "Start Search",IDC_SEARCH_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    BS_PUSHLIKE | WS_TABSTOP,195,30,55,14
+    CONTROL         171,IDC_STATIC,"Static",SS_BITMAP | SS_SUNKEN | 
+                    WS_BORDER,205,5,35,22
+END
+
+IDD_MUTLIPLAYER_CONNECT DIALOG DISCARDABLE  0, 0, 193, 141
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Multiplayer Connect"
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "Player Name:",IDC_STATIC,5,0,43,8
+    EDITTEXT        IDC_PLAYER_NAME_EDIT,5,12,148,14,ES_AUTOHSCROLL
+    LTEXT           "Connection Type:",IDC_STATIC,5,31,57,8
+    LISTBOX         IDC_CONNECTION_LIST,5,43,183,72,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "OK",IDOK,8,120,125,14
+    PUSHBUTTON      "Cancel",IDCANCEL,138,120,50,14
+    CONTROL         171,IDC_STATIC,"Static",SS_BITMAP | SS_SUNKEN | 
+                    WS_BORDER,158,5,35,22
+END
+
+IDD_MULTIPLAYER_CREATE DIALOG DISCARDABLE  0, 0, 127, 76
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Create Game"
+FONT 8, "MS Sans Serif"
+BEGIN
+    EDITTEXT        IDC_EDIT_SESSION_NAME,5,15,75,14,ES_AUTOHSCROLL
+    CONTROL         "Use DirectPlay Protocol",IDC_CHECK_DPLAY_PROTOCOL,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,5,35,91,10
+    DEFPUSHBUTTON   "OK",IDOK,5,50,80,20
+    PUSHBUTTON      "Cancel",IDCANCEL,90,50,30,20
+    LTEXT           "Game Name:",IDC_STATIC,5,5,42,8
+    CONTROL         171,IDC_STATIC,"Static",SS_BITMAP | SS_SUNKEN | 
+                    WS_BORDER,85,10,35,22
+END
+
+IDD_MAIN_GAME DIALOG DISCARDABLE  0, 0, 262, 156
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "DirectPlay Chat Sample"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "Exit",IDCANCEL,199,16,50,14
+    EDITTEXT        IDC_CHAT_EDIT,14,130,184,14,ES_WANTRETURN
+    LISTBOX         IDC_CHAT_LISTBOX,14,34,186,95,WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Number of people in conversation:",IDC_STATIC,14,19,109,
+                    8
+    LTEXT           "0",IDC_NUM_PLAYERS,127,19,54,8
+    PUSHBUTTON      "Send",IDC_SEND,199,130,50,14
+    GROUPBOX        "",IDC_STATIC,7,7,248,142
+    CONTROL         171,IDC_STATIC,"Static",SS_BITMAP | SS_SUNKEN | 
+                    WS_BORDER,205,65,35,22
+END
+
+IDD_LOBBY_WAIT_STATUS DIALOG DISCARDABLE  120, 110, 137, 46
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION
+CAPTION "Lobby Connection Status"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "&Cancel",IDC_LOBBYCONNECTCANCEL,55,10,80,15
+    CTEXT           "Finding Game...",IDC_WAIT_TEXT,5,30,120,8
+    CONTROL         171,IDC_STATIC,"Static",SS_BITMAP | SS_SUNKEN | 
+                    WS_BORDER,5,5,35,22
+END
+
+IDD_CHANGEDEVICE DIALOG DISCARDABLE  0, 0, 177, 90
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Mode Change"
+FONT 8, "MS Sans Serif"
+BEGIN
+    GROUPBOX        "&Device",IDC_STATIC,5,5,115,40
+    COMBOBOX        IDC_DEVICE_COMBO,10,15,105,100,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Use desktop &window",IDC_WINDOWED_CHECKBOX,"Button",
+                    BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,10,30,85,10
+    GROUPBOX        "&Mode",IDC_FULLSCREEN_TEXT,5,45,115,40
+    COMBOBOX        IDC_MODE_COMBO,10,55,105,100,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    CONTROL         "&Stereoscopic viewing",IDC_STEREO_CHECKBOX,"Button",
+                    BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,10,70,85,9
+    DEFPUSHBUTTON   "OK",IDOK,125,5,50,30
+    PUSHBUTTON      "Cancel",IDCANCEL,125,40,50,14
+    CONTROL         171,IDC_STATIC,"Static",SS_BITMAP,135,65,32,20
+END
+
+IDD_FINDDLG DIALOG DISCARDABLE  30, 73, 236, 62
+STYLE DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Find"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Fi&nd what:",-1,4,8,42,8
+    EDITTEXT        IDD_FINDWHAT,47,7,128,12,ES_AUTOHSCROLL | WS_GROUP
+    CONTROL         "Match &whole word only",IDD_WORD,"Button",
+                    BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,4,26,100,12
+    CONTROL         "Match &case",IDD_CASE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,4,42,64,12
+    GROUPBOX        "Direction",IDD_GROUPBOXDIRECTION,107,26,68,28,WS_GROUP
+    CONTROL         "&Up",IDD_UP,"Button",BS_AUTORADIOBUTTON | WS_GROUP,111,
+                    38,25,12
+    CONTROL         "&Down",IDD_DOWN,"Button",BS_AUTORADIOBUTTON,138,38,35,
+                    12
+    DEFPUSHBUTTON   "&Find Next",IDOK,182,5,50,14,WS_GROUP
+    PUSHBUTTON      "Cancel",IDCANCEL,182,23,50,14
+    PUSHBUTTON      "&Help",IDD_HELP,182,45,50,14
+END
+
+IDD_REPLACEDLG DIALOG DISCARDABLE  36, 44, 230, 94
+STYLE DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Replace"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Fi&nd what:",-1,4,9,48,8
+    EDITTEXT        IDD_FINDWHAT,54,7,114,12,ES_AUTOHSCROLL | WS_GROUP
+    LTEXT           "Re&place with:",-1,4,26,48,8
+    EDITTEXT        IDD_REPLACEWITH,54,24,114,12,ES_AUTOHSCROLL | WS_GROUP
+    CONTROL         "Match &whole word only",IDD_WORD,"Button",
+                    BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP,5,46,104,12
+    CONTROL         "Match &case",IDD_CASE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,5,62,59,12
+    DEFPUSHBUTTON   "&Find Next",IDOK,174,4,50,14,WS_GROUP
+    PUSHBUTTON      "&Replace",IDD_REPLACE,174,21,50,14
+    PUSHBUTTON      "Replace &All",IDD_REPLACEALL,174,38,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,174,55,50,14
+    PUSHBUTTON      "&Help",IDD_HELP,174,75,50,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_MUTLIPLAYER_CONNECT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 186
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 134
+    END
+
+    IDD_LOBBY_WAIT_STATUS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 123
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 39
+    END
+
+    IDD_CHANGEDEVICE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 169
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 83
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// French (France) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
+#ifdef _WIN32
+LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DANAEABOUT DIALOGEX 0, 0, 304, 111
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About DANAE..."
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,8,90,290,18
+    LTEXT           "GAIA Application",IDC_STATIC,13,51,55,8
+    LTEXT           "Copyright (c) 1999-2002 ARKANE Studios",IDC_STATIC,13,
+                    61,150,8
+    GROUPBOX        "About...",IDC_STATIC,8,40,290,45
+    LTEXT           "DAmnable but Necessary Arx Editor",IDC_STATIC,15,18,139,
+                    10
+    LTEXT           "Code: Meynier Cyril 1999-2002",IDC_STATIC,13,70,110,9
+    CONTROL         171,IDC_STATIC,"Static",SS_BITMAP | SS_CENTERIMAGE | 
+                    WS_BORDER,257,11,40,25,WS_EX_CLIENTEDGE | 
+                    WS_EX_STATICEDGE
+    GROUPBOX        "DANAE",IDC_STATIC,8,6,289,30
+    RTEXT           "Version",IDC_ABOUT_VERSION,233,70,60,9
+END
+
+IDD_OPTIONS DIALOGEX 0, 0, 344, 257
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_NOPARENTNOTIFY
+CAPTION "Danae Options"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,6,236,140,14
+    GROUPBOX        "Rendering",IDC_STATIC,7,5,93,95
+    CONTROL         "Show Wireframes",IDC_WIREFRAME,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,10,15,75,9
+    CONTROL         "Flat Render",IDC_NOTEXTURES,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,10,85,55,9
+    CONTROL         "Show Lights/Shadows",IDC_SHOWLIGHTSNSHADOWS,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,10,110,85,9
+    CONTROL         "Show Dynamic Lights",IDC_TORCHHALO,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,10,25,80,9
+    PUSHBUTTON      "Background Color",IDC_BKGCOLOR,178,191,55,20,
+                    BS_MULTILINE
+    CONTROL         "Use Math Optims",IDC_MATHOPTIM,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,110,15,70,9
+    CONTROL         "Show Normals",IDC_SHOWNORMALS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,10,55,65,9
+    CONTROL         "Show Depth",IDC_SHOWDEPTH,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,10,65,55,9
+    GROUPBOX        "Misc.",IDC_STATIC,105,5,80,65
+    DEFPUSHBUTTON   "CANCEL",IDCANCEL,152,236,99,14
+    CONTROL         "Show Info Text",IDC_INFOTEXT,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,10,75,65,9
+    CONTROL         "Ray Launching",IDC_RAY,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,110,25,70,9
+    CONTROL         "Show Torch Halo",IDC_TORCHHALO2,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,10,45,80,9
+    CONTROL         "Collisions",IDC_COLLISIONS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,110,35,70,9
+    CONTROL         "Player Collisions",IDC_PLAYERCOLLISIONS,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,110,45,70,9
+    CONTROL         "Invert Mouse Y",IDC_INVERTMOUSE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,110,55,70,9
+    GROUPBOX        "Debug",IDC_STATIC,190,5,60,142
+    CONTROL         "No Debug",IDC_LEVELNONE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,195,15,50,9
+    CONTROL         "Level 1",IDC_LEVEL1,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,195,30,40,9
+    CONTROL         "Level 2",IDC_LEVEL2,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,195,40,40,9
+    CONTROL         "Level 3",IDC_LEVEL3,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,195,50,40,9
+    CONTROL         "Level 4",IDC_LEVEL4,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,195,60,40,9
+    CONTROL         "Level 5",IDC_LEVEL5,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,195,70,40,9
+    GROUPBOX        "Filtering",IDC_STATIC,105,75,80,45
+    CONTROL         "Point",IDC_FILTERPOINT,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,110,85,60,10
+    CONTROL         "Linear",IDC_FILTERLINEAR,"Button",BS_AUTORADIOBUTTON,
+                    110,95,60,10
+    CONTROL         "Anisotropic",IDC_FILTERANISOTROPIC,"Button",
+                    BS_AUTORADIOBUTTON,110,105,60,10
+    CONTROL         "1st Person",IDC_DEBUG1ST,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,195,85,50,9
+    GROUPBOX        "Illum Options",IDC_STATIC,7,100,93,54
+    CONTROL         "Use Normals",IDC_ILLUMNORMAL,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,15,120,65,9
+    CONTROL         "Use Ray-Launching",IDC_ILLUMRAYLAUNCH,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,15,130,80,9
+    CONTROL         "Tsu Lighting",IDC_ILLUMSMOOTH,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,15,140,65,9
+    CONTROL         171,IDC_STATIC,"Static",SS_BITMAP | SS_SUNKEN | 
+                    WS_BORDER,301,228,35,22
+    GROUPBOX        "Full Screen Rendering",IDC_STATIC,105,125,80,35
+    CONTROL         "16 Bits",IDC_FULLRENDER16BITS,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP,110,135,70,10
+    CONTROL         "32 Bits",IDC_FULLRENDER32BITS,"Button",
+                    BS_AUTORADIOBUTTON,110,145,70,10
+    CONTROL         "Slider1",IDC_SLIDERDEPTH,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,105,175,95,10
+    LTEXT           "Clipping Depth",IDC_STATICDEPTH,105,165,50,10
+    PUSHBUTTON      "Default",IDC_DEPTHDEFAULT,160,165,35,10
+    CONTROL         "True Clipping",IDC_TRUECLIPPING,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,260,155,55,10
+    CONTROL         "NPC Moves",IDC_DEBUGNPCMOVE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,195,95,50,9
+    CONTROL         "System",IDC_DEBUGSYS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,195,105,50,9
+    CONTROL         "SetTexture",IDC_SETTEXTURE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,195,115,50,9
+    CONTROL         "Lighting Powerup",IDC_LIGHTPOWERUP,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,260,10,71,10
+    CONTROL         "Slider1",IDC_POWERSLIDER,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,255,20,85,10
+    CONTROL         "D3DTransform",IDC_D3DTRANSFORM,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,260,75,62,10
+    CONTROL         "Use Inter Normals",IDC_INTERNORM,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,260,65,72,10
+    CONTROL         "Slider1",IDC_POWERSLIDER2,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,255,45,85,10
+    LTEXT           "Lighting Increase",IDC_STATIC,260,35,70,8
+    CONTROL         "Don't Apply DynL",IDC_NOAPPLYDYNLIGHT,"Button",
+                    BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,260,120,70,10
+    CONTROL         "Adpt Flares",IDC_FLARES,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,260,85,65,10
+    CONTROL         "MapUpdate",IDC_MAPUPDATE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,260,95,65,10
+    CONTROL         "Third Person",IDC_THIRDPERSON,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,260,105,65,10
+    CONTROL         "Slider1",IDC_TIMESLIDER,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,255,185,85,10
+    PUSHBUTTON      "Reset TIme Factor",IDC_TIMEFACTOR,260,170,75,12
+    CONTROL         "Use Dynamic Normals",IDC_DYNAMICNORMALS,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,10,35,80,9
+    CONTROL         "Interpolate Mouse",IDC_INTERPOLATEMOUSE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,260,135,75,10
+    CONTROL         "V-sync",IDC_VSYNC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    260,145,75,10
+    CONTROL         "Code",IDC_DEBUGCODE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,195,125,50,9
+    CONTROL         "Shadows",IDC_SHOWSHADOWS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,205,167,47,10
+    CONTROL         "HPO",IDC_HPO,"Button",BS_AUTOCHECKBOX | WS_DISABLED | 
+                    WS_TABSTOP,109,201,31,10
+    CONTROL         "Z-MAP",IDC_ZMAPMODE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,205,178,38,10
+    GROUPBOX        "Textures",IDC_STATIC,7,155,93,44
+    CONTROL         "Blur MASTER-Textures",IDC_BLURTEXTURES,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,13,165,82,10
+    CONTROL         "Point MIP-Filtering",IDC_POINTINTERPOLATION,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,13,175,87,10
+    CONTROL         "No MIP-Mapping",IDC_NOMIPMAPS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,13,186,87,10
+    CONTROL         "Mesh Tweaking",IDC_MESHTWEAK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,109,188,66,10
+    CONTROL         "MOLLESS",IDC_DEBUGMOLLESS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,195,136,50,9
+    EDITTEXT        IDC_EDITNBINTERPOLATIONS,311,195,26,14,ES_AUTOHSCROLL
+    LTEXT           "Molless Nb Interpol",IDC_STATIC,239,198,65,8
+    CONTROL         "Syntax Check",IDC_SYNTAXCHECK,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,195,153,60,9
+    CONTROL         "True Fight",IDC_TRUEFIGHT,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,108,216,75,10
+    GROUPBOX        "Sound",IDC_STATIC,7,202,94,27
+    CONTROL         "Reverb",IDC_REVERB,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,58,213,38,9
+    CONTROL         "Disable",IDC_DISABLESOUND,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,12,213,38,9
+    CONTROL         "ARX DEMO",IDC_ARXDEMO,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,184,217,74,10
+    CONTROL         "D3D FOG",IDC_USED3DFOG,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,264,216,47,10
+END
+
+IDD_STARTOPTIONS DIALOGEX 0, 0, 283, 270
+STYLE DS_MODALFRAME | WS_POPUP
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,6,250,196,14
+    PUSHBUTTON      "Quit",IDQUIT,214,250,55,14
+    GROUPBOX        "Data Directory",IDC_STATIC,5,95,170,50
+    CONTROL         "C:\\Arx\\",IDC_OTHERSERVER,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,10,115,115,10
+    CONTROL         "\\\\ARKANESERVER\\Public\\Arx\\",IDC_ARKANESERVER,
+                    "Button",BS_AUTORADIOBUTTON,10,105,120,10
+    GROUPBOX        "Sound system",IDC_STATIC,5,150,85,42
+    PUSHBUTTON      "Choose Dir",IDC_CHOOSEDIR,10,128,160,12
+    LTEXT           "Copyright (c) ARKANE Studios 1999-2002",IDC_STATIC,5,0,
+                    165,10
+    CONTROL         "Force Compatibility",IDC_COMPATIBILITY,"Button",
+                    BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,95,150,75,10
+    CONTROL         150,IDC_STATIC,"Static",SS_BITMAP | SS_SUNKEN,5,10,172,
+                    80
+    CONTROL         "Multiplayer",IDC_MULTIPLAYER,"Button",BS_AUTOCHECKBOX | 
+                    WS_DISABLED | WS_TABSTOP,95,160,60,10
+    GROUPBOX        "Load",IDC_STATIC,180,72,90,175
+    CONTROL         171,IDC_STATIC,"Static",SS_BITMAP | SS_SUNKEN | 
+                    WS_BORDER,140,100,35,22
+    RTEXT           "Version",IDC_VERSION,210,0,50,10
+    CONTROL         "Slider1",IDC_TEXTUREPRECISION,"msctls_trackbar32",
+                    TBS_AUTOTICKS | TBS_BOTH | WS_TABSTOP,181,19,80,20
+    LTEXT           "Static",IDC_STATICC,186,44,75,10
+    GROUPBOX        "Textures",IDC_STATIC,180,10,90,60
+    CONTROL         "16 Bits",IDC_TEX16,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,190,55,37,10
+    CONTROL         "32 Bits",IDC_TEX32,"Button",BS_AUTORADIOBUTTON,231,55,
+                    35,10
+    CONTROL         "NO DIR CREATION",IDC_NODIRCREATION,"Button",
+                    BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,95,170,75,10
+    CONTROL         "Level 1",IDC_TLEVEL1,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,225,117,40,10
+    CONTROL         "Level 2",IDC_TLEVEL2,"Button",BS_AUTORADIOBUTTON,183,
+                    126,40,10
+    CONTROL         "Level 3",IDC_TLEVEL3,"Button",BS_AUTORADIOBUTTON,225,
+                    126,40,10
+    CONTROL         "Level 4",IDC_TLEVEL4,"Button",BS_AUTORADIOBUTTON,183,
+                    135,35,10
+    CONTROL         "Level 5",IDC_TLEVEL5,"Button",BS_AUTORADIOBUTTON,225,
+                    135,40,10
+    CONTROL         "Level 6",IDC_TLEVEL6,"Button",BS_AUTORADIOBUTTON,183,
+                    144,40,10
+    CONTROL         "Level 7",IDC_TLEVEL7,"Button",BS_AUTORADIOBUTTON,225,
+                    144,40,10
+    CONTROL         "Level 8",IDC_TLEVEL8,"Button",BS_AUTORADIOBUTTON,183,
+                    153,40,10
+    CONTROL         "Level 9",IDC_TLEVEL9,"Button",BS_AUTORADIOBUTTON,225,
+                    153,40,10
+    CONTROL         "Level 10",IDC_TLEVEL10,"Button",BS_AUTORADIOBUTTON,183,
+                    162,40,10
+    CONTROL         "Level Demo 1",IDC_LOADDEMO,"Button",BS_AUTORADIOBUTTON,
+                    183,81,70,10
+    CONTROL         "Level Demo 2",IDC_LOADDEMO2,"Button",BS_AUTORADIOBUTTON,
+                    183,90,65,10
+    CONTROL         "Level Demo 3",IDC_LOADDEMO3,"Button",BS_AUTORADIOBUTTON,
+                    183,99,65,10
+    CONTROL         "Level Demo 4",IDC_LOADDEMO4,"Button",BS_AUTORADIOBUTTON,
+                    183,108,65,10
+    CONTROL         "Level 0",IDC_TLEVEL0,"Button",BS_AUTORADIOBUTTON,183,
+                    117,39,10
+    PUSHBUTTON      "Launch GAME",IDC_LAUNCHDEMO,95,181,80,29,0,
+                    WS_EX_DLGMODALFRAME | WS_EX_CLIENTEDGE | 
+                    WS_EX_STATICEDGE
+    CONTROL         "Trace Memory Usage",IDC_TRACEMEMORY,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,95,214,84,10
+    CONTROL         "Syntax Checking",IDC_SYNTAXCHECKING,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,95,226,69,10
+    CONTROL         "Fast Loads",IDC_FASTLOADING,"Button",BS_AUTOCHECKBOX | 
+                    WS_DISABLED | WS_TABSTOP,14,229,64,10
+    CONTROL         "No CHECKSUM...",IDC_NOCHECKSUM,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,184,235,73,9
+    CONTROL         "Level 11",IDC_TLEVEL11,"Button",BS_AUTORADIOBUTTON,225,
+                    162,43,10
+    CONTROL         "Level 12",IDC_TLEVEL12,"Button",BS_AUTORADIOBUTTON,183,
+                    171,43,10
+    CONTROL         "Level 13",IDC_TLEVEL13,"Button",BS_AUTORADIOBUTTON,225,
+                    171,43,10
+    CONTROL         "Level 14",IDC_TLEVEL14,"Button",BS_AUTORADIOBUTTON,183,
+                    180,43,10
+    CONTROL         "Level 15",IDC_TLEVEL15,"Button",BS_AUTORADIOBUTTON,225,
+                    180,43,10
+    CONTROL         "Level 16",IDC_TLEVEL16,"Button",BS_AUTORADIOBUTTON,183,
+                    189,43,10
+    CONTROL         "Level 17",IDC_TLEVEL17,"Button",BS_AUTORADIOBUTTON,225,
+                    189,43,10
+    CONTROL         "Level 18",IDC_TLEVEL18,"Button",BS_AUTORADIOBUTTON,183,
+                    198,43,10
+    CONTROL         "Level 19",IDC_TLEVEL19,"Button",BS_AUTORADIOBUTTON,225,
+                    198,43,10
+    CONTROL         "Level 20",IDC_TLEVEL20,"Button",BS_AUTORADIOBUTTON,183,
+                    207,43,10
+    CONTROL         "Level 21",IDC_TLEVEL21,"Button",BS_AUTORADIOBUTTON,225,
+                    207,43,10
+    CONTROL         "Level 22",IDC_TLEVEL22,"Button",BS_AUTORADIOBUTTON,183,
+                    216,43,10
+    CONTROL         "Level 23",IDC_TLEVEL23,"Button",BS_AUTORADIOBUTTON,225,
+                    216,43,10
+    CONTROL         "Enable reverb",IDC_REVERB,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,11,175,58,10
+    CONTROL         "Disable",IDC_SOUND,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,11,163,58,10
+    CONTROL         "ANCHOR-Gen",IDC_NEED_ANCHOR,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,6,195,84,10
+    CONTROL         "Level GC",IDC_TLEVEL24,"Button",BS_AUTORADIOBUTTON,183,
+                    225,79,10
+END
+
+IDD_SHOWTEXT DIALOGEX 0, 0, 250, 277
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "GAIA Textview"
+FONT 8, "Fixedsys", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,7,260,236,14
+    EDITTEXT        IDC_SHOWTEXT,7,5,236,250,ES_MULTILINE | ES_AUTOVSCROLL | 
+                    ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | 
+                    WS_VSCROLL | WS_HSCROLL,WS_EX_STATICEDGE
+END
+
+IDD_SHOWVARS DIALOGEX 0, 0, 337, 276
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Variables"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,0,260,335,14
+    EDITTEXT        IDC_SHOWTEXT,0,10,165,245,ES_MULTILINE | ES_AUTOVSCROLL | 
+                    ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | 
+                    WS_VSCROLL,WS_EX_STATICEDGE
+    EDITTEXT        IDC_SHOWTEXT2,170,10,165,245,ES_MULTILINE | 
+                    ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | 
+                    ES_WANTRETURN | WS_VSCROLL,WS_EX_STATICEDGE
+    LTEXT           "Global Variables",IDC_STATIC,0,0,155,10
+    LTEXT           "Local Variables",IDC_STATIC,170,0,155,10
+END
+
+IDD_OPTIONS2 DIALOGEX 0, 0, 247, 151
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Show/Hide Options"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,6,132,175,14
+    PUSHBUTTON      "Cancel",IDCANCEL,189,132,50,14
+    CONTROL         "Hide Background",IDC_HIDEBACKGROUND,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,5,25,75,10
+    CONTROL         "Hide NPC",IDC_HIDENPC,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,5,35,60,10
+    CONTROL         "Hide FIX Inter",IDC_HIDEFIXINTER,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,5,46,65,10
+    CONTROL         "Hide Items",IDC_HIDEITEMS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,5,55,55,10
+    CONTROL         "Hide Particles",IDC_HIDEPARTICLES,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,5,65,60,10
+    CONTROL         "Hide Interface",IDC_HIDEINTERFACE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,5,75,60,10
+    CONTROL         171,IDC_STATIC,"Static",SS_BITMAP | SS_SUNKEN | 
+                    WS_BORDER,5,0,35,22
+    CONTROL         "Hide Nodes",IDC_HIDENODES,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,5,86,60,10
+    PUSHBUTTON      "Game Interface Color",IDC_INTERCOLOR,190,10,50,30,
+                    BS_MULTILINE,WS_EX_CLIENTEDGE
+    PUSHBUTTON      "   Torch    Color",IDC_INTERCOLOR2,190,45,50,30,
+                    BS_MULTILINE,WS_EX_CLIENTEDGE
+    PUSHBUTTON      "Mode",IDC_MODE,190,80,50,15,BS_MULTILINE,
+                    WS_EX_CLIENTEDGE
+    CONTROL         "Force IO Draw",IDC_FORCEIO,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,7,103,67,10
+    CONTROL         "Hide Anchors",IDC_HIDEANCHORS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,88,25,75,10
+    CONTROL         "Water FX",IDC_WATERFX,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,88,55,65,10
+    GROUPBOX        "TEST !!!",IDC_STATIC,79,43,100,40
+    CONTROL         "Reflect FX",IDC_REFLECTFX,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,88,66,65,10
+    CONTROL         "Hide Cameras",IDC_HIDECAMERAS,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,88,14,75,10
+    CONTROL         "Hide Magic Dust",IDC_HIDEMAGICDUST,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,87,87,79,10
+    CONTROL         "TREAT ALL IO",IDC_TREATALLIO,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,87,100,79,10
+    CONTROL         "Hide Speech",IDC_HIDESPEECH,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,6,117,60,10
+END
+
+IDD_SHOWTEXTBIG DIALOGEX 0, 0, 532, 301
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "ShowText"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,0,285,530,14
+    EDITTEXT        IDC_SHOWTEXT,0,5,530,275,ES_MULTILINE | ES_AUTOVSCROLL | 
+                    ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | 
+                    WS_VSCROLL | WS_HSCROLL,WS_EX_STATICEDGE
+END
+
+IDD_GAIATEXTEDIT DIALOG DISCARDABLE  0, 0, 152, 31
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "GAIA Text Edit"
+FONT 8, "MS Sans Serif"
+BEGIN
+    EDITTEXT        IDC_TEXTEDIT,0,0,150,12,ES_UPPERCASE | ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,0,15,95,14
+    PUSHBUTTON      "Cancel",IDCANCEL,100,15,50,14
+END
+
+IDD_FOGDIALOG DIALOGEX 0, 0, 237, 122
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW | WS_EX_CLIENTEDGE
+CAPTION "Fog Parameters"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,200,0,35,20
+    PUSHBUTTON      "Cancel",IDCANCEL,200,25,35,14
+    CONTROL         "Slider1",IDC_SLIDER_ROTATIONSPEED,"msctls_trackbar32",
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,45,41,115,10
+    LTEXT           "Rotation",IDC_STATIC,10,41,30,10
+    CONTROL         "Slider1",IDC_SLIDER_MOVESPEED,"msctls_trackbar32",
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,45,51,115,10
+    LTEXT           "Speed",IDC_STATIC,10,51,35,10
+    CONTROL         "Slider1",IDC_SLIDER_SCALING,"msctls_trackbar32",
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,45,70,115,10
+    LTEXT           "Scaling",IDC_STATIC,10,70,35,10
+    CONTROL         "Slider1",IDC_SLIDER_DURATION,"msctls_trackbar32",
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,45,81,115,10
+    LTEXT           "Duration",IDC_STATIC,10,81,30,10
+    PUSHBUTTON      "Color",IDC_BUTTON_COLOR,45,0,150,20
+    CONTROL         "Slider1",IDC_SLIDER_INITSIZE,"msctls_trackbar32",
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,45,62,115,10
+    LTEXT           "Size",IDC_STATIC,10,62,30,10
+    GROUPBOX        "Parameters",IDC_STATIC,5,20,190,100
+    CONTROL         "Slider1",IDC_SLIDER_FREQUENCY,"msctls_trackbar32",
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,45,30,115,10
+    LTEXT           "Frequency",IDC_STATIC,10,30,35,10
+    CONTROL         "Blend",IDC_BLEND1,"Button",BS_AUTORADIOBUTTON | 
+                    WS_DISABLED | WS_GROUP,10,95,40,10
+    CONTROL         "Blend2",IDC_BLEND2,"Button",BS_AUTORADIOBUTTON | 
+                    WS_DISABLED,10,105,40,10
+    CONTROL         "Additive",IDC_BLEND3,"Button",BS_AUTORADIOBUTTON | 
+                    WS_DISABLED,55,95,45,10
+    CONTROL         "Subtractive",IDC_BLEND4,"Button",BS_AUTORADIOBUTTON | 
+                    WS_DISABLED,55,105,55,10
+    CONTROL         "Directional Fog",IDC_DIRECTIONAL,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,120,95,59,10
+    CTEXT           "Static",IDC_SLIDER_FREQUENCY_TEXT,161,30,30,8,SS_SUNKEN
+    CTEXT           "Static",IDC_STATIC2,161,41,30,8,SS_SUNKEN
+    CTEXT           "Static",IDC_STATIC3,161,50,30,8,SS_SUNKEN
+    CTEXT           "Static",IDC_STATIC4,161,60,30,8,SS_SUNKEN
+    CTEXT           "Static",IDC_STATIC5,161,70,30,8,SS_SUNKEN
+    CTEXT           "Static",IDC_STATIC6,161,81,30,8,SS_SUNKEN
+    PUSHBUTTON      "Paste",IDPASTE,200,105,35,14
+    PUSHBUTTON      "Copy",IDCOPY,200,90,35,14
+    PUSHBUTTON      "Reset",IDRESET,200,75,35,14
+    PUSHBUTTON      "Apply",IDAPPLY,200,60,35,14
+    CONTROL         171,IDC_STATIC,"Static",SS_BITMAP | SS_SUNKEN,5,0,32,20
+END
+
+IDD_LIGHTDIALOG DIALOGEX 0, 0, 335, 196
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW | WS_EX_CLIENTEDGE
+CAPTION "Light Parameters"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    GROUPBOX        "Parameters",IDC_STATIC,0,25,125,95
+    LTEXT           "HotSpot",IDC_HOTSPOT,5,35,30,8
+    CONTROL         "Slider1",IDC_SLIDER11,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,5,45,115,10
+    CTEXT           "Static",IDC_STATIC11,85,35,30,8,SS_SUNKEN
+    LTEXT           "Falloff",IDC_HOTSPOT2,10,60,25,8
+    CONTROL         "Slider1",IDC_SLIDER12,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,5,70,115,10
+    CTEXT           "Static",IDC_STATIC12,85,60,30,8,SS_SUNKEN
+    LTEXT           "Intensity",IDC_HOTSPOT3,10,85,30,8
+    CONTROL         "Slider1",IDC_SLIDER13,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,5,95,115,10
+    CTEXT           "Static",IDC_STATIC13,85,85,30,8,SS_SUNKEN
+    PUSHBUTTON      "Color",IDC_LIGHTCOLOR,40,5,85,15
+    DEFPUSHBUTTON   "OK",IDOK,130,5,30,14
+    PUSHBUTTON      "Cancel",IDCANCEL,130,20,30,14
+    PUSHBUTTON      "Paste",IDPASTE,130,105,30,14
+    PUSHBUTTON      "Copy",IDCOPY,130,90,30,14
+    PUSHBUTTON      "Reset",IDRESET,130,75,30,14
+    PUSHBUTTON      "Apply",IDAPPLY,130,60,30,14
+    CONTROL         171,IDC_STATIC,"Static",SS_BITMAP | SS_SUNKEN,0,0,33,21
+    CONTROL         "Semi-Dynamic",IDC_SEMIDYNAMIC,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,175,10,75,10
+    CONTROL         "Extinguishable",IDC_EXTINGUISH,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,175,20,75,10
+    CONTROL         "Start Extinguished",IDC_EXTINGUISH2,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,175,30,75,10
+    LTEXT           "RGB Flicker",IDC_HOTSPOT4,175,45,39,8
+    CONTROL         "Slider1",IDC_SLIDER14,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,204,55,90,10
+    CTEXT           "Static",IDC_STATIC14,298,55,30,8,SS_SUNKEN
+    LTEXT           "Red",IDC_HOTSPOT5,178,55,14,8
+    LTEXT           "Green",IDC_HOTSPOT6,178,65,20,8
+    LTEXT           "Blue",IDC_HOTSPOT7,178,75,15,8
+    CONTROL         "Slider1",IDC_SLIDER15,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,204,65,90,10
+    CTEXT           "Static",IDC_STATIC15,298,65,30,8,SS_SUNKEN
+    CONTROL         "Slider1",IDC_SLIDER16,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,204,75,90,10
+    CTEXT           "Static",IDC_STATIC16,298,75,30,8,SS_SUNKEN
+    CONTROL         "Spawn Fire",IDC_SPAWNFIRE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,183,105,50,10
+    CONTROL         "Spawn Smoke",IDC_SPAWNSMOKE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,258,105,60,10
+    PUSHBUTTON      "FIRE",IDC_SET_FIRE,270,10,25,15
+    PUSHBUTTON      "FIRE2",IDC_SET_FIRE2,300,10,25,15
+    CONTROL         "Slider1",IDC_SLIDER17,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,204,95,90,10
+    LTEXT           "Radius",IDC_HOTSPOT8,178,95,25,8
+    CTEXT           "Static",IDC_STATIC17,298,95,30,8,SS_SUNKEN
+    GROUPBOX        "Extras",IDC_STATIC,165,0,165,189
+    CONTROL         "Color Legacy",IDC_COLORLEGACY,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,183,115,60,10
+    CONTROL         "Slider1",IDC_SLIDER18,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,204,125,90,10
+    LTEXT           "Freq",IDC_HOTSPOT9,178,125,25,8
+    CTEXT           "Static",IDC_STATIC18,298,125,30,8,SS_SUNKEN
+    CONTROL         "Slider1",IDC_SLIDER19,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,204,135,90,10
+    LTEXT           "Size",IDC_HOTSPOT10,178,135,25,8
+    CTEXT           "Static",IDC_STATIC19,298,135,30,8,SS_SUNKEN
+    CONTROL         "Slider1",IDC_SLIDER20,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,204,145,90,10
+    LTEXT           "speed",IDC_HOTSPOT11,178,145,25,8
+    CTEXT           "Static",IDC_STATIC20,298,145,30,8,SS_SUNKEN
+    CONTROL         "Don't Cast Shadows",IDC_CAST_SHADOWS,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,5,125,100,8
+    PUSHBUTTON      "Constantly Update Lights",IDC_CONSTANTUPDATE,7,175,154,
+                    14,BS_FLAT,WS_EX_DLGMODALFRAME
+    CONTROL         "Slider1",IDC_SLIDER21,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,204,162,90,10
+    LTEXT           "Flare Size",IDC_FLARESIZZ,168,161,35,8
+    CTEXT           "Static",IDC_STATIC21,298,161,30,8,SS_SUNKEN
+    CONTROL         "Fixed Flare Size",IDC_FIXFLARESIZE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,183,173,65,10
+    CONTROL         "No Ignit",IDC_NO_IGNIT,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,264,30,64,10
+    CONTROL         "Flare",IDC_FLARE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,
+                    256,172,31,10
+END
+
+IDD_SCRIPTDIALOG DIALOGEX 0, 0, 379, 285
+STYLE WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU | WS_THICKFRAME
+EXSTYLE WS_EX_CLIENTEDGE
+CAPTION "Script Editor"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,314,15,65,14
+    PUSHBUTTON      "Cancel",IDCANCEL,314,0,65,14
+    EDITTEXT        IDC_EDIT1,1,30,375,118,ES_MULTILINE,WS_EX_CLIENTEDGE
+    EDITTEXT        IDC_EDIT2,2,162,374,123,ES_MULTILINE,WS_EX_CLIENTEDGE
+    LTEXT           "Class Scipt",IDC_LOCSCR1,5,20,55,8
+    LTEXT           "Local Scipt",IDC_LOCSCR2,5,150,44,8
+    LTEXT           "Static",IDC_OBJNAME,5,5,237,13,SS_SUNKEN
+    CONTROL         "Freeze SCRIPT",IDC_FREEZESCRIPT,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,247,2,65,10
+    DEFPUSHBUTTON   "Check Syntax",IDSYNTAX,247,15,65,13
+    LTEXT           "Line",IDC_STATICLINE1,105,20,16,8
+    LTEXT           "0",IDC_LINE1,123,20,20,8
+    LTEXT           "Col",IDC_STATICCOL1,60,20,16,8
+    LTEXT           "0",IDC_COL1,77,20,21,8
+    LTEXT           "Line",IDC_STATICLINE2,103,150,16,8
+    LTEXT           "0",IDC_LINE2,121,150,20,8
+    LTEXT           "Col",IDC_STATICCOL2,57,150,16,8
+    LTEXT           "0",IDC_COL2,75,150,21,8
+END
+
+IDD_LANGUAGEDIALOG DIALOG DISCARDABLE  0, 0, 122, 95
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Language Choice"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,85,5,30,14
+    PUSHBUTTON      "Cancel",IDCANCEL,85,20,30,14
+    CONTROL         "English",IDC_LANGUAGE1,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,5,5,70,10
+    CONTROL         "Français",IDC_LANGUAGE2,"Button",BS_AUTORADIOBUTTON,5,
+                    15,70,10
+    CONTROL         "Shadok",IDC_LANGUAGE3,"Button",BS_AUTORADIOBUTTON,5,25,
+                    70,10
+    CONTROL         "Language 4",IDC_LANGUAGE4,"Button",BS_AUTORADIOBUTTON | 
+                    WS_DISABLED,5,35,70,10
+    CONTROL         "Language 5",IDC_LANGUAGE5,"Button",BS_AUTORADIOBUTTON | 
+                    WS_DISABLED,5,45,70,10
+    CONTROL         "Language 6",IDC_LANGUAGE6,"Button",BS_AUTORADIOBUTTON | 
+                    WS_DISABLED,5,55,70,10
+    CONTROL         "Language 7",IDC_LANGUAGE7,"Button",BS_AUTORADIOBUTTON | 
+                    WS_DISABLED,5,65,70,10
+    CONTROL         "Language 8",IDC_LANGUAGE8,"Button",BS_AUTORADIOBUTTON | 
+                    WS_DISABLED,5,75,70,10
+END
+
+IDD_PRECALC DIALOGEX 0, 0, 186, 60
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "Light Precalc Progress"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Recalculate",ID_RECALCULATE,5,45,50,14
+    CONTROL         "Progress1",IDC_PROGRESS,"msctls_progress32",PBS_SMOOTH | 
+                    WS_BORDER,5,5,175,14
+    DEFPUSHBUTTON   "STOP",ID_STOP,130,45,50,14
+    LTEXT           "Not used Yet",IDC_STATICC,5,25,85,15,SS_SUNKEN
+    DEFPUSHBUTTON   "Pause",ID_PAUSE,55,45,75,14
+    DEFPUSHBUTTON   "Around",ID_AROUND,95,25,85,14
+END
+
+IDD_PASS DIALOGEX 0, 0, 247, 246
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Enter Password"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,140,40,100,35
+    PUSHBUTTON      "QUIT",IDCANCEL,140,80,100,24
+    CONTROL         183,IDC_STATIC,"Static",SS_BITMAP | SS_REALSIZEIMAGE | 
+                    SS_SUNKEN | WS_BORDER,5,5,120,94,WS_EX_DLGMODALFRAME | 
+                    WS_EX_CLIENTEDGE | WS_EX_STATICEDGE
+    EDITTEXT        IDC_EDITPASS,140,20,100,14,ES_LOWERCASE | ES_PASSWORD | 
+                    ES_AUTOHSCROLL
+    LTEXT           "Please Enter Password:",IDC_STATIC,150,10,80,8
+    LTEXT           "Static",IDC_STATIC33,5,110,235,130,SS_SUNKEN,
+                    WS_EX_CLIENTEDGE
+END
+
+IDD_INTERDLG DIALOGEX 0, 0, 251, 244
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW | WS_EX_CLIENTEDGE
+CAPTION "Interactive Objects"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    LTEXT           "",IDC_INTERTEXT,140,18,111,226,0,WS_EX_CLIENTEDGE
+    DEFPUSHBUTTON   "&Go To Object",IDC_GOTOOBJECT,140,0,50,14
+    CONTROL         "Tree1",IDC_INTERTREEVIEW,"SysTreeView32",TVS_HASBUTTONS | 
+                    TVS_HASLINES | TVS_DISABLEDRAGDROP | TVS_SHOWSELALWAYS | 
+                    TVS_NOTOOLTIPS | WS_BORDER | WS_TABSTOP,0,0,139,244,
+                    WS_EX_CLIENTEDGE
+    DEFPUSHBUTTON   "&Sel/Unsel Object",IDC_SELECTOBJECT,191,0,60,14
+END
+
+IDD_PATHWAYDLG DIALOGEX 0, 0, 175, 199
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW | WS_EX_CLIENTEDGE
+CAPTION "PathWay Edition"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,114,3,57,14
+    LTEXT           "Duration",IDC_STATIC,8,14,32,14,SS_CENTERIMAGE
+    EDITTEXT        IDC_PATHWAYTIME,40,14,65,14,ES_NUMBER
+    CONTROL         "Bezier",IDC_PATHWAYBEZIER,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,8,32,39,10
+    DEFPUSHBUTTON   "APPLY",IDAPPLY,114,17,57,14
+    DEFPUSHBUTTON   "CANCEL",IDCANCEL,114,32,57,14
+    PUSHBUTTON      "Hierarchy Move",IDC_PATHWAYHIERARCHY,90,75,78,14,
+                    BS_FLAT,WS_EX_STATICEDGE
+    PUSHBUTTON      "No Loop",IDC_PATHWAYLOOP,6,75,81,14,BS_FLAT,
+                    WS_EX_STATICEDGE
+    GROUPBOX        "This Waypoint",IDC_STATIC,0,3,111,42
+    GROUPBOX        "This Path",IDC_STATIC,0,49,174,146
+    EDITTEXT        IDC_EDITNAME,31,58,137,14,ES_UPPERCASE | ES_AUTOHSCROLL
+    LTEXT           "Name",IDC_STATIC,8,60,20,8
+    CONTROL         "ZONE",IDC_ZONE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,
+                    94,36,10
+    EDITTEXT        IDC_EDITHEIGHT,99,92,69,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Zone Height",IDC_STATIC,50,94,43,8
+    CONTROL         "Ambiance",IDC_AMBIANCE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,8,111,47,10
+    EDITTEXT        IDC_AMBIANCETEXT,59,108,109,14,ES_AUTOHSCROLL
+    CONTROL         "Fade Color",IDC_FADECOLOR,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,6,147,48,10
+    PUSHBUTTON      "Choose Color",IDC_COLORCHOOSE,84,144,82,14
+    CONTROL         "F-Clip",IDC_CLIPPINGFAR,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,6,164,33,10
+    CONTROL         "Slider1",IDC_SLIDER1,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,72,164,75,9
+    PUSHBUTTON      "Reset",IDC_CLIPPINGRESET,45,161,24,14
+    CONTROL         "Reverb",IDC_REVERB,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,6,181,39,10
+    CONTROL         "Slider1",IDC_SLIDER2,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,60,129,75,9
+    LTEXT           "Static",IDC_FCLIPTEXT,147,161,24,8
+    LTEXT           "Static",IDC_MAXVOLTEXT,138,129,24,8
+    CONTROL         "",IDC_SHOWCOLOR,"Static",SS_BLACKFRAME | SS_SUNKEN,58,
+                    145,24,12
+    LTEXT           "Max Vol",IDC_STATIC,27,126,30,8
+    COMBOBOX        IDC_REVERBCOMBO,48,177,114,30,CBS_DROPDOWN | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_SNAPSHOT DIALOGEX 0, 0, 186, 84
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "Snapshot"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,128,0,58,14
+    DEFPUSHBUTTON   "Start Snapshot",IDSTARTSNAPSHOT,128,15,58,23
+    EDITTEXT        IDC_IMAGESSEC,47,2,26,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Images/sec",IDC_STATIC,3,4,37,8
+    PUSHBUTTON      "Set Path",IDC_SETPATH,1,68,181,14,0,WS_EX_CLIENTEDGE | 
+                    WS_EX_STATICEDGE
+    EDITTEXT        IDC_XSIZE,29,17,27,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "X Size",IDC_STATIC,3,20,22,8
+    EDITTEXT        IDC_YSIZE,87,17,27,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Y Size",IDC_STATIC,63,20,21,8
+    PUSHBUTTON      "16 Bits",IDC_16BITS,76,2,50,14,0,WS_EX_CLIENTEDGE | 
+                    WS_EX_STATICEDGE
+    LTEXT           "Filenames",IDC_STATIC,5,57,37,8
+    EDITTEXT        IDC_EDITFILENAMES,43,54,139,12,ES_AUTOHSCROLL
+    CONTROL         "Cache To Memory",IDC_MEMORYCACHE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,7,38,109,10
+    DEFPUSHBUTTON   "Cancel Snapshot",IDCANCELSNAP,127,39,58,14
+END
+
+IDD_SCRIPTERROR DIALOGEX 0, 0, 302, 150
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "MARCUS Script Checker"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,242,0,60,14
+    LTEXT           "",IDC_ERRORSTRING,0,0,238,12,0,WS_EX_CLIENTEDGE
+    LTEXT           "",IDC_ERRORLOG,0,16,302,131,0,WS_EX_CLIENTEDGE | 
+                    WS_EX_STATICEDGE
+END
+
+IDD_MESHREDUCTION DIALOGEX 0, 0, 186, 68
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "Mesh Reduction"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,129,7,50,14
+    CONTROL         "Slider1",IDC_SLIDER_REDUCTION,"msctls_trackbar32",
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,7,42,172,15
+    CONTROL         "No Reduction",IDC_NO_REDUCTION,"Button",
+                    BS_AUTORADIOBUTTON,7,7,95,10
+    CONTROL         "Allow Reduction",IDC_REDUCTION,"Button",
+                    BS_AUTORADIOBUTTON,7,18,95,10
+    CONTROL         "Force Reduction",IDC_FORCE_REDUCTION,"Button",
+                    BS_AUTORADIOBUTTON,7,30,95,10
+END
+
+IDD_SEARCH DIALOGEX 0, 0, 187, 47
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_NOPARENTNOTIFY | WS_EX_CLIENTEDGE
+CAPTION "Script Search"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_SEARCHEDIT,7,20,117,14,ES_AUTOHSCROLL | WS_GROUP,
+                    WS_EX_STATICEDGE
+    PUSHBUTTON      "Search !",IDOK,130,7,50,16,0,WS_EX_CLIENTEDGE
+    PUSHBUTTON      "Cancel",IDCANCEL,130,24,50,14,0,WS_EX_CLIENTEDGE
+    LTEXT           "Enter search string",IDC_STATIC,33,9,77,8
+END
+
+IDD_LEVEL_SELECTOR DIALOG DISCARDABLE  0, 0, 248, 170
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Level Selector"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,80,150,160,14
+    PUSHBUTTON      "Cancel",IDCANCEL,8,150,66,14
+    CONTROL         "Level 0 (Palace)",IDC_C_LEVEL0,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP,0,0,87,10
+    CONTROL         "Level 1 (Goblin Prison)",IDC_C_LEVEL1,"Button",
+                    BS_AUTORADIOBUTTON,0,10,87,10
+    CONTROL         "Level 2 (Trolls Galeries)",IDC_C_LEVEL2,"Button",
+                    BS_AUTORADIOBUTTON,0,20,87,10
+    CONTROL         "Level 3 (Bunker Entrance)",IDC_C_LEVEL3,"Button",
+                    BS_AUTORADIOBUTTON,0,30,96,10
+    CONTROL         "Level 4 (Ylside Bunker)",IDC_C_LEVEL4,"Button",
+                    BS_AUTORADIOBUTTON,0,40,87,10
+    CONTROL         "Level 5 (Snake-Women Galeries)",IDC_C_LEVEL5,"Button",
+                    BS_AUTORADIOBUTTON,0,50,120,10
+    CONTROL         "Level 6 (Galeries)",IDC_C_LEVEL6,"Button",
+                    BS_AUTORADIOBUTTON,0,60,87,10
+    CONTROL         "Level 7 (Dwarves Mine)",IDC_C_LEVEL7,"Button",
+                    BS_AUTORADIOBUTTON,0,70,87,10
+    CONTROL         "Level 8 (Council Room)",IDC_C_LEVEL8,"Button",
+                    BS_AUTORADIOBUTTON,0,80,87,10
+    CONTROL         "Level 9 (Cinematic)",IDC_C_LEVEL9,"Button",
+                    BS_AUTORADIOBUTTON | WS_DISABLED,0,90,87,10
+    CONTROL         "Level 10 (Cinematic)",IDC_C_LEVEL10,"Button",
+                    BS_AUTORADIOBUTTON | WS_DISABLED,0,100,87,10
+    CONTROL         "Level 11 (Town)",IDC_C_LEVEL11,"Button",
+                    BS_AUTORADIOBUTTON,0,110,87,10
+    CONTROL         "Level 12 (Tavern - Guardpost)",IDC_C_LEVEL12,"Button",
+                    BS_AUTORADIOBUTTON,128,0,112,10
+    CONTROL         "Level 13 (Galeries)",IDC_C_LEVEL13,"Button",
+                    BS_AUTORADIOBUTTON,128,10,87,10
+    CONTROL         "Level 14 (Akbaa Temple)",IDC_C_LEVEL14,"Button",
+                    BS_AUTORADIOBUTTON,128,20,104,10
+    CONTROL         "Level 15 (Goblin Ruins)",IDC_C_LEVEL15,"Button",
+                    BS_AUTORADIOBUTTON,128,30,87,10
+    CONTROL         "Level 16 (Dissidents)",IDC_C_LEVEL16,"Button",
+                    BS_AUTORADIOBUTTON,128,40,87,10
+    CONTROL         "Level 17 (Crypt 1)",IDC_C_LEVEL17,"Button",
+                    BS_AUTORADIOBUTTON,128,50,87,10
+    CONTROL         "Level 18 (Galeries)",IDC_C_LEVEL18,"Button",
+                    BS_AUTORADIOBUTTON,128,60,87,10
+    CONTROL         "Level 19 (Crypt 2)",IDC_C_LEVEL19,"Button",
+                    BS_AUTORADIOBUTTON,128,70,87,10
+    CONTROL         "Level 20 (Crypt 3)",IDC_C_LEVEL20,"Button",
+                    BS_AUTORADIOBUTTON,128,80,87,10
+    CONTROL         "Level 21 (Crypt 4)",IDC_C_LEVEL21,"Button",
+                    BS_AUTORADIOBUTTON,128,90,87,10
+    CONTROL         "Level 22 (Crypt 5)",IDC_C_LEVEL22,"Button",
+                    BS_AUTORADIOBUTTON,128,100,87,10
+    CONTROL         "Level 23 (Crypt 6)",IDC_C_LEVEL23,"Button",
+                    BS_AUTORADIOBUTTON,128,110,87,10
+    PUSHBUTTON      "Goto Any Poly",IDC_GOTOPOLY,128,130,112,14
+END
+
+IDD_ARX_CONFIG_DIALOG DIALOG DISCARDABLE  0, 0, 341, 247
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION
+CAPTION "Arx Fatalis - Settings"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         171,IDC_ARX_CONFIG_STATIC,"Static",SS_BITMAP,0,0,246,113
+    PUSHBUTTON      "OK",IDC_OK,245,212,38,13
+    COMBOBOX        IDC_COMBO_LANGUAGE,245,90,79,58,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_RESOLUTION,245,108,79,58,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_BPP,245,144,79,58,CBS_DROPDOWNLIST | CBS_SORT | 
+                    NOT WS_VISIBLE | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_TEXTURE,245,162,79,58,CBS_DROPDOWNLIST | 
+                    CBS_SORT | NOT WS_VISIBLE | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Quit",IDC_QUIT,286,212,38,13
+    COMBOBOX        IDC_COMBO_MISC,245,126,79,58,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_DANAEABOUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 297
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 104
+    END
+
+    IDD_OPTIONS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 337
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 250
+    END
+
+    IDD_STARTOPTIONS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 276
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 263
+    END
+
+    IDD_SHOWTEXT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 243
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 270
+    END
+
+    IDD_SHOWVARS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 330
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 269
+    END
+
+    IDD_OPTIONS2, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 240
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 144
+    END
+
+    IDD_SHOWTEXTBIG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 525
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 294
+    END
+
+    IDD_GAIATEXTEDIT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 145
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 24
+    END
+
+    IDD_FOGDIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 230
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 115
+    END
+
+    IDD_LIGHTDIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 328
+        BOTTOMMARGIN, 189
+    END
+
+    IDD_LANGUAGEDIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 115
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 88
+    END
+
+    IDD_PRECALC, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 53
+    END
+
+    IDD_PASS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 240
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 239
+    END
+
+    IDD_PATHWAYDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 168
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 192
+    END
+
+    IDD_SCRIPTERROR, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 149
+    END
+
+    IDD_MESHREDUCTION, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 61
+    END
+
+    IDD_SEARCH, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 40
+    END
+
+    IDD_LEVEL_SELECTOR, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 241
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 163
+    END
+
+    IDD_ARX_CONFIG_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 334
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 240
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON2               ICON    DISCARDABLE     "icon2.ico"
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "Danae_resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_DANAE               BITMAP  DISCARDABLE     "Danae.bmp"
+IDB_DANAETB             BITMAP  DISCARDABLE     "Danae_TB.bmp"
+IDR_DANAETOOLS          BITMAP  DISCARDABLE     "toolbar1.bmp"
+IDB_ARX                 BITMAP  DISCARDABLE     "ARX.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_DANAETOOLS TOOLBAR DISCARDABLE  16, 15
+BEGIN
+    BUTTON      DANAE_B001
+    BUTTON      DANAE_B002
+    BUTTON      DANAE_B003
+    BUTTON      DANAE_B004
+    BUTTON      DANAE_B005
+    BUTTON      DANAE_B006
+    BUTTON      DANAE_B007
+    BUTTON      DANAE_B008
+    BUTTON      DANAE_B009
+    BUTTON      DANAE_B010
+    BUTTON      DANAE_B011
+    BUTTON      DANAE_B012
+    BUTTON      DANAE_B013
+    BUTTON      DANAE_B014
+    BUTTON      DANAE_B015
+    BUTTON      DANAE_B016
+    BUTTON      DANAE_B017
+    BUTTON      DANAE_B018
+    BUTTON      DANAE_B018
+    BUTTON      DANAE_B019
+    BUTTON      DANAE_B020
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_DANAEMENU MENU DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New Level",                  DANAE_MENU_NEWLEVEL
+        MENUITEM SEPARATOR
+        MENUITEM "&Load Level",                 DANAE_MENU_LOADLEVEL
+        MENUITEM "&Save Level",                 DANAE_MENU_SAVELEVEL, GRAYED
+        MENUITEM "Save Level &As...",           DANAE_MENU_SAVEAS
+        MENUITEM SEPARATOR
+        MENUITEM "Project Path",                DANAE_MENU_PROJECTPATH
+        MENUITEM "Import .SCN",                 DANAE_MENU_IMPORTSCN, GRAYED
+        MENUITEM "FORCE Load...",               DANAE_MENU_FORCELOAD
+        MENUITEM SEPARATOR
+        MENUITEM "BIG PURGE !!!",               DANAE_MENU_PURGELEVEL
+        MENUITEM SEPARATOR
+        MENUITEM "Mega-Moulinex",               IDM_MOULINEX
+        MENUITEM SEPARATOR
+        MENUITEM "&Exit",                       DANAE_MENU_EXIT
+    END
+    POPUP "&Update"
+    BEGIN
+        MENUITEM "Update ALL Textures",         DANAE_MENU_UPDATEALLTEXTURES
+        MENUITEM "Update ALL Objects",          DANAE_MENU_UPDATEALLOBJECTS
+        , GRAYED
+        MENUITEM "Update ALL Scripts",          DANAE_MENU_UPDATEALLSCRIPTS
+        MENUITEM "Update ALL Sounds",           DANAE_MENU_UPDATESOUNDS
+        , GRAYED
+        MENUITEM "Update Scene",                DANAE_MENU_UPDATESCENE
+        , GRAYED
+        MENUITEM "Update Localisation",         DANAE_MENU_UPDATELOCALISATION
+
+        MENUITEM "Update Anims",                DANAE_MENU_UPDATEALLANIMS
+        MENUITEM SEPARATOR
+        MENUITEM "All Lights NOT casting Shadows", DANAE_MENU_RESETSHADOWS
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Options",                    DANAE_MENU_OPTIONS
+        MENUITEM "&Hide/Show",                  DANAE_MENU_OPTIONS2
+        MENUITEM "&Language",                   DANAE_MENU_LANGUAGE
+        MENUITEM "Light &Calculations",         DANAE_MENU_RECALC
+        MENUITEM "&Select Font",                DANAE_MENU_CHOOSEFONT
+        MENUITEM "&Save Path",                  DANAE_MENU_SAVEPATH
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "Loaded &TextureList",         DANAE_MENU_TEXLIST
+        MENUITEM "Loaded &Anims",               DANAE_MENU_ANIMATIONSLIST
+        MENUITEM "&Global Variables",           DANAE_MENU_GLOBALLIST
+        MENUITEM "&Local Variables",            DANAE_MENU_LOCALLIST
+        MENUITEM "&Interactive Objects",        DANAE_MENU_INTEROBJLIST
+        MENUITEM SEPARATOR
+        MENUITEM "&Allocated Memory",           DANAE_MENU_MEMORY
+    END
+    POPUP "&Interactive Objs"
+    BEGIN
+        MENUITEM "&Unfreeze All",               DANAE_MENU_UNFREEZEALLINTER
+        MENUITEM "&Mesh Reduction",             DANAE_MENU_MESH_REDUCTION
+    END
+    POPUP "&Scene"
+    BEGIN
+        MENUITEM "&Goto Any Poly",              IDM_ANYPOLY
+        MENUITEM "Generate DLF CheckFile",      IDM_DLF_CHECK
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About",                      DANAE_MENU_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_PATHWAYDLG DLGINIT
+BEGIN
+    IDC_REVERBCOMBO, 0x403, 11, 0
+0x6f50, 0x6575, 0x2c74, 0x6950, 0x6f70, "\000" 
+    0
+END
+
+#endif    // French (France) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

@@ -1,0 +1,294 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "EERIEres.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#define IDC_STATIC -1
+#include <windows.h>
+
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_MAIN_ICON           ICON    DISCARDABLE     "DirectX.ico"
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "EERIE_resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define IDC_STATIC -1\r\n"
+    "#include <windows.h>\r\n"
+    "\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 245
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 101
+    END
+
+    IDD_CHANGEDEVICE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 174
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 83
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUT DIALOG DISCARDABLE  0, 0, 252, 108
+STYLE DS_SYSMODAL | DS_MODALFRAME | DS_NOIDLEMSG | DS_SETFOREGROUND | 
+    DS_3DLOOK | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION
+CAPTION "About ..."
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,7,87,238,14
+    ICON            IDI_MAIN_ICON,IDC_STATIC,5,5,21,20
+    LTEXT           "EERIE Application",IDC_STATIC,35,5,59,8
+    LTEXT           "Copyright (c) 1999 ARKANE Studios",IDC_STATIC,35,15,115,
+                    8
+    GROUPBOX        "About...",IDC_STATIC,7,30,238,53
+    LTEXT           "GAIA Game and Application Interfacing Arcana",
+                    IDC_STATIC,13,41,189,11
+    LTEXT           "EERIE - Exceedingly Enchanting RenderIng Engine",
+                    IDC_STATIC,13,52,189,11
+END
+
+IDD_CHANGEDEVICE DIALOG DISCARDABLE  0, 0, 182, 90
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Change device"
+FONT 8, "MS Sans Serif"
+BEGIN
+    GROUPBOX        "&Device selection",-1,5,5,115,40
+    COMBOBOX        IDC_DEVICE_COMBO,10,15,105,100,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Use desktop &window",IDC_WINDOWED_CHECKBOX,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,10,30,85,10
+    GROUPBOX        "Fullscreen &modes",IDC_FULLSCREEN_TEXT,5,45,115,40
+    COMBOBOX        IDC_MODE_COMBO,10,55,105,100,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    CONTROL         "&Stereoscopic viewing",IDC_STEREO_CHECKBOX,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,10,70,85,9
+    DEFPUSHBUTTON   "OK",IDOK,125,5,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,125,25,50,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU MENU DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM SEPARATOR
+        MENUITEM "&About...\tF1",               IDM_ABOUT
+        MENUITEM "&Change device...\tF2",       IDM_CHANGEDEVICE
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit\tESC",                  IDM_EXIT
+    END
+END
+
+IDR_POPUP MENU DISCARDABLE 
+BEGIN
+    POPUP "Popup"
+    BEGIN
+        MENUITEM "&About...",                   IDM_ABOUT
+        MENUITEM "&Change device...",           IDM_CHANGEDEVICE
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       IDM_EXIT
+    END
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// French (France) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
+#ifdef _WIN32
+LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_DANAEABOUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 185
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 317
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DANAEABOUT DIALOGEX 0, 0, 192, 324
+STYLE DS_3DLOOK | WS_POPUP | WS_CAPTION
+EXSTYLE WS_EX_CLIENTEDGE | WS_EX_STATICEDGE
+CAPTION "About Danae..."
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,7,299,178,18
+    ICON            IDI_MAIN_ICON,IDC_STATIC,156,242,20,20
+    LTEXT           "GAIA Application",IDC_STATIC,13,243,54,8
+    LTEXT           "Copyright (c) 1999 ARKANE Studios",IDC_STATIC,14,253,
+                    115,8
+    GROUPBOX        "About...",IDC_STATIC,7,232,178,64
+    LTEXT           "DAmnable but Necessary Arx Editor",IDC_STATIC,14,19,139,
+                    10
+    LTEXT           "Code: Meynier Cyril 1999",IDC_STATIC,13,285,142,9
+    CONTROL         150,IDC_STATIC,"Static",SS_BITMAP | SS_CENTERIMAGE | 
+                    WS_BORDER,7,42,178,190,WS_EX_CLIENTEDGE | 
+                    WS_EX_STATICEDGE
+    GROUPBOX        "DANAE",IDC_STATIC,7,7,178,32
+    LTEXT           "Static",IDC_STATIC,7,230,178,72
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_DANAEMENU MENU DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New Level",                  DANAE_MENU_NEWLEVEL
+        MENUITEM SEPARATOR
+        MENUITEM "&Load Level",                 DANAE_MENU_LOADLEVEL
+        MENUITEM "&Save Level",                 DANAE_MENU_SAVELEVEL
+        MENUITEM "Save Level &As...",           DANAE_MENU_SAVEAS
+        MENUITEM SEPARATOR
+        MENUITEM "&Exit",                       DANAE_MENU_EXIT
+    END
+    MENUITEM "&Edit",                       65535
+    MENUITEM "&View",                       65535
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About",                      DANAE_MENU_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_CONSOLEBKG          BITMAP  DISCARDABLE     "ConsoleBkg.bmp"
+IDB_DANAE               BITMAP  DISCARDABLE     "Danae.bmp"
+IDR_DANAETOOLS          BITMAP  DISCARDABLE     "toolbar1.bmp"
+IDB_DANAETB             BITMAP  DISCARDABLE     "Danae_TB.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_DANAETOOLS TOOLBAR DISCARDABLE  16, 15
+BEGIN
+    BUTTON      DANAE_B001
+    BUTTON      DANAE_B002
+    BUTTON      DANAE_B003
+    BUTTON      DANAE_B004
+    BUTTON      DANAE_B005
+    BUTTON      DANAE_B006
+    BUTTON      DANAE_B007
+    BUTTON      DANAE_B008
+    BUTTON      DANAE_B009
+    BUTTON      DANAE_B010
+    BUTTON      DANAE_B011
+    BUTTON      DANAE_B012
+    BUTTON      DANAE_B013
+    BUTTON      DANAE_B014
+END
+
+#endif    // French (France) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

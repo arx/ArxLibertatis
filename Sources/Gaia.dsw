@@ -1,0 +1,233 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "ARX_SCRIPT_DEBUGGER"=.\DANAE_Debugger\ARX_SCRIPT_DEBUGGER.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/ARX/SOURCESS", SEEAAAAA
+    .
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Artemis"=.\Artemis\Artemis.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/ARX/SOURCESS/Artemis", BVEAAAAA
+    .\artemis
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name EErie
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name HERMES
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Athena"=.\Athena\Athena.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/ARX/SOURCESS/Athena", UEEAAAAA
+    .\athena
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name HERMES
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Autorun"=.\Autorun\Autorun.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/ARX/SOURCESS/Autorun", PVEAAAAA
+    .\autorun
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Athena
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "AutorunUNICODE"=.\AutorunUNICODE\AutorunUNICODE.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/ARX/SOURCESS/AutorunUNICODE", PGNAAAAA
+    .\autorununicode
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Ceditor"=.\Ceditor\Ceditor.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/ARX/SOURCESS/Ceditor", AGEAAAAA
+    .\ceditor
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "DANAE"=.\DANAE\DANAE.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/ARX/SOURCESS/DANAE", OGEAAAAA
+    .\danae
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name HERMES
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name MINOS
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Ceditor
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Mercury
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ARX_SCRIPT_DEBUGGER
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name EErie
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Athena
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "EErie"=.\EERIE\EErie.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/ARX/SOURCESS/EERIE", PLEAAAAA
+    .\eerie
+    end source code control
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name HERMES
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "HERMES"=.\HERMES\HERMES.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/ARX/SOURCESS/HERMES", AOEAAAAA
+    .\hermes
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MINOS"=.\MINOS\MINOS.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/ARX/SOURCESS/MINOS", WUEAAAAA
+    .\minos
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Mercury"=.\Mercury\Mercury.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/ARX/SOURCESS/Mercury", RUEAAAAA
+    .\mercury
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+    begin source code control
+    "$/ARX/SOURCESS", SEEAAAAA
+    .
+    end source code control
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+
