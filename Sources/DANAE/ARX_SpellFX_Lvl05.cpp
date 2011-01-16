@@ -1005,7 +1005,7 @@ float CPoisonProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 CMultiPoisonProjectile::CMultiPoisonProjectile(LPDIRECT3DDEVICE7 m_pd3dDevice, long nbmissiles)
 {
 	SetDuration(2000);
-	uiNumber = __min(5, nbmissiles);
+	uiNumber = min(5, nbmissiles);
 	pTab	 = NULL;
 	pTab	 = new CSpellFx*[uiNumber]();
 

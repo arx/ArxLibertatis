@@ -9997,7 +9997,7 @@ void DANAE::DrawAllInterface()
 
 		if (player.poison>0.f) 
 		{
-				float val = __min(player.poison, 0.2f) * 255.f * 5.f; 
+				float val = min(player.poison, 0.2f) * 255.f * 5.f; 
 			long g;
 			F2L(val,&g);
 			ulColor=0xFF000000 | ((255-g) <<16) | (g & 255)<<8;	
@@ -10291,14 +10291,14 @@ long Manage3DCursor(long flags)
 
 					for (long i=0;i<io->obj->nbvertex;i++)
 					{
-						maxoff.x=__max(maxoff.x,io->obj->vertexlist[i].v.x);
-						maxoff.y=__max(maxoff.y,io->obj->vertexlist[i].v.y);
-						maxoff.z=__max(maxoff.z,io->obj->vertexlist[i].v.z);
-						minoff.x=__min(minoff.x,io->obj->vertexlist[i].v.x);
-						minoff.y=__min(minoff.y,io->obj->vertexlist[i].v.y);
-						minoff.z=__min(minoff.z,io->obj->vertexlist[i].v.z);
-						miny=__min(miny,io->obj->vertexlist[i].v.y);
-						maxy=__max(maxy,io->obj->vertexlist[i].v.y);
+						maxoff.x=max(maxoff.x,io->obj->vertexlist[i].v.x);
+						maxoff.y=max(maxoff.y,io->obj->vertexlist[i].v.y);
+						maxoff.z=max(maxoff.z,io->obj->vertexlist[i].v.z);
+						minoff.x=min(minoff.x,io->obj->vertexlist[i].v.x);
+						minoff.y=min(minoff.y,io->obj->vertexlist[i].v.y);
+						minoff.z=min(minoff.z,io->obj->vertexlist[i].v.z);
+						miny=min(miny,io->obj->vertexlist[i].v.y);
+						maxy=max(maxy,io->obj->vertexlist[i].v.y);
 					}
 
 
@@ -10361,7 +10361,7 @@ long Manage3DCursor(long flags)
 					
 					for ( int i = 0 ; i < io->obj->nbvertex ; i++ )
 					{
-						maxdist = __max(	maxdist,
+						maxdist = max(	maxdist,
 											TRUEDistance2D(	objcenter.x, objcenter.z,
 			                               io->obj->vertexlist[i].v.x, io->obj->vertexlist[i].v.z) - 4.f);
 					}
@@ -10370,7 +10370,7 @@ long Manage3DCursor(long flags)
 					{
 						for (int i=1;i<io->obj->pbox->nb_physvert;i++)
 						{
-							maxdist=__max(maxdist,
+							maxdist=max(maxdist,
 								TRUEDistance2D(	io->obj->pbox->vert[0].initpos.x,
 												io->obj->pbox->vert[0].initpos.z,
 												io->obj->pbox->vert[i].initpos.x,
@@ -10392,8 +10392,8 @@ long Manage3DCursor(long flags)
 
 		collidpos.x = collidpos.y = collidpos.z = 0;
 		
-		cyl2.height	=	__min(-30.f, height); 
-		cyl2.radius	=	__max(20.f, maxdist); 
+		cyl2.height	=	min(-30.f, height); 
+		cyl2.radius	=	max(20.f, maxdist); 
 					
 
 					while ( iterating>0 )
@@ -10506,7 +10506,7 @@ long Manage3DCursor(long flags)
 						}
 						else
 						{
-				if (EEfabs(lastanything) > __min(EEfabs(height), 12))
+				if (EEfabs(lastanything) > min(EEfabs(height), 12))
 							{
 								INTERACTIVE_OBJ * io=DRAGINTER;
 								ARX_PLAYER_Remove_Invisibility();

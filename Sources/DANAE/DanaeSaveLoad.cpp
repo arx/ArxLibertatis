@@ -344,7 +344,7 @@ long DanaeSaveLevel(char * fic)
 	                 + 1000000
 	                 + nbARXpaths * sizeof(DANAE_LS_PATH) + nbARXpaths * sizeof(DANAE_LS_PATHWAYS) * 30;
 	long tmpp = dlh.nb_bkgpolys * (sizeof(D3DCOLOR) + 2) + 1000000;
-	allocsize = __max(tmpp, allocsize);
+	allocsize = max(tmpp, allocsize);
 	dat = (unsigned char *)malloc(allocsize);
 
 	if (dat == NULL)

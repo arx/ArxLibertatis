@@ -166,12 +166,12 @@ __inline void AddToBBox3D(INTERACTIVE_OBJ * io,EERIE_3D * pos)
 {
 	if (io)
 	{
-		io->bbox3D.min.x=__min(io->bbox3D.min.x,pos->x);
-		io->bbox3D.min.y=__min(io->bbox3D.min.y,pos->y);
-		io->bbox3D.min.z=__min(io->bbox3D.min.z,pos->z);
-		io->bbox3D.max.x=__max(io->bbox3D.max.x,pos->x);
-		io->bbox3D.max.y=__max(io->bbox3D.max.y,pos->y);
-		io->bbox3D.max.z=__max(io->bbox3D.max.z,pos->z);
+		io->bbox3D.min.x=min(io->bbox3D.min.x,pos->x);
+		io->bbox3D.min.y=min(io->bbox3D.min.y,pos->y);
+		io->bbox3D.min.z=min(io->bbox3D.min.z,pos->z);
+		io->bbox3D.max.x=max(io->bbox3D.max.x,pos->x);
+		io->bbox3D.max.y=max(io->bbox3D.max.y,pos->y);
+		io->bbox3D.max.z=max(io->bbox3D.max.z,pos->z);
 	}
 }
 extern long EXTERNALVIEW;
@@ -223,7 +223,7 @@ short ANIM_GetAltIdx(ANIM_HANDLE * ah,long old)
 
 	for (long i=1;i<ah->alt_nb;i++)
 	{
-		tot+=anim_power[__min(i,14)];		
+		tot+=anim_power[min(i,14)];		
 	}
 
 	while (1)
@@ -232,7 +232,7 @@ short ANIM_GetAltIdx(ANIM_HANDLE * ah,long old)
 		{
 			float rnd=rnd()*tot;
 
-			if ((rnd<anim_power[__min(i,14)]) && (i!=old)) 
+			if ((rnd<anim_power[min(i,14)]) && (i!=old)) 
 				return i;
 		}
 	}
@@ -1916,10 +1916,10 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 					(eobj->vertexlist[i].vert.sy >= -32000) &&
 					(eobj->vertexlist[i].vert.sy <= 32000))
 				{
-					BBOXMIN.x=__min(BBOXMIN.x,eobj->vertexlist[i].vert.sx);
-					BBOXMAX.x=__max(BBOXMAX.x,eobj->vertexlist[i].vert.sx);
-					BBOXMIN.y=__min(BBOXMIN.y,eobj->vertexlist[i].vert.sy);
-					BBOXMAX.y=__max(BBOXMAX.y,eobj->vertexlist[i].vert.sy);
+					BBOXMIN.x=min(BBOXMIN.x,eobj->vertexlist[i].vert.sx);
+					BBOXMAX.x=max(BBOXMAX.x,eobj->vertexlist[i].vert.sx);
+					BBOXMIN.y=min(BBOXMIN.y,eobj->vertexlist[i].vert.sy);
+					BBOXMAX.y=max(BBOXMAX.y,eobj->vertexlist[i].vert.sy);
 				}
 			}
 
@@ -2173,7 +2173,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	float fDist;
 	fDist=EEDistance3D(&pos,&ACTIVECAM->pos);
 	bPassInTANDL=false;
-	bBumpOnIO=(bALLOW_BUMP)&&(io)&&(io->ioflags&IO_BUMP)&&(fDist<__min(__max(0.f,(ACTIVECAM->cdepth*fZFogStart)-200.f),600.f))?true:false;
+	bBumpOnIO=(bALLOW_BUMP)&&(io)&&(io->ioflags&IO_BUMP)&&(fDist<min(max(0.f,(ACTIVECAM->cdepth*fZFogStart)-200.f),600.f))?true:false;
 
 	float prec;
 	prec=1.f/(ACTIVECAM->cdepth*ACTIVECAM->Zmul);
@@ -2382,11 +2382,11 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 					fr=((0.6f-dd)*6.f + (EEfabs(eobj->vertexlist[paf[k]].norm.z)+EEfabs(eobj->vertexlist[paf[k]].norm.y)))*0.125f;						
 
 					if (fr<0.f) fr=0.f;
-					else fr=__max(ffr,fr*255.f);
+					else fr=max(ffr,fr*255.f);
 
-					fr=__min(fr,255.f);
+					fr=min(fr,255.f);
 					fb*=255.f;
-					fb=__min(fb,255.f);
+					fb=min(fb,255.f);
 					F2L(fr,&lfr);
 					F2L(fb,&lfb);
 					vert_list[k].color=( 0xff001E00L | ( (lfr & 255) << 16) | (lfb & 255) );
@@ -2962,10 +2962,10 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 		// Memorizes 2D Bounding Box using vertex min/max x,y pos
 		if (eobj->vertexlist[i].vert.rhw>0.f) 
 		{
-			BBOXMIN.x=__min(BBOXMIN.x,eobj->vertexlist[i].vert.sx);
-			BBOXMAX.x=__max(BBOXMAX.x,eobj->vertexlist[i].vert.sx);
-			BBOXMIN.y=__min(BBOXMIN.y,eobj->vertexlist[i].vert.sy);
-			BBOXMAX.y=__max(BBOXMAX.y,eobj->vertexlist[i].vert.sy);
+			BBOXMIN.x=min(BBOXMIN.x,eobj->vertexlist[i].vert.sx);
+			BBOXMAX.x=max(BBOXMAX.x,eobj->vertexlist[i].vert.sx);
+			BBOXMIN.y=min(BBOXMIN.y,eobj->vertexlist[i].vert.sy);
+			BBOXMAX.y=max(BBOXMAX.y,eobj->vertexlist[i].vert.sy);
 
 		}
 
@@ -3062,9 +3062,9 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 							else dc *= p * el->precalc; 
 						}					
 
-						ffr=__max(ffr,el->rgb255.r*dc);
-						ffg=__max(ffg,el->rgb255.g*dc);
-						ffb=__max(ffb,el->rgb255.b*dc);
+						ffr=max(ffr,el->rgb255.r*dc);
+						ffg=max(ffg,el->rgb255.g*dc);
+						ffb=max(ffb,el->rgb255.b*dc);
 					}
 				}
 

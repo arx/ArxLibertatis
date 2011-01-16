@@ -2636,8 +2636,8 @@ INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long flags)
 
 	if (ep)
 	{
-		io->pos.y = __min(ep->v[0].sy, ep->v[1].sy);
-		io->lastpos.y = io->initpos.y = io->pos.y = __min(io->pos.y, ep->v[2].sy);
+		io->pos.y = min(ep->v[0].sy, ep->v[1].sy);
+		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].sy);
 	}
 
 	strcpy(io->filename, tex1);
@@ -2745,8 +2745,8 @@ INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, char * file)
 
 	if (ep)
 	{
-		io->pos.y = __min(ep->v[0].sy, ep->v[1].sy);
-		io->lastpos.y = io->initpos.y = io->pos.y = __min(io->pos.y, ep->v[2].sy);
+		io->pos.y = min(ep->v[0].sy, ep->v[1].sy);
+		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].sy);
 	}
 
 	io->lastpos.y = io->initpos.y = io->pos.y += PLAYER_BASE_HEIGHT;
@@ -2819,8 +2819,8 @@ INTERACTIVE_OBJ * AddMarker(LPDIRECT3DDEVICE7 pd3dDevice, char * file)
 
 	if (ep)
 	{
-		io->pos.y = __min(ep->v[0].sy, ep->v[1].sy);
-		io->lastpos.y = io->initpos.y = io->pos.y = __min(io->pos.y, ep->v[2].sy);
+		io->pos.y = min(ep->v[0].sy, ep->v[1].sy);
+		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].sy);
 	}
 
 	io->lastpos.y = io->initpos.y = io->pos.y += PLAYER_BASE_HEIGHT;
@@ -3117,8 +3117,8 @@ INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long flags)
 
 	if (ep)
 	{
-		io->pos.y = __min(ep->v[0].sy, ep->v[1].sy);
-		io->lastpos.y = io->initpos.y = io->pos.y = __min(io->pos.y, ep->v[2].sy);
+		io->pos.y = min(ep->v[0].sy, ep->v[1].sy);
+		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].sy);
 	}
 
 	
@@ -3467,8 +3467,8 @@ INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, char * fil, long flags)
 
 	if (ep)
 	{
-		io->pos.y = __min(ep->v[0].sy, ep->v[1].sy);
-		io->lastpos.y = io->initpos.y = io->pos.y = __min(io->pos.y, ep->v[2].sy);
+		io->pos.y = min(ep->v[0].sy, ep->v[1].sy);
+		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].sy);
 	}
 
 

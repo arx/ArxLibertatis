@@ -2776,14 +2776,14 @@ float GetIOHeight(INTERACTIVE_OBJ * io)
 
 	if (v < -165.f) return -165.f;
 
-	return __min(v, -45.f);
+	return min(v, -45.f);
 }
 float GetIORadius(INTERACTIVE_OBJ * io)
 {
 	if (io == inter.iobj[0])
 		return PLAYER_BASE_RADIUS;
 
-	float v = __max(io->original_radius * io->scale, 25.f);
+	float v = max(io->original_radius * io->scale, 25.f);
 
 	if (v > 60.f) return 60.f;
 
@@ -2822,12 +2822,12 @@ void ComputeTolerance(INTERACTIVE_OBJ * io, long targ, float * dst)
 		// Compute min target close-dist
 		if (inter.iobj[targ]->ioflags & IO_NO_COLLISIONS)
 			targ_dist = 0.f;
-		else targ_dist = __max(inter.iobj[targ]->physics.cyl.radius, GetIORadius(inter.iobj[targ])); //inter.iobj[targ]->physics.cyl.radius;
+		else targ_dist = max(inter.iobj[targ]->physics.cyl.radius, GetIORadius(inter.iobj[targ])); //inter.iobj[targ]->physics.cyl.radius;
 
 		// Compute min self close-dist
 		if (io->ioflags & IO_NO_COLLISIONS)
 			self_dist = 0.f;
-		else self_dist = __max(io->physics.cyl.radius, GetIORadius(io)); //io->physics.cyl.radius;
+		else self_dist = max(io->physics.cyl.radius, GetIORadius(io)); //io->physics.cyl.radius;
 
 		// Base tolerance = radius added
 		TOLERANCE = targ_dist + self_dist + 5.f;
@@ -3417,7 +3417,7 @@ void ManageNPCMovement(INTERACTIVE_OBJ * io)
 		Vector_Copy(&vect, &io->forcedmove);
 		float d = TRUEVector_Magnitude(&vect);
 		TRUEVector_Normalize(&vect);
-		float dd = __min(d, (float)FrameDiff * DIV6);
+		float dd = min(d, (float)FrameDiff * DIV6);
 		ForcedMove.x = vect.x * dd;
 		ForcedMove.y = vect.y * dd;
 		ForcedMove.z = vect.z * dd;
@@ -3688,7 +3688,7 @@ void ManageNPCMovement(INTERACTIVE_OBJ * io)
 			argh:;
 
 
-				long lMax = __max(ARX_NPC_GetNextAttainableNodeIncrement(io), 1L);
+				long lMax = max(ARX_NPC_GetNextAttainableNodeIncrement(io), 1L);
 				ARX_CHECK_USHORT(io->_npcdata->pathfind.listpos + lMax);
 
 				io->_npcdata->pathfind.listpos	+= ARX_CLEAN_WARN_CAST_USHORT(lMax);
@@ -3813,7 +3813,7 @@ float AngularDifference(float a1, float a2)
 	}
 
 	ret = a1 - a2;
-	ret = __min(ret, (a2 + 360) - a1);
+	ret = min(ret, (a2 + 360) - a1);
 	return ret;
 
 }
@@ -4542,11 +4542,11 @@ void ManageIgnition_2(INTERACTIVE_OBJ * io)
 			long id = io->ignit_light;
 			DynLight[id].exist = 1;
 
-			DynLight[id].intensity = __max(io->ignition * DIV10, 1.f);
-			DynLight[id].fallstart = __max(io->ignition * 10.f, 100.f);
-			DynLight[id].fallend   = __max(io->ignition * 25.f, 240.f);
-			float v = __max((io->ignition * DIV10), 0.5f);
-			v = __min(v, 1.f);
+			DynLight[id].intensity = max(io->ignition * DIV10, 1.f);
+			DynLight[id].fallstart = max(io->ignition * 10.f, 100.f);
+			DynLight[id].fallend   = max(io->ignition * 25.f, 240.f);
+			float v = max((io->ignition * DIV10), 0.5f);
+			v = min(v, 1.f);
 			DynLight[id].rgb.r = (1.f - rnd() * 0.2f) * v;
 			DynLight[id].rgb.g = (0.8f - rnd() * 0.2f) * v;
 			DynLight[id].rgb.b = (0.6f - rnd() * 0.2f) * v;

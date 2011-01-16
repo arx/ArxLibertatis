@@ -586,7 +586,7 @@ void ARX_SCRIPT_AllowInterScriptExec()
 	{
 		EVENT_SENDER = NULL;
 
-		long numm = __min(inter.nbmax, 10);
+		long numm = min(inter.nbmax, 10);
 
 		for (long n = 0; n < numm; n++)
 		{
@@ -694,7 +694,7 @@ void ARX_SCRIPT_ReleaseLabels(EERIE_SCRIPT * es)
 
 void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT * es)
 {
-	long nb = __min(MAX_SHORTCUT, SM_MAXCMD);
+	long nb = min(MAX_SHORTCUT, SM_MAXCMD);
 
 	for (long j = 1; j < nb; j++)
 	{
@@ -10613,7 +10613,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 												scr_timer[num2].es = es;
 												scr_timer[num2].exist = 1;
 												scr_timer[num2].io = io;
-												scr_timer[num2].msecs = (long)__max(iot->anims[num]->anims[iot->animlayer[nu].altidx_cur]->anim_time, 1000);
+												scr_timer[num2].msecs = (long)max(iot->anims[num]->anims[iot->animlayer[nu].altidx_cur]->anim_time, 1000);
 												scr_timer[num2].namelength = strlen(timername) + 1;
 												scr_timer[num2].name = (char *)malloc(scr_timer[num2].namelength);
 												strcpy(scr_timer[num2].name, timername);

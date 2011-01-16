@@ -410,23 +410,23 @@ int tri_tri_intersect(const EERIE_TRI * VV, const EERIE_TRI * UU)
 // Computes Bounding Box for a triangle
 inline void Triangle_ComputeBoundingBox(EERIE_3D_BBOX * bb, const EERIE_TRI * v)
 {
-	bb->min.x = __min(v->v[0].x, v->v[1].x);
-	bb->min.x = __min(bb->min.x, v->v[2].x);
+	bb->min.x = min(v->v[0].x, v->v[1].x);
+	bb->min.x = min(bb->min.x, v->v[2].x);
 
-	bb->max.x = __max(v->v[0].x, v->v[1].x);
-	bb->max.x = __max(bb->max.x, v->v[2].x);
+	bb->max.x = max(v->v[0].x, v->v[1].x);
+	bb->max.x = max(bb->max.x, v->v[2].x);
 
-	bb->min.y = __min(v->v[0].y, v->v[1].y);
-	bb->min.y = __min(bb->min.y, v->v[2].y);
+	bb->min.y = min(v->v[0].y, v->v[1].y);
+	bb->min.y = min(bb->min.y, v->v[2].y);
 
-	bb->max.y = __max(v->v[0].y, v->v[1].y);
-	bb->max.y = __max(bb->max.y, v->v[2].y);
+	bb->max.y = max(v->v[0].y, v->v[1].y);
+	bb->max.y = max(bb->max.y, v->v[2].y);
 
-	bb->min.z = __min(v->v[0].z, v->v[1].z);
-	bb->min.z = __min(bb->min.z, v->v[2].z);
+	bb->min.z = min(v->v[0].z, v->v[1].z);
+	bb->min.z = min(bb->min.z, v->v[2].z);
 
-	bb->max.z = __max(v->v[0].z, v->v[1].z);
-	bb->max.z = __max(bb->max.z, v->v[2].z);
+	bb->max.z = max(v->v[0].z, v->v[1].z);
+	bb->max.z = max(bb->max.z, v->v[2].z);
 }
 
 BOOL Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u)
@@ -538,9 +538,9 @@ float InterpolateAngle(float a1, float a2, const float pour)
 	float ft2 = EEfabs(t2);
 	float ft3 = EEfabs(t3);
 	float ft4 = EEfabs(t4);
-	float t = __min(ft1, ft2);
-	t = __min(t, ft3);
-	t = __min(t, ft4);
+	float t = min(ft1, ft2);
+	t = min(t, ft3);
+	t = min(t, ft4);
 
 	float i;
 
@@ -597,13 +597,13 @@ BOOL CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2
 {
 	if (cyl1 == cyl2) return FALSE;
 
-	float m1 = cyl1->origin.y;					//tokeep: __max(cyl1->origin.y,cyl1->origin.y+cyl1->height);
-	float m2 = cyl2->origin.y + cyl2->height;	//tokeep: __min(cyl2->origin.y,cyl2->origin.y+cyl2->height);
+	float m1 = cyl1->origin.y;					//tokeep: max(cyl1->origin.y,cyl1->origin.y+cyl1->height);
+	float m2 = cyl2->origin.y + cyl2->height;	//tokeep: min(cyl2->origin.y,cyl2->origin.y+cyl2->height);
 
 	if (m2 > m1) return FALSE;
 
-	m1 = cyl1->origin.y + cyl1->height;			//tokeep: __min(cyl1->origin.y,cyl1->origin.y+cyl1->height);
-	m2 = cyl2->origin.y;						//tokeep: __max(cyl2->origin.y,cyl2->origin.y+cyl2->height);
+	m1 = cyl1->origin.y + cyl1->height;			//tokeep: min(cyl1->origin.y,cyl1->origin.y+cyl1->height);
+	m2 = cyl2->origin.y;						//tokeep: max(cyl2->origin.y,cyl2->origin.y+cyl2->height);
 
 	if (m1 > m2) return FALSE;
 
@@ -618,12 +618,12 @@ BOOL CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2
 // Sort of...
 BOOL SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s)
 {
-	float m1 = __max(cyl1->origin.y, cyl1->origin.y + cyl1->height);
+	float m1 = max(cyl1->origin.y, cyl1->origin.y + cyl1->height);
 	float m2 = s->origin.y - s->radius;
 
 	if (m2 > m1) return FALSE;
 
-	m1 = __min(cyl1->origin.y, cyl1->origin.y + cyl1->height);
+	m1 = min(cyl1->origin.y, cyl1->origin.y + cyl1->height);
 	m2 = s->origin.y + s->radius;
 
 	if (m1 > m2) return FALSE;

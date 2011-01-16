@@ -312,7 +312,7 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 
 		for (; nn < obj->pbox->nb_physvert; nn++)
 		{
-			if (EEDistance3D(&center, &vert[nn].pos) <= __max(60, rad + 25))
+			if (EEDistance3D(&center, &vert[nn].pos) <= max(60, rad + 25))
 			{
 				nn = 1000;
 			}
@@ -823,11 +823,11 @@ BOOL IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long sourc
 	long ix, iz, ax, az;
 	long n;
 	F2L(obj->pbox->radius * DIV100, &n);
-	n = __min(2, n + 1);
-	ix = __max(px - n, 0);
-	ax = __min(px + n, ACTIVEBKG->Xsize - 1);
-	iz = __max(pz - n, 0);
-	az = __min(pz + n, ACTIVEBKG->Zsize - 1);
+	n = min(2, n + 1);
+	ix = max(px - n, 0);
+	ax = min(px + n, ACTIVEBKG->Xsize - 1);
+	iz = max(pz - n, 0);
+	az = min(pz + n, ACTIVEBKG->Zsize - 1);
 	LAST_COLLISION_POLY = NULL;
 	EERIEPOLY * ep;
 	EERIE_BKG_INFO * eg;
@@ -945,7 +945,7 @@ long EERIE_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubb
 	{
 		EERIE_PHYSICS_BOX_ComputeForces(obj);
 
-		if (!ARX_EERIE_PHYSICS_BOX_Compute(obj, __min(0.08f, timing), rubber, flags, source))
+		if (!ARX_EERIE_PHYSICS_BOX_Compute(obj, min(0.08f, timing), rubber, flags, source))
 			ret = 1;
 
 		timing -= 0.08f;
@@ -1055,13 +1055,13 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 	{
 		if (k == obj->origin) continue;
 
-		cubmin.x = __min(cubmin.x, obj->vertexlist[k].v.x);
-		cubmin.y = __min(cubmin.y, obj->vertexlist[k].v.y);
-		cubmin.z = __min(cubmin.z, obj->vertexlist[k].v.z);
+		cubmin.x = min(cubmin.x, obj->vertexlist[k].v.x);
+		cubmin.y = min(cubmin.y, obj->vertexlist[k].v.y);
+		cubmin.z = min(cubmin.z, obj->vertexlist[k].v.z);
 
-		cubmax.x = __max(cubmax.x, obj->vertexlist[k].v.x);
-		cubmax.y = __max(cubmax.y, obj->vertexlist[k].v.y);
-		cubmax.z = __max(cubmax.z, obj->vertexlist[k].v.z);
+		cubmax.x = max(cubmax.x, obj->vertexlist[k].v.x);
+		cubmax.y = max(cubmax.y, obj->vertexlist[k].v.y);
+		cubmax.z = max(cubmax.z, obj->vertexlist[k].v.z);
 	}
 
 	obj->pbox->vert[0].pos.x = cubmin.x + (cubmax.x - cubmin.x) * DIV2;
@@ -1114,44 +1114,44 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 			EERIE_3D curr;
 			memcpy(&curr, &obj->vertexlist[k].v, sizeof(EERIE_3D));
 			long SEC = 1;
-			obj->pbox->vert[SEC].pos.x = __min(obj->pbox->vert[SEC].pos.x, curr.x);
-			obj->pbox->vert[SEC].pos.z = __min(obj->pbox->vert[SEC].pos.z, curr.z);
+			obj->pbox->vert[SEC].pos.x = min(obj->pbox->vert[SEC].pos.x, curr.x);
+			obj->pbox->vert[SEC].pos.z = min(obj->pbox->vert[SEC].pos.z, curr.z);
 
-			obj->pbox->vert[SEC+1].pos.x = __min(obj->pbox->vert[SEC+1].pos.x, curr.x);
-			obj->pbox->vert[SEC+1].pos.z = __max(obj->pbox->vert[SEC+1].pos.z, curr.z);
+			obj->pbox->vert[SEC+1].pos.x = min(obj->pbox->vert[SEC+1].pos.x, curr.x);
+			obj->pbox->vert[SEC+1].pos.z = max(obj->pbox->vert[SEC+1].pos.z, curr.z);
 
-			obj->pbox->vert[SEC+2].pos.x = __max(obj->pbox->vert[SEC+2].pos.x, curr.x);
-			obj->pbox->vert[SEC+2].pos.z = __max(obj->pbox->vert[SEC+2].pos.z, curr.z);
+			obj->pbox->vert[SEC+2].pos.x = max(obj->pbox->vert[SEC+2].pos.x, curr.x);
+			obj->pbox->vert[SEC+2].pos.z = max(obj->pbox->vert[SEC+2].pos.z, curr.z);
 
-			obj->pbox->vert[SEC+3].pos.x = __max(obj->pbox->vert[SEC+3].pos.x, curr.x);
-			obj->pbox->vert[SEC+3].pos.z = __min(obj->pbox->vert[SEC+3].pos.z, curr.z);
+			obj->pbox->vert[SEC+3].pos.x = max(obj->pbox->vert[SEC+3].pos.x, curr.x);
+			obj->pbox->vert[SEC+3].pos.z = min(obj->pbox->vert[SEC+3].pos.z, curr.z);
 
 			SEC = 5;
-			obj->pbox->vert[SEC].pos.x = __min(obj->pbox->vert[SEC].pos.x, curr.x - RATI);
-			obj->pbox->vert[SEC].pos.z = __min(obj->pbox->vert[SEC].pos.z, curr.z - RATI);
+			obj->pbox->vert[SEC].pos.x = min(obj->pbox->vert[SEC].pos.x, curr.x - RATI);
+			obj->pbox->vert[SEC].pos.z = min(obj->pbox->vert[SEC].pos.z, curr.z - RATI);
 
-			obj->pbox->vert[SEC+1].pos.x = __min(obj->pbox->vert[SEC+1].pos.x, curr.x - RATI);
-			obj->pbox->vert[SEC+1].pos.z = __max(obj->pbox->vert[SEC+1].pos.z, curr.z + RATI);
+			obj->pbox->vert[SEC+1].pos.x = min(obj->pbox->vert[SEC+1].pos.x, curr.x - RATI);
+			obj->pbox->vert[SEC+1].pos.z = max(obj->pbox->vert[SEC+1].pos.z, curr.z + RATI);
 
-			obj->pbox->vert[SEC+2].pos.x = __max(obj->pbox->vert[SEC+2].pos.x, curr.x + RATI);
-			obj->pbox->vert[SEC+2].pos.z = __max(obj->pbox->vert[SEC+2].pos.z, curr.z + RATI);
+			obj->pbox->vert[SEC+2].pos.x = max(obj->pbox->vert[SEC+2].pos.x, curr.x + RATI);
+			obj->pbox->vert[SEC+2].pos.z = max(obj->pbox->vert[SEC+2].pos.z, curr.z + RATI);
 
-			obj->pbox->vert[SEC+3].pos.x = __max(obj->pbox->vert[SEC+3].pos.x, curr.x + RATI);
-			obj->pbox->vert[SEC+3].pos.z = __min(obj->pbox->vert[SEC+3].pos.z, curr.z - RATI);
+			obj->pbox->vert[SEC+3].pos.x = max(obj->pbox->vert[SEC+3].pos.x, curr.x + RATI);
+			obj->pbox->vert[SEC+3].pos.z = min(obj->pbox->vert[SEC+3].pos.z, curr.z - RATI);
 
 
 			SEC = 9;
-			obj->pbox->vert[SEC].pos.x = __min(obj->pbox->vert[SEC].pos.x, curr.x);
-			obj->pbox->vert[SEC].pos.z = __min(obj->pbox->vert[SEC].pos.z, curr.z);
+			obj->pbox->vert[SEC].pos.x = min(obj->pbox->vert[SEC].pos.x, curr.x);
+			obj->pbox->vert[SEC].pos.z = min(obj->pbox->vert[SEC].pos.z, curr.z);
 
-			obj->pbox->vert[SEC+1].pos.x = __min(obj->pbox->vert[SEC+1].pos.x, curr.x);
-			obj->pbox->vert[SEC+1].pos.z = __max(obj->pbox->vert[SEC+1].pos.z, curr.z);
+			obj->pbox->vert[SEC+1].pos.x = min(obj->pbox->vert[SEC+1].pos.x, curr.x);
+			obj->pbox->vert[SEC+1].pos.z = max(obj->pbox->vert[SEC+1].pos.z, curr.z);
 
-			obj->pbox->vert[SEC+2].pos.x = __max(obj->pbox->vert[SEC+2].pos.x, curr.x);
-			obj->pbox->vert[SEC+2].pos.z = __max(obj->pbox->vert[SEC+2].pos.z, curr.z);
+			obj->pbox->vert[SEC+2].pos.x = max(obj->pbox->vert[SEC+2].pos.x, curr.x);
+			obj->pbox->vert[SEC+2].pos.z = max(obj->pbox->vert[SEC+2].pos.z, curr.z);
 
-			obj->pbox->vert[SEC+3].pos.x = __max(obj->pbox->vert[SEC+3].pos.x, curr.x);
-			obj->pbox->vert[SEC+3].pos.z = __min(obj->pbox->vert[SEC+3].pos.z, curr.z);
+			obj->pbox->vert[SEC+3].pos.x = max(obj->pbox->vert[SEC+3].pos.x, curr.x);
+			obj->pbox->vert[SEC+3].pos.z = min(obj->pbox->vert[SEC+3].pos.z, curr.z);
 		}
 	}
 	else
@@ -1181,17 +1181,17 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 				SEC = 9;
 			}
 
-			obj->pbox->vert[SEC].pos.x = __min(obj->pbox->vert[SEC].pos.x, curr.x);
-			obj->pbox->vert[SEC].pos.z = __min(obj->pbox->vert[SEC].pos.z, curr.z);
+			obj->pbox->vert[SEC].pos.x = min(obj->pbox->vert[SEC].pos.x, curr.x);
+			obj->pbox->vert[SEC].pos.z = min(obj->pbox->vert[SEC].pos.z, curr.z);
 
-			obj->pbox->vert[SEC+1].pos.x = __min(obj->pbox->vert[SEC+1].pos.x, curr.x);
-			obj->pbox->vert[SEC+1].pos.z = __max(obj->pbox->vert[SEC+1].pos.z, curr.z);
+			obj->pbox->vert[SEC+1].pos.x = min(obj->pbox->vert[SEC+1].pos.x, curr.x);
+			obj->pbox->vert[SEC+1].pos.z = max(obj->pbox->vert[SEC+1].pos.z, curr.z);
 
-			obj->pbox->vert[SEC+2].pos.x = __max(obj->pbox->vert[SEC+2].pos.x, curr.x);
-			obj->pbox->vert[SEC+2].pos.z = __max(obj->pbox->vert[SEC+2].pos.z, curr.z);
+			obj->pbox->vert[SEC+2].pos.x = max(obj->pbox->vert[SEC+2].pos.x, curr.x);
+			obj->pbox->vert[SEC+2].pos.z = max(obj->pbox->vert[SEC+2].pos.z, curr.z);
 
-			obj->pbox->vert[SEC+3].pos.x = __max(obj->pbox->vert[SEC+3].pos.x, curr.x);
-			obj->pbox->vert[SEC+3].pos.z = __min(obj->pbox->vert[SEC+3].pos.z, curr.z);
+			obj->pbox->vert[SEC+3].pos.x = max(obj->pbox->vert[SEC+3].pos.x, curr.x);
+			obj->pbox->vert[SEC+3].pos.z = min(obj->pbox->vert[SEC+3].pos.z, curr.z);
 		}
 	}
 
@@ -1225,7 +1225,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 		if (k != 0)
 		{
 			float dist = TRUEEEDistance3D(&obj->pbox->vert[0].pos, &obj->pbox->vert[k].pos);
-			obj->pbox->radius = __max(obj->pbox->radius, dist);
+			obj->pbox->radius = max(obj->pbox->radius, dist);
 		}
 	}
 }

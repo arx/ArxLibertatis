@@ -789,7 +789,7 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, long flags, E
 		        && !(flags & (DAMAGE_TYPE_FIRE | DAMAGE_TYPE_COLD)))
 		{
 			damagesdone -= player.Full_resist_magic * DIV100 * damagesdone;
-			damagesdone = __max(0, damagesdone);
+			damagesdone = max(0, damagesdone);
 		}
 
 		return damagesdone;
@@ -846,7 +846,7 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, long flags, E
 			        && !(flags & (DAMAGE_TYPE_FIRE | DAMAGE_TYPE_COLD)))
 			{
 				damagesdone -= io_target->_npcdata->resist_magic * DIV100 * damagesdone;
-				damagesdone = __max(0, damagesdone);
+				damagesdone = max(0, damagesdone);
 			}
 
 			return damagesdone;
@@ -1016,7 +1016,7 @@ float ARX_DAMAGES_DamageNPC(INTERACTIVE_OBJ * io, float dmg, long source, long f
 			}
 		}
 
-		damagesdone = __min(dmg, io->_npcdata->life);
+		damagesdone = min(dmg, io->_npcdata->life);
 		io->_npcdata->life -= dmg;
 
 		bHitFlash = true;
@@ -1329,7 +1329,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 
 							if (i == 0)
 							{
-								manadrained = __min(dmg, player.mana);
+								manadrained = min(dmg, player.mana);
 								player.mana -= manadrained;
 							}
 							else
@@ -1338,20 +1338,20 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 
 								if ((io) && (io->_npcdata))
 								{
-									manadrained = __min(dmg, io->_npcdata->mana);
+									manadrained = min(dmg, io->_npcdata->mana);
 									io->_npcdata->mana -= manadrained;
 								}
 							}
 
 							if (damages[j].source == 0)
 							{
-								player.mana = __min(player.mana + manadrained, player.Full_maxmana);
+								player.mana = min(player.mana + manadrained, player.Full_maxmana);
 							}
 							else
 							{
 								if (ValidIONum(damages[j].source) && (inter.iobj[damages[j].source]->_npcdata))
 								{
-									inter.iobj[damages[j].source]->_npcdata->mana = __min(inter.iobj[damages[j].source]->_npcdata->mana + manadrained, inter.iobj[damages[j].source]->_npcdata->maxmana);
+									inter.iobj[damages[j].source]->_npcdata->mana = min(inter.iobj[damages[j].source]->_npcdata->mana + manadrained, inter.iobj[damages[j].source]->_npcdata->maxmana);
 								}
 							}
 						}
@@ -1381,7 +1381,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 									   )
 									{
 										dmg -= player.Full_resist_magic * DIV100 * dmg;
-										dmg = __max(0, dmg);
+										dmg = max(0, dmg);
 									}
 
 									if (damages[j].type & DAMAGE_TYPE_FIRE)
@@ -1425,7 +1425,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 									   )
 									{
 										dmg -= inter.iobj[i]->_npcdata->resist_magic * DIV100 * dmg;
-										dmg = __max(0, dmg);
+										dmg = max(0, dmg);
 									}
 
 									if (damages[j].type & DAMAGE_TYPE_COLD)
