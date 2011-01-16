@@ -5,6 +5,7 @@ set(SRC_DIR Sources)
 
 include_directories(
 	Sources/Include
+	/usr/include/wine/windows
 )
 
 #Add liblub sources
