@@ -34,10 +34,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_INTERFACE_H
 #define ARX_INTERFACE_H
 
-#include "eerietypes.h"
-#include "eeriepoly.h"
-#include "arx_spells.h"
-#include <tchar.h>
+#include "EERIETypes.h"
+#include "EERIEPoly.h"
+#include "ARX_Spells.h"
+//#include <tchar.h>
 
 //-----------------------------------------------------------------------------
 typedef struct

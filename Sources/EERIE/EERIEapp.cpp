@@ -56,26 +56,26 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 #include <stdio.h>
-#include <tchar.h>
+//#include <tchar.h>
 
-#include "EerieApp.h"
+#include "EERIEapp.h"
 #include "EERIEPoly.h"
-#include "EERIEUtil.h"
+#include "EERIEutil.h"
 
-#include "arx_menu.h"
-#include "../danae/arx_menu2.h"
-#include "arx_player.h"
-#include "arx_interface.h"
+#include "ARX_Menu.h"
+#include "../DANAE/ARX_Menu2.h"
+#include "ARX_Player.h"
+#include "ARX_Interface.h"
 
-#include "arx_time.h"
+#include "ARX_Time.h"
 
-#include "HERMESMain.h"
-#include "HERMESNet.h"
+#include "HERMESmain.h"
+#include "HERMESnet.h"
 
-#include "..\danae\danae_resource.h"
+#include "../DANAE/Danae_resource.h"
 
 #define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+//#include <crtdbg.h>
 
 //-----------------------------------------------------------------------------
 extern long USE_OLD_MOUSE_SYSTEM;

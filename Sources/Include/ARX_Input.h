@@ -58,9 +58,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_INPUT_H
 
 #define DIRECTINPUT_VERSION 0x0700
-#include <dinput.h>
-#include "MERCURY_dx_input.h"
-#include "MERCURY_extern.h"
+//#include <dinput.h>
+#include "Mercury_dx_input.h"
+#include "Mercury_extern.h"
 
 //-----------------------------------------------------------------------------
 #define INTERNAL_MOUSE_1	257

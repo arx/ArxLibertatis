@@ -48,10 +48,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_MENU2_H
 #define ARX_MENU2_H
 
-#include <windows.h>
+//#include <windows.h>
 #include <vector>
-#include <d3d.h>
-#include "arx_text.h"
+//#include <d3d.h>
+#include "ARX_Text.h"
 
 using namespace std;
 

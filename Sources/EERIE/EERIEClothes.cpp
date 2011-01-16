@@ -58,10 +58,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEClothes.h"
 #include "EERIEMeshTweak.h"
 #include "EERIEDraw.h"
-#include "EERIEMath.h"
+#include "EERIEmath.h"
 
 #define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+//#include <crtdbg.h>
 
 #define MOLLESS_USEGRAVITY 1
 #define MOLLESS_USEDAMPING 1

@@ -59,7 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define DANAE_H
 
 //-----------------------------------------------------------------------------
-#include "EERIEApp.h"
+#include "EERIEapp.h"
 #include "EERIETypes.h"
 #include "EERIEPoly.h"
 #include "ARX_Player.h"
@@ -67,7 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Physics.h"
 #include "ARX_Interactive.h"
 #include "DANAE_Debugger.h"
-#include "DANAESaveLoad.h"
+#include "DanaeSaveLoad.h"
 
 
 //-----------------------------------------------------------------------------

@@ -57,11 +57,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <math.h>
 
 #include "EERIECollisionSpheres.h"
-#include "EERIEMath.h"
+#include "EERIEmath.h"
 #include "EERIEMeshTweak.h"
 
 #define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+//#include <crtdbg.h>
 
 void EERIE_COLLISION_Cylinder_Create(INTERACTIVE_OBJ * io)
 {

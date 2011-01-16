@@ -47,11 +47,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //-----------------------------------------------------------------------------
 
 #include "SCRIPT_DEBUGGER_Dialog.h"
-#include <commctrl.h>
+//#include <commctrl.h>
 #include <stdio.h>
 
 #ifndef  __RESOURCE_H
-#include "Resource.h"
+//#include "Resource.h"
 #endif
 
 HINSTANCE ghInstance;

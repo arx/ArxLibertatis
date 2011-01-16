@@ -23,12 +23,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 #include "HERMES_ClusterSave.h"
-#include "windows.h"
+//#include "windows.h"
 #include "HERMES_hachage.h"
 
 
 #define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+//#include <crtdbg.h>
 
 //------------------------------------------------------------------------
 CCluster::CCluster(int _iTaille)

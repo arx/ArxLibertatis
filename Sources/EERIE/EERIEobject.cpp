@@ -57,21 +57,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <TheoData.h>
 #include "EERIEobject.h"
 #include "EERIETypes.h"
-#include "EERIEMath.h"
-#include "EERIEApp.h"
+#include "EERIEmath.h"
+#include "EERIEapp.h"
 #include "EERIEClothes.h"
 #include "EERIEProgressive.h"
 #include "EERIEPhysicsBox.h"
 #include "EERIECollisionSpheres.h"
 #include "EERIELinkedObj.h"
 
-#include "HERMESMain.h"
+#include "HERMESmain.h"
 
-#include "Arx_sound.h"
+#include "ARX_Sound.h"
 #include "ARX_Cedric.h"
 
 #define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+//#include <crtdbg.h>
 
 long COMPUTE_PORTALS = 1;
 long USE_PORTALS = 3; 

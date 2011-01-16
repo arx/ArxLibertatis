@@ -46,13 +46,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define HERMESDDE_H
 
 
-#include <windows.h>
-#include <mmsystem.h>
+//#include <windows.h>
+//#include <mmsystem.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-#include <io.h>
-#include "HERMESMain.h"
+//#include <io.h>
+#include "HERMESmain.h"
 
 extern BOOL DDEReceive(char * pouet);
 

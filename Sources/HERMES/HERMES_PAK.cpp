@@ -54,11 +54,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include "hermes_pak.h"
-#include "hermesmain.h"
+#include "HERMES_PAK.h"
+#include "HERMESmain.h"
 
 #define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+//#include <crtdbg.h>
 
 bool bForceInPack = false;
 long CURRENT_LOADMODE = LOAD_TRUEFILE;

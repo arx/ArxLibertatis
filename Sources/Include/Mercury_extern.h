@@ -25,23 +25,23 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef MERCURY_EXTERN_H
 #define MERCURY_EXTERN_H
 
-#include <windows.h>
+//#include <windows.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-#include <conio.h>
-#include <direct.h>
+//#include <conio.h>
+//#include <direct.h>
 #include <ARX_Common.h>
 
 #define INITGUID
 #define DIRECTINPUT_VERSION 0x0700
-#include <dinput.h>
+//#include <dinput.h>
 
 #include "Mercury_dx_input.h"
 
 #define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+//#include <crtdbg.h>
 
 /*---------------------------------------------------------*/
 #define MALLOC(a)		DI_Init.malloc(a)

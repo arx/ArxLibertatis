@@ -57,14 +57,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdio.h>
 
 #include "EERIEMeshTweak.h"
-#include "EERIEApp.h"
-#include "EERIEObject.h"
-#include "EERIEMath.h"
+#include "EERIEapp.h"
+#include "EERIEobject.h"
+#include "EERIEmath.h"
 
-#include "HERMESMain.h"
+#include "HERMESmain.h"
 
 #define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+//#include <crtdbg.h>
 
 void EERIE_MESH_ReleaseTransPolys(EERIE_3DOBJ * obj)
 {

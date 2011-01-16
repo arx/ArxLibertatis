@@ -56,18 +56,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 
 // Desc: HERMES main functionalities   //FILES MEMORY
-#include <windows.h>
-#include <shlobj.h>
+//#include <windows.h>
+//#include <shlobj.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include <io.h>
+//#include <io.h>
 #include <time.h>
-#include <direct.h>			// _getcwd
+//#include <direct.h>			// _getcwd
 #include "HERMESmain.h"
-#include "HERMESNet.h"
+#include "HERMESnet.h"
 
 #define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+//#include <crtdbg.h>
 
 
 char HermesBufferWork[_MAX_PATH];	// Used by FileStandardize (avoid malloc/free per call)

@@ -62,7 +62,7 @@ void ManageConsole();
 #ifndef HERMESCONSOLE_H
 #define HERMESCONSOLE_H
 
-#include <windows.h>
+//#include <windows.h>
 
 #define MAXW 320
 #define MAXH 64

@@ -60,7 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 #include <stdio.h>
-#include <windows.h>
+//#include <windows.h>
 #include <assert.h>
 #include <ARX_Common.h>
 

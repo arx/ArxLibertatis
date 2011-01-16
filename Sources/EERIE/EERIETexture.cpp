@@ -57,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 #define STRICT
-#include <tchar.h>
+//#include <tchar.h>
 #include <stdio.h>
 
 #include <jpeglib.h>
@@ -68,15 +68,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <zlib.h>
 
 #include "EERIETexture.h"
-#include "EERIEApp.h"
-#include "EERIEUtil.h"
+#include "EERIEapp.h"
+#include "EERIEutil.h"
 #include "EERIEJpeg.h"
-#include "EERIEMath.h"
+#include "EERIEmath.h"
 
-#include "HERMESMain.h"
+#include "HERMESmain.h"
 
 #define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+//#include <crtdbg.h>
 
 long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 /*-----------------------------------------------------------------------------*/
@@ -3407,7 +3407,7 @@ TextureContainer * LastTextureContainer = NULL;
 // Desc: Is passed a filename and creates a local Bitmap from that file.
 //       The texture can not be used until it is restored, however.
 //-----------------------------------------------------------------------------
-#include "hermesmain.h"
+#include "HERMESmain.h"
 extern long DEBUGSYS;
 
 TextureContainer * D3DTextr_CreateTextureFromFile(TCHAR * strName, char * wd , DWORD dwStage,

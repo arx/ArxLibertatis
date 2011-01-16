@@ -50,11 +50,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define EERIE_USEVB		0x8000	// using vertex buffer for EERIEDRAWPRIM
 #define EERIE_NOCOUNT	0x4000	// do not incr EERIEDrawnPolys for EERIEDRAWPRIM
 
-#include <d3d.h>
+//#include <d3d.h>
 #include "EERIEPoly.h"
 #include "EERIETexture.h"
-#include "EERIEMath.h"
-#include "EERIEApp.h"
+#include "EERIEmath.h"
+#include "EERIEapp.h"
 
 extern long ARX_ALTERNATE_3D;
 extern EERIE_3D SPRmins;

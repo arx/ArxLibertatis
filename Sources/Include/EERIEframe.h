@@ -52,8 +52,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #ifndef EERIEFRAME_H
 #define EERIEFRAME_H
-#include <ddraw.h>
-#include <d3d.h>
+//#include <ddraw.h>
+//#include <d3d.h>
 #include <ARX_Common.h>
 
 //-----------------------------------------------------------------------------

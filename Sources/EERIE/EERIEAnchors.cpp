@@ -37,17 +37,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <EERIEAnchors.h>
-#include "eerieapp.h"
+#include "EERIEapp.h"
 #include "EERIEPathfinder.h"
-#include "EERIEMath.h"
-#include "HermesMain.h"
-#include "danae.h"
+#include "EERIEmath.h"
+#include "HERMESmain.h"
+#include "Danae.h"
 #include "ARX_Text.h"
 
 extern float MAX_ALLOWED_PER_SECOND;
 extern BOOL DIRECT_PATH;
 #define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+//#include <crtdbg.h>
 
 
 EERIEPOLY * ANCHOR_CheckInPolyPrecis(float x, float y, float z)

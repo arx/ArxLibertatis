@@ -26,18 +26,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Arkane Studios
 //-----------------------------------------------------------------------------
 
-#include <windows.h>
-#include <amstream.h>
-#include <control.h>
-#include <uuids.h>
-#include <amvideo.h>
-#include <edevdefs.h>
-#include <dshow.h>
+//#include <windows.h>
+//#include <amstream.h>
+//#include <control.h>
+//#include <uuids.h>
+//#include <amvideo.h>
+//#include <edevdefs.h>
+//#include <dshow.h>
 
-#include "../danae/arx_menu2.h"			// CDirectInput
+#include "../DANAE/ARX_Menu2.h"			// CDirectInput
 
 #define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+//#include <crtdbg.h>
 
 //-----------------------------------------------------------------------------
 #pragma comment (lib, "amstrmid")

@@ -55,13 +55,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 #include "EERIEProgressive.h"
-#include "EERIEMath.h"
+#include "EERIEmath.h"
 #include "EERIEPoly.h"
 #include "EERIEMeshTweak.h"
 
 
 #define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+//#include <crtdbg.h>
 
 //*************************************************************************************
 // Adds a neighboring vertex to a vertex

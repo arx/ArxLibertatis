@@ -55,14 +55,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 ///////////////////////////////////////////////////////////////////////////////
 #include "EERIEPhysicsBox.h"
-#include "EERIEMath.h"
+#include "EERIEmath.h"
 
-#include "arx_interactive.h"
-#include "arx_npc.h"
-#include "arx_Collisions.h"
+#include "ARX_Interactive.h"
+#include "ARX_NPC.h"
+#include "ARX_Collisions.h"
 
 #define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+//#include <crtdbg.h>
 
 //-----------------------------------------------------------------------------
 float VELOCITY_THRESHOLD = 850.f;

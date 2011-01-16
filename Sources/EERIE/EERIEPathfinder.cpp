@@ -57,11 +57,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEPathfinder.h"
 #include "EERIELight.h"
 
-#include "HERMESMain.h"
-#include "MINOS_PathFinder.h"
+#include "HERMESmain.h"
+#include "Minos_PathFinder.h"
 
 #define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+//#include <crtdbg.h>
 
 static const float PATHFINDER_HEURISTIC_MIN(0.2F);
 static const float PATHFINDER_HEURISTIC_MAX(MINOS_HEURISTIC_MAX);

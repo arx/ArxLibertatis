@@ -44,11 +44,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stdio.h>
 #include "HERMESnet.h"
-#include "HERMESMain.h"
+#include "HERMESmain.h"
 #include "ResourceHERMESnet.h"
 
 #define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+//#include <crtdbg.h>
 
 
 //-----------------------------------------------------------------------------

@@ -59,12 +59,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define STRICT
 #include <math.h>
 #include <stdio.h>
-#include <tchar.h>
+//#include <tchar.h>
 
-#include "EerieUtil.h"
+#include "EERIEutil.h"
 
 #define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+//#include <crtdbg.h>
 
 //-----------------------------------------------------------------------------
 // Name: D3DUtil_InitSurfaceDesc()

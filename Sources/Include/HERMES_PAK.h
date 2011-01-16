@@ -58,7 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef HERMES_PAK_H
 #define HERMES_PAK_H
 
-#include "hermes_pack_public.h"
+#include "HERMES_pack_public.h"
 #include <vector>
 using namespace std;
 

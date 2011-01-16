@@ -61,23 +61,23 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEPoly.h"
 
 #include "EERIELight.h"
-#include "EERIEObject.h"
+#include "EERIEobject.h"
 #include "EERIETexture.h"
 #include "EERIEDraw.h"
-#include "EERIEUtil.h"
+#include "EERIEutil.h"
 #include "EERIEAnim.h"
 #include "EERIEAnchors.h"
 #include "EERIEPathfinder.h"
-#include "Arx_Particles.h"
-#include "Arx_Time.h"
-#include "Arx_Scene.h"
-#include "..\danae\Arx_menu2.h"
+#include "ARX_Particles.h"
+#include "ARX_Time.h"
+#include "ARX_Scene.h"
+#include "../DANAE/ARX_Menu2.h"
 
-#include "HERMESMain.h"
-#include "MINOS_PathFinder.h"
+#include "HERMESmain.h"
+#include "Minos_PathFinder.h"
 
 #define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+//#include <crtdbg.h>
 
 
 void ComputeFastBkgData(EERIE_BACKGROUND * eb);
