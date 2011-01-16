@@ -95,7 +95,7 @@ typedef struct
 	EERIE_3D	speinc[8];
 	unsigned long	tim_start;
 	unsigned long	duration;
-	BOOL		exist;
+	bool		exist;
 	long		dynlight;
 } OBJFX;
 
@@ -1099,7 +1099,7 @@ void ARX_MAGICAL_FLARES_Draw(LPDIRECT3DDEVICE7  m_pd3dDevice,long FRAMETICKS)
 	float zapp,x,y,z,s,r,g,b;
 
 	TextureContainer * surf;
-	BOOL key=!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE);
+	bool key=!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE);
 
 	for (long j=1;j<5;j++) 
 	{

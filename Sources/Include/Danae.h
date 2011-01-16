@@ -168,7 +168,7 @@ class DANAE : public CD3DApplication
 		HRESULT FrameMove(FLOAT fTimeKey);
 		HRESULT FinalCleanup();
 		void ManageKeyMouse();
-		BOOL ManageEditorControls();
+		bool ManageEditorControls();
 		void ManagePlayerControls();
 		void DrawAllInterface();
 		void DrawAllInterfaceFinish();
@@ -177,7 +177,7 @@ class DANAE : public CD3DApplication
 	public:
 		HRESULT InitDeviceObjects();
  
-		LRESULT MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+		LRESULT MsgProc(HWND hWnd, unsigned int uMsg, WPARAM wParam, LPARAM lParam);
 		DANAE();
 		long MustRefresh;
 

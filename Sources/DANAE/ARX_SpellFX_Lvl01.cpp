@@ -551,7 +551,7 @@ CMultiMagicMissile::CMultiMagicMissile(LPDIRECT3DDEVICE7 m_pd3dDevice, long nbmi
 
 	if (pTab)
 	{
-		for (UINT i = 0 ; i < uiNumber ; i++)
+		for (unsigned int i = 0 ; i < uiNumber ; i++)
 		{
 			pTab[i] = NULL;
 			pTab[i] = new CMagicMissile(m_pd3dDevice);
@@ -563,7 +563,7 @@ CMultiMagicMissile::CMultiMagicMissile(LPDIRECT3DDEVICE7 m_pd3dDevice, long nbmi
 //-----------------------------------------------------------------------------
 CMultiMagicMissile::~CMultiMagicMissile()
 {
-	for (UINT i = 0 ; i < uiNumber ; i++)
+	for (unsigned int i = 0 ; i < uiNumber ; i++)
 	{
 		if (pTab[i])
 		{
@@ -659,7 +659,7 @@ void CMultiMagicMissile::Create(EERIE_3D aePos, EERIE_3D angles)
 			}
 		}
 
-		for (UINT i = 0 ; i < uiNumber ; i++)
+		for (unsigned int i = 0 ; i < uiNumber ; i++)
 		{
 			if (pTab[i])
 			{
@@ -739,7 +739,7 @@ void CMultiMagicMissile::CheckCollision(float _fPlayer_Magic_Level)
 {
 	if (pTab)
 	{
-		for (UINT i = 0 ; i < uiNumber ; i++)
+		for (unsigned int i = 0 ; i < uiNumber ; i++)
 		{
 			if (pTab[i])
 			{
@@ -807,7 +807,7 @@ void CMultiMagicMissile::Update(unsigned long _ulTime)
 {
 	if (pTab)
 	{
-		for (UINT i = 0 ; i < uiNumber ; i++)
+		for (unsigned int i = 0 ; i < uiNumber ; i++)
 		{
 			if (pTab[i])
 			{
@@ -825,7 +825,7 @@ float CMultiMagicMissile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	if (pTab)
 	{
-		for (UINT i = 0 ; i < uiNumber ; i++)
+		for (unsigned int i = 0 ; i < uiNumber ; i++)
 		{
 			if (pTab[i])
 			{

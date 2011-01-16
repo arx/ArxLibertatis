@@ -512,7 +512,7 @@ void ARX_Allocate_Text(_TCHAR *&dest, _TCHAR * id_string)
 //-----------------------------------------------------------------------------
 struct _FONT_HEADER
 {
-	ULONG	ulVersion;
+	unsigned long	ulVersion;
 	USHORT 	usNumTables;
 	USHORT 	usSearchRange;
 	USHORT 	usEntrySelector;
@@ -522,10 +522,10 @@ struct _FONT_HEADER
 //-----------------------------------------------------------------------------
 struct _FONT_TABLE_HEADER
 {
-	ULONG	ulTag;
-	ULONG	ulCheckSum;
-	ULONG	ulOffset;
-	ULONG	ulLength;
+	unsigned long	ulTag;
+	unsigned long	ulCheckSum;
+	unsigned long	ulOffset;
+	unsigned long	ulLength;
 };
 
 //-----------------------------------------------------------------------------
@@ -548,7 +548,7 @@ struct _FONT_NAMING_NAMERECORD
 };
 
 //-----------------------------------------------------------------------------
-ULONG LilEndianLong(ULONG ulValue)
+unsigned long LilEndianLong(unsigned long ulValue)
 {
 	return (
 	           MAKELONG(

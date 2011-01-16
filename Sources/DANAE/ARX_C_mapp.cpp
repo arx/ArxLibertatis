@@ -35,7 +35,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 C_BITMAP	TabBitmap[MAX_BITMAP];
 int			MaxW, MaxH;
 int			NbBitmap;
-BOOL		Restore;
+bool		Restore;
 /*-----------------------------------------------------------*/
 extern char AllTxt[];
 extern HWND HwndPere;
@@ -98,7 +98,7 @@ C_BITMAP * GetFreeBitmap(int * num)
 	return NULL;
 }
 /*-----------------------------------------------------------*/
-BOOL DeleteFreeBitmap(int num)
+bool DeleteFreeBitmap(int num)
 {
 	C_BITMAP	* cb;
 
@@ -117,7 +117,7 @@ BOOL DeleteFreeBitmap(int num)
 	return TRUE;
 }
 /*-----------------------------------------------------------*/
-BOOL KillTexture(LPDIRECT3DDEVICE7 device, int num)
+bool KillTexture(LPDIRECT3DDEVICE7 device, int num)
 {
 	C_BITMAP	* cb;
 
@@ -149,7 +149,7 @@ void DeleteAllBitmap(LPDIRECT3DDEVICE7 device)
 	}
 }
 /*-----------------------------------------------------------*/
-BOOL AllocGrille(C_GRILLE * grille, int nbx, int nby, float tx, float ty, float dx, float dy, int echelle)
+bool AllocGrille(C_GRILLE * grille, int nbx, int nby, float tx, float ty, float dx, float dy, int echelle)
 {
 	grille->echelle = echelle;
 	int oldnbx = nbx + 1;
@@ -799,7 +799,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 	return id;
 }
 /*-----------------------------------------------------------*/
-BOOL ReCreateAllMapsForBitmap(int id, int nmax, CINEMATIQUE * c, LPDIRECT3DDEVICE7 device)
+bool ReCreateAllMapsForBitmap(int id, int nmax, CINEMATIQUE * c, LPDIRECT3DDEVICE7 device)
 {
 	int			nbx, nby, w, h, num;
 	C_BITMAP	* bi;
@@ -870,7 +870,7 @@ BOOL ReCreateAllMapsForBitmap(int id, int nmax, CINEMATIQUE * c, LPDIRECT3DDEVIC
 	return TRUE;
 }
 /*-----------------------------------------------------------*/
-BOOL CINEMATIQUE::ActiveTexture(int id)
+bool CINEMATIQUE::ActiveTexture(int id)
 {
 
 	TextureContainer	* tc;
@@ -955,11 +955,11 @@ void ReajustUV(LPDIRECT3DDEVICE7 device, int id)
 	}
 }
 /*-----------------------------------------------------------*/
-BOOL ActiveAllTexture(CINEMATIQUE * c)
+bool ActiveAllTexture(CINEMATIQUE * c)
 {
 	int			nb;
 	C_BITMAP	* cb;
-	BOOL		flag = FALSE;
+	bool		flag = FALSE;
 
 	cb = TabBitmap;
 	nb = MAX_BITMAP;

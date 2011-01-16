@@ -56,7 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEobject.h"
 
 // Save a FTL file
-BOOL			ARX_FTL_Save(char * fic, char * completefic, EERIE_3DOBJ * obj);
+bool			ARX_FTL_Save(char * fic, char * completefic, EERIE_3DOBJ * obj);
 // Load a FTL file
 EERIE_3DOBJ *	ARX_FTL_Load(char * fic, char * completefic, EERIE_3DOBJ * obj);
 

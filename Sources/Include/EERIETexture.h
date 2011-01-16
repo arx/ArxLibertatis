@@ -102,7 +102,7 @@ class TextureContainer
 		DWORD   m_dwStage;					// Texture stage (for multitexture devices)
 		DWORD   m_dwBPP;
 		DWORD   m_dwFlags;
-		BOOL    m_bHasAlpha;
+		bool    m_bHasAlpha;
 		DWORD	userflags;
 		bool	bColorKey;
 		bool	bColorKey2D;

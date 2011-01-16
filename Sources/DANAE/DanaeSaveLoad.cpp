@@ -103,7 +103,7 @@ extern bool bGCroucheToggle;
 
 long SPECIALPOLYSNB = 0;
 
-BOOL CanPurge(EERIE_3D * pos)
+bool CanPurge(EERIE_3D * pos)
 {
 	long px, pz;
 	F2L(pos->x * ACTIVEBKG->Xmul, &px);
@@ -246,7 +246,7 @@ EERIE_3DOBJ * _LoadTheObj(char * text, char * path)
 void ReplaceSpecifics(char * text)
 {
 	char			temp[512];
-	UINT			size_text = strlen(text);
+	unsigned int			size_text = strlen(text);
 
 	for (unsigned long i = 0 ; i < size_text ; i++)
 	{

@@ -3461,7 +3461,7 @@ void PlayerMovementIterate(float DeltaTime)
 				levitate = 0;
 			}
 
-			BOOL test;
+			bool test;
 			APPLY_PUSH = 1;
 			float PLAYER_CYLINDER_STEP = 40.f;
 

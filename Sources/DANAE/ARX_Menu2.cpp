@@ -4106,13 +4106,13 @@ bool CMenuElementText::OnMouseDoubleClick(int _iMouseButton)
 
 		if (pWindowMenu)
 		{
-			for (UINT i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
+			for (unsigned int i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
 			{
 				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 
 				if ( p->eMenuState == EDIT_QUEST_LOAD )
 				{
-					for (UINT j = 0 ; j < p->MenuAllZone.vMenuZone.size() ; j++)
+					for (unsigned int j = 0 ; j < p->MenuAllZone.vMenuZone.size() ; j++)
 					{
 						CMenuElement *pMenuElement = (CMenuElement*) ( (CMenuElement*)p->MenuAllZone.vMenuZone[j] )->GetZoneWithID( BUTTON_MENUEDITQUEST_LOAD_CONFIRM );
 
@@ -4219,7 +4219,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 	case BUTTON_MENUEDITQUEST_LOAD_INIT:
 		{
 			if ( pWindowMenu )
-				for (UINT i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
+				for (unsigned int i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
 				{
 					CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 
@@ -4227,7 +4227,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 					{
 						pWindowMenu->vWindowConsoleElement[i]->lData = lData;
 
-						for (UINT j = 0 ; j < p->MenuAllZone.vMenuZone.size() ; j++)
+						for (unsigned int j = 0 ; j < p->MenuAllZone.vMenuZone.size() ; j++)
 						{
 							CMenuZone *cz = p->MenuAllZone.vMenuZone[j];
 
@@ -4247,7 +4247,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 			pLoadConfirm->SetCheckOn();
 			pLoadConfirm->lColor=pLoadConfirm->lOldColor;
 
-				for (UINT i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
+				for (unsigned int i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
 			{
 				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 
@@ -4255,7 +4255,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 				{
 					pWindowMenu->vWindowConsoleElement[i]->lData = lData;
 
-						for (UINT j = 0 ; j < p->MenuAllZone.vMenuZone.size(); j++)
+						for (unsigned int j = 0 ; j < p->MenuAllZone.vMenuZone.size(); j++)
 					{
 						CMenuZone *cz = p->MenuAllZone.vMenuZone[j];
 
@@ -4276,7 +4276,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 		{
 			if (pWindowMenu)
 			{
-				for (UINT i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
+				for (unsigned int i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
 			{
 				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 
@@ -4322,7 +4322,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 	case BUTTON_MENUEDITQUEST_SAVE:
 		{
 			if (pWindowMenu)
-				for (UINT i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
+				for (unsigned int i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
 			{
 				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 
@@ -4353,7 +4353,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 	case BUTTON_MENUEDITQUEST_DELETE:
 		{
 			if (pWindowMenu)
-				for (UINT i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
+				for (unsigned int i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
 			{
 				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 
@@ -4558,7 +4558,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 		(eMenuState == EDIT_QUEST_SAVE_CONFIRM) ||
 		(eMenuState == EDIT_QUEST_DELETE_CONFIRM))
 	{
-		for (UINT i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
+		for (unsigned int i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
 		{
 			CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
 
@@ -5789,7 +5789,7 @@ static int scan2ascii(DWORD scancode, unsigned short* result)
    if (GetKeyboardState(State)==FALSE)
       return 0;
  
-   UINT vk=MapVirtualKeyEx(scancode,1,layout);
+   unsigned int vk=MapVirtualKeyEx(scancode,1,layout);
    return ToAsciiEx(vk,scancode,State,result,0,layout);
 }
 

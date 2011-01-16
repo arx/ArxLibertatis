@@ -49,7 +49,7 @@ extern bool bGATI8500;
  
  
 
-//BOOL CALLBACK ARX_CONFIG_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+//bool CALLBACK ARX_CONFIG_Proc(HWND hWnd, unsigned int uMsg, WPARAM wParam, LPARAM lParam);
 
 //-----------------------------------------------------------------------------
  

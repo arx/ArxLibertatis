@@ -154,7 +154,7 @@ bool NearlyEqual(float a,float b)
 	return false;
 }
 
-BOOL Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
+bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 {
 	
 	long count=0;
@@ -279,7 +279,7 @@ BOOL Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 
 extern long COMPUTE_PORTALS;
 #define TYPE_ROOM	2
-BOOL TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
+bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 {
 	long posx,posz,posy;
 	float cx,cy,cz;

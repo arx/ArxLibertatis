@@ -60,7 +60,7 @@ class CLocalisation
 				lpszUSection = NULL;
 			}
 			
-			for (UINT i = 0 ; i < vUKeys.size() ; i++)
+			for (unsigned int i = 0 ; i < vUKeys.size() ; i++)
 			{
 				free((void *) vUKeys[i]);
 				vUKeys[i] = NULL;

@@ -66,7 +66,7 @@ long CURRENT_LOADMODE = LOAD_TRUEFILE;
 PakManager * pPakManager = NULL;
 
 char PAK_WORKDIR[256];
-ULONG g_pak_workdir_len = 0;
+unsigned long g_pak_workdir_len = 0;
 char NOT_FOUND_FIC[256];
 long WRITE_NOT_FOUND = 0;
 

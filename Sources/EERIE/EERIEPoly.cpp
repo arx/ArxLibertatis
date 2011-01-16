@@ -94,7 +94,7 @@ extern long CYRIL_VERSION;
 extern CMenuConfig * pMenuConfig;
 
 
-BOOL IntersectLinePlane(EERIE_3D * l1, EERIE_3D * l2, EERIEPOLY * ep, EERIE_3D * intersect);
+bool IntersectLinePlane(EERIE_3D * l1, EERIE_3D * l2, EERIEPOLY * ep, EERIE_3D * intersect);
  
 int RayIn3DPolyNoCull(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY * epp);
 
@@ -238,7 +238,7 @@ void specialEE_RTP(D3DTLVERTEX * in, D3DTLVERTEX * out)
 
 //*************************************************************************************
 //*************************************************************************************
-BOOL RayCollidingPoly(EERIE_3D * orgn, EERIE_3D * dest, EERIEPOLY * ep, EERIE_3D * hit)
+bool RayCollidingPoly(EERIE_3D * orgn, EERIE_3D * dest, EERIEPOLY * ep, EERIE_3D * hit)
 {
 	if (IntersectLinePlane(orgn, dest, ep, hit))
 	{
@@ -249,7 +249,7 @@ BOOL RayCollidingPoly(EERIE_3D * orgn, EERIE_3D * dest, EERIEPOLY * ep, EERIE_3D
 }
 //*************************************************************************************
 //*************************************************************************************
-BOOL IntersectLinePlane(EERIE_3D * l1, EERIE_3D * l2, EERIEPOLY * ep, EERIE_3D * intersect)
+bool IntersectLinePlane(EERIE_3D * l1, EERIE_3D * l2, EERIEPOLY * ep, EERIE_3D * intersect)
 {
 	EERIE_3D v;
 	EERIE_3D v1;
@@ -656,7 +656,7 @@ EERIEPOLY * CheckTopPoly(float x, float y, float z)
 //*************************************************************************************
 //*************************************************************************************
 
-BOOL IsAnyPolyThere(float x, float z)
+bool IsAnyPolyThere(float x, float z)
 {
 	long px, pz;
 	F2L(x * ACTIVEBKG->Xmul, &px);
@@ -917,7 +917,7 @@ EERIEPOLY* EEIsUnderWaterFast(EERIE_3D * pos)
 	return found;
 }
 
-BOOL GetTruePolyY(EERIEPOLY * ep, EERIE_3D * pos, float * ret)
+bool GetTruePolyY(EERIEPOLY * ep, EERIE_3D * pos, float * ret)
 {
 	register EERIE_3D	n, s21, s31;
 
@@ -1702,7 +1702,7 @@ int EERIELaunchRay3(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY
 //*************************************************************************************
 // Computes the visibility from a point to another... (sort of...)
 //*************************************************************************************
-BOOL Visible(EERIE_3D * orgn, EERIE_3D * dest, EERIEPOLY * epp, EERIE_3D * hit)
+bool Visible(EERIE_3D * orgn, EERIE_3D * dest, EERIEPOLY * epp, EERIE_3D * hit)
 {
 	float			x, y, z; //current ray pos
 	float			dx, dy, dz; // ray incs
@@ -1946,7 +1946,7 @@ void BKG_VerticalReOrder(EERIE_BACKGROUND * eb)
 
 			if (eg->nbpoly > 1)
 			{
-				BOOL Reordered = FALSE;
+				bool Reordered = FALSE;
 
 				while (!Reordered)
 				{
@@ -2381,7 +2381,7 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv)
 //*************************************************************************************
 // Checks for angular difference between normals
 //*************************************************************************************
-BOOL LittleAngularDiff(EERIE_3D * norm, EERIE_3D * norm2)
+bool LittleAngularDiff(EERIE_3D * norm, EERIE_3D * norm2)
 {
 	if (Distance3D(norm->x, norm->y, norm->z,
 	               norm2->x, norm2->y, norm2->z) < 1.41421f) return TRUE;
@@ -2626,7 +2626,7 @@ void EERIEPOLY_Add_PolyIn(EERIE_BKG_INFO * eg, EERIEPOLY * ep)
 	eg->nbpolyin++;
 }
 
-BOOL PointInBBox(EERIE_3D * point, EERIE_2D_BBOX * bb)
+bool PointInBBox(EERIE_3D * point, EERIE_2D_BBOX * bb)
 {
 	if ((point->x > bb->max.x)
 	        ||	(point->x < bb->min.x)
@@ -2785,7 +2785,7 @@ float GetTileMaxY(long i, long j)
 
 #define TYPE_PORTAL	1
 #define TYPE_ROOM	2
-BOOL GetNameInfo(char * name1, long * type, long * val1, long * val2)
+bool GetNameInfo(char * name1, long * type, long * val1, long * val2)
 {
 	char name[256];
 	strcpy(name, name1);
@@ -3648,7 +3648,7 @@ void FinishAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * eanim)
 	return;
 }
 
-BOOL IsVertexIdxInGroup(EERIE_3DOBJ * eobj, long idx, long grs)
+bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj, long idx, long grs)
 {
 	long ii;
 
@@ -3752,7 +3752,7 @@ extern void LoadLevelScreen(LPDIRECT3DDEVICE7 pd3dDevice = NULL, long lev = -1, 
 extern float PROGRESS_BAR_COUNT;
 long NOCHECKSUM = 0;
 long USE_FAST_SCENES = 1;
-BOOL FastSceneLoad(char * partial_path)
+bool FastSceneLoad(char * partial_path)
 {
 	
 	if (!USE_FAST_SCENES) return FALSE;
@@ -4262,7 +4262,7 @@ release:
 	free(dat);
 	return FALSE;
 }
-BOOL FastSceneSave(char * partial_path, EERIE_MULTI3DSCENE * ms)
+bool FastSceneSave(char * partial_path, EERIE_MULTI3DSCENE * ms)
 {
 	char path[256];
 	sprintf(path, "%sGame\\%s", Project.workingdir, partial_path);

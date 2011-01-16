@@ -45,7 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Text.h"
 
 extern float MAX_ALLOWED_PER_SECOND;
-extern BOOL DIRECT_PATH;
+extern bool DIRECT_PATH;
 #define _CRTDBG_MAP_ALLOC
 //#include <crtdbg.h>
 
@@ -360,7 +360,7 @@ float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * ioo
 	return anything;
 }
 extern long MOVING_CYLINDER;
-BOOL ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, long flags)
+bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, long flags)
 {
 	float anything = ANCHOR_CheckAnythingInCylinder(cyl, io, flags);
 
@@ -472,7 +472,7 @@ BOOL ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, 
 
 
 
-BOOL ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, float MOVE_CYLINDER_STEP, long flags)
+bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, float MOVE_CYLINDER_STEP, long flags)
 {
 	MOVING_CYLINDER = 1;
 	DIRECT_PATH = TRUE;
@@ -1071,7 +1071,7 @@ void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb)
 							p1.y += 10.f;
 							p2.y += 10.f;
 							long _onetwo = 0;
-							BOOL treat = TRUE;
+							bool treat = TRUE;
 							float dist = TRUEEEDistance3D(&p1, &p2);
 							float dd = TRUEDistance2D(p1.x, p1.z, p2.x, p2.z);
 
@@ -1385,7 +1385,7 @@ void AnchorData_Create_Original_Method(EERIE_BACKGROUND * eb)
 
 						if ((ep2) && !(ep2->type & POLY_NOPATH))
 						{
-							BOOL bval = ANCHOR_AttemptValidCylinderPos(&currcyl, NULL, CFLAG_NO_INTERCOL | CFLAG_EXTRA_PRECISION | CFLAG_RETURN_HEIGHT | CFLAG_ANCHOR_GENERATION);
+							bool bval = ANCHOR_AttemptValidCylinderPos(&currcyl, NULL, CFLAG_NO_INTERCOL | CFLAG_EXTRA_PRECISION | CFLAG_RETURN_HEIGHT | CFLAG_ANCHOR_GENERATION);
 
 							if ((bval)
 							        && (currcyl.origin.y - 10.f <= current_y))
@@ -1515,7 +1515,7 @@ void AnchorData_Create_Alternative_Method_I(EERIE_BACKGROUND * eb)
 
 						if ((ep2) && !(ep2->type & POLY_NOPATH))
 						{
-							BOOL bval = ANCHOR_AttemptValidCylinderPos(&currcyl, NULL, CFLAG_NO_INTERCOL | CFLAG_EXTRA_PRECISION | CFLAG_RETURN_HEIGHT | CFLAG_ANCHOR_GENERATION);
+							bool bval = ANCHOR_AttemptValidCylinderPos(&currcyl, NULL, CFLAG_NO_INTERCOL | CFLAG_EXTRA_PRECISION | CFLAG_RETURN_HEIGHT | CFLAG_ANCHOR_GENERATION);
 
 							if ((bval)
 							        && (currcyl.origin.y - 10.f <= current_y))

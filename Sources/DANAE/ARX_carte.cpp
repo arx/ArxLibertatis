@@ -103,7 +103,7 @@ C_ARX_Carte::C_ARX_Carte(LPDIRECT3DDEVICE7 d,EERIE_BACKGROUND *bkg,int nbpix,int
 //#############################################################################################
 // Render de la scene
 //#############################################################################################
-BOOL C_ARX_Carte::Render(void)
+bool C_ARX_Carte::Render(void)
 {
 	if((!this->device)||(!this->background)) return E_FAIL;
 
@@ -222,7 +222,7 @@ void C_ARX_Carte::IncMoveMap(float incx,float incz)
 //#############################################################################################
 // CreateSurfTemp
 //#############################################################################################
-BOOL C_ARX_Carte::CreateSurfaceTemp(CD3DFramework7 *framework)
+bool C_ARX_Carte::CreateSurfaceTemp(CD3DFramework7 *framework)
 {
 	if(this->surfacetemp)
 	{
@@ -265,7 +265,7 @@ BOOL C_ARX_Carte::CreateSurfaceTemp(CD3DFramework7 *framework)
 //#############################################################################################
 // BltOnSurfTemp
 //#############################################################################################
-BOOL C_ARX_Carte::BltOnSurfTemp(CD3DFramework7 *framework,int x,int y,int dw,int dh,int largs,int largh)
+bool C_ARX_Carte::BltOnSurfTemp(CD3DFramework7 *framework,int x,int y,int dw,int dh,int largs,int largh)
 {
 LPDIRECTDRAWSURFACE7	surfacerender;
 RECT					src,dst;
@@ -291,7 +291,7 @@ RECT					src,dst;
 //#############################################################################################
 // BuildMap
 //#############################################################################################
-BOOL C_ARX_Carte::BuildMap(CD3DFramework7 *framework,char *name)
+bool C_ARX_Carte::BuildMap(CD3DFramework7 *framework,char *name)
 {
 	if(!this->CreateSurfaceTemp(framework)) return FALSE;
 
@@ -505,7 +505,7 @@ float oldposx,oldposz;
 }
 
 //-----------------------------------------------------------------------------
-BOOL NeedMapCreation()
+bool NeedMapCreation()
 {
 	char name[256];
 	GetLevelNameByNum(CURRENTLEVEL,name);	

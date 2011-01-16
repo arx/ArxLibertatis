@@ -112,7 +112,7 @@ typedef struct PassedParam
 extern HWND		MAIN_PROGRAM_HANDLE;
 extern long DEBUGG;
 extern long DebugLvl[6];
-extern UINT			GaiaWM;
+extern unsigned int			GaiaWM;
 extern DIR_NODE mainnode;
 
 void File_Standardize(char * from,char * to);
@@ -151,7 +151,7 @@ bool OKBox(char * text,char *title);
 void ShowPopup(char * text);
 int ShowError(char * funcname, char * message, long fatality);
 unsigned long MakeMemoryText(char * text);
-BOOL CreateFullPath(char * path);
+bool CreateFullPath(char * path);
 
 // Strings Funcs
 char *StringCopy(char * destination,char * source,long maxsize);
@@ -172,7 +172,7 @@ bool ERROR_Log(char * fic);
 void HERMES_Memory_Security_On(long size);
 void HERMES_Memory_Security_Off();
 long HERMES_Memory_Emergency_Out(long size=0,char * info=NULL);
-extern LARGE_INTEGER	start_chrono;
+extern long int	start_chrono;
 void StartBench();
 unsigned long EndBench();
 extern long NEED_BENCH;

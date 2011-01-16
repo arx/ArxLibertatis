@@ -78,7 +78,7 @@ typedef struct
 	long	pad[256];
 	float	fpad[256];
 	char	cpad[4096];
-	BOOL	bpad[256];
+	bool	bpad[256];
 } DANAE_LLF_HEADER; //Aligned 1 2 4
 
 ///////////////////////
@@ -98,8 +98,8 @@ typedef struct
 	long	nb_nodes;
 	long	nb_nodeslinks;
 	long	nb_zones;
-	BOOL	lighting;
-	BOOL    Bpad[256];
+	bool	lighting;
+	bool    Bpad[256];
 	long	nb_lights; 
 	long	nb_fogs; 
 
@@ -111,7 +111,7 @@ typedef struct
 	EERIE_3D	offset;
 	float	fpad[253];
 	char	cpad[4096];
-	BOOL	bpad[256];
+	bool	bpad[256];
 } DANAE_LS_HEADER; // Aligned 1 2 4
 
 #define	SP_IGNORED	1

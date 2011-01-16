@@ -429,7 +429,7 @@ inline void Triangle_ComputeBoundingBox(EERIE_3D_BBOX * bb, const EERIE_TRI * v)
 	bb->max.z = __max(bb->max.z, v->v[2].z);
 }
 
-BOOL Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u)
+bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u)
 {
 	EERIE_3D_BBOX bb1, bb2;
 	Triangle_ComputeBoundingBox(&bb1, v);
@@ -593,7 +593,7 @@ float InterpolateAngle(float a1, float a2, const float pour)
 
 // Cylinder y origin must be min Y of cylinder
 // Cylinder height MUST be negative FROM origin (inverted Theo XYZ system Legacy)
-BOOL CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2)
+bool CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2)
 {
 	if (cyl1 == cyl2) return FALSE;
 
@@ -616,7 +616,7 @@ BOOL CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2
 	return FALSE;
 }
 // Sort of...
-BOOL SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s)
+bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s)
 {
 	float m1 = __max(cyl1->origin.y, cyl1->origin.y + cyl1->height);
 	float m2 = s->origin.y - s->radius;

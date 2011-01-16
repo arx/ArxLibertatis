@@ -264,7 +264,7 @@ extern HWND MSGhwnd;
 class CD3DApplication
 {
 		// Internal variables and member functions
-		BOOL            m_bSingleStep;
+		bool            m_bSingleStep;
 		DWORD           m_dwBaseTime;
 		DWORD           m_dwStopTime;
 
@@ -276,9 +276,9 @@ public:
 protected:
 		// Overridable variables for the app
 		TCHAR*			m_strWindowTitle;
-		BOOL			m_bAppUseZBuffer;
-		BOOL			m_bAppUseStereo;
-		BOOL			m_bShowStats;
+		bool			m_bAppUseZBuffer;
+		bool			m_bAppUseStereo;
+		bool			m_bShowStats;
 		HRESULT(*m_fnConfirmDevice)(DDCAPS *, D3DDEVICEDESC7 *);
 		HWND				 CreateToolBar(HWND hWndParent, long tbb, HINSTANCE hInst);
 
@@ -340,17 +340,17 @@ protected:
  
 		HRESULT	SetClipping( float x1, float y1, float x2, float y2 );
  
-		BOOL					m_bFrameMoving;
-		BOOL					m_bActive;
+		bool					m_bFrameMoving;
+		bool					m_bActive;
 		HRESULT					Change3DEnvironment();
 		HRESULT					Initialize3DEnvironment();
-		BOOL					m_bReady;
+		bool					m_bReady;
 		D3DEnum_DeviceInfo*		m_pDeviceInfo;
 		HWND					m_hWnd;
 		HWND					m_hWndRender;
 		WNDPROC					m_OldProc;
 		HWND					m_dlghWnd;
-		BOOL					b_dlg;
+		bool					b_dlg;
 		long					d_dlgframe;
 		void					EERIEMouseUpdate(short x, short y);
 
@@ -358,7 +358,7 @@ protected:
 		virtual HRESULT			Create(HINSTANCE, TCHAR *);
 		virtual INT				Run();
 		virtual LRESULT			MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-		virtual VOID			Pause(BOOL bPause);
+		virtual VOID			Pause(bool bPause);
 		LRESULT					SwitchFullScreen() ;
 
 		CD3DFramework7*			m_pFramework;
@@ -408,7 +408,7 @@ int		ShowError(char * funcname, char * message, long fatality);
 
 void	ExitApp(int v);
 char*	MakeDir(char * tex, char * tex2);
-void	CalcFPS(BOOL reset = FALSE);
+void	CalcFPS(bool reset = FALSE);
 
 void	SetZBias(const LPDIRECT3DDEVICE7, int);
 

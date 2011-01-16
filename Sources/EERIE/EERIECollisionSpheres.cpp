@@ -188,7 +188,7 @@ long GetFirstChildGroup(EERIE_3DOBJ * obj, long group)
 	return -1;
 }
  
-BOOL IsExclusiveGroupMember(EERIE_3DOBJ * obj, long idx, long group)
+bool IsExclusiveGroupMember(EERIE_3DOBJ * obj, long idx, long group)
 {
 
 	long exclusive = 1;

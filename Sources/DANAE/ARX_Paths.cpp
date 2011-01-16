@@ -2017,8 +2017,8 @@ extern bool IsValidPos3(EERIE_3D * pos);
 extern long PHYS_COLLIDER;
 extern EERIEPOLY * LAST_COLLISION_POLY;
 extern long CUR_COLLISION_MATERIAL;
-extern BOOL IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long source, long * validd);
-extern BOOL IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long source);
+extern bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long source, long * validd);
+extern bool IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long source);
  
 extern float VELOCITY_THRESHOLD;
 
@@ -2107,7 +2107,7 @@ void ComputeForces(PHYSVERT * phys, long nb)
 		}
 	}
 }
-BOOL ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source);
+bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source);
 
  
 ///////////////////////////////////////////////////////////////////////////////
@@ -2239,9 +2239,9 @@ bool IsObjectInField(EERIE_3DOBJ * obj, long source)
 
 	return false;
 }
-BOOL IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long * validd);
+bool IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long * validd);
 
-BOOL _IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long * validd)
+bool _IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long * validd)
 {
 	EERIE_3D pol[3];
 	Vector_Copy(&pol[0], (EERIE_3D *)&ep->v[0]);
@@ -2266,9 +2266,9 @@ BOOL _IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, lon
 	return FALSE;
 }
 
-BOOL _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long source, long * validd)
+bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long source, long * validd)
 {
-	BOOL ret = TRUE;
+	bool ret = TRUE;
 	long px, pz;
 	float x = obj->pbox->vert[0].pos.x;
 	F2L(x * ACTIVEBKG->Xmul, &px);
@@ -2399,7 +2399,7 @@ BOOL _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long sour
 	return ret;
 }
 
-BOOL ARX_EERIE_PHYSICS_BOX_Compute_Simple(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source)
+bool ARX_EERIE_PHYSICS_BOX_Compute_Simple(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source)
 {
 	PHYSVERT * pv;
 	long validd[32];
@@ -2531,7 +2531,7 @@ BOOL ARX_EERIE_PHYSICS_BOX_Compute_Simple(EERIE_3DOBJ * obj, float framediff, fl
 	return TRUE;//ret;
 }
 
-BOOL ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source)
+bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source)
 {
 	
 	return ARX_EERIE_PHYSICS_BOX_Compute_Simple(obj, framediff, rubber, flags, source);
