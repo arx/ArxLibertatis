@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Updates: (date) (person) (update)
 //
 // Code:	Cyril Meynier
-//			Sébastien Scieux	(Zbuffer)
+//			Sï¿½bastien Scieux	(Zbuffer)
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
@@ -58,16 +58,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef  EERIEAPP_H
 #define  EERIEAPP_H
 
-#define  D3D_OVERLOADS
-
-#include <windows.h>
-#include <commctrl.h>
-#include <d3d.h>
+//#define  D3D_OVERLOADS
+//
+//#include <windows.h>
+//#include <commctrl.h>
+//#include <d3d.h>
 #include "EERIEFrame.h"
 #include "EERIEEnum.h"
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+//
+//#define _CRTDBG_MAP_ALLOC
+//#include <crtdbg.h>
 
 //-----------------------------------------------------------------------------
 #define HIDE_BACKGROUND 1
