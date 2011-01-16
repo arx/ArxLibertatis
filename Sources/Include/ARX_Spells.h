@@ -34,7 +34,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_SPELLS_H
 
 #include <EERIEPoly.h>
-#include "ARX_Common.h"
+//#include "ARX_Common.h"
 
 //#include "ARX_CSpellFx.h"
 class CSpellFx;

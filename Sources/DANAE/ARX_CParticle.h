@@ -29,8 +29,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //#define _CRTDBG_MAP_ALLOC
 //#include <crtdbg.h>
 
-#include "EERIETypes.h"
 #include <list>
+#include "EERIETypes.h"
 using namespace std;
 
 //-----------------------------------------------------------------------------

@@ -46,14 +46,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 //#define D3D_OVERLOADS
 //#include <d3d.h>
-#include <ARX_Common.h>
-#include <wine/windows/d3dtypes.h>
-#include <wine/windows/d3d.h>
-#include <wine/windows/tchar.h>
+//#include <ARX_Common.h>
+#include <d3d.h>
+//#include <tchar.h>
 
-#pragma inline_depth (255)
-#pragma inline_recursion (on)
-#pragma auto_inline (on)
+//#pragma inline_depth (255)
+//#pragma inline_recursion (on)
+//#pragma auto_inline (on)
 
 class TextureContainer;
 

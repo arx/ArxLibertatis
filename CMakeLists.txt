@@ -6,7 +6,10 @@ set(SRC_DIR Sources)
 include_directories(
 	Sources/Include
 	/usr/include/wine/windows
+	#/usr/include/wine/msvcrt
 )
+
+set(CMAKE_CXX_FLAGS "-fpermissive -w") #Debug
 
 #Add liblub sources
 set(SOURCE_DIRS
@@ -20,6 +23,7 @@ endforeach(SOURCE_DIR)
 
 #add_library()
 add_executable(arx ${SOURCES})
+#add_executable(arx Sources/DANAE/ARX_CParticleSystem.cpp)
 
 #link
 #target_link_libraries()

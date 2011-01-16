@@ -39,7 +39,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef D3DENUM_H
 #define D3DENUM_H
 #include <d3d.h>
-#include <ARX_Common.h>
+//#include <ARX_Common.h>
 
 //-----------------------------------------------------------------------------
 // Flag and error definitions
