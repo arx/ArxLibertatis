@@ -31,7 +31,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEMath.h"
 #include "EERIEDraw.h"
 #include "EERIEUtil.h"
-#include "ARX_menu2.h"
+#include "ARX_Menu2.h"
 
 //-----------------------------------------------------------------------------
 

@@ -68,16 +68,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Collisions.h"
 #include "ARX_Particles.h"
 #include "ARX_Damages.h"
-#include "ARX_interactive.h"
-#include "ARX_interface.h"
-#include "ARX_script.h"
+#include "ARX_Interactive.h"
+#include "ARX_Interface.h"
+#include "ARX_Script.h"
 
 #include "EERIELinkedObj.h"
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-
-
 
 typedef struct
 {

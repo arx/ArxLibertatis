@@ -54,17 +54,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+#define D3D_OVERLOADS
 #include "ARX_Scene.h"
 #include "ARX_Spells.h"
 #include "ARX_Sound.h"
 #include "ARX_Particles.h"
 #include "ARX_Draw.h"
-#include "ARX_player.h"
-#include "ARX_paths.h"
-#include "ARX_interface.h"
-#include "ARX_time.h"
+#include "ARX_Player.h"
+#include "ARX_Paths.h"
+#include "ARX_Interface.h"
+#include "ARX_Time.h"
 #include "ARX_HWTransform.h"
-#include "ARX_menu2.h"
+#include "ARX_Menu2.h"
 
 #include <HERMESMain.h>
 #include <EERIELight.h>
@@ -77,8 +78,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <dinput.h>
 
 #include <stdio.h>
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+
 extern long USE_LIGHT_OPTIM;
 
 
@@ -241,7 +241,7 @@ void PopOneTriangleListClipp(D3DTLVERTEX *_pVertex,int *_piNbVertex)
 		SMY_D3DVERTEX *pVertex;
 
 
-		int iMin  = min(*_piNbVertex,pDynamicVertexBufferTransform->ussMaxVertex);
+		int iMin  = min(*_piNbVertex,(int)pDynamicVertexBufferTransform->ussMaxVertex);
 		ARX_CHECK_USHORT(iMin);
 
 		unsigned short iNbVertex=ARX_CLEAN_WARN_CAST_USHORT(iMin); 	
@@ -336,7 +336,7 @@ __declspec(dllexport) HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevic
 		_LPVERTEX_		pVertex			=	NULL;
 		int				iOldNbVertex	=	pDVB->ussNbVertex;
 		pDVB->ussNbIndice				=	0;
-		unsigned short iNbVertex		=	(unsigned short) min( *_piNbVertex, pDVB->ussMaxVertex ); //don't overload VB
+		unsigned short iNbVertex		=	(unsigned short) min( *_piNbVertex, (int)pDVB->ussMaxVertex ); //don't overload VB
 
 		pDVB->ussNbVertex				+=	iNbVertex;
 
@@ -446,7 +446,7 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7	_d3dDevice,
 													pDynamicVertexBuffer_D3DVERTEX3_T);
 			break;
 		default:
-			ARX_LOG_ERROR("FVF is not supported by ARX_DrawPrimitiveVB");
+			printf("FVF is not supported by ARX_DrawPrimitiveVB\n");
 			ARX_CHECK(false && "FVF is not supported by ARX_DrawPrimitiveVB");
 		}
 	}
@@ -2786,7 +2786,7 @@ SMY_D3DVERTEX *pMyVertex;
 																	(void**)&pMyVertex									,
 																	NULL												) ) ) 
 		{
-			ARX_LOG_ERROR("ARX_PORTALS_Frustrum_RenderRoomTCullSoft Render Error : Cannot Lock Buffer.");
+			printf("ARX_PORTALS_Frustrum_RenderRoomTCullSoft Render Error : Cannot Lock Buffer.\n");
 			return;
 		}
 		
@@ -3230,7 +3230,7 @@ SMY_D3DVERTEX *pMyVertex;
 								tv[nu]				=	ep->v[nu].tv * 4.f;
 							}
 
-							float			t		=	max( 10, EEDistance3D(&ACTIVECAM->pos, (EERIE_3D *)&ep->v[nu]) - 80.f );
+							float			t		=	max( 10.0f, EEDistance3D(&ACTIVECAM->pos, (EERIE_3D *)&ep->v[nu]) - 80.f );
 
 							_fTransp[nu] = (150.f - t) * 0.006666666f;
 
@@ -3355,7 +3355,7 @@ SMY_D3DVERTEX *pMyVertex;
 							tv[nu]=ep->v[nu].tv*4.f;						
 						}
 
-							float			t		=	max( 10, EEDistance3D(&ACTIVECAM->pos, (EERIE_3D *)&ep->v[nu]) - 80.f );
+							float			t		=	max( 10.0f, EEDistance3D(&ACTIVECAM->pos, (EERIE_3D *)&ep->v[nu]) - 80.f );
 							//if (t < 10.f)	t		=	10.f;
 
 						_fTransp[nu] = (150.f - t) * 0.006666666f;
@@ -4359,11 +4359,11 @@ void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag, long param)
 
 	long lfr,lfb;
 	long zsnap=ACTIVECAM->Zsnap;
-	zsnap=min(zsnap,ACTIVEBKG->Zsize-1);
-	zsnap=max(zsnap,1);
+	zsnap=min((int)zsnap,ACTIVEBKG->Zsize-1);
+	zsnap=max((int)zsnap,1);
 	long xsnap=ACTIVECAM->Xsnap;
-	xsnap=min(xsnap,ACTIVEBKG->Xsize-1);
-	xsnap=max(xsnap,1);
+	xsnap=min((int)xsnap,ACTIVEBKG->Xsize-1);
+	xsnap=max((int)xsnap,1);
 
  
 
