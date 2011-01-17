@@ -47,9 +47,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 
 #include "HERMES_pack_public.h"
+#include <math.h>
 
-
-
+using std::min;
+using std::max;
 
 #define FINAL_COMMERCIAL_GAME
 //#define FINAL_COMMERCIAL_DEMO
@@ -237,7 +238,7 @@ static void WriteData(char * Buff, unsigned int * Size, void * Param)
 	PAK_PARAM * pPP = (PAK_PARAM *) Param;
 
 	ARX_CHECK_NOT_NEG(pPP->lSize);
-	long lSize = min(ARX_CAST_ULONG(pPP->lSize), *Size);
+	long lSize = min(ARX_CAST_ULONG(pPP->lSize), (unsigned long)*Size);
 
 	memcpy((void *) pPP->mem, (const void *) Buff, lSize);
 	pPP->mem   += lSize;

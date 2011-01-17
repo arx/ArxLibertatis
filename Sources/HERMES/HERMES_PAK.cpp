@@ -50,15 +50,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Updates: (date) (person) (update)
 //
-// Code: Sébastien Scieux
+// Code: Sï¿½bastien Scieux
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include "hermes_pak.h"
-#include "hermesmain.h"
-
-
-
+#include "HERMES_PAK.h"
+#include "HERMESMain.h"
 
 bool bForceInPack = false;
 long CURRENT_LOADMODE = LOAD_TRUEFILE;

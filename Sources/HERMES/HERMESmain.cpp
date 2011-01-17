@@ -60,10 +60,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <shlobj.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include <io.h>
+//#include <io.h>
 #include <time.h>
-#include <direct.h>			// _getcwd
-#include "HERMESmain.h"
+//#include <direct.h>			// _getcwd
+#include "HERMESMain.h"
 #include "HERMESNet.h"
 
 

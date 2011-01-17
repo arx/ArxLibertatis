@@ -43,12 +43,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 
 #include <stdio.h>
-#include "HERMESnet.h"
+#include "HERMESNet.h"
 #include "HERMESMain.h"
 #include "ResourceHERMESnet.h"
-
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -103,6 +100,6 @@ HRESULT ReadRegKeyValue( HKEY hKey, TCHAR* strName, long * val, long defaultt )
 	LONG bResult;
 
 	bResult = RegQueryValueEx( hKey, strName, 0, &dwType, 
-							 (LPBYTE) val, &dwLength );
+							 (LPBYTE) val, (unsigned)&dwLength );
     return S_OK;
 }
