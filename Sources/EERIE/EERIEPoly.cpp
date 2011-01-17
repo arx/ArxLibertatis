@@ -76,8 +76,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "HERMESMain.h"
 #include "MINOS_PathFinder.h"
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+
+
 
 
 void ComputeFastBkgData(EERIE_BACKGROUND * eb);

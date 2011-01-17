@@ -24,8 +24,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 #include "HERMES_hachage.h"
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+
+
 
 //-----------------------------------------------------------------------------
 CHachageString::CHachageString(int _iSize)

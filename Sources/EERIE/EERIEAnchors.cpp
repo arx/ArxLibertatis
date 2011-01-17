@@ -46,8 +46,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 extern float MAX_ALLOWED_PER_SECOND;
 extern BOOL DIRECT_PATH;
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+
+
 
 
 EERIEPOLY * ANCHOR_CheckInPolyPrecis(float x, float y, float z)

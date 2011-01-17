@@ -61,8 +61,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "arx_npc.h"
 #include "arx_Collisions.h"
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+
+
 
 //-----------------------------------------------------------------------------
 float VELOCITY_THRESHOLD = 850.f;

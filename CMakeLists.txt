@@ -14,7 +14,8 @@ set(CMAKE_CXX_FLAGS "-fpermissive -w") #Debug
 
 #Add liblub sources
 set(SOURCE_DIRS
-        DANAE
+        #DANAE
+        EERIE
 )
 foreach(SOURCE_DIR ${SOURCE_DIRS})
     file(GLOB GLOB_RESULT ${SRC_DIR}/${SOURCE_DIR}/*.cpp)

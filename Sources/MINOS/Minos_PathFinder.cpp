@@ -26,8 +26,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <Float.h>
 #include <time.h>
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+
+
 
 const Float MIN_RADIUS(110.F);
 

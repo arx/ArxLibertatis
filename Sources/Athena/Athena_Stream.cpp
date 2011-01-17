@@ -28,8 +28,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //#include "Athena_Stream_ASF.h"
 #include "Athena_FileIO.h"
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+
+
 
 namespace ATHENA
 {

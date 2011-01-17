@@ -53,8 +53,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CSPELLFX_H
 #define ARX_CSPELLFX_H
 
-//#define _CRTDBG_MAP_ALLOC
-//#include <crtdbg.h>
+//
+//
 
 const int BEZIERPrecision = 32;
 
