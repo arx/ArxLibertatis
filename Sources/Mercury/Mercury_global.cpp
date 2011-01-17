@@ -57,14 +57,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 #include "Mercury_extern.h"
+#include <dinput.h>
 
 /*-----------------------------------------------------*/
 HRESULT			DI_Hr;
 DXI_INIT		DI_Init;
 int				DI_NbInputInfo;
 INPUT_INFO		DI_InputInfo[128];
-
-IDirectInput7	*DI_DInput7;
+IDirectInput7W *DI_DInput7;
+//IDirectInput7	*DI_DInput7;
 
 INPUT_INFO				*DI_KeyBoardBuffer[MAXKEYBOARD];
 //DIDEVICEOBJECTDATA	*DI_MouseState[MAXMOUSE];
