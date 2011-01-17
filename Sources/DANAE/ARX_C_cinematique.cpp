@@ -37,13 +37,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 EERIE_CAMERA	Camera;
 char			AllTxt[32767];
-BOOL			LeftButton, RightButton;
+bool			LeftButton, RightButton;
 int				 InsertKey;
 C_KEY		*	KeyCopy;
 int				LargeurRender, HauteurRender;
 TextureContainer * FxTexture[2];
-BOOL			InRender;
-BOOL			ProjectModif;
+bool			InRender;
+bool			ProjectModif;
 
 //vertex
 D3DTLVERTEX		AllD3DTLVertex[40000];
@@ -51,13 +51,13 @@ D3DTLVERTEX		AllD3DTLVertex[40000];
 extern float DreamTable[];
 
 C_KEY			KeyTemp;
-BOOL			EditLight;
-BOOL			DrawLine;
-BOOL			ShiftKey;
-BOOL			AltKey;
+bool			EditLight;
+bool			DrawLine;
+bool			ShiftKey;
+bool			AltKey;
 
-BOOL			FlashBlancEnCours;
-BOOL			SpecialFadeEnCours;
+bool			FlashBlancEnCours;
+bool			SpecialFadeEnCours;
 float			OldSpeedFlashBlanc;
 float			OldSpeedSpecialFade;
 int				OldColorFlashBlanc;

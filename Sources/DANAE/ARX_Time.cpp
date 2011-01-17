@@ -70,7 +70,7 @@ float ARXTime = 0;
 bool ARXPausedTimer = 0;
 
 //-----------------------------------------------------------------------------
-LARGE_INTEGER	liFrequency;
+long int	liFrequency;
 bool			bTimerInit = false;
 
 void _ARX_TIME_Init()
@@ -88,7 +88,7 @@ void _ARX_TIME_Init()
 
 float _ARX_TIME_GetTime()
 {
-	LARGE_INTEGER liPerfCounter;
+	long int liPerfCounter;
 
 	_ARX_TIME_Init();
 

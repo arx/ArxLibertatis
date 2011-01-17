@@ -41,7 +41,7 @@ extern int	LSoundChoose;
 
 extern char		DirectoryAbs[];
 
-extern ULONG g_pak_workdir_len;
+extern unsigned long g_pak_workdir_len;
 
 void ClearAbsDirectory(char * pT, char * d);
 void AddDirectory(char * pT, char * dir);
@@ -88,7 +88,7 @@ C_SOUND * GetFreeSound(int * num)
 	return NULL;
 }
 /*-----------------------------------------------------------*/
-BOOL DeleteFreeSound(int num)
+bool DeleteFreeSound(int num)
 {
 	C_SOUND	*	cs;
 	int			l;
@@ -343,7 +343,7 @@ int AddSoundToList(char * dir, char * name, int id, int pos)
 	return num;
 }
 /*-----------------------------------------------------------*/
-BOOL PlaySoundKeyFramer(int id)
+bool PlaySoundKeyFramer(int id)
 {
 	C_SOUND * cs;
 

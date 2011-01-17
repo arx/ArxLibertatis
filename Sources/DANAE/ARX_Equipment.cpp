@@ -686,7 +686,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 	strcpy(wmat, "BARE");
 	strcpy(amat, "FLESH");
 
-	BOOL critical = FALSE;
+	bool critical = FALSE;
 
 	if (io_source == inter.iobj[0]) 
 	{
@@ -915,11 +915,11 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 // flags & 1 = blood spawn only
 //-----------------------------------------------------------------------------------------------
 //***********************************************************************************************
-BOOL ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * io_weapon, float ratioaim, long flags, long targ)
+bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * io_weapon, float ratioaim, long flags, long targ)
 {
 	if (TRUEFIGHT) ratioaim = 1.f;
 
-	BOOL ret = FALSE;
+	bool ret = FALSE;
 	long source = GetInterNum(io_source);
 	long weapon = GetInterNum(io_weapon);
 	EERIE_SPHERE sphere;

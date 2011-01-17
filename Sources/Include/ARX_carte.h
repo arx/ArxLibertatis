@@ -50,13 +50,13 @@ class C_ARX_Carte
 	public:
 		C_ARX_Carte(LPDIRECT3DDEVICE7 d = NULL, EERIE_BACKGROUND * bkg = NULL, int nbpixels = 10, int wrender = 640, int hrender = 480);
 		~C_ARX_Carte() {};
-		BOOL Render(void);
+		bool Render(void);
 		void MoveMap(float newposx, float newposy);
 		void IncMoveMap(float incx, float incz);
  
-		BOOL CreateSurfaceTemp(CD3DFramework7 * framework);
-		BOOL BltOnSurfTemp(CD3DFramework7 * framework, int x, int y, int dw, int dh, int largs, int largh);
-		BOOL BuildMap(CD3DFramework7 * framework, char * name);
+		bool CreateSurfaceTemp(CD3DFramework7 * framework);
+		bool BltOnSurfTemp(CD3DFramework7 * framework, int x, int y, int dw, int dh, int largs, int largh);
+		bool BuildMap(CD3DFramework7 * framework, char * name);
  
 };
 
@@ -65,7 +65,7 @@ extern C_ARX_Carte * ARXCarte;
 extern int iCreateMap;
 
 //-----------------------------------------------------------------------------
-BOOL NeedMapCreation();
+bool NeedMapCreation();
 void DANAE_Manage_CreateMap();
 
 #endif ARX_CARTE_H

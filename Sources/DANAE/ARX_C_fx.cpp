@@ -93,7 +93,7 @@ int FX_FadeOUT(float a, int color, int colord)
 
 float LastTime;
 /*---------------------------------------------------------------------------------*/
-BOOL FX_Blur(CINEMATIQUE * c, LPDIRECT3DDEVICE7 device, C_BITMAP * tb)
+bool FX_Blur(CINEMATIQUE * c, LPDIRECT3DDEVICE7 device, C_BITMAP * tb)
 {
 	int			nb;
 	EERIE_3D	* pos;
@@ -146,7 +146,7 @@ BOOL FX_Blur(CINEMATIQUE * c, LPDIRECT3DDEVICE7 device, C_BITMAP * tb)
 /*---------------------------------------------------------------------------------*/
 //POST FX
 /*---------------------------------------------------------------------------------*/
-BOOL FX_FlashBlanc(LPDIRECT3DDEVICE7 device, float w, float h, float speed, int color, float fps, float currfps)
+bool FX_FlashBlanc(LPDIRECT3DDEVICE7 device, float w, float h, float speed, int color, float fps, float currfps)
 {
 	D3DTLVERTEX	v[4];
 	int			col;
@@ -198,7 +198,7 @@ BOOL FX_FlashBlanc(LPDIRECT3DDEVICE7 device, float w, float h, float speed, int 
 	return TRUE;
 }
 /*---------------------------------------------------------------------------------*/
-BOOL SpecialFade(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, float h, float speed, float fps, float fpscurr)
+bool SpecialFade(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, float h, float speed, float fps, float fpscurr)
 {
 	D3DTLVERTEX	v[4];
 	float		w, dv;
@@ -302,7 +302,7 @@ BOOL SpecialFade(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, fl
 	return TRUE;
 }
 /*---------------------------------------------------------------------------------*/
-BOOL SpecialFadeR(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, float h, float speed, float fps, float fpscurr)
+bool SpecialFadeR(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, float h, float speed, float fps, float fpscurr)
 {
 	D3DTLVERTEX	v[4];
 	float		w, dv;

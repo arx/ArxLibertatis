@@ -116,14 +116,14 @@ extern long GameImpulses[MAX_IMPULSES][MAX_IMPULSES_NB];
 
 //-----------------------------------------------------------------------------
 void ARX_INPUT_Init_Game_Impulses();
-BOOL ARX_INPUT_Init(HINSTANCE hInst, HWND hWnd);
+bool ARX_INPUT_Init(HINSTANCE hInst, HWND hWnd);
 void ARX_INPUT_Release();
-BOOL ARX_INPUT_GetSCIDAxis(int * jx, int * jy, int * jz);
+bool ARX_INPUT_GetSCIDAxis(int * jx, int * jy, int * jz);
  
 //-----------------------------------------------------------------------------
-BOOL ARX_IMPULSE_NowPressed(long ident);
-BOOL ARX_IMPULSE_Pressed(long ident);
-BOOL ARX_IMPULSE_NowUnPressed(long ident);
+bool ARX_IMPULSE_NowPressed(long ident);
+bool ARX_IMPULSE_Pressed(long ident);
+bool ARX_IMPULSE_NowUnPressed(long ident);
  
 
 #endif

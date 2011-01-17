@@ -527,7 +527,7 @@ long AnchorData_GetNearest_Except(EERIE_3D * pos, EERIE_CYLINDER * cyl, long exc
 	return returnvalue;
 }
 
-BOOL ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
+bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
 {
 	// Check Validity
 	if ((!io) || (!(io->ioflags & IO_NPC)))
@@ -1395,7 +1395,7 @@ extern INTERACTIVE_OBJ * EVENT_SENDER;
 //***********************************************************************************************
 // Checks If a NPC is dead
 //***********************************************************************************************
-BOOL IsDeadNPC(INTERACTIVE_OBJ * io)
+bool IsDeadNPC(INTERACTIVE_OBJ * io)
 {
 	if (!io) return FALSE;
 
@@ -2037,7 +2037,7 @@ extern float STRIKE_AIMTIME;
 // IsPlayerStriking()
 // Checks if Player is currently striking.
 //***********************************************************************************************
-BOOL IsPlayerStriking()
+bool IsPlayerStriking()
 {
 	INTERACTIVE_OBJ * io = inter.iobj[0];
 
@@ -2327,7 +2327,7 @@ bool TryIOAnimMove(INTERACTIVE_OBJ * io, long animnum)
 	phys.targetpos.x = io->pos.x + trans2.x;
 	phys.targetpos.y = io->pos.y + trans2.y;
 	phys.targetpos.z = io->pos.z + trans2.z;
-	BOOL res = ARX_COLLISION_Move_Cylinder(&phys, io, 30, CFLAG_JUST_TEST | CFLAG_NPC);
+	bool res = ARX_COLLISION_Move_Cylinder(&phys, io, 30, CFLAG_JUST_TEST | CFLAG_NPC);
 
 	if (res && (EEfabs(phys.cyl.origin.y - io->pos.y) < 20.f))
 		return true;

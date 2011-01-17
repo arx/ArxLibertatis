@@ -5131,7 +5131,7 @@ void DANAE_StartNewQuest()
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;
 }
 
-BOOL DANAE_ManageSplashThings()
+bool DANAE_ManageSplashThings()
 {
 	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP);
 	
@@ -8065,7 +8065,7 @@ HRESULT DANAE::DeleteDeviceObjects()
 // MsgProc()
 //   Overrides StdMsgProc
 //*************************************************************************************
-LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
+LRESULT DANAE::MsgProc( HWND hWnd, unsigned int uMsg, WPARAM wParam,
                                     LPARAM lParam )
 {
 	switch (uMsg) 

@@ -292,10 +292,10 @@ long PHYS_COLLIDER = -1;
 //*************************************************************************************
 // Checks is a triangle of a physical object is colliding a triangle
 //*************************************************************************************
-BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k, long * validd)
+bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k, long * validd)
 {
 	EERIE_TRI t1, t2;
-	BOOL ret = FALSE;
+	bool ret = FALSE;
 	memcpy(&t2, verts, sizeof(EERIE_3D) * 3);
 
 	PHYSVERT * vert = obj->pbox->vert;
@@ -781,7 +781,7 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 
 //*************************************************************************************
 //*************************************************************************************
-BOOL IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long * validd)
+bool IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long * validd)
 {
 	EERIE_3D pol[3];
 	Vector_Copy(&pol[0], (EERIE_3D *)&ep->v[0]);
@@ -812,9 +812,9 @@ BOOL IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long
 
  
 EERIEPOLY * LAST_COLLISION_POLY = NULL;
-BOOL IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long source, long * validd)
+bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long source, long * validd)
 {
-	BOOL ret = TRUE;
+	bool ret = TRUE;
 	long px, pz;
 	float x = obj->pbox->vert[0].pos.x;
 	F2L(x * ACTIVEBKG->Xmul, &px);
@@ -878,7 +878,7 @@ BOOL IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long sourc
  
 //*************************************************************************************
 //*************************************************************************************
-BOOL IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long source)
+bool IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long source)
 {
 	EERIEPOLY * back_ep = CheckInPolyPrecis(obj->pbox->vert[kk].pos.x,
 	                                        obj->pbox->vert[kk].pos.y,
@@ -913,7 +913,7 @@ BOOL IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long 
 	return TRUE;
 }
  
-extern BOOL ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source);
+extern bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source);
 extern long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source);
 
 //*************************************************************************************

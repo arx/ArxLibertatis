@@ -65,6 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //#include <direct.h>			// _getcwd
 #include "HERMESmain.h"
 #include "HERMESnet.h"
+#include "linux_port.h"
 
 #define _CRTDBG_MAP_ALLOC
 //#include <crtdbg.h>
@@ -72,7 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 char HermesBufferWork[_MAX_PATH];	// Used by FileStandardize (avoid malloc/free per call)
 
-UINT GaiaWM = 0;
+unsigned int GaiaWM = 0;
 HWND MAIN_PROGRAM_HANDLE = NULL;
 long DEBUGG = 1;
 
@@ -381,7 +382,7 @@ unsigned long MakeMemoryText(char * text)
 		return 0;
 	}
 
-	BOOL * ignore;
+	bool * ignore;
 	unsigned long TotMemory = 0;
 	unsigned long TOTTotMemory = 0;
 	char header[128];
@@ -393,7 +394,7 @@ unsigned long MakeMemoryText(char * text)
 		return 0;
 	}
 
-	ignore = (BOOL *)malloc(sizeof(BOOL) * nb_MemoTraces);
+	ignore = (bool *)malloc(sizeof(bool) * nb_MemoTraces);
 
 	for (long i = 0; i < nb_MemoTraces; i++) ignore[i] = FALSE;
 
@@ -565,7 +566,7 @@ long DirectoryExist(char * name)
 	return 1;
 }
 
-BOOL CreateFullPath(char * path)
+bool CreateFullPath(char * path)
 {
 
 	char drive[_MAX_DRIVE];
@@ -903,7 +904,7 @@ bool HERMESFolderSelector(char * file_name, char * title)
 		return FALSE;
 	}
 }
-BOOL HERMES_WFSelectorCommon(PSTR pstrFileName, PSTR pstrTitleName, char * filter, long flag, long flag_operation, long max_car, HWND hWnd)
+bool HERMES_WFSelectorCommon(PSTR pstrFileName, PSTR pstrTitleName, char * filter, long flag, long flag_operation, long max_car, HWND hWnd)
 {
 	LONG	value;
 	char	cwd[_MAX_PATH];
@@ -1264,7 +1265,7 @@ long HERMES_Memory_Emergency_Out(long size, char * info)
 	return 0;
 }
 
-LARGE_INTEGER	start_chrono;
+long int	start_chrono;
 long NEED_BENCH = 0;
 void StartBench()
 {
@@ -1277,7 +1278,7 @@ unsigned long EndBench()
 {
 	if (NEED_BENCH)
 	{
-		LARGE_INTEGER	end_chrono;
+		long int	end_chrono;
 		QueryPerformanceCounter(&end_chrono);
 		unsigned long ret = (unsigned long)(end_chrono.QuadPart - start_chrono.QuadPart);
 		return ret;

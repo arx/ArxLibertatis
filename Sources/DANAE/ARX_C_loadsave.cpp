@@ -45,7 +45,7 @@ extern C_BITMAP	TabBitmap[];
 extern int		NbBitmap;
 extern C_TRACK	* CKTrack;
 char FileNameChoose[256];
-extern BOOL Restore;
+extern bool Restore;
 extern HWND HwndPere;
 extern int		NbSound;
 extern C_SOUND	TabSound[];
@@ -70,7 +70,7 @@ void ReadString(char * d)
 	}
 }
 /*----------------------------------------------------------------------*/
-BOOL LoadProject(CINEMATIQUE * c, char * dir, char * name)
+bool LoadProject(CINEMATIQUE * c, char * dir, char * name)
 {
 	int		nb, version;
 	C_TRACK	t;

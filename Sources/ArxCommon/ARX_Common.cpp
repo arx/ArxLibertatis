@@ -65,8 +65,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //#include <ARX_StackLogger.h>
 #include <time.h>
 #include <fcntl.h>
+#include <limits.h>
+#include <string.h>
 //#include <io.h>
-
+#include <errno.h>
+#include <sys/stat.h>
 
 
 
@@ -103,11 +106,11 @@ void ArxDebug::cpy_wstr(char * buf, const wchar_t * src, size_t max)
 void ArxDebug::Assert(const wchar_t * _sMessage, const wchar_t * _sFile, unsigned int _iLine)
 {
 	char msgbuf[8192];
-	char fn[MAX_PATH + 1], msg[MAX_PATH + 1], iFile[MAX_PATH + 1];
+	char fn[PATH_MAX + 1], msg[PATH_MAX + 1], iFile[PATH_MAX + 1];
 
 
-	cpy_wstr(msg, _sMessage, MAX_PATH);
-	cpy_wstr(iFile, _sFile, MAX_PATH);
+	cpy_wstr(msg, _sMessage, PATH_MAX);
+	cpy_wstr(iFile, _sFile, PATH_MAX);
 
 	if (iFile[0] == 0)
 	{
@@ -119,12 +122,12 @@ void ArxDebug::Assert(const wchar_t * _sMessage, const wchar_t * _sFile, unsigne
 		strcpy(msg, "?");
 	}
 
-	fn[MAX_PATH] = 0;
+	fn[PATH_MAX] = 0;
 
-	if (! GetModuleFileNameA(NULL, fn, MAX_PATH))
-	{
+	//if (! GetModuleFileNameA(NULL, fn, PATH_MAX))
+	//	{
 		strcpy(fn, "<unknown>");
-	}
+	//}
 
 	sprintf(msgbuf, "Assertation failed!\n\nProgram: %s\nFile: %s, Line %u\n\nExpression: %s",
 	        fn, iFile, _iLine, msg);
@@ -144,25 +147,27 @@ bool ArxDebug::CreateLogDirectory()
 	bool bReturn = true ;
 
 	//Verify if the log folder exist, otherwise create him
-	char * sLogReposiriry = "..\\Log";
+	char * sLogReposiriry = "../Log";
 
-	if (CreateDirectoryA(sLogReposiriry, NULL) == 0)
+	if (mkdir(sLogReposiriry, 0700) != 0) // FIXME perms?
 	{
-		DWORD iCodeError = GetLastError();
+		int iCodeError = errno;
 
 		switch (iCodeError)
 		{
-			case ERROR_ALREADY_EXISTS :
+			case EEXIST :
 				break ;
 
-			case ERROR_PATH_NOT_FOUND :
+			case EACCES :
 				bReturn = false ;
-				MessageBoxA(NULL, "Folder Path not found", "File ", MB_OK | MB_ICONHAND | MB_SETFOREGROUND | MB_TASKMODAL);
+				//MessageBoxA(NULL, "Folder Path not found", "File ", MB_OK | MB_ICONHAND | MB_SETFOREGROUND | MB_TASKMODAL);
+				// FIXME add back dialog box
 				break ;
 
 			default:
 				bReturn = false ;
-				MessageBoxA(NULL, "Folder Log cannot be create. May be you dont have the permission or enought space disk.", "File ", MB_OK | MB_ICONHAND | MB_SETFOREGROUND | MB_TASKMODAL);
+				//MessageBoxA(NULL, "Folder Log cannot be create. May be you dont have the permission or enought space disk.", "File ", MB_OK | MB_ICONHAND | MB_SETFOREGROUND | MB_TASKMODAL);
+				// FIXME add back dialog box
 
 		}
 	}
@@ -283,7 +288,7 @@ void ArxDebug::RedirectIOToConsole()
 
 bool ArxDebug::CreateDebugConsole()
 {
-	CONSOLE_SCREEN_BUFFER_INFO coninfo;
+	/*	CONSOLE_SCREEN_BUFFER_INFO coninfo;
 
 	// allocate a console for this app
 	if (!AllocConsole())
@@ -299,6 +304,7 @@ bool ArxDebug::CreateDebugConsole()
 	coninfo.dwSize.X = ARXCOMMON_MAX_CONSOLE_ROWS ;
 	coninfo.dwSize.Y = ARXCOMMON_MAX_CONSOLE_LINES;
 	SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), coninfo.dwSize);
+	*/
 	return true ;
 }
 
@@ -308,9 +314,9 @@ bool ArxDebug::CreateDebugConsole()
 
 void ArxDebug::CleanConsole()
 {
-	if (m_bConsoleInitialize)
+       	if (m_bConsoleInitialize)
 	{
-		FreeConsole();
+		//FreeConsole();
 	}
 }
 
@@ -335,7 +341,8 @@ void ArxDebug::StartLogSession()
 		else
 		{
 			m_bOpenLogFile = false ;
-			MessageBoxA(NULL, "Log file cannot be create. May be you dont have the permission or enought space disk.", "Log File ", MB_OK | MB_ICONHAND | MB_SETFOREGROUND | MB_TASKMODAL);
+			//MessageBoxA(NULL, "Log file cannot be create. May be you dont have the permission or enought space disk.", "Log File ", MB_OK | MB_ICONHAND | MB_SETFOREGROUND | MB_TASKMODAL);
+			// FIXME add back dialog
 		}
 	}
 }
@@ -348,7 +355,7 @@ void ArxDebug::StartLogSession()
 void ArxDebug::LogTypeManager(ARX_DEBUG_LOG_TYPE eType)
 {
 
-	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	//HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	time_t timestamp;
 	struct tm * t;
@@ -359,16 +366,16 @@ void ArxDebug::LogTypeManager(ARX_DEBUG_LOG_TYPE eType)
 	switch (eType)
 	{
 		case eLogWarning :
-			SetConsoleTextAttribute(hStdOut, ARXDEBUG_COLOR_WARNING);
+			//SetConsoleTextAttribute(hStdOut, ARXDEBUG_COLOR_WARNING);
 			m_ossBuffer << "[Warning : " << t->tm_hour << "h " << t->tm_min << "m " << t->tm_sec << "s] : ";
 			break;
 		case eLogError :
-			SetConsoleTextAttribute(hStdOut, ARXDEBUG_COLOR_ERROR);
+			//SetConsoleTextAttribute(hStdOut, ARXDEBUG_COLOR_ERROR);
 			m_ossBuffer << "[Error : " << t->tm_hour << "h " << t->tm_min << "m " << t->tm_sec << "s] : ";
 			break;
 		case eLog :
 		default:
-			SetConsoleTextAttribute(hStdOut, ARXDEBUG_COLOR_DEFAULT);
+			//SetConsoleTextAttribute(hStdOut, ARXDEBUG_COLOR_DEFAULT);
 			m_ossBuffer << "[Log : " << t->tm_hour << "h " << t->tm_min << "m " << t->tm_sec << "s] : ";
 	}
 }
@@ -400,7 +407,7 @@ void ArxDebug::Log(ARX_DEBUG_LOG_TYPE eType, const char * _sMessage, ...)
 	//Treat the ... Params
 	va_list arg_ptr ;
 	va_start(arg_ptr, _sMessage);
-	_vsnprintf(sBuffer, ARXCOMMON_BUFFERSIZE, _sMessage, arg_ptr);
+	vsnprintf(sBuffer, ARXCOMMON_BUFFERSIZE, _sMessage, arg_ptr);
 	va_end(arg_ptr) ;
 
 	LogTypeManager(eType);

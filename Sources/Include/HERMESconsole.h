@@ -63,6 +63,7 @@ void ManageConsole();
 #define HERMESCONSOLE_H
 
 //#include <windows.h>
+#include "linux_port.h"
 
 #define MAXW 320
 #define MAXH 64
@@ -72,8 +73,8 @@ class Console {
 		int onoff;
 		void Manage();
 		bool           c_bActive;
-		BOOL           c_bReady;
-		BOOL           c_bWindowed;
+		bool           c_bReady;
+		bool           c_bWindowed;
 		HWND consolehwnd;
 		HFONT font;
 		HBITMAP bakbmp;

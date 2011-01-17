@@ -187,7 +187,7 @@ long lMaxSymbolDrawSizeY;
 
 unsigned char ucFlick=0;
 
-BOOL GetSpellPosition(EERIE_3D * pos,long i)
+bool GetSpellPosition(EERIE_3D * pos,long i)
 {
  
 
@@ -809,7 +809,7 @@ void GetSymbVector(char c,EERIE_S2D * vec)
 }
 
 //-----------------------------------------------------------------------------
-BOOL MakeSpellName(char * spell, const long &num)
+bool MakeSpellName(char * spell, const long &num)
 {
 	switch (num)
 	{
@@ -2130,7 +2130,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 //*************************************************************************************
 // 
 //*************************************************************************************
-BOOL ARX_SPELLS_AnalyseSPELL()
+bool ARX_SPELLS_AnalyseSPELL()
 {
 	long caster = 0; // Local Player
 	long PRE_CAST=0;
@@ -3341,7 +3341,7 @@ long ARX_SPELLS_GetFree()
 }
 
 // Checks for an existing instance of this spelltype
-BOOL ARX_SPELLS_ExistAnyInstance(const long &typ) 
+bool ARX_SPELLS_ExistAnyInstance(const long &typ) 
 {
 	for (long i = 0; i < MAX_SPELLS; i++) 
 		if (spells[i].exist && (spells[i].type==typ)) return TRUE;
@@ -3366,7 +3366,7 @@ long ARX_SPELLS_GetInstanceForThisCaster(const long &typ, const long &caster)
 	return -1;
 }
 
-BOOL ARX_SPELLS_ExistAnyInstanceForThisCaster(const long &typ, const long &caster) 
+bool ARX_SPELLS_ExistAnyInstanceForThisCaster(const long &typ, const long &caster) 
 {
 	for (long i(0); i < MAX_SPELLS; i++)
 		if (spells[i].exist && (spells[i].type == typ) && (spells[i].caster == caster))

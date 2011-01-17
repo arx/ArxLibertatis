@@ -93,7 +93,7 @@ int	CLocalisationHash::GetKey(const _TCHAR * _lpszUText)
 //-----------------------------------------------------------------------------
 void CLocalisationHash::ReHash()
 {
-	ULONG	iNewSize = iSize << 1;
+	unsigned long	iNewSize = iSize << 1;
 	long	iNewMask = iNewSize - 1;
 
 	CLocalisation ** pTab2 = new CLocalisation *[iNewSize];
@@ -104,7 +104,7 @@ void CLocalisationHash::ReHash()
 	}
 
 
-	for (UINT i = 0 ; i < iSize ; i++)
+	for (unsigned int i = 0 ; i < iSize ; i++)
 	{
 		if (pTab[i] != NULL)
 		{
@@ -112,7 +112,7 @@ void CLocalisationHash::ReHash()
 			int	iH1	 = FuncH1(iKey);
 			int	iH2  = FuncH2(iKey);
 
-			UINT iNbSolution = 0;
+			unsigned int iNbSolution = 0;
 
 			while (iNbSolution < iNewSize)
 			{

@@ -1009,7 +1009,7 @@ CMultiPoisonProjectile::CMultiPoisonProjectile(LPDIRECT3DDEVICE7 m_pd3dDevice, l
 	pTab	 = NULL;
 	pTab	 = new CSpellFx*[uiNumber]();
 
-	for (UINT i = 0 ; i < uiNumber ; i++)
+	for (unsigned int i = 0 ; i < uiNumber ; i++)
 	{
 		pTab[i] = new CPoisonProjectile(m_pd3dDevice);
 		pTab[i]->spellinstance = this->spellinstance;
@@ -1019,7 +1019,7 @@ CMultiPoisonProjectile::CMultiPoisonProjectile(LPDIRECT3DDEVICE7 m_pd3dDevice, l
 //-----------------------------------------------------------------------------
 CMultiPoisonProjectile::~CMultiPoisonProjectile()
 {
-	for (UINT i = 0 ; i < uiNumber ; i++)
+	for (unsigned int i = 0 ; i < uiNumber ; i++)
 	{
 		if (pTab[i]->lLightId != -1)
 		{
@@ -1089,7 +1089,7 @@ void CMultiPoisonProjectile::Create(EERIE_3D _eSrc, float _afBeta = 0)
 
 	long lMax = 0;
 
-	for (UINT i = 0 ; i < uiNumber ; i++)
+	for (unsigned int i = 0 ; i < uiNumber ; i++)
 	{
 		pTab[i]->Create(_eSrc, afBeta + frand2() * 10.0f);
 		long lTime = ulDuration + (long) rnd() * 5000;
@@ -1132,7 +1132,7 @@ void CMultiPoisonProjectile::Create(EERIE_3D _eSrc, float _afBeta = 0)
 //-----------------------------------------------------------------------------
 void CMultiPoisonProjectile::Update(unsigned long _ulTime)
 {
-	for (UINT i = 0 ; i < uiNumber ; i++)
+	for (unsigned int i = 0 ; i < uiNumber ; i++)
 	{
 		pTab[i]->Update(_ulTime);
 	}
@@ -1143,7 +1143,7 @@ float CMultiPoisonProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 {
  
 
-	for (UINT i = 0 ; i < uiNumber ; i++)
+	for (unsigned int i = 0 ; i < uiNumber ; i++)
 	{
 		float fa = pTab[i]->Render(m_pd3dDevice);
 

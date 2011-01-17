@@ -68,10 +68,10 @@ extern long MAX_IN_SPHERE_Pos;
 extern short EVERYTHING_IN_SPHERE[MAX_IN_SPHERE+1];
 extern long EXCEPTIONS_LIST_Pos;
 extern short EXCEPTIONS_LIST[MAX_IN_SPHERE+1];
-extern BOOL DIRECT_PATH;
+extern bool DIRECT_PATH;
 
 //-----------------------------------------------------------------------------
-BOOL ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE_CYLINDER_STEP,long flags=0);
+bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE_CYLINDER_STEP,long flags=0);
 float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long flags=0);
 // CheckIOInSphere Flags START -------------------------------------------
 #define CAS_NO_NPC_COL			1
@@ -81,17 +81,17 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 #define CAS_NO_FIX_COL			16
 #define CAS_NO_DEAD_COL			32
 // CheckIOInSphere Flags END ---------------------------------------------
-BOOL CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags=0,long *num=NULL); //except source...
-BOOL CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ=-1); //except source...
+bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags=0,long *num=NULL); //except source...
+bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ=-1); //except source...
 EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere); //except source...
  
-BOOL IsCollidingIO(INTERACTIVE_OBJ * io,INTERACTIVE_OBJ * ioo);
+bool IsCollidingIO(INTERACTIVE_OBJ * io,INTERACTIVE_OBJ * ioo);
 // CheckIOInSphere Flags START -------------------------------------------
 #define IIS_NO_NOCOL	1
 // CheckIOInSphere Flags END ---------------------------------------------
-BOOL CheckIOInSphere(EERIE_SPHERE * sphere,long target,long flags=0);
-BOOL AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flags);
-BOOL IO_Visible(EERIE_3D * orgn, EERIE_3D * dest,EERIEPOLY * epp,EERIE_3D * hit);
+bool CheckIOInSphere(EERIE_SPHERE * sphere,long target,long flags=0);
+bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flags);
+bool IO_Visible(EERIE_3D * orgn, EERIE_3D * dest,EERIEPOLY * epp,EERIE_3D * hit);
 
 void ANCHOR_BLOCK_By_IO(INTERACTIVE_OBJ * io,long status);
 void ANCHOR_BLOCK_Clear();

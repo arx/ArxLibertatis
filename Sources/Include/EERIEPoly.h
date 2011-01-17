@@ -59,6 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 #include "EERIETypes.h"
+#include "linux_port.h"
 
 void specialEE_RTP(D3DTLVERTEX*,D3DTLVERTEX*);
 void EERIE_CreateMatriceProj(float _fWidth,float _fHeight,float _fFOV,float _fZNear,float _fZFar);
@@ -121,7 +122,7 @@ typedef struct
 	EERIE_3D lasttarget;
 	EERIE_3D lastpos;
 	EERIE_3D translatetarget;
-	BOOL	lastinfovalid;
+	bool	lastinfovalid;
 	EERIE_3D norm;
 	EERIE_RGB	fadecolor;
 	RECT	clip;
@@ -795,7 +796,7 @@ void SetNextAnim(INTERACTIVE_OBJ * io,ANIM_HANDLE * ea,long layer=0,long loop=0)
 
 void AcquireLastAnim(INTERACTIVE_OBJ * io);
 void FinishAnim(INTERACTIVE_OBJ * io,ANIM_HANDLE * eanim);
-BOOL Visible(EERIE_3D * orgn, EERIE_3D * dest,EERIEPOLY * epp,EERIE_3D * hit);
+bool Visible(EERIE_3D * orgn, EERIE_3D * dest,EERIEPOLY * epp,EERIE_3D * hit);
 void EERIEDrawTrue3DLine(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col);
 void FaceTarget(INTERACTIVE_OBJ * io);
 
@@ -809,9 +810,9 @@ EERIEPOLY * CheckInPolyIn(float x,float y,float z);
 EERIEPOLY * CheckInPolyPrecis(float x,float y,float z,float * needY=NULL);
 
 EERIEPOLY * EEIsUnderWater(EERIE_3D * pos);
-BOOL GetTruePolyY(EERIEPOLY * ep,EERIE_3D * pos,float * ret);
+bool GetTruePolyY(EERIEPOLY * ep,EERIE_3D * pos,float * ret);
 EERIEPOLY * EEIsUnderWaterFast(EERIE_3D * pos);
-BOOL IsVertexIdxInGroup(EERIE_3DOBJ * eobj,long idx,long grs);
+bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj,long idx,long grs);
  
 D3DCOLOR GetColorz(float x,float y,float z);
 int PointIn2DPolyXZ(EERIEPOLY * ep, float x, float z);
@@ -839,10 +840,10 @@ long PhysicalDrawBkgVLine(EERIE_3D * orgn,EERIE_3D * dest);
 long AnchorData_GetNearest(EERIE_3D *pos,EERIE_CYLINDER * cyl);
 
 // FAST SAVE LOAD
-BOOL FastSceneLoad(char * path);
-BOOL FastSceneSave(char * path,EERIE_MULTI3DSCENE * ms);
-BOOL CheckUniqueIdent(char * pathh);
-BOOL CreateUniqueIdent(char * pathh);
+bool FastSceneLoad(char * path);
+bool FastSceneSave(char * path,EERIE_MULTI3DSCENE * ms);
+bool CheckUniqueIdent(char * pathh);
+bool CreateUniqueIdent(char * pathh);
 
 
 //****************************************************************************
@@ -958,7 +959,7 @@ void PrepareActiveCamera();
 void ApplyLight(EERIEPOLY *ep);
 long MakeTopObjString(INTERACTIVE_OBJ * io, char * dest, unsigned int destSize);
 void DeclareEGInfo(float x,float y,float z);
-BOOL TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj);
+bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj);
 void ApplyWaterFXToVertex(EERIE_3D * odtv,D3DTLVERTEX * dtv,float power);
 int BackFaceCull2D(D3DTLVERTEX * tv);
 void ResetAnim(ANIM_USE * eanim);
@@ -1009,7 +1010,7 @@ short ANIM_GetAltIdx(ANIM_HANDLE * ah,long old);
 void ANIM_Set(ANIM_USE * au,ANIM_HANDLE * anim);
 void WriteMSEData(char * path,EERIE_MULTI3DSCENE * ms);
 
-BOOL LittleAngularDiff(EERIE_3D * norm,EERIE_3D * norm2);
+bool LittleAngularDiff(EERIE_3D * norm,EERIE_3D * norm2);
 void RecalcLight(EERIE_LIGHT * el);
 void CreatePWorld(long x0,long x1,long z0,long z1);
 void ComputeSworld();
@@ -1042,7 +1043,7 @@ extern void EERIETreatPoint(D3DTLVERTEX *in,D3DTLVERTEX *out);
 extern void EERIETreatPoint2(D3DTLVERTEX *in,D3DTLVERTEX *out);
 void _YRotatePoint(EERIE_3D *in,EERIE_3D *out,float c, float s);
 void _XRotatePoint(EERIE_3D *in,EERIE_3D *out,float c, float s);
-BOOL RayCollidingPoly(EERIE_3D * orgn,EERIE_3D * dest,EERIEPOLY * ep,EERIE_3D * hit);
+bool RayCollidingPoly(EERIE_3D * orgn,EERIE_3D * dest,EERIEPOLY * ep,EERIE_3D * hit);
 
 void EERIEPOLY_Compute_PolyIn();
 void F_PrepareCamera(EERIE_CAMERA * cam);
@@ -1125,7 +1126,7 @@ float CEDRIC_PtIn2DPolyProjV2(EERIE_3DOBJ * obj,EERIE_FACE * ef, float x, float 
 void EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 void ComputePortalVertexBuffer();
 float GetRoomDistance(long i,long j,EERIE_3D * p1,EERIE_3D * p2);
-BOOL GetNameInfo(char * name1,long * type,long * val1,long * val2);
+bool GetNameInfo(char * name1,long * type,long * val1,long * val2);
 
 typedef struct
 {

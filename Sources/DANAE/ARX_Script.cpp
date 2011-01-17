@@ -134,8 +134,8 @@ long NB_GLOBALS = 0;
 SCR_TIMER * scr_timer = NULL;
 long ActiveTimers = 0;
 
-LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK ShowTextDlg(HWND hDlg, unsigned int message, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK ShowVarsDlg(HWND hDlg, unsigned int message, WPARAM wParam, LPARAM lParam);
 void ResetAllGlobalVars();
 
 extern void ARX_MENU_Clicked_CREDITS();
@@ -183,7 +183,7 @@ again:
 
 	return -1;
 }
-BOOL CharIn(char * string, char _char)
+bool CharIn(char * string, char _char)
 {
 	char * s = string;
 
@@ -196,7 +196,7 @@ BOOL CharIn(char * string, char _char)
 
 	return false;
 }
-BOOL iCharIn(char * string, char _char)
+bool iCharIn(char * string, char _char)
 {
 	char * s = string;
 	MakeUpcase(string);
@@ -613,7 +613,7 @@ void ARX_SCRIPT_AllowInterScriptExec()
 }
 //*************************************************************************************
 //*************************************************************************************
-BOOL IsElement(char * seek, char * text)
+bool IsElement(char * seek, char * text)
 {
 	char tex[1024];
 	memcpy(tex, text, 1023);
@@ -2075,7 +2075,7 @@ long GetVarNum(SCRIPT_VAR * svf, long * nb, char * name)
 }
 //*************************************************************************************
 //*************************************************************************************
-BOOL UNSETVar(SCRIPT_VAR * svf, long * nb, char * name)
+bool UNSETVar(SCRIPT_VAR * svf, long * nb, char * name)
 {
 	long i = GetVarNum(svf, nb, name);
 
@@ -3005,7 +3005,7 @@ long SkipNextStatement(EERIE_SCRIPT * es, long pos)
 }
 //*************************************************************************************
 //*************************************************************************************
-BOOL IsGlobal(char c)
+bool IsGlobal(char c)
 {
 	if ((c == '$') || (c == '#') || (c == '&')) return TRUE;
 
@@ -3388,7 +3388,7 @@ void CheckHit(INTERACTIVE_OBJ * io, float ratioaim)
 //*************************************************************************************
 //*************************************************************************************
 
-BOOL HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
+bool HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 {
 	register float x0, y0, z0;
 	register float x1, y1, z1;
@@ -5803,7 +5803,7 @@ HWND LastErrorPopupNO2 = NULL;
 
 extern HWND CDP_IOOptions;
 extern INTERACTIVE_OBJ * CDP_EditIO;
-BOOL CheckScriptSyntax_Loading(INTERACTIVE_OBJ * io)
+bool CheckScriptSyntax_Loading(INTERACTIVE_OBJ * io)
 {
 	return TRUE;
 
@@ -5824,7 +5824,7 @@ BOOL CheckScriptSyntax_Loading(INTERACTIVE_OBJ * io)
 
 	return TRUE;
 }
-BOOL CheckScriptSyntax(INTERACTIVE_OBJ * io)
+bool CheckScriptSyntax(INTERACTIVE_OBJ * io)
 {
 	if (SYNTAXCHECKING == 0) return TRUE;
 
@@ -5854,7 +5854,7 @@ void ARX_SCRIPT_Init_Event_Stats()
 }
 //*********************************************************************************************
 //*********************************************************************************************
-BOOL IsIOGroup(INTERACTIVE_OBJ * io, char * group)
+bool IsIOGroup(INTERACTIVE_OBJ * io, char * group)
 {
 	for (long i = 0; i < io->nb_iogroups; i++)
 	{
@@ -13512,7 +13512,7 @@ end:
 	return ret;
 }
 
-BOOL InSubStack(EERIE_SCRIPT * es, long pos)
+bool InSubStack(EERIE_SCRIPT * es, long pos)
 {
 	for (long i = 0; i < MAX_GOSUB; i++)
 	{
@@ -13573,7 +13573,7 @@ void InitScript(EERIE_SCRIPT * es)
 	ARX_SCRIPT_ComputeShortcuts(es);
 }
 
-LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK ShowTextDlg(HWND hDlg, unsigned int message, WPARAM wParam, LPARAM lParam)
 {
 	HWND thWnd;
 
@@ -13606,7 +13606,7 @@ LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 
 	return FALSE;
 }
-LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK ShowVarsDlg(HWND hDlg, unsigned int message, WPARAM wParam, LPARAM lParam)
 {
 	HWND thWnd;
 

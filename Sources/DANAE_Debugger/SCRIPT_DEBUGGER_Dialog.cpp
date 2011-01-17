@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "SCRIPT_DEBUGGER_Dialog.h"
 //#include <commctrl.h>
 #include <stdio.h>
+#include "linux_port.h"
 
 #ifndef  __RESOURCE_H
 //#include "Resource.h"
@@ -64,7 +65,7 @@ char LocalName[128];
 bool gbDialog = false;
 
 
-BOOL CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+bool CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, unsigned int uMsg, WPARAM wParam, LPARAM lParam);
 
 
 ScriptDebuggerUpdate sdu;
@@ -128,7 +129,7 @@ void InsertItem(HWND _hwnd, char * _name, char * _value)
 }
 
 //-----------------------------------------------------------------------------
-BOOL CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+bool CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, unsigned int uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg)
 	{
@@ -282,7 +283,7 @@ BOOL CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 
 
 //-----------------------------------------------------------------------------
-BOOL WINAPI DllMain(HINSTANCE _hModule, DWORD _fdwreason, LPVOID _lpReserved)
+bool WINAPI DllMain(HINSTANCE _hModule, DWORD _fdwreason, LPVOID _lpReserved)
 //-----------------------------------------------------------------------------
 {
 	switch (_fdwreason)

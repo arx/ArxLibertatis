@@ -220,9 +220,9 @@ class CD3DTextureManager
 struct TEXTURESEARCHINFO
 {
 	DWORD dwDesiredBPP;   // Input for texture format search
-	BOOL  bUseAlpha;
-	BOOL  bUsePalette;
-	BOOL  bFoundGoodFormat;
+	bool  bUseAlpha;
+	bool  bUsePalette;
+	bool  bFoundGoodFormat;
 
 	DDPIXELFORMAT * pddpf; // Output of texture format search
 };
@@ -1106,14 +1106,14 @@ void CopySurfaceToBumpMap(LPDIRECTDRAWSURFACE7 sSurface, LPDIRECTDRAWSURFACE7 dS
 	
 	DWORD dr, dg, db, da;
 
-	for (ULONG y = 0 ; y < ddesc2.dwHeight ; y++)
+	for (unsigned long y = 0 ; y < ddesc2.dwHeight ; y++)
 	{
 		pDstData32 = (DWORD *)dBytes;
 		pDstData16 = (WORD *)dBytes;
 		pSrcData32 = (DWORD *)sBytes;
 		pSrcData16 = (WORD *)sBytes;
 
-		for (ULONG x = 0 ; x < ddesc2.dwWidth ; x++)
+		for (unsigned long x = 0 ; x < ddesc2.dwWidth ; x++)
 		{		
 			ARX_CHECK_LONG(x);
 			ARX_CHECK_LONG(y  * LineOffset);
@@ -1203,9 +1203,9 @@ bool IsColorKeyInSurface(LPDIRECTDRAWSURFACE7 _pSurface)
  
  
 
-	for (ULONG y = 0 ; y < ddesc.dwHeight ; y++)
+	for (unsigned long y = 0 ; y < ddesc.dwHeight ; y++)
 	{
-		for (ULONG x = 0 ; x < ddesc.dwWidth ; x++)
+		for (unsigned long x = 0 ; x < ddesc.dwWidth ; x++)
 		{
 			ARX_CHECK_LONG(x);
 			ARX_CHECK_LONG(y * LineOffset);
@@ -1336,14 +1336,14 @@ void StretchCopySurfaceToSurface(LPDIRECTDRAWSURFACE7 sSurface, LPDIRECTDRAWSURF
 
 	DWORD dr, dg, db, da;
 
-	for (ULONG y = 0 ; y < ddesc2.dwHeight ; y++)
+	for (unsigned long y = 0 ; y < ddesc2.dwHeight ; y++)
 	{
 		pDstData32 = (DWORD *)dBytes;
 		pDstData16 = (WORD *)dBytes;
 		pSrcData32 = (DWORD *)sBytes;
 		pSrcData16 = (WORD *)sBytes;
 
-		for (ULONG x = 0 ; x < ddesc2.dwWidth ; x++)
+		for (unsigned long x = 0 ; x < ddesc2.dwWidth ; x++)
 		{
 			F2L((float)(x * rx), &posx);
 			F2L((float)(y * ry) * LineOffset, &posy);
@@ -1512,10 +1512,10 @@ void PnuxSurface(LPDIRECTDRAWSURFACE7 sSurface)
 	pSrcData32 = (DWORD *)sBytes;
 	pSrcData16 = (WORD *)sBytes;
 
-	for (ULONG y = 0 ; y < ddesc.dwHeight ; y++)
+	for (unsigned long y = 0 ; y < ddesc.dwHeight ; y++)
 	{
 
-		for (ULONG x = 0 ; x < ddesc.dwWidth ; x++)
+		for (unsigned long x = 0 ; x < ddesc.dwWidth ; x++)
 		{
 			posx = x;
 			posy = y * LineOffset;
@@ -1669,10 +1669,10 @@ void SmoothSurface(LPDIRECTDRAWSURFACE7 sSurface)
 	pSrcData32 = (DWORD *)sBytes;
 	pSrcData16 = (WORD *)sBytes;
 
-	for (ULONG y = 0 ; y < ddesc.dwHeight ; y++)
+	for (unsigned long y = 0 ; y < ddesc.dwHeight ; y++)
 	{
 
-		for (ULONG x = 0 ; x < ddesc.dwWidth ; x++)
+		for (unsigned long x = 0 ; x < ddesc.dwWidth ; x++)
 		{
 			posx = x;
 			posy = y * LineOffset;
@@ -1852,7 +1852,7 @@ void SpecialBorderSurface(TextureContainer * tc, unsigned long x0, unsigned long
 
 	if (ddesc.dwHeight > y0)
 	{
-		for (ULONG x = 0 ; x < ddesc.dwWidth ; x++)
+		for (unsigned long x = 0 ; x < ddesc.dwWidth ; x++)
 		{
 			posx = x;
 			posy = y0 * LineOffset;
@@ -1865,7 +1865,7 @@ void SpecialBorderSurface(TextureContainer * tc, unsigned long x0, unsigned long
 				dwPixel = (DWORD)pSrcData32[offset];
 			else dwPixel = (WORD)pSrcData16[offset];
 
-			for (ULONG y = y0 ; y < ddesc.dwHeight ; y++)
+			for (unsigned long y = y0 ; y < ddesc.dwHeight ; y++)
 			{
 				posy = y * LineOffset;
 				offset = posx + posy;
@@ -1879,7 +1879,7 @@ void SpecialBorderSurface(TextureContainer * tc, unsigned long x0, unsigned long
 
 	if (ddesc.dwWidth > x0)
 	{
-		for (ULONG y = 0 ; y < ddesc.dwHeight ; y++)
+		for (unsigned long y = 0 ; y < ddesc.dwHeight ; y++)
 		{
 			posx = x0 - 1;
 			posy = y * LineOffset;
@@ -1891,7 +1891,7 @@ void SpecialBorderSurface(TextureContainer * tc, unsigned long x0, unsigned long
 				dwPixel = pSrcData32[offset];
 			else dwPixel = pSrcData16[offset];
 
-			for (ULONG x = x0 ; x < ddesc.dwWidth ; x++)
+			for (unsigned long x = x0 ; x < ddesc.dwWidth ; x++)
 			{
 				posx = x;
 				offset = posx + posy;
@@ -2489,7 +2489,7 @@ HRESULT TextureContainer::CopyBitmapToSurface(LPDIRECTDRAWSURFACE7 Surface)
 		LPDIRECTDRAWPALETTE  pPalette;
 		DWORD dwPaletteFlags = DDPCAPS_8BIT | DDPCAPS_ALLOW256;
 		DWORD pe[256];
-		UINT uiRes = GetDIBColorTable(hdcBitmap, 0, 256, (RGBQUAD *)pe);
+		unsigned int uiRes = GetDIBColorTable(hdcBitmap, 0, 256, (RGBQUAD *)pe);
 		ARX_CHECK_WORD(uiRes);
 		WORD  wNumColors     = ARX_CLEAN_WARN_CAST_WORD(uiRes);
 
@@ -2702,7 +2702,7 @@ HRESULT TextureContainer::CopyBitmapToSurface2(HBITMAP hbitmap, int depx, int de
 		DWORD dwPaletteFlags = DDPCAPS_8BIT | DDPCAPS_ALLOW256;
 		DWORD pe[256];
 
-		UINT uiRes = GetDIBColorTable(hdcBitmap, 0, 256, (RGBQUAD *)pe);
+		unsigned int uiRes = GetDIBColorTable(hdcBitmap, 0, 256, (RGBQUAD *)pe);
 		ARX_CHECK_WORD(uiRes);
 		WORD  wNumColors     = ARX_CLEAN_WARN_CAST_WORD(uiRes);
 
@@ -3007,7 +3007,7 @@ my_error_exit(j_common_ptr cinfo)
 	JPEGError = 1;
 	return;
 }
-BOOL JPEG_NO_TRUE_BLACK = TRUE;
+bool JPEG_NO_TRUE_BLACK = TRUE;
 /*--------------------------------------------------------------------------------*/
 HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 {
@@ -3212,7 +3212,7 @@ void ConvertData(char * dat)
 {
 	if (dat[0] == '"') strcpy(dat, dat + 1);
 
-	for (ULONG i = 1 ; i < strlen(dat) ; i++)
+	for (unsigned long i = 1 ; i < strlen(dat) ; i++)
 	{
 		if (dat[i] == '"') dat[i] = 0;
 	}
@@ -4980,8 +4980,8 @@ TextureContainer * TextureContainer::AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _i
 
 	int iOldWidth	= ddsdSurfaceDesc.dwWidth;
 	int iOldHeight	= ddsdSurfaceDesc.dwHeight;
-	UINT iHaloWidth	= ddsdSurfaceDesc.dwWidth + _iNbCouche;
-	UINT iHaloHeight = ddsdSurfaceDesc.dwHeight + _iNbCouche;
+	unsigned int iHaloWidth	= ddsdSurfaceDesc.dwWidth + _iNbCouche;
+	unsigned int iHaloHeight = ddsdSurfaceDesc.dwHeight + _iNbCouche;
 
 	if (ddDesc.dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_POW2)
 	{
@@ -5084,7 +5084,7 @@ TextureContainer * TextureContainer::AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _i
 
 			puiMem++;
 
-			for (UINT iX = 1 ; iX < (ddsdSurfaceDesc.dwWidth - 1) ; iX++)
+			for (unsigned int iX = 1 ; iX < (ddsdSurfaceDesc.dwWidth - 1) ; iX++)
 			{
 				if (*puiMem == uiColorCmp)
 				{
@@ -5109,7 +5109,7 @@ TextureContainer * TextureContainer::AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _i
 				if (!(*puiOneLineUp)) *puiOneLineUp = uiColorWrite;
 			}
 
-			for (UINT iY = 1 ; iY < (ddsdSurfaceDesc.dwHeight - 1) ; iY++)
+			for (unsigned int iY = 1 ; iY < (ddsdSurfaceDesc.dwHeight - 1) ; iY++)
 			{
 				pcMem += ddsdSurfaceDesc.lPitch;
 				puiMem = (unsigned int *)pcMem;
@@ -5128,7 +5128,7 @@ TextureContainer * TextureContainer::AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _i
 
 				puiMem++;
 
-				for (UINT iX = 1 ; iX < (ddsdSurfaceDesc.dwWidth - 1) ; iX++)
+				for (unsigned int iX = 1 ; iX < (ddsdSurfaceDesc.dwWidth - 1) ; iX++)
 				{
 					if (*puiMem == uiColorCmp)
 					{
@@ -5174,7 +5174,7 @@ TextureContainer * TextureContainer::AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _i
 
 			puiMem++;
 
-			for (UINT iX = 1 ; iX < (ddsdSurfaceDesc.dwWidth - 1) ; iX++)
+			for (unsigned int iX = 1 ; iX < (ddsdSurfaceDesc.dwWidth - 1) ; iX++)
 			{
 				if (*puiMem == uiColorCmp)
 				{
@@ -5266,7 +5266,7 @@ TextureContainer * TextureContainer::AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _i
 
 			pusMem++;
 
-			for (UINT iX = 1 ; iX < (ddsdSurfaceDesc.dwWidth - 1) ; iX++)
+			for (unsigned int iX = 1 ; iX < (ddsdSurfaceDesc.dwWidth - 1) ; iX++)
 			{
 				if (*pusMem == usColorCmp)
 				{
@@ -5291,7 +5291,7 @@ TextureContainer * TextureContainer::AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _i
 				if (!(*pusOneLineUp)) *pusOneLineUp = usColorWrite;
 			}
 
-			for (UINT iY = 1 ; iY < (ddsdSurfaceDesc.dwHeight - 1) ; iY++)
+			for (unsigned int iY = 1 ; iY < (ddsdSurfaceDesc.dwHeight - 1) ; iY++)
 			{
 				pcMem += ddsdSurfaceDesc.lPitch;
 				pusMem = (unsigned short *)pcMem;
@@ -5310,7 +5310,7 @@ TextureContainer * TextureContainer::AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _i
 
 				pusMem++;
 
-				for (UINT iX = 1 ; iX < (ddsdSurfaceDesc.dwWidth - 1) ; iX++)
+				for (unsigned int iX = 1 ; iX < (ddsdSurfaceDesc.dwWidth - 1) ; iX++)
 				{
 					if (*pusMem == usColorCmp)
 					{
@@ -5356,7 +5356,7 @@ TextureContainer * TextureContainer::AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _i
 
 			pusMem++;
 
-			for (UINT iX = 1 ; iX < (ddsdSurfaceDesc.dwWidth - 1) ; iX++)
+			for (unsigned int iX = 1 ; iX < (ddsdSurfaceDesc.dwWidth - 1) ; iX++)
 			{
 				if (*pusMem == usColorCmp)
 				{
@@ -5480,11 +5480,11 @@ TextureContainer * TextureContainer::AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _i
 
 	if (ddsdSurfaceDesc.ddpfPixelFormat.dwRGBBitCount == 16)
 	{
-		for (UINT iY = 0 ; iY < iHaloHeight ; iY++)
+		for (unsigned int iY = 0 ; iY < iHaloHeight ; iY++)
 		{
 			unsigned short * pusMem = (unsigned short *) ddsdSurfaceDesc.lpSurface;
 
-			for (UINT iX = 0 ; iX < iHaloWidth ; iX++)
+			for (unsigned int iX = 0 ; iX < iHaloWidth ; iX++)
 			{
 				usR = (unsigned char)((*pusMem >> dwRShiftR) << dwRShiftL);
 				usG = (unsigned char)((*pusMem >> dwGShiftR) << dwGShiftL);
@@ -5500,11 +5500,11 @@ TextureContainer * TextureContainer::AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _i
 	}
 	else
 	{
-		for (UINT iY = 0 ; iY < iHaloHeight ; iY++)
+		for (unsigned int iY = 0 ; iY < iHaloHeight ; iY++)
 		{
 			unsigned int * puiMem = (unsigned int *)ddsdSurfaceDesc.lpSurface;
 
-			for (UINT iX = 0 ; iX < iHaloWidth ; iX++)
+			for (unsigned int iX = 0 ; iX < iHaloWidth ; iX++)
 			{
 				usR = (unsigned char)((*puiMem >> dwRShiftR) << dwRShiftL);
 				usG = (unsigned char)((*puiMem >> dwGShiftR) << dwGShiftL);

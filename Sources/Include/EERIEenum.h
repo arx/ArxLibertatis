@@ -40,6 +40,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define D3DENUM_H
 //#include <d3d.h>
 #include <ARX_Common.h>
+#include "linux_port.h"
 
 //-----------------------------------------------------------------------------
 // Flag and error definitions
@@ -63,7 +64,7 @@ struct D3DEnum_DeviceInfo
 	TCHAR          strDesc[40];
 	GUID     *     pDeviceGUID;
 	D3DDEVICEDESC7 ddDeviceDesc;
-	BOOL           bHardware;
+	bool           bHardware;
 	WORD			wNbBlendStage;
 	WORD			wNbTextureSimultaneous;
 	DWORD			dwTextureOpCaps;
@@ -75,8 +76,8 @@ struct D3DEnum_DeviceInfo
 
 	// DDraw Mode Info
 	DDSURFACEDESC2 ddsdFullscreenMode;
-	BOOL           bWindowed;
-	BOOL           bStereo;
+	bool           bWindowed;
+	bool           bStereo;
 
 	// For internal use (apps should not need to use these)
 	GUID            guidDevice;
@@ -84,8 +85,8 @@ struct D3DEnum_DeviceInfo
 	DDSURFACEDESC2 * pddsdModes;
 	DWORD           dwNumModes;
 	DWORD           dwCurrentMode;
-	BOOL            bDesktopCompatible;
-	BOOL            bStereoCompatible;
+	bool            bDesktopCompatible;
+	bool            bStereoCompatible;
 };
 
 //-----------------------------------------------------------------------------

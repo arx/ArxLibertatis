@@ -2207,7 +2207,7 @@ static float GetSamplePresenceFactor(const char * name)
 
 	return 1.0F;
 }
-LARGE_INTEGER Sstart_chrono, Send_chrono;
+long int Sstart_chrono, Send_chrono;
 unsigned long BENCH_SOUND = 0;
 LPTHREAD_START_ROUTINE UpdateSoundThread(char *)
 {
@@ -2254,7 +2254,7 @@ static void ARX_SOUND_KillUpdateThread()
 
 static bool isSection(char * _lpszText)
 {
-	ULONG i = 0;
+	unsigned long i = 0;
 	unsigned long ulTextSize = strlen(_lpszText);
 	bool bFirst = false;
 	bool bLast = false;
@@ -2290,7 +2290,7 @@ static bool isSection(char * _lpszText)
 //-----------------------------------------------------------------------------
 static bool isString(char * _lpszText)
 {
-	ULONG i = 0;
+	unsigned long i = 0;
 	unsigned long ulTextSize = strlen(_lpszText);
  
  
@@ -2320,7 +2320,7 @@ static bool isString(char * _lpszText)
 //-----------------------------------------------------------------------------
 static bool isNotEmpty(char * _lpszText)
 {
-	ULONG i = 0;
+	unsigned long i = 0;
 	unsigned long ulTextSize = strlen(_lpszText);
 
 	while (i < ulTextSize)

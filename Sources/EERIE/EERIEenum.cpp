@@ -216,7 +216,7 @@ static HRESULT WINAPI DeviceEnumCallback(TCHAR		*	strDesc,
 	}
 
 	// Find a 640x480x16 mode for the default fullscreen mode
-	for (UINT i = 0 ; i < pDeviceInfo->dwNumModes ; i++)
+	for (unsigned int i = 0 ; i < pDeviceInfo->dwNumModes ; i++)
 	{
 		if ((pDeviceInfo->pddsdModes[i].dwWidth  == 640) &&
 		        (pDeviceInfo->pddsdModes[i].dwHeight == 480) &&
@@ -241,7 +241,7 @@ static HRESULT WINAPI DeviceEnumCallback(TCHAR		*	strDesc,
 // DriverEnumCallback()
 // Callback function for enumerating drivers.
 //************************************************************************************
-static BOOL WINAPI DriverEnumCallback(GUID * pGUID, TCHAR * strDesc,
+static bool WINAPI DriverEnumCallback(GUID * pGUID, TCHAR * strDesc,
                                       TCHAR * strName, VOID *, HMONITOR)
 {
 	D3DEnum_DeviceInfo d3dDeviceInfo;
@@ -381,8 +381,8 @@ VOID D3DEnum_GetDevices(D3DEnum_DeviceInfo ** ppDevices, DWORD * pdwCount)
 // select dialog box.
 //************************************************************************************
 static VOID UpdateDialogControls(HWND hDlg, D3DEnum_DeviceInfo * pCurrentDevice,
-                                 DWORD dwCurrentMode, BOOL bWindowed,
-                                 BOOL bStereo)
+                                 DWORD dwCurrentMode, bool bWindowed,
+                                 bool bStereo)
 {
 	// Get access to the enumerated device list
 	D3DEnum_DeviceInfo * pDeviceList;
@@ -477,14 +477,14 @@ static VOID UpdateDialogControls(HWND hDlg, D3DEnum_DeviceInfo * pCurrentDevice,
 // ChangeDeviceProc()
 // Windows message handling function for the device select dialog
 //************************************************************************************
-static BOOL CALLBACK ChangeDeviceProc(HWND hDlg, UINT uiMsg, WPARAM wParam,
+static bool CALLBACK ChangeDeviceProc(HWND hDlg, unsigned int uiMsg, WPARAM wParam,
                                       LPARAM lParam)
 {
 	static D3DEnum_DeviceInfo ** ppDeviceArg;
 	static D3DEnum_DeviceInfo * pCurrentDevice;
 	static DWORD dwCurrentMode;
-	static BOOL  bCurrentWindowed;
-	static BOOL  bCurrentStereo;
+	static bool  bCurrentWindowed;
+	static bool  bCurrentStereo;
 
 	// Get access to the enumerated device list
 	D3DEnum_DeviceInfo * pDeviceList;
@@ -522,8 +522,8 @@ static BOOL CALLBACK ChangeDeviceProc(HWND hDlg, UINT uiMsg, WPARAM wParam,
 		DWORD dwDevice   = ComboBox_GetCurSel(hwndDevice);
 		DWORD dwModeItem = ComboBox_GetCurSel(hwndMode);
 		DWORD dwMode     = ComboBox_GetItemData(hwndMode, dwModeItem);
-		BOOL  bWindowed  = hwndWindowed ? Button_GetCheck(hwndWindowed) : 0;
-		BOOL  bStereo    = hwndStereo   ? Button_GetCheck(hwndStereo)   : 0;
+		bool  bWindowed  = hwndWindowed ? Button_GetCheck(hwndWindowed) : 0;
+		bool  bStereo    = hwndStereo   ? Button_GetCheck(hwndStereo)   : 0;
 
 		D3DEnum_DeviceInfo * pDevice = &pDeviceList[dwDevice];
 

@@ -109,7 +109,7 @@ void ARX_EQUIPMENT_LaunchPlayerReadyWeapon();
 void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
 long ARX_EQUIPMENT_GetPlayerWeaponType();
 float ARX_EQUIPMENT_Apply(INTERACTIVE_OBJ * io, long ident, float trueval);
-BOOL ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * io_weapon, float percentaim, long flags, long targ = -1);
+bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * io_weapon, float percentaim, long flags, long targ = -1);
 void ARX_EQUIPMENT_RecreatePlayerMesh();
 float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * io_weapon, INTERACTIVE_OBJ * io_target, float ratioaim, EERIE_3D * pos = NULL);
  

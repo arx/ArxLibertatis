@@ -164,7 +164,7 @@ extern bool bSoftRender;
 
 extern CARXTextManager *pTextManageFlyingOver;
 
-BOOL IsPlayerStriking();
+bool IsPlayerStriking();
 void OptmizeInventory(unsigned int);
 long ARX_SPELLS_GetInstance(const long &);
 void ARX_SPELLS_Kill(const long &);
@@ -317,7 +317,7 @@ float ARX_CAST_TO_INT_THEN_FLOAT( float _f )
 
 
 //-----------------------------------------------------------------------------
-BOOL MouseInBookRect(const float x, const float y, const float cx, const float cy)
+bool MouseInBookRect(const float x, const float y, const float cx, const float cy)
 {
 	return ((DANAEMouse.x>=(x+BOOKDECX)*Xratio) 
 		&& (DANAEMouse.x<=(cx+BOOKDECX)*Xratio) 
@@ -326,14 +326,14 @@ BOOL MouseInBookRect(const float x, const float y, const float cx, const float c
 }
 
 //-----------------------------------------------------------------------------
-BOOL MouseInCam(EERIE_CAMERA * cam)
+bool MouseInCam(EERIE_CAMERA * cam)
 {
 	return ((DANAEMouse.x>cam->clip.left) && (DANAEMouse.x<cam->clip.right) &&
 		(DANAEMouse.x>cam->clip.top) && (DANAEMouse.y<cam->clip.bottom));
 }
 
 //-----------------------------------------------------------------------------
-BOOL MouseInRect(const float x0, const float y0, const float x1=32, const float y1=32)
+bool MouseInRect(const float x0, const float y0, const float x1=32, const float y1=32)
 {
 	return (	(DANAEMouse.x>=x0) 
 		&&	(DANAEMouse.x<=x1) 
@@ -342,7 +342,7 @@ BOOL MouseInRect(const float x0, const float y0, const float x1=32, const float 
 }
 
 //-----------------------------------------------------------------------------
-BOOL ARX_INTERFACE_MouseInBook()
+bool ARX_INTERFACE_MouseInBook()
 {		
 	if ((player.Interface & INTER_MAP ) &&  (!(player.Interface & INTER_COMBATMODE))) 
 		return (MouseInBookRect(99,65,599,372));
@@ -1634,7 +1634,7 @@ void GetInfosCombine()
 }
 
 //-----------------------------------------------------------------------------
-BOOL DANAE::ManageEditorControls()
+bool DANAE::ManageEditorControls()
 {
 	float val = 0.f;
 	EERIE_3D trans;
@@ -4121,7 +4121,7 @@ void DANAE::ManagePlayerControls()
 
 			EERIE_CYLINDER test;
 			memcpy(&test,&phys.cyl,sizeof(EERIE_CYLINDER));
-			BOOL npc = AttemptValidCylinderPos(&test, NULL, CFLAG_JUST_TEST | CFLAG_NPC);
+			bool npc = AttemptValidCylinderPos(&test, NULL, CFLAG_JUST_TEST | CFLAG_NPC);
 			float val=CheckAnythingInCylinder(&phys.cyl,inter.iobj[0],CFLAG_NO_NPC_COLLIDE | CFLAG_JUST_TEST);
 
 			if ((val > -40.f))
@@ -4150,7 +4150,7 @@ void DANAE::ManagePlayerControls()
 
 		if (EDITMODE || ARXPausedTimer) FD=40.f;
 		
-		BOOL left=ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFELEFT);
+		bool left=ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFELEFT);
 
 		if(!left)
 		{
@@ -4160,7 +4160,7 @@ void DANAE::ManagePlayerControls()
 			}
 		}
 
-		BOOL right=ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFERIGHT);
+		bool right=ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFERIGHT);
 
 		if(!right)
 		{
@@ -6672,9 +6672,9 @@ void ARX_INTERFACE_ERRORSOUND()
 }
 
 //-----------------------------------------------------------------------------
-BOOL CheckAttributeClick(float x, float y, float * val, TextureContainer * tc)
+bool CheckAttributeClick(float x, float y, float * val, TextureContainer * tc)
 {
-	BOOL rval=FALSE;
+	bool rval=FALSE;
 	float t;
 	t=*val;
 
@@ -6718,9 +6718,9 @@ BOOL CheckAttributeClick(float x, float y, float * val, TextureContainer * tc)
 }
 
 //-----------------------------------------------------------------------------
-BOOL CheckSkillClick(float x, float y, float * val, TextureContainer * tc, float * oldval)
+bool CheckSkillClick(float x, float y, float * val, TextureContainer * tc, float * oldval)
 {
-	BOOL rval=FALSE;
+	bool rval=FALSE;
 	float t,ot;
 	t=*val;
 	ot=*oldval;

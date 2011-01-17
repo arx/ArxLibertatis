@@ -52,7 +52,7 @@ CLocalisationHash * pHashLocalisation = NULL;
 //-----------------------------------------------------------------------------
 bool isSection(_TCHAR * _lpszUText)
 {
-	ULONG i			 = 0;
+	unsigned long i			 = 0;
 	unsigned long ulTextSize = _tcslen(_lpszUText);
 	bool bFirst = false;
 	bool bLast  = false;
@@ -128,7 +128,7 @@ bool isKey(const _TCHAR * _lpszUText)
 //-----------------------------------------------------------------------------
 bool isNotEmpty(_TCHAR * _lpszUText)
 {
-	ULONG i			 = 0;
+	unsigned long i			 = 0;
 	unsigned long ulTextSize = _tcslen(_lpszUText);
 
 	while (i < ulTextSize)
@@ -515,7 +515,7 @@ void ParseCurFile(EVE_TFILE * _e)
 	{
 		char * t = strdup((char *)_e->name);
 
-		for (UINT i = 0 ; i < strlen(t) ; i++)
+		for (unsigned int i = 0 ; i < strlen(t) ; i++)
 		{
 
 			t[i] = ARX_CLEAN_WARN_CAST_CHAR(tolower(t[i]));

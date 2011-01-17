@@ -121,7 +121,7 @@ extern	DAMAGE_INFO	damages[MAX_DAMAGES];
 void	CheckForIgnition(EERIE_3D * pos, float radius, long mode, long flag = 0);
  
  
-BOOL	DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long typ = 0, long numsource = -1);
+bool	DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long typ = 0, long numsource = -1);
 
 void	ARX_DAMAGE_Reset_Blood_Info();
 void	ARX_DAMAGE_Show_Hit_Blood(LPDIRECT3DDEVICE7 pd3dDevice);
@@ -132,7 +132,7 @@ void	ARX_DAMAGES_UpdateAll();
 float	ARX_DAMAGES_DamagePlayer(float dmg, long type, long source = -1, EERIE_3D * pos = NULL); 
 void	ARX_DAMAGES_DamageFIX(INTERACTIVE_OBJ * io, float dmg, long source = -1, long flags = 0, EERIE_3D * pos = NULL);
 float	ARX_DAMAGES_DamageNPC(INTERACTIVE_OBJ * io, float dmg, long source = -1, long flags = 0, EERIE_3D * pos = NULL); 
-BOOL	ARX_DAMAGES_TryToDoDamage(EERIE_3D * pos, float dmg, float radius, long source); 
+bool	ARX_DAMAGES_TryToDoDamage(EERIE_3D * pos, float dmg, float radius, long source); 
 void	ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_killer);
 void	ARX_DAMAGES_UpdateDamage(long j, float tim);
 float	ARX_DAMAGES_DealDamages(long target, float dmg, long source, long flags, EERIE_3D * pos);

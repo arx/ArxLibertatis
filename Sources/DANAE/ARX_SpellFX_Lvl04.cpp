@@ -1117,7 +1117,7 @@ void CFieldProtectionPentagram::Update(int t)
 				float d=Distance3D(this->pos.x,this->pos.y,this->pos.z,inter.iobj[nb]->pos.x,inter.iobj[nb]->pos.y,inter.iobj[nb]->pos.z);
 				if(d<=this->rayon)
 				{
-					BOOL	nexist=TRUE;
+					bool	nexist=TRUE;
 					int		nb2=256;
 					while(nb2--)
 					{

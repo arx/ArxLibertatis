@@ -62,7 +62,13 @@ CHachageString::~CHachageString()
 //-----------------------------------------------------------------------------
 bool CHachageString::AddString(char * _lpszText, void * _pMem)
 {
-	char * lpszTextLow = _strlwr(_lpszText);
+	//char * lpszTextLow = _strlwr(_lpszText);
+	char * lpszTextLow = strdup(_lpszText);
+	int len = strlen(_lpszText);
+	for (int i = 0; i < len; i++) {
+		lpszTextLow[i] = (char) tolower(_lpszText[i]);
+	}
+	lpszTextLow[len] = '\0';
 
 	if (iFill >= iSize * 0.75)
 	{
@@ -104,7 +110,14 @@ bool CHachageString::AddString(char * _lpszText, void * _pMem)
 
 void * CHachageString::GetPtrWithString(char * _lpszText)
 {
-	char * lpszTextLow = _strlwr(_lpszText);
+	//char * lpszTextLow = _strlwr(_lpszText);
+	char * lpszTextLow = strdup(_lpszText);
+	int len = strlen(_lpszText);
+	for (int i = 0; i < len; i++) {
+		lpszTextLow[i] = (char) tolower(_lpszText[i]);
+	}
+	lpszTextLow[len] = '\0';
+
 
 	int iKey = GetKey(lpszTextLow);
 	int	iH1 = FuncH1(iKey);

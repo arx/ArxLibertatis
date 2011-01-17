@@ -150,7 +150,7 @@ void EVE_REPERTOIRE::AddSousRepertoire(EVE_U8 * sname)
 
 	while (nbs--)
 	{
-		if (!stricmp((const EVE_8 *)fdir, (const EVE_8 *)rf->name))
+		if (!strcasecmp((const EVE_8 *)fdir, (const EVE_8 *)rf->name))
 		{
 			delete[] fdir;
 			rf->AddSousRepertoire(sname + l);
@@ -171,7 +171,7 @@ void EVE_REPERTOIRE::AddSousRepertoire(EVE_U8 * sname)
 	this->fils = rf;
 }
 //#############################################################################
-BOOL EVE_REPERTOIRE::DelSousRepertoire(EVE_U8 * sname)
+bool EVE_REPERTOIRE::DelSousRepertoire(EVE_U8 * sname)
 {
 	EVE_U32			nbs = this->nbsousreps, l;
 	EVE_REPERTOIRE	* rf = this->fils;
@@ -180,14 +180,14 @@ BOOL EVE_REPERTOIRE::DelSousRepertoire(EVE_U8 * sname)
 
 	while (nbs--)
 	{
-		if (!stricmp((const EVE_8 *)fdir, (const EVE_8 *)rf->name))
+		if (!strcasecmp((const EVE_8 *)fdir, (const EVE_8 *)rf->name))
 		{
 			delete[] fdir;
-			BOOL ok;
+			bool ok;
 
 			if (l == strlen((const EVE_8 *)sname))
 			{
-				ok = TRUE;
+				ok = true;
 			}
 			else
 			{
@@ -224,7 +224,7 @@ BOOL EVE_REPERTOIRE::DelSousRepertoire(EVE_U8 * sname)
 	}
 
 	delete[] fdir;
-	return FALSE;
+	return false;
 }
 //#############################################################################
 EVE_REPERTOIRE * EVE_REPERTOIRE::GetSousRepertoire(EVE_U8 * sname)
@@ -236,7 +236,7 @@ EVE_REPERTOIRE * EVE_REPERTOIRE::GetSousRepertoire(EVE_U8 * sname)
 
 	while (nbs--)
 	{
-		if (!stricmp((const EVE_8 *)fdir, (const EVE_8 *)rf->name))
+		if (!strcasecmp((const EVE_8 *)fdir, (const EVE_8 *)rf->name))
 		{
 			delete[] fdir;
 
@@ -280,7 +280,7 @@ EVE_TFILE * EVE_REPERTOIRE::AddFileToSousRepertoire(EVE_U8 * sname, EVE_U8 * nam
 
 	while (nb--)
 	{
-		if (!stricmp((const EVE_8 *)f->name, (const EVE_8 *)name)) return NULL;
+		if (!strcasecmp((const EVE_8 *)f->name, (const EVE_8 *)name)) return NULL;
 
 		f = f->fnext;
 	}

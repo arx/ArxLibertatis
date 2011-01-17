@@ -64,6 +64,6 @@ void EERIE_PHYSICS_BOX_Release(EERIE_3DOBJ * obj);
 void EERIE_PHYSICS_BOX_Show(EERIE_3DOBJ * obj, EERIE_3D * pos);
 void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, EERIE_3D * pos, EERIE_3D * vect, long flags = 0, EERIE_3D * angle = NULL);
 long EERIE_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source = -1);
-BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k, long * validd);
+bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k, long * validd);
 
 #endif

@@ -85,7 +85,7 @@ INTERACTIVE_OBJ * PUSHABLE_NPC=NULL;
 long MOVING_CYLINDER=0;
  
 EERIE_3D vector2D;
-BOOL DIRECT_PATH=TRUE;
+bool DIRECT_PATH=TRUE;
 long APPLY_PUSH=0;
 
 //-----------------------------------------------------------------------------
@@ -264,7 +264,7 @@ __inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 }
 
 //-----------------------------------------------------------------------------
-__inline BOOL IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
+__inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 {
 	if ((!ep) || (!sph)) return FALSE;
 
@@ -330,7 +330,7 @@ __inline BOOL IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 }
 
 //-----------------------------------------------------------------------------
-BOOL IsCollidingIO(INTERACTIVE_OBJ * io,INTERACTIVE_OBJ * ioo)
+bool IsCollidingIO(INTERACTIVE_OBJ * io,INTERACTIVE_OBJ * ioo)
 {
 	if (   (ioo!=NULL)
 		&& (io!=ioo)
@@ -1049,7 +1049,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 	return anything;	
 }
 //-----------------------------------------------------------------------------
-__forceinline BOOL InExceptionList(long val)
+__forceinline bool InExceptionList(long val)
 {
 	for (long i=0;i<EXCEPTIONS_LIST_Pos;i++)
 	{
@@ -1060,9 +1060,9 @@ __forceinline BOOL InExceptionList(long val)
 }
 
 //-----------------------------------------------------------------------------
-BOOL CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //except source...
+bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //except source...
 {
-	BOOL vreturn=FALSE;
+	bool vreturn=FALSE;
 	MAX_IN_SPHERE_Pos=0;
 	
 	EERIE_VERTEX * vlist;	
@@ -1256,7 +1256,7 @@ EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere) //except source...
 
 //-----------------------------------------------------------------------------
 
-BOOL CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags,long * num) //except source...
+bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags,long * num) //except source...
 {
 	if (num) *num=-1;
 
@@ -1418,7 +1418,7 @@ BOOL CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags,long * n
 }
 
 //-----------------------------------------------------------------------------
-BOOL CheckIOInSphere(EERIE_SPHERE * sphere,long target,long flags) 
+bool CheckIOInSphere(EERIE_SPHERE * sphere,long target,long flags) 
 {
 	if (!ValidIONum(target)) return FALSE;
 
@@ -1523,7 +1523,7 @@ float MAX_ALLOWED_PER_SECOND=12.f;
 // Checks if a position is valid, Modify it for height if necessary
 // Returns TRUE or FALSE
 
-BOOL AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flags)
+bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flags)
 {
 	PUSHABLE_NPC=NULL;
 	float anything = CheckAnythingInCylinder(cyl, io, flags); 
@@ -1695,7 +1695,7 @@ BOOL AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flag
 //flags & 32 Just Test !!!
 //flags & 64 NPC mode
 //----------------------------------------------------------------------------------------------
-BOOL ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE_CYLINDER_STEP,long flags)
+bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE_CYLINDER_STEP,long flags)
 {
 //	HERMESPerf script(HPERF_PHYSICS);
 //	+5 on 15
@@ -1893,7 +1893,7 @@ BOOL ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 }
 
 //-----------------------------------------------------------------------------
-BOOL IO_Visible(EERIE_3D * orgn, EERIE_3D * dest,EERIEPOLY * epp,EERIE_3D * hit)
+bool IO_Visible(EERIE_3D * orgn, EERIE_3D * dest,EERIEPOLY * epp,EERIE_3D * hit)
 {
 	
 
