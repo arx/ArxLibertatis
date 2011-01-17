@@ -7,8 +7,8 @@
 * Plan
 
   Once the Windows-specific functions are ported (/e.g./ changing
-  functions like =CreateDir= to =mkdir=), the plan is to then port the
-  DirectX functions to SDL.
+  functions like =CreateDirectory= to =mkdir=), the plan is to then
+  port the DirectX functions to SDL.
 
   In cases like this, the developers usually do not release the game
   data for free, so I am hoping to get the game demo working first,
