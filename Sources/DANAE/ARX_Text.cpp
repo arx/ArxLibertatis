@@ -56,13 +56,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "ARX_Loc.h"
 #include "ARX_Text.h"
-#include "danae.h"
+#include "Danae.h"
 
 #include "EERIEDraw.h"
-#include "HermesMain.h"
+#include "HERMESMain.h"
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 #include <assert.h>
 
 //-----------------------------------------------------------------------------

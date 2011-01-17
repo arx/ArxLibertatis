@@ -25,14 +25,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 //-----------------------------------------------------------------------------
 #include "EERIEMath.h"
-#include "arx_cspellfx.h"
-#include "arx_cparticle.h"
+#include "ARX_CSpellFx.h"
+#include "ARX_CParticle.h"
 
 #include <list>
 using namespace std;
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 
 //-----------------------------------------------------------------------------
 CParticle::CParticle()

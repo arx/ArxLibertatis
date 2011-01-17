@@ -54,7 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "danae.h"
+#include "Danae.h"
 
 #include <EERIEMath.h>
 #include <EERIELight.h>
@@ -68,7 +68,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Time.h"
 
 
-#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
+//#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
 extern CParticleManager * pParticleManager;
 
