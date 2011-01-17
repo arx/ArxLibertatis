@@ -54,7 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "danae.h"
+#include "Danae.h"
 
 #include <EERIEDraw.h>
 #include <EERIEMath.h>
@@ -65,17 +65,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <ARX_CSpellFx.h>
 #include "ARX_SpellFx_Lvl05.h"
 #include "ARX_SpellFx_Lvl03.h"
-#include <ARX_particles.h>
+#include <ARX_Particles.h>
 
 #include "ARX_CParticle.h"
 #include <ARX_CParticles.h>
 #include <ARX_CParticleParams.h>
 #include <ARX_Damages.h>
-#include <EERIEobject.h>
+#include <EERIEObject.h>
 #include "ARX_Time.h"
 
 
-#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
+//#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
 extern CParticleManager * pParticleManager;
 
@@ -534,8 +534,8 @@ void CIceProjectile::Create(EERIE_3D aeSrc, float afBeta)
 	s.z					= aeSrc.z;
 	float fspelldist	= ARX_CLEAN_WARN_CAST_FLOAT(iMax * 15);
 
-	fspelldist = min(fspelldist, 200);
-	fspelldist = max(fspelldist, 450);
+	fspelldist = min(fspelldist, 200.0f);
+	fspelldist = max(fspelldist, 450.0f);
 	e.x = aeSrc.x - fBetaRadSin * fspelldist;
 	e.y = aeSrc.y - 100;
 	e.z = aeSrc.z + fBetaRadCos * fspelldist;

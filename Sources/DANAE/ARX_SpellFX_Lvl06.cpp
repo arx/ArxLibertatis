@@ -54,7 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "danae.h"
+#include "Danae.h"
 
 #include <EERIEDraw.h>
 #include "EERIELight.h"
@@ -69,10 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_CParticles.h"
 #include "ARX_Time.h"
 
-
-#include <crtdbg.h>
-#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
-
+//#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
 extern CParticleManager * pParticleManager;
 
@@ -732,7 +729,7 @@ void CRiseDead::Create(EERIE_3D aeSrc, float afBeta)
 	this->Split(v1a, 0, end, 80);
 	this->Split(v1b, 0, end, -80);
 
-	// check de la conformité du split
+	// check de la conformitï¿½ du split
 	// sinon recalc de l'un de l'autre ou des deux
 	// espace min
 	if (0)
@@ -935,7 +932,7 @@ void CRiseDead::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	// computation des sommets
 	float fTempCos, fTempSin;
 
-	for (i = 0; i <= min(end, fSizeIntro); i++)
+	for (i = 0; i <= min(end, (int)fSizeIntro); i++)
 	{
 		if (i <= end * 0.5f)
 		{
@@ -970,7 +967,7 @@ void CRiseDead::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	if (bIntro)
 	{
-		for (i = 0; i < min(end, fSizeIntro); i++)
+		for (i = 0; i < min(end, (int)fSizeIntro); i++)
 		{
 			EE_RT2(&v1a[i], &vr[0]);
 			EE_RT2(&v1b[i], &vr[1]);
@@ -987,7 +984,7 @@ void CRiseDead::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	}
 	else
 	{
-		for (i = 0; i < min(end, fSizeIntro); i++)
+		for (i = 0; i < min(end, (int)fSizeIntro); i++)
 		{
 			EE_RT2(&va[i], &vr[0]);
 			EE_RT2(&vb[i], &vr[1]);
@@ -1008,7 +1005,7 @@ void CRiseDead::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	vr[0].color = vr[1].color = D3DRGB(0, 0, 0);
 	vr[2].color = vr[3].color = D3DRGB(fColorBorder[0], fColorBorder[1], fColorBorder[2]);
 
-	for (i = 0; i < min(end, fSizeIntro); i++)
+	for (i = 0; i < min(end, (int)fSizeIntro); i++)
 	{
 		vt[2].sx = va[i].sx   - (va[i].sx - eSrc.x) * 0.2f;
 		vt[2].sy = va[i].sy   - (va[i].sy - eSrc.y) * 0.2f;
@@ -1050,7 +1047,7 @@ void CRiseDead::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	//-------------------------------------------------------------------------
 	// rendu des faisceaux
 	// blend additif ou mul
-	// smooth sur les cotés ou pas ..
+	// smooth sur les cotï¿½s ou pas ..
 	// texture sympa avec glow au milieu ou uv wrap
 	SETALPHABLEND(m_pd3dDevice, TRUE);
 
@@ -1222,7 +1219,7 @@ void CRiseDead::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-// rendu de la déchirure spatio temporelle
+// rendu de la dï¿½chirure spatio temporelle
 float CRiseDead::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 {
 	if (ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro)) return 0.f;
@@ -1454,8 +1451,8 @@ void CParalyse::CreateLittlePrismTriangleList()
 			fd = 40 + rnd() * 80.0f;
 		}
 
-		fd = max(fd, 40);
-		fd = min(fd, 120);
+		fd = max(fd, 40.0f);
+		fd = min(fd, 120.0f);
 		tabprism[i].pos.x = pos.x + EEsin(randd) * fd;
 		tabprism[i].pos.y = pos.y;
 		tabprism[i].pos.z = pos.z + EEcos(randd) * fd;
@@ -1542,7 +1539,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 	}
 
 
-	// système de partoches pour la poussière
+	// systï¿½me de partoches pour la poussiï¿½re
 	CParticleSystem * pPS = new CParticleSystem();
 	CParticleParams cp;
 	cp.iNbMax = 200;
@@ -1604,7 +1601,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 		pParticleManager->AddSystem(pPS);
 	}
 
-	// système de partoches pour la poussière au sol
+	// systï¿½me de partoches pour la poussiï¿½re au sol
 	pPS = new CParticleSystem();
 	cp;
 	cp.iNbMax = 20;
