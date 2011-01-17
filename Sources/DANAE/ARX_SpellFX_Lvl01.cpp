@@ -70,13 +70,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <ARX_Sound.h>
 #include <ARX_Spells.h>
 #include "ARX_Time.h"
-#include "ARX_Npc.h"
+#include "ARX_NPC.h"
 #include "ARX_SpellFx_Lvl05.h"
 
 #include <DanaeSaveLoad.h>
-
-#include <crtdbg.h>
-#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
 extern CParticleManager * pParticleManager;
 
@@ -85,7 +82,7 @@ extern long cur_mr;
 //-----------------------------------------------------------------------------
 void LaunchMagicMissileExplosion(EERIE_3D & _ePos, int t = 0, long spellinstance = -1)
 {
-	// système de partoches pour l'explosion
+	// systï¿½me de partoches pour l'explosion
 	CParticleSystem * pPS = new CParticleSystem();
 	CParticleParams cp;
 	cp.iNbMax = 100 + t * 50;
@@ -680,7 +677,7 @@ void CMultiMagicMissile::Create(EERIE_3D aePos, EERIE_3D angles)
 				ARX_CHECK_LONG(fTime);
 				long	lTime	= ARX_CLEAN_WARN_CAST_LONG(fTime);
 
-				lTime		= max(1000, lTime);
+				lTime		= max(1000L, lTime);
 				lMax		= max(lMax, lTime);
 
 				CMagicMissile * pMM = (CMagicMissile *)pTab[i];
@@ -1407,7 +1404,7 @@ float CPortal::Render(LPDIRECT3DDEVICE7 device)
 	//affichage eclair
 	this->DrawAllEclair(device);
 
-	//affichage des particules à l'interieur
+	//affichage des particules ï¿½ l'interieur
 	if (rnd() > .25f)
 	{
 		int j = ARX_PARTICLES_GetFree();

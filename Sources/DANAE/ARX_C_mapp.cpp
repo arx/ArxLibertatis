@@ -22,14 +22,12 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include "arx_c_cinematique.h"
-#include "resource.h"
+#include "ARX_CCinematique.h"
+#include "Resource.h"
 #include "HERMESMain.h"
 #include "HERMES_PAK.h"
 
 #include <stdio.h>
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 
 /*-----------------------------------------------------------*/
 C_BITMAP	TabBitmap[MAX_BITMAP];
@@ -762,7 +760,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 
 			if (FAILED(D3DTextr_CreateEmptyTexture(AllTxt, w2, h2, 0, D3DTEXTR_NO_MIPMAP, NULL)))
 			{
-				sprintf(AllTxt, "Creation de le %d ème texture -> x: %d y %d w: %d h: %d", num, (long)dx, (long)dy, w2, h2);
+				sprintf(AllTxt, "Creation de le %d ï¿½me texture -> x: %d y %d w: %d h: %d", num, (long)dx, (long)dy, w2, h2);
 				MessageBox(NULL, AllTxt, "Erreur", 0);
 			}
 

@@ -58,10 +58,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <DANAE_VERSION.h>
 #include <stdio.h>
 #include <windows.h>
-#include <direct.h>
+//#include <direct.h>
 
-#include "Danae_Resource.h"
-#include "Danaedlg.h"
+#include "Danae_resource.h"
+#include "DanaeDlg.h"
 #include "ARX_Interface.h"
 #include "ARX_Paths.h"
 #include "ARX_Sound.h"

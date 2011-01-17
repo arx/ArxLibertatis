@@ -23,27 +23,25 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 #include "EERIEAnim.h"
-#include "HermesMain.h"
-#include "Arx_Collisions.h"
+#include "HERMESMain.h"
+#include "ARX_Collisions.h"
 #include "EERIEClothes.h"
 #include "EERIEObject.h"
 #include "EERIEMath.h"
 #include "EERIELight.h"
 #include "EERIEPoly.h"
 #include "EERIEDraw.h"
-#include <Arx_Sound.h>
-#include <Arx_Scene.h>
-#include <Arx_Equipment.h>
-#include <Arx_Damages.h>
-#include <Arx_Particles.h>
+#include <ARX_Sound.h>
+#include <ARX_Scene.h>
+#include <ARX_Equipment.h>
+#include <ARX_Damages.h>
+#include <ARX_Particles.h>
 #include <ARX_NPC.h>
 #include "ARX_Time.h"
-#include "danae.h"
+#include "Danae.h"
 #include <dinput.h>
-#include "arx_menu2.h"
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-#include 	"arx_cedric.h"
+#include "ARX_Menu2.h"
+#include "ARX_Cedric.h"
 
 
 #if	CEDRIC

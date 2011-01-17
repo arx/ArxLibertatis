@@ -64,7 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 
 //-----------------------------------------------------------------------------
-
+#include <vector>
 #include "ARX_ChangeLevel.h"
 
 #include "ARX_Damages.h"
@@ -77,7 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Sound.h"
 #include "ARX_Speech.h"
 #include "ARX_Spells.h"
-#include "ARX_time.h"
+#include "ARX_Time.h"
 
 #include <HERMESMain.h>
 
@@ -85,10 +85,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <EERIEObject.h>
 #include <EERIEPathfinder.h>
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-
-#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
+//#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern long GLOBAL_MAGIC_MODE;
@@ -234,7 +231,7 @@ void ARX_GAMESAVE_CreateNewInstance()
 		}
 		else
 		{
-			//le directory peut exister mais peut être vide après un crash
+			//le directory peut exister mais peut ï¿½tre vide aprï¿½s un crash
 			strcat(testpath, "\\GSAVE.SAV");
 			FILE * f = fopen(testpath, "rb");
 
@@ -783,7 +780,7 @@ retry:
 		{
 			case TYPE_G_TEXT:
 
-				if ((svar[i].name[0] == '$') || (svar[i].name[0] == '£'))
+				if ((svar[i].name[0] == '$') || (svar[i].name[0] == 'ï¿½'))
 				{
 					strcpy(avs.name, svar[i].name);
 
@@ -808,7 +805,7 @@ retry:
 				break;
 			case TYPE_G_LONG:
 
-				if ((svar[i].name[0] == '#') || (svar[i].name[0] == '§'))
+				if ((svar[i].name[0] == '#') || (svar[i].name[0] == 'ï¿½'))
 				{
 					strcpy(avs.name, svar[i].name);
 					avs.fval = (float)svar[i].ival;
@@ -1503,7 +1500,7 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 		{
 			case TYPE_L_TEXT:
 
-				if ((io->script.lvar[i].name[0] == '$') || (io->script.lvar[i].name[0] == '£'))
+				if ((io->script.lvar[i].name[0] == '$') || (io->script.lvar[i].name[0] == 'ï¿½'))
 				{
 					strcpy(avs->name, io->script.lvar[i].name);
 
@@ -1536,7 +1533,7 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 				break;
 			case TYPE_L_LONG:
 
-				if ((io->script.lvar[i].name[0] == '#') || (io->script.lvar[i].name[0] == '§'))
+				if ((io->script.lvar[i].name[0] == '#') || (io->script.lvar[i].name[0] == 'ï¿½'))
 				{
 					strcpy(avs->name, io->script.lvar[i].name);
 					avs->fval = (float)io->script.lvar[i].ival;
@@ -1583,7 +1580,7 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 		{
 			case TYPE_L_TEXT:
 
-				if ((io->script.lvar[i].name[0] == '$') || (io->script.lvar[i].name[0] == '£'))
+				if ((io->script.lvar[i].name[0] == '$') || (io->script.lvar[i].name[0] == 'ï¿½'))
 				{
 					strcpy(avs->name, io->over_script.lvar[i].name);
 
@@ -1615,7 +1612,7 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 				break;
 			case TYPE_L_LONG:
 
-				if ((io->script.lvar[i].name[0] == '#') || (io->script.lvar[i].name[0] == '§'))
+				if ((io->script.lvar[i].name[0] == '#') || (io->script.lvar[i].name[0] == 'ï¿½'))
 				{
 					strcpy(avs->name, io->over_script.lvar[i].name);
 					avs->fval	= (float)io->over_script.lvar[i].ival;
@@ -2788,7 +2785,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 						pos += io->script.lvar[i].ival;
 						io->script.lvar[i].ival = strlen(io->script.lvar[i].text) + 1;
 
-						if (io->script.lvar[i].text[0] == 'Ì')
+						if (io->script.lvar[i].text[0] == 'ï¿½')
 							io->script.lvar[i].text[0] = 0;
 					}
 					else
@@ -2814,13 +2811,13 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 					break;
 				default:
 
-					if ((avs->name[0] == '$') || (avs->name[0] == '£'))
+					if ((avs->name[0] == '$') || (avs->name[0] == 'ï¿½'))
 					{
 						avs->type = TYPE_L_TEXT;
 						goto retry;
 					}
 
-					if ((avs->name[0] == '#') || (avs->name[0] == '§'))
+					if ((avs->name[0] == '#') || (avs->name[0] == 'ï¿½'))
 					{
 						avs->type = TYPE_L_LONG;
 						goto retry;
@@ -2923,7 +2920,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 					break;
 				default:
 
-					if ((avs->name[0] == '$') || (avs->name[0] == '£'))
+					if ((avs->name[0] == '$') || (avs->name[0] == 'ï¿½'))
 					{
 						avs->type = TYPE_L_TEXT;
 						goto retry2;
@@ -3547,7 +3544,7 @@ long ARX_CHANGELEVEL_Pop_Globals()
 
 					memcpy(svar[i].text, dat + pos + sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE), svar[i].ival);
 
-					if (svar[i].text[0] == 'Ì')
+					if (svar[i].text[0] == 'ï¿½')
 						svar[i].text[0] = 0;
 				}
 				else
@@ -3995,8 +3992,8 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 
 
 //-----------------------------------------------------------------------------
-// copie un rep (récursif sous reps) dans un autre en créant les reps
-// écrase les fichiers pour les mettre à jour
+// copie un rep (rï¿½cursif sous reps) dans un autre en crï¿½ant les reps
+// ï¿½crase les fichiers pour les mettre ï¿½ jour
 void CopyDirectory(char * _lpszSrc, char * _lpszDest)
 {
 	CreateDirectory(_lpszDest, NULL);
