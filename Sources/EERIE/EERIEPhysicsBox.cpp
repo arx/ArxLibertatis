@@ -57,12 +57,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEPhysicsBox.h"
 #include "EERIEMath.h"
 
-#include "arx_interactive.h"
-#include "arx_npc.h"
-#include "arx_Collisions.h"
-
-
-
+#include "ARX_Interactive.h"
+#include "ARX_NPC.h"
+#include "ARX_Collisions.h"
 
 //-----------------------------------------------------------------------------
 float VELOCITY_THRESHOLD = 850.f;
@@ -312,7 +309,7 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 
 		for (; nn < obj->pbox->nb_physvert; nn++)
 		{
-			if (EEDistance3D(&center, &vert[nn].pos) <= max(60, rad + 25))
+			if (EEDistance3D(&center, &vert[nn].pos) <= max(60.0f, rad + 25))
 			{
 				nn = 1000;
 			}
@@ -823,11 +820,11 @@ BOOL IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long sourc
 	long ix, iz, ax, az;
 	long n;
 	F2L(obj->pbox->radius * DIV100, &n);
-	n = min(2, n + 1);
-	ix = max(px - n, 0);
-	ax = min(px + n, ACTIVEBKG->Xsize - 1);
-	iz = max(pz - n, 0);
-	az = min(pz + n, ACTIVEBKG->Zsize - 1);
+	n = min(2L, n + 1);
+	ix = max(px - n, 0L);
+	ax = min(px + n, ACTIVEBKG->Xsize - 1L);
+	iz = max(pz - n, 0L);
+	az = min(pz + n, ACTIVEBKG->Zsize - 1L);
 	LAST_COLLISION_POLY = NULL;
 	EERIEPOLY * ep;
 	EERIE_BKG_INFO * eg;

@@ -58,13 +58,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h>
 #include <tchar.h>
 
-#include "arx_time.h"
+#include "ARX_Time.h"
 
-#include "EerieApp.h"
-#include "EerieFrame.h"
-#include "EerieUtil.h"
+#include "EERIEApp.h"
+#include "EERIEFrame.h"
+#include "EERIEUtil.h"
 
-#include "HERMESmain.h"
+#include "HERMESMain.h"
 
 
 

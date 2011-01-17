@@ -71,10 +71,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Particles.h"
 #include "ARX_Time.h"
 #include "ARX_Scene.h"
-#include "..\danae\Arx_menu2.h"
+#include "../DANAE/ARX_Menu2.h"
 
 #include "HERMESMain.h"
-#include "MINOS_PathFinder.h"
+#include "Minos_PathFinder.h"
 
 
 
@@ -339,14 +339,15 @@ long MakeTopObjString(INTERACTIVE_OBJ * io,char * dest, unsigned int destSize)
 							if (EEfabs(inter.iobj[i]->pos.y - boxmin.y) < 40.f)
 							{
 							int iResult;
-							iResult = strcat_s(dest,destSize," ");
-							assert (iResult == 0);
-							iResult = strncpy_s(temp, tempSize, GetName(inter.iobj[i]->filename), strlen(GetName(inter.iobj[i]->filename)));
-							assert (iResult == 0);
-							iResult = sprintf_s(temp,tempSize,"%s_%04d",temp,inter.iobj[i]->ident) ;
-							assert (iResult >= 0);
-							iResult = strcat_s(dest,destSize,temp);
-							assert (iResult == 0);
+//							todo: string stuff
+//							iResult = strcat_s(dest,destSize," ");
+//							assert (iResult == 0);
+//							iResult = strncpy_s(temp, tempSize, GetName(inter.iobj[i]->filename), strlen(GetName(inter.iobj[i]->filename)));
+//							assert (iResult == 0);
+//							iResult = sprintf_s(temp,tempSize,"%s_%04d",temp,inter.iobj[i]->ident) ;
+//							assert (iResult >= 0);
+//							iResult = strcat_s(dest,destSize,temp);
+//							assert (iResult == 0);
 							}
 						}
 
@@ -2658,10 +2659,10 @@ void EERIEPOLY_Compute_PolyIn()
 			eg->polyin = NULL;
 			eg->nbpolyin = 0;
 
-			ii = max(i - 2, 0);
-			ij = max(j - 2, 0);
-			ai = min(i + 2, ACTIVEBKG->Xsize - 1);
-			aj = min(j + 2, ACTIVEBKG->Zsize - 1);
+			ii = max(i - 2, 0L);
+			ij = max(j - 2, 0L);
+			ai = min(i + 2, ACTIVEBKG->Xsize - 1L);
+			aj = min(j + 2, ACTIVEBKG->Zsize - 1L);
 
 			EERIE_2D_BBOX bb;
 			bb.min.x = (float)i * ACTIVEBKG->Xdiv - 10; 
@@ -2753,31 +2754,31 @@ void EERIEPOLY_Compute_PolyIn()
 
 float GetTileMinY(long i, long j)
 {
-	float min = 9999999999.f;
+	float minf = 9999999999.f;
 	EERIE_BKG_INFO * eg;
 	eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 
 	for (long kk = 0; kk < eg->nbpolyin; kk++)
 	{
 		EERIEPOLY * ep = eg->polyin[kk];
-		min = min(min, ep->min.y);
+		minf = min(minf, ep->min.y);
 	}
 
-	return min;
+	return minf;
 }
 float GetTileMaxY(long i, long j)
 {
-	float max = -9999999999.f;
+	float maxf = -9999999999.f;
 	EERIE_BKG_INFO * eg;
 	eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 
 	for (long kk = 0; kk < eg->nbpolyin; kk++)
 	{
 		EERIEPOLY * ep = eg->polyin[kk];
-		max = max(max, ep->max.y);
+		maxf = max(maxf, ep->max.y);
 	}
 
-	return max;
+	return maxf;
 }
 
 //*************************************************************************************
@@ -3762,7 +3763,6 @@ BOOL FastSceneLoad(char * partial_path)
 
 	long count = 0;
 	long idx;
-	struct _finddata_t fd;
 	char fic[256];
 
 	sprintf(fic, "%sfast.fts", path);
@@ -3792,20 +3792,21 @@ BOOL FastSceneLoad(char * partial_path)
 	long c_count;
 	c_count = 0;
 	sprintf(path2, "%s\\%s*.scn", Project.workingdir, partial_path);
-
-	if ((idx = _findfirst(path2, &fd)) != -1)
-	{
-		do
-		{
-			if (!(fd.attrib & _A_SUBDIR) && (!strcasecmp(GetExt(fd.name), ".scn")))
-			{
-				c_count++;
-			}
-		}
-		while (!(_findnext(idx, &fd)));
-
-		_findclose(idx);
-	}
+//	todo: find
+//	struct _finddata_t fd;
+//	if ((idx = _findfirst(path2, &fd)) != -1)
+//	{
+//		do
+//		{
+//			if (!(fd.attrib & _A_SUBDIR) && (!strcasecmp(GetExt(fd.name), ".scn")))
+//			{
+//				c_count++;
+//			}
+//		}
+//		while (!(_findnext(idx, &fd)));
+//
+//		_findclose(idx);
+//	}
 
 	count = 0;
 
@@ -4271,7 +4272,6 @@ BOOL FastSceneSave(char * partial_path, EERIE_MULTI3DSCENE * ms)
 
 	unsigned long	handle;
 	long idx;
-	struct _finddata_t fd;
 	long count = 0;
 	unsigned char * dat;
 	long i, j, k, kk;
@@ -4328,40 +4328,42 @@ BOOL FastSceneSave(char * partial_path, EERIE_MULTI3DSCENE * ms)
 
 	sprintf(path2, "%s%s*.scn", Project.workingdir, partial_path);
 
-	if ((idx = _findfirst(path2, &fd)) != -1)
-	{
-		do
-		{
-			if (!(fd.attrib & _A_SUBDIR))
-			{
-				text = GetExt(fd.name);
-
-				if (!strcasecmp(text, ".SCN"))
-				{
-					sprintf(path3, "%s%s%s", Project.workingdir, partial_path, fd.name);
-					SetExt(path3, ".scn");
-					UNIQUE_HEADER2 * uh2 = (UNIQUE_HEADER2 *)(dat + pos);
-					strcpy(uh2->path, fd.name);
-					pos += sizeof(UNIQUE_HEADER2);
-
-					char check[512];
-					HERMES_CreateFileCheck(path3, check, 512, UNIQUE_VERSION);
-					memcpy(dat + pos, check, 512);
-					pos += 512;
-					count++;
-
-					if (count > 60)
-					{
-						free(dat);
-						return FALSE;
-					}
-				}
-			}
-		}
-		while (!(_findnext(idx, &fd)));
-
-		_findclose(idx);
-	}
+//	todo: find
+//	struct _finddata_t fd;
+//	if ((idx = _findfirst(path2, &fd)) != -1)
+//	{
+//		do
+//		{
+//			if (!(fd.attrib & _A_SUBDIR))
+//			{
+//				text = GetExt(fd.name);
+//
+//				if (!strcasecmp(text, ".SCN"))
+//				{
+//					sprintf(path3, "%s%s%s", Project.workingdir, partial_path, fd.name);
+//					SetExt(path3, ".scn");
+//					UNIQUE_HEADER2 * uh2 = (UNIQUE_HEADER2 *)(dat + pos);
+//					strcpy(uh2->path, fd.name);
+//					pos += sizeof(UNIQUE_HEADER2);
+//
+//					char check[512];
+//					HERMES_CreateFileCheck(path3, check, 512, UNIQUE_VERSION);
+//					memcpy(dat + pos, check, 512);
+//					pos += 512;
+//					count++;
+//
+//					if (count > 60)
+//					{
+//						free(dat);
+//						return FALSE;
+//					}
+//				}
+//			}
+//		}
+//		while (!(_findnext(idx, &fd)));
+//
+//		_findclose(idx);
+//	}
 
 
 	uh->count = count;
@@ -4947,7 +4949,7 @@ void ComputePortalVertexBuffer()
 
 		vector<SINFO_TEXTURE_VERTEX *> vTextureVertex;
 
-		int iMaxRoom = min(portals->nb_rooms, 255);
+		int iMaxRoom = min(portals->nb_rooms, 255L);
 
 		if (portals->nb_rooms > 255)
 		{
