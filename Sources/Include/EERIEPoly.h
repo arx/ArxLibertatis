@@ -59,6 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 #include "EERIETypes.h"
+#include "linux_port.h"
 
 void specialEE_RTP(D3DTLVERTEX*,D3DTLVERTEX*);
 void EERIE_CreateMatriceProj(float _fWidth,float _fHeight,float _fFOV,float _fZNear,float _fZFar);

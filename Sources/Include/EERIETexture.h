@@ -66,6 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "EERIETypes.h"
 #include <vector>
+#include "linux_port.h"
 
 using namespace std;
 

@@ -63,6 +63,7 @@ void ManageConsole();
 #define HERMESCONSOLE_H
 
 //#include <windows.h>
+#include "linux_port.h"
 
 #define MAXW 320
 #define MAXH 64

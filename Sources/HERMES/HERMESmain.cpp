@@ -65,6 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //#include <direct.h>			// _getcwd
 #include "HERMESmain.h"
 #include "HERMESnet.h"
+#include "linux_port.h"
 
 #define _CRTDBG_MAP_ALLOC
 //#include <crtdbg.h>

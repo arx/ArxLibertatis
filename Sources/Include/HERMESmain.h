@@ -63,6 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "HERMES_PAK.h"
 #include "HERMESPerf.h"
+#include "linux_port.h"
 
 //#include <windows.h>
 //#include <io.h>

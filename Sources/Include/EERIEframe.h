@@ -55,6 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //#include <ddraw.h>
 //#include <d3d.h>
 #include <ARX_Common.h>
+#include "linux_port.h"
 
 //-----------------------------------------------------------------------------
 // Flags used for the Initialize() method of a CD3DFramework object
