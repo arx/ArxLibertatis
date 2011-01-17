@@ -67,7 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <EERIEPathfinder.h>
 #include <EERIECollisionSpheres.h>
 
-#include <ARX_C_Cinematique.h>
+#include <ARX_CCinematique.h>
 #include <ARX_Collisions.h>
 #include <ARX_Damages.h>
 #include <ARX_Equipment.h>
@@ -76,7 +76,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <ARX_Minimap.h>
 #include <ARX_Missile.h>
 #include <ARX_NPC.h>
-#include <ARX_player.h>
+#include <ARX_Player.h>
 #include <ARX_Particles.h>
 #include <ARX_Paths.h>
 #include <ARX_Scene.h>
@@ -86,12 +86,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <ARX_Speech.h>
 #include <ARX_Text.h>
 #include <ARX_Time.h>
-#include "danaedlg.h"
+#include "DanaeDlg.h"
 
 #include "Danae_resource.h"
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+
+//todo remove this define
+# define GWL_HINSTANCE       (-6)
 
 extern long GLOBAL_MAGIC_MODE;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
@@ -586,7 +587,7 @@ void ARX_SCRIPT_AllowInterScriptExec()
 	{
 		EVENT_SENDER = NULL;
 
-		long numm = min(inter.nbmax, 10);
+		long numm = min(inter.nbmax, 10L);
 
 		for (long n = 0; n < numm; n++)
 		{
@@ -2167,7 +2168,7 @@ char * GetVarValueInterpretedAsText(char * temp1, EERIE_SCRIPT * esss, INTERACTI
 		sprintf(var_text, "%d", l1);
 		return var_text;
 	}
-	else if (temp1[0] == '§')
+	else if (temp1[0] == 'ï¿½')
 	{
 		l1 = GETVarValueLong(&esss->lvar, &esss->nblvar, temp1);
 		sprintf(var_text, "%d", l1);
@@ -2184,7 +2185,7 @@ char * GetVarValueInterpretedAsText(char * temp1, EERIE_SCRIPT * esss, INTERACTI
 
 		return var_text;
 	}
-	else if (temp1[0] == '£')
+	else if (temp1[0] == 'ï¿½')
 	{
 		char * tempo = GETVarValueText(&esss->lvar, &esss->nblvar, temp1);
 
@@ -2225,7 +2226,7 @@ float GetVarValueInterpretedAsFloat(char * temp1, EERIE_SCRIPT * esss, INTERACTI
 
 	}
 	else if (temp1[0] == '#')	return (float)GETVarValueLong(&svar, &NB_GLOBALS, temp1);
-	else if (temp1[0] == '§') return (float)GETVarValueLong(&esss->lvar, &esss->nblvar, temp1);
+	else if (temp1[0] == 'ï¿½') return (float)GETVarValueLong(&esss->lvar, &esss->nblvar, temp1);
 	else if (temp1[0] == '&') return GETVarValueFloat(&svar, &NB_GLOBALS, temp1);
 	else if (temp1[0] == '@') return GETVarValueFloat(&esss->lvar, &esss->nblvar, temp1);
 
@@ -2924,7 +2925,7 @@ long GetNextWord_Interpreted(INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, ch
 	{
 		sprintf(temp, "%d", GETVarValueLong(&svar, &NB_GLOBALS, temp));
 	}
-	else if (temp[0] == '§')
+	else if (temp[0] == 'ï¿½')
 	{
 		sprintf(temp, "%d", GETVarValueLong(&es->lvar, &es->nblvar, temp));
 	}
@@ -2943,7 +2944,7 @@ long GetNextWord_Interpreted(INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, ch
 		if (tempo == NULL) temp[0] = 0;
 		else strcpy(temp, tempo);
 	}
-	else if (temp[0] == '£')
+	else if (temp[0] == 'ï¿½')
 	{
 		char * tempo = GETVarValueText(&es->lvar, &es->nblvar, temp);
 
@@ -3466,7 +3467,8 @@ long MakeLocalised(char * text, _TCHAR * output, long maxsize, long lastspeechfl
 	}
 
 	_TCHAR __text[256];
-	MultiByteToWideChar(CP_ACP, 0, text, -1, __text, 256);
+	//todo cast
+	//MultiByteToWideChar(CP_ACP, 0, text, -1, __text, 256);
 	return HERMES_UNICODE_GetProfileString(__text, _T("string"), _T("error"), output, maxsize, NULL, lastspeechflag);
 }
 
@@ -3476,7 +3478,8 @@ long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, char * _lpszText, long durati
 	_TCHAR __output[4096];
 	memset(__output, 0, 4096);
 	_TCHAR __text[256];
-	MultiByteToWideChar(CP_ACP, 0, _lpszText, -1, __text, 256);
+	//todo cast
+	//MultiByteToWideChar(CP_ACP, 0, _lpszText, -1, __text, 256);
 
 	HERMES_UNICODE_GetProfileString(
 	    __text,
@@ -9491,7 +9494,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							else sv->type = TYPE_G_TEXT;
 
 							break;
-						case '£': // LOCAL TEXT
+						case 'ï¿½': // LOCAL TEXT
 							strcpy(tempp, GetVarValueInterpretedAsText(temp2, esss, io));
 
 							if (a) RemoveNumerics(tempp);
@@ -9516,7 +9519,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							else sv->type = TYPE_G_LONG;
 
 							break;
-						case '§': // LOCAL LONG
+						case 'ï¿½': // LOCAL LONG
 							ival = (long)GetVarValueInterpretedAsFloat(temp2, esss, io);
 							sv = SETVarValueLong(&esss->lvar, &esss->nblvar, temp, ival);
 
@@ -10613,7 +10616,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 												scr_timer[num2].es = es;
 												scr_timer[num2].exist = 1;
 												scr_timer[num2].io = io;
-												scr_timer[num2].msecs = (long)max(iot->anims[num]->anims[iot->animlayer[nu].altidx_cur]->anim_time, 1000);
+												scr_timer[num2].msecs = (long)max(iot->anims[num]->anims[iot->animlayer[nu].altidx_cur]->anim_time, 1000.0f);
 												scr_timer[num2].namelength = strlen(timername) + 1;
 												scr_timer[num2].name = (char *)malloc(scr_timer[num2].namelength);
 												strcpy(scr_timer[num2].name, timername);
@@ -11051,7 +11054,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							typ1	=	TYPE_FLOAT;
 							fvar1	=	(float)GETVarValueLong(&svar, &NB_GLOBALS, temp);
 							break;
-						case '§':
+						case 'ï¿½':
 							typ1	=	TYPE_FLOAT;
 							fvar1	=	(float)GETVarValueLong(&esss->lvar, &esss->nblvar, temp);
 							break;
@@ -11071,7 +11074,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							else strcpy(tvar1, tempo);
 
 							break;
-						case '£':
+						case 'ï¿½':
 							typ1	=	TYPE_TEXT;
 							tempo	=	GETVarValueText(&esss->lvar, &esss->nblvar, temp);
 
@@ -11125,7 +11128,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							typ2			=	TYPE_FLOAT;
 							fvar2			=	(float)GETVarValueLong(&svar, &NB_GLOBALS, temp3);
 							break;
-						case '§':
+						case 'ï¿½':
 							typ2			=	TYPE_FLOAT;
 							fvar2			=	(float)GETVarValueLong(&esss->lvar, &esss->nblvar, temp3);
 							break;
@@ -11145,7 +11148,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							else strcpy(tvar2, tempo);
 
 							break;
-						case '£':
+						case 'ï¿½':
 							typ2			=	TYPE_TEXT;
 							tempo			=	GETVarValueText(&esss->lvar, &esss->nblvar, temp3);
 
@@ -11427,7 +11430,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 					switch (temp1[0])
 					{
 						case '$': // GLOBAL TEXT
-						case '£': // LOCAL TEXT
+						case 'ï¿½': // LOCAL TEXT
 							ShowScriptError("Unable to execute this\nOperation on a String", cmd);
 							break;
 						case '#': // GLOBAL LONG
@@ -11439,7 +11442,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							if (sv != NULL) sv->type = TYPE_G_LONG;
 
 							break;
-						case '§': // LOCAL LONG
+						case 'ï¿½': // LOCAL LONG
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = (float)GETVarValueLong(&esss->lvar, &esss->nblvar, temp1);
 							fval = fdval + fval;
@@ -12015,7 +12018,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 					else
 					{
 						_TCHAR UText[512];
-						MultiByteToWideChar(CP_ACP, 0, tempp, -1, UText, 256);
+//						todo cast
+//						MultiByteToWideChar(CP_ACP, 0, tempp, -1, UText, 256);
 						ARX_SPEECH_Add(NULL, UText);
 					}
 
@@ -12916,7 +12920,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 					switch (temp1[0])
 					{
 						case '$': // GLOBAL TEXT
-						case '£': // LOCAL TEXT
+						case 'ï¿½': // LOCAL TEXT
 							ShowScriptError("Unable to execute this\nOperation on a String", cmd);
 							break;
 						case '#': // GLOBAL LONG
@@ -12929,7 +12933,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 								sv->type = TYPE_G_LONG;
 
 							break;
-						case '§': // LOCAL LONG
+						case 'ï¿½': // LOCAL LONG
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = (float)GETVarValueLong(&esss->lvar, &esss->nblvar, temp1);
 							fval = fval * fdval;
@@ -13059,7 +13063,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							}
 
 							break;
-						case '§':
+						case 'ï¿½':
 							ival = GETVarValueLong(&esss->lvar, &esss->nblvar, temp1);
 
 							if (!strcmp(temp, "--"))
@@ -13147,7 +13151,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 					switch (temp1[0])
 					{
 						case '$': // GLOBAL TEXT
-						case '£': // LOCAL TEXT
+						case 'ï¿½': // LOCAL TEXT
 							ShowScriptError("Unable to execute this\nOperation on a String", cmd);
 							break;
 						case '#': // GLOBAL LONG
@@ -13165,7 +13169,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							if (sv != NULL) sv->type = TYPE_G_LONG;
 
 							break;
-						case '§': // LOCAL LONG
+						case 'ï¿½': // LOCAL LONG
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = (float)GETVarValueLong(&esss->lvar, &esss->nblvar, temp1);
 
@@ -13660,7 +13664,7 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, char * name, char * content)
 				sv->type = TYPE_G_TEXT;
 
 			break;
-		case '£': // LOCAL TEXT
+		case 'ï¿½': // LOCAL TEXT
 
 			if (io == NULL) return;
 
@@ -13681,7 +13685,7 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, char * name, char * content)
 				sv->type = TYPE_G_LONG;
 
 			break;
-		case '§': // LOCAL LONG
+		case 'ï¿½': // LOCAL LONG
 
 			if (io == NULL) return;
 
