@@ -1111,7 +1111,7 @@ int HandlerMemory(size_t stSize)
 		ShowWindow(danaeApp.m_hWnd,SW_MINIMIZE|SW_HIDE);
 	}
 
-	MessageBox(NULL,"Fatal memory error!!!","Arx fatalis",MB_ICONERROR);
+	MessageBox(NULL,"Fatal memory error!!!","ARX fatalis",MB_ICONERROR);
 	exit(-1);
 }
 
@@ -1493,7 +1493,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 		else
 		{
 			Dbg_str("Exit");
-			MessageBox(NULL, "Unable to Find Data File\nPlease Reinstall ARX Fatalis", "Arx Fatalis - Error", MB_ICONEXCLAMATION | MB_OK);
+			MessageBox(NULL, "Unable to Find Data File\nPlease Reinstall ARX Fatalis", "ARX Fatalis - Error", MB_ICONEXCLAMATION | MB_OK);
 			exit(0); 
 		}
 
@@ -1514,7 +1514,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 			}
 			else
 			{
-				MessageBox(NULL, "Unable to Find Data File\nPlease Reinstall ARX Fatalis", "Arx Fatalis - Error", MB_ICONEXCLAMATION | MB_OK);
+				MessageBox(NULL, "Unable to Find Data File\nPlease Reinstall ARX Fatalis", "ARX Fatalis - Error", MB_ICONEXCLAMATION | MB_OK);
 				exit(0);
 			}
 		}
@@ -1527,7 +1527,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 			PAK_SetLoadMode(LOAD_PACK, pakfile,Project.workingdir);
 		else
 		{
-			MessageBox(NULL, "Unable to Find Data File\nPlease Reinstall ARX Fatalis", "Arx Fatalis - Error", MB_ICONEXCLAMATION | MB_OK);
+			MessageBox(NULL, "Unable to Find Data File\nPlease Reinstall ARX Fatalis", "ARX Fatalis - Error", MB_ICONEXCLAMATION | MB_OK);
 			exit(0);
 		}
 	}

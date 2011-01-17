@@ -60,10 +60,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <tchar.h>
 #include <stdio.h>
 
-#include <jpeglib.h>
-#include <jerror.h>
-#include <jconfig.h>
-#include <jmorecfg.h>
 
 #include <zlib.h>
 
@@ -73,10 +69,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEJpeg.h"
 #include "EERIEMath.h"
 
+//boolean and INT32 clash with wine
+#define HAVE_BOOLEAN 1
+#define _BASETSD_H_ 1
+#include <jpeglib.h>
+#include <jerror.h>
+#include <jconfig.h>
+#include <jmorecfg.h>
+
 #include "HERMESMain.h"
-
-
-
 
 long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 /*-----------------------------------------------------------------------------*/
@@ -3307,7 +3308,7 @@ void LookForRefinementMap(TextureContainer * tc)
 
 				if (strstr(name, str1))
 				{
-					if (!_strcasecmp((char *)data, "NONE")) tc->TextureRefinement = NULL;
+					if (!strcasecmp((char *)data, "NONE")) tc->TextureRefinement = NULL;
 					else tc->TextureRefinement =
 						    D3DTextr_CreateTextureFromFile(str2, Project.workingdir, 0, D3DTEXTR_16BITSPERPIXEL);
 
@@ -3362,7 +3363,7 @@ void LookForRefinementMap(TextureContainer * tc)
 
 				if (!strcmp(name, str1))
 				{
-					if (!_strcasecmp((char *)data, "NONE")) tc->TextureRefinement = NULL;
+					if (!strcasecmp((char *)data, "NONE")) tc->TextureRefinement = NULL;
 					else tc->TextureRefinement =
 						    D3DTextr_CreateTextureFromFile(str2, Project.workingdir, 0, D3DTEXTR_16BITSPERPIXEL);
 
@@ -3790,7 +3791,8 @@ HRESULT TextureContainer::LoadJpegFileNoDecomp(TCHAR * strPathname)
 	m_dwHeight = cinfo->image_height;
 	m_dwBPP = 24;
 	m_pJPEGData_ex = memjpeg;
-	(void)jpeg_mem_reinitsrc((void *)cinfo);
+//	todo: weird libjpeg call
+//	(void)jpeg_mem_reinitsrc((void *)cinfo);
 
 	return S_OK;
 }
