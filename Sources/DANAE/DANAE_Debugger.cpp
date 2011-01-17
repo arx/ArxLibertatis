@@ -24,17 +24,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 
 #include <stdio.h>
-#include <conio.h>
+// #include <conio.h>
 #include <string.h>
 #include <windows.h>
-#include "..\DANAE_Debugger\SCRIPT_DEBUGGER_Dialog.h"
-#include "arx_interactive.h"
-#include "arx_time.h"
-#include "eeriepoly.h"
-#include <HERMESMain.h>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+#include "../DANAE_Debugger/SCRIPT_DEBUGGER_Dialog.h"
+#include "ARX_Interactive.h"
+#include "ARX_Time.h"
+#include "EERIEPoly.h"
+#include "HERMESMain.h"
 
 typedef void (APIENTRY * CREATEDIALOG)(HWND, ScriptDebuggerInfos &);
 typedef void (APIENTRY * SETPARAMS)(ScriptDebuggerInfos &);

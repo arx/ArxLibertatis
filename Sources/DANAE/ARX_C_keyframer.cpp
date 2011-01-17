@@ -23,12 +23,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 #include <stdlib.h>
-#include "arx_c_cinematique.h"
-#include "arx_time.h"
+#include "ARX_CCinematique.h"
+#include "ARX_Time.h"
 #include "Resource.h"
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 
 /*----------------------------------------------------------------------*/
 //undo/redo
@@ -223,7 +220,7 @@ void UpDateKeyLight(int frame)
 		num2++;
 	}
 
-	//on crépie le range avec ces deux valeurs
+	//on crï¿½pie le range avec ces deux valeurs
 	kbase->light.prev = klightprev;
 	kbase->light.next = klightnext;
 

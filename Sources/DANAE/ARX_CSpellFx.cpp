@@ -57,13 +57,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //		split sol bless
 // mardi 3 juillet 2001
 //		summon 10% poulet 90% demon
-//		confuse devient -> rhaa vista au lieu de méga comunicatum
+//		confuse devient -> rhaa vista au lieu de mï¿½ga comunicatum
 //		fix des cost des spells
 // lundi 2 juillet 2001
 //		paralyse + poufs + fix time 5 secondes
 // vendredi 29 juin 2001
 // jeudi 28
-//		fix fireball pos not réinit
+//		fix fireball pos not rï¿½init
 //		rise dead + summon fix tex qui wrap -> mirror
 // jeudi 21 juin 2001
 //		virer ombrignon magic sight
@@ -76,7 +76,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //		rise dead uniqmt zombie et momie
 //		fire protection, cold, armor, lower sont mutuellement exclusifs
 // jeudi 14 juin 2001
-//		intégration des particules dand danae, poser translate, édit
+//		intï¿½gration des particules dand danae, poser translate, ï¿½dit
 // mercredi 13 juin 2001
 //		spells
 // Mardi 12 juin 2001
@@ -98,10 +98,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Mercredi 9 mai 2001
 //		Apres Editeur de particules
 //		Finition des sorts pour l'E3
-//		Ignit & douse ya plus le son si ya pas de lumières dans le rayon d'action
+//		Ignit & douse ya plus le son si ya pas de lumiï¿½res dans le rayon d'action
 //		Ignit & Douse rayon 2m50
 //		Ignit & Douse 500 ms
-//		Ignit & Douse pas de son si rien à allumer / éteindre
+//		Ignit & Douse pas de son si rien ï¿½ allumer / ï¿½teindre
 //		Magic Missile + gros au milieu + fix orientation obj 3d sur le path
 // Lundi 23 avril 2001
 //		Finition, paufinage, binding avec le monde
@@ -119,19 +119,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //		Bless
 //		Incinerate
 // Lundi 9 avril 2001
-//		Truc générique de mouche sur path Herminte terminé avec alignement sur path
+//		Truc gï¿½nï¿½rique de mouche sur path Herminte terminï¿½ avec alignement sur path
 //		Spell Make Friend (confuse)
 //		Spell Magic Missile
 // Vendredi 6 avril 2001
-//		Truc générique de mouche sur path Hermite (seb)
+//		Truc gï¿½nï¿½rique de mouche sur path Hermite (seb)
 // Jeudi 5 avril 2001
-//		Début truc générique de mouche sur path Hermite (seb)
-//		Tests du path avec bézier -> pas cool paske passe pas par les points, enfin si
+//		Dï¿½but truc gï¿½nï¿½rique de mouche sur path Hermite (seb)
+//		Tests du path avec bï¿½zier -> pas cool paske passe pas par les points, enfin si
 //		mais fo des ptains de tangeantes qui font chier
 //		Negate Magic
 //		Paralyse
 // Mercredi 4 avril 2001
-//		Tests béziers
+//		Tests bï¿½ziers
 //		Create Food -> ajout chaudron + particules
 // Mardi 3 avril 2001
 //		Spells Armor, Speed, Dispell Illusion, CreateFood
@@ -140,37 +140,37 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Vendredi 30 mars 2001
 //		Rise Dead -> fixer dans tous les angles
 // Jeudi 29 mars 2001
-//		Rune of Guarding -> + particles + 3 meshs -> trop chargé à voir
+//		Rune of Guarding -> + particles + 3 meshs -> trop chargï¿½ ï¿½ voir
 // Mardi 27 mars 2001
 //		Cure Poison
 //		Rune of Guarding
 // Lundi 26 mars 2001
-//		Début Incinerate
-//		Réunion sur les spells
+//		Dï¿½but Incinerate
+//		Rï¿½union sur les spells
 // Vendredi 23 mars 2001
-//		Ice Terminé
+//		Ice Terminï¿½
 //		Mesh Motte de glace
 // Jeudi 22 mars 2001
 //		Mesh Stalagmite
 // Mercredi 21 mars 2001
-//		Nouveaux Spells à faire: Incinerate & Ice projectile
+//		Nouveaux Spells ï¿½ faire: Incinerate & Ice projectile
 // Mardi 20 mars 2001
 //		Lightning -> texture, donc division du nombre de faces par 2
-//		Lightning -> billboard 100% correct now par rapport à beta création
-//		Summon deuxième timer pour la fermeture
+//		Lightning -> billboard 100% correct now par rapport ï¿½ beta crï¿½ation
+//		Summon deuxiï¿½me timer pour la fermeture
 // Lundi 19 mars 2001
-//		summon nettoyage + terminé
+//		summon nettoyage + terminï¿½
 // Vendredi 16 mars 2001
-//		summon debug + nettoyage + améliorations + bordure
+//		summon debug + nettoyage + amï¿½liorations + bordure
 // Jeudi 15 mars 2001
-//		summon creature déchirure + lum vol + intro + bevel + fin plat
+//		summon creature dï¿½chirure + lum vol + intro + bevel + fin plat
 //		+ billboard	+ vol light quad plats + bug fix
 // Mercredi 14 mars 2001
-//		summon creature déchirure
+//		summon creature dï¿½chirure
 // Mardi 13 mar 2001
 //		summon creature
 // Lundi 12 mar 2001
-//		cube force field -> moins speed, rotate bitmap à la pougne
+//		cube force field -> moins speed, rotate bitmap ï¿½ la pougne
 //		+ jelly mauve / vert + intro
 // Mardi 06 mar 2001
 //		recherche sur cube force field
@@ -188,33 +188,33 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //		lightning 1ers tests + vecteurs math
 //-----------------------------------------------------------------------------
 // Todo: Lightning -> collisions
-//		 Ice -> pouf comme un train à vapeur à la progression
+//		 Ice -> pouf comme un train ï¿½ vapeur ï¿½ la progression
 //		 Ice -> limiter la distance
-//		 Ice -> intégrer dans la scène (avec les lumières dessus)
+//		 Ice -> intï¿½grer dans la scï¿½ne (avec les lumiï¿½res dessus)
 //		 ForceField -> rune qui tourne
 //		 Summon -> linker avec le earthquake
 //		 Cure Poison -> changer les tex + 1 variante
 //		 Rune Of Guarding -> mesh qui va + boule + lum dyn
 //		 Rise Dead -> fixer dans tous les angles
-//		 Paralyse -> perso en noir et blanc figé
+//		 Paralyse -> perso en noir et blanc figï¿½
 //		 -> life drain, mana et harm faire une grazubu de classe
-//		 bless -> halo doré
-//		 armor -> tex sur les y avec dégradé genre super power :o) sinon modif spécular
+//		 bless -> halo dorï¿½
+//		 armor -> tex sur les y avec dï¿½gradï¿½ genre super power :o) sinon modif spï¿½cular
 //		 detect trap, disarm trap, dispell illusion, enchant weapon
-//		 magic sight, changer fov + doux, couleur, textruche (en prévoir ptet +sieures)
+//		 magic sight, changer fov + doux, couleur, textruche (en prï¿½voir ptet +sieures)
 //		 poison proj finir les collisions
-//		 cure poison bouffe mana par pj guéri
+//		 cure poison bouffe mana par pj guï¿½ri
 //		 paralyse -> plantes grimpantes + perso en noir et blanc
 //		 negate magic
-//		 todo checker fire protec, armor, cold -> annulent lower que si sort supérieur en niveau
+//		 todo checker fire protec, armor, cold -> annulent lower que si sort supï¿½rieur en niveau
 //
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "danae.h"
+#include "Danae.h"
 #include "ARX_CSpellFx.h"
-#include "EERIEDRAW.h"
+#include "EERIEDraw.h"
 
 //-----------------------------------------------------------------------------
 CSpellFx::CSpellFx() :
