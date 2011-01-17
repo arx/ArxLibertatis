@@ -242,6 +242,10 @@ void F2L(const float f, long * l)
 //		_asm	fistp DWORD PTR [eax]
 //	}
 }
+void F2L(const float f, LONG * l)
+{
+	*l = f;
+}
 D3DCOLOR EERIERGB(float r, float g, float b)
 {
 	long t[3];
