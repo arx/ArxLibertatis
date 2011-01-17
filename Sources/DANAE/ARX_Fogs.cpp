@@ -56,16 +56,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ///////////////////////////////////////////////////////////////////////////////////////
 #include "ARX_Fogs.h"
 #include "ARX_Particles.h"
-#include "ARX_time.h"
-#include "ARX_menu2.h"
+#include "ARX_Time.h"
+#include "ARX_Menu2.h"
 
 #include "EERIEMath.h"
 #include "EERIEDraw.h"
 
 #include <stdio.h>
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-
 
 EERIE_3DOBJ * fogobj = NULL;
 extern FOG_DEF fogcopy;
