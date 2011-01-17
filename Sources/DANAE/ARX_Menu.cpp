@@ -71,15 +71,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Time.h"
 #include "ARX_Equipment.h"
 #include "DanaeSaveLoad.h"
-#include "eerieapp.h"
+#include "EERIEApp.h"
 
-#include "hermesmain.h"
+#include "HERMESMain.h"
 #include "EERIEDraw.h"
 #include "EERIEMath.h"
 #include "EERIEObject.h"
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 //-----------------------------------------------------------------------------
 extern CARXTextManager * pTextManage;
 extern CDirectInput * pGetInfoDirectInput;

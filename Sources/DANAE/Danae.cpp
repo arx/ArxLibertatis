@@ -58,15 +58,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Included files
 //-----------------------------------------------------------------------------
 #include <windows.h>
-#include <new.h>
+//srsly?
+//#include <new.h>
 #include <iostream>
 #include <fstream>
-#include "danae.h"
-#include "danaedlg.h"
-#include "../danae/Danae_resource.h"
+#include "Danae.h"
+#include "DanaeDlg.h"
+#include "Danae_resource.h"
 #include "DANAE_VERSION.h"
 
-#include <HERMESmain.h>
+#include <HERMESMain.h>
 #include <HERMESConsole.h>
 #include <HERMESnet.h>
 #include <HERMES_PAK.h>

@@ -58,7 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <dinput.h>
 
 #include "ARX_Interactive.h"
-#include "ARX_PATHS.h"
+#include "ARX_Paths.h"
 #include "ARX_FTL.h"
 #include "ARX_Equipment.h"
 #include "ARX_Sound.h"
@@ -66,33 +66,31 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Levels.h"
 #include "ARX_NPC.h"
 #include "ARX_Collisions.h"
-#include "ARX_Changelevel.h"
+#include "ARX_ChangeLevel.h"
 #include "ARX_Particles.h"
 #include "ARX_Damages.h"
 #include "ARX_Speech.h"
 #include "ARX_Script.h"
-#include "ARX_time.h"
-#include "ARX_scene.h"
-#include "ARX_menu2.h"
-#include "danaedlg.h"
+#include "ARX_Time.h"
+#include "ARX_Scene.h"
+#include "ARX_Menu2.h"
+#include "DanaeDlg.h"
 
 #include "HERMESMain.h"
 
 #include "EERIEAnim.h"
 #include "EERIELight.h"
-#include "EERIEObject.H"
-#include "EERIEPOLY.H"
+#include "EERIEObject.h"
+#include "EERIEPoly.h"
 #include "EERIELinkedObj.h"
 #include "EERIECollisionSpheres.h"
 #include "EERIEPhysicsBox.h"
 #include "EERIEProgressive.h"
 #include "EERIEClothes.h"
-#include "EERIEDRAW.h"
+#include "EERIEDraw.h"
 #include "EERIEMeshTweak.h"
 
 #include <stdlib.h>
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 
 extern EERIE_CAMERA TCAM[];
 extern long FRAME_COUNT;
