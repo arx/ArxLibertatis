@@ -108,7 +108,7 @@ bool isKey(const _TCHAR * _lpszUText)
 			else
 				bSpace = true;
 		}
-		else if (_istalnum(_lpszUText[i]))
+		else if (isalnum(_lpszUText[i]))
 		{
 			if (!bAlpha)
 				bAlpha = true;
@@ -130,7 +130,7 @@ bool isNotEmpty(_TCHAR * _lpszUText)
 
 	while (i < ulTextSize)
 	{
-		if (_istalnum(_lpszUText[i]))
+		if (isalnum(_lpszUText[i]))
 		{
 			return true;
 		}
@@ -194,7 +194,7 @@ _TCHAR * CleanKey(const _TCHAR * _lpszUText)
 		{
 			bEqual = true;
 		}
-		else if (bEqual && (_istalnum(_lpszUText[ul]) ||
+		else if (bEqual && (isalnum(_lpszUText[ul]) ||
 		                    ((_lpszUText[ul] != _T(' ')) &&
 		                     (_lpszUText[ul] != _T('"')))
 		                   ))
@@ -215,7 +215,7 @@ _TCHAR * CleanKey(const _TCHAR * _lpszUText)
 
 	while (ulPos--)
 	{
-		if (_istalnum(lpszUText[ulPos]))
+		if (isalnum(lpszUText[ulPos]))
 		{
 			break;
 		}
