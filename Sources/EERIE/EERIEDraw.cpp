@@ -48,9 +48,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "HERMESMain.h"
 
-
-
-
 extern void ComputeSingleFogVertex(D3DTLVERTEX*);
 
 
@@ -292,10 +289,10 @@ BOOL TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 	F2L(cz*DIV3*ACTIVEBKG->Zmul,&posz);
 	
 	long dx,dz,fx,fz;
-	dx=max(0,posx-1);
-	fx=min(posx+1,ACTIVEBKG->Xsize-1);
-	dz=max(0,posz-1);
-	fz=min(posz+1,ACTIVEBKG->Zsize-1);
+	dx=max(0L,posx-1);
+	fx=min(posx+1,ACTIVEBKG->Xsize-1L);
+	dz=max(0L,posz-1);
+	fz=min(posz+1,ACTIVEBKG->Zsize-1L);
 	float tolerance=0.1f;
 
 	for (long kl = 0; kl < 2; kl++)

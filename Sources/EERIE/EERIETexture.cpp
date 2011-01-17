@@ -52,7 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Updates: (date) (person) (update)
 //
 // Code:	Cyril Meynier
-//			Sébastien Scieux	(JPEG & PNG)
+//			Sï¿½bastien Scieux	(JPEG & PNG)
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
@@ -146,15 +146,16 @@ unsigned int		ChunkType, ChunkTaille, ChunkCRC;
 /*-----------------------------------------------------------------------------*/
 void InverseLong(int * l)
 {
-	_asm
-	{
-		push ebx;
-		mov ebx, dword ptr[l];
-		mov eax, [ebx];
-		bswap eax;
-		mov dword ptr[ebx], eax;
-		pop ebx;
-	}
+	*l=-(*l);
+//	_asm
+//	{
+//		push ebx;
+//		mov ebx, dword ptr[l];
+//		mov eax, [ebx];
+//		bswap eax;
+//		mov dword ptr[ebx], eax;
+//		pop ebx;
+//	}
 }
 
 
@@ -1959,7 +1960,8 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 	bool bActivateBump = true;
 	char tTxt[256];
 	strcpy(tTxt, (const char *)m_strName);
-	strupr(tTxt);
+//	todo: string
+//	strupr(tTxt);
 
 	//TEXTURE_STRETCH
 	if (strstr(tTxt, "INTERFACE") ||
@@ -3073,7 +3075,7 @@ HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 	struct	jpeg_decompress_struct	* cinfo = (jpeg_decompress_struct *)m_pJPEGData;
 	long	dx, dy;
 
-	//initialisé d'abord le format output
+	//initialisï¿½ d'abord le format output
 	cinfo->out_color_space = JCS_RGB;
 	cinfo->output_components = 3;
 	jpeg_start_decompress(cinfo);
@@ -3155,7 +3157,8 @@ HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 	}
 
 	(void)jpeg_finish_decompress(cinfo);
-	(void)jpeg_mem_reinitsrc((void *)cinfo);
+//	todo: this is no libjpeg call
+//	(void)jpeg_mem_reinitsrc((void *)cinfo);
 	delete buffer;
 
 	pddsTempSurface->Unlock(0);
@@ -3407,7 +3410,7 @@ TextureContainer * LastTextureContainer = NULL;
 // Desc: Is passed a filename and creates a local Bitmap from that file.
 //       The texture can not be used until it is restored, however.
 //-----------------------------------------------------------------------------
-#include "hermesmain.h"
+#include "HERMESMain.h"
 extern long DEBUGSYS;
 
 TextureContainer * D3DTextr_CreateTextureFromFile(TCHAR * strName, char * wd , DWORD dwStage,
@@ -3662,7 +3665,7 @@ HRESULT D3DTextr_InvalidateAllTextures()
 //-----------------------------------------------------------------------------
 
 /*
-	Detruit une surface chargée
+	Detruit une surface chargï¿½e
 	seb
 */
 void D3DTextr_KillTexture(TextureContainer * tex)
@@ -3672,7 +3675,7 @@ void D3DTextr_KillTexture(TextureContainer * tex)
 }
 
 /*
-	Detruit toutes les surfaces chargées
+	Detruit toutes les surfaces chargï¿½es
 */
 void D3DTextr_KillAllTextures()
 {
@@ -3811,11 +3814,11 @@ int	Read_PNG_Signature(void)
 }
 /*-----------------------------------------------------------------------------*/
 /*
-	un chunk est composé de:
+	un chunk est composï¿½ de:
 	4 byte:taille datas
 	4 byte:type
 	des datas
-	4 byte:CRC(a testé peut etre)
+	4 byte:CRC(a testï¿½ peut etre)
 
 	<< Datas PNG en memoire.
 	>> Type du chunk, taille du chunk, et son CRC
