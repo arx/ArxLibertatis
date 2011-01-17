@@ -65,7 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //#include <ARX_StackLogger.h>
 #include <time.h>
 #include <fcntl.h>
-#include <io.h>
+//#include <io.h>
 
 
 
@@ -400,7 +400,7 @@ void ArxDebug::Log(ARX_DEBUG_LOG_TYPE eType, const char * _sMessage, ...)
 	//Treat the ... Params
 	va_list arg_ptr ;
 	va_start(arg_ptr, _sMessage);
-	_vsnprintf(sBuffer, ARXCOMMON_BUFFERSIZE, _sMessage, arg_ptr);
+	vsnprintf(sBuffer, ARXCOMMON_BUFFERSIZE, _sMessage, arg_ptr);
 	va_end(arg_ptr) ;
 
 	LogTypeManager(eType);
