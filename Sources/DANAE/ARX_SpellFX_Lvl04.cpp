@@ -54,7 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "danae.h"
+#include "Danae.h"
 
 #include <EERIEDraw.h>
 #include <EERIEMath.h>
@@ -64,7 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_SpellFx_Lvl04.h"
 #include "ARX_Particles.h"
 #include "ARX_CParticles.h"
-#include "ARX_spells.h"
+#include "ARX_Spells.h"
 #include "ARX_Time.h"
 
 
@@ -1003,7 +1003,7 @@ void CFieldProtectionPentagram::Create(EERIE_3D *pos,float rayon,char type,int d
 		this->t=MakeTCFromFile("Graph/Obj3D/textures/(Fx)_pentagram2.bmp");
 	}
 
-	//on crée le penta subdiv
+	//on crï¿½e le penta subdiv
 	int		nbs=(int)(rayon*2.f/50.f);
 	if((rayon*2.f-((float)(nbs*50)))>0.f)
 	{
@@ -1269,7 +1269,7 @@ EERIE_3D	*lvertex;
 	this->vcylinder=(D3DTLVERTEX*)malloc(nb*sizeof(D3DTLVERTEX));
 	this->icylinder=(unsigned short*)malloc((nb+2)*sizeof(short));
 
-	//on le crée
+	//on le crï¿½e
 	hp=-this->hauteur;
 	hm=0.f;
 
@@ -1328,7 +1328,7 @@ EERIE_3D	*lvertex;
 		nb--;
 	}
 
-	//on le crée
+	//on le crï¿½e
 	hp=-this->hauteur;
 	hm=this->hauteur/(float)def;
 
@@ -1851,7 +1851,7 @@ void CFieldProtection::Render(LPDIRECT3DDEVICE7 device)
 	device->SetRenderState(D3DRENDERSTATE_SRCBLEND,D3DBLEND_ONE);
 	device->SetRenderState(D3DRENDERSTATE_DESTBLEND,D3DBLEND_ONE);
 
-	//tracé du cylindre
+	//tracï¿½ du cylindre
 	if(this->tf) device->SetTexture(0,this->tf->m_pddsSurface);
 	else device->SetTexture(0,NULL);
 

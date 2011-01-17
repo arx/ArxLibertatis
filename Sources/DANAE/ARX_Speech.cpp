@@ -56,7 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 #include <stdlib.h>
 
-#include "danae.h"
+#include "Danae.h"
 #include "ARX_Interface.h"
 #include "ARX_Speech.h"
 #include "ARX_Text.h"
@@ -67,13 +67,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Loc.h"
 #include "ARX_Time.h"
 
-#include "EERIEDRAW.h"
+#include "EERIEDraw.h"
 
-#include "hermesmain.h"
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-
+#include "HERMESMain.h"
 
 //-----------------------------------------------------------------------------
 extern TextureContainer *	arx_logo_tc;
@@ -152,7 +148,7 @@ long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, _TCHAR * _lpszUText, long duration)
 			long length = _tcslen(_lpszUText);
 
 			// We allocate memory for new speech
-			speech[i].lpszUText = (_TCHAR *) malloc(min(length + 1, 4096) * sizeof(_TCHAR)); 
+			speech[i].lpszUText = (_TCHAR *) malloc(min(length + 1, 4096L) * sizeof(_TCHAR));
 
 			// Sets creation time
 			speech[i].timecreation = tim;
@@ -216,10 +212,11 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 	{
 		SelectObject(hDC, InBookFont);
 
-		GetTextExtentPoint32W(hDC,
-		                      _T("p"),
-		                      1,
-		                      &sSize);
+//		todo: wchar
+//		GetTextExtentPoint32W(hDC,
+//		                      _T(foo),
+//		                      1,
+//		                      &sSize);
 		danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 
 		sSize.cy *= 3;
@@ -490,7 +487,8 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, char * data, long param, long mo
 	long flg = 0;
 
 	_TCHAR lpszUSection[512];
-	MultiByteToWideChar(CP_ACP, 0, data, -1, lpszUSection, 512);
+//	todo: wchar cast
+//	MultiByteToWideChar(CP_ACP, 0, data, -1, lpszUSection, 512);
 
 	if (!(flags & ARX_SPEECH_FLAG_NOTEXT))
 	{
@@ -664,11 +662,11 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 						if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 						{
 							SelectObject(hDC, InBookFont);
-
-							GetTextExtentPoint32W(hDC,
-							                      speech->text,
-							                      _tcslen(speech->text),
-							                      &sSize);
+							//	todo: wchar cast
+//							GetTextExtentPoint32W(hDC,
+//							                      speech->text,
+//							                      _tcslen(speech->text),
+//							                      &sSize);
 							danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 						}
 
@@ -705,7 +703,7 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 						                    -3,
 						                    0,
 						                    -10.f + (float)DANAESIZX,
-						                    0,		//taille recalculée
+						                    0,		//taille recalculï¿½e
 						                    speech->text,
 						                    RGB(255, 255, 255),
 						                    hRgn);

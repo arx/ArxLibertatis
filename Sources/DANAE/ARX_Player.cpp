@@ -69,7 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <EERIEDraw.h>
 #include <EERIEPathfinder.h>
 
-#include "ARX_Changelevel.h"
+#include "ARX_ChangeLevel.h"
 #include "ARX_Collisions.h"
 #include "ARX_CParticles.h"
 #include "ARX_Damages.h"
@@ -89,8 +89,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Speech.h"
 #include "ARX_Spells.h"
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 extern long		USE_NEW_SKILLS;
 extern long		ARX_CONVERSATION;
 extern long		HERO_SHOW_1ST;

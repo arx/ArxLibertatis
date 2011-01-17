@@ -24,19 +24,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 /*
   vendredi 23 novembre
-    màj update (check if size > 0)
+    mï¿½j update (check if size > 0)
   vendredi 15 juin 2001
-	amélorations, rajouts de trucs genre blend (nouvel alpha pour blood par ex)
-	insertion dans l'éditeur de Danae
-	affichage dans l'éditeur
-	mise à jour avec la dll
+	amï¿½lorations, rajouts de trucs genre blend (nouvel alpha pour blood par ex)
+	insertion dans l'ï¿½diteur de Danae
+	affichage dans l'ï¿½diteur
+	mise ï¿½ jour avec la dll
 	calcul du point pour selection souris
   jeudi 31 mai code cosmetics + optims
-  mercredi 30 mai nettoyage + préparations des VB + optims draw sprite + rotated
-			-> passage de trianglefan à loop
+  mercredi 30 mai nettoyage + prï¿½parations des VB + optims draw sprite + rotated
+			-> passage de trianglefan ï¿½ loop
   mardi 29 mai optims diverses + fix spawn
   lundi 28 mai fix des upates par la dll + random color lock + fix speed (slider -> edit)
-			+ fix set params deg2rad angle à faire en amont
+			+ fix set params deg2rad angle ï¿½ faire en amont
 			+ blend + flash + texture loop
   vendredi 25 mai DLL dans danae
   mercredi 23 mai 2001 interface revue + stuff added
@@ -48,12 +48,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
   lundi 21 mai 2001 code cosmetics + fire and forget particles + texture loop on/off
 			  + interface revue
   semaine e3 sens rotation + cone revu
-  lundi 07 mai 2001 time textures animées + spray cone plus ou moins + alpha
+  lundi 07 mai 2001 time textures animï¿½es + spray cone plus ou moins + alpha
 			  + rotation
-  04 mai 2001 textures animées + fix random velocity
+  04 mai 2001 textures animï¿½es + fix random velocity
 				base size
-  03 mai 2001 interface (random) + intégration danae ok
-  02 mai 2001 classes + interface (base) + début intégration danae
+  03 mai 2001 interface (random) + intï¿½gration danae ok
+  02 mai 2001 classes + interface (base) + dï¿½but intï¿½gration danae
   30 avril 2001 classes
 
 todo:
@@ -69,20 +69,16 @@ todo:
 
 
 //-----------------------------------------------------------------------------
-#include "danae.h"
-#include "arx_cspellfx.h"
-#include "arx_cparticles.h"
-#include "arx_cparticleParams.h"
+#include "Danae.h"
+#include "ARX_CSpellFx.h"
+#include "ARX_CParticles.h"
+#include "ARX_CParticleParams.h"
 
 #include "EERIEDraw.h"
 #include "EERIEPoly.h"
 
 #include <list>
 using namespace std;
-
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 
 //-----------------------------------------------------------------------------
 CParticleManager::CParticleManager()
