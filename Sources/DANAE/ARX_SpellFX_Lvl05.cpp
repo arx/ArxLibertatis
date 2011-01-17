@@ -54,7 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "danae.h"
+#include "Danae.h"
 
 #include <EERIEDraw.h>
 #include <EERIEMath.h>
@@ -76,7 +76,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIELight.h"
 #include "EERIEObject.h"
 
-#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
+//todo what for?
+//#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
 extern CParticleManager * pParticleManager;
 
@@ -516,7 +517,7 @@ float CRuneOfGuarding::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 //-----------------------------------------------------------------------------
 void LaunchPoisonExplosion(EERIE_3D * aePos)
 {
-	// système de partoches pour l'explosion
+	// systï¿½me de partoches pour l'explosion
 	CParticleSystem * pPS = new CParticleSystem();
 	CParticleParams cp;
 	cp.iNbMax = 80; 
@@ -690,7 +691,7 @@ void CPoisonProjectile::Create(EERIE_3D _eSrc, float _fBeta)
 	fTrail = -1;
 
 	//-------------------------------------------------------------------------
-	// système de partoches
+	// systï¿½me de partoches
 	CParticleParams cp;
 	cp.iNbMax = 5;
 	cp.fLife = 2000;
@@ -775,7 +776,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 		ulCurrentTime += _ulTime;
 	}
 
-	// on passe de 5 à 100 partoches en 1.5secs
+	// on passe de 5 ï¿½ 100 partoches en 1.5secs
 	if (ulCurrentTime < 750)
 	{
 		pPS.iParticleNbMax = 2;
@@ -1005,7 +1006,7 @@ float CPoisonProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 CMultiPoisonProjectile::CMultiPoisonProjectile(LPDIRECT3DDEVICE7 m_pd3dDevice, long nbmissiles)
 {
 	SetDuration(2000);
-	uiNumber = min(5, nbmissiles);
+	uiNumber = min(5L, nbmissiles);
 	pTab	 = NULL;
 	pTab	 = new CSpellFx*[uiNumber]();
 
@@ -1649,7 +1650,7 @@ void CLevitate::Update(unsigned long _ulTime)
 	switch (this->key)
 	{
 		case 0:
-			//monté du cone
+			//montï¿½ du cone
 			a = (float) ulCurrentTime / 1000.f;
 
 			if (a > 1.f)
@@ -1890,7 +1891,7 @@ float CLevitate::Render(LPDIRECT3DDEVICE7 device)
 			break;
 	}
 
-	//tracé du cone back
+	//tracï¿½ du cone back
 	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 	SETALPHABLEND(device, TRUE);
@@ -1922,7 +1923,7 @@ float CLevitate::Render(LPDIRECT3DDEVICE7 device)
 		j++;
 	}
 
-	//tracé du cone front
+	//tracï¿½ du cone front
 	SETCULL(device, D3DCULL_CCW);
 	
 	i = cone[1].conenbfaces - 2;
@@ -1947,7 +1948,7 @@ float CLevitate::Render(LPDIRECT3DDEVICE7 device)
 		j++;
 	}
 
-	//tracé des pierres
+	//tracï¿½ des pierres
 	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
 	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
 	this->DrawStone(device);
