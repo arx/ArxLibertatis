@@ -58,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //-----------------------------------------------------------------------------
 HRESULT WriteRegKey( HKEY hKey, TCHAR* strName, TCHAR* strValue )
 {
+#ifndef LINUX_PORT	
 	LONG bResult;
 
 	bResult = RegSetValueEx( hKey, strName, 0, REG_SZ, 
@@ -66,10 +67,14 @@ HRESULT WriteRegKey( HKEY hKey, TCHAR* strName, TCHAR* strValue )
 		return E_FAIL;
 
     return S_OK;
+#else
+    return false; // FIXME -- replace with gconf or something
+#endif    
 }
 
 HRESULT WriteRegKeyValue( HKEY hKey, TCHAR* strName, DWORD val )
 {
+#ifndef LINUX_PORT	
 	LONG bResult;
 
 	bResult = RegSetValueEx( hKey, strName, 0, REG_DWORD, 
@@ -78,6 +83,9 @@ HRESULT WriteRegKeyValue( HKEY hKey, TCHAR* strName, DWORD val )
 		return E_FAIL;
 
     return S_OK;
+#else
+    return false; // FIXME --replace with gconf or something
+#endif    
 }
 
 //-----------------------------------------------------------------------------
@@ -87,6 +95,7 @@ HRESULT WriteRegKeyValue( HKEY hKey, TCHAR* strName, DWORD val )
 HRESULT ReadRegKey( HKEY hKey, TCHAR* strName, TCHAR* strValue, 
                     DWORD dwLength, TCHAR* strDefault )
 {
+#ifndef LINUX_PORT	
 	DWORD dwType;
 	LONG bResult;
 
@@ -96,9 +105,13 @@ HRESULT ReadRegKey( HKEY hKey, TCHAR* strName, TCHAR* strValue,
 		strcpy( strValue, strDefault );
 
     return S_OK;
+#else
+    return false; // FIXME -- replace with gconf or something
+#endif    
 }
 HRESULT ReadRegKeyValue( HKEY hKey, TCHAR* strName, long * val, long defaultt )
 {
+#ifndef LINUX_PORT	
 	DWORD dwType;
 	unsigned long dwLength=4;
 	LONG bResult;
@@ -106,4 +119,7 @@ HRESULT ReadRegKeyValue( HKEY hKey, TCHAR* strName, long * val, long defaultt )
 	bResult = RegQueryValueEx( hKey, strName, 0, &dwType, 
 							 (LPBYTE) val, &dwLength );
     return S_OK;
+#else
+    return false; // FIXME -- replace with gconf or something
+#endif    
 }
