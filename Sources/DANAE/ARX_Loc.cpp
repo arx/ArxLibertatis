@@ -22,18 +22,15 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include "eerieapp.h"
-#include "Hermesmain.h"
+#include "EERIEApp.h"
+#include "HERMESMain.h"
 #include "ARX_LocHash.h"
 #include "ARX_Loc.h"
-#include "Arx_Config.h"
+#include "ARX_Config.h"
 #include <tchar.h>
 #include <list>
-#include "Arx_menu2.h"
-#include "EerieTexture.h"
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+#include "ARX_Menu2.h"
+#include "EERIETexture.h"
 
 extern long GERMAN_VERSION;
 extern long FRENCH_VERSION;
@@ -76,7 +73,7 @@ bool isSection(_TCHAR * _lpszUText)
 			else
 				return false;
 		}
-		else if (_istalnum(_lpszUText[i]))
+		else if (isalnum(_lpszUText[i]))
 		{
 			if (!bFirst)
 				return false;

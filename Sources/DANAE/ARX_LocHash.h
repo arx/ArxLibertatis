@@ -22,7 +22,7 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-// Code: Didier Pédreno
+// Code: Didier Pï¿½dreno
 
 #ifndef LOC_HASH_H
 #define LOC_HASH_H
@@ -36,9 +36,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <ARX_Common.h>
 
 using namespace std;
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 
 //-----------------------------------------------------------------------------
 class CLocalisation
