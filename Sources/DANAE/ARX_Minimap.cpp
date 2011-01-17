@@ -54,20 +54,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+#include <stdio.h>
 
+#include "ARX_Text.h"
 #include "ARX_Levels.h"
 #include "ARX_Minimap.h"
-#include "ARX_Text.h"
 #include "EERIELight.h"
 #include "EERIEPhysicsBox.h"
-#include "EERIEDRAW.h"
+#include "EERIEDraw.h"
 #include "EERIEObject.h"
-#include "Hermesmain.h"
-#include "danae.h"
-
-#include <stdio.h>
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+#include "HERMESMain.h"
+#include "Danae.h"
 
 MINI_MAP_DATA minimap[MAX_MINIMAPS];
 float mini_offset_x[MAX_MINIMAPS];

@@ -26,9 +26,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 
 #include <windows.h>
-#include "arx_config.h"
-#include "danae_resource.h"
-#include "danae.h" // pour danaeApp
+#include "ARX_Config.h"
+#include "Danae_resource.h"
+#include "Danae.h" // pour danaeApp
 #include "ARX_Menu2.h"
 #include <vector>
 using namespace std;
