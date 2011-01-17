@@ -38,7 +38,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <EERIELight.h>
 #include <EERIEObject.h>
 
-#include "danae.h"
+#include "Danae.h"
 #include <ARX_Collisions.h>
 #include <ARX_Damages.h>
 #include <ARX_Equipment.h>
@@ -51,12 +51,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Scene.h"
 #include <ARX_Particles.h>
 #include <ARX_Sound.h>
-#include "ARX_SpellFX.h"
+#include "ARX_SpellFx.h"
 #include <ARX_Speech.h>
 #include <ARX_Menu.h>
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 void MakeSpCol();
 extern long WILLRETURNTOCOMBATMODE;
 extern CMenuConfig *pMenuConfig;
@@ -3079,7 +3077,7 @@ void ARX_SPELLS_Analyse()
 
 					if ( ( pente > 0.4f ) && ( pente < 2.5f ) ) //une diagonale
 					{
-						if ( ( dx < 0 ) && ( dy < 0 ) ) //on a bougé vers droite/bas
+						if ( ( dx < 0 ) && ( dy < 0 ) ) //on a bougï¿½ vers droite/bas
 						{
 							if ( lastdir != ADOWNRIGHT ) 
 							{
@@ -3087,7 +3085,7 @@ void ARX_SPELLS_Analyse()
 								cdir++;
 							}
 						}
-						else if ( ( dx > 0 ) && ( dy < 0 ) ) //on a bougé vers gauche/bas
+						else if ( ( dx > 0 ) && ( dy < 0 ) ) //on a bougï¿½ vers gauche/bas
 						{
 							if ( lastdir != ADOWNLEFT ) 
 							{
@@ -3095,7 +3093,7 @@ void ARX_SPELLS_Analyse()
 								cdir++;
 							}
 						}
-						else if ( ( dx < 0 ) && ( dy > 0 ) ) //on a bougé vers droite/haut
+						else if ( ( dx < 0 ) && ( dy > 0 ) ) //on a bougï¿½ vers droite/haut
 						{
 							if ( lastdir != AUPRIGHT ) 
 							{
@@ -3103,7 +3101,7 @@ void ARX_SPELLS_Analyse()
 								cdir++;
 							}
 						}
-						else if ( ( dx > 0 ) && ( dy > 0 ) ) //on a bougé vers gauche/haut
+						else if ( ( dx > 0 ) && ( dy > 0 ) ) //on a bougï¿½ vers gauche/haut
 						{
 							if ( lastdir != AUPLEFT ) 
 							{
@@ -3116,9 +3114,9 @@ void ARX_SPELLS_Analyse()
 					}
 				}
 
-				if ( abs( dx ) > abs( dy ) ) //mouvement latéral plus important
+				if ( abs( dx ) > abs( dy ) ) //mouvement latï¿½ral plus important
 				{
-					if ( dx < 0 ) //on a bougé vers la droite
+					if ( dx < 0 ) //on a bougï¿½ vers la droite
 					{
 						if ( lastdir != ARIGHT ) 
 						{
@@ -3126,7 +3124,7 @@ void ARX_SPELLS_Analyse()
 							cdir++;
 						}
 					}
-					else //on a bougé vers la gauche
+					else //on a bougï¿½ vers la gauche
 					{
 						if ( lastdir != ALEFT ) 
 						{
@@ -3137,7 +3135,7 @@ void ARX_SPELLS_Analyse()
 				}
 				else //mouvement vertical plus significatif
 				{
-					if ( dy < 0 ) //on a bougé vers le bas
+					if ( dy < 0 ) //on a bougï¿½ vers le bas
 					{
 						if ( lastdir != ADOWN ) 
 						{
@@ -3145,7 +3143,7 @@ void ARX_SPELLS_Analyse()
 							cdir++;
 						}
 					}
-					else //on a bougé vers le haut
+					else //on a bougï¿½ vers le haut
 					{
 						if ( lastdir != AUP ) 
 						{
@@ -3232,7 +3230,7 @@ static void ARX_SPEELS_GetMaxRect(char *_pcName)
 {
 	char tcTxt[32];
 	int iMinX,iMinY,iMaxX,iMaxY;
-	int iSizeX,iSizeY;
+	long iSizeX,iSizeY;
 
 	ARX_SPELLS_RequestSymbolDraw3(_pcName,tcTxt);
 	ReCenterSequence(tcTxt,iMinX,iMinY,iMaxX,iMaxY);
@@ -3583,8 +3581,8 @@ float ARX_SPELLS_GetManaCost(long _lNumSpell,long lNumSpellTab)
 {
 	float Player_Magic_Level;
 	Player_Magic_Level = (float) player.Full_Skill_Casting + player.Full_Attribute_Mind;
-	Player_Magic_Level= max(1,Player_Magic_Level*DIV10);
-	Player_Magic_Level= min(10,Player_Magic_Level);
+	Player_Magic_Level= max(1.0f,Player_Magic_Level*DIV10);
+	Player_Magic_Level= min(10.0f,Player_Magic_Level);
 
 	switch (_lNumSpell) 
 	{
@@ -3832,7 +3830,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 
 	if ( sp_max ) 
 	{ 
-		level = max( level, 15 );
+		level = max( level, 15L );
 	}
 	
 	if ( ( source == 0 ) && ( FINAL_RELEASE ) )
@@ -3871,8 +3869,8 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		if ( level == -1 )
 		{
 			Player_Magic_Level = (float) player.Full_Skill_Casting + player.Full_Attribute_Mind;
-			Player_Magic_Level = max( 1, Player_Magic_Level * DIV10 );
-			Player_Magic_Level = min( 10, Player_Magic_Level );
+			Player_Magic_Level = max( 1.0f, Player_Magic_Level * DIV10 );
+			Player_Magic_Level = min( 10.0f, Player_Magic_Level );
 		}
 		else 
 		{
@@ -5644,7 +5642,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			CSpellFx *pCSpellFx = NULL;
 
 			ARX_CHECK_LONG(spells[i].caster_level);   
-			pCSpellFx = new CMultiPoisonProjectile( GDevice, max( ARX_CLEAN_WARN_CAST_LONG( spells[i].caster_level ), 1 ) );
+			pCSpellFx = new CMultiPoisonProjectile( GDevice, max( ARX_CLEAN_WARN_CAST_LONG( spells[i].caster_level ), 1L ) );
 
 
 			if (pCSpellFx != NULL)
@@ -7073,7 +7071,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 					
 
 			ARX_CHECK_LONG(spells[i].caster_level);   
-			pCSpellFx = new CMassLightning( GDevice, max( ARX_CLEAN_WARN_CAST_LONG( spells[i].caster_level ), 1 ) );
+			pCSpellFx = new CMassLightning( GDevice, max( ARX_CLEAN_WARN_CAST_LONG( spells[i].caster_level ), 1L ) );
 
 		
 			if (pCSpellFx != NULL)
@@ -8014,7 +8012,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			//---------------------------------------------------------------------------------------
 			//***************************************************************************************	
 			// LEVEL 2 -----------------------------------------------------------------------------
-			case SPELL_HEAL: // guérit les ennemis collés
+			case SPELL_HEAL: // guï¿½rit les ennemis collï¿½s
 			{
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
@@ -9786,11 +9784,12 @@ void ApplySPMax()
 		
 		ARX_PLAYER_Rune_Add_All();
 		_TCHAR UText[512];
-		MultiByteToWideChar(CP_ACP, 0, "!!!!!!! FanTomAciE !!!!!!!", -1, UText, 256);
+//		todo cast
+//		MultiByteToWideChar(CP_ACP, 0, "!!!!!!! FanTomAciE !!!!!!!", -1, UText, 256);
 		ARX_SPEECH_Add(NULL, UText);		
 		player.Attribute_Redistribute+=10;
 		player.Skill_Redistribute+=50;
-		player.level=max(player.level,10);
+		player.level=max((int)player.level,10);
 		player.xp=GetXPforLevel(10);
 	}
 	else

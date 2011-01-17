@@ -60,10 +60,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Damages.h"
 #include "HERMESMain.h"
 
-#include "EERIEpoly.h"
+#include "EERIEPoly.h"
 #include "EERIELinkedObj.h"
 #include "EERIELight.h"
-#include "EERIEDRAW.h"
+#include "EERIEDraw.h"
 #include "EERIEPoly.h"
 
 #include "ARX_Player.h"
@@ -75,11 +75,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Equipment.h"
 #include "ARX_Interface.h"
 #include "ARX_Paths.h"
-#include "ARX_script.h"
-#include "ARX_time.h"
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+#include "ARX_Script.h"
+#include "ARX_Time.h"
 
 extern long REFUSE_GAME_RETURN;
 
@@ -789,7 +786,7 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, long flags, E
 		        && !(flags & (DAMAGE_TYPE_FIRE | DAMAGE_TYPE_COLD)))
 		{
 			damagesdone -= player.Full_resist_magic * DIV100 * damagesdone;
-			damagesdone = max(0, damagesdone);
+			damagesdone = max(0.0f, damagesdone);
 		}
 
 		return damagesdone;
@@ -846,7 +843,7 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, long flags, E
 			        && !(flags & (DAMAGE_TYPE_FIRE | DAMAGE_TYPE_COLD)))
 			{
 				damagesdone -= io_target->_npcdata->resist_magic * DIV100 * damagesdone;
-				damagesdone = max(0, damagesdone);
+				damagesdone = max(0.0f, damagesdone);
 			}
 
 			return damagesdone;
@@ -1381,7 +1378,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 									   )
 									{
 										dmg -= player.Full_resist_magic * DIV100 * dmg;
-										dmg = max(0, dmg);
+										dmg = max(0.0f, dmg);
 									}
 
 									if (damages[j].type & DAMAGE_TYPE_FIRE)
@@ -1425,7 +1422,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 									   )
 									{
 										dmg -= inter.iobj[i]->_npcdata->resist_magic * DIV100 * dmg;
-										dmg = max(0, dmg);
+										dmg = max(0.0f, dmg);
 									}
 
 									if (damages[j].type & DAMAGE_TYPE_COLD)

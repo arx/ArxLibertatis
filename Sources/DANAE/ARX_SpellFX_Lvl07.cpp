@@ -54,7 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "danae.h"
+#include "Danae.h"
 
 #include <EERIEDraw.h>
 #include <EERIEMath.h>
@@ -101,7 +101,7 @@ CLightning::CLightning(TextureContainer * aTC) :
 }
 
 //------------------------------------------------------------------------------
-// Params une méchante struct
+// Params une mï¿½chante struct
 //------------------------------------------------------------------------------
 
 void CLightning::BuildS(LIGHTNING * pLInfo)
