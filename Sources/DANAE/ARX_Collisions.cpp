@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 
 #include <stdlib.h>
+#include <math.h>
 #include "ARX_Collisions.h"
 #include "HERMESMain.h"
 #include "EERIEMath.h"
@@ -64,8 +65,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_NPC.h"
 #include "ARX_Time.h"
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+using std::min;
+using std::max;
 
 //-----------------------------------------------------------------------------
 #define MAX_IN_SPHERE 20
@@ -118,7 +119,7 @@ __inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 		}		
 	}
 
-	if (nearest>max(82.f,cyl->radius)) return 999999.f;
+	if (nearest > max(82.f,cyl->radius)) return 999999.f;
 
 	if (	(cyl->radius<30.f)
 		||	(cyl->height>-80.f)
@@ -1228,10 +1229,10 @@ EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere) //except source...
 
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;
-	long spx=max(px-rad,0);
-	long epx=min(px+rad,ACTIVEBKG->Xsize-1);
-	long spz=max(pz-rad,0);
-	long epz=min(pz+rad,ACTIVEBKG->Zsize-1);
+	long spx=max(px-rad,0L);
+	long epx=min(px+rad,ACTIVEBKG->Xsize-1L);
+	long spz=max(pz-rad,0L);
+	long epz=min(pz+rad,ACTIVEBKG->Zsize-1L);
 
 	for (long j=spz;j<=epz;j++)
 	for (long i=spx;i<=epx;i++) 
@@ -1272,10 +1273,10 @@ BOOL CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags,long * n
 
 	if (!(flags & CAS_NO_BACKGROUND_COL))
 	{
-		long spz=max(pz-rad,0);
-		long epz=min(pz+rad,ACTIVEBKG->Zsize-1); 
-		long spx=max(px-rad,0);
-		long epx=min(px+rad,ACTIVEBKG->Xsize-1); 
+		long spz=max(pz-rad,0L);
+		long epz=min(pz+rad,ACTIVEBKG->Zsize-1L);
+		long spx=max(px-rad,0L);
+		long epx=min(px+rad,ACTIVEBKG->Xsize-1L);
 
 		for (long j=spz;j<=epz;j++)
 		for (long i=spx;i<=epx;i++) 
