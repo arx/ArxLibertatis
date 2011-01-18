@@ -198,9 +198,8 @@ void ViewImage::DrawAllImage()
 
 			if (!danaeApp.DANAEStartRender()) continue;
 
-
-			float fDepX = ARX_CLEAN_WARN_CAST_FLOAT(max(0L, ((DANAESIZX - pTex->m_dwWidth) >> 1)));
-			float fDepY = ARX_CLEAN_WARN_CAST_FLOAT(max(0L, ((DANAESIZY - pTex->m_dwHeight) >> 1)));
+			float fDepX = ARX_CLEAN_WARN_CAST_FLOAT(max(0L, ((DANAESIZX - (long)pTex->m_dwWidth) / 2)));
+			float fDepY = ARX_CLEAN_WARN_CAST_FLOAT(max(0L, ((DANAESIZY - (long)pTex->m_dwHeight) / 2)));
 
 
 

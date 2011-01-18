@@ -438,16 +438,16 @@ long HERMES_UNICODE_GetProfileString(_TCHAR * sectionname,
 
 		if (t)
 		{
-			_tcsncpy(destination, t, min(maxsize, _tcslen(t)));
+			_tcsncpy(destination, t, min((size_t)maxsize, strlen(t)));
 		}
 		else
 		{
-			_tcsncpy(destination, defaultstring, min(maxsize, _tcslen(defaultstring)));
+			_tcsncpy(destination, defaultstring, min((size_t)maxsize, strlen(defaultstring)));
 		}
 	}
 	else
 	{
-		_tcsncpy(destination, defaultstring, min(maxsize, _tcslen(defaultstring)));
+		_tcsncpy(destination, defaultstring, min((size_t)maxsize, strlen(defaultstring)));
 	}
 
 	return 0;
@@ -477,7 +477,7 @@ DWORD PAK_UNICODE_GetPrivateProfileString(_TCHAR * _lpszSection,
 
 	if (_lpszSection[0] == _T('\0'))
 	{
-		_tcsncpy(_lpszBuffer, _lpszDefault, min(_lBufferSize, _tcslen(_lpszDefault)));
+		_tcsncpy(_lpszBuffer, _lpszDefault, min((size_t)_lBufferSize, strlen(_lpszDefault)));
 		_stprintf(_lpszBuffer, _T("%s: NOT FOUND"), _lpszSection);
 		return 0;
 	}

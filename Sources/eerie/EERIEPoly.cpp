@@ -5349,89 +5349,34 @@ void ComputePortalVertexBuffer()
 }
 
 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+long EERIERTPPoly(EERIEPOLY *ep)
+{
+	specialEE_RTP(&ep->v[0],&ep->tv[0]);
+	specialEE_RTP(&ep->v[1],&ep->tv[1]);
+	specialEE_RTP(&ep->v[2],&ep->tv[2]);	
+
+	if (ep->type & POLY_QUAD) 
+	{
+		specialEE_RTP(&ep->v[3],&ep->tv[3]);	
+
+		if ((ep->tv[0].sz<=0.f) &&
+			(ep->tv[1].sz<=0.f) &&
+			(ep->tv[2].sz<=0.f) &&
+			(ep->tv[3].sz<=0.f) ) 
+		{
+			return 0;
+		}
+	}
+	else
+	{
+		if ((ep->tv[0].sz<=0.f) &&
+			(ep->tv[1].sz<=0.f) &&
+			(ep->tv[2].sz<=0.f)  ) 
+		{
+			return 0;
+		}
+	}
+
+	return 1;
+}
  

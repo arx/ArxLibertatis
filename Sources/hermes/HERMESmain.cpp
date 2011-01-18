@@ -57,22 +57,22 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 // Desc: HERMES main functionalities   //FILES MEMORY
 
+
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <time.h>
-//#include <direct.h>			// _getcwd
 #include "HERMESMain.h"
 #include "HERMESNet.h"
 #include <ARX_Casts.h>
 
-#include <crtdefs.h>
-#include <io.h>
-
-#include "stdio.h"
-
 // TODO is this correct?
 #define _MAX_EXT 3
 #define _MAX_FNAME 512
+#define _MAX_DRIVE 1
+#define _MAX_DIR _MAX_FNAME
+
+#include <cstring>
+using namespace std;
 
 char HermesBufferWork[MAX_PATH];	// Used by FileStandardize (avoid malloc/free per call)
 
@@ -97,9 +97,9 @@ unsigned char IsIn(char * strin, char * str)
 {
 	char * tmp;
 	tmp = strstr(strin, str);
-
+	
 	if (tmp == NULL) return 0;
-
+	
 	return 1;
 }
 
@@ -113,9 +113,9 @@ unsigned char NC_IsIn(char * strin, char * str)
 	MakeUpcase(t1);
 	MakeUpcase(t2);
 	tmp = strstr(t1, t2);
-
+	
 	if (tmp == NULL) return 0;
-
+	
 	return 1;
 }
 
@@ -170,8 +170,7 @@ again:
 	strcpy(to, temp);
 }
 
-long KillAllDirectory(char * path)
-{
+long KillAllDirectory(char * path) {/* TODO
 	long idx;
 	struct _finddata_t fl;
 	char pathh[512];
@@ -202,7 +201,7 @@ long KillAllDirectory(char * path)
 		_findclose(idx);
 	}
 
-	RemoveDirectory(path);
+	RemoveDirectory(path);*/
 	return 1;
 }
 
@@ -212,8 +211,8 @@ void GetDate(HERMES_DATE_TIME * hdt)
  
 	time_t long_time;
 
-	time(&long_time);                  /* Get time as long integer. */
-	newtime = localtime(&long_time);   /* Convert to local time. */
+	time(&long_time);                  // Get time as long integer.
+	newtime = localtime(&long_time);   // Convert to local time.
 
 	if (newtime)
 	{
@@ -249,7 +248,10 @@ void HERMES_InitDebug()
 
 void MakeUpcase(char * str)
 {
-	strupr(str);
+	char * end  = str + strlen(str);
+	for(; str != end; str++) {
+		*str = static_cast<char>(toupper(*str));
+	}
 }
 
 HKEY    ConsoleKey = NULL;
@@ -515,37 +517,37 @@ char _ext[256];
 
 char * GetName(char * str)
 {
-	_splitpath(str, _drv, _dir, _name, _ext);
+	//_splitpath(str, _drv, _dir, _name, _ext); TODO
 	return _name;
 }
 
 char * GetExt(char * str)
 {
-	_splitpath(str, _drv, _dir, _name, _ext);
+	//_splitpath(str, _drv, _dir, _name, _ext); TODO
 	return _ext;
 }
 
 void SetExt(char * str, char * new_ext)
 {
-	_splitpath(str, _drv, _dir, _name, _ext);
-	_makepath(str, _drv, _dir, _name, new_ext);
+	//_splitpath(str, _drv, _dir, _name, _ext); TODO
+	//_makepath(str, _drv, _dir, _name, new_ext);
 }
 
 void AddToName(char * str, char * cat)
 {
-	_splitpath(str, _drv, _dir, _name, _ext);
-	strcat(_name, cat);
-	_makepath(str, _drv, _dir, _name, _ext);
+	//_splitpath(str, _drv, _dir, _name, _ext);
+	//strcat(_name, cat);
+	//_makepath(str, _drv, _dir, _name, _ext);
 }
 
 void RemoveName(char * str)
 {
-	_splitpath(str, _drv, _dir, _name, _ext);
-	_makepath(str, _drv, _dir, NULL, NULL);
+	//_splitpath(str, _drv, _dir, _name, _ext); TODO
+	//_makepath(str, _drv, _dir, NULL, NULL);
 }
 
 long DirectoryExist(char * name)
-{
+{/* TODO
 	long idx;
 	struct _finddata_t fd;
 
@@ -565,13 +567,13 @@ long DirectoryExist(char * name)
 		return 0;
 	}
 
-	_findclose(idx);
+	_findclose(idx);*/
 	return 1;
 }
 
 BOOL CreateFullPath(char * path)
 {
-
+/* TODO
 	char drive[_MAX_DRIVE];
 	char dir[_MAX_DIR];
 	char fname[_MAX_FNAME];
@@ -603,9 +605,58 @@ BOOL CreateFullPath(char * path)
 	}
 
 	if (DirectoryExist(path)) return TRUE;
-
+*/
 	return FALSE;
 }
+
+// TODO stubs
+
+long FileExist(char * name)
+{
+	return 0;
+}
+
+long	FileOpenRead(char * name)
+{
+	return 0;
+}
+
+long	FileSizeHandle(long handle)
+{
+	return 0;
+}
+
+long	FileOpenWrite(char * name)
+{
+	return 0;
+}
+long	FileCloseRead(long handle)
+{
+	return 0;
+}
+
+long	FileCloseWrite(long handle)
+{
+	return 0;
+}
+
+long	FileRead(long handle, void * adr, long size)
+{
+	return 0;
+}
+
+long	FileWrite(long handle, void * adr, long size)
+{
+	return 0;
+}
+long	FileSeek(long handle, long offset, long mode)
+{
+	return 0;
+}
+
+#if 0
+
+
 long FileExist(char * name)
 {
 	long i;
@@ -619,28 +670,28 @@ long FileExist(char * name)
 long	FileOpenRead(char * name)
 {
 	long	handle;
-	handle = _open((const char *)name, (int)_O_BINARY | _O_RDONLY);
+	handle = open((const char *)name, (int)O_RDONLY);
 
 	if (handle < 0)	return(0);
 
-	return(handle + 1);
+	return(handle + 1);*/ return 0;
 }
 
 long	FileSizeHandle(long handle)
 {
-	return(_tell((int)handle - 1));
+	return (_tell((int)handle - 1));
 }
 
 long	FileOpenWrite(char * name)
 {
 	int	handle;
 
-	handle = _open((const char *)name, (int)_O_BINARY | _O_CREAT | _O_TRUNC, (int)_S_IWRITE);
+	handle = open((const char *)name, (int)O_CREAT | O_TRUNC, (int)S_IWRITE);
 
 	if (handle < 0)	return(0);
 
-	_close(handle);
-	handle = _open((const char *)name, (int)_O_BINARY | _O_WRONLY);
+	close(handle);
+	handle = open((const char *)name, (int)O_WRONLY);
 
 	if (handle < 0)	return(0);
 
@@ -670,6 +721,9 @@ long	FileSeek(long handle, long offset, long mode)
 {
 	return(_lseek((int)handle - 1, (long)offset, (int)mode));
 }
+
+#endif
+
 void ExitApp(int v)
 {
 	if (MAIN_PROGRAM_HANDLE != NULL)
@@ -869,7 +923,7 @@ char	LastFolder[MAX_PATH];		// Last Folder used
 static OPENFILENAME ofn;
 
 bool HERMESFolderBrowse(char * str)
-{
+{/* TODO
 	BROWSEINFO		bi;
 	LPITEMIDLIST	liil;
 
@@ -890,12 +944,12 @@ bool HERMESFolderBrowse(char * str)
 		if (SHGetPathFromIDList(liil, LastFolder))	return TRUE;
 		else return FALSE;
 	}
-	else return FALSE;
+	else */return FALSE;
 }
 
 
 bool HERMESFolderSelector(char * file_name, char * title)
-{
+{/* TODO
 	if (HERMESFolderBrowse(title))
 	{
 		sprintf(file_name, "%s\\", LastFolder);
@@ -905,10 +959,10 @@ bool HERMESFolderSelector(char * file_name, char * title)
 	{
 		strcpy(file_name, " ");
 		return FALSE;
-	}
+	}*/ return false;
 }
 BOOL HERMES_WFSelectorCommon(PSTR pstrFileName, PSTR pstrTitleName, char * filter, long flag, long flag_operation, long max_car, HWND hWnd)
-{
+{/* TODO
 	LONG	value;
 	char	cwd[MAX_PATH];
 
@@ -945,7 +999,7 @@ BOOL HERMES_WFSelectorCommon(PSTR pstrFileName, PSTR pstrTitleName, char * filte
 		value = GetSaveFileName(&ofn);
 	}
 
-	return value;
+	return value;*/ return false;
 }
 
 int HERMESFileSelectorOpen(PSTR pstrFileName, PSTR pstrTitleName, char * filter, HWND hWnd)
@@ -1289,4 +1343,6 @@ unsigned long EndBench()
 
 	return 0;
 }
+
+
  

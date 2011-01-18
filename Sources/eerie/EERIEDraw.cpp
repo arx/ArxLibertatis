@@ -1564,3 +1564,29 @@ void EERIEDrawBitmap2DecalY(LPDIRECT3DDEVICE7 pd3dDevice,float x,float y,float s
 	SETTC(pd3dDevice,tex);
 	EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, v, 4, 0  );	
 }
+
+void SETTC(LPDIRECT3DDEVICE7 pd3dDevice, TextureContainer * tc)
+{
+	if ( (!tc) || (!tc->m_pddsSurface) )
+	{
+		pd3dDevice->SetTexture( 0, NULL );
+	}
+	else
+	{
+		if ( tc->bColorKey )
+		{
+			pd3dDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, true);
+
+			if (	(Project.bits == 16) &&
+			        (!tc->bColorKey2D)	 )
+			{
+				SetZBias( pd3dDevice, -4 );
+			}
+		}
+		else
+		{
+			pd3dDevice->SetRenderState( D3DRENDERSTATE_COLORKEYENABLE, false );
+		}
+		pd3dDevice->SetTexture(0, tc->m_pddsSurface);
+	}
+}

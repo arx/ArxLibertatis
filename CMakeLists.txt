@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(ArxFatalis)
 
+
 set(SRC_DIR Sources)
 
 include_directories(
@@ -14,6 +15,9 @@ set(CMAKE_C_COMPILER winegcc)
 set(CMAKE_CXX_COMPILER wineg++)
 
 set(CMAKE_CXX_FLAGS "-fpermissive -w") #Debug
+
+add_definitions(-m32)
+
 
 
 #Add liblub sources
@@ -43,4 +47,4 @@ add_executable(arx ${SOURCES})
 #add_executable(arx Sources/DANAE/ARX_CParticleSystem.cpp)
 
 #link
-target_link_libraries(arx wine jpeg)
+target_link_libraries(arx wine jpeg dsound.dll)
