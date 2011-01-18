@@ -44,6 +44,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //#include <stdio.h>
 //>>>>>>> Stashed changes
 
+#include <math.h>
 #include <ARX_Sound.h>
 #include <Athena.h>
 #include <ARX_Interactive.h>

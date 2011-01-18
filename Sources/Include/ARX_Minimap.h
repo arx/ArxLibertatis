@@ -65,14 +65,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 typedef struct
 {
-	TextureContainer	* tc;
-	float				offsetx; // start of scene pos x
-	float				offsety;
-	float				xratio; // multiply x by xratio to obtain real-world pos
-	float				yratio;
-	float				width; // bitmap width/height
-	float				height;
-	unsigned char		revealed[MINIMAP_MAX_X][MINIMAP_MAX_Z];
+    TextureContainer*   tc;
+    float               offsetx; // start of scene pos x
+    float               offsety;
+    float               xratio; // multiply x by xratio to obtain real-world pos
+    float               yratio;
+    float               width; // bitmap width/height
+    float               height;
+    unsigned char       revealed[MINIMAP_MAX_X][MINIMAP_MAX_Z];
 } MINI_MAP_DATA;
 
 
@@ -95,11 +95,11 @@ void ARX_MINIMAP_Reveal();
 
 typedef struct
 {
-	float	x;
-	float	y;
-	long	lvl;
-	char	string[64];
-	_TCHAR * tstring;
+    float   x;
+    float   y;
+    long    lvl;
+    char    string[64];
+    std::string tstring;
 } MAPMARKER_DATA;
 extern MAPMARKER_DATA * Mapmarkers;
 extern long Nb_Mapmarkers;

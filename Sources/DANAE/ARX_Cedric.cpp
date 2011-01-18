@@ -22,6 +22,7 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+#include <math.h>
 #include "EERIEAnim.h"
 #include "HERMESMain.h"
 #include "ARX_Collisions.h"

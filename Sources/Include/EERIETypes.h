@@ -49,7 +49,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //#include <d3d.h>
 //#include <ARX_Common.h>
 #include <d3d.h>
-//#include <tchar.h>
 
 //#pragma inline_depth (255)
 //#pragma inline_recursion (on)

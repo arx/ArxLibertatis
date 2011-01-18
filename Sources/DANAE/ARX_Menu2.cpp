@@ -496,7 +496,7 @@ void GetTextSize(HFONT _hFont, _TCHAR *_lpszUText, int *_iWidth, int *_iHeight)
 
 //-----------------------------------------------------------------------------
 
-void FontRenderText(HFONT _hFont, EERIE_3D pos, _TCHAR *_pText, COLORREF _c)
+void FontRenderText(HFONT _hFont, EERIE_3D pos, std::string& _pText, COLORREF _c)
 {
 	if(pTextManage)
 	{
@@ -516,7 +516,7 @@ void FontRenderText(HFONT _hFont, EERIE_3D pos, _TCHAR *_pText, COLORREF _c)
 
 		ARX_TEXT pText;
 		ARX_Text_Init(&pText);
-		pText.lpszUText = _pText;
+		*pText.lpszUText = _pText;
 		pText.lCol = _c;
 		pText.rRect = rRect;
 
@@ -2079,7 +2079,11 @@ static void CalculAverageWidth( HDC& _hDC )
 static void ExtractAllCreditsTextInformations(HDC& _hDC)
 {
 	//Recupere les lignes � afficher
-	wistringstream iss((char)ARXmenu.mda->str_cre_credits);
+	std::wstring temp( ARXmenu.mda->str_cre_credits.length() );
+    std::copy( ARXmenu.mda->str_cre_credits.begin(),
+                ARXmenu.mda->str_cre_credits.end(),
+                temp.begin() );
+	wistringstream iss( temp );
 	wstring phrase;
 
 	//Use to calculate the positions
@@ -2870,13 +2874,13 @@ int iDecMenuPrincipaleY=50;
 						{
 							for(int iI=1;iI<(save_c);iI++)
 							{
-								_TCHAR tex[256];
+								char tex[256];
 
 								_stprintf(tex, _T("%S"),
 									save_l[iI].name);
 								
-								wchar_t tex2[256];
-								_tcscpy(tex2,tex);
+								char tex2[256];
+								strcpy( tex2,tex );
 //								todo: string
 //								_tcsupr(tex2);
 

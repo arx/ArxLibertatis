@@ -142,7 +142,7 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
                                 HRGN hRgn = NULL,
                                 HDC hHDC = NULL);
 
-void ARX_Allocate_Text(_TCHAR *&dest, _TCHAR * id_string);
+void ARX_Allocate_Text( std::string& dest, const char* id_string);
 _TCHAR * GetFontName(char *);
 void _ShowText(char * text);
 

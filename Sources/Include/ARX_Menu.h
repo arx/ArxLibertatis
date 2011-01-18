@@ -58,25 +58,25 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_MENU_H
 #define ARX_MENU_H
 
-#include <tchar.h>
+#include <string>
 #include "EERIETexture.h"
 #include "ARX_Input.h"
 
 //-----------------------------------------------------------------------------
-#define MAX_FLYOVER	32
+#define MAX_FLYOVER 32
 typedef struct
 {
-	TextureContainer	* Background;
-	TextureContainer	* BookBackground;
-	TextureContainer	* pTexCredits;
-	float				creditspos;
-	float				creditstart;
-	_TCHAR		*		flyover[MAX_FLYOVER];
-	_TCHAR		*		str_cre_credits;
-	// New Quest Buttons Strings
-	_TCHAR		*		str_button_quickgen;
-	_TCHAR		*		str_button_skin;
-	_TCHAR		*		str_button_done;
+    TextureContainer*   Background;
+    TextureContainer*   BookBackground;
+    TextureContainer*   pTexCredits;
+    float               creditspos;
+    float               creditstart;
+    std::string         flyover[MAX_FLYOVER];
+    std::string         str_cre_credits;
+    // New Quest Buttons Strings
+    std::string         str_button_quickgen;
+    std::string         str_button_skin;
+    std::string         str_button_done;
 } MENU_DYNAMIC_DATA;
 
 // ARX_MENU_DATA contains all Menu-datas

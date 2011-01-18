@@ -273,37 +273,37 @@ void ARX_Menu_Resources_Create(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	ARXmenu.mda->pTexCredits = MakeTCFromFile("Graph\\Interface\\menus\\Menu_credits.bmp");
 	ARXmenu.mda->BookBackground = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\Char_creation_Bg.BMP");
 
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STRENGTH],			_T("system_charsheet_strength"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MIND],				_T("system_charsheet_intel"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEXTERITY],			_T("system_charsheet_Dex"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CONSTITUTION],		_T("system_charsheet_consti"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STEALTH],			_T("system_charsheet_stealth"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MECANISM],			_T("system_charsheet_mecanism"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_INTUITION],			_T("system_charsheet_intuition"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_ETHERAL_LINK],		_T("system_charsheet_etheral_link"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_OBJECT_KNOWLEDGE],	_T("system_charsheet_objknoledge"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CASTING],			_T("system_charsheet_casting"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_PROJECTILE],		_T("system_charsheet_projectile"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CLOSE_COMBAT],		_T("system_charsheet_closecombat"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEFENSE],			_T("system_charsheet_defense"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_QUICK_GENERATION], _T("system_charsheet_quickgenerate"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_DONE],			_T("system_charsheet_done"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_SKIN],			_T("system_charsheet_skin"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_ATTRIBUTES],			_T("system_charsheet_atributes"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_SKILLS],				_T("system_charsheet_skills"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_STATUS],				_T("system_charsheet_status"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_LEVEL],				_T("system_charsheet_level"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_XP],					_T("system_charsheet_xpoints"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_HP],					_T("system_charsheet_hp"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_MANA],				_T("system_charsheet_mana"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_AC],					_T("system_charsheet_AC"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_MAGIC],		_T("system_charsheet_res_magic"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_POISON],		_T("system_charsheet_res_poison"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_DAMAGE],				_T("system_charsheet_damage"));
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STRENGTH],              "system_charsheet_strength");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MIND],                  "system_charsheet_intel");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEXTERITY],             "system_charsheet_Dex");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CONSTITUTION],          "system_charsheet_consti");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STEALTH],               "system_charsheet_stealth");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MECANISM],              "system_charsheet_mecanism");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_INTUITION],             "system_charsheet_intuition");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_ETHERAL_LINK],          "system_charsheet_etheral_link");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_OBJECT_KNOWLEDGE],      "system_charsheet_objknoledge");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CASTING],               "system_charsheet_casting");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_PROJECTILE],            "system_charsheet_projectile");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CLOSE_COMBAT],          "system_charsheet_closecombat");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEFENSE],               "system_charsheet_defense");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_QUICK_GENERATION],    "system_charsheet_quickgenerate");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_DONE],                "system_charsheet_done");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_SKIN],                "system_charsheet_skin");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_ATTRIBUTES],             "system_charsheet_atributes");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_SKILLS],                 "system_charsheet_skills");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_STATUS],                 "system_charsheet_status");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_LEVEL],                  "system_charsheet_level");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_XP],                     "system_charsheet_xpoints");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_HP],                     "system_charsheet_hp");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_MANA],                   "system_charsheet_mana");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_AC],                     "system_charsheet_AC");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_MAGIC],           "system_charsheet_res_magic");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_POISON],          "system_charsheet_res_poison");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_DAMAGE],                 "system_charsheet_damage");
 
-	ARX_Allocate_Text(ARXmenu.mda->str_button_quickgen,				_T("system_charsheet_button_quickgen"));
-	ARX_Allocate_Text(ARXmenu.mda->str_button_skin,					_T("system_charsheet_button_skin"));
-	ARX_Allocate_Text(ARXmenu.mda->str_button_done,					_T("system_charsheet_button_done"));
+	ARX_Allocate_Text(ARXmenu.mda->str_button_quickgen,                 "system_charsheet_button_quickgen");
+	ARX_Allocate_Text(ARXmenu.mda->str_button_skin,                     "system_charsheet_button_skin");
+	ARX_Allocate_Text(ARXmenu.mda->str_button_done,                     "system_charsheet_button_done");
 
 	long siz;
 	char szFileName[256];
@@ -311,7 +311,7 @@ void ARX_Menu_Resources_Create(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	sprintf(szFileName, "%sLocalisation\\ucredits_%s.txt", Project.workingdir, Project.localisationpath);
 	ARXmenu.mda->str_cre_credits = (_TCHAR *) PAK_FileLoadMalloc(szFileName, &siz);
 
-	if (ARXmenu.mda->str_cre_credits &&
+/*	if (!ARXmenu.mda->str_cre_credits.empty() &&
 	        ARXmenu.mda->str_cre_credits[(siz>>1)-1] != 0)
 	{
 		_TCHAR * pTxt = (_TCHAR *)malloc(siz + 2);
@@ -319,7 +319,8 @@ void ARX_Menu_Resources_Create(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		pTxt[(siz>>1)] = 0;
 		free(ARXmenu.mda->str_cre_credits);
 		ARXmenu.mda->str_cre_credits = pTxt;
-	}
+	}*/
+    ARXmenu.mda->str_cre_credits.clear();
 
 	CreateSaveGameList();
 }
@@ -344,19 +345,19 @@ void ARX_Menu_Resources_Release(bool _bNoSound)
 		D3DTextr_KillTexture(ARXmenu.mda->BookBackground);
 		ARXmenu.mda->BookBackground = NULL;
 	}
-
+/*
 	for (long i = 0; i < MAX_FLYOVER; i++)
 	{
-		if (ARXmenu.mda->flyover[i] != NULL)
+		if ( !ARXmenu.mda->flyover[i].empty() )
 			ARX_Menu_Release_Text(ARXmenu.mda->flyover[i]);
-	}
-
+	}*/
+/*
 	ARX_Menu_Release_Text(ARXmenu.mda->str_cre_credits);
 
 	ARX_Menu_Release_Text(ARXmenu.mda->str_button_quickgen);
 	ARX_Menu_Release_Text(ARXmenu.mda->str_button_skin);
 	ARX_Menu_Release_Text(ARXmenu.mda->str_button_done);
-
+*/
 	if (ARXmenu.mda)
 	{
 		free(ARXmenu.mda);
@@ -718,7 +719,7 @@ BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			Xratio = ox;
 			Yratio = oy;
 
-			if (ARXmenu.mda->flyover[FLYING_OVER] != NULL) //=ARXmenu.mda->flyover[FLYING_OVER];
+			if (!ARXmenu.mda->flyover[FLYING_OVER].empty() ) //=ARXmenu.mda->flyover[FLYING_OVER];
 			{
 				if (FLYING_OVER != OLD_FLYING_OVER)
 				{
@@ -797,7 +798,7 @@ BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 			ePos.x = fPosX;
 			ePos.y = fPosY;
-			FontRenderText(hFontMenu, ePos, ARXmenu.mda->str_button_quickgen, Color);
+			FontRenderText(hFontMenu, ePos, ARXmenu.mda->str_button_quickgen.c_str(), Color);
 
 			//---------------------------------------------------------------------
 			// Button SKIN
@@ -846,7 +847,7 @@ BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 			ePos.x = fPosX;
 			ePos.y = fPosY;
-			FontRenderText(hFontMenu, ePos, ARXmenu.mda->str_button_skin, Color);
+			FontRenderText(hFontMenu, ePos, ARXmenu.mda->str_button_skin.c_str(), Color);
 
 			//---------------------------------------------------------------------
 			// Button DONE
@@ -910,7 +911,7 @@ BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 			ePos.x = fPosX;
 			ePos.y = fPosY;
-			FontRenderText(hFontMenu, ePos, ARXmenu.mda->str_button_done, Color);
+			FontRenderText(hFontMenu, ePos, ARXmenu.mda->str_button_done.c_str(), Color);
 		}
 	}
 

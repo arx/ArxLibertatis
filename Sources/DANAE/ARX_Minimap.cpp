@@ -874,16 +874,17 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 					if ((!fl2)
 					        && (MouseInRect(verts[0].sx, verts[0].sy, verts[2].sx, verts[2].sy)))
 					{
-						if (!Mapmarkers[i].tstring)
+						if (Mapmarkers[i].tstring.empty())
 						{
-							_TCHAR output[4096];
+							char output[4096];
 							MakeLocalised(Mapmarkers[i].string, output, 4096, 0);
 							Mapmarkers[i].tstring = (_TCHAR *)malloc((_tcslen(output) + 1) * sizeof(_TCHAR));
-							ZeroMemory(Mapmarkers[i].tstring, (_tcslen(output) + 1)*sizeof(_TCHAR));
-							_tcscpy(Mapmarkers[i].tstring, output);
+							//ZeroMemory(Mapmarkers[i].tstring, (_tcslen(output) + 1)*sizeof(_TCHAR));
+							//_tcscpy(Mapmarkers[i].tstring, output);
+							Mapmarkers[i].tstring = output;
 						}
 
-						if (Mapmarkers[i].tstring)
+						if (!Mapmarkers[i].tstring.empty())
 						{
 							RECT rRect, bRect;
 							SetRect(&bRect	, (140),	(290)
@@ -906,11 +907,12 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 
 							long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(
-							                       hFontInGameNote, Mapmarkers[i].tstring, 0, rRect);
+							                       hFontInGameNote, Mapmarkers[i].tstring.c_str(), 0, rRect);
 
 							danaeApp.DANAEEndRender();
-							_TCHAR	Page_Buffer[256];
-							_tcsncpy(Page_Buffer, Mapmarkers[i].tstring, lLengthDraw);
+							char Page_Buffer[256];
+							//_tcsncpy(Page_Buffer, Mapmarkers[i].tstring, lLengthDraw);
+							strncpy( Page_Buffer, Mapmarkers[i].tstring.c_str(), lLengthDraw );
 							Page_Buffer[lLengthDraw] = _T('\0');
 
 							DrawBookTextInRect(ARX_CLEAN_WARN_CAST_FLOAT(bRect.left), ARX_CLEAN_WARN_CAST_FLOAT(bRect.top),
@@ -955,10 +957,11 @@ void ARX_MAPMARKER_Init()
 	{
 		for (long i = 0; i < Nb_Mapmarkers; i++)
 		{
-			if (Mapmarkers[i].tstring)
-				free(Mapmarkers[i].tstring);
+			if (!Mapmarkers[i].tstring.empty())
+				//free(Mapmarkers[i].tstring);
+				Mapmarkers[i].tstring.clear();
 
-			Mapmarkers[i].tstring = NULL;
+			//Mapmarkers[i].tstring = NULL;
 		}
 
 		free(Mapmarkers);
@@ -987,10 +990,11 @@ void ARX_MAPMARKER_Add(float x, float y, long lvl, char * temp)
 		Mapmarkers[num].x = x;
 		Mapmarkers[num].y = y;
 
-		if (Mapmarkers[num].tstring)
-			free(Mapmarkers[num].tstring);
+		if (!Mapmarkers[num].tstring.empty())
+			//free(Mapmarkers[num].tstring);
+			Mapmarkers[num].tstring.clear();
 
-		Mapmarkers[num].tstring = NULL;
+		//Mapmarkers[num].tstring = NULL;
 		strcpy(Mapmarkers[num].string, temp);
 		return;
 	}
@@ -1007,7 +1011,7 @@ void ARX_MAPMARKER_Add(float x, float y, long lvl, char * temp)
 	Mapmarkers[Nb_Mapmarkers].lvl = lvl;
 	Mapmarkers[Nb_Mapmarkers].x = x;
 	Mapmarkers[Nb_Mapmarkers].y = y;
-	Mapmarkers[Nb_Mapmarkers].tstring = NULL;
+	Mapmarkers[Nb_Mapmarkers].tstring.clear();
 	strcpy(Mapmarkers[Nb_Mapmarkers].string, temp);
 	Nb_Mapmarkers++;
 }
@@ -1023,10 +1027,11 @@ void ARX_MAPMARKER_Remove(char * temp)
 		return;
 	}
 
-	if (Mapmarkers[num].tstring)
-		free(Mapmarkers[num].tstring);
+	if (!Mapmarkers[num].tstring.empty())
+		//free(Mapmarkers[num].tstring);
+		Mapmarkers[num].tstring.clear();
 
-	Mapmarkers[num].tstring = NULL;
+	//Mapmarkers[num].tstring = NULL;
 
 	for (long i = num; i < Nb_Mapmarkers - 1; i++)
 	{

@@ -121,7 +121,7 @@ extern D3DTLVERTEX LATERDRAWHALO[];
 extern EERIE_LIGHT lightparam;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern STRUCT_SPEECH speech[];
-extern _TCHAR WILLADDSPEECH[];
+extern char WILLADDSPEECH[];
 extern float PLAYER_ROTATION;
 extern float SLID_VALUE;
 
@@ -530,17 +530,19 @@ void KillInterfaceTextureContainers()
 	D3DTextr_KillTexture(ITC.pTexCornerLeft);
 	D3DTextr_KillTexture(ITC.pTexCornerRight);
 	
-	if (ITC.lpszULevel)
+		ITC.lpszULevel.clear();
+	/*if (!ITC.lpszULevel.empty() )
 	{
-		free (ITC.lpszULevel);
-		ITC.lpszULevel = NULL;
+		//free (ITC.lpszULevel);
+		//ITC.lpszULevel = NULL;
 	}
-
-	if (ITC.lpszUXp)
+*/
+    ITC.lpszUXp.clear();
+	/*if (!ITC.lpszUXp.empty())
 	{
 		free (ITC.lpszUXp);
 		ITC.lpszUXp = NULL;
-	}
+	}*/
 	
 	ITC.questbook=NULL;
 	ITC.bookmark_char=NULL;
@@ -580,8 +582,6 @@ void KillInterfaceTextureContainers()
 	ITC.pTexSpellBook=NULL;
 	ITC.pTexCornerLeft=NULL;
 	ITC.pTexCornerRight=NULL;
-	ITC.lpszULevel = NULL;
-	ITC.lpszUXp = NULL;
 }
 
 //-----------------------------------------------------------------------------
@@ -761,7 +761,7 @@ void InventoryOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forceclose
 void ARX_INTERFACE_NoteInit()
 {
 	Note.type = NOTE_TYPE_UNDEFINED;
-	Note.text = NULL;
+	Note.text.clear();
 	Note.textsize = 0;
 	
 	QuestBook.curpage=0;
@@ -772,10 +772,11 @@ void ARX_INTERFACE_NoteClear()
 {
 	Note.type = NOTE_TYPE_UNDEFINED;
 
-	if (Note.text)
+	/*if (Note.text)
 		free(Note.text);
-
-	Note.text=NULL;
+*/
+    Note.text.clear();
+	//Note.text=NULL;
 	Note.textsize=0;
 	player.Interface&=~INTER_NOTE;	
 
@@ -806,15 +807,16 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type,char * tex)
 	if (player.Interface & INTER_NOTE)
 		ARX_INTERFACE_NoteClose();
 	
-	_TCHAR output[8096];
+	char output[8096];
 	ARX_INTERFACE_BookOpenClose(2);
 	ARX_INTERFACE_NoteClear();
 	Note.type=type;
 	MakeLocalised(tex,output,8096);
-	Note.text = (_TCHAR *)malloc((_tcslen(output)+1)*sizeof(_TCHAR));
+	//Note.text = (_TCHAR *)malloc((_tcslen(output)+1)*sizeof(_TCHAR));
 
-	ZeroMemory(Note.text, (_tcslen(output)+1)*sizeof(_TCHAR));
-	_tcscpy(Note.text,output); 	
+	//ZeroMemory(Note.text, (_tcslen(output)+1)*sizeof(_TCHAR));
+	//_tcscpy(Note.text,output); 	
+	Note.text = output;
 	player.Interface|=INTER_NOTE;
 
 	if (NoteTexture)
@@ -839,7 +841,7 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type,char * tex)
 
 		Note.curpage=0;
 		Note.pages[0]=0;
-		long length=_tcslen(Note.text);
+		long length=Note.text.length();
 		long curpage=1;
 		
 		NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Ingame_books.bmp");
@@ -869,7 +871,7 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type,char * tex)
 		while(length>0)
 		{
 			long lLengthDraw=ARX_UNICODE_ForceFormattingInRect(	hFontInGameNote,
-																Note.text+lLenghtCurr,
+																Note.text.c_str() + lLenghtCurr,
 																0,
 																rRect);
 			length-=lLengthDraw;
@@ -1078,7 +1080,7 @@ void ARX_INTERFACE_NoteManage()
 				{
 					if(Note.pages[Note.curpage+1]>0)
 					{
-						_tcsncpy(Page_Buffer,Note.text+Note.pages[Note.curpage],Note.pages[Note.curpage+1]-Note.pages[Note.curpage]);
+						_tcsncpy(Page_Buffer,Note.text.c_str()+Note.pages[Note.curpage],Note.pages[Note.curpage+1]-Note.pages[Note.curpage]);
 						Page_Buffer[Note.pages[Note.curpage+1]-Note.pages[Note.curpage]]=_T('\0');
 
 						danaeApp.DANAEEndRender();
@@ -1088,7 +1090,7 @@ void ARX_INTERFACE_NoteManage()
 						
 						if(Note.pages[Note.curpage+2]>0)
 						{
-							_tcsncpy(Page_Buffer,Note.text+Note.pages[Note.curpage+1],Note.pages[Note.curpage+2]-Note.pages[Note.curpage+1]);
+							_tcsncpy(Page_Buffer,Note.text.c_str()+Note.pages[Note.curpage+1],Note.pages[Note.curpage+2]-Note.pages[Note.curpage+1]);
 							Page_Buffer[Note.pages[Note.curpage+2]-Note.pages[Note.curpage+1]]=_T('\0');
 
 							danaeApp.DANAEEndRender();
@@ -1101,7 +1103,7 @@ void ARX_INTERFACE_NoteManage()
 					{
 						if(Note.pages[Note.curpage]>=0)
 						{
-							_tcscpy(Page_Buffer,Note.text+Note.pages[Note.curpage]);
+							_tcscpy(Page_Buffer,Note.text.c_str()+Note.pages[Note.curpage]);
 
 							danaeApp.DANAEEndRender();
 							DrawBookTextInRect( NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY+NoteTextMaxy,Page_Buffer,0,0x00FF00FF, hFontInGameNote);
@@ -1117,7 +1119,7 @@ void ARX_INTERFACE_NoteManage()
 			else
 			{
 				danaeApp.DANAEEndRender();
-				DrawBookTextInRect( NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY+NoteTextMaxy,Note.text,0,0x00FF00FF, hFontInGameNote);
+				DrawBookTextInRect( NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY+NoteTextMaxy,Note.text.c_str(),0,0x00FF00FF, hFontInGameNote);
 				danaeApp.DANAEStartRender();
 			}
 		}
@@ -1151,14 +1153,14 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 		
 		if(ARXmenu.mda)
 		{
-			for (long i=0;i<MAX_FLYOVER;i++)
+		/*	for (long i=0;i<MAX_FLYOVER;i++)
 			{
 				if (ARXmenu.mda->flyover[i]!=NULL)
 					ARX_Menu_Release_Text(ARXmenu.mda->flyover[i]);
 			}
 
 			free((void*)ARXmenu.mda);
-			ARXmenu.mda=NULL;
+			ARXmenu.mda=NULL;*/
 		}
 	}
 	else
@@ -1180,33 +1182,33 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 			ARXmenu.mda = (MENU_DYNAMIC_DATA *)malloc(sizeof(MENU_DYNAMIC_DATA)); 
 			memset(ARXmenu.mda,0,sizeof(MENU_DYNAMIC_DATA));
 			
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STRENGTH],			_T("system_charsheet_strength"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MIND],				_T("system_charsheet_intel"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEXTERITY],			_T("system_charsheet_Dex"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CONSTITUTION],		_T("system_charsheet_consti"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STEALTH],			_T("system_charsheet_stealth"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MECANISM],			_T("system_charsheet_mecanism"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_INTUITION],			_T("system_charsheet_intuition"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_ETHERAL_LINK],		_T("system_charsheet_etheral_link"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_OBJECT_KNOWLEDGE],	_T("system_charsheet_objknoledge"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CASTING],			_T("system_charsheet_casting"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_PROJECTILE],		_T("system_charsheet_projectile"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CLOSE_COMBAT],		_T("system_charsheet_closecombat"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEFENSE],			_T("system_charsheet_defense"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_QUICK_GENERATION],_T("system_charsheet_quickgenerate"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_DONE],			_T("system_charsheet_done"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_SKIN],			_T("system_charsheet_skin"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_ATTRIBUTES],			_T("system_charsheet_atributes"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_SKILLS],				_T("system_charsheet_skills"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_STATUS],				_T("system_charsheet_status"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_LEVEL],				_T("system_charsheet_level"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_XP],					_T("system_charsheet_xpoints"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_HP],					_T("system_charsheet_hp"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_MANA],				_T("system_charsheet_mana"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_AC],					_T("system_charsheet_AC"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_MAGIC],		_T("system_charsheet_res_magic"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_POISON],		_T("system_charsheet_res_poison"));
-			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_DAMAGE],				_T("system_charsheet_damage"));
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STRENGTH],              "system_charsheet_strength");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MIND],                  "system_charsheet_intel");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEXTERITY],             "system_charsheet_Dex");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CONSTITUTION],          "system_charsheet_consti");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STEALTH],               "system_charsheet_stealth");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MECANISM],              "system_charsheet_mecanism");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_INTUITION],             "system_charsheet_intuition");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_ETHERAL_LINK],          "system_charsheet_etheral_link");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_OBJECT_KNOWLEDGE],      "system_charsheet_objknoledge");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CASTING],               "system_charsheet_casting");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_PROJECTILE],            "system_charsheet_projectile");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CLOSE_COMBAT],          "system_charsheet_closecombat");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEFENSE],               "system_charsheet_defense");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_QUICK_GENERATION],    "system_charsheet_quickgenerate");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_DONE],                "system_charsheet_done");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_SKIN],                "system_charsheet_skin");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_ATTRIBUTES],             "system_charsheet_atributes");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_SKILLS],                 "system_charsheet_skills");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_STATUS],                 "system_charsheet_status");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_LEVEL],                  "system_charsheet_level");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_XP],                     "system_charsheet_xpoints");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_HP],                     "system_charsheet_hp");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_MANA],                   "system_charsheet_mana");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_AC],                     "system_charsheet_AC");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_MAGIC],           "system_charsheet_res_magic");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_POISON],          "system_charsheet_res_poison");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_DAMAGE],                 "system_charsheet_damage");
 		}
 	}
 	
@@ -5077,6 +5079,7 @@ extern void ARX_PrepareBackgroundNRMLs();
 //-----------------------------------------------------------------------------
 void DANAE::ManageKeyMouse() 
 {
+    std::string willaddspeech( WILLADDSPEECH );
 	if (ARXmenu.currentmode == AMCM_OFF)
 	{
 		INTERACTIVE_OBJ * pIO = NULL;
@@ -5834,11 +5837,11 @@ void DANAE::ManageKeyMouse()
 
 									pTextManage->Clear();
 								pTextManage->AddText(InBookFont,
-																		WILLADDSPEECH,
+																		 willaddspeech,
 																	    rDraw,
 																		RGB(232,204,143),
 																		0x00FF00FF,
-																		2000+_tcslen(WILLADDSPEECH)*60);
+																		2000+strlen(WILLADDSPEECH)*60);
 								}
 
 								WILLADDSPEECH[0]=0;
@@ -5921,7 +5924,7 @@ void DANAE::ManageKeyMouse()
 
 										pTextManage->Clear();
 								pTextManage->AddText(InBookFont,
-																		WILLADDSPEECH,
+																		willaddspeech,
 																	    rDraw,
 																		RGB(232,204,143),
 																		0x00FF00FF );
@@ -6808,14 +6811,14 @@ void StdDraw(float posx,float posy,D3DCOLOR color,TextureContainer * tcc,long fl
 						if (flag & 2)
 						{
 							if (Precast[PRECAST_NUM].typ >= 0)
-								_tcscpy(WILLADDSPEECH, spellicons[Precast[PRECAST_NUM].typ].name);
+								strcpy( WILLADDSPEECH, spellicons[Precast[PRECAST_NUM].typ].name.c_str());
 
 							WILLADDSPEECHTIME = ARXTimeUL(); 
 						}
 						else
 						{
 							if (spells[i].type >= 0)
-								_tcscpy(WILLADDSPEECH, spellicons[spells[i].type].name);
+								strcpy( WILLADDSPEECH, spellicons[spells[i].type].name.c_str());
 
 							WILLADDSPEECHTIME = ARXTimeUL(); 
 						}
@@ -7201,7 +7204,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							
 							SpecialCursor=CURSOR_INTERACTION_ON;
 							FLYING_OVER = i;
-							DrawBookTextCenter( 208, 90, spellicons[i].name,0,0x00FF00FF,InBookFont);
+							DrawBookTextCenter( 208, 90, spellicons[i].name.c_str(),0,0x00FF00FF,InBookFont);
 							
 							for (long li=0;li<MAX_SPEECH;li++)
 							{
@@ -7223,7 +7226,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 									1000,
 									0.01f,
 									2,
-									INTERNATIONAL_MODE?0:max(3000, int(70*_tcslen(spellicons[i].description))));
+									INTERNATIONAL_MODE?0:max(3000, int(70*spellicons[i].description.length())));
 							}
 							
 							
@@ -7917,10 +7920,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ARX_PLAYER_ComputePlayerFullStats();
 
 		danaeApp.DANAEEndRender();
-		_stprintf(tex, _T("%s %3d"), ITC.lpszULevel, player.level);
+		_stprintf(tex, _T("%s %3d"), ITC.lpszULevel.c_str(), player.level);
 		DrawBookTextCenter( 398, 74, tex,Color,0x00FF00FF,InBookFont);
 		
-		_stprintf(tex, _T("%s %8d"), ITC.lpszUXp, player.xp);
+		_stprintf(tex, _T("%s %8d"), ITC.lpszUXp.c_str(), player.xp);
 		DrawBookTextCenter( 510, 74, tex, Color,0x00FF00FF,InBookFont);
 		danaeApp.DANAEStartRender();
 
@@ -8127,7 +8130,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		}
 		
 		//------------------------------ SEB 04/12/2001
-		if (ARXmenu.mda && ARXmenu.mda->flyover[FLYING_OVER]) //=ARXmenu.mda->flyover[FLYING_OVER];
+		if (ARXmenu.mda && !ARXmenu.mda->flyover[FLYING_OVER].empty()) //=ARXmenu.mda->flyover[FLYING_OVER];
 		{
 			if( (FLYING_OVER!=OLD_FLYING_OVER)||
 				(INTERNATIONAL_MODE) )
@@ -8144,12 +8147,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 				if (FLYING_OVER == WND_XP)
 				{
-					_TCHAR tex[512];
-					_stprintf(tex, _T("%s %8d"), ARXmenu.mda->flyover[WND_XP], GetXPforLevel(player.level+1)-player.xp);
+					char tex[512];
+					_stprintf(tex, _T("%s %8d"), ARXmenu.mda->flyover[WND_XP].c_str(), GetXPforLevel(player.level+1)-player.xp);
+            std::string tex_string( tex );
 					UNICODE_ARXDrawTextCenteredScroll(	(DANAESIZX*0.5f),
 						4,
 						(DANAECENTERX)*0.82f,
-						tex,
+						tex_string,
 						RGB(232+t,204+t,143+t),
 						0x00FF00FF,
 						hFontInGame,
@@ -8170,7 +8174,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						1000,
 						0.01f,
 						3,
-						INTERNATIONAL_MODE?0:max(3000, int(70*_tcslen(ARXmenu.mda->flyover[FLYING_OVER]))));
+						INTERNATIONAL_MODE?0:max(3000, int(70*ARXmenu.mda->flyover[FLYING_OVER].length())));
 				}
 			}
 		}
@@ -8509,9 +8513,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 			
 			for (long i=0; i<nb_PlayerQuest; i++)
 			{
-				if (PlayerQuest[i].localised != NULL)
+				if ( !PlayerQuest[i].localised.empty() )
 				{
-					lLenght += _tcslen(PlayerQuest[i].localised);
+					lLenght += PlayerQuest[i].localised.length();
 				}
 			}
 			
@@ -8520,9 +8524,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 			
 			for (int i=0; i<nb_PlayerQuest; i++)
 			{
-				if (PlayerQuest[i].localised != NULL)
+				if ( !PlayerQuest[i].localised.empty() )
 				{
-					_tcscat(lpszQuests, PlayerQuest[i].localised);
+					strcat( lpszQuests, PlayerQuest[i].localised.c_str());
 					_tcscat(lpszQuests, _T("\n\n"));
 					lLenght+=2;
 				}

@@ -23,14 +23,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include <vector>
-#include <string>
-#include <stdio.h>
 #include "EERIEMath.h"
 #include "ARX_Menu2.h"
 #include "ARX_GlobalMods.h"
 #include "ARX_Time.h"
-#include <d3d.h>
+//#include <d3d.h>
+#include <string>
+#include <stdio.h>
+#include <vector>
 
 
 bool bUSE_D3DFOG_INTER;

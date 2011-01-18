@@ -2008,8 +2008,8 @@ void LoadSysTextures()
 
 	// Magic_Sight Level 1
 	current=&spellicons[SPELL_MAGIC_SIGHT];	
-	ARX_Allocate_Text(current->name, _T("system_spell_name_magic_sight"));
-	ARX_Allocate_Text(current->description, _T("system_spell_description_magic_sight"));
+	ARX_Allocate_Text(current->name, "system_spell_name_magic_sight");
+	ARX_Allocate_Text(current->description, "system_spell_description_magic_sight");
 	current->level=1;
 	current->spellid=SPELL_MAGIC_SIGHT;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_magic_sight.bmp");
@@ -2688,11 +2688,13 @@ void ClearSysTextures()
 
 	for (i=0;i<SPELL_COUNT;i++)
 	{
-		if (spellicons[i].name)
-			free(spellicons[i].name);
+		if (!spellicons[i].name.empty())
+			//free(spellicons[i].name);
+			spellicons[i].name.clear();
 
-		if (spellicons[i].description)
-			free(spellicons[i].description);
+		if (!spellicons[i].description.empty())
+			//free(spellicons[i].description);
+			spellicons[i].description.clear();
 	}
 }
 

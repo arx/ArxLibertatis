@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 #define DIRECTINPUT_VERSION 0x0700
 #include <dinput.h>
+#include <math.h>
 
 #include "ARX_Interactive.h"
 #include "ARX_Paths.h"

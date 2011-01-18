@@ -465,56 +465,60 @@ long UNICODE_ARXDrawTextCenter(float x, float y, _TCHAR * str, COLORREF col, COL
 long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, std::string& str, COLORREF col, COLORREF bcol, HFONT font, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut)
 {
 
-	RECT rRect;
-	ARX_CHECK_LONG(y);
-	ARX_CHECK_LONG(x + x2);   //IF OK, x - x2 cannot overflow
-	rRect.left	=	ARX_CLEAN_WARN_CAST_LONG(x - x2);
-	rRect.top	=	ARX_CLEAN_WARN_CAST_LONG(y);
-	rRect.right	=	ARX_CLEAN_WARN_CAST_LONG(x + x2);
+    RECT rRect;
+    ARX_CHECK_LONG(y);
+    ARX_CHECK_LONG(x + x2);   //IF OK, x - x2 cannot overflow
+    rRect.left = ARX_CLEAN_WARN_CAST_LONG(x - x2);
+    rRect.top = ARX_CLEAN_WARN_CAST_LONG(y);
+    rRect.right = ARX_CLEAN_WARN_CAST_LONG(x + x2);
 
 
-	if (pTextManage)
-	{
-		pTextManage->AddText(font,
-		                     str,
-		                     rRect,
-		                     col,
-		                     bcol,
-		                     iTimeOut,
-		                     iTimeScroll,
-		                     fSpeed,
-		                     iNbLigne
-		                    );
+    if (pTextManage)
+    {
+        pTextManage->AddText(font,
+                             str,
+                             rRect,
+                             col,
+                             bcol,
+                             iTimeOut,
+                             iTimeScroll,
+                             fSpeed,
+                             iNbLigne
+                            );
 
-		return ARX_CLEAN_WARN_CAST_LONG(x2);
-	}
+        return ARX_CLEAN_WARN_CAST_LONG(x2);
+    }
 
-	return 0;
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
-void ARX_Allocate_Text(_TCHAR *&dest, _TCHAR * id_string)
+void ARX_Allocate_Text( std::string& dest, const char* id_string)
 {
-	if (dest != NULL)
-	{
-		free(dest);
-		dest = NULL;
-	}
+/*
+    if (dest != NULL)
+    {
+        free(dest);
+        dest = NULL;
+    }
+*/
+    dest.clear();
 
-	_TCHAR output[4096];
-	PAK_UNICODE_GetPrivateProfileString(id_string, _T("string"), _T("default"), output, 4096, NULL);
-	dest = (_TCHAR *)malloc((_tcslen(output) + 1) * sizeof(_TCHAR));
-	_tcscpy(dest, output);
+    char output[4096];
+    PAK_UNICODE_GetPrivateProfileString(id_string, _T("string"), _T("default"), output, 4096, NULL);
+    //dest = (_TCHAR *)malloc((_tcslen(output) + 1) * sizeof(_TCHAR));
+    dest = output;
+    //_tcscpy(dest, output);
 }
 
 //-----------------------------------------------------------------------------
 struct _FONT_HEADER
 {
-	ULONG	ulVersion;
-	USHORT 	usNumTables;
-	USHORT 	usSearchRange;
-	USHORT 	usEntrySelector;
-	USHORT 	usRangeShift;
+    ULONG   ulVersion;
+    USHORT  usNumTables;
+    USHORT  usSearchRange;
+    USHORT  usEntrySelector;
+    USHORT  usRangeShift;
 };
 
 //-----------------------------------------------------------------------------
@@ -872,7 +876,7 @@ bool CARXTextManager::AddText(ARX_TEXT * _pArxText)
                     {
                         SelectObject(hDC, pArxText->hFont);
                         GetTextExtentPoint(hDC,
-                                          pArxText->lpszUText,
+                                          pArxText->lpszUText->c_str(),
                                           pArxText->lpszUText->length(),
                                           &sSize);
                         danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
@@ -989,7 +993,7 @@ void CARXTextManager::Render()
 			                         pArxText->rRect.top - pArxText->fDeltaY,
 			                         ARX_CLEAN_WARN_CAST_FLOAT(pArxText->rRect.right),
 			                         0,
-			                         pArxText->lpszUText,
+			                         pArxText->lpszUText->c_str(),
 			                         pArxText->lCol,
 			                         pArxText->lBkgCol,
 			                         pArxText->hFont,
@@ -1195,7 +1199,7 @@ void ARX_Text_Init()
 
 	lpszFontIngame = GetFontName(tx);
 
-	if (Unicows_AddFontResourceW((wchar_t*)wtx) == 0)
+	if (Unicows_AddFontResourceW(wtx) == 0)
 	{
 		FontError();
 	}
@@ -1211,7 +1215,7 @@ void ARX_Text_Init()
 
 	lpszFontMenu = GetFontName(tx);
 
-	if (Unicows_AddFontResourceW((wchar_t*)wtx) == 0)
+	if (Unicows_AddFontResourceW(wtx) == 0)
 	{
 		FontError();
 	}

@@ -59,9 +59,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //#define D3D_OVERLOADS
 //
 //#include <d3d.h>
-#include <algorithm>
 #include "EERIETypes.h"
 #include "EERIEPoly.h"
+#include <algorithm>
 //#include "ARX_Common.h"
 using std::min;
 using std::max;
