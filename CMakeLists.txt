@@ -10,6 +10,10 @@ include_directories(
 	#/usr/include/wine/msvcrt
 )
 
+#wine compiler
+set(CMAKE_CXX_COMPILER /usr/bin/wineg++)
+set(CMAKE_C_COMPILER /usr/bin/winegcc)
+
 set(CMAKE_CXX_FLAGS "-fpermissive -w") #Debug
 
 #Add liblub sources
