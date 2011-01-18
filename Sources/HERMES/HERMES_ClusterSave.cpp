@@ -23,6 +23,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 #include <vector>
+#include <string>
+#include <streambuf>
+#include <istream>
+#include <fstream>
+#include <sstream>
 #include <windows.h>
 #include "HERMES_ClusterSave.h"
 #include "HERMES_hachage.h"
