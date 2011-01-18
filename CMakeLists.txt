@@ -10,6 +10,9 @@ include_directories(
 	#/usr/include/wine/msvcrt
 )
 
+set(CMAKE_C_COMPILER winegcc)
+set(CMAKE_CXX_COMPILER wineg++)
+
 set(CMAKE_CXX_FLAGS "-fpermissive -w") #Debug
 
 
@@ -17,12 +20,12 @@ set(CMAKE_CXX_FLAGS "-fpermissive -w") #Debug
 set(SOURCE_DIRS
 	ArxCommon
 	Athena
-    DANAE
+    danae
     DANAE_Debugger
-    EERIE
-    HERMES
+    eerie
+    hermes
     Mercury
-    MINOS
+    minos
 )
 foreach(SOURCE_DIR ${SOURCE_DIRS})
     file(GLOB GLOB_RESULT ${SRC_DIR}/${SOURCE_DIR}/*.cpp)

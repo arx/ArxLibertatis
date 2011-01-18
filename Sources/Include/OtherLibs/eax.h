@@ -74,7 +74,8 @@ extern "C" {
 	typedef ALenum(*EAXGet)(const GUID *, ALuint, ALuint, ALvoid *, ALuint);
 #endif
 
-#pragma pack(push, 4)
+/* winemaker: #pragma pack(push, 4) */
+#include <pshpack4.h>
 
 	/*
 	* EAX 2.0 listener property set {0306A6A8-B224-11d2-99E5-0000E8D8C722}
@@ -448,7 +449,8 @@ extern "C" {
 #define EAX_MATERIAL_CURTAINROOMRATIO      1.00f
 
 
-#pragma pack(pop)
+/* winemaker: #pragma pack(pop) */
+#include <poppack.h>
 
 #ifdef __cplusplus
 }

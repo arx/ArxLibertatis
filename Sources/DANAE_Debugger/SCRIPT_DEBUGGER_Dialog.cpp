@@ -51,7 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdio.h>
 
 #ifndef  __RESOURCE_H
-#include "Resource.h"
+#include "resource.h"
 #endif
 
 HINSTANCE ghInstance;
