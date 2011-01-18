@@ -77,19 +77,19 @@ typedef enum _ARX_TEXT_TYPE
 //-----------------------------------------------------------------------------
 typedef struct _ARX_TEXT
 {
-	ARX_TEXT_TYPE	eType;
-	HFONT			hFont;
-	RECT			rRect;
-	RECT			rRectClipp;
-	_TCHAR		*	lpszUText;
-	float			fDeltaY;
-	float			fSpeedScrollY;
-	long			lCol;
-	long			lBkgCol;
-	long			lTimeScroll;
-	long			lTimeOut;
-	long			lTailleLigne;
-	int				iNbLineClip;
+    ARX_TEXT_TYPE   eType;
+    HFONT           hFont;
+    RECT            rRect;
+    RECT            rRectClipp;
+    std::string*    lpszUText;
+    float           fDeltaY;
+    float           fSpeedScrollY;
+    long            lCol;
+    long            lBkgCol;
+    long            lTimeScroll;
+    long            lTimeOut;
+    long            lTailleLigne;
+    int             iNbLineClip;
 } ARX_TEXT;
 
 //-----------------------------------------------------------------------------
@@ -104,7 +104,7 @@ class CARXTextManager
 		CARXTextManager();
 		~CARXTextManager();
 	public:
-		bool AddText(HFONT, _TCHAR *, RECT &, long _lCol = -1, long _lBkgCol = 0, long _lTimeOut = 0, long _lTimeScroll = 0, float _fSpeedScroll = 0.f, int iNbLigneClipp = 0);
+		bool AddText(HFONT, std::string&, RECT &, long _lCol = -1, long _lBkgCol = 0, long _lTimeOut = 0, long _lTimeScroll = 0, float _fSpeedScroll = 0.f, int iNbLigneClipp = 0);
 		bool AddText(ARX_TEXT *);
 		void Update(float);
 		void Render();
@@ -132,7 +132,7 @@ float DrawBookTextInRect(float x, float y, float maxx, float maxy, _TCHAR * text
 void DrawBookTextCenter(float x, float y, _TCHAR * text, COLORREF col, COLORREF col2, HFONT font);
 long UNICODE_ARXDrawTextCenter(float x, float y, _TCHAR * str, COLORREF col, COLORREF bcol, HFONT font);
  
-long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, _TCHAR * str, COLORREF col, COLORREF bcol, HFONT font, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut = INT_MAX);
+long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, std::string& str, COLORREF col, COLORREF bcol, HFONT font, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut = INT_MAX);
 long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, _TCHAR * _lpszUText, int _iSpacingY, RECT _rRect);
 long ARX_UNICODE_DrawTextInRect(float x, float y,
                                 float maxx, float maxy,

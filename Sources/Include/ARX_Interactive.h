@@ -60,7 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 //#include "Danae.h"
 #include "EERIEPoly.h"
-#include <tchar.h>
+#include <string>
 
 //-----------------------------------------------------------------------------
 #define MAX_LINKS 12
@@ -89,15 +89,15 @@ typedef struct
 
 typedef struct
 {
-	short		exist;
-	short		selected;
-	_TCHAR		UName[64];
-	char		name[64];
-	long		link[MAX_LINKS];
-	char		lnames[MAX_LINKS][64];
-	EERIE_3D	pos;
-	EERIE_S2D	bboxmin;
-	EERIE_S2D	bboxmax;
+    short       exist;
+    short       selected;
+    std::string UName;
+    char        name[64];
+    long        link[MAX_LINKS];
+    char        lnames[MAX_LINKS][64];
+    EERIE_3D    pos;
+    EERIE_S2D   bboxmin;
+    EERIE_S2D   bboxmax;
 } ARX_NODE;
 
 typedef struct

@@ -30,6 +30,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //
 ///////////////////////////////////////////////////////////////////////////////
+//<<<<<<< Updated upstream
 #include <stdio.h>
 #include <list>
 #include <algorithm>
@@ -39,21 +40,25 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <istream>
 #include <fstream>
 #include <sstream>
+//=======
+//#include <stdio.h>
+//>>>>>>> Stashed changes
 
 #include <ARX_Sound.h>
+#include <Athena.h>
+#include <ARX_Interactive.h>
+#include "ARX_Menu2.h"
 #include <HERMESMain.h>
-#include <HERMES_PAK.h>
+//#include <HERMES_PAK.h>
 #include <EERIEMath.h>
 #include <ARX_NPC.h>
-#include <ARX_Interactive.h>
 #include <ARX_Player.h>
-#include <ARX_Script.h>
+//#include <ARX_Script.h>
 #include <ARX_Particles.h>
-#include "ARX_Menu2.h"
-#include <Athena.h>
-#include "EERIEApp.h"
+//#include "EERIEApp.h"
+//#include <list>
 
-using namespace std;
+//using namespace std;
 
 using namespace ATHENA;
 
@@ -94,7 +99,7 @@ enum ParseIniFileEnum
 
 typedef unsigned long(* ParseIniFileCallback)(const char * lpszText);
 
-static enum PlayingAmbianceType
+enum PlayingAmbianceType
 {
 	PLAYING_AMBIANCE_MENU,
 	PLAYING_AMBIANCE_SCRIPT,

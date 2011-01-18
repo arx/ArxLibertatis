@@ -70,7 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 
-char HermesBufferWork[_MAX_PATH];	// Used by FileStandardize (avoid malloc/free per call)
+char HermesBufferWork[MAX_PATH];	// Used by FileStandardize (avoid malloc/free per call)
 
 UINT GaiaWM = 0;
 HWND MAIN_PROGRAM_HANDLE = NULL;

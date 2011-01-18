@@ -29,11 +29,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <Athena_Types.h>
 
-#ifndef AAL_APIDLL
+/*#ifndef AAL_APIDLL
 #define AAL_APIFUNC __declspec(dllimport)
 #else
 #define AAL_APIFUNC __declspec(dllexport)
-#endif
+#endif*/
+#define AAL_APIFUNC
 
 namespace ATHENA
 {

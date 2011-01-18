@@ -55,22 +55,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2010 ARKANE Studios SA. All rights reserved
 /////////////////////////////////////////////////////////////////////////////////////
-#pragma once
+#ifndef ARX_COMMON_H
+#define ARX_COMMON_H
+//#pragma once
 
 /* ---------------------------------------------------------
 						Include
 ------------------------------------------------------------*/
 
-#include <assert.h>
-#include <limits.h>
-#include <stdio.h>
-#include <iostream>
+//#include <assert.h>
+//#include <limits.h>
+//#include <stdio.h>
 #include <fstream>
 #include <sstream>
-#include <string>
-#include <stdarg.h>
+#include <iostream>
+//#include <string>
+//#include <stdarg.h>
 //#include <wtypes.h>
-#include <time.h>
+//#include <time.h>
 
 /* ---------------------------------------------------------
 					     Break
@@ -283,3 +285,5 @@ class ArxLogTag
 		}
 
 };
+#endif // ARX_COMMON_H
+

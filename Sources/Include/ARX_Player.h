@@ -58,7 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_PLAYER_H
 #define ARX_PLAYER_H
 
-#include <tchar.h>
+#include <string>
 #include "EERIEPoly.h"
 #include "ARX_Spells.h"
 
@@ -255,8 +255,8 @@ typedef struct
 #define MAX_QUESTS 100
 typedef struct
 {
-	char	* ident;
-	_TCHAR	* localised;
+    char* ident;
+    std::string localised;
 } STRUCT_QUEST;
 
 //-----------------------------------------------------------------------------

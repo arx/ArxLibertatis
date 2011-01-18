@@ -143,11 +143,10 @@ long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, _TCHAR * _lpszUText, int _i
 
 				for (; iTemp < iLenght ; iTemp++)
 				{
-//					todo: cast
-//					GetTextExtentPoint32W(hDC,
-//					                      &_lpszUText[iTemp],
-//					                      1,
-//					                      &sSize);
+					GetTextExtentPoint(hDC,
+					                      &_lpszUText[iTemp],
+					                      1,
+					                      &sSize);
 					{
 						if ((_lpszUText[iTemp] == _T('\n')) ||
 						        (_lpszUText[iTemp] == _T('*')))
@@ -227,11 +226,10 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, _TCHAR * _lpszUText, int _iSpacingY,
 
 		for (; iTemp < iLenght; iTemp++)
 		{
-//			todo: cast
-//			GetTextExtentPoint32W(_hDC,
-//			                      &_lpszUText[iTemp],
-//			                      1,
-//			                      &sSize);
+			GetTextExtentPoint(_hDC,
+			                      &_lpszUText[iTemp],
+			                      1,
+			                      &sSize);
 
 			if ((_lpszUText[iTemp] == _T('\n')) ||
 			        (_lpszUText[iTemp] == _T('*')))
@@ -441,20 +439,18 @@ long UNICODE_ARXDrawTextCenter(float x, float y, _TCHAR * str, COLORREF col, COL
 
 
 			SIZE siz;
-//			todo: cast
-//			GetTextExtentPoint32W(hDC,         // handle to DC
-//			                        str,           // character string
-//			                        _tcslen(str),   // number of characters
-//			                        &siz          // size
-//			                       );
+			GetTextExtentPoint(hDC,         // handle to DC
+			                        str,           // character string
+			                        _tcslen(str),   // number of characters
+			                        &siz          // size
+			                       );
 			RECT rect;
 			rect.top = (long)y;
 			rect.bottom = (long)999;
 			rect.left = (long)x - (siz.cx >> 1);
 			rect.right = (long)999;
 
-//			todo: cast
-//			TextOutW(hDC, rect.left, rect.top, str, _tcslen(str));
+			TextOut(hDC, rect.left, rect.top, str, _tcslen(str));
 
 			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 			return siz.cx;
@@ -466,7 +462,7 @@ long UNICODE_ARXDrawTextCenter(float x, float y, _TCHAR * str, COLORREF col, COL
 
 
 
-long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, _TCHAR * str, COLORREF col, COLORREF bcol, HFONT font, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut)
+long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, std::string& str, COLORREF col, COLORREF bcol, HFONT font, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut)
 {
 
 	RECT rRect;
@@ -654,7 +650,7 @@ _TCHAR * GetFontName(char * _lpszFileName)
 						SetFilePointer(hFile, FTH.ulOffset + FNH.usOffsetStorage + FNN.usStringOffset, NULL, FILE_BEGIN);
 						
 
-						wchar_t szName[256];
+						_TCHAR szName[256];
 
 
 
@@ -773,20 +769,20 @@ CARXTextManager::~CARXTextManager()
 }
 
 //-----------------------------------------------------------------------------
-bool CARXTextManager::AddText(HFONT _hFont, _TCHAR * _lpszUText, RECT & _rRect, long _lCol, long _lBkgCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp)
+bool CARXTextManager::AddText(HFONT _hFont, std::string& _lpszUText, RECT & _rRect, long _lCol, long _lBkgCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp)
 {
-	if ((_lpszUText) && (_hFont))
+	if ((!_lpszUText.empty()) && (_hFont))
 	{
 		ARX_TEXT * pArxText = (ARX_TEXT *) malloc(sizeof(ARX_TEXT));
 
 		if (pArxText)
 		{
-			pArxText->lpszUText = new _TCHAR[_tcsclen(_lpszUText)+1];
+			pArxText->lpszUText = new std::string();//_TCHAR[_tcsclen(_lpszUText)+1];
 
 			if (pArxText->lpszUText)
 			{
 				pArxText->hFont = _hFont;
-				_tcscpy(pArxText->lpszUText, _lpszUText);
+				*pArxText->lpszUText = _lpszUText;
 				pArxText->eType			= ARX_TEXT_STAY;
 				pArxText->rRect			= _rRect;
 				pArxText->lCol			= _lCol;
@@ -804,11 +800,10 @@ bool CARXTextManager::AddText(HFONT _hFont, _TCHAR * _lpszUText, RECT & _rRect, 
 					if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 					{
 						SelectObject(hDC, pArxText->hFont);
-//						todo: cast
-//						GetTextExtentPoint32W(hDC,
-//						                      pArxText->lpszUText,
-//						                      _tcslen(pArxText->lpszUText),
-//						                      &sSize);
+						GetTextExtentPoint(hDC,
+						                      pArxText->lpszUText->c_str(),
+						                      pArxText->lpszUText->length(),
+						                      &sSize);
 						danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 						pArxText->lTailleLigne = sSize.cy;
 						sSize.cy *= iNbLigneClipp;
@@ -846,72 +841,71 @@ bool CARXTextManager::AddText(HFONT _hFont, _TCHAR * _lpszUText, RECT & _rRect, 
 //-----------------------------------------------------------------------------
 bool CARXTextManager::AddText(ARX_TEXT * _pArxText)
 {
-	if ((_pArxText) && (_pArxText->lpszUText) && (_pArxText->hFont))
-	{
-		ARX_TEXT * pArxText = (ARX_TEXT *) malloc(sizeof(ARX_TEXT));
+    if ((_pArxText) && (_pArxText->lpszUText) && (_pArxText->hFont))
+    {
+        ARX_TEXT * pArxText = (ARX_TEXT *) malloc(sizeof(ARX_TEXT));
 
-		if (pArxText)
-		{
-			pArxText->lpszUText = new _TCHAR[_tcsclen(_pArxText->lpszUText)+1];
+        if (pArxText)
+        {
+            pArxText->lpszUText = new std::string( _pArxText->lpszUText->length() +1, '\0' );//new _TCHAR[_tcsclen(_pArxText->lpszUText)+1];
 
-			if (pArxText->lpszUText)
-			{
-				pArxText->hFont			= _pArxText->hFont;
-				_tcscpy(pArxText->lpszUText, _pArxText->lpszUText);
-				pArxText->eType			= _pArxText->eType;
-				pArxText->rRect			= _pArxText->rRect;
-				pArxText->lCol			= _pArxText->lCol;
-				pArxText->lBkgCol		= _pArxText->lBkgCol;
-				pArxText->lTimeScroll	= _pArxText->lTimeScroll;
-				pArxText->fDeltaY		= _pArxText->fDeltaY;
-				pArxText->fSpeedScrollY	= _pArxText->fSpeedScrollY;
-				pArxText->lTimeOut		= _pArxText->lTimeOut;
-				pArxText->iNbLineClip   = _pArxText->iNbLineClip;
+            if (pArxText->lpszUText)
+            {
+                pArxText->hFont			= _pArxText->hFont;
+                *pArxText->lpszUText = *_pArxText->lpszUText;
+                pArxText->eType			= _pArxText->eType;
+                pArxText->rRect			= _pArxText->rRect;
+                pArxText->lCol			= _pArxText->lCol;
+                pArxText->lBkgCol		= _pArxText->lBkgCol;
+                pArxText->lTimeScroll	= _pArxText->lTimeScroll;
+                pArxText->fDeltaY		= _pArxText->fDeltaY;
+                pArxText->fSpeedScrollY	= _pArxText->fSpeedScrollY;
+                pArxText->lTimeOut		= _pArxText->lTimeOut;
+                pArxText->iNbLineClip   = _pArxText->iNbLineClip;
 
-				if (pArxText->iNbLineClip)
-				{
-					HDC hDC;
-					SIZE sSize;
+                if (pArxText->iNbLineClip)
+                {
+                    HDC hDC;
+                    SIZE sSize;
 
-					if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
-					{
-						SelectObject(hDC, pArxText->hFont);
-//						todo: cast
-//						GetTextExtentPoint32W(hDC,
-//						                      pArxText->lpszUText,
-//						                      _tcslen(pArxText->lpszUText),
-//						                      &sSize);
-						danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-						pArxText->lTailleLigne = sSize.cy;
-						sSize.cy *= pArxText->iNbLineClip;
-					}
-					else
-					{
-						sSize.cy = pArxText->rRect.bottom - pArxText->rRect.top;
-						pArxText->lTailleLigne = sSize.cy;
-					}
+                    if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
+                    {
+                        SelectObject(hDC, pArxText->hFont);
+                        GetTextExtentPoint(hDC,
+                                          pArxText->lpszUText,
+                                          pArxText->lpszUText->length(),
+                                          &sSize);
+                        danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
+                        pArxText->lTailleLigne = sSize.cy;
+                        sSize.cy *= pArxText->iNbLineClip;
+                    }
+                    else
+                    {
+                        sSize.cy = pArxText->rRect.bottom - pArxText->rRect.top;
+                        pArxText->lTailleLigne = sSize.cy;
+                    }
 
-					SetRect(&pArxText->rRectClipp,
-					        pArxText->rRect.left,
-					        pArxText->rRect.top,
-					        pArxText->rRect.right,
-					        pArxText->rRect.top + sSize.cy);
-				}
-				else
-				{
-					pArxText->rRectClipp = pArxText->rRect;
-				}
+                    SetRect(&pArxText->rRectClipp,
+                            pArxText->rRect.left,
+                            pArxText->rRect.top,
+                            pArxText->rRect.right,
+                        pArxText->rRect.top + sSize.cy);
+                }
+                else
+                {
+                    pArxText->rRectClipp = pArxText->rRect;
+                }
 
-				vText.insert(vText.end(), pArxText);
-				return true;
-			}
+                vText.insert(vText.end(), pArxText);
+                return true;
+            }
 
-			free((void *)pArxText);
-			pArxText = NULL;
-		}
-	}
+            free((void *)pArxText);
+            pArxText = NULL;
+        }
+    }
 
-	return false;
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -1182,7 +1176,7 @@ void ARX_Text_Init()
 
 	ARX_Localisation_Init();
 
-	_TCHAR wtx[256];
+	WCHAR wtx[256];
 	char tx[256];
 
 	sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX.ttf"); // Full path
@@ -1195,9 +1189,9 @@ void ARX_Text_Init()
 //	todo: cast
 //	MultiByteToWideChar(CP_ACP, 0, tx , -1, wtx, 256);		// XS : We need to pass a unicode string to AddFontResourceW
 
-	typedef int (APIENTRY * AddFontRessourceW)(const wchar_t *);
+	typedef int (APIENTRY * AddFontRessource)(LPCWSTR);
 
-	AddFontRessourceW Unicows_AddFontResourceW = (AddFontRessourceW)GetProcAddress(hUnicodeLibrary, "AddFontResourceW");
+	AddFontRessource Unicows_AddFontResourceW = (AddFontRessource)GetProcAddress(hUnicodeLibrary, "AddFontResource");
 
 	lpszFontIngame = GetFontName(tx);
 
@@ -1429,11 +1423,11 @@ void ARX_Text_Close()
 		lpszFontMenu = NULL;
 	}
 
-	typedef ATOM(APIENTRY * RemoveRessourceW)(const wchar_t *);
+	typedef ATOM(APIENTRY * RemoveRessource)(LPCWSTR);
 
-	RemoveRessourceW Unicows_RemoveRessourceW = (RemoveRessourceW)GetProcAddress(hUnicodeLibrary, "RemoveFontResourceW");
+	RemoveRessource Unicows_RemoveRessource = (RemoveRessource)GetProcAddress(hUnicodeLibrary, "RemoveFontResource");
 
-	_TCHAR wtx[256];
+	WCHAR wtx[256];
 	char tx[256];
 	sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX.ttf"); // Full path
 
@@ -1447,7 +1441,7 @@ void ARX_Text_Close()
 	lpszFontIngame = GetFontName(tx);
 
 
-	if (Unicows_RemoveRessourceW((wchar_t*)wtx) == 0)
+	if (Unicows_RemoveRessource(wtx) == 0)
 	{
 		//	FontError(); // XS : Annoying popup, uncomment if you really want to track something down.
 	}
@@ -1462,7 +1456,7 @@ void ARX_Text_Close()
 	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
 	lpszFontMenu = GetFontName(tx);
 
-	if (Unicows_RemoveRessourceW((wchar_t*)wtx) == 0)
+	if (Unicows_RemoveRessource(wtx) == 0)
 	{
 		//	FontError();// XS : Annoying popup, uncomment if you really want to track something down.
 	}

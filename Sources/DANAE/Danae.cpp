@@ -4827,7 +4827,7 @@ void RenderAllNodes(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			{
 				xx=nodeobj->vertexlist[nodeobj->origin].vert.sx-40.f;
 				yy=nodeobj->vertexlist[nodeobj->origin].vert.sy-40.f;
-				ARX_TEXT_Draw(m_pd3dDevice, InBookFont, xx, yy, 0, 0, nodes.nodes[i].UName, EERIECOLOR_YELLOW);	//font
+				ARX_TEXT_Draw(m_pd3dDevice, InBookFont, xx, yy, 0, 0, nodes.nodes[i].UName.c_str(), EERIECOLOR_YELLOW); //font
 			}
 
 			if (nodes.nodes[i].selected)

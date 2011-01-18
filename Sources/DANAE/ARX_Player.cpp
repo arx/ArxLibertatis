@@ -451,8 +451,8 @@ void ARX_PLAYER_Quest_Init()
 			if (PlayerQuest[i].ident)
 				free((void *)PlayerQuest[i].ident);
 
-			if (PlayerQuest[i].localised)
-				free((void *)PlayerQuest[i].localised);
+			if (!PlayerQuest[i].localised.empty())
+				PlayerQuest[i].localised.clear();
 		}
 
 		free((void *)PlayerQuest);
@@ -550,16 +550,17 @@ void ARX_Player_Rune_Remove(unsigned long _ulRune)
 //*************************************************************************************
 void ARX_PLAYER_Quest_Add(char * quest, bool _bLoad)
 {
-	_TCHAR output[4096];
+	char output[4096];
 	MakeLocalised(quest, output, 4096);
 
 	if (output[0] == 0) return;
 
 	PlayerQuest = (STRUCT_QUEST *)realloc(PlayerQuest, sizeof(STRUCT_QUEST) * (nb_PlayerQuest + 1));
 	PlayerQuest[nb_PlayerQuest].ident = (char *)malloc(strlen(quest) + 1);
-	PlayerQuest[nb_PlayerQuest].localised = (_TCHAR *)malloc((_tcslen(output) + 1) * sizeof(_TCHAR));
+	PlayerQuest[nb_PlayerQuest].localised.resize( _tcslen(output) );
 	strcpy(PlayerQuest[nb_PlayerQuest].ident, quest);
-	_tcscpy(PlayerQuest[nb_PlayerQuest].localised, output);
+	//_tcscpy(PlayerQuest[nb_PlayerQuest].localised, output);
+	PlayerQuest[nb_PlayerQuest].localised = output;
 	nb_PlayerQuest++;
 	bBookHalo = !_bLoad;//true;
 	ulBookHaloTime = 0;

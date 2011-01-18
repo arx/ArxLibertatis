@@ -3243,8 +3243,8 @@ static void ARX_SPEELS_GetMaxRect(char *_pcName)
 // Initializes Spell engine (Called once at DANAE startup)
 void ARX_SPELLS_Init(LPDIRECT3DDEVICE7 m_pd3dDevice)
 {
-	lMaxSymbolDrawSizeX=INT_MIN;
-	lMaxSymbolDrawSizeY=INT_MIN;
+	lMaxSymbolDrawSizeX=MINLONG;
+	lMaxSymbolDrawSizeY=MINLONG;
 
 	ARX_SPEELS_GetMaxRect("AAM");
 	ARX_SPEELS_GetMaxRect("CETRIUS");

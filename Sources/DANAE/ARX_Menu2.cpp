@@ -2875,7 +2875,7 @@ int iDecMenuPrincipaleY=50;
 								_stprintf(tex, _T("%S"),
 									save_l[iI].name);
 								
-								_TCHAR tex2[256];
+								wchar_t tex2[256];
 								_tcscpy(tex2,tex);
 //								todo: string
 //								_tcsupr(tex2);

@@ -79,7 +79,7 @@ class Console {
 		HBITMAP bakbmp;
 		HINSTANCE hInst;								// current instance
 		char cmdlines[MAXH][MAXW];
-		TCHAR*  c_strAppTitle;
+		std::string  c_strAppTitle;
 		DWORD ThreadId;
 		HANDLE  ThreadHandle;
 		void Console::GetThreadMsg(MSG *msg) ;		
