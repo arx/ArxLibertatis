@@ -143,10 +143,11 @@ long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, _TCHAR * _lpszUText, int _i
 
 				for (; iTemp < iLenght ; iTemp++)
 				{
-					GetTextExtentPoint32W(hDC,
-					                      &_lpszUText[iTemp],
-					                      1,
-					                      &sSize);
+//					todo: cast
+//					GetTextExtentPoint32W(hDC,
+//					                      &_lpszUText[iTemp],
+//					                      1,
+//					                      &sSize);
 					{
 						if ((_lpszUText[iTemp] == _T('\n')) ||
 						        (_lpszUText[iTemp] == _T('*')))
@@ -226,10 +227,11 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, _TCHAR * _lpszUText, int _iSpacingY,
 
 		for (; iTemp < iLenght; iTemp++)
 		{
-			GetTextExtentPoint32W(_hDC,
-			                      &_lpszUText[iTemp],
-			                      1,
-			                      &sSize);
+//			todo: cast
+//			GetTextExtentPoint32W(_hDC,
+//			                      &_lpszUText[iTemp],
+//			                      1,
+//			                      &sSize);
 
 			if ((_lpszUText[iTemp] == _T('\n')) ||
 			        (_lpszUText[iTemp] == _T('*')))
@@ -439,18 +441,20 @@ long UNICODE_ARXDrawTextCenter(float x, float y, _TCHAR * str, COLORREF col, COL
 
 
 			SIZE siz;
-			GetTextExtentPoint32W(hDC,         // handle to DC
-			                        str,           // character string
-			                        _tcslen(str),   // number of characters
-			                        &siz          // size
-			                       );
+//			todo: cast
+//			GetTextExtentPoint32W(hDC,         // handle to DC
+//			                        str,           // character string
+//			                        _tcslen(str),   // number of characters
+//			                        &siz          // size
+//			                       );
 			RECT rect;
 			rect.top = (long)y;
 			rect.bottom = (long)999;
 			rect.left = (long)x - (siz.cx >> 1);
 			rect.right = (long)999;
 
-			TextOutW(hDC, rect.left, rect.top, str, _tcslen(str));
+//			todo: cast
+//			TextOutW(hDC, rect.left, rect.top, str, _tcslen(str));
 
 			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 			return siz.cx;
@@ -671,7 +675,7 @@ _TCHAR * GetFontName(char * _lpszFileName)
 
 
 						_TCHAR * szText = new _TCHAR[(FNN.usStringLength>>1)+1]; //@HACK
-						_tcscpy(szText, szName);
+						_tcscpy(szText, (const char*) szName);
 
 						CloseHandle(hFile);
 						return szText;
@@ -800,10 +804,11 @@ bool CARXTextManager::AddText(HFONT _hFont, _TCHAR * _lpszUText, RECT & _rRect, 
 					if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 					{
 						SelectObject(hDC, pArxText->hFont);
-						GetTextExtentPoint32W(hDC,
-						                      pArxText->lpszUText,
-						                      _tcslen(pArxText->lpszUText),
-						                      &sSize);
+//						todo: cast
+//						GetTextExtentPoint32W(hDC,
+//						                      pArxText->lpszUText,
+//						                      _tcslen(pArxText->lpszUText),
+//						                      &sSize);
 						danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 						pArxText->lTailleLigne = sSize.cy;
 						sSize.cy *= iNbLigneClipp;
@@ -871,10 +876,11 @@ bool CARXTextManager::AddText(ARX_TEXT * _pArxText)
 					if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 					{
 						SelectObject(hDC, pArxText->hFont);
-						GetTextExtentPoint32W(hDC,
-						                      pArxText->lpszUText,
-						                      _tcslen(pArxText->lpszUText),
-						                      &sSize);
+//						todo: cast
+//						GetTextExtentPoint32W(hDC,
+//						                      pArxText->lpszUText,
+//						                      _tcslen(pArxText->lpszUText),
+//						                      &sSize);
 						danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 						pArxText->lTailleLigne = sSize.cy;
 						sSize.cy *= pArxText->iNbLineClip;
@@ -1186,7 +1192,8 @@ void ARX_Text_Init()
 		sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX_default.ttf"); // Full path
 	}
 
-	MultiByteToWideChar(CP_ACP, 0, tx , -1, wtx, 256);		// XS : We need to pass a unicode string to AddFontResourceW
+//	todo: cast
+//	MultiByteToWideChar(CP_ACP, 0, tx , -1, wtx, 256);		// XS : We need to pass a unicode string to AddFontResourceW
 
 	typedef int (APIENTRY * AddFontRessourceW)(const wchar_t *);
 
@@ -1194,7 +1201,7 @@ void ARX_Text_Init()
 
 	lpszFontIngame = GetFontName(tx);
 
-	if (Unicows_AddFontResourceW(wtx) == 0)
+	if (Unicows_AddFontResourceW((wchar_t*)wtx) == 0)
 	{
 		FontError();
 	}
@@ -1206,11 +1213,11 @@ void ARX_Text_Init()
 		sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX_default.ttf"); // Full path
 	}
 
-	MultiByteToWideChar(CP_ACP, 0, tx , -1, wtx, 256);		// XS : We need to pass an unicode string to AddFontResourceW
+	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass an unicode string to AddFontResourceW
 
 	lpszFontMenu = GetFontName(tx);
 
-	if (Unicows_AddFontResourceW(wtx) == 0)
+	if (Unicows_AddFontResourceW((wchar_t*)wtx) == 0)
 	{
 		FontError();
 	}
@@ -1435,12 +1442,12 @@ void ARX_Text_Close()
 		sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX_default.ttf"); // Full path
 	}
 
-	MultiByteToWideChar(CP_ACP, 0, tx , -1, wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
+	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
 
 	lpszFontIngame = GetFontName(tx);
 
 
-	if (Unicows_RemoveRessourceW(wtx) == 0)
+	if (Unicows_RemoveRessourceW((wchar_t*)wtx) == 0)
 	{
 		//	FontError(); // XS : Annoying popup, uncomment if you really want to track something down.
 	}
@@ -1452,10 +1459,10 @@ void ARX_Text_Close()
 		sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX_default.ttf"); // Full path
 	}
 
-	MultiByteToWideChar(CP_ACP, 0, tx , -1, wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
+	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
 	lpszFontMenu = GetFontName(tx);
 
-	if (Unicows_RemoveRessourceW(wtx) == 0)
+	if (Unicows_RemoveRessourceW((wchar_t*)wtx) == 0)
 	{
 		//	FontError();// XS : Annoying popup, uncomment if you really want to track something down.
 	}
