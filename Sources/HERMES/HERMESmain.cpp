@@ -56,9 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 
 // Desc: HERMES main functionalities   //FILES MEMORY
-#include <limits.h>
 #include <windows.h>
-#include <shlobj.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 //#include <io.h>
@@ -66,12 +64,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //#include <direct.h>			// _getcwd
 #include "HERMESMain.h"
 #include "HERMESNet.h"
+#include "ARX_Casts.h"
 
+// from	wine/msvcrt/stdlib.h
+#define _MAX_DRIVE          3
+#define _MAX_FNAME          256
+#define _MAX_EXT            _MAX_FNAME
+#define _MAX_DIR            _MAX_FNAME
 
-
-
-
-char HermesBufferWork[_MAX_PATH];	// Used by FileStandardize (avoid malloc/free per call)
+char HermesBufferWork[MAX_PATH];	// Used by FileStandardize (avoid malloc/free per call)
 
 UINT GaiaWM = 0;
 HWND MAIN_PROGRAM_HANDLE = NULL;
@@ -170,34 +171,35 @@ again:
 long KillAllDirectory(char * path)
 {
 	long idx;
-	struct _finddata_t fl;
-	char pathh[512];
-	sprintf(pathh, "%s*.*", path);
-
-	if ((idx = _findfirst(pathh, &fl)) != -1)
-	{
-		do
-		{
-			if (fl.name[0] != '.')
-			{
-				if (fl.attrib & _A_SUBDIR)
-				{
-					sprintf(pathh, "%s%s\\", path, fl.name);
-					KillAllDirectory(pathh);
-					RemoveDirectory(pathh);
-				}
-				else
-				{
-					sprintf(pathh, "%s%s", path, fl.name);
-					DeleteFile(pathh);
-				}
-			}
-
-		}
-		while (_findnext(idx, &fl) != -1);
-
-		_findclose(idx);
-	}
+//	todo io.h
+//	struct _finddata_t fl;
+//	char pathh[512];
+//	sprintf(pathh, "%s*.*", path);
+//
+//	if ((idx = _findfirst(pathh, &fl)) != -1)
+//	{
+//		do
+//		{
+//			if (fl.name[0] != '.')
+//			{
+//				if (fl.attrib & _A_SUBDIR)
+//				{
+//					sprintf(pathh, "%s%s\\", path, fl.name);
+//					KillAllDirectory(pathh);
+//					RemoveDirectory(pathh);
+//				}
+//				else
+//				{
+//					sprintf(pathh, "%s%s", path, fl.name);
+//					DeleteFile(pathh);
+//				}
+//			}
+//
+//		}
+//		while (_findnext(idx, &fl) != -1);
+//
+//		_findclose(idx);
+//	}
 
 	RemoveDirectory(path);
 	return 1;
@@ -246,7 +248,8 @@ void HERMES_InitDebug()
 
 void MakeUpcase(char * str)
 {
-	strupr(str);
+//	todo: string
+//	strupr(str);
 }
 
 HKEY    ConsoleKey = NULL;
@@ -510,59 +513,61 @@ char _dir[256];
 char _name[256];
 char _ext[256];
 
+// todo: path stuff
 char * GetName(char * str)
 {
-	_splitpath(str, _drv, _dir, _name, _ext);
+//	_splitpath(str, _drv, _dir, _name, _ext);
 	return _name;
 }
 
 char * GetExt(char * str)
 {
-	_splitpath(str, _drv, _dir, _name, _ext);
+//	_splitpath(str, _drv, _dir, _name, _ext);
 	return _ext;
 }
 
 void SetExt(char * str, char * new_ext)
 {
-	_splitpath(str, _drv, _dir, _name, _ext);
-	_makepath(str, _drv, _dir, _name, new_ext);
+//	_splitpath(str, _drv, _dir, _name, _ext);
+//	_makepath(str, _drv, _dir, _name, new_ext);
 }
 
 void AddToName(char * str, char * cat)
 {
-	_splitpath(str, _drv, _dir, _name, _ext);
+//	_splitpath(str, _drv, _dir, _name, _ext);
 	strcat(_name, cat);
-	_makepath(str, _drv, _dir, _name, _ext);
+//	_makepath(str, _drv, _dir, _name, _ext);
 }
 
 void RemoveName(char * str)
 {
-	_splitpath(str, _drv, _dir, _name, _ext);
-	_makepath(str, _drv, _dir, NULL, NULL);
+//	_splitpath(str, _drv, _dir, _name, _ext);
+//	_makepath(str, _drv, _dir, NULL, NULL);
 }
 
 long DirectoryExist(char * name)
 {
 	long idx;
-	struct _finddata_t fd;
-
-	if ((idx = _findfirst(name, &fd)) == -1)
-	{
-		_findclose(idx);
-		char initial[256];
-		_getcwd(initial, 255);
-
-		if (_chdir(name) == 0) // success
-		{
-			_chdir(initial);
-			return 1;
-		}
-
-		_chdir(initial);
-		return 0;
-	}
-
-	_findclose(idx);
+//	todo: path stuff
+//	struct _finddata_t fd;
+//
+//	if ((idx = _findfirst(name, &fd)) == -1)
+//	{
+//		_findclose(idx);
+//		char initial[256];
+//		_getcwd(initial, 255);
+//
+//		if (_chdir(name) == 0) // success
+//		{
+//			_chdir(initial);
+//			return 1;
+//		}
+//
+//		_chdir(initial);
+//		return 0;
+//	}
+//
+//	_findclose(idx);
 	return 1;
 }
 
@@ -574,7 +579,8 @@ BOOL CreateFullPath(char * path)
 	char fname[_MAX_FNAME];
 	char ext[_MAX_EXT];
 
-	_splitpath(path, drive, dir, fname, ext);
+	// todo: path
+//	_splitpath(path, drive, dir, fname, ext);
 
 	if (strlen(dir) == 0) return FALSE;
 
@@ -592,7 +598,8 @@ BOOL CreateFullPath(char * path)
 			dir[pos] = 0;
 			memcpy(curpath + strlen(curpath), dir + start, pos - start + 1);
 			strcat(curpath, "\\");
-			_mkdir(curpath);
+			// todo: path
+//			_mkdir(curpath);
 			start = pos + 1;
 		}
 
@@ -616,7 +623,8 @@ long FileExist(char * name)
 long	FileOpenRead(char * name)
 {
 	long	handle;
-	handle = _open((const char *)name, (int)_O_BINARY | _O_RDONLY);
+	// todo: path
+//	handle = _open((const char *)name, (int)_O_BINARY | _O_RDONLY);
 
 	if (handle < 0)	return(0);
 
@@ -625,19 +633,21 @@ long	FileOpenRead(char * name)
 
 long	FileSizeHandle(long handle)
 {
-	return(_tell((int)handle - 1));
+//	todo: tell
+//	return(_tell((int)handle - 1));
+	return 0;
 }
 
 long	FileOpenWrite(char * name)
 {
 	int	handle;
-
-	handle = _open((const char *)name, (int)_O_BINARY | _O_CREAT | _O_TRUNC, (int)_S_IWRITE);
+	// todo: path
+//	handle = _open((const char *)name, (int)_O_BINARY | _O_CREAT | _O_TRUNC, (int)_S_IWRITE);
 
 	if (handle < 0)	return(0);
-
-	_close(handle);
-	handle = _open((const char *)name, (int)_O_BINARY | _O_WRONLY);
+	// todo: path
+//	_close(handle);
+//	handle = _open((const char *)name, (int)_O_BINARY | _O_WRONLY);
 
 	if (handle < 0)	return(0);
 
@@ -645,27 +655,37 @@ long	FileOpenWrite(char * name)
 }
 long	FileCloseRead(long handle)
 {
-	return(_close((int)handle - 1));
+	// todo: path
+//	return(_close((int)handle - 1));
+	return 0;
 }
 
 long	FileCloseWrite(long handle)
 {
-	_commit((int)handle - 1);
-	return(_close((int)handle - 1));
+	// todo: path
+//	_commit((int)handle - 1);
+//	return(_close((int)handle - 1));
+	return 0;
 }
 
 long	FileRead(long handle, void * adr, long size)
 {
-	return(_read(handle - 1, adr, size));
+	// todo: path
+//	return(_read(handle - 1, adr, size));
+	return 0;
 }
 
 long	FileWrite(long handle, void * adr, long size)
 {
-	return(_write(handle - 1, adr, size));
+	// todo: path
+//	return(_write(handle - 1, adr, size));
+	return 0;
 }
 long	FileSeek(long handle, long offset, long mode)
 {
-	return(_lseek((int)handle - 1, (long)offset, (int)mode));
+	// todo: path
+//	return(_lseek((int)handle - 1, (long)offset, (int)mode));
+	return 0;
 }
 void ExitApp(int v)
 {
@@ -862,32 +882,34 @@ retry:
 //******************************************************************************
 // OPEN/SAVE FILES DIALOGS
 //******************************************************************************
-char	LastFolder[_MAX_PATH];		// Last Folder used
+char	LastFolder[MAX_PATH];		// Last Folder used
 static OPENFILENAME ofn;
 
 bool HERMESFolderBrowse(char * str)
 {
-	BROWSEINFO		bi;
-	LPITEMIDLIST	liil;
-
-	bi.hwndOwner	= NULL;//MainFrameWindow;
-	bi.pidlRoot		= NULL;
-	bi.pszDisplayName = LastFolder;
-	bi.lpszTitle	= str;
-	bi.ulFlags		= 0;
-	bi.lpfn			= NULL;
-	bi.lParam		= 0;
-	bi.iImage		= 0;
-
-
-	liil = SHBrowseForFolder(&bi);
-
-	if (liil)
-	{
-		if (SHGetPathFromIDList(liil, LastFolder))	return TRUE;
-		else return FALSE;
-	}
-	else return FALSE;
+	// todo: include issues in wine
+//	BROWSEINFO		bi;
+//	LPITEMIDLIST	liil;
+//
+//	bi.hwndOwner	= NULL;//MainFrameWindow;
+//	bi.pidlRoot		= NULL;
+//	bi.pszDisplayName = LastFolder;
+//	bi.lpszTitle	= str;
+//	bi.ulFlags		= 0;
+//	bi.lpfn			= NULL;
+//	bi.lParam		= 0;
+//	bi.iImage		= 0;
+//
+//
+//	liil = SHBrowseForFolder(&bi);
+//
+//	if (liil)
+//	{
+//		if (SHGetPathFromIDList(liil, LastFolder))	return TRUE;
+//		else return FALSE;
+//	}
+//	else return FALSE;
+	return false;
 }
 
 
@@ -907,7 +929,7 @@ bool HERMESFolderSelector(char * file_name, char * title)
 BOOL HERMES_WFSelectorCommon(PSTR pstrFileName, PSTR pstrTitleName, char * filter, long flag, long flag_operation, long max_car, HWND hWnd)
 {
 	LONG	value;
-	char	cwd[_MAX_PATH];
+	char	cwd[MAX_PATH];
 
 	ofn.lStructSize		= sizeof(OPENFILENAME) ;
 	ofn.hInstance			= NULL ;
@@ -929,7 +951,8 @@ BOOL HERMES_WFSelectorCommon(PSTR pstrFileName, PSTR pstrTitleName, char * filte
 	ofn.lpstrTitle			= pstrTitleName ;
 	ofn.Flags				= flag;
 
-	_getcwd(cwd, _MAX_PATH);
+//	todo: path
+//	_getcwd(cwd, MAX_PATH);
 	ofn.lpstrInitialDir = cwd;
 	ofn.nMaxFile = max_car;
 
@@ -947,12 +970,12 @@ BOOL HERMES_WFSelectorCommon(PSTR pstrFileName, PSTR pstrTitleName, char * filte
 
 int HERMESFileSelectorOpen(PSTR pstrFileName, PSTR pstrTitleName, char * filter, HWND hWnd)
 {
-	return HERMES_WFSelectorCommon(pstrFileName, pstrTitleName, filter, OFN_HIDEREADONLY | OFN_CREATEPROMPT, 1, _MAX_PATH, hWnd);
+	return HERMES_WFSelectorCommon(pstrFileName, pstrTitleName, filter, OFN_HIDEREADONLY | OFN_CREATEPROMPT, 1, MAX_PATH, hWnd);
 }
  
 int HERMESFileSelectorSave(PSTR pstrFileName, PSTR pstrTitleName, char * filter, HWND hWnd)
 {
-	return HERMES_WFSelectorCommon(pstrFileName, pstrTitleName, filter, OFN_OVERWRITEPROMPT, 0, _MAX_PATH, hWnd);
+	return HERMES_WFSelectorCommon(pstrFileName, pstrTitleName, filter, OFN_OVERWRITEPROMPT, 0, MAX_PATH, hWnd);
 }
  
 //////////////////////////////////////// PACKING
