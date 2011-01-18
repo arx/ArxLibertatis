@@ -55,7 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 #include <stdio.h>
-
+#include <algorithm>
 #include "ARX_Text.h"
 #include "ARX_Levels.h"
 #include "ARX_Minimap.h"
@@ -65,6 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEObject.h"
 #include "HERMESMain.h"
 #include "Danae.h"
+#include "ARX_Casts.h"
 
 MINI_MAP_DATA minimap[MAX_MINIMAPS];
 float mini_offset_x[MAX_MINIMAPS];
