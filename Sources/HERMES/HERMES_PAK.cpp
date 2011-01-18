@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 #include "HERMES_PAK.h"
 #include "HERMESMain.h"
+#include "ARX_Casts.h"
 
 bool bForceInPack = false;
 long CURRENT_LOADMODE = LOAD_TRUEFILE;
