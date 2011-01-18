@@ -144,7 +144,7 @@ bool ArxDebug::CreateLogDirectory()
 	bool bReturn = true ;
 
 	//Verify if the log folder exist, otherwise create him
-	char * sLogReposiriry = "..\\Log";
+	const char sLogReposiriry[] = "..\\Log";
 
 	if (CreateDirectoryA(sLogReposiriry, NULL) == 0)
 	{

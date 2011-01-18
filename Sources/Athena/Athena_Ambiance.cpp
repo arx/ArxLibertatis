@@ -29,6 +29,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "Athena_Ambiance.h"
 #include "Athena_FileIO.h"
 
+#include <cstdlib>
+#include <cstring>
+using namespace std;
+
 
 
 
@@ -770,8 +774,8 @@ namespace ATHENA
 		{
 			--track;
 
-			if (track->name && !_strcasecmp(track->name, _name)) break;
-			else if (!_strcasecmp(_sample[GetSampleID(track->s_id)]->name, _name)) break;
+			if (track->name && !strcasecmp(track->name, _name)) break;
+			else if (!strcasecmp(_sample[GetSampleID(track->s_id)]->name, _name)) break;
 		}
 
 		t_id = track < track_l ? AAL_SFALSE : track - track_l;

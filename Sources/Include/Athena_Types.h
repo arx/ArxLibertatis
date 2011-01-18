@@ -41,8 +41,8 @@ namespace ATHENA
 	typedef signed char aalSByte;
 	typedef unsigned short aalUWord;
 	typedef signed short aalSWord;
-	typedef unsigned long aalULong;
-	typedef signed long aalSLong;
+	typedef unsigned int aalULong;
+	typedef signed int aalSLong;
  
 	typedef signed aalSInt;
 	typedef float aalFloat;
@@ -83,7 +83,7 @@ namespace ATHENA
 
 
 	// Flags                                                                     //
-	const enum aalFlag
+	enum aalFlag
 	{
 		AAL_FLAG_DUPLICATE       = 0x00000000,                                     //Duplicate sample if already playing
 		AAL_FLAG_RESTART         = 0x00000001,                                     //Force restart sample if already playing
@@ -109,7 +109,7 @@ namespace ATHENA
 	};
 
 	// Length units                                                              //
-	const enum aalUnit
+	enum aalUnit
 	{
 		AAL_UNIT_MS,
 		AAL_UNIT_SAMPLES,
@@ -117,7 +117,7 @@ namespace ATHENA
 	};
 
 	// Errors                                                                    //
-	const enum aalError
+	enum aalError
 	{
 		AAL_OK,
 		AAL_ERROR,                                                                 //General error
@@ -131,7 +131,7 @@ namespace ATHENA
 	};
 
 	// Key settings flags                                                        //
-	const enum aalKeySettingFlag
+	enum aalKeySettingFlag
 	{
 		AAL_KEY_SETTING_FLAG_RANDOM      = 0x00000001,
 		AAL_KEY_SETTING_FLAG_INTERPOLATE = 0x00000002

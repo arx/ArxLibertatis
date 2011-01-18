@@ -12,10 +12,11 @@ include_directories(
 
 set(CMAKE_CXX_FLAGS "-fpermissive -w") #Debug
 
+
 #Add liblub sources
 set(SOURCE_DIRS
 	ArxCommon
-	#Athena
+	Athena
     DANAE
     DANAE_Debugger
     EERIE
