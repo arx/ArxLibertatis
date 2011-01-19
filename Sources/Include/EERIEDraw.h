@@ -102,7 +102,7 @@ void EERIEDrawRotatedSprite(LPDIRECT3DDEVICE7 pd3dDevice, D3DTLVERTEX * in, floa
 
 void SETTEXTURE0(LPDIRECT3DDEVICE7 pd3dDevice, IDirectDrawSurface7 * tex);
 
-void SETTC(LPDIRECT3DDEVICE7 pd3dDevice, TextureContainer * tc)
+inline void SETTC(LPDIRECT3DDEVICE7 pd3dDevice, TextureContainer * tc)
 {
 	if ( (!tc) || (!tc->m_pddsSurface) )
 	{
