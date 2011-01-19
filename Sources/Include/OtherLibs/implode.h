@@ -35,8 +35,6 @@ inline	unsigned int explode(
 	return 0;
 }
 
-	unsigned long crc32(char * buffer, unsigned int * size, unsigned long * old_crc);
-
 #ifdef __cplusplus
 }                         // End of 'extern "C"' declaration
 #endif
