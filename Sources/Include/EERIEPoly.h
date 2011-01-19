@@ -463,6 +463,8 @@ typedef struct
 
 #define MAX_ANIMS 200		// max loadable anims per character
 
+typedef int ArxSound;
+
 typedef struct
 {
 	long				ioflags;			// IO type
@@ -491,7 +493,7 @@ typedef struct
 	EERIE_S2D			bbox2;		// 2D bounding box2
 	char *				usemesh;	// Alternate Mesh/path
 	EERIE_3DOBJ *		tweaky;		// tweaked original obj backup
-	long				sound;
+	ArxSound				sound;
 
 	unsigned long		type_flags;			// object type (weapon,goblin...)
 	long				scriptload;			// Is This object Loaded by Script ?
@@ -579,7 +581,7 @@ typedef struct
 
 	float				ignition;
 	long				ignit_light;
-	long				ignit_sound;
+	ArxSound				ignit_sound;
 	float				head_rot;
 	
 	short				damager_damages;

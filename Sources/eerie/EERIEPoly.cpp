@@ -968,7 +968,7 @@ void SetActiveCamera(EERIE_CAMERA * cam)
 
 //*************************************************************************************
 //*************************************************************************************
-__inline void EERIETreatPoint(D3DTLVERTEX * in, D3DTLVERTEX * out)
+void EERIETreatPoint(D3DTLVERTEX * in, D3DTLVERTEX * out)
 {
 	out->sx = in->sx - ACTIVECAM->pos.x;
 	out->sy = in->sy - ACTIVECAM->pos.y;
@@ -996,7 +996,7 @@ __inline void EERIETreatPoint(D3DTLVERTEX * in, D3DTLVERTEX * out)
 	out->rhw = fZTemp;
 }
 
-__inline void EERIETreatPoint2(D3DTLVERTEX * in, D3DTLVERTEX * out)
+void EERIETreatPoint2(D3DTLVERTEX * in, D3DTLVERTEX * out)
 {
 	out->sx = in->sx - ACTIVECAM->pos.x;
 	out->sy = in->sy - ACTIVECAM->pos.y;
@@ -1086,7 +1086,7 @@ void EE_P2(D3DTLVERTEX * in, D3DTLVERTEX * out)
 	out->rhw = fZTemp;
 }
 
-__inline void EE_RTP(D3DTLVERTEX * in, D3DTLVERTEX * out)
+void EE_RTP(D3DTLVERTEX * in, D3DTLVERTEX * out)
 {
 	//register float rhw;
 	out->sx = in->sx - ACTIVECAM->pos.x;

@@ -175,7 +175,7 @@ typedef struct
 	char	*	dir;
 	char	*	name;
 	char	*	sound;
-	long		idhandle;
+	ArxSound		idhandle;
 } C_SOUND;
 
 typedef struct

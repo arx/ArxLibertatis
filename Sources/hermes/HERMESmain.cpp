@@ -248,9 +248,12 @@ void HERMES_InitDebug()
 
 void MakeUpcase(char * str)
 {
-	char * end  = str + strlen(str);
-	for(; str != end; str++) {
-		*str = static_cast<char>(toupper(*str));
+	while(*str != '\0') {
+		// islower is needed as the are read-only strings passed that are already in upper case?
+		if(islower(*str)) {
+			*str = toupper(*str);
+		}
+		str++;
 	}
 }
 

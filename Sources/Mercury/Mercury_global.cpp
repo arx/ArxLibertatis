@@ -64,7 +64,7 @@ HRESULT			DI_Hr;
 DXI_INIT		DI_Init;
 int				DI_NbInputInfo;
 INPUT_INFO		DI_InputInfo[128];
-IDirectInput7W *DI_DInput7;
+IDirectInput7A *DI_DInput7;
 //IDirectInput7	*DI_DInput7;
 
 INPUT_INFO				*DI_KeyBoardBuffer[MAXKEYBOARD];

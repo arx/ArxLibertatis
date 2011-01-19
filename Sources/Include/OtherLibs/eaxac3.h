@@ -26,6 +26,7 @@
 #else
 #define EAXAC3_API __declspec(dllimport)
 #endif
+#define 
 
 #ifdef __cplusplus
 extern "C" {

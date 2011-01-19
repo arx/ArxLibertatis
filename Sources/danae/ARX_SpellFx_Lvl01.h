@@ -86,7 +86,7 @@ class CMagicMissile: public CSpellFx
 		EERIE_3D angles;
 		TextureContainer * tex_mm;
 		D3DTLVERTEX pathways[6];
-		long snd_loop;
+		ArxSound snd_loop;
 
 	public:
 		CMagicMissile();

@@ -155,166 +155,166 @@ static ARX_SOUND_Presence * presence_l = NULL;
  
 
 // ARX mixers
-long ARX_SOUND_MixerGame(AAL_SFALSE);
-long ARX_SOUND_MixerGameSample(AAL_SFALSE);
-long ARX_SOUND_MixerGameSpeech(AAL_SFALSE);
-long ARX_SOUND_MixerGameAmbiance(AAL_SFALSE);
-long ARX_SOUND_MixerMenu(AAL_SFALSE);
-long ARX_SOUND_MixerMenuSample(AAL_SFALSE);
-long ARX_SOUND_MixerMenuSpeech(AAL_SFALSE);
-long ARX_SOUND_MixerMenuAmbiance(AAL_SFALSE);
+ArxSound ARX_SOUND_MixerGame(AAL_SFALSE);
+ArxSound ARX_SOUND_MixerGameSample(AAL_SFALSE);
+ArxSound ARX_SOUND_MixerGameSpeech(AAL_SFALSE);
+ArxSound ARX_SOUND_MixerGameAmbiance(AAL_SFALSE);
+ArxSound ARX_SOUND_MixerMenu(AAL_SFALSE);
+ArxSound ARX_SOUND_MixerMenuSample(AAL_SFALSE);
+ArxSound ARX_SOUND_MixerMenuSpeech(AAL_SFALSE);
+ArxSound ARX_SOUND_MixerMenuAmbiance(AAL_SFALSE);
 
 // Menu ambiances
 char AMB_MENU[] = "ambient_menu.amb";
 char AMB_CREDITS[] = "ambient_credits.amb";
 
 // Menu samples
-long SND_MENU_CLICK(AAL_SFALSE);
-long SND_MENU_CREDITS_LOOP(AAL_SFALSE);
-long SND_MENU_LOOP(AAL_SFALSE);
-long SND_MENU_OPTIONS_LOOP(AAL_SFALSE);
-long SND_MENU_PUSH(AAL_SFALSE);
-long SND_MENU_RELEASE(AAL_SFALSE);
+ArxSound SND_MENU_CLICK(AAL_SFALSE);
+ArxSound SND_MENU_CREDITS_LOOP(AAL_SFALSE);
+ArxSound SND_MENU_LOOP(AAL_SFALSE);
+ArxSound SND_MENU_OPTIONS_LOOP(AAL_SFALSE);
+ArxSound SND_MENU_PUSH(AAL_SFALSE);
+ArxSound SND_MENU_RELEASE(AAL_SFALSE);
 
 // Interface samples
-long SND_BACKPACK(AAL_SFALSE);
-long SND_BOOK_OPEN(AAL_SFALSE);
-long SND_BOOK_CLOSE(AAL_SFALSE);
-long SND_BOOK_PAGE_TURN(AAL_SFALSE);
-long SND_GOLD(AAL_SFALSE);
-long SND_INVSTD(AAL_SFALSE);
-long SND_MAP(AAL_SFALSE);
-long SND_SCROLL_OPEN(AAL_SFALSE);
-long SND_SCROLL_CLOSE(AAL_SFALSE);
-long SND_TORCH_START(AAL_SFALSE);
-long SND_TORCH_LOOP(AAL_SFALSE);
-long SND_TORCH_END(AAL_SFALSE);
+ArxSound SND_BACKPACK(AAL_SFALSE);
+ArxSound SND_BOOK_OPEN(AAL_SFALSE);
+ArxSound SND_BOOK_CLOSE(AAL_SFALSE);
+ArxSound SND_BOOK_PAGE_TURN(AAL_SFALSE);
+ArxSound SND_GOLD(AAL_SFALSE);
+ArxSound SND_INVSTD(AAL_SFALSE);
+ArxSound SND_MAP(AAL_SFALSE);
+ArxSound SND_SCROLL_OPEN(AAL_SFALSE);
+ArxSound SND_SCROLL_CLOSE(AAL_SFALSE);
+ArxSound SND_TORCH_START(AAL_SFALSE);
+ArxSound SND_TORCH_LOOP(AAL_SFALSE);
+ArxSound SND_TORCH_END(AAL_SFALSE);
 
 // Other SFX samples
-long SND_FIREPLACE(AAL_SFALSE);
-long SND_PLOUF(AAL_SFALSE);
-long SND_QUAKE(AAL_SFALSE);
-long SND_WHOOSH(AAL_SFALSE);
+ArxSound SND_FIREPLACE(AAL_SFALSE);
+ArxSound SND_PLOUF(AAL_SFALSE);
+ArxSound SND_QUAKE(AAL_SFALSE);
+ArxSound SND_WHOOSH(AAL_SFALSE);
 
 // Player samples
-long SND_PLAYER_DEATH(AAL_SFALSE);
-long SND_PLAYER_DEATH_BY_FIRE(AAL_SFALSE);
+ArxSound SND_PLAYER_DEATH(AAL_SFALSE);
+ArxSound SND_PLAYER_DEATH_BY_FIRE(AAL_SFALSE);
 
-long SND_PLAYER_FILLLIFEMANA(AAL_SFALSE);
-long SND_PLAYER_HEART_BEAT(AAL_SFALSE);
-long SND_PLAYER_JUMP(AAL_SFALSE);
-long SND_PLAYER_JUMP_END(AAL_SFALSE);
-long SND_PLAYER_LEVEL_UP(AAL_SFALSE);
-long SND_PLAYER_POISONED(AAL_SFALSE);
+ArxSound SND_PLAYER_FILLLIFEMANA(AAL_SFALSE);
+ArxSound SND_PLAYER_HEART_BEAT(AAL_SFALSE);
+ArxSound SND_PLAYER_JUMP(AAL_SFALSE);
+ArxSound SND_PLAYER_JUMP_END(AAL_SFALSE);
+ArxSound SND_PLAYER_LEVEL_UP(AAL_SFALSE);
+ArxSound SND_PLAYER_POISONED(AAL_SFALSE);
 
 // Magic drawing samples
-long SND_MAGIC_AMBIENT(AAL_SFALSE);
-long SND_MAGIC_DRAW(AAL_SFALSE);
-long SND_MAGIC_FIZZLE(AAL_SFALSE);
+ArxSound SND_MAGIC_AMBIENT(AAL_SFALSE);
+ArxSound SND_MAGIC_DRAW(AAL_SFALSE);
+ArxSound SND_MAGIC_FIZZLE(AAL_SFALSE);
 
 // Magic symbols samples
-long SND_SYMB_AAM(AAL_SFALSE);
-long SND_SYMB_CETRIUS(AAL_SFALSE);
-long SND_SYMB_COSUM(AAL_SFALSE);
-long SND_SYMB_COMUNICATUM(AAL_SFALSE);
-long SND_SYMB_FOLGORA(AAL_SFALSE);
-long SND_SYMB_FRIDD(AAL_SFALSE);
-long SND_SYMB_KAOM(AAL_SFALSE);
-long SND_SYMB_MEGA(AAL_SFALSE);
-long SND_SYMB_MORTE(AAL_SFALSE);
-long SND_SYMB_MOVIS(AAL_SFALSE);
-long SND_SYMB_NHI(AAL_SFALSE);
-long SND_SYMB_RHAA(AAL_SFALSE);
-long SND_SYMB_SPACIUM(AAL_SFALSE);
-long SND_SYMB_STREGUM(AAL_SFALSE);
-long SND_SYMB_TAAR(AAL_SFALSE);
-long SND_SYMB_TEMPUS(AAL_SFALSE);
-long SND_SYMB_TERA(AAL_SFALSE);
-long SND_SYMB_VISTA(AAL_SFALSE);
-long SND_SYMB_VITAE(AAL_SFALSE);
-long SND_SYMB_YOK(AAL_SFALSE);
+ArxSound SND_SYMB_AAM(AAL_SFALSE);
+ArxSound SND_SYMB_CETRIUS(AAL_SFALSE);
+ArxSound SND_SYMB_COSUM(AAL_SFALSE);
+ArxSound SND_SYMB_COMUNICATUM(AAL_SFALSE);
+ArxSound SND_SYMB_FOLGORA(AAL_SFALSE);
+ArxSound SND_SYMB_FRIDD(AAL_SFALSE);
+ArxSound SND_SYMB_KAOM(AAL_SFALSE);
+ArxSound SND_SYMB_MEGA(AAL_SFALSE);
+ArxSound SND_SYMB_MORTE(AAL_SFALSE);
+ArxSound SND_SYMB_MOVIS(AAL_SFALSE);
+ArxSound SND_SYMB_NHI(AAL_SFALSE);
+ArxSound SND_SYMB_RHAA(AAL_SFALSE);
+ArxSound SND_SYMB_SPACIUM(AAL_SFALSE);
+ArxSound SND_SYMB_STREGUM(AAL_SFALSE);
+ArxSound SND_SYMB_TAAR(AAL_SFALSE);
+ArxSound SND_SYMB_TEMPUS(AAL_SFALSE);
+ArxSound SND_SYMB_TERA(AAL_SFALSE);
+ArxSound SND_SYMB_VISTA(AAL_SFALSE);
+ArxSound SND_SYMB_VITAE(AAL_SFALSE);
+ArxSound SND_SYMB_YOK(AAL_SFALSE);
 
 // Spells samples
-long SND_SPELL_ACTIVATE_PORTAL(AAL_SFALSE);
-long SND_SPELL_ARMOR_START(AAL_SFALSE);
-long SND_SPELL_ARMOR_END(AAL_SFALSE);
-long SND_SPELL_ARMOR_LOOP(AAL_SFALSE);
-long SND_SPELL_LOWER_ARMOR(AAL_SFALSE);
-long SND_SPELL_BLESS(AAL_SFALSE);
-long SND_SPELL_COLD_PROTECTION_START(AAL_SFALSE);
-long SND_SPELL_COLD_PROTECTION_LOOP(AAL_SFALSE);
-long SND_SPELL_COLD_PROTECTION_END(AAL_SFALSE);
-long SND_SPELL_CONFUSE(AAL_SFALSE);
-long SND_SPELL_CONTROL_TARGET(AAL_SFALSE);
-long SND_SPELL_CREATE_FIELD(AAL_SFALSE);
-long SND_SPELL_CREATE_FOOD(AAL_SFALSE);
-long SND_SPELL_CURE_POISON(AAL_SFALSE);
-long SND_SPELL_CURSE(AAL_SFALSE);
-long SND_SPELL_DETECT_TRAP(AAL_SFALSE);
-long SND_SPELL_DETECT_TRAP_LOOP(AAL_SFALSE);
-long SND_SPELL_DISARM_TRAP(AAL_SFALSE);
-long SND_SPELL_DISPELL_FIELD(AAL_SFALSE);
-long SND_SPELL_DISPELL_ILLUSION(AAL_SFALSE);
-long SND_SPELL_DOUSE(AAL_SFALSE);
-long SND_SPELL_ELECTRIC(AAL_SFALSE);
-long SND_SPELL_ENCHANT_WEAPON(AAL_SFALSE);
-long SND_SPELL_EXPLOSION(AAL_SFALSE);
-long SND_SPELL_EYEBALL_IN(AAL_SFALSE);
-long SND_SPELL_EYEBALL_OUT(AAL_SFALSE);
-long SND_SPELL_FIRE_FIELD(AAL_SFALSE);
-long SND_SPELL_FIRE_HIT(AAL_SFALSE);
-long SND_SPELL_FIRE_LAUNCH(AAL_SFALSE);
-long SND_SPELL_FIRE_PROTECTION(AAL_SFALSE);
-long SND_SPELL_FIRE_WIND(AAL_SFALSE);
-long SND_SPELL_FREEZETIME(AAL_SFALSE);
-long SND_SPELL_HARM(AAL_SFALSE);
-long SND_SPELL_HEALING(AAL_SFALSE);
-long SND_SPELL_ICE_FIELD(AAL_SFALSE);
-long SND_SPELL_ICE_PROJECTILE_LAUNCH(AAL_SFALSE);
-long SND_SPELL_INCINERATE(AAL_SFALSE);
-long SND_SPELL_IGNITE(AAL_SFALSE);
-long SND_SPELL_INVISIBILITY_START(AAL_SFALSE);
-long SND_SPELL_INVISIBILITY_END(AAL_SFALSE);
-long SND_SPELL_LEVITATE_START(AAL_SFALSE);
-long SND_SPELL_LIGHTNING_START(AAL_SFALSE);
-long SND_SPELL_LIGHTNING_LOOP(AAL_SFALSE);
-long SND_SPELL_LIGHTNING_END(AAL_SFALSE);
-long SND_SPELL_MAGICAL_HIT(AAL_SFALSE);
+ArxSound SND_SPELL_ACTIVATE_PORTAL(AAL_SFALSE);
+ArxSound SND_SPELL_ARMOR_START(AAL_SFALSE);
+ArxSound SND_SPELL_ARMOR_END(AAL_SFALSE);
+ArxSound SND_SPELL_ARMOR_LOOP(AAL_SFALSE);
+ArxSound SND_SPELL_LOWER_ARMOR(AAL_SFALSE);
+ArxSound SND_SPELL_BLESS(AAL_SFALSE);
+ArxSound SND_SPELL_COLD_PROTECTION_START(AAL_SFALSE);
+ArxSound SND_SPELL_COLD_PROTECTION_LOOP(AAL_SFALSE);
+ArxSound SND_SPELL_COLD_PROTECTION_END(AAL_SFALSE);
+ArxSound SND_SPELL_CONFUSE(AAL_SFALSE);
+ArxSound SND_SPELL_CONTROL_TARGET(AAL_SFALSE);
+ArxSound SND_SPELL_CREATE_FIELD(AAL_SFALSE);
+ArxSound SND_SPELL_CREATE_FOOD(AAL_SFALSE);
+ArxSound SND_SPELL_CURE_POISON(AAL_SFALSE);
+ArxSound SND_SPELL_CURSE(AAL_SFALSE);
+ArxSound SND_SPELL_DETECT_TRAP(AAL_SFALSE);
+ArxSound SND_SPELL_DETECT_TRAP_LOOP(AAL_SFALSE);
+ArxSound SND_SPELL_DISARM_TRAP(AAL_SFALSE);
+ArxSound SND_SPELL_DISPELL_FIELD(AAL_SFALSE);
+ArxSound SND_SPELL_DISPELL_ILLUSION(AAL_SFALSE);
+ArxSound SND_SPELL_DOUSE(AAL_SFALSE);
+ArxSound SND_SPELL_ELECTRIC(AAL_SFALSE);
+ArxSound SND_SPELL_ENCHANT_WEAPON(AAL_SFALSE);
+ArxSound SND_SPELL_EXPLOSION(AAL_SFALSE);
+ArxSound SND_SPELL_EYEBALL_IN(AAL_SFALSE);
+ArxSound SND_SPELL_EYEBALL_OUT(AAL_SFALSE);
+ArxSound SND_SPELL_FIRE_FIELD(AAL_SFALSE);
+ArxSound SND_SPELL_FIRE_HIT(AAL_SFALSE);
+ArxSound SND_SPELL_FIRE_LAUNCH(AAL_SFALSE);
+ArxSound SND_SPELL_FIRE_PROTECTION(AAL_SFALSE);
+ArxSound SND_SPELL_FIRE_WIND(AAL_SFALSE);
+ArxSound SND_SPELL_FREEZETIME(AAL_SFALSE);
+ArxSound SND_SPELL_HARM(AAL_SFALSE);
+ArxSound SND_SPELL_HEALING(AAL_SFALSE);
+ArxSound SND_SPELL_ICE_FIELD(AAL_SFALSE);
+ArxSound SND_SPELL_ICE_PROJECTILE_LAUNCH(AAL_SFALSE);
+ArxSound SND_SPELL_INCINERATE(AAL_SFALSE);
+ArxSound SND_SPELL_IGNITE(AAL_SFALSE);
+ArxSound SND_SPELL_INVISIBILITY_START(AAL_SFALSE);
+ArxSound SND_SPELL_INVISIBILITY_END(AAL_SFALSE);
+ArxSound SND_SPELL_LEVITATE_START(AAL_SFALSE);
+ArxSound SND_SPELL_LIGHTNING_START(AAL_SFALSE);
+ArxSound SND_SPELL_LIGHTNING_LOOP(AAL_SFALSE);
+ArxSound SND_SPELL_LIGHTNING_END(AAL_SFALSE);
+ArxSound SND_SPELL_MAGICAL_HIT(AAL_SFALSE);
 
-long SND_SPELL_MASS_LIGHTNING_END(AAL_SFALSE);
-long SND_SPELL_FIRE_FIELD_START(AAL_SFALSE);
-long SND_SPELL_FIRE_FIELD_LOOP(AAL_SFALSE);
-long SND_SPELL_FIRE_FIELD_END(AAL_SFALSE);
+ArxSound SND_SPELL_MASS_LIGHTNING_END(AAL_SFALSE);
+ArxSound SND_SPELL_FIRE_FIELD_START(AAL_SFALSE);
+ArxSound SND_SPELL_FIRE_FIELD_LOOP(AAL_SFALSE);
+ArxSound SND_SPELL_FIRE_FIELD_END(AAL_SFALSE);
 
 
-long SND_SPELL_MAGICAL_SHIELD(AAL_SFALSE);
-long SND_SPELL_MASS_INCINERATE(AAL_SFALSE);
-long SND_SPELL_MASS_PARALYSE(AAL_SFALSE);
-long SND_SPELL_MM_CREATE(AAL_SFALSE);
-long SND_SPELL_MM_HIT(AAL_SFALSE);
-long SND_SPELL_MM_LAUNCH(AAL_SFALSE);
-long SND_SPELL_MM_LOOP(AAL_SFALSE);
-long SND_SPELL_NEGATE_MAGIC(AAL_SFALSE);
-long SND_SPELL_NO_EFFECT(AAL_SFALSE);
-long SND_SPELL_PARALYSE(AAL_SFALSE);
-long SND_SPELL_PARALYSE_END(AAL_SFALSE);
-long SND_SPELL_POISON_PROJECTILE_LAUNCH(AAL_SFALSE);
-long SND_SPELL_RAISE_DEAD(AAL_SFALSE);
-long SND_SPELL_REPEL_UNDEAD(AAL_SFALSE);
-long SND_SPELL_REPEL_UNDEAD_LOOP(AAL_SFALSE);
-long SND_SPELL_RUNE_OF_GUARDING(AAL_SFALSE);
-long SND_SPELL_SLOW_DOWN(AAL_SFALSE);
-long SND_SPELL_SPARK(AAL_SFALSE);
-long SND_SPELL_SPEED_START(AAL_SFALSE);
-long SND_SPELL_SPEED_LOOP(AAL_SFALSE);
-long SND_SPELL_SPEED_END(AAL_SFALSE);
-long SND_SPELL_SUMMON_CREATURE(AAL_SFALSE);
-long SND_SPELL_TELEKINESIS_START(AAL_SFALSE);
-long SND_SPELL_TELEKINESIS_END(AAL_SFALSE);
-long SND_SPELL_TELEPORT(AAL_SFALSE);
-long SND_SPELL_TELEPORTED(AAL_SFALSE);
-long SND_SPELL_VISION_START(AAL_SFALSE);
-long SND_SPELL_VISION_LOOP(AAL_SFALSE);
+ArxSound SND_SPELL_MAGICAL_SHIELD(AAL_SFALSE);
+ArxSound SND_SPELL_MASS_INCINERATE(AAL_SFALSE);
+ArxSound SND_SPELL_MASS_PARALYSE(AAL_SFALSE);
+ArxSound SND_SPELL_MM_CREATE(AAL_SFALSE);
+ArxSound SND_SPELL_MM_HIT(AAL_SFALSE);
+ArxSound SND_SPELL_MM_LAUNCH(AAL_SFALSE);
+ArxSound SND_SPELL_MM_LOOP(AAL_SFALSE);
+ArxSound SND_SPELL_NEGATE_MAGIC(AAL_SFALSE);
+ArxSound SND_SPELL_NO_EFFECT(AAL_SFALSE);
+ArxSound SND_SPELL_PARALYSE(AAL_SFALSE);
+ArxSound SND_SPELL_PARALYSE_END(AAL_SFALSE);
+ArxSound SND_SPELL_POISON_PROJECTILE_LAUNCH(AAL_SFALSE);
+ArxSound SND_SPELL_RAISE_DEAD(AAL_SFALSE);
+ArxSound SND_SPELL_REPEL_UNDEAD(AAL_SFALSE);
+ArxSound SND_SPELL_REPEL_UNDEAD_LOOP(AAL_SFALSE);
+ArxSound SND_SPELL_RUNE_OF_GUARDING(AAL_SFALSE);
+ArxSound SND_SPELL_SLOW_DOWN(AAL_SFALSE);
+ArxSound SND_SPELL_SPARK(AAL_SFALSE);
+ArxSound SND_SPELL_SPEED_START(AAL_SFALSE);
+ArxSound SND_SPELL_SPEED_LOOP(AAL_SFALSE);
+ArxSound SND_SPELL_SPEED_END(AAL_SFALSE);
+ArxSound SND_SPELL_SUMMON_CREATURE(AAL_SFALSE);
+ArxSound SND_SPELL_TELEKINESIS_START(AAL_SFALSE);
+ArxSound SND_SPELL_TELEKINESIS_END(AAL_SFALSE);
+ArxSound SND_SPELL_TELEPORT(AAL_SFALSE);
+ArxSound SND_SPELL_TELEPORTED(AAL_SFALSE);
+ArxSound SND_SPELL_VISION_START(AAL_SFALSE);
+ArxSound SND_SPELL_VISION_LOOP(AAL_SFALSE);
 
 bool bForceNoEAX = false;
 
@@ -539,12 +539,12 @@ long ARX_SOUND_IsReverbEnabled()
 	return aalIsEnabled(AAL_FLAG_REVERBERATION);
 }
 
-void ARX_SOUND_MixerSetVolume(const long & mixer_id, const float & volume)
+void ARX_SOUND_MixerSetVolume(const ArxMixer & mixer_id, const float & volume)
 {
 	if (bIsActive) aalSetMixerVolume(mixer_id, volume);
 }
 
-float ARX_SOUND_MixerGetVolume(const long & mixer_id)
+float ARX_SOUND_MixerGetVolume(const ArxMixer & mixer_id)
 {
 	float volume(0.0F);
 
@@ -553,22 +553,22 @@ float ARX_SOUND_MixerGetVolume(const long & mixer_id)
 	return volume;
 }
 
-void ARX_SOUND_MixerStop(const long & mixer_id)
+void ARX_SOUND_MixerStop(const ArxMixer & mixer_id)
 {
 	if (bIsActive) aalMixerStop(mixer_id);
 }
 
-void ARX_SOUND_MixerPause(const long & mixer_id)
+void ARX_SOUND_MixerPause(const ArxMixer & mixer_id)
 {
 	if (bIsActive) aalMixerPause(mixer_id);
 }
 
-void ARX_SOUND_MixerResume(const long & mixer_id)
+void ARX_SOUND_MixerResume(const ArxMixer & mixer_id)
 {
 	if (bIsActive) aalMixerResume(mixer_id);
 }
 
-void ARX_SOUND_MixerSwitch(const long & from, const long & to)
+void ARX_SOUND_MixerSwitch(const ArxMixer & from, const ArxMixer & to)
 {
 	ARX_SOUND_MixerPause(from);
 	ARX_SOUND_MixerSetVolume(to, ARX_SOUND_MixerGetVolume(from));
@@ -601,7 +601,7 @@ void ARX_SOUND_EnvironmentSet(const char * name)
 	}
 }
 
-long ARX_SOUND_PlaySFX(int & sample_id, const EERIE_3D * position, const float & pitch, const int & loop)
+long ARX_SOUND_PlaySFX(ArxSound & sample_id, const EERIE_3D * position, const float & pitch, const int & loop)
 {
 	if (!bIsActive || sample_id == AAL_SFALSE) return AAL_SFALSE;
 
@@ -650,7 +650,7 @@ long ARX_SOUND_PlaySFX(int & sample_id, const EERIE_3D * position, const float &
 }
 
 
-long ARX_SOUND_PlayInterface(int & sample_id, const float & pitch, const int & loop)
+long ARX_SOUND_PlayInterface(ArxSound & sample_id, const float & pitch, const int & loop)
 {
 	if (!bIsActive || sample_id == AAL_SFALSE) return AAL_SFALSE;
 
@@ -667,7 +667,7 @@ long ARX_SOUND_PlayInterface(int & sample_id, const float & pitch, const int & l
 	return sample_id;
 }
 
-long ARX_SOUND_PlayMenu(int & sample_id, const float & pitch, const int & loop)
+long ARX_SOUND_PlayMenu(ArxSound & sample_id, const float & pitch, const int & loop)
 {
 	if (!bIsActive || sample_id == AAL_SFALSE) return AAL_SFALSE;
 
@@ -937,7 +937,7 @@ long ARX_SOUND_PlayScript(const char * name, const INTERACTIVE_OBJ * io, const f
 	return sample_id;
 }
 
-long ARX_SOUND_PlayAnim(int & sample_id, const EERIE_3D * position)
+long ARX_SOUND_PlayAnim(ArxSound & sample_id, const EERIE_3D * position)
 {
 	if (!bIsActive || sample_id == AAL_SFALSE) return AAL_SFALSE;
 
@@ -1007,13 +1007,13 @@ long ARX_SOUND_PlayCinematic(const char * name)
 	return sample_id;
 }
 
-long ARX_SOUND_IsPlaying(long & sample_id)
+long ARX_SOUND_IsPlaying(ArxSound & sample_id)
 {
 	return bIsActive ? aalIsSamplePlaying(sample_id) : 0;
 }
 
 
-float ARX_SOUND_GetDuration(long & sample_id)
+float ARX_SOUND_GetDuration(ArxSound & sample_id)
 {
 	if (bIsActive && sample_id != AAL_SFALSE)
 	{
@@ -1026,19 +1026,19 @@ float ARX_SOUND_GetDuration(long & sample_id)
 	return 0.f;
 }
 
-void ARX_SOUND_RefreshVolume(long & sample_id, const float & volume)
+void ARX_SOUND_RefreshVolume(ArxSound & sample_id, const float & volume)
 {
 	if (bIsActive && sample_id != AAL_SFALSE)
 		aalSetSampleVolume(sample_id, volume);
 }
 
-void ARX_SOUND_RefreshPitch(long & sample_id, const float & pitch)
+void ARX_SOUND_RefreshPitch(ArxSound & sample_id, const float & pitch)
 {
 	if (bIsActive && sample_id != AAL_SFALSE)
 		aalSetSamplePitch(sample_id, pitch);
 }
 
-void ARX_SOUND_RefreshPosition(long & sample_id, const EERIE_3D * position)
+void ARX_SOUND_RefreshPosition(ArxSound & sample_id, const EERIE_3D * position)
 {
 	if (bIsActive && sample_id != AAL_SFALSE)
 	{
@@ -1054,7 +1054,7 @@ void ARX_SOUND_RefreshPosition(long & sample_id, const EERIE_3D * position)
 	}
 }
 
-void ARX_SOUND_RefreshSpeechPosition(long & sample_id, const INTERACTIVE_OBJ * io)
+void ARX_SOUND_RefreshSpeechPosition(ArxSound & sample_id, const INTERACTIVE_OBJ * io)
 {
 	if (!bIsActive || !io || sample_id == AAL_SFALSE) return;
 
@@ -1078,7 +1078,7 @@ void ARX_SOUND_RefreshSpeechPosition(long & sample_id, const INTERACTIVE_OBJ * i
 	aalSetSamplePosition(sample_id, position);
 }
 
-long ARX_SOUND_Load(const char * name)
+ArxSound ARX_SOUND_Load(const char * name)
 {
 	if (!bIsActive) return AAL_SFALSE;
 
@@ -1089,19 +1089,19 @@ long ARX_SOUND_Load(const char * name)
 	return aalCreateSample(sample_name);
 }
 
-void ARX_SOUND_Free(const long & sample)
+void ARX_SOUND_Free(const ArxSound & sample)
 {
 	if (!bIsActive || sample == ARX_SOUND_INVALID_RESOURCE) return;
 
 	aalDeleteSample(sample);
 }
 
-void ARX_SOUND_Stop(int & sample_id)
+void ARX_SOUND_Stop(ArxSound & sample_id)
 {
 	if (bIsActive && sample_id != AAL_SFALSE) aalSampleStop(sample_id);
 }
 
-long ARX_SOUND_PlayScriptAmbiance(const char * name, const long & loop, const float & volume) //, const EERIE_3D *position)
+long ARX_SOUND_PlayScriptAmbiance(const char * name, const int & loop, const float & volume) //, const EERIE_3D *position)
 {
 	if (!bIsActive) return AAL_SFALSE;
 
@@ -1141,7 +1141,7 @@ long ARX_SOUND_PlayScriptAmbiance(const char * name, const long & loop, const fl
 	return ambiance_id;
 }
 
-long ARX_SOUND_PlayZoneAmbiance(const char * name, const long & loop, const float & volume) 
+long ARX_SOUND_PlayZoneAmbiance(const char * name, const int & loop, const float & volume) 
 {
 	if (!bIsActive) return AAL_SFALSE;
 
