@@ -690,8 +690,8 @@ bool PakManager::Read(char * _lpszName, void * _pMem)
 {
 	vector<EVE_LOADPACK *>::iterator i;
 
-	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '/'))
+	if ((_lpszName[0] == '\\') /*||
+	        (_lpszName[0] == '/')*/)
 	{
 		_lpszName++;
 	}
@@ -716,8 +716,8 @@ void * PakManager::ReadAlloc(char * _lpszName, int * _piTaille)
 {
 	vector<EVE_LOADPACK *>::iterator i;
 
-	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '/'))
+	if ((_lpszName[0] == '\\') /*||
+	        (_lpszName[0] == '/')*/)
 	{
 		_lpszName++;
 	}
@@ -743,8 +743,8 @@ int PakManager::GetSize(char * _lpszName)
 {
 	vector<EVE_LOADPACK *>::iterator i;
 
-	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '/'))
+	if ((_lpszName[0] == '\\') /*||
+	        (_lpszName[0] == '/')*/)
 	{
 		_lpszName++;
 	}
@@ -770,8 +770,8 @@ PACK_FILE * PakManager::fOpen(char * _lpszName)
 {
 	vector<EVE_LOADPACK *>::iterator i;
 
-	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '/'))
+	if ((_lpszName[0] == '\\') /*||
+	        (_lpszName[0] == '/')*/)
 	{
 		_lpszName++;
 	}
@@ -892,13 +892,11 @@ bool PakManager::ExistFile(char * _lpszName)
 {
 	vector<EVE_LOADPACK *>::iterator i;
 
-	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '/'))
+	if ((_lpszName[0] == '\\') /*||
+	        (_lpszName[0] == '/')*/)
 	{
 		_lpszName++;
 	}
-	
-	MakeUpcase_real(_lpszName); // TODO hack
 
 	char * pcDir = NULL;
 	char * pcDir1 = (char *)EVEF_GetDirName((unsigned char *)_lpszName);
