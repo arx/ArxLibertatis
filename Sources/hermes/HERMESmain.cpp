@@ -174,6 +174,7 @@ again:
 }
 
 long KillAllDirectory(char * path) {
+	printf("KillAllDirectory(%s)\n", path);
 	
 	WIN32_FIND_DATA FileInformation;             // File information
 	
@@ -182,10 +183,11 @@ long KillAllDirectory(char * path) {
 	char pathh[512];
 	sprintf(pathh, "%s*.*", path);
 	
-	if ((idx = FindFirstFile(pathh, &fl)) != -1)
+	if ((idx = FindFirstFile(pathh, &fl)) != INVALID_HANDLE_VALUE)
 	{
 		do
 		{
+			printf(" - \"%s\"\n", fl.cFileName);
 			if (fl.cFileName[0] != '.')
 			{
 				if (fl.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
@@ -202,7 +204,7 @@ long KillAllDirectory(char * path) {
 			}
 
 		}
-		while (FindNextFile(idx, &fl) != -1);
+		while(FindNextFile(idx, &fl));
 
 		FindClose(idx);
 	}
