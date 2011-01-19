@@ -575,7 +575,9 @@ long DanaeSaveLevel(char * fic)
 	compressed = NULL;
 	long cpr_pos;
 	cpr_pos = 0;
-	compressed = STD_Implode((char *)(dat + sizeof(DANAE_LS_HEADER)), pos - sizeof(DANAE_LS_HEADER), &cpr_pos);
+	printf("IMPLODE NOT IMPLEMENTED\n");
+	// TODO fix
+	//compressed = STD_Implode((char *)(dat + sizeof(DANAE_LS_HEADER)), pos - sizeof(DANAE_LS_HEADER), &cpr_pos);
 
 	if (FileWrite(handle, compressed, cpr_pos) != cpr_pos)
 	{
@@ -695,7 +697,9 @@ long DanaeSaveLevel(char * fic)
 
 	compressed = NULL;
 	cpr_pos = 0;
-	compressed = STD_Implode((char *)dat, pos, &cpr_pos);
+	printf("IMPLODE NOT IMPLEMENTED\n");
+	// TODO fix
+	//compressed = STD_Implode((char *)dat, pos, &cpr_pos);
 
 	if (FileWrite(handle, compressed, cpr_pos) != cpr_pos)
 	{

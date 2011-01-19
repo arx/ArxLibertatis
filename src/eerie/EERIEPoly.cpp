@@ -4609,7 +4609,9 @@ BOOL FastSceneSave(char * partial_path, EERIE_MULTI3DSCENE * ms)
 	long cpr_pos;
 	cpr_pos = 0;
 
-	compressed = STD_Implode((char *)(dat + compressedstart), pos - compressedstart, &cpr_pos);
+	printf("IMPLODE NOT IMPLEMENTED\n");
+	// TODO fix
+	//compressed = STD_Implode((char *)(dat + compressedstart), pos - compressedstart, &cpr_pos);
 
 	if (FileWrite(handle, compressed, cpr_pos) != cpr_pos)
 	{

@@ -63,7 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using namespace std;
 
 extern char PAK_WORKDIR[256];
-extern ULONG g_pak_workdir_len;
+extern unsigned long g_pak_workdir_len;
 
 
 #define LOAD_TRUEFILE			1

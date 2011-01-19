@@ -436,7 +436,9 @@ BOOL ARX_FTL_Save(char * incomplete_fic, char * complete_fic, EERIE_3DOBJ * obj)
 	compressed = NULL;
 	long cpr_pos;
 	cpr_pos = 0;
-	compressed = STD_Implode((char *)dat, pos, &cpr_pos);
+	printf("IMPLODE NOT IMPLEMENTED\n");
+	// TODO fix
+	//compressed = STD_Implode((char *)dat, pos, &cpr_pos);
 
 	// Now Saving Whole Buffer
 	if (!(handle = FileOpenWrite(gamefic)))

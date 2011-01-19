@@ -50,6 +50,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Casts.h"
 using std::min;
 using std::max;
+using std::size_t;
+
+#include <blast.h>
+
+#include <windows.h>
 
 // TODO crashes when using wrong data files
 #define FINAL_COMMERCIAL_GAME
@@ -228,29 +233,33 @@ void EVE_LOADPACK::Close()
 }
 
 //-----------------------------------------------------------------------------
-static unsigned int ReadData(char * Buff, unsigned int * Size, void * Param)
-{
+size_t ReadData(void * Param, const unsigned char ** buf) {
+	
 	PAK_PARAM * pPP = (PAK_PARAM *)Param;
-
-	int iRead = fread(Buff, 1, *Size, pPP->file);
+	
+	*buf = pPP->readbuf;
+	
+	int iRead = fread(pPP->readbuf, 1, PAK_READ_BUF_SIZE, pPP->file);
 
 	return (unsigned int)iRead;
 }
 
 //-----------------------------------------------------------------------------
-static void WriteData(char * Buff, unsigned int * Size, void * Param)
-{
+int WriteData(void * Param, unsigned char * buf, size_t len) {
+	
 	PAK_PARAM * pPP = (PAK_PARAM *) Param;
 
 	ARX_CHECK_NOT_NEG(pPP->lSize);
-	long lSize = min(ARX_CAST_ULONG(pPP->lSize), (unsigned long)*Size);
+	
+	size_t lSize = min(pPP->lSize, len);
 
-	memcpy((void *) pPP->mem, (const void *) Buff, lSize);
+	memcpy((void *) pPP->mem, (const void *) buf, lSize);
 	pPP->mem   += lSize;
 	pPP->lSize -= lSize;
+	
+	return 0;
 }
 
-char pcWorkBuff[EXP_BUFFER_SIZE];
 //-----------------------------------------------------------------------------
 bool EVE_LOADPACK::Read(char * _pcName, void * _mem)
 {
@@ -311,7 +320,7 @@ bool EVE_LOADPACK::Read(char * _pcName, void * _mem)
 			sPP.file = pfFile;
 			sPP.mem = (char *)_mem;
 			sPP.lSize = pTFiles->param3;
-			explode(ReadData, WriteData, pcWorkBuff, &sPP);
+			blast(ReadData, &sPP, WriteData, &sPP);
 		}
 		else
 		{
@@ -407,7 +416,7 @@ void * EVE_LOADPACK::ReadAlloc(char * _pcName, int * _piTaille)
 			sPP.file = pfFile;
 			sPP.mem = (char *)mem;
 			sPP.lSize = pTFiles->param3;
-			explode(ReadData, WriteData, pcWorkBuff, &sPP);
+			blast(ReadData, &sPP, WriteData, &sPP);
 		}
 		else
 		{
@@ -608,30 +617,34 @@ int EVE_LOADPACK::fClose(PACK_FILE * _pPackFile)
 }
 
 //-----------------------------------------------------------------------------
-static unsigned int ReadDataFRead(char * Buff, unsigned int * Size, void * Param)
-{
+size_t ReadDataFRead(void * Param, const unsigned char ** buf) {
+	
 	PAK_PARAM_FREAD * pPP = (PAK_PARAM_FREAD *)Param;
+	
+	*buf = pPP->readbuf;
 
-	int iRead = fread(Buff, 1, *Size, pPP->file);
+	int iRead = fread(pPP->readbuf, 1, PAK_READ_BUF_SIZE, pPP->file);
 
 	return (unsigned int)iRead;
 }
 
 //-----------------------------------------------------------------------------
-static void WriteDataFRead(char * Buff, unsigned int * Size, void * Param)
-{
+int WriteDataFRead(void * Param, unsigned char * buf, size_t len) {
+	
 	PAK_PARAM_FREAD * pPP = (PAK_PARAM_FREAD *)Param;
 
-	if (pPP->iTailleW >= pPP->iTailleBase) return;
+	if(pPP->iTailleW >= pPP->iTailleBase) {
+		return 1;
+	}
 
-	pPP->iOffsetBase -= *Size;
-	pPP->iOffsetCurr += *Size;
+	pPP->iOffsetBase -= len;
+	pPP->iOffsetCurr += len;
 
 	if (pPP->iOffset < pPP->iOffsetCurr)
 	{
-		if (pPP->iOffsetBase < 0) pPP->iOffsetBase += *Size;
+		if (pPP->iOffsetBase < 0) pPP->iOffsetBase += len;
 
-		int iSize = *Size - pPP->iOffsetBase;
+		int iSize = len - pPP->iOffsetBase;
 
 		if (pPP->iTaille > iSize)
 		{
@@ -649,9 +662,13 @@ static void WriteDataFRead(char * Buff, unsigned int * Size, void * Param)
 
 		pPP->iTailleW += iSize;
 
-		memcpy((void *)pPP->mem, (const void *)(Buff + pPP->iOffsetBase), iSize);
+		memcpy((void *)pPP->mem, (const void *)(buf + pPP->iOffsetBase), iSize);
 		pPP->mem += iSize;
 		pPP->iOffsetBase = 0;
+		
+		return 0;
+	} else {
+		return 1;
 	}
 }
 
@@ -686,7 +703,7 @@ int EVE_LOADPACK::fRead(void * _pMem, int _iSize, int _iCount, PACK_FILE * _pPac
 		sPP.iTaille     = sPP.iTailleBase = iTaille;
 		sPP.iTailleW    = 0;
 		sPP.iTailleFic  = _pPackFile->pFile->param3;
-		explode(ReadDataFRead, WriteDataFRead, pcWorkBuff, &sPP);
+		blast(ReadDataFRead, &sPP, WriteDataFRead, &sPP);
 		iTaille         = sPP.iTailleW;
 		iSeekPak        = ftell(pfFile);
 	}

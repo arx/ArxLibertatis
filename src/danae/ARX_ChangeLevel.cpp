@@ -729,7 +729,9 @@ retry:
 
 	char * compressed = NULL;
 	long cpr_pos = 0;
-	compressed = STD_Implode((char *)dat, pos, &cpr_pos);
+	printf("IMPLODE NOT IMPLEMENTED\n");
+	// TODO fix
+	//compressed = STD_Implode((char *)dat, pos, &cpr_pos);
 	free(dat);
 
 	for (int i = 0; i < cpr_pos; i += 2)
@@ -840,7 +842,9 @@ retry:
 
 	char * compressed = NULL;
 	long cpr_pos = 0;
-	compressed = STD_Implode((char *)dat, pos, &cpr_pos);
+	printf("IMPLODE NOT IMPLEMENTED\n");
+	// TODO fix
+	//compressed = STD_Implode((char *)dat, pos, &cpr_pos);
 	free(dat);
 
 	for (int i = 0; i < cpr_pos; i += 2)
@@ -1081,7 +1085,9 @@ retry:
 
 	char * compressed = NULL;
 	long cpr_pos = 0;
-	compressed = STD_Implode((char *)dat, pos, &cpr_pos);
+	printf("IMPLODE NOT IMPLEMENTED\n");
+	// TODO fix
+	//compressed = STD_Implode((char *)dat, pos, &cpr_pos);
 	free(dat);
 
 	for (int i = 0; i < cpr_pos; i += 2)
@@ -1831,7 +1837,9 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 
 	char * compressed = NULL;
 	long cpr_pos = 0;
-	compressed = STD_Implode((char *)dat, pos, &cpr_pos);
+	printf("IMPLODE NOT IMPLEMENTED\n");
+	// TODO fix
+	//compressed = STD_Implode((char *)dat, pos, &cpr_pos);
 	free(dat);
 
 	for (int i = 0; i < cpr_pos; i += 2)
@@ -4151,7 +4159,9 @@ long ARX_CHANGELEVEL_Set_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 
 	char * compressed = NULL;
 	long cpr_pos = 0;
-	compressed = STD_Implode((char *)dat, pos, &cpr_pos);
+	printf("IMPLODE NOT IMPLEMENTED\n");
+	// TODO fix
+	//compressed = STD_Implode((char *)dat, pos, &cpr_pos);
 
 	for (long i = 0; i < cpr_pos; i += 2)
 		compressed[i] = ~compressed[i];

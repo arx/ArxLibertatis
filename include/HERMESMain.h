@@ -93,13 +93,13 @@ typedef struct {
 //Always on for now...
 typedef struct PassedParam
 {
-   char *pSource;                   /* Pointer to source buffer           */
-   char *pDestination;              /* Pointer to destination buffer      */
-   unsigned long SourceOffset;      /* Offset into the source buffer      */
-   unsigned long DestinationOffset; /* Offset into the destination buffer */
-   unsigned long CompressedSize;    /* Need this for extracting!          */
-   unsigned long UnCompressedSize;  /* Size of uncompressed data file     */
-   unsigned long BufferSize;
+   char * pSource;                   /* Pointer to source buffer           */
+   char * pDestination;              /* Pointer to destination buffer      */
+   std::size_t SourceOffset;      /* Offset into the source buffer      */
+   std::size_t DestinationOffset; /* Offset into the destination buffer */
+   std::size_t CompressedSize;    /* Need this for extracting!          */
+   std::size_t UnCompressedSize;  /* Size of uncompressed data file     */
+   std::size_t BufferSize;
    unsigned long Crc;               /* Calculated CRC value               */
    unsigned long OrigCrc;           /* Original CRC value of data         */
 } PARAM;
@@ -167,7 +167,6 @@ void AddToName(char *str,char *cat);
 int HERMESFileSelectorOpen(PSTR pstrFileName, PSTR pstrTitleName,char *filter,HWND hWnd);
 int HERMESFileSelectorSave(PSTR pstrFileName, PSTR pstrTitleName,char *filter,HWND hWnd);
 long HERMES_CreateFileCheck(const char *name, char *scheck, const long &size, const float &id);
-char * STD_Implode(char * from,long from_size,long * to_size);
 char * STD_Explode(char * from,long from_size,long * to_size);
 void STD_ExplodeNoAlloc(char * from,long from_size,char * to,long * to_size);
 void ERROR_Log_Init(char * fic);

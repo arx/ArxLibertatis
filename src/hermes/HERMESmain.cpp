@@ -73,6 +73,8 @@ extern "C" {
 
 #include <unistd.h>
 
+#include <blast.h>
+
 // TODO is this correct?
 #define _MAX_EXT 3
 #define _MAX_FNAME 512
@@ -1318,188 +1320,70 @@ int HERMESFileSelectorSave(PSTR pstrFileName, PSTR pstrTitleName, char * filter,
 //////////////////////////////////////// PACKING
 //Always on for now...
 
-char WorkBuff[CMP_BUFFER_SIZE];
 
-/* Routine to read uncompressed data.  Used only by implode().
-** This routine reads the data that is to be compressed.
-*/
-
-unsigned int
-ReadUnCompressed(char * buff, unsigned int * size, void * Param)
-{
-	PARAM * Ptr = (PARAM *) Param;
-
-	if (Ptr->UnCompressedSize == 0L)
-	{
-		/* This will terminate the compression or extraction process */
-		return(0);
-	}
-
-	if (Ptr->UnCompressedSize < (unsigned long)*size)
-	{
-		*size = (unsigned int)Ptr->UnCompressedSize;
-	}
-
-	memcpy(buff, Ptr->pSource + Ptr->SourceOffset, *size);
-	Ptr->SourceOffset += (unsigned long) * size;
-	Ptr->UnCompressedSize -= (unsigned long) * size;
-
-	return(*size);
-}
-
-/* Routine to read compressed data.  Used only by explode().
+/* Routine to read compressed data.  Used only by blast().
 ** This routine reads the compressed data that is to be uncompressed.
 */
-
-unsigned int
-ReadCompressed(char * buff, unsigned int * size, void * Param)
-{
+size_t ReadCompressed(void * Param, const unsigned char ** buf) {
+	
 	PARAM * Ptr = (PARAM *) Param;
+	
+	*buf = Ptr->pSource + Ptr->SourceOffset;
+	
+	size_t size = Ptr->CompressedSize;
+	
+	Ptr->SourceOffset += size;
+	
+	Ptr->CompressedSize = 0;
 
-	if (Ptr->CompressedSize == 0L)
-	{
-		/* This will terminate the compression or extraction process */
-		return(0);
-	}
-
-	if (Ptr->CompressedSize < (unsigned long)*size)
-	{
-		*size = (unsigned int)Ptr->CompressedSize;
-	}
-
-	memcpy(buff, Ptr->pSource + Ptr->SourceOffset, *size);
-	Ptr->SourceOffset += (unsigned long) * size;
-	Ptr->CompressedSize -= (unsigned long) * size;
-
-	return(*size);
-}
-
-/* Routime to write compressed data.  Used only by implode().
-** This routine writes the compressed data to a memory buffer.
-*/
-
-void
-WriteCompressed(char * buff, unsigned int * size, void * Param)
-{
-	PARAM * Ptr = (PARAM *) Param;
-
-	if (Ptr->CompressedSize + (unsigned long)*size > Ptr->BufferSize)
-	{
-		Ptr->BufferSize = Ptr->CompressedSize + (unsigned long) * size;
-		Ptr->pDestination = (char *)realloc(Ptr->pDestination, Ptr->BufferSize);
-	}
-
-	if (Ptr->pDestination)
-	{
-		memcpy(Ptr->pDestination + Ptr->DestinationOffset, buff, *size);
-		Ptr->DestinationOffset += (unsigned long) * size;
-		Ptr->CompressedSize += (unsigned long) * size;
-	}
+	return size;
 }
 
 /* Routine to write uncompressed data. Used only by explode().
 ** This routine writes the uncompressed data to a memory buffer.
 */
-
-void
-WriteUnCompressed(char * buff, unsigned int * size, void * Param)
-{
+int WriteUnCompressed(void * Param, unsigned char * buf, size_t len) {
+	
 	PARAM * Ptr = (PARAM *) Param;
-
-	if (Ptr->UnCompressedSize + (unsigned long)*size > Ptr->BufferSize)
-	{
-		Ptr->BufferSize = Ptr->UnCompressedSize + ((unsigned long) * size) * 10;
+	
+	if(Ptr->UnCompressedSize + len > Ptr->BufferSize) {
+		Ptr->BufferSize = Ptr->UnCompressedSize + len * 10;
 		Ptr->pDestination = (char *)realloc(Ptr->pDestination, Ptr->BufferSize);
 	}
-
-	if (Ptr->pDestination)
-	{
-		memcpy(Ptr->pDestination + Ptr->DestinationOffset, buff, *size);
-		Ptr->DestinationOffset += (unsigned long) * size;
-		Ptr->UnCompressedSize += (unsigned long) * size;
+	
+	if(Ptr->pDestination) {
+		memcpy(Ptr->pDestination + Ptr->DestinationOffset, buf, len);
+		Ptr->DestinationOffset += len;
+		Ptr->UnCompressedSize += len;
+		return 0;
+	} else {
+		return 1;
 	}
+	
 }
 
-void
-WriteUnCompressedNoAlloc(char * buff, unsigned int * size, void * Param)
-{
+int WriteUnCompressedNoAlloc(void * Param, unsigned char * buf, size_t len) {
+	
 	PARAM * Ptr = (PARAM *) Param;
-
-	if (Ptr->UnCompressedSize + (unsigned long)*size > Ptr->BufferSize)
-	{
-		Ptr->BufferSize = Ptr->UnCompressedSize + ((unsigned long) * size) * 10;
+	
+	if(Ptr->UnCompressedSize + len > Ptr->BufferSize) {
+		return 1;
 	}
-
-	if (Ptr->pDestination)
-	{
-		memcpy(Ptr->pDestination + Ptr->DestinationOffset, buff, *size);
-		Ptr->DestinationOffset += (unsigned long) * size;
-		Ptr->UnCompressedSize += (unsigned long) * size;
+	
+	if(Ptr->pDestination) {
+		memcpy(Ptr->pDestination + Ptr->DestinationOffset, buf, len);
+		Ptr->DestinationOffset += len;
+		Ptr->UnCompressedSize += len;
+		return 0;
+	} else {
+		return 1;
 	}
+	
 }
 
-char * STD_Implode(char * from, long from_size, long * to_size)
-{
-	if (WorkBuff == NULL)
-	{
-		return NULL;
-	}
 
-	unsigned int type  = CMP_BINARY;
-	unsigned int dsize;// = 2048;
-
-	if (from_size <= 32768)
-		dsize = 1024;
-	else if (from_size <= 131072)
-		dsize = 2048;
-	else dsize = 4096;
-
-	PARAM Param;
-	memset(&Param, 0, sizeof(PARAM));
-
-	Param.pSource = from;
-	Param.pDestination = (char *)malloc(from_size);
-
-	bool bFirst = true; 
-
-	while (1)
-	{
-		Param.CompressedSize = 0;
-		Param.UnCompressedSize = from_size;
-		Param.BufferSize = Param.UnCompressedSize; 
-		Param.SourceOffset      = 0L;
-		Param.DestinationOffset = 0L;
-		Param.Crc               = (unsigned long) - 1;
-		long lResult = implode(ReadUnCompressed, WriteCompressed, WorkBuff, &Param, &type, &dsize);
-
-		if (!lResult)
-		{
-			break;
-		}
-
-		if (bFirst)
-		{
-			bFirst = false;
-			continue;
-		}
-
-		lResult = MessageBox(NULL, "Failed while saving...", "Save Error", MB_RETRYCANCEL | MB_ICONERROR);
-
-		if (lResult == IDCANCEL)
-		{
-			break;
-		}
-	}
-
-	*to_size = Param.CompressedSize;
-	return Param.pDestination;
-}
 char * STD_Explode(char * from, long from_size, long * to_size)
 {
-	if (WorkBuff == NULL)
-	{
-		return NULL;
-	}
 
 	PARAM Param;
 	memset(&Param, 0, sizeof(PARAM));
@@ -1509,7 +1393,7 @@ char * STD_Explode(char * from, long from_size, long * to_size)
 	Param.CompressedSize = from_size;
 
 	Param.Crc               = (unsigned long) - 1;
-	unsigned int error = explode(ReadCompressed, WriteUnCompressed, WorkBuff, &Param);
+	unsigned int error = blast(ReadCompressed, &Param, WriteUnCompressed, &Param);
 
 	if (error)
 	{
@@ -1523,19 +1407,15 @@ char * STD_Explode(char * from, long from_size, long * to_size)
 
 void STD_ExplodeNoAlloc(char * from, long from_size, char * to, long * to_size)
 {
-	if (WorkBuff == NULL)
-	{
-		return;
-	}
 
 	PARAM Param;
 	memset(&Param, 0, sizeof(PARAM));
-	Param.BufferSize = 0;
+	Param.BufferSize = to_size;
 	Param.pSource = from;
 	Param.pDestination = to; 
 	Param.CompressedSize = from_size;
 	Param.Crc               = (unsigned long) - 1;
-	unsigned int error = explode(ReadCompressed, WriteUnCompressedNoAlloc, WorkBuff, &Param);
+	unsigned int error = blast(ReadCompressed, &Param, WriteUnCompressedNoAlloc, &Param);
 
 	if (error)
 	{

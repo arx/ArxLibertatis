@@ -25,9 +25,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EVE_SAVE
 #define EVE_SAVE
 
-#include <stdio.h>
-#include <windows.h>
-#include "implode.h"
 #include "HERMES_pack_types.h"
 #include "HERMES_hachage.h"
 
@@ -62,7 +59,7 @@ public:
 	~EVE_REPERTOIRE();
 
 	void AddSousRepertoire(EVE_U8 *sname);
-	BOOL DelSousRepertoire(EVE_U8 *sname);
+	bool DelSousRepertoire(EVE_U8 *sname);
 	EVE_TFILE* AddFileToSousRepertoire(EVE_U8 *sname,EVE_U8 *name);
  
 	EVE_REPERTOIRE * GetSousRepertoire(EVE_U8 *sname);
