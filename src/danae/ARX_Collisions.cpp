@@ -86,7 +86,7 @@ INTERACTIVE_OBJ * PUSHABLE_NPC=NULL;
 long MOVING_CYLINDER=0;
  
 EERIE_3D vector2D;
-BOOL DIRECT_PATH=TRUE;
+bool DIRECT_PATH=TRUE;
 long APPLY_PUSH=0;
 
 //-----------------------------------------------------------------------------
@@ -1064,7 +1064,7 @@ static bool InExceptionList(long val)
 //-----------------------------------------------------------------------------
 bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //except source...
 {
-	BOOL vreturn = false;
+	bool vreturn = false;
 	MAX_IN_SPHERE_Pos=0;
 	
 	EERIE_VERTEX * vlist;	

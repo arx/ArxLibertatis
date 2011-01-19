@@ -140,7 +140,7 @@ extern long NOCHECKSUM;
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-BOOL ARX_FTL_Save(char * incomplete_fic, char * complete_fic, EERIE_3DOBJ * obj)
+bool ARX_FTL_Save(char * incomplete_fic, char * complete_fic, EERIE_3DOBJ * obj)
 {
 	// Need an object to be saved !
 	if (obj == NULL) return FALSE;

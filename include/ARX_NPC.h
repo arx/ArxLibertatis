@@ -74,8 +74,8 @@ const float ARX_NPC_AUDIBLE_PRESENCE_DEFAULT(1.0F);
 void ARX_NPC_Revive(INTERACTIVE_OBJ * io, long flag);
 void ARX_NPC_SetStat(INTERACTIVE_OBJ * io, char * statname, float value);
 void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos);
-BOOL ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target);
-BOOL IsDeadNPC(INTERACTIVE_OBJ * io);
+bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target);
+bool IsDeadNPC(INTERACTIVE_OBJ * io);
 
 void FaceTarget2(INTERACTIVE_OBJ * io);
 void ARX_TEMPORARY_TrySound(float power);
@@ -97,7 +97,7 @@ void CheckNPC(INTERACTIVE_OBJ * io);
 void ManageIgnition(INTERACTIVE_OBJ * io);
 void ManageIgnition_2(INTERACTIVE_OBJ * io);
 void CheckUnderWaterIO(INTERACTIVE_OBJ * io);
-BOOL IsDeadNPC(INTERACTIVE_OBJ * io);
+bool IsDeadNPC(INTERACTIVE_OBJ * io);
 void ARX_NPC_Kill_Spell_Launch(INTERACTIVE_OBJ * io);
 
 #endif

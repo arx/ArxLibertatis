@@ -67,7 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 /*-----------------------------------------------------------*/
 void DeleteAllBitmap(LPDIRECT3DDEVICE7 device);
 void DeleteAllSound(void);
-BOOL DeleteTrack(void);
+bool DeleteTrack(void);
 /*-----------------------------------------------------------*/
 //extern char DirectoryChoose[];
 /*-----------------------------------------------------------*/
@@ -341,9 +341,9 @@ class CINEMATIQUE
 		float		a;
 		int			fx;
 		int			fxsuiv;
-		BOOL		changekey;
+		bool		changekey;
 		C_KEY	*	key;
-		BOOL		projectload;
+		bool		projectload;
 		short		ti;
 		short		tichoose;
 		short		force;
@@ -368,7 +368,7 @@ class CINEMATIQUE
 		float		m_flIntensityRND;
 
 		CINEMATIQUE(LPDIRECT3DDEVICE7, int, int);
-		BOOL ActiveTexture(int id);
+		bool ActiveTexture(int id);
 		HRESULT InitDeviceObjects();
 		HRESULT OneTimeSceneReInit(void);
 		HRESULT Render(float FDIFF);
@@ -378,18 +378,18 @@ class CINEMATIQUE
 };
 
 /*-----------------------------------------------------------*/
-BOOL AllocTrack(int sf, int ef, float fps);
-BOOL AddKey(C_KEY * key, BOOL writecolor, BOOL writecolord, BOOL writecolorf);
-BOOL AddKeyLoad(C_KEY * key);
-void AddDiffKey(CINEMATIQUE * c, C_KEY * key, BOOL writecolor, BOOL writecolord, BOOL writecolorf);
-BOOL GereTrack(CINEMATIQUE * c, float fpscurr);
+bool AllocTrack(int sf, int ef, float fps);
+bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf);
+bool AddKeyLoad(C_KEY * key);
+void AddDiffKey(CINEMATIQUE * c, C_KEY * key, bool writecolor, bool writecolord, bool writecolorf);
+bool GereTrack(CINEMATIQUE * c, float fpscurr);
 
 void PlayTrack(CINEMATIQUE * c);
 int GetCurrentFrame(void);
 int GetStartFrame(void);
 int GetEndFrame(void);
 void SetCurrFrame(int frame);
-BOOL GereTrackNoPlay(CINEMATIQUE * c);
+bool GereTrackNoPlay(CINEMATIQUE * c);
 float GetTrackFPS(void);
 
 C_KEY * GetKey(int f, int * num);
@@ -401,37 +401,37 @@ void UpDateAllKeyLight(void);
 
 void InitMapLoad(CINEMATIQUE * c);
 C_BITMAP * GetFreeBitmap(int * num);
-BOOL DeleteFreeBitmap(int num);
-BOOL KillTexture(LPDIRECT3DDEVICE7 device, int num);
+bool DeleteFreeBitmap(int num);
+bool KillTexture(LPDIRECT3DDEVICE7 device, int num);
 int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int num, int pos);
-BOOL ActiveAllTexture(CINEMATIQUE * c);
+bool ActiveAllTexture(CINEMATIQUE * c);
 
-BOOL ReCreateAllMapsForBitmap(int id, int nmax, CINEMATIQUE * c, LPDIRECT3DDEVICE7 device);
+bool ReCreateAllMapsForBitmap(int id, int nmax, CINEMATIQUE * c, LPDIRECT3DDEVICE7 device);
 
 int FX_FadeIN(float a, int color, int colord);
 int FX_FadeOUT(float a, int color, int colord);
-BOOL FX_FlashBlanc(LPDIRECT3DDEVICE7 device, float w, float h, float speed, int color, float fps, float currfps);
-BOOL FX_Blur(CINEMATIQUE * c, LPDIRECT3DDEVICE7 device, C_BITMAP * tb);
-BOOL SpecialFade(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, float h, float speed, float fps, float fpscurr);
-BOOL SpecialFadeR(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, float h, float speed, float fps, float fpscurr);
+bool FX_FlashBlanc(LPDIRECT3DDEVICE7 device, float w, float h, float speed, int color, float fps, float currfps);
+bool FX_Blur(CINEMATIQUE * c, LPDIRECT3DDEVICE7 device, C_BITMAP * tb);
+bool SpecialFade(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, float h, float speed, float fps, float fpscurr);
+bool SpecialFadeR(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, float h, float speed, float fps, float fpscurr);
 void FX_DreamPrecalc(C_BITMAP * bi, float amp, float fps);
 
 void GetPathDirectory(char * dirfile);
 void ClearDirectory(char * dirfile);
-BOOL OpenDialogRead(char * titlename, HWND hwnd, unsigned long numfilter);
-BOOL OpenDialogSave(char * titlename, HWND hwnd, unsigned long numfilter);
+bool OpenDialogRead(char * titlename, HWND hwnd, unsigned long numfilter);
+bool OpenDialogSave(char * titlename, HWND hwnd, unsigned long numfilter);
 int OpenDialogColor(HWND hwnd, int col);
 char * OpenDiagDirectory(HWND hwnd, char * title);
 
-BOOL SaveProject(char * dir, char * name);
-BOOL LoadProject(CINEMATIQUE * c, char * dir, char * name);
-BOOL LoadOldProject(CINEMATIQUE * c, char * dir, char * name);
+bool SaveProject(char * dir, char * name);
+bool LoadProject(CINEMATIQUE * c, char * dir, char * name);
+bool LoadOldProject(CINEMATIQUE * c, char * dir, char * name);
 
 void InitSound(CINEMATIQUE * c);
 C_SOUND * GetFreeSound(int * num);
-BOOL DeleteFreeSound(int num);
-BOOL AddSoundToList(char * dir, char * name, int id, int pos);
-BOOL PlaySoundKeyFramer(int id);
+bool DeleteFreeSound(int num);
+int AddSoundToList(char * dir, char * name, int id, int pos);
+bool PlaySoundKeyFramer(int id);
 void StopSoundKeyFramer(void);
 
 void DrawGrille(LPDIRECT3DDEVICE7 device, C_GRILLE * grille, int col, int fx, C_LIGHT * light, EERIE_3D * posgrillesuiv, float angzgrillesuiv);

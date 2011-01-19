@@ -101,7 +101,7 @@ extern bool bGCroucheToggle;
 
 long SPECIALPOLYSNB = 0;
 
-BOOL CanPurge(EERIE_3D * pos)
+bool CanPurge(EERIE_3D * pos)
 {
 	long px, pz;
 	F2L(pos->x * ACTIVEBKG->Xmul, &px);

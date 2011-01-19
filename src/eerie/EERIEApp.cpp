@@ -368,7 +368,7 @@ INT CD3DApplication::Run()
 	HACCEL hAccel = NULL;
 
 	// Now we're ready to recieve and process Windows messages.
-	BOOL bGotMsg;
+	bool bGotMsg;
 	MSG  msg;
 	PeekMessage(&msg, NULL, 0U, 0U, PM_NOREMOVE);
 
@@ -415,7 +415,7 @@ void CD3DApplication::EvictManagedTextures()
 
 int CD3DApplication::WinManageMess()
 {
-	BOOL bGotMsg = true;
+	bool bGotMsg = true;
 	MSG  msg;
 
 	while (bGotMsg)
@@ -469,7 +469,7 @@ void CD3DApplication::EERIEMouseUpdate(short x, short y)
 	// Manages MouseGrab (Right-click maintained pressed)
 
 	POINT	pos;
-	BOOL	mod	=	FALSE;
+	bool	mod	=	FALSE;
 
 	pos.x = pos.y = 0;
 
@@ -881,7 +881,7 @@ HRESULT CD3DApplication::Initialize3DEnvironment()
 HRESULT CD3DApplication::Change3DEnvironment()
 {
 	HRESULT hr;
-	static BOOL  bOldWindowedState = TRUE;
+	static bool  bOldWindowedState = TRUE;
 	static DWORD dwSavedStyle;
 	static RECT  rcSaved;
 
@@ -1068,7 +1068,7 @@ VOID CD3DApplication::Cleanup3DEnvironment()
 // brings the GDI surface to the front of the display, so drawing
 // output like message boxes and menus may be displayed.
 //*************************************************************************************
-VOID CD3DApplication::Pause(BOOL bPause)
+VOID CD3DApplication::Pause(bool bPause)
 {
 	static DWORD dwAppPausedCount = 0L;
 
@@ -1123,7 +1123,7 @@ LRESULT CD3DApplication::OnResumeSuspend(DWORD dwData)
 
 //*************************************************************************************
 //*************************************************************************************
-VOID CalcFPS(BOOL reset)
+VOID CalcFPS(bool reset)
 {
 	static float fFPS      = 0.0f;
 	static float fLastTime = 0.0f;

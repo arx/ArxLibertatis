@@ -654,7 +654,7 @@ long EERIERTPPoly2(EERIEPOLY *ep)
 }
 
 
-BOOL IsSphereInFrustrum(float radius,EERIE_3D * point,EERIE_FRUSTRUM * frustrum);
+bool IsSphereInFrustrum(float radius,EERIE_3D * point,EERIE_FRUSTRUM * frustrum);
 bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * sphere)
 {
 	float dists=sphere->origin.x*efpPlaneNear.a + sphere->origin.y*efpPlaneNear.b + sphere->origin.z*efpPlaneNear.c + efpPlaneNear.d;
@@ -701,8 +701,8 @@ bool VisibleSphere(float x,float y,float z,float radius)
 	pos.z=z;
 	return EEVisibleSphere(&pos,radius);
 }
-BOOL IsInFrustrum(EERIE_3D * point,EERIE_FRUSTRUM * frustrum);
-BOOL IsBBoxInFrustrum(EERIE_3D_BBOX * bbox,EERIE_FRUSTRUM * frustrum)
+bool IsInFrustrum(EERIE_3D * point,EERIE_FRUSTRUM * frustrum);
+bool IsBBoxInFrustrum(EERIE_3D_BBOX * bbox,EERIE_FRUSTRUM * frustrum)
 {
 	EERIE_3D point;
 	point.x=bbox->min.x;
@@ -789,7 +789,7 @@ long * RoomDrawList=NULL;
 long NbRoomDrawList=0;
 long TotalRoomDrawList=0;
 
-BOOL ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io)
+bool ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io)
 {
 	if (EDITMODE) return FALSE;
 
@@ -876,7 +876,7 @@ BOOL ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io)
 	return FALSE;
 }
 //*********************************************************************************************************************
-// BOOL ARX_SCENE__PORTAL_ClipIO(INTERACTIVE_OBJ * io,EERIE_3DOBJ * eobj,EERIE_3D * position,EERIE_3D * bboxmin,EERIE_3D * bboxmax)
+// bool ARX_SCENE__PORTAL_ClipIO(INTERACTIVE_OBJ * io,EERIE_3DOBJ * eobj,EERIE_3D * position,EERIE_3D * bboxmin,EERIE_3D * bboxmax)
 //---------------------------------------------------------------------------------------------------------------------
 // USAGE/FUNCTION
 //   io can be NULL if io is valid io->bbox3D contains 3D world-bbox
@@ -888,7 +888,7 @@ BOOL ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io)
 //   Implement all Portal Methods
 //   Return a reduced clipbox which can be used for polys clipping in the case of partial visibility
 //*********************************************************************************************************************
-BOOL ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io,EERIE_3DOBJ * eobj,EERIE_3D * position,EERIE_3D * bboxmin,EERIE_3D * bboxmax)
+bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io,EERIE_3DOBJ * eobj,EERIE_3D * position,EERIE_3D * bboxmin,EERIE_3D * bboxmax)
 {
 	if (EDITMODE) return FALSE;
 
@@ -1309,7 +1309,7 @@ bool BBoxClipPoly(EERIE_2D_BBOX * bbox,EERIEPOLY * ep)
 	return false;
 
 }
-BOOL IsInFrustrum(EERIE_3D * point,EERIE_FRUSTRUM * frustrum)
+bool IsInFrustrum(EERIE_3D * point,EERIE_FRUSTRUM * frustrum)
 {
 	if (	((point->x*frustrum->plane[0].a + point->y*frustrum->plane[0].b + point->z*frustrum->plane[0].c + frustrum->plane[0].d)>0)
 		&&	((point->x*frustrum->plane[1].a + point->y*frustrum->plane[1].b + point->z*frustrum->plane[1].c + frustrum->plane[1].d)>0)
@@ -1321,7 +1321,7 @@ BOOL IsInFrustrum(EERIE_3D * point,EERIE_FRUSTRUM * frustrum)
 }
 
 
-BOOL IsSphereInFrustrum(float radius,EERIE_3D * point,EERIE_FRUSTRUM * frustrum)
+bool IsSphereInFrustrum(float radius,EERIE_3D * point,EERIE_FRUSTRUM * frustrum)
 {
 	float dists[4];
 	dists[0]=point->x*frustrum->plane[0].a + point->y*frustrum->plane[0].b + point->z*frustrum->plane[0].c + frustrum->plane[0].d;
@@ -4076,7 +4076,7 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 			}
 
 		
-BOOL Clip_Visible(const EERIE_3D * orgn, EERIE_3D * dest)
+bool Clip_Visible(const EERIE_3D * orgn, EERIE_3D * dest)
 {
 	register float dx,dy,dz,adx,ady,adz,ix,iy,iz;
 	register float x0,y0,z0;
@@ -4187,7 +4187,7 @@ long curpixel;
 
 
 
-BOOL spGetTruePolyY(const EERIEPOLY * ep, const EERIE_3D * pos, float * ret)
+bool spGetTruePolyY(const EERIEPOLY * ep, const EERIE_3D * pos, float * ret)
 	{
 		
 	register EERIE_3D n,s21,s31;
@@ -4265,7 +4265,7 @@ void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag, long param)
 
 	// First if scene camera hasn't moved we set MODIF to 0
 	// This allows us not to Clip/Rotate/Translate/Project again the scene
-	BOOL MODIF=TRUE;
+	bool MODIF=TRUE;
 
 	if (flag == 3)
 	{

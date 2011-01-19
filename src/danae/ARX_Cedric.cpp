@@ -46,7 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #if	CEDRIC
 
-extern		BOOL 		MIPM;
+extern		bool 		MIPM;
 extern		float 		vdist;
 extern 		float 		FORCED_REDUCTION_VALUE;
 extern		unsigned char * grps;

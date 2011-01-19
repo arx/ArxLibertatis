@@ -79,7 +79,7 @@ EERIE_PORTAL_DATA * portals = NULL;
 
 extern long DEBUGSYS;
 extern char LastLoadedScene[256];
-extern BOOL MIPM;
+extern bool MIPM;
 extern long USEINTERNORM;
 extern float vdist;
 extern long ALLOW_MIPMESHING;

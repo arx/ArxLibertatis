@@ -616,12 +616,12 @@ void OptmizeInventory(unsigned int _uiNumBag)
 }
 
 //*************************************************************************************
-// BOOL CanBePutInInventory(INTERACTIVE_OBJ * io)
+// bool CanBePutInInventory(INTERACTIVE_OBJ * io)
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
 //   tries to put an object in player inventory
 //*************************************************************************************
-BOOL CanBePutInInventory(INTERACTIVE_OBJ * io)
+bool CanBePutInInventory(INTERACTIVE_OBJ * io)
 {
 	if (io == NULL) return FALSE;
 
@@ -845,12 +845,12 @@ BOOL CanBePutInInventory(INTERACTIVE_OBJ * io)
 }
 
 //*************************************************************************************
-// BOOL CanBePutInSecondaryInventory(INVENTORY_DATA * id,INTERACTIVE_OBJ * io,long * xx,long * yy)
+// bool CanBePutInSecondaryInventory(INVENTORY_DATA * id,INTERACTIVE_OBJ * io,long * xx,long * yy)
 //------------------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
 //   Tries to put an object in secondary inventory
 //*************************************************************************************
-BOOL CanBePutInSecondaryInventory(INVENTORY_DATA * id, INTERACTIVE_OBJ * io, long * xx, long * yy)
+bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, INTERACTIVE_OBJ * io, long * xx, long * yy)
 {
 	if (!id) return FALSE;
 
@@ -1042,12 +1042,12 @@ BOOL CanBePutInSecondaryInventory(INVENTORY_DATA * id, INTERACTIVE_OBJ * io, lon
 }
 
 //*************************************************************************************
-// BOOL PutInInventory()
+// bool PutInInventory()
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
 //   Try to put DRAGINTER object in an inventory
 //*************************************************************************************
-BOOL PutInInventory()
+bool PutInInventory()
 {
 	// Check Validity
 	if ((!DRAGINTER)
@@ -1434,12 +1434,12 @@ BOOL PutInInventory()
 	return TRUE;
 }
 //*************************************************************************************
-// BOOL InSecondaryInventoryPos(EERIE_S2D * pos)
+// bool InSecondaryInventoryPos(EERIE_S2D * pos)
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
 //   Returns TRUE if xx,yy is a position in secondary inventory
 //*************************************************************************************
-BOOL InSecondaryInventoryPos(EERIE_S2D * pos)
+bool InSecondaryInventoryPos(EERIE_S2D * pos)
 {
 	if (SecondaryInventory != NULL)
 	{
@@ -1464,12 +1464,12 @@ BOOL InSecondaryInventoryPos(EERIE_S2D * pos)
 }
 
 //*************************************************************************************
-// BOOL InPlayerInventoryPos(EERIE_S2D * pos)
+// bool InPlayerInventoryPos(EERIE_S2D * pos)
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
 //   Returns TRUE if xx,yy is a position in player inventory
 //*************************************************************************************
-BOOL InPlayerInventoryPos(EERIE_S2D * pos)
+bool InPlayerInventoryPos(EERIE_S2D * pos)
 {
 	if (PLAYER_INTERFACE_HIDE_COUNT) return FALSE;
 
@@ -1549,12 +1549,12 @@ BOOL InPlayerInventoryPos(EERIE_S2D * pos)
 	return FALSE;
 }
 //*************************************************************************************
-// BOOL InInventoryPos(EERIE_S2D * pos)
+// bool InInventoryPos(EERIE_S2D * pos)
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
 //   Returns TRUE if "pos" is a position in player inventory or in SECONDARY inventory
 //*************************************************************************************
-BOOL InInventoryPos(EERIE_S2D * pos)
+bool InInventoryPos(EERIE_S2D * pos)
 {
 	if (InSecondaryInventoryPos(pos))
 		return TRUE;
@@ -1563,12 +1563,12 @@ BOOL InInventoryPos(EERIE_S2D * pos)
 }
 
 //*************************************************************************************
-// BOOL IsFlyingOverInventory(EERIE_S2D * pos)
+// bool IsFlyingOverInventory(EERIE_S2D * pos)
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
 //   returns TRUE if cursor is flying over any inventory
 //*************************************************************************************
-BOOL IsFlyingOverInventory(EERIE_S2D * pos)
+bool IsFlyingOverInventory(EERIE_S2D * pos)
 {
 	short tx, ty;
 
@@ -1645,7 +1645,7 @@ INTERACTIVE_OBJ * GetFromInventory(EERIE_S2D * pos)
 }
 
 //*************************************************************************************
-// BOOL GetItemWorldPosition( INTERACTIVE_OBJ * io,EERIE_3D * pos)
+// bool GetItemWorldPosition( INTERACTIVE_OBJ * io,EERIE_3D * pos)
 //-------------------------------------------------------------------------------------
 // FUNCTION:
 //   Gets real world position for an IO (can be used for non items)
@@ -1654,7 +1654,7 @@ INTERACTIVE_OBJ * GetFromInventory(EERIE_S2D * pos)
 //   Put the position in "pos". returns TRUE if position was found
 //   or FALSE if object is invalid, or position not defined.
 //*************************************************************************************
-BOOL GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos)
+bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 {
 	// Valid IO ?
 	if (!io) return FALSE;
@@ -1724,12 +1724,12 @@ BOOL GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 }
 
 //*************************************************************************************
-// BOOL GetItemWorldPositionSound( INTERACTIVE_OBJ * io,EERIE_3D * pos)
+// bool GetItemWorldPositionSound( INTERACTIVE_OBJ * io,EERIE_3D * pos)
 //-------------------------------------------------------------------------------------
 // FUNCTION:
 //   Gets real world position for an IO to spawn a sound
 //*************************************************************************************
-BOOL GetItemWorldPositionSound(INTERACTIVE_OBJ * io, EERIE_3D * pos)
+bool GetItemWorldPositionSound(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 {
 	if (!io) return FALSE;
 
@@ -1936,7 +1936,7 @@ void ReplaceInAllInventories(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 // Puts that object in player's "hand" (cursor)
 // returns TRUE if an object was taken FALSE elseway
 //*************************************************************************************
-BOOL TakeFromInventory(EERIE_S2D * pos)
+bool TakeFromInventory(EERIE_S2D * pos)
 {
 	long i, j;
 	INTERACTIVE_OBJ * io = GetFromInventory(pos);
@@ -2126,7 +2126,7 @@ BOOL TakeFromInventory(EERIE_S2D * pos)
 }
 
 //-----------------------------------------------------------------------------
-BOOL IsInPlayerInventory(INTERACTIVE_OBJ * io)
+bool IsInPlayerInventory(INTERACTIVE_OBJ * io)
 {
 	for (long iNbBag = 0; iNbBag < player.bag; iNbBag ++)
 		for (long j = 0; j < INVENTORY_Y; j++)
@@ -2142,7 +2142,7 @@ BOOL IsInPlayerInventory(INTERACTIVE_OBJ * io)
 }
 
 //-----------------------------------------------------------------------------
-BOOL IsInSecondaryInventory(INTERACTIVE_OBJ * io)
+bool IsInSecondaryInventory(INTERACTIVE_OBJ * io)
 {
 	if (SecondaryInventory)
 	{

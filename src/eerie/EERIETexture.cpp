@@ -222,9 +222,9 @@ class CD3DTextureManager
 struct TEXTURESEARCHINFO
 {
 	DWORD dwDesiredBPP;   // Input for texture format search
-	BOOL  bUseAlpha;
-	BOOL  bUsePalette;
-	BOOL  bFoundGoodFormat;
+	bool  bUseAlpha;
+	bool  bUsePalette;
+	bool  bFoundGoodFormat;
 
 	DDPIXELFORMAT * pddpf; // Output of texture format search
 };
@@ -3009,7 +3009,7 @@ my_error_exit(j_common_ptr cinfo)
 	JPEGError = 1;
 	return;
 }
-BOOL JPEG_NO_TRUE_BLACK = TRUE;
+bool JPEG_NO_TRUE_BLACK = TRUE;
 /*--------------------------------------------------------------------------------*/
 HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 {

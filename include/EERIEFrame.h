@@ -95,7 +95,7 @@ class CD3DFramework7
 	public:
 		// Internal variables for the framework class
 		HWND                 m_hWnd;               // The window object
-		BOOL                 m_bIsStereo;          // Stereo view mode
+		bool                 m_bIsStereo;          // Stereo view mode
 		LPDIRECTDRAW7        m_pDD;                // The DirectDraw object
 		LPDIRECT3D7          m_pD3D;               // The Direct3D object
 		LPDIRECT3DDEVICE7    m_pd3dDevice;         // The D3D device
@@ -112,14 +112,14 @@ class CD3DFramework7
 		HRESULT CreateEnvironment(GUID *, GUID *, DDSURFACEDESC2 *, DWORD);
 
 	public:
-		BOOL				m_bIsFullscreen;      // Fullscreen vs. windowed
+		bool				m_bIsFullscreen;      // Fullscreen vs. windowed
 
 		// Access functions for DirectX objects
-		BOOL				b_dlg;
+		bool				b_dlg;
 		long				bitdepth;
 
 		RECT				m_rcScreenRect;       // Screen rect for window
-		BOOL				m_bHasMoved;
+		bool				m_bHasMoved;
 		short				Ystart;
 		short				Xstart;
 		LPDIRECTDRAWSURFACE7 m_pddsZBuffer;        // The zbuffer surface
@@ -168,7 +168,7 @@ class CD3DFramework7
 		// Functions to aid rendering
 		HRESULT RestoreSurfaces();
 		HRESULT ShowFrame();
-		HRESULT FlipToGDISurface(BOOL bDrawFrame = FALSE);
+		HRESULT FlipToGDISurface(bool bDrawFrame = FALSE);
 
 		VOID    Move(INT x, INT y);
 

@@ -336,7 +336,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io)
 }
 
 
-BOOL ARX_INTERACTIVE_Attach(long n_source, long n_target, char * ap_source, char * ap_target)
+bool ARX_INTERACTIVE_Attach(long n_source, long n_target, char * ap_source, char * ap_target)
 {
 	if (!ValidIONum(n_source)
 	        ||	!ValidIONum(n_target))
@@ -477,7 +477,7 @@ EERIE_3DOBJ * GetExistingEerie(char * file)
 
 	return NULL;
 }
-BOOL ForceNPC_Above_Ground(INTERACTIVE_OBJ * io)
+bool ForceNPC_Above_Ground(INTERACTIVE_OBJ * io)
 {
 	if (io
 	        &&	(io->ioflags & IO_NPC)
@@ -1033,7 +1033,7 @@ void TranslateSelectedNodes(EERIE_3D * trans)
 }
 //*************************************************************************************
 //*************************************************************************************
-BOOL IsLinkedNode(long i, long j)
+bool IsLinkedNode(long i, long j)
 {
 	if ((!nodes.nodes[i].exist)
 	        ||	(!nodes.nodes[j].exist))
@@ -1134,7 +1134,7 @@ void ClearSelectedNodes()
 
 //*************************************************************************************
 //*************************************************************************************
-BOOL ExistNodeName(char * name)
+bool ExistNodeName(char * name)
 {
 	for (long i = 0; i < nodes.nbmax; i++)
 	{
@@ -3254,7 +3254,7 @@ void ReloadAllScripts()
 			ReloadScript(inter.iobj[i]);
 	}
 }
-BOOL ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t);
+bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t);
 //*************************************************************************************
 // Creates an unique identifier for an IO
 //*************************************************************************************
@@ -3291,7 +3291,7 @@ void MakeIOIdent(INTERACTIVE_OBJ * io)
 // NEED TO OPEN "if (LAST_CHINSTANCE!=-1) ARX_Changelevel_CurGame_Open();"
 // And close after seek session
 //*************************************************************************************
-BOOL ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t)
+bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t)
 {
 	if (!io)
 		return FALSE;
@@ -3809,7 +3809,7 @@ long IsCollidingAnyInter(float x, float y, float z, EERIE_3D * size)
 //*************************************************************************************
 // To upgrade to a more precise collision.
 //*************************************************************************************
-BOOL IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos)
+bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 {
 	long nbv;
 	long idx;
@@ -3853,9 +3853,9 @@ void SetYlsideDeath(INTERACTIVE_OBJ * io)
 	io->sfx_flag = SFX_TYPE_YLSIDE_DEATH;
 	io->sfx_time = ARXTimeUL(); 	
 }
-BOOL ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
+bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 {
-	BOOL col = FALSE;
+	bool col = FALSE;
 	float dist;
 	long i, ret;
 	long avoid = -1;
@@ -3949,9 +3949,9 @@ BOOL ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 
 	return col;
 }
-BOOL ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
+bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 {
-	BOOL col = FALSE;
+	bool col = FALSE;
 	float dist;
 	long i, ret;
 	long avoid = -1;
@@ -4750,7 +4750,7 @@ void ARX_INTERACTIVE_DestroyIO(INTERACTIVE_OBJ * ioo)
 //*************************************************************************************
 //
 //*************************************************************************************
-BOOL IsSameObject(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
+bool IsSameObject(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 {
 	if ((io == NULL)
 	        ||	(ioo == NULL)
@@ -4776,7 +4776,7 @@ BOOL IsSameObject(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 
 	return FALSE;
 }
-BOOL HaveCommonGroup(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
+bool HaveCommonGroup(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 {
 	if ((!io) || (!ioo)) return FALSE;
 

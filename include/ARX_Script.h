@@ -421,8 +421,8 @@ void ARX_SCRIPT_ResetAll(long flags);
 void ARX_SCRIPT_EventStackClearForIo(INTERACTIVE_OBJ * io);
 INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events();
 INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events_Sent();
-BOOL CheckScriptSyntax_Loading(INTERACTIVE_OBJ * io);
-BOOL CheckScriptSyntax(INTERACTIVE_OBJ * io);
+bool CheckScriptSyntax_Loading(INTERACTIVE_OBJ * io);
+bool CheckScriptSyntax(INTERACTIVE_OBJ * io);
 
 void ManageNPCMovement(INTERACTIVE_OBJ * io);
 void ReleaseScript(EERIE_SCRIPT * es);
@@ -451,13 +451,13 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 long SendMsgToAllIO(long msg, char * dat);
 
 void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, char * params, char * eventname);
-BOOL InSubStack(EERIE_SCRIPT * es, long pos);
+bool InSubStack(EERIE_SCRIPT * es, long pos);
 long GetSubStack(EERIE_SCRIPT * es);
 void AttemptMoveToTarget(INTERACTIVE_OBJ * io);
 void GetTargetPos(INTERACTIVE_OBJ * io, unsigned long smoothing = 0);
 void ARX_IOGROUP_Release(INTERACTIVE_OBJ * io);
 void CloneLocalVars(INTERACTIVE_OBJ * ioo, INTERACTIVE_OBJ * io);
-BOOL IsIOGroup(INTERACTIVE_OBJ * io, char * group);
+bool IsIOGroup(INTERACTIVE_OBJ * io, char * group);
 void ARX_SCRIPT_Free_All_Global_Variables();
 void		MakeLocalText(EERIE_SCRIPT * es, char * tx);
 void		MakeGlobalText(char * tx);

@@ -158,7 +158,7 @@ void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tou
 }
 //*************************************************************************************
 //*************************************************************************************
-BOOL EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink, char * actiontext, char * actiontext2, INTERACTIVE_OBJ * io)
+bool EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink, char * actiontext, char * actiontext2, INTERACTIVE_OBJ * io)
 {
 	long group = -1;
 

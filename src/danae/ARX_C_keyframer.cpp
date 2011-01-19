@@ -41,10 +41,10 @@ typedef struct
 } C_UNDOPILE;
 /*----------------------------------------------------------------------*/
 extern HWND HwndPere;
-extern BOOL ProjectModif;
+extern bool ProjectModif;
 /*----------------------------------------------------------------------*/
-static BOOL GereTrackNoPlay2(C_KEY * k, int frame);
-static BOOL DeleteKey2(CINEMATIQUE * c, int frame);
+static bool GereTrackNoPlay2(C_KEY * k, int frame);
+static bool DeleteKey2(CINEMATIQUE * c, int frame);
 /*----------------------------------------------------------------------*/
 C_TRACK	* CKTrack;
 
@@ -53,7 +53,7 @@ static int TotUndoPile, FillUndo;
 static C_UNDOPILE UndoKey[UNDOPILE];
 extern int LSoundChoose;
 /*----------------------------------------------------------------------*/
-BOOL AllocTrack(int sf, int ef, float fps)
+bool AllocTrack(int sf, int ef, float fps)
 {
 	if (CKTrack) return FALSE;
 
@@ -74,7 +74,7 @@ BOOL AllocTrack(int sf, int ef, float fps)
 	return TRUE;
 }
 /*----------------------------------------------------------------------*/
-BOOL DeleteTrack(void)
+bool DeleteTrack(void)
 {
 	if (!CKTrack) return FALSE;
 
@@ -288,7 +288,7 @@ void UpDateAllKeyLight(void)
 	}
 }
 /*----------------------------------------------------------------------*/
-BOOL AddKey(C_KEY * key, BOOL writecolor, BOOL writecolord, BOOL writecolorf)
+bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
 {
 	C_KEY	*	k;
 	int			num;
@@ -378,7 +378,7 @@ BOOL AddKey(C_KEY * key, BOOL writecolor, BOOL writecolord, BOOL writecolorf)
 	return TRUE;
 }
 /*----------------------------------------------------------------------*/
-BOOL AddKeyLoad(C_KEY * key)
+bool AddKeyLoad(C_KEY * key)
 {
 	C_KEY	*	k;
 	int			num;
@@ -422,7 +422,7 @@ BOOL AddKeyLoad(C_KEY * key)
 	return TRUE;
 }
 /*----------------------------------------------------------------------*/
-static BOOL DiffKey(C_KEY * key1, C_KEY * key2)
+static bool DiffKey(C_KEY * key1, C_KEY * key2)
 {
 	return((key1->pos.x != key2->pos.x) || (key1->pos.y != key2->pos.y) || (key1->pos.z != key2->pos.z) ||
 	       (key1->angz != key2->angz) ||
@@ -443,7 +443,7 @@ static BOOL DiffKey(C_KEY * key1, C_KEY * key2)
 	      );
 }
 /*----------------------------------------------------------------------*/
-void AddDiffKey(CINEMATIQUE * c, C_KEY * key, BOOL writecolor, BOOL writecolord, BOOL writecolorf)
+void AddDiffKey(CINEMATIQUE * c, C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
 {
 	C_KEY	* k, *ksuiv;
 	int		num;
@@ -509,7 +509,7 @@ float GetAngleInterpolation(float d, float e)
 }
 extern char AllTxt[];
 /*----------------------------------------------------------------------*/
-BOOL GereTrack(CINEMATIQUE * c, float fpscurr)
+bool GereTrack(CINEMATIQUE * c, float fpscurr)
 {
 	C_KEY	* k, *ksuiv;
 	float	a, unmoinsa, alight = 0, unmoinsalight = 0;
@@ -741,7 +741,7 @@ consequences on light :
 	return TRUE;
 }
 /*----------------------------------------------------------------------*/
-BOOL GereTrackNoPlay(CINEMATIQUE * c)
+bool GereTrackNoPlay(CINEMATIQUE * c)
 {
 	C_KEY	* k, *ksuiv;
 	float	a, unmoinsa, alight = 0, unmoinsalight = 0;

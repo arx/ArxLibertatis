@@ -226,7 +226,7 @@ void EERIE_PATHFINDER_Clear(long flag)
 }
 
 // Retrieves & Removes next Pathfind request from queue
-static BOOL EERIE_PATHFINDER_Get_Next_Request(PATHFINDER_REQUEST * request)
+static bool EERIE_PATHFINDER_Get_Next_Request(PATHFINDER_REQUEST * request)
 {
 	if (!request || !pathfinder_queue_start || !pathfinder_queue_start->valid)
 		return FALSE;

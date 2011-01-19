@@ -1483,7 +1483,7 @@ void ARX_DAMAGES_UpdateAll()
 	for (long j = 0; j < MAX_DAMAGES; j++)
 		ARX_DAMAGES_UpdateDamage(j, ARXTime);
 }
-BOOL SphereInIO(INTERACTIVE_OBJ * io, EERIE_3D * pos, float radius)
+bool SphereInIO(INTERACTIVE_OBJ * io, EERIE_3D * pos, float radius)
 {
 	if (io == NULL) return FALSE;
 
@@ -1507,9 +1507,9 @@ BOOL SphereInIO(INTERACTIVE_OBJ * io, EERIE_3D * pos, float radius)
 
 	return FALSE;
 }
-BOOL ARX_DAMAGES_TryToDoDamage(EERIE_3D * pos, float dmg, float radius, long source)
+bool ARX_DAMAGES_TryToDoDamage(EERIE_3D * pos, float dmg, float radius, long source)
 {
-	BOOL ret = FALSE;
+	bool ret = FALSE;
 
 	for (long i = 0; i < inter.nbmax; i++)
 	{
@@ -1651,9 +1651,9 @@ void PushPlayer(EERIE_3D * pos, float intensity)
 }
 //*************************************************************************************
 //*************************************************************************************
-BOOL DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long typ, long numsource)
+bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long typ, long numsource)
 {
-	BOOL damagesdone = FALSE;
+	bool damagesdone = FALSE;
 	EERIE_3D sub;
 	sub.x = player.pos.x;
 	sub.y = player.pos.y + 90.f;

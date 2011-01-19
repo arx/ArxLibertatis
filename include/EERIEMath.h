@@ -227,9 +227,9 @@ long F2L_RoundUp(float val);
 void EERIEMathPrecalc();
 void PrecalcATAN();
 void PrecalcSIN();
-BOOL PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt);
-BOOL CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2);
-BOOL SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s);
+bool PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt);
+bool CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2);
+bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s);
 
 // Optimized Float 2 Long Conversion
 inline void F2L(const float f, long * l)
@@ -551,7 +551,7 @@ inline float ScalarProduct(EERIE_3D * v0, EERIE_3D * v1)
 void CalcFaceNormal(EERIEPOLY * ep, const D3DTLVERTEX * v);
 void CalcObjFaceNormal(const EERIE_3D * v0, const EERIE_3D * v1, const EERIE_3D * v2, EERIE_FACE * ef);
 void Triangle_ComputeBoundingBox(EERIE_3D_BBOX * bb, EERIE_3D * v0, EERIE_3D * v1, EERIE_3D * v2);
-BOOL Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u);
+bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u);
 void MatrixFromQuat(EERIEMATRIX * mat, const EERIE_QUAT * q);
 
 //*******************************************************************************
@@ -582,7 +582,7 @@ inline float EEDistance3D(const EERIE_3D * from, const EERIE_3D * to)
 	return (float)EEsqrt(((to->x - from->x) * (to->x - from->x)) + ((to->y - from->y) * (to->y - from->y)) + ((to->z - from->z) * (to->z - from->z)));
 }
 
-inline BOOL PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)
+inline bool PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)
 {
 	register float pos1 = cyl->origin.y + cyl->height;
 

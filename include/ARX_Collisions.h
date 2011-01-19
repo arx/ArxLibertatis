@@ -67,7 +67,7 @@ extern long MAX_IN_SPHERE_Pos;
 extern short EVERYTHING_IN_SPHERE[MAX_IN_SPHERE+1];
 extern long EXCEPTIONS_LIST_Pos;
 extern short EXCEPTIONS_LIST[MAX_IN_SPHERE+1];
-extern BOOL DIRECT_PATH;
+extern bool DIRECT_PATH;
 
 //-----------------------------------------------------------------------------
 bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE_CYLINDER_STEP,long flags=0);

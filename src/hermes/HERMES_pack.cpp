@@ -171,7 +171,7 @@ void EVE_REPERTOIRE::AddSousRepertoire(EVE_U8 * sname)
 	this->fils = rf;
 }
 //#############################################################################
-BOOL EVE_REPERTOIRE::DelSousRepertoire(EVE_U8 * sname)
+bool EVE_REPERTOIRE::DelSousRepertoire(EVE_U8 * sname)
 {
 	EVE_U32			nbs = this->nbsousreps, l;
 	EVE_REPERTOIRE	* rf = this->fils;
@@ -183,7 +183,7 @@ BOOL EVE_REPERTOIRE::DelSousRepertoire(EVE_U8 * sname)
 		if (!strcasecmp((const EVE_8 *)fdir, (const EVE_8 *)rf->name))
 		{
 			delete[] fdir;
-			BOOL ok;
+			bool ok;
 
 			if (l == strlen((const EVE_8 *)sname))
 			{

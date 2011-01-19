@@ -413,7 +413,7 @@ unsigned long MakeMemoryText(char * text)
 		return 0;
 	}
 
-	BOOL * ignore;
+	bool * ignore;
 	unsigned long TotMemory = 0;
 	unsigned long TOTTotMemory = 0;
 	char header[128];
@@ -425,7 +425,7 @@ unsigned long MakeMemoryText(char * text)
 		return 0;
 	}
 
-	ignore = (BOOL *)malloc(sizeof(BOOL) * nb_MemoTraces);
+	ignore = (bool *)malloc(sizeof(bool) * nb_MemoTraces);
 
 	for (long i = 0; i < nb_MemoTraces; i++) ignore[i] = FALSE;
 
@@ -1264,7 +1264,7 @@ bool HERMESFolderSelector(char * file_name, char * title)
 		return FALSE;
 	}
 }
-BOOL HERMES_WFSelectorCommon(PSTR pstrFileName, PSTR pstrTitleName, char * filter, long flag, long flag_operation, long max_car, HWND hWnd)
+bool HERMES_WFSelectorCommon(PSTR pstrFileName, PSTR pstrTitleName, char * filter, long flag, long flag_operation, long max_car, HWND hWnd)
 {
 	LONG	value;
 	char	cwd[MAX_PATH];

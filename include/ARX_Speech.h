@@ -169,6 +169,6 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, char * data, long param, long mo
 void ARX_SPEECH_ReleaseIOSpeech(INTERACTIVE_OBJ * io);
 void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io);
 void ARX_SPEECH_Launch_No_Unicode_Seek(char * string, INTERACTIVE_OBJ * io_source, long mood = 0);
-BOOL ApplySpeechPos(EERIE_CAMERA * conversationcamera, long is);
+bool ApplySpeechPos(EERIE_CAMERA * conversationcamera, long is);
 
 #endif

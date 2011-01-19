@@ -796,7 +796,7 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 }
 
 //-----------------------------------------------------------------------------
-BOOL ApplySpeechPos(EERIE_CAMERA * conversationcamera, long is)
+bool ApplySpeechPos(EERIE_CAMERA * conversationcamera, long is)
 {
 	if (is < 0) return FALSE;
 

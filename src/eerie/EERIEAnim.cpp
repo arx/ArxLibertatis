@@ -111,7 +111,7 @@ extern long ZMAPMODE;
 extern float fZFogStart;
 //-----------------------------------------------------------------------------
 ANIM_HANDLE animations[MAX_ANIMATIONS];
-BOOL MIPM;
+bool MIPM;
 D3DTLVERTEX LATERDRAWHALO[HALOMAX*4];
 EERIE_LIGHT * llights[32];
 EERIE_QUAT * BIGQUAT;

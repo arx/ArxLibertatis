@@ -83,7 +83,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 	free(mem);
 }*/
 /*-------------------------------------------------------------*/
-BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi,LPVOID pvRef)
+bool CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi,LPVOID pvRef)
 {
 	INPUT_INFO	*info;
 
@@ -277,7 +277,7 @@ INPUT_INFO	*info;
 	DI_DInput7 = NULL;
 }
 /*-------------------------------------------------------------*/
-BOOL CompareGUID(GUID *g1,GUID *g2)
+bool CompareGUID(GUID *g1,GUID *g2)
 {
 int		i,j,*m1,*m2;
 char	*mm1,*mm2;
@@ -305,7 +305,7 @@ char	*mm1,*mm2;
 	return TRUE;
 }
 /*-------------------------------------------------------------*/
-BOOL CALLBACK DIEnumDeviceObjectsCallback(LPCDIDEVICEOBJECTINSTANCE lpddoi,LPVOID pvRef)
+bool CALLBACK DIEnumDeviceObjectsCallback(LPCDIDEVICEOBJECTINSTANCE lpddoi,LPVOID pvRef)
 {
 INPUT_INFO			*info;
 
@@ -761,7 +761,7 @@ INPUT_INFO		*info;
 
 	return dinf;
 }
-BOOL DXI_CleanAxeMouseZ(int id)
+bool DXI_CleanAxeMouseZ(int id)
 {
 DIDEVICEOBJECTDATA	*od;
 DIDEVICEOBJECTDATA	*od2;
@@ -806,12 +806,12 @@ void DXI_freeInfoDevice(DXI_INPUT_INFO *dinf)
 	free((void*)dinf);
 }
 /*-------------------------------------------------------------*/
-BOOL DXI_ExecuteAllDevices(BOOL _bKeept)
+bool DXI_ExecuteAllDevices(bool _bKeept)
 {
 int			nb,nbele;
 DWORD		dwNbele;//ARX: xrichter (2010-06-30) - treat warnings C4057 for 'LPDWORD' differs in indirection to slightly different base types from 'int *'
 INPUT_INFO	*info;
-BOOL		flg=TRUE;
+bool		flg=TRUE;
 void * temp;
 	
 //DIDEVICEOBJECTDATA	* od;
@@ -988,12 +988,12 @@ void * temp;
 	return flg;
 }
 /*-------------------------------------------------------------*/
-BOOL DXI_KeyPressed(int id,int dikkey)
+bool DXI_KeyPressed(int id,int dikkey)
 {
 	if(DI_KeyBoardBuffer[id]->bufferstate[dikkey]&0x80) return TRUE;
 	return FALSE;
 }
-BOOL DXI_OldKeyPressed(int id,int dikkey)
+bool DXI_OldKeyPressed(int id,int dikkey)
 {
 	//if(DI_InputInfo->old_bufferstate[id*dikkey]&0x80) return TRUE;
 //	if(DI_KeyBoardBuffer[id]->old_bufferstate[dikkey]&0x80) return TRUE;
@@ -1021,7 +1021,7 @@ void DXI_ClearKeys(int id)
 	memset(DI_KeyBoardBuffer[id],0,256);	
 }
 /*-------------------------------------------------------------*/
-BOOL DXI_GetAxeMouseXY(int id,int *mx,int *my)
+bool DXI_GetAxeMouseXY(int id,int *mx,int *my)
 {
 DIDEVICEOBJECTDATA	*od;
 int					nb,flg=0;
@@ -1051,7 +1051,7 @@ int					nb,flg=0;
 	return(flg>0);
 }
 /*-------------------------------------------------------------*/
-BOOL DXI_GetAxeMouseXYZ(int id,int *mx,int *my,int *mz)
+bool DXI_GetAxeMouseXYZ(int id,int *mx,int *my,int *mz)
 {
 DIDEVICEOBJECTDATA	*od;
 int					nb,flg=0;
@@ -1088,7 +1088,7 @@ int					nb,flg=0;
 }
 
 /*-------------------------------------------------------------*/
-BOOL DXI_MouseButtonImage(int id,int numb)
+bool DXI_MouseButtonImage(int id,int numb)
 {
 DIDEVICEOBJECTDATA	*od;
 int					state,nb;
@@ -1296,11 +1296,11 @@ int					state,nb;
 }
 
 /*-------------------------------------------------------------*/
-BOOL DXI_MouseButtonPressed(int id,int numb,int *_iDeltaTime)
+bool DXI_MouseButtonPressed(int id,int numb,int *_iDeltaTime)
 {
 DIDEVICEOBJECTDATA	*od;
 int					state,iTime1,iTime2,nb;
-BOOL				bResult;
+bool				bResult;
 
 	nb=DI_MouseState[id]->nbele;
 	if(!nb) return FALSE;
@@ -1423,7 +1423,7 @@ BOOL				bResult;
 	return (iTime1)?TRUE:FALSE;
 }
 /*-------------------------------------------------------------*/
-BOOL DXI_MouseButtonUnPressed(int id,int numb)
+bool DXI_MouseButtonUnPressed(int id,int numb)
 {
 DIDEVICEOBJECTDATA	*od;
 int					state,nb;
@@ -1472,7 +1472,7 @@ int					state,nb;
 	return FALSE;
 }
 
-BOOL DXI_OldMouseButtonPressed(int id,int numb)
+bool DXI_OldMouseButtonPressed(int id,int numb)
 {
 DIDEVICEOBJECTDATA	*od;
 int					state,nb;
@@ -1597,7 +1597,7 @@ int			dir;
 
 	return dir;
 }
-BOOL DXI_IsSCIDButtonPressed(int id,int numb)
+bool DXI_IsSCIDButtonPressed(int id,int numb)
 {
 INPUT_INFO	*io;
 
@@ -2107,7 +2107,7 @@ DIPROPDWORD		dipdw={
 	return DXI_OK;
 }
 /*-------------------------------------------------------------*/
-BOOL DXI_GetJoyButtonPressed(int id,int numb)
+bool DXI_GetJoyButtonPressed(int id,int numb)
 {
 INPUT_INFO	*io;
 
@@ -2130,7 +2130,7 @@ INPUT_INFO	*io;
 	}
 	return FALSE;
 }
-BOOL DXI_OldGetJoyButtonPressed(int id,int numb)
+bool DXI_OldGetJoyButtonPressed(int id,int numb)
 {
 INPUT_INFO	*io;
 

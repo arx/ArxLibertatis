@@ -71,7 +71,7 @@ extern CMenuConfig * pMenuConfig;
 extern long STOP_KEYBOARD_INPUT;
 
 //-----------------------------------------------------------------------------
-BOOL ARX_INPUT_Init(HINSTANCE hInst, HWND hWnd)
+bool ARX_INPUT_Init(HINSTANCE hInst, HWND hWnd)
 {
 #ifdef NO_DIRECT_INPUT
 	return TRUE;
@@ -166,7 +166,7 @@ void ARX_INPUT_Init_Game_Impulses()
 	GameImpulses[ARX_INPUT_IMPULSE_CROUCH][1] = INTERNAL_JOYSTICK_2;
 }
  
-BOOL ARX_INPUT_GetSCIDAxis(int * jx, int * jy, int * jz)
+bool ARX_INPUT_GetSCIDAxis(int * jx, int * jy, int * jz)
 {
 	if (ARX_SCID)
 	{
@@ -183,7 +183,7 @@ BOOL ARX_INPUT_GetSCIDAxis(int * jx, int * jy, int * jz)
 }
  
 //-----------------------------------------------------------------------------
-BOOL ARX_IMPULSE_NowPressed(long ident)
+bool ARX_IMPULSE_NowPressed(long ident)
 {
 	switch (ident)
 	{
@@ -240,7 +240,7 @@ BOOL ARX_IMPULSE_NowPressed(long ident)
 static unsigned int uiOneHandedMagicMode = 0;
 static unsigned int uiOneHandedStealth = 0;
 
-BOOL ARX_IMPULSE_Pressed(long ident)
+bool ARX_IMPULSE_Pressed(long ident)
 {
 	switch (ident)
 	{
@@ -462,7 +462,7 @@ BOOL ARX_IMPULSE_Pressed(long ident)
 }
 
 //-----------------------------------------------------------------------------
-BOOL ARX_IMPULSE_NowUnPressed(long ident)
+bool ARX_IMPULSE_NowUnPressed(long ident)
 {
 	switch (ident)
 	{
