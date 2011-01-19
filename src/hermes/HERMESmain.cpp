@@ -873,7 +873,7 @@ long DirectoryExist(char * name)
 	return 1;
 }
 
-BOOL CreateFullPath(char * path)
+bool CreateFullPath(char * path)
 {
 	char drive[_MAX_DRIVE];
 	char dir[_MAX_DIR];
@@ -913,22 +913,20 @@ BOOL CreateFullPath(char * path)
 
 long FileExist(char * name)
 {
-	printf("FileExist(%s)\n", name);
+	printf("FileExist(%s)", name);
 	long i;
 
 	if((i = FileOpenRead(name)) == 0) {
-		printf(" -> doesn't exist\n");
 		return 0;
 	}
 	
 	FileCloseRead(i);
-	printf(" -> exists\n");
 	return 1;
 }
 
 long	FileOpenRead(char * name)
 {
-	printf("FileOpenRead(%s)\n", name);
+	printf("FileOpenRead(%s)", name);
 	long	handle;
 	handle = CreateFile((const char *)name, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, 0);
 
@@ -949,18 +947,25 @@ long	FileSizeHandle(long handle)
 
 long	FileOpenWrite(char * name)
 {
-	printf("FileOpenWrite(%s)\n", name);
+	printf("FileOpenWrite(%s)", name);
 	int	handle;
 
 	handle = CreateFile((const char *)name, GENERIC_READ | GENERIC_WRITE, TRUNCATE_EXISTING, NULL, 0, 0, 0);
 
-	if (handle < 0)	return(0);
+	if (handle < 0)	{
+		printf(" -> error\n");
+		return(0);
+	}
 
 	CloseHandle(handle);
 	handle = CreateFile((const char *)name, GENERIC_WRITE, 0, NULL, 0, 0, 0);
 
-	if (handle < 0)	return(0);
+	if (handle < 0) {
+		printf(" -> error\n");
+		return(0);
+	}
 
+	printf(" -> handle %d\n", handle + 1);
 	return(handle + 1);
 }
 long	FileCloseRead(long handle)

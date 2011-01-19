@@ -148,7 +148,7 @@ bool OKBox(char * text,char *title);
 void ShowPopup(char * text);
 int ShowError(char * funcname, char * message, long fatality);
 unsigned long MakeMemoryText(char * text);
-BOOL CreateFullPath(char * path);
+bool CreateFullPath(char * path);
 
 // Strings Funcs
 char *StringCopy(char * destination,char * source,long maxsize);
