@@ -52,14 +52,14 @@ typedef int ArxMixer;
 
 const ArxSound ARX_SOUND_INVALID_RESOURCE(-1);
 
-extern ArxSound ARX_SOUND_MixerGame;
-extern ArxSound ARX_SOUND_MixerGameSample;
-extern ArxSound ARX_SOUND_MixerGameSpeech;
-extern ArxSound ARX_SOUND_MixerGameAmbiance;
-extern ArxSound ARX_SOUND_MixerMenu;
-extern ArxSound ARX_SOUND_MixerMenuSample;
-extern ArxSound ARX_SOUND_MixerMenuSpeech;
-extern ArxSound ARX_SOUND_MixerMenuAmbiance;
+extern ArxMixer ARX_SOUND_MixerGame;
+extern ArxMixer ARX_SOUND_MixerGameSample;
+extern ArxMixer ARX_SOUND_MixerGameSpeech;
+extern ArxMixer ARX_SOUND_MixerGameAmbiance;
+extern ArxMixer ARX_SOUND_MixerMenu;
+extern ArxMixer ARX_SOUND_MixerMenuSample;
+extern ArxMixer ARX_SOUND_MixerMenuSpeech;
+extern ArxMixer ARX_SOUND_MixerMenuAmbiance;
 
 // Menu ambiances
 extern char AMB_MENU[];

@@ -1347,5 +1347,3 @@ unsigned long EndBench()
 	return 0;
 }
 
-
- 
