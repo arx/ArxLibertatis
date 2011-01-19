@@ -465,6 +465,7 @@ void MemFree(void * adr)
  
 long HERMES_CreateFileCheck(const char * name, char * scheck, const long & size, const float & id)
 {
+	printf("HERMES_CreateFileCheck(%s, ...)\n", name);
 	WIN32_FILE_ATTRIBUTE_DATA attrib;
 	FILE * file;
 	long length(size >> 2), i = 7 * 4;
@@ -910,21 +911,31 @@ BOOL CreateFullPath(char * path)
 
 long FileExist(char * name)
 {
+	printf("FileExist(%s)\n", name);
 	long i;
 
-	if ((i = FileOpenRead(name)) == 0) return 0;
-
+	if((i = FileOpenRead(name)) == 0) {
+		printf(" -> doesn't exist\n");
+		return 0;
+	}
+	
 	FileCloseRead(i);
+	printf(" -> exists\n");
 	return 1;
 }
 
 long	FileOpenRead(char * name)
 {
+	printf("FileOpenRead(%s)\n", name);
 	long	handle;
-	handle = CreateFile((const char *)name, GENERIC_READ, 0, NULL, 0, 0, 0);
+	handle = CreateFile((const char *)name, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, 0);
 
-	if (handle < 0)	return(0);
-
+	if(handle < 0) {
+		printf(" -> error\n");
+		return(0);
+	}
+	
+	printf(" -> handle %d\n", handle + 1);
 	return(handle + 1);
 }
 
@@ -936,6 +947,7 @@ long	FileSizeHandle(long handle)
 
 long	FileOpenWrite(char * name)
 {
+	printf("FileOpenWrite(%s)\n", name);
 	int	handle;
 
 	handle = CreateFile((const char *)name, GENERIC_READ | GENERIC_WRITE, TRUNCATE_EXISTING, NULL, 0, 0, 0);
