@@ -34,6 +34,7 @@ inline	unsigned int explode(
 	    char     *    work_buf,
 	    void     *    param) {
 	printf("explode()\n");
+	exit(0);
 	return 0;
 }
 

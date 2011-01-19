@@ -1771,11 +1771,11 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	ARX_INPUT_Init_Game_Impulses();
 	pGetInfoDirectInput = new CDirectInput();
 	char szPath[256];
-	sprintf( szPath, "%s\\cfg.ini", Project.workingdir );
+	sprintf( szPath, "%scfg.ini", Project.workingdir );
 
 	if( !FileExist( szPath ) )
 	{
-		sprintf(szPath, "%s\\cfg_default.ini", Project.workingdir );
+		sprintf(szPath, "%scfg_default.ini", Project.workingdir );
 	}
 
 	pMenuConfig=new CMenuConfig(szPath);

@@ -536,11 +536,10 @@ TextureContainer::TextureContainer(TCHAR * strName, char * wd, DWORD dwStage,
                                    DWORD dwFlags)
 {
 	MakeUpcase(strName);
-	lstrcpy(m_strName, strName);
-
+	
 	if (wd != NULL)
-		lstrcpy(m_texName, strName + strlen(wd));
-	else lstrcpy(m_texName, strName);
+		strcpy(m_texName, strName + strlen(wd));
+	else strcpy(m_texName, strName);
 
 	m_dwWidth		= 0;
 	m_dwHeight		= 0;
@@ -750,17 +749,16 @@ TextureContainer::~TextureContainer()
 //-----------------------------------------------------------------------------
 HRESULT TextureContainer::LoadImageData()
 {
-	TCHAR * strExtension, *strExtension2;
+	TCHAR * strExtension;
 	TCHAR  strPathname[256];
 	TCHAR  tempstrPathname[256];
 
 	// Check File
-	lstrcpy(strPathname, m_strName);
+	strcpy(strPathname, m_strName);
+	printf("%s", m_strName);
 
-	if (NULL == (strExtension = _tcsrchr(m_strName, _T('.'))))
+	if (NULL == (strExtension = strchr(m_strName, '.')))
 		return DDERR_UNSUPPORTED;
-
-	strExtension2 = _tcsrchr(m_strName, _T('_'));
 
 	HRESULT hres;
 	strcpy(tempstrPathname, strPathname);
@@ -794,6 +792,7 @@ HRESULT TextureContainer::LoadImageData()
 //-----------------------------------------------------------------------------
 HRESULT TextureContainer::LoadBitmapFile(TCHAR * strPathname)
 {
+	printf("%s\n", strPathname);
 	if (!PAK_FileExist(strPathname)) return E_FAIL;
 
 	long siz = 0;
