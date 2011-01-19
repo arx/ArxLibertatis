@@ -26,7 +26,6 @@
 //
 
 #include <windows.h>
-#include "ARX_Config.h"
 #include "Danae_resource.h"
 #include "Danae.h" // pour danaeApp
 #include "ARX_Menu2.h"

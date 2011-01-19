@@ -91,7 +91,7 @@ long APPLY_PUSH=0;
 
 //-----------------------------------------------------------------------------
 // Added immediate return (return anything;)
-__inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
+inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 {
 	long flags=flag;
 	POLYIN=0;
@@ -265,11 +265,11 @@ __inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 }
 
 //-----------------------------------------------------------------------------
-__inline BOOL IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
+inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 {
-	if ((!ep) || (!sph)) return FALSE;
+	if ((!ep) || (!sph)) return false;
 
-	if (ep->area<100.f) return FALSE;
+	if (ep->area<100.f) return false;
 
 	long to;
 
@@ -289,7 +289,7 @@ __inline BOOL IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 
 			if (EEDistance3D(&sph->origin, &center) < sph->radius) 
 			{	
-				return TRUE;
+				return true;
 			}
 
 			if (ep->area>4000.f)
@@ -300,7 +300,7 @@ __inline BOOL IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 
 				if (EEDistance3D(&sph->origin, &center) < sph->radius) 
 				{	
-					return TRUE;
+					return true;
 				}
 			}
 
@@ -312,14 +312,14 @@ __inline BOOL IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 
 				if (EEDistance3D(&sph->origin, &center) < sph->radius) 
 				{	
-					return TRUE;
+					return true;
 				}
 			}
 		}
 
 		if (EEDistance3D(&sph->origin, (EERIE_3D *)&ep->v[n]) < sph->radius) 
 		{	
-			return TRUE;
+			return true;
 		}
 
 		r++;
@@ -327,11 +327,11 @@ __inline BOOL IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 		if (r>=to) r=0;	
 	}
 
-	return FALSE;
+	return false;
 }
 
 //-----------------------------------------------------------------------------
-BOOL IsCollidingIO(INTERACTIVE_OBJ * io,INTERACTIVE_OBJ * ioo)
+bool IsCollidingIO(INTERACTIVE_OBJ * io,INTERACTIVE_OBJ * ioo)
 {
 	if (   (ioo!=NULL)
 		&& (io!=ioo)
@@ -350,7 +350,7 @@ BOOL IsCollidingIO(INTERACTIVE_OBJ * io,INTERACTIVE_OBJ * ioo)
 				if (PointInCylinder(&ioo->physics.cyl,&io->obj->vertexlist3[j].v)) 
 				{
 					ioo->physics.cyl.radius=old;
-					return TRUE;
+					return true;
 				}
 			}
 
@@ -358,9 +358,10 @@ BOOL IsCollidingIO(INTERACTIVE_OBJ * io,INTERACTIVE_OBJ * ioo)
 		}
 	}
 	
-	return FALSE;
+	return false;
 }
 
+// TODO include header?
 extern void GetIOCyl(INTERACTIVE_OBJ * io,EERIE_CYLINDER * cyl);
 void PushIO_ON_Top(INTERACTIVE_OBJ * ioo,float ydec)
 {
@@ -506,11 +507,11 @@ bool IsAnyNPCInPlatform(INTERACTIVE_OBJ * pfrm)
 			EERIE_CYLINDER cyl;
 			GetIOCyl(io,&cyl);
 
-			if (CylinderPlatformCollide(&cyl,pfrm)!=0.f) return TRUE;
+			if (CylinderPlatformCollide(&cyl,pfrm)!=0.f) return true;
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 float CylinderPlatformCollide(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io)
 {
@@ -542,8 +543,8 @@ extern int TSU_TEST_COLLISIONS;
 	
 extern void GetIOCyl(INTERACTIVE_OBJ * io,EERIE_CYLINDER * cyl);
 
-__inline void EE_RotateY(D3DTLVERTEX *in,D3DTLVERTEX *out,float c, float s)
-{										 
+inline void EE_RotateY(D3DTLVERTEX *in,D3DTLVERTEX *out,float c, float s)
+{
 	out->sx = (in->sx*c) + (in->sz*s);
 	out->sy = in->sy;
 	out->sz = (in->sz*c) - (in->sx*s);
@@ -1050,20 +1051,20 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 	return anything;	
 }
 //-----------------------------------------------------------------------------
-BOOL InExceptionList(long val)
+static bool InExceptionList(long val)
 {
 	for (long i=0;i<EXCEPTIONS_LIST_Pos;i++)
 	{
-		if (val==EXCEPTIONS_LIST[i]) return TRUE;
+		if (val==EXCEPTIONS_LIST[i]) return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 //-----------------------------------------------------------------------------
-BOOL CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //except source...
+bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //except source...
 {
-	BOOL vreturn=FALSE;
+	BOOL vreturn = false;
 	MAX_IN_SPHERE_Pos=0;
 	
 	EERIE_VERTEX * vlist;	
@@ -1088,7 +1089,7 @@ BOOL CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 				|| !(io->GameFlags & GFLAG_ISINTREATZONE)
 				|| !(io->obj)
 			)
-			return FALSE;
+			return false;
 
 			ret_idx=targ;
 		}
@@ -1151,8 +1152,8 @@ BOOL CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 
 									if (MAX_IN_SPHERE_Pos>=MAX_IN_SPHERE) MAX_IN_SPHERE_Pos--;
 
-									vreturn=TRUE;
-									goto suivant;									
+									vreturn = true;
+									goto suivant;
 								}
 							}
 						}
@@ -1176,7 +1177,7 @@ BOOL CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 
 							if (MAX_IN_SPHERE_Pos>=MAX_IN_SPHERE) MAX_IN_SPHERE_Pos--;
 
-							vreturn=TRUE;
+							vreturn = true;
 							goto suivant;
 						}
 					}
@@ -1203,7 +1204,7 @@ BOOL CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 
 							if (MAX_IN_SPHERE_Pos>=MAX_IN_SPHERE) MAX_IN_SPHERE_Pos--;
 
-							vreturn=TRUE;		
+							vreturn = true;
 							goto suivant;
 						}
 					}
@@ -1257,7 +1258,7 @@ EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere) //except source...
 
 //-----------------------------------------------------------------------------
 
-BOOL CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags,long * num) //except source...
+bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags,long * num) //except source...
 {
 	if (num) *num=-1;
 
@@ -1289,13 +1290,13 @@ BOOL CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags,long * n
 
 				if (ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)) continue;
 
-				if (IsPolyInSphere(ep,sphere)) 
-					return TRUE;					
+				if (IsPolyInSphere(ep,sphere))
+					return true;
 			}
 		}	
 	}
 
-	if (flags & CAS_NO_NPC_COL) return FALSE;
+	if (flags & CAS_NO_NPC_COL) return false;
 
 	long validsource=0;
 
@@ -1371,7 +1372,7 @@ BOOL CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags,long * n
 								{		
 									if (num) *num=treatio[i].num;
 
-									return TRUE;
+									return true;
 								}
 							}
 						}
@@ -1391,7 +1392,7 @@ BOOL CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags,long * n
 						{
 							if (num) *num=treatio[i].num;
 
-							return TRUE;
+							return true;
 						}
 					}
 
@@ -1408,20 +1409,20 @@ BOOL CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags,long * n
 					{
 						if (num) *num=treatio[i].num;
 
-						return TRUE;
+						return true;
 					}
 				}
 			}
 		
 		}
 
-	return FALSE;	
+	return false;	
 }
 
 //-----------------------------------------------------------------------------
-BOOL CheckIOInSphere(EERIE_SPHERE * sphere,long target,long flags) 
+bool CheckIOInSphere(EERIE_SPHERE * sphere,long target,long flags) 
 {
-	if (!ValidIONum(target)) return FALSE;
+	if (!ValidIONum(target)) return false;
 
 	EERIE_VERTEX * vlist;		
 	INTERACTIVE_OBJ * io=inter.iobj[target];
@@ -1451,7 +1452,7 @@ BOOL CheckIOInSphere(EERIE_SPHERE * sphere,long target,long flags)
 						{
 							count++;
 
-							if (count>3) return TRUE;
+							if (count>3) return true;
 						}
 
 						ii--;
@@ -1473,7 +1474,7 @@ BOOL CheckIOInSphere(EERIE_SPHERE * sphere,long target,long flags)
 						{
 							count++;
 
-							if (count>6) return TRUE;
+							if (count>6) return true;
 						}
 
 						if (io->obj->nbvertex<120)
@@ -1497,10 +1498,10 @@ BOOL CheckIOInSphere(EERIE_SPHERE * sphere,long target,long flags)
 										if (count>3)
 									{
 										if (io->ioflags & IO_FIX)
-												return TRUE;
+												return true;
 
 											if (count>6) 
-												return TRUE;
+												return true;
 										}										
 									}
 									}
@@ -1510,12 +1511,12 @@ BOOL CheckIOInSphere(EERIE_SPHERE * sphere,long target,long flags)
 					}
 
 					if ((count>3) && (io->ioflags & IO_FIX))	
-						return TRUE;
+						return true;
 			
 				}
 			}
 	
-	return FALSE;	
+	return true;	
 }
 
 
@@ -1524,19 +1525,19 @@ float MAX_ALLOWED_PER_SECOND=12.f;
 // Checks if a position is valid, Modify it for height if necessary
 // Returns TRUE or FALSE
 
-BOOL AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flags)
+bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flags)
 {
 	PUSHABLE_NPC=NULL;
 	float anything = CheckAnythingInCylinder(cyl, io, flags); 
 
-	if ((flags & CFLAG_LEVITATE) && (anything==0.f)) return TRUE;
+	if ((flags & CFLAG_LEVITATE) && (anything==0.f)) return true;
 
 	if (anything>=0.f) // Falling Cylinder but valid pos !
 	{
 		if (flags & CFLAG_RETURN_HEIGHT)
 			cyl->origin.y+=anything;
 
-		return TRUE;
+		return true;
 	}
 	
 	EERIE_CYLINDER tmp;
@@ -1588,7 +1589,7 @@ BOOL AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flag
 				tolerate=cyl->height*DIV2;
 			}
 
-			if (anything<tolerate) return FALSE;
+			if (anything<tolerate) return false;
 		}
 
 		if (io && (flags & CFLAG_PLAYER) && (anything<0.f) && (flags & CFLAG_JUST_TEST))
@@ -1605,7 +1606,7 @@ BOOL AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flag
 					float tmp=CheckAnythingInCylinder(&tmpp,io,flags | CFLAG_JUST_TEST);
 
 					if (tmp<0)
-				return FALSE;
+				return false;
 			}
 		}
 
@@ -1616,7 +1617,7 @@ BOOL AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flag
 				if (player.jumpphase)
 				{
 					io->_npcdata->climb_count=MAX_ALLOWED_PER_SECOND;
-					return FALSE;
+					return false;
 				}				
 
 				float dist;
@@ -1633,7 +1634,7 @@ BOOL AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flag
 				if (anything < -55) 
 				{
 					io->_npcdata->climb_count=MAX_ALLOWED_PER_SECOND;
-					return FALSE;
+					return false;
 				}
 
 				EERIE_CYLINDER tmpp;
@@ -1648,19 +1649,19 @@ BOOL AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flag
 					float tmp=CheckAnythingInCylinder(&tmpp,io,flags | CFLAG_JUST_TEST);
 
 					if (tmp<0)
-						return FALSE;
+						return false;
 				}	
 			}			
 		}
 	}
-	else if (anything<-45) return FALSE;
+	else if (anything<-45) return false;
 
 	if ((flags & CFLAG_SPECIAL) && (anything<-40)) 
 	{
 		if (flags & CFLAG_RETURN_HEIGHT)
 			cyl->origin.y+=anything;
 
-		return FALSE;
+		return false;
 	}
 
 	memcpy(&tmp,cyl,sizeof(EERIE_CYLINDER));
@@ -1680,11 +1681,11 @@ BOOL AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flag
 			cyl->origin.y = tmp.origin.y; 
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	cyl->origin.y=tmp.origin.y;
-	return TRUE;
+	return true;
 }
 
 //----------------------------------------------------------------------------------------------
@@ -1696,7 +1697,7 @@ BOOL AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flag
 //flags & 32 Just Test !!!
 //flags & 64 NPC mode
 //----------------------------------------------------------------------------------------------
-BOOL ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE_CYLINDER_STEP,long flags)
+bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE_CYLINDER_STEP,long flags)
 {
 //	HERMESPerf script(HPERF_PHYSICS);
 //	+5 on 15
@@ -1713,7 +1714,7 @@ BOOL ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 	if (ip==NULL) 
 	{
 		MOVING_CYLINDER=0;
-		return FALSE;
+		return false;
 	}
 
 	float distance=TRUEEEDistance3D(&ip->startpos,&ip->targetpos);
@@ -1723,9 +1724,9 @@ BOOL ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 		MOVING_CYLINDER=0;
 
 		if (distance==0.f)
-			return TRUE;
+			return true;
 
-		return FALSE;
+		return false;
 	}
 
 	float onedist=1.f/distance;
@@ -1758,7 +1759,7 @@ BOOL ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 
 		if ((flags & CFLAG_CHECK_VALID_POS)
 			&& (CylinderAboveInvalidZone(&test.cyl)))
-				return FALSE;
+				return false;
 
 		if (AttemptValidCylinderPos(&test.cyl,io,flags))
 		{
@@ -1769,7 +1770,7 @@ BOOL ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 		{
 			//return FALSE;
 			if ((mvector.x==0.f) && (mvector.z==0.f))
-				return TRUE;
+				return true;
 			
 			//goto oki;
 			if (flags & CFLAG_CLIMBING)
@@ -1875,14 +1876,14 @@ BOOL ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 			{ 
 				ip->velocity.x=ip->velocity.y=ip->velocity.z=0.f;
 				MOVING_CYLINDER=0;
-				return FALSE;
+				return false;
 			}
 		}
 
 		if (flags & CFLAG_NO_HEIGHT_MOD)
 		{
 			if (EEfabs(ip->startpos.y - ip->cyl.origin.y)>30.f)
-				return FALSE;
+				return false;
 		}
 
 	oki:
@@ -1890,11 +1891,11 @@ BOOL ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 	}
 
 	MOVING_CYLINDER=0;
-	return TRUE;
+	return true;
 }
 
 //-----------------------------------------------------------------------------
-BOOL IO_Visible(EERIE_3D * orgn, EERIE_3D * dest,EERIEPOLY * epp,EERIE_3D * hit)
+bool IO_Visible(EERIE_3D * orgn, EERIE_3D * dest,EERIEPOLY * epp,EERIE_3D * hit)
 {
 	
 
@@ -2013,7 +2014,7 @@ BOOL IO_Visible(EERIE_3D * orgn, EERIE_3D * dest,EERIEPOLY * epp,EERIE_3D * hit)
 						hit->x=x;
 						hit->y=y;
 						hit->z=z;
-						return FALSE;
+						return false;
 					}
 				}
 			}
@@ -2061,14 +2062,14 @@ BOOL IO_Visible(EERIE_3D * orgn, EERIE_3D * dest,EERIEPOLY * epp,EERIE_3D * hit)
 fini:
 	;
 	
-	if ( found_ep == NULL ) return TRUE;
+	if ( found_ep == NULL ) return true;
 
-	if ( found_ep == epp ) return TRUE;
+	if ( found_ep == epp ) return true;
 
 	hit->x = found_hit.x;
 	hit->y = found_hit.y;
 	hit->z = found_hit.z;
-	return FALSE;
+	return false;
 }
 void ANCHOR_BLOCK_Clear()
 {

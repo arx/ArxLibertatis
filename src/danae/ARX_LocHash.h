@@ -27,13 +27,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef LOC_HASH_H
 #define LOC_HASH_H
 
-#include <windows.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <string>
-#include <tchar.h>
 #include <vector>
 #include <ARX_Common.h>
+#include <cstring>
 
 using namespace std;
 
@@ -41,8 +40,8 @@ using namespace std;
 class CLocalisation
 {
 	public:
-		_TCHAR		*	 lpszUSection;
-		vector<_TCHAR *> vUKeys;
+		char *  lpszUSection;
+		vector<char *> vUKeys;
 	
 	public:
 		CLocalisation()
@@ -57,14 +56,14 @@ class CLocalisation
 				lpszUSection = NULL;
 			}
 			
-			for (UINT i = 0 ; i < vUKeys.size() ; i++)
+			for (unsigned int i = 0 ; i < vUKeys.size() ; i++)
 			{
 				free((void *) vUKeys[i]);
 				vUKeys[i] = NULL;
 			}
 		};
 
-		void SetSection(_TCHAR * _lpszUSection)
+		void SetSection(char * _lpszUSection)
 		{
 			if (lpszUSection)
 			{
@@ -72,15 +71,15 @@ class CLocalisation
 				lpszUSection = NULL;
 			}
 
-			lpszUSection = (_TCHAR *) malloc((_tcslen(_lpszUSection) + 2) * sizeof(_TCHAR));
-			memset(lpszUSection, 0, (_tcslen(_lpszUSection) + 2) * sizeof(_TCHAR));
-			_tcscpy(lpszUSection, _lpszUSection);
+			lpszUSection = (char *) malloc((strlen(_lpszUSection) + 2) * sizeof(char));
+			std::memset(lpszUSection, 0, (strlen(_lpszUSection) + 2) * sizeof(char));
+			std::strcpy(lpszUSection, _lpszUSection);
 		};
-		void AddKey(_TCHAR * _lpszUText)
+		void AddKey(char * _lpszUText)
 		{
-			_TCHAR * lpszT = (_TCHAR *) malloc((_tcslen(_lpszUText) + 2) * sizeof(_TCHAR));
-			memset(lpszT, 0, (_tcslen(_lpszUText) + 2) * sizeof(_TCHAR));
-			_tcscpy(lpszT, _lpszUText);
+			char * lpszT = (char *) malloc((strlen(_lpszUText) + 2) * sizeof(char));
+			memset(lpszT, 0, (strlen(_lpszUText) + 2) * sizeof(char));
+			strcpy(lpszT, _lpszUText);
 
 			vUKeys.push_back(lpszT);
 		};
@@ -101,7 +100,7 @@ class CLocalisationHash
 	private:
 		int				FuncH1(int);
 		int				FuncH2(int);
-		int				GetKey(const _TCHAR *);
+		int				GetKey(const char *);
 
 	public:
 		CLocalisationHash(int _iSize = 1024);
@@ -110,8 +109,8 @@ class CLocalisationHash
 		void ReHash();
 		bool AddElement(CLocalisation * _pLoc);
  
-		_TCHAR * GetPtrWithString(const _TCHAR *);
-		unsigned long GetKeyCount(const _TCHAR *);
+		char * GetPtrWithString(const char *);
+		unsigned long GetKeyCount(const char *);
 };
 
 #endif
