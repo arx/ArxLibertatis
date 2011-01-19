@@ -913,30 +913,28 @@ BOOL CreateFullPath(char * path)
 
 long FileExist(char * name)
 {
-	printf("FileExist(%s)\n", name);
 	long i;
 
 	if((i = FileOpenRead(name)) == 0) {
-		printf(" -> doesn't exist\n");
+		printf("\e[1;31mDidn't find\e[m\t%s\n", name);
 		return 0;
 	}
 	
 	FileCloseRead(i);
-	printf(" -> exists\n");
+	printf("\e[1;32mFound\e[m\t%s\n", name);
 	return 1;
 }
 
 long	FileOpenRead(char * name)
 {
-	printf("FileOpenRead(%s)\n", name);
 	long	handle;
 	handle = CreateFile((const char *)name, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, 0);
 
 	if(handle < 0) {
-		printf(" -> error\n");
+		printf("\e[1;31mCan't open\e[m\t%s\n", name);
 		return(0);
 	}
-	
+	printf("\e[1;32mOpened\e[m\t%s\n", name);
 	printf(" -> handle %d\n", handle + 1);
 	return(handle + 1);
 }
