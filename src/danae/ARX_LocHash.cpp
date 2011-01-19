@@ -73,10 +73,10 @@ int	CLocalisationHash::FuncH2(int _iKey)
 }
 
 //-----------------------------------------------------------------------------
-int	CLocalisationHash::GetKey(const _TCHAR * _lpszUText)
+int	CLocalisationHash::GetKey(const char * _lpszUText)
 {
 	int iKey = 0;
-	int iLenght = _tcslen((const _TCHAR *)_lpszUText);
+	int iLenght = strlen((const char *)_lpszUText);
 	int iLenght2 = iLenght;
 
 	while (iLenght--)
@@ -90,7 +90,7 @@ int	CLocalisationHash::GetKey(const _TCHAR * _lpszUText)
 //-----------------------------------------------------------------------------
 void CLocalisationHash::ReHash()
 {
-	ULONG	iNewSize = iSize << 1;
+	unsigned long	iNewSize = iSize << 1;
 	long	iNewMask = iNewSize - 1;
 
 	CLocalisation ** pTab2 = new CLocalisation *[iNewSize];
@@ -101,7 +101,7 @@ void CLocalisationHash::ReHash()
 	}
 
 
-	for (UINT i = 0 ; i < iSize ; i++)
+	for (unsigned int i = 0 ; i < iSize ; i++)
 	{
 		if (pTab[i] != NULL)
 		{
@@ -109,7 +109,7 @@ void CLocalisationHash::ReHash()
 			int	iH1	 = FuncH1(iKey);
 			int	iH2  = FuncH2(iKey);
 
-			UINT iNbSolution = 0;
+			unsigned int iNbSolution = 0;
 
 			while (iNbSolution < iNewSize)
 			{
@@ -177,7 +177,7 @@ bool CLocalisationHash::AddElement(CLocalisation * _pLoc)
 }
 
 //-----------------------------------------------------------------------------
-_TCHAR * CLocalisationHash::GetPtrWithString(const _TCHAR * _lpszUText)
+char * CLocalisationHash::GetPtrWithString(const char * _lpszUText)
 {
 	int iKey = GetKey(_lpszUText);
 	int	iH1 = FuncH1(iKey);
@@ -191,7 +191,7 @@ _TCHAR * CLocalisationHash::GetPtrWithString(const _TCHAR * _lpszUText)
 
 		if (pTab[iH1])
 		{
-			if (!_tcsicmp(_lpszUText, pTab[iH1]->lpszUSection))
+			if (!strcasecmp(_lpszUText, pTab[iH1]->lpszUSection))
 			{
 				if (pTab[iH1]->vUKeys.size() > 0)
 				{
@@ -210,7 +210,7 @@ _TCHAR * CLocalisationHash::GetPtrWithString(const _TCHAR * _lpszUText)
 }
 
 //-----------------------------------------------------------------------------
-unsigned long CLocalisationHash::GetKeyCount(const _TCHAR * _lpszUText)
+unsigned long CLocalisationHash::GetKeyCount(const char * _lpszUText)
 {
 	int iKey = GetKey(_lpszUText);
 	int	iH1 = FuncH1(iKey);
@@ -224,7 +224,7 @@ unsigned long CLocalisationHash::GetKeyCount(const _TCHAR * _lpszUText)
 
 		if (pTab[iH1])
 		{
-			if (!_tcsicmp(_lpszUText, pTab[iH1]->lpszUSection))
+			if (!strcasecmp(_lpszUText, pTab[iH1]->lpszUSection))
 			{
 				return pTab[iH1]->vUKeys.size();
 
