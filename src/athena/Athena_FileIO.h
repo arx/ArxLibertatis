@@ -34,7 +34,6 @@ namespace ATHENA
 	extern FILE *(* FileOpen)(const char * name, const char * mode);
 	extern int (* FileClose)(FILE * file);
 	extern size_t (* FileRead)(void * buffer, size_t size, size_t count, FILE * file);
-	extern size_t (* FileWrite)(const void * buffer, size_t size, size_t count, FILE * file);
 	extern int (* FileSeek)(FILE * file, long offset, int origin);
 	extern long(* FileTell)(FILE * file);
 
