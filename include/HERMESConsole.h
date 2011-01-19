@@ -82,7 +82,7 @@ class Console {
 		TCHAR*  c_strAppTitle;
 		DWORD ThreadId;
 		HANDLE  ThreadHandle;
-		void Console::GetThreadMsg(MSG *msg) ;		
+		void GetThreadMsg(MSG *msg);
  
 	protected:
 		unsigned char ConsoleInitCmdLines();
