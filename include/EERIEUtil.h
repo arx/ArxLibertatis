@@ -77,8 +77,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 VOID D3DUtil_InitDeviceDesc(D3DDEVICEDESC7 & ddDevDesc);
 VOID D3DUtil_InitSurfaceDesc(DDSURFACEDESC2 & ddsd, DWORD dwFlags = 0,
                              DWORD dwCaps = 0);
-VOID D3DUtil_InitMaterial(D3DMATERIAL7 & mtrl, FLOAT r = 0.0f, FLOAT g = 0.0f,
-                          FLOAT b = 0.0f, FLOAT a = 1.0f);
+VOID D3DUtil_InitMaterial(D3DMATERIAL7 & mtrl, float r = 0.0f, float g = 0.0f,
+                          float b = 0.0f, float a = 1.0f);
  
 //-----------------------------------------------------------------------------
 // D3D Matrix functions. For performance reasons, some functions are inline.
@@ -93,8 +93,8 @@ inline VOID D3DUtil_SetIdentityMatrix(D3DMATRIX & m)
 	m._11 = m._22 = m._33 = m._44 = 1.0f;
 }
 
-inline VOID D3DUtil_SetTranslateMatrix(D3DMATRIX & m, FLOAT tx, FLOAT ty,
-                                       FLOAT tz)
+inline VOID D3DUtil_SetTranslateMatrix(D3DMATRIX & m, float tx, float ty,
+                                       float tz)
 {
 	D3DUtil_SetIdentityMatrix(m);
 	m._41 = tx;

@@ -9530,7 +9530,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							else sv->type = TYPE_L_LONG;
 
 							break;
-						case '&': // GLOBAL FLOAT
+						case '&': // GLOBAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							sv = SETVarValueFloat(&svar, &NB_GLOBALS, temp, fval);
 
@@ -9541,7 +9541,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							else sv->type = TYPE_G_FLOAT;
 
 							break;
-						case '@': // LOCAL FLOAT
+						case '@': // LOCAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							sv = SETVarValueFloat(&esss->lvar, &esss->nblvar, temp, fval);
 
@@ -11451,7 +11451,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							if (sv != NULL) sv->type = TYPE_L_LONG;
 
 							break;
-						case '&': // GLOBAL FLOAT
+						case '&': // GLOBAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = GETVarValueFloat(&svar, &NB_GLOBALS, temp1);
 							fval = fdval + fval;
@@ -11460,7 +11460,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							if (sv != NULL) sv->type = TYPE_G_FLOAT;
 
 							break;
-						case '@': // LOCAL FLOAT
+						case '@': // LOCAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = GETVarValueFloat(&esss->lvar, &esss->nblvar, temp1);
 							fval = fdval + fval;
@@ -12943,7 +12943,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 								sv->type = TYPE_L_LONG;
 
 							break;
-						case '&': // GLOBAL FLOAT
+						case '&': // GLOBAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = GETVarValueFloat(&svar, &NB_GLOBALS, temp1);
 							fval = fdval * fval;
@@ -12953,7 +12953,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 								sv->type = TYPE_G_FLOAT;
 
 							break;
-						case '@': // LOCAL FLOAT
+						case '@': // LOCAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = GETVarValueFloat(&esss->lvar, &esss->nblvar, temp1);
 							fval = fdval * fval;
@@ -13184,7 +13184,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							if (sv != NULL) sv->type = TYPE_L_LONG;
 
 							break;
-						case '&': // GLOBAL FLOAT
+						case '&': // GLOBAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = GETVarValueFloat(&svar, &NB_GLOBALS, temp1);
 
@@ -13199,7 +13199,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							if (sv != NULL) sv->type = TYPE_G_FLOAT;
 
 							break;
-						case '@': // LOCAL FLOAT
+						case '@': // LOCAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = GETVarValueFloat(&esss->lvar, &esss->nblvar, temp1);
 
@@ -13696,7 +13696,7 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, char * name, char * content)
 				sv->type = TYPE_L_LONG;
 
 			break;
-		case '&': // GLOBAL FLOAT
+		case '&': // GLOBAL float
 
 			if (io) return;
 
@@ -13707,7 +13707,7 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, char * name, char * content)
 				sv->type = TYPE_G_FLOAT;
 
 			break;
-		case '@': // LOCAL FLOAT
+		case '@': // LOCAL float
 
 			if (io == NULL) return;
 

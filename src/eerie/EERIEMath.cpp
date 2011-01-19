@@ -739,7 +739,7 @@ void TransformInverseVertexQuat(const EERIE_QUAT * quat, const EERIE_3D * vertex
 
 void Quat_Slerp(EERIE_QUAT * result, const EERIE_QUAT * from, EERIE_QUAT * to, float ratio)
 {
-	FLOAT fCosTheta = from->x * to->x + from->y * to->y + from->z * to->z + from->w * to->w;
+	float fCosTheta = from->x * to->x + from->y * to->y + from->z * to->z + from->w * to->w;
 
 	if (fCosTheta < 0.0f)
 	{
@@ -750,11 +750,11 @@ void Quat_Slerp(EERIE_QUAT * result, const EERIE_QUAT * from, EERIE_QUAT * to, f
 		to->w = -to->w;
 	}
 
-	FLOAT fBeta = 1.f - ratio;
+	float fBeta = 1.f - ratio;
 
 	if (1.0f - fCosTheta > 0.001f)
 	{
-		FLOAT fTheta = acosf(fCosTheta);
+		float fTheta = acosf(fCosTheta);
 		float t = 1 / EEsin(fTheta);
 		fBeta  = EEsin(fTheta * fBeta) * t ;
 		ratio = EEsin(fTheta * ratio) * t ;
@@ -1231,9 +1231,9 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const EERIE_3D * vect, cons
 //-----------------------------------------------------------------------------
 VOID MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * b)
 {
-	FLOAT * pA = (float *)a;
-	FLOAT * pB = (float *)b;
-	FLOAT  pM[16];
+	float * pA = (float *)a;
+	float * pB = (float *)b;
+	float  pM[16];
 
 	ZeroMemory(pM, sizeof(EERIEMATRIX));
 
@@ -1258,9 +1258,9 @@ VOID MatrixMultiply(EERIEMATRIX * q, const EERIEMATRIX * a, const EERIEMATRIX * 
 void VectorMatrixMultiply(EERIE_3D * vDest, const EERIE_3D * vSrc,
                           const EERIEMATRIX * mat)
 {
-	FLOAT x = vSrc->x * mat->_11 + vSrc->y * mat->_21 + vSrc->z * mat->_31 + mat->_41;
-	FLOAT y = vSrc->x * mat->_12 + vSrc->y * mat->_22 + vSrc->z * mat->_32 + mat->_42;
-	FLOAT z = vSrc->x * mat->_13 + vSrc->y * mat->_23 + vSrc->z * mat->_33 + mat->_43;
+	float x = vSrc->x * mat->_11 + vSrc->y * mat->_21 + vSrc->z * mat->_31 + mat->_41;
+	float y = vSrc->x * mat->_12 + vSrc->y * mat->_22 + vSrc->z * mat->_32 + mat->_42;
+	float z = vSrc->x * mat->_13 + vSrc->y * mat->_23 + vSrc->z * mat->_33 + mat->_43;
 
 	vDest->x = x;
 	vDest->y = y;

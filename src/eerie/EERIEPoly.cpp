@@ -163,9 +163,9 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _
 	float fFOV = DEG2RAD(_fFOV);
 	float fFarPlane = _fZFar;
 	float fNearPlane = _fZNear;
-	FLOAT w = fAspect * (cosf(fFOV / 2) / sinf(fFOV / 2));
-	FLOAT h =   1.0f  * (cosf(fFOV / 2) / sinf(fFOV / 2));
-	FLOAT Q = fFarPlane / (fFarPlane - fNearPlane);
+	float w = fAspect * (cosf(fFOV / 2) / sinf(fFOV / 2));
+	float h =   1.0f  * (cosf(fFOV / 2) / sinf(fFOV / 2));
+	float Q = fFarPlane / (fFarPlane - fNearPlane);
 
 	fK3 = (_fZFar - _fZNear);
 

@@ -1547,7 +1547,7 @@ void STD_ExplodeNoAlloc(char * from, long from_size, char * to, long * to_size)
 }
 //-------------------------------------------------------------------------------------
 // SP funcs
-#define hrnd()  (((FLOAT)rand() ) * 0.00003051850947599f)
+#define hrnd()  (((float)rand() ) * 0.00003051850947599f)
 
 //-------------------------------------------------------------------------------------
 // Error Logging Funcs...

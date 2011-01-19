@@ -71,8 +71,8 @@ using std::max;
 //-----------------------------------------------------------------------------
 // RANDOM Sequences Funcs/Defs
 //-----------------------------------------------------------------------------
-#define ornd()  (((FLOAT)rand() ) / RAND_MAX)
-#define rnd()  (((FLOAT)rand() ) * 0.00003051850947599f)
+#define ornd()  (((float)rand() ) / RAND_MAX)
+#define rnd()  (((float)rand() ) * 0.00003051850947599f)
 
 //Approximative Methods
 #define EEsqrt(val)	(float)ffsqrt(val)
@@ -98,7 +98,7 @@ using std::max;
 #define EEdef_PI_0_75		4.7123889803846896397f		//EEdef_2_PI-EEdef_PI_DIV_2
 #define EEdef_DEGTORAD		0.01745329251994329547f		// Degrees to Radians
 #define EEdef_RADTODEG		57.29577951308232286465f	// Radians to Degrees
-#define EEdef_HUGE			1.0e+38f					// Huge number for FLOAT
+#define EEdef_HUGE			1.0e+38f					// Huge number for float
 #define EEdef_EPSILON		1.0e-5f						// Tolerance for FLOATs
 #define EEdef_MAXfloat		1.0e+38f
 #define EEdef_MINfloat		-1.0e+38f
@@ -464,8 +464,8 @@ inline void TransformVertexQuat(EERIE_QUAT * quat, EERIE_3D * vertexin, EERIE_3D
 
 void TransformVertexQuat(const EERIE_QUAT * quat, const EERIE_3D * vertexin, EERIE_3D * vertexout);
 void TransformInverseVertexQuat(const EERIE_QUAT * quat, const EERIE_3D * vertexin, EERIE_3D * vertexout);
-void RotationFromQuat(EERIE_3D * v, FLOAT fTheta, const EERIE_QUAT * q);
-void QuatFromRotation(EERIE_QUAT * q, const EERIE_3D * v, const FLOAT fTheta);
+void RotationFromQuat(EERIE_3D * v, float fTheta, const EERIE_QUAT * q);
+void QuatFromRotation(EERIE_QUAT * q, const EERIE_3D * v, const float fTheta);
 void Quat_Init(EERIE_QUAT * quat, const float x = 0, const float y = 0, const float z = 0, const float w = 1);
 void Quat_Divide(EERIE_QUAT * dest, const EERIE_QUAT * q1, const EERIE_QUAT * q2);
 void Quat_Multiply(EERIE_QUAT * dest , const EERIE_QUAT * q1, const EERIE_QUAT * q2);

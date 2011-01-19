@@ -165,7 +165,7 @@ class DANAE : public CD3DApplication
 		HRESULT OneTimeSceneInit();
 		HRESULT DeleteDeviceObjects();
 		HRESULT Render();
-		HRESULT FrameMove(FLOAT fTimeKey);
+		HRESULT FrameMove(float fTimeKey);
 		HRESULT FinalCleanup();
 		void ManageKeyMouse();
 		BOOL ManageEditorControls();

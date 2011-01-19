@@ -2901,7 +2901,7 @@ extern void ARX_POLYSPLAT_Add(EERIE_3D * poss,long type,EERIE_RGB * col,float si
 // FrameMove()
 //  Called once per frame.
 //*************************************************************************************
-HRESULT DANAE::FrameMove( FLOAT fTimeKey )
+HRESULT DANAE::FrameMove( float fTimeKey )
 {
 	// To disable for demo
 	if (	!FINAL_COMMERCIAL_DEMO
