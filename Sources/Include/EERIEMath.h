@@ -59,9 +59,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //#define D3D_OVERLOADS
 //
 //#include <d3d.h>
+#include <algorithm>
 #include "EERIETypes.h"
 #include "EERIEPoly.h"
-#include <algorithm>
 //#include "ARX_Common.h"
 using std::min;
 using std::max;
@@ -195,7 +195,7 @@ using std::max;
 
 //-----------------------------------------------------------------------------
 
-__inline bool In3DBBoxTolerance(const EERIE_3D * pos, const EERIE_3D_BBOX * bbox, const float tolerance)
+inline bool In3DBBoxTolerance(const EERIE_3D * pos, const EERIE_3D_BBOX * bbox, const float tolerance)
 {
 	return ((pos->x >= bbox->min.x - tolerance)
 	        &&	(pos->x <= bbox->max.x + tolerance)
@@ -211,13 +211,13 @@ extern float Esin[];
 
 
 //-----------------------------------------------------------------------------
-__inline unsigned __int8 clipByte(int value)
+inline unsigned __int8 clipByte(int value)
 {
 	value = (0 & (-(int)(value < 0))) | (value & (-(int)!(value < 0)));
 	value = (255 & (-(int)(value > 255))) | (value & (-(int)!(value > 255)));
 	return  ARX_CLEAN_WARN_CAST_UCHAR(value);
 }
-__inline unsigned __int8 clipByte255(int value)
+inline unsigned __int8 clipByte255(int value)
 {
 	value = (255 & (-(int)(value > 255))) | (value & (-(int)!(value > 255)));
 	return ARX_CLEAN_WARN_CAST_UCHAR(value);
@@ -232,7 +232,7 @@ BOOL CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2
 BOOL SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s);
 
 // Optimized Float 2 Long Conversion
-void F2L(const float f, long * l)
+inline void F2L(const float f, long * l)
 {
 	*l = f;
 	//TODO: Optimize
@@ -243,11 +243,12 @@ void F2L(const float f, long * l)
 //		_asm	fistp DWORD PTR [eax]
 //	}
 }
-void F2L(const float f, LONG * l)
+inline void F2L(const float f, LONG * l)
 {
 	*l = f;
 }
-D3DCOLOR EERIERGB(float r, float g, float b)
+
+inline D3DCOLOR EERIERGB(float r, float g, float b)
 {
 	long t[3];
 	F2L(r * 255.f, &t[0]);
@@ -256,13 +257,13 @@ D3DCOLOR EERIERGB(float r, float g, float b)
 	return (0xff000000L | (t[0] << 16) | (t[1] << 8) | t[2]);
 }
 
-D3DCOLOR _EERIERGB(float v)
+inline D3DCOLOR _EERIERGB(float v)
 {
 	long t;
 	F2L(v * 255.f, &t);
 	return (0xff000000L | (t << 16) | (t << 8) | t);
 }
-D3DCOLOR _EERIERGBA(float v)
+inline D3DCOLOR _EERIERGBA(float v)
 {
 	long t;
 	F2L(v * 255.f, &t);
@@ -294,7 +295,7 @@ float InterpolateAngle(float a1, float a2, float pour);
 //*************************************************************************************
 float FORCEANGLE(float a);
 
-__inline float ffsqrt(float f)
+inline float ffsqrt(float f)
 {
 	unsigned int y = ((((unsigned int &)f) - 0x3f800000) >> 1) + 0x3f800000;
 	// can repeat the following line 3 times for improved precision...
@@ -308,19 +309,19 @@ __inline float ffsqrt(float f)
 //*************************************************************************************
 // Rotations
 //*************************************************************************************
-__inline void _ZRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s)
+inline void _ZRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s)
 {
 	out->x = (in->x * c) + (in->y * s);
 	out->y = (in->y * c) - (in->x * s);
 	out->z = in->z;
 }
-__inline void _YRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s)
+inline void _YRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s)
 {
 	out->x = (in->x * c) + (in->z * s);
 	out->y = in->y;
 	out->z = (in->z * c) - (in->x * s);
 }
-__inline void _XRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s)
+inline void _XRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s)
 {
 	out->x = in->x;
 	out->y = (in->y * c) - (in->z * s);
@@ -395,7 +396,7 @@ long	isqrt(long value);
 //*******************************************************************************
 // Rotation Functions
 //*******************************************************************************
-__inline void _YXZRotatePoint(EERIE_3D * in, EERIE_3D * out, EERIE_CAMERA * cam)
+inline void _YXZRotatePoint(EERIE_3D * in, EERIE_3D * out, EERIE_CAMERA * cam)
 {
 	register float tempy;
 	out->z = (in->z * cam->Ycos) - (in->x * cam->Ysin);
@@ -408,7 +409,7 @@ __inline void _YXZRotatePoint(EERIE_3D * in, EERIE_3D * out, EERIE_CAMERA * cam)
 //*************************************************************************************
 // Fast normal rotation :p
 //*************************************************************************************
-void _YXZRotateNorm(EERIE_3D * in, EERIE_3D * out, EERIE_CAMERA * cam)
+inline void _YXZRotateNorm(EERIE_3D * in, EERIE_3D * out, EERIE_CAMERA * cam)
 {
 	out->z = (in->y * cam->Xsin) + (((in->z * cam->Ycos) - (in->x * cam->Ysin)) * cam->Xcos);
 }
@@ -438,7 +439,7 @@ inline void Quat_Init(EERIE_QUAT * quat, const float x, const float y, const flo
 }
 
 // Transforms a Vertex by a matrix
-__inline void TransformVertexMatrix(EERIEMATRIX * mat, EERIE_3D * vertexin, EERIE_3D * vertexout)
+inline void TransformVertexMatrix(EERIEMATRIX * mat, EERIE_3D * vertexin, EERIE_3D * vertexout)
 {
 
 	vertexout->x = vertexin->x * mat->_11 + vertexin->y * mat->_21 + vertexin->z * mat->_31;
@@ -448,7 +449,7 @@ __inline void TransformVertexMatrix(EERIEMATRIX * mat, EERIE_3D * vertexin, EERI
 }
 
 // Transforms a Vertex by a quaternion
-__inline void TransformVertexQuat(EERIE_QUAT * quat, EERIE_3D * vertexin, EERIE_3D * vertexout)
+inline void TransformVertexQuat(EERIE_QUAT * quat, EERIE_3D * vertexin, EERIE_3D * vertexout)
 {
 
 	register float rx = vertexin->x * quat->w - vertexin->y * quat->z + vertexin->z * quat->y;
@@ -558,7 +559,7 @@ void MatrixFromQuat(EERIEMATRIX * mat, const EERIE_QUAT * q);
 //*******************************************************************************
 #define SquaredDistance2D(x0,y0,x1,y1) (float)( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) )
 #define SquaredDistance3D(x0,y0,z0,x1,y1,z1) (float)( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) +((z1-z0)*(z1-z0)) )
-__inline float EESquaredDistance3D(const EERIE_3D * from, const EERIE_3D * to)
+inline float EESquaredDistance3D(const EERIE_3D * from, const EERIE_3D * to)
 {
 	return (float)(((to->x - from->x) * (to->x - from->x)) + ((to->y - from->y) * (to->y - from->y)) + ((to->z - from->z) * (to->z - from->z)));
 }
@@ -567,7 +568,7 @@ __inline float EESquaredDistance3D(const EERIE_3D * from, const EERIE_3D * to)
 #define Distance3D(x0,y0,z0,x1,y1,z1) (float)EEsqrt( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) +((z1-z0)*(z1-z0)) )
 #define TRUEDistance2D(x0,y0,x1,y1) (float)TRUEsqrt( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) )
 #define TRUEDistance3D(x0,y0,z0,x1,y1,z1) (float)TRUEsqrt( ((x1-x0)*(x1-x0)) +((y1-y0)*(y1-y0)) +((z1-z0)*(z1-z0)) )
-__inline float TRUEEEDistance3D(const EERIE_3D * from, const EERIE_3D * to)
+inline float TRUEEEDistance3D(const EERIE_3D * from, const EERIE_3D * to)
 {
 	return (float)TRUEsqrt(((to->x - from->x) * (to->x - from->x)) + ((to->y - from->y) * (to->y - from->y)) + ((to->z - from->z) * (to->z - from->z)));
 }
@@ -576,12 +577,12 @@ __inline float TRUEEEDistance3D(const EERIE_3D * from, const EERIE_3D * to)
 // Compute Distance between two 3D points
 // WARNING: EEsqrt may use an approximative way of computing sqrt !
 //*************************************************************************************
-__inline float EEDistance3D(const EERIE_3D * from, const EERIE_3D * to)
+inline float EEDistance3D(const EERIE_3D * from, const EERIE_3D * to)
 {
 	return (float)EEsqrt(((to->x - from->x) * (to->x - from->x)) + ((to->y - from->y) * (to->y - from->y)) + ((to->z - from->z) * (to->z - from->z)));
 }
 
-__inline BOOL PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)
+inline BOOL PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)
 {
 	register float pos1 = cyl->origin.y + cyl->height;
 
@@ -595,7 +596,7 @@ __inline BOOL PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)
 	return FALSE;
 }
 
-__inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)
+inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)
 {
 	register float pos1 = cyl->origin.y + cyl->height;
 	long ret = 2;
@@ -618,7 +619,7 @@ __inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * 
 float	GetAngle(const float x0, const float y0, const float x1, const float y1);
 float	AngleDifference(float d, float e);
 
-__inline float MAKEANGLE(float a)
+inline float MAKEANGLE(float a)
 {
 	if (a >= 0)
 		return a - 360 * (int)(a * 0.0027777777f);
@@ -632,7 +633,7 @@ void QuatFromAngles(EERIE_QUAT * q, const EERIE_3D * angle);
 
 extern D3DMATRIX ProjectionMatrix;
 
-void specialEE_RT(D3DTLVERTEX * in, EERIE_3D * out)
+inline void specialEE_RT(D3DTLVERTEX * in, EERIE_3D * out)
 {
 	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
 	out->x = in->sx - et->posx;
@@ -645,7 +646,7 @@ void specialEE_RT(D3DTLVERTEX * in, EERIE_3D * out)
 	out->y = (out->y * et->xcos) - (temp * et->xsin);
 }
 
-void specialEE_P(EERIE_3D * in, D3DTLVERTEX * out)
+inline void specialEE_P(EERIE_3D * in, D3DTLVERTEX * out)
 {
 	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
 

@@ -57,10 +57,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_TEXT_H
 
 #include <vector>
+#include <string>
 //#include <list>
 #include "EERIEApp.h"
 #include "EERIETypes.h"
-#include <tchar.h>
 
 using std::vector;
 
@@ -113,8 +113,8 @@ class CARXTextManager
 
 //-----------------------------------------------------------------------------
 extern CARXTextManager * pTextManage;
-extern _TCHAR * lpszFontMenu;
-extern _TCHAR * lpszFontIngame;
+extern std::string lpszFontMenu;
+extern std::string lpszFontIngame;
 
 extern HFONT hFontMainMenu;
 extern HFONT hFontMenu;

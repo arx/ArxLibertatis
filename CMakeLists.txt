@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(ArxFatalis)
 
+
 set(SRC_DIR Sources)
 
 include_directories(
@@ -14,18 +15,22 @@ include_directories(
 set(CMAKE_CXX_COMPILER /usr/bin/wineg++)
 set(CMAKE_C_COMPILER /usr/bin/winegcc)
 
-set(CMAKE_CXX_FLAGS "-fpermissive -w") #Debug
 
-#Add liblub sources
+#set temporally less gcc problems
+set(CMAKE_CXX_FLAGS "-fpermissive -w -m32")
+
+add_definitions(-D_DEBUG)
+
+#Add sources
 set(SOURCE_DIRS
 	ArxCommon
-	#Athena
-    DANAE
+	Athena
+    danae
     DANAE_Debugger
-    EERIE
-    HERMES
+    eerie
+    hermes
     Mercury
-    MINOS
+    minos
 )
 foreach(SOURCE_DIR ${SOURCE_DIRS})
     file(GLOB GLOB_RESULT ${SRC_DIR}/${SOURCE_DIR}/*.cpp)
@@ -33,13 +38,14 @@ foreach(SOURCE_DIR ${SOURCE_DIRS})
 endforeach(SOURCE_DIR)
 
 #LIST(REMOVE_ITEM SOURCES 
-#/home/bmonkey/workspace/Port/ArxFatalis/Sources/DANAE/ARX_Sound.cpp
-#/home/bmonkey/workspace/Port/ArxFatalis/Sources/HERMES/HERMESmain.cpp
 #)
-#add_library()
-#message(${SOURCES})
+
+#build
 add_executable(arx ${SOURCES})
-#add_executable(arx Sources/DANAE/ARX_CParticleSystem.cpp)
 
 #link
-target_link_libraries(arx wine jpeg)
+target_link_libraries(arx dsound dxguid gdi32 shell32 dinput comdlg32 ole32 comctl32 ddraw jpeg z)
+
+add_custom_target(remake
+        COMMAND make clean && rm CMakeCache.txt && cmake . -G\"Unix Makefiles\" && make -j`getconf _NPROCESSORS_ONLN`
+)

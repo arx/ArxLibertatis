@@ -103,7 +103,7 @@ typedef struct
 typedef struct
 {
 	long				exist;
-	long				sample;
+	ArxSound				sample;
 	long				mood;
 	long				flags; 
 	unsigned long		time_creation;
