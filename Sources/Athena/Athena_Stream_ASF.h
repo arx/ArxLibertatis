@@ -107,5 +107,4 @@ namespace ATHENA
 	};
 
 }//ATHENA::
-
 #endif//__ATHENA_STREAM_ASF_H__

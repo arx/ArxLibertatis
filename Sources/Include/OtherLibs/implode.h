@@ -4,12 +4,14 @@
  PKWARE Data Compression Library Reg. U.S. Pat. and Tm. Off.
 ***************************************************************/
 
+
 #ifndef IMPLODE_H
 #define IMPLODE_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 // TODO find replacement library
 inline	unsigned int implode(
@@ -18,6 +20,7 @@ inline	unsigned int implode(
 	    char     *    work_buf,
 	    void     *    param,
 	    unsigned int * type,
+
 	    unsigned int * dsize) {
 	
 	return 0;

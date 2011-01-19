@@ -182,7 +182,7 @@ typedef struct
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//fx associï¿½
 	int			typeinterp;
 	EERIE_3D	pos;
 	float		angz;
@@ -196,7 +196,7 @@ typedef struct
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//fx associï¿½
 	int			typeinterp;
 	EERIE_3D	pos;
 	float		angz;
@@ -211,7 +211,7 @@ typedef struct
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//fx associï¿½
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
@@ -226,7 +226,7 @@ typedef struct
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//fx associï¿½
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
@@ -242,7 +242,7 @@ typedef struct CS_KEY
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//fx associï¿½
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
@@ -260,7 +260,7 @@ typedef struct
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//fx associï¿½
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
@@ -278,7 +278,7 @@ typedef struct
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//fx associï¿½
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
@@ -297,7 +297,7 @@ typedef struct CST_KEY
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//fx associï¿½
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
@@ -334,7 +334,7 @@ class CINEMATIQUE
 
 		EERIE_3D	pos;
 		float		angz;
-		EERIE_3D	possuiv;			//dans le cas d'une non interpolation fadée
+		EERIE_3D	possuiv;			//dans le cas d'une non interpolation fadï¿½e
 		float		angzsuiv;
 		int			numbitmap;
 		int			numbitmapsuiv;

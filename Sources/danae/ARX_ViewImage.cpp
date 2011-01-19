@@ -201,9 +201,6 @@ void ViewImage::DrawAllImage()
 			float fDepX = ARX_CLEAN_WARN_CAST_FLOAT(max(0L, ((DANAESIZX - (long)pTex->m_dwWidth) / 2)));
 			float fDepY = ARX_CLEAN_WARN_CAST_FLOAT(max(0L, ((DANAESIZY - (long)pTex->m_dwHeight) / 2)));
 
-
-
-
 			ARX_CHECK_NOT_NEG(DANAESIZX);
 			ARX_CHECK_NOT_NEG(DANAESIZY);
 			EERIEDrawBitmap(GDevice,

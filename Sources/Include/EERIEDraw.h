@@ -101,9 +101,7 @@ void EERIEDrawSprite(LPDIRECT3DDEVICE7 pd3dDevice, D3DTLVERTEX * in, float siz, 
 void EERIEDrawRotatedSprite(LPDIRECT3DDEVICE7 pd3dDevice, D3DTLVERTEX * in, float siz, TextureContainer * tex, D3DCOLOR col, float Zpos, float rot);
 
 void SETTEXTURE0(LPDIRECT3DDEVICE7 pd3dDevice, IDirectDrawSurface7 * tex);
-
 void SETTC(LPDIRECT3DDEVICE7 pd3dDevice, TextureContainer * tc);
-
 void SETCULL(LPDIRECT3DDEVICE7 pd3dDevice, DWORD state);
 void SETZWRITE(LPDIRECT3DDEVICE7 pd3dDevice, DWORD state);
 void SETALPHABLEND(LPDIRECT3DDEVICE7 pd3dDevice, DWORD state);

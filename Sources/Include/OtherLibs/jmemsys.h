@@ -131,7 +131,11 @@ typedef union
 #endif /* USE_MSDOS_MEMMGR */
 
 #ifdef USE_MAC_MEMMGR		/* Mac-specific junk */
+<<<<<<< HEAD:Sources/Include/OtherLibs/JMEMSYS.H
+#include <Files.h>
+=======
 #include <files.h>
+>>>>>>> 3cdbf4ca4199be3f04b61687f661774fa1359d78:Sources/Include/OtherLibs/jmemsys.h
 #endif /* USE_MAC_MEMMGR */
 
 

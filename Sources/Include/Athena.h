@@ -29,7 +29,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <Athena_Types.h>
 
-
 //#ifdef _WIN32
 //#ifndef AAL_APIDLL
 //#define AAL_APIFUNC __declspec(dllimport)

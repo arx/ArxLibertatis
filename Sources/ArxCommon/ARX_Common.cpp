@@ -473,7 +473,3 @@ void ArxDebug::CloseTag()
 	(m_uiTabulation == 0) ? m_uiTabulation : --m_uiTabulation;
 }
 
-
-
-
-

@@ -62,7 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <ARX_CSpellFx.h>
 
 //-----------------------------------------------------------------------------
-// Done By : Didier Pédreno
+// Done By : Didier Pï¿½dreno
 // Status  :
 //-----------------------------------------------------------------------------
 class CMagicMissile: public CSpellFx
@@ -87,7 +87,6 @@ class CMagicMissile: public CSpellFx
 		TextureContainer * tex_mm;
 		D3DTLVERTEX pathways[6];
 		ArxSound snd_loop;
-
 	public:
 		CMagicMissile();
 		CMagicMissile(LPDIRECT3DDEVICE7);
@@ -130,7 +129,7 @@ class CMultiMagicMissile: public CSpellFx
 };
 
 //-----------------------------------------------------------------------------
-// Done By : Sébastien Scieux
+// Done By : Sï¿½bastien Scieux
 // Status  :
 //-----------------------------------------------------------------------------
 class CIgnit: public CSpellFx
@@ -193,7 +192,7 @@ class CIgnit: public CSpellFx
 };
 
 //-----------------------------------------------------------------------------
-// Done By : Sébastien Scieux
+// Done By : Sï¿½bastien Scieux
 // Status  :
 //-----------------------------------------------------------------------------
 class CDoze: public CIgnit
@@ -209,7 +208,7 @@ class CDoze: public CIgnit
 };
 
 //-----------------------------------------------------------------------------
-// Done By : Sébastien Scieux
+// Done By : Sï¿½bastien Scieux
 // Status  :
 //-----------------------------------------------------------------------------
 class CPortal: public CSpellFx

@@ -31,6 +31,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 namespace ATHENA
 {
 
+
 	static const int AAF_MAGIC(0x41414646);      //'AAFF'
 	static const int AAF_VERSION(0x01000000);
 
@@ -123,6 +124,7 @@ namespace ATHENA
 	// Status                                                                    //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
+
 	aalError StreamASF::GetStream(FILE *&file)
 	{
 		file = stream;
@@ -134,6 +136,7 @@ namespace ATHENA
 		_format.frequency = header.o_freq;
 		_format.quality = header.o_qual;
 		_format.channels = header.o_chnl;
+
 		return AAL_OK;
 	}
 
@@ -153,6 +156,7 @@ namespace ATHENA
 	// I/O                                                                       //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
+
 	aalError StreamASF::Read(aalVoid * buffer, const aalULong & to_read, aalULong & read)
 	{
 		read = 0;

@@ -99,4 +99,5 @@ void ManageIgnition_2(INTERACTIVE_OBJ * io);
 void CheckUnderWaterIO(INTERACTIVE_OBJ * io);
 BOOL IsDeadNPC(INTERACTIVE_OBJ * io);
 void ARX_NPC_Kill_Spell_Launch(INTERACTIVE_OBJ * io);
+
 #endif

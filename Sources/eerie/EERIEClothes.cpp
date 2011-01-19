@@ -351,6 +351,3 @@ void KillClothesData(EERIE_3DOBJ * obj)
 	free(obj->cdata);
 	obj->cdata = NULL;
 }
-
-
- 

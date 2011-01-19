@@ -58,8 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 using namespace std;
 
-
-
 //#include "console_public.h"
 //#pragma comment(lib, "Console DLL")
 

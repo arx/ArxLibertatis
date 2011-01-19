@@ -494,7 +494,6 @@ typedef struct
 	char *				usemesh;	// Alternate Mesh/path
 	EERIE_3DOBJ *		tweaky;		// tweaked original obj backup
 	ArxSound				sound;
-
 	unsigned long		type_flags;			// object type (weapon,goblin...)
 	long				scriptload;			// Is This object Loaded by Script ?
 	EERIE_3D			target;				// Target position	
@@ -766,7 +765,7 @@ extern long MAX_ANIMATIONS;
 #define TRANSFORMED		2
 #define ALPHABLEND		1
 #define NOCULL			2
-#define TEXTURE3		1 // poly texturé 3
+#define TEXTURE3		1 // poly texture 3
 #define FLAT3			2 // poly flat 3
 
 //-----------------------------------------------------------------------------
@@ -826,7 +825,8 @@ int EERIELaunchRay3(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY
 float GetGroundY(EERIE_3D * pos);
 void EE_IRTP(D3DTLVERTEX *in,D3DTLVERTEX *out);
 void EE_RTT(D3DTLVERTEX *in,D3DTLVERTEX *out);
-void _EERIERTPPoly(EERIEPOLY *ep);
+//todo: is this needed?
+//void _EERIERTPPoly(EERIEPOLY *ep);
 void extEE_RTP(D3DTLVERTEX *in,D3DTLVERTEX *out);
 void MakeColorz(INTERACTIVE_OBJ * io);
 
@@ -968,9 +968,7 @@ void ResetAnim(ANIM_USE * eanim);
 //*************************************************************************************
 //*************************************************************************************
 
-	
 long EERIERTPPoly(EERIEPOLY *ep);
-
 
 void EE_RTP3(EERIE_3D * in, EERIE_3D * out, EERIE_CAMERA * cam);
 		

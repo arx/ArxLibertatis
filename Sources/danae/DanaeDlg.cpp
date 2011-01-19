@@ -66,7 +66,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Paths.h"
 #include "ARX_Sound.h"
 #if _ARX_CEDITOR_
+<<<<<<< HEAD:Sources/DANAE/DanaeDlg.cpp
+#include "Ceditor_Ceditor.h"
+=======
 #include "ceditor_ceditor.h"
+>>>>>>> 3cdbf4ca4199be3f04b61687f661774fa1359d78:Sources/danae/DanaeDlg.cpp
 #endif // _ARX_CEDITOR_
 #include "ARX_GlobalMods.h"
 #include "ARX_Particles.h"
