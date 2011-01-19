@@ -71,6 +71,8 @@ extern "C" {
 #include <shlobj.h>
 }
 
+#include <unistd.h>
+
 // TODO is this correct?
 #define _MAX_EXT 3
 #define _MAX_FNAME 512
@@ -122,12 +124,14 @@ unsigned char NC_IsIn(char * strin, char * str)
 	return 1;
 }
 
-void File_Standardize(char * from, char * to)
+void File_Standardize(const char * from, char * to)
 {
+	printf("File_Standardize(%s)\n", from);
+	
 	long pos = 0;
 	long pos2 = 0;
 	long size = strlen(from);
-	char * temp = HermesBufferWork;	
+	char * temp = from; /*HermesBufferWork;	
 
 	while (pos < size)
 	{
@@ -142,7 +146,7 @@ void File_Standardize(char * from, char * to)
 		pos++;
 	}
 
-	temp[pos2] = 0;
+	temp[pos2] = 0;*/
 
 again:
 	;
@@ -151,7 +155,7 @@ again:
 
 	while (pos < size - 2)
 	{
-		if ((temp[pos] == '\\') && (temp[pos+1] == '.') && (temp[pos+2] == '.'))
+		if ((temp[pos] == '\\' || temp[pos] == '/') && (temp[pos+1] == '.') && (temp[pos+2] == '.'))
 		{
 			long fnd = pos;
 
@@ -159,7 +163,7 @@ again:
 			{
 				pos--;
 
-				if (temp[pos] == '\\')
+				if (temp[pos] == '\\' || temp[pos] == '/')
 				{
 					strcpy(temp + pos, temp + fnd + 3);
 					goto again;
@@ -255,6 +259,17 @@ void HERMES_InitDebug()
 }
 
 void MakeUpcase(char * str)
+{/* TODO 
+	while(*str != '\0') {
+		// islower is needed as the are read-only strings passed that are already in upper case?
+		if(islower(*str)) {
+			*str = toupper(*str);
+		}
+		str++;
+	}*/
+}
+
+void MakeUpcase_real(char * str)
 {
 	while(*str != '\0') {
 		// islower is needed as the are read-only strings passed that are already in upper case?
@@ -873,8 +888,9 @@ long DirectoryExist(char * name)
 	return 1;
 }
 
-bool CreateFullPath(char * path)
-{
+bool CreateFullPath(const char * path) {
+	printf("CreateFullPath(%s)", path);
+	
 	char drive[_MAX_DRIVE];
 	char dir[_MAX_DIR];
 	char fname[_MAX_FNAME];
@@ -885,8 +901,9 @@ bool CreateFullPath(char * path)
 	if (strlen(dir) == 0) return FALSE;
 
 	char curpath[256];
-	strcpy(curpath, drive);
-	strcat(curpath, "\\");
+	curpath[0] = '\0';
+	//strcpy(curpath, drive);
+	strcat(curpath, PATH_SEPERATOR_STR);
 	long start = 1;
 	long pos = 1;
 	long size = strlen(dir);
@@ -897,7 +914,7 @@ bool CreateFullPath(char * path)
 		{
 			dir[pos] = 0;
 			memcpy(curpath + strlen(curpath), dir + start, pos - start + 1);
-			strcat(curpath, "\\");
+			strcat(curpath, PATH_SEPERATOR_STR);
 			CreateDirectory(curpath, NULL);
 			start = pos + 1;
 		}
@@ -911,9 +928,26 @@ bool CreateFullPath(char * path)
 }
 
 
+bool GetWorkingDirectory(char * dest)
+{
+	char text[256];
+
+	if(!getcwd(text, sizeof(text) / sizeof(char))) {
+		return false;
+	}
+
+	long len=strlen(text);
+
+	if (text[len]!=PATH_SEPERATOR_CHR) strcat(text,PATH_SEPERATOR_STR);
+
+	strcpy(dest,text);
+	printf("GetWorkingDirectory() -> %s\n", dest);
+	return true;
+}
+
 long FileExist(char * name)
 {
-	printf("FileExist(%s)", name);
+	printf("FileExist(%s)\n", name);
 	long i;
 
 	if((i = FileOpenRead(name)) == 0) {

@@ -406,7 +406,7 @@ float GLOBAL_LIGHT_FACTOR=0.85f;
 // Don't touch FINAL_COMMERCIAL_DEMO anymore
 // Comment #define REAL_DEMO for non-demo Version
 // UNcomment #define REAL_DEMO for demo Version
-
+//#define REAL_DEMO
 #ifdef REAL_DEMO
 long FINAL_COMMERCIAL_DEMO =1;
 #else
@@ -570,22 +570,6 @@ void ManageNONCombatModeAnimations();
 void LaunchMoulinex();
 
 //-----------------------------------------------------------------------------
-
-bool GetARXInstallPath(char * dest)
-{
-	char text[256];
-
-	GetCurrentDirectory( 256, text );
-
-	if (text[0]==0) return false;
-
-	long len=strlen(text);
-
-	if (text[len]!='\\') strcat(text,"\\");
-
-	strcpy(dest,text);
-	return true;
-}
 
 // Sends ON GAME_READY msg to all IOs
 void SendGameReadyMsg()
@@ -1444,7 +1428,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	{
 		if (FINAL_RELEASE)
 		{
-			if (!GetARXInstallPath(Project.workingdir))
+			if (!GetWorkingDirectory(Project.workingdir))
 			{
 				MessageBox(NULL,"Unable to Find Game Info\nPlease Reinstall ARX Fatalis","Error",MB_ICONEXCLAMATION | MB_OK);
 				exit(0);

@@ -59,7 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Casts.h"
 
 bool bForceInPack = false;
-long CURRENT_LOADMODE = LOAD_TRUEFILE;
+long CURRENT_LOADMODE = LOAD_PACK_THEN_TRUEFILE;
 
 PakManager * pPakManager = NULL;
 
@@ -136,10 +136,6 @@ void PAK_Close()
  
 void * _PAK_FileLoadMallocZero(char * name, long * SizeLoadMalloc)
 {
-#ifdef TEST_PACK_EDITOR
-	strcpy(PAK_WORKDIR, "\\\\arkaneserver\\public\\arx\\");
-	g_pak_workdir_len = strlen(PAK_WORKDIR);
-#endif
 
 	if (g_pak_workdir_len >= strlen(name))
 	{
@@ -173,10 +169,6 @@ void * _PAK_FileLoadMallocZero(char * name, long * SizeLoadMalloc)
 }
 void * _PAK_FileLoadMalloc(char * name, long * SizeLoadMalloc)
 {
-#ifdef TEST_PACK_EDITOR
-	strcpy(PAK_WORKDIR, "\\\\arkaneserver\\public\\arx\\");
-	g_pak_workdir_len = strlen(PAK_WORKDIR);
-#endif
 
 	if (g_pak_workdir_len >= strlen(name))
 	{
@@ -196,10 +188,6 @@ void * _PAK_FileLoadMalloc(char * name, long * SizeLoadMalloc)
 }
 long _PAK_DirectoryExist(char * name)
 {
-#ifdef TEST_PACK_EDITOR
-	strcpy(PAK_WORKDIR, "\\\\arkaneserver\\public\\arx\\");
-	g_pak_workdir_len = strlen(PAK_WORKDIR);
-#endif
 
 	long leng = strlen(name);
 
@@ -273,10 +261,6 @@ long PAK_DirectoryExist(char * name)
 
 long _PAK_FileExist(char * name)
 {
-#ifdef TEST_PACK_EDITOR
-	strcpy(PAK_WORKDIR, "\\\\arkaneserver\\public\\arx\\");
-	g_pak_workdir_len = strlen(PAK_WORKDIR);
-#endif
 
 	if (g_pak_workdir_len >= strlen(name))
 	{
@@ -474,10 +458,6 @@ long PAK_ftell(FILE * stream)
 
 FILE * _PAK_fopen(const char * filename, const char * mode)
 {
-#ifdef TEST_PACK_EDITOR
-	strcpy(PAK_WORKDIR, "\\\\arkaneserver\\public\\arx\\");
-	g_pak_workdir_len = strlen(PAK_WORKDIR);
-#endif
 
 	if (g_pak_workdir_len >= strlen(filename))
 	{
@@ -492,6 +472,8 @@ FILE * PAK_fopen(const char * filename, const char * mode)
 #ifdef TEST_PACK_EDITOR
 	CURRENT_LOADMODE = LOAD_PACK_THEN_TRUEFILE;
 #endif
+	
+	printf("PAK_fopen(%s)\n", filename);
 
 	FILE * ret = NULL;
 
@@ -737,7 +719,7 @@ bool PakManager::Read(char * _lpszName, void * _pMem)
 	vector<EVE_LOADPACK *>::iterator i;
 
 	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '//'))
+	        (_lpszName[0] == '/'))
 	{
 		_lpszName++;
 	}
@@ -761,7 +743,7 @@ void * PakManager::ReadAlloc(char * _lpszName, int * _piTaille)
 	vector<EVE_LOADPACK *>::iterator i;
 
 	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '//'))
+	        (_lpszName[0] == '/'))
 	{
 		_lpszName++;
 	}
@@ -786,7 +768,7 @@ int PakManager::GetSize(char * _lpszName)
 	vector<EVE_LOADPACK *>::iterator i;
 
 	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '//'))
+	        (_lpszName[0] == '/'))
 	{
 		_lpszName++;
 	}
@@ -811,7 +793,7 @@ PACK_FILE * PakManager::fOpen(char * _lpszName)
 	vector<EVE_LOADPACK *>::iterator i;
 
 	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '//'))
+	        (_lpszName[0] == '/'))
 	{
 		_lpszName++;
 	}
@@ -905,7 +887,7 @@ vector<EVE_REPERTOIRE *>* PakManager::ExistDirectory(char * _lpszName)
 	vector<EVE_LOADPACK *>::iterator i;
 
 	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '//'))
+	        (_lpszName[0] == '/'))
 	{
 		_lpszName++;
 	}
@@ -928,14 +910,16 @@ vector<EVE_REPERTOIRE *>* PakManager::ExistDirectory(char * _lpszName)
 //-----------------------------------------------------------------------------
 bool PakManager::ExistFile(char * _lpszName)
 {
+	printf("PakManager::ExistFile(%s)", _lpszName);
 	vector<EVE_LOADPACK *>::iterator i;
 
 	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '//'))
+	        (_lpszName[0] == '/'))
 	{
 		_lpszName++;
 	}
-
+	
+	MakeUpcase_real(_lpszName); // TODO hack
 
 	char * pcDir = NULL;
 	char * pcDir1 = (char *)EVEF_GetDirName((unsigned char *)_lpszName);
@@ -964,6 +948,7 @@ bool PakManager::ExistFile(char * _lpszName)
 				{
 					delete [] pcFile;
 					delete [] pcDir;
+					printf(" -> true\n");
 					return true;
 				}
 			}
@@ -974,5 +959,6 @@ bool PakManager::ExistFile(char * _lpszName)
 
 	delete [] pcDir;
 	delete [] pcFile;
+	printf(" -> false\n");
 	return false;
 }

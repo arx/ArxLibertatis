@@ -59,6 +59,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef  HERMESMAIN_H
 #define  HERMESMAIN_H
 
+#define PATH_SEPERATOR_STR "/"
+#define PATH_SEPERATOR_CHR '/'
+
 #define HERMES_PATH_SIZE	512
 
 #include "HERMES_PAK.h"
@@ -112,7 +115,7 @@ extern long DebugLvl[6];
 extern UINT			GaiaWM;
 extern DIR_NODE mainnode;
 
-void File_Standardize(char * from,char * to);
+void File_Standardize(const char * from,char * to);
 char * HERMES_GaiaCOM_Receive();
  
 long KillAllDirectory(char * path);
@@ -121,9 +124,12 @@ void HERMES_InitDebug();
 void SAFEstrcpy(char * dest, char * src, unsigned long max);
 
 
+void MakeUpcase_real(char * str);
 void MakeUpcase(char * str);
 unsigned char IsIn(char * strin, char * str);
 unsigned char NC_IsIn(char * strin, char * str);
+
+bool GetWorkingDirectory(char * dest);
 
 long FileExist(char *name);
 long DirectoryExist(char *name);
@@ -148,7 +154,7 @@ bool OKBox(char * text,char *title);
 void ShowPopup(char * text);
 int ShowError(char * funcname, char * message, long fatality);
 unsigned long MakeMemoryText(char * text);
-bool CreateFullPath(char * path);
+bool CreateFullPath(const char * path);
 
 // Strings Funcs
 char *StringCopy(char * destination,char * source,long maxsize);

@@ -51,8 +51,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-#define FINAL_COMMERCIAL_GAME
-//#define FINAL_COMMERCIAL_DEMO
+// TODO crashes when using wrong data files
+//#define FINAL_COMMERCIAL_GAME
+#define FINAL_COMMERCIAL_DEMO
 
 //-----------------------------------------------------------------------------
 EVE_LOADPACK::EVE_LOADPACK()
@@ -131,9 +132,15 @@ char * EVE_LOADPACK::ReadFAT_string()
 //-----------------------------------------------------------------------------
 bool EVE_LOADPACK::Open(char * _pcName)
 {
+	printf("EVE_LOADPACK::Open(%s)", _pcName);
+	
 	pfFile = fopen(_pcName, "rb");
 
-	if (!pfFile) return false;
+	if(!pfFile) {
+		printf(" -> not found\n");
+		return false;
+	}
+	printf(" -> found\n");
 
 	iPassKey = 0;
 
@@ -935,7 +942,6 @@ void EVE_LOADPACK::WriteSousRepertoire(char * pcAbs, EVE_REPERTOIRE * r)
 
 		if (pDat)
 		{
-			printf("%s\n", tTxt);
 			FILE * file;
 			file = fopen(tTxt, "wb");
 
@@ -994,7 +1000,6 @@ void EVE_LOADPACK::WriteSousRepertoireZarbi(char * pcAbs, EVE_REPERTOIRE * r)
 
 		if (pDat)
 		{
-			printf("%s\n", tTxt);
 			PACK_FILE * pPf = fOpen(tTxt + strlen((const char *)pcAbs), "rb");
 
 			if (!pPf)
@@ -1008,7 +1013,6 @@ void EVE_LOADPACK::WriteSousRepertoireZarbi(char * pcAbs, EVE_REPERTOIRE * r)
 
 				while (iTaille)
 				{
-					printf("%d\r", iTaille);
 
 					if (iTaille < 50)
 					{
@@ -1031,7 +1035,6 @@ void EVE_LOADPACK::WriteSousRepertoireZarbi(char * pcAbs, EVE_REPERTOIRE * r)
 					}
 				}
 
-				printf("%d\n", iTaille);
 				fClose(pPf);
 
 				FILE * file;

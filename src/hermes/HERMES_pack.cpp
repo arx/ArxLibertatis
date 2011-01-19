@@ -353,7 +353,7 @@ static EVE_U8 * GetFirstDir(EVE_U8 * dir, EVE_U32 * l)
 	*l = 1;
 
 	while ((*dirc) &&
-	        (*dirc != '\\'))
+	        (*dirc != '\\' && *dirc != '/'))
 	{
 		*l += 1;
 		dirc++;
@@ -382,7 +382,7 @@ EVE_U8 * EVEF_GetDirName(EVE_U8 * dirplusname)
 	dirc += l;
 
 	while ((l--) &&
-	        (*dirc != '\\'))
+	        (*dirc != '\\' && *dirc != '/'))
 	{
 		dirc--;
 	}
@@ -417,7 +417,7 @@ EVE_U8 * EVEF_GetFileName(EVE_U8 * dirplusname)
 	dirplusname += l;
 
 	while ((l--) &&
-	        (*dirplusname != '\\'))
+	        (*dirplusname != '\\' && *dirplusname != '/'))
 	{
 		dirplusname--;
 	}
