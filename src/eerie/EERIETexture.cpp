@@ -754,8 +754,7 @@ HRESULT TextureContainer::LoadImageData()
 	TCHAR  tempstrPathname[256];
 
 	// Check File
-	strcpy(strPathname, m_strName);
-	printf("%s", m_strName);
+	lstrcpy(strPathname, m_strName);
 
 	if (NULL == (strExtension = strchr(m_strName, '.')))
 		return DDERR_UNSUPPORTED;
@@ -792,7 +791,6 @@ HRESULT TextureContainer::LoadImageData()
 //-----------------------------------------------------------------------------
 HRESULT TextureContainer::LoadBitmapFile(TCHAR * strPathname)
 {
-	printf("%s\n", strPathname);
 	if (!PAK_FileExist(strPathname)) return E_FAIL;
 
 	long siz = 0;

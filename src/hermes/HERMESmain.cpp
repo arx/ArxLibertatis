@@ -128,7 +128,6 @@ unsigned char NC_IsIn(char * strin, char * str)
 
 void File_Standardize(const char * from, char * to)
 {
-	printf("File_Standardize(%s)\n", from);
 	
 	long pos = 0;
 	long pos2 = 0;
