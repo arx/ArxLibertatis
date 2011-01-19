@@ -1428,19 +1428,20 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	{
 		if (FINAL_RELEASE)
 		{
-			if (!GetWorkingDirectory(Project.workingdir))
-			{
-				MessageBox(NULL,"Unable to Find Game Info\nPlease Reinstall ARX Fatalis","Error",MB_ICONEXCLAMATION | MB_OK);
-				exit(0);
-			}
+			//if (!GetWorkingDirectory(Project.workingdir))
+			//{
+			//	MessageBox(NULL,"Unable to Find Game Info\nPlease Reinstall ARX Fatalis","Error",MB_ICONEXCLAMATION | MB_OK);
+			//	exit(0);
+			//}
+			strcpy(Project.workingdir, "");
 
-			File_Standardize(Project.workingdir,Project.workingdir);
+			//File_Standardize(Project.workingdir,Project.workingdir);
 			Dbg_str("Got Install Path");
 		}
 		else 
 		{
-			Dbg_str("Not Installed");
-			Danae_Registry_Read("LastWorkingDir",Project.workingdir,"c:\\arx\\",256);		
+			//Dbg_str("Not Installed");
+			//Danae_Registry_Read("LastWorkingDir",Project.workingdir,"c:\\arx\\",256);		
 		}
 	}
 

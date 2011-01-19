@@ -700,7 +700,7 @@ bool PakManager::Read(char * _lpszName, void * _pMem)
 	{
 		if ((*i)->Read(_lpszName, _pMem))
 		{
-			printf("\e[1;33mCan't read from PAK:\e[m\t%s\n", _lpszName);
+			printf("\e[1;32mCan't read from PAK:\e[m\t%s\n", _lpszName);
 			return true;
 		}
 	}
@@ -728,7 +728,7 @@ void * PakManager::ReadAlloc(char * _lpszName, int * _piTaille)
 
 		if ((pMem = (*i)->ReadAlloc(_lpszName, _piTaille)))
 		{
-			printf("\e[1;33mRead from PAK (a):\e[m\t%s\n", _lpszName);
+			printf("\e[1;32mRead from PAK (a):\e[m\t%s\n", _lpszName);
 			return pMem;
 		}
 	}
@@ -755,7 +755,7 @@ int PakManager::GetSize(char * _lpszName)
 
 		if ((iTaille = (*i)->GetSize(_lpszName)) > 0)
 		{
-			printf("\e[1;33mGot size in PAK:\e[m\t%s ($d)\n", _lpszName, iTaille);
+			printf("\e[1;32mGot size in PAK:\e[m\t%s (%d)\n", _lpszName, iTaille);
 			return iTaille;
 		}
 	}
