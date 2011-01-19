@@ -132,15 +132,13 @@ char * EVE_LOADPACK::ReadFAT_string()
 //-----------------------------------------------------------------------------
 bool EVE_LOADPACK::Open(char * _pcName)
 {
-	printf("EVE_LOADPACK::Open(%s)", _pcName);
 	
 	pfFile = fopen(_pcName, "rb");
 
 	if(!pfFile) {
-		printf(" -> not found\n");
+		printf("\e[1;35mCannot find PAK:\e[m\t%s\n", _pcName);
 		return false;
 	}
-	printf(" -> found\n");
 
 	iPassKey = 0;
 
@@ -209,6 +207,7 @@ bool EVE_LOADPACK::Open(char * _pcName)
 
 	fseek(pfFile, 0, SEEK_SET);
 
+	printf("\e[1;32mLoaded PAK:\e[m\t%s\n", _pcName);
 	return true;
 }
 
@@ -519,6 +518,7 @@ int EVE_LOADPACK::GetSize(char * _pcName)
 //-----------------------------------------------------------------------------
 PACK_FILE * EVE_LOADPACK::fOpen(const char * _pcName, const char * _pcMode)
 {
+	
 	if ((!_pcName) ||
 	        (!pRoot)) return NULL;
 

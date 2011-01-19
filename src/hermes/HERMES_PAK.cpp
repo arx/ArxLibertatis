@@ -472,8 +472,6 @@ FILE * PAK_fopen(const char * filename, const char * mode)
 #ifdef TEST_PACK_EDITOR
 	CURRENT_LOADMODE = LOAD_PACK_THEN_TRUEFILE;
 #endif
-	
-	printf("PAK_fopen(%s)\n", filename);
 
 	FILE * ret = NULL;
 
@@ -728,12 +726,14 @@ bool PakManager::Read(char * _lpszName, void * _pMem)
 	{
 		if ((*i)->Read(_lpszName, _pMem))
 		{
+			printf("\e[1;33mCan't read from PAK:\e[m\t%s\n", _lpszName);
 			return true;
 		}
 	}
 
 	DrawDebugFile(_lpszName);
 
+	printf("\e[1;33mRead from PAK:\e[m\t%s\n", _lpszName);
 	return false;
 }
 
@@ -754,11 +754,13 @@ void * PakManager::ReadAlloc(char * _lpszName, int * _piTaille)
 
 		if ((pMem = (*i)->ReadAlloc(_lpszName, _piTaille)))
 		{
+			printf("\e[1;33mRead from PAK (a):\e[m\t%s\n", _lpszName);
 			return pMem;
 		}
 	}
 
 	DrawDebugFile(_lpszName);
+	printf("\e[1;33mCan't read from PAK (a):\e[m\t%s\n", _lpszName);
 	return NULL;
 }
 
@@ -779,11 +781,13 @@ int PakManager::GetSize(char * _lpszName)
 
 		if ((iTaille = (*i)->GetSize(_lpszName)) > 0)
 		{
+			printf("\e[1;33mGot size in PAK:\e[m\t%s ($d)\n", _lpszName, iTaille);
 			return iTaille;
 		}
 	}
 
 	DrawDebugFile(_lpszName);
+	printf("\e[1;33mCan't get size in PAK:\e[m\t%s\n", _lpszName);
 	return -1;
 }
 
@@ -804,11 +808,13 @@ PACK_FILE * PakManager::fOpen(char * _lpszName)
 
 		if ((pPakFile = (*i)->fOpen((const char *)_lpszName, "rb")))
 		{
+			printf("\e[1;32mOpened from PAK:\e[m\t%s\n", _lpszName);
 			return pPakFile;
 		}
 	}
 
 	DrawDebugFile(_lpszName);
+	printf("\e[1;33mCan't open from PAK:\e[m\t%s\n", _lpszName);
 	return NULL;
 }
 
@@ -910,7 +916,6 @@ vector<EVE_REPERTOIRE *>* PakManager::ExistDirectory(char * _lpszName)
 //-----------------------------------------------------------------------------
 bool PakManager::ExistFile(char * _lpszName)
 {
-	printf("PakManager::ExistFile(%s)", _lpszName);
 	vector<EVE_LOADPACK *>::iterator i;
 
 	if ((_lpszName[0] == '\\') ||
@@ -948,7 +953,7 @@ bool PakManager::ExistFile(char * _lpszName)
 				{
 					delete [] pcFile;
 					delete [] pcDir;
-					printf(" -> true\n");
+					printf("\e[1;32mFound in PAK:\e[m\t%s\n", _lpszName);
 					return true;
 				}
 			}
@@ -959,6 +964,6 @@ bool PakManager::ExistFile(char * _lpszName)
 
 	delete [] pcDir;
 	delete [] pcFile;
-	printf(" -> false\n");
+	printf("\e[1;33mCan't find in PAK:\e[m\t%s\n", _lpszName);
 	return false;
 }

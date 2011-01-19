@@ -969,7 +969,6 @@ long	FileOpenRead(char * name)
 		return(0);
 	}
 	printf("\e[1;32mOpened\e[m\t%s\n", name);
-	printf(" -> handle %d\n", handle + 1);
 	return(handle + 1);
 }
 
@@ -981,13 +980,12 @@ long	FileSizeHandle(long handle)
 
 long	FileOpenWrite(char * name)
 {
-	printf("FileOpenWrite(%s)", name);
+	printf("FileOpenWrite(%s)\n", name);
 	int	handle;
 
 	handle = CreateFile((const char *)name, GENERIC_READ | GENERIC_WRITE, TRUNCATE_EXISTING, NULL, 0, 0, 0);
 
 	if (handle < 0)	{
-		printf(" -> error\n");
 		return(0);
 	}
 
@@ -995,11 +993,9 @@ long	FileOpenWrite(char * name)
 	handle = CreateFile((const char *)name, GENERIC_WRITE, 0, NULL, 0, 0, 0);
 
 	if (handle < 0) {
-		printf(" -> error\n");
 		return(0);
 	}
 
-	printf(" -> handle %d\n", handle + 1);
 	return(handle + 1);
 }
 long	FileCloseRead(long handle)
