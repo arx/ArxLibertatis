@@ -170,38 +170,41 @@ again:
 	strcpy(to, temp);
 }
 
-long KillAllDirectory(char * path) {/* TODO
-	long idx;
-	struct _finddata_t fl;
+long KillAllDirectory(char * path) {
+	
+	WIN32_FIND_DATA FileInformation;             // File information
+	
+	HANDLE idx;
+	WIN32_FIND_DATA fl;
 	char pathh[512];
 	sprintf(pathh, "%s*.*", path);
-
-	if ((idx = _findfirst(pathh, &fl)) != -1)
+	
+	if ((idx = FindFirstFile(pathh, &fl)) != -1)
 	{
 		do
 		{
-			if (fl.name[0] != '.')
+			if (fl.cFileName[0] != '.')
 			{
-				if (fl.attrib & _A_SUBDIR)
+				if (fl.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 				{
-					sprintf(pathh, "%s%s\\", path, fl.name);
+					sprintf(pathh, "%s%s\\", path, fl.cFileName);
 					KillAllDirectory(pathh);
 					RemoveDirectory(pathh);
 				}
 				else
 				{
-					sprintf(pathh, "%s%s", path, fl.name);
+					sprintf(pathh, "%s%s", path, fl.cFileName);
 					DeleteFile(pathh);
 				}
 			}
 
 		}
-		while (_findnext(idx, &fl) != -1);
+		while (FindNextFile(idx, &fl) != -1);
 
-		_findclose(idx);
+		FindClose(idx);
 	}
 
-	RemoveDirectory(path);*/
+	RemoveDirectory(path);
 	return 1;
 }
 
