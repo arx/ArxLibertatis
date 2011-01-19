@@ -24,6 +24,7 @@ inline	unsigned int implode(
 
 	    unsigned int * dsize) {
 	printf("implode()\n");
+	exit(0);
 	return 0;
 }
 
@@ -34,6 +35,7 @@ inline	unsigned int explode(
 	    char     *    work_buf,
 	    void     *    param) {
 	printf("explode()\n");
+	exit(0);
 	return 0;
 }
 

@@ -58,7 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "HERMESMain.h"
 #include "ARX_Casts.h"
 
-bool bForceInPack = false;
+bool bForceInPack = true;
 long CURRENT_LOADMODE = LOAD_PACK_THEN_TRUEFILE;
 
 PakManager * pPakManager = NULL;
@@ -218,9 +218,6 @@ long _PAK_DirectoryExist(char * name)
 
 long PAK_DirectoryExist(char * name)
 {
-#ifdef TEST_PACK_EDITOR
-	CURRENT_LOADMODE = LOAD_PACK_THEN_TRUEFILE;
-#endif
 
 	long ret = 0;
 
@@ -281,9 +278,6 @@ long _PAK_FileExist(char * name)
 
 long PAK_FileExist(char * name)
 {
-#ifdef TEST_PACK_EDITOR
-	CURRENT_LOADMODE = LOAD_PACK_THEN_TRUEFILE;
-#endif
 	long ret = 0;
 
 	switch (CURRENT_LOADMODE)
@@ -323,9 +317,6 @@ long PAK_FileExist(char * name)
 
 void * PAK_FileLoadMalloc(char * name, long * SizeLoadMalloc)
 {
-#ifdef TEST_PACK_EDITOR
-	CURRENT_LOADMODE = LOAD_PACK_THEN_TRUEFILE;
-#endif
 
 	void * ret = NULL;
 
@@ -367,9 +358,6 @@ void * PAK_FileLoadMalloc(char * name, long * SizeLoadMalloc)
 
 void * PAK_FileLoadMallocZero(char * name, long * SizeLoadMalloc)
 {
-#ifdef TEST_PACK_EDITOR
-	CURRENT_LOADMODE = LOAD_PACK_THEN_TRUEFILE;
-#endif
 
 	void * ret = NULL;
 
@@ -409,17 +397,12 @@ void * PAK_FileLoadMallocZero(char * name, long * SizeLoadMalloc)
 	return ret;
 }
 
-long PAK_ftell(FILE * stream);
-
 long _PAK_ftell(FILE * stream)
 {
 	return pPakManager->fTell((PACK_FILE *)stream);
 }
 long PAK_ftell(FILE * stream)
 {
-#ifdef TEST_PACK_EDITOR
-	CURRENT_LOADMODE = LOAD_PACK_THEN_TRUEFILE;
-#endif
 
 	long ret = 0;
 
@@ -440,11 +423,11 @@ long PAK_ftell(FILE * stream)
 			break;
 		case LOAD_TRUEFILE_THEN_PACK:
 
-			if (ferror(stream) && (!bForceInPack))
-			{
-				ret = ftell(stream);
-			}
-			else
+			//if (ferror(stream) && (!bForceInPack)) // TODO hack
+			//{
+			//	ret = ftell(stream);
+			//}
+			//else
 			{
 				ret = _PAK_ftell(stream);
 			}
@@ -469,9 +452,6 @@ FILE * _PAK_fopen(const char * filename, const char * mode)
 
 FILE * PAK_fopen(const char * filename, const char * mode)
 {
-#ifdef TEST_PACK_EDITOR
-	CURRENT_LOADMODE = LOAD_PACK_THEN_TRUEFILE;
-#endif
 
 	FILE * ret = NULL;
 
@@ -517,9 +497,6 @@ int _PAK_fclose(FILE * stream)
 
 int PAK_fclose(FILE * stream)
 {
-#ifdef TEST_PACK_EDITOR
-	CURRENT_LOADMODE = LOAD_PACK_THEN_TRUEFILE;
-#endif
 
 	int ret = 0;
 
@@ -540,11 +517,11 @@ int PAK_fclose(FILE * stream)
 			break;
 		case LOAD_TRUEFILE_THEN_PACK:
 
-			if (ferror(stream) && (!bForceInPack))
-			{
-				ret = fclose(stream);
-			}
-			else
+			//if (ferror(stream) && (!bForceInPack)) TODO hack
+			//{
+			//	ret = fclose(stream);
+			//}
+			//else
 			{
 				ret = _PAK_fclose(stream);
 			}
@@ -562,9 +539,6 @@ size_t _PAK_fread(void * buffer, size_t size, size_t count, FILE * stream)
 
 size_t PAK_fread(void * buffer, size_t size, size_t count, FILE * stream)
 {
-#ifdef TEST_PACK_EDITOR
-	CURRENT_LOADMODE = LOAD_PACK_THEN_TRUEFILE;
-#endif
 
 	size_t ret = 0;
 
@@ -585,11 +559,11 @@ size_t PAK_fread(void * buffer, size_t size, size_t count, FILE * stream)
 			break;
 		case LOAD_TRUEFILE_THEN_PACK:
 
-			if (ferror(stream) && (!bForceInPack))
-			{
-				ret = fread(buffer, size, count, stream);
-			}
-			else
+			//if (ferror(stream) && (!bForceInPack)) TODO hack
+			//{
+			//	ret = fread(buffer, size, count, stream);
+			//}
+			//else
 			{
 				ret = _PAK_fread(buffer, size, count, stream);
 			}
@@ -608,21 +582,21 @@ int _PAK_fseek(FILE * fic, long offset, int origin)
 
 int PAK_fseek(FILE * fic, long offset, int origin)
 {
-#ifdef TEST_PACK_EDITOR
-	CURRENT_LOADMODE = LOAD_PACK_THEN_TRUEFILE;
-#endif
 
 	int ret = 1;
 
 	switch (CURRENT_LOADMODE)
 	{
 		case LOAD_TRUEFILE:
+			
 			ret = fseek(fic, offset, origin);
 			break;
 		case LOAD_PACK:
+			
 			ret = _PAK_fseek(fic, offset, origin);
 			break;
 		case LOAD_PACK_THEN_TRUEFILE:
+			
 			ret = _PAK_fseek(fic, offset, origin);
 
 			if (ret == 1)
@@ -631,11 +605,11 @@ int PAK_fseek(FILE * fic, long offset, int origin)
 			break;
 		case LOAD_TRUEFILE_THEN_PACK:
 
-			if (ferror(fic) && (!bForceInPack))
-			{
-				ret = fseek(fic, offset, origin);
-			}
-			else
+			//if (ferror(fic) && (!bForceInPack)) TODO hack
+			//{
+			//	ret = fseek(fic, offset, origin);
+			//}
+			//else
 			{
 				ret = _PAK_fseek(fic, offset, origin);
 			}
@@ -716,8 +690,8 @@ bool PakManager::Read(char * _lpszName, void * _pMem)
 {
 	vector<EVE_LOADPACK *>::iterator i;
 
-	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '/'))
+	if ((_lpszName[0] == '\\') /*||
+	        (_lpszName[0] == '/')*/)
 	{
 		_lpszName++;
 	}
@@ -726,7 +700,7 @@ bool PakManager::Read(char * _lpszName, void * _pMem)
 	{
 		if ((*i)->Read(_lpszName, _pMem))
 		{
-			printf("\e[1;33mCan't read from PAK:\e[m\t%s\n", _lpszName);
+			printf("\e[1;32mCan't read from PAK:\e[m\t%s\n", _lpszName);
 			return true;
 		}
 	}
@@ -742,8 +716,8 @@ void * PakManager::ReadAlloc(char * _lpszName, int * _piTaille)
 {
 	vector<EVE_LOADPACK *>::iterator i;
 
-	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '/'))
+	if ((_lpszName[0] == '\\') /*||
+	        (_lpszName[0] == '/')*/)
 	{
 		_lpszName++;
 	}
@@ -754,7 +728,7 @@ void * PakManager::ReadAlloc(char * _lpszName, int * _piTaille)
 
 		if ((pMem = (*i)->ReadAlloc(_lpszName, _piTaille)))
 		{
-			printf("\e[1;33mRead from PAK (a):\e[m\t%s\n", _lpszName);
+			printf("\e[1;32mRead from PAK (a):\e[m\t%s\n", _lpszName);
 			return pMem;
 		}
 	}
@@ -769,8 +743,8 @@ int PakManager::GetSize(char * _lpszName)
 {
 	vector<EVE_LOADPACK *>::iterator i;
 
-	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '/'))
+	if ((_lpszName[0] == '\\') /*||
+	        (_lpszName[0] == '/')*/)
 	{
 		_lpszName++;
 	}
@@ -781,7 +755,7 @@ int PakManager::GetSize(char * _lpszName)
 
 		if ((iTaille = (*i)->GetSize(_lpszName)) > 0)
 		{
-			printf("\e[1;33mGot size in PAK:\e[m\t%s ($d)\n", _lpszName, iTaille);
+			printf("\e[1;32mGot size in PAK:\e[m\t%s (%d)\n", _lpszName, iTaille);
 			return iTaille;
 		}
 	}
@@ -796,8 +770,8 @@ PACK_FILE * PakManager::fOpen(char * _lpszName)
 {
 	vector<EVE_LOADPACK *>::iterator i;
 
-	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '/'))
+	if ((_lpszName[0] == '\\') /*||
+	        (_lpszName[0] == '/')*/)
 	{
 		_lpszName++;
 	}
@@ -918,13 +892,11 @@ bool PakManager::ExistFile(char * _lpszName)
 {
 	vector<EVE_LOADPACK *>::iterator i;
 
-	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '/'))
+	if ((_lpszName[0] == '\\') /*||
+	        (_lpszName[0] == '/')*/)
 	{
 		_lpszName++;
 	}
-	
-	MakeUpcase_real(_lpszName); // TODO hack
 
 	char * pcDir = NULL;
 	char * pcDir1 = (char *)EVEF_GetDirName((unsigned char *)_lpszName);

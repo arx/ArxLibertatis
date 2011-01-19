@@ -52,8 +52,8 @@ using std::min;
 using std::max;
 
 // TODO crashes when using wrong data files
-//#define FINAL_COMMERCIAL_GAME
-#define FINAL_COMMERCIAL_DEMO
+#define FINAL_COMMERCIAL_GAME
+//#define FINAL_COMMERCIAL_DEMO
 
 //-----------------------------------------------------------------------------
 EVE_LOADPACK::EVE_LOADPACK()

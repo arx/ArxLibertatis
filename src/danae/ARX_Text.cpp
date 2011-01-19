@@ -1185,11 +1185,11 @@ void ARX_Text_Init()
 	_TCHAR wtx[256];
 	char tx[256];
 
-	sprintf(tx, "%smisc" PATH_SEPERATOR_STR "%s", Project.workingdir, "Arx.ttf"); // Full path
+	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf"); // Full path
 
 	if (!FileExist(tx))
 	{
-		sprintf(tx, "%smisc" PATH_SEPERATOR_STR "%s", Project.workingdir, "ARX_default.ttf"); // Full path
+		sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
 	}
 
 //	todo: cast
@@ -1206,11 +1206,11 @@ void ARX_Text_Init()
 		FontError();
 	}
 
-	sprintf(tx, "%smisc" PATH_SEPERATOR_STR "%s", Project.workingdir, "Arx.ttf");
+	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf");
 
 	if (!FileExist(tx))
 	{
-		sprintf(tx, "%smisc" PATH_SEPERATOR_STR "%s", Project.workingdir, "ARX_default.ttf"); // Full path
+		sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
 	}
 
 	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass an unicode string to AddFontResourceW
@@ -1435,11 +1435,11 @@ void ARX_Text_Close()
 
 	_TCHAR wtx[256];
 	char tx[256];
-	sprintf(tx, "%smisc" PATH_SEPERATOR_STR "%s", Project.workingdir, "Arx.ttf"); // Full path
+	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf"); // Full path
 
 	if (!FileExist(tx))
 	{
-		sprintf(tx, "%smisc" PATH_SEPERATOR_STR "%s", Project.workingdir, "ARX_default.ttf"); // Full path
+		sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
 	}
 
 	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
@@ -1449,14 +1449,14 @@ void ARX_Text_Close()
 
 	if (Unicows_RemoveRessourceW((wchar_t*)wtx) == 0)
 	{
-		//	FontError(); // XS : Annoying popup, uncomment if you really want to track something down.
+			// FontError(); // XS : Annoying popup, uncomment if you really want to track something down.
 	}
 
-	sprintf(tx, "%smisc" PATH_SEPERATOR_STR "%s", Project.workingdir, "Arx.ttf"); // Full path
+	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf"); // Full path
 
 	if (!FileExist(tx))
 	{
-		sprintf(tx, "%smisc" PATH_SEPERATOR_STR "%s", Project.workingdir, "ARX_default.ttf"); // Full path
+		sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
 	}
 
 	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
@@ -1464,7 +1464,7 @@ void ARX_Text_Close()
 
 	if (Unicows_RemoveRessourceW((wchar_t*)wtx) == 0)
 	{
-		//	FontError();// XS : Annoying popup, uncomment if you really want to track something down.
+			// FontError();// XS : Annoying popup, uncomment if you really want to track something down.
 	}
 
 	ARX_Localisation_Close();
