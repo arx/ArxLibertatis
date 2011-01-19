@@ -2406,7 +2406,7 @@ void ARX_PLAYER_Manage_Visual()
 						if ((j != -1) && (!ARXPausedTimer))
 						{
 							ParticleCount++;
-							particle[j].exist = TRUE;
+							particle[j].exist = true;
 							particle[j].zdec = 0;
 
  
@@ -2857,7 +2857,7 @@ bool Valid_Jump_Pos()
 	float tmp = CheckAnythingInCylinder(&tmpp, inter.iobj[0], CFLAG_PLAYER | CFLAG_JUST_TEST);
 
 	if (tmp <= 20.f)
-		return TRUE;
+		return true;
 
 	long hum = 0;
 
@@ -3501,7 +3501,7 @@ void PlayerMovementIterate(float DeltaTime)
 					}
 				}
 
-				if ((test == FALSE) && (player.jumpphase > 0))
+				if ((test == false) && (player.jumpphase > 0))
 				{
 
 					player.physics.startpos.x = player.physics.cyl.origin.x = player.pos.x;
@@ -3677,7 +3677,7 @@ void ARX_PLAYER_Manage_Death()
 	}
 
 	{
-		SETALPHABLEND(GDevice, TRUE);
+		SETALPHABLEND(GDevice, true);
 		GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
 		GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
 		EERIEDrawBitmap(GDevice, 0.f, 0.f, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.000091f,

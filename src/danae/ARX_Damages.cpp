@@ -161,7 +161,7 @@ void ARX_DAMAGES_SCREEN_SPLATS_Add(EERIE_3D * pos, float dmgs)
 		ParticleCount++;
 		PARTICLE_DEF * pd = &particle[j];
 		pd->special			=	PARTICLE_SUB2 | SUBSTRACT;
-		pd->exist			=	TRUE;
+		pd->exist			=	true;
 		pd->zdec			=	0;
 		pd->ov.x			=	out.sx;
 		pd->ov.y			=	out.sy;
@@ -210,8 +210,8 @@ void ARX_DAMAGE_Show_Hit_Blood(LPDIRECT3DDEVICE7 pd3dDevice)
 	{
 		pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
 		pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR);
-		SETALPHABLEND(pd3dDevice, TRUE);
-		SETZWRITE(pd3dDevice, FALSE);
+		SETALPHABLEND(pd3dDevice, true);
+		SETZWRITE(pd3dDevice, false);
 
 		if (player.poison > 1.f)
 			color = D3DRGB(Blood_Pos - 1.f, 1.f, Blood_Pos - 1.f);
@@ -219,15 +219,15 @@ void ARX_DAMAGE_Show_Hit_Blood(LPDIRECT3DDEVICE7 pd3dDevice)
 			color = D3DRGB(1.f, Blood_Pos - 1.f, Blood_Pos - 1.f);
 
 		EERIEDrawBitmap(pd3dDevice, 0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.00009f, NULL, color);
-		SETZWRITE(pd3dDevice, TRUE);
-		SETALPHABLEND(pd3dDevice, FALSE);
+		SETZWRITE(pd3dDevice, true);
+		SETALPHABLEND(pd3dDevice, false);
 	}
 	else if (Blood_Pos > 0.f)
 	{
 		pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
 		pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR);
-		SETALPHABLEND(pd3dDevice, TRUE);
-		SETZWRITE(pd3dDevice, FALSE);
+		SETALPHABLEND(pd3dDevice, true);
+		SETZWRITE(pd3dDevice, false);
 
 		if (player.poison > 1.f)
 			color = D3DRGB(1.f - Blood_Pos, 1.f, 1.f - Blood_Pos);
@@ -235,8 +235,8 @@ void ARX_DAMAGE_Show_Hit_Blood(LPDIRECT3DDEVICE7 pd3dDevice)
 			color = D3DRGB(1.f, 1.f - Blood_Pos, 1.f - Blood_Pos);
 
 		EERIEDrawBitmap(pd3dDevice, 0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.00009f, NULL, color);
-		SETALPHABLEND(pd3dDevice, FALSE);
-		SETZWRITE(pd3dDevice, TRUE);
+		SETALPHABLEND(pd3dDevice, false);
+		SETZWRITE(pd3dDevice, true);
 	}
 
 	if (Blood_Pos > 0.f)
@@ -1128,7 +1128,7 @@ void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, EERIE_3D * pos, float dmg, INTERACT
 			if ((j != -1) && (!ARXPausedTimer))
 			{
 				ParticleCount++;
-				particle[j].exist	= TRUE;
+				particle[j].exist	= true;
 				particle[j].zdec	= 0;
 
 				if (io != NULL)
@@ -1473,9 +1473,9 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 			}
 		}
 
-		if (damages[j].duration == -1) damages[j].exist = FALSE;
+		if (damages[j].duration == -1) damages[j].exist = false;
 		else if (tim > damages[j].start_time + damages[j].duration)
-			damages[j].exist = FALSE;
+			damages[j].exist = false;
 	}
 }
 void ARX_DAMAGES_UpdateAll()
@@ -1485,9 +1485,9 @@ void ARX_DAMAGES_UpdateAll()
 }
 bool SphereInIO(INTERACTIVE_OBJ * io, EERIE_3D * pos, float radius)
 {
-	if (io == NULL) return FALSE;
+	if (io == NULL) return false;
 
-	if (io->obj == NULL) return FALSE;
+	if (io->obj == NULL) return false;
 
 	long step;
 
@@ -1501,15 +1501,15 @@ bool SphereInIO(INTERACTIVE_OBJ * io, EERIE_3D * pos, float radius)
 	{
 		if (EEDistance3D(pos, &io->obj->vertexlist3[i].v) <= radius)
 		{
-			return TRUE;
+			return true;
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 bool ARX_DAMAGES_TryToDoDamage(EERIE_3D * pos, float dmg, float radius, long source)
 {
-	bool ret = FALSE;
+	bool ret = false;
 
 	for (long i = 0; i < inter.nbmax; i++)
 	{
@@ -1541,13 +1541,13 @@ bool ARX_DAMAGES_TryToDoDamage(EERIE_3D * pos, float dmg, float radius, long sou
 									if (ValidIONum(source))
 										ARX_EQUIPMENT_ComputeDamages(inter.iobj[source], NULL, io, 1.f);
 
-									ret = TRUE;
+									ret = true;
 								}
 
 								if (io->ioflags & IO_FIX)
 								{
 									ARX_DAMAGES_DamageFIX(io, dmg, source, 0);
-									ret = TRUE;
+									ret = true;
 								}
 							}
 					}
@@ -1653,7 +1653,7 @@ void PushPlayer(EERIE_3D * pos, float intensity)
 //*************************************************************************************
 bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long typ, long numsource)
 {
-	bool damagesdone = FALSE;
+	bool damagesdone = false;
 	EERIE_3D sub;
 	sub.x = player.pos.x;
 	sub.y = player.pos.y + 90.f;
@@ -1777,7 +1777,7 @@ bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long t
 						ARX_DAMAGES_DamageNPC(ioo, dmg * ratio, numsource, 1, pos);
 					}
 
-					if (dmg > 1) damagesdone = TRUE;
+					if (dmg > 1) damagesdone = true;
 				}
 			}
 			else
@@ -1798,7 +1798,7 @@ bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long t
 					if (inter.iobj[i]->ioflags & IO_FIX)
 						ARX_DAMAGES_DamageFIX(inter.iobj[i], dmg * ratio, numsource, 1);
 
-					if (dmg > 0.2f) damagesdone = TRUE;
+					if (dmg > 0.2f) damagesdone = true;
 				}
 			}
 		}

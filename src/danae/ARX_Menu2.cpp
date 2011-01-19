@@ -284,7 +284,7 @@ void ARX_QuickSave()
 	char	tcDst[256];
 	sprintf( tcSrc, "%sSCT_0.BMP", Project.workingdir );
 	sprintf( tcDst, "%sSCT_1.BMP", Project.workingdir );
-	CopyFile( tcSrc, tcDst, FALSE );
+	CopyFile( tcSrc, tcDst, false );
 
 	if ( bFound0 == false )
 	{
@@ -293,7 +293,7 @@ void ARX_QuickSave()
 		ARXMenu_Options_Video_SetGamma( iOldGamma );
 		ARX_SOUND_MixerResume( ARX_SOUND_MixerGame );
 
-		CopyFile( tcDst, tcSrc, FALSE );
+		CopyFile( tcDst, tcSrc, false );
 		DeleteFile( tcDst );
 	}
 
@@ -337,7 +337,7 @@ void ARX_DrawAfterQuickLoad()
 
 	if(!pTex) return;
 
-	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,TRUE);
+	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,true);
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,D3DBLEND_ONE);
 
@@ -352,7 +352,7 @@ void ARX_DrawAfterQuickLoad()
 						pTex, 
 						D3DRGB(fColor,fColor,fColor) );
 
-	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,FALSE);
+	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,false);
 }
 
 //-----------------------------------------------------------------------------
@@ -2151,7 +2151,7 @@ static void DrawCredits(void)
 		//Set the device
 		if(!danaeApp.DANAEStartRender()) return;
 
-		SETALPHABLEND(GDevice,FALSE);
+		SETALPHABLEND(GDevice,false);
 		GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
 		SETZWRITE(GDevice,true);
 		GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE,false);
@@ -2314,7 +2314,7 @@ D3DTLVERTEX d3dvertex[4];
 	d3dvertex[3].color=iColor;
 
 	SETTC(GDevice,NULL);
-	SETALPHABLEND(GDevice,TRUE);
+	SETALPHABLEND(GDevice,true);
 
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
@@ -2324,7 +2324,7 @@ D3DTLVERTEX d3dvertex[4];
 
 	EERIEDRAWPRIM( GDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, d3dvertex, 4, 0, EERIE_NOCOUNT );
 
-	SETALPHABLEND(GDevice,FALSE);
+	SETALPHABLEND(GDevice,false);
 	SETZWRITE(GDevice, true);
 
 	danaeApp.EnableZBuffer();
@@ -2401,7 +2401,7 @@ bool Menu2_Render()
 			break;
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	if(!danaeApp.DANAEStartRender())
@@ -2554,7 +2554,7 @@ int iDecMenuPrincipaleY=50;
 				pMenu=NULL;
 			}
 
-			SETALPHABLEND(GDevice,FALSE);
+			SETALPHABLEND(GDevice,false);
 			GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
 			SETZWRITE(GDevice, true);
 			danaeApp.EnableZBuffer();
@@ -3884,7 +3884,7 @@ int iDecMenuPrincipaleY=50;
 
 	if (pTextureLoadRender)
 	{
-		GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,FALSE);
+		GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
 
 		int iOffsetX = 0;
 		int iOffsetY=0;
@@ -3952,7 +3952,7 @@ int iDecMenuPrincipaleY=50;
 		}
 	}
 
-	SETALPHABLEND(GDevice,FALSE);
+	SETALPHABLEND(GDevice,false);
 	GDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTFP_LINEAR);
 	GDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTFP_LINEAR);
 	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
@@ -5799,7 +5799,7 @@ static int scan2ascii(DWORD scancode, unsigned short* result)
    static HKL layout=GetKeyboardLayout(0);
    static unsigned char State[256];
 
-   if (GetKeyboardState(State)==FALSE)
+   if (GetKeyboardState(State)==false)
       return 0;
  
    UINT vk=MapVirtualKeyEx(scancode,1,layout);
@@ -6431,7 +6431,7 @@ int CWindowMenuConsole::Render()
 
 	int iSlider=0;
 
-	SETALPHABLEND(GDevice,TRUE);
+	SETALPHABLEND(GDevice,true);
 
 	//------------------------------------------------------------------------
 	//Affichage de la console
@@ -6451,7 +6451,7 @@ int CWindowMenuConsole::Render()
 
 	SETALPHABLEND(GDevice, false);
 
-	SETALPHABLEND(GDevice,FALSE);
+	SETALPHABLEND(GDevice,false);
 	EERIEDrawBitmap2(GDevice, ARX_CLEAN_WARN_CAST_FLOAT(iPosX), ARX_CLEAN_WARN_CAST_FLOAT(iSavePosY),
 		RATIO_X(pTexBackgroundBorder->m_dwWidth), RATIO_Y(pTexBackgroundBorder->m_dwHeight),
 		0, pTexBackgroundBorder, ARX_OPAQUE_WHITE);

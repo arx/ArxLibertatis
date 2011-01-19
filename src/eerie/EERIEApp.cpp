@@ -128,7 +128,7 @@ CD3DApplication::CD3DApplication()
 {
 	long i;
 	d_dlgframe = 0;
-	b_dlg = FALSE;
+	b_dlg = false;
 	m_pFramework   = NULL;
 	m_hWnd         = NULL;
 	m_dlghWnd		= NULL;
@@ -139,15 +139,15 @@ CD3DApplication::CD3DApplication()
 	m_pddsRenderTarget     = NULL;
 	m_pddsRenderTargetLeft = NULL;
 
-	m_bActive         = FALSE;
-	m_bReady          = FALSE;
-	m_bFrameMoving    = TRUE;
-	m_bSingleStep     = FALSE;
+	m_bActive         = false;
+	m_bReady          = false;
+	m_bFrameMoving    = true;
+	m_bSingleStep     = false;
 
 	m_strWindowTitle  = _T("EERIE Application");
-	m_bAppUseZBuffer  = FALSE;
-	m_bAppUseStereo   = FALSE;
-	m_bShowStats      = FALSE;
+	m_bAppUseZBuffer  = false;
+	m_bAppUseStereo   = false;
+	m_bShowStats      = false;
 	m_fnConfirmDevice = NULL;
 	CreationSizeX = 640;
 	CreationSizeY = 480;
@@ -291,13 +291,13 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst, TCHAR * strCmdLine)
 		MSGhwnd = m_hWnd = m_dlghWnd;
 		m_OldProc = (WNDPROC)SetWindowLong(m_hWnd,
 		                                   GWL_WNDPROC, (DWORD)WndProc);
-		b_dlg = TRUE;
-		m_bActive = TRUE;
+		b_dlg = true;
+		m_bActive = true;
 	}
 
 	// � supprimer au final
 	if (CreationFlags & WCF_ACCEPTFILES)
-		DragAcceptFiles(m_hWnd, TRUE);
+		DragAcceptFiles(m_hWnd, true);
 
 	// Initialize the 3D environment for the app
 	if (FAILED(hr = Initialize3DEnvironment()))
@@ -309,14 +309,14 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst, TCHAR * strCmdLine)
 
 	if (b_dlg)
 	{
-		m_pFramework->b_dlg = TRUE;
+		m_pFramework->b_dlg = true;
 	}
 
 	// Setup the app so it can support single-stepping
 	m_dwBaseTime = dwARX_TIME_Get();
 
 	// The app is ready to go
-	m_bReady = TRUE;
+	m_bReady = true;
 
 	if (ToolBar != NULL)
 	{
@@ -469,7 +469,7 @@ void CD3DApplication::EERIEMouseUpdate(short x, short y)
 	// Manages MouseGrab (Right-click maintained pressed)
 
 	POINT	pos;
-	bool	mod	=	FALSE;
+	bool	mod	=	false;
 
 	pos.x = pos.y = 0;
 
@@ -478,7 +478,7 @@ void CD3DApplication::EERIEMouseUpdate(short x, short y)
 		pos.x = (short)(this->m_pFramework->m_dwRenderWidth >> 1);
 		pos.y = (short)(this->m_pFramework->m_dwRenderHeight >> 1);
 
-		if ((x != pos.x) || (y != pos.y)) mod = TRUE;
+		if ((x != pos.x) || (y != pos.y)) mod = true;
 	}
 
 	if (!((ARXmenu.currentmode == AMCM_NEWQUEST)
@@ -501,7 +501,7 @@ void CD3DApplication::EERIEMouseUpdate(short x, short y)
 LRESULT CD3DApplication::SwitchFullScreen()
 {
 
-	m_bReady = FALSE;
+	m_bReady = false;
 	m_pDeviceInfo->bWindowed = !m_pDeviceInfo->bWindowed;
 
 	if (this->ToolBar != NULL)
@@ -516,8 +516,8 @@ LRESULT CD3DApplication::SwitchFullScreen()
 		return 0;
 	}
 
-	m_bReady = TRUE;
-	m_pFramework->m_bHasMoved = TRUE;
+	m_bReady = true;
+	m_pFramework->m_bHasMoved = true;
 
 	return 0;
 }
@@ -643,7 +643,7 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 				}
 				else
 				{
-					m_pFramework->FlipToGDISurface(TRUE);
+					m_pFramework->FlipToGDISurface(true);
 				}
 			}
 
@@ -659,12 +659,12 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			break;
 		case WM_SIZE:
 			RECT rec;
-			m_pFramework->m_bHasMoved = TRUE;
+			m_pFramework->m_bHasMoved = true;
 
 			// Check to see if we are losing our window...
 			if (SIZE_MAXHIDE == wParam || SIZE_MINIMIZED == wParam)
-				m_bActive = FALSE;
-			else m_bActive = TRUE;
+				m_bActive = false;
+			else m_bActive = true;
 
 
 			// A new window size will require a new backbuffer
@@ -688,11 +688,11 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 				}
 				else
 				{
-					m_bReady = FALSE;
+					m_bReady = false;
 
 					if (FAILED(hr = Change3DEnvironment()))   return 0;
 
-					m_bReady = TRUE;
+					m_bReady = true;
 				}
 
 				if (ToolBar && ToolBar->hWnd)
@@ -881,7 +881,7 @@ HRESULT CD3DApplication::Initialize3DEnvironment()
 HRESULT CD3DApplication::Change3DEnvironment()
 {
 	HRESULT hr;
-	static bool  bOldWindowedState = TRUE;
+	static bool  bOldWindowedState = true;
 	static DWORD dwSavedStyle;
 	static RECT  rcSaved;
 
@@ -943,9 +943,9 @@ HRESULT CD3DApplication::Change3DEnvironment()
 	}
 
 	// If the app is paused, trigger the rendering of the current frame
-	if (FALSE == m_bFrameMoving)
+	if (false == m_bFrameMoving)
 	{
-		m_bSingleStep = TRUE;
+		m_bSingleStep = true;
 		m_dwBaseTime += dwARX_TIME_Get() - m_dwStopTime;
 		m_dwStopTime  = dwARX_TIME_Get();
 	}
@@ -1014,7 +1014,7 @@ HRESULT CD3DApplication::Render3DEnvironment()
 		if (FAILED(hr = FrameMove(0.f)))
 			return hr;
 
-		m_bSingleStep = FALSE;
+		m_bSingleStep = false;
 	}
 
 	// Render the scene as normal
@@ -1040,8 +1040,8 @@ HRESULT CD3DApplication::Render3DEnvironment()
 //*************************************************************************************
 VOID CD3DApplication::Cleanup3DEnvironment()
 {
-	m_bActive = FALSE;
-	m_bReady  = FALSE;
+	m_bActive = false;
+	m_bReady  = false;
 
 	if (lpDDGammaControl)
 	{
@@ -1073,14 +1073,14 @@ VOID CD3DApplication::Pause(bool bPause)
 	static DWORD dwAppPausedCount = 0L;
 
 	dwAppPausedCount += (bPause ? +1 : -1);
-	m_bReady          = (dwAppPausedCount ? FALSE : TRUE);
+	m_bReady          = (dwAppPausedCount ? false : true);
 
 	// Handle the first pause request (of many, nestable pause requests)
 	if (bPause && (1 == dwAppPausedCount))
 	{
 		// Get a surface for the GDI
 		if (m_pFramework)
-			m_pFramework->FlipToGDISurface(TRUE);
+			m_pFramework->FlipToGDISurface(true);
 
 		// Stop the scene from animating
 		if (m_bFrameMoving)
@@ -1104,8 +1104,8 @@ VOID CD3DApplication::Pause(bool bPause)
 //*************************************************************************************
 LRESULT CD3DApplication::OnQuerySuspend(DWORD dwFlags)
 {
-	Pause(TRUE);
-	return TRUE;
+	Pause(true);
+	return true;
 }
 
 //*************************************************************************************
@@ -1117,8 +1117,8 @@ LRESULT CD3DApplication::OnQuerySuspend(DWORD dwFlags)
 //*************************************************************************************
 LRESULT CD3DApplication::OnResumeSuspend(DWORD dwData)
 {
-	Pause(FALSE);
-	return TRUE;
+	Pause(false);
+	return true;
 }
 
 //*************************************************************************************
@@ -1395,13 +1395,13 @@ bool OKBox(char * text, char * title)
 
 {
 	int i;
-	g_pD3DApp->Pause(TRUE);
+	g_pD3DApp->Pause(true);
 	i = MessageBox(g_pD3DApp->m_hWnd, text, title, MB_ICONQUESTION | MB_OKCANCEL);
-	g_pD3DApp->Pause(FALSE);
+	g_pD3DApp->Pause(false);
 
-	if (i == IDCANCEL) return FALSE;
+	if (i == IDCANCEL) return false;
 
-	return TRUE;
+	return true;
 }
 
 //*************************************************************************************
@@ -1415,9 +1415,9 @@ void ShowPopup(char * text)
 
 	}
 
-	g_pD3DApp->Pause(TRUE);
+	g_pD3DApp->Pause(true);
 	MessageBox(g_pD3DApp->m_hWnd, text, "GAIA popup", MB_ICONINFORMATION | MB_OK);
-	g_pD3DApp->Pause(FALSE);
+	g_pD3DApp->Pause(false);
 }
 
 extern void ExitProc();
@@ -1431,7 +1431,7 @@ int ShowError(char * funcname, char * message, long fatality)
 
 	if (!g_pD3DApp) return IDIGNORE;
 
-	g_pD3DApp->Pause(TRUE);
+	g_pD3DApp->Pause(true);
 
 	switch (fatality)
 	{
@@ -1439,7 +1439,7 @@ int ShowError(char * funcname, char * message, long fatality)
 			strcpy(fatall, "Non-Fatal");
 			sprintf(texx, "An ERROR occured in function: %s\n%s\n\nFatality Level: %d - %s\n\nOK to continue, CANCEL to Quit", funcname, message, fatality, fatall);
 			re = MessageBox(g_pD3DApp->m_hWnd, texx, "GAIA Error Message", MB_ICONERROR | MB_OKCANCEL);
-			g_pD3DApp->Pause(FALSE);
+			g_pD3DApp->Pause(false);
 
 			if (re == IDCANCEL) ExitProc();
 
@@ -1449,7 +1449,7 @@ int ShowError(char * funcname, char * message, long fatality)
 			strcpy(fatall, "Please Free Some Memory Then Click RETRY");
 			sprintf(texx, "An ERROR occured in function: %s\n%s\nFatality Level: %d - %s", funcname, message, fatality, fatall);
 			re = MessageBox(g_pD3DApp->m_hWnd, texx, "GAIA Error Message", MB_ICONSTOP | MB_ABORTRETRYIGNORE);
-			g_pD3DApp->Pause(FALSE);
+			g_pD3DApp->Pause(false);
 
 			if (re == IDABORT) ExitProc();
 
@@ -1459,30 +1459,30 @@ int ShowError(char * funcname, char * message, long fatality)
 			strcpy(fatall, "Fatal with some recoverable datas");
 			sprintf(texx, "An ERROR occured in function: %s\n%s\nFatality Level: %d - %s", funcname, message, fatality, fatall);
 			re = (MessageBox(g_pD3DApp->m_hWnd, texx, "GAIA Error Message", MB_ICONERROR | MB_OK));
-			g_pD3DApp->Pause(FALSE);
+			g_pD3DApp->Pause(false);
 			return re;
 			break;
 		case 3:
 			strcpy(fatall, "Fatal");
 			sprintf(texx, "An ERROR occured in function: %s\n%s\nFatality Level: %d - %s", funcname, message, fatality, fatall);
 			re = (MessageBox(g_pD3DApp->m_hWnd, texx, "GAIA Error Message", MB_ICONERROR | MB_OK));
-			g_pD3DApp->Pause(FALSE);
+			g_pD3DApp->Pause(false);
 			return re;
 			break;
 		case 4:
-			g_pD3DApp->Pause(FALSE);
+			g_pD3DApp->Pause(false);
 			return IDIGNORE;
 			break;
 		default:
 			strcpy(fatall, "Unknown fatality level");
 			sprintf(texx, "An ERROR occured in function: %s\n%s\nFatality Level: %d - %s", funcname, message, fatality, fatall);
 			re = (MessageBox(g_pD3DApp->m_hWnd, texx, "GAIA Error Message", MB_ICONERROR | MB_OK));
-			g_pD3DApp->Pause(FALSE);
+			g_pD3DApp->Pause(false);
 			return re;
 			break;
 	}
 
-	g_pD3DApp->Pause(FALSE);
+	g_pD3DApp->Pause(false);
 }
 
 void SetZBias(const LPDIRECT3DDEVICE7 _pd3dDevice, int _iZBias)

@@ -228,7 +228,7 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(pd3dDevice, TRUE);
+	SETALPHABLEND(pd3dDevice, true);
 
 	int iEnd = igrec + sSize.cy;
 
@@ -268,7 +268,7 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 		}
 	}
 
-	SETALPHABLEND(pd3dDevice, FALSE);
+	SETALPHABLEND(pd3dDevice, false);
 }
 
 void ARX_SPEECH_Check(LPDIRECT3DDEVICE7 pd3dDevice)
@@ -718,8 +718,8 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 						SETTC(GDevice, NULL);
 						GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ZERO);
 						GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
-						GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
-						GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE);
+						GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
+						GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
 						EERIEDrawFill2DRectDegrad(GDevice,
 						                          0.f,
 						                          fZoneClippY - 1.f, 
@@ -742,7 +742,7 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 						GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
 				
 						danaeApp.EnableZBuffer();
-						GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE);
+						GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
 
 
 						iTaille += (int)fZoneClippHeight;
@@ -798,9 +798,9 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 //-----------------------------------------------------------------------------
 bool ApplySpeechPos(EERIE_CAMERA * conversationcamera, long is)
 {
-	if (is < 0) return FALSE;
+	if (is < 0) return false;
 
-	if (aspeech[is].io == NULL)  return FALSE;
+	if (aspeech[is].io == NULL)  return false;
 
 
 	conversationcamera->d_pos.x = aspeech[is].io->pos.x;
@@ -811,5 +811,5 @@ bool ApplySpeechPos(EERIE_CAMERA * conversationcamera, long is)
 	conversationcamera->pos.y = conversationcamera->d_pos.y;
 	conversationcamera->pos.z = conversationcamera->d_pos.z - (float)EEcos(t) * 100.f;
 
-	return TRUE;
+	return true;
 }

@@ -78,8 +78,8 @@ float __mov;
  * result    : returns 1 if the triangles intersect, otherwise 0
  *
  */
-#define USE_EPSILON_TEST FALSE
-#define USE_POINT_IN_TRI FALSE
+#define USE_EPSILON_TEST false
+#define USE_POINT_IN_TRI false
 
 #define COMPUTE_INTERVALS(VV0,VV1,VV2,D0,D1,D2,D0D1,D0D2,isect0,isect1) \
 	if(D0D1>0.0f)                                         \
@@ -252,7 +252,7 @@ int coplanar_tri_tri(float N[3], float V0[3], float V1[3], float V2[3],
 	EDGE_AGAINST_TRI_EDGES(V2, V0, U0, U1, U2);
 
 	// Considered Impossible
-#if USE_EPSILON_TEST==TRUE
+#if USE_EPSILON_TEST==true
 	// finally, test if tri1 is totally contained in tri2 or vice versa
 	POINT_IN_TRI(V0, U0, U1, U2);
 	POINT_IN_TRI(U0, V0, V1, V2);
@@ -310,7 +310,7 @@ int tri_tri_intersect(const EERIE_TRI * VV, const EERIE_TRI * UU)
 	du2 = DOT(N1, U2) + d1;
 
 	/* coplanarity robustness check */
-#if USE_EPSILON_TEST==TRUE
+#if USE_EPSILON_TEST==true
 
 	if (EEfabs(du0) < EPSILON) du0 = 0.0;
 
@@ -337,7 +337,7 @@ int tri_tri_intersect(const EERIE_TRI * VV, const EERIE_TRI * UU)
 	dv1 = DOT(N2, V1) + d2;
 	dv2 = DOT(N2, V2) + d2;
 
-#if USE_EPSILON_TEST==TRUE
+#if USE_EPSILON_TEST==true
 
 	if (EEfabs(dv0) < EPSILON) dv0 = 0.0;
 
@@ -429,22 +429,22 @@ bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u)
 	Triangle_ComputeBoundingBox(&bb1, v);
 	Triangle_ComputeBoundingBox(&bb2, u);
 
-	if (bb1.max.y < bb2.min.y) return FALSE;
+	if (bb1.max.y < bb2.min.y) return false;
 
-	if (bb1.min.y > bb2.max.y) return FALSE;
+	if (bb1.min.y > bb2.max.y) return false;
 
-	if (bb1.max.x < bb2.min.x) return FALSE;
+	if (bb1.max.x < bb2.min.x) return false;
 
-	if (bb1.min.x > bb2.max.x) return FALSE;
+	if (bb1.min.x > bb2.max.x) return false;
 
-	if (bb1.max.z < bb2.min.z) return FALSE;
+	if (bb1.max.z < bb2.min.z) return false;
 
-	if (bb1.min.z > bb2.max.z) return FALSE;
+	if (bb1.min.z > bb2.max.z) return false;
 
 	if (tri_tri_intersect(v, u)) 
-		return TRUE;
+		return true;
 
-	return FALSE;
+	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -589,25 +589,25 @@ float InterpolateAngle(float a1, float a2, const float pour)
 // Cylinder height MUST be negative FROM origin (inverted Theo XYZ system Legacy)
 bool CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2)
 {
-	if (cyl1 == cyl2) return FALSE;
+	if (cyl1 == cyl2) return false;
 
 	float m1 = cyl1->origin.y;					//tokeep: max(cyl1->origin.y,cyl1->origin.y+cyl1->height);
 	float m2 = cyl2->origin.y + cyl2->height;	//tokeep: min(cyl2->origin.y,cyl2->origin.y+cyl2->height);
 
-	if (m2 > m1) return FALSE;
+	if (m2 > m1) return false;
 
 	m1 = cyl1->origin.y + cyl1->height;			//tokeep: min(cyl1->origin.y,cyl1->origin.y+cyl1->height);
 	m2 = cyl2->origin.y;						//tokeep: max(cyl2->origin.y,cyl2->origin.y+cyl2->height);
 
-	if (m1 > m2) return FALSE;
+	if (m1 > m2) return false;
 
 	m1 = cyl1->radius + cyl2->radius;
 
 	if (SquaredDistance2D(cyl1->origin.x, cyl1->origin.z, cyl2->origin.x, cyl2->origin.z)
 	        <= m1 * m1)
-		return TRUE;
+		return true;
 
-	return FALSE;
+	return false;
 }
 // Sort of...
 bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s)
@@ -615,21 +615,21 @@ bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s)
 	float m1 = max(cyl1->origin.y, cyl1->origin.y + cyl1->height);
 	float m2 = s->origin.y - s->radius;
 
-	if (m2 > m1) return FALSE;
+	if (m2 > m1) return false;
 
 	m1 = min(cyl1->origin.y, cyl1->origin.y + cyl1->height);
 	m2 = s->origin.y + s->radius;
 
-	if (m1 > m2) return FALSE;
+	if (m1 > m2) return false;
 
 	// Using Squared dists
 	if (SquaredDistance2D(cyl1->origin.x,
 	                      cyl1->origin.z,
 	                      s->origin.x,
 	                      s->origin.z)
-	        <= (cyl1->radius + s->radius)*(cyl1->radius + s->radius)) return TRUE;
+	        <= (cyl1->radius + s->radius)*(cyl1->radius + s->radius)) return true;
 
-	return FALSE;
+	return false;
 }
 
 // Returned in Radians ! use RAD2DEG() to convert it to degrees
@@ -1037,7 +1037,7 @@ void Vector_Add(EERIE_3D * dest, const EERIE_3D * v1, const EERIE_3D * v2)
 	dest->z = v1->z + v2->z;
 }
 //*************************************************************************************
-// Returns TRUE if vector v1 equals vector v2
+// Returns true if vector v1 equals vector v2
 //*************************************************************************************
 bool Vector_Compare(const EERIE_3D * v1, const EERIE_3D * v2)
 {
@@ -1175,7 +1175,7 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const EERIE_3D * vect, cons
 	TRUEVector_Normalize(&zAxis);
 
 	// Build the Y vector of the matrix (handle the degenerate case
-	// in the way that 3DS does) -- This is not the TRUE vector, only
+	// in the way that 3DS does) -- This is not the true vector, only
 	// a reference vector.
 	EERIE_3D yAxis;
 

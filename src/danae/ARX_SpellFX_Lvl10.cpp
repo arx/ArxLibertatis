@@ -250,13 +250,13 @@ float CControlTarget::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	int i = 0;
 
 	SETCULL(m_pd3dDevice, D3DCULL_NONE);
-	SETZWRITE(m_pd3dDevice, FALSE);
-	SETALPHABLEND(m_pd3dDevice, TRUE);
+	SETZWRITE(m_pd3dDevice, false);
+	SETALPHABLEND(m_pd3dDevice, true);
 
 	//----------------------------
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(m_pd3dDevice, TRUE);
+	SETALPHABLEND(m_pd3dDevice, true);
 
 	if (tex_mm && tex_mm->m_pddsSurface)
 	{

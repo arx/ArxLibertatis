@@ -145,7 +145,7 @@ enum ARX_DEBUG_LOG_TYPE
 
 
 //ARX_BEGIN: jycorbel (2010-06-28) - clean warning 'variable used without having been initialized'.
-#define ARX_CHECK_NO_ENTRY( ) ( arx_assert( FALSE ) )	//ARX: xrichter (2010-07-26) - Modified to use arx_assert
+#define ARX_CHECK_NO_ENTRY( ) ( arx_assert( false ) )	//ARX: xrichter (2010-07-26) - Modified to use arx_assert
 #define ARX_CHECK( _expr ) ( arx_assert( _expr ) )		//ARX: xrichter (2010-07-26) - Modified to use arx_assert
 #define ARX_WARN( _str ) ( std::printf("WARN: %s=%s", #_str, ( _str ) ) )
 #define ARX_WARN_F( _f ) ( std::printf("WARN: %s=%f", #_f, ( _f ) ) )
@@ -159,7 +159,7 @@ enum ARX_DEBUG_LOG_TYPE
 ------------------------------------------------------------*/
 
 //ARX_BEGIN: jycorbel (2010-07-02) - Assure compatibility with C code (Mercury).
-#define ARX_DEAD_CODE() {arx_assert( FALSE );} //ARX: xrichter (2010-06-23) - treat warnings C4700  Disable warning "local variable % used without having been initialized"
+#define ARX_DEAD_CODE() {arx_assert( false );} //ARX: xrichter (2010-06-23) - treat warnings C4700  Disable warning "local variable % used without having been initialized"
 //ARX_END: jycorbel (2010-07-02)
 
 //ARX_BEGIN: xrichter (2010-06-24) - Use to verify no overflow value by data type

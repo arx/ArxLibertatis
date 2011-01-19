@@ -447,8 +447,8 @@ float CFireBall::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	}
 
 	SETCULL(m_pd3dDevice, D3DCULL_NONE);
-	SETZWRITE(m_pd3dDevice, FALSE);
-	SETALPHABLEND(m_pd3dDevice, TRUE);
+	SETZWRITE(m_pd3dDevice, false);
+	SETALPHABLEND(m_pd3dDevice, true);
 
 	pPSFire.Render(m_pd3dDevice, D3DBLEND_ONE, D3DBLEND_ONE);
 	pPSFire2.Render(m_pd3dDevice, D3DBLEND_ONE, D3DBLEND_ONE);
@@ -645,7 +645,7 @@ void CIceProjectile::Create(EERIE_3D aeSrc, float afBeta)
 			damages[ttt].source = spells[spellinstance].caster;
 			damages[ttt].flags = DAMAGE_FLAG_DONT_HURT_SOURCE;
 			damages[ttt].type = DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_COLD;
-			damages[ttt].exist = TRUE;
+			damages[ttt].exist = true;
 		}
 	}
 
@@ -676,11 +676,11 @@ float CIceProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	if (ulCurrentTime >= ulDuration) return 0.f;
 
 	SETCULL(m_pd3dDevice, D3DCULL_CW);
-	SETZWRITE(m_pd3dDevice, FALSE);
+	SETZWRITE(m_pd3dDevice, false);
 
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_INVDESTCOLOR);
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(m_pd3dDevice, TRUE);
+	SETALPHABLEND(m_pd3dDevice, true);
 
 	iMax = (int)((iNumber * 2) * fOneOnDuration * ulCurrentTime);
 
@@ -1034,7 +1034,7 @@ void CSpeed::DrawRuban(LPDIRECT3DDEVICE7 device, int num, float size, int dec, f
 float CSpeed::Render(LPDIRECT3DDEVICE7 device)
 {
 	SETCULL(device, D3DCULL_NONE);
-	SETALPHABLEND(device, TRUE);
+	SETALPHABLEND(device, true);
 	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 
@@ -1049,7 +1049,7 @@ float CSpeed::Render(LPDIRECT3DDEVICE7 device)
 		                trubandef[i].r2, trubandef[i].g2, trubandef[i].b2) ;
 	}
 
-	SETALPHABLEND(device, FALSE);
+	SETALPHABLEND(device, false);
 	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
 

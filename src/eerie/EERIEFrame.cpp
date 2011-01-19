@@ -76,11 +76,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 CD3DFramework7::CD3DFramework7()
 {
 	m_hWnd           = NULL;
-	m_bIsFullscreen  = FALSE;
-	m_bIsStereo      = FALSE;
+	m_bIsFullscreen  = false;
+	m_bIsStereo      = false;
 	m_dwRenderWidth  = 0L;
 	m_dwRenderHeight = 0L;
-	b_dlg = FALSE;
+	b_dlg = false;
 	m_pddsFrontBuffer    = NULL;
 	m_pddsBackBuffer     = NULL;
 	m_pddsBackBufferLeft = NULL;
@@ -168,13 +168,13 @@ HRESULT CD3DFramework7::Initialize(HWND hWnd, GUID * pDriverGUID,
 
 	// Setup state for windowed/fullscreen mode
 	m_hWnd          = hWnd;
-	m_bIsStereo     = FALSE;
-	m_bIsFullscreen = (dwFlags & D3DFW_FULLSCREEN) ? TRUE : FALSE;
+	m_bIsStereo     = false;
+	m_bIsFullscreen = (dwFlags & D3DFW_FULLSCREEN) ? true : false;
 
 	// Support stereoscopic viewing for fullscreen modes which support it
 	if ((dwFlags & D3DFW_STEREO) && (dwFlags & D3DFW_FULLSCREEN))
 		if (pMode->ddsCaps.dwCaps2 & DDSCAPS2_STEREOSURFACELEFT)
-			m_bIsStereo = TRUE;
+			m_bIsStereo = true;
 
 	// Create the D3D rendering environment (surfaces, device, viewport, etc.)
 	if (FAILED(hr = CreateEnvironment(pDriverGUID, pDeviceGUID, pMode,
@@ -638,13 +638,13 @@ HRESULT CD3DFramework7::RestoreSurfaces()
 //-----------------------------------------------------------------------------
 VOID CD3DFramework7::Move(INT x, INT y)
 {
-	if (TRUE == m_bIsFullscreen)
+	if (true == m_bIsFullscreen)
 		return;
 
-	if (TRUE == b_dlg)
+	if (true == b_dlg)
 	{
 		POINT pt;
-		m_bHasMoved = TRUE;
+		m_bHasMoved = true;
 		GetClientRect(m_hWnd, &m_rcScreenRect);
 		pt.x = 0;
 		pt.y = 0;
@@ -657,7 +657,7 @@ VOID CD3DFramework7::Move(INT x, INT y)
 	}
 	else
 	{
-		m_bHasMoved = TRUE;
+		m_bHasMoved = true;
 		SetRect(&m_rcScreenRect, x, y, x + m_dwRenderWidth, y + m_dwRenderHeight);
 		ClipWindow(0, 0, m_dwRenderWidth, m_dwRenderHeight);
 	}

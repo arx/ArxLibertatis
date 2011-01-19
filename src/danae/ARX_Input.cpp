@@ -74,23 +74,23 @@ extern long STOP_KEYBOARD_INPUT;
 bool ARX_INPUT_Init(HINSTANCE hInst, HWND hWnd)
 {
 #ifdef NO_DIRECT_INPUT
-	return TRUE;
+	return true;
 #endif
 	memset((void *)&InputInit, 0, sizeof(DXI_INIT));
 	DXI_Init(hInst, &InputInit);
 
 	if (DXI_FAIL == DXI_GetKeyboardInputDevice(hWnd, DXI_KEYBOARD1, DXI_MODE_NONEXCLUSIF_OURMSG)) 
-		return FALSE;
+		return false;
 
 	if (DXI_FAIL == DXI_GetMouseInputDevice(hWnd, DXI_MOUSE1, DXI_MODE_NONEXCLUSIF_ALLMSG, 2, 2))
-		return FALSE;
+		return false;
 
 	if (DXI_FAIL == DXI_GetSCIDInputDevice(hWnd, DXI_SCID, DXI_MODE_EXCLUSIF_OURMSG, 2, 2))
 		ARX_SCID = 0;
 	else ARX_SCID = 1;
 
 	if (DXI_FAIL == DXI_SetMouseRelative(DXI_MOUSE1))
-		return FALSE;
+		return false;
 
 	//"ThrustMaster FireStorm(TM) Dual Power Gamepad"
 	if (DXI_FAIL != DXI_GetJoyInputDevice(hWnd, DXI_JOY1, DXI_MODE_EXCLUSIF_ALLMSG, 13, 4))
@@ -103,7 +103,7 @@ bool ARX_INPUT_Init(HINSTANCE hInst, HWND hWnd)
 	}
 	else ARX_XBOXPAD = 0;
 
-	return TRUE;
+	return true;
 }
 
 void ARX_INPUT_Release()
@@ -171,14 +171,14 @@ bool ARX_INPUT_GetSCIDAxis(int * jx, int * jy, int * jz)
 	if (ARX_SCID)
 	{
 		DXI_GetSCIDAxis(DXI_SCID, jx, jy, jz);
-		return TRUE;
+		return true;
 	}
 	else
 	{
 		*jx = 0;
 		*jy = 0;
 		*jz = 0;
-		return FALSE;
+		return false;
 	}
 }
  
@@ -199,7 +199,7 @@ bool ARX_IMPULSE_NowPressed(long ident)
 					if (pMenuConfig->sakActionKey[ident].iKey[j] & 0x80000000)
 					{
 						if (pGetInfoDirectInput->GetMouseButtonNowPressed(pMenuConfig->sakActionKey[ident].iKey[j]&~0x80000000))
-							return TRUE;
+							return true;
 					}
 					else
 					{
@@ -207,11 +207,11 @@ bool ARX_IMPULSE_NowPressed(long ident)
 						{
 							if (pMenuConfig->sakActionKey[ident].iKey[j] == 0x40000001)
 							{
-								if (pGetInfoDirectInput->iWheelSens < 0) return TRUE;
+								if (pGetInfoDirectInput->iWheelSens < 0) return true;
 							}
 							else
 							{
-								if (pGetInfoDirectInput->iWheelSens > 0) return TRUE;
+								if (pGetInfoDirectInput->iWheelSens > 0) return true;
 							}
 						}
 						else
@@ -225,7 +225,7 @@ bool ARX_IMPULSE_NowPressed(long ident)
 							}
 
 							if (pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(pMenuConfig->sakActionKey[ident].iKey[j] & 0xFFFF))
-								return TRUE & bCombine;
+								return true & bCombine;
 						}
 					}
 				}
@@ -233,7 +233,7 @@ bool ARX_IMPULSE_NowPressed(long ident)
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -258,7 +258,7 @@ bool ARX_IMPULSE_Pressed(long ident)
 						if (pMenuConfig->sakActionKey[ident].iKey[j] & 0x80000000)
 						{
 							if (pGetInfoDirectInput->GetMouseButtonRepeat(pMenuConfig->sakActionKey[ident].iKey[j]&~0x80000000))
-								return TRUE;
+								return true;
 						}
 						else
 						{
@@ -266,11 +266,11 @@ bool ARX_IMPULSE_Pressed(long ident)
 							{
 								if (pMenuConfig->sakActionKey[ident].iKey[j] == 0x40000001)
 								{
-									if (pGetInfoDirectInput->iWheelSens < 0) return TRUE;
+									if (pGetInfoDirectInput->iWheelSens < 0) return true;
 								}
 								else
 								{
-									if (pGetInfoDirectInput->iWheelSens > 0) return TRUE;
+									if (pGetInfoDirectInput->iWheelSens > 0) return true;
 								}
 							}
 							else
@@ -331,7 +331,7 @@ bool ARX_IMPULSE_Pressed(long ident)
 										break;
 										default:
 										{
-											return TRUE & bCombine;
+											return true & bCombine;
 										}
 										break;
 									}
@@ -400,7 +400,7 @@ bool ARX_IMPULSE_Pressed(long ident)
 
 						if ((uiOneHandedMagicMode == 1) || (uiOneHandedMagicMode == 2))
 						{
-							return TRUE;
+							return true;
 						}
 
 						break;
@@ -408,7 +408,7 @@ bool ARX_IMPULSE_Pressed(long ident)
 
 						if ((uiOneHandedStealth == 1) || (uiOneHandedStealth == 2))
 						{
-							return TRUE;
+							return true;
 						}
 
 						break;
@@ -423,7 +423,7 @@ bool ARX_IMPULSE_Pressed(long ident)
 						if (pMenuConfig->sakActionKey[ident].iKey[j] & 0x80000000)
 						{
 							if (pGetInfoDirectInput->GetMouseButtonRepeat(pMenuConfig->sakActionKey[ident].iKey[j]&~0x80000000))
-								return TRUE;
+								return true;
 						}
 						else
 						{
@@ -431,11 +431,11 @@ bool ARX_IMPULSE_Pressed(long ident)
 							{
 								if (pMenuConfig->sakActionKey[ident].iKey[j] == 0x40000001)
 								{
-									if (pGetInfoDirectInput->iWheelSens < 0) return TRUE;
+									if (pGetInfoDirectInput->iWheelSens < 0) return true;
 								}
 								else
 								{
-									if (pGetInfoDirectInput->iWheelSens > 0) return TRUE;
+									if (pGetInfoDirectInput->iWheelSens > 0) return true;
 								}
 							}
 							else
@@ -449,7 +449,7 @@ bool ARX_IMPULSE_Pressed(long ident)
 								}
 
 								if (pGetInfoDirectInput->IsVirtualKeyPressed(pMenuConfig->sakActionKey[ident].iKey[j] & 0xFFFF))
-									return TRUE & bCombine;
+									return true & bCombine;
 							}
 						}
 					}
@@ -458,7 +458,7 @@ bool ARX_IMPULSE_Pressed(long ident)
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -478,7 +478,7 @@ bool ARX_IMPULSE_NowUnPressed(long ident)
 					if (pMenuConfig->sakActionKey[ident].iKey[j] & 0x80000000)
 					{
 						if (pGetInfoDirectInput->GetMouseButtonNowUnPressed(pMenuConfig->sakActionKey[ident].iKey[j]&~0x80000000))
-							return TRUE;
+							return true;
 					}
 					else
 					{
@@ -491,14 +491,14 @@ bool ARX_IMPULSE_NowUnPressed(long ident)
 						}
 
 						if (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(pMenuConfig->sakActionKey[ident].iKey[j] & 0xFFFF))
-							return TRUE & bCombine;
+							return true & bCombine;
 					}
 				}
 			}
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 
 //-----------------------------------------------------------------------------

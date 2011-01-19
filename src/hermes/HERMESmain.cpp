@@ -427,7 +427,7 @@ unsigned long MakeMemoryText(char * text)
 
 	ignore = (bool *)malloc(sizeof(bool) * nb_MemoTraces);
 
-	for (long i = 0; i < nb_MemoTraces; i++) ignore[i] = FALSE;
+	for (long i = 0; i < nb_MemoTraces; i++) ignore[i] = false;
 
 	strcpy(text, "");
 
@@ -451,7 +451,7 @@ unsigned long MakeMemoryText(char * text)
 
 					if (!strcmp(header, theader))
 					{
-						ignore[j] = TRUE;
+						ignore[j] = true;
 						TotMemory += MemoTraces[j].size;
 					}
 				}
@@ -898,7 +898,7 @@ bool CreateFullPath(const char * path) {
 
 	splitpath(path, drive, dir, fname, ext);
 
-	if (strlen(dir) == 0) return FALSE;
+	if (strlen(dir) == 0) return false;
 
 	char curpath[256];
 	curpath[0] = '\0';
@@ -922,9 +922,9 @@ bool CreateFullPath(const char * path) {
 		pos++;
 	}
 
-	if (DirectoryExist(path)) return TRUE;
+	if (DirectoryExist(path)) return true;
 
-	return FALSE;
+	return false;
 }
 
 
@@ -1244,10 +1244,10 @@ bool HERMESFolderBrowse(char * str)
 
 	if (liil)
 	{
-		if (SHGetPathFromIDList(liil, LastFolder))	return TRUE;
-		else return FALSE;
+		if (SHGetPathFromIDList(liil, LastFolder))	return true;
+		else return false;
 	}
-	else return FALSE;
+	else return false;
 }
 
 
@@ -1256,12 +1256,12 @@ bool HERMESFolderSelector(char * file_name, char * title)
 	if (HERMESFolderBrowse(title))
 	{
 		sprintf(file_name, "%s\\", LastFolder);
-		return TRUE;
+		return true;
 	}
 	else
 	{
 		strcpy(file_name, " ");
-		return FALSE;
+		return false;
 	}
 }
 bool HERMES_WFSelectorCommon(PSTR pstrFileName, PSTR pstrTitleName, char * filter, long flag, long flag_operation, long max_car, HWND hWnd)

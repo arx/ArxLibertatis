@@ -276,7 +276,7 @@ void ARX_MISSILES_Update()
 				if (j != -1 && !ARXPausedTimer)
 				{
 					ParticleCount++;
-					particle[j].exist = TRUE;
+					particle[j].exist = true;
 					particle[j].zdec = 0;
 					particle[j].ov.x = pos.x;
 					particle[j].ov.y = pos.y;

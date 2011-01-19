@@ -411,7 +411,7 @@ retry4:
 		}
 
 		// Is There a Global translation ?
-		if (tkf2015.key_move == TRUE)
+		if (tkf2015.key_move == true)
 		{
 			tkm = (THEA_KEYMOVE *)(adr + pos);
 			pos += sizeof(THEA_KEYMOVE);
@@ -421,7 +421,7 @@ retry4:
 		}
 
 		// Is There a Global Rotation ?
-		if (tkf2015.key_orient == TRUE)
+		if (tkf2015.key_orient == true)
 		{
 			pos += sizeof(THEO_ANGLE);
 			quat = ( ArxQuat* ) ( adr + pos );		
@@ -434,7 +434,7 @@ retry4:
 		}
 
 		// Is There a Global Morph ? (IGNORED!)
-		if (tkf2015.key_morph == TRUE)
+		if (tkf2015.key_morph == true)
 		{
 			pos += sizeof(THEA_MORPH);
 
@@ -1467,7 +1467,7 @@ retry1:
 	if (psth->type_write == 0)
 	{
 		// LECTURE DE TEXTURE THEO IN_OBJECT... NOT QUITE IMPLEMENTED !!!
-		if (DEBUGG) SendConsole("SAVE_MAP_IN_OBJECT = TRUE", 3, 0, (HWND)MSGhwnd);
+		if (DEBUGG) SendConsole("SAVE_MAP_IN_OBJECT = true", 3, 0, (HWND)MSGhwnd);
 
 	retry2:
 		;
@@ -1494,11 +1494,11 @@ retry1:
 	}
 	else
 	{
-		if (DEBUGG) SendConsole("SAVE_MAP_IN_OBJECT = FALSE", 3, 0, (HWND)MSGhwnd);
+		if (DEBUGG) SendConsole("SAVE_MAP_IN_OBJECT = false", 3, 0, (HWND)MSGhwnd);
 
 		if ((psth->type_write & SAVE_MAP_BMP) || (psth->type_write & SAVE_MAP_TGA))
 		{
-			if (DEBUGG) SendConsole("SAVE_MAP_BMP or TGA = TRUE", 3, 0, (HWND)MSGhwnd);
+			if (DEBUGG) SendConsole("SAVE_MAP_BMP or TGA = true", 3, 0, (HWND)MSGhwnd);
 
 		retry3:
 			;
@@ -2668,7 +2668,7 @@ retry:
 		ShowPopup(text);
 
 
-		if (DEBUGG) SendConsole("SAVE_MAP_IN_OBJECT = TRUE", 3, 0, (HWND)MSGhwnd);
+		if (DEBUGG) SendConsole("SAVE_MAP_IN_OBJECT = true", 3, 0, (HWND)MSGhwnd);
 
 		eerie->nbmaps = pth->nb_maps;
 
@@ -2706,13 +2706,13 @@ retry:
 	}
 	else
 	{
-		if (DEBUGG) SendConsole("SAVE_MAP_IN_OBJECT = FALSE", 3, 0, (HWND)MSGhwnd);
+		if (DEBUGG) SendConsole("SAVE_MAP_IN_OBJECT = false", 3, 0, (HWND)MSGhwnd);
 
 		if ((pth->type_write & SAVE_MAP_BMP) || (pth->type_write & SAVE_MAP_TGA))
 		{
 			eerie->nbmaps = pth->nb_maps;
 
-			if (DEBUGG)	SendConsole("SAVE_MAP_BMP or TGA = TRUE", 3, 0, (HWND)MSGhwnd);
+			if (DEBUGG)	SendConsole("SAVE_MAP_BMP or TGA = true", 3, 0, (HWND)MSGhwnd);
 
 			if (pth->nb_maps > 0)
 			{

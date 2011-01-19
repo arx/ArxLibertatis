@@ -169,7 +169,7 @@ void CCurePoison::Create()
 	cp.fEndColorRandom[1] = 40;
 	cp.fEndColorRandom[2] = 0;
 	cp.fEndColorRandom[3] = 0;
-	cp.bTexInfo = FALSE;
+	cp.bTexInfo = false;
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = PARTICLE_CIRCULAR | PARTICLE_BORDER;
 	pPS->SetTexture("graph\\particles\\cure_poison.bmp", 0, 100); //5
@@ -425,10 +425,10 @@ float CRuneOfGuarding::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	float y = eSrc.y - 20;
 	float z = eSrc.z;
 
-	SETZWRITE(m_pd3dDevice, FALSE);
+	SETZWRITE(m_pd3dDevice, false);
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(m_pd3dDevice, TRUE);
+	SETALPHABLEND(m_pd3dDevice, true);
 
 	//----------------------------
 	//	long color = D3DRGB(1,1,1);
@@ -566,7 +566,7 @@ void LaunchPoisonExplosion(EERIE_3D * aePos)
 
 	cp.iBlendMode = 3;
 	cp.iFreq = -1;
-	cp.bTexInfo = FALSE;
+	cp.bTexInfo = false;
 	pPS->SetParams(cp);
 	pPS->ulParticleSpawn = 0;
 	pPS->SetTexture("graph\\particles\\big_greypouf.bmp", 0, 200);
@@ -837,7 +837,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 			cp.bEndLock = false;
 
 			cp.iBlendMode = 5;
-			cp.bTexInfo = FALSE;
+			cp.bTexInfo = false;
 			pPSStream.SetParams(cp);
 			pPSStream.ulParticleSpawn = 0;
 
@@ -868,11 +868,11 @@ float CPoisonProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	}
 
 	SETCULL(m_pd3dDevice, D3DCULL_NONE);
-	SETZWRITE(m_pd3dDevice, FALSE);
+	SETZWRITE(m_pd3dDevice, false);
 	//-------------------------------------------------------------------------
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(m_pd3dDevice, TRUE);
+	SETALPHABLEND(m_pd3dDevice, true);
 
 	// ------------------------------------------------------------------------
 	int n = BEZIERPrecision;
@@ -995,8 +995,8 @@ float CPoisonProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	}
 
 	SETCULL(m_pd3dDevice, D3DCULL_NONE);
-	SETZWRITE(m_pd3dDevice, FALSE);
-	SETALPHABLEND(m_pd3dDevice, TRUE);
+	SETZWRITE(m_pd3dDevice, false);
+	SETALPHABLEND(m_pd3dDevice, true);
 
 	return 1;
 }
@@ -1185,7 +1185,7 @@ float CMultiPoisonProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			damages[t].source	= spells[spellinstance].caster;
 			damages[t].flags	= 0;
 			damages[t].type		= DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_POISON;
-			damages[t].exist	= TRUE;
+			damages[t].exist	= true;
 		}
 	}
 
@@ -1307,10 +1307,10 @@ float CRepelUndead::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		return 0.f;
 	}
 
-	SETZWRITE(m_pd3dDevice, FALSE);
+	SETZWRITE(m_pd3dDevice, false);
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(m_pd3dDevice, TRUE);
+	SETALPHABLEND(m_pd3dDevice, true);
 
 	//----------------------------
 	EERIE_3D  eObjAngle;
@@ -1563,7 +1563,7 @@ void CLevitate::DrawStone(LPDIRECT3DDEVICE7 device)
 {
 	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_INVDESTCOLOR);
 	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(device, TRUE);
+	SETALPHABLEND(device, true);
 	int	nb = 256;
 
 	while (nb--)
@@ -1626,7 +1626,7 @@ void CLevitate::DrawStone(LPDIRECT3DDEVICE7 device)
 		}
 	}
 
-	SETALPHABLEND(device, FALSE);
+	SETALPHABLEND(device, false);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -1698,8 +1698,8 @@ float CLevitate::Render(LPDIRECT3DDEVICE7 device)
 {
 	if (this->key > 1) return 0;
 
-	SETALPHABLEND(device, TRUE);
-	SETZWRITE(device, FALSE);
+	SETALPHABLEND(device, true);
+	SETZWRITE(device, false);
 
 	//calcul du cone
 	D3DTLVERTEX d3dvs, *d3dv;
@@ -1894,7 +1894,7 @@ float CLevitate::Render(LPDIRECT3DDEVICE7 device)
 	//trac� du cone back
 	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(device, TRUE);
+	SETALPHABLEND(device, true);
 	SETTEXTUREWRAPMODE(device, D3DTADDRESS_MIRROR);
 
 	if (this->tsouffle) device->SetTexture(0, this->tsouffle->m_pddsSurface);
@@ -1955,8 +1955,8 @@ float CLevitate::Render(LPDIRECT3DDEVICE7 device)
 
 	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
-	SETALPHABLEND(device, FALSE);
-	SETZWRITE(device, TRUE);
+	SETALPHABLEND(device, false);
+	SETZWRITE(device, true);
 
 	return 0;
 }

@@ -332,8 +332,8 @@ extern "C" {
 	} EAXBUFFERPROPERTIES, *LPEAXBUFFERPROPERTIES;
 
 	// Used by DSPROPERTY_EAXBUFFER_FLAGS
-	//    TRUE:    value is computed automatically - property is an offset
-	//    FALSE:   value is used directly
+	//    true:    value is computed automatically - property is an offset
+	//    false:   value is used directly
 	//
 	// Note: The number and order of flags may change in future EAX versions.
 	//       To insure future compatibility, use flag defines as follows:

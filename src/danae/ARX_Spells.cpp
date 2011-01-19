@@ -220,7 +220,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 			if (ValidIONum(spells[i].target))
 			{
 				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
-				return TRUE;
+				return true;
 			}
 
 		break;
@@ -230,7 +230,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 			if (ValidIONum(spells[i].target))
 			{
 				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
-				return TRUE;
+				return true;
 			}
 
 		break;
@@ -244,7 +244,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 			if (ValidIONum(spells[i].target))
 			{
 				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
-				return TRUE;
+				return true;
 			}
 
 		break;
@@ -267,7 +267,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 			if (ValidIONum(spells[i].target))
 			{
 				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
-				return TRUE;
+				return true;
 			}
 
 		break;
@@ -280,7 +280,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 			if (ValidIONum(spells[i].target))
 			{
 				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
-				return TRUE;
+				return true;
 			}
 
 		break;
@@ -290,7 +290,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 			if (ValidIONum(spells[i].target))
 			{
 				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
-				return TRUE;
+				return true;
 			}
 
 		break;
@@ -303,7 +303,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 			if (ValidIONum(spells[i].target))
 			{
 				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
-				return TRUE;
+				return true;
 			}
 
 		break;
@@ -333,7 +333,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 			if (ValidIONum(spells[i].target))
 			{
 				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
-				return TRUE;
+				return true;
 			}
 
 		break;
@@ -349,7 +349,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 			if (ValidIONum(spells[i].target))
 			{
 				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
-				return TRUE;
+				return true;
 			}
 
 		break;
@@ -358,7 +358,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 		case SPELL_FLYING_EYE:
 		{	
 			Vector_Copy(pos,&eyeball.pos);
-			return TRUE;		
+			return true;		
 		}	
 		break;
 		//----------------------------------------------------------------------------
@@ -371,7 +371,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 				CFireField *pFireField = (CFireField *) pCSpellFX;
 					
 				Vector_Copy(pos,&pFireField->pos);
-				return TRUE;
+				return true;
 			}
 
 		break;
@@ -387,7 +387,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 			if (ValidIONum(spells[i].target))
 			{
 				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
-				return TRUE;
+				return true;
 			}
 
 		break;
@@ -398,7 +398,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 			if (ValidIONum(spells[i].target))
 			{
 				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
-				return TRUE;
+				return true;
 			}
 
 		break;
@@ -408,7 +408,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 			if (ValidIONum(spells[i].target))
 			{
 				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
-				return TRUE;
+				return true;
 			}
 
 		break;
@@ -424,7 +424,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 			if (ValidIONum(spells[i].target))
 			{
 				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
-				return TRUE;
+				return true;
 			}
 
 		break;
@@ -441,7 +441,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 			if (ValidIONum(spells[i].target))
 			{
 				Vector_Copy(pos,&inter.iobj[spells[i].target]->pos);
-				return TRUE;
+				return true;
 			}
 
 		break;
@@ -472,10 +472,10 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 	if (ValidIONum(spells[i].caster))
 	{
 		Vector_Copy(pos,&inter.iobj[spells[i].caster]->pos);
-		return TRUE;
+		return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 void LaunchAntiMagicField(EERIE_3D * pos,long ident)
@@ -981,10 +981,10 @@ bool MakeSpellName(char * spell, const long &num)
 			strcpy(spell, "MASS_INCINERATE");
 			break;
 		default :
-			return FALSE;
+			return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -3277,7 +3277,7 @@ void ARX_SPELLS_Init()
 	for (i = 0; i < MAX_SPELLS; i++)
 	{
 		spells[i].tolive = 0;
-		spells[i].exist = FALSE;
+		spells[i].exist = false;
 		spells[i].pSpellFx = NULL;
 	}
 }
@@ -3308,7 +3308,7 @@ void ARX_SPELLS_ClearAll()
 		if (spells[i].exist)
 		{
 			spells[i].tolive = 0;
-			spells[i].exist = FALSE;
+			spells[i].exist = false;
 
 			if (spells[i].pSpellFx)
 			{
@@ -3327,7 +3327,7 @@ long ARX_SPELLS_GetFree()
 {
 	for (long i = 0; i < MAX_SPELLS; i++) 
 	{
-		if (spells[i].exist == FALSE) 
+		if (spells[i].exist == false) 
 		{
 			spells[i].longinfo = spells[i].longinfo2 = -1;
 			spells[i].misc=NULL;
@@ -3342,9 +3342,9 @@ long ARX_SPELLS_GetFree()
 bool ARX_SPELLS_ExistAnyInstance(const long &typ) 
 {
 	for (long i = 0; i < MAX_SPELLS; i++) 
-		if (spells[i].exist && (spells[i].type==typ)) return TRUE;
+		if (spells[i].exist && (spells[i].type==typ)) return true;
 
-	return FALSE;
+	return false;
 }
 
 long ARX_SPELLS_GetInstance(const long &typ)
@@ -3368,9 +3368,9 @@ bool ARX_SPELLS_ExistAnyInstanceForThisCaster(const long &typ, const long &caste
 {
 	for (long i(0); i < MAX_SPELLS; i++)
 		if (spells[i].exist && (spells[i].type == typ) && (spells[i].caster == caster))
-			return TRUE;
+			return true;
 
-	return FALSE;
+	return false;
 }
 
 // Plays the sound of aborted spell
@@ -4146,7 +4146,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
 
-			spells[i].exist=TRUE;
+			spells[i].exist=true;
 			spells[i].fManaCostPerSecond=0.36f;
 			spells[i].bDuration = true;
 
@@ -4172,7 +4172,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
 
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].tolive = 20000;
 				
 			CSpellFx *pCSpellFx = NULL;
@@ -4221,7 +4221,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			
 			bool bLightInRadius = false;
 					
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].tolive = 20000;
 					
 			CSpellFx *pCSpellFx = NULL;
@@ -4345,7 +4345,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				return No_MagicAllowed();
 			
 			bool bLightInRadius = false;
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].tolive = 20000;
 					
 			CSpellFx *pCSpellFx = NULL;					
@@ -4473,7 +4473,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				return No_MagicAllowed();
 
 			ARX_SOUND_PlayInterface(SND_SPELL_ACTIVATE_PORTAL);
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].tolive = 20;
 			SPELLCAST_Notify(i);
 		}
@@ -4493,7 +4493,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if (!(spells[i].flags & SPELLCAST_FLAG_NOSOUND))
 				ARX_SOUND_PlaySFX(SND_SPELL_HEALING, &spells[i].caster_pos);					
 
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 0.4f*spells[i].caster_level;
 
@@ -4541,7 +4541,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if (!(spells[i].flags & SPELLCAST_FLAG_NOSOUND))
 				ARX_SOUND_PlaySFX(spells[i].snd_loop, &spells[i].caster_pos, 1.0F, ARX_SOUND_PLAY_LOOPED);
 
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].tolive = 60000;
 			spells[i].fManaCostPerSecond=0.4f;
@@ -4593,7 +4593,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 
 			spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_LOOP, &spells[i].caster_pos, 1.0F, ARX_SOUND_PLAY_LOOPED);
 				
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 
 			if (spells[i].caster==0)
 				spells[i].tolive = 20000000;
@@ -4662,7 +4662,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if (!(spells[i].flags & SPELLCAST_FLAG_NOSOUND))
 				ARX_SOUND_PlaySFX(SND_SPELL_ARMOR_START, &spells[i].caster_pos);
 				
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 
 			if (spells[i].caster==0)
 				spells[i].tolive = 20000000;
@@ -4716,7 +4716,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				spells[iCancel].tolive = 0;
 			}
 
-			spells[i].exist=TRUE;
+			spells[i].exist=true;
 			spells[i].tolive=6000000;
 			
 			spells[i].bDuration = true;
@@ -4733,7 +4733,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				damages[spells[i].longinfo].source=spells[i].caster;
 				damages[spells[i].longinfo].flags=DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 				damages[spells[i].longinfo].type=DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL;
-				damages[spells[i].longinfo].exist=TRUE;
+				damages[spells[i].longinfo].exist=true;
 			}
 
 			spells[i].longinfo2=GetFreeDynLight();
@@ -4777,7 +4777,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_SPEED_LOOP, &spells[i].caster_pos, 1.0F, ARX_SOUND_PLAY_LOOPED);
 			}
 				
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 
 			if (spells[i].caster==0)
 				spells[i].tolive = 200000000;
@@ -4820,7 +4820,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				return No_MagicAllowed();
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_DISPELL_ILLUSION);
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].tolive = 1000;
 			SPELLCAST_Notify(i);
 
@@ -4861,7 +4861,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
 
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].tolive = 20000;
 			
@@ -4957,7 +4957,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				return No_MagicAllowed();
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FOOD, &spells[i].caster_pos);
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].tolive = 3500;
 
 			if (duration>-1) spells[i].tolive=duration;
@@ -4990,7 +4990,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				return No_MagicAllowed();
 
 			ARX_SOUND_PlaySFX(SND_SPELL_ICE_PROJECTILE_LAUNCH, &spells[i].caster_pos);
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].tolive = 4200;
 				
 			CSpellFx *pCSpellFx = NULL;
@@ -5052,7 +5052,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			}
 
 			ARX_SOUND_PlaySFX(SND_SPELL_BLESS);
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].tolive = 2000000;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 0.5f*spells[i].caster_level*0.6666f;
@@ -5254,7 +5254,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				spells[iCancel].tolive = 0;
 			}
 			
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].tolive = 2000000;
 
@@ -5323,7 +5323,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if (spells[i].caster==0)
 				spells[i].target=0;
 
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].tolive = 2000000;
 			spells[i].bDuration = true;
@@ -5358,7 +5358,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
 
-			spells[i].exist=TRUE;						
+			spells[i].exist=true;						
 			spells[i].tolive=6000000;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 0.9f;
@@ -5388,7 +5388,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			}
 					
 			ARX_SOUND_PlaySFX(SND_SPELL_CURSE, &spells[i].caster_pos);
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].tolive = 2000000;
 
 			if (duration>-1) spells[i].tolive=duration;
@@ -5440,7 +5440,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_RUNE_OF_GUARDING);
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].tolive = 99999999;
 
 			if (duration>-1) spells[i].tolive=duration;
@@ -5480,7 +5480,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			}
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_LEVITATE_START);
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].tolive = 2000000000;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.f;
@@ -5559,7 +5559,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				}
 			}
 			
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].tolive = 3500;
 					
@@ -5602,7 +5602,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if (spells[i].target==0)
 				spells[i].snd_loop = ARX_SOUND_PlaySFX(SND_SPELL_REPEL_UNDEAD_LOOP, &spells[i].caster_pos, 1.0F, ARX_SOUND_PLAY_LOOPED);
 
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].tolive = 20000000;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.f;
@@ -5636,7 +5636,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				return No_MagicAllowed();
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_POISON_PROJECTILE_LAUNCH, &spells[i].caster_pos);
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].tolive = 900000000;
 					
 			CSpellFx *pCSpellFx = NULL;
@@ -5717,7 +5717,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 
 			Vector_Copy(&spells[i].target_pos,&target);
 			ARX_SOUND_PlaySFX(SND_SPELL_RAISE_DEAD, &spells[i].caster_pos);
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].tolive = 2000000;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.2f;
@@ -5781,7 +5781,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				return No_MagicAllowed();
 
 			ARX_SOUND_PlaySFX(SND_SPELL_PARALYSE, &spells[i].caster_pos);
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].tolive = 5000;
 			
 			if (duration>-1) spells[i].tolive=duration;
@@ -5838,7 +5838,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
 			
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 
 			if (flags & SPELLCAST_FLAG_RESTORE)
 			{				
@@ -5958,7 +5958,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				return No_MagicAllowed();
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_DISARM_TRAP);
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].tolive = 1;
 
@@ -6040,7 +6040,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if (bOk)
 			{
 				ARX_SOUND_PlaySFX(SND_SPELL_SLOW_DOWN, &spells[i].caster_pos);
-				spells[i].exist = TRUE;
+				spells[i].exist = true;
 
 				if (spells[i].caster==0)
 					spells[i].tolive = 10000000;
@@ -6103,7 +6103,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				return -1;
 
 			ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_IN);
-			spells[i].exist=TRUE;
+			spells[i].exist=true;
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].tolive=1000000;
 			spells[i].bDuration = true;
@@ -6125,7 +6125,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				{
 					ParticleCount++;
 					PARTICLE_DEF * pd=&particle[j];
-					pd->exist=TRUE;
+					pd->exist=true;
 					pd->zdec=0;							
  
 					pd->ov.x=eyeball.pos.x+5.f-rnd()*10.f;
@@ -6178,7 +6178,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			}
 					
 			ARX_SOUND_PlaySFX( SND_SPELL_FIRE_FIELD_START );
-			spells[i].exist					= TRUE;
+			spells[i].exist					= true;
 			spells[i].tolive				= 100000;
 			spells[i].bDuration				= true;
 			spells[i].fManaCostPerSecond	= 2.8f;
@@ -6244,7 +6244,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 					damages[spells[i].longinfo].source	= spells[i].caster;
 					damages[spells[i].longinfo].flags	= 0;
 					damages[spells[i].longinfo].type	= DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_FIELD;
-					damages[spells[i].longinfo].exist	= TRUE;
+					damages[spells[i].longinfo].exist	= true;
 					damages[spells[i].longinfo].pos.x	= target.x;
 					damages[spells[i].longinfo].pos.y	= target.y;
 					damages[spells[i].longinfo].pos.z	= target.z;
@@ -6281,7 +6281,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			}
 				
 			ARX_SOUND_PlaySFX(SND_SPELL_ICE_FIELD);
-			spells[i].exist			= TRUE;
+			spells[i].exist			= true;
 			spells[i].lastupdate	= spells[i].timcreation = ARXTimeUL();
 			spells[i].tolive		= 100000;
 			spells[i].bDuration		= true;
@@ -6348,7 +6348,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 					damages[spells[i].longinfo].source	= spells[i].caster;
 					damages[spells[i].longinfo].flags	= 0;
 					damages[spells[i].longinfo].type	= DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_COLD | DAMAGE_TYPE_FIELD;
-					damages[spells[i].longinfo].exist	= TRUE;
+					damages[spells[i].longinfo].exist	= true;
 					damages[spells[i].longinfo].pos.x	= target.x;
 					damages[spells[i].longinfo].pos.y	= target.y;
 					damages[spells[i].longinfo].pos.z	= target.z;
@@ -6371,7 +6371,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
 
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 				
 			CSpellFx *pCSpellFx = new CLightning();
 				
@@ -6408,7 +6408,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				return No_MagicAllowed();
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_CONFUSE);
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.5f;
@@ -6463,7 +6463,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
 
-			spells[i].exist=TRUE;
+			spells[i].exist=true;
 			spells[i].tolive=6000000;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 3.f;
@@ -6504,7 +6504,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
 
-			spells[i].exist=TRUE;
+			spells[i].exist=true;
 			spells[i].tolive=6000000;					
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 2.f;
@@ -6523,7 +6523,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				damages[spells[i].longinfo].source=spells[i].caster;
 				damages[spells[i].longinfo].flags=DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 				damages[spells[i].longinfo].type=DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_MANA;
-				damages[spells[i].longinfo].exist=TRUE;
+				damages[spells[i].longinfo].exist=true;
 			}
 
 			spells[i].longinfo2=GetFreeDynLight();
@@ -6557,7 +6557,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_EXPLOSION);
 					
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].tolive = 2000;
 			
@@ -6580,7 +6580,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				damages[spells[i].longinfo].source=spells[i].caster;
 				damages[spells[i].longinfo].flags=DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 				damages[spells[i].longinfo].type=DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL;
-				damages[spells[i].longinfo].exist=TRUE;
+				damages[spells[i].longinfo].exist=true;
 				damages[spells[i].longinfo].pos.x=target.x;
 				damages[spells[i].longinfo].pos.y=target.y;
 				damages[spells[i].longinfo].pos.z=target.z;
@@ -6656,7 +6656,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
 
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].tolive = 20;
 				
 			SPELLCAST_NotifyOnlyTarget(i);
@@ -6686,7 +6686,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				spells[iCancel].tolive = 0;
 			}				
 
-			spells[i].exist=TRUE;
+			spells[i].exist=true;
 			spells[i].tolive=6000000;
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 12.f;
@@ -6706,7 +6706,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				damages[id].source=spells[i].caster;
 				damages[id].flags=DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_FOLLOW_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 				damages[id].type=DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_DRAIN_LIFE;
-				damages[id].exist=TRUE;
+				damages[id].exist=true;
 			}
 
 			spells[i].longinfo2=GetFreeDynLight();
@@ -6744,7 +6744,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				return No_MagicAllowed();
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE);
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.9f;
@@ -6853,7 +6853,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				return No_MagicAllowed();
 
 			ARX_SOUND_PlaySFX(SND_SPELL_SUMMON_CREATURE);
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 1.9f;
@@ -6922,7 +6922,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				return No_MagicAllowed();
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_NEGATE_MAGIC);
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 2.f;
@@ -6970,7 +6970,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				return -1;
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE);
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].tolive = 20000;
 			
@@ -6991,7 +6991,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				return No_MagicAllowed();
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_MASS_PARALYSE);
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 
 			if (duration>-1) 
 				spells[i].tolive=duration;
@@ -7046,7 +7046,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				}
 			}
 					
-			spells[i].exist=TRUE;
+			spells[i].exist=true;
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].tolive=5000;			
 			spells[i].siz=0;
@@ -7109,11 +7109,11 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			// Draws White Flash on Screen
 			GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 			GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);												
-			SETALPHABLEND(GDevice,TRUE);
+			SETALPHABLEND(GDevice,true);
 			float val = 1.f; 
 
 			EERIEDrawBitmap(GDevice,0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.00009f,NULL,D3DRGB(0.5f+val*DIV2,val,val));
-			SETALPHABLEND(GDevice,FALSE);
+			SETALPHABLEND(GDevice,false);
 		}	
 		break;
 		//----------------------------------------------------------------------------
@@ -7161,7 +7161,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if (tcount==0) return -1;
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_CONTROL_TARGET);
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].tolive = 1000;
 			
@@ -7199,7 +7199,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			spells[i].siz=spells[i].caster_level*0.08f;
 			GLOBAL_SLOWDOWN -= spells[i].siz;
 			
-			spells[i].exist=TRUE;						
+			spells[i].exist=true;						
 			spells[i].tolive=200000;		
 
 			if (duration>-1) spells[i].tolive=duration;
@@ -7219,7 +7219,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				return No_MagicAllowed();
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_MASS_INCINERATE);
-			spells[i].exist = TRUE;
+			spells[i].exist = true;
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].tolive = 20000;
 			long nb_targets=0;
@@ -7261,7 +7261,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
 
-			spells[i].exist=TRUE;
+			spells[i].exist=true;
 			spells[i].tolive=7000;
 			ARX_SOUND_PlaySFX(SND_SPELL_TELEPORT, &spells[i].caster_pos);
 
@@ -7284,7 +7284,7 @@ void ARX_SPELLS_Kill(const long &i)
 
 	if (!spells[i].exist) return;
 
-	spells[i].exist=FALSE;
+	spells[i].exist=false;
 
 	// All Levels - Kill Light
 	if (spells[i].pSpellFx && spells[i].pSpellFx->lLightId != -1)
@@ -7368,7 +7368,7 @@ void ARX_SPELLS_Kill(const long &i)
 		case SPELL_LIFE_DRAIN :
 		case SPELL_MANA_DRAIN :
 
-			if (spells[i].longinfo!=-1) damages[spells[i].longinfo].exist=FALSE;	
+			if (spells[i].longinfo!=-1) damages[spells[i].longinfo].exist=false;	
 
 			if (spells[i].longinfo2!=-1) 
 			{
@@ -7392,7 +7392,7 @@ void ARX_SPELLS_Kill(const long &i)
 				{
 					ParticleCount++;
 					PARTICLE_DEF * pd=&particle[j];
-					pd->exist=TRUE;
+					pd->exist=true;
 					pd->zdec=0;					
  
 					pd->ov.x=eyeball.pos.x+5.f-rnd()*10.f;
@@ -7861,13 +7861,13 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				case SPELL_ICE_FIELD:
 
 					if (spells[i].longinfo!=-1)
-						damages[spells[i].longinfo].exist=FALSE;					
+						damages[spells[i].longinfo].exist=false;					
 
 				break;
 				case SPELL_FIRE_FIELD:
 
 					if (spells[i].longinfo!=-1)
-						damages[spells[i].longinfo].exist=FALSE;					
+						damages[spells[i].longinfo].exist=false;					
 
 				break;
 				//----------------------------------------------------------------------------
@@ -8127,8 +8127,8 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 					GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
 					GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );
-					SETALPHABLEND(GDevice,TRUE);
-					SETZWRITE(GDevice, FALSE );
+					SETALPHABLEND(GDevice,true);
+					SETZWRITE(GDevice, false );
 					cabalangle.b=spells[i].fdata+(float)FrameDiff*0.1f;
 					spells[i].fdata=cabalangle.b;
 
@@ -8156,8 +8156,8 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 							cabalcolor.g = 0.1f;
 							cabalcolor.r = 0.15f;
 					DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
-					SETALPHABLEND(GDevice,FALSE);		
-					SETZWRITE(GDevice, TRUE );	
+					SETALPHABLEND(GDevice,false);		
+					SETZWRITE(GDevice, true );	
 				}
 			}
 			break;				
@@ -8667,7 +8667,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 							{
 								ParticleCount++;
 								PARTICLE_DEF * pd=&particle[j];
-								pd->exist=TRUE;
+								pd->exist=true;
 								pd->zdec=0;
 								float sy=rnd()*3.14159f*2.f-3.14159f;
 								float sx=EEsin(sy);
@@ -9265,8 +9265,8 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 						GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
 						GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );
-						SETALPHABLEND(GDevice,TRUE);
-						SETZWRITE(GDevice, FALSE );
+						SETALPHABLEND(GDevice,true);
+						SETZWRITE(GDevice, false );
 						cabalangle.b=spells[i].fdata+(float)FrameDiff*0.1f;
 						spells[i].fdata=cabalangle.b;
 
@@ -9314,8 +9314,8 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 							cabalcolor.b = 0.8f;
 						DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						cabalangle.b=-cabalangle.b;
-						SETALPHABLEND(GDevice,FALSE);		
-						SETZWRITE(GDevice, TRUE );	
+						SETALPHABLEND(GDevice,false);		
+						SETZWRITE(GDevice, true );	
 
 						ARX_SOUND_RefreshPosition(spells[i].snd_loop, &cabalpos);
 					}
@@ -9365,8 +9365,8 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 						SETCULL(GDevice,D3DCULL_NONE);
 						GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
 						GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );
-						SETALPHABLEND(GDevice,TRUE);
-						SETZWRITE(GDevice, FALSE );
+						SETALPHABLEND(GDevice,true);
+						SETZWRITE(GDevice, false );
 						cabalangle.b=spells[i].fdata+(float)FrameDiff*0.1f;
 						spells[i].fdata=cabalangle.b;
 							cabalangle.g = 0.f;
@@ -9412,8 +9412,8 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 							cabalcolor.r = 0.8f;
 						DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						cabalangle.b=-cabalangle.b;
-						SETALPHABLEND(GDevice,FALSE);		
-						SETZWRITE(GDevice, TRUE );	
+						SETALPHABLEND(GDevice,false);		
+						SETZWRITE(GDevice, true );	
 
 						ARX_SOUND_RefreshPosition(spells[i].snd_loop, &cabalpos);
 						}

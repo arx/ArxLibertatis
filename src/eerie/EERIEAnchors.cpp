@@ -364,14 +364,14 @@ bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, 
 {
 	float anything = ANCHOR_CheckAnythingInCylinder(cyl, io, flags);
 
-	if ((flags & CFLAG_LEVITATE) && (anything == 0.f)) return TRUE;
+	if ((flags & CFLAG_LEVITATE) && (anything == 0.f)) return true;
 
 	if (anything >= 0.f) // Falling Cylinder but valid pos !
 	{
 		if (flags & CFLAG_RETURN_HEIGHT)
 			cyl->origin.y += anything;
 
-		return TRUE;
+		return true;
 	}
 
 	EERIE_CYLINDER tmp;
@@ -403,7 +403,7 @@ bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, 
 			else
 				tolerate = -45;
 
-			if (anything < tolerate) return FALSE;
+			if (anything < tolerate) return false;
 		}
 
 		if (io && (!(flags & CFLAG_JUST_TEST)))
@@ -413,7 +413,7 @@ bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, 
 				if (player.jumpphase)
 				{
 					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
-					return FALSE;
+					return false;
 				}
 
 				float dist;
@@ -425,25 +425,25 @@ bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, 
 				if (io->_npcdata->climb_count > MAX_ALLOWED_PER_SECOND)
 				{
 					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
-					return FALSE;
+					return false;
 				}
 
 				if (anything < -55) 
 				{
 					io->_npcdata->climb_count = MAX_ALLOWED_PER_SECOND;
-					return FALSE;
+					return false;
 				}
 			}
 		}
 	}
-	else if (anything < -45) return FALSE;
+	else if (anything < -45) return false;
 
 	if ((flags & CFLAG_SPECIAL) && (anything < -40))
 	{
 		if (flags & CFLAG_RETURN_HEIGHT)
 			cyl->origin.y += anything;
 
-		return FALSE;
+		return false;
 	}
 
 	memcpy(&tmp, cyl, sizeof(EERIE_CYLINDER));
@@ -463,11 +463,11 @@ bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, 
 			cyl->origin.y = tmp.origin.y; 
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	cyl->origin.y = tmp.origin.y;
-	return TRUE;
+	return true;
 }
 
 
@@ -475,13 +475,13 @@ bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, 
 bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, float MOVE_CYLINDER_STEP, long flags)
 {
 	MOVING_CYLINDER = 1;
-	DIRECT_PATH = TRUE;
+	DIRECT_PATH = true;
 	IO_PHYSICS test;
 
 	if (ip == NULL)
 	{
 		MOVING_CYLINDER = 0;
-		return FALSE;
+		return false;
 	}
 
 	float distance = TRUEEEDistance3D(&ip->startpos, &ip->targetpos);
@@ -489,7 +489,7 @@ bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, f
 	if (distance <= 0.f)
 	{
 		MOVING_CYLINDER = 0;
-		return TRUE; 
+		return true; 
 	}
 
 	float onedist = 1.f / distance;
@@ -519,7 +519,7 @@ bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, f
 
 		if ((flags & CFLAG_CHECK_VALID_POS)
 		        && (CylinderAboveInvalidZone(&test.cyl)))
-			return FALSE;
+			return false;
 
 		if (ANCHOR_AttemptValidCylinderPos(&test.cyl, io, flags))
 		{
@@ -540,7 +540,7 @@ bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, f
 				}
 			}
 
-			DIRECT_PATH = FALSE;
+			DIRECT_PATH = false;
 			// Must Attempt To Slide along collisions
 			register EERIE_3D	vecatt;
 			EERIE_3D			rpos		= { 0, 0, 0 };
@@ -627,7 +627,7 @@ bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, f
 			{
 				ip->velocity.x = ip->velocity.y = ip->velocity.z = 0.f;
 				MOVING_CYLINDER = 0;
-				return FALSE;
+				return false;
 			}
 		}
 
@@ -636,7 +636,7 @@ bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, f
 	}
 
 	MOVING_CYLINDER = 0;
-	return TRUE;
+	return true;
 }
 
 
@@ -792,24 +792,24 @@ bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg,
 		}
 	}
 
-	if (!best) return FALSE;
+	if (!best) return false;
 
-	if (CylinderAboveInvalidZone(&bestcyl)) return FALSE;
+	if (CylinderAboveInvalidZone(&bestcyl)) return false;
 
 	for (long k = 0; k < eb->nbanchors; k++)
 	{
 		_ANCHOR_DATA * ad = &eb->anchors[k];
 
-		if (TRUEEEDistance3D(&ad->pos, &bestcyl.origin) < 50.f) return FALSE;
+		if (TRUEEEDistance3D(&ad->pos, &bestcyl.origin) < 50.f) return false;
 
 		if (TRUEDistance2D(ad->pos.x, ad->pos.z, bestcyl.origin.x, bestcyl.origin.z) < 45.f)
 		{
-			if (EEfabs(ad->pos.y - bestcyl.origin.y) < 90.f) return FALSE;
+			if (EEfabs(ad->pos.y - bestcyl.origin.y) < 90.f) return false;
 
 			EERIEPOLY * ep = ANCHOR_CheckInPolyPrecis(ad->pos.x, ad->pos.y, ad->pos.z);
 			EERIEPOLY * ep2 = ANCHOR_CheckInPolyPrecis(ad->pos.x, bestcyl.origin.y, ad->pos.z);
 
-			if (ep2 == ep) return FALSE;
+			if (ep2 == ep) return false;
 		}
 
 	}
@@ -835,7 +835,7 @@ bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg,
 	ad->nblinked = 0;
 	ad->flags = 0;
 	eb->nbanchors++;
-	return TRUE;
+	return true;
 }
 bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, EERIE_3D * pos, long flags)
 {
@@ -915,13 +915,13 @@ bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, EERIE
 			}
 		}
 
-	if (!best) return FALSE;
+	if (!best) return false;
 
-	if (CylinderAboveInvalidZone(&bestcyl)) return FALSE;
+	if (CylinderAboveInvalidZone(&bestcyl)) return false;
 
 	if (flags == MUST_BE_BIG)
 	{
-		if (bestcyl.radius < 60) return FALSE;
+		if (bestcyl.radius < 60) return false;
 	}
 
 	// avoid to recreate same anchor twice...
@@ -935,13 +935,13 @@ bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, EERIE
 			        &&	(ad->pos.z == bestcyl.origin.z))
 			{
 				if (ad->radius >= bestcyl.radius)
-					return FALSE;
+					return false;
 
 				if (ad->radius <= bestcyl.radius)
 				{
 					ad->height = bestcyl.height;
 					ad->radius = bestcyl.radius;
-					return FALSE;
+					return false;
 				}
 			}
 		}
@@ -967,7 +967,7 @@ bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, EERIE
 	ad->nblinked = 0;
 	ad->flags = 0;
 	eb->nbanchors++;
-	return TRUE;
+	return true;
 }
 
 //**********************************************************************************************
@@ -1071,7 +1071,7 @@ void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb)
 							p1.y += 10.f;
 							p2.y += 10.f;
 							long _onetwo = 0;
-							bool treat = TRUE;
+							bool treat = true;
 							float dist = TRUEEEDistance3D(&p1, &p2);
 							float dd = TRUEDistance2D(p1.x, p1.z, p2.x, p2.z);
 
@@ -1136,8 +1136,8 @@ void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb)
 							else t--;
 
 							if (t <= 0)
-								treat = FALSE;
-							else treat = TRUE;
+								treat = false;
+							else treat = true;
 
 							if (treat)
 							{

@@ -681,7 +681,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 	strcpy(wmat, "BARE");
 	strcpy(amat, "FLESH");
 
-	bool critical = FALSE;
+	bool critical = false;
 
 	if (io_source == inter.iobj[0]) 
 	{
@@ -701,9 +701,9 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 		if (rnd() * 100 <= (float)(player.Full_Attribute_Dexterity - 9) * 2.f + (float)(player.Full_Skill_Close_Combat * DIV5))
 		{
 			if (SendIOScriptEvent(io_source, SM_CRITICAL, "", NULL) != REFUSE)
-				critical = TRUE;
+				critical = true;
 		}
-		else critical = FALSE;
+		else critical = false;
 
 		damages = attack * ratioaim; 
 
@@ -749,9 +749,9 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 		if (rnd() * 100 <= io_source->_npcdata->critical) 
 		{
 			if (SendIOScriptEvent(io_source, SM_CRITICAL, "", NULL) != REFUSE)
-				critical = TRUE;
+				critical = true;
 		}
-		else critical = FALSE;
+		else critical = false;
 
 		if (rnd() * 100.f <= (float)io_source->_npcdata->backstab_skill)
 		{
@@ -914,7 +914,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 {
 	if (TRUEFIGHT) ratioaim = 1.f;
 
-	bool ret = FALSE;
+	bool ret = false;
 	long source = GetInterNum(io_source);
 	long weapon = GetInterNum(io_weapon);
 	EERIE_SPHERE sphere;
@@ -929,7 +929,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 
 	for (long j = 0; j < nbact; j++)
 	{
-		if (!ValidIONum(weapon)) return FALSE;
+		if (!ValidIONum(weapon)) return false;
 
 		rad = GetHitValue(io_weapon->obj->actionlist[j].name);
 
@@ -1017,7 +1017,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 
 						if (target->ioflags & IO_NPC)
 						{
-							ret = TRUE;
+							ret = true;
 							target->spark_n_blood = 0;
 							target->_npcdata->SPLAT_TOT_NB = 0;
 

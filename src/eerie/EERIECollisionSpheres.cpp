@@ -204,8 +204,8 @@ bool IsExclusiveGroupMember(EERIE_3DOBJ * obj, long idx, long group)
 		}
 	}
 
-	if (exclusive) return TRUE;
-	else return FALSE;
+	if (exclusive) return true;
+	else return false;
 }
 
 float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, EERIE_3D * center, EERIE_3D * dirvect, long group, float maxi)
@@ -280,7 +280,7 @@ long AddVertexToVertexList(EERIE_3DOBJ * obj, EERIE_3D * center, long group)
 		        &&	(center->y == obj->vertexlist[i].v.y)
 		        &&	(center->z == obj->vertexlist[i].v.z))
 		{
-			if (IsVertexIdxInGroup(obj, i, group) == FALSE)
+			if (IsVertexIdxInGroup(obj, i, group) == false)
 			{
 				if ((obj->vertexlist[i].norm.x == 50.f)
 				        &&	(obj->vertexlist[i].norm.y == 50.f)

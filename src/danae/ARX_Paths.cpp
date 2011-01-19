@@ -592,7 +592,7 @@ void ARX_PATH_ReleaseAllPath()
 //*************************************************************************************
 ARX_PATH * ARX_PATHS_ExistName(char * name)
 {
-	if (ARXpaths == NULL) return FALSE;
+	if (ARXpaths == NULL) return false;
 
 	for (long i = 0; i < nbARXpaths; i++)
 	{
@@ -1265,7 +1265,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 
 	dmgs		=	0;
 	backstab	=	1.f;
-	critical	=	FALSE;
+	critical	=	false;
 
 	if (source == 0)
 	{
@@ -1274,7 +1274,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 		if (rnd() * 100 <= (float)(player.Full_Attribute_Dexterity - 9) * 2.f + (float)((player.Full_Skill_Projectile) * DIV5))
 		{
 			if (SendIOScriptEvent(io_source, SM_CRITICAL, "BOW", NULL) != REFUSE)
-				critical = TRUE;
+				critical = true;
 		}
 
 		dmgs	=	attack;
@@ -1458,7 +1458,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 {
 	if (Thrown_Count <= 0) return;
 
-	SETZWRITE(GDevice, TRUE);
+	SETZWRITE(GDevice, true);
 	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, true);
 
 	for (long i = 0; i < MAX_THROWN_OBJECTS; i++)
@@ -1561,7 +1561,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 								{
 									ParticleCount++;
 									PARTICLE_DEF * pd = &particle[j];
-									pd->exist	=	TRUE;
+									pd->exist	=	true;
 									pd->zdec	=	0;
 									Vector_Copy(&pd->ov, &pos);
 									pd->move.x	=	(2.f - 4.f * rnd());
@@ -1985,7 +1985,7 @@ void CRuban::DrawRuban(LPDIRECT3DDEVICE7 device, int num, float size, int dec, f
 float CRuban::Render(LPDIRECT3DDEVICE7 device)
 {
 	SETCULL(device, D3DCULL_NONE);
-	SETALPHABLEND(device, TRUE);
+	SETALPHABLEND(device, true);
 	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 
@@ -2000,7 +2000,7 @@ float CRuban::Render(LPDIRECT3DDEVICE7 device)
 		                trubandef[i].r2, trubandef[i].g2, trubandef[i].b2) ;
 	}
 
-	SETALPHABLEND(device, FALSE);
+	SETALPHABLEND(device, false);
 	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
 
@@ -2246,24 +2246,24 @@ bool _IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, lon
 	
 	if (ep->type & POLY_QUAD)
 	{
-		if (IsObjectVertexCollidingTriangle(obj, (EERIE_3D *)&pol, k, validd)) return TRUE;
+		if (IsObjectVertexCollidingTriangle(obj, (EERIE_3D *)&pol, k, validd)) return true;
 
 		Vector_Copy(&pol[1], (EERIE_3D *)&ep->v[2]);
 		Vector_Copy(&pol[2], (EERIE_3D *)&ep->v[3]);
 
-		if (IsObjectVertexCollidingTriangle(obj, (EERIE_3D *)&pol, k, validd)) return TRUE;
+		if (IsObjectVertexCollidingTriangle(obj, (EERIE_3D *)&pol, k, validd)) return true;
 
-		return FALSE;
+		return false;
 	}
 
-	if (IsObjectVertexCollidingTriangle(obj, (EERIE_3D *)&pol, k, validd)) return TRUE;
+	if (IsObjectVertexCollidingTriangle(obj, (EERIE_3D *)&pol, k, validd)) return true;
 
-	return FALSE;
+	return false;
 }
 
 bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long source, long * validd)
 {
-	bool ret = TRUE;
+	bool ret = true;
 	long px, pz;
 	float x = obj->pbox->vert[0].pos.x;
 	F2L(x * ACTIVEBKG->Xmul, &px);
@@ -2329,7 +2329,7 @@ bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long sour
 							else if (ep->type & POLY_EARTH) CUR_COLLISION_MATERIAL = MATERIAL_EARTH;
 							else CUR_COLLISION_MATERIAL = MATERIAL_STONE;
 
-							return FALSE;
+							return false;
 						}
 
 						// Last addon
@@ -2365,7 +2365,7 @@ bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long sour
 									else if (ep->type & POLY_EARTH) CUR_COLLISION_MATERIAL = MATERIAL_EARTH;
 									else CUR_COLLISION_MATERIAL = MATERIAL_STONE;
 
-									return FALSE;
+									return false;
 								}
 							}
 						}
@@ -2385,7 +2385,7 @@ bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long sour
 						else if (ep->type & POLY_EARTH) CUR_COLLISION_MATERIAL = MATERIAL_EARTH;
 						else CUR_COLLISION_MATERIAL = MATERIAL_STONE;
 
-						return FALSE;
+						return false;
 					}
 				}
 			}
@@ -2523,7 +2523,7 @@ bool ARX_EERIE_PHYSICS_BOX_Compute_Simple(EERIE_3DOBJ * obj, float framediff, fl
 			obj->pbox->stopcount = 0;
 	}
 
-	return TRUE;//ret;
+	return true;//ret;
 }
 
 bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source)

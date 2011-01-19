@@ -268,17 +268,17 @@ bool CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 			//PostQuitMessage(0);
 			gbDialog = false;
 			Sleep(100);
-			EndDialog(hWnd, TRUE);
+			EndDialog(hWnd, true);
 
 		}
 		break;
 		default:
-			return FALSE;
+			return false;
 			//DefWindowProc(hWnd, uMsg, wParam, lParam);
 			break;
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -297,7 +297,7 @@ bool WINAPI DllMain(HINSTANCE _hModule, DWORD _fdwreason, LPVOID _lpReserved)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 //-----------------------------------------------------------------------------

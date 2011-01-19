@@ -444,7 +444,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 				}
 			}
 
-			SETALPHABLEND(m_pd3dDevice, TRUE);
+			SETALPHABLEND(m_pd3dDevice, true);
 			m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
 			m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
 			m_pd3dDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_ALWAYS);
@@ -719,7 +719,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 			m_pd3dDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_WRAP);
 			m_pd3dDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
 
-			SETALPHABLEND(m_pd3dDevice, FALSE);
+			SETALPHABLEND(m_pd3dDevice, false);
 
 			if ((SHOWLEVEL == ARX_LEVELS_GetRealNum(CURRENTLEVEL)))
 			{
@@ -754,7 +754,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 				if (fl2)
 				{
-					SETALPHABLEND(m_pd3dDevice, TRUE);
+					SETALPHABLEND(m_pd3dDevice, true);
 					verts[0].sx += DECALX * Xratio;
 					verts[0].sy += DECALY * Yratio;
 					verts[1].sx += DECALX * Xratio;
@@ -765,7 +765,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 				EERIEDRAWPRIM(GDevice, D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, 3, 0);
 
-				if (fl2) SETALPHABLEND(m_pd3dDevice, FALSE);
+				if (fl2) SETALPHABLEND(m_pd3dDevice, false);
 			}
 		}
 

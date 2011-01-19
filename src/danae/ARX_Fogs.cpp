@@ -203,7 +203,7 @@ void AddPoisonFog(EERIE_3D * pos, float power)
 		{
 			ParticleCount++;
 			particle[j].special		=	FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-			particle[j].exist		=	TRUE;
+			particle[j].exist		=	true;
 			particle[j].zdec		=	0;
 			particle[j].ov.x		=	pos->x + 100.f - 200.f * rnd();
 			particle[j].ov.y		=	pos->y + 100.f - 200.f * rnd();
@@ -266,7 +266,7 @@ void ARX_FOGS_Render(long init)
 				{
 					ParticleCount++;
 					particle[j].special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING;
-					particle[j].exist = TRUE;
+					particle[j].exist = true;
 					particle[j].zdec = 0;
 
 					if (fogs[i].special & FOG_DIRECTIONAL)
@@ -313,7 +313,7 @@ void ARX_FOGS_RenderAll(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	EERIE_3D angle;
 	Vector_Init(&angle); 
 
-	SETALPHABLEND(m_pd3dDevice, FALSE);
+	SETALPHABLEND(m_pd3dDevice, false);
 
 	for (long i = 0; i < MAX_FOG; i++)
 	{

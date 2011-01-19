@@ -55,11 +55,11 @@ extern int LSoundChoose;
 /*----------------------------------------------------------------------*/
 bool AllocTrack(int sf, int ef, float fps)
 {
-	if (CKTrack) return FALSE;
+	if (CKTrack) return false;
 
 	CKTrack = (C_TRACK *)malloc(sizeof(C_TRACK));
 
-	if (!CKTrack) return FALSE;
+	if (!CKTrack) return false;
 
 	CKTrack->startframe = sf;
 	CKTrack->endframe = ef;
@@ -67,23 +67,23 @@ bool AllocTrack(int sf, int ef, float fps)
 	CKTrack->fps = fps;
 	CKTrack->nbkey = 0;
 	CKTrack->key = NULL;
-	CKTrack->pause = TRUE;
+	CKTrack->pause = true;
 
 	InitUndo();
 
-	return TRUE;
+	return true;
 }
 /*----------------------------------------------------------------------*/
 bool DeleteTrack(void)
 {
-	if (!CKTrack) return FALSE;
+	if (!CKTrack) return false;
 
 	if (CKTrack->key) free((void *)CKTrack->key);
 
 	free((void *)CKTrack);
 	CKTrack = NULL;
 
-	return TRUE;
+	return true;
 }
 /*----------------------------------------------------------------------*/
 static C_KEY * SearchAndMoveKey(int f)
@@ -173,7 +173,7 @@ void InitUndo(void)
 		nb--;
 	}
 
-	FillUndo = TRUE;
+	FillUndo = true;
 }
  
 /*----------------------------------------------------------------------*/
@@ -293,7 +293,7 @@ bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
 	C_KEY	*	k;
 	int			num;
 
-	if (!CKTrack || (key->frame < CKTrack->startframe) || (key->frame > CKTrack->endframe)) return FALSE;
+	if (!CKTrack || (key->frame < CKTrack->startframe) || (key->frame > CKTrack->endframe)) return false;
 
 	if (!(k = SearchKey(key->frame, &num)))
 	{
@@ -374,8 +374,8 @@ bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
 
 	AddPileUndo(k, PILE_ADD);
 
-	ProjectModif = TRUE;
-	return TRUE;
+	ProjectModif = true;
+	return true;
 }
 /*----------------------------------------------------------------------*/
 bool AddKeyLoad(C_KEY * key)
@@ -383,7 +383,7 @@ bool AddKeyLoad(C_KEY * key)
 	C_KEY	*	k;
 	int			num;
 
-	if (!CKTrack || (key->frame < CKTrack->startframe) || (key->frame > CKTrack->endframe)) return FALSE;
+	if (!CKTrack || (key->frame < CKTrack->startframe) || (key->frame > CKTrack->endframe)) return false;
 
 	if (!(k = SearchKey(key->frame, &num)))
 	{
@@ -419,7 +419,7 @@ bool AddKeyLoad(C_KEY * key)
 	k->angzgrille = key->angzgrille;
 	k->speedtrack = key->speedtrack;
 
-	return TRUE;
+	return true;
 }
 /*----------------------------------------------------------------------*/
 static bool DiffKey(C_KEY * key1, C_KEY * key2)
@@ -518,9 +518,9 @@ bool GereTrack(CINEMATIQUE * c, float fpscurr)
 	float	t1, t2, t3, f0, f1, f2, f3, p0, p1, temp;
 	C_KEY	* lightprec, *lightnext;
 
-	if (!CKTrack || !CKTrack->nbkey) return FALSE;
+	if (!CKTrack || !CKTrack->nbkey) return false;
 
-	if (CKTrack->pause) return TRUE;
+	if (CKTrack->pause) return true;
 
 	k = GetKey((int)CKTrack->currframe, &num);
 	ksuiv = (num == CKTrack->nbkey) ? ksuiv = k : ksuiv = k + 1;
@@ -725,7 +725,7 @@ consequences on light :
 	if (k != c->key)
 	{
 		c->key = k;
-		c->changekey = TRUE;
+		c->changekey = true;
 	}
 
 	c->flTime += fpscurr;
@@ -738,7 +738,7 @@ consequences on light :
 		c->flTime = ARX_TIME_Get();
 	}
 
-	return TRUE;
+	return true;
 }
 /*----------------------------------------------------------------------*/
 bool GereTrackNoPlay(CINEMATIQUE * c)
@@ -750,11 +750,11 @@ bool GereTrackNoPlay(CINEMATIQUE * c)
 	float	t1, t2, t3, f0, f1, f2, f3, p0, p1, temp;
 	C_KEY	* lightprec, *lightnext;
 
-	if (!CKTrack || !CKTrack->nbkey || !CKTrack->pause) return FALSE;
+	if (!CKTrack || !CKTrack->nbkey || !CKTrack->pause) return false;
 
 	k = GetKey((int) CKTrack->currframe, &num);
 
-	if (!k) return FALSE;
+	if (!k) return false;
 
 	ksuiv = (num == CKTrack->nbkey) ? ksuiv = k : ksuiv = k + 1;
 
@@ -830,7 +830,7 @@ bool GereTrackNoPlay(CINEMATIQUE * c)
 	c->posgrillesuiv	= ksuiv->posgrille;
 	c->angzgrillesuiv	= ksuiv->angzgrille;
 
-	if ((k->numbitmap < 0) || (ksuiv->numbitmap < 0)) return FALSE;
+	if ((k->numbitmap < 0) || (ksuiv->numbitmap < 0)) return false;
 
 	switch (k->typeinterp)
 	{
@@ -959,10 +959,10 @@ bool GereTrackNoPlay(CINEMATIQUE * c)
 	if (k != c->key)
 	{
 		c->key = k;
-		c->changekey = TRUE;
+		c->changekey = true;
 	}
 
-	return TRUE;
+	return true;
 }
 
 /*----------------------------------------------------------------------*/
@@ -970,7 +970,7 @@ void PlayTrack(CINEMATIQUE * c)
 {
 	if (!CKTrack || !CKTrack->pause) return;
 
-	CKTrack->pause = FALSE;
+	CKTrack->pause = false;
 	c->flTime = 0; 
 }
 /*----------------------------------------------------------------------*/

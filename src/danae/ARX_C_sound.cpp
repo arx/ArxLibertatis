@@ -93,7 +93,7 @@ bool DeleteFreeSound(int num)
 
 	cs = &TabSound[num];
 
-	if (!cs->actif) return FALSE;
+	if (!cs->actif) return false;
 
 	l = 0;
 
@@ -118,7 +118,7 @@ bool DeleteFreeSound(int num)
 	cs->actif = 0;
 	NbSound--;
 
-	return TRUE;
+	return true;
 }
 /*-----------------------------------------------------------*/
 void DeleteAllSound(void)
@@ -351,11 +351,11 @@ bool PlaySoundKeyFramer(int id)
 
 	cs = &TabSound[id];
 
-	if (!cs->actif) return FALSE;
+	if (!cs->actif) return false;
 
 	cs->idhandle = ARX_SOUND_PlayCinematic(cs->sound + g_pak_workdir_len);
 
-	return TRUE;
+	return true;
 }
 /*-----------------------------------------------------------*/
 void StopSoundKeyFramer(void)

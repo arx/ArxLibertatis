@@ -408,7 +408,7 @@ int		ShowError(char * funcname, char * message, long fatality);
 
 void	ExitApp(int v);
 char*	MakeDir(char * tex, char * tex2);
-void	CalcFPS(bool reset = FALSE);
+void	CalcFPS(bool reset = false);
 
 void	SetZBias(const LPDIRECT3DDEVICE7, int);
 

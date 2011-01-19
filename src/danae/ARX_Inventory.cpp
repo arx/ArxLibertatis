@@ -623,9 +623,9 @@ void OptmizeInventory(unsigned int _uiNumBag)
 //*************************************************************************************
 bool CanBePutInInventory(INTERACTIVE_OBJ * io)
 {
-	if (io == NULL) return FALSE;
+	if (io == NULL) return false;
 
-	if (io->ioflags & IO_MOVABLE) return FALSE;
+	if (io->ioflags & IO_MOVABLE) return false;
 
 	if (io->ioflags & IO_GOLD)
 	{
@@ -644,7 +644,7 @@ bool CanBePutInInventory(INTERACTIVE_OBJ * io)
 			io->GameFlags &= ~GFLAG_ISINTREATZONE;
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	long sx, sy;
@@ -711,7 +711,7 @@ bool CanBePutInInventory(INTERACTIVE_OBJ * io)
 
 						ARX_INVENTORY_Declare_InventoryIn(ioo);
 						sInventory = -1;
-						return TRUE;
+						return true;
 					}
 				}
 			}
@@ -746,7 +746,7 @@ bool CanBePutInInventory(INTERACTIVE_OBJ * io)
 						inventory[iNbBag][i][j].show = 1;
 						ARX_INVENTORY_Declare_InventoryIn(io);
 						sInventory = -1;
-						return TRUE;
+						return true;
 					}
 				}
 			}
@@ -801,7 +801,7 @@ bool CanBePutInInventory(INTERACTIVE_OBJ * io)
 								}
 
 								ARX_INVENTORY_Declare_InventoryIn(ioo);
-								return TRUE;
+								return true;
 							}
 						}
 					}
@@ -836,12 +836,12 @@ bool CanBePutInInventory(INTERACTIVE_OBJ * io)
 
 							inventory[iNbBag][i][j].show = 1;
 							ARX_INVENTORY_Declare_InventoryIn(io);
-							return TRUE;
+							return true;
 						}
 					}
 				}
 
-	return FALSE;
+	return false;
 }
 
 //*************************************************************************************
@@ -852,11 +852,11 @@ bool CanBePutInInventory(INTERACTIVE_OBJ * io)
 //*************************************************************************************
 bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, INTERACTIVE_OBJ * io, long * xx, long * yy)
 {
-	if (!id) return FALSE;
+	if (!id) return false;
 
-	if (!io) return FALSE;
+	if (!io) return false;
 
-	if (io->ioflags & IO_MOVABLE) return FALSE;
+	if (io->ioflags & IO_MOVABLE) return false;
 
 	long sx, sy;
 	long i, j, k, l;
@@ -914,7 +914,7 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, INTERACTIVE_OBJ * io, lon
 					}
 
 					sInventory = -1;
-					return TRUE;
+					return true;
 				}
 			}
 		
@@ -950,7 +950,7 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, INTERACTIVE_OBJ * io, lon
 				*xx = i;
 				*yy = j;
 				sInventory = -1;
-				return TRUE;
+				return true;
 			}
 		}
 	}
@@ -992,7 +992,7 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, INTERACTIVE_OBJ * io, lon
 							io->show = SHOW_FLAG_KILLED;
 						}
 
-						return TRUE;
+						return true;
 					}
 				}
 		}
@@ -1030,7 +1030,7 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, INTERACTIVE_OBJ * io, lon
 					id->slot[i][j].show = 1;
 					*xx = i;
 					*yy = j;
-					return TRUE;
+					return true;
 				}
 			}
 		}
@@ -1038,7 +1038,7 @@ bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, INTERACTIVE_OBJ * io, lon
 	*xx = -1;
 	*yy = -1;
 
-	return FALSE;
+	return false;
 }
 
 //*************************************************************************************
@@ -1052,7 +1052,7 @@ bool PutInInventory()
 	// Check Validity
 	if ((!DRAGINTER)
 	        ||	(DRAGINTER->ioflags & IO_MOVABLE))
-		return FALSE;
+		return false;
 
 	short tx, ty;
 	long sx, sy;
@@ -1076,7 +1076,7 @@ bool PutInInventory()
 			Set_DragInter(NULL);
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	// First Look for Identical Item...
@@ -1096,9 +1096,9 @@ bool PutInInventory()
 		if (io->ioflags & IO_SHOP)
 		{
 			if ((io->shop_category) && (!IsIOGroup(DRAGINTER, io->shop_category)))
-				return FALSE;
+				return false;
 
-			if (cos <= 0) return FALSE;
+			if (cos <= 0) return false;
 		}
 
 		INTERACTIVE_OBJ * ioo;
@@ -1140,7 +1140,7 @@ bool PutInInventory()
 							ARX_PLAYER_AddGold(cos);
 							ARX_SOUND_PlayInterface(SND_GOLD);
 							ARX_SOUND_PlayInterface(SND_INVSTD);
-							return TRUE;
+							return true;
 						}
 					}
 				}
@@ -1201,12 +1201,12 @@ bool PutInInventory()
 									ARX_SOUND_PlayInterface(SND_GOLD);
 								}
 							}
-							else return FALSE;
+							else return false;
 						}
 
 						ARX_SOUND_PlayInterface(SND_INVSTD);
 						Set_DragInter(NULL);
-						return TRUE;
+						return true;
 					}
 				}
 
@@ -1228,7 +1228,7 @@ bool PutInInventory()
 				}
 
 				Set_DragInter(NULL);
-				return TRUE;
+				return true;
 			}
 
 			for (j = 0; j < sy; j++)
@@ -1248,16 +1248,16 @@ bool PutInInventory()
 			DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
 			ARX_SOUND_PlayInterface(SND_INVSTD);
 			Set_DragInter(NULL);
-			return TRUE;
+			return true;
 		}
 	}
 
 	if (!(player.Interface & INTER_INVENTORY) && !(player.Interface & INTER_INVENTORYALL))
-		return FALSE;
+		return false;
 
-	if (InventoryY != 0) return FALSE;
+	if (InventoryY != 0) return false;
 
-	if (!InPlayerInventoryPos(&DANAEMouse)) return FALSE;
+	if (!InPlayerInventoryPos(&DANAEMouse)) return false;
 
 	int iBag = 0;
 
@@ -1282,7 +1282,7 @@ bool PutInInventory()
 
 		if ((tx >= 0) && (tx <= 16 - sx) && (ty >= 0) && (ty <= 3 - sy))
 			iBag = sActiveInventory;
-		else return FALSE;
+		else return false;
 	}
 	else
 	{
@@ -1350,7 +1350,7 @@ bool PutInInventory()
 		}
 
 		Set_DragInter(NULL);
-		return TRUE;
+		return true;
 	}
 
 	for (j = 0; j < sy; j++)
@@ -1400,7 +1400,7 @@ bool PutInInventory()
 					}
 
 					ARX_SOUND_PlayInterface(SND_INVSTD);
-					return TRUE;
+					return true;
 				}
 
 				if (0)
@@ -1411,10 +1411,10 @@ bool PutInInventory()
 
 						ARX_SOUND_PlayInterface(SND_INVSTD);
 						Set_DragInter(NULL);
-						return TRUE;
+						return true;
 					}
 
-				return FALSE;
+				return false;
 			}
 		}
 
@@ -1431,13 +1431,13 @@ bool PutInInventory()
 	ARX_SOUND_PlayInterface(SND_INVSTD);
 	DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
 	Set_DragInter(NULL);
-	return TRUE;
+	return true;
 }
 //*************************************************************************************
 // bool InSecondaryInventoryPos(EERIE_S2D * pos)
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
-//   Returns TRUE if xx,yy is a position in secondary inventory
+//   Returns true if xx,yy is a position in secondary inventory
 //*************************************************************************************
 bool InSecondaryInventoryPos(EERIE_S2D * pos)
 {
@@ -1453,25 +1453,25 @@ bool InSecondaryInventoryPos(EERIE_S2D * pos)
 		ty = ty / SHORT_INTERFACE_RATIO(32);
 
 
-		if ((tx < 0) || (tx >= SecondaryInventory->sizex)) return FALSE;
+		if ((tx < 0) || (tx >= SecondaryInventory->sizex)) return false;
 
-		if ((ty < 0) || (ty >= SecondaryInventory->sizey)) return FALSE;
+		if ((ty < 0) || (ty >= SecondaryInventory->sizey)) return false;
 
-		return TRUE;
+		return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 //*************************************************************************************
 // bool InPlayerInventoryPos(EERIE_S2D * pos)
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
-//   Returns TRUE if xx,yy is a position in player inventory
+//   Returns true if xx,yy is a position in player inventory
 //*************************************************************************************
 bool InPlayerInventoryPos(EERIE_S2D * pos)
 {
-	if (PLAYER_INTERFACE_HIDE_COUNT) return FALSE;
+	if (PLAYER_INTERFACE_HIDE_COUNT) return false;
 
 
 	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
@@ -1498,9 +1498,9 @@ bool InPlayerInventoryPos(EERIE_S2D * pos)
 
 
 			if ((tx >= 0) && (tx <= INVENTORY_X) && (ty >= 0) && (ty < INVENTORY_Y))
-				return TRUE;
+				return true;
 			else
-				return FALSE;
+				return false;
 		}
 	}
 	
@@ -1533,7 +1533,7 @@ bool InPlayerInventoryPos(EERIE_S2D * pos)
 
 
 				if ((tx >= 0) && (tx <= INVENTORY_X) && (ty >= 0) && (ty < INVENTORY_Y))
-					return TRUE;
+					return true;
 			}
 
 
@@ -1546,18 +1546,18 @@ bool InPlayerInventoryPos(EERIE_S2D * pos)
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 //*************************************************************************************
 // bool InInventoryPos(EERIE_S2D * pos)
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
-//   Returns TRUE if "pos" is a position in player inventory or in SECONDARY inventory
+//   Returns true if "pos" is a position in player inventory or in SECONDARY inventory
 //*************************************************************************************
 bool InInventoryPos(EERIE_S2D * pos)
 {
 	if (InSecondaryInventoryPos(pos))
-		return TRUE;
+		return true;
 
 	return (InPlayerInventoryPos(pos));
 }
@@ -1566,7 +1566,7 @@ bool InInventoryPos(EERIE_S2D * pos)
 // bool IsFlyingOverInventory(EERIE_S2D * pos)
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
-//   returns TRUE if cursor is flying over any inventory
+//   returns true if cursor is flying over any inventory
 //*************************************************************************************
 bool IsFlyingOverInventory(EERIE_S2D * pos)
 {
@@ -1585,7 +1585,7 @@ bool IsFlyingOverInventory(EERIE_S2D * pos)
 
 
 		if ((tx >= 0) && (tx <= SecondaryInventory->sizex) && (ty >= 0) && (ty <= SecondaryInventory->sizey))
-			return TRUE;
+			return true;
 	}
 
 	return InPlayerInventoryPos(pos);
@@ -1651,13 +1651,13 @@ INTERACTIVE_OBJ * GetFromInventory(EERIE_S2D * pos)
 //   Gets real world position for an IO (can be used for non items)
 //   (even in an inventory or being dragged)
 // RESULT:
-//   Put the position in "pos". returns TRUE if position was found
-//   or FALSE if object is invalid, or position not defined.
+//   Put the position in "pos". returns true if position was found
+//   or false if object is invalid, or position not defined.
 //*************************************************************************************
 bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 {
 	// Valid IO ?
-	if (!io) return FALSE;
+	if (!io) return false;
 
 	// Is this object being Dragged by player ?
 	if (DRAGINTER == io)
@@ -1666,7 +1666,7 @@ bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 		pos->x = player.pos.x;
 		pos->y = player.pos.y + 80.f; 
 		pos->z = player.pos.z;
-		return TRUE;
+		return true;
 	}
 
 	// Not in scene ?
@@ -1679,7 +1679,7 @@ bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 			pos->x = player.pos.x;
 			pos->y = player.pos.y + 80.f; 
 			pos->z = player.pos.z;
-			return TRUE;
+			return true;
 		}
 
 		// Is it in any player inventory ?
@@ -1692,7 +1692,7 @@ bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 						pos->x = player.pos.x;
 						pos->y = player.pos.y + 80.f; 
 						pos->z = player.pos.z;
-						return TRUE;
+						return true;
 					}
 				}
 
@@ -1711,7 +1711,7 @@ bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 						if (id->slot[k][j].io == io)
 						{
 							Vector_Copy(pos, &ioo->pos);
-							return TRUE;
+							return true;
 						}
 					}
 			}
@@ -1720,7 +1720,7 @@ bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 
 	// Default position.
 	Vector_Copy(pos, &io->pos);
-	return TRUE;
+	return true;
 }
 
 //*************************************************************************************
@@ -1731,7 +1731,7 @@ bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 //*************************************************************************************
 bool GetItemWorldPositionSound(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 {
-	if (!io) return FALSE;
+	if (!io) return false;
 
 	long i, j, k;
 	INVENTORY_DATA * id;
@@ -1739,7 +1739,7 @@ bool GetItemWorldPositionSound(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 	if (DRAGINTER == io)
 	{
 		ARX_PLAYER_FrontPos(pos);
-		return TRUE;
+		return true;
 	}
 
 	if (io->show != SHOW_FLAG_IN_SCENE)
@@ -1748,7 +1748,7 @@ bool GetItemWorldPositionSound(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 		{
 			// in player inventory
 			ARX_PLAYER_FrontPos(pos);
-			return TRUE;
+			return true;
 		}
 
 		if (player.bag)
@@ -1760,7 +1760,7 @@ bool GetItemWorldPositionSound(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 						{
 							// in player inventory
 							ARX_PLAYER_FrontPos(pos);
-							return TRUE;
+							return true;
 						}
 					}
 
@@ -1780,7 +1780,7 @@ bool GetItemWorldPositionSound(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 							pos->x = ioo->pos.x;
 							pos->y = ioo->pos.y;
 							pos->z = ioo->pos.z;
-							return TRUE;
+							return true;
 						}
 					}
 			}
@@ -1790,7 +1790,7 @@ bool GetItemWorldPositionSound(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 	pos->x = io->pos.x;
 	pos->y = io->pos.y;
 	pos->z = io->pos.z;
-	return TRUE;
+	return true;
 }
 
 //*************************************************************************************
@@ -1934,7 +1934,7 @@ void ReplaceInAllInventories(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 // Takes an object from an inventory (be it player's or secondary inventory)
 // at screen position "xx,yy"
 // Puts that object in player's "hand" (cursor)
-// returns TRUE if an object was taken FALSE elseway
+// returns true if an object was taken false elseway
 //*************************************************************************************
 bool TakeFromInventory(EERIE_S2D * pos)
 {
@@ -1942,7 +1942,7 @@ bool TakeFromInventory(EERIE_S2D * pos)
 	INTERACTIVE_OBJ * io = GetFromInventory(pos);
 	INTERACTIVE_OBJ * ioo;
 
-	if (io == NULL) return FALSE;
+	if (io == NULL) return false;
 
 	if (SecondaryInventory != NULL)
 	{
@@ -1965,7 +1965,7 @@ bool TakeFromInventory(EERIE_S2D * pos)
 
 						if (player.gold < cos)
 						{
-							return FALSE;
+							return false;
 						}
 
 						ARX_SOUND_PlayInterface(SND_GOLD);
@@ -1982,7 +1982,7 @@ bool TakeFromInventory(EERIE_S2D * pos)
 							ARX_SOUND_PlayInterface(SND_INVSTD);
 							Set_DragInter(ioo);
 							ARX_INVENTORY_Declare_Inventory_2_Out(ioo);
-							return TRUE;
+							return true;
 						}
 					}
 				}
@@ -2015,7 +2015,7 @@ bool TakeFromInventory(EERIE_S2D * pos)
 
 					ARX_INVENTORY_Declare_Inventory_2_Out(ioo);
 					ARX_INVENTORY_IdentifyIO(ioo);
-					return TRUE;
+					return true;
 				}
 			}
 
@@ -2088,7 +2088,7 @@ bool TakeFromInventory(EERIE_S2D * pos)
 						SendInitScriptEvent(ioo);
 						ARX_INVENTORY_Declare_InventoryOut(ioo);
 						ARX_INVENTORY_IdentifyIO(ioo);
-						return TRUE;
+						return true;
 					}
 				}
 		}
@@ -2122,7 +2122,7 @@ bool TakeFromInventory(EERIE_S2D * pos)
 	ARX_INVENTORY_Declare_InventoryOut(io);
 	RemoveFromAllInventories(io);
 	ARX_INVENTORY_IdentifyIO(io);
-	return TRUE;
+	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -2134,11 +2134,11 @@ bool IsInPlayerInventory(INTERACTIVE_OBJ * io)
 			{
 				if (inventory[iNbBag][i][j].io == io)
 				{
-					return TRUE;
+					return true;
 				}
 			}
 
-	return FALSE;
+	return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -2151,12 +2151,12 @@ bool IsInSecondaryInventory(INTERACTIVE_OBJ * io)
 			{
 				if (SecondaryInventory->slot[i][j].io == io)
 				{
-					return TRUE;
+					return true;
 				}
 			}
 	}
 
-	return FALSE;
+	return false;
 }
 
 //-----------------------------------------------------------------------------

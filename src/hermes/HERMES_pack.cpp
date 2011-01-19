@@ -187,7 +187,7 @@ bool EVE_REPERTOIRE::DelSousRepertoire(EVE_U8 * sname)
 
 			if (l == strlen((const EVE_8 *)sname))
 			{
-				ok = TRUE;
+				ok = true;
 			}
 			else
 			{
@@ -224,7 +224,7 @@ bool EVE_REPERTOIRE::DelSousRepertoire(EVE_U8 * sname)
 	}
 
 	delete[] fdir;
-	return FALSE;
+	return false;
 }
 //#############################################################################
 EVE_REPERTOIRE * EVE_REPERTOIRE::GetSousRepertoire(EVE_U8 * sname)

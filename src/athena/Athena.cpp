@@ -527,7 +527,7 @@ namespace ATHENA
 
 		if (flags & AAL_FLAG_MULTITHREAD && !mutex)
 		{
-			mutex = CreateMutex(NULL, FALSE, NULL);
+			mutex = CreateMutex(NULL, false, NULL);
 
 			if (!mutex) return AAL_ERROR_SYSTEM;
 

@@ -130,7 +130,7 @@ void DebugSphere(float x, float y, float z, float siz, long tim, D3DCOLOR color)
 	if ((j != -1) && (!ARXPausedTimer))
 	{
 		ParticleCount++;
-		particle[j].exist		=	TRUE;
+		particle[j].exist		=	true;
 		particle[j].zdec		=	0;
 		particle[j].ov.x		=	x;
 		particle[j].ov.y		=	y;
@@ -241,10 +241,10 @@ bool RayCollidingPoly(EERIE_3D * orgn, EERIE_3D * dest, EERIEPOLY * ep, EERIE_3D
 {
 	if (IntersectLinePlane(orgn, dest, ep, hit))
 	{
-		if (RayIn3DPolyNoCull(orgn, dest, hit, ep)) return TRUE;
+		if (RayIn3DPolyNoCull(orgn, dest, hit, ep)) return true;
 	}
 
-	return FALSE;
+	return false;
 }
 //*************************************************************************************
 //*************************************************************************************
@@ -271,10 +271,10 @@ bool IntersectLinePlane(EERIE_3D * l1, EERIE_3D * l2, EERIEPOLY * ep, EERIE_3D *
 		intersect->y = (v.y * d) + l2->y;
 		intersect->z = (v.z * d) + l2->z;
 
-		return TRUE;
+		return true;
 	}
 
-	return FALSE;
+	return false;
 }
  
 //*************************************************************************************
@@ -661,15 +661,15 @@ bool IsAnyPolyThere(float x, float z)
 	long px, pz;
 	F2L(x * ACTIVEBKG->Xmul, &px);
 
-	if (px >= ACTIVEBKG->Xsize)			return FALSE;
+	if (px >= ACTIVEBKG->Xsize)			return false;
 
-	if (px < 0)							return FALSE;
+	if (px < 0)							return false;
 
 	F2L(z * ACTIVEBKG->Zmul, &pz);
 
-	if (pz >= ACTIVEBKG->Zsize)			return FALSE;
+	if (pz >= ACTIVEBKG->Zsize)			return false;
 
-	if (pz < 0)							return FALSE;
+	if (pz < 0)							return false;
 
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;
@@ -679,10 +679,10 @@ bool IsAnyPolyThere(float x, float z)
 	{
 		ep = feg->polyin[k];
 
-		if (PointIn2DPolyXZ(ep, x, z)) return TRUE;
+		if (PointIn2DPolyXZ(ep, x, z)) return true;
 	}
 
-	return FALSE;
+	return false;
 }
 //*************************************************************************************
 //*************************************************************************************
@@ -930,7 +930,7 @@ bool GetTruePolyY(EERIEPOLY * ep, EERIE_3D * pos, float * ret)
 
 	n.y = (s21.z * s31.x) - (s21.x * s31.z);
 
-	if (n.y == 0.f) return FALSE; 
+	if (n.y == 0.f) return false; 
 
 	n.x = (s21.y * s31.z) - (s21.z * s31.y);
 	n.z = (s21.x * s31.y) - (s21.y * s31.x);
@@ -945,7 +945,7 @@ bool GetTruePolyY(EERIEPOLY * ep, EERIE_3D * pos, float * ret)
 	else if (s21.x > ep->max.y) s21.x = ep->max.y;
 
 	*ret = s21.x;
-	return TRUE;
+	return true;
 }
 
 //*************************************************************************************
@@ -1839,15 +1839,15 @@ bool Visible(EERIE_3D * orgn, EERIE_3D * dest, EERIEPOLY * epp, EERIE_3D * hit)
 fini:
 	;
 
-	if (!found_ep) return TRUE;
+	if (!found_ep) return true;
 
-	if (found_ep == epp) return TRUE;
+	if (found_ep == epp) return true;
 
 	hit->x	=	found_hit.x;
 	hit->y	=	found_hit.y;
 	hit->z	=	found_hit.z;
 
-	return FALSE;
+	return false;
 }
 
 
@@ -1946,11 +1946,11 @@ void BKG_VerticalReOrder(EERIE_BACKGROUND * eb)
 
 			if (eg->nbpoly > 1)
 			{
-				bool Reordered = FALSE;
+				bool Reordered = false;
 
 				while (!Reordered)
 				{
-					Reordered = TRUE;
+					Reordered = true;
 
 					for (short k = 0; k < eg->nbpoly - 1; k++)
 					{
@@ -1963,7 +1963,7 @@ void BKG_VerticalReOrder(EERIE_BACKGROUND * eb)
 							memcpy(&tep, ep2, sizeof(EERIEPOLY));
 							memcpy(ep2, ep, sizeof(EERIEPOLY));
 							memcpy(ep, &tep, sizeof(EERIEPOLY));
-							Reordered = FALSE;
+							Reordered = false;
 						}
 					}
 				}
@@ -2384,9 +2384,9 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv)
 bool LittleAngularDiff(EERIE_3D * norm, EERIE_3D * norm2)
 {
 	if (Distance3D(norm->x, norm->y, norm->z,
-	               norm2->x, norm2->y, norm2->z) < 1.41421f) return TRUE;
+	               norm2->x, norm2->y, norm2->z) < 1.41421f) return true;
 
-	return FALSE;
+	return false;
 }
 extern void ARX_PrepareBackgroundNRMLs();
 
@@ -2633,9 +2633,9 @@ bool PointInBBox(EERIE_3D * point, EERIE_2D_BBOX * bb)
 	        ||	(point->z > bb->max.y)
 	        ||	(point->z < bb->min.y)
 	   )
-		return FALSE;
+		return false;
 
-	return TRUE;
+	return true;
 }
 
 void EERIEPOLY_Compute_PolyIn()
@@ -2798,7 +2798,7 @@ bool GetNameInfo(char * name1, long * type, long * val1, long * val2)
 			*type = TYPE_ROOM;
 			*val1 = atoi(name + 2);
 			*val2 = 0;
-			return TRUE;
+			return true;
 		}
 
 		if ((name[1] == 'O') && (name[2] == 'O')
@@ -2807,7 +2807,7 @@ bool GetNameInfo(char * name1, long * type, long * val1, long * val2)
 			*type = TYPE_ROOM;
 			*val1 = atoi(name + 5);
 			*val2 = 0;
-			return TRUE;
+			return true;
 		}
 	}
 
@@ -2821,10 +2821,10 @@ bool GetNameInfo(char * name1, long * type, long * val1, long * val2)
 		temp[3] = 0;
 		*val1 = atoi(temp);
 		*val2 = atoi(name + 11);
-		return TRUE;
+		return true;
 	}
 
-	return FALSE;
+	return false;
 }
 extern long COMPUTE_PORTALS;
 void EERIE_PORTAL_Blend_Portals_And_Rooms()
@@ -3652,16 +3652,16 @@ bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj, long idx, long grs)
 {
 	long ii;
 
-	if (eobj == NULL) return FALSE;
+	if (eobj == NULL) return false;
 
 	for (long i = 0; i < eobj->grouplist[grs].nb_index; i++)
 	{
 		ii = (long)eobj->grouplist[grs].indexes[i];
 
-		if (ii == idx) return TRUE;
+		if (ii == idx) return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 #define NON_PORTAL_VERSION 0.136f
@@ -3755,7 +3755,7 @@ long USE_FAST_SCENES = 1;
 bool FastSceneLoad(char * partial_path)
 {
 	
-	if (!USE_FAST_SCENES) return FALSE;
+	if (!USE_FAST_SCENES) return false;
 
 	char path[256];
 	sprintf(path, "%sGame\\%s", Project.workingdir, partial_path);
@@ -3766,13 +3766,13 @@ bool FastSceneLoad(char * partial_path)
 
 	sprintf(fic, "%sfast.fts", path);
 
-	if (!PAK_FileExist(fic)) return FALSE;
+	if (!PAK_FileExist(fic)) return false;
 
 	long taille;
 	
 	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(fic, &taille);
 
-	if (dat == NULL) return FALSE;
+	if (dat == NULL) return false;
 
 	long pos = 0;
 	UNIQUE_HEADER * uh = (UNIQUE_HEADER *)dat;
@@ -4255,19 +4255,19 @@ lasuite:
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
 	free(dat);
-	return TRUE;
+	return true;
 
 release:
 	;
 	free(dat);
-	return FALSE;
+	return false;
 }
 bool FastSceneSave(char * partial_path, EERIE_MULTI3DSCENE * ms)
 {
 	char path[256];
 	sprintf(path, "%sGame\\%s", Project.workingdir, partial_path);
 
-	if (!CreateFullPath(path)) return FALSE;
+	if (!CreateFullPath(path)) return false;
 
 	unsigned long	handle;
 	long idx;
@@ -4354,7 +4354,7 @@ bool FastSceneSave(char * partial_path, EERIE_MULTI3DSCENE * ms)
 //					if (count > 60)
 //					{
 //						free(dat);
-//						return FALSE;
+//						return false;
 //					}
 //				}
 //			}
@@ -4595,13 +4595,13 @@ bool FastSceneSave(char * partial_path, EERIE_MULTI3DSCENE * ms)
 	if (!(handle = FileOpenWrite(fic)))
 	{
 		free(dat);
-		return FALSE;
+		return false;
 	}
 
 	if (FileWrite(handle, dat, compressedstart) != compressedstart)
 	{
 		free(dat);
-		return FALSE;
+		return false;
 	}
 
 	char * compressed;
@@ -4615,18 +4615,18 @@ bool FastSceneSave(char * partial_path, EERIE_MULTI3DSCENE * ms)
 	{
 		FileCloseWrite(handle);
 		free(dat);
-		return FALSE;
+		return false;
 	}
 
 	free(compressed);
 	FileCloseWrite(handle);
 	free(dat);
-	return TRUE;
+	return true;
 error:
 	;
 	ShowPopup("FTL Memory Problem...");
 	free(dat);
-	return FALSE;
+	return false;
 }
 
 void WriteMSEData(char * path, EERIE_MULTI3DSCENE * ms)

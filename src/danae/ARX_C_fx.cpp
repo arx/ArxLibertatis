@@ -98,7 +98,7 @@ bool FX_Blur(CINEMATIQUE * c, LPDIRECT3DDEVICE7 device, C_BITMAP * tb)
 	float		alpha, dalpha;
 	int			col;
 
-	if (c->numbitmap < 0 || !tb->actif) return FALSE;
+	if (c->numbitmap < 0 || !tb->actif) return false;
 
 	if (TotOldPos == NBOLDPOS)
 	{
@@ -138,7 +138,7 @@ bool FX_Blur(CINEMATIQUE * c, LPDIRECT3DDEVICE7 device, C_BITMAP * tb)
 		nb--;
 	}
 
-	return TRUE;
+	return true;
 }
 /*---------------------------------------------------------------------------------*/
 //POST FX
@@ -150,7 +150,7 @@ bool FX_FlashBlanc(LPDIRECT3DDEVICE7 device, float w, float h, float speed, int 
 
 	if (FlashAlpha < 0.f)
 	{
-		return FALSE;
+		return false;
 	}
 
 	if (FlashAlpha == 0.f) FlashAlpha = 1.f;
@@ -192,7 +192,7 @@ bool FX_FlashBlanc(LPDIRECT3DDEVICE7 device, float w, float h, float speed, int 
 
 	EERIEDRAWPRIM(device, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, v, 4, 0);
 
-	return TRUE;
+	return true;
 }
 /*---------------------------------------------------------------------------------*/
 bool SpecialFade(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, float h, float speed, float fps, float fpscurr)
@@ -202,7 +202,7 @@ bool SpecialFade(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, fl
 
 	w = (float)(mask->m_dwWidth) * 5.f;
 
-	if (SpecialFadeDx < 0.f) return FALSE;
+	if (SpecialFadeDx < 0.f) return false;
 
 	dv = (float)0.99999f * (h - 1) / mask->m_dwHeight;
 
@@ -296,7 +296,7 @@ bool SpecialFade(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, fl
 
 	device->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_CLAMP);
 
-	return TRUE;
+	return true;
 }
 /*---------------------------------------------------------------------------------*/
 bool SpecialFadeR(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, float h, float speed, float fps, float fpscurr)
@@ -306,7 +306,7 @@ bool SpecialFadeR(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, f
 
 	w = (float)(mask->m_dwWidth) * 5.f;
 
-	if (SpecialFadeDx < 0.f) return FALSE;
+	if (SpecialFadeDx < 0.f) return false;
 
 	dv = (float)0.99999f * (h - 1) / mask->m_dwHeight;
 
@@ -398,7 +398,7 @@ bool SpecialFadeR(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, f
 
 	device->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_CLAMP);
 
-	return TRUE;
+	return true;
 }
 /*---------------------------------------------------------------------------------*/
 float	DreamAng, DreamAng2;

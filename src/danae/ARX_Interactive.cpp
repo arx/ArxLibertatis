@@ -340,7 +340,7 @@ bool ARX_INTERACTIVE_Attach(long n_source, long n_target, char * ap_source, char
 {
 	if (!ValidIONum(n_source)
 	        ||	!ValidIONum(n_target))
-		return FALSE;
+		return false;
 
 	inter.iobj[n_source]->show = SHOW_FLAG_LINKED;
 	EERIE_LINKEDOBJ_UnLinkObjectFromObject(inter.iobj[n_target]->obj, inter.iobj[n_source]->obj);
@@ -492,13 +492,13 @@ bool ForceNPC_Above_Ground(INTERACTIVE_OBJ * io)
 			if (EEfabs(io->pos.y - io->physics.cyl.origin.y) < 45.f)
 			{
 				io->pos.y = io->physics.cyl.origin.y;
-				return TRUE;
+				return true;
 			}
-			else return FALSE;
+			else return false;
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 
 EERIE_3DOBJ * TheoToEerie_Fast(char * texpath, char * ficc, long flag, LPDIRECT3DDEVICE7 pd3dDevice)
@@ -1037,14 +1037,14 @@ bool IsLinkedNode(long i, long j)
 {
 	if ((!nodes.nodes[i].exist)
 	        ||	(!nodes.nodes[j].exist))
-		return FALSE;
+		return false;
 
 	for (long k = 0; k < MAX_LINKS; k++)
 	{
-		if (nodes.nodes[i].link[k] == j) return TRUE;
+		if (nodes.nodes[i].link[k] == j) return true;
 	}
 
-	return FALSE;
+	return false;
 }
 //*************************************************************************************
 //*************************************************************************************
@@ -1140,10 +1140,10 @@ bool ExistNodeName(char * name)
 	{
 		if ((nodes.nodes[i].exist)
 		        &&	(!strcmp(name, nodes.nodes[i].name)))
-			return TRUE;
+			return true;
 	}
 
-	return FALSE;
+	return false;
 }
 //*************************************************************************************
 //*************************************************************************************
@@ -2685,7 +2685,7 @@ INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long flags)
 
 	io->collision = 1;
 
-	if (CheckScriptSyntax_Loading(io) != TRUE) io->ioflags |= IO_FREEZESCRIPT;
+	if (CheckScriptSyntax_Loading(io) != true) io->ioflags |= IO_FREEZESCRIPT;
 
 	return io;
 }
@@ -2759,7 +2759,7 @@ INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, char * file)
 	io->ioflags = IO_CAMERA;
 	io->collision = 0;
 
-	if (CheckScriptSyntax_Loading(io) != TRUE) io->ioflags |= IO_FREEZESCRIPT;
+	if (CheckScriptSyntax_Loading(io) != true) io->ioflags |= IO_FREEZESCRIPT;
 
 	return io;
 }
@@ -2829,7 +2829,7 @@ INTERACTIVE_OBJ * AddMarker(LPDIRECT3DDEVICE7 pd3dDevice, char * file)
 	io->ioflags = IO_MARKER;
 	io->collision = 0;
 
-	if (CheckScriptSyntax_Loading(io) != TRUE) io->ioflags |= IO_FREEZESCRIPT;
+	if (CheckScriptSyntax_Loading(io) != true) io->ioflags |= IO_FREEZESCRIPT;
 
 	return io;
 }
@@ -3152,7 +3152,7 @@ INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long flags)
 	io->collision = 1;
 	io->inv = NULL;
 
-	if (CheckScriptSyntax_Loading(io) != TRUE) io->ioflags |= IO_FREEZESCRIPT;
+	if (CheckScriptSyntax_Loading(io) != true) io->ioflags |= IO_FREEZESCRIPT;
 
 	ARX_INTERACTIVE_HideGore(io);
 	return io;
@@ -3294,7 +3294,7 @@ void MakeIOIdent(INTERACTIVE_OBJ * io)
 bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t)
 {
 	if (!io)
-		return FALSE;
+		return false;
 
 	char name1[256];
 	char ident[256];;
@@ -3313,7 +3313,7 @@ bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t)
 
 				if (!strcasecmp(name1, name2))
 				{
-					return TRUE;
+					return true;
 				}
 			}
 		}
@@ -3325,17 +3325,17 @@ bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t)
 	sprintf(file2, "%s%s", file2, ident);
 
 	if (PAK_DirectoryExist(file2))
-		return TRUE;
+		return true;
 
 	if (LAST_CHINSTANCE != -1)
 	{
 		ARX_CHANGELEVEL_MakePath();
 
 		if (ARX_Changelevel_CurGame_Seek(ident))
-			return TRUE;
+			return true;
 	}
 
-	return FALSE;
+	return false;
 }
 //*************************************************************************************
 // Creates a Temporary IO Ident
@@ -3547,7 +3547,7 @@ INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, char * fil, long flags)
 	io->infracolor.b = 1.f;
 	io->collision = 0;
 
-	if (CheckScriptSyntax_Loading(io) != TRUE) io->ioflags |= IO_FREEZESCRIPT;
+	if (CheckScriptSyntax_Loading(io) != true) io->ioflags |= IO_FREEZESCRIPT;
 
 	return io;
 }
@@ -3700,7 +3700,7 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag, EERIE_3D * _pRe
 bool IsEquipedByPlayer(INTERACTIVE_OBJ * io)
 {
 	if (!io)
-		return FALSE;
+		return false;
 
 	if ((io->ioflags & IO_ICONIC) && (io->show == SHOW_FLAG_ON_PLAYER))
 		return true;
@@ -3712,7 +3712,7 @@ bool IsEquipedByPlayer(INTERACTIVE_OBJ * io)
 		if ((player.equiped[i] != 0) && (player.equiped[i] == num)) return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 extern long LOOKING_FOR_SPELL_TARGET;
@@ -3817,7 +3817,7 @@ bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 
 	if ((!io)
 	        ||	(!io->obj))
-		return FALSE;
+		return false;
 
 	if (Distance3D(pos->x, pos->y, pos->z, io->pos.x, io->pos.y, io->pos.z) < 190.f)
 	{
@@ -3831,7 +3831,7 @@ bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 				idx = io->obj->grouplist[i].origin;
 
 				if (Distance3D(pos->x, pos->y, pos->z, vlist[idx].v.x, vlist[idx].v.y, vlist[idx].v.z) <= 50.f)
-					return TRUE;
+					return true;
 			}
 		}
 		else
@@ -3840,12 +3840,12 @@ bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 			{
 				if (i != io->obj->origin)
 					if (Distance3D(pos->x, pos->y, pos->z, vlist[i].v.x, vlist[i].v.y, vlist[i].v.z) <= 30.f)
-						return TRUE;
+						return true;
 			}
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 
 void SetYlsideDeath(INTERACTIVE_OBJ * io)
@@ -3855,7 +3855,7 @@ void SetYlsideDeath(INTERACTIVE_OBJ * io)
 }
 bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 {
-	bool col = FALSE;
+	bool col = false;
 	float dist;
 	long i, ret;
 	long avoid = -1;
@@ -3894,7 +3894,7 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 				{
 					if (PointInCylinder(&io->physics.cyl, &obj->pbox->vert[kk].pos))
 					{
-						return TRUE;
+						return true;
 					}
 				}
 				else if (io->ioflags & IO_FIX)
@@ -3936,8 +3936,8 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 									}
 								}
 
-								return TRUE;
-								col = TRUE;
+								return true;
+								col = true;
 								ret = 1;
 							}
 						}
@@ -3951,7 +3951,7 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 }
 bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 {
-	bool col = FALSE;
+	bool col = false;
 	float dist;
 	long i, ret;
 	long avoid = -1;
@@ -3999,7 +3999,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 				for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
 					if (PointInCylinder(&io->physics.cyl, &obj->pbox->vert[kk].pos))
 					{
-						return TRUE;
+						return true;
 					}
 			}
 			else if (io->ioflags & IO_FIX)
@@ -4067,7 +4067,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 
 										if (PointIn2DPolyXZ(&ep, sphere.origin.x, sphere.origin.z))
 										{
-											return TRUE;
+											return true;
 										}
 									}
 								}
@@ -4105,7 +4105,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 											}
 										}
 
-										return TRUE;
+										return true;
 									}
 							}
 						}
@@ -4129,7 +4129,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 										SendIOScriptEvent(io_source, SM_COLLIDE_DOOR, "", NULL);
 									}
 								}
-								return TRUE;
+								return true;
 							}
 					}
 				}
@@ -4307,7 +4307,7 @@ void UpdateCameras()
 						io->_camdata->cam.lasttarget.x = smoothtarget.x;
 						io->_camdata->cam.lasttarget.y = smoothtarget.y;
 						io->_camdata->cam.lasttarget.z = smoothtarget.z;
-						io->_camdata->cam.lastinfovalid = TRUE;
+						io->_camdata->cam.lastinfovalid = true;
 						io->_camdata->cam.lastpos.x = io->_camdata->cam.pos.x;
 						io->_camdata->cam.lastpos.y = io->_camdata->cam.pos.y;
 						io->_camdata->cam.lastpos.z = io->_camdata->cam.pos.z;
@@ -4324,7 +4324,7 @@ void UpdateCameras()
 						io->_camdata->cam.lasttarget.x = io->target.x;
 						io->_camdata->cam.lasttarget.y = io->target.y;
 						io->_camdata->cam.lasttarget.z = io->target.z;
-						io->_camdata->cam.lastinfovalid = TRUE;
+						io->_camdata->cam.lastinfovalid = true;
 						io->_camdata->cam.lastpos.x = io->_camdata->cam.pos.x;
 						io->_camdata->cam.lastpos.y = io->_camdata->cam.pos.y;
 						io->_camdata->cam.lastpos.z = io->_camdata->cam.pos.z;
@@ -4346,7 +4346,7 @@ void UpdateCameras()
 					io->_camdata->cam.lasttarget.x = io->target.x;
 					io->_camdata->cam.lasttarget.y = io->target.y;
 					io->_camdata->cam.lasttarget.z = io->target.z;
-					io->_camdata->cam.lastinfovalid = TRUE;
+					io->_camdata->cam.lastinfovalid = true;
 					io->_camdata->cam.lastpos.x = io->_camdata->cam.pos.x;
 					io->_camdata->cam.lastpos.y = io->_camdata->cam.pos.y;
 					io->_camdata->cam.lastpos.z = io->_camdata->cam.pos.z;
@@ -4758,7 +4758,7 @@ bool IsSameObject(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 	        ||	(io->ioflags & IO_UNIQUE)
 	        ||	(io->durability != ioo->durability)
 	        ||	(io->max_durability != ioo->max_durability))
-		return FALSE;
+		return false;
 
 	if	((io->ioflags & IO_ITEM)
 	        &&	(ioo->ioflags & IO_ITEM)
@@ -4768,28 +4768,28 @@ bool IsSameObject(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 		if ((io->locname) && (ioo->locname))
 		{
 			if (strcmp(io->locname, ioo->locname) == 0)
-				return TRUE;
+				return true;
 		}
 		else
-			return TRUE;
+			return true;
 	}
 
-	return FALSE;
+	return false;
 }
 bool HaveCommonGroup(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 {
-	if ((!io) || (!ioo)) return FALSE;
+	if ((!io) || (!ioo)) return false;
 
 	for (long i = 0; i < io->nb_iogroups; i++)
 	{
 		for (long k = 0; k < ioo->nb_iogroups; k++)
 		{
 			if (!strcasecmp(io->iogroups[i].name, ioo->iogroups[k].name))
-				return TRUE;
+				return true;
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 
 float ARX_INTERACTIVE_GetArmorClass(INTERACTIVE_OBJ * io)

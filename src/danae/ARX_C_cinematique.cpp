@@ -160,15 +160,15 @@ CINEMATIQUE::CINEMATIQUE(LPDIRECT3DDEVICE7 _m_pd3dDevice, int _w, int _h)
 	numbitmap = -1;
 	numbitmapsuiv = -1;
 	fx = -1;
-	changekey = TRUE;
+	changekey = true;
 	idsound = -1;
 	key = NULL;
-	projectload = FALSE; 
+	projectload = false; 
 	ti = tichoose = INTERP_BEZIER;
 	speedchoose = 1.f;
 	InsertKey = 0;
-	ShiftKey = FALSE;
-	AltKey = FALSE;
+	ShiftKey = false;
+	AltKey = false;
 
 	m_flIntensityRND = 0.f;
 
@@ -246,15 +246,15 @@ HRESULT CINEMATIQUE::OneTimeSceneReInit()
 	numbitmap = -1;
 	numbitmapsuiv = -1;
 	fx = -1;
-	changekey = TRUE;
+	changekey = true;
 	idsound = -1;
 	key = NULL;
 
-	projectload = FALSE;
+	projectload = false;
 	InsertKey = 0;
 	KeyCopy = NULL;
 
-	LeftButton = RightButton = FALSE;
+	LeftButton = RightButton = false;
 
 	DeleteAllBitmap(GDevice);
 	DeleteAllSound();
@@ -263,8 +263,8 @@ HRESULT CINEMATIQUE::OneTimeSceneReInit()
 	InitSound(this);
 	DeleteTrack();
 
-	FlashBlancEnCours = FALSE;
-	SpecialFadeEnCours = FALSE;
+	FlashBlancEnCours = false;
+	SpecialFadeEnCours = false;
 
 	LSoundChoose = C_LANGUAGE_ENGLISH << 8;
 
@@ -274,7 +274,7 @@ HRESULT CINEMATIQUE::OneTimeSceneReInit()
 }
 HRESULT CINEMATIQUE::New()
 {
-	projectload = FALSE;
+	projectload = false;
 
 	numbitmap = -1;
 	numbitmapsuiv = -1;
@@ -282,7 +282,7 @@ HRESULT CINEMATIQUE::New()
 	key = NULL;
 	InsertKey = 0;
 	KeyCopy = NULL;
-	LeftButton = RightButton = FALSE;
+	LeftButton = RightButton = false;
 
 	DeleteTrack();
 	DeleteAllBitmap(GDevice);
@@ -290,9 +290,9 @@ HRESULT CINEMATIQUE::New()
 
 	AllocTrack(0, 100, 30.f);
 	FillKeyTemp(&pos, angz, 0, -1, -1, INTERP_BEZIER, 0x00FFFFFF, 0x00FFFFFF, 0x00FFFFFF, 1.f, -1, 1, NULL, &posgrille, angzgrille, 1.f);
-	AddKey(&KeyTemp, TRUE, TRUE, TRUE);
+	AddKey(&KeyTemp, true, true, true);
 	FillKeyTemp(&pos, angz, 100, -1, -1, INTERP_BEZIER, 0x00FFFFFF, 0x00FFFFFF, 0x00FFFFFF, 1.f, -1, 1, NULL, &posgrille, angzgrille, 1.f);
-	AddKey(&KeyTemp, TRUE, TRUE, TRUE);
+	AddKey(&KeyTemp, true, true, true);
 	this->lightd = this->lightchoose = this->light;
 
 	InitMapLoad(this);
@@ -301,12 +301,12 @@ HRESULT CINEMATIQUE::New()
 
 	SetCurrFrame(GetStartFrame());
 
-	projectload = TRUE;
+	projectload = true;
 
-	FlashBlancEnCours = FALSE;
-	SpecialFadeEnCours = FALSE;
+	FlashBlancEnCours = false;
+	SpecialFadeEnCours = false;
 
-	ProjectModif = FALSE;
+	ProjectModif = false;
 
 	LSoundChoose = C_LANGUAGE_ENGLISH << 8;
 
@@ -324,15 +324,15 @@ HRESULT CINEMATIQUE::InitDeviceObjects()
 	D3DUtil_InitMaterial(mtrl, 1.f, 1.f, 1.f);
 	m_pd3dDevice->SetMaterial(&mtrl);
 
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_TEXTUREPERSPECTIVE , TRUE);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE);
+	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_TEXTUREPERSPECTIVE , true);
+	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
 	SETZWRITE(GDevice, false);
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_AMBIENT,  0x0a0a0a0a);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, TRUE);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SPECULARENABLE, FALSE);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_LASTPIXEL, TRUE); 
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_CLIPPING , TRUE);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_LIGHTING  , FALSE);
+	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, true);
+	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SPECULARENABLE, false);
+	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_LASTPIXEL, true); 
+	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_CLIPPING , true);
+	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_LIGHTING  , false);
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_CULLMODE , D3DCULL_NONE);
 	m_pd3dDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_CLAMP);
 
@@ -387,10 +387,10 @@ HRESULT CINEMATIQUE::InitDeviceObjects()
 	m_pd3dDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFG_LINEAR);
 	m_pd3dDevice->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTFP_LINEAR);
 	m_pd3dDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, (DWORD)(0));
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
+	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
+	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
 
-	EditLight = FALSE;
+	EditLight = false;
 
 	return S_OK;
 }
@@ -403,20 +403,20 @@ HRESULT CINEMATIQUE::DeleteDeviceObjects()
 	D3DMATERIAL7 mtrl;
 	D3DUtil_InitMaterial(mtrl, 1.f, 1.f, 1.f);
 	m_pd3dDevice->SetMaterial(&mtrl);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_TEXTUREPERSPECTIVE , TRUE);
+	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_TEXTUREPERSPECTIVE , true);
 	danaeApp.EnableZBuffer();
 	SETZWRITE(GDevice, true);
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_AMBIENT,  0x0a0a0a0a);
 	// Setup Dither Mode
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, FALSE);
+	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, false);
 	// Setup Specular RenderState
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SPECULARENABLE, FALSE);
+	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SPECULARENABLE, false);
 	// Setup LastPixel RenderState
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_LASTPIXEL, TRUE); 
+	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_LASTPIXEL, true); 
 	// Setup Clipping RenderState
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_CLIPPING , TRUE);
+	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_CLIPPING , true);
 	// Disable Lighting RenderState
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_LIGHTING  , FALSE);
+	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_LIGHTING  , false);
 
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_CULLMODE , D3DCULL_CCW);
 	m_pd3dDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_WRAP);
@@ -451,8 +451,8 @@ HRESULT CINEMATIQUE::DeleteDeviceObjects()
 	m_pd3dDevice->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTFP_LINEAR);
 	m_pd3dDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, (DWORD)(0));
 
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE);
+	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
+	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, true);
 
 	m_pd3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
 	m_pd3dDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
@@ -670,12 +670,12 @@ HRESULT CINEMATIQUE::Render(float FDIFF)
 	{
 		m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0x00000000, 1.0f, 0L);
 		danaeApp.DANAEStartRender();
-		InRender = TRUE;
+		InRender = true;
 
 		if (InsertKey && NbBitmap)
 		{
 			FillKeyTemp(&pos, angz, GetCurrentFrame(), numbitmap, fx, ti, colorchoose, colorchoosed, colorflashchoose, speedchoose, idsound, force, &light, &posgrille, angzgrille, speedtrack);
-			AddDiffKey(this, &KeyTemp, TRUE, TRUE, TRUE);
+			AddDiffKey(this, &KeyTemp, true, true, true);
 
 			InsertKey = 0;
 		}
@@ -876,7 +876,7 @@ HRESULT CINEMATIQUE::Render(float FDIFF)
 
 		if (changekey)
 		{
-			changekey = FALSE;
+			changekey = false;
 		}
 
 		//post fx
@@ -900,7 +900,7 @@ HRESULT CINEMATIQUE::Render(float FDIFF)
 		}
 
 		CalcFPS();
-		InRender = FALSE;
+		InRender = false;
 	}
 
 	return S_OK;

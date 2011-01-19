@@ -229,7 +229,7 @@ void EERIE_PATHFINDER_Clear(long flag)
 static bool EERIE_PATHFINDER_Get_Next_Request(PATHFINDER_REQUEST * request)
 {
 	if (!request || !pathfinder_queue_start || !pathfinder_queue_start->valid)
-		return FALSE;
+		return false;
 
 	PATHFINDER_QUEUE_ELEMENT * cur = pathfinder_queue_start;
 
@@ -239,14 +239,14 @@ static bool EERIE_PATHFINDER_Get_Next_Request(PATHFINDER_REQUEST * request)
 	{
 		pathfinder_queue_start = cur->next;
 		free(cur);
-		return FALSE;
+		return false;
 	}
 
 	memcpy(request, &cur->req, sizeof(PATHFINDER_REQUEST));
 	pathfinder_queue_start = cur->next;
 	free(cur);
 
-	return TRUE;
+	return true;
 }
 LARGE_INTEGER Pstart_chrono, Pend_chrono;
 unsigned long BENCH_PATHFINDER = 0;
@@ -399,7 +399,7 @@ void EERIE_PATHFINDER_Create(EERIE_BACKGROUND * eb)
 		PATHFINDER_MUTEX = NULL;
 	}
 
-	PATHFINDER_MUTEX = CreateMutex(NULL, FALSE, NULL);
+	PATHFINDER_MUTEX = CreateMutex(NULL, false, NULL);
 	CURPATHFINDIO = NULL;
 	DWORD id;
 	PATHFINDER = (HANDLE)CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)PATHFINDER_Proc, NULL, 0, (LPDWORD)&id);

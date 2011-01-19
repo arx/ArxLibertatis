@@ -168,7 +168,7 @@ class CD3DFramework7
 		// Functions to aid rendering
 		HRESULT RestoreSurfaces();
 		HRESULT ShowFrame();
-		HRESULT FlipToGDISurface(bool bDrawFrame = FALSE);
+		HRESULT FlipToGDISurface(bool bDrawFrame = false);
 
 		VOID    Move(INT x, INT y);
 

@@ -86,7 +86,7 @@ INTERACTIVE_OBJ * PUSHABLE_NPC=NULL;
 long MOVING_CYLINDER=0;
  
 EERIE_3D vector2D;
-bool DIRECT_PATH=TRUE;
+bool DIRECT_PATH=true;
 long APPLY_PUSH=0;
 
 //-----------------------------------------------------------------------------
@@ -1523,7 +1523,7 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere,long target,long flags)
 float MAX_ALLOWED_PER_SECOND=12.f;
 //-----------------------------------------------------------------------------
 // Checks if a position is valid, Modify it for height if necessary
-// Returns TRUE or FALSE
+// Returns true or false
 
 bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flags)
 {
@@ -1703,12 +1703,12 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 //	+5 on 15
 //	
 //	memcpy(&ip->cyl.origin,&ip->targetpos,sizeof(EERIE_3D));
-//	return TRUE;
+//	return true;
 
 	ON_PLATFORM=0;
 	MOVING_CYLINDER=1;
 	COLLIDED_CLIMB_POLY=0;
-	DIRECT_PATH=TRUE;
+	DIRECT_PATH=true;
 	IO_PHYSICS test;
 
 	if (ip==NULL) 
@@ -1768,7 +1768,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 		}
 		else 
 		{
-			//return FALSE;
+			//return false;
 			if ((mvector.x==0.f) && (mvector.z==0.f))
 				return true;
 			
@@ -1785,7 +1785,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 				}
 			}
 
-			DIRECT_PATH=FALSE;
+			DIRECT_PATH=false;
 			// Must Attempt To Slide along collisions
 			register EERIE_3D vecatt;
 			EERIE_3D rpos;

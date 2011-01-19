@@ -217,8 +217,8 @@ float CExplosion::Render(LPDIRECT3DDEVICE7 device)
 {
 	if (this->key > 1) return 0;
 
-	SETALPHABLEND(device, TRUE);
-	SETZWRITE(device, FALSE);
+	SETALPHABLEND(device, true);
+	SETZWRITE(device, false);
 
 	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
@@ -422,8 +422,8 @@ float CExplosion::Render(LPDIRECT3DDEVICE7 device)
 
 	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
-	SETALPHABLEND(device, FALSE);
-	SETZWRITE(device, TRUE);
+	SETALPHABLEND(device, false);
+	SETZWRITE(device, true);
 
 	return 0;
 }
