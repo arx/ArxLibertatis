@@ -80,7 +80,7 @@ typedef struct
 	long			dynlight;
 	long			move;
 	INTERACTIVE_OBJ * io;
-	BOOL		bDrawBitmap;
+	bool		bDrawBitmap;
 } FLARES;
 
 //-----------------------------------------------------------------------------
@@ -110,7 +110,7 @@ typedef struct
 //-----------------------------------------------------------------------------
 typedef struct
 {
-	BOOL		exist;
+	bool		exist;
 	long		type;
 	EERIE_3D	ov;
 	EERIE_3D	move;
@@ -138,7 +138,7 @@ typedef struct
 //-----------------------------------------------------------------------------
 typedef struct
 {
-	BOOL		exist;
+	bool		exist;
 	long		selected;
 	EERIE_3D	pos;
 	EERIE_RGB	rgb;

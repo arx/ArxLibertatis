@@ -4122,7 +4122,7 @@ long ARX_CHANGELEVEL_Save(long instance, char * name)
 	char tcDst[256];
 	sprintf(tcSrc, "%sSCT_0.BMP", Project.workingdir);
 	sprintf(tcDst, "%sGSAVE.BMP", GameSavePath);
-	CopyFile(tcSrc, tcDst, FALSE);
+	CopyFile(tcSrc, tcDst, false);
 	DeleteFile(tcSrc);
 
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;

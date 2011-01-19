@@ -43,7 +43,7 @@ extern C_BITMAP	TabBitmap[];
 extern int		NbBitmap;
 extern C_TRACK	* CKTrack;
 char FileNameChoose[256];
-extern BOOL Restore;
+extern bool Restore;
 extern HWND HwndPere;
 extern int		NbSound;
 extern C_SOUND	TabSound[];
@@ -68,7 +68,7 @@ void ReadString(char * d)
 	}
 }
 /*----------------------------------------------------------------------*/
-BOOL LoadProject(CINEMATIQUE * c, char * dir, char * name)
+bool LoadProject(CINEMATIQUE * c, char * dir, char * name)
 {
 	int		nb, version;
 	C_TRACK	t;
@@ -89,7 +89,7 @@ BOOL LoadProject(CINEMATIQUE * c, char * dir, char * name)
 	strcat(AllTxt, name);
 	FCurr = PAK_fopen(AllTxt, "rb");
 
-	if (!FCurr) return FALSE;
+	if (!FCurr) return false;
 
 	ReadString(txt);
 
@@ -98,7 +98,7 @@ BOOL LoadProject(CINEMATIQUE * c, char * dir, char * name)
 		PAK_fclose(FCurr);
 		FCurr = NULL;
 		c->New();
-		return FALSE;
+		return false;
 	}
 
 	PAK_fread(&version, 4, 1, FCurr);
@@ -108,7 +108,7 @@ BOOL LoadProject(CINEMATIQUE * c, char * dir, char * name)
 		PAK_fclose(FCurr);
 		FCurr = NULL;
 		c->New();
-		return FALSE;
+		return false;
 	}
 
 	if (version >= ((1 << 16) | 61))
@@ -456,7 +456,7 @@ BOOL LoadProject(CINEMATIQUE * c, char * dir, char * name)
 	SetCurrFrame(0);
 
 	GereTrackNoPlay(c);
-	c->projectload = TRUE;
+	c->projectload = true;
 
 	InitUndo();
 
@@ -483,5 +483,5 @@ BOOL LoadProject(CINEMATIQUE * c, char * dir, char * name)
 
 	LSoundChoose = C_LANGUAGE_ENGLISH << 8;
 
-	return TRUE;
+	return true;
 }

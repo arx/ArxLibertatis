@@ -183,9 +183,9 @@ void ARXDRAW_DrawInterShadows(LPDIRECT3DDEVICE7 pd3dDevice)
 							if (first)
 							{
 								first=0;
-								SETZWRITE(pd3dDevice, FALSE );
+								SETZWRITE(pd3dDevice, false );
 								SETBLENDMODE(pd3dDevice,D3DBLEND_ZERO,D3DBLEND_INVSRCCOLOR);
-								SETALPHABLEND(pd3dDevice,TRUE);
+								SETALPHABLEND(pd3dDevice,true);
 								SETTC(pd3dDevice,Boom);
 							}
 
@@ -240,9 +240,9 @@ void ARXDRAW_DrawInterShadows(LPDIRECT3DDEVICE7 pd3dDevice)
 							if (first)
 							{
 								first=0;
-								SETZWRITE(pd3dDevice, FALSE );
+								SETZWRITE(pd3dDevice, false );
 								SETBLENDMODE(pd3dDevice,D3DBLEND_ZERO,D3DBLEND_INVSRCCOLOR);
-								SETALPHABLEND(pd3dDevice,TRUE);
+								SETALPHABLEND(pd3dDevice,true);
 								SETTC(pd3dDevice,Boom);
 							}
 
@@ -268,8 +268,8 @@ void ARXDRAW_DrawInterShadows(LPDIRECT3DDEVICE7 pd3dDevice)
 		
 		}
 
-	SETALPHABLEND(pd3dDevice,FALSE);
-	SETZWRITE(pd3dDevice, TRUE );
+	SETALPHABLEND(pd3dDevice,false);
+	SETZWRITE(pd3dDevice, true );
 	SetZBias(pd3dDevice,0);
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
 	
@@ -402,7 +402,7 @@ void ARXDRAW_DrawEyeBall(LPDIRECT3DDEVICE7 pd3dDevice)
 	rgb.g=d;
 	rgb.b=d;
 	SETBLENDMODE(pd3dDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-	SETALPHABLEND(pd3dDevice,TRUE);
+	SETALPHABLEND(pd3dDevice,true);
 	DrawEERIEObjEx(pd3dDevice,eyeballobj,&angle,&pos,&scale,&rgb);	
 }
 //*************************************************************************************
@@ -467,7 +467,7 @@ void ARXDRAW_DrawPolyBoom(LPDIRECT3DDEVICE7 pd3dDevice)
 	SetZBias(pd3dDevice,8);
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,0);
 	unsigned long tim = ARXTimeUL(); 	
-	SETALPHABLEND(pd3dDevice,TRUE);
+	SETALPHABLEND(pd3dDevice,true);
 
 	for ( i = 0 ; i < MAX_POLYBOOM ; i++ )
 	{
@@ -705,7 +705,7 @@ extern TextureContainer * InterTransTC[MAX_INTERTRANSPOL];
 
 void ARXDRAW_DrawAllInterTransPolyPos(LPDIRECT3DDEVICE7 pd3dDevice)
 {
-	SETALPHABLEND(pd3dDevice,TRUE);
+	SETALPHABLEND(pd3dDevice,true);
 	EERIEDrawnPolys+=INTERTRANSPOLYSPOS;
 
 	for (long i=0;i<INTERTRANSPOLYSPOS;i++) 
@@ -761,7 +761,7 @@ void ARXDRAW_DrawAllTransPolysPos( LPDIRECT3DDEVICE7 pd3dDevice, long MODIF )
 	int flg_NOCOUNT_USEVB = EERIE_NOCOUNT | (bSoftRender?EERIE_USEVB:0);
 	SetZBias( pd3dDevice, 1 );
 
-	SETALPHABLEND( pd3dDevice, TRUE );
+	SETALPHABLEND( pd3dDevice, true );
 
 	long i, to = 0; 
 
@@ -816,7 +816,7 @@ void ARXDRAW_DrawAllTransPolysPos( LPDIRECT3DDEVICE7 pd3dDevice, long MODIF )
 				{
 					pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
 					pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
-					SETALPHABLEND( pd3dDevice, TRUE );	
+					SETALPHABLEND( pd3dDevice, true );	
 					D3DTLVERTEX verts[4];
 					SETTC( pd3dDevice, enviro );
 
@@ -861,7 +861,7 @@ void ARXDRAW_DrawAllTransPolysPos( LPDIRECT3DDEVICE7 pd3dDevice, long MODIF )
 				pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
 				pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
 
-				SETALPHABLEND( pd3dDevice, TRUE );	
+				SETALPHABLEND( pd3dDevice, true );	
 				
 				D3DTLVERTEX verts[4];
 

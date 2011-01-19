@@ -111,7 +111,7 @@ extern long ZMAPMODE;
 extern float fZFogStart;
 //-----------------------------------------------------------------------------
 ANIM_HANDLE animations[MAX_ANIMATIONS];
-BOOL MIPM;
+bool MIPM;
 D3DTLVERTEX LATERDRAWHALO[HALOMAX*4];
 EERIE_LIGHT * llights[32];
 EERIE_QUAT * BIGQUAT;
@@ -1267,8 +1267,8 @@ TextureContainer *pTex=GetTextureList();
 	}
 
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,0);
-	SETALPHABLEND(GDevice,TRUE);
-	SETZWRITE(GDevice, FALSE); 
+	SETALPHABLEND(GDevice,true);
+	SETZWRITE(GDevice, false); 
 
 	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
 	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
@@ -1291,8 +1291,8 @@ TextureContainer *pTex=GetTextureList();
 	}
 
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
-	SETALPHABLEND(GDevice,FALSE);
-	SETZWRITE(GDevice,TRUE);
+	SETALPHABLEND(GDevice,false);
+	SETZWRITE(GDevice,true);
 
 	if(bGATI8500)
 	{
@@ -3698,11 +3698,11 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 
 					pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
 					pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
-					SETALPHABLEND( pd3dDevice, TRUE );			
-					SETZWRITE( pd3dDevice, FALSE );
+					SETALPHABLEND( pd3dDevice, true );			
+					SETZWRITE( pd3dDevice, false );
 					EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, &vert_list, 3, 0, bSoftRender?EERIE_USEVB:0);
-					SETALPHABLEND( pd3dDevice, FALSE );			
-					SETZWRITE( pd3dDevice, TRUE );
+					SETALPHABLEND( pd3dDevice, false );			
+					SETZWRITE( pd3dDevice, true );
 				}				
 	}
 

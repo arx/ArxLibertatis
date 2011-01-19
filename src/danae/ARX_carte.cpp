@@ -100,7 +100,7 @@ C_ARX_Carte::C_ARX_Carte(LPDIRECT3DDEVICE7 d,EERIE_BACKGROUND *bkg,int nbpix,int
 //#############################################################################################
 // Render de la scene
 //#############################################################################################
-BOOL C_ARX_Carte::Render(void)
+bool C_ARX_Carte::Render(void)
 {
 	if((!this->device)||(!this->background)) return E_FAIL;
 
@@ -219,7 +219,7 @@ void C_ARX_Carte::IncMoveMap(float incx,float incz)
 //#############################################################################################
 // CreateSurfTemp
 //#############################################################################################
-BOOL C_ARX_Carte::CreateSurfaceTemp(CD3DFramework7 *framework)
+bool C_ARX_Carte::CreateSurfaceTemp(CD3DFramework7 *framework)
 {
 	if(this->surfacetemp)
 	{
@@ -228,7 +228,7 @@ BOOL C_ARX_Carte::CreateSurfaceTemp(CD3DFramework7 *framework)
 
 	LPDIRECTDRAW7 ddraw=framework->GetDirectDraw();
 
-	if(!ddraw) return FALSE;
+	if(!ddraw) return false;
 
     // Setup the new surface desc
     DDSURFACEDESC2 ddsd;
@@ -238,7 +238,7 @@ BOOL C_ARX_Carte::CreateSurfaceTemp(CD3DFramework7 *framework)
 	if(!surfacerender)
 	{
         ddraw->Release();
-        return FALSE;
+        return false;
 	}
 
     surfacerender->GetSurfaceDesc(&ddsd);
@@ -254,22 +254,22 @@ BOOL C_ARX_Carte::CreateSurfaceTemp(CD3DFramework7 *framework)
     if(FAILED(hr=ddraw->CreateSurface(&ddsd,&this->surfacetemp,NULL)))
     {
         ddraw->Release();
-        return FALSE;
+        return false;
     }
 
-	return TRUE;
+	return true;
 }
 //#############################################################################################
 // BltOnSurfTemp
 //#############################################################################################
-BOOL C_ARX_Carte::BltOnSurfTemp(CD3DFramework7 *framework,int x,int y,int dw,int dh,int largs,int largh)
+bool C_ARX_Carte::BltOnSurfTemp(CD3DFramework7 *framework,int x,int y,int dw,int dh,int largs,int largh)
 {
 LPDIRECTDRAWSURFACE7	surfacerender;
 RECT					src,dst;
 
 	surfacerender=framework->GetRenderSurface();
 
-	if(!surfacerender) return FALSE;
+	if(!surfacerender) return false;
 
 	int n=this->nbpixels>>1;
 	src.left=n;
@@ -281,16 +281,16 @@ RECT					src,dst;
 	dst.right=dst.left+largs-dw;
 	dst.bottom=dst.top+largh-dh;
 
-	if(FAILED(this->surfacetemp->Blt(&dst,surfacerender,&src,DDBLT_WAIT,NULL))) return FALSE;
+	if(FAILED(this->surfacetemp->Blt(&dst,surfacerender,&src,DDBLT_WAIT,NULL))) return false;
 
-	return TRUE;
+	return true;
 }
 //#############################################################################################
 // BuildMap
 //#############################################################################################
-BOOL C_ARX_Carte::BuildMap(CD3DFramework7 *framework,char *name)
+bool C_ARX_Carte::BuildMap(CD3DFramework7 *framework,char *name)
 {
-	if(!this->CreateSurfaceTemp(framework)) return FALSE;
+	if(!this->CreateSurfaceTemp(framework)) return false;
 
 float oldposx,oldposz;
 	oldposx=this->posx;
@@ -335,7 +335,7 @@ float oldposx,oldposz;
 
 			if((cposx+taillex)>this->width) dw=cposx+taillex-this->width;
 
-			if(!this->BltOnSurfTemp(framework,cposx,cposy,dw,dh,taillex,tailley)) return FALSE;
+			if(!this->BltOnSurfTemp(framework,cposx,cposy,dw,dh,taillex,tailley)) return false;
 
 			cposx+=taillex;
 
@@ -354,7 +354,7 @@ float oldposx,oldposz;
 	if(FAILED(this->surfacetemp->Lock(NULL,&ddsd,DDLOCK_READONLY|DDLOCK_SURFACEMEMORYPTR|DDLOCK_WAIT,NULL)))
 	{
 		SAFE_RELEASE(this->surfacetemp);
-		return FALSE;
+		return false;
 	}
 
 	if(	(ddsd.ddpfPixelFormat.dwRGBBitCount==4)||
@@ -363,7 +363,7 @@ float oldposx,oldposz;
 	{
 		MessageBox(NULL,"Desktop not in 16 or 32 bits","Map Generation Error!!!",0);
 		SAFE_RELEASE(this->surfacetemp);
-		return FALSE;
+		return false;
 	}
 
 	int tailleraw;
@@ -384,7 +384,7 @@ float oldposx,oldposz;
 	if(!mem)
 	{
 		SAFE_RELEASE(this->surfacetemp);
-		return FALSE;
+		return false;
 	}
 
 	//info
@@ -498,19 +498,19 @@ float oldposx,oldposz;
 
 	this->posx=oldposx;
 	this->posz=oldposz;
-	return TRUE;
+	return true;
 }
 
 //-----------------------------------------------------------------------------
-BOOL NeedMapCreation()
+bool NeedMapCreation()
 {
 	char name[256];
 	GetLevelNameByNum(CURRENTLEVEL,name);	
 	sprintf(ThisLevelMap,"%s\\Graph\\Levels\\Level%s\\map.bmp",Project.workingdir,name);
 
-	if (PAK_FileExist(ThisLevelMap)) return FALSE;
+	if (PAK_FileExist(ThisLevelMap)) return false;
 
-	return TRUE;
+	return true;
 }
 
 //***********************************************************************************************

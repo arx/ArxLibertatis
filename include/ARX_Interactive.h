@@ -145,14 +145,14 @@ void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, char * s1);
 void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io);
 void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag = 0);
 void ARX_INTERACTIVE_DeleteByIndex(long i, long flag = 0);
-BOOL ARX_INTERACTIVE_Attach(long n_source, long n_target, char * ap_source, char * ap_target);
+bool ARX_INTERACTIVE_Attach(long n_source, long n_target, char * ap_source, char * ap_target);
 void ARX_INTERACTIVE_Detach(long n_source, long n_target);
 void ARX_INTERACTIVE_Show_Hide_1st(INTERACTIVE_OBJ * io, long state);
  
 void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io);
 bool ARX_INTERACTIVE_ConvertToValidPosForIO(INTERACTIVE_OBJ * io, EERIE_3D * target);
 void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io);
-BOOL ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source = -1);
+bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source = -1);
 void ARX_INTERACTIVE_DestroyIO(INTERACTIVE_OBJ * ioo);
 void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, long type, char * param1, char * param2);
 void ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(INTERACTIVE_OBJ * io);
@@ -167,21 +167,21 @@ void PrepareIOTreatZone(long flag = 0);
 void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, char * attach);
  
 void PutInFrontOfPlayer(INTERACTIVE_OBJ * io, long flag = 0);
-BOOL CanBePutInInventory(INTERACTIVE_OBJ * io);
+bool CanBePutInInventory(INTERACTIVE_OBJ * io);
 void SetShield(char * temp);
 void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io);
 INTERACTIVE_OBJ * GetInventoryObj();
 long ValidIONum(long num);
 long ValidIOAddress(INTERACTIVE_OBJ * io);
-BOOL GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos);
-BOOL GetItemWorldPositionSound(INTERACTIVE_OBJ * io, EERIE_3D * pos);
+bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos);
+bool GetItemWorldPositionSound(INTERACTIVE_OBJ * io, EERIE_3D * pos);
 long GetTargetByNameTarget(char * name);
 void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io);
  
 void SetWeapon_Back(INTERACTIVE_OBJ * io);
  
 void ReloadAllScripts();
-BOOL ForceNPC_Above_Ground(INTERACTIVE_OBJ * io);
+bool ForceNPC_Above_Ground(INTERACTIVE_OBJ * io);
 
 // BEGIN NODES DATA ****************************************************
 void InitNodes(long nb);
@@ -194,7 +194,7 @@ void MakeNodeName(long i);
 void EditNodeName(long i);
 void TranslateSelectedNodes(EERIE_3D * trans);
 void ClearSelectedNodes();
-BOOL ExistNodeName(char * name);
+bool ExistNodeName(char * name);
 void LinkNodeToNode(long i, long j);
 void UnLinkNodeFromNode(long i, long j);
 long CountNodes();
@@ -218,9 +218,9 @@ void ResetSelectedIORot();
  
 long GetNumberInterWithOutScriptLoadForLevel(long level);
 long IsCollidingAnyFIXInter(float x, float y, float z, EERIE_3D * size);
-BOOL InSecondaryInventoryPos(EERIE_S2D * pos);
-BOOL InPlayerInventoryPos(EERIE_S2D * pos);
-BOOL CanBePutInSecondaryInventory(INVENTORY_DATA * id, INTERACTIVE_OBJ * io, long * xx, long * yy);
+bool InSecondaryInventoryPos(EERIE_S2D * pos);
+bool InPlayerInventoryPos(EERIE_S2D * pos);
+bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, INTERACTIVE_OBJ * io, long * xx, long * yy);
 void FreeAllInter();
  
 void SetRightHand(char * temp);
@@ -228,7 +228,7 @@ void SetLeftHand(char * temp);
 void UnlinkAllLinkedObjects();
 void LinkObjectToObject(EERIE_3DOBJ * inter, EERIE_3DOBJ * tolink, char * actiontext, char * actiontext2);
 void UnLinkObjectFromObject(EERIE_3DOBJ * inter, EERIE_3DOBJ * tolink);
-BOOL IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos);
+bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos);
 long IsCollidingAnyInter(float x, float y, float z, EERIE_3D * size);
  
 INTERACTIVE_OBJ * AddInteractive(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long id, long flags = 0);
@@ -263,15 +263,15 @@ INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src);
 
 void CleanInventory();
 void SendInventoryObjectCommand(char * _lpszText, long _lCommand);
-BOOL PutInInventory();
+bool PutInInventory();
 char * GetInventoryName();
-BOOL TakeFromInventory(EERIE_S2D * pos);
+bool TakeFromInventory(EERIE_S2D * pos);
 INTERACTIVE_OBJ * GetFromInventory(EERIE_S2D * pos);
-BOOL IsFlyingOverInventory(EERIE_S2D * pos);
+bool IsFlyingOverInventory(EERIE_S2D * pos);
 void ForcePlayerInventoryObjectLevel(long level);
-BOOL IsInPlayerInventory(INTERACTIVE_OBJ * io);
-BOOL IsInSecondaryInventory(INTERACTIVE_OBJ * io);
-BOOL InInventoryPos(EERIE_S2D * pos);
+bool IsInPlayerInventory(INTERACTIVE_OBJ * io);
+bool IsInSecondaryInventory(INTERACTIVE_OBJ * io);
+bool InInventoryPos(EERIE_S2D * pos);
 void ReplaceInAllInventories(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo);
 void RemoveFromAllInventories(INTERACTIVE_OBJ * io);
 INTERACTIVE_OBJ * ARX_INVENTORY_GetTorchLowestDurability();
@@ -313,9 +313,9 @@ void TREATZONE_Clear();
 void TREATZONE_Release();
 void TREATZONE_AddIO(INTERACTIVE_OBJ * io, long num, long flag = 0);
 void TREATZONE_RemoveIO(INTERACTIVE_OBJ * io);
-BOOL IsSameObject(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo);
+bool IsSameObject(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo);
 void ARX_INTERACTIVE_ClearAllDynData();
-BOOL HaveCommonGroup(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo);
+bool HaveCommonGroup(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo);
 void ShowIOPath(INTERACTIVE_OBJ * io);
 void UpdateIOInvisibility(INTERACTIVE_OBJ * io);
 void CheckSetAnimOutOfTreatZone(INTERACTIVE_OBJ * io, long num);

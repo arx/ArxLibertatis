@@ -654,7 +654,7 @@ long EERIERTPPoly2(EERIEPOLY *ep)
 }
 
 
-BOOL IsSphereInFrustrum(float radius,EERIE_3D * point,EERIE_FRUSTRUM * frustrum);
+bool IsSphereInFrustrum(float radius,EERIE_3D * point,EERIE_FRUSTRUM * frustrum);
 bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * sphere)
 {
 	float dists=sphere->origin.x*efpPlaneNear.a + sphere->origin.y*efpPlaneNear.b + sphere->origin.z*efpPlaneNear.c + efpPlaneNear.d;
@@ -664,11 +664,11 @@ bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * sphere)
 		for (long i=0;i<frustrums->nb_frustrums;i++)
 		{
 			if (IsSphereInFrustrum(sphere->radius,(EERIE_3D *)&sphere->origin,&frustrums->frustrums[i]))
-				return FALSE;
+				return false;
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 bool	EEVisibleSphere(EERIE_3D * pos,float radius)
 {
@@ -701,8 +701,8 @@ bool VisibleSphere(float x,float y,float z,float radius)
 	pos.z=z;
 	return EEVisibleSphere(&pos,radius);
 }
-BOOL IsInFrustrum(EERIE_3D * point,EERIE_FRUSTRUM * frustrum);
-BOOL IsBBoxInFrustrum(EERIE_3D_BBOX * bbox,EERIE_FRUSTRUM * frustrum)
+bool IsInFrustrum(EERIE_3D * point,EERIE_FRUSTRUM * frustrum);
+bool IsBBoxInFrustrum(EERIE_3D_BBOX * bbox,EERIE_FRUSTRUM * frustrum)
 {
 	EERIE_3D point;
 	point.x=bbox->min.x;
@@ -760,7 +760,7 @@ BOOL IsBBoxInFrustrum(EERIE_3D_BBOX * bbox,EERIE_FRUSTRUM * frustrum)
 
 								if (!IsInFrustrum(&point,frustrum))
 								{
-									return	FALSE;
+									return	false;
 								}
 							}
 						}
@@ -770,7 +770,7 @@ BOOL IsBBoxInFrustrum(EERIE_3D_BBOX * bbox,EERIE_FRUSTRUM * frustrum)
 		}
 	}	
 
-	return TRUE;
+	return true;
 }
 
 bool FrustrumsClipBBox3D(EERIE_FRUSTRUM_DATA * frustrums,EERIE_3D_BBOX * bbox)
@@ -778,10 +778,10 @@ bool FrustrumsClipBBox3D(EERIE_FRUSTRUM_DATA * frustrums,EERIE_3D_BBOX * bbox)
 	for (long i=0;i<frustrums->nb_frustrums;i++)
 	{
 		if (IsBBoxInFrustrum(bbox,&frustrums->frustrums[i]))
-			return FALSE;
+			return false;
 	}
 
-	return FALSE;
+	return false;
 }
 PORTAL_ROOM_DRAW * RoomDraw=NULL;
 long NbRoomDraw=0;
@@ -789,13 +789,13 @@ long * RoomDrawList=NULL;
 long NbRoomDrawList=0;
 long TotalRoomDrawList=0;
 
-BOOL ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io)
+bool ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io)
 {
-	if (EDITMODE) return FALSE;
+	if (EDITMODE) return false;
 
-	if (io==inter.iobj[0]) return FALSE;
+	if (io==inter.iobj[0]) return false;
 
-	if ((io) && (io->ioflags & IO_FORCEDRAW)) return FALSE;
+	if ((io) && (io->ioflags & IO_FORCEDRAW)) return false;
 
 	if (USE_PORTALS && portals)
 	{
@@ -865,36 +865,36 @@ BOOL ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io)
 							io->bbox2.y=(short)-1;		
 						}
 
-						return TRUE;
+						return true;
 					}
 			}
 			}
-			else return FALSE;
+			else return false;
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 //*********************************************************************************************************************
-// BOOL ARX_SCENE__PORTAL_ClipIO(INTERACTIVE_OBJ * io,EERIE_3DOBJ * eobj,EERIE_3D * position,EERIE_3D * bboxmin,EERIE_3D * bboxmax)
+// bool ARX_SCENE__PORTAL_ClipIO(INTERACTIVE_OBJ * io,EERIE_3DOBJ * eobj,EERIE_3D * position,EERIE_3D * bboxmin,EERIE_3D * bboxmax)
 //---------------------------------------------------------------------------------------------------------------------
 // USAGE/FUNCTION
 //   io can be NULL if io is valid io->bbox3D contains 3D world-bbox
 //   bboxmin & bboxmax ARE in fact 2D-screen BBOXes using only (x,y).
 // RETURN:
-//   return TRUE if IO cannot be seen, FALSE if visible
+//   return true if IO cannot be seen, false if visible
 //---------------------------------------------------------------------------------------------------------------------
 // TODO:
 //   Implement all Portal Methods
 //   Return a reduced clipbox which can be used for polys clipping in the case of partial visibility
 //*********************************************************************************************************************
-BOOL ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io,EERIE_3DOBJ * eobj,EERIE_3D * position,EERIE_3D * bboxmin,EERIE_3D * bboxmax)
+bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io,EERIE_3DOBJ * eobj,EERIE_3D * position,EERIE_3D * bboxmin,EERIE_3D * bboxmax)
 {
-	if (EDITMODE) return FALSE;
+	if (EDITMODE) return false;
 
-	if (io==inter.iobj[0]) return FALSE;
+	if (io==inter.iobj[0]) return false;
 
-	if ((io) && (io->ioflags & IO_FORCEDRAW)) return FALSE;
+	if ((io) && (io->ioflags & IO_FORCEDRAW)) return false;
 
 	if (USE_PORTALS && portals)
 	{
@@ -934,7 +934,7 @@ BOOL ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io,EERIE_3DOBJ * eobj,EERIE_3D * 
 					io->bbox2.y=(short)-1;		
 				}
 
-				return TRUE;
+				return true;
 			}
 
 			switch (USE_PORTALS)
@@ -954,7 +954,7 @@ BOOL ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io,EERIE_3DOBJ * eobj,EERIE_3D * 
 							io->bbox2.y=(short)-1;		
 						}
 
-						return TRUE;
+						return true;
 					}
 				}
 				break;
@@ -983,7 +983,7 @@ BOOL ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io,EERIE_3DOBJ * eobj,EERIE_3D * 
 								io->bbox2.y=(short)-1;		
 							}
 
-							return TRUE;
+							return true;
 						}
 
 						if (FrustrumsClipBBox3D(frustrums,&io->bbox3D))
@@ -996,7 +996,7 @@ BOOL ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io,EERIE_3DOBJ * eobj,EERIE_3D * 
 								io->bbox2.y=(short)-1;		
 							}
 
-							return TRUE;
+							return true;
 						}
 					}
 
@@ -1005,7 +1005,7 @@ BOOL ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io,EERIE_3DOBJ * eobj,EERIE_3D * 
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 
 long ARX_PORTALS_GetRoomNumForPosition2(EERIE_3D * pos,long flag,float * height)
@@ -1309,19 +1309,19 @@ bool BBoxClipPoly(EERIE_2D_BBOX * bbox,EERIEPOLY * ep)
 	return false;
 
 }
-BOOL IsInFrustrum(EERIE_3D * point,EERIE_FRUSTRUM * frustrum)
+bool IsInFrustrum(EERIE_3D * point,EERIE_FRUSTRUM * frustrum)
 {
 	if (	((point->x*frustrum->plane[0].a + point->y*frustrum->plane[0].b + point->z*frustrum->plane[0].c + frustrum->plane[0].d)>0)
 		&&	((point->x*frustrum->plane[1].a + point->y*frustrum->plane[1].b + point->z*frustrum->plane[1].c + frustrum->plane[1].d)>0)
 		&&	((point->x*frustrum->plane[2].a + point->y*frustrum->plane[2].b + point->z*frustrum->plane[2].c + frustrum->plane[2].d)>0)
 		&&	((point->x*frustrum->plane[3].a + point->y*frustrum->plane[3].b + point->z*frustrum->plane[3].c + frustrum->plane[3].d)>0) )
-		return TRUE;
+		return true;
 
-	return FALSE;
+	return false;
 }
 
 
-BOOL IsSphereInFrustrum(float radius,EERIE_3D * point,EERIE_FRUSTRUM * frustrum)
+bool IsSphereInFrustrum(float radius,EERIE_3D * point,EERIE_FRUSTRUM * frustrum)
 {
 	float dists[4];
 	dists[0]=point->x*frustrum->plane[0].a + point->y*frustrum->plane[0].b + point->z*frustrum->plane[0].c + frustrum->plane[0].d;
@@ -1333,9 +1333,9 @@ BOOL IsSphereInFrustrum(float radius,EERIE_3D * point,EERIE_FRUSTRUM * frustrum)
 		&&	(dists[1]+radius>0)
 		&&	(dists[2]+radius>0)
 		&&	(dists[3]+radius>0) )
-		return TRUE;
+		return true;
 
-	return FALSE;
+	return false;
 	
 }
 
@@ -1353,10 +1353,10 @@ bool FrustrumsClipPoly(EERIE_FRUSTRUM_DATA * frustrums,EERIEPOLY * ep)
 	for (long i=0;i<frustrums->nb_frustrums;i++)
 	{
 		if (IsSphereInFrustrum(ep->v[0].rhw,(EERIE_3D *)&ep->center,&frustrums->frustrums[i]))
-			return FALSE;
+			return false;
 			}
 
-	return TRUE;
+	return true;
 }
  
  
@@ -1598,10 +1598,10 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 {
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,0);
 
-	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,TRUE);
+	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,true);
 
 	SETCULL(GDevice,D3DCULL_NONE);
-	SETZWRITE(GDevice,FALSE);
+	SETZWRITE(GDevice,false);
 
 	for (long i=0;i<NbRoomDrawList;i++)
 	{
@@ -1620,7 +1620,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 
 	SetZBias(GDevice,8);
 
-	SETZWRITE(GDevice, FALSE);
+	SETZWRITE(GDevice, false);
 
 	//render all fx!!
 	SETCULL(GDevice,D3DCULL_CW);
@@ -2360,7 +2360,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 	SetZBias(GDevice,0);
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
 	GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
-	SETALPHABLEND(GDevice,FALSE);
+	SETALPHABLEND(GDevice,false);
 }
 
 void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA * frustrums,long prec,long tim);
@@ -3179,8 +3179,8 @@ SMY_D3DVERTEX *pMyVertex;
 		//ZMapp
 		GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
 
-		GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,TRUE);
-		GDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE,FALSE);
+		GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,true);
+		GDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE,false);
 
 		iNbTex=portals->room[room_num].usNbTextures;
 		ppTexCurr=portals->room[room_num].ppTextureContainer;
@@ -3520,8 +3520,8 @@ SMY_D3DVERTEX *pMyVertex;
 			vPolyVoodooMetal.clear();
 		}
 
-		GDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE,TRUE);
-		GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,FALSE);
+		GDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE,true);
+		GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,false);
 	}
 }
 
@@ -4076,7 +4076,7 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 			}
 
 		
-BOOL Clip_Visible(const EERIE_3D * orgn, EERIE_3D * dest)
+bool Clip_Visible(const EERIE_3D * orgn, EERIE_3D * dest)
 {
 	register float dx,dy,dz,adx,ady,adz,ix,iy,iz;
 	register float x0,y0,z0;
@@ -4169,7 +4169,7 @@ long curpixel;
 			
 			if (feg->nothing)	tot += 2; 
 		
-			if (tot>MAX_OUT) return FALSE;
+			if (tot>MAX_OUT) return false;
 		}
 
 		float v=(float)curpixel*DIV5;
@@ -4182,12 +4182,12 @@ long curpixel;
 		forr-=PASS*v;		
 	}
 
-	return TRUE;//hard;
+	return true;//hard;
 }
 
 
 
-BOOL spGetTruePolyY(const EERIEPOLY * ep, const EERIE_3D * pos, float * ret)
+bool spGetTruePolyY(const EERIEPOLY * ep, const EERIE_3D * pos, float * ret)
 	{
 		
 	register EERIE_3D n,s21,s31;
@@ -4208,7 +4208,7 @@ BOOL spGetTruePolyY(const EERIEPOLY * ep, const EERIE_3D * pos, float * ret)
 
 	s21.x=(s21.x-(n.x*pos->x)-(n.z*pos->z))/n.y;
 	*ret=s21.x;
-	return TRUE;
+	return true;
 
 }
 
@@ -4265,7 +4265,7 @@ void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag, long param)
 
 	// First if scene camera hasn't moved we set MODIF to 0
 	// This allows us not to Clip/Rotate/Translate/Project again the scene
-	BOOL MODIF=TRUE;
+	bool MODIF=true;
 
 	if (flag == 3)
 	{
@@ -4748,7 +4748,7 @@ else
 			ARXDRAW_DrawEyeBall(pd3dDevice);
 
 		
-		SETZWRITE(pd3dDevice, FALSE );
+		SETZWRITE(pd3dDevice, false );
 
 		if (BoomCount) 
 			ARXDRAW_DrawPolyBoom(pd3dDevice);
@@ -4775,9 +4775,9 @@ if (HALOCUR>0)
 	SETTC(pd3dDevice,NULL);
 	pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_SRCCOLOR );
 	pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
-	SETALPHABLEND(pd3dDevice,TRUE);			
+	SETALPHABLEND(pd3dDevice,true);			
 	SETCULL(pd3dDevice,D3DCULL_NONE);
-	SETZWRITE(pd3dDevice,FALSE);
+	SETZWRITE(pd3dDevice,false);
 
 	for (i=0;i<HALOCUR;i++)
 	{
@@ -4797,12 +4797,12 @@ if (HALOCUR>0)
 	}
 
 		 HALOCUR = 0; 
-	SETALPHABLEND(pd3dDevice,FALSE);			
+	SETALPHABLEND(pd3dDevice,false);			
 }
 
 	SETCULL(pd3dDevice,D3DCULL_CCW);
-	SETALPHABLEND(pd3dDevice,FALSE);	
-	SETZWRITE(pd3dDevice, TRUE );
+	SETALPHABLEND(pd3dDevice,false);	
+	SETZWRITE(pd3dDevice, true );
 
 	if (EDITION==EDITION_LIGHTS)
 		ARXDRAW_DrawAllLights(pd3dDevice,x0,z0,x1,z1);

@@ -168,7 +168,7 @@ typedef struct
 	float			Full_maxmana;
 
 
-	// TRUE (naked) Player Values
+	// true (naked) Player Values
 	float			Attribute_Strength;
 	float			Attribute_Dexterity;
 	float			Attribute_Constitution;

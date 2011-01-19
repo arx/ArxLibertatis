@@ -540,9 +540,9 @@ extern long SPLASH_THINGS_STAGE;
 long NEED_INTRO_LAUNCH = 0;
 //-----------------------------------------------------------------------------
 // ARX Menu Rendering Func
-// returns FALSE if no menu needs to be displayed
+// returns false if no menu needs to be displayed
 //-----------------------------------------------------------------------------
-BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 {
 	// Auto-Launch Demo after 60 sec idle on Main Menu
 	if ((ARXmenu.currentmode == AMCM_MAIN) && CAN_REPLAY_INTRO)
@@ -566,7 +566,7 @@ BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	if (ARXmenu.currentmode == AMCM_OFF)
 	{
-		return FALSE;
+		return false;
 	}
 
 	FRAME_COUNT = 0;
@@ -580,7 +580,7 @@ BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	if (ARXmenu.currentmode == AMCM_OFF)
 	{
-		return FALSE;
+		return false;
 	}
 
 	if (pGetInfoDirectInput->GetMouseButton(DXI_BUTTON0))
@@ -600,7 +600,7 @@ BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	if (!danaeApp.DANAEStartRender())
 	{
-		return TRUE;
+		return true;
 	}
 
 	GDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0L);
@@ -686,11 +686,11 @@ BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		}
 
 		GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
-		SETALPHABLEND(GDevice, FALSE);
+		SETALPHABLEND(GDevice, false);
 
 		if (ARXmenu.mda->BookBackground != NULL)
 		{
-			SETALPHABLEND(GDevice, FALSE);
+			SETALPHABLEND(GDevice, false);
 			GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
 			SETZWRITE(GDevice, false);
 			GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_FALSE);
@@ -919,7 +919,7 @@ BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	{
 		if (ARXmenu.mda->BookBackground != NULL)
 		{
-			SETALPHABLEND(GDevice, FALSE);
+			SETALPHABLEND(GDevice, false);
 			GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
 			SETZWRITE(GDevice, false);
 			GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_FALSE);
@@ -1037,5 +1037,5 @@ BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	}
 
 	danaeApp.DANAEEndRender();
-	return TRUE;
+	return true;
 }

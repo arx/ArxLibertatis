@@ -38,7 +38,7 @@
 #define ARX_CHECK_DWORD(_x) ARX_CHECK_ULONG(_x)
 //ARX_END: xrichter (2010-06-24)
 
-#define ARX_CHECK_NO_ENTRY( ) ( arx_assert( FALSE ) )	//ARX: xrichter (2010-07-26) - Modified to use arx_assert
+#define ARX_CHECK_NO_ENTRY( ) ( arx_assert( false ) )	//ARX: xrichter (2010-07-26) - Modified to use arx_assert
 #define ARX_CHECK( _expr ) ( arx_assert( _expr ) )		//ARX: xrichter (2010-07-26) - Modified to use arx_assert
 #define ARX_WARN( _str ) ( printf("WARN: %s=%s", #_str, ( _str ) ) )
 #define ARX_WARN_F( _f ) ( printf("WARN: %s=%f", #_f, ( _f ) ) )
@@ -53,4 +53,4 @@
 #define ARX_CAST_UINT( _x ) ( static_cast<unsigned int>( _x ) )
 #define ARX_CAST_USHORT( _x ) ( static_cast<unsigned short>( _x ) )
 
-#define ARX_DEAD_CODE() {arx_assert( FALSE );} //ARX: xrichter (2010-06-23) - treat warnings C4700  Disable warning "local variable % used without having been initialized"
+#define ARX_DEAD_CODE() {arx_assert( false );} //ARX: xrichter (2010-06-23) - treat warnings C4700  Disable warning "local variable % used without having been initialized"

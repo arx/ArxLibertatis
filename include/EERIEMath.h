@@ -71,8 +71,8 @@ using std::max;
 //-----------------------------------------------------------------------------
 // RANDOM Sequences Funcs/Defs
 //-----------------------------------------------------------------------------
-#define ornd()  (((FLOAT)rand() ) / RAND_MAX)
-#define rnd()  (((FLOAT)rand() ) * 0.00003051850947599f)
+#define ornd()  (((float)rand() ) / RAND_MAX)
+#define rnd()  (((float)rand() ) * 0.00003051850947599f)
 
 //Approximative Methods
 #define EEsqrt(val)	(float)ffsqrt(val)
@@ -98,7 +98,7 @@ using std::max;
 #define EEdef_PI_0_75		4.7123889803846896397f		//EEdef_2_PI-EEdef_PI_DIV_2
 #define EEdef_DEGTORAD		0.01745329251994329547f		// Degrees to Radians
 #define EEdef_RADTODEG		57.29577951308232286465f	// Radians to Degrees
-#define EEdef_HUGE			1.0e+38f					// Huge number for FLOAT
+#define EEdef_HUGE			1.0e+38f					// Huge number for float
 #define EEdef_EPSILON		1.0e-5f						// Tolerance for FLOATs
 #define EEdef_MAXfloat		1.0e+38f
 #define EEdef_MINfloat		-1.0e+38f
@@ -227,9 +227,9 @@ long F2L_RoundUp(float val);
 void EERIEMathPrecalc();
 void PrecalcATAN();
 void PrecalcSIN();
-BOOL PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt);
-BOOL CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2);
-BOOL SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s);
+bool PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt);
+bool CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2);
+bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s);
 
 // Optimized Float 2 Long Conversion
 inline void F2L(const float f, long * l)
@@ -464,8 +464,8 @@ inline void TransformVertexQuat(EERIE_QUAT * quat, EERIE_3D * vertexin, EERIE_3D
 
 void TransformVertexQuat(const EERIE_QUAT * quat, const EERIE_3D * vertexin, EERIE_3D * vertexout);
 void TransformInverseVertexQuat(const EERIE_QUAT * quat, const EERIE_3D * vertexin, EERIE_3D * vertexout);
-void RotationFromQuat(EERIE_3D * v, FLOAT fTheta, const EERIE_QUAT * q);
-void QuatFromRotation(EERIE_QUAT * q, const EERIE_3D * v, const FLOAT fTheta);
+void RotationFromQuat(EERIE_3D * v, float fTheta, const EERIE_QUAT * q);
+void QuatFromRotation(EERIE_QUAT * q, const EERIE_3D * v, const float fTheta);
 void Quat_Init(EERIE_QUAT * quat, const float x = 0, const float y = 0, const float z = 0, const float w = 1);
 void Quat_Divide(EERIE_QUAT * dest, const EERIE_QUAT * q1, const EERIE_QUAT * q2);
 void Quat_Multiply(EERIE_QUAT * dest , const EERIE_QUAT * q1, const EERIE_QUAT * q2);
@@ -551,7 +551,7 @@ inline float ScalarProduct(EERIE_3D * v0, EERIE_3D * v1)
 void CalcFaceNormal(EERIEPOLY * ep, const D3DTLVERTEX * v);
 void CalcObjFaceNormal(const EERIE_3D * v0, const EERIE_3D * v1, const EERIE_3D * v2, EERIE_FACE * ef);
 void Triangle_ComputeBoundingBox(EERIE_3D_BBOX * bb, EERIE_3D * v0, EERIE_3D * v1, EERIE_3D * v2);
-BOOL Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u);
+bool Triangles_Intersect(const EERIE_TRI * v, const EERIE_TRI * u);
 void MatrixFromQuat(EERIEMATRIX * mat, const EERIE_QUAT * q);
 
 //*******************************************************************************
@@ -582,18 +582,18 @@ inline float EEDistance3D(const EERIE_3D * from, const EERIE_3D * to)
 	return (float)EEsqrt(((to->x - from->x) * (to->x - from->x)) + ((to->y - from->y) * (to->y - from->y)) + ((to->z - from->z) * (to->z - from->z)));
 }
 
-inline BOOL PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)
+inline bool PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)
 {
 	register float pos1 = cyl->origin.y + cyl->height;
 
-	if (pt->y < min(cyl->origin.y, pos1)) return FALSE;
+	if (pt->y < min(cyl->origin.y, pos1)) return false;
 
-	if (pt->y > max(cyl->origin.y, pos1)) return FALSE;
+	if (pt->y > max(cyl->origin.y, pos1)) return false;
 
 	if (Distance2D(cyl->origin.x, cyl->origin.z, pt->x, pt->z) <= cyl->radius)
-		return TRUE;
+		return true;
 
-	return FALSE;
+	return false;
 }
 
 inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)

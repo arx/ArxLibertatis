@@ -115,7 +115,7 @@ void ARX_INTERFACE_ShowFISHTANK(LPDIRECT3DDEVICE7 pd3dDevice)
 		pd3dDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_POINT);
 		pd3dDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_POINT);
 		pd3dDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP); 
-		pd3dDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, FALSE);
+		pd3dDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, false);
 
 		pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0L);
 
@@ -136,7 +136,7 @@ void ARX_INTERFACE_ShowFISHTANK(LPDIRECT3DDEVICE7 pd3dDevice)
 		Project.vsync = 1;
 
 		pd3dDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);
-		pd3dDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, TRUE);
+		pd3dDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, true);
 		pd3dDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_LINEAR);
 		pd3dDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_LINEAR);
 	}
@@ -150,7 +150,7 @@ void ARX_INTERFACE_ShowARKANE(LPDIRECT3DDEVICE7 pd3dDevice)
 		pd3dDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_POINT);
 		pd3dDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_POINT);
 		pd3dDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP); 
-		pd3dDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, FALSE);
+		pd3dDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, false);
 		SETZWRITE(pd3dDevice, true);
 
 		danaeApp.EnableZBuffer();
@@ -176,9 +176,9 @@ void ARX_INTERFACE_ShowARKANE(LPDIRECT3DDEVICE7 pd3dDevice)
 
 		Project.vsync = 1;
 
-		SETZWRITE(pd3dDevice, TRUE);
+		SETZWRITE(pd3dDevice, true);
 		pd3dDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);
-		pd3dDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, TRUE);
+		pd3dDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, true);
 		pd3dDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_LINEAR);
 		pd3dDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_LINEAR);
 	}

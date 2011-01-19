@@ -17,6 +17,9 @@ set(CMAKE_C_COMPILER /usr/bin/winegcc)
 #set temporally less gcc problems
 set(CMAKE_CXX_FLAGS "-fpermissive -w -m32")
 
+#Debug
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3")
+
 add_definitions(-D_DEBUG)
 
 file(GLOB_RECURSE SOURCES ${SRC_DIR}/*.cpp)

@@ -140,10 +140,10 @@ extern long NOCHECKSUM;
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-BOOL ARX_FTL_Save(char * incomplete_fic, char * complete_fic, EERIE_3DOBJ * obj)
+bool ARX_FTL_Save(char * incomplete_fic, char * complete_fic, EERIE_3DOBJ * obj)
 {
 	// Need an object to be saved !
-	if (obj == NULL) return FALSE;
+	if (obj == NULL) return false;
 
 	// Generate File name/path and create it
 	char path[256];
@@ -456,14 +456,14 @@ BOOL ARX_FTL_Save(char * incomplete_fic, char * complete_fic, EERIE_3DOBJ * obj)
 	FileCloseWrite(handle);
 	free(compressed);
 	free(dat);
-	return TRUE;
+	return true;
 
 error:
 	;
 	ShowPopup(_error);
 	free(dat);
 
-	return FALSE;
+	return false;
 }
 
 

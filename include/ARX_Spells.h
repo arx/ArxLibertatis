@@ -120,7 +120,7 @@ void ARX_SPELLS_Precast_Add(const long & typ, long level = 1, long flags = 0);
 void ARX_SPELLS_Precast_Launch(const long & num);
 
 long GetSpellId(const char * spell);
-BOOL MakeSpellName(char * spell, const long & num);
+bool MakeSpellName(char * spell, const long & num);
 void TryToCastSpell(INTERACTIVE_OBJ * io, const long & spellid, const long & level, const long & target, const long & flags, const long & duration);
 void ARX_SPELLS_Precast_Check();
 void ARX_SPELLS_Precast_Launch2(const long & num);
@@ -227,7 +227,7 @@ const unsigned long MAX_SPELLS(20);
 
 typedef struct
 {
-	BOOL		exist;
+	bool		exist;
 	long		caster;         // Number of the source interactive obj (0==player)
 	long		target;         // Number of the target interactive obj if any
 	float		caster_level;   // Level of Magic 1-10
@@ -303,7 +303,7 @@ void ARX_SPELLS_ClearAllSymbolDraw();
 
 void ARX_SPELLS_Init(LPDIRECT3DDEVICE7 m_pd3dDevice);
 
-BOOL ARX_SPELLS_ExistAnyInstance(const long & typ);
+bool ARX_SPELLS_ExistAnyInstance(const long & typ);
 void ARX_SPELLS_RemoveAllSpellsOn(INTERACTIVE_OBJ * io);
 long ARX_SPELLS_GetSpellOn(const INTERACTIVE_OBJ * io, const long & spellid);
 long ARX_SPELLS_GetInstanceForThisCaster(const long & typ, const long & caster);
@@ -312,7 +312,7 @@ void ARX_SPELLS_CancelSpellTarget();
 void ARX_SPELLS_LaunchSpellTarget(INTERACTIVE_OBJ * io);
 float ARX_SPELLS_ApplyFireProtection(INTERACTIVE_OBJ * io, float damages);
 float ARX_SPELLS_ApplyColdProtection(INTERACTIVE_OBJ * io, float damages);
-BOOL ARX_SPELLS_ExistAnyInstanceForThisCaster(const long & typ, const long & caster);
+bool ARX_SPELLS_ExistAnyInstanceForThisCaster(const long & typ, const long & caster);
 void ApplySPWep();
 void ARX_SPELLS_FizzleAllSpellsFromCaster(long num);
 #endif//ARX_SPELLS_H

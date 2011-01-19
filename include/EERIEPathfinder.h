@@ -61,7 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 typedef struct
 {
-	BOOL isvalid;
+	bool isvalid;
 	long from;
 	long to;
 	long * returnnumber;			// must point to a -1 value at call time

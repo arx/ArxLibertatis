@@ -101,31 +101,31 @@ extern bool bGCroucheToggle;
 
 long SPECIALPOLYSNB = 0;
 
-BOOL CanPurge(EERIE_3D * pos)
+bool CanPurge(EERIE_3D * pos)
 {
 	long px, pz;
 	F2L(pos->x * ACTIVEBKG->Xmul, &px);
 
 	if (px > ACTIVEBKG->Xsize - 3)
 	{
-		return TRUE;
+		return true;
 	}
 
 	if (px < 2)
 	{
-		return TRUE;
+		return true;
 	}
 
 	F2L(pos->z * ACTIVEBKG->Zmul, &pz);
 
 	if (pz > ACTIVEBKG->Zsize - 3)
 	{
-		return TRUE;
+		return true;
 	}
 
 	if (pz < 2)
 	{
-		return TRUE;
+		return true;
 	}
 
 	EERIE_BKG_INFO * eg;
@@ -135,10 +135,10 @@ BOOL CanPurge(EERIE_3D * pos)
 		{
 			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 
-			if (eg->nbpoly) return FALSE;
+			if (eg->nbpoly) return false;
 		}
 
-	return TRUE;
+	return true;
 }
 
 void BIG_PURGE()
@@ -382,7 +382,7 @@ long DanaeSaveLevel(char * fic)
 	dlh.angle_edit.a = player.angle.a;
 	dlh.angle_edit.b = player.angle.b;
 	dlh.angle_edit.g = player.angle.g;
-	dlh.lighting = FALSE; // MUST BE FALSE !!!!
+	dlh.lighting = false; // MUST BE false !!!!
 
 //	todo w32 api
 //	_time32(&dlh.time);
@@ -582,7 +582,7 @@ long DanaeSaveLevel(char * fic)
 	if (FileWrite(handle, compressed, cpr_pos) != cpr_pos)
 	{
 		free(dat);
-		return FALSE;
+		return false;
 	}
 
 	free(compressed);

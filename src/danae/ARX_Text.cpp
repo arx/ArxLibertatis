@@ -1240,7 +1240,7 @@ void ARX_Text_Init()
 		{
 			hFontMainMenu = _CreateFont(
 			                    iFontSize,
-			                    0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+			                    0, 0, 0, FW_NORMAL, false, false, false,
 			                    DEFAULT_CHARSET,
 			                    OUT_DEFAULT_PRECIS,
 			                    CLIP_DEFAULT_PRECIS,
@@ -1263,7 +1263,7 @@ void ARX_Text_Init()
 		{
 			hFontMenu = _CreateFont(
 			                iFontSize,
-			                0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+			                0, 0, 0, FW_NORMAL, false, false, false,
 			                DEFAULT_CHARSET,
 			                OUT_DEFAULT_PRECIS,
 			                CLIP_DEFAULT_PRECIS,
@@ -1286,7 +1286,7 @@ void ARX_Text_Init()
 		{
 			hFontControls = _CreateFont(
 			                    iFontSize,
-			                    0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+			                    0, 0, 0, FW_NORMAL, false, false, false,
 			                    DEFAULT_CHARSET,
 			                    OUT_DEFAULT_PRECIS,
 			                    CLIP_DEFAULT_PRECIS,
@@ -1309,7 +1309,7 @@ void ARX_Text_Init()
 		{
 			hFontCredits = _CreateFont(
 			                   iFontSize,
-			                   0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+			                   0, 0, 0, FW_NORMAL, false, false, false,
 			                   DEFAULT_CHARSET,
 			                   OUT_DEFAULT_PRECIS,
 			                   CLIP_DEFAULT_PRECIS,
@@ -1330,7 +1330,7 @@ void ARX_Text_Init()
 
 		hFontRedist = _CreateFont(
 		                  iFontSize,
-		                  0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+		                  0, 0, 0, FW_NORMAL, false, false, false,
 		                  DEFAULT_CHARSET,
 		                  OUT_DEFAULT_PRECIS,
 		                  CLIP_DEFAULT_PRECIS,
@@ -1358,7 +1358,7 @@ void ARX_Text_Init()
 		{
 			hFontInGame = _CreateFont(
 			                  iFontSize,
-			                  0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+			                  0, 0, 0, FW_NORMAL, false, false, false,
 			                  DEFAULT_CHARSET,
 			                  OUT_DEFAULT_PRECIS,
 			                  CLIP_DEFAULT_PRECIS,
@@ -1379,7 +1379,7 @@ void ARX_Text_Init()
 
 		hFontInGameNote = _CreateFont(
 		                      iFontSize,
-		                      0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+		                      0, 0, 0, FW_NORMAL, false, false, false,
 		                      DEFAULT_CHARSET,
 		                      OUT_DEFAULT_PRECIS,
 		                      CLIP_DEFAULT_PRECIS,
@@ -1399,7 +1399,7 @@ void ARX_Text_Init()
 
 		InBookFont = _CreateFont(
 		                 iFontSize,
-		                 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+		                 0, 0, 0, FW_NORMAL, false, false, false,
 		                 DEFAULT_CHARSET,
 		                 OUT_DEFAULT_PRECIS,
 		                 CLIP_DEFAULT_PRECIS,

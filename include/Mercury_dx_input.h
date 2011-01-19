@@ -121,25 +121,25 @@ extern "C" {
 	void DXI_Release(void);
 	int DXI_ChooseInputDevice(HWND hwnd, int id, int num, int mode);
 	void DXI_FreeInfoDevice(DXI_INPUT_INFO * dinf);
-	BOOL DXI_GetAxeMouseXYZ(int id, int * mx, int * my, int * mz);
-	BOOL DXI_ExecuteAllDevices(BOOL _bKeept);
+	bool DXI_GetAxeMouseXYZ(int id, int * mx, int * my, int * mz);
+	bool DXI_ExecuteAllDevices(bool _bKeept);
 	int DXI_GetSCIDInputDevice(HWND hwnd, int id, int mode, int minbutton, int minaxe);
 	int DXI_GetKeyboardInputDevice(HWND hwnd, int id, int mode);
 	int DXI_GetMouseInputDevice(HWND hwnd, int id, int mode, int minbutton, int minaxe);
 	int DXI_GetJoyInputDevice(HWND hwnd, int id, int mode, int minbutton, int minaxe);
-	BOOL DXI_KeyPressed(int id, int dikkey);
+	bool DXI_KeyPressed(int id, int dikkey);
 	int DXI_GetKeyIDPressed(int id);
 	void DXI_RestoreAllDevices(void);
 	void DXI_SleepAllDevices(void);
-	BOOL DXI_MouseButtonPressed(int id, int numb, int * _iDeltaTime);
+	bool DXI_MouseButtonPressed(int id, int numb, int * _iDeltaTime);
 	void DXI_MouseButtonCountClick(int id, int numb, int * _iNumClick, int * _iNumUnClick);
-	BOOL DXI_IsSCIDButtonPressed(int id, int numb);
+	bool DXI_IsSCIDButtonPressed(int id, int numb);
 	int DXI_GetSCIDAxis(int id, int * jx, int * jy, int * jz);
 	int DXI_SetMouseRelative(int id);
 	int DXI_SetRangeJoy(int id, int axe, int range);
-	BOOL DXI_GetJoyButtonPressed(int id, int numb);
-	BOOL DXI_OldKeyPressed(int id, int dikkey);
-	BOOL DXI_OldGetJoyButtonPressed(int id, int numb);
+	bool DXI_GetJoyButtonPressed(int id, int numb);
+	bool DXI_OldKeyPressed(int id, int dikkey);
+	bool DXI_OldGetJoyButtonPressed(int id, int numb);
  
 	/*-----------------------------------------------------------*/
 
