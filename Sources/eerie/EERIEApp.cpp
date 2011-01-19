@@ -70,8 +70,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "HERMESMain.h"
 #include "HERMESNet.h"
 
-#include "../DANAE/ARX_Menu2.h"
-#include "../DANAE/Danae_resource.h"
+#include "../danae/ARX_Menu2.h"
+#include "../danae/Danae_resource.h"
 
 //todo: dont
 # define GWL_WNDPROC         (-4)

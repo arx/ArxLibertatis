@@ -55,8 +55,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <eax.h>
 #include <math.h>
 
-
-
+#include <cstring>
+using namespace std;
 
 //#include "console_public.h"
 //#pragma comment(lib, "Console DLL")
@@ -362,7 +362,7 @@ namespace ATHENA
 			{
 				aalULong len2(strlen(root_path));
 
-				if (len2 < len && !memicmp(_path, root_path, len2))
+				if (len2 < len && !strncasecmp(_path, root_path, len2))
 				{
 					temp += len2;
 					len -= len2;
@@ -410,7 +410,7 @@ namespace ATHENA
 			{
 				aalULong len2(strlen(root_path));
 
-				if (len2 < len && !memicmp(_path, root_path, len2))
+				if (len2 < len && !strncasecmp(_path, root_path, len2))
 				{
 					temp += len2;
 					len -= len2;
@@ -458,7 +458,7 @@ namespace ATHENA
 			{
 				aalULong len2(strlen(root_path));
 
-				if (len2 < len && !memicmp(_path, root_path, len2))
+				if (len2 < len && !strncasecmp(_path, root_path, len2))
 				{
 					temp += len2;
 					len -= len2;
@@ -877,7 +877,7 @@ namespace ATHENA
 			return AAL_SFALSE;
 
 		for (aalULong i(0); i < _mixer.Size(); i++)
-			if (_mixer[i] && (!name || !_strcasecmp(name, _mixer[i]->name)))
+			if (_mixer[i] && (!name || !strcasecmp(name, _mixer[i]->name)))
 			{
 				if (mutex) ReleaseMutex(mutex);
 
@@ -895,7 +895,7 @@ namespace ATHENA
 			return AAL_SFALSE;
 
 		for (aalULong i(0); i < _amb.Size(); i++)
-			if (_amb[i] && (!name || !_strcasecmp(name, _amb[i]->name)))
+			if (_amb[i] && (!name || !strcasecmp(name, _amb[i]->name)))
 			{
 				if (mutex) ReleaseMutex(mutex);
 
@@ -913,7 +913,7 @@ namespace ATHENA
 			return AAL_SFALSE;
 
 		for (aalULong i(0); i < _env.Size(); i++)
-			if (_env[i] && (!name || !_strcasecmp(name, _env[i]->name)))
+			if (_env[i] && (!name || !strcasecmp(name, _env[i]->name)))
 			{
 				if (mutex) ReleaseMutex(mutex);
 

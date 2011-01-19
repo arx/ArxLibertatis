@@ -71,8 +71,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Particles.h"
 #include "ARX_Time.h"
 #include "ARX_Scene.h"
-#include "../DANAE/ARX_Menu2.h"
-
+#include "../danae/ARX_Menu2.h"
 #include "HERMESMain.h"
 #include "Minos_PathFinder.h"
 
@@ -996,7 +995,7 @@ void EERIETreatPoint(D3DTLVERTEX * in, D3DTLVERTEX * out)
 	out->rhw = fZTemp;
 }
 
-__inline void EERIETreatPoint2(D3DTLVERTEX * in, D3DTLVERTEX * out)
+void EERIETreatPoint2(D3DTLVERTEX * in, D3DTLVERTEX * out)
 {
 	out->sx = in->sx - ACTIVECAM->pos.x;
 	out->sy = in->sy - ACTIVECAM->pos.y;
@@ -5348,90 +5347,33 @@ void ComputePortalVertexBuffer()
 	}
 }
 
+long EERIERTPPoly(EERIEPOLY *ep)
+{
+	specialEE_RTP(&ep->v[0],&ep->tv[0]);
+	specialEE_RTP(&ep->v[1],&ep->tv[1]);
+	specialEE_RTP(&ep->v[2],&ep->tv[2]);	
 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+	if (ep->type & POLY_QUAD) 
+	{
+		specialEE_RTP(&ep->v[3],&ep->tv[3]);	
+
+		if ((ep->tv[0].sz<=0.f) &&
+			(ep->tv[1].sz<=0.f) &&
+			(ep->tv[2].sz<=0.f) &&
+			(ep->tv[3].sz<=0.f) ) 
+		{
+			return 0;
+		}
+	}
+	else
+	{
+		if ((ep->tv[0].sz<=0.f) &&
+			(ep->tv[1].sz<=0.f) &&
+			(ep->tv[2].sz<=0.f)  ) 
+		{
+			return 0;
+		}
+	}
+
+	return 1;
+}
