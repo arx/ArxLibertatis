@@ -43,3 +43,7 @@ add_executable(arx ${SOURCES})
 
 #link
 target_link_libraries(arx dsound dxguid gdi32 shell32 dinput comdlg32 ole32 comctl32 ddraw jpeg z)
+
+add_custom_target(remake
+        COMMAND make clean && rm CMakeCache.txt && cmake . -G\"Unix Makefiles\" && make -j`getconf _NPROCESSORS_ONLN`
+)
