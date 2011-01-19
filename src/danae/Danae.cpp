@@ -4830,7 +4830,7 @@ void RenderAllNodes(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			{
 				xx=nodeobj->vertexlist[nodeobj->origin].vert.sx-40.f;
 				yy=nodeobj->vertexlist[nodeobj->origin].vert.sy-40.f;
-				ARX_TEXT_Draw(m_pd3dDevice, InBookFont, xx, yy, 0, 0, nodes.nodes[i].UName.c_str(), EERIECOLOR_YELLOW); //font
+				ARX_TEXT_Draw(m_pd3dDevice, InBookFont, xx, yy, 0, 0, nodes.nodes[i].UName, EERIECOLOR_YELLOW); //font
 			}
 
 			if (nodes.nodes[i].selected)
@@ -7117,8 +7117,9 @@ static float _AvgFrameDiff = 150.f;
 		if (!(Project.hide & HIDE_NODES))
 				RenderAllNodes(m_pd3dDevice);
 
-		_TCHAR texx[80];
-		_stprintf(texx, _T("EDIT MODE - Selected %d"), NbIOSelected);
+    std::string texx( "EDIT MODE - Selected ");
+    std::stringstream ss( texx );
+		ss <<  NbIOSelected;
 		ARX_TEXT_Draw(m_pd3dDevice,InBookFont,100,2,0,0,texx,EERIECOLOR_YELLOW);
 	
 		if (EDITION==EDITION_FOGS)
