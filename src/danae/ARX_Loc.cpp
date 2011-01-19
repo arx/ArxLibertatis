@@ -26,7 +26,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "HERMESMain.h"
 #include "ARX_LocHash.h"
 #include "ARX_Loc.h"
-#include "ARX_Config.h"
 #include <tchar.h>
 #include <list>
 #include "ARX_Menu2.h"

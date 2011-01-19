@@ -62,16 +62,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 						Include
 ------------------------------------------------------------*/
 
-#include <assert.h>
-#include <limits.h>
-#include <stdio.h>
+#include <climits>
+#include <cstdio>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <stdarg.h>
-//#include <wtypes.h>
-#include <time.h>
+#include <cstdarg>
+#include <ctime>
 
 /* ---------------------------------------------------------
 					     Break
@@ -150,9 +148,9 @@ enum ARX_DEBUG_LOG_TYPE
 //ARX_BEGIN: jycorbel (2010-06-28) - clean warning 'variable used without having been initialized'.
 #define ARX_CHECK_NO_ENTRY( ) ( arx_assert( FALSE ) )	//ARX: xrichter (2010-07-26) - Modified to use arx_assert
 #define ARX_CHECK( _expr ) ( arx_assert( _expr ) )		//ARX: xrichter (2010-07-26) - Modified to use arx_assert
-#define ARX_WARN( _str ) ( printf("WARN: %s=%s", #_str, ( _str ) ) )
-#define ARX_WARN_F( _f ) ( printf("WARN: %s=%f", #_f, ( _f ) ) )
-#define ARX_WARN_I( _i ) ( printf("WARN: %s=%d", #_i, ( _i ) ) )
+#define ARX_WARN( _str ) ( std::printf("WARN: %s=%s", #_str, ( _str ) ) )
+#define ARX_WARN_F( _f ) ( std::printf("WARN: %s=%f", #_f, ( _f ) ) )
+#define ARX_WARN_I( _i ) ( std::printf("WARN: %s=%d", #_i, ( _i ) ) )
 //ARX_END: jycorbel (2010-06-28)
 
 
@@ -160,16 +158,6 @@ enum ARX_DEBUG_LOG_TYPE
 /* ---------------------------------------------------------
 						Pragma
 ------------------------------------------------------------*/
-
-#pragma warning(disable : 4100) //ARX - jycorbel - 2010/06/22 - Disable warning "unreferenced formal parameter"
-#pragma warning(disable : 4101) //ARX - jycorbel - 2010/06/22 - Disable warning "unreferenced local variable"
-#pragma warning(disable : 4127) //ARX - jycorbel - 2010/06/22 - Disable warning "conditional expression is constant"
-#pragma warning(disable : 4189) //ARX - jycorbel - 2010/06/22 - Disable warning "local variable is initialized but not referenced"
-#pragma warning(disable : 4201) //ARX - jycorbel - 2010/06/22 - Disable warning "nonstandard extension used : nameless struct/union"
-#pragma warning(disable : 4702) //ARX - jycorbel - 2010/06/22 - Disable warning "unreachable code"
-#pragma warning(disable : 4706) //ARX - jycorbel - 2010/06/22 - Disable warning "assignment within conditional expression"
-#pragma warning(disable : 4995) //ARX: xrichter (2010-07-02) - treat warnings for depreciate functions
-#pragma warning(disable : 4996) //ARX: xrichter (2010-07-02) - treat warnings for depreciate functions
 
 //ARX_BEGIN: jycorbel (2010-07-02) - Assure compatibility with C code (Mercury).
 #define ARX_DEAD_CODE() {arx_assert( FALSE );} //ARX: xrichter (2010-06-23) - treat warnings C4700  Disable warning "local variable % used without having been initialized"
