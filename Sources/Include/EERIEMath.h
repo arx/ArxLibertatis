@@ -232,7 +232,7 @@ BOOL CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2
 BOOL SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s);
 
 // Optimized Float 2 Long Conversion
-void F2L(const float f, long * l)
+inline void F2L(const float f, long * l)
 {
 	*l = f;
 	//TODO: Optimize
@@ -243,7 +243,7 @@ void F2L(const float f, long * l)
 //		_asm	fistp DWORD PTR [eax]
 //	}
 }
-void F2L(const float f, LONG * l)
+inline void F2L(const float f, LONG * l)
 {
 	*l = f;
 }
@@ -257,7 +257,7 @@ inline D3DCOLOR EERIERGB(float r, float g, float b)
 	return (0xff000000L | (t[0] << 16) | (t[1] << 8) | t[2]);
 }
 
-D3DCOLOR _EERIERGB(float v)
+inline D3DCOLOR _EERIERGB(float v)
 {
 	long t;
 	F2L(v * 255.f, &t);
