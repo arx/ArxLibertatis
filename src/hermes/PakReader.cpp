@@ -269,7 +269,7 @@ bool PakReader::Open(const char * name) {
 			file->offset = param;
 			file->param2 = param2;
 			file->param3 = param3;
-			file->taille = size;
+			file->size = size;
 		}
 		
 	}
@@ -412,7 +412,7 @@ bool PakReader::Read(char * _pcName, void * _mem)
 		}
 		else
 		{
-			fread(_mem, 1, pTFiles->taille, file);
+			fread(_mem, 1, pTFiles->size, file);
 		}
 
 		iSeekPak = ftell(file);
@@ -495,14 +495,14 @@ void * PakReader::ReadAlloc(char * _pcName, int * _piTaille)
 		}
 		else
 		{
-			mem = malloc(pTFiles->taille);
-			*_piTaille = (int)pTFiles->taille;
+			mem = malloc(pTFiles->size);
+			*_piTaille = (int)pTFiles->size;
 
 			if(!mem) {
 				goto error;
 			}
 
-			fread(mem, 1, pTFiles->taille, file);
+			fread(mem, 1, pTFiles->size, file);
 		}
 
 		iSeekPak = ftell(file);
@@ -587,7 +587,7 @@ int PakReader::GetSize(char * _pcName)
 		}
 		else
 		{
-			return pTFiles->taille;
+			return pTFiles->size;
 		}
 	}
 
@@ -784,15 +784,15 @@ size_t PakReader::fRead(void * _pMem, size_t _iSize, size_t _iCount, PakFileHand
 	else
 	{
 		assert(_pPackFile->iOffset >= 0);
-		if ((unsigned int)_pPackFile->iOffset >= _pPackFile->pFile->taille) return 0;
+		if ((unsigned int)_pPackFile->iOffset >= _pPackFile->pFile->size) return 0;
 
 		fseek(file, pTFiles->offset + _pPackFile->iOffset - iSeekPak, SEEK_CUR);
 
 		assert(iTaille >= 0);
 
-		if (pTFiles->taille < (unsigned int)_pPackFile->iOffset + iTaille)
+		if (pTFiles->size < (unsigned int)_pPackFile->iOffset + iTaille)
 		{
-			iTaille -= _pPackFile->iOffset + iTaille - pTFiles->taille;
+			iTaille -= _pPackFile->iOffset + iTaille - pTFiles->size;
 		}
 
 		fread(_pMem, 1, iTaille, file);
@@ -824,7 +824,7 @@ int PakReader::fSeek(PakFileHandle * _pPackFile, long _lOffset, int _iOrigin)
 			}
 			else
 			{
-				if (_lOffset > _pPackFile->pFile->taille) return 1;
+				if (_lOffset > _pPackFile->pFile->size) return 1;
 
 				_pPackFile->iOffset = _lOffset;
 			}
@@ -842,9 +842,9 @@ int PakReader::fSeek(PakFileHandle * _pPackFile, long _lOffset, int _iOrigin)
 			}
 			else
 			{
-				if (_lOffset > _pPackFile->pFile->taille) return 1;
+				if (_lOffset > _pPackFile->pFile->size) return 1;
 
-				_pPackFile->iOffset = _pPackFile->pFile->taille - _lOffset;
+				_pPackFile->iOffset = _pPackFile->pFile->size - _lOffset;
 			}
 
 			break;
@@ -867,7 +867,7 @@ int PakReader::fSeek(PakFileHandle * _pPackFile, long _lOffset, int _iOrigin)
 				int iOffset = _pPackFile->iOffset + _lOffset;
 
 				if ((iOffset < 0) ||
-			        ((unsigned int)iOffset > _pPackFile->pFile->taille))
+			        ((unsigned int)iOffset > _pPackFile->pFile->size))
 				{
 					return 1;
 				}

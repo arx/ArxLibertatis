@@ -34,7 +34,7 @@ class PakFile {
 public:
 	
 	const char * name;
-	std::size_t taille;
+	std::size_t size;
 	PakFile * fprev;
 	PakFile * fnext;
 	std::size_t offset;
