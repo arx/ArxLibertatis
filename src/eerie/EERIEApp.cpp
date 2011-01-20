@@ -77,9 +77,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::max;
 
-//todo: dont
-# define GWL_WNDPROC         (-4)
-
 //-----------------------------------------------------------------------------
 extern long USE_OLD_MOUSE_SYSTEM;
 extern long FINAL_RELEASE;
