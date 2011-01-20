@@ -36,21 +36,6 @@ add_custom_target(remake
         COMMAND make clean && rm CMakeCache.txt && cmake . -G\"Unix Makefiles\" && make -j`getconf _NPROCESSORS_ONLN`
 )
 
+add_subdirectory(tools)
 
 
-# compile unpak tool
-
-set(UNPAK_SRC_DIR tools/unpak)
-
-include_directories(
-	include
-)
-
-# normal build TODO
-#set(CMAKE_CXX_COMPILER g++)
-#set(CMAKE_C_COMPILER gcc)
-#set(CMAKE_CXX_FLAGS "-fpermissive -w")
-
-add_executable(unpak tools/unpak/unpak.cpp src/hermes/PakEntry.cpp src/hermes/PakReader.cpp src/hermes/HashMap.cpp src/hermes/blast.cpp)
-
-# target_link_libraries(unpak z)

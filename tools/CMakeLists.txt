@@ -1,0 +1,18 @@
+# compile unpak tool
+
+set(CMAKE_CXX_COMPILER g++)
+set(CMAKE_C_COMPILER gcc)
+set(CMAKE_CXX_FLAGS "-fpermissive -w")
+
+include_directories(
+	include
+)
+
+add_executable(unpak 
+unpak/unpak.cpp 
+../src/hermes/PakEntry.cpp 
+../src/hermes/PakReader.cpp 
+../src/hermes/HashMap.cpp 
+../src/hermes/blast.cpp)
+
+# target_link_libraries(unpak z)
