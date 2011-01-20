@@ -22,42 +22,65 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef HACHAGE_H
-#define HACHAGE_H
+#ifndef EVE_SAVE
+#define EVE_SAVE
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <vector>
-//#include <ARX_Common.h>
+class HashMap;
 
-typedef struct
-{
-	char	*lpszName;
-	void	*pMem;
-}T_HACHAGE_DATAS;
+#include <cstddef>
 
-class CHachageString
-{
-private:
-	int				iSize;
-	int				iMask;
-	int				iFill;
-	T_HACHAGE_DATAS	*tTab;
+#define PAK_FILE_COMPRESSED 1
+
+class PakFile {
+	
 public:
-	int		iNbCollisions;
-	int		iNbNoInsert;
-private:
-	int FuncH1(int);
-	int	FuncH2(int);
-	int	GetKey(char*);
+	
+	const char * name;
+	std::size_t size;
+	PakFile * fprev;
+	PakFile * fnext;
+	std::size_t offset;
+	unsigned int flags;
+	std::size_t param3;
+	
 public:
-	CHachageString(int _iSize=256);
-	~CHachageString();
-
-	bool AddString(char*,void *_pMem=NULL);
- 
-	void* GetPtrWithString(char *_lpszText);
+	
+	PakFile(const char * n = NULL);
+	~PakFile();
+	
 };
+
+class PakDirectory {
+	
+public:
+	
+	const char * name;
+	unsigned int nbsousreps;
+	unsigned int nbfiles;
+	PakDirectory * parent;
+	PakDirectory * fils;
+	PakDirectory * brotherprev;
+	PakDirectory * brothernext;
+	PakFile * fichiers;
+	HashMap * pHachage;
+	unsigned int param;
+	
+public:
+	
+	PakDirectory(PakDirectory * p, const char * n);
+	~PakDirectory();
+
+	PakDirectory * AddSousRepertoire(const char * sname);
+	bool DelSousRepertoire(const char * sname);
+	PakFile * AddFileToSousRepertoire(const char * sname, const char * name);
+ 
+	PakDirectory * GetSousRepertoire(const char * sname);
+ 
+	void ConstructFullNameRepertoire(char * );
+	friend void Kill(PakDirectory * r);
+};
+
+char * EVEF_GetDirName(const char * dirplusname);
+char * EVEF_GetFileName(const char * dirplusname);
 
 #endif

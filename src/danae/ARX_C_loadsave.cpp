@@ -26,8 +26,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stdlib.h>
 #include "ARX_CCinematique.h"
-#include "HERMES_PAK.h"
-#include "ARX_Casts.h"
+#include <hermes/PakManager.h>
+
 
 /*----------------------------------------------------------------------*/
 void DrawInfoTrack(void);

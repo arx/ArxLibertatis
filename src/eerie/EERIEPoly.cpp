@@ -75,7 +75,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "HERMESMain.h"
 #include "Minos_PathFinder.h"
 
-
+#include <hermes/PakManager.h>
 
 
 

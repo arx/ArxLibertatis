@@ -85,6 +85,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIECollisionSpheres.h"
 #include "EERIEMeshTweak.h"
 
+#include <cstdio>
+using std::sprintf;
+
 void CheckNPCEx(INTERACTIVE_OBJ * io);
 
 static const float ARX_NPC_ON_HEAR_MAX_DISTANCE_STEP(600.0F);

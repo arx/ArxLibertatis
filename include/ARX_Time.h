@@ -58,7 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_TIME_H
 
 #include "Danae.h"
-#include "ARX_Casts.h"
+
 //-----------------------------------------------------------------------------
 extern float ARXPausedTime;
 extern float ARXTotalPausedTime;

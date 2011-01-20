@@ -64,10 +64,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define HERMES_PATH_SIZE	512
 
-#include "HERMES_PAK.h"
 #include "HERMESPerf.h"
 
 #include <windows.h>
+
+#include <cstddef>
 
 typedef struct {
 	long	secs;

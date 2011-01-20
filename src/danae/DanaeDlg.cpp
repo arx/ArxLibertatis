@@ -58,16 +58,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <DANAE_VERSION.h>
 #include <stdio.h>
 #include <windows.h>
-//#include <direct.h>
 
 #include "Danae_resource.h"
 #include "DanaeDlg.h"
 #include "ARX_Interface.h"
 #include "ARX_Paths.h"
 #include "ARX_Sound.h"
-#if _ARX_CEDITOR_
-#include "ceditor_ceditor.h"
-#endif // _ARX_CEDITOR_
 #include "ARX_GlobalMods.h"
 #include "ARX_Particles.h"
 #include "ARX_Snapshot.h"
@@ -83,10 +79,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <EERIEMath.h>
 
 #include <stdio.h>
-
-//todo baaad
-# define GWL_HINSTANCE       (-6)
-# define GWL_WNDPROC         (-4)
 
 extern long CURRENTSNAPNUM;
 extern long SnapShotMode;

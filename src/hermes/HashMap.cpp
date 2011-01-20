@@ -22,27 +22,37 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include "HERMES_hachage.h"
+#include "hermes/HashMap.h"
+
+#include <cstdlib>
+#include <cstring>
+
+#include <algorithm>
+using std::transform;
+
+#include <string>
+using std::string;
+
+using std::size_t;
 
 //-----------------------------------------------------------------------------
-CHachageString::CHachageString(int _iSize)
+HashMap::HashMap(size_t _iSize)
 {
-	tTab = (T_HACHAGE_DATAS *)malloc(_iSize * sizeof(T_HACHAGE_DATAS));
+	tTab = (Entry *)malloc(_iSize * sizeof(Entry));
 	iNbCollisions = iNbNoInsert = 0;
-
+	
 	iSize = _iSize;
 	iFill = 0;
-
-	while (_iSize--)
-	{
-		tTab[_iSize].lpszName = NULL;
+	
+	for(size_t i = 0; i < _iSize; i++) {
+		tTab[i].lpszName = NULL;
 	}
-
+	
 	iMask = iSize - 1;
 }
 
 //-----------------------------------------------------------------------------
-CHachageString::~CHachageString()
+HashMap::~HashMap()
 {
 	while (iSize--)
 	{
@@ -57,21 +67,21 @@ CHachageString::~CHachageString()
 }
 
 //-----------------------------------------------------------------------------
-bool CHachageString::AddString(char * _lpszText, void * _pMem)
+bool HashMap::AddString(const char * _lpszText, void * _pMem)
 {
 	//	todo string;
-	char * lpszTextLow = _lpszText;
-//	char * lpszTextLow = strlwr(_lpszText);
+	string lpszTextLow = _lpszText;
+	transform(lpszTextLow.begin(), lpszTextLow.end(), lpszTextLow.begin(), tolower);
 
 	if (iFill >= iSize * 0.75)
 	{
 		//TO DO: recr�e toute la table!!!!
 		iSize <<= 1;
 		iMask = iSize - 1;
-		tTab = (T_HACHAGE_DATAS *)realloc(tTab, iSize * sizeof(T_HACHAGE_DATAS));
+		tTab = (Entry *)realloc(tTab, iSize * sizeof(Entry));
 	}
 
-	int iKey = GetKey(lpszTextLow);
+	int iKey = GetKey(lpszTextLow.c_str());
 	int	iH1 = FuncH1(iKey);
 	int	iH2 = FuncH2(iKey);
 
@@ -83,7 +93,7 @@ bool CHachageString::AddString(char * _lpszText, void * _pMem)
 
 		if (!tTab[iH1].lpszName)
 		{
-			tTab[iH1].lpszName = strdup(lpszTextLow);
+			tTab[iH1].lpszName = strdup(lpszTextLow.c_str());
 			tTab[iH1].pMem = _pMem;
 			iFill++;
 			return true;
@@ -101,13 +111,13 @@ bool CHachageString::AddString(char * _lpszText, void * _pMem)
 
 //-----------------------------------------------------------------------------
 
-void * CHachageString::GetPtrWithString(char * _lpszText)
+void * HashMap::GetPtrWithString(const char * _lpszText)
 {
 //	todo string;
-	char * lpszTextLow = _lpszText;
+	string lpszTextLow = _lpszText;
 //	char * lpszTextLow = _strlwr(_lpszText);
 
-	int iKey = GetKey(lpszTextLow);
+	int iKey = GetKey(lpszTextLow.c_str());
 	int	iH1 = FuncH1(iKey);
 	int	iH2 = FuncH2(iKey);
 
@@ -119,7 +129,7 @@ void * CHachageString::GetPtrWithString(char * _lpszText)
 
 		if (tTab[iH1].lpszName)
 		{
-			if (!strcmp((const char *)lpszTextLow, (const char *)tTab[iH1].lpszName))
+			if (!strcmp(lpszTextLow.c_str(), tTab[iH1].lpszName))
 			{
 				return tTab[iH1].pMem;
 			}
@@ -133,19 +143,19 @@ void * CHachageString::GetPtrWithString(char * _lpszText)
 }
 
 //-----------------------------------------------------------------------------
-int CHachageString::FuncH1(int _iKey)
+int HashMap::FuncH1(int _iKey)
 {
 	return _iKey;
 }
 
 //-----------------------------------------------------------------------------
-int	CHachageString::FuncH2(int _iKey)
+int	HashMap::FuncH2(int _iKey)
 {
 	return ((_iKey >> 1) | 1);
 }
 
 //-----------------------------------------------------------------------------
-int	CHachageString::GetKey(char * _lpszText)
+int	HashMap::GetKey(const char * _lpszText)
 {
 	int iKey = 0;
 	int iLenght = strlen((const char *)_lpszText);

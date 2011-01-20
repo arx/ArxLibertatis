@@ -25,89 +25,51 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EVE_LOAD
 #define EVE_LOAD
 
-#include "HERMES_pack.h"
+class PakFile;
+class PakDirectory;
+
+#include <cstddef>
+#include <cstdio> // for FILE
 
 #define PACK_MAX_FREAD	(256)
 
-#define PAK_READ_BUF_SIZE 1024
-typedef struct
-{
-	FILE *file;
-	char *mem;
-	std::size_t lSize;
-	
-	char readbuf[PAK_READ_BUF_SIZE];
-	
-} PAK_PARAM;
-
-typedef struct
-{
-	FILE	*file;
-	char	*mem;
-	int		iOffsetCurr;
-	int		iOffset;
-	int		iOffsetBase;
-	int		iTaille;
-	int		iTailleBase;
-	int		iTailleW;
-	int		iTailleFic;
-	
-	char readbuf[PAK_READ_BUF_SIZE];
-	
-} PAK_PARAM_FREAD;
-
-typedef struct
-{
+struct PakFileHandle {
 	bool		bActif;
 	int			iID;
 	int			iOffset;
-	EVE_TFILE	*pFile;
-} PACK_FILE;
+	PakFile * pFile;
+};
 
-class EVE_LOADPACK
+class PakReader
 {
 private:
-	FILE			*pfFile;
-	char			*pcFAT;
-	int				iTailleFAT;
-	int				iSeekPak;
-	PACK_FILE		tPackFile[PACK_MAX_FREAD];
-
-	unsigned char	cKey[512];
-	unsigned int	iPassKey;
+	
+	const char * fat;
+	FILE * file;
+	PakFileHandle tPackFile[PACK_MAX_FREAD];
+	
 public:
-	char			*lpszName;
-	EVE_REPERTOIRE	*pRoot;
+	const char * pakname;
+	PakDirectory * pRoot;
 private:
 	int ReadFAT_int();
 	char* ReadFAT_string();
 public:
-	EVE_LOADPACK();
-	~EVE_LOADPACK();
-
-	bool Open(char*);
+	PakReader();
+	~PakReader();
+	
+	bool Open(const char * pakfile);
 	void Close();
 	bool Read(char*,void*);
 	void* ReadAlloc(char*,int*);
 	int GetSize(char *_pcName);
-
-	PACK_FILE * fOpen(const char*,const char*);
-	int fClose(PACK_FILE*);
-	int fRead(void*,int,int,PACK_FILE*);
-	int fSeek(PACK_FILE*,unsigned long,int);
-	int fTell(PACK_FILE *);
-
-	void WriteSousRepertoire(char *pcAbs,EVE_REPERTOIRE *r);
-	void WriteSousRepertoireZarbi(char *pcAbs,EVE_REPERTOIRE *r);
-
-	void CryptChar(unsigned char*);
-	void UnCryptChar(unsigned char*);
-	void CryptString(unsigned char*);
-	int UnCryptString(unsigned char*);
-	void CryptShort(unsigned short*);
-	void UnCryptShort(unsigned short*);
-	void CryptInt(unsigned int*);
-	void UnCryptInt(unsigned int*);
+	
+	PakFileHandle * fOpen(const char * name, const char * mode);
+	int fClose(PakFileHandle * h);
+	std::size_t fRead(void * buf, std::size_t size, std::size_t n, PakFileHandle * h);
+	int fSeek(PakFileHandle * h, long off, int whence);
+	long fTell(PakFileHandle * h);
+	
 }; 
 
 #endif

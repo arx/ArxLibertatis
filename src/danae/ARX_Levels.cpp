@@ -54,6 +54,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+#include <vector>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
 #include "ARX_Levels.h"
 #include "DanaeSaveLoad.h"
 #include "time.h"
@@ -69,7 +74,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIECollisionSpheres.h"
 
 #include <stdio.h>
-#include <vector>
 
 extern long LOAD_N_DONT_ERASE;
 extern long DONT_LOAD_SCENE;

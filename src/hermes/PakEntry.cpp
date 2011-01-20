@@ -22,42 +22,33 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include "HERMES_pack.h"
+#include <hermes/PakEntry.h>
+#include <hermes/HashMap.h>
+
+#include <cstring>
 
 
+using std::size_t;
 
 
- 
+static char * GetFirstDir(const char * dir, size_t * l);
 
-//#############################################################################
-//#############################################################################
-//                             STATIC
-//#############################################################################
-//#############################################################################
-static EVE_U8 * GetDirName(EVE_U8 * dirplusname);
-static EVE_U8 * GetFileName(EVE_U8 * dirplusname);
-static EVE_U8 * GetFirstDir(EVE_U8 * dir, EVE_U32 * l);
-//#############################################################################
-//#############################################################################
-//                             EVE_TFILE
-//#############################################################################
-//#############################################################################
-EVE_TFILE::EVE_TFILE(EVE_U8 * dir, EVE_U8 * n)
+PakFile::PakFile(const char * n)
 {
 	this->name = NULL;
-	this->taille = 0;
-	this->param = this->param2 = this->param3 = 0;
+	this->size = 0;
+	this->offset = this->flags = this->param3 = 0;
 	this->fprev = this->fnext = NULL;
 
 	if (n)
 	{
-		this->name = new EVE_U8[strlen((const EVE_8 *)n)+1];
-		strcpy((EVE_8 *)this->name, (const EVE_8 *)n);
+		this->name = new char[strlen(n)+1];
+		strcpy(this->name, n);
 		return;
 	}
 }
 //#############################################################################
-EVE_TFILE::~EVE_TFILE()
+PakFile::~PakFile()
 {
 	if (this->name) delete[] this->name;
 
@@ -73,12 +64,12 @@ EVE_TFILE::~EVE_TFILE()
 }
 //#############################################################################
 //#############################################################################
-//                             EVE_REPERTOIRE
+//                             PakDirectory
 //#############################################################################
 //#############################################################################
-EVE_REPERTOIRE::EVE_REPERTOIRE(EVE_REPERTOIRE * p, EVE_U8 * n)
+PakDirectory::PakDirectory(PakDirectory * p, const char * n)
 {
-	pHachage = NULL; //new CHachageString(4096);
+	pHachage = NULL;
 	this->param = 0;
 	this->brotherprev = this->brothernext = NULL;
 	this->parent = p;
@@ -88,7 +79,7 @@ EVE_REPERTOIRE::EVE_REPERTOIRE(EVE_REPERTOIRE * p, EVE_U8 * n)
 
 	if (n)
 	{
-		EVE_U32 l;
+		size_t l;
 		this->name = GetFirstDir(n, &l);
 
 		if (this->name)
@@ -96,7 +87,7 @@ EVE_REPERTOIRE::EVE_REPERTOIRE(EVE_REPERTOIRE * p, EVE_U8 * n)
 			if (l != strlen((const char *)n))
 			{
 				this->nbsousreps = 1;
-				this->fils = new EVE_REPERTOIRE(this, n + l);
+				this->fils = new PakDirectory(this, n + l);
 			}
 
 			return;
@@ -106,7 +97,7 @@ EVE_REPERTOIRE::EVE_REPERTOIRE(EVE_REPERTOIRE * p, EVE_U8 * n)
 	this->name = NULL;
 }
 //#############################################################################
-EVE_REPERTOIRE::~EVE_REPERTOIRE()
+PakDirectory::~PakDirectory()
 {
 	if (this->name)
 	{
@@ -119,42 +110,42 @@ EVE_REPERTOIRE::~EVE_REPERTOIRE()
 		pHachage = NULL;
 	}
 
-	EVE_TFILE * f = fichiers;
+	PakFile * f = fichiers;
 
 	while (nbfiles--)
 	{
-		EVE_TFILE * fnext = f->fnext;
+		PakFile * fnext = f->fnext;
 		delete f;
 		f = fnext;
 	}
 
 	fichiers = NULL;
 
-	EVE_REPERTOIRE * r = this->fils;
-	EVE_U32 nb = this->nbsousreps;
+	PakDirectory * r = this->fils;
+	unsigned int nb = this->nbsousreps;
 
 	while (nb--)
 	{
-		EVE_REPERTOIRE * rnext = r->brothernext;
+		PakDirectory * rnext = r->brothernext;
 		delete r;
 		r = rnext;
 	}
 }
 //#############################################################################
-void EVE_REPERTOIRE::AddSousRepertoire(EVE_U8 * sname)
+PakDirectory * PakDirectory::AddSousRepertoire(const char * sname)
 {
-	EVE_U32			nbs = this->nbsousreps, l;
-	EVE_REPERTOIRE	* rf = this->fils;
+	unsigned int nbs = this->nbsousreps;
+	size_t l;
+	PakDirectory	* rf = this->fils;
 
-	EVE_U8 * fdir = GetFirstDir(sname, &l);
+	const char * fdir = GetFirstDir(sname, &l);
 
 	while (nbs--)
 	{
-		if (!strcasecmp((const EVE_8 *)fdir, (const EVE_8 *)rf->name))
+		if (!strcasecmp(fdir, rf->name))
 		{
 			delete[] fdir;
-			rf->AddSousRepertoire(sname + l);
-			return;
+			return rf->AddSousRepertoire(sname + l);
 		}
 
 		rf = rf->brothernext;
@@ -162,30 +153,33 @@ void EVE_REPERTOIRE::AddSousRepertoire(EVE_U8 * sname)
 
 	delete[] fdir;
 	this->nbsousreps++;
-	rf = new EVE_REPERTOIRE(this, sname);
+	rf = new PakDirectory(this, sname);
 	rf->brotherprev = NULL;
 	rf->brothernext = this->fils;
 
 	if (this->fils) this->fils->brotherprev = rf;
 
 	this->fils = rf;
+	
+	return rf;
 }
 //#############################################################################
-bool EVE_REPERTOIRE::DelSousRepertoire(EVE_U8 * sname)
+bool PakDirectory::DelSousRepertoire(const char * sname)
 {
-	EVE_U32			nbs = this->nbsousreps, l;
-	EVE_REPERTOIRE	* rf = this->fils;
-
-	EVE_U8 * fdir = GetFirstDir(sname, &l);
-
+	unsigned int nbs = this->nbsousreps;
+	size_t l;
+	PakDirectory * rf = this->fils;
+	
+	const char * fdir = GetFirstDir(sname, &l);
+	
 	while (nbs--)
 	{
-		if (!strcasecmp((const EVE_8 *)fdir, (const EVE_8 *)rf->name))
+		if (!strcasecmp(fdir, rf->name))
 		{
 			delete[] fdir;
 			bool ok;
 
-			if (l == strlen((const EVE_8 *)sname))
+			if (l == strlen(sname))
 			{
 				ok = true;
 			}
@@ -226,21 +220,26 @@ bool EVE_REPERTOIRE::DelSousRepertoire(EVE_U8 * sname)
 	delete[] fdir;
 	return false;
 }
+
+#include <stdio.h>
+
 //#############################################################################
-EVE_REPERTOIRE * EVE_REPERTOIRE::GetSousRepertoire(EVE_U8 * sname)
+PakDirectory * PakDirectory::GetSousRepertoire(const char * sname)
 {
-	EVE_U32			nbs = this->nbsousreps, l;
-	EVE_REPERTOIRE	* rf = this->fils;
+	unsigned int nbs = this->nbsousreps;
+	size_t l;
+	PakDirectory	* rf = this->fils;
 
-	EVE_U8 * fdir = GetFirstDir(sname, &l);
-
+	const char * fdir = GetFirstDir(sname, &l);
+	
 	while (nbs--)
 	{
-		if (!strcasecmp((const EVE_8 *)fdir, (const EVE_8 *)rf->name))
+		
+		if (!strcasecmp(fdir, rf->name))
 		{
 			delete[] fdir;
 
-			if (l == strlen((const EVE_8 *)sname))
+			if (l == strlen(sname))
 			{
 				return rf;
 			}
@@ -257,9 +256,9 @@ EVE_REPERTOIRE * EVE_REPERTOIRE::GetSousRepertoire(EVE_U8 * sname)
 	return NULL;
 }
 //#############################################################################
-EVE_TFILE * EVE_REPERTOIRE::AddFileToSousRepertoire(EVE_U8 * sname, EVE_U8 * name)
+PakFile * PakDirectory::AddFileToSousRepertoire(const char * sname, const char * name)
 {
-	EVE_REPERTOIRE * r;
+	PakDirectory * r;
 
 	if (!sname)
 	{
@@ -275,17 +274,17 @@ EVE_TFILE * EVE_REPERTOIRE::AddFileToSousRepertoire(EVE_U8 * sname, EVE_U8 * nam
 		}
 	}
 
-	EVE_TFILE * f = r->fichiers;
-	EVE_U32 nb = r->nbfiles;
+	PakFile * f = r->fichiers;
+	unsigned int nb = r->nbfiles;
 
 	while (nb--)
 	{
-		if (!strcasecmp((const EVE_8 *)f->name, (const EVE_8 *)name)) return NULL;
+		if (!strcasecmp(f->name, name)) return NULL;
 
 		f = f->fnext;
 	}
 
-	f = new EVE_TFILE(sname, name);
+	f = new PakFile(name);
 
 	if (!f) return NULL;
 
@@ -306,7 +305,7 @@ EVE_TFILE * EVE_REPERTOIRE::AddFileToSousRepertoire(EVE_U8 * sname, EVE_U8 * nam
 	return f;
 }
 //#############################################################################
-void EVE_REPERTOIRE::ConstructFullNameRepertoire(char * t)
+void PakDirectory::ConstructFullNameRepertoire(char * t)
 {
 	if (parent)
 	{
@@ -319,25 +318,25 @@ void EVE_REPERTOIRE::ConstructFullNameRepertoire(char * t)
 	}
 }
 //#############################################################################
-void Kill(EVE_REPERTOIRE * r)
+void Kill(PakDirectory * r)
 {
-	EVE_TFILE * f = r->fichiers;
+	PakFile * f = r->fichiers;
 
 	while (r->nbfiles--)
 	{
-		EVE_TFILE * fnext = f->fnext;
+		PakFile * fnext = f->fnext;
 		delete f;
 		f = fnext;
 	}
 
 	r->fichiers = NULL;
 
-	EVE_REPERTOIRE * brep = r->fils;
+	PakDirectory * brep = r->fils;
 	int nb = r->nbsousreps;
 
 	while (nb--)
 	{
-		EVE_REPERTOIRE * brepnext = brep->brothernext;
+		PakDirectory * brepnext = brep->brothernext;
 		Kill(brep);
 		brep = brepnext;
 	}
@@ -346,9 +345,9 @@ void Kill(EVE_REPERTOIRE * r)
 	delete r;
 }
 
-static EVE_U8 * GetFirstDir(EVE_U8 * dir, EVE_U32 * l)
+static char * GetFirstDir(const char * dir, size_t * l)
 {
-	EVE_U8	* dirc = dir;
+	const char * dirc = dir;
 
 	*l = 1;
 
@@ -359,25 +358,27 @@ static EVE_U8 * GetFirstDir(EVE_U8 * dir, EVE_U32 * l)
 		dirc++;
 	}
 
-	EVE_U8 * fdir = new EVE_U8[*l+1];
+	char * fdir = new char[*l+1];
 
 	if (!fdir) return NULL;
 
-	strncpy((EVE_8 *)fdir, (const EVE_8 *)dir, *l);
+	strncpy(fdir, dir, *l);
 	fdir[*l] = 0;
+	fdir[*l - 1] = '\\'; // TODO use "/" seperator
 
 	return fdir;
 }
 //#############################################################################
-EVE_U8 * EVEF_GetDirName(EVE_U8 * dirplusname)
+char * EVEF_GetDirName(const char * dirplusname)
 {
-	EVE_U32 l = strlen((const EVE_8 *)dirplusname);
+	size_t l = strlen(dirplusname);
 
-	EVE_U8 * dir = new EVE_U8[l+1], *dirc = dir;
+	char * dir = new char[l+1];
+	char * dirc = dir;
 
 	if (!dir) return NULL;
 
-	strcpy((EVE_8 *)dir, (const EVE_8 *)dirplusname);
+	strcpy(dir, dirplusname);
 
 	dirc += l;
 
@@ -397,7 +398,7 @@ EVE_U8 * EVEF_GetDirName(EVE_U8 * dirplusname)
 		return NULL;
 	}
 
-	EVE_U8 * dirf = new EVE_U8[strlen((const EVE_8 *)dir)+1];
+	char * dirf = new char[strlen(dir)+1];
 
 	if (!dirf)
 	{
@@ -405,18 +406,18 @@ EVE_U8 * EVEF_GetDirName(EVE_U8 * dirplusname)
 		return NULL;
 	}
 
-	strcpy((EVE_8 *)dirf, (const EVE_8 *)dir);
+	strcpy(dirf, dir);
 
 	delete[] dir;
 	return dirf;
 }
 //#############################################################################
-EVE_U8 * EVEF_GetFileName(EVE_U8 * dirplusname)
+char * EVEF_GetFileName(const char * dirplusname)
 {
-	EVE_S32 l = strlen((const EVE_8 *)dirplusname);
+	size_t l = strlen(dirplusname);
 	dirplusname += l;
 
-	while ((l--) &&
+	while ((--l) &&
 	        (*dirplusname != '\\' && *dirplusname != '/'))
 	{
 		dirplusname--;
@@ -424,11 +425,11 @@ EVE_U8 * EVEF_GetFileName(EVE_U8 * dirplusname)
 
 	if (l >= 0) dirplusname++;
 
-	EVE_U8 * fname = new EVE_U8[strlen((const EVE_8 *)dirplusname)+1];
+	char * fname = new char[strlen(dirplusname)+1];
 
 	if (!fname) return NULL;
 
-	strcpy((EVE_8 *)fname, (const EVE_8 *)dirplusname);
+	strcpy(fname, dirplusname);
 
 	return fname;
 }

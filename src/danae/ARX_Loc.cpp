@@ -30,6 +30,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <list>
 #include "ARX_Menu2.h"
 #include "EERIETexture.h"
+#include <hermes/PakManager.h>
+
+using std::sprintf;
 
 extern long GERMAN_VERSION;
 extern long FRENCH_VERSION;
@@ -496,44 +499,7 @@ DWORD PAK_UNICODE_GetPrivateProfileString(_TCHAR * _lpszSection,
 	return 1;
 }
 
-#include <vector>
-using namespace std;
+//#include <vector>
+//using std::vector;
 
-extern PakManager * pPakManager;
-vector<char *> mlist;
-
-//-----------------------------------------------------------------------------
-void ParseCurFile(EVE_TFILE * _e)
-{
-	if (!_e) return;
-
-	if (strcasecmp((char *)_e->name, "utext") > 0)
-	{
-		char * t = strdup((char *)_e->name);
-
-		for (UINT i = 0 ; i < strlen(t) ; i++)
-		{
-
-			t[i] = ARX_CLEAN_WARN_CAST_CHAR(tolower(t[i]));
-
-		}
-
-		mlist.insert(mlist.end(), t);
-		//free (t);
-	}
-
-	ParseCurFile(_e->fnext);
-}
-
-//-----------------------------------------------------------------------------
-void ParseCurRep(EVE_REPERTOIRE * _er)
-{
-	if (!_er) return;
-
-	ParseCurFile(_er->fichiers);
-
-	ParseCurRep(_er->fils);
-	ParseCurRep(_er->brothernext);
-}
-
-extern HBITMAP ARX_CONFIG_hBitmap;
+//vector<char *> mlist;

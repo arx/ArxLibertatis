@@ -22,13 +22,45 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef _EVE_TYPES
-#define _EVE_TYPES
+#ifndef HACHAGE_H
+#define HACHAGE_H
 
-//base
-typedef unsigned char	EVE_U8;
-typedef char			EVE_8;	
-typedef unsigned int	EVE_U32;	
-typedef signed int		EVE_S32;	
+#include <cstddef>
+
+class HashMap {
+	
+private:
+	
+	struct Entry {
+		const char * lpszName;
+		void * pMem;
+	}T_HACHAGE_DATAS;
+	
+	std::size_t iSize;
+	int iMask;
+	std::size_t iFill;
+	
+	Entry * tTab;
+	
+//public:
+	int iNbCollisions;
+	int iNbNoInsert;
+	
+private:
+	
+	int FuncH1(int);
+	int FuncH2(int);
+	int GetKey(const char * );
+	
+public:
+	
+	HashMap(std::size_t _iSize = 256);
+	~HashMap();
+	
+	bool AddString(const char * name, void * value = NULL);
+	
+	void * GetPtrWithString(const char * name);
+	
+};
 
 #endif
