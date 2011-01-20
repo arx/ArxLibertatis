@@ -41,7 +41,7 @@ public:
 	PakFile * fnext;
 	std::size_t offset;
 	unsigned int flags;
-	std::size_t param3;
+	std::size_t uncompressedSize;
 	
 public:
 	

@@ -115,6 +115,7 @@ void * HashMap::GetPtrWithString(const char * _lpszText)
 {
 //	todo string;
 	string lpszTextLow = _lpszText;
+	transform(lpszTextLow.begin(), lpszTextLow.end(), lpszTextLow.begin(), tolower);
 //	char * lpszTextLow = _strlwr(_lpszText);
 
 	int iKey = GetKey(lpszTextLow.c_str());
