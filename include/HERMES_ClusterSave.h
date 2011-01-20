@@ -56,7 +56,7 @@ public:
 };
 
 
-class CHachageString;
+class HashMap;
 
 class CSaveBlock{
 private:
@@ -69,7 +69,7 @@ private:
 	bool		bFirst;
 	int			iVersion;
 	bool ExpandNbFiles();
-	CHachageString* pHachage;
+	HashMap* pHachage;
 
 public:
 	char		*pcBlockName;

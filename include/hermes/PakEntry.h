@@ -25,7 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EVE_SAVE
 #define EVE_SAVE
 
-#include "../HERMES_hachage.h"
+class HashMap;
 
 #include <cstddef>
 
@@ -60,7 +60,7 @@ public:
 	PakDirectory * brotherprev;
 	PakDirectory * brothernext;
 	PakFile * fichiers;
-	CHachageString * pHachage;
+	HashMap * pHachage;
 	unsigned int param;
 	
 public:

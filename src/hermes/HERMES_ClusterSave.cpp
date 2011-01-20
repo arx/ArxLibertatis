@@ -176,7 +176,7 @@ bool CSaveBlock::BeginRead(void)
 
 	if (_iI > iNbHacheTroisQuart) iNbHache <<= 1;
 
-	pHachage = new CHachageString(iNbHache);
+	pHachage = new HashMap(iNbHache);
 
 	while (_iI--)
 	{

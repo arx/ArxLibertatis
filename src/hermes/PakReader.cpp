@@ -48,10 +48,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <hermes/PakReader.h>
 #include <hermes/PakEntry.h>
+#include <HERMES_hachage.h>
 
 #define PAK 1
 
 #include "ARX_Casts.h"
+
+#include <algorithm>
 using std::min;
 using std::max;
 using std::size_t;
@@ -196,7 +199,7 @@ bool PakReader::Open(char * _pcName)
 
 			if (iNbFiles > iNbHacheTroisQuart) iNbHache <<= 1;
 
-			pRepertoire->pHachage = new CHachageString(iNbHache);
+			pRepertoire->pHachage = new HashMap(iNbHache);
 		}
 
 		while (iNbFiles--)

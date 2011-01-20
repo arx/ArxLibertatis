@@ -23,6 +23,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 #include <hermes/PakEntry.h>
+#include <HERMES_hachage.h>
+
+#include <cstring>
 
 
 using std::size_t;
@@ -66,7 +69,7 @@ PakFile::~PakFile()
 //#############################################################################
 PakDirectory::PakDirectory(PakDirectory * p, const char * n)
 {
-	pHachage = NULL; //new CHachageString(4096);
+	pHachage = NULL;
 	this->param = 0;
 	this->brotherprev = this->brothernext = NULL;
 	this->parent = p;
