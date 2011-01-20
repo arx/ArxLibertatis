@@ -98,17 +98,17 @@ void ARX_Text_Init(ARX_TEXT *);
 //-----------------------------------------------------------------------------
 class CARXTextManager
 {
-	public:
-		vector<ARX_TEXT *>	vText;
-	public:
-		CARXTextManager();
-		~CARXTextManager();
-	public:
-		bool AddText(HFONT, std::string&, RECT &, long _lCol = -1, long _lBkgCol = 0, long _lTimeOut = 0, long _lTimeScroll = 0, float _fSpeedScroll = 0.f, int iNbLigneClipp = 0);
-		bool AddText(ARX_TEXT *);
-		void Update(float);
-		void Render();
-		void Clear();
+    public:
+        vector<ARX_TEXT *>	vText;
+    public:
+        CARXTextManager();
+        ~CARXTextManager();
+    public:
+        bool AddText(HFONT, const std::string&, RECT &, long _lCol = -1, long _lBkgCol = 0, long _lTimeOut = 0, long _lTimeScroll = 0, float _fSpeedScroll = 0.f, int iNbLigneClipp = 0);
+        bool AddText(ARX_TEXT *);
+        void Update(float);
+        void Render();
+        void Clear();
 };
 
 //-----------------------------------------------------------------------------
@@ -126,33 +126,33 @@ extern HFONT hFontInGame;
 extern HFONT hFontInGameNote;
 
 //-----------------------------------------------------------------------------
-long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice, HFONT ef, float x, float y, long spacingx, long spacingy, std::string& car, COLORREF colo, COLORREF bcol = 0x00FF00FF);
-long ARX_TEXT_DrawRect(LPDIRECT3DDEVICE7 pd3dDevice, HFONT ef, float x, float y, long spacingx, long spacingy, float maxx, float maxy, std::string& car, COLORREF colo, HRGN hRgn = NULL, COLORREF bcol = 0x00FF00FF, long flags = 0);
-float DrawBookTextInRect(float x, float y, float maxx, float maxy, std::string& text, COLORREF col, COLORREF col2, HFONT font);
-void DrawBookTextCenter(float x, float y, std::string& text, COLORREF col, COLORREF col2, HFONT font);
-long UNICODE_ARXDrawTextCenter(float x, float y, std::string& str, COLORREF col, COLORREF bcol, HFONT font);
+long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice, HFONT ef, float x, float y, long spacingx, long spacingy, const std::string& car, COLORREF colo, COLORREF bcol = 0x00FF00FF);
+long ARX_TEXT_DrawRect(LPDIRECT3DDEVICE7 pd3dDevice, HFONT ef, float x, float y, long spacingx, long spacingy, float maxx, float maxy, const std::string& car, COLORREF colo, HRGN hRgn = NULL, COLORREF bcol = 0x00FF00FF, long flags = 0);
+float DrawBookTextInRect(float x, float y, float maxx, float maxy, const std::string& text, COLORREF col, COLORREF col2, HFONT font);
+void DrawBookTextCenter(float x, float y, const std::string& text, COLORREF col, COLORREF col2, HFONT font);
+long UNICODE_ARXDrawTextCenter(float x, float y, const std::string& str, COLORREF col, COLORREF bcol, HFONT font);
  
-long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, std::string& str, COLORREF col, COLORREF bcol, HFONT font, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut = INT_MAX);
-long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, std::string& _lpszUText, int _iSpacingY, RECT _rRect);
+long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, const std::string& str, COLORREF col, COLORREF bcol, HFONT font, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut = INT_MAX);
+long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, const std::string& _lpszUText, int _iSpacingY, RECT _rRect);
 long ARX_UNICODE_DrawTextInRect(float x, float y,
                                 float maxx, float maxy,
-                                std::string& _lpszUText,
+                                const std::string& _lpszUText,
                                 COLORREF col, COLORREF bcol,
                                 HFONT font,
                                 HRGN hRgn = NULL,
                                 HDC hHDC = NULL);
 
 void ARX_Allocate_Text( std::string& dest, const char* id_string);
-_TCHAR * GetFontName(char *);
+std::string GetFontName( char *);
 void _ShowText(char * text);
 
 //-----------------------------------------------------------------------------
-long HERMES_UNICODE_GetProfileString( std::string& sectionname,
-                                     std::string& keyname,
-                                     std::string& defaultstring,
+long HERMES_UNICODE_GetProfileString( const std::string& sectionname,
+                                     const std::string& keyname,
+                                     const std::string& defaultstring,
                                      std::string& destination,
                                      unsigned long maxsize,
-                                     std::string& datastream,
+                                     const std::string& datastream,
                                      long lastspeech);
 
 //-----------------------------------------------------------------------------

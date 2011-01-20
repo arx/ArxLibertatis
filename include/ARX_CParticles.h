@@ -28,7 +28,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "EERIETypes.h"
 #include <list>
-using namespace std;
 
 #include "ARX_CParticleParams.h"
 #include "ARX_CParticleSystem.h"
@@ -51,7 +50,7 @@ class CParticleManager
 {
 	private:
 		//CParticleContainer		ParticleContainer;
-		list<CParticleSystem *> listParticleSystem;
+		std::list<CParticleSystem *> listParticleSystem;
 
 	public:
 		CParticleManager();

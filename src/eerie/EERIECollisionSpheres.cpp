@@ -60,7 +60,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEMath.h"
 #include "EERIEMeshTweak.h"
 
-
+using std::min;
+using std::max;
 
 
 void EERIE_COLLISION_Cylinder_Create(INTERACTIVE_OBJ * io)

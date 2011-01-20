@@ -63,8 +63,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIETypes.h"
 #include "EERIEPoly.h"
 //#include "ARX_Common.h"
-using std::min;
-using std::max;
 
 #define ARX_CLEAN_WARN_CAST_UCHAR(_x) (static_cast<unsigned char>( _x ))
 
@@ -584,6 +582,8 @@ inline float EEDistance3D(const EERIE_3D * from, const EERIE_3D * to)
 
 inline BOOL PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)
 {
+    using std::min;
+    using std::max;
 	register float pos1 = cyl->origin.y + cyl->height;
 
 	if (pt->y < min(cyl->origin.y, pos1)) return FALSE;
@@ -598,6 +598,8 @@ inline BOOL PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)
 
 inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)
 {
+    using std::min;
+    using std::max;
 	register float pos1 = cyl->origin.y + cyl->height;
 	long ret = 2;
 

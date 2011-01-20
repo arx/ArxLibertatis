@@ -1203,9 +1203,9 @@ void ARX_MAGICAL_FLARES_Draw(LPDIRECT3DDEVICE7  m_pd3dDevice,long FRAMETICKS)
 						flare[i].v.sy=flare[i].tv.sy;
 						flare[i].v.sz=flare[i].tv.sz;
 								
-						DynLight[0].rgb.r=max(DynLight[0].rgb.r,r);
-						DynLight[0].rgb.g=max(DynLight[0].rgb.g,g);
-						DynLight[0].rgb.b=max(DynLight[0].rgb.b,b);
+						DynLight[0].rgb.r=std::max(DynLight[0].rgb.r,r);
+						DynLight[0].rgb.g=std::max(DynLight[0].rgb.g,g);
+						DynLight[0].rgb.b=std::max(DynLight[0].rgb.b,b);
 
 						if (ValidDynLight(flare[i].dynlight)) 
 						{

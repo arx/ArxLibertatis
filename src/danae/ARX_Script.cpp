@@ -3458,17 +3458,15 @@ void MakeStandard(char * str)
 //*************************************************************************************
 //*************************************************************************************
 
-long MakeLocalised(char * text, std::string& output, long maxsize, long lastspeechflag)
+long MakeLocalised(char* text, std::string& output, long maxsize, long lastspeechflag)
 {
-	if (text[0] == 0)
+	if ( text.empty() )
 	{
 		output = "ERROR";
 		return 0;
 	}
 
 	_TCHAR __text[256];
-	//todo cast
-	//MultiByteToWideChar(CP_ACP, 0, text, -1, __text, 256);
 	return HERMES_UNICODE_GetProfileString(__text, _T("string"), _T("error"), _T(output.c_str()), maxsize, NULL, lastspeechflag);
 }
 

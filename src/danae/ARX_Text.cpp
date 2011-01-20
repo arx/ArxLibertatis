@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 #include <windows.h>
+#include <tchar.h>
 
 #include "ARX_Loc.h"
 #include "ARX_Text.h"
@@ -112,7 +113,7 @@ void FontError()
 }
 //-----------------------------------------------------------------------------
 
-long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, _TCHAR * _lpszUText, int _iSpacingY, RECT _rRect)
+long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, std::string& _lpszUText, int _iSpacingY, RECT _rRect)
 {
 
 	int iTemp = 0;
@@ -123,7 +124,7 @@ long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, _TCHAR * _lpszUText, int _i
 
 		if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 		{
-			int		iLenght	= _tcslen(_lpszUText);
+			int		iLenght	= _lpszUText.length();
 			int		iHeight	= 0;
 			SIZE	sSize;
 			int		iOldTemp;
@@ -198,56 +199,56 @@ long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, _TCHAR * _lpszUText, int _i
 }
 
 //-----------------------------------------------------------------------------
-long ARX_UNICODE_FormattingInRect(HDC _hDC, _TCHAR * _lpszUText, int _iSpacingY, RECT & _rRect)
+long ARX_UNICODE_FormattingInRect(HDC _hDC, std::string& _lpszUText, int _iSpacingY, RECT & _rRect)
 {
-	int	iLenght = _tcslen(_lpszUText);
-	int iHeight = 0;
-	SIZE sSize;
-	int iOldTemp;
-	bool bWrite;
-	sSize.cx = sSize.cy = 0;
+    int	iLenght = _lpszUText.length();
+    int iHeight = 0;
+    SIZE sSize;
+    int iOldTemp;
+    bool bWrite;
+    sSize.cx = sSize.cy = 0;
 
-	int iTemp = 0;
+    int iTemp = 0;
 
-	typedef bool (APIENTRY * TextOutW)(HDC hdc,          // handle to DC
-	                                   int nXStart,       // x-coordinate of starting position
-	                                   int nYStart,       // y-coordinate of starting position
-	                                   _TCHAR * lpString, // character string
-	                                   int cbString       // number of characters
-	                                  );
+    typedef bool (APIENTRY * TextOutW)(HDC hdc,          // handle to DC
+                                       int nXStart,       // x-coordinate of starting position
+                                       int nYStart,       // y-coordinate of starting position
+                                       _TCHAR* lpString, // character string
+                                       int cbString       // number of characters
+                                      );
 
-	TextOutW Unicows_TextOutW = (TextOutW)GetProcAddress(hUnicodeLibrary, "TextOutW");
+    TextOutW Unicows_TextOutW = (TextOutW)GetProcAddress(hUnicodeLibrary, "TextOutW");
 
-	while (1)
-	{
-		bWrite = true;
-		int iLenghtCurr = _rRect.left;
-		iOldTemp = iTemp;
+    while (1)
+    {
+        bWrite = true;
+        int iLenghtCurr = _rRect.left;
+        iOldTemp = iTemp;
 
-		for (; iTemp < iLenght; iTemp++)
-		{
-			GetTextExtentPoint(_hDC,
-			                      &_lpszUText[iTemp],
-			                      1,
-			                      &sSize);
+        for (; iTemp < iLenght; iTemp++)
+        {
+            GetTextExtentPoint(_hDC,
+                                  &_lpszUText[iTemp],
+                                  1,
+                                  &sSize);
 
-			if ((_lpszUText[iTemp] == _T('\n')) ||
-			        (_lpszUText[iTemp] == _T('*')))
-			{
-				iHeight += _iSpacingY + sSize.cy;
-				_lpszUText[iTemp] = _T('\0');
-				bWrite = false;
+            if ((_lpszUText[iTemp] == _T('\n')) ||
+                    (_lpszUText[iTemp] == _T('*')))
+            {
+                iHeight += _iSpacingY + sSize.cy;
+                _lpszUText[iTemp] = _T('\0');
+                bWrite = false;
 
-				Unicows_TextOutW(_hDC, _rRect.left, _rRect.top, &_lpszUText[iOldTemp], _tcslen(&_lpszUText[iOldTemp]));
-				_rRect.top += _iSpacingY + sSize.cy;
-				iTemp++;
-				break;
-			}
-			
-			iLenghtCurr += sSize.cx;
+                Unicows_TextOutW(_hDC, _rRect.left, _rRect.top, &_lpszUText[iOldTemp], _tcslen(&_lpszUText[iOldTemp]));
+                _rRect.top += _iSpacingY + sSize.cy;
+                iTemp++;
+                break;
+            }
+            
+            iLenghtCurr += sSize.cx;
 
-			if (iLenghtCurr > _rRect.right)
-			{
+            if (iLenghtCurr > _rRect.right)
+            {
 				iHeight += _iSpacingY + sSize.cy;
 
 				if (CHINESE_VERSION)
@@ -302,7 +303,7 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, _TCHAR * _lpszUText, int _iSpacingY,
 //-----------------------------------------------------------------------------
 long ARX_UNICODE_DrawTextInRect(float x, float y,
                                 float maxx, float maxy,
-                                _TCHAR * _lpszUText,
+                                const std::string& _text,
                                 COLORREF col,
                                 COLORREF bcol,
                                 HFONT font,
@@ -323,7 +324,7 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 		if (hHDC || SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 		{
 
-			_tcscpy(tUText, _lpszUText);
+			strcpy( tUText, _text.c_str() );
 
 			if (hRgn)
 			{
@@ -346,7 +347,8 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 			rect.top	= (long)y;
 			rect.left	= (long)x;
 			rect.right	= (long)maxx;
-			long n		= ARX_UNICODE_FormattingInRect(hDC, tUText, 0, rect);
+        std::string text( tUText );
+			long n = ARX_UNICODE_FormattingInRect(hDC, text, 0, rect);
 			rect.top	= (long)y;
 			rect.bottom	= ((long)y) + n;
 
@@ -370,10 +372,10 @@ long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice,
                    HFONT ef,
                    float x, float y,
                    long spacingx, long spacingy,
-                   _TCHAR * car,
+                   const std::string& car,
                    COLORREF colo, COLORREF bcol)
 {
-	if (car == NULL) return 0;
+	if (car.empty() ) return 0;
 
 	if (car[0] == 0) return 0;
 
@@ -387,7 +389,7 @@ long ARX_TEXT_DrawRect(LPDIRECT3DDEVICE7 pd3dDevice,
                        float x, float y,
                        long spacingx, long spacingy,
                        float maxx, float maxy,
-                       _TCHAR * car,
+                       const std::string& car,
                        COLORREF colo,
                        HRGN _hRgn,
                        COLORREF bcol,
@@ -402,7 +404,7 @@ long ARX_TEXT_DrawRect(LPDIRECT3DDEVICE7 pd3dDevice,
 
 
 //-----------------------------------------------------------------------------
-float DrawBookTextInRect(float x, float y, float maxx, float maxy, _TCHAR * text, COLORREF col, COLORREF col2, HFONT font)
+float DrawBookTextInRect(float x, float y, float maxx, float maxy, const std::string& text, COLORREF col, COLORREF col2, HFONT font)
 {
 	return (float)ARX_TEXT_DrawRect(GDevice, font,
 	                                (BOOKDECX + x) * Xratio, (BOOKDECY + y) * Yratio, -3, 0,
@@ -410,14 +412,14 @@ float DrawBookTextInRect(float x, float y, float maxx, float maxy, _TCHAR * text
 }
 
 //-----------------------------------------------------------------------------
-void DrawBookTextCenter(float x, float y, _TCHAR * text, COLORREF col, COLORREF col2, HFONT font)
+void DrawBookTextCenter(float x, float y, const std::string& text, COLORREF col, COLORREF col2, HFONT font)
 {
 	UNICODE_ARXDrawTextCenter((BOOKDECX + x)*Xratio, (BOOKDECY + y)*Yratio, text, col, col2, font);
 }
 
 //-----------------------------------------------------------------------------
 
-long UNICODE_ARXDrawTextCenter(float x, float y, _TCHAR * str, COLORREF col, COLORREF bcol, HFONT font)
+long UNICODE_ARXDrawTextCenter(float x, float y, const std::string& str, COLORREF col, COLORREF bcol, HFONT font)
 {
 	HDC hDC;
 
@@ -440,8 +442,8 @@ long UNICODE_ARXDrawTextCenter(float x, float y, _TCHAR * str, COLORREF col, COL
 
 			SIZE siz;
 			GetTextExtentPoint(hDC,         // handle to DC
-			                        str,           // character string
-			                        _tcslen(str),   // number of characters
+			                        str.c_str(),           // character string
+			                        str.length(),   // number of characters
 			                        &siz          // size
 			                       );
 			RECT rect;
@@ -450,7 +452,7 @@ long UNICODE_ARXDrawTextCenter(float x, float y, _TCHAR * str, COLORREF col, COL
 			rect.left = (long)x - (siz.cx >> 1);
 			rect.right = (long)999;
 
-			TextOut(hDC, rect.left, rect.top, str, _tcslen(str));
+			TextOut(hDC, rect.left, rect.top, str.c_str(), str.length());
 
 			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 			return siz.cx;
@@ -495,20 +497,11 @@ long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, std::string& 
 //-----------------------------------------------------------------------------
 void ARX_Allocate_Text( std::string& dest, const char* id_string)
 {
-/*
-    if (dest != NULL)
-    {
-        free(dest);
-        dest = NULL;
-    }
-*/
     dest.clear();
 
     char output[4096];
     PAK_UNICODE_GetPrivateProfileString(id_string, _T("string"), _T("default"), output, 4096, NULL);
-    //dest = (_TCHAR *)malloc((_tcslen(output) + 1) * sizeof(_TCHAR));
     dest = output;
-    //_tcscpy(dest, output);
 }
 
 //-----------------------------------------------------------------------------
@@ -569,7 +562,7 @@ USHORT LilEndianShort(USHORT ulValue)
 }
 
 //-----------------------------------------------------------------------------
-_TCHAR * GetFontName(char * _lpszFileName)
+std::string GetFontName(char * _lpszFileName)
 {
 	DWORD dwSize;
 	DWORD dwRead;
@@ -773,7 +766,7 @@ CARXTextManager::~CARXTextManager()
 }
 
 //-----------------------------------------------------------------------------
-bool CARXTextManager::AddText(HFONT _hFont, std::string& _lpszUText, RECT & _rRect, long _lCol, long _lBkgCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp)
+bool CARXTextManager::AddText(HFONT _hFont, const std::string& _lpszUText, RECT & _rRect, long _lCol, long _lBkgCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp)
 {
 	if ((!_lpszUText.empty()) && (_hFont))
 	{
@@ -1084,12 +1077,12 @@ HFONT _CreateFont(
     DWORD fdwClipPrecision,    // clipping precision
     DWORD fdwQuality,          // output quality
     DWORD fdwPitchAndFamily,   // pitch and family
-    _TCHAR * lpszFace          // typeface name
+    std::string lpszFace          // typeface name
 )
 {
 
 
-	typedef HFONT(APIENTRY * CreateFontW)(
+	typedef HFONT(APIENTRY * CreateFont)(
 	    int nHeight,               // height of font
 	    int nWidth,                // average character width
 	    int nEscapement,           // angle of escapement
@@ -1103,7 +1096,7 @@ HFONT _CreateFont(
 	    DWORD fdwClipPrecision,    // clipping precision
 	    DWORD fdwQuality,          // output quality
 	    DWORD fdwPitchAndFamily,   // pitch and family
-	    LPWSTR wlpszFace           // typeface name
+	    LPSTR wlpszFace           // typeface name
 	);
 
 	if (!hUnicodeLibrary)
@@ -1113,7 +1106,7 @@ HFONT _CreateFont(
 
  
 
-	CreateFontW Unicows_CreateFontW = (CreateFontW)GetProcAddress(hUnicodeLibrary, "CreateFontW");
+	CreateFont Unicows_CreateFont = (CreateFont)GetProcAddress(hUnicodeLibrary, "CreateFont");
 	/*
 	ANSI_CHARSET
 	BALTIC_CHARSET
@@ -1138,7 +1131,7 @@ HFONT _CreateFont(
 	}
 
 	//HFONT  ret = CreateFont(
-	HFONT ret = Unicows_CreateFontW(
+	HFONT ret = Unicows_CreateFont(
 	                nHeight,               // height of font
 	                nWidth,                // average character width
 	                nEscapement,           // angle of escapement
@@ -1152,7 +1145,7 @@ HFONT _CreateFont(
 	                fdwClipPrecision,    // clipping precision
 	                fdwQuality,          // output quality
 	                fdwPitchAndFamily,   // pitch and family
-	                (LPWSTR)lpszFace     // typeface name
+	                lpszFace.c_str()     // typeface name
 	            );
 
 	if (!ret)

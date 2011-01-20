@@ -74,6 +74,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <EERIEObject.h>
 #include "ARX_Time.h"
 
+#include <list>
 
 //#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
@@ -102,11 +103,11 @@ CFireBall::~CFireBall()
 void CFireBall::SetTTL(unsigned long aulTTL)
 {
 	unsigned long t = ulCurrentTime;
-	ulDuration = min(ulCurrentTime + aulTTL, ulDuration);
+	ulDuration = std::min(ulCurrentTime + aulTTL, ulDuration);
 	SetDuration(ulDuration);
 	ulCurrentTime = t;
 
-	list<CParticle *>::iterator i;
+	std::list<CParticle *>::iterator i;
 
 
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
@@ -534,8 +535,8 @@ void CIceProjectile::Create(EERIE_3D aeSrc, float afBeta)
 	s.z					= aeSrc.z;
 	float fspelldist	= ARX_CLEAN_WARN_CAST_FLOAT(iMax * 15);
 
-	fspelldist = min(fspelldist, 200.0f);
-	fspelldist = max(fspelldist, 450.0f);
+	fspelldist = std::min(fspelldist, 200.0f);
+	fspelldist = std::max(fspelldist, 450.0f);
 	e.x = aeSrc.x - fBetaRadSin * fspelldist;
 	e.y = aeSrc.y - 100;
 	e.z = aeSrc.z + fBetaRadCos * fspelldist;
@@ -745,7 +746,7 @@ float CIceProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	float x, y, z;
 
 	//----------------
-	for (i = 0; i < min(iNumber, iMax + 1); i++)
+	for (i = 0; i < std::min(iNumber, iMax + 1); i++)
 	{
 		float t = rnd();
 
@@ -772,7 +773,7 @@ float CIceProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				particle[j].siz = 20.f;
 
 
-				float fMin = min(2000 + (rnd() * 2000.f), ulDuration - ulCurrentTime + 500.0f * rnd());
+				float fMin = std::min(2000 + (rnd() * 2000.f), ulDuration - ulCurrentTime + 500.0f * rnd());
 				ARX_CHECK_ULONG(fMin);
 					
 				particle[j].tolive = ARX_CLEAN_WARN_CAST_ULONG(fMin);
@@ -813,7 +814,7 @@ float CIceProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				particle[j].siz = 0.5f;
 
 
-				float fMin = min(2000 + (rnd() * 1000.f), ulDuration - ulCurrentTime + 500.0f * rnd());
+				float fMin = std::min(2000 + (rnd() * 1000.f), ulDuration - ulCurrentTime + 500.0f * rnd());
 				ARX_CHECK_ULONG(fMin);
 
 				particle[j].tolive = ARX_CLEAN_WARN_CAST_ULONG(fMin);
@@ -1162,7 +1163,7 @@ if (ulCurrentTime >= ulDuration)
 			pPS->p3ParticleGravity.y = 0;
 			pPS->p3ParticleGravity.z = 0;
 
-		list<CParticle *>::iterator i;
+		std::list<CParticle *>::iterator i;
 
 		for (i = pPS->listParticle.begin(); i != pPS->listParticle.end(); ++i)
 		{

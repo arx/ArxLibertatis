@@ -92,14 +92,10 @@ void ARX_SPEECH_Init()
 //-----------------------------------------------------------------------------
 void ARX_SPEECH_MoveUp()
 {
-	if (speech[0].timecreation != 0)
-	{
-		if (speech[0].lpszUText != NULL)
-		{
-			free(speech[0].lpszUText);
-			speech[0].lpszUText = NULL;
-		}
-	}
+    if (speech[0].timecreation != 0)
+    {
+            speech[0].lpszUText.clear();
+    }
 
 	for (long j = 0; j < MAX_SPEECH - 1; j++)
 	{
@@ -112,19 +108,15 @@ void ARX_SPEECH_MoveUp()
 //-----------------------------------------------------------------------------
 void ARX_SPEECH_ClearAll()
 {
-	for (long i = 0; i < MAX_SPEECH; i++)
-	{
-		if (speech[i].timecreation != 0)
-		{
-			if (speech[i].lpszUText != NULL)
-			{
-				free(speech[i].lpszUText);
-				speech[i].lpszUText = NULL;
-			}
+    for (long i = 0; i < MAX_SPEECH; i++)
+    {
+        if (speech[i].timecreation != 0)
+        {
+            speech[i].lpszUText.clear();
 
-			speech[i].timecreation = 0;
-		}
-	}
+            speech[i].timecreation = 0;
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -162,7 +154,7 @@ long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, _TCHAR * _lpszUText, long duration)
 				memcpy(&speech[i].lpszUText, &_lpszUText, 4095 * sizeof(_TCHAR));
 				speech[i].lpszUText[4095] = 0;
 			}
-			else _tcscpy(speech[i].lpszUText, _lpszUText);
+			speech[i].lpszUText = _lpszUText;
 
 			// Sets speech color
 			if (io == NULL)
@@ -191,7 +183,7 @@ bool CheckLastSpeech(int _iI)
 	for (long i = _iI + 1; i < MAX_SPEECH; i++)
 	{
 		if ((speech[i].timecreation != 0) &&
-		        (speech[i].lpszUText != NULL))
+		        (!speech[i].lpszUText.empty()))
 		{
 			return false;
 		}
@@ -236,13 +228,13 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 	{
 		if (speech[i].timecreation != 0)
 		{
-			if (speech[i].lpszUText != NULL)
+			if (!speech[i].lpszUText.empty())
 			{
 
 				if ((speech[i].name) && (speech[i].name[0] != ' '))
-					_stprintf(temp, _T("%S > %s"), speech[i].name, speech[i].lpszUText);
+					_stprintf(temp, _T("%S > %s"), speech[i].name, speech[i].lpszUText.c_str());
 				else
-					_stprintf(temp, _T(" %s"), speech[i].lpszUText);//>
+					_stprintf(temp, _T(" %s"), speech[i].lpszUText.c_str());//>
 
 
 
@@ -383,33 +375,32 @@ long ARX_SPEECH_GetIOSpeech(INTERACTIVE_OBJ * io)
 
 void ARX_SPEECH_Release(long i)
 {
-	if (aspeech[i].exist)
-	{
-		ARX_SOUND_Stop(aspeech[i].sample);
+    if (aspeech[i].exist)
+    {
+        ARX_SOUND_Stop(aspeech[i].sample);
 
-		if (aspeech[i].text != NULL)
-			free(aspeech[i].text);
+        aspeech[i].text.clear();
 
-		if ((ValidIOAddress(aspeech[i].io))
-		        &&	(aspeech[i].io->animlayer[2].cur_anim))
-		{
-			AcquireLastAnim(aspeech[i].io);
-			aspeech[i].io->animlayer[2].cur_anim = NULL;
-		}
+        if ((ValidIOAddress(aspeech[i].io))
+                &&	(aspeech[i].io->animlayer[2].cur_anim))
+        {
+            AcquireLastAnim(aspeech[i].io);
+            aspeech[i].io->animlayer[2].cur_anim = NULL;
+        }
 
-		memset(&aspeech[i], 0, sizeof(ARX_SPEECH));
-	}
+        memset(&aspeech[i], 0, sizeof(ARX_SPEECH));
+    }
 }
 void ARX_SPEECH_ReleaseIOSpeech(INTERACTIVE_OBJ * io)
 {
-	for (long i = 0; i < MAX_ASPEECH; i++)
-	{
-		if ((aspeech[i].exist)
-		        &&	(aspeech->io == io))
-		{
-			ARX_SPEECH_Release(i);
-		}
-	}
+    for (long i = 0; i < MAX_ASPEECH; i++)
+    {
+        if ((aspeech[i].exist)
+                &&	(aspeech->io == io))
+        {
+            ARX_SPEECH_Release(i);
+        }
+    }
 }
 
 
@@ -486,29 +477,28 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, char * data, long param, long mo
 
 	long flg = 0;
 
-	_TCHAR lpszUSection[512];
+	std::string lpszUSection( 512, '\0' );
 //	todo: wchar cast
 //	MultiByteToWideChar(CP_ACP, 0, data, -1, lpszUSection, 512);
 
-	if (!(flags & ARX_SPEECH_FLAG_NOTEXT))
-	{
-		_TCHAR _output[4096];
-		ZeroMemory(_output, 4096 * sizeof(_TCHAR));
+    if (!(flags & ARX_SPEECH_FLAG_NOTEXT))
+    {
+        std::string _output( 4096, '\0' );
 
-		flg = HERMES_UNICODE_GetProfileString(lpszUSection,
-		                                      _T("string"),
-		                                      _T(""),
-		                                      _output,
-		                                      4096,
-		                                      NULL,
-		                                      io->lastspeechflag
-		                                     );
+        flg = HERMES_UNICODE_GetProfileString(lpszUSection,
+                                              std::string( "string" ),
+                                              "",
+                                              _output,
+                                              4096,
+                                              NULL,
+                                              io->lastspeechflag
+                                             );
 
 
 		io->lastspeechflag = (short)flg;
-		aspeech[num].text = (_TCHAR *) malloc((_tcslen(_output) + 1) * sizeof(_TCHAR));
-		_tcscpy(aspeech[num].text, _output);
-		aspeech[num].duration = max(aspeech[num].duration, (unsigned long)(strlen(_output) + 1) * 100);
+		aspeech[num].text.clear();
+		aspeech[num].text = _output;
+		aspeech[num].duration = max(aspeech[num].duration, (unsigned long)(strlen(_output.c_str()) + 1) * 100);
 	}
 
 	char speech_label[256];
@@ -521,7 +511,7 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, char * data, long param, long mo
 	{
 		long count = 0;
 
-		count = HERMES_UNICODE_GetProfileSectionKeyCount(lpszUSection);
+		count = HERMES_UNICODE_GetProfileSectionKeyCount(lpszUSection.c_str());
 
 		F2L((float)(rnd() *(float)count), &flg);
 
@@ -631,7 +621,7 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 
 		if (speech->exist)
 		{
-			if (speech->text != NULL)
+			if (!speech->text.c_str())
 			{
 				if ((ARX_CONVERSATION) && (speech->io))
 				{

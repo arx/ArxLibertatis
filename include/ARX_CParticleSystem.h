@@ -30,7 +30,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //#include <d3d.h>
 #include <list>
 #include <vector>
-using namespace std;
 
 #define PARTICLE_CIRCULAR  1
 #define PARTICLE_BORDER	   2
@@ -46,7 +45,7 @@ class CParticleParams;
 class CParticleSystem
 {
 	public:
-		list<CParticle *> listParticle;
+		std::list<CParticle *> listParticle;
 
 	public:
 		Point3	p3Pos;

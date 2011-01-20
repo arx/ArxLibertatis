@@ -662,7 +662,7 @@ float CLightning::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			sphere.origin.x = ax;
 			sphere.origin.y = ay;
 			sphere.origin.z = az;
-			sphere.radius = min(cnodetab[i].size, 50.f);
+			sphere.radius = std::min(cnodetab[i].size, 50.f);
 
 			if (CheckAnythingInSphere(&sphere, spells[spellinstance].caster, CAS_NO_SAME_GROUP))
 			{

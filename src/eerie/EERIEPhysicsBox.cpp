@@ -61,6 +61,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_NPC.h"
 #include "ARX_Collisions.h"
 
+using std::min;
+using std::max;
+
 //-----------------------------------------------------------------------------
 float VELOCITY_THRESHOLD = 850.f;
 #define FULLTESTS FALSE

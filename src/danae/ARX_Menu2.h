@@ -390,77 +390,77 @@ class CMenuZone
 //-----------------------------------------------------------------------------
 class CMenuAllZone
 {
-	public:
-		vector<CMenuZone *>	vMenuZone;
-	public:
-		CMenuAllZone();
-		virtual ~CMenuAllZone();
+    public:
+        std::vector<CMenuZone *>	vMenuZone;
+    public:
+        CMenuAllZone();
+        virtual ~CMenuAllZone();
 
-		void AddZone(CMenuZone *);
-		int CheckZone(int, int);
+        void AddZone(CMenuZone *);
+        int CheckZone(int, int);
  
-		CMenuZone * GetZoneNum(int);
-		CMenuZone * GetZoneWithID(int);
-		void Move(int, int);
-		void DrawZone();
-		int GetNbZone();
+        CMenuZone * GetZoneNum(int);
+        CMenuZone * GetZoneWithID(int);
+        void Move(int, int);
+        void DrawZone();
+        int GetNbZone();
 };
 
 typedef enum _ELEMSTATE
 {
-	TNOP,
-	//Element Text
-	EDIT,				//type d'etat
-	GETTOUCH,
-	EDIT_TIME,			//etat en cours
-	GETTOUCH_TIME
+    TNOP,
+    //Element Text
+    EDIT,           //type d'etat
+    GETTOUCH,
+    EDIT_TIME,      //etat en cours
+    GETTOUCH_TIME
 } ELEMSTATE;
 
 typedef enum _ELEMPOS
 {
-	NOCENTER,
-	CENTER,
-	CENTERY
+    NOCENTER,
+    CENTER,
+    CENTERY
 } ELEMPOS;
 
 //-----------------------------------------------------------------------------
 class CMenuElement : public CMenuZone
 {
-	public:
-		ELEMPOS		ePlace;			//placement de la zone
-		ELEMSTATE	eState;			//etat de l'element en cours
-		MENUSTATE	eMenuState;		//etat de retour de l'element
-		int			iShortCut;
-	public:
-		CMenuElement(MENUSTATE);
-		virtual ~CMenuElement();
+    public:
+        ELEMPOS     ePlace;			//placement de la zone
+        ELEMSTATE   eState;			//etat de l'element en cours
+        MENUSTATE   eMenuState;		//etat de retour de l'element
+        int         iShortCut;
+    public:
+        CMenuElement(MENUSTATE);
+        virtual ~CMenuElement();
 
-		virtual CMenuElement * OnShortCut();
-		virtual bool OnMouseClick(int) = 0;
-		virtual void Update(int) = 0;
-		virtual void Render() = 0;
-		virtual void RenderMouseOver() {};
-		virtual void EmptyFunction() {};
-		virtual bool OnMouseDoubleClick(int)
-		{
-			return false;
-		};
-		virtual CMenuZone * GetZoneWithID(int _iID)
-		{
-			if (iID == _iID)
-			{
-				return (CMenuZone *)this;
-			}
-			else
-			{
-				return NULL;
-			}
-		};
- 
-		void SetShortCut(int _iShortCut)
-		{
-			iShortCut = _iShortCut;
-		};
+        virtual CMenuElement * OnShortCut();
+        virtual bool OnMouseClick(int) = 0;
+        virtual void Update(int) = 0;
+        virtual void Render() = 0;
+        virtual void RenderMouseOver() {};
+        virtual void EmptyFunction() {};
+        virtual bool OnMouseDoubleClick(int)
+        {
+            return false;
+        };
+        virtual CMenuZone * GetZoneWithID(int _iID)
+        {
+            if (iID == _iID)
+            {
+                return (CMenuZone *)this;
+            }
+            else
+            {
+                return NULL;
+            }
+        };
+
+        void SetShortCut(int _iShortCut)
+        {
+            iShortCut = _iShortCut;
+        };
 };
 
 //-----------------------------------------------------------------------------
@@ -496,7 +496,7 @@ class CMenuPanel : public CMenuElement
 class CMenuElementText: public CMenuElement
 {
 	public:
-		_TCHAR	* lpszText;
+		std::string lpszText;
 		HFONT	pHFont;
 		long	lColor;
 		long	lOldColor;
@@ -507,14 +507,14 @@ class CMenuElementText: public CMenuElement
 
 	public:
 
-		CMenuElementText(int, HFONT, _TCHAR *, float, float, long, float, MENUSTATE); 
+		CMenuElementText(int, HFONT, std::string&, float, float, long, float, MENUSTATE); 
 		virtual ~CMenuElementText();
 
 		CMenuElement * OnShortCut();
 		bool OnMouseClick(int);
 		void Update(int);
 		void Render();
-		void SetText(_TCHAR * _pText);
+		void SetText(std::string& _pText);
 		void RenderMouseOver();
  
  
@@ -526,30 +526,42 @@ class CMenuElementText: public CMenuElement
 //-----------------------------------------------------------------------------
 class CMenuButton: public CMenuElement
 {
-	public:
-		vector<_TCHAR *>		vText;
-		int					iPos;
-		TextureContainer	* pTex;
-		TextureContainer	* pTexOver;
-		HFONT				pHFont;
-		int					iColor;
-		float				fSize;
+    public:
+        std::string         vText;
+        int                 iPos;
+        TextureContainer*   pTex;
+        TextureContainer*   pTexOver;
+        HFONT               pHFont;
+        int                 iColor;
+        float               fSize;
 
-	public:
-		CMenuButton(int, HFONT, MENUSTATE, int, int, _TCHAR *, float _fSize = 1.f, TextureContainer * _pTex = NULL, TextureContainer * _pTexOver = NULL, int _iColor = -1, int _iTailleX = 0, int _iTailleY = 0);
-		~CMenuButton();
+    public:
+        CMenuButton(    int,
+                        HFONT,
+                        MENUSTATE,
+                        int,
+                        int,
+                        std::string&,
+                        float _fSize = 1.f,
+                        TextureContainer * _pTex = NULL,
+                        TextureContainer * _pTexOver = NULL,
+                        int _iColor = -1,
+                        int _iTailleX = 0,
+                        int _iTailleY = 0
+                    );
+        ~CMenuButton();
 
-	public:
-		void SetPos(int, int);
-		void AddText(_TCHAR *);
-		CMenuElement * OnShortCut()
-		{
-			return NULL;
-		};
-		bool OnMouseClick(int);
-		void Update(int);
-		void Render();
-		void RenderMouseOver();
+    public:
+        void SetPos(int, int);
+        void AddText( std::string& );
+        CMenuElement * OnShortCut()
+        {
+            return NULL;
+        };
+        bool OnMouseClick(int);
+        void Update(int);
+        void Render();
+        void RenderMouseOver();
 };
 
 //-----------------------------------------------------------------------------
@@ -814,7 +826,7 @@ class CDirectInput
 		bool IsVirtualKeyPressedOneTouch(int);
 		bool IsVirtualKeyPressedNowPressed(int);
 		bool IsVirtualKeyPressedNowUnPressed(int);
-		_TCHAR * GetFullNameTouch(int);
+		std::string GetFullNameTouch(int);
  
  
 		void ResetAll();

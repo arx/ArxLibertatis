@@ -67,6 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_CParticleParams.h"
 #include "ARX_Time.h"
 
+#include <list>
 
 //#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
@@ -236,7 +237,7 @@ void CHeal::Update(unsigned long aulTime)
 		pPS->p3ParticleGravity.y = 0;
 		pPS->p3ParticleGravity.z = 0;
 
-		list<CParticle *>::iterator i;
+		std::list<CParticle *>::iterator i;
 
 		for (i = pPS->listParticle.begin(); i != pPS->listParticle.end(); ++i)
 		{
