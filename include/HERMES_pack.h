@@ -25,49 +25,59 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EVE_SAVE
 #define EVE_SAVE
 
-#include "HERMES_pack_types.h"
 #include "HERMES_hachage.h"
 
-#define PAK	1
+#include <cstddef>
 
-class EVE_TFILE{
+class PakFile {
+	
 public:
-	EVE_U8		*name;
-	EVE_U32		taille;
-	EVE_TFILE	*fprev,*fnext;
-	EVE_U32		param;
-	EVE_U32		param2;
-	EVE_U32		param3;
+	
+	const char * name;
+	std::size_t taille;
+	PakFile * fprev;
+	PakFile * fnext;
+	unsigned int param;
+	unsigned int param2;
+	unsigned int param3;
+	
 public:
-	EVE_TFILE(EVE_U8 *dir=NULL,EVE_U8 *n=NULL);
-	~EVE_TFILE();
+	
+	PakFile(const char * n = NULL);
+	~PakFile();
+	
 };
 
-class EVE_REPERTOIRE{
+class PakDirectory {
+	
 public:
-	EVE_U8			*name;
-	EVE_U32			nbsousreps;
-	EVE_U32			nbfiles;
-	EVE_REPERTOIRE	*parent;
-	EVE_REPERTOIRE	*fils;
-	EVE_REPERTOIRE	*brotherprev,*brothernext;
-	EVE_TFILE		*fichiers;
-	CHachageString	*pHachage;
-	EVE_U32			param;
+	
+	const char * name;
+	unsigned int nbsousreps;
+	unsigned int nbfiles;
+	PakDirectory * parent;
+	PakDirectory * fils;
+	PakDirectory * brotherprev;
+	PakDirectory * brothernext;
+	PakFile * fichiers;
+	CHachageString * pHachage;
+	unsigned int param;
+	
 public:
-	EVE_REPERTOIRE(EVE_REPERTOIRE *p,EVE_U8 *n);
-	~EVE_REPERTOIRE();
+	
+	PakDirectory(PakDirectory * p, const char * n);
+	~PakDirectory();
 
-	void AddSousRepertoire(EVE_U8 *sname);
-	bool DelSousRepertoire(EVE_U8 *sname);
-	EVE_TFILE* AddFileToSousRepertoire(EVE_U8 *sname,EVE_U8 *name);
+	void AddSousRepertoire(const char * sname);
+	bool DelSousRepertoire(const char * sname);
+	PakFile * AddFileToSousRepertoire(const char * sname, const char * name);
  
-	EVE_REPERTOIRE * GetSousRepertoire(EVE_U8 *sname);
+	PakDirectory * GetSousRepertoire(const char * sname);
  
-	void ConstructFullNameRepertoire(char*);
-	friend void Kill(EVE_REPERTOIRE *r);
+	void ConstructFullNameRepertoire(char * );
+	friend void Kill(PakDirectory * r);
 };
 
-EVE_U8 * EVEF_GetDirName(EVE_U8 *dirplusname);
-EVE_U8 * EVEF_GetFileName(EVE_U8 *dirplusname);
+char * EVEF_GetDirName(const char * dirplusname);
+char * EVEF_GetFileName(const char * dirplusname);
 #endif

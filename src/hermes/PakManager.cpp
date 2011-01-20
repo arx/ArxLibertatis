@@ -204,18 +204,13 @@ long _PAK_DirectoryExist(char * name)
 	long l = leng - g_pak_workdir_len ;
 	if (temp[l] != '\\') strcat(temp, "\\");
 
-	vector<EVE_REPERTOIRE *>* pvRepertoire;
-	pvRepertoire = pPakManager->ExistDirectory(temp);
+	vector<PakDirectory *> pvRepertoire(pPakManager->ExistDirectory(temp));
 
-	if (!pvRepertoire->size())
+	if (!pvRepertoire.size())
 	{
-		pvRepertoire->clear();
-		delete pvRepertoire;
 		return false;
 	}
 
-	pvRepertoire->clear();
-	delete pvRepertoire;
 	return true;
 }
 
@@ -865,7 +860,7 @@ int PakManager::fTell(PACK_FILE * _pPackFile)
 }
 
 //-----------------------------------------------------------------------------
-vector<EVE_REPERTOIRE *>* PakManager::ExistDirectory(char * _lpszName)
+vector<PakDirectory *>* PakManager::ExistDirectory(char * _lpszName)
 {
 	vector<PakReader *>::iterator i;
 
@@ -875,12 +870,12 @@ vector<EVE_REPERTOIRE *>* PakManager::ExistDirectory(char * _lpszName)
 		_lpszName++;
 	}
 
-	vector<EVE_REPERTOIRE *> *pvRepertoire = new vector<EVE_REPERTOIRE *>;
+	vector<PakDirectory *> *pvRepertoire = new vector<PakDirectory *>;
 	pvRepertoire->clear();
 
 	for (i = vLoadPak.begin(); i < vLoadPak.end(); i++)
 	{
-		EVE_REPERTOIRE * pRep;
+		PakDirectory * pRep;
 
 		if ((pRep = (*i)->pRoot->GetSousRepertoire((unsigned char *)_lpszName)))
 		{
@@ -916,13 +911,13 @@ bool PakManager::ExistFile(char * _lpszName)
 
 	for (i = vLoadPak.begin(); i < vLoadPak.end(); i++)
 	{
-		EVE_REPERTOIRE * pRep;
+		PakDirectory * pRep;
 
 		if ((pRep = (*i)->pRoot->GetSousRepertoire((unsigned char *)pcDir)))
 		{
 			if (pRep->nbfiles)
 			{
-				EVE_TFILE * pTFiles = (EVE_TFILE *)pRep->pHachage->GetPtrWithString((char *)pcFile);
+				PakFile * pTFiles = (PakFile *)pRep->pHachage->GetPtrWithString((char *)pcFile);
 
 				if (pTFiles)
 				{

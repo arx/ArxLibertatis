@@ -77,7 +77,7 @@ void * PAK_FileLoadMallocZero(char *name,long * SizeLoadMalloc=NULL);
 // use only for READ !!!!
 void PAK_SetLoadMode(long mode,char * pakfile,char * workdir=NULL);
 FILE * PAK_fopen(const char *filename, const char *mode );
-size_t PAK_fread(void *buffer, size_t size, size_t count, FILE *stream );;
+std::size_t PAK_fread(void *buffer, std::size_t size, std::size_t count, FILE *stream );;
 int PAK_fclose(FILE * stream);
 long PAK_ftell(FILE * stream);
 long PAK_DirectoryExist(char *name);
@@ -108,7 +108,7 @@ public:
 	int fRead(void *, int, int, PACK_FILE *);
 	int fSeek(PACK_FILE *,int,int);
 	int fTell(PACK_FILE *);
-	std::vector<EVE_REPERTOIRE*> * ExistDirectory(char *_lpszName);
+	std::vector<PakDirectory*> * ExistDirectory(char *_lpszName);
 	bool ExistFile(char *_lpszName);
 };
 

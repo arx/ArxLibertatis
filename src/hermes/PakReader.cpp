@@ -48,6 +48,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <hermes/PakReader.h>
 
+#define PAK 1
+
 #include "ARX_Casts.h"
 using std::min;
 using std::max;
@@ -148,7 +150,7 @@ bool PakReader::Open(char * _pcName)
 
 	iPassKey = 0;
 
-	pRoot = new EVE_REPERTOIRE(NULL, NULL);
+	pRoot = new PakDirectory(NULL, NULL);
 	fread((void *)&iTailleFAT, 1, 4, pfFile);
 	fseek(pfFile, iTailleFAT, SEEK_SET);
 	fread((void *)&iTailleFAT, 1, 4, pfFile);		//taille de la FAT
@@ -167,7 +169,7 @@ bool PakReader::Open(char * _pcName)
 	{
 		char * pcName = ReadFAT_string();
 
-		EVE_REPERTOIRE * pRepertoire = pRoot;
+		PakDirectory * pRepertoire = pRoot;
 
 		if (*pcName != 0)
 		{
@@ -199,7 +201,7 @@ bool PakReader::Open(char * _pcName)
 		while (iNbFiles--)
 		{
 			char * pcNameFile = ReadFAT_string();
-			EVE_TFILE * pFile = pRoot->AddFileToSousRepertoire((unsigned char *)pcName, (unsigned char *)pcNameFile);
+			PakFile * pFile = pRoot->AddFileToSousRepertoire((unsigned char *)pcName, (unsigned char *)pcNameFile);
 			pFile->param = ReadFAT_int();
 			pFile->param2 = ReadFAT_int();
 			pFile->param3 = ReadFAT_int();
@@ -280,7 +282,7 @@ bool PakReader::Read(char * _pcName, void * _mem)
 
 	char * pcFile = (char *)EVEF_GetFileName((unsigned char *)_pcName);
 
-	EVE_REPERTOIRE * pDir;
+	PakDirectory * pDir;
 
 	if (!pcDir)
 	{
@@ -309,7 +311,7 @@ bool PakReader::Read(char * _pcName, void * _mem)
 		return false;
 	}
 
-	EVE_TFILE * pTFiles = (EVE_TFILE *)pDir->pHachage->GetPtrWithString((char *)pcFile);
+	PakFile * pTFiles = (PakFile *)pDir->pHachage->GetPtrWithString((char *)pcFile);
 
 	if (pTFiles)
 	{
@@ -363,7 +365,7 @@ void * PakReader::ReadAlloc(char * _pcName, int * _piTaille)
 
 	char * pcFile = (char *)EVEF_GetFileName((unsigned char *)_pcName);
 
-	EVE_REPERTOIRE * pDir;
+	PakDirectory * pDir;
 
 	if (!pcDir)
 	{
@@ -392,7 +394,7 @@ void * PakReader::ReadAlloc(char * _pcName, int * _piTaille)
 		return false;
 	}
 
-	EVE_TFILE * pTFiles = (EVE_TFILE *)pDir->pHachage->GetPtrWithString((char *)pcFile);
+	PakFile * pTFiles = (PakFile *)pDir->pHachage->GetPtrWithString((char *)pcFile);
 
 	if (pTFiles)
 	{
@@ -471,7 +473,7 @@ int PakReader::GetSize(char * _pcName)
 
 	char * pcFile = (char *)EVEF_GetFileName((unsigned char *)_pcName);
 
-	EVE_REPERTOIRE * pDir;
+	PakDirectory * pDir;
 
 	if (!pcDir)
 	{
@@ -500,7 +502,7 @@ int PakReader::GetSize(char * _pcName)
 		return false;
 	}
 
-	EVE_TFILE * pTFiles = (EVE_TFILE *)pDir->pHachage->GetPtrWithString((char *)pcFile);
+	PakFile * pTFiles = (PakFile *)pDir->pHachage->GetPtrWithString((char *)pcFile);
 
 	if (pTFiles)
 	{
@@ -545,7 +547,7 @@ PACK_FILE * PakReader::fOpen(const char * _pcName, const char * _pcMode)
 
 	char * pcFile = (char *)EVEF_GetFileName((unsigned char *)_pcName);
 
-	EVE_REPERTOIRE * pDir;
+	PakDirectory * pDir;
 
 	if (!pcDir)
 	{
@@ -574,7 +576,7 @@ PACK_FILE * PakReader::fOpen(const char * _pcName, const char * _pcMode)
 		return false;
 	}
 
-	EVE_TFILE * pTFiles = (EVE_TFILE *)pDir->pHachage->GetPtrWithString((char *)pcFile);
+	PakFile * pTFiles = (PakFile *)pDir->pHachage->GetPtrWithString((char *)pcFile);
 
 	if (pTFiles)
 	{
@@ -686,7 +688,7 @@ int PakReader::fRead(void * _pMem, int _iSize, int _iCount, PACK_FILE * _pPackFi
 	        (!iTaille) ||
 	        (!_pPackFile->pFile)) return 0;
 
-	EVE_TFILE * pTFiles = _pPackFile->pFile;
+	PakFile * pTFiles = _pPackFile->pFile;
 
 	if (pTFiles->param2 & PAK)
 	{
@@ -935,7 +937,7 @@ void PakReader::UnCryptInt(unsigned int * _iInt)
 }
 
 //-----------------------------------------------------------------------------
-void PakReader::WriteSousRepertoire(char * pcAbs, EVE_REPERTOIRE * r)
+void PakReader::WriteSousRepertoire(char * pcAbs, PakDirectory * r)
 {
 	char EveTxtFile[256];
 	strcpy((char *)EveTxtFile, pcAbs);
@@ -947,7 +949,7 @@ void PakReader::WriteSousRepertoire(char * pcAbs, EVE_REPERTOIRE * r)
 
 	CreateDirectory((const char *)EveTxtFile, NULL);
 
-	EVE_TFILE * f = r->fichiers;
+	PakFile * f = r->fichiers;
 	int nb = r->nbfiles;
 
 	while (nb--)
@@ -979,19 +981,19 @@ void PakReader::WriteSousRepertoire(char * pcAbs, EVE_REPERTOIRE * r)
 	}
 
 
-	EVE_REPERTOIRE * brep = r->fils;
+	PakDirectory * brep = r->fils;
 	nb = r->nbsousreps;
 
 	while (nb--)
 	{
-		EVE_REPERTOIRE * brepnext = brep->brothernext;
+		PakDirectory * brepnext = brep->brothernext;
 		WriteSousRepertoire(pcAbs, brep);
 		brep = brepnext;
 	}
 }
 
 //-----------------------------------------------------------------------------
-void PakReader::WriteSousRepertoireZarbi(char * pcAbs, EVE_REPERTOIRE * r)
+void PakReader::WriteSousRepertoireZarbi(char * pcAbs, PakDirectory * r)
 {
 	char EveTxtFile[256];
 	strcpy((char *)EveTxtFile, pcAbs);
@@ -1003,7 +1005,7 @@ void PakReader::WriteSousRepertoireZarbi(char * pcAbs, EVE_REPERTOIRE * r)
 
 	CreateDirectory((const char *)EveTxtFile, NULL);
 
-	EVE_TFILE * f = r->fichiers;
+	PakFile * f = r->fichiers;
 	int nb = r->nbfiles;
 
 	while (nb--)
@@ -1075,12 +1077,12 @@ void PakReader::WriteSousRepertoireZarbi(char * pcAbs, EVE_REPERTOIRE * r)
 	}
 
 
-	EVE_REPERTOIRE * brep = r->fils;
+	PakDirectory * brep = r->fils;
 	nb = r->nbsousreps;
 
 	while (nb--)
 	{
-		EVE_REPERTOIRE * brepnext = brep->brothernext;
+		PakDirectory * brepnext = brep->brothernext;
 		WriteSousRepertoireZarbi(pcAbs, brep);
 		brep = brepnext;
 	}

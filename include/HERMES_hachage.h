@@ -37,6 +37,7 @@ typedef struct
 	void	*pMem;
 }T_HACHAGE_DATAS;
 
+// Hash String
 class CHachageString
 {
 private:

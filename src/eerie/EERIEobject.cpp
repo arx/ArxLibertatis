@@ -1295,7 +1295,7 @@ retry1:
 	strcpy(path, dirr + g_pak_workdir_len);
 	RemoveName(path);
 
-	vector<EVE_REPERTOIRE *> *pvRepertoire;
+	vector<PakDirectory *> *pvRepertoire;
 	pvRepertoire = pPakManager->ExistDirectory((char *)path);
 
 	if (!pvRepertoire->size())
@@ -1304,12 +1304,12 @@ retry1:
 		delete pvRepertoire;
 	}
 
-	vector<EVE_REPERTOIRE *>::iterator iT;
+	vector<PakDirectory *>::iterator iT;
 
 	for (iT = pvRepertoire->begin(); iT < pvRepertoire->end(); iT++)
 	{
 		int nb = (*iT)->nbfiles;
-		EVE_TFILE * et;
+		PakFile * et;
 		et = (*iT)->fichiers;
 
 		while (nb--)

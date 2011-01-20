@@ -58,7 +58,7 @@ struct PACK_FILE {
 	bool		bActif;
 	int			iID;
 	int			iOffset;
-	EVE_TFILE	*pFile;
+	PakFile * pFile;
 };
 
 class PakReader
@@ -74,7 +74,7 @@ private:
 	unsigned int	iPassKey;
 public:
 	char			*lpszName;
-	EVE_REPERTOIRE	*pRoot;
+	PakDirectory * pRoot;
 private:
 	int ReadFAT_int();
 	char* ReadFAT_string();
@@ -94,8 +94,8 @@ public:
 	int fSeek(PACK_FILE*,unsigned long,int);
 	int fTell(PACK_FILE *);
 
-	void WriteSousRepertoire(char *pcAbs,EVE_REPERTOIRE *r);
-	void WriteSousRepertoireZarbi(char *pcAbs,EVE_REPERTOIRE *r);
+	void WriteSousRepertoire(char *pcAbs,PakDirectory *r);
+	void WriteSousRepertoireZarbi(char *pcAbs,PakDirectory *r);
 
 	void CryptChar(unsigned char*);
 	void UnCryptChar(unsigned char*);
