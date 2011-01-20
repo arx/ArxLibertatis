@@ -69,9 +69,11 @@ using namespace std;
 extern "C" {
 #undef __cplusplus
 #include <shlobj.h>
+#include <windows.h>
+#include <unistd.h>
 }
 
-#include <unistd.h>
+
 
 #include <blast.h>
 
@@ -1265,7 +1267,7 @@ bool HERMESFolderSelector(char * file_name, char * title)
 		return false;
 	}
 }
-bool HERMES_WFSelectorCommon(PSTR pstrFileName, PSTR pstrTitleName, char * filter, long flag, long flag_operation, long max_car, HWND hWnd)
+bool HERMES_WFSelectorCommon(const char * pstrFileName, const char * pstrTitleName, char * filter, long flag, long flag_operation, long max_car, HWND hWnd)
 {
 	LONG	value;
 	char	cwd[MAX_PATH];
@@ -1306,12 +1308,12 @@ bool HERMES_WFSelectorCommon(PSTR pstrFileName, PSTR pstrTitleName, char * filte
 	return value;
 }
 
-int HERMESFileSelectorOpen(PSTR pstrFileName, PSTR pstrTitleName, char * filter, HWND hWnd)
+int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName, char * filter, HWND hWnd)
 {
 	return HERMES_WFSelectorCommon(pstrFileName, pstrTitleName, filter, OFN_HIDEREADONLY | OFN_CREATEPROMPT, 1, MAX_PATH, hWnd);
 }
  
-int HERMESFileSelectorSave(PSTR pstrFileName, PSTR pstrTitleName, char * filter, HWND hWnd)
+int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName, char * filter, HWND hWnd)
 {
 	return HERMES_WFSelectorCommon(pstrFileName, pstrTitleName, filter, OFN_OVERWRITEPROMPT, 0, MAX_PATH, hWnd);
 }

@@ -275,7 +275,7 @@ public:
 		float			fMouseSensibility;
 protected:
 		// Overridable variables for the app
-		TCHAR*			m_strWindowTitle;
+		char *			m_strWindowTitle;
 		bool			m_bAppUseZBuffer;
 		bool			m_bAppUseStereo;
 		bool			m_bShowStats;
@@ -336,7 +336,7 @@ protected:
 		{
 			return S_OK;
 		}
-		VOID					OutputText( DWORD x, DWORD y, TCHAR * str );
+		VOID					OutputText( DWORD x, DWORD y, const char * str );
  
 		HRESULT	SetClipping( float x1, float y1, float x2, float y2 );
  

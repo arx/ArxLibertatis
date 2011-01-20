@@ -1173,7 +1173,7 @@ HRESULT CD3DApplication::SetClipping(float x1, float y1, float x2, float y2)
 // OutputText()
 // Draws text on the window.
 //*************************************************************************************
-VOID CD3DApplication::OutputText(DWORD x, DWORD y, TCHAR * str)
+VOID CD3DApplication::OutputText(DWORD x, DWORD y, const char * str)
 {
 	HDC hDC;
 

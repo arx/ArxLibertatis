@@ -76,6 +76,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <jerror.h>
 #include <jconfig.h>
 #include <jmorecfg.h>
+#include <cassert>
 
 #include "HERMESMain.h"
 
