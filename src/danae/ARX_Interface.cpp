@@ -69,9 +69,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stdio.h>
 
-//todo: shouldn't be defined here
-# define GWL_HINSTANCE       (-6)
-
 extern float MagicSightFader;
 extern long FINAL_COMMERCIAL_DEMO;
 extern long NEED_TEST_TEXT;
