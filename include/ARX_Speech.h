@@ -92,32 +92,32 @@ typedef struct
 
 typedef struct
 {
-	unsigned long	timecreation;
-	unsigned long	duration;
-	D3DCOLOR		color;
-	char			name[64];
-	_TCHAR		*	lpszUText;
-	INTERACTIVE_OBJ * io;
+    unsigned long       timecreation;
+    unsigned long       duration;
+    D3DCOLOR            color;
+    char                name[64];
+    std::string         lpszUText;
+    INTERACTIVE_OBJ*    io;
 } STRUCT_SPEECH;
 
 typedef struct
 {
-	long				exist;
-	ArxSound				sample;
-	long				mood;
-	long				flags; 
-	unsigned long		time_creation;
-	unsigned long		duration;
-	float				fDeltaY;
-	int					iTimeScroll;
-	float				fPixelScroll;
-	D3DCOLOR			color;
-	_TCHAR		*		text;
-	INTERACTIVE_OBJ	*	io;
-	INTERACTIVE_OBJ	*	ioscript;
-	ARX_CINEMATIC_SPEECH cine;
-	EERIE_SCRIPT	*	es;
-	long				scrpos;
+    long                    exist;
+    ArxSound                sample;
+    long                    mood;
+    long                    flags; 
+    unsigned long           time_creation;
+    unsigned long           duration;
+    float                   fDeltaY;
+    int                     iTimeScroll;
+    float                   fPixelScroll;
+    D3DCOLOR                color;
+    std::string             text;
+    INTERACTIVE_OBJ*        io;
+    INTERACTIVE_OBJ*        ioscript;
+    ARX_CINEMATIC_SPEECH    cine;
+    EERIE_SCRIPT*           es;
+    long                    scrpos;
 } ARX_SPEECH;
 
 #define MAX_ASPEECH						100
@@ -159,7 +159,7 @@ void ARX_SPEECH_Reset();
 void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice);
 void ARX_SPEECH_Init();
 void ARX_SPEECH_Check(LPDIRECT3DDEVICE7 pd3dDevice);
-long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, _TCHAR * _lpszUText, long duration = -1);
+long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, const std::string& _lpszUText, long duration = -1);
 void ARX_SPEECH_ClearAll();
 // data can be either a direct text or a localised string
 // a localised string will be used to look for the duration of the sample
