@@ -384,8 +384,8 @@ void ARX_Localisation_Init(char * _lpszExtension)
 	//CD Check
 	if (FINAL_COMMERCIAL_DEMO && (!bForceInPack))
 	{
-		_TCHAR szMenuText[256];
-		PAK_UNICODE_GetPrivateProfileString(_T("system_menus_main_cdnotfound"), _T("string"), _T(""), szMenuText, 256, NULL);
+		std::string szMenuText;
+		PAK_UNICODE_GetPrivateProfileString( "system_menus_main_cdnotfound", "string", "", szMenuText, 256, NULL);
 
 		if (!szMenuText[0]) //warez
 		{
@@ -397,12 +397,12 @@ void ARX_Localisation_Init(char * _lpszExtension)
 
 	if (FINAL_COMMERCIAL_GAME)
 	{
-		_TCHAR szMenuText[256] = {0};
-		PAK_UNICODE_GetPrivateProfileString(_T("unicode"), _T("string"), _T(""), szMenuText, 256, NULL);
+		std::string szMenuText;
+		PAK_UNICODE_GetPrivateProfileString( "unicode", "string", "", szMenuText, 256, NULL);
 
 		if (szMenuText[0]) //warez
 		{
-			if (!_tcsicmp(_T("chinese"), szMenuText))
+			if (!szMenuText.compare( "chinese" ) )
 			{
 				CHINESE_VERSION = 1;
 			}

@@ -368,8 +368,8 @@ void LoadLevelScreen(LPDIRECT3DDEVICE7 _pd3dDevice, long num, float ratio)
 		}
 
 		fFadeColor += fFadeSens;
-		fFadeColor = min(1.f, fFadeColor);
-		fFadeColor = max(0.f, fFadeColor);
+		fFadeColor = std::min(1.f, fFadeColor);
+		fFadeColor = std::max(0.f, fFadeColor);
 	}
 
 	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT;
