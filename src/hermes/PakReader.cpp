@@ -50,18 +50,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <hermes/PakEntry.h>
 #include <hermes/HashMap.h>
 
+#include <sys/stat.h>
+
 #define PAK 1
 
-#include "ARX_Casts.h"
-
+#include <cstring>
 #include <algorithm>
 using std::min;
 using std::max;
 using std::size_t;
+using std::strlen;
 
 #include <blast.h>
 
-#include <windows.h>
+#include <cassert>
 
 // TODO crashes when using wrong data files
 #define FINAL_COMMERCIAL_GAME
@@ -255,8 +257,6 @@ size_t ReadData(void * Param, const unsigned char ** buf) {
 int WriteData(void * Param, unsigned char * buf, size_t len) {
 	
 	PAK_PARAM * pPP = (PAK_PARAM *) Param;
-
-	ARX_CHECK_NOT_NEG(pPP->lSize);
 	
 	size_t lSize = min(pPP->lSize, len);
 
@@ -696,8 +696,8 @@ size_t PakReader::fRead(void * _pMem, size_t _iSize, size_t _iCount, PakFileHand
 
 	if (pTFiles->param2 & PAK)
 	{
-		ARX_CHECK_NOT_NEG(_pPackFile->iOffset);
-		if (ARX_CAST_UINT(_pPackFile->iOffset) >= _pPackFile->pFile->param3) return 0;
+		assert(_pPackFile->iOffset >= 0);
+		if ((unsigned int)_pPackFile->iOffset >= _pPackFile->pFile->param3) return 0;
 
 		fseek(pfFile, pTFiles->param - iSeekPak, SEEK_CUR);
 
@@ -716,14 +716,14 @@ size_t PakReader::fRead(void * _pMem, size_t _iSize, size_t _iCount, PakFileHand
 	}
 	else
 	{
-		ARX_CHECK_NOT_NEG(_pPackFile->iOffset);
-		if (ARX_CAST_UINT(_pPackFile->iOffset) >= _pPackFile->pFile->taille) return 0;
+		assert(_pPackFile->iOffset >= 0);
+		if ((unsigned int)_pPackFile->iOffset >= _pPackFile->pFile->taille) return 0;
 
 		fseek(pfFile, pTFiles->param + _pPackFile->iOffset - iSeekPak, SEEK_CUR);
 
-		ARX_CHECK_NOT_NEG(iTaille);
+		assert(iTaille >= 0);
 
-		if (pTFiles->taille < ARX_CAST_UINT(_pPackFile->iOffset + iTaille))
+		if (pTFiles->taille < (unsigned int)_pPackFile->iOffset + iTaille)
 		{
 			iTaille -= _pPackFile->iOffset + iTaille - pTFiles->taille;
 		}
@@ -788,7 +788,7 @@ int PakReader::fSeek(PakFileHandle * _pPackFile, long _lOffset, int _iOrigin)
 				int iOffset = _pPackFile->iOffset + _lOffset;
 
 				if ((iOffset < 0) ||
-			        (ARX_CAST_UINT(iOffset) > _pPackFile->pFile->param3))
+			        ((unsigned int)iOffset > _pPackFile->pFile->param3))
 				{
 					return 1;
 				}
@@ -800,7 +800,7 @@ int PakReader::fSeek(PakFileHandle * _pPackFile, long _lOffset, int _iOrigin)
 				int iOffset = _pPackFile->iOffset + _lOffset;
 
 				if ((iOffset < 0) ||
-			        (ARX_CAST_UINT(iOffset) > _pPackFile->pFile->taille))
+			        ((unsigned int)iOffset > _pPackFile->pFile->taille))
 				{
 					return 1;
 				}
@@ -833,7 +833,7 @@ void PakReader::CryptChar(unsigned char * _pChar)
 	unsigned int iTailleKey = strlen((const char *) cKey);
 	int iDecalage = 0;
 	
-	*_pChar = ARX_CLEAN_WARN_CAST_UCHAR(((*_pChar) ^ cKey[iPassKey]) >> iDecalage);
+	*_pChar = ((*_pChar) ^ cKey[iPassKey]) >> iDecalage;
 
 	iPassKey++;
 
@@ -850,7 +850,7 @@ void PakReader::UnCryptChar(unsigned char * _pChar)
 	unsigned int iTailleKey = strlen((const char *) cKey);
 
 	int iDecalage = 0;
-	*_pChar = ARX_CLEAN_WARN_CAST_UCHAR(((*_pChar) ^ cKey[iPassKey]) << iDecalage);
+	*_pChar = ((*_pChar) ^ cKey[iPassKey]) << iDecalage;
 
 	iPassKey++;
 
@@ -896,8 +896,8 @@ int PakReader::UnCryptString(unsigned char * _pTxt)
 void PakReader::CryptShort(unsigned short * _pShort)
 {
 	unsigned char cA, cB;
-	cA = ARX_CLEAN_WARN_CAST_UCHAR((*_pShort) & 0xFF);
-	cB = ARX_CLEAN_WARN_CAST_UCHAR(((*_pShort) >> 8) & 0xFF);
+	cA = (unsigned char)((*_pShort) & 0xFF);
+	cB = (unsigned char)(((*_pShort) >> 8) & 0xFF);
 
 	CryptChar(&cA);
 	CryptChar(&cB);
@@ -908,8 +908,8 @@ void PakReader::CryptShort(unsigned short * _pShort)
 void PakReader::UnCryptShort(unsigned short * _pShort)
 {
 	unsigned char cA, cB;
-	cA = ARX_CLEAN_WARN_CAST_UCHAR((*_pShort) & 0xFF);
-	cB = ARX_CLEAN_WARN_CAST_UCHAR(((*_pShort) >> 8) & 0xFF);
+	cA = (unsigned char)((*_pShort) & 0xFF);
+	cB = (unsigned char)(((*_pShort) >> 8) & 0xFF);
 
 	UnCryptChar(&cA);
 	UnCryptChar(&cB);
@@ -951,7 +951,7 @@ void PakReader::WriteSousRepertoire(char * pcAbs, PakDirectory * r)
 		r->ConstructFullNameRepertoire(EveTxtFile);
 	}
 
-	CreateDirectory((const char *)EveTxtFile, NULL);
+	mkdir((const char *)EveTxtFile, 0777);
 
 	PakFile * f = r->fichiers;
 	int nb = r->nbfiles;
@@ -980,7 +980,7 @@ void PakReader::WriteSousRepertoire(char * pcAbs, PakDirectory * r)
 		}
 		else
 		{
-			MessageBox(NULL, tTxt, "No Found!!", 0);
+			printf("PakReader::WriteSousRepertoire No Found!! %s \n", tTxt);
 		}
 	}
 
@@ -1007,7 +1007,7 @@ void PakReader::WriteSousRepertoireZarbi(char * pcAbs, PakDirectory * r)
 		r->ConstructFullNameRepertoire(EveTxtFile);
 	}
 
-	CreateDirectory((const char *)EveTxtFile, NULL);
+	mkdir((const char *)EveTxtFile, 0777);
 
 	PakFile * f = r->fichiers;
 	int nb = r->nbfiles;
@@ -1028,7 +1028,7 @@ void PakReader::WriteSousRepertoireZarbi(char * pcAbs, PakDirectory * r)
 
 			if (!pPf)
 			{
-				MessageBox(NULL, tTxt, "ERROR fopen!!", 0);
+				printf("PakReader::WriteSousRepertoireZarbi: ERROR fopen!! %s\n", tTxt);
 			}
 			else
 			{
@@ -1055,7 +1055,7 @@ void PakReader::WriteSousRepertoireZarbi(char * pcAbs, PakDirectory * r)
 
 					if (nb3 != nb2)
 					{
-						MessageBox(NULL, tTxt, "ERROR fread!!", 0);
+						printf("PakReader::WriteSousRepertoireZarbi: ERROR fread!! %s\n", tTxt);
 					}
 				}
 
@@ -1076,7 +1076,7 @@ void PakReader::WriteSousRepertoireZarbi(char * pcAbs, PakDirectory * r)
 		}
 		else
 		{
-			MessageBox(NULL, tTxt, "No Found!!", 0);
+			printf("PakReader::WriteSousRepertoireZarbi: NotFound!! %s\n", tTxt);
 		}
 	}
 
