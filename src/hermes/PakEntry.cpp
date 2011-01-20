@@ -36,8 +36,8 @@ static char * GetFirstDir(const char * dir, size_t * l);
 PakFile::PakFile(const char * n)
 {
 	this->name = NULL;
-	this->taille = 0;
-	this->offset = this->param2 = this->param3 = 0;
+	this->size = 0;
+	this->offset = this->flags = this->param3 = 0;
 	this->fprev = this->fnext = NULL;
 
 	if (n)
