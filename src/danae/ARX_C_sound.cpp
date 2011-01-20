@@ -24,7 +24,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 #include <stdio.h>
 #include "ARX_CCinematique.h"
-#include "Resource.h"
 #include "ARX_Sound.h"
 #include "ARX_Casts.h"
 
