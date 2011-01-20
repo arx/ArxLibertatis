@@ -71,8 +71,7 @@ private:
 	
 	const char * fat;
 	FILE * file;
-	int				iSeekPak;
-	PakFileHandle		tPackFile[PACK_MAX_FREAD];
+	PakFileHandle tPackFile[PACK_MAX_FREAD];
 	
 public:
 	const char * pakfile;

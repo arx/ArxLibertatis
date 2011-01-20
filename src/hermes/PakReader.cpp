@@ -87,7 +87,6 @@ PakReader::PakReader() {
 	pakfile = NULL;
 	file = NULL;
 	pRoot = NULL;
-	iSeekPak = 0;
 	
 	fat = NULL;
 	
@@ -289,9 +288,6 @@ bool PakReader::Open(const char * name) {
 	}
 	fat = newfat;
 	
-	fseek(file, 0, SEEK_SET);
-	iSeekPak = 0;
-	
 	printf("\e[1;32mLoaded PAK:\e[m\t%s\n", name);
 	return true;
 	
@@ -400,7 +396,7 @@ bool PakReader::Read(char * _pcName, void * _mem)
 
 	if (pTFiles)
 	{
-		fseek(file, pTFiles->offset - iSeekPak, SEEK_CUR);
+		fseek(file, pTFiles->offset, SEEK_SET);
 
 		if (pTFiles->param2 & PAK)
 		{
@@ -414,8 +410,6 @@ bool PakReader::Read(char * _pcName, void * _mem)
 		{
 			fread(_mem, 1, pTFiles->size, file);
 		}
-
-		iSeekPak = ftell(file);
 
 		if (pcDir) delete [] pcDir;
 
@@ -476,7 +470,7 @@ void * PakReader::ReadAlloc(char * _pcName, int * _piTaille)
 	if (pTFiles)
 	{
 		void * mem;
-		fseek(file, pTFiles->offset - iSeekPak, SEEK_CUR);
+		fseek(file, pTFiles->offset, SEEK_SET);
 
 		if (pTFiles->param2 & PAK)
 		{
@@ -504,8 +498,6 @@ void * PakReader::ReadAlloc(char * _pcName, int * _piTaille)
 
 			fread(mem, 1, pTFiles->size, file);
 		}
-
-		iSeekPak = ftell(file);
 
 		if (pcDir) delete [] pcDir;
 
@@ -766,7 +758,7 @@ size_t PakReader::fRead(void * _pMem, size_t _iSize, size_t _iCount, PakFileHand
 		assert(_pPackFile->iOffset >= 0);
 		if ((unsigned int)_pPackFile->iOffset >= _pPackFile->pFile->param3) return 0;
 
-		fseek(file, pTFiles->offset - iSeekPak, SEEK_CUR);
+		fseek(file, pTFiles->offset, SEEK_SET);
 
 		PAK_PARAM_FREAD sPP;
 		sPP.file        = file;
@@ -779,14 +771,13 @@ size_t PakReader::fRead(void * _pMem, size_t _iSize, size_t _iCount, PakFileHand
 		sPP.iTailleFic  = _pPackFile->pFile->param3;
 		blast(ReadDataFRead, &sPP, WriteDataFRead, &sPP);
 		iTaille         = sPP.iTailleW;
-		iSeekPak        = ftell(file);
 	}
 	else
 	{
 		assert(_pPackFile->iOffset >= 0);
 		if ((unsigned int)_pPackFile->iOffset >= _pPackFile->pFile->size) return 0;
 
-		fseek(file, pTFiles->offset + _pPackFile->iOffset - iSeekPak, SEEK_CUR);
+		fseek(file, pTFiles->offset + _pPackFile->iOffset, SEEK_SET);
 
 		assert(iTaille >= 0);
 
@@ -796,7 +787,6 @@ size_t PakReader::fRead(void * _pMem, size_t _iSize, size_t _iCount, PakFileHand
 		}
 
 		fread(_pMem, 1, iTaille, file);
-		iSeekPak = ftell(file);
 	}
 
 	_pPackFile->iOffset += iTaille;
