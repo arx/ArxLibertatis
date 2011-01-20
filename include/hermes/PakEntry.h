@@ -29,6 +29,8 @@ class HashMap;
 
 #include <cstddef>
 
+#define PAK_FILE_COMPRESSED 1
+
 class PakFile {
 	
 public:
@@ -38,8 +40,8 @@ public:
 	PakFile * fprev;
 	PakFile * fnext;
 	std::size_t offset;
-	unsigned int param2;
-	unsigned int param3;
+	unsigned int flags;
+	std::size_t param3;
 	
 public:
 	

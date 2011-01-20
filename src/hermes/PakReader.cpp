@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <hermes/PakEntry.h>
 #include <hermes/HashMap.h>
 
-#define PAK 1
+#define PAK_READ_BUF_SIZE 1024
 
 #include <cstring>
 #include <algorithm>
@@ -82,7 +82,7 @@ static const uint8_t * selectKey(uint32_t first_bytes) {
 //-----------------------------------------------------------------------------
 PakReader::PakReader() {
 	
-	pakfile = NULL;
+	pakname = NULL;
 	file = NULL;
 	pRoot = NULL;
 	
@@ -100,9 +100,9 @@ PakReader::PakReader() {
 //-----------------------------------------------------------------------------
 PakReader::~PakReader() {
 	
-	if(pakfile) {
-		free((void *)pakfile);
-		pakfile = NULL;
+	if(pakname) {
+		free((void *)pakname);
+		pakname = NULL;
 	}
 	
 	if(file) {
@@ -159,7 +159,7 @@ inline bool safeGet(T & data, const char * & pos, uint32_t & fat_size) {
 //-----------------------------------------------------------------------------
 bool PakReader::Open(const char * name) {
 	
-	if(pRoot || pakfile || file) {
+	if(pRoot || pakname || file) {
 		// already loaded
 		return false;
 	}
@@ -264,7 +264,7 @@ bool PakReader::Open(const char * name) {
 			}
 			
 			file->offset = param;
-			file->param2 = param2;
+			file->flags = param2;
 			file->param3 = param3;
 			file->size = size;
 		}
@@ -276,10 +276,10 @@ bool PakReader::Open(const char * name) {
 	}
 	pRoot = newroot;
 	
-	if(pakfile) {
-		free(pakfile);
+	if(pakname) {
+		free(pakname);
 	}
-	pakfile = strdup((const char *)name);
+	pakname = strdup((const char *)name);
 	
 	if(fat) {
 		delete fat;
@@ -316,31 +316,63 @@ void PakReader::Close()
 	}
 }
 
+struct PakReadDataFile {
+	
+	FILE * file;
+	
+	char readbuf[PAK_READ_BUF_SIZE];
+	
+	PakReadDataFile(FILE * f) : file(f) {};
+	
+};
+
+struct PakWriteDataMem {
+	
+	char * buf;
+	
+	size_t size;
+	
+	PakWriteDataMem(char * b, size_t s) : buf(b), size(s) {};
+	
+};
+
 //-----------------------------------------------------------------------------
 size_t ReadData(void * Param, const unsigned char ** buf) {
 	
-	PAK_PARAM * pPP = (PAK_PARAM *)Param;
+	PakReadDataFile * pPP = (PakReadDataFile *)Param;
 	
 	*buf = pPP->readbuf;
 	
-	int iRead = fread(pPP->readbuf, 1, PAK_READ_BUF_SIZE, pPP->file);
+	int nread = fread(pPP->readbuf, 1, PAK_READ_BUF_SIZE, pPP->file);
 
-	return (unsigned int)iRead;
+	return nread;
 }
 
 //-----------------------------------------------------------------------------
 int WriteData(void * Param, unsigned char * buf, size_t len) {
 	
-	PAK_PARAM * pPP = (PAK_PARAM *) Param;
+	PakWriteDataMem * pPP = (PakWriteDataMem *) Param;
 	
-	size_t lSize = min(pPP->lSize, len);
+	if(len > pPP->size) {
+		return 1;
+	}
 
-	memcpy((void *) pPP->mem, (const void *) buf, lSize);
-	pPP->mem   += lSize;
-	pPP->lSize -= lSize;
+	memcpy((void *)pPP->buf, (const void *)buf, len);
+	pPP->buf += len;
+	pPP->size -= len;
 	
 	return 0;
 }
+
+static int blast(const FILE * file, unsigned char * buf, size_t size) {
+	
+	PakReadDataFile read(file);
+	PakWriteDataMem write(buf, size);
+	
+	return blast(ReadData, &read, WriteData, &write);
+}
+
+
 
 //-----------------------------------------------------------------------------
 bool PakReader::Read(char * _pcName, void * _mem)
@@ -396,13 +428,13 @@ bool PakReader::Read(char * _pcName, void * _mem)
 	{
 		fseek(file, pTFiles->offset, SEEK_SET);
 
-		if (pTFiles->param2 & PAK)
+		if (pTFiles->flags & PAK_FILE_COMPRESSED)
 		{
-			PAK_PARAM sPP;
-			sPP.file = file;
-			sPP.mem = (char *)_mem;
-			sPP.lSize = pTFiles->param3;
-			blast(ReadData, &sPP, WriteData, &sPP);
+			int r = blast(file, (char *)_mem, pTFiles->param3);
+			if(r) {
+				printf("\e[1;35mdecompression error %d:\e[m\tfor \"%s\" in \'%s\"\n", r, pTFiles->name, pakname);
+				goto error;
+			}
 		}
 		else
 		{
@@ -415,6 +447,8 @@ bool PakReader::Read(char * _pcName, void * _mem)
 
 		return true;
 	}
+	
+error:
 
 	if (pcDir) delete [] pcDir;
 
@@ -470,7 +504,7 @@ void * PakReader::ReadAlloc(char * _pcName, int * _piTaille)
 		void * mem;
 		fseek(file, pTFiles->offset, SEEK_SET);
 
-		if (pTFiles->param2 & PAK)
+		if (pTFiles->flags & PAK_FILE_COMPRESSED)
 		{
 			mem = malloc(pTFiles->param3);
 			*_piTaille = (int)pTFiles->param3;
@@ -479,11 +513,12 @@ void * PakReader::ReadAlloc(char * _pcName, int * _piTaille)
 				goto error;
 			}
 
-			PAK_PARAM sPP;
-			sPP.file = file;
-			sPP.mem = (char *)mem;
-			sPP.lSize = pTFiles->param3;
-			blast(ReadData, &sPP, WriteData, &sPP);
+			int r = blast(file, (char *)mem, pTFiles->param3);
+			if(r) {
+				printf("\e[1;35mdecompression error %d:\e[m\tfor \"%s\" in \'%s\"\n", r, pTFiles->name, pakname);
+				delete mem;
+				goto error;
+			}
 		}
 		else
 		{
@@ -571,7 +606,7 @@ int PakReader::GetSize(char * _pcName)
 
 		if (pcFile) delete [] pcFile;
 
-		if (pTFiles->param2 & PAK)
+		if (pTFiles->flags & PAK_FILE_COMPRESSED)
 		{
 			return pTFiles->param3;
 		}
@@ -680,6 +715,22 @@ int PakReader::fClose(PakFileHandle * _pPackFile)
 	return 0;
 }
 
+// TODO why not use PakBlastToBuffer
+struct PAK_PARAM_FREAD {
+	FILE	*file;
+	char	*mem;
+	int		iOffsetCurr;
+	int		iOffset;
+	int		iOffsetBase;
+	int		iTaille;
+	int		iTailleBase;
+	int		iTailleW;
+	int		iTailleFic;
+	
+	char readbuf[PAK_READ_BUF_SIZE];
+	
+};
+
 //-----------------------------------------------------------------------------
 size_t ReadDataFRead(void * Param, const unsigned char ** buf) {
 	
@@ -751,7 +802,7 @@ size_t PakReader::fRead(void * _pMem, size_t _iSize, size_t _iCount, PakFileHand
 
 	PakFile * pTFiles = _pPackFile->pFile;
 
-	if (pTFiles->param2 & PAK)
+	if (pTFiles->flags & PAK_FILE_COMPRESSED)
 	{
 		assert(_pPackFile->iOffset >= 0);
 		if ((unsigned int)_pPackFile->iOffset >= _pPackFile->pFile->param3) return 0;
@@ -804,7 +855,7 @@ int PakReader::fSeek(PakFileHandle * _pPackFile, long _lOffset, int _iOrigin)
 
 			if (_lOffset < 0) return 1;
 
-			if (_pPackFile->pFile->param2 & PAK)
+			if (_pPackFile->pFile->flags & PAK_FILE_COMPRESSED)
 			{
 				if (_lOffset > _pPackFile->pFile->param3) return 1;
 
@@ -822,7 +873,7 @@ int PakReader::fSeek(PakFileHandle * _pPackFile, long _lOffset, int _iOrigin)
 
 			if (_lOffset < 0) return 1;
 
-			if (_pPackFile->pFile->param2 & PAK)
+			if (_pPackFile->pFile->flags & PAK_FILE_COMPRESSED)
 			{
 				if (_lOffset > _pPackFile->pFile->param3) return 1;
 
@@ -838,7 +889,7 @@ int PakReader::fSeek(PakFileHandle * _pPackFile, long _lOffset, int _iOrigin)
 			break;
 		case SEEK_CUR:
 
-			if (_pPackFile->pFile->param2 & PAK)
+			if (_pPackFile->pFile->flags & PAK_FILE_COMPRESSED)
 			{
 				int iOffset = _pPackFile->iOffset + _lOffset;
 
