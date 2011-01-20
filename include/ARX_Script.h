@@ -60,6 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <EERIEPoly.h>
 #include <EERIEMeshTweak.h>
 #include <tchar.h>
+#include <string>
 
 //-----------------------------------------------------------------------------
 typedef struct

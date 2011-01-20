@@ -3458,7 +3458,7 @@ void MakeStandard(char * str)
 //*************************************************************************************
 //*************************************************************************************
 
-long MakeLocalised(char* text, std::string& output, long maxsize, long lastspeechflag)
+long MakeLocalised( const std::string& text, std::string& output, long maxsize, long lastspeechflag)
 {
 	if ( text.empty() )
 	{
@@ -3466,23 +3466,20 @@ long MakeLocalised(char* text, std::string& output, long maxsize, long lastspeec
 		return 0;
 	}
 
-	_TCHAR __text[256];
-	return HERMES_UNICODE_GetProfileString(__text, _T("string"), _T("error"), _T(output.c_str()), maxsize, NULL, lastspeechflag);
+	std::string __text;
+	return HERMES_UNICODE_GetProfileString(__text, "string", "error", output, maxsize, NULL, lastspeechflag);
 }
 
 //-----------------------------------------------------------------------------
 long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, char * _lpszText, long duration)
 {
-	_TCHAR __output[4096];
-	memset(__output, 0, 4096);
-	_TCHAR __text[256];
-	//todo cast
-	//MultiByteToWideChar(CP_ACP, 0, _lpszText, -1, __text, 256);
+	std::string __output( 4096, '\0' );
+	std::string __text;
 
 	HERMES_UNICODE_GetProfileString(
 	    __text,
-	    _T("string"),
-	    _T("Not Found"),
+	    "string",
+	    "Not Found",
 	    __output,
 	    4095,
 	    NULL,

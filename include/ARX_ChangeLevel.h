@@ -469,11 +469,11 @@ typedef struct
 } ARX_CHANGELEVEL_PLAYER_LEVEL_DATA;
 
 //-----------------------------------------------------------------------------
-#define SYSTEM_FLAG_TWEAKER_INFO	1
-#define SYSTEM_FLAG_INVENTORY		2
-#define SYSTEM_FLAG_EQUIPITEMDATA	4
-#define SYSTEM_FLAG_USEPATH			8
-#define ARX_GAMESAVE_VERSION 1.005f
+#define SYSTEM_FLAG_TWEAKER_INFO    1
+#define SYSTEM_FLAG_INVENTORY       2
+#define SYSTEM_FLAG_EQUIPITEMDATA   4
+#define SYSTEM_FLAG_USEPATH         8
+#define ARX_GAMESAVE_VERSION        1.005f
 
 extern long LAST_CHINSTANCE;
 extern char CurGamePath[256];
@@ -484,9 +484,9 @@ extern long FORBID_SAVE;
 //-----------------------------------------------------------------------------
 void ARX_GAMESAVE_MakePath();
 void ARX_GAMESAVE_CreateNewInstance();
-void ARX_GAMESAVE_GetInfo(char * path, char * name, long * time);
-long ARX_GAMESAVE_Save(long instance, char * name);
-long ARX_GAMESAVE_Load(long instance);
+void ARX_GAMESAVE_GetInfo( const std::string& path, const std::string& name, long& time);
+long ARX_GAMESAVE_Save( long instance, const std::string& name);
+long ARX_GAMESAVE_Load( long instance );
 
 void ARX_CHANGELEVEL_MakePath();
 long ARX_CHANGELEVEL_PushLevel(long num, long newnum);
@@ -495,21 +495,21 @@ long ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num);
 long ARX_CHANGELEVEL_Push_Globals(long num);
 long ARX_CHANGELEVEL_Pop_Globals();
 long ARX_CHANGELEVEL_Push_Player(long num);
-void ARX_CHANGELEVEL_Change(char * level, char * target, long angle, long confirm);
+void ARX_CHANGELEVEL_Change( const std::string& level, const std::string& target, long angle, long confirm);
 long ARX_CHANGELEVEL_Push_AllIO(long num);
 long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io);
-long ARX_CHANGELEVEL_Pop_IO(char * ident);
-void ARX_CHANGELEVEL_TestLoad(char * level, char * target);
-void ARX_CHANGELEVEL_TestSave(char * level, char * target);
-long ARX_CHANGELEVEL_GetInfo(char * path, char * name, float * version, long * level, unsigned long * time);
-long ARX_CHANGELEVEL_Set_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pld, char * path);
-long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pld, char * path);
+long ARX_CHANGELEVEL_Pop_IO( const std::string& ident);
+void ARX_CHANGELEVEL_TestLoad( const std::string& level, std::string& target);
+void ARX_CHANGELEVEL_TestSave( const std::string& level, std::string& target);
+long ARX_CHANGELEVEL_GetInfo( const std::string& path, const std::string& name, float& version, long& level, unsigned long& time);
+long ARX_CHANGELEVEL_Set_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pld, const std::string& path);
+long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pld, const std::string& path);
 long ARX_CHANGELEVEL_Load(long instance);
-long ARX_CHANGELEVEL_Save(long instance, char * name);
- 
+long ARX_CHANGELEVEL_Save(long instance, const std::string& name);
+
 
 void ARX_Changelevel_CurGame_Open();
-bool ARX_Changelevel_CurGame_Seek(char * ident);
+bool ARX_Changelevel_CurGame_Seek( const std::string& ident);
 void ARX_Changelevel_CurGame_Close();
 
 #endif

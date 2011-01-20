@@ -161,7 +161,7 @@ void CreateSaveGameList()
 
 	if (!(save_l = (SaveGame *)malloc(sizeof(SaveGame)))) return;
 
-	strcpy(save_l[0].name, "New");
+	save_l[0].name = "New";
 	memset(&save_l[0].stime, 0, sizeof(SYSTEMTIME));
 	save_c = 1;
 
@@ -183,13 +183,16 @@ void CreateSaveGameList()
 				}
 
 				save_l = (SaveGame *)ptr;
-				char text[256];
-				strcpy(text, fdata->cFileName + 4);
-				save_l[save_c].num = atoi(text);
-				sprintf(text, "%ssave%s\\%s\\", Project.workingdir, LOCAL_SAVENAME, fdata->cFileName);
+				std::string text;
+				text = fdata->cFileName + 4;
+				save_l[save_c].num = atoi(text.c_str());
+        std::stringstream ss;
+        ss << Project.workingdir << "save" << LOCAL_SAVENAME << "\\" << fdata->cFileName << "\\";
+        text = ss.str();
+//				sprintf(text, "%ssave%s\\%s\\", Project.workingdir, LOCAL_SAVENAME, fdata->cFileName);
 				unsigned long pouet;
 
-				if (ARX_CHANGELEVEL_GetInfo(text, save_l[save_c].name, &save_l[save_c].version, &save_l[save_c].level, &pouet) != -1)
+				if (ARX_CHANGELEVEL_GetInfo(text, save_l[save_c].name, save_l[save_c].version, save_l[save_c].level, pouet) != -1)
 				{
 					SYSTEMTIME stime;
 					FILETIME fTime;
@@ -302,32 +305,26 @@ void ARX_Menu_Resources_Create(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_DAMAGE],                 "system_charsheet_damage");
 
 	ARX_Allocate_Text(ARXmenu.mda->str_button_quickgen,                 "system_charsheet_button_quickgen");
-	ARX_Allocate_Text(ARXmenu.mda->str_button_skin,                     "system_charsheet_button_skin");
-	ARX_Allocate_Text(ARXmenu.mda->str_button_done,                     "system_charsheet_button_done");
+    ARX_Allocate_Text(ARXmenu.mda->str_button_skin,                     "system_charsheet_button_skin");
+    ARX_Allocate_Text(ARXmenu.mda->str_button_done,                     "system_charsheet_button_done");
 
-	long siz;
-	char szFileName[256];
+    long siz;
+    char szFileName[256];
 
-	sprintf(szFileName, "%sLocalisation\\ucredits_%s.txt", Project.workingdir, Project.localisationpath);
-	ARXmenu.mda->str_cre_credits = (_TCHAR *) PAK_FileLoadMalloc(szFileName, &siz);
+    sprintf(szFileName, "%sLocalisation\\ucredits_%s.txt", Project.workingdir, Project.localisationpath);
+    ARXmenu.mda->str_cre_credits = (_TCHAR *) PAK_FileLoadMalloc(szFileName, &siz);
 
-<<<<<<< HEAD:Sources/DANAE/ARX_Menu.cpp
-/*	if (!ARXmenu.mda->str_cre_credits.empty() &&
-=======
-	if (ARXmenu.mda->str_cre_credits &&
->>>>>>> origin/master:Sources/danae/ARX_Menu.cpp
-	        ARXmenu.mda->str_cre_credits[(siz>>1)-1] != 0)
-	{
-		_TCHAR * pTxt = (_TCHAR *)malloc(siz + 2);
-		memcpy(pTxt, ARXmenu.mda->str_cre_credits, siz);
-		pTxt[(siz>>1)] = 0;
-		free(ARXmenu.mda->str_cre_credits);
-		ARXmenu.mda->str_cre_credits = pTxt;
-<<<<<<< HEAD:Sources/DANAE/ARX_Menu.cpp
-	}*/
+    if (!ARXmenu.mda->str_cre_credits.empty() &&
+        ARXmenu.mda->str_cre_credits[(siz>>1)-1] != 0)
+    {
+        _TCHAR * pTxt = (_TCHAR *)malloc(siz + 2);
+        memcpy(pTxt, ARXmenu.mda->str_cre_credits.c_str(), siz);
+        pTxt[(siz>>1)] = 0;
+        ARXmenu.mda->str_cre_credits = pTxt;
+    }
     ARXmenu.mda->str_cre_credits.clear();
 
-	CreateSaveGameList();
+    CreateSaveGameList();
 }
 
 //-----------------------------------------------------------------------------
@@ -803,7 +800,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 			ePos.x = fPosX;
 			ePos.y = fPosY;
-			FontRenderText(hFontMenu, ePos, ARXmenu.mda->str_button_quickgen.c_str(), Color);
+			FontRenderText(hFontMenu, ePos, ARXmenu.mda->str_button_quickgen, Color);
 
 			//---------------------------------------------------------------------
 			// Button SKIN
@@ -852,7 +849,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 			ePos.x = fPosX;
 			ePos.y = fPosY;
-			FontRenderText(hFontMenu, ePos, ARXmenu.mda->str_button_skin.c_str(), Color);
+			FontRenderText(hFontMenu, ePos, ARXmenu.mda->str_button_skin, Color);
 
 			//---------------------------------------------------------------------
 			// Button DONE
@@ -916,7 +913,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 			ePos.x = fPosX;
 			ePos.y = fPosY;
-			FontRenderText(hFontMenu, ePos, ARXmenu.mda->str_button_done.c_str(), Color);
+			FontRenderText(hFontMenu, ePos, ARXmenu.mda->str_button_done, Color);
 		}
 	}
 
@@ -937,14 +934,14 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		COLORREF Color = 0;
 		int iW;
 		int iH;
-		_TCHAR szText[256];
+		std::string szText;
 
 		Color = RGB(232, 204, 143);
 
-		PAK_UNICODE_GetPrivateProfileString(_T("system_menus_main_cdnotfound"), _T("string"), _T(""), szText, 256, NULL);
+		PAK_UNICODE_GetPrivateProfileString( "system_menus_main_cdnotfound", "string", "", szText, 256, NULL);
 		iW = 0;
 		iH = 0;
-		GetTextSize(hFontMenu, szText, &iW, &iH);
+		GetTextSize(hFontMenu, szText.c_str(), &iW, &iH);
 		ePos.x = (DANAESIZX - iW) * 0.5f;
 		ePos.y = DANAESIZY * 0.4f;
 		FontRenderText(hFontMenu, ePos, szText, Color);
@@ -952,7 +949,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		PAK_UNICODE_GetPrivateProfileString(_T("system_yes"), _T("string"), _T(""), szText, 256, NULL);
 		iW = 0;
 		iH = 0;
-		GetTextSize(hFontMenu, szText, &iW, &iH);
+		GetTextSize(hFontMenu, szText.c_str(), &iW, &iH);
 		ePos.x = (DANAESIZX * 0.5f - iW) * 0.5f;
 		ePos.y = DANAESIZY * 0.5f;
 
@@ -978,7 +975,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		PAK_UNICODE_GetPrivateProfileString(_T("system_no"), _T("string"), _T(""), szText, 256, NULL);
 		iW = 0;
 		iH = 0;
-		GetTextSize(hFontMenu, szText, &iW, &iH);
+		GetTextSize(hFontMenu, szText.c_str(), &iW, &iH);
 		ePos.x = DANAESIZX * 0.5f + (DANAESIZX * 0.5f - iW) * 0.5f;
 
 		if (MouseInRect(ePos.x, ePos.y, ePos.x + iW, ePos.y + iH))
