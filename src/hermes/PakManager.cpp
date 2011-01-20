@@ -701,14 +701,14 @@ bool PakManager::Read(char * _lpszName, void * _pMem)
 	{
 		if ((*i)->Read(_lpszName, _pMem))
 		{
-			printf("\e[1;32mCan't read from PAK:\e[m\t%s\n", _lpszName);
+			printf("\e[1;32mRead from PAK:\e[m\t%s\n", _lpszName);
 			return true;
 		}
 	}
 
 	DrawDebugFile(_lpszName);
 
-	printf("\e[1;33mRead from PAK:\e[m\t%s\n", _lpszName);
+	printf("\e[1;33mCan't read from PAK:\e[m\t%s\n", _lpszName);
 	return false;
 }
 
@@ -735,7 +735,7 @@ void * PakManager::ReadAlloc(char * _lpszName, int * _piTaille)
 	}
 
 	DrawDebugFile(_lpszName);
-	printf("\e[1;33mCan't read from PAK (a):\e[m\t%s\n", _lpszName);
+	printf("\e[1;33mRead from PAK (a):\e[m\t%s\n", _lpszName);
 	return NULL;
 }
 
@@ -880,7 +880,7 @@ vector<PakDirectory *>* PakManager::ExistDirectory(char * _lpszName)
 	{
 		PakDirectory * pRep;
 
-		if ((pRep = (*i)->pRoot->GetSousRepertoire((unsigned char *)_lpszName)))
+		if ((pRep = (*i)->pRoot->getDirectory((unsigned char *)_lpszName)))
 		{
 			pvRepertoire->insert(pvRepertoire->end(), pRep);
 		}
@@ -916,11 +916,11 @@ bool PakManager::ExistFile(char * _lpszName)
 	{
 		PakDirectory * pRep;
 
-		if ((pRep = (*i)->pRoot->GetSousRepertoire((unsigned char *)pcDir)))
+		if ((pRep = (*i)->pRoot->getDirectory((unsigned char *)pcDir)))
 		{
 			if (pRep->nbfiles)
 			{
-				PakFile * pTFiles = (PakFile *)pRep->pHachage->GetPtrWithString((char *)pcFile);
+				PakFile * pTFiles = (PakFile *)pRep->filesMap->GetPtrWithString((char *)pcFile);
 
 				if (pTFiles)
 				{

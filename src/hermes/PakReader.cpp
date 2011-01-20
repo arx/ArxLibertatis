@@ -219,7 +219,7 @@ bool PakReader::Open(const char * name) {
 		
 		PakDirectory * dir;
 		if(*dirname != '\0') {
-			dir = newroot->AddSousRepertoire((unsigned char *)dirname);
+			dir = newroot->addDirectory((unsigned char *)dirname);
 		} else {
 			dir = newroot;
 		}
@@ -230,7 +230,7 @@ bool PakReader::Open(const char * name) {
 			goto error;
 		}
 		
-		if(nfiles && !dir->pHachage) {
+		if(nfiles && !dir->filesMap) {
 			int hashsize = 1;
 			while(hashsize < nfiles) {
 				hashsize <<= 1;
@@ -239,7 +239,7 @@ bool PakReader::Open(const char * name) {
 			if(nfiles > n) {
 				hashsize <<= 1;
 			}
-			dir->pHachage = new HashMap(hashsize);
+			dir->filesMap = new HashMap(hashsize);
 		}
 		
 		while(nfiles--) {
@@ -250,7 +250,7 @@ bool PakReader::Open(const char * name) {
 				goto error;
 			}
 			
-			PakFile * file = dir->AddFileToSousRepertoire(NULL, filename);
+			PakFile * file = dir->addFile(NULL, filename);
 			
 			uint32_t offset;
 			uint32_t flags;
@@ -401,7 +401,7 @@ bool PakReader::Read(char * _pcName, void * _mem)
 	}
 	else
 	{
-		pDir = pRoot->GetSousRepertoire((unsigned char *)pcDir);
+		pDir = pRoot->getDirectory((unsigned char *)pcDir);
 	}
 
 	if (!pDir)
@@ -422,7 +422,7 @@ bool PakReader::Read(char * _pcName, void * _mem)
 		return false;
 	}
 
-	PakFile * pTFiles = (PakFile *)pDir->pHachage->GetPtrWithString((char *)pcFile);
+	PakFile * pTFiles = (PakFile *)pDir->filesMap->GetPtrWithString((char *)pcFile);
 
 	if (pTFiles)
 	{
@@ -484,7 +484,7 @@ void * PakReader::ReadAlloc(char * _pcName, int * _piTaille)
 	}
 	else
 	{
-		pDir = pRoot->GetSousRepertoire((unsigned char *)pcDir);
+		pDir = pRoot->getDirectory((unsigned char *)pcDir);
 	}
 
 	if(!pDir) {
@@ -497,7 +497,7 @@ void * PakReader::ReadAlloc(char * _pcName, int * _piTaille)
 	
 	{
 
-	PakFile * pTFiles = (PakFile *)pDir->pHachage->GetPtrWithString((char *)pcFile);
+	PakFile * pTFiles = (PakFile *)pDir->filesMap->GetPtrWithString((char *)pcFile);
 
 	if (pTFiles)
 	{
@@ -577,7 +577,7 @@ int PakReader::GetSize(char * _pcName)
 	}
 	else
 	{
-		pDir = pRoot->GetSousRepertoire((unsigned char *)pcDir);
+		pDir = pRoot->getDirectory((unsigned char *)pcDir);
 	}
 
 	if (!pDir)
@@ -598,7 +598,7 @@ int PakReader::GetSize(char * _pcName)
 		return false;
 	}
 
-	PakFile * pTFiles = (PakFile *)pDir->pHachage->GetPtrWithString((char *)pcFile);
+	PakFile * pTFiles = (PakFile *)pDir->filesMap->GetPtrWithString((char *)pcFile);
 
 	if (pTFiles)
 	{
@@ -651,7 +651,7 @@ PakFileHandle * PakReader::fOpen(const char * _pcName, const char * _pcMode)
 	}
 	else
 	{
-		pDir = pRoot->GetSousRepertoire((unsigned char *)pcDir);
+		pDir = pRoot->getDirectory((unsigned char *)pcDir);
 	}
 
 	if (!pDir)
@@ -672,7 +672,7 @@ PakFileHandle * PakReader::fOpen(const char * _pcName, const char * _pcMode)
 		return false;
 	}
 
-	PakFile * pTFiles = (PakFile *)pDir->pHachage->GetPtrWithString((char *)pcFile);
+	PakFile * pTFiles = (PakFile *)pDir->filesMap->GetPtrWithString((char *)pcFile);
 
 	if (pTFiles)
 	{

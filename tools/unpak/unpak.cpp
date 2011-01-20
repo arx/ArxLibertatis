@@ -35,7 +35,7 @@ void dump(const PakReader & pak, const PakDirectory * dir, string where = string
 	
 	//printf("%s", dirname.c_str());
 	
-	PakFile * file = dir->fichiers;
+	PakFile * file = dir->files;
 	while(file != NULL) {
 		
 		if(!file->name) {
@@ -67,12 +67,12 @@ void dump(const PakReader & pak, const PakDirectory * dir, string where = string
 		
 		free(data);
 		
-		file = file->fnext;
+		file = file->next;
 	}
 	
-	dump(pak, dir->fils, dirname);
+	dump(pak, dir->children, dirname);
 	
-	dump(pak, dir->brothernext, where);
+	dump(pak, dir->next, where);
 	
 }
 

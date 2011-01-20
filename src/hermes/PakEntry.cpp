@@ -38,7 +38,7 @@ PakFile::PakFile(const char * n)
 	this->name = NULL;
 	this->size = 0;
 	this->offset = this->flags = this->uncompressedSize = 0;
-	this->fprev = this->fnext = NULL;
+	this->prev = this->next = NULL;
 
 	if (n)
 	{
@@ -52,14 +52,14 @@ PakFile::~PakFile()
 {
 	if (this->name) delete[] this->name;
 
-	if (this->fprev)
+	if (this->prev)
 	{
-		this->fprev->fnext = this->fnext;
+		this->prev->next = this->next;
 	}
 
-	if (this->fnext)
+	if (this->next)
 	{
-		this->fnext->fprev = this->fprev;
+		this->next->prev = this->prev;
 	}
 }
 //#############################################################################
@@ -69,12 +69,11 @@ PakFile::~PakFile()
 //#############################################################################
 PakDirectory::PakDirectory(PakDirectory * p, const char * n)
 {
-	pHachage = NULL;
-	this->param = 0;
-	this->brotherprev = this->brothernext = NULL;
+	filesMap = NULL;
+	this->prev = this->next = NULL;
 	this->parent = p;
-	this->fils = NULL;
-	this->fichiers = NULL;
+	this->children = NULL;
+	this->files = NULL;
 	this->nbsousreps = this->nbfiles = 0;
 
 	if (n)
@@ -87,7 +86,7 @@ PakDirectory::PakDirectory(PakDirectory * p, const char * n)
 			if (l != strlen((const char *)n))
 			{
 				this->nbsousreps = 1;
-				this->fils = new PakDirectory(this, n + l);
+				this->children = new PakDirectory(this, n + l);
 			}
 
 			return;
@@ -104,39 +103,39 @@ PakDirectory::~PakDirectory()
 		delete[] this->name;
 	}
 
-	if (pHachage)
+	if (filesMap)
 	{
-		delete pHachage;
-		pHachage = NULL;
+		delete filesMap;
+		filesMap = NULL;
 	}
 
-	PakFile * f = fichiers;
+	PakFile * f = files;
 
 	while (nbfiles--)
 	{
-		PakFile * fnext = f->fnext;
+		PakFile * fnext = f->next;
 		delete f;
 		f = fnext;
 	}
 
-	fichiers = NULL;
+	files = NULL;
 
-	PakDirectory * r = this->fils;
+	PakDirectory * r = this->children;
 	unsigned int nb = this->nbsousreps;
 
 	while (nb--)
 	{
-		PakDirectory * rnext = r->brothernext;
+		PakDirectory * rnext = r->next;
 		delete r;
 		r = rnext;
 	}
 }
 //#############################################################################
-PakDirectory * PakDirectory::AddSousRepertoire(const char * sname)
+PakDirectory * PakDirectory::addDirectory(const char * sname)
 {
 	unsigned int nbs = this->nbsousreps;
 	size_t l;
-	PakDirectory	* rf = this->fils;
+	PakDirectory	* rf = this->children;
 
 	const char * fdir = GetFirstDir(sname, &l);
 
@@ -145,30 +144,30 @@ PakDirectory * PakDirectory::AddSousRepertoire(const char * sname)
 		if (!strcasecmp(fdir, rf->name))
 		{
 			delete[] fdir;
-			return rf->AddSousRepertoire(sname + l);
+			return rf->addDirectory(sname + l);
 		}
 
-		rf = rf->brothernext;
+		rf = rf->next;
 	}
 
 	delete[] fdir;
 	this->nbsousreps++;
 	rf = new PakDirectory(this, sname);
-	rf->brotherprev = NULL;
-	rf->brothernext = this->fils;
+	rf->prev = NULL;
+	rf->next = this->children;
 
-	if (this->fils) this->fils->brotherprev = rf;
+	if (this->children) this->children->prev = rf;
 
-	this->fils = rf;
+	this->children = rf;
 	
 	return rf;
 }
 //#############################################################################
-bool PakDirectory::DelSousRepertoire(const char * sname)
+bool PakDirectory::removeDirectory(const char * sname)
 {
 	unsigned int nbs = this->nbsousreps;
 	size_t l;
-	PakDirectory * rf = this->fils;
+	PakDirectory * rf = this->children;
 	
 	const char * fdir = GetFirstDir(sname, &l);
 	
@@ -185,25 +184,25 @@ bool PakDirectory::DelSousRepertoire(const char * sname)
 			}
 			else
 			{
-				ok = rf->DelSousRepertoire(sname + l);
+				ok = rf->removeDirectory(sname + l);
 				return ok;
 			}
 
 			if (ok)
 			{
-				if (rf == this->fils)
+				if (rf == this->children)
 				{
-					this->fils = rf->brothernext;
+					this->children = rf->next;
 
-					if (this->fils) this->fils->brotherprev = NULL;
+					if (this->children) this->children->prev = NULL;
 				}
 				else
 				{
-					rf->brotherprev->brothernext = rf->brothernext;
+					rf->prev->next = rf->next;
 
-					if (rf->brothernext)
+					if (rf->next)
 					{
-						rf->brothernext->brotherprev = rf->brotherprev;
+						rf->next->prev = rf->prev;
 					}
 				}
 
@@ -214,7 +213,7 @@ bool PakDirectory::DelSousRepertoire(const char * sname)
 			return ok;
 		}
 
-		rf = rf->brothernext;
+		rf = rf->next;
 	}
 
 	delete[] fdir;
@@ -224,11 +223,11 @@ bool PakDirectory::DelSousRepertoire(const char * sname)
 #include <stdio.h>
 
 //#############################################################################
-PakDirectory * PakDirectory::GetSousRepertoire(const char * sname)
+PakDirectory * PakDirectory::getDirectory(const char * sname)
 {
 	unsigned int nbs = this->nbsousreps;
 	size_t l;
-	PakDirectory	* rf = this->fils;
+	PakDirectory	* rf = this->children;
 
 	const char * fdir = GetFirstDir(sname, &l);
 	
@@ -245,18 +244,18 @@ PakDirectory * PakDirectory::GetSousRepertoire(const char * sname)
 			}
 			else
 			{
-				return rf->GetSousRepertoire(sname + l);
+				return rf->getDirectory(sname + l);
 			}
 		}
 
-		rf = rf->brothernext;
+		rf = rf->next;
 	}
 
 	delete[] fdir;
 	return NULL;
 }
 //#############################################################################
-PakFile * PakDirectory::AddFileToSousRepertoire(const char * sname, const char * name)
+PakFile * PakDirectory::addFile(const char * sname, const char * name)
 {
 	PakDirectory * r;
 
@@ -266,7 +265,7 @@ PakFile * PakDirectory::AddFileToSousRepertoire(const char * sname, const char *
 	}
 	else
 	{
-		r = this->GetSousRepertoire(sname);
+		r = this->getDirectory(sname);
 
 		if (!r)
 		{
@@ -274,74 +273,61 @@ PakFile * PakDirectory::AddFileToSousRepertoire(const char * sname, const char *
 		}
 	}
 
-	PakFile * f = r->fichiers;
+	PakFile * f = r->files;
 	unsigned int nb = r->nbfiles;
 
 	while (nb--)
 	{
 		if (!strcasecmp(f->name, name)) return NULL;
 
-		f = f->fnext;
+		f = f->next;
 	}
 
 	f = new PakFile(name);
 
 	if (!f) return NULL;
 
-	f->fprev = NULL;
-	f->fnext = r->fichiers;
+	f->prev = NULL;
+	f->next = r->files;
 
-	if (f->fnext) f->fnext->fprev = f;
+	if (f->next) f->next->prev = f;
 
-	r->fichiers = f;
+	r->files = f;
 	r->nbfiles++;
 
 	//on l'insert dans la table de hachage
-	if (r->pHachage)
+	if (r->filesMap)
 	{
-		r->pHachage->AddString((char *)name, (void *)f);
+		r->filesMap->AddString((char *)name, (void *)f);
 	}
 
 	return f;
 }
 //#############################################################################
-void PakDirectory::ConstructFullNameRepertoire(char * t)
-{
-	if (parent)
-	{
-		parent->ConstructFullNameRepertoire(t);
-	}
-
-	if (name)
-	{
-		strcat((char *)t, (const char *)name);
-	}
-}
-//#############################################################################
 void Kill(PakDirectory * r)
 {
-	PakFile * f = r->fichiers;
+	PakFile * f = r->files;
 
 	while (r->nbfiles--)
 	{
-		PakFile * fnext = f->fnext;
+		PakFile * fnext = f->next;
 		delete f;
 		f = fnext;
 	}
 
-	r->fichiers = NULL;
+	r->files = NULL;
 
-	PakDirectory * brep = r->fils;
+	PakDirectory * brep = r->children;
 	int nb = r->nbsousreps;
 
 	while (nb--)
 	{
-		PakDirectory * brepnext = brep->brothernext;
+		PakDirectory * brepnext = brep->next;
 		Kill(brep);
 		brep = brepnext;
 	}
 
-	r->fils = NULL;
+	r->children = NULL;
 	delete r;
 }
 

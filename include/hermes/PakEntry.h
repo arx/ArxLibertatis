@@ -22,8 +22,8 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef EVE_SAVE
-#define EVE_SAVE
+#ifndef ARX_HERMES_PAKENTRY_H
+#define ARX_HERMES_PAKENTRY_H
 
 class HashMap;
 
@@ -37,8 +37,8 @@ public:
 	
 	const char * name;
 	std::size_t size;
-	PakFile * fprev;
-	PakFile * fnext;
+	PakFile * prev;
+	PakFile * next;
 	std::size_t offset;
 	unsigned int flags;
 	std::size_t uncompressedSize;
@@ -58,29 +58,31 @@ public:
 	unsigned int nbsousreps;
 	unsigned int nbfiles;
 	PakDirectory * parent;
-	PakDirectory * fils;
-	PakDirectory * brotherprev;
-	PakDirectory * brothernext;
-	PakFile * fichiers;
-	HashMap * pHachage;
-	unsigned int param;
+	PakDirectory * children;
+	PakDirectory * prev;
+	PakDirectory * next;
+	
+	PakFile * files;
+	
+	HashMap * filesMap;
 	
 public:
 	
 	PakDirectory(PakDirectory * p, const char * n);
 	~PakDirectory();
 
-	PakDirectory * AddSousRepertoire(const char * sname);
-	bool DelSousRepertoire(const char * sname);
-	PakFile * AddFileToSousRepertoire(const char * sname, const char * name);
+	PakDirectory * addDirectory(const char * sname);
+	
+	bool removeDirectory(const char * dirname);
+	
+	PakFile * addFile(const char * dirname, const char * filename);
  
-	PakDirectory * GetSousRepertoire(const char * sname);
+	PakDirectory * getDirectory(const char * dirname);
  
-	void ConstructFullNameRepertoire(char * );
-	friend void Kill(PakDirectory * r);
+	friend void kill(PakDirectory * r);
 };
 
 char * EVEF_GetDirName(const char * dirplusname);
 char * EVEF_GetFileName(const char * dirplusname);
 
-#endif
+#endif // ARX_HERMES_PAKENTRY_H
