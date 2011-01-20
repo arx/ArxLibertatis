@@ -68,16 +68,14 @@ struct PakFileHandle {
 class PakReader
 {
 private:
-	FILE			*pfFile;
-	char			*pcFAT;
-	int				iTailleFAT;
+	
+	const char * fat;
+	FILE * file;
 	int				iSeekPak;
 	PakFileHandle		tPackFile[PACK_MAX_FREAD];
-
-	unsigned char	cKey[512];
-	unsigned int	iPassKey;
+	
 public:
-	char			*lpszName;
+	const char * pakfile;
 	PakDirectory * pRoot;
 private:
 	int ReadFAT_int();
@@ -85,30 +83,22 @@ private:
 public:
 	PakReader();
 	~PakReader();
-
-	bool Open(char*);
+	
+	bool Open(const char * pakfile);
 	void Close();
 	bool Read(char*,void*);
 	void* ReadAlloc(char*,int*);
 	int GetSize(char *_pcName);
-
+	
 	PakFileHandle * fOpen(const char * name, const char * mode);
 	int fClose(PakFileHandle * h);
 	std::size_t fRead(void * buf, std::size_t size, std::size_t n, PakFileHandle * h);
 	int fSeek(PakFileHandle * h, long off, int whence);
 	long fTell(PakFileHandle * h);
-
+	
 	void WriteSousRepertoire(char *pcAbs,PakDirectory *r);
 	void WriteSousRepertoireZarbi(char *pcAbs,PakDirectory *r);
-
-	void CryptChar(unsigned char*);
-	void UnCryptChar(unsigned char*);
-	void CryptString(unsigned char*);
-	int UnCryptString(unsigned char*);
-	void CryptShort(unsigned short*);
-	void UnCryptShort(unsigned short*);
-	void CryptInt(unsigned int*);
-	void UnCryptInt(unsigned int*);
+	
 }; 
 
 #endif

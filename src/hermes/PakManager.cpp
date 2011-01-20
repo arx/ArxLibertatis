@@ -667,7 +667,7 @@ bool PakManager::RemovePak(char * _lpszName)
 
 		if (pLoadPak)
 		{
-			if (!strcasecmp((const char *)_lpszName, pLoadPak->lpszName))
+			if (!strcasecmp((const char *)_lpszName, pLoadPak->pakfile))
 			{
 				delete(*i);
 				vLoadPak.erase(i);

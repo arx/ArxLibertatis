@@ -68,7 +68,7 @@ public:
 	PakDirectory(PakDirectory * p, const char * n);
 	~PakDirectory();
 
-	void AddSousRepertoire(const char * sname);
+	PakDirectory * AddSousRepertoire(const char * sname);
 	bool DelSousRepertoire(const char * sname);
 	PakFile * AddFileToSousRepertoire(const char * sname, const char * name);
  

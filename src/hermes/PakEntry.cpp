@@ -132,7 +132,7 @@ PakDirectory::~PakDirectory()
 	}
 }
 //#############################################################################
-void PakDirectory::AddSousRepertoire(const char * sname)
+PakDirectory * PakDirectory::AddSousRepertoire(const char * sname)
 {
 	unsigned int nbs = this->nbsousreps, l;
 	PakDirectory	* rf = this->fils;
@@ -144,8 +144,7 @@ void PakDirectory::AddSousRepertoire(const char * sname)
 		if (!strcasecmp(fdir, rf->name))
 		{
 			delete[] fdir;
-			rf->AddSousRepertoire(sname + l);
-			return;
+			return rf->AddSousRepertoire(sname + l);
 		}
 
 		rf = rf->brothernext;
@@ -160,6 +159,8 @@ void PakDirectory::AddSousRepertoire(const char * sname)
 	if (this->fils) this->fils->brotherprev = rf;
 
 	this->fils = rf;
+	
+	return rf;
 }
 //#############################################################################
 bool PakDirectory::DelSousRepertoire(const char * sname)
