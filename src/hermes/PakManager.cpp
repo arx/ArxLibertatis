@@ -54,7 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <PakManager.h>
+#include <hermes/PakManager.h>
 #include <ARX_Casts.h>
 
 #include <HERMESMain.h>

@@ -73,7 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "../danae/ARX_Menu2.h"
 #include "../danae/Danae_resource.h"
 
-#include <PakManager.h>
+#include <hermes/PakManager.h>
 
 using std::max;
 

@@ -88,7 +88,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Time.h"
 #include "DanaeDlg.h"
 
-#include <PakManager.h>
+#include <hermes/PakManager.h>
 
 #include <stdio.h>
 

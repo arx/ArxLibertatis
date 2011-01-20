@@ -73,7 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Cedric.h"
 #include "HERMESMain.h"
 
-#include <PakManager.h>
+#include <hermes/PakManager.h>
 
 #include <cstdio>
 using std::sprintf;

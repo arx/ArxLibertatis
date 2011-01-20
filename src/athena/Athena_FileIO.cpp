@@ -25,7 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "Athena_FileIO.h"
 #include "Athena_Global.h"
 
-#include <PakManager.h>
+#include <hermes/PakManager.h>
 
 extern long CURRENT_LOADMODE;
 

@@ -67,7 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "Danae.h"
 #include "ARX_Casts.h"
 
-#include <PakManager.h>
+#include <hermes/PakManager.h>
 
 MINI_MAP_DATA minimap[MAX_MINIMAPS];
 float mini_offset_x[MAX_MINIMAPS];
