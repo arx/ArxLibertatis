@@ -93,11 +93,11 @@ extern ARX_MENU_DATA ARXmenu;
 
 typedef struct
 {
-	long				num;
-	char				name[256];
-	long				level;
-	float				version;
-	SYSTEMTIME			stime;
+    long            num;
+    std::string     name;
+    long            level;
+    float           version;
+    SYSTEMTIME      stime;
 } SaveGame;
 
 //-----------------------------------------------------------------------------

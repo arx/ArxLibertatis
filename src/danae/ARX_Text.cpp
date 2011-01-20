@@ -495,12 +495,10 @@ long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, std::string& 
 }
 
 //-----------------------------------------------------------------------------
-void ARX_Allocate_Text( std::string& dest, const char* id_string)
+void ARX_Allocate_Text( std::string& dest, const std::string& id_string)
 {
-    dest.clear();
-
-    char output[4096];
-    PAK_UNICODE_GetPrivateProfileString(id_string, _T("string"), _T("default"), output, 4096, NULL);
+    std::string output;
+    PAK_UNICODE_GetPrivateProfileString(id_string, "string", "default", output, 4096, NULL);
     dest = output;
 }
 
@@ -1161,6 +1159,7 @@ HFONT _CreateFont(
 //-----------------------------------------------------------------------------
 void ARX_Text_Init()
 {
+    std::stringstream ss;
 	ARX_Text_Close();
 
 
@@ -1197,207 +1196,215 @@ void ARX_Text_Init()
 		FontError();
 	}
 
-	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf");
+    sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf");
 
-	if (!FileExist(tx))
-	{
-		sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
-	}
+    if (!FileExist(tx))
+    {
+        sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
+    }
 
-	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass an unicode string to AddFontResourceW
+    MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass an unicode string to AddFontResourceW
 
-	lpszFontMenu = GetFontName(tx);
+    lpszFontMenu = GetFontName(tx);
 
-	if (Unicows_AddFontResourceW(wtx) == 0)
-	{
-		FontError();
-	}
-
-
-	pTextManage = new CARXTextManager();
-	pTextManageFlyingOver = new CARXTextManager();
+    if (Unicows_AddFontResourceW(wtx) == 0)
+    {
+        FontError();
+    }
 
 
-	if (!hFontMainMenu)
-	{
-		int iFontSize = 48;//58;
+    pTextManage = new CARXTextManager();
+    pTextManageFlyingOver = new CARXTextManager();
 
-		_TCHAR szUT[256];
-		PAK_UNICODE_GetPrivateProfileString(_T("system_font_mainmenu_size"), _T("string"), _T("58"), szUT, 256, NULL);
-		iFontSize = _ttoi(szUT);
-		iFontSize = Traffic(iFontSize);
 
-		if (!hFontMainMenu)
-		{
-			hFontMainMenu = _CreateFont(
-			                    iFontSize,
-			                    0, 0, 0, FW_NORMAL, false, false, false,
-			                    DEFAULT_CHARSET,
-			                    OUT_DEFAULT_PRECIS,
-			                    CLIP_DEFAULT_PRECIS,
-			                    ANTIALIASED_QUALITY,
-			                    VARIABLE_PITCH,
-			                    lpszFontMenu.c_str());
-		}
-	}
+    if (!hFontMainMenu)
+    {
+        int iFontSize = 48;//58;
 
-	if (!hFontMenu)
-	{
-		int iFontSize = 32;
+        std::string szUT;
+        PAK_UNICODE_GetPrivateProfileString( "system_font_mainmenu_size", "string", "58", szUT, 256, NULL);
+        ss << szUT;
+        ss >> iFontSize;
+        iFontSize = Traffic(iFontSize);
 
-		_TCHAR szUT[256];
-		PAK_UNICODE_GetPrivateProfileString(_T("system_font_menu_size"), _T("string"), _T("32"), szUT, 256, NULL);
-		iFontSize = _ttoi(szUT);
-		iFontSize = Traffic(iFontSize);
+        if (!hFontMainMenu)
+        {
+            hFontMainMenu = _CreateFont(
+                                iFontSize,
+                                0, 0, 0, FW_NORMAL, false, false, false,
+                                DEFAULT_CHARSET,
+                                OUT_DEFAULT_PRECIS,
+                                CLIP_DEFAULT_PRECIS,
+                                ANTIALIASED_QUALITY,
+                                VARIABLE_PITCH,
+                                lpszFontMenu.c_str());
+        }
+    }
 
-		if (!hFontMenu)
-		{
-			hFontMenu = _CreateFont(
-			                iFontSize,
-			                0, 0, 0, FW_NORMAL, false, false, false,
-			                DEFAULT_CHARSET,
-			                OUT_DEFAULT_PRECIS,
-			                CLIP_DEFAULT_PRECIS,
-			                ANTIALIASED_QUALITY,
-			                VARIABLE_PITCH,
-			                lpszFontMenu.c_str());
-		}
-	}
+    if (!hFontMenu)
+    {
+        int iFontSize = 32;
 
-	if (!hFontControls)
-	{
-		int iFontSize = 16;
+        std::string szUT;
+        PAK_UNICODE_GetPrivateProfileString( "system_font_menu_size", "string", "32", szUT, 256, NULL);
+        ss << szUT;
+        ss >> iFontSize;
+        iFontSize = Traffic(iFontSize);
 
-		_TCHAR szUT[256];
-		PAK_UNICODE_GetPrivateProfileString(_T("system_font_menucontrols_size"), _T("string"), _T("22"), szUT, 256, NULL);
-		iFontSize = _ttoi(szUT);
-		iFontSize = Traffic(iFontSize);
+        if (!hFontMenu)
+        {
+            hFontMenu = _CreateFont(
+                            iFontSize,
+                            0, 0, 0, FW_NORMAL, false, false, false,
+                            DEFAULT_CHARSET,
+                            OUT_DEFAULT_PRECIS,
+                            CLIP_DEFAULT_PRECIS,
+                            ANTIALIASED_QUALITY,
+                            VARIABLE_PITCH,
+                            lpszFontMenu.c_str());
+        }
+    }
 
-		if (!hFontControls)
-		{
-			hFontControls = _CreateFont(
-			                    iFontSize,
-			                    0, 0, 0, FW_NORMAL, false, false, false,
-			                    DEFAULT_CHARSET,
-			                    OUT_DEFAULT_PRECIS,
-			                    CLIP_DEFAULT_PRECIS,
-			                    ANTIALIASED_QUALITY,
-			                    VARIABLE_PITCH,
-			                    lpszFontMenu.c_str());
-		}
-	}
+    if (!hFontControls)
+    {
+        int iFontSize = 16;
 
-	if (!hFontCredits)
-	{
-		int iFontSize = 32;
+        std::string szUT;
+        PAK_UNICODE_GetPrivateProfileString( "system_font_menucontrols_size", "string", "22", szUT, 256, NULL);
+        ss << szUT;
+        ss >> iFontSize;
+        iFontSize = Traffic(iFontSize);
 
-		_TCHAR szUT[256];
-		PAK_UNICODE_GetPrivateProfileString(_T("system_font_menucredits_size"), _T("string"), _T("36"), szUT, 256, NULL);
-		iFontSize = _ttoi(szUT);
-		iFontSize = Traffic(iFontSize);
+        if (!hFontControls)
+        {
+            hFontControls = _CreateFont(
+                                iFontSize,
+                                0, 0, 0, FW_NORMAL, false, false, false,
+                                DEFAULT_CHARSET,
+                                OUT_DEFAULT_PRECIS,
+                                CLIP_DEFAULT_PRECIS,
+                                ANTIALIASED_QUALITY,
+                                VARIABLE_PITCH,
+                                lpszFontMenu.c_str());
+        }
+    }
 
-		if (!hFontCredits)
-		{
-			hFontCredits = _CreateFont(
-			                   iFontSize,
-			                   0, 0, 0, FW_NORMAL, false, false, false,
-			                   DEFAULT_CHARSET,
-			                   OUT_DEFAULT_PRECIS,
-			                   CLIP_DEFAULT_PRECIS,
-			                   ANTIALIASED_QUALITY,
-			                   VARIABLE_PITCH,
-			                   lpszFontMenu.c_str());
-		}
-	}
+    if (!hFontCredits)
+    {
+        int iFontSize = 32;
 
-	if (!hFontRedist)
-	{
-		int iFontSize = 16;
+        std::string szUT;
+        PAK_UNICODE_GetPrivateProfileString( "system_font_menucredits_size", "string", "36", szUT, 256, NULL);
+        ss << szUT;
+        ss >> iFontSize;
+        iFontSize = Traffic(iFontSize);
 
-		_TCHAR szUT[256];
-		PAK_UNICODE_GetPrivateProfileString(_T("system_font_redist_size"), _T("string"), _T("18"), szUT, 256, NULL);
-		iFontSize = _ttoi(szUT);
-		iFontSize = Traffic(iFontSize);
+        if (!hFontCredits)
+        {
+            hFontCredits = _CreateFont(
+                               iFontSize,
+                               0, 0, 0, FW_NORMAL, false, false, false,
+                               DEFAULT_CHARSET,
+                               OUT_DEFAULT_PRECIS,
+                               CLIP_DEFAULT_PRECIS,
+                               ANTIALIASED_QUALITY,
+                               VARIABLE_PITCH,
+                               lpszFontMenu.c_str());
+        }
+    }
 
-		hFontRedist = _CreateFont(
-		                  iFontSize,
-		                  0, 0, 0, FW_NORMAL, false, false, false,
-		                  DEFAULT_CHARSET,
-		                  OUT_DEFAULT_PRECIS,
-		                  CLIP_DEFAULT_PRECIS,
-		                  ANTIALIASED_QUALITY,
-		                  VARIABLE_PITCH,
-		                  lpszFontIngame.c_str());
-	}
+    if (!hFontRedist)
+    {
+        int iFontSize = 16;
 
-	// NEW QUEST
-	if (Yratio > 1.f)
-	{
-		Yratio *= .8f;
-	}
+        std::string szUT;
+        PAK_UNICODE_GetPrivateProfileString( "system_font_redist_size", "string", "18", szUT, 256, NULL);
+        ss << szUT;
+        ss >> iFontSize;
+        iFontSize = Traffic(iFontSize);
 
-	if (!hFontInGame)
-	{
-		int iFontSize = 16;
+        hFontRedist = _CreateFont(
+                          iFontSize,
+                          0, 0, 0, FW_NORMAL, false, false, false,
+                          DEFAULT_CHARSET,
+                          OUT_DEFAULT_PRECIS,
+                          CLIP_DEFAULT_PRECIS,
+                          ANTIALIASED_QUALITY,
+                          VARIABLE_PITCH,
+                          lpszFontIngame.c_str());
+    }
 
-		_TCHAR szUT[256];
-		PAK_UNICODE_GetPrivateProfileString(_T("system_font_book_size"), _T("string"), _T("18"), szUT, 256, NULL);
-		iFontSize = _ttoi(szUT);
-		iFontSize = Traffic(iFontSize);
+    // NEW QUEST
+    if (Yratio > 1.f)
+    {
+        Yratio *= .8f;
+    }
 
-		if (!hFontInGame)
-		{
-			hFontInGame = _CreateFont(
-			                  iFontSize,
-			                  0, 0, 0, FW_NORMAL, false, false, false,
-			                  DEFAULT_CHARSET,
-			                  OUT_DEFAULT_PRECIS,
-			                  CLIP_DEFAULT_PRECIS,
-			                  ANTIALIASED_QUALITY,
-			                  VARIABLE_PITCH,
-			                  lpszFontIngame.c_str());
-		}
-	}
+    if (!hFontInGame)
+    {
+        int iFontSize = 16;
 
-	if (!hFontInGameNote)
-	{
-		int iFontSize = 16;//18;
+        std::string szUT;
+        PAK_UNICODE_GetPrivateProfileString( "system_font_book_size", "string", "18", szUT, 256, NULL);
+        ss << szUT;
+        ss >> iFontSize;
+        iFontSize = Traffic(iFontSize);
 
-		_TCHAR szUT[256];
-		PAK_UNICODE_GetPrivateProfileString(_T("system_font_note_size"), _T("string"), _T("18"), szUT, 256, NULL);
-		iFontSize = _ttoi(szUT);
-		iFontSize = Traffic(iFontSize);
+        if (!hFontInGame)
+        {
+            hFontInGame = _CreateFont(
+                              iFontSize,
+                              0, 0, 0, FW_NORMAL, false, false, false,
+                              DEFAULT_CHARSET,
+                              OUT_DEFAULT_PRECIS,
+                              CLIP_DEFAULT_PRECIS,
+                              ANTIALIASED_QUALITY,
+                              VARIABLE_PITCH,
+                              lpszFontIngame.c_str());
+        }
+    }
 
-		hFontInGameNote = _CreateFont(
-		                      iFontSize,
-		                      0, 0, 0, FW_NORMAL, false, false, false,
-		                      DEFAULT_CHARSET,
-		                      OUT_DEFAULT_PRECIS,
-		                      CLIP_DEFAULT_PRECIS,
-		                      ANTIALIASED_QUALITY,
-		                      VARIABLE_PITCH,
-		                      lpszFontIngame.c_str());
-	}
+    if (!hFontInGameNote)
+    {
+        int iFontSize = 16;//18;
 
-	if (!InBookFont)
-	{
-		int iFontSize = 16;
+        std::string szUT;
+        PAK_UNICODE_GetPrivateProfileString( "system_font_note_size", "string", "18", szUT, 256, NULL);
+        ss << szUT;
+        ss >> iFontSize;
+        iFontSize = Traffic(iFontSize);
 
-		_TCHAR szUT[256];
-		PAK_UNICODE_GetPrivateProfileString(_T("system_font_book_size"), _T("string"), _T("18"), szUT, 256, NULL);
-		iFontSize = _ttoi(szUT);
-		iFontSize = Traffic(iFontSize);
+        hFontInGameNote = _CreateFont(
+                              iFontSize,
+                              0, 0, 0, FW_NORMAL, false, false, false,
+                              DEFAULT_CHARSET,
+                              OUT_DEFAULT_PRECIS,
+                              CLIP_DEFAULT_PRECIS,
+                              ANTIALIASED_QUALITY,
+                              VARIABLE_PITCH,
+                              lpszFontIngame.c_str());
+    }
 
-		InBookFont = _CreateFont(
-		                 iFontSize,
-		                 0, 0, 0, FW_NORMAL, false, false, false,
-		                 DEFAULT_CHARSET,
-		                 OUT_DEFAULT_PRECIS,
-		                 CLIP_DEFAULT_PRECIS,
-		                 ANTIALIASED_QUALITY,
-		                 VARIABLE_PITCH,
-		                 lpszFontIngame.c_str());
-	}
+    if (!InBookFont)
+    {
+        int iFontSize = 16;
+
+        std::string szUT;
+        PAK_UNICODE_GetPrivateProfileString( "system_font_book_size", "string", "18", szUT, 256, NULL);
+        ss << szUT;
+        ss >> iFontSize;
+        iFontSize = Traffic(iFontSize);
+
+        InBookFont = _CreateFont(
+                         iFontSize,
+                         0, 0, 0, FW_NORMAL, false, false, false,
+                         DEFAULT_CHARSET,
+                         OUT_DEFAULT_PRECIS,
+                         CLIP_DEFAULT_PRECIS,
+                         ANTIALIASED_QUALITY,
+                         VARIABLE_PITCH,
+                         lpszFontIngame.c_str());
+    }
 }
 
 //-----------------------------------------------------------------------------
