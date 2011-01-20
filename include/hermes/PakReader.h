@@ -34,10 +34,10 @@ class PakDirectory;
 #define PACK_MAX_FREAD	(256)
 
 struct PakFileHandle {
-	bool		bActif;
+	bool		active;
 	int			iID;
-	int			iOffset;
-	PakFile * pFile;
+	int			offset;
+	PakFile * file;
 };
 
 class PakReader
@@ -62,9 +62,9 @@ public:
 	
 	bool Open(const char * pakfile);
 	void Close();
-	bool Read(char*,void*);
-	void* ReadAlloc(char*,int*);
-	int GetSize(char *_pcName);
+	bool Read(const char * name, void * buf);
+	void * ReadAlloc(const char * name , size_t * size);
+	int GetSize(const char * name);
 	
 	PakFileHandle * fOpen(const char * name, const char * mode);
 	int fClose(PakFileHandle * h);

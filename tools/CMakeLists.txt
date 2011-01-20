@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 
 set(CMAKE_CXX_COMPILER g++)
 set(CMAKE_C_COMPILER gcc)
-set(CMAKE_CXX_FLAGS "-fpermissive -w")
+set(CMAKE_CXX_FLAGS "-fpermissive")
 
 include_directories(
 	../include

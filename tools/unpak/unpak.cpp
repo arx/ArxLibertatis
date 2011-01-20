@@ -13,7 +13,7 @@ using std::string;
 #include <algorithm>
 using std::transform;
 
-void dump(const PakReader & pak, const PakDirectory * dir, string where = string()) {
+void dump(PakReader & pak, const PakDirectory * dir, string where = string()) {
 	
 	if(!dir) {
 		return;
@@ -48,8 +48,8 @@ void dump(const PakReader & pak, const PakDirectory * dir, string where = string
 		
 		printf("%s\n", filename.c_str());
 		
-		int size;
-		const char * data = pak.ReadAlloc(filename.c_str(), &size);
+		size_t size;
+		char * data = (char*)pak.ReadAlloc(filename.c_str(), &size);
 		assert(data != NULL);
 		
 		FILE * f = fopen(filename.c_str(), "wb");
