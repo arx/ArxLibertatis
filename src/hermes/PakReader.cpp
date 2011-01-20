@@ -266,7 +266,7 @@ bool PakReader::Open(const char * name) {
 				goto error;
 			}
 			
-			file->param = param;
+			file->offset = param;
 			file->param2 = param2;
 			file->param3 = param3;
 			file->taille = size;
@@ -400,7 +400,7 @@ bool PakReader::Read(char * _pcName, void * _mem)
 
 	if (pTFiles)
 	{
-		fseek(file, pTFiles->param - iSeekPak, SEEK_CUR);
+		fseek(file, pTFiles->offset - iSeekPak, SEEK_CUR);
 
 		if (pTFiles->param2 & PAK)
 		{
@@ -476,7 +476,7 @@ void * PakReader::ReadAlloc(char * _pcName, int * _piTaille)
 	if (pTFiles)
 	{
 		void * mem;
-		fseek(file, pTFiles->param - iSeekPak, SEEK_CUR);
+		fseek(file, pTFiles->offset - iSeekPak, SEEK_CUR);
 
 		if (pTFiles->param2 & PAK)
 		{
@@ -766,7 +766,7 @@ size_t PakReader::fRead(void * _pMem, size_t _iSize, size_t _iCount, PakFileHand
 		assert(_pPackFile->iOffset >= 0);
 		if ((unsigned int)_pPackFile->iOffset >= _pPackFile->pFile->param3) return 0;
 
-		fseek(file, pTFiles->param - iSeekPak, SEEK_CUR);
+		fseek(file, pTFiles->offset - iSeekPak, SEEK_CUR);
 
 		PAK_PARAM_FREAD sPP;
 		sPP.file        = file;
@@ -786,7 +786,7 @@ size_t PakReader::fRead(void * _pMem, size_t _iSize, size_t _iCount, PakFileHand
 		assert(_pPackFile->iOffset >= 0);
 		if ((unsigned int)_pPackFile->iOffset >= _pPackFile->pFile->taille) return 0;
 
-		fseek(file, pTFiles->param + _pPackFile->iOffset - iSeekPak, SEEK_CUR);
+		fseek(file, pTFiles->offset + _pPackFile->iOffset - iSeekPak, SEEK_CUR);
 
 		assert(iTaille >= 0);
 
@@ -889,156 +889,4 @@ long PakReader::fTell(PakFileHandle * _pPackFile)
 	        (_pPackFile->iID != ((int)fat))) return -1;
 
 	return _pPackFile->iOffset;
-}
-
-//-----------------------------------------------------------------------------
-void PakReader::WriteSousRepertoire(char * pcAbs, PakDirectory * r)
-{
-	char EveTxtFile[256];
-	strcpy((char *)EveTxtFile, pcAbs);
-
-	if (r)
-	{
-		r->ConstructFullNameRepertoire(EveTxtFile);
-	}
-
-	mkdir((const char *)EveTxtFile, 0777);
-
-	PakFile * f = r->fichiers;
-	int nb = r->nbfiles;
-
-	while (nb--)
-	{
-		char	tTxt[512];
-		strcpy(tTxt, EveTxtFile);
-		strcat(tTxt, (const char *)f->name);
-		int		iTaille;
-		void	* pDat = this->ReadAlloc(tTxt + strlen((const char *)pcAbs), &iTaille);
-
-		if (pDat)
-		{
-			FILE * file;
-			file = fopen(tTxt, "wb");
-
-			if (file)
-			{
-				fwrite(pDat, 1, iTaille, file);
-				fclose(file);
-			}
-
-			free((void *)pDat);
-			f = f->fnext;
-		}
-		else
-		{
-			printf("PakReader::WriteSousRepertoire No Found!! %s \n", tTxt);
-		}
-	}
-
-
-	PakDirectory * brep = r->fils;
-	nb = r->nbsousreps;
-
-	while (nb--)
-	{
-		PakDirectory * brepnext = brep->brothernext;
-		WriteSousRepertoire(pcAbs, brep);
-		brep = brepnext;
-	}
-}
-
-//-----------------------------------------------------------------------------
-void PakReader::WriteSousRepertoireZarbi(char * pcAbs, PakDirectory * r)
-{
-	char EveTxtFile[256];
-	strcpy((char *)EveTxtFile, pcAbs);
-
-	if (r)
-	{
-		r->ConstructFullNameRepertoire(EveTxtFile);
-	}
-
-	mkdir((const char *)EveTxtFile, 0777);
-
-	PakFile * f = r->fichiers;
-	int nb = r->nbfiles;
-
-	while (nb--)
-	{
-		char	tTxt[512];
-		strcpy(tTxt, EveTxtFile);
-		strcat(tTxt, (const char *)f->name);
-		int		iTaille;
-
-		void	* pDat = this->ReadAlloc(tTxt + strlen((const char *)pcAbs), &iTaille);
-		int iTaille2 = iTaille;
-
-		if (pDat)
-		{
-			PakFileHandle * pPf = fOpen(tTxt + strlen((const char *)pcAbs), "rb");
-
-			if (!pPf)
-			{
-				printf("PakReader::WriteSousRepertoireZarbi: ERROR fopen!! %s\n", tTxt);
-			}
-			else
-			{
-				int nb2;
-				char * pcDat = (char *)pDat;
-
-				while (iTaille)
-				{
-
-					if (iTaille < 50)
-					{
-						nb2 = iTaille;
-					}
-					else
-					{
-						nb2 = rand() % iTaille;
-
-						if (!nb2) continue;
-					}
-
-					iTaille -= nb2;
-					int nb3 = fRead(pcDat, 1, nb2, pPf);
-					pcDat += nb2;
-
-					if (nb3 != nb2)
-					{
-						printf("PakReader::WriteSousRepertoireZarbi: ERROR fread!! %s\n", tTxt);
-					}
-				}
-
-				fClose(pPf);
-
-				FILE * file;
-				file = fopen(tTxt, "wb");
-
-				if (file)
-				{
-					fwrite(pDat, 1, iTaille2, file);
-					fclose(file);
-				}
-
-				free((void *)pDat);
-				f = f->fnext;
-			}
-		}
-		else
-		{
-			printf("PakReader::WriteSousRepertoireZarbi: NotFound!! %s\n", tTxt);
-		}
-	}
-
-
-	PakDirectory * brep = r->fils;
-	nb = r->nbsousreps;
-
-	while (nb--)
-	{
-		PakDirectory * brepnext = brep->brothernext;
-		WriteSousRepertoireZarbi(pcAbs, brep);
-		brep = brepnext;
-	}
 }

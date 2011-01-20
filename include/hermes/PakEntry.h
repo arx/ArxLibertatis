@@ -37,7 +37,7 @@ public:
 	std::size_t taille;
 	PakFile * fprev;
 	PakFile * fnext;
-	unsigned int param;
+	std::size_t offset;
 	unsigned int param2;
 	unsigned int param3;
 	

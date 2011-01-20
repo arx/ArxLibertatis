@@ -96,9 +96,6 @@ public:
 	int fSeek(PakFileHandle * h, long off, int whence);
 	long fTell(PakFileHandle * h);
 	
-	void WriteSousRepertoire(char *pcAbs,PakDirectory *r);
-	void WriteSousRepertoireZarbi(char *pcAbs,PakDirectory *r);
-	
 }; 
 
 #endif
