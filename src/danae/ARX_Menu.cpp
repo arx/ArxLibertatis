@@ -78,6 +78,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEMath.h"
 #include "EERIEObject.h"
 
+#include <PakManager.h>
+
 //-----------------------------------------------------------------------------
 extern CARXTextManager * pTextManage;
 extern CDirectInput * pGetInfoDirectInput;

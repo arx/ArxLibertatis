@@ -54,9 +54,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include "HERMES_PAK.h"
-#include "HERMESMain.h"
-#include "ARX_Casts.h"
+#include <PakManager.h>
+#include <ARX_Casts.h>
+
+#include <HERMESMain.h>
+
+using std::vector;
 
 bool bForceInPack = true;
 long CURRENT_LOADMODE = LOAD_PACK_THEN_TRUEFILE;

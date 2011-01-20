@@ -55,12 +55,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef HERMES_PAK_H
-#define HERMES_PAK_H
+#ifndef ARX_HERMES_PAKMANAGER_H
+#define ARX_HERMES_PAKMANAGER_H
 
 #include <vector>
 #include "HERMES_pack_public.h"
-using namespace std;
 
 extern char PAK_WORKDIR[256];
 extern unsigned long g_pak_workdir_len;
@@ -95,7 +94,7 @@ void PAK_Close();
 class PakManager
 {
 public:
-	vector<EVE_LOADPACK*> vLoadPak;
+	std::vector<EVE_LOADPACK*> vLoadPak;
 public:
 	PakManager();
 	~PakManager();
@@ -110,8 +109,8 @@ public:
 	int fRead(void *, int, int, PACK_FILE *);
 	int fSeek(PACK_FILE *,int,int);
 	int fTell(PACK_FILE *);
-	vector<EVE_REPERTOIRE*>* ExistDirectory(char *_lpszName);
+	std::vector<EVE_REPERTOIRE*> * ExistDirectory(char *_lpszName);
 	bool ExistFile(char *_lpszName);
 };
 
-#endif
+#endif // ARX_HERMES_PAKMANAGER_H

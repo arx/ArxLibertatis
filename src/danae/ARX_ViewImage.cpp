@@ -30,6 +30,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIETexture.h"
 #include "EERIEDraw.h"
 #include "HERMESMain.h"
+#include <PakManager.h>
+
+#include <cstdio>
+using std::sprintf;
 
 
 //-----------------------------------------------------------------------------

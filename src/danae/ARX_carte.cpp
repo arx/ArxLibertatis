@@ -31,6 +31,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "HERMESMain.h"
 #include "EERIEDraw.h"
 
+#include <PakManager.h>
+
 extern long FINAL_RELEASE;
 extern long CURRENTLEVEL;
 int iCreateMap = 0; // used to create mini-map bitmap

@@ -30,6 +30,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <list>
 #include "ARX_Menu2.h"
 #include "EERIETexture.h"
+#include <PakManager.h>
+
+using std::sprintf;
 
 extern long GERMAN_VERSION;
 extern long FRENCH_VERSION;
