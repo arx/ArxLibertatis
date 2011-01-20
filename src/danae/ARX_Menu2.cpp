@@ -150,9 +150,9 @@ static TextureContainer *pTextureLoadRender=NULL;
 
 int iTimeToDrawD7=-3000;
 
-char pStringMod[256];
-char pStringModSfx[256];
-char pStringModSpeech[256];
+std::string pStringMod( 256, '\0' );
+std::string pStringModSfx( 256, '\0' );
+std::string pStringModSpeech( 256, '\0' );
 
 //-----------------------------------------------------------------------------
 
@@ -1267,8 +1267,9 @@ extern bool IsNoGore( void );
 
 bool CMenuConfig::ReadAll()
 {
-    std::string *pcText;
-    boolbOk = false; 
+    std::stringstream ss;
+    std::string pcText;
+    bool bOk = false; 
     bool bOkTemp;
     int iTemp;
 
@@ -1277,7 +1278,7 @@ bool CMenuConfig::ReadAll()
     {
         if(GERMAN_VERSION)
         {
-            pcText = strdup("Deutsch");
+            pcText = "Deutsch";
         }
         else
         {
@@ -1285,681 +1286,659 @@ bool CMenuConfig::ReadAll()
             {
                 pcText = ReadConfigString( "LANGUAGE", "string" );
 
-                if( pcText&&
-                    (strcasecmp(pcText,"francais")&&
-                    strcasecmp(pcText,"deutsch")) )
+                if( !pcText.empty() &&
+                    (strcasecmp(pcText.c_str(),"francais")&&
+                    strcasecmp(pcText.c_str(),"deutsch")) )
                 {
-                    free(pcText);
-                    pcText = strdup("Francais");
+                    pcText = "Francais";
                 }
                 else
                 {
-                    if(!pcText)
+                    if( pcText.empty() )
                     {
-                        pcText = strdup("Francais");
+                        pcText = "Francais";
                     }
                 }
             }
             else
             {
-                pcText=ReadConfigString("LANGUAGE","string");
+                pcText = ReadConfigString("LANGUAGE","string");
             }
         }
 
-		if(pcText)
-		{
-			strcpy(Project.localisationpath,pcText);
-			free((void*)pcText);
-			pcText=NULL;
-		}
-	}
+        if( !pcText.empty() )
+        {
+            strcpy(Project.localisationpath,pcText.c_str() );
+        }
+    }
 
-	bool bWarningGore=false;
+    bool bWarningGore=false;
 
-	if (!strcasecmp(Project.localisationpath, "Deutsch"))
-	{
-		//no gore
-		GERMAN_VERSION=1;
-		uiGoreMode=0;
-		GORE_MODE=0;
-		bWarningGore=true;
-	}
+    if (!strcasecmp(Project.localisationpath, "Deutsch"))
+    {
+        //no gore
+        GERMAN_VERSION=1;
+        uiGoreMode=0;
+        GORE_MODE=0;
+        bWarningGore=true;
+    }
 
     ARX_Localisation_Init();
 
-	bGameNotFirstLaunch = ReadConfigInt("FIRSTRUN","int",bOkTemp)?true:false;
-
-	//video
-	pcText=ReadConfigString("VIDEO","resolution");
-
-	if(pcText)
-	{
-		char *pcTextCurr=pcText;
-		int iI=strlen(pcText);
-
-		while(iI--)
-		{
-			if(*pcTextCurr=='x')
-			{
-				*pcTextCurr=0;
-				pcTextCurr++;
-				bOk=true;
-				break;
-			}
-
-			pcTextCurr++;
-		}
-
-		if(bOk)
-		{
-			iWidth = atoi(pcText);
-			iHeight = atoi(pcTextCurr);
-		}
-		else
-		{
-			ARXMenu_Options_Video_GetResolution(iWidth,iHeight,iBpp);
-		}
-
-		free((void*)pcText);
-		pcText=NULL;
-	}
-	else
-	{
-		ARXMenu_Options_Video_GetResolution(iWidth,iHeight,iBpp);
-		bOk=false;
-	}
-
-	iNewWidth=iWidth;
-	iNewHeight=iHeight;
-
-	iTemp=ReadConfigInt("VIDEO","bpp",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Video_GetBitPlane(iBpp);
-		iTemp=iBpp;
-	}
-
-	iNewBpp=iBpp=iTemp;
-	iTemp=ReadConfigInt("VIDEO","full_screen",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Video_GetFullscreen(bFullScreen);
-	}
-	else
-	{
-		bFullScreen=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("VIDEO","bump",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Video_GetBump(bBumpMapping);
-		bNewBumpMapping=bBumpMapping;
-	}
-	else
-	{
-		bNewBumpMapping=bBumpMapping=(iTemp)?true:false;
-	}
-
-	bBumpMapping=bNewBumpMapping;
-
-	if(bBumpMapping)
-	{
-		EERIE_ActivateBump();
-	}
-	else
-	{
-		EERIE_DesactivateBump();
-	}
-
-	bALLOW_BUMP=bBumpMapping;
-
-	iTemp=ReadConfigInt("VIDEO","texture",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Video_GetTextureQuality(iTextureResol);
-		iTemp=iNewTextureResol=iTextureResol;
-	}
+    bGameNotFirstLaunch = ReadConfigInt("FIRSTRUN","int",bOkTemp)?true:false;
+
+    //video
+    pcText=ReadConfigString("VIDEO","resolution");
+
+    if( !pcText.empty() )
+    {
+        std::string width_string = pcText.substr( 0, pcText.find_first_of( 'x' ) );
+        std::string height_string = pcText.substr( pcText.find_first_of( 'x' ) );
+
+        // If both width and height are specified
+        if( !( width_string.empty() || height_string.empty() ) )
+        {
+            iWidth = atoi( width_string.c_str() );
+            iHeight = atoi( height_string.c_str() );
+            bOk = true;
+        }
+        else
+        {
+            ARXMenu_Options_Video_GetResolution(iWidth,iHeight,iBpp);
+        }
+    }
+    else
+    {
+        ARXMenu_Options_Video_GetResolution(iWidth,iHeight,iBpp);
+        bOk=false;
+    }
+
+    iNewWidth=iWidth;
+    iNewHeight=iHeight;
+
+    iTemp=ReadConfigInt("VIDEO","bpp",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        ARXMenu_Options_Video_GetBitPlane(iBpp);
+        iTemp=iBpp;
+    }
+
+    iNewBpp=iBpp=iTemp;
+    iTemp=ReadConfigInt("VIDEO","full_screen",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        ARXMenu_Options_Video_GetFullscreen(bFullScreen);
+    }
+    else
+    {
+        bFullScreen=(iTemp)?true:false;
+    }
+
+    iTemp=ReadConfigInt("VIDEO","bump",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        ARXMenu_Options_Video_GetBump(bBumpMapping);
+        bNewBumpMapping=bBumpMapping;
+    }
+    else
+    {
+        bNewBumpMapping=bBumpMapping=(iTemp)?true:false;
+    }
+
+    bBumpMapping=bNewBumpMapping;
+
+    if(bBumpMapping)
+    {
+        EERIE_ActivateBump();
+    }
+    else
+    {
+        EERIE_DesactivateBump();
+    }
+
+    bALLOW_BUMP=bBumpMapping;
+
+    iTemp=ReadConfigInt("VIDEO","texture",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        ARXMenu_Options_Video_GetTextureQuality(iTextureResol);
+        iTemp=iNewTextureResol=iTextureResol;
+    }
+
+    iTextureResol=iNewTextureResol=iTemp;
+
+    if(iTextureResol==2) Project.TextureSize=0;
+
+    if(iTextureResol==1) Project.TextureSize=2;
+
+    if(iTextureResol==0) Project.TextureSize=64;
+
+    WILL_RELOAD_ALL_TEXTURES=1;
+
+    iTemp=ReadConfigInt("VIDEO","mesh_reduction",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        ARXMenu_Options_Video_GetLODQuality(iMeshReduction);
+        iMeshReduction=iTemp;
+    }
 
-	iTextureResol=iNewTextureResol=iTemp;
+    iMeshReduction=iTemp;
+    iTemp=ReadConfigInt("VIDEO","others_details",bOkTemp);
+    bOk&=bOkTemp;
 
-	if(iTextureResol==2) Project.TextureSize=0;
+    if(!bOkTemp)
+    {
+        ARXMenu_Options_Video_GetDetailsQuality(iLevelOfDetails);
+        iTemp=iLevelOfDetails;
+    }
 
-	if(iTextureResol==1) Project.TextureSize=2;
+    iLevelOfDetails=iTemp;
+    iTemp=ReadConfigInt("VIDEO","fog",bOkTemp);
+    bOk&=bOkTemp;
 
-	if(iTextureResol==0) Project.TextureSize=64;
+    if(!bOkTemp)
+    {
+        ARXMenu_Options_Video_GetFogDistance(iFogDistance);
+        iTemp=iFogDistance;
+    }
+
+    iFogDistance=iTemp;
 
-	WILL_RELOAD_ALL_TEXTURES=1;
+    iTemp=ReadConfigInt("VIDEO","gamma",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        iTemp=5;
+    }
 
-	iTemp=ReadConfigInt("VIDEO","mesh_reduction",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Video_GetLODQuality(iMeshReduction);
-		iMeshReduction=iTemp;
-	}
-
-	iMeshReduction=iTemp;
-	iTemp=ReadConfigInt("VIDEO","others_details",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Video_GetDetailsQuality(iLevelOfDetails);
-		iTemp=iLevelOfDetails;
-	}
-
-	iLevelOfDetails=iTemp;
-	iTemp=ReadConfigInt("VIDEO","fog",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Video_GetFogDistance(iFogDistance);
-		iTemp=iFogDistance;
-	}
-
-	iFogDistance=iTemp;
-
-	iTemp=ReadConfigInt("VIDEO","gamma",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=5;
-	}
-
-	iGamma=iTemp;
-	iTemp=ReadConfigInt("VIDEO","luminosity",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=4;
-	}
-
-	iLuminosite=iTemp;
-
-	if((iLuminosite<0)||(iLuminosite>10))
-	{
-		iLuminosite=4;
-	}
-
-	iTemp=ReadConfigInt("VIDEO","contrast",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=5;
-	}
-
-	iContrast=iTemp;
-
-	if((iContrast<0)||(iContrast>10))
-	{
-		iContrast=5;
-	}
-
-	iTemp=ReadConfigInt("VIDEO","show_crosshair",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=1;
-	}
-
-	bShowCrossHair = iTemp?true:false;
-
-	iTemp=ReadConfigInt("VIDEO","antialiasing",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=0;
-	}
-
-	bAntiAliasing=iTemp?true:false;
-
-	iTemp=ReadConfigInt("MISC","forcesoftrender",bOkTemp);
-	if(!bOkTemp)
-	{
-		iTemp=0;
-	}
-
-	bDebugSetting=iTemp?true:false;
-
-	//audio
-	iTemp=ReadConfigInt("AUDIO","master_volume",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=iMasterVolume;
-	}
-
-	iMasterVolume=iTemp;
-	iTemp=ReadConfigInt("AUDIO","effects_volume",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=iSFXVolume;
-	}
-
-	iSFXVolume=iTemp;
-	iTemp=ReadConfigInt("AUDIO","speech_volume",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=iSpeechVolume;
-	}
-
-	iSpeechVolume=iTemp;
-	iTemp=ReadConfigInt("AUDIO","ambiance_volume",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		iTemp=iAmbianceVolume;
-	}
-
-	iAmbianceVolume=iTemp;
-	iTemp=ReadConfigInt("AUDIO","EAX",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Audio_GetEAX(bEAX);
-	}
-	else
-	{
-		bEAX=(iTemp)?true:false;
-	}
-
-	//input
-	iTemp=ReadConfigInt("INPUT","invert_mouse",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Control_GetInvertMouse(bInvertMouse);
-	}
-	else
-	{
-		bInvertMouse=(iTemp)?true:false;
-	}
-	
-	iTemp=ReadConfigInt("INPUT","auto_ready_weapon",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Control_GetAutoReadyWeapon(bAutoReadyWeapon);
-	}
-	else
-	{
-		bAutoReadyWeapon=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("INPUT","mouse_look_toggle",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bMouseLookToggle=true;
-	}
-	else
-	{
-		bMouseLookToggle=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("INPUT","mouse_sensitivity",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		ARXMenu_Options_Control_GetMouseSensitivity(iMouseSensitivity);
-		iTemp=iMouseSensitivity;
-	}
-
-	iMouseSensitivity=iTemp;
-
-	iTemp=ReadConfigInt("INPUT","mouse_smoothing",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bMouseSmoothing=false;
-	}
-	else
-	{
-		bMouseSmoothing=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("INPUT","auto_description",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bAutoDescription=true;
-	}
-	else
-	{
-		bAutoDescription=(iTemp)?true:false;
-	}
-
-	//key
-	bool bOk2=true;
-	bOk2&=ReadConfigKey("jump",CONTROLS_CUST_JUMP);
-	bOk2&=ReadConfigKey("magic_mode",CONTROLS_CUST_MAGICMODE);
-	bOk2&=ReadConfigKey("stealth_mode",CONTROLS_CUST_STEALTHMODE);
-	bOk2&=ReadConfigKey("walk_forward",CONTROLS_CUST_WALKFORWARD);
-	bOk2&=ReadConfigKey("walk_backward",CONTROLS_CUST_WALKBACKWARD);	
-	bOk2&=ReadConfigKey("strafe_left",CONTROLS_CUST_STRAFELEFT);
-	bOk2&=ReadConfigKey("strafe_right",CONTROLS_CUST_STRAFERIGHT);
-	bOk2&=ReadConfigKey("lean_left",CONTROLS_CUST_LEANLEFT);		
-	bOk2&=ReadConfigKey("lean_right",CONTROLS_CUST_LEANRIGHT);		
-	bOk2&=ReadConfigKey("crouch",CONTROLS_CUST_CROUCH);		
-	bOk2&=ReadConfigKey("mouselook",CONTROLS_CUST_MOUSELOOK);		
-	iTemp=ReadConfigInt("INPUT","link_mouse_look_to_use",bOkTemp);
-
-	if(!bOkTemp)
-	{
-		bLinkMouseLookToUse=true;
-	}
-	else
-	{
-		bLinkMouseLookToUse=(iTemp)?true:false;
-	}
-
-	bOk2&=ReadConfigKey("action_combine",CONTROLS_CUST_ACTION);		
-	bOk2&=ReadConfigKey("inventory",CONTROLS_CUST_INVENTORY);	
-	bOk2&=ReadConfigKey("book",CONTROLS_CUST_BOOK);			
-	bOk2&=ReadConfigKey("char_sheet",CONTROLS_CUST_BOOKCHARSHEET);			
-	bOk2&=ReadConfigKey("magic_book",CONTROLS_CUST_BOOKSPELL);			
-	bOk2&=ReadConfigKey("map",CONTROLS_CUST_BOOKMAP);			
-	bOk2&=ReadConfigKey("quest_book",CONTROLS_CUST_BOOKQUEST);			
-	bOk2&=ReadConfigKey("drink_potion_life",CONTROLS_CUST_DRINKPOTIONLIFE);
-	bOk2&=ReadConfigKey("drink_potion_mana",CONTROLS_CUST_DRINKPOTIONMANA);
-	bOk2&=ReadConfigKey("torch",CONTROLS_CUST_TORCH);
-
-	bOk2&=ReadConfigKey("cancel_current_spell",CONTROLS_CUST_CANCELCURSPELL);
-	bOk2&=ReadConfigKey("precast_1",CONTROLS_CUST_PRECAST1);
-	bOk2&=ReadConfigKey("precast_2",CONTROLS_CUST_PRECAST2);
-	bOk2&=ReadConfigKey("precast_3",CONTROLS_CUST_PRECAST3);
-	bOk2&=ReadConfigKey("draw_weapon",CONTROLS_CUST_WEAPON);
-	bOk2&=ReadConfigKey("quicksave",CONTROLS_CUST_QUICKSAVE);
-	bOk2&=ReadConfigKey("quickload",CONTROLS_CUST_QUICKLOAD);
-	bOk2&=ReadConfigKey("turn_left",CONTROLS_CUST_TURNLEFT);
-	bOk2&=ReadConfigKey("turn_right",CONTROLS_CUST_TURNRIGHT);
-	bOk2&=ReadConfigKey("look_up",CONTROLS_CUST_LOOKUP);
-	bOk2&=ReadConfigKey("look_down",CONTROLS_CUST_LOOKDOWN);
-	bOk2&=ReadConfigKey("strafe",CONTROLS_CUST_STRAFE);
-	bOk2&=ReadConfigKey("center_view",CONTROLS_CUST_CENTERVIEW);
-
-	bOk2&=ReadConfigKey("freelook",CONTROLS_CUST_FREELOOK);
-
-	bOk2&=ReadConfigKey("previous",CONTROLS_CUST_PREVIOUS);
-	bOk2&=ReadConfigKey("next",CONTROLS_CUST_NEXT);
-
-	bOk2&=ReadConfigKey("crouch_toggle",CONTROLS_CUST_CROUCHTOGGLE);
-
-	bOk2&=ReadConfigKey("unequip_weapon",CONTROLS_CUST_UNEQUIPWEAPON);
-
-	bOk2&=ReadConfigKey("minimap",CONTROLS_CUST_MINIMAP);
-
-	bOk2&=bOk;
-
-	if(!bOk2)
-	{
-		int iI=MAX_ACTION_KEY;
-
-		while(iI--)
-		{
-			sakActionKey[iI].iKey[0]=sakActionDefaultKey[iI].iKey[0];
-			sakActionKey[iI].iKey[1]=sakActionDefaultKey[iI].iKey[1];
-		}
-	}
-
-	//misc
-	iTemp=ReadConfigInt("MISC","softfog",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bATI=false;
-	}
-	else
-	{
-		bATI=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("MISC","clearnearcorrection",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bGATI8500=false;
-	}
-	else
-	{
-		bGATI8500=(iTemp)?true:false;
-	}
-
-
-	if(bGATI8500)
-	{
-		SOFTNEARCLIPPZ	=	5.f;
-	}
-
-	iTemp=ReadConfigInt("MISC","forcenoeax",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bForceNoEAX=false;
-	}
-	else
-	{
-		bForceNoEAX=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("MISC","forcegdi",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bForceGDI=false;
-	}
-	else
-	{
-		bForceGDI=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("MISC","forcemetaltwopass",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bForceMetalTwoPass=false;
-	}
-	else
-	{
-		bForceMetalTwoPass=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("MISC","forcezbias",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bForceZBias=false;
-	}
-	else
-	{
-		bForceZBias=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("MISC","newcontrol",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		INTERNATIONAL_MODE=1;
-	}
-	else
-	{
-		INTERNATIONAL_MODE=(iTemp)?1:0;
-	}
-
-	if(INTERNATIONAL_MODE)
-	{
-		bLinkMouseLookToUse=false;
-	}
-
-	iTemp=ReadConfigInt("MISC","forcetoggle",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bOneHanded=false;
-	}
-	else
-	{
-		bOneHanded=(iTemp)?true:false;
-	}
-
-	char* pcTextMod=ReadConfigString("MISC","mod");
-
-	if(	(pcTextMod)&&
-		(strlen(pcTextMod)<256) )
-	{
-		strcpy(pStringMod,pcTextMod);
-	}
-	else
-	{
-		strcpy(pStringMod,"mod.pak");
-	}
-
-	free((void*)pcTextMod);
-
-	pcTextMod=ReadConfigString("MISC","modsfx");
-
-	if(	(pcTextMod)&&
-		(strlen(pcTextMod)<256) )
-	{
-		strcpy(pStringModSfx,pcTextMod);
-	}
-	else
-	{
-		strcpy(pStringModSfx,"modsfx.pak");
-	}
-
-	free((void*)pcTextMod);
-
-	pcTextMod=ReadConfigString("MISC","modspeech");
-
-	if(	(pcTextMod)&&
-		(strlen(pcTextMod)<256) )
-	{
-		strcpy(pStringModSpeech,pcTextMod);
-	}
-	else
-	{
-		strcpy(pStringModSpeech,"modspeech.pak");
-	}
-
-	free((void*)pcTextMod);
-
-	uiGoreMode = ReadConfigInt("MISC", "fg", bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		uiGoreMode=bWarningGore?0:1;
-	}
-
-	switch(uiGoreMode)
-	{
-	case 0:
-		{
-			if(bWarningGore)
-			{
-				uiGoreMode=0;
-				GORE_MODE=0;
-			}
-			else
-			{
-				uiGoreMode=1;
-				GORE_MODE=1;
-			}
-		}
-		break;
-	case 1:
-		{
-			GORE_MODE=1;
-		}
-		break;
-	case 2:
-		{
-			GORE_MODE=0;
-		}
-		break;
-	default:
-		{
-			uiGoreMode=0;
-			GORE_MODE=0;
-		}
-		break;
-	}
-
-	//on set les options
-
-	ARXMenu_Options_Video_SetFogDistance(iFogDistance);
-	ARXMenu_Options_Video_SetTextureQuality(iTextureResol);
-	ARXMenu_Options_Video_SetBump(bBumpMapping);
-	ARXMenu_Options_Video_SetLODQuality(iMeshReduction);
-	ARXMenu_Options_Video_SetDetailsQuality(iLevelOfDetails);
-	ARXMenu_Options_Video_SetGamma(iGamma);
-	ARX_SetAntiAliasing();
-	ARXMenu_Options_Video_SetSoftRender();
-	ARXMenu_Options_Audio_SetMasterVolume(iMasterVolume);
-	ARXMenu_Options_Audio_SetSfxVolume(iSFXVolume);
-	ARXMenu_Options_Audio_SetSpeechVolume(iSpeechVolume);
-	ARXMenu_Options_Audio_SetAmbianceVolume(iAmbianceVolume);
-
-	pMenuConfig->bEAX=bEAX;
-	ARXMenu_Options_Control_SetInvertMouse(bInvertMouse);
-	ARXMenu_Options_Control_SetAutoReadyWeapon(bAutoReadyWeapon);
-	ARXMenu_Options_Control_SetMouseLookToggleMode(bMouseLookToggle);
-	ARXMenu_Options_Control_SetMouseSensitivity(iMouseSensitivity);
-	ARXMenu_Options_Control_SetAutoDescription(bAutoDescription);
-
-	if(pMenu)
-	{
-		pMenu->bReInitAll=true;
-	}
-
-	//mixer Game
-	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGame, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenu));
-	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameSample, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuSample));
-	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameSpeech, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuSpeech));
-	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameAmbiance, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuAmbiance));
-
-	ARX_Localisation_Close();
-	
-	GORE_MODE = IsNoGore()? 0 : 1;
-	return bOk;
+    iGamma=iTemp;
+    iTemp=ReadConfigInt("VIDEO","luminosity",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        iTemp=4;
+    }
+
+    iLuminosite=iTemp;
+
+    if((iLuminosite<0)||(iLuminosite>10))
+    {
+        iLuminosite=4;
+    }
+
+    iTemp=ReadConfigInt("VIDEO","contrast",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        iTemp=5;
+    }
+
+    iContrast=iTemp;
+
+    if((iContrast<0)||(iContrast>10))
+    {
+        iContrast=5;
+    }
+
+    iTemp=ReadConfigInt("VIDEO","show_crosshair",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        iTemp=1;
+    }
+
+    bShowCrossHair = iTemp?true:false;
+
+    iTemp=ReadConfigInt("VIDEO","antialiasing",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        iTemp=0;
+    }
+
+    bAntiAliasing=iTemp?true:false;
+
+    iTemp=ReadConfigInt("MISC","forcesoftrender",bOkTemp);
+    if(!bOkTemp)
+    {
+        iTemp=0;
+    }
+
+    bDebugSetting=iTemp?true:false;
+
+    //audio
+    iTemp=ReadConfigInt("AUDIO","master_volume",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        iTemp=iMasterVolume;
+    }
+
+    iMasterVolume=iTemp;
+    iTemp=ReadConfigInt("AUDIO","effects_volume",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        iTemp=iSFXVolume;
+    }
+
+    iSFXVolume=iTemp;
+    iTemp=ReadConfigInt("AUDIO","speech_volume",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        iTemp=iSpeechVolume;
+    }
+
+    iSpeechVolume=iTemp;
+    iTemp=ReadConfigInt("AUDIO","ambiance_volume",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        iTemp=iAmbianceVolume;
+    }
+
+    iAmbianceVolume=iTemp;
+    iTemp=ReadConfigInt("AUDIO","EAX",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        ARXMenu_Options_Audio_GetEAX(bEAX);
+    }
+    else
+    {
+        bEAX=(iTemp)?true:false;
+    }
+
+    //input
+    iTemp=ReadConfigInt("INPUT","invert_mouse",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        ARXMenu_Options_Control_GetInvertMouse(bInvertMouse);
+    }
+    else
+    {
+        bInvertMouse=(iTemp)?true:false;
+    }
+
+    iTemp=ReadConfigInt("INPUT","auto_ready_weapon",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        ARXMenu_Options_Control_GetAutoReadyWeapon(bAutoReadyWeapon);
+    }
+    else
+    {
+        bAutoReadyWeapon=(iTemp)?true:false;
+    }
+
+    iTemp=ReadConfigInt("INPUT","mouse_look_toggle",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        bMouseLookToggle=true;
+    }
+    else
+    {
+        bMouseLookToggle=(iTemp)?true:false;
+    }
+
+    iTemp=ReadConfigInt("INPUT","mouse_sensitivity",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        ARXMenu_Options_Control_GetMouseSensitivity(iMouseSensitivity);
+        iTemp=iMouseSensitivity;
+    }
+
+    iMouseSensitivity=iTemp;
+
+    iTemp=ReadConfigInt("INPUT","mouse_smoothing",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        bMouseSmoothing=false;
+    }
+    else
+    {
+        bMouseSmoothing=(iTemp)?true:false;
+    }
+
+    iTemp=ReadConfigInt("INPUT","auto_description",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        bAutoDescription=true;
+    }
+    else
+    {
+        bAutoDescription=(iTemp)?true:false;
+    }
+
+    //key
+    bool bOk2=true;
+    bOk2&=ReadConfigKey("jump",CONTROLS_CUST_JUMP);
+    bOk2&=ReadConfigKey("magic_mode",CONTROLS_CUST_MAGICMODE);
+    bOk2&=ReadConfigKey("stealth_mode",CONTROLS_CUST_STEALTHMODE);
+    bOk2&=ReadConfigKey("walk_forward",CONTROLS_CUST_WALKFORWARD);
+    bOk2&=ReadConfigKey("walk_backward",CONTROLS_CUST_WALKBACKWARD);	
+    bOk2&=ReadConfigKey("strafe_left",CONTROLS_CUST_STRAFELEFT);
+    bOk2&=ReadConfigKey("strafe_right",CONTROLS_CUST_STRAFERIGHT);
+    bOk2&=ReadConfigKey("lean_left",CONTROLS_CUST_LEANLEFT);		
+    bOk2&=ReadConfigKey("lean_right",CONTROLS_CUST_LEANRIGHT);		
+    bOk2&=ReadConfigKey("crouch",CONTROLS_CUST_CROUCH);		
+    bOk2&=ReadConfigKey("mouselook",CONTROLS_CUST_MOUSELOOK);		
+    iTemp=ReadConfigInt("INPUT","link_mouse_look_to_use",bOkTemp);
+
+    if(!bOkTemp)
+    {
+        bLinkMouseLookToUse=true;
+    }
+    else
+    {
+        bLinkMouseLookToUse=(iTemp)?true:false;
+    }
+
+    bOk2&=ReadConfigKey("action_combine",CONTROLS_CUST_ACTION);		
+    bOk2&=ReadConfigKey("inventory",CONTROLS_CUST_INVENTORY);	
+    bOk2&=ReadConfigKey("book",CONTROLS_CUST_BOOK);			
+    bOk2&=ReadConfigKey("char_sheet",CONTROLS_CUST_BOOKCHARSHEET);			
+    bOk2&=ReadConfigKey("magic_book",CONTROLS_CUST_BOOKSPELL);			
+    bOk2&=ReadConfigKey("map",CONTROLS_CUST_BOOKMAP);			
+    bOk2&=ReadConfigKey("quest_book",CONTROLS_CUST_BOOKQUEST);			
+    bOk2&=ReadConfigKey("drink_potion_life",CONTROLS_CUST_DRINKPOTIONLIFE);
+    bOk2&=ReadConfigKey("drink_potion_mana",CONTROLS_CUST_DRINKPOTIONMANA);
+    bOk2&=ReadConfigKey("torch",CONTROLS_CUST_TORCH);
+
+    bOk2&=ReadConfigKey("cancel_current_spell",CONTROLS_CUST_CANCELCURSPELL);
+    bOk2&=ReadConfigKey("precast_1",CONTROLS_CUST_PRECAST1);
+    bOk2&=ReadConfigKey("precast_2",CONTROLS_CUST_PRECAST2);
+    bOk2&=ReadConfigKey("precast_3",CONTROLS_CUST_PRECAST3);
+    bOk2&=ReadConfigKey("draw_weapon",CONTROLS_CUST_WEAPON);
+    bOk2&=ReadConfigKey("quicksave",CONTROLS_CUST_QUICKSAVE);
+    bOk2&=ReadConfigKey("quickload",CONTROLS_CUST_QUICKLOAD);
+    bOk2&=ReadConfigKey("turn_left",CONTROLS_CUST_TURNLEFT);
+    bOk2&=ReadConfigKey("turn_right",CONTROLS_CUST_TURNRIGHT);
+    bOk2&=ReadConfigKey("look_up",CONTROLS_CUST_LOOKUP);
+    bOk2&=ReadConfigKey("look_down",CONTROLS_CUST_LOOKDOWN);
+    bOk2&=ReadConfigKey("strafe",CONTROLS_CUST_STRAFE);
+    bOk2&=ReadConfigKey("center_view",CONTROLS_CUST_CENTERVIEW);
+
+    bOk2&=ReadConfigKey("freelook",CONTROLS_CUST_FREELOOK);
+
+    bOk2&=ReadConfigKey("previous",CONTROLS_CUST_PREVIOUS);
+    bOk2&=ReadConfigKey("next",CONTROLS_CUST_NEXT);
+
+    bOk2&=ReadConfigKey("crouch_toggle",CONTROLS_CUST_CROUCHTOGGLE);
+
+    bOk2&=ReadConfigKey("unequip_weapon",CONTROLS_CUST_UNEQUIPWEAPON);
+
+    bOk2&=ReadConfigKey("minimap",CONTROLS_CUST_MINIMAP);
+
+    bOk2&=bOk;
+
+    if(!bOk2)
+    {
+        int iI=MAX_ACTION_KEY;
+
+        while(iI--)
+        {
+            sakActionKey[iI].iKey[0]=sakActionDefaultKey[iI].iKey[0];
+            sakActionKey[iI].iKey[1]=sakActionDefaultKey[iI].iKey[1];
+        }
+    }
+
+    //misc
+    iTemp=ReadConfigInt("MISC","softfog",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        bATI=false;
+    }
+    else
+    {
+        bATI=(iTemp)?true:false;
+    }
+
+    iTemp=ReadConfigInt("MISC","clearnearcorrection",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        bGATI8500=false;
+    }
+    else
+    {
+        bGATI8500=(iTemp)?true:false;
+    }
+
+
+    if(bGATI8500)
+    {
+        SOFTNEARCLIPPZ	=	5.f;
+    }
+
+    iTemp=ReadConfigInt("MISC","forcenoeax",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        bForceNoEAX=false;
+    }
+    else
+    {
+        bForceNoEAX=(iTemp)?true:false;
+    }
+
+    iTemp=ReadConfigInt("MISC","forcegdi",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        bForceGDI=false;
+    }
+    else
+    {
+        bForceGDI=(iTemp)?true:false;
+    }
+
+    iTemp=ReadConfigInt("MISC","forcemetaltwopass",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        bForceMetalTwoPass=false;
+    }
+    else
+    {
+        bForceMetalTwoPass=(iTemp)?true:false;
+    }
+
+    iTemp=ReadConfigInt("MISC","forcezbias",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        bForceZBias=false;
+    }
+    else
+    {
+        bForceZBias=(iTemp)?true:false;
+    }
+
+    iTemp=ReadConfigInt("MISC","newcontrol",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        INTERNATIONAL_MODE=1;
+    }
+    else
+    {
+        INTERNATIONAL_MODE=(iTemp)?1:0;
+    }
+
+    if(INTERNATIONAL_MODE)
+    {
+        bLinkMouseLookToUse=false;
+    }
+
+    iTemp=ReadConfigInt("MISC","forcetoggle",bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        bOneHanded=false;
+    }
+    else
+    {
+        bOneHanded=(iTemp)?true:false;
+    }
+
+    std::string pcTextMod = ReadConfigString( "MISC", "mod" );
+
+    if( ( !pcTextMod.empty() ) && ( pcTextMod.length() < 256 ) )
+    {
+        pStringMod = pcTextMod;
+    }
+    else
+    {
+        pStringMod = "mod.pak";
+    }
+
+    pcTextModi = ReadConfigString("MISC","modsfx");
+
+    if( (pcTextMod)&&
+        (strlen(pcTextMod)<256) )
+    {
+        strcpy(pStringModSfx,pcTextMod);
+    }
+    else
+    {
+        strcpy(pStringModSfx,"modsfx.pak");
+    }
+
+    pcTextMod=ReadConfigString("MISC","modspeech");
+
+    if(	(pcTextMod)&&
+        (strlen(pcTextMod)<256) )
+    {
+        strcpy(pStringModSpeech,pcTextMod);
+    }
+    else
+    {
+        strcpy(pStringModSpeech,"modspeech.pak");
+    }
+
+    free((void*)pcTextMod);
+
+    uiGoreMode = ReadConfigInt("MISC", "fg", bOkTemp);
+    bOk&=bOkTemp;
+
+    if(!bOkTemp)
+    {
+        uiGoreMode=bWarningGore?0:1;
+    }
+
+    switch(uiGoreMode)
+    {
+    case 0:
+        {
+            if(bWarningGore)
+            {
+                uiGoreMode=0;
+                GORE_MODE=0;
+            }
+            else
+            {
+                uiGoreMode=1;
+                GORE_MODE=1;
+            }
+        }
+        break;
+    case 1:
+        {
+            GORE_MODE=1;
+        }
+        break;
+    case 2:
+        {
+            GORE_MODE=0;
+        }
+        break;
+    default:
+        {
+            uiGoreMode=0;
+            GORE_MODE=0;
+        }
+        break;
+    }
+
+    //on set les options
+
+    ARXMenu_Options_Video_SetFogDistance(iFogDistance);
+    ARXMenu_Options_Video_SetTextureQuality(iTextureResol);
+    ARXMenu_Options_Video_SetBump(bBumpMapping);
+    ARXMenu_Options_Video_SetLODQuality(iMeshReduction);
+    ARXMenu_Options_Video_SetDetailsQuality(iLevelOfDetails);
+    ARXMenu_Options_Video_SetGamma(iGamma);
+    ARX_SetAntiAliasing();
+    ARXMenu_Options_Video_SetSoftRender();
+    ARXMenu_Options_Audio_SetMasterVolume(iMasterVolume);
+    ARXMenu_Options_Audio_SetSfxVolume(iSFXVolume);
+    ARXMenu_Options_Audio_SetSpeechVolume(iSpeechVolume);
+    ARXMenu_Options_Audio_SetAmbianceVolume(iAmbianceVolume);
+
+    pMenuConfig->bEAX=bEAX;
+    ARXMenu_Options_Control_SetInvertMouse(bInvertMouse);
+    ARXMenu_Options_Control_SetAutoReadyWeapon(bAutoReadyWeapon);
+    ARXMenu_Options_Control_SetMouseLookToggleMode(bMouseLookToggle);
+    ARXMenu_Options_Control_SetMouseSensitivity(iMouseSensitivity);
+    ARXMenu_Options_Control_SetAutoDescription(bAutoDescription);
+
+    if(pMenu)
+    {
+        pMenu->bReInitAll=true;
+    }
+
+    //mixer Game
+    ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGame, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenu));
+    ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameSample, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuSample));
+    ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameSpeech, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuSpeech));
+    ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameAmbiance, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuAmbiance));
+
+    ARX_Localisation_Close();
+
+    GORE_MODE = IsNoGore()? 0 : 1;
+    return bOk;
 }
 
 //-----------------------------------------------------------------------------
