@@ -84,7 +84,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 	free(mem);
 }*/
 /*-------------------------------------------------------------*/
-BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi,LPVOID pvRef)
+bool CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi,LPVOID pvRef)
 {
 	INPUT_INFO	*info;
 
@@ -278,7 +278,7 @@ INPUT_INFO	*info;
 	DI_DInput7 = NULL;
 }
 /*-------------------------------------------------------------*/
-BOOL CompareGUID(GUID *g1,GUID *g2)
+bool CompareGUID(GUID *g1,GUID *g2)
 {
 int		i,j,*m1,*m2;
 char	*mm1,*mm2;
@@ -291,7 +291,7 @@ char	*mm1,*mm2;
 	m2=(int*)g2;
 	while(i)
 	{
-		if(*m1++!=*m2++) return FALSE;
+		if(*m1++!=*m2++) return false;
 		i--;
 	}
 
@@ -299,14 +299,14 @@ char	*mm1,*mm2;
 	mm2=(char*)m2;
 	while(j)
 	{
-		if(*mm1++!=*mm2++) return FALSE;
+		if(*mm1++!=*mm2++) return false;
 		j--;
 	}
 
-	return TRUE;
+	return true;
 }
 /*-------------------------------------------------------------*/
-BOOL CALLBACK DIEnumDeviceObjectsCallback(LPCDIDEVICEOBJECTINSTANCE lpddoi,LPVOID pvRef)
+bool CALLBACK DIEnumDeviceObjectsCallback(LPCDIDEVICEOBJECTINSTANCE lpddoi,LPVOID pvRef)
 {
 INPUT_INFO			*info;
 
@@ -762,16 +762,16 @@ INPUT_INFO		*info;
 
 	return dinf;
 }
-BOOL DXI_CleanAxeMouseZ(int id)
+bool DXI_CleanAxeMouseZ(int id)
 {
 DIDEVICEOBJECTDATA	*od;
 DIDEVICEOBJECTDATA	*od2;
 int					nb,flg=0;
 
-return FALSE;
+return false;
 
 	nb=DI_MouseState[id]->nbele;
-	if(!nb) return FALSE;
+	if(!nb) return false;
 	od=DI_MouseState[id]->mousestate;
 //	od2=DI_MouseState[id]->old_mousestate;
 	while(nb)
@@ -807,12 +807,12 @@ void DXI_freeInfoDevice(DXI_INPUT_INFO *dinf)
 	free((void*)dinf);
 }
 /*-------------------------------------------------------------*/
-BOOL DXI_ExecuteAllDevices(BOOL _bKeept)
+bool DXI_ExecuteAllDevices(bool _bKeept)
 {
 int			nb,nbele;
 DWORD		dwNbele;//ARX: xrichter (2010-06-30) - treat warnings C4057 for 'LPDWORD' differs in indirection to slightly different base types from 'int *'
 INPUT_INFO	*info;
-BOOL		flg=TRUE;
+bool		flg=true;
 void * temp;
 	
 //DIDEVICEOBJECTDATA	* od;
@@ -866,7 +866,7 @@ void * temp;
 					if (DIERR_NOTINITIALIZED  == DI_Hr) MessageBox(NULL,"DIERR_NOTINITIALIZED ","",0);
 					if (E_PENDING  == DI_Hr) MessageBox(NULL,"E_PENDING ","",0);
 */
-					flg=FALSE;
+					flg=false;
 					}
 				}
 				DXI_CleanAxeMouseZ(DXI_MOUSE1); //////////////////////////
@@ -918,39 +918,39 @@ void * temp;
 					//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->GetDeviceState(info->inputdevice7,256,(void*)info->bufferstate))) 
 //					if(FAILED(DI_Hr=info->inputdevice7->GetDeviceState(256,(void*)info->bufferstate))) 
 						memset(info->bufferstate,0,256); //seb 27/03/2002
-						flg=FALSE;					
+						flg=false;					
 					}
 					
 				}
 				break;
 			case DIDEVTYPE_JOYSTICK: 
-				//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->Poll(info->inputdevice7))) flg=FALSE;
-				if(FAILED(DI_Hr=info->inputdevice7->Poll())) flg=FALSE;
+				//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->Poll(info->inputdevice7))) flg=false;
+				if(FAILED(DI_Hr=info->inputdevice7->Poll())) flg=false;
 
 				if(info->datasid==DFDIJOYSTICK2)
 				{	
 					//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->GetDeviceState(info->inputdevice7,sizeof(DIJOYSTATE2),(void*)info->joystate2))) 
 					if(FAILED(DI_Hr=info->inputdevice7->GetDeviceState(sizeof(DIJOYSTATE2),(void*)info->joystate2))) 
-						flg=FALSE;
+						flg=false;
 				}
 				else
 				{	
 					//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->GetDeviceState(info->inputdevice7,sizeof(DIJOYSTATE),(void*)info->joystate))) 
 					if(FAILED(DI_Hr=info->inputdevice7->GetDeviceState(sizeof(DIJOYSTATE),(void*)info->joystate))) 
-						flg=FALSE;						
+						flg=false;						
 				}
 				break;
 			default:
 			case DIDEVTYPE_DEVICE: 
 				//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->Poll(info->inputdevice7))) 
 				if(FAILED(DI_Hr=info->inputdevice7->Poll())) 
-					flg=FALSE;
+					flg=false;
 					
 				if(info->datasid==DFDIJOYSTICK2)
 				{	
 					//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->GetDeviceState(info->inputdevice7,sizeof(DIJOYSTATE2),(void*)info->joystate2))) 
 					if(FAILED(DI_Hr=info->inputdevice7->GetDeviceState(sizeof(DIJOYSTATE2),(void*)info->joystate2))) 
-						flg=FALSE;
+						flg=false;
 				/*	else
 					{
 						long togo=sizeof(DIJOYSTATE2);
@@ -970,14 +970,14 @@ void * temp;
 				{	
 					//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->GetDeviceState(info->inputdevice7,sizeof(DIJOYSTATE),(void*)info->SCIDstate))) 
 					if(FAILED(DI_Hr=info->inputdevice7->GetDeviceState(sizeof(DIJOYSTATE),(void*)info->SCIDstate))) 
-						flg=FALSE;							
+						flg=false;							
 				}
 				break;
 				/*
 				nbele=info->nbbuttons+info->nbaxes; 
 				// Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->GetDeviceData(info->inputdevice7,sizeof(DIDEVICEOBJECTDATA),info->SCIDstate,&nbele,0))) 
 				if(FAILED(DI_Hr=info->inputdevice7->GetDeviceData(sizeof(DIDEVICEOBJECTDATA),info->SCIDstate,&nbele,0))) 
-					flg=FALSE;			
+					flg=false;			
 				info->nbele=nbele;
 				break;*/
 			}
@@ -989,16 +989,16 @@ void * temp;
 	return flg;
 }
 /*-------------------------------------------------------------*/
-BOOL DXI_KeyPressed(int id,int dikkey)
+bool DXI_KeyPressed(int id,int dikkey)
 {
-	if(DI_KeyBoardBuffer[id]->bufferstate[dikkey]&0x80) return TRUE;
-	return FALSE;
+	if(DI_KeyBoardBuffer[id]->bufferstate[dikkey]&0x80) return true;
+	return false;
 }
-BOOL DXI_OldKeyPressed(int id,int dikkey)
+bool DXI_OldKeyPressed(int id,int dikkey)
 {
-	//if(DI_InputInfo->old_bufferstate[id*dikkey]&0x80) return TRUE;
-//	if(DI_KeyBoardBuffer[id]->old_bufferstate[dikkey]&0x80) return TRUE;
-	return FALSE;
+	//if(DI_InputInfo->old_bufferstate[id*dikkey]&0x80) return true;
+//	if(DI_KeyBoardBuffer[id]->old_bufferstate[dikkey]&0x80) return true;
+	return false;
 }
 /*-------------------------------------------------------------*/
 int DXI_GetKeyIDPressed(int id)
@@ -1022,13 +1022,13 @@ void DXI_ClearKeys(int id)
 	memset(DI_KeyBoardBuffer[id],0,256);	
 }
 /*-------------------------------------------------------------*/
-BOOL DXI_GetAxeMouseXY(int id,int *mx,int *my)
+bool DXI_GetAxeMouseXY(int id,int *mx,int *my)
 {
 DIDEVICEOBJECTDATA	*od;
 int					nb,flg=0;
 
 	nb=DI_MouseState[id]->nbele;
-	if(!nb) return FALSE;
+	if(!nb) return false;
 	od=DI_MouseState[id]->mousestate;
 	while(nb)
 	{
@@ -1052,7 +1052,7 @@ int					nb,flg=0;
 	return(flg>0);
 }
 /*-------------------------------------------------------------*/
-BOOL DXI_GetAxeMouseXYZ(int id,int *mx,int *my,int *mz)
+bool DXI_GetAxeMouseXYZ(int id,int *mx,int *my,int *mz)
 {
 DIDEVICEOBJECTDATA	*od;
 int					nb,flg=0;
@@ -1060,7 +1060,7 @@ int					nb,flg=0;
 	*mx=*my=*mz=0;
 
 	nb=DI_MouseState[id]->nbele;
-	if(!nb) return FALSE;
+	if(!nb) return false;
 	od=DI_MouseState[id]->mousestate;
 	while(nb)
 	{
@@ -1089,7 +1089,7 @@ int					nb,flg=0;
 }
 
 /*-------------------------------------------------------------*/
-BOOL DXI_MouseButtonImage(int id,int numb)
+bool DXI_MouseButtonImage(int id,int numb)
 {
 DIDEVICEOBJECTDATA	*od;
 int					state,nb;
@@ -1101,7 +1101,7 @@ static FILE *fTemp=NULL;
 	}
 
 	nb=DI_MouseState[id]->nbele;
-	if(!nb) return FALSE;
+	if(!nb) return false;
 	od=DI_MouseState[id]->mousestate;
 	while(nb)
 	{
@@ -1148,7 +1148,7 @@ static FILE *fTemp=NULL;
 		case DXI_BUTTON7:
 			break;
 		default:
-			return FALSE;
+			return false;
 		}
 
 		od++;
@@ -1156,7 +1156,7 @@ static FILE *fTemp=NULL;
 	}
 
 	fprintf(fTemp,"\r\n---------\r\n");
-	return TRUE;
+	return true;
 }
 
 /*-------------------------------------------------------------*/
@@ -1297,19 +1297,19 @@ int					state,nb;
 }
 
 /*-------------------------------------------------------------*/
-BOOL DXI_MouseButtonPressed(int id,int numb,int *_iDeltaTime)
+bool DXI_MouseButtonPressed(int id,int numb,int *_iDeltaTime)
 {
 DIDEVICEOBJECTDATA	*od;
 int					state,iTime1,iTime2,nb;
-BOOL				bResult;
+bool				bResult;
 
 	nb=DI_MouseState[id]->nbele;
-	if(!nb) return FALSE;
+	if(!nb) return false;
 	od=DI_MouseState[id]->mousestate;
 	iTime1=iTime2=0;
 	while(nb)
 	{
-		bResult=FALSE;
+		bResult=false;
 		switch(numb)
 		{
 		case DXI_BUTTON0:
@@ -1318,7 +1318,7 @@ BOOL				bResult;
 				state=od->dwData;
 				if(state&0x80)
 				{
-					bResult=TRUE;
+					bResult=true;
 				}
 			}
 			break;
@@ -1328,7 +1328,7 @@ BOOL				bResult;
 				state=od->dwData;
 				if(state&0x80)
 				{
-					bResult=TRUE;
+					bResult=true;
 				}
 			}
 			break;
@@ -1338,7 +1338,7 @@ BOOL				bResult;
 				state=od->dwData;
 				if(state&0x80)
 				{
-					bResult=TRUE;
+					bResult=true;
 				}
 			}
 			break;
@@ -1348,7 +1348,7 @@ BOOL				bResult;
 				state=od->dwData;
 				if(state&0x80)
 				{
-					bResult=TRUE;
+					bResult=true;
 				}
 			}
 			break;
@@ -1358,7 +1358,7 @@ BOOL				bResult;
 				state=od->dwData;
 				if(state&0x80)
 				{
-					bResult=TRUE;
+					bResult=true;
 				}
 			}
 			break;
@@ -1368,7 +1368,7 @@ BOOL				bResult;
 				state=od->dwData;
 				if(state&0x80)
 				{
-					bResult=TRUE;
+					bResult=true;
 				}
 			}
 			break;
@@ -1378,7 +1378,7 @@ BOOL				bResult;
 				state=od->dwData;
 				if(state&0x80)
 				{
-					bResult=TRUE;
+					bResult=true;
 				}
 			}
 			break;
@@ -1388,12 +1388,12 @@ BOOL				bResult;
 				state=od->dwData;
 				if(state&0x80)
 				{
-					bResult=TRUE;
+					bResult=true;
 				}
 			}
 			break;
 		default:
-			return FALSE;
+			return false;
 		}
 
 		if(bResult)
@@ -1421,16 +1421,16 @@ BOOL				bResult;
 		*_iDeltaTime=iTime2-iTime1;
 	}
 
-	return (iTime1)?TRUE:FALSE;
+	return (iTime1)?true:false;
 }
 /*-------------------------------------------------------------*/
-BOOL DXI_MouseButtonUnPressed(int id,int numb)
+bool DXI_MouseButtonUnPressed(int id,int numb)
 {
 DIDEVICEOBJECTDATA	*od;
 int					state,nb;
 
 	nb=DI_MouseState[id]->nbele;
-	if(!nb) return FALSE;
+	if(!nb) return false;
 	od=DI_MouseState[id]->mousestate;
 	state=0x80;
 	while(nb)
@@ -1463,24 +1463,24 @@ int					state,nb;
 			if(od->dwOfs==DIMOFS_BUTTON7) state=od->dwData;
 			break;
 		default:
-			return FALSE;
+			return false;
 		}
-//		if(!(state&0x80)) return TRUE;
+//		if(!(state&0x80)) return true;
 		od++;
 		nb--;
 	}
-	if(!(state&0x80)) return TRUE;
-	return FALSE;
+	if(!(state&0x80)) return true;
+	return false;
 }
 
-BOOL DXI_OldMouseButtonPressed(int id,int numb)
+bool DXI_OldMouseButtonPressed(int id,int numb)
 {
 DIDEVICEOBJECTDATA	*od;
 int					state,nb;
 
-return FALSE;
+return false;
 	nb=DI_MouseState[id]->nbele;
-	if(!nb) return FALSE;
+	if(!nb) return false;
 //	od=DI_MouseState[id]->old_mousestate;
 	while(nb)
 	{
@@ -1512,13 +1512,13 @@ return FALSE;
 			if(od->dwOfs==DIMOFS_BUTTON7) state=od->dwData;
 			break;
 		default:
-			return FALSE;
+			return false;
 		}
-		if(state&0x80) return TRUE;
+		if(state&0x80) return true;
 		od++;
 		nb--;
 	}
-	return FALSE;
+	return false;
 }
 
 int DXI_GetSCIDAxis(int id,int *jx,int *jy,int *jz)
@@ -1598,7 +1598,7 @@ int			dir;
 
 	return dir;
 }
-BOOL DXI_IsSCIDButtonPressed(int id,int numb)
+bool DXI_IsSCIDButtonPressed(int id,int numb)
 {
 INPUT_INFO	*io;
 
@@ -1608,7 +1608,7 @@ INPUT_INFO	*io;
 		{
 			DIJOYSTATE2	*js;
 			js=io->joystate2;
-			if(js->rgbButtons[numb]&0x80) return TRUE;
+			if(js->rgbButtons[numb]&0x80) return true;
 		}
 	}
 	else
@@ -1616,10 +1616,10 @@ INPUT_INFO	*io;
 		{
 			DIJOYSTATE	*js;
 			js=io->joystate;
-			if(js->rgbButtons[numb]&0x80) return TRUE;
+			if(js->rgbButtons[numb]&0x80) return true;
 		}
 	}
-	return FALSE;
+	return false;
 }
 
 int DXI_GetSCIDButtonPressed(int id)
@@ -2108,7 +2108,7 @@ DIPROPDWORD		dipdw={
 	return DXI_OK;
 }
 /*-------------------------------------------------------------*/
-BOOL DXI_GetJoyButtonPressed(int id,int numb)
+bool DXI_GetJoyButtonPressed(int id,int numb)
 {
 INPUT_INFO	*io;
 
@@ -2118,7 +2118,7 @@ INPUT_INFO	*io;
 		{
 			DIJOYSTATE2	*js;
 			js=io->joystate2;
-			if(js->rgbButtons[numb]&0x80) return TRUE;
+			if(js->rgbButtons[numb]&0x80) return true;
 		}
 	}
 	else
@@ -2126,23 +2126,23 @@ INPUT_INFO	*io;
 		{
 			DIJOYSTATE	*js;
 			js=io->joystate;
-			if(js->rgbButtons[numb]&0x80) return TRUE;
+			if(js->rgbButtons[numb]&0x80) return true;
 		}
 	}
-	return FALSE;
+	return false;
 }
-BOOL DXI_OldGetJoyButtonPressed(int id,int numb)
+bool DXI_OldGetJoyButtonPressed(int id,int numb)
 {
 INPUT_INFO	*io;
 
-return FALSE;
+return false;
 	io=DI_JoyState[id];
 	if(io->datasid==DFDIJOYSTICK2)
 	{
 		{
 			DIJOYSTATE2	*js;
 //			js=io->old_joystate2;
-			if(js->rgbButtons[numb]&0x80) return TRUE;
+			if(js->rgbButtons[numb]&0x80) return true;
 		}
 	}
 	else
@@ -2150,10 +2150,10 @@ return FALSE;
 		{
 			DIJOYSTATE	*js;
 //			js=io->old_joystate;
-			if(js->rgbButtons[numb]&0x80) return TRUE;
+			if(js->rgbButtons[numb]&0x80) return true;
 		}
 	}
-	return FALSE;
+	return false;
 }
 /*-------------------------------------------------------------*/
 int DXI_GetIDJoyButtonPressed(int id)

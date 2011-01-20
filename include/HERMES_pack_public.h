@@ -25,16 +25,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EVE_LOAD
 #define EVE_LOAD
 
-#include "implode.h"
 #include "HERMES_pack.h"
 
 #define PACK_MAX_FREAD	(256)
 
+#define PAK_READ_BUF_SIZE 1024
 typedef struct
 {
 	FILE *file;
 	char *mem;
-	long lSize;
+	std::size_t lSize;
+	
+	char readbuf[PAK_READ_BUF_SIZE];
+	
 } PAK_PARAM;
 
 typedef struct
@@ -48,6 +51,9 @@ typedef struct
 	int		iTailleBase;
 	int		iTailleW;
 	int		iTailleFic;
+	
+	char readbuf[PAK_READ_BUF_SIZE];
+	
 } PAK_PARAM_FREAD;
 
 typedef struct

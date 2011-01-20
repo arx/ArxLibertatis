@@ -24,7 +24,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 #include <stdlib.h>
 #include "ARX_CCinematique.h"
-#include "Resource.h"
 
 /*---------------------------------------------------------------------------------*/
 extern HWND HwndPere;
@@ -90,7 +89,7 @@ int FX_FadeOUT(float a, int color, int colord)
 
 float LastTime;
 /*---------------------------------------------------------------------------------*/
-BOOL FX_Blur(CINEMATIQUE * c, LPDIRECT3DDEVICE7 device, C_BITMAP * tb)
+bool FX_Blur(CINEMATIQUE * c, LPDIRECT3DDEVICE7 device, C_BITMAP * tb)
 {
 	int			nb;
 	EERIE_3D	* pos;
@@ -98,7 +97,7 @@ BOOL FX_Blur(CINEMATIQUE * c, LPDIRECT3DDEVICE7 device, C_BITMAP * tb)
 	float		alpha, dalpha;
 	int			col;
 
-	if (c->numbitmap < 0 || !tb->actif) return FALSE;
+	if (c->numbitmap < 0 || !tb->actif) return false;
 
 	if (TotOldPos == NBOLDPOS)
 	{
@@ -138,19 +137,19 @@ BOOL FX_Blur(CINEMATIQUE * c, LPDIRECT3DDEVICE7 device, C_BITMAP * tb)
 		nb--;
 	}
 
-	return TRUE;
+	return true;
 }
 /*---------------------------------------------------------------------------------*/
 //POST FX
 /*---------------------------------------------------------------------------------*/
-BOOL FX_FlashBlanc(LPDIRECT3DDEVICE7 device, float w, float h, float speed, int color, float fps, float currfps)
+bool FX_FlashBlanc(LPDIRECT3DDEVICE7 device, float w, float h, float speed, int color, float fps, float currfps)
 {
 	D3DTLVERTEX	v[4];
 	int			col;
 
 	if (FlashAlpha < 0.f)
 	{
-		return FALSE;
+		return false;
 	}
 
 	if (FlashAlpha == 0.f) FlashAlpha = 1.f;
@@ -192,17 +191,17 @@ BOOL FX_FlashBlanc(LPDIRECT3DDEVICE7 device, float w, float h, float speed, int 
 
 	EERIEDRAWPRIM(device, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, v, 4, 0);
 
-	return TRUE;
+	return true;
 }
 /*---------------------------------------------------------------------------------*/
-BOOL SpecialFade(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, float h, float speed, float fps, float fpscurr)
+bool SpecialFade(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, float h, float speed, float fps, float fpscurr)
 {
 	D3DTLVERTEX	v[4];
 	float		w, dv;
 
 	w = (float)(mask->m_dwWidth) * 5.f;
 
-	if (SpecialFadeDx < 0.f) return FALSE;
+	if (SpecialFadeDx < 0.f) return false;
 
 	dv = (float)0.99999f * (h - 1) / mask->m_dwHeight;
 
@@ -296,17 +295,17 @@ BOOL SpecialFade(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, fl
 
 	device->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_CLAMP);
 
-	return TRUE;
+	return true;
 }
 /*---------------------------------------------------------------------------------*/
-BOOL SpecialFadeR(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, float h, float speed, float fps, float fpscurr)
+bool SpecialFadeR(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, float h, float speed, float fps, float fpscurr)
 {
 	D3DTLVERTEX	v[4];
 	float		w, dv;
 
 	w = (float)(mask->m_dwWidth) * 5.f;
 
-	if (SpecialFadeDx < 0.f) return FALSE;
+	if (SpecialFadeDx < 0.f) return false;
 
 	dv = (float)0.99999f * (h - 1) / mask->m_dwHeight;
 
@@ -398,7 +397,7 @@ BOOL SpecialFadeR(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, f
 
 	device->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_CLAMP);
 
-	return TRUE;
+	return true;
 }
 /*---------------------------------------------------------------------------------*/
 float	DreamAng, DreamAng2;

@@ -59,10 +59,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef  HERMESMAIN_H
 #define  HERMESMAIN_H
 
+#define PATH_SEPERATOR_STR "/"
+#define PATH_SEPERATOR_CHR '/'
+
 #define HERMES_PATH_SIZE	512
 
 #include "HERMES_PAK.h"
 #include "HERMESPerf.h"
+
+#include <windows.h>
 
 typedef struct {
 	long	secs;
@@ -90,13 +95,13 @@ typedef struct {
 //Always on for now...
 typedef struct PassedParam
 {
-   char *pSource;                   /* Pointer to source buffer           */
-   char *pDestination;              /* Pointer to destination buffer      */
-   unsigned long SourceOffset;      /* Offset into the source buffer      */
-   unsigned long DestinationOffset; /* Offset into the destination buffer */
-   unsigned long CompressedSize;    /* Need this for extracting!          */
-   unsigned long UnCompressedSize;  /* Size of uncompressed data file     */
-   unsigned long BufferSize;
+   char * pSource;                   /* Pointer to source buffer           */
+   char * pDestination;              /* Pointer to destination buffer      */
+   std::size_t SourceOffset;      /* Offset into the source buffer      */
+   std::size_t DestinationOffset; /* Offset into the destination buffer */
+   std::size_t CompressedSize;    /* Need this for extracting!          */
+   std::size_t UnCompressedSize;  /* Size of uncompressed data file     */
+   std::size_t BufferSize;
    unsigned long Crc;               /* Calculated CRC value               */
    unsigned long OrigCrc;           /* Original CRC value of data         */
 } PARAM;
@@ -109,10 +114,10 @@ typedef struct PassedParam
 extern HWND		MAIN_PROGRAM_HANDLE;
 extern long DEBUGG;
 extern long DebugLvl[6];
-extern UINT			GaiaWM;
+extern unsigned int			GaiaWM;
 extern DIR_NODE mainnode;
 
-void File_Standardize(char * from,char * to);
+void File_Standardize(const char * from,char * to);
 char * HERMES_GaiaCOM_Receive();
  
 long KillAllDirectory(char * path);
@@ -121,9 +126,12 @@ void HERMES_InitDebug();
 void SAFEstrcpy(char * dest, char * src, unsigned long max);
 
 
+void MakeUpcase_real(char * str);
 void MakeUpcase(char * str);
 unsigned char IsIn(char * strin, char * str);
 unsigned char NC_IsIn(char * strin, char * str);
+
+bool GetWorkingDirectory(char * dest);
 
 long FileExist(char *name);
 long DirectoryExist(char *name);
@@ -148,7 +156,7 @@ bool OKBox(char * text,char *title);
 void ShowPopup(char * text);
 int ShowError(char * funcname, char * message, long fatality);
 unsigned long MakeMemoryText(char * text);
-BOOL CreateFullPath(char * path);
+bool CreateFullPath(const char * path);
 
 // Strings Funcs
 char *StringCopy(char * destination,char * source,long maxsize);
@@ -158,10 +166,9 @@ char * GetName(char *str);
 char * GetExt(char *str);
 void SetExt(char *str,char *new_ext);
 void AddToName(char *str,char *cat);
-int HERMESFileSelectorOpen(PSTR pstrFileName, PSTR pstrTitleName,char *filter,HWND hWnd);
-int HERMESFileSelectorSave(PSTR pstrFileName, PSTR pstrTitleName,char *filter,HWND hWnd);
+int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName,char *filter,HWND hWnd);
+int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName,char *filter,HWND hWnd);
 long HERMES_CreateFileCheck(const char *name, char *scheck, const long &size, const float &id);
-char * STD_Implode(char * from,long from_size,long * to_size);
 char * STD_Explode(char * from,long from_size,long * to_size);
 void STD_ExplodeNoAlloc(char * from,long from_size,char * to,long * to_size);
 void ERROR_Log_Init(char * fic);

@@ -52,7 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////
 // DANAE Versions History													//
 //////////////////////////////////////////////////////////////////////////////
-// 1.838-839			Near TRUE DEMO Version !!!
+// 1.838-839			Near true DEMO Version !!!
 // 1.818-1.820+			Portals version
 // 1.817	24/01/2002	New external version
 // 1.816	22/01/2002	Added MAGIC ON/OFF script command

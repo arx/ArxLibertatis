@@ -45,8 +45,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdio.h>
 #include "HERMESNet.h"
 #include "HERMESMain.h"
-#include "ResourceHERMESnet.h"
-
 
 //-----------------------------------------------------------------------------
 // Name: WriteRegKey()

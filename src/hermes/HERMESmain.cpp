@@ -56,26 +56,34 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 
 // Desc: HERMES main functionalities   //FILES MEMORY
-#include <windows.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-//#include <io.h>
+#include <cstring>
+using namespace std;
+
 #include <time.h>
-//#include <direct.h>			// _getcwd
 #include "HERMESMain.h"
 #include "HERMESNet.h"
-#include "ARX_Casts.h"
+#include <ARX_Casts.h>
 
-// from	wine/msvcrt/stdlib.h
-#define _MAX_DRIVE          3
-#define _MAX_FNAME          256
-#define _MAX_EXT            _MAX_FNAME
-#define _MAX_DIR            _MAX_FNAME
+extern "C" {
+#undef __cplusplus
+#include <shlobj.h>
+#include <windows.h>
+#include <unistd.h>
+}
 
 
 
+#include <blast.h>
 
-char HermesBufferWork[MAX_PATH];	// Used by FileStandardize (avoid malloc/free per call)
+// TODO is this correct?
+#define _MAX_EXT 3
+#define _MAX_FNAME 512
+#define _MAX_DRIVE 1
+#define _MAX_DIR _MAX_FNAME
+
+
+
+char HermesBufferWork[MAX_PATH];    // Used by FileStandardize (avoid malloc/free per call)
 
 UINT GaiaWM = 0;
 HWND MAIN_PROGRAM_HANDLE = NULL;
@@ -388,7 +396,7 @@ unsigned long MakeMemoryText(char * text)
 		return 0;
 	}
 
-	BOOL * ignore;
+	bool * ignore;
 	unsigned long TotMemory = 0;
 	unsigned long TOTTotMemory = 0;
 	char header[128];
@@ -400,9 +408,9 @@ unsigned long MakeMemoryText(char * text)
 		return 0;
 	}
 
-	ignore = (BOOL *)malloc(sizeof(BOOL) * nb_MemoTraces);
+	ignore = (bool *)malloc(sizeof(bool) * nb_MemoTraces);
 
-	for (long i = 0; i < nb_MemoTraces; i++) ignore[i] = FALSE;
+	for (long i = 0; i < nb_MemoTraces; i++) ignore[i] = false;
 
 	strcpy(text, "");
 
@@ -426,7 +434,7 @@ unsigned long MakeMemoryText(char * text)
 
 					if (!strcmp(header, theader))
 					{
-						ignore[j] = TRUE;
+						ignore[j] = true;
 						TotMemory += MemoTraces[j].size;
 					}
 				}
@@ -574,7 +582,7 @@ long DirectoryExist(char * name)
 	return 1;
 }
 
-BOOL CreateFullPath(char * path)
+bool CreateFullPath(char * path)
 {
 
 	char drive[_MAX_DRIVE];
@@ -585,7 +593,7 @@ BOOL CreateFullPath(char * path)
 	// todo: path
 //	_splitpath(path, drive, dir, fname, ext);
 
-	if (strlen(dir) == 0) return FALSE;
+	if (strlen(dir) == 0) return false;
 
 	char curpath[256];
 	strcpy(curpath, drive);
@@ -609,9 +617,9 @@ BOOL CreateFullPath(char * path)
 		pos++;
 	}
 
-	if (DirectoryExist(path)) return TRUE;
+	if (DirectoryExist(path)) return true;
 
-	return FALSE;
+	return false;
 }
 long FileExist(char * name)
 {
@@ -908,10 +916,10 @@ bool HERMESFolderBrowse(char * str)
 //
 //	if (liil)
 //	{
-//		if (SHGetPathFromIDList(liil, LastFolder))	return TRUE;
-//		else return FALSE;
+//		if (SHGetPathFromIDList(liil, LastFolder))	return true;
+//		else return false;
 //	}
-//	else return FALSE;
+//	else return false;
 	return false;
 }
 
@@ -921,15 +929,15 @@ bool HERMESFolderSelector(char * file_name, char * title)
 	if (HERMESFolderBrowse(title))
 	{
 		sprintf(file_name, "%s\\", LastFolder);
-		return TRUE;
+		return true;
 	}
 	else
 	{
 		strcpy(file_name, " ");
-		return FALSE;
+		return false;
 	}
 }
-BOOL HERMES_WFSelectorCommon(PSTR pstrFileName, PSTR pstrTitleName, char * filter, long flag, long flag_operation, long max_car, HWND hWnd)
+bool HERMES_WFSelectorCommon(PSTR pstrFileName, PSTR pstrTitleName, char * filter, long flag, long flag_operation, long max_car, HWND hWnd)
 {
 	LONG	value;
 	char	cwd[MAX_PATH];

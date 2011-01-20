@@ -108,7 +108,7 @@ bool ARX_SPECIAL_ATTRACTORS_Add(long ionum, float power, float radius)
 	{
 		attractors[tst].power = power;
 		attractors[tst].radius = radius;
-		return FALSE;
+		return false;
 	}
 
 	for (long i = 0; i < MAX_ATTRACTORS; i++)
@@ -118,11 +118,11 @@ bool ARX_SPECIAL_ATTRACTORS_Add(long ionum, float power, float radius)
 			attractors[i].ionum = ionum;
 			attractors[i].power = power;
 			attractors[i].radius = radius;
-			return TRUE;
+			return true;
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 
 void ARX_SPECIAL_ATTRACTORS_ComputeForIO(INTERACTIVE_OBJ * ioo, EERIE_3D * force)

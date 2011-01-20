@@ -158,7 +158,7 @@ void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tou
 }
 //*************************************************************************************
 //*************************************************************************************
-BOOL EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink, char * actiontext, char * actiontext2, INTERACTIVE_OBJ * io)
+bool EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink, char * actiontext, char * actiontext2, INTERACTIVE_OBJ * io)
 {
 	long group = -1;
 
@@ -166,26 +166,26 @@ BOOL EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink,
 
 	if (ni < 0)
 	{
-		return FALSE; 
+		return false; 
 	}
 
 	long n = EERIE_LINKEDOBJ_Create(obj);
 
-	if (n == -1) return FALSE;
+	if (n == -1) return false;
 
 	group = GetActionPointGroup(obj, ni);
 
-	if (group < 0) return FALSE; 
+	if (group < 0) return false; 
 
 	long ni2 = GetActionPointIdx(tolink, actiontext2);
 
-	if (ni2 < 0) return FALSE; 
+	if (ni2 < 0) return false; 
 
 	obj->linked[n].lidx2 = ni2;
 	obj->linked[n].lidx = ni;
 	obj->linked[n].lgroup = group;
 	obj->linked[n].obj = tolink;
 	obj->linked[n].io = io;
-	return TRUE;
+	return true;
 
 }

@@ -134,7 +134,7 @@ COLORREF custcr[16];
 long accepted = 0;
 
  
-BOOL CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+bool CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 long InitMemorySnaps();
 void FlushMemorySnaps(long snap);
@@ -158,14 +158,14 @@ void SetCheck(HWND hWnd, int id, long chk)
 //*************************************************************************************
 //*************************************************************************************
 
-BOOL IsChecked(HWND hWnd, int id)
+bool IsChecked(HWND hWnd, int id)
 {
 	HWND thWnd;
 	thWnd = GetDlgItem(hWnd, id);
 
-	if (SendMessage(thWnd, BM_GETSTATE, 0, 0) == BST_CHECKED) return TRUE;
+	if (SendMessage(thWnd, BM_GETSTATE, 0, 0) == BST_CHECKED) return true;
 
-	return FALSE;
+	return false;
 }
 
 //*************************************************************************************
@@ -179,7 +179,7 @@ void SetClick(HWND hWnd, int id)
 }
 
 float FORCED_REDUCTION_VALUE = 0.f;
-BOOL CALLBACK MeshReductionProc(HWND hWnd, UINT uMsg, WPARAM wParam,
+bool CALLBACK MeshReductionProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                                 LPARAM lParam)
 {
 	HWND thWnd;
@@ -189,36 +189,36 @@ BOOL CALLBACK MeshReductionProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 	{
 		case WM_NOTIFY:
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER_REDUCTION);
-			t = SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+			t = SendMessage(thWnd, TBM_GETPOS, true, 0);
 			FORCED_REDUCTION_VALUE = (float)t * DIV10000;
 			break;
 		case WM_CLOSE:
 			MESH_REDUCTION_WINDOW = NULL;
-			EndDialog(hWnd, TRUE);
-			return FALSE;
+			EndDialog(hWnd, true);
+			return false;
 		case WM_INITDIALOG:
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER_REDUCTION);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(0, 10000));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(0, 10000));
 			t = (long)(FORCED_REDUCTION_VALUE * 10000.f);
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(t));
-			return TRUE;
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
+			return true;
 		case WM_COMMAND:
 
 			switch (LOWORD(wParam))
 			{
 				case IDOK:
 					thWnd = GetDlgItem(hWnd, IDC_SLIDER_REDUCTION);
-					t = SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+					t = SendMessage(thWnd, TBM_GETPOS, true, 0);
 					FORCED_REDUCTION_VALUE = (float)t * DIV10000;
 					MESH_REDUCTION_WINDOW = NULL;
-					EndDialog(hWnd, TRUE);
+					EndDialog(hWnd, true);
 					break;
 			}
 
 			break;
 	}
 
-	return FALSE;
+	return false;
 }
 
 char ERRORSTRING[65535];
@@ -231,10 +231,10 @@ HWND ShowErrorPopup(char * title, char * tex)
 	if (danaeApp.m_pFramework->m_bIsFullscreen)
 	{
 		ARX_TIME_Pause();
-		danaeApp.Pause(TRUE);
+		danaeApp.Pause(true);
 		DialogBox((HINSTANCE)GetWindowLong(danaeApp.m_hWnd, GWL_HINSTANCE),
 		          MAKEINTRESOURCE(IDD_SCRIPTERROR), danaeApp.m_hWnd, IDDErrorLogProc);
-		danaeApp.Pause(FALSE);
+		danaeApp.Pause(false);
 		ARX_TIME_UnPause();
 		return NULL;
 	}
@@ -243,7 +243,7 @@ HWND ShowErrorPopup(char * title, char * tex)
 	                             MAKEINTRESOURCE(IDD_SCRIPTERROR), danaeApp.m_hWnd, IDDErrorLogProc, 0);
 	return hdl;
 }
-BOOL CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam,
+bool CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                               LPARAM lParam)
 {
 	HWND thWnd;
@@ -251,31 +251,31 @@ BOOL CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 	switch (uMsg)
 	{
 		case WM_CLOSE:
-			EndDialog(hWnd, TRUE);
-			return FALSE;
+			EndDialog(hWnd, true);
+			return false;
 		case WM_INITDIALOG:
 			thWnd = GetDlgItem(hWnd, IDC_ERRORLOG);
 			SetWindowText(thWnd, ERRORSTRING);
 			thWnd = GetDlgItem(hWnd, IDC_ERRORSTRING);
 			SetWindowText(thWnd, ERRORTITLE);
-			return TRUE;
+			return true;
 		case WM_COMMAND:
 
 			switch (LOWORD(wParam))
 			{
 				case IDOK:
-					EndDialog(hWnd, TRUE);
+					EndDialog(hWnd, true);
 					break;
 			}
 
 			break;
 	}
 
-	return FALSE;
+	return false;
 }
 extern long ARX_PATHS_HIERARCHYMOVE;
 
-BOOL CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
+bool CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                                  LPARAM lParam)
 {
 	HWND thWnd;
@@ -284,22 +284,22 @@ BOOL CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 	{
 		case WM_CLOSE:
 			CDP_PATHWAYS_Options = NULL;
-			EndDialog(hWnd, TRUE);
-			return FALSE;
+			EndDialog(hWnd, true);
+			return false;
 		case WM_NOTIFY:
 			char temp[256];
 			float fval;
 			long val;
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER1);
-			val = (long)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+			val = (long)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			fval = (float)(val) * DIV10;
 			thWnd = GetDlgItem(hWnd, IDC_FCLIPTEXT);
 			sprintf(temp, "%3.1f m", fval);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER2);
-			val = (long)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+			val = (long)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_MAXVOLTEXT);
 			sprintf(temp, "%d%%", val);
 			SetWindowText(thWnd, temp);
@@ -312,7 +312,7 @@ BOOL CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 				                     | ((col & 255) << 16);
 				thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);
 				HDC dc;
-				InvalidateRect(thWnd, NULL, TRUE);
+				InvalidateRect(thWnd, NULL, true);
 
 				if (dc = GetDC(thWnd))
 				{
@@ -372,7 +372,7 @@ BOOL CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 				                     | ((col & 255) << 16);
 				thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);
 				HDC dc;
-				InvalidateRect(thWnd, NULL, TRUE);
+				InvalidateRect(thWnd, NULL, true);
 
 				if (dc = GetDC(thWnd))
 				{
@@ -423,23 +423,23 @@ BOOL CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 				}
 
 				thWnd = GetDlgItem(hWnd, IDC_SLIDER1);
-				SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(10, 400));
+				SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(10, 400));
 
 				if (ARX_PATHS_SelectedAP->flags & PATH_FARCLIP)
 				{
 					SetCheck(hWnd, IDC_CLIPPINGFAR, CHECK);
 					long t = ARX_CLEAN_WARN_CAST_LONG((long)ARX_PATHS_SelectedAP->farclip * DIV10);
-					SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(t));
+					SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
 				}
 				else
 				{
 					SetCheck(hWnd, IDC_CLIPPINGFAR, UNCHECK);
 					long t = (long)280;
-					SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(t));
+					SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
 				}
 
 				thWnd = GetDlgItem(hWnd, IDC_SLIDER2);	//Reverb
-				SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(1, 100)); // %
+				SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(1, 100)); // %
 
 				if (ARX_PATHS_SelectedAP->flags & PATH_REVERB)
 				{
@@ -455,7 +455,7 @@ BOOL CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 
 				if (t <= 1) t = 100;
 
-				SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(t));
+				SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
 				thWnd = GetDlgItem(hWnd, IDC_MAXVOLTEXT);
 				sprintf(temp, "%d", t);
 				SetWindowText(thWnd, temp);
@@ -503,7 +503,7 @@ BOOL CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 				SetWindowText(thWnd, "0");
 			}
 
-			return TRUE;
+			return true;
 		case WM_COMMAND:
 
 			switch (LOWORD(wParam))
@@ -528,7 +528,7 @@ BOOL CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 						ARX_PATHS_SelectedAP->rgb.b = (float)((long)((cc.rgbResult >> 16) & 255)) * DIV255;
 						thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);
 						HDC dc;
-						InvalidateRect(thWnd, NULL, TRUE);
+						InvalidateRect(thWnd, NULL, true);
 
 						if (dc = GetDC(thWnd))
 						{
@@ -646,7 +646,7 @@ BOOL CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 						}
 
 						thWnd = GetDlgItem(hWnd, IDC_SLIDER1);
-						val	=	SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+						val	=	SendMessage(thWnd, TBM_GETPOS, true, 0);
 						fval =	(float)(val) * 10.f;
 						ARX_PATHS_SelectedAP->farclip = fval;
 
@@ -660,7 +660,7 @@ BOOL CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 						}
 
 						thWnd = GetDlgItem(hWnd, IDC_SLIDER2);
-						val	=	SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+						val	=	SendMessage(thWnd, TBM_GETPOS, true, 0);
 						fval =	(float)(val);
 						ARX_PATHS_SelectedAP->amb_max_vol = fval;
 						thWnd = GetDlgItem(hWnd, IDC_EDITNAME);
@@ -675,21 +675,21 @@ BOOL CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 						if (LOWORD(wParam) == IDOK)
 						{
 							CDP_PATHWAYS_Options = NULL;
-							EndDialog(hWnd, TRUE);
+							EndDialog(hWnd, true);
 						}
 					}
 
 					break;
 				case IDCANCEL:
 					CDP_PATHWAYS_Options = NULL;
-					EndDialog(hWnd, TRUE);
+					EndDialog(hWnd, true);
 					break;
 			}
 
 			break;
 	}
 
-	return FALSE;
+	return false;
 }
 
 //-----------------------------------------------------------------------------------
@@ -813,7 +813,7 @@ void InterTreeSelectObject(HTREEITEM hitem)
 	}
 }
 
-BOOL CALLBACK InteractiveObjDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
+bool CALLBACK InteractiveObjDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                                     LPARAM lParam)
 {
 	HTREEITEM hitem;
@@ -836,7 +836,7 @@ BOOL CALLBACK InteractiveObjDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			break;
 		case WM_CLOSE:
 			KillInterTreeView();
-			return FALSE;
+			return false;
 		case WM_INITDIALOG:
 
 			if ((danaeApp.m_pDeviceInfo->bWindowed) && (danaeApp.m_hWnd != NULL))
@@ -863,7 +863,7 @@ BOOL CALLBACK InteractiveObjDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 				}
 			}
 
-			return TRUE;
+			return true;
 		case WM_COMMAND:
 
 			switch (LOWORD(wParam))
@@ -881,7 +881,7 @@ BOOL CALLBACK InteractiveObjDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			break;
 	}
 
-	return FALSE;
+	return false;
 }
 void InterTreeViewDisplayInfo(HTREEITEM hitem)
 {
@@ -1243,7 +1243,7 @@ void KillInterTreeView()
 				}
 			}
 
-		EndDialog(InterObjDlg, TRUE);
+		EndDialog(InterObjDlg, true);
 		InterObjDlg = NULL;
 	}
 }
@@ -1304,7 +1304,7 @@ void LaunchSnapShotParamApp(HWND hwnd)
 //*************************************************************************************
 //*************************************************************************************
 
-BOOL CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+bool CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	char temp[256];
 	HWND thWnd;
@@ -1366,7 +1366,7 @@ BOOL CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 					strcpy(snapshotdata.filenames, temp);
 
 					SnapShotDlg = NULL;
-					EndDialog(hWnd, TRUE);
+					EndDialog(hWnd, true);
 					break;
 				case IDCANCELSNAP:
 
@@ -1467,15 +1467,15 @@ BOOL CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 			if (snapshotdata.flag & 1) SetCheck(hWnd, IDC_MEMORYCACHE, CHECK);
 
-			return TRUE;
+			return true;
 			break;
 		case WM_CLOSE:
 			SnapShotDlg = NULL;
-			EndDialog(hWnd, TRUE);
+			EndDialog(hWnd, true);
 			break;
 	}
 
-	return FALSE;
+	return false;
 
 }
 
@@ -1591,7 +1591,7 @@ long SYNTAXCHECKING = 0;
 //*************************************************************************************
 //*************************************************************************************
 
-BOOL CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+bool CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HWND thWnd;
 
@@ -1638,8 +1638,8 @@ BOOL CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				{
 					PRECALC = NULL;
 					KillTimer(hWnd, 1);
-					EndDialog(hWnd, TRUE);
-					return FALSE;
+					EndDialog(hWnd, true);
+					return false;
 				}
 			}
 
@@ -1685,8 +1685,8 @@ BOOL CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case WM_CLOSE:
 			PRECALC = NULL;
 			KillTimer(hWnd, 1);
-			EndDialog(hWnd, TRUE);
-			return FALSE;
+			EndDialog(hWnd, true);
+			return false;
 			break;
 		case WM_INITDIALOG:
 
@@ -1723,17 +1723,17 @@ BOOL CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SendMessage(thWnd, PBM_SETBARCOLOR , 0, 0xFF0000FF);
 			thWnd = GetDlgItem(hWnd, IDC_STATICC);
 			SetWindowText(thWnd, "Idle");
-			return TRUE;
+			return true;
 			break;
 	}
 
-	return FALSE;
+	return false;
 }
 
 //*************************************************************************************
 //*************************************************************************************
 
-BOOL CALLBACK GaiaTextEdit(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
+bool CALLBACK GaiaTextEdit(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 {
 	HWND thWnd;
 
@@ -1743,11 +1743,11 @@ BOOL CALLBACK GaiaTextEdit(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 		{
 			thWnd = GetDlgItem(hWnd, IDC_TEXTEDIT);
 			GetWindowText(thWnd, GTE_TEXT, GTE_SIZE - 1);
-			EndDialog(hWnd, TRUE);
+			EndDialog(hWnd, true);
 		}
 
 		if (IDCANCEL == LOWORD(wParam))
-			EndDialog(hWnd, TRUE);
+			EndDialog(hWnd, true);
 	}
 
 	if (uMsg == WM_INITDIALOG)
@@ -1755,10 +1755,10 @@ BOOL CALLBACK GaiaTextEdit(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 		SetWindowText(hWnd, GTE_TITLE);
 		thWnd = GetDlgItem(hWnd, IDC_TEXTEDIT);
 		SetWindowText(thWnd, GTE_TEXT);
-		return TRUE;
+		return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 void ExitProc();
@@ -1766,7 +1766,7 @@ void ExitProc();
 //*************************************************************************************
 //*************************************************************************************
 
-BOOL CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+bool CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	long val;
 	HWND thWnd;
@@ -1791,13 +1791,13 @@ BOOL CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					if (IsChecked(hWnd, IDC_SOUND))
 					{
 						Project.soundmode &= ~ARX_SOUND_ON;
-						EnableWindow(GetDlgItem(hWnd, IDC_REVERB), FALSE);
+						EnableWindow(GetDlgItem(hWnd, IDC_REVERB), false);
 						SetCheck(hWnd, IDC_REVERB, UNCHECK);
 					}
 					else
 					{
 						Project.soundmode |= ARX_SOUND_ON;
-						EnableWindow(GetDlgItem(hWnd, IDC_REVERB), TRUE);
+						EnableWindow(GetDlgItem(hWnd, IDC_REVERB), true);
 
 						if (IsChecked(hWnd, IDC_REVERB)) Project.soundmode |= ARX_SOUND_REVERB;
 						else Project.soundmode &= ~ARX_SOUND_REVERB;
@@ -1895,7 +1895,7 @@ BOOL CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					chdir(tteexx);
 
 					thWnd = GetDlgItem(hWnd, IDC_TEXTUREPRECISION);
-					val = SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+					val = SendMessage(thWnd, TBM_GETPOS, true, 0);
 
 					switch (val)
 					{
@@ -1928,10 +1928,10 @@ BOOL CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					else Project.TextureBits = 32;
 
 					Danae_Registry_Write("LastWorkingDir", Project.workingdir);
-					EndDialog(hWnd, TRUE);
+					EndDialog(hWnd, true);
 					break;
 				case IDQUIT:
-					EndDialog(hWnd, TRUE);
+					EndDialog(hWnd, true);
 					ExitProc();
 					break;
 				case IDC_CHOOSEDIR:
@@ -2001,7 +2001,7 @@ BOOL CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			long val;
 			char temp[64];
 			thWnd = GetDlgItem(hWnd, IDC_TEXTUREPRECISION);
-			val = SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+			val = SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_STATICC);
 
 			switch (val)
@@ -2062,20 +2062,20 @@ BOOL CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			SetClick(hWnd, IDC_TEX16);
 			thWnd = GetDlgItem(hWnd, IDC_TEXTUREPRECISION);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(1, 8));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(1, 8));
 			long t = 8;
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(t));
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
 
 			if (NEED_ANCHORS) SetClick(hWnd, IDC_NEED_ANCHOR);
 
-			return TRUE;
+			return true;
 			break;
 	}
 
-	return FALSE;
+	return false;
 }
 char SCRIPT_SEARCH_TEXT[256];
-BOOL CALLBACK ScriptSearchProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
+bool CALLBACK ScriptSearchProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 {
 	if (WM_COMMAND == uMsg)
 	{
@@ -2085,10 +2085,10 @@ BOOL CALLBACK ScriptSearchProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 				HWND thWnd;
 				thWnd = GetDlgItem(hWnd, IDC_SEARCHEDIT);
 				GetWindowText(thWnd, SCRIPT_SEARCH_TEXT, 255);
-				EndDialog(hWnd, TRUE);
+				EndDialog(hWnd, true);
 				break;
 			case IDCANCEL:
-				EndDialog(hWnd, TRUE);
+				EndDialog(hWnd, true);
 				break;
 		}
 	}
@@ -2099,21 +2099,21 @@ BOOL CALLBACK ScriptSearchProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 		HWND thWnd;
 		thWnd = GetDlgItem(hWnd, IDC_SEARCHEDIT);
 		SetFocus(thWnd); 
-		return TRUE;
+		return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 //*************************************************************************************
 // AboutProc()
 //  message proc function for the about box
 //*************************************************************************************
-BOOL CALLBACK AboutProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
+bool CALLBACK AboutProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 {
 	if (WM_COMMAND == uMsg)
 		if (IDOK == LOWORD(wParam) || IDCANCEL == LOWORD(wParam))
-			EndDialog(hWnd, TRUE);
+			EndDialog(hWnd, true);
 
 	if (uMsg == WM_INITDIALOG)
 	{
@@ -2123,10 +2123,10 @@ BOOL CALLBACK AboutProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 		thWnd = GetDlgItem(hWnd, IDC_ABOUT_VERSION);
 		sprintf(tex, "Ver.%2.3f", DANAE_VERSION);
 		SetWindowText(thWnd, tex);
-		return TRUE;
+		return true;
 	}
 
-	return FALSE;
+	return false;
 }
 extern long DEBUGSYS;
 extern long DBGSETTEXTURE;
@@ -2139,7 +2139,7 @@ extern long TRUEFIGHT;
 //*************************************************************************************
 //*************************************************************************************
 
-BOOL CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+bool CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HWND thWnd;
 	static long wuz;
@@ -2265,24 +2265,24 @@ BOOL CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			if (ALLOW_MESH_TWEAKING) SetClick(hWnd, IDC_MESHTWEAK);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDERDEPTH);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(1000, 8000));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(1000, 8000));
 			long t = (long)subj.cdepth;
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(t));
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
 
 			thWnd = GetDlgItem(hWnd, IDC_POWERSLIDER);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(1, 10));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(1, 10));
 			t = (long)LPpower;
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(t));
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
 
 			thWnd = GetDlgItem(hWnd, IDC_POWERSLIDER2);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(0, 50));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(0, 50));
 			t = (long)(BIGLIGHTPOWER * 100.f);
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(t));
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
 
 			thWnd = GetDlgItem(hWnd, IDC_TIMESLIDER);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(0, 200));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(0, 200));
 			t = (long)(TIMEFACTOR * 100.f);
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(t));
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
 
 
 			thWnd = GetDlgItem(hWnd, IDC_D3DTRANSFORM);
@@ -2292,11 +2292,11 @@ BOOL CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			if (!ARX_SOUND_IsEnabled())
 			{
 				SetCheck(hWnd, IDC_DISABLESOUND, CHECK);
-				EnableWindow(GetDlgItem(hWnd, IDC_REVERB), FALSE);
+				EnableWindow(GetDlgItem(hWnd, IDC_REVERB), false);
 			}
 			else if (ARX_SOUND_IsReverbEnabled()) SetCheck(hWnd, IDC_REVERB, CHECK);
 
-			return TRUE;
+			return true;
 		}
 
 		case WM_DESTROY :
@@ -2312,7 +2312,7 @@ BOOL CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					TIMEFACTOR = 1.f;
 					long t = (long)(TIMEFACTOR * 100.f);
 					thWnd = GetDlgItem(hWnd, IDC_TIMESLIDER);
-					SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(t));
+					SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
 					break;
 				}
 
@@ -2337,14 +2337,14 @@ BOOL CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				case IDC_DISABLESOUND :
 
 					if (IsChecked(hWnd, IDC_DISABLESOUND))
-						EnableWindow(GetDlgItem(hWnd, IDC_REVERB), FALSE);
+						EnableWindow(GetDlgItem(hWnd, IDC_REVERB), false);
 					else
-						EnableWindow(GetDlgItem(hWnd, IDC_REVERB), TRUE);
+						EnableWindow(GetDlgItem(hWnd, IDC_REVERB), true);
 
 					break;
 
 				case IDC_DEPTHDEFAULT :
-					SendMessage(GetDlgItem(hWnd, IDC_SLIDERDEPTH), TBM_SETPOS, TRUE, (LPARAM)(2800));
+					SendMessage(GetDlgItem(hWnd, IDC_SLIDERDEPTH), TBM_SETPOS, true, (LPARAM)(2800));
 					break;
 
 				case IDOK :
@@ -2604,32 +2604,32 @@ BOOL CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					else MAPUPDATE = 0;
 
 					thWnd = GetDlgItem(hWnd, IDC_SLIDERDEPTH);
-					long t = SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+					long t = SendMessage(thWnd, TBM_GETPOS, true, 0);
 					EERIE_CAMERA * oldcam = ACTIVECAM;
 					SetActiveCamera(&subj);
 					SetCameraDepth((float)t);
 					SetActiveCamera(oldcam);
 
 					thWnd = GetDlgItem(hWnd, IDC_POWERSLIDER);
-					LPpower = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+					LPpower = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 
 					thWnd = GetDlgItem(hWnd, IDC_POWERSLIDER2);
-					BIGLIGHTPOWER = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0) * DIV100;
+					BIGLIGHTPOWER = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * DIV100;
 
 					thWnd = GetDlgItem(hWnd, IDC_TIMESLIDER);
-					TIMEFACTOR = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0) * DIV100;
+					TIMEFACTOR = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * DIV100;
 
 					thWnd = GetDlgItem(hWnd, IDC_EDITNBINTERPOLATIONS);
 					char tex[64];
 					GetWindowText(thWnd, tex, 63);
 					MOLLESS_Nb_Interpolations = atoi(tex);
 
-					EndDialog(hWnd, TRUE);
+					EndDialog(hWnd, true);
 					break;
 				}
 
 				case IDCANCEL :
-					EndDialog(hWnd, TRUE);
+					EndDialog(hWnd, true);
 					break;
 			}
 
@@ -2637,7 +2637,7 @@ BOOL CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 
 long WATERFX = 0;
@@ -2646,7 +2646,7 @@ long REFLECTFX = 0;
 //*************************************************************************************
 //*************************************************************************************
 
-BOOL CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+bool CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HRESULT hr;
 
@@ -2763,12 +2763,12 @@ BOOL CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			else Project.hide &= ~HIDE_NODES;
 
 
-			EndDialog(hWnd, TRUE);
+			EndDialog(hWnd, true);
 		}
 
 		if (IDCANCEL == LOWORD(wParam))
 		{
-			EndDialog(hWnd, TRUE);
+			EndDialog(hWnd, true);
 		}
 	}
 
@@ -2803,15 +2803,15 @@ BOOL CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		if (TreatAllIO)						SetClick(hWnd, IDC_TREATALLIO);
 
 
-		return TRUE;
+		return true;
 	}
 
-	return FALSE;
-	return WM_INITDIALOG == uMsg ? TRUE : FALSE;
+	return false;
+	return WM_INITDIALOG == uMsg ? true : false;
 }
 extern long CHANGE_LEVEL_PROC_RESULT;
 
-BOOL CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+bool CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (WM_COMMAND == uMsg)
 	{
@@ -2819,7 +2819,7 @@ BOOL CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 		{
 			ARX_PLAYER_GotoAnyPoly();
 			CHANGE_LEVEL_PROC_RESULT = -1;
-			EndDialog(hWnd, TRUE);
+			EndDialog(hWnd, true);
 		}
 		else if (IDOK == LOWORD(wParam))
 		{
@@ -2871,12 +2871,12 @@ BOOL CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 			if (IsChecked(hWnd, IDC_C_LEVEL23))	CHANGE_LEVEL_PROC_RESULT = 23;
 
-			EndDialog(hWnd, TRUE);
+			EndDialog(hWnd, true);
 		}
 		else if (IDCANCEL == LOWORD(wParam))
 		{
 
-			EndDialog(hWnd, TRUE);
+			EndDialog(hWnd, true);
 		}
 	}
 
@@ -2884,11 +2884,11 @@ BOOL CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	{
 		CHANGE_LEVEL_PROC_RESULT = -1;
 		SetClick(hWnd, IDC_C_LEVEL0);
-		return TRUE;
+		return true;
 	}
 
-	return FALSE;
-	return WM_INITDIALOG == uMsg ? TRUE : FALSE;
+	return false;
+	return WM_INITDIALOG == uMsg ? true : false;
 }
 
 
@@ -2908,13 +2908,13 @@ void LightApply(HWND hWnd)
 		lightparam.extras &= EXTRAS_FIREPLACE;
 
 		thWnd = GetDlgItem(hWnd, IDC_SLIDER11);
-		lightparam.fallstart = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+		lightparam.fallstart = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 
 		thWnd = GetDlgItem(hWnd, IDC_SLIDER12);
-		lightparam.fallend = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+		lightparam.fallend = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 
 		thWnd = GetDlgItem(hWnd, IDC_SLIDER13);
-		lightparam.intensity = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0) / 100.f;
+		lightparam.intensity = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) / 100.f;
 
 		if (IsChecked(hWnd, IDC_SEMIDYNAMIC))	lightparam.extras |= EXTRAS_SEMIDYNAMIC;
 		else lightparam.extras &= ~EXTRAS_SEMIDYNAMIC;
@@ -2947,28 +2947,28 @@ void LightApply(HWND hWnd)
 		else lightparam.extras &= ~EXTRAS_FLARE;
 
 		thWnd = GetDlgItem(hWnd, IDC_SLIDER14);
-		lightparam.ex_flicker.r = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0) * DIV100;
+		lightparam.ex_flicker.r = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * DIV100;
 
 		thWnd = GetDlgItem(hWnd, IDC_SLIDER15);
-		lightparam.ex_flicker.g = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0) * DIV100;
+		lightparam.ex_flicker.g = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * DIV100;
 
 		thWnd = GetDlgItem(hWnd, IDC_SLIDER16);
-		lightparam.ex_flicker.b = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0) * DIV100;
+		lightparam.ex_flicker.b = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * DIV100;
 
 		thWnd = GetDlgItem(hWnd, IDC_SLIDER17);
-		lightparam.ex_radius = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+		lightparam.ex_radius = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 
 		thWnd = GetDlgItem(hWnd, IDC_SLIDER18);
-		lightparam.ex_frequency = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0) * DIV100;
+		lightparam.ex_frequency = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * DIV100;
 
 		thWnd = GetDlgItem(hWnd, IDC_SLIDER19);
-		lightparam.ex_size = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0) * DIV10;
+		lightparam.ex_size = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * DIV10;
 
 		thWnd = GetDlgItem(hWnd, IDC_SLIDER20);
-		lightparam.ex_speed = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0) * DIV100;
+		lightparam.ex_speed = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * DIV100;
 
 		thWnd = GetDlgItem(hWnd, IDC_SLIDER21);
-		lightparam.ex_flaresize = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+		lightparam.ex_flaresize = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 
 		lightparam.pos.x = CDP_EditLight->pos.x;
 		lightparam.pos.y = CDP_EditLight->pos.y;
@@ -2992,7 +2992,7 @@ long INITT = 0;
 //*************************************************************************************
 //*************************************************************************************
 
-BOOL CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+bool CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HWND thWnd;
 	long l;
@@ -3166,7 +3166,7 @@ BOOL CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 					LightApply(hWnd);
 					CDP_LIGHTOptions = NULL;
 
-					EndDialog(hWnd, TRUE);
+					EndDialog(hWnd, true);
 					break;
 				case IDCANCEL:
 					PrecalcIOLighting(NULL, 0, 1);
@@ -3174,7 +3174,7 @@ BOOL CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 					if ((CDP_EditLight) && (CDP_EditLight->tl != -1)) DynLight[CDP_EditLight->tl].exist = 0;
 
-					EndDialog(hWnd, TRUE);
+					EndDialog(hWnd, true);
 					break;
 			}
 		}
@@ -3225,19 +3225,19 @@ BOOL CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 			}
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER11);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(0, 2000));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(0, 2000));
 			l = (long)(float)(lightparam.fallstart);
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(l));
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(l));
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER12);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(0, 2000));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(0, 2000));
 			l = (long)(float)(lightparam.fallend);
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(l));
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(l));
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER13);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(0, 500));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(0, 500));
 			l = (long)(float)(lightparam.intensity * 100.f);
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(l));
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(l));
 
 			if (lightparam.extras & EXTRAS_NOCASTED) SetCheck(hWnd, IDC_CAST_SHADOWS, CHECK);
 			else SetCheck(hWnd, IDC_CAST_SHADOWS, UNCHECK);
@@ -3271,112 +3271,112 @@ BOOL CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 			else SetCheck(hWnd, IDC_FIXFLARESIZE, UNCHECK);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER14);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(0, 100));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(0, 100));
 			l = (long)(float)(lightparam.ex_flicker.r * 100.f);
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(l));
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(l));
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER15);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(0, 100));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(0, 100));
 			l = (long)(float)(lightparam.ex_flicker.g * 100.f);
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(l));
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(l));
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER16);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(0, 100));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(0, 100));
 			l = (long)(float)(lightparam.ex_flicker.b * 100.f);
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(l));
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(l));
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER17);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(0, 100));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(0, 100));
 			l = (long)(float)(lightparam.ex_radius);
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(l));
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(l));
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER18);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(1, 100));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(1, 100));
 			l = (long)((float)(lightparam.ex_frequency * 100.f));
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(l));
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(l));
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER19);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(1, 30));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(1, 30));
 			l = (long)((float)(lightparam.ex_size * 10.f));
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(l));
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(l));
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER20);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(0, 100));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(0, 100));
 			l = (long)((float)(lightparam.ex_speed) * 100.f);
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(l));
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(l));
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER21);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(0, 200));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(0, 200));
 			l = (long)((float)(lightparam.ex_flaresize));
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(l));
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(l));
 			INITT = 0;
-			return TRUE;
+			return true;
 			break;
 		case WM_NOTIFY:
 			float val, val1, val2;
 			char temp[64];
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER11);
-			val1 = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+			val1 = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_STATIC11);
 			sprintf(temp, "%4.0f", val1);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER12);
-			val2 = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+			val2 = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_STATIC12);
 			sprintf(temp, "%4.0f", val2);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER13);
-			val = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0) * DIV100;
+			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * DIV100;
 			thWnd = GetDlgItem(hWnd, IDC_STATIC13);
 			sprintf(temp, "%2.2f", val);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER14);
-			val = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_STATIC14);
 			sprintf(temp, "%3d%%", (long)val);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER15);
-			val = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_STATIC15);
 			sprintf(temp, "%3d%%", (long)val);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER16);
-			val = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_STATIC16);
 			sprintf(temp, "%3d%%", (long)val);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER17);
-			val = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_STATIC17);
 			sprintf(temp, "%3dcm", (long)val);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER18);
-			val = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_STATIC18);
 			sprintf(temp, "%3d%%", (long)val);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER19);
-			val = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_STATIC19);
 			sprintf(temp, "%3d", (long)val);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER20);
-			val = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_STATIC20);
 			sprintf(temp, "%3d%%", (long)val);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER21);
-			val = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_STATIC21);
 			sprintf(temp, "%3d", (long)val);
 			SetWindowText(thWnd, temp);
@@ -3384,7 +3384,7 @@ BOOL CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 			if (val2 < val1)
 			{
 				thWnd = GetDlgItem(hWnd, IDC_SLIDER12);
-				SendMessage(thWnd, TBM_SETPOS, FALSE, (LPARAM)(val1));
+				SendMessage(thWnd, TBM_SETPOS, false, (LPARAM)(val1));
 			}
 
 			if (!INITT)
@@ -3404,7 +3404,7 @@ BOOL CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 			break;
 	}
 
-	return FALSE;
+	return false;
 }
 
 FOG_DEF fogparam;
@@ -3415,7 +3415,7 @@ extern FOG_DEF * CDP_EditFog;
 //*************************************************************************************
 //*************************************************************************************
 
-BOOL CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+bool CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HWND thWnd;
 	float t;
@@ -3449,22 +3449,22 @@ BOOL CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				if (CDP_EditFog != NULL)
 				{
 					thWnd = GetDlgItem(hWnd, IDC_SLIDER_ROTATIONSPEED);
-					fogparam.rotatespeed = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0) / 1000.f;
+					fogparam.rotatespeed = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) / 1000.f;
 
 					thWnd = GetDlgItem(hWnd, IDC_SLIDER_MOVESPEED);
-					fogparam.speed = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+					fogparam.speed = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 
 					thWnd = GetDlgItem(hWnd, IDC_SLIDER_INITSIZE);
-					fogparam.size = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+					fogparam.size = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 
 					thWnd = GetDlgItem(hWnd, IDC_SLIDER_SCALING);
-					fogparam.scale = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+					fogparam.scale = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 
 					thWnd = GetDlgItem(hWnd, IDC_SLIDER_DURATION);
-					fogparam.tolive = (long)SendMessage(thWnd, TBM_GETPOS, TRUE, 0) * 100;
+					fogparam.tolive = (long)SendMessage(thWnd, TBM_GETPOS, true, 0) * 100;
 
 					thWnd = GetDlgItem(hWnd, IDC_SLIDER_FREQUENCY);
-					fogparam.frequency = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+					fogparam.frequency = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 
 					thWnd = GetDlgItem(hWnd, IDC_DIRECTIONAL);
 
@@ -3532,22 +3532,22 @@ BOOL CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				if (CDP_EditFog != NULL)
 				{
 					thWnd = GetDlgItem(hWnd, IDC_SLIDER_ROTATIONSPEED);
-					fogparam.rotatespeed = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0) / 1000.f;
+					fogparam.rotatespeed = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) / 1000.f;
 
 					thWnd = GetDlgItem(hWnd, IDC_SLIDER_MOVESPEED);
-					fogparam.speed = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+					fogparam.speed = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 
 					thWnd = GetDlgItem(hWnd, IDC_SLIDER_INITSIZE);
-					fogparam.size = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+					fogparam.size = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 
 					thWnd = GetDlgItem(hWnd, IDC_SLIDER_SCALING);
-					fogparam.scale = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+					fogparam.scale = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 
 					thWnd = GetDlgItem(hWnd, IDC_SLIDER_DURATION);
-					fogparam.tolive = (long)SendMessage(thWnd, TBM_GETPOS, TRUE, 0) * 100;
+					fogparam.tolive = (long)SendMessage(thWnd, TBM_GETPOS, true, 0) * 100;
 
 					thWnd = GetDlgItem(hWnd, IDC_SLIDER_FREQUENCY);
-					fogparam.frequency = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+					fogparam.frequency = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 
 					thWnd = GetDlgItem(hWnd, IDC_DIRECTIONAL);
 
@@ -3558,13 +3558,13 @@ BOOL CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				}
 
 				CDP_FogOptions = NULL;
-				EndDialog(hWnd, TRUE);
+				EndDialog(hWnd, true);
 			}
 
 			if (IDCANCEL == LOWORD(wParam))
 			{
 				CDP_FogOptions = NULL;
-				EndDialog(hWnd, TRUE);
+				EndDialog(hWnd, true);
 			}
 		}
 		break;
@@ -3572,83 +3572,83 @@ BOOL CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER_ROTATIONSPEED);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(-100, 100));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(-100, 100));
 			t = (float)(long)(fogparam.rotatespeed * 1000.f);
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(t));
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER_MOVESPEED);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(0, 100));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(0, 100));
 			t = (float)(long)(fogparam.speed);
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(t));
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER_INITSIZE);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(1, 80));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(1, 80));
 			t = (float)(long)(fogparam.size);
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(t));
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER_SCALING);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(-80, 80));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(-80, 80));
 			t = (float)(long)(fogparam.scale);
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(t));
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER_DURATION);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(1, 400));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(1, 400));
 			t = (float)(long)(fogparam.tolive) / 100;
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(t));
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER_FREQUENCY);
-			SendMessage(thWnd, TBM_SETRANGE, TRUE, (LPARAM) MAKELONG(1, 99));
+			SendMessage(thWnd, TBM_SETRANGE, true, (LPARAM) MAKELONG(1, 99));
 			t = (float)(long)fogparam.frequency;
-			SendMessage(thWnd, TBM_SETPOS, TRUE, (LPARAM)(t));
+			SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
 
 
 
 			if (fogparam.special & FOG_DIRECTIONAL) SetClick(hWnd, IDC_DIRECTIONAL);
 
-			return TRUE;
+			return true;
 		}
 		case WM_NOTIFY:
 			float val;
 			char temp[64];
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER_FREQUENCY);
-			val = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER_FREQUENCY_TEXT);
 			sprintf(temp, "%2.0f%%", val);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER_ROTATIONSPEED);
-			val = ((float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0)) / 1000.f;
+			val = ((float)SendMessage(thWnd, TBM_GETPOS, true, 0)) / 1000.f;
 			thWnd = GetDlgItem(hWnd, IDC_STATIC2);
 			sprintf(temp, "%1.3f", val);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER_MOVESPEED);
-			val = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_STATIC3);
 			sprintf(temp, "%3.0f", val);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER_INITSIZE);
-			val = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_STATIC4);
 			sprintf(temp, "%3.0f", val);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER_SCALING);
-			val = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0);
+			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_STATIC5);
 			sprintf(temp, "%3.0f", val);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER_DURATION);
-			val = (float)SendMessage(thWnd, TBM_GETPOS, TRUE, 0) * DIV10;
+			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * DIV10;
 			thWnd = GetDlgItem(hWnd, IDC_STATIC6);
 			sprintf(temp, "%4.2fs", val);
 			SetWindowText(thWnd, temp);
 			break;
 	}
 
-	return FALSE;
+	return false;
 }
 long SHOWWARNINGS = 0;
 extern HWND CDP_IOOptions;
@@ -3682,7 +3682,7 @@ INTERACTIVE_OBJ * edit_io = NULL;
 //*************************************************************************************
 //*************************************************************************************
 
-BOOL CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+bool CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HWND thWnd;
 
@@ -3719,35 +3719,35 @@ BOOL CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			py = rec.top - 22;
 			thWnd = GetDlgItem(hWnd, IDC_LOCSCR1);
 			SetWindowPos(thWnd, HWND_TOP, px, py, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
-			InvalidateRect(thWnd, NULL, TRUE);
+			InvalidateRect(thWnd, NULL, true);
 			UpdateWindow(thWnd);
 			GetClientRect(thWnd, &rec);
 			px += rec.right + 5;
 
 			thWnd = GetDlgItem(hWnd, IDC_STATICCOL1);
 			SetWindowPos(thWnd, HWND_TOP, px, py, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
-			InvalidateRect(thWnd, NULL, TRUE);
+			InvalidateRect(thWnd, NULL, true);
 			UpdateWindow(thWnd);
 			GetClientRect(thWnd, &rec);
 			px += rec.right + 5;
 
 			thWnd = GetDlgItem(hWnd, IDC_COL1);
 			SetWindowPos(thWnd, HWND_TOP, px, py, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
-			InvalidateRect(thWnd, NULL, TRUE);
+			InvalidateRect(thWnd, NULL, true);
 			UpdateWindow(thWnd);
 			GetClientRect(thWnd, &rec);
 			px += rec.right + 5;
 
 			thWnd = GetDlgItem(hWnd, IDC_STATICLINE1);
 			SetWindowPos(thWnd, HWND_TOP, px, py, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
-			InvalidateRect(thWnd, NULL, TRUE);
+			InvalidateRect(thWnd, NULL, true);
 			UpdateWindow(thWnd);
 			GetClientRect(thWnd, &rec);
 			px += rec.right + 5;
 
 			thWnd = GetDlgItem(hWnd, IDC_LINE1);
 			SetWindowPos(thWnd, HWND_TOP, px, py, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
-			InvalidateRect(thWnd, NULL, TRUE);
+			InvalidateRect(thWnd, NULL, true);
 			UpdateWindow(thWnd);
 			GetClientRect(thWnd, &rec);
 			px += rec.right + 5;
@@ -3757,35 +3757,35 @@ BOOL CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			py = rec2.top - 22;
 			thWnd = GetDlgItem(hWnd, IDC_LOCSCR2);
 			SetWindowPos(thWnd, HWND_TOP, px, py, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
-			InvalidateRect(thWnd, NULL, TRUE);
+			InvalidateRect(thWnd, NULL, true);
 			UpdateWindow(thWnd);
 			GetClientRect(thWnd, &rec);
 			px += rec.right + 5;
 
 			thWnd = GetDlgItem(hWnd, IDC_STATICCOL2);
 			SetWindowPos(thWnd, HWND_TOP, px, py, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
-			InvalidateRect(thWnd, NULL, TRUE);
+			InvalidateRect(thWnd, NULL, true);
 			UpdateWindow(thWnd);
 			GetClientRect(thWnd, &rec);
 			px += rec.right + 5;
 
 			thWnd = GetDlgItem(hWnd, IDC_COL2);
 			SetWindowPos(thWnd, HWND_TOP, px, py, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
-			InvalidateRect(thWnd, NULL, TRUE);
+			InvalidateRect(thWnd, NULL, true);
 			UpdateWindow(thWnd);
 			GetClientRect(thWnd, &rec);
 			px += rec.right + 5;
 
 			thWnd = GetDlgItem(hWnd, IDC_STATICLINE2);
 			SetWindowPos(thWnd, HWND_TOP, px, py, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
-			InvalidateRect(thWnd, NULL, TRUE);
+			InvalidateRect(thWnd, NULL, true);
 			UpdateWindow(thWnd);
 			GetClientRect(thWnd, &rec);
 			px += rec.right + 5;
 
 			thWnd = GetDlgItem(hWnd, IDC_LINE2);
 			SetWindowPos(thWnd, HWND_TOP, px, py, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
-			InvalidateRect(thWnd, NULL, TRUE);
+			InvalidateRect(thWnd, NULL, true);
 			UpdateWindow(thWnd);
 			GetClientRect(thWnd, &rec);
 			px += rec.right + 5;
@@ -3816,7 +3816,7 @@ BOOL CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			IOScript_Y = _wndrect.top;
 			IOScript_XX = _wndrect.right - _wndrect.left;
 			IOScript_YY = _wndrect.bottom - _wndrect.top;
-			EndDialog(hWnd, TRUE);
+			EndDialog(hWnd, true);
 			break;
 		case WM_COMMAND:
 		{
@@ -3829,7 +3829,7 @@ BOOL CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					SHOWWARNINGS = 1;
 					CDP_EditIO->ioflags &= ~IO_FREEZESCRIPT;
 
-					if (CheckScriptSyntax(CDP_EditIO) != TRUE) CDP_EditIO->ioflags |= IO_FREEZESCRIPT;
+					if (CheckScriptSyntax(CDP_EditIO) != true) CDP_EditIO->ioflags |= IO_FREEZESCRIPT;
 					else CDP_EditIO->ioflags &= ~IO_FREEZESCRIPT;
 
 					SHOWWARNINGS = 0;
@@ -3969,7 +3969,7 @@ BOOL CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					}
 
 					if (!(CDP_EditIO->ioflags & IO_FREEZESCRIPT))
-						if (CheckScriptSyntax(CDP_EditIO) != TRUE) CDP_EditIO->ioflags |= IO_FREEZESCRIPT;
+						if (CheckScriptSyntax(CDP_EditIO) != true) CDP_EditIO->ioflags |= IO_FREEZESCRIPT;
 				}
 
 				CDP_IOOptions = NULL;
@@ -3983,7 +3983,7 @@ BOOL CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				IOScript_Y = _wndrect.top;
 				IOScript_XX = _wndrect.right - _wndrect.left;
 				IOScript_YY = _wndrect.bottom - _wndrect.top;
-				EndDialog(hWnd, TRUE);
+				EndDialog(hWnd, true);
 			}
 
 			if (IDCANCEL == LOWORD(wParam))
@@ -4008,7 +4008,7 @@ BOOL CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				IOScript_Y = _wndrect.top;
 				IOScript_XX = _wndrect.right - _wndrect.left;
 				IOScript_YY = _wndrect.bottom - _wndrect.top;
-				EndDialog(hWnd, TRUE);
+				EndDialog(hWnd, true);
 			}
 		}
 		break;
@@ -4108,12 +4108,12 @@ BOOL CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				SetWindowPos(hWnd, NULL, IOScript_X, IOScript_Y, IOScript_XX, IOScript_YY, SWP_NOZORDER);
 			}
 
-			return TRUE;
+			return true;
 		}
 
 	}
 
-	return FALSE;
+	return false;
 
 }
 extern HWND CDP_SOUNDOptions;
@@ -4121,7 +4121,7 @@ extern HWND CDP_SOUNDOptions;
 //*************************************************************************************
 //*************************************************************************************
  
-BOOL CALLBACK LanguageOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
+bool CALLBACK LanguageOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 {
 	if (WM_COMMAND == uMsg)
 		switch (LOWORD(wParam))
@@ -4138,14 +4138,14 @@ BOOL CALLBACK LanguageOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 					strcpy(Project.localisationpath, "fr");
 				}
 
-				EndDialog(hWnd, TRUE);
+				EndDialog(hWnd, true);
 				break;
 			case IDCANCEL:
-				EndDialog(hWnd, TRUE);
+				EndDialog(hWnd, true);
 				break;
 		}
 
-	return FALSE;
+	return false;
 }
 
 //*************************************************************************************
@@ -4180,10 +4180,10 @@ void launchlightdialog()
 			if (danaeApp.m_pFramework->m_bIsFullscreen)
 			{
 				ARX_TIME_Pause();
-				danaeApp.Pause(TRUE);
+				danaeApp.Pause(true);
 				DialogBox((HINSTANCE)GetWindowLong(danaeApp.m_hWnd, GWL_HINSTANCE),
 				          MAKEINTRESOURCE(IDD_LIGHTDIALOG), danaeApp.m_hWnd, LightOptionsProc);
-				danaeApp.Pause(FALSE);
+				danaeApp.Pause(false);
 				ARX_TIME_UnPause();
 			}
 			else

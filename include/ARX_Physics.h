@@ -61,7 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEPoly.h"
 
 //-----------------------------------------------------------------------------
-extern BOOL FALLING;
+extern bool FALLING;
 
 //-----------------------------------------------------------------------------
 EERIEPOLY * BCCheckInPoly(float x, float y, float z);
@@ -77,7 +77,7 @@ void CorrectMove(float ox, float oy, float oz,
 void ARX_PHYSICS_Apply();
 EERIEPOLY * IsUnderWater(float x, float y, float z);
 float GetTruePolyY(EERIEPOLY * ep, EERIE_3D * pos);
-BOOL IsAnyPolyThere(float x, float z);
+bool IsAnyPolyThere(float x, float z);
 EERIEPOLY * BCCheckInPoly(float x, float y, float z);
 
 #endif

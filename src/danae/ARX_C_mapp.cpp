@@ -23,7 +23,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 #include "ARX_CCinematique.h"
-#include "Resource.h"
 #include "HERMESMain.h"
 #include "HERMES_PAK.h"
 #include "ARX_Casts.h"
@@ -33,7 +32,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 C_BITMAP	TabBitmap[MAX_BITMAP];
 int			MaxW, MaxH;
 int			NbBitmap;
-BOOL		Restore;
+bool		Restore;
 /*-----------------------------------------------------------*/
 extern char AllTxt[];
 extern HWND HwndPere;
@@ -70,7 +69,7 @@ void InitMapLoad(CINEMATIQUE * c)
 	}
 
 	NbBitmap = 0;
-	Restore = TRUE;
+	Restore = true;
 }
 /*-----------------------------------------------------------*/
 C_BITMAP * GetFreeBitmap(int * num)
@@ -96,13 +95,13 @@ C_BITMAP * GetFreeBitmap(int * num)
 	return NULL;
 }
 /*-----------------------------------------------------------*/
-BOOL DeleteFreeBitmap(int num)
+bool DeleteFreeBitmap(int num)
 {
 	C_BITMAP	* cb;
 
 	cb = &TabBitmap[num];
 
-	if (!cb->actif) return FALSE;
+	if (!cb->actif) return false;
 
 	DeleteObject(cb->hbitmap);
 	free((void *)cb->dir);
@@ -112,16 +111,16 @@ BOOL DeleteFreeBitmap(int num)
 
 	NbBitmap--;
 
-	return TRUE;
+	return true;
 }
 /*-----------------------------------------------------------*/
-BOOL KillTexture(LPDIRECT3DDEVICE7 device, int num)
+bool KillTexture(LPDIRECT3DDEVICE7 device, int num)
 {
 	C_BITMAP	* cb;
 
 	cb = &TabBitmap[num];
 
-	if (!cb->actif) return FALSE;
+	if (!cb->actif) return false;
 
 	int nb = cb->grille.nbmat;
 
@@ -130,7 +129,7 @@ BOOL KillTexture(LPDIRECT3DDEVICE7 device, int num)
 		D3DTextr_KillTexture(cb->grille.mats[nb].tex);
 	}
 
-	return TRUE;
+	return true;
 }
 /*-----------------------------------------------------------*/
 void DeleteAllBitmap(LPDIRECT3DDEVICE7 device)
@@ -147,7 +146,7 @@ void DeleteAllBitmap(LPDIRECT3DDEVICE7 device)
 	}
 }
 /*-----------------------------------------------------------*/
-BOOL AllocGrille(C_GRILLE * grille, int nbx, int nby, float tx, float ty, float dx, float dy, int echelle)
+bool AllocGrille(C_GRILLE * grille, int nbx, int nby, float tx, float ty, float dx, float dy, int echelle)
 {
 	grille->echelle = echelle;
 	int oldnbx = nbx + 1;
@@ -233,7 +232,7 @@ BOOL AllocGrille(C_GRILLE * grille, int nbx, int nby, float tx, float ty, float 
 		
 	}
 
-	return TRUE;
+	return true;
 }
 /*-----------------------------------------------------------*/
 int AddMaterial(C_GRILLE * grille, TextureContainer * tex)
@@ -797,16 +796,16 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 	return id;
 }
 /*-----------------------------------------------------------*/
-BOOL ReCreateAllMapsForBitmap(int id, int nmax, CINEMATIQUE * c, LPDIRECT3DDEVICE7 device)
+bool ReCreateAllMapsForBitmap(int id, int nmax, CINEMATIQUE * c, LPDIRECT3DDEVICE7 device)
 {
 	int			nbx, nby, w, h, num;
 	C_BITMAP	* bi;
 
-	if (!c) return FALSE;
+	if (!c) return false;
 
 	bi = &TabBitmap[id];
 
-	if (!bi->actif) return FALSE;
+	if (!bi->actif) return false;
 
 	FreeGrille(&bi->grille);
 
@@ -865,23 +864,23 @@ BOOL ReCreateAllMapsForBitmap(int id, int nmax, CINEMATIQUE * c, LPDIRECT3DDEVIC
 
 	ReajustUV(GDevice, id);
 
-	return TRUE;
+	return true;
 }
 /*-----------------------------------------------------------*/
-BOOL CINEMATIQUE::ActiveTexture(int id)
+bool CINEMATIQUE::ActiveTexture(int id)
 {
 
 	TextureContainer	* tc;
 	C_BITMAP		*	cb;
 	int					nb;
 
-	if (id >= MAX_BITMAP) return FALSE;
+	if (id >= MAX_BITMAP) return false;
 
-	if (id < 0)			return FALSE;
+	if (id < 0)			return false;
 
 	cb = &TabBitmap[id];
 
-	if (!cb->actif) return FALSE;
+	if (!cb->actif) return false;
 
 	C_INDEXED	* mat = cb->grille.mats;
  
@@ -891,16 +890,16 @@ BOOL CINEMATIQUE::ActiveTexture(int id)
 	{
 		tc = mat->tex;
 
-		if (!tc) return FALSE;
+		if (!tc) return false;
 
-		if (tc->Restore(GDevice) != S_OK) return FALSE;	
+		if (tc->Restore(GDevice) != S_OK) return false;	
 
-		if (tc->CopyBitmapToSurface2(cb->hbitmap, mat->bitmapdepx, mat->bitmapdepy, mat->bitmapw, mat->bitmaph, 1) != S_OK) return FALSE;
+		if (tc->CopyBitmapToSurface2(cb->hbitmap, mat->bitmapdepx, mat->bitmapdepy, mat->bitmapw, mat->bitmaph, 1) != S_OK) return false;
 
 		mat++;
 	}
 
-	return TRUE;
+	return true;
 }
 /*-----------------------------------------------------------*/
 void ReajustUV(LPDIRECT3DDEVICE7 device, int id)
@@ -953,11 +952,11 @@ void ReajustUV(LPDIRECT3DDEVICE7 device, int id)
 	}
 }
 /*-----------------------------------------------------------*/
-BOOL ActiveAllTexture(CINEMATIQUE * c)
+bool ActiveAllTexture(CINEMATIQUE * c)
 {
 	int			nb;
 	C_BITMAP	* cb;
-	BOOL		flag = FALSE;
+	bool		flag = false;
 
 	cb = TabBitmap;
 	nb = MAX_BITMAP;

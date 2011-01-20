@@ -50,6 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 void EERIE_COLLISION_SPHERES_Create(EERIE_3DOBJ * obj);
 void EERIE_COLLISION_SPHERES_Release(EERIE_3DOBJ * obj);
 void EERIE_COLLISION_Cylinder_Create(INTERACTIVE_OBJ	* io);
-BOOL EERIE_COLLISION_Move_Cylinder(IO_PHYSICS	*	ip);
+bool EERIE_COLLISION_Move_Cylinder(IO_PHYSICS	*	ip);
 
 #endif

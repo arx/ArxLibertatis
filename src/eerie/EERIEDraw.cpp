@@ -151,7 +151,7 @@ bool NearlyEqual(float a,float b)
 	return false;
 }
 
-BOOL Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
+bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 {
 	
 	long count=0;
@@ -164,21 +164,21 @@ BOOL Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 	
 	if (ep2->type & POLY_QUAD)
 					{
-	return FALSE;
+	return false;
 }
 	
-	if (ep->tex != ep2->tex) return FALSE;
+	if (ep->tex != ep2->tex) return false;
 
 	long typ1=ep->type&(~POLY_QUAD);
 	long typ2=ep2->type&(~POLY_QUAD);
 
-	if (typ1!=typ2) return FALSE;
+	if (typ1!=typ2) return false;
 
-	if ((ep->type & POLY_TRANS) && (ep->transval!=ep2->transval)) return FALSE;
+	if ((ep->type & POLY_TRANS) && (ep->transval!=ep2->transval)) return false;
 
 	CalcFaceNormal(ep,ep->v);
 
-	if (EEfabs(Vector_DotProduct(&ep->norm,&ep2->norm))<1.f-tolerance) return FALSE;
+	if (EEfabs(Vector_DotProduct(&ep->norm,&ep2->norm))<1.f-tolerance) return false;
 	
 	for (long i=0;i<3;i++)
 	{
@@ -268,15 +268,15 @@ BOOL Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 			*Distance3D(	ep2->v[3].sx,ep2->v[3].sy,ep2->v[3].sz,
 							ep2->v[1].sx,ep2->v[1].sy,ep2->v[1].sz)*DIV2;
 
-		return TRUE;
+		return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 extern long COMPUTE_PORTALS;
 #define TYPE_ROOM	2
-BOOL TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
+bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 {
 	long posx,posz,posy;
 	float cx,cy,cz;
@@ -305,10 +305,10 @@ BOOL TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 		{
 
 			if (!GetNameInfo(eobj->name,&type,&val1,&val2))
-				return FALSE;
+				return false;
 
 			if (type!=TYPE_ROOM)
-				return FALSE;
+				return false;
 		}
 
 		eg=(EERIE_BKG_INFO *)&ACTIVEBKG->Backg[xx+zz*ACTIVEBKG->Xsize];
@@ -327,16 +327,16 @@ BOOL TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 
 			if ((kl==0) && (ep2->type & POLY_QUAD) )
 			{
-				if (Quadable(ep,ep2,tolerance)) return TRUE;
+				if (Quadable(ep,ep2,tolerance)) return true;
 			}
 			else if ((kl==1) && !(ep2->type & POLY_QUAD) )
 			{
-				if (Quadable(ep,ep2,tolerance)) return TRUE;
+				if (Quadable(ep,ep2,tolerance)) return true;
 			}
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 
 
@@ -356,8 +356,8 @@ void DRAWLATER_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 		D3DTLVERTEX verts[4];
 		pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
 		pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );	
-		SETZWRITE(pd3dDevice,FALSE); 
-		SETALPHABLEND(pd3dDevice,TRUE);					
+		SETZWRITE(pd3dDevice,false); 
+		SETALPHABLEND(pd3dDevice,true);					
 		SETCULL( pd3dDevice, D3DCULL_NONE );
 		long to;
 
@@ -434,8 +434,8 @@ void DRAWLATER_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 		}
 
 		EERIEDrawnPolys+=curdrawlater;
-		SETALPHABLEND(pd3dDevice,FALSE); 
-		SETZWRITE(pd3dDevice,TRUE); 
+		SETALPHABLEND(pd3dDevice,false); 
+		SETZWRITE(pd3dDevice,true); 
 
 	SETTC(pd3dDevice,NULL);
 }
@@ -534,7 +534,7 @@ void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
 				{
 					pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
 					pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
-					SETALPHABLEND(pd3dDevice,TRUE);	
+					SETALPHABLEND(pd3dDevice,true);	
 					SETTC(pd3dDevice,NULL); 
 
 					EERIEDRAWPRIM(	pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, ep->tv,	to,	0, flg_NOCOUNT_USEVB );
@@ -545,7 +545,7 @@ void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
 				{
 					pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
 					pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
-					SETALPHABLEND(pd3dDevice,TRUE);	
+					SETALPHABLEND(pd3dDevice,true);	
 					D3DTLVERTEX verts[4];
 					SETTC(pd3dDevice,enviro);
 
@@ -638,7 +638,7 @@ void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
 					}
 
 					SETTC(pd3dDevice,ptcTexture);				
-					SETALPHABLEND(pd3dDevice,FALSE);	
+					SETALPHABLEND(pd3dDevice,false);	
 			}				
 			
 			if (ZMAPMODE)
@@ -655,8 +655,8 @@ void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
 				{
 					pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
 					pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );	
-					SETZWRITE(pd3dDevice,FALSE); 
-					SETALPHABLEND(pd3dDevice,TRUE);					
+					SETZWRITE(pd3dDevice,false); 
+					SETALPHABLEND(pd3dDevice,true);					
 					D3DTLVERTEX verts[4];
 					SETTC(pd3dDevice,ptcTexture->TextureRefinement); 
 
@@ -726,8 +726,8 @@ void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
 				}
 
 				EERIEDrawnPolys+=ptcTexture->delayed_nb;
-				SETALPHABLEND(pd3dDevice,FALSE); 
-				SETZWRITE(pd3dDevice,TRUE);
+				SETALPHABLEND(pd3dDevice,false); 
+				SETZWRITE(pd3dDevice,true);
 			}
 
 			EERIEDrawnPolys+=ptcTexture->delayed_nb;
@@ -769,7 +769,7 @@ void Delayed_EERIEDRAWPRIM( EERIEPOLY * ep)
 					{
 						pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
 						pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
-						SETALPHABLEND(pd3dDevice,TRUE);	
+						SETALPHABLEND(pd3dDevice,true);	
 						D3DTLVERTEX verts[4];
 						SETTC(pd3dDevice,enviro);
 						for (long i=0;i<to;i++)
@@ -828,7 +828,7 @@ int			nb;
 
 	pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,D3DBLEND_DESTCOLOR);
 	pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,D3DBLEND_SRCCOLOR);	
-	SETALPHABLEND(pd3dDevice,TRUE);			
+	SETALPHABLEND(pd3dDevice,true);			
 	SETTC(pd3dDevice,ep->tex);
 
 	CalculTriangleBump( ep->tv[0], ep->tv[1], ep->tv[2], &du, &dv );
@@ -925,8 +925,8 @@ int			nb;
 
 	pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,D3DBLEND_ONE);
 	pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,D3DBLEND_ZERO);	
-	SETALPHABLEND(pd3dDevice,FALSE); 
-	SETZWRITE(pd3dDevice,TRUE); 
+	SETALPHABLEND(pd3dDevice,false); 
+	SETZWRITE(pd3dDevice,true); 
 }
 
 //*************************************************************************************

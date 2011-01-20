@@ -34,34 +34,32 @@ namespace ATHENA
 	FILE *(* FileOpen)(const char * name, const char * mode) = fopen;
 	int (* FileClose)(FILE * file) = fclose;
 	size_t (* FileRead)(void * buffer, size_t size, size_t count, FILE * file) = fread;
-	size_t (* FileWrite)(const void * buffer, size_t size, size_t count, FILE * file) = fwrite;
 	int (* FileSeek)(FILE * file, long offset, int origin) = fseek;
 	long(* FileTell)(FILE * file) = ftell;
 
 	aalVoid FileIOInit()
 	{
-		if (global_status & AAL_FLAG_PACKEDRESOURCES)
-		{
+		printf("FileIOInit\n");
+		//if (global_status & AAL_FLAG_PACKEDRESOURCES)
+		//{
 			CURRENT_LOADMODE = LOAD_PACK;
 
 			FileOpen = PAK_fopen;
 			FileClose = PAK_fclose;
 			FileRead = PAK_fread;
-			FileWrite = ::fwrite;
 			FileSeek = PAK_fseek;
 			FileTell = PAK_ftell;
-		}
-		else
-		{
-			CURRENT_LOADMODE = LOAD_TRUEFILE;
+		//}
+		//else
+		//{
+		//	CURRENT_LOADMODE = LOAD_TRUEFILE;
 
-			FileOpen =	::fopen;
-			FileClose = ::fclose;
-			FileRead =	::fread;
-			FileWrite = ::fwrite;
-			FileSeek =	::fseek;
-			FileTell =	::ftell;
-		}
+		//	FileOpen =	::fopen;
+		//	FileClose = ::fclose;
+		//	FileRead =	::fread;
+		//	FileSeek =	::fseek;
+		//	FileTell =	::ftell;
+		//}
 	}
 
 	aalVoid AddPack(const char * name)

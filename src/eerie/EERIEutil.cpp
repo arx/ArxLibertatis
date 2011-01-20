@@ -82,8 +82,8 @@ VOID D3DUtil_InitSurfaceDesc(DDSURFACEDESC2 & ddsd, DWORD dwFlags,
 // Name: D3DUtil_InitMaterial()
 // Desc: Helper function called to build a D3DMATERIAL7 structure
 //-----------------------------------------------------------------------------
-VOID D3DUtil_InitMaterial(D3DMATERIAL7 & mtrl, FLOAT r, FLOAT g, FLOAT b,
-                          FLOAT a)
+VOID D3DUtil_InitMaterial(D3DMATERIAL7 & mtrl, float r, float g, float b,
+                          float a)
 {
 	ZeroMemory(&mtrl, sizeof(D3DMATERIAL7));
 	mtrl.dcvDiffuse.r = mtrl.dcvAmbient.r = r;
@@ -104,7 +104,7 @@ HRESULT D3DUtil_SetViewMatrix(D3DMATRIX & mat, D3DVECTOR & vFrom,
 	// difference from the eyepoint to the lookat point.
 	D3DVECTOR vView = vAt - vFrom;
 
-	FLOAT fLength = Magnitude(vView);
+	float fLength = Magnitude(vView);
 
 	if (fLength < 1e-6f)
 		return E_INVALIDARG;
@@ -114,7 +114,7 @@ HRESULT D3DUtil_SetViewMatrix(D3DMATRIX & mat, D3DVECTOR & vFrom,
 
 	// Get the dot product, and calculate the projection of the z basis
 	// vector onto the up vector. The projection is the y basis vector.
-	FLOAT fDotProduct = DotProduct(vWorldUp, vView);
+	float fDotProduct = DotProduct(vWorldUp, vView);
 
 	D3DVECTOR vUp = vWorldUp - fDotProduct * vView;
 

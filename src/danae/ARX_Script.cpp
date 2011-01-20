@@ -92,7 +92,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 //todo remove this define
-# define GWL_HINSTANCE       (-6)
+//# define GWL_HINSTANCE       (-6)
 
 extern long GLOBAL_MAGIC_MODE;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
@@ -184,7 +184,7 @@ again:
 
 	return -1;
 }
-BOOL CharIn(char * string, char _char)
+bool CharIn(char * string, char _char)
 {
 	char * s = string;
 
@@ -197,7 +197,7 @@ BOOL CharIn(char * string, char _char)
 
 	return false;
 }
-BOOL iCharIn(char * string, char _char)
+bool iCharIn(char * string, char _char)
 {
 	char * s = string;
 	MakeUpcase(string);
@@ -614,7 +614,7 @@ void ARX_SCRIPT_AllowInterScriptExec()
 }
 //*************************************************************************************
 //*************************************************************************************
-BOOL IsElement(char * seek, char * text)
+bool IsElement(char * seek, char * text)
 {
 	char tex[1024];
 	memcpy(tex, text, 1023);
@@ -623,12 +623,12 @@ BOOL IsElement(char * seek, char * text)
 
 	while (token != NULL)
 	{
-		if (!strcmp(token, seek)) return TRUE;
+		if (!strcmp(token, seek)) return true;
 
 		token = strtok(NULL, " ");
 	}
 
-	return FALSE;
+	return false;
 
 }
 void ARX_SCRIPT_ReleaseLabels(EERIE_SCRIPT * es)
@@ -2076,11 +2076,11 @@ long GetVarNum(SCRIPT_VAR * svf, long * nb, char * name)
 }
 //*************************************************************************************
 //*************************************************************************************
-BOOL UNSETVar(SCRIPT_VAR * svf, long * nb, char * name)
+bool UNSETVar(SCRIPT_VAR * svf, long * nb, char * name)
 {
 	long i = GetVarNum(svf, nb, name);
 
-	if (i < 0) return FALSE;
+	if (i < 0) return false;
 
 	long n = *nb;
 
@@ -2097,7 +2097,7 @@ BOOL UNSETVar(SCRIPT_VAR * svf, long * nb, char * name)
 
 	svf = (SCRIPT_VAR *)realloc(svf, sizeof(SCRIPT_VAR) * (n - 1));
 	(*nb)--;
-	return TRUE;
+	return true;
 }
 //*************************************************************************************
 //*************************************************************************************
@@ -3006,11 +3006,11 @@ long SkipNextStatement(EERIE_SCRIPT * es, long pos)
 }
 //*************************************************************************************
 //*************************************************************************************
-BOOL IsGlobal(char c)
+bool IsGlobal(char c)
 {
-	if ((c == '$') || (c == '#') || (c == '&')) return TRUE;
+	if ((c == '$') || (c == '#') || (c == '&')) return true;
 
-	return FALSE;
+	return false;
 }
 
 //*************************************************************************************
@@ -3225,7 +3225,7 @@ void GetTargetPos(INTERACTIVE_OBJ * io, unsigned long smoothing)
 		if (wp < 0)
 		{
 			if (io->ioflags & IO_CAMERA)
-				io->_camdata->cam.lastinfovalid = FALSE;
+				io->_camdata->cam.lastinfovalid = false;
 		}
 		else
 		{
@@ -3389,7 +3389,7 @@ void CheckHit(INTERACTIVE_OBJ * io, float ratioaim)
 //*************************************************************************************
 //*************************************************************************************
 
-BOOL HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
+bool HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 {
 	register float x0, y0, z0;
 	register float x1, y1, z1;
@@ -3401,7 +3401,7 @@ BOOL HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 	z1 = ioo->pos.z;
 	float dist = Distance3D(x0, y0, z0, x1, y1, z1);
 
-	if (dist > 20000) return FALSE;
+	if (dist > 20000) return false;
 
 	float ab = MAKEANGLE(io->angle.b);
 	EERIE_3D orgn, dest;
@@ -3419,10 +3419,10 @@ BOOL HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 	{
 		//font
 		ARX_TEXT_Draw(GDevice, InBookFont, 300, 320, 0, 0, _T("VISIBLE"), D3DRGB(1.f, 0.f, 0.f));
-		return TRUE;
+		return true;
 	}
 
-	return FALSE;
+	return false;
 }
 //*************************************************************************************
 //*************************************************************************************
@@ -5804,39 +5804,39 @@ HWND LastErrorPopupNO2 = NULL;
 
 extern HWND CDP_IOOptions;
 extern INTERACTIVE_OBJ * CDP_EditIO;
-BOOL CheckScriptSyntax_Loading(INTERACTIVE_OBJ * io)
+bool CheckScriptSyntax_Loading(INTERACTIVE_OBJ * io)
 {
-	return TRUE;
+	return true;
 
-	if (CheckScriptSyntax(io) != TRUE)
+	if (CheckScriptSyntax(io) != true)
 		if (!CDP_IOOptions)
 		{
 			CDP_EditIO = io;
 
 			ARX_TIME_Pause();
-			danaeApp.Pause(TRUE);
+			danaeApp.Pause(true);
 			DialogBox((HINSTANCE)GetWindowLong(danaeApp.m_hWnd, GWL_HINSTANCE),
 			          MAKEINTRESOURCE(IDD_SCRIPTDIALOG), danaeApp.m_hWnd, IOOptionsProc);
-			danaeApp.Pause(FALSE);
+			danaeApp.Pause(false);
 			ARX_TIME_UnPause();
 			LastErrorPopupNO1 = NULL;
 			LastErrorPopupNO2 = NULL;
 		}
 
-	return TRUE;
+	return true;
 }
-BOOL CheckScriptSyntax(INTERACTIVE_OBJ * io)
+bool CheckScriptSyntax(INTERACTIVE_OBJ * io)
 {
-	if (SYNTAXCHECKING == 0) return TRUE;
+	if (SYNTAXCHECKING == 0) return true;
 
 	long s1 = LaunchScriptCheck(&io->script, io);
 	LastErrorPopupNO1 = LastErrorPopup;
 	long s2 = LaunchScriptCheck(&io->over_script, io);
 	LastErrorPopupNO2 = LastErrorPopup;
 
-	if (s1 + s2 < 2) return FALSE;
+	if (s1 + s2 < 2) return false;
 
-	return TRUE; // no errors.
+	return true; // no errors.
 }
 long Event_Total_Count = 0;
 
@@ -5855,16 +5855,16 @@ void ARX_SCRIPT_Init_Event_Stats()
 }
 //*********************************************************************************************
 //*********************************************************************************************
-BOOL IsIOGroup(INTERACTIVE_OBJ * io, char * group)
+bool IsIOGroup(INTERACTIVE_OBJ * io, char * group)
 {
 	for (long i = 0; i < io->nb_iogroups; i++)
 	{
 		if ((io->iogroups[i].name)
 		        &&	(!strcasecmp(group, io->iogroups[i].name)))
-			return TRUE;
+			return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 void ARX_IOGROUP_Release(INTERACTIVE_OBJ * io)
@@ -9528,7 +9528,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							else sv->type = TYPE_L_LONG;
 
 							break;
-						case '&': // GLOBAL FLOAT
+						case '&': // GLOBAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							sv = SETVarValueFloat(&svar, &NB_GLOBALS, temp, fval);
 
@@ -9539,7 +9539,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							else sv->type = TYPE_G_FLOAT;
 
 							break;
-						case '@': // LOCAL FLOAT
+						case '@': // LOCAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							sv = SETVarValueFloat(&esss->lvar, &esss->nblvar, temp, fval);
 
@@ -11391,8 +11391,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 					if (NEED_DEBUG)
 					{
-						if (failed) strcat(cmd, " -> FALSE");
-						else strcat(cmd, " -> TRUE");
+						if (failed) strcat(cmd, " -> false");
+						else strcat(cmd, " -> true");
 					}
 
 #endif
@@ -11449,7 +11449,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							if (sv != NULL) sv->type = TYPE_L_LONG;
 
 							break;
-						case '&': // GLOBAL FLOAT
+						case '&': // GLOBAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = GETVarValueFloat(&svar, &NB_GLOBALS, temp1);
 							fval = fdval + fval;
@@ -11458,7 +11458,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							if (sv != NULL) sv->type = TYPE_G_FLOAT;
 
 							break;
-						case '@': // LOCAL FLOAT
+						case '@': // LOCAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = GETVarValueFloat(&esss->lvar, &esss->nblvar, temp1);
 							fval = fdval + fval;
@@ -11495,8 +11495,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 					if (NEED_DEBUG)
 					{
-						if (failed) sprintf(cmd, "IFEXISTINTERNAL (%s) -> FALSE", temp);
-						else sprintf(cmd, "IFEXISTINTERNAL (%s) -> TRUE", temp);
+						if (failed) sprintf(cmd, "IFEXISTINTERNAL (%s) -> false", temp);
+						else sprintf(cmd, "IFEXISTINTERNAL (%s) -> true", temp);
 					}
 
 #endif
@@ -11560,8 +11560,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 					if (NEED_DEBUG)
 					{
-						if (failed) sprintf(cmd, "IFVISIBLE (%s) -> FALSE", temp);
-						else sprintf(cmd, "IFVISIBLE (%s) -> TRUE", temp);
+						if (failed) sprintf(cmd, "IFVISIBLE (%s) -> false", temp);
+						else sprintf(cmd, "IFVISIBLE (%s) -> true", temp);
 					}
 
 #endif
@@ -12941,7 +12941,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 								sv->type = TYPE_L_LONG;
 
 							break;
-						case '&': // GLOBAL FLOAT
+						case '&': // GLOBAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = GETVarValueFloat(&svar, &NB_GLOBALS, temp1);
 							fval = fdval * fval;
@@ -12951,7 +12951,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 								sv->type = TYPE_G_FLOAT;
 
 							break;
-						case '@': // LOCAL FLOAT
+						case '@': // LOCAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = GETVarValueFloat(&esss->lvar, &esss->nblvar, temp1);
 							fval = fdval * fval;
@@ -13182,7 +13182,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							if (sv != NULL) sv->type = TYPE_L_LONG;
 
 							break;
-						case '&': // GLOBAL FLOAT
+						case '&': // GLOBAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = GETVarValueFloat(&svar, &NB_GLOBALS, temp1);
 
@@ -13197,7 +13197,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							if (sv != NULL) sv->type = TYPE_G_FLOAT;
 
 							break;
-						case '@': // LOCAL FLOAT
+						case '@': // LOCAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = GETVarValueFloat(&esss->lvar, &esss->nblvar, temp1);
 
@@ -13514,18 +13514,18 @@ end:
 	return ret;
 }
 
-BOOL InSubStack(EERIE_SCRIPT * es, long pos)
+bool InSubStack(EERIE_SCRIPT * es, long pos)
 {
 	for (long i = 0; i < MAX_GOSUB; i++)
 	{
 		if (es->sub[i] == -1)
 		{
 			es->sub[i] = pos;
-			return TRUE;
+			return true;
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 void ClearSubStack(EERIE_SCRIPT * es)
 {
@@ -13588,10 +13588,10 @@ LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 			SendMessage(hDlg, WM_SIZE, 0, 0);
 			SetWindowText(hDlg, ShowTextWindowtext);
 			thWnd = GetDlgItem(hDlg, IDC_SHOWTEXT);
-			SendMessage(thWnd, WM_SETFONT, (WPARAM) GetStockObject(ANSI_FIXED_FONT), TRUE);
+			SendMessage(thWnd, WM_SETFONT, (WPARAM) GetStockObject(ANSI_FIXED_FONT), true);
 			SetWindowText(thWnd, ShowText);
 
-			return TRUE;
+			return true;
 		case WM_SIZE:
 			break;
 		case WM_COMMAND:
@@ -13606,7 +13606,7 @@ LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 			break;
 	}
 
-	return FALSE;
+	return false;
 }
 LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -13624,7 +13624,7 @@ LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 			SetWindowText(thWnd, ShowText);
 			thWnd = GetDlgItem(hDlg, IDC_SHOWTEXT2);
 			SetWindowText(thWnd, ShowText2);
-			return TRUE;
+			return true;
 		case WM_COMMAND:
 
 			switch (LOWORD(wParam))
@@ -13637,7 +13637,7 @@ LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 			break;
 	}
 
-	return FALSE;
+	return false;
 }
 
 void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, char * name, char * content)
@@ -13694,7 +13694,7 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, char * name, char * content)
 				sv->type = TYPE_L_LONG;
 
 			break;
-		case '&': // GLOBAL FLOAT
+		case '&': // GLOBAL float
 
 			if (io) return;
 
@@ -13705,7 +13705,7 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, char * name, char * content)
 				sv->type = TYPE_G_FLOAT;
 
 			break;
-		case '@': // LOCAL FLOAT
+		case '@': // LOCAL float
 
 			if (io == NULL) return;
 

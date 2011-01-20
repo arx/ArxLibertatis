@@ -524,11 +524,11 @@ long AnchorData_GetNearest_Except(EERIE_3D * pos, EERIE_CYLINDER * cyl, long exc
 	return returnvalue;
 }
 
-BOOL ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
+bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
 {
 	// Check Validity
 	if ((!io) || (!(io->ioflags & IO_NPC)))
-		return FALSE;
+		return false;
 
 	long MUST_SELECT_Start_Anchor = -1;
 	io->physics.cyl.origin.x = io->pos.x;
@@ -541,7 +541,7 @@ BOOL ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
 		if (!ForceNPC_Above_Ground(io))
 		{
 			io->_npcdata->pathfind.pathwait = 0;
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -549,7 +549,7 @@ BOOL ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
 	{
 		io->targetinfo = target;
 		io->_npcdata->pathfind.pathwait = 0;
-		return FALSE;
+		return false;
 	}
 
 	EERIE_3D pos1, pos2;
@@ -609,7 +609,7 @@ BOOL ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
 	        &&	(inter.iobj[target] == io))
 	{
 		io->_npcdata->pathfind.pathwait = 0;
-		return FALSE; // cannot pathfind self...
+		return false; // cannot pathfind self...
 	}
 
 	if (old_target != target)
@@ -680,7 +680,7 @@ BOOL ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
 			if (dist < 100)
 			{
 				io->_npcdata->pathfind.pathwait = 0;
-				return FALSE;
+				return false;
 			}
 		}
 	}
@@ -715,7 +715,7 @@ wander:
 	if ((from != -1) && (to != -1))
 	{
 		if ((from == to) && !(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND))
-			return TRUE;
+			return true;
 
 		float dist1 = EEDistance3D(&pos1, &ACTIVEBKG->anchors[from].pos);
 
@@ -728,7 +728,7 @@ wander:
 				float dist2 = EEDistance3D(&pos2, &ACTIVEBKG->anchors[to].pos);
 				float dist3 = EEDistance3D(&ACTIVEBKG->anchors[from].pos, &ACTIVEBKG->anchors[to].pos);
 
-				if (dist3 < 200.f) return FALSE;
+				if (dist3 < 200.f) return false;
 
 				if ((dist2 > 200.f)) 
 					goto failure;
@@ -753,10 +753,10 @@ wander:
 			tpr.returnlist = &io->_npcdata->pathfind.list;
 			tpr.returnnumber = &io->_npcdata->pathfind.listnb;
 			tpr.ioid = io;
-			tpr.isvalid = TRUE;
+			tpr.isvalid = true;
 
 			if (EERIE_PATHFINDER_Add_To_Queue(&tpr))
-				return TRUE;
+				return true;
 		}
 	}
 
@@ -768,10 +768,10 @@ failure:
 
 	io->_npcdata->pathfind.listnb = -2;
 
-	if (io->_npcdata->pathfind.flags & BEHAVIOUR_NONE) return FALSE;
+	if (io->_npcdata->pathfind.flags & BEHAVIOUR_NONE) return false;
 
 	SendIOScriptEvent(io, SM_PATHFINDER_FAILURE, "", NULL);
-	return FALSE;
+	return false;
 }
 
 //***********************************************************************************************
@@ -1392,17 +1392,17 @@ extern INTERACTIVE_OBJ * EVENT_SENDER;
 //***********************************************************************************************
 // Checks If a NPC is dead
 //***********************************************************************************************
-BOOL IsDeadNPC(INTERACTIVE_OBJ * io)
+bool IsDeadNPC(INTERACTIVE_OBJ * io)
 {
-	if (!io) return FALSE;
+	if (!io) return false;
 
-	if (!(io->ioflags & IO_NPC)) return FALSE;
+	if (!(io->ioflags & IO_NPC)) return false;
 
-	if (io->_npcdata->life <= 0) return TRUE;
+	if (io->_npcdata->life <= 0) return true;
 
-	if ((io->mainevent) && !strcmp(io->mainevent, "DEAD")) return TRUE;
+	if ((io->mainevent) && !strcmp(io->mainevent, "DEAD")) return true;
 
-	return FALSE;
+	return false;
 }
 //***********************************************************************************************
 //***********************************************************************************************
@@ -2034,11 +2034,11 @@ extern float STRIKE_AIMTIME;
 // IsPlayerStriking()
 // Checks if Player is currently striking.
 //***********************************************************************************************
-BOOL IsPlayerStriking()
+bool IsPlayerStriking()
 {
 	INTERACTIVE_OBJ * io = inter.iobj[0];
 
-	if (!io) return FALSE;
+	if (!io) return false;
 
 	ANIM_USE * useanim = &io->animlayer[1];
 	long weapontype = ARX_EQUIPMENT_GetPlayerWeaponType();
@@ -2051,9 +2051,9 @@ BOOL IsPlayerStriking()
 			for (j = 0; j < 4; j++)
 			{
 				if ((STRIKE_AIMTIME > 300)
-				        && (useanim->cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT_CYCLE+j*3])) return TRUE;
+				        && (useanim->cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT_CYCLE+j*3])) return true;
 
-				if (useanim->cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT+j*3]) return TRUE;
+				if (useanim->cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT+j*3]) return true;
 			}
 
 			break;
@@ -2062,9 +2062,9 @@ BOOL IsPlayerStriking()
 			for (j = 0; j < 4; j++)
 			{
 				if ((STRIKE_AIMTIME > 300)
-				        && (useanim->cur_anim == io->anims[ANIM_DAGGER_STRIKE_LEFT_CYCLE+j*3])) return TRUE;
+				        && (useanim->cur_anim == io->anims[ANIM_DAGGER_STRIKE_LEFT_CYCLE+j*3])) return true;
 
-				if (useanim->cur_anim == io->anims[ANIM_DAGGER_STRIKE_LEFT+j*3]) return TRUE;
+				if (useanim->cur_anim == io->anims[ANIM_DAGGER_STRIKE_LEFT+j*3]) return true;
 			}
 
 			break;
@@ -2073,9 +2073,9 @@ BOOL IsPlayerStriking()
 			for (j = 0; j < 4; j++)
 			{
 				if ((STRIKE_AIMTIME > 300)
-				        && (useanim->cur_anim == io->anims[ANIM_1H_STRIKE_LEFT_CYCLE+j*3])) return TRUE;
+				        && (useanim->cur_anim == io->anims[ANIM_1H_STRIKE_LEFT_CYCLE+j*3])) return true;
 
-				if (useanim->cur_anim == io->anims[ANIM_1H_STRIKE_LEFT+j*3]) return TRUE;
+				if (useanim->cur_anim == io->anims[ANIM_1H_STRIKE_LEFT+j*3]) return true;
 			}
 
 			break;
@@ -2084,15 +2084,15 @@ BOOL IsPlayerStriking()
 			for (j = 0; j < 4; j++)
 			{
 				if ((STRIKE_AIMTIME > 300)
-				        && (useanim->cur_anim == io->anims[ANIM_2H_STRIKE_LEFT_CYCLE+j*3])) return TRUE;
+				        && (useanim->cur_anim == io->anims[ANIM_2H_STRIKE_LEFT_CYCLE+j*3])) return true;
 
-				if (useanim->cur_anim == io->anims[ANIM_2H_STRIKE_LEFT+j*3]) return TRUE;
+				if (useanim->cur_anim == io->anims[ANIM_2H_STRIKE_LEFT+j*3]) return true;
 			}
 
 			break;
 	}
 
-	return FALSE;
+	return false;
 }
 //***********************************************************************************************
 //***********************************************************************************************
@@ -2324,7 +2324,7 @@ bool TryIOAnimMove(INTERACTIVE_OBJ * io, long animnum)
 	phys.targetpos.x = io->pos.x + trans2.x;
 	phys.targetpos.y = io->pos.y + trans2.y;
 	phys.targetpos.z = io->pos.z + trans2.z;
-	BOOL res = ARX_COLLISION_Move_Cylinder(&phys, io, 30, CFLAG_JUST_TEST | CFLAG_NPC);
+	bool res = ARX_COLLISION_Move_Cylinder(&phys, io, 30, CFLAG_JUST_TEST | CFLAG_NPC);
 
 	if (res && (EEfabs(phys.cyl.origin.y - io->pos.y) < 20.f))
 		return true;
@@ -3486,7 +3486,7 @@ void ManageNPCMovement(INTERACTIVE_OBJ * io)
 	}
 
 	APPLY_PUSH = 0; 
-	DIRECT_PATH = TRUE;
+	DIRECT_PATH = true;
 
 	// Now we try the physical move for real
 	if	(Vector_Compare(&io->physics.startpos, &io->physics.targetpos) // optim
@@ -4336,7 +4336,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 						{
 							ParticleCount++;
 							PARTICLE_DEF * pd	=	&particle[j];
-							pd->exist			=	TRUE;
+							pd->exist			=	true;
 							pd->zdec			=	0;
 							Vector_Copy(&pd->ov, &pos);
 							pd->move.x			=	(2.f - 4.f * rnd());
@@ -4407,7 +4407,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 			{
 				ParticleCount++;
 				PARTICLE_DEF * pd	=	&particle[j];
-				pd->exist		=	TRUE;
+				pd->exist		=	true;
 				pd->zdec		=	0;
 				Vector_Copy(&pd->ov, &pos);
 				pd->move.x		=	(2.f - 4.f * rnd());
@@ -4474,7 +4474,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 						{
 							ParticleCount++;
 							PARTICLE_DEF * pd	=	&particle[j];
-							pd->exist			=	TRUE;
+							pd->exist			=	true;
 							pd->zdec			=	0;
 
 							Vector_Copy(&pd->ov, &pos);

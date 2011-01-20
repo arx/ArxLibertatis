@@ -78,7 +78,7 @@ class CParticleParams
 	public:
 		CParticleParams()
 		{
-			bTexInfo = FALSE;
+			bTexInfo = false;
 		};
 };
 

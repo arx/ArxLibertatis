@@ -46,7 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #if	CEDRIC
 
-extern		BOOL 		MIPM;
+extern		bool 		MIPM;
 extern		float 		vdist;
 extern 		float 		FORCED_REDUCTION_VALUE;
 extern		unsigned char * grps;
@@ -2746,8 +2746,8 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 			{
 				pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR);
 				pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-				SETALPHABLEND(pd3dDevice, TRUE);
-				SETZWRITE(pd3dDevice, FALSE);
+				SETALPHABLEND(pd3dDevice, true);
+				SETZWRITE(pd3dDevice, false);
 				SETTC(pd3dDevice, NULL);
 				unsigned long v = _EERIERGB(special_color.r);
 
@@ -2757,8 +2757,8 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 				}
 				EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , &tv, 3,  0, EERIE_FLAG  );
 				EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , &tv, 3,  0, EERIE_FLAG  );//duplicate ???? @TBR ?
-				SETALPHABLEND(pd3dDevice, FALSE);
-				SETZWRITE(pd3dDevice, TRUE);
+				SETALPHABLEND(pd3dDevice, false);
+				SETZWRITE(pd3dDevice, true);
 			}
 
 		// Add a little bit of Fake Metal Specular if needed
@@ -2798,11 +2798,11 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 				{
 					pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR);
 					pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-					SETALPHABLEND(pd3dDevice, TRUE);
-					SETZWRITE(pd3dDevice, FALSE);
+					SETALPHABLEND(pd3dDevice, true);
+					SETZWRITE(pd3dDevice, false);
 					EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, &tv, 3, 0, EERIE_FLAG );
-					SETALPHABLEND(pd3dDevice, FALSE);
-					SETZWRITE(pd3dDevice, TRUE);
+					SETALPHABLEND(pd3dDevice, false);
+					SETZWRITE(pd3dDevice, true);
 				}
 			}
 		}

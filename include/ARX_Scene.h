@@ -71,11 +71,11 @@ long ARX_PORTALS_GetRoomNumForPosition(EERIE_3D * pos, long flag = 0);
 
 void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag, long param = 0);
 void ApplyLavaGlowToVertex(EERIE_3D * odtv, D3DTLVERTEX * dtv, float power);
-BOOL ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_3D * position, EERIE_3D * bboxmin, EERIE_3D * bboxmax);
+bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_3D * position, EERIE_3D * bboxmin, EERIE_3D * bboxmax);
 void RoomDrawRelease();
 void ComputeFog(D3DTLVERTEX *, long); 
-BOOL ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io);
-BOOL ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_3D * position, EERIE_3D * bboxmin, EERIE_3D * bboxmax);
+bool ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io);
+bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_3D * position, EERIE_3D * bboxmin, EERIE_3D * bboxmax);
 
 void ComputeFogVertex(D3DTLVERTEX * v);
 void ComputeSingleFogVertex(D3DTLVERTEX * v);

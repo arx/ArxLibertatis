@@ -507,14 +507,14 @@ class CMenuElementText: public CMenuElement
 
 	public:
 
-		CMenuElementText(int, HFONT, std::string&, float, float, long, float, MENUSTATE); 
+		CMenuElementText(int, HFONT, const std::string&, float, float, long, float, MENUSTATE); 
 		virtual ~CMenuElementText();
 
 		CMenuElement * OnShortCut();
 		bool OnMouseClick(int);
 		void Update(int);
 		void Render();
-		void SetText(std::string& _pText);
+		void SetText( const std::string& _pText);
 		void RenderMouseOver();
  
  
@@ -843,7 +843,7 @@ typedef struct
 class CMenuConfig
 {
 	public:
-		char	*	pcName;
+		std::string     pcName;
 		//LANGUAGE
 		//VIDEO
 		int			iWidth;
@@ -894,27 +894,27 @@ class CMenuConfig
 
 		bool		bNoReturnToWindows;
 	private:
-		int GetDIKWithASCII(char * _pcTouch);
-		char * ReadConfig(char * _pcSection, char * _pcKey);
-		bool WriteConfig(char * _pcSection, char * _pcKey, char * _pcDatas);
+		int GetDIKWithASCII( const std::string& _pcTouch);
+		std::string ReadConfig( const std::string& _pcSection, const std::string& _pcKey);
+		bool WriteConfig( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas);
 	public:
 		CMenuConfig();
-		CMenuConfig(char *);
+		CMenuConfig( const std::string& );
 		virtual ~CMenuConfig();
 
 		bool SetActionKey(int _iAction, int _iActionNum, int _iVirtualKey);
-		int ReadConfigInt(char * _pcSection, char * _pcKey, bool & _bOk);
+		int ReadConfigInt( const std::string& _pcSection, const std::string& _pcKey, bool & _bOk);
  
-		char * ReadConfigString(char * _pcSection, char * _pcKey);
-		bool WriteConfigInt(char * _pcSection, char * _pcKey, int _iDatas);
+		std::string ReadConfigString( const std::string& _pcSection, const std::string& _pcKey);
+		bool WriteConfigInt( const std::string& _pcSection, const std::string& _pcKey, int _iDatas);
  
-		bool WriteConfigString(char * _pcSection, char * _pcKey, char * _pcDatas);
+		bool WriteConfigString( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas);
  
  
  
 		void ResetActionKey();
-		bool WriteConfigKey(char * _pcKey, int _iAction);
-		bool ReadConfigKey(char * _pcKey, int _iAction);
+		bool WriteConfigKey( const std::string& _pcKey, int _iAction);
+		bool ReadConfigKey( const std::string& _pcKey, int _iAction);
 		void ReInitActionKey(CWindowMenuConsole * _pwmcWindowMenuConsole);
 		void SetDefaultKey();
 		void DefaultValue();

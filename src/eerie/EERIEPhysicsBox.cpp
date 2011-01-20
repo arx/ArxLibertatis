@@ -66,7 +66,7 @@ using std::max;
 
 //-----------------------------------------------------------------------------
 float VELOCITY_THRESHOLD = 850.f;
-#define FULLTESTS FALSE
+#define FULLTESTS false
 
 //-----------------------------------------------------------------------------
 extern long DEBUGNPCMOVE;
@@ -285,17 +285,17 @@ void EERIE_PHYSICS_BOX_ComputeForces(EERIE_3DOBJ * obj)
 	}
 }
 
-#define MAKE_COLL_TEST if (Triangles_Intersect(&t1,&t2)) return TRUE;
+#define MAKE_COLL_TEST if (Triangles_Intersect(&t1,&t2)) return true;
 
 long PHYS_COLLIDER = -1;
 
 //*************************************************************************************
 // Checks is a triangle of a physical object is colliding a triangle
 //*************************************************************************************
-BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k, long * validd)
+bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k, long * validd)
 {
 	EERIE_TRI t1, t2;
-	BOOL ret = FALSE;
+	bool ret = false;
 	memcpy(&t2, verts, sizeof(EERIE_3D) * 3);
 
 	PHYSVERT * vert = obj->pbox->vert;
@@ -319,12 +319,12 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 		}
 
 		if (nn < 1000)
-			return FALSE;
+			return false;
 	}
 	else
 	{
 		if (EEDistance3D(&center, &vert[k].pos) > rad + 25)
-			return FALSE;
+			return false;
 	}
 
 	//TOP
@@ -342,13 +342,13 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 				validd[1] = 0;
 				validd[2] = 0;
 				validd[3] = 0;
-				ret = TRUE;
+				ret = true;
 			}
-			else return TRUE;
+			else return true;
 		}//MAKE_COLL_TEST
 	}
 
-#if FULLTESTS==TRUE
+#if FULLTESTS==true
 
 	if ((k == -1) || (k == 1) || (k == 4) || (k == 3))
 	{
@@ -364,9 +364,9 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 				validd[1] = 0;
 				validd[3] = 0;
 				validd[4] = 0;
-				ret = TRUE;
+				ret = true;
 			}
-			else return TRUE;
+			else return true;
 		}//MAKE_COLL_TEST
 	}
 
@@ -387,13 +387,13 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 				validd[0] = 0;
 				validd[10] = 0;
 				validd[12] = 0;
-				ret = TRUE;
+				ret = true;
 			}
-			else return TRUE;
+			else return true;
 		}//MAKE_COLL_TEST
 	}
 
-#if FULLTESTS==TRUE
+#if FULLTESTS==true
 
 	if ((k == -1) || (k == 10) || (k == 11) || (k == 12))
 	{
@@ -409,9 +409,9 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 				validd[10] = 0;
 				validd[11] = 0;
 				validd[12] = 0;
-				ret = TRUE;
+				ret = true;
 			}
-			else return TRUE;
+			else return true;
 		}//MAKE_COLL_TEST
 	}
 
@@ -432,13 +432,13 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 				validd[1] = 0;
 				validd[4] = 0;
 				validd[5] = 0;
-				ret = TRUE;
+				ret = true;
 			}
-			else return TRUE;
+			else return true;
 		}//MAKE_COLL_TEST
 	}
 
-#if FULLTESTS==TRUE
+#if FULLTESTS==true
 
 	if ((k == -1) || (k == 4) || (k == 5) || (k == 8))
 	{
@@ -454,9 +454,9 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 				validd[4] = 0;
 				validd[5] = 0;
 				validd[8] = 0;
-				ret = TRUE;
+				ret = true;
 			}
-			else return TRUE;
+			else return true;
 		}//MAKE_COLL_TEST
 	}
 
@@ -477,13 +477,13 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 				validd[5] = 0;
 				validd[8] = 0;
 				validd[9] = 0;
-				ret = TRUE;
+				ret = true;
 			}
-			else return TRUE;
+			else return true;
 		}//MAKE_COLL_TEST
 	}
 
-#if FULLTESTS==TRUE
+#if FULLTESTS==true
 
 	if ((k == -1) || (k == 8) || (k == 12) || (k == 9))
 	{
@@ -499,9 +499,9 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 				validd[8] = 0;
 				validd[12] = 0;
 				validd[9] = 0;
-				ret = TRUE;
+				ret = true;
 			}
-			else return TRUE;
+			else return true;
 		}//MAKE_COLL_TEST
 	}
 
@@ -522,13 +522,13 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 				validd[3] = 0;
 				validd[2] = 0;
 				validd[7] = 0;
-				ret = TRUE;
+				ret = true;
 			}
-			else return TRUE;
+			else return true;
 		}//MAKE_COLL_TEST
 	}
 
-#if FULLTESTS==TRUE
+#if FULLTESTS==true
 
 	if ((k == -1) || (k == 2) || (k == 6) || (k == 7))
 	{
@@ -544,9 +544,9 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 				validd[2] = 0;
 				validd[6] = 0;
 				validd[7] = 0;
-				ret = TRUE;
+				ret = true;
 			}
-			else return TRUE;
+			else return true;
 		}//MAKE_COLL_TEST
 	}
 
@@ -567,13 +567,13 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 				validd[6] = 0;
 				validd[7] = 0;
 				validd[11] = 0;
-				ret = TRUE;
+				ret = true;
 			}
-			else return TRUE;
+			else return true;
 		}//MAKE_COLL_TEST
 	}
 
-#if FULLTESTS==TRUE
+#if FULLTESTS==true
 
 	if ((k == -1) || (k == 6) || (k == 10) || (k == 11))
 	{
@@ -589,9 +589,9 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 				validd[6] = 0;
 				validd[10] = 0;
 				validd[11] = 0;
-				ret = TRUE;
+				ret = true;
 			}
-			else return TRUE;
+			else return true;
 		}//MAKE_COLL_TEST
 	}
 
@@ -612,13 +612,13 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 				validd[1] = 0;
 				validd[2] = 0;
 				validd[6] = 0;
-				ret = TRUE;
+				ret = true;
 			}
-			else return TRUE;
+			else return true;
 		}//MAKE_COLL_TEST
 	}
 
-#if FULLTESTS==TRUE
+#if FULLTESTS==true
 
 	if ((k == -1) || (k == 1) || (k == 5) || (k == 6))
 	{
@@ -634,9 +634,9 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 				validd[1] = 0;
 				validd[5] = 0;
 				validd[6] = 0;
-				ret = TRUE;
+				ret = true;
 			}
-			else return TRUE;
+			else return true;
 		}//MAKE_COLL_TEST
 	}
 
@@ -657,13 +657,13 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 				validd[10] = 0;
 				validd[6] = 0;
 				validd[5] = 0;
-				ret = TRUE;
+				ret = true;
 			}
-			else return TRUE;
+			else return true;
 		}//MAKE_COLL_TEST
 	}
 
-#if FULLTESTS==TRUE
+#if FULLTESTS==true
 
 	if ((k == -1) || (k == 5) || (k == 9) || (k == 10))
 	{
@@ -679,9 +679,9 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 				validd[5] = 0;
 				validd[9] = 0;
 				validd[10] = 0;
-				ret = TRUE;
+				ret = true;
 			}
-			else return TRUE;
+			else return true;
 		}//MAKE_COLL_TEST
 	}
 
@@ -702,13 +702,13 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 				validd[3] = 0;
 				validd[4] = 0;
 				validd[7] = 0;
-				ret = TRUE;
+				ret = true;
 			}
-			else return TRUE;
+			else return true;
 		}//MAKE_COLL_TEST
 	}
 
-#if FULLTESTS==TRUE
+#if FULLTESTS==true
 
 	if ((k == -1) || (k == 7) || (k == 8) || (k == 4))
 	{
@@ -724,9 +724,9 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 				validd[4] = 0;
 				validd[7] = 0;
 				validd[8] = 0;
-				ret = TRUE;
+				ret = true;
 			}
-			else return TRUE;
+			else return true;
 		}//MAKE_COLL_TEST
 	}
 
@@ -747,13 +747,13 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 				validd[7] = 0;
 				validd[8] = 0;
 				validd[11] = 0;
-				ret = TRUE;
+				ret = true;
 			}
-			else return TRUE;
+			else return true;
 		}//MAKE_COLL_TEST
 	}
 
-#if FULLTESTS==TRUE
+#if FULLTESTS==true
 
 	if ((k == -1) || (k == 11) || (k == 12) || (k == 8))
 	{
@@ -769,9 +769,9 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 				validd[8] = 0;
 				validd[11] = 0;
 				validd[12] = 0;
-				ret = TRUE;
+				ret = true;
 			}
-			else return TRUE;
+			else return true;
 		}//MAKE_COLL_TEST
 	}
 
@@ -781,7 +781,7 @@ BOOL IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 
 //*************************************************************************************
 //*************************************************************************************
-BOOL IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long * validd)
+bool IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long * validd)
 {
 	EERIE_3D pol[3];
 	Vector_Copy(&pol[0], (EERIE_3D *)&ep->v[0]);
@@ -794,27 +794,27 @@ BOOL IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long
 
 	if (ep->type & POLY_QUAD)
 	{
-		if (IsObjectVertexCollidingTriangle(obj, (EERIE_3D *)&pol, k, validd)) return TRUE;
+		if (IsObjectVertexCollidingTriangle(obj, (EERIE_3D *)&pol, k, validd)) return true;
 
 		Vector_Copy(&pol[0], (EERIE_3D *)&ep->v[2]);
 		Vector_Copy(&pol[1], (EERIE_3D *)&ep->v[3]);
 		Vector_Copy(&pol[2], (EERIE_3D *)&ep->v[0]);
 
-		if (IsObjectVertexCollidingTriangle(obj, (EERIE_3D *)&pol, k, validd)) return TRUE;
+		if (IsObjectVertexCollidingTriangle(obj, (EERIE_3D *)&pol, k, validd)) return true;
 
-		return FALSE;
+		return false;
 	}
 
-	if (IsObjectVertexCollidingTriangle(obj, (EERIE_3D *)&pol, k, validd)) return TRUE;
+	if (IsObjectVertexCollidingTriangle(obj, (EERIE_3D *)&pol, k, validd)) return true;
 
-	return FALSE;
+	return false;
 }
 
  
 EERIEPOLY * LAST_COLLISION_POLY = NULL;
-BOOL IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long source, long * validd)
+bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long source, long * validd)
 {
-	BOOL ret = TRUE;
+	bool ret = true;
 	long px, pz;
 	float x = obj->pbox->vert[0].pos.x;
 	F2L(x * ACTIVEBKG->Xmul, &px);
@@ -866,8 +866,8 @@ BOOL IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long sourc
 						else if (ep->type & POLY_EARTH) CUR_COLLISION_MATERIAL = MATERIAL_EARTH;
 						else CUR_COLLISION_MATERIAL = MATERIAL_STONE;
 
-						ret = FALSE;
-						return FALSE;
+						ret = false;
+						return false;
 					}
 				}
 			}
@@ -878,7 +878,7 @@ BOOL IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long sourc
  
 //*************************************************************************************
 //*************************************************************************************
-BOOL IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long source)
+bool IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long source)
 {
 	EERIEPOLY * back_ep = CheckInPolyPrecis(obj->pbox->vert[kk].pos.x,
 	                                        obj->pbox->vert[kk].pos.y,
@@ -891,7 +891,7 @@ BOOL IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long 
 		posi.y -= 30.f;
 
 		CUR_COLLISION_MATERIAL = MATERIAL_STONE;
-		return FALSE;
+		return false;
 	}
 
 	if (!(flags & 1))
@@ -906,14 +906,14 @@ BOOL IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long 
 		if (ARX_INTERACTIVE_CheckCollision(obj, kk, source))
 		{
 			CUR_COLLISION_MATERIAL = 11;
-			return FALSE;
+			return false;
 		}
 	}
 
-	return TRUE;
+	return true;
 }
  
-extern BOOL ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source);
+extern bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source);
 extern long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source);
 
 //*************************************************************************************

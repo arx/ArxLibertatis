@@ -563,11 +563,11 @@ void CParticleSystem::Update(long _lTime)
 void CParticleSystem::Render(LPDIRECT3DDEVICE7 _lpD3DDevice, int _iSRCBLEND, int _iDESTBLEND)
 {
 	SETCULL(_lpD3DDevice, D3DCULL_NONE);
-	SETZWRITE(_lpD3DDevice, FALSE);
+	SETZWRITE(_lpD3DDevice, false);
 
 	_lpD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  iSrcBlend);
 	_lpD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, iDstBlend);
-	SETALPHABLEND(_lpD3DDevice, TRUE);
+	SETALPHABLEND(_lpD3DDevice, true);
 
 	int inumtex = 0;
 

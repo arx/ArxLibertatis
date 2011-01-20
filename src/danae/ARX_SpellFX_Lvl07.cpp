@@ -581,7 +581,7 @@ float CLightning::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	// rendu
 
 	SETCULL(m_pd3dDevice, D3DCULL_NONE);
-	SETZWRITE(m_pd3dDevice, FALSE);
+	SETZWRITE(m_pd3dDevice, false);
 
 	cnodetab[0].fx = frand2() * 1.5f * fMySize; //5
 	cnodetab[0].fy = frand2() * 1.5f * fMySize; //5
@@ -590,7 +590,7 @@ float CLightning::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(m_pd3dDevice, TRUE);
+	SETALPHABLEND(m_pd3dDevice, true);
 	SETTC(m_pd3dDevice, NULL);
 
 	v2[0].color = v2[1].color = v2[2].color = v2[3].color = D3DRGB(1, 1, 1);
@@ -678,7 +678,7 @@ float CLightning::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 					damages[si].source = spells[spellinstance].caster;
 					damages[si].flags = DAMAGE_FLAG_DONT_HURT_SOURCE | DAMAGE_FLAG_ADD_VISUAL_FX;
 					damages[si].type = DAMAGE_TYPE_FAKEFIRE | DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_LIGHTNING;
-					damages[si].exist = TRUE;
+					damages[si].exist = true;
 				}
 			}
 		}
@@ -797,8 +797,8 @@ float CLightning::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		                             &v2[3]);
 	}
 
-	SETZWRITE(m_pd3dDevice, TRUE);
-	SETALPHABLEND(m_pd3dDevice, FALSE);
+	SETZWRITE(m_pd3dDevice, true);
+	SETALPHABLEND(m_pd3dDevice, false);
 	return falpha;
 }
 
@@ -902,11 +902,11 @@ float CConfuse::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		return 0.f;
 	}
 
-	SETZWRITE(m_pd3dDevice, FALSE);
+	SETZWRITE(m_pd3dDevice, false);
 
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(m_pd3dDevice, TRUE);
+	SETALPHABLEND(m_pd3dDevice, true);
 
 	//-------------------------------------------------------------------------
 	if (tex_trail && tex_trail->m_pddsSurface)
@@ -1179,22 +1179,22 @@ float CFireField::Render(LPDIRECT3DDEVICE7 _pD3DDevice)
 {
 	if (this->key > 1) return 0;
 
-	SETALPHABLEND(_pD3DDevice, TRUE);
-	SETZWRITE(_pD3DDevice, FALSE);
+	SETALPHABLEND(_pD3DDevice, true);
+	SETZWRITE(_pD3DDevice, false);
 	_pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	_pD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 
 	SETCULL(_pD3DDevice, D3DCULL_NONE);
-	SETZWRITE(_pD3DDevice, FALSE);
-	SETALPHABLEND(_pD3DDevice, TRUE);
+	SETZWRITE(_pD3DDevice, false);
+	SETALPHABLEND(_pD3DDevice, true);
 
 	pPSStream.Render(_pD3DDevice, D3DBLEND_ONE, D3DBLEND_ONE);
 	pPSStream1.Render(_pD3DDevice, D3DBLEND_ONE, D3DBLEND_ONE);
 
 	_pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	_pD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
-	SETALPHABLEND(_pD3DDevice, FALSE);
-	SETZWRITE(_pD3DDevice, TRUE);
+	SETALPHABLEND(_pD3DDevice, false);
+	SETZWRITE(_pD3DDevice, true);
 
 	return 0;
 }
@@ -1353,10 +1353,10 @@ float CIceField::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	int i = 0;
 
 	
-	SETZWRITE(m_pd3dDevice, TRUE);
+	SETZWRITE(m_pd3dDevice, true);
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(m_pd3dDevice, TRUE);
+	SETALPHABLEND(m_pd3dDevice, true);
 
 	iMax = (int)(iNumber); 
 

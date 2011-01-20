@@ -80,25 +80,25 @@ void InterTreeViewItemAdd(INTERACTIVE_OBJ * io, char * name = NULL, long type = 
 void SetWindowTitle(HWND hWnd, char * tex);
 void KillInterTreeView();
 HWND ShowErrorPopup(char * title, char * tex);
-BOOL CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM);
-BOOL CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM);
-BOOL CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-BOOL CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-INT  CALLBACK AboutProc(HWND, UINT, WPARAM, LPARAM);
-BOOL CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-BOOL CALLBACK GaiaTextEdit(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+bool CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM);
+bool CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM);
+bool CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+bool CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+bool  CALLBACK AboutProc(HWND, UINT, WPARAM, LPARAM);
+bool CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+bool CALLBACK GaiaTextEdit(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 extern COLORREF custcr[16];
-BOOL CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-BOOL CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-BOOL CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+bool CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+bool CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+bool CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
  
-BOOL CALLBACK LanguageOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-BOOL CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-BOOL CALLBACK PassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-BOOL CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-BOOL CALLBACK MeshReductionProc(HWND hWnd, UINT uMsg, WPARAM wParam,
+bool CALLBACK LanguageOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+bool CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+bool CALLBACK PassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+bool CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+bool CALLBACK MeshReductionProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                                 LPARAM lParam);
-BOOL CALLBACK ScriptSearchProc(HWND hWnd, UINT uMsg, WPARAM wParam,
+bool CALLBACK ScriptSearchProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                                LPARAM lParam);
 
 void LaunchSnapShotParamApp(HWND hwnd);

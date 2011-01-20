@@ -72,8 +72,8 @@ class Console {
 		int onoff;
 		void Manage();
 		bool           c_bActive;
-		BOOL           c_bReady;
-		BOOL           c_bWindowed;
+		bool           c_bReady;
+		bool           c_bWindowed;
 		HWND consolehwnd;
 		HFONT font;
 		HBITMAP bakbmp;
@@ -82,7 +82,7 @@ class Console {
 		std::string  c_strAppTitle;
 		DWORD ThreadId;
 		HANDLE  ThreadHandle;
-		void Console::GetThreadMsg(MSG *msg) ;		
+		void GetThreadMsg(MSG *msg);
  
 	protected:
 		unsigned char ConsoleInitCmdLines();

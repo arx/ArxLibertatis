@@ -171,7 +171,7 @@ static HRESULT WINAPI DeviceEnumCallback(TCHAR		*	strDesc,
 	}
 
 	// Avoid duplicates: only enum HW devices for secondary DDraw drivers.
-	if (NULL != pDeviceInfo->pDriverGUID && FALSE == pDeviceInfo->bHardware)
+	if (NULL != pDeviceInfo->pDriverGUID && false == pDeviceInfo->bHardware)
 	{
 		return D3DENUMRET_OK;
 	}
@@ -201,7 +201,7 @@ static HRESULT WINAPI DeviceEnumCallback(TCHAR		*	strDesc,
 
 			// Record whether the device has any stereo modes
 			if (ddsdMode.ddsCaps.dwCaps2 & DDSCAPS2_STEREOSURFACELEFT)
-				pDeviceInfo->bStereoCompatible = TRUE;
+				pDeviceInfo->bStereoCompatible = true;
 		}
 	}
 
@@ -237,7 +237,7 @@ static HRESULT WINAPI DeviceEnumCallback(TCHAR		*	strDesc,
 // DriverEnumCallback()
 // Callback function for enumerating drivers.
 //************************************************************************************
-static BOOL WINAPI DriverEnumCallback(GUID * pGUID, TCHAR * strDesc,
+static bool WINAPI DriverEnumCallback(GUID * pGUID, TCHAR * strDesc,
                                       TCHAR * strName, VOID *, HMONITOR)
 {
 	D3DEnum_DeviceInfo d3dDeviceInfo;
@@ -280,7 +280,7 @@ static BOOL WINAPI DriverEnumCallback(GUID * pGUID, TCHAR * strDesc,
 	// Record whether the device can render into a desktop window
 	if (d3dDeviceInfo.ddDriverCaps.dwCaps2 & DDCAPS2_CANRENDERWINDOWED)
 		if (NULL == d3dDeviceInfo.pDriverGUID)
-			d3dDeviceInfo.bDesktopCompatible = TRUE;
+			d3dDeviceInfo.bDesktopCompatible = true;
 
 	// Enumerate the fullscreen display modes.
 	pDD->EnumDisplayModes(0, NULL, &d3dDeviceInfo, ModeEnumCallback);
@@ -377,8 +377,8 @@ VOID D3DEnum_GetDevices(D3DEnum_DeviceInfo ** ppDevices, DWORD * pdwCount)
 // select dialog box.
 //************************************************************************************
 static VOID UpdateDialogControls(HWND hDlg, D3DEnum_DeviceInfo * pCurrentDevice,
-                                 DWORD dwCurrentMode, BOOL bWindowed,
-                                 BOOL bStereo)
+                                 DWORD dwCurrentMode, bool bWindowed,
+                                 bool bStereo)
 {
 	// Get access to the enumerated device list
 	D3DEnum_DeviceInfo * pDeviceList;
@@ -397,8 +397,8 @@ static VOID UpdateDialogControls(HWND hDlg, D3DEnum_DeviceInfo * pCurrentDevice,
 	ComboBox_ResetContent(hwndMode);
 
 	// Don't let non-GDI devices be windowed
-	if (FALSE == pCurrentDevice->bDesktopCompatible)
-		bWindowed = FALSE;
+	if (false == pCurrentDevice->bDesktopCompatible)
+		bWindowed = false;
 
 	// Add a list of devices to the device combo box
 	for (DWORD device = 0; device < dwNumDevices; device++)
@@ -473,14 +473,14 @@ static VOID UpdateDialogControls(HWND hDlg, D3DEnum_DeviceInfo * pCurrentDevice,
 // ChangeDeviceProc()
 // Windows message handling function for the device select dialog
 //************************************************************************************
-static BOOL CALLBACK ChangeDeviceProc(HWND hDlg, UINT uiMsg, WPARAM wParam,
+static bool CALLBACK ChangeDeviceProc(HWND hDlg, UINT uiMsg, WPARAM wParam,
                                       LPARAM lParam)
 {
 	static D3DEnum_DeviceInfo ** ppDeviceArg;
 	static D3DEnum_DeviceInfo * pCurrentDevice;
 	static DWORD dwCurrentMode;
-	static BOOL  bCurrentWindowed;
-	static BOOL  bCurrentStereo;
+	static bool  bCurrentWindowed;
+	static bool  bCurrentStereo;
 
 	// Get access to the enumerated device list
 	D3DEnum_DeviceInfo * pDeviceList;
@@ -494,7 +494,7 @@ static BOOL CALLBACK ChangeDeviceProc(HWND hDlg, UINT uiMsg, WPARAM wParam,
 		ppDeviceArg = (D3DEnum_DeviceInfo **)lParam;
 
 		if (NULL == ppDeviceArg)
-			return FALSE;
+			return false;
 
 		// Setup temp storage pointers for dialog
 		pCurrentDevice = (*ppDeviceArg);
@@ -505,7 +505,7 @@ static BOOL CALLBACK ChangeDeviceProc(HWND hDlg, UINT uiMsg, WPARAM wParam,
 		UpdateDialogControls(hDlg, pCurrentDevice, dwCurrentMode,
 		                     bCurrentWindowed, bCurrentStereo);
 
-		return TRUE;
+		return true;
 	}
 	else if (WM_COMMAND == uiMsg)
 	{
@@ -518,8 +518,8 @@ static BOOL CALLBACK ChangeDeviceProc(HWND hDlg, UINT uiMsg, WPARAM wParam,
 		DWORD dwDevice   = ComboBox_GetCurSel(hwndDevice);
 		DWORD dwModeItem = ComboBox_GetCurSel(hwndMode);
 		DWORD dwMode     = ComboBox_GetItemData(hwndMode, dwModeItem);
-		BOOL  bWindowed  = hwndWindowed ? Button_GetCheck(hwndWindowed) : 0;
-		BOOL  bStereo    = hwndStereo   ? Button_GetCheck(hwndStereo)   : 0;
+		bool  bWindowed  = hwndWindowed ? Button_GetCheck(hwndWindowed) : 0;
+		bool  bStereo    = hwndStereo   ? Button_GetCheck(hwndStereo)   : 0;
 
 		D3DEnum_DeviceInfo * pDevice = &pDeviceList[dwDevice];
 
@@ -532,8 +532,8 @@ static BOOL CALLBACK ChangeDeviceProc(HWND hDlg, UINT uiMsg, WPARAM wParam,
 			{
 				// Return the newly selected device and its new properties
 				(*ppDeviceArg)              = pDevice;
-				pDevice->bWindowed          = FALSE;
-				pDevice->bStereo            = FALSE;
+				pDevice->bWindowed          = false;
+				pDevice->bStereo            = false;
 				pDevice->dwCurrentMode      = dwMode;
 				pDevice->ddsdFullscreenMode = pDevice->pddsdModes[dwMode];
 
@@ -542,13 +542,13 @@ static BOOL CALLBACK ChangeDeviceProc(HWND hDlg, UINT uiMsg, WPARAM wParam,
 			else
 				EndDialog(hDlg, IDCANCEL);
 
-			return TRUE;
+			return true;
 		}
 		else if (IDCANCEL == LOWORD(wParam))
 		{
 			// Handle the case when the user hits the Cancel button
 			EndDialog(hDlg, IDCANCEL);
-			return TRUE;
+			return true;
 		}
 		else if (CBN_SELENDOK == HIWORD(wParam))
 		{
@@ -563,10 +563,10 @@ static BOOL CALLBACK ChangeDeviceProc(HWND hDlg, UINT uiMsg, WPARAM wParam,
 
 		// Keep the UI current
 		UpdateDialogControls(hDlg, &pDeviceList[dwDevice], dwMode, bWindowed, bStereo);
-		return TRUE;
+		return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 
@@ -671,7 +671,7 @@ HRESULT D3DEnum_SelectDefaultDevice(D3DEnum_DeviceInfo ** ppDevice,
 
 #endif
 	// Set the windowed state of the newly selected device
-	(*ppDevice)->bWindowed = TRUE;
+	(*ppDevice)->bWindowed = true;
 
 	return S_OK;
 }

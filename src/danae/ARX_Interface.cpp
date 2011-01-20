@@ -66,7 +66,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Collisions.h"
 #include "ARX_CCinematique.h"
 #include "HERMESMain.h"
-#include "Resource.h"
 
 #include <stdio.h>
 
@@ -166,7 +165,7 @@ extern bool bSoftRender;
 
 extern CARXTextManager *pTextManageFlyingOver;
 
-BOOL IsPlayerStriking();
+bool IsPlayerStriking();
 void OptmizeInventory(unsigned int);
 long ARX_SPELLS_GetInstance(const long &);
 void ARX_SPELLS_Kill(const long &);
@@ -319,7 +318,7 @@ float ARX_CAST_TO_INT_THEN_FLOAT( float _f )
 
 
 //-----------------------------------------------------------------------------
-BOOL MouseInBookRect(const float x, const float y, const float cx, const float cy)
+bool MouseInBookRect(const float x, const float y, const float cx, const float cy)
 {
 	return ((DANAEMouse.x>=(x+BOOKDECX)*Xratio) 
 		&& (DANAEMouse.x<=(cx+BOOKDECX)*Xratio) 
@@ -328,14 +327,14 @@ BOOL MouseInBookRect(const float x, const float y, const float cx, const float c
 }
 
 //-----------------------------------------------------------------------------
-BOOL MouseInCam(EERIE_CAMERA * cam)
+bool MouseInCam(EERIE_CAMERA * cam)
 {
 	return ((DANAEMouse.x>cam->clip.left) && (DANAEMouse.x<cam->clip.right) &&
 		(DANAEMouse.x>cam->clip.top) && (DANAEMouse.y<cam->clip.bottom));
 }
 
 //-----------------------------------------------------------------------------
-BOOL MouseInRect(const float x0, const float y0, const float x1=32, const float y1=32)
+bool MouseInRect(const float x0, const float y0, const float x1=32, const float y1=32)
 {
 	return (	(DANAEMouse.x>=x0) 
 		&&	(DANAEMouse.x<=x1) 
@@ -344,12 +343,12 @@ BOOL MouseInRect(const float x0, const float y0, const float x1=32, const float 
 }
 
 //-----------------------------------------------------------------------------
-BOOL ARX_INTERFACE_MouseInBook()
+bool ARX_INTERFACE_MouseInBook()
 {		
 	if ((player.Interface & INTER_MAP ) &&  (!(player.Interface & INTER_COMBATMODE))) 
 		return (MouseInBookRect(99,65,599,372));
 
-	else return FALSE;
+	else return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -1630,7 +1629,7 @@ void GetInfosCombine()
 }
 
 //-----------------------------------------------------------------------------
-BOOL DANAE::ManageEditorControls()
+bool DANAE::ManageEditorControls()
 {
 	float val = 0.f;
 	EERIE_3D trans;
@@ -1918,7 +1917,7 @@ BOOL DANAE::ManageEditorControls()
 							EERIEMouseButton &=~1;
 						}
 
-						return FALSE;
+						return false;
 					}
 				}
 				
@@ -1943,7 +1942,7 @@ BOOL DANAE::ManageEditorControls()
 						}
 
 						if (DRAGINTER == NULL)
-							return FALSE;
+							return false;
 					}
 				}
 				
@@ -1962,7 +1961,7 @@ BOOL DANAE::ManageEditorControls()
 						EERIEMouseButton &=~1;
 					}
 
-					return FALSE;
+					return false;
 				}
 				
 				// inventaire
@@ -2073,7 +2072,7 @@ BOOL DANAE::ManageEditorControls()
 					}
 					
 					if (DRAGINTER == NULL)
-						return FALSE;
+						return false;
 				}
 			}
 			
@@ -2112,7 +2111,7 @@ BOOL DANAE::ManageEditorControls()
 					}
 
 					if (DRAGINTER == NULL)
-						return FALSE;
+						return false;
 				}
 			}
 		}
@@ -2202,7 +2201,7 @@ BOOL DANAE::ManageEditorControls()
 		if (MouseInRect(px, py, px+NoteTexture->m_dwWidth * Xratio, py+NoteTexture->m_dwHeight * Yratio))
 		{
 			eMouseState = MOUSE_IN_NOTE;
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -2231,7 +2230,7 @@ BOOL DANAE::ManageEditorControls()
 				}
 
 				if (DRAGINTER == NULL)
-					return FALSE;
+					return false;
 			}
 		}
 
@@ -2269,7 +2268,7 @@ BOOL DANAE::ManageEditorControls()
 			}
 
 			if (DRAGINTER == NULL)
-				return FALSE;
+				return false;
 		}
 	}
 
@@ -2759,7 +2758,7 @@ BOOL DANAE::ManageEditorControls()
 					strcpy(pp,GetName(loadfrom));
 					LoadLevelScreen(GDevice,GetLevelNumByName(pp));
 					
-					Pause(TRUE);
+					Pause(true);
 
 					if (CDP_LIGHTOptions!=NULL) SendMessage(CDP_LIGHTOptions,WM_CLOSE,0,0);
 
@@ -2779,8 +2778,8 @@ BOOL DANAE::ManageEditorControls()
 					this->kbd.inkey[INKEY_L]=0;
 					this->kbd.inkey[INKEY_LEFTSHIFT]=0;
 					this->kbd.inkey[INKEY_RIGHTSHIFT]=0;
-					Pause(FALSE);
-					return TRUE;
+					Pause(false);
+					return true;
 				}
 				
 			}
@@ -2803,10 +2802,10 @@ BOOL DANAE::ManageEditorControls()
 				{
 					char saveto[512];
 				strcpy(saveto, ""); 
-					Pause(TRUE);
+					Pause(true);
 					HERMESFileSelectorSave(saveto,"Save Danae Level","Danae Level File (*.DLF)\0*.DLF\0\0",this->m_hWnd);            
 					DanaeSaveLevel(saveto);
-					Pause(FALSE);
+					Pause(false);
 				}
 
 				this->kbd.inkey[INKEY_S]=0;
@@ -2946,10 +2945,10 @@ BOOL DANAE::ManageEditorControls()
 				if (danaeApp.m_pFramework->m_bIsFullscreen)
 				{
 					ARX_TIME_Pause();
-					Pause(TRUE);
+					Pause(true);
 					DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
 						MAKEINTRESOURCE(IDD_PATHWAYDLG), this->m_hWnd, PathwayOptionsProc);
-					Pause(FALSE);
+					Pause(false);
 					ARX_TIME_UnPause();				
 				}
 				else 
@@ -3553,10 +3552,10 @@ BOOL DANAE::ManageEditorControls()
 				if (danaeApp.m_pFramework->m_bIsFullscreen)
 				{
 					ARX_TIME_Pause();
-					Pause(TRUE);
+					Pause(true);
 					DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
 						MAKEINTRESOURCE(IDD_FOGDIALOG), this->m_hWnd, FogOptionsProc);
-					Pause(FALSE);
+					Pause(false);
 					ARX_TIME_UnPause();				
 				}
 				else 
@@ -3863,10 +3862,10 @@ BOOL DANAE::ManageEditorControls()
 				if (danaeApp.m_pFramework->m_bIsFullscreen)
 				{
 					ARX_TIME_Pause();
-					Pause(TRUE);
+					Pause(true);
 					DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
 						MAKEINTRESOURCE(IDD_SCRIPTDIALOG), this->m_hWnd, IOOptionsProc);
-					Pause(FALSE);
+					Pause(false);
 					ARX_TIME_UnPause();				
 				}
 				else 
@@ -3877,7 +3876,7 @@ BOOL DANAE::ManageEditorControls()
 			this->kbd.inkey[INKEY_RETURN]=0;
 		}
 		
-		return FALSE;
+		return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -4069,7 +4068,7 @@ void DANAE::ManagePlayerControls()
 				tr=DEG2RAD(eyeball.angle.b);
 				eyeball.pos.x+=-(float)EEsin(tr)*20.f*(float)FD*0.033f;
 				eyeball.pos.z+=+(float)EEcos(tr)*20.f*(float)FD*0.033f;
-				MustRefresh=TRUE;
+				MustRefresh=true;
 				NOMOREMOVES=1;
 			}
 
@@ -4079,7 +4078,7 @@ void DANAE::ManagePlayerControls()
 				tr=DEG2RAD(eyeball.angle.b);
 				eyeball.pos.x+=(float)EEsin(tr)*20.f*(float)FD*0.033f;
 				eyeball.pos.z+=-(float)EEcos(tr)*20.f*(float)FD*0.033f;
-				MustRefresh=TRUE;
+				MustRefresh=true;
 				NOMOREMOVES=1;
 			}				
 
@@ -4091,7 +4090,7 @@ void DANAE::ManagePlayerControls()
 				tr=DEG2RAD(MAKEANGLE(eyeball.angle.b+90.f));
 				eyeball.pos.x+=-(float)EEsin(tr)*10.f*(float)FD*0.033f;
 				eyeball.pos.z+=+(float)EEcos(tr)*10.f*(float)FD*0.033f;
-				MustRefresh=TRUE;
+				MustRefresh=true;
 				NOMOREMOVES=1;			
 			}
 
@@ -4104,7 +4103,7 @@ void DANAE::ManagePlayerControls()
 				eyeball.pos.x+=-(float)EEsin(tr)*10.f*(float)FD*0.033f;
 				//eyeball.pos.y+=FD*0.33f;
 				eyeball.pos.z+=(float)EEcos(tr)*10.f*(float)FD*0.033f;
-				MustRefresh=TRUE;
+				MustRefresh=true;
 				NOMOREMOVES=1;
 			}	
 
@@ -4117,7 +4116,7 @@ void DANAE::ManagePlayerControls()
 
 			EERIE_CYLINDER test;
 			memcpy(&test,&phys.cyl,sizeof(EERIE_CYLINDER));
-			BOOL npc = AttemptValidCylinderPos(&test, NULL, CFLAG_JUST_TEST | CFLAG_NPC);
+			bool npc = AttemptValidCylinderPos(&test, NULL, CFLAG_JUST_TEST | CFLAG_NPC);
 			float val=CheckAnythingInCylinder(&phys.cyl,inter.iobj[0],CFLAG_NO_NPC_COLLIDE | CFLAG_JUST_TEST);
 
 			if ((val > -40.f))
@@ -4146,23 +4145,23 @@ void DANAE::ManagePlayerControls()
 
 		if (EDITMODE || ARXPausedTimer) FD=40.f;
 		
-		BOOL left=ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFELEFT);
+		bool left=ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFELEFT);
 
 		if(!left)
 		{
 			if(ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFE)&&ARX_IMPULSE_Pressed(CONTROLS_CUST_TURNLEFT))
 			{
-				left=TRUE;
+				left=true;
 			}
 		}
 
-		BOOL right=ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFERIGHT);
+		bool right=ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFERIGHT);
 
 		if(!right)
 		{
 			if(ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFE)&&ARX_IMPULSE_Pressed(CONTROLS_CUST_TURNRIGHT))
 			{
-				right=TRUE;
+				right=true;
 			}
 		}
 
@@ -5961,10 +5960,10 @@ void DANAE::ManageKeyMouse()
 							if (danaeApp.m_pFramework->m_bIsFullscreen)
 							{
 								ARX_TIME_Pause();
-								Pause(TRUE);
+								Pause(true);
 								DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
 									MAKEINTRESOURCE(IDD_SCRIPTDIALOG), this->m_hWnd, IOOptionsProc);
-								Pause(FALSE);
+								Pause(false);
 								ARX_TIME_UnPause();				
 							}
 							else 
@@ -6028,18 +6027,18 @@ void DANAE::ManageKeyMouse()
 					{
 						if (EDITION==EDITION_LIGHTS) 
 						{
-							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,FALSE); //Zones
-							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,FALSE); //Nodes
-							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,FALSE); //Lights
-							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,FALSE); //Fogs				
+							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
+							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
+							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,false); //Lights
+							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs				
 							EDITION=EDITION_IO;
 						}
 						else 
 						{
-							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,FALSE); //Zones
-							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,FALSE); //Nodes
-							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,TRUE); //Lights
-							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,FALSE); //Fogs				
+							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B010,false); //Zones
+							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B004,false); //Nodes
+							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B007,true); //Lights
+							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B008,false); //Fogs				
 							EDITION=EDITION_LIGHTS;
 						}
 
@@ -6050,14 +6049,14 @@ void DANAE::ManageKeyMouse()
 					{
 						if (EDITMODE) 
 						{
-							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B006,FALSE);
+							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B006,false);
 							SetEditMode(0);							
 							ARX_TIME_Get();
 							SendGameReadyMsg();
 						}
 						else 
 						{
-							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B006,TRUE);
+							SendMessage(danaeApp.ToolBar->hWnd,TB_CHECKBUTTON ,DANAE_B006,true);
 							SetEditMode(1);			
 							RestoreAllIOInitPos();
 						}
@@ -6669,15 +6668,15 @@ void ARX_INTERFACE_ERRORSOUND()
 }
 
 //-----------------------------------------------------------------------------
-BOOL CheckAttributeClick(float x, float y, float * val, TextureContainer * tc)
+bool CheckAttributeClick(float x, float y, float * val, TextureContainer * tc)
 {
-	BOOL rval=FALSE;
+	bool rval=false;
 	float t;
 	t=*val;
 
 	if (MouseInBookRect(x,y,x+32,y+32))
 	{
-		rval=TRUE;
+		rval=true;
 
 		if (((BOOKBUTTON & 1) || (BOOKBUTTON & 2))&& (tc))
 			DrawBookInterfaceItem(GDevice,tc,x,y);
@@ -6715,16 +6714,16 @@ BOOL CheckAttributeClick(float x, float y, float * val, TextureContainer * tc)
 }
 
 //-----------------------------------------------------------------------------
-BOOL CheckSkillClick(float x, float y, float * val, TextureContainer * tc, float * oldval)
+bool CheckSkillClick(float x, float y, float * val, TextureContainer * tc, float * oldval)
 {
-	BOOL rval=FALSE;
+	bool rval=false;
 	float t,ot;
 	t=*val;
 	ot=*oldval;
 
 	if ( MouseInBookRect( x, y, x + 32, y + 32 ) )
 	{
-		rval=TRUE;
+		rval=true;
 
 		if (((BOOKBUTTON & 1) || (BOOKBUTTON & 2))&& (tc)) 
 			DrawBookInterfaceItem(GDevice,tc,x,y);
@@ -6897,7 +6896,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 	bGATI8500			=	false;
 	bSoftRender			=	false;
 
-	SETZWRITE(GDevice, TRUE );
+	SETZWRITE(GDevice, true );
 
 	danaeApp.EnableZBuffer();
 
@@ -6995,8 +6994,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						angle.b-=20.f;
 						
 						angle.b+=20.f;
-						SETZWRITE(GDevice,TRUE);
-						SETALPHABLEND(GDevice,FALSE);
+						SETZWRITE(GDevice,true);
+						SETALPHABLEND(GDevice,false);
 						DynLight[0].exist=1;	
 						
 						F2L((382+xpos*45+BOOKDECX)*Xratio,&bookcam.centerx);
@@ -7040,7 +7039,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 							if (r)
 							{
-								SETALPHABLEND(GDevice,TRUE);
+								SETALPHABLEND(GDevice,true);
 								SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
 								DrawEERIEInter(GDevice,necklace.runes[i],&angle,&pos,NULL);
 
@@ -7051,7 +7050,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 									PopAllTriangleList(true);
 								}
 								
-								SETALPHABLEND(GDevice,FALSE);
+								SETALPHABLEND(GDevice,false);
 
 								SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7309,7 +7308,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 	bGATI8500			=	false;
 	bSoftRender			=	false;
 
-	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, FALSE );
+	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false );
 	
 	if (ITC.questbook==NULL)
 	{
@@ -7452,9 +7451,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				// Draw highlighted Character sheet icon
 				BOOKINTERFACEITEMCOLOR=0xFF555555;
 				SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-				SETALPHABLEND(GDevice,TRUE);
+				SETALPHABLEND(GDevice,true);
 				DrawBookInterfaceItem(GDevice,ITC.bookmark_char,px,py);
-				SETALPHABLEND(GDevice,FALSE);
+				SETALPHABLEND(GDevice,false);
 				BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 			
 				// Set cursor to interacting
@@ -7494,9 +7493,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 					BOOKINTERFACEITEMCOLOR=0xFF555555;
 					SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
 
-					SETALPHABLEND(GDevice,TRUE);
+					SETALPHABLEND(GDevice,true);
 					DrawBookInterfaceItem(GDevice,ITC.bookmark_magic,px,py);
-					SETALPHABLEND(GDevice,FALSE);
+					SETALPHABLEND(GDevice,false);
 					BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 
 					// Set cursor to interacting
@@ -7525,9 +7524,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 			{
 				BOOKINTERFACEITEMCOLOR=0xFF555555;
 				SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-				SETALPHABLEND(GDevice,TRUE);
+				SETALPHABLEND(GDevice,true);
 				DrawBookInterfaceItem(GDevice,ITC.bookmark_map,px,py);			
-				SETALPHABLEND(GDevice,FALSE);
+				SETALPHABLEND(GDevice,false);
 				BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 
 				// Set cursor to interacting
@@ -7554,9 +7553,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 			{
 				BOOKINTERFACEITEMCOLOR=0xFF555555;
 				SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-				SETALPHABLEND(GDevice,TRUE);
+				SETALPHABLEND(GDevice,true);
 				DrawBookInterfaceItem(GDevice,ITC.bookmark_quest,px,py);
-				SETALPHABLEND(GDevice,FALSE);
+				SETALPHABLEND(GDevice,false);
 				BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 
 				// Set cursor to interacting
@@ -7628,9 +7627,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 					{
 						BOOKINTERFACEITEMCOLOR=0xFF555555;
 						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,TRUE);
+						SETALPHABLEND(GDevice,true);
 						DrawBookInterfaceItem(GDevice,ITC.accessible_1,px,py);
-						SETALPHABLEND(GDevice,FALSE);
+						SETALPHABLEND(GDevice,false);
 						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7656,9 +7655,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 					{
 						BOOKINTERFACEITEMCOLOR=0xFF555555;
 						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,TRUE);
+						SETALPHABLEND(GDevice,true);
 						DrawBookInterfaceItem(GDevice,ITC.accessible_2,px,py);
-						SETALPHABLEND(GDevice,FALSE);
+						SETALPHABLEND(GDevice,false);
 						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7684,9 +7683,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 					{
 						BOOKINTERFACEITEMCOLOR=0xFF555555;
 						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,TRUE);
+						SETALPHABLEND(GDevice,true);
 						DrawBookInterfaceItem(GDevice,ITC.accessible_3,px,py);
-						SETALPHABLEND(GDevice,FALSE);
+						SETALPHABLEND(GDevice,false);
 						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7712,9 +7711,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 					{
 						BOOKINTERFACEITEMCOLOR=0xFF555555;
 						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,TRUE);
+						SETALPHABLEND(GDevice,true);
 						DrawBookInterfaceItem(GDevice,ITC.accessible_4,px,py);
-						SETALPHABLEND(GDevice,FALSE);
+						SETALPHABLEND(GDevice,false);
 						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7740,9 +7739,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 					{
 						BOOKINTERFACEITEMCOLOR=0xFF555555;
 						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,TRUE);
+						SETALPHABLEND(GDevice,true);
 						DrawBookInterfaceItem(GDevice,ITC.accessible_5,px,py);
-						SETALPHABLEND(GDevice,FALSE);
+						SETALPHABLEND(GDevice,false);
 						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7768,9 +7767,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 					{
 						BOOKINTERFACEITEMCOLOR=0xFF555555;
 						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,TRUE);
+						SETALPHABLEND(GDevice,true);
 						DrawBookInterfaceItem(GDevice,ITC.accessible_6,px,py);
-						SETALPHABLEND(GDevice,FALSE);
+						SETALPHABLEND(GDevice,false);
 						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7796,9 +7795,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 					{
 						BOOKINTERFACEITEMCOLOR=0xFF555555;
 						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,TRUE);
+						SETALPHABLEND(GDevice,true);
 						DrawBookInterfaceItem(GDevice,ITC.accessible_7,px,py);
-						SETALPHABLEND(GDevice,FALSE);
+						SETALPHABLEND(GDevice,false);
 						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7824,9 +7823,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 					{
 						BOOKINTERFACEITEMCOLOR=0xFF555555;
 						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,TRUE);
+						SETALPHABLEND(GDevice,true);
 						DrawBookInterfaceItem(GDevice,ITC.accessible_8,px,py);
-						SETALPHABLEND(GDevice,FALSE);
+						SETALPHABLEND(GDevice,false);
 						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7852,9 +7851,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 					{
 						BOOKINTERFACEITEMCOLOR=0xFF555555;
 						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,TRUE);
+						SETALPHABLEND(GDevice,true);
 						DrawBookInterfaceItem(GDevice,ITC.accessible_9,px,py);
-						SETALPHABLEND(GDevice,FALSE);
+						SETALPHABLEND(GDevice,false);
 						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7880,9 +7879,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 					{
 						BOOKINTERFACEITEMCOLOR=0xFF555555;
 						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,TRUE);
+						SETALPHABLEND(GDevice,true);
 						DrawBookInterfaceItem(GDevice,ITC.accessible_10,px,py);
-						SETALPHABLEND(GDevice,FALSE);
+						SETALPHABLEND(GDevice,false);
 						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 						SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -8760,7 +8759,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		if (inter.iobj[0]->invisibility>0.f) 
 		{
 			SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-			SETALPHABLEND(GDevice,TRUE);
+			SETALPHABLEND(GDevice,true);
 		}
 
 		INVISIBILITY_OVERRIDE=inter.iobj[0]->invisibility;
@@ -8795,11 +8794,11 @@ void ARX_INTERFACE_ManageOpenedBook()
 			if(bRenderInterList)
 			{
 				GDevice->SetTextureStageState( 0, D3DTSS_MIPFILTER, D3DTFP_NONE);
-				SETALPHABLEND(GDevice,FALSE);
+				SETALPHABLEND(GDevice,false);
 				PopAllTriangleList(true);
-				SETALPHABLEND(GDevice,TRUE);
+				SETALPHABLEND(GDevice,true);
 				PopAllTriangleListTransparency();
-				SETALPHABLEND(GDevice,FALSE);
+				SETALPHABLEND(GDevice,false);
 				GDevice->SetTextureStageState( 0, D3DTSS_MIPFILTER, D3DTFP_POINT);
 			}
 		}
@@ -8828,7 +8827,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			danaeApp.SetClipping(0,0,(float)DANAESIZX,(float)DANAESIZY);
 		}
 
-		SETALPHABLEND(GDevice,FALSE);
+		SETALPHABLEND(GDevice,false);
 		SETCULL(GDevice,D3DCULL_NONE);
 		SetActiveCamera(oldcam);		
 		
@@ -9093,9 +9092,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 			{
 				SETTC(GDevice,NULL);
 				SETBLENDMODE(GDevice,D3DBLEND_SRCCOLOR,D3DBLEND_ONE);
-				SETALPHABLEND(GDevice,TRUE);			
+				SETALPHABLEND(GDevice,true);			
 				SETCULL(GDevice,D3DCULL_NONE);
-				SETZWRITE(GDevice,FALSE);
+				SETZWRITE(GDevice,false);
 
 				for (int i=0;i<HALOCUR;i++)
 				{
@@ -9112,7 +9111,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				}
 
 				HALOCUR=0;
-				SETALPHABLEND(GDevice,FALSE);			
+				SETALPHABLEND(GDevice,false);			
 			}
 		}
 	}	
@@ -9134,7 +9133,7 @@ void DANAE::DrawAllInterfaceFinish()
 	else if (rrr<0.f) rrr=0.f;
 	
 	SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-	SETALPHABLEND(GDevice,TRUE);
+	SETALPHABLEND(GDevice,true);
 	PRECAST_NUM=0;
 
 	for (long i=0;i<MAX_SPELLS;i++) 
@@ -9212,7 +9211,7 @@ void ARX_INTERFACE_DrawCurrentTorch()
 			ParticleCount++;
 			PARTICLE_DEF * pd	=	&particle[j];
 			pd->special			=	FIRE_TO_SMOKE;
-			pd->exist			=	TRUE;
+			pd->exist			=	true;
 			pd->zdec			=	0;
 			pd->ov.x 			=	px + INTERFACE_RATIO( 12 ) + rnd() * INTERFACE_RATIO( 3.f ) - rnd() * INTERFACE_RATIO( 6.f );
 			pd->ov.y 			=	py + rnd() * INTERFACE_RATIO( 6.f );
@@ -9280,9 +9279,9 @@ void DANAE::DrawAllInterface()
 
 			SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
 
-			GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, TRUE );
+			GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, true );
 			ARX_INTERFACE_DrawItem(ITC.aim_maxi, DANAECENTERX + INTERFACE_RATIO(-320+262.f), DANAESIZY + INTERFACE_RATIO(-72.f), 0.0001f, D3DRGB(j,j,j));
-			GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, FALSE );
+			GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, false );
 			ARX_INTERFACE_DrawItem(ITC.aim_empty, DANAECENTERX + INTERFACE_RATIO(-320+262.f), DANAESIZY + INTERFACE_RATIO(-72.f), 0.0001f, D3DRGB(1,1,1));
 			
 			if (bHitFlash)

@@ -1176,11 +1176,11 @@ void ARX_Text_Init()
 	WCHAR wtx[256];
 	char tx[256];
 
-	sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX.ttf"); // Full path
+	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf"); // Full path
 
 	if (!FileExist(tx))
 	{
-		sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX_default.ttf"); // Full path
+		sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
 	}
 
 //	todo: cast
@@ -1197,11 +1197,11 @@ void ARX_Text_Init()
 		FontError();
 	}
 
-	sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX.ttf");
+	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf");
 
 	if (!FileExist(tx))
 	{
-		sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX_default.ttf"); // Full path
+		sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
 	}
 
 	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass an unicode string to AddFontResourceW
@@ -1231,7 +1231,7 @@ void ARX_Text_Init()
 		{
 			hFontMainMenu = _CreateFont(
 			                    iFontSize,
-			                    0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+			                    0, 0, 0, FW_NORMAL, false, false, false,
 			                    DEFAULT_CHARSET,
 			                    OUT_DEFAULT_PRECIS,
 			                    CLIP_DEFAULT_PRECIS,
@@ -1254,7 +1254,7 @@ void ARX_Text_Init()
 		{
 			hFontMenu = _CreateFont(
 			                iFontSize,
-			                0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+			                0, 0, 0, FW_NORMAL, false, false, false,
 			                DEFAULT_CHARSET,
 			                OUT_DEFAULT_PRECIS,
 			                CLIP_DEFAULT_PRECIS,
@@ -1277,7 +1277,7 @@ void ARX_Text_Init()
 		{
 			hFontControls = _CreateFont(
 			                    iFontSize,
-			                    0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+			                    0, 0, 0, FW_NORMAL, false, false, false,
 			                    DEFAULT_CHARSET,
 			                    OUT_DEFAULT_PRECIS,
 			                    CLIP_DEFAULT_PRECIS,
@@ -1300,7 +1300,7 @@ void ARX_Text_Init()
 		{
 			hFontCredits = _CreateFont(
 			                   iFontSize,
-			                   0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+			                   0, 0, 0, FW_NORMAL, false, false, false,
 			                   DEFAULT_CHARSET,
 			                   OUT_DEFAULT_PRECIS,
 			                   CLIP_DEFAULT_PRECIS,
@@ -1321,7 +1321,7 @@ void ARX_Text_Init()
 
 		hFontRedist = _CreateFont(
 		                  iFontSize,
-		                  0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+		                  0, 0, 0, FW_NORMAL, false, false, false,
 		                  DEFAULT_CHARSET,
 		                  OUT_DEFAULT_PRECIS,
 		                  CLIP_DEFAULT_PRECIS,
@@ -1349,7 +1349,7 @@ void ARX_Text_Init()
 		{
 			hFontInGame = _CreateFont(
 			                  iFontSize,
-			                  0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+			                  0, 0, 0, FW_NORMAL, false, false, false,
 			                  DEFAULT_CHARSET,
 			                  OUT_DEFAULT_PRECIS,
 			                  CLIP_DEFAULT_PRECIS,
@@ -1370,7 +1370,7 @@ void ARX_Text_Init()
 
 		hFontInGameNote = _CreateFont(
 		                      iFontSize,
-		                      0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+		                      0, 0, 0, FW_NORMAL, false, false, false,
 		                      DEFAULT_CHARSET,
 		                      OUT_DEFAULT_PRECIS,
 		                      CLIP_DEFAULT_PRECIS,
@@ -1390,7 +1390,7 @@ void ARX_Text_Init()
 
 		InBookFont = _CreateFont(
 		                 iFontSize,
-		                 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+		                 0, 0, 0, FW_NORMAL, false, false, false,
 		                 DEFAULT_CHARSET,
 		                 OUT_DEFAULT_PRECIS,
 		                 CLIP_DEFAULT_PRECIS,
@@ -1430,11 +1430,11 @@ lpszFontMenu.clear();
 
 	WCHAR wtx[256];
 	char tx[256];
-	sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX.ttf"); // Full path
+	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf"); // Full path
 
 	if (!FileExist(tx))
 	{
-		sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX_default.ttf"); // Full path
+		sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
 	}
 
 	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
@@ -1444,14 +1444,14 @@ lpszFontMenu.clear();
 
 	if (Unicows_RemoveRessource(wtx) == 0)
 	{
-		//	FontError(); // XS : Annoying popup, uncomment if you really want to track something down.
+			// FontError(); // XS : Annoying popup, uncomment if you really want to track something down.
 	}
 
-	sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX.ttf"); // Full path
+	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf"); // Full path
 
 	if (!FileExist(tx))
 	{
-		sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX_default.ttf"); // Full path
+		sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
 	}
 
 	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
@@ -1459,7 +1459,7 @@ lpszFontMenu.clear();
 
 	if (Unicows_RemoveRessource(wtx) == 0)
 	{
-		//	FontError();// XS : Annoying popup, uncomment if you really want to track something down.
+			// FontError();// XS : Annoying popup, uncomment if you really want to track something down.
 	}
 
 	ARX_Localisation_Close();

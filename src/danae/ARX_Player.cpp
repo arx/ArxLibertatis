@@ -54,10 +54,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <ARX_Player.h>
 #include <limits.h>
 
 #include <stdlib.h>
+#include <algorithm>
+#include <vector>
+#include <string>
+#include <fstream>
+#include <sstream>
 
 #include <ARX_Menu.h>
 
@@ -69,6 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <EERIEDraw.h>
 #include <EERIEPathfinder.h>
 
+#include <ARX_Player.h>
 #include "ARX_ChangeLevel.h"
 #include "ARX_Collisions.h"
 #include "ARX_CParticles.h"
@@ -550,20 +555,20 @@ void ARX_Player_Rune_Remove(unsigned long _ulRune)
 //*************************************************************************************
 void ARX_PLAYER_Quest_Add(char * quest, bool _bLoad)
 {
-	char output[4096];
-	MakeLocalised(quest, output, 4096);
+    std::string output( 4096, '\0' );
+    MakeLocalised(quest, output, 4096);
 
-	if (output[0] == 0) return;
+    if (output[0] == 0) return;
 
-	PlayerQuest = (STRUCT_QUEST *)realloc(PlayerQuest, sizeof(STRUCT_QUEST) * (nb_PlayerQuest + 1));
-	PlayerQuest[nb_PlayerQuest].ident = (char *)malloc(strlen(quest) + 1);
-	PlayerQuest[nb_PlayerQuest].localised.resize( _tcslen(output) );
-	strcpy(PlayerQuest[nb_PlayerQuest].ident, quest);
-	//_tcscpy(PlayerQuest[nb_PlayerQuest].localised, output);
-	PlayerQuest[nb_PlayerQuest].localised = output;
-	nb_PlayerQuest++;
-	bBookHalo = !_bLoad;//true;
-	ulBookHaloTime = 0;
+    PlayerQuest = (STRUCT_QUEST *)realloc(PlayerQuest, sizeof(STRUCT_QUEST) * (nb_PlayerQuest + 1));
+    PlayerQuest[nb_PlayerQuest].ident = (char *)malloc(strlen(quest) + 1);
+    PlayerQuest[nb_PlayerQuest].localised.resize( output.length() );
+    strcpy(PlayerQuest[nb_PlayerQuest].ident, quest);
+    PlayerQuest[nb_PlayerQuest].localised = output;
+    PlayerQuest[nb_PlayerQuest].localised = output;
+    nb_PlayerQuest++;
+    bBookHalo = !_bLoad;//true;
+    ulBookHaloTime = 0;
 }
 
 //*************************************************************************************
@@ -2407,7 +2412,7 @@ void ARX_PLAYER_Manage_Visual()
 						if ((j != -1) && (!ARXPausedTimer))
 						{
 							ParticleCount++;
-							particle[j].exist = TRUE;
+							particle[j].exist = true;
 							particle[j].zdec = 0;
 
  
@@ -2858,7 +2863,7 @@ bool Valid_Jump_Pos()
 	float tmp = CheckAnythingInCylinder(&tmpp, inter.iobj[0], CFLAG_PLAYER | CFLAG_JUST_TEST);
 
 	if (tmp <= 20.f)
-		return TRUE;
+		return true;
 
 	long hum = 0;
 
@@ -3460,7 +3465,7 @@ void PlayerMovementIterate(float DeltaTime)
 				levitate = 0;
 			}
 
-			BOOL test;
+			bool test;
 			APPLY_PUSH = 1;
 			float PLAYER_CYLINDER_STEP = 40.f;
 
@@ -3502,7 +3507,7 @@ void PlayerMovementIterate(float DeltaTime)
 					}
 				}
 
-				if ((test == FALSE) && (player.jumpphase > 0))
+				if ((test == false) && (player.jumpphase > 0))
 				{
 
 					player.physics.startpos.x = player.physics.cyl.origin.x = player.pos.x;
@@ -3678,7 +3683,7 @@ void ARX_PLAYER_Manage_Death()
 	}
 
 	{
-		SETALPHABLEND(GDevice, TRUE);
+		SETALPHABLEND(GDevice, true);
 		GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
 		GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
 		EERIEDrawBitmap(GDevice, 0.f, 0.f, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.000091f,

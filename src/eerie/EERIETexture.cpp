@@ -76,6 +76,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <jerror.h>
 #include <jconfig.h>
 #include <jmorecfg.h>
+#include <cassert>
 
 #include "HERMESMain.h"
 
@@ -222,9 +223,9 @@ class CD3DTextureManager
 struct TEXTURESEARCHINFO
 {
 	DWORD dwDesiredBPP;   // Input for texture format search
-	BOOL  bUseAlpha;
-	BOOL  bUsePalette;
-	BOOL  bFoundGoodFormat;
+	bool  bUseAlpha;
+	bool  bUsePalette;
+	bool  bFoundGoodFormat;
 
 	DDPIXELFORMAT * pddpf; // Output of texture format search
 };
@@ -256,7 +257,7 @@ static HRESULT CALLBACK TextureSearchCallback(DDPIXELFORMAT * pddpf,
 
 		// Accept the first 8-bit palettized format we get
 		memcpy(ptsi->pddpf, pddpf, sizeof(DDPIXELFORMAT));
-		ptsi->bFoundGoodFormat = TRUE;
+		ptsi->bFoundGoodFormat = true;
 		return DDENUMRET_CANCEL;
 	}
 
@@ -274,10 +275,10 @@ static HRESULT CALLBACK TextureSearchCallback(DDPIXELFORMAT * pddpf,
 		return DDENUMRET_OK;
 
 	// Make sure current alpha format agrees with requested format type
-	if ((ptsi->bUseAlpha == TRUE) && !(pddpf->dwFlags & DDPF_ALPHAPIXELS))
+	if ((ptsi->bUseAlpha == true) && !(pddpf->dwFlags & DDPF_ALPHAPIXELS))
 		return DDENUMRET_OK;
 
-	if ((ptsi->bUseAlpha == FALSE) && (pddpf->dwFlags & DDPF_ALPHAPIXELS))
+	if ((ptsi->bUseAlpha == false) && (pddpf->dwFlags & DDPF_ALPHAPIXELS))
 		return DDENUMRET_OK;
 
 	// Check if we found a good match
@@ -288,7 +289,7 @@ static HRESULT CALLBACK TextureSearchCallback(DDPIXELFORMAT * pddpf,
 		        (pddpf->dwBBitMask == ptsi->pddpf->dwBBitMask))
 		{
 			memcpy(ptsi->pddpf, pddpf, sizeof(DDPIXELFORMAT));
-			ptsi->bFoundGoodFormat = TRUE;
+			ptsi->bFoundGoodFormat = true;
 			return DDENUMRET_CANCEL;
 		}
 		else return DDENUMRET_OK;
@@ -536,11 +537,10 @@ TextureContainer::TextureContainer(TCHAR * strName, char * wd, DWORD dwStage,
                                    DWORD dwFlags)
 {
 	MakeUpcase(strName);
-	lstrcpy(m_strName, strName);
-
+	
 	if (wd != NULL)
-		lstrcpy(m_texName, strName + strlen(wd));
-	else lstrcpy(m_texName, strName);
+		strcpy(m_texName, strName + strlen(wd));
+	else strcpy(m_texName, strName);
 
 	m_dwWidth		= 0;
 	m_dwHeight		= 0;
@@ -750,17 +750,15 @@ TextureContainer::~TextureContainer()
 //-----------------------------------------------------------------------------
 HRESULT TextureContainer::LoadImageData()
 {
-	TCHAR * strExtension, *strExtension2;
+	TCHAR * strExtension;
 	TCHAR  strPathname[256];
 	TCHAR  tempstrPathname[256];
 
 	// Check File
 	lstrcpy(strPathname, m_strName);
 
-	if (NULL == (strExtension = _tcsrchr(m_strName, _T('.'))))
+	if (NULL == (strExtension = strchr(m_strName, '.')))
 		return DDERR_UNSUPPORTED;
-
-	strExtension2 = _tcsrchr(m_strName, _T('_'));
 
 	HRESULT hres;
 	strcpy(tempstrPathname, strPathname);
@@ -1009,7 +1007,7 @@ HRESULT TextureContainer::LoadTargaFile(TCHAR * strPathname)
 
 		if ((m_pRGBAData[i] & 0x000000ff) != 0xff)
 		{
-			m_bHasAlpha = TRUE;
+			m_bHasAlpha = true;
 			break;
 		}
 	}
@@ -2122,10 +2120,10 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 
 	// Setup the structure to be used for texture enumration.
 	TEXTURESEARCHINFO tsi;
-	tsi.bFoundGoodFormat = FALSE;
+	tsi.bFoundGoodFormat = false;
 	tsi.pddpf            = &ddsd.ddpfPixelFormat;
 	tsi.dwDesiredBPP     = m_dwBPP;
-	tsi.bUsePalette      = FALSE;
+	tsi.bUsePalette      = false;
 	tsi.bUseAlpha        = m_bHasAlpha;
 
 	tsi.dwDesiredBPP = Project.TextureBits;
@@ -2136,13 +2134,13 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 		{
 			if (ddDesc.dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_ALPHAPALETTE)
 			{
-				tsi.bUseAlpha   = TRUE;
-				tsi.bUsePalette = TRUE;
+				tsi.bUseAlpha   = true;
+				tsi.bUsePalette = true;
 			}
 			else
 			{
-				tsi.bUseAlpha   = TRUE;
-				tsi.bUsePalette = FALSE;
+				tsi.bUseAlpha   = true;
+				tsi.bUsePalette = false;
 			}
 		}
 	}
@@ -2163,9 +2161,9 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 	}
 
 	// If we couldn't find a format, let's try a default format
-	if (FALSE == tsi.bFoundGoodFormat)
+	if (false == tsi.bFoundGoodFormat)
 	{
-		tsi.bUsePalette  = FALSE;
+		tsi.bUsePalette  = false;
 		tsi.dwDesiredBPP = 16;
 		tsi.pddpf->dwRBitMask = 0x0000F800;
 		tsi.pddpf->dwGBitMask = 0x000007E0;
@@ -2181,7 +2179,7 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 		}
 
 		// If we still fail, we cannot create this texture
-		if (FALSE == tsi.bFoundGoodFormat)
+		if (false == tsi.bFoundGoodFormat)
 			return E_FAIL;
 	}
 
@@ -3010,7 +3008,7 @@ my_error_exit(j_common_ptr cinfo)
 	JPEGError = 1;
 	return;
 }
-BOOL JPEG_NO_TRUE_BLACK = TRUE;
+bool JPEG_NO_TRUE_BLACK = true;
 /*--------------------------------------------------------------------------------*/
 HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 {
@@ -3572,7 +3570,7 @@ HRESULT D3DTextr_CreateEmptyTexture(TCHAR * strName, DWORD dwWidth,
 
 	// Save alpha usage flag
 	if (dwFlags & D3DTEXTR_CREATEWITHALPHA)
-		ptcTexture->m_bHasAlpha = TRUE;
+		ptcTexture->m_bHasAlpha = true;
 
 	return S_OK;
 }
@@ -3775,7 +3773,7 @@ HRESULT TextureContainer::LoadJpegFileNoDecomp(TCHAR * strPathname)
 		return E_FAIL;
 	}
 
-	jpeg_read_header(cinfo, TRUE);
+	jpeg_read_header(cinfo, true);
 
 	if (JPEGError)
 	{
@@ -4031,7 +4029,7 @@ HRESULT TextureContainer::LoadPNGFile(TCHAR * strPathname)
 
 	if (pngh->colortype & ALPHA_USED)
 	{
-		m_bHasAlpha = TRUE;
+		m_bHasAlpha = true;
 	}
 
 	m_dwWidth = pngh->width;

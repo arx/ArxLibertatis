@@ -24,7 +24,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 #include <stdio.h>
 #include "ARX_CCinematique.h"
-#include "Resource.h"
 #include "ARX_Sound.h"
 #include "ARX_Casts.h"
 
@@ -86,14 +85,14 @@ C_SOUND * GetFreeSound(int * num)
 	return NULL;
 }
 /*-----------------------------------------------------------*/
-BOOL DeleteFreeSound(int num)
+bool DeleteFreeSound(int num)
 {
 	C_SOUND	*	cs;
 	int			l;
 
 	cs = &TabSound[num];
 
-	if (!cs->actif) return FALSE;
+	if (!cs->actif) return false;
 
 	l = 0;
 
@@ -118,7 +117,7 @@ BOOL DeleteFreeSound(int num)
 	cs->actif = 0;
 	NbSound--;
 
-	return TRUE;
+	return true;
 }
 /*-----------------------------------------------------------*/
 void DeleteAllSound(void)
@@ -345,17 +344,17 @@ int AddSoundToList(char * dir, char * name, int id, int pos)
 	return num;
 }
 /*-----------------------------------------------------------*/
-BOOL PlaySoundKeyFramer(int id)
+bool PlaySoundKeyFramer(int id)
 {
 	C_SOUND * cs;
 
 	cs = &TabSound[id];
 
-	if (!cs->actif) return FALSE;
+	if (!cs->actif) return false;
 
 	cs->idhandle = ARX_SOUND_PlayCinematic(cs->sound + g_pak_workdir_len);
 
-	return TRUE;
+	return true;
 }
 /*-----------------------------------------------------------*/
 void StopSoundKeyFramer(void)

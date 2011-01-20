@@ -284,7 +284,7 @@ void ARX_QuickSave()
 	char	tcDst[256];
 	sprintf( tcSrc, "%sSCT_0.BMP", Project.workingdir );
 	sprintf( tcDst, "%sSCT_1.BMP", Project.workingdir );
-	CopyFile( tcSrc, tcDst, FALSE );
+	CopyFile( tcSrc, tcDst, false );
 
 	if ( bFound0 == false )
 	{
@@ -293,7 +293,7 @@ void ARX_QuickSave()
 		ARXMenu_Options_Video_SetGamma( iOldGamma );
 		ARX_SOUND_MixerResume( ARX_SOUND_MixerGame );
 
-		CopyFile( tcDst, tcSrc, FALSE );
+		CopyFile( tcDst, tcSrc, false );
 		DeleteFile( tcDst );
 	}
 
@@ -337,7 +337,7 @@ void ARX_DrawAfterQuickLoad()
 
 	if(!pTex) return;
 
-	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,TRUE);
+	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,true);
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,D3DBLEND_ONE);
 
@@ -352,7 +352,7 @@ void ARX_DrawAfterQuickLoad()
 						pTex, 
 						D3DRGB(fColor,fColor,fColor) );
 
-	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,FALSE);
+	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,false);
 }
 
 //-----------------------------------------------------------------------------
@@ -681,18 +681,20 @@ sakActionDefaultKey[CONTROLS_CUST_BOOKQUEST].iPage=1;
 
 //-----------------------------------------------------------------------------
 
-CMenuConfig::CMenuConfig(char *_pName)
+CMenuConfig::CMenuConfig( const std::string& _pName)
 {
-	if(!strcasecmp((const char*)"cfg",(const char*)_pName))
-	{
-		pcName=strdup("cfg.ini");
-	}
-	else
-	{
-		pcName=strdup(_pName);
-	}
+    // if _pName equals exactly "cfg"
+    if ( strcasecmp( _pName.c_str(), "cfg" ) == 0 )
+    //	if(!strcasecmp((const char*)"cfg",(const char*)_pName))
+    {
+        pcName="cfg.ini";
+    }
+    else
+    {
+        pcName = _pName;
+    }
 
-	First();
+    First();
 }
 
 //-----------------------------------------------------------------------------
@@ -746,11 +748,6 @@ bool CDirectInput::GetMouseButtonDoubleClick(int _iNumButton,int _iTime)
 
 CMenuConfig::~CMenuConfig()
 {
-	if(pcName)
-	{
-		free((void*)pcName);
-		pcName = NULL;
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -776,190 +773,158 @@ void CMenuConfig::SetDefaultKey()
 	}
 }
 
-//-----------------------------------------------------------------------------
-
-int CMenuConfig::GetDIKWithASCII(char *_pcTouch)
+std::string& to_lower( std::string& str )
 {
-_TCHAR pcT[256];
-
-//	TODO: cast
-//	MultiByteToWideChar(CP_ACP, 0, _pcTouch, -1, pcT, strlen(_pcTouch)+1);
-
-	if(!_tcsicmp(pcT,_T("---")))
-	{
-		return -1;
-	}
-
-	for(int iI=0;iI<256;iI++)
-	{
-		_TCHAR *pcT1=pGetInfoDirectInput->GetFullNameTouch(iI);
-
-		if(!_tcsicmp(pcT,pcT1))
-		{
-			free((void*)pcT1);
-			return iI;
-		}
-
-		free((void*)pcT1);
-		pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI | (DIK_LSHIFT << 16));
-
-		if(!_tcsicmp(pcT,pcT1))
-		{
-			free((void*)pcT1);
-			return iI|(DIK_LSHIFT<<16);
-		}
-
-		free((void*)pcT1);
-		pcT1=pGetInfoDirectInput->GetFullNameTouch(iI|(DIK_RSHIFT<<16));
-
-		if(!_tcsicmp(pcT,pcT1))
-		{
-			free((void*)pcT1);
-			return iI|(DIK_RSHIFT<<16);
-		}
-
-		free((void*)pcT1);
-		pcT1=pGetInfoDirectInput->GetFullNameTouch(iI|(DIK_LCONTROL<<16));
-
-		if(!_tcsicmp(pcT,pcT1))
-		{
-			free((void*)pcT1);
-			return iI|(DIK_LCONTROL<<16);
-		}
-
-		free((void*)pcT1);
-		pcT1=pGetInfoDirectInput->GetFullNameTouch(iI|(DIK_RCONTROL<<16));
-
-		if(!_tcsicmp(pcT,pcT1))
-		{
-			free((void*)pcT1);
-			return iI|(DIK_RCONTROL<<16);
-		}
-
-		free((void*)pcT1);
-		pcT1=pGetInfoDirectInput->GetFullNameTouch(iI|(DIK_LALT<<16));
-
-		if(!_tcsicmp(pcT,pcT1))
-		{
-			free((void*)pcT1);
-			return iI|(DIK_LALT<<16);
-		}
-
-		free((void*)pcT1);
-		pcT1=pGetInfoDirectInput->GetFullNameTouch(iI|(DIK_RALT<<16));
-
-		if(!_tcsicmp(pcT,pcT1))
-		{
-			free((void*)pcT1);
-			return iI|(DIK_RALT<<16);
-		}
-
-		free((void*)pcT1);
-	}
-
-	for(int iI=DIK_BUTTON1;iI<=DIK_BUTTON32;iI++)
-	{
-		_TCHAR *pcT1=pGetInfoDirectInput->GetFullNameTouch(iI);
-
-		if(!_tcsicmp(pcT,pcT1))
-		{
-			free((void*)pcT1);
-			return iI;
-		}
-
-		free((void*)pcT1);
-	}
-
-	for(int iI=DIK_WHEELUP;iI<=DIK_WHEELDOWN;iI++)
-	{
-		_TCHAR *pcT1=pGetInfoDirectInput->GetFullNameTouch(iI);
-
-		if(!_tcsicmp(pcT,pcT1))
-		{
-			free((void*)pcT1);
-			return iI;
-		}
-
-		free((void*)pcT1);
-	}
-
-	return -1;
+    std::transform( str.begin(), str.end(), str.begin(), ::tolower );
+    return str;
 }
 
 //-----------------------------------------------------------------------------
 
-char * CMenuConfig::ReadConfig(char *_pcSection,char *_pcKey)
+int CMenuConfig::GetDIKWithASCII( const std::string& _pcTouch)
 {
-char tcText[256];
+    std::string pcT = _pcTouch;
+    to_lower( pcT );
 
-	int iI=GetPrivateProfileString(_pcSection,_pcKey,"",tcText,256,pcName);
+    if( strcasecmp(pcT.c_str(), "---"  ) == 0 )
+    {
+        return -1;
+    }
 
-	if(iI<=0) return NULL;
+    for(int iI=0;iI<256;iI++)
+    {
+        std::string pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI);
+        to_lower( pcT1 );
 
-	char *pcText=(char*)malloc(strlen(tcText)+1);
+        if( !pcT.compare( pcT1 ) )
+            return iI;
 
-	if(!pcText) return NULL;
+        pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI | (DIK_LSHIFT << 16));
 
-	strcpy(pcText,tcText);
-	return pcText;
+        if( !pcT.compare( pcT1 ) )
+            return iI|(DIK_LSHIFT<<16);
+
+        pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI|(DIK_RSHIFT<<16));
+
+        if( !pcT.compare( pcT1 ) )
+            return iI|(DIK_RSHIFT<<16);
+
+        pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI|(DIK_LCONTROL<<16));
+
+        if( !pcT.compare( pcT1 ) )
+            return iI|(DIK_LCONTROL<<16);
+
+        pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI|(DIK_RCONTROL<<16));
+
+        if( !pcT.compare( pcT1 ) )
+            return iI|(DIK_RCONTROL<<16);
+
+        pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI|(DIK_LALT<<16));
+
+        if( ! pcT.compare( pcT1 ) )
+            return iI|(DIK_LALT<<16);
+
+        pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI|(DIK_RALT<<16));
+
+        if( !pcT.compare( pcT1 ) )
+            return iI|(DIK_RALT<<16);
+    }
+
+    for(int iI=DIK_BUTTON1;iI<=DIK_BUTTON32;iI++)
+    {
+        std::string pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI);
+
+        if( !pcT.compare( pcT1 ) )
+            return iI;
+    }
+
+    for(int iI=DIK_WHEELUP;iI<=DIK_WHEELDOWN;iI++)
+    {
+        std::string pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI);
+
+        if( !pcT.compare( pcT1 ) )
+            return iI;
+    }
+
+    return -1;
 }
 
 //-----------------------------------------------------------------------------
 
-int CMenuConfig::ReadConfigInt(char *_pcSection,char *_pcKey,bool &_bOk)
+std::string CMenuConfig::ReadConfig( const std::string& _pcSection, const std::string& _pcKey)
 {
-	char *pcText=ReadConfig(_pcSection,_pcKey);
+    char tcText[256];
 
-	if(!pcText)
-	{
-		_bOk=false;
-		return 0;
-	}
+    int iI = GetPrivateProfileString( _pcSection.c_str(), _pcKey.c_str(), "", tcText, 256, pcName.c_str() );
 
-	int iI=atoi(pcText);
-	free((void*)pcText);
-	pcText=NULL;
-	_bOk=true;
-	return iI;
+    if(iI<=0) return NULL;
+
+    char *pcText=(char*)malloc(strlen(tcText)+1);
+
+    if(!pcText) return NULL;
+
+    strcpy(pcText,tcText);
+    return pcText;
+}
+
+//-----------------------------------------------------------------------------
+
+int CMenuConfig::ReadConfigInt( const std::string& _pcSection, const std::string& _pcKey, bool &_bOk )
+{
+	std::string pcText=ReadConfig(_pcSection,_pcKey);
+
+    if ( pcText.empty() )
+    {
+        _bOk = false;
+        return 0;
+    }
+
+    std::stringstream ss( pcText );
+
+    int iI;
+    ss >> iI;
+    _bOk=true;
+    return iI;
 }
 
 //-----------------------------------------------------------------------------
 	
-char* CMenuConfig::ReadConfigString(char *_pcSection,char *_pcKey)
+std::string CMenuConfig::ReadConfigString( const std::string& _pcSection, const std::string& _pcKey)
 {
 	return ReadConfig(_pcSection,_pcKey);
 }
 
 //-----------------------------------------------------------------------------
 
-bool CMenuConfig::WriteConfig(char *_pcSection,char *_pcKey,char *_pcDatas)
+bool CMenuConfig::WriteConfig( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas)
 {
 int iErreur=0;
 
 	char tcText[256];	
 
-	if(!GetPrivateProfileSection(_pcSection,tcText,256,pcName))
+	if(!GetPrivateProfileSection(_pcSection.c_str(),tcText,256,pcName.c_str()))
 	{
-		if(WritePrivateProfileSection(_pcSection,"",pcName)) iErreur++;
+		if(WritePrivateProfileSection(_pcSection.c_str(),"",pcName.c_str())) iErreur++;
 	}
 
-	if(WritePrivateProfileString(_pcSection,_pcKey,_pcDatas,pcName)) iErreur++;
+	if(WritePrivateProfileString(_pcSection.c_str(),_pcKey.c_str(),_pcDatas.c_str(),pcName.c_str())) iErreur++;
 
 	return (iErreur==2);
 }
 
 //-----------------------------------------------------------------------------
 
-bool CMenuConfig::WriteConfigInt(char *_pcSection,char *_pcKey,int _iDatas)
+bool CMenuConfig::WriteConfigInt( const std::string& _pcSection, const std::string& _pcKey, const int _iDatas)
 {
+    std::stringstream ss( _iDatas );
 	char tcTxt[256];
 	sprintf(tcTxt,"%d",_iDatas);
-	return WriteConfig(_pcSection,_pcKey,(char*)tcTxt);
+	return WriteConfig(_pcSection,_pcKey, tcTxt);
 }
 
 //-----------------------------------------------------------------------------
 
-bool CMenuConfig::WriteConfigString(char *_pcSection,char *_pcKey,char *_pcDatas)
+bool CMenuConfig::WriteConfigString( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas)
 {
 	return WriteConfig(_pcSection,_pcKey,_pcDatas);
 }
@@ -1059,63 +1024,42 @@ bool CMenuConfig::SetActionKey(int _iAction,int _iActionNum,int _iVirtualKey)
 
 //-----------------------------------------------------------------------------
 
-bool CMenuConfig::WriteConfigKey(char *_pcKey,int _iAction)
+bool CMenuConfig::WriteConfigKey( const std::string& _pcKey,int _iAction)
 {
-char tcTxt[256];
-char tcTxt2[256];
-char *pcText;
-bool bOk=true;
-_TCHAR *pcText1;
+    char tcTxt[256];
+    char tcTxt2[256];
+    std::string pcText;
+    bool bOk=true;
+    std::string pcText1;
 
-	strcpy(tcTxt,_pcKey);
+    strcpy(tcTxt,_pcKey.c_str());
 
-		int iL;
-		pcText1=pGetInfoDirectInput->GetFullNameTouch(sakActionKey[_iAction].iKey[0]);
-		iL=_tcslen(pcText1)+1;
-		pcText=(char*)malloc(iL);
+    int iL;
+    pcText1 = pGetInfoDirectInput->GetFullNameTouch(sakActionKey[_iAction].iKey[0]);
+    iL = pcText1.length() + 1;
 
-		while(iL--)
-		{
-			pcText[iL]=char(pcText1[iL]);
-		}
+    pcText = pcText1;
 
-		free((void*)pcText1);
-		pcText1=NULL;
-		
-		if(pcText)
-		{
-			strcpy(tcTxt2,tcTxt);
-			strcat(tcTxt2,"_k0");
-			bOk&=WriteConfigString("KEY",tcTxt2,pcText);
-			free((void*)pcText);
-			pcText=NULL;
-		}
+    if( !pcText.empty() )
+    {
+        strcpy(tcTxt2,tcTxt);
+        strcat(tcTxt2,"_k0");
+        bOk&=WriteConfigString("KEY",tcTxt2,pcText);
+    }
 
-		pcText1=pGetInfoDirectInput->GetFullNameTouch(sakActionKey[_iAction].iKey[1]);
-		iL=_tcslen(pcText1)+1;
-		pcText=(char*)malloc(iL);
+    pcText1 = pGetInfoDirectInput->GetFullNameTouch(sakActionKey[_iAction].iKey[1]);
+    iL = pcText1.length() + 1;
+        
+    pcText = pcText1;
 
-		while(iL--)
-		{
-			pcText[iL]=char(pcText1[iL]);
-		}
+    if( !pcText.empty() )
+    {
+        strcpy(tcTxt2,tcTxt);
+        strcat(tcTxt2,"_k1");
+        bOk&=WriteConfigString("KEY",tcTxt2,pcText);
+    }
 
-		free((void*)pcText1);
-		pcText1=NULL;
-
-		if(pcText)
-		{
-			strcpy(tcTxt2,tcTxt);
-			strcat(tcTxt2,"_k1");
-			bOk&=WriteConfigString("KEY",tcTxt2,pcText);
-			free((void*)pcText);
-			pcText=NULL;
-		}
-
-		
-	
-
-	return bOk;
+    return bOk;
 }
 
 //-----------------------------------------------------------------------------
@@ -1162,68 +1106,53 @@ void CMenuConfig::ReInitActionKey(CWindowMenuConsole *_pwmcWindowMenuConsole)
 
 //-----------------------------------------------------------------------------
 
-bool CMenuConfig::ReadConfigKey(char *_pcKey,int _iAction)
+bool CMenuConfig::ReadConfigKey( const std::string& _pcKey, int _iAction )
 {
-char tcTxt[256];
-char tcTxt2[256];
-char *pcText;
-bool bOk=true;
-	strcpy(tcTxt, _pcKey);
+    char tcTxt[256];
+    char tcTxt2[256];
+    std::string pcText;
+    bool bOk=true;
+    strcpy(tcTxt, _pcKey.c_str());
 
 
-		int iDIK;
-		strcpy(tcTxt2,tcTxt);
-		strcat(tcTxt2,"_k0");
-		pcText=ReadConfigString("KEY",tcTxt2);
+    int iDIK;
+    strcpy(tcTxt2,tcTxt);
+    strcat(tcTxt2,"_k0");
+    pcText = ReadConfigString( "KEY", tcTxt2 );
 
-		if(!pcText)
-		{
-			bOk=false;
-		}
-		else
-		{
-			iDIK=GetDIKWithASCII(pcText);
+    if( pcText.empty() )
+        bOk=false;
+    else
+    {
+        iDIK = GetDIKWithASCII( pcText );
 
-			if(iDIK==-1)
-			{
-				sakActionKey[_iAction].iKey[0]=-1;
-			}
-			else
-			{
-				SetActionKey(_iAction,0,iDIK);
-			}
+        if( iDIK == -1 )
+            sakActionKey[_iAction].iKey[0]=-1;
+        else
+            SetActionKey( _iAction, 0, iDIK) ;
+    }
 
-			free((void*)pcText);
-			pcText=NULL;
-		}
+    strcpy( tcTxt2, tcTxt );
+    strcat( tcTxt2, "_k1" );
+    pcText = ReadConfigString( "KEY", tcTxt2 );
 
-		strcpy(tcTxt2,tcTxt);
-		strcat(tcTxt2,"_k1");
-		pcText=ReadConfigString("KEY",tcTxt2);
+    if( pcText.empty() )
+        bOk = false;
+    else
+    {
+        iDIK = GetDIKWithASCII( pcText );
 
-		if(!pcText)
-		{
-			bOk=false;
-		}
-		else
-		{
-			iDIK=GetDIKWithASCII(pcText);
-
-			if(iDIK==-1)
-			{
-				sakActionKey[_iAction].iKey[1]=-1;
-			}
-			else
-			{
-				SetActionKey(_iAction,1,iDIK);
-			}
-
-			free((void*)pcText);
-			pcText=NULL;
-		}
-		
-
-	return bOk;
+        if( iDIK == -1 )
+        {
+            sakActionKey[_iAction].iKey[1]=-1;
+        }
+        else
+        {
+            SetActionKey( _iAction, 1, iDIK );
+        }
+    }
+    
+    return bOk;
 }
 
 //-----------------------------------------------------------------------------
@@ -1338,44 +1267,44 @@ extern bool IsNoGore( void );
 
 bool CMenuConfig::ReadAll()
 {
-	char	*pcText;
-	bool	bOk=false;
-	bool	bOkTemp;
-	int		iTemp;
+    std::string *pcText;
+    boolbOk = false; 
+    bool bOkTemp;
+    int iTemp;
 
-	//language
-	if (strlen(Project.localisationpath) == 0)
-	{
-		if(GERMAN_VERSION)
-		{
-			pcText = strdup("Deutsch");
-		}
-		else
-		{
-			if(FRENCH_VERSION)
-			{
-				pcText=ReadConfigString("LANGUAGE","string");
+    //language
+    if (strlen(Project.localisationpath) == 0)
+    {
+        if(GERMAN_VERSION)
+        {
+            pcText = strdup("Deutsch");
+        }
+        else
+        {
+            if(FRENCH_VERSION)
+            {
+                pcText = ReadConfigString( "LANGUAGE", "string" );
 
-				if( pcText&&
-					(strcasecmp(pcText,"francais")&&
-					strcasecmp(pcText,"deutsch")) )
-				{
-					free(pcText);
-					pcText = strdup("Francais");
-				}
-				else
-				{
-					if(!pcText)
-					{
-						pcText = strdup("Francais");
-					}
-				}
-			}
-			else
-			{
-				pcText=ReadConfigString("LANGUAGE","string");
-			}
-		}
+                if( pcText&&
+                    (strcasecmp(pcText,"francais")&&
+                    strcasecmp(pcText,"deutsch")) )
+                {
+                    free(pcText);
+                    pcText = strdup("Francais");
+                }
+                else
+                {
+                    if(!pcText)
+                    {
+                        pcText = strdup("Francais");
+                    }
+                }
+            }
+            else
+            {
+                pcText=ReadConfigString("LANGUAGE","string");
+            }
+        }
 
 		if(pcText)
 		{
@@ -2155,7 +2084,7 @@ static void DrawCredits(void)
 		//Set the device
 		if(!danaeApp.DANAEStartRender()) return;
 
-		SETALPHABLEND(GDevice,FALSE);
+		SETALPHABLEND(GDevice,false);
 		GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
 		SETZWRITE(GDevice,true);
 		GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE,false);
@@ -2318,7 +2247,7 @@ D3DTLVERTEX d3dvertex[4];
 	d3dvertex[3].color=iColor;
 
 	SETTC(GDevice,NULL);
-	SETALPHABLEND(GDevice,TRUE);
+	SETALPHABLEND(GDevice,true);
 
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
@@ -2328,7 +2257,7 @@ D3DTLVERTEX d3dvertex[4];
 
 	EERIEDRAWPRIM( GDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, d3dvertex, 4, 0, EERIE_NOCOUNT );
 
-	SETALPHABLEND(GDevice,FALSE);
+	SETALPHABLEND(GDevice,false);
 	SETZWRITE(GDevice, true);
 
 	danaeApp.EnableZBuffer();
@@ -2405,7 +2334,7 @@ bool Menu2_Render()
 			break;
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	if(!danaeApp.DANAEStartRender())
@@ -2558,7 +2487,7 @@ int iDecMenuPrincipaleY=50;
 				pMenu=NULL;
 			}
 
-			SETALPHABLEND(GDevice,FALSE);
+			SETALPHABLEND(GDevice,false);
 			GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
 			SETZWRITE(GDevice, true);
 			danaeApp.EnableZBuffer();
@@ -3888,7 +3817,7 @@ int iDecMenuPrincipaleY=50;
 
 	if (pTextureLoadRender)
 	{
-		GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,FALSE);
+		GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
 
 		int iOffsetX = 0;
 		int iOffsetY=0;
@@ -3956,7 +3885,7 @@ int iDecMenuPrincipaleY=50;
 		}
 	}
 
-	SETALPHABLEND(GDevice,FALSE);
+	SETALPHABLEND(GDevice,false);
 	GDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTFP_LINEAR);
 	GDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTFP_LINEAR);
 	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
@@ -5803,7 +5732,7 @@ static int scan2ascii(DWORD scancode, unsigned short* result)
    static HKL layout=GetKeyboardLayout(0);
    static unsigned char State[256];
 
-   if (GetKeyboardState(State)==FALSE)
+   if (GetKeyboardState(State)==false)
       return 0;
  
    UINT vk=MapVirtualKeyEx(scancode,1,layout);
@@ -6435,7 +6364,7 @@ int CWindowMenuConsole::Render()
 
 	int iSlider=0;
 
-	SETALPHABLEND(GDevice,TRUE);
+	SETALPHABLEND(GDevice,true);
 
 	//------------------------------------------------------------------------
 	//Affichage de la console
@@ -6455,7 +6384,7 @@ int CWindowMenuConsole::Render()
 
 	SETALPHABLEND(GDevice, false);
 
-	SETALPHABLEND(GDevice,FALSE);
+	SETALPHABLEND(GDevice,false);
 	EERIEDrawBitmap2(GDevice, ARX_CLEAN_WARN_CAST_FLOAT(iPosX), ARX_CLEAN_WARN_CAST_FLOAT(iSavePosY),
 		RATIO_X(pTexBackgroundBorder->m_dwWidth), RATIO_Y(pTexBackgroundBorder->m_dwHeight),
 		0, pTexBackgroundBorder, ARX_OPAQUE_WHITE);

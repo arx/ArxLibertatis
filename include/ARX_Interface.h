@@ -338,11 +338,11 @@ float INTERFACE_RATIO_LONG(const long);
 float INTERFACE_RATIO_DWORD(const DWORD);
 short SHORT_INTERFACE_RATIO(const float);
 
-BOOL MouseInCam(EERIE_CAMERA * cam);
-BOOL MouseInRect(float x0, float y0, float x1, float y1);
+bool MouseInCam(EERIE_CAMERA * cam);
+bool MouseInRect(float x0, float y0, float x1, float y1);
 long GetMainSpeakingIO();
 void DrawBookInterfaceItem(LPDIRECT3DDEVICE7 m_pd3dDevice, TextureContainer * tc, float x, float y, float z = 0.000001f);
-BOOL ARX_INTERFACE_MouseInBook();
+bool ARX_INTERFACE_MouseInBook();
 void ARX_INTERFACE_PlayerInterfaceModify(long showhide, long smooth);
 void ARX_INTERFACE_Reset();
 void ARX_INTERFACE_SetCinemascope(long v, long vv);

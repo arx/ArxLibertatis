@@ -383,10 +383,10 @@ float CMagicMissile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	// Set Appropriate Renderstates -------------------------------------------
 	SETCULL(m_pd3dDevice, D3DCULL_NONE);
-	SETZWRITE(m_pd3dDevice, FALSE);
+	SETZWRITE(m_pd3dDevice, false);
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(m_pd3dDevice, TRUE);
+	SETALPHABLEND(m_pd3dDevice, true);
 
 	// Set Texture ------------------------------------------------------------
 	if (tex_mm && tex_mm->m_pddsSurface)
@@ -784,7 +784,7 @@ void CMultiMagicMissile::CheckCollision(float _fPlayer_Magic_Level)
 							damages[ttt].source	= spells[spellinstance].caster;
 							damages[ttt].flags	= DAMAGE_FLAG_DONT_HURT_SOURCE;
 							damages[ttt].type	= DAMAGE_TYPE_MAGICAL;
-							damages[ttt].exist	= TRUE;
+							damages[ttt].exist	= true;
 						}
 
 						EERIE_RGB rgb;
@@ -1336,8 +1336,8 @@ void CPortal::Update(unsigned long _ulTime)
 /*--------------------------------------------------------------------------*/
 float CPortal::Render(LPDIRECT3DDEVICE7 device)
 {
-	SETALPHABLEND(device, TRUE);
-	SETZWRITE(device, FALSE);
+	SETALPHABLEND(device, true);
+	SETZWRITE(device, false);
 
 	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
@@ -1447,9 +1447,9 @@ float CPortal::Render(LPDIRECT3DDEVICE7 device)
 
 	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
-	SETALPHABLEND(device, FALSE);
+	SETALPHABLEND(device, false);
 	SETCULL(device, D3DCULL_NONE);
-	SETZWRITE(device, TRUE);
+	SETZWRITE(device, true);
 
 	return 0;
 }

@@ -93,7 +93,7 @@ typedef struct
 	EERIE_3D	speinc[8];
 	unsigned long	tim_start;
 	unsigned long	duration;
-	BOOL		exist;
+	bool		exist;
 	long		dynlight;
 } OBJFX;
 
@@ -150,7 +150,7 @@ void SpawnMetalShine(EERIE_3D * pos,long r,long g,long b,long num)
 	{
 		ParticleCount++;
 		PARTICLE_DEF * pd=&particle[j];
-		pd->exist		=	TRUE;
+		pd->exist		=	true;
 		pd->zdec		=	0;
 		pd->ov.x		=	pos->x;
 		pd->ov.y		=	pos->y;
@@ -191,7 +191,7 @@ void LaunchDummyParticle()
 	{
 		ParticleCount++;
 		PARTICLE_DEF * pd=&particle[j];
-		pd->exist=TRUE;
+		pd->exist=true;
 		pd->zdec=0;
 		float f=DEG2RAD(player.angle.b);
 		pd->ov.x		=	player.pos.x+EEsin(f)*100.f;
@@ -258,7 +258,7 @@ void ARX_PARTICLES_Spawn_Lava_Burn(EERIE_3D * poss,float power,INTERACTIVE_OBJ *
 	{
 		ParticleCount++;
 		PARTICLE_DEF * pd	=	&particle[j];
-		pd->exist			=	TRUE;
+		pd->exist			=	true;
 		pd->zdec			=	0;
 		pd->ov.x			=	pos.x;
 		pd->ov.y			=	pos.y;
@@ -296,7 +296,7 @@ void ARX_PARTICLES_Spawn_Rogue_Blood(EERIE_3D * pos,float dmgs,D3DCOLOR col)
 		b=(float)((long)((col) & 255))*DIV255;
 		ParticleCount++;
 		PARTICLE_DEF * pd=&particle[j];
-		pd->exist=TRUE;
+		pd->exist=true;
 		pd->zdec=0;
 		pd->ov.x=pos->x;
 		pd->ov.y=pos->y;
@@ -342,7 +342,7 @@ void ARX_PARTICLES_Spawn_Blood3(EERIE_3D * pos,float dmgs,D3DCOLOR col,long vert
 			b=(float)((long)((col) & 255))*DIV255;
 			ParticleCount++;
 			PARTICLE_DEF * pd=&particle[j];
-			pd->exist=TRUE;
+			pd->exist=true;
 			pd->zdec=0;
 		pd->ov.x = pos->x - EEsin((float)ARXTime * DIV1000) * 30.f; 
 		pd->ov.y = pos->y + EEsin((float)ARXTime * DIV1000) * 30.f; 
@@ -762,7 +762,7 @@ void ARX_PARTICLES_Spawn_Blood(EERIE_3D * pos,EERIE_3D * vect,float dmgs,long so
 		{
 			ParticleCount++;
 			PARTICLE_DEF * pd=&particle[j];
-			pd->exist=TRUE;
+			pd->exist=true;
 			pd->zdec=0;
 			pd->siz=0.f;
 			pd->scale.x=(float)spawn_nb;
@@ -815,7 +815,7 @@ void ARX_PARTICLES_Spawn_Spark(EERIE_3D * pos,float dmgs,long flags)
 		{
 			ParticleCount++;
 			PARTICLE_DEF * pd=&particle[j];
-			pd->exist=TRUE;
+			pd->exist=true;
 			pd->zdec=0;
 			pd->oldpos.x=pd->ov.x=pos->x+rnd()*10.f-5.f;
 			pd->oldpos.y=pd->ov.y=pos->y+rnd()*10.f-5.f;
@@ -897,7 +897,7 @@ void AddRandomSmoke(INTERACTIVE_OBJ * io,long amount)
 			{
 				ParticleCount++;
 				PARTICLE_DEF * pd=&particle[j];
-				pd->exist		=	TRUE;
+				pd->exist		=	true;
 				pd->zdec		=	0;
 				pd->ov.x		=	io->obj->vertexlist3[num].v.x+rnd()*10.f-5.f;
 				pd->ov.y		=	io->obj->vertexlist3[num].v.y+rnd()*10.f-5.f;
@@ -948,7 +948,7 @@ void ARX_PARTICLES_Add_Smoke(EERIE_3D * pos,long flags,long amount,EERIE_RGB * r
 		{
 			ParticleCount++;
 			PARTICLE_DEF * pd=&particle[j];
-			pd->exist=TRUE;
+			pd->exist=true;
 			pd->zdec=0;
 			pd->ov.x=pos->x+mod.x;
 			pd->ov.y=pos->y+mod.y;
@@ -1080,11 +1080,11 @@ void ManageTorch()
 void ARX_MAGICAL_FLARES_Draw(LPDIRECT3DDEVICE7  m_pd3dDevice,long FRAMETICKS)
 {
 	/////////FLARE
-	SETZWRITE(m_pd3dDevice, FALSE );
+	SETZWRITE(m_pd3dDevice, false );
 	m_pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
 	m_pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );
 
-	SETALPHABLEND(m_pd3dDevice,TRUE);
+	SETALPHABLEND(m_pd3dDevice,true);
 	shinum++;
 
 	if (shinum>=10) shinum=1;
@@ -1097,7 +1097,7 @@ void ARX_MAGICAL_FLARES_Draw(LPDIRECT3DDEVICE7  m_pd3dDevice,long FRAMETICKS)
 	float zapp,x,y,z,s,r,g,b;
 
 	TextureContainer * surf;
-	BOOL key=!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE);
+	bool key=!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE);
 
 	for (long j=1;j<5;j++) 
 	{
@@ -1220,11 +1220,11 @@ void ARX_MAGICAL_FLARES_Draw(LPDIRECT3DDEVICE7  m_pd3dDevice,long FRAMETICKS)
 
 						if (!flare[i].io) 
 						{
-							GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,FALSE);
+							GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
 						}
 						else
 						{
-							GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,TRUE);
+							GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,true);
 						}
 
 						if(flare[i].bDrawBitmap)
@@ -1250,8 +1250,8 @@ void ARX_MAGICAL_FLARES_Draw(LPDIRECT3DDEVICE7  m_pd3dDevice,long FRAMETICKS)
 
 	if (DynLight[0].rgb.b>1.f) DynLight[0].rgb.b=1.f;
 
-	SETZWRITE(m_pd3dDevice, TRUE );
-	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, TRUE); 
+	SETZWRITE(m_pd3dDevice, true );
+	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, true); 
 }
 
 //-----------------------------------------------------------------------------
@@ -1288,7 +1288,7 @@ void ARX_BOOMS_Add(EERIE_3D * poss,long type)
 	{
 		ParticleCount++;
 		PARTICLE_DEF * pd=&particle[j];
-		pd->exist=TRUE;
+		pd->exist=true;
 		pd->ov.x=poss->x;
 		pd->ov.y=poss->y;
 		pd->ov.z=poss->z;
@@ -1317,7 +1317,7 @@ void ARX_BOOMS_Add(EERIE_3D * poss,long type)
 		{
 			ParticleCount++;
 			PARTICLE_DEF * pd=&particle[j];
-			pd->exist=TRUE;
+			pd->exist=true;
 			pd->ov.x=poss->x;
 			pd->ov.y=poss->y;
 			pd->ov.z=poss->z;
@@ -1526,9 +1526,9 @@ void UpdateObjFx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CAMERA * cam)
 	
 	pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
 	pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );
-	SETALPHABLEND(pd3dDevice,TRUE);
+	SETALPHABLEND(pd3dDevice,true);
 
-	SETZWRITE(pd3dDevice, FALSE );
+	SETZWRITE(pd3dDevice, false );
 	
 
 	for (long i=0;i<MAX_OBJFX;i++)
@@ -1539,7 +1539,7 @@ void UpdateObjFx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CAMERA * cam)
 
 			if (framediff>objfx[i].duration) 
 			{
-				objfx[i].exist=FALSE;
+				objfx[i].exist=false;
 
 				if (ValidDynLight(objfx[i].dynlight))
 					DynLight[objfx[i].dynlight].exist=0;
@@ -1710,7 +1710,7 @@ void MagFX(float posx,float posy,float posz)
 	{
 		ParticleCount++;
 		PARTICLE_DEF * pd	=	&particle[j];
-		pd->exist			=	TRUE;
+		pd->exist			=	true;
 		pd->zdec			=	0;
 		pd->ov.x			=	posx+rnd()*6.f-rnd()*12.f;
 		pd->ov.y			=	posy+rnd()*6.f-rnd()*12.f;
@@ -1745,7 +1745,7 @@ void MakeBookFX(float posx,float posy,float posz)
 		{
 			ParticleCount++;
 			PARTICLE_DEF * pd=&particle[j];
-			pd->exist		=	TRUE;
+			pd->exist		=	true;
 			pd->zdec		=	0;
 			pd->ov.x		=	posx+rnd()*6.f-rnd()*12.f;
 			pd->ov.y		=	posy+rnd()*6.f-rnd()*12.f;
@@ -1775,7 +1775,7 @@ void MakeBookFX(float posx,float posy,float posz)
 		{
 			ParticleCount++;
 			PARTICLE_DEF * pd=&particle[j];
-			pd->exist		=	TRUE;
+			pd->exist		=	true;
 			pd->zdec		=	0;
 
 			pd->ov.x		=	posx - i * 2; 
@@ -1811,7 +1811,7 @@ int ARX_GenereOneEtincelle(EERIE_3D *pos,EERIE_3D *dir)
 	
 	ParticleCount++;
 	PARTICLE_DEF * pd=&particle[i];
-	pd->exist		=	TRUE;
+	pd->exist		=	true;
 	pd->type		=	PARTICLE_ETINCELLE;
 	pd->special		=	GRAVITY;
 	pd->ov			=	pd->oldpos	=	*pos;
@@ -1872,7 +1872,7 @@ void ARX_PARTICLES_Spawn_Splat(EERIE_3D * pos,float dmgs,D3DCOLOR col,long vert,
 			ParticleCount++;
 			PARTICLE_DEF * pd=&particle[j];
 			pd->special		=	PARTICLE_SUB2 | SUBSTRACT | GRAVITY;
-			pd->exist		=	TRUE;
+			pd->exist		=	true;
 			pd->ov.x		=	pos->x;
 			pd->ov.y		=	pos->y;
 			pd->ov.z		=	pos->z;
@@ -1909,7 +1909,7 @@ void ARX_PARTICLES_SpawnWaterSplash(EERIE_3D *_ePos)
 			pd->special = FADE_IN_AND_OUT | ROTATING | MODULATE_ROTATION | DISSIPATING | GRAVITY;
 			pd->special |= SPLAT_WATER;
 
-			pd->exist		=	TRUE;
+			pd->exist		=	true;
 			pd->ov.x 		=	_ePos->x + rnd()*30;
 			pd->ov.y 		=	_ePos->y - rnd()*20;
 			pd->ov.z 		=	_ePos->z + rnd()*30;
@@ -1957,7 +1957,7 @@ void SpawnFireballTail(EERIE_3D * poss,EERIE_3D * vecto,float level,long flags)
 			PARTICLE_DEF * pd=&particle[j];
 			pd->special		=	FIRE_TO_SMOKE | FADE_IN_AND_OUT | PARTICLE_ANIMATED | ROTATING | MODULATE_ROTATION;
 			pd->fparam		=	0.02f-rnd()*0.02f;
-			pd->exist		=	TRUE;
+			pd->exist		=	true;
 			pd->ov.x		=	poss->x;
 			pd->ov.y		=	poss->y;
 			pd->ov.z		=	poss->z;
@@ -2015,7 +2015,7 @@ void LaunchFireballBoom(EERIE_3D * poss,float level,EERIE_3D * direction,EERIE_R
 			ParticleCount++;
 			PARTICLE_DEF * pd=&particle[j];
 			pd->special=FIRE_TO_SMOKE | FADE_IN_AND_OUT | PARTICLE_ANIMATED;
-			pd->exist=TRUE;
+			pd->exist=true;
 			pd->ov.x=poss->x;
 			pd->ov.y=poss->y;
 			pd->ov.z=poss->z;
@@ -2137,7 +2137,7 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 
 				if ((xx<0) || (yy<0) || (xx>ACTIVEBKG->Xsize) || (yy>ACTIVEBKG->Zsize))
 				{
-					part->exist=FALSE;
+					part->exist=false;
 					ParticleCount--;
 					continue;
 				}
@@ -2146,7 +2146,7 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 
 				if (!feg->treat)
 				{
-					part->exist=FALSE;
+					part->exist=false;
 					ParticleCount--;
 					continue;
 				}
@@ -2188,7 +2188,7 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 				}
 				else 
 				{
-					part->exist=FALSE;
+					part->exist=false;
 					ParticleCount--;
 					continue;
 				}
@@ -2262,11 +2262,11 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 			
 			if (part->special & PARTICLE_NOZBUFFER) 
 			{
-				GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,FALSE);
+				GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
 			}
 			else
 			{
-				GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,TRUE);
+				GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,true);
 			}
 
 			if (part->special & FADE_IN_AND_OUT) 
@@ -2307,11 +2307,11 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 				{
 					if (part->special & NO_TRANS)
 					{
-						SETALPHABLEND(pd3dDevice,FALSE);
+						SETALPHABLEND(pd3dDevice,false);
 					}
 					else
 					{
-						SETALPHABLEND(pd3dDevice,TRUE);
+						SETALPHABLEND(pd3dDevice,true);
 
 						if (part->special & SUBSTRACT) 
 						{
@@ -2378,7 +2378,7 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 						if (rnd()<0.9f)
 							SpawnGroundSplat(&sp,&rgb,sp.radius,0);
 
-						part->exist=FALSE;
+						part->exist=false;
 						ParticleCount--;
 						continue;
 					}
@@ -2399,7 +2399,7 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 						if (rnd()<0.9f)
 							SpawnGroundSplat(&sp,&rgb,sp.radius,2);
 
-						part->exist=FALSE;
+						part->exist=false;
 						ParticleCount--;
 						continue;
 					}
@@ -2417,11 +2417,11 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 			{
 				if (part->special & NO_TRANS)
 				{
-					SETALPHABLEND(pd3dDevice,FALSE);
+					SETALPHABLEND(pd3dDevice,false);
 				}
 				else
 				{
-					SETALPHABLEND(pd3dDevice,TRUE);
+					SETALPHABLEND(pd3dDevice,true);
 
 					if (part->special & SUBSTRACT) 
 					{
@@ -2581,7 +2581,7 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 	}
 
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
-	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,TRUE);
+	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,true);
 }
 
 //-----------------------------------------------------------------------------
@@ -2650,7 +2650,7 @@ void TreatBackgroundActions()
 					damages[id].source=-5;
 				damages[id].flags = 0; 
 					damages[id].type=DAMAGE_TYPE_MAGICAL | DAMAGE_TYPE_FIRE | DAMAGE_TYPE_NO_FIX;
-					damages[id].exist=TRUE;
+					damages[id].exist=true;
 					damages[id].pos.x=gl->pos.x;
 					damages[id].pos.y=gl->pos.y;
 					damages[id].pos.z=gl->pos.z;
@@ -2687,7 +2687,7 @@ void TreatBackgroundActions()
 				{
 					ParticleCount++;
 					PARTICLE_DEF * pd=&particle[j];
-					pd->exist=TRUE;
+					pd->exist=true;
 					pd->zdec=0;
 					sy=rnd()*3.14159f;
 					sx=EEsin(sy);
@@ -2735,7 +2735,7 @@ void TreatBackgroundActions()
 					{
 						ParticleCount++;
 						PARTICLE_DEF * pd=&particle[j];
-						pd->exist=TRUE;
+						pd->exist=true;
 						pd->zdec=0;
 						sy = rnd() * 3.14159f * 2.f - 3.14159f; 
 						sx=EEsin(sy);
@@ -2998,7 +2998,7 @@ void AddFlare(EERIE_S2D * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 							pd->special|=PARTICLE_NOZBUFFER;
 						}
 
-						pd->exist		=	TRUE;
+						pd->exist		=	true;
 						pd->zdec		=	0;
 						pd->ov.x		=	fl->v.sx+rnd()*10.f-5.f;
 						pd->ov.y		=	fl->v.sy+rnd()*10.f-5.f;
@@ -3141,7 +3141,7 @@ void AddFlare2(EERIE_S2D * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 						ParticleCount++;
 						PARTICLE_DEF * pd=&particle[j];
 						pd->special		=	FADE_IN_AND_OUT;
-						pd->exist		=	TRUE;
+						pd->exist		=	true;
 						pd->zdec		=	0;
 						pd->ov.x		=	fl->v.sx+rnd()*10.f-5.f;
 						pd->ov.y		=	fl->v.sy+rnd()*10.f-5.f;
