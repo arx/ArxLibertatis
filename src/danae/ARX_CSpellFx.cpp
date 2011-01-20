@@ -214,7 +214,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Danae.h"
 #include "ARX_CSpellFx.h"
-#include "ARX_Casts.h"
+
 #include "EERIEDraw.h"
 
 //-----------------------------------------------------------------------------

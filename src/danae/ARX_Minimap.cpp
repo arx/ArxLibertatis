@@ -54,6 +54,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+#include <iostream>
+#include <fstream>
+#include <sstream>
 #include <stdio.h>
 #include <algorithm>
 #include "ARX_Text.h"
@@ -65,7 +68,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEObject.h"
 #include "HERMESMain.h"
 #include "Danae.h"
-#include "ARX_Casts.h"
+
 
 #include <hermes/PakManager.h>
 

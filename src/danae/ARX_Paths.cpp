@@ -67,11 +67,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Particles.h"
 #include "ARX_Damages.h"
 #include "ARX_Equipment.h"
-#include "ARX_Casts.h"
+
 #include "EERIELight.h"
 #include "EERIEDraw.h"
 #include "EERIEPhysicsBox.h"
-#include "ARX_Casts.h"
+
 #include "DanaeDlg.h"
 #include "HERMESMain.h"
 #include <stdio.h>

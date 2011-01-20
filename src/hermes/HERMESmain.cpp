@@ -64,9 +64,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <time.h>
 #include "HERMESMain.h"
 #include "HERMESNet.h"
-#include <ARX_Casts.h>
-
-
 
 extern "C" {
 #undef __cplusplus

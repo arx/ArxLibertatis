@@ -25,10 +25,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 //-----------------------------------------------------------------------------
 #include <vector>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 #include "EERIEMath.h"
 #include "ARX_CSpellFx.h"
 #include "ARX_CParticle.h"
-#include "ARX_Casts.h"
+
 #include <list>
 using namespace std;
 

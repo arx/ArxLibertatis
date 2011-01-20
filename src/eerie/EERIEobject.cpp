@@ -66,7 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIELinkedObj.h"
 
 #include "HERMESMain.h"
-#include "ARX_Casts.h"
+
 #include "ARX_Sound.h"
 #include "ARX_Cedric.h"
 
