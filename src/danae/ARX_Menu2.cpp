@@ -6682,7 +6682,7 @@ CMenuButton::CMenuButton(int _iID, HFONT _pHFont,MENUSTATE _eMenuState,int _iPos
 
 CMenuButton::~CMenuButton()
 {
-    vector<_TCHAR*>::iterator i;
+    std::string::iterator i;
 
     for(i=vText.begin();i!=vText.end();++i)
     {
@@ -6742,18 +6742,18 @@ void CMenuButton::SetPos(int _iX,int _iY)
 
 //-----------------------------------------------------------------------------
 
-void CMenuButton::AddText(_TCHAR *_pText)
+void CMenuButton::AddText( const std::string& _pText)
 {
-    if (!_pText) return;
+    if ( _pText.empty() )
+        return;
 
-    _TCHAR * pText2=_tcsdup(_pText);
-    vText.insert(vText.end(),pText2);
+    vText += _pText;
 
     int iSizeXButton=rZone.right-rZone.left;
     int iSizeYButton=rZone.bottom-rZone.top;
     int iSizeX=0;
     int iSizeY=0;
-    GetTextSize(pHFont, _pText, &iSizeX, &iSizeY);
+    GetTextSize(pHFont, _pText, iSizeX, iSizeY);
 
     if(iSizeX>iSizeXButton) iSizeXButton=iSizeX;
 
@@ -6811,7 +6811,7 @@ void CMenuButton::Render()
     //affichage de la font
     if(vText.size())
     {
-        _TCHAR *pText=vText[iPos];
+        std::string pText = vText[iPos];
 
         GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  true);
         GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
@@ -6868,7 +6868,7 @@ void CMenuButton::RenderMouseOver()
 
     if( vText.size() )
     {
-        _TCHAR *pText=vText[iPos];
+        std::string pText=vText[iPos];
 
         GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  true);
         GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
@@ -6949,7 +6949,7 @@ void CMenuSliderText::SetWidth(int _iWidth)
     {
         CMenuElementText *pMenuElementText=*it;
         int x, y;
-        GetTextSize(pMenuElementText->pHFont, pMenuElementText->lpszText, &x, &y);
+        GetTextSize(pMenuElementText->pHFont, pMenuElementText->lpszText, x, y);
 
         int dxx=(dx-x)>>1;
         pMenuElementText->SetPos(ARX_CLEAN_WARN_CAST_FLOAT(pLeftButton->rZone.right + dxx), ARX_CLEAN_WARN_CAST_FLOAT(rZone.top));
@@ -6964,7 +6964,7 @@ void CMenuSliderText::AddText(CMenuElementText *_pText)
     vText.insert(vText.end(), _pText);
 
     int x,y;
-    GetTextSize(_pText->pHFont, _pText->lpszText, &x, &y);
+    GetTextSize(_pText->pHFont, _pText->lpszText, x, y);
 
     rZone.right  = max(rZone.right, rZone.left + pLeftButton->GetWidth() + pRightButton->GetWidth() + x);
     rZone.bottom = max(rZone.bottom, rZone.top + y);
@@ -6979,7 +6979,7 @@ void CMenuSliderText::AddText(CMenuElementText *_pText)
     for(it=vText.begin();it<vText.end();it++)
     {
         CMenuElementText *pMenuElementText=*it;
-        GetTextSize(pMenuElementText->pHFont, pMenuElementText->lpszText, &x, &y);
+        GetTextSize(pMenuElementText->pHFont, pMenuElementText->lpszText, x, y);
 
         int dxx=(dx-x)>>1;
         pMenuElementText->SetPos(ARX_CLEAN_WARN_CAST_FLOAT(pLeftButton->rZone.right + dxx), ARX_CLEAN_WARN_CAST_FLOAT(rZone.top));
@@ -7061,15 +7061,14 @@ bool CMenuSliderText::OnMouseClick(int)
                 (iY >= pRightButton->rZone.top) &&
                 (iX <= pRightButton->rZone.right) &&
                 (iY <= pRightButton->rZone.bottom))
-            {
-                iPos++;
+        {
+            iPos++;
 
             ARX_CHECK_NOT_NEG(iPos);
 
-            if ( ARX_CAST_UINT( iPos ) >= vText.size() - 1 ) iPos = vText.size() - 1 ;
-
-
-            }
+            if ( ARX_CAST_UINT( iPos ) >= vText.size() - 1 )
+                iPos = vText.size() - 1 ;
+        }
     }
 
     switch (iID)
@@ -7077,11 +7076,13 @@ bool CMenuSliderText::OnMouseClick(int)
     // MENUOPTIONS_VIDEO
     case BUTTON_MENUOPTIONSVIDEO_RESOLUTION:
         {
-            _TCHAR *pcText;
-            pcText=(vText.at(iPos))->lpszText;
+            std::string pcText = (vText.at(iPos))->lpszText;
+            std::stringstream ss( pcText );
             int iX = pMenuConfig->iWidth;
             int iY = pMenuConfig->iHeight;
-            _stscanf(pcText, _T("%dx%d"), &iX, &iY);
+            char tmp;
+            ss >> iX >> tmp >> iY;
+//            pcText, "%dx%d"), &iX, &iY);
             {
                 pMenuConfig->iNewWidth = iX;
                 pMenuConfig->iNewHeight = iY;
@@ -7092,9 +7093,11 @@ bool CMenuSliderText::OnMouseClick(int)
     // MENUOPTIONS_VIDEO
     case BUTTON_MENUOPTIONSVIDEO_BPP:
         {
-            _TCHAR *pcText;
+            std::string pcText;
+            std::stringstream ss;
             pcText = vText[iPos]->lpszText;
-            pMenuConfig->iNewBpp=_ttoi(pcText);
+            ss << pcText;
+            ss >> pMenuConfig->iNewBpp;
             pMenuConfig->bChangeResolution = true;
         }
         break;
@@ -8203,13 +8206,13 @@ std::string CDirectInput::GetFullNameTouch(int _iVirtualKey)
         PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_numlock", "string", "---", pText, 256, NULL);
         break;
     case DIK_DIVIDE:
-        _tcscpy(pText,_T("_/_"));
+        pText = "_/_";
         break;
     case DIK_MULTIPLY:
-        _tcscpy(pText,_T("_x_"));
+        pText += "_x_";
         break;
     case DIK_SYSRQ:           
-        _tcscpy(pText,_T("?"));
+        pText = "?";
         break;
     case DIK_UP:                  // UpArrow on arrow keypad
 
@@ -8334,7 +8337,7 @@ std::string CDirectInput::GetFullNameTouch(int _iVirtualKey)
         PAK_UNICODE_GetPrivateProfileString(_T("system_menus_options_input_customize_controls_wheeldown"), _T("string"), _T("w1"), pText, 256, NULL);
         break;
     case -1:
-        _tcscpy(pText,_T("---"));
+        pText += "---";
         break;
     default:
         {
@@ -8344,72 +8347,63 @@ std::string CDirectInput::GetFullNameTouch(int _iVirtualKey)
 
         if(!i)
         {
-            _stprintf(pText,_T("Key_%d"),_iVirtualKey);
+            std::stringstream ss;
+            ss << "Key_" << _iVirtualKey;
+            pText = ss.str();
         }
         else
         {
-    //            todo: cast
-    //            MultiByteToWideChar(CP_ACP, 0, tAnsiText, -1, pText, 256);
-
             if(_iVirtualKey==DIK_LSHIFT)
             {
-                _TCHAR tText2[256];
-                _TCHAR *pText3;
-                PAK_UNICODE_GetPrivateProfileString(_T("system_menus_options_input_customize_controls_left"), _T("string"), _T("---"), tText2, 256, NULL);
-                tText2[1]=0;
-                pText3=(_TCHAR*)malloc((_tcslen(tText2)+_tcslen(pText)+1)*sizeof(_TCHAR));
-                _tcscpy(pText3,tText2);
+                std::string tText2;
+                std::string pText3;
+                PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_left", "string", "---", tText2, 256, NULL);
+                tText2[1] = 0;
+                pText3 = tText2;
                 pText3 += pText;
-                free((void*)pText);
-                pText=pText3;
+                pText = pText3;
             }
 
             if(_iVirtualKey==DIK_LCONTROL)
             {
-                _TCHAR tText2[256];
-                _TCHAR *pText3;
-                PAK_UNICODE_GetPrivateProfileString(_T("system_menus_options_input_customize_controls_left"), _T("string"), _T("---"), tText2, 256, NULL);
+                std::string tText2;
+                std::string pText3;
+                PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_left", "string", "---", tText2, 256, NULL);
                 tText2[1]=0;
-                pText3=(_TCHAR*)malloc((_tcslen(tText2)+_tcslen(pText)+1)*sizeof(_TCHAR));
-                _tcscpy(pText3,tText2);
+                pText3 = tText2;
                 pText3 += pText;
-                free((void*)pText);
-                pText=pText3;
+                pText = pText3;
             }
 
             if(_iVirtualKey==DIK_LALT)
             {
-                _TCHAR tText2[256];
-                _TCHAR *pText3;
-                PAK_UNICODE_GetPrivateProfileString(_T("system_menus_options_input_customize_controls_left"), _T("string"), _T("---"), tText2, 256, NULL);
+                std::string tText2;
+                std::string pText3;
+                PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_left", "string", "---", tText2, 256, NULL);
                 tText2[1]=0;
-                pText3=(_TCHAR*)malloc((_tcslen(tText2)+_tcslen(pText)+1)*sizeof(_TCHAR));
-                _tcscpy(pText3,tText2);
+                pText3 = tText2;
                 pText3 += pText;
-                free((void*)pText);
                 pText=pText3;
             }
 
-                if (_iVirtualKey == DIK_NUMPADENTER)
+            if (_iVirtualKey == DIK_NUMPADENTER)
             {
-                _TCHAR *pText3;
-                pText3=(_TCHAR*)malloc((_tcslen(pText)+1+1)*sizeof(_TCHAR));
-                _tcscpy(pText3,pText);
+                std::string pText3;
+                pText3 = pText;
                 pText3 += "0";
-                free((void*)pText);
-                pText=pText3;
+                pText = pText3;
             }
 
-            if(_tcslen(pText)>8)
+            if( pText.length() > 8 )
             {
                 pText[8]=0;
                 int iI=8;
 
                 while(iI--)
                 {
-                    if(pText[iI]==_T(' '))
+                    if( pText[iI] == ' ' )
                     {
-                        pText[iI]=0;
+                        pText[iI] = 0;
                     }
                     else break;
                 }
@@ -8419,15 +8413,12 @@ std::string CDirectInput::GetFullNameTouch(int _iVirtualKey)
         break;
     }
 
-    if(pText2)
+    if( !pText2.empty() )
     {
-        _TCHAR *pText3=(_TCHAR*)malloc((_tcslen(pText2)+_tcslen(pText)+1+1)*sizeof(_TCHAR));
-        _tcscpy(pText3,pText2);
+        std::string pText3 = pText2;
         pText3 += "+";
         pText3 += pText;
-        free((void*)pText);
-        free((void*)pText2);
-        pText=pText3;
+        pText = pText3;
 
     }
 

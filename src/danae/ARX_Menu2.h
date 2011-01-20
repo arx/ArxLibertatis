@@ -553,7 +553,7 @@ class CMenuButton: public CMenuElement
 
     public:
         void SetPos(int, int);
-        void AddText( std::string& );
+        void AddText( const std::string& );
         CMenuElement * OnShortCut()
         {
             return NULL;
@@ -570,7 +570,7 @@ class CMenuSliderText: public CMenuElement
 	public:
 		CMenuButton		*	pLeftButton;
 		CMenuButton		*	pRightButton;
-		vector<CMenuElementText *>	vText;
+		vector<CMenuElementText*>	vText;
 		int					iPos;
 		int					iOldPos;
 	public:
