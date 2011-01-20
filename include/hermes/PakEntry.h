@@ -70,16 +70,19 @@ public:
 	
 	PakDirectory(PakDirectory * p, const char * n);
 	~PakDirectory();
-
+	
 	PakDirectory * addDirectory(const char * sname);
 	
 	bool removeDirectory(const char * dirname);
 	
 	PakFile * addFile(const char * dirname, const char * filename);
- 
+	
 	PakDirectory * getDirectory(const char * dirname);
- 
+	
+	PakFile * getFile(const char * dirplusfilename);
+	
 	friend void kill(PakDirectory * r);
+	
 };
 
 char * EVEF_GetDirName(const char * dirplusname);

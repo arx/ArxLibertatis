@@ -646,7 +646,7 @@ bool PakManager::AddPak(char * _lpszName)
 	PakReader * pLoadPak = new PakReader();
 	pLoadPak->Open(_lpszName);
 
-	if (!pLoadPak->pRoot)
+	if (!pLoadPak->root)
 	{
 		delete pLoadPak;
 		return false;
@@ -880,7 +880,7 @@ vector<PakDirectory *>* PakManager::ExistDirectory(char * _lpszName)
 	{
 		PakDirectory * pRep;
 
-		if ((pRep = (*i)->pRoot->getDirectory((unsigned char *)_lpszName)))
+		if ((pRep = (*i)->root->getDirectory((unsigned char *)_lpszName)))
 		{
 			pvRepertoire->insert(pvRepertoire->end(), pRep);
 		}
@@ -916,7 +916,7 @@ bool PakManager::ExistFile(char * _lpszName)
 	{
 		PakDirectory * pRep;
 
-		if ((pRep = (*i)->pRoot->getDirectory((unsigned char *)pcDir)))
+		if ((pRep = (*i)->root->getDirectory((unsigned char *)pcDir)))
 		{
 			if (pRep->nbfiles)
 			{

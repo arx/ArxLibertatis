@@ -90,6 +90,6 @@ int main(int argc, char ** argv) {
 		return 1;
 	}
 	
-	dump(pak, pak.pRoot);
+	dump(pak, pak.root);
 	
 }

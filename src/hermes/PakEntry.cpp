@@ -303,6 +303,32 @@ PakFile * PakDirectory::addFile(const char * sname, const char * name)
 
 	return f;
 }
+
+PakFile * PakDirectory::getFile(const char * name) {
+	
+	PakDirectory * d = this;
+	
+	char * tempdir = EVEF_GetDirName(name);
+	if(tempdir) {
+		char * dir = dir = new char[strlen((const char *)tempdir) + 2];
+		strcpy((char *)dir, (const char *)tempdir);
+		strcat((char *)dir, "\\");
+		delete [] tempdir;
+		d = this->getDirectory(dir);
+		delete dir;
+		if(!d) {
+			// directory not found
+			return NULL;
+		}
+	}
+	
+	char * file = EVEF_GetFileName(name);
+	PakFile * f = (PakFile *)d->filesMap->GetPtrWithString(file);
+	delete file;
+	
+	return f;
+}
+
 //#############################################################################
 void Kill(PakDirectory * r)
 {

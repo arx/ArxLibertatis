@@ -50,13 +50,15 @@ private:
 	
 public:
 	const char * pakname;
-	PakDirectory * pRoot;
+	PakDirectory * root;
 private:
 	int ReadFAT_int();
 	char* ReadFAT_string();
 public:
 	PakReader();
 	~PakReader();
+	
+	PakFile * getFile(const char * name);
 	
 	bool Open(const char * pakfile);
 	void Close();

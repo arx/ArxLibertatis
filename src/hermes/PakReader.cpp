@@ -84,7 +84,7 @@ PakReader::PakReader() {
 	
 	pakname = NULL;
 	file = NULL;
-	pRoot = NULL;
+	root = NULL;
 	
 	fat = NULL;
 	
@@ -109,8 +109,8 @@ PakReader::~PakReader() {
 		fclose(file);
 	}
 	
-	if(pRoot) {
-		delete pRoot;
+	if(root) {
+		delete root;
 	}
 	
 	if(fat) {
@@ -159,7 +159,7 @@ inline bool safeGet(T & data, const char * & pos, uint32_t & fat_size) {
 //-----------------------------------------------------------------------------
 bool PakReader::Open(const char * name) {
 	
-	if(pRoot || pakname || file) {
+	if(root || pakname || file) {
 		// already loaded
 		return false;
 	}
@@ -271,10 +271,10 @@ bool PakReader::Open(const char * name) {
 		
 	}
 	
-	if(pRoot) {
-		delete pRoot;
+	if(root) {
+		delete root;
 	}
-	pRoot = newroot;
+	root = newroot;
 	
 	if(pakname) {
 		free(pakname);
@@ -309,10 +309,10 @@ void PakReader::Close()
 		file = NULL;
 	}
 
-	if (pRoot)
+	if (root)
 	{
-		delete pRoot;
-		pRoot = NULL;
+		delete root;
+		root = NULL;
 	}
 }
 
@@ -372,96 +372,49 @@ static int blast(const FILE * file, unsigned char * buf, size_t size) {
 	return blast(ReadData, &read, WriteData, &write);
 }
 
+PakFile * PakReader::getFile(const char * name) {
+	
+	if(!name || !root) {
+		// Not loaded.
+		return NULL;
+	}
+	
+	return root->getFile(name);
+}
+
 
 
 //-----------------------------------------------------------------------------
-bool PakReader::Read(char * _pcName, void * _mem)
-{
-	if ((!_pcName) ||
-	        (!pRoot)) return false;
-
-	char * pcDir = NULL;
-	char * pcDir1 = (char *)EVEF_GetDirName((unsigned char *)_pcName);
-
-	if (pcDir1)
-	{
-		pcDir = new char[strlen((const char *)pcDir1)+2];
-		strcpy((char *)pcDir, (const char *)pcDir1);
-		strcat((char *)pcDir, "\\");
-		delete [] pcDir1;
-	}
-
-	char * pcFile = (char *)EVEF_GetFileName((unsigned char *)_pcName);
-
-	PakDirectory * pDir;
-
-	if (!pcDir)
-	{
-		pDir = pRoot;
-	}
-	else
-	{
-		pDir = pRoot->getDirectory((unsigned char *)pcDir);
-	}
-
-	if (!pDir)
-	{
-		if (pcDir) delete [] pcDir;
-
-		if (pcFile) delete [] pcFile;
-
-		return NULL;
-	}
-
-	if (!pDir->nbfiles)
-	{
-		if (pcDir) delete [] pcDir;
-
-		if (pcFile) delete [] pcFile;
-
+// TODO unchecked buffer size
+bool PakReader::Read(char * name, void * buf) {
+	
+	PakFile * f = getFile(name);
+	if(!f) {
 		return false;
 	}
-
-	PakFile * pTFiles = (PakFile *)pDir->filesMap->GetPtrWithString((char *)pcFile);
-
-	if (pTFiles)
-	{
-		fseek(file, pTFiles->offset, SEEK_SET);
-
-		if (pTFiles->flags & PAK_FILE_COMPRESSED)
-		{
-			int r = blast(file, (char *)_mem, pTFiles->uncompressedSize);
-			if(r) {
-				printf("\e[1;35mdecompression error %d:\e[m\tfor \"%s\" in \'%s\"\n", r, pTFiles->name, pakname);
-				goto error;
-			}
+	
+	fseek(file, f->offset, SEEK_SET);
+	
+	if(f->flags & PAK_FILE_COMPRESSED) {
+		int r = blast(file, (char *)buf, f->uncompressedSize);
+		if(r) {
+			printf("\e[1;35mdecompression error %d:\e[m\tfor \"%s\" in \'%s\"\n", r, f->name, pakname);
+			return false;
 		}
-		else
-		{
-			fread(_mem, 1, pTFiles->size, file);
+	} else {
+		if(fread(buf, f->size, 1, file) != 1) {
+			return false;
 		}
-
-		if (pcDir) delete [] pcDir;
-
-		if (pcFile) delete [] pcFile;
-
-		return true;
 	}
 	
-error:
-
-	if (pcDir) delete [] pcDir;
-
-	if (pcFile) delete [] pcFile;
-
-	return false;
+	return true;
 }
 
 //-----------------------------------------------------------------------------
 void * PakReader::ReadAlloc(char * _pcName, int * _piTaille)
 {
 	if ((!_pcName) ||
-	        (!pRoot)) return NULL;
+	        (!root)) return NULL;
 
 	char * pcDir = NULL;
 	char * pcDir1 = (char *)EVEF_GetDirName((unsigned char *)_pcName);
@@ -480,11 +433,11 @@ void * PakReader::ReadAlloc(char * _pcName, int * _piTaille)
 
 	if (!pcDir)
 	{
-		pDir = pRoot;
+		pDir = root;
 	}
 	else
 	{
-		pDir = pRoot->getDirectory((unsigned char *)pcDir);
+		pDir = root->getDirectory((unsigned char *)pcDir);
 	}
 
 	if(!pDir) {
@@ -554,7 +507,7 @@ error:
 int PakReader::GetSize(char * _pcName)
 {
 	if ((!_pcName) ||
-	        (!pRoot)) return -1;
+	        (!root)) return -1;
 
 	char * pcDir = NULL;
 	char * pcDir1 = (char *)EVEF_GetDirName((unsigned char *)_pcName);
@@ -573,11 +526,11 @@ int PakReader::GetSize(char * _pcName)
 
 	if (!pcDir)
 	{
-		pDir = pRoot;
+		pDir = root;
 	}
 	else
 	{
-		pDir = pRoot->getDirectory((unsigned char *)pcDir);
+		pDir = root->getDirectory((unsigned char *)pcDir);
 	}
 
 	if (!pDir)
@@ -628,7 +581,7 @@ PakFileHandle * PakReader::fOpen(const char * _pcName, const char * _pcMode)
 {
 	
 	if ((!_pcName) ||
-	        (!pRoot)) return NULL;
+	        (!root)) return NULL;
 
 	char * pcDir = NULL;
 	char * pcDir1 = (char *)EVEF_GetDirName((unsigned char *)_pcName);
@@ -647,11 +600,11 @@ PakFileHandle * PakReader::fOpen(const char * _pcName, const char * _pcMode)
 
 	if (!pcDir)
 	{
-		pDir = pRoot;
+		pDir = root;
 	}
 	else
 	{
-		pDir = pRoot->getDirectory((unsigned char *)pcDir);
+		pDir = root->getDirectory((unsigned char *)pcDir);
 	}
 
 	if (!pDir)
