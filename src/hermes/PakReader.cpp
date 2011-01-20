@@ -73,10 +73,8 @@ const uint8_t PAK_KEY_FULL[] = "AVQF3FCKE50GRIAYXJP2AMEYO5QGA0JGIIH2NHBTVOA1VOGG
 static const uint8_t * selectKey(uint32_t first_bytes) {
 	switch(first_bytes) {
 		case 0x46515641:
-			printf("full version\n");
 			return PAK_KEY_FULL;
 		case 0x4149534E:
-			printf("demo version\n");
 			return PAK_KEY_DEMO;
 		default:
 			return NULL;
@@ -129,19 +127,19 @@ static void pakDecrypt(uint8_t * fat, size_t fat_size, const uint8_t * key) {
 	size_t keysize = strlen((const char *)key);
 	
 	for(size_t i = 0, ki = 0; i < fat_size; i++, ki = (ki + 1) % keysize) {
-		fat[i] = fat[i] ^ key[ki];
+		fat[i] ^= key[ki];
 	}
 	
 }
 
-static const char * safeGetString(const char * & pos, size_t & fat_size) {
+static const char * safeGetString(const char * & pos, uint32_t & fat_size) {
 	
 	const char * begin = pos;
 	
 	for(size_t i = 0; i < fat_size; i++) {
 		if(pos[i] == 0) {
-			fat_size -= i;
-			pos += i;
+			fat_size -= i + 1;
+			pos += i + 1;
 			return begin;
 		}
 	}
@@ -150,7 +148,7 @@ static const char * safeGetString(const char * & pos, size_t & fat_size) {
 }
 
 template <class T>
-inline bool safeGet(T & data, const char * & pos, size_t & fat_size) {
+inline bool safeGet(T & data, const char * & pos, uint32_t & fat_size) {
 	T nfiles;
 	if(fat_size < sizeof(T)) {
 		return false;
@@ -197,17 +195,17 @@ bool PakReader::Open(const char * name) {
 	
 	// Read the whole FAT.
 	char * newfat = new char[fat_size];
-	if(fread(fat, fat_size, 1, file) != 1) {
+	if(fread(newfat, fat_size, 1, file) != 1) {
 		printf("error reading FAT\n");
 		return false;
 	}
 	
 	// Decrypt the FAT.
-	const char * key = selectKey(*(uint32_t*)fat);
+	const char * key = selectKey(*(uint32_t*)newfat);
 	if(key) {
-		pakDecrypt(fat, fat_size, key);
+		pakDecrypt(newfat, fat_size, key);
 	} else {
-		printf("WARNING: unknown PAK key ID 0x%08x, assuming no key\n", *(uint32_t*)fat);
+		printf("WARNING: unknown PAK key ID 0x%08x, assuming no key\n", *(uint32_t*)newfat);
 	}
 	
 	PakDirectory * newroot = new PakDirectory(NULL, NULL);
@@ -223,10 +221,10 @@ bool PakReader::Open(const char * name) {
 		}
 		
 		PakDirectory * dir;
-		if(*dirname == 0) {
-			dir = pRoot->AddSousRepertoire((unsigned char *)dirname);
+		if(*dirname != '\0') {
+			dir = newroot->AddSousRepertoire((unsigned char *)dirname);
 		} else {
-			dir = pRoot;
+			dir = newroot;
 		}
 		
 		uint32_t nfiles;
@@ -240,8 +238,8 @@ bool PakReader::Open(const char * name) {
 			while(hashsize < nfiles) {
 				hashsize <<= 1;
 			}
-			int iNbHacheTroisQuart = (hashsize * 3) / 4;
-			if(nfiles > iNbHacheTroisQuart) {
+			int n = (hashsize * 3) / 4;
+			if(nfiles > n) {
 				hashsize <<= 1;
 			}
 			dir->pHachage = new HashMap(hashsize);
@@ -463,23 +461,15 @@ void * PakReader::ReadAlloc(char * _pcName, int * _piTaille)
 		pDir = pRoot->GetSousRepertoire((unsigned char *)pcDir);
 	}
 
-	if (!pDir)
-	{
-		if (pcDir) delete [] pcDir;
-
-		if (pcFile) delete [] pcFile;
-
-		return NULL;
+	if(!pDir) {
+		goto error;
 	}
 
-	if (!pDir->nbfiles)
-	{
-		if (pcDir) delete [] pcDir;
-
-		if (pcFile) delete [] pcFile;
-
-		return false;
+	if(!pDir->nbfiles) {
+		goto error;
 	}
+	
+	{
 
 	PakFile * pTFiles = (PakFile *)pDir->pHachage->GetPtrWithString((char *)pcFile);
 
@@ -493,13 +483,8 @@ void * PakReader::ReadAlloc(char * _pcName, int * _piTaille)
 			mem = malloc(pTFiles->param3);
 			*_piTaille = (int)pTFiles->param3;
 
-			if (!mem)
-			{
-				if (pcDir) delete [] pcDir;
-
-				if (pcFile) delete [] pcFile;
-
-				return NULL;
+			if(!mem) {
+				goto error;
 			}
 
 			PAK_PARAM sPP;
@@ -513,13 +498,8 @@ void * PakReader::ReadAlloc(char * _pcName, int * _piTaille)
 			mem = malloc(pTFiles->taille);
 			*_piTaille = (int)pTFiles->taille;
 
-			if (!mem)
-			{
-				if (pcDir) delete [] pcDir;
-
-				if (pcFile) delete [] pcFile;
-
-				return NULL;
+			if(!mem) {
+				goto error;
 			}
 
 			fread(mem, 1, pTFiles->taille, file);
@@ -533,11 +513,15 @@ void * PakReader::ReadAlloc(char * _pcName, int * _piTaille)
 
 		return mem;
 	}
-
+	
+	}
+	
+error:
+	
 	if (pcDir) delete [] pcDir;
-
+	
 	if (pcFile) delete [] pcFile;
-
+	
 	return NULL;
 }
 

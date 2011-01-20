@@ -205,7 +205,7 @@ long _PAK_DirectoryExist(char * name)
 	char temp[256];
 	strcpy(temp, name + g_pak_workdir_len);
 	long l = leng - g_pak_workdir_len ;
-	if (temp[l] != '\\') strcat(temp, "\\");
+	if (temp[l] != '\\' && temp[l] != '/') strcat(temp, "\\");
 
 	vector<PakDirectory *> pvRepertoire(pPakManager->ExistDirectory(temp));
 
@@ -691,8 +691,8 @@ bool PakManager::Read(char * _lpszName, void * _pMem)
 {
 	vector<PakReader *>::iterator i;
 
-	if ((_lpszName[0] == '\\') /*||
-	        (_lpszName[0] == '/')*/)
+	if ((_lpszName[0] == '\\') ||
+	        (_lpszName[0] == '/'))
 	{
 		_lpszName++;
 	}
@@ -717,8 +717,8 @@ void * PakManager::ReadAlloc(char * _lpszName, int * _piTaille)
 {
 	vector<PakReader *>::iterator i;
 
-	if ((_lpszName[0] == '\\') /*||
-	        (_lpszName[0] == '/')*/)
+	if ((_lpszName[0] == '\\') ||
+	        (_lpszName[0] == '/'))
 	{
 		_lpszName++;
 	}
@@ -744,8 +744,8 @@ int PakManager::GetSize(char * _lpszName)
 {
 	vector<PakReader *>::iterator i;
 
-	if ((_lpszName[0] == '\\') /*||
-	        (_lpszName[0] == '/')*/)
+	if ((_lpszName[0] == '\\') ||
+	        (_lpszName[0] == '/'))
 	{
 		_lpszName++;
 	}
@@ -771,8 +771,8 @@ PakFileHandle * PakManager::fOpen(char * _lpszName)
 {
 	vector<PakReader *>::iterator i;
 
-	if ((_lpszName[0] == '\\') /*||
-	        (_lpszName[0] == '/')*/)
+	if ((_lpszName[0] == '\\') ||
+	        (_lpszName[0] == '/'))
 	{
 		_lpszName++;
 	}
@@ -893,8 +893,8 @@ bool PakManager::ExistFile(char * _lpszName)
 {
 	vector<PakReader *>::iterator i;
 
-	if ((_lpszName[0] == '\\') /*||
-	        (_lpszName[0] == '/')*/)
+	if ((_lpszName[0] == '\\') ||
+	        (_lpszName[0] == '/'))
 	{
 		_lpszName++;
 	}

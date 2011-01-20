@@ -27,6 +27,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 #include <cstring>
 
+#include <algorithm>
+using std::transform;
+
+#include <string>
+using std::string;
+
 using std::size_t;
 
 //-----------------------------------------------------------------------------
@@ -34,15 +40,14 @@ HashMap::HashMap(size_t _iSize)
 {
 	tTab = (Entry *)malloc(_iSize * sizeof(Entry));
 	iNbCollisions = iNbNoInsert = 0;
-
+	
 	iSize = _iSize;
 	iFill = 0;
-
-	while (_iSize--)
-	{
-		tTab[_iSize].lpszName = NULL;
+	
+	for(size_t i = 0; i < _iSize; i++) {
+		tTab[i].lpszName = NULL;
 	}
-
+	
 	iMask = iSize - 1;
 }
 
@@ -65,8 +70,8 @@ HashMap::~HashMap()
 bool HashMap::AddString(const char * _lpszText, void * _pMem)
 {
 	//	todo string;
-	const char * lpszTextLow = _lpszText;
-//	char * lpszTextLow = strlwr(_lpszText);
+	string lpszTextLow = _lpszText;
+	transform(lpszTextLow.begin(), lpszTextLow.end(), lpszTextLow.begin(), tolower);
 
 	if (iFill >= iSize * 0.75)
 	{
@@ -76,7 +81,7 @@ bool HashMap::AddString(const char * _lpszText, void * _pMem)
 		tTab = (Entry *)realloc(tTab, iSize * sizeof(Entry));
 	}
 
-	int iKey = GetKey(lpszTextLow);
+	int iKey = GetKey(lpszTextLow.c_str());
 	int	iH1 = FuncH1(iKey);
 	int	iH2 = FuncH2(iKey);
 
@@ -88,7 +93,7 @@ bool HashMap::AddString(const char * _lpszText, void * _pMem)
 
 		if (!tTab[iH1].lpszName)
 		{
-			tTab[iH1].lpszName = strdup(lpszTextLow);
+			tTab[iH1].lpszName = strdup(lpszTextLow.c_str());
 			tTab[iH1].pMem = _pMem;
 			iFill++;
 			return true;
@@ -109,10 +114,10 @@ bool HashMap::AddString(const char * _lpszText, void * _pMem)
 void * HashMap::GetPtrWithString(const char * _lpszText)
 {
 //	todo string;
-	const char * lpszTextLow = _lpszText;
+	string lpszTextLow = _lpszText;
 //	char * lpszTextLow = _strlwr(_lpszText);
 
-	int iKey = GetKey(lpszTextLow);
+	int iKey = GetKey(lpszTextLow.c_str());
 	int	iH1 = FuncH1(iKey);
 	int	iH2 = FuncH2(iKey);
 
@@ -124,7 +129,7 @@ void * HashMap::GetPtrWithString(const char * _lpszText)
 
 		if (tTab[iH1].lpszName)
 		{
-			if (!strcmp(lpszTextLow, tTab[iH1].lpszName))
+			if (!strcmp(lpszTextLow.c_str(), tTab[iH1].lpszName))
 			{
 				return tTab[iH1].pMem;
 			}

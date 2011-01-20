@@ -79,7 +79,7 @@ PakDirectory::PakDirectory(PakDirectory * p, const char * n)
 
 	if (n)
 	{
-		unsigned int l;
+		size_t l;
 		this->name = GetFirstDir(n, &l);
 
 		if (this->name)
@@ -134,7 +134,8 @@ PakDirectory::~PakDirectory()
 //#############################################################################
 PakDirectory * PakDirectory::AddSousRepertoire(const char * sname)
 {
-	unsigned int nbs = this->nbsousreps, l;
+	unsigned int nbs = this->nbsousreps;
+	size_t l;
 	PakDirectory	* rf = this->fils;
 
 	const char * fdir = GetFirstDir(sname, &l);
@@ -165,7 +166,8 @@ PakDirectory * PakDirectory::AddSousRepertoire(const char * sname)
 //#############################################################################
 bool PakDirectory::DelSousRepertoire(const char * sname)
 {
-	unsigned int nbs = this->nbsousreps, l;
+	unsigned int nbs = this->nbsousreps;
+	size_t l;
 	PakDirectory * rf = this->fils;
 	
 	const char * fdir = GetFirstDir(sname, &l);
@@ -218,16 +220,21 @@ bool PakDirectory::DelSousRepertoire(const char * sname)
 	delete[] fdir;
 	return false;
 }
+
+#include <stdio.h>
+
 //#############################################################################
 PakDirectory * PakDirectory::GetSousRepertoire(const char * sname)
 {
-	unsigned int nbs = this->nbsousreps, l;
+	unsigned int nbs = this->nbsousreps;
+	size_t l;
 	PakDirectory	* rf = this->fils;
 
 	const char * fdir = GetFirstDir(sname, &l);
-
+	
 	while (nbs--)
 	{
+		
 		if (!strcasecmp(fdir, rf->name))
 		{
 			delete[] fdir;
@@ -357,6 +364,7 @@ static char * GetFirstDir(const char * dir, size_t * l)
 
 	strncpy(fdir, dir, *l);
 	fdir[*l] = 0;
+	fdir[*l - 1] = '\\'; // TODO use "/" seperator
 
 	return fdir;
 }
