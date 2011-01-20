@@ -435,7 +435,7 @@ void ClearSubStack(EERIE_SCRIPT * es);
 
 //-----------------------------------------------------------------------------
 
-long MakeLocalised(char * text, _TCHAR * output, long maxsize, long lastspeechflag = 0);
+long MakeLocalised(char * text, std::string& output, long maxsize, long lastspeechflag = 0);
 
 //-----------------------------------------------------------------------------
 long specialstrcmp(char * text, char * seek);
