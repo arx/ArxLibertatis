@@ -48,7 +48,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <hermes/PakReader.h>
 #include <hermes/PakEntry.h>
-#include <HERMES_hachage.h>
+#include <hermes/HashMap.h>
 
 #define PAK 1
 
