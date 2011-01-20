@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /*
 ===========================================================================
 ARX FATALIS GPL Source Code
@@ -58,12 +57,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 // Desc: HERMES main functionalities   //FILES MEMORY
 #include <cstring>
-using namespace std;
+#include <cstdio>
 
 #include <time.h>
 #include "HERMESMain.h"
 #include "HERMESNet.h"
-#include <ARX_Casts.h>
 
 extern "C" {
 #undef __cplusplus
@@ -76,12 +74,13 @@ extern "C" {
 
 #include <blast.h>
 
+using namespace std;
+
 // TODO is this correct?
 #define _MAX_EXT 3
 #define _MAX_FNAME 512
 #define _MAX_DRIVE 1
 #define _MAX_DIR _MAX_FNAME
-
 
 
 char HermesBufferWork[MAX_PATH];    // Used by FileStandardize (avoid malloc/free per call)
@@ -105,60 +104,61 @@ void SAFEstrcpy(char * dest, char * src, unsigned long max)
 
 unsigned char IsIn(char * strin, char * str)
 {
-	char * tmp;
-	tmp = strstr(strin, str);
+    char * tmp;
+    tmp = strstr(strin, str);
 
-	if (tmp == NULL) return 0;
+    if (tmp == NULL) return 0;
 
-	return 1;
+    return 1;
 }
 
 unsigned char NC_IsIn(char * strin, char * str)
 {
-	char * tmp;
-	char t1[4096];
-	char t2[4096];
-	strcpy(t1, strin);
-	strcpy(t2, str);
-	MakeUpcase(t1);
-	MakeUpcase(t2);
-	tmp = strstr(t1, t2);
+    char * tmp;
+    char t1[4096];
+    char t2[4096];
+    strcpy(t1, strin);
+    strcpy(t2, str);
+    MakeUpcase(t1);
+    MakeUpcase(t2);
+    tmp = strstr(t1, t2);
 
-	if (tmp == NULL) return 0;
+    if (tmp == NULL) return 0;
 
-	return 1;
+    return 1;
 }
 
-void File_Standardize(char * from, char * to)
+void File_Standardize(const char * from, char * to)
 {
-	long pos = 0;
-	long pos2 = 0;
-	long size = strlen(from);
-	char * temp = HermesBufferWork;	
 
-	while (pos < size)
-	{
-		if (((from[pos] == '\\') || (from[pos] == '/')) && (pos != 0))
-		{
-			while ((pos < size - 1)
-			        && ((from[pos+1] == '\\') || (from[pos+1] == '/')))
-				pos++;
-		}
+    long pos = 0;
+    long pos2 = 0;
+    long size = strlen(from);
+    char * temp = from; /*HermesBufferWork;	
 
-		temp[pos2++]	= ARX_CLEAN_WARN_CAST_CHAR(toupper(from[pos]));
-		pos++;
-	}
+    while (pos < size)
+    {
+        if (((from[pos] == '\\') || (from[pos] == '/')) && (pos != 0))
+        {
+            while ((pos < size - 1)
+                    && ((from[pos+1] == '\\') || (from[pos+1] == '/')))
+                pos++;
+        }
 
-	temp[pos2] = 0;
+        temp[pos2++]	= ARX_CLEAN_WARN_CAST_CHAR(toupper(from[pos]));
+        pos++;
+    }
 
-again:
-	;
-	size = strlen(temp);
-	pos = 0;
+    temp[pos2] = 0;*/
 
-	while (pos < size - 2)
-	{
-		if ((temp[pos] == '\\') && (temp[pos+1] == '.') && (temp[pos+2] == '.'))
+    again:
+    ;
+    size = strlen(temp);
+    pos = 0;
+
+    while (pos < size - 2)
+    {
+		if ((temp[pos] == '\\' || temp[pos] == '/') && (temp[pos+1] == '.') && (temp[pos+2] == '.'))
 		{
 			long fnd = pos;
 
@@ -166,7 +166,7 @@ again:
 			{
 				pos--;
 
-				if (temp[pos] == '\\')
+				if (temp[pos] == '\\' || temp[pos] == '/')
 				{
 					strcpy(temp + pos, temp + fnd + 3);
 					goto again;
@@ -180,38 +180,41 @@ again:
 	strcpy(to, temp);
 }
 
-long KillAllDirectory(char * path)
-{
-	long idx;
-//	todo io.h
-//	struct _finddata_t fl;
-//	char pathh[512];
-//	sprintf(pathh, "%s*.*", path);
-//
-//	if ((idx = _findfirst(pathh, &fl)) != -1)
-//	{
-//		do
-//		{
-//			if (fl.name[0] != '.')
-//			{
-//				if (fl.attrib & _A_SUBDIR)
-//				{
-//					sprintf(pathh, "%s%s\\", path, fl.name);
-//					KillAllDirectory(pathh);
-//					RemoveDirectory(pathh);
-//				}
-//				else
-//				{
-//					sprintf(pathh, "%s%s", path, fl.name);
-//					DeleteFile(pathh);
-//				}
-//			}
-//
-//		}
-//		while (_findnext(idx, &fl) != -1);
-//
-//		_findclose(idx);
-//	}
+long KillAllDirectory(char * path) {
+	printf("KillAllDirectory(%s)\n", path);
+	
+	WIN32_FIND_DATA FileInformation;             // File information
+	
+	HANDLE idx;
+	WIN32_FIND_DATA fl;
+	char pathh[512];
+	sprintf(pathh, "%s*.*", path);
+	
+	if ((idx = FindFirstFile(pathh, &fl)) != INVALID_HANDLE_VALUE)
+	{
+		do
+		{
+			printf(" - \"%s\"\n", fl.cFileName);
+			if (fl.cFileName[0] != '.')
+			{
+				if (fl.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+				{
+					sprintf(pathh, "%s%s\\", path, fl.cFileName);
+					KillAllDirectory(pathh);
+					RemoveDirectory(pathh);
+				}
+				else
+				{
+					sprintf(pathh, "%s%s", path, fl.cFileName);
+					DeleteFile(pathh);
+				}
+			}
+
+		}
+		while(FindNextFile(idx, &fl));
+
+		FindClose(idx);
+	}
 
 	RemoveDirectory(path);
 	return 1;
@@ -223,8 +226,8 @@ void GetDate(HERMES_DATE_TIME * hdt)
  
 	time_t long_time;
 
-	time(&long_time);                  /* Get time as long integer. */
-	newtime = localtime(&long_time);   /* Convert to local time. */
+	time(&long_time);                  // Get time as long integer.
+	newtime = localtime(&long_time);   // Convert to local time.
 
 	if (newtime)
 	{
@@ -259,9 +262,25 @@ void HERMES_InitDebug()
 }
 
 void MakeUpcase(char * str)
+{/* TODO 
+	while(*str != '\0') {
+		// islower is needed as the are read-only strings passed that are already in upper case?
+		if(islower(*str)) {
+			*str = toupper(*str);
+		}
+		str++;
+	}*/
+}
+
+void MakeUpcase_real(char * str)
 {
-//	todo: string
-//	strupr(str);
+	while(*str != '\0') {
+		// islower is needed as the are read-only strings passed that are already in upper case?
+		if(islower(*str)) {
+			*str = toupper(*str);
+		}
+		str++;
+	}
 }
 
 HKEY    ConsoleKey = NULL;
@@ -466,6 +485,7 @@ void MemFree(void * adr)
  
 long HERMES_CreateFileCheck(const char * name, char * scheck, const long & size, const float & id)
 {
+	printf("HERMES_CreateFileCheck(%s, ...)\n", name);
 	WIN32_FILE_ATTRIBUTE_DATA attrib;
 	FILE * file;
 	long length(size >> 2), i = 7 * 4;
@@ -517,6 +537,296 @@ long HERMES_CreateFileCheck(const char * name, char * scheck, const long & size,
 	return false;
 }
 
+#define GetLastChar(x)      strchr(x, '\0')
+#define NullTerminate(x)    x[i] = '\0'
+
+// from http://acmlm.kafuka.org/board/thread.php?id=3930
+static void splitpath(const char *path, char *drive, char *dir, char *fName, char *ext)
+{
+    char separator = '\\';
+
+    char    *endPoint = NULL,
+            *pos = (char*) path,
+            *temp = NULL,
+            *lastChar = NULL;
+
+    unsigned int    i = 0,
+                    unixStyle = 0;
+
+    /* initialize all the output strings in case we have to abort */
+    if(drive) { strcpy(drive, ""); } 
+    if(dir)   { strcpy(dir, "");   }
+    if(fName) { strcpy(fName, "");  }
+    if(ext)   { strcpy(ext, "");   }
+
+    /* find the end of the string */
+    lastChar = GetLastChar(path);
+
+    if(path[0] == '/')
+    {   separator = '/'; unixStyle = 1; }
+    else
+        separator = '\\';
+
+    /* first figure out whether it contains a drive name */
+    endPoint = strchr(path, separator);
+
+    /* unix style drives are of the form "/drivename/" */
+    if(unixStyle)
+        endPoint = strchr(endPoint + 1, separator);
+
+    /* we found a drive name */
+    if(endPoint && (endPoint < lastChar))
+    {
+        if(drive)
+        {
+            for(i = 0; pos + i < endPoint; i++)
+                drive[i] = pos[i];
+
+            NullTerminate(drive); /* null terminate the the drive string */
+        }
+
+        pos = endPoint;
+    }
+    else if(unixStyle)
+    {
+
+        if(drive)
+        {
+            for(i = 0; (pos + i) < lastChar; i++)
+                    drive[i] = pos[i];
+
+            NullTerminate(drive);
+        }
+            
+        return;
+    }
+    else
+        /* this happens when there's no separators in the path name */
+        endPoint = pos; 
+
+    /* next, find the directory name, if any */
+    temp = pos;
+
+    while(temp && (endPoint < lastChar) )
+    {
+        temp = strchr(endPoint + 1, separator);
+
+        if(temp) { endPoint = temp; }
+    }
+
+    /* if true, it means there's an intermediate directory name */
+    if( (endPoint) && (endPoint > pos) && (endPoint < lastChar))
+    {
+        if(dir)
+        {
+            for(i = 0; (pos + i) <= endPoint; i++)
+                dir[i] = pos[i];
+
+            NullTerminate(dir);
+        }
+
+        pos = ++endPoint;
+    }
+    else
+        /* this happens when there's no separators in the path name */
+        endPoint = pos;
+
+    /* find the file name */
+    temp = pos;
+
+    while(temp && (endPoint < lastChar))
+    {
+        temp = strchr(endPoint + 1, '.');
+
+        if(temp) { endPoint = temp; }
+    }
+
+    if( (endPoint > pos) && (endPoint < lastChar))
+    {
+        if(fName)
+        {
+            for(i = 0; pos + i < endPoint; i++)
+                fName[i] = pos[i];
+
+            NullTerminate(fName);
+        }
+
+        pos = endPoint;
+    }
+    else if(endPoint == pos)
+    {
+        /* in this case there is no extension */
+        if(fName)
+        {
+            for(i = 0; (pos + i) < lastChar; i++)
+                fName[i] = pos[i];
+
+            fName[i] = '\0';
+        }
+
+        return;
+    }
+
+    /* the remaining characters just get dumped as the extension */
+    if(ext)
+    {
+        for(i = 0; pos + i < lastChar; i++)
+            ext[i] = pos[i];
+
+        NullTerminate(ext);
+    }
+        
+    /* finished! :) */
+    }
+    
+// from http://acmlm.kafuka.org/board/thread.php?id=3930
+static void makepath(char *path, const char *drive, const char *dir, const char *fName, const char *ext)
+{
+    char separator = '\\';
+    char *lastChar = NULL;
+    char *pos      = NULL;
+    
+    unsigned int    i = 0,
+                    unixStyle = 0,
+                    sepCount = 0; /* number of consecutive separators */
+    
+
+    if(!path)
+        return;
+    
+    /* Initialize the path to nothing */
+    strcpy(path, "");
+    
+    if(drive)
+    {
+        if(drive[0] == '/')
+        {   
+            unixStyle = 1; separator = '/';
+        }
+
+        sepCount = 0;
+        pos = (char*) drive;
+        lastChar = GetLastChar(drive);
+
+        if(lastChar == pos)
+            goto directory;
+
+        for(; pos < lastChar; pos++)
+        {
+            sepCount = ( (*pos) == separator ) ? sepCount + 1 : 0;
+
+            /* filter out any extra separators */
+            if(sepCount > 1) { continue; }
+        
+            path[i++] = (*pos);
+        }
+        
+        if( (i) && path[i-1] != separator)
+            path[i++] = separator;
+           
+        NullTerminate(path);
+    }
+
+directory:
+
+    if(dir)
+    {
+        sepCount = 0;
+        pos = (char*) dir;
+        lastChar = GetLastChar(dir);
+    
+        if(pos == lastChar)
+            goto fileName;
+
+        /* no character in the path yet? have to add that first separator */
+        if(!i)
+            path[i++] = separator; sepCount++;
+
+        /* getting rid of any extra separators */
+        while( ((*pos) == separator) && (pos < lastChar) )
+            pos++;
+        
+        for( ; pos < lastChar; pos++)
+        {
+            sepCount = ( (*pos) == separator ) ? sepCount + 1 : 0;
+        
+            if(sepCount > 1) { continue; }
+        
+            path[i++] = (*pos);
+        }
+        
+        if( (i) && path[i-1] != separator)
+            path[i++] = separator;            
+        
+        NullTerminate(path);
+    }
+
+fileName:
+    
+    if(fName)
+    {
+        pos = (char*) fName;
+        lastChar = GetLastChar(fName);
+        
+        if(lastChar == pos)
+            goto extension;
+
+        for(sepCount = 0; pos < lastChar; pos++)
+        {
+            sepCount = ( (*pos) == '.' ) ? sepCount + 1 : 0;
+            
+            if(sepCount > 1) { continue; }
+            
+            path[i++] = (*pos);
+        }
+    
+        NullTerminate(path);
+    }
+
+extension:
+
+    if(ext)
+    {
+        sepCount = 0;
+        pos = (char*) ext;
+        lastChar = GetLastChar(ext);
+
+        if(lastChar == pos)
+            return;
+
+        if(i && (path[i - 1] != '.'))
+        {   path[i++] = '.'; sepCount++; }
+        
+        for(; pos < lastChar; pos++)
+        {
+            sepCount = ( (*pos) == '.' ) ? sepCount + 1 : 0;
+            
+            if(sepCount > 1) { continue; }
+            
+            path[i++] = (*pos);
+        }
+
+        NullTerminate(path);
+    }
+    else
+    {
+        lastChar = GetLastChar(path) - 1;
+        
+        /* backpedal until we get rid of all the dots b/c what's the use of a dot on an extensionless file? */
+        while(lastChar > path)
+        {
+            if((*lastChar) != '.')
+                break;
+        
+            (*lastChar) = '\0';
+            lastChar--;
+        }        
+    }
+}
+
+#undef GetLastChar
+#undef NullTerminate
+
 //******************************************************************************
 // FILES MANAGEMENT
 //******************************************************************************
@@ -525,80 +835,78 @@ char _dir[256];
 char _name[256];
 char _ext[256];
 
-// todo: path stuff
 char * GetName(char * str)
 {
-//	_splitpath(str, _drv, _dir, _name, _ext);
+	splitpath(str, _drv, _dir, _name, _ext);
 	return _name;
 }
 
 char * GetExt(char * str)
 {
-//	_splitpath(str, _drv, _dir, _name, _ext);
+	splitpath(str, _drv, _dir, _name, _ext);
 	return _ext;
 }
 
 void SetExt(char * str, char * new_ext)
 {
-//	_splitpath(str, _drv, _dir, _name, _ext);
-//	_makepath(str, _drv, _dir, _name, new_ext);
+	splitpath(str, _drv, _dir, _name, _ext);
+	makepath(str, _drv, _dir, _name, new_ext);
 }
 
 void AddToName(char * str, char * cat)
 {
-//	_splitpath(str, _drv, _dir, _name, _ext);
+	splitpath(str, _drv, _dir, _name, _ext);
 	strcat(_name, cat);
-//	_makepath(str, _drv, _dir, _name, _ext);
+	makepath(str, _drv, _dir, _name, _ext);
 }
 
 void RemoveName(char * str)
 {
-//	_splitpath(str, _drv, _dir, _name, _ext);
-//	_makepath(str, _drv, _dir, NULL, NULL);
+	splitpath(str, _drv, _dir, _name, _ext);
+	makepath(str, _drv, _dir, NULL, NULL);
 }
 
 long DirectoryExist(char * name)
 {
-	long idx;
-//	todo: path stuff
-//	struct _finddata_t fd;
-//
-//	if ((idx = _findfirst(name, &fd)) == -1)
-//	{
-//		_findclose(idx);
-//		char initial[256];
-//		_getcwd(initial, 255);
-//
-//		if (_chdir(name) == 0) // success
-//		{
-//			_chdir(initial);
-//			return 1;
-//		}
-//
-//		_chdir(initial);
-//		return 0;
-//	}
-//
-//	_findclose(idx);
+	HANDLE idx;
+	WIN32_FIND_DATA fd;
+
+	if ((idx = FindFirstFile(name, &fd)) == -1)
+	{
+		FindClose(idx);
+		char initial[256];
+		GetCurrentDirectory(255, initial);
+
+		if (SetCurrentDirectory(name) == 0) // success
+		{
+			SetCurrentDirectory(initial);
+			return 1;
+		}
+
+		SetCurrentDirectory(initial);
+		return 0;
+	}
+
+	FindClose(idx);
 	return 1;
 }
 
-bool CreateFullPath(char * path)
-{
-
+bool CreateFullPath(const char * path) {
+	printf("CreateFullPath(%s)", path);
+	
 	char drive[_MAX_DRIVE];
 	char dir[_MAX_DIR];
 	char fname[_MAX_FNAME];
-	char ext[_MAX_EXT];
+	char ext[MAX_PATH];
 
-	// todo: path
-//	_splitpath(path, drive, dir, fname, ext);
+	splitpath(path, drive, dir, fname, ext);
 
 	if (strlen(dir) == 0) return false;
 
 	char curpath[256];
-	strcpy(curpath, drive);
-	strcat(curpath, "\\");
+	curpath[0] = '\0';
+	//strcpy(curpath, drive);
+	strcat(curpath, PATH_SEPERATOR_STR);
 	long start = 1;
 	long pos = 1;
 	long size = strlen(dir);
@@ -609,9 +917,8 @@ bool CreateFullPath(char * path)
 		{
 			dir[pos] = 0;
 			memcpy(curpath + strlen(curpath), dir + start, pos - start + 1);
-			strcat(curpath, "\\");
-			// todo: path
-//			_mkdir(curpath);
+			strcat(curpath, PATH_SEPERATOR_STR);
+			CreateDirectory(curpath, NULL);
 			start = pos + 1;
 		}
 
@@ -622,83 +929,107 @@ bool CreateFullPath(char * path)
 
 	return false;
 }
+
+
+bool GetWorkingDirectory(char * dest)
+{
+	char text[256];
+
+	if(!getcwd(text, sizeof(text) / sizeof(char))) {
+		return false;
+	}
+
+	long len=strlen(text);
+
+	if (text[len]!=PATH_SEPERATOR_CHR) strcat(text,PATH_SEPERATOR_STR);
+
+	strcpy(dest,text);
+	printf("GetWorkingDirectory() -> %s\n", dest);
+	return true;
+}
+
 long FileExist(char * name)
 {
 	long i;
 
-	if ((i = FileOpenRead(name)) == 0) return 0;
-
+	if((i = FileOpenRead(name)) == 0) {
+		printf("\e[1;31mDidn't find\e[m\t%s\n", name);
+		return 0;
+	}
+	
 	FileCloseRead(i);
+	printf("\e[1;32mFound\e[m\t%s\n", name);
 	return 1;
 }
 
 long	FileOpenRead(char * name)
 {
 	long	handle;
-	// todo: path
-//	handle = _open((const char *)name, (int)_O_BINARY | _O_RDONLY);
+	handle = CreateFile((const char *)name, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, 0);
 
-	if (handle < 0)	return(0);
-
+	if(handle < 0) {
+		printf("\e[1;31mCan't open\e[m\t%s\n", name);
+		return(0);
+	}
+	printf("\e[1;32mOpened\e[m\t%s\n", name);
 	return(handle + 1);
 }
 
 long	FileSizeHandle(long handle)
 {
-//	todo: tell
-//	return(_tell((int)handle - 1));
-	return 0;
+	
+	return (SetFilePointer((int)handle - 1, 0, NULL, FILE_CURRENT));
 }
 
 long	FileOpenWrite(char * name)
 {
+	printf("FileOpenWrite(%s)\n", name);
 	int	handle;
-	// todo: path
-//	handle = _open((const char *)name, (int)_O_BINARY | _O_CREAT | _O_TRUNC, (int)_S_IWRITE);
 
-	if (handle < 0)	return(0);
-	// todo: path
-//	_close(handle);
-//	handle = _open((const char *)name, (int)_O_BINARY | _O_WRONLY);
+	handle = CreateFile((const char *)name, GENERIC_READ | GENERIC_WRITE, TRUNCATE_EXISTING, NULL, 0, 0, 0);
 
-	if (handle < 0)	return(0);
+	if (handle < 0)	{
+		return(0);
+	}
+
+	CloseHandle(handle);
+	handle = CreateFile((const char *)name, GENERIC_WRITE, 0, NULL, 0, 0, 0);
+
+	if (handle < 0) {
+		return(0);
+	}
 
 	return(handle + 1);
 }
 long	FileCloseRead(long handle)
 {
-	// todo: path
-//	return(_close((int)handle - 1));
-	return 0;
+	return(CloseHandle((int)handle - 1));
 }
 
 long	FileCloseWrite(long handle)
 {
-	// todo: path
-//	_commit((int)handle - 1);
-//	return(_close((int)handle - 1));
-	return 0;
+	//_commit((int)handle - 1);
+	return(CloseHandle((int)handle - 1));
 }
 
 long	FileRead(long handle, void * adr, long size)
 {
-	// todo: path
-//	return(_read(handle - 1, adr, size));
-	return 0;
+	DWORD ret;
+	ReadFile(handle - 1, adr, size, &ret, NULL);
+	return ret;
 }
 
 long	FileWrite(long handle, void * adr, long size)
 {
-	// todo: path
-//	return(_write(handle - 1, adr, size));
-	return 0;
+	DWORD ret;
+	WriteFile(handle - 1, adr, size, &ret, NULL);
+	return ret;
 }
 long	FileSeek(long handle, long offset, long mode)
 {
-	// todo: path
-//	return(_lseek((int)handle - 1, (long)offset, (int)mode));
-	return 0;
+	return SetFilePointer((int)handle - 1, offset, NULL, mode);
 }
+
 void ExitApp(int v)
 {
 	if (MAIN_PROGRAM_HANDLE != NULL)
@@ -899,29 +1230,27 @@ static OPENFILENAME ofn;
 
 bool HERMESFolderBrowse(char * str)
 {
-	// todo: include issues in wine
-//	BROWSEINFO		bi;
-//	LPITEMIDLIST	liil;
-//
-//	bi.hwndOwner	= NULL;//MainFrameWindow;
-//	bi.pidlRoot		= NULL;
-//	bi.pszDisplayName = LastFolder;
-//	bi.lpszTitle	= str;
-//	bi.ulFlags		= 0;
-//	bi.lpfn			= NULL;
-//	bi.lParam		= 0;
-//	bi.iImage		= 0;
-//
-//
-//	liil = SHBrowseForFolder(&bi);
-//
-//	if (liil)
-//	{
-//		if (SHGetPathFromIDList(liil, LastFolder))	return true;
-//		else return false;
-//	}
-//	else return false;
-	return false;
+	BROWSEINFO		bi;
+	LPITEMIDLIST	liil;
+
+	bi.hwndOwner	= NULL;//MainFrameWindow;
+	bi.pidlRoot		= NULL;
+	bi.pszDisplayName = LastFolder;
+	bi.lpszTitle	= str;
+	bi.ulFlags		= 0;
+	bi.lpfn			= NULL;
+	bi.lParam		= 0;
+	bi.iImage		= 0;
+
+
+	liil = SHBrowseForFolder(&bi);
+
+	if (liil)
+	{
+		if (SHGetPathFromIDList(liil, LastFolder))	return true;
+		else return false;
+	}
+	else return false;
 }
 
 
@@ -938,7 +1267,7 @@ bool HERMESFolderSelector(char * file_name, char * title)
 		return false;
 	}
 }
-bool HERMES_WFSelectorCommon(PSTR pstrFileName, PSTR pstrTitleName, char * filter, long flag, long flag_operation, long max_car, HWND hWnd)
+bool HERMES_WFSelectorCommon(const char * pstrFileName, const char * pstrTitleName, char * filter, long flag, long flag_operation, long max_car, HWND hWnd)
 {
 	LONG	value;
 	char	cwd[MAX_PATH];
@@ -949,7 +1278,7 @@ bool HERMES_WFSelectorCommon(PSTR pstrFileName, PSTR pstrTitleName, char * filte
 	ofn.nMaxCustFilter		= 0 ;
 	ofn.nFilterIndex		= 0 ;
 	ofn.lpstrFileTitle		= NULL ;
-	ofn.nMaxFileTitle		= _MAX_FNAME + _MAX_EXT ;
+	ofn.nMaxFileTitle		= _MAX_FNAME + MAX_PATH ;
 	ofn.nFileOffset		= 0 ;
 	ofn.nFileExtension		= 0 ;
 	ofn.lpstrDefExt		= "txt" ;
@@ -963,8 +1292,7 @@ bool HERMES_WFSelectorCommon(PSTR pstrFileName, PSTR pstrTitleName, char * filte
 	ofn.lpstrTitle			= pstrTitleName ;
 	ofn.Flags				= flag;
 
-//	todo: path
-//	_getcwd(cwd, MAX_PATH);
+	GetCurrentDirectory(cwd, MAX_PATH);
 	ofn.lpstrInitialDir = cwd;
 	ofn.nMaxFile = max_car;
 
@@ -980,12 +1308,12 @@ bool HERMES_WFSelectorCommon(PSTR pstrFileName, PSTR pstrTitleName, char * filte
 	return value;
 }
 
-int HERMESFileSelectorOpen(PSTR pstrFileName, PSTR pstrTitleName, char * filter, HWND hWnd)
+int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName, char * filter, HWND hWnd)
 {
 	return HERMES_WFSelectorCommon(pstrFileName, pstrTitleName, filter, OFN_HIDEREADONLY | OFN_CREATEPROMPT, 1, MAX_PATH, hWnd);
 }
  
-int HERMESFileSelectorSave(PSTR pstrFileName, PSTR pstrTitleName, char * filter, HWND hWnd)
+int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName, char * filter, HWND hWnd)
 {
 	return HERMES_WFSelectorCommon(pstrFileName, pstrTitleName, filter, OFN_OVERWRITEPROMPT, 0, MAX_PATH, hWnd);
 }
@@ -993,188 +1321,69 @@ int HERMESFileSelectorSave(PSTR pstrFileName, PSTR pstrTitleName, char * filter,
 //////////////////////////////////////// PACKING
 //Always on for now...
 
-char WorkBuff[CMP_BUFFER_SIZE];
-
-/* Routine to read uncompressed data.  Used only by implode().
-** This routine reads the data that is to be compressed.
-*/
-
-unsigned int
-ReadUnCompressed(char * buff, unsigned int * size, void * Param)
-{
-	PARAM * Ptr = (PARAM *) Param;
-
-	if (Ptr->UnCompressedSize == 0L)
-	{
-		/* This will terminate the compression or extraction process */
-		return(0);
-	}
-
-	if (Ptr->UnCompressedSize < (unsigned long)*size)
-	{
-		*size = (unsigned int)Ptr->UnCompressedSize;
-	}
-
-	memcpy(buff, Ptr->pSource + Ptr->SourceOffset, *size);
-	Ptr->SourceOffset += (unsigned long) * size;
-	Ptr->UnCompressedSize -= (unsigned long) * size;
-
-	return(*size);
-}
-
-/* Routine to read compressed data.  Used only by explode().
+/* Routine to read compressed data.  Used only by blast().
 ** This routine reads the compressed data that is to be uncompressed.
 */
-
-unsigned int
-ReadCompressed(char * buff, unsigned int * size, void * Param)
-{
+size_t ReadCompressed(void * Param, const unsigned char ** buf) {
+	
 	PARAM * Ptr = (PARAM *) Param;
+	
+	*buf = Ptr->pSource + Ptr->SourceOffset;
+	
+	size_t size = Ptr->CompressedSize;
+	
+	Ptr->SourceOffset += size;
+	
+	Ptr->CompressedSize = 0;
 
-	if (Ptr->CompressedSize == 0L)
-	{
-		/* This will terminate the compression or extraction process */
-		return(0);
-	}
-
-	if (Ptr->CompressedSize < (unsigned long)*size)
-	{
-		*size = (unsigned int)Ptr->CompressedSize;
-	}
-
-	memcpy(buff, Ptr->pSource + Ptr->SourceOffset, *size);
-	Ptr->SourceOffset += (unsigned long) * size;
-	Ptr->CompressedSize -= (unsigned long) * size;
-
-	return(*size);
-}
-
-/* Routime to write compressed data.  Used only by implode().
-** This routine writes the compressed data to a memory buffer.
-*/
-
-void
-WriteCompressed(char * buff, unsigned int * size, void * Param)
-{
-	PARAM * Ptr = (PARAM *) Param;
-
-	if (Ptr->CompressedSize + (unsigned long)*size > Ptr->BufferSize)
-	{
-		Ptr->BufferSize = Ptr->CompressedSize + (unsigned long) * size;
-		Ptr->pDestination = (char *)realloc(Ptr->pDestination, Ptr->BufferSize);
-	}
-
-	if (Ptr->pDestination)
-	{
-		memcpy(Ptr->pDestination + Ptr->DestinationOffset, buff, *size);
-		Ptr->DestinationOffset += (unsigned long) * size;
-		Ptr->CompressedSize += (unsigned long) * size;
-	}
+	return size;
 }
 
 /* Routine to write uncompressed data. Used only by explode().
 ** This routine writes the uncompressed data to a memory buffer.
 */
-
-void
-WriteUnCompressed(char * buff, unsigned int * size, void * Param)
-{
+int WriteUnCompressed(void * Param, unsigned char * buf, size_t len) {
+	
 	PARAM * Ptr = (PARAM *) Param;
-
-	if (Ptr->UnCompressedSize + (unsigned long)*size > Ptr->BufferSize)
-	{
-		Ptr->BufferSize = Ptr->UnCompressedSize + ((unsigned long) * size) * 10;
+	
+	if(Ptr->UnCompressedSize + len > Ptr->BufferSize) {
+		Ptr->BufferSize = Ptr->UnCompressedSize + len * 10;
 		Ptr->pDestination = (char *)realloc(Ptr->pDestination, Ptr->BufferSize);
 	}
-
-	if (Ptr->pDestination)
-	{
-		memcpy(Ptr->pDestination + Ptr->DestinationOffset, buff, *size);
-		Ptr->DestinationOffset += (unsigned long) * size;
-		Ptr->UnCompressedSize += (unsigned long) * size;
+	
+	if(Ptr->pDestination) {
+		memcpy(Ptr->pDestination + Ptr->DestinationOffset, buf, len);
+		Ptr->DestinationOffset += len;
+		Ptr->UnCompressedSize += len;
+		return 0;
+	} else {
+		return 1;
 	}
+	
 }
 
-void
-WriteUnCompressedNoAlloc(char * buff, unsigned int * size, void * Param)
-{
+int WriteUnCompressedNoAlloc(void * Param, unsigned char * buf, size_t len) {
+	
 	PARAM * Ptr = (PARAM *) Param;
-
-	if (Ptr->UnCompressedSize + (unsigned long)*size > Ptr->BufferSize)
-	{
-		Ptr->BufferSize = Ptr->UnCompressedSize + ((unsigned long) * size) * 10;
+	
+	if(Ptr->UnCompressedSize + len > Ptr->BufferSize) {
+		return 1;
 	}
-
-	if (Ptr->pDestination)
-	{
-		memcpy(Ptr->pDestination + Ptr->DestinationOffset, buff, *size);
-		Ptr->DestinationOffset += (unsigned long) * size;
-		Ptr->UnCompressedSize += (unsigned long) * size;
+	
+	if(Ptr->pDestination) {
+		memcpy(Ptr->pDestination + Ptr->DestinationOffset, buf, len);
+		Ptr->DestinationOffset += len;
+		Ptr->UnCompressedSize += len;
+		return 0;
+	} else {
+		return 1;
 	}
+	
 }
 
-char * STD_Implode(char * from, long from_size, long * to_size)
-{
-	if (WorkBuff == NULL)
-	{
-		return NULL;
-	}
 
-	unsigned int type  = CMP_BINARY;
-	unsigned int dsize;// = 2048;
-
-	if (from_size <= 32768)
-		dsize = 1024;
-	else if (from_size <= 131072)
-		dsize = 2048;
-	else dsize = 4096;
-
-	PARAM Param;
-	memset(&Param, 0, sizeof(PARAM));
-
-	Param.pSource = from;
-	Param.pDestination = (char *)malloc(from_size);
-
-	bool bFirst = true; 
-
-	while (1)
-	{
-		Param.CompressedSize = 0;
-		Param.UnCompressedSize = from_size;
-		Param.BufferSize = Param.UnCompressedSize; 
-		Param.SourceOffset      = 0L;
-		Param.DestinationOffset = 0L;
-		Param.Crc               = (unsigned long) - 1;
-		long lResult = implode(ReadUnCompressed, WriteCompressed, WorkBuff, &Param, &type, &dsize);
-
-		if (!lResult)
-		{
-			break;
-		}
-
-		if (bFirst)
-		{
-			bFirst = false;
-			continue;
-		}
-
-		lResult = MessageBox(NULL, "Failed while saving...", "Save Error", MB_RETRYCANCEL | MB_ICONERROR);
-
-		if (lResult == IDCANCEL)
-		{
-			break;
-		}
-	}
-
-	*to_size = Param.CompressedSize;
-	return Param.pDestination;
-}
 char * STD_Explode(char * from, long from_size, long * to_size)
 {
-	if (WorkBuff == NULL)
-	{
-		return NULL;
-	}
 
 	PARAM Param;
 	memset(&Param, 0, sizeof(PARAM));
@@ -1184,7 +1393,7 @@ char * STD_Explode(char * from, long from_size, long * to_size)
 	Param.CompressedSize = from_size;
 
 	Param.Crc               = (unsigned long) - 1;
-	unsigned int error = explode(ReadCompressed, WriteUnCompressed, WorkBuff, &Param);
+	unsigned int error = blast(ReadCompressed, &Param, WriteUnCompressed, &Param);
 
 	if (error)
 	{
@@ -1198,19 +1407,15 @@ char * STD_Explode(char * from, long from_size, long * to_size)
 
 void STD_ExplodeNoAlloc(char * from, long from_size, char * to, long * to_size)
 {
-	if (WorkBuff == NULL)
-	{
-		return;
-	}
 
 	PARAM Param;
 	memset(&Param, 0, sizeof(PARAM));
-	Param.BufferSize = 0;
+	Param.BufferSize = to_size;
 	Param.pSource = from;
 	Param.pDestination = to; 
 	Param.CompressedSize = from_size;
 	Param.Crc               = (unsigned long) - 1;
-	unsigned int error = explode(ReadCompressed, WriteUnCompressedNoAlloc, WorkBuff, &Param);
+	unsigned int error = blast(ReadCompressed, &Param, WriteUnCompressedNoAlloc, &Param);
 
 	if (error)
 	{
@@ -1222,7 +1427,7 @@ void STD_ExplodeNoAlloc(char * from, long from_size, char * to, long * to_size)
 }
 //-------------------------------------------------------------------------------------
 // SP funcs
-#define hrnd()  (((FLOAT)rand() ) * 0.00003051850947599f)
+#define hrnd()  (((float)rand() ) * 0.00003051850947599f)
 
 //-------------------------------------------------------------------------------------
 // Error Logging Funcs...
@@ -1321,3 +1526,4 @@ unsigned long EndBench()
 
 	return 0;
 }
+
