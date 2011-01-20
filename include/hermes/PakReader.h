@@ -25,7 +25,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EVE_LOAD
 #define EVE_LOAD
 
-#include "HERMES_pack.h"
+class PakFile;
+class PakDirectory;
+
+#include <cstddef>
+#include <cstdio> // for FILE
 
 #define PACK_MAX_FREAD	(256)
 

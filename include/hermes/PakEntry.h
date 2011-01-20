@@ -25,7 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EVE_SAVE
 #define EVE_SAVE
 
-#include "HERMES_hachage.h"
+#include "../HERMES_hachage.h"
 
 #include <cstddef>
 
@@ -80,4 +80,5 @@ public:
 
 char * EVEF_GetDirName(const char * dirplusname);
 char * EVEF_GetFileName(const char * dirplusname);
+
 #endif

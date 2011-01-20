@@ -59,7 +59,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_HERMES_PAKMANAGER_H
 
 #include <vector>
-#include "PakReader.h"
+
+class PACK_FILE;
+class PakReader;
+class PakDirectory;
+
+#include <cstdio>
 
 extern char PAK_WORKDIR[256];
 extern unsigned long g_pak_workdir_len;
