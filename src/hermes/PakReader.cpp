@@ -529,7 +529,7 @@ int PakReader::GetSize(char * _pcName)
 }
 
 //-----------------------------------------------------------------------------
-PACK_FILE * PakReader::fOpen(const char * _pcName, const char * _pcMode)
+PakFileHandle * PakReader::fOpen(const char * _pcName, const char * _pcMode)
 {
 	
 	if ((!_pcName) ||
@@ -610,7 +610,7 @@ PACK_FILE * PakReader::fOpen(const char * _pcName, const char * _pcMode)
 }
 
 //-----------------------------------------------------------------------------
-int PakReader::fClose(PACK_FILE * _pPackFile)
+int PakReader::fClose(PakFileHandle * _pPackFile)
 {
 	if ((!_pPackFile) ||
 	        (!_pPackFile->bActif) ||
@@ -677,7 +677,7 @@ int WriteDataFRead(void * Param, unsigned char * buf, size_t len) {
 }
 
 //-----------------------------------------------------------------------------
-int PakReader::fRead(void * _pMem, int _iSize, int _iCount, PACK_FILE * _pPackFile)
+size_t PakReader::fRead(void * _pMem, size_t _iSize, size_t _iCount, PakFileHandle * _pPackFile)
 {
 	if ((!_pPackFile) ||
 	        (!_pPackFile->pFile) ||
@@ -734,7 +734,7 @@ int PakReader::fRead(void * _pMem, int _iSize, int _iCount, PACK_FILE * _pPackFi
 }
 
 //-----------------------------------------------------------------------------
-int PakReader::fSeek(PACK_FILE * _pPackFile, unsigned long _lOffset, int _iOrigin)
+int PakReader::fSeek(PakFileHandle * _pPackFile, long _lOffset, int _iOrigin)
 {
 	if ((!_pPackFile) ||
 	        (!_pPackFile->pFile) ||
@@ -812,7 +812,7 @@ int PakReader::fSeek(PACK_FILE * _pPackFile, unsigned long _lOffset, int _iOrigi
 }
 
 //-----------------------------------------------------------------------------
-int PakReader::fTell(PACK_FILE * _pPackFile)
+long PakReader::fTell(PakFileHandle * _pPackFile)
 {
 	if ((!_pPackFile) ||
 	        (!_pPackFile->pFile) ||
@@ -1021,7 +1021,7 @@ void PakReader::WriteSousRepertoireZarbi(char * pcAbs, PakDirectory * r)
 
 		if (pDat)
 		{
-			PACK_FILE * pPf = fOpen(tTxt + strlen((const char *)pcAbs), "rb");
+			PakFileHandle * pPf = fOpen(tTxt + strlen((const char *)pcAbs), "rb");
 
 			if (!pPf)
 			{

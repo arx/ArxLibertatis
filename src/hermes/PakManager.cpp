@@ -399,7 +399,7 @@ void * PAK_FileLoadMallocZero(char * name, long * SizeLoadMalloc)
 
 long _PAK_ftell(FILE * stream)
 {
-	return pPakManager->fTell((PACK_FILE *)stream);
+	return pPakManager->fTell((PakFileHandle *)stream);
 }
 long PAK_ftell(FILE * stream)
 {
@@ -492,7 +492,7 @@ FILE * PAK_fopen(const char * filename, const char * mode)
 
 int _PAK_fclose(FILE * stream)
 {
-	return pPakManager->fClose((PACK_FILE *)stream);
+	return pPakManager->fClose((PakFileHandle *)stream);
 }
 
 int PAK_fclose(FILE * stream)
@@ -534,7 +534,7 @@ int PAK_fclose(FILE * stream)
 
 size_t _PAK_fread(void * buffer, size_t size, size_t count, FILE * stream)
 {
-	return pPakManager->fRead(buffer, size, count, (PACK_FILE *)stream);
+	return pPakManager->fRead(buffer, size, count, (PakFileHandle *)stream);
 }
 
 size_t PAK_fread(void * buffer, size_t size, size_t count, FILE * stream)
@@ -577,7 +577,7 @@ size_t PAK_fread(void * buffer, size_t size, size_t count, FILE * stream)
 
 int _PAK_fseek(FILE * fic, long offset, int origin)
 {
-	return pPakManager->fSeek((PACK_FILE *)fic, offset, origin);
+	return pPakManager->fSeek((PakFileHandle *)fic, offset, origin);
 }
 
 int PAK_fseek(FILE * fic, long offset, int origin)
@@ -766,7 +766,7 @@ int PakManager::GetSize(char * _lpszName)
 }
 
 //-----------------------------------------------------------------------------
-PACK_FILE * PakManager::fOpen(char * _lpszName)
+PakFileHandle * PakManager::fOpen(char * _lpszName)
 {
 	vector<PakReader *>::iterator i;
 
@@ -778,7 +778,7 @@ PACK_FILE * PakManager::fOpen(char * _lpszName)
 
 	for (i = vLoadPak.begin(); i < vLoadPak.end(); i++)
 	{
-		PACK_FILE * pPakFile;
+		PakFileHandle * pPakFile;
 
 		if ((pPakFile = (*i)->fOpen((const char *)_lpszName, "rb")))
 		{
@@ -793,7 +793,7 @@ PACK_FILE * PakManager::fOpen(char * _lpszName)
 }
 
 //-----------------------------------------------------------------------------
-int PakManager::fClose(PACK_FILE * _pPakFile)
+int PakManager::fClose(PakFileHandle * _pPakFile)
 {
 	vector<PakReader *>::iterator i;
 
@@ -810,7 +810,7 @@ int PakManager::fClose(PACK_FILE * _pPakFile)
 }
 
 //-----------------------------------------------------------------------------
-int PakManager::fRead(void * _pMem, int _iSize, int _iCount, PACK_FILE * _pPackFile)
+int PakManager::fRead(void * _pMem, int _iSize, int _iCount, PakFileHandle * _pPackFile)
 {
 	vector<PakReader *>::iterator i;
 
@@ -828,7 +828,7 @@ int PakManager::fRead(void * _pMem, int _iSize, int _iCount, PACK_FILE * _pPackF
 }
 
 //-----------------------------------------------------------------------------
-int PakManager::fSeek(PACK_FILE * _pPackFile, int _iSeek, int _iMode)
+int PakManager::fSeek(PakFileHandle * _pPackFile, int _iSeek, int _iMode)
 {
 	vector<PakReader *>::iterator i;
 
@@ -844,7 +844,7 @@ int PakManager::fSeek(PACK_FILE * _pPackFile, int _iSeek, int _iMode)
 }
 
 //-----------------------------------------------------------------------------
-int PakManager::fTell(PACK_FILE * _pPackFile)
+int PakManager::fTell(PakFileHandle * _pPackFile)
 {
 	vector<PakReader *>::iterator i;
 

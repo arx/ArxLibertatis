@@ -58,7 +58,7 @@ struct PAK_PARAM_FREAD {
 	
 };
 
-struct PACK_FILE {
+struct PakFileHandle {
 	bool		bActif;
 	int			iID;
 	int			iOffset;
@@ -72,7 +72,7 @@ private:
 	char			*pcFAT;
 	int				iTailleFAT;
 	int				iSeekPak;
-	PACK_FILE		tPackFile[PACK_MAX_FREAD];
+	PakFileHandle		tPackFile[PACK_MAX_FREAD];
 
 	unsigned char	cKey[512];
 	unsigned int	iPassKey;
@@ -92,11 +92,11 @@ public:
 	void* ReadAlloc(char*,int*);
 	int GetSize(char *_pcName);
 
-	PACK_FILE * fOpen(const char*,const char*);
-	int fClose(PACK_FILE*);
-	int fRead(void*,int,int,PACK_FILE*);
-	int fSeek(PACK_FILE*,unsigned long,int);
-	int fTell(PACK_FILE *);
+	PakFileHandle * fOpen(const char * name, const char * mode);
+	int fClose(PakFileHandle * h);
+	std::size_t fRead(void * buf, std::size_t size, std::size_t n, PakFileHandle * h);
+	int fSeek(PakFileHandle * h, long off, int whence);
+	long fTell(PakFileHandle * h);
 
 	void WriteSousRepertoire(char *pcAbs,PakDirectory *r);
 	void WriteSousRepertoireZarbi(char *pcAbs,PakDirectory *r);

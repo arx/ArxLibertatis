@@ -60,7 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <vector>
 
-class PACK_FILE;
+class PakFileHandle;
 class PakReader;
 class PakDirectory;
 
@@ -108,11 +108,11 @@ public:
 	bool Read(char *,void *);
 	void* ReadAlloc(char *,int *);
 	int GetSize(char *);
-	PACK_FILE* fOpen(char *);
-	int fClose(PACK_FILE *);
-	int fRead(void *, int, int, PACK_FILE *);
-	int fSeek(PACK_FILE *,int,int);
-	int fTell(PACK_FILE *);
+	PakFileHandle * fOpen(char *);
+	int fClose(PakFileHandle *);
+	int fRead(void *, int, int, PakFileHandle *);
+	int fSeek(PakFileHandle *,int,int);
+	int fTell(PakFileHandle *);
 	std::vector<PakDirectory*> * ExistDirectory(char *_lpszName);
 	bool ExistFile(char *_lpszName);
 };
