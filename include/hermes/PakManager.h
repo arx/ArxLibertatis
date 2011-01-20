@@ -59,7 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_HERMES_PAKMANAGER_H
 
 #include <vector>
-#include "HERMES_pack_public.h"
+#include "PakReader.h"
 
 extern char PAK_WORKDIR[256];
 extern unsigned long g_pak_workdir_len;
@@ -71,7 +71,6 @@ extern unsigned long g_pak_workdir_len;
 #define LOAD_TRUEFILE_THEN_PACK	4
 
 extern long CURRENT_LOADMODE;
-extern EVE_LOADPACK *pLoadPack;
 void * PAK_FileLoadMalloc(char *name,long * SizeLoadMalloc=NULL);
 void * PAK_FileLoadMallocZero(char *name,long * SizeLoadMalloc=NULL);
 
@@ -94,7 +93,7 @@ void PAK_Close();
 class PakManager
 {
 public:
-	std::vector<EVE_LOADPACK*> vLoadPak;
+	std::vector<PakReader*> vLoadPak;
 public:
 	PakManager();
 	~PakManager();

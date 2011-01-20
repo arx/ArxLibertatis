@@ -30,18 +30,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define PACK_MAX_FREAD	(256)
 
 #define PAK_READ_BUF_SIZE 1024
-typedef struct
-{
+struct PAK_PARAM {
 	FILE *file;
 	char *mem;
 	std::size_t lSize;
 	
 	char readbuf[PAK_READ_BUF_SIZE];
 	
-} PAK_PARAM;
+};
 
-typedef struct
-{
+struct PAK_PARAM_FREAD {
 	FILE	*file;
 	char	*mem;
 	int		iOffsetCurr;
@@ -54,17 +52,16 @@ typedef struct
 	
 	char readbuf[PAK_READ_BUF_SIZE];
 	
-} PAK_PARAM_FREAD;
+};
 
-typedef struct
-{
+struct PACK_FILE {
 	bool		bActif;
 	int			iID;
 	int			iOffset;
 	EVE_TFILE	*pFile;
-} PACK_FILE;
+};
 
-class EVE_LOADPACK
+class PakReader
 {
 private:
 	FILE			*pfFile;
@@ -82,8 +79,8 @@ private:
 	int ReadFAT_int();
 	char* ReadFAT_string();
 public:
-	EVE_LOADPACK();
-	~EVE_LOADPACK();
+	PakReader();
+	~PakReader();
 
 	bool Open(char*);
 	void Close();

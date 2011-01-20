@@ -46,7 +46,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 */
 
-#include "HERMES_pack_public.h"
+#include <hermes/PakReader.h>
+
 #include "ARX_Casts.h"
 using std::min;
 using std::max;
@@ -61,7 +62,7 @@ using std::size_t;
 //#define FINAL_COMMERCIAL_DEMO
 
 //-----------------------------------------------------------------------------
-EVE_LOADPACK::EVE_LOADPACK()
+PakReader::PakReader()
 {
 	lpszName = NULL;
 	pfFile = NULL;
@@ -92,7 +93,7 @@ EVE_LOADPACK::EVE_LOADPACK()
 }
 
 //-----------------------------------------------------------------------------
-EVE_LOADPACK::~EVE_LOADPACK()
+PakReader::~PakReader()
 {
 	if (lpszName)
 	{
@@ -112,7 +113,7 @@ EVE_LOADPACK::~EVE_LOADPACK()
 }
 
 //-----------------------------------------------------------------------------
-int EVE_LOADPACK::ReadFAT_int()
+int PakReader::ReadFAT_int()
 {
 	int i = *((int *)pcFAT);
 	pcFAT += 4;
@@ -124,7 +125,7 @@ int EVE_LOADPACK::ReadFAT_int()
 }
 
 //-----------------------------------------------------------------------------
-char * EVE_LOADPACK::ReadFAT_string()
+char * PakReader::ReadFAT_string()
 {
 	char * t = pcFAT;
 	int i = UnCryptString((unsigned char *)t) + 1;
@@ -135,7 +136,7 @@ char * EVE_LOADPACK::ReadFAT_string()
 }
 
 //-----------------------------------------------------------------------------
-bool EVE_LOADPACK::Open(char * _pcName)
+bool PakReader::Open(char * _pcName)
 {
 	
 	pfFile = fopen(_pcName, "rb");
@@ -217,7 +218,7 @@ bool EVE_LOADPACK::Open(char * _pcName)
 }
 
 //-----------------------------------------------------------------------------
-void EVE_LOADPACK::Close()
+void PakReader::Close()
 {
 	if (pfFile)
 	{
@@ -261,7 +262,7 @@ int WriteData(void * Param, unsigned char * buf, size_t len) {
 }
 
 //-----------------------------------------------------------------------------
-bool EVE_LOADPACK::Read(char * _pcName, void * _mem)
+bool PakReader::Read(char * _pcName, void * _mem)
 {
 	if ((!_pcName) ||
 	        (!pRoot)) return false;
@@ -344,7 +345,7 @@ bool EVE_LOADPACK::Read(char * _pcName, void * _mem)
 }
 
 //-----------------------------------------------------------------------------
-void * EVE_LOADPACK::ReadAlloc(char * _pcName, int * _piTaille)
+void * PakReader::ReadAlloc(char * _pcName, int * _piTaille)
 {
 	if ((!_pcName) ||
 	        (!pRoot)) return NULL;
@@ -452,7 +453,7 @@ void * EVE_LOADPACK::ReadAlloc(char * _pcName, int * _piTaille)
 }
 
 //-----------------------------------------------------------------------------
-int EVE_LOADPACK::GetSize(char * _pcName)
+int PakReader::GetSize(char * _pcName)
 {
 	if ((!_pcName) ||
 	        (!pRoot)) return -1;
@@ -525,7 +526,7 @@ int EVE_LOADPACK::GetSize(char * _pcName)
 }
 
 //-----------------------------------------------------------------------------
-PACK_FILE * EVE_LOADPACK::fOpen(const char * _pcName, const char * _pcMode)
+PACK_FILE * PakReader::fOpen(const char * _pcName, const char * _pcMode)
 {
 	
 	if ((!_pcName) ||
@@ -606,7 +607,7 @@ PACK_FILE * EVE_LOADPACK::fOpen(const char * _pcName, const char * _pcMode)
 }
 
 //-----------------------------------------------------------------------------
-int EVE_LOADPACK::fClose(PACK_FILE * _pPackFile)
+int PakReader::fClose(PACK_FILE * _pPackFile)
 {
 	if ((!_pPackFile) ||
 	        (!_pPackFile->bActif) ||
@@ -673,7 +674,7 @@ int WriteDataFRead(void * Param, unsigned char * buf, size_t len) {
 }
 
 //-----------------------------------------------------------------------------
-int EVE_LOADPACK::fRead(void * _pMem, int _iSize, int _iCount, PACK_FILE * _pPackFile)
+int PakReader::fRead(void * _pMem, int _iSize, int _iCount, PACK_FILE * _pPackFile)
 {
 	if ((!_pPackFile) ||
 	        (!_pPackFile->pFile) ||
@@ -730,7 +731,7 @@ int EVE_LOADPACK::fRead(void * _pMem, int _iSize, int _iCount, PACK_FILE * _pPac
 }
 
 //-----------------------------------------------------------------------------
-int EVE_LOADPACK::fSeek(PACK_FILE * _pPackFile, unsigned long _lOffset, int _iOrigin)
+int PakReader::fSeek(PACK_FILE * _pPackFile, unsigned long _lOffset, int _iOrigin)
 {
 	if ((!_pPackFile) ||
 	        (!_pPackFile->pFile) ||
@@ -808,7 +809,7 @@ int EVE_LOADPACK::fSeek(PACK_FILE * _pPackFile, unsigned long _lOffset, int _iOr
 }
 
 //-----------------------------------------------------------------------------
-int EVE_LOADPACK::fTell(PACK_FILE * _pPackFile)
+int PakReader::fTell(PACK_FILE * _pPackFile)
 {
 	if ((!_pPackFile) ||
 	        (!_pPackFile->pFile) ||
@@ -818,7 +819,7 @@ int EVE_LOADPACK::fTell(PACK_FILE * _pPackFile)
 }
 
 //-----------------------------------------------------------------------------
-void EVE_LOADPACK::CryptChar(unsigned char * _pChar)
+void PakReader::CryptChar(unsigned char * _pChar)
 {
 #ifdef CRYPT_OFF
 	return;
@@ -834,7 +835,7 @@ void EVE_LOADPACK::CryptChar(unsigned char * _pChar)
 }
 
 //-----------------------------------------------------------------------------
-void EVE_LOADPACK::UnCryptChar(unsigned char * _pChar)
+void PakReader::UnCryptChar(unsigned char * _pChar)
 {
 #ifdef CRYPT_OFF
 	return;
@@ -850,7 +851,7 @@ void EVE_LOADPACK::UnCryptChar(unsigned char * _pChar)
 	if (iPassKey >= iTailleKey) iPassKey = 0;
 }
 //-----------------------------------------------------------------------------
-void EVE_LOADPACK::CryptString(unsigned char * _pTxt)
+void PakReader::CryptString(unsigned char * _pTxt)
 {
 	unsigned char * pTxtCopy = (unsigned char *)_pTxt;
 	int iTaille = strlen((const char *)_pTxt) + 1;
@@ -863,7 +864,7 @@ void EVE_LOADPACK::CryptString(unsigned char * _pTxt)
 }
 
 //-----------------------------------------------------------------------------
-int EVE_LOADPACK::UnCryptString(unsigned char * _pTxt)
+int PakReader::UnCryptString(unsigned char * _pTxt)
 {
 	unsigned char * pTxtCopy = (unsigned char *)_pTxt;
 
@@ -886,7 +887,7 @@ int EVE_LOADPACK::UnCryptString(unsigned char * _pTxt)
 }
 
 //-----------------------------------------------------------------------------
-void EVE_LOADPACK::CryptShort(unsigned short * _pShort)
+void PakReader::CryptShort(unsigned short * _pShort)
 {
 	unsigned char cA, cB;
 	cA = ARX_CLEAN_WARN_CAST_UCHAR((*_pShort) & 0xFF);
@@ -898,7 +899,7 @@ void EVE_LOADPACK::CryptShort(unsigned short * _pShort)
 }
 
 //-----------------------------------------------------------------------------
-void EVE_LOADPACK::UnCryptShort(unsigned short * _pShort)
+void PakReader::UnCryptShort(unsigned short * _pShort)
 {
 	unsigned char cA, cB;
 	cA = ARX_CLEAN_WARN_CAST_UCHAR((*_pShort) & 0xFF);
@@ -910,7 +911,7 @@ void EVE_LOADPACK::UnCryptShort(unsigned short * _pShort)
 }
 
 //-----------------------------------------------------------------------------
-void EVE_LOADPACK::CryptInt(unsigned int * _iInt)
+void PakReader::CryptInt(unsigned int * _iInt)
 {
 	unsigned short sA, sB;
 	sA = (*_iInt) & 0xFFFF;
@@ -922,7 +923,7 @@ void EVE_LOADPACK::CryptInt(unsigned int * _iInt)
 }
 
 //-----------------------------------------------------------------------------
-void EVE_LOADPACK::UnCryptInt(unsigned int * _iInt)
+void PakReader::UnCryptInt(unsigned int * _iInt)
 {
 	unsigned short sA, sB;
 	sA = (*_iInt) & 0xFFFF;
@@ -934,7 +935,7 @@ void EVE_LOADPACK::UnCryptInt(unsigned int * _iInt)
 }
 
 //-----------------------------------------------------------------------------
-void EVE_LOADPACK::WriteSousRepertoire(char * pcAbs, EVE_REPERTOIRE * r)
+void PakReader::WriteSousRepertoire(char * pcAbs, EVE_REPERTOIRE * r)
 {
 	char EveTxtFile[256];
 	strcpy((char *)EveTxtFile, pcAbs);
@@ -990,7 +991,7 @@ void EVE_LOADPACK::WriteSousRepertoire(char * pcAbs, EVE_REPERTOIRE * r)
 }
 
 //-----------------------------------------------------------------------------
-void EVE_LOADPACK::WriteSousRepertoireZarbi(char * pcAbs, EVE_REPERTOIRE * r)
+void PakReader::WriteSousRepertoireZarbi(char * pcAbs, EVE_REPERTOIRE * r)
 {
 	char EveTxtFile[256];
 	strcpy((char *)EveTxtFile, pcAbs);
