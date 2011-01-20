@@ -68,6 +68,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "HERMESMain.h"
 
 #include <stdio.h>
+#include <iomanip>
 
 //todo: shouldn't be defined here
 # define GWL_HINSTANCE       (-6)
@@ -1827,29 +1828,28 @@ bool DANAE::ManageEditorControls()
 
                                 if (temp->ioflags & IO_GOLD)
                                 {
-                                     UText[256];
-                                    _stprintf(UText, _T("%d %s"), temp->_itemdata->price, WILLADDSPEECH);
-                                    _tcscpy(WILLADDSPEECH, UText);
+                                    std::stringstream ss;
+                                    ss << temp->_itemdata->price << ' ' << WILLADDSPEECH;
+                                    WILLADDSPEECH = ss.str();
                                 }
 
                                 if ((temp->poisonous>0) && (temp->poisonous_count!=0))
                                 {
-                                    _TCHAR Text[256];
-                                    _TCHAR UText[256];
+                                    std::string Text;
                                     MakeLocalised("[Description_Poisoned]",Text,256,-1);
-                                    _stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH, Text, (long)temp->poisonous);
-                                    _tcscpy(WILLADDSPEECH, UText);
+                                    std::stringstream ss;
+                                    ss << WILLADDSPEECH << " (" << Text << ' ' << (long)temp->poisonous << ")";
+                                    WILLADDSPEECH = ss.str();
                                 }
 
                                 if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
                                 {
-                                    _TCHAR Text[256];
-                                    _TCHAR UText[256];
+                                    std::string Text;
+                                    std::stringstream ss;
                                     MakeLocalised("[Description_Durability]",Text,256,-1);
-                                    _stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH, Text, temp->durability,temp->max_durability);
-                                    _tcscpy(WILLADDSPEECH, UText);
+                                    ss << WILLADDSPEECH << ' ' << Text << ' ' << setprecision(3) << temp->durability << '/' << temp->max_durability;
+                                    WILLADDSPEECH == ss.str();
                                 }
-
 
                                 WILLADDSPEECHTIME = ARXTimeUL(); 
                             }
@@ -5763,30 +5763,29 @@ void DANAE::ManageKeyMouse()
 
                             if (temp->ioflags & IO_GOLD)
                             {
-                                _TCHAR UText[256];
-                                _stprintf(UText, _T("%d %s"), temp->_itemdata->price, WILLADDSPEECH);
-                                _tcscpy(WILLADDSPEECH, UText);
+                                std::stringstream ss;
+                                ss << temp->_itemdata->price << ' ' << WILLADDSPEECH;
+                                WILLADDSPEECH = ss.str();
                             }
 
                             if ((temp->poisonous>0) && (temp->poisonous_count!=0))
                             {
-                                _TCHAR Text[256];
-                                _TCHAR UText[256];
+                                std::stringstream ss;
+                                std::string Text;
                                 MakeLocalised("[Description_Poisoned]",Text,256,-1);
-                                _stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH, Text, (long)temp->poisonous);
-                                _tcscpy(WILLADDSPEECH, UText);
+                                ss << WILLADDSPEECH << " (" << Text << ' ' << (long)temp->poisonous << ")";
+                                WILLADDSPEECH = ss.str();
                             }
 
                             if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
                             {
-                                _TCHAR Text[256];
-                                _TCHAR UText[256];
+                                std::string Text;
                                 MakeLocalised("[Description_Durability]",Text,256,-1);
-                                _stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH, Text, temp->durability,temp->max_durability);
-                                _tcscpy(WILLADDSPEECH, UText);
+                                std::stringstream ss;
+                                ss << WILLADDSPEECH << ' ' << Text << ' ' << setprecision(3) << temp->durability << '/' << temp->max_durability;
+                                WILLADDSPEECH = ss.str();
                             }
 
-                    
                         WILLADDSPEECHTIME = ARXTimeUL();
 
                         if (INTERNATIONAL_MODE)
@@ -5804,25 +5803,25 @@ void DANAE::ManageKeyMouse()
                             if (bAddText)
                             {
 
-                                    //------------ ONLY IN DEBUG
-                                    ARX_CHECK_LONG( 120 * Xratio );
-                                    ARX_CHECK_LONG( 14 * Yratio );
-                                    ARX_CHECK_LONG( ( 120 + 500 ) * Xratio );
-                                    ARX_CHECK_LONG( ( 14  + 200 ) * Yratio );
-                                    //------------
-                                    RECT rDraw	=	{	ARX_CLEAN_WARN_CAST_LONG( 120 * Xratio ), 
-                                                        ARX_CLEAN_WARN_CAST_LONG( 14 * Yratio ),
-                                                        ARX_CLEAN_WARN_CAST_LONG( ( 120 + 500 ) * Xratio ),
+                                //------------ ONLY IN DEBUG
+                                ARX_CHECK_LONG( 120 * Xratio );
+                                ARX_CHECK_LONG( 14 * Yratio );
+                                ARX_CHECK_LONG( ( 120 + 500 ) * Xratio );
+                                ARX_CHECK_LONG( ( 14  + 200 ) * Yratio );
+                                //------------
+                                RECT rDraw	=	{	ARX_CLEAN_WARN_CAST_LONG( 120 * Xratio ), 
+                                                    ARX_CLEAN_WARN_CAST_LONG( 14 * Yratio ),
+                                                    ARX_CLEAN_WARN_CAST_LONG( ( 120 + 500 ) * Xratio ),
                                                     ARX_CLEAN_WARN_CAST_LONG((14 + 200) * Yratio)
-                                             };
+                                                 };
 
-                                    pTextManage->Clear();
+                                pTextManage->Clear();
                                 pTextManage->AddText(InBookFont,
-                                                                         willaddspeech,
-                                                                        rDraw,
-                                                                        RGB(232,204,143),
-                                                                        0x00FF00FF,
-                                                                        2000+strlen(WILLADDSPEECH)*60);
+                                                    willaddspeech,
+                                                    rDraw,
+                                                    RGB(232,204,143),
+                                                    0x00FF00FF,
+                                                    2000+WILLADDSPEECH.length()*60);
                                 }
 
                                 WILLADDSPEECH[0]=0;
@@ -5831,64 +5830,64 @@ void DANAE::ManageKeyMouse()
                     }	
                     else
                     {
-                        if(	(INTERNATIONAL_MODE)&&
+                        if( (INTERNATIONAL_MODE)&&
                             (pMenuConfig)&&
                             (pMenuConfig->bAutoDescription))
-                    {
+                        {
 
-                                INTERACTIVE_OBJ * temp;
-                        temp = FlyingOverIO; 
+                            INTERACTIVE_OBJ * temp;
+                            temp = FlyingOverIO; 
 
-                                if ((temp!=NULL) && temp->locname[0] )
-                                {
-                                    if (((FlyingOverIO->ioflags & IO_ITEM) && FlyingOverIO->_itemdata->equipitem)
+                            if ((temp!=NULL) && temp->locname[0] )
+                            {
+                                if (((FlyingOverIO->ioflags & IO_ITEM) && FlyingOverIO->_itemdata->equipitem)
                                         && (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
                                         >= FlyingOverIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
-                                    {
-                                        SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY,"");
-                                    }
+                                {
+                                    SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY,"");
+                                }
 
-                                    MakeLocalised(temp->locname,WILLADDSPEECH,256,-1);
+                                MakeLocalised(temp->locname,WILLADDSPEECH,256,-1);
 
-                                    if (temp->ioflags & IO_GOLD)
-                                    {
-                                        _TCHAR UText[256];
-                                        _stprintf(UText, _T("%d %s"), temp->_itemdata->price, WILLADDSPEECH);
-                                        _tcscpy(WILLADDSPEECH, UText);
-                                    }
+                                if (temp->ioflags & IO_GOLD)
+                                {
+                                    std::stringstream ss;
+                                    ss << temp->_itemdata->price << ' ' << WILLADDSPEECH;
+                                    WILLADDSPEECH = ss.str();
+                                }
 
-                                    if ((temp->poisonous>0) && (temp->poisonous_count!=0))
-                                    {
-                                        _TCHAR Text[256];
-                                        _TCHAR UText[256];
-                                        MakeLocalised("[Description_Poisoned]",Text,256,-1);
-                                        _stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH, Text, (long)temp->poisonous);
-                                        _tcscpy(WILLADDSPEECH, UText);
-                                    }
+                                if ((temp->poisonous>0) && (temp->poisonous_count!=0))
+                                {
+                                    std::stringstream ss;
+                                    std::string Text;
+                                    MakeLocalised("[Description_Poisoned]",Text,256,-1);
+                                    ss << WILLADDSPEECH << ' ' << " (" << Text << ' ' << (long)temp->poisonous << ')';
+                                    WILLADDSPEECH = ss.str();
+                                }
 
-                                    if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
-                                    {
-                                        _TCHAR Text[256];
-                                        _TCHAR UText[256];
-                                        MakeLocalised("[Description_Durability]",Text,256,-1);
-                                        _stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH, Text, temp->durability,temp->max_durability);
-                                        _tcscpy(WILLADDSPEECH, UText);
-                                    }
+                                if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
+                                {
+                                    std::string Text;
+                                    MakeLocalised("[Description_Durability]",Text,256,-1);
+                                    std::stringstream ss;
+                                    ss << WILLADDSPEECH << ' ' << Text << ' ' << setprecision(3) << temp->durability << '/' << temp->max_durability;
+                                    WILLADDSPEECH = ss.str();
+                                }
 
-                        
-                                    WILLADDSPEECHTIME = ARXTimeUL();//treat warning C4244 conversion from 'float' to 'unsigned long'
-    
-                                    bool bAddText=true;
 
-                                    if( (temp->obj)&&
-                                        (temp->obj->pbox)&&
+                                WILLADDSPEECHTIME = ARXTimeUL();//treat warning C4244 conversion from 'float' to 'unsigned long'
+
+                                bool bAddText=true;
+
+                                if( (temp->obj)&&
+                                    (temp->obj->pbox)&&
                                     (temp->obj->pbox->active == 1))
-                            {
-                                        bAddText=false;
-                                    }
+                                {
+                                    bAddText=false;
+                                }
 
-                            if (bAddText)
-                            {
+                                if (bAddText)
+                                {
 
                                         //------------ ONLY IN DEBUG
                                         ARX_CHECK_LONG( 120 * Xratio );
@@ -6792,14 +6791,14 @@ void StdDraw(float posx,float posy,D3DCOLOR color,TextureContainer * tcc,long fl
                         if (flag & 2)
                         {
                             if (Precast[PRECAST_NUM].typ >= 0)
-                                strcpy( WILLADDSPEECH, spellicons[Precast[PRECAST_NUM].typ].name.c_str());
+                                WILLADDSPEECH = spellicons[Precast[PRECAST_NUM].typ].name;
 
                             WILLADDSPEECHTIME = ARXTimeUL(); 
                         }
                         else
                         {
                             if (spells[i].type >= 0)
-                                strcpy( WILLADDSPEECH, spellicons[spells[i].type].name.c_str());
+                                WILLADDSPEECH = spellicons[spells[i].type].name;
 
                             WILLADDSPEECHTIME = ARXTimeUL(); 
                         }
