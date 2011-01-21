@@ -105,12 +105,12 @@ __inline void AddToBBox3D(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 {
 	if (io)
 	{
-		io->bbox3D.min.x = min(io->bbox3D.min.x, pos->x);
-		io->bbox3D.min.y = min(io->bbox3D.min.y, pos->y);
-		io->bbox3D.min.z = min(io->bbox3D.min.z, pos->z);
-		io->bbox3D.max.x = max(io->bbox3D.max.x, pos->x);
-		io->bbox3D.max.y = max(io->bbox3D.max.y, pos->y);
-		io->bbox3D.max.z = max(io->bbox3D.max.z, pos->z);
+		io->bbox3D.min.x = std::min(io->bbox3D.min.x, pos->x);
+		io->bbox3D.min.y = std::min(io->bbox3D.min.y, pos->y);
+		io->bbox3D.min.z = std::min(io->bbox3D.min.z, pos->z);
+		io->bbox3D.max.x = std::max(io->bbox3D.max.x, pos->x);
+		io->bbox3D.max.y = std::max(io->bbox3D.max.y, pos->y);
+		io->bbox3D.max.z = std::max(io->bbox3D.max.z, pos->z);
 	}
 }
 
@@ -385,7 +385,7 @@ static	void	Cedric_AnimateObject(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, ANIM_
 		else if (animuse->pour < 0.f) animuse->pour = 0.f;
 
 		// Now go for groups rotation/translation/scaling, And transform Linked objects by the way
-		l = min(eobj->nbgroups - 1, eanim->nb_groups - 1);
+		l = std::min(eobj->nbgroups - 1, eanim->nb_groups - 1);
 
 		for (j = l; j >= 0; j--)
 		{
@@ -583,10 +583,10 @@ int		Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DAT
 		// Updates 2D Bounding Box
 		if (outVert->vert.rhw > 0.f)
 		{
-			BBOXMIN.x = min(BBOXMIN.x, outVert->vert.sx);
-			BBOXMAX.x = max(BBOXMAX.x, outVert->vert.sx);
-			BBOXMIN.y = min(BBOXMIN.y, outVert->vert.sy);
-			BBOXMAX.y = max(BBOXMAX.y, outVert->vert.sy);
+			BBOXMIN.x = std::min(BBOXMIN.x, outVert->vert.sx);
+			BBOXMAX.x = std::max(BBOXMAX.x, outVert->vert.sx);
+			BBOXMIN.y = std::min(BBOXMIN.y, outVert->vert.sy);
+			BBOXMAX.y = std::max(BBOXMAX.y, outVert->vert.sy);
 		}
 	}
 
@@ -1751,7 +1751,7 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 			for (long i = 0 ; i < eobj->nbvertex ; i++)
 			{
 				if (eobj->vertexlist3[i].vert.rhw > 0.f)
-					MAX_ZEDE = max(eobj->vertexlist3[i].vert.sz, MAX_ZEDE);
+					MAX_ZEDE = std::max(eobj->vertexlist3[i].vert.sz, MAX_ZEDE);
 			}
 			
 		}
@@ -1763,7 +1763,7 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 		float fDist		= EEDistance3D(pos, &ACTIVECAM->pos);
 		bPassInTANDL	= false;
 
-		bBumpOnIO		= ( bALLOW_BUMP ) && ( io ) && ( io->ioflags & IO_BUMP ) && ( fDist < min( max( 0.f, ( ACTIVECAM->cdepth * fZFogStart ) - 200.f ), 600.f ) ) ? true : false ;
+		bBumpOnIO		= ( bALLOW_BUMP ) && ( io ) && ( io->ioflags & IO_BUMP ) && ( fDist < std::min( std::max( 0.f, ( ACTIVECAM->cdepth * fZFogStart ) - 200.f ), 600.f ) ) ? true : false ;
 
 		for (i = 0 ; i < eobj->nbfaces ; i++)
 		{

@@ -631,7 +631,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	}
 
 	// Recreate Groups
-	work->nbgroups = max(obj1->nbgroups, obj2->nbgroups);
+	work->nbgroups = std::max(obj1->nbgroups, obj2->nbgroups);
 	work->grouplist = (EERIE_GROUPLIST *)malloc(sizeof(EERIE_GROUPLIST) * work->nbgroups); 
 	memset(work->grouplist, 0, sizeof(EERIE_GROUPLIST)*work->nbgroups);
 

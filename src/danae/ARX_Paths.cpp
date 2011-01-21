@@ -140,11 +140,11 @@ void ARX_PATH_ComputeBB(ARX_PATH * ap)
 
 	for (long i = 0; i < ap->nb_pathways; i++)
 	{
-		ap->bbmin.x = min(ap->bbmin.x, ap->pos.x + ap->pathways[i].rpos.x);
-		ap->bbmax.x = max(ap->bbmax.x, ap->pos.x + ap->pathways[i].rpos.x);
+		ap->bbmin.x = std::min(ap->bbmin.x, ap->pos.x + ap->pathways[i].rpos.x);
+		ap->bbmax.x = std::max(ap->bbmax.x, ap->pos.x + ap->pathways[i].rpos.x);
 
-		ap->bbmin.z = min(ap->bbmin.z, ap->pos.z + ap->pathways[i].rpos.z);
-		ap->bbmax.z = max(ap->bbmax.z, ap->pos.z + ap->pathways[i].rpos.z);
+		ap->bbmin.z = std::min(ap->bbmin.z, ap->pos.z + ap->pathways[i].rpos.z);
+		ap->bbmax.z = std::max(ap->bbmax.z, ap->pos.z + ap->pathways[i].rpos.z);
 	}
 
 	if (ap->height > 0)
@@ -1383,10 +1383,10 @@ EERIEPOLY * CheckArrowPolyCollision(EERIE_3D * start, EERIE_3D * end)
 	F2L(end->z * ACTIVEBKG->Zmul, &pz);
 
 	long ix, ax, iz, az;
-	ix = max(px - 2, 0L);
-	ax = min(px + 2, ACTIVEBKG->Xsize - 1L);
-	iz = max(pz - 2, 0L);
-	az = min(pz + 2, ACTIVEBKG->Zsize - 1L);
+	ix = std::max(px - 2, 0L);
+	ax = std::min(px + 2, ACTIVEBKG->Xsize - 1L);
+	iz = std::max(pz - 2, 0L);
+	az = std::min(pz + 2, ACTIVEBKG->Zsize - 1L);
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;
 
@@ -2272,11 +2272,11 @@ bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long sour
 	long ix, iz, ax, az;
 	long n;
 	F2L(obj->pbox->radius * DIV100, &n);
-	n = min(1L, n + 1);
-	ix = max(px - n, 0L);
-	ax = min(px + n, ACTIVEBKG->Xsize - 1L);
-	iz = max(pz - n, 0L);
-	az = min(pz + n, ACTIVEBKG->Zsize - 1L);
+	n = std::min(1L, n + 1);
+	ix = std::max(px - n, 0L);
+	ax = std::min(px + n, ACTIVEBKG->Xsize - 1L);
+	iz = std::max(pz - n, 0L);
+	az = std::min(pz + n, ACTIVEBKG->Zsize - 1L);
 	LAST_COLLISION_POLY = NULL;
 	EERIEPOLY * ep;
 	EERIE_BKG_INFO * eg;
@@ -2572,7 +2572,7 @@ long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber
 
 			ComputeForces(obj->pbox->vert, obj->pbox->nb_physvert);
 
-			if (!ARX_EERIE_PHYSICS_BOX_Compute(obj, min(0.11f, timing * 10), rubber, flags, source))
+			if (!ARX_EERIE_PHYSICS_BOX_Compute(obj, std::min(0.11f, timing * 10), rubber, flags, source))
 				ret = 1;
 
 			timing -= t_threshold; 
@@ -2861,7 +2861,7 @@ void ARX_PrepareBackgroundNRMLs()
 
 				for (long ii = 0; ii < nbvert; ii++)
 				{
-					dist = max(dist, TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center));
+					dist = std::max(dist, TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center));
 				}
 
 				ep->v[0].rhw = dist;

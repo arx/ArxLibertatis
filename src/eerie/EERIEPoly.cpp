@@ -298,13 +298,13 @@ long MakeTopObjString(INTERACTIVE_OBJ * io,char * dest, unsigned int destSize)
 
 	for (i = 0; i < io->obj->nbvertex; i++)
 	{
-		boxmin.x = min(boxmin.x, io->obj->vertexlist3[i].v.x);
-		boxmin.y = min(boxmin.y, io->obj->vertexlist3[i].v.y);
-		boxmin.z = min(boxmin.z, io->obj->vertexlist3[i].v.z);
+		boxmin.x = std::min(boxmin.x, io->obj->vertexlist3[i].v.x);
+		boxmin.y = std::min(boxmin.y, io->obj->vertexlist3[i].v.y);
+		boxmin.z = std::min(boxmin.z, io->obj->vertexlist3[i].v.z);
 
-		boxmax.x = max(boxmax.x, io->obj->vertexlist3[i].v.x);
-		boxmax.y = max(boxmax.y, io->obj->vertexlist3[i].v.y);
-		boxmax.z = max(boxmax.z, io->obj->vertexlist3[i].v.z);
+		boxmax.x = std::max(boxmax.x, io->obj->vertexlist3[i].v.x);
+		boxmax.y = std::max(boxmax.y, io->obj->vertexlist3[i].v.y);
+		boxmax.z = std::max(boxmax.z, io->obj->vertexlist3[i].v.z);
 	}
 
 	boxmin.y -= 5.f;
@@ -1224,9 +1224,9 @@ D3DCOLOR GetColorz(float x, float y, float z)
 				}
 
 				dc *= 0.4f * 255.f; 
-				ffr = max(ffr, el->rgb.r * dc);
-				ffg = max(ffg, el->rgb.g * dc);
-				ffb = max(ffb, el->rgb.b * dc);
+				ffr = std::max(ffr, el->rgb.r * dc);
+				ffg = std::max(ffg, el->rgb.g * dc);
+				ffb = std::max(ffb, el->rgb.b * dc);
 			}
 		}
 	}
@@ -1277,13 +1277,13 @@ D3DCOLOR GetColorz(float x, float y, float z)
 		ffb = ffb * ratio2 + _ffb * ratio;
 	}
 
-	ffr = min(ffr, 255.f);
+	ffr = std::min(ffr, 255.f);
 	F2L(ffr, &lfr);
 
-	ffg = min(ffg, 255.f);
+	ffg = std::min(ffg, 255.f);
 	F2L(ffg, &lfg);
 
-	ffb = min(ffb, 255.f);
+	ffb = std::min(ffb, 255.f);
 	F2L(ffb, &lfb);
 	color = (0xFF000000L | ((lfr & 255) << 16) |	((lfg & 255) << 8) | (lfb & 255));
 	return color;
@@ -2023,12 +2023,12 @@ bool GetRoomCenter(long room_num, EERIE_3D * center)
 		FAST_BKG_DATA * feg;
 		feg = &ACTIVEBKG->fastdata[portals->room[room_num].epdata[lll].px][portals->room[room_num].epdata[lll].py];
 		EERIEPOLY * ep = &feg->polydata[portals->room[room_num].epdata[lll].idx];
-		bbox.min.x = min(bbox.min.x, ep->center.x);
-		bbox.min.y = min(bbox.min.y, ep->center.y);
-		bbox.min.z = min(bbox.min.z, ep->center.z);
-		bbox.max.x = max(bbox.max.x, ep->center.x);
-		bbox.max.y = max(bbox.max.y, ep->center.y);
-		bbox.max.z = max(bbox.max.z, ep->center.z);
+		bbox.min.x = std::min(bbox.min.x, ep->center.x);
+		bbox.min.y = std::min(bbox.min.y, ep->center.y);
+		bbox.min.z = std::min(bbox.min.z, ep->center.z);
+		bbox.max.x = std::max(bbox.max.x, ep->center.x);
+		bbox.max.y = std::max(bbox.max.y, ep->center.y);
+		bbox.max.z = std::max(bbox.max.z, ep->center.z);
 	}
 
 	center->x = (bbox.max.x + bbox.min.x) * DIV2;
@@ -2581,7 +2581,7 @@ void PrepareBackgroundNRMLs()
 
 				for (long ii = 0; ii < nbvert; ii++)
 				{
-					dist = max(dist, TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center));
+					dist = std::max(dist, TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center));
 				}
 
 				ep->v[0].rhw = dist;
@@ -2658,10 +2658,10 @@ void EERIEPOLY_Compute_PolyIn()
 			eg->polyin = NULL;
 			eg->nbpolyin = 0;
 
-			ii = max(i - 2, 0L);
-			ij = max(j - 2, 0L);
-			ai = min(i + 2, ACTIVEBKG->Xsize - 1L);
-			aj = min(j + 2, ACTIVEBKG->Zsize - 1L);
+			ii = std::max(i - 2, 0L);
+			ij = std::max(j - 2, 0L);
+			ai = std::min(i + 2, ACTIVEBKG->Xsize - 1L);
+			aj = std::min(j + 2, ACTIVEBKG->Zsize - 1L);
 
 			EERIE_2D_BBOX bb;
 			bb.min.x = (float)i * ACTIVEBKG->Xdiv - 10; 
@@ -2733,8 +2733,8 @@ void EERIEPOLY_Compute_PolyIn()
 			for (long kk = 0; kk < eg->nbpolyin; kk++)
 			{
 				EERIEPOLY * ep = eg->polyin[kk];
-				eg->tile_miny = min(eg->tile_miny, ep->min.y);
-				eg->tile_maxy = max(eg->tile_maxy, ep->max.y);
+				eg->tile_miny = std::min(eg->tile_miny, ep->min.y);
+				eg->tile_maxy = std::max(eg->tile_maxy, ep->max.y);
 			}
 
 			FAST_BKG_DATA * fbd = &ACTIVEBKG->fastdata[i][j];
@@ -2760,7 +2760,7 @@ float GetTileMinY(long i, long j)
 	for (long kk = 0; kk < eg->nbpolyin; kk++)
 	{
 		EERIEPOLY * ep = eg->polyin[kk];
-		minf = min(minf, ep->min.y);
+		minf = std::min(minf, ep->min.y);
 	}
 
 	return minf;
@@ -2774,7 +2774,7 @@ float GetTileMaxY(long i, long j)
 	for (long kk = 0; kk < eg->nbpolyin; kk++)
 	{
 		EERIEPOLY * ep = eg->polyin[kk];
-		maxf = max(maxf, ep->max.y);
+		maxf = std::max(maxf, ep->max.y);
 	}
 
 	return maxf;
@@ -2862,12 +2862,12 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms()
 			ep->center.y += ep->v[i].sy;
 			ep->center.z += ep->v[i].sz;
 
-			ep->min.x = min(ep->min.x, ep->v[i].sx);
-			ep->min.y = min(ep->min.y, ep->v[i].sy);
-			ep->min.z = min(ep->min.z, ep->v[i].sz);
-			ep->max.x = max(ep->max.x, ep->v[i].sx);
-			ep->max.y = max(ep->max.y, ep->v[i].sy);
-			ep->max.z = max(ep->max.z, ep->v[i].sz);
+			ep->min.x = std::min(ep->min.x, ep->v[i].sx);
+			ep->min.y = std::min(ep->min.y, ep->v[i].sy);
+			ep->min.z = std::min(ep->min.z, ep->v[i].sz);
+			ep->max.x = std::max(ep->max.x, ep->v[i].sx);
+			ep->max.y = std::max(ep->max.y, ep->v[i].sy);
+			ep->max.z = std::max(ep->max.z, ep->v[i].sz);
 		}
 
 		ep->center.x *= divide;
@@ -2877,7 +2877,7 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms()
 
 		for (long ii = 0; ii < to; ii++)
 		{
-			dist = max(dist, TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center));
+			dist = std::max(dist, TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center));
 		}
 
 		ep->norm2.x = dist;
@@ -3014,8 +3014,8 @@ void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, char * name, long px, long py, long i
 		for (int ii = 0; ii < nbvert; ii++)
 		{
 			float fDist = TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center);
-			fDistMin = min(fDistMin, fDist);
-			fDistMax = max(fDistMax, fDist);
+			fDistMin = std::min(fDistMin, fDist);
+			fDistMax = std::max(fDistMax, fDist);
 		}
 
 		fDistMin = (fDistMax + fDistMin) * .5f;
@@ -3113,20 +3113,20 @@ int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj)
 	epp->center.x = cx; 
 	epp->center.y = cy; 
 	epp->center.z = cz; 
-	epp->max.x = max(epp->v[0].sx, epp->v[1].sx);
-	epp->max.x = max(epp->max.x, epp->v[2].sx);
-	epp->min.x = min(epp->v[0].sx, epp->v[1].sx);
-	epp->min.x = min(epp->min.x, epp->v[2].sx);
+	epp->max.x = std::max(epp->v[0].sx, epp->v[1].sx);
+	epp->max.x = std::max(epp->max.x, epp->v[2].sx);
+	epp->min.x = std::min(epp->v[0].sx, epp->v[1].sx);
+	epp->min.x = std::min(epp->min.x, epp->v[2].sx);
 
-	epp->max.y = max(epp->v[0].sy, epp->v[1].sy);
-	epp->max.y = max(epp->max.y, epp->v[2].sy);
-	epp->min.y = min(epp->v[0].sy, epp->v[1].sy);
-	epp->min.y = min(epp->min.y, epp->v[2].sy);
+	epp->max.y = std::max(epp->v[0].sy, epp->v[1].sy);
+	epp->max.y = std::max(epp->max.y, epp->v[2].sy);
+	epp->min.y = std::min(epp->v[0].sy, epp->v[1].sy);
+	epp->min.y = std::min(epp->min.y, epp->v[2].sy);
 
-	epp->max.z = max(epp->v[0].sz, epp->v[1].sz);
-	epp->max.z = max(epp->max.z, epp->v[2].sz);
-	epp->min.z = min(epp->v[0].sz, epp->v[1].sz);
-	epp->min.z = min(epp->min.z, epp->v[2].sz);
+	epp->max.z = std::max(epp->v[0].sz, epp->v[1].sz);
+	epp->max.z = std::max(epp->max.z, epp->v[2].sz);
+	epp->min.z = std::min(epp->v[0].sz, epp->v[1].sz);
+	epp->min.z = std::min(epp->min.z, epp->v[2].sz);
 	epp->type = ep->type;
 	epp->type &= ~POLY_QUAD;
 
@@ -4022,14 +4022,14 @@ lasuite:
 
 					if (h != 0)
 					{
-						ep2->max.x = max(ep2->max.x, ep2->v[h].sx);
-						ep2->min.x = min(ep2->min.x, ep2->v[h].sx);
+						ep2->max.x = std::max(ep2->max.x, ep2->v[h].sx);
+						ep2->min.x = std::min(ep2->min.x, ep2->v[h].sx);
 
-						ep2->max.y = max(ep2->max.y, ep2->v[h].sy);
-						ep2->min.y = min(ep2->min.y, ep2->v[h].sy);
+						ep2->max.y = std::max(ep2->max.y, ep2->v[h].sy);
+						ep2->min.y = std::min(ep2->min.y, ep2->v[h].sy);
 
-						ep2->max.z = max(ep2->max.z, ep2->v[h].sz);
-						ep2->min.z = min(ep2->min.z, ep2->v[h].sz);
+						ep2->max.z = std::max(ep2->max.z, ep2->v[h].sz);
+						ep2->min.z = std::min(ep2->min.z, ep2->v[h].sz);
 					}
 					else
 					{
@@ -4047,7 +4047,7 @@ lasuite:
 
 				for (int h = 0; h < to; h++)
 				{
-					dist = max(dist, TRUEEEDistance3D((EERIE_3D *)&ep2->v[h], &ep2->center));
+					dist = std::max(dist, TRUEEEDistance3D((EERIE_3D *)&ep2->v[h], &ep2->center));
 				}
 
 				ep2->v[0].rhw = dist;
@@ -4950,7 +4950,7 @@ void ComputePortalVertexBuffer()
 
 		vector<SINFO_TEXTURE_VERTEX *> vTextureVertex;
 
-		int iMaxRoom = min(portals->nb_rooms, 255L);
+		int iMaxRoom = std::min(portals->nb_rooms, 255L);
 
 		if (portals->nb_rooms > 255)
 		{

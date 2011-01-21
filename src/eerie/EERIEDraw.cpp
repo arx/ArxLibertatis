@@ -250,12 +250,12 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 	ep2->center.x=(ep2->v[0].sx+ep2->v[1].sx+ep2->v[2].sx+ep2->v[3].sx)*DIV4;
 	ep2->center.y=(ep2->v[0].sy+ep2->v[1].sy+ep2->v[2].sy+ep2->v[3].sy)*DIV4;
 	ep2->center.z=(ep2->v[0].sz+ep2->v[1].sz+ep2->v[2].sz+ep2->v[3].sz)*DIV4;
-	ep2->max.x=max(ep2->max.x,ep2->v[3].sx);
-	ep2->min.x=min(ep2->min.x,ep2->v[3].sx);
-	ep2->max.y=max(ep2->max.y,ep2->v[3].sy);
-	ep2->min.y=min(ep2->min.y,ep2->v[3].sy);
-	ep2->max.z=max(ep2->max.z,ep2->v[3].sz);
-	ep2->min.z=min(ep2->min.z,ep2->v[3].sz);
+	ep2->max.x=std::max(ep2->max.x,ep2->v[3].sx);
+	ep2->min.x=std::min(ep2->min.x,ep2->v[3].sx);
+	ep2->max.y=std::max(ep2->max.y,ep2->v[3].sy);
+	ep2->min.y=std::min(ep2->min.y,ep2->v[3].sy);
+	ep2->max.z=std::max(ep2->max.z,ep2->v[3].sz);
+	ep2->min.z=std::min(ep2->min.z,ep2->v[3].sz);
 
 	ep2->norm2.x=ep->norm.x;
 	ep2->norm2.y=ep->norm.y;
@@ -289,10 +289,10 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 	F2L(cz*DIV3*ACTIVEBKG->Zmul,&posz);
 	
 	long dx,dz,fx,fz;
-	dx=max(0L,posx-1);
-	fx=min(posx+1,ACTIVEBKG->Xsize-1L);
-	dz=max(0L,posz-1);
-	fz=min(posz+1,ACTIVEBKG->Zsize-1L);
+	dx=std::max(0L,posx-1);
+	fx=std::min(posx+1,ACTIVEBKG->Xsize-1L);
+	dz=std::max(0L,posz-1);
+	fz=std::min(posz+1,ACTIVEBKG->Zsize-1L);
 	float tolerance=0.1f;
 
 	for (long kl = 0; kl < 2; kl++)
@@ -1108,7 +1108,7 @@ void EERIEDrawTrue3DLine(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3D * orgn, EERIE_3D 
 	while (m>0)
 	{
 		EERIE_3D tpos;
-		float dep=min(m,30.f);
+		float dep=std::min(m,30.f);
 		tpos.x=cpos.x+vect.x*dep;
 		tpos.y=cpos.y+vect.y*dep;
 		tpos.z=cpos.z+vect.z*dep;

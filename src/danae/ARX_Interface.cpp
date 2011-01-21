@@ -1844,7 +1844,7 @@ bool DANAE::ManageEditorControls()
                                     std::string Text;
                                     std::stringstream ss;
                                     MakeLocalised("[Description_Durability]",Text,256,-1);
-                                    ss << WILLADDSPEECH << ' ' << Text << ' ' << setprecision(3) << temp->durability << '/' << temp->max_durability;
+                                    ss << WILLADDSPEECH << ' ' << Text << ' ' << std::setprecision(3) << temp->durability << '/' << temp->max_durability;
                                     WILLADDSPEECH == ss.str();
                                 }
 
@@ -5779,7 +5779,7 @@ void DANAE::ManageKeyMouse()
                                 std::string Text;
                                 MakeLocalised("[Description_Durability]",Text,256,-1);
                                 std::stringstream ss;
-                                ss << WILLADDSPEECH << ' ' << Text << ' ' << setprecision(3) << temp->durability << '/' << temp->max_durability;
+                                ss << WILLADDSPEECH << ' ' << Text << ' ' << std::setprecision(3) << temp->durability << '/' << temp->max_durability;
                                 WILLADDSPEECH = ss.str();
                             }
 
@@ -5867,7 +5867,7 @@ void DANAE::ManageKeyMouse()
                                     std::string Text;
                                     MakeLocalised("[Description_Durability]",Text,256,-1);
                                     std::stringstream ss;
-                                    ss << WILLADDSPEECH << ' ' << Text << ' ' << setprecision(3) << temp->durability << '/' << temp->max_durability;
+                                    ss << WILLADDSPEECH << ' ' << Text << ' ' << std::setprecision(3) << temp->durability << '/' << temp->max_durability;
                                     WILLADDSPEECH = ss.str();
                                 }
 

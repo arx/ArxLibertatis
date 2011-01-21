@@ -140,7 +140,7 @@ long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, _TCHAR * _lpszUText, long duration)
 			long length = _tcslen(_lpszUText);
 
 			// We allocate memory for new speech
-			speech[i].lpszUText = (_TCHAR *) malloc(min(length + 1, 4096L) * sizeof(_TCHAR));
+			speech[i].lpszUText = (_TCHAR *) malloc(std::min(length + 1, 4096L) * sizeof(_TCHAR));
 
 			// Sets creation time
 			speech[i].timecreation = tim;
@@ -498,7 +498,7 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, char * data, long param, long mo
 		io->lastspeechflag = (short)flg;
 		aspeech[num].text.clear();
 		aspeech[num].text = _output;
-		aspeech[num].duration = max(aspeech[num].duration, (unsigned long)(strlen(_output.c_str()) + 1) * 100);
+		aspeech[num].duration = std::max(aspeech[num].duration, (unsigned long)(strlen(_output.c_str()) + 1) * 100);
 	}
 
 	char speech_label[256];

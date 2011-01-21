@@ -423,16 +423,16 @@ void ARX_Localisation_Close()
 }
 
 //-----------------------------------------------------------------------------
-long HERMES_UNICODE_GetProfileString(_TCHAR * sectionname,
-                                     _TCHAR * t_keyname,
-                                     _TCHAR * defaultstring,
-                                     _TCHAR * destination,
-                                     unsigned long    maxsize,
-                                     _TCHAR * datastream,
-                                     long    lastspeech)
+long HERMES_UNICODE_GetProfileString(   const std::string&  sectionname,
+                                        const std::string&  t_keyname,
+                                        const std::string&  defaultstring,
+                                        std::string&        destination,
+                                        unsigned long       maxsize,
+                                        const std::string&  datastream,
+                                        long                lastspeech)
 {
 
-	ZeroMemory(destination, maxsize * sizeof(_TCHAR));
+    destination.clear();
 
 	if (pHashLocalisation)
 	{
@@ -467,39 +467,32 @@ long HERMES_UNICODE_GetProfileSectionKeyCount(const _TCHAR * sectionname)
 static long ltNum = 0;
 
 //-----------------------------------------------------------------------------
-DWORD PAK_UNICODE_GetPrivateProfileString(_TCHAR * _lpszSection,
-        _TCHAR * _lpszKey,
-        _TCHAR * _lpszDefault,
-        _TCHAR * _lpszBuffer,
-        unsigned long	_lBufferSize,
-        char	* _lpszFileName)
+int PAK_UNICODE_GetPrivateProfileString(    const std::string&  _lpszSection,
+                                            const std::string&  _lpszKey,
+                                            const std::string&  _lpszDefault,
+                                            std::string&        _lpszBuffer,
+                                            unsigned long       _lBufferSize,
+                                            const std::string&  _lpszFileName )
 {
-	ltNum ++;
-	ZeroMemory(_lpszBuffer, _lBufferSize * sizeof(_TCHAR));
+    ltNum ++;
+    _lpszBuffer.clear();
 
-	if (_lpszSection[0] == _T('\0'))
-	{
-		_tcsncpy(_lpszBuffer, _lpszDefault, min((size_t)_lBufferSize, strlen(_lpszDefault)));
-		_stprintf(_lpszBuffer, _T("%s: NOT FOUND"), _lpszSection);
-		return 0;
-	}
+    if ( _lpszSection.empty() )
+    {
+        _lpszBuffer = _lpszDefault + ":NOT FOUND";
+        return 0;
+    }
 
-	_TCHAR szSection[256] = _T("");
-	_stprintf(szSection, _T("[%s]"), _lpszSection);
+    std::string szSection = "[" + _lpszSection + "]";
 
-	HERMES_UNICODE_GetProfileString(
-	    szSection,
-	    _lpszKey,
-	    _lpszDefault,
-	    _lpszBuffer,
-	    _lBufferSize,
-	    NULL,
-	    -1); //lastspeechflag
+    HERMES_UNICODE_GetProfileString( szSection,
+                                    _lpszKey,
+                                    _lpszDefault,
+                                    _lpszBuffer,
+                                    _lBufferSize,
+                                    NULL,
+                                    -1); //lastspeechflag
 
-	return 1;
+    return 1;
 }
 
-//#include <vector>
-//using std::vector;
-
-//vector<char *> mlist;

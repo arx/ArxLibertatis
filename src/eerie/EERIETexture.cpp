@@ -2066,7 +2066,7 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 
 			if ((ddsd.dwWidth > 128) || (ddsd.dwHeight > 128))
 			{
-				float fVal = ARX_CLEAN_WARN_CAST_FLOAT(max(ddsd.dwWidth, ddsd.dwHeight));
+				float fVal = ARX_CLEAN_WARN_CAST_FLOAT(std::max(ddsd.dwWidth, ddsd.dwHeight));
 				fRatio = 128.0f / fVal;
 			}
 

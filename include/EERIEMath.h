@@ -63,7 +63,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIETypes.h"
 #include "EERIEPoly.h"
 //#include "ARX_Common.h"
-
+using std::min;
+using std::max;
 #define ARX_CLEAN_WARN_CAST_UCHAR(_x) (static_cast<unsigned char>( _x ))
 
 //-----------------------------------------------------------------------------
