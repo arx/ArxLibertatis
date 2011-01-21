@@ -20,6 +20,12 @@ Rename all .pak files in the Arx Fatalis installation to lowercase and the run f
 
 `$ WINEDEBUG=-all ./arx.exe`
 
+## Debuggung
+
+Because ARX is compiled as a winelib application, normal gdb won't work. Instead use winedbg:
+
+`$ WINEDEBUG=-all winedbg ./arx.exe.so`
+
 ## Chat
 
 \#arxfatalis on irc.freenode.net
