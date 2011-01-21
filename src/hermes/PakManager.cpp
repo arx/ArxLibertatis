@@ -890,55 +890,21 @@ vector<PakDirectory *>* PakManager::ExistDirectory(char * _lpszName)
 	return pvRepertoire;
 }
 
-//-----------------------------------------------------------------------------
-bool PakManager::ExistFile(char * _lpszName)
-{
-	vector<PakReader *>::iterator i;
-
-	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '/'))
-	{
-		_lpszName++;
+bool PakManager::ExistFile(char * name) {
+	
+	if((name[0] == '\\') || (name[0] == '/')) {
+		name++;
 	}
-
-	char * pcDir = NULL;
-	char * pcDir1 = (char *)EVEF_GetDirName((unsigned char *)_lpszName);
-
-	if (pcDir1)
-	{
-		pcDir = new char[strlen((const char *)pcDir1)+2];
-		strcpy((char *)pcDir, (const char *)pcDir1);
-		strcat((char *)pcDir, "\\");
-		delete [] pcDir1;
-	}
-
-	char * pcFile = (char *)EVEF_GetFileName((unsigned char *)_lpszName);
-
-	for (i = vLoadPak.begin(); i < vLoadPak.end(); i++)
-	{
-		PakDirectory * pRep;
-
-		if ((pRep = (*i)->root->getDirectory((unsigned char *)pcDir)))
-		{
-			if (pRep->nbfiles)
-			{
-				PakFile * pTFiles = (PakFile *)pRep->filesMap->GetPtrWithString((char *)pcFile);
-
-				if (pTFiles)
-				{
-					delete [] pcFile;
-					delete [] pcDir;
-					printf("\e[1;32mFound in PAK:\e[m\t%s\n", _lpszName);
-					return true;
-				}
-			}
+	
+	for(vector<PakReader *>::iterator i = vLoadPak.begin(); i < vLoadPak.end(); i++) {
+		if((*i)->getFile(name)) {
+			printf("\e[1;32mFound in PAK:\e[m\t%s\n", name);
+			return true;
 		}
 	}
-
-	DrawDebugFile(_lpszName);
-
-	delete [] pcDir;
-	delete [] pcFile;
-	printf("\e[1;33mCan't find in PAK:\e[m\t%s\n", _lpszName);
+	
+	DrawDebugFile(name);
+	
+	printf("\e[1;33mCan't find in PAK:\e[m\t%s\n", name);
 	return false;
 }

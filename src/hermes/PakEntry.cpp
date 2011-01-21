@@ -26,6 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <hermes/HashMap.h>
 
 #include <cstring>
+#include <cassert>
 
 
 using std::size_t;
@@ -42,8 +43,9 @@ PakFile::PakFile(const char * n)
 
 	if (n)
 	{
-		this->name = new char[strlen(n)+1];
-		strcpy(this->name, n);
+		char * nc = new char[strlen(n)+1];
+		strcpy(nc, n);
+		this->name = nc;
 		return;
 	}
 }
@@ -98,37 +100,31 @@ PakDirectory::PakDirectory(PakDirectory * p, const char * n)
 //#############################################################################
 PakDirectory::~PakDirectory()
 {
-	if (this->name)
-	{
-		delete[] this->name;
+	if(name) {
+		delete[] name;
+		name = NULL;
 	}
-
-	if (filesMap)
-	{
+	
+	if(filesMap) {
 		delete filesMap;
 		filesMap = NULL;
 	}
-
+	
 	PakFile * f = files;
-
-	while (nbfiles--)
-	{
+	while(f) {
 		PakFile * fnext = f->next;
 		delete f;
 		f = fnext;
 	}
-
 	files = NULL;
-
-	PakDirectory * r = this->children;
-	unsigned int nb = this->nbsousreps;
-
-	while (nb--)
-	{
+	
+	PakDirectory * r = children;
+	while(r) {
 		PakDirectory * rnext = r->next;
 		delete r;
 		r = rnext;
 	}
+	children = NULL;
 }
 //#############################################################################
 PakDirectory * PakDirectory::addDirectory(const char * sname)
@@ -228,7 +224,8 @@ PakDirectory * PakDirectory::getDirectory(const char * sname)
 	unsigned int nbs = this->nbsousreps;
 	size_t l;
 	PakDirectory	* rf = this->children;
-
+	
+	// TODO this can be done without allocating
 	const char * fdir = GetFirstDir(sname, &l);
 	
 	while (nbs--)
@@ -255,81 +252,85 @@ PakDirectory * PakDirectory::getDirectory(const char * sname)
 	return NULL;
 }
 //#############################################################################
-PakFile * PakDirectory::addFile(const char * sname, const char * name)
-{
-	PakDirectory * r;
-
-	if (!sname)
-	{
-		r = this;
-	}
-	else
-	{
-		r = this->getDirectory(sname);
-
-		if (!r)
-		{
+PakFile * PakDirectory::addFile(const char * name) {
+	
+	PakFile * f = files;
+	while(f) {
+		if(!strcasecmp(f->name, name)) {
+			// File already exists.
 			return NULL;
 		}
-	}
-
-	PakFile * f = r->files;
-	unsigned int nb = r->nbfiles;
-
-	while (nb--)
-	{
-		if (!strcasecmp(f->name, name)) return NULL;
-
 		f = f->next;
 	}
-
+	
 	f = new PakFile(name);
-
-	if (!f) return NULL;
-
-	f->prev = NULL;
-	f->next = r->files;
-
-	if (f->next) f->next->prev = f;
-
-	r->files = f;
-	r->nbfiles++;
-
-	//on l'insert dans la table de hachage
-	if (r->filesMap)
-	{
-		r->filesMap->AddString((char *)name, (void *)f);
+	if(!f) {
+		return NULL;
 	}
-
+	
+	// Add file to hash map.
+	if(filesMap) {
+		if(!filesMap->add((char *)name, (void *)f)) {
+			delete f;
+			return NULL;
+		}
+	} else {
+		printf("file added befor initializing files map\n");
+	}
+	
+	// Link file into list.
+	f->prev = NULL;
+	f->next = files;
+	if(files) {
+		files->prev = f;
+	}
+	files = f;
+	
+	nbfiles++;
+	
 	return f;
+}
+
+static size_t getFileNamePosition(const char * dirplusname) {
+	
+	size_t i = strlen(dirplusname);
+	
+	while(i != 0) {
+		i--;
+		if(dirplusname[i] == '\\' || dirplusname[i] == '/') {
+			// Found dir seperator.
+			return i + 1;
+		}
+	}
+	
+	return i;
 }
 
 PakFile * PakDirectory::getFile(const char * name) {
 	
 	PakDirectory * d = this;
 	
-	char * tempdir = EVEF_GetDirName(name);
-	if(tempdir) {
-		char * dir = dir = new char[strlen((const char *)tempdir) + 2];
-		strcpy((char *)dir, (const char *)tempdir);
-		strcat((char *)dir, "\\");
-		delete [] tempdir;
+	// Get the directory.
+	size_t fpos = getFileNamePosition(name);
+	if(fpos) {
+		char * dir = new char[fpos + 1]; // TODO this can be done without allocating
+		memcpy(dir, name, fpos);
+		dir[fpos] = '\0';
 		d = this->getDirectory(dir);
-		delete dir;
+		delete[] dir;
 		if(!d) {
 			// directory not found
 			return NULL;
 		}
 	}
 	
-	char * file = EVEF_GetFileName(name);
-	PakFile * f = (PakFile *)d->filesMap->GetPtrWithString(file);
-	delete file;
+	assert(d->filesMap != NULL);
 	
-	return f;
+	const char * file = name + fpos;
+	return (PakFile *)d->filesMap->get(file);
 }
 
-//#############################################################################
+// TODO is this even used?
 void Kill(PakDirectory * r)
 {
 	PakFile * f = r->files;
@@ -379,69 +380,4 @@ static char * GetFirstDir(const char * dir, size_t * l)
 	fdir[*l - 1] = '\\'; // TODO use "/" seperator
 
 	return fdir;
-}
-//#############################################################################
-char * EVEF_GetDirName(const char * dirplusname)
-{
-	size_t l = strlen(dirplusname);
-
-	char * dir = new char[l+1];
-	char * dirc = dir;
-
-	if (!dir) return NULL;
-
-	strcpy(dir, dirplusname);
-
-	dirc += l;
-
-	while ((l--) &&
-	        (*dirc != '\\' && *dirc != '/'))
-	{
-		dirc--;
-	}
-
-	if (l)
-	{
-		*dirc = 0;
-	}
-	else
-	{
-		delete[] dir;
-		return NULL;
-	}
-
-	char * dirf = new char[strlen(dir)+1];
-
-	if (!dirf)
-	{
-		delete[] dir;
-		return NULL;
-	}
-
-	strcpy(dirf, dir);
-
-	delete[] dir;
-	return dirf;
-}
-//#############################################################################
-char * EVEF_GetFileName(const char * dirplusname)
-{
-	size_t l = strlen(dirplusname);
-	dirplusname += l;
-
-	while ((--l) &&
-	        (*dirplusname != '\\' && *dirplusname != '/'))
-	{
-		dirplusname--;
-	}
-
-	if (l >= 0) dirplusname++;
-
-	char * fname = new char[strlen(dirplusname)+1];
-
-	if (!fname) return NULL;
-
-	strcpy(fname, dirplusname);
-
-	return fname;
 }

@@ -75,7 +75,7 @@ public:
 	
 	bool removeDirectory(const char * dirname);
 	
-	PakFile * addFile(const char * dirname, const char * filename);
+	PakFile * addFile(const char * filename);
 	
 	PakDirectory * getDirectory(const char * dirname);
 	
@@ -86,6 +86,5 @@ public:
 };
 
 char * EVEF_GetDirName(const char * dirplusname);
-char * EVEF_GetFileName(const char * dirplusname);
 
 #endif // ARX_HERMES_PAKENTRY_H

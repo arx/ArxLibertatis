@@ -32,34 +32,30 @@ class HashMap {
 private:
 	
 	struct Entry {
-		const char * lpszName;
-		void * pMem;
-	}T_HACHAGE_DATAS;
+		const char * name;
+		void * value;
+	};
 	
-	std::size_t iSize;
-	int iMask;
-	std::size_t iFill;
+	std::size_t size;
+	std::size_t mask;
+	std::size_t fill;
 	
-	Entry * tTab;
-	
-//public:
-	int iNbCollisions;
-	int iNbNoInsert;
+	Entry * data;
 	
 private:
 	
-	int FuncH1(int);
-	int FuncH2(int);
-	int GetKey(const char * );
+	std::size_t FuncH1(std::size_t);
+	std::size_t FuncH2(std::size_t);
+	std::size_t getHash(const char * );
 	
 public:
 	
-	HashMap(std::size_t _iSize = 256);
+	HashMap(std::size_t size = 256);
 	~HashMap();
 	
-	bool AddString(const char * name, void * value = NULL);
+	bool add(const char * name, void * value = NULL);
 	
-	void * GetPtrWithString(const char * name);
+	void * get(const char * name);
 	
 };
 

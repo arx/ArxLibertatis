@@ -34,9 +34,9 @@ class PakDirectory;
 #define PACK_MAX_FREAD	(256)
 
 struct PakFileHandle {
-	bool		active;
-	int			iID;
-	int			offset;
+	bool active;
+	void * iID;
+	int offset;
 	PakFile * file;
 };
 

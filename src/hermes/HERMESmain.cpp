@@ -74,7 +74,7 @@ extern "C" {
 
 
 
-#include <blast.h>
+#include <hermes/blast.h>
 
 using namespace std;
 

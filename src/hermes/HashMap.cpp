@@ -22,10 +22,11 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+
 #include "hermes/HashMap.h"
 
-#include <cstdlib>
 #include <cstring>
+#include <cassert>
 
 #include <algorithm>
 using std::transform;
@@ -35,137 +36,108 @@ using std::string;
 
 using std::size_t;
 
-//-----------------------------------------------------------------------------
-HashMap::HashMap(size_t _iSize)
-{
-	tTab = (Entry *)malloc(_iSize * sizeof(Entry));
-	iNbCollisions = iNbNoInsert = 0;
+HashMap::HashMap(size_t sz) {
 	
-	iSize = _iSize;
-	iFill = 0;
+	data = new Entry[sz];
 	
-	for(size_t i = 0; i < _iSize; i++) {
-		tTab[i].lpszName = NULL;
+	size = sz;
+	fill = 0;
+	
+	for(size_t i = 0; i < sz; i++) {
+		data[i].name = NULL;
 	}
 	
-	iMask = iSize - 1;
+	// TODO size must be a power of two
+	mask = sz - 1;
 }
 
-//-----------------------------------------------------------------------------
-HashMap::~HashMap()
-{
-	while (iSize--)
-	{
-		if (tTab[iSize].lpszName)
-		{
-			free((void *)tTab[iSize].lpszName);
-			tTab[iSize].lpszName = NULL;
+HashMap::~HashMap() {
+	
+	while(size--) {
+		if(data[size].name) {
+			free((void *)data[size].name);
+			data[size].name = NULL;
 		}
 	}
 
-	free((void *)tTab);
+	delete[] data;
 }
 
-//-----------------------------------------------------------------------------
-bool HashMap::AddString(const char * _lpszText, void * _pMem)
-{
-	//	todo string;
-	string lpszTextLow = _lpszText;
-	transform(lpszTextLow.begin(), lpszTextLow.end(), lpszTextLow.begin(), tolower);
-
-	if (iFill >= iSize * 0.75)
-	{
-		//TO DO: recr�e toute la table!!!!
-		iSize <<= 1;
-		iMask = iSize - 1;
-		tTab = (Entry *)realloc(tTab, iSize * sizeof(Entry));
+bool HashMap::add(const char * name, void * value) {
+	
+	string lname = name;
+	transform(lname.begin(), lname.end(), lname.begin(), tolower);
+	
+	if(fill >= (size * 3) / 4) {
+		// TODO recreate the table
+		//size <<= 1;
+		//mask = size - 1;
+		//data = (Entry *)realloc(data, size * sizeof(Entry));
+		return false;
 	}
-
-	int iKey = GetKey(lpszTextLow.c_str());
-	int	iH1 = FuncH1(iKey);
-	int	iH2 = FuncH2(iKey);
-
-	int	iNbSolution = 0;
-
-	while (iNbSolution < iSize)
-	{
-		iH1 &= iMask;
-
-		if (!tTab[iH1].lpszName)
-		{
-			tTab[iH1].lpszName = strdup(lpszTextLow.c_str());
-			tTab[iH1].pMem = _pMem;
-			iFill++;
+	
+	size_t hash = getHash(lname.c_str());
+	size_t h1 = FuncH1(hash);
+	size_t h2 = FuncH2(hash);
+	
+	for(size_t i = 0; i < size; i++) {
+		
+		h1 &= mask;
+		
+		if (!data[h1].name) {
+			data[h1].name = strdup(lname.c_str());
+			data[h1].value = value;
+			assert(data[h1].name);
+			fill++;
 			return true;
 		}
-
-		iNbCollisions++;
-		iH1 += iH2;
-
-		iNbSolution++;
+		
+		h1 += h2;
 	}
-
-	iNbNoInsert++;
+	
 	return false;
 }
 
-//-----------------------------------------------------------------------------
-
-void * HashMap::GetPtrWithString(const char * _lpszText)
-{
-//	todo string;
-	string lpszTextLow = _lpszText;
-	transform(lpszTextLow.begin(), lpszTextLow.end(), lpszTextLow.begin(), tolower);
-//	char * lpszTextLow = _strlwr(_lpszText);
-
-	int iKey = GetKey(lpszTextLow.c_str());
-	int	iH1 = FuncH1(iKey);
-	int	iH2 = FuncH2(iKey);
-
-	int	iNbSolution = 0;
-
-	while (iNbSolution < iSize)
-	{
-		iH1 &= iMask;
-
-		if (tTab[iH1].lpszName)
-		{
-			if (!strcmp(lpszTextLow.c_str(), tTab[iH1].lpszName))
-			{
-				return tTab[iH1].pMem;
+void * HashMap::get(const char * name) {
+	
+	string lname = name;
+	transform(lname.begin(), lname.end(), lname.begin(), tolower);
+	
+	size_t hash = getHash(lname.c_str());
+	size_t h1 = FuncH1(hash);
+	size_t h2 = FuncH2(hash);
+	
+	for(size_t i = 0; i < size; i++) {
+		h1 &= mask;
+		
+		if(data[h1].name) {
+			if(!strcmp(lname.c_str(), data[h1].name)) {
+				return data[h1].value;
 			}
 		}
-
-		iH1 += iH2;
-		iNbSolution++;
+		
+		h1 += h2;
 	}
-
+	
 	return NULL;
 }
 
-//-----------------------------------------------------------------------------
-int HashMap::FuncH1(int _iKey)
-{
-	return _iKey;
+size_t HashMap::FuncH1(size_t hash) {
+	return hash;
 }
 
-//-----------------------------------------------------------------------------
-int	HashMap::FuncH2(int _iKey)
-{
-	return ((_iKey >> 1) | 1);
+size_t HashMap::FuncH2(size_t hash) {
+	return ((hash >> 1) | 1);
 }
 
-//-----------------------------------------------------------------------------
-int	HashMap::GetKey(const char * _lpszText)
-{
-	int iKey = 0;
-	int iLenght = strlen((const char *)_lpszText);
-	int iLenght2 = iLenght;
-
-	while (iLenght--)
-	{
-		iKey += _lpszText[iLenght] * (iLenght + 1) + _lpszText[iLenght] * iLenght2;
+size_t HashMap::getHash(const char * name) {
+	
+	size_t iKey = 0;
+	size_t len = strlen((const char *)name);
+	
+	for(size_t i = 0; i < len; i++) {
+		iKey += name[i] * (i + 1) + name[i] * len;
 	}
-
+	
 	return iKey;
 }
