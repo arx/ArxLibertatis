@@ -6241,6 +6241,7 @@ static float _AvgFrameDiff = 150.f;
 				float iCalc = step*speedfactor ;
 				ARX_CHECK_ULONG(iCalc);
 
+				assert(inter.iobj[0]->obj != NULL);
 				EERIEDrawAnimQuat(	m_pd3dDevice,	inter.iobj[0]->obj,
 					&inter.iobj[0]->animlayer[0],
 					&inter.iobj[0]->angle,&inter.iobj[0]->pos, 
@@ -6274,6 +6275,7 @@ static float _AvgFrameDiff = 150.f;
 			
 			if (inter.iobj[0]->ioflags & IO_FREEZESCRIPT) val=0;
 
+			assert(inter.iobj[0]->obj != NULL);
 			EERIEDrawAnimQuat(	m_pd3dDevice,	
 				inter.iobj[0]->obj,
 					&inter.iobj[0]->animlayer[0],
@@ -6975,6 +6977,7 @@ static float _AvgFrameDiff = 150.f;
 
 		if (inter.iobj[0]->invisibility>0.9f) inter.iobj[0]->invisibility=0.9f;
 
+		assert(inter.iobj[0]->obj != NULL);
 		EERIEDrawAnimQuat(	m_pd3dDevice,	inter.iobj[0]->obj,
 				&inter.iobj[0]->animlayer[0],
 				&inter.iobj[0]->angle,&inter.iobj[0]->pos, 0,inter.iobj[0],0,8);		
