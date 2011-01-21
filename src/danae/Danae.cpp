@@ -1853,7 +1853,8 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	char fic[256];
 	sprintf(fic,"%sGraph\\Obj3D\\Interactive\\Player\\G.ASL",Project.workingdir);
 
-	LaunchCDROMCheck(0);
+//	LaunchCDROMCheck(0);
+
 	HRESULT hr=danaeApp.Run();
 
 #ifdef ARX_STEAM
@@ -4908,6 +4909,7 @@ void ProcessAllTheo(char * path)
 	//todo finddata
 //	struct _finddata_t fd;
 	sprintf(pathh,"%s*.*",path);
+	printf("unimplemented ProcessAllTheo: %s\n", path);
 
 //	if ((idx=_findfirst(pathh,&fd))!=-1)
 //	{
