@@ -54,7 +54,7 @@ void dump(PakReader & pak, const PakDirectory * dir, string where = string()) {
 			exit(1);
 		}
 		
-		if(file->size) {
+		if(file->size && (!(file->flags & PAK_FILE_COMPRESSED) || file->uncompressedSize)) {
 			
 			size_t size;
 			char * data = (char*)pak.ReadAlloc(filename.c_str(), &size);
