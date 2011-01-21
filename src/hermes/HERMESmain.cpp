@@ -299,8 +299,7 @@ void ConsoleSend(char * dat, long level, HWND source, long flag)
 	RegCloseKey(ConsoleKey);
 }
 
-void SendConsole(char * dat, long level, long flag, HWND source)
-{
+void SendConsole(char * dat, long level, long flag, HWND source) {
 	if (GaiaWM != 0)
 	{
 		if (DebugLvl[0]) return;

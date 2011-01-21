@@ -74,8 +74,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 					     Break
 ------------------------------------------------------------*/
 
-#define appIsDebuggerPresent	IsDebuggerPresent
-#define appDebugBreak()			( appIsDebuggerPresent() ? (DebugBreak(),1) : 1 )
 #define ARXCOMMON_BUFFERSIZE	512
 #define DEBUG_INSIDEAFILE       true
 
