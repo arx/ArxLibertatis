@@ -226,7 +226,6 @@ class ArxDebug
 	private :
 		static ArxDebug * m_pInstance ;
 
-		bool				m_bConsoleInitialize	;
 		bool				m_bOpenLogFile	;
 		std::ofstream		m_fsFile ;
 		unsigned int		m_uiTabulation ;
@@ -234,9 +233,6 @@ class ArxDebug
 
 	private :
 		ArxDebug(bool _bLogIntoFile);
-		void RedirectIOToConsole();
-		bool CreateDebugConsole();
-		void CleanConsole();
 
 		void OpenTag(const char * _sTag); //Used to specify a session inside the log file
 		void CloseTag();
