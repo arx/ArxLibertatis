@@ -6275,6 +6275,10 @@ static float _AvgFrameDiff = 150.f;
 			
 			if (inter.iobj[0]->ioflags & IO_FREEZESCRIPT) val=0;
 
+			// TODO remove
+			if(!inter.iobj[0]->obj) {
+				printf("missing %s\n", inter.iobj[0]->filename);
+			}
 			assert(inter.iobj[0]->obj != NULL);
 			EERIEDrawAnimQuat(	m_pd3dDevice,	
 				inter.iobj[0]->obj,
