@@ -519,6 +519,8 @@ EERIE_3DOBJ * TheoToEerie_Fast(char * texpath, char * ficc, long flag, LPDIRECT3
 
 		return ret;
 	}
+	
+	// TODO the actual .teo files are not shipped with Arx, only the compressed?/preprocessed?/optimized? .ftl files, so if the ARX_FTL_Load call fails we can give up anyway
 
 	if (ret = GetExistingEerie(fic))
 	{

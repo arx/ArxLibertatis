@@ -575,13 +575,19 @@ long BH_MODE = 0;
 //***********************************************************************************************
 EERIE_3DOBJ * ARX_FTL_Load(char * incomplete_fic, char * complete_fic, EERIE_3DOBJ * obj)
 {
+	
+	printf("ARX_FTL_Load(%s, %s)\n", incomplete_fic, complete_fic);
+	
 	// Creates FTL file name
 	char gamefic[256];
-	sprintf(gamefic, "%sGame%s", Project.workingdir, incomplete_fic);
+	sprintf(gamefic, "%sGame%s", Project.workingdir, complete_fic); // TODO was incomplete_fic
 	SetExt(gamefic, ".FTL");
 
 	// Checks for FTL file existence
-	if (!PAK_FileExist(gamefic)) return NULL;
+	if(!PAK_FileExist(gamefic)) {
+		printf("ARX_FTL_Load: not found in PAK\n");
+		return NULL;
+	}
 
 	// Our file exist we can use it
 	unsigned char * dat;
@@ -609,7 +615,10 @@ EERIE_3DOBJ * ARX_FTL_Load(char * incomplete_fic, char * complete_fic, EERIE_3DO
 	}
 	else NoCheck = 1;
 
-	if (!compressed) return NULL;
+	if(!compressed) {
+		printf("ARX_FTL_Load: error loading from PAK\n");
+		return NULL;
+	}
 
 	long DontCheck = 0;
 
@@ -617,7 +626,10 @@ EERIE_3DOBJ * ARX_FTL_Load(char * incomplete_fic, char * complete_fic, EERIE_3DO
 
 	dat = (unsigned char *)STD_Explode(compressed, cpr_pos, &allocsize);//pos,&cpr_pos);
 
-	if (!dat) return NULL;
+	if(!dat) {
+		printf("ARX_FTL_Load: error decompressing\n");
+		return NULL;
+	}
 
 	if (!NOrelease) free(compressed);
 
@@ -628,6 +640,7 @@ EERIE_3DOBJ * ARX_FTL_Load(char * incomplete_fic, char * complete_fic, EERIE_3DO
 	// Verify FTL file Signature
 	if ((afph->ident[0] != 'F') && (afph->ident[1] != 'T') && (afph->ident[2] != 'L'))
 	{
+		printf("ARX_FTL_Load: wrong magic number\n");
 		free(dat);
 		return NULL;
 	}
@@ -635,6 +648,7 @@ EERIE_3DOBJ * ARX_FTL_Load(char * incomplete_fic, char * complete_fic, EERIE_3DO
 	// Verify FTL file version
 	if (afph->version != CURRENT_FTL_VERSION)
 	{
+		printf("ARX_FTL_Load: wrong version: %f, expected %f\n", afph->version, CURRENT_FTL_VERSION);
 		free(dat);
 		return NULL;
 	}
@@ -652,6 +666,7 @@ EERIE_3DOBJ * ARX_FTL_Load(char * incomplete_fic, char * complete_fic, EERIE_3DO
 		for (long i = 0; i < 512; i++)
 			if (check[i] != pouet[i])
 			{
+				printf("ARX_FTL_Load: checksum error\n");
 				free(dat);
 				return NULL;
 			}
@@ -817,6 +832,7 @@ EERIE_3DOBJ * ARX_FTL_Load(char * incomplete_fic, char * complete_fic, EERIE_3DO
 
 	if (!obj)
 	{
+		printf("ARX_FTL_Load: error loading data\n");
 		free(dat);
 		return NULL;
 	}
@@ -881,5 +897,6 @@ EERIE_3DOBJ * ARX_FTL_Load(char * incomplete_fic, char * complete_fic, EERIE_3DO
 	EERIEOBJECT_CreatePFaces(obj);
 	// Now we can release our cool FTL file
 	EERIE_Object_Precompute_Fast_Access(obj);
+	printf("ARX_FTL_Load: loaded\n");
 	return obj;
 }
