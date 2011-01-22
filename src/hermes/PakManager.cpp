@@ -652,7 +652,7 @@ void * PakManager::ReadAlloc(const char * filename, int * sizeRead)
 	{
 		void * pMem;
 
-		if ((pMem = (*i)->ReadAlloc(filename, size)))
+		if ((pMem = (*i)->ReadAlloc(filename, &size)))
 		{
 			printf("\e[1;32mRead from PAK (a):\e[m\t%s\n", filename);
 			*sizeRead = size;

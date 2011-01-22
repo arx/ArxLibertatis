@@ -394,13 +394,11 @@ void * PakReader::ReadAlloc(const char * name, size_t * size) {
 	
 	void * mem;
 	if(f->flags & PAK_FILE_COMPRESSED) {
-		
 		mem = malloc(f->uncompressedSize);
-		*size = (int)f->uncompressedSize;
+		*size = f->uncompressedSize;
 		if(!mem) {
 			return NULL;
 		}
-		
 		int r = blast(file, (char *)mem, f->uncompressedSize);
 		if(r) {
 			printf("\e[1;35mdecompression error (a) %d:\e[m\tfor \"%s\" in \'%s\"\n", r, f->name, pakname);
@@ -409,9 +407,8 @@ void * PakReader::ReadAlloc(const char * name, size_t * size) {
 		}
 		
 	} else {
-		
 		mem = malloc(f->size);
-		*size = (int)f->size;
+		*size = f->size;
 		if(!mem) {
 			return NULL;
 		}
