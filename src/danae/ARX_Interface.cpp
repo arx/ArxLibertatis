@@ -9422,7 +9422,7 @@ void DANAE::DrawAllInterface()
 				{
 					ARX_INTERFACE_DrawInventory(sActiveInventory);
 
-
+assert(ITC.hero_inventory != NULL);
 					float fCenterX	= DANAECENTERX + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.hero_inventory->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
 					float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
 					ARX_CHECK_INT(fCenterX);
