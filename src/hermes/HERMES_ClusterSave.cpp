@@ -221,7 +221,7 @@ bool CSaveBlock::BeginRead(void)
 	        i < iNbFiles;
 	        ++i)
 	{
-		pHachage->AddString(sInfoFile[i].pcFileName, &sInfoFile[i]);
+		pHachage->add(sInfoFile[i].pcFileName, &sInfoFile[i]);
 	}
 
 	return true;
@@ -577,7 +577,7 @@ bool CSaveBlock::Save(char * _pcFileName, void * _pDatas, int _iSize)
 //------------------------------------------------------------------------
 bool CSaveBlock::Read(char * _pcFileName, char * _pPtr)
 {
-	CInfoFile * _pInfoFile = (CInfoFile *)pHachage->GetPtrWithString(_pcFileName);
+	CInfoFile * _pInfoFile = (CInfoFile *)pHachage->get(_pcFileName);
 
 	if (!_pInfoFile)
 	{
@@ -605,7 +605,7 @@ int CSaveBlock::GetSize(char * _pcFileName)
 
 	if (pHachage)
 	{
-		_pInfoFile = (CInfoFile *)pHachage->GetPtrWithString(_pcFileName);
+		_pInfoFile = (CInfoFile *)pHachage->get(_pcFileName);
 
 		if (!_pInfoFile)
 		{
@@ -653,7 +653,7 @@ bool CSaveBlock::ExistFile(char * _pcFileName)
 
 	if (pHachage)
 	{
-		_pInfoFile = (CInfoFile *)pHachage->GetPtrWithString(_pcFileName);
+		_pInfoFile = (CInfoFile *)pHachage->get(_pcFileName);
 		return _pInfoFile ? true : false;
 	}
 	else

@@ -13,7 +13,7 @@ using std::string;
 #include <algorithm>
 using std::transform;
 
-void dump(const PakReader & pak, const PakDirectory * dir, string where = string()) {
+void dump(PakReader & pak, const PakDirectory * dir, string where = string()) {
 	
 	if(!dir) {
 		return;
@@ -35,7 +35,7 @@ void dump(const PakReader & pak, const PakDirectory * dir, string where = string
 	
 	//printf("%s", dirname.c_str());
 	
-	PakFile * file = dir->fichiers;
+	PakFile * file = dir->files;
 	while(file != NULL) {
 		
 		if(!file->name) {
@@ -48,31 +48,36 @@ void dump(const PakReader & pak, const PakDirectory * dir, string where = string
 		
 		printf("%s\n", filename.c_str());
 		
-		int size;
-		const char * data = pak.ReadAlloc(filename.c_str(), &size);
-		assert(data != NULL);
-		
 		FILE * f = fopen(filename.c_str(), "wb");
 		if(!f) {
 			printf("error opening file for writing: %s\n", filename.c_str());
 			exit(1);
 		}
 		
-		if(fwrite(data, size, 1, f) != 1) {
-			printf("error writing to file for writing: %s\n", filename.c_str());
-			exit(1);
+		if(file->size && (!(file->flags & PAK_FILE_COMPRESSED) || file->uncompressedSize)) {
+			
+			size_t size;
+			char * data = (char*)pak.ReadAlloc(filename.c_str(), &size);
+			assert(data != NULL);
+			
+			if(fwrite(data, size, 1, f) != 1) {
+				printf("error writing to file for writing: %s\n", filename.c_str());
+				fclose(f);
+				exit(1);
+			}
+			
+			free(data);
+			
 		}
 		
 		fclose(f);
 		
-		free(data);
-		
-		file = file->fnext;
+		file = file->next;
 	}
 	
-	dump(pak, dir->fils, dirname);
+	dump(pak, dir->children, dirname);
 	
-	dump(pak, dir->brothernext, where);
+	dump(pak, dir->next, where);
 	
 }
 
@@ -90,6 +95,6 @@ int main(int argc, char ** argv) {
 		return 1;
 	}
 	
-	dump(pak, pak.pRoot);
+	dump(pak, pak.root);
 	
 }

@@ -1432,12 +1432,12 @@ static void ARX_SOUND_CreateEnvironments()
 		for (iv = pvDirectory->begin(); iv < pvDirectory->end(); iv++)
 		{
 			int nb = (*iv)->nbfiles;
-			PakFile * et = (*iv)->fichiers;
+			PakFile * et = (*iv)->files;
 
 			while (nb--)
 			{
 				aalCreateEnvironment((const char *)et->name);
-				et = et->fnext;
+				et = et->next;
 			}
 		}
 

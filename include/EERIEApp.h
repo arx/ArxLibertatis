@@ -328,10 +328,7 @@ protected:
 		VOID					Cleanup3DEnvironment();
 		LPDIRECT3D7				m_pD3D;
 		void					EvictManagedTextures();
-		virtual HRESULT Render()
-		{
-			return S_OK;
-		}
+		HRESULT Render();
 		virtual HRESULT InitDeviceObjects()
 		{
 			return S_OK;

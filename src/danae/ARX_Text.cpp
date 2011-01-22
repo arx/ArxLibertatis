@@ -108,7 +108,8 @@ void FontError()
 	    NULL
 	);
 
-	MessageBox(NULL, (LPCSTR)lpMsgBuf, (LPCSTR)"Font Error", MB_OK | MB_ICONINFORMATION);
+//	MessageBox(NULL, (LPCSTR)lpMsgBuf, (LPCSTR)"Font Error", MB_OK | MB_ICONINFORMATION);
+	printf("Font Error\n");
 #endif
 }
 //-----------------------------------------------------------------------------

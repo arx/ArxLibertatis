@@ -295,19 +295,19 @@ bool WINAPI DllMain(HINSTANCE _hModule, DWORD _fdwreason, LPVOID _lpReserved)
 }
 
 //-----------------------------------------------------------------------------
-LPSTR APIFUNC SCRIPT_DEBUGGER_GetName()
+LPSTR SCRIPT_DEBUGGER_GetName()
 {
 	return "SCRIPT DEBUGGER";
 }
 
 //-----------------------------------------------------------------------------
-unsigned long APIFUNC SCRIPT_DEBUGGER_GetVersion()
+unsigned long SCRIPT_DEBUGGER_GetVersion()
 {
 	return MAKELONG(1, 0);
 }
 
 //-----------------------------------------------------------------------------
-void APIFUNC SCRIPT_DEBUGGER_CreateDialog(HWND _hWindow, ScriptDebuggerInfos & _s)
+void SCRIPT_DEBUGGER_CreateDialog(HWND _hWindow, ScriptDebuggerInfos & _s)
 {
 	if (!gbDialog)
 	{
@@ -341,7 +341,7 @@ int CALLBACK MyCompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 }
 
 //-----------------------------------------------------------------------------
-void APIFUNC SCRIPT_DEBUGGER_SetParams(ScriptDebuggerInfos & _s)
+void SCRIPT_DEBUGGER_SetParams(ScriptDebuggerInfos & _s)
 {
 	if (_s.bClear)
 	{
@@ -460,7 +460,7 @@ void APIFUNC SCRIPT_DEBUGGER_SetParams(ScriptDebuggerInfos & _s)
 }
 
 //-----------------------------------------------------------------------------
-void APIFUNC SCRIPT_DEBUGGER_GetParams(ScriptDebuggerUpdate & _pp)
+void SCRIPT_DEBUGGER_GetParams(ScriptDebuggerUpdate & _pp)
 {
 	sdu.bEvents = false;
 	int iRes = SendMessage(iInfo.hEventsEnabled, BM_GETCHECK, 0, 0);
@@ -502,13 +502,13 @@ void APIFUNC SCRIPT_DEBUGGER_GetParams(ScriptDebuggerUpdate & _pp)
 }
 
 //-----------------------------------------------------------------------------
-bool APIFUNC SCRIPT_DEBUGGER_WindowOpened()
+bool SCRIPT_DEBUGGER_WindowOpened()
 {
 	return gbDialog;
 }
 
 //-----------------------------------------------------------------------------
-void APIFUNC SCRIPT_DEBUGGER_Destroy()
+void SCRIPT_DEBUGGER_Destroy()
 {
 	if (gbDialog)
 		SendMessage(ghDialog, WM_CLOSE, 0, 0);

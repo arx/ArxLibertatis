@@ -1311,7 +1311,7 @@ retry1:
 	{
 		int nb = (*iT)->nbfiles;
 		PakFile * et;
-		et = (*iT)->fichiers;
+		et = (*iT)->files;
 
 		while (nb--)
 		{
@@ -1329,7 +1329,7 @@ retry1:
 				}
 			}
 
-			et = et->fnext;
+			et = et->next;
 		}
 	}
 
