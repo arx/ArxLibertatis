@@ -129,10 +129,10 @@ void HERMES_InitDebug();
 void SAFEstrcpy(char * dest, char * src, unsigned long max);
 
 
-void MakeUpcase_real(char * str);
-void MakeUpcase(char * str);
-unsigned char IsIn(char * strin, char * str);
-unsigned char NC_IsIn(char * strin, char * str);
+void MakeUpcase_real( std::string& str);
+void MakeUpcase( std::string& str);
+unsigned char IsIn( const std::string& strin, const std::string& str);
+unsigned char NC_IsIn( std::string strin, std::string str);
 
 bool GetWorkingDirectory(char * dest);
 
@@ -150,8 +150,8 @@ void	*FileLoadMallocZero(char *name,long * filesize=NULL);
  
  
 void GetDate(HERMES_DATE_TIME * hdt);
-void SendConsole(char * dat,long level,long flag,HWND source);
-void ForceSendConsole(char * dat,long level,long flag,HWND source);
+void SendConsole( const std::string& dat,long level,long flag,HWND source);
+void ForceSendConsole( const std::string& dat,long level,long flag,HWND source);
  
  
 void MemFree(void * adr);
@@ -159,13 +159,13 @@ bool OKBox(char * text,char *title);
 void ShowPopup( const std::string& text);
 int ShowError(char * funcname, char * message, long fatality);
 unsigned long MakeMemoryText(char * text);
-bool CreateFullPath(const char * path);
+bool CreateFullPath( const std::string& path );
 
 // Strings Funcs
 char *StringCopy(char * destination,char * source,long maxsize);
 bool HERMESFolderSelector(char *file_name,char *title);
 void RemoveName(char *str);
-char * GetName(char *str);
+std::string GetName( const std::string& str);
 char * GetExt(char *str);
 void SetExt( std::string& str, const std::string& new_ext );
 void AddToName(char *str,char *cat);

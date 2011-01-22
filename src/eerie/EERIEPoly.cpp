@@ -2785,28 +2785,28 @@ float GetTileMaxY(long i, long j)
 
 #define TYPE_PORTAL	1
 #define TYPE_ROOM	2
-bool GetNameInfo(char * name1, long * type, long * val1, long * val2)
+bool GetNameInfo( const std::string name1, long& type, long& val1, long& val2)
 {
-	char name[256];
-	strcpy(name, name1);
+	std::string name;
+	name = name1;
 	MakeUpcase(name);
 
 	if (name[0] == 'R')
 	{
 		if (name[1] == '_')
 		{
-			*type = TYPE_ROOM;
-			*val1 = atoi(name + 2);
-			*val2 = 0;
+			type = TYPE_ROOM;
+			val1 = atoi(name.c_str() + 2);
+			val2 = 0;
 			return true;
 		}
 
 		if ((name[1] == 'O') && (name[2] == 'O')
 		        && (name[3] == 'M') && (name[4] == '_'))
 		{
-			*type = TYPE_ROOM;
-			*val1 = atoi(name + 5);
-			*val2 = 0;
+			type = TYPE_ROOM;
+			val1 = atoi(name.c_str() + 5);
+			val2 = 0;
 			return true;
 		}
 	}
@@ -2815,18 +2815,20 @@ bool GetNameInfo(char * name1, long * type, long * val1, long * val2)
 	        && (name[3] == 'T') && (name[4] == 'A') && (name[5] == 'L')
 	        && (name[6] == '_'))
 	{
-		*type = TYPE_PORTAL;
+		type = TYPE_PORTAL;
 		char temp[16];
-		strcpy(temp, name + 7);
+		strcpy(temp, name.c_str() + 7);
 		temp[3] = 0;
-		*val1 = atoi(temp);
-		*val2 = atoi(name + 11);
+		val1 = atoi(temp);
+		val2 = atoi(name.c_str() + 11);
 		return true;
 	}
 
 	return false;
 }
+
 extern long COMPUTE_PORTALS;
+
 void EERIE_PORTAL_Blend_Portals_And_Rooms()
 {
 	if (!COMPUTE_PORTALS) return;
@@ -3124,46 +3126,45 @@ int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj)
 	epp->min.y = std::min(epp->min.y, epp->v[2].sy);
 
 	epp->max.z = std::max(epp->v[0].sz, epp->v[1].sz);
-	epp->max.z = std::max(epp->max.z, epp->v[2].sz);
-	epp->min.z = std::min(epp->v[0].sz, epp->v[1].sz);
-	epp->min.z = std::min(epp->min.z, epp->v[2].sz);
-	epp->type = ep->type;
-	epp->type &= ~POLY_QUAD;
+    epp->max.z = std::max(epp->max.z, epp->v[2].sz);
+    epp->min.z = std::min(epp->v[0].sz, epp->v[1].sz);
+    epp->min.z = std::min(epp->min.z, epp->v[2].sz);
+    epp->type = ep->type;
+    epp->type &= ~POLY_QUAD;
 
-	CalcFaceNormal(epp, epp->v);
-	epp->area = Distance3D((epp->v[0].sx + epp->v[1].sx) * DIV2,
-	                       (epp->v[0].sy + epp->v[1].sy) * DIV2,
-	                       (epp->v[0].sz + epp->v[1].sz) * DIV2,
-	                       epp->v[2].sx, epp->v[2].sy, epp->v[2].sz)
-	            * Distance3D(epp->v[0].sx, epp->v[0].sy, epp->v[0].sz,
-	                         epp->v[1].sx, epp->v[1].sy, epp->v[1].sz) * DIV2;
-	
-	ARX_CHECK_SHORT(val1);
+    CalcFaceNormal(epp, epp->v);
+    epp->area = Distance3D((epp->v[0].sx + epp->v[1].sx) * DIV2,
+                           (epp->v[0].sy + epp->v[1].sy) * DIV2,
+                           (epp->v[0].sz + epp->v[1].sz) * DIV2,
+                           epp->v[2].sx, epp->v[2].sy, epp->v[2].sz)
+                * Distance3D(epp->v[0].sx, epp->v[0].sy, epp->v[0].sz,
+                             epp->v[1].sx, epp->v[1].sy, epp->v[1].sz) * DIV2;
 
-	if (type == TYPE_ROOM)
-		epp->room = ARX_CLEAN_WARN_CAST_SHORT(val1);
-	else
-		epp->room = -1;
+    ARX_CHECK_SHORT(val1);
 
-	eg->nbpoly++;
-	
-	eg->treat = 0;
+    if (type == TYPE_ROOM)
+        epp->room = ARX_CLEAN_WARN_CAST_SHORT(val1);
+    else
+        epp->room = -1;
 
-	if (ep != NULL)
-		if (ep->tex != NULL)
-			if (ep->tex->m_texName)
-				if (ep->tex->m_texName[0] != 0)
-				{
-					if (IsIn(ep->tex->m_texName, "STONE"))		ep->type |= POLY_STONE;
-					else if (IsIn(ep->tex->m_texName, "PIERRE"))	ep->type |= POLY_STONE;
-					else if (IsIn(ep->tex->m_texName, "WOOD"))	ep->type |= POLY_WOOD;
-					else if (IsIn(ep->tex->m_texName, "BOIS"))	ep->type |= POLY_STONE;
-					else if (IsIn(ep->tex->m_texName, "GAVIER"))	ep->type |= POLY_GRAVEL;
-					else if (IsIn(ep->tex->m_texName, "EARTH"))	ep->type |= POLY_EARTH;
-				}
+    eg->nbpoly++;
 
-	EERIE_PORTAL_Poly_Add(epp, eobj->name, posx, posz, eg->nbpoly - 1);
-	return 1;
+    eg->treat = 0;
+
+    if (ep != NULL)
+        if (ep->tex != NULL)
+            if ( !ep->tex->m_texName.empty() )
+            {
+                if ( ep->tex->m_texName.find("STONE") )		ep->type |= POLY_STONE;
+                else if ( ep->tex->m_texName.find("PIERRE") )	ep->type |= POLY_STONE;
+                else if ( ep->tex->m_texName.find("WOOD"))	ep->type |= POLY_WOOD;
+                else if ( ep->tex->m_texName.find("BOIS"))	ep->type |= POLY_STONE;
+                else if ( ep->tex->m_texName.find("GAVIER"))	ep->type |= POLY_GRAVEL;
+                else if ( ep->tex->m_texName.find("EARTH"))    ep->type |= POLY_EARTH;
+            }
+
+    EERIE_PORTAL_Poly_Add(epp, eobj->name.c_str(), posx, posz, eg->nbpoly - 1);
+    return 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -3763,6 +3764,7 @@ bool FastSceneLoad(char * partial_path)
 	long count = 0;
 	long idx;
 	char fic[256];
+	std::string path2;
 
 	sprintf(fic, "%sfast.fts", path.c_str());
 
@@ -3784,7 +3786,6 @@ bool FastSceneLoad(char * partial_path)
 
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
-	std::string path2;
 
 	if (uh->count == 0) goto lasuite;
 
@@ -3807,23 +3808,23 @@ bool FastSceneLoad(char * partial_path)
 //		_findclose(idx);
 //	}
 
-	count = 0;
+    count = 0;
 
-	while (count < uh->count)
-	{
-		UNIQUE_HEADER2 * uh2 = (UNIQUE_HEADER2 *)(dat + pos);
-		pos += sizeof(UNIQUE_HEADER2);
-		char check[512];
-		char * check2 = (char *)(dat + pos);
-		pos += 512;
-		path2 = Project.workingdir + partial_path + uh2->path;
-		SetExt(path2, ".scn");
+    while (count < uh->count)
+    {
+        UNIQUE_HEADER2 * uh2 = (UNIQUE_HEADER2 *)(dat + pos);
+        pos += sizeof(UNIQUE_HEADER2);
+        char check[512];
+        char * check2 = (char *)(dat + pos);
+        pos += 512;
+        path2 = Project.workingdir + partial_path + uh2->path;
+        SetExt(path2, ".scn");
 
-		if (PAK_FileExist(path2))
-		{
-			if (!NOCHECKSUM)
-			{
-				HERMES_CreateFileCheck(path2, check, 512, UNIQUE_VERSION);
+        if (PAK_FileExist(path2))
+        {
+            if (!NOCHECKSUM)
+            {
+                    HERMES_CreateFileCheck(path2.c_str(), check, 512, UNIQUE_VERSION);
 
 				for (long jj = 0; jj < 512; jj++)
 					if (check[jj] != check2[jj]) goto release;
@@ -3896,7 +3897,7 @@ lasuite:
 	{
 		FAST_TEXTURE_CONTAINER * ftc = (FAST_TEXTURE_CONTAINER *)(dat + pos);
 		char fic[256];
-		sprintf(fic, "%s%s", Project.workingdir, ftc->fic);
+		sprintf(fic, "%s%s", Project.workingdir.c_str(), ftc->fic);
 		ftc->temp = D3DTextr_CreateTextureFromFile(fic, Project.workingdir, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
 
 		if ((ftc->temp) && (GDevice) && (ftc->temp->m_pddsSurface == NULL)) ftc->temp->Restore(GDevice);
@@ -4264,8 +4265,8 @@ release:
 }
 bool FastSceneSave(char * partial_path, EERIE_MULTI3DSCENE * ms)
 {
-	char path[256];
-	sprintf(path, "%sGame\\%s", Project.workingdir, partial_path);
+	std::string path;
+	path, Project.workingdir + "Game\\" + partial_path;
 
 	if (!CreateFullPath(path)) return false;
 
@@ -4316,16 +4317,16 @@ bool FastSceneSave(char * partial_path, EERIE_MULTI3DSCENE * ms)
 
 	memset(dat, 0, allocsize);
 	UNIQUE_HEADER * uh = (UNIQUE_HEADER *)dat;
-	strcpy(uh->path, path);
+	strcpy(uh->path, path.c_str());
 	uh->version = UNIQUE_VERSION;
 	pos += sizeof(UNIQUE_HEADER);
 
-	char path2[256];
+	std::string path2;
 	char path3[256];
 
 	char * text;
 
-	sprintf(path2, "%s%s*.scn", Project.workingdir, partial_path);
+	path2 = Project.workingdir + partial_path + "*.scn";
 
 //	todo: find
 //	struct _finddata_t fd;
@@ -4367,7 +4368,7 @@ bool FastSceneSave(char * partial_path, EERIE_MULTI3DSCENE * ms)
 
 	uh->count = count;
 	char fic[256];
-	sprintf(fic, "%sfast.fts", path);
+	sprintf(fic, "%sfast.fts", path.c_str());
 	long compressedstart = pos;
 
 	FAST_SCENE_HEADER * fsh = (FAST_SCENE_HEADER *)(dat + pos);
@@ -4424,7 +4425,7 @@ bool FastSceneSave(char * partial_path, EERIE_MULTI3DSCENE * ms)
 					FAST_TEXTURE_CONTAINER * ftc;
 					ftc = (FAST_TEXTURE_CONTAINER *)(dat + pos);
 					ftc->tc = ep->tex;
-					strcpy(ftc->fic, ep->tex->m_texName);
+					strcpy(ftc->fic, ep->tex->m_texName.c_str());
 					ftc->temp = NULL;
 					fsh->nb_textures++;
 					pos += sizeof(FAST_TEXTURE_CONTAINER);
@@ -4644,7 +4645,7 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms)
 	char ftemp[256];
 	strcpy(ftemp, LastLoadedScene);
 	RemoveName(ftemp);
-	sprintf(fic, "%s%s", Project.workingdir, LastLoadedScene);
+	sprintf(fic, "%s%s", Project.workingdir.c_str(), LastLoadedScene);
 
 	// First Release Any Portal Data
 	EERIE_PORTAL_Release();
@@ -4796,7 +4797,7 @@ void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 
 	if (COMPUTE_PORTALS)
 	{
-		if (GetNameInfo(eobj->name, &type, &val1, &val2))
+		if (GetNameInfo(eobj->name.c_str(), &type, &val1, &val2))
 		{
 			if (type == TYPE_PORTAL)
 			{
@@ -4822,7 +4823,7 @@ void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 					else break;
 				}
 
-				if (i > 0) EERIE_PORTAL_Poly_Add(&epp, eobj->name, -1, -1, -1);
+				if (i > 0) EERIE_PORTAL_Poly_Add(&epp, eobj->name.c_str(), -1, -1, -1);
 
 				return;
 			}
@@ -4830,7 +4831,7 @@ void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 	}
 	else
 	{
-		if (GetNameInfo(eobj->name, &type, &val1, &val2))
+		if (GetNameInfo(eobj->name.c_str(), &type, &val1, &val2))
 		{
 			if (type == TYPE_PORTAL)
 			{

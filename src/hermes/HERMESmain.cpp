@@ -102,7 +102,7 @@ void SAFEstrcpy(char * dest, char * src, unsigned long max)
 }
 
 
-unsigned char IsIn(char * strin, char * str)
+unsigned char IsIn( char * strin, char * str)
 {
     char * tmp;
     tmp = strstr(strin, str);
@@ -112,18 +112,13 @@ unsigned char IsIn(char * strin, char * str)
     return 1;
 }
 
-unsigned char NC_IsIn(char * strin, char * str)
+unsigned char NC_IsIn( std::string t1, std::string t2 )
 {
-    char * tmp;
-    char t1[4096];
-    char t2[4096];
-    strcpy(t1, strin);
-    strcpy(t2, str);
     MakeUpcase(t1);
     MakeUpcase(t2);
-    tmp = strstr(t1, t2);
+    size_t tmp = t1.find(t2);
 
-    if (tmp == NULL) return 0;
+    if (tmp == string::npos ) return 0;
 
     return 1;
 }
@@ -262,8 +257,10 @@ void HERMES_InitDebug()
 	DEBUGG = 0;
 }
 
-void MakeUpcase(char * str)
-{/* TODO 
+void MakeUpcase( std::string& str )
+{
+    std::transform( str.begin(), str.end(), str.begin(), ::toupper );
+/* TODO 
 	while(*str != '\0') {
 		// islower is needed as the are read-only strings passed that are already in upper case?
 		if(islower(*str)) {
@@ -273,33 +270,35 @@ void MakeUpcase(char * str)
 	}*/
 }
 
-void MakeUpcase_real(char * str)
+void MakeUpcase_real( std::string& str )
 {
+    std::transform( str.begin(), str.end(), str.begin(), ::toupper );
+/*
 	while(*str != '\0') {
 		// islower is needed as the are read-only strings passed that are already in upper case?
 		if(islower(*str)) {
 			*str = toupper(*str);
 		}
 		str++;
-	}
+	}*/
 }
 
 HKEY    ConsoleKey = NULL;
 #define CONSOLEKEY_KEY     TEXT("Software\\Arkane_Studios\\ASMODEE")
 
-void ConsoleSend(char * dat, long level, HWND source, long flag)
+void ConsoleSend( const std::string& dat, long level, HWND source, long flag)
 {
 	RegCreateKeyEx(HKEY_CURRENT_USER, CONSOLEKEY_KEY, 0, NULL,
 	               REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL,
 	               &ConsoleKey, NULL);
-	WriteRegKey(ConsoleKey, "ConsInfo", dat);
+	WriteRegKey(ConsoleKey, "ConsInfo", dat.c_str() );
 	WriteRegKeyValue(ConsoleKey, "ConsHwnd", (DWORD)source);
 	WriteRegKeyValue(ConsoleKey, "ConsLevel", (DWORD)level);
 	WriteRegKeyValue(ConsoleKey, "ConsFlag", (DWORD)flag);
 	RegCloseKey(ConsoleKey);
 }
 
-void SendConsole(char * dat, long level, long flag, HWND source) {
+void SendConsole( const std::string& dat, long level, long flag, HWND source) {
 	if (GaiaWM != 0)
 	{
 		if (DebugLvl[0]) return;
@@ -315,8 +314,10 @@ void SendConsole(char * dat, long level, long flag, HWND source) {
 		}
 	}
 }
+
 long FINAL_COMMERCIAL_DEMO_bis = 1;
-void ForceSendConsole(char * dat, long level, long flag, HWND source)
+
+void ForceSendConsole( const std::string& dat, long level, long flag, HWND source)
 {
 	if (!FINAL_COMMERCIAL_DEMO_bis)
 	{
@@ -891,8 +892,8 @@ long DirectoryExist(char * name)
 	return 1;
 }
 
-bool CreateFullPath(const char * path) {
-	printf("CreateFullPath(%s)", path);
+bool CreateFullPath( const std::string& path ) {
+	printf("CreateFullPath(%s)", path.c_str() );
 	
 	char drive[_MAX_DRIVE];
 	char dir[_MAX_DIR];

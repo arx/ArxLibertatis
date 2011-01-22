@@ -65,11 +65,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //-----------------------------------------------------------------------------
 typedef struct
 {
-	EERIE_LIGHT	light;
-	EERIE_3D	pos;
-	long		dl;
-	short		type;
-	short		exist;
+    EERIE_LIGHT	light;
+    EERIE_3D	pos;
+    long		dl;
+    short		type;
+    short		exist;
 } ACTIONSTRUCT;
 
 //-----------------------------------------------------------------------------

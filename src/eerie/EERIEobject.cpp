@@ -107,7 +107,7 @@ long GetGroupOriginByName(EERIE_3DOBJ * eobj, char * text)
 
 	for (long i = 0; i < eobj->nbgroups; i++)
 	{
-		if (!strcasecmp(text, eobj->grouplist[i].name)) return eobj->grouplist[i].origin;
+		if ( !strcasecmp(text, eobj->grouplist[i].name.c_str() )) return eobj->grouplist[i].origin;
 	}
 
 	return -1;
@@ -119,7 +119,7 @@ long GetActionPointIdx(EERIE_3DOBJ * eobj, char * text)
 
 	for (long i = 0; i < eobj->nbaction; i++)
 	{
-		if (!strcasecmp(text, eobj->actionlist[i].name)) return eobj->actionlist[i].idx;
+		if (!strcasecmp(text, eobj->actionlist[i].name.c_str() )) return eobj->actionlist[i].idx;
 	}
 
 	return -1;
@@ -950,7 +950,7 @@ retry4:
 		memcpy(eerie->grouplist[i].indexes, adr + pos, ptg3011->nb_index * sizeof(long));
 		pos += ptg3011->nb_index * sizeof(long);
 		memcpy(groupname, adr + pos, 256);
-		strcpy(eerie->grouplist[i].name, groupname);
+		eerie->grouplist[i].name = groupname;
 		eerie->grouplist[i].siz = 0.f;
 
 		for (long o = 0; o < ptg3011->nb_index; o++)
@@ -1024,7 +1024,7 @@ retry4:
 		eerie->actionlist[i].act = ptap->action;
 		eerie->actionlist[i].sfx = ptap->num_sfx;
 		eerie->actionlist[i].idx = ptap->vert_index;
-		strcpy(eerie->actionlist[i].name, ptap->name);
+		eerie->actionlist[i].name = ptap->name;
 		MakeUpcase(eerie->actionlist[i].name);
 	}
 
@@ -1636,7 +1636,7 @@ retry4:
 			seerie->nbobj--;
 			id--;
 		}
-		else strcpy(seerie->objs[id]->name, ptoh->object_name);
+		else seerie->objs[id]->name = ptoh->object_name;
 
 		id++;
 
@@ -2049,13 +2049,13 @@ retry4:
 	nouvo->cub.zmin = obj->cub.zmin;
 	nouvo->drawflags = obj->drawflags;
 
-	if ((obj->file) && (obj->file[0]))
-		strcpy(nouvo->file, obj->file);
+	if ( !obj->file.empty() )
+		nouvo->file = obj->file;
 
 	nouvo->ident = obj->ident;
 
-	if ((obj->name) && (obj->name[0]))
-		strcpy(nouvo->name, obj->name);
+	if ( !obj->name.empty() )
+		nouvo->name = obj->name;
 
 	nouvo->origin = obj->origin;
 	Vector_Copy(&nouvo->point0, &obj->point0);
@@ -2266,7 +2266,7 @@ long EERIE_OBJECT_GetGroup(EERIE_3DOBJ * obj, char * groupname)
 
 	for (long i = 0; i < obj->nbgroups; i++)
 	{
-		if (!strcasecmp(obj->grouplist[i].name, groupname)) return i;
+		if (!strcasecmp(obj->grouplist[i].name.c_str(), groupname)) return i;
 	}
 
 	return -1;
@@ -2666,7 +2666,7 @@ retry:
 	}
 
 	Clear3DObj(eerie);
-	strcpy(eerie->file, fic);
+	eerie->file = fic;
 
 	if (pth->type_write == 0)
 	{
@@ -2974,7 +2974,7 @@ void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret)
 
 		if ((fic = fopen(logfic.c_str(), "a+")) != NULL)
 		{
-			fprintf(fic, "NOT CENTERED %s\n", ret->file);
+			fprintf(fic, "NOT CENTERED %s\n", ret->file.c_str());
 			fclose(fic);
 		}
 	}

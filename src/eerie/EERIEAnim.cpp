@@ -354,9 +354,9 @@ long EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah,char * path)
 }
 
 //-----------------------------------------------------------------------------
-ANIM_HANDLE * EERIE_ANIMMANAGER_Load(char * path)
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load( std::string& path)
 {
-	ANIM_HANDLE * handl=EERIE_ANIMMANAGER_GetHandle(path);
+	ANIM_HANDLE * handl=EERIE_ANIMMANAGER_GetHandle(path.c_str());
 
 	if (handl) 
 	{
@@ -378,22 +378,22 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load(char * path)
 				animations[i].anims=(EERIE_ANIM **)malloc(sizeof(EERIE_ANIM *));
 				animations[i].sizes=(long *)malloc(sizeof(long));
 
-				animations[i].anims[0]=TheaToEerie(adr,FileSize,path,TEA_PLAYER_SAMPLES);
+				animations[i].anims[0]=TheaToEerie(adr,FileSize,path.c_str(),TEA_PLAYER_SAMPLES);
 				animations[i].sizes[0]=FileSize;
 				animations[i].alt_nb=1;
 				free(adr);
 
 				if (animations[i].anims[0]==NULL) return NULL;			
 
-				strcpy(animations[i].path,path);				
+				strcpy(animations[i].path,path.c_str());				
 				animations[i].locks=1;
 				SetExt(path,"");
-				sprintf(path2,"%s%d.tea",path,pathcount);
+				sprintf(path2,"%s%d.tea",path.c_str(),pathcount);
 
 				while (EERIE_ANIMMANAGER_AddAltAnim(&animations[i],path2))
 				{
 					pathcount++;
-					sprintf(path2,"%s%d.tea",path,pathcount);					
+					sprintf(path2,"%s%d.tea",path.c_str(),pathcount);					
 				}
 
 				return &animations[i];

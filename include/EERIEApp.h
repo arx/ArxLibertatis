@@ -227,13 +227,13 @@ typedef struct
 
 typedef struct
 {
-	HWND		hWnd;
-	long		CreationToolBar;
-	long		ToolBarNb;
-	LPCTBBUTTON Buttons;
-	long		Bitmap;
-	char*		String;
-	long		Type;
+    HWND		hWnd;
+    long		CreationToolBar;
+    long		ToolBarNb;
+    LPCTBBUTTON Buttons;
+    long		Bitmap;
+    char*		String;
+    long		Type;
 } EERIETOOLBAR;
 
 typedef struct
