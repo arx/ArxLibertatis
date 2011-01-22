@@ -219,7 +219,6 @@ typedef struct
 	EERIE_RGBB	torch;
 	long		interpolatemouse;
 	long		vsync;
-	char		workingdir[256];
 	char		localisationpath[256];
 } PROJECT;
 
@@ -404,7 +403,6 @@ void	ShowPopup(char * text);
 int		ShowError(char * funcname, char * message, long fatality);
 
 void	ExitApp(int v);
-char*	MakeDir(char * tex, char * tex2);
 void	CalcFPS(bool reset = false);
 
 void	SetZBias(const LPDIRECT3DDEVICE7, int);

@@ -841,8 +841,8 @@ long PhysicalDrawBkgVLine(EERIE_3D * orgn,EERIE_3D * dest);
 long AnchorData_GetNearest(EERIE_3D *pos,EERIE_CYLINDER * cyl);
 
 // FAST SAVE LOAD
-bool FastSceneLoad(char * path);
-bool FastSceneSave(char * path,EERIE_MULTI3DSCENE * ms);
+bool FastSceneLoad(const char * path);
+bool FastSceneSave(const char * path,EERIE_MULTI3DSCENE * ms);
 bool CheckUniqueIdent(char * pathh);
 bool CreateUniqueIdent(char * pathh);
 
@@ -995,8 +995,8 @@ void LaunchLightThread(long minx=0,long minz=0,long maxx=99999,long maxz=99999);
 void EERIE_ANIMMANAGER_Init();
 void EERIE_ANIMMANAGER_PurgeUnused();
 void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim);
-ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(char * path);
-ANIM_HANDLE * EERIE_ANIMMANAGER_Load(char * path);
+ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const char * path);
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const char * path);
 void BkgAddShadowPoly(EERIEPOLY * ep,EERIEPOLY * father);
 
 EERIEPOLY * GetMinNextPoly(long i,long j,EERIEPOLY * ep);

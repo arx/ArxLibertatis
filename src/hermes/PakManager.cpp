@@ -64,6 +64,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <HERMESMain.h>
 #include "ARX_Common.h"
 
+#include <stddef.h>
+
 using std::vector;
 
 bool bForceInPack = true;
@@ -71,42 +73,7 @@ long CURRENT_LOADMODE = LOAD_PACK_THEN_TRUEFILE;
 
 PakManager * pPakManager = NULL;
 
-char PAK_WORKDIR[256];
-unsigned long g_pak_workdir_len = 0;
-char NOT_FOUND_FIC[256];
-long WRITE_NOT_FOUND = 0;
-
-void PAK_NotFoundInit(char * fich)
-{
-	strcpy(NOT_FOUND_FIC, fich);
-	FILE * fic;
-
-	if ((fic = fopen(NOT_FOUND_FIC, "w")) != NULL)
-	{
-		WRITE_NOT_FOUND = 1;
-		fclose(fic);
-	}
-	else WRITE_NOT_FOUND = 0;
-}
-
-bool PAK_NotFound(char * fich)
-{
-	FILE * fic;
-
-	if (WRITE_NOT_FOUND)
-	{
-		if ((fic = fopen(NOT_FOUND_FIC, "a+")) != NULL)
-		{
-			fprintf(fic, "Not Found %s\n", fich);
-			fclose(fic);
-			return true;
-		}
-	}
-
-	return false;
-}
-
-void PAK_SetLoadMode(long mode, char * pakfile, char * workdir)
+void PAK_SetLoadMode(long mode, const char * pakfile)
 {
 
 	mode = LOAD_TRUEFILE_THEN_PACK;
@@ -122,17 +89,6 @@ void PAK_SetLoadMode(long mode, char * pakfile, char * workdir)
 		pPakManager->AddPak(pakfile);
 	}
 
-	if (workdir)
-	{
-		strcpy(PAK_WORKDIR, workdir);
-		g_pak_workdir_len = strlen(PAK_WORKDIR);
-	}
-	else
-	{
-		strcpy(PAK_WORKDIR, "");
-		g_pak_workdir_len = 0;
-	}
-
 }
 
 void PAK_Close()
@@ -141,72 +97,54 @@ void PAK_Close()
 
 	pPakManager = NULL;
 }
- 
-void * _PAK_FileLoadMallocZero(char * name, long * SizeLoadMalloc)
+
+// TODO size_t argument
+void * _PAK_FileLoadMallocZero(const char * name, long * sizeRead)
 {
 
-	if (g_pak_workdir_len >= strlen(name))
+	int size;
+	size = pPakManager->GetSize(name);
+
+	if (size > 0)
 	{
-		if (SizeLoadMalloc) *SizeLoadMalloc = 0;
+		char * mem = (char *)malloc(size + 2);
 
-		return NULL;
-	}
+		pPakManager->Read(name, mem);
 
-	int iTaille;
-	iTaille = pPakManager->GetSize(name + g_pak_workdir_len);
+		mem[size] = 0;
+		mem[size + 1] = 0;
 
-	if (iTaille > 0)
-	{
-		char * mem = (char *)malloc(iTaille + 2);
-
-		pPakManager->Read(name + g_pak_workdir_len, mem);
-
-		mem[iTaille]   = 0;
-		mem[iTaille+1] = 0;
-
-		if (SizeLoadMalloc) *SizeLoadMalloc = iTaille + 2;
+		if (sizeRead) *sizeRead = size + 2;
 
 		return mem;
 	}
 	else
 	{
-		if (SizeLoadMalloc) *SizeLoadMalloc = iTaille;
+		if (sizeRead) *sizeRead = size;
 
 		return NULL;
 	}
 }
-void * _PAK_FileLoadMalloc(char * name, long * SizeLoadMalloc)
+
+// TODO size_t for argument
+void * _PAK_FileLoadMalloc(const char * name, long * sizeRead)
 {
 
-	if (g_pak_workdir_len >= strlen(name))
-	{
-		if (SizeLoadMalloc) *SizeLoadMalloc = 0;
+	int size = 0;
+	void * mem = pPakManager->ReadAlloc(name, &size);
 
-		return NULL;
-	}
-
-	int iTaille = 0;
-	void * mem = pPakManager->ReadAlloc(name + g_pak_workdir_len, &iTaille);
-
-	if ((SizeLoadMalloc) && mem) *SizeLoadMalloc = iTaille;
-
-	if (mem == NULL) PAK_NotFound(name);
+	if (sizeRead && mem) *sizeRead = size;
 
 	return mem;
 }
-long _PAK_DirectoryExist(char * name)
-{
+
+long _PAK_DirectoryExist(const char * name) {
 
 	long leng = strlen(name);
 
-	if (ARX_CAST_LONG(g_pak_workdir_len) >= leng)
-	{
-		return false;
-	}
-
 	char temp[256];
-	strcpy(temp, name + g_pak_workdir_len);
-	long l = leng - g_pak_workdir_len ;
+	strcpy(temp, name); // TODO this copy can be avoided
+	long l = leng ;
 	if (temp[l] != '\\' && temp[l] != '/') strcat(temp, "\\");
 
 	vector<PakDirectory *> pvRepertoire(pPakManager->ExistDirectory(temp));
@@ -219,8 +157,7 @@ long _PAK_DirectoryExist(char * name)
 	return true;
 }
 
-long PAK_DirectoryExist(char * name)
-{
+long PAK_DirectoryExist(const char * name) {
 
 	long ret = 0;
 
@@ -259,27 +196,13 @@ long PAK_DirectoryExist(char * name)
 	return ret;
 }
 
-long _PAK_FileExist(char * name)
-{
-
-	if (g_pak_workdir_len >= strlen(name))
-	{
-		return false;
-	}
-
-	char path[256];
-	strcpy(path, name + g_pak_workdir_len);
-
-	if (pPakManager->ExistFile(path)) return 1;
-
-	PAK_NotFound(name);
-	return 0;
+// TODO return should be bool
+long _PAK_FileExist(const char * name) {
+	return pPakManager->ExistFile(name) ? 1 : 0;
 }
 
 
-
-
-long PAK_FileExist(char * name)
+long PAK_FileExist(const char * name)
 {
 	long ret = 0;
 
@@ -318,7 +241,7 @@ long PAK_FileExist(char * name)
 	return ret;
 }
 
-void * PAK_FileLoadMalloc(char * name, long * SizeLoadMalloc)
+void * PAK_FileLoadMalloc(const char * name, long * SizeLoadMalloc)
 {
 
 	void * ret = NULL;
@@ -359,7 +282,7 @@ void * PAK_FileLoadMalloc(char * name, long * SizeLoadMalloc)
 	return ret;
 }
 
-void * PAK_FileLoadMallocZero(char * name, long * SizeLoadMalloc)
+void * PAK_FileLoadMallocZero(const char * name, long * SizeLoadMalloc)
 {
 
 	void * ret = NULL;
@@ -444,13 +367,7 @@ long PAK_ftell(FILE * stream)
 
 FILE * _PAK_fopen(const char * filename, const char * mode)
 {
-
-	if (g_pak_workdir_len >= strlen(filename))
-	{
-		return NULL;
-	}
-
-	return (FILE *)pPakManager->fOpen((char *)(filename + g_pak_workdir_len));
+	return (FILE *)pPakManager->fOpen(filename);
 }
 
 FILE * PAK_fopen(const char * filename, const char * mode)
@@ -643,10 +560,13 @@ PakManager::~PakManager()
 }
 
 //-----------------------------------------------------------------------------
-bool PakManager::AddPak(char * _lpszName)
+bool PakManager::AddPak(const char * pakname)
 {
 	PakReader * pLoadPak = new PakReader();
-	pLoadPak->Open(_lpszName);
+	if(!pLoadPak->Open(pakname)) {
+		delete pLoadPak;
+		return false;
+	}
 
 	if (!pLoadPak->root)
 	{
@@ -659,7 +579,7 @@ bool PakManager::AddPak(char * _lpszName)
 }
 
 //-----------------------------------------------------------------------------
-bool PakManager::RemovePak(char * _lpszName)
+bool PakManager::RemovePak(const char * _lpszName)
 {
 	vector<PakReader *>::iterator i;
 
@@ -682,116 +602,110 @@ bool PakManager::RemovePak(char * _lpszName)
 }
 
 //-----------------------------------------------------------------------------
-static void DrawDebugFile(char * _lpszName)
-{
-	return;
-
-}
-
-//-----------------------------------------------------------------------------
-bool PakManager::Read(char * _lpszName, void * _pMem)
+bool PakManager::Read(const char * filename, void * buffer)
 {
 	vector<PakReader *>::iterator i;
 
-	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '/'))
+	if ((filename[0] == '\\') ||
+	        (filename[0] == '/'))
 	{
-		_lpszName++;
+		filename++;
 	}
 
 	for (i = vLoadPak.begin(); i < vLoadPak.end(); i++)
 	{
-		if ((*i)->Read(_lpszName, _pMem))
+		if ((*i)->Read(filename, buffer))
 		{
-			printf("\e[1;32mRead from PAK:\e[m\t%s\n", _lpszName);
+			printf("\e[1;32mRead from PAK:\e[m\t%s\n", filename);
 			return true;
 		}
 	}
 
-	DrawDebugFile(_lpszName);
-
-	printf("\e[1;33mCan't read from PAK:\e[m\t%s\n", _lpszName);
+	printf("\e[1;33mCan't read from PAK:\e[m\t%s\n", filename);
 	return false;
 }
 
 //-----------------------------------------------------------------------------
-void * PakManager::ReadAlloc(char * _lpszName, int * _piTaille)
+void * PakManager::ReadAlloc(const char * filename, int * sizeRead)
 {
 	vector<PakReader *>::iterator i;
 
-	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '/'))
+	if ((filename[0] == '\\') ||
+	        (filename[0] == '/'))
 	{
-		_lpszName++;
+		filename++;
 	}
+	
+	// TODO change parameter type
+	size_t size = *sizeRead;
 
 	for (i = vLoadPak.begin(); i < vLoadPak.end(); i++)
 	{
 		void * pMem;
 
-		if ((pMem = (*i)->ReadAlloc(_lpszName, _piTaille)))
+		if ((pMem = (*i)->ReadAlloc(filename, &size)))
 		{
-			printf("\e[1;32mRead from PAK (a):\e[m\t%s\n", _lpszName);
+			printf("\e[1;32mRead from PAK (a):\e[m\t%s\n", filename);
+			*sizeRead = size;
 			return pMem;
 		}
 	}
 
-	DrawDebugFile(_lpszName);
-	printf("\e[1;33mRead from PAK (a):\e[m\t%s\n", _lpszName);
+	printf("\e[1;33mRead from PAK (a):\e[m\t%s\n", filename);
+	*sizeRead = size;
 	return NULL;
 }
 
 //-----------------------------------------------------------------------------
-int PakManager::GetSize(char * _lpszName)
+// return should be size_t?
+int PakManager::GetSize(const char * filename)
 {
 	vector<PakReader *>::iterator i;
 
-	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '/'))
+	if ((filename[0] == '\\') ||
+	        (filename[0] == '/'))
 	{
-		_lpszName++;
+		filename++;
 	}
 
 	for (i = vLoadPak.begin(); i < vLoadPak.end(); i++)
 	{
 		int iTaille;
 
-		if ((iTaille = (*i)->GetSize(_lpszName)) > 0)
+		if ((iTaille = (*i)->GetSize(filename)) > 0)
 		{
-			printf("\e[1;32mGot size in PAK:\e[m\t%s (%d)\n", _lpszName, iTaille);
+			printf("\e[1;32mGot size in PAK:\e[m\t%s (%d)\n", filename, iTaille);
 			return iTaille;
 		}
 	}
 
-	DrawDebugFile(_lpszName);
-	printf("\e[1;33mCan't get size in PAK:\e[m\t%s\n", _lpszName);
+	printf("\e[1;33mCan't get size in PAK:\e[m\t%s\n", filename);
 	return -1;
 }
 
 //-----------------------------------------------------------------------------
-PakFileHandle * PakManager::fOpen(char * _lpszName)
+PakFileHandle * PakManager::fOpen(const char * filename)
 {
 	vector<PakReader *>::iterator i;
 
-	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '/'))
+	if ((filename[0] == '\\') ||
+	        (filename[0] == '/'))
 	{
-		_lpszName++;
+		filename++;
 	}
 
 	for (i = vLoadPak.begin(); i < vLoadPak.end(); i++)
 	{
 		PakFileHandle * pPakFile;
 
-		if ((pPakFile = (*i)->fOpen((const char *)_lpszName, "rb")))
+		if ((pPakFile = (*i)->fOpen(filename, "rb")))
 		{
-			printf("\e[1;32mOpened from PAK:\e[m\t%s\n", _lpszName);
+			printf("\e[1;32mOpened from PAK:\e[m\t%s\n", filename);
 			return pPakFile;
 		}
 	}
 
-	DrawDebugFile(_lpszName);
-	printf("\e[1;33mCan't open from PAK:\e[m\t%s\n", _lpszName);
+	printf("\e[1;33mCan't open from PAK:\e[m\t%s\n", filename);
 	return NULL;
 }
 
@@ -865,14 +779,14 @@ int PakManager::fTell(PakFileHandle * _pPackFile)
 }
 
 //-----------------------------------------------------------------------------
-vector<PakDirectory *>* PakManager::ExistDirectory(char * _lpszName)
+vector<PakDirectory *>* PakManager::ExistDirectory(const char * name)
 {
 	vector<PakReader *>::iterator i;
 
-	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '/'))
+	if ((name[0] == '\\') ||
+	        (name[0] == '/'))
 	{
-		_lpszName++;
+		name++;
 	}
 
 	vector<PakDirectory *> *pvRepertoire = new vector<PakDirectory *>;
@@ -882,7 +796,7 @@ vector<PakDirectory *>* PakManager::ExistDirectory(char * _lpszName)
 	{
 		PakDirectory * pRep;
 
-		if ((pRep = (*i)->root->getDirectory((unsigned char *)_lpszName)))
+		if ((pRep = (*i)->root->getDirectory(name)))
 		{
 			pvRepertoire->insert(pvRepertoire->end(), pRep);
 		}
@@ -890,7 +804,7 @@ vector<PakDirectory *>* PakManager::ExistDirectory(char * _lpszName)
 	return pvRepertoire;
 }
 
-bool PakManager::ExistFile(char * name) {
+bool PakManager::ExistFile(const char * name) {
 	
 	if((name[0] == '\\') || (name[0] == '/')) {
 		name++;
@@ -902,8 +816,6 @@ bool PakManager::ExistFile(char * name) {
 			return true;
 		}
 	}
-	
-	DrawDebugFile(name);
 	
 	printf("\e[1;33mCan't find in PAK:\e[m\t%s\n", name);
 	return false;

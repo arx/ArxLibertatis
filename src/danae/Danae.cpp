@@ -814,7 +814,6 @@ void InitializeDanae()
 	snapshotdata.ysize=480;
 	snapshotdata.flag=1;
 	
-	char temp[512];
 	char temp2[512];
 	EERIEMathPrecalc();
 	ARX_MISSILES_ClearAll();
@@ -1042,18 +1041,15 @@ void InitializeDanae()
 	}
 	else if (temp2[0]!=0)
 	{
-		char ftemp[256];
-		strcpy(ftemp,temp2);
-		MakeDir(temp,temp2);
 
-		if (FastSceneLoad(ftemp))
+		if (FastSceneLoad(temp2))
 		{
 			FASTmse=1;
 			goto suite;
 		}
 
 		ARX_SOUND_PlayCinematic("Editor_Humiliation.wav");
-		mse=PAK_MultiSceneToEerie(temp);				
+		mse=PAK_MultiSceneToEerie(temp2);				
 	suite:
 		;
 		EERIEPOLY_Compute_PolyIn();
@@ -1355,16 +1351,6 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 						PROCESS_LEVELS=0;
 						PROCESS_ONLY_ONE_LEVEL=-1;
 
-						if ((IsIn(param[posflags],"d")) || (IsIn(param[posflags],"D")))
-						{
-							parampos++;
-							DONT_CHANGE_WORKINGDIR=1;
-
-							if (PAK_DirectoryExist(param[parampos]))
-								File_Standardize(param[parampos],Project.workingdir);
-							else exit(0);
-						}
-
 						if ((IsIn(param[posflags],"u")) || (IsIn(param[posflags],"U")))
 						{
 							parampos++;
@@ -1422,96 +1408,67 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 
 	NOCHECKSUM=0;
 
-	if (!MOULINEX)
-	{
-		if (FINAL_RELEASE)
-		{
-			//if (!GetWorkingDirectory(Project.workingdir))
-			//{
-			//	MessageBox(NULL,"Unable to Find Game Info\nPlease Reinstall ARX Fatalis","Error",MB_ICONEXCLAMATION | MB_OK);
-			//	exit(0);
-			//}
-			strcpy(Project.workingdir, "");
-
-			//File_Standardize(Project.workingdir,Project.workingdir);
-			Dbg_str("Got Install Path");
-		}
-		else 
-		{
-			//Dbg_str("Not Installed");
-			//Danae_Registry_Read("LastWorkingDir",Project.workingdir,"c:\\arx\\",256);		
-		}
-	}
-
 	if ((!MOULINEX) && FINAL_RELEASE)
 	{
 		Dbg_str("FINAL RELEASE");
-		char pakfile[256];
 
 		if(pStringMod[0])
 		{
-			sprintf(pakfile,"%s%s",Project.workingdir,pStringMod);
-			Dbg_str(pakfile);
+			Dbg_str(pStringMod);
 
-			if (FileExist(pakfile))
+			if (FileExist(pStringMod))
 			{
 				Dbg_str("FileExist");
-				PAK_SetLoadMode(LOAD_PACK,pakfile);
+				PAK_SetLoadMode(LOAD_PACK, pStringMod);
 				Dbg_str("LoadMode OK");
 			
 			}
 		}
-
-		sprintf(pakfile,"%sdata.pak",Project.workingdir);
-		Dbg_str(pakfile);
-
-		if (FileExist(pakfile))
-		{
+		
+		const char PAK_DATA[] = "data.pak";
+		Dbg_str(PAK_DATA);
+		if(FileExist(PAK_DATA)) {
 			NOBUILDMAP=1;
 			NOCHECKSUM=1;
 			Dbg_str("FileExist");
-			PAK_SetLoadMode(LOAD_PACK,pakfile);
+			PAK_SetLoadMode(LOAD_PACK, PAK_DATA);
 			Dbg_str("LoadMode OK");
 			
 		}
 		else
 		{
 			Dbg_str("Exit");
-			MessageBox(NULL, "Unable to Find Data File\nPlease Reinstall ARX Fatalis", "ARX Fatalis - Error", MB_ICONEXCLAMATION | MB_OK);
-			exit(0); 
+			printf("Unable to Find Data File\n");
+			exit(0);
 		}
-
+		
+		const char PAK_LOC[] = "loc.pak";
 		Dbg_str("LocPAK");
-		sprintf(pakfile, "%sloc.pak", Project.workingdir);
-
-		if( FileExist( pakfile ) )
+		if(FileExist(PAK_LOC))
 		{
-			PAK_SetLoadMode(LOAD_PACK, pakfile,Project.workingdir);
+			PAK_SetLoadMode(LOAD_PACK, PAK_LOC);
 		}
 		else
 		{
-			sprintf(pakfile, "%sloc_default.pak", Project.workingdir);
-
-			if( FileExist( pakfile ) )
+			const char PAK_LOC_DEFAULT[] = "loc_default.pak";
+			if(FileExist(PAK_LOC_DEFAULT))
 			{
-				PAK_SetLoadMode(LOAD_PACK, pakfile,Project.workingdir);
+				PAK_SetLoadMode(LOAD_PACK, PAK_LOC_DEFAULT);
 			}
 			else
 			{
-				MessageBox(NULL, "Unable to Find Data File\nPlease Reinstall ARX Fatalis", "ARX Fatalis - Error", MB_ICONEXCLAMATION | MB_OK);
+				printf("Unable to Find Localization File\n");
 				exit(0);
 			}
 		}
 
 		Dbg_str("data2PAK");
-
-		sprintf(pakfile, "%sdata2.pak", Project.workingdir);
-
-		if (FileExist(pakfile))
-			PAK_SetLoadMode(LOAD_PACK, pakfile,Project.workingdir);
+		const char PAK_DATA2[] = "data2.pak";
+		if(FileExist(PAK_DATA2))
+			PAK_SetLoadMode(LOAD_PACK, PAK_DATA2);
 		else
 		{
-			MessageBox(NULL, "Unable to Find Data File\nPlease Reinstall ARX Fatalis", "ARX Fatalis - Error", MB_ICONEXCLAMATION | MB_OK);
+			printf("Unable to Find Aux Data File\n");
 			exit(0);
 		}
 	}
@@ -1519,11 +1476,6 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	{
 		Dbg_str("TRUEFILE LM");
 		PAK_SetLoadMode(LOAD_TRUEFILE,"");
-		char fich[256];
-		sprintf(fich,"%sPAK_NOT_FOUND.txt",Project.workingdir);
-		PAK_NotFoundInit(fich);
-		sprintf(fich,"%sERROR_Log.txt",Project.workingdir);
-		ERROR_Log_Init(fich);
 	}
 
 	//delete current for clean save.........
@@ -1533,7 +1485,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 			uiNum<20;
 			++uiNum)
 	{
-		sprintf(txttemp,"%sSave%s\\Cur%04d\\",Project.workingdir,LOCAL_SAVENAME,uiNum);
+		sprintf(txttemp,"Save%s\\Cur%04d\\",LOCAL_SAVENAME,uiNum);
 
 		if (DirectoryExist(txttemp))
 			KillAllDirectory(txttemp);
@@ -1654,8 +1606,6 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	if (FINAL_RELEASE)
 	{
 		LaunchDemo=1;
-
-		File_Standardize(Project.workingdir, Project.workingdir);
 		Project.TextureSize=0;
 		Project.TextureBits=16;
 		Project.bits=32;
@@ -1671,15 +1621,10 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	else
 	{
 		Project.demo=LEVELDEMO2;
-
-		if (!DONT_CHANGE_WORKINGDIR)
-			Danae_Registry_Read("LastWorkingDir",Project.workingdir,"c:\\arx\\",256);		
 	}
 
 	Dbg_str("After Popup");
 	atexit(ClearGame);
-	char pakfile[256];
-	sprintf(pakfile,"%sdata.pak",Project.workingdir);
 
 	if (LaunchDemo)
 	{
@@ -1770,15 +1715,18 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	Dbg_str("DInput Init");
 	ARX_INPUT_Init_Game_Impulses();
 	pGetInfoDirectInput = new CDirectInput();
-	char szPath[256];
-	sprintf( szPath, "%scfg.ini", Project.workingdir );
+	
+	const char RESOURCE_CONFIG[] = "cfg.ini";
+	const char RESOURCE_CONFIG_DEFAULT[] = "cfg_default.ini";
+	
+	char * config_path = RESOURCE_CONFIG;
 
-	if( !FileExist( szPath ) )
+	if(!FileExist(RESOURCE_CONFIG))
 	{
-		sprintf(szPath, "%scfg_default.ini", Project.workingdir );
+		config_path = RESOURCE_CONFIG_DEFAULT;
 	}
 
-	pMenuConfig=new CMenuConfig(szPath);
+	pMenuConfig=new CMenuConfig(config_path);
 	pMenuConfig->ReadAll();
 	Dbg_str("DInput Init Success");
 
@@ -1828,12 +1776,12 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	char tex[512];
 
 	if (GAME_EDITOR)
-		sprintf(tex,"DANAE Project - %s",Project.workingdir);
+		sprintf(tex,"DANAE Project");
 	else 
 		sprintf(tex,"ARX Fatalis");
 
 	if (MOULINEX)
-		sprintf(tex,"MOULINEX - %s",Project.workingdir);
+		sprintf(tex,"MOULINEX");
 
 	SetWindowTitle(danaeApp.m_hWnd,tex);
 	
@@ -1850,8 +1798,6 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	Dbg_str("InitializeDanae Success");
 	Dbg_str("DanaeApp RUN");
 	danaeApp.m_bReady = true;
-	char fic[256];
-	sprintf(fic,"%sGraph\\Obj3D\\Interactive\\Player\\G.ASL",Project.workingdir);
 
 //	LaunchCDROMCheck(0);
 
@@ -2704,17 +2650,18 @@ void LaunchWaitingCine()
 	}
 
 	DANAE_KillCinematic();
-	char temp1[256];
+	
+	const char RESOURCE_GRAPH_INTERFACE_ILLUSTRATIONS[] = "Graph\\interface\\illustrations\\";
+	
 	char temp2[256];
-	sprintf(temp1,"%sGraph\\interface\\illustrations\\",Project.workingdir);
-	strcpy(temp2,temp1);
+	strcpy(temp2,RESOURCE_GRAPH_INTERFACE_ILLUSTRATIONS);
 	strcat(temp2,WILL_LAUNCH_CINE);
 
 	if (PAK_FileExist(temp2))
 	{			
 		ControlCinematique->OneTimeSceneReInit();						
 
-		if (LoadProject(ControlCinematique,temp1,WILL_LAUNCH_CINE))
+		if (LoadProject(ControlCinematique,RESOURCE_GRAPH_INTERFACE_ILLUSTRATIONS,WILL_LAUNCH_CINE))
 		{				
 
 			if (CINE_PRELOAD) PLAY_LOADED_CINEMATIC=0;
@@ -4902,14 +4849,14 @@ void ManageQuakeFX()
 	}
 }
 
-void ProcessAllTheo(char * path)
+void ProcessAllTheo()
 {
-	long idx;
-	char pathh[512];
+	//long idx;
+	//char pathh[512];
 	//todo finddata
 //	struct _finddata_t fd;
-	sprintf(pathh,"%s*.*",path);
-	printf("unimplemented ProcessAllTheo: %s\n", path);
+	//sprintf(pathh,"*.*");
+	printf("unimplemented ProcessAllTheo\n");
 
 //	if ((idx=_findfirst(pathh,&fd))!=-1)
 //	{
@@ -4933,7 +4880,7 @@ void ProcessAllTheo(char * path)
 //						char path2[512];
 //						char texpath[512];
 //						sprintf(path2,"%s%s",path,fd.name);
-//						sprintf(texpath,"%sGraph\\Obj3D\\Textures\\",Project.workingdir);
+//						sprintf(texpath,"Graph\\Obj3D\\Textures\\");
 //						EERIE_3DOBJ * temp;
 //						char tx[1024];
 //						sprintf(tx,"Moulinex %s (%s - %s)",fd.name,path2,texpath);
@@ -4968,7 +4915,7 @@ void LaunchMoulinex()
 		sprintf(tx,"Moulinex THEO convertALL START________________");
 		ForceSendConsole(tx,1,0,NULL);
 		_ShowText(tx);
-		ProcessAllTheo(Project.workingdir);
+		ProcessAllTheo();
 		sprintf(tx,"Moulinex THEO convertALL END__________________");
 		ForceSendConsole(tx,1,0,NULL);
 		_ShowText(tx);
@@ -5022,7 +4969,7 @@ void LaunchMoulinex()
 			lastlvl=MOULINEX-2;
 
 		GetLevelNameByNum(lastlvl,tx);
-		sprintf(saveto,"%s\\Graph\\Levels\\Level%s\\level%s.dlf",Project.workingdir,tx,tx);
+		sprintf(saveto,"Graph\\Levels\\Level%s\\level%s.dlf",tx,tx);
 
 		if (FileExist(saveto))
 		{
@@ -5071,7 +5018,7 @@ void LaunchMoulinex()
 
 		if (strcasecmp(tx,"NONE"))
 		{
-			sprintf(loadfrom,"%s\\Graph\\Levels\\Level%s\\level%s.dlf",Project.workingdir,tx,tx);
+			sprintf(loadfrom,"Graph\\Levels\\Level%s\\level%s.dlf",tx,tx);
 
 			if (FileExist(loadfrom))
 			{
@@ -5105,7 +5052,7 @@ void DANAE_StartNewQuest()
 	OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
 	LoadLevelScreen(GDevice,1);
 	char loadfrom[256];
-	sprintf(loadfrom,"%sGraph\\Levels\\Level1\\Level1.dlf",Project.workingdir);
+	sprintf(loadfrom,"Graph\\Levels\\Level1\\Level1.dlf");
 	DONT_ERASE_PLAYER=1;							
 	DanaeClearAll();
 	PROGRESS_BAR_COUNT+=2.f;
@@ -5166,7 +5113,7 @@ bool DANAE_ManageSplashThings()
 		{
 			// Playing the videos in startupvids.txt
 			char startupvidsPath[256];
-			sprintf(startupvidsPath,"%smisc\\startupvids.txt",Project.workingdir);			
+			sprintf(startupvidsPath,"misc\\startupvids.txt");
 
 			if ((FileExist(startupvidsPath)) && (SPLASH_START == 0))
 			{
@@ -5178,7 +5125,7 @@ bool DANAE_ManageSplashThings()
 				while(stStartupVids.good())
 				{
 					stStartupVids.getline(vidToPlay,64);					
-					sprintf(vidToPlayPath,"%smisc\\%s",Project.workingdir,vidToPlay);					
+					sprintf(vidToPlayPath,"misc\\%s",vidToPlay);					
 					bSkipVideoIntro = false; // We need to reset this else we'll skip all vids w/ one key pressed
 
 					if (FileExist(vidToPlayPath)) 
@@ -5254,13 +5201,13 @@ bool DANAE_ManageSplashThings()
 
 			if (CEDRIC_VERSION)
 			{
-				sprintf(loadfrom,"%sGraph\\Levels\\LevelDemo2\\levelDemo2.dlf",Project.workingdir);
+				sprintf(loadfrom,"Graph\\Levels\\LevelDemo2\\levelDemo2.dlf");
 				LoadLevelScreen(GDevice,29);	
 			}
 			else
 			{
 				REFUSE_GAME_RETURN=1;
-				sprintf(loadfrom,"%sGraph\\Levels\\Level10\\level10.dlf",Project.workingdir);
+				sprintf(loadfrom,"Graph\\Levels\\Level10\\level10.dlf");
 				OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
 				PROGRESS_BAR_TOTAL = 108;
 				LoadLevelScreen(GDevice,10);	
@@ -5582,10 +5529,8 @@ void DemoFileCheck()
 
 	if (!FINAL_COMMERCIAL_DEMO)
 	{
-		char fic[256];
-		sprintf(fic,"%sGraph\\Obj3D\\Interactive\\NPC\\Undead_Liche\\Undead_Liche.asl",Project.workingdir);
-
-		if (!PAK_FileExist(fic))
+		const char RESOURCE_UNDEAD_LICH = "Graph\\Obj3D\\Interactive\\NPC\\Undead_Liche\\Undead_Liche.asl";
+		if (!PAK_FileExist(RESOURCE_UNDEAD_LICH))
 		{
 			FINAL_COMMERCIAL_DEMO=1;
 		}
@@ -5917,11 +5862,11 @@ static float _AvgFrameDiff = 150.f;
 		NEED_INTRO_LAUNCH=0;
 		char loadfrom[256];
 		REFUSE_GAME_RETURN=1;
-		sprintf(loadfrom,"%sGraph\\Levels\\Level10\\level10.dlf",Project.workingdir);
+		const char RESOURCE_LEVEL_10 = "Graph\\Levels\\Level10\\level10.dlf";
 		OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
 		PROGRESS_BAR_TOTAL = 108;
 		LoadLevelScreen(GDevice,10);	
-		DanaeLoadLevel(GDevice,loadfrom);
+		DanaeLoadLevel(GDevice,RESOURCE_LEVEL_10);
 		FORBID_SAVE=0;
 		FirstFrame=1;
 		SPLASH_THINGS_STAGE=0;
@@ -8136,28 +8081,13 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				HANDLE	hDrop;
 				long		number;
 				char temp[512];
-				char texx[512];
 				hDrop = (HANDLE) wParam;
 				number=DragQueryFile((HDROP)hDrop,0,temp,512); 
 
 				if (number > 0)
 				{
-					strcpy(texx,temp);
-					strcpy(temp,Project.workingdir);
-					MakeUpcase(temp);
-					MakeUpcase(texx);
 
-					if (!specialstrcmp(texx, temp))
-					{
-						strcpy(ItemToBeAdded,texx);
-					}
-					else 
-					{
-						char warn[256];
-						sprintf(warn,"Warning: You CANNOT add an object not coming from Project Path (%s)",Project.workingdir);
-						ShowPopup(warn);
-						strcpy(ItemToBeAdded,"");
-					}
+						strcpy(ItemToBeAdded,temp);
 				}
 
 				DragFinish((HDROP)hDrop);
@@ -8634,15 +8564,9 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 					ARX_TIME_UnPause();
 				break;
 				case DANAE_MENU_PROJECTPATH:
-					char tex[512];
-					HERMESFolderSelector(Project.workingdir,"Choose Working Folder");
-					sprintf(tex,"DANAE Project - %s",Project.workingdir);
-					Danae_Registry_Write("LastWorkingDir",Project.workingdir);
-					SetWindowTitle(hWnd,tex);
-					char tteexx[512];
-					strcpy(tteexx,Project.workingdir);
-					strcat(tteexx,"GRAPH\\LEVELS\\");
-					chdir(tteexx);
+					HERMESFolderSelector("","Choose Working Folder");
+					SetWindowTitle(hWnd,"DANAE Project");
+					chdir("GRAPH\\LEVELS\\");
 					break;
 				case DANAE_MENU_NEWLEVEL:
 					ARX_TIME_Pause();
