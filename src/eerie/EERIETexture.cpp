@@ -536,7 +536,6 @@ void ReloadAllTextures(LPDIRECT3DDEVICE7 pd3dDevice)
 //-----------------------------------------------------------------------------
 TextureContainer::TextureContainer(const char * strName, DWORD dwStage, DWORD dwFlags)
 {
-	MakeUpcase(strName);
 	
 	strcpy(m_texName, strName);
 
@@ -3431,8 +3430,6 @@ TextureContainer * D3DTextr_CreateTextureFromFile(const char * strName, DWORD dw
 		return ReturnValue;
 
 	// Check first to see if the texture is already loaded
-	MakeUpcase(strName);
-
 	if (NULL != (LastTextureContainer = FindTexture(strName)))
 	{
 		if (DEBUGSYS)
