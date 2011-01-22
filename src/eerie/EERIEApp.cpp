@@ -959,10 +959,6 @@ HRESULT CD3DApplication::UpdateGamma()
 	return 0;
 }
 
-HRESULT CD3DApplication::Render() {
-	return S_OK;
-}
-
 //*************************************************************************************
 // Render3DEnvironment()
 // Draws the scene.
