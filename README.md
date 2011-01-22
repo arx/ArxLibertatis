@@ -14,19 +14,23 @@ Wine and 32bit is only a temporary solution.
 
 `$ make`
 
-## Ubuntu / Debian (and other distros with default libjpeg 6)
+## Ubuntu / Debian (and other distros with default libjpeg version 6)
 
 If you get following build error:
-error: conflicting declaration ‘typedef long int INT32’
+
+/usr/include/jmorecfg.h:161: error: conflicting declaration ‘typedef long int INT32’
 
 `$ sudo aptitude install libjpeg8-dev`
 
-Some hints from cybersphinx on getting the 32bit libjpeg8 library 
+For 64bit:
+
+Some hints from cybersphinx on getting the 32bit libjpeg8 library (for linking)
+
 (Ubuntu has only libjpeg6 in it's 32bit libs package)
 
 http://paste.pocoo.org/show/323329/ 
 
-I will make the Ubuntu build section more straight forward, next time I build it in Ubuntu.
+I will make the Ubuntu build readme section more straight forward, next time I build it in Ubuntu.
 
 ## Run
 
