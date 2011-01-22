@@ -604,7 +604,7 @@ EERIE_3DOBJ * ARX_FTL_Load(char * incomplete_fic, char * complete_fic, EERIE_3DO
 
 	if (!compressed)
 	{
-		compressed = (char *)PAK_FileLoadMalloc(gamefic, &cpr_pos);
+		compressed = (char *)PAK_FileLoadMalloc(gamefic, cpr_pos);
 		NOrelease = MCache_Push(gamefic, compressed, cpr_pos) ? 1 : 0;
 	}
 	else NoCheck = 1;
@@ -615,7 +615,7 @@ EERIE_3DOBJ * ARX_FTL_Load(char * incomplete_fic, char * complete_fic, EERIE_3DO
 
 	if (CURRENT_LOADMODE != LOAD_TRUEFILE) DontCheck = 1;
 
-	dat = (unsigned char *)STD_Explode(compressed, cpr_pos, &allocsize);//pos,&cpr_pos);
+	dat = (unsigned char *)STD_Explode(compressed, cpr_pos, allocsize);//pos,&cpr_pos);
 
 	if (!dat) return NULL;
 

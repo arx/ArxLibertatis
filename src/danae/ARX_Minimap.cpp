@@ -204,7 +204,7 @@ void ARX_MINIMAP_Load_Offsets()
 	if (PAK_FileExist(fic))
 	{
 		long siz = 0;
-		char * dat = (char *)PAK_FileLoadMalloc(fic, &siz);
+		char * dat = (char *)PAK_FileLoadMalloc(fic, siz);
 		long pos = 0;
 
 		if (dat)

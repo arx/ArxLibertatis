@@ -29,13 +29,15 @@ class HashMap;
 
 #include <cstddef>
 
+#include <string>
+
 #define PAK_FILE_COMPRESSED 1
 
 class PakFile {
 	
 public:
 	
-	const char * name;
+	std::string name;
 	std::size_t size;
 	PakFile * prev;
 	PakFile * next;
@@ -45,7 +47,7 @@ public:
 	
 public:
 	
-	PakFile(const char * n = NULL);
+	PakFile( const std::string& n );
 	~PakFile();
 	
 };
@@ -54,7 +56,7 @@ class PakDirectory {
 	
 public:
 	
-	const char * name;
+	const char* name;
 	unsigned int nbsousreps;
 	unsigned int nbfiles;
 	PakDirectory * parent;
@@ -68,18 +70,18 @@ public:
 	
 public:
 	
-	PakDirectory(PakDirectory * p, const char * n);
+	PakDirectory(PakDirectory * p, const std::string& n);
 	~PakDirectory();
 	
-	PakDirectory * addDirectory(const char * sname);
+	PakDirectory * addDirectory(const std::string& sname);
 	
-	bool removeDirectory(const char * dirname);
+	bool removeDirectory(const std::string& dirname);
 	
-	PakFile * addFile(const char * filename);
+	PakFile * addFile(const std::string& filename);
 	
-	PakDirectory * getDirectory(const char * dirname);
+	PakDirectory * getDirectory(const std::string& dirname);
 	
-	PakFile * getFile(const char * dirplusfilename);
+	PakFile * getFile(const std::string& dirplusfilename);
 	
 	friend void kill(PakDirectory * r);
 	

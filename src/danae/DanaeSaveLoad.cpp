@@ -1096,7 +1096,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, char * fic)
 
 	strcpy(LastLoadedDLF, fic);
 
-	dat = (unsigned char *)PAK_FileLoadMalloc(fic, &FileSize);
+	dat = (unsigned char *)PAK_FileLoadMalloc(fic, FileSize);
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
 	memcpy(&dlh, dat, sizeof(DANAE_LS_HEADER));
@@ -1116,7 +1116,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, char * fic)
 		char * compressed = (char *)(dat + pos);
 		long cpr_pos;
 		cpr_pos = 0;
-		dat = (unsigned char *)STD_Explode(compressed, FileSize - pos, &FileSize);
+		dat = (unsigned char *)STD_Explode(compressed, FileSize - pos, FileSize);
 
 		if (dat == NULL)
 		{
@@ -1542,8 +1542,8 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, char * fic)
 	if (dlh.version >= 1.44f) // using compression
 	{
 		long cpr_pos;
-		char * compressed = (char *)PAK_FileLoadMalloc(fic2, &cpr_pos);
-		dat = (unsigned char *)STD_Explode(compressed, cpr_pos, &FileSize);
+		char * compressed = (char *)PAK_FileLoadMalloc(fic2, cpr_pos);
+		dat = (unsigned char *)STD_Explode(compressed, cpr_pos, FileSize);
 
 		if (dat == NULL)
 		{
@@ -1556,7 +1556,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, char * fic)
 	}
 	else
 	{
-		dat = (unsigned char *)PAK_FileLoadMalloc(fic2, &FileSize);
+		dat = (unsigned char *)PAK_FileLoadMalloc(fic2, FileSize);
 	}
 
 	llh = (DANAE_LLF_HEADER *)(dat);
@@ -2053,7 +2053,7 @@ void ARX_SAVELOAD_DLFCheckAdd(char * path, long num)
 		return;
 	}
 
-	dat = (unsigned char *)PAK_FileLoadMalloc(fic, &FileSize);
+	dat = (unsigned char *)PAK_FileLoadMalloc(fic, FileSize);
 	memcpy(&dlh, dat, sizeof(DANAE_LS_HEADER));
 	pos += sizeof(DANAE_LS_HEADER);
 
@@ -2071,7 +2071,7 @@ void ARX_SAVELOAD_DLFCheckAdd(char * path, long num)
 		char * compressed = (char *)(dat + pos);
 		long cpr_pos;
 		cpr_pos = 0;
-		dat = (unsigned char *)STD_Explode(compressed, FileSize - pos, &FileSize);
+		dat = (unsigned char *)STD_Explode(compressed, FileSize - pos, FileSize);
 
 		if (dat == NULL)
 		{

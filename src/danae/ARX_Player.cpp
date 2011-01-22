@@ -1814,7 +1814,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 	if (PAK_FileExist(texscript))
 	{
 		long FileSize = 0;
-		io->script.data = (char *)PAK_FileLoadMalloc(texscript, &FileSize);
+		io->script.data = (char *)PAK_FileLoadMalloc(texscript, FileSize);
 
 		if (io->script.data != NULL)
 		{

@@ -389,7 +389,7 @@ HBITMAP LoadTargaFile(TCHAR * strPathname)
 	if (!PAK_FileExist(strPathname)) return NULL;
 
 	long siz = 0;
-	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, &siz);
+	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, siz);
 
 	if (NULL == dat) return NULL;
 
@@ -525,7 +525,7 @@ HBITMAP LoadBMPImage(char * strPathname)
 	if (!PAK_FileExist(strPathname)) return NULL;
 
 	long siz = 0;
-	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, &siz);
+	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, siz);
 
 	if (!dat) return NULL;
 

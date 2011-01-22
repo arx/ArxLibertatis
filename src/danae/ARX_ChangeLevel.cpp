@@ -361,18 +361,17 @@ void ARX_Changelevel_CurGame_Open()
 	GLOBAL_pSaveB->BeginRead();
 	return;
 }
-bool ARX_Changelevel_CurGame_Seek(char * ident)
+
+bool ARX_Changelevel_CurGame_Seek( const std::string& ident )
 {
-	if (GLOBAL_pSaveB)
-	{
-		char fic[256];
-		sprintf(fic, "%s.sav", ident);
+    if (GLOBAL_pSaveB)
+    {
+        if (GLOBAL_pSaveB->ExistFile( ident + ".sav" )) return true;
+    }
 
-		if (GLOBAL_pSaveB->ExistFile(fic)) return true;
-	}
-
-	return false;
+    return false;
 }
+
 void ARX_Changelevel_CurGame_Close()
 {
 	if (GLOBAL_pSaveB)
@@ -1862,39 +1861,42 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 //-----------------------------------------------------------------------------
 long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 {
-	unsigned char * dat;
-	long pos = 0;
-	char loadfile[256];
-	char _error[256];
-	
-	sprintf(loadfile, "lvl%03d.sav", num);
-	long size;
-	size = _pSaveBlock->GetSize(loadfile);
+    unsigned char * dat;
+    long pos = 0;
+    std::string loadfile;
+    std::string _error;
+    std::stringstream ss;
 
-	if (size <= 0)
-	{
-		sprintf(_error, "Unable to Open %s for Read...", loadfile);
-		ShowPopup(_error);
-		return -1;
-	}
+    ss << "lvl" << num << ".sav";
+    loadfile = ss.str();
 
-	char * compressed = (char *) GetStdBuffer(size); 
+    long size;
+    size = _pSaveBlock->GetSize(loadfile);
 
-	if (!compressed) HERMES_Memory_Emergency_Out();
+    if (size <= 0)
+    {
+        _error = "Unable to Open " + loadfile + " for Read...";
+        ShowPopup( _error );
+        return -1;
+    }
 
-	if (!_pSaveBlock->Read(loadfile, (char *)compressed))
-	{
-		sprintf(_error, "Unable to Open %s for Read...", loadfile);
-		ShowPopup(_error);
-		return -1;
-	}
+    std::string compressed; 
 
-	for (long i = 0; i < size; i += 2)
-		compressed[i] = ~compressed[i];
+    //if (!compressed) HERMES_Memory_Emergency_Out();
 
-	long ssize = size;
+    if ( !_pSaveBlock->Read( loadfile, compressed ) )
+    {
+        _error = "Unable to Open " + loadfile + "for Read...";
+        ShowPopup(_error);
+        return -1;
+    }
+
+    for (long i = 0; i < size; i += 2)
+        compressed[i] = ~compressed[i];
+
+    long ssize = size;
  
-	dat = (unsigned char *)STD_Explode(compressed, ssize, &size); 
+    dat = (unsigned char *)STD_Explode(compressed, ssize, size); 
 
 	memcpy(asi, dat, sizeof(ARX_CHANGELEVEL_INDEX));
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
@@ -1928,46 +1930,48 @@ long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 //-----------------------------------------------------------------------------
 long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num)
 {
-	unsigned char * dat;
-	long pos = 0;
-	char loadfile[256];
-	char _error[256];
-	long size;
+    unsigned char * dat;
+    long pos = 0;
+    std::string loadfile;
+    std::string _error;
+    std::stringstream ss;
+    long size;
 
-	sprintf(loadfile, "lvl%03d.sav", num);
-	size = _pSaveBlock->GetSize(loadfile);
+    ss << "lvl" << num << ".sav";
+    loadfile = ss.str();
+    size = _pSaveBlock->GetSize(loadfile);
 
-	if (size < 0)
-	{
-		sprintf(_error, "Unable to Open %s for Read...", loadfile);
-		ShowPopup(_error);
-		return -1;
-	}
+    if (size < 0)
+    {
+        _error = "Unable to Open " + loadfile + " for Read...";
+        ShowPopup(_error);
+        return -1;
+    }
 
-	char * compressed = (char *) GetStdBuffer(size); 
+    std::string compressed; 
 
-	if (!compressed) HERMES_Memory_Emergency_Out();
+    //if (!compressed) HERMES_Memory_Emergency_Out();
 
-	if (!_pSaveBlock->Read(loadfile, (char *)compressed))
-	{
-		sprintf(_error, "Unable to Open %s for Read...", loadfile);
-		ShowPopup(_error);
-		return -1;
-	}
+    if (!_pSaveBlock->Read(loadfile, compressed))
+    {
+        _error = "Unable to Open " + loadfile + " for Read...";
+        ShowPopup(_error);
+        return -1;
+    }
 
-	for (long i = 0; i < size; i += 2)
-		compressed[i] = ~compressed[i];
+    for (long i = 0; i < size; i += 2)
+        compressed[i] = ~compressed[i];
 
-	long ssize = size;
+    long ssize = size;
 
-	dat = (unsigned char *)STD_Explode(compressed, ssize, &size); //pos,&cpr_pos);
+    dat = (unsigned char *)STD_Explode(compressed, ssize, size); //pos,&cpr_pos);
 
-	// Skip Changelevel Index
-	pos += sizeof(ARX_CHANGELEVEL_INDEX);
-	// Skip Inter idx
-	pos += sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter;
-	// Now Restore Paths
-	ARX_CHANGELEVEL_PATH * acp;
+    // Skip Changelevel Index
+    pos += sizeof(ARX_CHANGELEVEL_INDEX);
+    // Skip Inter idx
+    pos += sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter;
+    // Now Restore Paths
+    ARX_CHANGELEVEL_PATH * acp;
 
 	for (int i = 0; i < asi->nb_paths; i++)
 	{
@@ -2121,18 +2125,18 @@ long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVEL_PLA
 		return -1;
 	}
 
-	char * compressed = (char *) GetStdBuffer(size); 
+	std::string compressed; 
 
-	if (!compressed) HERMES_Memory_Emergency_Out();
+	//if (!compressed) HERMES_Memory_Emergency_Out();
 
-	_pSaveBlock->Read(loadfile, (char *)compressed);
+	_pSaveBlock->Read(loadfile, compressed);
 
 	for (long i = 0; i < size; i += 2)
 		compressed[i] = ~compressed[i];
 
 	long ssize = size;
  
-	char * dat = (char *)STD_Explode(compressed, ssize, &size); 
+	char * dat = (char *)STD_Explode(compressed, ssize, size); 
 	memcpy(asp, dat, sizeof(ARX_CHANGELEVEL_PLAYER));
 	//free(compressed);
 
@@ -2412,11 +2416,11 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 		return -1;
 	}
 
-	char * compressed = (char *)GetStdBuffer(size); 
+	std::string compressed; 
 
-	if (!compressed) HERMES_Memory_Emergency_Out();
+	//if (!compressed) HERMES_Memory_Emergency_Out();
 
-	if (!_pSaveBlock->Read(loadfile, (char *)compressed))
+	if (!_pSaveBlock->Read(loadfile, compressed))
 	{
 		if (!FOR_EXTERNAL_PEOPLE)
 			ShowPopup("Unable to Read Data");
@@ -2429,7 +2433,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 
 	long ssize = size;
  
-	dat = (unsigned char *)STD_Explode(compressed, ssize, &size);
+	dat = (unsigned char *)STD_Explode(compressed, ssize, size);
 
 
 	// Ignore object if can't explode file
@@ -3466,59 +3470,58 @@ long ARX_CHANGELEVEL_PopAllIO_FINISH(ARX_CHANGELEVEL_INDEX * asi, long reloadfla
 //-----------------------------------------------------------------------------
 long ARX_CHANGELEVEL_Pop_Globals()
 {
-	ARX_CHANGELEVEL_SAVE_GLOBALS * acsg;
-	unsigned char * dat;
-	long pos = 0;
-	char loadfile[256];
-	long size;
-	char _error[256];
+    ARX_CHANGELEVEL_SAVE_GLOBALS * acsg;
+    unsigned char * dat;
+    long pos = 0;
+    std::string loadfile = "Globals.sav";
+    long size;
+    std::string _error;
 
-	ARX_SCRIPT_Free_All_Global_Variables();
-	sprintf(loadfile, "Globals.sav");
-	size = _pSaveBlock->GetSize(loadfile);
+    ARX_SCRIPT_Free_All_Global_Variables();
+    size = _pSaveBlock->GetSize(loadfile);
 
-	if (size < 0)
-	{
-		sprintf(_error, "Unable to Open %s for Read...", loadfile);
+    if (size < 0)
+    {
+        _error = "Unable to Open " + loadfile + " for Read...";
 
-		if (!FOR_EXTERNAL_PEOPLE)
-			ShowPopup(_error);
+        if (!FOR_EXTERNAL_PEOPLE)
+            ShowPopup(_error);
 
-		return -1;
-	}
+        return -1;
+    }
 
-	char * compressed = (char *) GetStdBuffer(size); 
+    std::string compressed; 
 
-	if (!compressed) HERMES_Memory_Emergency_Out();
+    //if (!compressed) HERMES_Memory_Emergency_Out();
 
-	if (!_pSaveBlock->Read(loadfile, (char *)compressed))
-	{
-		sprintf(_error, "Unable to Open %s for Read...", loadfile);
+    if (!_pSaveBlock->Read(loadfile, compressed))
+    {
+        _error = "Unable to Open " + loadfile + " for Read...";
 
-		if (!FOR_EXTERNAL_PEOPLE)
-			ShowPopup(_error);
+        if (!FOR_EXTERNAL_PEOPLE)
+            ShowPopup(_error);
 
-		return -1;
-	}
+        return -1;
+    }
 
-	for (long i = 0; i < size; i += 2)
-	{
-		compressed[i] = ~compressed[i];
-	}
+    for (long i = 0; i < size; i += 2)
+    {
+        compressed[i] = ~compressed[i];
+    }
 
-	long ssize = size;
+    long ssize = size;
  
-	dat = (unsigned char *)STD_Explode(compressed, ssize, &size);
-	acsg = (ARX_CHANGELEVEL_SAVE_GLOBALS *)(dat);
-	pos += sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS);
+    dat = (unsigned char *)STD_Explode(compressed, ssize, size);
+    acsg = (ARX_CHANGELEVEL_SAVE_GLOBALS *)(dat);
+    pos += sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS);
 
-	if (acsg->version != ARX_GAMESAVE_VERSION)
-	{
-		free(dat);
-		sprintf(_error, "Invalid version: %s...", loadfile);
+    if (acsg->version != ARX_GAMESAVE_VERSION)
+    {
+        free(dat);
+        _error = "Invalid version: " + loadfile + "...";
 
-		if (!FOR_EXTERNAL_PEOPLE)
-			ShowPopup(_error);
+        if (!FOR_EXTERNAL_PEOPLE)
+            ShowPopup(_error);
 
 		return -1;
 	}
@@ -4186,8 +4189,8 @@ long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 	// Checks For Directory
 	if (!DirectoryExist(path)) return -1;
 
-	char loadfile[256];
-	char _error[256];
+	std::string loadfile;
+	std::string _error;
 	long size;
 	unsigned char * dat;
 
@@ -4199,13 +4202,13 @@ long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 	if (!_pSaveBlock->BeginRead()) return -1;
 
 	// Get Size
-	sprintf(loadfile, "pld.sav");
+	loadfile = "pld.sav";
 	size = _pSaveBlock->GetSize(loadfile);
 
 	// Checks for Void/Invalid File
 	if (size <= 0)
 	{
-		sprintf(_error, "Unable to Open %s for Read1...", loadfile);
+		_error = "Unable to Open " + loadfile + " for Read1...";
 		ShowPopup(_error);
 		_pSaveBlock->EndRead();
 		delete _pSaveBlock;
@@ -4214,15 +4217,15 @@ long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 	}
 
 	// Allocate Necessary Size
-	char * compressed = (char *) malloc(size);
+	std::string compressed;
 
-	if (!compressed) HERMES_Memory_Emergency_Out();
+	//if (!compressed) HERMES_Memory_Emergency_Out();
 
 	// Read Block
-	if (!_pSaveBlock->Read(loadfile, (char *)compressed))
+	if (!_pSaveBlock->Read(loadfile, compressed))
 	{
-		free(compressed);
-		sprintf(_error, "Unable to Open %s for Read2...", loadfile);
+		//free(compressed);
+		_error = "Unable to Open " + loadfile + " for Read2...";
 		ShowPopup(_error);
 		_pSaveBlock->EndRead();
 		delete _pSaveBlock;
@@ -4237,12 +4240,12 @@ long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 	// Explode File
 	long ssize = size;
  
-	dat = (unsigned char *)STD_Explode(compressed, ssize, &size); //pos,&cpr_pos);
-	free(compressed);
+	dat = (unsigned char *)STD_Explode(compressed, ssize, size); //pos,&cpr_pos);
+	//free(compressed);
 
 	if (dat == NULL)
 	{
-		sprintf(_error, "Unable to Explode %s...", loadfile);
+		_error = "Unable to Explode " + loadfile + "...";
 		ShowPopup(_error);
 		_pSaveBlock->EndRead();
 		delete _pSaveBlock;

@@ -28,35 +28,35 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstddef>
 
 class HashMap {
-	
+    
 private:
-	
-	struct Entry {
-		const char * name;
-		void * value;
-	};
-	
-	std::size_t size;
-	std::size_t mask;
-	std::size_t fill;
-	
-	Entry * data;
-	
+    
+    struct Entry {
+        const std::string name;
+        void * value;
+    };
+    
+    std::size_t size;
+    std::size_t mask;
+    std::size_t fill;
+    
+    Entry * data;
+    
 private:
-	
-	std::size_t FuncH1(std::size_t);
-	std::size_t FuncH2(std::size_t);
-	std::size_t getHash(const char * );
-	
+    
+    std::size_t FuncH1( std::size_t );
+    std::size_t FuncH2( std::size_t );
+    std::size_t getHash( const std::string& );
+    
 public:
-	
-	HashMap(std::size_t size = 256);
-	~HashMap();
-	
-	bool add(const char * name, void * value = NULL);
-	
-	void * get(const char * name);
-	
+    
+    HashMap(std::size_t size = 256);
+    ~HashMap();
+    
+    bool add( const std::string& name, void * value = NULL );
+    
+    void* get( const std::string& name );
+    
 };
 
 #endif

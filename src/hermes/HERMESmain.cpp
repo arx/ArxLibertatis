@@ -128,13 +128,12 @@ unsigned char NC_IsIn(char * strin, char * str)
     return 1;
 }
 
-void File_Standardize(const char * from, char * to)
+void File_Standardize(const std::string& from, std::string& to)
 {
-
     long pos = 0;
     long pos2 = 0;
-    long size = strlen(from);
-    char * temp = from; /*HermesBufferWork;	
+    long size = from.length();
+    std::string temp = from; /*HermesBufferWork;	
 
     while (pos < size)
     {
@@ -153,31 +152,33 @@ void File_Standardize(const char * from, char * to)
 
     again:
     ;
-    size = strlen(temp);
+    size = temp.length();
     pos = 0;
 
     while (pos < size - 2)
     {
-		if ((temp[pos] == '\\' || temp[pos] == '/') && (temp[pos+1] == '.') && (temp[pos+2] == '.'))
-		{
-			long fnd = pos;
+        if ((temp[pos] == '\\' || temp[pos] == '/') && (temp[pos+1] == '.') && (temp[pos+2] == '.'))
+        {
+            long fnd = pos;
 
-			while (pos > 0)
-			{
-				pos--;
+            while (pos > 0)
+            {
+                pos--;
 
-				if (temp[pos] == '\\' || temp[pos] == '/')
-				{
-					strcpy(temp + pos, temp + fnd + 3);
-					goto again;
-				}
-			}
-		}
+                if (temp[pos] == '\\' || temp[pos] == '/')
+                {
+                    // Remove /descend/ascend bit found in path, e.g /dir/../
+                    temp = temp.substr( 0, pos ) + temp.substr( fnd + 3 );
+                    //strcpy(temp + pos, temp + fnd + 3);
+                    goto again;
+                }
+            }
+        }
 
-		pos++;
-	}
+        pos++;
+    }
 
-	strcpy(to, temp);
+    to = temp;
 }
 
 long KillAllDirectory(char * path) {

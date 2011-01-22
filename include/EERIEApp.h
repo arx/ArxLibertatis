@@ -60,6 +60,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 //#define  D3D_OVERLOADS
 //
+#include <string>
+
 #include "EERIEFrame.h"
 #include "EERIEEnum.h"
 #include <windows.h>
@@ -195,32 +197,32 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //-----------------------------------------------------------------------------
 typedef struct
 {
-	float r;
-	float g;
-	float b;
+    float r;
+    float g;
+    float b;
 } EERIE_RGBB;
 
 typedef struct
 {
-	long		soundmode;
-	long		compatibility;
-	long		ambient;
-	long		improve;
-	long		detectliving;
-	long		improvespeed;
-	long		telekinesis;
-	long		multiplayer;
-	long		demo;
-	long		bits;
-	long		hide;
-	long		TextureSize;
-	long		TextureBits;
-	EERIE_RGBB	interfacergb;
-	EERIE_RGBB	torch;
-	long		interpolatemouse;
-	long		vsync;
-	char		workingdir[256];
-	char		localisationpath[256];
+    long            soundmode;
+    long            compatibility;
+    long            ambient;
+    long            improve;
+    long            detectliving;
+    long            improvespeed;
+    long            telekinesis;
+    long            multiplayer;
+    long            demo;
+    long            bits;
+    long            hide;
+    long            TextureSize;
+    long            TextureBits;
+    EERIE_RGBB      interfacergb;
+    EERIE_RGBB      torch;
+    long            interpolatemouse;
+    long            vsync;
+    std::string     workingdir;
+    std::string     localisationpath;
 } PROJECT;
 
 typedef struct

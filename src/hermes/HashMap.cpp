@@ -63,7 +63,7 @@ HashMap::~HashMap() {
 	delete[] data;
 }
 
-bool HashMap::add(const char * name, void * value) {
+bool HashMap::add(const std::string& name, void* value) {
 	
 	string lname = name;
 	transform(lname.begin(), lname.end(), lname.begin(), tolower);

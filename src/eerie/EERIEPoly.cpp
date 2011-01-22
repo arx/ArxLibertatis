@@ -3757,20 +3757,20 @@ bool FastSceneLoad(char * partial_path)
 	
 	if (!USE_FAST_SCENES) return false;
 
-	char path[256];
-	sprintf(path, "%sGame\\%s", Project.workingdir, partial_path);
+	std::string path;
+	path = Project.workingdir + "Game\\" + partial_path;
 
 	long count = 0;
 	long idx;
 	char fic[256];
 
-	sprintf(fic, "%sfast.fts", path);
+	sprintf(fic, "%sfast.fts", path.c_str());
 
 	if (!PAK_FileExist(fic)) return false;
 
 	long taille;
 	
-	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(fic, &taille);
+    unsigned char* dat = (unsigned char *)PAK_FileLoadMalloc(fic, taille);
 
 	if (dat == NULL) return false;
 
@@ -3778,19 +3778,19 @@ bool FastSceneLoad(char * partial_path)
 	UNIQUE_HEADER * uh = (UNIQUE_HEADER *)dat;
 	pos += sizeof(UNIQUE_HEADER);
 
-	if (!NOCHECKSUM) if (strcasecmp(uh->path, path)) goto release;
+	if (!NOCHECKSUM) if (strcasecmp(uh->path, path.c_str())) goto release;
 
 	if (uh->version != UNIQUE_VERSION) goto release;
 
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
-	char path2[256];
+	std::string path2;
 
 	if (uh->count == 0) goto lasuite;
 
 	long c_count;
 	c_count = 0;
-	sprintf(path2, "%s\\%s*.scn", Project.workingdir, partial_path);
+	path2 = Project.workingdir + partial_path + "*.scn";
 //	todo: find
 //	struct _finddata_t fd;
 //	if ((idx = _findfirst(path2, &fd)) != -1)
@@ -3816,7 +3816,7 @@ bool FastSceneLoad(char * partial_path)
 		char check[512];
 		char * check2 = (char *)(dat + pos);
 		pos += 512;
-		sprintf(path2, "%s%s%s", Project.workingdir, partial_path, uh2->path);
+		path2 = Project.workingdir + partial_path + uh2->path;
 		SetExt(path2, ".scn");
 
 		if (PAK_FileExist(path2))
@@ -3850,19 +3850,19 @@ lasuite:
 	InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, BKG_SIZX, BKG_SIZZ);
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
-	char * compressed;
-	long cpr_pos;
-	cpr_pos = taille;
-	compressed = (char *)(dat + pos);
-	char * torelease;
-	torelease = (char *)dat;
+    char * compressed;
+    long cpr_pos;
+    cpr_pos = taille;
+    compressed = (char *)(dat + pos);
+    char * torelease;
+    torelease = (char *)dat;
 
 
-	dat = (unsigned char *)malloc(uh->compressedsize);
+    dat = (unsigned char *)malloc(uh->compressedsize);
 
-	if (dat == NULL) goto release;
+    if (dat == NULL) goto release;
 
-	STD_ExplodeNoAlloc(compressed,cpr_pos-pos,(char *)dat,&cpr_pos);
+    STD_ExplodeNoAlloc( compressed, cpr_pos-pos, dat, cpr_pos);
 
 	if (dat == NULL) goto release;
 

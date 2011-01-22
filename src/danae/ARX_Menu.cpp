@@ -314,7 +314,7 @@ void ARX_Menu_Resources_Create(LPDIRECT3DDEVICE7 m_pd3dDevice)
     char szFileName[256];
 
     sprintf(szFileName, "%sLocalisation\\ucredits_%s.txt", Project.workingdir, Project.localisationpath);
-    ARXmenu.mda->str_cre_credits = (_TCHAR *) PAK_FileLoadMalloc(szFileName, &siz);
+    ARXmenu.mda->str_cre_credits = (_TCHAR*) PAK_FileLoadMalloc(szFileName, siz);
 
     if (!ARXmenu.mda->str_cre_credits.empty() &&
         ARXmenu.mda->str_cre_credits[(siz>>1)-1] != 0)

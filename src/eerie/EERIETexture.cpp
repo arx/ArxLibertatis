@@ -314,34 +314,36 @@ TextureContainer * GetAnyTexture()
 	return g_ptcTextureList;
 }
 
-TextureContainer * FindTexture(TCHAR * strTextureName)
+TextureContainer * FindTexture( const std::string& strTextureName)
 {
-	TextureContainer * ptcTexture = g_ptcTextureList;
+    TextureContainer * ptcTexture = g_ptcTextureList;
 
-	while (ptcTexture)
-	{
-		if (strstr(strTextureName, ptcTexture->m_texName))
-			return ptcTexture;
+    while (ptcTexture)
+    {
+        if ( strTextureName.find( ptcTexture->m_texName) )
+            return ptcTexture;
 
-		ptcTexture = ptcTexture->m_pNext;
-	}
+        ptcTexture = ptcTexture->m_pNext;
+    }
 
-	return NULL;
+    return NULL;
 }
-TextureContainer * _FindTexture(char * strTextureName)
+
+TextureContainer * _FindTexture( const std::string& strTextureName)
 {
-	TextureContainer * ptcTexture = g_ptcTextureList;
+    TextureContainer * ptcTexture = g_ptcTextureList;
 
-	while (ptcTexture)
-	{
-		if (strstr(strTextureName, ptcTexture->m_texName))
-			return ptcTexture;
+    while (ptcTexture)
+    {
+        if ( strTextureName.find( ptcTexture->m_texName) )
+            return ptcTexture;
 
-		ptcTexture = ptcTexture->m_pNext;
-	}
+        ptcTexture = ptcTexture->m_pNext;
+    }
 
-	return NULL;
+    return NULL;
 }
+
 long BLURTEXTURES = 0;
 long NOMIPMAPS = 0;
 
@@ -751,40 +753,42 @@ TextureContainer::~TextureContainer()
 //-----------------------------------------------------------------------------
 HRESULT TextureContainer::LoadImageData()
 {
-	TCHAR * strExtension;
-	TCHAR  strPathname[256];
-	TCHAR  tempstrPathname[256];
+    std::string strExtension;
+    std::string strPathname;
+    std::string tempstrPathname;
 
-	// Check File
-	lstrcpy(strPathname, m_strName);
+    // Check File
+    strPathname = m_strName;
 
-	if (NULL == (strExtension = strchr(m_strName, '.')))
-		return DDERR_UNSUPPORTED;
+    strExtension = m_strName.substr( m_strName.find_first_of('.') );
 
-	HRESULT hres;
-	strcpy(tempstrPathname, strPathname);
-	SetExt(tempstrPathname, ".png");
+    if ( strExtension.empty() )
+        return DDERR_UNSUPPORTED;
 
-	if ((hres = LoadPNGFile(tempstrPathname)) != E_FAIL) return hres;
+    HRESULT hres;
+    tempstrPathname = strPathname;
+    SetExt(tempstrPathname, ".png");
 
-	SetExt(tempstrPathname, ".jpg");
+    if ((hres = LoadPNGFile(tempstrPathname)) != E_FAIL) return hres;
 
-	if ((hres = LoadJpegFileNoDecomp(tempstrPathname)) != E_FAIL) return hres;
+    SetExt(tempstrPathname, ".jpg");
 
-	SetExt(tempstrPathname, ".jpeg");
+    if ((hres = LoadJpegFileNoDecomp(tempstrPathname)) != E_FAIL) return hres;
 
-	if ((hres = LoadJpegFileNoDecomp(tempstrPathname)) != E_FAIL) return hres;
+    SetExt(tempstrPathname, ".jpeg");
 
-	// Load bitmap files
-	if (!lstrcmpi(strExtension, _T(".bmp")))
-		return LoadBitmapFile(strPathname);
+    if ((hres = LoadJpegFileNoDecomp(tempstrPathname)) != E_FAIL) return hres;
 
-	// Load targa files
-	if (!lstrcmpi(strExtension, _T(".tga")))
-		return LoadTargaFile(strPathname);
+    // Load bitmap files
+    if (!lstrcmpi(strExtension, _T(".bmp")))
+        return LoadBitmapFile(strPathname);
 
-	// Can add code here to check for other file formats before failing
-	return DDERR_UNSUPPORTED;
+    // Load targa files
+    if (!lstrcmpi(strExtension, _T(".tga")))
+        return LoadTargaFile(strPathname);
+
+    // Can add code here to check for other file formats before failing
+    return DDERR_UNSUPPORTED;
 }
 
 //-----------------------------------------------------------------------------
@@ -796,7 +800,7 @@ HRESULT TextureContainer::LoadBitmapFile(TCHAR * strPathname)
 	if (!PAK_FileExist(strPathname)) return E_FAIL;
 
 	long siz = 0;
-	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, &siz);
+	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, siz);
 
 	if (!dat) return E_FAIL;
 
@@ -892,7 +896,7 @@ HRESULT TextureContainer::LoadTargaFile(TCHAR * strPathname)
 	if (!PAK_FileExist(strPathname)) return E_FAIL;
 
 	long siz = 0;
-	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, &siz);
+	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, siz);
 
 	if (NULL == dat)
 		return E_FAIL;
@@ -3211,11 +3215,11 @@ HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 // Desc: Enumeration callback routine to find a best-matching texture format.
 //-----------------------------------------------------------------------------
 
-void ConvertData(char * dat)
+void ConvertData( std::string dat)
 {
-	if (dat[0] == '"') strcpy(dat, dat + 1);
+	if (dat[0] == '"') dat.erase( 0, 1 );
 
-	for (ULONG i = 1 ; i < strlen(dat) ; i++)
+	for ( int i = 1 ; i < dat.length() ; i++)
 	{
 		if (dat[i] == '"') dat[i] = 0;
 	}
@@ -3227,21 +3231,21 @@ void LookForRefinementMap(TextureContainer * tc)
 	long GlobalRefine_size = 0;
 	char * Refine = NULL;
 	long Refine_size = 0;
-	char inifile[512];
+	std::string inifile;
 	long count = 0;
-	char str1[1024];
-	char str2[1024];
+	std::string str1;
+	std::string str2;
 	tc->TextureRefinement = NULL;
 
 	if (GlobalRefine == NULL)
 	{
 		if (GlobalRefine_size == 0)
 		{
-			sprintf(inifile, "%sGraph\\Obj3D\\Textures\\Refinement\\GlobalRefinement.ini", Project.workingdir);
+			inifile = Project.workingdir + "Graph\\Obj3D\\Textures\\Refinement\\GlobalRefinement.ini";
 
 			if (PAK_FileExist(inifile))
 			{
-				GlobalRefine = (char *)PAK_FileLoadMallocZero(inifile, &GlobalRefine_size);
+				GlobalRefine = (char *)PAK_FileLoadMallocZero(inifile, GlobalRefine_size);
 			}
 
 			if (GlobalRefine == NULL) GlobalRefine_size = -1;
@@ -3252,11 +3256,11 @@ void LookForRefinementMap(TextureContainer * tc)
 	{
 		if (Refine_size == 0)
 		{
-			sprintf(inifile, "%sGraph\\Obj3D\\Textures\\Refinement\\Refinement.ini", Project.workingdir);
+			inifile = Project.workingdir + "Graph\\Obj3D\\Textures\\Refinement\\Refinement.ini";
 
 			if (PAK_FileExist(inifile))
 			{
-				Refine = (char *)PAK_FileLoadMallocZero(inifile, &Refine_size);
+				Refine = (char *)PAK_FileLoadMallocZero(inifile, Refine_size);
 			}
 
 			if (Refine == NULL) Refine_size = -1;
@@ -3267,10 +3271,10 @@ void LookForRefinementMap(TextureContainer * tc)
 	{
 		unsigned char * from = (unsigned char *)GlobalRefine;
 		long fromsize = GlobalRefine_size;
-		unsigned char data[256];
+		std::string data;
 		long pos = 0;
-		char name[256];
-		strcpy(name, GetName(tc->m_strName));
+		std::string name;
+		name = GetName(tc->m_strName);
 
 		while (pos < GlobalRefine_size)
 		{
@@ -3295,21 +3299,21 @@ void LookForRefinementMap(TextureContainer * tc)
 				continue;
 			}
 
-			ConvertData((char *)data);
+			ConvertData(data);
 
-			if (count == 0) strcpy(str1, (char *)data);
+			if (count == 0) str1 = data;
 
 			if (count == 1)
 			{
-				sprintf(str2, "%sGraph\\Obj3D\\Textures\\Refinement\\%s.bmp", Project.workingdir, data);
-				MakeUpcase(str1);
-				MakeUpcase(name);
+				str2 = Project.workingdir + "Graph\\Obj3D\\Textures\\Refinement\\" + data + ".bmp";
+				std::transform( str1.begin(), str1.end(), str1.begin(), ::toupper );
+				std::transform( name.begin(), name.end(), name.begin(), ::toupper );
 
-				if (strstr(name, str1))
+				if ( name.find( str1) )
 				{
-					if (!strcasecmp((char *)data, "NONE")) tc->TextureRefinement = NULL;
+					if (!strcasecmp(data.c_str(), "NONE")) tc->TextureRefinement = NULL;
 					else tc->TextureRefinement =
-						    D3DTextr_CreateTextureFromFile(str2, Project.workingdir, 0, D3DTEXTR_16BITSPERPIXEL);
+						    D3DTextr_CreateTextureFromFile(str2.c_str(), Project.workingdir.c_str(), 0, D3DTEXTR_16BITSPERPIXEL);
 
 				}
 			}
@@ -3322,10 +3326,9 @@ void LookForRefinementMap(TextureContainer * tc)
 	{
 		unsigned char * from = (unsigned char *)Refine;
 		long fromsize = Refine_size;
-		unsigned char data[256];
+		std::string data;
 		long pos = 0;
-		char name[256];
-		strcpy(name, GetName(tc->m_strName));
+		std::string name = GetName(tc->m_strName);
 
 		while (pos < Refine_size)
 		{
@@ -3350,21 +3353,21 @@ void LookForRefinementMap(TextureContainer * tc)
 				continue;
 			}
 
-			ConvertData((char *)data);
+			ConvertData(data);
 
-			if (count == 0) strcpy(str1, (char *)data);
+			if (count == 0) str1 = data;
 
 			if (count == 1)
 			{
-				sprintf(str2, "%sGraph\\Obj3D\\Textures\\Refinement\\%s.bmp", Project.workingdir, data);
-				MakeUpcase(str1);
-				MakeUpcase(name);
+				str2 = Project.workingdir + "Graph\\Obj3D\\Textures\\Refinement\\" + data + ".bmp";
+				std::transform( str1.begin(), str1.end(), str1.begin(), ::toupper );
+				std::transform( name.begin(), name.end(), name.begin(), ::toupper );
 
-				if (!strcmp(name, str1))
+				if ( !name.compare( str1 ) )
 				{
-					if (!strcasecmp((char *)data, "NONE")) tc->TextureRefinement = NULL;
+					if (!strcasecmp(data.c_str(), "NONE")) tc->TextureRefinement = NULL;
 					else tc->TextureRefinement =
-						    D3DTextr_CreateTextureFromFile(str2, Project.workingdir, 0, D3DTEXTR_16BITSPERPIXEL);
+						    D3DTextr_CreateTextureFromFile(str2.c_str(), Project.workingdir.c_str(), 0, D3DTEXTR_16BITSPERPIXEL);
 
 				}
 			}
@@ -3721,7 +3724,7 @@ HRESULT TextureContainer::LoadJpegFileNoDecomp(TCHAR * strPathname)
 		return E_FAIL;
 
 	long	taille;
-	unsigned char * memjpeg = (unsigned char *)PAK_FileLoadMalloc(strPathname, &taille);
+	unsigned char * memjpeg = (unsigned char *)PAK_FileLoadMalloc(strPathname, taille);
 
 	if (!memjpeg)
 		return E_FAIL;
@@ -4870,12 +4873,12 @@ HRESULT TextureContainer::CopyPNGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 //*************************************************************************************
 TextureContainer * GetTextureFile(char * tex, long flag)
 {
-	char dir[256];
-	char dir2[256];
+	std::string dir;
+	std::string dir2;
 
 	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
-	sprintf(dir2, "%s%s", Project.workingdir, tex);
+	dir2 = Project.workingdir + tex;
 	File_Standardize(dir2, dir);
 	TextureContainer * returnTc;
 
@@ -4891,12 +4894,12 @@ TextureContainer * GetTextureFile(char * tex, long flag)
 //*************************************************************************************
 TextureContainer * GetTextureFile_NoRefinement(char * tex, long flag)
 {
-	char dir[256];
-	char dir2[256];
+	std::string dir;
+	std::string dir2;
 
 	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
-	sprintf(dir2, "%s%s", Project.workingdir, tex);
+	dir2 = Project.workingdir + tex;
 	File_Standardize(dir2, dir);
 	TextureContainer * returnTc;
 

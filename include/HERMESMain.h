@@ -64,6 +64,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define HERMES_PATH_SIZE	512
 
+#include <string>
+
 #include "HERMESPerf.h"
 
 #include <windows.h>
@@ -118,7 +120,7 @@ extern long DebugLvl[6];
 extern unsigned int			GaiaWM;
 extern DIR_NODE mainnode;
 
-void File_Standardize(const char * from,char * to);
+void File_Standardize( const std::string& from, std::string& to );
 char * HERMES_GaiaCOM_Receive();
  
 long KillAllDirectory(char * path);
@@ -154,7 +156,7 @@ void ForceSendConsole(char * dat,long level,long flag,HWND source);
  
 void MemFree(void * adr);
 bool OKBox(char * text,char *title);
-void ShowPopup(char * text);
+void ShowPopup( const std::string& text);
 int ShowError(char * funcname, char * message, long fatality);
 unsigned long MakeMemoryText(char * text);
 bool CreateFullPath(const char * path);
@@ -165,15 +167,15 @@ bool HERMESFolderSelector(char *file_name,char *title);
 void RemoveName(char *str);
 char * GetName(char *str);
 char * GetExt(char *str);
-void SetExt(char *str,char *new_ext);
+void SetExt( std::string& str, const std::string& new_ext );
 void AddToName(char *str,char *cat);
 int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName,char *filter,HWND hWnd);
 int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName,char *filter,HWND hWnd);
 long HERMES_CreateFileCheck(const char *name, char *scheck, const long &size, const float &id);
-char * STD_Explode(char * from,long from_size,long * to_size);
-void STD_ExplodeNoAlloc(char * from,long from_size,char * to,long * to_size);
-void ERROR_Log_Init(char * fic);
-bool ERROR_Log(char * fic);
+char* STD_Explode( const std::string& from, long from_size, long& to_size);
+void STD_ExplodeNoAlloc( const std::string& from, long from_size, char* to, long& to_size);
+void ERROR_Log_Init( const std::string& fic);
+bool ERROR_Log( const std::string& fic);
 void HERMES_Memory_Security_On(long size);
 void HERMES_Memory_Security_Off();
 long HERMES_Memory_Emergency_Out(long size=0,char * info=NULL);

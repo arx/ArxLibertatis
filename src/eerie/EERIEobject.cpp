@@ -1315,13 +1315,13 @@ retry1:
 
 		while (nb--)
 		{
-			if (!strcasecmp(GetExt((char *)et->name), ".scn"))
+			if ( !strcasecmp( GetExt( et->name.c_str() ), ".scn") )
 			{
-				char path2[256];
-				sprintf(path2, "%s%s", dirr, et->name);
+				std::string path2;
+				path2 = dirr + et->name;
 				long SizeAlloc = 0;
 
-				if (adr = (unsigned char *)PAK_FileLoadMalloc(path2, &SizeAlloc))
+				if (adr = (unsigned char *)PAK_FileLoadMalloc(path2, SizeAlloc))
 				{
 					es->scenes[es->nb_scenes] = (EERIE_3DSCENE *)ScnToEerie(adr, SizeAlloc, path, TTE_NO_NDATA | TTE_NO_PDATA);
 					es->nb_scenes++;
@@ -2968,11 +2968,11 @@ void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret)
 
 	if (!FOR_EXTERNAL_PEOPLE)
 	{
-		char logfic[256];
-		sprintf(logfic, "%sNot_Centered_Objs.txt", Project.workingdir);
+		std::string logfic;
+		logfic = Project.workingdir + "Not_Centered_Objs.txt";
 		FILE * fic;
 
-		if ((fic = fopen(logfic, "a+")) != NULL)
+		if ((fic = fopen(logfic.c_str(), "a+")) != NULL)
 		{
 			fprintf(fic, "NOT CENTERED %s\n", ret->file);
 			fclose(fic);

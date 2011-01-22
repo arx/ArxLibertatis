@@ -175,25 +175,27 @@ void * _PAK_FileLoadMallocZero(char * name, long * SizeLoadMalloc)
 		return NULL;
 	}
 }
-void * _PAK_FileLoadMalloc(char * name, long * SizeLoadMalloc)
+
+void * _PAK_FileLoadMalloc( const std::string& name, long& SizeLoadMalloc)
 {
 
-	if (g_pak_workdir_len >= strlen(name))
-	{
-		if (SizeLoadMalloc) *SizeLoadMalloc = 0;
+    if ( g_pak_workdir_len >= name.length() )
+    {
+        if ( SizeLoadMalloc ) SizeLoadMalloc = 0;
 
-		return NULL;
-	}
+        return NULL;
+    }
 
-	int iTaille = 0;
-	void * mem = pPakManager->ReadAlloc(name + g_pak_workdir_len, &iTaille);
+    int iTaille = 0;
+    void* mem = pPakManager->ReadAlloc(name.substr(g_pak_workdir_len), &iTaille);
 
-	if ((SizeLoadMalloc) && mem) *SizeLoadMalloc = iTaille;
+    if ((SizeLoadMalloc) && mem) *SizeLoadMalloc = iTaille;
 
-	if (mem == NULL) PAK_NotFound(name);
+    if (mem == NULL) PAK_NotFound(name);
 
-	return mem;
+    return mem;
 }
+
 long _PAK_DirectoryExist(char * name)
 {
 
@@ -259,7 +261,7 @@ long PAK_DirectoryExist(char * name)
 	return ret;
 }
 
-long _PAK_FileExist(char * name)
+long _PAK_FileExist( const std::string& name )
 {
 
 	if (g_pak_workdir_len >= strlen(name))
@@ -279,7 +281,7 @@ long _PAK_FileExist(char * name)
 
 
 
-long PAK_FileExist(char * name)
+long PAK_FileExist( const std::string& name )
 {
 	long ret = 0;
 
@@ -715,30 +717,30 @@ bool PakManager::Read(char * _lpszName, void * _pMem)
 }
 
 //-----------------------------------------------------------------------------
-void * PakManager::ReadAlloc(char * _lpszName, int * _piTaille)
+void* PakManager::ReadAlloc( const std::string _lpszName, int& _piTaille)
 {
-	vector<PakReader *>::iterator i;
+    vector<PakReader *>::iterator i;
 
-	if ((_lpszName[0] == '\\') ||
-	        (_lpszName[0] == '/'))
-	{
-		_lpszName++;
-	}
+    if ((_lpszName[0] == '\\') ||
+            (_lpszName[0] == '/'))
+    {
+        _lpszName++;
+    }
 
-	for (i = vLoadPak.begin(); i < vLoadPak.end(); i++)
-	{
-		void * pMem;
+    for (i = vLoadPak.begin(); i < vLoadPak.end(); i++)
+    {
+        void * pMem;
 
-		if ((pMem = (*i)->ReadAlloc(_lpszName, _piTaille)))
-		{
-			printf("\e[1;32mRead from PAK (a):\e[m\t%s\n", _lpszName);
-			return pMem;
-		}
-	}
+        if ((pMem = (*i)->ReadAlloc(_lpszName, _piTaille)))
+        {
+            printf("\e[1;32mRead from PAK (a):\e[m\t%s\n", _lpszName);
+            return pMem;
+        }
+    }
 
-	DrawDebugFile(_lpszName);
-	printf("\e[1;33mRead from PAK (a):\e[m\t%s\n", _lpszName);
-	return NULL;
+    DrawDebugFile(_lpszName);
+    printf("\e[1;33mRead from PAK (a):\e[m\t%s\n", _lpszName);
+    return NULL;
 }
 
 //-----------------------------------------------------------------------------

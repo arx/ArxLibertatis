@@ -450,12 +450,12 @@ long HERMES_UNICODE_GetProfileString(   const std::string&  sectionname,
 }
 
 //-----------------------------------------------------------------------------
-long HERMES_UNICODE_GetProfileSectionKeyCount(const _TCHAR * sectionname)
+long HERMES_UNICODE_GetProfileSectionKeyCount(const std::string& sectionname)
 {
-	if (pHashLocalisation)
-		return pHashLocalisation->GetKeyCount(sectionname);
+    if (pHashLocalisation)
+        return pHashLocalisation->GetKeyCount(sectionname);
 
-	return 0;
+    return 0;
 }
 
 static long ltNum = 0;

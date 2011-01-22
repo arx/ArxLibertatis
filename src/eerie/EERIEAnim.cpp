@@ -334,7 +334,7 @@ long EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah,char * path)
 
 	if (!PAK_FileExist(path)) return 0;
 
-	if ((adr=(unsigned char *)PAK_FileLoadMalloc(path,&FileSize))!=NULL)
+	if ((adr=(unsigned char *)PAK_FileLoadMalloc(path,FileSize))!=NULL)
 	{
 		temp=TheaToEerie(adr,FileSize,path,TEA_PLAYER_SAMPLES);
 		free(adr);
@@ -373,7 +373,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load(char * path)
 	{
 		if (animations[i].path[0]==0)
 		{				
-			if ((adr=(unsigned char *)PAK_FileLoadMalloc(path,&FileSize))!=NULL)
+			if ((adr=(unsigned char *)PAK_FileLoadMalloc(path,FileSize))!=NULL)
 			{
 				animations[i].anims=(EERIE_ANIM **)malloc(sizeof(EERIE_ANIM *));
 				animations[i].sizes=(long *)malloc(sizeof(long));

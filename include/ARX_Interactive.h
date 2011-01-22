@@ -67,24 +67,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 typedef struct
 {
-	long			init;
-	long			nbmax;
-	INTERACTIVE_OBJ ** iobj;
-	char		*	lock;
+    long                init;
+    long                nbmax;
+    INTERACTIVE_OBJ**   iobj;
+    std::string         lock;
 } INTERACTIVE_OBJECTS;
 
 typedef struct
 {
-	INTERACTIVE_OBJ * io;
-	long			show;
+    INTERACTIVE_OBJ*    io;
+    long                show;
 } INVENTORY_SLOT;
 
 typedef struct
 {
-	INTERACTIVE_OBJ * io;
-	long			sizex;
-	long			sizey;
-	INVENTORY_SLOT	slot[20][20];
+    INTERACTIVE_OBJ*    io;
+    long                sizex;
+    long                sizey;
+    INVENTORY_SLOT      slot[20][20];
 } INVENTORY_DATA;
 
 typedef struct
@@ -102,29 +102,29 @@ typedef struct
 
 typedef struct
 {
-	long		init;
-	long		nbmax;
-	ARX_NODE	* nodes;
+    long        init;
+    long        nbmax;
+    ARX_NODE*   nodes;
 } ARX_NODES;
 
 //-----------------------------------------------------------------------------
-#define INVENTORY_X			16
-#define INVENTORY_Y			3
-#define EQUIP_RIGHTHAND		1
-#define EQUIP_LEFTHAND		2
-#define EQUIP_SECONDARY		3
-#define EQUIP_SHIELD		4
-#define TARGET_PATH			-3
-#define TARGET_NONE			-2
-#define TARGET_PLAYER		0 //-1
-#define TARGET_NODE			50000
-#define NO_IDENT			1
-#define NO_MESH				2
-#define NO_ON_LOAD			4
-#define IO_IMMEDIATELOAD	8
+#define INVENTORY_X         16
+#define INVENTORY_Y         3
+#define EQUIP_RIGHTHAND     1
+#define EQUIP_LEFTHAND      2
+#define EQUIP_SECONDARY     3
+#define EQUIP_SHIELD        4
+#define TARGET_PATH         -3
+#define TARGET_NONE         -2
+#define TARGET_PLAYER       0 //-1
+#define TARGET_NODE         50000
+#define NO_IDENT            1
+#define NO_MESH             2
+#define NO_ON_LOAD          4
+#define IO_IMMEDIATELOAD    8
 #define RENDER_INTER_FLAG_DUMMY_DRAW 1
-#define FLAG_NOCONFIRM		1
-#define FLAG_DONTKILLDIR	2
+#define FLAG_NOCONFIRM      1
+#define FLAG_DONTKILLDIR    2
 
 //-----------------------------------------------------------------------------
 extern ARX_NODES nodes;

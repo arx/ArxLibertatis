@@ -81,7 +81,6 @@ static const char * selectKey(uint32_t first_bytes) {
 
 PakReader::PakReader() {
 	
-	pakname = NULL;
 	file = 0;
 	root = NULL;
 	fat = NULL;
@@ -134,12 +133,12 @@ inline bool safeGet(T & data, const char * & pos, uint32_t & fat_size) {
 	return true;
 }
 
-bool PakReader::Open(const char * name) {
+bool PakReader::Open(const std::string& name) {
 	
-	FILE * newfile = fopen(name, "rb");
+	FILE * newfile = fopen(name.c_str(), "rb");
 	
 	if(!newfile) {
-		printf("\e[1;35mCannot find PAK:\e[m\t%s\n", name);
+		printf("\e[1;35mCannot find PAK:\e[m\t%s\n", name.c_str());
 		return false;
 	}
 	
@@ -251,11 +250,11 @@ bool PakReader::Open(const char * name) {
 	Close();
 	
 	root = newroot;
-	pakname = strdup((const char *)name);
+	pakname = name;
 	fat = newfat;
 	file = newfile;
 	
-	printf("\e[1;32mLoaded PAK:\e[m\t%s\n", name);
+	printf("\e[1;32mLoaded PAK:\e[m\t%s\n", name.c_str());
 	return true;
 	
 	
@@ -270,27 +269,24 @@ error:
 }
 
 void PakReader::Close() {
-	
-	if(pakname) {
-		free((void *)pakname);
-		pakname = NULL;
-	}
-	
-	if(file) {
-		fclose(file);
-		file = 0;
-	}
-	
-	if(root) {
-		delete root;
-		root = NULL;
-	}
-	
-	if(fat) {
-		delete[] fat;
-		fat = NULL;
-	}
-	
+
+    pakname.clear();
+
+    if(file) {
+        fclose(file);
+        file = 0;
+    }
+
+    if(root) {
+        delete root;
+        root = NULL;
+    }
+
+    if(fat) {
+        delete[] fat;
+        fat = NULL;
+    }
+
 }
 
 struct PakReadDataFile {
@@ -347,19 +343,19 @@ static int blast(FILE * file, char * buf, size_t size) {
 	return blast(ReadData, &read, WriteData, &write);
 }
 
-PakFile * PakReader::getFile(const char * name) {
-	
-	if(!name || !root) {
-		// Not loaded.
-		return NULL;
-	}
-	
-	return root->getFile(name);
+PakFile * PakReader::getFile(const std::string& name) {
+
+    if( name.empty() || !root ) {
+        // Not loaded.
+        return NULL;
+    }
+
+    return root->getFile(name);
 }
 
 
 // TODO unchecked buffer size
-bool PakReader::Read(const char * name, void * buf) {
+bool PakReader::Read(const std::string& name, void * buf) {
 	
 	PakFile * f = getFile(name);
 	if(!f) {
@@ -371,7 +367,7 @@ bool PakReader::Read(const char * name, void * buf) {
 	if(f->flags & PAK_FILE_COMPRESSED) {
 		int r = blast(file, (char *)buf, f->uncompressedSize);
 		if(r) {
-			printf("\e[1;35mdecompression error %d:\e[m\tfor \"%s\" in \'%s\"\n", r, f->name, pakname);
+			printf("\e[1;35mdecompression error %d:\e[m\tfor \"%s\" in \'%s\"\n", r, f->name.c_str(), pakname.c_str());
 			return false;
 		}
 	} else {
@@ -383,49 +379,49 @@ bool PakReader::Read(const char * name, void * buf) {
 	return true;
 }
 
-void * PakReader::ReadAlloc(const char * name, size_t * size) {
-	
-	PakFile * f = getFile(name);
-	if(!f) {
-		return NULL;
-	}
-	
-	fseek(file, f->offset, SEEK_SET);
-	
-	void * mem;
-	if(f->flags & PAK_FILE_COMPRESSED) {
-		
-		mem = malloc(f->uncompressedSize);
-		*size = (int)f->uncompressedSize;
-		if(!mem) {
-			return NULL;
-		}
-		
-		int r = blast(file, (char *)mem, f->uncompressedSize);
-		if(r) {
-			printf("\e[1;35mdecompression error (a) %d:\e[m\tfor \"%s\" in \'%s\"\n", r, f->name, pakname);
-			free(mem);
-			return NULL;
-		}
-		
-	} else {
-		
-		mem = malloc(f->size);
-		*size = (int)f->size;
-		if(!mem) {
-			return NULL;
-		}
-		
-		if(fread(mem, f->size, 1, file) != 1) {
-			free(mem);
-			return NULL;
-		}
-	}
-	
-	return mem;
+void* PakReader::ReadAlloc( const std::string& name, size_t& size ) {
+
+    PakFile * f = getFile(name);
+    if(!f) {
+        return NULL;
+    }
+
+    fseek(file, f->offset, SEEK_SET);
+
+    void* mem;
+    if(f->flags & PAK_FILE_COMPRESSED) {
+
+        mem = malloc(f->uncompressedSize);
+        size = (int)f->uncompressedSize;
+        if(!mem) {
+            return NULL;
+        }
+    
+        int r = blast(file, (char*)mem, f->uncompressedSize);
+        if(r) {
+            printf("\e[1;35mdecompression error (a) %d:\e[m\tfor \"%s\" in \'%s\"\n", r, f->name.c_str(), pakname.c_str());
+            free(mem);
+            return NULL;
+        }
+    
+    } else {
+
+        mem = malloc(f->size);
+        size = (int)f->size;
+        if(!mem) {
+            return NULL;
+        }
+
+        if(fread(mem, f->size, 1, file) != 1) {
+            free(mem);
+            return NULL;
+        }
+    }
+
+    return mem;
 }
 
-int PakReader::GetSize(const char * name) {
+int PakReader::GetSize(const std::string& name) {
 	
 	PakFile * f = getFile(name);
 	if(!f) {
@@ -439,7 +435,7 @@ int PakReader::GetSize(const char * name) {
 	}
 }
 
-PakFileHandle * PakReader::fOpen(const char * name, const char * mode) {
+PakFileHandle * PakReader::fOpen(const std::string& name, const std::string& mode) {
 	
 	(void)mode;
 	
@@ -561,7 +557,7 @@ size_t PakReader::fRead(void * buf, size_t isize, size_t count, PakFileHandle * 
 		
 		int r = blast(ReadData, &read, WriteDataOffset, &write);
 		if(!r) {
-			printf("\e[1;35mdecompression error (f) %d:\e[m\tfor \"%s\" in \'%s\"\n", r, f->name, pakname);
+			printf("\e[1;35mdecompression error (f) %d:\e[m\tfor \"%s\" in \'%s\"\n", r, f->name.c_str(), pakname.c_str());
 			return 0;
 		}
 		
