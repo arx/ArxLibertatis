@@ -1017,7 +1017,8 @@ HRESULT CD3DApplication::Render3DEnvironment()
 	// Show the frame on the primary surface.
 	if (FAILED(hr = m_pFramework->ShowFrame()))
 	{
-		printf("ShowFrame FAILED\n");
+		printf("ShowFrame FAILED: %d %d <- look for this in ddraw.h\n", hr&0xFFFF);
+		
 		if (DDERR_SURFACELOST != hr)
 			return hr;
 
