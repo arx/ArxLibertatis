@@ -1273,7 +1273,10 @@ char * GetVersionString()
 // Sets DANAE Main Window Title
 //*************************************************************************************
 void SetWindowTitle(HWND hWnd, char * tex) {
-	SetWindowText(hWnd, tex);
+	char texx[512];
+	strcpy(texx, tex);
+	strcat(texx, GetVersionString());
+	SetWindowText(hWnd, texx);
 }
 
 HWND SnapShotDlg = NULL;
