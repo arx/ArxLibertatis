@@ -538,6 +538,7 @@ TextureContainer::TextureContainer(const char * strName, DWORD dwStage, DWORD dw
 {
 	
 	strcpy(m_texName, strName);
+	printf("TextureContainer: strName=\"%s\" m_strName=\"%s\"\n", strName, m_strName);
 
 	m_dwWidth		= 0;
 	m_dwHeight		= 0;
