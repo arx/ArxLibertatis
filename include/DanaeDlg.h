@@ -63,6 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define IOTVTYPE_NODE 2
 #define IOTVTYPE_PLAYER 3
 
+//TODO: What is this?
 #define _ARX_FINAL_VERSION_ " SC-1£ µ*[aAv|( $!1^;.|(2çà1çà]_______"
 
 extern short Cross;
