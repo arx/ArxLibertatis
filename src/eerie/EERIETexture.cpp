@@ -755,8 +755,10 @@ HRESULT TextureContainer::LoadImageData()
 	// Check File
 	lstrcpy(strPathname, m_strName);
 
-	if (NULL == (strExtension = strchr(m_strName, '.')))
+	if (NULL == (strExtension = strchr(m_strName, '.'))) {
+		printf("LoadImageData: unsupported (missing extension): %s\n", m_strName);
 		return DDERR_UNSUPPORTED;
+	}
 
 	HRESULT hres;
 	strcpy(tempstrPathname, strPathname);
@@ -779,7 +781,8 @@ HRESULT TextureContainer::LoadImageData()
 	// Load targa files
 	if (!lstrcmpi(strExtension, _T(".tga")))
 		return LoadTargaFile(strPathname);
-
+	
+	printf("LoadImageData: unsupported (unknown extension): %s\n", m_strName);
 	// Can add code here to check for other file formats before failing
 	return DDERR_UNSUPPORTED;
 }
