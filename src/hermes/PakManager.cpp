@@ -602,13 +602,6 @@ bool PakManager::RemovePak(const char * _lpszName)
 }
 
 //-----------------------------------------------------------------------------
-static void DrawDebugFile(char * _lpszName)
-{
-	return;
-
-}
-
-//-----------------------------------------------------------------------------
 bool PakManager::Read(const char * filename, void * buffer)
 {
 	vector<PakReader *>::iterator i;
@@ -627,8 +620,6 @@ bool PakManager::Read(const char * filename, void * buffer)
 			return true;
 		}
 	}
-
-	DrawDebugFile(filename);
 
 	printf("\e[1;33mCan't read from PAK:\e[m\t%s\n", filename);
 	return false;
@@ -660,7 +651,6 @@ void * PakManager::ReadAlloc(const char * filename, int * sizeRead)
 		}
 	}
 
-	DrawDebugFile(filename);
 	printf("\e[1;33mRead from PAK (a):\e[m\t%s\n", filename);
 	*sizeRead = size;
 	return NULL;
@@ -689,7 +679,6 @@ int PakManager::GetSize(const char * filename)
 		}
 	}
 
-	DrawDebugFile(filename);
 	printf("\e[1;33mCan't get size in PAK:\e[m\t%s\n", filename);
 	return -1;
 }
@@ -716,7 +705,6 @@ PakFileHandle * PakManager::fOpen(const char * filename)
 		}
 	}
 
-	DrawDebugFile(filename);
 	printf("\e[1;33mCan't open from PAK:\e[m\t%s\n", filename);
 	return NULL;
 }
@@ -828,8 +816,6 @@ bool PakManager::ExistFile(const char * name) {
 			return true;
 		}
 	}
-	
-	DrawDebugFile(name);
 	
 	printf("\e[1;33mCan't find in PAK:\e[m\t%s\n", name);
 	return false;
