@@ -434,25 +434,19 @@ long HERMES_UNICODE_GetProfileString(   const std::string&  sectionname,
 
     destination.clear();
 
-	if (pHashLocalisation)
-	{
-		_TCHAR * t = pHashLocalisation->GetPtrWithString(sectionname);
+    if (pHashLocalisation)
+    {
+        std::string* t = pHashLocalisation->GetPtrWithString(sectionname);
 
-		if (t)
-		{
-			_tcsncpy(destination, t, min((size_t)maxsize, strlen(t)));
-		}
-		else
-		{
-			_tcsncpy(destination, defaultstring, min((size_t)maxsize, strlen(defaultstring)));
-		}
-	}
-	else
-	{
-		_tcsncpy(destination, defaultstring, min((size_t)maxsize, strlen(defaultstring)));
-	}
+        if (t)
+            destination = *t;
+        else
+            destination = defaultstring;
+    }
+    else
+        destination = defaultstring;
 
-	return 0;
+    return 0;
 }
 
 //-----------------------------------------------------------------------------

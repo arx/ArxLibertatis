@@ -39,78 +39,48 @@ using namespace std;
 //-----------------------------------------------------------------------------
 class CLocalisation
 {
-	public:
-		char *  lpszUSection;
-		vector<char *> vUKeys;
-	
-	public:
-		CLocalisation()
-		{
-			lpszUSection = NULL;
-		};
-		~CLocalisation()
-		{
-			if (lpszUSection)
-			{
-				free((void *)lpszUSection);
-				lpszUSection = NULL;
-			}
-			
-			for (unsigned int i = 0 ; i < vUKeys.size() ; i++)
-			{
-				free((void *) vUKeys[i]);
-				vUKeys[i] = NULL;
-			}
-		};
+    public:
+        std::string lpszUSection;
+        vector< std::string > vUKeys;
+    
+    public:
+        void SetSection( const std::string& _lpszUSection )
+        {
+            lpszUSection = _lpszUSection;
+        };
 
-		void SetSection(char * _lpszUSection)
-		{
-			if (lpszUSection)
-			{
-				free(lpszUSection);
-				lpszUSection = NULL;
-			}
-
-			lpszUSection = (char *) malloc((strlen(_lpszUSection) + 2) * sizeof(char));
-			std::memset(lpszUSection, 0, (strlen(_lpszUSection) + 2) * sizeof(char));
-			std::strcpy(lpszUSection, _lpszUSection);
-		};
-		void AddKey(char * _lpszUText)
-		{
-			char * lpszT = (char *) malloc((strlen(_lpszUText) + 2) * sizeof(char));
-			memset(lpszT, 0, (strlen(_lpszUText) + 2) * sizeof(char));
-			strcpy(lpszT, _lpszUText);
-
-			vUKeys.push_back(lpszT);
-		};
+        void AddKey( const std::string& _lpszUText )
+        {
+            vUKeys.push_back( _lpszUText );
+        };
 };
 
 //-----------------------------------------------------------------------------
 class CLocalisationHash
 {
-	public:
-		unsigned long	iSize;
-		long			iMask;
-		unsigned long	iFill;
-		CLocalisation	** pTab;
-	public:
-		unsigned long	iNbCollisions;
-		unsigned long	iNbNoInsert;
+    public:
+        unsigned long   iSize;
+        long            iMask;
+        unsigned long   iFill;
+        CLocalisation** pTab;
+    public:
+        unsigned long   iNbCollisions;
+        unsigned long   iNbNoInsert;
 
-	private:
-		int				FuncH1(int);
-		int				FuncH2(int);
-		int				GetKey(const char *);
+    private:
+        int FuncH1(int);
+        int FuncH2(int);
+        int GetKey( const std::string& );
 
-	public:
-		CLocalisationHash(int _iSize = 1024);
-		~CLocalisationHash();
+    public:
+        CLocalisationHash(int _iSize = 1024);
+        ~CLocalisationHash();
 
-		void ReHash();
-		bool AddElement(CLocalisation * _pLoc);
+        void ReHash();
+        bool AddElement(CLocalisation * _pLoc);
  
-		char * GetPtrWithString(const char *);
-		unsigned long GetKeyCount(const char *);
+        std::string* GetPtrWithString( const std::string& );
+        unsigned long GetKeyCount(const std::string& );
 };
 
 #endif
