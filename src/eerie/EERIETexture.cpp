@@ -537,8 +537,9 @@ void ReloadAllTextures(LPDIRECT3DDEVICE7 pd3dDevice)
 TextureContainer::TextureContainer(const char * strName, DWORD dwStage, DWORD dwFlags)
 {
 	
+	// TODO why are there two names?
 	strcpy(m_texName, strName);
-	printf("TextureContainer: strName=\"%s\" m_strName=\"%s\"\n", strName, m_strName);
+	strcpy(m_strName, strName);
 
 	m_dwWidth		= 0;
 	m_dwHeight		= 0;
