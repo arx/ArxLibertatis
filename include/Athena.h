@@ -60,7 +60,6 @@ namespace ATHENA
 	AAL_APIFUNC aalError aalSetStreamLimit(const aalULong & size);
 	AAL_APIFUNC aalError aalSetOutputFormat(const aalFormat & format);
 	AAL_APIFUNC aalError aalAddResourcePack(const char * name);
-	AAL_APIFUNC aalError aalSetRootPath(const char * path);
 	AAL_APIFUNC aalError aalSetSamplePath(const char * path);
 	AAL_APIFUNC aalError aalSetAmbiancePath(const char * path);
 	AAL_APIFUNC aalError aalSetEnvironmentPath(const char * path);

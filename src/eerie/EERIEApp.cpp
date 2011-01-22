@@ -114,14 +114,6 @@ enum APPMSGTYPE { MSG_NONE, MSGERR_APPMUSTEXIT, MSGWARN_SWITCHEDTOSOFTWARE };
 static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 //*************************************************************************************
-//*************************************************************************************
-char * MakeDir(char * tex, char * tex2)
-{
-	sprintf(tex, "%s%s", Project.workingdir, tex2);
-	return tex;
-}
-
-//*************************************************************************************
 // CD3DApplication()
 // Constructor
 //*************************************************************************************

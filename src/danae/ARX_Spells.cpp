@@ -5894,7 +5894,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			{
 				pCSpellFx->spellinstance=i;
 				char tmptext[256];
-				sprintf(tmptext,"%sGraph\\Obj3D\\Interactive\\Fix_inter\\blue_cube\\blue_cube.asl",Project.workingdir);
+				strcpy(tmptext,"Graph\\Obj3D\\Interactive\\Fix_inter\\blue_cube\\blue_cube.asl");
 				INTERACTIVE_OBJ * io;
 				io=AddFix(GDevice,tmptext,IO_IMMEDIATELOAD);
 
@@ -8490,7 +8490,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 							if (EEfabs(anything)<30)
 							{
-								sprintf(tmptext,"%sGraph\\Obj3D\\Interactive\\NPC\\Undead_base\\Undead_base.asl",Project.workingdir);
+								strcpy(tmptext,"Graph\\Obj3D\\Interactive\\NPC\\Undead_base\\Undead_base.asl");
 								INTERACTIVE_OBJ * io;
 								io=AddNPC(m_pd3dDevice,tmptext,IO_IMMEDIATELOAD);
 
@@ -8901,7 +8901,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 							if (spells[i].caster_level>=9)
 							{
 								tokeep=1;
-								sprintf(tmptext,"%sGraph\\Obj3D\\Interactive\\NPC\\Demon\\Demon.asl",Project.workingdir);
+								strcpy(tmptext,"Graph\\Obj3D\\Interactive\\NPC\\Demon\\Demon.asl");
 							}
 							else 
 							{
@@ -8909,22 +8909,22 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 								if (rnd()>0.98f)
 								{
-									sprintf(tmptext,"%sGraph\\Obj3D\\Interactive\\NPC\\WRat_base\\WRat_base.asl",Project.workingdir);
+									strcpy(tmptext,"Graph\\Obj3D\\Interactive\\NPC\\WRat_base\\WRat_base.asl");
 									tokeep=-1;
 								}
 								else
-									sprintf(tmptext,"%sGraph\\Obj3D\\Interactive\\NPC\\Chicken_Base\\Chicken_Base.asl",Project.workingdir);
+									strcpy(tmptext,"Graph\\Obj3D\\Interactive\\NPC\\Chicken_Base\\Chicken_Base.asl");
 							}
 
 							if ((rnd()>0.997f) || ((cur_rf>=3) && (rnd()>0.8f)) || ((cur_mr>=3) && (rnd()>0.3f)))
 							{
-								sprintf(tmptext,"%sGraph\\Obj3D\\Interactive\\NPC\\WRat_base\\WRat_base.asl",Project.workingdir);
+								strcpy(tmptext,"Graph\\Obj3D\\Interactive\\NPC\\WRat_base\\WRat_base.asl");
 								tokeep=-1;
 							}
 
 							if ((rnd()>0.997f) || (sp_max && (rnd()>0.8f)) || ((cur_mr>=3) && (rnd()>0.3f)))
 							{
-								sprintf(tmptext,"%sGraph\\Obj3D\\Interactive\\NPC\\Y_mx\\Y_mx.asl",Project.workingdir);
+								strcpy(tmptext,"Graph\\Obj3D\\Interactive\\NPC\\Y_mx\\Y_mx.asl");
 								tokeep=0;
 							}
 
@@ -8932,12 +8932,12 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 							{
 								if (rnd()>0.5) 
 								{
-									sprintf(tmptext,"%sGraph\\Obj3D\\Interactive\\NPC\\WRat_base\\WRat_base.asl",Project.workingdir);
+									strcpy(tmptext,"Graph\\Obj3D\\Interactive\\NPC\\WRat_base\\WRat_base.asl");
 									tokeep=-1;
 								}
 								else
 								{
-									sprintf(tmptext,"%sGraph\\Obj3D\\Interactive\\NPC\\Y_mx\\Y_mx.asl",Project.workingdir);
+									strcpy(tmptext,"Graph\\Obj3D\\Interactive\\NPC\\Y_mx\\Y_mx.asl");
 									tokeep=0;
 								}
 							}
@@ -8947,7 +8947,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 							if (!io)
 							{
-								sprintf(tmptext,"%sGraph\\Obj3D\\Interactive\\NPC\\Chicken_Base\\Chicken_Base.asl",Project.workingdir);
+								strcpy(tmptext,"Graph\\Obj3D\\Interactive\\NPC\\Chicken_Base\\Chicken_Base.asl");
 								tokeep=0;
 								io=AddNPC(m_pd3dDevice,tmptext,IO_IMMEDIATELOAD);
 							}
@@ -9518,7 +9518,7 @@ void ApplySPWep()
 		ARX_SPSound();
 		char tex[256];
 		char tex2[256];
-		sprintf(tex2,"%sGraph\\Obj3D\\Interactive\\Items\\Weapons\\sword_mx\\sword_mx.teo",Project.workingdir);
+		strcpy(tex2,"Graph\\Obj3D\\Interactive\\Items\\Weapons\\sword_mx\\sword_mx.teo");
 		File_Standardize(tex2,tex);
 		INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(GDevice,tex,IO_IMMEDIATELOAD);
 
@@ -9599,11 +9599,8 @@ void ApplySPBow()
 {
 	{		
 		ARX_SPSound();
-		char tex[256];
-		char tex2[256];
-		sprintf(tex2,"%sGraph\\Obj3D\\Interactive\\Items\\Weapons\\bow_mx\\bow_mx.teo",Project.workingdir);
-		File_Standardize(tex2,tex);
-		INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(GDevice,tex,IO_IMMEDIATELOAD);
+		const char OBJ_BOW[] = "Graph\\Obj3D\\Interactive\\Items\\Weapons\\bow_mx\\bow_mx.teo";
+		INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(GDevice,OBJ_BOW,IO_IMMEDIATELOAD);
 
 		if (ioo!=NULL)
 		{			
@@ -9635,13 +9632,13 @@ void ApplySPArm()
 	switch (sp_arm)
 	{
 		case 0:
-			sprintf(tex2,"%sGraph\\Obj3D\\Interactive\\Items\\Armor\\Helmet_plate_cm\\Helmet_plate_cm.teo",Project.workingdir);
+			strcpy(tex2,"%sGraph\\Obj3D\\Interactive\\Items\\Armor\\Helmet_plate_cm\\Helmet_plate_cm.teo");
 		break;
 		case 1:
-			sprintf(tex2,"%sGraph\\Obj3D\\Interactive\\Items\\Armor\\Legging_plate_cm\\Legging_plate_cm.teo",Project.workingdir);
+			strcpy(tex2,"%sGraph\\Obj3D\\Interactive\\Items\\Armor\\Legging_plate_cm\\Legging_plate_cm.teo");
 		break;
 		case 2:
-			sprintf(tex2,"%sGraph\\Obj3D\\Interactive\\Items\\Armor\\Chest_plate_cm\\Chest_plate_cm.teo",Project.workingdir);
+			strcpy(tex2,"%sGraph\\Obj3D\\Interactive\\Items\\Armor\\Chest_plate_cm\\Chest_plate_cm.teo");
 		break;
 		default:
 			return;

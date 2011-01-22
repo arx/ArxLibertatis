@@ -66,9 +66,6 @@ class PakDirectory;
 
 #include <cstdio>
 
-extern char PAK_WORKDIR[256];
-extern unsigned long g_pak_workdir_len;
-
 
 #define LOAD_TRUEFILE			1
 #define LOAD_PACK				2
@@ -76,11 +73,11 @@ extern unsigned long g_pak_workdir_len;
 #define LOAD_TRUEFILE_THEN_PACK	4
 
 extern long CURRENT_LOADMODE;
-void * PAK_FileLoadMalloc(char *name,long * SizeLoadMalloc=NULL);
-void * PAK_FileLoadMallocZero(char *name,long * SizeLoadMalloc=NULL);
+void * PAK_FileLoadMalloc(const char *name,long * SizeLoadMalloc=NULL);
+void * PAK_FileLoadMallocZero(const char *name,long * SizeLoadMalloc=NULL);
 
 // use only for READ !!!!
-void PAK_SetLoadMode(long mode,char * pakfile,char * workdir=NULL);
+void PAK_SetLoadMode(long mode,char * pakfile);
 FILE * PAK_fopen(const char *filename, const char *mode );
 std::size_t PAK_fread(void *buffer, std::size_t size, std::size_t count, FILE *stream );;
 int PAK_fclose(FILE * stream);
@@ -88,9 +85,6 @@ long PAK_ftell(FILE * stream);
 long PAK_DirectoryExist(char *name);
 long PAK_FileExist(char *name);
 int PAK_fseek(FILE * fic,long offset,int origin);
-
-void PAK_NotFoundInit(char * fic);
-bool PAK_NotFound(char * fic);
 
 void PAK_Close();
 

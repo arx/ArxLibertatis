@@ -255,7 +255,7 @@ SnapShot::SnapShot(char * _pDir, char * _pName, bool _bReplace)
 		pName = strdup(tTxt);
 //		strupr(pName);
 
-		strcpy(tTxt, Project.workingdir);
+		tTxt[0] = '\0';
 
 		if (_pDir)
 		{
@@ -413,7 +413,7 @@ bool SnapShot::GetSnapShot()
 
 	//sauvegarde bmp
 	char tTxt[256];
-	sprintf(tTxt, "%s%s_%d.bmp", Project.workingdir, pName, ulNum);
+	sprintf(tTxt, "%s_%d.bmp", pName, ulNum);
 	FILE * fFile = fopen(tTxt, "wb");
 
 	if (!fFile)
@@ -619,7 +619,7 @@ bool SnapShot::GetSnapShotDim(int _iWith, int _iHeight)
 
 	//sauvegarde bmp
 	char tTxt[256];
-	sprintf(tTxt, "%s%s_%d.bmp", Project.workingdir, pName, ulNum);
+	sprintf(tTxt, "%s_%d.bmp", pName, ulNum);
 	FILE * fFile = fopen(tTxt, "wb");
 
 	if (!fFile)

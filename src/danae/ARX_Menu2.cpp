@@ -280,10 +280,8 @@ void ARX_QuickSave()
 		return;
 	}
 
-	char	tcSrc[256];
-	char	tcDst[256];
-	sprintf( tcSrc, "%sSCT_0.BMP", Project.workingdir );
-	sprintf( tcDst, "%sSCT_1.BMP", Project.workingdir );
+	const char tcSrc[] = "SCT_0.BMP";
+	const char tcDst[] = "SCT_1.BMP";
 	CopyFile( tcSrc, tcDst, false );
 
 	if ( bFound0 == false )
@@ -4669,7 +4667,7 @@ void CMenuElementText::RenderMouseOver()
 			CURRENT_GAME_INSTANCE=save_l[lData].num;
 			ARX_GAMESAVE_MakePath();
 			char tTxt[256];
-			sprintf(tTxt,"%sGSAVE.BMP",GameSavePath+strlen(Project.workingdir));
+			sprintf(tTxt,"%sGSAVE.BMP",GameSavePath);
 			TextureContainer *pTextureTemp=GetTextureFile_NoRefinement(tTxt);
 
 			if (pTextureTemp != pTextureLoad)
@@ -4696,7 +4694,7 @@ void CMenuElementText::RenderMouseOver()
 			CURRENT_GAME_INSTANCE=save_l[lData].num;
 			ARX_GAMESAVE_MakePath();
 			char tTxt[256];
-			sprintf(tTxt,"%sGSAVE.BMP",GameSavePath+strlen(Project.workingdir));
+			sprintf(tTxt,"%sGSAVE.BMP",GameSavePath);
 			TextureContainer *pTextureTemp=GetTextureFile_NoRefinement(tTxt);
 
 			if (pTextureTemp != pTextureLoad)
@@ -7649,23 +7647,14 @@ void CMenuSlider::RenderMouseOver()
 
 CDirectInput::CDirectInput()
 {
-	char temp[256];
-	MakeDir(temp,"graph\\interface\\cursors\\cursor00.bmp");
-	pTex[0]=D3DTextr_GetSurfaceContainer(temp);
-	MakeDir(temp,"graph\\interface\\cursors\\cursor01.bmp");
-	pTex[1]=D3DTextr_GetSurfaceContainer(temp);
-	MakeDir(temp,"graph\\interface\\cursors\\cursor02.bmp");
-	pTex[2]=D3DTextr_GetSurfaceContainer(temp);
-	MakeDir(temp,"graph\\interface\\cursors\\cursor03.bmp");
-	pTex[3]=D3DTextr_GetSurfaceContainer(temp);
-	MakeDir(temp,"graph\\interface\\cursors\\cursor04.bmp");
-	pTex[4]=D3DTextr_GetSurfaceContainer(temp);
-	MakeDir(temp,"graph\\interface\\cursors\\cursor05.bmp");
-	pTex[5]=D3DTextr_GetSurfaceContainer(temp);
-	MakeDir(temp,"graph\\interface\\cursors\\cursor06.bmp");
-	pTex[6]=D3DTextr_GetSurfaceContainer(temp);
-	MakeDir(temp,"graph\\interface\\cursors\\cursor07.bmp");
-	pTex[7]=D3DTextr_GetSurfaceContainer(temp);
+	pTex[0]=D3DTextr_GetSurfaceContainer("graph\\interface\\cursors\\cursor00.bmp");
+	pTex[1]=D3DTextr_GetSurfaceContainer("graph\\interface\\cursors\\cursor01.bmp");
+	pTex[2]=D3DTextr_GetSurfaceContainer("graph\\interface\\cursors\\cursor02.bmp");
+	pTex[3]=D3DTextr_GetSurfaceContainer("graph\\interface\\cursors\\cursor03.bmp");
+	pTex[4]=D3DTextr_GetSurfaceContainer("graph\\interface\\cursors\\cursor04.bmp");
+	pTex[5]=D3DTextr_GetSurfaceContainer("graph\\interface\\cursors\\cursor05.bmp");
+	pTex[6]=D3DTextr_GetSurfaceContainer("graph\\interface\\cursors\\cursor06.bmp");
+	pTex[7]=D3DTextr_GetSurfaceContainer("graph\\interface\\cursors\\cursor07.bmp");
 
 	SetCursorOff();
 	SetSensibility(2);

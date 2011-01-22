@@ -142,7 +142,7 @@ extern long NOCHECKSUM;
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-bool ARX_FTL_Save(char * incomplete_fic, char * complete_fic, EERIE_3DOBJ * obj)
+bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 {
 	// Need an object to be saved !
 	if (obj == NULL) return false;
@@ -150,7 +150,7 @@ bool ARX_FTL_Save(char * incomplete_fic, char * complete_fic, EERIE_3DOBJ * obj)
 	// Generate File name/path and create it
 	char path[256];
 	char gamefic[256];
-	sprintf(gamefic, "%sGame%s", Project.workingdir, incomplete_fic);
+	sprintf(gamefic, "Game\\%s", file);
 	SetExt(gamefic, ".FTL");
 	strcpy(path, gamefic);
 	RemoveName(path);
@@ -236,8 +236,8 @@ bool ARX_FTL_Save(char * incomplete_fic, char * complete_fic, EERIE_3DOBJ * obj)
 
 	// Identification
 	char check[512];
-	MakeUpcase(complete_fic);
-	HERMES_CreateFileCheck(complete_fic, check, 512, CURRENT_FTL_VERSION);
+	MakeUpcase(file);
+	HERMES_CreateFileCheck(file, check, 512, CURRENT_FTL_VERSION);
 	memcpy(dat + pos, check, 512);
 	pos += 512;
 
@@ -573,14 +573,14 @@ long BH_MODE = 0;
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-EERIE_3DOBJ * ARX_FTL_Load(char * incomplete_fic, char * complete_fic, EERIE_3DOBJ * obj)
+EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 {
 	
-	printf("ARX_FTL_Load(%s, %s)\n", incomplete_fic, complete_fic);
+	printf("ARX_FTL_Load(%s)\n", file);
 	
 	// Creates FTL file name
 	char gamefic[256];
-	sprintf(gamefic, "%sGame%s", Project.workingdir, complete_fic); // TODO was incomplete_fic
+	sprintf(gamefic, "Game\\%s", file);
 	SetExt(gamefic, ".FTL");
 
 	// Checks for FTL file existence
@@ -658,8 +658,7 @@ EERIE_3DOBJ * ARX_FTL_Load(char * incomplete_fic, char * complete_fic, EERIE_3DO
 	{
 		char check[512];
 
-		MakeUpcase(complete_fic);
-		HERMES_CreateFileCheck(complete_fic, check, 512, CURRENT_FTL_VERSION);
+		HERMES_CreateFileCheck(file, check, 512, CURRENT_FTL_VERSION);
 
 		char * pouet = (char *)(dat + pos);
 
@@ -679,10 +678,11 @@ EERIE_3DOBJ * ARX_FTL_Load(char * incomplete_fic, char * complete_fic, EERIE_3DO
 	afsh = (ARX_FTL_SECONDARY_HEADER *)(dat + pos);
 	pos += sizeof(ARX_FTL_SECONDARY_HEADER);
 
+	EERIE_3DOBJ * obj = NULL;
+	
 	// Check For & Load 3D Data
 	if (afsh->offset_3Ddata != -1)
 	{
-		if (obj) ReleaseEERIE3DObj(obj), obj = NULL;
 
 		//todo free
 		obj = (EERIE_3DOBJ *)malloc(sizeof(EERIE_3DOBJ));
@@ -769,11 +769,10 @@ EERIE_3DOBJ * ARX_FTL_Load(char * incomplete_fic, char * complete_fic, EERIE_3DO
 			for (long i = 0; i < af3Ddh->nb_maps; i++)
 			{
 				memcpy(ficc2, dat + pos, 256);
-				strcpy(ficc3, Project.workingdir);
-				strcat(ficc3, ficc2);
+				strcpy(ficc3, ficc2);
 				File_Standardize(ficc3, ficc);
 
-				obj->texturecontainer[i] = D3DTextr_CreateTextureFromFile(ficc, Project.workingdir, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
+				obj->texturecontainer[i] = D3DTextr_CreateTextureFromFile(ficc, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
 
 				if (GDevice && obj->texturecontainer[i] && !obj->texturecontainer[i]->m_pddsSurface)
 					obj->texturecontainer[i]->Restore(GDevice);

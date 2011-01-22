@@ -56,7 +56,7 @@ ViewImage::ViewImage(char * _pcDir, char * _pExt)
 
 	while (1)
 	{
-		sprintf(tTxt, "%squit%d.bmp", _pcDir + strlen(Project.workingdir), iNum);
+		sprintf(tTxt, "%squit%d.bmp", _pcDir, iNum);
 
 		if (pPakManager->ExistFile(tTxt))
 		{
@@ -68,7 +68,7 @@ ViewImage::ViewImage(char * _pcDir, char * _pExt)
 		}
 		else
 		{
-			sprintf(tTxt, "%squit%d.jpg", _pcDir + strlen(Project.workingdir), iNum);
+			sprintf(tTxt, "%squit%d.jpg", _pcDir, iNum);
 
 			if (pPakManager->ExistFile(tTxt))
 			{
@@ -260,10 +260,7 @@ void ViewImage::DrawAllImage()
 //-----------------------------------------------------------------------------
 void StartImageDemo()
 {
-	char tTxt[256];
-	sprintf(tTxt, Project.workingdir);
-	strcat(tTxt, "graph\\interface\\misc\\");
-	ViewImage * pViewImage = new ViewImage(tTxt, "*.bmp");
+	ViewImage * pViewImage = new ViewImage("graph\\interface\\misc\\", "*.bmp");
 
 	if (!pViewImage) return;
 

@@ -198,13 +198,12 @@ void ARX_MINIMAP_ValidatePlayerPos()
 //-----------------------------------------------------------------------------
 void ARX_MINIMAP_Load_Offsets()
 {
-	char fic[256];
-	sprintf(fic, "%s\\Graph\\Levels\\mini_offsets.ini", Project.workingdir);
+	const char INI_MINI_OFFSETS[] = "Graph\\Levels\\mini_offsets.ini";
 
-	if (PAK_FileExist(fic))
+	if (PAK_FileExist(INI_MINI_OFFSETS))
 	{
 		long siz = 0;
-		char * dat = (char *)PAK_FileLoadMalloc(fic, &siz);
+		char * dat = (char *)PAK_FileLoadMalloc(INI_MINI_OFFSETS, &siz);
 		long pos = 0;
 
 		if (dat)
@@ -304,10 +303,9 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 	if (!pTexDetect)
 	{
-		GetTextureFile("Graph\\particles\\flare.bmp");
-		char temp[256];
-		MakeDir(temp, "Graph\\particles\\flare.bmp");
-		pTexDetect = D3DTextr_GetSurfaceContainer(temp);
+		const char tex_flare[] = "Graph\\particles\\flare.bmp";
+		GetTextureFile(tex_flare); // TODO why discard the return? leak!?
+		pTexDetect = D3DTextr_GetSurfaceContainer(tex_flare);
 	}
 
 	//	SHOWLEVEL=8;

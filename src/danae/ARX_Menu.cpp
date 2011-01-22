@@ -159,7 +159,7 @@ void CreateSaveGameList()
 	char path[512] = "";
 	HANDLE h;
 
-	sprintf(path, "%ssave%s\\save*", Project.workingdir, LOCAL_SAVENAME);
+	sprintf(path, "save%s\\save*", LOCAL_SAVENAME);
 
 	if (!(save_l = (SaveGame *)malloc(sizeof(SaveGame)))) return;
 
@@ -188,7 +188,7 @@ void CreateSaveGameList()
 				char text[256];
 				strcpy(text, fdata->cFileName + 4);
 				save_l[save_c].num = atoi(text);
-				sprintf(text, "%ssave%s\\%s\\", Project.workingdir, LOCAL_SAVENAME, fdata->cFileName);
+				sprintf(text, "save%s\\%s\\", LOCAL_SAVENAME, fdata->cFileName);
 				unsigned long pouet;
 
 				if (ARX_CHANGELEVEL_GetInfo(text, save_l[save_c].name, &save_l[save_c].version, &save_l[save_c].level, &pouet) != -1)
@@ -310,7 +310,7 @@ void ARX_Menu_Resources_Create(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	long siz;
 	char szFileName[256];
 
-	sprintf(szFileName, "%sLocalisation\\ucredits_%s.txt", Project.workingdir, Project.localisationpath);
+	sprintf(szFileName, "Localisation\\ucredits_%s.txt", Project.localisationpath);
 	ARXmenu.mda->str_cre_credits = (_TCHAR *) PAK_FileLoadMalloc(szFileName, &siz);
 
 	if (ARXmenu.mda->str_cre_credits &&

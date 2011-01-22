@@ -423,63 +423,36 @@ void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, cons
 //-----------------------------------------------------------------------------
 void CreateInterfaceTextureContainers()
 {
-	char temp[512];
 	memset(&ITC,0,sizeof(INTERFACE_TC));
-	MakeDir(temp,"Graph\\Interface\\bars\\aim_empty.bmp");
-	ITC.aim_empty = MakeTCFromFile(temp, 0);
-	MakeDir(temp,"Graph\\Interface\\bars\\aim_maxi.bmp");
-	ITC.aim_maxi = MakeTCFromFile(temp, 0);
-	MakeDir(temp,"Graph\\Interface\\bars\\flash_gauge.bmp");
-	ITC.aim_hit = MakeTCFromFile(temp, 0);
-	MakeDir(temp,"Graph\\Interface\\Inventory\\hero_inventory.bmp");
-	ITC.hero_inventory = MakeTCFromFile(temp, 0);
-	MakeDir(temp,"Graph\\Interface\\Inventory\\Ingame_inventory.bmp");
-	BasicInventorySkin = MakeTCFromFile(temp, 0);
-	MakeDir(temp,"Graph\\Interface\\Inventory\\scroll_up.bmp");
-	ITC.hero_inventory_up = MakeTCFromFile(temp, 0);
-	MakeDir(temp,"Graph\\Interface\\Inventory\\scroll_down.bmp");
-	ITC.hero_inventory_down = MakeTCFromFile(temp, 0);
-	MakeDir(temp,"Graph\\Interface\\Inventory\\Hero_inventory_link.bmp");
-	ITC.hero_inventory_link = MakeTCFromFile(temp, 0);
+	ITC.aim_empty = MakeTCFromFile("Graph\\Interface\\bars\\aim_empty.bmp", 0);
+	ITC.aim_maxi = MakeTCFromFile("Graph\\Interface\\bars\\aim_maxi.bmp", 0);
+	ITC.aim_hit = MakeTCFromFile("Graph\\Interface\\bars\\flash_gauge.bmp", 0);
+	ITC.hero_inventory = MakeTCFromFile("Graph\\Interface\\Inventory\\hero_inventory.bmp", 0);
+	BasicInventorySkin = MakeTCFromFile("Graph\\Interface\\Inventory\\Ingame_inventory.bmp", 0);
+	ITC.hero_inventory_up = MakeTCFromFile("Graph\\Interface\\Inventory\\scroll_up.bmp", 0);
+	ITC.hero_inventory_down = MakeTCFromFile("Graph\\Interface\\Inventory\\scroll_down.bmp", 0);
+	ITC.hero_inventory_link = MakeTCFromFile("Graph\\Interface\\Inventory\\Hero_inventory_link.bmp", 0);
 
-	MakeDir(temp,"Graph\\Interface\\Inventory\\inv_pick.bmp");
-	ITC.inventory_pickall = MakeTCFromFile(temp, 0);
-	MakeDir(temp,"Graph\\Interface\\Inventory\\inv_close.bmp");
-	ITC.inventory_close = MakeTCFromFile(temp, 0);
+	ITC.inventory_pickall = MakeTCFromFile("Graph\\Interface\\Inventory\\inv_pick.bmp", 0);
+	ITC.inventory_close = MakeTCFromFile("Graph\\Interface\\Inventory\\inv_close.bmp", 0);
 	
-	MakeDir(temp,"Graph\\Interface\\Icons\\lvl_up.bmp");
-	ITC.Icon_Lvl_Up = MakeTCFromFile(temp, 0);
-	ITC.ingame_sub_inv = NULL; 
-	MakeDir(temp,"Graph\\Interface\\Icons\\Backpack.bmp");
-	ITC.backpack=D3DTextr_GetSurfaceContainer(temp);
-	MakeDir(temp,"Graph\\Interface\\Inventory\\Gold.bmp");
-	ITC.gold=D3DTextr_GetSurfaceContainer(temp);
-	MakeDir(temp,"Graph\\Interface\\Icons\\Book.bmp");
-	ITC.book=D3DTextr_GetSurfaceContainer(temp);
-	MakeDir(temp,"Graph\\Interface\\Icons\\Steal.bmp");
-	ITC.steal=D3DTextr_GetSurfaceContainer(temp);
-	MakeDir(temp,"Graph\\Interface\\Icons\\cant_steal_item.bmp");
-	ITC.item_cant_steal=D3DTextr_GetSurfaceContainer(temp);
-	MakeDir(temp,"Graph\\interface\\bars\\Empty_gauge_Red.bmp");
-	ITC.empty_gauge_red=D3DTextr_GetSurfaceContainer(temp);
-	MakeDir(temp,"Graph\\interface\\bars\\Empty_gauge_Blue.bmp");
-	ITC.empty_gauge_blue=D3DTextr_GetSurfaceContainer(temp);
-	MakeDir(temp,"Graph\\interface\\bars\\Filled_gauge_Red.bmp");
-	ITC.filled_gauge_red=D3DTextr_GetSurfaceContainer(temp);
-	MakeDir(temp,"Graph\\interface\\bars\\Filled_gauge_Blue.bmp");
-	ITC.filled_gauge_blue=D3DTextr_GetSurfaceContainer(temp);
-	MakeDir(temp,"Graph\\Interface\\cursors\\target_on.bmp");
-	ITC.target_on=D3DTextr_GetSurfaceContainer(temp);
-	MakeDir(temp,"Graph\\Interface\\cursors\\target_off.bmp");
-	ITC.target_off=D3DTextr_GetSurfaceContainer(temp);
-	MakeDir(temp,"Graph\\Interface\\cursors\\interaction_on.bmp");
-	ITC.interaction_on=D3DTextr_GetSurfaceContainer(temp);
-	MakeDir(temp,"Graph\\Interface\\cursors\\interaction_off.bmp");
-	ITC.interaction_off=D3DTextr_GetSurfaceContainer(temp);
-	MakeDir(temp,"Graph\\Interface\\cursors\\magic.bmp");
-	ITC.magic=D3DTextr_GetSurfaceContainer(temp);
-	MakeDir(temp,"Graph\\Interface\\cursors\\throw.bmp");
-	ThrowObject = D3DTextr_GetSurfaceContainer(temp);
+	ITC.Icon_Lvl_Up = MakeTCFromFile("Graph\\Interface\\Icons\\lvl_up.bmp", 0);
+	ITC.ingame_sub_inv = NULL;
+	ITC.backpack = D3DTextr_GetSurfaceContainer("Graph\\Interface\\Icons\\Backpack.bmp");
+	ITC.gold=D3DTextr_GetSurfaceContainer("Graph\\Interface\\Inventory\\Gold.bmp");
+	ITC.book=D3DTextr_GetSurfaceContainer("Graph\\Interface\\Icons\\Book.bmp");
+	ITC.steal=D3DTextr_GetSurfaceContainer("Graph\\Interface\\Icons\\Steal.bmp");
+	ITC.item_cant_steal=D3DTextr_GetSurfaceContainer("Graph\\Interface\\Icons\\cant_steal_item.bmp");
+	ITC.empty_gauge_red=D3DTextr_GetSurfaceContainer("Graph\\interface\\bars\\Empty_gauge_Red.bmp");
+	ITC.empty_gauge_blue=D3DTextr_GetSurfaceContainer("Graph\\interface\\bars\\Empty_gauge_Blue.bmp");
+	ITC.filled_gauge_red=D3DTextr_GetSurfaceContainer("Graph\\interface\\bars\\Filled_gauge_Red.bmp");
+	ITC.filled_gauge_blue=D3DTextr_GetSurfaceContainer("Graph\\interface\\bars\\Filled_gauge_Blue.bmp");
+	ITC.target_on=D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\target_on.bmp");
+	ITC.target_off=D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\target_off.bmp");
+	ITC.interaction_on=D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\interaction_on.bmp");
+	ITC.interaction_off=D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\interaction_off.bmp");
+	ITC.magic=D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\magic.bmp");
+	ThrowObject = D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\throw.bmp");
 }
 
 //-----------------------------------------------------------------------------
