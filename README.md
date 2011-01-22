@@ -14,6 +14,20 @@ Wine and 32bit is only a temporary solution.
 
 `$ make`
 
+## Ubuntu / Debian (and other distros with default libjpeg 6)
+
+If you get following build error:
+error: conflicting declaration ‘typedef long int INT32’
+
+`$ sudo aptitude install libjpeg8-dev`
+
+Some hints from cybersphinx on getting the 32bit libjpeg8 library 
+(Ubuntu has only libjpeg6 in it's 32bit libs package)
+
+http://paste.pocoo.org/show/323329/ 
+
+I will make the Ubuntu build section more straight forward, next time I build it in Ubuntu.
+
 ## Run
 
 Rename all .pak files in the Arx Fatalis installation to lowercase and the run from the directory containing the .pak files.
