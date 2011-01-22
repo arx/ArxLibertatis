@@ -127,16 +127,17 @@ void * _PAK_FileLoadMallocZero(const char * name, long * sizeRead)
 }
 
 // TODO size_t for argument
-void * _PAK_FileLoadMalloc(const char * name, long * SizeLoadMalloc)
+void * _PAK_FileLoadMalloc(const char * name, long * sizeRead)
 {
 
-	int iTaille = 0;
-	void * mem = pPakManager->ReadAlloc(name, &iTaille);
+	int size = 0;
+	void * mem = pPakManager->ReadAlloc(name, &size);
 
-	if ((SizeLoadMalloc) && mem) *SizeLoadMalloc = iTaille;
+	if (sizeRead && mem) *sizeRead = size;
 
 	return mem;
 }
+
 long _PAK_DirectoryExist(const char * name) {
 
 	long leng = strlen(name);
