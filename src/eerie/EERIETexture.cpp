@@ -3005,7 +3005,8 @@ my_error_exit(j_common_ptr cinfo)
 	char txt[256];
 	(*cinfo->err->output_message)(cinfo); 
 	sprintf(txt, "truc zarb: %s", cinfo->err->jpeg_message_table[cinfo->err->msg_code]);
-	MessageBox(NULL, txt, "EERIE JPEG Error", 0);
+//	MessageBox(NULL, txt, "EERIE JPEG Error", 0);
+	printf("EERIE JPEG Error: %s", txt);
 
 	JPEGError = 1;
 	return;
