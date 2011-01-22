@@ -1799,7 +1799,8 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	Dbg_str("DanaeApp RUN");
 	danaeApp.m_bReady = true;
 
-	LaunchCDROMCheck(0);
+//	LaunchCDROMCheck(0);
+
 	HRESULT hr=danaeApp.Run();
 
 #ifdef ARX_STEAM
@@ -4855,6 +4856,7 @@ void ProcessAllTheo()
 	//todo finddata
 //	struct _finddata_t fd;
 	//sprintf(pathh,"*.*");
+	printf("unimplemented ProcessAllTheo\n");
 
 //	if ((idx=_findfirst(pathh,&fd))!=-1)
 //	{

@@ -158,9 +158,13 @@ long FindScriptPos(EERIE_SCRIPT * es, char * str, long poss)
 
 	if (result < 0) return -1;
 
-	long len2 = strlen(str);
+	int len2 = strlen(str);
 
-	if (es->data[result+len2] <= 32) return result;
+	if (len2+result > es->size){
+		printf("ERROR: Out of data borders %s\n String length: %d Result: %d Size: %d \n", str, len2, result, es->size);
+	}else{
+		if (es->data[result+len2] <= 32) return result;
+	}
 
 	return -1;
 }
