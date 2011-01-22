@@ -641,7 +641,7 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			}
 
 			break;
-		case WM_MOVE:
+		case WM_MOVE: break; // TODO hack to prevent wrong m_rcScreenRect in EERIEFrame
 
 			// If in windowed mode, move the Framework's window
 			if (m_pFramework && m_bActive && m_bReady && m_pDeviceInfo->bWindowed)
