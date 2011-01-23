@@ -747,44 +747,32 @@ TextureContainer::~TextureContainer()
 // Name: LoadImageData()
 // Desc: Loads the texture map's image data
 //-----------------------------------------------------------------------------
-HRESULT TextureContainer::LoadImageData()
-{
-	TCHAR * strExtension;
-	TCHAR  strPathname[256];
-	TCHAR  tempstrPathname[256];
-
-	// Check File
-	lstrcpy(strPathname, m_strName);
-
-	if (NULL == (strExtension = strchr(m_strName, '.'))) {
-		printf("LoadImageData: unsupported (missing extension): %s\n", m_strName);
-		return DDERR_UNSUPPORTED;
-	}
-
-	HRESULT hres;
-	strcpy(tempstrPathname, strPathname);
-	SetExt(tempstrPathname, ".png");
-
-	if ((hres = LoadPNGFile(tempstrPathname)) != E_FAIL) return hres;
-
-	SetExt(tempstrPathname, ".jpg");
-
-	if ((hres = LoadJpegFileNoDecomp(tempstrPathname)) != E_FAIL) return hres;
-
-	SetExt(tempstrPathname, ".jpeg");
-
-	if ((hres = LoadJpegFileNoDecomp(tempstrPathname)) != E_FAIL) return hres;
-
-	// Load bitmap files
-	if (!lstrcmpi(strExtension, _T(".bmp")))
-		return LoadBitmapFile(strPathname);
-
-	// Load targa files
-	if (!lstrcmpi(strExtension, _T(".tga")))
-		return LoadTargaFile(strPathname);
+HRESULT TextureContainer::LoadImageData() {
 	
-	printf("LoadImageData: unsupported (unknown extension): %s\n", m_strName);
+	char tempstrPathname[256];
+	
+	HRESULT hres;
+	strcpy(tempstrPathname, m_strName);
+	
+	SetExt(tempstrPathname, ".png");
+	if((hres = LoadPNGFile(tempstrPathname)) != E_FAIL) return hres;
+	
+	SetExt(tempstrPathname, ".jpg");
+	if((hres = LoadJpegFileNoDecomp(tempstrPathname)) != E_FAIL) return hres;
+	
+	SetExt(tempstrPathname, ".jpeg");
+	if((hres = LoadJpegFileNoDecomp(tempstrPathname)) != E_FAIL) return hres;
+	
+	SetExt(tempstrPathname, ".bmp");
+	if((hres = LoadBitmapFile(tempstrPathname)) != E_FAIL) return hres;
+	
+	SetExt(tempstrPathname, ".tga");
+	if((hres = LoadTargaFile(tempstrPathname)) != E_FAIL) return hres;
+	
 	// Can add code here to check for other file formats before failing
+	
+	printf("\e[1;31mLoadImageData: not found: %s\e[m\n", m_strName);
+	
 	return DDERR_UNSUPPORTED;
 }
 
@@ -3002,12 +2990,8 @@ int JPEGError;
 METHODDEF(void)
 my_error_exit(j_common_ptr cinfo)
 {
-	char txt[256];
+	// Output message to console.
 	(*cinfo->err->output_message)(cinfo); 
-	sprintf(txt, "truc zarb: %s", cinfo->err->jpeg_message_table[cinfo->err->msg_code]);
-//	MessageBox(NULL, txt, "EERIE JPEG Error", 0);
-	printf("EERIE JPEG Error: %s", txt);
-
 	JPEGError = 1;
 	return;
 }
