@@ -184,8 +184,8 @@ class TextureContainer
 		HRESULT LoadBitmapFile(TCHAR * strPathname);
 		HRESULT LoadTargaFile(TCHAR * strPathname);
  
-		HRESULT LoadJpegFileNoDecomp(TCHAR * strPathname);
-		HRESULT LoadPNGFile(TCHAR * strPathname);
+		HRESULT LoadJpegFileNoDecomp(const char * strPathname);
+		HRESULT LoadPNGFile(const char * strPathname);
 		HRESULT Restore(LPDIRECT3DDEVICE7 pd3dDevice);
 		HRESULT CopyBitmapToSurface(LPDIRECTDRAWSURFACE7 Surface);
 		HRESULT CopyBitmapToSurface2(HBITMAP hbitmap, int depx, int depy, int largeur, int hauteur, long flag = 0);
