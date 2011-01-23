@@ -36,18 +36,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 typedef long FileHandle;
 
-long KillAllDirectory(char * path);
+long KillAllDirectory(const char * path);
 
-long FileExist(char * name);
-long DirectoryExist(char * name);
-FileHandle FileOpenRead(char * name);
-FileHandle FileOpenWrite(char * name);
+long FileExist(const char * name);
+long DirectoryExist(const char * name);
+FileHandle FileOpenRead(const char * name);
+FileHandle FileOpenWrite(const char * name);
 long FileCloseWrite(FileHandle h);
 long FileCloseRead(FileHandle h);
 long FileRead(FileHandle h, void * adr, long size);
-long FileWrite(FileHandle h, void * adr, long size);
-void * FileLoadMalloc(char * name, long * filesize = 0);
-void * FileLoadMallocZero(char * name, long * filesize = 0);
+long FileWrite(FileHandle h, const void * adr, long size);
+void * FileLoadMalloc(const char * name, long * filesize = 0);
+void * FileLoadMallocZero(const char * name, long * filesize = 0);
 long FileSeek(FileHandle handle, long offset, long mode);
 
 #endif // ARX_HERMES_FILESYSTEM_H

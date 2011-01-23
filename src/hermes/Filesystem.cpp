@@ -27,7 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h>
 #include <cstdio>
 
-long KillAllDirectory(char * path) {
+long KillAllDirectory(const char * path) {
 	printf("KillAllDirectory(%s)\n", path);
 	
 	WIN32_FIND_DATA FileInformation;             // File information
@@ -67,7 +67,32 @@ long KillAllDirectory(char * path) {
 	return 1;
 }
 
-long FileExist(char * name)
+long DirectoryExist(const char * name)
+{
+	HANDLE idx;
+	WIN32_FIND_DATA fd;
+
+	if ((idx = FindFirstFile(name, &fd)) == -1)
+	{
+		FindClose(idx);
+		char initial[256];
+		GetCurrentDirectory(255, initial);
+
+		if (SetCurrentDirectory(name) == 0) // success
+		{
+			SetCurrentDirectory(initial);
+			return 1;
+		}
+
+		SetCurrentDirectory(initial);
+		return 0;
+	}
+
+	FindClose(idx);
+	return 1;
+}
+
+long FileExist(const char * name)
 {
 	FileHandle i;
 
@@ -81,10 +106,10 @@ long FileExist(char * name)
 	return 1;
 }
 
-FileHandle	FileOpenRead(char * name)
+FileHandle	FileOpenRead(const char * name)
 {
 	long	handle;
-	handle = CreateFile((const char *)name, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, 0);
+	handle = CreateFile(name, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, 0);
 
 	if(handle < 0) {
 		printf("\e[1;31mCan't open\e[m\t%s\n", name);
@@ -100,19 +125,19 @@ long	FileSizeHandle(FileHandle handle)
 	return (SetFilePointer((int)handle - 1, 0, NULL, FILE_CURRENT));
 }
 
-FileHandle	FileOpenWrite(char * name)
+FileHandle	FileOpenWrite(const char * name)
 {
 	printf("FileOpenWrite(%s)\n", name);
 	FileHandle	handle;
 
-	handle = CreateFile((const char *)name, GENERIC_READ | GENERIC_WRITE, TRUNCATE_EXISTING, NULL, 0, 0, 0);
+	handle = CreateFile(name, GENERIC_READ | GENERIC_WRITE, TRUNCATE_EXISTING, NULL, 0, 0, 0);
 
 	if (handle < 0)	{
 		return(0);
 	}
 
 	CloseHandle(handle);
-	handle = CreateFile((const char *)name, GENERIC_WRITE, 0, NULL, 0, 0, 0);
+	handle = CreateFile(name, GENERIC_WRITE, 0, NULL, 0, 0, 0);
 
 	if (handle < 0) {
 		return(0);
@@ -139,7 +164,7 @@ long	FileRead(FileHandle handle, void * adr, long size)
 	return ret;
 }
 
-long	FileWrite(FileHandle handle, void * adr, long size)
+long	FileWrite(FileHandle handle, const void * adr, long size)
 {
 	DWORD ret;
 	WriteFile(handle - 1, adr, size, &ret, NULL);
@@ -151,7 +176,7 @@ long	FileSeek(long handle, long offset, long mode)
 	return SetFilePointer((int)handle - 1, offset, NULL, mode);
 }
 
-void	* FileLoadMallocZero(char * name, long * SizeLoadMalloc)
+void	* FileLoadMallocZero(const char * name, long * SizeLoadMalloc)
 {
 	long	handle;
 	long	size1, size2;
@@ -200,7 +225,7 @@ void	* FileLoadMallocZero(char * name, long * SizeLoadMalloc)
 	return(adr);
 }
 
-void	* FileLoadMalloc(char * name, long * SizeLoadMalloc)
+void	* FileLoadMalloc(const char * name, long * SizeLoadMalloc)
 {
 	long	handle;
 	long	size1, size2;

@@ -816,31 +816,6 @@ void RemoveName(char * str)
 	makepath(str, _drv, _dir, NULL, NULL);
 }
 
-long DirectoryExist(char * name)
-{
-	HANDLE idx;
-	WIN32_FIND_DATA fd;
-
-	if ((idx = FindFirstFile(name, &fd)) == -1)
-	{
-		FindClose(idx);
-		char initial[256];
-		GetCurrentDirectory(255, initial);
-
-		if (SetCurrentDirectory(name) == 0) // success
-		{
-			SetCurrentDirectory(initial);
-			return 1;
-		}
-
-		SetCurrentDirectory(initial);
-		return 0;
-	}
-
-	FindClose(idx);
-	return 1;
-}
-
 bool CreateFullPath(const char * path) {
 	printf("CreateFullPath(%s)", path);
 	
