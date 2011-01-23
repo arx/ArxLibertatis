@@ -182,7 +182,7 @@ typedef struct
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//associated fx
 	int			typeinterp;
 	EERIE_3D	pos;
 	float		angz;
@@ -196,7 +196,7 @@ typedef struct
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//associated fx
 	int			typeinterp;
 	EERIE_3D	pos;
 	float		angz;
@@ -211,7 +211,7 @@ typedef struct
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//associated fx
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
@@ -226,7 +226,7 @@ typedef struct
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//associated fx
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
@@ -242,7 +242,7 @@ typedef struct CS_KEY
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//associated fx
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
@@ -260,7 +260,7 @@ typedef struct
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//associated fx
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
@@ -278,7 +278,7 @@ typedef struct
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//associated fx
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
@@ -297,7 +297,7 @@ typedef struct CST_KEY
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//associated fx
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
@@ -309,7 +309,7 @@ typedef struct CST_KEY
 	EERIE_3D	posgrille;
 	float		angzgrille;
 	float		speedtrack;
-	int			idsound[16];	//16 langues max.
+	int			idsound[16];	//16 languages max.
 } C_KEY;
 
 typedef struct
@@ -334,7 +334,7 @@ class CINEMATIQUE
 
 		EERIE_3D	pos;
 		float		angz;
-		EERIE_3D	possuiv;			//dans le cas d'une non interpolation fadée
+		EERIE_3D	possuiv;			//in the case of a non-fade interpolation
 		float		angzsuiv;
 		int			numbitmap;
 		int			numbitmapsuiv;
