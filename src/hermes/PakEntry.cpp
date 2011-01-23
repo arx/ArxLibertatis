@@ -71,7 +71,7 @@ PakDirectory::PakDirectory( PakDirectory * p, const std::string& n )
 
     if ( !n.empty() )
     {
-        size_t l;
+        size_t l = 0;
         this->name = GetFirstDir(n, l);
 
         if (this->name)
@@ -121,10 +121,10 @@ PakDirectory::~PakDirectory()
 PakDirectory * PakDirectory::addDirectory(const std::string& sname)
 {
 	unsigned int nbs = this->nbsousreps;
-	size_t l;
+	size_t l = 0;
 	PakDirectory	* rf = this->children;
 
-	const char * fdir = GetFirstDir(sname, &l);
+	const char * fdir = GetFirstDir(sname, l);
 
 	while (nbs--)
 	{
@@ -153,10 +153,10 @@ PakDirectory * PakDirectory::addDirectory(const std::string& sname)
 bool PakDirectory::removeDirectory(const std::string& sname)
 {
 	unsigned int nbs = this->nbsousreps;
-	size_t l;
+	size_t l = 0;
 	PakDirectory * rf = this->children;
 	
-	const char * fdir = GetFirstDir(sname, &l);
+	const char * fdir = GetFirstDir(sname, l);
 	
 	while (nbs--)
 	{
@@ -213,11 +213,11 @@ bool PakDirectory::removeDirectory(const std::string& sname)
 PakDirectory * PakDirectory::getDirectory(const std::string& sname)
 {
 	unsigned int nbs = this->nbsousreps;
-	size_t l;
+	size_t l = 0;
 	PakDirectory	* rf = this->children;
 	
 	// TODO this can be done without allocating
-	const char * fdir = GetFirstDir(sname, &l);
+	const char * fdir = GetFirstDir(sname, l);
 	
 	while (nbs--)
 	{
@@ -348,26 +348,26 @@ void Kill(PakDirectory * r)
 	delete r;
 }
 
-static char * GetFirstDir(const char * dir, size_t * l)
+static char * GetFirstDir(const std::string& dir, size_t& l)
 {
-	const char * dirc = dir;
+	const char* dirc = dir.c_str();
 
-	*l = 1;
+	l = 1;
 
 	while ((*dirc) &&
 	        (*dirc != '\\' && *dirc != '/'))
 	{
-		*l += 1;
+		l += 1;
 		dirc++;
 	}
 
-	char * fdir = new char[*l+1];
+	char * fdir = new char[l+1];
 
 	if (!fdir) return NULL;
 
-	strncpy(fdir, dir, *l);
-	fdir[*l] = 0;
-	fdir[*l - 1] = '\\'; // TODO use "/" seperator
+	strncpy(fdir, dir.c_str(), l);
+	fdir[l] = 0;
+	fdir[l - 1] = '\\'; // TODO use "/" seperator
 
 	return fdir;
 }

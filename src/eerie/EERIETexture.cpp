@@ -543,6 +543,7 @@ TextureContainer::TextureContainer( const std::string& strName, DWORD dwStage,
                                    DWORD dwFlags)
 {
     m_texName = strName;
+    m_strName = strName;
     MakeUpcase( m_texName );
 
     m_dwWidth		= 0;
@@ -763,7 +764,10 @@ HRESULT TextureContainer::LoadImageData()
     strExtension = m_strName.substr( m_strName.find_first_of('.') );
 
     if ( strExtension.empty() )
+    {
+        printf("LoadImageData: unsupported (missing extension): %s\n", m_strName.c_str());
         return DDERR_UNSUPPORTED;
+    }
 
     HRESULT hres;
     tempstrPathname = strPathname;
@@ -787,6 +791,10 @@ HRESULT TextureContainer::LoadImageData()
     if (!lstrcmpi(strExtension.c_str(), _T(".tga")))
         return LoadTargaFile(strPathname.c_str());
 
+    // Can add code here to check for other file formats before failing
+    return DDERR_UNSUPPORTED;
+
+    printf("LoadImageData: unsupported (unknown extension): %s\n", m_strName);
     // Can add code here to check for other file formats before failing
     return DDERR_UNSUPPORTED;
 }
@@ -3008,7 +3016,7 @@ my_error_exit(j_common_ptr cinfo)
     char txt[256];
     (*cinfo->err->output_message)(cinfo); 
     sprintf(txt, "truc zarb: %s", cinfo->err->jpeg_message_table[cinfo->err->msg_code]);
-    MessageBox(NULL, txt, "EERIE JPEG Error", 0);
+    printf("EERIE JPEG Error: %s", txt);
 
     JPEGError = 1;
     return;

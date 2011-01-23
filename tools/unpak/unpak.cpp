@@ -38,7 +38,7 @@ void dump(PakReader & pak, const PakDirectory * dir, string where = string()) {
 	PakFile * file = dir->files;
 	while(file != NULL) {
 		
-		if(!file->name) {
+		if(file->name.empty()) {
 			
 		}
 		
@@ -57,7 +57,7 @@ void dump(PakReader & pak, const PakDirectory * dir, string where = string()) {
 		if(file->size && (!(file->flags & PAK_FILE_COMPRESSED) || file->uncompressedSize)) {
 			
 			size_t size;
-			char * data = (char*)pak.ReadAlloc(filename.c_str(), &size);
+			char * data = (char*)pak.ReadAlloc(filename, size);
 			assert(data != NULL);
 			
 			if(fwrite(data, size, 1, f) != 1) {
