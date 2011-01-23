@@ -274,7 +274,7 @@ public:
 		float			fMouseSensibility;
 protected:
 		// Overridable variables for the app
-		char *			m_strWindowTitle;
+		const char * m_strWindowTitle;
 		bool			m_bAppUseZBuffer;
 		bool			m_bAppUseStereo;
 		bool			m_bShowStats;
@@ -399,7 +399,7 @@ extern CD3DApplication * g_pD3DApp;
 // MESSAGE BOXES
 //******************************************************************************
 bool	OKBox(char * text, char * title);
-void	ShowPopup(char * text);
+void	ShowPopup(const char * text);
 int		ShowError(char * funcname, char * message, long fatality);
 
 void	ExitApp(int v);

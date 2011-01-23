@@ -45,7 +45,6 @@ namespace ATHENA
 	aalSLong environment_id(AAL_SFALSE);
 
 	// Global settings                                                           //
-	char * root_path = NULL;
 	char * sample_path = NULL;
 	char * ambiance_path = NULL;
 	char * environment_path = NULL;

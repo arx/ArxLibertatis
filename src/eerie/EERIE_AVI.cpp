@@ -114,7 +114,7 @@ bool PlayFile(HWND hWnd, char * file)
 		h = grc.bottom;
 
 		char te[256];
-		sprintf(te, "%d - %d", w, h);
+		sprintf(te, "%ld - %ld", w, h);
 
 		long lLeft, lTop;
 		lLeft = 0;
