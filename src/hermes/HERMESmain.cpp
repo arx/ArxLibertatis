@@ -632,10 +632,10 @@ long HERMES_CreateFileCheck(const char * name, char * scheck, const long & size,
     }
     
 		// from http://acmlm.kafuka.org/board/thread.php?id=3930
-    static void makepath(char *path, char *drive, char *dir, char *fName, char *ext)
+    static void makepath(char *path, char *drive, char *dir, char *fName, const char *ext)
     {
         char separator = '\\';
-        char *lastChar = NULL;
+        const char * lastChar = NULL;
         char *pos      = NULL;
         
         unsigned int    i = 0,
@@ -762,16 +762,16 @@ long HERMES_CreateFileCheck(const char * name, char * scheck, const long & size,
         }
         else
         {
-            lastChar = GetLastChar(path) - 1;
+            char * lastPathChar = GetLastChar(path) - 1;
             
             /* backpedal until we get rid of all the dots b/c what's the use of a dot on an extensionless file? */
-            while(lastChar > path)
+            while(lastPathChar > path)
             {
-                if((*lastChar) != '.')
+                if((*lastPathChar) != '.')
                     break;
             
-                (*lastChar) = '\0';
-                lastChar--;
+                (*lastPathChar) = '\0';
+                lastPathChar--;
             }        
         }
     }
@@ -799,13 +799,13 @@ char * GetExt(const char * str)
 	return _ext;
 }
 
-void SetExt(char * str, char * new_ext)
+void SetExt(char * str, const char * new_ext)
 {
 	splitpath(str, _drv, _dir, _name, _ext);
 	makepath(str, _drv, _dir, _name, new_ext);
 }
 
-void AddToName(char * str, char * cat)
+void AddToName(char * str, const char * cat)
 {
 	splitpath(str, _drv, _dir, _name, _ext);
 	strcat(_name, cat);

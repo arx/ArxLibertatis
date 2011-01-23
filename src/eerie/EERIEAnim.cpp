@@ -384,7 +384,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const char * path)
 				animations[i].locks=1;
 				char temp[512]; // TODO improve
 				strcpy(temp, path);
-				SetExt(temp,"");
+				SetExt(temp, "");
 				sprintf(path2,"%s%d.tea",temp,pathcount);
 
 				while (EERIE_ANIMMANAGER_AddAltAnim(&animations[i],path2))
@@ -427,7 +427,7 @@ long EERIE_ANIMMANAGER_Count(char *tex,long * memsize)
 			for (long k=0;k<animations[i].alt_nb;k++)
 				totsize+=animations[i].sizes[k];
 
-			sprintf(temp,"%3d[%3d] %s size %d Locks %d Alt %d\r\n",count,i,txx,totsize,animations[i].locks,animations[i].alt_nb-1);
+			sprintf(temp,"%3ld[%3ld] %s size %ld Locks %ld Alt %d\r\n",count,i,txx,totsize,animations[i].locks,animations[i].alt_nb-1);
 			memsize+=totsize;
 			strcat(tex,temp);
 		}
