@@ -1014,7 +1014,7 @@ void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb)
 
 			if (per != lastper)
 			{
-				sprintf(text, "Anchor Links Generation: %d%%", per);
+				sprintf(text, "Anchor Links Generation: %ld%%", per);
 				lastper = per;
 				_ShowText(text);
 			}
@@ -1180,7 +1180,7 @@ void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb)
 
 			if (per != lastper)
 			{
-				sprintf(text, "Anchor Generation: %d%% (Pass II)", per);
+				sprintf(text, "Anchor Generation: %ld%% (Pass II)", per);
 				lastper = per;
 				_ShowText(text);
 			}
@@ -1342,7 +1342,7 @@ void AnchorData_Create_Original_Method(EERIE_BACKGROUND * eb)
 
 				if (per != lastper)
 				{
-					sprintf(text, "Anchor Generation: %d%%", per);
+					sprintf(text, "Anchor Generation: %ld%%", per);
 					lastper = per;
 					_ShowText(text);
 				}
@@ -1472,7 +1472,7 @@ void AnchorData_Create_Alternative_Method_I(EERIE_BACKGROUND * eb)
 
 				if (per != lastper)
 				{
-					sprintf(text, "Anchor Generation: %d%%", per);
+					sprintf(text, "Anchor Generation: %ld%%", per);
 					lastper = per;
 					_ShowText(text);
 				}
