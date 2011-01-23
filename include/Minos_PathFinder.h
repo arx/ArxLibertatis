@@ -37,7 +37,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using namespace MINOS;
 
 // Flags                                                                     //
-typedef enum MINOSFlags
+enum MINOSFlags
 {
 	MINOS_REGULAR = 0x0000,
 	MINOS_STEALTH = 0x0001,
