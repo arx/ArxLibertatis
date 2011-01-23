@@ -3753,13 +3753,12 @@ extern void LoadLevelScreen(LPDIRECT3DDEVICE7 pd3dDevice = NULL, long lev = -1, 
 extern float PROGRESS_BAR_COUNT;
 long NOCHECKSUM = 0;
 long USE_FAST_SCENES = 1;
-bool FastSceneLoad(char * partial_path)
+bool FastSceneLoad(const char * partial_path)
 {
 	
 	if (!USE_FAST_SCENES) return false;
 
-	std::string path;
-	path = Project.workingdir + "Game\\" + partial_path;
+	std::string path = "Game\\" + partial_path;
 
 	long count = 0;
 	long idx;
@@ -3791,7 +3790,7 @@ bool FastSceneLoad(char * partial_path)
 
 	long c_count;
 	c_count = 0;
-	path2 = Project.workingdir + partial_path + "*.scn";
+	path2 = partial_path + "*.scn";
 //	todo: find
 //	struct _finddata_t fd;
 //	if ((idx = _findfirst(path2, &fd)) != -1)
@@ -3817,7 +3816,7 @@ bool FastSceneLoad(char * partial_path)
         char check[512];
         char * check2 = (char *)(dat + pos);
         pos += 512;
-        path2 = Project.workingdir + partial_path + uh2->path;
+        path2 = partial_path + uh2->path;
         SetExt(path2, ".scn");
 
         if (PAK_FileExist(path2))
@@ -3897,8 +3896,8 @@ lasuite:
 	{
 		FAST_TEXTURE_CONTAINER * ftc = (FAST_TEXTURE_CONTAINER *)(dat + pos);
 		char fic[256];
-		sprintf(fic, "%s%s", Project.workingdir.c_str(), ftc->fic);
-		ftc->temp = D3DTextr_CreateTextureFromFile(fic, Project.workingdir, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
+		sprintf(fic, "%s", ftc->fic);
+		ftc->temp = D3DTextr_CreateTextureFromFile(fic, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
 
 		if ((ftc->temp) && (GDevice) && (ftc->temp->m_pddsSurface == NULL)) ftc->temp->Restore(GDevice);
 
@@ -4263,10 +4262,10 @@ release:
 	free(dat);
 	return false;
 }
-bool FastSceneSave(char * partial_path, EERIE_MULTI3DSCENE * ms)
+bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms)
 {
 	std::string path;
-	path, Project.workingdir + "Game\\" + partial_path;
+	path = "Game\\" + partial_path;
 
 	if (!CreateFullPath(path)) return false;
 
@@ -4326,7 +4325,7 @@ bool FastSceneSave(char * partial_path, EERIE_MULTI3DSCENE * ms)
 
 	char * text;
 
-	path2 = Project.workingdir + partial_path + "*.scn";
+	path2 = partial_path + "*.scn";
 
 //	todo: find
 //	struct _finddata_t fd;
@@ -4340,7 +4339,7 @@ bool FastSceneSave(char * partial_path, EERIE_MULTI3DSCENE * ms)
 //
 //				if (!strcasecmp(text, ".SCN"))
 //				{
-//					sprintf(path3, "%s%s%s", Project.workingdir, partial_path, fd.name);
+//					sprintf(path3, "%s%s", partial_path, fd.name);
 //					SetExt(path3, ".scn");
 //					UNIQUE_HEADER2 * uh2 = (UNIQUE_HEADER2 *)(dat + pos);
 //					strcpy(uh2->path, fd.name);
@@ -4645,7 +4644,7 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms)
 	char ftemp[256];
 	strcpy(ftemp, LastLoadedScene);
 	RemoveName(ftemp);
-	sprintf(fic, "%s%s", Project.workingdir.c_str(), LastLoadedScene);
+	strcpy(fic, LastLoadedScene);
 
 	// First Release Any Portal Data
 	EERIE_PORTAL_Release();

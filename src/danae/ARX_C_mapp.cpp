@@ -38,7 +38,6 @@ extern char AllTxt[];
 extern HWND HwndPere;
 extern char DirectoryChoose[];
 
-extern char		DirectoryAbs[];
 void ClearAbsDirectory(char * pT, char * d);
 void AddDirectory(char * pT, char * dir);
 
@@ -668,7 +667,6 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 	strcpy(AllTxt, dir);
 	strcat(AllTxt, name);
 	ClearAbsDirectory(AllTxt, "ARX\\");
-	AddDirectory(AllTxt, DirectoryAbs);
 	SetExt(AllTxt, ".BMP");
 
 	if (PAK_FileExist(AllTxt))

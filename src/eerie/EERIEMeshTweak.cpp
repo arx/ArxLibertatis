@@ -101,8 +101,7 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const std::string& s1, const std::
 
 	skintochange = "Graph\\Obj3D\\Textures\\" + s1 + ".bmp";
 	MakeUpcase(skintochange);
-	sprintf(skinname, "%sGraph\\Obj3D\\Textures\\%s.bmp", Project.workingdir.c_str(), s2.c_str());
-	TextureContainer * tex = D3DTextr_CreateTextureFromFile(skinname, Project.workingdir);
+	TextureContainer * tex = D3DTextr_CreateTextureFromFile(skintochange);
 
 	if (obj->originaltextures == NULL)
 	{
@@ -892,9 +891,7 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const std::string& _path
 	std::string path;
 	File_Standardize(_path, path);
 
-	filet = Project.workingdir;
-	filet += "GAME\\";
-	filet += path.substr( Project.workingdir.length() );
+	filet = "GAME\\" + path;
 
 	SetExt(filet, ".FTL");
 	File_Standardize(filet, file2);
@@ -928,8 +925,7 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const std::string& _path
 
 	if ((PAK_FileExist(file2)) || (PAK_FileExist(path)))
 	{
-		char tex1[256];
-		sprintf(tex1, "%sGraph\\Obj3D\\Textures\\", Project.workingdir.c_str());
+		const char tex1[] = "Graph\\Obj3D\\Textures\\";
 
 		if (io->ioflags & IO_NPC)
 			tobj = TheoToEerie_Fast(tex1, path.c_str(), TTE_NPC);

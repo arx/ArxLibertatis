@@ -1272,8 +1272,7 @@ char * GetVersionString()
 //*************************************************************************************
 // Sets DANAE Main Window Title
 //*************************************************************************************
-void SetWindowTitle(HWND hWnd, char * tex)
-{
+void SetWindowTitle(HWND hWnd, char * tex) {
 	char texx[512];
 	strcpy(texx, tex);
 	strcat(texx, GetVersionString());
@@ -1874,17 +1873,14 @@ bool CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					if (IsChecked(hWnd, IDC_COMPATIBILITY)) Project.compatibility = 1;
 					else Project.compatibility = 0;
 
-					if (IsChecked(hWnd, IDC_OTHERSERVER))
-					{
-						thWnd = GetDlgItem(hWnd, IDC_OTHERSERVER);
-						GetWindowText(thWnd, Project.workingdir, 256);
-					}
-					else strcpy(Project.workingdir, "\\\\ARKANESERVER\\Public\\Arx\\");
+					//if (IsChecked(hWnd, IDC_OTHERSERVER))
+					//{
+					//	thWnd = GetDlgItem(hWnd, IDC_OTHERSERVER);
+					//	GetWindowText(thWnd, Project_workingdir, 256);
+					//}
+					//else strcpy(Project_workingdir, "\\\\ARKANESERVER\\Public\\Arx\\");
 
-					char tteexx[512];
-					strcpy(tteexx, Project.workingdir);
-					strcat(tteexx, "GRAPH\\LEVELS\\");
-					chdir(tteexx);
+					chdir("GRAPH\\LEVELS\\");
 
 					thWnd = GetDlgItem(hWnd, IDC_TEXTUREPRECISION);
 					val = SendMessage(thWnd, TBM_GETPOS, true, 0);
@@ -1919,7 +1915,7 @@ bool CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					if (IsChecked(hWnd, IDC_TEX16)) Project.TextureBits = 16;
 					else Project.TextureBits = 32;
 
-					Danae_Registry_Write("LastWorkingDir", Project.workingdir);
+					//Danae_Registry_Write("LastWorkingDir", Project_workingdir);
 					EndDialog(hWnd, true);
 					break;
 				case IDQUIT:
@@ -1929,62 +1925,10 @@ bool CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				case IDC_CHOOSEDIR:
 					thWnd = GetDlgItem(hWnd, IDC_OTHERSERVER);
 					SendMessage(thWnd, BM_CLICK, 0, 0);
-					HERMESFolderSelector(Project.workingdir, "Choose Working Folder");
+					//HERMESFolderSelector(Project_workingdir, "Choose Working Folder");
 
-					if (!strcmp(Project.workingdir, "A:\\\\")) strcpy(Project.workingdir, "A:\\");
-
-					if (!strcmp(Project.workingdir, "B:\\\\")) strcpy(Project.workingdir, "B:\\");
-
-					if (!strcmp(Project.workingdir, "C:\\\\")) strcpy(Project.workingdir, "C:\\");
-
-					if (!strcmp(Project.workingdir, "D:\\\\")) strcpy(Project.workingdir, "D:\\");
-
-					if (!strcmp(Project.workingdir, "E:\\\\")) strcpy(Project.workingdir, "E:\\");
-
-					if (!strcmp(Project.workingdir, "F:\\\\")) strcpy(Project.workingdir, "F:\\");
-
-					if (!strcmp(Project.workingdir, "G:\\\\")) strcpy(Project.workingdir, "G:\\");
-
-					if (!strcmp(Project.workingdir, "H:\\\\")) strcpy(Project.workingdir, "H:\\");
-
-					if (!strcmp(Project.workingdir, "I:\\\\")) strcpy(Project.workingdir, "I:\\");
-
-					if (!strcmp(Project.workingdir, "J:\\\\")) strcpy(Project.workingdir, "J:\\");
-
-					if (!strcmp(Project.workingdir, "K:\\\\")) strcpy(Project.workingdir, "K:\\");
-
-					if (!strcmp(Project.workingdir, "L:\\\\")) strcpy(Project.workingdir, "L:\\");
-
-					if (!strcmp(Project.workingdir, "M:\\\\")) strcpy(Project.workingdir, "M:\\");
-
-					if (!strcmp(Project.workingdir, "N:\\\\")) strcpy(Project.workingdir, "N:\\");
-
-					if (!strcmp(Project.workingdir, "O:\\\\")) strcpy(Project.workingdir, "O:\\");
-
-					if (!strcmp(Project.workingdir, "P:\\\\")) strcpy(Project.workingdir, "P:\\");
-
-					if (!strcmp(Project.workingdir, "Q:\\\\")) strcpy(Project.workingdir, "Q:\\");
-
-					if (!strcmp(Project.workingdir, "R:\\\\")) strcpy(Project.workingdir, "R:\\");
-
-					if (!strcmp(Project.workingdir, "S:\\\\")) strcpy(Project.workingdir, "S:\\");
-
-					if (!strcmp(Project.workingdir, "T:\\\\")) strcpy(Project.workingdir, "T:\\");
-
-					if (!strcmp(Project.workingdir, "U:\\\\")) strcpy(Project.workingdir, "U:\\");
-
-					if (!strcmp(Project.workingdir, "V:\\\\")) strcpy(Project.workingdir, "V:\\");
-
-					if (!strcmp(Project.workingdir, "W:\\\\")) strcpy(Project.workingdir, "W:\\");
-
-					if (!strcmp(Project.workingdir, "X:\\\\")) strcpy(Project.workingdir, "X:\\");
-
-					if (!strcmp(Project.workingdir, "Y:\\\\")) strcpy(Project.workingdir, "Y:\\");
-
-					if (!strcmp(Project.workingdir, "Z:\\\\")) strcpy(Project.workingdir, "Z:\\");
-
-					SetWindowText(thWnd, Project.workingdir);
-					Danae_Registry_Write("LastWorkingDir", Project.workingdir);
+					//SetWindowText(thWnd, Project_workingdir);
+					//Danae_Registry_Write("LastWorkingDir", Project_workingdir);
 					break;
 			}
 
@@ -2036,9 +1980,9 @@ bool CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			thWnd = GetDlgItem(hWnd, IDC_VERSION);
 			sprintf(tex, "Ver.%2.3f", DANAE_VERSION);
 			SetWindowText(thWnd, tex);
-			Danae_Registry_Read("LastWorkingDir", Project.workingdir, "c:\\arx\\", 256);
+			//Danae_Registry_Read("LastWorkingDir", Project_workingdir, "c:\\arx\\", 256);
 			thWnd = GetDlgItem(hWnd, IDC_OTHERSERVER);
-			SetWindowText(thWnd, Project.workingdir);
+			//SetWindowText(thWnd, Project_workingdir);
 
 			if (HERMES_KEEP_MEMORY_TRACE) SetClick(hWnd, IDC_TRACEMEMORY);
 

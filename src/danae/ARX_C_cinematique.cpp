@@ -61,8 +61,6 @@ int				OldColorFlashBlanc;
 int				OldFxSpecialFade;
 int				LSoundChoose;
 
-char			DirectoryAbs[256];
-
 /*---------------------------------------------------------------------------------*/
  
 /*---------------------------------------------------------------------------------*/
@@ -170,8 +168,6 @@ CINEMATIQUE::CINEMATIQUE(LPDIRECT3DDEVICE7 _m_pd3dDevice, int _w, int _h)
 	AltKey = false;
 
 	m_flIntensityRND = 0.f;
-
-	strcpy(DirectoryAbs, Project.workingdir);
 }
 /*-------------------------------------------------------------------*/
 void FillKeyTemp(EERIE_3D * pos, float az, int frame, int numbitmap, int numfx, short ti, int color, int colord, int colorf, float speed, int idsound, short force, C_LIGHT * light, EERIE_3D * posgrille, float azgrille, float speedtrack)

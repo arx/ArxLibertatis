@@ -183,11 +183,10 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 		ReleaseEERIE3DObj(io->obj);
 	}
 
-	char tex[256];
-	char tex1[256];
-	sprintf(tex1, "%sGraph\\Obj3D\\Textures\\", Project.workingdir);
-	MakeDir(tex, "graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo");
-	io->obj = TheoToEerie_Fast(tex1, tex, TTE_NO_PHYSICS_BOX | TTE_NPC);
+	const char texpath[] = "Graph\\Obj3D\\Textures\\";
+	const char OBJECT_HUMAN_BASE[] = "graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo";
+	// TODO wrong order of parameters?
+	io->obj = TheoToEerie_Fast(OBJECT_HUMAN_BASE, texpath, TTE_NO_PHYSICS_BOX | TTE_NPC);
 	
 	long sel_ = -1;
 	long i;
@@ -202,7 +201,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 		{
 			if (tweaker->tweakerinfo->filename[0] != 0)
 			{
-				sprintf(pathh, "%s\\Graph\\Obj3D\\Interactive\\NPC\\human_base\\tweaks\\%s", Project.workingdir, tweaker->tweakerinfo->filename);
+				sprintf(pathh, "Graph\\Obj3D\\Interactive\\NPC\\human_base\\tweaks\\%s", tweaker->tweakerinfo->filename);
 				EERIE_MESH_TWEAK_Do(io, TWEAK_HEAD, pathh);
 			}
 
@@ -258,7 +257,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 		{
 			if (tweaker->tweakerinfo->filename[0] != 0)
 			{
-				sprintf(pathh, "%s\\Graph\\Obj3D\\Interactive\\NPC\\human_base\\tweaks\\%s", Project.workingdir, tweaker->tweakerinfo->filename);
+				sprintf(pathh, "Graph\\Obj3D\\Interactive\\NPC\\human_base\\tweaks\\%s", tweaker->tweakerinfo->filename);
 				EERIE_MESH_TWEAK_Do(io, TWEAK_TORSO, pathh);
 			}
 
@@ -314,7 +313,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 		{
 			if (tweaker->tweakerinfo->filename[0] != 0)
 			{
-				sprintf(pathh, "%s\\Graph\\Obj3D\\Interactive\\NPC\\human_base\\tweaks\\%s", Project.workingdir, tweaker->tweakerinfo->filename);
+				sprintf(pathh, "Graph\\Obj3D\\Interactive\\NPC\\human_base\\tweaks\\%s", tweaker->tweakerinfo->filename);
 				EERIE_MESH_TWEAK_Do(io, TWEAK_LEGS, pathh);
 			}
 

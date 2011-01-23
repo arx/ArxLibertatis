@@ -100,7 +100,7 @@ extern ACTIONSTRUCT actions[MAX_ACTIONS];
 
 //-----------------------------------------------------------------------------
 EERIE_MULTI3DSCENE	* MultiSceneToEerie(char * dir);
-EERIE_MULTI3DSCENE	* PAK_MultiSceneToEerie(char * dir);
+EERIE_MULTI3DSCENE	* PAK_MultiSceneToEerie(const char * dir);
 
 void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms);
 void ReleaseScene(EERIE_3DSCENE	*	scene);
@@ -120,9 +120,9 @@ void ZRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s);
 
 EERIE_3DOBJ * TheoToEerie(unsigned char * adr,long size,char * texpath,char * fic,long flag,LPDIRECT3DDEVICE7 pd3dDevice=NULL,long flag2=0);
 void _THEObjLoad(EERIE_3DOBJ *eerie,unsigned char * adr,long * poss,long version,long flag=0,long flag2=0);
-EERIE_3DOBJ * TheoToEerie_Fast(char * texpath,char * fic,long flag,LPDIRECT3DDEVICE7 pd3dDevice=NULL);
-EERIE_ANIM * TheaToEerie(unsigned char * adr,long size,char * fic,long flags);
-EERIE_ANIM * OldTheaToEerie(unsigned char * adr,long size,char * fic);
+EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * fic,long flag,LPDIRECT3DDEVICE7 pd3dDevice=NULL);
+EERIE_ANIM * TheaToEerie(unsigned char * adr,long size,const char * fic,long flags);
+EERIE_ANIM * OldTheaToEerie(unsigned char * adr,long size,const char * fic);
 
 EERIE_3DSCENE * ScnToEerie(unsigned char * adr,  long		  size, char   *  fic,	long flags = 0);
 

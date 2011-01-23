@@ -169,7 +169,7 @@ void InverseLong(int * l)
 
 
 
-TextureContainer * MakeTCFromFile(char * tex, long flag)
+TextureContainer * MakeTCFromFile(const char * tex, long flag)
 {
 	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
@@ -186,7 +186,7 @@ TextureContainer * MakeTCFromFile(char * tex, long flag)
 	return tc;
 }
 
-TextureContainer * MakeTCFromFile_NoRefinement(char * tex, long flag)
+TextureContainer * MakeTCFromFile_NoRefinement(const char * tex, long flag)
 {
 	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
@@ -539,10 +539,10 @@ void ReloadAllTextures(LPDIRECT3DDEVICE7 pd3dDevice)
 // Name: TextureContainer()
 // Desc: Constructor for a texture object
 //-----------------------------------------------------------------------------
-TextureContainer::TextureContainer( const std::string& strName, const std::string& wd, DWORD dwStage,
+TextureContainer::TextureContainer( const std::string& strName, DWORD dwStage,
                                    DWORD dwFlags)
 {
-    m_texName = strName.substr( wd.length() );
+    m_texName = strName;
     MakeUpcase( m_texName );
 
     m_dwWidth		= 0;
@@ -3231,7 +3231,6 @@ void LookForRefinementMap(TextureContainer * tc)
     long GlobalRefine_size = 0;
     char * Refine = NULL;
     long Refine_size = 0;
-    std::string inifile;
     long count = 0;
     std::string str1;
     std::string str2;
@@ -3241,11 +3240,11 @@ void LookForRefinementMap(TextureContainer * tc)
     {
         if (GlobalRefine_size == 0)
         {
-            inifile = Project.workingdir + "Graph\\Obj3D\\Textures\\Refinement\\GlobalRefinement.ini";
+            const char INI_REFINEMENT_GLOBAL[] ="Graph\\Obj3D\\Textures\\Refinement\\GlobalRefinement.ini";
 
-            if (PAK_FileExist(inifile))
+            if (PAK_FileExist(INI_REFINEMENT_GLOBAL))
             {
-                GlobalRefine = (char *)PAK_FileLoadMallocZero(inifile, GlobalRefine_size);
+                GlobalRefine = (char *)PAK_FileLoadMallocZero(INI_REFINEMENT_GLOBAL, GlobalRefine_size);
             }
 
             if (GlobalRefine == NULL) GlobalRefine_size = -1;
@@ -3256,11 +3255,11 @@ void LookForRefinementMap(TextureContainer * tc)
     {
         if (Refine_size == 0)
         {
-            inifile = Project.workingdir + "Graph\\Obj3D\\Textures\\Refinement\\Refinement.ini";
+            const char INI_REFINEMENT[] = "Graph\\Obj3D\\Textures\\Refinement\\Refinement.ini";
 
-            if (PAK_FileExist(inifile))
+            if (PAK_FileExist(INI_REFINEMENT))
             {
-                Refine = (char *)PAK_FileLoadMallocZero(inifile, Refine_size);
+                Refine = (char *)PAK_FileLoadMallocZero(INI_REFINEMENT, Refine_size);
             }
 
             if (Refine == NULL) Refine_size = -1;
@@ -3305,15 +3304,15 @@ void LookForRefinementMap(TextureContainer * tc)
 
             if (count == 1)
             {
-                str2 = Project.workingdir + "Graph\\Obj3D\\Textures\\Refinement\\" + data + ".bmp";
-                std::transform( str1.begin(), str1.end(), str1.begin(), ::toupper );
-                std::transform( name.begin(), name.end(), name.begin(), ::toupper );
+                str2 = "Graph\\Obj3D\\Textures\\Refinement\\" + data + ".bmp";
+                MakeUpcase( str1 );
+                MakeUpcase( name );
 
                 if ( name.find( str1) )
                 {
                     if (!strcasecmp(data.c_str(), "NONE")) tc->TextureRefinement = NULL;
                     else tc->TextureRefinement =
-                            D3DTextr_CreateTextureFromFile(str2.c_str(), Project.workingdir.c_str(), 0, D3DTEXTR_16BITSPERPIXEL);
+                            D3DTextr_CreateTextureFromFile(str2.c_str(), 0, D3DTEXTR_16BITSPERPIXEL);
 
                 }
             }
@@ -3359,15 +3358,15 @@ void LookForRefinementMap(TextureContainer * tc)
 
             if (count == 1)
             {
-                str2 = Project.workingdir + "Graph\\Obj3D\\Textures\\Refinement\\" + data + ".bmp";
-                std::transform( str1.begin(), str1.end(), str1.begin(), ::toupper );
-                std::transform( name.begin(), name.end(), name.begin(), ::toupper );
+                str2 = "Graph\\Obj3D\\Textures\\Refinement\\" + data + ".bmp";
+                MakeUpcase( str1 );
+                MakeUpcase( name );
 
                 if ( !name.compare( str1 ) )
                 {
                     if (!strcasecmp(data.c_str(), "NONE")) tc->TextureRefinement = NULL;
                     else tc->TextureRefinement =
-                            D3DTextr_CreateTextureFromFile(str2.c_str(), Project.workingdir.c_str(), 0, D3DTEXTR_16BITSPERPIXEL);
+                            D3DTextr_CreateTextureFromFile(str2.c_str(), 0, D3DTEXTR_16BITSPERPIXEL);
 
                 }
             }
@@ -3388,6 +3387,7 @@ void LookForRefinementMap(TextureContainer * tc)
         Refine = NULL;
     }
 }
+
 void ReleaseAllTCWithFlag(long flag)
 {
     restart:
@@ -3416,7 +3416,7 @@ TextureContainer * LastTextureContainer = NULL;
 #include "HERMESMain.h"
 extern long DEBUGSYS;
 
-TextureContainer * D3DTextr_CreateTextureFromFile( std::string& strName, char * wd , DWORD dwStage,
+TextureContainer * D3DTextr_CreateTextureFromFile( std::string& strName, DWORD dwStage,
         DWORD dwFlags, long sysflags)
 {
     TextureContainer * ReturnValue = NULL;
@@ -3449,7 +3449,7 @@ TextureContainer * D3DTextr_CreateTextureFromFile( std::string& strName, char * 
     }
 
     // Allocate and add the texture to the linked list of textures;
-    TextureContainer * ptcTexture = new TextureContainer(strName, wd , dwStage,
+    TextureContainer * ptcTexture = new TextureContainer(strName, dwStage,
             dwFlags);
 
     if (NULL == ptcTexture)
@@ -3545,7 +3545,7 @@ TextureContainer * D3DTextr_CreateTextureFromFile( std::string& strName, char * 
 //-----------------------------------------------------------------------------
 HRESULT D3DTextr_CreateEmptyTexture( std::string& strName, DWORD dwWidth,
                                     DWORD dwHeight, DWORD dwStage,
-                                    DWORD dwFlags, const std::string& wd , DWORD flags)
+                                    DWORD dwFlags, DWORD flags)
 {
     if (!(flags & 1)) // no name check
     {
@@ -3561,7 +3561,7 @@ HRESULT D3DTextr_CreateEmptyTexture( std::string& strName, DWORD dwWidth,
     }
 
     // Allocate and add the texture to the linked list of textures;
-    TextureContainer * ptcTexture = new TextureContainer(strName, wd, dwStage,
+    TextureContainer * ptcTexture = new TextureContainer(strName, dwStage,
             dwFlags);
 
     if (NULL == ptcTexture)
@@ -4871,42 +4871,32 @@ HRESULT TextureContainer::CopyPNGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 
 //*************************************************************************************
 //*************************************************************************************
-TextureContainer * GetTextureFile(char * tex, long flag)
+TextureContainer * GetTextureFile(const char * tex, long flag)
 {
-    std::string dir;
-    std::string dir2;
-
     long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
     GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
-    dir2 = Project.workingdir + tex;
-    File_Standardize(dir2, dir);
     TextureContainer * returnTc;
 
     if (flag & 1)
-        returnTc = D3DTextr_CreateTextureFromFile(dir, Project.workingdir, 0, D3DTEXTR_32BITSPERPIXEL);
+        returnTc = D3DTextr_CreateTextureFromFile(tex, 0, D3DTEXTR_32BITSPERPIXEL);
     else
-        returnTc = D3DTextr_CreateTextureFromFile(dir, Project.workingdir, 0, D3DTEXTR_NO_MIPMAP);
+        returnTc = D3DTextr_CreateTextureFromFile(dir, 0, D3DTEXTR_NO_MIPMAP);
 
     GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
     return returnTc;
 }
 //*************************************************************************************
 //*************************************************************************************
-TextureContainer * GetTextureFile_NoRefinement(char * tex, long flag)
+TextureContainer * GetTextureFile_NoRefinement(const char * tex, long flag)
 {
-    std::string dir;
-    std::string dir2;
-
     long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
     GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
-    dir2 = Project.workingdir + tex;
-    File_Standardize(dir2, dir);
     TextureContainer * returnTc;
 
     if (flag & 1)
-        returnTc = D3DTextr_CreateTextureFromFile(dir, Project.workingdir, 0, D3DTEXTR_32BITSPERPIXEL | D3DTEXTR_NO_REFINEMENT);
+        returnTc = D3DTextr_CreateTextureFromFile(tex, 0, D3DTEXTR_32BITSPERPIXEL | D3DTEXTR_NO_REFINEMENT);
     else
-        returnTc = D3DTextr_CreateTextureFromFile(dir, Project.workingdir, 0, D3DTEXTR_NO_MIPMAP | D3DTEXTR_NO_REFINEMENT);
+        returnTc = D3DTextr_CreateTextureFromFile(tex, 0, D3DTEXTR_NO_MIPMAP | D3DTEXTR_NO_REFINEMENT);
 
     GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
     return returnTc;
@@ -5545,7 +5535,7 @@ TextureContainer * TextureContainer::AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _i
                    iHaloHeight,
                    0,
                    0,
-                   NULL, 1)))
+                   1)))
     {
         DeleteDC(memDC);
         DeleteObject(hBitmap);

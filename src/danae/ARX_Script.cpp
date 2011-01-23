@@ -7032,11 +7032,11 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 						char tex2[256];
 
 						if (io->ioflags & IO_NPC)
-							sprintf(tex2, "%sGraph\\Obj3D\\Interactive\\NPC\\%s.teo", Project.workingdir, temp);
+							sprintf(tex2, "Graph\\Obj3D\\Interactive\\NPC\\%s.teo", temp);
 						else if (io->ioflags & IO_FIX)
-							sprintf(tex2, "%sGraph\\Obj3D\\Interactive\\FIX_INTER\\%s.teo", Project.workingdir, temp);
+							sprintf(tex2, "Graph\\Obj3D\\Interactive\\FIX_INTER\\%s.teo", temp);
 						else
-							sprintf(tex2, "%sGraph\\Obj3D\\Interactive\\Items\\%s.teo", Project.workingdir, temp);
+							sprintf(tex2, "Graph\\Obj3D\\Interactive\\Items\\%s.teo", temp);
 
 						File_Standardize(tex2, tex);
 						EERIE_3D last_angle;
@@ -7343,10 +7343,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 					else
 					{
 						{
-							char temp1[256];
 							char temp2[256];
-							sprintf(temp1, "%sGraph\\interface\\illustrations\\", Project.workingdir);
-							strcpy(temp2, temp1);
+							strcpy(temp2, "Graph\\interface\\illustrations\\");
 							strcat(temp2, temp);
 							strcat(temp2, ".cin");
 							strcat(temp, ".cin");
@@ -8631,7 +8629,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 						if ((t >= 0) && (t < inter.nbmax))
 						{
 							char tex2[256];
-							sprintf(tex2, "%sGraph\\Obj3D\\Interactive\\NPC\\%s", Project.workingdir, temp);
+							sprintf(tex2, "Graph\\Obj3D\\Interactive\\NPC\\%s", temp);
 							File_Standardize(tex2, tmptext);
 							INTERACTIVE_OBJ * ioo;
 
@@ -8698,7 +8696,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 						if ((t >= 0) && (t < inter.nbmax))
 						{
 							char tex2[256];
-							sprintf(tex2, "%sGraph\\Obj3D\\Interactive\\ITEMS\\%s", Project.workingdir, temp);
+							sprintf(tex2, "Graph\\Obj3D\\Interactive\\ITEMS\\%s", temp);
 							File_Standardize(tex2, tmptext);
 							INTERACTIVE_OBJ * ioo;
 
@@ -10907,12 +10905,12 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 								if ((iot == inter.iobj[0]) || (iot->ioflags & IO_NPC))
 								{
 									flag = TEA_NPC_SAMPLES;
-									sprintf(tex3, "%sGraph\\Obj3D\\Anims\\npc\\%s", Project.workingdir, temp2);
+									sprintf(tex3, "Graph\\Obj3D\\Anims\\npc\\%s", temp2);
 								}
 								else
 								{
 									flag = TEA_FIX_SAMPLES;
-									sprintf(tex3, "%sGraph\\Obj3D\\Anims\\Fix_Inter\\%s", Project.workingdir, temp2);
+									sprintf(tex3, "Graph\\Obj3D\\Anims\\Fix_Inter\\%s", temp2);
 								}
 
 								SetExt(tex3, ".tea");
@@ -11705,7 +11703,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 								else
 								{
 									char tex2[256];
-									sprintf(tex2, "%sGraph\\Obj3D\\Interactive\\Items\\%s.teo", Project.workingdir, temp2);
+									sprintf(tex2, "Graph\\Obj3D\\Interactive\\Items\\%s.teo", temp2);
 									File_Standardize(tex2, tex);
 
 									if (FORBID_SCRIPT_IO_CREATION == 0)
@@ -11837,7 +11835,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 								else
 								{
 									char tex2[256];
-									sprintf(tex2, "%sGraph\\Obj3D\\Interactive\\Items\\%s.teo", Project.workingdir, temp2);
+									sprintf(tex2, "Graph\\Obj3D\\Interactive\\Items\\%s.teo", temp2);
 									File_Standardize(tex2, tex);
 
 									if (FORBID_SCRIPT_IO_CREATION == 0)
@@ -12434,7 +12432,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 								if (tw != TWEAK_ERROR)
 								{
-									ARX_INTERACTIVE_MEMO_TWEAK(io, tw, path + strlen(Project.workingdir), NULL);
+									ARX_INTERACTIVE_MEMO_TWEAK(io, tw, path, NULL);
 									EERIE_MESH_TWEAK_Do(io, tw, path);
 								}
 							}
@@ -12669,9 +12667,9 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 					char tex1[256];
 					char tex2[256];
 
-					if (io->ioflags & IO_NPC)	sprintf(tex2, "%sGraph\\Obj3D\\Interactive\\NPC\\%s", Project.workingdir, temp);
-					else if (io->ioflags & IO_FIX)	sprintf(tex2, "%sGraph\\Obj3D\\Interactive\\FIX_INTER\\%s", Project.workingdir, temp);
-					else if (io->ioflags & IO_ITEM)	sprintf(tex2, "%sGraph\\Obj3D\\Interactive\\Items\\%s", Project.workingdir, temp);
+					if (io->ioflags & IO_NPC)	sprintf(tex2, "Graph\\Obj3D\\Interactive\\NPC\\%s", temp);
+					else if (io->ioflags & IO_FIX)	sprintf(tex2, "Graph\\Obj3D\\Interactive\\FIX_INTER\\%s", temp);
+					else if (io->ioflags & IO_ITEM)	sprintf(tex2, "Graph\\Obj3D\\Interactive\\Items\\%s", temp);
 					else tex2[0] = 0;
 
 					File_Standardize(tex2, tex);
@@ -12689,16 +12687,14 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							io->obj = NULL;
 						}
 
-						char tex2[256];
-						sprintf(tex2, "%sGraph\\Obj3D\\Textures\\", Project.workingdir);
-						File_Standardize(tex2, tex1);
+						const char texpath[] = "Graph\\Obj3D\\Textures\\";
 
 						if (io->ioflags & IO_FIX)
-							io->obj = TheoToEerie_Fast(tex1, tex, TTE_NO_NDATA | TTE_NO_PHYSICS_BOX, GDevice);
+							io->obj = TheoToEerie_Fast(texpath, tex, TTE_NO_NDATA | TTE_NO_PHYSICS_BOX, GDevice);
 						else if (io->ioflags & IO_NPC)
-							io->obj = TheoToEerie_Fast(tex1, tex, TTE_NO_PHYSICS_BOX | TTE_NPC, GDevice);
+							io->obj = TheoToEerie_Fast(texpath, tex, TTE_NO_PHYSICS_BOX | TTE_NPC, GDevice);
 						else
-							io->obj = TheoToEerie_Fast(tex1, tex, 0, GDevice);
+							io->obj = TheoToEerie_Fast(texpath, tex, 0, GDevice);
 
 						EERIE_COLLISION_Cylinder_Create(io);
 					}

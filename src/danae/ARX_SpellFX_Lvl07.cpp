@@ -838,9 +838,7 @@ CConfuse::CConfuse(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	spapi_count++;
 
-	char tex[256];
-
-	MakeDir(tex, "Graph\\Obj3D\\Interactive\\Fix_inter\\fx_papivolle\\fx_papivolle.tea");
+	const char tex[] = "Graph\\Obj3D\\Interactive\\Fix_inter\\fx_papivolle\\fx_papivolle.tea";
 	ANIM_HANDLE * anim_papii = EERIE_ANIMMANAGER_Load(tex);
 
 	fColor[0] = 0.3f;

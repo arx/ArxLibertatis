@@ -198,14 +198,14 @@ extern char LOCAL_SAVENAME[64];
  
 void ARX_GAMESAVE_MakePath()
 {
-	sprintf(GameSavePath, "%sSave%s\\", Project.workingdir, LOCAL_SAVENAME);
+	sprintf(GameSavePath, "Save%s\\", LOCAL_SAVENAME);
 
 	if (!DirectoryExist(GameSavePath))
 	{
 		CreateDirectory(GameSavePath, NULL);
 	}
 
-	sprintf(GameSavePath, "%sSave%s\\Save%04d\\", Project.workingdir, LOCAL_SAVENAME, CURRENT_GAME_INSTANCE);
+	sprintf(GameSavePath, "Save%s\\Save%04d\\", LOCAL_SAVENAME, CURRENT_GAME_INSTANCE);
 
 	if (!DirectoryExist(GameSavePath))
 	{
@@ -218,7 +218,7 @@ void ARX_GAMESAVE_CreateNewInstance()
 	char basepath[256];
 	char testpath[256];
 	long num = 1;
-	sprintf(basepath, "%sSave%s\\", Project.workingdir, LOCAL_SAVENAME);
+	sprintf(basepath, "Save%s\\", LOCAL_SAVENAME);
 
 	while (1)
 	{
@@ -312,14 +312,14 @@ long GetIOAnimIdx2(INTERACTIVE_OBJ * io, ANIM_HANDLE * anim)
 //--------------------------------------------------------------------------------------------
 void ARX_CHANGELEVEL_MakePath()
 {
-	sprintf(CurGamePath, "%sSave%s\\", Project.workingdir, LOCAL_SAVENAME);
+	sprintf(CurGamePath, "Save%s\\", LOCAL_SAVENAME);
 
 	if (!DirectoryExist(CurGamePath))
 	{
 		CreateDirectory(CurGamePath, NULL);
 	}
 
-	sprintf(CurGamePath, "%sSave%s\\Cur%04d\\", Project.workingdir, LOCAL_SAVENAME, LAST_CHINSTANCE);
+	sprintf(CurGamePath, "Save%s\\Cur%04d\\", LOCAL_SAVENAME, LAST_CHINSTANCE);
 
 	if (!DirectoryExist(CurGamePath))
 		CreateDirectory(CurGamePath, NULL);
@@ -330,7 +330,7 @@ void ARX_CHANGELEVEL_CreateNewInstance()
 	char basepath[256];
 	char testpath[256];
 	long num = 1;
-	sprintf(basepath, "%sSave%s\\", Project.workingdir, LOCAL_SAVENAME);
+	sprintf(basepath, "Save%s\\", LOCAL_SAVENAME);
 
 	while (1)
 	{
@@ -1043,7 +1043,7 @@ retry:
 
 		if (inter.iobj[0]->anims[i] != NULL)
 		{
-			strcpy(asp->anims[i], inter.iobj[0]->anims[i]->path + strlen(Project.workingdir));
+			strcpy(asp->anims[i], inter.iobj[0]->anims[i]->path);
 		}
 	}
 
@@ -1339,7 +1339,7 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 
 		if (io->anims[i] != NULL)
 		{
-			strcpy(ais.anims[i], io->anims[i]->path + strlen(Project.workingdir));
+			strcpy(ais.anims[i], io->anims[i]->path);
 		}
 	}
 
@@ -2046,7 +2046,7 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 	LOAD_N_DONT_ERASE = 1;
 
 	sprintf(tex, "LEVEL%s", lev);
-	sprintf(ftemp, "%sGraph\\Levels\\%s\\%s.DLF", Project.workingdir, tex, tex);
+	sprintf(ftemp, "Graph\\Levels\\%s\\%s.DLF", tex, tex);
 
 	if (!PAK_FileExist(ftemp))
 	{
@@ -2315,9 +2315,7 @@ long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVEL_PLA
 
 		if (asp->anims[i][0])
 		{
-			char tex[256];
-			sprintf(tex, "%s%s", Project.workingdir, asp->anims[i]);
-			io->anims[i] = EERIE_ANIMMANAGER_Load(tex);
+			io->anims[i] = EERIE_ANIMMANAGER_Load(asp->anims[i]);
 		}
 	}
 
@@ -2653,20 +2651,19 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 			{
 				char tex[256];
 
-				if ((strlen(Project.workingdir) + strlen(ais->anims[i])) > 256)
+				if (strlen(ais->anims[i]) > 256)
 				{
 					continue;
 				}
 
-				sprintf(tex, "%s%s", Project.workingdir, ais->anims[i]);
-				io->anims[i] = EERIE_ANIMMANAGER_Load(tex);
+				io->anims[i] = EERIE_ANIMMANAGER_Load(ais->anims[i]);
 
 				if (io->anims[i] == NULL)
 				{
 					if (io->ioflags & IO_NPC)
-						sprintf(tex, "%sGRAPH\\OBJ3D\\ANIMS\\NPC\\%s%s", Project.workingdir, GetName(ais->anims[i]), GetExt(ais->anims[i]));
+						sprintf(tex, "GRAPH\\OBJ3D\\ANIMS\\NPC\\%s%s", GetName(ais->anims[i]), GetExt(ais->anims[i]));
 					else
-						sprintf(tex, "%sGRAPH\\OBJ3D\\ANIMS\\FIX_Inter\\%s%s", Project.workingdir, GetName(ais->anims[i]), GetExt(ais->anims[i]));
+						sprintf(tex, "GRAPH\\OBJ3D\\ANIMS\\FIX_Inter\\%s%s", GetName(ais->anims[i]), GetExt(ais->anims[i]));
 
 					io->anims[i] = EERIE_ANIMMANAGER_Load(tex);
 				}
@@ -4122,9 +4119,8 @@ long ARX_CHANGELEVEL_Save(long instance, char * name)
 	CopyDirectory(CurGamePath, GameSavePath);
 
 	//on copie le fichier temporaire bmp dans le repertoire
-	char tcSrc[256];
+	const char tcSrc[] = "SCT_0.BMP";
 	char tcDst[256];
-	sprintf(tcSrc, "%sSCT_0.BMP", Project.workingdir);
 	sprintf(tcDst, "%sGSAVE.BMP", GameSavePath);
 	CopyFile(tcSrc, tcDst, false);
 	DeleteFile(tcSrc);

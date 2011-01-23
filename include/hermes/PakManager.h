@@ -66,9 +66,6 @@ class PakDirectory;
 
 #include <cstdio>
 
-extern char PAK_WORKDIR[256];
-extern unsigned long g_pak_workdir_len;
-
 
 #define LOAD_TRUEFILE			1
 #define LOAD_PACK				2
@@ -80,17 +77,15 @@ void * PAK_FileLoadMalloc( const std::string& name, long& SizeLoadMalloc );
 void * PAK_FileLoadMallocZero( const std::string& name,long& SizeLoadMalloc );
 
 // use only for READ !!!!
-void PAK_SetLoadMode(long mode,char * pakfile,char * workdir=NULL);
-FILE * PAK_fopen(const char *filename, const char *mode );
-std::size_t PAK_fread(void *buffer, std::size_t size, std::size_t count, FILE *stream );;
+void PAK_SetLoadMode(long mode, const char * pakfile);
+FILE * PAK_fopen(const char * filename, const char * mode );
+std::size_t PAK_fread(void * buffer, std::size_t size, std::size_t count, FILE * stream );
 int PAK_fclose(FILE * stream);
 long PAK_ftell(FILE * stream);
 long PAK_DirectoryExist( const std::string& name);
 long PAK_FileExist( const std::string& name);
 int PAK_fseek(FILE * fic,long offset,int origin);
 
-void PAK_NotFoundInit(char * fic);
-bool PAK_NotFound(char * fic);
 
 void PAK_Close();
 
@@ -103,17 +98,17 @@ public:
 	PakManager();
 	~PakManager();
 
-	bool AddPak( const std::string& );
-	bool RemovePak( const std::string& );
-	bool Read( const std::string&, void* );
-	void* ReadAlloc( const std::string&, int* );
-	int GetSize( const std::string& );
-	PakFileHandle * fOpen( const std::string& );
-	int fClose(PakFileHandle *);
-	int fRead(void *, int, int, PakFileHandle *);
-	int fSeek(PakFileHandle *,int,int);
-	int fTell(PakFileHandle *);
-	std::vector<PakDirectory*> * ExistDirectory( const std::string& _lpszName);
+	bool AddPak( const std::string& pakname );
+	bool RemovePak( const std::string& pakname );
+	bool Read( const std::string& filename, void* buffer );
+	void* ReadAlloc( const std::string& filename, int* sizeRead );
+	int GetSize( const std::string& filename );
+	PakFileHandle * fOpen( const std::string& filename );
+	int fClose(PakFileHandle * fh);
+	int fRead(void * buffer, int size, int count, PakFileHandle * fh);
+	int fSeek(PakFileHandle * fh, int offset, int whence );
+	int fTell(PakFileHandle * fh);
+	std::vector<PakDirectory*> * ExistDirectory( const std::string& name);
 	bool ExistFile( const std::string& _lpszName);
 };
 

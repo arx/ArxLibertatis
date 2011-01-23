@@ -1717,7 +1717,7 @@ void	ARX_PLAYER_Restore_Skin()
 		if (tx[0])
 		{
 			MakeUpcase(tx);
-			sprintf((char *)PLAYER_SKIN_TC->m_strName, "%s%s", Project.workingdir, (char *)tx);
+			strcpy((char *)PLAYER_SKIN_TC->m_strName, (char *)tx);
 			ReloadTexture(PLAYER_SKIN_TC);
 			PLAYER_SKIN_TC->Restore(GDevice);
 		}
@@ -1731,7 +1731,7 @@ void	ARX_PLAYER_Restore_Skin()
 	if ((tmpTC) && (tx2[0]))
 	{
 		MakeUpcase(tx2);
-		sprintf((char *)tmpTC->m_strName, "%s%s", Project.workingdir, (char *)tx2);
+		strcpy((char *)tmpTC->m_strName, (char *)tx2);
 		ReloadTexture(tmpTC);
 		tmpTC->Restore(GDevice);
 	}
@@ -1743,7 +1743,7 @@ void	ARX_PLAYER_Restore_Skin()
 	if ((tmpTC) && (tx3[0]))
 	{
 		MakeUpcase(tx3);
-		sprintf((char *)tmpTC->m_strName, "%s%s", Project.workingdir, (char *)tx3);
+		strcpy((char *)tmpTC->m_strName, (char *)tx3);
 		ReloadTexture(tmpTC);
 		tmpTC->Restore(GDevice);
 	}
@@ -1755,7 +1755,7 @@ void	ARX_PLAYER_Restore_Skin()
 	if ((tmpTC) && (tx4[0]))
 	{
 		MakeUpcase(tx4);
-		sprintf((char *)tmpTC->m_strName, "%s%s", Project.workingdir, (char *)tx4);
+		strcpy((char *)tmpTC->m_strName, (char *)tx4);
 		ReloadTexture(tmpTC);
 		tmpTC->Restore(GDevice);
 	}
@@ -1770,20 +1770,18 @@ extern HRESULT DANAEFinalCleanup();
 //*************************************************************************************
 void ARX_PLAYER_LoadHeroAnimsAndMesh()
 {
-	char tex[256];
-	char tex1[256];
-	sprintf(tex1, "%sGraph\\Obj3D\\Textures\\", Project.workingdir);
-	MakeDir(tex, "graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo");
+	const char texpath[] = "Graph\\Obj3D\\Textures\\";
+	const char OBJECT_HUMAN_BASE[] = "graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo";
  
-	hero = TheoToEerie_Fast(tex1, tex, TTE_NO_PHYSICS_BOX | TTE_NPC);
+	hero = TheoToEerie_Fast(texpath, OBJECT_HUMAN_BASE, TTE_NO_PHYSICS_BOX | TTE_NPC);
 	PLAYER_SKIN_TC = MakeTCFromFile("Graph\\Obj3D\\Textures\\npc_human_base_hero_head.bmp");
 
-	MakeDir(tex, "graph\\Obj3D\\Anims\\NPC\\human_wait_book.tea");
-	herowaitbook = EERIE_ANIMMANAGER_Load(tex);
-	MakeDir(tex, "graph\\Obj3D\\Anims\\NPC\\human_normal_wait.tea");
-	herowait2 = EERIE_ANIMMANAGER_Load(tex);
-	MakeDir(tex, "graph\\Obj3D\\Anims\\NPC\\human_wait_book_2handed.tea");
-	herowait_2h = EERIE_ANIMMANAGER_Load(tex);
+	const char ANIM_WAIT_BOOK[] = "graph\\Obj3D\\Anims\\NPC\\human_wait_book.tea";
+	herowaitbook = EERIE_ANIMMANAGER_Load(ANIM_WAIT_BOOK);
+	const char ANIM_WAIT_NORMAL[] = "graph\\Obj3D\\Anims\\NPC\\human_normal_wait.tea";
+	herowait2 = EERIE_ANIMMANAGER_Load(ANIM_WAIT_NORMAL);
+	const char ANIM_WAIT_TWOHANDED[] = "graph\\Obj3D\\Anims\\NPC\\human_wait_book_2handed.tea";
+	herowait_2h = EERIE_ANIMMANAGER_Load(ANIM_WAIT_TWOHANDED);
 
 	INTERACTIVE_OBJ * io = CreateFreeInter(0);
 	io->obj = hero; 
@@ -1806,7 +1804,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 
 	//todo free
 	io->armormaterial = strdup("LEATHER");
-	sprintf(io->filename, "%sgraph\\obj3D\\Interactive\\Player\\Player.teo", Project.workingdir);
+	strcpy(io->filename, "graph\\obj3D\\Interactive\\Player\\Player.teo");
 	char texscript[256];
 	strcpy(texscript, io->filename);
 	SetExt(texscript, ".asl");

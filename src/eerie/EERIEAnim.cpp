@@ -308,7 +308,7 @@ void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim)
 }
 
 //-----------------------------------------------------------------------------
-ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(char * path)
+ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const char * path)
 {
 	for (long i=0;i<MAX_ANIMATIONS;i++)
 	{
@@ -749,7 +749,7 @@ void DrawEERIEInterMatrix(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 
 void specialEE_P(D3DTLVERTEX *in,D3DTLVERTEX *out);
 
-TextureContainer TexSpecialColor("SPECIALCOLOR_LIST",NULL,0,D3DTEXTR_NO_INSERT);
+TextureContainer TexSpecialColor("SPECIALCOLOR_LIST",0,D3DTEXTR_NO_INSERT);
 //-----------------------------------------------------------------------------
 ARX_D3DVERTEX * PushVertexInTableCull(TextureContainer *pTex)
 {
