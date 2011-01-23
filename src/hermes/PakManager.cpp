@@ -60,7 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 
 #include <hermes/PakManager.h>
-#include <hermes/PakReader.h>
+#include <hermes/PakReader.h>F
 #include <hermes/PakEntry.h>
 #include <hermes/Filesystem.h>
 
@@ -182,9 +182,8 @@ void * PAK_FileLoadMallocZero(const char * name, size_t * sizeLoaded) {
 	return ret;
 }
 
-long PAK_ftell(FILE * stream) {
+long PAK_ftell(PakFileHandle * pfh) {
 	
-	PakFileHandle * pfh = (PakFileHandle *)stream;
 	assert(pfh->active);
 	
 	if(pfh->reader) {
@@ -194,14 +193,11 @@ long PAK_ftell(FILE * stream) {
 	return FileTell(pfh->truefile);
 }
 
-// TODO remove mode parameter
-FILE * PAK_fopen(const char * filename, const char * mode) {
-	
-	(void)mode;
+PakFileHandle * PAK_fopen(const char * filename) {
 	
 	PakFileHandle * pfh = pPakManager->fOpen(filename);
 	if(pfh) {
-		return (FILE *)pfh;
+		return pfh;
 	}
 	
 	FileHandle fh = FileOpenRead(filename);
@@ -218,12 +214,11 @@ FILE * PAK_fopen(const char * filename, const char * mode) {
 	pfh->reader = NULL;
 	pfh->truefile = fh;
 	
-	return (FILE *)pfh;
+	return pfh;
 }
 
-int PAK_fclose(FILE * stream) {
+int PAK_fclose(PakFileHandle * pfh) {
 	
-	PakFileHandle * pfh = (PakFileHandle *)stream;
 	assert(pfh->active);
 	
 	if(pfh->reader) {
@@ -238,9 +233,8 @@ int PAK_fclose(FILE * stream) {
 	return ret;
 }
 
-size_t PAK_fread(void * buffer, size_t size, size_t count, FILE * stream) {
+size_t PAK_fread(void * buffer, size_t size, size_t count, PakFileHandle * pfh) {
 	
-	PakFileHandle * pfh = (PakFileHandle *)stream;
 	assert(pfh->active);
 	
 	if(pfh->reader) {
@@ -250,9 +244,8 @@ size_t PAK_fread(void * buffer, size_t size, size_t count, FILE * stream) {
 	return FileRead(pfh->truefile, buffer, size * count);
 }
 
-int PAK_fseek(FILE * stream, int offset, int origin) {
+int PAK_fseek(PakFileHandle * pfh, int offset, long origin) {
 	
-	PakFileHandle * pfh = (PakFileHandle *)stream;
 	assert(pfh->active);
 	
 	if(pfh->reader) {
@@ -401,7 +394,7 @@ size_t PakManager::fRead(void * buf, size_t size, size_t count, PakFileHandle * 
 	return pfh->reader->fRead(buf, size, count, pfh);
 }
 
-int PakManager::fSeek(PakFileHandle * pfh, int offset, int whence) {
+int PakManager::fSeek(PakFileHandle * pfh, int offset, long whence) {
 	
 	assert(pfh->reader != NULL);
 	

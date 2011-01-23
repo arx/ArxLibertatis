@@ -26,7 +26,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <memory.h>
 #include <stdlib.h>
 #include "Athena_Stream_ASF.h"
-#include "Athena_FileIO.h"
+
+#include <hermes/PakManager.h>
 
 namespace ATHENA
 {
@@ -70,7 +71,7 @@ namespace ATHENA
 	// Setup                                                                     //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError StreamASF::SetStream(FILE * _stream)
+	aalError StreamASF::SetStream(PakFileHandle * _stream)
 	{
 		if (!_stream) return AAL_ERROR_FILEIO;
 
@@ -79,27 +80,27 @@ namespace ATHENA
 
 		stream = _stream;
 
-		if (!FileRead(&header.magic, 4, 1, stream)) return AAL_ERROR_FILEIO;
+		if (!PAK_fread(&header.magic, 4, 1, stream)) return AAL_ERROR_FILEIO;
 
 		if (header.magic != AAF_MAGIC) return AAL_ERROR_FORMAT;
 
-		if (!FileRead(&header.version, 4, 1, stream)) return AAL_ERROR_FILEIO;
+		if (!PAK_fread(&header.version, 4, 1, stream)) return AAL_ERROR_FILEIO;
 
 		if (header.version > AAF_VERSION) return AAL_ERROR_FORMAT;
 
-		if (!FileRead(&header.f_size, 4, 1, stream)) return AAL_ERROR_FILEIO;
+		if (!PAK_fread(&header.f_size, 4, 1, stream)) return AAL_ERROR_FILEIO;
 
-		if (!FileRead(&header.o_freq, 4, 1, stream)) return AAL_ERROR_FILEIO;
+		if (!PAK_fread(&header.o_freq, 4, 1, stream)) return AAL_ERROR_FILEIO;
 
-		if (!FileRead(&header.o_qual, 4, 1, stream)) return AAL_ERROR_FILEIO;
+		if (!PAK_fread(&header.o_qual, 4, 1, stream)) return AAL_ERROR_FILEIO;
 
-		if (!FileRead(&header.o_chnl, 4, 1, stream)) return AAL_ERROR_FILEIO;
+		if (!PAK_fread(&header.o_chnl, 4, 1, stream)) return AAL_ERROR_FILEIO;
 
-		if (!FileRead(&header.o_size, 4, 1, stream)) return AAL_ERROR_FILEIO;
+		if (!PAK_fread(&header.o_size, 4, 1, stream)) return AAL_ERROR_FILEIO;
 
-		if (!FileRead(&header.frame_c, 4, 1, stream)) return AAL_ERROR_FILEIO;
+		if (!PAK_fread(&header.frame_c, 4, 1, stream)) return AAL_ERROR_FILEIO;
 
-		offset = FileTell(stream);
+		offset = PAK_ftell(stream);
 
 		return AAL_OK;
 	}
@@ -125,7 +126,7 @@ namespace ATHENA
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 
-	aalError StreamASF::GetStream(FILE *&file)
+	aalError StreamASF::GetStream(PakFileHandle *&file)
 	{
 		file = stream;
 		return AAL_OK;

@@ -23,7 +23,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 #include "Athena_Codec_RAW.h"
-#include "Athena_FileIO.h"
+
+#include <hermes/PakManager.h>
 
 
 
@@ -59,7 +60,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError CodecRAW::SetStream(FILE * _stream)
+	aalError CodecRAW::SetStream(PakFileHandle * _stream)
 	{
 		stream = _stream;
 
@@ -68,7 +69,7 @@ namespace ATHENA
 
 	aalError CodecRAW::SetPosition(const aalULong & _position)
 	{
-		if (FileSeek(stream, _position, SEEK_CUR)) return AAL_ERROR_FILEIO;
+		if (PAK_fseek(stream, _position, SEEK_CUR)) return AAL_ERROR_FILEIO;
 
 		cursor = _position;
 
@@ -87,7 +88,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError CodecRAW::GetStream(FILE *&_stream)
+	aalError CodecRAW::GetStream(PakFileHandle *&_stream)
 	{
 		_stream = stream;
 
@@ -108,7 +109,7 @@ namespace ATHENA
 	///////////////////////////////////////////////////////////////////////////////
 	aalError CodecRAW::Read(aalVoid * buffer, const aalULong & to_read, aalULong & read)
 	{
-		read = FileRead(buffer, 1, to_read, stream);
+		read = PAK_fread(buffer, 1, to_read, stream);
 
 		return AAL_OK;
 	}

@@ -49,7 +49,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "Athena_Instance.h"
 #include "Athena_Global.h"
 #include "Athena_Stream.h"
-#include "Athena_FileIO.h"
 
 #include <dsound.h>
 #include <eax.h>
@@ -375,9 +374,6 @@ namespace ATHENA
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
 
-		if (flags & AAL_FLAG_PACKEDRESOURCES)
-			global_status |= AAL_FLAG_PACKEDRESOURCES, FileIOInit();
-
 		if (flags & AAL_FLAG_DEBUG)
 		{
 			if (debug_log) fclose(debug_log);
@@ -440,9 +436,6 @@ namespace ATHENA
 	{
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
-
-		if (flags & AAL_FLAG_PACKEDRESOURCES)
-			global_status &= ~AAL_FLAG_PACKEDRESOURCES, FileIOInit();
 
 		if (flags & AAL_FLAG_DEBUG && debug_log)
 			fclose(debug_log), debug_log = NULL;

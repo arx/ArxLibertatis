@@ -22,15 +22,18 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <stdio.h>
+
 #include <math.h>
 #include "Athena_Global.h"
 #include "Athena_Sample.h"
 #include "Athena_Ambiance.h"
-#include "Athena_FileIO.h"
 
 #include <cstdlib>
 #include <cstring>
+
+#include <hermes/PakManager.h>
+
+
 using namespace std;
 
 namespace ATHENA
@@ -98,7 +101,7 @@ namespace ATHENA
 		}
 	}
 
-	static aalError LoadAmbianceFileVersion_1000(FILE * file, Ambiance & amb)
+	static aalError LoadAmbianceFileVersion_1000(PakFileHandle * file, Ambiance & amb)
 	{
 		//Read tracks configs
 		for (aalULong i(0); i < amb.track_c; ++i)
@@ -114,7 +117,7 @@ namespace ATHENA
 			//Get track sample name
 			do
 			{
-				if (!FileRead(&text[j], 1, 1, file)) return AAL_ERROR_FILEIO;
+				if (!PAK_fread(&text[j], 1, 1, file)) return AAL_ERROR_FILEIO;
 			}
 			while (text[j++]);
 
@@ -143,37 +146,37 @@ namespace ATHENA
 
 			memset(track->key_l, 0, sizeof(TrackKey));
 
-			if (!FileRead(&key->start, 4, 1, file) ||
-			        !FileRead(&key->loop, 4, 1, file) ||
-			        !FileRead(&key->delay_min, 4, 1, file) ||
-			        !FileRead(&key->delay_max, 4, 1, file) ||
-			        !FileRead(&key->volume.min, 4, 1, file) ||
-			        !FileRead(&key->volume.max, 4, 1, file) ||
-			        !FileRead(&key->volume.interval, 4, 1, file) ||
-			        !FileRead(&key->volume.flags, 4, 1, file) ||
-			        !FileRead(&key->pitch.min, 4, 1, file) ||
-			        !FileRead(&key->pitch.max, 4, 1, file) ||
-			        !FileRead(&key->pitch.interval, 4, 1, file) ||
-			        !FileRead(&key->pitch.flags, 4, 1, file) ||
-			        !FileRead(&key->pan.min, 4, 1, file) ||
-			        !FileRead(&key->pan.max, 4, 1, file) ||
-			        !FileRead(&key->pan.interval, 4, 1, file) ||
-			        !FileRead(&key->pan.flags, 4, 1, file) ||
-			        !FileRead(&key->x.min, 4, 1, file) ||
-			        !FileRead(&key->x.max, 4, 1, file) ||
-			        !FileRead(&key->x.interval, 4, 1, file) ||
-			        !FileRead(&key->x.flags, 4, 1, file) ||
-			        !FileRead(&key->y.min, 4, 1, file) ||
-			        !FileRead(&key->y.max, 4, 1, file) ||
-			        !FileRead(&key->y.interval, 4, 1, file) ||
-			        !FileRead(&key->y.flags, 4, 1, file) ||
-			        !FileRead(&key->z.min, 4, 1, file) ||
-			        !FileRead(&key->z.max, 4, 1, file) ||
-			        !FileRead(&key->z.interval, 4, 1, file) ||
-			        !FileRead(&key->z.flags, 4, 1, file))
+			if (!PAK_fread(&key->start, 4, 1, file) ||
+			        !PAK_fread(&key->loop, 4, 1, file) ||
+			        !PAK_fread(&key->delay_min, 4, 1, file) ||
+			        !PAK_fread(&key->delay_max, 4, 1, file) ||
+			        !PAK_fread(&key->volume.min, 4, 1, file) ||
+			        !PAK_fread(&key->volume.max, 4, 1, file) ||
+			        !PAK_fread(&key->volume.interval, 4, 1, file) ||
+			        !PAK_fread(&key->volume.flags, 4, 1, file) ||
+			        !PAK_fread(&key->pitch.min, 4, 1, file) ||
+			        !PAK_fread(&key->pitch.max, 4, 1, file) ||
+			        !PAK_fread(&key->pitch.interval, 4, 1, file) ||
+			        !PAK_fread(&key->pitch.flags, 4, 1, file) ||
+			        !PAK_fread(&key->pan.min, 4, 1, file) ||
+			        !PAK_fread(&key->pan.max, 4, 1, file) ||
+			        !PAK_fread(&key->pan.interval, 4, 1, file) ||
+			        !PAK_fread(&key->pan.flags, 4, 1, file) ||
+			        !PAK_fread(&key->x.min, 4, 1, file) ||
+			        !PAK_fread(&key->x.max, 4, 1, file) ||
+			        !PAK_fread(&key->x.interval, 4, 1, file) ||
+			        !PAK_fread(&key->x.flags, 4, 1, file) ||
+			        !PAK_fread(&key->y.min, 4, 1, file) ||
+			        !PAK_fread(&key->y.max, 4, 1, file) ||
+			        !PAK_fread(&key->y.interval, 4, 1, file) ||
+			        !PAK_fread(&key->y.flags, 4, 1, file) ||
+			        !PAK_fread(&key->z.min, 4, 1, file) ||
+			        !PAK_fread(&key->z.max, 4, 1, file) ||
+			        !PAK_fread(&key->z.interval, 4, 1, file) ||
+			        !PAK_fread(&key->z.flags, 4, 1, file))
 				return AAL_ERROR_FILEIO;
 
-			if (!FileRead(&track->flags, 4, 1, file)) return AAL_ERROR_FILEIO;
+			if (!PAK_fread(&track->flags, 4, 1, file)) return AAL_ERROR_FILEIO;
 
 			track->flags &= ~(TRACK_MUTED | TRACK_PAUSED | TRACK_PREFETCHED);
 		}
@@ -181,7 +184,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	static aalError LoadAmbianceFileVersion_1001(FILE * file, Ambiance & amb)
+	static aalError LoadAmbianceFileVersion_1001(PakFileHandle * file, Ambiance & amb)
 	{
 		for (aalULong i(0); i < amb.track_c; ++i)
 		{
@@ -195,7 +198,7 @@ namespace ATHENA
 			//Get track sample name
 			do
 			{
-				if (!FileRead(&text[j], 1, 1, file)) return AAL_ERROR_FILEIO;
+				if (!PAK_fread(&text[j], 1, 1, file)) return AAL_ERROR_FILEIO;
 			}
 			while (text[j++]);
 
@@ -217,7 +220,7 @@ namespace ATHENA
 			sample->Catch();
 
 			//Read flags and key count
-			if (!FileRead(&track->flags, 4, 1, file) || !FileRead(&track->key_c, 4, 1, file))
+			if (!PAK_fread(&track->flags, 4, 1, file) || !PAK_fread(&track->key_c, 4, 1, file))
 				return AAL_ERROR_FILEIO;
 
 			track->flags &= ~(TRACK_MUTED | TRACK_PAUSED | TRACK_PREFETCHED);
@@ -236,35 +239,35 @@ namespace ATHENA
 			{
 				TrackKey * key = &track->key_l[j];
 
-				if (!FileRead(&key->flags, 4, 1, file) ||
-				        !FileRead(&key->start, 4, 1, file) ||
-				        !FileRead(&key->loop, 4, 1, file) ||
-				        !FileRead(&key->delay_min, 4, 1, file) ||
-				        !FileRead(&key->delay_max, 4, 1, file) ||
-				        !FileRead(&key->volume.min, 4, 1, file) ||
-				        !FileRead(&key->volume.max, 4, 1, file) ||
-				        !FileRead(&key->volume.interval, 4, 1, file) ||
-				        !FileRead(&key->volume.flags, 4, 1, file) ||
-				        !FileRead(&key->pitch.min, 4, 1, file) ||
-				        !FileRead(&key->pitch.max, 4, 1, file) ||
-				        !FileRead(&key->pitch.interval, 4, 1, file) ||
-				        !FileRead(&key->pitch.flags, 4, 1, file) ||
-				        !FileRead(&key->pan.min, 4, 1, file) ||
-				        !FileRead(&key->pan.max, 4, 1, file) ||
-				        !FileRead(&key->pan.interval, 4, 1, file) ||
-				        !FileRead(&key->pan.flags, 4, 1, file) ||
-				        !FileRead(&key->x.min, 4, 1, file) ||
-				        !FileRead(&key->x.max, 4, 1, file) ||
-				        !FileRead(&key->x.interval, 4, 1, file) ||
-				        !FileRead(&key->x.flags, 4, 1, file) ||
-				        !FileRead(&key->y.min, 4, 1, file) ||
-				        !FileRead(&key->y.max, 4, 1, file) ||
-				        !FileRead(&key->y.interval, 4, 1, file) ||
-				        !FileRead(&key->y.flags, 4, 1, file) ||
-				        !FileRead(&key->z.min, 4, 1, file) ||
-				        !FileRead(&key->z.max, 4, 1, file) ||
-				        !FileRead(&key->z.interval, 4, 1, file) ||
-				        !FileRead(&key->z.flags, 4, 1, file))
+				if (!PAK_fread(&key->flags, 4, 1, file) ||
+				        !PAK_fread(&key->start, 4, 1, file) ||
+				        !PAK_fread(&key->loop, 4, 1, file) ||
+				        !PAK_fread(&key->delay_min, 4, 1, file) ||
+				        !PAK_fread(&key->delay_max, 4, 1, file) ||
+				        !PAK_fread(&key->volume.min, 4, 1, file) ||
+				        !PAK_fread(&key->volume.max, 4, 1, file) ||
+				        !PAK_fread(&key->volume.interval, 4, 1, file) ||
+				        !PAK_fread(&key->volume.flags, 4, 1, file) ||
+				        !PAK_fread(&key->pitch.min, 4, 1, file) ||
+				        !PAK_fread(&key->pitch.max, 4, 1, file) ||
+				        !PAK_fread(&key->pitch.interval, 4, 1, file) ||
+				        !PAK_fread(&key->pitch.flags, 4, 1, file) ||
+				        !PAK_fread(&key->pan.min, 4, 1, file) ||
+				        !PAK_fread(&key->pan.max, 4, 1, file) ||
+				        !PAK_fread(&key->pan.interval, 4, 1, file) ||
+				        !PAK_fread(&key->pan.flags, 4, 1, file) ||
+				        !PAK_fread(&key->x.min, 4, 1, file) ||
+				        !PAK_fread(&key->x.max, 4, 1, file) ||
+				        !PAK_fread(&key->x.interval, 4, 1, file) ||
+				        !PAK_fread(&key->x.flags, 4, 1, file) ||
+				        !PAK_fread(&key->y.min, 4, 1, file) ||
+				        !PAK_fread(&key->y.max, 4, 1, file) ||
+				        !PAK_fread(&key->y.interval, 4, 1, file) ||
+				        !PAK_fread(&key->y.flags, 4, 1, file) ||
+				        !PAK_fread(&key->z.min, 4, 1, file) ||
+				        !PAK_fread(&key->z.max, 4, 1, file) ||
+				        !PAK_fread(&key->z.interval, 4, 1, file) ||
+				        !PAK_fread(&key->z.flags, 4, 1, file))
 					return AAL_ERROR_FILEIO;
 			}
 		}
@@ -272,7 +275,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	static aalError LoadAmbianceFileVersion_1002(FILE * file, Ambiance & amb)
+	static aalError LoadAmbianceFileVersion_1002(PakFileHandle * file, Ambiance & amb)
 	{
 		//Read tracks configs
 		for (aalULong i(0); i < amb.track_c; i++)
@@ -287,7 +290,7 @@ namespace ATHENA
 			//Get track sample name
 			do
 			{
-				if (!FileRead(&text[j], 1, 1, file)) return AAL_ERROR_FILEIO;
+				if (!PAK_fread(&text[j], 1, 1, file)) return AAL_ERROR_FILEIO;
 			}
 			while (text[j++]);
 
@@ -314,7 +317,7 @@ namespace ATHENA
 
 			do
 			{
-				if (!FileRead(&text[j], 1, 1, file)) return AAL_ERROR_FILEIO;
+				if (!PAK_fread(&text[j], 1, 1, file)) return AAL_ERROR_FILEIO;
 			}
 			while (text[j++]);
 
@@ -329,7 +332,7 @@ namespace ATHENA
 			}
 
 			//Read flags and key count
-			if (!FileRead(&track->flags, 4, 1, file) || !FileRead(&track->key_c, 4, 1, file))
+			if (!PAK_fread(&track->flags, 4, 1, file) || !PAK_fread(&track->key_c, 4, 1, file))
 				return AAL_ERROR_FILEIO;
 
 			track->flags &= ~(TRACK_MUTED | TRACK_PAUSED | TRACK_PREFETCHED);
@@ -348,35 +351,35 @@ namespace ATHENA
 			{
 				TrackKey * key = &track->key_l[j];
 
-				if (!FileRead(&key->flags, 4, 1, file) ||
-				        !FileRead(&key->start, 4, 1, file) ||
-				        !FileRead(&key->loop, 4, 1, file) ||
-				        !FileRead(&key->delay_min, 4, 1, file) ||
-				        !FileRead(&key->delay_max, 4, 1, file) ||
-				        !FileRead(&key->volume.min, 4, 1, file) ||
-				        !FileRead(&key->volume.max, 4, 1, file) ||
-				        !FileRead(&key->volume.interval, 4, 1, file) ||
-				        !FileRead(&key->volume.flags, 4, 1, file) ||
-				        !FileRead(&key->pitch.min, 4, 1, file) ||
-				        !FileRead(&key->pitch.max, 4, 1, file) ||
-				        !FileRead(&key->pitch.interval, 4, 1, file) ||
-				        !FileRead(&key->pitch.flags, 4, 1, file) ||
-				        !FileRead(&key->pan.min, 4, 1, file) ||
-				        !FileRead(&key->pan.max, 4, 1, file) ||
-				        !FileRead(&key->pan.interval, 4, 1, file) ||
-				        !FileRead(&key->pan.flags, 4, 1, file) ||
-				        !FileRead(&key->x.min, 4, 1, file) ||
-				        !FileRead(&key->x.max, 4, 1, file) ||
-				        !FileRead(&key->x.interval, 4, 1, file) ||
-				        !FileRead(&key->x.flags, 4, 1, file) ||
-				        !FileRead(&key->y.min, 4, 1, file) ||
-				        !FileRead(&key->y.max, 4, 1, file) ||
-				        !FileRead(&key->y.interval, 4, 1, file) ||
-				        !FileRead(&key->y.flags, 4, 1, file) ||
-				        !FileRead(&key->z.min, 4, 1, file) ||
-				        !FileRead(&key->z.max, 4, 1, file) ||
-				        !FileRead(&key->z.interval, 4, 1, file) ||
-				        !FileRead(&key->z.flags, 4, 1, file))
+				if (!PAK_fread(&key->flags, 4, 1, file) ||
+				        !PAK_fread(&key->start, 4, 1, file) ||
+				        !PAK_fread(&key->loop, 4, 1, file) ||
+				        !PAK_fread(&key->delay_min, 4, 1, file) ||
+				        !PAK_fread(&key->delay_max, 4, 1, file) ||
+				        !PAK_fread(&key->volume.min, 4, 1, file) ||
+				        !PAK_fread(&key->volume.max, 4, 1, file) ||
+				        !PAK_fread(&key->volume.interval, 4, 1, file) ||
+				        !PAK_fread(&key->volume.flags, 4, 1, file) ||
+				        !PAK_fread(&key->pitch.min, 4, 1, file) ||
+				        !PAK_fread(&key->pitch.max, 4, 1, file) ||
+				        !PAK_fread(&key->pitch.interval, 4, 1, file) ||
+				        !PAK_fread(&key->pitch.flags, 4, 1, file) ||
+				        !PAK_fread(&key->pan.min, 4, 1, file) ||
+				        !PAK_fread(&key->pan.max, 4, 1, file) ||
+				        !PAK_fread(&key->pan.interval, 4, 1, file) ||
+				        !PAK_fread(&key->pan.flags, 4, 1, file) ||
+				        !PAK_fread(&key->x.min, 4, 1, file) ||
+				        !PAK_fread(&key->x.max, 4, 1, file) ||
+				        !PAK_fread(&key->x.interval, 4, 1, file) ||
+				        !PAK_fread(&key->x.flags, 4, 1, file) ||
+				        !PAK_fread(&key->y.min, 4, 1, file) ||
+				        !PAK_fread(&key->y.max, 4, 1, file) ||
+				        !PAK_fread(&key->y.interval, 4, 1, file) ||
+				        !PAK_fread(&key->y.flags, 4, 1, file) ||
+				        !PAK_fread(&key->z.min, 4, 1, file) ||
+				        !PAK_fread(&key->z.max, 4, 1, file) ||
+				        !PAK_fread(&key->z.interval, 4, 1, file) ||
+				        !PAK_fread(&key->z.flags, 4, 1, file))
 					return AAL_ERROR_FILEIO;
 			}
 		}
@@ -384,7 +387,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	static aalError LoadAmbianceFileVersion_1003(FILE * file, Ambiance & amb)
+	static aalError LoadAmbianceFileVersion_1003(PakFileHandle * file, Ambiance & amb)
 	{
 		Track * track = &amb.track_l[amb.track_c];
 
@@ -402,7 +405,7 @@ namespace ATHENA
 			//Get track sample name
 			do
 			{
-				if (!FileRead(&text[j], 1, 1, file)) return AAL_ERROR_FILEIO;
+				if (!PAK_fread(&text[j], 1, 1, file)) return AAL_ERROR_FILEIO;
 			}
 			while (text[j++]);
 
@@ -428,7 +431,7 @@ namespace ATHENA
 
 			do
 			{
-				if (!FileRead(&text[j], 1, 1, file)) return AAL_ERROR_FILEIO;
+				if (!PAK_fread(&text[j], 1, 1, file)) return AAL_ERROR_FILEIO;
 			}
 			while (text[j++]);
 
@@ -442,7 +445,7 @@ namespace ATHENA
 			}
 
 			//Read flags and key count
-			if (!FileRead(&track->flags, 4, 1, file) || !FileRead(&track->key_c, 4, 1, file))
+			if (!PAK_fread(&track->flags, 4, 1, file) || !PAK_fread(&track->key_c, 4, 1, file))
 				return AAL_ERROR_FILEIO;
 
 			track->flags &= ~(TRACK_MUTED | TRACK_PAUSED | TRACK_PREFETCHED);
@@ -463,35 +466,35 @@ namespace ATHENA
 			{
 				--key;
 
-				if (!FileRead(&key->flags, 4, 1, file) ||
-				        !FileRead(&key->start, 4, 1, file) ||
-				        !FileRead(&key->loop, 4, 1, file) ||
-				        !FileRead(&key->delay_min, 4, 1, file) ||
-				        !FileRead(&key->delay_max, 4, 1, file) ||
-				        !FileRead(&key->volume.min, 4, 1, file) ||
-				        !FileRead(&key->volume.max, 4, 1, file) ||
-				        !FileRead(&key->volume.interval, 4, 1, file) ||
-				        !FileRead(&key->volume.flags, 4, 1, file) ||
-				        !FileRead(&key->pitch.min, 4, 1, file) ||
-				        !FileRead(&key->pitch.max, 4, 1, file) ||
-				        !FileRead(&key->pitch.interval, 4, 1, file) ||
-				        !FileRead(&key->pitch.flags, 4, 1, file) ||
-				        !FileRead(&key->pan.min, 4, 1, file) ||
-				        !FileRead(&key->pan.max, 4, 1, file) ||
-				        !FileRead(&key->pan.interval, 4, 1, file) ||
-				        !FileRead(&key->pan.flags, 4, 1, file) ||
-				        !FileRead(&key->x.min, 4, 1, file) ||
-				        !FileRead(&key->x.max, 4, 1, file) ||
-				        !FileRead(&key->x.interval, 4, 1, file) ||
-				        !FileRead(&key->x.flags, 4, 1, file) ||
-				        !FileRead(&key->y.min, 4, 1, file) ||
-				        !FileRead(&key->y.max, 4, 1, file) ||
-				        !FileRead(&key->y.interval, 4, 1, file) ||
-				        !FileRead(&key->y.flags, 4, 1, file) ||
-				        !FileRead(&key->z.min, 4, 1, file) ||
-				        !FileRead(&key->z.max, 4, 1, file) ||
-				        !FileRead(&key->z.interval, 4, 1, file) ||
-				        !FileRead(&key->z.flags, 4, 1, file))
+				if (!PAK_fread(&key->flags, 4, 1, file) ||
+				        !PAK_fread(&key->start, 4, 1, file) ||
+				        !PAK_fread(&key->loop, 4, 1, file) ||
+				        !PAK_fread(&key->delay_min, 4, 1, file) ||
+				        !PAK_fread(&key->delay_max, 4, 1, file) ||
+				        !PAK_fread(&key->volume.min, 4, 1, file) ||
+				        !PAK_fread(&key->volume.max, 4, 1, file) ||
+				        !PAK_fread(&key->volume.interval, 4, 1, file) ||
+				        !PAK_fread(&key->volume.flags, 4, 1, file) ||
+				        !PAK_fread(&key->pitch.min, 4, 1, file) ||
+				        !PAK_fread(&key->pitch.max, 4, 1, file) ||
+				        !PAK_fread(&key->pitch.interval, 4, 1, file) ||
+				        !PAK_fread(&key->pitch.flags, 4, 1, file) ||
+				        !PAK_fread(&key->pan.min, 4, 1, file) ||
+				        !PAK_fread(&key->pan.max, 4, 1, file) ||
+				        !PAK_fread(&key->pan.interval, 4, 1, file) ||
+				        !PAK_fread(&key->pan.flags, 4, 1, file) ||
+				        !PAK_fread(&key->x.min, 4, 1, file) ||
+				        !PAK_fread(&key->x.max, 4, 1, file) ||
+				        !PAK_fread(&key->x.interval, 4, 1, file) ||
+				        !PAK_fread(&key->x.flags, 4, 1, file) ||
+				        !PAK_fread(&key->y.min, 4, 1, file) ||
+				        !PAK_fread(&key->y.max, 4, 1, file) ||
+				        !PAK_fread(&key->y.interval, 4, 1, file) ||
+				        !PAK_fread(&key->y.flags, 4, 1, file) ||
+				        !PAK_fread(&key->z.min, 4, 1, file) ||
+				        !PAK_fread(&key->z.max, 4, 1, file) ||
+				        !PAK_fread(&key->z.interval, 4, 1, file) ||
+				        !PAK_fread(&key->z.flags, 4, 1, file))
 					return AAL_ERROR_FILEIO;
 			}
 		}
@@ -506,7 +509,7 @@ namespace ATHENA
 	///////////////////////////////////////////////////////////////////////////////
 	aalError Ambiance::Load(const char * _name)
 	{
-		FILE * file = NULL;
+		PakFileHandle * file = NULL;
 		aalULong sign, version;
 		aalError error;
 		Track * track = NULL;
@@ -526,26 +529,26 @@ namespace ATHENA
 		if (!file) return AAL_ERROR_FILEIO;
 
 		//Read file signature and version
-		if (!FileRead(&sign, 4, 1, file) || !FileRead(&version, 4, 1, file))
+		if (!PAK_fread(&sign, 4, 1, file) || !PAK_fread(&version, 4, 1, file))
 		{
-			FileClose(file);
+			PAK_fclose(file);
 			return AAL_ERROR_FILEIO;
 		}
 
 		//Check file signature
 		if (sign != AMBIANCE_FILE_SIGNATURE || version > AMBIANCE_FILE_VERSION)
 		{
-			FileClose(file);
+			PAK_fclose(file);
 			return AAL_ERROR_FORMAT;
 		}
 
 		//Read track count and initialize track structures
-		FileRead(&track_c, 4, 1, file);
+		PAK_fread(&track_c, 4, 1, file);
 		track_l = (Track *)malloc(sizeof(Track) * track_c);
 
 		if (!track_l)
 		{
-			FileClose(file);
+			PAK_fclose(file);
 			return AAL_ERROR_MEMORY;
 		}
 
@@ -570,7 +573,7 @@ namespace ATHENA
 		}
 
 
-		FileClose(file);
+		PAK_fclose(file);
 		strcpy(name, _name);
 
 		return error;

@@ -24,7 +24,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 #include <string.h>
 #include "Athena_Resource.h"
-#include "Athena_FileIO.h"
+#include <hermes/PakManager.h>
 
 
 
@@ -35,23 +35,23 @@ namespace ATHENA
 	extern char * root_path;
 
 
-	FILE * OpenResource(const char * name, const char * resource_path)
+	PakFileHandle * OpenResource(const char * name, const char * resource_path)
 	{
-		FILE * file = FileOpen(name, "rb");
+		PakFileHandle * file = PAK_fopen(name);
 		char text[256];
 
 		if (!file && root_path)
 		{
 			strcpy(text, root_path);
 			strcat(text, name);
-			file = FileOpen(text, "rb");
+			file = PAK_fopen(text);
 		}
 
 		if (!file && resource_path)
 		{
 			strcpy(text, resource_path);
 			strcat(text, name);
-			file = FileOpen(text, "rb");
+			file = PAK_fopen(text);
 		}
 
 		if (!file && root_path && resource_path)
@@ -59,7 +59,7 @@ namespace ATHENA
 			strcpy(text, root_path);
 			strcat(text, resource_path);
 			strcat(text, name);
-			file = FileOpen(text, "rb");
+			file = PAK_fopen(text);
 		}
 
 		return file;
