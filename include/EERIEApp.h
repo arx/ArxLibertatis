@@ -64,7 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEEnum.h"
 #include <windows.h>
 #include <commctrl.h>
-#include <d3d.h>
+#include <d3dwrapper.h>
 //
 //
 //
