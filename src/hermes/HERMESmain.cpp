@@ -1122,7 +1122,7 @@ void HERMES_Memory_Security_Off()
 	HERMES_MEMORY_SECURITY = NULL;
 }
 
-long HERMES_Memory_Emergency_Out(long size, char * info)
+long HERMES_Memory_Emergency_Out(long size, const char * info)
 {
 	if (HERMES_MEMORY_SECURITY)
 		free(HERMES_MEMORY_SECURITY);

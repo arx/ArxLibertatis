@@ -135,7 +135,7 @@ void ERROR_Log_Init(char * fic);
 bool ERROR_Log(char * fic);
 void HERMES_Memory_Security_On(long size);
 void HERMES_Memory_Security_Off();
-long HERMES_Memory_Emergency_Out(long size=0,char * info=NULL);
+long HERMES_Memory_Emergency_Out(long size = 0, const char * info=NULL);
 void StartBench();
 unsigned long EndBench();
 extern long NEED_BENCH;
