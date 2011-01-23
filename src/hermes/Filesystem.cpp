@@ -27,6 +27,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h>
 #include <cstdio>
 
+#include <cassert>
+
 long KillAllDirectory(const char * path) {
 	printf("KillAllDirectory(%s)\n", path);
 	
@@ -102,11 +104,13 @@ FileHandle FileOpenRead(const char * name) {
 	
 	HANDLE handle = CreateFile(name, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, 0);
 
-	if(handle < 0) {
+	if(handle == INVALID_HANDLE_VALUE) {
 		printf("\e[1;31mCan't open\e[m\t%s\n", name);
 		return INVALID_FILE_HANDLE;
 	}
 	printf("\e[1;32mOpened\e[m\t%s\n", name);
+	
+	assert(MAKEHANDLE(handle) != INVALID_FILE_HANDLE);
 	
 	return MAKEHANDLE(handle);
 }
@@ -143,6 +147,8 @@ FileHandle FileOpenWrite(const char * name) {
 	if(handle == INVALID_HANDLE_VALUE) {
 		return INVALID_FILE_HANDLE;
 	}
+	
+	assert(MAKEHANDLE(handle) != INVALID_FILE_HANDLE);
 	
 	return MAKEHANDLE(handle);
 }
