@@ -920,7 +920,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans)
 	char tmp[512];
 	char tmp2[512];
 	char temp[512];
-	long FileSize;
+	size_t FileSize;
 	INTERACTIVE_OBJ * io;
 
 	sprintf(nameident, "%s_%04d", GetName(dli->name), dli->ident);
@@ -1064,7 +1064,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, char * fic)
 
 	long pos = 0;
 	long i;
-	long FileSize = 0;
+	size_t FileSize = 0;
 	char tstr[128];
 	HERMES_DATE_TIME hdt;
 	ShowCurLoadInfo("Starting Level Loading");
@@ -1530,9 +1530,9 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, char * fic)
 
 	if (dlh.version >= 1.44f) // using compression
 	{
-		long cpr_pos;
-		char * compressed = (char *)PAK_FileLoadMalloc(fic2, &cpr_pos);
-		dat = (unsigned char *)STD_Explode(compressed, cpr_pos, &FileSize);
+		size_t size;
+		char * compressed = (char *)PAK_FileLoadMalloc(fic2, &size);
+		dat = (unsigned char *)STD_Explode(compressed, size, &FileSize);
 
 		if (dat == NULL)
 		{
@@ -2033,7 +2033,7 @@ void ARX_SAVELOAD_DLFCheckAdd(char * path, long num)
 
 	long pos = 0;
 	long i;
-	long FileSize = 0;
+	size_t FileSize = 0;
 
 	SetExt(fic, ".DLF");
 

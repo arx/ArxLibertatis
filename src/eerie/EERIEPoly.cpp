@@ -3769,9 +3769,9 @@ bool FastSceneLoad(const char * partial_path)
 
 	if (!PAK_FileExist(fic)) return false;
 
-	long taille;
+	size_t size;
 	
-	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(fic, &taille);
+	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(fic, &size);
 
 	if (dat == NULL) return false;
 
@@ -3852,8 +3852,8 @@ lasuite:
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
 	char * compressed;
-	long cpr_pos;
-	cpr_pos = taille;
+	size_t cpr_pos;
+	cpr_pos = size;
 	compressed = (char *)(dat + pos);
 	char * torelease;
 	torelease = (char *)dat;

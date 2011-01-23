@@ -202,7 +202,7 @@ void ARX_MINIMAP_Load_Offsets()
 
 	if (PAK_FileExist(INI_MINI_OFFSETS))
 	{
-		long siz = 0;
+		size_t siz = 0;
 		char * dat = (char *)PAK_FileLoadMalloc(INI_MINI_OFFSETS, &siz);
 		long pos = 0;
 
@@ -217,7 +217,7 @@ void ARX_MINIMAP_Load_Offsets()
 
 				pos++;
 
-				if (pos >= siz) i = 100;
+				if (pos >= siz) break;
 			}
 
 			free(dat);

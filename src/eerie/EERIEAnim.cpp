@@ -329,7 +329,7 @@ long EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah,char * path)
 	if (!ah->path[0]) return 0;
 
 	unsigned char * adr;
-	long FileSize;
+	size_t FileSize;
 	EERIE_ANIM * temp;
 
 	if (!PAK_FileExist(path)) return 0;
@@ -365,7 +365,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const char * path)
 	}
 
 	unsigned char * adr;
-	long FileSize;
+	size_t FileSize;
 	char path2[256];
 	char pathcount=2;
 

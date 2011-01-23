@@ -271,7 +271,7 @@ float GetTimeBetweenKeyFrames(EERIE_ANIM * ea, long f1, long f2)
 	return time;
 }
 //-----------------------------------------------------------------------------------------------------
-EERIE_ANIM * TheaToEerie(unsigned char * adr, long size, const char * fic, long flags)
+EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * fic, long flags)
 {
 	THEA_HEADER				th;
 	THEA_KEYFRAME			tkf;
@@ -1223,7 +1223,7 @@ retry10:
 //				if (!strcasecmp(tex, ".SCN"))
 //				{
 //					sprintf(path, "%s%s", dirr, fd.name);
-//					long SizeAlloc = 0;
+//					size_t SizeAlloc = 0;
 //
 //					if (adr = (unsigned char *)PAK_FileLoadMalloc(path, &SizeAlloc))
 //					{
@@ -1322,7 +1322,7 @@ retry1:
 			{
 				char path2[256];
 				sprintf(path2, "%s%s", dirr, et->name);
-				long SizeAlloc = 0;
+				size_t SizeAlloc = 0;
 
 				if (adr = (unsigned char *)PAK_FileLoadMalloc(path2, &SizeAlloc))
 				{

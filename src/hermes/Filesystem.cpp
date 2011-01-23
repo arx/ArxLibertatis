@@ -68,7 +68,7 @@ long KillAllDirectory(const char * path) {
 }
 
 // TODO return should be bool
-long DirectoryExist(const char * name)
+bool DirectoryExist(const char * name)
 {
 	HANDLE idx;
 	WIN32_FIND_DATA fd;
@@ -82,30 +82,30 @@ long DirectoryExist(const char * name)
 		if (SetCurrentDirectory(name) == 0) // success
 		{
 			SetCurrentDirectory(initial);
-			return 1;
+			return true;
 		}
 
 		SetCurrentDirectory(initial);
-		return 0;
+		return false;
 	}
 
 	FindClose(idx);
-	return 1;
+	return true;
 }
 
 // TODO return should be bool
-long FileExist(const char * name)
+bool FileExist(const char * name)
 {
 	FileHandle i;
 
 	if((i = FileOpenRead(name)) == 0) {
 		printf("\e[1;31mDidn't find\e[m\t%s\n", name);
-		return 0;
+		return false;
 	}
 	
 	FileCloseRead(i);
 	printf("\e[1;32mFound\e[m\t%s\n", name);
-	return 1;
+	return true;
 }
 
 FileHandle	FileOpenRead(const char * name)
@@ -173,12 +173,12 @@ long	FileWrite(FileHandle handle, const void * adr, long size)
 	return ret;
 }
 
-long	FileSeek(long handle, long offset, long mode)
+long	FileSeek(long handle, int offset, long mode)
 {
 	return SetFilePointer((int)handle - 1, offset, NULL, mode);
 }
 
-void	* FileLoadMallocZero(const char * name, long * SizeLoadMalloc)
+void	* FileLoadMallocZero(const char * name, size_t * SizeLoadMalloc)
 {
 	long	handle;
 	long	size1, size2;
@@ -227,7 +227,7 @@ void	* FileLoadMallocZero(const char * name, long * SizeLoadMalloc)
 	return(adr);
 }
 
-void	* FileLoadMalloc(const char * name, long * SizeLoadMalloc)
+void	* FileLoadMalloc(const char * name, size_t * SizeLoadMalloc)
 {
 	long	handle;
 	long	size1, size2;

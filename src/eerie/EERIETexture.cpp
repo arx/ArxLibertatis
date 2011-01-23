@@ -784,8 +784,9 @@ HRESULT TextureContainer::LoadBitmapFile(TCHAR * strPathname)
 {
 	if (!PAK_FileExist(strPathname)) return E_FAIL;
 
-	long siz = 0;
+	size_t siz = 0;
 	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, &siz);
+	// TODO siz ignored
 
 	if (!dat) return E_FAIL;
 
@@ -880,8 +881,9 @@ HRESULT TextureContainer::LoadTargaFile(TCHAR * strPathname)
 {
 	if (!PAK_FileExist(strPathname)) return E_FAIL;
 
-	long siz = 0;
-	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, &siz);
+	size_t size = 0;
+	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, &size);
+	// TODO size ignored
 
 	if (NULL == dat)
 		return E_FAIL;
@@ -3210,9 +3212,9 @@ void ConvertData(char * dat)
 void LookForRefinementMap(TextureContainer * tc)
 {
 	char * GlobalRefine = NULL;
-	long GlobalRefine_size = 0;
+	size_t GlobalRefine_size = 0;
 	char * Refine = NULL;
-	long Refine_size = 0;
+	size_t Refine_size = 0;
 	long count = 0;
 	char str1[1024];
 	char str2[1024];
@@ -3229,7 +3231,7 @@ void LookForRefinementMap(TextureContainer * tc)
 				GlobalRefine = (char *)PAK_FileLoadMallocZero(INI_REFINEMENT_GLOBAL, &GlobalRefine_size);
 			}
 
-			if (GlobalRefine == NULL) GlobalRefine_size = -1;
+			if (GlobalRefine == NULL) GlobalRefine_size = 0;
 		}
 	}
 
@@ -3244,7 +3246,7 @@ void LookForRefinementMap(TextureContainer * tc)
 				Refine = (char *)PAK_FileLoadMallocZero(INI_REFINEMENT, &Refine_size);
 			}
 
-			if (Refine == NULL) Refine_size = -1;
+			if (Refine == NULL) Refine_size = 0;
 		}
 	}
 
@@ -3702,8 +3704,8 @@ HRESULT TextureContainer::LoadJpegFileNoDecomp(TCHAR * strPathname)
 	if (!PAK_FileExist(strPathname))
 		return E_FAIL;
 
-	long	taille;
-	unsigned char * memjpeg = (unsigned char *)PAK_FileLoadMalloc(strPathname, &taille);
+	size_t size;
+	unsigned char * memjpeg = (unsigned char *)PAK_FileLoadMalloc(strPathname, &size);
 
 	if (!memjpeg)
 		return E_FAIL;
@@ -3744,7 +3746,7 @@ HRESULT TextureContainer::LoadJpegFileNoDecomp(TCHAR * strPathname)
 		return E_FAIL;
 	}
 
-	jpeg_mem_src(cinfo, (char *)memjpeg, taille);
+	jpeg_mem_src(cinfo, (char *)memjpeg, size);
 
 	if (JPEGError)
 	{

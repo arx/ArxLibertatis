@@ -29,9 +29,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cassert>
 
 
-using std::size_t;
-
-
 static char * GetFirstDir(const char * dir, size_t * l);
 
 PakFile::PakFile(const char * n)
