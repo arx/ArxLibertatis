@@ -276,7 +276,7 @@ typedef struct
 
 typedef struct
 {
-	long			lgroup; //linked to group n� if lgroup=-1 NOLINK
+	long			lgroup; //linked to group n° if lgroup=-1 NOLINK
 	long			lidx;
 	long			lidx2;
 	EERIE_MOD_INFO	modinfo;
