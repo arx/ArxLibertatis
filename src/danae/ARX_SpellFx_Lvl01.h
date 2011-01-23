@@ -129,7 +129,7 @@ class CMultiMagicMissile: public CSpellFx
 };
 
 //-----------------------------------------------------------------------------
-// Done By : S�bastien Scieux
+// Done By : Sébastien Scieux
 // Status  :
 //-----------------------------------------------------------------------------
 class CIgnit: public CSpellFx
@@ -192,7 +192,7 @@ class CIgnit: public CSpellFx
 };
 
 //-----------------------------------------------------------------------------
-// Done By : S�bastien Scieux
+// Done By : Sébastien Scieux
 // Status  :
 //-----------------------------------------------------------------------------
 class CDoze: public CIgnit
@@ -208,7 +208,7 @@ class CDoze: public CIgnit
 };
 
 //-----------------------------------------------------------------------------
-// Done By : S�bastien Scieux
+// Done By : Sébastien Scieux
 // Status  :
 //-----------------------------------------------------------------------------
 class CPortal: public CSpellFx
