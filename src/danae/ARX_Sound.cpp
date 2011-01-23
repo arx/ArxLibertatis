@@ -1396,7 +1396,7 @@ void ARX_SOUND_AmbianceRestorePlayList(void * _play_list, unsigned long size)
 	}
 }
 
-// P�B�M�J�M�A
+// PâBôMéJèMçA
 extern PakManager * pPakManager;
 static void ARX_SOUND_CreateEnvironments()
 {
