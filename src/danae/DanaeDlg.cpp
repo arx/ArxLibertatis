@@ -267,7 +267,7 @@ bool CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 }
 extern long ARX_PATHS_HIERARCHYMOVE;
 
-bool CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
+INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                                  LPARAM lParam)
 {
 	HWND thWnd;
@@ -3351,7 +3351,7 @@ extern FOG_DEF * CDP_EditFog;
 //*************************************************************************************
 //*************************************************************************************
 
-bool CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HWND thWnd;
 	float t;
@@ -3618,7 +3618,7 @@ INTERACTIVE_OBJ * edit_io = NULL;
 //*************************************************************************************
 //*************************************************************************************
 
-bool CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HWND thWnd;
 
