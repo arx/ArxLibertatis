@@ -462,7 +462,7 @@ void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 }
 extern long GORE_MODE;
  
-EERIE_3DOBJ * GetExistingEerie(char * file)
+EERIE_3DOBJ * GetExistingEerie(const char * file)
 {
 	for (long i = 1; i < inter.nbmax; i++)
 	{
@@ -3366,7 +3366,6 @@ INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const char * fil, long f
 	char texscript[HERMES_PATH_SIZE];
 	char file[256];
 	long type = IO_ITEM;
-	MakeUpcase(fil);
 
 	if (!specialstrcmp(GetName(fil), "GOLD_COIN"))
 	{

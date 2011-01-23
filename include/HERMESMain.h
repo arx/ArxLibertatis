@@ -105,8 +105,8 @@ void HERMES_InitDebug();
 void SAFEstrcpy(char * dest, char * src, unsigned long max);
 
 void MakeUpcase(char * str);
-unsigned char IsIn(char * strin, char * str);
-unsigned char NC_IsIn(char * strin, char * str);
+bool IsIn(const char * strin, const char * str);
+bool NC_IsIn(const char * strin, const char * str);
 
 void GetDate(HERMES_DATE_TIME * hdt);
 void SendConsole(char * dat,long level,long flag,HWND source);
@@ -122,8 +122,8 @@ bool CreateFullPath(const char * path);
 // Strings Funcs
 bool HERMESFolderSelector(char *file_name,char *title);
 void RemoveName(char *str);
-char * GetName(char *str);
-char * GetExt(char *str);
+char * GetName(const char *str);
+char * GetExt(const char *str);
 void SetExt(char *str,char *new_ext);
 void AddToName(char *str,char *cat);
 int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName,char *filter,HWND hWnd);
