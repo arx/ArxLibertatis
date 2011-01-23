@@ -95,11 +95,13 @@ void InitList(HWND _hwnd)
 	lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT;// | LVCF_SUBITEM;
 	lvc.fmt = LVCFMT_LEFT;
 	lvc.cx = 145;//75
-	lvc.pszText = "Name";
+	lvc.pszText = strdup("Name");
 	SendMessage(_hwnd, LVM_INSERTCOLUMN, 0, (LPARAM) &lvc);
+	free(lvc.pszText);
 	lvc.cx = 50;//75
-	lvc.pszText = "Value";
+	lvc.pszText = strdup("Value");
 	SendMessage(_hwnd, LVM_INSERTCOLUMN, 1, (LPARAM) &lvc);
+	free(lvc.pszText);
 }
 
 //-----------------------------------------------------------------------------
@@ -107,7 +109,7 @@ void InsertItem(HWND _hwnd, char * _name, char * _value)
 {
 	LVITEM lvi;
 	lvi.mask = LVIF_TEXT | LVIF_PARAM;
-	lvi.pszText = "Should not be seen";
+	lvi.pszText = strdup("Should not be seen");
 
 
 	lvi.iItem = 1;
@@ -115,7 +117,7 @@ void InsertItem(HWND _hwnd, char * _name, char * _value)
 	lvi.lParam = (LPARAM) strdup(_name);
 
 	int r = SendMessage(_hwnd, LVM_INSERTITEM, 0, (LPARAM)(const LV_ITEM FAR *)(&lvi));
-
+	free(lvi.pszText);
 	ListView_SetItemText(_hwnd, r, 0, _name);
 	ListView_SetItemText(_hwnd, r, 1, _value);
 }
@@ -295,7 +297,7 @@ bool WINAPI DllMain(HINSTANCE _hModule, DWORD _fdwreason, LPVOID _lpReserved)
 }
 
 //-----------------------------------------------------------------------------
-LPSTR SCRIPT_DEBUGGER_GetName()
+const char * SCRIPT_DEBUGGER_GetName()
 {
 	return "SCRIPT DEBUGGER";
 }
