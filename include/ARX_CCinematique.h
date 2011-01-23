@@ -182,7 +182,7 @@ typedef struct
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associ�
+	int			fx;				//fx associé
 	int			typeinterp;
 	EERIE_3D	pos;
 	float		angz;
@@ -196,7 +196,7 @@ typedef struct
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associ�
+	int			fx;				//fx associé
 	int			typeinterp;
 	EERIE_3D	pos;
 	float		angz;
@@ -211,7 +211,7 @@ typedef struct
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associ�
+	int			fx;				//fx associé
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
@@ -226,7 +226,7 @@ typedef struct
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associ�
+	int			fx;				//fx associé
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
@@ -242,7 +242,7 @@ typedef struct CS_KEY
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associ�
+	int			fx;				//fx associé
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
@@ -260,7 +260,7 @@ typedef struct
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associ�
+	int			fx;				//fx associé
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
@@ -278,7 +278,7 @@ typedef struct
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associ�
+	int			fx;				//fx associé
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
@@ -297,7 +297,7 @@ typedef struct CST_KEY
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associ�
+	int			fx;				//fx associé
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
