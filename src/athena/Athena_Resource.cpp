@@ -22,53 +22,29 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <string.h>
+#include <cstring>
 #include "Athena_Resource.h"
 #include <hermes/PakManager.h>
 
+namespace ATHENA {
 
 
-
-namespace ATHENA
-{
-
-	extern char * root_path;
-
-
-	PakFileHandle * OpenResource(const char * name, const char * resource_path)
-	{
-		PakFileHandle * file = NULL;
-		char text[256];
-		
-		if (!file && resource_path)
-		{
-			strcpy(text, resource_path);
-			strcat(text, name);
-			file = PAK_fopen(text);
-		}
-		
-		if(!file) {
-			file = PAK_fopen(name);
-		}
-
-		if (!file && root_path)
-		{
-			strcpy(text, root_path);
-			strcat(text, name);
-			file = PAK_fopen(text);
-		}
-
-
-
-		if (!file && root_path && resource_path)
-		{
-			strcpy(text, root_path);
-			strcat(text, resource_path);
-			strcat(text, name);
-			file = PAK_fopen(text);
-		}
-
-		return file;
+PakFileHandle * OpenResource(const char * name, const char * resource_path) {
+	
+	PakFileHandle * file = NULL;
+	char text[256];
+	
+	if (!file && resource_path) {
+		strcpy(text, resource_path);
+		strcat(text, name);
+		file = PAK_fopen(text);
 	}
+	
+	if(!file) {
+		file = PAK_fopen(name);
+	}
+	
+	return file;
+}
 
 }//ATHENA::
