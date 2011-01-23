@@ -36,8 +36,6 @@ extern HWND HwndPere;
 extern char DirectoryChoose[];
 extern int	LSoundChoose;
 
-void ClearAbsDirectory(char * pT, char * d);
-void AddDirectory(char * pT, char * dir);
 /*-----------------------------------------------------------*/
 void InitSound(CINEMATIQUE * c)
 {

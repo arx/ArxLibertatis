@@ -125,7 +125,7 @@ namespace ATHENA
 
 	aalVoid DebugLog(const char * text)
 	{
-		fprintf(debug_log, text);
+		fprintf(debug_log, "%s", text);
 		fflush(debug_log);
 	}
 
