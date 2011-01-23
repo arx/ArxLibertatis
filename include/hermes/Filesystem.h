@@ -49,5 +49,6 @@ long FileWrite(FileHandle h, const void * adr, long size);
 void * FileLoadMalloc(const char * name, long * filesize = 0);
 void * FileLoadMallocZero(const char * name, long * filesize = 0);
 long FileSeek(FileHandle handle, long offset, long mode);
+long FileTell(FileHandle handle);
 
 #endif // ARX_HERMES_FILESYSTEM_H

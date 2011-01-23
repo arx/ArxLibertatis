@@ -58,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_HERMES_PAKMANAGER_H
 #define ARX_HERMES_PAKMANAGER_H
 
+#include <stddef.h>
 #include <vector>
 
 class PakFileHandle;
@@ -71,8 +72,8 @@ void * PAK_FileLoadMallocZero(const char * name, long * SizeLoadMalloc = NULL);
 
 bool PAK_AddPak(const char * pakfile);
 
-FILE * PAK_fopen(const char * filename, const char * mode );
-std::size_t PAK_fread(void * buffer, std::size_t size, std::size_t count, FILE * stream );
+FILE * PAK_fopen(const char * filename, const char * mode);
+std::size_t PAK_fread(void * buffer, std::size_t size, std::size_t count, FILE * stream);
 int PAK_fclose(FILE * stream);
 long PAK_ftell(FILE * stream);
 long PAK_DirectoryExist(const char * name);
@@ -81,12 +82,14 @@ int PAK_fseek(FILE * fic, long offset, int origin);
 
 void PAK_Close();
 
-//-----------------------------------------------------------------------------
-class PakManager
-{
+class PakManager {
+	
+private:
+	
+	std::vector<PakReader*> loadedPaks;
+	
 public:
-	std::vector<PakReader*> vLoadPak;
-public:
+	
 	PakManager();
 	~PakManager();
 
@@ -102,6 +105,7 @@ public:
 	int fTell(PakFileHandle * fh);
 	std::vector<PakDirectory*> * ExistDirectory(const char * name);
 	bool ExistFile(const char * name);
+	
 };
 
 #endif // ARX_HERMES_PAKMANAGER_H
