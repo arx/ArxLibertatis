@@ -181,8 +181,8 @@ class TextureContainer
 		float	m_ody;						// precalculated 1.f/height
  
 		HRESULT LoadImageData();
-		HRESULT LoadBitmapFile(TCHAR * strPathname);
-		HRESULT LoadTargaFile(TCHAR * strPathname);
+		HRESULT LoadBitmapFile(const char * strPathname);
+		HRESULT LoadTargaFile(const char * strPathname);
  
 		HRESULT LoadJpegFileNoDecomp(const char * strPathname);
 		HRESULT LoadPNGFile(const char * strPathname);

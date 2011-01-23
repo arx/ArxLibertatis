@@ -782,15 +782,15 @@ HRESULT TextureContainer::LoadImageData() {
 // Name: LoadBitmapFile()
 // Desc: Loads data from a .bmp file, and stores it in a bitmap structure.
 //-----------------------------------------------------------------------------
-HRESULT TextureContainer::LoadBitmapFile(TCHAR * strPathname)
-{
-	if (!PAK_FileExist(strPathname)) return E_FAIL;
+HRESULT TextureContainer::LoadBitmapFile(const char * strPathname) {
 
 	size_t siz = 0;
 	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, &siz);
 	// TODO siz ignored
 
-	if (!dat) return E_FAIL;
+	if(!dat) {
+		return E_FAIL;
+	}
 
 	BITMAPINFOHEADER sBitmapH = *((BITMAPINFOHEADER *)(dat + sizeof(BITMAPFILEHEADER)));
 	HDC hHDC = CreateCompatibleDC(NULL);
@@ -879,16 +879,15 @@ HRESULT TextureContainer::LoadBitmapFile(TCHAR * strPathname)
 // Desc: Loads RGBA data from a .tga file, and stores it in allocated memory
 //       for the specified texture container
 //-----------------------------------------------------------------------------
-HRESULT TextureContainer::LoadTargaFile(TCHAR * strPathname)
+HRESULT TextureContainer::LoadTargaFile(const char * strPathname)
 {
-	if (!PAK_FileExist(strPathname)) return E_FAIL;
-
 	size_t size = 0;
 	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, &size);
 	// TODO size ignored
 
-	if (NULL == dat)
+	if(!dat) {
 		return E_FAIL;
+	}
 
 	struct TargaHeader
 	{
@@ -3702,13 +3701,8 @@ TextureContainer * D3DTextr_GetSurfaceContainer(const char * strName)
 //-----------------------------------------------------------------------------
 HRESULT TextureContainer::LoadJpegFileNoDecomp(const char * strPathname) {
 	
-	if(!PAK_FileExist(strPathname)) {
-		return E_FAIL;
-	}
-	
 	size_t size;
 	unsigned char * memjpeg = (unsigned char *)PAK_FileLoadMalloc(strPathname, &size);
-	
 	if(!memjpeg) {
 		return E_FAIL;
 	}
