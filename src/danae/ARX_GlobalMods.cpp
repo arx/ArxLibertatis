@@ -56,7 +56,7 @@ extern float fZFogStart;
 extern bool bZBUFFER;
 extern D3DMATRIX ProjectionMatrix;
 
-extern unsigned long ulBKGColor = 0;
+unsigned long ulBKGColor = 0;
 
 void ARX_GLOBALMODS_Reset()
 {
