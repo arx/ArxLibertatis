@@ -1209,6 +1209,7 @@ retry10:
 	strcpy(LastLoadedScene, dirr);
 	sprintf(pathh, "%s*.scn", dirr);
 
+	printf("\e[1;33mpartially unimplemented MultiSceneToEerie\e[m\n");
 //	if ((idx = _findfirst(pathh, &fd)) != -1)
 //	{
 //		do
@@ -1379,29 +1380,13 @@ EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const char * dirr)
 {
 	EERIE_MULTI3DSCENE * em = NULL;
 
-	switch (CURRENT_LOADMODE)
-	{
-		case LOAD_TRUEFILE:
-			em = MultiSceneToEerie(dirr);
-			break;
-		case LOAD_PACK:
-			em = _PAK_MultiSceneToEerie(dirr);
-			break;
-		case LOAD_PACK_THEN_TRUEFILE:
-			em = _PAK_MultiSceneToEerie(dirr);
+// TODO create unified implementation for both pak and non-pak
+	
+	em = _PAK_MultiSceneToEerie(dirr);
 
-			if (!em)
-				em = MultiSceneToEerie(dirr);
+	if(!em)
+		em = MultiSceneToEerie(dirr);
 
-			break;
-		case LOAD_TRUEFILE_THEN_PACK:
-			em = MultiSceneToEerie(dirr);
-
-			if (!em)
-				em = _PAK_MultiSceneToEerie(dirr);
-
-			break;
-	}
 
 	EERIEPOLY_Compute_PolyIn();
 	return em;

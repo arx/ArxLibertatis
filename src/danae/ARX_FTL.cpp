@@ -622,7 +622,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 
 	long DontCheck = 0;
 
-	if (CURRENT_LOADMODE != LOAD_TRUEFILE) DontCheck = 1;
+	DontCheck = 1;
 
 	dat = (unsigned char *)STD_Explode(compressed, cpr_pos, &allocsize);//pos,&cpr_pos);
 

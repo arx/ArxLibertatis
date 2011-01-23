@@ -66,18 +66,11 @@ class PakDirectory;
 
 #include <cstdio>
 
-
-#define LOAD_TRUEFILE			1
-#define LOAD_PACK				2
-#define LOAD_PACK_THEN_TRUEFILE	3
-#define LOAD_TRUEFILE_THEN_PACK	4
-
-extern long CURRENT_LOADMODE;
 void * PAK_FileLoadMalloc(const char * name, long * SizeLoadMalloc = NULL);
 void * PAK_FileLoadMallocZero(const char * name, long * SizeLoadMalloc = NULL);
 
-// use only for READ !!!!
-void PAK_SetLoadMode(long mode, const char * pakfile);
+void PAK_AddPak(const char * pakfile);
+
 FILE * PAK_fopen(const char * filename, const char * mode );
 std::size_t PAK_fread(void * buffer, std::size_t size, std::size_t count, FILE * stream );
 int PAK_fclose(FILE * stream);
