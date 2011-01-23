@@ -69,7 +69,7 @@ class PakDirectory;
 void * PAK_FileLoadMalloc(const char * name, long * SizeLoadMalloc = NULL);
 void * PAK_FileLoadMallocZero(const char * name, long * SizeLoadMalloc = NULL);
 
-void PAK_AddPak(const char * pakfile);
+bool PAK_AddPak(const char * pakfile);
 
 FILE * PAK_fopen(const char * filename, const char * mode );
 std::size_t PAK_fread(void * buffer, std::size_t size, std::size_t count, FILE * stream );

@@ -78,24 +78,21 @@ using std::vector;
 
 PakManager * pPakManager = NULL;
 
-// TODO remove param
-void PAK_AddPak(const char * pakfile)
-{
-
-	if (FileExist(pakfile))
-	{
-		if (!pPakManager) pPakManager = new PakManager();
-
-		pPakManager->RemovePak(pakfile);
-		pPakManager->AddPak(pakfile);
+bool PAK_AddPak(const char * pakfile) {
+	
+	if(!pPakManager) {
+		pPakManager = new PakManager();
 	}
-
+	
+	return pPakManager->AddPak(pakfile);
 }
 
-void PAK_Close()
-{
-	if (pPakManager) delete pPakManager;
-
+void PAK_Close() {
+	
+	if(pPakManager) {
+		delete pPakManager;
+	}
+	
 	pPakManager = NULL;
 }
 
@@ -316,13 +313,15 @@ bool PakManager::AddPak(const char * pakname)
 		delete pLoadPak;
 		return false;
 	}
-
+	
 	if (!pLoadPak->root)
 	{
 		delete pLoadPak;
 		return false;
 	}
-
+	
+	RemovePak(pakname);
+	
 	vLoadPak.push_back(pLoadPak);
 	return true;
 }
