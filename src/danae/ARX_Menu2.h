@@ -886,7 +886,7 @@ class CMenuConfig
 		bool WriteConfig(char * _pcSection, char * _pcKey, char * _pcDatas);
 	public:
 		CMenuConfig();
-		CMenuConfig(char *);
+		CMenuConfig(const char *);
 		virtual ~CMenuConfig();
 
 		bool SetActionKey(int _iAction, int _iActionNum, int _iVirtualKey);

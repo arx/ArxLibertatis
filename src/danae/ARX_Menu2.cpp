@@ -679,9 +679,9 @@ sakActionDefaultKey[CONTROLS_CUST_BOOKQUEST].iPage=1;
 
 //-----------------------------------------------------------------------------
 
-CMenuConfig::CMenuConfig(char *_pName)
+CMenuConfig::CMenuConfig(const char *_pName)
 {
-	if(!strcasecmp((const char*)"cfg",(const char*)_pName))
+	if(!strcasecmp("cfg", _pName))
 	{
 		pcName=strdup("cfg.ini");
 	}

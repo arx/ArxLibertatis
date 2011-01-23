@@ -171,7 +171,7 @@ void SetClick(HWND hWnd, int id)
 }
 
 float FORCED_REDUCTION_VALUE = 0.f;
-bool CALLBACK MeshReductionProc(HWND hWnd, UINT uMsg, WPARAM wParam,
+INT_PTR CALLBACK MeshReductionProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                                 LPARAM lParam)
 {
 	HWND thWnd;
@@ -1582,7 +1582,7 @@ long SYNTAXCHECKING = 0;
 //*************************************************************************************
 //*************************************************************************************
 
-bool CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HWND thWnd;
 
@@ -2011,7 +2011,7 @@ bool CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return false;
 }
 char SCRIPT_SEARCH_TEXT[256];
-bool CALLBACK ScriptSearchProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
+INT_PTR CALLBACK ScriptSearchProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 {
 	if (WM_COMMAND == uMsg)
 	{
@@ -2045,7 +2045,7 @@ bool CALLBACK ScriptSearchProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 // AboutProc()
 //  message proc function for the about box
 //*************************************************************************************
-bool CALLBACK AboutProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
+INT_PTR CALLBACK AboutProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 {
 	if (WM_COMMAND == uMsg)
 		if (IDOK == LOWORD(wParam) || IDCANCEL == LOWORD(wParam))
@@ -2075,7 +2075,7 @@ extern long TRUEFIGHT;
 //*************************************************************************************
 //*************************************************************************************
 
-bool CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HWND thWnd;
 	static long wuz;
@@ -2582,7 +2582,7 @@ long REFLECTFX = 0;
 //*************************************************************************************
 //*************************************************************************************
 
-bool CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HRESULT hr;
 
@@ -2747,7 +2747,7 @@ bool CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 extern long CHANGE_LEVEL_PROC_RESULT;
 
-bool CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (WM_COMMAND == uMsg)
 	{
@@ -4057,7 +4057,7 @@ extern HWND CDP_SOUNDOptions;
 //*************************************************************************************
 //*************************************************************************************
  
-bool CALLBACK LanguageOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
+INT_PTR CALLBACK LanguageOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 {
 	if (WM_COMMAND == uMsg)
 		switch (LOWORD(wParam))

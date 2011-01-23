@@ -1061,7 +1061,7 @@ void InitializeDanae()
 		LaunchInteractiveObjectsApp( danaeApp.m_hWnd);	
 	}
 
-void Dbg_str(char * txt)
+void Dbg_str(const char * txt)
 {
 	printf("%s\n", txt);
 }
@@ -1693,7 +1693,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	const char RESOURCE_CONFIG[] = "cfg.ini";
 	const char RESOURCE_CONFIG_DEFAULT[] = "cfg_default.ini";
 	
-	char * config_path = RESOURCE_CONFIG;
+	const char * config_path = RESOURCE_CONFIG;
 
 	if(!FileExist(RESOURCE_CONFIG))
 	{
@@ -5501,7 +5501,7 @@ void DemoFileCheck()
 
 	if (!FINAL_COMMERCIAL_DEMO)
 	{
-		const char RESOURCE_UNDEAD_LICH = "Graph\\Obj3D\\Interactive\\NPC\\Undead_Liche\\Undead_Liche.asl";
+		const char RESOURCE_UNDEAD_LICH[] = "Graph\\Obj3D\\Interactive\\NPC\\Undead_Liche\\Undead_Liche.asl";
 		if (!PAK_FileExist(RESOURCE_UNDEAD_LICH))
 		{
 			FINAL_COMMERCIAL_DEMO=1;
@@ -5834,7 +5834,7 @@ static float _AvgFrameDiff = 150.f;
 		NEED_INTRO_LAUNCH=0;
 		char loadfrom[256];
 		REFUSE_GAME_RETURN=1;
-		const char RESOURCE_LEVEL_10 = "Graph\\Levels\\Level10\\level10.dlf";
+		const char RESOURCE_LEVEL_10[] = "Graph\\Levels\\Level10\\level10.dlf";
 		OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
 		PROGRESS_BAR_TOTAL = 108;
 		LoadLevelScreen(GDevice,10);	

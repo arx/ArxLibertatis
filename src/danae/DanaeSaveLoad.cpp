@@ -1046,7 +1046,7 @@ void ShowCurLoadInfo(char * string)
 extern long FASTmse;
 long DONT_LOAD_INTERS = 0;
 long FAKE_DIR = 0;
-long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, char * fic)
+long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * fic)
 {
 	char _error[512];
 	DANAE_LS_HEADER				dlh;
