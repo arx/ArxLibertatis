@@ -757,7 +757,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 
 			if (FAILED(D3DTextr_CreateEmptyTexture(AllTxt, w2, h2, 0, D3DTEXTR_NO_MIPMAP, NULL)))
 			{
-				sprintf(AllTxt, "Creation de le %d �me texture -> x: %d y %d w: %d h: %d", num, (long)dx, (long)dy, w2, h2);
+				sprintf(AllTxt, "Creating texture #%d -> x: %d y %d w: %d h: %d", num, (long)dx, (long)dy, w2, h2);
 				MessageBox(NULL, AllTxt, "Erreur", 0);
 			}
 
