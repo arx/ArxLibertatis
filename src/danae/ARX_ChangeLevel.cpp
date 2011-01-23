@@ -234,7 +234,7 @@ void ARX_GAMESAVE_CreateNewInstance()
 		}
 		else
 		{
-			//le directory peut exister mais peut �tre vide apr�s un crash
+			//The directory may exist but may be empty after crash
 			strcat(testpath, "\\GSAVE.SAV");
 			FILE * f = fopen(testpath, "rb");
 
@@ -785,7 +785,7 @@ retry:
 		{
 			case TYPE_G_TEXT:
 
-				if ((svar[i].name[0] == '$') || (svar[i].name[0] == '�'))
+				if ((svar[i].name[0] == '$') || (svar[i].name[0] == '\xA3'))
 				{
 					strcpy(avs.name, svar[i].name);
 
@@ -810,7 +810,7 @@ retry:
 				break;
 			case TYPE_G_LONG:
 
-				if ((svar[i].name[0] == '#') || (svar[i].name[0] == '�'))
+				if ((svar[i].name[0] == '#') || (svar[i].name[0] == '\xA7'))
 				{
 					strcpy(avs.name, svar[i].name);
 					avs.fval = (float)svar[i].ival;
@@ -1509,7 +1509,7 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 		{
 			case TYPE_L_TEXT:
 
-				if ((io->script.lvar[i].name[0] == '$') || (io->script.lvar[i].name[0] == '�'))
+				if ((io->script.lvar[i].name[0] == '$') || (io->script.lvar[i].name[0] == '\xA3'))
 				{
 					strcpy(avs->name, io->script.lvar[i].name);
 
@@ -1542,7 +1542,7 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 				break;
 			case TYPE_L_LONG:
 
-				if ((io->script.lvar[i].name[0] == '#') || (io->script.lvar[i].name[0] == '�'))
+				if ((io->script.lvar[i].name[0] == '#') || (io->script.lvar[i].name[0] == '\xA7'))
 				{
 					strcpy(avs->name, io->script.lvar[i].name);
 					avs->fval = (float)io->script.lvar[i].ival;
@@ -1589,7 +1589,7 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 		{
 			case TYPE_L_TEXT:
 
-				if ((io->script.lvar[i].name[0] == '$') || (io->script.lvar[i].name[0] == '�'))
+				if ((io->script.lvar[i].name[0] == '$') || (io->script.lvar[i].name[0] == '\xA3'))
 				{
 					strcpy(avs->name, io->over_script.lvar[i].name);
 
@@ -1621,7 +1621,7 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 				break;
 			case TYPE_L_LONG:
 
-				if ((io->script.lvar[i].name[0] == '#') || (io->script.lvar[i].name[0] == '�'))
+				if ((io->script.lvar[i].name[0] == '#') || (io->script.lvar[i].name[0] == '\xA7'))
 				{
 					strcpy(avs->name, io->over_script.lvar[i].name);
 					avs->fval	= (float)io->over_script.lvar[i].ival;
@@ -2793,7 +2793,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 						pos += io->script.lvar[i].ival;
 						io->script.lvar[i].ival = strlen(io->script.lvar[i].text) + 1;
 
-						if (io->script.lvar[i].text[0] == '�')
+						if (io->script.lvar[i].text[0] == '\xCC')
 							io->script.lvar[i].text[0] = 0;
 					}
 					else
@@ -2819,13 +2819,13 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 					break;
 				default:
 
-					if ((avs->name[0] == '$') || (avs->name[0] == '�'))
+					if ((avs->name[0] == '$') || (avs->name[0] == '\xA3'))
 					{
 						avs->type = TYPE_L_TEXT;
 						goto retry;
 					}
 
-					if ((avs->name[0] == '#') || (avs->name[0] == '�'))
+					if ((avs->name[0] == '#') || (avs->name[0] == '\xA7'))
 					{
 						avs->type = TYPE_L_LONG;
 						goto retry;
@@ -2928,7 +2928,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 					break;
 				default:
 
-					if ((avs->name[0] == '$') || (avs->name[0] == '�'))
+					if ((avs->name[0] == '$') || (avs->name[0] == '\xA3'))
 					{
 						avs->type = TYPE_L_TEXT;
 						goto retry2;
@@ -3552,7 +3552,7 @@ long ARX_CHANGELEVEL_Pop_Globals()
 
 					memcpy(svar[i].text, dat + pos + sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE), svar[i].ival);
 
-					if (svar[i].text[0] == '�')
+					if (svar[i].text[0] == '\xCC')
 						svar[i].text[0] = 0;
 				}
 				else
@@ -4000,8 +4000,8 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 
 
 //-----------------------------------------------------------------------------
-// copie un rep (r�cursif sous reps) dans un autre en cr�ant les reps
-// �crase les fichiers pour les mettre � jour
+// copy a dir (recursive sub reps) in another, creating reps
+// overwrites files for update
 void CopyDirectory(char * _lpszSrc, char * _lpszDest)
 {
 	CreateDirectory(_lpszDest, NULL);
