@@ -111,7 +111,7 @@ inline VOID D3DUtil_SetTranslateMatrix(D3DMATRIX & m, D3DVECTOR & v)
 // Debug printing support
 //-----------------------------------------------------------------------------
 
-HRESULT _DbgOut(TCHAR *, DWORD, HRESULT, TCHAR *);
+HRESULT _DbgOut(const char *, DWORD, HRESULT, const char *);
 
 #if defined(DEBUG) | defined(_DEBUG)
 #define DEBUG_MSG(str)    _DbgOut( __FILE__, (DWORD)__LINE__, 0, str )
