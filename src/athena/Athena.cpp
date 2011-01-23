@@ -243,13 +243,6 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError aalAddResourcePack(const char * name)
-	{
-		AddPack(name);
-
-		return AAL_OK;
-	}
-
 	aalError aalSetStreamLimit(const aalULong & limit)
 	{
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
