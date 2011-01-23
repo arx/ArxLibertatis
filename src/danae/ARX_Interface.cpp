@@ -7881,7 +7881,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 	
 	if (Book_Mode == 0)
 	{
-		FLYING_OVER=NULL;
+		FLYING_OVER = 0;
 		_TCHAR tex[64];
 		COLORREF Color = RGB(0,0,0);
 		
@@ -8093,7 +8093,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 		{
 			for (long i=0;i<MAX_SPEECH;i++)
 			{
-				if (speech[i].timecreation>0) FLYING_OVER=NULL;
+				if (speech[i].timecreation > 0)
+					FLYING_OVER = 0;
 			}
 		}
 		
@@ -8754,7 +8755,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			ARX_CHECK_ULONG(Original_framedelay);
 			EERIEDrawAnimQuat(GDevice,inter.iobj[0]->obj, &player.useanim,&ePlayerAngle,&pos,
 				ARX_CLEAN_WARN_CAST_ULONG(Original_framedelay),
-				NULL,D3DCOLORWHITE,NULL);
+				NULL,D3DCOLORWHITE, 0);
 
 		}
 		else

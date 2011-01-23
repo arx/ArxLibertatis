@@ -89,7 +89,7 @@ CD3DFramework7::CD3DFramework7()
 	m_pd3dDevice      = NULL;
 	m_pDD             = NULL;
 	m_pD3D            = NULL;
-	m_dwDeviceMemType = NULL;
+	m_dwDeviceMemType = 0;
 	Ystart = 0;
 	Xstart = 0;
 	ClipWin.top = 0;
