@@ -56,30 +56,33 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#define STRICT
-#include <tchar.h>
+
 #include <stdio.h>
 
-
+#include <cassert>
+#define STRICT
+#include <tchar.h>
 #include <zlib.h>
-
 #include "EERIETexture.h"
 #include "EERIEApp.h"
 #include "EERIEUtil.h"
 #include "EERIEJpeg.h"
 #include "EERIEMath.h"
+#include "HERMESMain.h"
+#include <hermes/PakManager.h>
 
 //boolean and INT32 clash with wine
-#define HAVE_BOOLEAN 1
-#define _BASETSD_H_ 1
+#define INT32 INT32_JPEG
+#define boolean boolean_JPEG
+#undef _WIN32
+
 #include <jpeglib.h>
 #include <jerror.h>
 #include <jconfig.h>
 #include <jmorecfg.h>
-#include <cassert>
 
-#include "HERMESMain.h"
-#include <hermes/PakManager.h>
+#undef boolean
+#undef INT32
 
 long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 /*-----------------------------------------------------------------------------*/
