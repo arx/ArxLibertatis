@@ -80,7 +80,7 @@ typedef struct {
 //Always on for now...
 typedef struct PassedParam
 {
-   char * pSource;                   /* Pointer to source buffer           */
+   const char * pSource;                   /* Pointer to source buffer           */
    char * pDestination;              /* Pointer to destination buffer      */
    std::size_t SourceOffset;      /* Offset into the source buffer      */
    std::size_t DestinationOffset; /* Offset into the destination buffer */
