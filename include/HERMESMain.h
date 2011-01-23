@@ -59,9 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef  HERMESMAIN_H
 #define  HERMESMAIN_H
 
-#define PATH_SEPERATOR_STR "/"
-#define PATH_SEPERATOR_CHR '/'
-
 #define HERMES_PATH_SIZE	512
 
 #include "HERMESPerf.h"
@@ -95,10 +92,6 @@ typedef struct PassedParam
 } PARAM;
 
 
-#define	FILE_SEEK_START		0
-#define	FILE_SEEK_CURRENT	1
-#define	FILE_SEEK_END		2
-
 extern HWND		MAIN_PROGRAM_HANDLE;
 extern long DEBUGG;
 extern long DebugLvl[6];
@@ -106,35 +99,19 @@ extern unsigned int			GaiaWM;
 
 void File_Standardize(const char * from,char * to);
 char * HERMES_GaiaCOM_Receive();
- 
-long KillAllDirectory(char * path);
+
 void HERMES_InitDebug();
 
 void SAFEstrcpy(char * dest, char * src, unsigned long max);
-
 
 void MakeUpcase(char * str);
 unsigned char IsIn(char * strin, char * str);
 unsigned char NC_IsIn(char * strin, char * str);
 
-long FileExist(char *name);
-long DirectoryExist(char *name);
-long	FileOpenRead(char *name);
- 
-long	FileOpenWrite(char *name);      
-long	FileCloseWrite(long h);
-long	FileCloseRead(long h);
-long	FileRead(long h, void *adr, long size);
-long	FileWrite(long h, void *adr, long size);
-void	*FileLoadMalloc(char *name,long * filesize=NULL);
-void	*FileLoadMallocZero(char *name,long * filesize=NULL);
- 
- 
 void GetDate(HERMES_DATE_TIME * hdt);
 void SendConsole(char * dat,long level,long flag,HWND source);
 void ForceSendConsole(char * dat,long level,long flag,HWND source);
- 
- 
+
 void MemFree(void * adr);
 bool OKBox(char * text,char *title);
 void ShowPopup(char * text);
@@ -162,4 +139,5 @@ long HERMES_Memory_Emergency_Out(long size=0,char * info=NULL);
 void StartBench();
 unsigned long EndBench();
 extern long NEED_BENCH;
+
 #endif // HERMESMAIN_H

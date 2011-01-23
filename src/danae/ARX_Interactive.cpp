@@ -91,6 +91,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEMeshTweak.h"
 
 #include <hermes/PakManager.h>
+#include <hermes/Filesystem.h>
 
 #include <stdlib.h>
 

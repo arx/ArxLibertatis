@@ -54,18 +54,22 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+
+#include <stddef.h>
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <cassert>
+#include <cstring>
+#include <cstdlib>
+
 #include <hermes/PakManager.h>
 #include <hermes/PakReader.h>
 #include <hermes/PakEntry.h>
 #include <hermes/HashMap.h>
-#include <HERMESMain.h>
-#include "ARX_Common.h"
-#include <cassert>
+#include <hermes/Filesystem.h>
 
-#include <stddef.h>
 
 using std::vector;
 

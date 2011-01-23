@@ -64,7 +64,7 @@ class PakFileHandle;
 class PakReader;
 class PakDirectory;
 
-#include <cstdio>
+#include <cstdio> // TODO remove
 
 void * PAK_FileLoadMalloc(const char * name, long * SizeLoadMalloc = NULL);
 void * PAK_FileLoadMallocZero(const char * name, long * SizeLoadMalloc = NULL);
