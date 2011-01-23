@@ -413,7 +413,7 @@ unsigned long MakeMemoryText(char * text)
 				}
 			}
 
-			sprintf(theader, "%12u %s\r\n", TotMemory, header);
+			sprintf(theader, "%12lu %s\r\n", TotMemory, header);
 
 			if (strlen(text) + strlen(theader) + 4 < 64000)
 			{
@@ -1134,12 +1134,12 @@ long HERMES_Memory_Emergency_Out(long size, const char * info)
 	if (info)
 	{
 		if (size > 0)
-			sprintf(out, "FATAL ERROR: Unable To Allocate %d bytes... %s", size, info);
+			sprintf(out, "FATAL ERROR: Unable To Allocate %ld bytes... %s", size, info);
 		else
 			sprintf(out, "FATAL ERROR: Unable To Allocate Memory... %s", info);
 	}
 	else if (size > 0)
-		sprintf(out, "FATAL ERROR: Unable To Allocate %d bytes...", size);
+		sprintf(out, "FATAL ERROR: Unable To Allocate %ld bytes...", size);
 	else
 		sprintf(out, "FATAL ERROR: Unable To Allocate Memory...");
 
