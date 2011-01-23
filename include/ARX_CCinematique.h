@@ -334,7 +334,7 @@ class CINEMATIQUE
 
 		EERIE_3D	pos;
 		float		angz;
-		EERIE_3D	possuiv;			//dans le cas d'une non interpolation fad�e
+		EERIE_3D	possuiv;			//dans le cas d'une non interpolation fadée
 		float		angzsuiv;
 		int			numbitmap;
 		int			numbitmapsuiv;
