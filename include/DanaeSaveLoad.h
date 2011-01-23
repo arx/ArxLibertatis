@@ -239,9 +239,6 @@ INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans);
 extern EERIE_3D MSP;
 void BIG_PURGE();
 void CheckIO_NOT_SAVED();
- 
-extern long		DanaeSaveLevel(char * fic);
-extern long		DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, char * fic);
 
 void ARX_SAVELOAD_CheckDLFs();
 #endif

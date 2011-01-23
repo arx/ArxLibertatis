@@ -1186,7 +1186,7 @@ void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms)
 	free(ms);
 }
 //-----------------------------------------------------------------------------------------------------
-EERIE_MULTI3DSCENE * MultiSceneToEerie(char * dirr)
+EERIE_MULTI3DSCENE * MultiSceneToEerie(const char * dirr)
 {
 	char * tex;
 	long idx;
