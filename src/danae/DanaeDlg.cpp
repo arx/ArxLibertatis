@@ -126,7 +126,7 @@ COLORREF custcr[16];
 long accepted = 0;
 
  
-bool CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+INT_PTR CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 long InitMemorySnaps();
 void FlushMemorySnaps(long snap);
@@ -235,7 +235,7 @@ HWND ShowErrorPopup(char * title, char * tex)
 	                             MAKEINTRESOURCE(IDD_SCRIPTERROR), danaeApp.m_hWnd, IDDErrorLogProc, 0);
 	return hdl;
 }
-bool CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam,
+INT_PTR CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                               LPARAM lParam)
 {
 	HWND thWnd;
@@ -805,7 +805,7 @@ void InterTreeSelectObject(HTREEITEM hitem)
 	}
 }
 
-bool CALLBACK InteractiveObjDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
+INT_PTR CALLBACK InteractiveObjDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                                     LPARAM lParam)
 {
 	HTREEITEM hitem;
@@ -1295,7 +1295,7 @@ void LaunchSnapShotParamApp(HWND hwnd)
 //*************************************************************************************
 //*************************************************************************************
 
-bool CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	char temp[256];
 	HWND thWnd;
@@ -1724,7 +1724,7 @@ INT_PTR CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 //*************************************************************************************
 //*************************************************************************************
 
-bool CALLBACK GaiaTextEdit(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
+INT_PTR CALLBACK GaiaTextEdit(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 {
 	HWND thWnd;
 
@@ -1757,7 +1757,7 @@ void ExitProc();
 //*************************************************************************************
 //*************************************************************************************
 
-bool CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	long val;
 	HWND thWnd;
@@ -2928,7 +2928,7 @@ long INITT = 0;
 //*************************************************************************************
 //*************************************************************************************
 
-bool CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HWND thWnd;
 	long l;
