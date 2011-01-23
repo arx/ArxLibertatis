@@ -282,7 +282,7 @@ long DanaeSaveLevel(char * fic)
 	unsigned char * dat	=		NULL;
 	unsigned siz	=		255;
 	long pos			=		0;
-	unsigned long	handle;
+	FileHandle handle;
 	long bcount;
 
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
@@ -1072,20 +1072,22 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * fic)
 	GetDate(&hdt);
 	sprintf(tstr, "%2dh%02dm%02d LOADLEVEL start", hdt.hours, hdt.mins, hdt.secs);
 	ForceSendConsole(tstr, 1, 0, (HWND)1);
-	SetExt(fic, ".DLF");
+	char fileDlf[512];
+	strcpy(fileDlf, fic);
+	SetExt(fileDlf, ".DLF");
 	char fic2[512];
 	strcpy(fic2, fic);
 	SetExt(fic2, ".LLF");
 
-	if (!PAK_FileExist(fic))
+	if (!PAK_FileExist(fileDlf))
 	{
-		sprintf(_error, "Unable to find %s", fic);
+		sprintf(_error, "Unable to find %s", fileDlf);
 		goto loaderror;
 	}
 
-	strcpy(LastLoadedDLF, fic);
+	strcpy(LastLoadedDLF, fileDlf);
 
-	dat = (unsigned char *)PAK_FileLoadMalloc(fic, &FileSize);
+	dat = (unsigned char *)PAK_FileLoadMalloc(fileDlf, &FileSize);
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
 	memcpy(&dlh, dat, sizeof(DANAE_LS_HEADER));
@@ -1127,7 +1129,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * fic)
 
 	if (strcmp(dlh.ident, "DANAE_FILE"))
 	{
-		sprintf(_error, "File %s is not a valid file", fic);
+		sprintf(_error, "File %s is not a valid file", fileDlf);
 		goto loaderror;
 	}
 
@@ -1145,9 +1147,9 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * fic)
 
 		if (FAKE_DIR)
 		{
-			strcpy(ftemp, fic);
+			strcpy(ftemp, fileDlf);
 			RemoveName(ftemp);
-			strcpy(temp, fic);
+			strcpy(temp, fileDlf);
 			RemoveName(temp);
 			FAKE_DIR = 0;
 		}

@@ -62,7 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //#include <ARX_Common.h>
 
 //-----------------------------------------------------------------------------
-long GetLevelNumByName(char * name);
+long GetLevelNumByName(const char * name);
 void GetLevelNameByNum(long num, char * name);
 long ARX_LEVELS_GetRealNum(long num);
 
