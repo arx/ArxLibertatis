@@ -2875,7 +2875,7 @@ HRESULT TextureContainer::CopyRGBADataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 	if (FAILED(hr = pDD->CreateSurface(&ddsd, &pddsTempSurface, NULL)))
 	{
 		pDD->Release();
-		return NULL;
+		return 0;
 	}
 
 	while (pddsTempSurface->Lock(NULL, &ddsd, 0, 0) == DDERR_WASSTILLDRAWING);
@@ -3025,7 +3025,7 @@ HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 	if (FAILED(hr = pDD->CreateSurface(&ddsd, &pddsTempSurface, NULL)))
 	{
 		pDD->Release();
-		return NULL;
+		return 0;
 	}
 
 	while (pddsTempSurface->Lock(NULL, &ddsd, 0, 0) == DDERR_WASSTILLDRAWING);
@@ -3074,7 +3074,7 @@ HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 		pddsTempSurface->Unlock(0);
 		pddsTempSurface->Release();
 		pDD->Release();
-		return NULL;
+		return 0;
 	}
 
 
@@ -3086,7 +3086,7 @@ HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 		pddsTempSurface->Unlock(0);
 		pddsTempSurface->Release();
 		pDD->Release();
-		return NULL;
+		return 0;
 	}
 
 	unsigned char * bufferconv;
@@ -3107,7 +3107,7 @@ HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 			pddsTempSurface->Release();
 			pDD->Release();
 			(void)jpeg_finish_decompress(cinfo);
-			return NULL;
+			return 0;
 		}
 
 		bufferconv = (unsigned char *)buffer;
@@ -4261,7 +4261,7 @@ HRESULT TextureContainer::CopyPNGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 	if (FAILED(hr = pDD->CreateSurface(&ddsd, &pddsTempSurface, NULL)))
 	{
 		pDD->Release();
-		return NULL;
+		return 0;
 	}
 
 	while (pddsTempSurface->Lock(NULL, &ddsd, 0, 0) == DDERR_WASSTILLDRAWING);
@@ -4329,7 +4329,7 @@ HRESULT TextureContainer::CopyPNGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 			break;
 		default:
 				pDD->Release();
-			return NULL;
+			return 0;
 			break;
 	}
 
@@ -4338,7 +4338,7 @@ HRESULT TextureContainer::CopyPNGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 	if (!memd)
 	{
 		pDD->Release();
-		return NULL;
+		return 0;
 	}
 
 	//depak
@@ -4373,7 +4373,7 @@ HRESULT TextureContainer::CopyPNGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 			default:
 					delete memd;
 				pDD->Release();
-				return NULL;
+				return 0;
 				break;
 		}
 
