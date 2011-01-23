@@ -128,7 +128,7 @@ bool PlayFile(HWND hWnd, char * file)
 
 		// Run the graph.
 		pMediaControl->Run();
-		long l = 0;
+		LONG l = 0;
 
 		for (int i = 0; i < 256; i++)
 		{
@@ -148,7 +148,7 @@ bool PlayFile(HWND hWnd, char * file)
 				}
 			}
 
-			pMediaEvent->WaitForCompletion((LONG)0L, (LONG)&l); //INFINITE
+			pMediaEvent->WaitForCompletion((LONG)0L, &l); //INFINITE
 		}
 
 		CleanUp();
