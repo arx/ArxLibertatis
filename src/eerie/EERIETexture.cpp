@@ -52,7 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Updates: (date) (person) (update)
 //
 // Code:	Cyril Meynier
-//			S�bastien Scieux	(JPEG & PNG)
+//			Sébastien Scieux	(JPEG & PNG)
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
@@ -3676,7 +3676,7 @@ HRESULT D3DTextr_InvalidateAllTextures()
 //-----------------------------------------------------------------------------
 
 /*
-    Detruit une surface charg�e
+    Destroyed a charged surface
     seb
 */
 void D3DTextr_KillTexture(TextureContainer * tex)
@@ -3686,7 +3686,7 @@ void D3DTextr_KillTexture(TextureContainer * tex)
 }
 
 /*
-    Detruit toutes les surfaces charg�es
+    Destroy all the charged surfaces
 */
 void D3DTextr_KillAllTextures()
 {
@@ -3824,16 +3824,17 @@ int	Read_PNG_Signature(void)
     PNGDatas = (char *)dat;
     return PNG_OK;
 }
+
 /*-----------------------------------------------------------------------------*/
 /*
-    un chunk est compos� de:
-    4 byte:taille datas
-    4 byte:type
-    des datas
-    4 byte:CRC(a test� peut etre)
+    a chunk is composed of:
+    4 byte: size data
+    4 byte: type
+    data
+    Byte 4: CRC (could be tested)
 
-    << Datas PNG en memoire.
-    >> Type du chunk, taille du chunk, et son CRC
+    << Datas PNG in memory.
+    >> type of chunk, chunk size, and CRC
 */
 void Read_PNG_Chunk(void)
 {
@@ -3850,8 +3851,8 @@ void Read_PNG_Chunk(void)
 }
 /*-----------------------------------------------------------------------------*/
 /*
-    << Datas PNG en memoire.
-    >> Header crepie+code erreur
+    << PNG data in memory.
+    >> Header crepe + error code
 */
 int Read_PNG_Header(DATAS_PNG * dpng)
 {
