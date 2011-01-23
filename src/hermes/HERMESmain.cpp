@@ -239,8 +239,9 @@ void MakeUpcase(char * str)
 HKEY    ConsoleKey = NULL;
 #define CONSOLEKEY_KEY     TEXT("Software\\Arkane_Studios\\ASMODEE")
 
-void ConsoleSend(char * dat, long level, HWND source, long flag)
+void ConsoleSend(const char * dat, long level, HWND source, long flag)
 {
+	printf("ConsoleSend: %s %ld %p %ld\n", dat, level, source, flag);
 	RegCreateKeyEx(HKEY_CURRENT_USER, CONSOLEKEY_KEY, 0, NULL,
 	               REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL,
 	               &ConsoleKey, NULL);
@@ -251,7 +252,7 @@ void ConsoleSend(char * dat, long level, HWND source, long flag)
 	RegCloseKey(ConsoleKey);
 }
 
-void SendConsole(char * dat, long level, long flag, HWND source) {
+void SendConsole(const char * dat, long level, long flag, HWND source) {
 	if (GaiaWM != 0)
 	{
 		if (DebugLvl[0]) return;
@@ -268,7 +269,7 @@ void SendConsole(char * dat, long level, long flag, HWND source) {
 	}
 }
 long FINAL_COMMERCIAL_DEMO_bis = 1;
-void ForceSendConsole(char * dat, long level, long flag, HWND source)
+void ForceSendConsole(const char * dat, long level, long flag, HWND source)
 {
 	if (!FINAL_COMMERCIAL_DEMO_bis)
 	{

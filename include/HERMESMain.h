@@ -109,13 +109,12 @@ bool IsIn(const char * strin, const char * str);
 bool NC_IsIn(const char * strin, const char * str);
 
 void GetDate(HERMES_DATE_TIME * hdt);
-void SendConsole(char * dat,long level,long flag,HWND source);
-void ForceSendConsole(char * dat,long level,long flag,HWND source);
+void SendConsole(const char * dat,long level,long flag,HWND source);
+void ForceSendConsole(const char * dat,long level,long flag,HWND source);
 
 void MemFree(void * adr);
 bool OKBox(char * text,char *title);
 void ShowPopup(const char * text);
-int ShowError(char * funcname, char * message, long fatality);
 unsigned long MakeMemoryText(char * text);
 bool CreateFullPath(const char * path);
 

@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Name: WriteRegKey()
 // Desc: Writes a registry key 
 //-----------------------------------------------------------------------------
-HRESULT WriteRegKey( HKEY hKey, TCHAR* strName, TCHAR* strValue )
+HRESULT WriteRegKey( HKEY hKey, const char * strName, const char * strValue )
 {
 	LONG bResult;
 
