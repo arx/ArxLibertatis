@@ -10954,7 +10954,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							typ1	=	TYPE_FLOAT;
 							fvar1	=	(float)GETVarValueLong(&svar, &NB_GLOBALS, temp);
 							break;
-						case '\xA3':
+						case '\xA7':
 							typ1	=	TYPE_FLOAT;
 							fvar1	=	(float)GETVarValueLong(&esss->lvar, &esss->nblvar, temp);
 							break;
@@ -11028,7 +11028,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							typ2			=	TYPE_FLOAT;
 							fvar2			=	(float)GETVarValueLong(&svar, &NB_GLOBALS, temp3);
 							break;
-						case '\xA3':
+						case '\xA7':
 							typ2			=	TYPE_FLOAT;
 							fvar2			=	(float)GETVarValueLong(&esss->lvar, &esss->nblvar, temp3);
 							break;
