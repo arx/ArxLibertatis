@@ -113,8 +113,6 @@ void SendConsole(const char * dat,long level,long flag,HWND source);
 void ForceSendConsole(const char * dat,long level,long flag,HWND source);
 
 void MemFree(void * adr);
-bool OKBox(char * text,char *title);
-void ShowPopup(const char * text);
 unsigned long MakeMemoryText(char * text);
 bool CreateFullPath(const char * path);
 
