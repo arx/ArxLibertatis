@@ -117,13 +117,13 @@ FileHandle	FileOpenRead(const char * name)
 		return(0);
 	}
 	printf("\e[1;32mOpened\e[m\t%s\n", name);
-	return(handle + 1);
+	return(handle);
 }
 
 long	FileTell(FileHandle handle)
 {
 	
-	return (SetFilePointer((HANDLE)handle - 1, 0, NULL, FILE_CURRENT));
+	return (SetFilePointer((HANDLE)handle, 0, NULL, FILE_CURRENT));
 }
 
 FileHandle	FileOpenWrite(const char * name)
@@ -144,33 +144,33 @@ FileHandle	FileOpenWrite(const char * name)
 		return(0);
 	}
 
-	return(handle + 1);
+	return(handle);
 }
 
 long FileCloseRead(FileHandle handle) {
-	return CloseHandle((FileHandle)handle - 1);
+	return CloseHandle((FileHandle)handle);
 }
 
 long FileCloseWrite(FileHandle handle) {
-	return CloseHandle((FileHandle)handle - 1);
+	return CloseHandle((FileHandle)handle);
 }
 
 long FileRead(FileHandle handle, void * adr, long size) {
 	DWORD ret;
-	ReadFile(handle - 1, adr, size, &ret, NULL);
+	ReadFile(handle, adr, size, &ret, NULL);
 	return ret;
 }
 
 long	FileWrite(FileHandle handle, const void * adr, long size)
 {
 	DWORD ret;
-	WriteFile(handle - 1, adr, size, &ret, NULL);
+	WriteFile(handle, adr, size, &ret, NULL);
 	return ret;
 }
 
 long	FileSeek(FileHandle handle, int offset, long mode)
 {
-	return SetFilePointer(handle - 1, offset, NULL, mode);
+	return SetFilePointer(handle, offset, NULL, mode);
 }
 
 void	* FileLoadMallocZero(const char * name, size_t * SizeLoadMalloc)
