@@ -62,7 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <ARX_CSpellFx.h>
 
 //-----------------------------------------------------------------------------
-// Done By : Didier P�dreno
+// Done By : Didier Pédreno
 // Status  :
 //-----------------------------------------------------------------------------
 class CMagicMissile: public CSpellFx
