@@ -863,7 +863,7 @@ void FillIOIdent(char * tofill, INTERACTIVE_OBJ * io)
 	   )
 		strcpy(tofill, "NONE");
 	else
-		sprintf(tofill, "%s_%04d", GetName(io->filename), io->ident);
+		sprintf(tofill, "%s_%04d", GetName(io->filename).c_str(), io->ident);
 }
 extern long sp_max;
 extern long cur_rf;
@@ -1154,7 +1154,7 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 
 	// Sets Savefile Name
 	char savefile[256];
-	sprintf(savefile, "%s_%04d.sav", GetName(io->filename), io->ident);
+	sprintf(savefile, "%s_%04d.sav", GetName(io->filename).c_str(), io->ident);
 
 	// Define Type & Affiliated Structure Size
 	long type;
@@ -1471,7 +1471,7 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 				memset(ats, 0, sizeof(ARX_CHANGELEVEL_TIMERS_SAVE));
 				ats->longinfo = scr_timer[i].longinfo;
 				ats->msecs = scr_timer[i].msecs;
-				strcpy(ats->name, scr_timer[i].name);
+				strcpy(ats->name, scr_timer[i].name.c_str());
 				ats->pos = scr_timer[i].pos;
 
 				if (scr_timer[i].es == &io->script)
@@ -2478,7 +2478,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 	long num = atoi(ident + strlen(ident) - 4);
 
 	dli.ident = num;
-	strcpy(dli.name, ais->filename);
+	dli.name = ais->filename;
 	dli.pos.x = ais->pos.x;
 	dli.pos.y = ais->pos.y;
 	dli.pos.z = ais->pos.z;
@@ -2661,9 +2661,9 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 				if (io->anims[i] == NULL)
 				{
 					if (io->ioflags & IO_NPC)
-						sprintf(tex, "GRAPH\\OBJ3D\\ANIMS\\NPC\\%s%s", GetName(ais->anims[i]), GetExt(ais->anims[i]));
+						sprintf(tex, "GRAPH\\OBJ3D\\ANIMS\\NPC\\%s%s", GetName(ais->anims[i]).c_str(), GetExt(ais->anims[i]));
 					else
-						sprintf(tex, "GRAPH\\OBJ3D\\ANIMS\\FIX_Inter\\%s%s", GetName(ais->anims[i]), GetExt(ais->anims[i]));
+						sprintf(tex, "GRAPH\\OBJ3D\\ANIMS\\FIX_Inter\\%s%s", GetName(ais->anims[i]).c_str(), GetExt(ais->anims[i]));
 
 					io->anims[i] = EERIE_ANIMMANAGER_Load(tex);
 				}
@@ -2718,9 +2718,9 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 				scr_timer[num].namelength = strlen(ats->name) + 1;
 				scr_timer[num].name = (char *) malloc(scr_timer[num].namelength);
 
-				if (!scr_timer[num].name) HERMES_Memory_Emergency_Out();
+				//if (!scr_timer[num].name) HERMES_Memory_Emergency_Out();
 
-				strcpy(scr_timer[num].name, ats->name);
+				scr_timer[num].name = ats->name;
 				scr_timer[num].pos = ats->pos;
 
 
@@ -3253,7 +3253,7 @@ long ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi)
 		PROGRESS_BAR_COUNT += increment;
 		LoadLevelScreen();
 		char tempo[256];
-		sprintf(tempo, "%s_%04d", GetName(idx_io[i].filename), idx_io[i].ident);
+		sprintf(tempo, "%s_%04d", GetName(idx_io[i].filename).c_str(), idx_io[i].ident);
 		ARX_CHANGELEVEL_Pop_IO(tempo);
 	}
 

@@ -22,6 +22,9 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+#include <algorithm>
+#include <iomanip>
+
 #include "ARX_CCinematique.h"
 #include "HERMESMain.h"
 #include <hermes/PakManager.h>
@@ -34,7 +37,7 @@ int			MaxW, MaxH;
 int			NbBitmap;
 bool		Restore;
 /*-----------------------------------------------------------*/
-extern char AllTxt[];
+extern std::string AllTxt;
 extern HWND HwndPere;
 extern char DirectoryChoose[];
 
@@ -664,19 +667,19 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 
 	strcpy(bi->name, name);
 
-	strcpy(AllTxt, dir);
-	strcat(AllTxt, name);
-	ClearAbsDirectory(AllTxt, "ARX\\");
+	AllTxt = dir;
+	AllTxt += name;
+	ClearAbsDirectory(AllTxt.c_str(), "ARX\\");
 	SetExt(AllTxt, ".BMP");
 
 	if (PAK_FileExist(AllTxt))
 	{
-		bi->hbitmap = (HBITMAP)LoadBMPImage(AllTxt);
+		bi->hbitmap = (HBITMAP)LoadBMPImage(AllTxt.c_str());
 
 		if (!bi->hbitmap)
 		{
-			strcpy(AllTxt, name);
-			strcat(AllTxt, " --not found--");
+			AllTxt = name;
+			AllTxt += " --not found--";
 			h = NULL;
 
 			bi->actif = 1;
@@ -690,12 +693,12 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 
 		if (PAK_FileExist(AllTxt))
 		{
-			bi->hbitmap = LoadTargaFile(AllTxt);
+			bi->hbitmap = LoadTargaFile(AllTxt.c_str());
 
 			if (!bi->hbitmap)
 			{
-				strcpy(AllTxt, name);
-				strcat(AllTxt, " --not found--");
+				AllTxt = name;
+				AllTxt += " --not found--";
 				h = NULL;
 
 				bi->actif = 1;
@@ -752,16 +755,22 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 			if ((w - MaxW) < 0) w2 = w;
 			else w2 = MaxW;
 
-			sprintf(AllTxt, "%s_%4d", name, num);
-			MakeUpcase(AllTxt);
+            std::stringstream ss;
+            ss << name << '_' << std::setw(4) << num;
+            AllTxt = ss.str();
+            //AllTxt, "%s_%4d", name, num);
+            MakeUpcase(AllTxt);
 
-			if (FAILED(D3DTextr_CreateEmptyTexture(AllTxt, w2, h2, 0, D3DTEXTR_NO_MIPMAP, NULL)))
-			{
-				sprintf(AllTxt, "Creating texture #%d -> x: %d y %d w: %d h: %d", num, (long)dx, (long)dy, w2, h2);
-				MessageBox(NULL, AllTxt, "Erreur", 0);
-			}
+            if (FAILED(D3DTextr_CreateEmptyTexture(AllTxt.c_str(), w2, h2, 0, D3DTEXTR_NO_MIPMAP, NULL)))
+            {
+                std::stringstream ss;
+                ss << "Creating texture #" << num << " -> x: " << (long)dx << " y: " << (long)dy << " w: " << w2 << " h: " << h2;
+                //sprintf(AllTxt, "Creating texture #%d -> x: %d y %d w: %d h: %d", num, (long)dx, (long)dy, w2, h2);
+                AllTxt = ss.str();
+                MessageBox(NULL, AllTxt.c_str(), "Erreur", 0);
+            }
 
-			TextureContainer * t = FindTexture(AllTxt);
+			TextureContainer * t = FindTexture(AllTxt.c_str());
 			AddQuadUVs(&bi->grille, bi->nbx - nbxx, bi->nby - nby, 1, 1, bi->w - w, bi->h - h, w2, h2, t);
 
 			dx += (float)w2;
@@ -842,11 +851,14 @@ bool ReCreateAllMapsForBitmap(int id, int nmax, CINEMATIQUE * c, LPDIRECT3DDEVIC
 			if ((w - MaxW) < 0) w2 = w;
 			else w2 = MaxW;
 
-			sprintf(AllTxt, "%s_%4d", bi->name, num);
-			MakeUpcase(AllTxt);
+            std::stringstream ss;
+            ss << bi->name << '_' << std::setw(4) << num;
+            AllTxt = ss.str();
+            //sprintf(AllTxt, "%s_%4d", bi->name, num);
+            MakeUpcase(AllTxt);
 
-			TextureContainer * t = FindTexture(AllTxt);
-			AddQuadUVs(&bi->grille, (bi->nbx - nbxx)*nmax, (bi->nby - nby)*nmax, nmax, nmax, bi->w - w, bi->h - h, w2, h2, t);
+            TextureContainer * t = FindTexture(AllTxt.c_str());
+            AddQuadUVs(&bi->grille, (bi->nbx - nbxx)*nmax, (bi->nby - nby)*nmax, nmax, nmax, bi->w - w, bi->h - h, w2, h2, t);
 
 			dx += (float)w2;
 			w -= MaxW;

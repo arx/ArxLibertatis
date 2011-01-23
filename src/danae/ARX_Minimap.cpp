@@ -920,7 +920,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
                             char Page_Buffer[256];
                             //_tcsncpy(Page_Buffer, Mapmarkers[i].tstring, lLengthDraw);
                             strncpy( Page_Buffer, Mapmarkers[i].tstring.c_str(), lLengthDraw );
-                            Page_Buffer[lLengthDraw] = _T('\0');
+                            Page_Buffer[lLengthDraw] = '\0';
 
                             DrawBookTextInRect(ARX_CLEAN_WARN_CAST_FLOAT(bRect.left), ARX_CLEAN_WARN_CAST_FLOAT(bRect.top),
                                                ARX_CLEAN_WARN_CAST_FLOAT(bRect.right), ARX_CLEAN_WARN_CAST_FLOAT(bRect.bottom),

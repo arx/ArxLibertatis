@@ -22,6 +22,8 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+#include <algorithm>
+
 #include "Danae.h"
 #include "ARX_MenuPublic.h"
 #include "ARX_Menu.h"

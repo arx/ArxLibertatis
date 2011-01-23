@@ -1292,12 +1292,11 @@ retry1:
 	memset(es, 0, sizeof(EERIE_MULTI3DSCENE));
 	strcpy(LastLoadedScene, dirr);
 
-	char path[256];
-	strcpy(path, dirr);
+	std::string path = dirr;
 	RemoveName(path);
 
 	vector<PakDirectory *> *pvRepertoire;
-	pvRepertoire = pPakManager->ExistDirectory((char *)path);
+	pvRepertoire = pPakManager->ExistDirectory(path);
 
 	if (!pvRepertoire->size())
 	{
@@ -1323,7 +1322,7 @@ retry1:
 
 				if (adr = (unsigned char *)PAK_FileLoadMalloc(path2, SizeAlloc))
 				{
-					es->scenes[es->nb_scenes] = (EERIE_3DSCENE *)ScnToEerie(adr, SizeAlloc, path, TTE_NO_NDATA | TTE_NO_PDATA);
+					es->scenes[es->nb_scenes] = (EERIE_3DSCENE *)ScnToEerie(adr, SizeAlloc, path.c_str(), TTE_NO_NDATA | TTE_NO_PDATA);
 					es->nb_scenes++;
 					free(adr);
 				}

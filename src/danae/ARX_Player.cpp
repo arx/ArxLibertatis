@@ -1656,58 +1656,54 @@ TextureContainer * PLAYER_SKIN_TC = NULL;
 void	ARX_PLAYER_Restore_Skin()
 {
 
-	char tx[256];
-	char tx2[256];
-	char tx3[256];
-	char tx4[256];
-	tx[0] = 0;
-	tx2[0] = 0;
-	tx3[0] = 0;
-	tx4[0] = 0;
+	std::string tx;
+	std::string tx2;
+	std::string tx3;
+	std::string tx4;
 
 	switch (player.skin)
 	{
 		case 0:
-			strcpy(tx, "Graph\\Obj3D\\Textures\\npc_human_base_hero_head.bmp");
-			strcpy(tx2, "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp");
-			strcpy(tx3, "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp");
-			strcpy(tx4, "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp");
+			tx = "Graph\\Obj3D\\Textures\\npc_human_base_hero_head.bmp";
+			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
+			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
+			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
 			break;
 		case 1:
-			strcpy(tx, "Graph\\Obj3D\\Textures\\npc_human_base_hero2_head.bmp");
-			strcpy(tx2, "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero2_head.bmp");
-			strcpy(tx3, "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero2_head.bmp");
-			strcpy(tx4, "Graph\\Obj3D\\Textures\\npc_human_leather_hero2_head.bmp");
+			tx = "Graph\\Obj3D\\Textures\\npc_human_base_hero2_head.bmp";
+			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero2_head.bmp";
+			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero2_head.bmp";
+			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero2_head.bmp";
 			break;
 		case 2:
-			strcpy(tx, "Graph\\Obj3D\\Textures\\npc_human_base_hero3_head.bmp");
-			strcpy(tx2, "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero3_head.bmp");
-			strcpy(tx3, "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero3_head.bmp");
-			strcpy(tx4, "Graph\\Obj3D\\Textures\\npc_human_leather_hero3_head.bmp");
+			tx = "Graph\\Obj3D\\Textures\\npc_human_base_hero3_head.bmp";
+			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero3_head.bmp";
+			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero3_head.bmp";
+			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero3_head.bmp";
 			break;
 		case 3:
-			strcpy(tx, "Graph\\Obj3D\\Textures\\npc_human_base_hero4_head.bmp");
-			strcpy(tx2, "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero4_head.bmp");
-			strcpy(tx3, "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero4_head.bmp");
-			strcpy(tx4, "Graph\\Obj3D\\Textures\\npc_human_leather_hero4_head.bmp");
+			tx = "Graph\\Obj3D\\Textures\\npc_human_base_hero4_head.bmp";
+			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero4_head.bmp";
+			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero4_head.bmp";
+			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero4_head.bmp";
 			break;
 		case 4:
-			strcpy(tx, "Graph\\Obj3D\\Textures\\npc_human_cm_hero_head.bmp");
-			strcpy(tx2, "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp");
-			strcpy(tx3, "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp");
-			strcpy(tx4, "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp");
+			tx = "Graph\\Obj3D\\Textures\\npc_human_cm_hero_head.bmp";
+			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
+			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
+			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
 			break;
 		case 5:
-			strcpy(tx, "Graph\\Obj3D\\Textures\\npc_human__base_hero_head.bmp");
-			strcpy(tx2, "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp");
-			strcpy(tx3, "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp");
-			strcpy(tx4, "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp");
+			tx = "Graph\\Obj3D\\Textures\\npc_human__base_hero_head.bmp";
+			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
+			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
+			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
 			break;
 		case 6: //just in case
-			strcpy(tx, "Graph\\Obj3D\\Textures\\npc_human__base_hero_head.bmp");
-			strcpy(tx2, "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp");
-			strcpy(tx3, "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp");
-			strcpy(tx4, "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp");
+			tx ="Graph\\Obj3D\\Textures\\npc_human__base_hero_head.bmp";
+			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
+			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
+			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
 			break;
 	}
 
@@ -1717,45 +1713,44 @@ void	ARX_PLAYER_Restore_Skin()
 		if (tx[0])
 		{
 			MakeUpcase(tx);
-			strcpy((char *)PLAYER_SKIN_TC->m_strName, (char *)tx);
+			PLAYER_SKIN_TC->m_strName = tx;
 			ReloadTexture(PLAYER_SKIN_TC);
 			PLAYER_SKIN_TC->Restore(GDevice);
 		}
 	}
 
-	char tt[256];
-	strcpy(tt, "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp");
+	std::string tt = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
 	MakeUpcase(tt);
-	TextureContainer * tmpTC = _FindTexture(tt);
+	TextureContainer * tmpTC = _FindTexture(tt.c_str());
 
 	if ((tmpTC) && (tx2[0]))
 	{
 		MakeUpcase(tx2);
-		strcpy((char *)tmpTC->m_strName, (char *)tx2);
+		tmpTC->m_strName = tx2;
 		ReloadTexture(tmpTC);
 		tmpTC->Restore(GDevice);
 	}
 
-	strcpy(tt, "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp");
+	tt = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
 	MakeUpcase(tt);
-	tmpTC = _FindTexture(tt);
+	tmpTC = _FindTexture(tt.c_str());
 
 	if ((tmpTC) && (tx3[0]))
 	{
 		MakeUpcase(tx3);
-		strcpy((char *)tmpTC->m_strName, (char *)tx3);
+		tmpTC->m_strName = tx3;
 		ReloadTexture(tmpTC);
 		tmpTC->Restore(GDevice);
 	}
 
-	strcpy(tt, "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp");
+	tt = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
 	MakeUpcase(tt);
-	tmpTC = _FindTexture(tt);
+	tmpTC = _FindTexture(tt.c_str());
 
 	if ((tmpTC) && (tx4[0]))
 	{
 		MakeUpcase(tx4);
-		strcpy((char *)tmpTC->m_strName, (char *)tx4);
+		tmpTC->m_strName = tx4;
 		ReloadTexture(tmpTC);
 		tmpTC->Restore(GDevice);
 	}
@@ -1805,8 +1800,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 	//todo free
 	io->armormaterial = strdup("LEATHER");
 	strcpy(io->filename, "graph\\obj3D\\Interactive\\Player\\Player.teo");
-	char texscript[256];
-	strcpy(texscript, io->filename);
+	std::string texscript = io->filename;
 	SetExt(texscript, ".asl");
 
 	if (PAK_FileExist(texscript))

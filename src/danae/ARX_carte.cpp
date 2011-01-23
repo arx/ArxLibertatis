@@ -23,6 +23,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 #include <stdio.h>
+#include <algorithm>
+
 #include "Danae.h"
 #include "ARX_Carte.h"
 #include "ARX_Levels.h"

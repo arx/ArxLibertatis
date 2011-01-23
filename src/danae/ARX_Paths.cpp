@@ -237,12 +237,13 @@ ARX_PATH * ARX_PATH_CheckPlayerInZone()
 	return NULL;
 }
 long JUST_RELOADED = 0;
+
 void ARX_PATH_UpdateAllZoneInOutInside()
 {
 	if (EDITMODE) return;
 
 	static long count = 1;
-	char temp[64];
+	std::string temp;
 
 	long f	=	ARX_CLEAN_WARN_CAST_LONG(FrameDiff);
 
@@ -280,9 +281,9 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				}
 				else if ((op != NULL) && (p == NULL)) // Leaving Zone OP
 				{
-					strcpy(temp, op->name);
+					temp = op->name;
 					MakeUpcase(temp);
-					SendIOScriptEvent(io, SM_LEAVEZONE, temp, NULL); 
+					SendIOScriptEvent(io, SM_LEAVEZONE, temp.c_str(), NULL); 
 
 					if (op->controled[0] != 0)
 					{
@@ -292,8 +293,8 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 						{
 							char texx[128];
 							char tex2[128];
-							strcpy(texx, GetName(io->filename));
-							sprintf(tex2, "%s_%04d %s", texx, io->ident, temp);
+							strcpy(texx, GetName(io->filename).c_str());
+							sprintf(tex2, "%s_%04d %s", texx, io->ident, temp.c_str());
 							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2, NULL);
 						}
 					}
@@ -303,7 +304,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 					io->inzone_show = io->show;
 				entering:
 					;
-					strcpy(temp, p->name);
+					temp = p->name;
 					MakeUpcase(temp);
 
 
@@ -314,7 +315,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 					}
 					else
 					{
-						SendIOScriptEvent(io, SM_ENTERZONE, temp, NULL); 
+						SendIOScriptEvent(io, SM_ENTERZONE, temp.c_str(), NULL); 
 
 						if (p->controled[0] != 0)
 						{
@@ -324,8 +325,8 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 							{
 								char texx[128];
 								char tex2[128];
-								strcpy(texx, GetName(io->filename));
-								sprintf(tex2, "%s_%04d %s", texx, io->ident, temp);
+								strcpy(texx, GetName(io->filename).c_str());
+								sprintf(tex2, "%s_%04d %s", texx, io->ident, temp.c_str());
 								SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2, NULL); 
 							}
 						}
@@ -333,9 +334,9 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				}
 				else 
 				{
-					strcpy(temp, op->name);
+					temp = op->name;
 					MakeUpcase(temp);
-					SendIOScriptEvent(io, SM_LEAVEZONE, temp, NULL); 
+					SendIOScriptEvent(io, SM_LEAVEZONE, temp.c_str(), NULL); 
 
 					if (op->controled[0] != 0)
 					{
@@ -345,16 +346,16 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 						{
 							char texx[128];
 							char tex2[128];
-							strcpy(texx, GetName(io->filename));
-							sprintf(tex2, "%s_%04d %s", texx, io->ident, temp);
+							strcpy(texx, GetName(io->filename).c_str());
+							sprintf(tex2, "%s_%04d %s", texx, io->ident, temp.c_str());
 							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2, NULL); 
 						}
 					}
 
 					io->inzone_show = io->show;
-					strcpy(temp, p->name);
+					temp = p->name;
 					MakeUpcase(temp);
-					SendIOScriptEvent(io, SM_ENTERZONE, temp, NULL); 
+					SendIOScriptEvent(io, SM_ENTERZONE, temp.c_str(), NULL); 
 
 					if (p->controled[0] != 0)
 					{
@@ -364,8 +365,8 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 						{
 							char texx[128];
 							char tex2[128];
-							strcpy(texx, GetName(io->filename));
-							sprintf(tex2, "%s_%04d %s", texx, io->ident, temp);
+							strcpy(texx, GetName(io->filename).c_str());
+							sprintf(tex2, "%s_%04d %s", texx, io->ident, temp.c_str());
 							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2, NULL);
 						}
 					}
@@ -395,9 +396,9 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 		}
 		else if ((op != NULL) && (p == NULL)) // Leaving Zone OP
 		{
-			strcpy(temp, op->name);
+			temp = op->name;
 			MakeUpcase(temp);
-			SendIOScriptEvent(inter.iobj[0], SM_LEAVEZONE, temp, NULL); 
+			SendIOScriptEvent(inter.iobj[0], SM_LEAVEZONE, temp.c_str(), NULL); 
 			CHANGE_LEVEL_ICON = -1;
 
 			if (op->controled[0] != 0)
@@ -407,16 +408,16 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				if (t >= 0)
 				{
 					char tex2[128];
-					sprintf(tex2, "PLAYER %s", temp);
+					sprintf(tex2, "PLAYER %s", temp.c_str());
 					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2, NULL); 
 				}
 			}
 		}
 		else if ((op == NULL) && (p != NULL)) // Entering Zone P
 		{
-			strcpy(temp, p->name);
+			temp = p->name;
 			MakeUpcase(temp);
-			SendIOScriptEvent(inter.iobj[0], SM_ENTERZONE, temp, NULL); 
+			SendIOScriptEvent(inter.iobj[0], SM_ENTERZONE, temp.c_str(), NULL); 
 
 			if (p->flags & PATH_AMBIANCE && p->ambiance[0])
 				ARX_SOUND_PlayZoneAmbiance(p->ambiance, ARX_SOUND_PLAY_LOOPED, p->amb_max_vol * DIV100);
@@ -446,14 +447,14 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				if (t >= 0)
 				{
 					char tex2[128];
-					sprintf(tex2, "PLAYER %s", temp);
+					sprintf(tex2, "PLAYER %s", temp.c_str());
 					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2, NULL); 
 				}
 			}
 		}
 		else 
 		{
-			strcpy(temp, op->name);
+			temp = op->name;
 			MakeUpcase(temp);
 
 			if (op->controled[0] != 0)
@@ -463,12 +464,12 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				if (t >= 0)
 				{
 					char tex2[128];
-					sprintf(tex2, "PLAYER %s", temp);
+					sprintf(tex2, "PLAYER %s", temp.c_str());
 					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2, NULL); 
 				}
 			}
 
-			strcpy(temp, p->name);
+			temp = p->name;
 			MakeUpcase(temp);
 
 			if (p->controled[0] != 0)
@@ -478,7 +479,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				if (t >= 0)
 				{
 					char tex2[128];
-					sprintf(tex2, "PLAYER %s", temp);
+					sprintf(tex2, "PLAYER %s", temp.c_str());
 					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2, NULL); 
 				}
 			}
@@ -1645,7 +1646,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 				for (long j = 0; j < nbact; j++)
 				{
 					float rad = -1;
-					rad = GetHitValue(Thrown[i].obj->actionlist[j].name);
+					rad = GetHitValue(Thrown[i].obj->actionlist[j].name.c_str());
 					rad *= DIV2;
 
 					if (rad == -1) continue;
@@ -1674,8 +1675,8 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 						char weapon_material[64]	= "DAGGER";
 						char bkg_material[64]		= "EARTH";
 
-						if (ep &&  ep->tex && ep->tex->m_texName)
-							GetMaterialString(ep->tex->m_texName, bkg_material);
+						if (ep &&  ep->tex && !ep->tex->m_texName.empty())
+							GetMaterialString(ep->tex->m_texName.c_str(), bkg_material);
 
 						if (ValidIONum(Thrown[i].source))
 							ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, inter.iobj[Thrown[i].source]);

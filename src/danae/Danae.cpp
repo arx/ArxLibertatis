@@ -166,9 +166,9 @@ extern EERIE_3D loddpos;
 extern EERIE_3DOBJ * fogobj;
 extern bool		bGameNotFirstLaunch;
 extern bool		bSkipVideoIntro;
-extern char		SCRIPT_SEARCH_TEXT[256];
-extern char		ShowText[65536];
-extern char		ShowText2[65536];
+extern std::string      SCRIPT_SEARCH_TEXT;
+extern std::string      ShowText;
+extern std::string      ShowText2;
 extern float Full_Jump_Height;
 extern float	MAX_ALLOWED_PER_SECOND;
 extern float	InventoryX;
@@ -1764,9 +1764,9 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	Dbg_str("AInput Init Success");
 
 	//read from cfg file
-	if (strlen(Project.localisationpath)==0)
+	if ( Project.localisationpath.length() == 0 )
 	{
-		strcpy(Project.localisationpath,"english");
+		Project.localisationpath = "english";
 	}
 
 	ShowWindow(danaeApp.m_hWnd, SW_SHOW);
@@ -3742,7 +3742,7 @@ long Player_Arrow_Count()
 
 		if (io)
 		{
-			if (!strcasecmp(GetName(io->filename),"Arrows"))
+			if (!strcasecmp(GetName(io->filename).c_str(),"Arrows"))
 			{
 				if ( io->durability >= 1.f )
 
@@ -3772,7 +3772,7 @@ INTERACTIVE_OBJ * Player_Arrow_Count_Decrease()
 
 		if (ioo)
 		{
-			if (!strcasecmp(GetName(ioo->filename),"Arrows"))
+			if (!strcasecmp(GetName(ioo->filename).c_str(),"Arrows"))
 			{
 				if (ioo->durability >= 1.f)
 				{
@@ -7670,7 +7670,7 @@ void ShowInfoText(long COR)
 		sprintf(tex,"Events %d (IOmax N/A) Timers %d",Event_Total_Count,ARX_SCRIPT_CountTimers());
 	else 
 	{
-		strcpy(temp,GetName(io->filename));	
+		strcpy(temp,GetName(io->filename).c_str());	
 		sprintf(tex,"Events %d (IOmax %s_%04d %d) Timers %d",Event_Total_Count,temp,io->ident,io->stat_count,ARX_SCRIPT_CountTimers());
 	}
 
@@ -7680,7 +7680,7 @@ void ShowInfoText(long COR)
 
 	if (io!=NULL)		
 	{
-		strcpy(temp,GetName(io->filename));	
+		strcpy(temp,GetName(io->filename).c_str());	
 		sprintf(tex,"Max SENDER %s_%04d %d)",temp,io->ident,io->stat_sent);
 		danaeApp.OutputText( 70, 114, tex );
 	}
@@ -8430,14 +8430,14 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 					if (ValidIONum(LastSelectedIONum))
 					{
-						strcpy(ShowText,"");
+						ShowText = "";
 
 						if (inter.iobj[LastSelectedIONum]->script.data!=NULL)
 							MakeLocalText(&inter.iobj[LastSelectedIONum]->script,ShowText);
 						else if (inter.iobj[LastSelectedIONum]->over_script.data!=NULL)
 							MakeLocalText(&inter.iobj[LastSelectedIONum]->over_script,ShowText);
 
-						strcpy(ShowTextWindowtext,"Local Variables");
+						ShowTextWindowtext = "Local Variables";
 						DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXT, NULL, (DLGPROC)ShowTextDlg);					
 					}
 					else  
@@ -8445,17 +8445,22 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 				break;
 				case DANAE_MENU_MEMORY:
-					strcpy(ShowText,"");
+        {
+                    ShowText = "";
 					unsigned long msize;
-					msize=MakeMemoryText(ShowText);
-					sprintf(ShowTextWindowtext,"Allocated Memory %u bytes %u Kb",msize,msize>>10);
+					msize=MakeMemoryText(ShowText.c_str());
+                    std::stringstream ss;
+                    ss << "Allocated Memory " << msize << " bytes " << (msize>>10) << " Kb";
+                    ShowTextWindowtext = ss.str();
+					//ShowTextWindowtext = "Allocated Memory %u bytes %u Kb",msize,msize>>10);
 					CreateDialogParam( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
                             MAKEINTRESOURCE(IDD_SHOWTEXT), this->m_hWnd, (DLGPROC)ShowTextDlg,0 );
+        }
 				break;
 				case DANAE_MENU_GLOBALLIST:
-					strcpy(ShowText,"");
+					ShowText = "";
 					MakeGlobalText(ShowText);
-					strcpy(ShowTextWindowtext,"Global Variables");
+					ShowTextWindowtext ="Global Variables";
 					DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXT, NULL, (DLGPROC)ShowTextDlg);					
 				break;
 				case DANAE_MENU_INTEROBJLIST:
@@ -8543,29 +8548,39 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 					}
 
 				break;
-				case DANAE_MENU_ANIMATIONSLIST:
-					long tr;
-					long memsize;
-					ARX_TIME_Pause();
-                	Pause(true);
-					tr=EERIE_ANIMMANAGER_Count(ShowText,&memsize);
-					sprintf(ShowTextWindowtext,"Animations %d %d Ko",tr,memsize>>10);
-					DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXTBIG, NULL, (DLGPROC)ShowTextDlg);
-					Pause(false);
-					ARX_TIME_UnPause();
-				break;
-				case DANAE_MENU_TEXLIST:
-					long _tr;
-					long _memsize;
-					long _memmip;
-					ARX_TIME_Pause();
-                	Pause(true);
-					_tr=CountTextures(ShowText,&_memsize,&_memmip);
-					sprintf(ShowTextWindowtext,"Textures %d %d Ko MIPsize %d Ko",_tr,_memsize>>10,_memmip>>10);
-					DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXTBIG, NULL, (DLGPROC)ShowTextDlg);
-					Pause(false);
-					ARX_TIME_UnPause();
-				break;
+                case DANAE_MENU_ANIMATIONSLIST:
+                {
+                    long tr;
+                    long memsize;
+                    ARX_TIME_Pause();
+                    Pause(true);
+                    tr=EERIE_ANIMMANAGER_Count(ShowText,&memsize);
+                    std::stringstream ss;
+                    ss << "Animations " << tr << ' ' << (memsize>>10) << " Ko";
+                    ShowTextWindowtext = ss.str();
+                    //sprintf(ShowTextWindowtext,"Animations %d %d Ko",tr,memsize>>10);
+                    DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXTBIG, NULL, (DLGPROC)ShowTextDlg);
+                    Pause(false);
+                    ARX_TIME_UnPause();
+                }
+                break;
+                case DANAE_MENU_TEXLIST:
+                {
+                    long _tr;
+                    long _memsize;
+                    long _memmip;
+                    ARX_TIME_Pause();
+                    Pause(true);
+                    _tr=CountTextures(ShowText,&_memsize,&_memmip);
+                    std::stringstream ss;
+                    ss << "Textures " << _tr << ' ' << (_memsize>>10) << " Ko MIPsize " << (_memmip>>10) << " Ko";
+                    ShowTextWindowtext = ss.str();
+                    //sprintf(ShowTextWindowtext,"Textures %d %d Ko MIPsize %d Ko",_tr,_memsize>>10,_memmip>>10);
+                    DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXTBIG, NULL, (DLGPROC)ShowTextDlg);
+                    Pause(false);
+                    ARX_TIME_UnPause();
+                }
+                break;
 				case DANAE_MENU_PROJECTPATH:
 					HERMESFolderSelector("","Choose Working Folder");
 					SetWindowTitle(hWnd,"DANAE Project");

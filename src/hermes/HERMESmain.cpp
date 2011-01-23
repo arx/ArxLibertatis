@@ -861,7 +861,7 @@ void AddToName(char * str, char * cat)
 	makepath(str, _drv, _dir, _name, _ext);
 }
 
-void RemoveName(char * str)
+void RemoveName( std::string& str )
 {
 	splitpath(str, _drv, _dir, _name, _ext);
 	makepath(str, _drv, _dir, NULL, NULL);

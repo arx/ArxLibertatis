@@ -218,21 +218,21 @@ void BIG_PURGE()
 EERIE_3DOBJ * _LoadTheObj(char * text, char * path)
 {
 	
-	char tex1[256];
+	std::string tex1;
 	EERIE_3DOBJ * wr;
 	
 	if (path == NULL)
 	{
-		strcpy(tex1, "Graph\\obj3D\\textures\\");
+		tex1 = "Graph\\obj3D\\textures\\";
 	}
 	else
 	{
-		strcpy(tex1, text);
+		tex1 = text;
 		RemoveName(tex1);
-		strcat(tex1, path);
+		tex1 += path;
 	}
 	
-	wr = TheoToEerie_Fast(tex1, text, 0);
+	wr = TheoToEerie_Fast(tex1.c_str(), text, 0);
 	return wr;
 }
 
@@ -829,45 +829,48 @@ void LogDirDestruction(char * dir)
 //*************************************************************************************
 void CheckIO_NOT_SAVED()
 {
-	char temp[512];
-	char temp2[512];
-	char temp3[512];
+    std::string temp;
+    char temp2[512];
+    std::string temp3;
 
-	if (ADDED_IO_NOT_SAVED)
-	{
-		if (OKBox("You have added objects, but not saved them...\nDELETE THEM ??????", "Danae WARNING"))
-		{
-			for (long i = 1; i < inter.nbmax; i++) // ignoring player
-			{
-				if ((inter.iobj[i] != NULL)  && (!inter.iobj[i]->scriptload))
+    if (ADDED_IO_NOT_SAVED)
+    {
+        if (OKBox("You have added objects, but not saved them...\nDELETE THEM ??????", "Danae WARNING"))
+        {
+            for (long i = 1; i < inter.nbmax; i++) // ignoring player
+            {
+                if ((inter.iobj[i] != NULL)  && (!inter.iobj[i]->scriptload))
 
-					if (inter.iobj[i]->EditorFlags & EFLAG_NOTSAVED)
-					{
-						if (inter.iobj[i]->ident > 0)
-						{
-							sprintf(temp, inter.iobj[i]->filename);
-							strcpy(temp2, GetName(temp).c_str());
-							RemoveName(temp);
-							sprintf(temp, "%s%s_%04d.", temp, temp2, inter.iobj[i]->ident);
+                    if (inter.iobj[i]->EditorFlags & EFLAG_NOTSAVED)
+                    {
+                        if (inter.iobj[i]->ident > 0)
+                        {
+                            temp = inter.iobj[i]->filename;
+                            strcpy(temp2, GetName(temp).c_str());
+                            RemoveName(temp);
+                            std::stringstream ss;
+                            ss << temp << temp2 << '_' << std::setw(4) << inter.iobj[i]->ident << '.';
+                            temp = ss.str();
+                            //temp += "%s%s_%04d." temp2 + '_' + inter.iobj[i]->ident + '.';
 
-							if (DirectoryExist(temp))
-							{
-								sprintf(temp3, "Really remove Directory & Directory Contents ?\n\n%s", temp);
+                            if (DirectoryExist(temp.c_str()))
+                            {
+                                temp3 = "Really remove Directory & Directory Contents ?\n\n" + temp;
 
-								if (OKBox(temp3, "WARNING"))
-								{
-									strcat(temp, "\\");
-									LogDirDestruction(temp);
-									KillAllDirectory(temp);
-								}
-							}
+                                if (OKBox(temp3.c_str(), "WARNING"))
+                                {
+                                    temp += "\\";
+                                    LogDirDestruction(temp.c_str());
+                                    KillAllDirectory(temp.c_str());
+                                }
+                            }
 
-							ReleaseInter(inter.iobj[i]);
-						}
-					}
-			}
-		}
-	}
+                            ReleaseInter(inter.iobj[i]);
+                        }
+                    }
+            }
+        }
+    }
 }
 
 //*************************************************************************************
@@ -902,7 +905,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 			{
 				temp = io->filename;
 				strcpy(temp2, GetName(temp).c_str());
-				RemoveName(temp.c_str());
+				RemoveName(temp);
 				sprintf(temp3, "%s%s_%04d", temp.c_str(), temp2, io->ident);
 				temp = temp3;
                 temp += "\\";
@@ -931,7 +934,7 @@ extern long FORCE_IO_INDEX;
 INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans)
 {
 	char nameident[256];
-	char tmp[512];
+	std::string tmp;
 	char tmp2[512];
 	char temp[512];
 	long FileSize;
@@ -978,17 +981,23 @@ suite:
 		if (!NODIRCREATION)
 		{
 			io->ident = dli->ident;
-			sprintf(tmp, io->filename);
+			tmp = io->filename;
 			strcpy(tmp2, GetName(tmp).c_str());
 			RemoveName(tmp);
-			sprintf(tmp, "%s%s_%04d", tmp, tmp2, io->ident);
+            std::stringstream ss;
+            ss << tmp << tmp2 << '_' << std::setw(4) << io->ident;
+            tmp = ss.str();
+            //sprintf(tmp, "%s%s_%04d", tmp.c_str(), tmp2, io->ident);
 
 			if (PAK_DirectoryExist(tmp))
 			{
-				sprintf(tmp, io->filename);
+				tmp = io->filename;
 				strcpy(tmp2, GetName(tmp).c_str());
 				RemoveName(tmp);
-				sprintf(tmp, "%s%s_%04d\\%s.asl", tmp, tmp2, io->ident, tmp2);
+                std::stringstream ss;
+                ss << tmp << tmp2 << '_' << std::setw(4) << io->ident << '\\' << tmp2 << ".asl";
+                tmp = ss.str();
+                //sprintf(tmp, "%s%s_%04d\\%s.asl", tmp, tmp2, io->ident, tmp2);
 
 				if (PAK_FileExist(tmp))
 				{
@@ -1013,8 +1022,8 @@ suite:
 			}
 			else
 			{
-				CreateDirectory(tmp, NULL);
-				LogDirCreation(tmp);
+				CreateDirectory(tmp.c_str(), NULL);
+				LogDirCreation(tmp.c_str());
 				WriteIOInfo(io, temp);
 			}
 		}
@@ -1071,7 +1080,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
 	DANAE_LS_LIGHTINGHEADER	*	dll;
 	DANAE_LS_NODE		*		dln;
 	char name[64];
-	char temp[512];
+	std::string temp;
 	EERIE_3D trans;
 	unsigned char * dat = NULL;
 	float increment = 0;
@@ -1154,39 +1163,40 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
 	{
 		dls = (DANAE_LS_SCENE *)(dat + pos);
 		pos += sizeof(DANAE_LS_SCENE);
-		char ftemp[256];
+		std::string ftemp;
 
 		if (FAKE_DIR)
 		{
-			strcpy(ftemp, fic.c_str());
+			ftemp = fic;
 			RemoveName(ftemp);
-			strcpy(temp, fic.c_str());
+			temp = fic;
 			RemoveName(temp);
 			FAKE_DIR = 0;
 		}
 		else // normal load
 		{
-			strcpy(ftemp, dls->name);
+			ftemp = dls->name;
 			RemoveName(ftemp);
-			strcpy(temp, dls->name);
+			temp = dls->name;
 			RemoveName(temp);
 		}
 
-		if (FastSceneLoad(ftemp))
+		if (FastSceneLoad(ftemp.c_str()))
 		{
 			FASTmse = 1;
 			goto suite;
 		}
 
 		ARX_SOUND_PlayCinematic("Editor_Humiliation.wav");
-		mse = PAK_MultiSceneToEerie(temp);
+		mse = PAK_MultiSceneToEerie(temp.c_str());
 		PROGRESS_BAR_COUNT += 20.f;
 		LoadLevelScreen();
 	suite:
 		;
 		EERIEPOLY_Compute_PolyIn();
-		strcpy(LastLoadedScene, ftemp);
-		RemoveName(LastLoadedScene);
+		strcpy(LastLoadedScene, ftemp.c_str());
+        std::string str_LastLoadedScene = LastLoadedScene;
+		RemoveName(str_LastLoadedScene);
 	}
 
 	if (FASTmse)

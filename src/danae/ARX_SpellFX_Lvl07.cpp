@@ -54,6 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
+
 #include "Danae.h"
 
 #include <EERIEDraw.h>
@@ -662,7 +664,7 @@ float CLightning::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			sphere.origin.x = ax;
 			sphere.origin.y = ay;
 			sphere.origin.z = az;
-			sphere.radius = std::min(cnodetab[i].size, 50.f);
+			sphere.radius = min(cnodetab[i].size, 50.f);
 
 			if (CheckAnythingInSphere(&sphere, spells[spellinstance].caster, CAS_NO_SAME_GROUP))
 			{

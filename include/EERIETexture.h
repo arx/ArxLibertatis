@@ -222,7 +222,7 @@ class TextureContainer
 TextureContainer * D3DTextr_GetSurfaceContainer(const char * strName);
 TextureContainer * GetTextureList();
 extern TextureContainer * LastTextureContainer;
-long CountTextures(char * tex, long * memsize, long * memmip);
+long CountTextures( const std::string& tex, long * memsize, long * memmip);
  
 //-----------------------------------------------------------------------------
 // Texture invalidation and restoration functions

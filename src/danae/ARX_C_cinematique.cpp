@@ -23,6 +23,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 #include <stdlib.h>
+
+#include <algorithm>
+
 #include "Danae.h"
 #include "ARX_CCinematique.h"
 #include "EERIEUtil.h"
@@ -33,7 +36,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 /*---------------------------------------------------------------------------------*/
 
 EERIE_CAMERA	Camera;
-char			AllTxt[32767];
+std::string AllTxt;
 bool			LeftButton, RightButton;
 int				 InsertKey;
 C_KEY		*	KeyCopy;

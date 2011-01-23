@@ -26,13 +26,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define HACHAGE_H
 
 #include <cstddef>
+#include <string>
 
 class HashMap {
     
 private:
     
     struct Entry {
-        const std::string name;
+        std::string name;
         void * value;
     };
     

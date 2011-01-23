@@ -56,6 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 #include <stdlib.h>
 
+#include <algorithm>
+
 #include "Danae.h"
 #include "ARX_Interface.h"
 #include "ARX_Speech.h"
@@ -139,8 +141,7 @@ long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, _TCHAR * _lpszUText, long duration)
 		{
 			long length = _tcslen(_lpszUText);
 
-			// We allocate memory for new speech
-			speech[i].lpszUText = (_TCHAR *) malloc(std::min(length + 1, 4096L) * sizeof(_TCHAR));
+			speech[i].lpszUText.clear();
 
 			// Sets creation time
 			speech[i].timecreation = tim;
@@ -165,7 +166,7 @@ long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, _TCHAR * _lpszUText, long duration)
 			else
 			{
 				speech[i].io = io;
-				strcpy(speech[i].name, GetName(io->filename));
+				strcpy(speech[i].name, GetName(io->filename).c_str());
 			}
 
 			speech[i].color = D3DRGB(1.f, 1.f, 1.f);
@@ -498,7 +499,7 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, char * data, long param, long mo
 		io->lastspeechflag = (short)flg;
 		aspeech[num].text.clear();
 		aspeech[num].text = _output;
-		aspeech[num].duration = std::max(aspeech[num].duration, (unsigned long)(strlen(_output.c_str()) + 1) * 100);
+		aspeech[num].duration = max(aspeech[num].duration, (unsigned long)(strlen(_output.c_str()) + 1) * 100);
 	}
 
 	char speech_label[256];

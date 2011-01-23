@@ -148,12 +148,11 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
     if (obj == NULL) return false;
 
     // Generate File name/path and create it
-    char path[256];
     std::string gamefic;
     gamefic = "Game\\";
     gamefic += file;
     SetExt(gamefic, ".FTL");
-    strcpy(path, gamefic.c_str());
+    std::string path = gamefic;
 	RemoveName(path);
 
 	if (!CreateFullPath(path)) return NULL;

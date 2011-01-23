@@ -229,7 +229,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				for (i = 0; i < io->obj->nbmaps; i++)
 				{
-					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName)))
+					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName).c_str()))
 						textochange = i;
 				}
 
@@ -285,7 +285,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				for (i = 0; i < io->obj->nbmaps; i++)
 				{
-					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName)))
+					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName).c_str()))
 						textochange = i;
 				}
 
@@ -341,7 +341,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				for (i = 0; i < io->obj->nbmaps; i++)
 				{
-					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName)))
+					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName).c_str()))
 						textochange = i;
 				}
 
@@ -930,7 +930,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 	{
 		if (!ValidIONum(weapon)) return false;
 
-		rad = GetHitValue(io_weapon->obj->actionlist[j].name);
+		rad = GetHitValue(io_weapon->obj->actionlist[j].name.c_str());
 
 		if (rad == -1) continue;
 
@@ -1189,8 +1189,8 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 
 						char bkg_material[64] = "EARTH";
 
-						if (ep &&  ep->tex && ep->tex->m_texName)
-							GetMaterialString(ep->tex->m_texName, bkg_material);
+						if (ep &&  ep->tex && ep->tex->m_texName.c_str())
+							GetMaterialString(ep->tex->m_texName.c_str(), bkg_material);
 
 						ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, &sphere.origin, io_source);
 					}

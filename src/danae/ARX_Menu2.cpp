@@ -300,7 +300,6 @@ void ARX_QuickSave()
 
     DeleteFile( tcSrc );
     DeleteFile( tcDst );
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1153,7 +1152,7 @@ bool CMenuConfig::SaveAll()
 
     //language
     strcpy(tcTxt,"\"");
-    strcat(tcTxt,Project.localisationpath);
+    strcat(tcTxt,Project.localisationpath.c_str());
     strcat(tcTxt,"\"");
     bOk&=WriteConfigString("LANGUAGE","string",tcTxt);
     bOk&=WriteConfigInt("FIRSTRUN","int", bGameNotFirstLaunch?1:0);
@@ -1263,7 +1262,7 @@ bool CMenuConfig::ReadAll()
     int iTemp;
 
     //language
-    if (strlen(Project.localisationpath) == 0)
+    if ( Project.localisationpath.length() == 0 )
     {
         if(GERMAN_VERSION)
         {
@@ -1296,14 +1295,12 @@ bool CMenuConfig::ReadAll()
         }
 
         if( !pcText.empty() )
-        {
-            strcpy(Project.localisationpath,pcText.c_str() );
-        }
+            Project.localisationpath = pcText;
     }
 
     bool bWarningGore=false;
 
-    if (!strcasecmp(Project.localisationpath, "Deutsch"))
+    if (!strcasecmp(Project.localisationpath.c_str(), "Deutsch"))
     {
         //no gore
         GERMAN_VERSION=1;
@@ -4522,7 +4519,7 @@ void CMenuElementText::RenderMouseOver()
             CURRENT_GAME_INSTANCE=save_l[lData].num;
             ARX_GAMESAVE_MakePath();
             char tTxt[256];
-            sprintf(tTxt,"%sGSAVE.BMP",GameSavePath+strlen(Project.workingdir));
+            sprintf(tTxt,"%sGSAVE.BMP",GameSavePath);
             TextureContainer *pTextureTemp=GetTextureFile_NoRefinement(tTxt);
 
             if (pTextureTemp != pTextureLoad)

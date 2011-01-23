@@ -54,6 +54,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+
+#include <algorithm>
+#include <fstream>
+#include <string>
+#include <sstream>
+#include <vector>
+
 #include "EERIEAnim.h"
 #include "EERIEClothes.h"
 #include "EERIEObject.h"
@@ -168,12 +175,12 @@ __inline void AddToBBox3D(INTERACTIVE_OBJ * io,EERIE_3D * pos)
 {
 	if (io)
 	{
-		io->bbox3D.min.x=std::min(io->bbox3D.min.x,pos->x);
-		io->bbox3D.min.y=std::min(io->bbox3D.min.y,pos->y);
-		io->bbox3D.min.z=std::min(io->bbox3D.min.z,pos->z);
-		io->bbox3D.max.x=std::max(io->bbox3D.max.x,pos->x);
-		io->bbox3D.max.y=std::max(io->bbox3D.max.y,pos->y);
-		io->bbox3D.max.z=std::max(io->bbox3D.max.z,pos->z);
+		io->bbox3D.min.x=min(io->bbox3D.min.x,pos->x);
+		io->bbox3D.min.y=min(io->bbox3D.min.y,pos->y);
+		io->bbox3D.min.z=min(io->bbox3D.min.z,pos->z);
+		io->bbox3D.max.x=max(io->bbox3D.max.x,pos->x);
+		io->bbox3D.max.y=max(io->bbox3D.max.y,pos->y);
+		io->bbox3D.max.z=max(io->bbox3D.max.z,pos->z);
 	}
 }
 extern long EXTERNALVIEW;
@@ -225,7 +232,7 @@ short ANIM_GetAltIdx(ANIM_HANDLE * ah,long old)
 
 	for (long i=1;i<ah->alt_nb;i++)
 	{
-		tot+=anim_power[std::min(i,14L)];
+		tot+=anim_power[min(i,14L)];
 	}
 
 	while (1)
@@ -234,7 +241,7 @@ short ANIM_GetAltIdx(ANIM_HANDLE * ah,long old)
 		{
 			float rnd=rnd()*tot;
 
-			if ((rnd<anim_power[std::min((int)i,14)]) && (i!=old))
+			if ((rnd<anim_power[min((int)i,14)]) && (i!=old))
 				return i;
 		}
 	}
@@ -408,14 +415,11 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load( std::string& path)
 
 //-----------------------------------------------------------------------------
 // tex Must be of sufficient size...
-long EERIE_ANIMMANAGER_Count(char *tex,long * memsize)
+long EERIE_ANIMMANAGER_Count( std::string& tex, long * memsize)
 {
 	char temp[512];
 	long count=0;
 	*memsize=0;
-
-	if (tex!=NULL) 
-		strcpy(tex,"");
 
 	for (long i=0;i<MAX_ANIMATIONS;i++)
 	{
@@ -432,7 +436,7 @@ long EERIE_ANIMMANAGER_Count(char *tex,long * memsize)
 
 			sprintf(temp,"%3d[%3d] %s size %d Locks %d Alt %d\r\n",count,i,txx,totsize,animations[i].locks,animations[i].alt_nb-1);
 			memsize+=totsize;
-			strcat(tex,temp);
+			tex += temp;
 		}
 	}	
 
@@ -1918,10 +1922,10 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 					(eobj->vertexlist[i].vert.sy >= -32000) &&
 					(eobj->vertexlist[i].vert.sy <= 32000))
 				{
-					BBOXMIN.x=std::min(BBOXMIN.x,eobj->vertexlist[i].vert.sx);
-					BBOXMAX.x=std::max(BBOXMAX.x,eobj->vertexlist[i].vert.sx);
-					BBOXMIN.y=std::min(BBOXMIN.y,eobj->vertexlist[i].vert.sy);
-					BBOXMAX.y=std::max(BBOXMAX.y,eobj->vertexlist[i].vert.sy);
+					BBOXMIN.x=min(BBOXMIN.x,eobj->vertexlist[i].vert.sx);
+					BBOXMAX.x=max(BBOXMAX.x,eobj->vertexlist[i].vert.sx);
+					BBOXMIN.y=min(BBOXMIN.y,eobj->vertexlist[i].vert.sy);
+					BBOXMAX.y=max(BBOXMAX.y,eobj->vertexlist[i].vert.sy);
 				}
 			}
 
@@ -2175,7 +2179,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	float fDist;
 	fDist=EEDistance3D(&pos,&ACTIVECAM->pos);
 	bPassInTANDL=false;
-	bBumpOnIO=(bALLOW_BUMP)&&(io)&&(io->ioflags&IO_BUMP)&&(fDist<std::min(std::max(0.f,(ACTIVECAM->cdepth*fZFogStart)-200.f),600.f))?true:false;
+	bBumpOnIO=(bALLOW_BUMP)&&(io)&&(io->ioflags&IO_BUMP)&&(fDist<min(max(0.f,(ACTIVECAM->cdepth*fZFogStart)-200.f),600.f))?true:false;
 
 	float prec;
 	prec=1.f/(ACTIVECAM->cdepth*ACTIVECAM->Zmul);
@@ -2384,11 +2388,11 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 					fr=((0.6f-dd)*6.f + (EEfabs(eobj->vertexlist[paf[k]].norm.z)+EEfabs(eobj->vertexlist[paf[k]].norm.y)))*0.125f;						
 
 					if (fr<0.f) fr=0.f;
-					else fr=std::max(ffr,fr*255.f);
+					else fr=max(ffr,fr*255.f);
 
-					fr=std::min(fr,255.f);
+					fr=min(fr,255.f);
 					fb*=255.f;
-					fb=std::min(fb,255.f);
+					fb=min(fb,255.f);
 					F2L(fr,&lfr);
 					F2L(fb,&lfb);
 					vert_list[k].color=( 0xff001E00L | ( (lfr & 255) << 16) | (lfb & 255) );
@@ -2964,10 +2968,10 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 		// Memorizes 2D Bounding Box using vertex min/max x,y pos
 		if (eobj->vertexlist[i].vert.rhw>0.f) 
 		{
-			BBOXMIN.x=std::min(BBOXMIN.x,eobj->vertexlist[i].vert.sx);
-			BBOXMAX.x=std::max(BBOXMAX.x,eobj->vertexlist[i].vert.sx);
-			BBOXMIN.y=std::min(BBOXMIN.y,eobj->vertexlist[i].vert.sy);
-			BBOXMAX.y=std::max(BBOXMAX.y,eobj->vertexlist[i].vert.sy);
+			BBOXMIN.x=min(BBOXMIN.x,eobj->vertexlist[i].vert.sx);
+			BBOXMAX.x=max(BBOXMAX.x,eobj->vertexlist[i].vert.sx);
+			BBOXMIN.y=min(BBOXMIN.y,eobj->vertexlist[i].vert.sy);
+			BBOXMAX.y=max(BBOXMAX.y,eobj->vertexlist[i].vert.sy);
 
 		}
 
@@ -3064,9 +3068,9 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 							else dc *= p * el->precalc; 
 						}					
 
-						ffr=std::max(ffr,el->rgb255.r*dc);
-						ffg=std::max(ffg,el->rgb255.g*dc);
-						ffb=std::max(ffb,el->rgb255.b*dc);
+						ffr=max(ffr,el->rgb255.r*dc);
+						ffg=max(ffg,el->rgb255.g*dc);
+						ffb=max(ffb,el->rgb255.b*dc);
 					}
 				}
 

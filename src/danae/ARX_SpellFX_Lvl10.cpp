@@ -54,6 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
+
 #include "Danae.h"
 
 #include <EERIEMath.h>
@@ -73,7 +75,7 @@ CMassLightning::CMassLightning(LPDIRECT3DDEVICE7 m_pd3dDevice, long nbmissiles)
 {
 	SetDuration(2000);
 	pTab = new CLightning*[10];
-	number = std::min(10L, nbmissiles);
+	number = min(10L, nbmissiles);
 
 	TextureContainer * pTex = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_lightning_red.bmp");
 
@@ -99,7 +101,7 @@ void CMassLightning::Create(EERIE_3D aePos, float afBeta = 0)
 		pTab[i]->Create(aePos, eTarget, 0);
 		long lTime = (long)(ulDuration + rnd() * 5000.0f);
 		pTab[i]->SetDuration(lTime);
-		lMax = std::max(lMax, lTime);
+		lMax = max(lMax, lTime);
 		pTab[i]->spellinstance = this->spellinstance;
 		pTab[i]->SetColor1(1.f, 0.75f, 0.75f); // milieu
 		pTab[i]->SetColor2(0.3f, 0.f, 0.f); // extr�mit�s

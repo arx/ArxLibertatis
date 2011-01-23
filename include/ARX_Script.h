@@ -57,30 +57,30 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SCRIPTING_H
 #define ARX_SCRIPTING_H
 
+#include <string>
+
 #include <EERIEPoly.h>
 #include <EERIEMeshTweak.h>
-#include <tchar.h>
-#include <string>
 
 //-----------------------------------------------------------------------------
 typedef struct
 {
-	char		*	name;
-	short			exist;
-	short			flags; 
-	long			namelength;
-	long			times;
-	long			msecs;
-	long			pos;
-	long			longinfo;
-	unsigned long	tim;
-	INTERACTIVE_OBJ * io;
-	EERIE_SCRIPT	* es;
+    std::string         name;
+    short               exist;
+    short               flags; 
+    long                namelength;
+    long                times;
+    long                msecs;
+    long                pos;
+    long                longinfo;
+    unsigned long       tim;
+    INTERACTIVE_OBJ*    io;
+    EERIE_SCRIPT*       es;
 } SCR_TIMER;
 
 typedef struct
 {
-	char		*	name;
+    std::string name;
 } SCRIPT_EVENT;
 
 //-----------------------------------------------------------------------------
@@ -378,10 +378,10 @@ extern SCRIPT_VAR * svar;
 extern INTERACTIVE_OBJ * EVENT_SENDER;
 extern SCRIPT_EVENT AS_EVENT[];
 extern SCR_TIMER * scr_timer;
-extern char ShowTextWindowtext[128];
-extern char ShowText[65536];
-extern char ShowText2[65536];
-extern char BIG_DEBUG_STRING[BIG_DEBUG_SIZE];
+extern std::string ShowTextWindowtext;
+extern std::string ShowText;
+extern std::string ShowText2;
+extern std::string BIG_DEBUG_STRING;
 extern long NEED_DEBUG;
 extern long BIG_DEBUG_POS;
 extern long NB_GLOBALS;
@@ -405,15 +405,15 @@ void ARX_SCRIPT_Timer_Clear_For_IO(INTERACTIVE_OBJ * io);
 void ARX_SCRIPT_Timer_Clear_By_IO(INTERACTIVE_OBJ * io);
 long ARX_SCRIPT_Timer_GetFree();
  
-void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, char * newevent);
+void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, const std::string& newevent);
 void ARX_SCRIPT_EventStackExecute();
 void ARX_SCRIPT_EventStackExecuteAll();
 void ARX_SCRIPT_EventStackInit();
 void ARX_SCRIPT_EventStackClear();
-void ARX_SCRIPT_LaunchScriptSearch(char * search);
+void ARX_SCRIPT_LaunchScriptSearch( std::string& search);
 void ARX_SCRIPT_ResetObject(INTERACTIVE_OBJ * io, long flags);
 void ARX_SCRIPT_Reset(INTERACTIVE_OBJ * io, long flags);
-long ARX_SCRIPT_GetSystemIOScript(INTERACTIVE_OBJ * io, char * name);
+long ARX_SCRIPT_GetSystemIOScript(INTERACTIVE_OBJ * io, const std::string& name);
 void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT * es);
 void ARX_SCRIPT_AllowInterScriptExec();
 long ARX_SCRIPT_CountTimers();
@@ -427,40 +427,40 @@ bool CheckScriptSyntax(INTERACTIVE_OBJ * io);
 
 void ManageNPCMovement(INTERACTIVE_OBJ * io);
 void ReleaseScript(EERIE_SCRIPT * es);
-long GetNextWord(EERIE_SCRIPT * es, long i, char * temp, long flags = 0);
+long GetNextWord(EERIE_SCRIPT * es, long i, std::string& temp, long flags = 0);
 void ARX_SCRIPT_Init_Event_Stats();
-void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, char * name, char * content);
+void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const std::string& name, const std::string& content);
 void InitAllGlobalVars();
 long SendInitScriptEvent(INTERACTIVE_OBJ * io);
 void ClearSubStack(EERIE_SCRIPT * es);
 
 //-----------------------------------------------------------------------------
 
-long MakeLocalised(char * text, std::string& output, long maxsize, long lastspeechflag = 0);
+long MakeLocalised( const std::string& text, std::string& output, long maxsize, long lastspeechflag = 0);
 
 //-----------------------------------------------------------------------------
-long specialstrcmp(char * text, char * seek);
+long specialstrcmp( const std::string& text, const std::string& seek);
 void CheckHit(INTERACTIVE_OBJ * io, float ratio);
-long NotifyIOEvent(INTERACTIVE_OBJ * io, long msg, char * params);
+long NotifyIOEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params);
 void ForceAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * ea);
 
-long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, char * text, long duration = -1);
-long ARX_SPEECH_ForceLocalised(INTERACTIVE_OBJ * io, char * text, long duration = -1);
+long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const std::string& text, long duration = -1);
+long ARX_SPEECH_ForceLocalised(INTERACTIVE_OBJ * io, const std::string& text, long duration = -1);
 
-long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, char * params, char * eventname = NULL);
-long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ * io, char * eventname, long info = 0);
+long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params, const std::string& eventname = "" );
+long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& eventname, long info = 0);
 long SendMsgToAllIO(long msg, char * dat);
 
-void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, char * params, char * eventname);
+void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params, const std::string& eventname);
 bool InSubStack(EERIE_SCRIPT * es, long pos);
 long GetSubStack(EERIE_SCRIPT * es);
 void AttemptMoveToTarget(INTERACTIVE_OBJ * io);
 void GetTargetPos(INTERACTIVE_OBJ * io, unsigned long smoothing = 0);
 void ARX_IOGROUP_Release(INTERACTIVE_OBJ * io);
 void CloneLocalVars(INTERACTIVE_OBJ * ioo, INTERACTIVE_OBJ * io);
-bool IsIOGroup(INTERACTIVE_OBJ * io, char * group);
+bool IsIOGroup(INTERACTIVE_OBJ * io, const std::string& group);
 void ARX_SCRIPT_Free_All_Global_Variables();
-void		MakeLocalText(EERIE_SCRIPT * es, char * tx);
-void		MakeGlobalText(char * tx);
+void		MakeLocalText(EERIE_SCRIPT * es, const std::string& tx);
+void		MakeGlobalText( const std::string& tx);
 
 #endif

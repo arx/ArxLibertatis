@@ -4647,8 +4647,7 @@ void WriteMSEData(char * path, EERIE_MULTI3DSCENE * ms)
 void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms) 
 {
 	char fic[256];
-	char ftemp[256];
-	strcpy(ftemp, LastLoadedScene);
+	std::string ftemp = LastLoadedScene;
 	RemoveName(ftemp);
 	strcpy(fic, LastLoadedScene);
 
@@ -4656,7 +4655,7 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms)
 	EERIE_PORTAL_Release();
 
 	// Try to Load Fast Scene
-	if (!FastSceneLoad(ftemp))
+	if (!FastSceneLoad(ftemp.c_str()))
 	{
 		//failure: Not-Fast Load;
 		EERIE_3DSCENE * escn;
@@ -4683,7 +4682,7 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms)
 		if (NEED_ANCHORS)	AnchorData_Create(ACTIVEBKG);
 
 		WriteMSEData(fic, ms);
-		FastSceneSave(ftemp, ms);
+		FastSceneSave(ftemp.c_str(), ms);
 		ComputePortalVertexBuffer();
 		ComputeRoomDistance();
 	}

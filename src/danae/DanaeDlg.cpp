@@ -131,6 +131,7 @@ bool CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 long InitMemorySnaps();
 void FlushMemorySnaps(long snap);
 
+std::string SCRIPT_SEARCH_TEXT;
 
 #define CHECK 1
 #define UNCHECK 0
@@ -1012,7 +1013,7 @@ void AddIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, char * name, long type)
 	if (type == IOTVTYPE_PLAYER) strcpy(temp, "PLAYER");
 	else if (io != NULL)
 	{
-		strcpy(temp, GetName(io->filename));
+		strcpy(temp, GetName(io->filename).c_str());
 		sprintf(temp2, "_%04d", io->ident);
 		strcat(temp, temp2);
 	}
@@ -2010,35 +2011,36 @@ bool CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	return false;
 }
-char SCRIPT_SEARCH_TEXT[256];
 bool CALLBACK ScriptSearchProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 {
-	if (WM_COMMAND == uMsg)
-	{
-		switch (LOWORD(wParam))
-		{
-			case IDOK:
-				HWND thWnd;
-				thWnd = GetDlgItem(hWnd, IDC_SEARCHEDIT);
-				GetWindowText(thWnd, SCRIPT_SEARCH_TEXT, 255);
-				EndDialog(hWnd, true);
-				break;
-			case IDCANCEL:
-				EndDialog(hWnd, true);
-				break;
-		}
-	}
+    if (WM_COMMAND == uMsg)
+    {
+        switch (LOWORD(wParam))
+        {
+            case IDOK:
+                HWND thWnd;
+                thWnd = GetDlgItem(hWnd, IDC_SEARCHEDIT);
+                char temp[256];
+                GetWindowText(thWnd, temp, 255);
+                SCRIPT_SEARCH_TEXT = temp;
+                EndDialog(hWnd, true);
+                break;
+            case IDCANCEL:
+                EndDialog(hWnd, true);
+                break;
+        }
+    }
 
-	if (uMsg == WM_INITDIALOG)
-	{
-		SCRIPT_SEARCH_TEXT[0] = 0;
-		HWND thWnd;
-		thWnd = GetDlgItem(hWnd, IDC_SEARCHEDIT);
-		SetFocus(thWnd); 
-		return true;
-	}
+    if (uMsg == WM_INITDIALOG)
+    {
+        SCRIPT_SEARCH_TEXT[0] = 0;
+        HWND thWnd;
+        thWnd = GetDlgItem(hWnd, IDC_SEARCHEDIT);
+        SetFocus(thWnd); 
+        return true;
+    }
 
-	return false;
+    return false;
 }
 
 //*************************************************************************************
@@ -3957,7 +3959,7 @@ bool CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				// Isis Athena
 				char temp[256];
 				thWnd = GetDlgItem(hWnd, IDC_OBJNAME);
-				strcpy(temp, GetName(CDP_EditIO->filename));
+				strcpy(temp, GetName(CDP_EditIO->filename).c_str());
 				sprintf(temp, "%s_%04d", temp, CDP_EditIO->ident);
 				SetWindowText(thWnd, temp);
 
@@ -4066,12 +4068,12 @@ bool CALLBACK LanguageOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 
 				if (IsChecked(hWnd, IDC_LANGUAGE1))
 				{
-					strcpy(Project.localisationpath, "english");
+					Project.localisationpath = "english";
 				}
 
 				if (IsChecked(hWnd, IDC_LANGUAGE2))
 				{
-					strcpy(Project.localisationpath, "fr");
+					Project.localisationpath = "fr";
 				}
 
 				EndDialog(hWnd, true);

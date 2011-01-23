@@ -164,7 +164,7 @@ bool CreateFullPath( const std::string& path );
 // Strings Funcs
 char *StringCopy(char * destination,char * source,long maxsize);
 bool HERMESFolderSelector(char *file_name,char *title);
-void RemoveName(char *str);
+void RemoveName( std::string& str );
 std::string GetName( const std::string& str);
 char * GetExt(char *str);
 void SetExt( std::string& str, const std::string& new_ext );

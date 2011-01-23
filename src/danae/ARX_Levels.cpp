@@ -134,8 +134,7 @@ long GetLevelNumByName(char * name)
 {
 	if (name)
 	{
-		char temp[256];
-		strcpy(temp, name);
+		std::string temp = name;
 		MakeUpcase(temp);
 
 		if (IsIn(temp, "LEVEL10")) return 10;

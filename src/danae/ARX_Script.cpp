@@ -57,6 +57,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stdlib.h>
 
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+
+
 #include "ARX_Script.h"
 
 #include <HERMESMain.h>
@@ -124,9 +132,6 @@ extern float g_TimeStartCinemascope;
 INTERACTIVE_OBJ * LASTSPAWNED = NULL;
 INTERACTIVE_OBJ * EVENT_SENDER = NULL;
 SCRIPT_VAR * svar = NULL;
-char ShowTextWindowtext[128];
-char ShowText[65536];
-char ShowText2[65536];
 char var_text[256];
 char SSEPARAMS[MAX_SSEPARAMS][64];
 long FORBID_SCRIPT_IO_CREATION = 0;
@@ -203,6 +208,12 @@ bool CharIn(char * string, char _char)
 }
 bool iCharIn(char * string, char _char)
 {
+    std::string str = string;
+    if ( str.find( _char ) != std::string::npos )
+        return true;
+
+    return false;
+/*
 	char * s = string;
 	MakeUpcase(string);
 
@@ -213,7 +224,7 @@ bool iCharIn(char * string, char _char)
 		s++;
 	}
 
-	return false;
+	return false; */
 }
 extern long FOR_EXTERNAL_PEOPLE;
 
@@ -297,7 +308,7 @@ long ARX_SCRIPT_SearchTextFromPos(EERIE_SCRIPT * es, char * search, long startpo
 
 	long curpos; // current pos in stream
 	long curtpos; // current pos in current line;
-	char curtline[4096];
+	std::string curtline;
 
 
 	if (es == NULL) return -1;
@@ -314,7 +325,7 @@ long ARX_SCRIPT_SearchTextFromPos(EERIE_SCRIPT * es, char * search, long startpo
 	// Get a line from stream
 	while (curpos < es->size)
 	{
-		memset(curtline, 0, 4096);
+		curtline.clear();
 		curtpos = 0;
 
 		while ((curpos < es->size) && (es->data[curpos] != '\n'))
@@ -331,10 +342,10 @@ long ARX_SCRIPT_SearchTextFromPos(EERIE_SCRIPT * es, char * search, long startpo
 		{
 			MakeUpcase(curtline);
 
-			if (strstr(curtline, search))
+			if ( curtline.find( search) )
 			{
 				*nline = curline;
-				strcpy(tline, curtline);
+				strcpy(tline, curtline.c_str());
 				lastline = curline;
 				return curpos;
 			}
@@ -371,37 +382,43 @@ long SendMsgToAllIO(long msg, char * dat)
 	return ret;
 }
 
-void ARX_SCRIPT_LaunchScriptSearch(char * search)
+void ARX_SCRIPT_LaunchScriptSearch( std::string& search)
 {
-	strcpy(ShowText, "");
-	long foundnb = 0;
-	long size = 0;
-	char tline[4096];
-	char toadd[4096];
-	char objname[256];
-	long nline;
-	INTERACTIVE_OBJ * io = NULL;
-	MakeUpcase(search);
+    ShowText.clear();
+    long foundnb = 0;
+    long size = 0;
+    std::string tline[4096];
+    std::string toadd[4096];
+    std::string objname[256];
+    long nline;
+    INTERACTIVE_OBJ * io = NULL;
+    MakeUpcase(search);
 
-	for (long i = 0; i < inter.nbmax; i++)
-	{
-		if (inter.iobj[i] != NULL)
-		{
-			io = inter.iobj[i];
+    for (long i = 0; i < inter.nbmax; i++)
+    {
+        if (inter.iobj[i] != NULL)
+        {
+            io = inter.iobj[i];
 
-			if (i == 0) strcpy(objname, "PLAYER");
-			else sprintf(objname, "%s_%04d", GetName(io->filename), io->ident);
+            if (i == 0) objname = "PLAYER";
+            else
+            {
+                std::stringstream ss;
+                ss << GetName(io->filename) << '_' << std::setw(4) << io->ident;
+                objname = ss.str();
+                //sprintf(objname, "%s_%04d", GetName(io->filename).c_str(), io->ident);
+            }
 
-			long pos = 0;
+            long pos = 0;
 
-			while (pos != -1)
-			{
+            while (pos != -1)
+            {
 
-				pos = ARX_SCRIPT_SearchTextFromPos(&io->script, search, pos, tline, &nline);
+                pos = ARX_SCRIPT_SearchTextFromPos(&io->script, search.c_str(), pos, tline, &nline);
 
-				if (pos > 0)
-				{
-					sprintf(toadd, "%s - GLOBAL - Line %4d : %s\n", objname, nline, tline);
+                if (pos > 0)
+                {
+                    sprintf(toadd, "%s - GLOBAL - Line %4d : %s\n", objname, nline, tline);
 
 					if (size + strlen(toadd) + 3 < 65535)
 					{
@@ -422,7 +439,7 @@ void ARX_SCRIPT_LaunchScriptSearch(char * search)
 
 			while (pos != -1)
 			{
-				pos = ARX_SCRIPT_SearchTextFromPos(&io->over_script, search, pos, tline, &nline);
+				pos = ARX_SCRIPT_SearchTextFromPos(&io->over_script, search.c_str(), pos, tline, &nline);
 
 				if (pos > 0)
 				{
@@ -453,7 +470,7 @@ suite:
 		strcpy(ShowText, "No Occurence Found...");
 	}
 
-	sprintf(ShowTextWindowtext, "Search Results for %s (%d occurences)", search, foundnb);
+	sprintf(ShowTextWindowtext, "Search Results for %s (%d occurences)", search.c_str(), foundnb);
 
 
 	DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXTBIG, danaeApp.m_hWnd, (DLGPROC)ShowTextDlg);
@@ -576,7 +593,7 @@ void ARX_SCRIPT_AllowInterScriptExec()
 	{
 		EVENT_SENDER = NULL;
 
-		long numm = std::min(inter.nbmax, 10L);
+		long numm = min(inter.nbmax, 10L);
 
 		for (long n = 0; n < numm; n++)
 		{
@@ -639,7 +656,7 @@ void ARX_SCRIPT_ReleaseLabels(EERIE_SCRIPT * es)
 
 void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT * es)
 {
-	long nb = std::min(MAX_SHORTCUT, SM_MAXCMD);
+	long nb = min(MAX_SHORTCUT, SM_MAXCMD);
 
 	for (long j = 1; j < nb; j++)
 	{
@@ -699,8 +716,13 @@ void ReleaseScript(EERIE_SCRIPT * es)
 // returns 0 if "seek" is at the start of "text"
 // else returns 1
 //*************************************************************************************
-long specialstrcmp(char * text, char * seek)
+long specialstrcmp( const std::string& text, const std::string& seek)
 {
+    if ( text.compare( 0, seek.length(), seek ) == 0 )
+        return 0;
+
+    return 1;
+/*
 
 	long len = strlen(seek);
 	long len2 = strlen(text);
@@ -712,14 +734,14 @@ long specialstrcmp(char * text, char * seek)
 		if (text[i] != seek[i]) return 1;
 	}
 
-	return 0;
+	return 0;*/
 }
 #define TYPE_TEXT	1
 #define TYPE_FLOAT	2
 #define TYPE_LONG	3
 //*************************************************************************************
 //*************************************************************************************
-long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtcontent,unsigned int txtcontentSize,float * fcontent,long * lcontent)
+long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, std::string& name,char * txtcontent,unsigned int txtcontentSize,float * fcontent,long * lcontent)
 {
 	MakeUpcase(name);
 
@@ -727,25 +749,25 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 	{
 		case '$':
 
-			if (!strcmp(name, "^$PARAM1"))
+			if (!name.compare("^$PARAM1"))
 			{
 				strcpy(txtcontent, SSEPARAMS[0]);
 				return TYPE_TEXT;
 			}
 
-			if (!strcmp(name, "^$PARAM2"))
+			if (!name.compare("^$PARAM2"))
 			{
 				strcpy(txtcontent, SSEPARAMS[1]);
 				return TYPE_TEXT;
 			}
 
-			if (!strcmp(name, "^$PARAM3"))
+			if (!name.compare("^$PARAM3"))
 			{
 				strcpy(txtcontent, SSEPARAMS[2]);
 				return TYPE_TEXT;
 			}
 
-			if (!strcmp(name, "^$OBJONTOP"))
+			if (!name.compare("^$OBJONTOP"))
 			{
 				strcpy(txtcontent, "NONE");
 
@@ -757,25 +779,25 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 			break;
 		case '&':
 
-			if (!strcmp(name, "^&PARAM1"))
+			if (!name.compare("^&PARAM1"))
 			{
 				*fcontent = (float)atof(SSEPARAMS[0]);
 				return TYPE_FLOAT;
 			}
 
-			if (!strcmp(name, "^&PARAM2"))
+			if (!name.compare("^&PARAM2"))
 			{
 				*fcontent = (float)atof(SSEPARAMS[1]);
 				return TYPE_FLOAT;
 			}
 
-			if (!strcmp(name, "^&PARAM3"))
+			if (!name.compare("^&PARAM3"))
 			{
 				*fcontent = (float)atof(SSEPARAMS[2]);
 				return TYPE_FLOAT;
 			}
 
-			if (!strcmp(name, "^&PLAYERDIST"))
+			if (!name.compare("^&PLAYERDIST"))
 			{
 				if (io)
 				{
@@ -787,7 +809,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 			break;
 		case '#':
 
-			if (!strcmp(name, "^#PLAYERDIST"))
+			if (!name.compare("^#PLAYERDIST"))
 			{
 				if (io != NULL)
 				{
@@ -796,25 +818,25 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 				}
 			}
 
-			if (!strcmp(name, "^#PARAM1"))
+			if (!name.compare("^#PARAM1"))
 			{
 				*lcontent = atol(SSEPARAMS[0]);
 				return TYPE_LONG;
 			}
 
-			if (!strcmp(name, "^#PARAM2"))
+			if (!name.compare("^#PARAM2"))
 			{
 				*lcontent = atol(SSEPARAMS[1]);
 				return TYPE_LONG;
 			}
 
-			if (!strcmp(name, "^#PARAM3"))
+			if (!name.compare("^#PARAM3"))
 			{
 				*lcontent = atol(SSEPARAMS[2]);
 				return TYPE_LONG;
 			}
 
-			if (!strcmp(name, "^#TIMER1"))
+			if (!name.compare("^#TIMER1"))
 			{
 				if (io != NULL)
 				{
@@ -830,7 +852,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 				return TYPE_LONG;
 			}
 
-			if (!strcmp(name, "^#TIMER2"))
+			if (!name.compare("^#TIMER2"))
 			{
 				if (io != NULL)
 				{
@@ -846,7 +868,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 				return TYPE_LONG;
 			}
 
-			if (!strcmp(name, "^#TIMER3"))
+			if (!name.compare("^#TIMER3"))
 			{
 				if (io != NULL)
 				{
@@ -862,7 +884,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 				return TYPE_LONG;
 			}
 
-			if (!strcmp(name, "^#TIMER4"))
+			if (!name.compare("^#TIMER4"))
 			{
 				if (io != NULL)
 				{
@@ -882,31 +904,31 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 			break;
 		case 'G':
 
-			if (!strcmp(name, "^GORE"))
+			if (!name.compare("^GORE"))
 			{
 				*lcontent = GORE_MODE;
 				return TYPE_LONG;
 			}
 
-			if (!strcmp(name, "^GAMEDAYS"))
+			if (!name.compare("^GAMEDAYS"))
 			{
 				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 864000000);
 				return TYPE_LONG;
 			}
 
-			if (!strcmp(name, "^GAMEHOURS"))
+			if (!name.compare("^GAMEHOURS"))
 			{
 				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 3600000);
 				return TYPE_LONG;
 			}
 
-			if (!strcmp(name, "^GAMEMINUTES"))
+			if (!name.compare("^GAMEMINUTES"))
 			{
 				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 60000);
 				return TYPE_LONG;
 			}
 
-			if (!strcmp(name, "^GAMESECONDS"))
+			if (!name.compare("^GAMESECONDS"))
 			{
 				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 1000);
 				return TYPE_LONG;
@@ -927,32 +949,32 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 				return TYPE_FLOAT;
 			}
 
-			if (!strcmp(name, "^ARXDAYS"))
+			if (!name.compare("^ARXDAYS"))
 			{
 				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 7200000);
 				return TYPE_LONG;
 			}
 
-			if (!strcmp(name, "^ARXHOURS"))
+			if (!name.compare("^ARXHOURS"))
 			{
 				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 600000);
 				return TYPE_LONG;
 			}
 
-			if (!strcmp(name, "^ARXMINUTES"))
+			if (!name.compare("^ARXMINUTES"))
 			{
 				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 10000);
 				return TYPE_LONG;
 			}
 
-			if (!strcmp(name, "^ARXSECONDS"))
+			if (!name.compare("^ARXSECONDS"))
 			{
 				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 1000);
 				*lcontent *= 6;
 				return TYPE_LONG;
 			}
 
-			if (!strcmp(name, "^ARXTIME_HOURS"))
+			if (!name.compare("^ARXTIME_HOURS"))
 			{
 				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 600000);
 
@@ -961,7 +983,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 				return TYPE_LONG;
 			}
 
-			if (!strcmp(name, "^ARXTIME_MINUTES"))
+			if (!name.compare("^ARXTIME_MINUTES"))
 			{
 				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime / 10000);
 
@@ -970,7 +992,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 				return TYPE_LONG;
 			}
 
-			if (!strcmp(name, "^ARXTIME_SECONDS"))
+			if (!name.compare("^ARXTIME_SECONDS"))
 			{
 				*lcontent = ARX_CLEAN_WARN_CAST_LONG(ARXTime * 6 / 1000);
 
@@ -1304,7 +1326,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 					else
 					{
 						char temp[256];
-						strcpy(temp, GetName(EVENT_SENDER->filename));
+						strcpy(temp, GetName(EVENT_SENDER->filename).c_str());
 						sprintf(txtcontent, "%s_%04d", temp, EVENT_SENDER->ident);
 					}
 				}
@@ -1358,7 +1380,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 				else
 				{
 					char temp[256];
-					strcpy(temp, GetName(io->filename));
+					strcpy(temp, GetName(io->filename).c_str());
 					sprintf(txtcontent, "%s_%04d", temp, io->ident);
 				}
 
@@ -1459,7 +1481,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 				if (LASTSPAWNED)
 				{
 					char temp[256];
-					strcpy(temp, GetName(LASTSPAWNED->filename));
+					strcpy(temp, GetName(LASTSPAWNED->filename).c_str());
 					sprintf(txtcontent, "%s_%04d", temp, LASTSPAWNED->ident);
 				}
 				else strcpy(txtcontent, "NONE");
@@ -1762,7 +1784,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 					}
 				}
 
-				if (!strcasecmp(name, "^PLAYERSPELL_INVISIBILITY"))
+				if (!strcasecmp(name.c_str(), "^PLAYERSPELL_INVISIBILITY"))
 				{
 					if (inter.iobj[0]->invisibility > 0.3f)
 					{
@@ -1789,7 +1811,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 				else if (ioo)
 				{
 					char temp[256];
-					strcpy(temp, GetName(ioo->filename));
+					strcpy(temp, GetName(ioo->filename).c_str());
 					sprintf(txtcontent, "%s_%04d", temp, ioo->ident);
 				}
 				else 	strcpy(txtcontent, "NONE");
@@ -1810,7 +1832,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 					else
 					{
 						char temp[256];
-						strcpy(temp, GetName(inter.iobj[io->targetinfo]->filename));
+						strcpy(temp, GetName(inter.iobj[io->targetinfo]->filename).c_str());
 						sprintf(txtcontent, "%s_%04d", temp, inter.iobj[io->targetinfo]->ident);
 					}
 				}
@@ -1856,7 +1878,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 		else
 		{
 			char temp[256];
-			strcpy(temp, GetName(io->filename));
+			strcpy(temp, GetName(io->filename).c_str());
 			sprintf(txtcontent, "%s_%04d", temp, io->ident);
 		}
 
@@ -1944,7 +1966,7 @@ SCRIPT_VAR * GetFreeVarSlot(SCRIPT_VAR ** _svff, long * _nb)
 
 //*************************************************************************************
 //*************************************************************************************
-SCRIPT_VAR * GetVarAddress(SCRIPT_VAR * svf, long * nb, char * name)
+SCRIPT_VAR * GetVarAddress(SCRIPT_VAR * svf, long * nb, const std::string& name)
 {
 	if (!svf)
 		return NULL;
@@ -1953,7 +1975,7 @@ SCRIPT_VAR * GetVarAddress(SCRIPT_VAR * svf, long * nb, char * name)
 	{
 		if (svf[i].type != 0)
 		{
-			if (!strcasecmp(name, svf[i].name))
+			if (!strcasecmp(name.c_str(), svf[i].name))
 				return &svf[i];
 		}
 	}
@@ -1962,7 +1984,7 @@ SCRIPT_VAR * GetVarAddress(SCRIPT_VAR * svf, long * nb, char * name)
 }
 //*************************************************************************************
 //*************************************************************************************
-long GetVarNum(SCRIPT_VAR * svf, long * nb, char * name)
+long GetVarNum(SCRIPT_VAR * svf, long* nb, const std::string& name)
 {
 	if (!svf) return -1;
 
@@ -1970,7 +1992,7 @@ long GetVarNum(SCRIPT_VAR * svf, long * nb, char * name)
 	{
 		if ((svf[i].type != 0) && (svf[i].name))
 		{
-			if (!strcmp(name, svf[i].name)) return i;
+			if (!strcmp(name.c_str(), svf[i].name)) return i;
 		}
 	}
 
@@ -1978,7 +2000,7 @@ long GetVarNum(SCRIPT_VAR * svf, long * nb, char * name)
 }
 //*************************************************************************************
 //*************************************************************************************
-bool UNSETVar(SCRIPT_VAR * svf, long * nb, char * name)
+bool UNSETVar(SCRIPT_VAR * svf, long* nb, const std::string& name)
 {
 	long i = GetVarNum(svf, nb, name);
 
@@ -2003,7 +2025,7 @@ bool UNSETVar(SCRIPT_VAR * svf, long * nb, char * name)
 }
 //*************************************************************************************
 //*************************************************************************************
-long GETVarValueLong(SCRIPT_VAR ** svf, long * nb, char * name)
+long GETVarValueLong(SCRIPT_VAR ** svf, long* nb, const std::string& name)
 {
 	SCRIPT_VAR * tsv;
 	tsv = GetVarAddress(*svf, nb, name);
@@ -2014,7 +2036,7 @@ long GETVarValueLong(SCRIPT_VAR ** svf, long * nb, char * name)
 }
 //*************************************************************************************
 //*************************************************************************************
-float GETVarValueFloat(SCRIPT_VAR ** svf, long * nb, char * name)
+float GETVarValueFloat(SCRIPT_VAR ** svf, long* nb, const std::string& name)
 {
 	SCRIPT_VAR * tsv;
 	tsv = GetVarAddress(*svf, nb, name);
@@ -2025,7 +2047,7 @@ float GETVarValueFloat(SCRIPT_VAR ** svf, long * nb, char * name)
 }
 //*************************************************************************************
 //*************************************************************************************
-char * GETVarValueText(SCRIPT_VAR ** svf, long * nb, char * name)
+std::string GETVarValueText(SCRIPT_VAR ** svf, long* nb, const std::string& name)
 {
 	SCRIPT_VAR * tsv;
 	tsv = GetVarAddress(*svf, nb, name);
@@ -2037,7 +2059,7 @@ char * GETVarValueText(SCRIPT_VAR ** svf, long * nb, char * name)
 
 //*************************************************************************************
 //*************************************************************************************
-char * GetVarValueInterpretedAsText(char * temp1, EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io)
+std::string GetVarValueInterpretedAsText( const std::string& temp1, EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io)
 {
 	float t1;
 	long l1;
@@ -2066,21 +2088,21 @@ char * GetVarValueInterpretedAsText(char * temp1, EERIE_SCRIPT * esss, INTERACTI
 	}
 	else if (temp1[0] == '#')
 	{
-		l1 = GETVarValueLong(&svar, &NB_GLOBALS, temp1);
+		l1 = GETVarValueLong(&svar, &NB_GLOBALS, temp1.c_str());
 		sprintf(var_text, "%d", l1);
 		return var_text;
 	}
 	else if (temp1[0] == '\xA7')
 	{
-		l1 = GETVarValueLong(&esss->lvar, &esss->nblvar, temp1);
+		l1 = GETVarValueLong(&esss->lvar, &esss->nblvar, temp1.c_str());
 		sprintf(var_text, "%d", l1);
 		return var_text;
 	}
-	else if (temp1[0] == '&') t1 = GETVarValueFloat(&svar, &NB_GLOBALS, temp1);
-	else if (temp1[0] == '@') t1 = GETVarValueFloat(&esss->lvar, &esss->nblvar, temp1);
+	else if (temp1[0] == '&') t1 = GETVarValueFloat(&svar, &NB_GLOBALS, temp1.c_str());
+	else if (temp1[0] == '@') t1 = GETVarValueFloat(&esss->lvar, &esss->nblvar, temp1.c_str());
 	else if (temp1[0] == '$')
 	{
-		char * tempo = GETVarValueText(&svar, &NB_GLOBALS, temp1);
+		char * tempo = GETVarValueText(&svar, &NB_GLOBALS, temp1.c_str());
 
 		if (tempo == NULL) strcpy(var_text, "VOID");
 		else strcpy(var_text, tempo);
@@ -2089,7 +2111,7 @@ char * GetVarValueInterpretedAsText(char * temp1, EERIE_SCRIPT * esss, INTERACTI
 	}
 	else if (temp1[0] == '\xA3')
 	{
-		char * tempo = GETVarValueText(&esss->lvar, &esss->nblvar, temp1);
+		char * tempo = GETVarValueText(&esss->lvar, &esss->nblvar, temp1.c_str());
 
 		if (tempo == NULL) strcpy(var_text, "VOID");
 		else strcpy(var_text, tempo);
@@ -2098,7 +2120,7 @@ char * GetVarValueInterpretedAsText(char * temp1, EERIE_SCRIPT * esss, INTERACTI
 	}
 	else
 	{
-		strcpy(var_text, temp1);
+		strcpy(var_text, temp1.c_str());
 		return var_text;
 	}
 
@@ -2108,7 +2130,7 @@ char * GetVarValueInterpretedAsText(char * temp1, EERIE_SCRIPT * esss, INTERACTI
 
 //*************************************************************************************
 //*************************************************************************************
-float GetVarValueInterpretedAsFloat(char * temp1, EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io)
+float GetVarValueInterpretedAsFloat( std::string& temp1, EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io)
 {
 	if (temp1[0] == '^')
 	{
@@ -2127,12 +2149,12 @@ float GetVarValueInterpretedAsFloat(char * temp1, EERIE_SCRIPT * esss, INTERACTI
 		}
 
 	}
-	else if (temp1[0] == '#')	return (float)GETVarValueLong(&svar, &NB_GLOBALS, temp1);
-	else if (temp1[0] == '\xA7') return (float)GETVarValueLong(&esss->lvar, &esss->nblvar, temp1);
-	else if (temp1[0] == '&') return GETVarValueFloat(&svar, &NB_GLOBALS, temp1);
-	else if (temp1[0] == '@') return GETVarValueFloat(&esss->lvar, &esss->nblvar, temp1);
+	else if (temp1[0] == '#')	return (float)GETVarValueLong(&svar, &NB_GLOBALS, temp1.c_str());
+	else if (temp1[0] == '\xA7') return (float)GETVarValueLong(&esss->lvar, &esss->nblvar, temp1.c_str());
+	else if (temp1[0] == '&') return GETVarValueFloat(&svar, &NB_GLOBALS, temp1.c_str());
+	else if (temp1[0] == '@') return GETVarValueFloat(&esss->lvar, &esss->nblvar, temp1.c_str());
 
-	return (float)atof(temp1);
+	return (float)atof(temp1.c_str());
 }
 //*************************************************************************************
 //*************************************************************************************
@@ -2666,7 +2688,7 @@ INTERACTIVE_OBJ * _CURIO = NULL;
 //		 =1 no INTERPRETATION (except for ~ )										//
 //*************************************************************************************
 
-long GetNextWord(EERIE_SCRIPT * es, long i, char * temp, long flags)
+long GetNextWord(EERIE_SCRIPT * es, long i, std::string& temp, long flags)
 {
 
 	// Avoids negative position...
@@ -2764,10 +2786,10 @@ long GetNextWord(EERIE_SCRIPT * es, long i, char * temp, long flags)
 				// Found A tilded string...
 				if (end > start)
 				{
-					char tildedd[256];
+					std::string tildedd;
 					char interp[256];
 					char result[512];
-					memcpy(tildedd, temp + start, end - start + 1);
+					tildedd.assign( temp + start, end - start + 1);
 					tildedd[end-start+1] = 0;
 
 					if (es->master)
@@ -2804,7 +2826,7 @@ long GetNextWord(EERIE_SCRIPT * es, long i, char * temp, long flags)
 
 //*************************************************************************************
 //*************************************************************************************
-long GetNextWord_Interpreted(INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, char * temp)
+long GetNextWord_Interpreted(INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, std::string& temp)
 {
 	long pos=GetNextWord(es,i,temp);
 	if	(temp[0]=='^') {
@@ -13306,7 +13328,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 					if (NEED_DEBUG)
 					{
 						strcat(cmd, " ");
-						strcat(cmd, temp);
+						strcat(cmd, tempo);
 					}
 
 #endif
@@ -13319,8 +13341,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 				else if (!strcmp(temp, "DRAWSYMBOL")) // DRAWSYMBOL symbol duration
 				{
-					char temp1[64];
-					char temp2[64];
+					std::string temp1;
+					std::string temp2;
 					pos = GetNextWord(es, pos, temp1);
 					pos = GetNextWord(es, pos, temp2);
 
@@ -13350,7 +13372,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 					pos = GetNextWord(es, pos, temp2);
 					pos = GetNextWord(es, pos, temp3);
 					pos = GetNextWord(es, pos, temp4);
-					sprintf(cmd, "SCRIPT ERROR: %s_%04d %s %s %s %s [char %d]", GetName(io->filename), io->ident, temp, temp2, temp3, temp4, ppos);
+					sprintf(cmd, "SCRIPT ERROR: %s_%04d %s %s %s %s [char %d]", GetName(io->filename).c_str(), io->ident, temp, temp2, temp3, temp4, ppos);
 
 					if (!ERROR_Log(cmd));
 					else ShowPopup(cmd);

@@ -43,9 +43,9 @@ HashMap::HashMap(size_t sz) {
 	size = sz;
 	fill = 0;
 	
-	for(size_t i = 0; i < sz; i++) {
+	/*for(size_t i = 0; i < sz; i++) {
 		data[i].name = NULL;
-	}
+	}*/
 	
 	// TODO size must be a power of two
 	mask = sz - 1;
@@ -53,12 +53,12 @@ HashMap::HashMap(size_t sz) {
 
 HashMap::~HashMap() {
 	
-	while(size--) {
+	/*while(size--) {
 		if(data[size].name) {
 			free((void *)data[size].name);
 			data[size].name = NULL;
 		}
-	}
+	}*/
 
 	delete[] data;
 }
@@ -84,10 +84,10 @@ bool HashMap::add(const std::string& name, void* value) {
 		
 		h1 &= mask;
 		
-		if (!data[h1].name) {
-			data[h1].name = strdup(lname.c_str());
+		if ( data[h1].name.empty() ) {
+			data[h1].name = lname;
 			data[h1].value = value;
-			assert(data[h1].name);
+			assert( !data[h1].name.empty() );
 			fill++;
 			return true;
 		}
@@ -98,7 +98,7 @@ bool HashMap::add(const std::string& name, void* value) {
 	return false;
 }
 
-void * HashMap::get(const char * name) {
+void * HashMap::get(const std::string& name) {
 	
 	string lname = name;
 	transform(lname.begin(), lname.end(), lname.begin(), tolower);
@@ -110,8 +110,8 @@ void * HashMap::get(const char * name) {
 	for(size_t i = 0; i < size; i++) {
 		h1 &= mask;
 		
-		if(data[h1].name) {
-			if(!strcmp(lname.c_str(), data[h1].name)) {
+		if( !data[h1].name.empty() ) {
+			if(!strcmp(lname.c_str(), data[h1].name.c_str())) {
 				return data[h1].value;
 			}
 		}
@@ -130,10 +130,10 @@ size_t HashMap::FuncH2(size_t hash) {
 	return ((hash >> 1) | 1);
 }
 
-size_t HashMap::getHash(const char * name) {
+size_t HashMap::getHash(const std::string& name) {
 	
 	size_t iKey = 0;
-	size_t len = strlen((const char *)name);
+	size_t len = name.length();
 	
 	for(size_t i = 0; i < len; i++) {
 		iKey += name[i] * (i + 1) + name[i] * len;
