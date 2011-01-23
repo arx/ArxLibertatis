@@ -137,7 +137,7 @@ CD3DApplication::CD3DApplication()
 	m_bFrameMoving    = true;
 	m_bSingleStep     = false;
 
-	m_strWindowTitle  = _T("EERIE Application");
+	m_strWindowTitle  = "EERIE Application";
 	m_bAppUseZBuffer  = false;
 	m_bAppUseStereo   = false;
 	m_bShowStats      = false;
@@ -1017,7 +1017,7 @@ HRESULT CD3DApplication::Render3DEnvironment()
 	// Show the frame on the primary surface.
 	if (FAILED(hr = m_pFramework->ShowFrame()))
 	{
-		printf("ShowFrame FAILED: %d %d <- look for this in ddraw.h\n", hr&0xFFFF);
+		printf("ShowFrame FAILED: %d %d <- look for this in ddraw.h\n", hr, hr&0xFFFF);
 		
 		if (DDERR_SURFACELOST != hr)
 			return hr;
@@ -1402,7 +1402,7 @@ bool OKBox(char * text, char * title)
 
 //*************************************************************************************
 //*************************************************************************************
-void ShowPopup(char * text)
+void ShowPopup(const char * text)
 {
 	if (FINAL_COMMERCIAL_DEMO ||
 	        FINAL_COMMERCIAL_GAME)
@@ -1433,7 +1433,7 @@ int ShowError(char * funcname, char * message, long fatality)
 	{
 		case 0:
 			strcpy(fatall, "Non-Fatal");
-			sprintf(texx, "An ERROR occured in function: %s\n%s\n\nFatality Level: %d - %s\n\nOK to continue, CANCEL to Quit", funcname, message, fatality, fatall);
+			sprintf(texx, "An ERROR occured in function: %s\n%s\n\nFatality Level: %ld - %s\n\nOK to continue, CANCEL to Quit", funcname, message, fatality, fatall);
 			re = MessageBox(g_pD3DApp->m_hWnd, texx, "GAIA Error Message", MB_ICONERROR | MB_OKCANCEL);
 			g_pD3DApp->Pause(false);
 
@@ -1443,7 +1443,7 @@ int ShowError(char * funcname, char * message, long fatality)
 			break;
 		case 1:
 			strcpy(fatall, "Please Free Some Memory Then Click RETRY");
-			sprintf(texx, "An ERROR occured in function: %s\n%s\nFatality Level: %d - %s", funcname, message, fatality, fatall);
+			sprintf(texx, "An ERROR occured in function: %s\n%s\nFatality Level: %ld - %s", funcname, message, fatality, fatall);
 			re = MessageBox(g_pD3DApp->m_hWnd, texx, "GAIA Error Message", MB_ICONSTOP | MB_ABORTRETRYIGNORE);
 			g_pD3DApp->Pause(false);
 
@@ -1453,14 +1453,14 @@ int ShowError(char * funcname, char * message, long fatality)
 			break;
 		case 2:
 			strcpy(fatall, "Fatal with some recoverable datas");
-			sprintf(texx, "An ERROR occured in function: %s\n%s\nFatality Level: %d - %s", funcname, message, fatality, fatall);
+			sprintf(texx, "An ERROR occured in function: %s\n%s\nFatality Level: %ld - %s", funcname, message, fatality, fatall);
 			re = (MessageBox(g_pD3DApp->m_hWnd, texx, "GAIA Error Message", MB_ICONERROR | MB_OK));
 			g_pD3DApp->Pause(false);
 			return re;
 			break;
 		case 3:
 			strcpy(fatall, "Fatal");
-			sprintf(texx, "An ERROR occured in function: %s\n%s\nFatality Level: %d - %s", funcname, message, fatality, fatall);
+			sprintf(texx, "An ERROR occured in function: %s\n%s\nFatality Level: %ld - %s", funcname, message, fatality, fatall);
 			re = (MessageBox(g_pD3DApp->m_hWnd, texx, "GAIA Error Message", MB_ICONERROR | MB_OK));
 			g_pD3DApp->Pause(false);
 			return re;
@@ -1471,7 +1471,7 @@ int ShowError(char * funcname, char * message, long fatality)
 			break;
 		default:
 			strcpy(fatall, "Unknown fatality level");
-			sprintf(texx, "An ERROR occured in function: %s\n%s\nFatality Level: %d - %s", funcname, message, fatality, fatall);
+			sprintf(texx, "An ERROR occured in function: %s\n%s\nFatality Level: %ld - %s", funcname, message, fatality, fatall);
 			re = (MessageBox(g_pD3DApp->m_hWnd, texx, "GAIA Error Message", MB_ICONERROR | MB_OK));
 			g_pD3DApp->Pause(false);
 			return re;
