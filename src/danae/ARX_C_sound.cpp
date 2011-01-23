@@ -127,7 +127,7 @@ void DeleteAllSound(void)
 	}
 }
 /*-----------------------------------------------------------*/
-void CutAndAddString(char * pText, char * pDebText)
+void CutAndAddString(char * pText, const char * pDebText)
 {
 	int	i = strlen(pText);
 	int j = strlen(pDebText);
