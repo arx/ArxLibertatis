@@ -14,7 +14,7 @@ set(CMAKE_CXX_COMPILER /usr/bin/wineg++)
 set(CMAKE_C_COMPILER /usr/bin/winegcc)
 
 #set temporally less gcc problems
-set(CMAKE_CXX_FLAGS "-m32 -w")
+set(CMAKE_CXX_FLAGS "-m32")
 
 #Debug
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3")
