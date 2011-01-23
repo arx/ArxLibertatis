@@ -368,10 +368,10 @@ long CountTextures(char * tex, long * memsize, long * memmip)
 		if (tex != NULL)
 		{
 			if (ptcTexture->m_dwFlags & D3DTEXTR_NO_MIPMAP)
-				sprintf(temp, "%3d %s %dx%dx%d %d %s\r\n", count, ptcTexture->m_strName, ptcTexture->m_dwWidth, ptcTexture->m_dwHeight, ptcTexture->m_dwBPP, ptcTexture->locks, GetName(ptcTexture->m_texName));
+				sprintf(temp, "%3ld %s %dx%dx%d %ld %s\r\n", count, ptcTexture->m_strName, ptcTexture->m_dwWidth, ptcTexture->m_dwHeight, ptcTexture->m_dwBPP, ptcTexture->locks, GetName(ptcTexture->m_texName));
 			else
 			{
-				sprintf(temp, "%3d %s %dx%dx%d %d MIP %s\r\n", count, ptcTexture->m_strName, ptcTexture->m_dwWidth, ptcTexture->m_dwHeight, ptcTexture->m_dwBPP, ptcTexture->locks, GetName(ptcTexture->m_texName));
+				sprintf(temp, "%3ld %s %dx%dx%d %ld MIP %s\r\n", count, ptcTexture->m_strName, ptcTexture->m_dwWidth, ptcTexture->m_dwHeight, ptcTexture->m_dwBPP, ptcTexture->locks, GetName(ptcTexture->m_texName));
 
 				for (long k = 1; k <= NB_MIPMAP_LEVELS; k++)
 				{
