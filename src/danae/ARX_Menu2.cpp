@@ -2077,7 +2077,8 @@ static void CalculAverageWidth( HDC& _hDC )
 static void ExtractAllCreditsTextInformations(HDC& _hDC)
 {
 	//Recupere les lignes � afficher
-	wistringstream iss((char)ARXmenu.mda->str_cre_credits);
+	// TODO check this cast
+	wistringstream iss((const wchar_t *)ARXmenu.mda->str_cre_credits);
 	wstring phrase;
 
 	//Use to calculate the positions
