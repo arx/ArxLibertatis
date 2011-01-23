@@ -29,7 +29,7 @@ class PakFile;
 class PakDirectory;
 class PakReader;
 
-typedef long FileHandle;
+typedef void * FileHandle;
 
 #include <stddef.h>
 #include <cstdio> // for FILE

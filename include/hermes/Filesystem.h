@@ -36,7 +36,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define	FILE_SEEK_CURRENT 1
 #define	FILE_SEEK_END 2
 
-typedef long FileHandle;
+typedef void * FileHandle;
 
 long KillAllDirectory(const char * path);
 

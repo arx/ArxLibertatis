@@ -73,7 +73,7 @@ bool DirectoryExist(const char * name)
 	HANDLE idx;
 	WIN32_FIND_DATA fd;
 
-	if ((idx = FindFirstFile(name, &fd)) == -1)
+	if (!(idx = FindFirstFile(name, &fd)))
 	{
 		FindClose(idx);
 		char initial[256];
@@ -110,8 +110,7 @@ bool FileExist(const char * name)
 
 FileHandle	FileOpenRead(const char * name)
 {
-	long	handle;
-	handle = CreateFile(name, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, 0);
+	FileHandle handle = CreateFile(name, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, 0);
 
 	if(handle < 0) {
 		printf("\e[1;31mCan't open\e[m\t%s\n", name);
@@ -124,7 +123,7 @@ FileHandle	FileOpenRead(const char * name)
 long	FileTell(FileHandle handle)
 {
 	
-	return (SetFilePointer((int)handle - 1, 0, NULL, FILE_CURRENT));
+	return (SetFilePointer((HANDLE)handle - 1, 0, NULL, FILE_CURRENT));
 }
 
 FileHandle	FileOpenWrite(const char * name)
@@ -148,19 +147,15 @@ FileHandle	FileOpenWrite(const char * name)
 	return(handle + 1);
 }
 
-long FileCloseRead(FileHandle handle)
-{
-	return(CloseHandle((int)handle - 1));
+long FileCloseRead(FileHandle handle) {
+	return CloseHandle((FileHandle)handle - 1);
 }
 
-long FileCloseWrite(FileHandle handle)
-{
-	//_commit((int)handle - 1);
-	return(CloseHandle((int)handle - 1));
+long FileCloseWrite(FileHandle handle) {
+	return CloseHandle((FileHandle)handle - 1);
 }
 
-long	FileRead(FileHandle handle, void * adr, long size)
-{
+long FileRead(FileHandle handle, void * adr, long size) {
 	DWORD ret;
 	ReadFile(handle - 1, adr, size, &ret, NULL);
 	return ret;
@@ -175,12 +170,12 @@ long	FileWrite(FileHandle handle, const void * adr, long size)
 
 long	FileSeek(long handle, int offset, long mode)
 {
-	return SetFilePointer((int)handle - 1, offset, NULL, mode);
+	return SetFilePointer((FileHandle)handle - 1, offset, NULL, mode);
 }
 
 void	* FileLoadMallocZero(const char * name, size_t * SizeLoadMalloc)
 {
-	long	handle;
+	FileHandle handle;
 	long	size1, size2;
 	unsigned char	* adr;
 
@@ -229,7 +224,7 @@ void	* FileLoadMallocZero(const char * name, size_t * SizeLoadMalloc)
 
 void	* FileLoadMalloc(const char * name, size_t * SizeLoadMalloc)
 {
-	long	handle;
+	FileHandle handle;
 	long	size1, size2;
 	unsigned char	* adr;
 
