@@ -37,8 +37,19 @@ namespace ATHENA
 
 	PakFileHandle * OpenResource(const char * name, const char * resource_path)
 	{
-		PakFileHandle * file = PAK_fopen(name);
+		PakFileHandle * file = NULL;
 		char text[256];
+		
+		if (!file && resource_path)
+		{
+			strcpy(text, resource_path);
+			strcat(text, name);
+			file = PAK_fopen(text);
+		}
+		
+		if(!file) {
+			file = PAK_fopen(name);
+		}
 
 		if (!file && root_path)
 		{
@@ -47,12 +58,7 @@ namespace ATHENA
 			file = PAK_fopen(text);
 		}
 
-		if (!file && resource_path)
-		{
-			strcpy(text, resource_path);
-			strcat(text, name);
-			file = PAK_fopen(text);
-		}
+
 
 		if (!file && root_path && resource_path)
 		{
