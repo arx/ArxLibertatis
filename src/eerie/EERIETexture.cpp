@@ -794,7 +794,7 @@ HRESULT TextureContainer::LoadImageData()
     // Can add code here to check for other file formats before failing
     return DDERR_UNSUPPORTED;
 
-    printf("LoadImageData: unsupported (unknown extension): %s\n", m_strName);
+    printf("LoadImageData: unsupported (unknown extension): %s\n", m_strName.c_str());
     // Can add code here to check for other file formats before failing
     return DDERR_UNSUPPORTED;
 }
@@ -4888,7 +4888,7 @@ TextureContainer * GetTextureFile(const char * tex, long flag)
     if (flag & 1)
         returnTc = D3DTextr_CreateTextureFromFile(tex, 0, D3DTEXTR_32BITSPERPIXEL);
     else
-        returnTc = D3DTextr_CreateTextureFromFile(dir, 0, D3DTEXTR_NO_MIPMAP);
+        returnTc = D3DTextr_CreateTextureFromFile(tex, 0, D3DTEXTR_NO_MIPMAP);
 
     GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
     return returnTc;
