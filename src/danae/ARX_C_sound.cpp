@@ -23,6 +23,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 #include <stdio.h>
+#include <algorithm>
 #include "ARX_CCinematique.h"
 #include "ARX_Sound.h"
 
@@ -252,7 +253,7 @@ void PatchReplace()
 		}
 
 		*pcTxt = 0;
-		strcat(pcTxt, Project.localisationpath);
+		strcat(pcTxt, Project.localisationpath.c_str());
 		strcat(pcTxt, "\\");
 		strcat(pcTxt, pcTxt3 + 1);
 
@@ -321,7 +322,7 @@ int AddSoundToList(char * dir, char * name, int id, int pos)
 		char szTemp[1024];
 		ZeroMemory(szTemp, 1024);
 
-		sprintf(szTemp, "speech\\%s\\%s", Project.localisationpath, name);
+		sprintf(szTemp, "speech\\%s\\%s", Project.localisationpath.c_str(), name);
 		cs->sound = strdup(szTemp);
 	}
 

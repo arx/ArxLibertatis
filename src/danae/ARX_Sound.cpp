@@ -30,9 +30,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //
 ///////////////////////////////////////////////////////////////////////////////
+#include <algorithm>
 #include <stdio.h>
 #include <list>
-#include <algorithm>
 #include <vector>
 #include <string>
 #include <streambuf>
@@ -705,7 +705,7 @@ long ARX_SOUND_PlaySpeech(const char * name, const INTERACTIVE_OBJ * io)
 	aalChannel channel;
 	aalSLong sample_id;
 
-	sprintf(file_name, "speech\\%s\\%s.wav", Project.localisationpath, name);
+	sprintf(file_name, "speech\\%s\\%s.wav", Project.localisationpath.c_str(), name);
 
 	sample_id = aalCreateSample(file_name);
 
@@ -1096,18 +1096,16 @@ long ARX_SOUND_PlayScriptAmbiance(const char * name, const int & loop, const flo
 {
 	if (!bIsActive) return AAL_SFALSE;
 
-	char temp[512];
-
-	strcpy(temp, name);
+	std::string temp = name;
 	SetExt(temp, ".amb");
 
-	long ambiance_id(aalGetAmbiance(temp));
+	long ambiance_id(aalGetAmbiance(temp.c_str()));
 
 	if (ambiance_id == AAL_SFALSE)
 	{
 		if (volume == 0.0F) return AAL_SFALSE;
 
-		ambiance_id = aalCreateAmbiance(temp);
+		ambiance_id = aalCreateAmbiance(temp.c_str());
 		aalSetAmbianceUserData(ambiance_id, (void *)PLAYING_AMBIANCE_SCRIPT);
 
 		aalChannel channel;
@@ -1136,9 +1134,7 @@ long ARX_SOUND_PlayZoneAmbiance(const char * name, const int & loop, const float
 {
 	if (!bIsActive) return AAL_SFALSE;
 
-	char temp[512];
-
-	strcpy(temp, name);
+	std::string temp = name;
 	SetExt(temp, ".amb");
 
 	if (!strcasecmp(name, "NONE"))
@@ -1148,11 +1144,11 @@ long ARX_SOUND_PlayZoneAmbiance(const char * name, const int & loop, const float
 		return AAL_SFALSE;
 	}
 
-	long ambiance_id(aalGetAmbiance(temp));
+	long ambiance_id(aalGetAmbiance(temp.c_str()));
 
 	if (ambiance_id == AAL_SFALSE)
 	{
-		ambiance_id = aalCreateAmbiance(temp);
+		ambiance_id = aalCreateAmbiance(temp.c_str());
 		aalSetAmbianceUserData(ambiance_id, (void *)PLAYING_AMBIANCE_ZONE);
 	}
 	else if (ambiance_id == ambiance_zone)
@@ -1175,13 +1171,10 @@ long ARX_SOUND_SetAmbianceTrackStatus(const char * ambiance_name, const char * t
 	if (!bIsActive || !ambiance_name) return AAL_SFALSE;
 
 	int ambiance_id, track_id;
-	char temp[512];
-
-	strcpy(temp, ambiance_name);
-	sprintf(temp, "%s", ambiance_name);
+	std::string temp = ambiance_name;
 	SetExt(temp, ".amb");
 
-	ambiance_id = aalGetAmbiance(temp);
+	ambiance_id = aalGetAmbiance(temp.c_str());
 
 	if (ambiance_id == AAL_SFALSE) return AAL_SFALSE;
 
@@ -2003,7 +1996,7 @@ static void ARX_SOUND_CreateCollisionMaps()
 
 		sprintf(path, "%s%s%s", ARX_SOUND_PATH_INI, ARX_SOUND_COLLISION_MAP_NAME[i], ARX_SOUND_FILE_EXTENSION_INI);
 
-		lpszFileText = (char *)PAK_FileLoadMallocZero(path, &lFileSize);
+		lpszFileText = (char *)PAK_FileLoadMallocZero(path, lFileSize);
 
 		if (!lpszFileText) return;
 
@@ -2173,7 +2166,7 @@ static void ARX_SOUND_CreatePresenceMap()
 
 	sprintf(path, "%s%s%s", ARX_SOUND_PATH_INI, ARX_SOUND_PRESENCE_NAME, ARX_SOUND_FILE_EXTENSION_INI);
 
-	lpszFileText = (char *)PAK_FileLoadMallocZero(path, &lFileSize);
+	lpszFileText = (char *)PAK_FileLoadMallocZero(path, lFileSize);
 
 	if (!lpszFileText) return;
 

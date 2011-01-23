@@ -57,6 +57,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define STRICT
 
 #include <stdio.h>
+#include <algorithm>
+#include <math.h>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 #include "EERIEApp.h"
 #include "EERIEPoly.h"

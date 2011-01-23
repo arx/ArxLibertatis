@@ -55,6 +55,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
+#include <iomanip>
+
 #include <DanaeSaveLoad.h>
 
 #include <stdio.h>
@@ -236,8 +239,17 @@ EERIE_3DOBJ * _LoadTheObj(char * text, char * path)
 //*************************************************************************************
 //*************************************************************************************
 
-void ReplaceSpecifics(char * text)
+void ReplaceSpecifics( std::string& text )
 {
+    std::string temp = text;
+    MakeUpcase( temp );
+    size_t graph_loc = temp.find_first_of( "GRAPH" );
+
+    if ( graph_loc != string::npos )
+    {
+        text = text.substr( graph_loc );
+    }
+/*
 	char			temp[512];
 	UINT			size_text = strlen(text);
 
@@ -255,7 +267,7 @@ void ReplaceSpecifics(char * text)
 		}
 	}
 
-	return;
+	return;*/
 }
 
 extern long NODIRCREATION;
@@ -264,10 +276,10 @@ extern long ADDED_IO_NOT_SAVED;
 //*************************************************************************************
 //*************************************************************************************
 
-long DanaeSaveLevel(char * fic)
+long DanaeSaveLevel( std::string& fic)
 {
-	char fic2[512];
-	char fic3[512];
+	std::string fic2;
+	std::string fic3;
 	char _error[512];
 	DANAE_LS_HEADER				dlh;
 	DANAE_LS_SCENE				dls;
@@ -300,23 +312,23 @@ long DanaeSaveLevel(char * fic)
 	sprintf(tx, "_%02d_%02d_%d__%dh%dmn", hdt.months, hdt.days, hdt.years, hdt.hours, hdt.mins);
 	SetExt(fic, ".DLF");
 
-	if (FileExist(fic))
+	if (FileExist(fic.c_str()))
 	{
-		strcpy(fic2, fic);
+		fic2 = fic;
 		sprintf(newtext, "Backup_DLF_%s", tx);
 		SetExt(fic2, newtext);
-		rename(fic, fic2);
+		rename(fic.c_str(), fic2.c_str());
 	}
 
-	strcpy(fic2, fic);
+	fic2 = fic;
 	SetExt(fic2, ".LLF");
 
-	if (FileExist(fic2))
+	if (FileExist(fic2.c_str()))
 	{
-		strcpy(fic3, fic);
+		fic3 = fic;
 		sprintf(newtext, "Backup_LLF_%s", tx);
 		SetExt(fic3, newtext);
-		rename(fic2, fic3);
+		rename(fic2.c_str(), fic3.c_str());
 	}
 
 	SetExt(fic, ".DLF");
@@ -419,7 +431,7 @@ long DanaeSaveLevel(char * fic)
 			dli.angle.a = io->initangle.a;
 			dli.angle.b = io->initangle.b;
 			dli.angle.g = io->initangle.g;
-			strcpy(dli.name, io->filename);
+			dli.name = io->filename;
 
 			if (io->ident == 0)
 			{
@@ -549,20 +561,20 @@ long DanaeSaveLevel(char * fic)
 
 	if (pos > allocsize)
 	{
-		sprintf(_error, "Badly Allocated SaveBuffer...%s", fic);
+		sprintf(_error, "Badly Allocated SaveBuffer...%s", fic.c_str());
 		goto error;
 	}
 
 	// Now Saving Whole Buffer
-	if (!(handle = FileOpenWrite(fic)))
+	if (!(handle = FileOpenWrite(fic.c_str())))
 	{
-		sprintf(_error, "Unable to Open %s for Write...", fic);
+		sprintf(_error, "Unable to Open %s for Write...", fic.c_str());
 		goto error;
 	}
 
 	if (FileWrite(handle, dat, sizeof(DANAE_LS_HEADER)) != sizeof(DANAE_LS_HEADER))
 	{
-		sprintf(_error, "Unable to Write to %s", fic);
+		sprintf(_error, "Unable to Write to %s", fic.c_str());
 		goto error;
 	}
 
@@ -589,7 +601,7 @@ long DanaeSaveLevel(char * fic)
 
 	//////////////////////////////////////////////////////////////////////////////
 	//Now Save Separate LLF Lighting File
-	strcpy(fic2, fic);
+	fic2 = fic;
 	SetExt(fic2, ".LLF");
 	pos = 0;
 	DANAE_LLF_HEADER llh;
@@ -679,14 +691,14 @@ long DanaeSaveLevel(char * fic)
 
 	if (pos > allocsize)
 	{
-		sprintf(_error, "Badly Allocated SaveBuffer...%s", fic2);
+		sprintf(_error, "Badly Allocated SaveBuffer...%s", fic2.c_str());
 		goto error;
 	}
 
 	// Now Saving Whole Buffer
-	if (!(handle = FileOpenWrite(fic2)))
+	if (!(handle = FileOpenWrite(fic2.c_str())))
 	{
-		sprintf(_error, "Unable to Open %s for Write...", fic2);
+		sprintf(_error, "Unable to Open %s for Write...", fic2.c_str());
 		goto error;
 	}
 
@@ -699,7 +711,7 @@ long DanaeSaveLevel(char * fic)
 	if (FileWrite(handle, compressed, cpr_pos) != cpr_pos)
 	{
 		free(compressed);
-		sprintf(_error, "Unable to Write to %s", fic2);
+		sprintf(_error, "Unable to Write to %s", fic2.c_str());
 		goto error;
 	}
 
@@ -736,7 +748,7 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, char * dir)
 
 	if (DirectoryExist(dir))
 	{
-		strcpy(temp, GetName(io->filename));
+		strcpy(temp, GetName(io->filename).c_str());
 		sprintf(dfile, "%s\\%s.log", dir, temp);
 
 		if ((fic = fopen(dfile, "w")) != NULL)
@@ -834,7 +846,7 @@ void CheckIO_NOT_SAVED()
 						if (inter.iobj[i]->ident > 0)
 						{
 							sprintf(temp, inter.iobj[i]->filename);
-							strcpy(temp2, GetName(temp));
+							strcpy(temp2, GetName(temp).c_str());
 							RemoveName(temp);
 							sprintf(temp, "%s%s_%04d.", temp, temp2, inter.iobj[i]->ident);
 
@@ -864,14 +876,14 @@ void CheckIO_NOT_SAVED()
 void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 {
 	int fic;
-	char temp[256];
+	std::string temp;
 	char temp2[256];
 	char temp3[256];
 
 	switch (fl)
 	{
 		case 1: //CLASS SCRIPT
-			strcpy(temp, io->filename);
+			temp = io->filename;
 			SetExt(temp, "ASL");
 
 //			todo win32api
@@ -888,11 +900,14 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 
 			if (io->ident != 0)
 			{
-				strcpy(temp, io->filename);
-				strcpy(temp2, GetName(temp));
-				RemoveName(temp);
-				sprintf(temp3, "%s%s_%04d", temp, temp2, io->ident);
-				sprintf(temp, "%s\\%s.asl", temp3, temp2);
+				temp = io->filename;
+				strcpy(temp2, GetName(temp).c_str());
+				RemoveName(temp.c_str());
+				sprintf(temp3, "%s%s_%04d", temp.c_str(), temp2, io->ident);
+				temp = temp3;
+                temp += "\\";
+                temp += temp2;
+                temp += ".asl";
 
 				if (DirectoryExist(temp3))
 				{
@@ -922,17 +937,17 @@ INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans)
 	long FileSize;
 	INTERACTIVE_OBJ * io;
 
-	sprintf(nameident, "%s_%04d", GetName(dli->name), dli->ident);
+	sprintf(nameident, "%s_%04d", GetName(dli->name).c_str(), dli->ident);
 	long t;
 	t = GetTargetByNameTarget(nameident);
 
 	if (FORCE_IO_INDEX != -1)
 	{
-		io = AddInteractive(GDevice, dli->name, dli->ident, NO_MESH | NO_ON_LOAD);
+		io = AddInteractive(GDevice, dli->name.c_str(), dli->ident, NO_MESH | NO_ON_LOAD);
 		goto suite;
 	}
 
-	sprintf(nameident, "%s_%04d", GetName(dli->name), dli->ident);
+	sprintf(nameident, "%s_%04d", GetName(dli->name).c_str(), dli->ident);
 
 	t = GetTargetByNameTarget(nameident);
 
@@ -943,7 +958,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans)
 
 	ReplaceSpecifics(dli->name);
 
-	io = AddInteractive(GDevice, dli->name, dli->ident, NO_MESH | NO_ON_LOAD);
+	io = AddInteractive(GDevice, dli->name.c_str(), dli->ident, NO_MESH | NO_ON_LOAD);
 suite:
 	;
 
@@ -964,14 +979,14 @@ suite:
 		{
 			io->ident = dli->ident;
 			sprintf(tmp, io->filename);
-			strcpy(tmp2, GetName(tmp));
+			strcpy(tmp2, GetName(tmp).c_str());
 			RemoveName(tmp);
 			sprintf(tmp, "%s%s_%04d", tmp, tmp2, io->ident);
 
 			if (PAK_DirectoryExist(tmp))
 			{
 				sprintf(tmp, io->filename);
-				strcpy(tmp2, GetName(tmp));
+				strcpy(tmp2, GetName(tmp).c_str());
 				RemoveName(tmp);
 				sprintf(tmp, "%s%s_%04d\\%s.asl", tmp, tmp2, io->ident, tmp2);
 
@@ -983,7 +998,7 @@ suite:
 						io->over_script.data = NULL;
 					}
 
-					io->over_script.data = (char *)PAK_FileLoadMallocZero(tmp, &FileSize);
+					io->over_script.data = (char *)PAK_FileLoadMallocZero(tmp, FileSize);
 
 					if (io->over_script.data != NULL)
 					{
@@ -1045,7 +1060,7 @@ void ShowCurLoadInfo(char * string)
 extern long FASTmse;
 long DONT_LOAD_INTERS = 0;
 long FAKE_DIR = 0;
-long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, char * fic)
+long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
 {
 	char _error[512];
 	DANAE_LS_HEADER				dlh;
@@ -1067,22 +1082,21 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, char * fic)
 	char tstr[128];
 	HERMES_DATE_TIME hdt;
 	ShowCurLoadInfo("Starting Level Loading");
-	CURRENTLEVEL = GetLevelNumByName(fic);
+	CURRENTLEVEL = GetLevelNumByName(fic.c_str());
 	GetDate(&hdt);
 	sprintf(tstr, "%2dh%02dm%02d LOADLEVEL start", hdt.hours, hdt.mins, hdt.secs);
 	ForceSendConsole(tstr, 1, 0, (HWND)1);
 	SetExt(fic, ".DLF");
-	char fic2[512];
-	strcpy(fic2, fic);
+	std::string fic2 = fic;
 	SetExt(fic2, ".LLF");
 
 	if (!PAK_FileExist(fic))
 	{
-		sprintf(_error, "Unable to find %s", fic);
+		sprintf(_error, "Unable to find %s", fic.c_str());
 		goto loaderror;
 	}
 
-	strcpy(LastLoadedDLF, fic);
+	strcpy(LastLoadedDLF, fic.c_str());
 
 	dat = (unsigned char *)PAK_FileLoadMalloc(fic, FileSize);
 	PROGRESS_BAR_COUNT += 1.f;
@@ -1126,7 +1140,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, char * fic)
 
 	if (strcmp(dlh.ident, "DANAE_FILE"))
 	{
-		sprintf(_error, "File %s is not a valid file", fic);
+		sprintf(_error, "File %s is not a valid file", fic.c_str());
 		goto loaderror;
 	}
 
@@ -1144,9 +1158,9 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, char * fic)
 
 		if (FAKE_DIR)
 		{
-			strcpy(ftemp, fic);
+			strcpy(ftemp, fic.c_str());
 			RemoveName(ftemp);
-			strcpy(temp, fic);
+			strcpy(temp, fic.c_str());
 			RemoveName(temp);
 			FAKE_DIR = 0;
 		}
@@ -1996,10 +2010,10 @@ long GetIdent(char * ident)
 
 	return -1;
 }
-void AddIdent(char * ident, long num)
+void AddIdent( std::string& ident, long num)
 {
 	MakeUpcase(ident);
-	long n = GetIdent(ident);
+	long n = GetIdent(ident.c_str());
 
 	if (n != -1)
 	{
@@ -2013,7 +2027,7 @@ void AddIdent(char * ident, long num)
 	else
 	{
 		dlfcheck = (DLFCHECK *)realloc(dlfcheck, sizeof(DLFCHECK) * (dlfcount + 1));
-		strcpy(dlfcheck[dlfcount].ident, ident);
+		strcpy(dlfcheck[dlfcount].ident, ident.c_str());
 		dlfcheck[dlfcount].occurence = 1;
 		sprintf(dlfcheck[dlfcount].nums, "%d ", num);
 		dlfcount++;
@@ -2021,8 +2035,8 @@ void AddIdent(char * ident, long num)
 }
 void ARX_SAVELOAD_DLFCheckAdd(char * path, long num)
 {
-	char fic[256];
-	sprintf(fic, "Graph\\Levels\\Level%s", path);
+	std::string fic("Graph\\Levels\\Level");
+    fic += path;
 
 	char _error[512];
 	DANAE_LS_HEADER				dlh;
@@ -2075,7 +2089,7 @@ void ARX_SAVELOAD_DLFCheckAdd(char * path, long num)
 	if (strcmp(dlh.ident, "DANAE_FILE"))
 	{
 		free(dat);
-		sprintf(_error, "File %s is not a valid file", fic);
+		sprintf(_error, "File %s is not a valid file", fic.c_str());
 		return;
 	}
 
@@ -2090,9 +2104,10 @@ void ARX_SAVELOAD_DLFCheckAdd(char * path, long num)
 	{
 		dli = (DANAE_LS_INTER *)(dat + pos);
 		pos += sizeof(DANAE_LS_INTER);
-		char id[256];
-		sprintf(id, "%s_%04d", GetName(dli->name), dli->ident);
-		AddIdent(id, num);
+		std::stringstream ss;
+		ss << GetName(dli->name) << '_' << std::setw(4) << dli->ident;
+    std::string id = ss.str();
+		AddIdent( id, num);
 	}
 
 	free(dat);

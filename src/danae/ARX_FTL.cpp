@@ -144,15 +144,16 @@ extern long NOCHECKSUM;
 //***********************************************************************************************
 bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 {
-	// Need an object to be saved !
-	if (obj == NULL) return false;
+    // Need an object to be saved !
+    if (obj == NULL) return false;
 
-	// Generate File name/path and create it
-	char path[256];
-	char gamefic[256];
-	sprintf(gamefic, "Game\\%s", file);
-	SetExt(gamefic, ".FTL");
-	strcpy(path, gamefic);
+    // Generate File name/path and create it
+    char path[256];
+    std::string gamefic;
+    gamefic = "Game\\";
+    gamefic += file;
+    SetExt(gamefic, ".FTL");
+    strcpy(path, gamefic.c_str());
 	RemoveName(path);
 
 	if (!CreateFullPath(path)) return NULL;
@@ -236,8 +237,9 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 
 	// Identification
 	char check[512];
-	MakeUpcase(file);
-	HERMES_CreateFileCheck(file, check, 512, CURRENT_FTL_VERSION);
+    std::string filename = file;
+    MakeUpcase(filename);
+	HERMES_CreateFileCheck(filename.c_str(), check, 512, CURRENT_FTL_VERSION);
 	memcpy(dat + pos, check, 512);
 	pos += 512;
 
@@ -311,7 +313,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 		memset(ficc, 0, 256);
 
 		if (obj->texturecontainer[i])
-			strcpy(ficc, obj->texturecontainer[i]->m_texName);
+			strcpy(ficc, obj->texturecontainer[i]->m_texName.c_str());
 
 		memcpy(dat + pos, ficc, 256);
 		pos += 256;
@@ -365,7 +367,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 			if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
 		}
 
-		strcpy(af3Ddh->name, obj->file);
+		strcpy(af3Ddh->name, obj->file.c_str());
 	}
 
 	// Progressive DATA
@@ -430,7 +432,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 
 	if (pos > allocsize)
 	{
-		sprintf(_error, "Badly Allocated SaveBuffer...%s", gamefic);
+		sprintf(_error, "Badly Allocated SaveBuffer...%s", gamefic.c_str());
 		goto error;
 	}
 
@@ -443,15 +445,15 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 	//compressed = STD_Implode((char *)dat, pos, &cpr_pos);
 
 	// Now Saving Whole Buffer
-	if (!(handle = FileOpenWrite(gamefic)))
+	if (!(handle = FileOpenWrite(gamefic.c_str())))
 	{
-		sprintf(_error, "Unable to Open %s for Write...", gamefic);
+		sprintf(_error, "Unable to Open %s for Write...", gamefic.c_str());
 		goto error;
 	}
 
 	if (FileWrite(handle, compressed, cpr_pos) != cpr_pos)
 	{
-		sprintf(_error, "Unable to Write to %s", gamefic);
+		sprintf(_error, "Unable to Write to %s", gamefic.c_str());
 		goto error;
 	}
 
@@ -474,7 +476,7 @@ error:
 //***********************************************************************************************
 typedef struct
 {
-	char * name;
+	std::string name;
 	char * data;
 	long size;
 } MCACHE_DATA;
@@ -498,33 +500,32 @@ long MCache_GetSize()
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-long MCache_Get(char * file)
+long MCache_Get( const std::string file)
 {
-	char fic[256];
+    std::string fic;
 
-	File_Standardize(file, fic);
+    File_Standardize(file, fic);
 
-	for (long i = 0; i < MCache_Number; i++)
-		if (!strcasecmp(MCache[i].name, fic)) return i;
+    for (long i = 0; i < MCache_Number; i++)
+        if ( !strcasecmp(MCache[i].name.c_str(), fic.c_str() ) ) return i;
 
-	return -1;
+    return -1;
 }
 //***********************************************************************************************
 // Pushes a Mesh In Mesh Cache
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-bool MCache_Push(char * file, char * data, long size)
+bool MCache_Push( const std::string& file, char * data, long size)
 {
-	char fic[256];
+	std::string fic;
 
 	File_Standardize(file, fic);
 
-	if (MCache_Get(fic) != -1) return false; // already cached
+	if (MCache_Get(fic.c_str()) != -1) return false; // already cached
 
 	MCache = (MCACHE_DATA *)realloc(MCache, sizeof(MCACHE_DATA) * (MCache_Number + 1));
-	MCache[MCache_Number].name = (char *)malloc(strlen(file) + 1);
-	strcpy(MCache[MCache_Number].name, fic);
+	MCache[MCache_Number].name = fic;
 	MCache[MCache_Number].data = data;
 	MCache[MCache_Number].size = size;
 	MCache_Number++;
@@ -540,7 +541,7 @@ void MCache_ClearAll()
 {
 	for (long i(0); i < MCache_Number; i++)
 	{
-		free(MCache[i].name), MCache[i].name = NULL;
+    MCache[i].name.clear();
 		free(MCache[i].data), MCache[i].data = NULL;
 	}
 
@@ -579,8 +580,9 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	printf("ARX_FTL_Load(%s)\n", file);
 	
 	// Creates FTL file name
-	char gamefic[256];
-	sprintf(gamefic, "Game\\%s", file);
+	std::string gamefic;
+	gamefic += "Game\\";
+    gamefic += file;
 	SetExt(gamefic, ".FTL");
 
 	// Checks for FTL file existence
@@ -606,7 +608,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	long NOrelease = 1;
 	long NoCheck = 0;
 
-	compressed = MCache_Pop(gamefic, &cpr_pos);
+	compressed = MCache_Pop(gamefic.c_str(), &cpr_pos);
 
 	if (!compressed)
 	{
@@ -699,7 +701,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		obj->nbaction = af3Ddh->nb_action;
 		obj->nbselections = af3Ddh->nb_selections;
 		obj->origin = af3Ddh->origin;
-		strcpy(obj->file, af3Ddh->name);
+		obj->file = af3Ddh->name;
 
 		// Alloc'n'Copy vertices
 		if (obj->nbvertex > 0)
@@ -759,17 +761,15 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		// Alloc'n'Copy textures
 		if (af3Ddh->nb_maps > 0)
 		{
-			char ficc[256];
-			char ficc2[256];
-			char ficc3[256];
+			std::string ficc, ficc2, ficc3;
 
 			//todo free
 			obj->texturecontainer = (TextureContainer **)malloc(sizeof(TextureContainer *) * af3Ddh->nb_maps);
 
 			for (long i = 0; i < af3Ddh->nb_maps; i++)
 			{
-				memcpy(ficc2, dat + pos, 256);
-				strcpy(ficc3, ficc2);
+				ficc2 = (char*)(dat + pos);
+				ficc3 = ficc2;
 				File_Standardize(ficc3, ficc);
 
 				obj->texturecontainer[i] = D3DTextr_CreateTextureFromFile(ficc, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);

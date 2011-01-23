@@ -3753,12 +3753,14 @@ extern void LoadLevelScreen(LPDIRECT3DDEVICE7 pd3dDevice = NULL, long lev = -1, 
 extern float PROGRESS_BAR_COUNT;
 long NOCHECKSUM = 0;
 long USE_FAST_SCENES = 1;
+
 bool FastSceneLoad(const char * partial_path)
 {
 	
 	if (!USE_FAST_SCENES) return false;
 
-	std::string path = "Game\\" + partial_path;
+    std::string path = "Game\\";
+    path += partial_path;
 
 	long count = 0;
 	long idx;
@@ -3788,9 +3790,10 @@ bool FastSceneLoad(const char * partial_path)
 
 	if (uh->count == 0) goto lasuite;
 
-	long c_count;
-	c_count = 0;
-	path2 = partial_path + "*.scn";
+    long c_count;
+    c_count = 0;
+    path2 = partial_path;
+    path2 += "*.scn";
 //	todo: find
 //	struct _finddata_t fd;
 //	if ((idx = _findfirst(path2, &fd)) != -1)
@@ -3816,7 +3819,8 @@ bool FastSceneLoad(const char * partial_path)
         char check[512];
         char * check2 = (char *)(dat + pos);
         pos += 512;
-        path2 = partial_path + uh2->path;
+        path2 = partial_path;
+        path2 += uh2->path;
         SetExt(path2, ".scn");
 
         if (PAK_FileExist(path2))
@@ -4264,8 +4268,9 @@ release:
 }
 bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms)
 {
-	std::string path;
-	path = "Game\\" + partial_path;
+    std::string path;
+    path = "Game\\";
+    path += partial_path;
 
 	if (!CreateFullPath(path)) return false;
 
@@ -4320,12 +4325,13 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms)
 	uh->version = UNIQUE_VERSION;
 	pos += sizeof(UNIQUE_HEADER);
 
-	std::string path2;
-	char path3[256];
+    std::string path2;
+    char path3[256];
 
-	char * text;
+    char * text;
 
-	path2 = partial_path + "*.scn";
+    path2 = partial_path;
+    path2 +="*.scn";
 
 //	todo: find
 //	struct _finddata_t fd;

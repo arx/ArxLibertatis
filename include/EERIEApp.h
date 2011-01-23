@@ -61,12 +61,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //#define  D3D_OVERLOADS
 //
 #include <string>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <sstream>
 
-#include "EERIEFrame.h"
-#include "EERIEEnum.h"
 #include <windows.h>
 #include <commctrl.h>
 #include <d3d.h>
+
+#include "EERIEFrame.h"
+#include "EERIEEnum.h"
 //
 //
 //
