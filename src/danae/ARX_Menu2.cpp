@@ -245,7 +245,7 @@ void ARX_QuickSave()
 	for( int iI = 1 ; iI < (save_c) ; iI++ )
 	{
 		_TCHAR	tex2[256];
-		_stprintf( tex2, _T( "%S"), save_l[iI].name );
+		_stprintf( tex2, _T( "%s"), save_l[iI].name );
 //		todo: string
 //		_tcsupr( tex2 );
 
@@ -380,7 +380,7 @@ bool ARX_QuickLoad()
 	for( int iI = 1 ; iI < (save_c) ; iI++ )
 	{
 		_TCHAR	tex2[256];
-		_stprintf( tex2, _T( "%S" ), save_l[iI].name );
+		_stprintf( tex2, _T( "%s" ), save_l[iI].name );
 		//todo string
 //		_tcsupr( tex2 );
 
@@ -470,7 +470,7 @@ bool MENU_NoActiveWindow()
 
 //-----------------------------------------------------------------------------
 
-void GetTextSize(HFONT _hFont, _TCHAR *_lpszUText, int *_iWidth, int *_iHeight)
+void GetTextSize(HFONT _hFont, const char *_lpszUText, int *_iWidth, int *_iHeight)
 {
 	HDC hDC;
 
@@ -776,7 +776,7 @@ void CMenuConfig::SetDefaultKey()
 
 //-----------------------------------------------------------------------------
 
-int CMenuConfig::GetDIKWithASCII(char *_pcTouch)
+int CMenuConfig::GetDIKWithASCII(const char *_pcTouch)
 {
 _TCHAR pcT[256];
 
@@ -886,7 +886,7 @@ _TCHAR pcT[256];
 
 //-----------------------------------------------------------------------------
 
-char * CMenuConfig::ReadConfig(char *_pcSection,char *_pcKey)
+char * CMenuConfig::ReadConfig(const char *_pcSection, const char *_pcKey)
 {
 char tcText[256];
 
@@ -904,7 +904,7 @@ char tcText[256];
 
 //-----------------------------------------------------------------------------
 
-int CMenuConfig::ReadConfigInt(char *_pcSection,char *_pcKey,bool &_bOk)
+int CMenuConfig::ReadConfigInt(const char *_pcSection, const char *_pcKey,bool &_bOk)
 {
 	char *pcText=ReadConfig(_pcSection,_pcKey);
 
@@ -923,14 +923,14 @@ int CMenuConfig::ReadConfigInt(char *_pcSection,char *_pcKey,bool &_bOk)
 
 //-----------------------------------------------------------------------------
 	
-char* CMenuConfig::ReadConfigString(char *_pcSection,char *_pcKey)
+char* CMenuConfig::ReadConfigString(const char *_pcSection, const char *_pcKey)
 {
 	return ReadConfig(_pcSection,_pcKey);
 }
 
 //-----------------------------------------------------------------------------
 
-bool CMenuConfig::WriteConfig(char *_pcSection,char *_pcKey,char *_pcDatas)
+bool CMenuConfig::WriteConfig(const char *_pcSection, const char *_pcKey,char *_pcDatas)
 {
 int iErreur=0;
 
@@ -948,7 +948,7 @@ int iErreur=0;
 
 //-----------------------------------------------------------------------------
 
-bool CMenuConfig::WriteConfigInt(char *_pcSection,char *_pcKey,int _iDatas)
+bool CMenuConfig::WriteConfigInt(const char *_pcSection, const char *_pcKey,int _iDatas)
 {
 	char tcTxt[256];
 	sprintf(tcTxt,"%d",_iDatas);
@@ -957,7 +957,7 @@ bool CMenuConfig::WriteConfigInt(char *_pcSection,char *_pcKey,int _iDatas)
 
 //-----------------------------------------------------------------------------
 
-bool CMenuConfig::WriteConfigString(char *_pcSection,char *_pcKey,char *_pcDatas)
+bool CMenuConfig::WriteConfigString(const char *_pcSection, const char *_pcKey,char *_pcDatas)
 {
 	return WriteConfig(_pcSection,_pcKey,_pcDatas);
 }
@@ -1057,7 +1057,7 @@ bool CMenuConfig::SetActionKey(int _iAction,int _iActionNum,int _iVirtualKey)
 
 //-----------------------------------------------------------------------------
 
-bool CMenuConfig::WriteConfigKey(char *_pcKey,int _iAction)
+bool CMenuConfig::WriteConfigKey(const char *_pcKey,int _iAction)
 {
 char tcTxt[256];
 char tcTxt2[256];
@@ -1160,7 +1160,7 @@ void CMenuConfig::ReInitActionKey(CWindowMenuConsole *_pwmcWindowMenuConsole)
 
 //-----------------------------------------------------------------------------
 
-bool CMenuConfig::ReadConfigKey(char *_pcKey,int _iAction)
+bool CMenuConfig::ReadConfigKey(const char *_pcKey,int _iAction)
 {
 char tcTxt[256];
 char tcTxt2[256];
@@ -2714,7 +2714,7 @@ int iDecMenuPrincipaleY=50;
 							for(iI=1; iI<(save_c); iI++)
 							{
 								_TCHAR tex[256];
-								_stprintf(tex, _T("%S"),
+								_stprintf(tex, _T("%s"),
 									save_l[iI].name);
 								
 								CMenuElementText *me02;
@@ -2871,7 +2871,7 @@ int iDecMenuPrincipaleY=50;
 							{
 								_TCHAR tex[256];
 
-								_stprintf(tex, _T("%S"),
+								_stprintf(tex, _T("%s"),
 									save_l[iI].name);
 								
 								_TCHAR tex2[256];
@@ -4033,7 +4033,7 @@ CMenuElement* CMenuElement::OnShortCut()
 
 //-----------------------------------------------------------------------------
 
-CMenuElementText::CMenuElementText(int _iID, HFONT _pHFont,_TCHAR *_pText,float _fPosX,float _fPosY,long _lColor,float _fSize,MENUSTATE _eMs) : CMenuElement(_eMs)
+CMenuElementText::CMenuElementText(int _iID, HFONT _pHFont,const char *_pText,float _fPosX,float _fPosY,long _lColor,float _fSize,MENUSTATE _eMs) : CMenuElement(_eMs)
 {
 	iID = _iID;
 
@@ -4298,7 +4298,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 					{
 						{
 							_TCHAR szT[256];
-							_stprintf(szT, _T("%lu - %S"), lData, lpszText);
+							_stprintf(szT, _T("%lu - %s"), lData, lpszText);
 							char ml[256];
 							memset( ml, 0, 256 );
 
@@ -4344,7 +4344,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 					if ( me )
 					{
 						_TCHAR szT[256];
-						_stprintf( szT, _T("%lu - %S"), me->lData, me->lpszText );
+						_stprintf( szT, _T("%lu - %s"), me->lData, me->lpszText );
 						char ml[256];
 						memset( ml, 0, 256 );
 //						todo: cast
@@ -4376,7 +4376,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 					if ( me )
 					{
 						_TCHAR szT[256];
-						_stprintf( szT, _T("%lu - %S"), me->lData, me->lpszText );
+						_stprintf( szT, _T("%lu - %s"), me->lData, me->lpszText );
 
 						char ml[256];
 						memset(ml,0,256);
@@ -4585,7 +4585,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 					_TCHAR szText[256];
 
 					if( lData )
-						_stprintf( szText, _T("%S"), save_l[lData].name );
+						_stprintf( szText, _T("%s"), save_l[lData].name );
 					else
 					{
 						PAK_UNICODE_GetPrivateProfileString("system_menu_editquest_newsavegame", "", szText, 256);
@@ -6771,7 +6771,7 @@ long CMenuPanel::IsMouseOver(int _iX, int _iY)
 
 //-----------------------------------------------------------------------------
 
-CMenuButton::CMenuButton(int _iID, HFONT _pHFont,MENUSTATE _eMenuState,int _iPosX,int _iPosY,_TCHAR *_pText,float _fSize,TextureContainer *_pTex,TextureContainer *_pTexOver,int _iColor,int _iTailleX,int _iTailleY)
+CMenuButton::CMenuButton(int _iID, HFONT _pHFont,MENUSTATE _eMenuState,int _iPosX,int _iPosY,const char *_pText,float _fSize,TextureContainer *_pTex,TextureContainer *_pTexOver,int _iColor,int _iTailleX,int _iTailleY)
 : CMenuElement(_eMenuState)
 {
 	iID = _iID;
@@ -6890,7 +6890,7 @@ void CMenuButton::SetPos(int _iX,int _iY)
 
 //-----------------------------------------------------------------------------
 
-void CMenuButton::AddText(_TCHAR *_pText)
+void CMenuButton::AddText(const char *_pText)
 {
 	if (!_pText) return;
 
