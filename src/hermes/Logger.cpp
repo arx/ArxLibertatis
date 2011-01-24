@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "hermes/Logger.h"
 #define BASH_COLOR 1
 
@@ -14,11 +15,12 @@ const string blackList[] = {
 };
 
 Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {
+  fatal = false;
   if( level < logLevel || isInBlackList(file)) {
-    m_Print = false;
+    print = false;
     return;
   }
-  m_Print = true;
+  print = true;
   switch(level) {
     case Info:
       log(1,32,"INFO",file, line);
@@ -32,14 +34,20 @@ Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {
     case Debug:
       log(1,36,"DEBUG",file, line);
       break;
+    case Fatal:
+      log(4,31,"FATAL",file, line);
+      fatal = true;
+      break;
     default:
       log(1,32,"INFO",file, line);
   };
 }
 
 Logger::~Logger() {
-  if (m_Print)
+  if (print)
     std::cout<<std::endl;
+  if (fatal)
+	  exit(0);
 }
 
 void Logger::log(int mode, int color, const string & level,

@@ -195,25 +195,32 @@ long PAK_ftell(PakFileHandle * pfh) {
 
 PakFileHandle * PAK_fopen(const char * filename) {
 	
+	if(!pPakManager){
+		printf("FATAL: No Pack Manager!\n");
+		exit(0);
+		//TODO(lubosz): Logger does not work here :/
+//		LogFatal << "No Pakmanager!";
+	}
+
 	PakFileHandle * pfh = pPakManager->fOpen(filename);
 	if(pfh) {
 		return pfh;
 	}
-	
+
 	FileHandle fh = FileOpenRead(filename);
 	if(!fh) {
 		return NULL;
 	}
-	
+
 	pfh = new PakFileHandle;
 	if(!pfh) {
 		return NULL;
 	}
-	
+
 	pfh->active = true;
 	pfh->reader = NULL;
 	pfh->truefile = fh;
-	
+
 	return pfh;
 }
 
