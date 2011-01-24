@@ -63,6 +63,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 void EERIE_LINKEDOBJ_InitData(EERIE_3DOBJ * obj);
 void EERIE_LINKEDOBJ_ReleaseData(EERIE_3DOBJ * obj);
 void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tounlink);
-bool EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink, char * actiontext, char * actiontext2, INTERACTIVE_OBJ * io = NULL);
+bool EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink, const char * actiontext, const char * actiontext2, INTERACTIVE_OBJ * io = NULL);
 
 #endif

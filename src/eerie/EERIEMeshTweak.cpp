@@ -193,7 +193,7 @@ long ObjectAddVertex(EERIE_3DOBJ * obj, EERIE_VERTEX * vert)
 }
 //*************************************************************************************
 //*************************************************************************************
-long GetActionPoint(EERIE_3DOBJ * obj, char * name)
+long GetActionPoint(EERIE_3DOBJ * obj, const char * name)
 {
 	if (!obj) return -1;
 

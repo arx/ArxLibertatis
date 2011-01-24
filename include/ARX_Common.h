@@ -226,45 +226,8 @@ class ArxDebug
 	private :
 		static ArxDebug * m_pInstance ;
 
-		bool				m_bOpenLogFile	;
-		std::ofstream		m_fsFile ;
-		unsigned int		m_uiTabulation ;
-		std::ostringstream	m_ossBuffer ;
-
 	private :
 		ArxDebug(bool _bLogIntoFile);
-
-		void OpenTag(const char * _sTag); //Used to specify a session inside the log file
-		void CloseTag();
-
-		void StartLogSession();
-		void EndLogSession();
-
-		void AddTabulation(std::ostringstream & _ossBuffer);
-		void LogTypeManager(ARX_DEBUG_LOG_TYPE eType);
-		static void cpy_wstr(char * buf, const wchar_t * src, size_t max);
-		static bool CreateLogDirectory();
-		static void CreateCrashFile(const char * _sFn , const char * _sMsg , const char * _sFile , unsigned int _iLine, const std::string & _sStackTrace);
-};
-
-
-/*
-	Use to have an automatic indentation without scope problems
-*/
-class ArxLogTag
-{
-	public :
-		//Increment ArxDebug::m_uiTabulation
-		ArxLogTag(const char * _sTag = "")
-		{
-			ArxDebug::GetInstance(false)->OpenTag(_sTag);
-		}
-
-		//Decrement ArxDebug::m_uiTabulation
-		~ArxLogTag()
-		{
-			ArxDebug::GetInstance()->CloseTag();
-		}
-
+	
 };
 #endif // ARX_COMMON_H

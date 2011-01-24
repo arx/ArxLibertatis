@@ -67,7 +67,7 @@ void DANAE_DEBUGGER_Launch(HWND hWnd)
 
 	if (!(DD_GetParams =	(DD_GETPARAMS) GetProcAddress(hm, "SCRIPT_DEBUGGER_GetParams"))) goto invalid;
 
-	printf("%lu\n", GetLastError());
+	printf("%u\n", GetLastError());
 	printf("yo\n");
 
 	if (DD_DebugDialog)
@@ -157,7 +157,11 @@ void DANAE_DEBUGGER_Update()
 
 	char temp[256];
 
+<<<<<<< HEAD
 	sprintf(temp, "%s_%04d", GetName(io->filename).c_str(), io->ident);
+=======
+	sprintf(temp, "%s_%04ld", GetName(io->filename), io->ident);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 	s.lpszObjName = strdup(temp);
 	sprintf(buffer, "%5.0f", io->pos.x);
 	s.p3ObjPos[0] = strdup(buffer);
@@ -176,7 +180,11 @@ void DANAE_DEBUGGER_Update()
 
 	if (tio)
 	{
+<<<<<<< HEAD
 		sprintf(temp, "%s_%04d", GetName(tio->filename).c_str(), tio->ident);
+=======
+		sprintf(temp, "%s_%04ld", GetName(tio->filename), tio->ident);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 		s.lpszTargetName = strdup(temp);
 		sprintf(buffer, "%5.0f", tio->pos.x);
 		s.p3TargetPos[0] = strdup(buffer);
@@ -213,7 +221,7 @@ void DANAE_DEBUGGER_Update()
 					vg[i].lpszVarValue = strdup(svar[i].text);
 					break;
 				case TYPE_G_LONG:
-					sprintf(temp, "%d", svar[i].ival);
+					sprintf(temp, "%ld", svar[i].ival);
 					vg[i].lpszVarValue = strdup(temp);
 					break;
 				case TYPE_G_FLOAT:
@@ -252,7 +260,7 @@ void DANAE_DEBUGGER_Update()
 					vl[i].lpszVarValue = strdup(temp);
 					break;
 				case TYPE_L_LONG:
-					sprintf(temp, "%d", es->lvar[i].ival);
+					sprintf(temp, "%ld", es->lvar[i].ival);
 					vl[i].lpszVarValue = strdup(temp);
 					break;
 				case TYPE_L_FLOAT:
@@ -347,7 +355,11 @@ void DANAE_DEBUGGER_Update()
 		{
 			if ((scr_timer[i].exist)  && (scr_timer[i].io == io))
 			{
+<<<<<<< HEAD
 				sprintf(temp, "%s %d %dms\r\n", scr_timer[i].name.c_str(), scr_timer[i].times, scr_timer[i].msecs);
+=======
+				sprintf(temp, "%s %ld %ldms\r\n", scr_timer[i].name, scr_timer[i].times, scr_timer[i].msecs);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 				strcat(buf, temp);
 			}
 		}

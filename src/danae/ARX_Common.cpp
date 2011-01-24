@@ -66,6 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <time.h>
 #include <fcntl.h>
 //#include <io.h>
+#include <hermes/Logger.h>
 
 
 
@@ -74,26 +75,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 	static var initialize
 */
 ArxDebug		*	ArxDebug::m_pInstance				= NULL	;
-
-
-
-/*
-	Convert wchar to char
-*/
-void ArxDebug::cpy_wstr(char * buf, const wchar_t * src, size_t max)
-{
-	if (src)
-	{
-		while (max > 0 && *src != 0)
-		{
-			*buf++ = (char) src[0];
-			--max;
-			src++;
-		}
-	}
-
-	*buf = 0;
-}
 
 
 /*
@@ -129,87 +110,8 @@ void ArxDebug::Assert(const char * _sMessage, const char * _sFile, unsigned int 
 	sprintf(msgbuf, "Assertation failed!\n\nProgram: %s\nFile: %s, Line %u\n\nExpression: %s",
 	        fn, iFile, _iLine, msg);
 
-	/*std::string stackTrace ;
-	  ArxStackLogger::StackLogger s ;
-	  s.GetStackTrace(stackTrace);
-	  CreateCrashFile(fn, msg, iFile, _iLine, stackTrace);
-	  */
+	LogError << msgbuf;
 }
-
-/*
-	Use to create Log directory
-*/
-bool ArxDebug::CreateLogDirectory()
-{
-	bool bReturn = true ;
-
-	//Verify if the log folder exist, otherwise create him
-	const char sLogReposiriry[] = "Log";
-
-	if (CreateDirectoryA(sLogReposiriry, NULL) == 0)
-	{
-		DWORD iCodeError = GetLastError();
-
-		switch (iCodeError)
-		{
-			case ERROR_ALREADY_EXISTS :
-				break ;
-
-			case ERROR_PATH_NOT_FOUND :
-				bReturn = false ;
-				MessageBoxA(NULL, "Folder Path not found", "File ", MB_OK | MB_ICONHAND | MB_SETFOREGROUND | MB_TASKMODAL);
-				break ;
-
-			default:
-				bReturn = false ;
-				MessageBoxA(NULL, "Folder Log cannot be create. May be you dont have the permission or enought space disk.", "File ", MB_OK | MB_ICONHAND | MB_SETFOREGROUND | MB_TASKMODAL);
-
-		}
-	}
-
-	return bReturn ;
-}
-
-
-/*
-	Use to create the log file into the Log folder.
-*/
-/*
-void ArxDebug::CreateCrashFile(const char * _sFn , const char * _sMsg , const char * _sFile , unsigned int _iLine, const std::string & _sStackTrace)
-{
-	DWORD nCode;
-
-	//Create the message bow for ask if we want a report log
-	std::ostringstream oss ;
-	oss << "Executable : " << _sFn << "\nFile : " << _sFile << "	Line : " << _iLine << "\nCause : " << _sMsg;
-	std::string _sFileOss = oss.str().c_str();
-
-	oss << "\n Do you want to generate a report into your Log folder ? ";
-
-	nCode = MessageBoxA(NULL, oss.str().c_str(), "ARX Runtime Assertation ", MB_YESNO |
-	                    MB_ICONHAND | MB_SETFOREGROUND | MB_TASKMODAL);
-
-	if ((nCode == IDYES) && CreateLogDirectory())
-	{
-		//Open an outpout stream and write inside
-		std::ofstream fsFile ;
-		std::ostringstream ossFileName ;
-		ossFileName << "..\\Log\\CrashReport__" << time(NULL) << ".txt";
-
-		fsFile.open(ossFileName.str().c_str(), std::ios::out | std::ios::trunc);
-
-		if (!fsFile)
-		{
-			MessageBoxA(NULL, "Crash report cannot be create. May be you don't have the permission or enough space disk.", "Crash Report ", MB_OK | MB_ICONHAND | MB_SETFOREGROUND | MB_TASKMODAL);
-			return ;
-		}
-
-		fsFile << __DATE__ << "\n\n" << _sFileOss << "\n\n ------------------------------------------ CallStack Log --------------------------------- \n\n" << _sStackTrace;
-
-		fsFile.close();
-	}
-}
-*/
 
 /*
 	Singleton Getter/Cleaner
@@ -238,101 +140,16 @@ void ArxDebug::CleanInstance()
 	Constructor & Destructor
 */
 ArxDebug::ArxDebug(bool _bLogIntoFile /*= true*/) {
-
-	m_bOpenLogFile = false;
-	m_uiTabulation = 0;
-
-	if (_bLogIntoFile)
-	{
-		StartLogSession();
-	}
 }
 
-ArxDebug::~ArxDebug()
-{
-	EndLogSession();
-
-	m_pInstance = NULL ;
-	m_uiTabulation = 0	;
+ArxDebug::~ArxDebug() {
 }
-
-
-/*
-	Log Functions
-*/
-void ArxDebug::StartLogSession()
-{
-	if (CreateLogDirectory())
-	{
-		unsigned int uiID = static_cast<unsigned int>(time(NULL));
-
-		std::ostringstream ossFileName ;
-		ossFileName << "Log/Log__" << uiID << ".txt";
-		m_fsFile.open(ossFileName.str().c_str(), std::ios::out | std::ios::app);
-
-		if (m_fsFile)
-		{
-			m_bOpenLogFile = true ;
-		}
-		else
-		{
-			m_bOpenLogFile = false ;
-			MessageBoxA(NULL, "Log file cannot be create. May be you dont have the permission or enought space disk.", "Log File ", MB_OK | MB_ICONHAND | MB_SETFOREGROUND | MB_TASKMODAL);
-		}
-	}
-}
-
-
-
-/*
-	Use to manage color inside the console
-*/
-void ArxDebug::LogTypeManager(ARX_DEBUG_LOG_TYPE eType)
-{
-
-	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-
-	time_t timestamp;
-	struct tm * t;
-
-	timestamp = time(NULL);
-	t = localtime(&timestamp);
-	
-	switch (eType)
-	{
-		case eLogWarning :
-			m_ossBuffer << "[Warning : " << t->tm_hour << "h " << t->tm_min << "m " << t->tm_sec << "s] : ";
-			break;
-		case eLogError :
-			m_ossBuffer << "[Error : " << t->tm_hour << "h " << t->tm_min << "m " << t->tm_sec << "s] : ";
-			break;
-		case eLog :
-		default:
-			m_ossBuffer << "[Log : " << t->tm_hour << "h " << t->tm_min << "m " << t->tm_sec << "s] : ";
-	}
-}
-
-
-/*
-	Add tabulation for a better look
-*/
-void ArxDebug::AddTabulation(std::ostringstream & _ossBuffer)
-{
-	for (unsigned int i = 0 ; i < m_uiTabulation ; ++i)
-	{
-		_ossBuffer << "\t";
-	}
-}
-
 
 /*
 	Use to log a message
 */
-
-
-
-void ArxDebug::Log(ARX_DEBUG_LOG_TYPE eType, const char * _sMessage, ...)
-{
+// TODO use Logger directly
+void ArxDebug::Log(ARX_DEBUG_LOG_TYPE eType, const char * _sMessage, ...) {
 	//Use to stack the message and the params
 	char sBuffer[ARXCOMMON_BUFFERSIZE];
 
@@ -341,67 +158,18 @@ void ArxDebug::Log(ARX_DEBUG_LOG_TYPE eType, const char * _sMessage, ...)
 	va_start(arg_ptr, _sMessage);
 	vsnprintf(sBuffer, ARXCOMMON_BUFFERSIZE, _sMessage, arg_ptr);
 	va_end(arg_ptr) ;
-
-	LogTypeManager(eType);
-
-	//Use to Add the tabulation inside the oss
-	AddTabulation(m_ossBuffer);
-	m_ossBuffer << sBuffer << "\n";
-
-	//We want to write log inside a file
-	if (m_bOpenLogFile)
+	
+	switch (eType)
 	{
-		m_fsFile << m_ossBuffer.str().c_str();
-		m_fsFile.flush();
+		case eLogWarning :
+			LogWarning << sBuffer;
+			break;
+		case eLogError :
+			LogError << sBuffer;
+			break;
+		case eLog :
+		default:
+			LogInfo << sBuffer;
 	}
-
-	//Write the log on the console
-	std::cout << m_ossBuffer.str().c_str();
-	std::cout.flush();
-}
-
-
-/*
-	Close the stream
-*/
-void ArxDebug::EndLogSession()
-{
-	if (m_bOpenLogFile)
-	{
-		m_fsFile.close();
-		m_bOpenLogFile = false;
-	}
-}
-
-
-
-
-/*
-	Add a new session into the log
-*/
-void ArxDebug::OpenTag(const char * _sTag)
-{
-	++m_uiTabulation;
-
-	m_ossBuffer << "[Log : " << __TIME__ << "] :";
-	AddTabulation(m_ossBuffer);
-	m_ossBuffer << " ---------------- " << _sTag << " ----------------" << "\n";
-
-	if (m_bOpenLogFile)
-	{
-		m_fsFile << m_ossBuffer.str().c_str();
-		m_fsFile.flush();
-	}
-
-	//Write tag inside the console
-	std::cout << m_ossBuffer.str().c_str();
-}
-
-
-/*
-	Close a tag
-*/
-void ArxDebug::CloseTag()
-{
-	(m_uiTabulation == 0) ? m_uiTabulation : --m_uiTabulation;
+	
 }

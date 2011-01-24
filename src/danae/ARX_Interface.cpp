@@ -1100,6 +1100,7 @@ void ARX_INTERFACE_NoteManage()
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forceclose
 {
+<<<<<<< HEAD
     if ((t==1) && (player.Interface & INTER_MAP)) return;
 
     if ((t==2) && (!(player.Interface & INTER_MAP))) return;
@@ -1184,6 +1185,99 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
     pTextManage->Clear();
 
     TRUE_PLAYER_MOUSELOOK_ON &= ~1;
+=======
+	if ((t==1) && (player.Interface & INTER_MAP)) return;
+
+	if ((t==2) && (!(player.Interface & INTER_MAP))) return;
+	
+	
+	if (player.Interface & INTER_MAP) 
+	{
+		ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, 0.9F + 0.2F * rnd());
+		SendIOScriptEvent(inter.iobj[0],SM_BOOK_CLOSE,"",NULL);	
+		player.Interface &=~ INTER_MAP;
+		ARX_MINIMAP_PurgeTC();
+		
+		if(ARXmenu.mda)
+		{
+			for (long i=0;i<MAX_FLYOVER;i++)
+			{
+				if (ARXmenu.mda->flyover[i]!=NULL)
+					ARX_Menu_Release_Text(ARXmenu.mda->flyover[i]);
+			}
+
+			free((void*)ARXmenu.mda);
+			ARXmenu.mda=NULL;
+		}
+	}
+	else
+	{
+		SendIOScriptEvent(inter.iobj[0],0,"","BOOK_OPEN");
+		
+		ARX_SOUND_PlayInterface(SND_BOOK_OPEN, 0.9F + 0.2F * rnd());
+		SendIOScriptEvent(inter.iobj[0],SM_BOOK_OPEN,"",NULL);
+		ARX_INTERFACE_NoteClose();
+		player.Interface |= INTER_MAP;
+		Book_MapPage=ARX_LEVELS_GetRealNum(CURRENTLEVEL)+1;
+
+		if (Book_MapPage>8) Book_MapPage=8;
+
+		if (Book_MapPage<1) Book_MapPage=1;
+		
+		if(!ARXmenu.mda)
+		{
+			ARXmenu.mda = (MENU_DYNAMIC_DATA *)malloc(sizeof(MENU_DYNAMIC_DATA)); 
+			memset(ARXmenu.mda,0,sizeof(MENU_DYNAMIC_DATA));
+			
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STRENGTH],			"system_charsheet_strength");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MIND],				"system_charsheet_intel");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEXTERITY],			"system_charsheet_Dex");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CONSTITUTION],		"system_charsheet_consti");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STEALTH],			"system_charsheet_stealth");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MECANISM],			"system_charsheet_mecanism");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_INTUITION],			"system_charsheet_intuition");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_ETHERAL_LINK],		"system_charsheet_etheral_link");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_OBJECT_KNOWLEDGE],	"system_charsheet_objknoledge");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CASTING],			"system_charsheet_casting");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_PROJECTILE],		"system_charsheet_projectile");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CLOSE_COMBAT],		"system_charsheet_closecombat");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEFENSE],			"system_charsheet_defense");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_QUICK_GENERATION],"system_charsheet_quickgenerate");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_DONE],			"system_charsheet_done");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_SKIN],			"system_charsheet_skin");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_ATTRIBUTES],			"system_charsheet_atributes");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_SKILLS],				"system_charsheet_skills");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_STATUS],				"system_charsheet_status");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_LEVEL],				"system_charsheet_level");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_XP],					"system_charsheet_xpoints");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_HP],					"system_charsheet_hp");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_MANA],				"system_charsheet_mana");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_AC],					"system_charsheet_AC");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_MAGIC],		"system_charsheet_res_magic");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_POISON],		"system_charsheet_res_poison");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_DAMAGE],				"system_charsheet_damage");
+		}
+	}
+	
+	if (player.Interface&INTER_COMBATMODE)
+	{
+		player.Interface&=~INTER_COMBATMODE;
+		ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
+	}
+	
+	if (player.Interface & INTER_INVENTORYALL)
+	{
+		ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+		bInventoryClosing = true;
+	}
+	
+	BOOKZOOM = 0;
+	bBookHalo = false;
+	ulBookHaloTime = 0;
+	pTextManage->Clear();
+
+	TRUE_PLAYER_MOUSELOOK_ON &= ~1;
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 }
 
 //-------------------------------------------------------------------------------------
@@ -1237,6 +1331,7 @@ void ReleaseInfosCombine()
 //-----------------------------------------------------------------------------
 void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO) 
 {
+<<<<<<< HEAD
     if(!COMBINE)
     {
         return;
@@ -1288,6 +1383,59 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
                     while(pcToken)
                     {
                         pcToken=strtok(NULL,"\r\n");
+=======
+	if(!COMBINE)
+	{
+		return;
+	}
+
+	char tcIndent[256];
+	char tcIsClass[256];
+	strcpy(tcIndent,COMBINE->filename);
+	strcpy(tcIsClass,GetName(tcIndent));
+	sprintf(tcIndent,"%s_%04ld",tcIsClass,COMBINE->ident);
+	MakeUpcase(tcIndent);				
+
+		char tTxtCombineDest[256];
+
+		if(	(_pWithIO)&&
+			(_pWithIO!=COMBINE)&&
+			(_pWithIO->script.data) )
+		{
+			char* pCopyScript=new char[_pWithIO->script.size];
+			memcpy(pCopyScript,_pWithIO->script.data,_pWithIO->script.size);
+			
+			char* pCopyOverScript=NULL;
+
+			if(_pWithIO->over_script.data)
+			{
+				pCopyOverScript=new char[_pWithIO->over_script.size];
+				memcpy(pCopyOverScript,_pWithIO->over_script.data,_pWithIO->over_script.size);
+			}
+
+			char* pcDataEnd=NULL;
+			char *pcFound=NULL;
+
+			if(pCopyOverScript)
+			{
+				pcDataEnd=((char*)pCopyOverScript)+_pWithIO->over_script.size;
+				pcFound=strstr((char*)pCopyOverScript,"ON COMBINE");
+
+				if(pcFound)
+				{
+					unsigned int uiNbOpen=0;
+
+					char *pcToken=strtok(pcFound,"\r\n");
+
+					if(strstr(pcToken,"{"))
+					{
+						uiNbOpen++;
+					}
+
+					while(pcToken)
+					{
+						pcToken=strtok(NULL,"\r\n");
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 //						strupr(pcToken);
     
                         bool bCanCombine=false;
@@ -1620,6 +1768,7 @@ bool DANAE::ManageEditorControls()
     {
         bool bOk = true;
 
+<<<<<<< HEAD
         if (TRUE_PLAYER_MOUSELOOK_ON)
         {
             if (!(player.Interface & INTER_COMBATMODE) && (player.doingmagic!=2) && !InInventoryPos(&DANAEMouse))
@@ -2698,6 +2847,1028 @@ bool DANAE::ManageEditorControls()
             else ARX_PLAYER_Remove_Invisibility();
         }
           
+=======
+	
+	if (SMOOTHSLID==1)
+	{
+		SLID_VALUE+=(float)Original_framedelay*DIV10;
+
+		if (SLID_VALUE > 100.f)
+		{
+			SLID_VALUE = 100.f;
+			SMOOTHSLID = 0;
+		}
+
+		F2L(SLID_VALUE,&lSLID_VALUE);
+	}
+	else if (SMOOTHSLID==-1)
+	{
+		SLID_VALUE-=(float)Original_framedelay*DIV10;
+
+		if (SLID_VALUE < 0.f)
+		{
+			SLID_VALUE = 0.f;
+			SMOOTHSLID = 0;
+		}
+
+		F2L(SLID_VALUE,&lSLID_VALUE);
+	}
+	
+	if (CINEMA_INC==1)
+	{
+		CINEMA_DECAL+=(float)Original_framedelay*DIV10;
+
+		if (CINEMA_DECAL > 100.f)
+		{
+			CINEMA_DECAL = 100.f;
+			CINEMA_INC = 0;
+		}
+	}
+	else if (CINEMA_INC==-1)
+	{
+		CINEMA_DECAL-=(float)Original_framedelay*DIV10;
+
+		if (CINEMA_DECAL < 0.f)
+		{
+			CINEMA_DECAL = 0.f;
+			CINEMA_INC = 0;
+		}
+	}
+
+	/////////////////////////////////////////////////////
+	
+	if  (EERIEMouseButton & 1)
+	{
+		if ( !(LastMouseClick &1) )
+		{
+			STARTDRAG.x=DANAEMouse.x;
+			STARTDRAG.y=DANAEMouse.y;
+			DRAGGING=0;
+			
+			if (pMenuConfig->bAutoReadyWeapon == false)
+			{
+				MouseDragX = 0;
+				MouseDragY = 0;
+			}
+		}
+		else
+		{
+			if ((abs(DANAEMouse.x-STARTDRAG.x)>2) && (abs(DANAEMouse.y-STARTDRAG.y)>2)
+			   || ((pMenuConfig->bAutoReadyWeapon == false) && ((abs(MouseDragX) > 2) || (abs(MouseDragY) > 2))))
+			{
+				DRAGGING=1;
+			}
+		}
+	}
+	else
+	{
+		DRAGGING=0;
+	}
+
+	//-------------------------------------------------------------------------
+	// interface
+	//-------------------------------------------------------------------------
+	// torch
+	float px = 0;
+	float py = 0;
+	
+	if (!BLOCK_PLAYER_CONTROLS)
+	{
+		if ((!(player.Interface & INTER_COMBATMODE)))
+		{
+		
+			if (!TRUE_PLAYER_MOUSELOOK_ON)
+			{
+				px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(110);
+
+				if (px < INTERFACE_RATIO(10)) px = INTERFACE_RATIO(10);
+
+				py = DANAESIZY - INTERFACE_RATIO(158+32);
+
+				if (CURRENT_TORCH != NULL)
+				{
+					if (MouseInRect(px,py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(64)))
+					{
+						eMouseState=MOUSE_IN_TORCH_ICON;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+						
+						if ((LastMouseClick & 1) && (!(EERIEMouseButton & 1)) )
+						{
+							INTERACTIVE_OBJ * temp = CURRENT_TORCH;
+
+							if ((temp!=NULL) && temp->locname[0])
+							{
+								if (((CURRENT_TORCH->ioflags & IO_ITEM) && CURRENT_TORCH->_itemdata->equipitem)
+									&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
+									>= CURRENT_TORCH->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
+								{
+									SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY,"");
+								}
+
+								MakeLocalised(temp->locname,WILLADDSPEECH,256);
+
+								if (temp->ioflags & IO_GOLD)
+								{
+									_TCHAR UText[256];
+									_stprintf(UText, "%ld %s", temp->_itemdata->price, WILLADDSPEECH);
+									_tcscpy(WILLADDSPEECH, UText);
+								}
+
+								if ((temp->poisonous>0) && (temp->poisonous_count!=0))
+								{
+									_TCHAR Text[256];
+									_TCHAR UText[256];
+									MakeLocalised("[Description_Poisoned]",Text,256);
+									_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH, Text, (int)temp->poisonous);
+									_tcscpy(WILLADDSPEECH, UText);
+								}
+
+								if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
+								{
+									_TCHAR Text[256];
+									_TCHAR UText[256];
+									MakeLocalised("[Description_Durability]",Text,256);
+									_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH, Text, temp->durability,temp->max_durability);
+									_tcscpy(WILLADDSPEECH, UText);
+								}
+
+
+								WILLADDSPEECHTIME = ARXTimeUL(); 
+							}
+						}
+
+						if  ((EERIEMouseButton & 1) && (LastMouseClick &1))
+						{
+							if ( (abs(DANAEMouse.x-STARTDRAG.x)>2) ||
+								(abs(DANAEMouse.y-STARTDRAG.y)>2) )	DRAGGING = 1;
+						}
+						
+						if ((DRAGINTER == NULL)  && (!PLAYER_MOUSELOOK_ON) && DRAGGING)
+						{
+							INTERACTIVE_OBJ * io=CURRENT_TORCH;
+							CURRENT_TORCH->show=SHOW_FLAG_IN_SCENE;
+							ARX_SOUND_PlaySFX(SND_TORCH_END);
+							ARX_SOUND_Stop(SND_TORCH_LOOP);
+							CURRENT_TORCH=NULL;	
+							SHOW_TORCH=0;
+							DynLight[0].exist=0;
+							Set_DragInter(io);
+							DRAGINTER->ignition=1;
+						}
+						else
+						{
+							if ((EERIEMouseButton & 4) && (COMBINE == NULL))
+							{
+								COMBINE = CURRENT_TORCH;
+							}
+
+							if (!(EERIEMouseButton & 2) && (LastMouseClick & 2))
+							{
+								ARX_PLAYER_ClickedOnTorch(CURRENT_TORCH);
+								EERIEMouseButton &= ~2;
+								TRUE_PLAYER_MOUSELOOK_ON&=~1;
+							}
+						}
+					}
+				}
+				
+				// redist
+				if ((player.Skill_Redistribute) || (player.Attribute_Redistribute))
+				{
+					px = DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
+					py = DANAESIZY - INTERFACE_RATIO(218);
+
+					if (MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32))) 
+					{
+						eMouseState=MOUSE_IN_REDIST_ICON;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+
+						if ((EERIEMouseButton & 1) && !(LastMouseClick & 1))
+						{
+							ARX_INTERFACE_BookOpenClose(1);
+							EERIEMouseButton &=~1;
+						}
+
+						return false;
+					}
+				}
+				
+				
+				// gold
+				if (player.gold>0)
+				{
+					px = DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
+					py = DANAESIZY - INTERFACE_RATIO(183);
+
+					if (MouseInRect(px,py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32)))
+					{
+						eMouseState=MOUSE_IN_GOLD_ICON;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+
+						if ((player.gold > 0)
+							&& (!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE))
+							&& (COMBINE==NULL) && (!COMBINEGOLD))
+						{
+							if (EERIEMouseButton & 4)
+								COMBINEGOLD=1;
+						}
+
+						if (DRAGINTER == NULL)
+							return false;
+					}
+				}
+				
+				// book
+				px = DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
+				py = DANAESIZY - INTERFACE_RATIO(148);
+
+				if (MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32)))
+				{
+					eMouseState=MOUSE_IN_BOOK_ICON;
+					SpecialCursor=CURSOR_INTERACTION_ON;
+
+					if ((EERIEMouseButton & 1) && !(LastMouseClick & 1))
+					{
+						ARX_INTERFACE_BookOpenClose(0);
+						EERIEMouseButton &=~1;
+					}
+
+					return false;
+				}
+				
+				// inventaire
+				px = DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE + GL_DECAL_ICONS;
+				py = DANAESIZY - INTERFACE_RATIO(113);
+				static float flDelay=0;
+
+				if (MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32))||flDelay)
+				{
+					eMouseState=MOUSE_IN_INVENTORY_ICON;
+					SpecialCursor=CURSOR_INTERACTION_ON;
+
+					if (EERIEMouseButton & 4)
+					{
+						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+
+						if (player.Interface | INTER_INVENTORYALL)
+						{
+							OptmizeInventory(0);
+							OptmizeInventory(1);
+							OptmizeInventory(2);
+						}
+						else
+						{
+							OptmizeInventory(sActiveInventory);
+						}
+
+						flDelay=0;
+						EERIEMouseButton&=~4;
+					}
+					else if (((EERIEMouseButton & 1) && !(LastMouseClick & 1)) || flDelay)
+					{
+						if (!flDelay)
+					{
+							flDelay=ARX_TIME_Get();
+							return false;
+						}
+						else
+						{
+							if ((ARX_TIME_Get() - flDelay) < 300)
+							{
+								return false;
+							}
+							else
+							{
+								flDelay=0;
+							}
+						}
+
+						if (player.Interface & INTER_INVENTORYALL)
+						{
+							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+							bInventoryClosing = true;
+
+						}
+						else
+						{
+							if (INTERNATIONAL_MODE)
+							{
+								bInverseInventory=!bInverseInventory;
+								lOldTruePlayerMouseLook=TRUE_PLAYER_MOUSELOOK_ON;
+							}
+							else
+							{
+								InventoryOpenClose(0);
+							}
+						}
+
+						EERIEMouseButton &=~1;
+					}
+					else if ((EERIEMouseButton & 2) && !(LastMouseClick & 2))
+					{
+						ARX_INTERFACE_BookOpenClose(2);
+						ARX_INVENTORY_OpenClose(NULL);
+
+						if (player.Interface & INTER_INVENTORYALL)
+						{
+							bInventoryClosing = true;
+						}
+						else
+						{
+							if ((player.Interface & INTER_INVENTORY))
+							{
+								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+								bInventoryClosing = true;
+								bInventorySwitch = true;
+							}
+							else
+							{
+								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+								player.Interface |= INTER_INVENTORYALL;
+
+								float fInventoryY	=	INTERFACE_RATIO( 121.f ) * (player.bag);
+								ARX_CHECK_LONG( fInventoryY );
+								InventoryY			=	ARX_CLEAN_WARN_CAST_LONG( fInventoryY );
+
+								ARX_INTERFACE_NoteClose();
+
+								if (TRUE_PLAYER_MOUSELOOK_ON)
+								{
+									WILLRETURNTOFREELOOK = 1;
+								}
+							}
+						}
+
+						EERIEMouseButton &= ~2;
+						TRUE_PLAYER_MOUSELOOK_ON&=~1;
+					}
+					
+					if (DRAGINTER == NULL)
+						return false;
+				}
+			}
+			
+			// steal
+			if (player.Interface & INTER_STEAL)
+			{
+				px = ARX_CLEAN_WARN_CAST_FLOAT(-lSLID_VALUE);
+				py = DANAESIZY - INTERFACE_RATIO(78 + 32);
+
+				if (MouseInRect(px, py, px + INTERFACE_RATIO(32), py + INTERFACE_RATIO(32)))
+				{
+					eMouseState=MOUSE_IN_STEAL_ICON;
+					SpecialCursor=CURSOR_INTERACTION_ON;
+
+					if ((EERIEMouseButton & 1) && !(LastMouseClick & 1))
+					{
+						ARX_INVENTORY_OpenClose(ioSteal);
+
+						if (player.Interface&(INTER_INVENTORY | INTER_INVENTORYALL))		
+						{
+							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+						}
+
+						if (SecondaryInventory != NULL)
+						{
+							SendIOScriptEvent(ioSteal, SM_STEAL,"");
+
+							if (INTERNATIONAL_MODE)
+							{
+								bForceEscapeFreeLook=true;
+							    lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
+							}
+						}
+
+						EERIEMouseButton &=~1;
+					}
+
+					if (DRAGINTER == NULL)
+						return false;
+				}
+			}
+		}
+	}
+
+	// gros player book
+	if (player.Interface & INTER_MAP) 
+	{
+		px = 97 * Xratio;
+		py = 64 * Yratio;
+		
+		if (ITC.playerbook)
+		{
+			if (MouseInRect(px, py, px + ITC.playerbook->m_dwWidth * Xratio, py + ITC.playerbook->m_dwHeight * Yratio))
+			{
+				eMouseState = MOUSE_IN_BOOK;
+			}
+		}
+	}
+	
+	// gros book/note
+	if (player.Interface & INTER_NOTE)
+	{
+		switch (Note.type)
+		{
+		case NOTE_TYPE_NOTE:
+			NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\BigNote.bmp");
+
+			if (NoteTexture)
+			{
+				NotePosX = 320-NoteTexture->m_dwWidth*DIV2;
+				NotePosY=47.f;
+				NoteTextMinx=30.f;
+				NoteTextMaxx=NoteTexture->m_dwWidth-40.f;
+				NoteTextMiny=30.f;
+				NoteTextMaxy=NoteTexture->m_dwHeight-40.f;
+			}					
+
+			break;
+		case NOTE_TYPE_NOTICE:
+			NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Notice.bmp");
+
+			if (NoteTexture)
+			{
+				NotePosX = 320-NoteTexture->m_dwWidth*DIV2;
+				NotePosY=47.f;
+				NoteTextMinx=50.f;
+				NoteTextMaxx=NoteTexture->m_dwWidth-50.f;
+				NoteTextMiny=50.f;
+				NoteTextMaxy=NoteTexture->m_dwHeight-50.f;
+			}
+
+			break;
+		case NOTE_TYPE_BIGNOTE:
+		case NOTE_TYPE_BOOK:
+
+			if (Note.type ==NOTE_TYPE_BIGNOTE)
+			{
+				NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Very_BigNote.bmp");
+				NoteTextureLeft=MakeTCFromFile("Graph\\Interface\\book\\Left_corner.bmp");
+				NoteTextureRight=MakeTCFromFile("Graph\\Interface\\book\\Right_corner.bmp");
+			}
+			else
+			{
+				NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Ingame_books.bmp");
+				NoteTextureLeft=MakeTCFromFile("Graph\\Interface\\book\\Left_corner.bmp");
+				NoteTextureRight=MakeTCFromFile("Graph\\Interface\\book\\Right_corner.bmp");
+			}
+
+			if (NoteTexture)
+			{
+				NotePosX = 320-NoteTexture->m_dwWidth*DIV2;
+				NotePosY=47.f;
+				NoteTextMinx = 40.f;
+				NoteTextMaxx = NoteTexture->m_dwWidth*DIV2-10.f;
+				NoteTextMiny = 40.f;
+				NoteTextMaxy = NoteTexture->m_dwHeight-30.f;
+			}
+
+			break;
+		}
+		
+		px = NotePosX * Xratio;
+		py = NotePosY * Yratio;
+		
+		if (NoteTexture)
+		if (MouseInRect(px, py, px+NoteTexture->m_dwWidth * Xratio, py+NoteTexture->m_dwHeight * Yratio))
+		{
+			eMouseState = MOUSE_IN_NOTE;
+			return false;
+		}
+	}
+
+	if (!PLAYER_INTERFACE_HIDE_COUNT && (TSecondaryInventory!=NULL))
+	{
+		px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(16);
+		py = INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwHeight) - INTERFACE_RATIO(16);
+		INTERACTIVE_OBJ * temp=(INTERACTIVE_OBJ *)TSecondaryInventory->io;
+
+		if (temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal))
+		{
+			if (MouseInRect(px,py, px + INTERFACE_RATIO(16), py + INTERFACE_RATIO(16)))
+			{
+				eMouseState = MOUSE_IN_INVENTORY_PICKALL_ICON;
+				SpecialCursor=CURSOR_INTERACTION_ON;
+
+				if ((EERIEMouseButton & 1) && !(LastMouseClick & 1))
+				{
+					if (TSecondaryInventory)
+					{
+						// play un son que si un item est pris
+						ARX_INVENTORY_TakeAllFromSecondaryInventory();
+					}
+					
+					EERIEMouseButton &=~1;
+				}
+
+				if (DRAGINTER == NULL)
+					return false;
+			}
+		}
+
+		//py = 20;
+		px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwWidth) - INTERFACE_RATIO(32);
+
+		if (MouseInRect(px,py, px + INTERFACE_RATIO(16), py + INTERFACE_RATIO(16)))
+		{
+			eMouseState = MOUSE_IN_INVENTORY_CLOSE_ICON;
+			SpecialCursor=CURSOR_INTERACTION_ON;
+
+			if ((EERIEMouseButton & 1) && !(LastMouseClick & 1))
+			{
+				INTERACTIVE_OBJ * io = NULL;
+				
+				if (SecondaryInventory!=NULL)
+				{
+					io = (INTERACTIVE_OBJ *)SecondaryInventory->io;
+				}
+				else if (player.Interface & INTER_STEAL)
+				{
+					io = ioSteal;
+				}
+
+				if (io!=NULL)
+				{
+					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd()); 
+					InventoryDir=-1;
+					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE,"");
+					TSecondaryInventory=SecondaryInventory;
+					SecondaryInventory=NULL;
+				}
+
+				EERIEMouseButton &=~1;
+			}
+
+			if (DRAGINTER == NULL)
+				return false;
+		}
+	}
+
+	//-------------------------------------------------------------------------
+	
+	
+	// Single Click On Object
+	if ( ( LastMouseClick & 1 ) && ( !( EERIEMouseButton & 1 ) ) )
+	{
+		if ( FlyingOverIO && ( !DRAGINTER ) )
+		{
+			SendIOScriptEvent( FlyingOverIO, SM_CLICKED, "" );
+			bool bOk = true;
+			
+			if ( SecondaryInventory != NULL )
+			{
+				INTERACTIVE_OBJ * temp = (INTERACTIVE_OBJ *)SecondaryInventory->io;
+
+				if (IsInSecondaryInventory(FlyingOverIO))
+					if ( temp->ioflags & IO_SHOP )
+						bOk = false;
+			}
+
+			if ( !( FlyingOverIO->ioflags & IO_MOVABLE ) )
+				if ( ( FlyingOverIO->ioflags & IO_ITEM ) && bOk )
+				{
+					if ( ARX_IMPULSE_Pressed( CONTROLS_CUST_STEALTHMODE ) )
+					{
+						if ( !InPlayerInventoryPos( &DANAEMouse ) && !ARX_INTERFACE_MouseInBook() )
+						{
+							long sx, sy; 
+							bool bSecondary = false;
+
+							sx = sy = 0 ;
+
+							if ( TSecondaryInventory && IsInSecondaryInventory( FlyingOverIO ) )
+							{
+								if ( SecondaryInventory )
+								{
+									bool bfound = true;
+
+									for ( long j = 0 ; j < SecondaryInventory->sizey && bfound ; j++ )
+									{
+										for ( long i = 0 ; i < SecondaryInventory->sizex && bfound ; i++ )
+										{
+											if ( SecondaryInventory->slot[i][j].io == FlyingOverIO )
+											{
+												sx		= i;
+												sy		= j;
+												bfound	= false;
+											}
+										}
+									}
+
+									if (bfound) ARX_CHECK_NO_ENTRY();
+								}
+
+								bSecondary = true;
+							}
+
+							RemoveFromAllInventories( FlyingOverIO );
+							FlyingOverIO->show = SHOW_FLAG_IN_INVENTORY;
+
+							if ( FlyingOverIO->ioflags & IO_GOLD )
+							{
+								ARX_SOUND_PlayInterface( SND_GOLD );	
+							}
+
+							ARX_SOUND_PlayInterface( SND_INVSTD );
+
+							if ( !CanBePutInInventory( FlyingOverIO ) )
+							{
+								if ( TSecondaryInventory && bSecondary )
+								{
+									extern short sInventory, sInventoryX, sInventoryY;
+									sInventory	= 2;
+
+									ARX_CHECK_SHORT(sx);
+									ARX_CHECK_SHORT(sy);
+									sInventoryX = ARX_CLEAN_WARN_CAST_SHORT(sx);
+									sInventoryY = ARX_CLEAN_WARN_CAST_SHORT(sy);
+
+									CanBePutInSecondaryInventory( TSecondaryInventory, FlyingOverIO, &sx, &sy );
+								}
+
+								if ( !bSecondary )
+								{
+									FlyingOverIO->show = SHOW_FLAG_IN_SCENE;
+								}
+							}
+
+							if (DRAGINTER == FlyingOverIO)
+							{
+								DRAGINTER = NULL;
+							}
+
+							FlyingOverIO = NULL;
+						}
+					}
+				}
+		}
+	}
+	
+	if (!(player.Interface & INTER_COMBATMODE))
+	{
+		// Dropping an Interactive Object that has been dragged
+		if ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1) && (DRAGINTER!=NULL)) 
+		{
+			//if (ARX_EQUIPMENT_PutOnPlayer(DRAGINTER))
+			if (InInventoryPos(&DANAEMouse)) // Attempts to put it in inventory
+			{
+				if (!PutInInventory())
+				{
+				}			
+			}
+			else if (eMouseState == MOUSE_IN_INVENTORY_ICON)
+			{
+				if (!PutInInventory())
+				{
+				}
+			}
+			else if (ARX_INTERFACE_MouseInBook())
+			{	
+				if (Book_Mode == 0)
+				{
+					SendIOScriptEvent(DRAGINTER,SM_INVENTORYUSE,"");
+					COMBINE=NULL;
+				}
+			}			
+			else if (DRAGINTER->ioflags & IO_GOLD)
+			{
+					ARX_PLAYER_AddGold(DRAGINTER->_itemdata->price);
+					ARX_SOUND_PlayInterface(SND_GOLD);
+
+					if (DRAGINTER->scriptload)
+					{
+						RemoveFromAllInventories(DRAGINTER);
+
+						ReleaseInter(DRAGINTER);
+					}
+					else
+					{
+						DRAGINTER->show=SHOW_FLAG_IN_INVENTORY;
+						DRAGINTER->GameFlags&=~GFLAG_ISINTREATZONE;
+					}	
+
+					Set_DragInter(NULL);
+				}
+			else if (DRAGINTER!=NULL)
+			{
+				if (!EDITMODE) // test for NPC & FIX
+				{	
+					if ((DRAGINTER->ioflags & IO_NPC) || (DRAGINTER->ioflags & IO_FIX) )
+					{
+						Set_DragInter(NULL);
+						goto suivant2;
+					}
+				}
+
+				if (!((DRAGINTER->ioflags & IO_ITEM) && (DRAGINTER->_itemdata->count > 1)))
+					if ((DRAGINTER->obj) && (DRAGINTER->obj->pbox))
+					{
+
+						if (
+							(!InInventoryPos(&DANAEMouse))) //Put object in fromt of player
+						{
+							if (ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
+								 goto suivant2;
+
+							long res=Manage3DCursor(0);
+							
+						if (res==0) // Throw Object
+						{
+							INTERACTIVE_OBJ * io=DRAGINTER;
+							ARX_PLAYER_Remove_Invisibility();
+							io->obj->pbox->active=1;
+							io->obj->pbox->stopcount=0;
+							float vx=-((float)DANAEMouse.x-(float)subj.centerx);
+
+							vx/=3.f;
+							EERIE_3D pos;
+								pos.x = io->pos.x = player.pos.x; 
+								pos.z = io->pos.z = player.pos.z; 
+							pos.y=io->pos.y=player.pos.y+80.f;
+							io->velocity.x=0.f;
+							io->velocity.y=0.f;
+							io->velocity.z=0.f;
+							io->stopped=1;
+							float y_ratio=(float)((float)DANAEMouse.y-(float)DANAECENTERY)/(float)DANAESIZY*2;
+							float x_ratio=-(float)((float)DANAEMouse.x-(float)DANAECENTERX)/(float)DANAECENTERX;
+							EERIE_3D viewvector;
+							viewvector.x=-(float)EEsin(DEG2RAD(player.angle.b+(x_ratio*30.f)))*EEcos(DEG2RAD(player.angle.a));
+								viewvector.y = EEsin(DEG2RAD(player.angle.a)) + y_ratio; 
+							viewvector.z= (float)EEcos(DEG2RAD(player.angle.b+(x_ratio*30.f)))*EEcos(DEG2RAD(player.angle.a));
+							io->soundtime=0;
+							io->soundcount=0;
+							EERIE_PHYSICS_BOX_Launch(io->obj,&pos,&viewvector);
+							ARX_SOUND_PlaySFX(SND_WHOOSH, &pos);
+							io->show=SHOW_FLAG_IN_SCENE;
+							Set_DragInter(NULL);
+						}
+				}
+						}
+
+			suivant2:
+				;
+						}
+					}
+						
+	if (COMBINE)
+	{
+		if ((!CURRENT_TORCH) || (CURRENT_TORCH && (COMBINE != CURRENT_TORCH)))
+		{
+			EERIE_3D pos;
+
+			if (GetItemWorldPosition(COMBINE,&pos))
+			{
+				if (EEDistance3D(&pos,&player.pos)>300.f)
+					COMBINE=NULL;
+			}
+			else COMBINE=NULL;
+		}
+	}
+	
+	if ((EERIEMouseButton & 1) && !(LastMouseClick & 1) && ((COMBINE !=NULL) || COMBINEGOLD)) 
+	{
+			ReleaseInfosCombine(); 
+
+		INTERACTIVE_OBJ * io;
+
+		if ((io=FlyingOverIO)!=NULL)
+		{
+			if (COMBINEGOLD)
+			{
+				char temp[256];
+				strcpy(temp,"GOLD_COIN");
+				SendIOScriptEvent(io,SM_COMBINE,temp);
+			}
+			else
+			{
+				if (io!=COMBINE)
+				{
+					char temp[256];
+					char temp2[256];
+					strcpy(temp,COMBINE->filename);
+					strcpy(temp2,GetName(temp));
+					sprintf(temp,"%s_%04ld",temp2,COMBINE->ident);
+					MakeUpcase(temp);				
+					EVENT_SENDER=COMBINE;
+
+					if (!specialstrcmp(temp2,"KEYRING"))
+						ARX_KEYRING_Combine(io);
+					else
+						SendIOScriptEvent(io,SM_COMBINE,temp);
+				}
+			}			
+		}
+
+		else // GLights
+		{
+			float fMaxdist = 300;
+
+			if (Project.telekinesis) fMaxdist = 850;
+			
+			for (long i=0;i<MAX_LIGHTS;i++)
+			{
+				if ((GLight[i]!=NULL) &&
+					(GLight[i]->exist) &&
+					(EEDistance3D(&GLight[i]->pos, &player.pos) <= fMaxdist) &&
+					(!(GLight[i]->extras & EXTRAS_NO_IGNIT)))
+				{
+					if (MouseInRect(GLight[i]->mins.x, GLight[i]->mins.y, GLight[i]->maxs.x, GLight[i]->maxs.y))
+					{
+						if (COMBINE->ioflags & IO_ITEM)
+						{
+							if ((COMBINE == CURRENT_TORCH) || (COMBINE->_itemdata->LightValue == 1))
+							{
+								if (GLight[i]->status != 1)
+								{
+									GLight[i]->status = 1;
+									ARX_SOUND_PlaySFX(SND_TORCH_START, &GLight[i]->pos);
+								}
+							}
+
+							if (COMBINE->_itemdata->LightValue == 0)
+							{
+								if (GLight[i]->status != 0)
+								{
+									GLight[i]->status = 0;
+									ARX_SOUND_PlaySFX(SND_TORCH_END, &GLight[i]->pos);
+									SendIOScriptEvent(COMBINE, SM_CUSTOM, "DOUSE");
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		COMBINEGOLD=0;
+		bool bQuitCombine = true;
+
+		if ((player.Interface & INTER_INVENTORY))
+		{
+			if (player.bag)
+			{
+
+					float fCenterX	= DANAECENTERX + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.hero_inventory->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
+					float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
+
+
+				float posx = ARX_CAST_TO_INT_THEN_FLOAT( fCenterX );
+				float posy = ARX_CAST_TO_INT_THEN_FLOAT( fSizY );
+
+
+				
+				if (sActiveInventory > 0)
+				{
+					if (MouseInRect(posx, posy, posx+INTERFACE_RATIO(32), posy+INTERFACE_RATIO(32)))
+						bQuitCombine = false;
+				}
+
+				if (sActiveInventory < player.bag-1)
+				{
+
+					float fRatio	= INTERFACE_RATIO(32 + 5) ;
+					ARX_CHECK_INT(posy + fRatio);
+
+					posy += ARX_CLEAN_WARN_CAST_INT(fRatio);
+
+
+					if (MouseInRect(posx, posy, posx+INTERFACE_RATIO(32), posy+INTERFACE_RATIO(32)))
+						bQuitCombine = false;
+				}
+			}
+		}
+
+		if (bQuitCombine)
+		{
+			COMBINE=NULL;
+			EERIEMouseButton &= ~1;
+		}
+	}
+
+		//lights
+	if (COMBINE)
+	{
+		float fMaxdist = 300;
+
+		if (Project.telekinesis) fMaxdist = 850;
+		
+		for (long i=0;i<MAX_LIGHTS;i++)
+		{
+			if ((GLight[i]!=NULL) &&
+				(GLight[i]->exist) &&
+
+				(EEDistance3D(&GLight[i]->pos, &player.pos) <= fMaxdist) &&
+				(!(GLight[i]->extras & EXTRAS_NO_IGNIT)))
+			{
+				if (MouseInRect(GLight[i]->mins.x, GLight[i]->mins.y, GLight[i]->maxs.x, GLight[i]->maxs.y))
+				{
+					SpecialCursor = CURSOR_INTERACTION_ON;
+				}
+			}
+		}
+	}
+
+	// Double Clicked and not already combining.
+	if ((EERIEMouseButton & 4) && (COMBINE==NULL)) 
+	{
+		long accept_combine=1;
+
+		if ((SecondaryInventory!=NULL) && (InSecondaryInventoryPos(&DANAEMouse)))
+		{
+			INTERACTIVE_OBJ * io=(INTERACTIVE_OBJ *)SecondaryInventory->io;
+
+			if (io->ioflags & IO_SHOP) accept_combine=0;
+		}
+
+		if (accept_combine)
+		{
+			
+			if ((FlyingOverIO) &&
+				( (FlyingOverIO->ioflags & IO_ITEM) && !(FlyingOverIO->ioflags & IO_MOVABLE)))
+			{
+				COMBINE=FlyingOverIO;
+				GetInfosCombine();
+				EERIEMouseButton&=~4;
+			} 
+			else if (InInventoryPos(&DANAEMouse)) EERIEMouseButton&=4;
+		}
+	}
+
+	// Checks for Object Dragging
+	if (!EDITMODE)
+		if (( DRAGGING && !PLAYER_MOUSELOOK_ON &&
+			(!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE)) &&
+			(DRAGINTER==NULL)
+			)
+			|| // mode system shock
+			( DRAGGING && (pMenuConfig->bAutoReadyWeapon == false) &&
+			(!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE)) &&
+			(DRAGINTER==NULL))
+			)
+		{
+			if ( !TakeFromInventory(&STARTDRAG))
+			{
+				bool bOk = false;
+				
+				INTERACTIVE_OBJ *io = InterClick(&STARTDRAG); 
+
+				if (io && !BLOCK_PLAYER_CONTROLS)
+				{
+					if (ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
+					{
+						if (io->show == SHOW_FLAG_ON_PLAYER)
+							bOk = true;
+					}
+					else
+					{
+						bOk = true;
+					}
+				}
+
+				if (bOk)
+				{
+					Set_DragInter(io);
+
+					if (io!=NULL) 
+					{
+						ARX_PLAYER_Remove_Invisibility();
+
+						if (DRAGINTER->show==SHOW_FLAG_ON_PLAYER)
+						{
+							ARX_EQUIPMENT_UnEquip(inter.iobj[0],DRAGINTER);
+							RemoveFromAllInventories(DRAGINTER);
+							DRAGINTER->bbox2.x=-1;
+									}
+
+						if (!EDITMODE)
+						{	
+							if ((io->ioflags & IO_NPC) || (io->ioflags & IO_FIX)) 
+							{
+								Set_DragInter(NULL);
+								goto suivant;
+							}
+						}
+
+						if (io->ioflags & IO_UNDERWATER)
+						{
+							io->ioflags&=~IO_UNDERWATER;
+							ARX_SOUND_PlayInterface(SND_PLOUF, 0.8F + 0.4F * rnd());
+						}
+
+						DRAGINTER->show=SHOW_FLAG_NOT_DRAWN;
+						ARX_SOUND_PlayInterface(SND_INVSTD);
+					}
+				}
+				else
+					Set_DragInter(NULL);
+				
+				suivant:
+					;
+			}
+			else ARX_PLAYER_Remove_Invisibility();
+		}
+		  
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 }
 
     // Load Level Command
@@ -5032,6 +6203,7 @@ extern void ARX_PrepareBackgroundNRMLs();
 //-----------------------------------------------------------------------------
 void DANAE::ManageKeyMouse() 
 {
+<<<<<<< HEAD
     std::string willaddspeech( WILLADDSPEECH );
     if (ARXmenu.currentmode == AMCM_OFF)
     {
@@ -5955,6 +7127,931 @@ void DANAE::ManageKeyMouse()
 
                     this->kbd.inkey[41]=0;					
                 }
+=======
+	if (ARXmenu.currentmode == AMCM_OFF)
+	{
+		INTERACTIVE_OBJ * pIO = NULL;
+
+		if (!BLOCK_PLAYER_CONTROLS)
+		{
+			if (TRUE_PLAYER_MOUSELOOK_ON && !(player.Interface & INTER_COMBATMODE)
+				&& (eMouseState != MOUSE_IN_NOTE)
+				)
+			{
+				POINT pos;
+				pos.x=EERIEMouseX;
+				pos.y=EERIEMouseY;
+				
+				
+				EERIE_S2D poss;
+
+				ARX_CHECK_SHORT(pos.x);
+				ARX_CHECK_SHORT(pos.y);
+				poss.x=ARX_CLEAN_WARN_CAST_SHORT(pos.x);
+				poss.y=ARX_CLEAN_WARN_CAST_SHORT(pos.y);
+
+				poss.x=MemoMouse.x;
+				poss.y=MemoMouse.y;
+				
+				// mode systemshock
+				if (pMenuConfig->bMouseLookToggle && pMenuConfig->bAutoReadyWeapon == false)
+				{
+					
+
+					float fX =  DANAESIZX * 0.5f;
+					float fY =	DANAESIZY * 0.5f;
+					ARX_CHECK_SHORT(fX);
+					ARX_CHECK_SHORT(fY);
+
+					DANAEMouse.x = ARX_CLEAN_WARN_CAST_SHORT(fX);
+					DANAEMouse.y = ARX_CLEAN_WARN_CAST_SHORT(fY);
+
+
+					pIO = FlyingOverObject(&DANAEMouse,1);
+					
+					if (pIO)
+					{
+						FlyingOverIO = pIO;
+						MemoMouse.x = DANAEMouse.x;
+						MemoMouse.y = DANAEMouse.y;
+					}
+				}
+				else
+					pIO = FlyingOverObject(&poss,1);
+			}
+			else
+				pIO = FlyingOverObject(&DANAEMouse,1);
+		}
+		
+		if (pIO && (ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK))
+		{
+			for (long i=0;i<MAX_EQUIPED;i++)
+			{
+				if ((player.equiped[i]!=0)
+					&&	ValidIONum(player.equiped[i])
+					&&	(inter.iobj[player.equiped[i]] == pIO))
+					FlyingOverIO = pIO;
+			}
+		}
+		
+		if ((pIO)
+			&& (pIO->GameFlags & GFLAG_INTERACTIVITY)
+			&& !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)
+			&& (eMouseState != MOUSE_IN_NOTE)
+			)
+		{
+			if (!(EERIEMouseButton & 2) && (LastMouseClick & 2)
+				&&  (STARTED_ACTION_ON_IO == pIO))
+			{
+				if (pIO->ioflags & IO_ITEM)
+				{
+					FlyingOverIO = pIO;
+					COMBINE=NULL;
+
+					if (DRAGINTER == NULL)
+					{
+						bool bOk = true;
+
+						if (SecondaryInventory!=NULL)
+						{
+							INTERACTIVE_OBJ * temp=(INTERACTIVE_OBJ *)SecondaryInventory->io;
+
+							if (IsInSecondaryInventory(FlyingOverIO))
+								if (temp->ioflags & IO_SHOP)
+									bOk = false;
+						}
+						
+							INTERACTIVE_OBJ * io=inter.iobj[0];
+							ANIM_USE * useanim=&io->animlayer[1];
+							long type=ARX_EQUIPMENT_GetPlayerWeaponType();
+
+							switch (type)
+							{		
+							case WEAPON_DAGGER:
+
+								if(useanim->cur_anim==io->anims[ANIM_DAGGER_UNREADY_PART_1]) bOk=false;
+
+								break;
+							case WEAPON_1H:
+
+								if(useanim->cur_anim==io->anims[ANIM_1H_UNREADY_PART_1]) bOk=false;
+
+								break;
+							case WEAPON_2H:
+
+								if(useanim->cur_anim==io->anims[ANIM_2H_UNREADY_PART_1]) bOk=false;
+
+								break;
+							case WEAPON_BOW:
+
+								if(useanim->cur_anim==io->anims[ANIM_MISSILE_UNREADY_PART_1]) bOk=false;
+
+								break;
+							default:
+								break;
+							}
+						
+						if (bOk)
+						{
+							if (!((FlyingOverIO->_itemdata->playerstacksize <= 1) && (FlyingOverIO->_itemdata->count > 1)))
+							{
+								SendIOScriptEvent(FlyingOverIO,SM_INVENTORYUSE,"");
+
+								if (!((pMenuConfig->bAutoReadyWeapon == false) && (pMenuConfig->bMouseLookToggle)))
+								{
+									TRUE_PLAYER_MOUSELOOK_ON&=~1;
+								}
+							}
+						}
+					}
+
+					if ((pMenuConfig->bAutoReadyWeapon == false) && (pMenuConfig->bMouseLookToggle))
+					{
+						EERIEMouseButton &= ~2;
+					}
+				}
+				}
+			else //!TRUE_PLAYER_MOUSELOOK_ON  
+			{
+				if ((EERIEMouseButton & 2) && !(LastMouseClick & 2))
+				{
+					STARTED_ACTION_ON_IO=FlyingOverIO;
+				}
+			}
+		}
+		
+		if ((eMouseState == MOUSE_IN_WORLD) || 
+			((eMouseState == MOUSE_IN_BOOK) && (!((ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK) && (Book_Mode !=2))))
+			)
+		{
+			if (pMenuConfig->bMouseLookToggle)
+			{
+				
+					if (eMouseState != MOUSE_IN_NOTE)
+				{
+						if ((EERIEMouseButton & 2) && !(LastMouseClick & 2)&&(pMenuConfig)&&(pMenuConfig->bLinkMouseLookToUse))
+						{
+							if (!(FlyingOverIO && (FlyingOverIO->ioflags & IO_ITEM)) || DRAGINTER)
+							{
+								if (!(TRUE_PLAYER_MOUSELOOK_ON & 1))
+								{
+									if (!InInventoryPos(&DANAEMouse))
+									{
+										if (!((player.Interface & INTER_MAP) && Book_Mode != 2))
+										{
+											TRUE_PLAYER_MOUSELOOK_ON|=1;
+											EERIEMouseButton &= ~2;
+											SLID_START=(float)ARXTime;
+											lFadeMapTime = lARXTime;
+										}
+									}
+								}
+								else 
+								{
+									if (!((pMenuConfig->bAutoReadyWeapon == false) && (pMenuConfig->bMouseLookToggle) && FlyingOverIO && (FlyingOverIO->ioflags & IO_ITEM)))
+									{
+										TRUE_PLAYER_MOUSELOOK_ON&=~1;
+
+										if (player.Interface & INTER_COMBATMODE && !(player.Interface & INTER_NOTE))
+											ARX_INTERFACE_Combat_Mode(0);
+									}
+								}
+							}
+						}
+				}
+			}
+			else
+			{
+				if (eMouseState != MOUSE_IN_NOTE)
+				{
+					if(	(EERIEMouseButton & 2) &&
+						(!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK & (Book_Mode !=2))) &&
+						(!(TRUE_PLAYER_MOUSELOOK_ON & 1) || SPECIAL_DRAW_WEAPON)&&
+					        (pMenuConfig) && (pMenuConfig->bLinkMouseLookToUse)) 
+					{
+						if (SPECIAL_DRAW_WEAPON)
+							SPECIAL_DRAW_WEAPON=0;
+						else if (!InInventoryPos(&DANAEMouse))
+							{
+								if (SPECIAL_DRAW_WEAPON)
+								{
+									TRUE_PLAYER_MOUSELOOK_ON&=~1;
+									SPECIAL_DRAW_WEAPON=0;
+								}
+								else
+								{
+									TRUE_PLAYER_MOUSELOOK_ON|=1;
+									SLID_START=(float)ARXTime;
+								lFadeMapTime = lARXTime;
+								}
+							}
+					}
+					else if ((!(EERIEMouseButton & 2)) && pMenuConfig->bLinkMouseLookToUse && (LastMouseClick & 2))
+					{
+						if (!SPECIAL_DRAW_WEAPON)
+						{
+							if (!ARX_IMPULSE_Pressed(CONTROLS_CUST_FREELOOK)) 
+								TRUE_PLAYER_MOUSELOOK_ON&=~1;
+
+							if ((player.Interface & INTER_COMBATMODE) && !ARX_IMPULSE_Pressed(CONTROLS_CUST_FREELOOK))
+								ARX_INTERFACE_Combat_Mode(0);
+						}
+
+						EERIEMouseButton &= ~2;
+					}
+				}
+
+				if (TRUE_PLAYER_MOUSELOOK_ON && (!(EERIEMouseButton & 2)) && !SPECIAL_DRAW_WEAPON)
+				{
+					if (!ARX_IMPULSE_Pressed(CONTROLS_CUST_FREELOOK))
+						TRUE_PLAYER_MOUSELOOK_ON&=~1;
+				}
+			}
+		}
+		
+		PLAYER_MOUSELOOK_ON=TRUE_PLAYER_MOUSELOOK_ON;
+
+		if ((player.doingmagic==2)&& (pMenuConfig->bMouseLookToggle))
+			PLAYER_MOUSELOOK_ON=0;
+	}
+
+	if(ARXmenu.currentmode!=AMCM_OFF)
+	{
+		PLAYER_MOUSELOOK_ON=0;
+	}
+
+	// Checks For MouseGrabbing/Restoration after Grab	
+	bool bRestoreCoordMouse=true;
+
+	if((PLAYER_MOUSELOOK_ON) && (!LAST_PLAYER_MOUSELOOK_ON))
+	{
+		MemoMouse.x=DANAEMouse.x;
+		MemoMouse.y=DANAEMouse.y;
+		EERIEMouseGrab=1;
+	}
+	else if ((!PLAYER_MOUSELOOK_ON) && (LAST_PLAYER_MOUSELOOK_ON))
+	{
+		EERIEMouseGrab=0;
+		POINT	pos;
+		pos.x=MemoMouse.x;
+		pos.y=MemoMouse.y;
+
+		if ( this->m_pDeviceInfo->bWindowed)
+		{
+			pos.x+=this->m_pFramework->Xstart;
+			pos.y+=this->m_pFramework->Ystart;
+		}
+
+		ClientToScreen(this->m_hWnd,&pos);
+		SetCursorPos(pos.x,pos.y);
+		DANAEMouse.x=MemoMouse.x;
+		DANAEMouse.y=MemoMouse.y;
+
+		if(	(danaeApp.m_pFramework->m_bIsFullscreen)&&
+			(bGLOBAL_DINPUT_GAME) )
+		{
+			if(pGetInfoDirectInput)
+			{
+
+				pGetInfoDirectInput->fMouseAXTemp	=	DANAEMouse.x ;
+				pGetInfoDirectInput->fMouseAYTemp	=	DANAEMouse.y ;
+				ARX_CHECK_INT(pGetInfoDirectInput->fMouseAXTemp);
+				ARX_CHECK_INT(pGetInfoDirectInput->fMouseAYTemp);
+				
+				pGetInfoDirectInput->iMouseAX=ARX_CLEAN_WARN_CAST_INT(pGetInfoDirectInput->fMouseAXTemp);
+				pGetInfoDirectInput->iMouseAY=ARX_CLEAN_WARN_CAST_INT(pGetInfoDirectInput->fMouseAYTemp);
+
+
+			}
+		}
+
+		bRestoreCoordMouse=false;
+	}
+
+	LAST_PLAYER_MOUSELOOK_ON=PLAYER_MOUSELOOK_ON;
+	
+	
+	
+	
+	
+	PLAYER_ROTATION=0;
+
+	if (Project.interpolatemouse) // mouse smoothing...
+	{
+		float v=EERIEMouseXdep*DIV1000;
+
+		if (v>3.1415927f) 
+		{
+			v=3.1415927f;
+		}
+		else if (v<-3.1415927f) 
+		{
+			v=-3.1415927f;
+		}
+
+		F2L((float)(EEsin(v)*600.f),&EERIEMouseXdep);
+		
+		v=EERIEMouseYdep*DIV1000;
+
+		if (v>3.1415927f) 
+		{
+			v=3.1415927f;
+		}
+		else if (v<-3.1415927f) 
+		{
+			v=-3.1415927f;
+		}
+
+		F2L((float)(EEsin(v)*600.f),&EERIEMouseYdep);
+		
+	}
+
+	ARX_Menu_Manage(this->m_pd3dDevice);
+	EERIE_3D tm;
+	tm.x=tm.y=tm.z=0.f;
+	INTERACTIVE_OBJ * t;
+	
+	MOVETYPE=MOVE_WAIT;
+
+	if(bRestoreCoordMouse)
+	{
+
+		ARX_CHECK_SHORT(EERIEMouseX-this->m_pFramework->Xstart);
+		ARX_CHECK_SHORT(EERIEMouseX-this->m_pFramework->Ystart);
+		ARX_CHECK_SHORT(EERIEMouseX);
+		ARX_CHECK_SHORT(EERIEMouseY);
+
+		if ( this->m_pDeviceInfo->bWindowed)
+		{
+			DANAEMouse.x=ARX_CLEAN_WARN_CAST_SHORT(EERIEMouseX-this->m_pFramework->Xstart);
+			DANAEMouse.y=ARX_CLEAN_WARN_CAST_SHORT(EERIEMouseY-this->m_pFramework->Ystart);
+		}
+		else 
+		{
+			DANAEMouse.x=ARX_CLEAN_WARN_CAST_SHORT(EERIEMouseX);
+			DANAEMouse.y=ARX_CLEAN_WARN_CAST_SHORT(EERIEMouseY);
+		}
+
+
+				}
+	
+	// Player/Eyeball Freelook Management
+	if (!BLOCK_PLAYER_CONTROLS)
+	{
+		GetInventoryObj_INVENTORYUSE(&DANAEMouse); 
+
+		if ((!(player.Interface & INTER_MAP )) || ((player.Interface & INTER_MAP ) && ((!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK & (Book_Mode != 2))/*ARX_INTERFACE_MouseInBook()*/) || (Book_Mode==2) || (Book_Mode==3) || (Book_Mode!=-1)))
+			||
+			(player.Interface & INTER_COMBATMODE))
+		{
+			static int flPushTimeX[2]={0,0};
+			static int flPushTimeY[2]={0,0};
+			bool bKeySpecialMove=false;
+
+			if(!ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFE))
+			{
+
+				float fTime		= ARX_TIME_Get();	
+				ARX_CHECK_INT(fTime);
+
+				int	iTime		=  ARX_CLEAN_WARN_CAST_INT(fTime);
+
+
+				if(ARX_IMPULSE_Pressed(CONTROLS_CUST_TURNLEFT))
+				{
+					if(!flPushTimeX[0]) 
+					{
+						flPushTimeX[0]	=	iTime;
+					}
+
+					bKeySpecialMove=true;
+				}
+				else flPushTimeX[0]=0;
+
+				if(ARX_IMPULSE_Pressed(CONTROLS_CUST_TURNRIGHT))
+				{
+					if(!flPushTimeX[1]) 
+					{
+						flPushTimeX[1]	=	iTime;
+					}
+
+					bKeySpecialMove=true;
+				}
+				else flPushTimeX[1]=0;
+			}
+
+			if (USE_PLAYERCOLLISIONS)
+			{
+
+				float fTime		= ARX_TIME_Get();	
+				ARX_CHECK_INT(fTime);
+
+				int	iTime		=  ARX_CLEAN_WARN_CAST_INT(fTime);
+
+
+				if(ARX_IMPULSE_Pressed(CONTROLS_CUST_LOOKUP))
+				{
+					if(!flPushTimeY[0]) 
+					{
+						flPushTimeY[0]	=	iTime;
+					}
+
+					bKeySpecialMove=true;
+				}
+				else flPushTimeY[0]=0;
+
+				if(ARX_IMPULSE_Pressed(CONTROLS_CUST_LOOKDOWN))
+				{
+					if(!flPushTimeY[1]) 
+					{
+						flPushTimeY[1]	=	iTime;
+					}
+
+					bKeySpecialMove=true;
+				}
+				else flPushTimeY[1]=0;
+			}
+
+			if(bKeySpecialMove)
+			{
+				int iAction=0;
+
+				if(	flPushTimeX[0]||
+					flPushTimeX[1] )
+				{
+					if(flPushTimeX[0]<flPushTimeX[1]) EERIEMouseXdep=10;
+					else EERIEMouseXdep=-10;
+
+					iAction|=1;
+				}
+
+				if(	flPushTimeY[0]||
+					flPushTimeY[1] )
+				{
+					if(flPushTimeY[0]<flPushTimeY[1]) EERIEMouseYdep=10;
+					else EERIEMouseYdep=-10;
+
+					iAction|=2;
+				}
+
+				if(!(iAction&1)) EERIEMouseXdep=0;
+
+				if(!(iAction&2)) EERIEMouseYdep=0;
+			}
+			else
+			{
+				if (INTERNATIONAL_MODE)
+				{
+					if (bRenderInCursorMode)
+					{
+						if(	(DANAEMouse.x==(DANAESIZX-1))&&
+						        (pGetInfoDirectInput->iMouseRX > 8))
+						{
+							EERIEMouseYdep=0;
+							EERIEMouseXdep=pGetInfoDirectInput->iMouseRX;
+							bKeySpecialMove=true;
+						}
+						else
+						{
+							if( (!DANAEMouse.x)&&
+							        (pGetInfoDirectInput->iMouseRX < -8))
+							{
+								EERIEMouseYdep=0;
+								EERIEMouseXdep=pGetInfoDirectInput->iMouseRX;
+								bKeySpecialMove=true;
+							}
+						}
+
+						if(	(DANAEMouse.y==(DANAESIZY-1))&&
+						        (pGetInfoDirectInput->iMouseRY > 8))
+						{
+							EERIEMouseYdep=pGetInfoDirectInput->iMouseRY;
+							EERIEMouseXdep=0;
+							bKeySpecialMove=true;
+						}
+						else
+						{
+							if(	(!DANAEMouse.y)&&
+							        (pGetInfoDirectInput->iMouseRY < -8))
+							{
+								EERIEMouseYdep=pGetInfoDirectInput->iMouseRY;
+								EERIEMouseXdep=0;
+								bKeySpecialMove=true;
+							}
+						}
+					}
+				}
+			}
+
+			if(ARX_IMPULSE_Pressed(CONTROLS_CUST_CENTERVIEW))
+			{
+				eyeball.angle.a=eyeball.angle.g=0.f;
+				player.desiredangle.a=player.desiredangle.g=player.angle.a=player.angle.g=0.f;
+			}
+
+			float fd;
+
+			if(	0
+				&&	(danaeApp.m_pFramework->m_bIsFullscreen)
+				&&	(bGLOBAL_DINPUT_GAME) )
+			{
+				fd = (Original_framedelay) * .3f * (640.f / (float)DANAESIZX); 
+			}
+			else
+			{
+
+				fd = (((float)pGetInfoDirectInput->iSensibility) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
+
+				if(	(pMenuConfig)&&
+					(pMenuConfig->bMouseSmoothing) )
+				{
+					float of=Original_framedelay;
+
+					if (of<=0.f)
+						fd=0.f;
+					else if (of>80.f)
+					{
+						of=80.f;
+						fd*=of;
+					}
+					else
+						fd*=of;
+				}
+				else if (fd > 200)
+						fd=200;
+			}
+
+			fd *= ((float)DANAESIZX) * DIV640; 
+
+			if ((eyeball.exist==2) && (PLAYER_MOUSELOOK_ON||bKeySpecialMove)) 
+			{
+				if (EERIEMouseYdep!=0)
+				{
+					float ia;
+
+					if(	(pMenuConfig)&&
+						(pMenuConfig->bMouseSmoothing) )
+					{
+						ia=((float)EERIEMouseYdep*DIV60)*fd;
+					}
+					else
+					{
+						ia=((float)EERIEMouseYdep*DIV5)*fd;
+					}
+
+					if (INVERTMOUSE) ia=-ia;
+
+					if (eyeball.angle.a<70.f) 
+					{
+						if (eyeball.angle.a+ia<70.f) eyeball.angle.a+=ia;
+					}
+					else if (eyeball.angle.a>300.f) 
+					{
+						if (eyeball.angle.a+ia>300.f) eyeball.angle.a+=ia;
+					}
+
+					eyeball.angle.a=MAKEANGLE(eyeball.angle.a);
+				}
+
+				if (EERIEMouseXdep!=0)
+				{
+					float ib;
+
+					if(	(pMenuConfig)&&
+						(pMenuConfig->bMouseSmoothing) )
+					{
+						ib=((float)EERIEMouseXdep*DIV50)*fd;
+					}
+					else
+					{
+						ib=((float)EERIEMouseXdep*DIV5)*fd;
+					}
+
+					eyeball.angle.b=MAKEANGLE(eyeball.angle.b-ib);			
+				}
+			}
+			else if (PLAYER_MOUSELOOK_ON || bKeySpecialMove) 
+				if (ARXmenu.currentmode != AMCM_NEWQUEST)
+					{
+					if ((EERIEMouseYdep != 0)) 
+						{
+						float ia;
+							
+							if(	(pMenuConfig)&&
+								(pMenuConfig->bMouseSmoothing) )
+							{
+								ia=((float)EERIEMouseYdep*DIV60*fd);
+							}
+							else
+							{
+							ia = ((float)EERIEMouseYdep * DIV5 * fd);
+							}
+
+							if ((inter.iobj[0]) && EEfabs(ia)>2.f) inter.iobj[0]->lastanimtime=0;
+							
+							if (INVERTMOUSE) ia=-ia;
+
+							float iangle=player.angle.a;
+						
+							player.desiredangle.a=player.angle.a;
+							player.desiredangle.a+=ia;
+							player.desiredangle.a=MAKEANGLE(player.desiredangle.a);
+
+							if ((player.desiredangle.a>=74.9f) && (player.desiredangle.a<=301.f))
+							{
+								if (iangle<75.f) player.desiredangle.a=74.9f; //69
+								else player.desiredangle.a=301.f;
+							}
+							
+						}
+
+					if ((EERIEMouseXdep != 0))
+						{
+							float ib;
+
+							if(	(pMenuConfig)&&
+								(pMenuConfig->bMouseSmoothing) )
+							{
+								ib=((float)EERIEMouseXdep*DIV50*fd);
+							}
+							else
+							{
+							ib = ((float)EERIEMouseXdep * DIV5 * fd); 
+							}
+							
+							if (ib!=0.f) player.Current_Movement|=PLAYER_ROTATE;	
+
+							player.desiredangle.b=player.angle.b;
+							player.desiredangle.b=MAKEANGLE(player.desiredangle.b-ib);			
+							PLAYER_ROTATION=ib;
+						}
+				
+				}
+				
+		}
+	}
+	
+	
+
+	{
+		
+		if (EDITMODE)
+		{
+			if (EERIEMouseButton & 1) 
+			{
+				t = FlyingOverIO; 
+
+				if (t!=NULL)
+				{
+					SelectIO(t);
+					EERIEMouseButton&=~1;
+				}		
+			}
+		}
+		////////
+		else if ((!BLOCK_PLAYER_CONTROLS) && !(player.Interface & INTER_COMBATMODE)) 
+			{
+				if (DRAGINTER == NULL)
+					if ((LastMouseClick & 1) && !(EERIEMouseButton & 1) && !(EERIEMouseButton & 4) && !(LastMouseClick & 4))
+					{
+						INTERACTIVE_OBJ * temp;
+					temp = FlyingOverIO; 
+
+						if ((temp!=NULL) && temp->locname[0] )
+						{
+							if (((FlyingOverIO->ioflags & IO_ITEM) && FlyingOverIO->_itemdata->equipitem)
+								&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
+								>= FlyingOverIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
+							{
+								SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY,"");
+							}
+
+							MakeLocalised(temp->locname,WILLADDSPEECH,256);
+
+							if (temp->ioflags & IO_GOLD)
+							{
+								_TCHAR UText[256];
+								_stprintf(UText, _T("%ld %s"), temp->_itemdata->price, WILLADDSPEECH);
+								_tcscpy(WILLADDSPEECH, UText);
+							}
+
+							if ((temp->poisonous>0) && (temp->poisonous_count!=0))
+							{
+								_TCHAR Text[256];
+								_TCHAR UText[256];
+								MakeLocalised("[Description_Poisoned]",Text,256);
+								_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH, Text, (int)temp->poisonous);
+								_tcscpy(WILLADDSPEECH, UText);
+							}
+
+							if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
+							{
+								_TCHAR Text[256];
+								_TCHAR UText[256];
+								MakeLocalised("[Description_Durability]",Text,256);
+								_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH, Text, temp->durability,temp->max_durability);
+								_tcscpy(WILLADDSPEECH, UText);
+							}
+
+					
+						WILLADDSPEECHTIME = ARXTimeUL();
+
+						if (INTERNATIONAL_MODE)
+						{
+
+							bool bAddText = true;		
+
+								if( (temp->obj)&&
+									(temp->obj->pbox)&&
+							        (temp->obj->pbox->active == 1))
+							{
+									bAddText=false;
+								}
+
+							if (bAddText)
+							{
+
+									//------------ ONLY IN DEBUG
+									ARX_CHECK_LONG( 120 * Xratio );
+									ARX_CHECK_LONG( 14 * Yratio );
+									ARX_CHECK_LONG( ( 120 + 500 ) * Xratio );
+									ARX_CHECK_LONG( ( 14  + 200 ) * Yratio );
+									//------------
+									RECT rDraw	=	{	ARX_CLEAN_WARN_CAST_LONG( 120 * Xratio ), 
+														ARX_CLEAN_WARN_CAST_LONG( 14 * Yratio ),
+														ARX_CLEAN_WARN_CAST_LONG( ( 120 + 500 ) * Xratio ),
+								                    ARX_CLEAN_WARN_CAST_LONG((14 + 200) * Yratio)
+								             };
+
+									pTextManage->Clear();
+								pTextManage->AddText(InBookFont,
+																		WILLADDSPEECH,
+																	    rDraw,
+																		RGB(232,204,143),
+																		0x00FF00FF,
+																		2000+_tcslen(WILLADDSPEECH)*60);
+								}
+
+								WILLADDSPEECH[0]=0;
+							}
+						}
+					}	
+					else
+					{
+						if(	(INTERNATIONAL_MODE)&&
+							(pMenuConfig)&&
+					        (pMenuConfig->bAutoDescription))
+					{
+
+								INTERACTIVE_OBJ * temp;
+						temp = FlyingOverIO; 
+
+								if ((temp!=NULL) && temp->locname[0] )
+								{
+									if (((FlyingOverIO->ioflags & IO_ITEM) && FlyingOverIO->_itemdata->equipitem)
+										&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
+										>= FlyingOverIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
+									{
+										SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY,"");
+									}
+
+									MakeLocalised(temp->locname,WILLADDSPEECH,256);
+
+									if (temp->ioflags & IO_GOLD)
+									{
+										_TCHAR UText[256];
+										_stprintf(UText, _T("%ld %s"), temp->_itemdata->price, WILLADDSPEECH);
+										_tcscpy(WILLADDSPEECH, UText);
+									}
+
+									if ((temp->poisonous>0) && (temp->poisonous_count!=0))
+									{
+										_TCHAR Text[256];
+										_TCHAR UText[256];
+										MakeLocalised("[Description_Poisoned]",Text,256);
+										_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH, Text, (int)temp->poisonous);
+										_tcscpy(WILLADDSPEECH, UText);
+									}
+
+									if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
+									{
+										_TCHAR Text[256];
+										_TCHAR UText[256];
+										MakeLocalised("[Description_Durability]",Text,256);
+										_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH, Text, temp->durability,temp->max_durability);
+										_tcscpy(WILLADDSPEECH, UText);
+									}
+
+						
+									WILLADDSPEECHTIME = ARXTimeUL();//treat warning C4244 conversion from 'float' to 'unsigned long'
+	
+									bool bAddText=true;
+
+									if( (temp->obj)&&
+										(temp->obj->pbox)&&
+							        (temp->obj->pbox->active == 1))
+							{
+										bAddText=false;
+									}
+
+							if (bAddText)
+							{
+
+										//------------ ONLY IN DEBUG
+										ARX_CHECK_LONG( 120 * Xratio );
+										ARX_CHECK_LONG( 14 * Yratio );
+										ARX_CHECK_LONG( ( 120 + 500 ) * Xratio );
+										ARX_CHECK_LONG( ( 14 + 200 ) * Yratio );
+										//------------
+
+										RECT rDraw = {	ARX_CLEAN_WARN_CAST_LONG( 120 * Xratio ), 
+														ARX_CLEAN_WARN_CAST_LONG( 14 * Yratio ), 
+														ARX_CLEAN_WARN_CAST_LONG( ( 120 + 500 ) * Xratio ),
+								                ARX_CLEAN_WARN_CAST_LONG((14 + 200) * Yratio)
+								             };
+
+										pTextManage->Clear();
+								pTextManage->AddText(InBookFont,
+																		WILLADDSPEECH,
+																	    rDraw,
+																		RGB(232,204,143),
+																		0x00FF00FF );
+									}
+
+									WILLADDSPEECH[0]=0;
+								}
+							}
+					}
+			}
+			
+			if ((EERIEMouseButton & 4) || (LastMouseClick & 4)) WILLADDSPEECH[0]=0;
+
+			if (WILLADDSPEECH[0]!=0)
+				if (WILLADDSPEECHTIME+300<FrameTime)
+				{	
+					ARX_SPEECH_Add(NULL, WILLADDSPEECH);
+					WILLADDSPEECH[0]=0;
+				}
+
+				///////
+		if ((EERIEMouseButton & 4) && (EDITMODE))
+				{
+					INTERACTIVE_OBJ * t;
+					
+			t = FlyingOverIO; 
+
+					if (t!=NULL) 
+					{
+						SelectIO(t);
+						EERIEMouseButton&=~4;
+						
+						if ((CDP_IOOptions) && (LastSelectedIONum>=0) && (CDP_EditIO!=inter.iobj[LastSelectedIONum]))
+						{
+							SendMessage(CDP_IOOptions,WM_COMMAND,MAKELONG(IDOK,0),0);
+						}
+
+						if ((!CDP_IOOptions) && (ValidIONum(LastSelectedIONum)))
+						{
+							CDP_EditIO=inter.iobj[LastSelectedIONum];
+
+							if (danaeApp.m_pFramework->m_bIsFullscreen)
+							{
+								ARX_TIME_Pause();
+								Pause(true);
+								DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+									MAKEINTRESOURCE(IDD_SCRIPTDIALOG), this->m_hWnd, IOOptionsProc);
+								Pause(false);
+								ARX_TIME_UnPause();				
+							}
+							else 
+								CDP_IOOptions=(CreateDialogParam( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+								MAKEINTRESOURCE(IDD_SCRIPTDIALOG), this->m_hWnd, IOOptionsProc,0 ));
+						}
+					}
+				}
+
+				if (	(!FINAL_COMMERCIAL_DEMO) 
+					&&	(!FINAL_COMMERCIAL_GAME)	
+					&& (ARXmenu.currentmode == AMCM_OFF))
+				{
+					if (this->kbd.inkey[41])
+					{
+						
+						if (NEED_TEST_TEXT)
+						{
+							NEED_TEST_TEXT=0;
+							USE_PLAYERCOLLISIONS=1;						
+						}
+						else
+						{
+							NEED_TEST_TEXT=1;
+							USE_PLAYERCOLLISIONS=0;
+						}
+					}
+
+					this->kbd.inkey[41]=0;					
+				}
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 
 #ifndef NOEDITOR
 
@@ -7348,6 +9445,7 @@ void ARX_INTERFACE_ManageOpenedBook()
     if (ARXmenu.currentmode != AMCM_NEWQUEST)
     {
  
+<<<<<<< HEAD
         GDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_ALWAYS);
 
         if (Book_Mode == 0)
@@ -8589,6 +10687,1249 @@ void ARX_INTERFACE_ManageOpenedBook()
 
         if (BOOKZOOM)
         {
+=======
+		GDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_ALWAYS);
+
+		if (Book_Mode == 0)
+		{
+			DrawBookInterfaceItem(GDevice, ITC.playerbook, 97, 64, 0.9999f); 
+		}
+		else if (Book_Mode == 1)
+		{
+			DrawBookInterfaceItem(GDevice, ITC.pTexSpellBook, 97, 64, 0.9999f);
+		}
+		else if (Book_Mode == 2)
+		{
+			DrawBookInterfaceItem(GDevice, ITC.questbook, 97, 64, 0.9999f);
+			  }
+			  else
+			  {
+			DrawBookInterfaceItem(GDevice,ITC.questbook, 97, 64, 0.9999f);
+		}
+
+		GDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
+	}
+	else 
+	{
+		float x, y;
+
+		x = 0;
+		
+		if ( ITC.playerbook )
+		{
+
+
+			x = ARX_CLEAN_WARN_CAST_FLOAT( ( 640 - ITC.playerbook->m_dwWidth ) / 2 );
+			y = ARX_CLEAN_WARN_CAST_FLOAT( ( 480 - ITC.playerbook->m_dwHeight ) / 2 );
+
+			DrawBookInterfaceItem( GDevice, ITC.playerbook, x, y );//95.f+2.f,47.f+17.f);
+		}
+
+		BOOKDECX = x - 97;
+		BOOKDECY = x - 64 + 19;
+	}
+	
+	if (ARXmenu.currentmode != AMCM_NEWQUEST)
+	{
+		bool bOnglet[11];
+		long max_onglet = 0;
+		long Book_Page = 1;
+		
+		//---------------------------------------------------------------------
+		// Checks Clicks in bookmarks
+		
+		// Character Sheet
+		if (Book_Mode != 0)
+		{
+			float px=BOOKMARKS_POS_X;
+			float py=BOOKMARKS_POS_Y;
+			DrawBookInterfaceItem(GDevice,ITC.bookmark_char,px,py);
+
+			// Check for cursor on charcter sheet bookmark
+			if (	ITC.bookmark_char
+				&&	MouseInBookRect(px,py,px+ITC.bookmark_char->m_dwWidth,py+ITC.bookmark_char->m_dwHeight))
+			{
+				// Draw highlighted Character sheet icon
+				BOOKINTERFACEITEMCOLOR=0xFF555555;
+				SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+				SETALPHABLEND(GDevice,true);
+				DrawBookInterfaceItem(GDevice,ITC.bookmark_char,px,py);
+				SETALPHABLEND(GDevice,false);
+				BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+			
+				// Set cursor to interacting
+				SpecialCursor=CURSOR_INTERACTION_ON;
+
+				// Check for click
+				if (bookclick.x!=-1)
+				{
+					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+					Book_Mode=0; 
+					pTextManage->Clear();
+				}
+			}
+		}
+
+		if (Book_Mode != 1)
+		{
+			if (player.rune_flags)
+			{
+				float px=BOOKMARKS_POS_X+32;
+				float py=BOOKMARKS_POS_Y;
+				DrawBookInterfaceItem(GDevice,ITC.bookmark_magic,px,py);
+
+				//////////////// TO BE REDONE/REMOVED - START
+				if (NewSpell==1)
+				{
+					NewSpell=2;
+
+					for (long nk=0;nk<2;nk++) MagFX(BOOKDECX+220.f,BOOKDECY+49.f,0.000001f);
+				}
+
+				//////////////// TO BE REDONE/REMOVED - END
+				if (	ITC.bookmark_magic 
+					&&	MouseInBookRect(px,py,px+ITC.bookmark_magic->m_dwWidth,py+ITC.bookmark_magic->m_dwHeight))				
+				{
+					// Draw highlighted Magic sheet icon
+					BOOKINTERFACEITEMCOLOR=0xFF555555;
+					SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+
+					SETALPHABLEND(GDevice,true);
+					DrawBookInterfaceItem(GDevice,ITC.bookmark_magic,px,py);
+					SETALPHABLEND(GDevice,false);
+					BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+
+					// Set cursor to interacting
+					SpecialCursor=CURSOR_INTERACTION_ON;
+
+					// Check for click
+					if (bookclick.x!=-1)
+					{
+						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+						Book_Mode=1;
+						pTextManage->Clear();
+					}
+				}
+			}
+		}
+
+		if (Book_Mode!=2)
+		{
+			float px=BOOKMARKS_POS_X+64;
+			float py=BOOKMARKS_POS_Y;
+
+			DrawBookInterfaceItem(GDevice,ITC.bookmark_map,px,py);			
+
+			if (	ITC.bookmark_map
+				&&	MouseInBookRect(px,py,px+ITC.bookmark_map->m_dwWidth,py+ITC.bookmark_map->m_dwHeight))				
+			{
+				BOOKINTERFACEITEMCOLOR=0xFF555555;
+				SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+				SETALPHABLEND(GDevice,true);
+				DrawBookInterfaceItem(GDevice,ITC.bookmark_map,px,py);			
+				SETALPHABLEND(GDevice,false);
+				BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+
+				// Set cursor to interacting
+				SpecialCursor=CURSOR_INTERACTION_ON;
+
+				// Check for click
+				if (bookclick.x!=-1)
+				{
+					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+					Book_Mode=2;
+					pTextManage->Clear();
+				}
+			}
+		}
+
+		if (Book_Mode!=3)
+		{
+			float px=BOOKMARKS_POS_X+96;
+			float py=BOOKMARKS_POS_Y;
+			DrawBookInterfaceItem(GDevice,ITC.bookmark_quest,px,py);
+
+			if (	ITC.bookmark_quest
+				&&	MouseInBookRect(px,py,px+ITC.bookmark_quest->m_dwWidth,py+ITC.bookmark_quest->m_dwHeight))				
+			{
+				BOOKINTERFACEITEMCOLOR=0xFF555555;
+				SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+				SETALPHABLEND(GDevice,true);
+				DrawBookInterfaceItem(GDevice,ITC.bookmark_quest,px,py);
+				SETALPHABLEND(GDevice,false);
+				BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+
+				// Set cursor to interacting
+				SpecialCursor=CURSOR_INTERACTION_ON;
+
+				// Check for click
+				if (bookclick.x!=-1) 
+				{
+					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+					Book_Mode=3;
+					pTextManage->Clear();
+				}
+			}
+		}
+		
+		if (Book_Mode==2) max_onglet=8;
+		else max_onglet=10;
+		
+		if (Book_Mode==1) Book_Page = Book_SpellPage;
+		else Book_Page = Book_MapPage;
+		
+		ZeroMemory(&bOnglet, 11*sizeof(bool));
+
+		// calcul de la page de spells
+		if (Book_Mode == 1)
+		{
+			max_onglet = 0;
+
+			for (long i=0; i<SPELL_COUNT; i++)
+			{
+				if (spellicons[i].bSecret == false)
+				{
+					long j = 0;
+					bool bOk = true;
+
+					while ((j < 4) && (spellicons[i].symbols[j] != 255))
+					{
+						if (!(player.rune_flags & (1<<spellicons[i].symbols[j])))
+						{
+							bOk = false;
+						}
+
+						j++;
+					}
+
+					if (bOk)
+					{
+						bOnglet[spellicons[i].level] = true;
+					}
+				}
+			}
+		}
+		else
+		{
+			memset(&bOnglet, true, (max_onglet+1)*sizeof(bool));
+		}
+		
+		if ((Book_Mode==1) || (Book_Mode==2))
+		{
+			if (bOnglet[1])
+			{
+				if (Book_Page!=1) 
+				{
+					float px=100.f;
+					float py=82.f;
+					DrawBookInterfaceItem(GDevice,ITC.accessible_1,px,py);
+
+					if (MouseInBookRect(px,py,px+32,py+32))
+					{
+						BOOKINTERFACEITEMCOLOR=0xFF555555;
+						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+						SETALPHABLEND(GDevice,true);
+						DrawBookInterfaceItem(GDevice,ITC.accessible_1,px,py);
+						SETALPHABLEND(GDevice,false);
+						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+
+						if (bookclick.x!=-1)
+						{
+							Book_Page=1;
+							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+						}
+					}
+				}
+				else DrawBookInterfaceItem(GDevice,ITC.current_1,102.f,82.f);
+			}
+
+			if (bOnglet[2])
+			{
+				if (Book_Page!=2) 
+				{
+					float px=98.f;
+					float py=112.f;
+					DrawBookInterfaceItem(GDevice,ITC.accessible_2,px,py);
+
+					if (MouseInBookRect(px,py,px+32,py+32))
+					{
+						BOOKINTERFACEITEMCOLOR=0xFF555555;
+						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+						SETALPHABLEND(GDevice,true);
+						DrawBookInterfaceItem(GDevice,ITC.accessible_2,px,py);
+						SETALPHABLEND(GDevice,false);
+						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+
+						if (bookclick.x!=-1)
+						{
+							Book_Page=2;
+							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+						}
+					}
+				}
+				else DrawBookInterfaceItem(GDevice,ITC.current_2,100.f,114.f);
+			}
+
+			if (bOnglet[3])
+			{
+				if (Book_Page!=3) 
+				{
+					float px=97.f;
+					float py=143.f;
+					DrawBookInterfaceItem(GDevice,ITC.accessible_3,px,py);
+
+					if (MouseInBookRect(px,py,px+32,py+32))
+					{
+						BOOKINTERFACEITEMCOLOR=0xFF555555;
+						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+						SETALPHABLEND(GDevice,true);
+						DrawBookInterfaceItem(GDevice,ITC.accessible_3,px,py);
+						SETALPHABLEND(GDevice,false);
+						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+
+						if (bookclick.x!=-1)
+						{
+							Book_Page=3;
+							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+						}
+					}
+				}
+				else DrawBookInterfaceItem(GDevice,ITC.current_3,101.f,141.f);
+			}
+
+			if (bOnglet[4])
+			{
+				if (Book_Page!=4)
+				{
+					float px=95.f;
+					float py=170.f;
+					DrawBookInterfaceItem(GDevice,ITC.accessible_4,px,py);
+
+					if (MouseInBookRect(px,py,px+32,py+32))
+					{
+						BOOKINTERFACEITEMCOLOR=0xFF555555;
+						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+						SETALPHABLEND(GDevice,true);
+						DrawBookInterfaceItem(GDevice,ITC.accessible_4,px,py);
+						SETALPHABLEND(GDevice,false);
+						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+
+						if (bookclick.x!=-1)
+						{
+							Book_Page=4;
+							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+						}
+					}
+				}
+				else DrawBookInterfaceItem(GDevice,ITC.current_4,100.f,170.f);
+			}
+
+			if (bOnglet[5])
+			{
+				if (Book_Page!=5) 
+				{
+					float px=95.f;
+					float py=200.f;
+					DrawBookInterfaceItem(GDevice,ITC.accessible_5,px,py);
+
+					if (MouseInBookRect(px,py,px+32,py+32))
+					{
+						BOOKINTERFACEITEMCOLOR=0xFF555555;
+						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+						SETALPHABLEND(GDevice,true);
+						DrawBookInterfaceItem(GDevice,ITC.accessible_5,px,py);
+						SETALPHABLEND(GDevice,false);
+						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+
+						if (bookclick.x!=-1)
+						{
+							Book_Page=5;
+							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+						}
+					}
+				}
+				else DrawBookInterfaceItem(GDevice,ITC.current_5,97.f,199.f);
+			}
+
+			if (bOnglet[6])
+			{
+				if (Book_Page!=6) 
+				{
+					float px=94.f;
+					float py=229.f;
+					DrawBookInterfaceItem(GDevice,ITC.accessible_6,px,py);
+
+					if (MouseInBookRect(px,py,px+32,py+32))
+					{
+						BOOKINTERFACEITEMCOLOR=0xFF555555;
+						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+						SETALPHABLEND(GDevice,true);
+						DrawBookInterfaceItem(GDevice,ITC.accessible_6,px,py);
+						SETALPHABLEND(GDevice,false);
+						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+
+						if (bookclick.x!=-1)
+						{
+							Book_Page=6;
+							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+						}
+					}
+				}
+				else DrawBookInterfaceItem(GDevice,ITC.current_6,103.f,226.f);
+			}
+
+			if (bOnglet[7])
+			{
+				if (Book_Page!=7)
+				{
+					float px=94.f;
+					float py=259.f;
+					DrawBookInterfaceItem(GDevice,ITC.accessible_7,px,py);
+
+					if (MouseInBookRect(px,py,px+32,py+32))
+					{
+						BOOKINTERFACEITEMCOLOR=0xFF555555;
+						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+						SETALPHABLEND(GDevice,true);
+						DrawBookInterfaceItem(GDevice,ITC.accessible_7,px,py);
+						SETALPHABLEND(GDevice,false);
+						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+
+						if (bookclick.x!=-1)
+						{
+							Book_Page=7;
+							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+						}
+					}
+				}
+				else DrawBookInterfaceItem(GDevice,ITC.current_7,101.f,255.f);
+			}
+
+			if (bOnglet[8])
+			{
+				if (Book_Page!=8) 
+				{
+					float px=92.f;
+					float py=282.f;
+					DrawBookInterfaceItem(GDevice,ITC.accessible_8,px,py);
+
+					if (MouseInBookRect(px,py,px+32,py+32))
+					{
+						BOOKINTERFACEITEMCOLOR=0xFF555555;
+						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+						SETALPHABLEND(GDevice,true);
+						DrawBookInterfaceItem(GDevice,ITC.accessible_8,px,py);
+						SETALPHABLEND(GDevice,false);
+						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+
+						if (bookclick.x!=-1)
+						{
+							Book_Page=8;
+							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+						}
+					}
+				}
+				else DrawBookInterfaceItem(GDevice,ITC.current_8,99.f,283.f);
+			}
+
+			if (bOnglet[9])
+			{
+				if (Book_Page!=9) 
+				{
+					float px=90.f;
+					float py=308.f;
+					DrawBookInterfaceItem(GDevice,ITC.accessible_9,px,py);
+
+					if (MouseInBookRect(px,py,px+32,py+32))
+					{
+						BOOKINTERFACEITEMCOLOR=0xFF555555;
+						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+						SETALPHABLEND(GDevice,true);
+						DrawBookInterfaceItem(GDevice,ITC.accessible_9,px,py);
+						SETALPHABLEND(GDevice,false);
+						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+
+						if (bookclick.x!=-1)
+						{
+							Book_Page=9;
+							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+						}
+					}
+				}
+				else DrawBookInterfaceItem(GDevice,ITC.current_9,99.f,307.f);
+			}
+
+			if (bOnglet[10])
+			{
+				if (Book_Page!=10) 
+				{
+					float px=97.f;
+					float py=331.f;
+					DrawBookInterfaceItem(GDevice,ITC.accessible_10,px,py);
+
+					if (MouseInBookRect(px,py,px+32,py+32))
+					{
+						BOOKINTERFACEITEMCOLOR=0xFF555555;
+						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+						SETALPHABLEND(GDevice,true);
+						DrawBookInterfaceItem(GDevice,ITC.accessible_10,px,py);
+						SETALPHABLEND(GDevice,false);
+						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+
+						if (bookclick.x!=-1)
+						{
+							Book_Page=10;
+							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+						}
+					}
+				}
+				else DrawBookInterfaceItem(GDevice,ITC.current_10,104.f,331.f);
+			}		
+
+			if (Book_Mode==1) Book_SpellPage=Book_Page;
+			else if (Book_Mode==2) Book_MapPage=Book_Page;
+		}
+
+		bookclick.x=-1;
+	}
+	
+	if (Book_Mode == 0)
+	{
+		FLYING_OVER = 0;
+		_TCHAR tex[64];
+		COLORREF Color = RGB(0,0,0);
+		
+		ARX_PLAYER_ComputePlayerFullStats();
+
+		danaeApp.DANAEEndRender();
+		_stprintf(tex, _T("%s %3d"), ITC.lpszULevel, player.level);
+		DrawBookTextCenter( 398, 74, tex,Color,0x00FF00FF,InBookFont);
+		
+		_stprintf(tex, _T("%s %8ld"), ITC.lpszUXp, player.xp);
+		DrawBookTextCenter( 510, 74, tex, Color,0x00FF00FF,InBookFont);
+		danaeApp.DANAEStartRender();
+
+		if (MouseInBookRect(463, 74, 550, 94))
+		{
+			FLYING_OVER = WND_XP;
+		}
+
+		if (MouseInBookRect(97+41,64+62, 97+41+32, 64+62+32))
+		{
+			FLYING_OVER = WND_AC;
+		}
+		else if (MouseInBookRect(97+41,64+120, 97+41+32, 64+120+32))
+		{
+			FLYING_OVER = WND_RESIST_MAGIC;
+		}
+		else if (MouseInBookRect(97+41,64+178, 97+41+32, 64+178+32))
+		{
+			FLYING_OVER = WND_RESIST_POISON;
+		}
+		else if (MouseInBookRect(97+211,64+62, 97+211+32, 64+62+32))
+		{
+			FLYING_OVER = WND_HP;
+		}
+		else if (MouseInBookRect(97+211,64+120, 97+211+32, 64+120+32))
+		{
+			FLYING_OVER = WND_MANA;
+		}
+		else if (MouseInBookRect(97+211,64+178, 97+211+32, 64+178+32))
+		{
+			FLYING_OVER = WND_DAMAGE;
+		}
+		
+		if (!((player.Attribute_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST)))
+		{
+			// Main Player Attributes
+			if (CheckAttributeClick(379,95,&player.Attribute_Strength,		ITC.ic_strength))
+			{
+				FLYING_OVER=BOOK_STRENGTH;			
+				SpecialCursor = CURSOR_REDIST;
+				lCursorRedistValue = player.Attribute_Redistribute;
+			}
+
+			if (CheckAttributeClick(428,95,&player.Attribute_Mind,			ITC.ic_mind))
+			{
+				FLYING_OVER=BOOK_MIND;
+				SpecialCursor = CURSOR_REDIST;
+				lCursorRedistValue = player.Attribute_Redistribute;
+			}
+
+			if (CheckAttributeClick(477,95,&player.Attribute_Dexterity,		ITC.ic_dexterity))
+			{
+				FLYING_OVER=BOOK_DEXTERITY;
+				SpecialCursor = CURSOR_REDIST;
+				lCursorRedistValue = player.Attribute_Redistribute;
+			}
+
+			if (CheckAttributeClick(526,95,&player.Attribute_Constitution,	ITC.ic_constitution))
+			{
+				FLYING_OVER=BOOK_CONSTITUTION;
+				SpecialCursor = CURSOR_REDIST;
+				lCursorRedistValue = player.Attribute_Redistribute;
+			}
+		}
+		
+		if (!((player.Skill_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST)))
+		{
+			if (CheckSkillClick(389,177,&player.Skill_Stealth,		ITC.ic_stealth,&player.Old_Skill_Stealth))
+			{
+				FLYING_OVER=BOOK_STEALTH;
+				SpecialCursor = CURSOR_REDIST;
+				lCursorRedistValue = player.Skill_Redistribute;
+			}
+
+			if (CheckSkillClick(453,177,&player.Skill_Mecanism,		ITC.ic_mecanism,&player.Old_Skill_Mecanism))
+			{
+				FLYING_OVER=BOOK_MECANISM;
+				SpecialCursor = CURSOR_REDIST;
+				lCursorRedistValue = player.Skill_Redistribute;
+			}
+
+			if (CheckSkillClick(516,177,&player.Skill_Intuition,	ITC.ic_intuition,&player.Old_Skill_Intuition))
+			{
+				FLYING_OVER=BOOK_INTUITION;
+				SpecialCursor = CURSOR_REDIST;
+				lCursorRedistValue = player.Skill_Redistribute;
+			}
+
+			if (CheckSkillClick(389,230,&player.Skill_Etheral_Link,	ITC.ic_etheral_link,&player.Old_Skill_Etheral_Link))
+			{
+				FLYING_OVER=BOOK_ETHERAL_LINK;
+				SpecialCursor = CURSOR_REDIST;
+				lCursorRedistValue = player.Skill_Redistribute;
+			}
+
+			if (CheckSkillClick(453,230,&player.Skill_Object_Knowledge,ITC.ic_object_knowledge,&player.Old_Skill_Object_Knowledge))
+			{
+				FLYING_OVER=BOOK_OBJECT_KNOWLEDGE;
+				SpecialCursor = CURSOR_REDIST;
+				lCursorRedistValue = player.Skill_Redistribute;
+				
+				if ((BOOKBUTTON & 1) && !(LASTBOOKBUTTON & 1))
+				{
+					ARX_INVENTORY_IdentifyAll();
+					ARX_EQUIPMENT_IdentifyAll();
+				}
+
+				ARX_PLAYER_ComputePlayerFullStats();
+			}
+
+			if (CheckSkillClick(516,230,&player.Skill_Casting,		ITC.ic_casting,&player.Old_Skill_Casting))
+			{
+				FLYING_OVER=BOOK_CASTING;
+				SpecialCursor = CURSOR_REDIST;
+				lCursorRedistValue = player.Skill_Redistribute;
+			}
+
+			if (CheckSkillClick(389,284,&player.Skill_Close_Combat,	ITC.ic_close_combat,&player.Old_Skill_Close_Combat))
+			{
+				FLYING_OVER=BOOK_CLOSE_COMBAT;
+				SpecialCursor = CURSOR_REDIST;
+				lCursorRedistValue = player.Skill_Redistribute;
+			}
+
+			if (CheckSkillClick(453,284,&player.Skill_Projectile,	ITC.ic_projectile,&player.Old_Skill_Projectile))
+			{
+				FLYING_OVER=BOOK_PROJECTILE;
+				SpecialCursor = CURSOR_REDIST;
+				lCursorRedistValue = player.Skill_Redistribute;
+			}
+
+			if (CheckSkillClick(516,284,&player.Skill_Defense,		ITC.ic_defense,&player.Old_Skill_Defense))
+			{
+				FLYING_OVER=BOOK_DEFENSE;
+				SpecialCursor = CURSOR_REDIST;
+				lCursorRedistValue = player.Skill_Redistribute;
+			}
+		}
+		else
+		{
+			//------------------------------------PRIMARY
+			if (MouseInBookRect(379,95, 379+32, 95+32))
+			{
+				FLYING_OVER=BOOK_STRENGTH;			
+			}
+			else if (MouseInBookRect(428,95, 428+32, 95+32))
+			{
+				FLYING_OVER=BOOK_MIND;
+			}
+			else if (MouseInBookRect(477,95, 477+32, 95+32))
+			{
+				FLYING_OVER=BOOK_DEXTERITY;
+			}
+			else if (MouseInBookRect(526,95, 526+32, 95+32))
+			{
+				FLYING_OVER=BOOK_CONSTITUTION;
+			}
+			
+			//------------------------------------SECONDARY
+			if (MouseInBookRect(389,177, 389+32, 177+32))
+			{
+				FLYING_OVER=BOOK_STEALTH;
+			}
+			else if (MouseInBookRect(453,177, 453+32, 177+32))
+			{
+				FLYING_OVER=BOOK_MECANISM;
+			}
+			else if (MouseInBookRect(516,177, 516+32, 177+32))
+			{
+				FLYING_OVER=BOOK_INTUITION;
+			}
+			else if (MouseInBookRect(389,230, 389+32, 230+32))
+			{
+				FLYING_OVER=BOOK_ETHERAL_LINK;
+			}
+			else if (MouseInBookRect(453,230, 453+32, 230+32))
+			{
+				FLYING_OVER=BOOK_OBJECT_KNOWLEDGE;
+			}
+			else if (MouseInBookRect(516,230, 516+32, 230+32))
+			{
+				FLYING_OVER=BOOK_CASTING;
+			}
+			else if (MouseInBookRect(389,284, 389+32, 284+32))
+			{
+				FLYING_OVER=BOOK_CLOSE_COMBAT;
+			}
+			else if (MouseInBookRect(453,284, 453+32, 284+32))
+			{
+				FLYING_OVER=BOOK_PROJECTILE;
+			}
+			else if (MouseInBookRect(516,284, 516+32, 284+32))
+			{
+				FLYING_OVER=BOOK_DEFENSE;
+			}
+		}
+		
+		if (!INTERNATIONAL_MODE)
+		{
+			for (long i=0;i<MAX_SPEECH;i++)
+			{
+				if (speech[i].timecreation > 0)
+					FLYING_OVER = 0;
+			}
+		}
+		
+		//------------------------------ SEB 04/12/2001
+		if (ARXmenu.mda && ARXmenu.mda->flyover[FLYING_OVER]) //=ARXmenu.mda->flyover[FLYING_OVER];
+		{
+			if( (FLYING_OVER!=OLD_FLYING_OVER)||
+				(INTERNATIONAL_MODE) )
+			{
+
+				float fRandom	= rnd() * 2 ;
+				ARX_CHECK_INT(fRandom);
+
+				int t = ARX_CLEAN_WARN_CAST_INT(fRandom);
+
+
+				pTextManage->Clear();
+				OLD_FLYING_OVER=FLYING_OVER;
+
+				if (FLYING_OVER == WND_XP)
+				{
+					_TCHAR tex[512];
+					_stprintf(tex, _T("%s %8ld"), ARXmenu.mda->flyover[WND_XP], GetXPforLevel(player.level+1)-player.xp);
+					UNICODE_ARXDrawTextCenteredScroll(	(DANAESIZX*0.5f),
+						4,
+						(DANAECENTERX)*0.82f,
+						tex,
+						RGB(232+t,204+t,143+t),
+						0x00FF00FF,
+						hFontInGame,
+						1000,
+						0.01f,
+						3,
+						INTERNATIONAL_MODE?0:max(3000, int(70*_tcslen(tex))));
+				}
+				else
+				{
+					UNICODE_ARXDrawTextCenteredScroll(	(DANAESIZX*0.5f),
+						4,
+						(DANAECENTERX)*0.82f,
+						ARXmenu.mda->flyover[FLYING_OVER],
+						RGB(232+t,204+t,143+t),
+						0x00FF00FF,
+						hFontInGame,
+						1000,
+						0.01f,
+						3,
+						INTERNATIONAL_MODE?0:max(3000, int(70*_tcslen(ARXmenu.mda->flyover[FLYING_OVER]))));
+				}
+			}
+		}
+		else
+		{
+			OLD_FLYING_OVER=-1;
+		}
+
+		//------------------------------
+		
+		danaeApp.DANAEEndRender();
+		_stprintf(tex, _T("%3.0f"),player.Full_Attribute_Strength);
+
+		if (player.Mod_Attribute_Strength<0.f)
+			Color = 0x000000FF;		
+		else if (player.Mod_Attribute_Strength>0.f)
+			Color = 0x00FF0000;		
+		else Color = 0;
+
+		if (ARXmenu.currentmode==AMCM_NEWQUEST)
+		{
+			if (player.Full_Attribute_Strength == 6)
+				Color = 0x000000FF;
+		}
+
+		DrawBookTextCenter( 391, 129, tex, Color, 0x00FF00FF, InBookFont);
+		
+		_stprintf(tex, _T("%3.0f"),player.Full_Attribute_Mind);
+
+		if (player.Mod_Attribute_Mind<0.f)
+			Color = 0x000000FF;		
+		else if (player.Mod_Attribute_Mind>0.f)
+			Color = 0x00FF0000;		
+		else Color = 0;
+
+		if (ARXmenu.currentmode==AMCM_NEWQUEST)
+		{
+			if (player.Full_Attribute_Mind == 6)
+				Color = 0x000000FF;
+		}
+
+		DrawBookTextCenter( 440, 129, tex, Color, 0x00FF00FF, InBookFont);
+		
+		_stprintf(tex, _T("%3.0f"),player.Full_Attribute_Dexterity);
+
+		if (player.Mod_Attribute_Dexterity<0.f)
+			Color = 0x000000FF;		
+		else if (player.Mod_Attribute_Dexterity>0.f)
+			Color = 0x00FF0000;		
+		else Color = 0;
+
+		if (ARXmenu.currentmode==AMCM_NEWQUEST)
+		{
+			if (player.Full_Attribute_Dexterity == 6)
+				Color = 0x000000FF;
+		}
+
+		DrawBookTextCenter( 490, 129, tex, Color, 0x00FF00FF, InBookFont);
+		
+		_stprintf(tex, _T("%3.0f"),player.Full_Attribute_Constitution);
+
+		if (player.Mod_Attribute_Constitution<0.f)
+			Color = 0x000000FF;		
+		else if (player.Mod_Attribute_Constitution>0.f)
+			Color = 0x00FF0000;		
+		else Color = 0;
+
+		if (ARXmenu.currentmode==AMCM_NEWQUEST)
+		{
+			if (player.Full_Attribute_Constitution == 6)
+				Color = 0x000000FF;
+		}
+
+		DrawBookTextCenter( 538, 129, tex, Color, 0x00FF00FF,InBookFont);
+		
+		// Player Skills
+		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Stealth);
+
+		if (player.Mod_Skill_Stealth<0.f)
+			Color = 0x000000FF;		
+		else if (player.Mod_Skill_Stealth>0.f)
+			Color = 0x00FF0000;
+		else Color = 0;
+
+		if (ARXmenu.currentmode==AMCM_NEWQUEST)
+		{
+			if (player.Skill_Stealth == 0)
+				Color = 0x000000FF;
+		}
+
+		DrawBookTextCenter( 405, 210, tex, Color, 0x00FF00FF, InBookFont);
+		
+		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Mecanism);
+
+		if (player.Mod_Skill_Mecanism<0.f)
+			Color = 0x000000FF;		
+		else if (player.Mod_Skill_Mecanism>0.f)
+			Color = 0x00FF0000;		
+		else Color = 0;
+
+		if (ARXmenu.currentmode==AMCM_NEWQUEST)
+		{
+			if (player.Skill_Mecanism == 0)
+				Color = 0x000000FF;
+		}
+
+		DrawBookTextCenter( 469, 210, tex, Color, 0x00FF00FF, InBookFont);
+		
+		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Intuition);
+
+		if (player.Mod_Skill_Intuition<0.f)
+			Color = 0x000000FF;		
+		else if (player.Mod_Skill_Intuition>0.f)
+			Color = 0x00FF0000;		
+		else Color = 0;
+
+		if (ARXmenu.currentmode==AMCM_NEWQUEST)
+		{
+			if (player.Skill_Intuition == 0)
+				Color = 0x000000FF;
+		}
+
+		DrawBookTextCenter( 533, 210, tex, Color, 0x00FF00FF,InBookFont);
+		
+		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Etheral_Link);
+
+		if (player.Mod_Skill_Etheral_Link<0.f)
+			Color = 0x000000FF;		
+		else if (player.Mod_Skill_Etheral_Link>0.f)
+			Color = 0x00FF0000;		
+		else Color = 0;
+
+		if (ARXmenu.currentmode==AMCM_NEWQUEST)
+		{
+			if (player.Skill_Etheral_Link == 0)
+				Color = 0x000000FF;
+		}
+
+		DrawBookTextCenter( 405, 265, tex, Color, 0x00FF00FF, InBookFont);
+		
+		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Object_Knowledge);
+
+		if (player.Mod_Skill_Object_Knowledge<0.f)
+			Color = 0x000000FF;		
+		else if (player.Mod_Skill_Object_Knowledge>0.f)
+			Color = 0x00FF0000;		
+		else Color = 0;
+
+		if (ARXmenu.currentmode==AMCM_NEWQUEST)
+		{
+			if (player.Skill_Object_Knowledge == 0)
+				Color = 0x000000FF;
+		}
+
+		DrawBookTextCenter( 469, 265, tex, Color, 0x00FF00FF, InBookFont);
+		
+		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Casting);
+
+		if (player.Mod_Skill_Casting<0.f)
+			Color = 0x000000FF;		
+		else if (player.Mod_Skill_Casting>0.f)
+			Color = 0x00FF0000;		
+		else Color = 0;
+
+		if (ARXmenu.currentmode==AMCM_NEWQUEST)
+		{
+			if (player.Skill_Casting == 0)
+				Color = 0x000000FF;
+		}
+
+		DrawBookTextCenter( 533, 265, tex, Color, 0x00FF00FF, InBookFont);
+		
+		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Close_Combat);
+
+		if (player.Mod_Skill_Close_Combat<0.f)
+			Color = 0x000000FF;		
+		else if (player.Mod_Skill_Close_Combat>0.f)
+			Color = 0x00FF0000;		
+		else Color = 0;
+
+		if (ARXmenu.currentmode==AMCM_NEWQUEST)
+		{
+			if (player.Skill_Close_Combat == 0)
+				Color = 0x000000FF;
+		}
+
+		DrawBookTextCenter( 405, 319, tex, Color, 0x00FF00FF, InBookFont);
+		
+		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Projectile);
+
+		if (player.Mod_Skill_Projectile<0.f)
+			Color = 0x000000FF;		
+		else if (player.Mod_Skill_Projectile>0.f)
+			Color = 0x00FF0000;		
+		else Color = 0;
+
+		if (ARXmenu.currentmode==AMCM_NEWQUEST)
+		{
+			if (player.Skill_Projectile == 0)
+				Color = 0x000000FF;
+		}
+
+		DrawBookTextCenter( 469, 319, tex, Color, 0x00FF00FF, InBookFont);
+		
+		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Defense);
+
+		if (player.Mod_Skill_Defense<0.f)
+			Color = 0x000000FF;		
+		else if (player.Mod_Skill_Defense>0.f)
+			Color = 0x00FF0000;		
+		else Color = 0;
+
+		if (ARXmenu.currentmode==AMCM_NEWQUEST)
+		{
+			if (player.Skill_Defense == 0)
+				Color = 0x000000FF;
+		}
+
+		DrawBookTextCenter( 533, 319, tex, Color, 0x00FF00FF, InBookFont);
+		
+		// Secondary Attributes
+		_stprintf(tex, _T("%ld"),F2L_RoundUp(player.Full_maxlife));
+
+		if ((player.Mod_maxlife<0.f) || (player.Full_maxlife < player.maxlife))
+			Color = 0x000000FF;		
+		else if ((player.Mod_maxlife>0.f) || (player.Full_maxlife > player.maxlife))
+			Color = 0x00FF0000;		
+		else Color = 0;
+
+		DrawBookTextCenter( 324, 158, tex, Color,0x00FF00FF, InBookFont);
+		
+		_stprintf(tex, _T("%ld"),F2L_RoundUp(player.Full_maxmana));
+
+		if ((player.Mod_maxmana<0.f) || (player.Full_maxmana < player.maxmana))
+			Color = 0x000000FF;		
+		else if ((player.Mod_maxmana>0.f) || (player.Full_maxmana > player.maxmana))
+			Color = 0x00FF0000;		
+		else Color = 0;
+
+		DrawBookTextCenter( 324, 218, tex, Color, 0x00FF00FF, InBookFont);
+		
+		_stprintf(tex, _T("%ld"), F2L_RoundUp(player.Full_damages));
+
+		if (player.Mod_damages<0.f)
+			Color = 0x000000FF;		
+		else if (player.Mod_damages>0.f)
+			Color = 0x00FF0000;		
+		else Color = 0;
+
+		DrawBookTextCenter( 324, 278, tex, Color, 0x00FF00FF, InBookFont);
+		
+		float ac = player.Full_armor_class;
+		_stprintf(tex, _T("%ld"),F2L_RoundUp(ac));
+
+		if (player.Mod_armor_class<0.f)
+			Color = 0x000000FF;		
+		else if (player.Mod_armor_class>0.f)
+			Color = 0x00FF0000;		
+		else Color = 0;
+
+		DrawBookTextCenter( 153, 158, tex, Color, 0x00FF00FF, InBookFont);
+		
+		_stprintf(tex, _T("%3.0f"),player.Full_resist_magic);
+
+		if (player.Mod_resist_magic<0.f)
+			Color = 0x000000FF;		
+		else if (player.Mod_resist_magic>0.f)
+			Color = 0x00FF0000;		
+		else Color = 0;
+
+		DrawBookTextCenter( 153, 218, tex, Color, 0x00FF00FF, InBookFont);
+		
+		_stprintf(tex, _T("%3.0f"),player.Full_resist_poison);
+
+		if (player.Mod_resist_poison<0.f)
+			Color = 0x000000FF;		
+		else if (player.Mod_resist_poison>0.f)
+			Color = 0x00FF0000;		
+		else Color = 0;
+
+		DrawBookTextCenter( 153, 278, tex, Color, 0x00FF00FF, InBookFont);
+		danaeApp.DANAEStartRender();
+	}
+	else if (Book_Mode==2)
+	{
+		long SHOWLEVEL = Book_MapPage - 1;
+
+		if ((SHOWLEVEL>=0) && (SHOWLEVEL<32))
+			ARX_MINIMAP_Show(GDevice,SHOWLEVEL,0);
+
+		SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
+
+		if ((SHOWLEVEL>=0) && (SHOWLEVEL<32))
+			ARX_MINIMAP_Show(GDevice,SHOWLEVEL,1);
+	}
+	else if (Book_Mode==3)
+	{
+		if (nb_PlayerQuest > 0)
+		{
+			//-----------------------------------------------------------------
+			// stuff pour le texte
+			NotePosX = (97 );
+			NotePosY = (64 );
+			NoteTextMinx = 40.f;
+			NoteTextMaxx = ITC.questbook->m_dwWidth*DIV2-10.f;
+			NoteTextMiny = 40.f;
+			NoteTextMaxy = ITC.questbook->m_dwHeight-65.f;
+			float fPosX = 97;
+			float fPosY = 64;
+			float x0 = 0;
+			float y0 = 0;
+			
+			// calcul du nombre de pages
+			RECT rRect;
+			long lCurPage = 1;
+
+
+			float fMinX = (NoteTextMaxx-NoteTextMinx)*Xratio ;
+			float fMinY = (NoteTextMaxy-NoteTextMiny)*Yratio ;
+			ARX_CHECK_INT(fMinX);
+			ARX_CHECK_INT(fMinY);
+			
+			SetRect(&rRect,
+				0,
+				0,
+				ARX_CLEAN_WARN_CAST_INT(fMinX),
+				ARX_CLEAN_WARN_CAST_INT(fMinY)
+				);
+
+
+			int lLenghtCurr=0;
+			long lLenght = 0;
+			_TCHAR *lpszQuests = NULL;
+
+			QuestBook.pages[0]=0;
+			
+			for (long i=0; i<nb_PlayerQuest; i++)
+			{
+				if (PlayerQuest[i].localised != NULL)
+				{
+					lLenght += _tcslen(PlayerQuest[i].localised);
+				}
+			}
+			
+			lpszQuests = new _TCHAR[lLenght+nb_PlayerQuest*2+1];
+			ZeroMemory(lpszQuests, (lLenght+nb_PlayerQuest*2+1)*sizeof(_TCHAR));
+			
+			for (int i=0; i<nb_PlayerQuest; i++)
+			{
+				if (PlayerQuest[i].localised != NULL)
+				{
+					_tcscat(lpszQuests, PlayerQuest[i].localised);
+					_tcscat(lpszQuests, _T("\n\n"));
+					lLenght+=2;
+				}
+			}
+			
+			while(lLenght>0)
+			{
+				danaeApp.DANAEEndRender();
+				long lLengthDraw=ARX_UNICODE_ForceFormattingInRect(	hFontInGameNote,
+					lpszQuests + lLenghtCurr,
+					0,
+					rRect);
+				danaeApp.DANAEStartRender();
+				lLenght -= lLengthDraw;
+				lLenghtCurr += lLengthDraw;
+
+				if (lCurPage + 1 < MAX_PAGES)
+					QuestBook.pages[lCurPage++] = lLenghtCurr;
+			}
+
+			if (lCurPage + 1 < MAX_PAGES)
+				QuestBook.pages[lCurPage++] = -1;
+			else
+				QuestBook.pages[MAX_PAGES-1] = -1;
+
+			QuestBook.totpages = lCurPage;
+			
+			//---------------------------------------------------------------------
+			// render
+			if (QuestBook.curpage >= QuestBook.totpages)
+				QuestBook.curpage = QuestBook.totpages-1;
+
+			if (QuestBook.curpage < 0)
+				QuestBook.curpage = 0;
+
+			if (QuestBook.curpage>1)
+			{
+				x0 =   8 + fPosX;
+				y0 =  -6 + fPosY + ITC.questbook->m_dwHeight - ITC.pTexCornerLeft->m_dwHeight;
+				DrawBookInterfaceItem(GDevice, ITC.pTexCornerLeft,  x0, y0);
+
+				if (MouseInBookRect(x0,y0,x0+ITC.pTexCornerLeft->m_dwWidth,y0+ITC.pTexCornerLeft->m_dwHeight))
+				{
+					SpecialCursor=CURSOR_INTERACTION_ON;
+
+					if (!(EERIEMouseButton & 1) && (LastMouseClick & 1))
+					{
+						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+						QuestBook.curpage -= 2;
+					}
+				}
+			}
+
+			if ((QuestBook.curpage + 4) < QuestBook.totpages)
+			{
+				x0 = -15 + fPosX + ITC.questbook->m_dwWidth  - ITC.pTexCornerRight->m_dwWidth;
+				y0 =  -6 + fPosY + ITC.questbook->m_dwHeight - ITC.pTexCornerRight->m_dwHeight;
+				DrawBookInterfaceItem(GDevice, ITC.pTexCornerRight, x0, y0);
+				
+				if (MouseInBookRect(x0,y0,x0+ITC.pTexCornerRight->m_dwWidth,y0+ITC.pTexCornerRight->m_dwHeight))
+				{
+					SpecialCursor=CURSOR_INTERACTION_ON;
+
+					if (!(EERIEMouseButton & 1) && (LastMouseClick & 1))
+					{
+						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+						QuestBook.curpage+=2;
+					}
+				}
+			}
+
+			if (QuestBook.pages[QuestBook.curpage]>=0)
+			{
+				if(QuestBook.pages[QuestBook.curpage+1]>0)
+				{
+					_tcsncpy(Page_Buffer, lpszQuests + QuestBook.pages[QuestBook.curpage], QuestBook.pages[QuestBook.curpage+1] - QuestBook.pages[QuestBook.curpage]);
+					Page_Buffer[QuestBook.pages[QuestBook.curpage+1] - QuestBook.pages[QuestBook.curpage]]=_T('\0');
+					DrawBookTextInRect( NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx, NotePosY + NoteTextMaxy, Page_Buffer, 0, 0x00FF00FF, hFontInGameNote);
+					
+					if(QuestBook.pages[QuestBook.curpage+2]>0)
+					{
+						_tcsncpy(Page_Buffer, lpszQuests + QuestBook.pages[QuestBook.curpage+1], QuestBook.pages[QuestBook.curpage+2] - QuestBook.pages[QuestBook.curpage+1]);
+						Page_Buffer[QuestBook.pages[QuestBook.curpage+2] - QuestBook.pages[QuestBook.curpage+1]]=_T('\0');
+						DrawBookTextInRect( NotePosX + NoteTextMinx + (NoteTextMaxx - NoteTextMinx) +20, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx + (NoteTextMaxx - NoteTextMinx) +20, NotePosY + NoteTextMaxy, Page_Buffer, 0, 0x00FF00FF, hFontInGameNote);
+					}
+				}
+				else
+				{
+					if(QuestBook.pages[QuestBook.curpage]>=0)
+					{
+						_tcscpy(Page_Buffer, lpszQuests + QuestBook.pages[QuestBook.curpage]);
+						DrawBookTextInRect( NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY + NoteTextMaxy, Page_Buffer, 0, 0x00FF00FF, hFontInGameNote);
+					}
+				}
+			}
+
+			delete []lpszQuests;
+		}
+	}
+	
+	if ((Book_Mode==0) && (inter.iobj[0]->obj!=NULL))
+	{
+
+		SETZWRITE(GDevice,true);
+		danaeApp.EnableZBuffer();
+		SetFilteringMode(GDevice,1);
+		D3DRECT rec;
+
+		if (BOOKZOOM)
+		{
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
  
             F2L((float)((118.F+BOOKDECX)*Xratio),&rec.x1);
             F2L((float)((69.f +BOOKDECY)*Yratio),&rec.y1);
@@ -10531,6 +13872,7 @@ long Manage3DCursor(long flags)
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_RenderCursor(long flag)
 {
+<<<<<<< HEAD
     if (!SPECIAL_DRAGINTER_RENDER)
     {
         ManageIgnition_2(DRAGINTER);	
@@ -11067,5 +14409,543 @@ void ARX_INTERFACE_RenderCursor(long flag)
         GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_LINEAR );
         SETTEXTUREWRAPMODE(GDevice,D3DTADDRESS_WRAP);
     }
+=======
+	if (!SPECIAL_DRAGINTER_RENDER)
+	{
+		ManageIgnition_2(DRAGINTER);	
+		GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_POINT );
+		GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_POINT );
+		SETTEXTUREWRAPMODE(GDevice,D3DTADDRESS_CLAMP);
+	}
+	
+	TextureContainer * surf;
+
+	if (!SPECIAL_DRAGINTER_RENDER)
+	if (LOOKING_FOR_SPELL_TARGET)
+	{
+		if (ARXTime>LOOKING_FOR_SPELL_TARGET_TIME+7000)
+		{
+			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &player.pos);
+			ARX_SPELLS_CancelSpellTarget();
+		}
+
+		if (	(FlyingOverIO)
+			&&	(	((LOOKING_FOR_SPELL_TARGET & 1) && (FlyingOverIO->ioflags & IO_NPC))
+			|| ((LOOKING_FOR_SPELL_TARGET & 2) && (FlyingOverIO->ioflags & IO_ITEM))	)	)
+		{
+			surf=ITC.target_on;
+
+			if (!(EERIEMouseButton & 1) && (LastMouseClick & 1))
+			{
+				ARX_SPELLS_LaunchSpellTarget(FlyingOverIO);
+			}
+		}
+		else 
+		{
+			surf=ITC.target_off;
+
+			if(ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE))
+			{
+				ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &player.pos);
+				ARX_SPELLS_CancelSpellTarget();
+			}
+		}
+
+		float POSX=DANAEMouse.x;
+		float POSY=DANAEMouse.y;
+
+		if (TRUE_PLAYER_MOUSELOOK_ON)
+		{
+			POSX = MemoMouse.x;
+			POSY = MemoMouse.y;
+		}
+
+
+		float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
+		float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
+
+		EERIEDrawBitmap(GDevice,(float)(POSX-(fTexSizeX*0.5f)),(float)(POSY-(surf->m_dwHeight*0.5f)),
+			fTexSizeX, fTexSizeY, 0.f,
+			surf,D3DCOLORWHITE);
+		
+		SETTEXTUREWRAPMODE(GDevice,D3DTADDRESS_WRAP);
+		return;
+	}
+
+	SPECIAL_DRAW_INTER_SHADOW = 0;
+		
+	if (flag || ((!BLOCK_PLAYER_CONTROLS) && 
+		(!PLAYER_INTERFACE_HIDE_COUNT)))
+	{
+		RECT rect;
+
+		if (!SPECIAL_DRAGINTER_RENDER)
+			SETCULL(GDevice,D3DCULL_NONE);
+
+		if ((COMBINE) || (COMBINEGOLD))
+		{
+			if (SpecialCursor==CURSOR_INTERACTION_ON)
+				SpecialCursor=CURSOR_COMBINEON;
+			else SpecialCursor=CURSOR_COMBINEOFF;
+		}
+		
+		if ((SpecialCursor) || !PLAYER_MOUSELOOK_ON || (DRAGINTER!=NULL)
+		        || ((FlyingOverIO) && PLAYER_MOUSELOOK_ON && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK) 
+			&& (eMouseState != MOUSE_IN_NOTE)
+			&& (FlyingOverIO->ioflags & IO_ITEM)
+			&& (FlyingOverIO->GameFlags & GFLAG_INTERACTIVITY)
+			&& (pMenuConfig->bAutoReadyWeapon == false))
+			|| ((MAGICMODE==1) && PLAYER_MOUSELOOK_ON))
+		{
+			
+			if (!SPECIAL_DRAGINTER_RENDER)
+			{
+				if(FlyingOverIO||DRAGINTER)
+				{
+					fHighLightAng+=(float)(FrameDiff*0.5);
+
+					if(fHighLightAng>90.f) fHighLightAng=90.f;
+
+
+					float fHLight	= 100.f*sin(DEG2RAD(fHighLightAng));
+					ARX_CHECK_INT(fHLight);
+					
+					iHighLight	= ARX_CLEAN_WARN_CAST_INT(fHLight);
+
+				
+				}
+				else
+				{
+					 fHighLightAng=0.f;
+					iHighLight = 0;
+				}
+			}
+			
+			
+			CANNOT_PUT_IT_HERE=0;
+			float ag=player.angle.a;
+
+			if (ag>180) ag=ag-360;
+
+			float drop_miny=(float)(DANAECENTERY)-DANAECENTERY*(ag*DIV70);
+
+			if ((DANAEMouse.y>drop_miny) && DRAGINTER && !InInventoryPos(&DANAEMouse)
+			        && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK))
+			{
+				if (Manage3DCursor(1)==0)
+					CANNOT_PUT_IT_HERE = -1; 
+
+				if (SPECIAL_DRAGINTER_RENDER)
+				{
+					
+					CANNOT_PUT_IT_HERE=0;
+					return;
+				}
+				
+			}
+			else CANNOT_PUT_IT_HERE = -1; 
+						  
+			if (SPECIAL_DRAGINTER_RENDER)
+				return;
+
+			float POSX,POSY;
+			
+			POSX=(float)DANAEMouse.x;
+			POSY=(float)DANAEMouse.y;
+			
+			
+			if ((SpecialCursor) && (!DRAGINTER))
+			{
+				if (((COMBINE!=NULL) && (COMBINE->inv!=NULL)) || COMBINEGOLD)
+				{
+					if (TRUE_PLAYER_MOUSELOOK_ON && (pMenuConfig->bAutoReadyWeapon))
+					{
+						POSX = MemoMouse.x;
+						POSY = MemoMouse.y;
+					}
+
+					TextureContainer * tc;
+
+					if (COMBINEGOLD) tc=GoldCoinsTC[5];
+					else tc=COMBINE->inv;
+
+					if (tc->m_pddsSurface==NULL)
+					{
+						D3DTextr_Restore(tc->m_strName,GDevice);
+					}
+
+					float MODIF=0.f;
+	
+
+					float fTexSizeX = INTERFACE_RATIO_DWORD(tc->m_dwWidth);
+					float fTexSizeY = INTERFACE_RATIO_DWORD(tc->m_dwHeight);
+
+
+					if (SpecialCursor==CURSOR_COMBINEON)
+					{
+						EERIEDrawBitmap(GDevice,(float)POSX+MODIF,(float)POSY+MODIF
+							,(float)fTexSizeX
+							,(float)fTexSizeY,0.00001f
+							,tc,0xFFFFFFFF);
+
+						if ((FlyingOverIO!=NULL) && (FlyingOverIO->ioflags & IO_BLACKSMITH))
+						{
+							float v=ARX_DAMAGES_ComputeRepairPrice(COMBINE,FlyingOverIO);
+
+							if (v>0.f)
+							{								
+								long t;
+								F2L(v,&t);
+								ARX_INTERFACE_DrawNumber(POSX+MODIF-16,POSY+MODIF-10,t,6,0xFF00FFFF);
+							}
+						}
+					}
+					else
+						EERIEDrawBitmap(GDevice,(float)POSX+MODIF,(float)POSY+MODIF
+						,(float)fTexSizeX
+						,(float)fTexSizeY,0.00001f
+						,tc,0xFFFFAA66);
+				}				
+				
+				switch (SpecialCursor)
+				{
+				case CURSOR_REDIST:
+					{
+						surf = ITC.pTexCursorRedist;
+					}
+					break;
+				case CURSOR_COMBINEOFF:
+					surf=ITC.target_off;
+						POSX -= 16.f;
+						POSY -= 16.f;
+					break;
+				case CURSOR_COMBINEON:
+					surf=ITC.target_on;
+
+					if (surf)
+							POSX -= 16.f;
+
+						POSY -= 16.f;
+					break;
+				case CURSOR_FIREBALLAIM:
+					surf=ITC.target_on;
+
+					if (surf)
+					{
+						rect.right	=	surf->m_dwWidth;
+						rect.bottom	=	surf->m_dwHeight;
+					}
+
+					else 
+					{
+						ARX_CHECK_NO_ENTRY();
+						rect.right = 0;
+						rect.bottom = 0;
+					}
+
+
+
+					POSX = 320.f - rect.right / 2.f;
+					POSY = 280.f - rect.bottom / 2.f;
+					break; 
+				case CURSOR_INTERACTION_ON:
+
+					ARX_CHECK_LONG( Original_framedelay );
+					CURCURTIME += ARX_CLEAN_WARN_CAST_LONG( Original_framedelay );
+
+
+					if (CURCURPOS!=3) 
+					{
+						while(CURCURTIME>CURCURDELAY)
+						{
+							CURCURTIME-=CURCURDELAY;
+							CURCURPOS++;
+						}
+					}
+
+					if (CURCURPOS>7) CURCURPOS=0;
+
+					surf=scursor[CURCURPOS];
+					break;
+				default:
+					if (CURCURPOS!=0)
+					{
+
+						ARX_CHECK_LONG( Original_framedelay );
+						CURCURTIME += ARX_CLEAN_WARN_CAST_LONG( Original_framedelay );
+
+
+						while(CURCURTIME>CURCURDELAY)
+						{
+							CURCURTIME-=CURCURDELAY;
+							CURCURPOS++;
+						}
+					}
+
+					if (CURCURPOS>7) CURCURPOS=0;
+
+					surf=scursor[CURCURPOS];
+					break;
+				}
+
+				if ((surf))
+				{
+
+					if (SpecialCursor == CURSOR_REDIST)
+					{
+						EERIEDrawBitmap(GDevice,(float)POSX,(float)POSY,
+							surf->m_dwWidth * Xratio,
+							surf->m_dwHeight * Yratio,
+							0.f,
+							surf,D3DCOLORWHITE);
+						
+						danaeApp.DANAEEndRender();	
+						_TCHAR temp[256];
+						_stprintf(temp, _T("%3ld"), lCursorRedistValue);
+						ARX_TEXT_Draw(GDevice, InBookFont, DANAEMouse.x + 6* Xratio, DANAEMouse.y + 11* Yratio, 999, 999, temp, D3DCOLORBLACK, 0x00FF00FF);
+						danaeApp.DANAEStartRender();
+					}
+					else
+					{
+
+						float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
+						float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
+
+						EERIEDrawBitmap(GDevice,(float)POSX,(float)POSY,
+							fTexSizeX, fTexSizeY, 0.f,
+							surf,D3DCOLORWHITE);
+					}
+				}
+
+				SpecialCursor=0;
+			}
+			else
+			{
+				if (!(player.Current_Movement & PLAYER_CROUCH) && (!BLOCK_PLAYER_CONTROLS 
+					&& (ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE)))
+					&& (ARXmenu.currentmode==AMCM_OFF))
+				{
+					if (MAGICMODE<0) 
+					{
+						if (player.Interface & INTER_MAP )
+						{
+							ARX_INTERFACE_BookOpenClose(2); // Forced Closing
+						}
+
+						MAGICMODE=1;
+					}
+
+					surf=ITC.magic;
+
+					float POSX=DANAEMouse.x;
+					float POSY=DANAEMouse.y;
+
+					if (TRUE_PLAYER_MOUSELOOK_ON)
+					{
+						POSX = MemoMouse.x;
+						POSY = MemoMouse.y;
+					}
+
+
+					float fTexSizeX = INTERFACE_RATIO_DWORD(surf->m_dwWidth);
+					float fTexSizeY = INTERFACE_RATIO_DWORD(surf->m_dwHeight);
+
+
+					EERIEDrawBitmap(	GDevice,
+										(float)(POSX - (fTexSizeX*0.5f)),
+										(float)(POSY - (fTexSizeY*0.5f)),
+										(float)fTexSizeX,
+										(float)fTexSizeY,
+										0.f,
+										surf,
+										D3DCOLORWHITE);
+				}
+				else 
+				{
+					if (MAGICMODE>-1)
+					{
+						ARX_SOUND_Stop(SND_MAGIC_DRAW);
+						MAGICMODE=-1;
+					}
+
+					if ((DRAGINTER!=NULL) && (DRAGINTER->inv!=NULL))
+					{
+						TextureContainer * tc;
+						TextureContainer * tc2=NULL;
+						tc=DRAGINTER->inv;
+
+						if (NeedHalo(DRAGINTER)) tc2=DRAGINTER->inv->TextureHalo;//>_itemdata->halo_tc;
+						
+						if (tc->m_pddsSurface==NULL)
+						{
+							tc->Restore(GDevice);					
+						}	
+
+						D3DCOLOR color;
+
+						if ((DRAGINTER->poisonous) && (DRAGINTER->poisonous_count!=0))
+							color=0xFF00FF00;
+						else color=D3DCOLORWHITE;
+						
+						float mx = POSX;
+						float my = POSY;
+
+						if (TRUE_PLAYER_MOUSELOOK_ON && (pMenuConfig->bAutoReadyWeapon))
+						{
+							mx = MemoMouse.x;
+							my = MemoMouse.y;
+						}
+						
+
+						float fTexSizeX = INTERFACE_RATIO_DWORD(tc->m_dwWidth);
+						float fTexSizeY = INTERFACE_RATIO_DWORD(tc->m_dwHeight);
+
+
+						if (!(DRAGINTER->ioflags & IO_MOVABLE))
+						{
+							EERIEDrawBitmap(GDevice,(float)mx,(float)my
+								,(float)fTexSizeX
+								,(float)fTexSizeY,0.00001f
+								,tc,color);
+
+							if ((DRAGINTER->ioflags & IO_ITEM) && (DRAGINTER->_itemdata->count!=1))
+								ARX_INTERFACE_DrawNumber(mx+2.f,my+13.f,
+								DRAGINTER->_itemdata->count, 3, D3DCOLORWHITE);
+						}
+						else
+						{
+							if ((InInventoryPos(&DANAEMouse) || InSecondaryInventoryPos(&DANAEMouse))
+								||
+								(CANNOT_PUT_IT_HERE != -1))
+							{
+								EERIEDrawBitmap(GDevice,(float)mx,(float)my
+									,(float)fTexSizeX
+									,(float)fTexSizeY,0.00001f
+									,tc,color);
+							}
+						}
+						
+						//cross not over inventory icon
+						if ((CANNOT_PUT_IT_HERE!=0) && (eMouseState != MOUSE_IN_INVENTORY_ICON))
+						{
+							if (!InInventoryPos(&DANAEMouse) && !InSecondaryInventoryPos(&DANAEMouse) && !ARX_INTERFACE_MouseInBook())
+							{
+								TextureContainer * tcc=Movable;
+
+								if (CANNOT_PUT_IT_HERE==-1)
+									tcc=ThrowObject;
+
+								if ((tcc) && (tcc!=tc)) // to avoid movable double red cross...
+									EERIEDrawBitmap(GDevice,(float)mx+16,(float)my
+
+									,INTERFACE_RATIO_DWORD(tcc->m_dwWidth)
+									,INTERFACE_RATIO_DWORD(tcc->m_dwHeight),0.00001f
+
+									,tcc,D3DCOLORWHITE);
+							}
+						}
+						
+						if (tc2)
+						{
+							ARX_INTERFACE_HALO_Draw(DRAGINTER,GDevice,tc,tc2,mx,my, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+						}
+					}
+					else 
+					{
+						if (CURCURPOS != 0)
+						{
+						
+								ARX_CHECK_LONG( Original_framedelay );
+								CURCURTIME	+=	ARX_CLEAN_WARN_CAST_LONG( Original_framedelay );
+
+
+								while(CURCURTIME>CURCURDELAY)
+								{
+									CURCURTIME-=CURCURDELAY;
+									CURCURPOS++;
+								}
+							}
+
+							if (CURCURPOS>7) CURCURPOS=0;
+
+							surf=scursor[CURCURPOS];
+						
+						
+						if (surf) 
+						{
+							EERIEDrawBitmap(GDevice,(float)POSX,(float)POSY,
+							                INTERFACE_RATIO_DWORD(surf->m_dwWidth), INTERFACE_RATIO_DWORD(surf->m_dwHeight), 0.f,
+								surf,D3DCOLORWHITE);
+						}
+					}
+				}
+			}
+		}
+		else //mode system shock
+		{
+			if (SPECIAL_DRAGINTER_RENDER)
+				return;
+
+			if(FlyingOverIO||DRAGINTER)
+			{
+				fHighLightAng+=(float)(FrameDiff*0.5f);
+
+				if(fHighLightAng>90.f) fHighLightAng=90.f;
+
+
+				float fHLight	= 100.f*sin(DEG2RAD(fHighLightAng));
+				ARX_CHECK_INT(fHLight);
+				
+				iHighLight	= ARX_CLEAN_WARN_CAST_INT(fHLight);
+
+			}
+			else
+			{
+				fHighLightAng=0.f;
+				iHighLight = 0;
+			}
+
+			if (TRUE_PLAYER_MOUSELOOK_ON && pMenuConfig && pMenuConfig->bShowCrossHair)
+			{
+				if (!(player.Interface & INTER_COMBATMODE))
+				{
+					CURCURPOS=0;
+					float POSX, POSY;
+			
+						surf = pTCCrossHair;
+
+						if (!surf)
+						{
+							surf=ITC.target_off;
+						}
+
+						if (surf)
+						{
+							SETALPHABLEND(GDevice, true);
+							SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+
+							POSX = DANAESIZX*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwWidth)*0.5f;
+							POSY = DANAESIZY*0.5f - INTERFACE_RATIO_DWORD(surf->m_dwHeight)*0.5f;
+
+							D3DCOLOR col=D3DRGB(0.5f, 0.5f, 0.5f);
+							
+							EERIEDrawBitmap(GDevice,(float)POSX,(float)POSY,
+
+								INTERFACE_RATIO_DWORD(surf->m_dwWidth),
+								INTERFACE_RATIO_DWORD(surf->m_dwHeight),
+
+								0.f,
+								surf, col);
+							SETALPHABLEND(GDevice, false);
+						}					
+					}
+				}
+			}
+		
+		GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_LINEAR );
+		GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_LINEAR );
+		SETTEXTUREWRAPMODE(GDevice,D3DTADDRESS_WRAP);
+	}
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 }
 

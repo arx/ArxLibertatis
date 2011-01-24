@@ -25,39 +25,38 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef HACHAGE_H
 #define HACHAGE_H
 
-#include <cstddef>
+#include <stddef.h>
 #include <string>
 
 class HashMap {
-    
+	
 private:
-    
-    struct Entry {
-        std::string name;
-        void * value;
-    };
-    
-    std::size_t size;
-    std::size_t mask;
-    std::size_t fill;
-    
-    Entry * data;
-    
+	
+	struct Entry {
+		std::string name;
+		void * value;
+	};
+	
+	size_t size;
+	size_t mask;
+	size_t fill;
+	
+	Entry * data;
+	
 private:
-    
-    std::size_t FuncH1( std::size_t );
-    std::size_t FuncH2( std::size_t );
-    std::size_t getHash( const std::string& );
-    
+	
+	size_t FuncH1( size_t );
+	size_t FuncH2( size_t );
+	size_t getHash( const std::string& );
+	
 public:
-    
-    HashMap(std::size_t size = 256);
-    ~HashMap();
-    
-    bool add( const std::string& name, void * value = NULL );
-    
-    void* get( const std::string& name );
-    
+	
+	HashMap(size_t size = 256);
+	~HashMap();
+	
+	bool add( const std::string& name, void * value = NULL );
+	
+	void* get( const std::string& name );
 };
 
 #endif

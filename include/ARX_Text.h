@@ -74,19 +74,19 @@ typedef enum _ARX_TEXT_TYPE
 //-----------------------------------------------------------------------------
 typedef struct _ARX_TEXT
 {
-    ARX_TEXT_TYPE   eType;
-    HFONT           hFont;
-    RECT            rRect;
-    RECT            rRectClipp;
-    std::string*    lpszUText;
-    float           fDeltaY;
-    float           fSpeedScrollY;
-    long            lCol;
-    long            lBkgCol;
-    long            lTimeScroll;
-    long            lTimeOut;
-    long            lTailleLigne;
-    int             iNbLineClip;
+	ARX_TEXT_TYPE   eType;
+	HFONT           hFont;
+	RECT            rRect;
+	RECT            rRectClipp;
+	std::string*    lpszUText;
+	float           fDeltaY;
+	float           fSpeedScrollY;
+	long            lCol;
+	long            lBkgCol;
+	long            lTimeScroll;
+	long            lTimeOut;
+	long            lTailleLigne;
+	int             iNbLineClip;
 } ARX_TEXT;
 
 //-----------------------------------------------------------------------------
@@ -95,17 +95,17 @@ void ARX_Text_Init(ARX_TEXT *);
 //-----------------------------------------------------------------------------
 class CARXTextManager
 {
-    public:
-        vector<ARX_TEXT *>	vText;
-    public:
-        CARXTextManager();
-        ~CARXTextManager();
-    public:
-        bool AddText(HFONT, const std::string&, RECT &, long _lCol = -1, long _lBkgCol = 0, long _lTimeOut = 0, long _lTimeScroll = 0, float _fSpeedScroll = 0.f, int iNbLigneClipp = 0);
-        bool AddText(ARX_TEXT *);
-        void Update(float);
-        void Render();
-        void Clear();
+	public:
+		vector<ARX_TEXT *>	vText;
+	public:
+		CARXTextManager();
+		~CARXTextManager();
+	public:
+		bool AddText(HFONT, const std::string&, RECT &, long _lCol = -1, long _lBkgCol = 0, long _lTimeOut = 0, long _lTimeScroll = 0, float _fSpeedScroll = 0.f, int iNbLigneClipp = 0);
+		bool AddText(ARX_TEXT *);
+		void Update(float);
+		void Render();
+		void Clear();
 };
 
 //-----------------------------------------------------------------------------
@@ -132,25 +132,16 @@ long UNICODE_ARXDrawTextCenter(float x, float y, const std::string& str, COLORRE
 long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, const std::string& str, COLORREF col, COLORREF bcol, HFONT font, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut = INT_MAX);
 long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, const std::string& _lpszUText, int _iSpacingY, RECT _rRect);
 long ARX_UNICODE_DrawTextInRect(float x, float y,
-                                float maxx, float maxy,
-                                const std::string& _lpszUText,
-                                COLORREF col, COLORREF bcol,
-                                HFONT font,
-                                HRGN hRgn = NULL,
-                                HDC hHDC = NULL);
+								float maxx, float maxy,
+								const std::string& _lpszUText,
+								COLORREF col, COLORREF bcol,
+								HFONT font,
+								HRGN hRgn = NULL,
+								HDC hHDC = NULL);
 
 void ARX_Allocate_Text( std::string& dest, const char* id_string);
 std::string GetFontName( char *);
 void _ShowText(char * text);
-
-//-----------------------------------------------------------------------------
-long HERMES_UNICODE_GetProfileString( const std::string& sectionname,
-                                     const std::string& keyname,
-                                     const std::string& defaultstring,
-                                     std::string& destination,
-                                     unsigned long maxsize,
-                                     const std::string& datastream,
-                                     long lastspeech);
 
 //-----------------------------------------------------------------------------
 

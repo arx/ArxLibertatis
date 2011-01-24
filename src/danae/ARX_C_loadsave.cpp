@@ -51,11 +51,6 @@ extern C_SOUND	TabSound[];
 extern C_KEY KeyTemp;
 extern int LSoundChoose;
 
-void ClearDirectory(char * dirfile);
-void GetPathDirectory(char * dirfile);
-void ClearAbsDirectory(char * pT, char * d);
-void AddDirectory(char * pT, char * dir);
-
 /*----------------------------------------------------------------------*/
 void ReadString(char * d)
 {

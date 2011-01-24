@@ -34,8 +34,6 @@ using std::transform;
 #include <string>
 using std::string;
 
-using std::size_t;
-
 HashMap::HashMap(size_t sz) {
 	
 	data = new Entry[sz];

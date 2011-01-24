@@ -73,6 +73,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "DanaeSaveLoad.h"
 #include "EERIEApp.h"
 
+#include "ARX_ViewImage.h"
+
 #include "HERMESMain.h"
 #include "EERIEDraw.h"
 #include "EERIEMath.h"
@@ -130,8 +132,6 @@ long SP_HEAD = 0;
 bool MENU_NoActiveWindow();
 void ClearGame();
 void ClearGameDEVICE();
-
-void GetTextSize(HFONT _hFont, _TCHAR * _lpszUText, int * _iWidth, int * _iHeight);
 
 //-----------------------------------------------------------------------------
 void ARX_Menu_Release_Text(void * a)
@@ -441,7 +441,6 @@ void ARX_MENU_Clicked_CREDITS()
 	ARX_MENU_LaunchAmb(AMB_CREDITS);
 }
 extern long FINAL_COMMERCIAL_DEMO;
-void StartImageDemo();
 bool ARX_IsSteam();
 
 //-----------------------------------------------------------------------------
@@ -935,7 +934,11 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 		Color = RGB(232, 204, 143);
 
+<<<<<<< HEAD
 		PAK_UNICODE_GetPrivateProfileString( "system_menus_main_cdnotfound", "string", "", szText, 256, NULL);
+=======
+		PAK_UNICODE_GetPrivateProfileString("system_menus_main_cdnotfound", "", szText, 256);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 		iW = 0;
 		iH = 0;
 		GetTextSize(hFontMenu, szText.c_str(), &iW, &iH);
@@ -943,7 +946,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		ePos.y = DANAESIZY * 0.4f;
 		FontRenderText(hFontMenu, ePos, szText, Color);
 
-		PAK_UNICODE_GetPrivateProfileString(_T("system_yes"), _T("string"), _T(""), szText, 256, NULL);
+		PAK_UNICODE_GetPrivateProfileString("system_yes", "", szText, 256);
 		iW = 0;
 		iH = 0;
 		GetTextSize(hFontMenu, szText.c_str(), &iW, &iH);
@@ -969,7 +972,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 		FontRenderText(hFontMenu, ePos, szText, Color);
 
-		PAK_UNICODE_GetPrivateProfileString(_T("system_no"), _T("string"), _T(""), szText, 256, NULL);
+		PAK_UNICODE_GetPrivateProfileString("system_no", "", szText, 256);
 		iW = 0;
 		iH = 0;
 		GetTextSize(hFontMenu, szText.c_str(), &iW, &iH);

@@ -506,7 +506,11 @@ class CMenuElementText: public CMenuElement
 
 	public:
 
+<<<<<<< HEAD
 		CMenuElementText(int, HFONT, const std::string&, float, float, long, float, MENUSTATE); 
+=======
+		CMenuElementText(int, HFONT, const char *, float, float, long, float, MENUSTATE); 
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 		virtual ~CMenuElementText();
 
 		CMenuElement * OnShortCut();
@@ -525,6 +529,7 @@ class CMenuElementText: public CMenuElement
 //-----------------------------------------------------------------------------
 class CMenuButton: public CMenuElement
 {
+<<<<<<< HEAD
     public:
         std::string         vText;
         int                 iPos;
@@ -561,6 +566,32 @@ class CMenuButton: public CMenuElement
         void Update(int);
         void Render();
         void RenderMouseOver();
+=======
+	public:
+		vector<_TCHAR *>		vText;
+		int					iPos;
+		TextureContainer	* pTex;
+		TextureContainer	* pTexOver;
+		HFONT				pHFont;
+		int					iColor;
+		float				fSize;
+
+	public:
+		CMenuButton(int, HFONT, MENUSTATE, int, int, const char *, float _fSize = 1.f, TextureContainer * _pTex = NULL, TextureContainer * _pTexOver = NULL, int _iColor = -1, int _iTailleX = 0, int _iTailleY = 0);
+		~CMenuButton();
+
+	public:
+		void SetPos(int, int);
+		void AddText(const char *);
+		CMenuElement * OnShortCut()
+		{
+			return NULL;
+		};
+		bool OnMouseClick(int);
+		void Update(int);
+		void Render();
+		void RenderMouseOver();
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 };
 
 //-----------------------------------------------------------------------------
@@ -893,27 +924,47 @@ class CMenuConfig
 
 		bool		bNoReturnToWindows;
 	private:
+<<<<<<< HEAD
 		int GetDIKWithASCII( const std::string& _pcTouch);
 		std::string ReadConfig( const std::string& _pcSection, const std::string& _pcKey);
 		bool WriteConfig( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas);
+=======
+		int GetDIKWithASCII(const char * _pcTouch);
+		char * ReadConfig(const char * _pcSection, const char * _pcKey);
+		bool WriteConfig(const char * _pcSection, const char * _pcKey, char * _pcDatas);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 	public:
 		CMenuConfig();
 		CMenuConfig( const std::string& );
 		virtual ~CMenuConfig();
 
 		bool SetActionKey(int _iAction, int _iActionNum, int _iVirtualKey);
+<<<<<<< HEAD
 		int ReadConfigInt( const std::string& _pcSection, const std::string& _pcKey, bool & _bOk);
  
 		std::string ReadConfigString( const std::string& _pcSection, const std::string& _pcKey);
 		bool WriteConfigInt( const std::string& _pcSection, const std::string& _pcKey, int _iDatas);
  
 		bool WriteConfigString( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas);
+=======
+		int ReadConfigInt(const char * _pcSection, const char * _pcKey, bool & _bOk);
+ 
+		char * ReadConfigString(const char * _pcSection, const char * _pcKey);
+		bool WriteConfigInt(const char * _pcSection, const char * _pcKey, int _iDatas);
+ 
+		bool WriteConfigString(const char * _pcSection, const char * _pcKey, char * _pcDatas);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
  
  
  
 		void ResetActionKey();
+<<<<<<< HEAD
 		bool WriteConfigKey( const std::string& _pcKey, int _iAction);
 		bool ReadConfigKey( const std::string& _pcKey, int _iAction);
+=======
+		bool WriteConfigKey(const char * _pcKey, int _iAction);
+		bool ReadConfigKey(const char * _pcKey, int _iAction);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 		void ReInitActionKey(CWindowMenuConsole * _pwmcWindowMenuConsole);
 		void SetDefaultKey();
 		void DefaultValue();
@@ -976,5 +1027,7 @@ void ARX_MENU_Clicked_CREDITS();
 bool ARX_QuickLoad();
 void ARX_QuickSave();
 void ARX_DrawAfterQuickLoad();
+
+void GetTextSize(HFONT _hFont, const char * _lpszUText, int * _iWidth, int * _iHeight);
 
 #endif

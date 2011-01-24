@@ -717,6 +717,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
             }
         }
 
+<<<<<<< HEAD
         if (flag != 2)
         {
             m_pd3dDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_WRAP);
@@ -955,6 +956,268 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
                 }
             }
     }
+=======
+						if (fl2) verts[3].color = D3DRGB(v * DIV2, v * DIV2, v * DIV2);
+						else
+							verts[3].color = D3DRGB(v, v, v);
+
+						oo += v;
+
+						if (oo > 0.f)
+						{
+							if (fl2)
+							{
+								verts[0].sx += DECALX * Xratio;
+								verts[0].sy += DECALY * Yratio;
+								verts[1].sx += DECALX * Xratio;
+								verts[1].sy += DECALY * Yratio;
+								verts[2].sx += DECALX * Xratio;
+								verts[2].sy += DECALY * Yratio;
+								verts[3].sx += DECALX * Xratio;
+								verts[3].sy += DECALY * Yratio;
+							}
+
+							EERIEDRAWPRIM(GDevice, D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, 4, 0);
+						}
+					}
+				}
+			}
+		}
+
+		if (flag != 2)
+		{
+			m_pd3dDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_WRAP);
+			m_pd3dDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
+
+			SETALPHABLEND(m_pd3dDevice, false);
+
+			if ((SHOWLEVEL == ARX_LEVELS_GetRealNum(CURRENTLEVEL)))
+			{
+				// Now Draws Playerpos/angle
+				verts[0].color = 0xFFFF0000;
+				verts[1].color = 0xFFFF0000;
+				verts[2].color = 0xFFFF0000;
+				float val;
+
+				if (flag == 1) val = 6.f;
+				else val = 3.f;
+
+				float rx = 0.f;
+				float ry = -val * 1.8f;
+				float rx2 = -val * DIV2;
+				float ry2 = val;
+				float rx3 = val * DIV2;
+				float ry3 = val;
+
+				float angle = DEG2RAD(player.angle.b);
+				float ca = EEcos(angle);
+				float sa = EEsin(angle);
+
+				verts[0].sx = (px + rx2 * ca + ry2 * sa) * Xratio;
+				verts[0].sy = (py + ry2 * ca - rx2 * sa) * Yratio;
+				verts[1].sx = (px + rx * ca + ry * sa) * Xratio;
+				verts[1].sy = (py + ry * ca - rx * sa) * Yratio;
+				verts[2].sx = (px + rx3 * ca + ry3 * sa) * Xratio;
+				verts[2].sy = (py + ry3 * ca - rx3 * sa) * Yratio;
+
+				SETTC(GDevice, NULL);
+
+				if (fl2)
+				{
+					SETALPHABLEND(m_pd3dDevice, true);
+					verts[0].sx += DECALX * Xratio;
+					verts[0].sy += DECALY * Yratio;
+					verts[1].sx += DECALX * Xratio;
+					verts[1].sy += DECALY * Yratio;
+					verts[2].sx += DECALX * Xratio;
+					verts[2].sy += DECALY * Yratio;
+				}
+
+				EERIEDRAWPRIM(GDevice, D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, 3, 0);
+
+				if (fl2) SETALPHABLEND(m_pd3dDevice, false);
+			}
+		}
+
+		// tsu
+		for (long lnpc = 1; lnpc < inter.nbmax; lnpc++)
+		{
+			if ((inter.iobj[lnpc] != NULL) && (inter.iobj[lnpc]->ioflags & IO_NPC))
+			{
+				if (inter.iobj[lnpc]->_npcdata->life > 0.f)
+					if (!((inter.iobj[lnpc]->GameFlags & GFLAG_MEGAHIDE) ||
+					        (inter.iobj[lnpc]->show == SHOW_FLAG_MEGAHIDE))
+					        && (inter.iobj[lnpc]->show == SHOW_FLAG_IN_SCENE))
+						if (!(inter.iobj[lnpc]->show == SHOW_FLAG_HIDDEN))
+							if (inter.iobj[lnpc]->_npcdata->fDetect >= 0)
+							{
+								if (player.Full_Skill_Etheral_Link >= inter.iobj[lnpc]->_npcdata->fDetect)
+								{
+									float fpx;
+									float fpy;
+								
+									fpx = sstartx + ((inter.iobj[lnpc]->pos.x - 100 + ofx - ofx2) * DIV100 * casex
+									                 + mini_offset_x[CURRENTLEVEL] * ratiooo * mod_x) / mod_x; 
+									fpy = sstarty + ((mapmaxy[SHOWLEVEL] - ofy - ofy2) * DIV100 * casey
+									                 - (inter.iobj[lnpc]->pos.z + 200 + ofy - ofy2) * DIV100 * casey + mini_offset_y[CURRENTLEVEL] * ratiooo * mod_z) / mod_z; 
+
+									if (flag == 1)
+									{
+
+										fpx = startx + ((inter.iobj[lnpc]->pos.x - 100 + ofx - ofx2) * DIV100 * casex
+										                + mini_offset_x[CURRENTLEVEL] * ratiooo * mod_x) / mod_x; 
+										fpy = starty + ((mapmaxy[SHOWLEVEL] - ofy - ofy2) * DIV100 * casey
+										                - (inter.iobj[lnpc]->pos.z + 200 + ofy - ofy2) * DIV100 * casey + mini_offset_y[CURRENTLEVEL] * ratiooo * mod_z) / mod_z; 
+
+
+									}
+
+									float d = Distance2D(player.pos.x, player.pos.z, inter.iobj[lnpc]->pos.x, inter.iobj[lnpc]->pos.z);
+
+		
+									if ((d <= 800) && (fabs(inter.iobj[0]->pos.y - inter.iobj[lnpc]->pos.y) < 250.f))
+									{
+										float col = 1.f;
+
+										if (d > 600.f)
+										{
+											col = 1.f - (d - 600.f) * DIV200;
+										}
+
+										if (!fl2)
+										{
+											SETALPHABLEND(m_pd3dDevice, true);
+											m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
+											m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+										}
+										else
+											SETALPHABLEND(m_pd3dDevice, true);
+
+										if (fl2)
+										{
+											fpx += DECALX * Xratio;
+											fpy += (DECALY + 15) * Yratio;
+										}
+
+										fpx *= Xratio;
+										fpy *= Yratio;
+										EERIEDrawBitmap(GDevice, fpx, fpy,
+										                5.f * ratiooo, 5.f * ratiooo, 0, pTexDetect, D3DRGB(col, 0, 0));
+
+										if (!fl2)
+											SETALPHABLEND(m_pd3dDevice, false);
+									}
+								}
+							}
+			}
+		}
+
+		if (flag == 0)
+			for (long i = 0; i < Nb_Mapmarkers; i++)
+			{
+				if (Mapmarkers[i].lvl == SHOWLEVEL + 1)
+				{
+					float pos_x = Mapmarkers[i].x * 8 * ratiooo * ACTIVEBKG->Xmul * casex + startx;
+					float pos_y = Mapmarkers[i].y * 8 * ratiooo * ACTIVEBKG->Zmul * casey + starty;
+					float size = 5.f * ratiooo;
+					verts[0].color = 0xFFFF0000;
+					verts[1].color = 0xFFFF0000;
+					verts[2].color = 0xFFFF0000;
+					verts[3].color = 0xFFFF0000;
+					verts[0].sx = (pos_x - size) * Xratio;
+					verts[0].sy = (pos_y - size) * Yratio;
+					verts[1].sx = (pos_x + size) * Xratio;
+					verts[1].sy = (pos_y - size) * Yratio;
+					verts[2].sx = (pos_x + size) * Xratio;
+					verts[2].sy = (pos_y + size) * Yratio;
+					verts[3].sx = (pos_x - size) * Xratio;
+					verts[3].sy = (pos_y + size) * Yratio;
+					verts[0].tu = 0.f;
+					verts[0].tv = 0.f;
+					verts[1].tu = 1.f;
+					verts[1].tv = 0.f;
+					verts[2].tu = 1.f;
+					verts[2].tv = 1.f;
+					verts[3].tu = 0.f;
+					verts[3].tv = 1.f;
+
+					if ((!fl2)
+					        && (MouseInRect(verts[0].sx, verts[0].sy, verts[2].sx, verts[2].sy)))
+					{
+						if (!Mapmarkers[i].tstring)
+						{
+							_TCHAR output[4096];
+							MakeLocalised(Mapmarkers[i].string, output, 4096);
+							Mapmarkers[i].tstring = (_TCHAR *)malloc((_tcslen(output) + 1) * sizeof(_TCHAR));
+							ZeroMemory(Mapmarkers[i].tstring, (_tcslen(output) + 1)*sizeof(_TCHAR));
+							_tcscpy(Mapmarkers[i].tstring, output);
+						}
+
+						if (Mapmarkers[i].tstring)
+						{
+							RECT rRect, bRect;
+							SetRect(&bRect	, (140),	(290)
+							        , (140 + 205),	(358));
+
+							float fLeft		= (bRect.left) * Xratio ;
+							float fRight	= (bRect.right) * Xratio ;
+							float fTop		= (bRect.top) * Yratio ;
+							float fBottom	= (bRect.bottom) * Yratio ;
+							ARX_CHECK_INT(fLeft);
+							ARX_CHECK_INT(fRight);
+							ARX_CHECK_INT(fTop);
+							ARX_CHECK_INT(fBottom);
+
+							SetRect(&rRect
+							        , ARX_CLEAN_WARN_CAST_INT(fLeft)
+							        , ARX_CLEAN_WARN_CAST_INT(fTop)
+							        , ARX_CLEAN_WARN_CAST_INT(fRight)
+							        , ARX_CLEAN_WARN_CAST_INT(fBottom));
+
+
+							long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(
+							                       hFontInGameNote, Mapmarkers[i].tstring, 0, rRect);
+
+							danaeApp.DANAEEndRender();
+							_TCHAR	Page_Buffer[256];
+							_tcsncpy(Page_Buffer, Mapmarkers[i].tstring, lLengthDraw);
+							Page_Buffer[lLengthDraw] = _T('\0');
+
+							DrawBookTextInRect(ARX_CLEAN_WARN_CAST_FLOAT(bRect.left), ARX_CLEAN_WARN_CAST_FLOAT(bRect.top),
+							                   ARX_CLEAN_WARN_CAST_FLOAT(bRect.right), ARX_CLEAN_WARN_CAST_FLOAT(bRect.bottom),
+							                   Page_Buffer, 0, 0x00FF00FF,
+							                   hFontInGameNote);
+
+
+							danaeApp.DANAEStartRender();
+						}
+					}
+
+					if (MapMarkerTc == NULL)
+					{
+						MapMarkerTc = MakeTCFromFile("Graph\\interface\\icons\\mapmarker.bmp");
+					}
+
+					SETTC(GDevice, MapMarkerTc);
+
+					if (fl2)
+					{
+						verts[0].sx += DECALX * Xratio;
+						verts[0].sy += DECALY * Yratio;
+						verts[1].sx += DECALX * Xratio;
+						verts[1].sy += DECALY * Yratio;
+						verts[2].sx += DECALX * Xratio;
+						verts[2].sy += DECALY * Yratio;
+						verts[3].sx += DECALX * Xratio;
+						verts[3].sy += DECALY * Yratio;
+					}
+
+					EERIEDRAWPRIM(GDevice, D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, 4, 0);
+				}
+			}
+
+	}
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 }
 
 void ARX_MAPMARKER_Init()

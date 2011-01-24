@@ -65,22 +65,22 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //-----------------------------------------------------------------------------
 typedef struct
 {
-    std::string         name;
-    short               exist;
-    short               flags; 
-    long                namelength;
-    long                times;
-    long                msecs;
-    long                pos;
-    long                longinfo;
-    unsigned long       tim;
-    INTERACTIVE_OBJ*    io;
-    EERIE_SCRIPT*       es;
+	std::string         name;
+	short               exist;
+	short               flags; 
+	long                namelength;
+	long                times;
+	long                msecs;
+	long                pos;
+	long                longinfo;
+	unsigned long       tim;
+	INTERACTIVE_OBJ*    io;
+	EERIE_SCRIPT*       es;
 } SCR_TIMER;
 
 typedef struct
 {
-    std::string name;
+	std::string name;
 } SCRIPT_EVENT;
 
 //-----------------------------------------------------------------------------
@@ -436,22 +436,27 @@ void ClearSubStack(EERIE_SCRIPT * es);
 
 //-----------------------------------------------------------------------------
 
+// TODO why is this in ARX_Script?
 long MakeLocalised( const std::string& text, std::string& output, long maxsize, long lastspeechflag = 0);
 
 //-----------------------------------------------------------------------------
 long specialstrcmp( const std::string& text, const std::string& seek);
 void CheckHit(INTERACTIVE_OBJ * io, float ratio);
+
+long NotifyIOEvent(INTERACTIVE_OBJ * io, long msg);
 long NotifyIOEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params);
 void ForceAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * ea);
 
 long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const std::string& text, long duration = -1);
-long ARX_SPEECH_ForceLocalised(INTERACTIVE_OBJ * io, const std::string& text, long duration = -1);
 
 long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params, const std::string& eventname = "" );
 long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& eventname, long info = 0);
-long SendMsgToAllIO(long msg, char * dat);
+
+long SendMsgToAllIO(long msg, const char * dat);
 
 void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params, const std::string& eventname);
+
+
 bool InSubStack(EERIE_SCRIPT * es, long pos);
 long GetSubStack(EERIE_SCRIPT * es);
 void AttemptMoveToTarget(INTERACTIVE_OBJ * io);

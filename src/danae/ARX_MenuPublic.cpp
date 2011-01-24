@@ -680,7 +680,7 @@ void ARXMenu_DeleteQuest(long num)
 	{
 		char temp[256];
 
-		sprintf(temp, "Save%s\\save%04d\\", LOCAL_SAVENAME, save_l[num+save_p].num);
+		sprintf(temp, "Save%s\\save%04ld\\", LOCAL_SAVENAME, save_l[num+save_p].num);
 		KillAllDirectory(temp);
 		FreeSaveGameList();
 		CreateSaveGameList();

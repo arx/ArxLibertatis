@@ -1850,7 +1850,7 @@ static void ARX_SOUND_LoadCollision(const long & mat1, const long & mat2, const 
 
 	for (long i(0); i < MAX_VARIANTS; i++)
 	{
-		sprintf(path, "%s_%d.wav", name, i + 1);
+		sprintf(path, "%s_%ld.wav", name, i + 1);
 		Inter_Materials[mat1][mat2][i] = aalCreateSample(path);
 
 		if (mat1 != mat2)
@@ -1940,7 +1940,7 @@ unsigned long CollisionMapStringCallback(const char * lpszString)
 		long sample_id;
 
 		if (i)
-			sprintf(path, "%s%u%s", lpszValue, i, ARX_SOUND_FILE_EXTENSION_WAV);
+			sprintf(path, "%s%lu%s", lpszValue, i, ARX_SOUND_FILE_EXTENSION_WAV);
 		else
 			sprintf(path, "%s%s", lpszValue, ARX_SOUND_FILE_EXTENSION_WAV);
 
@@ -1948,7 +1948,7 @@ unsigned long CollisionMapStringCallback(const char * lpszString)
 
 		if (sample_id == ARX_SOUND_INVALID_RESOURCE)
 		{
-			sprintf(path, "%s_%u%s", lpszValue, i, ARX_SOUND_FILE_EXTENSION_WAV);
+			sprintf(path, "%s_%lu%s", lpszValue, i, ARX_SOUND_FILE_EXTENSION_WAV);
 			sample_id = aalCreateSample(path);
 		}
 

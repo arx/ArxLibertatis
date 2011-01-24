@@ -31,10 +31,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <objbase.h>
 #include <ARX_Common.h>
 
-void ARX_Localisation_Init(char * _lpszExtension = "english");
+void ARX_Localisation_Init(const char * _lpszExtension = "english");
 void ARX_Localisation_Close();
 
 
+<<<<<<< HEAD
 int PAK_UNICODE_GetPrivateProfileString( const std::string& _lpszSection,
         const std::string& _lpszKey,
         const std::string& _lpszDefault,
@@ -43,5 +44,18 @@ int PAK_UNICODE_GetPrivateProfileString( const std::string& _lpszSection,
         const std::string& _lpszFileName);
 
 long HERMES_UNICODE_GetProfileSectionKeyCount( const std::string& sectionname);
+=======
+DWORD PAK_UNICODE_GetPrivateProfileString(const char * _lpszSection,
+        const char * _lpszDefault,
+        char * _lpszBuffer,
+        unsigned long	_lBufferSize);
+
+long HERMES_UNICODE_GetProfileSectionKeyCount(const char * sectionname);
+
+long HERMES_UNICODE_GetProfileString(const char	*	sectionname,
+                                     const char	*	defaultstring,
+                                     char	*	destination,
+                                     unsigned long	maxsize);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 
 #endif

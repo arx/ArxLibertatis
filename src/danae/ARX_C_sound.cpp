@@ -37,8 +37,6 @@ extern HWND HwndPere;
 extern char DirectoryChoose[];
 extern int	LSoundChoose;
 
-void ClearAbsDirectory(char * pT, char * d);
-void AddDirectory(char * pT, char * dir);
 /*-----------------------------------------------------------*/
 void InitSound(CINEMATIQUE * c)
 {
@@ -130,7 +128,7 @@ void DeleteAllSound(void)
 	}
 }
 /*-----------------------------------------------------------*/
-void CutAndAddString(char * pText, char * pDebText)
+void CutAndAddString(char * pText, const char * pDebText)
 {
 	int	i = strlen(pText);
 	int j = strlen(pDebText);

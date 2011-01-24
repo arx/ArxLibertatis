@@ -327,7 +327,8 @@ void ParseFile(_TCHAR * _lpszUTextFile, const unsigned long _ulFileSize)
 char LocalisationLanguage = -1;
 
 //-----------------------------------------------------------------------------
-void ARX_Localisation_Init(char * _lpszExtension) 
+// TODO parameter not really used.
+void ARX_Localisation_Init(const char * _lpszExtension) 
 {
 	if (_lpszExtension == NULL)
 		return;
@@ -376,8 +377,13 @@ void ARX_Localisation_Init(char * _lpszExtension)
 	//CD Check
 	if (FINAL_COMMERCIAL_DEMO)
 	{
+<<<<<<< HEAD
 		std::string szMenuText;
 		PAK_UNICODE_GetPrivateProfileString( "system_menus_main_cdnotfound", "string", "", szMenuText, 256, NULL);
+=======
+		_TCHAR szMenuText[256];
+		PAK_UNICODE_GetPrivateProfileString("system_menus_main_cdnotfound", "", szMenuText, 256);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 
 		if (!szMenuText[0]) //warez
 		{
@@ -387,8 +393,13 @@ void ARX_Localisation_Init(char * _lpszExtension)
 
 	if (FINAL_COMMERCIAL_GAME)
 	{
+<<<<<<< HEAD
 		std::string szMenuText;
 		PAK_UNICODE_GetPrivateProfileString( "unicode", "string", "", szMenuText, 256, NULL);
+=======
+		_TCHAR szMenuText[256] = {0};
+		PAK_UNICODE_GetPrivateProfileString("unicode", "", szMenuText, 256);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 
 		if (szMenuText[0]) //warez
 		{
@@ -410,6 +421,7 @@ void ARX_Localisation_Close()
 }
 
 //-----------------------------------------------------------------------------
+<<<<<<< HEAD
 long HERMES_UNICODE_GetProfileString(   const std::string&  sectionname,
                                         const std::string&  t_keyname,
                                         const std::string&  defaultstring,
@@ -417,6 +429,12 @@ long HERMES_UNICODE_GetProfileString(   const std::string&  sectionname,
                                         unsigned long       maxsize,
                                         const std::string&  datastream,
                                         long                lastspeech)
+=======
+long HERMES_UNICODE_GetProfileString(const char * sectionname,
+                                     const char * defaultstring,
+                                     char * destination,
+                                     unsigned long    maxsize)
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 {
 
     destination.clear();
@@ -437,7 +455,11 @@ long HERMES_UNICODE_GetProfileString(   const std::string&  sectionname,
 }
 
 //-----------------------------------------------------------------------------
+<<<<<<< HEAD
 long HERMES_UNICODE_GetProfileSectionKeyCount(const std::string& sectionname)
+=======
+long HERMES_UNICODE_GetProfileSectionKeyCount(const char * sectionname)
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 {
     if (pHashLocalisation)
         return pHashLocalisation->GetKeyCount(sectionname);
@@ -448,6 +470,7 @@ long HERMES_UNICODE_GetProfileSectionKeyCount(const std::string& sectionname)
 static long ltNum = 0;
 
 //-----------------------------------------------------------------------------
+<<<<<<< HEAD
 int PAK_UNICODE_GetPrivateProfileString(    const std::string&  _lpszSection,
                                             const std::string&  _lpszKey,
                                             const std::string&  _lpszDefault,
@@ -475,5 +498,32 @@ int PAK_UNICODE_GetPrivateProfileString(    const std::string&  _lpszSection,
                                     -1); //lastspeechflag
 
     return 1;
+=======
+DWORD PAK_UNICODE_GetPrivateProfileString(const char * _lpszSection,
+        const char * _lpszDefault,
+        char * _lpszBuffer,
+        unsigned long	_lBufferSize)
+{
+	ltNum ++;
+	ZeroMemory(_lpszBuffer, _lBufferSize * sizeof(_TCHAR));
+
+	if (_lpszSection[0] == _T('\0'))
+	{
+		_tcsncpy(_lpszBuffer, _lpszDefault, min((size_t)_lBufferSize, strlen(_lpszDefault)));
+		_stprintf(_lpszBuffer, _T("%s: NOT FOUND"), _lpszSection);
+		return 0;
+	}
+
+	_TCHAR szSection[256] = _T("");
+	_stprintf(szSection, _T("[%s]"), _lpszSection);
+
+	HERMES_UNICODE_GetProfileString(
+	    szSection,
+	    _lpszDefault,
+	    _lpszBuffer,
+	    _lBufferSize); //lastspeechflag
+
+	return 1;
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 }
 

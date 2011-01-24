@@ -41,8 +41,6 @@ extern std::string AllTxt;
 extern HWND HwndPere;
 extern char DirectoryChoose[];
 
-void ClearAbsDirectory(char * pT, char * d);
-void AddDirectory(char * pT, char * dir);
 
 /*-----------------------------------------------------------*/
 void FreeGrille(C_GRILLE * grille);
@@ -757,6 +755,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 			if ((w - MaxW) < 0) w2 = w;
 			else w2 = MaxW;
 
+<<<<<<< HEAD
             std::stringstream ss;
             ss << name << '_' << std::setw(4) << num;
             AllTxt = ss.str();
@@ -773,6 +772,18 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
             }
 
 			TextureContainer * t = FindTexture(AllTxt.c_str());
+=======
+			sprintf(AllTxt, "%s_%4d", name, num);
+			MakeUpcase(AllTxt);
+
+			if (FAILED(D3DTextr_CreateEmptyTexture(AllTxt, w2, h2, 0, D3DTEXTR_NO_MIPMAP, 0)))
+			{
+				sprintf(AllTxt, "Creating texture #%d -> x: %ld y %ld w: %d h: %d", num, (long)dx, (long)dy, w2, h2);
+				MessageBox(NULL, AllTxt, "Erreur", 0);
+			}
+
+			TextureContainer * t = FindTexture(AllTxt);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 			AddQuadUVs(&bi->grille, bi->nbx - nbxx, bi->nby - nby, 1, 1, bi->w - w, bi->h - h, w2, h2, t);
 
 			dx += (float)w2;

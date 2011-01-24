@@ -35,7 +35,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Sound.h"
 #include "ARX_Loc.h"
 #include "ARX_Text.h"
-#include "ARX_ViewImage.h"
 #include "ARX_Interface.h"
 
 #include "Mercury_dx_input.h"
@@ -44,6 +43,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIETexture.h"
 #include "EERIEPoly.h"
 #include "EERIEDraw.h"
+
+using std::wistringstream;
 
 //#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
@@ -213,6 +214,7 @@ bool isTimeBefore(SYSTEMTIME s1, SYSTEMTIME s2)
 
 void ARX_QuickSave()
 {
+<<<<<<< HEAD
     if( REFUSE_GAME_RETURN ) return;
 
     FreeSaveGameList();
@@ -300,6 +302,100 @@ void ARX_QuickSave()
 
     DeleteFile( tcSrc );
     DeleteFile( tcDst );
+=======
+	if( REFUSE_GAME_RETURN ) return;
+
+	FreeSaveGameList();
+	CreateSaveGameList();
+
+	_TCHAR szMenuText[256];
+	_tcscpy( szMenuText, _T( QUICK_SAVE_ID ) );
+
+	_TCHAR szMenuText1[256];
+	_tcscpy( szMenuText1, _T( QUICK_SAVE_ID1 ) );
+
+	int iOldGamma;
+
+	ARXMenu_Options_Video_GetGamma( iOldGamma );
+	ARXMenu_Options_Video_SetGamma( ( iOldGamma - 1 ) < 0 ? 0 : ( iOldGamma - 1 ) );
+
+	ARX_SOUND_MixerPause( ARX_SOUND_MixerGame );
+
+	bool		bFound0		=	false;
+	bool		bFound1		=	false;
+
+	int			iNbSave0	=	0; // will be used if >0 (0 will so mean NOTFOUND)
+	int			iNbSave1	=	0; // will be used if >0 (0 will so mean NOTFOUND)
+	SYSTEMTIME	sTime0;
+	SYSTEMTIME	sTime1;
+	ZeroMemory( &sTime0, sizeof(SYSTEMTIME) );// will be used if iNbSave0>0 (iNbSave0==0 will so mean NOTFOUND and sTime0 will not be used)
+	ZeroMemory( &sTime1, sizeof(SYSTEMTIME) );// will be used if iNbSave0>0 (iNbSave1==0 will so mean NOTFOUND and sTime1 will not be used)
+
+
+	for( int iI = 1 ; iI < (save_c) ; iI++ )
+	{
+		_TCHAR	tex2[256];
+		_stprintf( tex2, _T( "%s"), save_l[iI].name );
+//		todo: string
+//		_tcsupr( tex2 );
+
+		if( _tcsstr( szMenuText, tex2 ) )
+		{
+			bFound0		=	true;
+			sTime0		=	save_l[iI].stime;
+			iNbSave0	=	iI;
+		}
+		else if( _tcsstr( szMenuText1, tex2 ) )
+		{
+			bFound1		=	true;
+			sTime1		=	save_l[iI].stime;
+			iNbSave1	=	iI;
+		}
+	}
+
+	if ( bFound0 && bFound1 &&
+		( iNbSave0 > 0 ) && ( iNbSave0 < save_c ) &&
+		( iNbSave1 > 0 ) && ( iNbSave1 < save_c ) )
+	{
+		int	iSave;
+		
+		if ( isTimeBefore( sTime0, sTime1 ) )
+			iSave = iNbSave0;
+		else
+			iSave = iNbSave1;
+
+		UpdateSaveGame( iSave );
+		ARXMenu_Options_Video_SetGamma( iOldGamma );
+		ARX_SOUND_MixerResume( ARX_SOUND_MixerGame );
+		return;
+	}
+
+	const char tcSrc[] = "SCT_0.BMP";
+	const char tcDst[] = "SCT_1.BMP";
+	CopyFile( tcSrc, tcDst, false );
+
+	if ( bFound0 == false )
+	{
+		strcpy( save_l[0].name, QUICK_SAVE_ID );
+		UpdateSaveGame( 0 );
+		ARXMenu_Options_Video_SetGamma( iOldGamma );
+		ARX_SOUND_MixerResume( ARX_SOUND_MixerGame );
+
+		CopyFile( tcDst, tcSrc, false );
+		DeleteFile( tcDst );
+	}
+
+	if ( bFound1 == false )
+	{
+		strcpy( save_l[0].name, QUICK_SAVE_ID1 );
+		UpdateSaveGame( 0 );
+		ARXMenu_Options_Video_SetGamma( iOldGamma );
+		ARX_SOUND_MixerResume( ARX_SOUND_MixerGame );
+	}
+
+	DeleteFile( tcSrc );
+	DeleteFile( tcDst );
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 }
 
 //-----------------------------------------------------------------------------
@@ -352,6 +448,7 @@ void ARX_DrawAfterQuickLoad()
 
 bool ARX_QuickLoad()
 {
+<<<<<<< HEAD
     FreeSaveGameList();
     CreateSaveGameList();
 
@@ -445,6 +542,106 @@ bool ARX_QuickLoad()
     }
 
     return false;
+=======
+	FreeSaveGameList();
+	CreateSaveGameList();
+
+	_TCHAR szMenuText[256];
+	_tcscpy( szMenuText, _T( QUICK_SAVE_ID ) );
+
+	_TCHAR szMenuText1[256];
+	_tcscpy( szMenuText1, _T( QUICK_SAVE_ID1 ) );
+
+	bool bFound0 = false;
+	bool bFound1 = false;
+
+	int iNbSave0	=	0; // will be used if >0 (0 will so mean NOTFOUND)
+	int iNbSave1	=	0; // will be used if >0 (0 will so mean NOTFOUND)
+	SYSTEMTIME sTime0;
+	SYSTEMTIME sTime1;
+	ZeroMemory( &sTime0, sizeof(SYSTEMTIME) );// will be used if iNbSave0>0 (iNbSave0==0 will so mean NOTFOUND and sTime0 will not be used)
+	ZeroMemory( &sTime1, sizeof(SYSTEMTIME) );// will be used if iNbSave0>0 (iNbSave1==0 will so mean NOTFOUND ans sTime1 will not be used)
+
+
+	for( int iI = 1 ; iI < (save_c) ; iI++ )
+	{
+		_TCHAR	tex2[256];
+		_stprintf( tex2, _T( "%s" ), save_l[iI].name );
+		//todo string
+//		_tcsupr( tex2 );
+
+		if( _tcsstr( szMenuText, tex2 ) )
+		{
+			bFound0		=	true;
+			sTime0		=	save_l[iI].stime;
+			iNbSave0	=	iI;
+		}
+		else if( _tcsstr( szMenuText1, tex2 ) )
+		{
+			bFound1		=	true;
+			sTime1		=	save_l[iI].stime;
+			iNbSave1	=	iI;
+		}
+	}
+
+	ARX_SOUND_MixerPause( ARX_SOUND_MixerGame );
+
+	if ( bFound0 && bFound1 &&
+		( iNbSave0 > 0 ) && ( iNbSave0 < save_c ) &&
+		( iNbSave1 > 0 ) && ( iNbSave1 < save_c ) )
+	{
+		int iSave;
+
+		if ( isTimeBefore( sTime0, sTime1 ) )
+			iSave = iNbSave1;
+		else
+			iSave = iNbSave0;
+
+		INTRO_NOT_LOADED		=	1;
+		LoadLevelScreen();
+		PROGRESS_BAR_TOTAL		=	238;
+		OLD_PROGRESS_BAR_COUNT	=	PROGRESS_BAR_COUNT=0;
+		PROGRESS_BAR_COUNT		+=	1.f;
+		LoadLevelScreen( GDevice, save_l[iSave].level );
+		DanaeClearLevel();
+		ARX_CHANGELEVEL_Load( save_l[iSave].num );
+		REFUSE_GAME_RETURN		=	0;
+		ARX_SOUND_MixerResume( ARX_SOUND_MixerGame );
+		return true;
+	}
+
+	if ( bFound0 != false )
+	{
+		INTRO_NOT_LOADED		=	1;
+		LoadLevelScreen();
+		PROGRESS_BAR_TOTAL		=	238;
+		OLD_PROGRESS_BAR_COUNT	=	PROGRESS_BAR_COUNT=0;
+		PROGRESS_BAR_COUNT		+=	1.f;
+		LoadLevelScreen( GDevice, save_l[iNbSave0].level );
+		DanaeClearLevel();
+		ARX_CHANGELEVEL_Load( save_l[iNbSave0].num );
+		REFUSE_GAME_RETURN		=	0;
+		ARX_SOUND_MixerResume( ARX_SOUND_MixerGame );
+		return true;
+	}
+
+	if ( bFound1 != false )
+	{
+		INTRO_NOT_LOADED		=	1;
+		LoadLevelScreen();
+		PROGRESS_BAR_TOTAL		=	238;
+		OLD_PROGRESS_BAR_COUNT	=	PROGRESS_BAR_COUNT=0;
+		PROGRESS_BAR_COUNT		+=	1.f;
+		LoadLevelScreen( GDevice, save_l[iNbSave1].level );
+		DanaeClearLevel();
+		ARX_CHANGELEVEL_Load( save_l[iNbSave1].num );
+		REFUSE_GAME_RETURN		=	0;
+		ARX_SOUND_MixerResume( ARX_SOUND_MixerGame );
+		return true;
+	}
+
+	return false;
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 }
 
 //-----------------------------------------------------------------------------
@@ -460,7 +657,11 @@ bool MENU_NoActiveWindow()
 
 //-----------------------------------------------------------------------------
 
+<<<<<<< HEAD
 void GetTextSize(HFONT _hFont, std::string _lpszUText, int& _iWidth, int& _iHeight)
+=======
+void GetTextSize(HFONT _hFont, const char *_lpszUText, int *_iWidth, int *_iHeight)
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 {
     HDC hDC;
 
@@ -761,11 +962,27 @@ void CMenuConfig::SetDefaultKey()
     }
 }
 
+<<<<<<< HEAD
 std::string& to_lower( std::string& str )
 {
     std::transform( str.begin(), str.end(), str.begin(), ::tolower );
     return str;
 }
+=======
+//-----------------------------------------------------------------------------
+
+int CMenuConfig::GetDIKWithASCII(const char *_pcTouch)
+{
+_TCHAR pcT[256];
+
+//	TODO: cast
+//	MultiByteToWideChar(CP_ACP, 0, _pcTouch, -1, pcT, strlen(_pcTouch)+1);
+
+	if(!_tcsicmp(pcT,_T("---")))
+	{
+		return -1;
+	}
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 
 //-----------------------------------------------------------------------------
 
@@ -839,7 +1056,11 @@ int CMenuConfig::GetDIKWithASCII( const std::string& _pcTouch)
 
 //-----------------------------------------------------------------------------
 
+<<<<<<< HEAD
 std::string CMenuConfig::ReadConfig( const std::string& _pcSection, const std::string& _pcKey)
+=======
+char * CMenuConfig::ReadConfig(const char *_pcSection, const char *_pcKey)
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 {
     char tcText[256];
 
@@ -857,7 +1078,11 @@ std::string CMenuConfig::ReadConfig( const std::string& _pcSection, const std::s
 
 //-----------------------------------------------------------------------------
 
+<<<<<<< HEAD
 int CMenuConfig::ReadConfigInt( const std::string& _pcSection, const std::string& _pcKey, bool &_bOk )
+=======
+int CMenuConfig::ReadConfigInt(const char *_pcSection, const char *_pcKey,bool &_bOk)
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 {
     std::string pcText=ReadConfig(_pcSection,_pcKey);
 
@@ -876,15 +1101,24 @@ int CMenuConfig::ReadConfigInt( const std::string& _pcSection, const std::string
 }
 
 //-----------------------------------------------------------------------------
+<<<<<<< HEAD
     
 std::string CMenuConfig::ReadConfigString( const std::string& _pcSection, const std::string& _pcKey)
+=======
+	
+char* CMenuConfig::ReadConfigString(const char *_pcSection, const char *_pcKey)
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 {
     return ReadConfig(_pcSection,_pcKey);
 }
 
 //-----------------------------------------------------------------------------
 
+<<<<<<< HEAD
 bool CMenuConfig::WriteConfig( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas)
+=======
+bool CMenuConfig::WriteConfig(const char *_pcSection, const char *_pcKey,char *_pcDatas)
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 {
 int iErreur=0;
 
@@ -902,7 +1136,11 @@ int iErreur=0;
 
 //-----------------------------------------------------------------------------
 
+<<<<<<< HEAD
 bool CMenuConfig::WriteConfigInt( const std::string& _pcSection, const std::string& _pcKey, const int _iDatas)
+=======
+bool CMenuConfig::WriteConfigInt(const char *_pcSection, const char *_pcKey,int _iDatas)
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 {
     std::stringstream ss( _iDatas );
     char tcTxt[256];
@@ -912,7 +1150,11 @@ bool CMenuConfig::WriteConfigInt( const std::string& _pcSection, const std::stri
 
 //-----------------------------------------------------------------------------
 
+<<<<<<< HEAD
 bool CMenuConfig::WriteConfigString( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas)
+=======
+bool CMenuConfig::WriteConfigString(const char *_pcSection, const char *_pcKey,char *_pcDatas)
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 {
     return WriteConfig(_pcSection,_pcKey,_pcDatas);
 }
@@ -936,6 +1178,7 @@ void CMenuConfig::ResetActionKey()
 
 bool CMenuConfig::SetActionKey(int _iAction,int _iActionNum,int _iVirtualKey)
 {
+<<<<<<< HEAD
     if(    (_iAction>=MAX_ACTION_KEY)||
         (_iActionNum>1) ) return false;
 
@@ -971,6 +1214,136 @@ bool CMenuConfig::SetActionKey(int _iAction,int _iActionNum,int _iVirtualKey)
         {
             sakActionKey[_iAction].iKey[1]=-1;
         }
+=======
+	if(	(_iAction>=MAX_ACTION_KEY)||
+		(_iActionNum>1) ) return false;
+
+	bool bChange=false;
+	bool bSecondChoice=false;
+	int iOldVirtualKey=sakActionKey[_iAction].iKey[_iActionNum];
+	sakActionKey[_iAction].iKey[_iActionNum]=_iVirtualKey;
+
+	if(_iActionNum)
+	{
+		if(sakActionKey[_iAction].iKey[0]==-1)
+		{
+			sakActionKey[_iAction].iKey[0]=iOldVirtualKey;
+			bSecondChoice=true;
+		}
+
+		if(sakActionKey[_iAction].iKey[0]==_iVirtualKey)
+		{
+			sakActionKey[_iAction].iKey[0]=-1;
+		}
+
+		bChange=true;
+	}
+	else
+	{
+		if(sakActionKey[_iAction].iKey[1]==-1)
+		{
+			sakActionKey[_iAction].iKey[1]=iOldVirtualKey;
+			bSecondChoice=true;
+		}
+
+		if(sakActionKey[_iAction].iKey[1]==_iVirtualKey)
+		{
+			sakActionKey[_iAction].iKey[1]=-1;
+		}
+
+		bChange=true;
+	}
+
+	if(bSecondChoice)
+	{
+		bChange=true;
+		iOldVirtualKey=-1;
+	}
+
+	//on remove les doublons de keys
+	int iI=MAX_ACTION_KEY;
+
+	while(iI--)
+	{
+		if(iI==_iAction) continue;
+
+		if(sakActionKey[iI].iPage!=sakActionKey[_iAction].iPage) continue;
+
+		if(sakActionKey[iI].iKey[0]==_iVirtualKey)
+		{
+			sakActionKey[iI].iKey[0]=iOldVirtualKey;
+			bChange=true;
+			break;
+		}
+		else
+		{
+			if(sakActionKey[iI].iKey[1]==_iVirtualKey)
+			{
+				sakActionKey[iI].iKey[1]=iOldVirtualKey;
+				bChange=true;
+				break;
+			}
+		}
+	}
+
+	return bChange;
+}
+
+//-----------------------------------------------------------------------------
+
+bool CMenuConfig::WriteConfigKey(const char *_pcKey,int _iAction)
+{
+char tcTxt[256];
+char tcTxt2[256];
+char *pcText;
+bool bOk=true;
+_TCHAR *pcText1;
+
+	strcpy(tcTxt,_pcKey);
+
+		int iL;
+		pcText1=pGetInfoDirectInput->GetFullNameTouch(sakActionKey[_iAction].iKey[0]);
+		iL=_tcslen(pcText1)+1;
+		pcText=(char*)malloc(iL);
+
+		while(iL--)
+		{
+			pcText[iL]=char(pcText1[iL]);
+		}
+
+		free((void*)pcText1);
+		pcText1=NULL;
+		
+		if(pcText)
+		{
+			strcpy(tcTxt2,tcTxt);
+			strcat(tcTxt2,"_k0");
+			bOk&=WriteConfigString("KEY",tcTxt2,pcText);
+			free((void*)pcText);
+			pcText=NULL;
+		}
+
+		pcText1=pGetInfoDirectInput->GetFullNameTouch(sakActionKey[_iAction].iKey[1]);
+		iL=_tcslen(pcText1)+1;
+		pcText=(char*)malloc(iL);
+
+		while(iL--)
+		{
+			pcText[iL]=char(pcText1[iL]);
+		}
+
+		free((void*)pcText1);
+		pcText1=NULL;
+
+		if(pcText)
+		{
+			strcpy(tcTxt2,tcTxt);
+			strcat(tcTxt2,"_k1");
+			bOk&=WriteConfigString("KEY",tcTxt2,pcText);
+			free((void*)pcText);
+			pcText=NULL;
+		}
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 
         bChange=true;
     }
@@ -1052,7 +1425,11 @@ bool CMenuConfig::WriteConfigKey( const std::string& _pcKey,int _iAction)
 
 //-----------------------------------------------------------------------------
 
+<<<<<<< HEAD
 void CMenuConfig::ReInitActionKey(CWindowMenuConsole *_pwmcWindowMenuConsole)
+=======
+bool CMenuConfig::ReadConfigKey(const char *_pcKey,int _iAction)
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 {
     int iID=BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1;
     int iI=MAX_ACTION_KEY;
@@ -3733,6 +4110,7 @@ bool Menu2_Render()
         pTextManage->Render();
     }
 
+<<<<<<< HEAD
     danaeApp.DANAEStartRender();
     GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP);
 
@@ -3741,6 +4119,1528 @@ bool Menu2_Render()
     GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE,false);
     GDevice->SetRenderState( D3DRENDERSTATE_CULLMODE,D3DCULL_NONE);
     pGetInfoDirectInput->DrawCursor();
+=======
+bool Menu2_Render()
+{
+	ARXOldTimeMenu = ARXTimeMenu;
+	ARXTimeMenu = ARX_TIME_Get( false );
+	ARXDiffTimeMenu = ARXTimeMenu-ARXOldTimeMenu;
+	
+	if (ARXDiffTimeMenu < 0) //this mean ArxTimeMenu is reseted 
+		ARXDiffTimeMenu = 0 ;
+
+	GDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTFP_LINEAR);
+	GDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTFP_LINEAR);
+
+	if ((AMCM_NEWQUEST==ARXmenu.currentmode)
+		|| (AMCM_CREDITS==ARXmenu.currentmode)
+		|| (AMCM_CDNOTFOUND==ARXmenu.currentmode))
+	{
+		if(pWindowMenu)
+		{
+			delete pWindowMenu;
+			pWindowMenu=NULL;
+		}
+
+		if(pMenu)
+		{
+			delete pMenu;
+			pMenu=NULL;
+		}
+
+		switch(ARXmenu.currentmode)
+		{
+		case AMCM_CREDITS:
+			DrawCredits();
+			return true;
+			break;
+		}
+
+		return false;
+	}
+
+	if(!danaeApp.DANAEStartRender())
+	{
+		return true;
+	}
+
+	if(pTextManage)
+	{
+		pTextManage->Clear();
+	}
+
+	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP);
+
+	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
+	SETZWRITE(GDevice, false);
+	GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE,false);
+	GDevice->SetRenderState( D3DRENDERSTATE_CULLMODE,D3DCULL_NONE);
+	
+	MENUSTATE eOldMenuState=NOP;
+	MENUSTATE eM;
+
+	if(!pMenu)
+	{
+		eM=NOP;
+	}
+	else
+	{
+		eM=pMenu->eOldMenuWindowState;
+	}
+
+	long lColor = RGB(232, 204, 142);
+
+	if(	(!pMenu)|| ((pMenu)&&(pMenu->bReInitAll)) )
+	{
+		_TCHAR szMenuText[256];
+		bool bBOOL = false;
+		CMenuElementText *me;
+
+		if( (pMenu) && (pMenu->bReInitAll) )
+		{
+			eOldMenuState=pMenu->eOldMenuState;
+
+			if(pWindowMenu)
+			{
+				delete pWindowMenu;
+				pWindowMenu=NULL;
+			}
+
+			if(pMenu)
+			{
+				delete pMenu;
+				pMenu=NULL;
+			}
+		}
+
+		pMenu = new CMenuState(MAIN);
+		pMenu->eOldMenuWindowState=eM;
+
+		pMenu->pTexBackGround = MakeTCFromFile("Graph\\Interface\\menus\\menu_main_background.bmp");
+
+		int iPosMenuPrincipaleX = 370;
+int iPosMenuPrincipaleY=100;
+int iDecMenuPrincipaleY=50;
+#define MACRO_MENU_PRINCIPALE(MACRO_button,MACRO_menu,MACRO_locate,MACRO_check){\
+		PAK_UNICODE_GetPrivateProfileString(MACRO_locate, _T(""), szMenuText, 256);\
+		me = new CMenuElementText(MACRO_button, hFontMainMenu, szMenuText, RATIO_X(iPosMenuPrincipaleX), RATIO_Y(iPosMenuPrincipaleY), lColor, 1.8f, MACRO_menu);\
+		if(MACRO_check)\
+		{\
+			pMenuElementResume=me;\
+			ARXMenu_GetResumeGame(bBOOL);\
+			if (bBOOL)\
+			{\
+				me->SetCheckOn();\
+			}\
+			else\
+			{\
+				me->SetCheckOff();\
+				me->lColor=RGB(127,127,127);\
+			}\
+		}\
+		pMenu->AddMenuElement(me);\
+		iPosMenuPrincipaleY+=iDecMenuPrincipaleY;\
+}
+		MACRO_MENU_PRINCIPALE(BUTTON_MENUMAIN_RESUMEGAME,RESUME_GAME,"system_menus_main_resumegame",1);
+		MACRO_MENU_PRINCIPALE(BUTTON_MENUMAIN_NEWQUEST,NEW_QUEST,"system_menus_main_newquest",0);
+		MACRO_MENU_PRINCIPALE(-1,EDIT_QUEST,"system_menus_main_editquest",0);
+		MACRO_MENU_PRINCIPALE(BUTTON_MENUMAIN_OPTIONS,OPTIONS,"system_menus_main_options",0);
+		MACRO_MENU_PRINCIPALE(BUTTON_MENUMAIN_CREDITS,CREDITS,"system_menus_main_credits",0);
+		MACRO_MENU_PRINCIPALE(-1,QUIT,"system_menus_main_quit",0);
+#undef MACRO_MENU_PRINCIPALE
+
+		//version
+		_TCHAR twVersion[32];
+//		todo: cast
+//		MultiByteToWideChar(CP_ACP, 0, GetVersionString()+3, -1, twVersion, 32 );
+
+		me = new CMenuElementText( -1, hFontControls, twVersion, RATIO_X(580), RATIO_Y(65), lColor, 1.0f, NOP );
+		me->SetCheckOff();
+		me->lColor=RGB(127,127,127);
+		pMenu->AddMenuElement(me);
+	}
+
+	bool bScroll=true;
+	{
+		if(pMenuElementResume)
+		{
+			bool bTemp;
+			ARXMenu_GetResumeGame(bTemp);
+
+			if(bTemp)
+			{
+				pMenuElementResume->SetCheckOn();
+				((CMenuElementText*)pMenuElementResume)->lColor=lColor;
+			}
+			else
+			{
+				pMenuElementResume->SetCheckOff();
+				((CMenuElementText*)pMenuElementResume)->lColor=RGB(127,127,127);
+			}
+		}
+
+
+		ARX_CHECK_INT(ARXDiffTimeMenu);
+		MENUSTATE eMenuState = pMenu->Update(ARX_CLEAN_WARN_CAST_INT(ARXDiffTimeMenu));
+
+
+		if(eOldMenuState!=NOP)
+		{
+			eMenuState=eOldMenuState;
+			bScroll=false;
+		}
+
+		if( eMenuState == RESUME_GAME )
+		{
+			pTextManage->Clear();
+			ARXmenu.currentmode = AMCM_OFF;
+			pMenu->eMenuState = NOP;
+			pMenu->pZoneClick = NULL;
+
+			if(pWindowMenu)
+			{
+				delete pWindowMenu;
+				pWindowMenu=NULL;
+			}
+
+			if(pMenu)
+			{
+				delete pMenu;
+				pMenu=NULL;
+			}
+
+			SETALPHABLEND(GDevice,false);
+			GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
+			SETZWRITE(GDevice, true);
+			danaeApp.EnableZBuffer();
+			danaeApp.DANAEEndRender();
+
+			return true;
+		}
+		else if (eMenuState!=NOP )
+		{
+			pMenu->eOldMenuState=eMenuState;
+
+			if(pWindowMenu)
+			{
+				delete pWindowMenu;
+				pWindowMenu=NULL;
+			}
+
+			//suivant la resolution
+			int iWindowMenuWidth=(321);
+			int iWindowMenuHeight=(430);
+			int iWindowMenuPosX=(20);
+			int iWindowMenuPosY=(480-iWindowMenuHeight)>>1;
+			int	iWindowConsoleOffsetX=(0);
+			int	iWindowConsoleOffsetY=(14-10);
+			int	iWindowConsoleWidth=(iWindowMenuWidth-iWindowConsoleOffsetX);
+			int	iWindowConsoleHeight=(iWindowMenuHeight-iWindowConsoleOffsetY+20);
+			///////////////////////
+
+			float fPosX1 = RATIO_X(20);
+			float fPosX2 = RATIO_X(200);
+
+
+			ARX_CHECK_INT(fPosX2);
+			int iPosX2	= ARX_CLEAN_WARN_CAST_INT(fPosX2);
+
+
+			float fPosBack	  = RATIO_X(10);
+			float fPosBackY	  = RATIO_Y(190);
+			float fPosNext	  = RATIO_X(140);
+
+			float fPosApply   = RATIO_X(240);
+
+			float fPosBDAY	  = RATIO_Y(380);
+
+			pWindowMenu = new CWindowMenu(iWindowMenuPosX,iWindowMenuPosY,iWindowMenuWidth,iWindowMenuHeight,1);
+
+			switch(eMenuState)
+			{
+			//------------------ START NEW_QUEST
+			case NEW_QUEST:
+				{
+					_TCHAR szMenuText[256];
+					bool bBOOL = false;
+					ARXMenu_GetResumeGame(bBOOL);
+
+					if (!bBOOL)
+					{
+						break;
+					}
+
+					CMenuElement *me = NULL;
+					CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,NEW_QUEST);
+					PAK_UNICODE_GetPrivateProfileString("system_menus_main_editquest_confirm", "", szMenuText, 256);
+					me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
+					me->bCheck = false;
+					pWindowMenuConsole->AddMenuCenter(me);
+
+					PAK_UNICODE_GetPrivateProfileString("system_menus_main_newquest_confirm", "", szMenuText, 256);
+					me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
+					me->bCheck = false;
+					pWindowMenuConsole->AddMenuCenter(me);
+
+					CMenuPanel *pPanel = new CMenuPanel();
+					PAK_UNICODE_GetPrivateProfileString("system_yes", "", szMenuText, 256);
+					_tcscat(szMenuText, _T("   "));
+					me = new CMenuElementText(BUTTON_MENUNEWQUEST_CONFIRM, hFontMenu, szMenuText, 0, 0,lColor,1.f, NEW_QUEST_ENTER_GAME);
+					me->SetPos(RATIO_X(iWindowConsoleWidth - (me->GetWidth() + 10)),0);
+					pPanel->AddElementNoCenterIn(me);
+					PAK_UNICODE_GetPrivateProfileString("system_no", "", szMenuText, 256);
+					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosBack, 0,lColor,1.f, MAIN);
+					me->SetShortCut(DIK_ESCAPE);
+					pPanel->AddElementNoCenterIn(me);
+
+
+					ARX_CHECK_INT(fPosBDAY);
+					
+					pPanel->Move(0,
+								ARX_CLEAN_WARN_CAST_INT(fPosBDAY)	);
+
+					
+					pWindowMenuConsole->AddMenu(pPanel);
+					pWindowMenu->AddConsole(pWindowMenuConsole);
+					pWindowMenu->eCurrentMenuState=NEW_QUEST;
+
+					}
+				break;
+			//------------------ END NEW_QUEST
+			case EDIT_QUEST:
+				{
+					CMenuElement *me;
+					CMenuElement *me01;
+					CMenuPanel *pPanel;
+					TextureContainer *pTex;
+					_TCHAR szMenuText[256];
+					CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST);
+
+					PAK_UNICODE_GetPrivateProfileString("system_menus_main_editquest_load", "", szMenuText, 256);
+					me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_INIT, hFontMenu, szMenuText, 0, 0, lColor, 1.f, EDIT_QUEST_LOAD);
+					pWindowMenuConsole->AddMenuCenter(me);
+
+					PAK_UNICODE_GetPrivateProfileString("system_menus_main_editquest_save", "", szMenuText, 256);
+					me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0, lColor, 1.f, EDIT_QUEST_SAVE);
+					bool bBOOL;
+					ARXMenu_GetResumeGame(bBOOL);
+
+					if(!FINAL_RELEASE) bBOOL=true;
+
+					if (!bBOOL)
+					{
+						me->SetCheckOff();
+						((CMenuElementText*)me)->lColor=RGB(127,127,127);
+					}
+
+					pWindowMenuConsole->AddMenuCenter(me);
+
+					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
+					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+					me->eMenuState = MAIN;
+					me->SetShortCut(DIK_ESCAPE);
+					pWindowMenuConsole->AddMenu(me);
+
+					pWindowMenu->eCurrentMenuState = EDIT_QUEST;
+					pWindowMenu->AddConsole(pWindowMenuConsole);
+
+					// LOAD ---------------------------------------------------
+					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY-(40),iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST_LOAD);
+					pWindowMenuConsole->iInterligne = 5;
+
+					pTex = MakeTCFromFile("\\Graph\\interface\\icons\\Menu_main_Load.bmp");
+					me = new CMenuCheckButton(-1, 0, 0, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+					((CMenuCheckButton *)me)->bCheck = false;
+					pWindowMenuConsole->AddMenuCenter(me);
+					{
+						//QUICK LOAD
+						_TCHAR szMenuText[256];
+						_tcscpy(szMenuText,_T(QUICK_SAVE_ID));
+						_TCHAR szMenuText1[256];
+						_tcscpy(szMenuText1,_T(QUICK_SAVE_ID1));
+
+						//LOAD
+						int iI;
+						int iFirst=2;
+						bool b1 = false;
+						bool b2 = false;
+
+						while(iFirst>=0)
+						{
+							for(iI=1; iI<(save_c); iI++)
+							{
+								_TCHAR tex[256];
+								_stprintf(tex, _T("%s"),
+									save_l[iI].name);
+								
+								CMenuElementText *me02;
+								
+								_TCHAR tex2[256];
+								_tcscpy(tex2,tex);
+
+//								todo: string
+//								_tcsupr(tex2);
+
+								if(!_tcscmp(szMenuText, tex2) || !_tcscmp(szMenuText1, tex2))
+								{
+									if(!iFirst || (b1 && b2)) continue;
+
+									PAK_UNICODE_GetPrivateProfileString("system_menus_main_quickloadsave", "Quick", tex, 256);
+
+									if (_tcsstr(szMenuText, tex2))
+									{
+										if (b1) continue;
+
+										b1 = true;
+									}
+									else if (_tcsstr(szMenuText1, tex2))
+									{
+										if (b2) continue;
+
+										b2 = true;
+									}
+
+									char tex3[256];
+									char tex4[256];
+									strcpy(tex4,"  ");
+									GetDateFormat(	LOCALE_SYSTEM_DEFAULT,
+										0,
+										&save_l[iI].stime,
+										"MMM dd yyyy",
+										tex3,
+										256);
+									strcat(tex4,tex3);
+									GetTimeFormat(	LOCALE_SYSTEM_DEFAULT,
+										0,
+										&save_l[iI].stime,
+										"   HH:mm",
+										tex3,
+										256);
+									strcat(tex4,tex3);
+// todo: cast
+//									MultiByteToWideChar(	CP_ACP,
+//										0,
+//										tex4,
+//										-1,
+//										tex2,
+//										256);
+									_tcscat(tex,tex2);
+									
+									me02 = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls, tex, fPosX1, 0.f, lColor, 0.8f, NOP);
+
+									me02->lData=iI;
+									pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me02);
+									break;
+								}
+								else
+								{
+									if(iFirst) continue;
+
+									char tex3[256];
+									char tex4[256];
+									strcpy(tex4,"  ");
+									GetDateFormat(	LOCALE_SYSTEM_DEFAULT,
+										0,
+										&save_l[iI].stime,
+										"MMM dd yyyy",
+										tex3,
+										256);
+									strcat(tex4,tex3);
+									GetTimeFormat(	LOCALE_SYSTEM_DEFAULT,
+										0,
+										&save_l[iI].stime,
+										"   HH:mm",
+										tex3,
+										256);
+									strcat(tex4,tex3);
+
+//									todo: cast
+//									MultiByteToWideChar(	CP_ACP,
+//										0,
+//										tex4,
+//										-1,
+//										tex2,
+//										256);
+									_tcscat(tex,tex2);
+									
+									me02=new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls,tex, fPosX1,0.f,lColor, 0.8f, NOP);
+								}
+
+								me02->lData=iI;
+								pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me02);
+							}
+
+							iFirst--;
+						}
+
+						me01 = new CMenuElementText(-1, hFontControls, _T(" "), fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
+							me01->SetCheckOff();
+							pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me01);
+
+						CMenuPanel *pc = new CMenuPanel();
+						PAK_UNICODE_GetPrivateProfileString("system_menus_main_editquest_load", "", szMenuText, 256);
+						_tcscat(szMenuText, _T("   "));
+						me = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD_CONFIRM, hFontMenu, szMenuText, 0, 0,lColor,1.f, MAIN);
+
+						me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), fPosBDAY + RATIO_Y(40));
+
+						pLoadConfirm=(CMenuElementText*)me;
+						me->SetCheckOff();
+						((CMenuElementText*)me)->lOldColor=((CMenuElementText*)me)->lColor;
+						((CMenuElementText*)me)->lColor=RGB(127,127,127);
+
+						pWindowMenuConsole->AddMenu(me);
+						pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
+						me = new CMenuCheckButton(-1, fPosBack, fPosBackY + RATIO_Y(20), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+						me->eMenuState = EDIT_QUEST;
+						me->SetShortCut(DIK_ESCAPE);
+						pc->AddElementNoCenterIn(me);
+
+						pWindowMenuConsole->AddMenu(pc);
+					}
+					pWindowMenu->AddConsole(pWindowMenuConsole);
+
+					// SAVE----------------------------------------------------
+					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY - (40), iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST_SAVE);
+					pWindowMenuConsole->iInterligne = 5;
+
+					pTex = MakeTCFromFile("\\Graph\\interface\\icons\\Menu_main_save.bmp");
+					me = new CMenuCheckButton(-1, fPosBack-(pTex?(pTex->m_dwDeviceWidth-pTex->m_dwWidth):0), 0, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+					((CMenuCheckButton *)me)->bCheck = false;
+					pWindowMenuConsole->AddMenuCenter(me);
+
+					//QUICK SAVE
+					_TCHAR szMenuText1[256];
+					_tcscpy(szMenuText,_T(QUICK_SAVE_ID));
+					_tcscpy(szMenuText1,_T(QUICK_SAVE_ID1));
+
+					//SAVE
+					int iFirst=2;
+					bool b1 = false;
+					bool b2 = false;
+
+					while(iFirst>=0)
+					{
+						if(save_c!=1)
+						{
+							for(int iI=1;iI<(save_c);iI++)
+							{
+								_TCHAR tex[256];
+
+								_stprintf(tex, _T("%s"),
+									save_l[iI].name);
+								
+								_TCHAR tex2[256];
+								_tcscpy(tex2,tex);
+//								todo: string
+//								_tcsupr(tex2);
+
+								if(!_tcscmp(szMenuText, tex2) || !_tcscmp(szMenuText1, tex2))
+								{
+									if(!iFirst || (b1 && b2)) continue;
+
+									PAK_UNICODE_GetPrivateProfileString("system_menus_main_quickloadsave", "Quick", tex, 256);
+
+									if (_tcsstr(szMenuText, tex2))
+									{
+										if (b1) continue;
+
+										b1 = true;
+									}
+									else if (_tcsstr(szMenuText1, tex2))
+									{
+										if (b2) continue;
+
+										b2 = true;
+									}									
+
+									char tex3[256];
+									char tex4[256];
+									strcpy(tex4,"  ");
+									GetDateFormat(	LOCALE_SYSTEM_DEFAULT,
+										0,
+										&save_l[iI].stime,
+										"MMM dd yyyy",
+										tex3,
+										256);
+									strcat(tex4,tex3);
+									GetTimeFormat(	LOCALE_SYSTEM_DEFAULT,
+										0,
+										&save_l[iI].stime,
+										"   HH:mm",
+										tex3,
+										256);
+									strcat(tex4,tex3);
+
+//									todo: cast
+//									MultiByteToWideChar(	CP_ACP,
+//										0,
+//										tex4,
+//										-1,
+//										tex2,
+//										256);
+									_tcscat(tex,tex2);
+									
+									me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, tex, fPosX1, 0.f, RGB(127, 127, 127), 0.8f, EDIT_QUEST_SAVE_CONFIRM);
+									me->SetCheckOff();
+
+									me->lData=iI;
+									pWindowMenuConsole->AddMenuCenterY(me);
+									break;
+								}
+								else
+								{
+									if(iFirst) continue;
+
+									char tex3[256];
+									char tex4[256];
+									strcpy(tex4,"  ");
+									GetDateFormat(	LOCALE_SYSTEM_DEFAULT,
+										0,
+										&save_l[iI].stime,
+										"MMM dd yyyy",
+										tex3,
+										256);
+									strcat(tex4,tex3);
+									GetTimeFormat(	LOCALE_SYSTEM_DEFAULT,
+										0,
+										&save_l[iI].stime,
+										"   HH:mm",
+										tex3,
+										256);
+									strcat(tex4,tex3);
+//	todo: cast
+//									MultiByteToWideChar(	CP_ACP,
+//										0,
+//										tex4,
+//										-1,
+//										tex2,
+//										256);
+									_tcscat(tex,tex2);
+									
+									me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, tex, fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
+								}
+
+								me->lData=iI;
+								pWindowMenuConsole->AddMenuCenterY(me);
+							}
+						}
+
+						iFirst--;
+					}
+
+					pTex = MakeTCFromFile("\\Graph\\interface\\Icons\\Arx_logo_08.bmp");
+
+					for(int iI=save_c; iI<=15; iI++)
+					{
+						_TCHAR tex[256];
+						_stprintf(tex, _T("-%04d-")
+
+							,iI);
+						CMenuElementText * me01 = new CMenuElementText(-1, hFontControls, tex, fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
+
+						me01->eMenuState=EDIT_QUEST_SAVE_CONFIRM;
+						me01->lData=0;
+						pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me01);
+					}
+
+					me01 = new CMenuElementText(-1, hFontControls, _T(" "), fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
+					me01->SetCheckOff();
+					pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me01);
+
+					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
+					me = new CMenuCheckButton(-1, fPosBack, fPosBackY + RATIO_Y(20), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+
+					me->eMenuState = EDIT_QUEST;
+					me->SetShortCut(DIK_ESCAPE);
+					pWindowMenuConsole->AddMenu(me);
+
+					pWindowMenu->AddConsole(pWindowMenuConsole);
+
+					// SAVE CONFIRM--------------------------------------------
+					pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,EDIT_QUEST_SAVE_CONFIRM);
+
+					pTex = MakeTCFromFile("\\Graph\\interface\\icons\\Menu_main_save.bmp");
+					me = new CMenuCheckButton(-1, 0, 0, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+					((CMenuCheckButton *)me)->bCheck = false;
+					pWindowMenuConsole->AddMenuCenter(me);
+					
+					PAK_UNICODE_GetPrivateProfileString("system_menu_editquest_newsavegame", "---", szMenuText, 256);
+
+					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+					me->lData=0;
+
+					pWindowMenuConsole->AddMenuCenter(me);
+					me->eState=EDIT;
+					me->ePlace=CENTER;
+					
+					pPanel = new CMenuPanel();
+
+					PAK_UNICODE_GetPrivateProfileString("system_menus_main_editquest_save", "", szMenuText, 256);
+
+					me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVE, hFontMenu, szMenuText, 0, 0,lColor,1.f, MAIN);
+
+					me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), fPosBDAY);
+					pPanel->AddElementNoCenterIn(me);
+
+					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
+					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+					me->eMenuState = EDIT_QUEST_SAVE;
+					me->SetShortCut(DIK_ESCAPE);
+					pPanel->AddElementNoCenterIn(me);
+
+					pWindowMenuConsole->AddMenu(pPanel);
+					
+					pWindowMenu->AddConsole(pWindowMenuConsole);
+					}
+				break;
+			//------------------ END SAVE_QUEST
+			case MULTIPLAYER:
+				{
+				}
+				break;
+			//------------------ START OPTIONS
+			case OPTIONS_INPUT:
+				{
+					MessageBox(0, "", "", 0);
+
+				}
+				break;
+			case OPTIONS:
+				{
+					_TCHAR szMenuText[256];
+					CMenuElement *me;
+					CMenuPanel *pc;
+					TextureContainer *pTex;
+
+					CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS);
+
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video", "", szMenuText, 256);
+					me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_INIT, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_VIDEO);
+					pWindowMenuConsole->AddMenuCenter(me);
+					
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_audio", "", szMenuText, 256);
+					me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_AUDIO);
+					pWindowMenuConsole->AddMenuCenter(me);
+					
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_input", "", szMenuText, 256);
+					me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_INPUT);
+					pWindowMenuConsole->AddMenuCenter(me);
+					
+					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
+					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+					me->eMenuState = MAIN;
+					me->SetShortCut(DIK_ESCAPE);
+					pWindowMenuConsole->AddMenu(me);
+				
+					pWindowMenu->AddConsole(pWindowMenuConsole);
+				//------------------ END OPTIONS
+					
+				//------------------ START VIDEO
+					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY - (40),iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_VIDEO);
+
+					pc = new CMenuPanel();
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_resolution", "", szMenuText, 256);
+					_tcscat(szMenuText, _T("  "));
+					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+					me->SetCheckOff();
+					pc->AddElement(me);
+					int iOffsetX = iPosX2;
+					int iModeX,iModeY,iModeBpp;
+					ARXMenu_Options_Video_GetResolution(iModeX,iModeY,iModeBpp);
+					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RESOLUTION, 0, 0);
+					pMenuSliderResol =(CMenuSliderText*)me;
+					int nb=danaeApp.m_pDeviceInfo->dwNumModes;
+					vector<int> vBpp;
+					vBpp.clear();
+					int i=0;
+
+					for(;i<nb;i++)
+					{
+						{
+							_stprintf(szMenuText,_T("%dx%d"),danaeApp.m_pDeviceInfo->pddsdModes[i].dwWidth,danaeApp.m_pDeviceInfo->pddsdModes[i].dwHeight);
+	
+
+							ARX_CHECK_NOT_NEG( iModeBpp );
+
+							if( danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == ARX_CAST_UINT( iModeBpp ) )
+							{
+								((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, (MENUSTATE)(OPTIONS_VIDEO_RESOLUTION_0+i)));
+
+								ARX_CHECK_NOT_NEG( iModeX );
+								ARX_CHECK_NOT_NEG( iModeY );
+
+								if( ( danaeApp.m_pDeviceInfo->pddsdModes[i].dwWidth == ARX_CAST_UINT( iModeX ) ) &&
+									( danaeApp.m_pDeviceInfo->pddsdModes[i].dwHeight == ARX_CAST_UINT( iModeY ) ) )
+								{
+
+									((CMenuSliderText*)me)->iPos = ((CMenuSliderText *)me)->vText.size()-1;
+									danaeApp.m_pDeviceInfo->ddsdFullscreenMode=danaeApp.m_pDeviceInfo->pddsdModes[i];
+									danaeApp.m_pDeviceInfo->dwCurrentMode=i;
+								}
+							}
+							
+							//bpp
+							bool bExist=false;
+							vector<int>::iterator ii;
+
+							for(ii=vBpp.begin();ii!=vBpp.end();ii++)
+							{
+								if (ARX_CAST_UINT(*ii) == danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount)
+								{
+									bExist=true;
+									break;
+								}
+							}
+
+							if(!bExist)
+							{
+								vBpp.insert(vBpp.end(),danaeApp.m_pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount);
+							}
+						}
+					}
+
+
+					float fRatio	= (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth()); 
+					ARX_CHECK_INT(fRatio);
+
+					me->Move(	ARX_CLEAN_WARN_CAST_INT(fRatio)	,0); 
+
+
+					pc->AddElement(me);
+
+					pWindowMenuConsole->AddMenuCenterY(pc);
+
+					CMenuPanel *pc1 = new CMenuPanel();
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture", "", szMenuText, 256);
+					_tcscat(szMenuText, _T(" "));
+					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+					me->SetCheckOff();
+					pc1->AddElement(me);
+					iOffsetX = iPosX2;
+					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_TEXTURES, 0, 0);
+					pMenuSliderTexture = (CMenuSliderText*)me;
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture_low", "", szMenuText, 256);
+					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_VIDEO));
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture_med", "", szMenuText, 256);
+					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_VIDEO));
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture_high", "", szMenuText, 256);
+					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_VIDEO));
+
+
+					fRatio	= (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth()); 
+					ARX_CHECK_INT(fRatio);
+
+					me->Move(	ARX_CLEAN_WARN_CAST_INT(fRatio)	,0); 
+
+
+					int iSize = me->GetWidth();
+					pc1->AddElement(me);
+					int iQuality = 0;
+					ARXMenu_Options_Video_GetTextureQuality(iQuality);
+					((CMenuSliderText *)me)->iPos = iQuality;
+
+					pc = new CMenuPanel();
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_bpp", "", szMenuText, 256);
+					_tcscat(szMenuText, _T(" "));
+					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+					me->SetCheckOff();
+					pc->AddElement(me);
+					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_BPP, 0, 0);
+					pMenuSliderBpp = (CMenuSliderText*)me;
+
+					vector<int>::iterator ii;
+
+					for(ii=vBpp.begin();ii!=vBpp.end();ii++)
+					{
+//						todo: string
+//						_itot(*ii,szMenuText,10);
+						((CMenuSliderText*)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0, lColor, 1.f, (MENUSTATE)(BUTTON_MENUOPTIONSVIDEO_BPP+i)));
+
+						if(*ii==iModeBpp)
+						{
+							((CMenuSliderText*)me)->iPos = ((CMenuSliderText*)me)->vText.size()-1;
+						}
+					}
+
+					((CMenuSliderText *)me)->SetWidth(iSize);
+
+
+					fRatio	= (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth()); 
+					ARX_CHECK_INT(fRatio);
+
+					me->Move(	ARX_CLEAN_WARN_CAST_INT(fRatio)	,0); 
+
+
+					pc->AddElement(me);
+					pWindowMenuConsole->AddMenuCenterY(pc);
+
+					pWindowMenuConsole->AddMenuCenterY(pc1);
+					pc = new CMenuPanel();
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_detail", "", szMenuText, 256);
+					_tcscat(szMenuText, _T(" "));
+					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+					me->SetCheckOff();
+					pc->AddElement(me);
+					iOffsetX = iPosX2;
+					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS, 0, 0);
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture_low", "", szMenuText, 256);
+					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture_med", "", szMenuText, 256);
+					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_texture_high", "", szMenuText, 256);
+					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
+
+					
+					fRatio	= (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth()); 
+					ARX_CHECK_INT(fRatio);
+
+					me->Move(	ARX_CLEAN_WARN_CAST_INT(fRatio)	,0); 
+
+
+					pc->AddElement(me);
+					iQuality = 0;
+					ARXMenu_Options_Video_GetDetailsQuality(iQuality);
+					((CMenuSliderText *)me)->iPos = iQuality;
+
+					pWindowMenuConsole->AddMenuCenterY(pc);
+
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_bump", "", szMenuText, 256);
+					_tcscat(szMenuText, _T(" "));
+					TextureContainer *pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
+					TextureContainer *pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
+					CMenuElementText * metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+					metemp->SetCheckOff();
+					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_BUMP, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
+					pMenuCheckButtonBump=(CMenuCheckButton*)me;
+					bool bBOOL = false;
+					ARXMenu_Options_Video_GetBump(bBOOL);
+
+					if (bBOOL)
+					{
+						((CMenuCheckButton*)me)->iState=1;
+					}
+					else
+					{
+						((CMenuCheckButton*)me)->iState=0;
+					}
+
+					pWindowMenuConsole->AddMenuCenterY(me);
+
+					pc = new CMenuPanel();
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_brouillard", "", szMenuText, 256);
+					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+					me->SetCheckOff();
+					pc->AddElement(me);
+					me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_FOG, iPosX2, 0);
+					int iFog = 5;
+					ARXMenu_Options_Video_GetFogDistance(iFog);
+					((CMenuSlider *)me)->iPos = iFog;
+					pc->AddElement(me);
+
+					pWindowMenuConsole->AddMenuCenterY(pc);
+
+					pc = new CMenuPanel();
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_gamma", "", szMenuText, 256);
+					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+					me->SetCheckOff();
+					pc->AddElement(me);
+					me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_GAMMA, iPosX2, 0);
+					int iGamma = 0;
+					ARXMenu_Options_Video_GetGamma(iGamma);
+					((CMenuSlider*)me)->iPos = iGamma;
+					pc->AddElement(me);
+					pWindowMenuConsole->AddMenuCenterY(pc);
+
+					pc = new CMenuPanel();
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_luminosity", "luminosity", szMenuText, 256);
+					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+					me->SetCheckOff();
+					pc->AddElement(me);
+					me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_LUMINOSITY, iPosX2, 0);
+					int iLum = 0;
+					ARXMenu_Options_Video_GetLuminosity(iLum);
+					((CMenuSlider*)me)->iPos = iLum;
+					pc->AddElement(me);
+					pWindowMenuConsole->AddMenuCenterY(pc);
+
+					pc = new CMenuPanel();
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_contrast", "contrast", szMenuText, 256);
+					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+					me->SetCheckOff();
+					pc->AddElement(me);
+					me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_CONTRAST, iPosX2, 0);
+					int iContrast = 0;
+					ARXMenu_Options_Video_GetContrast(iContrast);
+					((CMenuSlider*)me)->iPos = iContrast;
+					pc->AddElement(me);
+					pWindowMenuConsole->AddMenuCenterY(pc);
+
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_crosshair", "Show Crosshair", szMenuText, 256);
+					_tcscat(szMenuText, _T(" "));
+					pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
+					pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
+					metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+					metemp->SetCheckOff();
+					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_CROSSHAIR, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
+
+					if (pMenuConfig&&pMenuConfig->bShowCrossHair)
+					{
+						((CMenuCheckButton*)me)->iState=1;
+					}
+					else
+					{
+						((CMenuCheckButton*)me)->iState=0;
+					}
+
+					pWindowMenuConsole->AddMenuCenterY(me);
+
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_video_antialiasing", "antialiasing", szMenuText, 256);
+					_tcscat(szMenuText, _T(" "));
+					pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
+					pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
+					metemp = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+					metemp->SetCheckOff();
+					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_ANTIALIASING, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
+
+					if (pMenuConfig&&pMenuConfig->bAntiAliasing)
+					{
+						((CMenuCheckButton*)me)->iState=1;
+					}
+					else
+					{
+						((CMenuCheckButton*)me)->iState=0;
+					}
+
+					pWindowMenuConsole->AddMenuCenterY(me);
+					ARX_SetAntiAliasing();
+
+					metemp = new CMenuElementText(-1, hFontMenu, _T("Enable Rendering Fix"), fPosX1, 0.f, lColor, 1.f, NOP);
+					metemp->SetCheckOff();
+					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_DEBUGSETTING, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
+
+ 					((CMenuCheckButton*)me)->iState=ARXMenu_Options_Video_SetSoftRender();
+
+					pWindowMenuConsole->AddMenuCenterY(me);
+
+					pc = new CMenuPanel();
+					PAK_UNICODE_GetPrivateProfileString("system_menus_video_apply", "", szMenuText, 256);
+					_tcscat(szMenuText, _T("   "));
+					pMenuElementApply = me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_APPLY, hFontMenu, szMenuText, fPosApply, 0.f, lColor, 1.f, NOP);
+					me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), fPosBDAY + RATIO_Y(40));
+					me->SetCheckOff();
+					pc->AddElementNoCenterIn(me);
+
+					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
+					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_BACK, fPosBack, fPosBackY + RATIO_Y(20), pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+					me->eMenuState = OPTIONS;
+					me->SetShortCut(DIK_ESCAPE);
+					pc->AddElementNoCenterIn(me);
+
+					pWindowMenuConsole->AddMenu(pc);
+
+					pWindowMenu->AddConsole(pWindowMenuConsole);
+					//------------------ END VIDEO
+					
+					//------------------ START AUDIO
+					pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_AUDIO);
+					
+					pc = new CMenuPanel();
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_audio_master_volume", "", szMenuText, 256);
+					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO_VOLUME);
+					me->SetCheckOff();
+					pc->AddElement(me);
+					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_MASTER, iPosX2, 0);
+					int iMaster = 0;
+					ARXMenu_Options_Audio_GetMasterVolume(iMaster);
+					((CMenuSlider *)me)->iPos = iMaster;
+					pc->AddElement(me);
+					pWindowMenuConsole->AddMenuCenterY(pc);
+					
+					pc = new CMenuPanel();
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_audio_effects_volume", "", szMenuText, 256);
+					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
+					me->SetCheckOff();
+					pc->AddElement(me);
+					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SFX, iPosX2, 0);
+					int iSfx = 0;
+					ARXMenu_Options_Audio_GetSfxVolume(iSfx);
+					((CMenuSlider *)me)->iPos = iSfx;
+					pc->AddElement(me);
+					pWindowMenuConsole->AddMenuCenterY(pc);
+					
+					pc = new CMenuPanel();
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_audio_speech_volume", "", szMenuText, 256);
+					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
+					me->SetCheckOff();
+					pc->AddElement(me);
+					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SPEECH, iPosX2, 0);
+					int iSpeech = 0;
+					ARXMenu_Options_Audio_GetSpeechVolume(iSpeech);
+					((CMenuSlider *)me)->iPos = iSpeech;
+					pc->AddElement(me);
+					pWindowMenuConsole->AddMenuCenterY(pc);
+
+					pc = new CMenuPanel();
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_audio_ambiance_volume", "", szMenuText, 256);
+					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
+					me->SetCheckOff();
+					pc->AddElement(me);
+					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, iPosX2, 0);
+					int iAmbiance = 0;
+					ARXMenu_Options_Audio_GetAmbianceVolume(iAmbiance);
+					((CMenuSlider *)me)->iPos = iAmbiance;
+					pc->AddElement(me);
+					pWindowMenuConsole->AddMenuCenterY(pc);
+
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_audio_eax", "EAX", szMenuText, 256);
+					_tcscat(szMenuText, _T(" "));
+					pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
+					pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
+					CMenuElementText * pElementText = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT);
+					me = new CMenuCheckButton(BUTTON_MENUOPTIONSAUDIO_EAX, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, pElementText);
+					bool bEAX = true;
+
+					if (bEAX)
+					{
+						((CMenuCheckButton*)me)->iState=pMenuConfig->bEAX?1:0;
+					}
+					else
+					{
+						me->SetCheckOff();
+						pElementText->lColor=RGB(127,127,127);
+					}
+
+					pWindowMenuConsole->AddMenuCenterY(me);
+					
+					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
+					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+					me->eMenuState = OPTIONS;
+					me->SetShortCut(DIK_ESCAPE);
+					pWindowMenuConsole->AddMenu(me);
+
+					pWindowMenu->AddConsole(pWindowMenuConsole);
+					//------------------ END AUDIO
+					
+					//------------------ START INPUT
+					pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_INPUT);
+					
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls", "", szMenuText, 256);
+					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
+					pWindowMenuConsole->AddMenuCenterY(me);
+					
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_invert_mouse", "", szMenuText, 256);
+					_tcscat(szMenuText, _T(" "));
+					pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
+					pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
+					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_INVERTMOUSE, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
+					bBOOL = false;
+					ARXMenu_Options_Control_GetInvertMouse(bBOOL);
+
+					if (bBOOL)
+					{
+						((CMenuCheckButton*)me)->iState=1;
+					}
+					else
+					{
+						((CMenuCheckButton*)me)->iState=0;
+					}
+
+					pWindowMenuConsole->AddMenuCenterY(me);
+
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_auto_ready_weapon", "", szMenuText, 256);
+					_tcscat(szMenuText, _T(" "));
+					pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
+					pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
+					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTOREADYWEAPON, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
+					bBOOL = false;
+					ARXMenu_Options_Control_GetAutoReadyWeapon(bBOOL);
+
+					if (bBOOL)
+					{
+						((CMenuCheckButton*)me)->iState=1;
+					}
+					else
+					{
+						((CMenuCheckButton*)me)->iState=0;
+					}
+
+					pWindowMenuConsole->AddMenuCenterY(me);
+
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_mouse_look_toggle", "", szMenuText, 256);
+					_tcscat(szMenuText, _T(" "));
+					pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
+					pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
+					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_MOUSELOOK, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
+					bBOOL = false;
+					ARXMenu_Options_Control_GetMouseLookToggleMode(bBOOL);
+
+					if (bBOOL)
+					{
+						((CMenuCheckButton*)me)->iState=1;
+					}
+					else
+					{
+						((CMenuCheckButton*)me)->iState=0;
+					}
+
+					pWindowMenuConsole->AddMenuCenterY(me);
+
+					pc = new CMenuPanel();
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_mouse_sensitivity", "", szMenuText, 256);
+					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
+					me->SetCheckOff();
+					pc->AddElement(me);
+					me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY, iPosX2, 0);
+					int iSensitivity = 0;
+					ARXMenu_Options_Control_GetMouseSensitivity(iSensitivity);
+					((CMenuSlider*)me)->iPos = iSensitivity;
+					pc->AddElement(me);
+					pWindowMenuConsole->AddMenuCenterY(pc);
+
+					if (INTERNATIONAL_MODE)
+					{
+						PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_mouse_smoothing", "mouse_smoothing", szMenuText, 256);
+						_tcscat(szMenuText, _T(" "));
+						pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
+						pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
+						me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_MOUSE_SMOOTHING, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
+						bBOOL = false;
+						ARXMenu_Options_Control_GetMouseSmoothing(bBOOL);
+
+						if (bBOOL)
+						{
+							((CMenuCheckButton*)me)->iState=1;
+						}
+						else
+						{
+							((CMenuCheckButton*)me)->iState=0;
+						}
+
+						pWindowMenuConsole->AddMenuCenterY(me);
+
+						PAK_UNICODE_GetPrivateProfileString("system_menus_autodescription", "auto_description", szMenuText, 256);
+						_tcscat(szMenuText, _T(" "));
+						pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
+						pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
+						me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_AUTODESCRIPTION, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT));
+						bBOOL = false;
+						ARXMenu_Options_Control_GetAutoDescription(bBOOL);
+
+						if (bBOOL)
+						{
+							((CMenuCheckButton*)me)->iState=1;
+						}
+						else
+						{
+							((CMenuCheckButton*)me)->iState=0;
+						}
+
+						pWindowMenuConsole->AddMenuCenterY(me);
+					}
+
+					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
+					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+					me->eMenuState = OPTIONS;
+					me->SetShortCut(DIK_ESCAPE);
+					pWindowMenuConsole->AddMenu(me);
+					pWindowMenu->AddConsole(pWindowMenuConsole);
+				//------------------ END INPUT
+
+				//------------------ START CUSTOM CONTROLS
+				_TCHAR	pNoDef1[]=_T("---");
+				_TCHAR	pNoDef2[]=_T("---");
+
+				#define CUSTOM_CTRL_X0	RATIO_X(20)
+				#define CUSTOM_CTRL_X1	RATIO_X(150)
+				#define CUSTOM_CTRL_X2	RATIO_X(245)
+					long fControlPosY	=	ARX_CLEAN_WARN_CAST_LONG(RATIO_Y(8.f));
+				#define CUSTOM_CTRL_FUNC(a,b,c,d){\
+						pc=new CMenuPanel();\
+						PAK_UNICODE_GetPrivateProfileString(_T(a), _T("?"), szMenuText, 256);\
+						me = new CMenuElementText(-1, hFontControls, szMenuText, CUSTOM_CTRL_X0, 0,lColor,.7f, NOP);\
+						me->SetCheckOff();\
+						pc->AddElement(me);\
+						me = new CMenuElementText(c, hFontControls, pNoDef1, CUSTOM_CTRL_X1, 0,lColor,.7f, NOP);\
+						me->eState=GETTOUCH;\
+						if((!b)||(c<0))\
+						{\
+							me->SetCheckOff();\
+							((CMenuElementText*)me)->lColor=RGB(127,127,127);\
+						}\
+						pc->AddElement(me);\
+						me = new CMenuElementText(d, hFontControls, pNoDef2, CUSTOM_CTRL_X2, 0,lColor,.7f, NOP);\
+						me->eState=GETTOUCH;\
+						if(d<0)\
+						{\
+							me->SetCheckOff();\
+							((CMenuElementText*)me)->lColor=RGB(127,127,127);\
+						}\
+						pc->AddElement(me);\
+						pc->Move(0,fControlPosY);\
+						pWindowMenuConsole->AddMenu(pc);\
+						fControlPosY += ARX_CLEAN_WARN_CAST_LONG( pc->GetHeight() + RATIO_Y(3.f) );\
+					};
+
+
+				#define CUSTOM_CTRL_FUNC2(a,b,c,d){\
+						pc=new CMenuPanel();\
+						PAK_UNICODE_GetPrivateProfileString(_T(a), _T("?"), szMenuText, 256);\
+						_tcscat(szMenuText,_T("2"));\
+						me = new CMenuElementText(-1, hFontControls, szMenuText, CUSTOM_CTRL_X0, 0,lColor,.7f, NOP);\
+						me->SetCheckOff();\
+						pc->AddElement(me);\
+						me = new CMenuElementText(c, hFontControls, pNoDef1, CUSTOM_CTRL_X1, 0,lColor,.7f, NOP);\
+						me->eState=GETTOUCH;\
+						if((!b)||(c<0))\
+						{\
+							me->SetCheckOff();\
+							((CMenuElementText*)me)->lColor=RGB(127,127,127);\
+						}\
+						pc->AddElement(me);\
+						me = new CMenuElementText(d, hFontControls, pNoDef2, CUSTOM_CTRL_X2, 0,lColor,.7f, NOP);\
+						me->eState=GETTOUCH;\
+						if(d<0)\
+						{\
+							me->SetCheckOff();\
+							((CMenuElementText*)me)->lColor=RGB(127,127,127);\
+						}\
+						pc->AddElement(me);\
+						pc->Move(0,fControlPosY);\
+						pWindowMenuConsole->AddMenu(pc);\
+						fControlPosY += ARX_CLEAN_WARN_CAST_LONG( pc->GetHeight() + RATIO_Y(3.f) );\
+					};
+
+
+					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
+					
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_mouselook",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK2);
+
+					if (!INTERNATIONAL_MODE)
+					{
+						PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_link_use_to_mouselook", "?", szMenuText, 256);
+						\
+				pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
+				pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
+				pElementText= new CMenuElementText(-1, hFontControls, szMenuText, CUSTOM_CTRL_X0, 0,lColor,.7f, NOP);
+				me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_LINK, 0, 0, pTex1->m_dwWidth>>1, pTex1, pTex2, pElementText);
+				me->Move(0,fControlPosY);
+						pWindowMenuConsole->AddMenu(me);
+						\
+							fControlPosY += ARX_CLEAN_WARN_CAST_LONG(me->GetHeight() + RATIO_Y(3.f));
+
+				if(pMenuConfig->bLinkMouseLookToUse)
+				{
+					((CMenuCheckButton*)me)->iState=1;
+				}
+				}
+
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_action_combine",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_jump",1,BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_magic_mode",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_stealth_mode",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_walk_forward",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_walk_backward",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_strafe_left",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_strafe_right",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_lean_left",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_lean_right",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_crouch",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_crouch_toggle",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE2);
+
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_strafe",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFE2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_center_view",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CENTERVIEW2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_freelook",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_FREELOOK2);
+
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_turn_left",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNLEFT2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_turn_right",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TURNRIGHT2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_look_up",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKUP2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_look_down",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN1, BUTTON_MENUOPTIONS_CONTROLS_CUST_LOOKDOWN2);
+
+					pc=new CMenuPanel();
+
+					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
+					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+					me->eMenuState = OPTIONS_INPUT;
+					me->SetShortCut(DIK_ESCAPE);
+					pc->AddElementNoCenterIn(me);
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_default", "", szMenuText, 256);
+					me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NOP);
+					me->SetPos((RATIO_X(iWindowConsoleWidth) - me->GetWidth())*0.5f, fPosBDAY);
+					pc->AddElementNoCenterIn(me);
+					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\next.bmp");
+					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, fPosNext, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+					me->eMenuState = OPTIONS_INPUT_CUSTOMIZE_KEYS_2;
+					me->SetShortCut(DIK_ESCAPE);
+					pc->AddElementNoCenterIn(me);
+
+					pWindowMenuConsole->AddMenu(pc);
+
+					pWindowMenu->AddConsole(pWindowMenuConsole);
+					pMenuConfig->ReInitActionKey(pWindowMenuConsole);
+
+					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_INPUT_CUSTOMIZE_KEYS_2);
+
+					fControlPosY = ARX_CLEAN_WARN_CAST_LONG(RATIO_Y(8.f));
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_inventory",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1, BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_book",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_bookcharsheet",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_bookmap",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKMAP2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_bookspell",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_bookquest",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST1, BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKQUEST2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_drink_potion_life",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_drink_potion_mana",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA1, BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_torch",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH1, BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH2);
+
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_cancelcurrentspell",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL1, BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_precast1",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1_2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_precast2",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST2_2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_precast3",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3, BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST3_2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_weapon",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON1, BUTTON_MENUOPTIONS_CONTROLS_CUST_WEAPON2);
+
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_unequipweapon",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON1, BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON2);
+
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_previous",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS1, BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_next",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT1, BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT2);
+
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_quickload",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKLOAD2);
+					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_quicksave",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE, BUTTON_MENUOPTIONS_CONTROLS_CUST_QUICKSAVE2);
+
+					CUSTOM_CTRL_FUNC2("system_menus_options_input_customize_controls_bookmap",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP2);
+
+					pc=new CMenuPanel();
+
+					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
+					me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_CUST_BACK, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
+					me->eMenuState = OPTIONS_INPUT_CUSTOMIZE_KEYS_1;
+					me->SetShortCut(DIK_ESCAPE);
+					pc->AddElementNoCenterIn(me);
+					PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_default", "", szMenuText, 256);
+					me = new CMenuElementText(BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NOP);
+					me->SetPos((RATIO_X(iWindowConsoleWidth) - me->GetWidth())*0.5f, fPosBDAY);
+					pc->AddElementNoCenterIn(me);
+
+					pWindowMenuConsole->AddMenu(pc);
+
+					pWindowMenu->AddConsole(pWindowMenuConsole);
+					pMenuConfig->ReInitActionKey(pWindowMenuConsole);
+					#undef CUSTOM_CTRL_X0
+					#undef CUSTOM_CTRL_X1
+					#undef CUSTOM_CTRL_X2
+					#undef CUSTOM_CTRL_FUNC
+					#undef CUSTOM_CTRL_FUNC2
+				//------------------ END CUSTOM CONTROLS
+
+					pWindowMenu->eCurrentMenuState=OPTIONS;
+				}
+				break;
+
+			case QUIT:
+				{
+					_TCHAR szMenuText[256];
+					CMenuElement *me = NULL;
+					CWindowMenuConsole *pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,QUIT);
+					PAK_UNICODE_GetPrivateProfileString("system_menus_main_quit", "", szMenuText, 256);
+					me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
+					me->bCheck = false;
+					pWindowMenuConsole->AddMenuCenter(me);
+
+					PAK_UNICODE_GetPrivateProfileString("system_menus_main_editquest_confirm", "", szMenuText, 256);
+					me=new CMenuElementText(-1, hFontMenu, szMenuText,0,0,lColor,1.f, NOP);
+					me->bCheck = false;
+					pWindowMenuConsole->AddMenuCenter(me);
+
+					CMenuPanel *pPanel = new CMenuPanel();
+					PAK_UNICODE_GetPrivateProfileString("system_yes", "", szMenuText, 256);
+
+					me = new CMenuElementText(BUTTON_MENUMAIN_QUIT, hFontMenu, szMenuText, 0, 0,lColor,1.f, NEW_QUEST_ENTER_GAME);
+
+					me->SetPos(RATIO_X(iWindowConsoleWidth-10)-me->GetWidth(), 0);
+					pPanel->AddElementNoCenterIn(me);
+					PAK_UNICODE_GetPrivateProfileString("system_no", "", szMenuText, 256);
+					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosBack, 0,lColor,1.f, MAIN);
+					me->SetShortCut(DIK_ESCAPE);
+					pPanel->AddElementNoCenterIn(me);
+
+
+					ARX_CHECK_INT(fPosBDAY);
+					
+					pPanel->Move(0,ARX_CLEAN_WARN_CAST_INT(fPosBDAY));
+
+					
+					pWindowMenuConsole->AddMenu(pPanel);
+					pWindowMenu->AddConsole(pWindowMenuConsole);
+					pWindowMenu->eCurrentMenuState=QUIT;
+
+				}
+				break;
+			}
+
+		}
+	}
+	pMenu->Render();
+
+	if(pWindowMenu)
+	{
+		if(!bScroll)
+		{
+			pWindowMenu->fAngle=90.f;
+			pWindowMenu->eCurrentMenuState=pMenu->eOldMenuWindowState;
+		}
+
+
+		ARX_CHECK_INT(ARXDiffTimeMenu);
+		
+		pWindowMenu->Update(ARX_CLEAN_WARN_CAST_INT(ARXDiffTimeMenu));
+
+
+		if (pWindowMenu)
+		{
+			MENUSTATE eMS=pWindowMenu->Render();
+
+			if(eMS!=NOP)
+			{
+				pMenu->eOldMenuWindowState=eMS;
+			}
+		}
+
+		Check_Apply();
+	}
+
+	bNoMenu=false;
+
+	danaeApp.DANAEEndRender();
+
+	if(pTextManage)
+	{
+		pTextManage->Update(ARXDiffTimeMenu);
+		pTextManage->Render();
+	}
+
+	danaeApp.DANAEStartRender();
+	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP);
+
+	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
+	SETZWRITE(GDevice, false);
+	GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE,false);
+	GDevice->SetRenderState( D3DRENDERSTATE_CULLMODE,D3DCULL_NONE);
+	pGetInfoDirectInput->DrawCursor();
+
+	if(pMenu->bReInitAll)
+	{
+		GDevice->Clear( 0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, D3DRGBA(0,0,0,0), 1.0f, 0L);
+
+		if(bForceReInitAllTexture)
+		{
+			D3DTextr_RestoreAllTextures(GDevice);
+			bForceReInitAllTexture=false;
+		}
+	}
+
+	if (pTextureLoadRender)
+	{
+		GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 
     if(pMenu->bReInitAll)
     {
@@ -3905,7 +5805,11 @@ CMenuElement* CMenuElement::OnShortCut()
 
 //-----------------------------------------------------------------------------
 
+<<<<<<< HEAD
 CMenuElementText::CMenuElementText(int _iID, HFONT _pHFont, const std::string& _pText,float _fPosX,float _fPosY,long _lColor,float _fSize,MENUSTATE _eMs) : CMenuElement(_eMs)
+=======
+CMenuElementText::CMenuElementText(int _iID, HFONT _pHFont,const char *_pText,float _fPosX,float _fPosY,long _lColor,float _fSize,MENUSTATE _eMs) : CMenuElement(_eMs)
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 {
     iID = _iID;
 
@@ -4006,6 +5910,7 @@ bool CMenuElementText::OnMouseDoubleClick(int _iMouseButton)
 // true: block les zones de checks
 bool CMenuElementText::OnMouseClick(int _iMouseButton)
 {
+<<<<<<< HEAD
     switch(eState)
     {
     case EDIT:
@@ -4450,6 +6355,462 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
     }
 
     return false;
+=======
+	switch(eState)
+	{
+	case EDIT:
+		eState=EDIT_TIME;
+		return true;
+	case GETTOUCH:
+		eState=GETTOUCH_TIME;
+		lOldColor=lColorHighlight;
+		return true;
+	}
+
+	if (iID != BUTTON_MENUMAIN_RESUMEGAME)
+	{
+		ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+	}
+
+	switch (iID)
+	{
+	case -1:
+		{
+			return false;
+		}
+		break;
+	// MENUMAIN
+	case BUTTON_MENUMAIN_RESUMEGAME:
+		{
+			pTextManage->Clear();
+			ARXMenu_ResumeGame();
+			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+		}
+		break;
+	case BUTTON_MENUMAIN_NEWQUEST:
+		{
+			bool bBOOL = false;
+			ARXMenu_GetResumeGame(bBOOL);
+
+			if (!bBOOL)
+			{
+				ARXMenu_NewQuest();
+			}
+		}
+		break;
+	case BUTTON_MENUMAIN_LOADQUEST:
+		{
+		}break;
+	case BUTTON_MENUMAIN_SAVEQUEST:
+		{
+		}break;
+	case BUTTON_MENUMAIN_MULTIPLAYER:
+		{
+		}break;
+	case BUTTON_MENUMAIN_OPTIONS:
+		{
+		}break;
+	case BUTTON_MENUMAIN_CREDITS:
+		{
+			ARXMenu_Credits();
+		}
+		break;
+	case BUTTON_MENUMAIN_QUIT:
+		{
+			ARXMenu_Quit();
+		}
+		break;
+	case BUTTON_MENUNEWQUEST_CONFIRM:
+		{
+			ARXMenu_NewQuest();
+		}
+		break;
+	// MENULOADQUEST
+	case BUTTON_MENUOPTIONSVIDEO_INIT:
+		{
+			pMenuConfig->iNewWidth = pMenuConfig->iWidth;
+			pMenuConfig->iNewHeight = pMenuConfig->iHeight;
+			pMenuConfig->iNewBpp = pMenuConfig->iBpp;
+			pMenuConfig->iNewTextureResol = pMenuConfig->iTextureResol;
+
+			pMenuConfig->bChangeResolution = false;
+			pMenuConfig->bChangeTextures = false;
+		}
+		break;
+	case BUTTON_MENUEDITQUEST_LOAD_INIT:
+		{
+			if ( pWindowMenu )
+				for (UINT i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
+				{
+					CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
+
+					if ( p->eMenuState == EDIT_QUEST_LOAD )
+					{
+						pWindowMenu->vWindowConsoleElement[i]->lData = lData;
+
+						for (UINT j = 0 ; j < p->MenuAllZone.vMenuZone.size() ; j++)
+						{
+							CMenuZone *cz = p->MenuAllZone.vMenuZone[j];
+
+							if ( cz->iID == BUTTON_MENUEDITQUEST_LOAD )
+							{
+								( (CMenuElementText *)cz )->bSelected = false;
+							}
+						}
+					}
+				}
+		}
+		break;
+	case BUTTON_MENUEDITQUEST_LOAD:
+		{
+			if (pWindowMenu)
+			{
+			pLoadConfirm->SetCheckOn();
+			pLoadConfirm->lColor=pLoadConfirm->lOldColor;
+
+				for (UINT i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
+			{
+				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
+
+				if ( p->eMenuState == EDIT_QUEST_LOAD )
+				{
+					pWindowMenu->vWindowConsoleElement[i]->lData = lData;
+
+						for (UINT j = 0 ; j < p->MenuAllZone.vMenuZone.size(); j++)
+					{
+						CMenuZone *cz = p->MenuAllZone.vMenuZone[j];
+
+						if ( cz->iID == BUTTON_MENUEDITQUEST_LOAD )
+						{
+							( (CMenuElementText *)cz )->bSelected = false;
+						}
+					}
+
+					bSelected = true;
+
+					}
+				}
+			}
+			}
+		break;
+	case BUTTON_MENUEDITQUEST_LOAD_CONFIRM:
+		{
+			if (pWindowMenu)
+			{
+				for (UINT i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
+			{
+				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
+
+				if ( p->eMenuState == EDIT_QUEST_LOAD )
+				{
+					lData = pWindowMenu->vWindowConsoleElement[i]->lData;
+
+					if ( lData )
+					{
+						{
+							_TCHAR szT[256];
+							_stprintf(szT, _T("%lu - %s"), lData, lpszText);
+							char ml[256];
+							memset( ml, 0, 256 );
+
+							eMenuState = MAIN;
+							GDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );	
+							ARXMenu_LoadQuest( lData );
+
+							bNoMenu=true;
+
+							if( pTextManage )
+							{
+								pTextManage->Clear();
+							}
+
+							break;
+						}
+					}
+				}
+			}
+
+			pLoadConfirm->SetCheckOff();
+			pLoadConfirm->lColor=RGB( 127, 127, 127 );
+			}
+		}
+		break;
+	case BUTTON_MENUEDITQUEST_LOAD_CONFIRM_BACK:
+		pLoadConfirm->SetCheckOff();
+		pLoadConfirm->lColor=RGB(127,127,127);
+		break;
+	// MENUSAVEQUEST
+	case BUTTON_MENUEDITQUEST_SAVE:
+		{
+			if (pWindowMenu)
+				for (UINT i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
+			{
+				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
+
+				if ( p->eMenuState == EDIT_QUEST_SAVE_CONFIRM )
+				{
+					pWindowMenu->vWindowConsoleElement[i]->lData = lData;
+					CMenuElementText * me = (CMenuElementText *) p->MenuAllZone.vMenuZone[1];
+
+					if ( me )
+					{
+						_TCHAR szT[256];
+						_stprintf( szT, _T("%lu - %s"), me->lData, me->lpszText );
+						char ml[256];
+						memset( ml, 0, 256 );
+//						todo: cast
+//						WideCharToMultiByte( CP_ACP, 0, me->lpszText, _tcslen( me->lpszText ),
+//							ml,  _tcslen( me->lpszText ) + 1,
+//							"_", NULL );
+
+						strcpy( save_l[me->lData].name, ml );
+						eMenuState = MAIN;
+						ARXMenu_SaveQuest( me->lData );
+						break;
+					}
+				}
+			}
+		}
+		break;
+	case BUTTON_MENUEDITQUEST_DELETE:
+		{
+			if (pWindowMenu)
+				for (UINT i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
+			{
+				CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
+
+				if ( p->eMenuState == EDIT_QUEST_DELETE_CONFIRM )
+				{
+					pWindowMenu->vWindowConsoleElement[i]->lData = lData;
+					CMenuElementText * me = (CMenuElementText *) p->MenuAllZone.vMenuZone[1];
+
+					if ( me )
+					{
+						_TCHAR szT[256];
+						_stprintf( szT, _T("%lu - %s"), me->lData, me->lpszText );
+
+						char ml[256];
+						memset(ml,0,256);
+//						todo: cast
+//						WideCharToMultiByte( CP_ACP, 0, me->lpszText, _tcslen( me->lpszText ),
+//							ml,  _tcslen( me->lpszText ) + 1,
+//							"_", NULL );
+
+						strcpy( save_l[me->lData].name, ml );
+						eMenuState = MAIN;
+						ARXMenu_DeleteQuest( me->lData );
+						FreeSaveGameList();
+						CreateSaveGameList();
+							break;
+							}
+								}
+							}
+						}
+						break;
+	case BUTTON_MENUOPTIONSVIDEO_APPLY:
+		{
+			//----------BUMP
+			if(pMenuConfig->bNewBumpMapping!=pMenuConfig->bBumpMapping)
+			{
+				pMenuConfig->bBumpMapping=pMenuConfig->bNewBumpMapping;
+
+				if(pMenuConfig->bBumpMapping)
+				{
+					EERIE_ActivateBump();
+				}
+				else
+				{
+					EERIE_DesactivateBump();
+				}
+
+				if(pMenuConfig->bBumpMapping!=bALLOW_BUMP)
+				{
+					bForceReInitAllTexture=true;
+				}
+
+				bALLOW_BUMP=pMenuConfig->bBumpMapping;
+
+				pMenuCheckButtonBump->iOldState=-1;
+			}
+
+			//----------END_BUMP
+
+			//----------CHANGE_TEXTURE
+			if(pMenuConfig->iNewTextureResol!=pMenuConfig->iTextureResol)
+			{
+				pMenuConfig->iTextureResol=pMenuConfig->iNewTextureResol;
+
+				if(pMenuConfig->iTextureResol==2)Project.TextureSize=0;
+
+				if(pMenuConfig->iTextureResol==1)Project.TextureSize=2;
+
+				if(pMenuConfig->iTextureResol==0)Project.TextureSize=64;
+
+				WILL_RELOAD_ALL_TEXTURES=1;
+
+				pMenuSliderTexture->iOldPos=-1;
+			}
+
+			//----------END_CHANGE_TEXTURE
+
+			//----------RESOLUTION
+			if(	(pMenuConfig->iNewWidth!=pMenuConfig->iWidth)||
+				(pMenuConfig->iNewHeight!=pMenuConfig->iHeight)||
+				(pMenuConfig->iNewBpp!=pMenuConfig->iBpp) )
+			{
+				pMenuConfig->iWidth=pMenuConfig->iNewWidth;
+				pMenuConfig->iHeight=pMenuConfig->iNewHeight;
+				pMenuConfig->iBpp=pMenuConfig->iNewBpp;
+				ARXMenu_Private_Options_Video_SetResolution(	pMenuConfig->iWidth,
+																pMenuConfig->iHeight,
+																pMenuConfig->iBpp);
+
+				pMenuSliderResol->iOldPos=-1;
+				pMenuSliderBpp->iOldPos=-1;
+			}
+
+			//----------END_RESOLUTION
+			pMenuConfig->bChangeResolution = false;
+			pMenuConfig->bChangeTextures = false;
+			pMenu->bReInitAll=true;
+		}
+		break;
+	// MENUOPTIONS_CONTROLS
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP2:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE1:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_MAGICMODE2:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE1:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_STEALTHMODE2:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD1:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKFORWARD2:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD1:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_WALKBACKWARD2:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT1:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFELEFT2:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT1:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_STRAFERIGHT2:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT1:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANLEFT2:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT1:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_LEANRIGHT2:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH1:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCH2:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK1:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY1:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_INVENTORY2:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK1:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOK2:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE1:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONLIFE2:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA1:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_DRINKPOTIONMANA2:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_CUST_DEFAULT:
+		{
+		}break;
+	case BUTTON_MENUOPTIONS_CONTROLS_BACK:
+		{
+			if(pMenuConfig)
+				pMenuConfig->SaveAll();
+		}
+		break;
+	}
+
+	if ((eMenuState == EDIT_QUEST_LOAD_CONFIRM) ||
+		(eMenuState == EDIT_QUEST_SAVE_CONFIRM) ||
+		(eMenuState == EDIT_QUEST_DELETE_CONFIRM))
+	{
+		for (UINT i = 0 ; i < pWindowMenu->vWindowConsoleElement.size() ; i++)
+		{
+			CWindowMenuConsole *p = pWindowMenu->vWindowConsoleElement[i];
+
+			if ( p->eMenuState == eMenuState )
+			{
+				p->lData = lData;
+				CMenuElementText * me = (CMenuElementText *) p->MenuAllZone.vMenuZone[1];
+
+				if ( me )
+				{
+					me->lData = lData;
+					_TCHAR szText[256];
+
+					if( lData )
+						_stprintf( szText, _T("%s"), save_l[lData].name );
+					else
+					{
+						PAK_UNICODE_GetPrivateProfileString("system_menu_editquest_newsavegame", "", szText, 256);
+					}
+
+					me->SetText( szText );
+					p->AlignElementCenter( me );
+				}
+			}
+		}
+	}
+
+	return false;
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 }
 
 //-----------------------------------------------------------------------------
@@ -6002,10 +8363,206 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY,int _Fr
         pZone->bActif=true;
     }
 
+<<<<<<< HEAD
     iOldPosX=iPosX;
     iOldPosY=iPosY;
     iPosX=_iPosX;
     iPosY=_iPosY;
+=======
+void CWindowMenuConsole::UpdateText()
+{
+	if(pGetInfoDirectInput->bTouch)
+	{
+		pGetInfoDirectInput->iKeyId&=0xFFFF;
+
+		if(	(pGetInfoDirectInput->IsVirtualKeyPressed(DIK_RETURN))||
+			(pGetInfoDirectInput->IsVirtualKeyPressed(DIK_NUMPADENTER)) ||
+			(pGetInfoDirectInput->IsVirtualKeyPressed(DIK_ESCAPE)) )
+		{
+			ARX_SOUND_PlayMenu(SND_MENU_CLICK);
+			((CMenuElementText*)pZoneClick)->eState=EDIT;
+
+			if(!_tcslen(((CMenuElementText*)pZoneClick)->lpszText))
+			{
+				_TCHAR szMenuText[256];
+				PAK_UNICODE_GetPrivateProfileString("system_menu_editquest_newsavegame", "", szMenuText, 256);
+
+				((CMenuElementText*)pZoneClick)->SetText(szMenuText);
+
+				int iDx=pZoneClick->rZone.right-pZoneClick->rZone.left;
+
+				if(pZoneClick->ePlace)
+				{
+					pZoneClick->rZone.left=iPosX+((iWidth-iDx)>>1);
+
+					if(pZoneClick->rZone.left<0)
+					{
+						pZoneClick->rZone.left=0;
+					}
+				}
+
+				pZoneClick->rZone.right=pZoneClick->rZone.left+iDx;
+			}
+
+			pZoneClick=NULL;
+			bEdit=false;
+			return;
+		}
+		
+		bool bKey=false;
+		_TCHAR tText[256];
+		
+		CMenuElementText *pZoneText=(CMenuElementText*)pZoneClick;
+
+		if(pGetInfoDirectInput->IsVirtualKeyPressedOneTouch(DIK_BACKSPACE))
+		{
+			_tcscpy(tText,pZoneText->lpszText);
+
+			if(_tcslen(tText))
+			{
+				tText[_tcslen(tText)-1]=_T('\0');
+				bKey=true;
+			}
+		}
+		else
+		{
+			if(pGetInfoDirectInput->IsVirtualKeyPressedOneTouch(pGetInfoDirectInput->iKeyId))
+			{
+				_tcscpy(tText,pZoneText->lpszText);
+
+				unsigned short tusOutPut[2];
+				_TCHAR tCat[2];
+
+				int iKey = pGetInfoDirectInput->iKeyId;
+				int iR = scan2ascii(iKey, tusOutPut);
+
+				if(!iR)
+				{
+					bKey=true;
+
+					//touche non reconnue
+					switch(iKey)
+					{
+					case DIK_NUMPAD0:
+						tCat[0]=_T('0');
+						tCat[1]=0;
+						break;
+					case DIK_NUMPAD1:
+						tCat[0]=_T('1');
+						tCat[1]=0;
+						break;
+					case DIK_NUMPAD2:
+						tCat[0]=_T('2');
+						tCat[1]=0;
+						break;
+					case DIK_NUMPAD3:
+						tCat[0]=_T('3');
+						tCat[1]=0;
+						break;
+					case DIK_NUMPAD4:
+						tCat[0]=_T('4');
+						tCat[1]=0;
+						break;
+					case DIK_NUMPAD5:
+						tCat[0]=_T('5');
+						tCat[1]=0;
+						break;
+					case DIK_NUMPAD6:
+						tCat[0]=_T('6');
+						tCat[1]=0;
+						break;
+					case DIK_NUMPAD7:
+						tCat[0]=_T('7');
+						tCat[1]=0;
+						break;
+					case DIK_NUMPAD8:
+						tCat[0]=_T('8');
+						tCat[1]=0;
+						break;
+					case DIK_NUMPAD9:
+						tCat[0]=_T('9');
+						tCat[1]=0;
+						break;
+					case DIK_DECIMAL:     
+						tCat[0]=_T('.');
+						tCat[1]=0;
+						break;
+					case DIK_DIVIDE:      
+						tCat[0]=_T('/');
+						tCat[1]=0;
+						break;
+					default:
+						bKey=false;
+						break;
+					}
+				}
+				else
+				{
+					tCat[0]= (_TCHAR)(tusOutPut[0]);
+					tCat[1]=0;
+					bKey=true;
+				}
+
+				if(bKey)
+				{
+					if ((isalnum(tCat[0]) || _istspace(tCat[0]) || _istpunct(tCat[0])) && (tCat[0]!=_T('\t')) && (tCat[0]!=_T('*')))
+						_tcscat(tText,tCat);
+				}
+			}
+		}
+
+		if(bKey)
+		{
+			pZoneText->SetText(tText);
+
+			if(	(pZoneText->rZone.right-pZoneText->rZone.left)>(iWidth-RATIO_X(64)) )
+			{
+				tText[_tcslen(tText)-1]=0;
+				pZoneText->SetText(tText);
+			}
+			
+			int iDx=pZoneClick->rZone.right-pZoneClick->rZone.left;
+
+			if(pZoneClick->ePlace)
+			{
+				pZoneClick->rZone.left=iPosX+((iWidth-iDx)>>1);
+
+				if(pZoneClick->rZone.left<0)
+				{
+					pZoneClick->rZone.left=0;
+				}
+			}
+
+			pZoneClick->rZone.right=pZoneClick->rZone.left+iDx;
+		}
+	}
+	
+	if (pZoneClick->rZone.top == pZoneClick->rZone.bottom)
+	{
+		int w,h;
+		GetTextSize(((CMenuElementText*)pZoneClick)->pHFont, _T("|"), (int*)&w, (int*)&h);
+		pZoneClick->rZone.bottom += h;
+	}
+
+	//DRAW CURSOR
+	D3DTLVERTEX v[4];
+	SETTC(GDevice,NULL);
+	float col=.5f+rnd()*.5f;
+	v[0].color=v[1].color=v[2].color=v[3].color=D3DRGBA(col,col,col,1.f);
+	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;	
+	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
+
+	v[0].sx = (float)pZoneClick->rZone.right;
+	v[0].sy = (float)pZoneClick->rZone.top;
+	v[1].sx = v[0].sx+2.f;
+	v[1].sy = v[0].sy;
+	v[2].sx = v[0].sx;
+	v[2].sy = (float)pZoneClick->rZone.bottom;
+	v[3].sx = v[1].sx;
+	v[3].sy = v[2].sy;
+	EERIEDRAWPRIM(GDevice,D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
+}
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 
     // Check if mouse over
     if (bMouseListen)
@@ -6619,8 +9176,13 @@ long CMenuPanel::IsMouseOver(int _iX, int _iY)
 
 //-----------------------------------------------------------------------------
 
+<<<<<<< HEAD
 CMenuButton::CMenuButton(int _iID, HFONT _pHFont,MENUSTATE _eMenuState,int _iPosX,int _iPosY, const std::string& _pText,float _fSize,TextureContainer *_pTex,TextureContainer *_pTexOver,int _iColor,int _iTailleX,int _iTailleY)
     : CMenuElement(_eMenuState)
+=======
+CMenuButton::CMenuButton(int _iID, HFONT _pHFont,MENUSTATE _eMenuState,int _iPosX,int _iPosY,const char *_pText,float _fSize,TextureContainer *_pTex,TextureContainer *_pTexOver,int _iColor,int _iTailleX,int _iTailleY)
+: CMenuElement(_eMenuState)
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 {
     iID = _iID;
     pHFont = _pHFont;
@@ -6738,7 +9300,11 @@ void CMenuButton::SetPos(int _iX,int _iY)
 
 //-----------------------------------------------------------------------------
 
+<<<<<<< HEAD
 void CMenuButton::AddText( const std::string& _pText)
+=======
+void CMenuButton::AddText(const char *_pText)
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 {
     if ( _pText.empty() )
         return;
@@ -8146,11 +10712,16 @@ bool CDirectInput::GetMouseButtonNowPressed(int _iNumButton)
 bool CDirectInput::GetMouseButtonNowUnPressed(int _iNumButton)
 {
 
+<<<<<<< HEAD
     return( (!bMouseButton[_iNumButton])&&(bOldMouseButton[_iNumButton]) );
+=======
+	return( (!bMouseButton[_iNumButton])&&(bOldMouseButton[_iNumButton]) );
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 }
 
 //-----------------------------------------------------------------------------
 
+<<<<<<< HEAD
 std::string CDirectInput::GetFullNameTouch(int _iVirtualKey)
 {
     std::string pText;
@@ -8410,6 +10981,282 @@ std::string CDirectInput::GetFullNameTouch(int _iVirtualKey)
     }
 
     return pText;
+=======
+_TCHAR * CDirectInput::GetFullNameTouch(int _iVirtualKey)
+{
+	_TCHAR *pText=(_TCHAR*)malloc(256*sizeof(_TCHAR));
+
+	if(!pText) return NULL;
+
+	long lParam;
+
+	_TCHAR *pText2=NULL;
+
+	if(	(_iVirtualKey!=-1)&&
+		(_iVirtualKey&~0xC000FFFF) )	//COMBINAISON
+	{
+		pText2=GetFullNameTouch((_iVirtualKey>>16)&0x3FFF);
+	}
+
+	lParam=((_iVirtualKey)&0x7F)<<16;
+
+	switch(_iVirtualKey)
+	{
+	case DIK_HOME:
+
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_home", "---", pText, 256);
+		break;
+	case DIK_NEXT:
+
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_pagedown", "---", pText, 256);
+		break;
+	case DIK_END:
+
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_end", "---", pText, 256);
+		break;
+	case DIK_INSERT:
+
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_insert", "---", pText, 256);
+		break;
+	case DIK_DELETE:
+
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_delete", "---", pText, 256);
+		break;
+	case DIK_NUMLOCK:
+
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_numlock", "---", pText, 256);
+		break;
+	case DIK_DIVIDE:
+		_tcscpy(pText,_T("_/_"));
+		break;
+	case DIK_MULTIPLY:
+		_tcscpy(pText,_T("_x_"));
+		break;
+	case DIK_SYSRQ:           
+		_tcscpy(pText,_T("?"));
+		break;
+	case DIK_UP:                  // UpArrow on arrow keypad
+
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_up", "---", pText, 256);
+		break;
+	case DIK_PRIOR:               // PgUp on arrow keypad
+
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_pageup", "---", pText, 256);
+		break;
+	case DIK_LEFT:                // LeftArrow on arrow keypad
+
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_left", "---", pText, 256);
+		break;
+	case DIK_RIGHT:               // RightArrow on arrow keypad
+
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_right", "---", pText, 256);
+		break;
+	case DIK_DOWN:                // DownArrow on arrow keypad
+
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_down", "---", pText, 256);
+		break;
+	case DIK_BUTTON1:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button0", "b1", pText, 256);
+		break;
+	case DIK_BUTTON2:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button1", "b2", pText, 256);
+		break;
+	case DIK_BUTTON3:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button2", "b3", pText, 256);
+		break;
+	case DIK_BUTTON4:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button3", "b4", pText, 256);
+		break;
+	case DIK_BUTTON5:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button4", "b5", pText, 256);
+		break;
+	case DIK_BUTTON6:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button5", "b6", pText, 256);
+		break;
+	case DIK_BUTTON7:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button6", "b7", pText, 256);
+		break;
+	case DIK_BUTTON8:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button7", "b8", pText, 256);
+		break;
+	case DIK_BUTTON9:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button8", "b9", pText, 256);
+		break;
+	case DIK_BUTTON10:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button9", "b10", pText, 256);
+		break;
+	case DIK_BUTTON11:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button10", "b11", pText, 256);
+		break;
+	case DIK_BUTTON12:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button11", "b12", pText, 256);
+		break;
+	case DIK_BUTTON13:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button12", "b13", pText, 256);
+		break;
+	case DIK_BUTTON14:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button13", "b14", pText, 256);
+		break;
+	case DIK_BUTTON15:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button14", "b15", pText, 256);
+		break;
+	case DIK_BUTTON16:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button15", "b16", pText, 256);
+		break;
+	case DIK_BUTTON17:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button16", "b17", pText, 256);
+		break;
+	case DIK_BUTTON18:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button17", "b18", pText, 256);
+		break;
+	case DIK_BUTTON19:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button18", "b19", pText, 256);
+		break;
+	case DIK_BUTTON20:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button19", "b20", pText, 256);
+		break;
+	case DIK_BUTTON21:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button20", "b21", pText, 256);
+		break;
+	case DIK_BUTTON22:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button21", "b22", pText, 256);
+		break;
+	case DIK_BUTTON23:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button22", "b23", pText, 256);
+		break;
+	case DIK_BUTTON24:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button23", "b24", pText, 256);
+		break;
+	case DIK_BUTTON25:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button24", "b25", pText, 256);
+		break;
+	case DIK_BUTTON26:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button25", "b26", pText, 256);
+		break;
+	case DIK_BUTTON27:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button26", "b27", pText, 256);
+		break;
+	case DIK_BUTTON28:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button27", "b28", pText, 256);
+		break;
+	case DIK_BUTTON29:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button28", "b29", pText, 256);
+		break;
+	case DIK_BUTTON30:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button29", "b30", pText, 256);
+		break;
+	case DIK_BUTTON31:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button30", "b31", pText, 256);
+		break;
+	case DIK_BUTTON32:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_button31", "b32", pText, 256);
+		break;
+	case DIK_WHEELUP:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_wheelup", "w0", pText, 256);
+		break;
+	case DIK_WHEELDOWN:
+		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_wheeldown", "w1", pText, 256);
+		break;
+	case -1:
+		_tcscpy(pText,_T("---"));
+		break;
+	default:
+		{
+		char tAnsiText[256];
+		GetKeyNameText(lParam,tAnsiText,256);
+		int i=strlen(tAnsiText);
+
+		if(!i)
+		{
+			_stprintf(pText,_T("Key_%d"),_iVirtualKey);
+		}
+		else
+		{
+//			todo: cast
+//			MultiByteToWideChar(CP_ACP, 0, tAnsiText, -1, pText, 256);
+
+			if(_iVirtualKey==DIK_LSHIFT)
+			{
+				_TCHAR tText2[256];
+				_TCHAR *pText3;
+				PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_left", "---", tText2, 256);
+				tText2[1]=0;
+				pText3=(_TCHAR*)malloc((_tcslen(tText2)+_tcslen(pText)+1)*sizeof(_TCHAR));
+				_tcscpy(pText3,tText2);
+				_tcscat(pText3,pText);
+				free((void*)pText);
+				pText=pText3;
+			}
+
+			if(_iVirtualKey==DIK_LCONTROL)
+			{
+				_TCHAR tText2[256];
+				_TCHAR *pText3;
+				PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_left", "---", tText2, 256);
+				tText2[1]=0;
+				pText3=(_TCHAR*)malloc((_tcslen(tText2)+_tcslen(pText)+1)*sizeof(_TCHAR));
+				_tcscpy(pText3,tText2);
+				_tcscat(pText3,pText);
+				free((void*)pText);
+				pText=pText3;
+			}
+
+			if(_iVirtualKey==DIK_LALT)
+			{
+				_TCHAR tText2[256];
+				_TCHAR *pText3;
+				PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_left", "---", tText2, 256);
+				tText2[1]=0;
+				pText3=(_TCHAR*)malloc((_tcslen(tText2)+_tcslen(pText)+1)*sizeof(_TCHAR));
+				_tcscpy(pText3,tText2);
+				_tcscat(pText3,pText);
+				free((void*)pText);
+				pText=pText3;
+			}
+
+				if (_iVirtualKey == DIK_NUMPADENTER)
+			{
+				_TCHAR *pText3;
+				pText3=(_TCHAR*)malloc((_tcslen(pText)+1+1)*sizeof(_TCHAR));
+				_tcscpy(pText3,pText);
+				_tcscat(pText3,_T("0"));
+				free((void*)pText);
+				pText=pText3;
+			}
+  
+			if(_tcslen(pText)>8)
+			{
+				pText[8]=0;
+				int iI=8;
+
+				while(iI--)
+				{
+					if(pText[iI]==_T(' '))
+					{
+						pText[iI]=0;
+					}
+					else break;
+				}
+			}
+		}
+		}
+		break;
+	}
+
+	if(pText2)
+	{
+		_TCHAR *pText3=(_TCHAR*)malloc((_tcslen(pText2)+_tcslen(pText)+1+1)*sizeof(_TCHAR));
+		_tcscpy(pText3,pText2);
+		_tcscat(pText3,_T("+"));
+		_tcscat(pText3,pText);
+		free((void*)pText);
+		free((void*)pText2);
+		pText=pText3;
+
+	}
+
+	return pText;
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 }
 
 //-----------------------------------------------------------------------------

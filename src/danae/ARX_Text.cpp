@@ -304,6 +304,7 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, std::string& _lpszUText, int _iSpaci
 
 //-----------------------------------------------------------------------------
 long ARX_UNICODE_DrawTextInRect(float x, float y,
+<<<<<<< HEAD
 								float maxx, float maxy,
 								const std::string& _text,
 								COLORREF col,
@@ -312,6 +313,16 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 								HRGN hRgn,
 								HDC hHDC
 							   )
+=======
+                                float maxx, float maxy,
+                                const char * _lpszUText,
+                                COLORREF col,
+                                COLORREF bcol,
+                                HFONT font,
+                                HRGN hRgn,
+                                HDC hHDC
+                               )
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 {
 	HDC hDC = NULL;
 
@@ -371,11 +382,19 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 
 //-----------------------------------------------------------------------------
 long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice,
+<<<<<<< HEAD
 				   HFONT ef,
 				   float x, float y,
 				   long spacingx, long spacingy,
 				   const std::string& car,
 				   COLORREF colo, COLORREF bcol)
+=======
+                   HFONT ef,
+                   float x, float y,
+                   long spacingx, long spacingy,
+                   const char * car,
+                   COLORREF colo, COLORREF bcol)
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 {
 	if (car.empty() ) return 0;
 
@@ -497,11 +516,26 @@ long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, std::string& 
 }
 
 //-----------------------------------------------------------------------------
+<<<<<<< HEAD
 void ARX_Allocate_Text( std::string& dest, const std::string& id_string)
 {
 	std::string output;
 	PAK_UNICODE_GetPrivateProfileString(id_string, "string", "default", output, 4096, NULL);
 	dest = output;
+=======
+void ARX_Allocate_Text(char *&dest, const char * id_string)
+{
+	if (dest != NULL)
+	{
+		free(dest);
+		dest = NULL;
+	}
+
+	_TCHAR output[4096];
+	PAK_UNICODE_GetPrivateProfileString(id_string, "default", output, 4096);
+	dest = (_TCHAR *)malloc((_tcslen(output) + 1) * sizeof(_TCHAR));
+	_tcscpy(dest, output);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 }
 
 //-----------------------------------------------------------------------------
@@ -1223,10 +1257,16 @@ void ARX_Text_Init()
 	{
 		int iFontSize = 48;//58;
 
+<<<<<<< HEAD
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_mainmenu_size", "string", "58", szUT, 256, NULL);
 		ss << szUT;
 		ss >> iFontSize;
+=======
+		_TCHAR szUT[256];
+		PAK_UNICODE_GetPrivateProfileString("system_font_mainmenu_size", "58", szUT, 256);
+		iFontSize = _ttoi(szUT);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 		iFontSize = Traffic(iFontSize);
 
 		if (!hFontMainMenu)
@@ -1247,10 +1287,16 @@ void ARX_Text_Init()
 	{
 		int iFontSize = 32;
 
+<<<<<<< HEAD
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_menu_size", "string", "32", szUT, 256, NULL);
 		ss << szUT;
 		ss >> iFontSize;
+=======
+		_TCHAR szUT[256];
+		PAK_UNICODE_GetPrivateProfileString("system_font_menu_size", "32", szUT, 256);
+		iFontSize = _ttoi(szUT);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 		iFontSize = Traffic(iFontSize);
 
 		if (!hFontMenu)
@@ -1271,10 +1317,16 @@ void ARX_Text_Init()
 	{
 		int iFontSize = 16;
 
+<<<<<<< HEAD
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_menucontrols_size", "string", "22", szUT, 256, NULL);
 		ss << szUT;
 		ss >> iFontSize;
+=======
+		_TCHAR szUT[256];
+		PAK_UNICODE_GetPrivateProfileString("system_font_menucontrols_size", "22", szUT, 256);
+		iFontSize = _ttoi(szUT);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 		iFontSize = Traffic(iFontSize);
 
 		if (!hFontControls)
@@ -1295,10 +1347,16 @@ void ARX_Text_Init()
 	{
 		int iFontSize = 32;
 
+<<<<<<< HEAD
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_menucredits_size", "string", "36", szUT, 256, NULL);
 		ss << szUT;
 		ss >> iFontSize;
+=======
+		_TCHAR szUT[256];
+		PAK_UNICODE_GetPrivateProfileString("system_font_menucredits_size", "36", szUT, 256);
+		iFontSize = _ttoi(szUT);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 		iFontSize = Traffic(iFontSize);
 
 		if (!hFontCredits)
@@ -1319,10 +1377,16 @@ void ARX_Text_Init()
 	{
 		int iFontSize = 16;
 
+<<<<<<< HEAD
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_redist_size", "string", "18", szUT, 256, NULL);
 		ss << szUT;
 		ss >> iFontSize;
+=======
+		_TCHAR szUT[256];
+		PAK_UNICODE_GetPrivateProfileString("system_font_redist_size", "18", szUT, 256);
+		iFontSize = _ttoi(szUT);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 		iFontSize = Traffic(iFontSize);
 
 		hFontRedist = _CreateFont(
@@ -1346,10 +1410,16 @@ void ARX_Text_Init()
 	{
 		int iFontSize = 16;
 
+<<<<<<< HEAD
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_book_size", "string", "18", szUT, 256, NULL);
 		ss << szUT;
 		ss >> iFontSize;
+=======
+		_TCHAR szUT[256];
+		PAK_UNICODE_GetPrivateProfileString("system_font_book_size", "18", szUT, 256);
+		iFontSize = _ttoi(szUT);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 		iFontSize = Traffic(iFontSize);
 
 		if (!hFontInGame)
@@ -1370,10 +1440,16 @@ void ARX_Text_Init()
 	{
 		int iFontSize = 16;//18;
 
+<<<<<<< HEAD
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_note_size", "string", "18", szUT, 256, NULL);
 		ss << szUT;
 		ss >> iFontSize;
+=======
+		_TCHAR szUT[256];
+		PAK_UNICODE_GetPrivateProfileString("system_font_note_size", "18", szUT, 256);
+		iFontSize = _ttoi(szUT);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 		iFontSize = Traffic(iFontSize);
 
 		hFontInGameNote = _CreateFont(
@@ -1391,10 +1467,16 @@ void ARX_Text_Init()
 	{
 		int iFontSize = 16;
 
+<<<<<<< HEAD
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_book_size", "string", "18", szUT, 256, NULL);
 		ss << szUT;
 		ss >> iFontSize;
+=======
+		_TCHAR szUT[256];
+		PAK_UNICODE_GetPrivateProfileString("system_font_book_size", "18", szUT, 256);
+		iFontSize = _ttoi(szUT);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 		iFontSize = Traffic(iFontSize);
 
 		InBookFont = _CreateFont(

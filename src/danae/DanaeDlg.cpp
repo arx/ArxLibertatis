@@ -108,7 +108,7 @@ extern long ForceIODraw;
 extern long NEED_ANCHORS;
 long HIDEANCHORS = 1;
 extern long HERMES_KEEP_MEMORY_TRACE;
-extern char * GTE_TITLE;
+extern const char * GTE_TITLE;
 extern char * GTE_TEXT;
 extern long GTE_SIZE;
 extern float TIMEFACTOR;
@@ -294,7 +294,7 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER2);
 			val = (long)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_MAXVOLTEXT);
-			sprintf(temp, "%d%%", val);
+			sprintf(temp, "%ld%%", val);
 			SetWindowText(thWnd, temp);
 
 			if (ARX_PATHS_SelectedAP)
@@ -450,7 +450,7 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 
 				SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
 				thWnd = GetDlgItem(hWnd, IDC_MAXVOLTEXT);
-				sprintf(temp, "%d", t);
+				sprintf(temp, "%ld", t);
 				SetWindowText(thWnd, temp);
 				////////////////////////////////////////////////	END NEW
 
@@ -468,7 +468,7 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 						SetWindowText(thWnd, "0");
 					else
 					{
-						sprintf(str, "%d", ARX_PATHS_SelectedAP->height);
+						sprintf(str, "%ld", ARX_PATHS_SelectedAP->height);
 						SetWindowText(thWnd, str);
 					}
 				}
@@ -913,9 +913,9 @@ void InterTreeViewDisplayInfo(HTREEITEM hitem)
 
 				if (tvv[i]->io->ioflags & IO_MARKER) strcpy(typee, "Marker");
 
-				sprintf(texx, "Ident: %s\n%s NumIO %d\nPos X:%d Y:%d Z:%d\nShow %d Lvl %d (%d)"
+				sprintf(texx, "Ident: %s\n%s NumIO %ld\nPos X:%ld Y:%ld Z:%ld\nShow %d Lvl %d (%d)"
 				        , tvv[i]->text, typee, GetInterNum(tvv[i]->io), (long)tvv[i]->io->pos.x, (long)tvv[i]->io->pos.y, (long)tvv[i]->io->pos.z,
-				        (long)tvv[i]->io->show, tvv[i]->io->level, tvv[i]->io->truelevel
+				        tvv[i]->io->show, tvv[i]->io->level, tvv[i]->io->truelevel
 				       );
 				SetDlgItemText(InterObjDlg, IDC_INTERTEXT, texx);
 				return;
@@ -944,7 +944,7 @@ LONG CALLBACK InterTreeViewSubClassFunc(HWND hWnd,
 }
 
 
-void RemoveIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, char * name, long type)
+void RemoveIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, const char * name, long type)
 {
 	if (TVVcount != 0)
 		if (io != NULL)
@@ -998,7 +998,7 @@ void RemoveIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, char * name, long type)
 		}
 }
 
-void AddIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, char * name, long type)
+void AddIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, const char * name, long type)
 {
 	TVINSERTSTRUCT tis;
 	HTREEITEM parent = NULL;
@@ -1013,8 +1013,13 @@ void AddIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, char * name, long type)
 	if (type == IOTVTYPE_PLAYER) strcpy(temp, "PLAYER");
 	else if (io != NULL)
 	{
+<<<<<<< HEAD
 		strcpy(temp, GetName(io->filename).c_str());
 		sprintf(temp2, "_%04d", io->ident);
+=======
+		strcpy(temp, GetName(io->filename));
+		sprintf(temp2, "_%04ld", io->ident);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 		strcat(temp, temp2);
 	}
 	else strcpy(temp, name);
@@ -1194,11 +1199,11 @@ void FillInterTreeView(HWND tvhwnd)
  
  
  
-void InterTreeViewItemRemove(INTERACTIVE_OBJ * io, char * name, long type)
+void InterTreeViewItemRemove(INTERACTIVE_OBJ * io, const char * name, long type)
 {
 	if (InterObjDlg) RemoveIOTVItem(dlgTreeViewhWnd, io, name, type);
 }
-void InterTreeViewItemAdd(INTERACTIVE_OBJ * io, char * name, long type)
+void InterTreeViewItemAdd(INTERACTIVE_OBJ * io, const char * name, long type)
 {
 	if (InterObjDlg) AddIOTVItem(dlgTreeViewhWnd, io, name, type);
 }
@@ -1273,7 +1278,7 @@ char * GetVersionString()
 //*************************************************************************************
 // Sets DANAE Main Window Title
 //*************************************************************************************
-void SetWindowTitle(HWND hWnd, char * tex) {
+void SetWindowTitle(HWND hWnd, const char * tex) {
 	char texx[512];
 	strcpy(texx, tex);
 	strcat(texx, GetVersionString());
@@ -1417,7 +1422,7 @@ INT_PTR CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 						long nb = InitMemorySnaps();
 						SnapShotMode = 1;
 						char temp[64];
-						sprintf(temp, "%d Stop", nb);
+						sprintf(temp, "%ld Stop", nb);
 						SetWindowText(thWnd, temp);
 					}
 
@@ -1446,15 +1451,15 @@ INT_PTR CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 			SetWindowText(thWnd, snapshotdata.path);
 
 			thWnd = GetDlgItem(hWnd, IDC_XSIZE);
-			sprintf(temp, "%d", snapshotdata.xsize);
+			sprintf(temp, "%ld", snapshotdata.xsize);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_YSIZE);
-			sprintf(temp, "%d", snapshotdata.ysize);
+			sprintf(temp, "%ld", snapshotdata.ysize);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_IMAGESSEC);
-			sprintf(temp, "%d", snapshotdata.imgsec);
+			sprintf(temp, "%ld", snapshotdata.imgsec);
 			SetWindowText(thWnd, temp);
 
 			if (snapshotdata.flag & 1) SetCheck(hWnd, IDC_MEMORYCACHE, CHECK);
@@ -1617,7 +1622,7 @@ INT_PTR CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			{
 				char tex[32];
 				t *= DIV10;
-				sprintf(tex, "Working... ( %d%% )", (long)t);
+				sprintf(tex, "Working... ( %ld%% )", (long)t);
 				SetWindowText(thWnd, tex);
 			}
 			else
@@ -2091,7 +2096,7 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			oml = ModeLight;
 			char tex[64];
 			thWnd = GetDlgItem(hWnd, IDC_EDITNBINTERPOLATIONS);
-			sprintf(tex, "%d", MOLLESS_Nb_Interpolations);
+			sprintf(tex, "%ld", MOLLESS_Nb_Interpolations);
 			SetWindowText(thWnd, tex);
 
 			if (ARX_DEMO)					SetClick(hWnd, IDC_ARXDEMO);
@@ -3274,49 +3279,49 @@ INT_PTR CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER14);
 			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_STATIC14);
-			sprintf(temp, "%3d%%", (long)val);
+			sprintf(temp, "%3ld%%", (long)val);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER15);
 			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_STATIC15);
-			sprintf(temp, "%3d%%", (long)val);
+			sprintf(temp, "%3ld%%", (long)val);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER16);
 			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_STATIC16);
-			sprintf(temp, "%3d%%", (long)val);
+			sprintf(temp, "%3ld%%", (long)val);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER17);
 			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_STATIC17);
-			sprintf(temp, "%3dcm", (long)val);
+			sprintf(temp, "%3ldcm", (long)val);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER18);
 			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_STATIC18);
-			sprintf(temp, "%3d%%", (long)val);
+			sprintf(temp, "%3ld%%", (long)val);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER19);
 			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_STATIC19);
-			sprintf(temp, "%3d", (long)val);
+			sprintf(temp, "%3ld", (long)val);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER20);
 			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_STATIC20);
-			sprintf(temp, "%3d%%", (long)val);
+			sprintf(temp, "%3ld%%", (long)val);
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER21);
 			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 			thWnd = GetDlgItem(hWnd, IDC_STATIC21);
-			sprintf(temp, "%3d", (long)val);
+			sprintf(temp, "%3ld", (long)val);
 			SetWindowText(thWnd, temp);
 
 			if (val2 < val1)
@@ -3959,8 +3964,13 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 				// Isis Athena
 				char temp[256];
 				thWnd = GetDlgItem(hWnd, IDC_OBJNAME);
+<<<<<<< HEAD
 				strcpy(temp, GetName(CDP_EditIO->filename).c_str());
 				sprintf(temp, "%s_%04d", temp, CDP_EditIO->ident);
+=======
+				strcpy(temp, GetName(CDP_EditIO->filename));
+				sprintf(temp, "%s_%04ld", temp, CDP_EditIO->ident);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 				SetWindowText(thWnd, temp);
 
 				thWnd = GetDlgItem(hWnd, IDC_EDIT1);
@@ -4089,7 +4099,7 @@ INT_PTR CALLBACK LanguageOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 //*************************************************************************************
 // Creates A Text Box
 //*************************************************************************************
-void TextBox(char * title, char * text, long size)
+void TextBox(const char * title, char * text, long size)
 {
 	ARX_TIME_Pause();
 	GTE_TITLE = title;

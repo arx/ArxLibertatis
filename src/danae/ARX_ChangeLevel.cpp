@@ -206,7 +206,7 @@ void ARX_GAMESAVE_MakePath()
 		CreateDirectory(GameSavePath, NULL);
 	}
 
-	sprintf(GameSavePath, "Save%s\\Save%04d\\", LOCAL_SAVENAME, CURRENT_GAME_INSTANCE);
+	sprintf(GameSavePath, "Save%s\\Save%04ld\\", LOCAL_SAVENAME, CURRENT_GAME_INSTANCE);
 
 	if (!DirectoryExist(GameSavePath))
 	{
@@ -223,7 +223,7 @@ void ARX_GAMESAVE_CreateNewInstance()
 
 	while (1)
 	{
-		sprintf(testpath, "%sSave%04d", basepath, num);
+		sprintf(testpath, "%sSave%04ld", basepath, num);
 
 		if (!DirectoryExist(testpath))
 		{
@@ -253,13 +253,13 @@ void ARX_GAMESAVE_CreateNewInstance()
 }
 
 long NEED_LOG = 0; //1;
-void LogData(char * tex)
+void LogData(const char * tex)
 {
 	if (!NEED_LOG) return;
 
 	FILE * fic;
 
-	if ((fic = fopen("c:\\ARXlog.txt", "a")) != NULL)
+	if ((fic = fopen("ARXlog.txt", "a")) != NULL)
 	{
 		fprintf(fic, "%s\n", tex);
 		fclose(fic);
@@ -320,7 +320,7 @@ void ARX_CHANGELEVEL_MakePath()
 		CreateDirectory(CurGamePath, NULL);
 	}
 
-	sprintf(CurGamePath, "Save%s\\Cur%04d\\", LOCAL_SAVENAME, LAST_CHINSTANCE);
+	sprintf(CurGamePath, "Save%s\\Cur%04ld\\", LOCAL_SAVENAME, LAST_CHINSTANCE);
 
 	if (!DirectoryExist(CurGamePath))
 		CreateDirectory(CurGamePath, NULL);
@@ -335,7 +335,7 @@ void ARX_CHANGELEVEL_CreateNewInstance()
 
 	while (1)
 	{
-		sprintf(testpath, "%sCur%04d", basepath, num);
+		sprintf(testpath, "%sCur%04ld", basepath, num);
 
 		if (!DirectoryExist(testpath))
 		{
@@ -397,7 +397,7 @@ void ARX_CHANGELEVEL_Change(char * level, char * target, long angle, long confir
 	{
 		LogData("ARX_CHANGELEVEL_Change");
 		char tex[256];
-		sprintf(tex, "Date: %02d/%02d/%d  Time: %dh%d", hdt.days, hdt.months, hdt.years, hdt.hours, hdt.mins);
+		sprintf(tex, "Date: %02ld/%02ld/%ld  Time: %ldh%ld", hdt.days, hdt.months, hdt.years, hdt.hours, hdt.mins);
 		LogData(tex);
 		sprintf(tex, "level %s target %s", level, target);
 		LogData(tex);
@@ -543,7 +543,7 @@ long ARX_CHANGELEVEL_PushLevel(long num, long newnum)
 
 	ForcePlayerInventoryObjectLevel(newnum);
 	char lvltxt[64];
-	sprintf(lvltxt, "l%03d", num);
+	sprintf(lvltxt, "l%03ld", num);
 
 	char sfile[256];
 	sprintf(sfile, "%sGsave.sav", CurGamePath);
@@ -648,7 +648,7 @@ long ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 	}
 
 	char savefile[256];
-	sprintf(savefile, "lvl%03d.sav", num);
+	sprintf(savefile, "lvl%03ld.sav", num);
 
 	long allocsize = sizeof(ARX_CHANGELEVEL_INDEX)
 	                 + sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter
@@ -864,7 +864,11 @@ void FillIOIdent(char * tofill, INTERACTIVE_OBJ * io)
 	   )
 		strcpy(tofill, "NONE");
 	else
+<<<<<<< HEAD
 		sprintf(tofill, "%s_%04d", GetName(io->filename).c_str(), io->ident);
+=======
+		sprintf(tofill, "%s_%04ld", GetName(io->filename), io->ident);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 }
 extern long sp_max;
 extern long cur_rf;
@@ -1155,7 +1159,11 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 
 	// Sets Savefile Name
 	char savefile[256];
+<<<<<<< HEAD
 	sprintf(savefile, "%s_%04d.sav", GetName(io->filename).c_str(), io->ident);
+=======
+	sprintf(savefile, "%s_%04ld.sav", GetName(io->filename), io->ident);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 
 	// Define Type & Affiliated Structure Size
 	long type;
@@ -1832,7 +1840,7 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 	if ((pos > allocsize) && (!FOR_EXTERNAL_PEOPLE))
 	{
 		char tex[256];
-		sprintf(tex, "SaveBuffer Overflow %d >> %d", pos, allocsize);
+		sprintf(tex, "SaveBuffer Overflow %ld >> %ld", pos, allocsize);
 		ShowPopup(tex);
 	}
 
@@ -1862,11 +1870,22 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 //-----------------------------------------------------------------------------
 long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 {
+<<<<<<< HEAD
     unsigned char * dat;
     long pos = 0;
     std::string loadfile;
     std::string _error;
     std::stringstream ss;
+=======
+	unsigned char * dat;
+	long pos = 0;
+	char loadfile[256];
+	char _error[256];
+	
+	sprintf(loadfile, "lvl%03ld.sav", num);
+	size_t size;
+	size = _pSaveBlock->GetSize(loadfile);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 
     ss << "lvl" << num << ".sav";
     loadfile = ss.str();
@@ -1938,9 +1957,14 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num)
     std::stringstream ss;
     long size;
 
+<<<<<<< HEAD
     ss << "lvl" << num << ".sav";
     loadfile = ss.str();
     size = _pSaveBlock->GetSize(loadfile);
+=======
+	sprintf(loadfile, "lvl%03ld.sav", num);
+	size = _pSaveBlock->GetSize(loadfile);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 
     if (size < 0)
     {
@@ -3254,7 +3278,11 @@ long ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi)
 		PROGRESS_BAR_COUNT += increment;
 		LoadLevelScreen();
 		char tempo[256];
+<<<<<<< HEAD
 		sprintf(tempo, "%s_%04d", GetName(idx_io[i].filename).c_str(), idx_io[i].ident);
+=======
+		sprintf(tempo, "%s_%04ld", GetName(idx_io[i].filename), idx_io[i].ident);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 		ARX_CHANGELEVEL_Pop_IO(tempo);
 	}
 
@@ -3664,7 +3692,7 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 	// Now we can load our things...
 	char loadfile[256];
 	long FirstTime;
-	sprintf(loadfile, "lvl%03d.sav", instance);
+	sprintf(loadfile, "lvl%03ld.sav", instance);
 
 	LogData("Before Saveblock Access");
 	// Open Saveblock for read
@@ -4284,7 +4312,7 @@ long ARX_CHANGELEVEL_Load(long instance)
 	{
 		LogData("ARX_CHANGELEVEL_Load");
 		char tex[256];
-		sprintf(tex, "Date: %02d/%02d/%d  Time: %dh%d", hdt.days, hdt.months, hdt.years, hdt.hours, hdt.mins);
+		sprintf(tex, "Date: %02ld/%02ld/%ld  Time: %ldh%ld", hdt.days, hdt.months, hdt.years, hdt.hours, hdt.mins);
 		LogData(tex);
 	}
 

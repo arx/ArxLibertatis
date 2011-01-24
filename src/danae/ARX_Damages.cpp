@@ -366,8 +366,13 @@ float ARX_DAMAGES_DamagePlayer(float dmg, long type, long source, EERIE_3D * pos
 							         &&	(inter.iobj[source]->filename[0] != 0))
 							{
 								char temp[256];
+<<<<<<< HEAD
 								strcpy(temp, GetName(inter.iobj[source]->filename).c_str());
 								sprintf(killer, "%s_%04d", temp, inter.iobj[source]->ident);
+=======
+								strcpy(temp, GetName(inter.iobj[source]->filename));
+								sprintf(killer, "%s_%04ld", temp, inter.iobj[source]->ident);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 							}
 
 							SendIOScriptEvent(inter.iobj[i], 0, killer, "TARGET_DEATH");
@@ -600,7 +605,7 @@ void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_kill
 	ARX_SCRIPT_Timer_Clear_By_IO(io_dead);
 
 	if (strcasecmp(io_dead->mainevent, "DEAD"))
-		NotifyIOEvent(io_dead, SM_DIE, "");
+		NotifyIOEvent(io_dead, SM_DIE);
 
 	if (!ValidIOAddress(io_dead))
 		return;
@@ -627,8 +632,13 @@ void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_kill
 		if (io_killer)
 		{
 			char temp[256];
+<<<<<<< HEAD
 			strcpy(temp, GetName(io_killer->filename).c_str());
 			sprintf(killer, "%s_%04d", temp, io_killer->ident);
+=======
+			strcpy(temp, GetName(io_killer->filename));
+			sprintf(killer, "%s_%04ld", temp, io_killer->ident);
+>>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 		}
 	}
 

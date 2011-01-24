@@ -288,7 +288,7 @@ void CParticleSystem::SetParams(CParticleParams & _pp)
 }
 
 //-----------------------------------------------------------------------------
-void CParticleSystem::SetTexture(char * _pszTex, int _iNbTex, int _iTime, bool _bLoop)
+void CParticleSystem::SetTexture(const char * _pszTex, int _iNbTex, int _iTime, bool _bLoop)
 {
 	if (_iNbTex == 0)
 	{

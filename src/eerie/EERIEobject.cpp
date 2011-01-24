@@ -103,7 +103,7 @@ void EERIEOBJECT_DeletePFaces(EERIE_3DOBJ * eobj);
 long FASTLOADS = 0;
 
 //-----------------------------------------------------------------------------------------------------
-long GetGroupOriginByName(EERIE_3DOBJ * eobj, char * text)
+long GetGroupOriginByName(EERIE_3DOBJ * eobj, const char * text)
 {
 	if (!eobj) return -1;
 
@@ -115,7 +115,7 @@ long GetGroupOriginByName(EERIE_3DOBJ * eobj, char * text)
 	return -1;
 }
 //-----------------------------------------------------------------------------------------------------
-long GetActionPointIdx(EERIE_3DOBJ * eobj, char * text)
+long GetActionPointIdx(EERIE_3DOBJ * eobj, const char * text)
 {
 	if (!eobj) return -1;
 
@@ -310,7 +310,7 @@ retry1:
 
 	if (th.version < 2014)
 	{
-		sprintf(texx, "\nInvalid TEA Version !!!\n%s  %d", fic, th.version);
+		sprintf(texx, "\nInvalid TEA Version !!!\n%s  %ld", fic, th.version);
 		ShowError("TheaToEerie", texx, 0);
 		free(eerie);
 		eerie = NULL;
@@ -329,7 +329,7 @@ retry1:
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
 		sprintf(texx, "Identity----------------------- %s", th.identity);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "Version - %d  Frames %d  Groups %d KeyFrames %d", th.version, th.nb_frames, th.nb_groups, th.nb_key_frames);
+		sprintf(texx, "Version - %ld  Frames %ld  Groups %ld KeyFrames %ld", th.version, th.nb_frames, th.nb_groups, th.nb_key_frames);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
 	}
 
@@ -415,7 +415,7 @@ retry4:
 
 		if (DEBUGG)
 		{
-			sprintf(texx, "pos %d - NumFr %d MKF %d THEA_KEYFRAME %d TIME %fs -Move %d Orient %d Morph %d",
+			sprintf(texx, "pos %ld - NumFr %ld MKF %d THEA_KEYFRAME %d TIME %fs -Move %d Orient %d Morph %d",
 			        pos, eerie->frames[i].num_frame, tkf2015.master_key_frame, sizeof(THEA_KEYFRAME), (float)(eerie->frames[i].time / 1000.f), tkf2015.key_move, tkf2015.key_orient, tkf2015.key_morph);
 			SendConsole(texx, 3, 0, (HWND)MSGhwnd);
 		}
@@ -450,7 +450,7 @@ retry4:
 
 			if (DEBUGG)
 			{
-				sprintf(texx, "-> Frame %d MORPH - pos %d THEO_MORPH %d", i, pos, sizeof(THEA_MORPH));
+				sprintf(texx, "-> Frame %ld MORPH - pos %ld THEO_MORPH %d", i, pos, sizeof(THEA_MORPH));
 				SendConsole(texx, 3, 0, (HWND)MSGhwnd);
 			}
 		}
@@ -490,7 +490,7 @@ retry4:
  
 			if (DEBUGG)
 			{
-				sprintf(texx, "---> Frame %d Sample %s size %d", i, ts->sample_name, ts->sample_size);
+				sprintf(texx, "---> Frame %ld Sample %s size %ld", i, ts->sample_name, ts->sample_size);
 				ForceSendConsole(texx, 3, 0, (HWND)MSGhwnd);
 			}
 
@@ -640,10 +640,10 @@ void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, long * poss, long ver
 
 	if (DEBUGG)
 	{
-		sprintf(texx, "Nb Vertex %d Nb Action Points %d Nb Lines %d",
+		sprintf(texx, "Nb Vertex %ld Nb Action Points %ld Nb Lines %ld",
 		        tn.nb_vertex, tn.nb_action_point, tn.nb_lines);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "Nb Faces %d Nb Groups %d",
+		sprintf(texx, "Nb Faces %ld Nb Groups %ld",
 		        tn.nb_faces, tn.nb_groups);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
 	}
@@ -1443,13 +1443,13 @@ retry1:
 		SendConsole(texx, 2, 0, (HWND)MSGhwnd);
 		sprintf(texx, "---------THEO SCN FILE---------");
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "Version %d Nb Textures %d", psth->version, psth->nb_maps);
+		sprintf(texx, "Version %lu Nb Textures %ld", psth->version, psth->nb_maps);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
 	}
 
 	if ((psth->version < 3008) || (psth->version > 3024))
 	{
-		sprintf(texx, "\nINVALID Theo Version !!!\nVersion Found    - %d\nVersion Required - %d to %d\n\nPlease Update File\n%s", psth->version, 3008, 3024, fic);
+		sprintf(texx, "\nINVALID Theo Version !!!\nVersion Found    - %lu\nVersion Required - %d to %d\n\nPlease Update File\n%s", psth->version, 3008, 3024, fic);
 		ShowError("ScnToEerie", texx, 0);
 		free(seerie);
 		seerie = NULL;
@@ -1544,7 +1544,7 @@ retry1:
 
 	if (DEBUGG)
 	{
-		sprintf(texx, "Nb objects %d", nbo);
+		sprintf(texx, "Nb objects %ld", nbo);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
 	}
 
@@ -1640,7 +1640,7 @@ retry4:
 
 	if (DEBUGG)
 	{
-		sprintf(texx, "Nb Lights %d", nbl);
+		sprintf(texx, "Nb Lights %ld", nbl);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
 	}
 
@@ -1737,7 +1737,7 @@ retry7:
 
 	if (DEBUGG)
 	{
-		sprintf(texx, "Version %d Nb Textures %d", psth->version, psth->nb_maps);
+		sprintf(texx, "Version %ld Nb Textures %ld", psth->version, psth->nb_maps);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
 	}
 
@@ -2232,7 +2232,7 @@ retry4:
 	return nouvo;
 }
 //-----------------------------------------------------------------------------------------------------
-long EERIE_OBJECT_GetSelection(EERIE_3DOBJ * obj, char * selname)
+long EERIE_OBJECT_GetSelection(EERIE_3DOBJ * obj, const char * selname)
 {
 	if (!obj) return -1;
 
@@ -2244,7 +2244,7 @@ long EERIE_OBJECT_GetSelection(EERIE_3DOBJ * obj, char * selname)
 	return -1;
 }
 //-----------------------------------------------------------------------------------------------------
-long EERIE_OBJECT_GetGroup(EERIE_3DOBJ * obj, char * groupname)
+long EERIE_OBJECT_GetGroup(EERIE_3DOBJ * obj, const char * groupname)
 {
 	if (!obj) return -1;
 
@@ -2615,15 +2615,15 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, 
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
 		sprintf(texx, "Identity----------------------- %s", pth->identity);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "Version------------------------ %u", pth->version);
+		sprintf(texx, "Version------------------------ %lu", pth->version);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "Maps Seek---------------------- %d", pth->maps_seek);
+		sprintf(texx, "Maps Seek---------------------- %ld", pth->maps_seek);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "Objects Seek------------------- %d", pth->object_seek);
+		sprintf(texx, "Objects Seek------------------- %ld", pth->object_seek);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "NB maps------------------------ %d", pth->nb_maps);
+		sprintf(texx, "NB maps------------------------ %ld", pth->nb_maps);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "Type_Write--------------------- %u", pth->type_write);
+		sprintf(texx, "Type_Write--------------------- %lu", pth->type_write);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
 	}
 
@@ -2631,7 +2631,7 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, 
 	{
 		if (!(flag & TTE_NOPOPUP))
 		{
-			sprintf(texx, "\nINVALID Theo Version !!!\nVersion Found    - %d\nVersion Required - %d to %d\n\nPlease Update File\n%s", pth->version, 3004, 3011, fic);
+			sprintf(texx, "\nINVALID Theo Version !!!\nVersion Found    - %lu\nVersion Required - %d to %d\n\nPlease Update File\n%s", pth->version, 3004, 3011, fic);
 			ShowError("TheoToEerie", texx, 0);
 		}
 
