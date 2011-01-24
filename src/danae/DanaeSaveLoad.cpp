@@ -1075,7 +1075,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * fic)
 	ForceSendConsole(tstr, 1, 0, (HWND)1);
 	char fileDlf[512];
 	strcpy(fileDlf, fic);
-	SetExt(fileDlf, ".DLF");
+//	SetExt(fileDlf, ".DLF");
 	char fic2[512];
 	strcpy(fic2, fic);
 	SetExt(fic2, ".LLF");
@@ -1141,6 +1141,8 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * fic)
 	{
 		dlh.nb_nodes = 0;
 	}
+
+	LogDebug << "Loading Scene";
 
 	// Loading Scene
 	if (dlh.nb_scn >= 1)
