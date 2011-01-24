@@ -92,6 +92,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <hermes/PakManager.h>
 #include <hermes/Filesystem.h>
+#include <hermes/Logger.h>
 
 #include <stdio.h>
 
@@ -207,7 +208,7 @@ void BIG_PURGE()
 
 		char text[256];
 		sprintf(text, "Killed: %ld IO; %ld Lights; %ld Paths; %ld Fogs.",
-		        IO_count, LIGHT_count, PATH_count, FOG_count);
+				IO_count, LIGHT_count, PATH_count, FOG_count);
 		ShowPopup(text);
 	}
 }
@@ -241,14 +242,14 @@ EERIE_3DOBJ * _LoadTheObj(const char * text, const char * path)
 
 void ReplaceSpecifics( std::string& text )
 {
-    std::string temp = text;
-    MakeUpcase( temp );
-    size_t graph_loc = temp.find_first_of( "GRAPH" );
+	std::string temp = text;
+	MakeUpcase( temp );
+	size_t graph_loc = temp.find_first_of( "GRAPH" );
 
-    if ( graph_loc != string::npos )
-    {
-        text = text.substr( graph_loc );
-    }
+	if ( graph_loc != string::npos )
+	{
+		text = text.substr( graph_loc );
+	}
 /*
 	char			temp[512];
 	UINT			size_text = strlen(text);
@@ -342,12 +343,12 @@ long DanaeSaveLevel( std::string& fic)
 	dlh.nb_ignoredpolys = BKG_CountIgnoredPolys(ACTIVEBKG);
 	dlh.nb_paths = nbARXpaths;
 	long allocsize = sizeof(DANAE_LS_HEADER) + sizeof(DANAE_LS_HEADER) * 1 + sizeof(DANAE_LS_INTER) * nb_inter + 512
-	                 + sizeof(DANAE_LS_LIGHTINGHEADER) + (bcount + 1) * sizeof(D3DCOLOR)
-	                 + dlh.nb_nodes * (sizeof(DANAE_LS_NODE) + 64 * MAX_LINKS)
-	                 + dlh.nb_lights * sizeof(DANAE_LS_LIGHT)
+					 + sizeof(DANAE_LS_LIGHTINGHEADER) + (bcount + 1) * sizeof(D3DCOLOR)
+					 + dlh.nb_nodes * (sizeof(DANAE_LS_NODE) + 64 * MAX_LINKS)
+					 + dlh.nb_lights * sizeof(DANAE_LS_LIGHT)
 
-	                 + 1000000
-	                 + nbARXpaths * sizeof(DANAE_LS_PATH) + nbARXpaths * sizeof(DANAE_LS_PATHWAYS) * 30;
+					 + 1000000
+					 + nbARXpaths * sizeof(DANAE_LS_PATH) + nbARXpaths * sizeof(DANAE_LS_PATHWAYS) * 30;
 	long tmpp = dlh.nb_bkgpolys * (sizeof(D3DCOLOR) + 2) + 1000000;
 	allocsize = max(tmpp, allocsize);
 	dat = (unsigned char *)malloc(allocsize);
@@ -410,7 +411,7 @@ long DanaeSaveLevel( std::string& fic)
 	for (i = 1; i < inter.nbmax; i++) // Ignoring Player Data
 	{
 		if ((inter.iobj[i] != NULL)  && (!inter.iobj[i]->scriptload)
-		        && (inter.iobj[i]->truelevel == CURRENTLEVEL))
+				&& (inter.iobj[i]->truelevel == CURRENTLEVEL))
 		{
 			INTERACTIVE_OBJ * io = inter.iobj[i];
 			memset(&dli, 0, sizeof(DANAE_LS_INTER));
@@ -770,7 +771,7 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, char * dir)
 				fprintf(fic, "DLF File : None\n");
 
 			fprintf(fic, "Position : x %8.f y %8.f z %8.f (relative to anchor)\n",
-			        io->initpos.x - Mscenepos.x, io->initpos.y - Mscenepos.y, io->initpos.z - Mscenepos.z);
+					io->initpos.x - Mscenepos.x, io->initpos.y - Mscenepos.y, io->initpos.z - Mscenepos.z);
 			fclose(fic);
 		}
 	}
@@ -829,53 +830,9 @@ void LogDirDestruction(char * dir)
 //*************************************************************************************
 void CheckIO_NOT_SAVED()
 {
-<<<<<<< HEAD
-    std::string temp;
-    char temp2[512];
-    std::string temp3;
-
-    if (ADDED_IO_NOT_SAVED)
-    {
-        if (OKBox("You have added objects, but not saved them...\nDELETE THEM ??????", "Danae WARNING"))
-        {
-            for (long i = 1; i < inter.nbmax; i++) // ignoring player
-            {
-                if ((inter.iobj[i] != NULL)  && (!inter.iobj[i]->scriptload))
-
-                    if (inter.iobj[i]->EditorFlags & EFLAG_NOTSAVED)
-                    {
-                        if (inter.iobj[i]->ident > 0)
-                        {
-                            temp = inter.iobj[i]->filename;
-                            strcpy(temp2, GetName(temp).c_str());
-                            RemoveName(temp);
-                            std::stringstream ss;
-                            ss << temp << temp2 << '_' << std::setw(4) << inter.iobj[i]->ident << '.';
-                            temp = ss.str();
-                            //temp += "%s%s_%04d." temp2 + '_' + inter.iobj[i]->ident + '.';
-
-                            if (DirectoryExist(temp.c_str()))
-                            {
-                                temp3 = "Really remove Directory & Directory Contents ?\n\n" + temp;
-
-                                if (OKBox(temp3.c_str(), "WARNING"))
-                                {
-                                    temp += "\\";
-                                    LogDirDestruction(temp.c_str());
-                                    KillAllDirectory(temp.c_str());
-                                }
-                            }
-
-                            ReleaseInter(inter.iobj[i]);
-                        }
-                    }
-            }
-        }
-    }
-=======
-	char temp[512];
+	std::string temp;
 	char temp2[512];
-	char temp3[512];
+	std::string temp3;
 
 	if (ADDED_IO_NOT_SAVED)
 	{
@@ -889,20 +846,23 @@ void CheckIO_NOT_SAVED()
 					{
 						if (inter.iobj[i]->ident > 0)
 						{
-							strcpy(temp, inter.iobj[i]->filename);
-							strcpy(temp2, GetName(temp));
+							temp = inter.iobj[i]->filename;
+							strcpy(temp2, GetName(temp).c_str());
 							RemoveName(temp);
-							sprintf(temp, "%s%s_%04ld.", temp, temp2, inter.iobj[i]->ident);
+							std::stringstream ss;
+							ss << temp << temp2 << '_' << std::setw(4) << inter.iobj[i]->ident << '.';
+							temp = ss.str();
+							//temp += "%s%s_%04d." temp2 + '_' + inter.iobj[i]->ident + '.';
 
-							if (DirectoryExist(temp))
+							if (DirectoryExist(temp.c_str()))
 							{
-								sprintf(temp3, "Really remove Directory & Directory Contents ?\n\n%s", temp);
+								temp3 = "Really remove Directory & Directory Contents ?\n\n" + temp;
 
-								if (OKBox(temp3, "WARNING"))
+								if (OKBox(temp3.c_str(), "WARNING"))
 								{
-									strcat(temp, "\\");
-									LogDirDestruction(temp);
-									KillAllDirectory(temp);
+									temp += "\\";
+									LogDirDestruction(temp.c_str());
+									KillAllDirectory(temp.c_str());
 								}
 							}
 
@@ -912,7 +872,6 @@ void CheckIO_NOT_SAVED()
 			}
 		}
 	}
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 }
 
 //*************************************************************************************
@@ -948,16 +907,11 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 				temp = io->filename;
 				strcpy(temp2, GetName(temp).c_str());
 				RemoveName(temp);
-<<<<<<< HEAD
-				sprintf(temp3, "%s%s_%04d", temp.c_str(), temp2, io->ident);
+				sprintf(temp3, "%s%s_%04ld", temp.c_str(), temp2, io->ident);
 				temp = temp3;
-                temp += "\\";
-                temp += temp2;
-                temp += ".asl";
-=======
-				sprintf(temp3, "%s%s_%04ld", temp, temp2, io->ident);
-				sprintf(temp, "%s\\%s.asl", temp3, temp2);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
+				temp += "\\";
+				temp += temp2;
+				temp += ".asl";
 
 				if (DirectoryExist(temp3))
 				{
@@ -987,11 +941,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans)
 	size_t FileSize;
 	INTERACTIVE_OBJ * io;
 
-<<<<<<< HEAD
-	sprintf(nameident, "%s_%04d", GetName(dli->name).c_str(), dli->ident);
-=======
-	sprintf(nameident, "%s_%04ld", GetName(dli->name), dli->ident);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
+	sprintf(nameident, "%s_%04ld", GetName(dli->name).c_str(), dli->ident);
 	long t;
 	t = GetTargetByNameTarget(nameident);
 
@@ -1001,11 +951,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans)
 		goto suite;
 	}
 
-<<<<<<< HEAD
-	sprintf(nameident, "%s_%04d", GetName(dli->name).c_str(), dli->ident);
-=======
-	sprintf(nameident, "%s_%04ld", GetName(dli->name), dli->ident);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
+	sprintf(nameident, "%s_%04ld", GetName(dli->name).c_str(), dli->ident);
 
 	t = GetTargetByNameTarget(nameident);
 
@@ -1036,37 +982,23 @@ suite:
 		if (!NODIRCREATION)
 		{
 			io->ident = dli->ident;
-<<<<<<< HEAD
 			tmp = io->filename;
 			strcpy(tmp2, GetName(tmp).c_str());
 			RemoveName(tmp);
-            std::stringstream ss;
-            ss << tmp << tmp2 << '_' << std::setw(4) << io->ident;
-            tmp = ss.str();
-            //sprintf(tmp, "%s%s_%04d", tmp.c_str(), tmp2, io->ident);
+			std::stringstream ss;
+			ss << tmp << tmp2 << '_' << std::setw(4) << io->ident;
+			tmp = ss.str();
+			//sprintf(tmp, "%s%s_%04d", tmp.c_str(), tmp2, io->ident);
 
 			if (PAK_DirectoryExist(tmp))
 			{
 				tmp = io->filename;
 				strcpy(tmp2, GetName(tmp).c_str());
 				RemoveName(tmp);
-                std::stringstream ss;
-                ss << tmp << tmp2 << '_' << std::setw(4) << io->ident << '\\' << tmp2 << ".asl";
-                tmp = ss.str();
-                //sprintf(tmp, "%s%s_%04d\\%s.asl", tmp, tmp2, io->ident, tmp2);
-=======
-			strcpy(tmp, io->filename);
-			strcpy(tmp2, GetName(tmp));
-			RemoveName(tmp);
-			sprintf(tmp, "%s%s_%04ld", tmp, tmp2, io->ident);
-
-			if (PAK_DirectoryExist(tmp))
-			{
-				strcpy(tmp, io->filename);
-				strcpy(tmp2, GetName(tmp));
-				RemoveName(tmp);
-				sprintf(tmp, "%s%s_%04ld\\%s.asl", tmp, tmp2, io->ident, tmp2);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
+				std::stringstream ss;
+				ss << tmp << tmp2 << '_' << std::setw(4) << io->ident << '\\' << tmp2 << ".asl";
+				tmp = ss.str();
+				//sprintf(tmp, "%s%s_%04d\\%s.asl", tmp, tmp2, io->ident, tmp2);
 
 				if (PAK_FileExist(tmp))
 				{
@@ -1159,14 +1091,9 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
 	size_t FileSize = 0;
 	char tstr[128];
 	HERMES_DATE_TIME hdt;
-<<<<<<< HEAD
-	ShowCurLoadInfo("Starting Level Loading");
-	CURRENTLEVEL = GetLevelNumByName(fic.c_str());
-=======
-	printf("Starting Level Loading\n");
+	LogInfo << "Loading Level " << fic;
 	ClearCurLoadInfo();
 	CURRENTLEVEL = GetLevelNumByName(fic);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 	GetDate(&hdt);
 	sprintf(tstr, "%2ldh%02ldm%02ld LOADLEVEL start", hdt.hours, hdt.mins, hdt.secs);
 	ForceSendConsole(tstr, 1, 0, (HWND)1);
@@ -1270,7 +1197,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
 		;
 		EERIEPOLY_Compute_PolyIn();
 		strcpy(LastLoadedScene, ftemp.c_str());
-        std::string str_LastLoadedScene = LastLoadedScene;
+		std::string str_LastLoadedScene = LastLoadedScene;
 		RemoveName(str_LastLoadedScene);
 	}
 
@@ -2125,7 +2052,7 @@ void AddIdent( std::string& ident, long num)
 void ARX_SAVELOAD_DLFCheckAdd(char * path, long num)
 {
 	std::string fic("Graph\\Levels\\Level");
-    fic += path;
+	fic += path;
 
 	char _error[512];
 	DANAE_LS_HEADER				dlh;
@@ -2193,16 +2120,10 @@ void ARX_SAVELOAD_DLFCheckAdd(char * path, long num)
 	{
 		dli = (DANAE_LS_INTER *)(dat + pos);
 		pos += sizeof(DANAE_LS_INTER);
-<<<<<<< HEAD
 		std::stringstream ss;
 		ss << GetName(dli->name) << '_' << std::setw(4) << dli->ident;
-    std::string id = ss.str();
+	std::string id = ss.str();
 		AddIdent( id, num);
-=======
-		char id[256];
-		sprintf(id, "%s_%04ld", GetName(dli->name), dli->ident);
-		AddIdent(id, num);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 	}
 
 	free(dat);

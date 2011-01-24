@@ -172,9 +172,9 @@ char AMB_CREDITS[] = "ambient_credits.amb";
 
 // Menu samples
 ArxSound SND_MENU_CLICK(AAL_SFALSE);
-ArxSound SND_MENU_CREDITS_LOOP(AAL_SFALSE);
-ArxSound SND_MENU_LOOP(AAL_SFALSE);
-ArxSound SND_MENU_OPTIONS_LOOP(AAL_SFALSE);
+//ArxSound SND_MENU_CREDITS_LOOP(AAL_SFALSE);
+//ArxSound SND_MENU_LOOP(AAL_SFALSE);
+//ArxSound SND_MENU_OPTIONS_LOOP(AAL_SFALSE);
 ArxSound SND_MENU_PUSH(AAL_SFALSE);
 ArxSound SND_MENU_RELEASE(AAL_SFALSE);
 
@@ -204,8 +204,8 @@ ArxSound SND_PLAYER_DEATH_BY_FIRE(AAL_SFALSE);
 
 ArxSound SND_PLAYER_FILLLIFEMANA(AAL_SFALSE);
 ArxSound SND_PLAYER_HEART_BEAT(AAL_SFALSE);
-ArxSound SND_PLAYER_JUMP(AAL_SFALSE);
-ArxSound SND_PLAYER_JUMP_END(AAL_SFALSE);
+//ArxSound SND_PLAYER_JUMP(AAL_SFALSE);
+//ArxSound SND_PLAYER_JUMP_END(AAL_SFALSE);
 ArxSound SND_PLAYER_LEVEL_UP(AAL_SFALSE);
 ArxSound SND_PLAYER_POISONED(AAL_SFALSE);
 
@@ -283,7 +283,7 @@ ArxSound SND_SPELL_LIGHTNING_LOOP(AAL_SFALSE);
 ArxSound SND_SPELL_LIGHTNING_END(AAL_SFALSE);
 ArxSound SND_SPELL_MAGICAL_HIT(AAL_SFALSE);
 
-ArxSound SND_SPELL_MASS_LIGHTNING_END(AAL_SFALSE);
+//ArxSound SND_SPELL_MASS_LIGHTNING_END(AAL_SFALSE);
 ArxSound SND_SPELL_FIRE_FIELD_START(AAL_SFALSE);
 ArxSound SND_SPELL_FIRE_FIELD_LOOP(AAL_SFALSE);
 ArxSound SND_SPELL_FIRE_FIELD_END(AAL_SFALSE);
@@ -1457,9 +1457,9 @@ static void ARX_SOUND_CreateStaticSamples()
 
 	//Menu
 	SND_MENU_CLICK                     = aalCreateSample("menu_click.wav");
-	SND_MENU_CREDITS_LOOP              = aalCreateSample("menu_credits_loop.wav");
-	SND_MENU_LOOP                      = aalCreateSample("menu_loop.wav");
-	SND_MENU_OPTIONS_LOOP              = aalCreateSample("menu_options_loop.wav");
+	//SND_MENU_CREDITS_LOOP              = aalCreateSample("menu_credits_loop.wav");
+	//SND_MENU_LOOP                      = aalCreateSample("menu_loop.wav");
+	//SND_MENU_OPTIONS_LOOP              = aalCreateSample("menu_options_loop.wav");
 	SND_MENU_PUSH                      = aalCreateSample("menu_push.wav");
 	SND_MENU_RELEASE                   = aalCreateSample("menu_release.wav");
 
@@ -1472,8 +1472,8 @@ static void ARX_SOUND_CreateStaticSamples()
 	// Player
 	SND_PLAYER_FILLLIFEMANA            = aalCreateSample("player_filllifemana.wav");
 	SND_PLAYER_HEART_BEAT              = aalCreateSample("player_heartb.wav");
-	SND_PLAYER_JUMP                    = aalCreateSample("player_jump.wav");
-	SND_PLAYER_JUMP_END                = aalCreateSample("player_jumpend.wav");
+	//SND_PLAYER_JUMP                    = aalCreateSample("player_jump.wav");
+	//SND_PLAYER_JUMP_END                = aalCreateSample("player_jumpend.wav");
 	SND_PLAYER_LEVEL_UP                = aalCreateSample("player_level_up.wav");
 	SND_PLAYER_POISONED                = aalCreateSample("player_poisoned.wav");
 	SND_PLAYER_DEATH_BY_FIRE           = aalCreateSample("lava_death.wav");
@@ -1551,7 +1551,7 @@ static void ARX_SOUND_CreateStaticSamples()
 	SND_SPELL_LIGHTNING_END            = aalCreateSample("magic_spell_lightning_end.wav");
 	SND_SPELL_MAGICAL_HIT              = aalCreateSample("magic_spell_magicalhit.wav");
 
-	SND_SPELL_MASS_LIGHTNING_END		= aalCreateSample("magic_spell_mass_lightning_end.wav");
+	//SND_SPELL_MASS_LIGHTNING_END		= aalCreateSample("magic_spell_mass_lightning_end.wav");
 	SND_SPELL_FIRE_FIELD_START			= aalCreateSample("magic_spell_fire_field.wav");
 	SND_SPELL_FIRE_FIELD_LOOP			= aalCreateSample("magic_spell_fire_field_loop.wav");
 	SND_SPELL_FIRE_FIELD_END			= aalCreateSample("magic_spell_fire_field_end.wav");
@@ -1611,9 +1611,9 @@ static void ARX_SOUND_ReleaseStaticSamples()
 
 	// Menu samples
 	SND_MENU_CLICK = AAL_SFALSE;
-	SND_MENU_CREDITS_LOOP = AAL_SFALSE;
-	SND_MENU_LOOP = AAL_SFALSE;
-	SND_MENU_OPTIONS_LOOP = AAL_SFALSE;
+	//SND_MENU_CREDITS_LOOP = AAL_SFALSE;
+	//SND_MENU_LOOP = AAL_SFALSE;
+	//SND_MENU_OPTIONS_LOOP = AAL_SFALSE;
 	SND_MENU_PUSH = AAL_SFALSE;
 	SND_MENU_RELEASE = AAL_SFALSE;
 
@@ -1622,8 +1622,8 @@ static void ARX_SOUND_ReleaseStaticSamples()
 	SND_PLAYER_DEATH_BY_FIRE = AAL_SFALSE;
 	SND_PLAYER_FILLLIFEMANA = AAL_SFALSE;
 	SND_PLAYER_HEART_BEAT = AAL_SFALSE;
-	SND_PLAYER_JUMP = AAL_SFALSE;
-	SND_PLAYER_JUMP_END = AAL_SFALSE;
+	//SND_PLAYER_JUMP = AAL_SFALSE;
+	//SND_PLAYER_JUMP_END = AAL_SFALSE;
 	SND_PLAYER_LEVEL_UP = AAL_SFALSE;
 	SND_PLAYER_POISONED = AAL_SFALSE;
 
@@ -1701,7 +1701,7 @@ static void ARX_SOUND_ReleaseStaticSamples()
 	SND_SPELL_LIGHTNING_END = AAL_SFALSE;
 	SND_SPELL_MAGICAL_HIT = AAL_SFALSE;
 
-	SND_SPELL_MASS_LIGHTNING_END = AAL_SFALSE;
+	//SND_SPELL_MASS_LIGHTNING_END = AAL_SFALSE;
 	SND_SPELL_FIRE_FIELD_START = AAL_SFALSE;
 	SND_SPELL_FIRE_FIELD_LOOP = AAL_SFALSE;
 	SND_SPELL_FIRE_FIELD_END = AAL_SFALSE;

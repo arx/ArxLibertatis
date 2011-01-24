@@ -81,7 +81,7 @@ public:
 	void * ReadAlloc(const std::string& name , size_t& size);
 	int GetSize(const std::string& name);
 	
-	PakFileHandle * fOpen(const std::string& name, const std::string& mode);
+	PakFileHandle * fOpen(const std::string& name );
 	int fClose(PakFileHandle * h);
 	size_t fRead(void * buf, size_t size, size_t n, PakFileHandle * h);
 	int fSeek(PakFileHandle * h, int off, long whence);

@@ -26,6 +26,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "Athena_Global.h"
 #include "Athena_Stream.h"
 
+#include <hermes/Logger.h>
+
 #include <cstdlib>
 #include <cstring>
 using namespace std;
@@ -65,7 +67,9 @@ namespace ATHENA
 	{
 		Stream * stream = CreateStream(_name);
 
-		if (!stream) return AAL_ERROR_FILEIO;
+		if(!stream) {
+			return AAL_ERROR_FILEIO;
+		}
 
 		stream->GetFormat(format);
 		stream->GetLength(length);

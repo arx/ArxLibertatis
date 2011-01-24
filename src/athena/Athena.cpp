@@ -49,6 +49,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <eax.h>
 #include <math.h>
 
+#include <hermes/Logger.h>
+
 #include <cstring>
 using namespace std;
 
@@ -612,6 +614,8 @@ namespace ATHENA
 		if ((name && sample->Load(name)) || (s_id = _sample.Add(sample)) == AAL_SFALSE)
 		{
 			delete sample;
+			
+			LogError << "Sample " << name << " not found";
 
 			if (mutex) ReleaseMutex(mutex);
 
@@ -637,6 +641,8 @@ namespace ATHENA
 		if ((name && ambiance->Load(name)) || (a_id = _amb.Add(ambiance)) == AAL_SFALSE)
 		{
 			delete ambiance;
+			
+			LogError << "Ambiance " << name << " not found";
 
 			if (mutex) ReleaseMutex(mutex);
 
@@ -669,6 +675,8 @@ namespace ATHENA
 		if ((name && env->Load(name)) || (e_id = _env.Add(env)) == AAL_SFALSE)
 		{
 			delete env;
+			
+			LogError << "Environment " << name << " not found";
 
 			if (mutex) ReleaseMutex(mutex);
 

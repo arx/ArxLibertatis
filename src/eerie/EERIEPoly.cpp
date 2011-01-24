@@ -77,7 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <hermes/PakManager.h>
 #include <hermes/Filesystem.h>
-
+#include <hermes/Logger.h>
 
 
 void ComputeFastBkgData(EERIE_BACKGROUND * eb);
@@ -313,9 +313,9 @@ long MakeTopObjString(INTERACTIVE_OBJ * io,char * dest, unsigned int destSize)
 	strcpy(dest, "");
 
 	if ((player.pos.x > boxmin.x)
-	        && (player.pos.x < boxmax.x)
-	        && (player.pos.z > boxmin.z)
-	        && (player.pos.z < boxmax.z))
+			&& (player.pos.x < boxmax.x)
+			&& (player.pos.z > boxmin.z)
+			&& (player.pos.z < boxmax.z))
 	{
 		{
 			if (EEfabs(player.pos.y + 160.f - boxmin.y) < 50.f)
@@ -332,9 +332,9 @@ long MakeTopObjString(INTERACTIVE_OBJ * io,char * dest, unsigned int destSize)
 					if ((inter.iobj[i]->ioflags & IO_NPC) || (inter.iobj[i]->ioflags & IO_ITEM))
 					{
 						if (((inter.iobj[i]->pos.x) > boxmin.x)
-						        && ((inter.iobj[i]->pos.x) < boxmax.x)
-						        && ((inter.iobj[i]->pos.z) > boxmin.z)
-						        && ((inter.iobj[i]->pos.z) < boxmax.z))
+								&& ((inter.iobj[i]->pos.x) < boxmax.x)
+								&& ((inter.iobj[i]->pos.z) > boxmin.z)
+								&& ((inter.iobj[i]->pos.z) < boxmax.z))
 						{
 							if (EEfabs(inter.iobj[i]->pos.y - boxmin.y) < 40.f)
 							{
@@ -373,9 +373,9 @@ EERIEPOLY * CheckInPoly(float x, float y, float z, float * needY)
 	F2L(poss.z * ACTIVEBKG->Zmul, &pz);
 
 	if ((pz >= ACTIVEBKG->Zsize - 1)
-	        ||	(pz <= 0)
-	        ||	(px >= ACTIVEBKG->Xsize - 1)
-	        ||	(px <= 0))
+			||	(pz <= 0)
+			||	(px >= ACTIVEBKG->Xsize - 1)
+			||	(px <= 0))
 		return NULL;
 
 	float rx, rz;
@@ -453,17 +453,17 @@ EERIEPOLY * CheckInPoly(float x, float y, float z, float * needY)
 				ep = feg->polyin[k];
 
 				if (
-				    (poss.x >= ep->min.x) && (poss.x <= ep->max.x)
-				    &&	(poss.z >= ep->min.z) && (poss.z <= ep->max.z)
-				    && !(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
-				    && (ep->max.y >= poss.y)
-				    &&	(ep != found)
-				    &&	(PointIn2DPolyXZ(ep, poss.x, poss.z))
+					(poss.x >= ep->min.x) && (poss.x <= ep->max.x)
+					&&	(poss.z >= ep->min.z) && (poss.z <= ep->max.z)
+					&& !(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
+					&& (ep->max.y >= poss.y)
+					&&	(ep != found)
+					&&	(PointIn2DPolyXZ(ep, poss.x, poss.z))
 				)
 				{
 					if ((GetTruePolyY(ep, &poss, &rz))
-					        &&	(rz >= poss.y)
-					        &&	((found == NULL) || ((found != NULL) && (rz <= foundY)))
+							&&	(rz >= poss.y)
+							&&	((found == NULL) || ((found != NULL) && (rz <= foundY)))
 					   )
 					{
 						found = ep;
@@ -489,9 +489,9 @@ EERIEPOLY * CheckInPolyPrecis(float x, float y, float z, float * needY)
 	F2L(poss.z * ACTIVEBKG->Zmul, &pz);
 
 	if ((pz >= ACTIVEBKG->Zsize - 1)
-	        ||	(pz <= 0)
-	        ||	(px >= ACTIVEBKG->Xsize - 1)
-	        ||	(px <= 0))
+			||	(pz <= 0)
+			||	(px >= ACTIVEBKG->Xsize - 1)
+			||	(px <= 0))
 		return NULL;
 
 	float rx, rz;
@@ -567,17 +567,17 @@ EERIEPOLY * CheckInPolyPrecis(float x, float y, float z, float * needY)
 				ep = feg->polyin[k];
 
 				if (
-				    (poss.x >= ep->min.x) && (poss.x <= ep->max.x)
-				    &&	(poss.z >= ep->min.z) && (poss.z <= ep->max.z)
-				    && !(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
-				    && (ep->max.y >= poss.y)
-				    &&	(ep != found)
-				    &&	(PointIn2DPolyXZ(ep, poss.x, poss.z))
+					(poss.x >= ep->min.x) && (poss.x <= ep->max.x)
+					&&	(poss.z >= ep->min.z) && (poss.z <= ep->max.z)
+					&& !(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL))
+					&& (ep->max.y >= poss.y)
+					&&	(ep != found)
+					&&	(PointIn2DPolyXZ(ep, poss.x, poss.z))
 				)
 				{
 					if ((GetTruePolyY(ep, &poss, &rz))
-					        &&	(rz >= poss.y)
-					        &&	((found == NULL) || ((found != NULL) && (rz <= foundY)))
+							&&	(rz >= poss.y)
+							&&	((found == NULL) || ((found != NULL) && (rz <= foundY)))
 					   )
 					{
 						found = ep;
@@ -638,10 +638,10 @@ EERIEPOLY * CheckTopPoly(float x, float y, float z)
 		ep = feg->polyin[k];
 
 		if ((!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)))
-		        &&	(ep->min.y < y)
-		        &&	(x >= ep->min.x) && (x <= ep->max.x)
-		        &&	(z >= ep->min.z) && (z <= ep->max.z)
-		        &&	(PointIn2DPolyXZ(ep, x, z)))
+				&&	(ep->min.y < y)
+				&&	(x >= ep->min.x) && (x <= ep->max.x)
+				&&	(z >= ep->min.z) && (z <= ep->max.z)
+				&&	(PointIn2DPolyXZ(ep, x, z)))
 		{
 			if ((EEfabs(ep->max.y - ep->min.y) > 50.f) &&	(y - ep->center.y < 60.f)) continue;
 
@@ -739,7 +739,7 @@ EERIEPOLY * GetMinPoly(float x, float y, float z)
 			if (GetTruePolyY(ep, &pos, &ret))
 			{
 				if (((found != NULL) && (ret > foundy))
-				        || (found == NULL))
+						|| (found == NULL))
 				{
 					found = ep;
 					foundy = ret;
@@ -794,7 +794,7 @@ EERIEPOLY * GetMaxPoly(float x, float y, float z)
 			if (GetTruePolyY(ep, &pos, &ret))
 			{
 				if (((found != NULL) && (ret < foundy))
-				        || (found == NULL))
+						|| (found == NULL))
 				{
 					found = ep;
 					foundy = ret;
@@ -1335,8 +1335,8 @@ int PointIn2DPoly(EERIEPOLY * ep, float x, float y)
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
 		if ((((ep->tv[i].sy <= y) && (y < ep->tv[j].sy)) ||
-		        ((ep->tv[j].sy <= y) && (y < ep->tv[i].sy))) &&
-		        (x < (ep->tv[j].sx - ep->tv[i].sx) *(y - ep->tv[i].sy) / (ep->tv[j].sy - ep->tv[i].sy) + ep->tv[i].sx))
+				((ep->tv[j].sy <= y) && (y < ep->tv[i].sy))) &&
+				(x < (ep->tv[j].sx - ep->tv[i].sx) *(y - ep->tv[i].sy) / (ep->tv[j].sy - ep->tv[i].sy) + ep->tv[i].sx))
 			c = !c;
 	}
 
@@ -1345,8 +1345,8 @@ int PointIn2DPoly(EERIEPOLY * ep, float x, float y)
 		for (i = 1, j = 3; i < 4; j = i++)
 		{
 			if ((((ep->tv[i].sy <= y) && (y < ep->tv[j].sy)) ||
-			        ((ep->tv[j].sy <= y) && (y < ep->tv[i].sy))) &&
-			        (x < (ep->tv[j].sx - ep->tv[i].sx) *(y - ep->tv[i].sy) / (ep->tv[j].sy - ep->tv[i].sy) + ep->tv[i].sx))
+					((ep->tv[j].sy <= y) && (y < ep->tv[i].sy))) &&
+					(x < (ep->tv[j].sx - ep->tv[i].sx) *(y - ep->tv[i].sy) / (ep->tv[j].sy - ep->tv[i].sy) + ep->tv[i].sx))
 				c = !c;
 		}
 
@@ -1363,8 +1363,8 @@ float PtIn2DPolyProj(EERIE_3DOBJ * obj, EERIE_FACE * ef, float x, float z)
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
 		if ((((obj->vertexlist[ef->vid[i]].vert.sy <= z) && (z < obj->vertexlist[ef->vid[j]].vert.sy)) ||
-		        ((obj->vertexlist[ef->vid[j]].vert.sy <= z) && (z < obj->vertexlist[ef->vid[i]].vert.sy))) &&
-		        (x < (obj->vertexlist[ef->vid[j]].vert.sx - obj->vertexlist[ef->vid[i]].vert.sx) *(z - obj->vertexlist[ef->vid[i]].vert.sy) / (obj->vertexlist[ef->vid[j]].vert.sy - obj->vertexlist[ef->vid[i]].vert.sy) + obj->vertexlist[ef->vid[i]].vert.sx))
+				((obj->vertexlist[ef->vid[j]].vert.sy <= z) && (z < obj->vertexlist[ef->vid[i]].vert.sy))) &&
+				(x < (obj->vertexlist[ef->vid[j]].vert.sx - obj->vertexlist[ef->vid[i]].vert.sx) *(z - obj->vertexlist[ef->vid[i]].vert.sy) / (obj->vertexlist[ef->vid[j]].vert.sy - obj->vertexlist[ef->vid[i]].vert.sy) + obj->vertexlist[ef->vid[i]].vert.sx))
 			c = !c;
 	}
 
@@ -1384,8 +1384,8 @@ float CEDRIC_PtIn2DPolyProjV2(EERIE_3DOBJ * obj, EERIE_FACE * ef, float x, float
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
 		if ((((obj->vertexlist3[ef->vid[i]].vert.sy <= z) && (z < obj->vertexlist3[ef->vid[j]].vert.sy)) ||
-		        ((obj->vertexlist3[ef->vid[j]].vert.sy <= z) && (z < obj->vertexlist3[ef->vid[i]].vert.sy))) &&
-		        (x < (obj->vertexlist3[ef->vid[j]].vert.sx - obj->vertexlist3[ef->vid[i]].vert.sx) *(z - obj->vertexlist3[ef->vid[i]].vert.sy) / (obj->vertexlist3[ef->vid[j]].vert.sy - obj->vertexlist3[ef->vid[i]].vert.sy) + obj->vertexlist3[ef->vid[i]].vert.sx))
+				((obj->vertexlist3[ef->vid[j]].vert.sy <= z) && (z < obj->vertexlist3[ef->vid[i]].vert.sy))) &&
+				(x < (obj->vertexlist3[ef->vid[j]].vert.sx - obj->vertexlist3[ef->vid[i]].vert.sx) *(z - obj->vertexlist3[ef->vid[i]].vert.sy) / (obj->vertexlist3[ef->vid[j]].vert.sy - obj->vertexlist3[ef->vid[i]].vert.sy) + obj->vertexlist3[ef->vid[i]].vert.sx))
 			c = !c;
 	}
 
@@ -1402,8 +1402,8 @@ int PointIn2DPolyXZ(EERIEPOLY * ep, float x, float z)
 	for (i = 0, j = 2; i < 3; j = i++)
 	{
 		if ((((ep->v[i].sz <= z) && (z < ep->v[j].sz)) ||
-		        ((ep->v[j].sz <= z) && (z < ep->v[i].sz))) &&
-		        (x < (ep->v[j].sx - ep->v[i].sx) *(z - ep->v[i].sz) / (ep->v[j].sz - ep->v[i].sz) + ep->v[i].sx))
+				((ep->v[j].sz <= z) && (z < ep->v[i].sz))) &&
+				(x < (ep->v[j].sx - ep->v[i].sx) *(z - ep->v[i].sz) / (ep->v[j].sz - ep->v[i].sz) + ep->v[i].sx))
 			c = !c;
 	}
 
@@ -1411,8 +1411,8 @@ int PointIn2DPolyXZ(EERIEPOLY * ep, float x, float z)
 		for (i = 1, j = 3; i < 4; j = i++)
 		{
 			if ((((ep->v[i].sz <= z) && (z < ep->v[j].sz)) ||
-			        ((ep->v[j].sz <= z) && (z < ep->v[i].sz))) &&
-			        (x < (ep->v[j].sx - ep->v[i].sx) *(z - ep->v[i].sz) / (ep->v[j].sz - ep->v[i].sz) + ep->v[i].sx))
+					((ep->v[j].sz <= z) && (z < ep->v[i].sz))) &&
+					(x < (ep->v[j].sx - ep->v[i].sx) *(z - ep->v[i].sz) / (ep->v[j].sz - ep->v[i].sz) + ep->v[i].sx))
 				d = !d;
 		}
 
@@ -1675,8 +1675,8 @@ int EERIELaunchRay3(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY
 						if (!(ep->type & POLY_TRANS))
 						{
 							if ((y >= ep->min.y - 10.f) && (y <= ep->max.y + 10.f)
-							        && (x >= ep->min.x - 10.f) && (x <= ep->max.x + 10.f)
-							        && (z >= ep->min.z - 10.f) && (z <= ep->max.z + 10.f))
+									&& (x >= ep->min.x - 10.f) && (x <= ep->max.x + 10.f)
+									&& (z >= ep->min.z - 10.f) && (z <= ep->max.z + 10.f))
 							{
 								voidlast = 0;
 
@@ -1919,7 +1919,7 @@ void ARX_PORTALS_SWAP_EPs(short px, short py, short ep_idx, short ep_idx2)
 		for (long  lll = 0; lll < portals->room[room_num].nb_polys; lll++)
 		{
 			if ((portals->room[room_num].epdata[lll].px == px)
-			        && (portals->room[room_num].epdata[lll].py == py))
+					&& (portals->room[room_num].epdata[lll].py == py))
 			{
 				if (portals->room[room_num].epdata[lll].idx == ep_idx)
 					portals->room[room_num].epdata[lll].idx = ep_idx2;
@@ -2108,7 +2108,7 @@ void ComputeRoomDistance()
 
 	NbRoomDistance = portals->nb_rooms + 1;
 	RoomDistance =
-	    (ROOM_DIST_DATA *)malloc(sizeof(ROOM_DIST_DATA) * (NbRoomDistance) * (NbRoomDistance));
+		(ROOM_DIST_DATA *)malloc(sizeof(ROOM_DIST_DATA) * (NbRoomDistance) * (NbRoomDistance));
 
 	for (long n = 0; n < NbRoomDistance; n++)
 		for (long m = 0; m < NbRoomDistance; m++)
@@ -2170,7 +2170,7 @@ void ComputeRoomDistance()
 		for (long j = 0; j < portals->nb_total; j++)
 		{
 			if ((portals->portals[j].room_1 == i)
-			        ||	(portals->portals[j].room_2 == i))
+					||	(portals->portals[j].room_2 == i))
 			{
 				for (long tt = 0; tt < nb_anchors; tt++)
 				{
@@ -2190,12 +2190,12 @@ void ComputeRoomDistance()
 		for (long j = 0; j < portals->nb_total; j++)
 		{
 			if (((portals->portals[j].room_1 == i)
-			        || (portals->portals[j].room_2 == i)))
+					|| (portals->portals[j].room_2 == i)))
 				for (long jj = 0; jj < portals->nb_total; jj++)
 				{
 					if ((jj != j)
-					        &&	((portals->portals[jj].room_1 == i)
-					             ||	(portals->portals[jj].room_2 == i)))
+							&&	((portals->portals[jj].room_1 == i)
+								 ||	(portals->portals[jj].room_2 == i)))
 					{
 						long p1 = -1;
 						long p2 = -1;
@@ -2239,8 +2239,8 @@ void ComputeRoomDistance()
 
 			unsigned char found(0);
 			found = pathfinder.Move(MINOS_REGULAR,
-			                        i, j,
-			                        &retnum, &rl);
+									i, j,
+									&retnum, &rl);
 
 			if (found)
 			{
@@ -2385,7 +2385,7 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv)
 bool LittleAngularDiff(EERIE_3D * norm, EERIE_3D * norm2)
 {
 	if (Distance3D(norm->x, norm->y, norm->z,
-	               norm2->x, norm2->y, norm2->z) < 1.41421f) return true;
+				   norm2->x, norm2->y, norm2->z) < 1.41421f) return true;
 
 	return false;
 }
@@ -2482,8 +2482,8 @@ void PrepareBackgroundNRMLs()
 									for (k2 = 0; k2 < nbvert2; k2++)
 									{
 										if ((EEfabs(ep2->v[k2].sx - ep->v[k].sx) < 2.f)
-										        &&	(EEfabs(ep2->v[k2].sy - ep->v[k].sy) < 2.f)
-										        &&	(EEfabs(ep2->v[k2].sz - ep->v[k].sz) < 2.f))
+												&&	(EEfabs(ep2->v[k2].sy - ep->v[k].sy) < 2.f)
+												&&	(EEfabs(ep2->v[k2].sz - ep->v[k].sz) < 2.f))
 										{
 											if (k2 == 3)
 											{
@@ -2630,9 +2630,9 @@ void EERIEPOLY_Add_PolyIn(EERIE_BKG_INFO * eg, EERIEPOLY * ep)
 bool PointInBBox(EERIE_3D * point, EERIE_2D_BBOX * bb)
 {
 	if ((point->x > bb->max.x)
-	        ||	(point->x < bb->min.x)
-	        ||	(point->z > bb->max.y)
-	        ||	(point->z < bb->min.y)
+			||	(point->x < bb->min.x)
+			||	(point->z > bb->max.y)
+			||	(point->z < bb->min.y)
 	   )
 		return false;
 
@@ -2803,7 +2803,7 @@ bool GetNameInfo( const std::string name1, long& type, long& val1, long& val2)
 		}
 
 		if ((name[1] == 'O') && (name[2] == 'O')
-		        && (name[3] == 'M') && (name[4] == '_'))
+				&& (name[3] == 'M') && (name[4] == '_'))
 		{
 			type = TYPE_ROOM;
 			val1 = atoi(name.c_str() + 5);
@@ -2813,8 +2813,8 @@ bool GetNameInfo( const std::string name1, long& type, long& val1, long& val2)
 	}
 
 	if ((name[0] == 'P') && (name[1] == 'O') && (name[2] == 'R')
-	        && (name[3] == 'T') && (name[4] == 'A') && (name[5] == 'L')
-	        && (name[6] == '_'))
+			&& (name[3] == 'T') && (name[4] == 'A') && (name[5] == 'L')
+			&& (name[6] == '_'))
 	{
 		type = TYPE_PORTAL;
 		char temp[16];
@@ -2888,7 +2888,7 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms()
 		for (long nroom = 0; nroom <= portals->nb_rooms; nroom++)
 		{
 			if ((nroom == portals->portals[num].room_1)
-			        ||	(nroom == portals->portals[num].room_2))
+					||	(nroom == portals->portals[num].room_2))
 			{
 				portals->room[nroom].portals = (long *)realloc(portals->room[nroom].portals, sizeof(long) * (portals->room[nroom].nb_portals + 1));
 				portals->room[nroom].portals[portals->room[nroom].nb_portals] = num;
@@ -3127,45 +3127,45 @@ int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj)
 	epp->min.y = std::min(epp->min.y, epp->v[2].sy);
 
 	epp->max.z = std::max(epp->v[0].sz, epp->v[1].sz);
-    epp->max.z = std::max(epp->max.z, epp->v[2].sz);
-    epp->min.z = std::min(epp->v[0].sz, epp->v[1].sz);
-    epp->min.z = std::min(epp->min.z, epp->v[2].sz);
-    epp->type = ep->type;
-    epp->type &= ~POLY_QUAD;
+	epp->max.z = std::max(epp->max.z, epp->v[2].sz);
+	epp->min.z = std::min(epp->v[0].sz, epp->v[1].sz);
+	epp->min.z = std::min(epp->min.z, epp->v[2].sz);
+	epp->type = ep->type;
+	epp->type &= ~POLY_QUAD;
 
-    CalcFaceNormal(epp, epp->v);
-    epp->area = Distance3D((epp->v[0].sx + epp->v[1].sx) * DIV2,
-                           (epp->v[0].sy + epp->v[1].sy) * DIV2,
-                           (epp->v[0].sz + epp->v[1].sz) * DIV2,
-                           epp->v[2].sx, epp->v[2].sy, epp->v[2].sz)
-                * Distance3D(epp->v[0].sx, epp->v[0].sy, epp->v[0].sz,
-                             epp->v[1].sx, epp->v[1].sy, epp->v[1].sz) * DIV2;
+	CalcFaceNormal(epp, epp->v);
+	epp->area = Distance3D((epp->v[0].sx + epp->v[1].sx) * DIV2,
+						   (epp->v[0].sy + epp->v[1].sy) * DIV2,
+						   (epp->v[0].sz + epp->v[1].sz) * DIV2,
+						   epp->v[2].sx, epp->v[2].sy, epp->v[2].sz)
+				* Distance3D(epp->v[0].sx, epp->v[0].sy, epp->v[0].sz,
+							 epp->v[1].sx, epp->v[1].sy, epp->v[1].sz) * DIV2;
 
-    ARX_CHECK_SHORT(val1);
+	ARX_CHECK_SHORT(val1);
 
-    if (type == TYPE_ROOM)
-        epp->room = ARX_CLEAN_WARN_CAST_SHORT(val1);
-    else
-        epp->room = -1;
+	if (type == TYPE_ROOM)
+		epp->room = ARX_CLEAN_WARN_CAST_SHORT(val1);
+	else
+		epp->room = -1;
 
-    eg->nbpoly++;
+	eg->nbpoly++;
 
-    eg->treat = 0;
+	eg->treat = 0;
 
-    if (ep != NULL)
-        if (ep->tex != NULL)
-            if ( !ep->tex->m_texName.empty() )
-            {
-                if ( ep->tex->m_texName.find("STONE") )		ep->type |= POLY_STONE;
-                else if ( ep->tex->m_texName.find("PIERRE") )	ep->type |= POLY_STONE;
-                else if ( ep->tex->m_texName.find("WOOD"))	ep->type |= POLY_WOOD;
-                else if ( ep->tex->m_texName.find("BOIS"))	ep->type |= POLY_STONE;
-                else if ( ep->tex->m_texName.find("GAVIER"))	ep->type |= POLY_GRAVEL;
-                else if ( ep->tex->m_texName.find("EARTH"))    ep->type |= POLY_EARTH;
-            }
+	if (ep != NULL)
+		if (ep->tex != NULL)
+			if ( !ep->tex->m_texName.empty() )
+			{
+				if ( ep->tex->m_texName.find("STONE") )		ep->type |= POLY_STONE;
+				else if ( ep->tex->m_texName.find("PIERRE") )	ep->type |= POLY_STONE;
+				else if ( ep->tex->m_texName.find("WOOD"))	ep->type |= POLY_WOOD;
+				else if ( ep->tex->m_texName.find("BOIS"))	ep->type |= POLY_STONE;
+				else if ( ep->tex->m_texName.find("GAVIER"))	ep->type |= POLY_GRAVEL;
+				else if ( ep->tex->m_texName.find("EARTH"))    ep->type |= POLY_EARTH;
+			}
 
-    EERIE_PORTAL_Poly_Add(epp, eobj->name.c_str(), posx, posz, eg->nbpoly - 1);
-    return 1;
+	EERIE_PORTAL_Poly_Add(epp, eobj->name.c_str(), posx, posz, eg->nbpoly - 1);
+	return 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -3263,10 +3263,10 @@ void PrepareActiveCamera()
 	ACTIVECAM->matrix._33 = cx * cy ;
 
 	EERIE_CreateMatriceProj(ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX),
-	                        ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY),
-	                        EERIE_TransformOldFocalToNewFocal(ACTIVECAM->focal),
-	                        1.f,
-	                        ACTIVECAM->cdepth);
+							ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY),
+							EERIE_TransformOldFocalToNewFocal(ACTIVECAM->focal),
+							1.f,
+							ACTIVECAM->cdepth);
 
 
 }
@@ -3304,10 +3304,10 @@ void PrepareCamera(EERIE_CAMERA * cam)
 	cam->transform.posz = cam->pos.z;
 
 	EERIE_CreateMatriceProj(ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX),
-	                        ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY),
-	                        EERIE_TransformOldFocalToNewFocal(cam->focal),
-	                        1.f,
-	                        cam->cdepth);
+							ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY),
+							EERIE_TransformOldFocalToNewFocal(cam->focal),
+							1.f,
+							cam->cdepth);
 
 }
 
@@ -3447,7 +3447,7 @@ long CountBkgVertex()
 //*************************************************************************************
 //*************************************************************************************
 void DrawEERIEObjEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
-                    EERIE_3D * angle, EERIE_3D  * pos, EERIE_3D * scale, EERIE_RGB * col)
+					EERIE_3D * angle, EERIE_3D  * pos, EERIE_3D * scale, EERIE_RGB * col)
 {
 	if (eobj == NULL) return;
 
@@ -3507,7 +3507,7 @@ void DrawEERIEObjEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 		vert_list[0].color = vert_list[1].color = vert_list[2].color = coll;
 
 		if ((eobj->facelist[i].facetype == 0)
-		        || (eobj->texturecontainer[eobj->facelist[i].texid] == NULL))
+				|| (eobj->texturecontainer[eobj->facelist[i].texid] == NULL))
 		{
 			SETTC(pd3dDevice , NULL);
 		}
@@ -3521,15 +3521,15 @@ void DrawEERIEObjEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 		else SETCULL(pd3dDevice, D3DCULL_CW);
 
 		ARX_DrawPrimitive_SoftClippZ(&vert_list[0],
-		                             &vert_list[1],
-		                             &vert_list[2]);
+									 &vert_list[1],
+									 &vert_list[2]);
 	}
 }
 //*************************************************************************************
 //routine qui gere l'alpha au vertex SEB
 //*************************************************************************************
 void DrawEERIEObjExEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
-                      EERIE_3D * angle, EERIE_3D  * pos, EERIE_3D * scale, int coll)
+					  EERIE_3D * angle, EERIE_3D  * pos, EERIE_3D * scale, int coll)
 {
 	if (eobj == NULL) return;
 
@@ -3588,7 +3588,7 @@ void DrawEERIEObjExEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 		vert_list[0].color = vert_list[1].color = vert_list[2].color = coll;
 
 		if ((eobj->facelist[i].facetype == 0)
-		        || (eobj->texturecontainer[eobj->facelist[i].texid] == NULL))
+				|| (eobj->texturecontainer[eobj->facelist[i].texid] == NULL))
 		{
 			SETTC(pd3dDevice , NULL);
 		}
@@ -3602,7 +3602,7 @@ void DrawEERIEObjExEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 		else SETCULL(pd3dDevice, D3DCULL_CW);
 
 		ARX_DrawPrimitive_SoftClippZ(&vert_list[0],
-		                             &vert_list[1],
+									 &vert_list[1],
 									 &vert_list[2]);
 	}
 }
@@ -3618,9 +3618,9 @@ extern long USE_CEDRIC_ANIM;
 void AcquireLastAnim(INTERACTIVE_OBJ * io)
 {
 	if ((!io->animlayer[0].cur_anim)
-	        &&	(!io->animlayer[1].cur_anim)
-	        &&	(!io->animlayer[2].cur_anim)
-	        &&	(!io->animlayer[3].cur_anim)) return;
+			&&	(!io->animlayer[1].cur_anim)
+			&&	(!io->animlayer[2].cur_anim)
+			&&	(!io->animlayer[3].cur_anim)) return;
 
 	// Stores Frametime and number of vertex for later interpolation
 	ARX_CHECK_ULONG(FrameTime);
@@ -3757,18 +3757,18 @@ long USE_FAST_SCENES = 1;
 
 bool FastSceneLoad(const char * partial_path)
 {
-	
+	LogDebug << "Fast Scene Load " << partial_path;
 	if (!USE_FAST_SCENES) return false;
 
-    std::string path = "Game\\";
-    path += partial_path;
+	std::string path = "Game\\";
+	path += partial_path;
 
 	long count = 0;
-	long idx;
 	char fic[256];
 	std::string path2;
 
 	sprintf(fic, "%sfast.fts", path.c_str());
+	LogDebug << "Fast Scene Load " << fic;
 
 	if (!PAK_FileExist(fic)) return false;
 
@@ -3791,44 +3791,50 @@ bool FastSceneLoad(const char * partial_path)
 
 	if (uh->count == 0) goto lasuite;
 
-    long c_count;
-    c_count = 0;
-    path2 = partial_path;
-    path2 += "*.scn";
-//	todo: find
-//	struct _finddata_t fd;
-//	if ((idx = _findfirst(path2, &fd)) != -1)
-//	{
-//		do
-//		{
-//			if (!(fd.attrib & _A_SUBDIR) && (!strcasecmp(GetExt(fd.name), ".scn")))
-//			{
-//				c_count++;
-//			}
-//		}
-//		while (!(_findnext(idx, &fd)));
-//
-//		_findclose(idx);
-//	}
+	long c_count;
+	c_count = 0;
+	path2 = partial_path;
+	path2 += "*.scn";
 
-    count = 0;
+	LogDebug << "Looking for " << path2;
 
-    while (count < uh->count)
-    {
-        UNIQUE_HEADER2 * uh2 = (UNIQUE_HEADER2 *)(dat + pos);
-        pos += sizeof(UNIQUE_HEADER2);
-        char check[512];
-        char * check2 = (char *)(dat + pos);
-        pos += 512;
-        path2 = partial_path;
-        path2 += uh2->path;
-        SetExt(path2, ".scn");
+	HANDLE idx;
+	WIN32_FIND_DATA fd;
+	if ((idx = FindFirstFile(path2, &fd)) != INVALID_HANDLE_VALUE)
+	{
+		do
+		{
+			LogDebug << "Doing something " << fd.cFileName;
+			if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) && (!strcasecmp(GetExt(fd.cFileName), ".scn")))
+			{
+				c_count++;
+			}
+		}
+		while (FindNextFile(idx, &fd));
 
-        if (PAK_FileExist(path2))
-        {
-            if (!NOCHECKSUM)
-            {
-                    HERMES_CreateFileCheck(path2.c_str(), check, 512, UNIQUE_VERSION);
+		FindClose(idx);
+	}
+
+	count = 0;
+
+	while (count < uh->count)
+	{
+		UNIQUE_HEADER2 * uh2 = (UNIQUE_HEADER2 *)(dat + pos);
+		pos += sizeof(UNIQUE_HEADER2);
+		char check[512];
+		char * check2 = (char *)(dat + pos);
+		pos += 512;
+		path2 = partial_path;
+		path2 += uh2->path;
+		SetExt(path2, ".scn");
+
+		LogDebug << "Looking for " << path2;
+
+		if (PAK_FileExist(path2))
+		{
+			if (!NOCHECKSUM)
+			{
+					HERMES_CreateFileCheck(path2.c_str(), check, 512, UNIQUE_VERSION);
 
 				for (long jj = 0; jj < 512; jj++)
 					if (check[jj] != check2[jj]) goto release;
@@ -3863,11 +3869,11 @@ lasuite:
 	torelease = (char *)dat;
 
 
-    dat = (unsigned char *)malloc(uh->compressedsize);
+	dat = (unsigned char *)malloc(uh->compressedsize);
 
-    if (dat == NULL) goto release;
+	if (dat == NULL) goto release;
 
-    STD_ExplodeNoAlloc( compressed, cpr_pos-pos, dat, cpr_pos);
+	STD_ExplodeNoAlloc( compressed, cpr_pos-pos, dat, cpr_pos);
 
 	if (dat == NULL) goto release;
 
@@ -3955,8 +3961,8 @@ lasuite:
 					for (kk = 0; kk < fsh->nb_textures; kk++)
 					{
 						if ((temp_tex->tc == ep->tex) && (temp_tex != NULL)
-						        && (temp_tex->temp) 
-						        && (temp_tex->temp->m_texName[0] != 0))
+								&& (temp_tex->temp) 
+								&& (temp_tex->temp->m_texName[0] != 0))
 						{
 							ep->tex = temp_tex->temp;
 							goto oki;
@@ -4231,7 +4237,7 @@ lasuite:
 	{
 		NbRoomDistance = portals->nb_rooms + 1;
 		RoomDistance =
-		    (ROOM_DIST_DATA *)malloc(sizeof(ROOM_DIST_DATA) * (NbRoomDistance) * (NbRoomDistance));
+			(ROOM_DIST_DATA *)malloc(sizeof(ROOM_DIST_DATA) * (NbRoomDistance) * (NbRoomDistance));
 
 		for (long n = 0; n < NbRoomDistance; n++)
 			for (long m = 0; m < NbRoomDistance; m++)
@@ -4269,9 +4275,9 @@ release:
 }
 bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms)
 {
-    std::string path;
-    path = "Game\\";
-    path += partial_path;
+	std::string path;
+	path = "Game\\";
+	path += partial_path;
 
 	if (!CreateFullPath(path)) return false;
 
@@ -4282,9 +4288,9 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms)
 	long i, j, k, kk;
 
 	long allocsize =	(256) * 60 + 1000000 +
-	                    sizeof(FAST_SCENE_HEADER) +
-	                    sizeof(FAST_TEXTURE_CONTAINER) * 1000 +
-	                    sizeof(FAST__ANCHOR_DATA) * ACTIVEBKG->nbanchors * 2;
+						sizeof(FAST_SCENE_HEADER) +
+						sizeof(FAST_TEXTURE_CONTAINER) * 1000 +
+						sizeof(FAST__ANCHOR_DATA) * ACTIVEBKG->nbanchors * 2;
 
 	if (portals)
 	{
@@ -4326,13 +4332,13 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms)
 	uh->version = UNIQUE_VERSION;
 	pos += sizeof(UNIQUE_HEADER);
 
-    std::string path2;
-    char path3[256];
+	std::string path2;
+	char path3[256];
 
-    char * text;
+	char * text;
 
-    path2 = partial_path;
-    path2 +="*.scn";
+	path2 = partial_path;
+	path2 +="*.scn";
 
 //	todo: find
 //	struct _finddata_t fd;
@@ -4425,7 +4431,7 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms)
 						if (temp_tex->tc == ep->tex) goto already_stored;
 
 						temp_tex = (FAST_TEXTURE_CONTAINER *)
-						           (unsigned char *)(tex + (sizeof(FAST_TEXTURE_CONTAINER) * (kk + 1))); 
+								   (unsigned char *)(tex + (sizeof(FAST_TEXTURE_CONTAINER) * (kk + 1))); 
 					}
 
 					FAST_TEXTURE_CONTAINER * ftc;
@@ -4723,8 +4729,8 @@ void EERIEPOLY_FillMissingVertex(EERIEPOLY * po, EERIEPOLY * ep)
 		for (long j = 0; j < 3; j++)
 		{
 			if	((po->v[j].sx == ep->v[i].sx)
-			        &&	(po->v[j].sy == ep->v[i].sy)
-			        &&	(po->v[j].sz == ep->v[i].sz))
+					&&	(po->v[j].sy == ep->v[i].sy)
+					&&	(po->v[j].sz == ep->v[i].sz))
 				same = 1;
 		}
 
@@ -4925,7 +4931,7 @@ vector<COPY3D> vCopy3d;
 void IncrementPolyWithNormal(EERIEPOLY * _pPoly, float _fFactor)
 {
 	if ((pMenuConfig) &&
-	        (pMenuConfig->bForceZBias))
+			(pMenuConfig->bForceZBias))
 	{
 		_pPoly->v[0].sx += _pPoly->norm.x * _fFactor;
 		_pPoly->v[0].sy += _pPoly->norm.y * _fFactor;
@@ -4963,9 +4969,9 @@ void ComputePortalVertexBuffer()
 			char tTxt[256];
 			sprintf(tTxt, "rooms > 255");
 			MessageBox(NULL,
-			           tTxt,
-			           "Error Portals",
-			           MB_OK | MB_ICONERROR);
+					   tTxt,
+					   "Error Portals",
+					   MB_OK | MB_ICONERROR);
 			return;
 		}
 
@@ -4993,8 +4999,8 @@ void ComputePortalVertexBuffer()
 				EERIEPOLY * pPoly = &pBkgInfo->polydata[pRoom->epdata[iNbPoly].idx];
 
 				if ((pPoly->type & POLY_IGNORE) ||
-				        (pPoly->type & POLY_HIDE) ||
-				        (!pPoly->tex)) continue;
+						(pPoly->type & POLY_HIDE) ||
+						(!pPoly->tex)) continue;
 
 				if (!pPoly->tex->tMatRoom)
 				{
@@ -5135,9 +5141,9 @@ void ComputePortalVertexBuffer()
 				char tTxt[256];
 				sprintf(tTxt, "portals %d - Zero Vertex", iNb);
 				MessageBox(NULL,
-				           tTxt,
-				           "Error Portals",
-				           MB_OK | MB_ICONERROR);
+						   tTxt,
+						   "Error Portals",
+						   MB_OK | MB_ICONERROR);
 
 				vector<SINFO_TEXTURE_VERTEX *>::iterator it;
 
@@ -5166,8 +5172,8 @@ void ComputePortalVertexBuffer()
 			pRoom->pVertexBuffer = NULL;
 
 			if (FAILED(danaeApp.m_pD3D->CreateVertexBuffer(&d3dvbufferdesc,
-			           &pRoom->pVertexBuffer,
-			           0)))
+					   &pRoom->pVertexBuffer,
+					   0)))
 			{
 				if (pRoom->pussIndice)
 				{
@@ -5178,9 +5184,9 @@ void ComputePortalVertexBuffer()
 				char tTxt[256];
 				sprintf(tTxt, "CreateVertexBuffer - NbVertexs %d", iNbVertexForRoom);
 				MessageBox(NULL,
-				           tTxt,
-				           "Error TransForm",
-				           MB_OK | MB_ICONERROR);
+						   tTxt,
+						   "Error TransForm",
+						   MB_OK | MB_ICONERROR);
 				return;
 			}
 
@@ -5188,8 +5194,8 @@ void ComputePortalVertexBuffer()
 			SMY_D3DVERTEX * pVertex;
 
 			if (FAILED(pRoom->pVertexBuffer->Lock(DDLOCK_WRITEONLY | DDLOCK_NOOVERWRITE,
-			                                      (void **)&pVertex,
-			                                      NULL)))
+												  (void **)&pVertex,
+												  NULL)))
 			{
 				pRoom->pVertexBuffer->Release();
 				pRoom->pVertexBuffer = NULL;
@@ -5222,8 +5228,8 @@ void ComputePortalVertexBuffer()
 					EERIEPOLY * pPoly = &pBkgInfo->polydata[pRoom->epdata[iNbPoly].idx];
 
 					if ((pPoly->type & POLY_IGNORE) ||
-					        (pPoly->type & POLY_HIDE) ||
-					        (!pPoly->tex)) continue;
+							(pPoly->type & POLY_HIDE) ||
+							(!pPoly->tex)) continue;
 
 					if (pPoly->tex == pTextureContainer)
 					{
@@ -5304,34 +5310,34 @@ void ComputePortalVertexBuffer()
 				pTextureContainer->tMatRoom[iNb].uslNbIndiceNoCull_TSubstractive = 0;
 
 				if (((*it)->iNbIndiceCull > 65535) ||
-				        ((*it)->iNbIndiceNoCull > 65535) ||
-				        ((*it)->iNbIndiceCull_TNormalTrans > 65535) ||
-				        ((*it)->iNbIndiceNoCull_TNormalTrans > 65535) ||
-				        ((*it)->iNbIndiceCull_TMultiplicative > 65535) ||
-				        ((*it)->iNbIndiceNoCull_TMultiplicative > 65535) ||
-				        ((*it)->iNbIndiceCull_TAdditive > 65535) ||
-				        ((*it)->iNbIndiceNoCull_TAdditive > 65535) ||
-				        ((*it)->iNbIndiceCull_TSubstractive > 65535) ||
-				        ((*it)->iNbIndiceNoCull_TSubstractive > 65535))
+						((*it)->iNbIndiceNoCull > 65535) ||
+						((*it)->iNbIndiceCull_TNormalTrans > 65535) ||
+						((*it)->iNbIndiceNoCull_TNormalTrans > 65535) ||
+						((*it)->iNbIndiceCull_TMultiplicative > 65535) ||
+						((*it)->iNbIndiceNoCull_TMultiplicative > 65535) ||
+						((*it)->iNbIndiceCull_TAdditive > 65535) ||
+						((*it)->iNbIndiceNoCull_TAdditive > 65535) ||
+						((*it)->iNbIndiceCull_TSubstractive > 65535) ||
+						((*it)->iNbIndiceNoCull_TSubstractive > 65535))
 				{
 					char tTxt[256];
 					sprintf(tTxt, "CreateVertexBuffer - Indices>65535");
 					MessageBox(NULL,
-					           tTxt,
-					           "Error TransForm",
-					           MB_OK | MB_ICONERROR);
+							   tTxt,
+							   "Error TransForm",
+							   MB_OK | MB_ICONERROR);
 				}
 
 				iStartCull +=	(*it)->iNbIndiceCull +
-				                (*it)->iNbIndiceNoCull +
-				                (*it)->iNbIndiceCull_TNormalTrans +
-				                (*it)->iNbIndiceNoCull_TNormalTrans +
-				                (*it)->iNbIndiceCull_TMultiplicative +
-				                (*it)->iNbIndiceNoCull_TMultiplicative +
-				                (*it)->iNbIndiceCull_TAdditive +
-				                (*it)->iNbIndiceNoCull_TAdditive +
-				                (*it)->iNbIndiceCull_TSubstractive +
-				                (*it)->iNbIndiceNoCull_TSubstractive;
+								(*it)->iNbIndiceNoCull +
+								(*it)->iNbIndiceCull_TNormalTrans +
+								(*it)->iNbIndiceNoCull_TNormalTrans +
+								(*it)->iNbIndiceCull_TMultiplicative +
+								(*it)->iNbIndiceNoCull_TMultiplicative +
+								(*it)->iNbIndiceCull_TAdditive +
+								(*it)->iNbIndiceNoCull_TAdditive +
+								(*it)->iNbIndiceCull_TSubstractive +
+								(*it)->iNbIndiceNoCull_TSubstractive;
 
 				iStartVertex += iIndiceInVertex;
 
