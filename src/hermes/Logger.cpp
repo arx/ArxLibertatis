@@ -11,7 +11,8 @@ const string blackList[] = {
 		"ARX_Script.cpp",
 		"PakManager.cpp",
 		"PakReader.cpp",
-		"Filesystem.cpp"
+		"Filesystem.cpp",
+		"Athena.cpp"
 };
 
 Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {
