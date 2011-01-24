@@ -70,27 +70,6 @@ void * PAK_FileLoadMallocZero(const char * name, size_t * sizeLoaded = NULL);
 
 bool PAK_AddPak(const char * pakfile);
 
-<<<<<<< HEAD
-#define LOAD_TRUEFILE			1
-#define LOAD_PACK				2
-#define LOAD_PACK_THEN_TRUEFILE	3
-#define LOAD_TRUEFILE_THEN_PACK	4
-
-extern long CURRENT_LOADMODE;
-void * PAK_FileLoadMalloc( const std::string& name, long& SizeLoadMalloc );
-void * PAK_FileLoadMallocZero( const std::string& name,long& SizeLoadMalloc );
-
-// use only for READ !!!!
-void PAK_SetLoadMode(long mode, const char * pakfile);
-FILE * PAK_fopen(const char * filename, const char * mode );
-std::size_t PAK_fread(void * buffer, std::size_t size, std::size_t count, FILE * stream );
-int PAK_fclose(FILE * stream);
-long PAK_ftell(FILE * stream);
-long PAK_DirectoryExist( const std::string& name);
-long PAK_FileExist( const std::string& name);
-int PAK_fseek(FILE * fic,long offset,int origin);
-
-=======
 PakFileHandle * PAK_fopen(const char * filename);
 size_t PAK_fread(void * buffer, size_t size, size_t count, PakFileHandle * stream);
 int PAK_fclose(PakFileHandle * stream);
@@ -98,7 +77,6 @@ long PAK_ftell(PakFileHandle * stream);
 bool PAK_DirectoryExist(const char * name);
 bool PAK_FileExist(const char * name);
 int PAK_fseek(PakFileHandle * fic, int offset, long origin);
->>>>>>> 5073e39f879cb51c7b8bd3bb33a399c5a309171c
 
 void PAK_Close();
 
@@ -113,34 +91,19 @@ public:
 	PakManager();
 	~PakManager();
 
-<<<<<<< HEAD
 	bool AddPak( const std::string& pakname );
 	bool RemovePak( const std::string& pakname );
 	bool Read( const std::string& filename, void* buffer );
-	void* ReadAlloc( const std::string& filename, int* sizeRead );
-	int GetSize( const std::string& filename );
+	void* ReadAlloc( const std::string& filename, size_t& sizeRead );
+	size_t GetSize( const std::string& filename );
 	PakFileHandle * fOpen( const std::string& filename );
 	int fClose(PakFileHandle * fh);
-	int fRead(void * buffer, int size, int count, PakFileHandle * fh);
-	int fSeek(PakFileHandle * fh, int offset, int whence );
+	int fRead(void * buffer, size_t size, size_t count, PakFileHandle * fh);
+	int fSeek(PakFileHandle * fh, int offset, long whence );
 	int fTell(PakFileHandle * fh);
 	std::vector<PakDirectory*> * ExistDirectory( const std::string& name);
-	bool ExistFile( const std::string& _lpszName);
-=======
-	bool AddPak(const char * pakname);
-	bool RemovePak(const char * pakname);
-	bool Read(const char * filename, void * buffer);
-	void * ReadAlloc(const char * filenme, size_t * sizeRead);
-	size_t GetSize(const char * filename);
-	PakFileHandle * fOpen(const char * filename);
-	int fClose(PakFileHandle * fh);
-	size_t fRead(void * buffer, size_t size, size_t count, PakFileHandle * fh);
-	int fSeek(PakFileHandle * fh, int offset, long whence);
-	int fTell(PakFileHandle * fh);
-	std::vector<PakDirectory*> * ExistDirectory(const char * name);
-	bool ExistFile(const char * name);
+	bool ExistFile( const std::string& name );
 	
->>>>>>> 5073e39f879cb51c7b8bd3bb33a399c5a309171c
 };
 
 #endif // ARX_HERMES_PAKMANAGER_H
