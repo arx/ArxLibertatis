@@ -1947,7 +1947,7 @@ SCRIPT_VAR * GetFreeVarSlot(SCRIPT_VAR ** _svff, long * _nb)
 
 //*************************************************************************************
 //*************************************************************************************
-SCRIPT_VAR * GetVarAddress(SCRIPT_VAR * svf, long * nb, char * name)
+SCRIPT_VAR * GetVarAddress(SCRIPT_VAR * svf, long * nb, const char * name)
 {
 	if (!svf)
 		return NULL;
@@ -2139,7 +2139,7 @@ float GetVarValueInterpretedAsFloat(char * temp1, EERIE_SCRIPT * esss, INTERACTI
 }
 //*************************************************************************************
 //*************************************************************************************
-SCRIPT_VAR * SETVarValueLong(SCRIPT_VAR ** svf, long * nb, char * name, long val)
+SCRIPT_VAR * SETVarValueLong(SCRIPT_VAR ** svf, long * nb, const char * name, long val)
 {
 	SCRIPT_VAR * tsv = GetVarAddress(*svf, nb, name);
 
@@ -2158,7 +2158,7 @@ SCRIPT_VAR * SETVarValueLong(SCRIPT_VAR ** svf, long * nb, char * name, long val
 }
 //*************************************************************************************
 //*************************************************************************************
-SCRIPT_VAR * SETVarValueFloat(SCRIPT_VAR ** svf, long * nb, char * name, float val)
+SCRIPT_VAR * SETVarValueFloat(SCRIPT_VAR ** svf, long * nb, const char * name, float val)
 {
 	SCRIPT_VAR * tsv;
 	tsv = GetVarAddress(*svf, nb, name);
@@ -2178,7 +2178,7 @@ SCRIPT_VAR * SETVarValueFloat(SCRIPT_VAR ** svf, long * nb, char * name, float v
 }
 //*************************************************************************************
 //*************************************************************************************
-SCRIPT_VAR * SETVarValueText(SCRIPT_VAR ** svf, long * nb, char * name, char * val)
+SCRIPT_VAR * SETVarValueText(SCRIPT_VAR ** svf, long * nb, const char * name, const char * val)
 {
 	SCRIPT_VAR * tsv;
 	tsv = GetVarAddress(*svf, nb, name);
@@ -3378,7 +3378,7 @@ long MakeLocalised(const char * text, char * output, long maxsize)
 }
 
 //-----------------------------------------------------------------------------
-long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, char * _lpszText, long duration)
+long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const char * _lpszText, long duration)
 {
 	_TCHAR __output[4096];
 	memset(__output, 0, 4096);
@@ -5765,7 +5765,7 @@ void ARX_SCRIPT_Init_Event_Stats()
 }
 //*********************************************************************************************
 //*********************************************************************************************
-bool IsIOGroup(INTERACTIVE_OBJ * io, char * group)
+bool IsIOGroup(INTERACTIVE_OBJ * io, const char * group)
 {
 	for (long i = 0; i < io->nb_iogroups; i++)
 	{
@@ -13546,7 +13546,7 @@ LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 	return false;
 }
 
-void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, char * name, char * content)
+void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const char * name, const char * content)
 {
 	EERIE_SCRIPT * esss = NULL;
 	SCRIPT_VAR * sv = NULL;
