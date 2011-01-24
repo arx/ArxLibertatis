@@ -1,7 +1,9 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#define ShortFile strrchr(__FILE__, '/')+1
+#include <cstring>
+
+#define ShortFile std::strrchr(__FILE__, '/')+1
 #define LogDebug Logger(ShortFile,__LINE__, Logger::Debug)
 #define LogError Logger(ShortFile,__LINE__, Logger::Error)
 #define LogWarning Logger(ShortFile,__LINE__, Logger::Warning)
