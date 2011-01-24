@@ -322,6 +322,7 @@ bool PakManager::Read(const char * filename, void * buffer) {
 	return false;
 }
 
+<<<<<<< HEAD
 //-----------------------------------------------------------------------------
 void * PakManager::ReadAlloc(const std::string& filename, size_t& sizeRead)
 {
@@ -344,6 +345,27 @@ void * PakManager::ReadAlloc(const std::string& filename, size_t& sizeRead)
     printf("\e[1;33mRead from PAK (a):\e[m\t%s\n", filename);
     sizeRead = 0;
     return 0;
+=======
+void * PakManager::ReadAlloc(const char * filename, size_t * sizeRead) {
+	
+	if((filename[0] == '\\') || (filename[0] == '/')) {
+		filename++;
+	}
+	
+	for(vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
+		void * buf;
+		if((buf = (*i)->ReadAlloc(filename, sizeRead))) {
+			printf("\e[1;32mRead from PAK (a):\e[m\t%s\n", filename);
+			return buf;
+		}
+	}
+	
+	printf("\e[1;33mCan't read from PAK (a):\e[m\t%s\n", filename);
+	if(sizeRead) {
+		*sizeRead = 0;
+	}
+	return NULL;
+>>>>>>> 9c08453f0f7d4e6db068449c37fc13e3ed5a9d74
 }
 
 // return should be size_t?

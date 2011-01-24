@@ -32,9 +32,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define PATH_SEPERATOR_STR "/"
 #define PATH_SEPERATOR_CHR '/'
 
-#define	FILE_SEEK_START 0
-#define	FILE_SEEK_CURRENT 1
-#define	FILE_SEEK_END 2
+#define FILE_SEEK_START 0
+#define FILE_SEEK_CURRENT 1
+#define FILE_SEEK_END 2
 
 typedef void * FileHandle;
 

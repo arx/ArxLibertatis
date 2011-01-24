@@ -88,128 +88,128 @@ typedef struct
 
 class TextureContainer
 {
-    public:
-        TextureContainer * m_pNext;         // Linked list ptr
+	public:
+		TextureContainer * m_pNext;         // Linked list ptr
 
-        std::string m_strName;              // Image filename
-        std::string m_texName;              // Name of texture
-        DWORD   m_dwWidth;
-        DWORD   m_dwHeight;
-        DWORD	m_dwOriginalWidth;
-        DWORD	m_dwOriginalHeight;
-        DWORD	m_dwDeviceWidth;
-        DWORD	m_dwDeviceHeight;
-        DWORD   m_dwStage;					// Texture stage (for multitexture devices)
-        DWORD   m_dwBPP;
-        DWORD   m_dwFlags;
-        bool    m_bHasAlpha;
-        DWORD	userflags;
-        bool	bColorKey;
-        bool	bColorKey2D;
+		std::string m_strName;              // Image filename
+		std::string m_texName;              // Name of texture
+		DWORD   m_dwWidth;
+		DWORD   m_dwHeight;
+		DWORD	m_dwOriginalWidth;
+		DWORD	m_dwOriginalHeight;
+		DWORD	m_dwDeviceWidth;
+		DWORD	m_dwDeviceHeight;
+		DWORD   m_dwStage;					// Texture stage (for multitexture devices)
+		DWORD   m_dwBPP;
+		DWORD   m_dwFlags;
+		bool    m_bHasAlpha;
+		DWORD	userflags;
+		bool	bColorKey;
+		bool	bColorKey2D;
 
-        LPDIRECTDRAWSURFACE7 m_pddsSurface;	// Surface of the texture
-        LPDIRECTDRAWSURFACE7 m_pddsBumpMap;	// Surface of BumpMap
-        HBITMAP m_hbmBitmap;				// Bitmap containing texture image
-        DWORD * m_pRGBAData;
-        unsigned char * m_pJPEGData;
-        unsigned char * m_pJPEGData_ex;
-        unsigned char	* m_pPNGData;
+		LPDIRECTDRAWSURFACE7 m_pddsSurface;	// Surface of the texture
+		LPDIRECTDRAWSURFACE7 m_pddsBumpMap;	// Surface of BumpMap
+		HBITMAP m_hbmBitmap;				// Bitmap containing texture image
+		DWORD * m_pRGBAData;
+		unsigned char * m_pJPEGData;
+		unsigned char * m_pJPEGData_ex;
+		unsigned char	* m_pPNGData;
 
-    public:
-        LPDIRECT3DVERTEXBUFFER7		vertexbuffer;
-        LPDIRECT3DVERTEXBUFFER7		vbuf;
-        long	vbuf_max;
+	public:
+		LPDIRECT3DVERTEXBUFFER7		vertexbuffer;
+		LPDIRECT3DVERTEXBUFFER7		vbuf;
+		long	vbuf_max;
 
-        DELAYED_PRIM *	delayed;			// delayed_drawing
-        long	delayed_nb;
-        long	delayed_max;
+		DELAYED_PRIM *	delayed;			// delayed_drawing
+		long	delayed_nb;
+		long	delayed_max;
 
-        vector<EERIEPOLY *> vPolyZMap;
-        vector<EERIEPOLY *> vPolyBump;
-        vector<D3DTLVERTEX> vPolyInterBump;
-        vector<SMY_ZMAPPINFO> vPolyInterZMap;
-        vector<D3DTLVERTEX> vPolyInterBumpTANDL;
-        vector<SMY_ZMAPPINFO> vPolyInterZMapTANDL;
+		vector<EERIEPOLY *> vPolyZMap;
+		vector<EERIEPOLY *> vPolyBump;
+		vector<D3DTLVERTEX> vPolyInterBump;
+		vector<SMY_ZMAPPINFO> vPolyInterZMap;
+		vector<D3DTLVERTEX> vPolyInterBumpTANDL;
+		vector<SMY_ZMAPPINFO> vPolyInterZMapTANDL;
 
-        SMY_ARXMAT * tMatRoom;
+		SMY_ARXMAT * tMatRoom;
 
-        unsigned long	ulMaxVertexListCull;
-        unsigned long	ulNbVertexListCull;
-        ARX_D3DVERTEX	* pVertexListCull;
-        unsigned long	ulMaxVertexListCull_TNormalTrans;
-        unsigned long	ulNbVertexListCull_TNormalTrans;
-        ARX_D3DVERTEX	* pVertexListCull_TNormalTrans;
-        unsigned long	ulMaxVertexListCull_TAdditive;
-        unsigned long	ulNbVertexListCull_TAdditive;
-        ARX_D3DVERTEX	* pVertexListCull_TAdditive;
-        unsigned long	ulMaxVertexListCull_TSubstractive;
-        unsigned long	ulNbVertexListCull_TSubstractive;
-        ARX_D3DVERTEX	* pVertexListCull_TSubstractive;
-        unsigned long	ulMaxVertexListCull_TMultiplicative;
-        unsigned long	ulNbVertexListCull_TMultiplicative;
-        ARX_D3DVERTEX	* pVertexListCull_TMultiplicative;
-        unsigned long	ulMaxVertexListCull_TMetal;
-        unsigned long	ulNbVertexListCull_TMetal;
-        ARX_D3DVERTEX	* pVertexListCull_TMetal;
+		unsigned long	ulMaxVertexListCull;
+		unsigned long	ulNbVertexListCull;
+		ARX_D3DVERTEX	* pVertexListCull;
+		unsigned long	ulMaxVertexListCull_TNormalTrans;
+		unsigned long	ulNbVertexListCull_TNormalTrans;
+		ARX_D3DVERTEX	* pVertexListCull_TNormalTrans;
+		unsigned long	ulMaxVertexListCull_TAdditive;
+		unsigned long	ulNbVertexListCull_TAdditive;
+		ARX_D3DVERTEX	* pVertexListCull_TAdditive;
+		unsigned long	ulMaxVertexListCull_TSubstractive;
+		unsigned long	ulNbVertexListCull_TSubstractive;
+		ARX_D3DVERTEX	* pVertexListCull_TSubstractive;
+		unsigned long	ulMaxVertexListCull_TMultiplicative;
+		unsigned long	ulNbVertexListCull_TMultiplicative;
+		ARX_D3DVERTEX	* pVertexListCull_TMultiplicative;
+		unsigned long	ulMaxVertexListCull_TMetal;
+		unsigned long	ulNbVertexListCull_TMetal;
+		ARX_D3DVERTEX	* pVertexListCull_TMetal;
 
-        //version hybride T&L
-        unsigned long	ulMaxVertexListCullH;
-        unsigned long	ulNbVertexListCullH;
-        ARX_D3DVERTEX	* pVertexListCullH;
-        unsigned long	ulMaxVertexListCull_TNormalTransH;
-        unsigned long	ulNbVertexListCull_TNormalTransH;
-        ARX_D3DVERTEX	* pVertexListCull_TNormalTransH;
-        unsigned long	ulMaxVertexListCull_TAdditiveH;
-        unsigned long	ulNbVertexListCull_TAdditiveH;
-        ARX_D3DVERTEX	* pVertexListCull_TAdditiveH;
-        unsigned long	ulMaxVertexListCull_TSubstractiveH;
-        unsigned long	ulNbVertexListCull_TSubstractiveH;
-        ARX_D3DVERTEX	* pVertexListCull_TSubstractiveH;
-        unsigned long	ulMaxVertexListCull_TMultiplicativeH;
-        unsigned long	ulNbVertexListCull_TMultiplicativeH;
-        ARX_D3DVERTEX	* pVertexListCull_TMultiplicativeH;
-        unsigned long	ulMaxVertexListCull_TMetalH;
-        unsigned long	ulNbVertexListCull_TMetalH;
-        ARX_D3DVERTEX	* pVertexListCull_TMetalH;
+		//version hybride T&L
+		unsigned long	ulMaxVertexListCullH;
+		unsigned long	ulNbVertexListCullH;
+		ARX_D3DVERTEX	* pVertexListCullH;
+		unsigned long	ulMaxVertexListCull_TNormalTransH;
+		unsigned long	ulNbVertexListCull_TNormalTransH;
+		ARX_D3DVERTEX	* pVertexListCull_TNormalTransH;
+		unsigned long	ulMaxVertexListCull_TAdditiveH;
+		unsigned long	ulNbVertexListCull_TAdditiveH;
+		ARX_D3DVERTEX	* pVertexListCull_TAdditiveH;
+		unsigned long	ulMaxVertexListCull_TSubstractiveH;
+		unsigned long	ulNbVertexListCull_TSubstractiveH;
+		ARX_D3DVERTEX	* pVertexListCull_TSubstractiveH;
+		unsigned long	ulMaxVertexListCull_TMultiplicativeH;
+		unsigned long	ulNbVertexListCull_TMultiplicativeH;
+		ARX_D3DVERTEX	* pVertexListCull_TMultiplicativeH;
+		unsigned long	ulMaxVertexListCull_TMetalH;
+		unsigned long	ulNbVertexListCull_TMetalH;
+		ARX_D3DVERTEX	* pVertexListCull_TMetalH;
 
-        float	m_dx;						// precalculated 1.f/width
-        float	m_dy;						// precalculated 1.f/height
-        float	m_hdx;						// precalculated 0.5f/width
-        float	m_hdy;						// precalculated 0.5f/height
-        float	m_odx;						// precalculated 1.f/width
-        float	m_ody;						// precalculated 1.f/height
+		float	m_dx;						// precalculated 1.f/width
+		float	m_dy;						// precalculated 1.f/height
+		float	m_hdx;						// precalculated 0.5f/width
+		float	m_hdy;						// precalculated 0.5f/height
+		float	m_odx;						// precalculated 1.f/width
+		float	m_ody;						// precalculated 1.f/height
  
-        HRESULT LoadImageData();
-        HRESULT LoadBitmapFile(TCHAR * strPathname);
-        HRESULT LoadTargaFile(TCHAR * strPathname);
+		HRESULT LoadImageData();
+		HRESULT LoadBitmapFile( const std::string& strPathname);
+		HRESULT LoadTargaFile( const std::string& strPathname);
  
-        HRESULT LoadJpegFileNoDecomp( const std::string& strPathname );
-        HRESULT LoadPNGFile( const std::string& strPathname );
-        HRESULT Restore(LPDIRECT3DDEVICE7 pd3dDevice);
-        HRESULT CopyBitmapToSurface(LPDIRECTDRAWSURFACE7 Surface);
-        HRESULT CopyBitmapToSurface2(HBITMAP hbitmap, int depx, int depy, int largeur, int hauteur, long flag = 0);
-        HRESULT CopyRGBADataToSurface(LPDIRECTDRAWSURFACE7 Surface);
-        HRESULT CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface);
-        HRESULT CopyPNGDataToSurface(LPDIRECTDRAWSURFACE7 Surface);
-        HRESULT Use();
+		HRESULT LoadJpegFileNoDecomp( const std::string& strPathname );
+		HRESULT LoadPNGFile( const std::string& strPathname );
+		HRESULT Restore(LPDIRECT3DDEVICE7 pd3dDevice);
+		HRESULT CopyBitmapToSurface(LPDIRECTDRAWSURFACE7 Surface);
+		HRESULT CopyBitmapToSurface2(HBITMAP hbitmap, int depx, int depy, int largeur, int hauteur, long flag = 0);
+		HRESULT CopyRGBADataToSurface(LPDIRECTDRAWSURFACE7 Surface);
+		HRESULT CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface);
+		HRESULT CopyPNGDataToSurface(LPDIRECTDRAWSURFACE7 Surface);
+		HRESULT Use();
 
-        TextureContainer * TextureRefinement;
-        TextureContainer( const std::string& strName, DWORD dwStage, DWORD dwFlags);
-        ~TextureContainer();
-        long	locks;
-        long systemflags;
-        long mcachecount;
-        bool NoResize;
-    
-        bool CreateHalo(LPDIRECT3DDEVICE7 _lpDevice);
-        TextureContainer * AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _iNbCouche, float _fR, float _fG, float _fB, float & _iDecalX, float & _iDecalY);
-        float halodecalX;
-        float halodecalY;
-        TextureContainer * TextureHalo;
-        int iHaloNbCouche;
-        float fHaloRed;
-        float fHaloGreen;
-        float fHaloBlue;
+		TextureContainer * TextureRefinement;
+		TextureContainer( const std::string& strName, DWORD dwStage, DWORD dwFlags);
+		~TextureContainer();
+		long	locks;
+		long systemflags;
+		long mcachecount;
+		bool NoResize;
+	
+		bool CreateHalo(LPDIRECT3DDEVICE7 _lpDevice);
+		TextureContainer * AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _iNbCouche, float _fR, float _fG, float _fB, float & _iDecalX, float & _iDecalY);
+		float halodecalX;
+		float halodecalY;
+		TextureContainer * TextureHalo;
+		int iHaloNbCouche;
+		float fHaloRed;
+		float fHaloGreen;
+		float fHaloBlue;
 };
 
 
@@ -251,10 +251,10 @@ void ReloadTexture(TextureContainer * tc);
 #define D3DTEXTR_NO_INSERT		  0x80000000
 
 TextureContainer  * D3DTextr_CreateTextureFromFile( const std::string& strName, DWORD dwStage = 0L,
-        DWORD dwFlags = 0L , long sysflags = 0);
+		DWORD dwFlags = 0L , long sysflags = 0);
 HRESULT D3DTextr_CreateEmptyTexture(const char * strName, DWORD dwWidth,
-                                    DWORD dwHeight, DWORD dwStage,
-                                    DWORD dwFlags, DWORD flags = 0);
+									DWORD dwHeight, DWORD dwStage,
+									DWORD dwFlags, DWORD flags = 0);
  
 HRESULT D3DTextr_DestroyContainer(TextureContainer * ptcTexture);
 

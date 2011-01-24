@@ -628,10 +628,10 @@ long HERMES_CreateFileCheck(const char * name, char * scheck, const long & size,
     }
     
 		// from http://acmlm.kafuka.org/board/thread.php?id=3930
-    static void makepath(char *path, char *drive, char *dir, char *fName, char *ext)
+    static void makepath(char *path, char *drive, char *dir, char *fName, const char *ext)
     {
         char separator = '\\';
-        char *lastChar = NULL;
+        const char * lastChar = NULL;
         char *pos      = NULL;
         
         unsigned int    i = 0,
@@ -747,11 +747,17 @@ extension:
         
         for(; pos < lastChar; pos++)
         {
-            sepCount = ( (*pos) == '.' ) ? sepCount + 1 : 0;
+            char * lastPathChar = GetLastChar(path) - 1;
             
-            if(sepCount > 1) { continue; }
+            /* backpedal until we get rid of all the dots b/c what's the use of a dot on an extensionless file? */
+            while(lastPathChar > path)
+            {
+                if((*lastPathChar) != '.')
+                    break;
             
-            path[i++] = (*pos);
+                (*lastPathChar) = '\0';
+                lastPathChar--;
+            }        
         }
 
         NullTerminate(path);
@@ -795,13 +801,13 @@ char * GetExt(const char * str)
 	return _ext;
 }
 
-void SetExt(char * str, char * new_ext)
+void SetExt(char * str, const char * new_ext)
 {
 	splitpath(str, _drv, _dir, _name, _ext);
 	makepath(str, _drv, _dir, _name, new_ext);
 }
 
-void AddToName(char * str, char * cat)
+void AddToName(char * str, const char * cat)
 {
 	splitpath(str, _drv, _dir, _name, _ext);
 	strcat(_name, cat);
@@ -1117,7 +1123,7 @@ void HERMES_Memory_Security_Off()
 	HERMES_MEMORY_SECURITY = NULL;
 }
 
-long HERMES_Memory_Emergency_Out(long size, char * info)
+long HERMES_Memory_Emergency_Out(long size, const char * info)
 {
 	if (HERMES_MEMORY_SECURITY)
 		free(HERMES_MEMORY_SECURITY);

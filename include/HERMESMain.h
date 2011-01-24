@@ -82,15 +82,15 @@ typedef struct {
 //Always on for now...
 typedef struct PassedParam
 {
-   const char * pSource;                   /* Pointer to source buffer           */
-   char * pDestination;              /* Pointer to destination buffer      */
-   std::size_t SourceOffset;      /* Offset into the source buffer      */
-   std::size_t DestinationOffset; /* Offset into the destination buffer */
-   std::size_t CompressedSize;    /* Need this for extracting!          */
-   std::size_t UnCompressedSize;  /* Size of uncompressed data file     */
-   std::size_t BufferSize;
-   unsigned long Crc;               /* Calculated CRC value               */
-   unsigned long OrigCrc;           /* Original CRC value of data         */
+	const char * pSource;                   /* Pointer to source buffer           */
+	char * pDestination;              /* Pointer to destination buffer      */
+	std::size_t SourceOffset;      /* Offset into the source buffer      */
+	std::size_t DestinationOffset; /* Offset into the destination buffer */
+	std::size_t CompressedSize;    /* Need this for extracting!          */
+	std::size_t UnCompressedSize;  /* Size of uncompressed data file     */
+	std::size_t BufferSize;
+	unsigned long Crc;               /* Calculated CRC value               */
+	unsigned long OrigCrc;           /* Original CRC value of data         */
 } PARAM;
 
 
@@ -106,43 +106,20 @@ void HERMES_InitDebug();
 
 void SAFEstrcpy(char * dest, char * src, unsigned long max);
 
-<<<<<<< HEAD
 
-void MakeUpcase_real( std::string& str);
 void MakeUpcase( std::string& str);
 unsigned char IsIn( const std::string& strin, const std::string& str);
 unsigned char NC_IsIn( std::string strin, std::string str);
 
-bool GetWorkingDirectory(char * dest);
-
-long FileExist(char *name);
-long DirectoryExist(char *name);
-long	FileOpenRead(char *name);
- 
-long	FileOpenWrite(char *name);      
-long	FileCloseWrite(long h);
-long	FileCloseRead(long h);
-long	FileRead(long h, void *adr, long size);
-long	FileWrite(long h, void *adr, long size);
-void	*FileLoadMalloc(char *name,long * filesize=NULL);
-void	*FileLoadMallocZero(char *name,long * filesize=NULL);
- 
- 
 void GetDate(HERMES_DATE_TIME * hdt);
 void SendConsole( const std::string& dat,long level,long flag,HWND source);
 void ForceSendConsole( const std::string& dat,long level,long flag,HWND source);
- 
- 
-=======
-void MakeUpcase(char * str);
-bool IsIn(const char * strin, const char * str);
-bool NC_IsIn(const char * strin, const char * str);
+
 
 void GetDate(HERMES_DATE_TIME * hdt);
 void SendConsole(char * dat,long level,long flag,HWND source);
 void ForceSendConsole(char * dat,long level,long flag,HWND source);
 
->>>>>>> 5073e39f879cb51c7b8bd3bb33a399c5a309171c
 void MemFree(void * adr);
 bool OKBox(char * text,char *title);
 void ShowPopup( const std::string& text);
@@ -152,35 +129,21 @@ bool CreateFullPath( const std::string& path );
 
 // Strings Funcs
 bool HERMESFolderSelector(char *file_name,char *title);
-<<<<<<< HEAD
 void RemoveName( std::string& str );
 std::string GetName( const std::string& str);
-char * GetExt(char *str);
 void SetExt( std::string& str, const std::string& new_ext );
-=======
-void RemoveName(char *str);
-char * GetName(const char *str);
 char * GetExt(const char *str);
-void SetExt(char *str,char *new_ext);
->>>>>>> 5073e39f879cb51c7b8bd3bb33a399c5a309171c
-void AddToName(char *str,char *cat);
+void AddToName(char *str, const char *cat);
 int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName,char *filter,HWND hWnd);
 int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName,char *filter,HWND hWnd);
 long HERMES_CreateFileCheck(const char *name, char *scheck, const long &size, const float &id);
-<<<<<<< HEAD
-char* STD_Explode( const std::string& from, long from_size, long& to_size);
-void STD_ExplodeNoAlloc( const std::string& from, long from_size, char* to, long& to_size);
+char* STD_Explode( const std::string& from, size_t from_size, size_t& to_size);
+void STD_ExplodeNoAlloc( const std::string& from, size_t from_size, char* to, size_t& to_size);
 void ERROR_Log_Init( const std::string& fic);
 bool ERROR_Log( const std::string& fic);
-=======
-char * STD_Explode(char * from, size_t from_size, size_t * to_size);
-void STD_ExplodeNoAlloc(char * from, size_t from_size,char * to,size_t * to_size);
-void ERROR_Log_Init(char * fic);
-bool ERROR_Log(char * fic);
->>>>>>> 5073e39f879cb51c7b8bd3bb33a399c5a309171c
 void HERMES_Memory_Security_On(long size);
 void HERMES_Memory_Security_Off();
-long HERMES_Memory_Emergency_Out(long size=0,char * info=NULL);
+long HERMES_Memory_Emergency_Out(long size = 0, const char * info=NULL);
 void StartBench();
 unsigned long EndBench();
 extern long NEED_BENCH;
