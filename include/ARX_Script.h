@@ -412,7 +412,7 @@ void ARX_SCRIPT_EventStackClear();
 void ARX_SCRIPT_LaunchScriptSearch(char * search);
 void ARX_SCRIPT_ResetObject(INTERACTIVE_OBJ * io, long flags);
 void ARX_SCRIPT_Reset(INTERACTIVE_OBJ * io, long flags);
-long ARX_SCRIPT_GetSystemIOScript(INTERACTIVE_OBJ * io, char * name);
+long ARX_SCRIPT_GetSystemIOScript(INTERACTIVE_OBJ * io, const char * name);
 void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT * es);
 void ARX_SCRIPT_AllowInterScriptExec();
 long ARX_SCRIPT_CountTimers();

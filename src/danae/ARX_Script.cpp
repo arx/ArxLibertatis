@@ -3934,7 +3934,7 @@ void ARX_SCRIPT_Timer_Clear_For_IO(INTERACTIVE_OBJ * io)
 
 
 
-long ARX_SCRIPT_GetSystemIOScript(INTERACTIVE_OBJ * io, char * name)
+long ARX_SCRIPT_GetSystemIOScript(INTERACTIVE_OBJ * io, const char * name)
 {
 	if (ActiveTimers)
 	{
