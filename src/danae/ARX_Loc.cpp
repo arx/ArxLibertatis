@@ -327,7 +327,8 @@ void ParseFile(_TCHAR * _lpszUTextFile, const unsigned long _ulFileSize)
 char LocalisationLanguage = -1;
 
 //-----------------------------------------------------------------------------
-void ARX_Localisation_Init(char * _lpszExtension) 
+// TODO parameter not really used.
+void ARX_Localisation_Init(const char * _lpszExtension) 
 {
 	if (_lpszExtension == NULL)
 		return;
