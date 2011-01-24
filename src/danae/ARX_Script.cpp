@@ -85,6 +85,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <ARX_Speech.h>
 #include <ARX_Text.h>
 #include <ARX_Time.h>
+#include "ARX_Loc.h"
 #include "DanaeDlg.h"
 
 #include <cassert>
@@ -3373,7 +3374,7 @@ long MakeLocalised(char * text, _TCHAR * output, long maxsize, long lastspeechfl
 	_TCHAR __text[256];
 	//todo cast
 	//MultiByteToWideChar(CP_ACP, 0, text, -1, __text, 256);
-	return HERMES_UNICODE_GetProfileString(__text, _T("string"), _T("error"), output, maxsize, NULL, lastspeechflag);
+	return HERMES_UNICODE_GetProfileString(__text, "error", output, maxsize);
 }
 
 //-----------------------------------------------------------------------------
@@ -3387,13 +3388,9 @@ long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, char * _lpszText, long durati
 
 	HERMES_UNICODE_GetProfileString(
 	    __text,
-	    _T("string"),
 	    _T("Not Found"),
 	    __output,
-	    4095,
-	    NULL,
-	    -1
-	);
+	    4095);
 	return (ARX_SPEECH_Add(io, __output, duration));
 }
 

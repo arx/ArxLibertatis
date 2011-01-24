@@ -500,7 +500,7 @@ long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, _TCHAR * str,
 }
 
 //-----------------------------------------------------------------------------
-void ARX_Allocate_Text(_TCHAR *&dest, _TCHAR * id_string)
+void ARX_Allocate_Text(char *&dest, const char * id_string)
 {
 	if (dest != NULL)
 	{
@@ -509,7 +509,7 @@ void ARX_Allocate_Text(_TCHAR *&dest, _TCHAR * id_string)
 	}
 
 	_TCHAR output[4096];
-	PAK_UNICODE_GetPrivateProfileString(id_string, _T("string"), _T("default"), output, 4096, NULL);
+	PAK_UNICODE_GetPrivateProfileString(id_string, "default", output, 4096);
 	dest = (_TCHAR *)malloc((_tcslen(output) + 1) * sizeof(_TCHAR));
 	_tcscpy(dest, output);
 }
@@ -1235,7 +1235,7 @@ void ARX_Text_Init()
 		int iFontSize = 48;//58;
 
 		_TCHAR szUT[256];
-		PAK_UNICODE_GetPrivateProfileString(_T("system_font_mainmenu_size"), _T("string"), _T("58"), szUT, 256, NULL);
+		PAK_UNICODE_GetPrivateProfileString("system_font_mainmenu_size", "58", szUT, 256);
 		iFontSize = _ttoi(szUT);
 		iFontSize = Traffic(iFontSize);
 
@@ -1258,7 +1258,7 @@ void ARX_Text_Init()
 		int iFontSize = 32;
 
 		_TCHAR szUT[256];
-		PAK_UNICODE_GetPrivateProfileString(_T("system_font_menu_size"), _T("string"), _T("32"), szUT, 256, NULL);
+		PAK_UNICODE_GetPrivateProfileString("system_font_menu_size", "32", szUT, 256);
 		iFontSize = _ttoi(szUT);
 		iFontSize = Traffic(iFontSize);
 
@@ -1281,7 +1281,7 @@ void ARX_Text_Init()
 		int iFontSize = 16;
 
 		_TCHAR szUT[256];
-		PAK_UNICODE_GetPrivateProfileString(_T("system_font_menucontrols_size"), _T("string"), _T("22"), szUT, 256, NULL);
+		PAK_UNICODE_GetPrivateProfileString("system_font_menucontrols_size", "22", szUT, 256);
 		iFontSize = _ttoi(szUT);
 		iFontSize = Traffic(iFontSize);
 
@@ -1304,7 +1304,7 @@ void ARX_Text_Init()
 		int iFontSize = 32;
 
 		_TCHAR szUT[256];
-		PAK_UNICODE_GetPrivateProfileString(_T("system_font_menucredits_size"), _T("string"), _T("36"), szUT, 256, NULL);
+		PAK_UNICODE_GetPrivateProfileString("system_font_menucredits_size", "36", szUT, 256);
 		iFontSize = _ttoi(szUT);
 		iFontSize = Traffic(iFontSize);
 
@@ -1327,7 +1327,7 @@ void ARX_Text_Init()
 		int iFontSize = 16;
 
 		_TCHAR szUT[256];
-		PAK_UNICODE_GetPrivateProfileString(_T("system_font_redist_size"), _T("string"), _T("18"), szUT, 256, NULL);
+		PAK_UNICODE_GetPrivateProfileString("system_font_redist_size", "18", szUT, 256);
 		iFontSize = _ttoi(szUT);
 		iFontSize = Traffic(iFontSize);
 
@@ -1353,7 +1353,7 @@ void ARX_Text_Init()
 		int iFontSize = 16;
 
 		_TCHAR szUT[256];
-		PAK_UNICODE_GetPrivateProfileString(_T("system_font_book_size"), _T("string"), _T("18"), szUT, 256, NULL);
+		PAK_UNICODE_GetPrivateProfileString("system_font_book_size", "18", szUT, 256);
 		iFontSize = _ttoi(szUT);
 		iFontSize = Traffic(iFontSize);
 
@@ -1376,7 +1376,7 @@ void ARX_Text_Init()
 		int iFontSize = 16;//18;
 
 		_TCHAR szUT[256];
-		PAK_UNICODE_GetPrivateProfileString(_T("system_font_note_size"), _T("string"), _T("18"), szUT, 256, NULL);
+		PAK_UNICODE_GetPrivateProfileString("system_font_note_size", "18", szUT, 256);
 		iFontSize = _ttoi(szUT);
 		iFontSize = Traffic(iFontSize);
 
@@ -1396,7 +1396,7 @@ void ARX_Text_Init()
 		int iFontSize = 16;
 
 		_TCHAR szUT[256];
-		PAK_UNICODE_GetPrivateProfileString(_T("system_font_book_size"), _T("string"), _T("18"), szUT, 256, NULL);
+		PAK_UNICODE_GetPrivateProfileString("system_font_book_size", "18", szUT, 256);
 		iFontSize = _ttoi(szUT);
 		iFontSize = Traffic(iFontSize);
 

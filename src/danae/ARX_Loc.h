@@ -35,13 +35,16 @@ void ARX_Localisation_Init(char * _lpszExtension = "english");
 void ARX_Localisation_Close();
 
 
-DWORD PAK_UNICODE_GetPrivateProfileString(_TCHAR * _lpszSection,
-        _TCHAR * _lpszKey,
-        _TCHAR * _lpszDefault,
-        _TCHAR * _lpszBuffer,
-        unsigned long	_lBufferSize,
-        char	* _lpszFileName);
+DWORD PAK_UNICODE_GetPrivateProfileString(const char * _lpszSection,
+        const char * _lpszDefault,
+        char * _lpszBuffer,
+        unsigned long	_lBufferSize);
 
-long HERMES_UNICODE_GetProfileSectionKeyCount(const _TCHAR * sectionname);
+long HERMES_UNICODE_GetProfileSectionKeyCount(const char * sectionname);
+
+long HERMES_UNICODE_GetProfileString(const char	*	sectionname,
+                                     const char	*	defaultstring,
+                                     char	*	destination,
+                                     unsigned long	maxsize);
 
 #endif

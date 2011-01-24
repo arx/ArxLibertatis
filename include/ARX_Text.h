@@ -139,18 +139,11 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
                                 HRGN hRgn = NULL,
                                 HDC hHDC = NULL);
 
-void ARX_Allocate_Text(_TCHAR *&dest, _TCHAR * id_string);
+void ARX_Allocate_Text(char *&dest, const char * id_string);
 _TCHAR * GetFontName(char *);
 void _ShowText(char * text);
 
 //-----------------------------------------------------------------------------
-long HERMES_UNICODE_GetProfileString(_TCHAR	*	sectionname,
-                                     _TCHAR	*	t_keyname,
-                                     _TCHAR	*	defaultstring,
-                                     _TCHAR	*	destination,
-                                     unsigned long	maxsize,
-                                     _TCHAR	*	datastream,
-                                     long			lastspeech);
 
 //-----------------------------------------------------------------------------
 

@@ -937,7 +937,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 		Color = RGB(232, 204, 143);
 
-		PAK_UNICODE_GetPrivateProfileString(_T("system_menus_main_cdnotfound"), _T("string"), _T(""), szText, 256, NULL);
+		PAK_UNICODE_GetPrivateProfileString("system_menus_main_cdnotfound", "", szText, 256);
 		iW = 0;
 		iH = 0;
 		GetTextSize(hFontMenu, szText, &iW, &iH);
@@ -945,7 +945,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		ePos.y = DANAESIZY * 0.4f;
 		FontRenderText(hFontMenu, ePos, szText, Color);
 
-		PAK_UNICODE_GetPrivateProfileString(_T("system_yes"), _T("string"), _T(""), szText, 256, NULL);
+		PAK_UNICODE_GetPrivateProfileString("system_yes", "", szText, 256);
 		iW = 0;
 		iH = 0;
 		GetTextSize(hFontMenu, szText, &iW, &iH);
@@ -971,7 +971,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 		FontRenderText(hFontMenu, ePos, szText, Color);
 
-		PAK_UNICODE_GetPrivateProfileString(_T("system_no"), _T("string"), _T(""), szText, 256, NULL);
+		PAK_UNICODE_GetPrivateProfileString("system_no", "", szText, 256);
 		iW = 0;
 		iH = 0;
 		GetTextSize(hFontMenu, szText, &iW, &iH);
