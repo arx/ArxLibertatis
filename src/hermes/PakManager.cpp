@@ -377,7 +377,7 @@ PakFileHandle * PakManager::fOpen(const char * filename) {
 	
 	for (vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
 		PakFileHandle * pfh;
-		if((pfh = (*i)->fOpen(filename, "rb"))) {
+		if((pfh = (*i)->fOpen(filename))) {
 			LogInfo << "Opened from PAK "<< filename;
 			return pfh;
 		}

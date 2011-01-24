@@ -456,9 +456,7 @@ int PakReader::GetSize(const char * name) {
 	}
 }
 
-PakFileHandle * PakReader::fOpen(const char * name, const char * mode) {
-	
-	(void)mode;
+PakFileHandle * PakReader::fOpen(const char * name) {
 	
 	PakFile * f = getFile(name);
 	if(!f) {
@@ -469,6 +467,7 @@ PakFileHandle * PakReader::fOpen(const char * name, const char * mode) {
 	
 	while(--iNb) {
 		if(!tPackFile[iNb].active) {
+			assert(tPackFile[iNb].reader == this);
 			tPackFile[iNb].iID = (void*)fat; // TODO why use the FAT address here?
 			tPackFile[iNb].active = true;
 			tPackFile[iNb].offset = 0;
@@ -477,6 +476,7 @@ PakFileHandle * PakReader::fOpen(const char * name, const char * mode) {
 		}
 	}
 	
+	LogError << "cannot fopen file in PAK, ran out of handles";
 	return NULL;
 }
 
@@ -490,55 +490,41 @@ int PakReader::fClose(PakFileHandle * fh) {
 
 struct PakWriteDataMemOffset {
 	char * buf;
-	int iOffsetCurr;
-	int iOffset;
-	int iOffsetBase;
-	int iTaille;
-	int iTailleBase;
-	int iTailleW;
-	int iTailleFic;
+	size_t currentOffset;
+	size_t startOffset;
+	size_t endOffset;
 };
 
 int WriteDataOffset(void * Param, unsigned char * buf, size_t len) {
 	
 	PakWriteDataMemOffset * pPP = (PakWriteDataMemOffset *)Param;
 	
-	if(pPP->iTailleW >= pPP->iTailleBase) {
+	if(pPP->currentOffset >= pPP->endOffset) {
 		return 1;
 	}
 	
-	// TODO check this
-	
-	pPP->iOffsetBase -= len;
-	pPP->iOffsetCurr += len;
-	
-	if(pPP->iOffset < pPP->iOffsetCurr) {
-		if(pPP->iOffsetBase < 0) {
-			pPP->iOffsetBase += len;
-		}
-		
-		int iSize = len - pPP->iOffsetBase;
-		
-		if(pPP->iTaille > iSize) {
-			pPP->iTaille -= iSize;
+	if(pPP->currentOffset < pPP->startOffset) {
+		size_t toStart = pPP->startOffset - pPP->currentOffset;
+		if(len <= toStart) {
+			pPP->currentOffset += len;
+			return 0;
 		} else {
-			iSize = pPP->iTaille;
+			pPP->currentOffset = pPP->startOffset;
+			buf += toStart;
+			len -= toStart;
 		}
-		
-		if((pPP->iTailleW + iSize) > pPP->iTailleFic) {
-			iSize = pPP->iTailleFic - pPP->iTailleW;
-		}
-		
-		pPP->iTailleW += iSize;
-		
-		memcpy((void *)pPP->buf, (const void *)(buf + pPP->iOffsetBase), iSize);
-		pPP->buf += iSize;
-		pPP->iOffsetBase = 0;
-		
-		return 0;
-	} else {
-		return 1;
 	}
+	
+	size_t toCopy = min(len, pPP->endOffset - pPP->currentOffset);
+	
+	assert(toCopy != 0);
+	
+	memcpy(pPP->buf, buf, toCopy);
+	
+	pPP->currentOffset += toCopy;
+	pPP->buf += toCopy;
+	
+	return 0;
 }
 
 size_t PakReader::fRead(void * buf, size_t isize, size_t count, PakFileHandle * fh) {
@@ -547,9 +533,9 @@ size_t PakReader::fRead(void * buf, size_t isize, size_t count, PakFileHandle * 
 		return 0;
 	}
 	
-	int size = isize * count;
+	size_t size = isize * count;
 	
-	if((!fh) || (!size) || (!fh->file)) {
+	if(!size) {
 		return 0;
 	}
 	
@@ -557,34 +543,41 @@ size_t PakReader::fRead(void * buf, size_t isize, size_t count, PakFileHandle * 
 	
 	assert(fh->offset >= 0);
 	
-	if((unsigned int)fh->offset >= fh->file->uncompressedSize) {
-		return 0;
-	}
-	
 	if(f->flags & PAK_FILE_COMPRESSED) {
+		
+		if((size_t)fh->offset >= fh->file->uncompressedSize) {
+			return 0;
+		}
+		
+		if(size != fh->file->uncompressedSize) {
+			LogWarning << "partially reading a compressed file - ineffixent!";
+		}
 		
 		fseek(file, f->offset, SEEK_SET);
 		
 		PakReadDataFile read(file);
 		PakWriteDataMemOffset write;
 		
-		write.buf = (char *)buf;
-		write.iOffsetCurr = 0;
-		write.iOffset = fh->offset;
-		write.iOffsetBase = fh->offset;
-		write.iTaille = write.iTailleBase = size;
-		write.iTailleW = 0;
-		write.iTailleFic = fh->file->uncompressedSize;
 		
+		write.buf = (char *)buf;
+		write.currentOffset = 0;
+		write.startOffset = fh->offset;
+		write.endOffset = min(fh->offset + size, f->uncompressedSize);
+		
+		// TODO this is really inefficient
 		int r = blast(ReadData, &read, WriteDataOffset, &write);
 		if(!r) {
 			printf("\e[1;35mdecompression error (f) %d:\e[m\tfor \"%s\" in \'%s\"\n", r, f->name, pakname);
 			return 0;
 		}
 		
-		size = write.iTailleW;
+		size = write.currentOffset - write.startOffset;
 		
 	} else {
+		
+		if((size_t)fh->offset >= fh->file->size) {
+			return 0;
+		}
 		
 		fseek(file, f->offset + fh->offset, SEEK_SET);
 		
