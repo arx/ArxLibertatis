@@ -24,6 +24,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 
 #include <hermes/PakManager.h>
+#include <hermes/Logger.h>
 
 #include "Athena_Stream_WAV.h"
 #include "Athena_Codec_RAW.h"
@@ -96,18 +97,21 @@ namespace ATHENA
 	///////////////////////////////////////////////////////////////////////////////
 	aalError StreamWAV::SetStream(PakFileHandle * _stream)
 	{
-		if (!_stream) return AAL_ERROR_FILEIO;
+		if(!_stream) {
+			return AAL_ERROR_FILEIO;
+		}
 
 		stream = _stream;
 
 		format = malloc(sizeof(WAVEFORMATEX));
-
-		if (!format) return AAL_ERROR_MEMORY;
+		if(!format) {
+			return AAL_ERROR_MEMORY;
+		}
 
 		ChunkFile wave(stream);
 
 		// Check for 'RIFF' chunk id and skip file size
-		if (wave.Check("RIFF") ||
+		if(wave.Check("RIFF") ||
 		        wave.Skip(4) ||
 		        wave.Check("WAVE") ||
 		        wave.Find("fmt ") ||
@@ -116,8 +120,9 @@ namespace ATHENA
 		        wave.Read(&AS_FORMAT_PCM(format)->nSamplesPerSec, 4) ||
 		        wave.Read(&AS_FORMAT_PCM(format)->nAvgBytesPerSec, 4) ||
 		        wave.Read(&AS_FORMAT_PCM(format)->nBlockAlign, 2) ||
-		        wave.Read(&AS_FORMAT_PCM(format)->wBitsPerSample, 2))
+		        wave.Read(&AS_FORMAT_PCM(format)->wBitsPerSample, 2)) {
 			return AAL_ERROR_FORMAT;
+		}
 
 		// Get codec specific infos from header for non-PCM format
 		if (AS_FORMAT_PCM(format)->wFormatTag != WAVE_FORMAT_PCM)

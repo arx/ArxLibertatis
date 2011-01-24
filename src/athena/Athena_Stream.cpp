@@ -27,6 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "Athena_Stream_WAV.h"
 
 #include <hermes/PakManager.h>
+#include <hermes/Logger.h>
 
 
 
@@ -40,13 +41,16 @@ namespace ATHENA
 		Stream * stream = NULL;
 
 		file = OpenResource(name, sample_path);
-
-		if (!file) return NULL;
+		if(!file) {
+			return NULL;
+		}
 
 		PAK_fseek(file, 0, SEEK_SET);
 		stream = new StreamWAV;
 
-		if (stream->SetStream(file)) delete stream;
+		if(stream->SetStream(file)) {
+			delete stream;
+		}
 		else return stream;
 
 		PAK_fclose(file);
