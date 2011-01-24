@@ -408,6 +408,7 @@ long ARX_SOUND_INIT=1;
 long GORE_MODE=0;
 long USE_LIGHT_OPTIM	=1;
 long GLOBAL_FORCE_MINI_TEXTURE=0;
+// set to 0 for dev mode
 long FINAL_COMMERCIAL_GAME = 1;   // <--------------	fullgame
 long GERMAN_VERSION = 0;
 long FRENCH_VERSION = 0;
@@ -801,7 +802,7 @@ void InitializeDanae()
 	snapshotdata.ysize=480;
 	snapshotdata.flag=1;
 	
-	char temp2[512];
+	char levelPath[512];
 	EERIEMathPrecalc();
 	ARX_MISSILES_ClearAll();
 	ARX_SPELLS_Init();
@@ -812,111 +813,111 @@ void InitializeDanae()
 	ARX_MAGICAL_FLARES_FirstInit();
 
 	strcpy(LastLoadedScene,"");
-	strcpy(temp2,"Graph\\Levels\\Level");
+	strcpy(levelPath,"Graph\\Levels\\Level");
 
 	switch (Project.demo)
 	{
 		case NOLEVEL:
-			temp2[0] = 0;
+			levelPath[0] = 0;
 			break;
 		case LEVELDEMO:
-			strcat(temp2, "Demo\\");
+			strcat(levelPath, "Demo\\");
 			break;
 		case LEVELDEMO2:
-			strcat(temp2, "Demo2\\");
+			strcat(levelPath, "Demo2\\");
 			break;
 		case LEVELDEMO3:
-			strcat(temp2, "Demo3\\");
+			strcat(levelPath, "Demo3\\");
 			break;
 		case LEVELDEMO4:
-			strcat(temp2, "Demo4\\");
+			strcat(levelPath, "Demo4\\");
 			break;
 		case LEVEL0:
-			strcat(temp2, "0\\");
+			strcat(levelPath, "0\\");
 			break;
 		case LEVEL1:
-			strcat(temp2, "1\\");
+			strcat(levelPath, "1\\");
 			break;
 		case LEVEL2:
-			strcat(temp2, "2\\");
+			strcat(levelPath, "2\\");
 			break;
 		case LEVEL3:
-			strcat(temp2, "3\\");
+			strcat(levelPath, "3\\");
 			break;
 		case LEVEL4:
-			strcat(temp2, "4\\");
+			strcat(levelPath, "4\\");
 			break;
 		case LEVEL5:
-			strcat(temp2, "5\\");
+			strcat(levelPath, "5\\");
 			break;
 		case LEVEL6:
-			strcat(temp2, "6\\");
+			strcat(levelPath, "6\\");
 			break;
 		case LEVEL7:
-			strcat(temp2, "7\\");
+			strcat(levelPath, "7\\");
 			break;
 		case LEVEL8:
-			strcat(temp2, "8\\");
+			strcat(levelPath, "8\\");
 			break;
 		case LEVEL9:
-			strcat(temp2, "9\\");
+			strcat(levelPath, "9\\");
 			break;
 		case LEVEL10:
-			strcat(temp2, "10\\");
+			strcat(levelPath, "10\\");
 			break;
 		case LEVEL11:
-			strcat(temp2, "11\\");
+			strcat(levelPath, "11\\");
 			break;
 		case LEVEL12:
-			strcat(temp2, "12\\");
+			strcat(levelPath, "12\\");
 			break;
 		case LEVEL13:
-			strcat(temp2, "13\\");
+			strcat(levelPath, "13\\");
 			break;
 		case LEVEL14:
-			strcat(temp2, "14\\");
+			strcat(levelPath, "14\\");
 			break;
 		case LEVEL15:
-			strcat(temp2, "15\\");
+			strcat(levelPath, "15\\");
 			break;
 		case LEVEL16:
-			strcat(temp2, "16\\");
+			strcat(levelPath, "16\\");
 			break;
 		case LEVEL17:
-			strcat(temp2, "17\\");
+			strcat(levelPath, "17\\");
 			break;
 		case LEVEL18:
-			strcat(temp2, "18\\");
+			strcat(levelPath, "18\\");
 			break;
 		case LEVEL19:
-			strcat(temp2, "19\\");
+			strcat(levelPath, "19\\");
 			break;
 		case LEVEL20:
-			strcat(temp2, "20\\");
+			strcat(levelPath, "20\\");
 			break;
 		case LEVEL21:
-			strcat(temp2, "21\\");
+			strcat(levelPath, "21\\");
 			break;
 		case LEVEL22:
-			strcat(temp2, "22\\");
+			strcat(levelPath, "22\\");
 			break;
 		case LEVEL23:
-			strcat(temp2, "23\\");
+			strcat(levelPath, "23\\");
 			break;
 		case LEVEL24:
-			strcat(temp2, "24\\");
+			strcat(levelPath, "24\\");
 			break;
 		case LEVEL25:
-			strcat(temp2, "25\\");
+			strcat(levelPath, "25\\");
 			break;
 		case LEVEL26:
-			strcat(temp2, "26\\");
+			strcat(levelPath, "26\\");
 			break;
 		case LEVEL27:
-			strcat(temp2, "27\\");
+			strcat(levelPath, "27\\");
 			break;
 		default:
-			temp2[0] = 0;
+			levelPath[0] = 0;
 	}
 
 	memset(&DefaultBkg,0,sizeof(EERIE_BACKGROUND));
@@ -1011,41 +1012,33 @@ void InitializeDanae()
 	LoadSysTextures();
 	CreateInterfaceTextureContainers();
 
-	if (MOULINEX)
-	{
-	}
-	else if (LaunchDemo) 
-	{
-		if ((FINAL_RELEASE) 
-			&& (pMenuConfig->bFullScreen || AUTO_FULL_SCREEN )
-		   )
-		{
+//	LaunchDemo = 0;
+
+	if (LaunchDemo) {
+		LogInfo << "Launching Demo";
+
+		if ((FINAL_RELEASE) && (pMenuConfig->bFullScreen || AUTO_FULL_SCREEN )) {
 			DanaeSwitchFullScreen();
 		}
-
 		LaunchDemo=0;
 		SPLASH_THINGS_STAGE=11;
-	}
-	else if (temp2[0]!=0)
-	{
+	} else if (levelPath[0]!=0)	{
+		LogInfo << "Launching Level " << levelPath;
 
-		if (FastSceneLoad(temp2))
-		{
+		if (FastSceneLoad(levelPath)) {
 			FASTmse=1;
-			goto suite;
+		} else {
+			ARX_SOUND_PlayCinematic("Editor_Humiliation.wav");
+			mse=PAK_MultiSceneToEerie(levelPath);
 		}
-
-		ARX_SOUND_PlayCinematic("Editor_Humiliation.wav");
-		mse=PAK_MultiSceneToEerie(temp2);				
-	suite:
-		;
 		EERIEPOLY_Compute_PolyIn();
-		strcpy(LastLoadedScene,temp2);
+		strcpy(LastLoadedScene,levelPath);
 	}
 
 	if ((GAME_EDITOR) && (!MOULINEX))
 		LaunchInteractiveObjectsApp( danaeApp.m_hWnd);	
-	}
+
+}
 
 //*************************************************************************************
 // DANAEApp EntryPoint
