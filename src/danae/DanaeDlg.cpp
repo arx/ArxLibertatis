@@ -1272,7 +1272,7 @@ char * GetVersionString()
 //*************************************************************************************
 // Sets DANAE Main Window Title
 //*************************************************************************************
-void SetWindowTitle(HWND hWnd, char * tex) {
+void SetWindowTitle(HWND hWnd, const char * tex) {
 	char texx[512];
 	strcpy(texx, tex);
 	strcat(texx, GetVersionString());

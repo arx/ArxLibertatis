@@ -2185,7 +2185,7 @@ void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, EERIE_3D * target, long flag
 //*************************************************************************************
 // Finds IO number by name
 //*************************************************************************************
-long GetTargetByNameTarget(char * name)
+long GetTargetByNameTarget(const char * name)
 {
 	char temp[256];
 

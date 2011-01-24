@@ -448,7 +448,7 @@ long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const char * text, long durat
 
 long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const char * params, const char * eventname = NULL);
 long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTIVE_OBJ * io, const char * eventname, long info = 0);
-long SendMsgToAllIO(long msg, char * dat);
+long SendMsgToAllIO(long msg, const char * dat);
 
 void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const char * params, const char * eventname);
 bool InSubStack(EERIE_SCRIPT * es, long pos);

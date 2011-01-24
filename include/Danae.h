@@ -190,10 +190,10 @@ extern DANAE danaeApp;
 void SetEditMode(long ed, const bool stop_sound = true);
 void AddQuakeFX(float intensity, float duration, float period, long flags);
 //-----------------------------------------------------------------------------
-void Danae_Registry_Read(char * string, char * text, char * defaultstr = "", long maxsize = 256);
-void Danae_Registry_ReadValue(char * string, long * value, long defaultvalue = 0);
-void Danae_Registry_Write(char * string, char * text);
-void Danae_Registry_WriteValue(char * string, DWORD value);
+void Danae_Registry_Read(const char * string, char * text, const char * defaultstr = "", long maxsize = 256);
+void Danae_Registry_ReadValue(const char * string, long * value, long defaultvalue = 0);
+void Danae_Registry_Write(const char * string, const char * text);
+void Danae_Registry_WriteValue(const char * string, DWORD value);
 void SetFilteringMode(LPDIRECT3DDEVICE7 m_pd3dDevice, long mode);
 void SendGameReadyMsg();
 void DanaeSwitchFullScreen();

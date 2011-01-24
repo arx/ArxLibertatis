@@ -358,7 +358,7 @@ void Stack_SendMsgToAllNPC_IO(long msg, const char * dat)
 		}
 	}
 }
-long SendMsgToAllIO(long msg, char * dat)
+long SendMsgToAllIO(long msg, const char * dat)
 {
 	long ret = ACCEPT;
 

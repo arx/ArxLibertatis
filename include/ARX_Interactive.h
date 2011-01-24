@@ -175,7 +175,7 @@ long ValidIONum(long num);
 long ValidIOAddress(INTERACTIVE_OBJ * io);
 bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos);
 bool GetItemWorldPositionSound(INTERACTIVE_OBJ * io, EERIE_3D * pos);
-long GetTargetByNameTarget(char * name);
+long GetTargetByNameTarget(const char * name);
 void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io);
  
 void SetWeapon_Back(INTERACTIVE_OBJ * io);

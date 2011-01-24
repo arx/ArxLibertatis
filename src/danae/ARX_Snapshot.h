@@ -33,7 +33,7 @@ class SnapShot
 		char		*	pName;
 		unsigned long	ulNum;
 	public:
-		SnapShot(char *, char *, bool _bReplace = false);
+		SnapShot(const char *, const char *, bool _bReplace = false);
 		~SnapShot();
 
 		bool GetSnapShot();
@@ -54,7 +54,7 @@ typedef struct
 
 extern SNAPSHOTINFO snapshotdata;
 
-void InitSnapShot(char *, char *);
+void InitSnapShot(const char *, const char *);
 void GetSnapShot();
 void FreeSnapShot();
 

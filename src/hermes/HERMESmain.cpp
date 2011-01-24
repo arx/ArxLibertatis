@@ -872,7 +872,7 @@ void ExitApp(int v)
 char	LastFolder[MAX_PATH];		// Last Folder used
 static OPENFILENAME ofn;
 
-bool HERMESFolderBrowse(char * str)
+bool HERMESFolderBrowse(const char * str)
 {
 	BROWSEINFO		bi;
 	LPITEMIDLIST	liil;
@@ -898,7 +898,7 @@ bool HERMESFolderBrowse(char * str)
 }
 
 
-bool HERMESFolderSelector(char * file_name, char * title)
+bool HERMESFolderSelector(char * file_name, const char * title)
 {
 	if (HERMESFolderBrowse(title))
 	{

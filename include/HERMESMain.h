@@ -117,7 +117,7 @@ unsigned long MakeMemoryText(char * text);
 bool CreateFullPath(const char * path);
 
 // Strings Funcs
-bool HERMESFolderSelector(char *file_name,char *title);
+bool HERMESFolderSelector(char * file_name, const char * title);
 void RemoveName(char *str);
 char * GetName(const char *str);
 char * GetExt(const char *str);
