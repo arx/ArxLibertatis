@@ -1018,6 +1018,7 @@ void InitializeDanae()
 		LogInfo << "Launching Demo";
 
 		if ((FINAL_RELEASE) && (pMenuConfig->bFullScreen || AUTO_FULL_SCREEN )) {
+			LogDebug << "Switching to Fullscreen";
 			DanaeSwitchFullScreen();
 		}
 		LaunchDemo=0;
@@ -1036,7 +1037,7 @@ void InitializeDanae()
 	}
 
 	if ((GAME_EDITOR) && (!MOULINEX))
-		LaunchInteractiveObjectsApp( danaeApp.m_hWnd);	
+		LaunchInteractiveObjectsApp( danaeApp.m_hWnd);
 
 }
 
@@ -2958,11 +2959,14 @@ void ReleaseDanaeBeforeRun()
 
 HRESULT DANAE::BeforeRun()
 {
+
+	LogDebug << "Before Run...";
 	long i;
 
 	GDevice=m_pd3dDevice;
 
 	ControlCinematique = new CINEMATIQUE(danaeApp.m_pFramework->GetD3DDevice(), danaeApp.m_pFramework->m_dwRenderWidth, danaeApp.m_pFramework->m_dwRenderHeight);
+	LogDebug << "Initializing ControlCinematique " << danaeApp.m_pFramework->m_dwRenderWidth << "x" << danaeApp.m_pFramework->m_dwRenderHeight;
 	memset(&necklace,0,sizeof(ARX_NECKLACE));
 	long old=GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE=-1;
