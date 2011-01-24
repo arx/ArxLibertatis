@@ -72,4 +72,70 @@ typedef int (*blast_out)(void *how, unsigned char *buf, std::size_t len);
  */
 int blast(blast_in infun, void *inhow, blast_out outfun, void *outhow);
 
+// Convenience implementations.
+
+struct BlastMemOutBuffer {
+	
+	char * buf;
+	
+	size_t size;
+	
+	inline BlastMemOutBuffer(char * b, size_t s) : buf(b), size(s) {};
+	
+};
+
+struct BlastMemInBuffer {
+	
+	const char * buf;
+	
+	size_t size;
+	
+	inline BlastMemInBuffer(const char * b, size_t s) : buf(b), size(s) {};
+	
+};
+
+struct BlastMemOutBufferRealloc {
+	
+	char * buf;
+	
+	size_t allocSize;
+	size_t fillSize;
+	
+	inline BlastMemOutBufferRealloc(char * b = NULL, size_t alloc = 0, size_t fill = 0)
+	       : buf(b), allocSize(alloc), fillSize(fill) {};
+	
+};
+
+/**
+ * Writes data to a BlastMemOutBuffer.
+ * Advances the buf pointer and decreases size.
+ **/
+int blastOutMem(void * Param, unsigned char * buf, size_t len);
+
+/**
+ * Reads data from a BlastMemInBuffer.
+ * Advances the buf pointer and decrises size.
+ */
+size_t blastInMem(void * Param, const unsigned char ** buf);
+
+/**
+ * Writes data to a BlastMemOutBufferRealloc.
+ * Increases fillSize and resizes the buffer if needed.
+ * Uses realloc() for resize:
+ *  - If there is an intitial buffer, it must be allocated with malloc()
+ *  - The final buffer must be deallocated using free(), not delete
+ **/
+int blastOutMemRealloc(void * Param, unsigned char * buf, size_t len);
+
+/**
+ * Decompress data and allocate memory as needed.
+ * Returned pointer should be deallocated using free(), not delete.
+ */
+char * blastMemAlloc(const char * from, size_t fromSize, size_t & toSize);
+
+/**
+ * Decompress data.
+ **/
+size_t blastMem(const char * from, size_t fromSize, char * to, size_t toSize);
+
 #endif // ARX_HERMES_BLAST_H

@@ -90,6 +90,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <hermes/PakManager.h>
 #include <hermes/Filesystem.h>
 #include <hermes/Logger.h>
+#include <hermes/blast.h>
 
 #include <stdio.h>
 
@@ -1112,14 +1113,14 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * fic)
 		char * compressed = (char *)(dat + pos);
 		long cpr_pos;
 		cpr_pos = 0;
-		dat = (unsigned char *)STD_Explode(compressed, FileSize - pos, &FileSize);
+		dat = (unsigned char *)blastMemAlloc(compressed, FileSize - pos, FileSize);
 
 		free(torelease);
 		compressed = NULL;
 		pos = 0;
 
 		if (dat == NULL) {
-			LogError <<"STD_Explode did not return anything "<< fileDlf;
+			LogError << "STD_Explode did not return anything "<< fileDlf;
 			return -1;
 		}
 	}
@@ -1545,7 +1546,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * fic)
 	{
 		size_t size;
 		char * compressed = (char *)PAK_FileLoadMalloc(fic2, &size);
-		dat = (unsigned char *)STD_Explode(compressed, size, &FileSize);
+		dat = (unsigned char *)blastMemAlloc(compressed, size, FileSize);
 
 		if (dat == NULL)
 		{
@@ -2072,7 +2073,7 @@ void ARX_SAVELOAD_DLFCheckAdd(char * path, long num)
 		char * compressed = (char *)(dat + pos);
 		long cpr_pos;
 		cpr_pos = 0;
-		dat = (unsigned char *)STD_Explode(compressed, FileSize - pos, &FileSize);
+		dat = (unsigned char *)blastMemAlloc(compressed, FileSize - pos, FileSize);
 
 		if (dat == NULL)
 		{
