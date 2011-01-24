@@ -50,10 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <d3dwrapper.h>
 #include <ARX_Common.h>
 
-//#pragma inline_depth (255)
-//#pragma inline_recursion (on)
-//#pragma auto_inline (on)
-
 class TextureContainer;
 
 typedef struct

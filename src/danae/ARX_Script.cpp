@@ -98,6 +98,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "Danae_resource.h"
 
 #include <hermes/PakManager.h>
+#include "hermes/Logger.h"
 
 #include <cstdio>
 using std::sprintf;
@@ -166,7 +167,7 @@ long FindScriptPos(EERIE_SCRIPT * es, char * str, long poss)
 	int len2 = strlen(str);
 
 	if (len2+result > es->size){
-		printf("ERROR: Out of data borders %s\n String length: %d Result: %d Size: %d \n", str, len2, result, es->size);
+		LogError << "Out of data borders " << str;
 	}else{
 		if (es->data[result+len2] <= 32) return result;
 	}

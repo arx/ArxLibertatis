@@ -23,14 +23,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include <hermes/Filesystem.h>
 #include <windows.h>
 #include <cstdio>
-
 #include <cassert>
+#include <hermes/Filesystem.h>
+#include "hermes/Logger.h"
 
 long KillAllDirectory(const char * path) {
-	printf("KillAllDirectory(%s)\n", path);
+	LogInfo << "KillAllDirectory "<< path;
 	
 	WIN32_FIND_DATA FileInformation;             // File information
 	
@@ -105,10 +105,10 @@ FileHandle FileOpenRead(const char * name) {
 	HANDLE handle = CreateFile(name, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, 0);
 
 	if(handle == INVALID_HANDLE_VALUE) {
-		printf("\e[1;31mCan't open\e[m\t%s\n", name);
+		LogError <<"Can't open "<< name;
 		return INVALID_FILE_HANDLE;
 	}
-	printf("\e[1;32mOpened\e[m\t%s\n", name);
+	LogInfo <<"Opened "<< name;
 	
 	assert(MAKEHANDLE(handle) != INVALID_FILE_HANDLE);
 	
@@ -119,12 +119,12 @@ bool FileExist(const char * name) {
 	
 	FileHandle handle = FileOpenRead(name);
 	if(!handle) {
-		printf("\e[1;31mDidn't find\e[m\t%s\n", name);
+		LogError <<"Didn't find "<< name;
 		return false;
 	}
 	
 	FileCloseRead(handle);
-	printf("\e[1;32mFound\e[m\t%s\n", name);
+	LogInfo <<"Found "<< name;
 	return true;
 }
 

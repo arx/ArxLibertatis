@@ -39,9 +39,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 //-----------------------------------------------------------------------------
-#pragma comment (lib, "amstrmid")
-
-//-----------------------------------------------------------------------------
 #define CLASSNAME "VideoWindow"
 #define WM_GRAPHNOTIFY  WM_USER+13
 

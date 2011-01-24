@@ -63,7 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <hermes/PakReader.h>
 #include <hermes/PakEntry.h>
 #include <hermes/Filesystem.h>
-
+#include "hermes/Logger.h"
 
 using std::vector;
 
@@ -313,12 +313,12 @@ bool PakManager::Read(const char * filename, void * buffer) {
 
 	for(vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
 		if((*i)->Read(filename, buffer)) {
-			printf("\e[1;32mRead from PAK:\e[m\t%s\n", filename);
+			LogInfo << "Read from PAK "<< filename;
 			return true;
 		}
 	}
 	
-	printf("\e[1;33mCan't read from PAK:\e[m\t%s\n", filename);
+	LogError << "Can't read from PAK "<< filename;
 	return false;
 }
 
@@ -355,12 +355,12 @@ void * PakManager::ReadAlloc(const char * filename, size_t * sizeRead) {
 	for(vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
 		void * buf;
 		if((buf = (*i)->ReadAlloc(filename, sizeRead))) {
-			printf("\e[1;32mRead from PAK (a):\e[m\t%s\n", filename);
+			LogInfo << "Read from PAK (a) "<< filename;
 			return buf;
 		}
 	}
 	
-	printf("\e[1;33mCan't read from PAK (a):\e[m\t%s\n", filename);
+	LogError << "Can't read from PAK (a) "<< filename;
 	if(sizeRead) {
 		*sizeRead = 0;
 	}
@@ -378,12 +378,12 @@ size_t PakManager::GetSize(const char * filename) {
 	for (vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
 		int size;
 		if((size = (*i)->GetSize(filename)) > 0) {
-			printf("\e[1;32mGot size in PAK:\e[m\t%s (%d)\n", filename, size);
+			LogInfo << "Got size in PAK "<< filename << " "<<size;
 			return size;
 		}
 	}
 	
-	printf("\e[1;33mCan't get size in PAK:\e[m\t%s\n", filename);
+	LogError << "Can't get size in PAK "<< filename;
 	return -1;
 }
 
@@ -396,12 +396,12 @@ PakFileHandle * PakManager::fOpen(const char * filename) {
 	for (vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
 		PakFileHandle * pfh;
 		if((pfh = (*i)->fOpen(filename, "rb"))) {
-			printf("\e[1;32mOpened from PAK:\e[m\t%s\n", filename);
+			LogInfo << "Opened from PAK "<< filename;
 			return pfh;
 		}
 	}
 	
-	printf("\e[1;33mCan't open from PAK:\e[m\t%s\n", filename);
+	LogError << "Can't open from PAK "<< filename;
 	return NULL;
 }
 
@@ -458,11 +458,11 @@ bool PakManager::ExistFile(const char * name) {
 	
 	for(vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
 		if((*i)->getFile(name)) {
-			printf("\e[1;32mFound in PAK:\e[m\t%s\n", name);
+			LogInfo << "Found in PAK "<< name;
 			return true;
 		}
 	}
 	
-	printf("\e[1;33mCan't find in PAK:\e[m\t%s\n", name);
+	LogError << "Can't find in PAK "<< name;
 	return false;
 }
