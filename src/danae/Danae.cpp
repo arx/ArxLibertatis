@@ -380,7 +380,7 @@ float BOW_FOCAL=0;
 long PlayerWeaponBlocked=-1;
 long SHOW_TORCH=0;
 float FrameDiff=0;
-long CEDRIC_VERSION=0;
+long CEDRIC_VERSION=1;
 long CYRIL_VERSION=0;
 float GLOBAL_LIGHT_FACTOR=0.85f;
 
@@ -1047,20 +1047,6 @@ void InitializeDanae()
 		LaunchInteractiveObjectsApp( danaeApp.m_hWnd);	
 	}
 
-void LaunchCDROMCheck(long param)
-{
-	return;
-
-	if (param==0)
-	{
-		// Randomize Check 5% chance per call.
-		if (rnd()<0.95f)
-			return;
-	}
-
-	//Place CDROM Checking code here...
-}
-
 //*************************************************************************************
 // DANAEApp EntryPoint
 //*************************************************************************************
@@ -1317,6 +1303,8 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 		
 	} else {
 		LogInfo << "TRUEFILE LM";
+		//TODO(lubosz): dirty hack to initialize the pak manager
+		PAK_AddPak("");
 	}
 
 	//delete current for clean save.........
@@ -1443,9 +1431,9 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 			MessageBox(NULL, "DanaeScriptEditor :: IDS_RICHED_LOAD_FAIL", "", MB_OK|MB_ICONEXCLAMATION);
 		}
 	}
-	
-	if (FINAL_RELEASE)
-	{
+
+	if (FINAL_RELEASE) {
+		LogInfo << "FINAL_RELEASE";
 		LaunchDemo=1;
 		Project.TextureSize=0;
 		Project.TextureBits=16;
@@ -1455,12 +1443,11 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 		Project.ambient=1;
 		Project.multiplayer=0;
 		NOCHECKSUM=1;
-	}
-	else if (!MOULINEX)
+	} else if (!MOULINEX) {
 //		DialogBox( hInstance,MAKEINTRESOURCE(IDD_STARTOPTIONS), NULL, StartProc );
-		printf("ERROR: %s\n", MAKEINTRESOURCE(IDD_STARTOPTIONS));
-	else
-	{
+		LogError << "not MOULINEX ";
+	} else {
+		LogInfo << "default LEVELDEMO2";
 		Project.demo=LEVELDEMO2;
 	}
 
@@ -1546,11 +1533,9 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	}
 
 	LogInfo << "Sound Init";
-
 	if (	(Project.soundmode != 0)
 		&&	ARX_SOUND_INIT	)
 		ARX_SOUND_Init(MAIN_PROGRAM_HANDLE);
-	
 	LogInfo << "Sound Init Success";
 
 	LogInfo << "DInput Init";
@@ -5617,7 +5602,6 @@ static float _AvgFrameDiff = 150.f;
 	// Clicked on New Quest ? (TODO:need certainly to be moved somewhere else...)
 	if (START_NEW_QUEST)
 	{
-		LaunchCDROMCheck(0);
 		DANAE_StartNewQuest();
 	}
 
@@ -5678,7 +5662,6 @@ static float _AvgFrameDiff = 150.f;
 	if ((TELEPORT_TO_LEVEL[0]) && (CHANGE_LEVEL_ICON==200))
 	{
 		CHANGE_LEVEL_ICON=-1;
-		LaunchCDROMCheck(0);
 		ARX_CHANGELEVEL_Change(TELEPORT_TO_LEVEL, TELEPORT_TO_POSITION, TELEPORT_TO_ANGLE, 0);
 		memset(TELEPORT_TO_LEVEL,0,64);
 		memset(TELEPORT_TO_POSITION,0,64);
@@ -5883,7 +5866,6 @@ static float _AvgFrameDiff = 150.f;
 
 		if (WILL_QUICKSAVE>=2)
 		{
-			LaunchCDROMCheck(0);
 			ARX_QuickSave();
 			WILL_QUICKSAVE=0;
 		}
@@ -5893,7 +5875,6 @@ static float _AvgFrameDiff = 150.f;
 	if (WILL_QUICKLOAD)
 	{
 		WILL_QUICKLOAD=0;
-		LaunchCDROMCheck(0);
 
 		if (ARX_QuickLoad())
 			NEED_SPECIAL_RENDEREND=1;
