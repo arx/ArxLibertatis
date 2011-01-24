@@ -3,7 +3,7 @@
 
 using std::cout;
 
-Logger::LogLevel Logger::logLevel = Logger::Info;
+Logger::LogLevel Logger::logLevel = Logger::Debug;
 
 const string blackList[] = {
 		"ARX_FTL.cpp",
@@ -28,6 +28,9 @@ Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {
       break;
     case Error:
       log(1,31,"ERROR",file, line);
+      break;
+    case Debug:
+      log(1,36,"DEBUG",file, line);
       break;
     default:
       log(1,32,"INFO",file, line);

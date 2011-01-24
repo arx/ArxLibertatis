@@ -2,6 +2,7 @@
 #define LOGGER_H
 
 #define ShortFile strrchr(__FILE__, '/')+1
+#define LogDebug Logger(ShortFile,__LINE__, Logger::Debug)
 #define LogError Logger(ShortFile,__LINE__, Logger::Error)
 #define LogWarning Logger(ShortFile,__LINE__, Logger::Warning)
 #define LogInfo Logger(ShortFile,__LINE__, Logger::Info)
@@ -15,7 +16,8 @@ class Logger {
 
 public:
   enum LogLevel {
-    Info=0,
+	Debug = 0,
+    Info,
     Warning,
     Error
   };

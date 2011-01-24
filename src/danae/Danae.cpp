@@ -1166,7 +1166,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	for (i=0;i<MAX_EXPLO;i++) explo[i]=NULL;
 
 	USE_FAST_SCENES = 1;
-	LogInfo << "Danae Start";
+	LogDebug << "Danae Start";
 
 	memset(&Project,0,sizeof(PROJECT));
 	Project.vsync = true;
