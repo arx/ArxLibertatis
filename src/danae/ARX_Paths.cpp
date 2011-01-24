@@ -108,12 +108,12 @@ ARX_PATH * ARX_PATHS_AddNew(EERIE_3D * pos)
 	ARXpaths = (ARX_PATH **)realloc(ARXpaths, sizeof(ARX_PATH *) * (nbARXpaths + 1));
 	strcpy(tex, "NewPath");
 	long num = 1;
-	sprintf(str, "%s%04d", tex, num);
+	sprintf(str, "%s%04ld", tex, num);
 	num++;
 
 	while (ARX_PATHS_ExistName(str))
 	{
-		sprintf(str, "%s%04d", tex, num);
+		sprintf(str, "%s%04ld", tex, num);
 		num++;
 	}
 
@@ -293,7 +293,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 							char texx[128];
 							char tex2[128];
 							strcpy(texx, GetName(io->filename));
-							sprintf(tex2, "%s_%04d %s", texx, io->ident, temp);
+							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp);
 							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2, NULL);
 						}
 					}
@@ -325,7 +325,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 								char texx[128];
 								char tex2[128];
 								strcpy(texx, GetName(io->filename));
-								sprintf(tex2, "%s_%04d %s", texx, io->ident, temp);
+								sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp);
 								SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2, NULL); 
 							}
 						}
@@ -346,7 +346,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 							char texx[128];
 							char tex2[128];
 							strcpy(texx, GetName(io->filename));
-							sprintf(tex2, "%s_%04d %s", texx, io->ident, temp);
+							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp);
 							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2, NULL); 
 						}
 					}
@@ -365,7 +365,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 							char texx[128];
 							char tex2[128];
 							strcpy(texx, GetName(io->filename));
-							sprintf(tex2, "%s_%04d %s", texx, io->ident, temp);
+							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp);
 							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2, NULL);
 						}
 					}
@@ -495,7 +495,7 @@ suite:
 
 //*************************************************************************************
 //*************************************************************************************
-ARX_PATH * ARX_PATHS_Create(char * name, EERIE_3D * pos)
+ARX_PATH * ARX_PATHS_Create(const char * name, EERIE_3D * pos)
 {
 	ARX_PATH * ap = (ARX_PATH *)malloc(sizeof(ARX_PATH)); 
 

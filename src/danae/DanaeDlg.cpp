@@ -943,7 +943,7 @@ LONG CALLBACK InterTreeViewSubClassFunc(HWND hWnd,
 }
 
 
-void RemoveIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, char * name, long type)
+void RemoveIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, const char * name, long type)
 {
 	if (TVVcount != 0)
 		if (io != NULL)
@@ -997,7 +997,7 @@ void RemoveIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, char * name, long type)
 		}
 }
 
-void AddIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, char * name, long type)
+void AddIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, const char * name, long type)
 {
 	TVINSERTSTRUCT tis;
 	HTREEITEM parent = NULL;
@@ -1193,11 +1193,11 @@ void FillInterTreeView(HWND tvhwnd)
  
  
  
-void InterTreeViewItemRemove(INTERACTIVE_OBJ * io, char * name, long type)
+void InterTreeViewItemRemove(INTERACTIVE_OBJ * io, const char * name, long type)
 {
 	if (InterObjDlg) RemoveIOTVItem(dlgTreeViewhWnd, io, name, type);
 }
-void InterTreeViewItemAdd(INTERACTIVE_OBJ * io, char * name, long type)
+void InterTreeViewItemAdd(INTERACTIVE_OBJ * io, const char * name, long type)
 {
 	if (InterObjDlg) AddIOTVItem(dlgTreeViewhWnd, io, name, type);
 }

@@ -102,7 +102,7 @@ char * HERMES_GaiaCOM_Receive();
 
 void HERMES_InitDebug();
 
-void SAFEstrcpy(char * dest, char * src, unsigned long max);
+void SAFEstrcpy(char * dest, const char * src, unsigned long max);
 
 void MakeUpcase(char * str);
 bool IsIn(const char * strin, const char * str);

@@ -76,8 +76,8 @@ extern HWND CDP_PATHWAYS_Options;
 extern HWND CDP_IOOptions;
 
 void LaunchInteractiveObjectsApp(HWND hwnd);
-void InterTreeViewItemRemove(INTERACTIVE_OBJ * io, char * name = NULL, long type = 0);
-void InterTreeViewItemAdd(INTERACTIVE_OBJ * io, char * name = NULL, long type = 0);
+void InterTreeViewItemRemove(INTERACTIVE_OBJ * io, const char * name = NULL, long type = 0);
+void InterTreeViewItemAdd(INTERACTIVE_OBJ * io, const char * name = NULL, long type = 0);
 void SetWindowTitle(HWND hWnd, char * tex);
 void KillInterTreeView();
 HWND ShowErrorPopup(char * title, char * tex);

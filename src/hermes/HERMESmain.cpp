@@ -91,7 +91,7 @@ UINT GaiaWM = 0;
 HWND MAIN_PROGRAM_HANDLE = NULL;
 long DEBUGG = 1;
 
-void SAFEstrcpy(char * dest, char * src, unsigned long max)
+void SAFEstrcpy(char * dest, const char * src, unsigned long max)
 {
 	if (strlen(src) > max)
 	{
