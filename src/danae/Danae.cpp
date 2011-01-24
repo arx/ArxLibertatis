@@ -4682,7 +4682,7 @@ void ManageQuakeFX()
 }
 
 //TODO(lubosz): only needed for moulinex?
-void ProcessAllTheo(char * path) {
+void ProcessAllTheo(const char * path) {
 	HANDLE idx;
 	char pathh[512];
 	WIN32_FIND_DATA fd;
