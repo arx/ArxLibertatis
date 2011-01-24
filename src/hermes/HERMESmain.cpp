@@ -60,11 +60,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstring>
 #include <cstdio>
+#include <iostream>
 
 #include <time.h>
 #include "HERMESMain.h"
 #include "HERMESNet.h"
 #include <hermes/Filesystem.h>
+#include <hermes/Logger.h>
 
 extern "C" {
 #undef __cplusplus
@@ -1031,23 +1033,25 @@ int WriteUnCompressedNoAlloc(void * Param, unsigned char * buf, size_t len) {
 
 char * STD_Explode(char * from, size_t from_size, size_t * to_size)
 {
-
+//	LogDebug << "STD Explode from " << from;
 	PARAM Param;
 	memset(&Param, 0, sizeof(PARAM));
 	Param.BufferSize = 0;
 	Param.pSource = from;
-	Param.pDestination = NULL; 
+	Param.pDestination = NULL;
 	Param.CompressedSize = from_size;
 
 	Param.Crc               = (unsigned long) - 1;
 	unsigned int error = blast(ReadCompressed, &Param, WriteUnCompressed, &Param);
 
-	if (error)
-	{
-		*to_size = 0; 
-		return NULL;
-	}
+	//TODO(lubosz): error should return something?
+//	if (error) {
+//		LogError <<"Blast returned Error " << error << " for " << Param.pSource;
+//		*to_size = 0;
+//		return NULL;
+//	}
 
+//	LogDebug << "STD Explode Param.pDestination " << Param.pDestination;
 	*to_size = Param.UnCompressedSize;
 	return Param.pDestination;
 }
