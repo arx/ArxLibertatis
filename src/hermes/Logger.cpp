@@ -5,7 +5,13 @@ using std::cout;
 
 Logger::LogLevel Logger::logLevel = Logger::Info;
 
-const string blackList[] = {"PakManager.cpp", "Filesystem.cpp"};
+const string blackList[] = {
+		"ARX_FTL.cpp",
+		"ARX_Script.cpp",
+		"PakManager.cpp",
+		"PakReader.cpp",
+		"Filesystem.cpp"
+};
 
 Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {
   if( level < logLevel || isInBlackList(file)) {
