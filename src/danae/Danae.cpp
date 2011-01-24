@@ -389,6 +389,7 @@ float GLOBAL_LIGHT_FACTOR=0.85f;
 // Don't touch FINAL_COMMERCIAL_DEMO anymore
 // Comment #define REAL_DEMO for non-demo Version
 // UNcomment #define REAL_DEMO for demo Version
+//TODO(lubosz): uncommenting this define causes stack overflow
 //#define REAL_DEMO
 #ifdef REAL_DEMO
 long FINAL_COMMERCIAL_DEMO =1;
@@ -461,7 +462,7 @@ long DONT_CHANGE_WORKINGDIR=0;
 // EDITOR FLAGS/Vars
 //-----------------------------------------------------------------------------
 // Flag used to Launch Moulinex
-long MOULINEX=0;
+long MOULINEX=1;
 long KILL_AT_MOULINEX_END=0;
 long HIPOLY=0;			// Are We Using Poly-Spawning Ray-Casted Shadows ?
 long NODIRCREATION=0;	// No IO Directory Creation ?
@@ -1110,12 +1111,14 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 
 	if (FINAL_COMMERCIAL_GAME)
 	{
+		LogDebug << "FINAL_COMMERCIAL_GAME";
 		ARX_SOUND_INIT=1;
 		FOR_EXTERNAL_PEOPLE=1;
 		ARX_DEMO=0;
 	}
 	else if (FINAL_COMMERCIAL_DEMO)
 	{
+		LogDebug << "FINAL_COMMERCIAL_DEMO";
 		ARX_SOUND_INIT=1;
 		FOR_EXTERNAL_PEOPLE=1;
 		ARX_DEMO=1;
@@ -1123,6 +1126,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 
 	if (FOR_EXTERNAL_PEOPLE)
 	{
+		LogDebug << "FOR_EXTERNAL_PEOPLE";
 		ARX_SOUND_INIT		= 1;
 		ALLOW_CHEATS		= 0;
 		CEDRIC_VERSION		= 0;
@@ -1145,6 +1149,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	}
 	else if (CEDRIC_VERSION)
 	{
+		LogDebug << "CEDRIC_VERSION";
 		ARX_DEMO=0; 
 		FAST_SPLASHES=1;
 		FORCE_SHOW_FPS=1;
@@ -1174,6 +1179,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 
 	if (!FOR_EXTERNAL_PEOPLE)
 	{
+		LogDebug << "not FOR_EXTERNAL_PEOPLE";
 		char * param[10];
 		long parampos=0;
 		
@@ -1288,7 +1294,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 		if(PAK_AddPak(PAK_DATA)) {
 			LogInfo << "LoadMode OK";
 		} else {
-			printf("Unable to Find Data File\n");
+			LogError << "Unable to Find Data File";
 			exit(0);
 		}
 		
@@ -1602,8 +1608,8 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	if (strlen(Project.localisationpath)==0)
 	{
 		strcpy(Project.localisationpath,"english");
+		LogWarning << "Falling back to default localisationpath";
 	}
-
 	ShowWindow(danaeApp.m_hWnd, SW_SHOW);
 
 	//-------------------------------------------------------------------------
@@ -4677,62 +4683,61 @@ void ManageQuakeFX()
 	}
 }
 
-void ProcessAllTheo()
-{
-	//long idx;
-	//char pathh[512];
-	//todo finddata
-//	struct _finddata_t fd;
-	//sprintf(pathh,"*.*");
-	printf("unimplemented ProcessAllTheo\n");
+//TODO(lubosz): only needed for moulinex?
+void ProcessAllTheo(char * path) {
+	HANDLE idx;
+	char pathh[512];
+	WIN32_FIND_DATA fd;
+	sprintf(pathh,"*.*");
 
-//	if ((idx=_findfirst(pathh,&fd))!=-1)
-//	{
-//		do
-//		{
-//			if (strcmp(fd.name,".") && strcmp(fd.name,".."))
-//			{
-//				if (fd.attrib & _A_SUBDIR)
-//				{
-//					char path2[512];
-//					sprintf(path2,"%s%s\\",path,fd.name);
-//					ProcessAllTheo(path2);
-//				}
-//				else
-//				{
-//					char ext[256];
-//					strcpy(ext,GetExt(fd.name));
-//
-//					if (!strcasecmp(ext,".teo"))
-//					{
-//						char path2[512];
-//						char texpath[512];
-//						sprintf(path2,"%s%s",path,fd.name);
-//						sprintf(texpath,"Graph\\Obj3D\\Textures\\");
-//						EERIE_3DOBJ * temp;
-//						char tx[1024];
-//						sprintf(tx,"Moulinex %s (%s - %s)",fd.name,path2,texpath);
-//						ForceSendConsole(tx,1,0,NULL);
-//						_ShowText(tx);
-//
-//						if (strstr(path2,"\\NPC\\"))
-//							temp=TheoToEerie_Fast(texpath,path2,TTE_NPC,GDevice);
-//						else
-//							temp=TheoToEerie_Fast(texpath,path2,0,GDevice);
-//
-//						if (temp)
-//						{
-//							ReleaseEERIE3DObj(temp);
-//							ReleaseAllTCWithFlag(0);
-//						}
-//					}
-//				}
-//			}
-//		}
-//		while (!(_findnext(idx, &fd)));
-//
-//		_findclose(idx);
-//	}
+	if ((idx = FindFirstFile(pathh, &fd)) != INVALID_HANDLE_VALUE)
+	{
+		do
+		{
+			LogDebug << "ProcessAllTheo" << fd.cFileName;
+			if (strcmp(fd.cFileName,".") && strcmp(fd.cFileName,".."))
+			{
+				if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+				{
+					char path2[512];
+					sprintf(path2,"%s%s\\",path,fd.cFileName);
+					ProcessAllTheo(path2);
+				}
+				else
+				{
+					char ext[256];
+					strcpy(ext,GetExt(fd.cFileName));
+
+					if (!strcasecmp(ext,".teo"))
+					{
+						char path2[512];
+						char texpath[512];
+						sprintf(path2,"%s%s",path,fd.cFileName);
+						sprintf(texpath,"Graph\\Obj3D\\Textures\\");
+						EERIE_3DOBJ * temp;
+						char tx[1024];
+						sprintf(tx,"Moulinex %s (%s - %s)",fd.cFileName,path2,texpath);
+						ForceSendConsole(tx,1,0,NULL);
+						_ShowText(tx);
+
+						if (strstr(path2,"\\NPC\\"))
+							temp=TheoToEerie_Fast(texpath,path2,TTE_NPC,GDevice);
+						else
+							temp=TheoToEerie_Fast(texpath,path2,0,GDevice);
+
+						if (temp)
+						{
+							ReleaseEERIE3DObj(temp);
+							ReleaseAllTCWithFlag(0);
+						}
+					}
+				}
+			}
+		}
+		while (FindNextFile(idx, &fd));
+
+		FindClose(idx);
+	}
 }
 void LaunchMoulinex()
 {
@@ -4743,7 +4748,7 @@ void LaunchMoulinex()
 		sprintf(tx,"Moulinex THEO convertALL START________________");
 		ForceSendConsole(tx,1,0,NULL);
 		_ShowText(tx);
-		ProcessAllTheo();
+		ProcessAllTheo(""); // working dir
 		sprintf(tx,"Moulinex THEO convertALL END__________________");
 		ForceSendConsole(tx,1,0,NULL);
 		_ShowText(tx);
@@ -5352,6 +5357,8 @@ unsigned long oBENCH_SOUND=0;
 
 long WILL_QUICKLOAD=0;
 long WILL_QUICKSAVE=0;
+
+// do we still need this?
 void DemoFileCheck()
 {
 	return;
