@@ -35,11 +35,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Make sure global 3D localisation and multiple keys / track works properly //
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
-#pragma comment(lib, "dxguid.lib")
-#pragma comment(lib, "dsound.lib")
-#pragma comment(lib, "eaxguid.lib")
-#pragma comment(lib, "implode.lib")
-#pragma comment(lib, "winmm.lib")
 
 #include <Athena.h>
 #include "Athena_Resource.h"
@@ -56,9 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstring>
 using namespace std;
-
-//#include "console_public.h"
-//#pragma comment(lib, "Console DLL")
 
 namespace ATHENA
 {
