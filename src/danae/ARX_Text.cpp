@@ -55,6 +55,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h>
 #include <assert.h>
 
+#include <string>
+
 #include "ARX_Loc.h"
 #include "ARX_Text.h"
 #include "Danae.h"
@@ -65,6 +67,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "hermes/Filesystem.h"
 #include "hermes/Logger.h"
 
+using std::string;
+
 //-----------------------------------------------------------------------------
 _TCHAR * lpszFontMenu = NULL;
 _TCHAR * lpszFontIngame = NULL;
@@ -74,7 +78,6 @@ _TCHAR tUText[8192];
 CARXTextManager * pTextManage = NULL;
 CARXTextManager * pTextManageFlyingOver = NULL;
 
-HMODULE hUnicodeLibrary = NULL;
 //-----------------------------------------------------------------------------
 HFONT InBookFont	= NULL;
 HFONT hFontRedist	= NULL;
@@ -92,10 +95,7 @@ extern long CHINESE_VERSION;
 extern long EAST_EUROPE;
 
 //-----------------------------------------------------------------------------
-void FontError()
-// XS : Lil' wrapper around FormatMessage & GetLastError
-{
-#ifdef _DEBUG
+string FontError() {
 	LPVOID lpMsgBuf;
 	FormatMessage(
 	    FORMAT_MESSAGE_ALLOCATE_BUFFER |
@@ -106,12 +106,8 @@ void FontError()
 	    0, // Default language
 	    (LPTSTR) &lpMsgBuf,
 	    0,
-	    NULL
-	);
-
-//	MessageBox(NULL, (LPCSTR)lpMsgBuf, (LPCSTR)"Font Error", MB_OK | MB_ICONINFORMATION);
-	LogError << "Font Error: " << (LPCSTR)lpMsgBuf;
-#endif
+	    NULL);
+	return string("Font Error: ") + (LPCSTR)lpMsgBuf;
 }
 //-----------------------------------------------------------------------------
 
@@ -146,11 +142,10 @@ long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, _TCHAR * _lpszUText, int _i
 
 				for (; iTemp < iLenght ; iTemp++)
 				{
-//					todo: cast
-//					GetTextExtentPoint32W(hDC,
-//					                      &_lpszUText[iTemp],
-//					                      1,
-//					                      &sSize);
+					GetTextExtentPoint32A(hDC,
+					                      &_lpszUText[iTemp],
+					                      1,
+					                      &sSize);
 					{
 						if ((_lpszUText[iTemp] == _T('\n')) ||
 						        (_lpszUText[iTemp] == _T('*')))
@@ -202,25 +197,16 @@ long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, _TCHAR * _lpszUText, int _i
 }
 
 //-----------------------------------------------------------------------------
-long ARX_UNICODE_FormattingInRect(HDC _hDC, _TCHAR * _lpszUText, int _iSpacingY, RECT & _rRect)
+long ARX_UNICODE_FormattingInRect(HDC _hDC, char * text, int _iSpacingY, RECT & _rRect)
 {
-	int	iLenght = _tcslen(_lpszUText);
+	size_t	iLenght = strlen(text);
 	int iHeight = 0;
 	SIZE sSize;
-	int iOldTemp;
+	size_t iOldTemp;
 	bool bWrite;
 	sSize.cx = sSize.cy = 0;
 
-	int iTemp = 0;
-
-	typedef bool (APIENTRY * TextOutW)(HDC hdc,          // handle to DC
-	                                   int nXStart,       // x-coordinate of starting position
-	                                   int nYStart,       // y-coordinate of starting position
-	                                   _TCHAR * lpString, // character string
-	                                   int cbString       // number of characters
-	                                  );
-
-	TextOutW Unicows_TextOutW = (TextOutW)GetProcAddress(hUnicodeLibrary, "TextOutW");
+	size_t iTemp = 0;
 
 	while (1)
 	{
@@ -230,20 +216,19 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, _TCHAR * _lpszUText, int _iSpacingY,
 
 		for (; iTemp < iLenght; iTemp++)
 		{
-//			todo: cast
-//			GetTextExtentPoint32W(_hDC,
-//			                      &_lpszUText[iTemp],
-//			                      1,
-//			                      &sSize);
+			GetTextExtentPoint32A(_hDC,
+			                      &text[iTemp],
+			                      1,
+			                      &sSize);
 
-			if ((_lpszUText[iTemp] == _T('\n')) ||
-			        (_lpszUText[iTemp] == _T('*')))
+			if ((text[iTemp] == _T('\n')) ||
+			        (text[iTemp] == _T('*')))
 			{
 				iHeight += _iSpacingY + sSize.cy;
-				_lpszUText[iTemp] = _T('\0');
+				text[iTemp] = _T('\0');
 				bWrite = false;
 
-				Unicows_TextOutW(_hDC, _rRect.left, _rRect.top, &_lpszUText[iOldTemp], _tcslen(&_lpszUText[iOldTemp]));
+				TextOutA(_hDC, _rRect.left, _rRect.top, &text[iOldTemp], strlen(&text[iOldTemp]));
 				_rRect.top += _iSpacingY + sSize.cy;
 				iTemp++;
 				break;
@@ -258,21 +243,23 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, _TCHAR * _lpszUText, int _iSpacingY,
 				if (CHINESE_VERSION)
 				{
 					_TCHAR * ptexttemp = (_TCHAR *)malloc((iTemp - iOldTemp + 1) << 1);
-					_tcsncpy(ptexttemp, &_lpszUText[iOldTemp], iTemp - iOldTemp);
+					_tcsncpy(ptexttemp, &text[iOldTemp], iTemp - iOldTemp);
 					ptexttemp[iTemp-iOldTemp] = _T('\0');
 
-					Unicows_TextOutW(_hDC, _rRect.left, _rRect.top, ptexttemp, _tcslen(ptexttemp));
+					TextOutA(_hDC, _rRect.left, _rRect.top, ptexttemp, strlen(ptexttemp));
 					free((void *)ptexttemp);
 					ptexttemp = NULL;
 					iTemp--;
 				}
 				else
 				{
-					while ((_lpszUText[iTemp] != _T(' ')) && (iTemp > 0)) iTemp--;
+					while ((text[iTemp] != _T(' ')) && (iTemp > 0)) iTemp--;
 
-					_lpszUText[iTemp] = _T('\0');
+					text[iTemp] = _T('\0');
 
-					Unicows_TextOutW(_hDC, _rRect.left, _rRect.top, &_lpszUText[iOldTemp], _tcslen(&_lpszUText[iOldTemp]));
+					if(!TextOutA(_hDC, _rRect.left, _rRect.top, &text[iOldTemp], strlen(&text[iOldTemp]))) {
+						LogError << FontError() << " while displaying " << &text[iOldTemp];
+					}
 				}
 
 				bWrite = false;
@@ -293,9 +280,9 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, _TCHAR * _lpszUText, int _iSpacingY,
 	{
 		iHeight += _iSpacingY + sSize.cy;
 
-		if (!Unicows_TextOutW(_hDC, _rRect.left, _rRect.top, &_lpszUText[iOldTemp], _tcslen(&_lpszUText[iOldTemp])))
+		if (!TextOutA(_hDC, _rRect.left, _rRect.top, &text[iOldTemp], strlen(&text[iOldTemp])))
 		{
-			FontError();
+			LogError << FontError() << " while displaying " << &text[iOldTemp];
 		}
 
 		_rRect.top += _iSpacingY + sSize.cy;
@@ -444,20 +431,18 @@ long UNICODE_ARXDrawTextCenter(float x, float y, _TCHAR * str, COLORREF col, COL
 
 
 			SIZE siz;
-//			todo: cast
-//			GetTextExtentPoint32W(hDC,         // handle to DC
-//			                        str,           // character string
-//			                        _tcslen(str),   // number of characters
-//			                        &siz          // size
-//			                       );
+			GetTextExtentPoint32A(hDC,         // handle to DC
+			                        str,           // character string
+			                        _tcslen(str),   // number of characters
+			                        &siz          // size
+			                       );
 			RECT rect;
 			rect.top = (long)y;
 			rect.bottom = (long)999;
 			rect.left = (long)x - (siz.cx >> 1);
 			rect.right = (long)999;
 
-//			todo: cast
-//			TextOutW(hDC, rect.left, rect.top, str, _tcslen(str));
+			TextOutA(hDC, rect.left, rect.top, str, _tcslen(str));
 
 			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 			return siz.cx;
@@ -572,7 +557,7 @@ USHORT LilEndianShort(USHORT ulValue)
 }
 
 //-----------------------------------------------------------------------------
-_TCHAR * GetFontName(char * _lpszFileName)
+_TCHAR * GetFontName(const char * _lpszFileName)
 {
 	DWORD dwSize;
 	DWORD dwRead;
@@ -807,11 +792,10 @@ bool CARXTextManager::AddText(HFONT _hFont, _TCHAR * _lpszUText, RECT & _rRect, 
 					if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 					{
 						SelectObject(hDC, pArxText->hFont);
-//						todo: cast
-//						GetTextExtentPoint32W(hDC,
-//						                      pArxText->lpszUText,
-//						                      _tcslen(pArxText->lpszUText),
-//						                      &sSize);
+						GetTextExtentPoint32A(hDC,
+						                      pArxText->lpszUText,
+						                      _tcslen(pArxText->lpszUText),
+						                      &sSize);
 						danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 						pArxText->lTailleLigne = sSize.cy;
 						sSize.cy *= iNbLigneClipp;
@@ -879,11 +863,10 @@ bool CARXTextManager::AddText(ARX_TEXT * _pArxText)
 					if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 					{
 						SelectObject(hDC, pArxText->hFont);
-//						todo: cast
-//						GetTextExtentPoint32W(hDC,
-//						                      pArxText->lpszUText,
-//						                      _tcslen(pArxText->lpszUText),
-//						                      &sSize);
+						GetTextExtentPoint32A(hDC,
+						                      pArxText->lpszUText,
+						                      _tcslen(pArxText->lpszUText),
+						                      &sSize);
 						danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 						pArxText->lTailleLigne = sSize.cy;
 						sSize.cy *= pArxText->iNbLineClip;
@@ -1089,36 +1072,10 @@ HFONT _CreateFont(
     DWORD fdwClipPrecision,    // clipping precision
     DWORD fdwQuality,          // output quality
     DWORD fdwPitchAndFamily,   // pitch and family
-    _TCHAR * lpszFace          // typeface name
+    const char * lpszFace          // typeface name
 )
 {
-
-
-	typedef HFONT(APIENTRY * CreateFontW)(
-	    int nHeight,               // height of font
-	    int nWidth,                // average character width
-	    int nEscapement,           // angle of escapement
-	    int nOrientation,          // base-line orientation angle
-	    int fnWeight,              // font weight
-	    DWORD fdwItalic,           // italic attribute option
-	    DWORD fdwUnderline,        // underline attribute option
-	    DWORD fdwStrikeOut,        // strikeout attribute option
-	    DWORD fdwCharSet,          // character set identifier
-	    DWORD fdwOutputPrecision,  // output precision
-	    DWORD fdwClipPrecision,    // clipping precision
-	    DWORD fdwQuality,          // output quality
-	    DWORD fdwPitchAndFamily,   // pitch and family
-	    LPWSTR wlpszFace           // typeface name
-	);
-
-	if (!hUnicodeLibrary)
-	{
-		return NULL;
-	}
-
- 
-
-	CreateFontW Unicows_CreateFontW = (CreateFontW)GetProcAddress(hUnicodeLibrary, "CreateFontW");
+	
 	/*
 	ANSI_CHARSET
 	BALTIC_CHARSET
@@ -1143,7 +1100,7 @@ HFONT _CreateFont(
 	}
 
 	//HFONT  ret = CreateFont(
-	HFONT ret = Unicows_CreateFontW(
+	HFONT ret = CreateFontA(
 	                nHeight,               // height of font
 	                nWidth,                // average character width
 	                nEscapement,           // angle of escapement
@@ -1157,58 +1114,45 @@ HFONT _CreateFont(
 	                fdwClipPrecision,    // clipping precision
 	                fdwQuality,          // output quality
 	                fdwPitchAndFamily,   // pitch and family
-	                (LPWSTR)lpszFace     // typeface name
+	                lpszFace     // typeface name
 	            );
 
 	if (!ret)
 	{
-		FontError();
+		LogError << FontError() << " creating font " << lpszFace;
 	}
 
 	return ret;
 }
 
 
+string getFontFile() {
+	string tx= "misc" PATH_SEPERATOR_STR "Arx.ttf";
+	if(!FileExist(tx.c_str())) {
+		tx = "misc" PATH_SEPERATOR_STR "ARX_default.ttf"; // Full path
+	}
+	return tx;
+}
 
 //-----------------------------------------------------------------------------
 void ARX_Text_Init()
 {
 	ARX_Text_Close();
 
-
-	hUnicodeLibrary = LoadLibraryA("unicows.dll");
-
-	if (!hUnicodeLibrary)
-	{
-		exit(0);
-	}
-
 	ARX_Localisation_Init();
-
-	_TCHAR wtx[256];
-	char tx[256];
-
-	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf"); // Full path
-
-	if (!FileExist(tx))
-	{
-		sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
-	}
+	
+	string tx = getFontFile();
 
 //	todo: cast
 //	MultiByteToWideChar(CP_ACP, 0, tx , -1, wtx, 256);		// XS : We need to pass a unicode string to AddFontResourceW
 
-	typedef int (APIENTRY * AddFontRessourceW)(const wchar_t *);
+	lpszFontIngame = GetFontName(tx.c_str());
 
-	AddFontRessourceW Unicows_AddFontResourceW = (AddFontRessourceW)GetProcAddress(hUnicodeLibrary, "AddFontResourceW");
-
-	lpszFontIngame = GetFontName(tx);
-
-	if (Unicows_AddFontResourceW((wchar_t*)wtx) == 0)
-	{
-		FontError();
+	if(AddFontResourceA(tx.c_str()) == 0) {
+		LogError << FontError();
 	}
 
+/*
 	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf");
 
 	if (!FileExist(tx))
@@ -1216,14 +1160,14 @@ void ARX_Text_Init()
 		sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
 	}
 
-	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass an unicode string to AddFontResourceW
+	//MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass an unicode string to AddFontResourceW
 
 	lpszFontMenu = GetFontName(tx);
 
-	if (Unicows_AddFontResourceW((wchar_t*)wtx) == 0)
+	if (AddFontResourceA(wtx) == 0)
 	{
-		FontError();
-	}
+		LogError << FontError();
+	}*/
 
 
 	pTextManage = new CARXTextManager();
@@ -1415,10 +1359,6 @@ void ARX_Text_Init()
 //-----------------------------------------------------------------------------
 void ARX_Text_Close()
 {
-	if (!hUnicodeLibrary)
-	{
-		hUnicodeLibrary = LoadLibraryA("unicows.dll");
-	}
 
 	if (lpszFontIngame)
 	{
@@ -1432,29 +1372,17 @@ void ARX_Text_Close()
 		lpszFontMenu = NULL;
 	}
 
-	typedef ATOM(APIENTRY * RemoveRessourceW)(const wchar_t *);
+	string tx = getFontFile();
 
-	RemoveRessourceW Unicows_RemoveRessourceW = (RemoveRessourceW)GetProcAddress(hUnicodeLibrary, "RemoveFontResourceW");
+	//MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
 
-	_TCHAR wtx[256];
-	char tx[256];
-	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf"); // Full path
+	lpszFontIngame = GetFontName(tx.c_str());
 
-	if (!FileExist(tx))
-	{
-		sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
+
+	if(!RemoveFontResourceA(tx.c_str())) {
+			 LogError << FontError() << " while removing font " << tx; // XS : Annoying popup, uncomment if you really want to track something down.
 	}
-
-	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
-
-	lpszFontIngame = GetFontName(tx);
-
-
-	if (Unicows_RemoveRessourceW((wchar_t*)wtx) == 0)
-	{
-			// FontError(); // XS : Annoying popup, uncomment if you really want to track something down.
-	}
-
+/*
 	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf"); // Full path
 
 	if (!FileExist(tx))
@@ -1465,11 +1393,11 @@ void ARX_Text_Close()
 	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
 	lpszFontMenu = GetFontName(tx);
 
-	if (Unicows_RemoveRessourceW((wchar_t*)wtx) == 0)
+	if (RemoveFontResourceA(wtx) == 0)
 	{
-			// FontError();// XS : Annoying popup, uncomment if you really want to track something down.
+			 LogError << FontError();// XS : Annoying popup, uncomment if you really want to track something down.
 	}
-
+*/
 	ARX_Localisation_Close();
 
 	if (pTextManage)
@@ -1532,6 +1460,4 @@ void ARX_Text_Close()
 		hFontInGameNote = NULL;
 	}
 
-	FreeLibrary(hUnicodeLibrary);
-	hUnicodeLibrary = NULL;
 }

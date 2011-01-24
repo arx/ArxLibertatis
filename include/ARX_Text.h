@@ -140,7 +140,7 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
                                 HDC hHDC = NULL);
 
 void ARX_Allocate_Text(char *&dest, const char * id_string);
-_TCHAR * GetFontName(char *);
+_TCHAR * GetFontName(const char *);
 void _ShowText(char * text);
 
 //-----------------------------------------------------------------------------
