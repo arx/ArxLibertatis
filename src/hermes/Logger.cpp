@@ -15,16 +15,16 @@ Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {
   m_Print = true;
   switch(level) {
     case Info:
-      cout<<"[\e[1;32mINFO\e[m\t"<<file<<":"<<line<<"]\t";
+      cout<<"[\e[1;32mINFO\e[m]\t"<<file<<":"<<line<<"\t";
       break;
     case Warning:
-      cout<<"[\e[1;33mWARNING\e[m\t"<<file<<":"<<line<<"]\t";
+      cout<<"[\e[1;33mWARNING\e[m]\t"<<file<<":"<<line<<"\t";
       break;
     case Error:
-      cout<<"[\e[1;31mERROR\e[m\t"<<file<<":"<<line<<"]\t";
+      cout<<"[\e[1;31mERROR\e[m]\t"<<file<<":"<<line<<"\t";
       break;
     default:
-      cout<<"[\e[1;32mINFO\e[m\t"<<file<<":"<<line<<"]\t";
+      cout<<"[\e[1;32mINFO\e[m]\t"<<file<<":"<<line<<"\t";
   };
 }
 
