@@ -4253,7 +4253,7 @@ void ARX_NPC_SpawnAudibleSound(EERIE_3D * pos, INTERACTIVE_OBJ * source, const f
 						char temp[64];
 
 						F2L(fdist, &ldistance);
-						sprintf(temp, "%d", ldistance);
+						sprintf(temp, "%ld", ldistance);
 
 						SendIOScriptEvent(inter.iobj[i], SM_HEAR, temp);
 					}
@@ -4264,7 +4264,7 @@ void ARX_NPC_SpawnAudibleSound(EERIE_3D * pos, INTERACTIVE_OBJ * source, const f
 					char temp[64];
 
 					F2L(distance, &ldistance);
-					sprintf(temp, "%d", ldistance);
+					sprintf(temp, "%ld", ldistance);
 
 					SendIOScriptEvent(inter.iobj[i], SM_HEAR, temp);
 				}

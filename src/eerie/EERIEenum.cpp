@@ -250,7 +250,7 @@ static BOOL WINAPI DriverEnumCallback(GUID * pGUID, TCHAR * strDesc,
 
 	if (FAILED(hr))
 	{
-		DEBUG_MSG(_T("Can't create DDraw during enumeration!"));
+		DEBUG_MSG("Can't create DDraw during enumeration!");
 		return D3DENUMRET_OK;
 	}
 
@@ -260,7 +260,7 @@ static BOOL WINAPI DriverEnumCallback(GUID * pGUID, TCHAR * strDesc,
 	if (FAILED(hr))
 	{
 		pDD->Release();
-		DEBUG_MSG(_T("Can't query IDirect3D7 during enumeration!"));
+		DEBUG_MSG("Can't query IDirect3D7 during enumeration!");
 		return D3DENUMRET_OK;
 	}
 

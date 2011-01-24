@@ -85,7 +85,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <ARX_Speech.h>
 #include <ARX_Text.h>
 #include <ARX_Time.h>
+#include "ARX_Loc.h"
 #include "DanaeDlg.h"
+
+#include <cassert>
 
 #include "Danae_resource.h"
 
@@ -149,7 +152,7 @@ bool ARX_EQUIPMENT_IsPlayerEquip(INTERACTIVE_OBJ * _pIO);
 // Looks for string in script, return pos. Search start position can be set using	//
 // poss parameter.																	//
 //*************************************************************************************
-long FindScriptPos(EERIE_SCRIPT * es, char * str, long poss)
+long FindScriptPos(EERIE_SCRIPT * es, const char * str, long poss)
 {
 
 	if (!es->data) return -1;
@@ -346,7 +349,7 @@ long ARX_SCRIPT_SearchTextFromPos(EERIE_SCRIPT * es, char * search, long startpo
 	return -1;
 }
 
-void Stack_SendMsgToAllNPC_IO(long msg, char * dat)
+void Stack_SendMsgToAllNPC_IO(long msg, const char * dat)
 {
 	for (long i = 0; i < inter.nbmax; i++)
 	{
@@ -356,7 +359,7 @@ void Stack_SendMsgToAllNPC_IO(long msg, char * dat)
 		}
 	}
 }
-long SendMsgToAllIO(long msg, char * dat)
+long SendMsgToAllIO(long msg, const char * dat)
 {
 	long ret = ACCEPT;
 
@@ -391,7 +394,7 @@ void ARX_SCRIPT_LaunchScriptSearch(char * search)
 			io = inter.iobj[i];
 
 			if (i == 0) strcpy(objname, "PLAYER");
-			else sprintf(objname, "%s_%04d", GetName(io->filename), io->ident);
+			else sprintf(objname, "%s_%04ld", GetName(io->filename), io->ident);
 
 			long pos = 0;
 
@@ -402,7 +405,7 @@ void ARX_SCRIPT_LaunchScriptSearch(char * search)
 
 				if (pos > 0)
 				{
-					sprintf(toadd, "%s - GLOBAL - Line %4d : %s\n", objname, nline, tline);
+					sprintf(toadd, "%s - GLOBAL - Line %4ld : %s\n", objname, nline, tline);
 
 					if (size + strlen(toadd) + 3 < 65535)
 					{
@@ -427,7 +430,7 @@ void ARX_SCRIPT_LaunchScriptSearch(char * search)
 
 				if (pos > 0)
 				{
-					sprintf(toadd, "%s - LOCAL  - Line %4d : %s\n", objname, nline, tline);
+					sprintf(toadd, "%s - LOCAL  - Line %4ld : %s\n", objname, nline, tline);
 
 					if (size + strlen(toadd) + 3 < 65535)
 					{
@@ -454,12 +457,12 @@ suite:
 		strcpy(ShowText, "No Occurence Found...");
 	}
 
-	sprintf(ShowTextWindowtext, "Search Results for %s (%d occurences)", search, foundnb);
+	sprintf(ShowTextWindowtext, "Search Results for %s (%ld occurences)", search, foundnb);
 
 
 	DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXTBIG, danaeApp.m_hWnd, (DLGPROC)ShowTextDlg);
 }
-void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, char * newevent)
+void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, const char * newevent)
 {
 	if (io == NULL) return;
 
@@ -1306,7 +1309,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 					{
 						char temp[256];
 						strcpy(temp, GetName(EVENT_SENDER->filename));
-						sprintf(txtcontent, "%s_%04d", temp, EVENT_SENDER->ident);
+						sprintf(txtcontent, "%s_%04ld", temp, EVENT_SENDER->ident);
 					}
 				}
 				else 	strcpy(txtcontent, "NONE");
@@ -1360,7 +1363,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 				{
 					char temp[256];
 					strcpy(temp, GetName(io->filename));
-					sprintf(txtcontent, "%s_%04d", temp, io->ident);
+					sprintf(txtcontent, "%s_%04ld", temp, io->ident);
 				}
 
 				return TYPE_TEXT;
@@ -1461,7 +1464,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 				{
 					char temp[256];
 					strcpy(temp, GetName(LASTSPAWNED->filename));
-					sprintf(txtcontent, "%s_%04d", temp, LASTSPAWNED->ident);
+					sprintf(txtcontent, "%s_%04ld", temp, LASTSPAWNED->ident);
 				}
 				else strcpy(txtcontent, "NONE");
 
@@ -1791,7 +1794,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 				{
 					char temp[256];
 					strcpy(temp, GetName(ioo->filename));
-					sprintf(txtcontent, "%s_%04d", temp, ioo->ident);
+					sprintf(txtcontent, "%s_%04ld", temp, ioo->ident);
 				}
 				else 	strcpy(txtcontent, "NONE");
 
@@ -1812,7 +1815,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 					{
 						char temp[256];
 						strcpy(temp, GetName(inter.iobj[io->targetinfo]->filename));
-						sprintf(txtcontent, "%s_%04d", temp, inter.iobj[io->targetinfo]->ident);
+						sprintf(txtcontent, "%s_%04ld", temp, inter.iobj[io->targetinfo]->ident);
 					}
 				}
 
@@ -1858,7 +1861,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 		{
 			char temp[256];
 			strcpy(temp, GetName(io->filename));
-			sprintf(txtcontent, "%s_%04d", temp, io->ident);
+			sprintf(txtcontent, "%s_%04ld", temp, io->ident);
 		}
 
 		return TYPE_TEXT;
@@ -1945,7 +1948,7 @@ SCRIPT_VAR * GetFreeVarSlot(SCRIPT_VAR ** _svff, long * _nb)
 
 //*************************************************************************************
 //*************************************************************************************
-SCRIPT_VAR * GetVarAddress(SCRIPT_VAR * svf, long * nb, char * name)
+SCRIPT_VAR * GetVarAddress(SCRIPT_VAR * svf, long * nb, const char * name)
 {
 	if (!svf)
 		return NULL;
@@ -2055,7 +2058,7 @@ char * GetVarValueInterpretedAsText(char * temp1, EERIE_SCRIPT * esss, INTERACTI
 				return var_text;
 				break;
 			case TYPE_LONG:
-				sprintf(var_text, "%d", lv);
+				sprintf(var_text, "%ld", lv);
 				return var_text;
 				break;
 			default:
@@ -2068,13 +2071,13 @@ char * GetVarValueInterpretedAsText(char * temp1, EERIE_SCRIPT * esss, INTERACTI
 	else if (temp1[0] == '#')
 	{
 		l1 = GETVarValueLong(&svar, &NB_GLOBALS, temp1);
-		sprintf(var_text, "%d", l1);
+		sprintf(var_text, "%ld", l1);
 		return var_text;
 	}
 	else if (temp1[0] == '\xA7')
 	{
 		l1 = GETVarValueLong(&esss->lvar, &esss->nblvar, temp1);
-		sprintf(var_text, "%d", l1);
+		sprintf(var_text, "%ld", l1);
 		return var_text;
 	}
 	else if (temp1[0] == '&') t1 = GETVarValueFloat(&svar, &NB_GLOBALS, temp1);
@@ -2137,7 +2140,7 @@ float GetVarValueInterpretedAsFloat(char * temp1, EERIE_SCRIPT * esss, INTERACTI
 }
 //*************************************************************************************
 //*************************************************************************************
-SCRIPT_VAR * SETVarValueLong(SCRIPT_VAR ** svf, long * nb, char * name, long val)
+SCRIPT_VAR * SETVarValueLong(SCRIPT_VAR ** svf, long * nb, const char * name, long val)
 {
 	SCRIPT_VAR * tsv = GetVarAddress(*svf, nb, name);
 
@@ -2156,7 +2159,7 @@ SCRIPT_VAR * SETVarValueLong(SCRIPT_VAR ** svf, long * nb, char * name, long val
 }
 //*************************************************************************************
 //*************************************************************************************
-SCRIPT_VAR * SETVarValueFloat(SCRIPT_VAR ** svf, long * nb, char * name, float val)
+SCRIPT_VAR * SETVarValueFloat(SCRIPT_VAR ** svf, long * nb, const char * name, float val)
 {
 	SCRIPT_VAR * tsv;
 	tsv = GetVarAddress(*svf, nb, name);
@@ -2176,7 +2179,7 @@ SCRIPT_VAR * SETVarValueFloat(SCRIPT_VAR ** svf, long * nb, char * name, float v
 }
 //*************************************************************************************
 //*************************************************************************************
-SCRIPT_VAR * SETVarValueText(SCRIPT_VAR ** svf, long * nb, char * name, char * val)
+SCRIPT_VAR * SETVarValueText(SCRIPT_VAR ** svf, long * nb, const char * name, const char * val)
 {
 	SCRIPT_VAR * tsv;
 	tsv = GetVarAddress(*svf, nb, name);
@@ -2817,7 +2820,7 @@ long GetNextWord_Interpreted(INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, ch
 				strcpy(temp, tv);
 				break;
 			case TYPE_LONG:
-				sprintf(temp, "%d", lv);
+				sprintf(temp, "%ld", lv);
 				break;
 			case TYPE_FLOAT:
 				sprintf(temp, "%f", fv);
@@ -2826,11 +2829,11 @@ long GetNextWord_Interpreted(INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, ch
 	}
 	else if	(temp[0] == '#')
 	{
-		sprintf(temp, "%d", GETVarValueLong(&svar, &NB_GLOBALS, temp));
+		sprintf(temp, "%ld", GETVarValueLong(&svar, &NB_GLOBALS, temp));
 	}
 	else if (temp[0] == '\xA7')
 	{
-		sprintf(temp, "%d", GETVarValueLong(&es->lvar, &es->nblvar, temp));
+		sprintf(temp, "%ld", GETVarValueLong(&es->lvar, &es->nblvar, temp));
 	}
 	else if (temp[0] == '&')
 	{
@@ -2935,7 +2938,7 @@ void MakeGlobalText(char * tx)
 			case TYPE_G_LONG:
 				strcat(tx, svar[i].name);
 				strcat(tx, " = ");
-				sprintf(texx, "%d", svar[i].ival);
+				sprintf(texx, "%ld", svar[i].ival);
 				strcat(tx, texx);
 				strcat(tx, "\r\n");
 				break;
@@ -2972,7 +2975,7 @@ void MakeLocalText(EERIE_SCRIPT * es, char * tx)
 			case TYPE_L_LONG:
 				strcat(tx, es->lvar[i].name);
 				strcat(tx, " = ");
-				sprintf(texx, "%d", es->lvar[i].ival);
+				sprintf(texx, "%ld", es->lvar[i].ival);
 				strcat(tx, texx);
 				strcat(tx, "\r\n");
 				break;
@@ -3321,7 +3324,7 @@ bool HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 	if ((aa < ab + 90.f) && (aa > ab - 90.f))
 	{
 		//font
-		ARX_TEXT_Draw(GDevice, InBookFont, 300, 320, 0, 0, _T("VISIBLE"), D3DRGB(1.f, 0.f, 0.f));
+		ARX_TEXT_Draw(GDevice, InBookFont, 300, 320, 0, 0, "VISIBLE", D3DRGB(1.f, 0.f, 0.f));
 		return true;
 	}
 
@@ -3332,7 +3335,7 @@ bool HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 
 //*************************************************************************************
 //*************************************************************************************
-void ShowScriptError(char * tx, char * cmd)
+void ShowScriptError(const char * tx, const char * cmd)
 {
 	char text[512];
 	sprintf(text, "SCRIPT ERROR\n%s\n\n%s", tx, cmd);
@@ -3361,22 +3364,22 @@ void MakeStandard(char * str)
 //*************************************************************************************
 //*************************************************************************************
 
-long MakeLocalised(char * text, _TCHAR * output, long maxsize, long lastspeechflag)
+long MakeLocalised(const char * text, char * output, long maxsize)
 {
 	if (text[0] == 0)
 	{
-		_tcscpy(output, _T("ERROR"));
+		strcpy(output, "ERROR");
 		return 0;
 	}
 
 	_TCHAR __text[256];
 	//todo cast
 	//MultiByteToWideChar(CP_ACP, 0, text, -1, __text, 256);
-	return HERMES_UNICODE_GetProfileString(__text, _T("string"), _T("error"), output, maxsize, NULL, lastspeechflag);
+	return HERMES_UNICODE_GetProfileString(__text, "error", output, maxsize);
 }
 
 //-----------------------------------------------------------------------------
-long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, char * _lpszText, long duration)
+long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const char * _lpszText, long duration)
 {
 	_TCHAR __output[4096];
 	memset(__output, 0, 4096);
@@ -3386,13 +3389,9 @@ long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, char * _lpszText, long durati
 
 	HERMES_UNICODE_GetProfileString(
 	    __text,
-	    _T("string"),
 	    _T("Not Found"),
 	    __output,
-	    4095,
-	    NULL,
-	    -1
-	);
+	    4095);
 	return (ARX_SPEECH_Add(io, __output, duration));
 }
 
@@ -3402,25 +3401,32 @@ long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, char * _lpszText, long durati
 // returns ACCEPT to accept default EVENT processing								//
 // returns REFUSE to refuse default EVENT processing								//
 //*************************************************************************************
-void MakeSSEPARAMS(char * params)
+void MakeSSEPARAMS(const char * params)
 {
 	for (long i = 0; i < MAX_SSEPARAMS; i++)
 	{
 		SSEPARAMS[i][0] = 0;
 	}
 
-	if ((params == NULL) || (params[0] == 0)) return;
+	if ((params == NULL)) return;
 
-	char * token;
 	long pos = 0;
-	token = strtok(params, " ");
 
-	while (token != NULL)
-	{
-		if (pos < MAX_SSEPARAMS) strcpy(SSEPARAMS[pos], token);
-
+	while(*params != '\0' && pos < MAX_SSEPARAMS) {
+		
+		size_t tokensize = strchr(params, ' ') - params;
+		
+		assert(tokensize < 64 - 1);
+		memcpy(SSEPARAMS[pos], params, tokensize);
+		SSEPARAMS[pos][tokensize] = 0;
+		
+		params += tokensize;
+		
+		if(*params != '\0') {
+			params++;
+		}
+		
 		pos++;
-		token = strtok(NULL, " ");
 	}
 }
 
@@ -3428,7 +3434,7 @@ long GLOB = 0;
 
 //*************************************************************************************
 //*************************************************************************************
-long NotifyIOEvent(INTERACTIVE_OBJ * io, long msg, char * params)
+long NotifyIOEvent(INTERACTIVE_OBJ * io, long msg)
 {
 	if (SendIOScriptEvent(io, msg, "") != REFUSE)
 	{
@@ -3557,7 +3563,7 @@ void ARX_SCRIPT_EventStackExecuteAll()
 	ARX_SCRIPT_EventStackExecute();
 	STACK_FLOW = 20;
 }
-void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, char * params, char * eventname)
+void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const char * params, const char * eventname)
 {
 	for (long i = 0; i < MAX_EVENT_STACK; i++)
 	{
@@ -3592,7 +3598,7 @@ void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, char * params, char
 		}
 	}
 }
-long SendIOScriptEventReverse(INTERACTIVE_OBJ * io, long msg, char * params, char * eventname)
+long SendIOScriptEventReverse(INTERACTIVE_OBJ * io, long msg, const char * params, const char * eventname)
 {
 	// checks invalid IO
 	if (!io) return -1;
@@ -3626,7 +3632,7 @@ long SendIOScriptEventReverse(INTERACTIVE_OBJ * io, long msg, char * params, cha
 	// Refused further processing.
 	return REFUSE;
 }
-long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, char * params, char * eventname)
+long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const char * params, const char * eventname)
 {
 	// checks invalid IO
 	if (!io) return -1;
@@ -3756,7 +3762,7 @@ void ARX_SCRIPT_Timer_GetDefaultName(char * tx)
 
 	while (1)
 	{
-		sprintf(texx, "TIMER_%d", i);
+		sprintf(texx, "TIMER_%ld", i);
 		i++;
 
 		if (ARX_SCRIPT_Timer_Exist(texx) == -1)
@@ -3926,7 +3932,7 @@ void ARX_SCRIPT_Timer_Clear_For_IO(INTERACTIVE_OBJ * io)
 
 
 
-long ARX_SCRIPT_GetSystemIOScript(INTERACTIVE_OBJ * io, char * name)
+long ARX_SCRIPT_GetSystemIOScript(INTERACTIVE_OBJ * io, const char * name)
 {
 	if (ActiveTimers)
 	{
@@ -4179,8 +4185,8 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 
 	if (cb != 0)
 	{
-		if (cb > 0) sprintf(tem, "Global - Warning: Invalid Number of Closing Brackets. %d '}' missed\n", cb);
-		else sprintf(tem, "Global - Warning: Invalid Number of Opening Brackets. %d '{' missed\n", -cb);
+		if (cb > 0) sprintf(tem, "Global - Warning: Invalid Number of Closing Brackets. %ld '}' missed\n", cb);
+		else sprintf(tem, "Global - Warning: Invalid Number of Opening Brackets. %ld '{' missed\n", -cb);
 
 		if (strlen(tem) + strlen(errstring) < 65480) strcat(errstring, tem);
 		else stoppingdebug = 1;
@@ -4385,7 +4391,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 
 					if ((pos = GetNextWord(es, pos, temp)) == -1)
 					{
-						sprintf(tem, "Line %04d - Error: 'GOTO': No Label specified\n-- %s", currentline, curlinetext);
+						sprintf(tem, "Line %04ld - Error: 'GOTO': No Label specified\n-- %s", currentline, curlinetext);
 						errors++;
 					}
 					else
@@ -4395,7 +4401,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 
 						if (ppos == -1)
 						{
-							sprintf(tem, "Line %04d - Error: 'GOTO': Label %s NOT FOUND in script\n-- %s", currentline, texx, curlinetext);
+							sprintf(tem, "Line %04ld - Error: 'GOTO': Label %s NOT FOUND in script\n-- %s", currentline, texx, curlinetext);
 							errors++;
 						}
 					}
@@ -4406,7 +4412,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 
 					if ((pos = GetNextWord(es, pos, temp)) == -1)
 					{
-						sprintf(tem, "Line %04d - Error: 'GOSUB': No Label specified\n-- %s", currentline, curlinetext);
+						sprintf(tem, "Line %04ld - Error: 'GOSUB': No Label specified\n-- %s", currentline, curlinetext);
 						errors++;
 					}
 					else
@@ -4416,7 +4422,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 
 						if (pos == -1)
 						{
-							sprintf(tem, "Line %04d - Error: 'GOSUB': Label %s NOT FOUND in script\n-- %s", currentline, texx, curlinetext);
+							sprintf(tem, "Line %04ld - Error: 'GOSUB': Label %s NOT FOUND in script\n-- %s", currentline, texx, curlinetext);
 							errors++;
 						}
 					}
@@ -4902,7 +4908,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 					}
 					else
 					{
-						sprintf(tem, "Line %04d - Error: 'SET_TARGET': param1 '%s' is an invalid parameter\n-- %s", currentline, temp, curlinetext);
+						sprintf(tem, "Line %04ld - Error: 'SET_TARGET': param1 '%s' is an invalid parameter\n-- %s", currentline, temp, curlinetext);
 						errors++;
 					}
 
@@ -5022,7 +5028,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				else if (!strcmp(temp, "SETINTERNALNAME"))
 				{
 					pos = GetNextWord(es, pos, temp);
-					sprintf(tem, "Line %04d - Warning: 'SET_INTERNAL_NAME': Obsolete Command.\n-- %s", currentline, curlinetext);
+					sprintf(tem, "Line %04ld - Warning: 'SET_INTERNAL_NAME': Obsolete Command.\n-- %s", currentline, curlinetext);
 					warnings++;
 				}
 				else if (!strcmp(temp, "SHOWGLOBALS"))
@@ -5074,7 +5080,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 					}
 					else
 					{
-						sprintf(tem, "Line %04d - Error: 'SPECIAL_FX': param1 '%s' is an invalid parameter.\n-- %s", currentline, temp1, curlinetext);
+						sprintf(tem, "Line %04ld - Error: 'SPECIAL_FX': param1 '%s' is an invalid parameter.\n-- %s", currentline, temp1, curlinetext);
 						errors++;
 					}
 				}
@@ -5293,7 +5299,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 					else if	(!strcasecmp(temp2, "istype"))	{}
 					else
 					{
-						sprintf(tem, "Line %04d - Error: 'IF': Unknown Operator %s found.\n-- %s", currentline, temp2, curlinetext);
+						sprintf(tem, "Line %04ld - Error: 'IF': Unknown Operator %s found.\n-- %s", currentline, temp2, curlinetext);
 						errors++;
 					}
 				}
@@ -5305,7 +5311,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				else if (!strcmp(temp, "IFEXISTINTERNAL"))
 				{
 					pos = GetNextWord(es, pos, temp);
-					sprintf(tem, "Line %04d - Warning: 'IF_EXIST_INTERNAL': Obsolete Command.\n-- %s", currentline, curlinetext);
+					sprintf(tem, "Line %04ld - Warning: 'IF_EXIST_INTERNAL': Obsolete Command.\n-- %s", currentline, curlinetext);
 					warnings++;
 				}
 				else if (!strcmp(temp, "IFVISIBLE"))
@@ -5424,7 +5430,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				}
 				else if (!strcmp(temp, "TARGETPLAYERPOS"))
 				{
-					sprintf(tem, "Line %04d - Warning: 'TARGET_PLAYER_POS': Obsolete Command Please Use SET_TARGET PLAYER.\n-- %s", currentline, curlinetext);
+					sprintf(tem, "Line %04ld - Warning: 'TARGET_PLAYER_POS': Obsolete Command Please Use SET_TARGET PLAYER.\n-- %s", currentline, curlinetext);
 					warnings++;
 				}
 				else if (!strcmp(temp, "TWEAK"))
@@ -5453,7 +5459,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 					}
 					else
 					{
-						sprintf(tem, "Line %04d - Error: 'TWEAK %s': Unknown parameter %s found.\n-- %s", currentline, temp, temp, curlinetext);
+						sprintf(tem, "Line %04ld - Error: 'TWEAK %s': Unknown parameter %s found.\n-- %s", currentline, temp, temp, curlinetext);
 						errors++;
 					}
 				}
@@ -5667,7 +5673,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 
 		if (unknowncommand)
 		{
-			sprintf(tem, "Line %04d - Error: Unknown Command '%s'\n-- %s", currentline, temp, curlinetext);
+			sprintf(tem, "Line %04ld - Error: Unknown Command '%s'\n-- %s", currentline, temp, curlinetext);
 			errors++;
 		}
 
@@ -5688,13 +5694,13 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 		if (es == &io->over_script)
 		{
 			strcpy(temp, GetName(io->filename));
-			sprintf(title, "%s_%04d", temp, io->ident);
+			sprintf(title, "%s_%04ld", temp, io->ident);
 			strcat(title, " LOCAL SCRIPT.");
 		}
 		else
 		{
 			strcpy(temp, GetName(io->filename));
-			sprintf(title, "%s_%04d", temp, io->ident);
+			sprintf(title, "%s_%04ld", temp, io->ident);
 			strcat(title, " CLASS SCRIPT.");
 		}
 
@@ -5760,7 +5766,7 @@ void ARX_SCRIPT_Init_Event_Stats()
 }
 //*********************************************************************************************
 //*********************************************************************************************
-bool IsIOGroup(INTERACTIVE_OBJ * io, char * group)
+bool IsIOGroup(INTERACTIVE_OBJ * io, const char * group)
 {
 	for (long i = 0; i < io->nb_iogroups; i++)
 	{
@@ -6030,7 +6036,7 @@ void ManageCasseDArme(INTERACTIVE_OBJ * io)
 INTERACTIVE_OBJ * IO_DEBUG = NULL;
 //*************************************************************************************
 //*************************************************************************************
-long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ * io, char * evname, long info)
+long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTIVE_OBJ * io, const char * evname, long info)
 {
 	if (io)
 	{
@@ -8447,7 +8453,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 					{
 						char title[64];
 						strcpy(temp, GetName(io->filename));
-						sprintf(title, "%s_%04d", temp, io->ident);
+						sprintf(title, "%s_%04ld", temp, io->ident);
 						strcpy(ap->controled, title);
 					}
 
@@ -9112,7 +9118,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 				}
 				else if (!strcmp(temp, "SENDEVENT"))
 				{
-					char * evt = NULL;
+					const char * evt = NULL;
 					char temp1[64];
 					char temp2[64];
 					char temp3[64];
@@ -13356,7 +13362,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 					pos = GetNextWord(es, pos, temp2);
 					pos = GetNextWord(es, pos, temp3);
 					pos = GetNextWord(es, pos, temp4);
-					sprintf(cmd, "SCRIPT ERROR: %s_%04d %s %s %s %s [char %d]", GetName(io->filename), io->ident, temp, temp2, temp3, temp4, ppos);
+					sprintf(cmd, "SCRIPT ERROR: %s_%04ld %s %s %s %s [char %ld]", GetName(io->filename), io->ident, temp, temp2, temp3, temp4, ppos);
 
 					if (!ERROR_Log(cmd));
 					else ShowPopup(cmd);
@@ -13541,7 +13547,7 @@ LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 	return false;
 }
 
-void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, char * name, char * content)
+void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const char * name, const char * content)
 {
 	EERIE_SCRIPT * esss = NULL;
 	SCRIPT_VAR * sv = NULL;

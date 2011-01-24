@@ -327,7 +327,8 @@ void ParseFile(_TCHAR * _lpszUTextFile, const unsigned long _ulFileSize)
 char LocalisationLanguage = -1;
 
 //-----------------------------------------------------------------------------
-void ARX_Localisation_Init(char * _lpszExtension) 
+// TODO parameter not really used.
+void ARX_Localisation_Init(const char * _lpszExtension) 
 {
 	if (_lpszExtension == NULL)
 		return;
@@ -377,7 +378,7 @@ void ARX_Localisation_Init(char * _lpszExtension)
 	if (FINAL_COMMERCIAL_DEMO)
 	{
 		_TCHAR szMenuText[256];
-		PAK_UNICODE_GetPrivateProfileString(_T("system_menus_main_cdnotfound"), _T("string"), _T(""), szMenuText, 256, NULL);
+		PAK_UNICODE_GetPrivateProfileString("system_menus_main_cdnotfound", "", szMenuText, 256);
 
 		if (!szMenuText[0]) //warez
 		{
@@ -388,7 +389,7 @@ void ARX_Localisation_Init(char * _lpszExtension)
 	if (FINAL_COMMERCIAL_GAME)
 	{
 		_TCHAR szMenuText[256] = {0};
-		PAK_UNICODE_GetPrivateProfileString(_T("unicode"), _T("string"), _T(""), szMenuText, 256, NULL);
+		PAK_UNICODE_GetPrivateProfileString("unicode", "", szMenuText, 256);
 
 		if (szMenuText[0]) //warez
 		{
@@ -410,13 +411,10 @@ void ARX_Localisation_Close()
 }
 
 //-----------------------------------------------------------------------------
-long HERMES_UNICODE_GetProfileString(_TCHAR * sectionname,
-                                     _TCHAR * t_keyname,
-                                     _TCHAR * defaultstring,
-                                     _TCHAR * destination,
-                                     unsigned long    maxsize,
-                                     _TCHAR * datastream,
-                                     long    lastspeech)
+long HERMES_UNICODE_GetProfileString(const char * sectionname,
+                                     const char * defaultstring,
+                                     char * destination,
+                                     unsigned long    maxsize)
 {
 
 	ZeroMemory(destination, maxsize * sizeof(_TCHAR));
@@ -443,7 +441,7 @@ long HERMES_UNICODE_GetProfileString(_TCHAR * sectionname,
 }
 
 //-----------------------------------------------------------------------------
-long HERMES_UNICODE_GetProfileSectionKeyCount(const _TCHAR * sectionname)
+long HERMES_UNICODE_GetProfileSectionKeyCount(const char * sectionname)
 {
 	if (pHashLocalisation)
 		return pHashLocalisation->GetKeyCount(sectionname);
@@ -454,12 +452,10 @@ long HERMES_UNICODE_GetProfileSectionKeyCount(const _TCHAR * sectionname)
 static long ltNum = 0;
 
 //-----------------------------------------------------------------------------
-DWORD PAK_UNICODE_GetPrivateProfileString(_TCHAR * _lpszSection,
-        _TCHAR * _lpszKey,
-        _TCHAR * _lpszDefault,
-        _TCHAR * _lpszBuffer,
-        unsigned long	_lBufferSize,
-        char	* _lpszFileName)
+DWORD PAK_UNICODE_GetPrivateProfileString(const char * _lpszSection,
+        const char * _lpszDefault,
+        char * _lpszBuffer,
+        unsigned long	_lBufferSize)
 {
 	ltNum ++;
 	ZeroMemory(_lpszBuffer, _lBufferSize * sizeof(_TCHAR));
@@ -476,12 +472,9 @@ DWORD PAK_UNICODE_GetPrivateProfileString(_TCHAR * _lpszSection,
 
 	HERMES_UNICODE_GetProfileString(
 	    szSection,
-	    _lpszKey,
 	    _lpszDefault,
 	    _lpszBuffer,
-	    _lBufferSize,
-	    NULL,
-	    -1); //lastspeechflag
+	    _lBufferSize); //lastspeechflag
 
 	return 1;
 }

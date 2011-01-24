@@ -166,20 +166,20 @@ HRESULT D3DUtil_SetViewMatrix(D3DMATRIX & mat, D3DVECTOR & vFrom,
 // Name: _DbgOut()
 // Desc: Outputs a message to the debug stream
 //-----------------------------------------------------------------------------
-HRESULT _DbgOut(TCHAR * strFile, DWORD dwLine, HRESULT hr, TCHAR * strMsg)
+HRESULT _DbgOut(const char * strFile, DWORD dwLine, HRESULT hr, const char * strMsg)
 {
-	TCHAR buffer[256];
-	wsprintf(buffer, _T("%s(%ld): "), strFile, dwLine);
+	char buffer[256];
+	wsprintf(buffer, "%s(%ld): ", strFile, dwLine);
 	OutputDebugString(buffer);
 	OutputDebugString(strMsg);
 
 	if (hr)
 	{
-		wsprintf(buffer, _T("(hr=%08lx)\n"), hr);
+		wsprintf(buffer, "(hr=%08lx)\n", hr);
 		OutputDebugString(buffer);
 	}
 
-	OutputDebugString(_T("\n"));
+	OutputDebugString("\n");
 
 	return hr;
 }

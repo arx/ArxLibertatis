@@ -76,7 +76,7 @@ struct ScriptDebuggerInfos
 
 
 //-----------------------------------------------------------------------------
-LPSTR			SCRIPT_DEBUGGER_GetName();
+const char * SCRIPT_DEBUGGER_GetName();
 
 //-----------------------------------------------------------------------------
 unsigned long	SCRIPT_DEBUGGER_GetVersion();

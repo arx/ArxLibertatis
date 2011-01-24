@@ -398,9 +398,9 @@ extern CD3DApplication * g_pD3DApp;
 //******************************************************************************
 // MESSAGE BOXES
 //******************************************************************************
-bool	OKBox(char * text, char * title);
+bool	OKBox(const char * text, const char * title);
 void	ShowPopup(const char * text);
-int		ShowError(char * funcname, char * message, long fatality);
+int		ShowError(const char * funcname, const char * message, long fatality);
 
 void	ExitApp(int v);
 void	CalcFPS(bool reset = false);

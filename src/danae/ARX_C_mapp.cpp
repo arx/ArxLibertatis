@@ -38,8 +38,6 @@ extern char AllTxt[];
 extern HWND HwndPere;
 extern char DirectoryChoose[];
 
-void ClearAbsDirectory(char * pT, char * d);
-void AddDirectory(char * pT, char * dir);
 
 /*-----------------------------------------------------------*/
 void FreeGrille(C_GRILLE * grille);
@@ -759,7 +757,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 
 			if (FAILED(D3DTextr_CreateEmptyTexture(AllTxt, w2, h2, 0, D3DTEXTR_NO_MIPMAP, 0)))
 			{
-				sprintf(AllTxt, "Creating texture #%d -> x: %d y %d w: %d h: %d", num, (long)dx, (long)dy, w2, h2);
+				sprintf(AllTxt, "Creating texture #%d -> x: %ld y %ld w: %d h: %d", num, (long)dx, (long)dy, w2, h2);
 				MessageBox(NULL, AllTxt, "Erreur", 0);
 			}
 

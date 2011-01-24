@@ -506,7 +506,7 @@ class CMenuElementText: public CMenuElement
 
 	public:
 
-		CMenuElementText(int, HFONT, _TCHAR *, float, float, long, float, MENUSTATE); 
+		CMenuElementText(int, HFONT, const char *, float, float, long, float, MENUSTATE); 
 		virtual ~CMenuElementText();
 
 		CMenuElement * OnShortCut();
@@ -535,12 +535,12 @@ class CMenuButton: public CMenuElement
 		float				fSize;
 
 	public:
-		CMenuButton(int, HFONT, MENUSTATE, int, int, _TCHAR *, float _fSize = 1.f, TextureContainer * _pTex = NULL, TextureContainer * _pTexOver = NULL, int _iColor = -1, int _iTailleX = 0, int _iTailleY = 0);
+		CMenuButton(int, HFONT, MENUSTATE, int, int, const char *, float _fSize = 1.f, TextureContainer * _pTex = NULL, TextureContainer * _pTexOver = NULL, int _iColor = -1, int _iTailleX = 0, int _iTailleY = 0);
 		~CMenuButton();
 
 	public:
 		void SetPos(int, int);
-		void AddText(_TCHAR *);
+		void AddText(const char *);
 		CMenuElement * OnShortCut()
 		{
 			return NULL;
@@ -881,27 +881,27 @@ class CMenuConfig
 
 		bool		bNoReturnToWindows;
 	private:
-		int GetDIKWithASCII(char * _pcTouch);
-		char * ReadConfig(char * _pcSection, char * _pcKey);
-		bool WriteConfig(char * _pcSection, char * _pcKey, char * _pcDatas);
+		int GetDIKWithASCII(const char * _pcTouch);
+		char * ReadConfig(const char * _pcSection, const char * _pcKey);
+		bool WriteConfig(const char * _pcSection, const char * _pcKey, char * _pcDatas);
 	public:
 		CMenuConfig();
 		CMenuConfig(const char *);
 		virtual ~CMenuConfig();
 
 		bool SetActionKey(int _iAction, int _iActionNum, int _iVirtualKey);
-		int ReadConfigInt(char * _pcSection, char * _pcKey, bool & _bOk);
+		int ReadConfigInt(const char * _pcSection, const char * _pcKey, bool & _bOk);
  
-		char * ReadConfigString(char * _pcSection, char * _pcKey);
-		bool WriteConfigInt(char * _pcSection, char * _pcKey, int _iDatas);
+		char * ReadConfigString(const char * _pcSection, const char * _pcKey);
+		bool WriteConfigInt(const char * _pcSection, const char * _pcKey, int _iDatas);
  
-		bool WriteConfigString(char * _pcSection, char * _pcKey, char * _pcDatas);
+		bool WriteConfigString(const char * _pcSection, const char * _pcKey, char * _pcDatas);
  
  
  
 		void ResetActionKey();
-		bool WriteConfigKey(char * _pcKey, int _iAction);
-		bool ReadConfigKey(char * _pcKey, int _iAction);
+		bool WriteConfigKey(const char * _pcKey, int _iAction);
+		bool ReadConfigKey(const char * _pcKey, int _iAction);
 		void ReInitActionKey(CWindowMenuConsole * _pwmcWindowMenuConsole);
 		void SetDefaultKey();
 		void DefaultValue();
@@ -964,5 +964,7 @@ void ARX_MENU_Clicked_CREDITS();
 bool ARX_QuickLoad();
 void ARX_QuickSave();
 void ARX_DrawAfterQuickLoad();
+
+void GetTextSize(HFONT _hFont, const char * _lpszUText, int * _iWidth, int * _iHeight);
 
 #endif

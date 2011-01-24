@@ -240,7 +240,7 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 			{
 
 				if ((speech[i].name) && (speech[i].name[0] != ' '))
-					_stprintf(temp, _T("%S > %s"), speech[i].name, speech[i].lpszUText);
+					_stprintf(temp, _T("%s > %s"), speech[i].name, speech[i].lpszUText);
 				else
 					_stprintf(temp, _T(" %s"), speech[i].lpszUText);//>
 
@@ -303,7 +303,7 @@ void ARX_SPEECH_Check(LPDIRECT3DDEVICE7 pd3dDevice)
 }
 
 //-----------------------------------------------------------------------------
-void ARX_SPEECH_Launch_No_Unicode_Seek(char * string, INTERACTIVE_OBJ * io_source, long mood)
+void ARX_SPEECH_Launch_No_Unicode_Seek(const char * string, INTERACTIVE_OBJ * io_source, long mood)
 {
 	mood = ANIM_TALK_NEUTRAL;
 	long speechnum = ARX_SPEECH_AddSpeech(io_source, string, PARAM_LOCALISED, mood, 4);
@@ -446,7 +446,7 @@ void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io)
 }
 
 
-long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, char * data, long param, long mood, long flags)
+long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long param, long mood, long flags)
 {
 	if (!data || !data[0]) return -1;
 
@@ -496,13 +496,9 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, char * data, long param, long mo
 		ZeroMemory(_output, 4096 * sizeof(_TCHAR));
 
 		flg = HERMES_UNICODE_GetProfileString(lpszUSection,
-		                                      _T("string"),
 		                                      _T(""),
 		                                      _output,
-		                                      4096,
-		                                      NULL,
-		                                      io->lastspeechflag
-		                                     );
+		                                      4096);
 
 
 		io->lastspeechflag = (short)flg;
@@ -537,7 +533,7 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, char * data, long param, long mo
 	}
 
 	if (flg > 1)
-		sprintf(speech_sample, "%s%d", speech_label, flg);
+		sprintf(speech_sample, "%s%ld", speech_label, flg);
 	else
 		strcpy(speech_sample, speech_label);
 

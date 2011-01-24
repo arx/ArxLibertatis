@@ -123,7 +123,7 @@ extern HFONT hFontInGame;
 extern HFONT hFontInGameNote;
 
 //-----------------------------------------------------------------------------
-long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice, HFONT ef, float x, float y, long spacingx, long spacingy, _TCHAR * car, COLORREF colo, COLORREF bcol = 0x00FF00FF);
+long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice, HFONT ef, float x, float y, long spacingx, long spacingy, const char * car, COLORREF colo, COLORREF bcol = 0x00FF00FF);
 long ARX_TEXT_DrawRect(LPDIRECT3DDEVICE7 pd3dDevice, HFONT ef, float x, float y, long spacingx, long spacingy, float maxx, float maxy, _TCHAR * car, COLORREF colo, HRGN hRgn = NULL, COLORREF bcol = 0x00FF00FF, long flags = 0);
 float DrawBookTextInRect(float x, float y, float maxx, float maxy, _TCHAR * text, COLORREF col, COLORREF col2, HFONT font);
 void DrawBookTextCenter(float x, float y, _TCHAR * text, COLORREF col, COLORREF col2, HFONT font);
@@ -133,24 +133,17 @@ long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, _TCHAR * str,
 long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, _TCHAR * _lpszUText, int _iSpacingY, RECT _rRect);
 long ARX_UNICODE_DrawTextInRect(float x, float y,
                                 float maxx, float maxy,
-                                _TCHAR * _lpszUText,
+                                const char * _lpszUText,
                                 COLORREF col, COLORREF bcol,
                                 HFONT font,
                                 HRGN hRgn = NULL,
                                 HDC hHDC = NULL);
 
-void ARX_Allocate_Text(_TCHAR *&dest, _TCHAR * id_string);
+void ARX_Allocate_Text(char *&dest, const char * id_string);
 _TCHAR * GetFontName(char *);
 void _ShowText(char * text);
 
 //-----------------------------------------------------------------------------
-long HERMES_UNICODE_GetProfileString(_TCHAR	*	sectionname,
-                                     _TCHAR	*	t_keyname,
-                                     _TCHAR	*	defaultstring,
-                                     _TCHAR	*	destination,
-                                     unsigned long	maxsize,
-                                     _TCHAR	*	datastream,
-                                     long			lastspeech);
 
 //-----------------------------------------------------------------------------
 

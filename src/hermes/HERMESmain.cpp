@@ -91,7 +91,7 @@ UINT GaiaWM = 0;
 HWND MAIN_PROGRAM_HANDLE = NULL;
 long DEBUGG = 1;
 
-void SAFEstrcpy(char * dest, char * src, unsigned long max)
+void SAFEstrcpy(char * dest, const char * src, unsigned long max)
 {
 	if (strlen(src) > max)
 	{
@@ -239,8 +239,9 @@ void MakeUpcase(char * str)
 HKEY    ConsoleKey = NULL;
 #define CONSOLEKEY_KEY     TEXT("Software\\Arkane_Studios\\ASMODEE")
 
-void ConsoleSend(char * dat, long level, HWND source, long flag)
+void ConsoleSend(const char * dat, long level, HWND source, long flag)
 {
+	printf("ConsoleSend: %s %ld %p %ld\n", dat, level, source, flag);
 	RegCreateKeyEx(HKEY_CURRENT_USER, CONSOLEKEY_KEY, 0, NULL,
 	               REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL,
 	               &ConsoleKey, NULL);
@@ -251,7 +252,7 @@ void ConsoleSend(char * dat, long level, HWND source, long flag)
 	RegCloseKey(ConsoleKey);
 }
 
-void SendConsole(char * dat, long level, long flag, HWND source) {
+void SendConsole(const char * dat, long level, long flag, HWND source) {
 	if (GaiaWM != 0)
 	{
 		if (DebugLvl[0]) return;
@@ -268,7 +269,7 @@ void SendConsole(char * dat, long level, long flag, HWND source) {
 	}
 }
 long FINAL_COMMERCIAL_DEMO_bis = 1;
-void ForceSendConsole(char * dat, long level, long flag, HWND source)
+void ForceSendConsole(const char * dat, long level, long flag, HWND source)
 {
 	if (!FINAL_COMMERCIAL_DEMO_bis)
 	{
@@ -412,7 +413,7 @@ unsigned long MakeMemoryText(char * text)
 				}
 			}
 
-			sprintf(theader, "%12u %s\r\n", TotMemory, header);
+			sprintf(theader, "%12lu %s\r\n", TotMemory, header);
 
 			if (strlen(text) + strlen(theader) + 4 < 64000)
 			{
@@ -871,7 +872,7 @@ void ExitApp(int v)
 char	LastFolder[MAX_PATH];		// Last Folder used
 static OPENFILENAME ofn;
 
-bool HERMESFolderBrowse(char * str)
+bool HERMESFolderBrowse(const char * str)
 {
 	BROWSEINFO		bi;
 	LPITEMIDLIST	liil;
@@ -897,7 +898,7 @@ bool HERMESFolderBrowse(char * str)
 }
 
 
-bool HERMESFolderSelector(char * file_name, char * title)
+bool HERMESFolderSelector(char * file_name, const char * title)
 {
 	if (HERMESFolderBrowse(title))
 	{
@@ -910,7 +911,7 @@ bool HERMESFolderSelector(char * file_name, char * title)
 		return false;
 	}
 }
-bool HERMES_WFSelectorCommon(const char * pstrFileName, const char * pstrTitleName, char * filter, long flag, long flag_operation, long max_car, HWND hWnd)
+bool HERMES_WFSelectorCommon(const char * pstrFileName, const char * pstrTitleName, const char * filter, long flag, long flag_operation, long max_car, HWND hWnd)
 {
 	LONG	value;
 	char	cwd[MAX_PATH];
@@ -953,12 +954,12 @@ bool HERMES_WFSelectorCommon(const char * pstrFileName, const char * pstrTitleNa
 	return value;
 }
 
-int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName, char * filter, HWND hWnd)
+int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName, const char * filter, HWND hWnd)
 {
 	return HERMES_WFSelectorCommon(pstrFileName, pstrTitleName, filter, OFN_HIDEREADONLY | OFN_CREATEPROMPT, 1, MAX_PATH, hWnd);
 }
  
-int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName, char * filter, HWND hWnd)
+int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName, const char * filter, HWND hWnd)
 {
 	return HERMES_WFSelectorCommon(pstrFileName, pstrTitleName, filter, OFN_OVERWRITEPROMPT, 0, MAX_PATH, hWnd);
 }
@@ -1133,12 +1134,12 @@ long HERMES_Memory_Emergency_Out(long size, const char * info)
 	if (info)
 	{
 		if (size > 0)
-			sprintf(out, "FATAL ERROR: Unable To Allocate %d bytes... %s", size, info);
+			sprintf(out, "FATAL ERROR: Unable To Allocate %ld bytes... %s", size, info);
 		else
 			sprintf(out, "FATAL ERROR: Unable To Allocate Memory... %s", info);
 	}
 	else if (size > 0)
-		sprintf(out, "FATAL ERROR: Unable To Allocate %d bytes...", size);
+		sprintf(out, "FATAL ERROR: Unable To Allocate %ld bytes...", size);
 	else
 		sprintf(out, "FATAL ERROR: Unable To Allocate Memory...");
 

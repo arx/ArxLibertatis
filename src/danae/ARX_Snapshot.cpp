@@ -234,7 +234,7 @@ void FlushMemorySnaps(long flag)
 	MAXSNAPS = 0;
 }
 //-----------------------------------------------------------------------------
-SnapShot::SnapShot(char * _pDir, char * _pName, bool _bReplace)
+SnapShot::SnapShot(const char * _pDir, const char * _pName, bool _bReplace)
 {
 	ulNum = 0;
 
@@ -413,7 +413,7 @@ bool SnapShot::GetSnapShot()
 
 	//sauvegarde bmp
 	char tTxt[256];
-	sprintf(tTxt, "%s_%d.bmp", pName, ulNum);
+	sprintf(tTxt, "%s_%ld.bmp", pName, ulNum);
 	FILE * fFile = fopen(tTxt, "wb");
 
 	if (!fFile)
@@ -619,7 +619,7 @@ bool SnapShot::GetSnapShotDim(int _iWith, int _iHeight)
 
 	//sauvegarde bmp
 	char tTxt[256];
-	sprintf(tTxt, "%s_%d.bmp", pName, ulNum);
+	sprintf(tTxt, "%s_%ld.bmp", pName, ulNum);
 	FILE * fFile = fopen(tTxt, "wb");
 
 	if (!fFile)
@@ -659,7 +659,7 @@ bool SnapShot::GetSnapShotDim(int _iWith, int _iHeight)
 }
 
 //-----------------------------------------------------------------------------
-void InitSnapShot(char * _pDir, char * _pName)
+void InitSnapShot(const char * _pDir, const char * _pName)
 {
 	FreeSnapShot();
 	pSnapShot = new SnapShot(_pDir, _pName);
