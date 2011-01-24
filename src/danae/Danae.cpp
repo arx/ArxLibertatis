@@ -462,7 +462,7 @@ long DONT_CHANGE_WORKINGDIR=0;
 // EDITOR FLAGS/Vars
 //-----------------------------------------------------------------------------
 // Flag used to Launch Moulinex
-long MOULINEX=1;
+long MOULINEX=0;
 long KILL_AT_MOULINEX_END=0;
 long HIPOLY=0;			// Are We Using Poly-Spawning Ray-Casted Shadows ?
 long NODIRCREATION=0;	// No IO Directory Creation ?
@@ -1257,6 +1257,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 
 					if (!strcasecmp(param[parampos],"moulinex"))
 					{
+						LogInfo << "Launching moulinex";
 						MOULINEX=1;
 						KILL_AT_MOULINEX_END=1;
 						
@@ -4694,7 +4695,7 @@ void ProcessAllTheo(char * path) {
 	{
 		do
 		{
-			LogDebug << "ProcessAllTheo" << fd.cFileName;
+			LogDebug << "ProcessAllTheo " << fd.cFileName;
 			if (strcmp(fd.cFileName,".") && strcmp(fd.cFileName,".."))
 			{
 				if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
