@@ -1013,43 +1013,33 @@ void InitializeDanae()
 	LoadSysTextures();
 	CreateInterfaceTextureContainers();
 
-	LogInfo << "Level Path " << levelPath;
+//	LaunchDemo = 0;
 
-	if (MOULINEX)
-	{
-	}
-	else if (LaunchDemo) 
-	{
-		if ((FINAL_RELEASE) 
-			&& (pMenuConfig->bFullScreen || AUTO_FULL_SCREEN )
-		   )
-		{
+	if (LaunchDemo) {
+		LogInfo << "Launching Demo";
+
+		if ((FINAL_RELEASE) && (pMenuConfig->bFullScreen || AUTO_FULL_SCREEN )) {
 			DanaeSwitchFullScreen();
 		}
-
 		LaunchDemo=0;
 		SPLASH_THINGS_STAGE=11;
-	}
-	else if (levelPath[0]!=0)
-	{
+	} else if (levelPath[0]!=0)	{
+		LogInfo << "Launching Level " << levelPath;
 
-		if (FastSceneLoad(levelPath))
-		{
+		if (FastSceneLoad(levelPath)) {
 			FASTmse=1;
-			goto suite;
+		} else {
+			ARX_SOUND_PlayCinematic("Editor_Humiliation.wav");
+			mse=PAK_MultiSceneToEerie(levelPath);
 		}
-
-		ARX_SOUND_PlayCinematic("Editor_Humiliation.wav");
-		mse=PAK_MultiSceneToEerie(levelPath);
-	suite:
-		;
 		EERIEPOLY_Compute_PolyIn();
 		strcpy(LastLoadedScene,levelPath);
 	}
 
 	if ((GAME_EDITOR) && (!MOULINEX))
 		LaunchInteractiveObjectsApp( danaeApp.m_hWnd);	
-	}
+
+}
 
 //*************************************************************************************
 // DANAEApp EntryPoint
