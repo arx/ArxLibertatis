@@ -157,11 +157,7 @@ void DANAE_DEBUGGER_Update()
 
 	char temp[256];
 
-<<<<<<< HEAD
-	sprintf(temp, "%s_%04d", GetName(io->filename).c_str(), io->ident);
-=======
-	sprintf(temp, "%s_%04ld", GetName(io->filename), io->ident);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
+	sprintf(temp, "%s_%04ld", GetName(io->filename).c_str(), io->ident);
 	s.lpszObjName = strdup(temp);
 	sprintf(buffer, "%5.0f", io->pos.x);
 	s.p3ObjPos[0] = strdup(buffer);
@@ -180,11 +176,7 @@ void DANAE_DEBUGGER_Update()
 
 	if (tio)
 	{
-<<<<<<< HEAD
-		sprintf(temp, "%s_%04d", GetName(tio->filename).c_str(), tio->ident);
-=======
-		sprintf(temp, "%s_%04ld", GetName(tio->filename), tio->ident);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
+		sprintf(temp, "%s_%04ld", GetName(tio->filename).c_str(), tio->ident);
 		s.lpszTargetName = strdup(temp);
 		sprintf(buffer, "%5.0f", tio->pos.x);
 		s.p3TargetPos[0] = strdup(buffer);
@@ -355,11 +347,7 @@ void DANAE_DEBUGGER_Update()
 		{
 			if ((scr_timer[i].exist)  && (scr_timer[i].io == io))
 			{
-<<<<<<< HEAD
-				sprintf(temp, "%s %d %dms\r\n", scr_timer[i].name.c_str(), scr_timer[i].times, scr_timer[i].msecs);
-=======
-				sprintf(temp, "%s %ld %ldms\r\n", scr_timer[i].name, scr_timer[i].times, scr_timer[i].msecs);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
+				sprintf(temp, "%s %ld %dms\r\n", scr_timer[i].name.c_str(), scr_timer[i].times, scr_timer[i].msecs);
 				strcat(buf, temp);
 			}
 		}

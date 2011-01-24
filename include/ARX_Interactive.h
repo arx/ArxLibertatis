@@ -258,7 +258,7 @@ void SetWeapon_On(INTERACTIVE_OBJ * io);
 void Prepare_SetWeapon(INTERACTIVE_OBJ * io, char * temp);
 void ComputeVVPos(INTERACTIVE_OBJ * io);
 void SetYlsideDeath(INTERACTIVE_OBJ * io);
-void GetMaterialString(char * origin, char * dest);
+void GetMaterialString( const char * origin, char * dest);
 INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src);
 
 // TODO create separate header fro functions from ARX_Invetory.cpp

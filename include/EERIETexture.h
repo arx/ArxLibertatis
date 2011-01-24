@@ -64,8 +64,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIETEXTR_H
 #define EERIETEXTR_H
 
-#include "EERIETypes.h"
 #include <vector>
+
+#include "EERIETypes.h"
 
 using std::vector;
 
@@ -228,7 +229,7 @@ long CountTextures( const std::string& tex, long * memsize, long * memmip);
 // Texture invalidation and restoration functions
 //-----------------------------------------------------------------------------
  
-HRESULT D3DTextr_Restore(TCHAR * strName, LPDIRECT3DDEVICE7 pd3dDevice);
+HRESULT D3DTextr_Restore( const std::string& strName, LPDIRECT3DDEVICE7 pd3dDevice);
 HRESULT D3DTextr_InvalidateAllTextures();
 HRESULT D3DTextr_RestoreAllTextures(LPDIRECT3DDEVICE7 pd3dDevice);
 HRESULT D3DTextr_TESTRestoreAllTextures(LPDIRECT3DDEVICE7 pd3dDevice);

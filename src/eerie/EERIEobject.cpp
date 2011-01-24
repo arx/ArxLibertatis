@@ -1321,7 +1321,7 @@ retry1:
 			{
 				std::string path2;
 				path2 = dirr + et->name;
-				long SizeAlloc = 0;
+				size_t SizeAlloc = 0;
 
 				if (adr = (unsigned char *)PAK_FileLoadMalloc(path2, SizeAlloc))
 				{
@@ -1393,7 +1393,7 @@ EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const char * dirr)
 	return em;
 }
 //-----------------------------------------------------------------------------------------------------
-EERIE_3DSCENE * ScnToEerie(unsigned char * adr, long size, char * fic, long flags)
+EERIE_3DSCENE * ScnToEerie(unsigned char * adr, long size, const std::string& fic, long flags)
 {
 	if (adr == NULL) return NULL;
 
@@ -1418,7 +1418,7 @@ EERIE_3DSCENE * ScnToEerie(unsigned char * adr, long size, char * fic, long flag
 
 	if (DEBUGSYS)
 	{
-		sprintf(texx, "LoadSCN %s", fic);
+		sprintf(texx, "LoadSCN %s", fic.c_str());
 		ForceSendConsole(texx, 1, 0, (HWND)1);
 	}
 
@@ -1439,7 +1439,7 @@ retry1:
 
 	if (DEBUGG)
 	{
-		sprintf(texx, "SCNtoEERIE %s", fic);
+		sprintf(texx, "SCNtoEERIE %s", fic.c_str());
 		SendConsole(texx, 2, 0, (HWND)MSGhwnd);
 		sprintf(texx, "---------THEO SCN FILE---------");
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
@@ -1449,7 +1449,7 @@ retry1:
 
 	if ((psth->version < 3008) || (psth->version > 3024))
 	{
-		sprintf(texx, "\nINVALID Theo Version !!!\nVersion Found    - %lu\nVersion Required - %d to %d\n\nPlease Update File\n%s", psth->version, 3008, 3024, fic);
+		sprintf(texx, "\nINVALID Theo Version !!!\nVersion Found    - %lu\nVersion Required - %d to %d\n\nPlease Update File\n%s", psth->version, 3008, 3024, fic.c_str());
 		ShowError("ScnToEerie", texx, 0);
 		free(seerie);
 		seerie = NULL;

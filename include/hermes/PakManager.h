@@ -66,8 +66,8 @@ class PakFileHandle;
 class PakReader;
 class PakDirectory;
 
-void * PAK_FileLoadMalloc(const char * name, size_t * sizeLoaded = NULL);
-void * PAK_FileLoadMallocZero(const char * name, size_t * sizeLoaded = NULL);
+void * PAK_FileLoadMalloc( const std::string& name, size_t& sizeLoaded );
+void * PAK_FileLoadMallocZero( const std::string& name, size_t& sizeLoaded );
 
 bool PAK_AddPak(const char * pakfile);
 

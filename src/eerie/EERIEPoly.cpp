@@ -2967,7 +2967,7 @@ void EERIE_PORTAL_Release()
 	}
 }
 extern long COMPUTE_PORTALS;
-void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, char * name, long px, long py, long idx)
+void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const char * name, long px, long py, long idx)
 {
 	if (!COMPUTE_PORTALS) return;
 
@@ -3800,7 +3800,7 @@ bool FastSceneLoad(const char * partial_path)
 
 	HANDLE idx;
 	WIN32_FIND_DATA fd;
-	if ((idx = FindFirstFile(path2, &fd)) != INVALID_HANDLE_VALUE)
+	if ((idx = FindFirstFile(path2.c_str(), &fd)) != INVALID_HANDLE_VALUE)
 	{
 		do
 		{
@@ -3830,7 +3830,7 @@ bool FastSceneLoad(const char * partial_path)
 
 		LogDebug << "Looking for " << path2;
 
-		if (PAK_FileExist(path2))
+		if (PAK_FileExist(path2.c_str()))
 		{
 			if (!NOCHECKSUM)
 			{
@@ -3873,7 +3873,7 @@ lasuite:
 
 	if (dat == NULL) goto release;
 
-	STD_ExplodeNoAlloc( compressed, cpr_pos-pos, dat, cpr_pos);
+	STD_ExplodeNoAlloc( compressed, cpr_pos-pos, (char*)dat, cpr_pos);
 
 	if (dat == NULL) goto release;
 

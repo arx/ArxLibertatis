@@ -384,7 +384,7 @@ void AddQuadUVs(C_GRILLE * grille, int depcx, int depcy, int tcx, int tcy, int b
 }
 
 /*-----------------------------------------------------------*/
-HBITMAP LoadTargaFile(TCHAR * strPathname)
+HBITMAP LoadTargaFile( const char * strPathname)
 {
 	if (!PAK_FileExist(strPathname)) return NULL;
 
@@ -519,14 +519,14 @@ HBITMAP LoadTargaFile(TCHAR * strPathname)
 	return hbitmap;
 }
 
-HBITMAP LoadBMPImage(char * strPathname)
+HBITMAP LoadBMPImage( const char * strPathname)
 {
 	HBITMAP m_hbmBitmap = NULL;
 
 	if (!PAK_FileExist(strPathname)) return NULL;
 
-	size_t size = 0;
-	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, size);
+	size_t siz = 0;
+	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, siz);
 	// TODO siz ignored
 
 	if (!dat) return NULL;
@@ -669,10 +669,10 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 
 	AllTxt = dir;
 	AllTxt += name;
-	ClearAbsDirectory(AllTxt.c_str(), "ARX\\");
+	ClearAbsDirectory(AllTxt, "ARX\\");
 	SetExt(AllTxt, ".BMP");
 
-	if (PAK_FileExist(AllTxt))
+	if (PAK_FileExist(AllTxt.c_str()))
 	{
 		bi->hbitmap = (HBITMAP)LoadBMPImage(AllTxt.c_str());
 
@@ -691,7 +691,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 	{
 		SetExt(AllTxt, ".TGA");
 
-		if (PAK_FileExist(AllTxt))
+		if (PAK_FileExist(AllTxt.c_str()))
 		{
 			bi->hbitmap = LoadTargaFile(AllTxt.c_str());
 
@@ -755,35 +755,22 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 			if ((w - MaxW) < 0) w2 = w;
 			else w2 = MaxW;
 
-<<<<<<< HEAD
-            std::stringstream ss;
-            ss << name << '_' << std::setw(4) << num;
-            AllTxt = ss.str();
-            //AllTxt, "%s_%4d", name, num);
-            MakeUpcase(AllTxt);
-
-            if (FAILED(D3DTextr_CreateEmptyTexture(AllTxt.c_str(), w2, h2, 0, D3DTEXTR_NO_MIPMAP, 0)))
-            {
-                std::stringstream ss;
-                ss << "Creating texture #" << num << " -> x: " << (long)dx << " y: " << (long)dy << " w: " << w2 << " h: " << h2;
-                //sprintf(AllTxt, "Creating texture #%d -> x: %d y %d w: %d h: %d", num, (long)dx, (long)dy, w2, h2);
-                AllTxt = ss.str();
-                MessageBox(NULL, AllTxt.c_str(), "Erreur", 0);
-            }
-
-			TextureContainer * t = FindTexture(AllTxt.c_str());
-=======
-			sprintf(AllTxt, "%s_%4d", name, num);
+			std::stringstream ss;
+			ss << name << '_' << std::setw(4) << num;
+			AllTxt = ss.str();
+			//AllTxt, "%s_%4d", name, num);
 			MakeUpcase(AllTxt);
 
-			if (FAILED(D3DTextr_CreateEmptyTexture(AllTxt, w2, h2, 0, D3DTEXTR_NO_MIPMAP, 0)))
+			if (FAILED(D3DTextr_CreateEmptyTexture(AllTxt.c_str(), w2, h2, 0, D3DTEXTR_NO_MIPMAP, 0)))
 			{
-				sprintf(AllTxt, "Creating texture #%d -> x: %ld y %ld w: %d h: %d", num, (long)dx, (long)dy, w2, h2);
-				MessageBox(NULL, AllTxt, "Erreur", 0);
+				std::stringstream ss;
+				ss << "Creating texture #" << num << " -> x: " << (long)dx << " y: " << (long)dy << " w: " << w2 << " h: " << h2;
+				//sprintf(AllTxt, "Creating texture #%d -> x: %d y %d w: %d h: %d", num, (long)dx, (long)dy, w2, h2);
+				AllTxt = ss.str();
+				MessageBox(NULL, AllTxt.c_str(), "Erreur", 0);
 			}
 
-			TextureContainer * t = FindTexture(AllTxt);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
+			TextureContainer * t = FindTexture(AllTxt.c_str());
 			AddQuadUVs(&bi->grille, bi->nbx - nbxx, bi->nby - nby, 1, 1, bi->w - w, bi->h - h, w2, h2, t);
 
 			dx += (float)w2;

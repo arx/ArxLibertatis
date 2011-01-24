@@ -78,7 +78,7 @@ typedef struct _ARX_TEXT
 	HFONT           hFont;
 	RECT            rRect;
 	RECT            rRectClipp;
-	std::string*    lpszUText;
+	std::string     lpszUText;
 	float           fDeltaY;
 	float           fSpeedScrollY;
 	long            lCol;

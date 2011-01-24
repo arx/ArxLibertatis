@@ -58,6 +58,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 
 #include <stdio.h>
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <iomanip>
+#include <sstream>
 
 #include <cassert>
 #define STRICT
@@ -84,7 +89,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #undef boolean
 #undef INT32
 
-#include <iomanip>
 long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 /*-----------------------------------------------------------------------------*/
 #define OR	||
@@ -793,10 +797,10 @@ HRESULT TextureContainer::LoadImageData()
 // Name: LoadBitmapFile()
 // Desc: Loads data from a .bmp file, and stores it in a bitmap structure.
 //-----------------------------------------------------------------------------
-HRESULT TextureContainer::LoadBitmapFile(const char * strPathname) {
+HRESULT TextureContainer::LoadBitmapFile(const std::string& strPathname) {
 
 	size_t siz = 0;
-	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, &siz);
+	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname.c_str(), siz);
 	// TODO siz ignored
 
 	if(!dat) {
@@ -890,10 +894,10 @@ HRESULT TextureContainer::LoadBitmapFile(const char * strPathname) {
 // Desc: Loads RGBA data from a .tga file, and stores it in allocated memory
 //       for the specified texture container
 //-----------------------------------------------------------------------------
-HRESULT TextureContainer::LoadTargaFile(const char * strPathname)
+HRESULT TextureContainer::LoadTargaFile(const std::string& strPathname)
 {
 	size_t size = 0;
-	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, &size);
+	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname.c_str(), size);
 	// TODO size ignored
 
 	if(!dat) {
@@ -2068,7 +2072,7 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 
 			if ((ddsd.dwWidth > 128) || (ddsd.dwHeight > 128))
 			{
-				float fVal = ARX_CLEAN_WARN_CAST_FLOAT(std::max(ddsd.dwWidth, ddsd.dwHeight));
+				float fVal = ARX_CLEAN_WARN_CAST_FLOAT(max(ddsd.dwWidth, ddsd.dwHeight));
 				fRatio = 128.0f / fVal;
 			}
 
@@ -2886,7 +2890,7 @@ HRESULT TextureContainer::CopyRGBADataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 	if (FAILED(hr = pDD->CreateSurface(&ddsd, &pddsTempSurface, NULL)))
 	{
 		pDD->Release();
-		return NULL;
+		return 0;
 	}
 
 	while (pddsTempSurface->Lock(NULL, &ddsd, 0, 0) == DDERR_WASSTILLDRAWING);
@@ -3039,7 +3043,7 @@ HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 	if (FAILED(hr = pDD->CreateSurface(&ddsd, &pddsTempSurface, NULL)))
 	{
 		pDD->Release();
-		return NULL;
+		return 0;
 	}
 
 	while (pddsTempSurface->Lock(NULL, &ddsd, 0, 0) == DDERR_WASSTILLDRAWING);
@@ -3088,7 +3092,7 @@ HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 		pddsTempSurface->Unlock(0);
 		pddsTempSurface->Release();
 		pDD->Release();
-		return NULL;
+		return 0;
 	}
 
 
@@ -3100,7 +3104,7 @@ HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 		pddsTempSurface->Unlock(0);
 		pddsTempSurface->Release();
 		pDD->Release();
-		return NULL;
+		return 0;
 	}
 
 	unsigned char * bufferconv;
@@ -3121,7 +3125,7 @@ HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 			pddsTempSurface->Release();
 			pDD->Release();
 			(void)jpeg_finish_decompress(cinfo);
-			return NULL;
+			return 0;
 		}
 
 		bufferconv = (unsigned char *)buffer;
@@ -3226,9 +3230,9 @@ void ConvertData( std::string dat)
 void LookForRefinementMap(TextureContainer * tc)
 {
 	char * GlobalRefine = NULL;
-	long GlobalRefine_size = 0;
+	size_t GlobalRefine_size = 0;
 	char * Refine = NULL;
-	long Refine_size = 0;
+	size_t Refine_size = 0;
 	long count = 0;
 	std::string str1;
 	std::string str2;
@@ -3712,10 +3716,10 @@ TextureContainer * D3DTextr_GetSurfaceContainer( std::string& strName)
 // Desc: Loads a .jpeg file, and stores it in allocated memory
 //       for the specified texture container
 //-----------------------------------------------------------------------------
-HRESULT TextureContainer::LoadJpegFileNoDecomp(const char * strPathname) {
+HRESULT TextureContainer::LoadJpegFileNoDecomp(const std::string& strPathname) {
 	
 	size_t size;
-	unsigned char * memjpeg = (unsigned char *)PAK_FileLoadMalloc(strPathname, &size);
+	unsigned char * memjpeg = (unsigned char *)PAK_FileLoadMalloc(strPathname.c_str(), size);
 	if(!memjpeg) {
 		return E_FAIL;
 	}
@@ -3988,7 +3992,7 @@ HRESULT TextureContainer::LoadPNGFile( const std::string& strPathname)
 {
 	int taille;
 	
-	PakFileHandle * file = PAK_fopen(strPathname);
+	PakFileHandle * file = PAK_fopen(strPathname.c_str());
 	
 	if(!file) {
 		return E_FAIL;
@@ -4266,7 +4270,7 @@ HRESULT TextureContainer::CopyPNGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 	if (FAILED(hr = pDD->CreateSurface(&ddsd, &pddsTempSurface, NULL)))
 	{
 		pDD->Release();
-		return NULL;
+		return 0;
 	}
 
 	while (pddsTempSurface->Lock(NULL, &ddsd, 0, 0) == DDERR_WASSTILLDRAWING);
@@ -4334,7 +4338,7 @@ HRESULT TextureContainer::CopyPNGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 			break;
 		default:
 				pDD->Release();
-			return NULL;
+			return 0;
 			break;
 	}
 
@@ -4343,7 +4347,7 @@ HRESULT TextureContainer::CopyPNGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 	if (!memd)
 	{
 		pDD->Release();
-		return NULL;
+		return 0;
 	}
 
 	//depak
@@ -4378,7 +4382,7 @@ HRESULT TextureContainer::CopyPNGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 			default:
 					delete memd;
 				pDD->Release();
-				return NULL;
+				return 0;
 				break;
 		}
 

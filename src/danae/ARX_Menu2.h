@@ -389,77 +389,77 @@ class CMenuZone
 //-----------------------------------------------------------------------------
 class CMenuAllZone
 {
-    public:
-        std::vector<CMenuZone *>	vMenuZone;
-    public:
-        CMenuAllZone();
-        virtual ~CMenuAllZone();
+	public:
+		std::vector<CMenuZone *>	vMenuZone;
+	public:
+		CMenuAllZone();
+		virtual ~CMenuAllZone();
 
-        void AddZone(CMenuZone *);
-        int CheckZone(int, int);
+		void AddZone(CMenuZone *);
+		int CheckZone(int, int);
  
-        CMenuZone * GetZoneNum(int);
-        CMenuZone * GetZoneWithID(int);
-        void Move(int, int);
-        void DrawZone();
-        int GetNbZone();
+		CMenuZone * GetZoneNum(int);
+		CMenuZone * GetZoneWithID(int);
+		void Move(int, int);
+		void DrawZone();
+		int GetNbZone();
 };
 
 typedef enum _ELEMSTATE
 {
-    TNOP,
-    //Element Text
-    EDIT,           //type d'etat
-    GETTOUCH,
-    EDIT_TIME,      //etat en cours
-    GETTOUCH_TIME
+	TNOP,
+	//Element Text
+	EDIT,           //type d'etat
+	GETTOUCH,
+	EDIT_TIME,      //etat en cours
+	GETTOUCH_TIME
 } ELEMSTATE;
 
 typedef enum _ELEMPOS
 {
-    NOCENTER,
-    CENTER,
-    CENTERY
+	NOCENTER,
+	CENTER,
+	CENTERY
 } ELEMPOS;
 
 //-----------------------------------------------------------------------------
 class CMenuElement : public CMenuZone
 {
-    public:
-        ELEMPOS     ePlace;			//placement de la zone
-        ELEMSTATE   eState;			//etat de l'element en cours
-        MENUSTATE   eMenuState;		//etat de retour de l'element
-        int         iShortCut;
-    public:
-        CMenuElement(MENUSTATE);
-        virtual ~CMenuElement();
+	public:
+		ELEMPOS     ePlace;			//placement de la zone
+		ELEMSTATE   eState;			//etat de l'element en cours
+		MENUSTATE   eMenuState;		//etat de retour de l'element
+		int         iShortCut;
+	public:
+		CMenuElement(MENUSTATE);
+		virtual ~CMenuElement();
 
-        virtual CMenuElement * OnShortCut();
-        virtual bool OnMouseClick(int) = 0;
-        virtual void Update(int) = 0;
-        virtual void Render() = 0;
-        virtual void RenderMouseOver() {};
-        virtual void EmptyFunction() {};
-        virtual bool OnMouseDoubleClick(int)
-        {
-            return false;
-        };
-        virtual CMenuZone * GetZoneWithID(int _iID)
-        {
-            if (iID == _iID)
-            {
-                return (CMenuZone *)this;
-            }
-            else
-            {
-                return NULL;
-            }
-        };
+		virtual CMenuElement * OnShortCut();
+		virtual bool OnMouseClick(int) = 0;
+		virtual void Update(int) = 0;
+		virtual void Render() = 0;
+		virtual void RenderMouseOver() {};
+		virtual void EmptyFunction() {};
+		virtual bool OnMouseDoubleClick(int)
+		{
+			return false;
+		};
+		virtual CMenuZone * GetZoneWithID(int _iID)
+		{
+			if (iID == _iID)
+			{
+				return (CMenuZone *)this;
+			}
+			else
+			{
+				return NULL;
+			}
+		};
 
-        void SetShortCut(int _iShortCut)
-        {
-            iShortCut = _iShortCut;
-        };
+		void SetShortCut(int _iShortCut)
+		{
+			iShortCut = _iShortCut;
+		};
 };
 
 //-----------------------------------------------------------------------------
@@ -506,11 +506,7 @@ class CMenuElementText: public CMenuElement
 
 	public:
 
-<<<<<<< HEAD
 		CMenuElementText(int, HFONT, const std::string&, float, float, long, float, MENUSTATE); 
-=======
-		CMenuElementText(int, HFONT, const char *, float, float, long, float, MENUSTATE); 
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 		virtual ~CMenuElementText();
 
 		CMenuElement * OnShortCut();
@@ -529,60 +525,22 @@ class CMenuElementText: public CMenuElement
 //-----------------------------------------------------------------------------
 class CMenuButton: public CMenuElement
 {
-<<<<<<< HEAD
-    public:
-        std::string         vText;
-        int                 iPos;
-        TextureContainer*   pTex;
-        TextureContainer*   pTexOver;
-        HFONT               pHFont;
-        int                 iColor;
-        float               fSize;
-
-    public:
-        CMenuButton(    int,
-                        HFONT,
-                        MENUSTATE,
-                        int,
-                        int,
-                        const std::string&,
-                        float _fSize = 1.f,
-                        TextureContainer * _pTex = NULL,
-                        TextureContainer * _pTexOver = NULL,
-                        int _iColor = -1,
-                        int _iTailleX = 0,
-                        int _iTailleY = 0
-                    );
-        ~CMenuButton();
-
-    public:
-        void SetPos(int, int);
-        void AddText( const std::string& );
-        CMenuElement * OnShortCut()
-        {
-            return NULL;
-        };
-        bool OnMouseClick(int);
-        void Update(int);
-        void Render();
-        void RenderMouseOver();
-=======
 	public:
-		vector<_TCHAR *>		vText;
-		int					iPos;
-		TextureContainer	* pTex;
-		TextureContainer	* pTexOver;
-		HFONT				pHFont;
-		int					iColor;
-		float				fSize;
+		std::string         vText;
+		int                 iPos;
+		TextureContainer*   pTex;
+		TextureContainer*   pTexOver;
+		HFONT               pHFont;
+		int                 iColor;
+		float               fSize;
 
 	public:
-		CMenuButton(int, HFONT, MENUSTATE, int, int, const char *, float _fSize = 1.f, TextureContainer * _pTex = NULL, TextureContainer * _pTexOver = NULL, int _iColor = -1, int _iTailleX = 0, int _iTailleY = 0);
+		CMenuButton(int, HFONT, MENUSTATE, int, int, const std::string&, float _fSize = 1.f, TextureContainer * _pTex = NULL, TextureContainer * _pTexOver = NULL, int _iColor = -1, int _iTailleX = 0, int _iTailleY = 0);
 		~CMenuButton();
 
 	public:
 		void SetPos(int, int);
-		void AddText(const char *);
+		void AddText( const std::string& );
 		CMenuElement * OnShortCut()
 		{
 			return NULL;
@@ -591,7 +549,6 @@ class CMenuButton: public CMenuElement
 		void Update(int);
 		void Render();
 		void RenderMouseOver();
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 };
 
 //-----------------------------------------------------------------------------
@@ -924,47 +881,27 @@ class CMenuConfig
 
 		bool		bNoReturnToWindows;
 	private:
-<<<<<<< HEAD
 		int GetDIKWithASCII( const std::string& _pcTouch);
 		std::string ReadConfig( const std::string& _pcSection, const std::string& _pcKey);
 		bool WriteConfig( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas);
-=======
-		int GetDIKWithASCII(const char * _pcTouch);
-		char * ReadConfig(const char * _pcSection, const char * _pcKey);
-		bool WriteConfig(const char * _pcSection, const char * _pcKey, char * _pcDatas);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 	public:
 		CMenuConfig();
 		CMenuConfig( const std::string& );
 		virtual ~CMenuConfig();
 
 		bool SetActionKey(int _iAction, int _iActionNum, int _iVirtualKey);
-<<<<<<< HEAD
 		int ReadConfigInt( const std::string& _pcSection, const std::string& _pcKey, bool & _bOk);
  
 		std::string ReadConfigString( const std::string& _pcSection, const std::string& _pcKey);
 		bool WriteConfigInt( const std::string& _pcSection, const std::string& _pcKey, int _iDatas);
  
 		bool WriteConfigString( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas);
-=======
-		int ReadConfigInt(const char * _pcSection, const char * _pcKey, bool & _bOk);
- 
-		char * ReadConfigString(const char * _pcSection, const char * _pcKey);
-		bool WriteConfigInt(const char * _pcSection, const char * _pcKey, int _iDatas);
- 
-		bool WriteConfigString(const char * _pcSection, const char * _pcKey, char * _pcDatas);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
  
  
  
 		void ResetActionKey();
-<<<<<<< HEAD
 		bool WriteConfigKey( const std::string& _pcKey, int _iAction);
 		bool ReadConfigKey( const std::string& _pcKey, int _iAction);
-=======
-		bool WriteConfigKey(const char * _pcKey, int _iAction);
-		bool ReadConfigKey(const char * _pcKey, int _iAction);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 		void ReInitActionKey(CWindowMenuConsole * _pwmcWindowMenuConsole);
 		void SetDefaultKey();
 		void DefaultValue();

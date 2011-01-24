@@ -1804,9 +1804,9 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 	std::string texscript = io->filename;
 	SetExt(texscript, ".asl");
 
-	if (PAK_FileExist(texscript))
+	if (PAK_FileExist(texscript.c_str()))
 	{
-		long FileSize = 0;
+		size_t FileSize = 0;
 		io->script.data = (char *)PAK_FileLoadMalloc(texscript, FileSize);
 
 		if (io->script.data != NULL)

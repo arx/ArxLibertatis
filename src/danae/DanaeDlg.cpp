@@ -1013,13 +1013,8 @@ void AddIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, const char * name, long type
 	if (type == IOTVTYPE_PLAYER) strcpy(temp, "PLAYER");
 	else if (io != NULL)
 	{
-<<<<<<< HEAD
 		strcpy(temp, GetName(io->filename).c_str());
-		sprintf(temp2, "_%04d", io->ident);
-=======
-		strcpy(temp, GetName(io->filename));
 		sprintf(temp2, "_%04ld", io->ident);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 		strcat(temp, temp2);
 	}
 	else strcpy(temp, name);
@@ -2016,7 +2011,7 @@ INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	return false;
 }
-bool CALLBACK ScriptSearchProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
+INT_PTR CALLBACK ScriptSearchProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 {
     if (WM_COMMAND == uMsg)
     {
@@ -3964,13 +3959,8 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 				// Isis Athena
 				char temp[256];
 				thWnd = GetDlgItem(hWnd, IDC_OBJNAME);
-<<<<<<< HEAD
 				strcpy(temp, GetName(CDP_EditIO->filename).c_str());
-				sprintf(temp, "%s_%04d", temp, CDP_EditIO->ident);
-=======
-				strcpy(temp, GetName(CDP_EditIO->filename));
 				sprintf(temp, "%s_%04ld", temp, CDP_EditIO->ident);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 				SetWindowText(thWnd, temp);
 
 				thWnd = GetDlgItem(hWnd, IDC_EDIT1);

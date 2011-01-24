@@ -8261,7 +8261,9 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 		{
 					ShowText = "";
 					unsigned long msize;
-					msize=MakeMemoryText(ShowText.c_str());
+					char temp[512];
+					msize=MakeMemoryText( temp );
+					ShowText = temp;
 					std::stringstream ss;
 					ss << "Allocated Memory " << msize << " bytes " << (msize>>10) << " Kb";
 					ShowTextWindowtext = ss.str();

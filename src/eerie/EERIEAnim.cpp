@@ -336,7 +336,7 @@ long EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah, char * path) {
 	}
 	
 	size_t FileSize;
-	unsigned char * adr = (unsigned char *)PAK_FileLoadMalloc(path,&FileSize);
+	unsigned char * adr = (unsigned char *)PAK_FileLoadMalloc( path, FileSize );
 	if(!adr) {
 		return 0;
 	}

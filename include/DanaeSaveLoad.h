@@ -84,7 +84,7 @@ typedef struct
 ///////////////////////
 EERIE_3DOBJ * _LoadTheObj(const char * text, const char * path);
 void SaveIOScript(INTERACTIVE_OBJ * io, long fl);
-void LogDirCreation(char * dir);
+void LogDirCreation( const char * dir);
 typedef struct
 {
 	float	version;
@@ -123,7 +123,7 @@ typedef struct
 	long	pad[16];
 	float	fpad[16];
 } DANAE_LS_SCENE; // Aligned 1 2 4 8
-void WriteIOInfo(INTERACTIVE_OBJ * io, char * dir);
+void WriteIOInfo(INTERACTIVE_OBJ * io, const char * dir);
 typedef struct
 {
 	std::string name;

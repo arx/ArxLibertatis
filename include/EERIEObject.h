@@ -123,7 +123,7 @@ void _THEObjLoad(EERIE_3DOBJ *eerie,unsigned char * adr,long * poss,long version
 EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * fic,long flag,LPDIRECT3DDEVICE7 pd3dDevice=NULL);
 EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size,const char * fic,long flags);
 
-EERIE_3DSCENE * ScnToEerie(unsigned char * adr,  long		  size, char   *  fic,	long flags = 0);
+EERIE_3DSCENE * ScnToEerie(unsigned char * adr,  long		  size, const std::string& fic,	long flags = 0);
 
 void Clear3DObj(EERIE_3DOBJ	* eerie);
 void Clear3DScene(EERIE_3DSCENE	* eerie);

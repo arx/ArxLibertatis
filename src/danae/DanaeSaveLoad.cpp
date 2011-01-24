@@ -782,7 +782,7 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, char * dir)
 
 const char LOG_DIR_CREATION[] = "Dir_Creation.log";
 
-void LogDirCreation(char * dir)
+void LogDirCreation( const char * dir)
 {
 	FILE * fic;
 	HERMES_DATE_TIME hdt;
@@ -805,7 +805,7 @@ void LogDirCreation(char * dir)
 //*************************************************************************************
 //*************************************************************************************
 
-void LogDirDestruction(char * dir)
+void LogDirDestruction( const char * dir)
 {
 	FILE * fic;
 	HERMES_DATE_TIME hdt;
@@ -990,7 +990,7 @@ suite:
 			tmp = ss.str();
 			//sprintf(tmp, "%s%s_%04d", tmp.c_str(), tmp2, io->ident);
 
-			if (PAK_DirectoryExist(tmp))
+			if (PAK_DirectoryExist(tmp.c_str()))
 			{
 				tmp = io->filename;
 				strcpy(tmp2, GetName(tmp).c_str());
@@ -1000,7 +1000,7 @@ suite:
 				tmp = ss.str();
 				//sprintf(tmp, "%s%s_%04d\\%s.asl", tmp, tmp2, io->ident, tmp2);
 
-				if (PAK_FileExist(tmp))
+				if (PAK_FileExist(tmp.c_str()))
 				{
 					if (io->over_script.data)
 					{
@@ -1024,7 +1024,7 @@ suite:
 			else
 			{
 				CreateDirectory(tmp.c_str(), NULL);
-				LogDirCreation(tmp.c_str());
+    			LogDirCreation(tmp.c_str());
 				WriteIOInfo(io, temp);
 			}
 		}
@@ -1093,7 +1093,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
 	HERMES_DATE_TIME hdt;
 	LogInfo << "Loading Level " << fic;
 	ClearCurLoadInfo();
-	CURRENTLEVEL = GetLevelNumByName(fic);
+	CURRENTLEVEL = GetLevelNumByName(fic.c_str());
 	GetDate(&hdt);
 	sprintf(tstr, "%2ldh%02ldm%02ld LOADLEVEL start", hdt.hours, hdt.mins, hdt.secs);
 	ForceSendConsole(tstr, 1, 0, (HWND)1);
@@ -1101,7 +1101,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
 	std::string fic2 = fic;
 	SetExt(fic2, ".LLF");
 
-	if (!PAK_FileExist(fileDlf))
+	if (!PAK_FileExist(fic.c_str()))
 	{
 		sprintf(_error, "Unable to find %s", fic.c_str());
 		goto loaderror;
@@ -1280,7 +1280,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
 
 	if (dlh.lighting)
 	{
-		if (!PAK_FileExist(fic2))
+		if (!PAK_FileExist(fic2.c_str()))
 		{
 			dll = (DANAE_LS_LIGHTINGHEADER *)(dat + pos);
 			pos += sizeof(DANAE_LS_LIGHTINGHEADER);
@@ -1338,7 +1338,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
 
 	if (dlh.version < 1.003f) dlh.nb_lights = 0;
 
-	if (!PAK_FileExist(fic2))
+	if (!PAK_FileExist(fic2.c_str()))
 	{
 		if (dlh.nb_lights != 0)
 		{
@@ -1550,7 +1550,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
 	pos = 0;
 	DANAE_LLF_HEADER * llh;
 
-	if (!PAK_FileExist(fic2))
+	if (!PAK_FileExist(fic2.c_str()))
 	{
 		goto finish;
 	}
@@ -2016,20 +2016,22 @@ void ARX_SAVELOAD_DLFCheckInit()
 	dlfcheck = NULL;
 	dlfcount = 0;
 }
-long GetIdent(char * ident)
+
+long GetIdent( const std::string& ident)
 {
 	for (long n = 0; n < dlfcount; n++)
 	{
-		if (!strcasecmp(dlfcheck[n].ident, ident))
+		if (!strcasecmp(dlfcheck[n].ident, ident.c_str()))
 			return n;
 	}
 
 	return -1;
 }
+
 void AddIdent( std::string& ident, long num)
 {
 	MakeUpcase(ident);
-	long n = GetIdent(ident.c_str());
+	long n = GetIdent(ident);
 
 	if (n != -1)
 	{
@@ -2066,7 +2068,7 @@ void ARX_SAVELOAD_DLFCheckAdd(char * path, long num)
 
 	SetExt(fic, ".DLF");
 
-	if (!PAK_FileExist(fic))
+	if (!PAK_FileExist(fic.c_str()))
 	{
 		return;
 	}

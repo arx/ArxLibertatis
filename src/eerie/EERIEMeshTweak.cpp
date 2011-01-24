@@ -264,7 +264,7 @@ long ObjectAddFace(EERIE_3DOBJ * obj, EERIE_FACE * face, EERIE_3DOBJ * srcobj)
 }
 //*************************************************************************************
 //*************************************************************************************
-long ObjectAddAction(EERIE_3DOBJ * obj, char * name, long act,
+long ObjectAddAction(EERIE_3DOBJ * obj, const char * name, long act,
                      long sfx, EERIE_VERTEX * vert) 
 {
 	long newvert = ObjectAddVertex(obj, vert);
@@ -286,7 +286,7 @@ long ObjectAddAction(EERIE_3DOBJ * obj, char * name, long act,
 		obj->actionlist = (EERIE_ACTIONLIST *)realloc(obj->actionlist, sizeof(EERIE_ACTIONLIST) * (obj->nbaction + 1));
 	}
 
-	strcpy(obj->actionlist[obj->nbaction].name.c_str(), name);
+	obj->actionlist[obj->nbaction].name = name;
 	obj->actionlist[obj->nbaction].act = act;
 	obj->actionlist[obj->nbaction].sfx = sfx;
 	obj->actionlist[obj->nbaction].idx = newvert;
@@ -896,7 +896,7 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const std::string& _path
 	SetExt(filet, ".FTL");
 	File_Standardize(filet, file2);
 
-	if ((!PAK_FileExist(file2)) && (!PAK_FileExist(path))) return;
+	if ((!PAK_FileExist(file2.c_str())) && (!PAK_FileExist(path.c_str()))) return;
 
 	if (tw == TWEAK_ERROR) return;
 
@@ -923,7 +923,7 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const std::string& _path
 	EERIE_3DOBJ * result = NULL;
 	EERIE_3DOBJ * result2 = NULL;
 
-	if ((PAK_FileExist(file2)) || (PAK_FileExist(path)))
+	if ((PAK_FileExist(file2.c_str())) || (PAK_FileExist(path.c_str())))
 	{
 		const char tex1[] = "Graph\\Obj3D\\Textures\\";
 

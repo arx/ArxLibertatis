@@ -32,7 +32,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 C_SOUND		TabSound[MAX_SOUND];
 int			NbSound;
 /*-----------------------------------------------------------*/
-extern char AllTxt[];
+extern std::string AllTxt;
 extern HWND HwndPere;
 extern char DirectoryChoose[];
 extern int	LSoundChoose;
@@ -148,7 +148,7 @@ void CutAndAddString(char * pText, const char * pDebText)
 
 	if (bOk)
 	{
-		strcat(AllTxt, pText);
+		AllTxt += pText;
 	}
 }
 /*-----------------------------------------------------------*/
@@ -181,14 +181,15 @@ int ExistSound(char * dir, char * name)
 }
 
 /*-----------------------------------------------------------*/
+/* TODO Figure out what this is supposed to do */
 void PatchReplace()
 {
 	char CopyTxt[256];
-	int j = strlen(AllTxt);
-	char * pT = AllTxt;
+	int j = AllTxt.length();
+	//char * pT = AllTxt;
 
-	while (j--)
-	{
+	//while (j--)
+	//{
 		//todo strings
 //		if (!strnicmp(pT, "uk", strlen("uk")))
 //		{
@@ -208,18 +209,18 @@ void PatchReplace()
 //			break;
 //		}
 
-		pT++;
-	}
+		//pT++;
+	//}
 
 	ClearAbsDirectory(AllTxt, "ARX\\");
 
 	//on enleve "sfx"
 	bool bFound = false;
-	pT = AllTxt;
-	j = strlen((const char *)pT);
+	//pT = AllTxt;
+	//j = strlen((const char *)pT);
 
-	while (j)
-	{
+	//while (j)
+	//{
 		//todo strings
 //		if (!strnicmp((const char *)pT, "sfx\\speech\\", strlen((const char *)"sfx\\speech\\")))
 //		{
@@ -227,22 +228,22 @@ void PatchReplace()
 //			break;
 //		}
 
-		j--;
-		pT++;
-	}
+		//j--;
+		//pT++;
+	//}
 
-	if (bFound)
+	/*if (bFound)
 	{
 		memmove((void *)pT, (const void *)(pT + 4), strlen((const char *)(pT + 4)) + 1);
-	}
+	}*/
 
 	//UNIQUEMENT EN MODE GAME!!!!!!
-	char * pcTxt = strstr(AllTxt, "speech\\");
+	std::string pcTxt = strstr(AllTxt.c_str(), "speech\\");
 
-	if (pcTxt)
+	if (!pcTxt.empty())
 	{
-		pcTxt += strlen("speech\\");
-		char * pcTxt2 = strdup(pcTxt);
+		pcTxt = pcTxt.substr( strlen("speech\\") );
+		char * pcTxt2 = strdup(pcTxt.c_str());
 		char * pcTxt3 = pcTxt2;
 
 		while (*pcTxt3 != '\\')
@@ -250,10 +251,10 @@ void PatchReplace()
 			pcTxt3++;
 		}
 
-		*pcTxt = 0;
-		strcat(pcTxt, Project.localisationpath.c_str());
-		strcat(pcTxt, "\\");
-		strcat(pcTxt, pcTxt3 + 1);
+		pcTxt.clear();
+		pcTxt += Project.localisationpath;
+		pcTxt += "\\";
+		pcTxt += (pcTxt3 + 1);
 
 		free((void *)pcTxt2);
 	}
@@ -303,17 +304,17 @@ int AddSoundToList(char * dir, char * name, int id, int pos)
 
 	strcpy(cs->name, name);
 
-	strcpy(AllTxt, "\\\\Arkaneserver\\public\\ARX\\");
+	AllTxt = "\\\\Arkaneserver\\public\\ARX\\";
 	CutAndAddString(dir, "sfx");
-	strcat(AllTxt, name);
+	AllTxt += name;
 	PatchReplace();
 
 //	todo strings
 //	strupr(AllTxt);
 
-	if (strstr(AllTxt, "SFX"))
+	if ( AllTxt.find("SFX") != std::string::npos )
 	{
-		cs->sound = strdup(AllTxt);
+		cs->sound = strdup(AllTxt.c_str());
 	}
 	else
 	{

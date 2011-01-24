@@ -90,13 +90,11 @@ void PAK_Close() {
 	pPakManager = NULL;
 }
 
-void * _PAK_FileLoadMallocZero(const char * name, size_t * sizeRead) {
+void * _PAK_FileLoadMallocZero(const std::string& name, size_t& sizeRead) {
 	
 	size_t size = pPakManager->GetSize(name);
 	if(size == 0) {
-		if(sizeRead) {
-			*sizeRead = size;
-		}
+		sizeRead = size;
 		return NULL;
 	}
 	
@@ -104,18 +102,14 @@ void * _PAK_FileLoadMallocZero(const char * name, size_t * sizeRead) {
 	
 	if(!pPakManager->Read(name, mem)) {
 		delete mem;
-		if(sizeRead) {
-			*sizeRead = 0;
-		}
+		sizeRead = 0;
 		return NULL;
 	}
 	
 	mem[size] = 0;
 	mem[size + 1] = 0;
 	
-	if(sizeRead) {
-		*sizeRead = size + 2;
-	}
+	sizeRead = size + 2;
 	
 	return mem;
 }

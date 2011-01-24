@@ -554,7 +554,7 @@ void MCache_ClearAll()
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-char * MCache_Pop(char * file, size_t * size)
+char * MCache_Pop( const char * file, size_t * size)
 {
 	long num = MCache_Get(file);
 
@@ -580,13 +580,13 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	
 	
 	// Creates FTL file name
-	std::string gamefic;
-	gamefic += "Game\\";
-    gamefic += file;
-	SetExt(gamefic, ".FTL");
+	std::string filename;
+	filename += "Game\\";
+	filename += file;
+	SetExt(filename, ".FTL");
 
 	// Checks for FTL file existence
-	if(!PAK_FileExist(filename)) {
+	if(!PAK_FileExist(filename.c_str())) {
 		LogError<<"ARX_FTL_Load: not found in PAK" << filename;
 		return NULL;
 	}
@@ -608,12 +608,12 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	long NOrelease = 1;
 	long NoCheck = 0;
 
-	compressed = MCache_Pop(gamefic.c_str(), &compressedSize);
+	compressedData = MCache_Pop(filename.c_str(), &compressedSize);
 
 	if (!compressedData)
 	{
-		compressedData = (char *)PAK_FileLoadMalloc(filename, &compressedSize);
-		NOrelease = MCache_Push(gamefic, compressedData, compressedSize) ? 1 : 0;
+		compressedData = (char *)PAK_FileLoadMalloc(filename, compressedSize);
+		NOrelease = MCache_Push(filename, compressedData, compressedSize) ? 1 : 0;
 	}
 	else NoCheck = 1;
 

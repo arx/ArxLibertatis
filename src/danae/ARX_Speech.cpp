@@ -233,11 +233,7 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 			{
 
 				if ((speech[i].name) && (speech[i].name[0] != ' '))
-<<<<<<< HEAD
-					_stprintf(temp, _T("%S > %s"), speech[i].name, speech[i].lpszUText.c_str());
-=======
-					_stprintf(temp, _T("%s > %s"), speech[i].name, speech[i].lpszUText);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
+					_stprintf(temp, _T("%s > %s"), speech[i].name, speech[i].lpszUText.c_str());
 				else
 					_stprintf(temp, _T(" %s"), speech[i].lpszUText.c_str());//>
 
@@ -486,25 +482,14 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long param, l
 //	todo: wchar cast
 //	MultiByteToWideChar(CP_ACP, 0, data, -1, lpszUSection, 512);
 
-    if (!(flags & ARX_SPEECH_FLAG_NOTEXT))
-    {
-        std::string _output( 4096, '\0' );
+	if (!(flags & ARX_SPEECH_FLAG_NOTEXT))
+	{
+		std::string _output( 4096, '\0' );
 
-<<<<<<< HEAD
-        flg = HERMES_UNICODE_GetProfileString(lpszUSection,
-                                              std::string( "string" ),
-                                              "",
-                                              _output,
-                                              4096,
-                                              NULL,
-                                              io->lastspeechflag
-                                             );
-=======
 		flg = HERMES_UNICODE_GetProfileString(lpszUSection,
-		                                      _T(""),
+		                                      "",
 		                                      _output,
 		                                      4096);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 
 
 		io->lastspeechflag = (short)flg;

@@ -117,6 +117,6 @@ void ARX_EQUIPMENT_IdentifyAll();
 
 void ARX_EQUIPMENT_UnEquipAllPlayer();
 float ARX_EQUIPMENT_GetSpecialValue(INTERACTIVE_OBJ * io, long val);
-float GetHitValue(char * name);
+float GetHitValue( const char * name);
 void ARX_EQUIPMENT_UnEquipPlayerWeapon();
 #endif

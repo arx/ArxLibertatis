@@ -230,14 +230,8 @@ void ARX_INTERACTIVE_ForceIOLeaveZone(INTERACTIVE_OBJ * io, long flags)
 			{
 				char texx[128];
 				char tex2[128];
-<<<<<<< HEAD
 				strcpy(texx, GetName(io->filename).c_str());
-
-				sprintf(tex2, "%s_%04d %s", texx, io->ident, temp.c_str());
-=======
-				strcpy(texx, GetName(io->filename));
-				sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
+				sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
 				SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2, NULL); 
 			}
 		}
@@ -1737,11 +1731,7 @@ void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, char * s1)
 
 	std::string icontochange;
 
-<<<<<<< HEAD
 	icontochange = io->filename;
-=======
-	strcpy(icontochange, io->filename);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 	RemoveName(icontochange);
 	icontochange += s1;
 	SetExt(icontochange, ".bmp");
@@ -2223,11 +2213,7 @@ long GetTargetByNameTarget(const char * name)
 		if ((inter.iobj[i] != NULL)
 		        &&	(inter.iobj[i]->ident > -1))
 		{
-<<<<<<< HEAD
-			sprintf(temp, "%s_%04d", GetName(inter.iobj[i]->filename).c_str(), inter.iobj[i]->ident);
-=======
-			sprintf(temp, "%s_%04ld", GetName(inter.iobj[i]->filename), inter.iobj[i]->ident);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
+			sprintf(temp, "%s_%04ld", GetName(inter.iobj[i]->filename).c_str(), inter.iobj[i]->ident);
 
 			if (!strcasecmp(name, temp)) return i;
 		}
@@ -2550,7 +2536,7 @@ void Prepare_SetWeapon(INTERACTIVE_OBJ * io, std::string& temp)
 	}
 }
 
-void GetIOScript(INTERACTIVE_OBJ * io, char * texscript)
+void GetIOScript(INTERACTIVE_OBJ * io, const char * texscript)
 {
 	if (PAK_FileExist(texscript))
 	{
@@ -2598,7 +2584,7 @@ INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
     file2 += file;
     SetExt(file2, ".FTL");
 
-    if (!PAK_FileExist(file2)
+    if (!PAK_FileExist(file2.c_str())
             &&	!PAK_FileExist(file))
     {
         return NULL;
@@ -2712,17 +2698,13 @@ INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
 	std::string texscript = file;
 
 	SetExt(texscript, "asl");
-<<<<<<< HEAD
-=======
-	strcpy(tex1, file);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 	SetExt(tex1, "teo");
 
 	std::string file2 = "GAME\\%s";
     file2 += file;
 	SetExt(file2, ".FTL");
 
-	if (!PAK_FileExist(file2)
+	if (!PAK_FileExist(file2.c_str())
 	        &&	!PAK_FileExist(file))
 	{
 		return NULL;
@@ -2786,10 +2768,6 @@ INTERACTIVE_OBJ * AddMarker(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
 	std::string texscript = file;
 
 	SetExt(texscript, "asl");
-<<<<<<< HEAD
-=======
-	strcpy(tex1, file);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 	SetExt(tex1, "teo");
 
 	std::string file2;
@@ -2797,7 +2775,7 @@ INTERACTIVE_OBJ * AddMarker(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
     file2 += file;
 	SetExt(file2, ".FTL");
 
-	if (!PAK_FileExist(file2)
+	if (!PAK_FileExist(file2.c_str())
 	        &&	!PAK_FileExist(file))
 	{
 		return NULL;
@@ -2957,37 +2935,11 @@ void RotateSelectedIO(EERIE_3D * op)
 //*************************************************************************************
 void ARX_INTERACTIVE_DeleteByIndex(long i, long flag)
 {
-<<<<<<< HEAD
-    if ((i < 1)
-            ||	(i >= inter.nbmax))
-        return;
-
-    std::string temp;
-    char temp2[HERMES_PATH_SIZE];
-    char temp3[HERMES_PATH_SIZE];
-
-    if (inter.iobj[i] != NULL)
-    {
-        //Must "KILL" dir...
-        if (inter.iobj[i]->scriptload == 0)
-        {
-            if (inter.iobj[i]->ident > 0)
-            {
-                temp = inter.iobj[i]->filename;
-                strcpy(temp2, GetName(temp).c_str());
-                RemoveName(temp);
-                std::stringstream ss;
-                ss << temp << temp2 << '_' << std::setw(4) << inter.iobj[i]->ident << '.';
-                temp = ss.str();
-                //sprintf(temp, "%s%s_%04d.", temp, temp2, inter.iobj[i]->ident)
-
-				if (DirectoryExist(temp.c_str()))
-=======
 	if ((i < 1)
 	        ||	(i >= inter.nbmax))
 		return;
 
-	char temp[HERMES_PATH_SIZE];
+	std::string temp;
 	char temp2[HERMES_PATH_SIZE];
 	char temp3[HERMES_PATH_SIZE];
 
@@ -2998,13 +2950,15 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, long flag)
 		{
 			if (inter.iobj[i]->ident > 0)
 			{
-				strcpy(temp, inter.iobj[i]->filename);
-				strcpy(temp2, GetName(temp));
+				temp = inter.iobj[i]->filename;
+				strcpy(temp2, GetName(temp).c_str());
 				RemoveName(temp);
-				sprintf(temp, "%s%s_%04ld.", temp, temp2, inter.iobj[i]->ident);
+				std::stringstream ss;
+				ss << temp << temp2 << '_' << std::setw(4) << inter.iobj[i]->ident << '.';
+				temp = ss.str();
+				//sprintf(temp, "%s%s_%04d.", temp, temp2, inter.iobj[i]->ident)
 
-				if (DirectoryExist(temp))
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
+				if (DirectoryExist(temp.c_str()))
 				{
 					long _delete = 0;
 					sprintf(temp3, "Really remove Directory & Directory Contents ?\n\n%s", temp.c_str());
@@ -3092,7 +3046,7 @@ INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
     file2 += file;
     SetExt(file2, ".FTL");
 
-	if ((!PAK_FileExist(file2))
+	if ((!PAK_FileExist(file2.c_str()))
 	        &&	(!PAK_FileExist(file))
 	   )
 	{
@@ -3208,7 +3162,7 @@ void ReloadScript(INTERACTIVE_OBJ * io)
 	ReleaseScript(&io->over_script);
 	ReleaseScript(&io->script);
 
-	if (PAK_FileExist(texscript))
+	if (PAK_FileExist(texscript.c_str()))
 	{
 		size_t FileSize = 0;
 		io->script.data = (char *)PAK_FileLoadMallocZero(texscript, FileSize);
@@ -3225,22 +3179,14 @@ void ReloadScript(INTERACTIVE_OBJ * io)
 		io->script.data = NULL;
 	}
 
-<<<<<<< HEAD
 	texscript = io->filename;
 	strcpy(tmp2, GetName(texscript).c_str());
 	RemoveName(texscript);
-    std::stringstream ss;
-    ss << texscript << tmp2 << '_' << std::setw(4) << io->ident << '\\' << tmp2 << ".asl";
-    texscript = ss.str();
-//	texscript , "%s%s_%04d\\%s.asl", texscript, tmp2, io->ident, tmp2);
-=======
-	strcpy(texscript, io->filename);
-	strcpy(tmp2, GetName(texscript));
-	RemoveName(texscript);
-	sprintf(texscript, "%s%s_%04ld\\%s.asl", texscript, tmp2, io->ident, tmp2);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
+	std::stringstream ss;
+	ss << texscript << tmp2 << '_' << std::setw(4) << io->ident << '\\' << tmp2 << ".asl";
+	texscript = ss.str();
 
-	if (PAK_FileExist(texscript))
+	if (PAK_FileExist(texscript.c_str()))
 	{
 		size_t FileSize = 0;
 		io->over_script.data = (char *)PAK_FileLoadMallocZero(texscript, FileSize);
@@ -3307,61 +3253,33 @@ bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t);
 //*************************************************************************************
 void MakeIOIdent(INTERACTIVE_OBJ * io)
 {
-<<<<<<< HEAD
-    std::string temp;
-    char temp2[HERMES_PATH_SIZE];
-    long t = 1;
-
-    if ((NODIRCREATION)
-            ||	!io)
-        return;
-
-    while (io->ident == 0)
-    {
-        temp = io->filename;
-        strcpy(temp2, GetName(temp).c_str());
-        RemoveName(temp);
-        std::stringstream ss;
-        ss << temp << temp2 << '_' << std::setw(4) << t << '.';
-        //(temp, "%s%s_%04d.", temp, temp2, t);
-
-        if (!DirectoryExist(temp.c_str()))
-        {
-            io->ident = t;
-            CreateDirectory(temp.c_str(), NULL);
-            LogDirCreation(temp.c_str());
-            WriteIOInfo(io, temp.c_str());
-        }
-
-        t++;
-    }
-=======
-	char temp[HERMES_PATH_SIZE];
+	std::string temp;
 	char temp2[HERMES_PATH_SIZE];
 	long t = 1;
 
 	if ((NODIRCREATION)
-	        ||	!io)
+	       ||	!io)
 		return;
 
 	while (io->ident == 0)
 	{
-		strcpy(temp, io->filename);
-		strcpy(temp2, GetName(temp));
+		temp = io->filename;
+		strcpy(temp2, GetName(temp).c_str());
 		RemoveName(temp);
-		sprintf(temp, "%s%s_%04ld.", temp, temp2, t);
+		std::stringstream ss;
+		ss << temp << temp2 << '_' << std::setw(4) << t << '.';
+		//(temp, "%s%s_%04d.", temp, temp2, t);
 
-		if (!DirectoryExist(temp))
+		if (!DirectoryExist(temp.c_str()))
 		{
 			io->ident = t;
-			CreateDirectory(temp, NULL);
-			LogDirCreation(temp);
-			WriteIOInfo(io, temp);
+			CreateDirectory(temp.c_str(), NULL);
+			LogDirCreation(temp.c_str());
+			WriteIOInfo(io, temp.c_str());
 		}
 
 		t++;
 	}
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 }
 //*************************************************************************************
 // Tells if an ident corresponds to a temporary IO
@@ -3375,13 +3293,8 @@ bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t)
 
 	char name1[256];
 	char ident[256];;
-<<<<<<< HEAD
 	strcpy(name1, GetName(io->filename).c_str());
-	sprintf(ident, "%s_%04d", name1, t);
-=======
-	strcpy(name1, GetName(io->filename));
 	sprintf(ident, "%s_%04ld", name1, t);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 
 	for (long i = 0; i < inter.nbmax; i++)
 	{
@@ -3405,7 +3318,7 @@ bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t)
 	RemoveName(file2);
 	file2 += ident;
 
-	if (PAK_DirectoryExist(file2))
+	if (PAK_DirectoryExist(file2.c_str()))
 		return true;
 
 	if (LAST_CHINSTANCE != -1)
@@ -3474,28 +3387,28 @@ INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fil, 
 
 	texscript = file;
 	SetExt(texscript, "asl");
-<<<<<<< HEAD
 	tex1 = file;
-=======
-	strcpy(tex1, file);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 	SetExt(tex1, "teo");
 
+	// TODO clean up
 	tex2 = file;
 	SetExt(tex2, "bmp");
-	AddToName(tex2.c_str(), "[Icon]");
+	char temp[256];
+	strcpy( temp, tex2.c_str() );
+	AddToName( temp, "[Icon]");
+	tex2 = temp;
 
 	std::string file2;
 	file2 = "GAME\\" + file;
 	SetExt(file2, ".FTL");
 
-	if (!PAK_FileExist(file2)
-	        &&	!PAK_FileExist(file))
+	if (!PAK_FileExist(file2.c_str())
+	        &&	!PAK_FileExist(file.c_str()))
 	{
 		return NULL;
 	}
 
-	if (!PAK_FileExist(tex2)) 	return NULL;
+	if (!PAK_FileExist(tex2.c_str())) 	return NULL;
 
 	INTERACTIVE_OBJ * io = CreateFreeInter();
 
