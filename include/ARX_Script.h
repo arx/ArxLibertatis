@@ -404,7 +404,7 @@ void ARX_SCRIPT_Timer_Clear_For_IO(INTERACTIVE_OBJ * io);
 void ARX_SCRIPT_Timer_Clear_By_IO(INTERACTIVE_OBJ * io);
 long ARX_SCRIPT_Timer_GetFree();
  
-void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, char * newevent);
+void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, const char * newevent);
 void ARX_SCRIPT_EventStackExecute();
 void ARX_SCRIPT_EventStackExecuteAll();
 void ARX_SCRIPT_EventStackInit();
@@ -440,7 +440,7 @@ long MakeLocalised(char * text, _TCHAR * output, long maxsize, long lastspeechfl
 //-----------------------------------------------------------------------------
 long specialstrcmp(const char * text, const char * seek);
 void CheckHit(INTERACTIVE_OBJ * io, float ratio);
-long NotifyIOEvent(INTERACTIVE_OBJ * io, long msg, char * params);
+long NotifyIOEvent(INTERACTIVE_OBJ * io, long msg);
 void ForceAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * ea);
 
 long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, char * text, long duration = -1);
@@ -450,7 +450,7 @@ long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const char * params, cons
 long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTIVE_OBJ * io, const char * eventname, long info = 0);
 long SendMsgToAllIO(long msg, char * dat);
 
-void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, char * params, char * eventname);
+void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const char * params, const char * eventname);
 bool InSubStack(EERIE_SCRIPT * es, long pos);
 long GetSubStack(EERIE_SCRIPT * es);
 void AttemptMoveToTarget(INTERACTIVE_OBJ * io);

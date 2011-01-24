@@ -460,7 +460,7 @@ suite:
 
 	DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXTBIG, danaeApp.m_hWnd, (DLGPROC)ShowTextDlg);
 }
-void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, char * newevent)
+void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, const char * newevent)
 {
 	if (io == NULL) return;
 
@@ -3436,7 +3436,7 @@ long GLOB = 0;
 
 //*************************************************************************************
 //*************************************************************************************
-long NotifyIOEvent(INTERACTIVE_OBJ * io, long msg, char * params)
+long NotifyIOEvent(INTERACTIVE_OBJ * io, long msg)
 {
 	if (SendIOScriptEvent(io, msg, "") != REFUSE)
 	{
@@ -3565,7 +3565,7 @@ void ARX_SCRIPT_EventStackExecuteAll()
 	ARX_SCRIPT_EventStackExecute();
 	STACK_FLOW = 20;
 }
-void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, char * params, char * eventname)
+void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const char * params, const char * eventname)
 {
 	for (long i = 0; i < MAX_EVENT_STACK; i++)
 	{
