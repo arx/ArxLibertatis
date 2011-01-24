@@ -7,7 +7,7 @@ using std::cout;
 Logger::LogLevel Logger::logLevel = Logger::Debug;
 
 const string blackList[] = {
-		/*"ARX_FTL.cpp",*/
+		"ARX_FTL.cpp",
 		"ARX_Script.cpp",
 		"PakManager.cpp",
 		"PakReader.cpp",

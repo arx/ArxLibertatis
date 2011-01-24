@@ -82,37 +82,10 @@ typedef struct
 } DANAE_LLF_HEADER; //Aligned 1 2 4
 
 ///////////////////////
+
 EERIE_3DOBJ * _LoadTheObj(const char * text, const char * path);
 void SaveIOScript(INTERACTIVE_OBJ * io, long fl);
 void LogDirCreation(char * dir);
-typedef struct
-{
-	float	version;
-	char	ident[16];
-	char	lastuser[256];
-	long	time;
-	EERIE_3D pos_edit;
-	EERIE_3D angle_edit;
-	long	nb_scn;
-	long	nb_inter;
-	long	nb_nodes;
-	long	nb_nodeslinks;
-	long	nb_zones;
-	bool	lighting;
-	bool    Bpad[256];
-	long	nb_lights; 
-	long	nb_fogs; 
-
-	long	nb_bkgpolys;		
-	long	nb_ignoredpolys;	
-	long	nb_childpolys;		
-	long	nb_paths;			
-	long	pad[250];
-	EERIE_3D	offset;
-	float	fpad[253];
-	char	cpad[4096];
-	bool	bpad[256];
-} DANAE_LS_HEADER; // Aligned 1 2 4
 
 #define	SP_IGNORED	1
 #define	SP_CHILD	2

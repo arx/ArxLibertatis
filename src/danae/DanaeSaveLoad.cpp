@@ -263,6 +263,37 @@ void ReplaceSpecifics(char * text)
 extern long NODIRCREATION;
 extern long ADDED_IO_NOT_SAVED;
 
+//#pragma pack(push,1)
+typedef struct
+{
+	float	version;
+	char	ident[16];
+	char	lastuser[256];
+	long	time;
+	EERIE_3D pos_edit;
+	EERIE_3D angle_edit;
+	long	nb_scn;
+	long	nb_inter;
+	long	nb_nodes;
+	long	nb_nodeslinks;
+	long	nb_zones;
+	bool	lighting;
+	bool    Bpad[256];
+	long	nb_lights; 
+	long	nb_fogs; 
+
+	long	nb_bkgpolys;		
+	long	nb_ignoredpolys;	
+	long	nb_childpolys;		
+	long	nb_paths;			
+	long	pad[250];
+	EERIE_3D	offset;
+	float	fpad[253];
+	char	cpad[4096];
+	bool	bpad[256];
+} DANAE_LS_HEADER; // Aligned 1 2 4
+//#pragma pack(pop)
+
 //*************************************************************************************
 //*************************************************************************************
 
@@ -1096,8 +1127,9 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * fic)
 	LoadLevelScreen();
 	memcpy(&dlh, dat, sizeof(DANAE_LS_HEADER));
 	pos += sizeof(DANAE_LS_HEADER);
+	// TODO copying directly into structs is not very portable
 
-	LogDebug << "dlh.version " << dlh.version;
+	LogDebug << "dlh.version " << dlh.version << " header size " << sizeof(DANAE_LS_HEADER);
 
 	if (dlh.version > CURRENT_VERSION) // using compression
 	{
