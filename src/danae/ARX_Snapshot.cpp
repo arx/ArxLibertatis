@@ -413,7 +413,7 @@ bool SnapShot::GetSnapShot()
 
 	//sauvegarde bmp
 	char tTxt[256];
-	sprintf(tTxt, "%s_%d.bmp", pName, ulNum);
+	sprintf(tTxt, "%s_%ld.bmp", pName, ulNum);
 	FILE * fFile = fopen(tTxt, "wb");
 
 	if (!fFile)
@@ -619,7 +619,7 @@ bool SnapShot::GetSnapShotDim(int _iWith, int _iHeight)
 
 	//sauvegarde bmp
 	char tTxt[256];
-	sprintf(tTxt, "%s_%d.bmp", pName, ulNum);
+	sprintf(tTxt, "%s_%ld.bmp", pName, ulNum);
 	FILE * fFile = fopen(tTxt, "wb");
 
 	if (!fFile)
