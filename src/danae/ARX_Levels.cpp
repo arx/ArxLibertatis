@@ -130,7 +130,7 @@ long ARX_LEVELS_GetRealNum(long num)
 	return num;
 }
 
-long GetLevelNumByName(char * name)
+long GetLevelNumByName(const char * name)
 {
 	if (name)
 	{

@@ -27,8 +27,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class PakFile;
 class PakDirectory;
+class PakReader;
 
-#include <cstddef>
+typedef void * FileHandle;
+
+#include <stddef.h>
 #include <cstdio> // for FILE
 
 #include <string>
@@ -36,14 +39,20 @@ class PakDirectory;
 #define PACK_MAX_FREAD	(256)
 
 struct PakFileHandle {
+	
+	PakReader * reader;
+	
 	bool active;
 	void * iID;
 	int offset;
 	PakFile * file;
+	
+	FileHandle truefile;
+	
 };
 
-class PakReader
-{
+class PakReader {
+	
 private:
 	
 	const char * fat;
@@ -53,10 +62,14 @@ private:
 public:
 	std::string pakname;
 	PakDirectory * root;
+	
 private:
+	
 	int ReadFAT_int();
 	char* ReadFAT_string();
+	
 public:
+	
 	PakReader();
 	~PakReader();
 	
@@ -70,8 +83,8 @@ public:
 	
 	PakFileHandle * fOpen(const std::string& name, const std::string& mode);
 	int fClose(PakFileHandle * h);
-	std::size_t fRead(void * buf, std::size_t size, std::size_t n, PakFileHandle * h);
-	int fSeek(PakFileHandle * h, long off, int whence);
+	size_t fRead(void * buf, size_t size, size_t n, PakFileHandle * h);
+	int fSeek(PakFileHandle * h, int off, long whence);
 	long fTell(PakFileHandle * h);
 	
 }; 

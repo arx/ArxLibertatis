@@ -72,6 +72,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <hermes/PakManager.h>
 #include <hermes/PakEntry.h>
+#include <hermes/Filesystem.h>
+
 #include <cstdio>
 using std::sprintf;
 using std::fopen;
@@ -269,7 +271,7 @@ float GetTimeBetweenKeyFrames(EERIE_ANIM * ea, long f1, long f2)
 	return time;
 }
 //-----------------------------------------------------------------------------------------------------
-EERIE_ANIM * TheaToEerie(unsigned char * adr, long size, const char * fic, long flags)
+EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * fic, long flags)
 {
 	THEA_HEADER				th;
 	THEA_KEYFRAME			tkf;
@@ -1184,7 +1186,7 @@ void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms)
 	free(ms);
 }
 //-----------------------------------------------------------------------------------------------------
-EERIE_MULTI3DSCENE * MultiSceneToEerie(char * dirr)
+EERIE_MULTI3DSCENE * MultiSceneToEerie(const char * dirr)
 {
 	char * tex;
 	long idx;
@@ -1209,6 +1211,7 @@ retry10:
 	strcpy(LastLoadedScene, dirr);
 	sprintf(pathh, "%s*.scn", dirr);
 
+	printf("\e[1;33mpartially unimplemented MultiSceneToEerie\e[m\n");
 //	if ((idx = _findfirst(pathh, &fd)) != -1)
 //	{
 //		do
@@ -1220,7 +1223,7 @@ retry10:
 //				if (!strcasecmp(tex, ".SCN"))
 //				{
 //					sprintf(path, "%s%s", dirr, fd.name);
-//					long SizeAlloc = 0;
+//					size_t SizeAlloc = 0;
 //
 //					if (adr = (unsigned char *)PAK_FileLoadMalloc(path, &SizeAlloc))
 //					{
@@ -1378,29 +1381,13 @@ EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const char * dirr)
 {
 	EERIE_MULTI3DSCENE * em = NULL;
 
-	switch (CURRENT_LOADMODE)
-	{
-		case LOAD_TRUEFILE:
-			em = MultiSceneToEerie(dirr);
-			break;
-		case LOAD_PACK:
-			em = _PAK_MultiSceneToEerie(dirr);
-			break;
-		case LOAD_PACK_THEN_TRUEFILE:
-			em = _PAK_MultiSceneToEerie(dirr);
+// TODO create unified implementation for both pak and non-pak
+	
+	em = _PAK_MultiSceneToEerie(dirr);
 
-			if (!em)
-				em = MultiSceneToEerie(dirr);
+	if(!em)
+		em = MultiSceneToEerie(dirr);
 
-			break;
-		case LOAD_TRUEFILE_THEN_PACK:
-			em = MultiSceneToEerie(dirr);
-
-			if (!em)
-				em = _PAK_MultiSceneToEerie(dirr);
-
-			break;
-	}
 
 	EERIEPOLY_Compute_PolyIn();
 	return em;
@@ -2584,7 +2571,7 @@ void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj)
 
 //-----------------------------------------------------------------------------------------------------
 // Converts a Theo Object to an EERIE object
-EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, char * texpath, char * fic, long flag, LPDIRECT3DDEVICE7 pd3dDevice, long flag2) // flag 1 progressive alloc 2 SLOW
+EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, const char * fic, long flag, LPDIRECT3DDEVICE7 pd3dDevice, long flag2) // flag 1 progressive alloc 2 SLOW
 {
 	if (adr == NULL) 	return NULL;
 

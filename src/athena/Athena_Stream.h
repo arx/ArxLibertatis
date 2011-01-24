@@ -25,7 +25,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef __ATHENA_STREAM_H__
 #define __ATHENA_STREAM_H__
 
-#include <stdio.h>
 #include <Athena_Types.h>
 #include "Athena_Codec.h"
 
@@ -43,12 +42,12 @@ namespace ATHENA
 			// Destructor                                                                //
 			virtual ~Stream() {};
 			// Setup                                                                     //
-			virtual aalError SetStream(FILE * stream) = 0;
+			virtual aalError SetStream(PakFileHandle * stream) = 0;
 			virtual aalError SetFormat(const aalFormat & format) = 0;
 			virtual aalError SetLength(const aalULong & length) = 0;
 			virtual aalError SetPosition(const aalULong & position) = 0;
 			// Status                                                                    //
-			virtual aalError GetStream(FILE *&stream) = 0;
+			virtual aalError GetStream(PakFileHandle *&stream) = 0;
 			virtual aalError GetFormat(aalFormat & format) = 0;
 			virtual aalError GetLength(aalULong & length) = 0;
 			virtual aalError GetPosition(aalULong & position) = 0;

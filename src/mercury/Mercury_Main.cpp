@@ -84,7 +84,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 	free(mem);
 }*/
 /*-------------------------------------------------------------*/
-bool CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi,LPVOID pvRef)
+// must be BOOL to be passed to DX
+BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef)
 {
 	INPUT_INFO	*info;
 
@@ -306,7 +307,8 @@ char	*mm1,*mm2;
 	return true;
 }
 /*-------------------------------------------------------------*/
-bool CALLBACK DIEnumDeviceObjectsCallback(LPCDIDEVICEOBJECTINSTANCE lpddoi,LPVOID pvRef)
+// must be bool to be passed to DX
+BOOL CALLBACK DIEnumDeviceObjectsCallback(LPCDIDEVICEOBJECTINSTANCE lpddoi,LPVOID pvRef)
 {
 INPUT_INFO			*info;
 

@@ -57,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIEOBJECT_H
 #define EERIEOBJECT_H
 
-#include <d3d.h>
+#include <d3dwrapper.h>
 #include "EERIEApp.h"
 #include "EERIELight.h"
 #include "EERIETexture.h"
@@ -99,7 +99,7 @@ extern D3DTLVERTEX	vert_list[4];
 extern ACTIONSTRUCT actions[MAX_ACTIONS];
 
 //-----------------------------------------------------------------------------
-EERIE_MULTI3DSCENE	* MultiSceneToEerie(char * dir);
+EERIE_MULTI3DSCENE	* MultiSceneToEerie(const char * dir);
 EERIE_MULTI3DSCENE	* PAK_MultiSceneToEerie(const char * dir);
 
 void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms);
@@ -118,11 +118,10 @@ void XRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s);
 void YRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s);
 void ZRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s);
 
-EERIE_3DOBJ * TheoToEerie(unsigned char * adr,long size,char * texpath,char * fic,long flag,LPDIRECT3DDEVICE7 pd3dDevice=NULL,long flag2=0);
+EERIE_3DOBJ * TheoToEerie(unsigned char * adr,long size, const char * texpath, const char * fic,long flag,LPDIRECT3DDEVICE7 pd3dDevice=NULL,long flag2=0);
 void _THEObjLoad(EERIE_3DOBJ *eerie,unsigned char * adr,long * poss,long version,long flag=0,long flag2=0);
 EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * fic,long flag,LPDIRECT3DDEVICE7 pd3dDevice=NULL);
-EERIE_ANIM * TheaToEerie(unsigned char * adr,long size,const char * fic,long flags);
-EERIE_ANIM * OldTheaToEerie(unsigned char * adr,long size,const char * fic);
+EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size,const char * fic,long flags);
 
 EERIE_3DSCENE * ScnToEerie(unsigned char * adr,  long		  size, char   *  fic,	long flags = 0);
 

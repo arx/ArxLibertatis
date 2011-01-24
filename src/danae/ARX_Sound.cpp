@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <hermes/PakManager.h>
 #include <hermes/PakReader.h>
 #include <hermes/PakEntry.h>
+#include <hermes/Filesystem.h>
 #include <EERIEMath.h>
 #include <ARX_NPC.h>
 #include <ARX_Interactive.h>
@@ -417,47 +418,35 @@ long ARX_SOUND_Init(HWND hwnd)
 	aalSetListenerUnitFactor(ARX_SOUND_UNIT_FACTOR);
 	aalSetListenerRolloffFactor(ARX_SOUND_ROLLOFF_FACTOR);
 
-	if (FINAL_RELEASE)
-	{
-
-		aalEnable(AAL_FLAG_PACKEDRESOURCES);
-
-		if (pStringModSfx[0])
-		{
-			if (FileExist(pStringModSfx)) aalAddResourcePack(pStringModSfx);
+	if(FINAL_RELEASE) {
+		
+		if(pStringModSfx[0]) {
+			if(!PAK_AddPak(pStringModSfx)) {
+				printf("Unable to Find Mod SFX Data File\n");
+			}
 		}
-
-		if (pStringModSpeech[0])
-		{
-			if (FileExist(pStringModSpeech)) aalAddResourcePack(pStringModSpeech);
+		
+		if (pStringModSpeech[0]) {
+			if(!PAK_AddPak(pStringModSpeech)) {
+				printf("Unable to Find Mod Speech Data File\n");
+			}
 		}
-
+		
 		const char PAK_SFX[] = "sfx.pak";
-		if (FileExist(PAK_SFX)) aalAddResourcePack(PAK_SFX);
-		else
-		{
+		if(!PAK_AddPak(PAK_SFX)) {
 			printf("Unable to Find SFX Data File\n");
 			exit(0);
 		}
-
+		
 		const char PAK_SPEECH[] = "speech.pak";
-		if (FileExist(PAK_SPEECH))
-		{
-			aalAddResourcePack(PAK_SPEECH);
-		}
-		else
-		{
+		if(!PAK_AddPak(PAK_SPEECH)) {
 			const char PAK_SPEECH_DEFAULT[] = "speech_default.pak";
-			if (FileExist(PAK_SPEECH_DEFAULT))
-			{
-				aalAddResourcePack(PAK_SPEECH_DEFAULT);
-			}
-			else
-			{
+			if(!PAK_AddPak(PAK_SPEECH_DEFAULT)) {
 				printf("Unable to Find Speech Data File\n");
 				exit(0);
 			}
 		}
+		
 	}
 
 	// Load samples
@@ -1992,7 +1981,7 @@ static void ARX_SOUND_CreateCollisionMaps()
 	for (unsigned long i = 0; i < ARX_SOUND_COLLISION_MAP_COUNT; i++)
 	{
 		char * lpszFileText;
-		long lFileSize;
+		size_t lFileSize;
 
 		sprintf(path, "%s%s%s", ARX_SOUND_PATH_INI, ARX_SOUND_COLLISION_MAP_NAME[i], ARX_SOUND_FILE_EXTENSION_INI);
 
@@ -2162,7 +2151,7 @@ static void ARX_SOUND_CreatePresenceMap()
 {
 	char path[256];
 	char * lpszFileText;
-	long lFileSize;
+	size_t lFileSize;
 
 	sprintf(path, "%s%s%s", ARX_SOUND_PATH_INI, ARX_SOUND_PRESENCE_NAME, ARX_SOUND_FILE_EXTENSION_INI);
 

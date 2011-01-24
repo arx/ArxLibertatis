@@ -126,7 +126,7 @@ COLORREF custcr[16];
 long accepted = 0;
 
  
-bool CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+INT_PTR CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 long InitMemorySnaps();
 void FlushMemorySnaps(long snap);
@@ -172,7 +172,7 @@ void SetClick(HWND hWnd, int id)
 }
 
 float FORCED_REDUCTION_VALUE = 0.f;
-bool CALLBACK MeshReductionProc(HWND hWnd, UINT uMsg, WPARAM wParam,
+INT_PTR CALLBACK MeshReductionProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                                 LPARAM lParam)
 {
 	HWND thWnd;
@@ -236,7 +236,7 @@ HWND ShowErrorPopup(char * title, char * tex)
 	                             MAKEINTRESOURCE(IDD_SCRIPTERROR), danaeApp.m_hWnd, IDDErrorLogProc, 0);
 	return hdl;
 }
-bool CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam,
+INT_PTR CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                               LPARAM lParam)
 {
 	HWND thWnd;
@@ -268,7 +268,7 @@ bool CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 }
 extern long ARX_PATHS_HIERARCHYMOVE;
 
-bool CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
+INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                                  LPARAM lParam)
 {
 	HWND thWnd;
@@ -806,7 +806,7 @@ void InterTreeSelectObject(HTREEITEM hitem)
 	}
 }
 
-bool CALLBACK InteractiveObjDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
+INT_PTR CALLBACK InteractiveObjDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                                     LPARAM lParam)
 {
 	HTREEITEM hitem;
@@ -1296,7 +1296,7 @@ void LaunchSnapShotParamApp(HWND hwnd)
 //*************************************************************************************
 //*************************************************************************************
 
-bool CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	char temp[256];
 	HWND thWnd;
@@ -1583,7 +1583,7 @@ long SYNTAXCHECKING = 0;
 //*************************************************************************************
 //*************************************************************************************
 
-bool CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HWND thWnd;
 
@@ -1725,7 +1725,7 @@ bool CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 //*************************************************************************************
 //*************************************************************************************
 
-bool CALLBACK GaiaTextEdit(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
+INT_PTR CALLBACK GaiaTextEdit(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 {
 	HWND thWnd;
 
@@ -1758,7 +1758,7 @@ void ExitProc();
 //*************************************************************************************
 //*************************************************************************************
 
-bool CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	long val;
 	HWND thWnd;
@@ -2047,7 +2047,7 @@ bool CALLBACK ScriptSearchProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 // AboutProc()
 //  message proc function for the about box
 //*************************************************************************************
-bool CALLBACK AboutProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
+INT_PTR CALLBACK AboutProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 {
 	if (WM_COMMAND == uMsg)
 		if (IDOK == LOWORD(wParam) || IDCANCEL == LOWORD(wParam))
@@ -2077,7 +2077,7 @@ extern long TRUEFIGHT;
 //*************************************************************************************
 //*************************************************************************************
 
-bool CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HWND thWnd;
 	static long wuz;
@@ -2584,7 +2584,7 @@ long REFLECTFX = 0;
 //*************************************************************************************
 //*************************************************************************************
 
-bool CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HRESULT hr;
 
@@ -2749,7 +2749,7 @@ bool CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 extern long CHANGE_LEVEL_PROC_RESULT;
 
-bool CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (WM_COMMAND == uMsg)
 	{
@@ -2930,7 +2930,7 @@ long INITT = 0;
 //*************************************************************************************
 //*************************************************************************************
 
-bool CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HWND thWnd;
 	long l;
@@ -3159,7 +3159,7 @@ bool CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 			if ((CDP_EditLight) && (CDP_EditLight->tl != -1))
 			{
 				DynLight[CDP_EditLight->tl].exist = 0;
-				CDP_EditLight->tl = NULL;
+				CDP_EditLight->tl = 0;
 			}
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER11);
@@ -3353,7 +3353,7 @@ extern FOG_DEF * CDP_EditFog;
 //*************************************************************************************
 //*************************************************************************************
 
-bool CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HWND thWnd;
 	float t;
@@ -3620,7 +3620,7 @@ INTERACTIVE_OBJ * edit_io = NULL;
 //*************************************************************************************
 //*************************************************************************************
 
-bool CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	HWND thWnd;
 
@@ -4059,7 +4059,7 @@ extern HWND CDP_SOUNDOptions;
 //*************************************************************************************
 //*************************************************************************************
  
-bool CALLBACK LanguageOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
+INT_PTR CALLBACK LanguageOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 {
 	if (WM_COMMAND == uMsg)
 		switch (LOWORD(wParam))

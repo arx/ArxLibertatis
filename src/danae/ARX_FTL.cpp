@@ -65,6 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "HERMESMain.h"
 
 #include <hermes/PakManager.h>
+#include <hermes/Filesystem.h>
 
 //***********************************************************************************************
 //	FTL FILE Structure:
@@ -426,7 +427,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 	afsh->offset_cylinder = -1;
 
 	// Now we can flush our cool FTL file to the hard drive
-	unsigned long	handle;
+	FileHandle handle;
 	char _error[512];
 
 	if (pos > allocsize)
@@ -477,7 +478,7 @@ typedef struct
 {
 	std::string name;
 	char * data;
-	long size;
+	size_t size;
 } MCACHE_DATA;
 
 MCACHE_DATA * MCache = NULL;
@@ -515,7 +516,7 @@ long MCache_Get( const std::string file)
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-bool MCache_Push( const std::string& file, char * data, long size)
+bool MCache_Push( const std::string& file, char * data, size_t size)
 {
 	std::string fic;
 
@@ -552,7 +553,7 @@ void MCache_ClearAll()
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-char * MCache_Pop(char * file, long * size)
+char * MCache_Pop(char * file, size_t * size)
 {
 	long num = MCache_Get(file);
 
@@ -585,7 +586,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	SetExt(gamefic, ".FTL");
 
 	// Checks for FTL file existence
-	if(!PAK_FileExist(gamefic)) {
+	if(!PAK_FileExist(filename)) {
 		printf("ARX_FTL_Load: not found in PAK\n");
 		return NULL;
 	}
@@ -593,7 +594,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	// Our file exist we can use it
 	unsigned char * dat;
 	long pos = 0;
-	long allocsize;
+	size_t allocsize;
 
 	ARX_FTL_PRIMARY_HEADER 	*		afph;
 	ARX_FTL_SECONDARY_HEADER 	*		afsh;
@@ -602,37 +603,38 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	ARX_FTL_COLLISION_SPHERES_DATA_HEADER * afcsdh;
 	ARX_FTL_3D_DATA_HEADER 	*		af3Ddh;
 
-	char * compressed = NULL;
-	long cpr_pos = 0;
+	char * compressedData = NULL;
+	size_t compressedSize = 0;
 	long NOrelease = 1;
 	long NoCheck = 0;
 
-	compressed = MCache_Pop(gamefic.c_str(), &cpr_pos);
+	compressed = MCache_Pop(gamefic.c_str(), &compressedSize);
 
-	if (!compressed)
+	if (!compressedData)
 	{
-		compressed = (char *)PAK_FileLoadMalloc(gamefic, cpr_pos);
-		NOrelease = MCache_Push(gamefic, compressed, cpr_pos) ? 1 : 0;
+		compressedData = (char *)PAK_FileLoadMalloc(filename, &compressedSize);
+		NOrelease = MCache_Push(gamefic, compressedData, compressedSize) ? 1 : 0;
 	}
 	else NoCheck = 1;
 
-	if(!compressed) {
+	if(!compressedData) {
 		printf("ARX_FTL_Load: error loading from PAK\n");
 		return NULL;
 	}
 
 	long DontCheck = 0;
 
-	if (CURRENT_LOADMODE != LOAD_TRUEFILE) DontCheck = 1;
+	DontCheck = 1;
 
-	dat = (unsigned char *)STD_Explode(compressed, cpr_pos, allocsize);//pos,&cpr_pos);
+	dat = (unsigned char *)STD_Explode(compressedData, compressedSize, allocsize);//pos,&cpr_pos);
+	// TODO size ignored
 
 	if(!dat) {
 		printf("ARX_FTL_Load: error decompressing\n");
 		return NULL;
 	}
 
-	if (!NOrelease) free(compressed);
+	if (!NOrelease) free(compressedData);
 
 	// Pointer to Primary Header
 	afph = (ARX_FTL_PRIMARY_HEADER *)dat;

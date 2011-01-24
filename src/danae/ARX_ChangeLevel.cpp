@@ -63,7 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-//-----------------------------------------------------------------------------
+#include <d3dwrapper.h>
 #include <vector>
 #include <algorithm>
 #include "ARX_ChangeLevel.h"
@@ -82,6 +82,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <HERMESMain.h>
 #include <hermes/PakManager.h>
+#include <hermes/Filesystem.h>
 
 #include <EERIEMath.h>
 #include <EERIEObject.h>
@@ -2116,7 +2117,7 @@ long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVEL_PLA
 	char _error[256];
 
 	sprintf(loadfile, "player.sav");
-	long size = _pSaveBlock->GetSize(loadfile);
+	size_t size = _pSaveBlock->GetSize(loadfile);
 
 	if (size <= 0)
 	{
@@ -2385,7 +2386,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 	ARX_CHANGELEVEL_IO_SAVE * ais;
 	unsigned char * dat;
 	long pos = 0;
-	long size = 0;
+	size_t size = 0;
 
 	sprintf(loadfile, "%s.sav", ident);
 
@@ -3471,7 +3472,7 @@ long ARX_CHANGELEVEL_Pop_Globals()
     unsigned char * dat;
     long pos = 0;
     std::string loadfile = "Globals.sav";
-    long size;
+    size_t size;
     std::string _error;
 
     ARX_SCRIPT_Free_All_Global_Variables();
@@ -4187,7 +4188,7 @@ long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 
 	std::string loadfile;
 	std::string _error;
-	long size;
+	size_t size;
 	unsigned char * dat;
 
 	// Open Save Block

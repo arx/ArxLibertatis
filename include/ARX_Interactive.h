@@ -231,12 +231,12 @@ void UnLinkObjectFromObject(EERIE_3DOBJ * inter, EERIE_3DOBJ * tolink);
 bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos);
 long IsCollidingAnyInter(float x, float y, float z, EERIE_3D * size);
  
-INTERACTIVE_OBJ * AddInteractive(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long id, long flags = 0);
-INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long flags = 0);
-INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long flags = 0);
-INTERACTIVE_OBJ  * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long flags = 0);
-INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, char * file);
-INTERACTIVE_OBJ * AddMarker(LPDIRECT3DDEVICE7 pd3dDevice, char * file);
+INTERACTIVE_OBJ * AddInteractive(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long id, long flags = 0);
+INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags = 0);
+INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags = 0);
+INTERACTIVE_OBJ  * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags = 0);
+INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, const char * file);
+INTERACTIVE_OBJ * AddMarker(LPDIRECT3DDEVICE7 pd3dDevice, const char * file);
 
 void InitInter(long nb);
 INTERACTIVE_OBJ * CreateFreeInter(long num = -1);

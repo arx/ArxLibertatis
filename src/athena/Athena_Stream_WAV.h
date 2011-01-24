@@ -28,6 +28,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <Athena_Types.h>
 #include "Athena_Stream.h"
 
+class PakFileHandle;
+
 namespace ATHENA
 {
 
@@ -43,12 +45,12 @@ namespace ATHENA
 			StreamWAV();
 			~StreamWAV();
 			// Setup                                                                     //
-			aalError SetStream(FILE * stream);
+			aalError SetStream(PakFileHandle * stream);
 			aalError SetFormat(const aalFormat & format);
 			aalError SetLength(const aalULong & length);
 			aalError SetPosition(const aalULong & position);
 			// Status                                                                    //
-			aalError GetStream(FILE *&stream);
+			aalError GetStream(PakFileHandle *&stream);
 			aalError GetFormat(aalFormat & format);
 			aalError GetLength(aalULong & length);
 			aalError GetPosition(aalULong & position);
@@ -57,7 +59,7 @@ namespace ATHENA
 			aalError Write(aalVoid * buffer, const aalULong & to_write, aalULong & write);
 		private:
 			// Data                                                                      //
-			FILE * stream;
+			PakFileHandle * stream;
 			Codec * codec;
 			aalVoid * status;                 //Stream status
 			aalVoid * format;                 //File data format

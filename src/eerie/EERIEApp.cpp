@@ -146,7 +146,7 @@ CD3DApplication::CD3DApplication()
 	CreationSizeY = 480;
 	CreationFlags = 0;
 	owner = 0L;
-	CreationMenu = NULL;
+	CreationMenu = 0;
 	ToolBar = NULL;
 	strcpy(StatusText, "");
 	memset(&Project, 0, sizeof(PROJECT));
@@ -265,7 +265,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst, TCHAR * strCmdLine)
 	if (m_dlghWnd == NULL)
 	{
 		if (FINAL_COMMERCIAL_DEMO || FINAL_COMMERCIAL_GAME)
-			menu = NULL;
+			menu = 0;
 		else
 			menu = CreationMenu;
 

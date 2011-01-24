@@ -22,6 +22,8 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+
+#include <d3dwrapper.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -32,7 +34,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Menu2.h"
 #include "ARX_GlobalMods.h"
 #include "ARX_Time.h"
-#include <d3d.h>
 
 
 bool bUSE_D3DFOG_INTER;
@@ -45,7 +46,7 @@ GLOBAL_MODS stacked;
 extern long USE_D3DFOG;
 extern long EDITMODE;
 
-// changement du clipping Z valeur max & min
+// change the clipping Z max & min
 #define DEFAULT_ZCLIP		6400.f 
 #define DEFAULT_MINZCLIP	1200.f 
 
@@ -55,7 +56,7 @@ extern float fZFogStart;
 extern bool bZBUFFER;
 extern D3DMATRIX ProjectionMatrix;
 
-extern unsigned long ulBKGColor = 0;
+unsigned long ulBKGColor = 0;
 
 void ARX_GLOBALMODS_Reset()
 {

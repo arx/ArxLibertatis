@@ -22,11 +22,11 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <windows.h>
-#include <mmreg.h>
+
+#include <hermes/PakManager.h>
+
 #include <Athena_Types.h>
 #include "Athena_Codec_ADPCM.h"
-#include "Athena_FileIO.h"
 
 
 
@@ -159,7 +159,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError CodecADPCM::SetStream(FILE * _stream)
+	aalError CodecADPCM::SetStream(PakFileHandle * _stream)
 	{
 		stream = _stream;
 
@@ -173,7 +173,7 @@ namespace ATHENA
 
 		aalULong i = (_position >> shift) / header->wSamplesPerBlock;
 
-		if (FileSeek(stream, i * header->wfx.nBlockAlign, SEEK_CUR))
+		if (PAK_fseek(stream, i * header->wfx.nBlockAlign, SEEK_CUR))
 			return AAL_ERROR_FILEIO;
 
 		i = _position - i * (header->wSamplesPerBlock << shift);
@@ -217,7 +217,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError CodecADPCM::GetStream(FILE *&_stream)
+	aalError CodecADPCM::GetStream(PakFileHandle *&_stream)
 	{
 		_stream = stream;
 
@@ -286,7 +286,7 @@ namespace ATHENA
 			{
 				aalError error;
 
-				if (padding) FileSeek(stream, padding, SEEK_CUR);
+				if (padding) PAK_fseek(stream, padding, SEEK_CUR);
 
 				error = GetNextBlock();
 
@@ -337,13 +337,13 @@ namespace ATHENA
 	aalError CodecADPCM::GetNextBlock()
 	{
 		// Load and check block header
-		if (!FileRead(predictor, sizeof(aalUByte) << shift, 1, stream)) return AAL_ERROR_FILEIO;
+		if (!PAK_fread(predictor, sizeof(aalUByte) << shift, 1, stream)) return AAL_ERROR_FILEIO;
 
-		if (!FileRead(delta, sizeof(aalSWord) << shift, 1, stream)) return AAL_ERROR_FILEIO;
+		if (!PAK_fread(delta, sizeof(aalSWord) << shift, 1, stream)) return AAL_ERROR_FILEIO;
 
-		if (!FileRead(samp1, sizeof(aalSWord) << shift, 1, stream)) return AAL_ERROR_FILEIO;
+		if (!PAK_fread(samp1, sizeof(aalSWord) << shift, 1, stream)) return AAL_ERROR_FILEIO;
 
-		if (!FileRead(samp2, sizeof(aalSWord) << shift, 1, stream)) return AAL_ERROR_FILEIO;
+		if (!PAK_fread(samp2, sizeof(aalSWord) << shift, 1, stream)) return AAL_ERROR_FILEIO;
 
 		odd = AAL_UFALSE;
 		sample_i = 0;
@@ -359,7 +359,7 @@ namespace ATHENA
 			((aalSWord *)cache_l)[i] = samp2[i];
 		}
 
-		if (!FileRead(nybble_l, nybble_c, 1, stream)) return AAL_ERROR_FILEIO;
+		if (!PAK_fread(nybble_l, nybble_c, 1, stream)) return AAL_ERROR_FILEIO;
 
 		return AAL_OK;
 	}

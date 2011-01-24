@@ -76,6 +76,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "Minos_PathFinder.h"
 
 #include <hermes/PakManager.h>
+#include <hermes/Filesystem.h>
 
 
 
@@ -3771,9 +3772,9 @@ bool FastSceneLoad(const char * partial_path)
 
 	if (!PAK_FileExist(fic)) return false;
 
-	long taille;
+	size_t size;
 	
-    unsigned char* dat = (unsigned char *)PAK_FileLoadMalloc(fic, taille);
+	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(fic, size);
 
 	if (dat == NULL) return false;
 
@@ -3854,12 +3855,12 @@ lasuite:
 	InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, BKG_SIZX, BKG_SIZZ);
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
-    char * compressed;
-    long cpr_pos;
-    cpr_pos = taille;
-    compressed = (char *)(dat + pos);
-    char * torelease;
-    torelease = (char *)dat;
+	char * compressed;
+	size_t cpr_pos;
+	cpr_pos = size;
+	compressed = (char *)(dat + pos);
+	char * torelease;
+	torelease = (char *)dat;
 
 
     dat = (unsigned char *)malloc(uh->compressedsize);
@@ -4274,7 +4275,7 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms)
 
 	if (!CreateFullPath(path)) return false;
 
-	unsigned long	handle;
+	FileHandle	handle;
 	long idx;
 	long count = 0;
 	unsigned char * dat;

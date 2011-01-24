@@ -27,7 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class HashMap;
 
-#include <cstddef>
+#include <stddef.h>
 
 #include <string>
 
@@ -38,12 +38,12 @@ class PakFile {
 public:
 	
 	std::string name;
-	std::size_t size;
+	size_t size;
 	PakFile * prev;
 	PakFile * next;
-	std::size_t offset;
+	size_t offset;
 	unsigned int flags;
-	std::size_t uncompressedSize;
+	size_t uncompressedSize;
 	
 public:
 	

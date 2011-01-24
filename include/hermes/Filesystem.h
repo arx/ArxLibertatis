@@ -22,50 +22,35 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include "Athena_FileIO.h"
-#include "Athena_Global.h"
-#include <hermes/PakManager.h>
 
-extern long CURRENT_LOADMODE;
 
-namespace ATHENA
-{
+#ifndef ARX_HERMES_FILESYSTEM_H
+#define ARX_HERMES_FILESYSTEM_H
 
-	FILE *(* FileOpen)(const char * name, const char * mode) = fopen;
-	int (* FileClose)(FILE * file) = fclose;
-	size_t (* FileRead)(void * buffer, size_t size, size_t count, FILE * file) = fread;
-	int (* FileSeek)(FILE * file, long offset, int origin) = fseek;
-	long(* FileTell)(FILE * file) = ftell;
+#include <stddef.h>
 
-	aalVoid FileIOInit()
-	{
-		printf("FileIOInit\n");
-		//if (global_status & AAL_FLAG_PACKEDRESOURCES)
-		//{
-			CURRENT_LOADMODE = LOAD_PACK;
+#define PATH_SEPERATOR_STR "/"
+#define PATH_SEPERATOR_CHR '/'
 
-			FileOpen = PAK_fopen;
-			FileClose = PAK_fclose;
-			FileRead = PAK_fread;
-			FileSeek = PAK_fseek;
-			FileTell = PAK_ftell;
-		//}
-		//else
-		//{
-		//	CURRENT_LOADMODE = LOAD_TRUEFILE;
+#define	FILE_SEEK_START 0
+#define	FILE_SEEK_CURRENT 1
+#define	FILE_SEEK_END 2
 
-		//	FileOpen =	::fopen;
-		//	FileClose = ::fclose;
-		//	FileRead =	::fread;
-		//	FileSeek =	::fseek;
-		//	FileTell =	::ftell;
-		//}
-	}
+typedef void * FileHandle;
 
-	aalVoid AddPack(const char * name)
-	{
-		PAK_SetLoadMode(global_status & AAL_FLAG_PACKEDRESOURCES ? LOAD_PACK : LOAD_TRUEFILE,
-		                (char *)name);
-	}
+long KillAllDirectory(const char * path);
 
-}//ATHENA::
+bool FileExist(const char * name);
+bool DirectoryExist(const char * name);
+FileHandle FileOpenRead(const char * name);
+FileHandle FileOpenWrite(const char * name);
+long FileCloseWrite(FileHandle h);
+long FileCloseRead(FileHandle h);
+long FileRead(FileHandle h, void * adr, long size);
+long FileWrite(FileHandle h, const void * adr, long size);
+void * FileLoadMalloc(const char * name, size_t * sizeLoaded = 0);
+void * FileLoadMallocZero(const char * name, size_t * sizeLoaded = 0);
+long FileSeek(FileHandle handle, int offset, long mode);
+long FileTell(FileHandle handle);
+
+#endif // ARX_HERMES_FILESYSTEM_H

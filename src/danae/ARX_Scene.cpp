@@ -59,6 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <math.h>
 
+#include <d3dwrapper.h>
 #include "ARX_Scene.h"
 #include "ARX_Spells.h"
 #include "ARX_Sound.h"
@@ -321,7 +322,7 @@ void PopOneTriangleListClipp(D3DTLVERTEX *_pVertex,int *_piNbVertex)
  *	@return S_OK if function exit correctly.
 /************************************************************************/
 template<class _LPVERTEX_>
-__declspec(dllexport) HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevice, 
+HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevice,
 													D3DPRIMITIVETYPE			_dptPrimitiveType, 
 													DWORD						_dwVertexTypeDesc,
 													_LPVERTEX_					_pVertex, 

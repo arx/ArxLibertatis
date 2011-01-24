@@ -100,6 +100,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEMeshTweak.h"
 
 #include <hermes/PakManager.h>
+#include <hermes/Filesystem.h>
 
 #include <stdlib.h>
 
@@ -471,7 +472,7 @@ void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 }
 extern long GORE_MODE;
  
-EERIE_3DOBJ * GetExistingEerie(char * file)
+EERIE_3DOBJ * GetExistingEerie(const char * file)
 {
 	for (long i = 1; i < inter.nbmax; i++)
 	{
@@ -538,7 +539,7 @@ EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * file, long fla
 	{
 	alternateway:
 		;
-		long FileSize = 0;
+		size_t FileSize = 0;
 		unsigned char * adr;
 
 		if (adr = (unsigned char *)PAK_FileLoadMalloc(file, FileSize))
@@ -2419,7 +2420,7 @@ void ReleaseInter(INTERACTIVE_OBJ * io)
 // Creates an IO Ident for added object if necessary
 // flags can be IO_IMMEDIATELOAD (1) to FORCE loading
 //***********************************************************************************
-INTERACTIVE_OBJ * AddInteractive(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long id, long flags)
+INTERACTIVE_OBJ * AddInteractive(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long id, long flags)
 {
 	INTERACTIVE_OBJ * io = NULL;
 	std::string ficc;
@@ -2540,7 +2541,7 @@ void GetIOScript(INTERACTIVE_OBJ * io, char * texscript)
 {
 	if (PAK_FileExist(texscript))
 	{
-		long FileSize = 0;
+		size_t FileSize = 0;
 		io->script.data = (char *)PAK_FileLoadMallocZero(texscript, FileSize);
 
 		if (io->script.data)
@@ -2573,7 +2574,7 @@ void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, char * attach)
 // AddFix
 // Adds a FIX INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long flags)
+INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags)
 {
     std::string tex1 = file;
     std::string texscript = file;
@@ -2691,7 +2692,7 @@ INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long flags)
 // AddCamera
 // Adds a CAMERA INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, char * file)
+INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
 {
 
 	std::string tex1 = file;;
@@ -2762,7 +2763,7 @@ INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, char * file)
 // AddMarker
 // Adds a MARKER INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddMarker(LPDIRECT3DDEVICE7 pd3dDevice, char * file)
+INTERACTIVE_OBJ * AddMarker(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
 {
 	std::string tex1 = file;
 	std::string texscript = file;
@@ -3031,7 +3032,7 @@ void GroundSnapSelectedIO()
 // AddNPC
 // Adds a NPC INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long flags)
+INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags)
 {
     // creates script filename
     std::string texscript = file;;
@@ -3164,7 +3165,7 @@ void ReloadScript(INTERACTIVE_OBJ * io)
 
 	if (PAK_FileExist(texscript))
 	{
-		long FileSize = 0;
+		size_t FileSize = 0;
 		io->script.data = (char *)PAK_FileLoadMallocZero(texscript, FileSize);
 
 		if (io->script.data != NULL)
@@ -3189,7 +3190,7 @@ void ReloadScript(INTERACTIVE_OBJ * io)
 
 	if (PAK_FileExist(texscript))
 	{
-		long FileSize = 0;
+		size_t FileSize = 0;
 		io->over_script.data = (char *)PAK_FileLoadMallocZero(texscript, FileSize);
 
 		if (io->over_script.data != NULL)
@@ -3364,14 +3365,13 @@ extern long SP_DBG;
 // AddItem
 // Adds an ITEM INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fil, long flags)
+INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fil, long flags)
 {
 	std::string tex1;
 	std::string tex2;
 	std::string texscript;
 	std::string file;
 	long type = IO_ITEM;
-	MakeUpcase(fil);
 
 	if (!specialstrcmp(GetName(fil), "GOLD_COIN"))
 	{

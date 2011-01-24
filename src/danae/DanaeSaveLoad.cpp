@@ -92,6 +92,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "DanaeDlg.h"
 
 #include <hermes/PakManager.h>
+#include <hermes/Filesystem.h>
 
 #include <stdio.h>
 
@@ -293,7 +294,7 @@ long DanaeSaveLevel( std::string& fic)
 	unsigned char * dat	=		NULL;
 	unsigned siz	=		255;
 	long pos			=		0;
-	unsigned long	handle;
+	FileHandle handle;
 	long bcount;
 
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
@@ -373,7 +374,7 @@ long DanaeSaveLevel( std::string& fic)
 	dlh.nb_inter = nb_inter;
 	dlh.nb_zones = 0;
 
-	if (dlh.nb_scn != NULL)
+	if (dlh.nb_scn != 0)
 	{
 		dlh.pos_edit.x = subj.pos.x - Mscenepos.x;
 		dlh.pos_edit.y = subj.pos.y - Mscenepos.y;
@@ -415,7 +416,7 @@ long DanaeSaveLevel( std::string& fic)
 			INTERACTIVE_OBJ * io = inter.iobj[i];
 			memset(&dli, 0, sizeof(DANAE_LS_INTER));
 
-			if (dlh.nb_scn != NULL)
+			if (dlh.nb_scn != 0)
 			{
 				dli.pos.x = io->initpos.x - Mscenepos.x;
 				dli.pos.y = io->initpos.y - Mscenepos.y;
@@ -937,7 +938,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans)
 	std::string tmp;
 	char tmp2[512];
 	char temp[512];
-	long FileSize;
+	size_t FileSize;
 	INTERACTIVE_OBJ * io;
 
 	sprintf(nameident, "%s_%04d", GetName(dli->name).c_str(), dli->ident);
@@ -1087,7 +1088,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
 
 	long pos = 0;
 	long i;
-	long FileSize = 0;
+	size_t FileSize = 0;
 	char tstr[128];
 	HERMES_DATE_TIME hdt;
 	ShowCurLoadInfo("Starting Level Loading");
@@ -1099,7 +1100,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
 	std::string fic2 = fic;
 	SetExt(fic2, ".LLF");
 
-	if (!PAK_FileExist(fic))
+	if (!PAK_FileExist(fileDlf))
 	{
 		sprintf(_error, "Unable to find %s", fic.c_str());
 		goto loaderror;
@@ -1553,7 +1554,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
 
 	if (dlh.version >= 1.44f) // using compression
 	{
-		long cpr_pos;
+		size_t cpr_pos;
 		char * compressed = (char *)PAK_FileLoadMalloc(fic2, cpr_pos);
 		dat = (unsigned char *)STD_Explode(compressed, cpr_pos, FileSize);
 
@@ -2056,7 +2057,7 @@ void ARX_SAVELOAD_DLFCheckAdd(char * path, long num)
 
 	long pos = 0;
 	long i;
-	long FileSize = 0;
+	size_t FileSize = 0;
 
 	SetExt(fic, ".DLF");
 

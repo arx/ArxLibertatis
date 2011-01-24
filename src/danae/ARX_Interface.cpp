@@ -31,6 +31,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+#include <d3dwrapper.h>
+
 #include "ARX_Interface.h"
 #include "ARX_Minimap.h"
 #include "ARX_Paths.h"
@@ -7158,7 +7160,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
                             
                             for (long li=0;li<MAX_SPEECH;li++)
                             {
-                                if (speech[li].timecreation>0) FLYING_OVER=0;
+                                if (speech[li].timecreation>0)
+                                    FLYING_OVER=0;
                             }
                             
                             if(	(OLD_FLYING_OVER != FLYING_OVER)||
@@ -7344,7 +7347,6 @@ void ARX_INTERFACE_ManageOpenedBook()
     
     if (ARXmenu.currentmode != AMCM_NEWQUEST)
     {
- 
  
         GDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_ALWAYS);
 
@@ -7863,7 +7865,7 @@ void ARX_INTERFACE_ManageOpenedBook()
     
     if (Book_Mode == 0)
     {
-        FLYING_OVER=NULL;
+        FLYING_OVER=0;
         _TCHAR tex[64];
         COLORREF Color = RGB(0,0,0);
         
@@ -8075,7 +8077,7 @@ void ARX_INTERFACE_ManageOpenedBook()
         {
             for (long i=0;i<MAX_SPEECH;i++)
             {
-                if (speech[i].timecreation>0) FLYING_OVER=NULL;
+                if (speech[i].timecreation>0) FLYING_OVER=0;
             }
         }
         
@@ -8457,7 +8459,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
             int lLenghtCurr=0;
             long lLenght = 0;
-            _TCHAR *lpszQuests = NULL;
+            _TCHAR *lpszQuests = 0;
 
             QuestBook.pages[0]=0;
             
@@ -8577,7 +8579,7 @@ void ARX_INTERFACE_ManageOpenedBook()
         }
     }
     
-    if ((Book_Mode==0) && (inter.iobj[0]->obj!=NULL))
+    if ((Book_Mode==0) && (inter.iobj[0]->obj!=0))
     {
 
         SETZWRITE(GDevice,true);
@@ -8731,18 +8733,18 @@ void ARX_INTERFACE_ManageOpenedBook()
         EERIE_VERTEX *	vertexlist=(EERIE_VERTEX *)malloc(sizeof(EERIE_VERTEX)*inter.iobj[0]->obj->nbvertex);
         memcpy(vertexlist,inter.iobj[0]->obj->vertexlist3,sizeof(EERIE_VERTEX)*inter.iobj[0]->obj->nbvertex);
 
-        if (player.useanim.cur_anim != NULL) 
+        if (player.useanim.cur_anim != 0) 
         {
 
             ARX_CHECK_ULONG(Original_framedelay);
             EERIEDrawAnimQuat(GDevice,inter.iobj[0]->obj, &player.useanim,&ePlayerAngle,&pos,
                 ARX_CLEAN_WARN_CAST_ULONG(Original_framedelay),
-                NULL,D3DCOLORWHITE,NULL);
+                0,D3DCOLORWHITE,0);
 
         }
         else
         {
-            DrawEERIEInter(GDevice,inter.iobj[0]->obj,&ePlayerAngle,&pos,NULL);
+            DrawEERIEInter(GDevice,inter.iobj[0]->obj,&ePlayerAngle,&pos,0);
         }
 
         INVISIBILITY_OVERRIDE=0;

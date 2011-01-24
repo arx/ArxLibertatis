@@ -70,6 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <HERMESConsole.h>
 #include <HERMESNet.h>
 #include <hermes/PakManager.h>
+#include <hermes/Filesystem.h>
  
 #include <EERIEUtil.h>
 #include <EERIE_AVI.h>
@@ -1060,7 +1061,7 @@ void InitializeDanae()
 		LaunchInteractiveObjectsApp( danaeApp.m_hWnd);	
 	}
 
-void Dbg_str(char * txt)
+void Dbg_str(const char * txt)
 {
 	printf("%s\n", txt);
 }
@@ -1408,74 +1409,47 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 
 	NOCHECKSUM=0;
 
-	if ((!MOULINEX) && FINAL_RELEASE)
-	{
+	if((!MOULINEX) && FINAL_RELEASE) {
+		
 		Dbg_str("FINAL RELEASE");
-
-		if(pStringMod[0])
-		{
+		
+		if(pStringMod[0]) {
 			Dbg_str(pStringMod);
-
-			if (FileExist(pStringMod))
-			{
-				Dbg_str("FileExist");
-				PAK_SetLoadMode(LOAD_PACK, pStringMod);
+			if(PAK_AddPak(pStringMod)) {
 				Dbg_str("LoadMode OK");
-			
 			}
 		}
 		
 		const char PAK_DATA[] = "data.pak";
 		Dbg_str(PAK_DATA);
-		if(FileExist(PAK_DATA)) {
-			NOBUILDMAP=1;
-			NOCHECKSUM=1;
-			Dbg_str("FileExist");
-			PAK_SetLoadMode(LOAD_PACK, PAK_DATA);
+		NOBUILDMAP=1;
+		NOCHECKSUM=1;
+		if(PAK_AddPak(PAK_DATA)) {
 			Dbg_str("LoadMode OK");
-			
-		}
-		else
-		{
-			Dbg_str("Exit");
+		} else {
 			printf("Unable to Find Data File\n");
 			exit(0);
 		}
 		
 		const char PAK_LOC[] = "loc.pak";
 		Dbg_str("LocPAK");
-		if(FileExist(PAK_LOC))
-		{
-			PAK_SetLoadMode(LOAD_PACK, PAK_LOC);
-		}
-		else
-		{
+		if(!PAK_AddPak(PAK_LOC)) {
 			const char PAK_LOC_DEFAULT[] = "loc_default.pak";
-			if(FileExist(PAK_LOC_DEFAULT))
-			{
-				PAK_SetLoadMode(LOAD_PACK, PAK_LOC_DEFAULT);
-			}
-			else
-			{
+			if(!PAK_AddPak(PAK_LOC_DEFAULT)) {
 				printf("Unable to Find Localization File\n");
 				exit(0);
 			}
 		}
-
+		
 		Dbg_str("data2PAK");
 		const char PAK_DATA2[] = "data2.pak";
-		if(FileExist(PAK_DATA2))
-			PAK_SetLoadMode(LOAD_PACK, PAK_DATA2);
-		else
-		{
+		if(!PAK_AddPak(PAK_DATA2)) {
 			printf("Unable to Find Aux Data File\n");
 			exit(0);
 		}
-	}
-	else
-	{
+		
+	} else {
 		Dbg_str("TRUEFILE LM");
-		PAK_SetLoadMode(LOAD_TRUEFILE,"");
 	}
 
 	//delete current for clean save.........
@@ -1719,7 +1693,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	const char RESOURCE_CONFIG[] = "cfg.ini";
 	const char RESOURCE_CONFIG_DEFAULT[] = "cfg_default.ini";
 	
-	char * config_path = RESOURCE_CONFIG;
+	const char * config_path = RESOURCE_CONFIG;
 
 	if(!FileExist(RESOURCE_CONFIG))
 	{
@@ -3559,9 +3533,7 @@ long FirstFrameHandling(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	if ((CURRENTLEVEL>=0) && !(NOBUILDMAP) && GAME_EDITOR)
 	{
-		if (CURRENT_LOADMODE!=LOAD_TRUEFILE)
-			iCreateMap=0;
-		else if (NeedMapCreation())	
+		if (NeedMapCreation())	
 			iCreateMap=1;
 		else 
 			iCreateMap=0;
@@ -5531,7 +5503,7 @@ void DemoFileCheck()
 
 	if (!FINAL_COMMERCIAL_DEMO)
 	{
-		const char RESOURCE_UNDEAD_LICH = "Graph\\Obj3D\\Interactive\\NPC\\Undead_Liche\\Undead_Liche.asl";
+		const char RESOURCE_UNDEAD_LICH[] = "Graph\\Obj3D\\Interactive\\NPC\\Undead_Liche\\Undead_Liche.asl";
 		if (!PAK_FileExist(RESOURCE_UNDEAD_LICH))
 		{
 			FINAL_COMMERCIAL_DEMO=1;
@@ -5864,7 +5836,7 @@ static float _AvgFrameDiff = 150.f;
 		NEED_INTRO_LAUNCH=0;
 		char loadfrom[256];
 		REFUSE_GAME_RETURN=1;
-		const char RESOURCE_LEVEL_10 = "Graph\\Levels\\Level10\\level10.dlf";
+		const char RESOURCE_LEVEL_10[] = "Graph\\Levels\\Level10\\level10.dlf";
 		OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
 		PROGRESS_BAR_TOTAL = 108;
 		LoadLevelScreen(GDevice,10);	

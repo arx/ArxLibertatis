@@ -62,6 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <time.h>
 #include "HERMESMain.h"
 #include "HERMESNet.h"
+#include <hermes/Filesystem.h>
 
 extern "C" {
 #undef __cplusplus
@@ -101,26 +102,21 @@ void SAFEstrcpy(char * dest, char * src, unsigned long max)
 	}
 }
 
-
-unsigned char IsIn( char * strin, char * str)
-{
-    char * tmp;
-    tmp = strstr(strin, str);
-
-    if (tmp == NULL) return 0;
-
-    return 1;
-}
-
 unsigned char NC_IsIn( std::string t1, std::string t2 )
 {
     MakeUpcase(t1);
     MakeUpcase(t2);
-    size_t tmp = t1.find(t2);
 
-    if (tmp == string::npos ) return 0;
+    return ( t1.find(t2) != string::npos );
+}
 
-    return 1;
+bool IsIn(const char * strin, const char * str)
+{
+	const char * tmp = strstr(strin, str);
+	
+	if (tmp == NULL) return false;
+	
+	return true;
 }
 
 void File_Standardize(const std::string& from, std::string& to)
@@ -176,46 +172,6 @@ void File_Standardize(const std::string& from, std::string& to)
     to = temp;
 }
 
-long KillAllDirectory(char * path) {
-	printf("KillAllDirectory(%s)\n", path);
-	
-	WIN32_FIND_DATA FileInformation;             // File information
-	
-	HANDLE idx;
-	WIN32_FIND_DATA fl;
-	char pathh[512];
-	sprintf(pathh, "%s*.*", path);
-	
-	if ((idx = FindFirstFile(pathh, &fl)) != INVALID_HANDLE_VALUE)
-	{
-		do
-		{
-			printf(" - \"%s\"\n", fl.cFileName);
-			if (fl.cFileName[0] != '.')
-			{
-				if (fl.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-				{
-					sprintf(pathh, "%s%s\\", path, fl.cFileName);
-					KillAllDirectory(pathh);
-					RemoveDirectory(pathh);
-				}
-				else
-				{
-					sprintf(pathh, "%s%s", path, fl.cFileName);
-					DeleteFile(pathh);
-				}
-			}
-
-		}
-		while(FindNextFile(idx, &fl));
-
-		FindClose(idx);
-	}
-
-	RemoveDirectory(path);
-	return 1;
-}
-
 void GetDate(HERMES_DATE_TIME * hdt)
 {
 	struct tm * newtime;
@@ -261,19 +217,6 @@ void MakeUpcase( std::string& str )
 {
     std::transform( str.begin(), str.end(), str.begin(), ::toupper );
 /* TODO 
-	while(*str != '\0') {
-		// islower is needed as the are read-only strings passed that are already in upper case?
-		if(islower(*str)) {
-			*str = toupper(*str);
-		}
-		str++;
-	}*/
-}
-
-void MakeUpcase_real( std::string& str )
-{
-    std::transform( str.begin(), str.end(), str.begin(), ::toupper );
-/*
 	while(*str != '\0') {
 		// islower is needed as the are read-only strings passed that are already in upper case?
 		if(islower(*str)) {
@@ -538,38 +481,42 @@ long HERMES_CreateFileCheck(const char * name, char * scheck, const long & size,
 	return false;
 }
 
-#define GetLastChar(x)      strchr(x, '\0')
-#define NullTerminate(x)    x[i] = '\0'
+    #define GetLastChar(x)      strchr(x, '\0')
+    #define NullTerminate(x)    x[i] = '\0'
+    
+    // from http://acmlm.kafuka.org/board/thread.php?id=3930
+    static void splitpath(const char * path, char * drive, char * dir, char * fName, char * ext)
+    {
+        char separator = '\\';
+        
+        const char    *endPoint = NULL,
+                *pos = (char*) path,
+                *temp = NULL,
+                *lastChar = NULL;
+ 
+        unsigned int    i = 0,
+                        unixStyle = 0;
+        
+        /* initialize all the output strings in case we have to abort */
+        if(drive) { strcpy(drive, ""); } 
+        if(dir)   { strcpy(dir, "");   }
+        if(fName) { strcpy(fName, "");  }
+        if(ext)   { strcpy(ext, "");   }
 
-// from http://acmlm.kafuka.org/board/thread.php?id=3930
-static void splitpath(const char *path, char *drive, char *dir, char *fName, char *ext)
-{
-    char separator = '\\';
+        /* find the end of the string */
+        lastChar = GetLastChar(path);
 
-    char    *endPoint = NULL,
-            *pos = (char*) path,
-            *temp = NULL,
-            *lastChar = NULL;
-
-    unsigned int    i = 0,
-                    unixStyle = 0;
-
-    /* initialize all the output strings in case we have to abort */
-    if(drive) { strcpy(drive, ""); } 
-    if(dir)   { strcpy(dir, "");   }
-    if(fName) { strcpy(fName, "");  }
-    if(ext)   { strcpy(ext, "");   }
-
-    /* find the end of the string */
-    lastChar = GetLastChar(path);
-
-    if(path[0] == '/')
-    {   separator = '/'; unixStyle = 1; }
-    else
-        separator = '\\';
-
-    /* first figure out whether it contains a drive name */
-    endPoint = strchr(path, separator);
+        if(path[0] == '/')
+        {   separator = '/'; unixStyle = 1; }
+        else
+            separator = '\\';
+    
+        /* first figure out whether it contains a drive name */
+        endPoint = strchr(path, separator);
+        
+        /* unix style drives are of the form "/drivename/" */
+        if(unixStyle)
+            endPoint = strchr(endPoint + 1, separator);
 
     /* unix style drives are of the form "/drivename/" */
     if(unixStyle)
@@ -680,17 +627,17 @@ static void splitpath(const char *path, char *drive, char *dir, char *fName, cha
     /* finished! :) */
     }
     
-// from http://acmlm.kafuka.org/board/thread.php?id=3930
-static void makepath(char *path, const char *drive, const char *dir, const char *fName, const char *ext)
-{
-    char separator = '\\';
-    char *lastChar = NULL;
-    char *pos      = NULL;
-    
-    unsigned int    i = 0,
-                    unixStyle = 0,
-                    sepCount = 0; /* number of consecutive separators */
-    
+		// from http://acmlm.kafuka.org/board/thread.php?id=3930
+    static void makepath(char *path, char *drive, char *dir, char *fName, char *ext)
+    {
+        char separator = '\\';
+        char *lastChar = NULL;
+        char *pos      = NULL;
+        
+        unsigned int    i = 0,
+                        unixStyle = 0,
+                        sepCount = 0; /* number of consecutive separators */
+        
 
     if(!path)
         return;
@@ -836,13 +783,13 @@ char _dir[256];
 char _name[256];
 char _ext[256];
 
-char * GetName(char * str)
+char * GetName(const char * str)
 {
 	splitpath(str, _drv, _dir, _name, _ext);
 	return _name;
 }
 
-char * GetExt(char * str)
+char * GetExt(const char * str)
 {
 	splitpath(str, _drv, _dir, _name, _ext);
 	return _ext;
@@ -865,31 +812,6 @@ void RemoveName( std::string& str )
 {
 	splitpath(str, _drv, _dir, _name, _ext);
 	makepath(str, _drv, _dir, NULL, NULL);
-}
-
-long DirectoryExist(char * name)
-{
-	HANDLE idx;
-	WIN32_FIND_DATA fd;
-
-	if ((idx = FindFirstFile(name, &fd)) == -1)
-	{
-		FindClose(idx);
-		char initial[256];
-		GetCurrentDirectory(255, initial);
-
-		if (SetCurrentDirectory(name) == 0) // success
-		{
-			SetCurrentDirectory(initial);
-			return 1;
-		}
-
-		SetCurrentDirectory(initial);
-		return 0;
-	}
-
-	FindClose(idx);
-	return 1;
 }
 
 bool CreateFullPath( const std::string& path ) {
@@ -931,106 +853,6 @@ bool CreateFullPath( const std::string& path ) {
 	return false;
 }
 
-
-bool GetWorkingDirectory(char * dest)
-{
-	char text[256];
-
-	if(!getcwd(text, sizeof(text) / sizeof(char))) {
-		return false;
-	}
-
-	long len=strlen(text);
-
-	if (text[len]!=PATH_SEPERATOR_CHR) strcat(text,PATH_SEPERATOR_STR);
-
-	strcpy(dest,text);
-	printf("GetWorkingDirectory() -> %s\n", dest);
-	return true;
-}
-
-long FileExist(char * name)
-{
-	long i;
-
-	if((i = FileOpenRead(name)) == 0) {
-		printf("\e[1;31mDidn't find\e[m\t%s\n", name);
-		return 0;
-	}
-	
-	FileCloseRead(i);
-	printf("\e[1;32mFound\e[m\t%s\n", name);
-	return 1;
-}
-
-long	FileOpenRead(char * name)
-{
-	long	handle;
-	handle = CreateFile((const char *)name, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, 0);
-
-	if(handle < 0) {
-		printf("\e[1;31mCan't open\e[m\t%s\n", name);
-		return(0);
-	}
-	printf("\e[1;32mOpened\e[m\t%s\n", name);
-	return(handle + 1);
-}
-
-long	FileSizeHandle(long handle)
-{
-	
-	return (SetFilePointer((int)handle - 1, 0, NULL, FILE_CURRENT));
-}
-
-long	FileOpenWrite(char * name)
-{
-	printf("FileOpenWrite(%s)\n", name);
-	int	handle;
-
-	handle = CreateFile((const char *)name, GENERIC_READ | GENERIC_WRITE, TRUNCATE_EXISTING, NULL, 0, 0, 0);
-
-	if (handle < 0)	{
-		return(0);
-	}
-
-	CloseHandle(handle);
-	handle = CreateFile((const char *)name, GENERIC_WRITE, 0, NULL, 0, 0, 0);
-
-	if (handle < 0) {
-		return(0);
-	}
-
-	return(handle + 1);
-}
-long	FileCloseRead(long handle)
-{
-	return(CloseHandle((int)handle - 1));
-}
-
-long	FileCloseWrite(long handle)
-{
-	//_commit((int)handle - 1);
-	return(CloseHandle((int)handle - 1));
-}
-
-long	FileRead(long handle, void * adr, long size)
-{
-	DWORD ret;
-	ReadFile(handle - 1, adr, size, &ret, NULL);
-	return ret;
-}
-
-long	FileWrite(long handle, void * adr, long size)
-{
-	DWORD ret;
-	WriteFile(handle - 1, adr, size, &ret, NULL);
-	return ret;
-}
-long	FileSeek(long handle, long offset, long mode)
-{
-	return SetFilePointer((int)handle - 1, offset, NULL, mode);
-}
-
 void ExitApp(int v)
 {
 	if (MAIN_PROGRAM_HANDLE != NULL)
@@ -1039,190 +861,6 @@ void ExitApp(int v)
 	exit(v);
 }
 
-// Finishes by a 0 (for text)
-void	* FileLoadMallocZero(char * name, long * SizeLoadMalloc)
-{
-	long	handle;
-	long	size1, size2;
-	unsigned char	* adr;
-
-retry:
-	;
-	handle = FileOpenRead(name);
-
-	if (!handle)
-	{
-		char str[256];
-		strcpy(str, name);
-		int mb;
-		mb = ShowError("FileLoadMalloc", str, 4);
-
-		switch (mb)
-		{
-			case IDABORT:
-				ExitApp(1);
-				break;
-			case IDRETRY:
-				goto  retry;
-				break;
-			case IDIGNORE:
-				if (SizeLoadMalloc != NULL) *SizeLoadMalloc = 0;
-
-				return(NULL);
-				break;
-		}
-	}
-
-	FileSeek(handle, 0, FILE_SEEK_END);
-	size1 = FileSizeHandle(handle) + 2;
-	adr = (unsigned char *)malloc(size1);
-
-	if (!adr)
-	{
-		int mb;
-		mb = ShowError("FileLoadMalloc", name, 4);
-
-		switch (mb)
-		{
-			case IDABORT:
-				ExitApp(1);
-				break;
-			case IDRETRY:
-				FileCloseRead(handle);
-				goto  retry;
-				break;
-			case IDIGNORE:
-				FileCloseRead(handle);
-
-				if (SizeLoadMalloc != NULL) *SizeLoadMalloc = 0;
-
-				return(0);
-				break;
-		}
-	}
-
-	FileSeek(handle, 0, FILE_SEEK_START);
-	size2 = FileRead(handle, adr, size1 - 2);
-	FileCloseRead(handle);
-
-	if (size1 != size2 + 2)
-	{
-		free(adr);
-		int mb;
-		mb = ShowError("FileLoadMalloc", name, 4);
-
-		switch (mb)
-		{
-			case IDABORT:
-				ExitApp(1);
-				break;
-			case IDRETRY:
-				goto  retry;
-				break;
-			case IDIGNORE:
-				if (SizeLoadMalloc != NULL) *SizeLoadMalloc = 0;
-
-				return(0);
-				break;
-		}
-	}
-
-	if (SizeLoadMalloc != NULL) *SizeLoadMalloc = size1;
-
-	adr[size1-1] = 0;
-	adr[size1-2] = 0;
-	return(adr);
-}
-void	* FileLoadMalloc(char * name, long * SizeLoadMalloc)
-{
-	long	handle;
-	long	size1, size2;
-	unsigned char	* adr;
-
-retry:
-	handle = FileOpenRead(name);
-
-	if (!handle)
-	{
-		char str[256];
-		strcpy(str, name);
-		int mb;
-		mb = ShowError("FileLoadMalloc", str, 4);
-
-		switch (mb)
-		{
-			case IDABORT:
-				ExitApp(1);
-				break;
-			case IDRETRY:
-				goto  retry;
-				break;
-			case IDIGNORE:
-				if (SizeLoadMalloc != NULL) *SizeLoadMalloc = 0;
-				return(NULL);
-				break;
-		}
-
-	}
-
-	FileSeek(handle, 0, FILE_SEEK_END);
-	size1 = FileSizeHandle(handle);
-	adr = (unsigned char *)malloc(size1);
-
-	if (!adr)
-	{
-		int mb;
-		mb = ShowError("FileLoadMalloc", name, 4);
-
-		switch (mb)
-		{
-			case IDABORT:
-				ExitApp(1);
-				break;
-			case IDRETRY:
-				FileCloseRead(handle);
-				goto  retry;
-				break;
-			case IDIGNORE:
-				FileCloseRead(handle);
-
-				if (SizeLoadMalloc != NULL) *SizeLoadMalloc = 0;
-
-				return(0);
-				break;
-		}
-	}
-
-	FileSeek(handle, 0, FILE_SEEK_START);
-	size2 = FileRead(handle, adr, size1);
-	FileCloseRead(handle);
-
-	if (size1 != size2)
-	{
-		free(adr);
-		int mb;
-		mb = ShowError("FileLoadMalloc", name, 4);
-
-		switch (mb)
-		{
-			case IDABORT:
-				ExitApp(1);
-				break;
-			case IDRETRY:
-				goto  retry;
-				break;
-			case IDIGNORE:
-				if (SizeLoadMalloc != NULL) *SizeLoadMalloc = 0;
-				return(0);
-				break;
-		}
-
-	}
-
-	if (SizeLoadMalloc != NULL) *SizeLoadMalloc = size1;
-
-	return(adr);
-}
 //******************************************************************************
 // OPEN/SAVE FILES DIALOGS
 //******************************************************************************
@@ -1289,11 +927,11 @@ bool HERMES_WFSelectorCommon(const char * pstrFileName, const char * pstrTitleNa
 
 	ofn.lpstrFilter			= filter ;
 	ofn.hwndOwner			= hWnd;
-	ofn.lpstrFile			= pstrFileName ;
+	ofn.lpstrFile			= strdup(pstrFileName);
 	ofn.lpstrTitle			= pstrTitleName ;
 	ofn.Flags				= flag;
 
-	GetCurrentDirectory(cwd, MAX_PATH);
+	GetCurrentDirectory(MAX_PATH, cwd);
 	ofn.lpstrInitialDir = cwd;
 	ofn.nMaxFile = max_car;
 
@@ -1305,6 +943,8 @@ bool HERMES_WFSelectorCommon(const char * pstrFileName, const char * pstrTitleNa
 	{
 		value = GetSaveFileName(&ofn);
 	}
+	
+	free(ofn.lpstrFile);
 
 	return value;
 }
@@ -1329,7 +969,7 @@ size_t ReadCompressed(void * Param, const unsigned char ** buf) {
 	
 	PARAM * Ptr = (PARAM *) Param;
 	
-	*buf = Ptr->pSource + Ptr->SourceOffset;
+	*buf = (const unsigned char *)Ptr->pSource + Ptr->SourceOffset;
 	
 	size_t size = Ptr->CompressedSize;
 	
@@ -1383,7 +1023,7 @@ int WriteUnCompressedNoAlloc(void * Param, unsigned char * buf, size_t len) {
 }
 
 
-char * STD_Explode(char * from, long from_size, long * to_size)
+char * STD_Explode(char * from, size_t from_size, size_t * to_size)
 {
 
 	PARAM Param;
@@ -1406,12 +1046,12 @@ char * STD_Explode(char * from, long from_size, long * to_size)
 	return Param.pDestination;
 }
 
-void STD_ExplodeNoAlloc(char * from, long from_size, char * to, long * to_size)
+void STD_ExplodeNoAlloc(char * from, size_t from_size, char * to, size_t * to_size)
 {
 
 	PARAM Param;
 	memset(&Param, 0, sizeof(PARAM));
-	Param.BufferSize = to_size;
+	Param.BufferSize = *to_size;
 	Param.pSource = from;
 	Param.pDestination = to; 
 	Param.CompressedSize = from_size;

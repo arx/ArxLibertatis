@@ -26,7 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_HWTRANSFORM
 
 #include <vector>
-#include <d3d.h>
+#include <d3dwrapper.h>
 #include <EERIEPoly.h>
 #include <EERIETexture.h>
 

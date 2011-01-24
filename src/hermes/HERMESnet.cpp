@@ -94,10 +94,10 @@ HRESULT ReadRegKey( HKEY hKey, TCHAR* strName, TCHAR* strValue,
 HRESULT ReadRegKeyValue( HKEY hKey, TCHAR* strName, long * val, long defaultt )
 {
 	DWORD dwType;
-	unsigned long dwLength=4;
+	unsigned int dwLength=4;
 	LONG bResult;
 
 	bResult = RegQueryValueEx( hKey, strName, 0, &dwType, 
-							 (LPBYTE) val, (unsigned)&dwLength );
+							 (LPBYTE) val, &dwLength );
     return S_OK;
 }

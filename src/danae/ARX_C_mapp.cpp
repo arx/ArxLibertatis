@@ -390,8 +390,9 @@ HBITMAP LoadTargaFile(TCHAR * strPathname)
 {
 	if (!PAK_FileExist(strPathname)) return NULL;
 
-	long siz = 0;
-	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, siz);
+	size_t size = 0;
+	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, size);
+	// TODO size ignored
 
 	if (NULL == dat) return NULL;
 
@@ -526,8 +527,9 @@ HBITMAP LoadBMPImage(char * strPathname)
 
 	if (!PAK_FileExist(strPathname)) return NULL;
 
-	long siz = 0;
-	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, siz);
+	size_t size = 0;
+	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, size);
+	// TODO siz ignored
 
 	if (!dat) return NULL;
 
@@ -637,7 +639,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 		FreeGrille(&bi->grille);
 		NbBitmap--;
 
-		h = NULL;
+		h = 0;
 		id = n;
 	}
 	else
@@ -680,7 +682,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 		{
 			AllTxt = name;
 			AllTxt += " --not found--";
-			h = NULL;
+			h = 0;
 
 			bi->actif = 1;
 			NbBitmap++;
@@ -699,7 +701,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 			{
 				AllTxt = name;
 				AllTxt += " --not found--";
-				h = NULL;
+				h = 0;
 
 				bi->actif = 1;
 				NbBitmap++;
@@ -761,7 +763,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
             //AllTxt, "%s_%4d", name, num);
             MakeUpcase(AllTxt);
 
-            if (FAILED(D3DTextr_CreateEmptyTexture(AllTxt.c_str(), w2, h2, 0, D3DTEXTR_NO_MIPMAP, NULL)))
+            if (FAILED(D3DTextr_CreateEmptyTexture(AllTxt.c_str(), w2, h2, 0, D3DTEXTR_NO_MIPMAP, 0)))
             {
                 std::stringstream ss;
                 ss << "Creating texture #" << num << " -> x: " << (long)dx << " y: " << (long)dy << " w: " << w2 << " h: " << h2;
@@ -790,11 +792,11 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 
 	if (n >= 0)
 	{
-		h = NULL;
+		h = 0;
 	}
 	else
 	{
-		h = NULL;
+		h = 0;
 	}
 
 	c->ActiveTexture(id);

@@ -25,8 +25,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef __ATHENA_CODEC_H__
 #define __ATHENA_CODEC_H__
 
-#include <stdio.h>
 #include <Athena_Types.h>
+
+class PakFileHandle;
 
 namespace ATHENA
 {
@@ -43,11 +44,11 @@ namespace ATHENA
 			virtual ~Codec() {};
 			// Setup
 			virtual aalError SetHeader(aalVoid * header) = 0;
-			virtual aalError SetStream(FILE * stream) = 0;
+			virtual aalError SetStream(PakFileHandle * stream) = 0;
 			virtual aalError SetPosition(const aalULong & position) = 0;
 			// Status
 			virtual aalError GetHeader(aalVoid *&header) = 0;
-			virtual aalError GetStream(FILE *&stream) = 0;
+			virtual aalError GetStream(PakFileHandle *&stream) = 0;
 			virtual aalError GetPosition(aalULong & position) = 0;
 			// File I/O
 			virtual aalError Read(aalVoid * buffer, const aalULong & to_read, aalULong & read) = 0;

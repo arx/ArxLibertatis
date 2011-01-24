@@ -237,7 +237,7 @@ static HRESULT WINAPI DeviceEnumCallback(TCHAR		*	strDesc,
 // DriverEnumCallback()
 // Callback function for enumerating drivers.
 //************************************************************************************
-static bool WINAPI DriverEnumCallback(GUID * pGUID, TCHAR * strDesc,
+static BOOL WINAPI DriverEnumCallback(GUID * pGUID, TCHAR * strDesc,
                                       TCHAR * strName, VOID *, HMONITOR)
 {
 	D3DEnum_DeviceInfo d3dDeviceInfo;
@@ -473,7 +473,7 @@ static VOID UpdateDialogControls(HWND hDlg, D3DEnum_DeviceInfo * pCurrentDevice,
 // ChangeDeviceProc()
 // Windows message handling function for the device select dialog
 //************************************************************************************
-static bool CALLBACK ChangeDeviceProc(HWND hDlg, UINT uiMsg, WPARAM wParam,
+static INT_PTR CALLBACK ChangeDeviceProc(HWND hDlg, UINT uiMsg, WPARAM wParam,
                                       LPARAM lParam)
 {
 	static D3DEnum_DeviceInfo ** ppDeviceArg;

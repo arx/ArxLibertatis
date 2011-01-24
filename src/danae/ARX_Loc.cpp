@@ -40,7 +40,6 @@ extern long CHINESE_VERSION;
 extern long FINAL_COMMERCIAL_GAME;
 
 extern PROJECT			Project;
-extern bool bForceInPack;
 extern long FINAL_COMMERCIAL_DEMO;
 using namespace std;
 extern CMenuConfig * pMenuConfig;
@@ -343,20 +342,10 @@ void ARX_Localisation_Init(char * _lpszExtension)
 	ZeroMemory(tx, 256);
 	sprintf(tx, "localisation\\utext_%s.ini", Project.localisationpath);
 
-	long LocalisationSize = 0;
+	size_t LocalisationSize = 0;
 	_TCHAR * Localisation = NULL;
 
-	if (GERMAN_VERSION)
-	{
-		bool bOldForceInPack = bForceInPack;
-		bForceInPack = true;
-		Localisation = (_TCHAR *)PAK_FileLoadMallocZero(tx, &LocalisationSize);
-		bForceInPack = bOldForceInPack;
-	}
-	else
-	{
-		Localisation = (_TCHAR *)PAK_FileLoadMallocZero(tx, &LocalisationSize);
-	}
+	Localisation = (_TCHAR *)PAK_FileLoadMallocZero(tx, &LocalisationSize);
 
 	if (Localisation == NULL)
 	{
@@ -385,16 +374,14 @@ void ARX_Localisation_Init(char * _lpszExtension)
 	}
 
 	//CD Check
-	if (FINAL_COMMERCIAL_DEMO && (!bForceInPack))
+	if (FINAL_COMMERCIAL_DEMO)
 	{
 		std::string szMenuText;
 		PAK_UNICODE_GetPrivateProfileString( "system_menus_main_cdnotfound", "string", "", szMenuText, 256, NULL);
 
 		if (!szMenuText[0]) //warez
 		{
-			bForceInPack = true;
 			ARX_Localisation_Init();
-			bForceInPack = false;
 		}
 	}
 
