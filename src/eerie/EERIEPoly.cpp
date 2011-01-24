@@ -77,7 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <hermes/PakManager.h>
 #include <hermes/Filesystem.h>
-
+#include <hermes/Logger.h>
 
 
 void ComputeFastBkgData(EERIE_BACKGROUND * eb);
@@ -3755,7 +3755,7 @@ long NOCHECKSUM = 0;
 long USE_FAST_SCENES = 1;
 bool FastSceneLoad(const char * partial_path)
 {
-	
+	LogDebug << "Fast Scene Load " << partial_path;
 	if (!USE_FAST_SCENES) return false;
 
 	char path[256];
@@ -3765,6 +3765,7 @@ bool FastSceneLoad(const char * partial_path)
 	char fic[256];
 
 	sprintf(fic, "%sfast.fts", path);
+	LogDebug << "Fast Scene Load " << fic;
 
 	if (!PAK_FileExist(fic)) return false;
 
@@ -3792,12 +3793,15 @@ bool FastSceneLoad(const char * partial_path)
 	c_count = 0;
 	sprintf(path2, "%s*.scn", partial_path);
 
+	LogDebug << "Looking for " << path2;
+
 	HANDLE idx;
 	WIN32_FIND_DATA fd;
 	if ((idx = FindFirstFile(path2, &fd)) != INVALID_HANDLE_VALUE)
 	{
 		do
 		{
+			LogDebug << "Doing something " << fd.cFileName;
 			if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) && (!strcasecmp(GetExt(fd.cFileName), ".scn")))
 			{
 				c_count++;
@@ -3819,6 +3823,8 @@ bool FastSceneLoad(const char * partial_path)
 		pos += 512;
 		sprintf(path2, "%s%s", partial_path, uh2->path);
 		SetExt(path2, ".scn");
+
+		LogDebug << "Looking for " << path2;
 
 		if (PAK_FileExist(path2))
 		{
