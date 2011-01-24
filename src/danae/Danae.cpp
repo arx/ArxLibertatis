@@ -113,7 +113,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <ARX_Text.h>
 #include "ARX_Missile.h"
 #include "ARX_Cedric.h"
-#include "ARX_HWTransform.h"
 #include "ARX_MenuPublic.h"
 #include "ARX_Snapshot.h"
 
@@ -3217,8 +3216,6 @@ HRESULT DANAE::BeforeRun()
 		DANAE_Manage_CreateMap();		
 
 	danaeApp.GetZBufferMax();
-
-	ARX_HWTransform_Init(m_pD3D);
 
 	ARX_Localisation_Init();
 	return S_OK;

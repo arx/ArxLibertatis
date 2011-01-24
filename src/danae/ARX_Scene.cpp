@@ -64,7 +64,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Paths.h"
 #include "ARX_Interface.h"
 #include "ARX_Time.h"
-#include "ARX_HWTransform.h"
 #include "ARX_Menu2.h"
 
 #include <HERMESMain.h>
@@ -4236,7 +4235,6 @@ void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag, long param)
 
 	if (D3DTRANSFORM) 
 	{
-		ARX_HWTransform_Render();
 		return;
 	}
 		

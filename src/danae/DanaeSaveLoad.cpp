@@ -84,7 +84,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <ARX_Special.h>
 #include <ARX_Speech.h>
 #include <ARX_Spells.h>
-#include "ARX_HWTransform.h"
 #include "ARX_Time.h"
 #include "DanaeDlg.h"
 
@@ -1866,7 +1865,6 @@ void DanaeClearLevel(long flag)
 	bGToggleCombatModeWithKey = false;
 	bGCroucheToggle = false;
 
-	ARX_HWTransform_Kill();
 	INTERTRANSPOLYSPOS = 0;
 
 	for (long i = 0; i < MAX_DYNLIGHTS; i++) // DynLight 0 is reserved for torch & flares !
