@@ -3363,11 +3363,11 @@ void MakeStandard(char * str)
 //*************************************************************************************
 //*************************************************************************************
 
-long MakeLocalised(char * text, _TCHAR * output, long maxsize, long lastspeechflag)
+long MakeLocalised(const char * text, char * output, long maxsize)
 {
 	if (text[0] == 0)
 	{
-		_tcscpy(output, _T("ERROR"));
+		strcpy(output, "ERROR");
 		return 0;
 	}
 

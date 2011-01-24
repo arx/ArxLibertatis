@@ -140,7 +140,7 @@ void LaunchSnapShotParamApp(HWND hwnd);
 #define NOLEVEL		32
 
  
-void TextBox(char * title, char * text, long size);
+void TextBox(const char * title, char * text, long size);
 void launchlightdialog();
 
 #endif

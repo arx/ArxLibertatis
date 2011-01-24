@@ -2160,7 +2160,7 @@ bool IsInSecondaryInventory(INTERACTIVE_OBJ * io)
 }
 
 //-----------------------------------------------------------------------------
-void SendInventoryObjectCommand(char * _lpszText, long _lCommand)
+void SendInventoryObjectCommand(const char * _lpszText, long _lCommand)
 {
 	if (player.bag)
 		for (int iNbBag = 0; iNbBag < player.bag; iNbBag++)

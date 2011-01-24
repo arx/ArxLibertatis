@@ -911,7 +911,7 @@ bool HERMESFolderSelector(char * file_name, char * title)
 		return false;
 	}
 }
-bool HERMES_WFSelectorCommon(const char * pstrFileName, const char * pstrTitleName, char * filter, long flag, long flag_operation, long max_car, HWND hWnd)
+bool HERMES_WFSelectorCommon(const char * pstrFileName, const char * pstrTitleName, const char * filter, long flag, long flag_operation, long max_car, HWND hWnd)
 {
 	LONG	value;
 	char	cwd[MAX_PATH];
@@ -954,12 +954,12 @@ bool HERMES_WFSelectorCommon(const char * pstrFileName, const char * pstrTitleNa
 	return value;
 }
 
-int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName, char * filter, HWND hWnd)
+int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName, const char * filter, HWND hWnd)
 {
 	return HERMES_WFSelectorCommon(pstrFileName, pstrTitleName, filter, OFN_HIDEREADONLY | OFN_CREATEPROMPT, 1, MAX_PATH, hWnd);
 }
  
-int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName, char * filter, HWND hWnd)
+int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName, const char * filter, HWND hWnd)
 {
 	return HERMES_WFSelectorCommon(pstrFileName, pstrTitleName, filter, OFN_OVERWRITEPROMPT, 0, MAX_PATH, hWnd);
 }

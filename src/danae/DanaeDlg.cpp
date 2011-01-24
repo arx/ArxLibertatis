@@ -108,7 +108,7 @@ extern long ForceIODraw;
 extern long NEED_ANCHORS;
 long HIDEANCHORS = 1;
 extern long HERMES_KEEP_MEMORY_TRACE;
-extern char * GTE_TITLE;
+extern const char * GTE_TITLE;
 extern char * GTE_TEXT;
 extern long GTE_SIZE;
 extern float TIMEFACTOR;
@@ -4087,7 +4087,7 @@ INT_PTR CALLBACK LanguageOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 //*************************************************************************************
 // Creates A Text Box
 //*************************************************************************************
-void TextBox(char * title, char * text, long size)
+void TextBox(const char * title, char * text, long size)
 {
 	ARX_TIME_Pause();
 	GTE_TITLE = title;

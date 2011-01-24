@@ -880,7 +880,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 						if (!Mapmarkers[i].tstring)
 						{
 							_TCHAR output[4096];
-							MakeLocalised(Mapmarkers[i].string, output, 4096, 0);
+							MakeLocalised(Mapmarkers[i].string, output, 4096);
 							Mapmarkers[i].tstring = (_TCHAR *)malloc((_tcslen(output) + 1) * sizeof(_TCHAR));
 							ZeroMemory(Mapmarkers[i].tstring, (_tcslen(output) + 1)*sizeof(_TCHAR));
 							_tcscpy(Mapmarkers[i].tstring, output);

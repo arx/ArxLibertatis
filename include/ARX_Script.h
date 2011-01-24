@@ -435,7 +435,8 @@ void ClearSubStack(EERIE_SCRIPT * es);
 
 //-----------------------------------------------------------------------------
 
-long MakeLocalised(char * text, _TCHAR * output, long maxsize, long lastspeechflag = 0);
+// TODO why is this in ARX_Script?
+long MakeLocalised(const char * text, char * output, long maxsize);
 
 //-----------------------------------------------------------------------------
 long specialstrcmp(const char * text, const char * seek);
