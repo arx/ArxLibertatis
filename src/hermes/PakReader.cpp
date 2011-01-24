@@ -49,6 +49,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <hermes/PakReader.h>
 #include <hermes/PakEntry.h>
 #include <hermes/HashMap.h>
+#include "hermes/Logger.h"
 
 #define PAK_READ_BUF_SIZE 1024
 
@@ -140,7 +141,7 @@ bool PakReader::Open(const char * name) {
 	FILE * newfile = fopen(name, "rb");
 	
 	if(!newfile) {
-		printf("\e[1;35mCannot find PAK:\e[m\t%s\n", name);
+		LogError <<"Cannot find PAK "<< name;
 		return false;
 	}
 	
@@ -256,7 +257,7 @@ bool PakReader::Open(const char * name) {
 	fat = newfat;
 	file = newfile;
 	
-	printf("\e[1;32mLoaded PAK:\e[m\t%s\n", name);
+	LogInfo <<"Loaded PAK " << name;
 	return true;
 	
 	

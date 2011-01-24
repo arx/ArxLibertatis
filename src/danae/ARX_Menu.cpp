@@ -450,11 +450,6 @@ void ARX_MENU_Clicked_QUIT_GAME()
 		if	(FINAL_COMMERCIAL_DEMO)
 		{
 			StartImageDemo();
-
-			if (ARX_IsSteam())
-			{
-				ShellExecute(NULL, "open", "steam://store/1700", NULL, NULL, SW_SHOWNORMAL);
-			}
 		}
 
 		ARX_Menu_Resources_Release();

@@ -53,6 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 #include <windows.h>
+#include <assert.h>
 
 #include "ARX_Loc.h"
 #include "ARX_Text.h"
@@ -61,9 +62,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEDraw.h"
 #include "HERMESMain.h"
 
-#include <assert.h>
-
-#include <hermes/Filesystem.h>
+#include "hermes/Filesystem.h"
+#include "hermes/Logger.h"
 
 //-----------------------------------------------------------------------------
 _TCHAR * lpszFontMenu = NULL;
@@ -110,7 +110,7 @@ void FontError()
 	);
 
 //	MessageBox(NULL, (LPCSTR)lpMsgBuf, (LPCSTR)"Font Error", MB_OK | MB_ICONINFORMATION);
-	printf("Font Error\n");
+	LogError << "Font Error: " << (LPCSTR)lpMsgBuf;
 #endif
 }
 //-----------------------------------------------------------------------------
