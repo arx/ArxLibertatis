@@ -307,7 +307,7 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, _TCHAR * _lpszUText, int _iSpacingY,
 //-----------------------------------------------------------------------------
 long ARX_UNICODE_DrawTextInRect(float x, float y,
                                 float maxx, float maxy,
-                                _TCHAR * _lpszUText,
+                                const char * _lpszUText,
                                 COLORREF col,
                                 COLORREF bcol,
                                 HFONT font,
@@ -375,7 +375,7 @@ long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice,
                    HFONT ef,
                    float x, float y,
                    long spacingx, long spacingy,
-                   _TCHAR * car,
+                   const char * car,
                    COLORREF colo, COLORREF bcol)
 {
 	if (car == NULL) return 0;

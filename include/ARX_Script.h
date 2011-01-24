@@ -79,7 +79,7 @@ typedef struct
 
 typedef struct
 {
-	char		*	name;
+	const char		*	name;
 } SCRIPT_EVENT;
 
 //-----------------------------------------------------------------------------
