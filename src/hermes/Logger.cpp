@@ -1,6 +1,6 @@
 #include "hermes/Logger.h"
+#define BASH_COLOR 1
 
-using std::string;
 using std::cout;
 
 Logger::LogLevel Logger::logLevel = Logger::Info;
@@ -15,22 +15,32 @@ Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {
   m_Print = true;
   switch(level) {
     case Info:
-      cout<<"[\e[1;32mINFO\e[m]\t"<<file<<":"<<line<<"\t";
+      log(1,32,"INFO",file, line);
       break;
     case Warning:
-      cout<<"[\e[1;33mWARNING\e[m]\t"<<file<<":"<<line<<"\t";
+      log(1,33,"WARNING",file, line);
       break;
     case Error:
-      cout<<"[\e[1;31mERROR\e[m]\t"<<file<<":"<<line<<"\t";
+      log(1,31,"ERROR",file, line);
       break;
     default:
-      cout<<"[\e[1;32mINFO\e[m]\t"<<file<<":"<<line<<"\t";
+      log(1,32,"INFO",file, line);
   };
 }
 
 Logger::~Logger() {
   if (m_Print)
     std::cout<<std::endl;
+}
+
+void Logger::log(int mode, int color, const string & level,
+		const string & file, int line) {
+#ifdef BASH_COLOR
+	cout<<"[\e["<< mode <<";"<< color <<"m" << level << "\e[m]  "
+			<<"\e[0;35m"<<file<<"\e[m:\e[0;33m"<<line<<"\e[m"<<"  ";
+#else
+	cout<<"["<< level << "]  "<<file<<":"<<line<<"  ";
+#endif
 }
 
 bool Logger::isInBlackList(const std::string& file) {
