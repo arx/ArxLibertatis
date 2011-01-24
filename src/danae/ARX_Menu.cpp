@@ -73,6 +73,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "DanaeSaveLoad.h"
 #include "EERIEApp.h"
 
+#include "ARX_ViewImage.h"
+
 #include "HERMESMain.h"
 #include "EERIEDraw.h"
 #include "EERIEMath.h"
@@ -436,7 +438,6 @@ void ARX_MENU_Clicked_CREDITS()
 	ARX_MENU_LaunchAmb(AMB_CREDITS);
 }
 extern long FINAL_COMMERCIAL_DEMO;
-void StartImageDemo();
 bool ARX_IsSteam();
 
 //-----------------------------------------------------------------------------

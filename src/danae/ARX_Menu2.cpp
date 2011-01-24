@@ -35,7 +35,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Sound.h"
 #include "ARX_Loc.h"
 #include "ARX_Text.h"
-#include "ARX_ViewImage.h"
 #include "ARX_Interface.h"
 
 #include "Mercury_dx_input.h"
@@ -44,6 +43,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIETexture.h"
 #include "EERIEPoly.h"
 #include "EERIEDraw.h"
+
+using std::wistringstream;
 
 //#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
