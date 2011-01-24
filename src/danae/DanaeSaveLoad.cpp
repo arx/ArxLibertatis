@@ -1072,7 +1072,7 @@ long DONT_LOAD_INTERS = 0;
 long FAKE_DIR = 0;
 long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
 {
-	char _error[512];
+//	char _error[512];
 	DANAE_LS_HEADER				dlh;
 	DANAE_LS_SCENE		*		dls;
 	DANAE_LS_INTER		*		dli;
@@ -1097,14 +1097,19 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
 	GetDate(&hdt);
 	sprintf(tstr, "%2ldh%02ldm%02ld LOADLEVEL start", hdt.hours, hdt.mins, hdt.secs);
 	ForceSendConsole(tstr, 1, 0, (HWND)1);
-	SetExt(fic, ".DLF");
-	std::string fic2 = fic;
+	std::string fileDlf;
+	fileDlf = fic;
+//	SetExt(fileDlf, ".DLF");
+	std::string fic2;
+	fic2 = fic;
 	SetExt(fic2, ".LLF");
 
-	if (!PAK_FileExist(fic.c_str()))
-	{
-		sprintf(_error, "Unable to find %s", fic.c_str());
-		goto loaderror;
+	LogDebug << "fic2 " << fic2;
+	LogDebug << "fileDlf " << fileDlf;
+
+	if (!PAK_FileExist(fileDlf.c_str())) {
+		LogError <<"Unable to find "<< fileDlf;
+		return -1;
 	}
 
 	strcpy(LastLoadedDLF, fic.c_str());
@@ -1114,6 +1119,8 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
 	LoadLevelScreen();
 	memcpy(&dlh, dat, sizeof(DANAE_LS_HEADER));
 	pos += sizeof(DANAE_LS_HEADER);
+
+	LogDebug << "dlh.version " << dlh.version;
 
 	if (dlh.version > CURRENT_VERSION) // using compression
 	{
@@ -1131,15 +1138,14 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
 		cpr_pos = 0;
 		dat = (unsigned char *)STD_Explode(compressed, FileSize - pos, FileSize);
 
-		if (dat == NULL)
-		{
-			free(torelease);
-			goto loaderror;
-		}
-
 		free(torelease);
 		compressed = NULL;
 		pos = 0;
+
+		if (dat == NULL) {
+			LogError <<"STD_Explode did not return anything "<< fileDlf;
+			return -1;
+		}
 	}
 
 	loddpos.x = subj.pos.x = dlh.pos_edit.x;
@@ -1151,14 +1157,16 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
 
 	if (strcmp(dlh.ident, "DANAE_FILE"))
 	{
-		sprintf(_error, "File %s is not a valid file", fic.c_str());
-		goto loaderror;
+		LogError << "Not a valid file "<< fileDlf;
+		return -1;
 	}
 
 	if (dlh.version < 1.001f)
 	{
 		dlh.nb_nodes = 0;
 	}
+
+	LogDebug << "Loading Scene";
 
 	// Loading Scene
 	if (dlh.nb_scn >= 1)
@@ -1710,16 +1718,16 @@ finish:
 	USE_PLAYERCOLLISIONS = 1;
 	return 1;
 
-loaderror:
-	;
-	FASTmse = 0;
-	ShowPopup(_error);
-
-	if (dat) free(dat);
-
-	LOADEDD = 1;
-	ARX_SCENE_Render(NULL, 3);
-	return -1;
+//loaderror:
+//	;
+//	FASTmse = 0;
+//	ShowPopup(_error);
+//
+//	if (dat) free(dat);
+//
+//	LOADEDD = 1;
+//	ARX_SCENE_Render(NULL, 3);
+//	return -1;
 }
 extern void MCache_ClearAll();
 extern TextureContainer * MapMarkerTc;

@@ -113,7 +113,7 @@ class TextureContainer
 		HBITMAP m_hbmBitmap;				// Bitmap containing texture image
 		DWORD * m_pRGBAData;
 		unsigned char * m_pJPEGData;
-		unsigned char * m_pJPEGData_ex;
+		char * m_pJPEGData_ex;
 		unsigned char	* m_pPNGData;
 
 	public:
