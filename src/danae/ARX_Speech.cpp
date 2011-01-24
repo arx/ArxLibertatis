@@ -240,7 +240,7 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 			{
 
 				if ((speech[i].name) && (speech[i].name[0] != ' '))
-					_stprintf(temp, _T("%S > %s"), speech[i].name, speech[i].lpszUText);
+					_stprintf(temp, _T("%s > %s"), speech[i].name, speech[i].lpszUText);
 				else
 					_stprintf(temp, _T(" %s"), speech[i].lpszUText);//>
 
@@ -533,7 +533,7 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long param, l
 	}
 
 	if (flg > 1)
-		sprintf(speech_sample, "%s%d", speech_label, flg);
+		sprintf(speech_sample, "%s%ld", speech_label, flg);
 	else
 		strcpy(speech_sample, speech_label);
 
