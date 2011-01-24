@@ -3762,7 +3762,6 @@ bool FastSceneLoad(const char * partial_path)
 	sprintf(path, "Game\\%s", partial_path);
 
 	long count = 0;
-	long idx;
 	char fic[256];
 
 	sprintf(fic, "%sfast.fts", path);
@@ -3792,21 +3791,22 @@ bool FastSceneLoad(const char * partial_path)
 	long c_count;
 	c_count = 0;
 	sprintf(path2, "%s*.scn", partial_path);
-//	todo: find
-//	struct _finddata_t fd;
-//	if ((idx = _findfirst(path2, &fd)) != -1)
-//	{
-//		do
-//		{
-//			if (!(fd.attrib & _A_SUBDIR) && (!strcasecmp(GetExt(fd.name), ".scn")))
-//			{
-//				c_count++;
-//			}
-//		}
-//		while (!(_findnext(idx, &fd)));
-//
-//		_findclose(idx);
-//	}
+
+	HANDLE idx;
+	WIN32_FIND_DATA fd;
+	if ((idx = FindFirstFile(path2, &fd)) != INVALID_HANDLE_VALUE)
+	{
+		do
+		{
+			if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) && (!strcasecmp(GetExt(fd.cFileName), ".scn")))
+			{
+				c_count++;
+			}
+		}
+		while (FindNextFile(idx, &fd));
+
+		FindClose(idx);
+	}
 
 	count = 0;
 
