@@ -263,7 +263,7 @@ void ReplaceSpecifics(char * text)
 extern long NODIRCREATION;
 extern long ADDED_IO_NOT_SAVED;
 
-//#pragma pack(push,1)
+#pragma pack(push,1)
 typedef struct
 {
 	float	version;
@@ -277,8 +277,8 @@ typedef struct
 	long	nb_nodes;
 	long	nb_nodeslinks;
 	long	nb_zones;
-	bool	lighting;
-	bool    Bpad[256];
+	BOOL	lighting;
+	BOOL    Bpad[256];
 	long	nb_lights; 
 	long	nb_fogs; 
 
@@ -290,9 +290,9 @@ typedef struct
 	EERIE_3D	offset;
 	float	fpad[253];
 	char	cpad[4096];
-	bool	bpad[256];
+	BOOL	bpad[256];
 } DANAE_LS_HEADER; // Aligned 1 2 4
-//#pragma pack(pop)
+#pragma pack(pop)
 
 //*************************************************************************************
 //*************************************************************************************
