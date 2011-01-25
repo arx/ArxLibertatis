@@ -126,8 +126,6 @@ void AddToName(char *str, const char *cat);
 int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName,const char *filter,HWND hWnd);
 int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName,const char *filter,HWND hWnd);
 long HERMES_CreateFileCheck(const char *name, char *scheck, const long &size, const float &id);
-char * STD_Explode(char * from, size_t from_size, size_t * to_size);
-void STD_ExplodeNoAlloc(char * from, size_t from_size,char * to,size_t * to_size);
 void ERROR_Log_Init(char * fic);
 bool ERROR_Log(char * fic);
 void HERMES_Memory_Security_On(long size);
