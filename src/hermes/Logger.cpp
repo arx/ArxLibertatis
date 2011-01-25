@@ -10,7 +10,7 @@ const string blackList[] = {
 		"ARX_FTL.cpp",
 		"ARX_Script.cpp",
 		"PakManager.cpp",
-		"PakReader.cpp",
+		/*"PakReader.cpp",*/
 		"Filesystem.cpp",
 		"Athena.cpp"
 };

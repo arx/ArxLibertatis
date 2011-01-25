@@ -294,6 +294,15 @@ typedef struct
 } DANAE_LS_HEADER; // Aligned 1 2 4
 #pragma pack(pop)
 
+#pragma pack(push,1)
+typedef struct
+{
+	char	name[512];
+	long	pad[16];
+	float	fpad[16];
+} DANAE_LS_SCENE; // Aligned 1 2 4 8
+#pragma pack(pop)
+
 //*************************************************************************************
 //*************************************************************************************
 

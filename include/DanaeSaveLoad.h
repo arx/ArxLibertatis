@@ -92,12 +92,6 @@ void LogDirCreation(char * dir);
 #define	SP_IGNORED	1
 #define	SP_CHILD	2
 
-typedef struct
-{
-	char	name[512];
-	long	pad[16];
-	float	fpad[16];
-} DANAE_LS_SCENE; // Aligned 1 2 4 8
 void WriteIOInfo(INTERACTIVE_OBJ * io, char * dir);
 typedef struct
 {

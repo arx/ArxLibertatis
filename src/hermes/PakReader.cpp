@@ -400,6 +400,7 @@ void * PakReader::ReadAlloc(const char * name, size_t * sizeRead) {
 		}
 		
 		if(fread(mem, f->size, 1, file) != 1) {
+			LogError << "PakReader::ReadAlloc: read error" << f->size;
 			free(mem);
 			if(sizeRead) {
 				*sizeRead = 0;
