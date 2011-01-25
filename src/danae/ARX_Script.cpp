@@ -158,17 +158,17 @@ bool ARX_EQUIPMENT_IsPlayerEquip(INTERACTIVE_OBJ * _pIO);
 // Looks for string in script, return pos. Search start position can be set using	//
 // poss parameter.																	//
 //*************************************************************************************
-long FindScriptPos(EERIE_SCRIPT * es, const char * str, long poss)
+long FindScriptPos(EERIE_SCRIPT * es, const std::string& str, long poss)
 {
 
 	if (!es->data) return -1;
 
-	char * pdest = strstr(es->data + poss, str);
+	char * pdest = strstr(es->data + poss, str.c_str());
 	long result = pdest - es->data;
 
 	if (result < 0) return -1;
 
-	int len2 = strlen(str);
+	int len2 = str.length();
 
 	if (len2+result > es->size){
 		LogError << "Out of data borders " << str;
@@ -178,13 +178,14 @@ long FindScriptPos(EERIE_SCRIPT * es, const char * str, long poss)
 
 	return -1;
 }
-long FindScriptPosGOTO(EERIE_SCRIPT * es, char * str, long poss)
+
+long FindScriptPosGOTO(EERIE_SCRIPT * es, const std::string& str, long poss)
 {
 	if (!es->data) return -1;
 
-	char * pdest = strstr(es->data + poss, str);
+	char * pdest = strstr(es->data + poss, str.c_str());
 	long result;
-	long len2 = strlen(str);
+	long len2 = str.length();
 again:
 	;
 	result = pdest - es->data;
@@ -193,7 +194,7 @@ again:
 
 	if (es->data[result+len2] <= 32) return result + len2;
 
-	if (pdest = strstr(es->data + poss + result + len2, str))
+	if (pdest = strstr(es->data + poss + result + len2, str.c_str()))
 		goto again;
 
 	return -1;
@@ -306,7 +307,7 @@ void RemoveNumerics(char * tx)
 }
 
 
-long ARX_SCRIPT_SearchTextFromPos(EERIE_SCRIPT * es, char * search, long startpos, char * tline, long * nline)
+long ARX_SCRIPT_SearchTextFromPos(EERIE_SCRIPT * es, const std::string& search, long startpos, std::string& tline, long * nline)
 {
 	static long lastline = 0;
 	long curline;
@@ -350,7 +351,7 @@ long ARX_SCRIPT_SearchTextFromPos(EERIE_SCRIPT * es, char * search, long startpo
 			if ( curtline.find( search) )
 			{
 				*nline = curline;
-				strcpy(tline, curtline.c_str());
+				tline = curtline;
 				lastline = curline;
 				return curpos;
 			}
@@ -419,24 +420,27 @@ void ARX_SCRIPT_LaunchScriptSearch( std::string& search)
 			while (pos != -1)
 			{
 
-				pos = ARX_SCRIPT_SearchTextFromPos(&io->script, search.c_str(), pos, tline, &nline);
+				pos = ARX_SCRIPT_SearchTextFromPos(&io->script, search, pos, tline, &nline);
 
 				if (pos > 0)
 				{
-					sprintf(toadd, "%s - GLOBAL - Line %4d : %s\n", objname, nline, tline);
+					std::stringstream ss;
+					ss << objname << " - GLOBAL - Line " << nline << " : " << tline << '\n';
+					//sprintf(toadd, "%s - GLOBAL - Line %4d : %s\n", objname, nline, tline);
+					toadd = ss.str();
 
-					if (size + strlen(toadd) + 3 < 65535)
+					if (size + toadd.length() + 3 < 65535)
 					{
-						strcat(ShowText, toadd);
+						ShowText += toadd;
 						foundnb++;
 					}
 					else
 					{
-						strcat(ShowText, "...");
+						ShowText += "...";
 						goto suite;
 					}
 
-					size += strlen(toadd);
+					size += toadd.length();
 				}
 			}
 
@@ -448,20 +452,23 @@ void ARX_SCRIPT_LaunchScriptSearch( std::string& search)
 
 				if (pos > 0)
 				{
-					sprintf(toadd, "%s - LOCAL  - Line %4ld : %s\n", objname, nline, tline);
+					std::stringstream ss;
+					ss << objname << " - LOCAL  - Line " << nline << " : " << tline << '\n';
+					toadd = ss.str();
+					//toadd, "%s - LOCAL  - Line %4ld : %s\n", objname, nline, tline);
 
-					if (size + strlen(toadd) + 3 < 65535)
+					if (size + toadd.length() + 3 < 65535)
 					{
-						strcat(ShowText, toadd);
+						ShowText += toadd;
 						foundnb++;
 					}
 					else
 					{
-						strcat(ShowText, "...");
+						ShowText += "...";
 						goto suite;
 					}
 
-					size += strlen(toadd);
+					size += toadd.length();
 				}
 			}
 		}
@@ -472,10 +479,13 @@ suite:
 
 	if (foundnb <= 0)
 	{
-		strcpy(ShowText, "No Occurence Found...");
+		ShowText = "No Occurence Found...";
 	}
 
-	sprintf(ShowTextWindowtext, "Search Results for %s (%ld occurences)", search.c_str(), foundnb);
+	std::stringstream ss;
+	ss << "Search Results for " << search << '(' << foundnb << " occurences)";
+	ShowTextWindowtext = ss.str();
+	//sprintf(ShowTextWindowtext, "Search Results for %s (%ld occurences)", search.c_str(), foundnb);
 
 
 	DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXTBIG, danaeApp.m_hWnd, (DLGPROC)ShowTextDlg);
@@ -669,14 +679,14 @@ void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT * es)
 
 		if (es->shortcut[j] >= 0)
 		{
-			char dest[256];
+			std::string dest;
 			GetNextWord(es, es->shortcut[j], dest);
 
-			if (!strcasecmp(dest, "{"))
+			if (!strcasecmp(dest.c_str(), "{"))
 			{
 				GetNextWord(es, es->shortcut[j], dest);
 
-				if (!strcasecmp(dest, "ACCEPT"))
+				if (!strcasecmp(dest.c_str(), "ACCEPT"))
 				{
 					es->shortcut[j] = -1;
 				}
@@ -746,8 +756,9 @@ long specialstrcmp( const std::string& text, const std::string& seek)
 #define TYPE_LONG	3
 //*************************************************************************************
 //*************************************************************************************
-long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, std::string& name,char * txtcontent,unsigned int txtcontentSize,float * fcontent,long * lcontent)
+long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _name, std::string& txtcontent,unsigned int txtcontentSize,float * fcontent,long * lcontent)
 {
+	std::string name = _name;
 	MakeUpcase(name);
 
 	switch (name[1])
@@ -756,25 +767,25 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, std::string& name,char
 
 			if (!name.compare("^$PARAM1"))
 			{
-				strcpy(txtcontent, SSEPARAMS[0]);
+				txtcontent = SSEPARAMS[0];
 				return TYPE_TEXT;
 			}
 
 			if (!name.compare("^$PARAM2"))
 			{
-				strcpy(txtcontent, SSEPARAMS[1]);
+				txtcontent = SSEPARAMS[1];
 				return TYPE_TEXT;
 			}
 
 			if (!name.compare("^$PARAM3"))
 			{
-				strcpy(txtcontent, SSEPARAMS[2]);
+				txtcontent = SSEPARAMS[2];
 				return TYPE_TEXT;
 			}
 
 			if (!name.compare("^$OBJONTOP"))
 			{
-				strcpy(txtcontent, "NONE");
+				txtcontent = "NONE";
 
 				if (io)	MakeTopObjString(io,txtcontent,txtcontentSize);//ARX: xrichter (2010-08-04) - Fix corrupted stack
 
@@ -1268,51 +1279,51 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, std::string& name,char
 			{
 				if (io && (io->ioflags & IO_NPC))
 				{
-					strcpy(txtcontent, "");
+					txtcontent = "";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_LOOK_AROUND)
-						strcat(txtcontent, "L");
+						txtcontent += "L";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_SNEAK)
-						strcat(txtcontent, "S");
+						txtcontent += "S";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_DISTANT)
-						strcat(txtcontent, "D");
+						txtcontent += "D";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_MAGIC)
-						strcat(txtcontent, "M");
+						txtcontent += "M";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_FIGHT)
-						strcat(txtcontent, "F");
+						txtcontent += "F";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_GO_HOME)
-						strcat(txtcontent, "H");
+						txtcontent += "H";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_FRIENDLY)
-						strcat(txtcontent, "R");
+						txtcontent += "R";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
-						strcat(txtcontent, "T");
+						txtcontent += "T";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_FLEE)
-						strcat(txtcontent, "E");
+						txtcontent += "E";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_LOOK_FOR)
-						strcat(txtcontent, "O");
+						txtcontent += "O";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_HIDE)
-						strcat(txtcontent, "I");
+						txtcontent += "I";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
-						strcat(txtcontent, "W");
+						txtcontent += "W";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_GUARD)
-						strcat(txtcontent, "U");
+						txtcontent += "U";
 
 					if (io->_npcdata->behavior & BEHAVIOUR_STARE_AT)
-						strcat(txtcontent, "A");
+						txtcontent += "A";
 				}
-				else strcpy(txtcontent, "");
+				else txtcontent = "";
 
 				return TYPE_TEXT;
 			}
@@ -1326,16 +1337,19 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, std::string& name,char
 				{
 					if (EVENT_SENDER == inter.iobj[0])
 					{
-						strcpy(txtcontent, "PLAYER");
+						txtcontent = "PLAYER";
 					}
 					else
 					{
-						char temp[256];
-						strcpy(temp, GetName(EVENT_SENDER->filename).c_str());
-						sprintf(txtcontent, "%s_%04ld", temp, EVENT_SENDER->ident);
+						std::string temp;
+						temp = GetName(EVENT_SENDER->filename);
+						std::stringstream ss;
+						ss << temp << '_' << EVENT_SENDER->ident;
+						txtcontent = ss.str();
+						//sprintf(txtcontent, "%s_%04ld", temp, EVENT_SENDER->ident);
 					}
 				}
-				else 	strcpy(txtcontent, "NONE");
+				else 	txtcontent = "NONE";
 
 				return TYPE_TEXT;
 			}
@@ -1381,7 +1395,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, std::string& name,char
 
 			if (!specialstrcmp(name, "^ME"))
 			{
-				if (io == inter.iobj[0]) strcpy(txtcontent, "PLAYER");
+				if (io == inter.iobj[0]) txtcontent = "PLAYER";
 				else
 				{
 					char temp[256];
@@ -2064,7 +2078,7 @@ std::string GETVarValueText(SCRIPT_VAR ** svf, long* nb, const std::string& name
 
 //*************************************************************************************
 //*************************************************************************************
-std::string GetVarValueInterpretedAsText( const std::string& temp1, EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io)
+std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io)
 {
 	float t1;
 	long l1;
@@ -2072,7 +2086,9 @@ std::string GetVarValueInterpretedAsText( const std::string& temp1, EERIE_SCRIPT
 	if (temp1[0] == '^')
 	{
 		const unsigned int tvSize = 64 ;
-		long lv; float fv; char tv[tvSize];
+		long lv;
+		float fv;
+		std::string tv;
 
 		switch (GetSystemVar(esss,io,temp1,tv,tvSize,&fv,&lv))//Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
 		{
@@ -2140,7 +2156,10 @@ float GetVarValueInterpretedAsFloat( std::string& temp1, EERIE_SCRIPT * esss, IN
 	if (temp1[0] == '^')
 	{
 		const unsigned int tvSize = 64 ;
-		long lv; float fv; char tv[tvSize];
+		long lv;
+		float fv;
+		std::string tv; 
+
 		switch (GetSystemVar(esss,io,temp1,tv,tvSize,&fv,&lv)) //Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
 		{
 			case TYPE_TEXT:

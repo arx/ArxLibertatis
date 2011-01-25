@@ -280,7 +280,7 @@ bool IntersectLinePlane(EERIE_3D * l1, EERIE_3D * l2, EERIEPOLY * ep, EERIE_3D *
  
 //*************************************************************************************
 //*************************************************************************************
-long MakeTopObjString(INTERACTIVE_OBJ * io,char * dest, unsigned int destSize)
+long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest, unsigned int destSize)
 {
 	EERIE_3D boxmin;
 	EERIE_3D boxmax;
@@ -310,7 +310,7 @@ long MakeTopObjString(INTERACTIVE_OBJ * io,char * dest, unsigned int destSize)
 
 	boxmin.y -= 5.f;
 	boxmax.y -= 5.f;
-	strcpy(dest, "");
+	dest = "";
 
 	if ((player.pos.x > boxmin.x)
 			&& (player.pos.x < boxmax.x)
@@ -319,7 +319,7 @@ long MakeTopObjString(INTERACTIVE_OBJ * io,char * dest, unsigned int destSize)
 	{
 		{
 			if (EEfabs(player.pos.y + 160.f - boxmin.y) < 50.f)
-				strcat(dest, " PLAYER");
+				dest += " PLAYER";
 		}
 	}
 
@@ -355,7 +355,7 @@ long MakeTopObjString(INTERACTIVE_OBJ * io,char * dest, unsigned int destSize)
 		}
 	}
 
-	if (strlen(dest) == 0) strcpy(dest, "NONE");
+	if (dest.length() == 0) dest = "NONE";
 
 	return -1;
 }
