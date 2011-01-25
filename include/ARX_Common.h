@@ -71,6 +71,64 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <ctime>
 
 /* ---------------------------------------------------------
+						Platforms
+------------------------------------------------------------*/
+#define	ARX_PLATFORM_UNKNOWN	0
+#define	ARX_PLATFORM_WIN32		1
+#define	ARX_PLATFORM_PPU		2
+#define	ARX_PLATFORM_LINUX		3
+
+#if defined(__PPU__)
+	#define ARX_PLATFORM	ARX_PLATFORM_PPU
+#elif defined(_WIN32)
+	#define	ARX_PLATFORM	ARX_PLATFORM_WIN32
+#elif defined(__linux)
+    #define	ARX_PLATFORM	ARX_PLATFORM_LINUX
+#else
+	#define	ARX_PLATFORM	ARX_PLATFORM_UNKNOWN
+#endif
+
+#ifndef ARX_PLATFORM
+	#warning "Unknown target platform"
+#endif
+
+/* ---------------------------------------------------------
+						Compilers
+------------------------------------------------------------*/
+#define	ARX_COMPILER_UNKNOWN	0
+#define	ARX_COMPILER_VC9		1
+#define	ARX_COMPILER_VC10		2
+#define	ARX_COMPILER_GCC		3
+
+#if defined(__GNUC__)
+	#define ARX_COMPILER		ARX_COMPILER_GCC
+#elif defined(_MSC_VER)
+	#if _MSC_VER < 1600
+		#define	ARX_COMPILER	ARX_COMPILER_VC9
+	#elif _MSC_VER < 1700
+		#define	ARX_COMPILER	ARX_COMPILER_VC10
+	#endif
+#else
+	#define ARX_COMPILER		ARX_COMPILER_UNKNOWN
+#endif
+
+#ifndef ARX_COMPILER
+	#warning "Unknown compiler"
+#endif
+
+#define ARX_COMPILER_MSVC	((ARX_COMPILER == ARX_COMPILER_VC9) || (ARX_COMPILER == ARX_COMPILER_VC10))
+
+// TODO: Move this in a platform specific file
+#if ARX_COMPILER_MSVC
+    #include <direct.h>
+
+    // Windows like to be non-standard... sigh
+    #define strcasecmp  _stricmp
+    #define strncasecmp _strnicmp
+    #define chdir       _chdir
+#endif
+
+/* ---------------------------------------------------------
 					     Break
 ------------------------------------------------------------*/
 
