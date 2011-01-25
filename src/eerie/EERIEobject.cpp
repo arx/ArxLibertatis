@@ -73,6 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <hermes/PakManager.h>
 #include <hermes/PakEntry.h>
 #include <hermes/Filesystem.h>
+#include <hermes/Logger.h>
 
 #include <cstdio>
 using std::sprintf;
@@ -1380,9 +1381,12 @@ retry1:
 //-----------------------------------------------------------------------------------------------------
 EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const char * dirr)
 {
+	LogInfo << "Loading Multiscene " << dirr;
+	
 	EERIE_MULTI3DSCENE * em = NULL;
 
 // TODO create unified implementation for both pak and non-pak
+// TODO is this even used?
 	
 	em = _PAK_MultiSceneToEerie(dirr);
 
@@ -1396,6 +1400,8 @@ EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const char * dirr)
 //-----------------------------------------------------------------------------------------------------
 EERIE_3DSCENE * ScnToEerie(unsigned char * adr, long size, char * fic, long flags)
 {
+	LogInfo << "Loading Scene " << fic;
+	
 	if (adr == NULL) return NULL;
 
 	EERIE_3DSCENE 	*	seerie;

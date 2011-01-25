@@ -53,12 +53,14 @@ class TextureContainer;
 
 //#pragma pack(push,1)
 
+#pragma pack(push,1)
 typedef struct
 {
 	float r;
 	float g;
 	float b;
 } EERIE_RGB; // Aligned 1 2 4
+#pragma pack(pop)
 
 
 typedef struct
