@@ -60,6 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <sstream>
 #include <vector>
@@ -391,9 +392,9 @@ void ARX_SCRIPT_LaunchScriptSearch( std::string& search)
 	ShowText.clear();
 	long foundnb = 0;
 	long size = 0;
-	std::string tline[4096];
-	std::string toadd[4096];
-	std::string objname[256];
+	std::string tline;
+	std::string toadd;
+	std::string objname;
 	long nline;
 	INTERACTIVE_OBJ * io = NULL;
 	MakeUpcase(search);
@@ -2692,7 +2693,7 @@ INTERACTIVE_OBJ * _CURIO = NULL;
 //		 =1 no INTERPRETATION (except for ~ )										//
 //*************************************************************************************
 
-long GetNextWord(EERIE_SCRIPT * es, long i, std::string& temp, long flags)
+long GetNextWord( EERIE_SCRIPT * es, long i, std::string& temp, long flags )
 {
 
 	// Avoids negative position...
@@ -2830,7 +2831,7 @@ long GetNextWord(EERIE_SCRIPT * es, long i, std::string& temp, long flags)
 
 //*************************************************************************************
 //*************************************************************************************
-long GetNextWord_Interpreted(INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, std::string& temp)
+long GetNextWord_Interpreted( INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, std::string& temp )
 {
 	long pos=GetNextWord(es,i,temp);
 	if	(temp[0]=='^') {
@@ -2902,7 +2903,7 @@ long GotoNextLine(EERIE_SCRIPT * es, long pos)
 //*************************************************************************************
 long SkipNextStatement(EERIE_SCRIPT * es, long pos)
 {
-	char temp[512];
+	std::string temp;
 	long brack = 1;
 	long tpos;
 	pos = GetNextWord(es, pos, temp);
@@ -13510,10 +13511,10 @@ LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 			break;
 		case WM_INITDIALOG:
 			SendMessage(hDlg, WM_SIZE, 0, 0);
-			SetWindowText(hDlg, ShowTextWindowtext);
+			SetWindowText(hDlg, ShowTextWindowtext.c_str());
 			thWnd = GetDlgItem(hDlg, IDC_SHOWTEXT);
 			SendMessage(thWnd, WM_SETFONT, (WPARAM) GetStockObject(ANSI_FIXED_FONT), true);
-			SetWindowText(thWnd, ShowText);
+			SetWindowText(thWnd, ShowText.c_str());
 
 			return true;
 		case WM_SIZE:
@@ -13543,11 +13544,11 @@ LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 			break;
 		case WM_INITDIALOG:
 			SendMessage(hDlg, WM_SIZE, 0, 0);
-			SetWindowText(hDlg, ShowTextWindowtext);
+			SetWindowText(hDlg, ShowTextWindowtext.c_str());
 			thWnd = GetDlgItem(hDlg, IDC_SHOWTEXT);
-			SetWindowText(thWnd, ShowText);
+			SetWindowText(thWnd, ShowText.c_str());
 			thWnd = GetDlgItem(hDlg, IDC_SHOWTEXT2);
-			SetWindowText(thWnd, ShowText2);
+			SetWindowText(thWnd, ShowText2.c_str());
 			return true;
 		case WM_COMMAND:
 
