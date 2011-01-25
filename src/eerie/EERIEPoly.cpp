@@ -3690,7 +3690,7 @@ typedef struct
 
 #define SIZ_WRK 10
 
- 
+#pragma pack(push,1)
 typedef struct
 {
 	float	sy;
@@ -3699,7 +3699,9 @@ typedef struct
 	float	stu;
 	float	stv;
 } FAST_VERTEX;
+#pragma pack(pop)
 
+#pragma pack(push,1)
 typedef struct
 {
 	FAST_VERTEX		v[4];
@@ -3713,8 +3715,9 @@ typedef struct
 	short			room;
 	short			paddy;
 } FAST_EERIEPOLY;
+#pragma pack(pop)
 
-
+#pragma pack(push,1)
 typedef struct
 {
 	float	version;
@@ -3730,14 +3733,18 @@ typedef struct
 	long	nb_rooms;
 
 } FAST_SCENE_HEADER;
+#pragma pack(pop)
 
+#pragma pack(push,1)
 typedef struct
 {
-	TextureContainer * tc;
+	TextureContainer * tc; // TODO pointer in struct used for saving/loading - ugh
 	TextureContainer * temp;
 	char		fic[256];
 } FAST_TEXTURE_CONTAINER;
+#pragma pack(pop)
 
+#pragma pack(push,1)
 typedef struct FAST__ANCHOR_DATA
 {
 	EERIE_3D	pos;
@@ -3747,12 +3754,24 @@ typedef struct FAST__ANCHOR_DATA
 	short		flags;
 
 } FAST__ANCHOR_DATA;
+#pragma pack(pop)
 
+#pragma pack(push,1)
 typedef struct
 {
 	long	nbpoly; 
 	long	nbianchors;
 } FAST_SCENE_INFO;
+#pragma pack(pop)
+
+#pragma pack(push,1)
+typedef struct
+{
+	float	distance; // -1 means use truedist
+	EERIE_3D startpos;
+	EERIE_3D endpos;
+} ROOM_DIST_DATA_SAVE;
+#pragma pack(pop)
 
 extern void LoadLevelScreen(LPDIRECT3DDEVICE7 pd3dDevice = NULL, long lev = -1, float v = 0.f);
 extern float PROGRESS_BAR_COUNT;
@@ -3937,8 +3956,6 @@ bool FastSceneLoad(const char * partial_path)
 	unsigned char * tex;
 	tex = (unsigned char *)(rawdata + pos);
 	
-	LogDebug << "FastSceneLoad: ReCreate textures...";
-	
 	//ReCreate textures...
 	for (k = 0; k < fsh->nb_textures; k++)
 	{
@@ -3955,6 +3972,7 @@ bool FastSceneLoad(const char * partial_path)
 	PROGRESS_BAR_COUNT += 4.f;
 	LoadLevelScreen();
 
+	LogDebug << "FastSceneLoad: ReCreate textures...";
 	for (j = 0; j < fsh->sizez; j++)
 		for (i = 0; i < fsh->sizex; i++)
 		{
