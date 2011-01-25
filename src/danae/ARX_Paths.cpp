@@ -293,13 +293,8 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 						{
 							char texx[128];
 							char tex2[128];
-<<<<<<< HEAD
 							strcpy(texx, GetName(io->filename).c_str());
-							sprintf(tex2, "%s_%04d %s", texx, io->ident, temp.c_str());
-=======
-							strcpy(texx, GetName(io->filename));
-							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
+							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
 							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2, NULL);
 						}
 					}
@@ -330,13 +325,8 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 							{
 								char texx[128];
 								char tex2[128];
-<<<<<<< HEAD
 								strcpy(texx, GetName(io->filename).c_str());
-								sprintf(tex2, "%s_%04d %s", texx, io->ident, temp.c_str());
-=======
-								strcpy(texx, GetName(io->filename));
-								sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
+								sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
 								SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2, NULL); 
 							}
 						}
@@ -356,13 +346,8 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 						{
 							char texx[128];
 							char tex2[128];
-<<<<<<< HEAD
 							strcpy(texx, GetName(io->filename).c_str());
-							sprintf(tex2, "%s_%04d %s", texx, io->ident, temp.c_str());
-=======
-							strcpy(texx, GetName(io->filename));
-							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
+							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
 							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2, NULL); 
 						}
 					}
@@ -380,13 +365,8 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 						{
 							char texx[128];
 							char tex2[128];
-<<<<<<< HEAD
 							strcpy(texx, GetName(io->filename).c_str());
-							sprintf(tex2, "%s_%04d %s", texx, io->ident, temp.c_str());
-=======
-							strcpy(texx, GetName(io->filename));
-							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
+							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
 							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2, NULL);
 						}
 					}

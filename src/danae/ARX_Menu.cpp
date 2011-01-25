@@ -310,7 +310,7 @@ void ARX_Menu_Resources_Create(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	ARX_Allocate_Text(ARXmenu.mda->str_button_skin,                     "system_charsheet_button_skin");
 	ARX_Allocate_Text(ARXmenu.mda->str_button_done,                     "system_charsheet_button_done");
 
-	long siz;
+	size_t siz;
 	char szFileName[256];
 
 	sprintf(szFileName, "Localisation\\ucredits_%s.txt", Project.localisationpath.c_str());
@@ -934,11 +934,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 		Color = RGB(232, 204, 143);
 
-<<<<<<< HEAD
-		PAK_UNICODE_GetPrivateProfileString( "system_menus_main_cdnotfound", "string", "", szText, 256, NULL);
-=======
 		PAK_UNICODE_GetPrivateProfileString("system_menus_main_cdnotfound", "", szText, 256);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 		iW = 0;
 		iH = 0;
 		GetTextSize(hFontMenu, szText.c_str(), &iW, &iH);
