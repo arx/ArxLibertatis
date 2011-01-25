@@ -1341,12 +1341,9 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 					}
 					else
 					{
-						std::string temp;
-						temp = GetName(EVENT_SENDER->filename);
 						std::stringstream ss;
-						ss << temp << '_' << EVENT_SENDER->ident;
+						ss << GetName(EVENT_SENDER->filename) << '_' << EVENT_SENDER->ident;
 						txtcontent = ss.str();
-						//sprintf(txtcontent, "%s_%04ld", temp, EVENT_SENDER->ident);
 					}
 				}
 				else 	txtcontent = "NONE";
@@ -1398,12 +1395,9 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 				if (io == inter.iobj[0]) txtcontent = "PLAYER";
 				else
 				{
-					std::string temp;
-					temp, GetName(io->filename);
 					std::stringstream ss;
-					ss << temp << '_' << io->ident;
+					ss << GetName(io->filename) << '_' << io->ident;
 					txtcontent = ss.str();
-					//sprintf(txtcontent, "%s_%04ld", temp, io->ident);
 				}
 
 				return TYPE_TEXT;
@@ -1502,12 +1496,9 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 			{
 				if (LASTSPAWNED)
 				{
-					std::string temp;
-					temp = GetName(LASTSPAWNED->filename);
 					std::stringstream ss;
-					ss << temp << '_' << LASTSPAWNED->ident;
+					ss << GetName(LASTSPAWNED->filename) << '_' << LASTSPAWNED->ident;
 					txtcontent = ss.str();
-					//sprintf(txtcontent, "%s_%04ld", temp, LASTSPAWNED->ident);
 				}
 				else txtcontent = "NONE";
 
@@ -1835,11 +1826,11 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 				}
 				else if (ioo)
 				{
-					char temp[256];
-					strcpy(temp, GetName(ioo->filename).c_str());
-					sprintf(txtcontent, "%s_%04ld", temp, ioo->ident);
+					std::stringstream ss;
+					ss << GetName(ioo->filename) << '_' << ioo->ident;
+					txtcontent = ss.str();
 				}
-				else 	strcpy(txtcontent, "NONE");
+				else 	txtcontent = "NONE";
 
 				return TYPE_TEXT;
 			}
@@ -1849,16 +1840,16 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 
 			if (!specialstrcmp(name, "^TARGET"))
 			{
-				if (io->targetinfo == 0) strcpy(txtcontent, "PLAYER");
+				if (io->targetinfo == 0) txtcontent = "PLAYER";
 				else
 				{
 					if (!ValidIONum(io->targetinfo))
-						strcpy(txtcontent, "NONE");
+						txtcontent = "NONE";
 					else
 					{
-						char temp[256];
-						strcpy(temp, GetName(inter.iobj[io->targetinfo]->filename).c_str());
-						sprintf(txtcontent, "%s_%04ld", temp, inter.iobj[io->targetinfo]->ident);
+						std::stringstream ss;
+						ss << GetName(inter.iobj[io->targetinfo]->filename) << '_' << inter.iobj[io->targetinfo]->ident;
+						txtcontent = ss.str();
 					}
 				}
 
@@ -1898,13 +1889,13 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 	{
 		if (io == inter.iobj[0])
 		{
-			strcpy(txtcontent, "PLAYER");
+			txtcontent = "PLAYER";
 		}
 		else
 		{
-			char temp[256];
-			strcpy(temp, GetName(io->filename).c_str());
-			sprintf(txtcontent, "%s_%04ld", temp, io->ident);
+			std::stringstream ss;
+			ss << GetName(io->filename) << '_' << io->ident;
+			txtcontent = ss.str();
 		}
 
 		return TYPE_TEXT;
@@ -2099,7 +2090,7 @@ std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * ess
 		switch (GetSystemVar(esss,io,temp1,tv,tvSize,&fv,&lv))//Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
 		{
 			case TYPE_TEXT:
-				strcpy(var_text, tv);
+				strcpy(var_text, tv.c_str());
 				return var_text;
 				break;
 			case TYPE_LONG:
@@ -2129,19 +2120,19 @@ std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * ess
 	else if (temp1[0] == '@') t1 = GETVarValueFloat(&esss->lvar, &esss->nblvar, temp1.c_str());
 	else if (temp1[0] == '$')
 	{
-		char * tempo = GETVarValueText(&svar, &NB_GLOBALS, temp1.c_str());
+		std::string tempo = GETVarValueText(&svar, &NB_GLOBALS, temp1.c_str());
 
-		if (tempo == NULL) strcpy(var_text, "VOID");
-		else strcpy(var_text, tempo);
+		if (tempo.empty()) strcpy(var_text, "VOID");
+		else strcpy(var_text, tempo.c_str());
 
 		return var_text;
 	}
 	else if (temp1[0] == '\xA3')
 	{
-		char * tempo = GETVarValueText(&esss->lvar, &esss->nblvar, temp1.c_str());
+		std::string tempo = GETVarValueText(&esss->lvar, &esss->nblvar, temp1.c_str());
 
-		if (tempo == NULL) strcpy(var_text, "VOID");
-		else strcpy(var_text, tempo);
+		if (tempo.empty()) strcpy(var_text, "VOID");
+		else strcpy(var_text, tempo.c_str());
 
 		return var_text;
 	}
@@ -2169,7 +2160,7 @@ float GetVarValueInterpretedAsFloat( std::string& temp1, EERIE_SCRIPT * esss, IN
 		switch (GetSystemVar(esss,io,temp1,tv,tvSize,&fv,&lv)) //Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
 		{
 			case TYPE_TEXT:
-				return (float)atof(tv);
+				return (float)atof(tv.c_str());
 				break;
 			case TYPE_LONG:
 				return (float)lv;
@@ -2717,7 +2708,7 @@ INTERACTIVE_OBJ * _CURIO = NULL;
 // flags =0 standard																//
 //		 =1 no INTERPRETATION (except for ~ )										//
 //*************************************************************************************
-
+/* TODO Clean up this mess */
 long GetNextWord( EERIE_SCRIPT * es, long i, std::string& temp, long flags )
 {
 
@@ -2797,7 +2788,7 @@ long GetNextWord( EERIE_SCRIPT * es, long i, std::string& temp, long flags )
 	   )
 	{
 		long _pos = 0;
-		long _size = strlen(temp);
+		long _size = temp.length();
 
 		while ((_pos < _size) && (tildes >= 2))
 		{
@@ -2819,29 +2810,29 @@ long GetNextWord( EERIE_SCRIPT * es, long i, std::string& temp, long flags )
 					std::string tildedd;
 					char interp[256];
 					char result[512];
-					tildedd.assign( temp + start, end - start + 1);
+					tildedd.assign( temp.substr( start, end - start + 1) );
 					tildedd[end-start+1] = 0;
 
 					if (es->master)
-						strcpy(interp, GetVarValueInterpretedAsText(tildedd, (EERIE_SCRIPT *)es->master, _CURIO));
+						strcpy(interp, GetVarValueInterpretedAsText(tildedd, (EERIE_SCRIPT *)es->master, _CURIO).c_str());
 					else
-						strcpy(interp, GetVarValueInterpretedAsText(tildedd, es, _CURIO));
+						strcpy(interp, GetVarValueInterpretedAsText(tildedd, es, _CURIO).c_str());
 
 					if (start == 1) strcpy(result, "");
 					else
 					{
-						memcpy(result, temp, start - 1);
+						memcpy(result, temp.c_str(), start - 1);
 						result[start-1] = 0;
 					}
 
 					strcat(result, interp);
 
 					if (end + 2 < _size)
-						strcat(result, temp + end + 2);
+						strcat(result, temp.c_str() + end + 2);
 
 					_pos = -1;
-					strcpy(temp, result);
-					_size = strlen(temp);
+					temp = result;
+					_size = temp.length();
 					tildes -= 2;
 				}
 			}
@@ -2861,7 +2852,10 @@ long GetNextWord_Interpreted( INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, s
 	long pos=GetNextWord(es,i,temp);
 	if	(temp[0]=='^') {
 		const unsigned int tvSize = 64 ;
-		long lv; float fv; char tv[tvSize];
+		long lv;
+		float fv;
+		std::string tv;
+
 		switch (GetSystemVar(es,io,temp,tv,tvSize,&fv,&lv)) //Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
 		{
 			case TYPE_TEXT:
