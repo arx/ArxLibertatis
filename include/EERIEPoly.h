@@ -1074,13 +1074,6 @@ extern long NbRoomDraw;
 
 #define NPC_ITEMS__AMBIENT_VALUE_255	35
 #define NPC_ITEMS__AMBIENT_VALUE		0.1372549f
- 
-typedef struct
-{
-	float	distance; // -1 means use truedist
-	EERIE_3D startpos;
-	EERIE_3D endpos;
-} ROOM_DIST_DATA_SAVE;
 
 typedef struct
 {
