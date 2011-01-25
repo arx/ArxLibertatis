@@ -73,9 +73,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 /* ---------------------------------------------------------
 						Platforms
 ------------------------------------------------------------*/
-#define	ARX_PLATFORM_WIN32	0
-#define	ARX_PLATFORM_PPU	1
-#define	ARX_PLATFORM_LINUX	2
+#define	ARX_PLATFORM_UNKNOWN	0
+#define	ARX_PLATFORM_WIN32		1
+#define	ARX_PLATFORM_PPU		2
+#define	ARX_PLATFORM_LINUX		3
 
 #if defined(__PPU__)
 	#define ARX_PLATFORM	ARX_PLATFORM_PPU
@@ -83,6 +84,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 	#define	ARX_PLATFORM	ARX_PLATFORM_WIN32
 #elif defined(__linux)
     #define	ARX_PLATFORM	ARX_PLATFORM_LINUX
+#else
+	#define	ARX_PLATFORM	ARX_PLATFORM_UNKNOWN
 #endif
 
 #ifndef ARX_PLATFORM
@@ -92,9 +95,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 /* ---------------------------------------------------------
 						Compilers
 ------------------------------------------------------------*/
-#define	ARX_COMPILER_VC9	0
-#define	ARX_COMPILER_VC10	1
-#define	ARX_COMPILER_GCC	2
+#define	ARX_COMPILER_UNKNOWN	0
+#define	ARX_COMPILER_VC9		1
+#define	ARX_COMPILER_VC10		2
+#define	ARX_COMPILER_GCC		3
 
 #if defined(__GNUC__)
 	#define ARX_COMPILER		ARX_COMPILER_GCC
@@ -104,6 +108,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 	#elif _MSC_VER < 1700
 		#define	ARX_COMPILER	ARX_COMPILER_VC10
 	#endif
+#else
+	#define ARX_COMPILER		ARX_COMPILER_UNKNOWN
 #endif
 
 #ifndef ARX_COMPILER
