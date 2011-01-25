@@ -86,7 +86,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #endif
 
 #ifndef ARX_PLATFORM
-	#error "Unsupported target platform"
+	#warning "Unknown target platform"
 #endif
 
 /* ---------------------------------------------------------
@@ -107,7 +107,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #endif
 
 #ifndef ARX_COMPILER
-	#error "Unsupported compiler"
+	#warning "Unknown compiler"
 #endif
 
 #define ARX_COMPILER_MSVC	((ARX_COMPILER == ARX_COMPILER_VC9) || (ARX_COMPILER == ARX_COMPILER_VC10))
