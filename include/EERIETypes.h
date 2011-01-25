@@ -51,6 +51,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class TextureContainer;
 
+//#pragma pack(push,1)
+
 typedef struct
 {
 	float r;
@@ -843,6 +845,8 @@ class CMY_DYNAMIC_VERTEXBUFFER
 		void * Lock(unsigned int);
 		bool UnLock();
 };
+
+//#pragma pack(pop)
 
 #define FVF_D3DVERTEX	(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1|D3DFVF_TEXTUREFORMAT2)
 #define FVF_D3DVERTEX2	(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX2|D3DFVF_TEXTUREFORMAT2)
