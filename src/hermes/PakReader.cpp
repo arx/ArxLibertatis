@@ -291,58 +291,31 @@ void PakReader::Close() {
 
 }
 
-struct PakReadDataFile {
+struct BlastFileInBuffer {
 	
 	FILE * file;
 	
 	unsigned char readbuf[PAK_READ_BUF_SIZE];
 	
-	PakReadDataFile(FILE * f) : file(f) {};
+	BlastFileInBuffer(FILE * f) : file(f) {};
 	
 };
 
-struct PakWriteDataMem {
+size_t blastInFile(void * Param, const unsigned char ** buf) {
 	
-	char * buf;
+	BlastFileInBuffer * p = (BlastFileInBuffer *)Param;
 	
-	size_t size;
+	*buf = p->readbuf;
 	
-	PakWriteDataMem(char * b, size_t s) : buf(b), size(s) {};
-	
-};
-
-size_t ReadData(void * Param, const unsigned char ** buf) {
-	
-	PakReadDataFile * pPP = (PakReadDataFile *)Param;
-	
-	*buf = pPP->readbuf;
-	
-	int nread = fread(pPP->readbuf, 1, PAK_READ_BUF_SIZE, pPP->file);
-	
-	return nread;
-}
-
-int WriteData(void * Param, unsigned char * buf, size_t len) {
-	
-	PakWriteDataMem * pPP = (PakWriteDataMem *) Param;
-	
-	if(len > pPP->size) {
-		return 1;
-	}
-	
-	memcpy((void *)pPP->buf, (const void *)buf, len);
-	pPP->buf += len;
-	pPP->size -= len;
-	
-	return 0;
+	return fread(p->readbuf, 1, PAK_READ_BUF_SIZE, p->file);
 }
 
 static int blast(FILE * file, char * buf, size_t size) {
 	
-	PakReadDataFile read(file);
-	PakWriteDataMem write(buf, size);
+	BlastFileInBuffer in(file);
+	BlastMemOutBuffer out(buf, size);
 	
-	return blast(ReadData, &read, WriteData, &write);
+	return blast(blastInFile, &in, blastOutMem, &out);
 }
 
 PakFile * PakReader::getFile(const std::string& name) {
@@ -369,7 +342,7 @@ bool PakReader::Read(const std::string& name, void * buf) {
 	if(f->flags & PAK_FILE_COMPRESSED) {
 		int r = blast(file, (char *)buf, f->uncompressedSize);
 		if(r) {
-			printf("\e[1;35mdecompression error %d:\e[m\tfor \"%s\" in \'%s\"\n", r, f->name.c_str(), pakname.c_str());
+			LogError << "PakReader::Read: blast error " << r << " outSize=" << f->uncompressedSize;
 			return false;
 		}
 	} else {
@@ -401,7 +374,7 @@ void* PakReader::ReadAlloc( const std::string& name, size_t& sizeRead ) {
 	
 		int r = blast(file, (char*)mem, f->uncompressedSize);
 		if(r) {
-			printf("\e[1;35mdecompression error (a) %d:\e[m\tfor \"%s\" in \'%s\"\n", r, f->name.c_str(), pakname.c_str());
+			LogError << "PakReader::ReadAlloc: blast error " << r << " outSize=" << f->uncompressedSize;
 			free(mem);
 			sizeRead = 0;
 			return NULL;
@@ -475,41 +448,41 @@ int PakReader::fClose(PakFileHandle * fh) {
 	return 0;
 }
 
-struct PakWriteDataMemOffset {
+struct BlastMemOutBufferOffset {
 	char * buf;
 	size_t currentOffset;
 	size_t startOffset;
 	size_t endOffset;
 };
 
-int WriteDataOffset(void * Param, unsigned char * buf, size_t len) {
+int blastOutMemOffset(void * Param, unsigned char * buf, size_t len) {
 	
-	PakWriteDataMemOffset * pPP = (PakWriteDataMemOffset *)Param;
+	BlastMemOutBufferOffset * p = (BlastMemOutBufferOffset *)Param;
 	
-	if(pPP->currentOffset >= pPP->endOffset) {
+	if(p->currentOffset >= p->endOffset) {
 		return 1;
 	}
 	
-	if(pPP->currentOffset < pPP->startOffset) {
-		size_t toStart = pPP->startOffset - pPP->currentOffset;
+	if(p->currentOffset < p->startOffset) {
+		size_t toStart = p->startOffset - p->currentOffset;
 		if(len <= toStart) {
-			pPP->currentOffset += len;
+			p->currentOffset += len;
 			return 0;
 		} else {
-			pPP->currentOffset = pPP->startOffset;
+			p->currentOffset = p->startOffset;
 			buf += toStart;
 			len -= toStart;
 		}
 	}
 	
-	size_t toCopy = min(len, pPP->endOffset - pPP->currentOffset);
+	size_t toCopy = min(len, p->endOffset - p->currentOffset);
 	
 	assert(toCopy != 0);
 	
-	memcpy(pPP->buf, buf, toCopy);
+	memcpy(p->buf, buf, toCopy);
 	
-	pPP->currentOffset += toCopy;
-	pPP->buf += toCopy;
+	p->currentOffset += toCopy;
+	p->buf += toCopy;
 	
 	return 0;
 }
@@ -542,23 +515,22 @@ size_t PakReader::fRead(void * buf, size_t isize, size_t count, PakFileHandle * 
 		
 		fseek(file, f->offset, SEEK_SET);
 		
-		PakReadDataFile read(file);
-		PakWriteDataMemOffset write;
+		BlastFileInBuffer in(file);
+		BlastMemOutBufferOffset out;
 		
-		
-		write.buf = (char *)buf;
-		write.currentOffset = 0;
-		write.startOffset = fh->offset;
-		write.endOffset = min(fh->offset + size, f->uncompressedSize);
+		out.buf = (char *)buf;
+		out.currentOffset = 0;
+		out.startOffset = fh->offset;
+		out.endOffset = min(fh->offset + size, f->uncompressedSize);
 		
 		// TODO this is really inefficient
-		int r = blast(ReadData, &read, WriteDataOffset, &write);
-		if(!r) {
-			printf("\e[1;35mdecompression error (f) %d:\e[m\tfor \"%s\" in \'%s\"\n", r, f->name.c_str(), pakname.c_str());
+		int r = blast(blastInFile, &in, blastOutMemOffset, &out);
+		if(r) {
+			LogError << "PakReader::fRead: blast error " << r << " outSize=" << f->uncompressedSize;
 			return 0;
 		}
 		
-		size = write.currentOffset - write.startOffset;
+		size = min((size_t)0, out.currentOffset - out.startOffset);
 		
 	} else {
 		

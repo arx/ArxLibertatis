@@ -74,9 +74,6 @@ extern "C" {
 }
 
 
-
-#include <hermes/blast.h>
-
 using namespace std;
 
 // TODO is this correct?
@@ -231,11 +228,7 @@ void MakeUpcase( std::string& str )
 HKEY    ConsoleKey = NULL;
 #define CONSOLEKEY_KEY     TEXT("Software\\Arkane_Studios\\ASMODEE")
 
-<<<<<<< HEAD
 void ConsoleSend( const std::string& dat, long level, HWND source, long flag)
-=======
-void ConsoleSend(const char * dat, long level, HWND source, long flag)
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 {
 	printf("ConsoleSend: %s %ld %p %ld\n", dat, level, source, flag);
 	RegCreateKeyEx(HKEY_CURRENT_USER, CONSOLEKEY_KEY, 0, NULL,
@@ -248,11 +241,7 @@ void ConsoleSend(const char * dat, long level, HWND source, long flag)
 	RegCloseKey(ConsoleKey);
 }
 
-<<<<<<< HEAD
 void SendConsole( const std::string& dat, long level, long flag, HWND source) {
-=======
-void SendConsole(const char * dat, long level, long flag, HWND source) {
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 	if (GaiaWM != 0)
 	{
 		if (DebugLvl[0]) return;
@@ -270,12 +259,8 @@ void SendConsole(const char * dat, long level, long flag, HWND source) {
 }
 
 long FINAL_COMMERCIAL_DEMO_bis = 1;
-<<<<<<< HEAD
 
 void ForceSendConsole( const std::string& dat, long level, long flag, HWND source)
-=======
-void ForceSendConsole(const char * dat, long level, long flag, HWND source)
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 {
 	if (!FINAL_COMMERCIAL_DEMO_bis)
 	{
@@ -980,115 +965,6 @@ int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName
 	return HERMES_WFSelectorCommon(pstrFileName, pstrTitleName, filter, OFN_OVERWRITEPROMPT, 0, MAX_PATH, hWnd);
 }
  
-//////////////////////////////////////// PACKING
-//Always on for now...
-
-/* Routine to read compressed data.  Used only by blast().
-** This routine reads the compressed data that is to be uncompressed.
-*/
-size_t ReadCompressed(void * Param, const unsigned char ** buf) {
-	
-	PARAM * Ptr = (PARAM *) Param;
-	
-	*buf = (const unsigned char *)Ptr->pSource + Ptr->SourceOffset;
-	
-	size_t size = Ptr->CompressedSize;
-	
-	Ptr->SourceOffset += size;
-	
-	Ptr->CompressedSize = 0;
-
-	return size;
-}
-
-/* Routine to write uncompressed data. Used only by explode().
-** This routine writes the uncompressed data to a memory buffer.
-*/
-int WriteUnCompressed(void * Param, unsigned char * buf, size_t len) {
-	
-	PARAM * Ptr = (PARAM *) Param;
-	
-	if(Ptr->UnCompressedSize + len > Ptr->BufferSize) {
-		Ptr->BufferSize = Ptr->UnCompressedSize + len * 10;
-		Ptr->pDestination = (char *)realloc(Ptr->pDestination, Ptr->BufferSize);
-	}
-	
-	if(Ptr->pDestination) {
-		memcpy(Ptr->pDestination + Ptr->DestinationOffset, buf, len);
-		Ptr->DestinationOffset += len;
-		Ptr->UnCompressedSize += len;
-		return 0;
-	} else {
-		return 1;
-	}
-	
-}
-
-int WriteUnCompressedNoAlloc(void * Param, unsigned char * buf, size_t len) {
-	
-	PARAM * Ptr = (PARAM *) Param;
-	
-	if(Ptr->UnCompressedSize + len > Ptr->BufferSize) {
-		return 1;
-	}
-	
-	if(Ptr->pDestination) {
-		memcpy(Ptr->pDestination + Ptr->DestinationOffset, buf, len);
-		Ptr->DestinationOffset += len;
-		Ptr->UnCompressedSize += len;
-		return 0;
-	} else {
-		return 1;
-	}
-	
-}
-
-
-char * STD_Explode(char * from, size_t from_size, size_t * to_size)
-{
-//	LogDebug << "STD Explode from " << from;
-	PARAM Param;
-	memset(&Param, 0, sizeof(PARAM));
-	Param.BufferSize = 0;
-	Param.pSource = from;
-	Param.pDestination = NULL;
-	Param.CompressedSize = from_size;
-
-	Param.Crc               = (unsigned long) - 1;
-	unsigned int error = blast(ReadCompressed, &Param, WriteUnCompressed, &Param);
-
-	//TODO(lubosz): error should return something?
-//	if (error) {
-//		LogError <<"Blast returned Error " << error << " for " << Param.pSource;
-//		*to_size = 0;
-//		return NULL;
-//	}
-
-//	LogDebug << "STD Explode Param.pDestination " << Param.pDestination;
-	*to_size = Param.UnCompressedSize;
-	return Param.pDestination;
-}
-
-void STD_ExplodeNoAlloc(char * from, size_t from_size, char * to, size_t * to_size)
-{
-
-	PARAM Param;
-	memset(&Param, 0, sizeof(PARAM));
-	Param.BufferSize = *to_size;
-	Param.pSource = from;
-	Param.pDestination = to; 
-	Param.CompressedSize = from_size;
-	Param.Crc               = (unsigned long) - 1;
-	unsigned int error = blast(ReadCompressed, &Param, WriteUnCompressedNoAlloc, &Param);
-
-	if (error)
-	{
-		*to_size = 0; 
-		return;
-	}
-
-	*to_size = Param.UnCompressedSize;
-}
 //-------------------------------------------------------------------------------------
 // SP funcs
 #define hrnd()  (((float)rand() ) * 0.00003051850947599f)

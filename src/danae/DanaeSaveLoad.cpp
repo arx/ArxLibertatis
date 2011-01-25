@@ -93,6 +93,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <hermes/PakManager.h>
 #include <hermes/Filesystem.h>
 #include <hermes/Logger.h>
+#include <hermes/blast.h>
 
 #include <stdio.h>
 
@@ -273,6 +274,37 @@ void ReplaceSpecifics( std::string& text )
 
 extern long NODIRCREATION;
 extern long ADDED_IO_NOT_SAVED;
+
+//#pragma pack(push,1)
+typedef struct
+{
+	float	version;
+	char	ident[16];
+	char	lastuser[256];
+	long	time;
+	EERIE_3D pos_edit;
+	EERIE_3D angle_edit;
+	long	nb_scn;
+	long	nb_inter;
+	long	nb_nodes;
+	long	nb_nodeslinks;
+	long	nb_zones;
+	bool	lighting;
+	bool    Bpad[256];
+	long	nb_lights; 
+	long	nb_fogs; 
+
+	long	nb_bkgpolys;		
+	long	nb_ignoredpolys;	
+	long	nb_childpolys;		
+	long	nb_paths;			
+	long	pad[250];
+	EERIE_3D	offset;
+	float	fpad[253];
+	char	cpad[4096];
+	bool	bpad[256];
+} DANAE_LS_HEADER; // Aligned 1 2 4
+//#pragma pack(pop)
 
 //*************************************************************************************
 //*************************************************************************************
@@ -1119,8 +1151,9 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
 	LoadLevelScreen();
 	memcpy(&dlh, dat, sizeof(DANAE_LS_HEADER));
 	pos += sizeof(DANAE_LS_HEADER);
+	// TODO copying directly into structs is not very portable
 
-	LogDebug << "dlh.version " << dlh.version;
+	LogDebug << "dlh.version " << dlh.version << " header size " << sizeof(DANAE_LS_HEADER);
 
 	if (dlh.version > CURRENT_VERSION) // using compression
 	{
@@ -1136,14 +1169,14 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
 		char * compressed = (char *)(dat + pos);
 		long cpr_pos;
 		cpr_pos = 0;
-		dat = (unsigned char *)STD_Explode(compressed, FileSize - pos, FileSize);
+		dat = (unsigned char *)blastMemAlloc(compressed, FileSize - pos, FileSize);
 
 		free(torelease);
 		compressed = NULL;
 		pos = 0;
 
 		if (dat == NULL) {
-			LogError <<"STD_Explode did not return anything "<< fileDlf;
+			LogError << "STD_Explode did not return anything "<< fileDlf;
 			return -1;
 		}
 	}
@@ -1568,9 +1601,9 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
 
 	if (dlh.version >= 1.44f) // using compression
 	{
-		size_t cpr_pos;
-		char * compressed = (char *)PAK_FileLoadMalloc(fic2, cpr_pos);
-		dat = (unsigned char *)STD_Explode(compressed, cpr_pos, FileSize);
+		size_t size;
+		char * compressed = (char *)PAK_FileLoadMalloc(fic2, size);
+		dat = (unsigned char *)blastMemAlloc(compressed, size, FileSize);
 
 		if (dat == NULL)
 		{
@@ -2099,7 +2132,7 @@ void ARX_SAVELOAD_DLFCheckAdd(char * path, long num)
 		char * compressed = (char *)(dat + pos);
 		long cpr_pos;
 		cpr_pos = 0;
-		dat = (unsigned char *)STD_Explode(compressed, FileSize - pos, FileSize);
+		dat = (unsigned char *)blastMemAlloc(compressed, FileSize - pos, FileSize);
 
 		if (dat == NULL)
 		{
