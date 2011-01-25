@@ -3972,7 +3972,6 @@ bool FastSceneLoad(const char * partial_path)
 	PROGRESS_BAR_COUNT += 4.f;
 	LoadLevelScreen();
 
-	LogDebug << "FastSceneLoad: ReCreate textures...";
 	for (j = 0; j < fsh->sizez; j++)
 		for (i = 0; i < fsh->sizex; i++)
 		{
