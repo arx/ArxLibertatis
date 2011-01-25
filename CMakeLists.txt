@@ -21,7 +21,7 @@ ELSE (MSVC)
 	set(CMAKE_CXX_COMPILER /usr/bin/wineg++)
 	set(CMAKE_C_COMPILER /usr/bin/winegcc)
 
-	#set temporally less gcc problems
+	#set 32bit
 	set(CMAKE_CXX_FLAGS "-m32")
 
 	#Debug
