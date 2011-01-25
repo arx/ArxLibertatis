@@ -2850,6 +2850,7 @@ long GetNextWord( EERIE_SCRIPT * es, long i, std::string& temp, long flags )
 long GetNextWord_Interpreted( INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, std::string& temp )
 {
 	long pos=GetNextWord(es,i,temp);
+	std::stringstream ss;
 	if	(temp[0]=='^') {
 		const unsigned int tvSize = 64 ;
 		long lv;
@@ -2859,45 +2860,45 @@ long GetNextWord_Interpreted( INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, s
 		switch (GetSystemVar(es,io,temp,tv,tvSize,&fv,&lv)) //Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
 		{
 			case TYPE_TEXT:
-				strcpy(temp, tv);
+				temp = tv;
 				break;
 			case TYPE_LONG:
-				sprintf(temp, "%ld", lv);
+				ss << lv;
+				temp = ss.str();
 				break;
 			case TYPE_FLOAT:
-				sprintf(temp, "%f", fv);
+				ss << fv;
+				temp = ss.str();
 				break;
 		}
 	}
 	else if	(temp[0] == '#')
 	{
-		sprintf(temp, "%ld", GETVarValueLong(&svar, &NB_GLOBALS, temp));
+		ss << GETVarValueLong(&svar, &NB_GLOBALS, temp);
+		temp = ss.str();
 	}
 	else if (temp[0] == '\xA7')
 	{
-		sprintf(temp, "%ld", GETVarValueLong(&es->lvar, &es->nblvar, temp));
+		ss << GETVarValueLong(&es->lvar, &es->nblvar, temp);
+		temp = ss.str();
 	}
 	else if (temp[0] == '&')
 	{
-		sprintf(temp, "%f", GETVarValueFloat(&svar, &NB_GLOBALS, temp));
+		ss << GETVarValueFloat(&svar, &NB_GLOBALS, temp);
+		temp = ss.str();
 	}
 	else if (temp[0] == '@')
 	{
-		sprintf(temp, "%f", GETVarValueFloat(&es->lvar, &es->nblvar, temp));
+		ss << GETVarValueFloat(&es->lvar, &es->nblvar, temp);
+		temp = ss.str();
 	}
 	else if (temp[0] == '$')
 	{
-		char * tempo = GETVarValueText(&svar, &NB_GLOBALS, temp);
-
-		if (tempo == NULL) temp[0] = 0;
-		else strcpy(temp, tempo);
+		temp = GETVarValueText(&svar, &NB_GLOBALS, temp);
 	}
 	else if (temp[0] == '\xA3')
 	{
-		char * tempo = GETVarValueText(&es->lvar, &es->nblvar, temp);
-
-		if (tempo == NULL) temp[0] = 0;
-		else strcpy(temp, tempo);
+		temp = GETVarValueText(&es->lvar, &es->nblvar, temp);
 	}
 
 	return pos;
@@ -2945,7 +2946,7 @@ long SkipNextStatement(EERIE_SCRIPT * es, long pos)
 	tpos = GetNextWord(es, pos, temp);
 	MakeUpcase(temp);
 
-	if (!strcmp(temp, "ELSE"))
+	if (!temp.compare("ELSE"))
 	{
 		pos = tpos;
 	}
@@ -3777,12 +3778,9 @@ long ARX_SCRIPT_Timer_Exist(char * texx)
 	{
 		if (scr_timer[i].exist)
 		{
-			if (scr_timer[i].name)
+			if ( !scr_timer[i].name.compare(texx) )
 			{
-				if (!strcasecmp(scr_timer[i].name, texx))
-				{
-					return i;
-				}
+				return i;
 			}
 		}
 	}
@@ -3837,12 +3835,7 @@ void ARX_SCRIPT_Timer_ClearByNum(long timer_idx)
 {
 	if (scr_timer[timer_idx].exist)
 	{
-		if (scr_timer[timer_idx].name)
-		{
-			free(scr_timer[timer_idx].name);
-			scr_timer[timer_idx].name = NULL;
-		}
-
+		scr_timer[timer_idx].name.clear();
 		ActiveTimers--;
 		scr_timer[timer_idx].namelength = 0;
 		scr_timer[timer_idx].exist = 0;
@@ -3876,11 +3869,12 @@ void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(char * timername, INTERACTIVE_OBJ * i
 		if (scr_timer[i].exist)
 		{
 			if ((scr_timer[i].io == io) &&
-					(!strcasecmp(timername, scr_timer[i].name)))
+					(!scr_timer[i].name.compare(timername)))
 				ARX_SCRIPT_Timer_ClearByNum(i);
 		}
 	}
 }
+
 void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(INTERACTIVE_OBJ * io)
 {
 	for (long i = 0; i < MAX_TIMER_SCRIPT; i++)
@@ -3892,6 +3886,7 @@ void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(INTERACTIVE_OBJ * io)
 		}
 	}
 }
+
 void ARX_SCRIPT_Timer_Clear_By_IO(INTERACTIVE_OBJ * io)
 {
 	for (long i = 0; i < MAX_TIMER_SCRIPT; i++)
@@ -3977,7 +3972,7 @@ long ARX_SCRIPT_GetSystemIOScript(INTERACTIVE_OBJ * io, const char * name)
 		{
 			if (scr_timer[i].exist)
 			{
-				if ((scr_timer[i].io == io) && (!strcasecmp(scr_timer[i].name, name)))
+				if ((scr_timer[i].io == io) && (!scr_timer[i].name.compare(name)))
 				{
 					return i;
 				}
@@ -4071,7 +4066,7 @@ void ARX_SCRIPT_Timer_Check()
 
 					if (!es)
 					{
-						if (!strcasecmp(st->name, "_R_A_T_"))
+						if (!st->name.compare("_R_A_T_"))
 						{
 							if (Manage_Specific_RAT_Timer(st)) continue;
 						}

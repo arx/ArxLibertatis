@@ -1902,7 +1902,7 @@ long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 
 	long ssize = size;
  
-	dat = (unsigned char *)blastMemAlloc(compressed, ssize, size); 
+	dat = (unsigned char *)blastMemAlloc(compressed.c_str(), ssize, size); 
 
 	memcpy(asi, dat, sizeof(ARX_CHANGELEVEL_INDEX));
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
@@ -1970,7 +1970,7 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num)
 
 	long ssize = size;
 
-	dat = (unsigned char *)blastMemAlloc(compressed, ssize, size); //pos,&cpr_pos);
+	dat = (unsigned char *)blastMemAlloc(compressed.c_str(), ssize, size); //pos,&cpr_pos);
 
 	// Skip Changelevel Index
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
@@ -2142,7 +2142,7 @@ long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVEL_PLA
 
 	long ssize = size;
  
-	char * dat = blastMemAlloc(compressed, ssize, size); 
+	char * dat = blastMemAlloc(compressed.c_str(), ssize, size); 
 	memcpy(asp, dat, sizeof(ARX_CHANGELEVEL_PLAYER));
 	//free(compressed);
 
@@ -2437,7 +2437,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 
 	long ssize = size;
  
-	dat = (unsigned char *)blastMemAlloc(compressed, ssize, size);
+	dat = (unsigned char *)blastMemAlloc(compressed.c_str(), ssize, size);
 
 
 	// Ignore object if can't explode file
@@ -3514,7 +3514,7 @@ long ARX_CHANGELEVEL_Pop_Globals()
 
 	long ssize = size;
  
-	dat = (unsigned char *)blastMemAlloc(compressed, ssize, size);
+	dat = (unsigned char *)blastMemAlloc(compressed.c_str(), ssize, size);
 	acsg = (ARX_CHANGELEVEL_SAVE_GLOBALS *)(dat);
 	pos += sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS);
 
@@ -4242,7 +4242,7 @@ long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 	// Explode File
 	long ssize = size;
  
-	dat = (unsigned char *)blastMemAlloc(compressed, ssize, size); //pos,&cpr_pos);
+	dat = (unsigned char *)blastMemAlloc(compressed.c_str(), ssize, size); //pos,&cpr_pos);
 
 	if (dat == NULL)
 	{
