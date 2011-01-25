@@ -212,11 +212,11 @@ bool CharIn(char * string, char _char)
 }
 bool iCharIn(char * string, char _char)
 {
-    std::string str = string;
-    if ( str.find( _char ) != std::string::npos )
-        return true;
+	std::string str = string;
+	if ( str.find( _char ) != std::string::npos )
+		return true;
 
-    return false;
+	return false;
 /*
 	char * s = string;
 	MakeUpcase(string);
@@ -294,7 +294,7 @@ void RemoveNumerics(char * tx)
 	for (unsigned long i = 0 ; i < size_dest ; i++)
 	{
 		if ((dest[i] < '0')
-		        &&	(dest[i] > '9')
+				&&	(dest[i] > '9')
 		   )
 		{
 			tx[pos++] = dest[i];
@@ -388,49 +388,12 @@ long SendMsgToAllIO(long msg, const char * dat)
 
 void ARX_SCRIPT_LaunchScriptSearch( std::string& search)
 {
-<<<<<<< HEAD
-    ShowText.clear();
-    long foundnb = 0;
-    long size = 0;
-    std::string tline[4096];
-    std::string toadd[4096];
-    std::string objname[256];
-    long nline;
-    INTERACTIVE_OBJ * io = NULL;
-    MakeUpcase(search);
-
-    for (long i = 0; i < inter.nbmax; i++)
-    {
-        if (inter.iobj[i] != NULL)
-        {
-            io = inter.iobj[i];
-
-            if (i == 0) objname = "PLAYER";
-            else
-            {
-                std::stringstream ss;
-                ss << GetName(io->filename) << '_' << std::setw(4) << io->ident;
-                objname = ss.str();
-                //sprintf(objname, "%s_%04d", GetName(io->filename).c_str(), io->ident);
-            }
-
-            long pos = 0;
-
-            while (pos != -1)
-            {
-
-                pos = ARX_SCRIPT_SearchTextFromPos(&io->script, search.c_str(), pos, tline, &nline);
-
-                if (pos > 0)
-                {
-                    sprintf(toadd, "%s - GLOBAL - Line %4d : %s\n", objname, nline, tline);
-=======
-	strcpy(ShowText, "");
+	ShowText.clear();
 	long foundnb = 0;
 	long size = 0;
-	char tline[4096];
-	char toadd[4096];
-	char objname[256];
+	std::string tline[4096];
+	std::string toadd[4096];
+	std::string objname[256];
 	long nline;
 	INTERACTIVE_OBJ * io = NULL;
 	MakeUpcase(search);
@@ -441,20 +404,25 @@ void ARX_SCRIPT_LaunchScriptSearch( std::string& search)
 		{
 			io = inter.iobj[i];
 
-			if (i == 0) strcpy(objname, "PLAYER");
-			else sprintf(objname, "%s_%04ld", GetName(io->filename), io->ident);
+			if (i == 0) objname = "PLAYER";
+			else
+			{
+				std::stringstream ss;
+				ss << GetName(io->filename) << '_' << std::setw(4) << io->ident;
+				objname = ss.str();
+				//sprintf(objname, "%s_%04d", GetName(io->filename).c_str(), io->ident);
+			}
 
 			long pos = 0;
 
 			while (pos != -1)
 			{
 
-				pos = ARX_SCRIPT_SearchTextFromPos(&io->script, search, pos, tline, &nline);
+				pos = ARX_SCRIPT_SearchTextFromPos(&io->script, search.c_str(), pos, tline, &nline);
 
 				if (pos > 0)
 				{
-					sprintf(toadd, "%s - GLOBAL - Line %4ld : %s\n", objname, nline, tline);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
+					sprintf(toadd, "%s - GLOBAL - Line %4d : %s\n", objname, nline, tline);
 
 					if (size + strlen(toadd) + 3 < 65535)
 					{
@@ -506,11 +474,7 @@ suite:
 		strcpy(ShowText, "No Occurence Found...");
 	}
 
-<<<<<<< HEAD
-	sprintf(ShowTextWindowtext, "Search Results for %s (%d occurences)", search.c_str(), foundnb);
-=======
-	sprintf(ShowTextWindowtext, "Search Results for %s (%ld occurences)", search, foundnb);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
+	sprintf(ShowTextWindowtext, "Search Results for %s (%ld occurences)", search.c_str(), foundnb);
 
 
 	DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXTBIG, danaeApp.m_hWnd, (DLGPROC)ShowTextDlg);
@@ -758,10 +722,10 @@ void ReleaseScript(EERIE_SCRIPT * es)
 //*************************************************************************************
 long specialstrcmp( const std::string& text, const std::string& seek)
 {
-    if ( text.compare( 0, seek.length(), seek ) == 0 )
-        return 0;
+	if ( text.compare( 0, seek.length(), seek ) == 0 )
+		return 0;
 
-    return 1;
+	return 1;
 /*
 
 	long len = strlen(seek);
@@ -1068,7 +1032,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, std::string& name,char
 					if (ValidIONum(t))
 					{
 						if (((io->show == SHOW_FLAG_IN_SCENE) || (io->show == SHOW_FLAG_IN_INVENTORY))
-						        && ((inter.iobj[t]->show == SHOW_FLAG_IN_SCENE) || (inter.iobj[t]->show == SHOW_FLAG_IN_INVENTORY))
+								&& ((inter.iobj[t]->show == SHOW_FLAG_IN_SCENE) || (inter.iobj[t]->show == SHOW_FLAG_IN_INVENTORY))
 						   )
 						{
 							EERIE_3D pos, pos2;
@@ -1271,10 +1235,10 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, std::string& name,char
 				EERIE_3D pos;
 
 				if (io
-				        &&	GetItemWorldPosition(io, &pos)
-				        &&	(pos.x == io->initpos.x)
-				        &&	(pos.y == io->initpos.y)
-				        &&	(pos.z == io->initpos.z))
+						&&	GetItemWorldPosition(io, &pos)
+						&&	(pos.x == io->initpos.x)
+						&&	(pos.y == io->initpos.y)
+						&&	(pos.z == io->initpos.z))
 				{
 					*lcontent = 1;
 					return TYPE_LONG;
@@ -1289,8 +1253,8 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, std::string& name,char
 				*lcontent = 0;
 
 				if ((io)
-				        &&	(io->ioflags & IO_ITEM)
-				        &&	(IsInPlayerInventory(io)))
+						&&	(io->ioflags & IO_ITEM)
+						&&	(IsInPlayerInventory(io)))
 					*lcontent = 1;
 
 				return TYPE_LONG;
@@ -1366,13 +1330,8 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, std::string& name,char
 					else
 					{
 						char temp[256];
-<<<<<<< HEAD
 						strcpy(temp, GetName(EVENT_SENDER->filename).c_str());
-						sprintf(txtcontent, "%s_%04d", temp, EVENT_SENDER->ident);
-=======
-						strcpy(temp, GetName(EVENT_SENDER->filename));
 						sprintf(txtcontent, "%s_%04ld", temp, EVENT_SENDER->ident);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 					}
 				}
 				else 	strcpy(txtcontent, "NONE");
@@ -1425,13 +1384,8 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, std::string& name,char
 				else
 				{
 					char temp[256];
-<<<<<<< HEAD
 					strcpy(temp, GetName(io->filename).c_str());
-					sprintf(txtcontent, "%s_%04d", temp, io->ident);
-=======
-					strcpy(temp, GetName(io->filename));
 					sprintf(txtcontent, "%s_%04ld", temp, io->ident);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 				}
 
 				return TYPE_TEXT;
@@ -1486,7 +1440,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, std::string& name,char
 						{
 							if (spells[i].type == id)
 								if ((spells[i].caster >= 0) && (spells[i].caster < inter.nbmax)
-								        && (io == inter.iobj[spells[i].caster]))
+										&& (io == inter.iobj[spells[i].caster]))
 								{
 									*lcontent = 1;
 									return TYPE_LONG;
@@ -1531,13 +1485,8 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, std::string& name,char
 				if (LASTSPAWNED)
 				{
 					char temp[256];
-<<<<<<< HEAD
 					strcpy(temp, GetName(LASTSPAWNED->filename).c_str());
-					sprintf(txtcontent, "%s_%04d", temp, LASTSPAWNED->ident);
-=======
-					strcpy(temp, GetName(LASTSPAWNED->filename));
 					sprintf(txtcontent, "%s_%04ld", temp, LASTSPAWNED->ident);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 				}
 				else strcpy(txtcontent, "NONE");
 
@@ -1556,7 +1505,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, std::string& name,char
 					if (!strcmp(obj, "PLAYER"))
 					{
 						*fcontent = (float)Distance3D(player.pos.x, player.pos.y, player.pos.z,
-						                              io->pos.x, io->pos.y, io->pos.z);
+													  io->pos.x, io->pos.y, io->pos.z);
 						return TYPE_FLOAT;
 					}
 
@@ -1565,7 +1514,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, std::string& name,char
 					if (ValidIONum(t))
 					{
 						if (((io->show == SHOW_FLAG_IN_SCENE) || (io->show == SHOW_FLAG_IN_INVENTORY))
-						        && ((inter.iobj[t]->show == SHOW_FLAG_IN_SCENE) || (inter.iobj[t]->show == SHOW_FLAG_IN_INVENTORY))
+								&& ((inter.iobj[t]->show == SHOW_FLAG_IN_SCENE) || (inter.iobj[t]->show == SHOW_FLAG_IN_INVENTORY))
 						   )
 						{
 							EERIE_3D pos, pos2;
@@ -1800,11 +1749,11 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, std::string& name,char
 						if (spells[i].caster == 0)
 						{
 							if ((spells[i].type == SPELL_LIFE_DRAIN)
-							        ||	(spells[i].type == SPELL_HARM)
-							        ||	(spells[i].type == SPELL_FIRE_FIELD)
-							        ||	(spells[i].type == SPELL_ICE_FIELD)
-							        ||	(spells[i].type == SPELL_LIGHTNING_STRIKE)
-							        ||	(spells[i].type == SPELL_MASS_LIGHTNING_STRIKE)
+									||	(spells[i].type == SPELL_HARM)
+									||	(spells[i].type == SPELL_FIRE_FIELD)
+									||	(spells[i].type == SPELL_ICE_FIELD)
+									||	(spells[i].type == SPELL_LIGHTNING_STRIKE)
+									||	(spells[i].type == SPELL_MASS_LIGHTNING_STRIKE)
 							   )
 							{
 								*lcontent = 1;
@@ -1866,13 +1815,8 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, std::string& name,char
 				else if (ioo)
 				{
 					char temp[256];
-<<<<<<< HEAD
 					strcpy(temp, GetName(ioo->filename).c_str());
-					sprintf(txtcontent, "%s_%04d", temp, ioo->ident);
-=======
-					strcpy(temp, GetName(ioo->filename));
 					sprintf(txtcontent, "%s_%04ld", temp, ioo->ident);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 				}
 				else 	strcpy(txtcontent, "NONE");
 
@@ -1892,13 +1836,8 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, std::string& name,char
 					else
 					{
 						char temp[256];
-<<<<<<< HEAD
 						strcpy(temp, GetName(inter.iobj[io->targetinfo]->filename).c_str());
-						sprintf(txtcontent, "%s_%04d", temp, inter.iobj[io->targetinfo]->ident);
-=======
-						strcpy(temp, GetName(inter.iobj[io->targetinfo]->filename));
 						sprintf(txtcontent, "%s_%04ld", temp, inter.iobj[io->targetinfo]->ident);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 					}
 				}
 
@@ -1943,13 +1882,8 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, std::string& name,char
 		else
 		{
 			char temp[256];
-<<<<<<< HEAD
 			strcpy(temp, GetName(io->filename).c_str());
-			sprintf(txtcontent, "%s_%04d", temp, io->ident);
-=======
-			strcpy(temp, GetName(io->filename));
 			sprintf(txtcontent, "%s_%04ld", temp, io->ident);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 		}
 
 		return TYPE_TEXT;
@@ -2036,11 +1970,7 @@ SCRIPT_VAR * GetFreeVarSlot(SCRIPT_VAR ** _svff, long * _nb)
 
 //*************************************************************************************
 //*************************************************************************************
-<<<<<<< HEAD
 SCRIPT_VAR * GetVarAddress(SCRIPT_VAR * svf, long * nb, const std::string& name)
-=======
-SCRIPT_VAR * GetVarAddress(SCRIPT_VAR * svf, long * nb, const char * name)
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 {
 	if (!svf)
 		return NULL;
@@ -2162,24 +2092,14 @@ std::string GetVarValueInterpretedAsText( const std::string& temp1, EERIE_SCRIPT
 	}
 	else if (temp1[0] == '#')
 	{
-<<<<<<< HEAD
 		l1 = GETVarValueLong(&svar, &NB_GLOBALS, temp1.c_str());
-		sprintf(var_text, "%d", l1);
-=======
-		l1 = GETVarValueLong(&svar, &NB_GLOBALS, temp1);
 		sprintf(var_text, "%ld", l1);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 		return var_text;
 	}
 	else if (temp1[0] == '\xA7')
 	{
-<<<<<<< HEAD
 		l1 = GETVarValueLong(&esss->lvar, &esss->nblvar, temp1.c_str());
-		sprintf(var_text, "%d", l1);
-=======
-		l1 = GETVarValueLong(&esss->lvar, &esss->nblvar, temp1);
 		sprintf(var_text, "%ld", l1);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 		return var_text;
 	}
 	else if (temp1[0] == '&') t1 = GETVarValueFloat(&svar, &NB_GLOBALS, temp1.c_str());
@@ -2789,8 +2709,8 @@ long GetNextWord(EERIE_SCRIPT * es, long i, std::string& temp, long flags)
 
 	// First ignores spaces & unused chars
 	while ((i < es->size) &&
-	        ((esdat[i] <= 32)	|| (esdat[i] == '(') || (esdat[i] == ')'))
-	      )
+			((esdat[i] <= 32)	|| (esdat[i] == '(') || (esdat[i] == ')'))
+		  )
 	{
 		if (es->data[i] == '\n') LINEEND = 1;
 
@@ -2799,9 +2719,9 @@ long GetNextWord(EERIE_SCRIPT * es, long i, std::string& temp, long flags)
 
 	// now take chars until it finds a space or unused char
 	while ((esdat[i] > 32)
-	        && (esdat[i] != '(')
-	        && (esdat[i] != ')')
-	      )
+			&& (esdat[i] != '(')
+			&& (esdat[i] != ')')
+		  )
 	{
 
 
@@ -2847,7 +2767,7 @@ long GetNextWord(EERIE_SCRIPT * es, long i, std::string& temp, long flags)
 
 	// Now retreives Tilded chars...
 	if ((!(flags & 2))
-	        &&	(tildes > 0)
+			&&	(tildes > 0)
 	   )
 	{
 		long _pos = 0;
@@ -3136,8 +3056,8 @@ void ForceAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * ea)
 	if (io == NULL) return;
 
 	if ((io->animlayer[0].cur_anim)
-	        && (io->animlayer[0].cur_anim != io->anims[ANIM_DIE])
-	        && (io->animlayer[0].cur_anim != io->anims[ANIM_HIT1]))
+			&& (io->animlayer[0].cur_anim != io->anims[ANIM_DIE])
+			&& (io->animlayer[0].cur_anim != io->anims[ANIM_HIT1]))
 		AcquireLastAnim(io);
 
 	FinishAnim(io, io->animlayer[0].cur_anim);
@@ -3191,7 +3111,7 @@ void GetTargetPos(INTERACTIVE_OBJ * io, unsigned long smoothing)
 		}
 
 		if ((io->_npcdata) && (io->_npcdata->pathfind.listnb != -1) && (io->_npcdata->pathfind.list)
-		        && (!(io->_npcdata->behavior & BEHAVIOUR_FRIENDLY)))// Targeting Anchors !
+				&& (!(io->_npcdata->behavior & BEHAVIOUR_FRIENDLY)))// Targeting Anchors !
 		{
 			if (io->_npcdata->pathfind.listpos < io->_npcdata->pathfind.listnb)
 			{
@@ -3358,7 +3278,7 @@ void CheckHit(INTERACTIVE_OBJ * io, float ratioaim)
 									dist = EEDistance3D(&pos, &inter.iobj[i]->obj->vertexlist3[k].v);
 
 									if ((dist <= dist_limit)
-									        &&	(EEfabs(pos.y - inter.iobj[i]->obj->vertexlist3[k].v.y) < 60.f))
+											&&	(EEfabs(pos.y - inter.iobj[i]->obj->vertexlist3[k].v.y) < 60.f))
 									{
 										count++;
 
@@ -3466,49 +3386,29 @@ void MakeStandard(char * str)
 //*************************************************************************************
 //*************************************************************************************
 
-<<<<<<< HEAD
 long MakeLocalised( const std::string& text, std::string& output, long maxsize, long lastspeechflag)
-=======
-long MakeLocalised(const char * text, char * output, long maxsize)
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 {
 	if ( text.empty() )
 	{
-<<<<<<< HEAD
 		output = "ERROR";
 		return 0;
 	}
 
 	std::string __text;
-	return HERMES_UNICODE_GetProfileString(__text, "string", "error", output, maxsize, NULL, lastspeechflag);
-=======
-		strcpy(output, "ERROR");
-		return 0;
-	}
-
-	_TCHAR __text[256];
-	//todo cast
-	//MultiByteToWideChar(CP_ACP, 0, text, -1, __text, 256);
 	return HERMES_UNICODE_GetProfileString(__text, "error", output, maxsize);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
 }
 
 //-----------------------------------------------------------------------------
 long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const char * _lpszText, long duration)
 {
-	std::string __output( 4096, '\0' );
+	std::string __output;
 	std::string __text;
 
 	HERMES_UNICODE_GetProfileString(
-	    __text,
-<<<<<<< HEAD
-	    "string",
-	    "Not Found",
-=======
-	    _T("Not Found"),
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
-	    __output,
-	    4095);
+		__text,
+		"Not Found",
+		__output,
+		4095);
 	return (ARX_SPEECH_Add(io, __output, duration));
 }
 
@@ -3956,7 +3856,7 @@ void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(char * timername, INTERACTIVE_OBJ * i
 		if (scr_timer[i].exist)
 		{
 			if ((scr_timer[i].io == io) &&
-			        (!strcasecmp(timername, scr_timer[i].name)))
+					(!strcasecmp(timername, scr_timer[i].name)))
 				ARX_SCRIPT_Timer_ClearByNum(i);
 		}
 	}
@@ -4169,7 +4069,7 @@ void ARX_SCRIPT_Timer_Check()
 					}
 
 					if ((es)
-					        &&	(ValidIOAddress(io)))
+							&&	(ValidIOAddress(io)))
 					{
 
 						SendScriptEvent(es, SM_EXECUTELINE, "", io, NULL, pos);
@@ -4761,22 +4661,22 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 								pos = GetNextWord(es, pos, temp2);
 							}
 							else if ((!strcasecmp(temp2, "CCCTALKER_L"))
-							         || (!strcasecmp(temp2, "CCCTALKER_R")))
+									 || (!strcasecmp(temp2, "CCCTALKER_R")))
 							{
 								pos = GetNextWord(es, pos, temp2);
 								pos = GetNextWord(es, pos, temp2);
 								pos = GetNextWord(es, pos, temp2);
 							}
 							else if ((!strcasecmp(temp2, "CCCLISTENER_L"))
-							         || (!strcasecmp(temp2, "CCCLISTENER_R")))
+									 || (!strcasecmp(temp2, "CCCLISTENER_R")))
 							{
 								pos = GetNextWord(es, pos, temp2);
 								pos = GetNextWord(es, pos, temp2);
 								pos = GetNextWord(es, pos, temp2);
 							}
 							else if ((!strcasecmp(temp2, "SIDE"))
-							         || (!strcasecmp(temp2, "SIDE_L"))
-							         || (!strcasecmp(temp2, "SIDE_R")))
+									 || (!strcasecmp(temp2, "SIDE_L"))
+									 || (!strcasecmp(temp2, "SIDE_R")))
 							{
 								pos = GetNextWord(es, pos, temp2);
 								pos = GetNextWord(es, pos, temp2);
@@ -5727,7 +5627,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 			case '+':
 
 				if ((!strcmp(temp, "++")) ||
-				        (!strcmp(temp, "--")))
+						(!strcmp(temp, "--")))
 				{
 					pos = GetNextWord(es, pos, temp1);
 				}
@@ -5737,8 +5637,8 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 			case 'D':
 
 				if (
-				    (!strcmp(temp, "DEC")) ||
-				    (!strcmp(temp, "DIV")))
+					(!strcmp(temp, "DEC")) ||
+					(!strcmp(temp, "DIV")))
 				{
 					pos = GetNextWord(es, pos, temp1);
 					pos = GetNextWord(es, pos, temp2);
@@ -5844,7 +5744,7 @@ bool CheckScriptSyntax_Loading(INTERACTIVE_OBJ * io)
 			ARX_TIME_Pause();
 			danaeApp.Pause(true);
 			DialogBox((HINSTANCE)GetWindowLong(danaeApp.m_hWnd, GWL_HINSTANCE),
-			          MAKEINTRESOURCE(IDD_SCRIPTDIALOG), danaeApp.m_hWnd, IOOptionsProc);
+					  MAKEINTRESOURCE(IDD_SCRIPTDIALOG), danaeApp.m_hWnd, IOOptionsProc);
 			danaeApp.Pause(false);
 			ARX_TIME_UnPause();
 			LastErrorPopupNO1 = NULL;
@@ -5888,7 +5788,7 @@ bool IsIOGroup(INTERACTIVE_OBJ * io, const char * group)
 	for (long i = 0; i < io->nb_iogroups; i++)
 	{
 		if ((io->iogroups[i].name)
-		        &&	(!strcasecmp(group, io->iogroups[i].name)))
+				&&	(!strcasecmp(group, io->iogroups[i].name)))
 			return true;
 	}
 
@@ -5913,7 +5813,7 @@ void ARX_IOGROUP_Remove(INTERACTIVE_OBJ * io, char * group)
 	for (long i = 0; i < io->nb_iogroups; i++)
 	{
 		if ((io->iogroups[i].name)
-		        &&	(!strcasecmp(group, io->iogroups[i].name)))
+				&&	(!strcasecmp(group, io->iogroups[i].name)))
 			toremove = i;
 	}
 
@@ -5962,7 +5862,7 @@ INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events()
 	for (long i = 0; i < inter.nbmax; i++)
 	{
 		if ((inter.iobj[i] != NULL)
-		        &&	(inter.iobj[i]->stat_count > max))
+				&&	(inter.iobj[i]->stat_count > max))
 		{
 			ionum = i;
 			max = inter.iobj[i]->stat_count;
@@ -5983,7 +5883,7 @@ INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events_Sent()
 	for (long i = 0; i < inter.nbmax; i++)
 	{
 		if ((inter.iobj[i] != NULL)
-		        &&	(inter.iobj[i]->stat_sent > max))
+				&&	(inter.iobj[i]->stat_sent > max))
 		{
 			ionum = i;
 			max = inter.iobj[i]->stat_sent;
@@ -6025,9 +5925,9 @@ long BIG_DEBUG_POS = 0;
 void ManageCasseDArme(INTERACTIVE_OBJ * io)
 {
 	if ((io->type_flags & OBJECT_TYPE_DAGGER) ||
-	        (io->type_flags & OBJECT_TYPE_1H) ||
-	        (io->type_flags & OBJECT_TYPE_2H) ||
-	        (io->type_flags & OBJECT_TYPE_BOW))
+			(io->type_flags & OBJECT_TYPE_1H) ||
+			(io->type_flags & OBJECT_TYPE_2H) ||
+			(io->type_flags & OBJECT_TYPE_BOW))
 	{
 		if (player.bag)
 		{
@@ -6043,16 +5943,16 @@ void ManageCasseDArme(INTERACTIVE_OBJ * io)
 					for (int i = 0; i < INVENTORY_X; i++)
 					{
 						if ((inventory[iNbBag][i][j].io) &&
-						        (inventory[iNbBag][i][j].io != io) &&
-						        ((inventory[iNbBag][i][j].io->type_flags & OBJECT_TYPE_DAGGER) ||
-						         (inventory[iNbBag][i][j].io->type_flags & OBJECT_TYPE_1H) ||
-						         (inventory[iNbBag][i][j].io->type_flags & OBJECT_TYPE_2H) ||
-						         (inventory[iNbBag][i][j].io->type_flags & OBJECT_TYPE_BOW)))
+								(inventory[iNbBag][i][j].io != io) &&
+								((inventory[iNbBag][i][j].io->type_flags & OBJECT_TYPE_DAGGER) ||
+								 (inventory[iNbBag][i][j].io->type_flags & OBJECT_TYPE_1H) ||
+								 (inventory[iNbBag][i][j].io->type_flags & OBJECT_TYPE_2H) ||
+								 (inventory[iNbBag][i][j].io->type_flags & OBJECT_TYPE_BOW)))
 						{
 
 							if ((io->ioflags & IO_ITEM) &&
-							        (inventory[iNbBag][i][j].io->ioflags & IO_ITEM) &&
-							        (inventory[iNbBag][i][j].io->_itemdata->equipitem))
+									(inventory[iNbBag][i][j].io->ioflags & IO_ITEM) &&
+									(inventory[iNbBag][i][j].io->_itemdata->equipitem))
 							{
 								if (inventory[iNbBag][i][j].io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value == io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Damages].value)
 								{
@@ -6158,7 +6058,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 	if (io)
 	{
 		if ((io->GameFlags & GFLAG_MEGAHIDE)
-		        &&	(msg != SM_RELOAD))
+				&&	(msg != SM_RELOAD))
 			return ACCEPT;
 
 		if (io->show == SHOW_FLAG_DESTROYED) // destroyed
@@ -6191,14 +6091,14 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 		if (io->ioflags & IO_NPC)
 		{
 			if ((io->_npcdata->life <= 0.f) && (msg != SM_DEAD) && (msg != SM_DIE) && (msg != SM_EXECUTELINE) && (msg != SM_RELOAD)
-			        && (msg != SM_EXECUTELINE)
-			        && (msg != SM_INVENTORY2_OPEN) && (msg != SM_INVENTORY2_CLOSE))
+					&& (msg != SM_EXECUTELINE)
+					&& (msg != SM_INVENTORY2_OPEN) && (msg != SM_INVENTORY2_CLOSE))
 				return ACCEPT;
 		}
 
 		//changement d'armes si on casse
 		if (((io->ioflags & IO_FIX)	||	(io->ioflags & IO_ITEM))
-		        &&	(msg == SM_BREAK))
+				&&	(msg == SM_BREAK))
 		{
 			ManageCasseDArme(io);
 		}
@@ -6208,9 +6108,9 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 	LINEEND = 0;
 
 	if (((EDITMODE) || (PauseScript))
-	        && (msg != SM_LOAD)
-	        && (msg != SM_INIT)
-	        && (msg != SM_INITEND))
+			&& (msg != SM_LOAD)
+			&& (msg != SM_INIT)
+			&& (msg != SM_INITEND))
 		return ACCEPT;
 
 	long ret = ACCEPT;
@@ -6308,7 +6208,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 			else
 			{
 				if (((msg >= SM_MAXCMD))
-				        && (msg != SM_EXECUTELINE) && (!evname))
+						&& (msg != SM_EXECUTELINE) && (!evname))
 				{
 
 					return ACCEPT;
@@ -7126,7 +7026,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 								for (int i = 0; i < MAX_EQUIPED; i++)
 								{
 									if	((player.equiped[i] != 0)
-									        &&	ValidIONum(player.equiped[i]))
+											&&	ValidIONum(player.equiped[i]))
 									{
 										INTERACTIVE_OBJ * equiped = inter.iobj[player.equiped[i]];
 
@@ -7891,8 +7791,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					if (t <= -1) t = GetInterNum(io);
 
 					if ((t >= 0)
-					        &&	(t < inter.nbmax)
-					        &&	(spellid != -1))
+							&&	(t < inter.nbmax)
+							&&	(spellid != -1))
 					{
 						if (io != inter.iobj[0])
 						{
@@ -8007,7 +7907,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 									else ComputeACSPos(&acs, io, -1);
 								}
 								else if ((!strcasecmp(temp2, "CCCTALKER_L"))
-								         || (!strcasecmp(temp2, "CCCTALKER_R")))
+										 || (!strcasecmp(temp2, "CCCTALKER_R")))
 								{
 									if (!strcasecmp(temp2, "CCCTALKER_R"))
 										acs.type = ARX_CINE_SPEECH_CCCTALKER_R;
@@ -8028,7 +7928,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 									else ComputeACSPos(&acs, io, acs.ionum);
 								}
 								else if ((!strcasecmp(temp2, "CCCLISTENER_L"))
-								         || (!strcasecmp(temp2, "CCCLISTENER_R")))
+										 || (!strcasecmp(temp2, "CCCLISTENER_R")))
 								{
 									if (!strcasecmp(temp2, "CCCLISTENER_R"))
 										acs.type = ARX_CINE_SPEECH_CCCLISTENER_R;
@@ -8049,8 +7949,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 									else ComputeACSPos(&acs, io, acs.ionum);
 								}
 								else if ((!strcasecmp(temp2, "SIDE"))
-								         || (!strcasecmp(temp2, "SIDE_L"))
-								         || (!strcasecmp(temp2, "SIDE_R")))
+										 || (!strcasecmp(temp2, "SIDE_L"))
+										 || (!strcasecmp(temp2, "SIDE_R")))
 								{
 									if (!strcasecmp(temp2, "SIDE_L"))
 										acs.type = ARX_CINE_SPEECH_SIDE_LEFT;
@@ -9128,7 +9028,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 								old_target = io->targetinfo;
 
 							if ((io->_npcdata->behavior & BEHAVIOUR_FLEE) ||
-							        (io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND))
+									(io->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND))
 								old_target = -12;
 						}
 
@@ -9380,15 +9280,15 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						for (long l = 0 ; l < inter.nbmax ; l++)
 						{
 							if ((inter.iobj[l] != NULL)
-							        && (inter.iobj[l] != io)
-							        &&	!(inter.iobj[l]->ioflags & IO_CAMERA)
-							        &&	!(inter.iobj[l]->ioflags & IO_MARKER)
-							        && ((!group) || (IsIOGroup(inter.iobj[l], groupname)))
+									&& (inter.iobj[l] != io)
+									&&	!(inter.iobj[l]->ioflags & IO_CAMERA)
+									&&	!(inter.iobj[l]->ioflags & IO_MARKER)
+									&& ((!group) || (IsIOGroup(inter.iobj[l], groupname)))
 							   )
 							{
 								if (((sendto & SEND_NPC) && (inter.iobj[l]->ioflags & IO_NPC))
-								        ||	((sendto & SEND_FIX) && (inter.iobj[l]->ioflags & IO_FIX))
-								        ||	((sendto & SEND_ITEM) && (inter.iobj[l]->ioflags & IO_ITEM)))
+										||	((sendto & SEND_FIX) && (inter.iobj[l]->ioflags & IO_FIX))
+										||	((sendto & SEND_ITEM) && (inter.iobj[l]->ioflags & IO_ITEM)))
 								{
 									GetItemWorldPosition(inter.iobj[l], &_pos);
 									GetItemWorldPosition(io, &_pos2);
@@ -9413,14 +9313,14 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							for (long l = 0; l < inter.nbmax; l++)
 							{
 								if ((inter.iobj[l])
-								        &&	!(inter.iobj[l]->ioflags & IO_CAMERA)
-								        &&	!(inter.iobj[l]->ioflags & IO_MARKER)
-								        &&	((!group) || (IsIOGroup(inter.iobj[l], groupname)))
+										&&	!(inter.iobj[l]->ioflags & IO_CAMERA)
+										&&	!(inter.iobj[l]->ioflags & IO_MARKER)
+										&&	((!group) || (IsIOGroup(inter.iobj[l], groupname)))
 								   )
 								{
 									if (((sendto & SEND_NPC) && (inter.iobj[l]->ioflags & IO_NPC))
-									        ||	((sendto & SEND_FIX) && (inter.iobj[l]->ioflags & IO_FIX))
-									        ||	((sendto & SEND_ITEM) && (inter.iobj[l]->ioflags & IO_ITEM)))
+											||	((sendto & SEND_FIX) && (inter.iobj[l]->ioflags & IO_FIX))
+											||	((sendto & SEND_ITEM) && (inter.iobj[l]->ioflags & IO_ITEM)))
 									{
 										GetItemWorldPosition(inter.iobj[l], &_pos);
 
@@ -9439,8 +9339,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						for (long l = 0; l < inter.nbmax; l++)
 						{
 							if ((inter.iobj[l] != NULL)
-							        && (inter.iobj[l] != io)
-							        && (IsIOGroup(inter.iobj[l], groupname))
+									&& (inter.iobj[l] != io)
+									&& (IsIOGroup(inter.iobj[l], groupname))
 							   )
 							{
 								io->stat_sent++;
@@ -11879,7 +11779,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 										long xx, yy;
 
 										if ((ioo != NULL)
-										        &&	(multi != 0))
+												&&	(multi != 0))
 										{
 											LASTSPAWNED = ioo;
 											ioo->scriptload = 1;
@@ -11987,12 +11887,12 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							else inter.iobj[t]->show = SHOW_FLAG_HIDDEN;
 						}
 						else if ((inter.iobj[t]->show == SHOW_FLAG_MEGAHIDE)
-						         ||	(inter.iobj[t]->show == SHOW_FLAG_HIDDEN))
+								 ||	(inter.iobj[t]->show == SHOW_FLAG_HIDDEN))
 						{
 							inter.iobj[t]->show = SHOW_FLAG_IN_SCENE;
 
 							if ((inter.iobj[t]->ioflags & IO_NPC)
-							        &&	(inter.iobj[t]->_npcdata->life <= 0.f)
+									&&	(inter.iobj[t]->_npcdata->life <= 0.f)
 							   )
 							{
 								inter.iobj[t]->animlayer[0].cur_anim = inter.iobj[t]->anims[ANIM_DIE];
@@ -12243,10 +12143,10 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 								if (t == -3)
 								{
 									if ((io->show != SHOW_FLAG_LINKED)
-									        &&	(io->show != SHOW_FLAG_HIDDEN)
-									        &&	(io->show != SHOW_FLAG_MEGAHIDE)
-									        &&	(io->show != SHOW_FLAG_DESTROYED)
-									        &&	(io->show != SHOW_FLAG_KILLED))
+											&&	(io->show != SHOW_FLAG_HIDDEN)
+											&&	(io->show != SHOW_FLAG_MEGAHIDE)
+											&&	(io->show != SHOW_FLAG_DESTROYED)
+											&&	(io->show != SHOW_FLAG_KILLED))
 										io->show = SHOW_FLAG_IN_SCENE;
 
 									ARX_INTERACTIVE_Teleport(io, &player.pos);
@@ -12266,13 +12166,13 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 											else
 											{
 												if ((io->ioflags & IO_NPC)
-												        &&	(io->_npcdata->life <= 0))
+														&&	(io->_npcdata->life <= 0))
 												{
 												}
 												else
 												{
 													if ((io->show != SHOW_FLAG_HIDDEN)
-													        &&	(io->show != SHOW_FLAG_MEGAHIDE))
+															&&	(io->show != SHOW_FLAG_MEGAHIDE))
 														io->show = SHOW_FLAG_IN_SCENE;
 
 													ARX_INTERACTIVE_Teleport(io, &pos);
@@ -12299,13 +12199,13 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 								else
 								{
 									if ((io->ioflags & IO_NPC)
-									        &&	(io->_npcdata->life <= 0))
+											&&	(io->_npcdata->life <= 0))
 									{
 									}
 									else
 									{
 										if ((io->show != SHOW_FLAG_HIDDEN)
-										        &&	(io->show != SHOW_FLAG_MEGAHIDE))
+												&&	(io->show != SHOW_FLAG_MEGAHIDE))
 											io->show = SHOW_FLAG_IN_SCENE;
 
 										ARX_INTERACTIVE_Teleport(io, &io->initpos);
@@ -12911,7 +12811,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 			case 'M':
 
 				if (
-				    (!strcmp(temp, "MUL")))
+					(!strcmp(temp, "MUL")))
 				{
 					char temp1[64];
 					char temp2[64];
@@ -13062,7 +12962,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 			case '+':
 
 				if ((!strcmp(temp, "++")) ||
-				        (!strcmp(temp, "--")))
+						(!strcmp(temp, "--")))
 				{
 					SCRIPT_VAR * sv = NULL;
 					char temp1[64];
@@ -13139,8 +13039,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 			case 'D':
 
 				if (
-				    (!strcmp(temp, "DEC")) ||
-				    (!strcmp(temp, "DIV")))
+					(!strcmp(temp, "DEC")) ||
+					(!strcmp(temp, "DIV")))
 				{
 					char temp1[64];
 					char temp2[64];
@@ -13479,11 +13379,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					pos = GetNextWord(es, pos, temp2);
 					pos = GetNextWord(es, pos, temp3);
 					pos = GetNextWord(es, pos, temp4);
-<<<<<<< HEAD
-					sprintf(cmd, "SCRIPT ERROR: %s_%04d %s %s %s %s [char %d]", GetName(io->filename).c_str(), io->ident, temp, temp2, temp3, temp4, ppos);
-=======
-					sprintf(cmd, "SCRIPT ERROR: %s_%04ld %s %s %s %s [char %ld]", GetName(io->filename), io->ident, temp, temp2, temp3, temp4, ppos);
->>>>>>> df2af971ab3656a12f6261838c8349ced418e011
+					sprintf(cmd, "SCRIPT ERROR: %s_%04ld %s %s %s %s [char %ld]", GetName(io->filename).c_str(), io->ident, temp, temp2, temp3, temp4, ppos);
 
 					if (!ERROR_Log(cmd));
 					else ShowPopup(cmd);
