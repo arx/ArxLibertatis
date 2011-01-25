@@ -55,6 +55,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+
+
 #include <stdlib.h>
 
 #include "ARX_Script.h"
@@ -3403,6 +3405,12 @@ long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const char * _lpszText, long 
 //*************************************************************************************
 void MakeSSEPARAMS(const char * params)
 {
+	if(params) {
+		LogDebug << "MakeSSEPARAMS \"" << params << "\"";
+	} else {
+		LogDebug << "MakeSSEPARAMS NULL";
+	}
+	
 	for (long i = 0; i < MAX_SSEPARAMS; i++)
 	{
 		SSEPARAMS[i][0] = 0;
@@ -3414,7 +3422,12 @@ void MakeSSEPARAMS(const char * params)
 
 	while(*params != '\0' && pos < MAX_SSEPARAMS) {
 		
-		size_t tokensize = strchr(params, ' ') - params;
+		size_t tokensize;
+		while(params[tokensize] != ' ' && params[tokensize] != '\0') {
+			tokensize++;
+		}
+		
+		LogDebug << "MakeSSEPARAMS tokensize is " << tokensize;
 		
 		assert(tokensize < 64 - 1);
 		memcpy(SSEPARAMS[pos], params, tokensize);
