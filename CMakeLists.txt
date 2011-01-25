@@ -15,6 +15,15 @@ ENDIF()
 IF (MSVC)
 	# Set optimal options for msvc:
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+	# Source groups
+	set(SOURCE_GROUPS
+		    athena danae debugger eerie hermes minos
+	)
+
+	foreach(SOURCE_GROUP ${SOURCE_GROUPS})
+		file(GLOB_RECURSE SOURCES ${SRC_DIR}/${SOURCE_GROUP}/*.cpp)
+		SOURCE_GROUP("src\\\\${SOURCE_GROUP}" FILES ${SOURCES})
+	endforeach(SOURCE_GROUP)
 ELSE (MSVC)
 	# Set optimal options for gcc:
 	#wine compiler
@@ -30,16 +39,6 @@ ENDIF (MSVC)
 
 # Preprocessor definitions
 add_definitions(-D_DEBUG)
-
-# Source groups
-set(SOURCE_GROUPS
-        athena danae debugger eerie hermes minos
-)
-
-foreach(SOURCE_GROUP ${SOURCE_GROUPS})
-    file(GLOB_RECURSE SOURCES ${SRC_DIR}/${SOURCE_GROUP}/*.cpp)
-	SOURCE_GROUP("src\\\\${SOURCE_GROUP}" FILES ${SOURCES})
-endforeach(SOURCE_GROUP)
 
 #glob all sources and includes
 file(GLOB_RECURSE ALL_INCLUDES ${INC_DIR}/*.h)
