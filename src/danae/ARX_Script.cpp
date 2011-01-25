@@ -1398,9 +1398,12 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 				if (io == inter.iobj[0]) txtcontent = "PLAYER";
 				else
 				{
-					char temp[256];
-					strcpy(temp, GetName(io->filename).c_str());
-					sprintf(txtcontent, "%s_%04ld", temp, io->ident);
+					std::string temp;
+					temp, GetName(io->filename);
+					std::stringstream ss;
+					ss << temp << '_' << io->ident;
+					txtcontent = ss.str();
+					//sprintf(txtcontent, "%s_%04ld", temp, io->ident);
 				}
 
 				return TYPE_TEXT;
@@ -1499,11 +1502,14 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 			{
 				if (LASTSPAWNED)
 				{
-					char temp[256];
-					strcpy(temp, GetName(LASTSPAWNED->filename).c_str());
-					sprintf(txtcontent, "%s_%04ld", temp, LASTSPAWNED->ident);
+					std::string temp;
+					temp = GetName(LASTSPAWNED->filename);
+					std::stringstream ss;
+					ss << temp << '_' << LASTSPAWNED->ident;
+					txtcontent = ss.str();
+					//sprintf(txtcontent, "%s_%04ld", temp, LASTSPAWNED->ident);
 				}
-				else strcpy(txtcontent, "NONE");
+				else txtcontent = "NONE";
 
 				return TYPE_TEXT;
 			}
@@ -1588,11 +1594,11 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 
 				if (op == NULL)
 				{
-					strcpy(txtcontent, "NONE");
+					txtcontent = "NONE";
 					return TYPE_TEXT;
 				}
 
-				strcpy(txtcontent, op->name);
+				txtcontent = op->name;
 				return TYPE_TEXT;
 			}
 
@@ -1825,7 +1831,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 
 				if (ioo == inter.iobj[0])
 				{
-					strcpy(txtcontent, "PLAYER");
+					txtcontent = "PLAYER";
 				}
 				else if (ioo)
 				{
