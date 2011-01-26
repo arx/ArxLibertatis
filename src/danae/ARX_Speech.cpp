@@ -486,8 +486,7 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long param, l
 	long flg = 0;
 
 	_TCHAR lpszUSection[512];
-//	todo: wchar cast
-//	MultiByteToWideChar(CP_ACP, 0, data, -1, lpszUSection, 512);
+	MultiByteToWideChar(CP_ACP, 0, data, -1, (wchar_t*)lpszUSection, 512);
 
 	if (!(flags & ARX_SPEECH_FLAG_NOTEXT))
 	{
