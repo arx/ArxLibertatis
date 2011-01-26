@@ -154,23 +154,26 @@ bool ARX_EQUIPMENT_IsPlayerEquip(INTERACTIVE_OBJ * _pIO);
 // Looks for string in script, return pos. Search start position can be set using	//
 // poss parameter.																	//
 //*************************************************************************************
-long FindScriptPos(EERIE_SCRIPT * es, const char * str, long poss)
+long FindScriptPos(EERIE_SCRIPT * es, const char * str)
 {
 
 	if (!es->data) return -1;
 
-	char * pdest = strstr(es->data + poss, str);
+	char * pdest = strstr(es->data, str);
+	
+	if(!pdest) {
+		return -1;
+	}
+	
 	long result = pdest - es->data;
 
-	if (result < 0) return -1;
+	assert(result >= 0);
 
 	int len2 = strlen(str);
+	
+	assert(len2 + result <= es->size);
 
-	if (len2+result > es->size){
-		LogError << "Out of data borders " << str;
-	}else{
-		if (es->data[result+len2] <= 32) return result;
-	}
+	if (es->data[result+len2] <= 32) return result;
 
 	return -1;
 }
@@ -645,11 +648,12 @@ void ARX_SCRIPT_ReleaseLabels(EERIE_SCRIPT * es)
 
 void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT * es)
 {
+	LogDebug << "ARX_SCRIPT_ComputeShortcuts start";
 	long nb = min(MAX_SHORTCUT, SM_MAXCMD);
 
 	for (long j = 1; j < nb; j++)
 	{
-		es->shortcut[j] = FindScriptPos(es, AS_EVENT[j].name, 0);
+		es->shortcut[j] = FindScriptPos(es, AS_EVENT[j].name);
 
 		if (es->shortcut[j] >= 0)
 		{
@@ -668,6 +672,8 @@ void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT * es)
 		}
 
 	}
+	
+	LogDebug << "ARX_SCRIPT_ComputeShortcuts end";
 }
 
 
@@ -3427,8 +3433,6 @@ void MakeSSEPARAMS(const char * params)
 			tokensize++;
 		}
 		
-		LogDebug << "MakeSSEPARAMS tokensize is " << tokensize;
-		
 		assert(tokensize < 64 - 1);
 		memcpy(SSEPARAMS[pos], params, tokensize);
 		SSEPARAMS[pos][tokensize] = 0;
@@ -6051,6 +6055,8 @@ INTERACTIVE_OBJ * IO_DEBUG = NULL;
 //*************************************************************************************
 long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTIVE_OBJ * io, const char * evname, long info)
 {
+	LogDebug << "SendScriptEvent msg=\"" << msg << "\" params=\"" << params << "\" evname=\"" << evname << "\"";
+	
 	if (io)
 	{
 		if ((io->GameFlags & GFLAG_MEGAHIDE)
@@ -6126,7 +6132,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 	{
 		strcpy(eventname, "ON ");
 		strcat(eventname, evname);
-		pos = FindScriptPos(es, eventname, 0);
+		pos = FindScriptPos(es, eventname);
 	}
 	else
 	{
@@ -6210,7 +6216,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					return ACCEPT;
 				}
 
-				pos = FindScriptPos(es, AS_EVENT[msg].name, 0);
+				pos = FindScriptPos(es, AS_EVENT[msg].name);
 			}
 		}
 	}
