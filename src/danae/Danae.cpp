@@ -282,7 +282,7 @@ TextureContainer *	TC_smoke=NULL;
 TextureContainer *	TC_missile=NULL;
 TextureContainer *	Z_map=NULL;
 TextureContainer *	Boom=NULL;
-TextureContainer *	zbtex=NULL;
+//TextureContainer *	zbtex=NULL;
 TextureContainer *	mecanism_tc=NULL;
 TextureContainer *	arrow_left_tc=NULL;
 EERIE_MULTI3DSCENE * mse=NULL;
@@ -2332,7 +2332,7 @@ void LoadSysTextures()
 	TC_fire=			_GetTexture_NoRefinement("Graph\\particles\\fire.bmp");
 	TC_fire2=			_GetTexture_NoRefinement("Graph\\particles\\fire2.bmp");
 	TC_smoke=			_GetTexture_NoRefinement("Graph\\particles\\smoke.bmp");
-	zbtex=				_GetTexture_NoRefinement("Graph\\particles\\zbtex.bmp");
+	//zbtex=				_GetTexture_NoRefinement("Graph\\particles\\zbtex.bmp");
 	TC_missile=			_GetTexture_NoRefinement("Graph\\particles\\missile.bmp");
 	Z_map=				_GetTexture_NoRefinement("Graph\\interface\\misc\\z-map.bmp");
 	Boom=				_GetTexture_NoRefinement("Graph\\Particles\\boom.bmp");
@@ -2380,7 +2380,7 @@ void LoadSysTextures()
 	GetTextureFile_NoRefinement("Graph\\Interface\\Inventory\\scroll_down.bmp");
 	GetTextureFile_NoRefinement("Graph\\Interface\\Inventory\\Hero_inventory_link.bmp");
 	GetTextureFile_NoRefinement("Graph\\Interface\\Inventory\\ingame_inventory.bmp");
-	GetTextureFile_NoRefinement("Graph\\Interface\\Inventory\\ingame_sub_inv.bmp");
+	//GetTextureFile_NoRefinement("Graph\\Interface\\Inventory\\ingame_sub_inv.bmp");
 	GetTextureFile_NoRefinement("Graph\\Interface\\Inventory\\Gold.bmp");
 
 	GetTextureFile_NoRefinement("Graph\\Interface\\Inventory\\inv_pick.bmp");
