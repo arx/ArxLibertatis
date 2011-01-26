@@ -6,21 +6,28 @@ using std::cout;
 
 Logger::LogLevel Logger::logLevel = Logger::Debug;
 
-const string blackList[] = {
-		"ARX_FTL.cpp",
-		"ARX_Script.cpp",
-		"PakManager.cpp",
-		/*"PakReader.cpp",*/
-		"Filesystem.cpp",
-		"Athena.cpp"
+struct LogSetting {
+	string codefile;
+	Logger::LogLevel logLevel;
+};
+
+const LogSetting blackList[] = {
+	{ "ARX_FTL.cpp", Logger::Warning },
+	{ "ARX_Script.cpp", Logger::Warning },
+	{ "PakManager.cpp", Logger::Fatal },
+	{ "PakReader.cpp", Logger::Info },
+	{ "Filesystem.cpp", Logger::Fatal },
+	{ "Athena.cpp", Logger::Error }
 };
 
 Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {
   fatal = false;
-  if( level < logLevel || isInBlackList(file)) {
+	LogLevel curLevel = getLogLevel(file);
+  if(level < curLevel || curLevel == None) {
     print = false;
     return;
   }
+  
   print = true;
   switch(level) {
     case Info:
@@ -61,10 +68,10 @@ void Logger::log(int mode, int color, const string & level,
 #endif
 }
 
-bool Logger::isInBlackList(const std::string& file) {
-	for (unsigned i=0; i < sizeof(blackList)/sizeof(string); i++) {
-		if (blackList[i] == file)
-			return true;
+Logger::LogLevel Logger::getLogLevel(const std::string& file) {
+	for (unsigned i=0; i < sizeof(blackList)/sizeof(*blackList); i++) {
+		if (blackList[i].codefile == file)
+			return blackList[i].logLevel;
 	}
-	return false;
+	return logLevel;
 }
