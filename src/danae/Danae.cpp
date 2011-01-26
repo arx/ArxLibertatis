@@ -7340,8 +7340,11 @@ void DANAE::GoFor2DFX()
 
 						LAST_ZVAL	=	fZFire;
 
-						ARX_CHECK_LONG( danaeApp.zbuffer_max );
-						LAST_FVAL	=	ARX_CLEAN_WARN_CAST_LONG( danaeApp.zbuffer_max );
+						//TODO(lubosz): zbuffer assertion
+//						LogDebug << "zbuffer_max " << danaeApp.zbuffer_max << " " << LONG_MAX << " " << LONG_MIN;
+//						ARX_CHECK_LONG( danaeApp.zbuffer_max );
+//						LAST_FVAL	=	ARX_CLEAN_WARN_CAST_LONG( danaeApp.zbuffer_max );
+						LAST_FVAL = LONG_MAX;
 
 					}
 

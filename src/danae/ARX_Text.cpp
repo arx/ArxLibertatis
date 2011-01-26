@@ -54,7 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 #include <windows.h>
 #include <assert.h>
-
 #include <string>
 
 #include "ARX_Loc.h"
@@ -142,7 +141,7 @@ long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, std::string& _lpszUText, in
 
 				for (; iTemp < iLenght ; iTemp++)
 				{
-					GetTextExtentPoint(hDC,
+					GetTextExtentPoint32(hDC,
 					                      &_lpszUText[iTemp],
 					                      1,
 					                      &sSize);
@@ -216,7 +215,7 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, std::string& text, int _iSpacingY, R
 
 		for (; iTemp < iLenght; iTemp++)
 		{
-			GetTextExtentPoint(_hDC,
+			GetTextExtentPoint32(_hDC,
 			                      &text[iTemp],
 			                      1,
 			                      &sSize);
@@ -304,6 +303,9 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 {
 	HDC hDC = NULL;
 
+	//TODO(lubosz): Fix the text temporalily for crash
+	//_text ="todo";
+
 	// Get a DC for the surface. Then, write out the buffer
 	if (danaeApp.m_pddsRenderTarget)
 	{
@@ -312,6 +314,8 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 			hDC = hHDC;
 		}
 
+		//TODO(lubosz): text render crash
+//		if (false)
 		if (hHDC || SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 		{
 
@@ -432,7 +436,7 @@ long UNICODE_ARXDrawTextCenter(float x, float y, const std::string& str, COLORRE
 
 
 			SIZE siz;
-			GetTextExtentPoint(hDC,         // handle to DC
+			GetTextExtentPoint32(hDC,         // handle to DC
 			                        str.c_str(),           // character string
 			                        str.length(),   // number of characters
 			                        &siz          // size
@@ -1127,31 +1131,31 @@ void ARX_Text_Init()
 	
 	string tx = getFontFile();
 
-//	todo: cast
-//	MultiByteToWideChar(CP_ACP, 0, tx , -1, wtx, 256);		// XS : We need to pass a unicode string to AddFontResourceW
+	wchar_t wtx[256];
+	MultiByteToWideChar(CP_ACP, 0, tx.c_str() , -1, wtx, 256);		// XS : We need to pass a unicode string to AddFontResourceW
 
 	lpszFontIngame = GetFontName(tx.c_str());
 
-	if(AddFontResourceA(tx.c_str()) == 0) {
+	if(AddFontResource(tx.c_str()) == 0) {
 		LogError << FontError();
 	}
 
-/*
-	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf");
 
-	if (!FileExist(tx))
-	{
-		sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
-	}
+//	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf");
+//
+//	if (!FileExist(tx))
+//	{
+//		sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
+//	}
+//
+//	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass an unicode string to AddFontResourceW
 
-	//MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass an unicode string to AddFontResourceW
+	lpszFontMenu = GetFontName(tx.c_str());
 
-	lpszFontMenu = GetFontName(tx);
-
-	if (AddFontResourceA(wtx) == 0)
+	if (AddFontResourceW(wtx) == 0)
 	{
 		LogError << FontError();
-	}*/
+	}
 
 
 	pTextManage = new CARXTextManager();

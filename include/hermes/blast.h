@@ -130,6 +130,8 @@ int blastOutMemRealloc(void * Param, unsigned char * buf, size_t len);
 /**
  * Decompress data and allocate memory as needed.
  * Returned pointer should be deallocated using free(), not delete.
+ * 
+ * If the uncompressed size is known, always uses blastMem instead.
  */
 char * blastMemAlloc(const char * from, size_t fromSize, size_t & toSize);
 

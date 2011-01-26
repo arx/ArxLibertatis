@@ -275,7 +275,7 @@ void ReplaceSpecifics( std::string& text )
 extern long NODIRCREATION;
 extern long ADDED_IO_NOT_SAVED;
 
-//#pragma pack(push,1)
+#pragma pack(push,1)
 typedef struct
 {
 	float	version;
@@ -289,8 +289,8 @@ typedef struct
 	long	nb_nodes;
 	long	nb_nodeslinks;
 	long	nb_zones;
-	bool	lighting;
-	bool    Bpad[256];
+	BOOL	lighting;
+	BOOL    Bpad[256];
 	long	nb_lights; 
 	long	nb_fogs; 
 
@@ -302,9 +302,142 @@ typedef struct
 	EERIE_3D	offset;
 	float	fpad[253];
 	char	cpad[4096];
-	bool	bpad[256];
+	BOOL	bpad[256];
 } DANAE_LS_HEADER; // Aligned 1 2 4
-//#pragma pack(pop)
+#pragma pack(pop)
+
+#pragma pack(push,1)
+typedef struct
+{
+	char	name[512];
+	long	pad[16];
+	float	fpad[16];
+} DANAE_LS_SCENE; // Aligned 1 2 4 8
+#pragma pack(pop)
+
+#pragma pack(push,1)
+typedef struct
+{
+	long		nb_values;
+	long		ViewMode;
+	long		ModeLight;
+	long		pad;
+} DANAE_LS_LIGHTINGHEADER; // Aligned 1 2 4 8
+#pragma pack(pop)
+
+#pragma pack(push,1)
+typedef struct
+{
+	long		r;
+	long		g;
+	long		b;
+} DANAE_LS_VLIGHTING; // Aligned 1 2 4
+#pragma pack(pop)
+
+#pragma pack(push,1)
+typedef struct
+{
+	EERIE_3D	pos;
+	EERIE_RGB	rgb;
+	float		fallstart;
+	float		fallend;
+	float		intensity;
+	float		i;
+	EERIE_RGB	ex_flicker;
+	float		ex_radius;
+	float		ex_frequency;
+	float		ex_size;
+	float		ex_speed;
+	float		ex_flaresize;
+	float		fpadd[24];
+	long		extras;
+	long		lpadd[31];
+} DANAE_LS_LIGHT; //ver 1.003f // Aligned 1 2 4
+#pragma pack(pop)
+
+#pragma pack(push,1)
+typedef struct
+{
+	EERIE_3D	pos;
+	EERIE_RGB	rgb;
+	float		size;
+	long		special;
+	float		scale;
+	EERIE_3D	move;
+	EERIE_3D	angle;
+	float		speed;
+	float		rotatespeed;
+	long		tolive;
+	long		blend;
+	float		frequency;
+	float		fpadd[32];
+	long		lpadd[32];
+	char		cpadd[256];
+} DANAE_LS_FOG; // Aligned 1 2 4
+#pragma pack(pop)
+
+#pragma pack(push,1)
+typedef struct
+{
+	char		name[64];
+	EERIE_3D	pos;
+	long		pad[16];
+	float		fpad[16];
+} DANAE_LS_NODE; // Aligned 1 2 4
+#pragma pack(pop)
+
+#pragma pack(push,1)
+typedef struct
+{
+	char		name[64];
+	short		idx;
+	short		flags;
+	EERIE_3D	initpos;
+	EERIE_3D	pos;
+	long		nb_pathways;
+	EERIE_RGB	rgb; 
+	float		farclip; 
+	float		reverb;
+	float		amb_max_vol; 
+	float		fpadd[26];
+	long		height;
+	long		lpadd[31];
+	char		ambiance[128]; 
+	char		cpadd[128];
+} DANAE_LS_PATH; // Aligned 1 2 4
+#pragma pack(pop)
+
+#pragma pack(push,1)
+typedef struct
+{
+	EERIE_3D		rpos;
+	long			flag;
+	unsigned long	time;
+	float		fpadd[2];
+	long		lpadd[2];
+	char		cpadd[32];
+} DANAE_LS_PATHWAYS; // Aligned 1 2 4
+#pragma pack(pop)
+
+//Lighting File Header
+#pragma pack(push,1)
+typedef struct
+{
+	float	version;
+	char	ident[16];
+	char	lastuser[256];
+	long	time;
+
+	long	nb_lights;
+	long	nb_Shadow_Polys;
+	long	nb_IGNORED_Polys;
+	long	nb_bkgpolys;
+	long	pad[256];
+	float	fpad[256];
+	char	cpad[4096];
+	BOOL	bpad[256];
+} DANAE_LLF_HEADER; //Aligned 1 2 4
+#pragma pack(pop)
 
 //*************************************************************************************
 //*************************************************************************************
@@ -1226,9 +1359,11 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
 
 		if (FastSceneLoad(ftemp.c_str()))
 		{
+			LogDebug << "done loading scene";
 			FASTmse = 1;
 			goto suite;
 		}
+		LogDebug << "loading scene failed";
 
 		ARX_SOUND_PlayCinematic("Editor_Humiliation.wav");
 		mse = PAK_MultiSceneToEerie(temp.c_str());
@@ -1749,6 +1884,9 @@ finish:
 	LOADEDD = 1;
 	FASTmse = 0;
 	USE_PLAYERCOLLISIONS = 1;
+	
+	LogInfo << "Done loading level";
+	
 	return 1;
 
 //loaderror:

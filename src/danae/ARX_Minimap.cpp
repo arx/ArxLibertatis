@@ -976,17 +976,17 @@ void ARX_MAPMARKER_Init()
 	Mapmarkers = NULL;
 	Nb_Mapmarkers = 0;
 }
-long ARX_MAPMARKER_Get(char * str)
+long ARX_MAPMARKER_Get( const std::string& str)
 {
 	for (long i = 0; i < Nb_Mapmarkers; i++)
 	{
-		if (!strcasecmp(Mapmarkers[i].string, str))
+		if (!strcasecmp(Mapmarkers[i].string, str.c_str()))
 			return i;
 	}
 
 	return -1;
 }
-void ARX_MAPMARKER_Add(float x, float y, long lvl, char * temp)
+void ARX_MAPMARKER_Add(float x, float y, long lvl, const std::string& temp)
 {
 	long num = ARX_MAPMARKER_Get(temp);
 
@@ -1001,7 +1001,7 @@ void ARX_MAPMARKER_Add(float x, float y, long lvl, char * temp)
 			Mapmarkers[num].tstring.clear();
 
 		//Mapmarkers[num].tstring = NULL;
-		strcpy(Mapmarkers[num].string, temp);
+		strcpy(Mapmarkers[num].string, temp.c_str());
 		return;
 	}
 
@@ -1018,10 +1018,11 @@ void ARX_MAPMARKER_Add(float x, float y, long lvl, char * temp)
 	Mapmarkers[Nb_Mapmarkers].x = x;
 	Mapmarkers[Nb_Mapmarkers].y = y;
 	Mapmarkers[Nb_Mapmarkers].tstring.clear();
-	strcpy(Mapmarkers[Nb_Mapmarkers].string, temp);
+	strcpy(Mapmarkers[Nb_Mapmarkers].string, temp.c_str());
 	Nb_Mapmarkers++;
 }
-void ARX_MAPMARKER_Remove(char * temp)
+
+void ARX_MAPMARKER_Remove( const std::string& temp)
 {
 	long num = ARX_MAPMARKER_Get(temp);
 

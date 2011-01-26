@@ -1269,6 +1269,7 @@ void RestoreInitialIOStatus()
 		RestoreInitialIOStatusOfIO(inter.iobj[i]);
 	}
 }
+
 void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const std::string& temp)
 {
     if ((!io)
@@ -1318,15 +1319,15 @@ void ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(INTERACTIVE_OBJ * io)
 	io->Tweaks = NULL;
 	io->Tweak_nb = 0;
 }
-void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, long type, char * param1, char * param2)
+void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, long type, const std::string& param1, const std::string& param2)
 {
 	io->Tweaks = (TWEAK_INFO *)realloc(io->Tweaks, sizeof(TWEAK_INFO) * (io->Tweak_nb + 1));
 	memset(&io->Tweaks[io->Tweak_nb], 0, sizeof(TWEAK_INFO));
 	io->Tweaks[io->Tweak_nb].type = type;
 
-	if (param1) strcpy(io->Tweaks[io->Tweak_nb].param1, param1);
+	if (!param1.empty()) strcpy(io->Tweaks[io->Tweak_nb].param1, param1.c_str());
 
-	if (param2) strcpy(io->Tweaks[io->Tweak_nb].param2, param2);
+	if (!param2.empty()) strcpy(io->Tweaks[io->Tweak_nb].param2, param2.c_str());
 
 	io->Tweak_nb++;
 }
@@ -1723,10 +1724,9 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 	}
 }
 
-void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, char * s1)
+void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const std::string& s1)
 {
-	if ((!io)
-	        ||	(!s1))
+	if ((!io) || (s1.empty()))
 		return;
 
 	std::string icontochange;

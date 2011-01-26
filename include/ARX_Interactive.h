@@ -141,7 +141,7 @@ extern long NbIOSelected;
 
 //-----------------------------------------------------------------------------
 void ARX_INTERACTIVE_UnfreezeAll();
-void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, char * s1);
+void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const std::string& s1 );
 void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io);
 void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag = 0);
 void ARX_INTERACTIVE_DeleteByIndex(long i, long flag = 0);
@@ -154,10 +154,10 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(INTERACTIVE_OBJ * io, EERIE_3D * tar
 void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io);
 bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source = -1);
 void ARX_INTERACTIVE_DestroyIO(INTERACTIVE_OBJ * ioo);
-void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, long type, char * param1, char * param2);
+void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, long type, const std::string& param1, const std::string& param2);
 void ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(INTERACTIVE_OBJ * io);
 void ARX_INTERACTIVE_APPLY_TWEAK_INFO(INTERACTIVE_OBJ * io);
-void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, char * temp);
+void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const std::string& temp);
 void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, EERIE_3D * target, long flags = 0);
 
 bool IsEquipedByPlayer(INTERACTIVE_OBJ * io);

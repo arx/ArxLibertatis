@@ -55,6 +55,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+
+
 #include <stdlib.h>
 
 #include <algorithm>
@@ -3441,6 +3443,12 @@ long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const char * _lpszText, long 
 //*************************************************************************************
 void MakeSSEPARAMS(const char * params)
 {
+	if(params) {
+		LogDebug << "MakeSSEPARAMS \"" << params << "\"";
+	} else {
+		LogDebug << "MakeSSEPARAMS NULL";
+	}
+	
 	for (long i = 0; i < MAX_SSEPARAMS; i++)
 	{
 		SSEPARAMS[i][0] = 0;
@@ -3452,7 +3460,12 @@ void MakeSSEPARAMS(const char * params)
 
 	while(*params != '\0' && pos < MAX_SSEPARAMS) {
 		
-		size_t tokensize = strchr(params, ' ') - params;
+		size_t tokensize = 0;
+		while(params[tokensize] != ' ' && params[tokensize] != '\0') {
+			tokensize++;
+		}
+		
+		LogDebug << "MakeSSEPARAMS tokensize is " << tokensize;
 		
 		assert(tokensize < 64 - 1);
 		memcpy(SSEPARAMS[pos], params, tokensize);
@@ -11341,8 +11354,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				}
 				else if (!strcmp(temp, "INC"))
 				{
-					char temp1[64];
-					char temp2[64];
+					std::string temp1;
+					std::string temp2;
 					float fval;
 					float fdval;
 					SCRIPT_VAR * sv = NULL;
@@ -11377,7 +11390,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = (float)GETVarValueLong(&svar, &NB_GLOBALS, temp1);
 							fval = fdval + fval;
-							sv = SETVarValueLong(&svar, &NB_GLOBALS, temp1, (long)fval);
+							sv = SETVarValueLong(&svar, &NB_GLOBALS, temp1.c_str(), (long)fval);
 
 							if (sv != NULL) sv->type = TYPE_G_LONG;
 
@@ -11386,7 +11399,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = (float)GETVarValueLong(&esss->lvar, &esss->nblvar, temp1);
 							fval = fdval + fval;
-							sv = SETVarValueLong(&esss->lvar, &esss->nblvar, temp1, (long)fval);
+							sv = SETVarValueLong(&esss->lvar, &esss->nblvar, temp1.c_str(), (long)fval);
 
 							if (sv != NULL) sv->type = TYPE_L_LONG;
 
@@ -11395,7 +11408,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = GETVarValueFloat(&svar, &NB_GLOBALS, temp1);
 							fval = fdval + fval;
-							sv = SETVarValueFloat(&svar, &NB_GLOBALS, temp1, fval);
+							sv = SETVarValueFloat(&svar, &NB_GLOBALS, temp1.c_str(), fval);
 
 							if (sv != NULL) sv->type = TYPE_G_FLOAT;
 
@@ -11404,7 +11417,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = GETVarValueFloat(&esss->lvar, &esss->nblvar, temp1);
 							fval = fdval + fval;
-							sv = SETVarValueFloat(&esss->lvar, &esss->nblvar, temp1, fval);
+							sv = SETVarValueFloat(&esss->lvar, &esss->nblvar, temp1.c_str(), fval);
 
 							if (sv != NULL) sv->type = TYPE_L_FLOAT;
 
@@ -11569,19 +11582,19 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						}
 						else if (!strcmp(temp, "SKIN"))
 						{
-							char temp2[256];
+							std::string temp2;
 							pos = GetNextWord(es, pos, temp2);
 
 							if (io)
 							{
 								if (io->inventory_skin) free(io->inventory_skin);
 
-								io->inventory_skin = strdup(temp2);
+								io->inventory_skin = strdup(temp2.c_str());
 							}
 						}
 						else if (!strcmp(temp, "PLAYERADDFROMSCENE"))
 						{
-							char temp2[256];
+							std::string temp2;
 							pos = GetNextWord(es, pos, temp2);
 #ifdef NEEDING_DEBUG
 
@@ -11614,8 +11627,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						else if ((!strcmp(temp, "PLAYERADD")) || (!strcmp(temp, "PLAYERADDMULTI")))
 						{
 							{
-								char temp2[256];
-								char tex[256];
+								std::string temp2;
+								std::string tex;
 								pos = GetNextWord(es, pos, temp2);
 #ifdef NEEDING_DEBUG
 
@@ -11645,13 +11658,13 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 								}
 								else
 								{
-									char tex2[256];
-									sprintf(tex2, "Graph\\Obj3D\\Interactive\\Items\\%s.teo", temp2);
+									std::string tex2;
+									tex2 = "Graph\\Obj3D\\Interactive\\Items\\" + temp2 + ".teo";
 									File_Standardize(tex2, tex);
 
 									if (FORBID_SCRIPT_IO_CREATION == 0)
 									{
-										INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddItem(GDevice, tex, IO_IMMEDIATELOAD);
+										INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddItem(GDevice, tex.c_str(), IO_IMMEDIATELOAD);
 
 										if (ioo != NULL)
 										{
@@ -11666,13 +11679,13 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 												if (ioo->ioflags & IO_GOLD)
 												{
-													ioo->_itemdata->price = atoi(temp2);
+													ioo->_itemdata->price = atoi(temp2.c_str());
 												}
 												else
 												{
 													ioo->_itemdata->maxcount = 9999;
 
-													int iTemp = atoi(temp2);
+													int iTemp = atoi(temp2.c_str());
 													ARX_CHECK_SHORT(iTemp);
 
 													ioo->_itemdata->count = ARX_CLEAN_WARN_CAST_SHORT(iTemp);
@@ -11701,7 +11714,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						else if (!strcmp(temp, "ADDFROMSCENE"))
 						{
 							long xx, yy;
-							char temp2[256];
+							std::string temp2;
 
 							pos = GetNextWord(es, pos, temp2);
 #ifdef NEEDING_DEBUG
@@ -11744,7 +11757,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						}
 						else if ((!strcmp(temp, "ADD")) || (!strcmp(temp, "ADDMULTI")))
 						{
-							char temp2[256];
+							std::string temp2;
 
 							if (inter.iobj[ion]->inventory == NULL)
 							{
@@ -11755,7 +11768,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							}
 							else if (inter.iobj[ion]->inventory != NULL)
 							{
-								char tex[256];
+								std::string tex;
 
 								pos = GetNextWord(es, pos, temp2);
 #ifdef NEEDING_DEBUG
@@ -11777,8 +11790,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 								}
 								else
 								{
-									char tex2[256];
-									sprintf(tex2, "Graph\\Obj3D\\Interactive\\Items\\%s.teo", temp2);
+									std::string tex2;
+									tex2 = "Graph\\Obj3D\\Interactive\\Items\\" + temp2 + ".teo";
 									File_Standardize(tex2, tex);
 
 									if (FORBID_SCRIPT_IO_CREATION == 0)
@@ -11788,10 +11801,10 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 										if (!strcmp(temp, "ADDMULTI"))
 										{
 											pos = GetNextWord(es, pos, temp2);
-											multi = atoi(temp2);
+											multi = atoi(temp2.c_str());
 										}
 
-										INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddItem(GDevice, tex, IO_IMMEDIATELOAD);
+										INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddItem(GDevice, tex.c_str(), IO_IMMEDIATELOAD);
 										long xx, yy;
 
 										if ((ioo != NULL)
@@ -11871,7 +11884,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 				if (!strcmp(temp, "OBJECTHIDE"))
 				{
-					char temp1[256];
+					std::string temp1;
 					long megahide = 0;
 					pos = GetNextWord(es, pos, temp);
 
@@ -11949,7 +11962,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						pos = GetNextWord(es, pos, temp);
 					}
 
-					strcpy(tempp, GetVarValueInterpretedAsText(temp, esss, io));
+					strcpy(tempp, GetVarValueInterpretedAsText(temp, esss, io).c_str());
 
 					if (tempp[0] == '[')
 					{
@@ -12008,9 +12021,9 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 					if (iCharIn(temp, 'C'))
 					{
-						char temp1[64];
-						char temp2[64];
-						char temp3[64];
+						std::string temp1;
+						std::string temp2;
+						std::string temp3;
 						pos = GetNextWord(es, pos, temp1);
 						pos = GetNextWord(es, pos, temp2);
 						pos = GetNextWord(es, pos, temp3);
@@ -12025,7 +12038,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 					if (iCharIn(temp, 'S'))
 					{
-						char temp1[64];
+						std::string temp1;
 						pos = GetNextWord(es, pos, temp1);
 
 						if (io)
@@ -12047,7 +12060,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 				if (!strcmp(temp, "TELEPORT"))
 				{
-					char temp2[128];
+					std::string temp2;
 					pos = GetNextWord(es, pos, temp);
 #ifdef NEEDING_DEBUG
 
@@ -12103,7 +12116,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 								}
 
 #endif
-								strcpy(TELEPORT_TO_LEVEL, temp);
+								strcpy(TELEPORT_TO_LEVEL, temp.c_str());
 								pos = GetNextWord(es, pos, temp);
 #ifdef NEEDING_DEBUG
 
@@ -12114,7 +12127,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 								}
 
 #endif
-								strcpy(TELEPORT_TO_POSITION, temp);
+								strcpy(TELEPORT_TO_POSITION, temp.c_str());
 
 								if (angle == -1) TELEPORT_TO_ANGLE	=	ARX_CLEAN_WARN_CAST_LONG(player.angle.b);
 								else TELEPORT_TO_ANGLE = angle;
@@ -12271,7 +12284,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 						if (!strcasecmp(temp, "SKIN"))
 						{
-							char temp1[256];
+							std::string temp1;
 							pos = GetNextWord(es, pos, temp);
 #ifdef NEEDING_DEBUG
 
@@ -12362,16 +12375,16 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 								}
 
 #endif
-								char path[512];
+								std::string path;
 
 								if (io->usemesh != NULL)
-									strcpy(path, io->usemesh);
-								else strcpy(path, io->filename);
+									path = io->usemesh;
+								else path = io->filename;
 
 								RemoveName(path);
-								strcat(path, "Tweaks\\");
-								strcat(path, temp);
-								strcat(path, ".teo");
+								path += "Tweaks\\";
+								path += temp;
+								path += ".teo";
 
 								if (tw != TWEAK_ERROR)
 								{
@@ -12391,15 +12404,15 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				{
 					// Timer -m nbtimes duration commands
 					char timername[64];
-					char temp2[64];
-					char temp3[64];
+					std::string temp2;
+					std::string temp3;
 
 					long times = 0;
 					long msecs = 0;
 
 					// Checks if the timer is named by caller of if it needs a default name
-					if (strlen(temp) > 5)
-						strcpy(timername, temp + 5);
+					if (temp.length() > 5)
+						strcpy(timername, temp.c_str() + 5);
 					else ARX_SCRIPT_Timer_GetDefaultName(timername);
 
 #ifdef NEEDING_DEBUG
@@ -12455,7 +12468,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 #endif
 							}
 
-							times = atoi(temp2);
+							times = atoi(temp2.c_str());
 							pos = GetNextWord(es, pos, temp3);
 #ifdef NEEDING_DEBUG
 
@@ -12466,7 +12479,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							}
 
 #endif
-							msecs = atoi(temp3);
+							msecs = atoi(temp3.c_str());
 
 							if (!mili) msecs *= 1000;
 
@@ -12481,7 +12494,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 								scr_timer[num].msecs = msecs;
 								scr_timer[num].namelength = strlen(timername) + 1;
 								scr_timer[num].name = (char *)malloc(scr_timer[num].namelength);
-								strcpy(scr_timer[num].name, timername);
+								scr_timer[num].name = timername;
 								scr_timer[num].pos = pos;
 								scr_timer[num].tim = ARXTimeUL();
 								scr_timer[num].times = times;
@@ -12528,7 +12541,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 				if (!strcmp(temp, "WORLDFADE"))
 				{
-					char temp1[64];
+					std::string temp1;
 					pos = GetNextWord(es, pos, temp);
 					pos = GetNextWord(es, pos, temp1); //duration
 					F2L(GetVarValueInterpretedAsFloat(temp1, esss, io), &FADEDURATION);
@@ -12537,8 +12550,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					if (!strcasecmp(temp, "OUT"))
 					{
 
-						char temp2[64];
-						char temp3[64];
+						std::string temp2;
+						std::string temp3;
 
 						pos = GetNextWord(es, pos, temp1);
 						pos = GetNextWord(es, pos, temp2);
@@ -12606,13 +12619,13 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 #endif
 					ARX_INTERACTIVE_USEMESH(io, temp);
 
-					char tex[256];
-					char tex1[256];
-					char tex2[256];
+					std::string tex;
+					std::string tex1;
+					std::string tex2;
 
-					if (io->ioflags & IO_NPC)	sprintf(tex2, "Graph\\Obj3D\\Interactive\\NPC\\%s", temp);
-					else if (io->ioflags & IO_FIX)	sprintf(tex2, "Graph\\Obj3D\\Interactive\\FIX_INTER\\%s", temp);
-					else if (io->ioflags & IO_ITEM)	sprintf(tex2, "Graph\\Obj3D\\Interactive\\Items\\%s", temp);
+					if (io->ioflags & IO_NPC)	tex2 = "Graph\\Obj3D\\Interactive\\NPC\\" + temp;
+					else if (io->ioflags & IO_FIX)	tex2 = "Graph\\Obj3D\\Interactive\\FIX_INTER\\" + temp;
+					else if (io->ioflags & IO_ITEM)	tex2 = "Graph\\Obj3D\\Interactive\\Items\\" + temp;
 					else tex2[0] = 0;
 
 					File_Standardize(tex2, tex);
@@ -12622,7 +12635,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						if (io->usemesh == NULL)
 							io->usemesh = (char *)malloc(256);
 
-						strcpy(io->usemesh, tex);
+						strcpy(io->usemesh, tex.c_str());
 
 						if (io->obj != NULL)
 						{
@@ -12633,11 +12646,11 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						const char texpath[] = "Graph\\Obj3D\\Textures\\";
 
 						if (io->ioflags & IO_FIX)
-							io->obj = TheoToEerie_Fast(texpath, tex, TTE_NO_NDATA | TTE_NO_PHYSICS_BOX, GDevice);
+							io->obj = TheoToEerie_Fast(texpath, tex.c_str(), TTE_NO_NDATA | TTE_NO_PHYSICS_BOX, GDevice);
 						else if (io->ioflags & IO_NPC)
-							io->obj = TheoToEerie_Fast(texpath, tex, TTE_NO_PHYSICS_BOX | TTE_NPC, GDevice);
+							io->obj = TheoToEerie_Fast(texpath, tex.c_str(), TTE_NO_PHYSICS_BOX | TTE_NPC, GDevice);
 						else
-							io->obj = TheoToEerie_Fast(texpath, tex, 0, GDevice);
+							io->obj = TheoToEerie_Fast(texpath, tex.c_str(), 0, GDevice);
 
 						EERIE_COLLISION_Cylinder_Create(io);
 					}
@@ -12695,7 +12708,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				else if (!strcmp(temp, "UNSETCONTROLLEDZONE"))
 				{
 					pos = GetNextWord(es, pos, temp);
-					ARX_PATH * ap = ARX_PATH_GetAddressByName(temp);
+					ARX_PATH * ap = ARX_PATH_GetAddressByName(temp.c_str());
 
 					if (ap != NULL)
 					{
@@ -12829,8 +12842,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				if (
 					(!strcmp(temp, "MUL")))
 				{
-					char temp1[64];
-					char temp2[64];
+					std::string temp1;
+					std::string temp2;
 					float fval;
 					float fdval;
 					SCRIPT_VAR * sv = NULL;
@@ -12865,7 +12878,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = (float)GETVarValueLong(&svar, &NB_GLOBALS, temp1);
 							fval = fval * fdval;
-							sv = SETVarValueLong(&svar, &NB_GLOBALS, temp1, (long)fval);
+							sv = SETVarValueLong(&svar, &NB_GLOBALS, temp1.c_str(), (long)fval);
 
 							if (sv)
 								sv->type = TYPE_G_LONG;
@@ -12875,7 +12888,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = (float)GETVarValueLong(&esss->lvar, &esss->nblvar, temp1);
 							fval = fval * fdval;
-							sv = SETVarValueLong(&esss->lvar, &esss->nblvar, temp1, (long)fval);
+							sv = SETVarValueLong(&esss->lvar, &esss->nblvar, temp1.c_str(), (long)fval);
 
 							if (sv)
 								sv->type = TYPE_L_LONG;
@@ -12885,7 +12898,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = GETVarValueFloat(&svar, &NB_GLOBALS, temp1);
 							fval = fdval * fval;
-							sv = SETVarValueFloat(&svar, &NB_GLOBALS, temp1, fval);
+							sv = SETVarValueFloat(&svar, &NB_GLOBALS, temp1.c_str(), fval);
 
 							if (sv)
 								sv->type = TYPE_G_FLOAT;
@@ -12895,7 +12908,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = GETVarValueFloat(&esss->lvar, &esss->nblvar, temp1);
 							fval = fdval * fval;
-							sv = SETVarValueFloat(&esss->lvar, &esss->nblvar, temp1, fval);
+							sv = SETVarValueFloat(&esss->lvar, &esss->nblvar, temp1.c_str(), fval);
 
 							if (sv)
 								sv->type = TYPE_L_FLOAT;
@@ -12914,9 +12927,9 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				{
 					if (io != NULL)
 					{
-						char temp1[64];
-						char temp2[64];
-						char temp3[64];
+						std::string temp1;
+						std::string temp2;
+						std::string temp3;
 						float t1, t2, t3;
 
 
@@ -12981,7 +12994,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						(!strcmp(temp, "--")))
 				{
 					SCRIPT_VAR * sv = NULL;
-					char temp1[64];
+					std::string temp1;
 					long	ival;
 					float	fval;
 					pos = GetNextWord(es, pos, temp1);
@@ -12993,11 +13006,11 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 							if (!strcmp(temp, "--"))
 							{
-								sv = SETVarValueLong(&svar, &NB_GLOBALS, temp1, ival - 1);
+								sv = SETVarValueLong(&svar, &NB_GLOBALS, temp1.c_str(), ival - 1);
 							}
 							else
 							{
-								sv = SETVarValueLong(&svar, &NB_GLOBALS, temp1, ival + 1);
+								sv = SETVarValueLong(&svar, &NB_GLOBALS, temp1.c_str(), ival + 1);
 							}
 
 							break;
@@ -13006,11 +13019,11 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 							if (!strcmp(temp, "--"))
 							{
-								sv = SETVarValueLong(&esss->lvar, &esss->nblvar, temp1, ival - 1);
+								sv = SETVarValueLong(&esss->lvar, &esss->nblvar, temp1.c_str(), ival - 1);
 							}
 							else
 							{
-								sv = SETVarValueFloat(&esss->lvar, &esss->nblvar, temp1, ival + 1.f);
+								sv = SETVarValueFloat(&esss->lvar, &esss->nblvar, temp1.c_str(), ival + 1.f);
 							}
 
 							break;
@@ -13020,11 +13033,11 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 							if (!strcmp(temp, "--"))
 							{
-								sv = SETVarValueFloat(&svar, &NB_GLOBALS, temp1, fval  - 1.f);
+								sv = SETVarValueFloat(&svar, &NB_GLOBALS, temp1.c_str(), fval  - 1.f);
 							}
 							else
 							{
-								sv = SETVarValueFloat(&esss->lvar, &esss->nblvar, temp1, fval + 1.f);
+								sv = SETVarValueFloat(&esss->lvar, &esss->nblvar, temp1.c_str(), fval + 1.f);
 							}
 
 							break;
@@ -13033,11 +13046,11 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 							if (!strcmp(temp, "--"))
 							{
-								sv = SETVarValueFloat(&esss->lvar, &esss->nblvar, temp1, fval - 1.f);
+								sv = SETVarValueFloat(&esss->lvar, &esss->nblvar, temp1.c_str(), fval - 1.f);
 							}
 							else
 							{
-								sv = SETVarValueFloat(&esss->lvar, &esss->nblvar, temp1, fval + 1.f);
+								sv = SETVarValueFloat(&esss->lvar, &esss->nblvar, temp1.c_str(), fval + 1.f);
 							}
 
 							break;
@@ -13058,8 +13071,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					(!strcmp(temp, "DEC")) ||
 					(!strcmp(temp, "DIV")))
 				{
-					char temp1[64];
-					char temp2[64];
+					std::string temp1;
+					std::string temp2;
 					float fval;
 					float fdval;
 					SCRIPT_VAR * sv = NULL;
@@ -13102,7 +13115,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 								if (fval != 0.f)	fval = fdval / fval;
 							}
 
-							sv = SETVarValueLong(&svar, &NB_GLOBALS, temp1, (long)fval);
+							sv = SETVarValueLong(&svar, &NB_GLOBALS, temp1.c_str(), (long)fval);
 
 							if (sv != NULL) sv->type = TYPE_G_LONG;
 
@@ -13117,7 +13130,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 								if (fval != 0.f)	fval = fdval / fval;
 							}
 
-							sv = SETVarValueLong(&esss->lvar, &esss->nblvar, temp1, (long)fval);
+							sv = SETVarValueLong(&esss->lvar, &esss->nblvar, temp1.c_str(), (long)fval);
 
 							if (sv != NULL) sv->type = TYPE_L_LONG;
 
@@ -13132,7 +13145,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 								if (fval != 0.f)	fval = fdval / fval;
 							}
 
-							sv = SETVarValueFloat(&svar, &NB_GLOBALS, temp1, fval);
+							sv = SETVarValueFloat(&svar, &NB_GLOBALS, temp1.c_str(), fval);
 
 							if (sv != NULL) sv->type = TYPE_G_FLOAT;
 
@@ -13147,7 +13160,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 								if (fval != 0.f)	fval = fdval / fval;
 							}
 
-							sv = SETVarValueFloat(&esss->lvar, &esss->nblvar, temp1, fval);
+							sv = SETVarValueFloat(&esss->lvar, &esss->nblvar, temp1.c_str(), fval);
 
 							if (sv != NULL) sv->type = TYPE_L_FLOAT;
 
@@ -13162,9 +13175,9 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				}
 				else if (!strcmp(temp, "DESTROY"))
 				{
-					char temp2[256];
+					std::string temp2;
 					pos = GetNextWord(es, pos, temp2); // Source IO
-					strcpy(temp, GetVarValueInterpretedAsText(temp2, esss, io));
+					temp = GetVarValueInterpretedAsText(temp2, esss, io);
 					long t = GetTargetByNameTarget(temp);
 
 					if (t == -2) t = GetInterNum(io); //self
@@ -13373,7 +13386,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					{
 						MakeUpcase(temp1);
 						float dur = GetVarValueInterpretedAsFloat(temp2, esss, io);
-						ARX_SPELLS_RequestSymbolDraw(io, temp1, dur);
+						ARX_SPELLS_RequestSymbolDraw(io, temp1.c_str(), dur);
 					}
 
 #ifdef NEEDING_DEBUG
@@ -13388,14 +13401,14 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 				if (io)
 				{
-					char temp2[256];
-					char temp3[256];
-					char temp4[256];
+					std::string temp2;
+					std::string temp3;
+					std::string temp4;
 					long ppos = pos;
 					pos = GetNextWord(es, pos, temp2);
 					pos = GetNextWord(es, pos, temp3);
 					pos = GetNextWord(es, pos, temp4);
-					sprintf(cmd, "SCRIPT ERROR: %s_%04ld %s %s %s %s [char %ld]", GetName(io->filename).c_str(), io->ident, temp, temp2, temp3, temp4, ppos);
+					sprintf(cmd, "SCRIPT ERROR: %s_%04ld %s %s %s %s [char %ld]", GetName(io->filename).c_str(), io->ident, temp.c_str(), temp2.c_str(), temp3.c_str(), temp4.c_str(), ppos);
 
 					if (!ERROR_Log(cmd));
 					else ShowPopup(cmd);
