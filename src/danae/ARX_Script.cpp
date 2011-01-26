@@ -199,26 +199,18 @@ again:
 
 	return -1;
 }
-bool CharIn(char * string, char _char)
+
+bool CharIn( const std::string& str, char _char)
 {
-	char * s = string;
-
-	while (*s)
-	{
-		if ((*s) == _char) return true;
-
-		s++;
-	}
-
-	return false;
+	return ( str.find( _char ) != std::string::npos );
 }
-bool iCharIn(char * string, char _char)
-{
-	std::string str = string;
-	if ( str.find( _char ) != std::string::npos )
-		return true;
 
-	return false;
+bool iCharIn( const std::string& str, char _char)
+{
+	std::string temp = str;
+	MakeUpcase(temp);
+	::toupper(_char);
+	return ( temp.find( _char ) != std::string::npos );
 /*
 	char * s = string;
 	MakeUpcase(string);
@@ -232,14 +224,25 @@ bool iCharIn(char * string, char _char)
 
 	return false; */
 }
+
+size_t strcasecmp( const std::string& str1, const std::string& str2 )
+{
+	return strcasecmp( str1.c_str(), str2.c_str() );
+}
+
+size_t strcmp( const std::string& str1, const std::string& str2 )
+{
+	return str1.compare( str2 );
+}
+
 extern long FOR_EXTERNAL_PEOPLE;
 
 //*************************************************************************************
 // SCRIPT Precomputed Label Offsets Management
-long FindLabelPos(EERIE_SCRIPT * es, char * string)
+long FindLabelPos(EERIE_SCRIPT * es, const std::string& string)
 {
 	char texx[128];
-	sprintf(texx, ">>%s", string);
+	sprintf(texx, ">>%s", string.c_str());
 	return FindScriptPosGOTO(es, texx, 0);
 }
 
@@ -635,7 +638,7 @@ void ARX_SCRIPT_AllowInterScriptExec()
 }
 //*************************************************************************************
 //*************************************************************************************
-bool IsElement(char * seek, char * text)
+bool IsElement( const char * seek, const char * text)
 {
 	char tex[1024];
 	memcpy(tex, text, 1023);
@@ -2333,7 +2336,7 @@ SCRIPT_EVENT AS_EVENT[] =
 
 //*************************************************************************************
 //*************************************************************************************
-long GetNumAnim(char * name)
+long GetNumAnim( const std::string& name)
 {
 
 
@@ -3384,22 +3387,19 @@ void ShowScriptError(const char * tx, const char * cmd)
 	sprintf(text, "SCRIPT ERROR\n%s\n\n%s", tx, cmd);
 	ShowPopup(text);
 }
-void MakeStandard(char * str)
+
+void MakeStandard( std::string& str)
 {
 	long i = 0;
 	long pos = 0;
 
-	while (1)
+	while ( i < str.length() )
 	{
 		if (str[i] != '_')
 		{
-
-			str[pos++] = ARX_CLEAN_WARN_CAST_CHAR(toupper(str[i]));
-
+			str.erase(i, 1);
+			str[i] = toupper(str[i]);
 		}
-
-		if (str[i] == 0) return;
-
 		i++;
 	}
 }
@@ -4226,10 +4226,10 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 		warnings++;
 	}
 
-	char temp[256];
-	char temp1[64];
-	char temp2[64];
-	char temp3[64];
+	std::string temp;
+	std::string temp1;
+	std::string temp2;
+	std::string temp3;
 
 	char curlinetext[512];
 	long pos = 0;
@@ -4257,7 +4257,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				break;
 			case 'O':
 
-				if (!strcmp(temp, "OBJECTHIDE"))
+				if (!temp.compare("OBJECTHIDE"))
 				{
 					pos = GetNextWord(es, pos, temp);
 
@@ -4268,7 +4268,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "ON"))
+				else if (!temp.compare("ON"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
@@ -4292,7 +4292,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				break;
 			case 'B':
 
-				if (!strcmp(temp, "BOOK"))
+				if (!temp.compare("BOOK"))
 				{
 					pos = GetNextWord(es, pos, temp);
 
@@ -4301,17 +4301,17 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 						pos = GetNextWord(es, pos, temp);
 					}
 				}
-				else if (!strcmp(temp, "BEHAVIOR"))
+				else if (!temp.compare("BEHAVIOR"))
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if (!strcasecmp(temp, "STACK"))
+					if (!temp.compare("STACK"))
 					{
 					}
-					else if (!strcasecmp(temp, "UNSTACK"))
+					else if (!strcasecmp(temp.c_str(), "UNSTACK"))
 					{
 					}
-					else if (!strcasecmp(temp, "UNSTACKALL"))
+					else if (!strcasecmp(temp.c_str(), "UNSTACKALL"))
 					{
 					}
 					else
@@ -4321,13 +4321,13 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 							pos = GetNextWord(es, pos, temp);
 						}
 
-						if (!strcasecmp(temp, "FLEE"))
+						if (!strcasecmp(temp.c_str(), "FLEE"))
 							pos = GetNextWord(es, pos, temp);
-						else if (!strcasecmp(temp, "LOOK_FOR"))
+						else if (!strcasecmp(temp.c_str(), "LOOK_FOR"))
 							pos = GetNextWord(es, pos, temp);
-						else if (!strcasecmp(temp, "HIDE"))
+						else if (!strcasecmp(temp.c_str(), "HIDE"))
 							pos = GetNextWord(es, pos, temp);
-						else if (!strcasecmp(temp, "WANDER_AROUND"))
+						else if (!strcasecmp(temp.c_str(), "WANDER_AROUND"))
 							pos = GetNextWord(es, pos, temp);
 					}
 				}
@@ -4336,15 +4336,15 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				break;
 			case 'A':
 
-				if (!strcmp(temp, "ADDBAG"))
+				if (!temp.compare("ADDBAG"))
 				{
 				}
 
-				if (!strcmp(temp, "ACTIVATEPHYSICS"))
+				if (!temp.compare("ACTIVATEPHYSICS"))
 				{
 				}
 
-				if (!strcmp(temp, "AMBIANCE"))
+				if (!temp.compare("AMBIANCE"))
 				{
 					pos = GetNextWord(es, pos, temp);
 
@@ -4377,7 +4377,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 						}
 					}
 				}
-				else if (!strcmp(temp, "ATTRACTOR"))
+				else if (!temp.compare("ATTRACTOR"))
 				{
 					pos = GetNextWord(es, pos, temp);
 					pos = GetNextWord(es, pos, temp);
@@ -4387,25 +4387,25 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 						pos = GetNextWord(es, pos, temp);
 					}
 				}
-				else if (!strcmp(temp, "ACCEPT"))
+				else if (!temp.compare("ACCEPT"))
 				{
 				}
-				else if (!strcmp(temp, "ANCHORBLOCK"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "ADDXP"))
+				else if (!temp.compare("ANCHORBLOCK"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "ADDGOLD"))
+				else if (!temp.compare("ADDXP"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "ATTACHNPCTOPLAYER"))
+				else if (!temp.compare("ADDGOLD"))
+				{
+					pos = GetNextWord(es, pos, temp);
+				}
+				else if (!temp.compare("ATTACHNPCTOPLAYER"))
 				{
 				}
-				else if (!strcmp(temp, "ATTACH"))
+				else if (!temp.compare("ATTACH"))
 				{
 					pos = GetNextWord(es, pos, temp); // Source IO
 					pos = GetNextWord(es, pos, temp); // source action_point
@@ -4417,7 +4417,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				break;
 			case 'G':
 
-				if (!strcmp(temp, "GOTO"))
+				if (!temp.compare("GOTO"))
 				{
 					char texx[64];
 
@@ -4428,7 +4428,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 					}
 					else
 					{
-						sprintf(texx, ">>%s", temp);
+						sprintf(texx, ">>%s", temp.c_str());
 						long ppos = FindLabelPos(es, texx);
 
 						if (ppos == -1)
@@ -4438,7 +4438,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 						}
 					}
 				}
-				else if (!strcmp(temp, "GOSUB"))
+				else if (!temp.compare("GOSUB"))
 				{
 					char texx[64];
 
@@ -4449,7 +4449,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 					}
 					else
 					{
-						sprintf(texx, ">>%s", temp);
+						sprintf(texx, ">>%s", temp.c_str());
 						pos = FindLabelPos(es, texx);
 
 						if (pos == -1)
@@ -4459,7 +4459,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 						}
 					}
 				}
-				else if (!strcmp(temp, "GMODE"))
+				else if (!temp.compare("GMODE"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
@@ -4469,10 +4469,10 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				break;
 			case 'R':
 
-				if (!strcmp(temp, "REFUSE"))
+				if (!temp.compare("REFUSE"))
 				{
 				}
-				else if (!strcmp(temp, "REVIVE"))
+				else if (!temp.compare("REVIVE"))
 				{
 					long tmp = GetNextWord(es, pos, temp);
 
@@ -4481,31 +4481,31 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 						pos = tmp;
 					}
 				}
-				else if (!strcmp(temp, "RIDICULOUS"))
+				else if (!temp.compare("RIDICULOUS"))
 				{
 				}
-				else if (!strcmp(temp, "REPAIR"))
+				else if (!temp.compare("REPAIR"))
 				{
 					pos = GetNextWord(es, pos, temp);
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "RANDOM"))
+				else if (!temp.compare("RANDOM"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "RETURN"))
+				else if (!temp.compare("RETURN"))
 					{		}
-				else if (!strcmp(temp, "REPLACEME"))
+				else if (!temp.compare("REPLACEME"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "ROTATE"))
+				else if (!temp.compare("ROTATE"))
 				{
 					pos = GetNextWord(es, pos, temp);
 					pos = GetNextWord(es, pos, temp);
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "RUNE"))
+				else if (!temp.compare("RUNE"))
 				{
 					pos = GetNextWord(es, pos, temp);
 
@@ -4517,19 +4517,19 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				break;
 			case 'C':
 
-				if (!strcmp(temp, "CINE"))
+				if (!temp.compare("CINE"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "COLLISION"))
+				else if (!temp.compare("COLLISION"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "CAMERACONTROL"))
+				else if (!temp.compare("CAMERACONTROL"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "CONVERSATION"))
+				else if (!temp.compare("CONVERSATION"))
 				{
 					pos = GetNextWord(es, pos, temp);
 					long nb_people = 0;
@@ -4567,15 +4567,15 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 						}
 					}
 				}
-				else if (!strcmp(temp, "CAMERAACTIVATE"))
+				else if (!temp.compare("CAMERAACTIVATE"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "CAMERASMOOTHING"))
+				else if (!temp.compare("CAMERASMOOTHING"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "CINEMASCOPE"))
+				else if (!temp.compare("CINEMASCOPE"))
 				{
 					pos = GetNextWord(es, pos, temp);
 
@@ -4584,17 +4584,17 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 						pos = GetNextWord(es, pos, temp);
 					}
 				}
-				else if (!strcmp(temp, "CAMERAFOCAL"))
+				else if (!temp.compare("CAMERAFOCAL"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "CAMERATRANSLATETARGET"))
+				else if (!temp.compare("CAMERATRANSLATETARGET"))
 				{
 					pos = GetNextWord(es, pos, temp);
 					pos = GetNextWord(es, pos, temp);
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (strcmp(temp, "CLOSE_STEAL_BAG"))   // temp != "CLOSE_STEAL_BAG"
+				else if (temp.compare("CLOSE_STEAL_BAG"))   // temp != "CLOSE_STEAL_BAG"
 				{
 					unknowncommand = 1;
 				}
@@ -4602,13 +4602,13 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				break;
 			case 'Q':
 
-				if (!strcmp(temp, "QUAKE"))
+				if (!temp.compare("QUAKE"))
 				{
 					pos = GetNextWord(es, pos, temp);
 					pos = GetNextWord(es, pos, temp);
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "QUEST"))
+				else if (!temp.compare("QUEST"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
@@ -4617,10 +4617,10 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				break;
 			case 'N':
 
-				if (!strcmp(temp, "NOP"))
+				if (!temp.compare("NOP"))
 				{
 				}
-				else if (!strcmp(temp, "NOTE"))
+				else if (!temp.compare("NOTE"))
 				{
 					pos = GetNextWord(es, pos, temp);
 					pos = GetNextWord(es, pos, temp);
@@ -4630,7 +4630,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				break;
 			case 'S':
 
-				if (!strcmp(temp, "SPELLCAST"))
+				if (!temp.compare("SPELLCAST"))
 				{
 					pos = GetNextWord(es, pos, temp); // switch or level
 
@@ -4653,7 +4653,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				suite:
 					;
 				}
-				else if (!strcmp(temp, "SPEAK")) // speak say_ident actions
+				else if (!temp.compare("SPEAK")) // speak say_ident actions
 				{
 					pos = GetNextWord(es, pos, temp);
 
@@ -4662,7 +4662,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 					}
 					else if (temp[0] == '-')
 					{
-						if ((strstr(temp2, "C")) || (strstr(temp2, "c")))
+						if ((temp2.find("C") != std::string::npos) || (temp2.find("c") != std::string::npos))
 						{
 							pos = GetNextWord(es, pos, temp2);
 
@@ -4705,78 +4705,78 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 						pos = GetNextWord(es, pos, temp);
 					}
 				}
-				else if (!strcmp(temp, "SHOPCATEGORY"))
+				else if (!temp.compare("SHOPCATEGORY"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SHOPMULTIPLY"))
+				else if (!temp.compare("SHOPMULTIPLY"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETPOISONOUS"))
+				else if (!temp.compare("SETPOISONOUS"))
 				{
 					pos = GetNextWord(es, pos, temp);
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETPLATFORM"))
+				else if (!temp.compare("SETPLATFORM"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETGORE"))
+				else if (!temp.compare("SETGORE"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETUNIQUE"))
+				else if (!temp.compare("SETUNIQUE"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETBLACKSMITH"))
+				else if (!temp.compare("SETBLACKSMITH"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETDETECT"))
+				else if (!temp.compare("SETDETECT"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETELEVATOR"))
+				else if (!temp.compare("SETELEVATOR"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETTRAP"))
+				else if (!temp.compare("SETTRAP"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETSECRET"))
+				else if (!temp.compare("SETSECRET"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETSTEAL"))
+				else if (!temp.compare("SETSTEAL"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETLIGHT"))
+				else if (!temp.compare("SETLIGHT"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETBLOOD"))
+				else if (!temp.compare("SETBLOOD"))
 				{
 					pos = GetNextWord(es, pos, temp);
 					pos = GetNextWord(es, pos, temp);
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETMATERIAL"))
+				else if (!temp.compare("SETMATERIAL"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETSPEAKPITCH"))
+				else if (!temp.compare("SETSPEAKPITCH"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETSPEED"))
+				else if (!temp.compare("SETSPEED"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETGROUP"))
+				else if (!temp.compare("SETGROUP"))
 				{
 					pos = GetNextWord(es, pos, temp);
 
@@ -4785,20 +4785,20 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 						pos = GetNextWord(es, pos, temp);
 					}
 				}
-				else if (!strcmp(temp, "SETNPCSTAT"))
+				else if (!temp.compare("SETNPCSTAT"))
 				{
 					pos = GetNextWord(es, pos, temp);
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETXPVALUE"))
+				else if (!temp.compare("SETXPVALUE"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETNAME"))
+				else if (!temp.compare("SETNAME"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETPLAYERTWEAK"))
+				else if (!temp.compare("SETPLAYERTWEAK"))
 				{
 					pos = GetNextWord(es, pos, temp);
 
@@ -4807,29 +4807,29 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETCONTROLLEDZONE"))
+				else if (!temp.compare("SETCONTROLLEDZONE"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if ((!strcmp(temp, "SETSTATUS")) || (!strcmp(temp, "SETMAINEVENT")))
+				else if ((!temp.compare("SETSTATUS")) || (!temp.compare("SETMAINEVENT")))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETMOVEMODE"))
+				else if (!temp.compare("SETMOVEMODE"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SPAWN"))
+				else if (!temp.compare("SPAWN"))
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if ((!strcmp(temp, "NPC")) || (!strcmp(temp, "ITEM")) || (!strcmp(temp, "FIX")))
+					if ((!temp.compare("NPC")) || (!temp.compare("ITEM")) || (!temp.compare("FIX")))
 					{
 						pos = GetNextWord(es, pos, temp); // object to spawn.
 						pos = GetNextWord(es, pos, temp); // spawn position.
 					}
 				}
-				else if (!strcmp(temp, "SETOBJECTTYPE"))
+				else if (!temp.compare("SETOBJECTTYPE"))
 				{
 					pos = GetNextWord(es, pos, temp);
 
@@ -4838,33 +4838,33 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 						pos = GetNextWord(es, pos, temp);
 					}
 				}
-				else if (!strcmp(temp, "SETRIGHTHAND"))
+				else if (!temp.compare("SETRIGHTHAND"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETLEFTHAND"))
+				else if (!temp.compare("SETLEFTHAND"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETHUNGER"))
+				else if (!temp.compare("SETHUNGER"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETSHIELD"))
+				else if (!temp.compare("SETSHIELD"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETTWOHANDED"))
+				else if (!temp.compare("SETTWOHANDED"))
 				{
 				}
-				else if (!strcmp(temp, "SETINTERACTIVITY"))
+				else if (!temp.compare("SETINTERACTIVITY"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETEQUIP"))
+				else if (!temp.compare("SETEQUIP"))
 				{
-					char temp2[64];
-					char temp3[64];
+					std::string temp2;
+					std::string temp3;
 					pos = GetNextWord(es, pos, temp3);
 
 					if (temp3[0] == '-')
@@ -4882,28 +4882,28 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 
 					}
 				}
-				else if (!strcmp(temp, "SETONEHANDED"))
+				else if (!temp.compare("SETONEHANDED"))
 				{
 				}
-				else if (!strcmp(temp, "SETWEAPON"))
+				else if (!temp.compare("SETWEAPON"))
 				{
 					pos = GetNextWord(es, pos, temp);
 
 					if (temp[0] == '-')
 						pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETLIFE"))
+				else if (!temp.compare("SETLIFE"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETDURABILITY"))
+				else if (!temp.compare("SETDURABILITY"))
 				{
 					pos = GetNextWord(es, pos, temp);
 
 					if (temp[0] == '-')
 						pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETPATH"))
+				else if (!temp.compare("SETPATH"))
 				{
 					if (temp[0] == '-')
 					{
@@ -4912,7 +4912,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETTARGET"))
+				else if (!temp.compare("SETTARGET"))
 				{
 					pos = GetNextWord(es, pos, temp);
 
@@ -4921,39 +4921,39 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 						pos = GetNextWord(es, pos, temp);
 					}
 
-					if (!strcmp(temp, "PATH"))
+					if (!temp.compare("PATH"))
 					{
 					}
-					else if (!strcmp(temp, "PLAYER"))
+					else if (!temp.compare("PLAYER"))
 					{
 					}
-					else if (!strcmp(temp, "NONE"))
+					else if (!temp.compare("NONE"))
 					{
 					}
-					else if (!strcmp(temp, "NODE"))
+					else if (!temp.compare("NODE"))
 					{
 						pos = GetNextWord(es, pos, temp);
 					}
-					else if (!strcmp(temp, "OBJECT"))
+					else if (!temp.compare("OBJECT"))
 					{
 						pos = GetNextWord(es, pos, temp);
 					}
 					else
 					{
-						sprintf(tem, "Line %04ld - Error: 'SET_TARGET': param1 '%s' is an invalid parameter\n-- %s", currentline, temp, curlinetext);
+						sprintf(tem, "Line %04ld - Error: 'SET_TARGET': param1 '%s' is an invalid parameter\n-- %s", currentline, temp.c_str(), curlinetext);
 						errors++;
 					}
 
 				}
-				else if (!strcmp(temp, "STARTTIMER"))
+				else if (!temp.compare("STARTTIMER"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "STOPTIMER"))
+				else if (!temp.compare("STOPTIMER"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SENDEVENT"))
+				else if (!temp.compare("SENDEVENT"))
 				{
 					pos = GetNextWord(es, pos, temp);
 
@@ -4971,7 +4971,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 					pos = GetNextWord_Interpreted(io, es, pos, temp);
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SET"))
+				else if (!temp.compare("SET"))
 				{
 					pos = GetNextWord(es, pos, temp);
 
@@ -4982,154 +4982,154 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 
 					pos = GetNextWord(es, pos, temp2);
 				}
-				else if (!strcmp(temp, "SAY"))
+				else if (!temp.compare("SAY"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETSTEPMATERIAL"))
+				else if (!temp.compare("SETSTEPMATERIAL"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETARMORMATERIAL"))
+				else if (!temp.compare("SETARMORMATERIAL"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETWEAPONMATERIAL"))
+				else if (!temp.compare("SETWEAPONMATERIAL"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETSTRIKESPEECH"))
+				else if (!temp.compare("SETSTRIKESPEECH"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETANGULAR"))
+				else if (!temp.compare("SETANGULAR"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETPLAYERCOLLISION"))
+				else if (!temp.compare("SETPLAYERCOLLISION"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETPLAYERCONTROLS"))
+				else if (!temp.compare("SETPLAYERCONTROLS"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETWORLDCOLLISION"))
+				else if (!temp.compare("SETWORLDCOLLISION"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETSHADOW"))
+				else if (!temp.compare("SETSHADOW"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETDETACHABLE"))
+				else if (!temp.compare("SETDETACHABLE"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETSTACKABLE"))
+				else if (!temp.compare("SETSTACKABLE"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETSHOP"))
+				else if (!temp.compare("SETSHOP"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETMAXCOUNT"))
+				else if (!temp.compare("SETMAXCOUNT"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETCOUNT"))
+				else if (!temp.compare("SETCOUNT"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETWEIGHT"))
+				else if (!temp.compare("SETWEIGHT"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETEVENT"))
+				else if (!temp.compare("SETEVENT"))
 				{
 					pos = GetNextWord(es, pos, temp);
 					pos = GetNextWord(es, pos, temp2);
 					MakeUpcase(temp);
 					MakeUpcase(temp2);
 				}
-				else if (!strcmp(temp, "SETPRICE"))
+				else if (!temp.compare("SETPRICE"))
 				{
 					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETINTERNALNAME"))
+				else if (!temp.compare("SETINTERNALNAME"))
 				{
 					pos = GetNextWord(es, pos, temp);
 					sprintf(tem, "Line %04ld - Warning: 'SET_INTERNAL_NAME': Obsolete Command.\n-- %s", currentline, curlinetext);
 					warnings++;
 				}
-				else if (!strcmp(temp, "SHOWGLOBALS"))
+				else if (!temp.compare("SHOWGLOBALS"))
 				{
 				}
-				else if (!strcmp(temp, "SHOWLOCALS"))
+				else if (!temp.compare("SHOWLOCALS"))
 				{
 				}
-				else if (!strcmp(temp, "SHOWVARS"))
+				else if (!temp.compare("SHOWVARS"))
 				{
 				}
-				else if (!strcmp(temp, "SETIRCOLOR"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETSCALE"))
+				else if (!temp.compare("SETIRCOLOR"))
 				{
 					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SPECIALFX"))
+				else if (!temp.compare("SETSCALE"))
+				{
+					pos = GetNextWord(es, pos, temp);
+				}
+				else if (!temp.compare("SPECIALFX"))
 				{
 					pos = GetNextWord(es, pos, temp);
 
 					if (!strcasecmp(temp, "PLAYER_APPEARS"))
 					{
 					}
-					else if (!strcmp(temp, "HEAL"))
+					else if (!temp.compare("HEAL"))
 					{
 						pos = GetNextWord(es, pos, temp);
 					}
-					else if (!strcmp(temp, "MANA"))
+					else if (!temp.compare("MANA"))
 					{
 						pos = GetNextWord(es, pos, temp);
 					}
-					else if (!strcmp(temp, "NEWSPELL"))
+					else if (!temp.compare("NEWSPELL"))
 					{
 						pos = GetNextWord(es, pos, temp);
 					}
-					else if (!strcmp(temp, "TORCH"))
+					else if (!temp.compare("TORCH"))
 					{
 					}
-					else if (!strcmp(temp, "FIERY"))
+					else if (!temp.compare("FIERY"))
 					{
 					}
-					else if (!strcmp(temp, "FIERYOFF"))
+					else if (!temp.compare("FIERYOFF"))
 					{
 					}
 					else
 					{
-						sprintf(tem, "Line %04ld - Error: 'SPECIAL_FX': param1 '%s' is an invalid parameter.\n-- %s", currentline, temp1, curlinetext);
+						sprintf(tem, "Line %04ld - Error: 'SPECIAL_FX': param1 '%s' is an invalid parameter.\n-- %s", currentline, temp1.c_str(), curlinetext);
 						errors++;
 					}
 				}
-				else if (!strcmp(temp, "SETBUMP"))
+				else if (!temp.compare("SETBUMP"))
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if ((!strcmp(temp, "ON")) || (!strcmp(temp, "OFF")))
+					if ((!temp.compare("ON")) || (!temp.compare("OFF")))
 					{
 					}
 					else pos = GetNextWord(es, pos, temp);
 				}
-				else if (!strcmp(temp, "SETZMAP"))
+				else if (!temp.compare("SETZMAP"))
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if ((!strcmp(temp, "ON")) || (!strcmp(temp, "OFF")))
+					if ((!temp.compare("ON")) || (!temp.compare("OFF")))
 					{
 					}
 					else pos = GetNextWord(es, pos, temp);
@@ -5139,7 +5139,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				break;
 			case 'Z':
 
-				if (!strcmp(temp, "ZONEPARAM"))
+				if (!temp.compare("ZONEPARAM"))
 				{
 					pos = GetNextWord(es, pos, temp);
 
@@ -5331,7 +5331,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 					else if	(!strcasecmp(temp2, "istype"))	{}
 					else
 					{
-						sprintf(tem, "Line %04ld - Error: 'IF': Unknown Operator %s found.\n-- %s", currentline, temp2, curlinetext);
+						sprintf(tem, "Line %04ld - Error: 'IF': Unknown Operator %s found.\n-- %s", currentline, temp2.c_str(), curlinetext);
 						errors++;
 					}
 				}
@@ -5437,7 +5437,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 
 					if (0 != strcasecmp(temp, "behind"))
 					{
-						char temp2[256];
+						std::string temp2;
 
 						if (temp[0] == '-')
 						{
@@ -5491,7 +5491,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 					}
 					else
 					{
-						sprintf(tem, "Line %04ld - Error: 'TWEAK %s': Unknown parameter %s found.\n-- %s", currentline, temp, temp, curlinetext);
+						sprintf(tem, "Line %04ld - Error: 'TWEAK %s': Unknown parameter %s found.\n-- %s", currentline, temp.c_str(), temp.c_str(), curlinetext);
 						errors++;
 					}
 				}
@@ -5705,7 +5705,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 
 		if (unknowncommand)
 		{
-			sprintf(tem, "Line %04ld - Error: Unknown Command '%s'\n-- %s", currentline, temp, curlinetext);
+			sprintf(tem, "Line %04ld - Error: Unknown Command '%s'\n-- %s", currentline, temp.c_str(), curlinetext);
 			errors++;
 		}
 
@@ -5725,14 +5725,14 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 
 		if (es == &io->over_script)
 		{
-			strcpy(temp, GetName(io->filename));
-			sprintf(title, "%s_%04ld", temp, io->ident);
+			temp = GetName(io->filename);
+			sprintf(title, "%s_%04ld", temp.c_str(), io->ident);
 			strcat(title, " LOCAL SCRIPT.");
 		}
 		else
 		{
-			strcpy(temp, GetName(io->filename));
-			sprintf(title, "%s_%04ld", temp, io->ident);
+			temp = GetName(io->filename);
+			sprintf(title, "%s_%04ld", temp.c_str(), io->ident);
 			strcat(title, " CLASS SCRIPT.");
 		}
 
@@ -5817,11 +5817,9 @@ void ARX_IOGROUP_Release(INTERACTIVE_OBJ * io)
 	io->iogroups = NULL;
 	io->nb_iogroups = 0;
 }
-void ARX_IOGROUP_Remove(INTERACTIVE_OBJ * io, char * group)
+void ARX_IOGROUP_Remove(INTERACTIVE_OBJ * io, const std::string& group)
 {
-	if (group == NULL) return;
-
-	if (group[0] == 0) return;
+	if ( group.empty() ) return;
 
 	long toremove = -1;
 
@@ -5855,7 +5853,8 @@ void ARX_IOGROUP_Remove(INTERACTIVE_OBJ * io, char * group)
 	io->iogroups = temporary;
 	io->nb_iogroups--;
 }
-void ARX_IOGROUP_Add(INTERACTIVE_OBJ * io, char * group)
+
+void ARX_IOGROUP_Add(INTERACTIVE_OBJ * io, const char * group)
 {
 	if (group == NULL) return;
 
@@ -5912,7 +5911,6 @@ INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events_Sent()
 	return NULL;
 }
 long NEED_DEBUG = 0;
-char BIG_DEBUG_STRING[BIG_DEBUG_SIZE];
 long BIG_DEBUG_POS = 0;
 
 
@@ -6129,7 +6127,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 		return ACCEPT;
 
 	long ret = ACCEPT;
-	char temp[256];
+	std::string temp;
 	char cmd[256];
 	char eventname[64];
 	long brackets = 0;
@@ -6265,7 +6263,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 		}
 		else
 		{
-			pos += strlen(AS_EVENT[msg].name);
+			pos += AS_EVENT[msg].name.length();
 #ifdef NEEDING_DEBUG
 
 			if (NEED_DEBUG)
@@ -6579,7 +6577,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				else if (!strcmp(temp, "ATTRACTOR"))
 				{
 					pos = GetNextWord(es, pos, temp);
-					long t = GetTargetByNameTarget(temp);
+					long t = GetTargetByNameTarget(temp.c_str());
 
 					if (t == -2) t = GetInterNum(io);
 
@@ -6648,7 +6646,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 #endif
 
-							ARX_SOUND_PlayScriptAmbiance(temp, ARX_SOUND_PLAY_LOOPED, volume * DIV100);
+							ARX_SOUND_PlayScriptAmbiance(temp.c_str(), ARX_SOUND_PLAY_LOOPED, volume * DIV100);
 						}
 						else if (iCharIn(temp, 'N'))
 						{
@@ -6663,11 +6661,11 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 #endif
 
-							ARX_SOUND_PlayScriptAmbiance(temp, ARX_SOUND_PLAY_ONCE);
+							ARX_SOUND_PlayScriptAmbiance(temp.c_str(), ARX_SOUND_PLAY_ONCE);
 						}
 						else if (iCharIn(temp, 'M'))
 						{
-							char temp2[256];
+							std::string temp2;
 
 							pos = GetNextWord(es, pos, temp2);
 #ifdef NEEDING_DEBUG
@@ -6680,7 +6678,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 #endif
 
-							ARX_SOUND_SetAmbianceTrackStatus(temp, temp2, 1); //1 = Mute
+							ARX_SOUND_SetAmbianceTrackStatus(temp.c_str(), temp2.c_str(), 1); //1 = Mute
 
 							pos = GetNextWord(es, pos, temp);
 #ifdef NEEDING_DEBUG
@@ -6695,20 +6693,20 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						}
 						else if (iCharIn(temp, 'U'))
 						{
-							char temp2[256];
+							std::string temp2;
 
 							pos = GetNextWord(es, pos, temp2);
 #ifdef NEEDING_DEBUG
 
 							if (NEED_DEBUG)
 							{
-								strcat(cmd, temp2);
+								strcat(cmd, temp2.c_str());
 								strcat(cmd, " ");
 							}
 
 #endif
 
-							ARX_SOUND_SetAmbianceTrackStatus(temp, temp2, 0);//0 = unmute
+							ARX_SOUND_SetAmbianceTrackStatus(temp.c_str(), temp2.c_str(), 0);//0 = unmute
 
 							pos = GetNextWord(es, pos, temp);
 #ifdef NEEDING_DEBUG
@@ -6725,7 +6723,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					else if (!strcasecmp(temp, "KILL"))
 						ARX_SOUND_KillAmbiances();
 					else
-						ARX_SOUND_PlayScriptAmbiance(temp);
+						ARX_SOUND_PlayScriptAmbiance(temp.c_str());
 				}
 				else if (!strcmp(temp, "ANCHORBLOCK"))
 				{
@@ -6759,19 +6757,19 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					}
 
 #endif
-					char temp1[64];
-					char temp2[64];
+					std::string temp1;
+					std::string temp2;
 					pos = GetNextWord(es, pos, temp); // Source IO
 #ifdef NEEDING_DEBUG
 
 					if (NEED_DEBUG)
 					{
-						strcat(cmd, temp);
+						strcat(cmd, temp.c_str());
 						strcat(cmd, " ");
 					}
 
 #endif
-					long t = GetTargetByNameTarget(temp);
+					long t = GetTargetByNameTarget(temp.c_str());
 
 					if (t == -2) t = GetInterNum(io); //self
 
@@ -6786,7 +6784,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 #endif
 					pos = GetNextWord(es, pos, temp); // target IO
-					long t2 = GetTargetByNameTarget(temp);
+					long t2 = GetTargetByNameTarget(temp.c_str());
 #ifdef NEEDING_DEBUG
 
 					if (NEED_DEBUG)
@@ -6810,7 +6808,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 #endif
 
-					if (ARX_INTERACTIVE_Attach(t, t2, temp1, temp2))
+					if (ARX_INTERACTIVE_Attach(t, t2, temp1.c_str(), temp2.c_str()))
 					{
 #ifdef NEEDING_DEBUG
 
@@ -6933,9 +6931,9 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				}
 				else if (!strcmp(temp, "RANDOM"))
 				{
-					char temp1[64];
+					std::string temp1;
 					pos = GetNextWord(es, pos, temp1);
-					float val = (float)atof(temp1);
+					float val = (float)atof(temp1.c_str());
 
 					if (val < 0.f) val = 0.f;
 					else if (val > 100.f) val = 100.f;
@@ -6970,20 +6968,20 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					if (io)
 					{
 
-						char tex[256];
-						char tex2[256];
+						std::string tex;
+						std::string tex2;
 
 						if (io->ioflags & IO_NPC)
-							sprintf(tex2, "Graph\\Obj3D\\Interactive\\NPC\\%s.teo", temp);
+							tex2 = "Graph\\Obj3D\\Interactive\\NPC\\" + temp + ".teo";
 						else if (io->ioflags & IO_FIX)
-							sprintf(tex2, "Graph\\Obj3D\\Interactive\\FIX_INTER\\%s.teo", temp);
+							tex2 = "Graph\\Obj3D\\Interactive\\FIX_INTER\\" + temp + ".teo";
 						else
-							sprintf(tex2, "Graph\\Obj3D\\Interactive\\Items\\%s.teo", temp);
+							tex2 = "Graph\\Obj3D\\Interactive\\Items\\" + temp + ".teo";
 
 						File_Standardize(tex2, tex);
 						EERIE_3D last_angle;
 						memcpy(&last_angle, &io->angle, sizeof(EERIE_3D));
-						INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddInteractive(GDevice, tex, -1); //AddItem(GDevice,tex);
+						INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddInteractive(GDevice, tex.c_str(), -1); //AddItem(GDevice,tex);
 
 						if (ioo != NULL)
 						{
@@ -7081,9 +7079,9 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				{
 					if (io != NULL)
 					{
-						char temp1[64];
-						char temp2[64];
-						char temp3[64];
+						std::string temp1;
+						std::string temp2;
+						std::string temp3;
 						float t1, t2, t3;
 
 
@@ -7287,13 +7285,13 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						{
 							char temp2[256];
 							strcpy(temp2, "Graph\\interface\\illustrations\\");
-							strcat(temp2, temp);
+							strcat(temp2, temp.c_str());
 							strcat(temp2, ".cin");
-							strcat(temp, ".cin");
+							temp += ".cin";
 
 							if (PAK_FileExist(temp2))
 							{
-								strcpy(WILL_LAUNCH_CINE, temp);
+								strcpy(WILL_LAUNCH_CINE, temp.c_str());
 								CINE_PRELOAD = preload;
 							}
 						}
@@ -7587,8 +7585,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				}
 				else if (!strcmp(temp, "CAMERATRANSLATETARGET"))
 				{
-					char temp2[64];
-					char temp3[64];
+					std::string temp2;
+					std::string temp3;
 
 					pos = GetNextWord(es, pos, temp);
 					pos = GetNextWord(es, pos, temp2);
@@ -7666,7 +7664,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				else if (!strcmp(temp, "QUEST"))
 				{
 					pos = GetNextWord(es, pos, temp);
-					ARX_PLAYER_Quest_Add(temp);
+					ARX_PLAYER_Quest_Add(temp.c_str());
 #ifdef NEEDING_DEBUG
 
 					if (NEED_DEBUG) sprintf(cmd, "QUEST %s", temp);
@@ -7705,7 +7703,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						ARX_INTERFACE_NoteClose();
 					else
 					{
-						ARX_INTERFACE_NoteOpen(type, temp);
+						ARX_INTERFACE_NoteOpen(type, temp.c_str());
 					}
 				}
 
@@ -7715,7 +7713,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				if (!strcmp(temp, "SPELLCAST"))
 				{
 
-					char temp2[256];
+					std::string temp2;
 					long duration = -1;
 					long flags = 0;
 					long dur = 0;
@@ -7826,7 +7824,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					acs.type = ARX_CINE_SPEECH_NONE;
 
 
-					char temp2[256];
+					std::string temp2;
 					long ttt;
 
 					long player		=	0;
@@ -8009,7 +8007,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						}
 
 						long speechnum;
-						char * temp1 = GetVarValueInterpretedAsText(temp2, esss, io);
+						std::string temp1 = GetVarValueInterpretedAsText(temp2, esss, io);
 
 						if (!strcmp(temp2, "[]"))
 						{
@@ -8023,10 +8021,10 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 							if (player)
 							{
-								speechnum = ARX_SPEECH_AddSpeech(inter.iobj[0], temp1, PARAM_LOCALISED, mood, voixoff);
+								speechnum = ARX_SPEECH_AddSpeech(inter.iobj[0], temp1.c_str(), PARAM_LOCALISED, mood, voixoff);
 							}
 							else
-								speechnum = ARX_SPEECH_AddSpeech(io, temp1, PARAM_LOCALISED, mood, voixoff);
+								speechnum = ARX_SPEECH_AddSpeech(io, temp1.c_str(), PARAM_LOCALISED, mood, voixoff);
 
 							ttt = GetNextWord(es, pos, temp2);
 #ifdef NEEDING_DEBUG
@@ -8066,10 +8064,10 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					if (io->shop_category) free(io->shop_category);
 
 					io->shop_category = NULL;
-					io->shop_category = (char *)malloc(strlen(temp) + 1);
+					io->shop_category = (char *)malloc(temp.length() + 1);
 
 					if (io->shop_category)
-						strcpy(io->shop_category, temp);
+						strcpy(io->shop_category, temp.c_str());
 				}
 				else if (!strcmp(temp, "SHOPMULTIPLY"))
 				{
@@ -8273,7 +8271,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 					if (io)
 					{
-						io->material = ARX_MATERIAL_GetIdByName(temp);
+						io->material = ARX_MATERIAL_GetIdByName(temp.c_str());
 					}
 
 #ifdef NEEDING_DEBUG
@@ -8339,19 +8337,19 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						pos = GetNextWord(es, pos, temp);
 					}
 
-					char * temp1 = GetVarValueInterpretedAsText(temp, esss, io);
+					std::string temp1 = GetVarValueInterpretedAsText(temp, esss, io);
 
 					if (remove)
 					{
 						if (!strcasecmp(temp1, "DOOR")) io->GameFlags &= ~GFLAG_DOOR;
 
-						ARX_IOGROUP_Remove(io, temp1);
+						ARX_IOGROUP_Remove(io, temp1.c_str());
 					}
 					else
 					{
 						if (!strcasecmp(temp1, "DOOR")) io->GameFlags |= GFLAG_DOOR;
 
-						ARX_IOGROUP_Add(io, temp1);
+						ARX_IOGROUP_Add(io, temp1.c_str());
 					}
 
 #ifdef NEEDING_DEBUG
@@ -8362,10 +8360,10 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				}
 				else if (!strcmp(temp, "SETNPCSTAT"))
 				{
-					char temp2[256];
+					std::string temp2;
 					pos = GetNextWord(es, pos, temp);
 					pos = GetNextWord(es, pos, temp2);
-					ARX_NPC_SetStat(io, temp, GetVarValueInterpretedAsFloat(temp2, esss, io));
+					ARX_NPC_SetStat(io, temp.c_str(), GetVarValueInterpretedAsFloat(temp2, esss, io));
 #ifdef NEEDING_DEBUG
 
 					if (NEED_DEBUG) sprintf(cmd, "SET_NPC_STAT %s", temp);
@@ -8395,7 +8393,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 					if (io != NULL)
 					{
-						strcpy(io->locname, temp);
+						strcpy(io->locname, temp.c_str());
 					}
 
 #ifdef NEEDING_DEBUG
@@ -8412,7 +8410,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					if (NEED_DEBUG)
 					{
 						strcpy(cmd, "SET_PLAYER_TWEAK ");
-						strcat(cmd, temp);
+						strcat(cmd, temp.c_str());
 					}
 
 #endif
@@ -8429,14 +8427,14 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 					if (!strcasecmp(temp, "SKIN"))
 					{
-						char temp2[256];
+						std::string temp2;
 						pos = GetNextWord(es, pos, temp);
 #ifdef NEEDING_DEBUG
 
 						if (NEED_DEBUG)
 						{
 							strcat(cmd, " ");
-							strcat(cmd, temp);
+							strcat(cmd, temp.c_str());
 						}
 
 #endif
@@ -8446,15 +8444,15 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						if (NEED_DEBUG)
 						{
 							strcat(cmd, " ");
-							strcat(cmd, temp2);
+							strcat(cmd, temp2.c_str());
 						}
 
 #endif
 
 						if (io->tweakerinfo)
 						{
-							strcpy(io->tweakerinfo->skintochange, temp);
-							strcpy(io->tweakerinfo->skinchangeto, temp2);
+							strcpy(io->tweakerinfo->skintochange, temp.c_str());
+							strcpy(io->tweakerinfo->skinchangeto, temp2.c_str());
 						}
 					}
 					else	// Mesh Tweaker...
@@ -8465,27 +8463,27 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						if (NEED_DEBUG)
 						{
 							strcat(cmd, " ");
-							strcat(cmd, temp);
+							strcat(cmd, temp.c_str());
 						}
 
 #endif
 
 						if (io->tweakerinfo)
 						{
-							strcpy(io->tweakerinfo->filename, temp);
+							strcpy(io->tweakerinfo->filename, temp.c_str());
 						}
 					}
 				}
 				else if (!strcmp(temp, "SETCONTROLLEDZONE"))
 				{
 					pos = GetNextWord(es, pos, temp);
-					ARX_PATH * ap = ARX_PATH_GetAddressByName(temp);
+					ARX_PATH * ap = ARX_PATH_GetAddressByName(temp.c_str());
 
 					if (ap != NULL)
 					{
 						char title[64];
-						strcpy(temp, GetName(io->filename));
-						sprintf(title, "%s_%04ld", temp, io->ident);
+						temp = GetName(io->filename);
+						sprintf(title, "%s_%04ld", temp.c_str(), io->ident);
 						strcpy(ap->controled, title);
 					}
 
@@ -8528,8 +8526,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				}
 				else if (!strcmp(temp, "SPAWN"))
 				{
-					char temp2[64];
-					char tmptext[256];
+					std::string temp2;
+					std::string tmptext;
 					pos = GetNextWord(es, pos, temp);
 #ifdef NEEDING_DEBUG
 
@@ -8571,13 +8569,13 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						if ((t >= 0) && (t < inter.nbmax))
 						{
 							char tex2[256];
-							sprintf(tex2, "Graph\\Obj3D\\Interactive\\NPC\\%s", temp);
+							sprintf(tex2, "Graph\\Obj3D\\Interactive\\NPC\\%s", temp.c_str());
 							File_Standardize(tex2, tmptext);
 							INTERACTIVE_OBJ * ioo;
 
 							if (FORBID_SCRIPT_IO_CREATION == 0)
 							{
-								ioo = AddNPC(GDevice, tmptext, IO_IMMEDIATELOAD);
+								ioo = AddNPC(GDevice, tmptext.c_str(), IO_IMMEDIATELOAD);
 
 								if (ioo)
 								{
@@ -8638,13 +8636,13 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						if ((t >= 0) && (t < inter.nbmax))
 						{
 							char tex2[256];
-							sprintf(tex2, "Graph\\Obj3D\\Interactive\\ITEMS\\%s", temp);
+							sprintf(tex2, "Graph\\Obj3D\\Interactive\\ITEMS\\%s", temp.c_str());
 							File_Standardize(tex2, tmptext);
 							INTERACTIVE_OBJ * ioo;
 
 							if (FORBID_SCRIPT_IO_CREATION == 0)
 							{
-								ioo = AddItem(GDevice, tmptext, IO_IMMEDIATELOAD);
+								ioo = AddItem(GDevice, tmptext.c_str(), IO_IMMEDIATELOAD);
 
 								if (ioo)
 								{
@@ -8693,7 +8691,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						pos = GetNextWord(es, pos, temp);
 					}
 
-					ARX_EQUIPMENT_SetObjectType(io, temp, val);
+					ARX_EQUIPMENT_SetObjectType(io, temp.c_str(), val);
 #ifdef NEEDING_DEBUG
 
 					if (NEED_DEBUG) sprintf(cmd, "SET_OBJECT_TYPE %s", temp);
@@ -8774,16 +8772,16 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				}
 				else if (!strcmp(temp, "SETEQUIP"))
 				{
-					char temp2[128];
+					std::string temp2;
 					temp2[0] = 0;
-					char temp3[128];
+					std::string temp3;
 					pos = GetNextWord(es, pos, temp3);
 #ifdef NEEDING_DEBUG
 
 					if (NEED_DEBUG)
 					{
 						strcpy(cmd, "SET_EQUIP ");
-						strcat(cmd, temp3);
+						strcat(cmd, temp3.c_str());
 					}
 
 #endif
@@ -8809,7 +8807,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							if (NEED_DEBUG)
 							{
 								strcat(cmd, " ");
-								strcat(cmd, temp2);
+								strcat(cmd, temp2.c_str());
 							}
 
 #endif
@@ -8817,7 +8815,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					}
 					else
 					{
-						strcpy(temp, temp3);
+						temp = temp3;
 						pos = GetNextWord(es, pos, temp2);
 						temp3[0] = 0;
 					}
@@ -8826,11 +8824,11 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 					if (temp2[0])
 					{
-						if (temp2[strlen(temp2)-1] == '%') flag = 1;
+						if (temp2[temp2.length()-1] == '%') flag = 1;
 					}
 					else flag = 0;
 
-					ARX_EQUIPMENT_SetEquip(io, temp3, temp, GetVarValueInterpretedAsFloat(temp2, esss, io), flag);
+					ARX_EQUIPMENT_SetEquip(io, temp3.c_str(), temp.c_str(), GetVarValueInterpretedAsFloat(temp2, esss, io), flag);
 				}
 				else if (!strcmp(temp, "SETONEHANDED"))
 				{
@@ -8859,7 +8857,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					if ((io) && (io->ioflags & IO_NPC))
 					{
 						// temporarily removed for Alpha
-						strcpy(io->_npcdata->weaponname, temp);
+						strcpy(io->_npcdata->weaponname, temp.c_str());
 						Prepare_SetWeapon(io, temp);
 					}
 
@@ -8948,7 +8946,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						}
 						else
 						{
-							ARX_PATH * ap = ARX_PATH_GetAddressByName(temp);
+							ARX_PATH * ap = ARX_PATH_GetAddressByName(temp.c_str());
 
 							if ((ap != NULL) && (ap != io->usepath))
 							{
@@ -9031,7 +9029,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 #endif
 					}
 
-					char * temp1 = GetVarValueInterpretedAsText(temp, esss, io);
+					std::string temp1 = GetVarValueInterpretedAsText(temp, esss, io);
 
 					if (io != NULL)
 					{
@@ -9150,10 +9148,10 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				}
 				else if (!strcmp(temp, "SENDEVENT"))
 				{
-					const char * evt = NULL;
-					char temp1[64];
-					char temp2[64];
-					char temp3[64];
+					std::string evt;
+					std::string temp1;
+					std::string temp2;
+					std::string temp3;
 					char zonename[128];
 					pos = GetNextWord(es, pos, temp1);
 #ifdef NEEDING_DEBUG
@@ -9213,8 +9211,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 						if (group)
 						{
-							char * temp6 = GetVarValueInterpretedAsText(temp1, esss, io);
-							strcpy(groupname, temp6);
+							std::string temp6 = GetVarValueInterpretedAsText(temp1, esss, io);
+							strcpy(groupname, temp6.c_str());
 							pos = GetNextWord(es, pos, temp1);
 #ifdef NEEDING_DEBUG
 
@@ -9247,7 +9245,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 #endif
 
-						if (zone) strcpy(zonename, temp2);
+						if (zone) strcpy(zonename, temp2.c_str());
 
 						if (radius) rad = GetVarValueInterpretedAsFloat(temp2, esss, io);
 					}
@@ -9268,7 +9266,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 					while (i < SM_MAXCMD)
 					{
-						if (!strcmp(temp1, AS_EVENT[i].name + 3))
+						if (!strcmp(temp1, AS_EVENT[i].name.c_str() + 3))
 						{
 							break;
 						}
@@ -9282,7 +9280,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					}
 					else
 					{
-						evt = AS_EVENT[i].name + 3;
+						evt = AS_EVENT[i].name.c_str() + 3;
 					}
 
 					INTERACTIVE_OBJ * oes = EVENT_SENDER;
@@ -9382,7 +9380,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				}
 				else if (!strcmp(temp, "SET"))
 				{
-					char temp2[64];
+					std::string temp2;
 					char tempp[256];
 					long ival;
 					float fval;
@@ -9420,11 +9418,11 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					switch (temp[0])
 					{
 						case '$': // GLOBAL TEXT
-							strcpy(tempp, GetVarValueInterpretedAsText(temp2, esss, io));
+							strcpy(tempp, GetVarValueInterpretedAsText(temp2, esss, io).c_str());
 
 							if (a) RemoveNumerics(tempp);
 
-							sv = SETVarValueText(&svar, &NB_GLOBALS, temp, tempp);
+							sv = SETVarValueText(&svar, &NB_GLOBALS, temp.c_str(), tempp);
 
 							if (sv == NULL)
 							{
@@ -9434,11 +9432,11 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 							break;
 						case '\xA3': // LOCAL TEXT
-							strcpy(tempp, GetVarValueInterpretedAsText(temp2, esss, io));
+							strcpy(tempp, GetVarValueInterpretedAsText(temp2, esss, io).c_str());
 
 							if (a) RemoveNumerics(tempp);
 
-							sv = SETVarValueText(&esss->lvar, &esss->nblvar, temp, tempp);
+							sv = SETVarValueText(&esss->lvar, &esss->nblvar, temp.c_str(), tempp);
 
 							if (sv == NULL)
 							{
@@ -9449,7 +9447,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							break;
 						case '#': // GLOBAL LONG
 							ival = (long)GetVarValueInterpretedAsFloat(temp2, esss, io);
-							sv = SETVarValueLong(&svar, &NB_GLOBALS, temp, ival);
+							sv = SETVarValueLong(&svar, &NB_GLOBALS, temp.c_str(), ival);
 
 							if (sv == NULL)
 							{
@@ -9460,7 +9458,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							break;
 						case '\xA7': // LOCAL LONG
 							ival = (long)GetVarValueInterpretedAsFloat(temp2, esss, io);
-							sv = SETVarValueLong(&esss->lvar, &esss->nblvar, temp, ival);
+							sv = SETVarValueLong(&esss->lvar, &esss->nblvar, temp.c_str(), ival);
 
 							if (sv == NULL)
 							{
@@ -9471,7 +9469,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							break;
 						case '&': // GLOBAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							sv = SETVarValueFloat(&svar, &NB_GLOBALS, temp, fval);
+							sv = SETVarValueFloat(&svar, &NB_GLOBALS, temp.c_str(), fval);
 
 							if (sv == NULL)
 							{
@@ -9482,7 +9480,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							break;
 						case '@': // LOCAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							sv = SETVarValueFloat(&esss->lvar, &esss->nblvar, temp, fval);
+							sv = SETVarValueFloat(&esss->lvar, &esss->nblvar, temp.c_str(), fval);
 
 							if (sv == NULL)
 							{
@@ -9495,7 +9493,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "SET %s %s", temp, temp2);
+					if (NEED_DEBUG) sprintf(cmd, "SET %s %s", temp.c_str(), temp2);
 
 #endif
 				}
@@ -9536,8 +9534,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							io->stepmaterial = NULL;
 						}
 
-						io->stepmaterial = (char *)malloc(strlen(temp) + 1);
-						strcpy(io->stepmaterial, temp);
+						io->stepmaterial = (char *)malloc(temp.length() + 1);
+						strcpy(io->stepmaterial, temp.c_str());
 					}
 
 #ifdef NEEDING_DEBUG
@@ -9558,8 +9556,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							io->armormaterial = NULL;
 						}
 
-						io->armormaterial = (char *)malloc(strlen(temp) + 1);
-						strcpy(io->armormaterial, temp);
+						io->armormaterial = (char *)malloc(temp.length() + 1);
+						strcpy(io->armormaterial, temp.c_str());
 					}
 
 #ifdef NEEDING_DEBUG
@@ -9578,7 +9576,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							free(io->weaponmaterial);
 
 						io->weaponmaterial = NULL;
-						io->weaponmaterial = strdup(temp);
+						io->weaponmaterial = strdup(temp.c_str());
 					}
 
 #ifdef NEEDING_DEBUG
@@ -9596,12 +9594,12 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						if (io->strikespeech) free(io->strikespeech);
 
 						io->strikespeech = NULL;
-						io->strikespeech = strdup(temp);
+						io->strikespeech = strdup(temp.c_str());
 					}
 
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "SET_STEP_MATERIAL %s", temp);
+					if (NEED_DEBUG) sprintf(cmd, "SET_STEP_MATERIAL %s", temp.c_str());
 
 #endif
 				}
@@ -9712,7 +9710,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				else if (!strcmp(temp, "SETCOUNT"))
 				{
 					pos = GetNextWord(es, pos, temp);
-					float c = (float)atof(temp);
+					float c = (float)atof(temp.c_str());
 
 					if (c < 1.f) c = 1.f;
 
@@ -9758,7 +9756,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				}
 				else if (!strcmp(temp, "SETEVENT"))
 				{
-					char temp2[64];
+					std::string temp2;
 					long t;
 					pos = GetNextWord(es, pos, temp);
 					pos = GetNextWord(es, pos, temp2);
@@ -9866,9 +9864,9 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				}
 				else if (!strcmp(temp, "SHOWGLOBALS"))
 				{
-					strcpy(ShowText, "");
+					ShowText = "";
 					MakeGlobalText(ShowText);
-					strcpy(ShowTextWindowtext, "Global Variables");
+					ShowTextWindowtext = "Global Variables";
 
 					if (!(danaeApp.kbd.inkey[INKEY_LEFTSHIFT]) && !(danaeApp.kbd.inkey[INKEY_RIGHTSHIFT]))
 						DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXT, NULL, (DLGPROC)ShowTextDlg);
@@ -9881,9 +9879,9 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				}
 				else if (!strcmp(temp, "SHOWLOCALS"))
 				{
-					strcpy(ShowText, "");
+					ShowText = "";
 					MakeLocalText(es, ShowText);
-					strcpy(ShowTextWindowtext, "Local Variables");
+					ShowTextWindowtext = "Local Variables";
 
 					if (!(danaeApp.kbd.inkey[INKEY_LEFTSHIFT]) && !(danaeApp.kbd.inkey[INKEY_RIGHTSHIFT]))
 						DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXT, NULL, (DLGPROC)ShowTextDlg);
@@ -9896,11 +9894,11 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				}
 				else if (!strcmp(temp, "SHOWVARS"))
 				{
-					strcpy(ShowText, "");
-					strcpy(ShowText2, "");
+					ShowText = "";
+					ShowText2 = "";
 					MakeGlobalText(ShowText);
 					MakeLocalText(es, ShowText2);
-					strcpy(ShowTextWindowtext, "Variables");
+					ShowTextWindowtext = "Variables";
 
 					if (!(danaeApp.kbd.inkey[INKEY_LEFTSHIFT]) && !(danaeApp.kbd.inkey[INKEY_RIGHTSHIFT]))
 						DialogBox(hInstance, (LPCTSTR)IDD_SHOWVARS, NULL, (DLGPROC)ShowVarsDlg);
@@ -9915,9 +9913,9 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				{
 					if (io != NULL)
 					{
-						char temp1[64];
-						char temp2[64];
-						char temp3[64];
+						std::string temp1;
+						std::string temp2;
+						std::string temp3;
 						float t1, t2, t3;
 
 						pos = GetNextWord(es, pos, temp1);
@@ -9940,7 +9938,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				{
 					if (io != NULL)
 					{
-						char temp1[64];
+						std::string temp1;
 						float t1;
 						pos = GetNextWord(es, pos, temp1);
 						t1 = GetVarValueInterpretedAsFloat(temp1, esss, io);
@@ -9965,7 +9963,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				}
 				else if (!strcmp(temp, "SPECIALFX"))
 				{
-					char temp1[256];
+					std::string temp1;
 					pos = GetNextWord(es, pos, temp1);
 #ifdef NEEDING_DEBUG
 
@@ -9999,7 +9997,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 #endif
 
 						if (!BLOCK_PLAYER_CONTROLS)
-							player.life += (float)atof(temp1);
+							player.life += (float)atof(temp1.c_str());
 
 						if (player.life > player.Full_maxlife) player.life = player.Full_maxlife;
 
@@ -10017,7 +10015,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						}
 
 #endif
-						player.mana += (float)atof(temp1);
+						player.mana += (float)atof(temp1.c_str());
 
 						if (player.mana > player.Full_maxmana) player.mana = player.Full_maxmana;
 
@@ -10225,7 +10223,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							}
 
 #endif
-							ARX_SOUND_PlayZoneAmbiance(temp);
+							ARX_SOUND_PlayZoneAmbiance(temp.c_str());
 						}
 
 					}
@@ -10259,10 +10257,10 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				}
 				else if (!strcmp(temp, "KEYRINGADD"))
 				{
-					char temp2[256];
+					std::string temp2;
 					pos = GetNextWord(es, pos, temp2);
-					strcpy(temp, GetVarValueInterpretedAsText(temp2, esss, io));
-					ARX_KEYRING_Add(temp);
+					temp = GetVarValueInterpretedAsText(temp2, esss, io);
+					ARX_KEYRING_Add(temp.c_str());
 				}
 
 				break;
@@ -10270,10 +10268,10 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 				if (!strcmp(temp, "FORCEANIM"))
 				{
-					char temp2[256];
+					std::string temp2;
 					long num;
 					pos = GetNextWord(es, pos, temp2);
-					num = GetNumAnim(temp2);
+					num = GetNumAnim(temp2.c_str());
 
 					if (num > -1)
 					{
@@ -10287,7 +10285,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "FORCEANIM %s", temp2);
+					if (NEED_DEBUG) sprintf(cmd, "FORCEANIM %s", temp2.c_str());
 
 #endif
 				}
@@ -10309,7 +10307,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				}
 				else if (!strcmp(temp, "FORCEDEATH"))
 				{
-					char temp2[256];
+					std::string temp2;
 					long t;
 					pos = GetNextWord(es, pos, temp2);
 					MakeUpcase(temp2);
@@ -10375,7 +10373,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				}
 				else if (!strcmp(temp, "PRECAST"))
 				{
-					char temp2[256];
+					std::string temp2;
 					long duration = -1;
 					long flags = 0;
 					long dur = 0;
@@ -10448,7 +10446,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				}
 				else if (!strcmp(temp, "PATHFIND"))
 				{
-					char temp2[128];
+					std::string temp2;
 					pos = GetNextWord(es, pos, temp2);
 					long t = GetTargetByNameTarget(temp2);
 					ARX_NPC_LaunchPathfind(io, t);
@@ -10461,7 +10459,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				else if (!strcmp(temp, "PLAYANIM"))
 				{
 					INTERACTIVE_OBJ * iot = io;
-					char temp2[256];
+					std::string temp2;
 					long num;
 					long nu = 0;
 					long loop = 0;
@@ -10555,10 +10553,10 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 												scr_timer[num2].es = es;
 												scr_timer[num2].exist = 1;
 												scr_timer[num2].io = io;
-												scr_timer[num2].msecs = (long)std::max(iot->anims[num]->anims[iot->animlayer[nu].altidx_cur]->anim_time, 1000.0f);
+												scr_timer[num2].msecs = (long)max(iot->anims[num]->anims[iot->animlayer[nu].altidx_cur]->anim_time, 1000.0f);
 												scr_timer[num2].namelength = strlen(timername) + 1;
 												scr_timer[num2].name = (char *)malloc(scr_timer[num2].namelength);
-												strcpy(scr_timer[num2].name, timername);
+												scr_timer[num2].name = timername;
 												scr_timer[num2].pos = pos;
 												scr_timer[num2].tim = ARXTimeUL();
 												scr_timer[num2].times = 1;
@@ -10574,7 +10572,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				}
 				else if (!strcmp(temp, "PLAYERINTERFACE"))
 				{
-					char temp2[256];
+					std::string temp2;
 					pos = GetNextWord(es, pos, temp2);
 #ifdef NEEDING_DEBUG
 
@@ -10616,7 +10614,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				else if (!strcmp(temp, "PLAY"))
 				{
 					unsigned long loop(ARX_SOUND_PLAY_ONCE);
-					char temp2[256];
+					std::string temp2;
 					float pitch(1.0F);
 					bool unique(false);
 					bool stop(false);
@@ -10654,7 +10652,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 #endif
 					}
 
-					char * temp1 = GetVarValueInterpretedAsText(temp2, esss, io);
+					std::string temp1 = GetVarValueInterpretedAsText(temp2, esss, io);
 
 					if (io)
 					{
@@ -10673,9 +10671,9 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							long num;
 
 							if (no_pos || SM_INVENTORYUSE == msg)
-								num = ARX_SOUND_PlayScript(temp1, NULL, pitch, loop);
+								num = ARX_SOUND_PlayScript(temp1.c_str(), NULL, pitch, loop);
 							else
-								num = ARX_SOUND_PlayScript(temp1, io, pitch, loop);
+								num = ARX_SOUND_PlayScript(temp1.c_str(), io, pitch, loop);
 
 							if (unique) io->sound = num;
 
@@ -10700,11 +10698,11 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				}
 				else if (!strcmp(temp, "PLAYSPEECH"))
 				{
-					char temp2[256];
+					std::string temp2;
 
 					pos = GetNextWord(es, pos, temp2);
 
-					long num = ARX_SOUND_PlaySpeech(temp2, io && io->show == 1 ? io : NULL);
+					long num = ARX_SOUND_PlaySpeech(temp2.c_str(), io && io->show == 1 ? io : NULL);
 
 #ifdef NEEDING_DEBUG
 
@@ -10725,7 +10723,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					if (!(danaeApp.kbd.inkey[INKEY_LEFTSHIFT]) && !(danaeApp.kbd.inkey[INKEY_RIGHTSHIFT]))
 					{
 						ARX_TIME_Pause();
-						ShowPopup(temp);
+						ShowPopup(temp.c_str());
 						ARX_TIME_UnPause();
 					}
 
@@ -10737,7 +10735,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				}
 				else if (!strcmp(temp, "PHYSICAL"))
 				{
-					char temp2[64];
+					std::string temp2;
 					pos = GetNextWord(es, pos, temp);
 
 					if (!strcasecmp(temp, "ON"))
@@ -10814,7 +10812,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						pos = GetNextWord(es, pos, temp);
 					}
 
-					char temp2[256];
+					std::string temp2;
 					long flag;
 
 					pos = GetNextWord(es, pos, temp2);
@@ -10841,31 +10839,31 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 							if (iot->anims[num] == NULL)
 							{
-								char tex2[256];
-								char tex3[256];
+								std::string tex2;
+								std::string tex3;
 
 								if ((iot == inter.iobj[0]) || (iot->ioflags & IO_NPC))
 								{
 									flag = TEA_NPC_SAMPLES;
-									sprintf(tex3, "Graph\\Obj3D\\Anims\\npc\\%s", temp2);
+									tex3 = "Graph\\Obj3D\\Anims\\npc\\" + temp2;
 								}
 								else
 								{
 									flag = TEA_FIX_SAMPLES;
-									sprintf(tex3, "Graph\\Obj3D\\Anims\\Fix_Inter\\%s", temp2);
+									tex3 = "Graph\\Obj3D\\Anims\\Fix_Inter\\" + temp2;
 								}
 
 								SetExt(tex3, ".tea");
 								File_Standardize(tex3, tex2);
 
-								if (PAK_FileExist(tex2))
+								if (PAK_FileExist(tex2.c_str()))
 								{
-									iot->anims[num] = EERIE_ANIMMANAGER_Load(tex2);
+									iot->anims[num] = EERIE_ANIMMANAGER_Load(tex2.c_str());
 
 									if (iot->anims[num] == NULL)
 									{
 										char ttmp[512];
-										sprintf(ttmp, "LOADANIM %s %s FAILED", temp, temp2);
+										sprintf(ttmp, "LOADANIM %s %s FAILED", temp.c_str(), temp2.c_str());
 										ForceSendConsole(ttmp, 1, 0, (HWND)1);
 									}
 								}
@@ -10873,7 +10871,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							else
 							{
 								char ttmp[512];
-								sprintf(ttmp, "LOADANIM %s %s FAILED", temp, temp2);
+								sprintf(ttmp, "LOADANIM %s %s FAILED", temp.c_str(), temp2.c_str());
 								ForceSendConsole(ttmp, 1, 0, (HWND)1);
 							}
 						}
@@ -10886,7 +10884,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					pos = GetNextWord(es, pos, temp);
 
 					if (ValidIONum(t))
-						LinkObjToMe(io, inter.iobj[t], temp);
+						LinkObjToMe(io, inter.iobj[t], temp.c_str());
 
 #ifdef NEEDING_DEBUG
 
@@ -10901,13 +10899,14 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				if ((temp[1] == 'F') && (temp[2] == 0))
 				{
 					const unsigned int tvSize = 256 ;
-					char	temp3[tvSize];
-					short	oper				= 0;
-					short	failed				= 0;
-					short	typ1, typ2;
-					char	tvar1[tvSize], tvar2[tvSize];
-					float	fvar1, fvar2;
-					char *	tempo;
+					std::string temp3;
+					short oper = 0;
+					short failed = 0;
+					short typ1, typ2;
+					std::string tvar1;
+					std::string tvar2;
+					float fvar1, fvar2;
+					std::string tempo;
 
 					fvar1 = fvar2 = 0;
 					pos = GetNextWord(es, pos, temp);
@@ -10964,13 +10963,14 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					switch (temp[0])
 					{
 						case '^':
+						{
 							
-							long lv; float fv; char tv[tvSize];	//Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
+							long lv; float fv; std::string tv;	//Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
 							switch ( GetSystemVar( esss, io, temp, tv,tvSize, &fv, &lv ) )
 							{
 								case TYPE_TEXT:
 									typ1	=	TYPE_TEXT;
-									strcpy(tvar1, tv);
+									tvar1 = tv;
 									break;
 								case TYPE_LONG:
 									typ1	=	TYPE_FLOAT;
@@ -10987,7 +10987,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 									break;
 
 							}
-
+						}
 							break;
 						case '#':
 							typ1	=	TYPE_FLOAT;
@@ -11009,16 +11009,16 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							typ1	=	TYPE_TEXT;
 							tempo	=	GETVarValueText(&svar, &NB_GLOBALS, temp);
 
-							if (tempo == NULL) tvar1[0] = 0;
-							else strcpy(tvar1, tempo);
+							if ( tempo.empty()) tvar1[0] = 0;
+							else tvar1 = tempo;
 
 							break;
 						case '\xA3':
 							typ1	=	TYPE_TEXT;
 							tempo	=	GETVarValueText(&esss->lvar, &esss->nblvar, temp);
 
-							if (tempo == NULL) tvar1[0] = 0;
-							else strcpy(tvar1, tempo);
+							if ( tempo.empty() ) tvar1[0] = 0;
+							else tvar1 = tempo;
 
 							break;
 						default:
@@ -11026,25 +11026,26 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							if ((oper == OPER_ISTYPE) || (oper == OPER_ISGROUP) || (oper == OPER_NOTISGROUP))
 							{
 								typ1 =	TYPE_TEXT;
-								strcpy(tvar1, temp);
+								tvar1 = temp;
 							}
 							else
 							{
 								typ1 =	TYPE_FLOAT;
-								fvar1 =	(float)atof(temp);
+								fvar1 =	(float)atof(temp.c_str());
 							}
 					}
 
 					switch ( temp3[0] )
 					{
 						case '^':
+						{
 							
-							long lv; float fv; char tv[tvSize];
+							long lv; float fv; std::string tv;
 							switch ( GetSystemVar( esss, io, temp3, tv,tvSize, &fv, &lv ) )
 							{
 								case TYPE_TEXT:
 									typ2	=	TYPE_TEXT;
-									strcpy(tvar2, tv);
+									tvar2 = tv;
 									break;
 								case TYPE_LONG:
 									typ2	=	TYPE_FLOAT;
@@ -11061,7 +11062,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 									break;
 
 							}
-
+						}
 							break;
 						case '#':
 							typ2			=	TYPE_FLOAT;
@@ -11083,16 +11084,16 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							typ2			=	TYPE_TEXT;
 							tempo			=	GETVarValueText(&svar, &NB_GLOBALS, temp3);
 
-							if (tempo == NULL) tvar2[0] = 0;
-							else strcpy(tvar2, tempo);
+							if (tempo.empty()) tvar2[0] = 0;
+							else tvar2 = tempo;
 
 							break;
 						case '\xA3':
 							typ2			=	TYPE_TEXT;
 							tempo			=	GETVarValueText(&esss->lvar, &esss->nblvar, temp3);
 
-							if (tempo == NULL) tvar2[0] = 0;
-							else strcpy(tvar2, tempo);
+							if (tempo.empty()) tvar2[0] = 0;
+							else tvar2 = tempo;
 
 							break;
 						default:
@@ -11100,12 +11101,12 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 							if (typ1 == TYPE_TEXT)
 							{
 								typ2		=	TYPE_TEXT;
-								strcpy(tvar2, temp3);
+								tvar2 = temp3;
 							}
 							else
 							{
 								typ2		=	TYPE_FLOAT;
-								fvar2		=	(float)atof(temp3);
+								fvar2		=	(float)atof(temp3.c_str());
 							}
 					}
 
@@ -11123,7 +11124,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 									MakeUpcase(tvar1);
 									MakeUpcase(tvar2);
 
-									if (IsElement(tvar1, tvar2)) failed = 0;
+									if (IsElement(tvar1.c_str(), tvar2.c_str())) failed = 0;
 									else failed = 1;
 								}
 							}
@@ -11203,7 +11204,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 									if (t == -2) t = GetInterNum(io);
 
-									long flagg	=	ARX_EQUIPMENT_GetObjectTypeFlag(tvar2);
+									long flagg	=	ARX_EQUIPMENT_GetObjectTypeFlag(tvar2.c_str());
 
 									if ((flagg != 0) && (ValidIONum(t)))
 									{

@@ -1735,7 +1735,7 @@ static void ARX_SOUND_ReleaseStaticSamples()
 	SND_SPELL_VISION_LOOP = AAL_SFALSE;
 }
 
-long ARX_MATERIAL_GetIdByName(char * name)
+long ARX_MATERIAL_GetIdByName( const char * name)
 {
 	if (!strcasecmp(name, "WEAPON"))	      return MATERIAL_WEAPON;
 

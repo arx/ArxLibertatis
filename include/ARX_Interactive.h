@@ -145,7 +145,7 @@ void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, char * s1);
 void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io);
 void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag = 0);
 void ARX_INTERACTIVE_DeleteByIndex(long i, long flag = 0);
-bool ARX_INTERACTIVE_Attach(long n_source, long n_target, char * ap_source, char * ap_target);
+bool ARX_INTERACTIVE_Attach(long n_source, long n_target, const char * ap_source, const char * ap_target);
 void ARX_INTERACTIVE_Detach(long n_source, long n_target);
 void ARX_INTERACTIVE_Show_Hide_1st(INTERACTIVE_OBJ * io, long state);
  
@@ -164,7 +164,7 @@ bool IsEquipedByPlayer(INTERACTIVE_OBJ * io);
 void CleanScriptLoadedIO();
 void PrepareIOTreatZone(long flag = 0);
  
-void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, char * attach);
+void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const char * attach);
  
 void PutInFrontOfPlayer(INTERACTIVE_OBJ * io, long flag = 0);
 bool CanBePutInInventory(INTERACTIVE_OBJ * io);
@@ -175,7 +175,7 @@ long ValidIONum(long num);
 long ValidIOAddress(INTERACTIVE_OBJ * io);
 bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos);
 bool GetItemWorldPositionSound(INTERACTIVE_OBJ * io, EERIE_3D * pos);
-long GetTargetByNameTarget(const char * name);
+long GetTargetByNameTarget(const std::string& name);
 void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io);
  
 void SetWeapon_Back(INTERACTIVE_OBJ * io);
@@ -255,7 +255,7 @@ void SelectIO(INTERACTIVE_OBJ * io);
 void ForcePlayerLookAtIO(INTERACTIVE_OBJ * io);
 void SetWeapon_On(INTERACTIVE_OBJ * io);
  
-void Prepare_SetWeapon(INTERACTIVE_OBJ * io, char * temp);
+void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const std::string& temp);
 void ComputeVVPos(INTERACTIVE_OBJ * io);
 void SetYlsideDeath(INTERACTIVE_OBJ * io);
 void GetMaterialString( const char * origin, char * dest);

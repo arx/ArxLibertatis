@@ -780,7 +780,7 @@ failure:
 
 //***********************************************************************************************
 //***********************************************************************************************
-void ARX_NPC_SetStat(INTERACTIVE_OBJ * io, char * statname, float value)
+void ARX_NPC_SetStat(INTERACTIVE_OBJ * io, const char * statname, float value)
 {
 	if ((!io)
 	        ||	(!(io->ioflags & IO_NPC)))

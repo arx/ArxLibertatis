@@ -348,7 +348,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io)
 }
 
 
-bool ARX_INTERACTIVE_Attach(long n_source, long n_target, char * ap_source, char * ap_target)
+bool ARX_INTERACTIVE_Attach(long n_source, long n_target, const char * ap_source, const char * ap_target)
 {
 	if (!ValidIONum(n_source)
 	        ||	!ValidIONum(n_target))
@@ -2500,7 +2500,7 @@ void SetWeapon_Back(INTERACTIVE_OBJ * io)
 	}
 }
 
-void Prepare_SetWeapon(INTERACTIVE_OBJ * io, std::string& temp)
+void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const std::string& temp)
 {
 	if (!io
 	        ||	!(io->ioflags & IO_NPC))
@@ -2559,7 +2559,7 @@ void GetIOScript(INTERACTIVE_OBJ * io, const char * texscript)
 //***********************************************************************************
 // Links an Interactive Object to another interactive object using an attach point
 //***********************************************************************************
-void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, char * attach)
+void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const char * attach)
 {
 	if ((!io)
 	        ||	(!io2))

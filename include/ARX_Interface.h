@@ -351,7 +351,7 @@ void ARX_INTERFACE_ManageOpenedBook();
 void ARX_INTERFACE_ManageOpenedBook_Finish();
 void ARX_INTERFACE_NoteManage();
 void ARX_INTERFACE_BookOpenClose(unsigned long t);
-void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, char * tex);
+void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex);
 void ARX_INTERFACE_NoteClose();
 void ARX_INTERFACE_NoteClear();
 void ARX_INTERFACE_NoteInit();

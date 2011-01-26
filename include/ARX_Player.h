@@ -360,7 +360,7 @@ void	ARX_PLAYER_Frame_Update();
 void	ARX_PLAYER_Manage_Movement();
 void	ARX_PLAYER_Manage_Death();
 void	ARX_PLAYER_GotoAnyPoly();
-void	ARX_PLAYER_Quest_Add(char * quest, bool _bLoad = false);
+void	ARX_PLAYER_Quest_Add( const char * quest, bool _bLoad = false);
 void	ARX_PLAYER_Quest_Init();
 void	ARX_PLAYER_Quest_FirstInit();
 void	ARX_PLAYER_FrontPos(EERIE_3D * pos);
@@ -383,7 +383,7 @@ bool	ARX_PLAYER_CanStealItem(INTERACTIVE_OBJ *);
 
 
 void	ARX_KEYRING_Init();
-void	ARX_KEYRING_Add(char * key);
+void	ARX_KEYRING_Add( const char* key);
 void	ARX_KEYRING_Combine(INTERACTIVE_OBJ * io);
 
 void	ARX_PLAYER_Reset_Fall();

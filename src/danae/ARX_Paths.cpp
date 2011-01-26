@@ -550,7 +550,7 @@ void ARX_PATHS_ChangeName(ARX_PATH * ap, char * newname)
 }
 //*************************************************************************************
 //*************************************************************************************
-ARX_PATH * ARX_PATH_GetAddressByName(char * name)
+ARX_PATH * ARX_PATH_GetAddressByName( const char * name)
 {
 
 	if ((name) && (name[0]) && (ARXpaths))

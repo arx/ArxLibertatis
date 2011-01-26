@@ -99,7 +99,7 @@ EQUIP_INFO equipinfo[IO_EQUIPITEM_ELEMENT_Number];
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/29)
 //***********************************************************************************************
-unsigned long ARX_EQUIPMENT_GetObjectTypeFlag(char * temp)
+unsigned long ARX_EQUIPMENT_GetObjectTypeFlag( const char * temp)
 {
 	if (!temp) return 0;
 
@@ -1431,7 +1431,7 @@ void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip)
 // Sets/unsets an object type flag
 //-----------------------------------------------------------------------------------------------
 //***********************************************************************************************
-void ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ * io, char * temp, long val)
+void ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ * io, const char * temp, long val)
 {
 	// avoid erroneous objects
 	if (!io) return;
@@ -1595,7 +1595,7 @@ float ARX_EQUIPMENT_GetSpecialValue(INTERACTIVE_OBJ * io, long val)
 
 	return -1;
 }
-void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, char * param1, char * param2, float val, short flags)
+void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const char * param1, const char * param2, float val, short flags)
 {
 	if (io == NULL) return;
 

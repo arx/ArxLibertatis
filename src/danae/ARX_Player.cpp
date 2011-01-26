@@ -242,7 +242,7 @@ void ARX_KEYRING_Init()
 // FUNCTION/RESULT:
 //   Add a key to Keyring
 //*************************************************************************************
-void ARX_KEYRING_Add(char * key)
+void ARX_KEYRING_Add( const char * key)
 {
 	Keyring = (KEYRING_SLOT *)realloc(Keyring, sizeof(KEYRING_SLOT) * (Keyring_Number + 1));
 	memset(&Keyring[Keyring_Number], 0, sizeof(KEYRING_SLOT));
@@ -556,7 +556,7 @@ void ARX_Player_Rune_Remove(unsigned long _ulRune)
 // FUNCTION/RESULT:
 //   Add quest "quest" to player Questbook
 //*************************************************************************************
-void ARX_PLAYER_Quest_Add(char * quest, bool _bLoad)
+void ARX_PLAYER_Quest_Add( const char * quest, bool _bLoad)
 {
     std::string output( 4096, '\0' );
     MakeLocalised(quest, output, 4096);
