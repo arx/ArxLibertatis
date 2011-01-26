@@ -54,7 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 #include <windows.h>
 #include <assert.h>
-
 #include <string>
 
 #include "ARX_Loc.h"
@@ -142,8 +141,8 @@ long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, _TCHAR * _lpszUText, int _i
 
 				for (; iTemp < iLenght ; iTemp++)
 				{
-					GetTextExtentPoint32A(hDC,
-					                      &_lpszUText[iTemp],
+					GetTextExtentPoint32(hDC,
+							&_lpszUText[iTemp],
 					                      1,
 					                      &sSize);
 					{
@@ -208,6 +207,9 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, char * text, int _iSpacingY, RECT & 
 
 	size_t iTemp = 0;
 
+//	LogDebug << "text: " << text;
+//	LogDebug << "wchar: " << (wchar_t*)text;
+
 	while (1)
 	{
 		bWrite = true;
@@ -216,8 +218,8 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, char * text, int _iSpacingY, RECT & 
 
 		for (; iTemp < iLenght; iTemp++)
 		{
-			GetTextExtentPoint32A(_hDC,
-			                      &text[iTemp],
+			GetTextExtentPoint32W(_hDC,
+					(wchar_t*)&text[iTemp],
 			                      1,
 			                      &sSize);
 
@@ -228,7 +230,7 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, char * text, int _iSpacingY, RECT & 
 				text[iTemp] = _T('\0');
 				bWrite = false;
 
-				TextOutA(_hDC, _rRect.left, _rRect.top, &text[iOldTemp], strlen(&text[iOldTemp]));
+				TextOutW(_hDC, _rRect.left, _rRect.top, (wchar_t*)&text[iOldTemp], strlen(&text[iOldTemp]));
 				_rRect.top += _iSpacingY + sSize.cy;
 				iTemp++;
 				break;
@@ -246,7 +248,7 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, char * text, int _iSpacingY, RECT & 
 					_tcsncpy(ptexttemp, &text[iOldTemp], iTemp - iOldTemp);
 					ptexttemp[iTemp-iOldTemp] = _T('\0');
 
-					TextOutA(_hDC, _rRect.left, _rRect.top, ptexttemp, strlen(ptexttemp));
+					TextOutW(_hDC, _rRect.left, _rRect.top, (wchar_t*)ptexttemp, strlen(ptexttemp));
 					free((void *)ptexttemp);
 					ptexttemp = NULL;
 					iTemp--;
@@ -257,7 +259,7 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, char * text, int _iSpacingY, RECT & 
 
 					text[iTemp] = _T('\0');
 
-					if(!TextOutA(_hDC, _rRect.left, _rRect.top, &text[iOldTemp], strlen(&text[iOldTemp]))) {
+					if(!TextOutW(_hDC, _rRect.left, _rRect.top, (wchar_t*)&text[iOldTemp], strlen(&text[iOldTemp]))) {
 						LogError << FontError() << " while displaying " << &text[iOldTemp];
 					}
 				}
@@ -280,7 +282,7 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, char * text, int _iSpacingY, RECT & 
 	{
 		iHeight += _iSpacingY + sSize.cy;
 
-		if (!TextOutA(_hDC, _rRect.left, _rRect.top, &text[iOldTemp], strlen(&text[iOldTemp])))
+		if (!TextOutW(_hDC, _rRect.left, _rRect.top, (wchar_t*)&text[iOldTemp], strlen(&text[iOldTemp])))
 		{
 			LogError << FontError() << " while displaying " << &text[iOldTemp];
 		}
@@ -312,10 +314,13 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 			hDC = hHDC;
 		}
 
+//		if (false)
 		if (hHDC || SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 		{
 
 			_tcscpy(tUText, _lpszUText);
+
+//			LogDebug << "ARX_UNICODE_DrawTextInRect " << tUText << " " <<_lpszUText;
 
 			if (hRgn)
 			{
@@ -431,7 +436,7 @@ long UNICODE_ARXDrawTextCenter(float x, float y, _TCHAR * str, COLORREF col, COL
 
 
 			SIZE siz;
-			GetTextExtentPoint32A(hDC,         // handle to DC
+			GetTextExtentPoint32(hDC,         // handle to DC
 			                        str,           // character string
 			                        _tcslen(str),   // number of characters
 			                        &siz          // size
@@ -1143,31 +1148,31 @@ void ARX_Text_Init()
 	
 	string tx = getFontFile();
 
-//	todo: cast
-//	MultiByteToWideChar(CP_ACP, 0, tx , -1, wtx, 256);		// XS : We need to pass a unicode string to AddFontResourceW
+	wchar_t wtx[256];
+	MultiByteToWideChar(CP_ACP, 0, tx.c_str() , -1, wtx, 256);		// XS : We need to pass a unicode string to AddFontResourceW
 
 	lpszFontIngame = GetFontName(tx.c_str());
 
-	if(AddFontResourceA(tx.c_str()) == 0) {
+	if(AddFontResource(tx.c_str()) == 0) {
 		LogError << FontError();
 	}
 
-/*
-	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf");
 
-	if (!FileExist(tx))
-	{
-		sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
-	}
+//	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf");
+//
+//	if (!FileExist(tx))
+//	{
+//		sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
+//	}
+//
+//	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass an unicode string to AddFontResourceW
 
-	//MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass an unicode string to AddFontResourceW
+	lpszFontMenu = GetFontName(tx.c_str());
 
-	lpszFontMenu = GetFontName(tx);
-
-	if (AddFontResourceA(wtx) == 0)
+	if (AddFontResourceW(wtx) == 0)
 	{
 		LogError << FontError();
-	}*/
+	}
 
 
 	pTextManage = new CARXTextManager();
