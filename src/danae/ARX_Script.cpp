@@ -3422,7 +3422,7 @@ void MakeSSEPARAMS(const char * params)
 
 	while(*params != '\0' && pos < MAX_SSEPARAMS) {
 		
-		size_t tokensize;
+		size_t tokensize = 0;
 		while(params[tokensize] != ' ' && params[tokensize] != '\0') {
 			tokensize++;
 		}
