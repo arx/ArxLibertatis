@@ -2957,16 +2957,7 @@ void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret)
 	if ((offset.x == 0) && (offset.y == 0) && (offset.z == 0))
 		return;
 
-	if (!FOR_EXTERNAL_PEOPLE)
-	{
-		FILE * fic;
-
-		if ((fic = fopen("Not_Centered_Objs.txt", "a+")) != NULL)
-		{
-			fprintf(fic, "NOT CENTERED %s\n", ret->file);
-			fclose(fic);
-		}
-	}
+	LogWarning << "NOT CENTERED " << ret->file;
 
 
 	for (long i = 0; i < ret->nbvertex; i++)
