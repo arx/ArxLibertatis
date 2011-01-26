@@ -168,8 +168,6 @@ namespace ATHENA
 
 		if (device) device->Release(), device = NULL;
 
-		if (debug_log) fclose(debug_log), debug_log = NULL;
-
 		free(sample_path), sample_path = NULL;
 		free(ambiance_path), ambiance_path = NULL;
 		free(environment_path), environment_path = NULL;
@@ -368,22 +366,6 @@ namespace ATHENA
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
 
-		if (flags & AAL_FLAG_DEBUG)
-		{
-			if (debug_log) fclose(debug_log);
-
-			debug_log = fopen("athena.log", "w");
-
-			if (!debug_log)
-			{
-				if (mutex) ReleaseMutex(mutex);
-
-				return AAL_ERROR_FILEIO;
-			}
-
-			global_status |= AAL_FLAG_DEBUG;
-		}
-
 		if (flags & AAL_FLAG_MULTITHREAD && !mutex)
 		{
 			mutex = CreateMutex(NULL, false, NULL);
@@ -431,9 +413,6 @@ namespace ATHENA
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
 
-		if (flags & AAL_FLAG_DEBUG && debug_log)
-			fclose(debug_log), debug_log = NULL;
-
 		if (flags & AAL_FLAG_MULTITHREAD && mutex)
 			ReleaseMutex(mutex), CloseHandle(mutex), mutex = NULL;
 
@@ -463,9 +442,6 @@ namespace ATHENA
 
 		switch (flag)
 		{
-			case AAL_FLAG_DEBUG         :
-				status = debug_log ? AAL_UTRUE : AAL_UFALSE;
-				break;
 
 			case AAL_FLAG_MULTITHREAD   :
 				status = mutex ? AAL_UTRUE : AAL_UFALSE;
