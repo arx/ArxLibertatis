@@ -24,6 +24,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 
 #include "hermes/HashMap.h"
+#include "hermes/Logger.h"
 
 #include <cstring>
 #include <cassert>
@@ -93,6 +94,7 @@ bool HashMap::add(const char * name, void * value) {
 		h1 += h2;
 	}
 	
+	LogWarning << "not inserting into hash map: " << name;
 	return false;
 }
 

@@ -17,7 +17,8 @@ const LogSetting blackList[] = {
 	{ "PakManager.cpp", Logger::Fatal },
 	{ "PakReader.cpp", Logger::Info },
 	{ "Filesystem.cpp", Logger::Fatal },
-	{ "Athena.cpp", Logger::Error }
+	{ "Athena.cpp", Logger::Error },
+	{ "Athena_Instance.cpp", Logger::Info }
 };
 
 Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {
