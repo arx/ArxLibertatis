@@ -84,6 +84,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <hermes/PakManager.h>
 #include <hermes/Filesystem.h>
 #include <hermes/blast.h>
+#include <hermes/Logger.h>
 
 #include <EERIEMath.h>
 #include <EERIEObject.h>
@@ -253,19 +254,7 @@ void ARX_GAMESAVE_CreateNewInstance()
 	}
 }
 
-long NEED_LOG = 0; //1;
-void LogData(const char * tex)
-{
-	if (!NEED_LOG) return;
-
-	FILE * fic;
-
-	if ((fic = fopen("ARXlog.txt", "a")) != NULL)
-	{
-		fprintf(fic, "%s\n", tex);
-		fclose(fic);
-	}
-}
+long NEED_LOG = 1; //0;
 
 //-----------------------------------------------------------------------------
 INTERACTIVE_OBJ * ConvertToValidIO(char * str)
@@ -282,9 +271,7 @@ INTERACTIVE_OBJ * ConvertToValidIO(char * str)
 	{
 		if ((NEED_LOG) && (strcasecmp(str, "none")))
 		{
-			char temp[256];
-			sprintf(temp, "Call to ConvertToValidIO(%s)", str);
-			LogData(temp);
+			LogDebug << "Call to ConvertToValidIO(" << str << ")";
 		}
 
 		t = ARX_CHANGELEVEL_Pop_IO(str);
@@ -391,18 +378,17 @@ extern long FINAL_COMMERCIAL_DEMO;
 //--------------------------------------------------------------------------------------------
 void ARX_CHANGELEVEL_Change(char * level, char * target, long angle, long confirm)
 {
-	LogData("-----------------------------------");
+	LogDebug << "-----------------------------------";
 	HERMES_DATE_TIME hdt;
 	GetDate(&hdt);
 
 	if (NEED_LOG)
 	{
-		LogData("ARX_CHANGELEVEL_Change");
+		LogDebug << "ARX_CHANGELEVEL_Change";
 		char tex[256];
 		sprintf(tex, "Date: %02ld/%02ld/%ld  Time: %ldh%ld", hdt.days, hdt.months, hdt.years, hdt.hours, hdt.mins);
-		LogData(tex);
-		sprintf(tex, "level %s target %s", level, target);
-		LogData(tex);
+		LogDebug << tex;
+		LogDebug << "level " << level << " target " << target;
 	}
 
 	DemoFileCheck();
@@ -476,14 +462,14 @@ void ARX_CHANGELEVEL_Change(char * level, char * target, long angle, long confir
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen(GDevice, num);
 
-	LogData("Before ARX_CHANGELEVEL_PushLevel");
+	LogDebug << "Before ARX_CHANGELEVEL_PushLevel";
 	ARX_CHANGELEVEL_PushLevel(CURRENTLEVEL, NEW_LEVEL);
-	LogData("After  ARX_CHANGELEVEL_PushLevel");
+	LogDebug << "After  ARX_CHANGELEVEL_PushLevel";
 
 
-	LogData("Before ARX_CHANGELEVEL_PopLevel");
+	LogDebug << "Before ARX_CHANGELEVEL_PopLevel";
 	ARX_CHANGELEVEL_PopLevel(num, 1);
-	LogData("After  ARX_CHANGELEVEL_PopLevel");
+	LogDebug << "After  ARX_CHANGELEVEL_PopLevel";
 
 	FreeStdBuffer();
 
@@ -512,7 +498,7 @@ void ARX_CHANGELEVEL_Change(char * level, char * target, long angle, long confir
 	ARX_PLAYER_RectifyPosition();
 	JUST_RELOADED = 1;
 	NO_GMOD_RESET = 0;
-	LogData("-----------------------------------");
+	LogDebug << "-----------------------------------";
 }
 
 //--------------------------------------------------------------------------------------------
@@ -2394,20 +2380,14 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 
 	if (NEED_LOG)
 	{
-		char temp[256];
-		sprintf(temp, "--> Before ARX_CHANGELEVEL_Pop_IO(%s)", ident);
-		LogData(temp);
+		LogDebug << "--> Before ARX_CHANGELEVEL_Pop_IO(" << ident << ")";
 	}
 
 	size = _pSaveBlock->GetSize(loadfile);
 
 	if (size < 0)
 	{
-		char _error[256];
-		sprintf(_error, "Unable to Open %s for Read...", loadfile);
-
-		if (!FOR_EXTERNAL_PEOPLE)
-			ShowPopup(_error);
+		LogError << "Unable to Open " << loadfile << " for Read...";
 
 		return -1;
 	}
@@ -2464,9 +2444,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 
 	if (NEED_LOG)
 	{
-		char temp[256];
-		sprintf(temp, "--> Phase2 ARX_CHANGELEVEL_Pop_IO(%s)", ident);
-		LogData(temp);
+		LogDebug << "--> Phase2 ARX_CHANGELEVEL_Pop_IO(" << ident << ")";
 	}
 
 	DANAE_LS_INTER dli;
@@ -3195,11 +3173,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 	}
 	else
 	{
-		char temp[512];
-		sprintf(temp, "CHANGELEVEL Error: Unable to load %s", ident);
-
-		if (!FOR_EXTERNAL_PEOPLE)
-			ShowPopup(temp);
+		LogError << "CHANGELEVEL Error: Unable to load " << ident;
 	}
 
 
@@ -3208,16 +3182,12 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 
 	if (NEED_LOG)
 	{
-		char temp[256];
-		sprintf(temp, "--> After  ARX_CHANGELEVEL_Pop_IO(%s)", ident);
-		LogData(temp);
+		LogDebug << "--> After  ARX_CHANGELEVEL_Pop_IO(" << ident << ")";
 	}
 
 	return GetInterNum(tmp);
 corrupted:
-	char cstring[256];
-	sprintf(cstring, "Save File Is Corrupted\nTrying to Fix %s", ident);
-	ShowPopup(cstring);//"Save file is corrupted.");
+	LogError << "Save File Is Corrupted, Trying to Fix " << ident;
 
 	free(dat);
 	io->inventory = NULL; 
@@ -3621,7 +3591,7 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 {
 	DANAE_ReleaseAllDatasDynamic();
 
-	LogData("Before ARX_CHANGELEVEL_PopLevel Alloc'n'Free");
+	LogDebug << "Before ARX_CHANGELEVEL_PopLevel Alloc'n'Free";
 
 	if (_Gaids) ReleaseGaids();
 
@@ -3639,20 +3609,19 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 
 	if (!DirectoryExist(CurGamePath))
 	{
-		if (!FOR_EXTERNAL_PEOPLE)
-			ShowPopup("Cannot Load this game: Directory Not Found");
+		LogError << "Cannot Load this game: Directory Not Found: " << CurGamePath;
 
 		RELOADING = 0;
 		ReleaseGaids();
 		return -1;
 	}
 
-	LogData("After  ARX_CHANGELEVEL_PopLevel Alloc'n'Free");
+	LogDebug << "After  ARX_CHANGELEVEL_PopLevel Alloc'n'Free";
 
 	// Clears All Scene contents...
-	LogData("Before DANAE ClearAll");
+	LogDebug << "Before DANAE ClearAll";
 	DanaeClearAll();
-	LogData("After  DANAE ClearAll");
+	LogDebug << "After  DANAE ClearAll";
 
 	ARX_TIME_Pause();
 	ARX_TIME_Force_Time_Restore(ARX_CHANGELEVEL_DesiredTime);
@@ -3664,13 +3633,13 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 	long FirstTime;
 	sprintf(loadfile, "lvl%03ld.sav", instance);
 
-	LogData("Before Saveblock Access");
+	LogDebug << "Before Saveblock Access";
 	// Open Saveblock for read
 	char sfile[256];
 	sprintf(sfile, "%sGsave.sav", CurGamePath);
 	_pSaveBlock = new CSaveBlock(sfile);
 	_pSaveBlock->BeginRead();
-	LogData("After  Saveblock Access");
+	LogDebug << "After  Saveblock Access";
 
 	PROGRESS_BAR_COUNT += 2.f;
 	LoadLevelScreen(GDevice, instance);
@@ -3700,14 +3669,13 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 
 	if (!FirstTime)
 	{
-		LogData("Before ARX_CHANGELEVEL_Pop_Index");
+		LogDebug << "Before ARX_CHANGELEVEL_Pop_Index";
 
 		if (ARX_CHANGELEVEL_Pop_Index(&asi, instance) != 1)
 		{
 			FreeStdBuffer();
 
-			if (!FOR_EXTERNAL_PEOPLE)
-				ShowPopup("Cannot Load Index data");
+			LogError << "Cannot Load Index data";
 
 			ARX_TIME_UnPause();
 
@@ -3728,7 +3696,7 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 			return -1;
 		}
 
-		LogData("After  ARX_CHANGELEVEL_Pop_Index");
+		LogDebug << "After  ARX_CHANGELEVEL_Pop_Index";
 
 		if (asi.version != ARX_GAMESAVE_VERSION)
 		{
@@ -3763,14 +3731,13 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 
 	PROGRESS_BAR_COUNT += 2.f;
 	LoadLevelScreen(GDevice, instance);
-	LogData("Before ARX_CHANGELEVEL_Pop_Level");
+	LogDebug << "Before ARX_CHANGELEVEL_Pop_Level";
 
 	if (ARX_CHANGELEVEL_Pop_Level(&asi, instance, FirstTime) != 1)
 	{
 		FreeStdBuffer();
 
-		if (!FOR_EXTERNAL_PEOPLE)
-			ShowPopup("Cannot Load Level data");
+		LogError << "Cannot Load Level data";
 
 		ARX_TIME_UnPause();
 
@@ -3793,7 +3760,7 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 
 
 
-	LogData("After  ARX_CHANGELEVEL_Pop_Index");
+	LogDebug << "After  ARX_CHANGELEVEL_Pop_Index";
 	PROGRESS_BAR_COUNT += 20.f;
 	LoadLevelScreen(GDevice, instance);
 
@@ -3818,14 +3785,13 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 
 	if (!FirstTime)
 	{
-		LogData("Before ARX_CHANGELEVEL_PopAllIO");
+		LogDebug << "Before ARX_CHANGELEVEL_PopAllIO";
 
 		if (ARX_CHANGELEVEL_PopAllIO(&asi) != 1)
 		{
 			FreeStdBuffer();
 
-			if (!FOR_EXTERNAL_PEOPLE)
-				ShowPopup("Cannot Load IO data");
+			LogError << "Cannot Load IO data";
 
 			ARX_TIME_UnPause();
 
@@ -3846,12 +3812,12 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 			return -1;
 		}
 
-		LogData("After  ARX_CHANGELEVEL_PopAllIO");
+		LogDebug << "After  ARX_CHANGELEVEL_PopAllIO";
 	}
 
 	PROGRESS_BAR_COUNT += 20.f;
 	LoadLevelScreen(GDevice, instance);
-	LogData("Before ARX_CHANGELEVEL_Pop_Player");
+	LogDebug << "Before ARX_CHANGELEVEL_Pop_Player";
 
 	if (ARX_CHANGELEVEL_Pop_Player(&asi, &asp) != 1)
 	{
@@ -3879,10 +3845,10 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 		return -1;
 	}
 
-	LogData("After  ARX_CHANGELEVEL_Pop_Player");
+	LogDebug << "After  ARX_CHANGELEVEL_Pop_Player";
 	PROGRESS_BAR_COUNT += 10.f;
 	LoadLevelScreen();
-	LogData("Before Misc Code");
+	LogDebug << "Before Misc Code";
 
 	// Restoring Player equipment...
 	player.equipsecondaryIO = ConvertToValidIO(asp.equipsecondaryIO);
@@ -3914,12 +3880,12 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 
 	PROGRESS_BAR_COUNT += 2.f;
 	LoadLevelScreen();
-	LogData("After Misc Code");
+	LogDebug << "After Misc Code";
 
-	LogData("Before ARX_CHANGELEVEL_PopAllIO_FINISH");
+	LogDebug << "Before ARX_CHANGELEVEL_PopAllIO_FINISH";
 	// Restoring all Missing Objects required by other objects...
 	ARX_CHANGELEVEL_PopAllIO_FINISH(&asi, reloadflag);
-	LogData("After  ARX_CHANGELEVEL_PopAllIO_FINISH");
+	LogDebug << "After  ARX_CHANGELEVEL_PopAllIO_FINISH";
 	PROGRESS_BAR_COUNT += 15.f;
 	LoadLevelScreen();
 	ReleaseGaids();
@@ -3928,14 +3894,14 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 
 	if (!FirstTime)
 	{
-		LogData("Before ARX_CHANGELEVEL_Pop_Zones_n_Lights");
+		LogDebug << "Before ARX_CHANGELEVEL_Pop_Zones_n_Lights";
 		ARX_CHANGELEVEL_Pop_Zones_n_Lights(&asi, instance);
-		LogData("After  ARX_CHANGELEVEL_Pop_Zones_n_Lights");
+		LogDebug << "After  ARX_CHANGELEVEL_Pop_Zones_n_Lights";
 	}
 
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
-	LogData("Before Player Misc Init");
+	LogDebug << "Before Player Misc Init";
 	ForcePlayerInventoryObjectLevel(instance);
 	ARX_EQUIPMENT_RecreatePlayerMesh();
 	PROGRESS_BAR_COUNT += 1.f;
@@ -3946,9 +3912,9 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 
 	NO_TIME_INIT = 1;
 	FORCE_TIME_RESTORE = ARX_CHANGELEVEL_DesiredTime;
-	LogData("After  Player Misc Init");
+	LogDebug << "After  Player Misc Init";
 
-	LogData("Before Memory Release");
+	LogDebug << "Before Memory Release";
 
 	if (idx_io)
 		free(idx_io);
@@ -3966,15 +3932,15 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 
 	NO_TIME_INIT = 1;
 	FreeStdBuffer();
-	LogData("After  Memory Release");
+	LogDebug << "After  Memory Release";
 
-	LogData("Before SaveBlock Release");
+	LogDebug << "Before SaveBlock Release";
 	_pSaveBlock->EndRead();
 	delete _pSaveBlock;
 	_pSaveBlock = NULL;
-	LogData("After  SaveBlock Release");
+	LogDebug << "After  SaveBlock Release";
 
-	LogData("Before Final Inits");
+	LogDebug << "Before Final Inits";
 	HERO_SHOW_1ST = -1;
 
 	if (EXTERNALVIEW)
@@ -3992,7 +3958,7 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 	player.Interface &= ~INTER_COMBATMODE;
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
-	LogData("After  Final Inits");
+	LogDebug << "After  Final Inits";
 	return 1;
 }
 
@@ -4274,16 +4240,16 @@ extern long STARTED_A_GAME;
 //------------------------------------------------------------------------------
 long ARX_CHANGELEVEL_Load(long instance)
 {
-	LogData("-----------------------------------");
+	LogDebug << "-----------------------------------";
 	HERMES_DATE_TIME hdt;
 	GetDate(&hdt);
 
 	if (NEED_LOG)
 	{
-		LogData("ARX_CHANGELEVEL_Load");
+		LogDebug << "ARX_CHANGELEVEL_Load";
 		char tex[256];
 		sprintf(tex, "Date: %02ld/%02ld/%ld  Time: %ldh%ld", hdt.days, hdt.months, hdt.years, hdt.hours, hdt.mins);
-		LogData(tex);
+		LogDebug << tex;
 	}
 
 	iTimeToDrawD7 = -3000;
@@ -4298,8 +4264,7 @@ long ARX_CHANGELEVEL_Load(long instance)
 	// Checks Instance
 	if (instance <= -1)
 	{
-		if (!FOR_EXTERNAL_PEOPLE)
-			ShowPopup("Internal Non-Fatal Error");
+		LogWarning << "Internal Non-Fatal Error";
 
 		return -1;
 	}
@@ -4310,8 +4275,7 @@ long ARX_CHANGELEVEL_Load(long instance)
 
 	if (!DirectoryExist(GameSavePath))
 	{
-		if (!FOR_EXTERNAL_PEOPLE)
-			ShowPopup("Unknown SavePath");
+		LogError << "Unknown SavePath: " << GameSavePath;
 
 		return -1;
 	}
