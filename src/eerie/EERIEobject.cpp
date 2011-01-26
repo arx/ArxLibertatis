@@ -77,9 +77,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 using std::sprintf;
-using std::fopen;
-using std::fprintf;
-using std::fclose;
 
 
 
