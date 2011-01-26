@@ -207,9 +207,6 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, char * text, int _iSpacingY, RECT & 
 
 	size_t iTemp = 0;
 
-//	LogDebug << "text: " << text;
-//	LogDebug << "wchar: " << (wchar_t*)text;
-
 	while (1)
 	{
 		bWrite = true;
@@ -218,8 +215,8 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, char * text, int _iSpacingY, RECT & 
 
 		for (; iTemp < iLenght; iTemp++)
 		{
-			GetTextExtentPoint32W(_hDC,
-					(wchar_t*)&text[iTemp],
+			GetTextExtentPoint32(_hDC,
+					&text[iTemp],
 			                      1,
 			                      &sSize);
 
@@ -230,7 +227,7 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, char * text, int _iSpacingY, RECT & 
 				text[iTemp] = _T('\0');
 				bWrite = false;
 
-				TextOutW(_hDC, _rRect.left, _rRect.top, (wchar_t*)&text[iOldTemp], strlen(&text[iOldTemp]));
+				TextOutA(_hDC, _rRect.left, _rRect.top, &text[iOldTemp], strlen(&text[iOldTemp]));
 				_rRect.top += _iSpacingY + sSize.cy;
 				iTemp++;
 				break;
@@ -248,7 +245,7 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, char * text, int _iSpacingY, RECT & 
 					_tcsncpy(ptexttemp, &text[iOldTemp], iTemp - iOldTemp);
 					ptexttemp[iTemp-iOldTemp] = _T('\0');
 
-					TextOutW(_hDC, _rRect.left, _rRect.top, (wchar_t*)ptexttemp, strlen(ptexttemp));
+					TextOutA(_hDC, _rRect.left, _rRect.top, ptexttemp, strlen(ptexttemp));
 					free((void *)ptexttemp);
 					ptexttemp = NULL;
 					iTemp--;
@@ -259,7 +256,7 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, char * text, int _iSpacingY, RECT & 
 
 					text[iTemp] = _T('\0');
 
-					if(!TextOutW(_hDC, _rRect.left, _rRect.top, (wchar_t*)&text[iOldTemp], strlen(&text[iOldTemp]))) {
+					if(!TextOutA(_hDC, _rRect.left, _rRect.top, &text[iOldTemp], strlen(&text[iOldTemp]))) {
 						LogError << FontError() << " while displaying " << &text[iOldTemp];
 					}
 				}
@@ -282,7 +279,7 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, char * text, int _iSpacingY, RECT & 
 	{
 		iHeight += _iSpacingY + sSize.cy;
 
-		if (!TextOutW(_hDC, _rRect.left, _rRect.top, (wchar_t*)&text[iOldTemp], strlen(&text[iOldTemp])))
+		if (!TextOutA(_hDC, _rRect.left, _rRect.top, &text[iOldTemp], strlen(&text[iOldTemp])))
 		{
 			LogError << FontError() << " while displaying " << &text[iOldTemp];
 		}
@@ -306,6 +303,9 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 {
 	HDC hDC = NULL;
 
+	//TODO(lubosz): Fix the text temporalily for crash
+	_lpszUText ="todo";
+
 	// Get a DC for the surface. Then, write out the buffer
 	if (danaeApp.m_pddsRenderTarget)
 	{
@@ -314,13 +314,12 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 			hDC = hHDC;
 		}
 
+		//TODO(lubosz): text render crash
 //		if (false)
 		if (hHDC || SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 		{
 
 			_tcscpy(tUText, _lpszUText);
-
-//			LogDebug << "ARX_UNICODE_DrawTextInRect " << tUText << " " <<_lpszUText;
 
 			if (hRgn)
 			{
