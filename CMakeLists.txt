@@ -57,6 +57,11 @@ add_custom_target(remake
         COMMAND make clean && rm CMakeCache.txt && cmake . -G\"Unix Makefiles\" && make -j`getconf _NPROCESSORS_ONLN`
 )
 
+add_custom_target(doc
+		#build the documentation
+        COMMAND doxygen doc/Doxyfile
+)
+
 add_subdirectory(tools)
 
 

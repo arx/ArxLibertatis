@@ -28,6 +28,12 @@ Because ARX is compiled as a winelib application, normal gdb won't work. Instead
 
 `$ WINEDEBUG=-all winedbg ./arx.exe.so`
 
+## Build documentation
+
+Run this form the root directory:
+
+`$ make doc`
+
 ## Chat
 
 \#arxfatalis on irc.freenode.net
