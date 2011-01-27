@@ -62,6 +62,18 @@ add_custom_target(doc
         COMMAND doxygen doc/Doxyfile
 )
 
+
+#find python2
+IF(EXISTS "/usr/bin/python2")
+	SET(PYTHON_BIN "python2")
+ELSE()
+	SET(PYTHON_BIN "python")
+ENDIF()
+SET(STYLE_FILTER -readability/casting,-build/header_guard,-build/include,-readability/streams,-whitespace,-runtime/int)
+add_custom_target(style
+        COMMAND ${PYTHON_BIN} scripts/cpplint.py --filter=${STYLE_FILTER} ${ALL_SOURCES} ${ALL_INCLUDES}
+)
+
 add_subdirectory(tools)
 
 
