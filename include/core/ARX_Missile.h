@@ -33,7 +33,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_MISSILE_H
 #define ARX_MISSILE_H
 
-#include <EERIEPoly.h>
+#include "renderer/EERIEPoly.h"
 
 //-----------------------------------------------------------------------------
 enum ARX_SPELLS_MISSILE_TYPE

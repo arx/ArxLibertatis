@@ -57,9 +57,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SCRIPTING_H
 #define ARX_SCRIPTING_H
 
-#include <EERIEPoly.h>
-#include <EERIEMeshTweak.h>
 #include <tchar.h>
+#include "renderer/EERIEPoly.h"
+#include "renderer/EERIEMeshTweak.h"
 
 //-----------------------------------------------------------------------------
 typedef struct

@@ -23,14 +23,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 //-----------------------------------------------------------------------------
-// création du fichier le mardi 22 mai18:32
+// crï¿½ation du fichier le mardi 22 mai18:32
 //-----------------------------------------------------------------------------
 
 
 #ifndef _ARX_CPARTICLE_PARAMS_H
 #define _ARX_CPARTICLE_PARAMS_H
 
-#include "EERIETypes.h"
+#include "renderer/EERIETypes.h"
 
 typedef EERIE_3D Point3;
 

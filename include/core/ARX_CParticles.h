@@ -26,15 +26,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CPARTICLES_H
 #define ARX_CPARTICLES_H
 
-#include "EERIETypes.h"
 #include <list>
 using namespace std;
 
-#include "ARX_CParticleParams.h"
-#include "ARX_CParticleSystem.h"
-//#include "ARX_CParticleContainer.h"
+#include "renderer/EERIETypes.h"
+#include "core/ARX_CParticleParams.h"
+#include "core/ARX_CParticleSystem.h"
 
-//class CParticleContainer;
 class CParticleSystem;
 
 //-----------------------------------------------------------------------------

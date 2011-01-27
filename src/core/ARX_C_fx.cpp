@@ -23,7 +23,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 #include <stdlib.h>
-#include "ARX_CCinematique.h"
+#include "core/ARX_CCinematique.h"
 
 /*---------------------------------------------------------------------------------*/
 extern HWND HwndPere;

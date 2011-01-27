@@ -57,19 +57,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SPECIAL_H
 #define ARX_SPECIAL_H
 
-#include <EERIETypes.h>
-#include <EERIEPoly.h>
+#include "renderer/EERIETypes.h"
+#include "renderer/EERIEPoly.h"
 
 //////////////////////////////// ATTRACTOR Funcs
-
-
 void ARX_SPECIAL_ATTRACTORS_Reset();
 void ARX_SPECIAL_ATTRACTORS_Remove(long ionum);
 long ARX_SPECIAL_ATTRACTORS_Exist(long ionum);
 bool ARX_SPECIAL_ATTRACTORS_Add(long ionum, float power, float radius);
 void ARX_SPECIAL_ATTRACTORS_ComputeForIO(INTERACTIVE_OBJ * io, EERIE_3D * force);
 
-////////////////////////////////
-
 #endif
-

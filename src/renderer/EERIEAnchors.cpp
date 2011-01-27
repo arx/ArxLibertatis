@@ -36,13 +36,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <EERIEAnchors.h>
-#include "EERIEApp.h"
-#include "EERIEPathfinder.h"
-#include "EERIEMath.h"
-#include "HERMESMain.h"
-#include "Danae.h"
-#include "ARX_Text.h"
+#include "renderer/EERIEAnchors.h"
+#include "renderer/EERIEApp.h"
+#include "renderer/EERIEPathfinder.h"
+#include "renderer/EERIEMath.h"
+#include "io/HERMESMain.h"
+#include "core/Danae.h"
+#include "core/ARX_Text.h"
 
 extern float MAX_ALLOWED_PER_SECOND;
 extern bool DIRECT_PATH;

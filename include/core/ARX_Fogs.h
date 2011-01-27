@@ -57,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_FOGS_H
 #define ARX_FOGS_H
 
-#include "EERIETypes.h"
+#include "renderer/EERIETypes.h"
 
 //-----------------------------------------------------------------------------
 void ARX_FOGS_Set_Object(EERIE_3DOBJ * _fogobj);

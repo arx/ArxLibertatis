@@ -54,9 +54,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 ///////////////////////////////////////////////////////////////////////////////////////
+
+//TODO(lubosz): empty file :/
 #ifndef ARX_NETWORK_H
 #define ARX_NETWORK_H
 
-#include "EERIETypes.h"
+#include "renderer/EERIETypes.h"
 
 #endif

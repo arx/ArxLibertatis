@@ -27,7 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define __MINOS_COMMON_VERSION__ "0000"
 
-#include <ARX_Common.h>
+#include "core/ARX_Common.h"
 
 namespace MINOS
 {

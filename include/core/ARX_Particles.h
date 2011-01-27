@@ -57,10 +57,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_PARTICLES_H
 #define ARX_PARTICLES_H
 
-
-#include <EERIETypes.h>
-#include <EERIEPoly.h>
 #include <tchar.h>
+#include "renderer/EERIETypes.h"
+#include "renderer/EERIEPoly.h"
 
 //-----------------------------------------------------------------------------
 typedef struct
@@ -188,7 +187,7 @@ enum ARX_PARTICLES_TYPE_FLAG
 	GRAVITY             = 0x00000020,
 	SUBSTRACT           = 0x00000040,
 	FIRE_TO_SMOKE2      = 0x00000080,
-	PARTICLE_ETINCELLE  = 0x00000100, //gère l'acceleration et la gravité
+	PARTICLE_ETINCELLE  = 0x00000100, //gï¿½re l'acceleration et la gravitï¿½
 	FOLLOW_SOURCE       = 0x00000200,
 	FOLLOW_SOURCE2      = 0x00000400,
 	DELAY_FOLLOW_SOURCE = 0x00000800,

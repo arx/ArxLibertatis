@@ -58,10 +58,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <algorithm>
 
-#include <d3dwrapper.h>
+#include "d3dwrapper.h"
 #include "EERIETypes.h"
 #include "EERIEPoly.h"
-//#include "ARX_Common.h"
 using std::min;
 using std::max;
 

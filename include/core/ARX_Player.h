@@ -59,7 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_PLAYER_H
 
 #include <tchar.h>
-#include "EERIEPoly.h"
+#include "renderer/EERIEPoly.h"
 #include "ARX_Spells.h"
 
 //-----------------------------------------------------------------------------

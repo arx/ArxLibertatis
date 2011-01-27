@@ -58,18 +58,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 //-----------------------------------------------------------------------------------//
-#include <ARX_Common.h>
 #include <windows.h>
 #include <stdio.h>
 #include <signal.h>
-//#include <ARX_StackLogger.h>
 #include <time.h>
 #include <fcntl.h>
-//#include <io.h>
-#include <hermes/Logger.h>
 
-
-
+#include "core/ARX_Common.h"
+#include "io/Logger.h"
 
 /*
 	static var initialize

@@ -48,15 +48,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "EERIELight.h"
-#include "EERIEMath.h"
-#include "EERIEObject.h"
-#include "EERIEDraw.h"
+#include "renderer/EERIELight.h"
+#include "renderer/EERIEMath.h"
+#include "renderer/EERIEObject.h"
+#include "renderer/EERIEDraw.h"
 
-#include "ARX_Time.h"
-#include "ARX_Sound.h"
-
-
+#include "core/ARX_Time.h"
+#include "core/ARX_Sound.h"
 
 extern float GLOBAL_LIGHT_FACTOR;
 EERIE_LIGHT * GLight[MAX_LIGHTS];

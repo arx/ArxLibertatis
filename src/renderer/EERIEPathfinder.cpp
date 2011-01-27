@@ -54,11 +54,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 ///////////////////////////////////////////////////////////////////////////////
-#include "EERIEPathfinder.h"
-#include "EERIELight.h"
+#include "renderer/EERIEPathfinder.h"
+#include "renderer/EERIELight.h"
 
-#include "HERMESMain.h"
-#include "Minos_PathFinder.h"
+#include "io/HERMESMain.h"
+#include "core/Minos_PathFinder.h"
 
 static const float PATHFINDER_HEURISTIC_MIN(0.2F);
 static const float PATHFINDER_HEURISTIC_MAX(MINOS_HEURISTIC_MAX);

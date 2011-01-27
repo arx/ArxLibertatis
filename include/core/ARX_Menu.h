@@ -59,7 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_MENU_H
 
 #include <tchar.h>
-#include "EERIETexture.h"
+#include "renderer/EERIETexture.h"
 #include "ARX_Input.h"
 
 //-----------------------------------------------------------------------------

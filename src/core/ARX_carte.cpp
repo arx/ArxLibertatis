@@ -23,15 +23,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 #include <stdio.h>
-#include "Danae.h"
-#include "ARX_Carte.h"
-#include "ARX_Levels.h"
-#include "EERIEUtil.h"
-#include "EERIETexture.h"
-#include "HERMESMain.h"
-#include "EERIEDraw.h"
-
-#include <hermes/PakManager.h>
+#include "core/Danae.h"
+#include "core/ARX_Carte.h"
+#include "core/ARX_Levels.h"
+#include "renderer/EERIEUtil.h"
+#include "renderer/EERIETexture.h"
+#include "renderer/EERIEDraw.h"
+#include "io/HERMESMain.h"
+#include "io/PakManager.h"
 
 extern long FINAL_RELEASE;
 extern long CURRENTLEVEL;

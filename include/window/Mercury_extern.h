@@ -30,14 +30,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-//#include <conio.h>
-//#include <direct.h>
-#include <ARX_Common.h>
-
-//#define INITGUID
-#define DIRECTINPUT_VERSION 0x0700
 #include <dinput.h>
 
+#include "core/ARX_Common.h"
 #include "Mercury_dx_input.h"
 
 /*---------------------------------------------------------*/

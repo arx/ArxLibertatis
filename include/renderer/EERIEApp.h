@@ -59,15 +59,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define  EERIEAPP_H
 
 //#define  D3D_OVERLOADS
-//
-#include "EERIEFrame.h"
-#include "EERIEEnum.h"
 #include <windows.h>
 #include <commctrl.h>
-#include <d3dwrapper.h>
-//
-//
-//
+
+#include "EERIEFrame.h"
+#include "EERIEEnum.h"
+#include "d3dwrapper.h"
+
 
 //-----------------------------------------------------------------------------
 #define HIDE_BACKGROUND 1

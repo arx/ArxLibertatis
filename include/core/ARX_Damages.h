@@ -58,7 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_DAMAGES_H
 #define ARX_DAMAGES_H
 
-#include "EERIEPoly.h"
+#include "renderer/EERIEPoly.h"
 
 //-----------------------------------------------------------------------------
 typedef struct

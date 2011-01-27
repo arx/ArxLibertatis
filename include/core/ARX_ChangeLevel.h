@@ -57,14 +57,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CHANGELEVEL_H
 #define ARX_CHANGELEVEL_H
 
-#include "HERMES_ClusterSave.h"
-#include "EERIETypes.h"
-#include "EERIEPoly.h"
-#include "ARX_Levels.h"
-#include "ARX_Minimap.h"
-#include "ARX_Interactive.h"
-#include "ARX_Spells.h"
-#include "ARX_GlobalMods.h"
+#include "io/HERMES_ClusterSave.h"
+#include "renderer/EERIETypes.h"
+#include "renderer/EERIEPoly.h"
+#include "core/ARX_Levels.h"
+#include "core/ARX_Minimap.h"
+#include "core/ARX_Interactive.h"
+#include "core/ARX_Spells.h"
+#include "core/ARX_GlobalMods.h"
 
 //-----------------------------------------------------------------------------
 #define SIZE_ID	64

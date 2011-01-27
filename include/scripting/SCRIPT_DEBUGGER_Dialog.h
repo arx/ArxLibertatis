@@ -28,7 +28,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define SCRIPT_DEBUGGER_H
 
 #include <windows.h>
-#include <ARX_Common.h>
+#include "core/ARX_Common.h"
 
 struct Vars
 {
@@ -82,7 +82,7 @@ const char * SCRIPT_DEBUGGER_GetName();
 unsigned long	SCRIPT_DEBUGGER_GetVersion();
 
 //-----------------------------------------------------------------------------
-// Création de la boite de dialogue
+// Crï¿½ation de la boite de dialogue
 void			SCRIPT_DEBUGGER_CreateDialog(HWND, ScriptDebuggerInfos &);
 
 //-----------------------------------------------------------------------------

@@ -60,9 +60,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define MAX_ACTORS 10
 
 #include <tchar.h>
-#include "EERIEApp.h"
-#include "EERIEPoly.h"
-#include "EERIETypes.h"
+#include "renderer/EERIEApp.h"
+#include "renderer/EERIEPoly.h"
+#include "renderer/EERIETypes.h"
 
 const unsigned long MAX_SPEECH(9);
 

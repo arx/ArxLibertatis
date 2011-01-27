@@ -57,13 +57,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stdlib.h>
 #include <math.h>
-#include "ARX_Collisions.h"
-#include "HERMESMain.h"
-#include "EERIEMath.h"
-#include "ARX_Damages.h"
-#include "ARX_Interactive.h"
-#include "ARX_NPC.h"
-#include "ARX_Time.h"
+
+#include "renderer/EERIEMath.h"
+#include "io/HERMESMain.h"
+#include "core/ARX_Collisions.h"
+#include "core/ARX_Damages.h"
+#include "core/ARX_Interactive.h"
+#include "core/ARX_NPC.h"
+#include "core/ARX_Time.h"
 
 using std::min;
 using std::max;

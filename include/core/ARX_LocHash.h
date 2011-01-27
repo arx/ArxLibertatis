@@ -31,8 +31,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 #include <string>
 #include <vector>
-#include <ARX_Common.h>
 #include <cstring>
+#include "ARX_Common.h"
 
 using namespace std;
 

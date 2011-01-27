@@ -22,14 +22,14 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-// Code: Didier Pédreno
+// Code: Didier Pï¿½dreno
 
 #ifndef ARX_LOC_H
 #define ARX_LOC_H
 
 #include <tchar.h>
 #include <objbase.h>
-#include <ARX_Common.h>
+#include "core/ARX_Common.h"
 
 void ARX_Localisation_Init(const char * _lpszExtension = "english");
 void ARX_Localisation_Close();

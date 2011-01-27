@@ -58,22 +58,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdio.h>
 #include <tchar.h>
 
-#include "EERIEApp.h"
-#include "EERIEPoly.h"
-#include "EERIEUtil.h"
+#include "renderer/EERIEApp.h"
+#include "renderer/EERIEPoly.h"
+#include "renderer/EERIEUtil.h"
 
-#include "ARX_Menu.h"
-#include "ARX_Player.h"
-#include "ARX_Interface.h"
-#include "ARX_Time.h"
+#include "core/ARX_Menu.h"
+#include "core/ARX_Player.h"
+#include "core/ARX_Interface.h"
+#include "core/ARX_Time.h"
+#include "core/ARX_Menu2.h"
+#include "core/Danae_resource.h"
 
-#include "HERMESMain.h"
-#include "HERMESNet.h"
-
-#include "../core/ARX_Menu2.h"
-#include "../core/Danae_resource.h"
-
-#include <hermes/PakManager.h>
+#include "io/HERMESMain.h"
+#include "io/HERMESNet.h"
+#include "io/PakManager.h"
 
 using std::max;
 

@@ -28,21 +28,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string.h>
 #include <windows.h>
 #include <tchar.h>
-#include "Danae.h"
-#include "ARX_Menu.h"
-#include "ARX_Menu2.h"
-#include "ARX_MenuPublic.h"
-#include "ARX_Sound.h"
-#include "ARX_Loc.h"
-#include "ARX_Text.h"
-#include "ARX_Interface.h"
-
-#include "Mercury_dx_input.h"
-#include "ARX_Time.h"
-
-#include "EERIETexture.h"
-#include "EERIEPoly.h"
-#include "EERIEDraw.h"
+#include "core/Danae.h"
+#include "core/ARX_Menu.h"
+#include "core/ARX_Menu2.h"
+#include "core/ARX_MenuPublic.h"
+#include "core/ARX_Sound.h"
+#include "core/ARX_Loc.h"
+#include "core/ARX_Text.h"
+#include "core/ARX_Interface.h"
+#include "core/ARX_Time.h"
+#include "renderer/EERIETexture.h"
+#include "renderer/EERIEPoly.h"
+#include "renderer/EERIEDraw.h"
+#include "window/Mercury_dx_input.h"
 
 using std::wistringstream;
 
