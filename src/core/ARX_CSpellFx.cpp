@@ -257,7 +257,7 @@ unsigned long CSpellFx::GetDuration()
 void CSpellFx::SetAngle(float afAngle)
 {
 	fBeta = afAngle;
-	fBetaRad = DEG2RAD(fBeta);
+	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
 }
@@ -277,7 +277,7 @@ void Draw3DLineTex(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D s, EERIE_3D e, float
 {
 	float fBeta = MAKEANGLE(player.angle.b);
 	float zz = fSize; // size
-	float xx = (float)(fSize * cos(DEG2RAD(fBeta)));
+	float xx = (float)(fSize * cos(radians(fBeta)));
 
 	D3DTLVERTEX v[4];
 	D3DTLVERTEX v2[4];
@@ -321,7 +321,7 @@ void Draw3DLineTex(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D s, EERIE_3D e, float
 	                             &v2[2],
 	                             &v2[3]);
 
-	zz *= (float) sin(DEG2RAD(fBeta));
+	zz *= (float) sin(radians(fBeta));
 
 	v[0].sx = s.x + xx;
 	v[0].sy = s.y;
@@ -355,8 +355,8 @@ void Draw3DLineTex(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D s, EERIE_3D e, float
 void Draw3DLineTex(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D s, EERIE_3D e, int color, float fStartSize, float fEndSize)
 {
 	float fBeta = MAKEANGLE(player.angle.b);
-	float xxs = (float)(fStartSize * cos(DEG2RAD(fBeta)));
-	float xxe = (float)(fEndSize * cos(DEG2RAD(fBeta)));
+	float xxs = (float)(fStartSize * cos(radians(fBeta)));
+	float xxe = (float)(fEndSize * cos(radians(fBeta)));
 	float zzs = fStartSize;
 	float zze = fEndSize;
 
@@ -402,8 +402,8 @@ void Draw3DLineTex(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D s, EERIE_3D e, int c
 	                             &v2[2],
 	                             &v2[3]);
 
-	zzs *= (float) sin(DEG2RAD(fBeta));
-	zze *= (float) sin(DEG2RAD(fBeta));
+	zzs *= (float) sin(radians(fBeta));
+	zze *= (float) sin(radians(fBeta));
 
 	v[0].sx = s.x + xxs;
 	v[0].sy = s.y;
@@ -438,7 +438,7 @@ void Draw3DLineTex2(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D s, EERIE_3D e, floa
 {
 	float fBeta = MAKEANGLE(player.angle.b);
 	float zz = fSize; 
-	float xx = (float)(fSize * cos(DEG2RAD(fBeta)));
+	float xx = (float)(fSize * cos(radians(fBeta)));
 
 	D3DTLVERTEX v[4];
 	D3DTLVERTEX v2[4];
@@ -484,7 +484,7 @@ void Draw3DLineTex2(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D s, EERIE_3D e, floa
 	                             &v2[3]);
 
 
-	zz *= (float) sin(DEG2RAD(fBeta));
+	zz *= (float) sin(radians(fBeta));
 
 	v[0].sx = s.x + xx;
 	v[0].sy = s.y;

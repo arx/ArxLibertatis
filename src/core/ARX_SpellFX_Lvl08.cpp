@@ -269,7 +269,7 @@ float CExplosion::Render(LPDIRECT3DDEVICE7 device)
 					particle[j].exist = 1;
 					particle[j].zdec = 0;
 
-					float a = DEG2RAD(360.f * scale);
+					float a = radians(360.f * scale);
 					float b = rin; 
 
 					particle[j].ov.x		=	pos.x + b * EEcos(a);
@@ -300,7 +300,7 @@ float CExplosion::Render(LPDIRECT3DDEVICE7 device)
 					particle[j].exist = 1;
 					particle[j].zdec = 0;
 
-					float a = DEG2RAD(-360.f * scale);
+					float a = radians(-360.f * scale);
 					float b = this->rin;
 
 					particle[j].ov.x	=	pos.x + b * EEcos(a);

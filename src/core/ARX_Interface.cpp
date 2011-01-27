@@ -2438,9 +2438,9 @@ bool DANAE::ManageEditorControls()
 							float y_ratio=(float)((float)DANAEMouse.y-(float)DANAECENTERY)/(float)DANAESIZY*2;
 							float x_ratio=-(float)((float)DANAEMouse.x-(float)DANAECENTERX)/(float)DANAECENTERX;
 							EERIE_3D viewvector;
-							viewvector.x=-(float)EEsin(DEG2RAD(player.angle.b+(x_ratio*30.f)))*EEcos(DEG2RAD(player.angle.a));
-								viewvector.y = EEsin(DEG2RAD(player.angle.a)) + y_ratio; 
-							viewvector.z= (float)EEcos(DEG2RAD(player.angle.b+(x_ratio*30.f)))*EEcos(DEG2RAD(player.angle.a));
+							viewvector.x=-(float)EEsin(radians(player.angle.b+(x_ratio*30.f)))*EEcos(radians(player.angle.a));
+								viewvector.y = EEsin(radians(player.angle.a)) + y_ratio; 
+							viewvector.z= (float)EEcos(radians(player.angle.b+(x_ratio*30.f)))*EEcos(radians(player.angle.a));
 							io->soundtime=0;
 							io->soundcount=0;
 							EERIE_PHYSICS_BOX_Launch(io->obj,&pos,&viewvector);
@@ -2816,9 +2816,9 @@ bool DANAE::ManageEditorControls()
 			{
 				if ((ARX_PATHS_SelectedAP!=NULL) && (ARX_PATHS_SelectedNum!=-1))
 				{
-					trans.x=-(float)EEsin(DEG2RAD(player.angle.b))*val;
+					trans.x=-(float)EEsin(radians(player.angle.b))*val;
 					trans.y=0.f;
-					trans.z=(float)EEcos(DEG2RAD(player.angle.b))*val;
+					trans.z=(float)EEcos(radians(player.angle.b))*val;
 					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,0,0);
 				}
 
@@ -2829,9 +2829,9 @@ bool DANAE::ManageEditorControls()
 			{
 				if ((ARX_PATHS_SelectedAP!=NULL) && (ARX_PATHS_SelectedNum!=-1))
 				{
-					trans.x=(float)EEsin(DEG2RAD(player.angle.b))*val;
+					trans.x=(float)EEsin(radians(player.angle.b))*val;
 					trans.y=0.f;
-					trans.z=-(float)EEcos(DEG2RAD(player.angle.b))*val;
+					trans.z=-(float)EEcos(radians(player.angle.b))*val;
 					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,0,0);
 				}
 
@@ -2842,9 +2842,9 @@ bool DANAE::ManageEditorControls()
 			{
 				if ((ARX_PATHS_SelectedAP!=NULL) && (ARX_PATHS_SelectedNum!=-1))
 				{
-					trans.x=-(float)EEsin(DEG2RAD(MAKEANGLE(player.angle.b-90.f)))*val;
+					trans.x=-(float)EEsin(radians(MAKEANGLE(player.angle.b-90.f)))*val;
 					trans.y=0.f;
-					trans.z=(float)EEcos(DEG2RAD(MAKEANGLE(player.angle.b-90.f)))*val;
+					trans.z=(float)EEcos(radians(MAKEANGLE(player.angle.b-90.f)))*val;
 					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,0,0);
 				}
 
@@ -2855,9 +2855,9 @@ bool DANAE::ManageEditorControls()
 			{
 				if ((ARX_PATHS_SelectedAP!=NULL) && (ARX_PATHS_SelectedNum!=-1))
 				{
-					trans.x=-(float)EEsin(DEG2RAD(MAKEANGLE(player.angle.b+90.f)))*val;
+					trans.x=-(float)EEsin(radians(MAKEANGLE(player.angle.b+90.f)))*val;
 					trans.y=0.f;
-					trans.z=(float)EEcos(DEG2RAD(MAKEANGLE(player.angle.b+90.f)))*val;
+					trans.z=(float)EEcos(radians(MAKEANGLE(player.angle.b+90.f)))*val;
 					ARX_PATHS_ModifyPathWay(ARX_PATHS_SelectedAP,ARX_PATHS_SelectedNum,ARX_PATHS_HIERARCHYMOVE | ARX_PATH_MOD_TRANSLATE,&trans,0,0);
 				}
 
@@ -2939,8 +2939,8 @@ bool DANAE::ManageEditorControls()
 			if (this->kbd.inkey[INKEY_N]) 
 			{
 				EERIE_3D pos;
-				pos.x=player.pos.x-(float)EEsin(DEG2RAD(player.angle.b))*150.f;
-				pos.z=player.pos.z+(float)EEcos(DEG2RAD(player.angle.b))*150.f;
+				pos.x=player.pos.x-(float)EEsin(radians(player.angle.b))*150.f;
+				pos.z=player.pos.z+(float)EEcos(radians(player.angle.b))*150.f;
 				pos.y=player.pos.y+80.f;		
 
 				if (CDP_PATHWAYS_Options) SendMessage(CDP_PATHWAYS_Options,WM_COMMAND,MAKEWPARAM(IDAPPLY,0),0);
@@ -2970,13 +2970,13 @@ bool DANAE::ManageEditorControls()
 
 					if (v<=2)
 					{
-						pos.x=-(float)EEsin(DEG2RAD(player.angle.b))*100.f;
-						pos.z=+(float)EEcos(DEG2RAD(player.angle.b))*100.f;
+						pos.x=-(float)EEsin(radians(player.angle.b))*100.f;
+						pos.z=+(float)EEcos(radians(player.angle.b))*100.f;
 					}
 					else
 					{
-						pos.x=ARX_PATHS_SelectedAP->pathways[v-2].rpos.x-(float)EEsin(DEG2RAD(player.angle.b))*100.f;
-						pos.z=ARX_PATHS_SelectedAP->pathways[v-2].rpos.z+(float)EEcos(DEG2RAD(player.angle.b))*100.f;
+						pos.x=ARX_PATHS_SelectedAP->pathways[v-2].rpos.x-(float)EEsin(radians(player.angle.b))*100.f;
+						pos.z=ARX_PATHS_SelectedAP->pathways[v-2].rpos.z+(float)EEcos(radians(player.angle.b))*100.f;
 					}
 
 					if (v-1>=0) 
@@ -3100,8 +3100,8 @@ bool DANAE::ManageEditorControls()
 					GLight[num]->intensity = 1.2f;
 					GLight[num]->maxs.x = -1;
 					GLight[num]->mins.x = -1;
-					GLight[num]->pos.x = player.pos.x - (float)EEsin(DEG2RAD(player.angle.b)) * 150.f;
-					GLight[num]->pos.z = player.pos.z + (float)EEcos(DEG2RAD(player.angle.b)) * 150.f;
+					GLight[num]->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 150.f;
+					GLight[num]->pos.z = player.pos.z + (float)EEcos(radians(player.angle.b)) * 150.f;
 					GLight[num]->pos.y = player.pos.y + 80.f;
 					GLight[num]->rgb.r = 1.f;
 					GLight[num]->rgb.g = 0.f;
@@ -3130,9 +3130,9 @@ bool DANAE::ManageEditorControls()
 			if (this->kbd.inkey[INKEY_PAD8]) 
 			{
 				PrecalcIOLighting(NULL,0,1);	
-				trans.x=-(float)EEsin(DEG2RAD(player.angle.b))*val;
+				trans.x=-(float)EEsin(radians(player.angle.b))*val;
 				trans.y=0.f;
-				trans.z=(float)EEcos(DEG2RAD(player.angle.b))*val;
+				trans.z=(float)EEcos(radians(player.angle.b))*val;
 				EERIE_LIGHT_TranslateSelected(&trans);
 				this->kbd.inkey[INKEY_PAD8]=0;
 			}
@@ -3140,9 +3140,9 @@ bool DANAE::ManageEditorControls()
 			if (this->kbd.inkey[INKEY_PAD2]) 
 			{
 				PrecalcIOLighting(NULL,0,1);
-				trans.x=(float)EEsin(DEG2RAD(player.angle.b))*val;
+				trans.x=(float)EEsin(radians(player.angle.b))*val;
 				trans.y=0.f;
-				trans.z=-(float)EEcos(DEG2RAD(player.angle.b))*val;
+				trans.z=-(float)EEcos(radians(player.angle.b))*val;
 				EERIE_LIGHT_TranslateSelected(&trans);
 				this->kbd.inkey[INKEY_PAD2]=0;
 			}
@@ -3150,9 +3150,9 @@ bool DANAE::ManageEditorControls()
 			if (this->kbd.inkey[INKEY_PAD6]) 
 			{
 				PrecalcIOLighting(NULL,0,1);
-				trans.x=-(float)EEsin(DEG2RAD(MAKEANGLE(player.angle.b-90.f)))*val;
+				trans.x=-(float)EEsin(radians(MAKEANGLE(player.angle.b-90.f)))*val;
 				trans.y=0.f;
-				trans.z=(float)EEcos(DEG2RAD(MAKEANGLE(player.angle.b-90.f)))*val;
+				trans.z=(float)EEcos(radians(MAKEANGLE(player.angle.b-90.f)))*val;
 				EERIE_LIGHT_TranslateSelected(&trans);
 				this->kbd.inkey[INKEY_PAD6]=0;
 			}		
@@ -3160,9 +3160,9 @@ bool DANAE::ManageEditorControls()
 			if (this->kbd.inkey[INKEY_PAD4]) 
 			{
 				PrecalcIOLighting(NULL,0,1);
-				trans.x=-(float)EEsin(DEG2RAD(MAKEANGLE(player.angle.b+90.f)))*val;
+				trans.x=-(float)EEsin(radians(MAKEANGLE(player.angle.b+90.f)))*val;
 				trans.y=0.f;
-				trans.z=(float)EEcos(DEG2RAD(MAKEANGLE(player.angle.b+90.f)))*val;
+				trans.z=(float)EEcos(radians(MAKEANGLE(player.angle.b+90.f)))*val;
 				EERIE_LIGHT_TranslateSelected(&trans);
 				this->kbd.inkey[INKEY_PAD4]=0;
 			}
@@ -3224,36 +3224,36 @@ bool DANAE::ManageEditorControls()
 		if (this->kbd.inkey[INKEY_PAD8]) 
 		{
 			// Translate FRONT
-			trans.x=-(float)EEsin(DEG2RAD(player.angle.b))*val;
+			trans.x=-(float)EEsin(radians(player.angle.b))*val;
 			trans.y=0.f;
-			trans.z=(float)EEcos(DEG2RAD(player.angle.b))*val;
+			trans.z=(float)EEcos(radians(player.angle.b))*val;
 			this->kbd.inkey[INKEY_PAD8]=0;
 		}
 
 		if (this->kbd.inkey[INKEY_PAD2]) 
 		{
 			//	translate BACK
-			trans.x=(float)EEsin(DEG2RAD(player.angle.b))*val;
+			trans.x=(float)EEsin(radians(player.angle.b))*val;
 			trans.y=0.f;
-			trans.z=-(float)EEcos(DEG2RAD(player.angle.b))*val;
+			trans.z=-(float)EEcos(radians(player.angle.b))*val;
 			this->kbd.inkey[INKEY_PAD2]=0;
 		}
 
 		if (this->kbd.inkey[INKEY_PAD6]) 
 		{
 			//	translate RIGHT
-			trans.x=-(float)EEsin(DEG2RAD(MAKEANGLE(player.angle.b-90.f)))*val;
+			trans.x=-(float)EEsin(radians(MAKEANGLE(player.angle.b-90.f)))*val;
 			trans.y=0.f;
-			trans.z=(float)EEcos(DEG2RAD(MAKEANGLE(player.angle.b-90.f)))*val;
+			trans.z=(float)EEcos(radians(MAKEANGLE(player.angle.b-90.f)))*val;
 			this->kbd.inkey[INKEY_PAD6]=0;
 		}		
 
 		if (this->kbd.inkey[INKEY_PAD4]) 
 		{
 			// translate LEFT
-			trans.x=-(float)EEsin(DEG2RAD(MAKEANGLE(player.angle.b+90.f)))*val;
+			trans.x=-(float)EEsin(radians(MAKEANGLE(player.angle.b+90.f)))*val;
 			trans.y=0.f;
-			trans.z=(float)EEcos(DEG2RAD(MAKEANGLE(player.angle.b+90.f)))*val;
+			trans.z=(float)EEcos(radians(MAKEANGLE(player.angle.b+90.f)))*val;
 			this->kbd.inkey[INKEY_PAD4]=0;
 		}
 
@@ -3372,8 +3372,8 @@ bool DANAE::ManageEditorControls()
 				{
 					ClearNode(n,0);
 					nodes.nodes[n].exist=1;
-					nodes.nodes[n].pos.x=player.pos.x-(float)EEsin(DEG2RAD(player.angle.b))*150.f;
-					nodes.nodes[n].pos.z=player.pos.z+(float)EEcos(DEG2RAD(player.angle.b))*150.f;
+					nodes.nodes[n].pos.x=player.pos.x-(float)EEsin(radians(player.angle.b))*150.f;
+					nodes.nodes[n].pos.z=player.pos.z+(float)EEcos(radians(player.angle.b))*150.f;
 					nodes.nodes[n].pos.y=player.pos.y+80.f;
 					MakeNodeName(n);
 					UnselectAllNodes();
@@ -3402,7 +3402,7 @@ bool DANAE::ManageEditorControls()
 			if (this->kbd.inkey[INKEY_PAD8]) 
 			{
 				float ag=GetNearestSnappedAngle(player.angle.b);
-				ag=DEG2RAD(ag);
+				ag=radians(ag);
 				trans.x=-(float)EEsin(ag)*val;
 				trans.y=0.f;
 				trans.z=(float)EEcos(ag)*val;
@@ -3413,7 +3413,7 @@ bool DANAE::ManageEditorControls()
 			if (this->kbd.inkey[INKEY_PAD2]) 
 			{
 				float ag=GetNearestSnappedAngle(player.angle.b);
-				ag=DEG2RAD(ag);
+				ag=radians(ag);
 				trans.x=(float)EEsin(ag)*val;
 				trans.y=0.f;
 				trans.z=-(float)EEcos(ag)*val;
@@ -3424,7 +3424,7 @@ bool DANAE::ManageEditorControls()
 			if (this->kbd.inkey[INKEY_PAD6]) 
 			{
 				float ag=GetNearestSnappedAngle(MAKEANGLE(player.angle.b-90.f));
-				ag=DEG2RAD(ag);
+				ag=radians(ag);
 				trans.x=-(float)EEsin(ag)*val;
 				trans.y=0.f;
 				trans.z=(float)EEcos(ag)*val;
@@ -3435,7 +3435,7 @@ bool DANAE::ManageEditorControls()
 			if (this->kbd.inkey[INKEY_PAD4]) 
 			{
 				float ag=GetNearestSnappedAngle(MAKEANGLE(player.angle.b+90.f));
-				ag=DEG2RAD(ag);
+				ag=radians(ag);
 				trans.x=-(float)EEsin(ag)*val;
 				trans.y=0.f;
 				trans.z=(float)EEcos(ag)*val;
@@ -3512,8 +3512,8 @@ bool DANAE::ManageEditorControls()
 				fogs[LastSelectedFog].move.y=0.f;
 				fogs[LastSelectedFog].move.z=0.f;
 				EERIE_3D out;
-				_YRotatePoint(&fogs[LastSelectedFog].move,&out,EEcos(DEG2RAD(MAKEANGLE(fogs[LastSelectedFog].angle.b))),EEsin(DEG2RAD(MAKEANGLE(fogs[LastSelectedFog].angle.b))));
-				_XRotatePoint(&out,&fogs[LastSelectedFog].move,EEcos(DEG2RAD(MAKEANGLE(fogs[LastSelectedFog].angle.a))),EEsin(DEG2RAD(MAKEANGLE(fogs[LastSelectedFog].angle.a))));
+				_YRotatePoint(&fogs[LastSelectedFog].move,&out,EEcos(radians(MAKEANGLE(fogs[LastSelectedFog].angle.b))),EEsin(radians(MAKEANGLE(fogs[LastSelectedFog].angle.b))));
+				_XRotatePoint(&out,&fogs[LastSelectedFog].move,EEcos(radians(MAKEANGLE(fogs[LastSelectedFog].angle.a))),EEsin(radians(MAKEANGLE(fogs[LastSelectedFog].angle.a))));
 				
 				
 			}
@@ -3554,8 +3554,8 @@ bool DANAE::ManageEditorControls()
 				ARX_FOGS_UnselectAll();
 				ARX_FOGS_Select(n);
 				LastSelectedFog=n;
-				fogs[n].pos.x=player.pos.x-(float)EEsin(DEG2RAD(player.angle.b))*150.f;
-				fogs[n].pos.z=player.pos.z+(float)EEcos(DEG2RAD(player.angle.b))*150.f;
+				fogs[n].pos.x=player.pos.x-(float)EEsin(radians(player.angle.b))*150.f;
+				fogs[n].pos.z=player.pos.z+(float)EEcos(radians(player.angle.b))*150.f;
 				fogs[n].pos.y=player.pos.y+80.f;
 				EERIEPOLY * ep=CheckInPoly(fogs[n].pos.x,fogs[n].pos.y+PLAYER_BASE_HEIGHT,fogs[n].pos.z);
 
@@ -3613,9 +3613,9 @@ bool DANAE::ManageEditorControls()
 
 		if ( this->kbd.inkey[INKEY_PAD8] ) 
 		{
-			trans.x = -(float)EEsin( DEG2RAD( player.angle.b ) ) * val;
+			trans.x = -(float)EEsin( radians( player.angle.b ) ) * val;
 			trans.y = 0.f;
-			trans.z = (float)EEcos( DEG2RAD( player.angle.b ) ) * val;
+			trans.z = (float)EEcos( radians( player.angle.b ) ) * val;
 			ARX_FOGS_TranslateSelected( &trans );
 			this->kbd.inkey[INKEY_PAD8] = 0;
 		}
@@ -3623,9 +3623,9 @@ bool DANAE::ManageEditorControls()
 		if (this->kbd.inkey[INKEY_PAD2]) 
 		{
 			EERIE_3D trans;
-			trans.x=(float)EEsin(DEG2RAD(player.angle.b))*val;
+			trans.x=(float)EEsin(radians(player.angle.b))*val;
 			trans.y=0.f;
-			trans.z=-(float)EEcos(DEG2RAD(player.angle.b))*val;
+			trans.z=-(float)EEcos(radians(player.angle.b))*val;
 			ARX_FOGS_TranslateSelected(&trans);
 			this->kbd.inkey[INKEY_PAD2]=0;
 		}
@@ -3633,9 +3633,9 @@ bool DANAE::ManageEditorControls()
 		if (this->kbd.inkey[INKEY_PAD6]) 
 		{
 			EERIE_3D trans;
-			trans.x=-(float)EEsin(DEG2RAD(MAKEANGLE(player.angle.b-90.f)))*val;
+			trans.x=-(float)EEsin(radians(MAKEANGLE(player.angle.b-90.f)))*val;
 			trans.y=0.f;
-			trans.z=(float)EEcos(DEG2RAD(MAKEANGLE(player.angle.b-90.f)))*val;
+			trans.z=(float)EEcos(radians(MAKEANGLE(player.angle.b-90.f)))*val;
 			ARX_FOGS_TranslateSelected(&trans);
 			this->kbd.inkey[INKEY_PAD6]=0;
 		}		
@@ -3643,9 +3643,9 @@ bool DANAE::ManageEditorControls()
 		if (this->kbd.inkey[INKEY_PAD4]) 
 		{
 			EERIE_3D trans;
-			trans.x=-(float)EEsin(DEG2RAD(MAKEANGLE(player.angle.b+90.f)))*val;
+			trans.x=-(float)EEsin(radians(MAKEANGLE(player.angle.b+90.f)))*val;
 			trans.y=0.f;
-			trans.z=(float)EEcos(DEG2RAD(MAKEANGLE(player.angle.b+90.f)))*val;
+			trans.z=(float)EEcos(radians(MAKEANGLE(player.angle.b+90.f)))*val;
 			ARX_FOGS_TranslateSelected(&trans);
 			this->kbd.inkey[INKEY_PAD4]=0;
 		}
@@ -3720,7 +3720,7 @@ bool DANAE::ManageEditorControls()
 		{
 			EERIE_3D trans;
 			float ag=GetNearestSnappedAngle(player.angle.b);
-			ag=DEG2RAD(ag);
+			ag=radians(ag);
 			trans.x=-(float)EEsin(ag)*val;
 			trans.y=0.f;
 			trans.z=(float)EEcos(ag)*val;
@@ -3732,7 +3732,7 @@ bool DANAE::ManageEditorControls()
 		{
 			EERIE_3D trans;
 			float ag=GetNearestSnappedAngle(player.angle.b);
-			ag=DEG2RAD(ag);
+			ag=radians(ag);
 			trans.x=(float)EEsin(ag)*val;
 			trans.y=0.f;
 			trans.z=-(float)EEcos(ag)*val;
@@ -3744,7 +3744,7 @@ bool DANAE::ManageEditorControls()
 		{
 			EERIE_3D trans;
 			float ag=GetNearestSnappedAngle(MAKEANGLE(player.angle.b-90.f));
-			ag=DEG2RAD(ag);
+			ag=radians(ag);
 			trans.x=-(float)EEsin(ag)*val;
 			trans.y=0.f;
 			trans.z=(float)EEcos(ag)*val;
@@ -3756,7 +3756,7 @@ bool DANAE::ManageEditorControls()
 		{
 			EERIE_3D trans;
 			float ag=GetNearestSnappedAngle(MAKEANGLE(player.angle.b+90.f));
-			ag=DEG2RAD(ag);
+			ag=radians(ag);
 			trans.x=-(float)EEsin(ag)*val;
 			trans.y=0.f;
 			trans.z=(float)EEcos(ag)*val;
@@ -4043,7 +4043,7 @@ void DANAE::ManagePlayerControls()
 			// Checks WALK_FORWARD Key Status.
 			if (ARX_IMPULSE_Pressed(CONTROLS_CUST_WALKFORWARD) )
 			{
-				tr=DEG2RAD(eyeball.angle.b);
+				tr=radians(eyeball.angle.b);
 				eyeball.pos.x+=-(float)EEsin(tr)*20.f*(float)FD*0.033f;
 				eyeball.pos.z+=+(float)EEcos(tr)*20.f*(float)FD*0.033f;
 				MustRefresh=true;
@@ -4053,7 +4053,7 @@ void DANAE::ManagePlayerControls()
 			// Checks WALK_BACKWARD Key Status.
 			if (ARX_IMPULSE_Pressed(CONTROLS_CUST_WALKBACKWARD) )
 			{
-				tr=DEG2RAD(eyeball.angle.b);
+				tr=radians(eyeball.angle.b);
 				eyeball.pos.x+=(float)EEsin(tr)*20.f*(float)FD*0.033f;
 				eyeball.pos.z+=-(float)EEcos(tr)*20.f*(float)FD*0.033f;
 				MustRefresh=true;
@@ -4065,7 +4065,7 @@ void DANAE::ManagePlayerControls()
 				(ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFE)&&ARX_IMPULSE_Pressed(CONTROLS_CUST_TURNLEFT)))
 				&& !NOMOREMOVES)
 			{
-				tr=DEG2RAD(MAKEANGLE(eyeball.angle.b+90.f));
+				tr=radians(MAKEANGLE(eyeball.angle.b+90.f));
 				eyeball.pos.x+=-(float)EEsin(tr)*10.f*(float)FD*0.033f;
 				eyeball.pos.z+=+(float)EEcos(tr)*10.f*(float)FD*0.033f;
 				MustRefresh=true;
@@ -4077,7 +4077,7 @@ void DANAE::ManagePlayerControls()
 				(ARX_IMPULSE_Pressed(CONTROLS_CUST_STRAFE)&&ARX_IMPULSE_Pressed(CONTROLS_CUST_TURNRIGHT)))
 				&& !NOMOREMOVES)
 			{
-				tr=DEG2RAD(MAKEANGLE(eyeball.angle.b-90.f));
+				tr=radians(MAKEANGLE(eyeball.angle.b-90.f));
 				eyeball.pos.x+=-(float)EEsin(tr)*10.f*(float)FD*0.033f;
 				//eyeball.pos.y+=FD*0.33f;
 				eyeball.pos.z+=(float)EEcos(tr)*10.f*(float)FD*0.033f;
@@ -4160,7 +4160,7 @@ void DANAE::ManagePlayerControls()
 
 			if (Project.improvespeed) multi+=1.2f;
 
-			t=DEG2RAD(player.angle.b);
+			t=radians(player.angle.b);
 			multi=5.f*(float)FD*MoveDiv*multi;
 			tm.x+=(float)EEsin(t)*multi;
 			tm.z-=(float)EEcos(t)*multi;
@@ -4189,7 +4189,7 @@ void DANAE::ManagePlayerControls()
 
 			if (Project.improvespeed) multi+=1.5;
 
-			t=DEG2RAD(player.angle.b);
+			t=radians(player.angle.b);
 			multi=10.f*(float)FD*MoveDiv*multi;
 			tm.x-=(float)EEsin(t)*multi;
 			tm.z+=(float)EEcos(t)*multi;
@@ -4204,7 +4204,7 @@ void DANAE::ManagePlayerControls()
 		if (left && !NOMOREMOVES)
 		{
 			CurrFightPos=0;
-			t=DEG2RAD(MAKEANGLE(player.angle.b+90.f));
+			t=radians(MAKEANGLE(player.angle.b+90.f));
 			multi=6.f*(float)FD*MoveDiv;
 			tm.x-=(float)EEsin(t)*multi;
 			tm.z+=(float)EEcos(t)*multi;
@@ -4221,7 +4221,7 @@ void DANAE::ManagePlayerControls()
 		if ( right && !NOMOREMOVES)
 		{
 			CurrFightPos=1;
-			t=DEG2RAD(MAKEANGLE(player.angle.b-90.f));
+			t=radians(MAKEANGLE(player.angle.b-90.f));
 			multi=6.f*(float)FD*MoveDiv;
 			tm.x-=(float)EEsin(t)*multi;
 			tm.z+=(float)EEcos(t)*multi;			
@@ -6179,8 +6179,8 @@ void DANAE::ManageKeyMouse()
 								else 
 								{
 									ARX_SPELLS_Launch(SPELL_SPEED,0);
-									tm.x+=-(float)EEsin(DEG2RAD(player.pos.b))*(float)FrameDiff*( 1.0f / 3 );
-									tm.z+=+(float)EEcos(DEG2RAD(player.pos.b))*(float)FrameDiff*( 1.0f / 3 );
+									tm.x+=-(float)EEsin(radians(player.pos.b))*(float)FrameDiff*( 1.0f / 3 );
+									tm.z+=+(float)EEcos(radians(player.pos.b))*(float)FrameDiff*( 1.0f / 3 );
 								}
 
 								this->kbd.inkey[INKEY_4]=0;
@@ -6324,7 +6324,7 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 								SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
 								SETALPHABLEND(GDevice,true);
 
-								float fColorPulse	=	255.f * fabs( cos( DEG2RAD( fDecPulse ) ) );
+								float fColorPulse	=	255.f * fabs( cos( radians( fDecPulse ) ) );
 								DWORD dwColor		=	ARX_CLEAN_WARN_CAST_DWORD(fColorPulse);
 								
 								EERIEDrawBitmap(GDevice,
@@ -6432,7 +6432,7 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 						{
 							if (io->ioflags & IO_CAN_COMBINE) 
 							{
-								float fColorPulse	=	255.f * fabs( cos( DEG2RAD( fDecPulse ) ) );
+								float fColorPulse	=	255.f * fabs( cos( radians( fDecPulse ) ) );
 								DWORD dwColor		=	ARX_CLEAN_WARN_CAST_DWORD(fColorPulse);
 
 								SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
@@ -10107,7 +10107,7 @@ assert(ITC.hero_inventory != NULL);
 						fArrowMove=0.f;
 					}
 
-					float fMove=fabs(sin(DEG2RAD(fArrowMove)))*fSizeX*.5f;
+					float fMove=fabs(sin(radians(fArrowMove)))*fSizeX*.5f;
 					
 					EERIEDrawBitmap(	GDevice,					//left
 						0+fMove,
@@ -10211,8 +10211,8 @@ long Manage3DCursor(long flags)
 
 	temp.g = 0; 
 	EERIE_3D pos;
-	float angle=DEG2RAD(MAKEANGLE(player.angle.b));
-	float angle2=DEG2RAD(MAKEANGLE(player.angle.b-90.f));
+	float angle=radians(MAKEANGLE(player.angle.b));
+	float angle2=radians(MAKEANGLE(player.angle.b-90.f));
 				
 	float zrange=(DANAESIZY-DANAEMouse.y)/(DANAESIZY-drop_miny); //between 0 (bottom) and 1 (top)
 	float va=player.angle.a;
@@ -10283,9 +10283,9 @@ long Manage3DCursor(long flags)
 					cyl.radius=40.f;
 
 					EERIE_3D orgn,dest,mvectx,mvecty;
-		mvectx.x = mvecty.x = -(float)EEsin(DEG2RAD(player.angle.b - 90.f)); 
+		mvectx.x = mvecty.x = -(float)EEsin(radians(player.angle.b - 90.f)); 
 		mvectx.y = mvecty.y = 0; 
-		mvectx.z = mvecty.z = +(float)EEcos(DEG2RAD(player.angle.b - 90.f)); 
+		mvectx.z = mvecty.z = +(float)EEcos(radians(player.angle.b - 90.f)); 
 					TRUEVector_Normalize(&mvectx);
 	
 					float xmod,ymod;
@@ -10298,18 +10298,18 @@ long Manage3DCursor(long flags)
 					mvecty.y=ymod;
 		mvecty.z = 0; 
 
-					orgn.x=player.pos.x-(float)EEsin(DEG2RAD(player.angle.b))*(float)EEcos(DEG2RAD(player.angle.a))*50.f
+					orgn.x=player.pos.x-(float)EEsin(radians(player.angle.b))*(float)EEcos(radians(player.angle.a))*50.f
 		         + mvectx.x; 
-					orgn.y=player.pos.y+(float)EEsin(DEG2RAD(player.angle.a))*50.f
+					orgn.y=player.pos.y+(float)EEsin(radians(player.angle.a))*50.f
 							+mvectx.y+mvecty.y;
-					orgn.z=player.pos.z+(float)EEcos(DEG2RAD(player.angle.b))*(float)EEcos(DEG2RAD(player.angle.a))*50.f
+					orgn.z=player.pos.z+(float)EEcos(radians(player.angle.b))*(float)EEcos(radians(player.angle.a))*50.f
 		         + mvectx.z; 
 	
-					dest.x=player.pos.x-(float)EEsin(DEG2RAD(player.angle.b))*(float)EEcos(DEG2RAD(player.angle.a))*10000.f
+					dest.x=player.pos.x-(float)EEsin(radians(player.angle.b))*(float)EEcos(radians(player.angle.a))*10000.f
 		         + mvectx.x; 
-					dest.y=player.pos.y+(float)EEsin(DEG2RAD(player.angle.a))*10000.f
+					dest.y=player.pos.y+(float)EEsin(radians(player.angle.a))*10000.f
 							+mvectx.y+mvecty.y*5.f;
-					dest.z=player.pos.z+(float)EEcos(DEG2RAD(player.angle.b))*(float)EEcos(DEG2RAD(player.angle.a))*10000.f
+					dest.z=player.pos.z+(float)EEcos(radians(player.angle.b))*(float)EEcos(radians(player.angle.a))*10000.f
 		         + mvectx.z; 
 					pos.x=orgn.x;
 					pos.y=orgn.y;
@@ -10644,7 +10644,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 					if(fHighLightAng>90.f) fHighLightAng=90.f;
 
 
-					float fHLight	= 100.f*sin(DEG2RAD(fHighLightAng));
+					float fHLight	= 100.f*sin(radians(fHighLightAng));
 					ARX_CHECK_INT(fHLight);
 					
 					iHighLight	= ARX_CLEAN_WARN_CAST_INT(fHLight);
@@ -11030,7 +11030,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 				if(fHighLightAng>90.f) fHighLightAng=90.f;
 
 
-				float fHLight	= 100.f*sin(DEG2RAD(fHighLightAng));
+				float fHLight	= 100.f*sin(radians(fHighLightAng));
 				ARX_CHECK_INT(fHLight);
 				
 				iHighLight	= ARX_CLEAN_WARN_CAST_INT(fHLight);

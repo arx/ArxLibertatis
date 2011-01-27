@@ -294,9 +294,9 @@ static	void	Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse,
 				ftr.y *= scale;
 				ftr.z *= scale;
 
-				float temp = DEG2RAD(MAKEANGLE(180.f - io->angle.b));
+				float temp = radians(MAKEANGLE(180.f - io->angle.b));
 
-				if (io == inter.iobj[0]) temp = DEG2RAD(MAKEANGLE(180.f - player.angle.b));
+				if (io == inter.iobj[0]) temp = radians(MAKEANGLE(180.f - player.angle.b));
 
 				_YRotatePoint(&ftr, &ftr2, (float)EEcos(temp), (float)EEsin(temp));
 
@@ -1171,9 +1171,9 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 void Cedric_PrepareHalo(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, EERIE_3D * pos, EERIE_3D & ftr)
 {
 	EERIE_3D cam_vector, t_vector;
-	cam_vector.x = -EEsin(DEG2RAD(ACTIVECAM->angle.b)) * EEcos(DEG2RAD(ACTIVECAM->angle.a));
-	cam_vector.y = EEsin(DEG2RAD(ACTIVECAM->angle.a));
-	cam_vector.z = EEcos(DEG2RAD(ACTIVECAM->angle.b)) * EEcos(DEG2RAD(ACTIVECAM->angle.a));
+	cam_vector.x = -EEsin(radians(ACTIVECAM->angle.b)) * EEcos(radians(ACTIVECAM->angle.a));
+	cam_vector.y = EEsin(radians(ACTIVECAM->angle.a));
+	cam_vector.z = EEcos(radians(ACTIVECAM->angle.b)) * EEcos(radians(ACTIVECAM->angle.a));
 
 	/* Apply light on all vertices */
 	for (long i = 0; i != obj->nb_bones; i++)
@@ -2860,9 +2860,9 @@ void Cedric_ManageExtraRotationsFirst(INTERACTIVE_OBJ * io, EERIE_3DOBJ * obj)
 			{
 				EERIE_3D vt1;
 				EERIE_QUAT quat1;
-				vt1.x = DEG2RAD(io->_npcdata->ex_rotate->group_rotate[k].g);
-				vt1.y = DEG2RAD(io->_npcdata->ex_rotate->group_rotate[k].b);
-				vt1.z = DEG2RAD(io->_npcdata->ex_rotate->group_rotate[k].a);
+				vt1.x = radians(io->_npcdata->ex_rotate->group_rotate[k].g);
+				vt1.y = radians(io->_npcdata->ex_rotate->group_rotate[k].b);
+				vt1.z = radians(io->_npcdata->ex_rotate->group_rotate[k].a);
 				QuatFromAngles(&quat1, &vt1);
 				Quat_Copy(&obj->c_data->bones[i].quatinit, &quat1);
 			}

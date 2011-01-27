@@ -523,8 +523,8 @@ void DrawGrille(LPDIRECT3DDEVICE7 device, C_GRILLE * grille, int col, int fx, C_
 	D3DTLVERTEX * d3dv = AllD3DTLVertex;
 
 	LocalPos = *posgrille;
-	LocalSin = (float)sin(DEG2RAD(angzgrille));
-	LocalCos = (float)cos(DEG2RAD(angzgrille));
+	LocalSin = (float)sin(radians(angzgrille));
+	LocalCos = (float)cos(radians(angzgrille));
 
 	if ((fx & 0x0000FF00) == FX_DREAM)
 	{

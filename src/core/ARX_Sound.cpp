@@ -674,15 +674,15 @@ void ARX_SOUND_IOFrontPos(const INTERACTIVE_OBJ * io, aalVector & pos)
 {
 	if (io)
 	{
-		pos.x = io->pos.x - EEsin(DEG2RAD(MAKEANGLE(io->angle.b))) * 100.0F;
+		pos.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.b))) * 100.0F;
 		pos.y = io->pos.y - 100.0F;
-		pos.z = io->pos.z + EEcos(DEG2RAD(MAKEANGLE(io->angle.b))) * 100.0F;
+		pos.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b))) * 100.0F;
 	}
 	else if (ACTIVECAM)
 	{
-		pos.x = ACTIVECAM->pos.x - EEsin(DEG2RAD(MAKEANGLE(ACTIVECAM->angle.b))) * 100.0F;
+		pos.x = ACTIVECAM->pos.x - EEsin(radians(MAKEANGLE(ACTIVECAM->angle.b))) * 100.0F;
 		pos.y = ACTIVECAM->pos.y - 100.0F;
-		pos.z = ACTIVECAM->pos.z + EEcos(DEG2RAD(MAKEANGLE(ACTIVECAM->angle.b))) * 100.0F;
+		pos.z = ACTIVECAM->pos.z + EEcos(radians(MAKEANGLE(ACTIVECAM->angle.b))) * 100.0F;
 	}
 	else
 	{
@@ -973,7 +973,7 @@ long ARX_SOUND_PlayCinematic(const char * name)
 	{
 		EERIE_3D front, up;
 		float t;
-		t = DEG2RAD(MAKEANGLE(ACTIVECAM->angle.b));
+		t = radians(MAKEANGLE(ACTIVECAM->angle.b));
 		front.x = -EEsin(t);
 		front.y = 0.f;
 		front.z = EEcos(t);

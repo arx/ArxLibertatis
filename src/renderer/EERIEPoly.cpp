@@ -159,7 +159,7 @@ float fK3;
 void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _fZNear, float _fZFar)
 {
 	float fAspect = _fHeight / _fWidth;
-	float fFOV = DEG2RAD(_fFOV);
+	float fFOV = radians(_fFOV);
 	float fFarPlane = _fZFar;
 	float fNearPlane = _fZNear;
 	float w = fAspect * (cosf(fFOV / 2) / sinf(fFOV / 2));
@@ -1425,8 +1425,8 @@ void SetTargetCamera(EERIE_CAMERA * cam, float x, float y, float z)
 {
 	if ((cam->pos.x == x) && (cam->pos.y == y) && (cam->pos.z == z)) return;
 
-	cam->angle.a = (RAD2DEG(GetAngle(cam->pos.y, cam->pos.z, y, cam->pos.z + TRUEDistance2D(x, z, cam->pos.x, cam->pos.z)))); //alpha entre orgn et dest;
-	cam->angle.b = (180.f + RAD2DEG(GetAngle(cam->pos.x, cam->pos.z, x, z))); //beta entre orgn et dest;
+	cam->angle.a = (degrees(GetAngle(cam->pos.y, cam->pos.z, y, cam->pos.z + TRUEDistance2D(x, z, cam->pos.x, cam->pos.z)))); //alpha entre orgn et dest;
+	cam->angle.b = (180.f + degrees(GetAngle(cam->pos.x, cam->pos.z, x, z))); //beta entre orgn et dest;
 	cam->angle.g = 0.f;
 }
 
@@ -3222,13 +3222,13 @@ float EERIE_TransformOldFocalToNewFocal(float _fOldFocal)
 
 void PrepareActiveCamera()
 {
-	register float tmp = DEG2RAD(ACTIVECAM->angle.a);
+	register float tmp = radians(ACTIVECAM->angle.a);
 	ACTIVECAM->Xcos = (float)EEcos(tmp);
 	ACTIVECAM->Xsin = (float)EEsin(tmp);
-	tmp = DEG2RAD(ACTIVECAM->angle.b);
+	tmp = radians(ACTIVECAM->angle.b);
 	ACTIVECAM->Ycos = (float)EEcos(tmp);
 	ACTIVECAM->Ysin = (float)EEsin(tmp);
-	tmp = DEG2RAD(ACTIVECAM->angle.g);
+	tmp = radians(ACTIVECAM->angle.g);
 	ACTIVECAM->Zcos = (float)EEcos(tmp);
 	ACTIVECAM->Zsin = (float)EEsin(tmp);
 	ACTIVECAM->posleft = (float)(ACTIVECAM->centerx + ACTIVECAM->clip.left);
@@ -3269,11 +3269,11 @@ void PrepareActiveCamera()
 }
 void F_PrepareCamera(EERIE_CAMERA * cam)
 {
-	float tmp = DEG2RAD(cam->angle.a);
+	float tmp = radians(cam->angle.a);
 	cam->use_focal = cam->focal * Xratio;
 	cam->Xcos = (float)EEcos(tmp);
 	cam->Xsin = (float)EEsin(tmp);
-	tmp = DEG2RAD(cam->angle.b);
+	tmp = radians(cam->angle.b);
 	cam->Ycos = (float)EEcos(tmp);
 	cam->Ysin = (float)EEsin(tmp);
 	cam->Zcos = 1;
@@ -3283,14 +3283,14 @@ void F_PrepareCamera(EERIE_CAMERA * cam)
 //*************************************************************************************
 void PrepareCamera(EERIE_CAMERA * cam)
 {
-	float tmp = DEG2RAD(cam->angle.a);
+	float tmp = radians(cam->angle.a);
 	cam->transform.use_focal = cam->use_focal = cam->focal * Xratio;
 	cam->transform.xcos = cam->Xcos = (float)EEcos(tmp);
 	cam->transform.xsin = cam->Xsin = (float)EEsin(tmp);
-	tmp = DEG2RAD(cam->angle.b);
+	tmp = radians(cam->angle.b);
 	cam->transform.ycos = cam->Ycos = (float)EEcos(tmp);
 	cam->transform.ysin = cam->Ysin = (float)EEsin(tmp);
-	tmp = DEG2RAD(cam->angle.g);
+	tmp = radians(cam->angle.g);
 	cam->Zcos = (float)EEcos(tmp);
 	cam->Zsin = (float)EEsin(tmp);
 	cam->transform.xmod = cam->xmod = cam->posleft = (float)(cam->centerx + cam->clip.left);
@@ -3310,14 +3310,14 @@ void PrepareCamera(EERIE_CAMERA * cam)
 
 void SP_PrepareCamera(EERIE_CAMERA * cam)
 {
-	float tmp = DEG2RAD(cam->angle.a);
+	float tmp = radians(cam->angle.a);
 	cam->transform.use_focal = cam->use_focal = cam->focal * Xratio;
 	cam->transform.xcos = cam->Xcos = (float)EEcos(tmp);
 	cam->transform.xsin = cam->Xsin = (float)EEsin(tmp);
-	tmp = DEG2RAD(cam->angle.b);
+	tmp = radians(cam->angle.b);
 	cam->transform.ycos = cam->Ycos = (float)EEcos(tmp);
 	cam->transform.ysin = cam->Ysin = (float)EEsin(tmp);
-	tmp = DEG2RAD(cam->angle.g);
+	tmp = radians(cam->angle.g);
 	cam->Zcos = (float)EEcos(tmp);
 	cam->Zsin = (float)EEsin(tmp);
 	cam->transform.xmod = cam->xmod = cam->posleft = (float)(cam->centerx + cam->clip.left);
@@ -3454,13 +3454,13 @@ void DrawEERIEObjEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	register D3DTLVERTEX vert_list[4];
 
 
-	Zsin = DEG2RAD(angle->a);
+	Zsin = radians(angle->a);
 	Xcos = (float)EEcos(Zsin);
 	Xsin = (float)EEsin(Zsin);
-	Zsin = DEG2RAD(angle->b);
+	Zsin = radians(angle->b);
 	Ycos = (float)EEcos(Zsin);
 	Ysin = (float)EEsin(Zsin);
-	Zsin = DEG2RAD(angle->g);
+	Zsin = radians(angle->g);
 	Zcos = (float)EEcos(Zsin);
 	Zsin = (float)EEsin(Zsin);
 
@@ -3536,13 +3536,13 @@ void DrawEERIEObjExEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	register D3DTLVERTEX vert_list[4];
 
 
-	Zsin = DEG2RAD(angle->a);
+	Zsin = radians(angle->a);
 	Xcos = (float)EEcos(Zsin);
 	Xsin = (float)EEsin(Zsin);
-	Zsin = DEG2RAD(angle->b);
+	Zsin = radians(angle->b);
 	Ycos = (float)EEcos(Zsin);
 	Ysin = (float)EEsin(Zsin);
-	Zsin = DEG2RAD(angle->g);
+	Zsin = radians(angle->g);
 	Zcos = (float)EEcos(Zsin);
 	Zsin = (float)EEsin(Zsin);
 
@@ -4828,13 +4828,13 @@ void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 
 	long i;
 	D3DTLVERTEX vlist[3];
-	Zsin = DEG2RAD(eobj->angle.a);
+	Zsin = radians(eobj->angle.a);
 	Xcos = (float)EEcos(Zsin);
 	Xsin = (float)EEsin(Zsin);
-	Zsin = DEG2RAD(eobj->angle.b);
+	Zsin = radians(eobj->angle.b);
 	Ycos = (float)EEcos(Zsin);
 	Ysin = (float)EEsin(Zsin);
-	Zsin = DEG2RAD(eobj->angle.g);
+	Zsin = radians(eobj->angle.g);
 	Zcos = (float)EEcos(Zsin);
 	Zsin = (float)EEsin(Zsin);
 

@@ -569,7 +569,7 @@ bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, f
 			while (rangle <= maxRANGLE)   //tries on the Right and Left sides
 			{
 				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER)); 
-				float t = DEG2RAD(MAKEANGLE(rangle));
+				float t = radians(MAKEANGLE(rangle));
 				_YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
 				test.cyl.origin.x	+=	vecatt.x * curmovedist;
 				test.cyl.origin.y	+=	vecatt.y * curmovedist;
@@ -584,7 +584,7 @@ bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, f
 				rangle += ANGLESTEPP;
 
 				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER));   
-				t = DEG2RAD(MAKEANGLE(langle));
+				t = radians(MAKEANGLE(langle));
 				_YRotatePoint(&mvector, &vecatt, EEcos(t), EEsin(t));
 				test.cyl.origin.x	+=	vecatt.x * curmovedist;
 				test.cyl.origin.y	+=	vecatt.y * curmovedist;
@@ -696,9 +696,9 @@ bool CylinderAboveInvalidZone(EERIE_CYLINDER * cyl)
 			if (rad == 0) ang = 360;
 
 			EERIE_3D pos;
-			pos.x = cyl->origin.x - EEsin(DEG2RAD(ang)) * rad;
+			pos.x = cyl->origin.x - EEsin(radians(ang)) * rad;
 			pos.y = cyl->origin.y - 20.f;
-			pos.z = cyl->origin.z + EEcos(DEG2RAD(ang)) * rad;
+			pos.z = cyl->origin.z + EEcos(radians(ang)) * rad;
 			EERIEPOLY * ep = ANCHOR_CheckInPoly(pos.x, pos.y, pos.z);
 
 			if (!ep) continue;
@@ -859,7 +859,7 @@ bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, EERIE
 	for (long rad = 0; rad < 20; rad += 10) 
 		for (long ang = 0; ang < 360; ang += 45) // 45
 		{
-			float t = DEG2RAD((float)ang);
+			float t = radians((float)ang);
 			// We set our current position depending on given position, radius & angle.
 			currcyl.radius = 40; 
 			currcyl.height = -165; 

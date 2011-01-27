@@ -96,9 +96,9 @@ void CMassLightning::Create(EERIE_3D aePos, float afBeta = 0)
 
 	for (int i = 0; i < number; i++)
 	{
-		eTarget.x = aePos.x - EEsin(DEG2RAD(i * ft)) * 500.0f;
+		eTarget.x = aePos.x - EEsin(radians(i * ft)) * 500.0f;
 		eTarget.y = aePos.y;
-		eTarget.z = aePos.z + EEcos(DEG2RAD(i * ft)) * 500.0f;
+		eTarget.z = aePos.z + EEcos(radians(i * ft)) * 500.0f;
 		pTab[i]->Create(aePos, eTarget, 0);
 		long lTime = (long)(ulDuration + rnd() * 5000.0f);
 		pTab[i]->SetDuration(lTime);
@@ -168,7 +168,7 @@ void CControlTarget::Create(EERIE_3D aeSrc, float afBeta)
 	eSrc.z = aeSrc.z;
 
 	fBeta = afBeta;
-	fBetaRad = DEG2RAD(fBeta);
+	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
 
@@ -424,9 +424,9 @@ float CControlTarget::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	stitepos.x = lastpos.x;
 	stitepos.y = lastpos.y;
 	stitepos.z = lastpos.z;
-	stiteangle.b = 180 - RAD2DEG(bubu);
+	stiteangle.b = 180 - degrees(bubu);
 	stiteangle.a = 0;
-	stiteangle.g = 90 - RAD2DEG(bubu1);
+	stiteangle.g = 90 - degrees(bubu1);
 	stitecolor.r = 0.7f;
 	stitecolor.g = 0.7f;
 	stitecolor.b = 0.7f;
