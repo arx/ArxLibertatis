@@ -1290,3 +1290,10 @@ float GetNearestSnappedAngle(float angle)
 
 	return 0.f;
 }
+
+float radians(float degrees){
+	return degrees*2*PI/360;
+}
+float degrees(float radians){
+	return radians*360/(2*PI);
+}

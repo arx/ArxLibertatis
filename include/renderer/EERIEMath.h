@@ -568,5 +568,8 @@ inline void specialEE_P(EERIE_3D * in, D3DTLVERTEX * out)
 	out->rhw = fZTemp; 
 }
 
+float radians(float x);
+float degrees(float x);
+
 #endif
 
