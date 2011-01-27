@@ -54,15 +54,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 ///////////////////////////////////////////////////////////////////////////////////////
-#include "ARX_Fogs.h"
-#include "ARX_Particles.h"
-#include "ARX_Time.h"
-#include "ARX_Menu2.h"
-
-#include "EERIEMath.h"
-#include "EERIEDraw.h"
-
 #include <stdio.h>
+
+#include "core/ARX_Fogs.h"
+#include "core/ARX_Particles.h"
+#include "core/ARX_Time.h"
+#include "core/ARX_Menu2.h"
+
+#include "renderer/EERIEMath.h"
+#include "renderer/EERIEDraw.h"
 
 EERIE_3DOBJ * fogobj = NULL;
 extern FOG_DEF fogcopy;

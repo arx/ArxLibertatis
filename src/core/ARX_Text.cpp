@@ -56,15 +56,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <assert.h>
 #include <string>
 
-#include "ARX_Loc.h"
-#include "ARX_Text.h"
-#include "Danae.h"
+#include "core/ARX_Loc.h"
+#include "core/ARX_Text.h"
+#include "core/Danae.h"
 
-#include "EERIEDraw.h"
-#include "HERMESMain.h"
+#include "renderer/EERIEDraw.h"
 
-#include "hermes/Filesystem.h"
-#include "hermes/Logger.h"
+#include "io/HERMESMain.h"
+#include "io/Filesystem.h"
+#include "io/Logger.h"
 
 using std::string;
 

@@ -57,26 +57,26 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "ARX_Damages.h"
-#include "HERMESMain.h"
+#include "io/HERMESMain.h"
 
-#include "EERIEPoly.h"
-#include "EERIELinkedObj.h"
-#include "EERIELight.h"
-#include "EERIEDraw.h"
-#include "EERIEPoly.h"
+#include "renderer/EERIEPoly.h"
+#include "renderer/EERIELinkedObj.h"
+#include "renderer/EERIELight.h"
+#include "renderer/EERIEDraw.h"
+#include "renderer/EERIEPoly.h"
 
-#include "ARX_Player.h"
-#include "ARX_NPC.h"
-#include "ARX_Sound.h"
-#include "ARX_Speech.h"
-#include "ARX_Collisions.h"
-#include "ARX_Particles.h"
-#include "ARX_Equipment.h"
-#include "ARX_Interface.h"
-#include "ARX_Paths.h"
-#include "ARX_Script.h"
-#include "ARX_Time.h"
+#include "core/ARX_Damages.h"
+#include "core/ARX_Player.h"
+#include "core/ARX_NPC.h"
+#include "core/ARX_Sound.h"
+#include "core/ARX_Speech.h"
+#include "core/ARX_Collisions.h"
+#include "core/ARX_Particles.h"
+#include "core/ARX_Equipment.h"
+#include "core/ARX_Interface.h"
+#include "core/ARX_Paths.h"
+#include "core/ARX_Script.h"
+#include "core/ARX_Time.h"
 
 extern long REFUSE_GAME_RETURN;
 

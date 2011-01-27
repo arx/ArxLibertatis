@@ -56,31 +56,30 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 
 #include <windows.h>
-#include <fstream>
 #include <stdlib.h>
+#include <fstream>
 
-#include "ARX_Menu.h"
-#include "ARX_ChangeLevel.h"
-#include "ARX_Sound.h"
-#include "ARX_CParticle.h"
-#include "ARX_CParticles.h"
-#include "ARX_CParticleParams.h"
-#include "ARX_Loc.h"
-#include "ARX_Menu2.h"
-#include "ARX_Text.h"
-#include "ARX_Time.h"
-#include "ARX_Equipment.h"
-#include "DanaeSaveLoad.h"
-#include "EERIEApp.h"
+#include "core/ARX_Menu.h"
+#include "core/ARX_ChangeLevel.h"
+#include "core/ARX_Sound.h"
+#include "core/ARX_CParticle.h"
+#include "core/ARX_CParticles.h"
+#include "core/ARX_CParticleParams.h"
+#include "core/ARX_Loc.h"
+#include "core/ARX_Menu2.h"
+#include "core/ARX_Text.h"
+#include "core/ARX_Time.h"
+#include "core/ARX_Equipment.h"
+#include "core/DanaeSaveLoad.h"
+#include "core/ARX_ViewImage.h"
 
-#include "ARX_ViewImage.h"
+#include "renderer/EERIEApp.h"
+#include "renderer/EERIEDraw.h"
+#include "renderer/EERIEMath.h"
+#include "renderer/EERIEObject.h"
 
-#include "HERMESMain.h"
-#include "EERIEDraw.h"
-#include "EERIEMath.h"
-#include "EERIEObject.h"
-
-#include <hermes/PakManager.h>
+#include "io/HERMESMain.h"
+#include "io/PakManager.h"
 
 //-----------------------------------------------------------------------------
 extern CARXTextManager * pTextManage;

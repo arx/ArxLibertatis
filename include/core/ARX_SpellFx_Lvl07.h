@@ -55,12 +55,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+//TODO(lubosz): empty file
+
 #ifndef ARX_CSPELLFX_LVL07_H
 #define ARX_CSPELLFX_LVL07_H
 
-#include "ARX_CParticles.h"
-#include <EERIETypes.h>
-#include <EERIEPoly.h>
+#include "core/ARX_CParticles.h"
+#include "renderer/EERIETypes.h"
+#include "renderer/EERIEPoly.h"
 
 class CParticleSystem;
 
@@ -87,7 +89,7 @@ class CSpellFx;
  
 
 //-----------------------------------------------------------------------------
-// Done By : Didier Pédreno
+// Done By : Didier Pï¿½dreno
 // Status  :
 //-----------------------------------------------------------------------------
 class CLightningNode
@@ -201,7 +203,7 @@ class CLightning: public CSpellFx
 
 //-----------------------------------------------------------------------------
 // Ex Make Friend
-// Done By : Didier Pédreno
+// Done By : Didier Pï¿½dreno
 // Status  :
 //-----------------------------------------------------------------------------
 class CConfuse: public CSpellFx

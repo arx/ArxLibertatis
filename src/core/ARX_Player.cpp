@@ -58,39 +58,38 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stdlib.h>
 
-#include <ARX_Menu.h>
-#include <ARX_Player.h>
+#include "core/ARX_Menu.h"
+#include "core/ARX_Player.h"
 
-#include <HERMESMain.h>
+#include "renderer/EERIEMath.h"
+#include "renderer/EERIEObject.h"
+#include "renderer/EERIEPoly.h"
+#include "renderer/EERIEDraw.h"
+#include "renderer/EERIEPathfinder.h"
 
-#include <EERIEMath.h>
-#include <EERIEObject.h>
-#include <EERIEPoly.h>
-#include <EERIEDraw.h>
-#include <EERIEPathfinder.h>
+#include "core/ARX_ChangeLevel.h"
+#include "core/ARX_Collisions.h"
+#include "core/ARX_CParticles.h"
+#include "core/ARX_Damages.h"
+#include "core/ARX_Equipment.h"
+#include "core/ARX_Fogs.h"
+#include "core/ARX_GlobalMods.h"
+#include "core/ARX_Loc.h"
+#include "core/ARX_Missile.h"
+#include "core/ARX_NPC.h"
+#include "core/ARX_Particles.h"
+#include "core/ARX_Paths.h"
+#include "core/ARX_Text.h"
+#include "core/ARX_Time.h"
+#include "core/ARX_Script.h"
+#include "core/ARX_Sound.h"
+#include "core/ARX_Special.h"
+#include "core/ARX_Speech.h"
+#include "core/ARX_Spells.h"
 
-#include "ARX_ChangeLevel.h"
-#include "ARX_Collisions.h"
-#include "ARX_CParticles.h"
-#include "ARX_Damages.h"
-#include "ARX_Equipment.h"
-#include "ARX_Fogs.h"
-#include "ARX_GlobalMods.h"
-#include "ARX_Loc.h"
-#include "ARX_Missile.h"
-#include "ARX_NPC.h"
-#include "ARX_Particles.h"
-#include "ARX_Paths.h"
-#include "ARX_Text.h"
-#include "ARX_Time.h"
-#include "ARX_Script.h"
-#include "ARX_Sound.h"
-#include "ARX_Special.h"
-#include "ARX_Speech.h"
-#include "ARX_Spells.h"
-
-#include <hermes/PakManager.h>
-#include <hermes/Filesystem.h>
+#include "io/HERMESMain.h"
+#include "io/PakManager.h"
+#include "io/Filesystem.h"
 
 extern long		USE_NEW_SKILLS;
 extern long		ARX_CONVERSATION;

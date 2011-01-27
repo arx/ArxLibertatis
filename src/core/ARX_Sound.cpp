@@ -40,21 +40,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <fstream>
 #include <sstream>
 
-#include <ARX_Sound.h>
-#include <HERMESMain.h>
-#include <hermes/PakManager.h>
-#include <hermes/PakReader.h>
-#include <hermes/PakEntry.h>
-#include <hermes/Filesystem.h>
-#include <EERIEMath.h>
-#include <ARX_NPC.h>
-#include <ARX_Interactive.h>
-#include <ARX_Player.h>
-#include <ARX_Script.h>
-#include <ARX_Particles.h>
-#include "ARX_Menu2.h"
-#include <Athena.h>
-#include "EERIEApp.h"
+#include "io/HERMESMain.h"
+#include "io/PakManager.h"
+#include "io/PakReader.h"
+#include "io/PakEntry.h"
+#include "io/Filesystem.h"
+
+#include "core/ARX_Sound.h"
+#include "core/ARX_NPC.h"
+#include "core/ARX_Interactive.h"
+#include "core/ARX_Player.h"
+#include "core/ARX_Script.h"
+#include "core/ARX_Particles.h"
+#include "core/ARX_Menu2.h"
+
+#include "renderer/EERIEMath.h"
+#include "renderer/EERIEApp.h"
+
+#include "audio/Athena.h"
 
 using namespace std;
 

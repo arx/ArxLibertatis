@@ -25,9 +25,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h>
 #include <mmsystem.h>
 #include <commctrl.h>
+
 #include <vector>
-// #include <process.h>
-#include "EERIETexture.h"
+
+#include "renderer/EERIETexture.h"
 
 using namespace std;
 

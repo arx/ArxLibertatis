@@ -55,30 +55,30 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 #define _ARX_CEDITOR_  0
-#include <DANAE_VERSION.h>
 #include <stdio.h>
 #include <windows.h>
-
-#include "Danae_resource.h"
-#include "DanaeDlg.h"
-#include "ARX_Interface.h"
-#include "ARX_Paths.h"
-#include "ARX_Sound.h"
-#include "ARX_GlobalMods.h"
-#include "ARX_Particles.h"
-#include "ARX_Snapshot.h"
-#include "ARX_Text.h"
-#include "ARX_Time.h"
-
-#include <EERIEUtil.h>
-#include <EERIEClothes.h>
-#include <EERIELight.h>
-#include <EERIETexture.h>
-
-#include <HERMESMain.h>
-#include <EERIEMath.h>
-
 #include <stdio.h>
+
+#include "core/DANAE_VERSION.h"
+#include "core/Danae_resource.h"
+#include "core/DanaeDlg.h"
+#include "core/ARX_Interface.h"
+#include "core/ARX_Paths.h"
+#include "core/ARX_Sound.h"
+#include "core/ARX_GlobalMods.h"
+#include "core/ARX_Particles.h"
+#include "core/ARX_Snapshot.h"
+#include "core/ARX_Text.h"
+#include "core/ARX_Time.h"
+
+#include "io/HERMESMain.h"
+
+#include "renderer/EERIEUtil.h"
+#include "renderer/EERIEClothes.h"
+#include "renderer/EERIELight.h"
+#include "renderer/EERIETexture.h"
+#include "renderer/EERIEMath.h"
+
 
 extern long CURRENTSNAPNUM;
 extern long SnapShotMode;

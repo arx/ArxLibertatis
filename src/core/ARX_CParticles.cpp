@@ -67,17 +67,18 @@ todo:
 	bounding box
 */
 
-
+//TODO(lubosz): remove Version history
 //-----------------------------------------------------------------------------
-#include "Danae.h"
-#include "ARX_CSpellFx.h"
-#include "ARX_CParticles.h"
-#include "ARX_CParticleParams.h"
-
-#include "EERIEDraw.h"
-#include "EERIEPoly.h"
-
 #include <list>
+
+#include "core/Danae.h"
+#include "core/ARX_CSpellFx.h"
+#include "core/ARX_CParticles.h"
+#include "core/ARX_CParticleParams.h"
+
+#include "renderer/EERIEDraw.h"
+#include "renderer/EERIEPoly.h"
+
 using namespace std;
 
 //-----------------------------------------------------------------------------
