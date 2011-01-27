@@ -25,7 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef __ATHENA_STREAM_WAV_H__
 #define __ATHENA_STREAM_WAV_H__
 
-#include <Athena_Types.h>
+#include "Athena_Types.h"
 #include "Athena_Stream.h"
 
 class PakFileHandle;

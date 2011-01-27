@@ -22,12 +22,11 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <eax.h>
 #include <math.h>
-#include "Athena_Global.h"
-#include "Athena_Instance.h"
-#include "Athena_Stream.h"
-
+#include "audio/eax.h"
+#include "audio/Athena_Global.h"
+#include "audio/Athena_Instance.h"
+#include "audio/Athena_Stream.h"
 
 // TODO find right library
 const GUID DSPROPSETID_EAX20_BufferProperties = { 0x306a6a7, 0xb224, 0x11d2, { 0x99, 0xe5, 0x0, 0x0, 0xe8, 0xd8, 0xc7, 0x22 } };

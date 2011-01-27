@@ -22,15 +22,12 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include "Athena_Global.h"
-#include "Athena_Stream.h"
-#include "Athena_Stream_WAV.h"
+#include "audio/Athena_Global.h"
+#include "audio/Athena_Stream.h"
+#include "audio/Athena_Stream_WAV.h"
 
-#include <hermes/PakManager.h>
-#include <hermes/Logger.h>
-
-
-
+#include "io/PakManager.h"
+#include "io/Logger.h"
 
 namespace ATHENA
 {

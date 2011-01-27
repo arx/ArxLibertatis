@@ -25,8 +25,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef __ATHENA_TRACK_H__
 #define __ATHENA_TRACK_H__
 
-#include <Athena_Types.h>
+#include "Athena_Types.h"
 #include "Athena_Global.h"
+
+//TODO(lubosz): Empty header
 
 namespace ATHENA
 {

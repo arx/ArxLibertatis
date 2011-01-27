@@ -36,22 +36,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <Athena.h>
-#include "Athena_Resource.h"
-#include "Athena_Mixer.h"
-#include "Athena_Sample.h"
-#include "Athena_Ambiance.h"
-#include "Athena_Instance.h"
-#include "Athena_Global.h"
-#include "Athena_Stream.h"
-
 #include <dsound.h>
-#include <eax.h>
 #include <math.h>
-
-#include <hermes/Logger.h>
-
 #include <cstring>
+
+#include "audio/Athena.h"
+#include "audio/Athena_Resource.h"
+#include "audio/Athena_Mixer.h"
+#include "audio/Athena_Sample.h"
+#include "audio/Athena_Ambiance.h"
+#include "audio/Athena_Instance.h"
+#include "audio/Athena_Global.h"
+#include "audio/Athena_Stream.h"
+#include "audio/eax.h"
+#include "io/Logger.h"
+
 using namespace std;
 
 namespace ATHENA

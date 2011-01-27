@@ -25,7 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef __ATHENA_TYPES_H__
 #define __ATHENA_TYPES_H__
 
-#include <ARX_Common.h>
+#include "core/ARX_Common.h"
 
 #ifndef NULL
 #define NULL    0
