@@ -48,7 +48,7 @@ extern CMenuConfig * pMenuConfig;
 CLocalisationHash * pHashLocalisation = NULL;
 
 //-----------------------------------------------------------------------------
-bool isSection(_TCHAR * _lpszUText)
+bool isSection( const _TCHAR * _lpszUText)
 {
 	ULONG i			 = 0;
 	unsigned long ulTextSize = _tcslen(_lpszUText);
@@ -230,20 +230,33 @@ _TCHAR * CleanKey(const _TCHAR * _lpszUText)
 }
 
 //-----------------------------------------------------------------------------
-void ParseFile( std::string _lpszUTextFile, const unsigned long _ulFileSize)
+void ParseFile( const std::string& _lpszUTextFile, const unsigned long _ulFileSize)
 {
-	_TCHAR * pULine;
- 
-
-	//-------------------------------------------------------------------------
-	// on skip l'entete unicode
-	std::string 
-	const char* pFile = _lpszUTextFile.c_str();
-	pFile ++;
+	std::string temp = _lpszUTextFile;
+	const char* pFile = temp.c_str();
+	temp.erase( 0, 1 ); // TODO This apparently removes a unicode header?
 	unsigned long ulFileSize = _ulFileSize - 1;
 
-	//-------------------------------------------------------------------------
-	//clean up comments
+	// Remove all comments from the input string
+	while ( true )
+	{
+		// Find comment start
+		size_t comment_start = temp.find( "//" );
+
+		// No comments found, break
+		if ( comment_start == std::string::npos ) break;
+
+		// Find comment end after comment start
+		size_t line_end = temp.find_first_of( "\r\n", comment_start );
+
+		// Remove comments until end of line or end if file
+		if ( line_end != std::string::npos )
+			temp.erase( comment_start, line_end - comment_start );
+		else
+			temp.erase( comment_start );
+	}
+
+/*
 	for (unsigned long i = 0; i < (ulFileSize - 1); i++)
 	{
 		if ((pFile[i] == _T('/')) && (pFile[i+1] == _T('/')))
@@ -259,10 +272,18 @@ void ParseFile( std::string _lpszUTextFile, const unsigned long _ulFileSize)
 			i = j;
 		}
 	}
+*/
+	list< std::string > strings;
 
-	//-------------------------------------------------------------------------
-	// get all lines into list
-
+	// Find lines and put them into the vector
+	while ( !temp.empty() )
+	{
+		size_t line_end = temp.find_first_of( "\r\n" );
+		strings.push_back( temp.substr( 0, line_end ) );
+		temp.erase( 0, line_end );
+	}
+/*		
+	
 	list<_TCHAR *> lUText;
 	pULine = _tcstok(pFile, _T("\r\n"));
 
@@ -278,9 +299,37 @@ void ParseFile( std::string _lpszUTextFile, const unsigned long _ulFileSize)
 
 		pULine = _tcstok(NULL, _T("\r\n"));
 	}
+*/
 
-	list<_TCHAR *>::iterator it;
+	list< std::string >::iterator iter;
 
+	while ( iter != strings.end() )
+	{
+		if ( isSection((*iter).c_str()) )
+		{
+			CLocalisation* loc = new CLocalisation();
+			std::string section_str = CleanSection( (*iter).c_str() );
+			loc->SetSection( (*iter).c_str() );
+
+			iter++;
+
+			while ((iter != strings.end()) && (!isSection((*iter).c_str())))
+			{
+				if(isKey((*iter).c_str()))
+					loc->AddKey( CleanKey((*iter).c_str() ) );
+				else
+					break;
+			}
+
+			pHashLocalisation->AddElement(loc);
+			continue;
+		}
+
+		iter++;
+	}
+		
+	//list<_TCHAR *>::iterator it;
+/*
 	//-------------------------------------------------------------------------
 	// look up for sections and associated keys
 	it = lUText.begin();
@@ -321,7 +370,7 @@ void ParseFile( std::string _lpszUTextFile, const unsigned long _ulFileSize)
 
 		it++;
 		t++;
-	}
+	}*/
 }
 
 //-----------------------------------------------------------------------------
@@ -370,7 +419,7 @@ void ARX_Localisation_Init(const char * _lpszExtension)
 		pHashLocalisation = new CLocalisationHash(1 << 13);
 		LocalisationSize = Localisation.length();
 		ParseFile(Localisation, LocalisationSize);
-		Localization.clear();
+		Localisation.clear();
 		LocalisationSize = 0;
 	}
 
