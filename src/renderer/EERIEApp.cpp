@@ -70,8 +70,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "HERMESMain.h"
 #include "HERMESNet.h"
 
-#include "../danae/ARX_Menu2.h"
-#include "../danae/Danae_resource.h"
+#include "../core/ARX_Menu2.h"
+#include "../core/Danae_resource.h"
 
 #include <hermes/PakManager.h>
 
