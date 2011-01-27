@@ -71,8 +71,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define TBOOL int
 
-// TODO this breaks some assertion
-//#pragma pack(push,1)
+#pragma pack(push,1)
 typedef struct
 {
 	float			x;
@@ -219,11 +218,6 @@ typedef struct
 	TBOOL			animated_map;
 } THEO_TEXTURE; // Aligned 1 2 4
 
- 
- 
- 
- 
- 
 
 typedef struct
 {
@@ -286,12 +280,6 @@ typedef struct
 	long			num_sfx;
 } THEO_ACTION_POINT; // Aligned 1 2 4
 
- 
- 
- 
- 
- 
- 
 
 typedef struct
 {
@@ -517,10 +505,11 @@ typedef struct
 	char			sample_name[SIZE_NAME];
 	long			sample_size;
 } THEA_SAMPLE; // Aligned 1 2 4
-//#pragma pack(pop)
 
 //***********************************************************************
 //*		END THEO TEA Animation FILE FORMAT structures					*
 //***********************************************************************
+
+#pragma pack(pop)
 
 #endif // THEODATA_H
