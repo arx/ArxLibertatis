@@ -54,11 +54,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <string>
 
 #define DIRECTINPUT_VERSION 0x0700
 #include <dinput.h>
 #include <stdio.h>
+
+#include <algorithm>
+#include <string>
 
 #include "core/ARX_Scene.h"
 #include "core/ARX_Spells.h"

@@ -2801,7 +2801,7 @@ bool Menu2_Render()
 										0,
 										tex4,
 										-1,
-										(wchar_t*)tex2,
+										(wchar_t*)tex2.c_str(),
 										256);
 									tex += tex2;
 									

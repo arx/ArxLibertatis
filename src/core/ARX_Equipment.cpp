@@ -58,6 +58,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <algorithm>
+#include <fstream>
+#include <sstream>
+#include <vector>
+
 #include "io/HERMESMain.h"
 #include "renderer/d3dwrapper.h"
 #include "renderer/EERIEMath.h"
@@ -1022,15 +1027,15 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 
 							if (drain_life > 0.f)
 							{
-								float life_gain = std::min(dmgs, drain_life);
-								life_gain = std::min(life_gain, target->_npcdata->life);
-								life_gain = std::max(life_gain, 0.f);
+								float life_gain = min(dmgs, drain_life);
+								life_gain = min(life_gain, target->_npcdata->life);
+								life_gain = max(life_gain, 0.f);
 								ARX_DAMAGES_HealInter(io_source, life_gain);
 							}
 
 							if (paralyse > 0.f)
 							{
-								float ptime = std::min(dmgs * 1000.f, paralyse);
+								float ptime = min(dmgs * 1000.f, paralyse);
 								ARX_SPELLS_Launch(SPELL_PARALYSE, weapon, SPELLCAST_FLAG_NOMANA | SPELLCAST_FLAG_NOCHECKCANCAST
 								                  , 5, EVERYTHING_IN_SPHERE[jj], (long)(ptime));
 							}

@@ -23,6 +23,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 #include <stdlib.h>
+
+#include <algorithm>
+#include <fstream>
+#include <sstream>
+#include <vector>
+
 #include "core/ARX_CCinematique.h"
 
 /*---------------------------------------------------------------------------------*/

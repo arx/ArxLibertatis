@@ -22,8 +22,11 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <string>
 #include <dinput.h>
+
+#include <algorithm>
+#include <string>
+#include <vector>
 
 #include "io/HERMESMain.h"
 #include "renderer/EERIEAnim.h"
