@@ -54,6 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
 
 #include "Danae.h"
 
@@ -1008,7 +1009,7 @@ float CPoisonProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 CMultiPoisonProjectile::CMultiPoisonProjectile(LPDIRECT3DDEVICE7 m_pd3dDevice, long nbmissiles)
 {
 	SetDuration(2000);
-	uiNumber = std::min(5L, nbmissiles);
+	uiNumber = min(5L, nbmissiles);
 	pTab	 = NULL;
 	pTab	 = new CSpellFx*[uiNumber]();
 
@@ -1097,7 +1098,7 @@ void CMultiPoisonProjectile::Create(EERIE_3D _eSrc, float _afBeta = 0)
 		pTab[i]->Create(_eSrc, afBeta + frand2() * 10.0f);
 		long lTime = ulDuration + (long) rnd() * 5000;
 		pTab[i]->SetDuration(lTime);
-		lMax = std::max(lMax, lTime);
+		lMax = max(lMax, lTime);
 
 		CPoisonProjectile * pPP = (CPoisonProjectile *) pTab[i];
 

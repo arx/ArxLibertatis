@@ -55,6 +55,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 //------------------------------------------------------------------------------------
+
+#include <algorithm>
+
 #include "HERMESPerf.h"
 
 #include "EERIEApp.h"
@@ -2175,7 +2178,7 @@ void SendInventoryObjectCommand(const char * _lpszText, long _lCommand)
 							{
 								if (inventory[iNbBag][i][j].io->obj->texturecontainer[lTex])
 								{
-									if (strcmp(inventory[iNbBag][i][j].io->obj->texturecontainer[lTex]->m_texName, _lpszText) == 0)
+									if (strcmp(inventory[iNbBag][i][j].io->obj->texturecontainer[lTex]->m_texName.c_str(), _lpszText) == 0)
 									{
 										if (inventory[iNbBag][i][j].io->GameFlags & GFLAG_INTERACTIVITY)
 											SendIOScriptEvent(inventory[iNbBag][i][j].io, _lCommand, "");

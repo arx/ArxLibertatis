@@ -4179,8 +4179,8 @@ void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, EERIE_3D * pos, const float vol
 		EERIEPOLY * ep;
 		ep = CheckInPoly(pos->x, pos->y - 100.0F, pos->z);
 
-		if (ep &&  ep->tex && ep->tex->m_texName)
-			GetMaterialString(ep->tex->m_texName, floor_material);
+		if (ep &&  ep->tex && !ep->tex->m_texName.empty())
+			GetMaterialString(ep->tex->m_texName.c_str(), floor_material);
 	}
 
 	if (io && io->stepmaterial)
