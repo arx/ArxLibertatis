@@ -298,6 +298,8 @@ bool PakManager::AddPak(const char * pakname) {
 }
 
 bool PakManager::RemovePak(const char * pakname) {
+
+	LogInfo << "Remove Pack " << pakname;
 	
 	for(vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
 		

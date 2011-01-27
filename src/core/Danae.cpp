@@ -58,15 +58,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Included files
 //-----------------------------------------------------------------------------
 
-//TODO(lubosz): too many includes :D
-
 #include <windows.h>
 
-#include <iostream>
-#include <fstream>
-
 #include "io/HERMESMain.h"
-#include "io/HERMESConsole.h"
 #include "io/HERMESNet.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
@@ -76,13 +70,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIE_AVI.h"
 #include "renderer/EERIEAnim.h"
 #include "renderer/EERIEPathfinder.h"
-#include "renderer/EERIECollisionSpheres.h"
-#include "renderer/EERIEPhysicsBox.h"
-#include "renderer/EERIEObject.h"
-#include "renderer/EERIEPoly.h"
 #include "renderer/EERIELinkedObj.h"
 
-#include "core/Danae.h"
 #include "core/DanaeDlg.h"
 #include "core/Danae_resource.h"
 #include "core/DANAE_VERSION.h"
@@ -95,27 +84,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/ARX_Equipment.h"
 #include "core/ARX_FTL.h"
 #include "core/ARX_Fogs.h"
-#include "core/ARX_GlobalMods.h"
-#include "core/ARX_Input.h"
-#include "core/ARX_Interface.h"
-#include "core/ARX_Interactive.h"
-#include "core/ARX_Levels.h"
 #include "core/ARX_Loc.h"
 #include "core/ARX_Menu.h"
 #include "core/ARX_Menu2.h"
-#include "core/ARX_NPC.h"
 #include "core/ARX_Particles.h"
 #include "core/ARX_Paths.h"
 #include "core/ARX_Scene.h"
-#include "core/ARX_Script.h"
 #include "core/ARX_Sound.h"
 #include "core/ARX_Special.h"
 #include "core/ARX_Speech.h"
-#include "core/ARX_Spells.h"
 #include "core/ARX_Time.h"
-#include "core/ARX_Text.h"
 #include "core/ARX_Missile.h"
-#include "core/ARX_Cedric.h"
 #include "core/ARX_MenuPublic.h"
 #include "core/ARX_Snapshot.h"
 
