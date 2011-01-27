@@ -46,7 +46,7 @@ CCluster::~CCluster()
 }
 
 //------------------------------------------------------------------------
-void CInfoFile::Set(char * _pcFileName, int _iTaille)
+void CInfoFile::Set( const char * _pcFileName, int _iTaille)
 {
 	if (pcFileName)
 	{
@@ -461,7 +461,7 @@ bool CSaveBlock::ExpandNbFiles()
 }
 
 //------------------------------------------------------------------------
-bool CSaveBlock::Save(char * _pcFileName, void * _pDatas, int _iSize)
+bool CSaveBlock::Save( const std::string& _pcFileName, void * _pDatas, int _iSize)
 {
 	bool _bFound = false;
 	CInfoFile * _pInfoFile = sInfoFile;
@@ -469,7 +469,7 @@ bool CSaveBlock::Save(char * _pcFileName, void * _pDatas, int _iSize)
 
 	while (_iI--)
 	{
-		if (!strcasecmp((const char *)_pInfoFile->pcFileName, (const char *)_pcFileName))
+		if (!strcasecmp(_pInfoFile->pcFileName, _pcFileName.c_str()))
 		{
 			_bFound = true;
 			break;
@@ -482,7 +482,7 @@ bool CSaveBlock::Save(char * _pcFileName, void * _pDatas, int _iSize)
 	{
 		ExpandNbFiles();
 		_pInfoFile = &sInfoFile[iNbFiles-1];
-		_pInfoFile->Set(_pcFileName, _iSize);
+		_pInfoFile->Set(_pcFileName.c_str(), _iSize);
 
 		_pInfoFile->FirstCluster.iNext = iTailleBlock;
 	}
@@ -575,7 +575,7 @@ bool CSaveBlock::Save(char * _pcFileName, void * _pDatas, int _iSize)
 }
 
 //------------------------------------------------------------------------
-bool CSaveBlock::Read(char * _pcFileName, char * _pPtr)
+bool CSaveBlock::Read( const std::string& _pcFileName, char* _pPtr)
 {
 	CInfoFile * _pInfoFile = (CInfoFile *)pHachage->get(_pcFileName);
 
@@ -599,7 +599,7 @@ bool CSaveBlock::Read(char * _pcFileName, char * _pPtr)
 }
 
 //------------------------------------------------------------------------
-int CSaveBlock::GetSize(char * _pcFileName)
+int CSaveBlock::GetSize( const std::string& _pcFileName)
 {
 	CInfoFile * _pInfoFile = NULL;
 
@@ -620,7 +620,7 @@ int CSaveBlock::GetSize(char * _pcFileName)
 
 		while (_iI--)
 		{
-			if (!strcasecmp((const char *)_pInfoFile->pcFileName, (const char *)_pcFileName))
+			if (!strcasecmp(_pInfoFile->pcFileName, _pcFileName.c_str()))
 			{
 				_bFound = true;
 				break;
@@ -647,7 +647,7 @@ int CSaveBlock::GetSize(char * _pcFileName)
 	return _iTaille;
 }
 //------------------------------------------------------------------------
-bool CSaveBlock::ExistFile(char * _pcFileName)
+bool CSaveBlock::ExistFile( const std::string& _pcFileName)
 {
 	CInfoFile * _pInfoFile = NULL;
 
@@ -663,7 +663,7 @@ bool CSaveBlock::ExistFile(char * _pcFileName)
 
 		while (_iI--)
 		{
-			if (!strcasecmp((const char *)_pInfoFile->pcFileName, (const char *)_pcFileName))
+			if (!strcasecmp(_pInfoFile->pcFileName, _pcFileName.c_str()))
 			{
 				return true;
 			}

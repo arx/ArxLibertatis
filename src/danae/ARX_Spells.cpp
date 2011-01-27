@@ -7149,7 +7149,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 					long n;
 					F2L(spells[i].caster_level,&n);
 					sprintf(param,"%s_%04ld %ld"
-						,GetName(tmp_io->filename)
+						,GetName(tmp_io->filename).c_str()
 						,tmp_io->ident
 						,n
 						);
@@ -9516,11 +9516,11 @@ void ApplySPWep()
 	if (!sp_wep)
 	{		
 		ARX_SPSound();
-		char tex[256];
-		char tex2[256];
-		strcpy(tex2,"Graph\\Obj3D\\Interactive\\Items\\Weapons\\sword_mx\\sword_mx.teo");
+		std::string tex;
+		std::string tex2;
+		tex2 = "Graph\\Obj3D\\Interactive\\Items\\Weapons\\sword_mx\\sword_mx.teo";
 		File_Standardize(tex2,tex);
-		INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(GDevice,tex,IO_IMMEDIATELOAD);
+		INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(GDevice,tex.c_str(),IO_IMMEDIATELOAD);
 
 		if (ioo!=NULL)
 		{			
@@ -9626,19 +9626,19 @@ void ApplySPBow()
 void ApplySPArm()
 {
 	ARX_SPSound();
-	char tex[256];
-	char tex2[256];
+	std::string tex;
+	std::string tex2;
 
 	switch (sp_arm)
 	{
 		case 0:
-			strcpy(tex2,"%sGraph\\Obj3D\\Interactive\\Items\\Armor\\Helmet_plate_cm\\Helmet_plate_cm.teo");
+			tex2 = "%sGraph\\Obj3D\\Interactive\\Items\\Armor\\Helmet_plate_cm\\Helmet_plate_cm.teo";
 		break;
 		case 1:
-			strcpy(tex2,"%sGraph\\Obj3D\\Interactive\\Items\\Armor\\Legging_plate_cm\\Legging_plate_cm.teo");
+			tex2 = "%sGraph\\Obj3D\\Interactive\\Items\\Armor\\Legging_plate_cm\\Legging_plate_cm.teo";
 		break;
 		case 2:
-			strcpy(tex2,"%sGraph\\Obj3D\\Interactive\\Items\\Armor\\Chest_plate_cm\\Chest_plate_cm.teo");
+			tex2 = "%sGraph\\Obj3D\\Interactive\\Items\\Armor\\Chest_plate_cm\\Chest_plate_cm.teo";
 		break;
 		default:
 			return;
@@ -9646,7 +9646,7 @@ void ApplySPArm()
 	}
 
 	File_Standardize(tex2,tex);
-	INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(GDevice,tex,IO_IMMEDIATELOAD);
+	INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(GDevice,tex.c_str(),IO_IMMEDIATELOAD);
 
 	if (ioo!=NULL)
 	{			

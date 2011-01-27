@@ -1886,9 +1886,9 @@ long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 		return -1;
 	}
 
-	std::string compressed; 
+	char * compressed = (char *) GetStdBuffer(size);
 
-	//if (!compressed) HERMES_Memory_Emergency_Out();
+	if (!compressed) HERMES_Memory_Emergency_Out();
 
 	if ( !_pSaveBlock->Read( loadfile, compressed ) )
 	{
@@ -1902,7 +1902,7 @@ long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 
 	long ssize = size;
  
-	dat = (unsigned char *)blastMemAlloc(compressed.c_str(), ssize, size); 
+	dat = (unsigned char *)blastMemAlloc(compressed, ssize, size); 
 
 	memcpy(asi, dat, sizeof(ARX_CHANGELEVEL_INDEX));
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
@@ -1954,9 +1954,9 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num)
 		return -1;
 	}
 
-	std::string compressed; 
+	char * compressed = (char *) GetStdBuffer(size); 
 
-	//if (!compressed) HERMES_Memory_Emergency_Out();
+	if (!compressed) HERMES_Memory_Emergency_Out();
 
 	if (!_pSaveBlock->Read(loadfile, compressed))
 	{
@@ -1970,7 +1970,7 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num)
 
 	long ssize = size;
 
-	dat = (unsigned char *)blastMemAlloc(compressed.c_str(), ssize, size); //pos,&cpr_pos);
+	dat = (unsigned char *)blastMemAlloc(compressed, ssize, size); //pos,&cpr_pos);
 
 	// Skip Changelevel Index
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
@@ -2131,9 +2131,9 @@ long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVEL_PLA
 		return -1;
 	}
 
-	std::string compressed; 
+	char * compressed = (char *) GetStdBuffer(size);
 
-	//if (!compressed) HERMES_Memory_Emergency_Out();
+	if (!compressed) HERMES_Memory_Emergency_Out();
 
 	_pSaveBlock->Read(loadfile, compressed);
 
@@ -2142,7 +2142,7 @@ long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVEL_PLA
 
 	long ssize = size;
  
-	char * dat = blastMemAlloc(compressed.c_str(), ssize, size); 
+	char * dat = blastMemAlloc(compressed, ssize, size); 
 	memcpy(asp, dat, sizeof(ARX_CHANGELEVEL_PLAYER));
 	//free(compressed);
 
@@ -2420,9 +2420,9 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 		return -1;
 	}
 
-	std::string compressed; 
+	char * compressed = (char *) GetStdBuffer(size);
 
-	//if (!compressed) HERMES_Memory_Emergency_Out();
+	if (!compressed) HERMES_Memory_Emergency_Out();
 
 	if (!_pSaveBlock->Read(loadfile, compressed))
 	{
@@ -2437,7 +2437,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 
 	long ssize = size;
  
-	dat = (unsigned char *)blastMemAlloc(compressed.c_str(), ssize, size);
+	dat = (unsigned char *)blastMemAlloc(compressed, ssize, size);
 
 
 	// Ignore object if can't explode file
@@ -3493,9 +3493,10 @@ long ARX_CHANGELEVEL_Pop_Globals()
 		return -1;
 	}
 
-	std::string compressed; 
 
-	//if (!compressed) HERMES_Memory_Emergency_Out();
+	char * compressed = (char *) GetStdBuffer(size);
+
+	if (!compressed) HERMES_Memory_Emergency_Out();
 
 	if (!_pSaveBlock->Read(loadfile, compressed))
 	{
@@ -3514,7 +3515,7 @@ long ARX_CHANGELEVEL_Pop_Globals()
 
 	long ssize = size;
  
-	dat = (unsigned char *)blastMemAlloc(compressed.c_str(), ssize, size);
+	dat = (unsigned char *)blastMemAlloc(compressed, ssize, size);
 	acsg = (ARX_CHANGELEVEL_SAVE_GLOBALS *)(dat);
 	pos += sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS);
 
@@ -4219,9 +4220,9 @@ long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 	}
 
 	// Allocate Necessary Size
-	std::string compressed;
+	char * compressed = (char *) GetStdBuffer(size);
 
-	//if (!compressed) HERMES_Memory_Emergency_Out();
+	if (!compressed) HERMES_Memory_Emergency_Out();
 
 	// Read Block
 	if (!_pSaveBlock->Read(loadfile, compressed))
@@ -4242,7 +4243,7 @@ long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 	// Explode File
 	long ssize = size;
  
-	dat = (unsigned char *)blastMemAlloc(compressed.c_str(), ssize, size); //pos,&cpr_pos);
+	dat = (unsigned char *)blastMemAlloc(compressed, ssize, size); //pos,&cpr_pos);
 
 	if (dat == NULL)
 	{

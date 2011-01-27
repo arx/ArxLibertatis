@@ -51,7 +51,7 @@ public:
 	CCluster	FirstCluster;
 	CCluster*	pLastCluster;
 public:
-	void Set(char *_pcFileName,int _iTaille);
+	void Set( const char *_pcFileName,int _iTaille);
 	void KillAll();
 };
 
@@ -83,7 +83,7 @@ public:
 
 	bool BeginRead(void);
 	void EndRead();
-	bool Read( const std::string& _pcFileName, std::string& _pPtr);
+	bool Read( const std::string& _pcFileName, char* _pPtr);
 	int	 GetSize( const std::string& _pcFileName);
 	bool ExistFile( const std::string& _pcFileName);
 	void ResetFAT();

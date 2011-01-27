@@ -54,6 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include <algorithm>
+
 #include "Danae.h"
 
 #include <EERIEMath.h>
@@ -317,7 +319,7 @@ void CSummonCreature::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	// computation des sommets
 	float fTempCos, fTempSin;
 
-	for (i = 0; i <= std::min(end, int(fSizeIntro)); i++)
+	for (i = 0; i <= min(end, int(fSizeIntro)); i++)
 	{
 		if (i <= end * 0.5f)
 		{
@@ -352,7 +354,7 @@ void CSummonCreature::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	if (bIntro)
 	{
-		for (i = 0; i < std::min(end, (int)fSizeIntro); i++)
+		for (i = 0; i < min(end, (int)fSizeIntro); i++)
 		{
 			EE_RT2(&v1a[i], &vr[0]);
 			EE_RT2(&v1b[i], &vr[1]);
@@ -368,7 +370,7 @@ void CSummonCreature::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	}
 	else
 	{
-		for (i = 0; i < std::min(end, (int)fSizeIntro); i++)
+		for (i = 0; i < min(end, (int)fSizeIntro); i++)
 		{
 			EE_RT2(&va[i], &vr[0]);
 			EE_RT2(&vb[i], &vr[1]);
@@ -389,7 +391,7 @@ void CSummonCreature::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	vr[0].color = vr[1].color = D3DRGB(0, 0, 0);
 	vr[2].color = vr[3].color = D3DRGB(fColorBorder[0], fColorBorder[1], fColorBorder[2]);
 
-	for (i = 0; i < std::min(end, (int)fSizeIntro); i++)
+	for (i = 0; i < min(end, (int)fSizeIntro); i++)
 	{
 		vt[2].sx = va[i].sx   - (va[i].sx - eSrc.x) * 0.2f;
 		vt[2].sy = va[i].sy   - (va[i].sy - eSrc.y) * 0.2f;

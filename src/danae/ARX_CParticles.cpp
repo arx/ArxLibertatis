@@ -69,6 +69,7 @@ todo:
 
 
 //-----------------------------------------------------------------------------
+#include <algorithm>
 #include "Danae.h"
 #include "ARX_CSpellFx.h"
 #include "ARX_CParticles.h"

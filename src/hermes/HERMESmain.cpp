@@ -58,6 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Desc: HERMES main functionalities   //FILES MEMORY
 #include <cstring>
 #include <cstdio>
+
+#include <algorithm>
 #include <iostream>
 
 #include <time.h>
@@ -103,10 +105,10 @@ void SAFEstrcpy(char * dest, const char * src, unsigned long max)
 
 unsigned char NC_IsIn( std::string t1, std::string t2 )
 {
-    MakeUpcase(t1);
-    MakeUpcase(t2);
+	MakeUpcase(t1);
+	MakeUpcase(t2);
 
-    return ( t1.find(t2) != string::npos );
+	return ( t1.find(t2) != string::npos );
 }
 
 bool IsIn(const char * strin, const char * str)
@@ -120,55 +122,55 @@ bool IsIn(const char * strin, const char * str)
 
 void File_Standardize(const std::string& from, std::string& to)
 {
-    long pos = 0;
-    long pos2 = 0;
-    long size = from.length();
-    std::string temp = from; /*HermesBufferWork;	
+	long pos = 0;
+	long pos2 = 0;
+	long size = from.length();
+	std::string temp = from; /*HermesBufferWork;	
 
-    while (pos < size)
-    {
-        if (((from[pos] == '\\') || (from[pos] == '/')) && (pos != 0))
-        {
-            while ((pos < size - 1)
-                    && ((from[pos+1] == '\\') || (from[pos+1] == '/')))
-                pos++;
-        }
+	while (pos < size)
+	{
+		if (((from[pos] == '\\') || (from[pos] == '/')) && (pos != 0))
+		{
+			while ((pos < size - 1)
+					&& ((from[pos+1] == '\\') || (from[pos+1] == '/')))
+				pos++;
+		}
 
-        temp[pos2++]	= ARX_CLEAN_WARN_CAST_CHAR(toupper(from[pos]));
-        pos++;
-    }
+		temp[pos2++]	= ARX_CLEAN_WARN_CAST_CHAR(toupper(from[pos]));
+		pos++;
+	}
 
-    temp[pos2] = 0;*/
+	temp[pos2] = 0;*/
 
-    again:
-    ;
-    size = temp.length();
-    pos = 0;
+	again:
+	;
+	size = temp.length();
+	pos = 0;
 
-    while (pos < size - 2)
-    {
-        if ((temp[pos] == '\\' || temp[pos] == '/') && (temp[pos+1] == '.') && (temp[pos+2] == '.'))
-        {
-            long fnd = pos;
+	while (pos < size - 2)
+	{
+		if ((temp[pos] == '\\' || temp[pos] == '/') && (temp[pos+1] == '.') && (temp[pos+2] == '.'))
+		{
+			long fnd = pos;
 
-            while (pos > 0)
-            {
-                pos--;
+			while (pos > 0)
+			{
+				pos--;
 
-                if (temp[pos] == '\\' || temp[pos] == '/')
-                {
-                    // Remove /descend/ascend bit found in path, e.g /dir/../
-                    temp = temp.substr( 0, pos ) + temp.substr( fnd + 3 );
-                    //strcpy(temp + pos, temp + fnd + 3);
-                    goto again;
-                }
-            }
-        }
+				if (temp[pos] == '\\' || temp[pos] == '/')
+				{
+					// Remove /descend/ascend bit found in path, e.g /dir/../
+					temp = temp.substr( 0, pos ) + temp.substr( fnd + 3 );
+					//strcpy(temp + pos, temp + fnd + 3);
+					goto again;
+				}
+			}
+		}
 
-        pos++;
-    }
+		pos++;
+	}
 
-    to = temp;
+	to = temp;
 }
 
 void GetDate(HERMES_DATE_TIME * hdt)
@@ -214,7 +216,7 @@ void HERMES_InitDebug()
 
 void MakeUpcase( std::string& str )
 {
-    std::transform( str.begin(), str.end(), str.begin(), ::toupper );
+	std::transform( str.begin(), str.end(), str.begin(), ::toupper );
 /* TODO 
 	while(*str != '\0') {
 		// islower is needed as the are read-only strings passed that are already in upper case?
@@ -230,10 +232,10 @@ HKEY    ConsoleKey = NULL;
 
 void ConsoleSend( const std::string& dat, long level, HWND source, long flag)
 {
-	printf("ConsoleSend: %s %ld %p %ld\n", dat, level, source, flag);
+	printf("ConsoleSend: %s %ld %p %ld\n", dat.c_str(), level, source, flag);
 	RegCreateKeyEx(HKEY_CURRENT_USER, CONSOLEKEY_KEY, 0, NULL,
-	               REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL,
-	               &ConsoleKey, NULL);
+				   REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL,
+				   &ConsoleKey, NULL);
 	WriteRegKey(ConsoleKey, "ConsInfo", dat.c_str() );
 	WriteRegKeyValue(ConsoleKey, "ConsHwnd", (DWORD)source);
 	WriteRegKeyValue(ConsoleKey, "ConsLevel", (DWORD)level);
@@ -279,10 +281,10 @@ char * HERMES_GaiaCOM_Receive()
 {
 	static char dat[1024];
 	RegCreateKeyEx(HKEY_CURRENT_USER, COMKEY_KEY, 0, NULL,
-	               REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL,
-	               &ComKey, NULL);
+				   REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL,
+				   &ComKey, NULL);
 	ReadRegKey(ComKey, "ComInfo",
-	           dat, 512, "");
+			   dat, 512, "");
 	RegCloseKey(ComKey);
 	return dat;
 }
@@ -481,301 +483,301 @@ long HERMES_CreateFileCheck(const char * name, char * scheck, const long & size,
 	return false;
 }
 
-    #define GetLastChar(x)      strchr(x, '\0')
-    #define NullTerminate(x)    x[i] = '\0'
-    
-    // from http://acmlm.kafuka.org/board/thread.php?id=3930
-    static void splitpath(const char * path, char * drive, char * dir, char * fName, char * ext)
-    {
-        char separator = '\\';
-        
-        const char    *endPoint = NULL,
-                *pos = (char*) path,
-                *temp = NULL,
-                *lastChar = NULL;
+	#define GetLastChar(x)      strchr(x, '\0')
+	#define NullTerminate(x)    x[i] = '\0'
+	
+	// from http://acmlm.kafuka.org/board/thread.php?id=3930
+	static void splitpath(const char * path, char * drive, char * dir, char * fName, char * ext)
+	{
+		char separator = '\\';
+		
+		const char    *endPoint = NULL,
+				*pos = (char*) path,
+				*temp = NULL,
+				*lastChar = NULL;
  
-        unsigned int    i = 0,
-                        unixStyle = 0;
-        
-        /* initialize all the output strings in case we have to abort */
-        if(drive) { strcpy(drive, ""); } 
-        if(dir)   { strcpy(dir, "");   }
-        if(fName) { strcpy(fName, "");  }
-        if(ext)   { strcpy(ext, "");   }
+		unsigned int    i = 0,
+						unixStyle = 0;
+		
+		/* initialize all the output strings in case we have to abort */
+		if(drive) { strcpy(drive, ""); } 
+		if(dir)   { strcpy(dir, "");   }
+		if(fName) { strcpy(fName, "");  }
+		if(ext)   { strcpy(ext, "");   }
 
-        /* find the end of the string */
-        lastChar = GetLastChar(path);
+		/* find the end of the string */
+		lastChar = GetLastChar(path);
 
-        if(path[0] == '/')
-        {   separator = '/'; unixStyle = 1; }
-        else
-            separator = '\\';
-    
-        /* first figure out whether it contains a drive name */
-        endPoint = strchr(path, separator);
-        
-        /* unix style drives are of the form "/drivename/" */
-        if(unixStyle)
-            endPoint = strchr(endPoint + 1, separator);
+		if(path[0] == '/')
+		{   separator = '/'; unixStyle = 1; }
+		else
+			separator = '\\';
+	
+		/* first figure out whether it contains a drive name */
+		endPoint = strchr(path, separator);
+		
+		/* unix style drives are of the form "/drivename/" */
+		if(unixStyle)
+			endPoint = strchr(endPoint + 1, separator);
 
-    /* unix style drives are of the form "/drivename/" */
-    if(unixStyle)
-        endPoint = strchr(endPoint + 1, separator);
+	/* unix style drives are of the form "/drivename/" */
+	if(unixStyle)
+		endPoint = strchr(endPoint + 1, separator);
 
-    /* we found a drive name */
-    if(endPoint && (endPoint < lastChar))
-    {
-        if(drive)
-        {
-            for(i = 0; pos + i < endPoint; i++)
-                drive[i] = pos[i];
+	/* we found a drive name */
+	if(endPoint && (endPoint < lastChar))
+	{
+		if(drive)
+		{
+			for(i = 0; pos + i < endPoint; i++)
+				drive[i] = pos[i];
 
-            NullTerminate(drive); /* null terminate the the drive string */
-        }
+			NullTerminate(drive); /* null terminate the the drive string */
+		}
 
-        pos = endPoint;
-    }
-    else if(unixStyle)
-    {
+		pos = endPoint;
+	}
+	else if(unixStyle)
+	{
 
-        if(drive)
-        {
-            for(i = 0; (pos + i) < lastChar; i++)
-                    drive[i] = pos[i];
+		if(drive)
+		{
+			for(i = 0; (pos + i) < lastChar; i++)
+					drive[i] = pos[i];
 
-            NullTerminate(drive);
-        }
-            
-        return;
-    }
-    else
-        /* this happens when there's no separators in the path name */
-        endPoint = pos; 
+			NullTerminate(drive);
+		}
+			
+		return;
+	}
+	else
+		/* this happens when there's no separators in the path name */
+		endPoint = pos; 
 
-    /* next, find the directory name, if any */
-    temp = pos;
+	/* next, find the directory name, if any */
+	temp = pos;
 
-    while(temp && (endPoint < lastChar) )
-    {
-        temp = strchr(endPoint + 1, separator);
+	while(temp && (endPoint < lastChar) )
+	{
+		temp = strchr(endPoint + 1, separator);
 
-        if(temp) { endPoint = temp; }
-    }
+		if(temp) { endPoint = temp; }
+	}
 
-    /* if true, it means there's an intermediate directory name */
-    if( (endPoint) && (endPoint > pos) && (endPoint < lastChar))
-    {
-        if(dir)
-        {
-            for(i = 0; (pos + i) <= endPoint; i++)
-                dir[i] = pos[i];
+	/* if true, it means there's an intermediate directory name */
+	if( (endPoint) && (endPoint > pos) && (endPoint < lastChar))
+	{
+		if(dir)
+		{
+			for(i = 0; (pos + i) <= endPoint; i++)
+				dir[i] = pos[i];
 
-            NullTerminate(dir);
-        }
+			NullTerminate(dir);
+		}
 
-        pos = ++endPoint;
-    }
-    else
-        /* this happens when there's no separators in the path name */
-        endPoint = pos;
+		pos = ++endPoint;
+	}
+	else
+		/* this happens when there's no separators in the path name */
+		endPoint = pos;
 
-    /* find the file name */
-    temp = pos;
+	/* find the file name */
+	temp = pos;
 
-    while(temp && (endPoint < lastChar))
-    {
-        temp = strchr(endPoint + 1, '.');
+	while(temp && (endPoint < lastChar))
+	{
+		temp = strchr(endPoint + 1, '.');
 
-        if(temp) { endPoint = temp; }
-    }
+		if(temp) { endPoint = temp; }
+	}
 
-    if( (endPoint > pos) && (endPoint < lastChar))
-    {
-        if(fName)
-        {
-            for(i = 0; pos + i < endPoint; i++)
-                fName[i] = pos[i];
+	if( (endPoint > pos) && (endPoint < lastChar))
+	{
+		if(fName)
+		{
+			for(i = 0; pos + i < endPoint; i++)
+				fName[i] = pos[i];
 
-            NullTerminate(fName);
-        }
+			NullTerminate(fName);
+		}
 
-        pos = endPoint;
-    }
-    else if(endPoint == pos)
-    {
-        /* in this case there is no extension */
-        if(fName)
-        {
-            for(i = 0; (pos + i) < lastChar; i++)
-                fName[i] = pos[i];
+		pos = endPoint;
+	}
+	else if(endPoint == pos)
+	{
+		/* in this case there is no extension */
+		if(fName)
+		{
+			for(i = 0; (pos + i) < lastChar; i++)
+				fName[i] = pos[i];
 
-            fName[i] = '\0';
-        }
+			fName[i] = '\0';
+		}
 
-        return;
-    }
+		return;
+	}
 
-    /* the remaining characters just get dumped as the extension */
-    if(ext)
-    {
-        for(i = 0; pos + i < lastChar; i++)
-            ext[i] = pos[i];
+	/* the remaining characters just get dumped as the extension */
+	if(ext)
+	{
+		for(i = 0; pos + i < lastChar; i++)
+			ext[i] = pos[i];
 
-        NullTerminate(ext);
-    }
-        
-    /* finished! :) */
-    }
-    
+		NullTerminate(ext);
+	}
+		
+	/* finished! :) */
+	}
+	
 		// from http://acmlm.kafuka.org/board/thread.php?id=3930
-    static void makepath(char *path, char *drive, char *dir, char *fName, const char *ext)
-    {
-        char separator = '\\';
-        const char * lastChar = NULL;
-        char *pos      = NULL;
-        
-        unsigned int    i = 0,
-                        unixStyle = 0,
-                        sepCount = 0; /* number of consecutive separators */
-        
+	static void makepath(char *path, char *drive, char *dir, char *fName, const char *ext)
+	{
+		char separator = '\\';
+		const char * lastChar = NULL;
+		char *pos      = NULL;
+		
+		unsigned int    i = 0,
+						unixStyle = 0,
+						sepCount = 0; /* number of consecutive separators */
+		
 
-    if(!path)
-        return;
-    
-    /* Initialize the path to nothing */
-    strcpy(path, "");
-    
-    if(drive)
-    {
-        if(drive[0] == '/')
-        {   
-            unixStyle = 1; separator = '/';
-        }
+	if(!path)
+		return;
+	
+	/* Initialize the path to nothing */
+	strcpy(path, "");
+	
+	if(drive)
+	{
+		if(drive[0] == '/')
+		{   
+			unixStyle = 1; separator = '/';
+		}
 
-        sepCount = 0;
-        pos = (char*) drive;
-        lastChar = GetLastChar(drive);
+		sepCount = 0;
+		pos = (char*) drive;
+		lastChar = GetLastChar(drive);
 
-        if(lastChar == pos)
-            goto directory;
+		if(lastChar == pos)
+			goto directory;
 
-        for(; pos < lastChar; pos++)
-        {
-            sepCount = ( (*pos) == separator ) ? sepCount + 1 : 0;
+		for(; pos < lastChar; pos++)
+		{
+			sepCount = ( (*pos) == separator ) ? sepCount + 1 : 0;
 
-            /* filter out any extra separators */
-            if(sepCount > 1) { continue; }
-        
-            path[i++] = (*pos);
-        }
-        
-        if( (i) && path[i-1] != separator)
-            path[i++] = separator;
-           
-        NullTerminate(path);
-    }
+			/* filter out any extra separators */
+			if(sepCount > 1) { continue; }
+		
+			path[i++] = (*pos);
+		}
+		
+		if( (i) && path[i-1] != separator)
+			path[i++] = separator;
+		   
+		NullTerminate(path);
+	}
 
 directory:
 
-    if(dir)
-    {
-        sepCount = 0;
-        pos = (char*) dir;
-        lastChar = GetLastChar(dir);
-    
-        if(pos == lastChar)
-            goto fileName;
+	if(dir)
+	{
+		sepCount = 0;
+		pos = (char*) dir;
+		lastChar = GetLastChar(dir);
+	
+		if(pos == lastChar)
+			goto fileName;
 
-        /* no character in the path yet? have to add that first separator */
-        if(!i)
-            path[i++] = separator; sepCount++;
+		/* no character in the path yet? have to add that first separator */
+		if(!i)
+			path[i++] = separator; sepCount++;
 
-        /* getting rid of any extra separators */
-        while( ((*pos) == separator) && (pos < lastChar) )
-            pos++;
-        
-        for( ; pos < lastChar; pos++)
-        {
-            sepCount = ( (*pos) == separator ) ? sepCount + 1 : 0;
-        
-            if(sepCount > 1) { continue; }
-        
-            path[i++] = (*pos);
-        }
-        
-        if( (i) && path[i-1] != separator)
-            path[i++] = separator;            
-        
-        NullTerminate(path);
-    }
+		/* getting rid of any extra separators */
+		while( ((*pos) == separator) && (pos < lastChar) )
+			pos++;
+		
+		for( ; pos < lastChar; pos++)
+		{
+			sepCount = ( (*pos) == separator ) ? sepCount + 1 : 0;
+		
+			if(sepCount > 1) { continue; }
+		
+			path[i++] = (*pos);
+		}
+		
+		if( (i) && path[i-1] != separator)
+			path[i++] = separator;            
+		
+		NullTerminate(path);
+	}
 
 fileName:
-    
-    if(fName)
-    {
-        pos = (char*) fName;
-        lastChar = GetLastChar(fName);
-        
-        if(lastChar == pos)
-            goto extension;
+	
+	if(fName)
+	{
+		pos = (char*) fName;
+		lastChar = GetLastChar(fName);
+		
+		if(lastChar == pos)
+			goto extension;
 
-        for(sepCount = 0; pos < lastChar; pos++)
-        {
-            sepCount = ( (*pos) == '.' ) ? sepCount + 1 : 0;
-            
-            if(sepCount > 1) { continue; }
-            
-            path[i++] = (*pos);
-        }
-    
-        NullTerminate(path);
-    }
+		for(sepCount = 0; pos < lastChar; pos++)
+		{
+			sepCount = ( (*pos) == '.' ) ? sepCount + 1 : 0;
+			
+			if(sepCount > 1) { continue; }
+			
+			path[i++] = (*pos);
+		}
+	
+		NullTerminate(path);
+	}
 
 extension:
 
-    if(ext)
-    {
-        sepCount = 0;
-        pos = (char*) ext;
-        lastChar = GetLastChar(ext);
+	if(ext)
+	{
+		sepCount = 0;
+		pos = (char*) ext;
+		lastChar = GetLastChar(ext);
 
-        if(lastChar == pos)
-            return;
+		if(lastChar == pos)
+			return;
 
-        if(i && (path[i - 1] != '.'))
-        {   path[i++] = '.'; sepCount++; }
-        
-        for(; pos < lastChar; pos++)
-        {
-            char * lastPathChar = GetLastChar(path) - 1;
-            
-            /* backpedal until we get rid of all the dots b/c what's the use of a dot on an extensionless file? */
-            while(lastPathChar > path)
-            {
-                if((*lastPathChar) != '.')
-                    break;
-            
-                (*lastPathChar) = '\0';
-                lastPathChar--;
-            }        
-        }
+		if(i && (path[i - 1] != '.'))
+		{   path[i++] = '.'; sepCount++; }
+		
+		for(; pos < lastChar; pos++)
+		{
+			char * lastPathChar = GetLastChar(path) - 1;
+			
+			/* backpedal until we get rid of all the dots b/c what's the use of a dot on an extensionless file? */
+			while(lastPathChar > path)
+			{
+				if((*lastPathChar) != '.')
+					break;
+			
+				(*lastPathChar) = '\0';
+				lastPathChar--;
+			}        
+		}
 
-        NullTerminate(path);
-    }
-    else
-    {
-        lastChar = GetLastChar(path) - 1;
-        
-        /* backpedal until we get rid of all the dots b/c what's the use of a dot on an extensionless file? */
-        while(lastChar > path)
-        {
-            if((*lastChar) != '.')
-                break;
-        
-            (*lastChar) = '\0';
-            lastChar--;
-        }        
-    }
+		NullTerminate(path);
+	}
+	else
+	{
+		lastChar = GetLastChar(path) - 1;
+		
+		/* backpedal until we get rid of all the dots b/c what's the use of a dot on an extensionless file? */
+		while(lastChar > path)
+		{
+			if((*lastChar) != '.')
+				break;
+		
+			(*lastChar) = '\0';
+			lastChar--;
+		}        
+	}
 }
 
 #undef GetLastChar
@@ -816,19 +818,25 @@ void AddToName(char * str, const char * cat)
 
 void RemoveName( std::string& str )
 {
-	splitpath(str, _drv, _dir, _name, _ext);
-	makepath(str, _drv, _dir, NULL, NULL);
+	char temp[512];
+	strcpy( temp, str.c_str() );
+	splitpath( temp, _drv, _dir, _name, _ext);
+	makepath(temp, _drv, _dir, NULL, NULL);
+	str = temp;
 }
 
 bool CreateFullPath( const std::string& path ) {
 	printf("CreateFullPath(%s)", path.c_str() );
+
+	char temp[512];
+	strcpy( temp, path.c_str() );
 	
 	char drive[_MAX_DRIVE];
 	char dir[_MAX_DIR];
 	char fname[_MAX_FNAME];
 	char ext[MAX_PATH];
 
-	splitpath(path, drive, dir, fname, ext);
+	splitpath( temp, drive, dir, fname, ext);
 
 	if (strlen(dir) == 0) return false;
 
@@ -854,7 +862,7 @@ bool CreateFullPath( const std::string& path ) {
 		pos++;
 	}
 
-	if (DirectoryExist(path)) return true;
+	if (DirectoryExist(temp)) return true;
 
 	return false;
 }
