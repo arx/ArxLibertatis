@@ -23,6 +23,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 #include <cstdio>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+#include <vector>
 
 #include "core/Danae.h"
 #include "core/ARX_ViewImage.h"

@@ -60,6 +60,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <fcntl.h>
 #include <time.h>
 
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+
 #include "renderer/EERIEMath.h"
 #include "renderer/EERIEPathfinder.h"
 #include "renderer/EERIEObject.h"

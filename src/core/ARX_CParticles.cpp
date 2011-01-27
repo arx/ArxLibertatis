@@ -70,6 +70,11 @@ todo:
 //TODO(lubosz): remove Version history
 //-----------------------------------------------------------------------------
 #include <list>
+#include <algorithm>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
 
 #include "core/Danae.h"
 #include "core/ARX_CSpellFx.h"
