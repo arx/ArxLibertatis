@@ -79,10 +79,11 @@ typedef struct
 	EERIE_SCRIPT*       es;
 } SCR_TIMER;
 
-typedef struct
+struct SCRIPT_EVENT
 {
+	SCRIPT_EVENT( const std::string& str ): name( str ) {}
 	std::string name;
-} SCRIPT_EVENT;
+};
 
 //-----------------------------------------------------------------------------
 #define PATHFIND_ALWAYS		1
@@ -377,7 +378,7 @@ typedef struct
 //-----------------------------------------------------------------------------
 extern SCRIPT_VAR * svar;
 extern INTERACTIVE_OBJ * EVENT_SENDER;
-extern std::vector<SCRIPT_EVENT> AS_EVENT;
+extern SCRIPT_EVENT AS_EVENT[];
 extern SCR_TIMER * scr_timer;
 extern std::string ShowTextWindowtext;
 extern long NEED_DEBUG;

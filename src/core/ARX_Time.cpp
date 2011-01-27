@@ -59,6 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <fstream>
 #include <sstream>
+#include <vector>
 
 #include "core/ARX_Time.h"
 
