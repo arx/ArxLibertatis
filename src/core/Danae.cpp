@@ -5711,9 +5711,9 @@ static float _AvgFrameDiff = 150.f;
 		ARXTotalPausedTime+=ARXTime-(LastFrameTime+(1000/snapshotdata.imgsec));		
 	}
 
-	PULSATE=EEsin(FrameTime*( 1.0f / 800 ));
-	METALdecal=EEsin(FrameTime*( 1.0f / 50 ))*( 1.0f / 200 );
-	PULSS=EEsin(FrameTime*( 1.0f / 200 ))*DIVPI*( 1.0f / 4 )+0.25f;
+	PULSATE=EEsin(FrameTime / 800);
+	METALdecal=EEsin(FrameTime / 50) / 200 ;
+	PULSS=(EEsin(FrameTime / 200) / (4*PI) )+0.25f;
 	EERIEDrawnPolys=0;
 	
 	// EditMode Specific code

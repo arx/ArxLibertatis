@@ -2927,9 +2927,9 @@ void AddFlare(EERIE_S2D * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 			switch (PIPOrgb) 
 			{
 			case 0:
-				fl->g=rnd()*DEUXTIERS;
-				fl->r=(rnd()*DEUXTIERS)+0.4f;
-				fl->b=(rnd()*DEUXTIERS)+0.4f;
+				fl->g=rnd()*( 2.0f / 3 );
+				fl->r=(rnd()*( 2.0f / 3 ))+0.4f;
+				fl->b=(rnd()*( 2.0f / 3 ))+0.4f;
 				break;
 			case 1:
 				fl->b=rnd()*0.55f;
@@ -2939,7 +2939,7 @@ void AddFlare(EERIE_S2D * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 			case 2:
 				fl->b=rnd()*0.55f;
 					fl->g = rnd() * 0.55f;
-				fl->r=(rnd()*DEUXTIERS)+0.4f;
+				fl->r=(rnd()*( 2.0f / 3 ))+0.4f;
 				break;			
 			}
 			
@@ -3024,9 +3024,9 @@ void AddFlare(EERIE_S2D * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 						}
 						else pd->siz=1.f+rnd()*1.f;
 
-						pd->r=fl->r*DEUXTIERS;
-						pd->g=fl->g*DEUXTIERS;
-						pd->b=fl->b*DEUXTIERS;
+						pd->r=fl->r*( 2.0f / 3 );
+						pd->g=fl->g*( 2.0f / 3 );
+						pd->b=fl->b*( 2.0f / 3 );
 						pd->fparam=1.2f;
 					}
 				}
@@ -3076,9 +3076,9 @@ void AddFlare2(EERIE_S2D * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 			switch (PIPOrgb) 
 			{
 			case 0:
-				fl->g=rnd()*DEUXTIERS;
-				fl->r=(rnd()*DEUXTIERS)+0.4f;
-				fl->b=(rnd()*DEUXTIERS)+0.4f;
+				fl->g=rnd()*( 2.0f / 3 );
+				fl->r=(rnd()*( 2.0f / 3 ))+0.4f;
+				fl->b=(rnd()*( 2.0f / 3 ))+0.4f;
 				break;
 			case 1:
 				fl->b=rnd()*0.55f;
@@ -3088,7 +3088,7 @@ void AddFlare2(EERIE_S2D * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 			case 2:
 				fl->b=rnd()*0.55f;
 					fl->g = rnd() * 0.55f; 
-				fl->r=(rnd()*DEUXTIERS)+0.4f;
+				fl->r=(rnd()*( 2.0f / 3 ))+0.4f;
 				break;			
 			}
 			
@@ -3167,9 +3167,9 @@ void AddFlare2(EERIE_S2D * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 						}
 						else pd->siz=1.f+rnd()*1.f;
 
-						pd->r=fl->r*DEUXTIERS;
-						pd->g=fl->g*DEUXTIERS;
-						pd->b=fl->b*DEUXTIERS;
+						pd->r=fl->r*( 2.0f / 3 );
+						pd->g=fl->g*( 2.0f / 3 );
+						pd->b=fl->b*( 2.0f / 3 );
 						pd->fparam=1.2f;
 						pd->type=PARTICLE_2D;
 					}
