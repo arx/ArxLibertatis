@@ -352,8 +352,10 @@ long EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah, char * path) {
 }
 
 //-----------------------------------------------------------------------------
-ANIM_HANDLE * EERIE_ANIMMANAGER_Load( std::string& path)
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load( const std::string& _path)
 {
+	std::string path = _path;
+
 	ANIM_HANDLE * handl=EERIE_ANIMMANAGER_GetHandle(path.c_str());
 
 	if (handl) 

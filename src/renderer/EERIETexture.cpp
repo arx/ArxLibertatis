@@ -3418,9 +3418,10 @@ TextureContainer * LastTextureContainer = NULL;
 
 extern long DEBUGSYS;
 
-TextureContainer * D3DTextr_CreateTextureFromFile( std::string& strName, DWORD dwStage,
+TextureContainer * D3DTextr_CreateTextureFromFile( const std::string& _strName, DWORD dwStage,
 		DWORD dwFlags, long sysflags)
 {
+	std::string strName = _strName;
 	TextureContainer * ReturnValue = NULL;
 	// Check parameters
 	std::string texx;
@@ -3586,10 +3587,11 @@ HRESULT D3DTextr_CreateEmptyTexture( std::string& strName, DWORD dwWidth,
 // Desc: Invalidates the current texture objects and rebuilds new ones
 //       using the new device.
 //-----------------------------------------------------------------------------
-HRESULT D3DTextr_Restore( std::string& strName, LPDIRECT3DDEVICE7 pd3dDevice)
+HRESULT D3DTextr_Restore( const std::string& strName, LPDIRECT3DDEVICE7 pd3dDevice)
 {
-	MakeUpcase(strName);
-	TextureContainer * ptcTexture = FindTexture(strName);
+	std::string temp = strName;
+	MakeUpcase(temp);
+	TextureContainer * ptcTexture = FindTexture(temp);
 
 	if (NULL == ptcTexture)
 		return DDERR_NOTFOUND;
@@ -3704,8 +3706,9 @@ HRESULT D3DTextr_DestroyContainer(TextureContainer * ptcTexture)
 // Desc: Returns a pointer to a d3dSurface from the name of the texture
 //-----------------------------------------------------------------------------
 
-TextureContainer * D3DTextr_GetSurfaceContainer( std::string& strName)
+TextureContainer * D3DTextr_GetSurfaceContainer( const std::string& _strName)
 {
+	std::string strName = _strName;
 	MakeUpcase(strName);
 	TextureContainer * ptcTexture = FindTexture(strName);
 	return ptcTexture;

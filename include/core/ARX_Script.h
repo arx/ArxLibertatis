@@ -378,8 +378,6 @@ extern INTERACTIVE_OBJ * EVENT_SENDER;
 extern SCRIPT_EVENT AS_EVENT[];
 extern SCR_TIMER * scr_timer;
 extern std::string ShowTextWindowtext;
-extern std::string ShowText;
-extern std::string ShowText2;
 extern std::string BIG_DEBUG_STRING;
 extern long NEED_DEBUG;
 extern long BIG_DEBUG_POS;

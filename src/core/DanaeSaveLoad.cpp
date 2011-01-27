@@ -440,8 +440,9 @@ typedef struct
 //*************************************************************************************
 //*************************************************************************************
 
-long DanaeSaveLevel( std::string& fic)
+long DanaeSaveLevel( const std::string& _fic )
 {
+	std::string fic = _fic;
 	std::string fic2;
 	std::string fic3;
 	char _error[512];
@@ -1233,7 +1234,7 @@ void ClearCurLoadInfo()
 extern long FASTmse;
 long DONT_LOAD_INTERS = 0;
 long FAKE_DIR = 0;
-long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, std::string& fic)
+long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fic)
 {
 //	char _error[512];
 	DANAE_LS_HEADER				dlh;

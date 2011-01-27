@@ -2784,7 +2784,7 @@ float GetTileMaxY(long i, long j)
 
 #define TYPE_PORTAL	1
 #define TYPE_ROOM	2
-bool GetNameInfo( const std::string name1, long& type, long& val1, long& val2)
+bool GetNameInfo( const std::string& name1, long& type, long& val1, long& val2)
 {
 	std::string name;
 	name = name1;
@@ -2971,7 +2971,7 @@ void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const char * name, long px, long py, 
 
 	long type, val1, val2;
 
-	if (!GetNameInfo(name, &type, &val1, &val2)) return;
+	if (!GetNameInfo(name, type, val1, val2)) return;
 
 	if (portals == NULL)
 	{
@@ -4860,7 +4860,7 @@ void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 
 	if (COMPUTE_PORTALS)
 	{
-		if (GetNameInfo(eobj->name.c_str(), &type, &val1, &val2))
+		if (GetNameInfo(eobj->name, type, val1, val2))
 		{
 			if (type == TYPE_PORTAL)
 			{
@@ -4894,7 +4894,7 @@ void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 	}
 	else
 	{
-		if (GetNameInfo(eobj->name.c_str(), &type, &val1, &val2))
+		if (GetNameInfo(eobj->name, type, val1, val2))
 		{
 			if (type == TYPE_PORTAL)
 			{

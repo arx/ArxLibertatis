@@ -103,7 +103,7 @@ void SAFEstrcpy(char * dest, const char * src, unsigned long max)
 	}
 }
 
-unsigned char NC_IsIn( std::string t1, std::string t2 )
+bool NC_IsIn( std::string t1, std::string t2 )
 {
 	MakeUpcase(t1);
 	MakeUpcase(t2);
@@ -111,13 +111,9 @@ unsigned char NC_IsIn( std::string t1, std::string t2 )
 	return ( t1.find(t2) != string::npos );
 }
 
-bool IsIn(const char * strin, const char * str)
+bool IsIn(const std::string& strin, const std::string& str)
 {
-	const char * tmp = strstr(strin, str);
-	
-	if (tmp == NULL) return false;
-	
-	return true;
+	return ( strin.find( str ) != std::string::npos );
 }
 
 void File_Standardize(const std::string& from, std::string& to)
@@ -784,29 +780,35 @@ char _dir[256];
 char _name[256];
 char _ext[256];
 
-char * GetName(const char * str)
+std::string GetName( const std::string& str )
 {
-	splitpath(str, _drv, _dir, _name, _ext);
+	splitpath(str.c_str(), _drv, _dir, _name, _ext);
 	return _name;
 }
 
-char * GetExt(const char * str)
+char* GetExt( const std::string& str )
 {
-	splitpath(str, _drv, _dir, _name, _ext);
+	splitpath(str.c_str(), _drv, _dir, _name, _ext);
 	return _ext;
 }
 
-void SetExt(char * str, const char * new_ext)
+void SetExt( std::string& str, const std::string& new_ext )
 {
-	splitpath(str, _drv, _dir, _name, _ext);
-	makepath(str, _drv, _dir, _name, new_ext);
+	char temp[512];
+	strcpy( temp, str.c_str() );
+	splitpath(temp, _drv, _dir, _name, _ext);
+	makepath(temp, _drv, _dir, _name, new_ext.c_str());
+	str = temp;
 }
 
-void AddToName(char * str, const char * cat)
+void AddToName( std::string& str, const std::string& cat )
 {
-	splitpath(str, _drv, _dir, _name, _ext);
-	strcat(_name, cat);
-	makepath(str, _drv, _dir, _name, _ext);
+	splitpath(str.c_str(), _drv, _dir, _name, _ext);
+	strcat(_name, cat.c_str() );
+	char temp[512];
+	strcpy( temp, str.c_str() );
+	makepath(temp, _drv, _dir, _name, _ext);
+	str = temp;
 }
 
 void RemoveName( std::string& str )

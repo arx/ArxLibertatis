@@ -2194,19 +2194,19 @@ void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, EERIE_3D * target, long flag
 //*************************************************************************************
 // Finds IO number by name
 //*************************************************************************************
-long GetTargetByNameTarget(const char * name)
+long GetTargetByNameTarget(const std::string& name)
 {
 	char temp[256];
 
-	if (name == NULL) return -1;
+	if (name.empty()) return -1;
 
-	if (!strcasecmp(name, "self"))		return -2;
+	if (!strcasecmp(name.c_str(), "self"))		return -2;
 
-	if (!strcasecmp(name, "none"))		return -1;
+	if (!strcasecmp(name.c_str(), "none"))		return -1;
 
-	if (!strcasecmp(name, "me"))		return -2;
+	if (!strcasecmp(name.c_str(), "me"))		return -2;
 
-	if (!strcasecmp(name, "player"))	return 0;     ///player is now an io with index 0
+	if (!strcasecmp(name.c_str(), "player"))	return 0;     ///player is now an io with index 0
 
 	for (long i = 0 ; i < inter.nbmax ; i++)
 	{
@@ -2215,7 +2215,7 @@ long GetTargetByNameTarget(const char * name)
 		{
 			sprintf(temp, "%s_%04ld", GetName(inter.iobj[i]->filename).c_str(), inter.iobj[i]->ident);
 
-			if (!strcasecmp(name, temp)) return i;
+			if (!strcasecmp(name.c_str(), temp)) return i;
 		}
 	}
 
@@ -4855,4 +4855,35 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 		EERIE_PHYSICS_BOX_Launch(io->obj, &pos, &fallvector);
 
 	}
+}
+
+//-------------------------------------------------------------------------
+void GetMaterialString( const char * origin, char * dest)
+{
+	// need to be precomputed !!!
+	if (IsIn(origin, "STONE"))	strcpy(dest, "STONE");
+	else if (IsIn(origin, "MARBLE"))	strcpy(dest, "STONE");
+	else if (IsIn(origin, "ROCK"))	strcpy(dest, "STONE");
+	else if (IsIn(origin, "WOOD"))	strcpy(dest, "WOOD");
+	else if (IsIn(origin, "WET"))	strcpy(dest, "WET");
+	else if (IsIn(origin, "MUD"))	strcpy(dest, "WET");
+	else if (IsIn(origin, "BLOOD"))	strcpy(dest, "WET");
+	else if (IsIn(origin, "BONE"))	strcpy(dest, "WET");
+	else if (IsIn(origin, "FLESH"))	strcpy(dest, "WET");
+	else if (IsIn(origin, "SHIT"))	strcpy(dest, "WET");
+	else if (IsIn(origin, "SOIL"))	strcpy(dest, "GRAVEL");
+	else if (IsIn(origin, "GRAVEL"))	strcpy(dest, "GRAVEL");
+	else if (IsIn(origin, "EARTH"))	strcpy(dest, "GRAVEL");
+	else if (IsIn(origin, "DUST"))	strcpy(dest, "GRAVEL");
+	else if (IsIn(origin, "SAND"))	strcpy(dest, "GRAVEL");
+	else if (IsIn(origin, "STRAW"))	strcpy(dest, "GRAVEL");
+	else if (IsIn(origin, "METAL"))	strcpy(dest, "METAL");
+	else if (IsIn(origin, "IRON"))	strcpy(dest, "METAL");
+	else if (IsIn(origin, "GLASS"))	strcpy(dest, "METAL");
+	else if (IsIn(origin, "RUST"))	strcpy(dest, "METAL");
+	else if (IsIn(origin, "EARTH"))	strcpy(dest, "EARTH");
+	else if (IsIn(origin, "ICE"))	strcpy(dest, "ICE");
+	else if (IsIn(origin, "FABRIC")) strcpy(dest, "CARPET");
+	else if (IsIn(origin, "MOSS"))	strcpy(dest, "CARPET");
+	else strcpy(dest, "UNKNOWN");
 }

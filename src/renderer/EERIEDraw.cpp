@@ -304,7 +304,7 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 		if (COMPUTE_PORTALS)
 		{
 
-			if (!GetNameInfo(eobj->name.c_str(),&type,&val1,&val2))
+			if (!GetNameInfo(eobj->name, type, val1, val2))
 				return false;
 
 			if (type!=TYPE_ROOM)

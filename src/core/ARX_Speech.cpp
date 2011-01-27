@@ -126,12 +126,10 @@ void ARX_SPEECH_ClearAll()
 }
 
 //-----------------------------------------------------------------------------
-long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, _TCHAR * _lpszUText, long duration)
+long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, const std::string& _name, long duration)
 {
 
-	if (_lpszUText == NULL) return -1;
-
-	if (_lpszUText[0] == 0) return -1;
+	if ( _name.empty() ) return -1;
 
 	unsigned long tim = ARXTimeUL(); 
 
@@ -144,7 +142,7 @@ long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, _TCHAR * _lpszUText, long duration)
 	{
 		if (speech[i].timecreation == 0)
 		{
-			long length = _tcslen(_lpszUText);
+			long length = _name.length();
 
 			speech[i].lpszUText.clear();
 
@@ -155,12 +153,12 @@ long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, _TCHAR * _lpszUText, long duration)
 			if (duration == -1) speech[i].duration = 2000 + length * 60; 
 			else speech[i].duration = duration;
 
-			if (length > 4095)
+			/*if (length > 4095)
 			{
-				memcpy(&speech[i].lpszUText, &_lpszUText, 4095 * sizeof(_TCHAR));
+				speech[i].lpszUText = _name;
 				speech[i].lpszUText[4095] = 0;
-			}
-			speech[i].lpszUText = _lpszUText;
+			}*/
+			speech[i].lpszUText = _name;
 
 			// Sets speech color
 			if (io == NULL)

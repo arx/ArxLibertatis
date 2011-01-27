@@ -131,45 +131,45 @@ bool _PAK_DirectoryExist(const char * name) {
 	return result;
 }
 
-bool PAK_DirectoryExist(const char * name) {
+bool PAK_DirectoryExist(const std::string& name) {
 	
-	if(_PAK_DirectoryExist(name)) {
+	if(_PAK_DirectoryExist(name.c_str())) {
 		return true;
 	}
 	
-	return DirectoryExist(name);
+	return DirectoryExist(name.c_str());
 }
 
-bool PAK_FileExist(const std::string& name) {
+bool PAK_FileExist(const char* name) {
 	
 	if(pPakManager->ExistFile(name)) {
 		return true;
 	}
 	
-	return FileExist(name.c_str());
+	return FileExist(name);
 }
 
-void * PAK_FileLoadMalloc(const char * name, size_t * sizeLoaded) {
+void * PAK_FileLoadMalloc(const std::string& name, size_t& sizeLoaded) {
 	
 	void * ret = NULL;
 	
-	ret = pPakManager->ReadAlloc(name, *sizeLoaded);
+	ret = pPakManager->ReadAlloc(name, sizeLoaded);
 	
 	if(!ret) {
-		ret = FileLoadMalloc(name, sizeLoaded);
+		ret = FileLoadMalloc(name.c_str(), &sizeLoaded);
 	}
 	
 	return ret;
 }
 
-void * PAK_FileLoadMallocZero(const char * name, size_t * sizeLoaded) {
+void * PAK_FileLoadMallocZero(const std::string& name, size_t& sizeLoaded) {
 	
 	void * ret = NULL;
 	
-	ret = _PAK_FileLoadMallocZero(name, *sizeLoaded);
+	ret = _PAK_FileLoadMallocZero(name, sizeLoaded);
 	
 	if(!ret) {
-		ret = FileLoadMallocZero(name, sizeLoaded);
+		ret = FileLoadMallocZero(name.c_str(), &sizeLoaded);
 	}
 	
 	return ret;

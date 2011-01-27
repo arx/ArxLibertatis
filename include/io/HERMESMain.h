@@ -108,17 +108,12 @@ void SAFEstrcpy(char * dest, const char * src, unsigned long max);
 
 
 void MakeUpcase( std::string& str);
-unsigned char IsIn( const std::string& strin, const std::string& str);
-unsigned char NC_IsIn( std::string strin, std::string str);
+bool IsIn( const std::string& strin, const std::string& str );
+bool NC_IsIn( std::string strin, std::string str);
 
 void GetDate(HERMES_DATE_TIME * hdt);
 void SendConsole( const std::string& dat,long level,long flag,HWND source);
 void ForceSendConsole( const std::string& dat,long level,long flag,HWND source);
-
-
-void GetDate(HERMES_DATE_TIME * hdt);
-void SendConsole(const char * dat,long level,long flag,HWND source);
-void ForceSendConsole(const char * dat,long level,long flag,HWND source);
 
 void MemFree(void * adr);
 unsigned long MakeMemoryText(char * text);
@@ -129,8 +124,8 @@ bool HERMESFolderSelector(char * file_name, const char * title);
 void RemoveName( std::string& str );
 std::string GetName( const std::string& str);
 void SetExt( std::string& str, const std::string& new_ext );
-char * GetExt(const char *str);
-void AddToName(char *str, const char *cat);
+char* GetExt(const std::string& str);
+void AddToName(char *str, const std::string& cat);
 int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName,const char *filter,HWND hWnd);
 int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName,const char *filter,HWND hWnd);
 long HERMES_CreateFileCheck(const char *name, char *scheck, const long &size, const float &id);

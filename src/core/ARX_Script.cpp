@@ -124,6 +124,10 @@ extern long FRAME_COUNT;
 extern long lChangeWeapon;
 extern INTERACTIVE_OBJ * pIOChangeWeapon;
 
+std::string ShowText;
+std::string ShowText2;
+std::string ShowTextWindowtext;
+
 extern float g_TimeStartCinemascope;
 
 INTERACTIVE_OBJ * LASTSPAWNED = NULL;
@@ -485,14 +489,16 @@ suite:
 
 	DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXTBIG, danaeApp.m_hWnd, (DLGPROC)ShowTextDlg);
 }
-void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, const char * newevent)
+
+void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, const std::string& newevent)
 {
 	if (io == NULL) return;
 
 	if (!strcasecmp(newevent, "MAIN"))
 		io->mainevent[0] = 0;
-	else strcpy(io->mainevent, newevent);
+	else strcpy(io->mainevent, newevent.c_str());
 }
+
 //*************************************************************************************
 //*************************************************************************************
 void ARX_SCRIPT_ResetObject(INTERACTIVE_OBJ * io, long flags)
@@ -3412,10 +3418,13 @@ long MakeLocalised( const std::string& text, std::string& output, long maxsize, 
 }
 
 //-----------------------------------------------------------------------------
-long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const char * _lpszText, long duration)
+long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const std::string& _lpszText, long duration)
 {
 	std::string __output;
-	std::string __text;
+	std::string __text = _lpszText;
+
+	//todo cast
+	//MultiByteToWideChar(CP_ACP, 0, _lpszText, -1, __text, 256);
 
 	HERMES_UNICODE_GetProfileString(
 		__text,
@@ -3604,26 +3613,26 @@ void ARX_SCRIPT_EventStackExecuteAll()
 	ARX_SCRIPT_EventStackExecute();
 	STACK_FLOW = 20;
 }
-void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const char * params, const char * eventname)
+void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params, const std::string& eventname)
 {
 	for (long i = 0; i < MAX_EVENT_STACK; i++)
 	{
 		if (!eventstack[i].exist)
 		{
-			if (strlen(params) != 0)
+			if (params.length() != 0)
 			{
-				eventstack[i].params = (char *)malloc(strlen(params) + 1);
-				strcpy(eventstack[i].params, params);
+				eventstack[i].params = (char *)malloc(params.length() + 1);
+				strcpy(eventstack[i].params, params.c_str());
 			}
 			else
 			{
 				eventstack[i].params = NULL;
 			}
 
-			if ((eventname) && (strlen(eventname) != 0))
+			if ( eventname.length() != 0)
 			{
-				eventstack[i].eventname = (char *)malloc(strlen(eventname) + 1);
-				strcpy(eventstack[i].eventname, eventname);
+				eventstack[i].eventname = (char *)malloc(eventname.length() + 1);
+				strcpy(eventstack[i].eventname, eventname.c_str());
 			}
 			else
 			{
@@ -3639,7 +3648,7 @@ void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const char * params
 		}
 	}
 }
-long SendIOScriptEventReverse(INTERACTIVE_OBJ * io, long msg, const char * params, const char * eventname)
+long SendIOScriptEventReverse(INTERACTIVE_OBJ * io, long msg, const std::string& params, const std::string& eventname)
 {
 	// checks invalid IO
 	if (!io) return -1;
@@ -3673,7 +3682,8 @@ long SendIOScriptEventReverse(INTERACTIVE_OBJ * io, long msg, const char * param
 	// Refused further processing.
 	return REFUSE;
 }
-long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const char * params, const char * eventname)
+
+long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params, const std::string& eventname)
 {
 	// checks invalid IO
 	if (!io) return -1;
@@ -3688,7 +3698,7 @@ long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const char * params, cons
 		{
 			if (inter.iobj[num])
 			{
-				SendIOScriptEventReverse(inter.iobj[num], msg, params, eventname);
+				SendIOScriptEventReverse(inter.iobj[num], msg, params.c_str(), eventname.c_str());
 				EVENT_SENDER = oes;
 			}
 		}
@@ -5801,7 +5811,7 @@ void ARX_SCRIPT_Init_Event_Stats()
 }
 //*********************************************************************************************
 //*********************************************************************************************
-bool IsIOGroup(INTERACTIVE_OBJ * io, const char * group)
+bool IsIOGroup(INTERACTIVE_OBJ * io, const std::string& group)
 {
 	for (long i = 0; i < io->nb_iogroups; i++)
 	{
@@ -6069,7 +6079,7 @@ void ManageCasseDArme(INTERACTIVE_OBJ * io)
 INTERACTIVE_OBJ * IO_DEBUG = NULL;
 //*************************************************************************************
 //*************************************************************************************
-long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTIVE_OBJ * io, const char * evname, long info)
+long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info)
 {
 	if (io)
 	{
@@ -6142,10 +6152,10 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 	if (esss == NULL) esss = es;
 
 	// Finds script position to execute code...
-	if (evname != NULL)
+	if ( !evname.empty())
 	{
 		strcpy(eventname, "ON ");
-		strcat(eventname, evname);
+		strcat(eventname, evname.c_str());
 		pos = FindScriptPos(es, eventname, 0);
 	}
 	else
@@ -6224,7 +6234,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 			else
 			{
 				if (((msg >= SM_MAXCMD))
-						&& (msg != SM_EXECUTELINE) && (!evname))
+						&& (msg != SM_EXECUTELINE) && (evname.empty()))
 				{
 
 					return ACCEPT;
@@ -6245,12 +6255,12 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 
 
-	MakeSSEPARAMS(params);
+	MakeSSEPARAMS(params.c_str());
 
 
 	if (msg != SM_EXECUTELINE)
 	{
-		if (evname)
+		if (!evname.empty())
 		{
 			pos += strlen(eventname); // adding 'ON ' length
 #ifdef NEEDING_DEBUG

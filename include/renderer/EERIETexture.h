@@ -220,7 +220,7 @@ class TextureContainer
 // ASCII name.
 //-----------------------------------------------------------------------------
  
-TextureContainer * D3DTextr_GetSurfaceContainer(const char * strName);
+TextureContainer * D3DTextr_GetSurfaceContainer(const std::string& strName);
 TextureContainer * GetTextureList();
 extern TextureContainer * LastTextureContainer;
 long CountTextures( const std::string& tex, long * memsize, long * memmip);

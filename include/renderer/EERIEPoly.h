@@ -1090,7 +1090,7 @@ float CEDRIC_PtIn2DPolyProjV2(EERIE_3DOBJ * obj,EERIE_FACE * ef, float x, float 
 void EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 void ComputePortalVertexBuffer();
 float GetRoomDistance(long i,long j,EERIE_3D * p1,EERIE_3D * p2);
-bool GetNameInfo( const std::string& name1,long * type,long * val1,long * val2);
+bool GetNameInfo( const std::string& name1,long& type,long& val1,long& val2);
 
 typedef struct
 {
