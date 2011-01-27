@@ -55,6 +55,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 #include <cstdio>
+#include <iostream>
+#include <algorithm>
+#include <fstream>
+#include <sstream>
+#include <vector>
 using std::sprintf;
 
 #include "renderer/EERIEAnim.h"

@@ -58,6 +58,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdio.h>
 #include <vector>
 #include <algorithm>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 #include "io/HERMESPerf.h"
 

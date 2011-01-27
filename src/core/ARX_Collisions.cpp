@@ -58,6 +58,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdlib.h>
 #include <math.h>
 
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
 #include "renderer/EERIEMath.h"
 #include "io/HERMESMain.h"
 #include "core/ARX_Collisions.h"

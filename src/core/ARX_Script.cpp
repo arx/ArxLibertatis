@@ -59,6 +59,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdlib.h>
 #include <cstdio>
 #include <cassert>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+#include <vector>
 
 #include "renderer/EERIEObject.h"
 #include "renderer/EERIELinkedObj.h"
@@ -89,6 +94,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Danae_resource.h"
 #include "io/HERMESMain.h"
 #include "io/PakManager.h"
+#include "io/Logger.h"
 
 using std::sprintf;
 
