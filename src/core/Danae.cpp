@@ -103,7 +103,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/ARX_Loc.h"
 #include "core/ARX_Menu.h"
 #include "core/ARX_Menu2.h"
-#include "core/ARX_Network.h"
 #include "core/ARX_NPC.h"
 #include "core/ARX_Particles.h"
 #include "core/ARX_Paths.h"
