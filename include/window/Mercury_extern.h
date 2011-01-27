@@ -30,6 +30,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
+#define DIRECTINPUT_VERSION 0x0700
 #include <dinput.h>
 
 #include "core/ARX_Common.h"
