@@ -63,10 +63,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iostream>
 
 #include <time.h>
-#include "HERMESMain.h"
-#include "HERMESNet.h"
-#include <hermes/Filesystem.h>
-#include <hermes/Logger.h>
+#include "io/HERMESMain.h"
+#include "io/HERMESNet.h"
+#include "io/Filesystem.h"
+#include "io/Logger.h"
 
 extern "C" {
 #undef __cplusplus
@@ -78,7 +78,7 @@ extern "C" {
 
 using namespace std;
 
-// TODO is this correct?
+// TODO(lubosz): temporary include replacement
 #define _MAX_EXT 3
 #define _MAX_FNAME 512
 #define _MAX_DRIVE 1

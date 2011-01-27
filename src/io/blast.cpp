@@ -29,8 +29,8 @@
 #include <cstring>
 #include <cstdlib>
 
-#include <hermes/blast.h>              /* prototype for blast() */
-#include <hermes/Logger.h>
+#include "io/blast.h"              /* prototype for blast() */
+#include "io/Logger.h"
 
 #define local static            /* for local function definitions */
 #define MAXBITS 13              /* maximum code length */

@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "hermes/Logger.h"
+#include "io/Logger.h"
 #define BASH_COLOR 1
 
 using std::cout;

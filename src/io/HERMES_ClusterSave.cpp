@@ -29,8 +29,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <fstream>
 #include <sstream>
 #include <windows.h>
-#include "HERMES_ClusterSave.h"
-#include "hermes/HashMap.h"
+#include "io/HERMES_ClusterSave.h"
+#include "io/HashMap.h"
 
 //------------------------------------------------------------------------
 CCluster::CCluster(int _iTaille)

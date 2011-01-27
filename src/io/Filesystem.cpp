@@ -26,8 +26,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h>
 #include <cstdio>
 #include <cassert>
-#include <hermes/Filesystem.h>
-#include "hermes/Logger.h"
+#include "io/Filesystem.h"
+#include "io/Logger.h"
 
 long KillAllDirectory(const char * path) {
 	LogInfo << "KillAllDirectory "<< path;
