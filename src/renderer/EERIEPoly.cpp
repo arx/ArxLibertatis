@@ -146,9 +146,9 @@ void DebugSphere(float x, float y, float z, float siz, long tim, D3DCOLOR color)
 		particle[j].tolive		=	tim;
 		particle[j].tc			=	EERIE_DRAW_sphere_particle;
 		particle[j].siz			=	siz;
-		particle[j].r			=	(float)((color >> 16) & 255) * DIV255;
-		particle[j].g			=	(float)((color >> 8)  & 255) * DIV255;
-		particle[j].b			=	(float)((color) & 255) * DIV255;
+		particle[j].r			=	(float)((color >> 16) & 255) * ( 1.0f / 255 );
+		particle[j].g			=	(float)((color >> 8)  & 255) * ( 1.0f / 255 );
+		particle[j].b			=	(float)((color) & 255) * ( 1.0f / 255 );
 	}
 }
 
@@ -1246,12 +1246,12 @@ D3DCOLOR GetColorz(float x, float y, float z)
 		if (ep->type & POLY_QUAD)
 		{
 			to = 4;
-			div = DIV4;
+			div = ( 1.0f / 4 );
 		}
 		else
 		{
 			to = 3;
-			div = DIV3;
+			div = ( 1.0f / 3 );
 		}
 
 		ApplyDynLight(ep);
@@ -1268,7 +1268,7 @@ D3DCOLOR GetColorz(float x, float y, float z)
 		_ffg *= div;
 		_ffb *= div;
 		float ratio, ratio2;
-		ratio = EEfabs(needy - y) * DIV300;
+		ratio = EEfabs(needy - y) * ( 1.0f / 300 );
 		ratio = (1.f - ratio); 
 		ratio2 = 1.f - ratio;
 		ffr = ffr * ratio2 + _ffr * ratio;
@@ -1725,7 +1725,7 @@ bool Visible(EERIE_3D * orgn, EERIE_3D * dest, EERIEPOLY * epp, EERIE_3D * hit)
 	float			distance;
 	float			nearest		=	distance	=	EEDistance3D(orgn, dest);
 
-	if (distance < pas) pas	=	distance * DIV2;
+	if (distance < pas) pas	=	distance * ( 1.0f / 2 );
 
 	dx	=	(dest->x - orgn->x);
 	adx	=	EEfabs(dx);
@@ -2030,9 +2030,9 @@ bool GetRoomCenter(long room_num, EERIE_3D * center)
 		bbox.max.z = max(bbox.max.z, ep->center.z);
 	}
 
-	center->x = (bbox.max.x + bbox.min.x) * DIV2;
-	center->y = (bbox.max.y + bbox.min.y) * DIV2;
-	center->z = (bbox.max.z + bbox.min.z) * DIV2;
+	center->x = (bbox.max.x + bbox.min.x) * ( 1.0f / 2 );
+	center->y = (bbox.max.y + bbox.min.y) * ( 1.0f / 2 );
+	center->z = (bbox.max.z + bbox.min.z) * ( 1.0f / 2 );
 
 	Vector_Copy(&portals->room[room_num].center, center);
 	portals->room[room_num].radius = EEDistance3D(center, &bbox.max);
@@ -2154,9 +2154,9 @@ void ComputeRoomDistance()
 		// Add V centers;
 		for (int nn = 0, nk = 3; nn < 4; nk = nn++)
 		{
-			ad[curpos].pos.x = (portals->portals[i].poly.v[nn].sx + portals->portals[i].poly.v[nk].sx) * DIV2;
-			ad[curpos].pos.y = (portals->portals[i].poly.v[nn].sy + portals->portals[i].poly.v[nk].sy) * DIV2;
-			ad[curpos].pos.z = (portals->portals[i].poly.v[nn].sz + portals->portals[i].poly.v[nk].sz) * DIV2;
+			ad[curpos].pos.x = (portals->portals[i].poly.v[nn].sx + portals->portals[i].poly.v[nk].sx) * ( 1.0f / 2 );
+			ad[curpos].pos.y = (portals->portals[i].poly.v[nn].sy + portals->portals[i].poly.v[nk].sy) * ( 1.0f / 2 );
+			ad[curpos].pos.z = (portals->portals[i].poly.v[nn].sz + portals->portals[i].poly.v[nk].sz) * ( 1.0f / 2 );
 			ptr[curpos] = (void *)&portals->portals[i];
 			curpos++;
 		}
@@ -2433,9 +2433,9 @@ void PrepareBackgroundNRMLs()
 					}
 					else if ((k > 0) && (nbvert > 3))
 					{
-						nrml.x = (ep->norm.x + ep->norm2.x) * DIV2;
-						nrml.y = (ep->norm.y + ep->norm2.y) * DIV2;
-						nrml.z = (ep->norm.z + ep->norm2.z) * DIV2;
+						nrml.x = (ep->norm.x + ep->norm2.x) * ( 1.0f / 2 );
+						nrml.y = (ep->norm.y + ep->norm2.y) * ( 1.0f / 2 );
+						nrml.z = (ep->norm.z + ep->norm2.z) * ( 1.0f / 2 );
 						count = 1.f; 
 					}
 					else
@@ -2506,9 +2506,9 @@ void PrepareBackgroundNRMLs()
 											else if ((k2 > 0) && (nbvert2 > 3))
 											{
 												EERIE_3D tnrml;
-												tnrml.x = (ep2->norm.x + ep2->norm2.x) * DIV2;
-												tnrml.y = (ep2->norm.y + ep2->norm2.y) * DIV2;
-												tnrml.z = (ep2->norm.z + ep2->norm2.z) * DIV2;
+												tnrml.x = (ep2->norm.x + ep2->norm2.x) * ( 1.0f / 2 );
+												tnrml.y = (ep2->norm.y + ep2->norm2.y) * ( 1.0f / 2 );
+												tnrml.z = (ep2->norm.z + ep2->norm2.z) * ( 1.0f / 2 );
 
 												if (LittleAngularDiff(&cur_nrml, &tnrml))
 												{
@@ -2668,8 +2668,8 @@ void EERIEPOLY_Compute_PolyIn()
 			bb.min.y = (float)j * ACTIVEBKG->Zdiv - 10;
 			bb.max.y = (float)bb.min.y + ACTIVEBKG->Zdiv + 20;
 			EERIE_3D bbcenter;
-			bbcenter.x = (bb.min.x + bb.max.x) * DIV2;
-			bbcenter.z = (bb.min.y + bb.max.y) * DIV2;
+			bbcenter.x = (bb.min.x + bb.max.x) * ( 1.0f / 2 );
+			bbcenter.z = (bb.min.y + bb.max.y) * ( 1.0f / 2 );
 
 			for (long cj = ij; cj < aj; cj++)
 				for (long ci = ii; ci < ai; ci++)
@@ -2704,9 +2704,9 @@ void EERIEPOLY_Compute_PolyIn()
 								else
 								{
 									EERIE_3D pt;
-									pt.x = (ep2->v[k].sx + ep2->center.x) * DIV2;
-									pt.y = (ep2->v[k].sy + ep2->center.y) * DIV2;
-									pt.z = (ep2->v[k].sz + ep2->center.z) * DIV2;
+									pt.x = (ep2->v[k].sx + ep2->center.x) * ( 1.0f / 2 );
+									pt.y = (ep2->v[k].sy + ep2->center.y) * ( 1.0f / 2 );
+									pt.z = (ep2->v[k].sz + ep2->center.z) * ( 1.0f / 2 );
 
 									if (PointInBBox((EERIE_3D *)&pt, &bb))
 									{
@@ -2840,12 +2840,12 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms()
 		ep->center.y = ep->v[0].sy;
 		ep->center.z = ep->v[0].sz;
 		long to = 3;
-		float divide = DIV3;
+		float divide = ( 1.0f / 3 );
 
 		if (ep->type & POLY_QUAD)
 		{
 			to = 4;
-			divide = DIV4;
+			divide = ( 1.0f / 4 );
 		}
 
 		ep->min.x = ep->v[0].sx;
@@ -3058,9 +3058,9 @@ int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj)
 	cx = (ep->v[0].sx + ep->v[1].sx + ep->v[2].sx);
 	cy = (ep->v[0].sy + ep->v[1].sy + ep->v[2].sy);
 	cz = (ep->v[0].sz + ep->v[1].sz + ep->v[2].sz);
-	posx = (long)(float)(cx * DIV3 * ACTIVEBKG->Xmul); 
-	posz = (long)(float)(cz * DIV3 * ACTIVEBKG->Zmul); 
-	posy = (long)(float)(cy * DIV3 * ACTIVEBKG->Xmul + ACTIVEBKG->Xsize * DIV2); 
+	posx = (long)(float)(cx * ( 1.0f / 3 ) * ACTIVEBKG->Xmul); 
+	posz = (long)(float)(cz * ( 1.0f / 3 ) * ACTIVEBKG->Zmul); 
+	posy = (long)(float)(cy * ( 1.0f / 3 ) * ACTIVEBKG->Xmul + ACTIVEBKG->Xsize * ( 1.0f / 2 )); 
 
 	if (posy < 0) return 0;
 	else if (posy >= ACTIVEBKG->Xsize) return 0;
@@ -3073,14 +3073,14 @@ int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj)
 
 	eg = &ACTIVEBKG->Backg[posx+posz*ACTIVEBKG->Xsize];
 
-	DeclareEGInfo(cx * DIV3, cy * DIV3, cz * DIV3);
+	DeclareEGInfo(cx * ( 1.0f / 3 ), cy * ( 1.0f / 3 ), cz * ( 1.0f / 3 ));
 	DeclareEGInfo(ep->v[0].sx, ep->v[0].sy, ep->v[0].sz);
 	DeclareEGInfo(ep->v[1].sx, ep->v[1].sy, ep->v[1].sz);
 	DeclareEGInfo(ep->v[2].sx, ep->v[2].sy, ep->v[2].sz);
 
-	cx *= DIV3;
-	cy *= DIV3;
-	cz *= DIV3;
+	cx *= ( 1.0f / 3 );
+	cy *= ( 1.0f / 3 );
+	cz *= ( 1.0f / 3 );
 	long t = (((eg->nbpoly) >> 1) << 1) + 2; 
 	long tt = (((eg->nbpoly - 1) >> 1) << 1) + 2; 
 
@@ -3130,12 +3130,12 @@ int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj)
 	epp->type &= ~POLY_QUAD;
 
 	CalcFaceNormal(epp, epp->v);
-	epp->area = Distance3D((epp->v[0].sx + epp->v[1].sx) * DIV2,
-	                       (epp->v[0].sy + epp->v[1].sy) * DIV2,
-	                       (epp->v[0].sz + epp->v[1].sz) * DIV2,
+	epp->area = Distance3D((epp->v[0].sx + epp->v[1].sx) * ( 1.0f / 2 ),
+	                       (epp->v[0].sy + epp->v[1].sy) * ( 1.0f / 2 ),
+	                       (epp->v[0].sz + epp->v[1].sz) * ( 1.0f / 2 ),
 	                       epp->v[2].sx, epp->v[2].sy, epp->v[2].sz)
 	            * Distance3D(epp->v[0].sx, epp->v[0].sy, epp->v[0].sz,
-	                         epp->v[1].sx, epp->v[1].sy, epp->v[1].sz) * DIV2;
+	                         epp->v[1].sx, epp->v[1].sy, epp->v[1].sz) * ( 1.0f / 2 );
 	
 	ARX_CHECK_SHORT(val1);
 
@@ -5100,7 +5100,7 @@ void ComputePortalVertexBuffer()
 						if (pPoly->transval >= 2.f) //MULTIPLICATIVE
 						{
 							pTextureVertex->iNbIndiceNoCull_TMultiplicative += iNbIndice;
-							fTransp *= DIV2;
+							fTransp *= ( 1.0f / 2 );
 							fTransp += .5f;
 						}
 						else
@@ -5144,7 +5144,7 @@ void ComputePortalVertexBuffer()
 						if (pPoly->transval >= 2.f) //MULTIPLICATIVE
 						{
 							pTextureVertex->iNbIndiceCull_TMultiplicative += iNbIndice;
-							fTransp *= DIV2;
+							fTransp *= ( 1.0f / 2 );
 							fTransp += .5f;
 						}
 						else

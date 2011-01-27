@@ -444,8 +444,8 @@ float CRuneOfGuarding::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	stitepos.z = z;
 
 	float gtc = (float)ARX_TIME_Get();
-	float v = EEsin(gtc * DIV1000) * DIV10;
-	stiteangle.b = MAKEANGLE(gtc * DIV1000); 
+	float v = EEsin(gtc * ( 1.0f / 1000 )) * ( 1.0f / 10 );
+	stiteangle.b = MAKEANGLE(gtc * ( 1.0f / 1000 )); 
 	stitecolor.r = 0.4f - v;
 	stitecolor.g = 0.4f - v;
 	stitecolor.b = 0.6f - v;
@@ -1175,8 +1175,8 @@ float CMultiPoisonProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			damages[t].pos.z  = pPoisonProjectile->eCurPos.z;
 			damages[t].radius = 120.f;
 			float v = spells[spellinstance].caster_level;
-			v = 4.f + v * DIV10 * 6.f ;
-			damages[t].damages	= v * DIV1000 * _framedelay;
+			v = 4.f + v * ( 1.0f / 10 ) * 6.f ;
+			damages[t].damages	= v * ( 1.0f / 1000 ) * _framedelay;
 			damages[t].area		= DAMAGE_FULL;
 			damages[t].duration	= ARX_CLEAN_WARN_CAST_LONG(FrameDiff);
 			damages[t].source	= spells[spellinstance].caster;
@@ -1325,8 +1325,8 @@ float CRepelUndead::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	rgbObjColor.g = 0.6f;
 	rgbObjColor.b = 0.8f;
 
-	float vv = 1.f + (EEsin(ARX_TIME_Get() * DIV1000)); 
-	vv *= DIV2;
+	float vv = 1.f + (EEsin(ARX_TIME_Get() * ( 1.0f / 1000 ))); 
+	vv *= ( 1.0f / 2 );
 	vv += 1.1f;
 	eObjScale.z = vv;
 	eObjScale.y = vv;

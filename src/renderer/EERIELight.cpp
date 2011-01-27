@@ -671,9 +671,9 @@ void TreatBackgroundDynlights()
 					DynLight[n].extras		=	GLight[i]->extras;
 					DynLight[n].duration	=	(long) LONG_MAX;
 
-					DynLight[n].rgb.r = GLight[i]->rgb.r - GLight[i]->rgb.r * GLight[i]->ex_flicker.r * rnd() * DIV2; 
-					DynLight[n].rgb.g = GLight[i]->rgb.g - GLight[i]->rgb.g * GLight[i]->ex_flicker.g * rnd() * DIV2; 
-					DynLight[n].rgb.b = GLight[i]->rgb.b - GLight[i]->rgb.b * GLight[i]->ex_flicker.b * rnd() * DIV2; 
+					DynLight[n].rgb.r = GLight[i]->rgb.r - GLight[i]->rgb.r * GLight[i]->ex_flicker.r * rnd() * ( 1.0f / 2 ); 
+					DynLight[n].rgb.g = GLight[i]->rgb.g - GLight[i]->rgb.g * GLight[i]->ex_flicker.g * rnd() * ( 1.0f / 2 ); 
+					DynLight[n].rgb.b = GLight[i]->rgb.b - GLight[i]->rgb.b * GLight[i]->ex_flicker.b * rnd() * ( 1.0f / 2 ); 
 
 					if (DynLight[n].rgb.r < 0.f) DynLight[n].rgb.r = 0.f;
 
@@ -951,7 +951,7 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 								}
 
 							tcd = 1.f / (float)tc;
-							ep->v[k].color = D3DRGB(totr * tcd * DIV255, totg * tcd * DIV255, totb * tcd * DIV255);
+							ep->v[k].color = D3DRGB(totr * tcd * ( 1.0f / 255 ), totg * tcd * ( 1.0f / 255 ), totb * tcd * ( 1.0f / 255 ));
 						}
 
 				}

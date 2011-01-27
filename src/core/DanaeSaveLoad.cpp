@@ -1363,15 +1363,15 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * fic)
 	}
 	else if (mse != NULL)
 	{
-		Mscenepos.x = -mse->cub.xmin - (mse->cub.xmax - mse->cub.xmin) * DIV2 + ((float)ACTIVEBKG->Xsize * (float)ACTIVEBKG->Xdiv) * DIV2;
+		Mscenepos.x = -mse->cub.xmin - (mse->cub.xmax - mse->cub.xmin) * ( 1.0f / 2 ) + ((float)ACTIVEBKG->Xsize * (float)ACTIVEBKG->Xdiv) * ( 1.0f / 2 );
 
-		Mscenepos.z = -mse->cub.zmin - (mse->cub.zmax - mse->cub.zmin) * DIV2 + ((float)ACTIVEBKG->Zsize * (float)ACTIVEBKG->Zdiv) * DIV2;
+		Mscenepos.z = -mse->cub.zmin - (mse->cub.zmax - mse->cub.zmin) * ( 1.0f / 2 ) + ((float)ACTIVEBKG->Zsize * (float)ACTIVEBKG->Zdiv) * ( 1.0f / 2 );
 		float t1 = (float)(long)(mse->point0.x / BKG_SIZX);
 		float t2 = (float)(long)(mse->point0.z / BKG_SIZZ);
 		t1 = mse->point0.x - t1 * BKG_SIZX;
 		t2 = mse->point0.z - t2 * BKG_SIZZ;
-		Mscenepos.x = (float)((long)(Mscenepos.x / BKG_SIZX)) * BKG_SIZX + (float)BKG_SIZX * DIV2;
-		Mscenepos.z = (float)((long)(Mscenepos.z / BKG_SIZZ)) * BKG_SIZZ + (float)BKG_SIZZ * DIV2;
+		Mscenepos.x = (float)((long)(Mscenepos.x / BKG_SIZX)) * BKG_SIZX + (float)BKG_SIZX * ( 1.0f / 2 );
+		Mscenepos.z = (float)((long)(Mscenepos.z / BKG_SIZZ)) * BKG_SIZZ + (float)BKG_SIZZ * ( 1.0f / 2 );
 		mse->pos.x = Mscenepos.x = Mscenepos.x + BKG_SIZX - t1;
 		mse->pos.z = Mscenepos.z = Mscenepos.z + BKG_SIZZ - t2;
 		Mscenepos.y = mse->pos.y = -mse->cub.ymin - 100.f - mse->point0.y;

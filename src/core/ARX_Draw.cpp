@@ -154,7 +154,7 @@ void ARXDRAW_DrawInterShadows(LPDIRECT3DDEVICE7 pd3dDevice)
 				ltv[3]=	D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, 0, 1, 0.3f, 0.7f) ;
 				
 				float s1=16.f*io->scale;
-				float s2=s1 * DIV2;	
+				float s2=s1 * ( 1.0f / 2 );	
 
 				if (io->obj->nbgroups<=1)
 				{
@@ -165,7 +165,7 @@ void ARXDRAW_DrawInterShadows(LPDIRECT3DDEVICE7 pd3dDevice)
 						if (ep!=NULL)
 						{
 							in.sy=ep->min.y-3.f;
-							float r=0.5f-((float)EEfabs(io->obj->vertexlist3[k].v.y-in.sy))*DIV500;
+							float r=0.5f-((float)EEfabs(io->obj->vertexlist3[k].v.y-in.sy))*( 1.0f / 500 );
 							r-=io->invisibility;
 							r*=io->scale;
 
@@ -220,14 +220,14 @@ void ARXDRAW_DrawInterShadows(LPDIRECT3DDEVICE7 pd3dDevice)
 						if (ep!=NULL)
 						{
 							in.sy=ep->min.y-3.f;
-							float r=0.8f-((float)EEfabs(io->obj->vertexlist3[origin].v.y-in.sy))*DIV500;
+							float r=0.8f-((float)EEfabs(io->obj->vertexlist3[origin].v.y-in.sy))*( 1.0f / 500 );
 							r*=io->obj->grouplist[k].siz;
 							r-=io->invisibility;
 
 							if (r<=0.f) continue;
 
 							float s1=io->obj->grouplist[k].siz*44.f;
-							float s2=s1*DIV2;
+							float s2=s1*( 1.0f / 2 );
 							in.sx=io->obj->vertexlist3[origin].v.x-s2;						
 							in.sz=io->obj->vertexlist3[origin].v.z-s2;
 
@@ -316,7 +316,7 @@ void EERIEDrawLight(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_LIGHT * el)
 
 					if ((center.sz>0.f) && (center.sz<1000.f))
 					{
-						float t=(1.f-center.sz)*ACTIVECAM->use_focal*DIV3000;
+						float t=(1.f-center.sz)*ACTIVECAM->use_focal*( 1.0f / 3000 );
 						float rad=el->fallstart*t;
 						EERIEDrawCircle(center.sx,center.sy,rad,0xFFFFFF00,0.0001f);
 						rad=el->fallend*t;
@@ -379,12 +379,12 @@ void ARXDRAW_DrawEyeBall(LPDIRECT3DDEVICE7 pd3dDevice)
 
 	if (eyeball.exist<0) 
 	{
-		d=(float)(-eyeball.exist)*DIV100;
+		d=(float)(-eyeball.exist)*( 1.0f / 100 );
 		eyeball.exist++;		
 	}
 	else if (eyeball.exist>2) 
 	{		
-		d=(float)(eyeball.exist)*DIV100;
+		d=(float)(eyeball.exist)*( 1.0f / 100 );
 	}
 	else return;
 
@@ -520,7 +520,7 @@ void ARXDRAW_DrawPolyBoom(LPDIRECT3DDEVICE7 pd3dDevice)
 						ltv[k].tu=polyboom[i].u[k];
 						ltv[k].tv=polyboom[i].v[k];
 
-						if (Project.improve) ltv[k].color=EERIERGB(tt*DIV2,0.f,0.f);
+						if (Project.improve) ltv[k].color=EERIERGB(tt*( 1.0f / 2 ),0.f,0.f);
 						else ltv[k].color=_EERIERGB(tt);
 
 						ltv[k].specular=0xFF000000;
@@ -724,7 +724,7 @@ void ARXDRAW_DrawAllInterTransPolyPos(LPDIRECT3DDEVICE7 pd3dDevice)
 		if (ttt>=2.f)  //MULTIPLICATIVE
 		{
 			SETBLENDMODE(pd3dDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-			ttt*=DIV2;
+			ttt*=( 1.0f / 2 );
 			ttt+=0.5f;
 			InterTransPol[i][2].color=InterTransPol[i][1].color=InterTransPol[i][0].color=_EERIERGB(ttt);
 		}
@@ -786,7 +786,7 @@ void ARXDRAW_DrawAllTransPolysPos( LPDIRECT3DDEVICE7 pd3dDevice, long MODIF )
 			if ( ttt >= 2.f )  //MULTIPLICATIVE
 			{
 				SETBLENDMODE( pd3dDevice, D3DBLEND_ONE, D3DBLEND_ONE );
-				ttt	*= DIV2;
+				ttt	*= ( 1.0f / 2 );
 				ttt	+= 0.5f;
 				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = _EERIERGB( ttt );
 			}
@@ -828,23 +828,23 @@ void ARXDRAW_DrawAllTransPolysPos( LPDIRECT3DDEVICE7 pd3dDevice, long MODIF )
 						verts[j].sz		= ep->tv[j].sz;
 						verts[j].rhw	= ep->tv[j].rhw;
 						verts[j].color	= 0xFFFFFFFF;
-						verts[j].tu		= ep->v[j].sx * DIV1000 + EEsin( ( ep->v[j].sx ) * DIV200 + (float) FrameTime * DIV2000 ) * DIV20;
-						verts[j].tv		= ep->v[j].sz * DIV1000 + EEcos( (ep->v[j].sz) * DIV200 + (float) FrameTime * DIV2000 ) * DIV20;
+						verts[j].tu		= ep->v[j].sx * ( 1.0f / 1000 ) + EEsin( ( ep->v[j].sx ) * ( 1.0f / 200 ) + (float) FrameTime * ( 1.0f / 2000 ) ) * ( 1.0f / 20 );
+						verts[j].tv		= ep->v[j].sz * ( 1.0f / 1000 ) + EEcos( (ep->v[j].sz) * ( 1.0f / 200 ) + (float) FrameTime * ( 1.0f / 2000 ) ) * ( 1.0f / 20 );
 					}	
 
 					EERIEDRAWPRIM(pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
 
 					for ( i = 0 ; i < to ; i++ )
 					{
-						verts[i].tu = ep->v[i].sx * DIV1000 + EEsin( ( ep->v[i].sx ) * DIV100 + (float)FrameTime * DIV2000 ) * DIV10;
-						verts[i].tv = ep->v[i].sz * DIV1000 + EEcos( ( ep->v[i].sz ) * DIV100 + (float)FrameTime * DIV2000 ) * DIV10;
+						verts[i].tu = ep->v[i].sx * ( 1.0f / 1000 ) + EEsin( ( ep->v[i].sx ) * ( 1.0f / 100 ) + (float)FrameTime * ( 1.0f / 2000 ) ) * ( 1.0f / 10 );
+						verts[i].tv = ep->v[i].sz * ( 1.0f / 1000 ) + EEcos( ( ep->v[i].sz ) * ( 1.0f / 100 ) + (float)FrameTime * ( 1.0f / 2000 ) ) * ( 1.0f / 10 );
 					}	
 					EERIEDRAWPRIM(pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
 					
 					for ( i = 0 ; i < to ; i++ )
 					{
-							verts[i].tu		= ep->v[i].sx * DIV600 + EEsin ( ( ep->v[i].sx ) * DIV160 + (float)FrameTime * DIV2000 ) * DIV11;
-							verts[i].tv		= ep->v[i].sz * DIV600 + EEcos ( ( ep->v[i].sz ) * DIV160 + (float)FrameTime * DIV2000 ) * DIV11;
+							verts[i].tu		= ep->v[i].sx * ( 1.0f / 600 ) + EEsin ( ( ep->v[i].sx ) * ( 1.0f / 160 ) + (float)FrameTime * ( 1.0f / 2000 ) ) * ( 1.0f / 11 );
+							verts[i].tv		= ep->v[i].sz * ( 1.0f / 600 ) + EEcos ( ( ep->v[i].sz ) * ( 1.0f / 160 ) + (float)FrameTime * ( 1.0f / 2000 ) ) * ( 1.0f / 11 );
 							verts[i].color	= 0xFF666666;
 					}	
 
@@ -875,30 +875,30 @@ void ARXDRAW_DrawAllTransPolysPos( LPDIRECT3DDEVICE7 pd3dDevice, long MODIF )
 					verts[j].sz		= ep->tv[j].sz;
 					verts[j].rhw	= ep->tv[j].rhw;
 					verts[j].color	= 0xFF505050;
-					verts[j].tu		= ep->v[j].sx * DIV1000 + EEsin( ( ep->v[j].sx ) * DIV200 + (float)FrameTime * DIV1000 ) * DIV32;
-					verts[j].tv		= ep->v[j].sz * DIV1000 + EEcos( ( ep->v[j].sz ) * DIV200 + (float)FrameTime * DIV1000 ) * DIV32;
+					verts[j].tu		= ep->v[j].sx * ( 1.0f / 1000 ) + EEsin( ( ep->v[j].sx ) * ( 1.0f / 200 ) + (float)FrameTime * ( 1.0f / 1000 ) ) * ( 1.0f / 32 );
+					verts[j].tv		= ep->v[j].sz * ( 1.0f / 1000 ) + EEcos( ( ep->v[j].sz ) * ( 1.0f / 200 ) + (float)FrameTime * ( 1.0f / 1000 ) ) * ( 1.0f / 32 );
 
-					if ( ep->type & POLY_FALL ) verts[j].tv += (float)FrameTime * DIV4000;
+					if ( ep->type & POLY_FALL ) verts[j].tv += (float)FrameTime * ( 1.0f / 4000 );
 				}
 
 				EERIEDRAWPRIM(pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
 
 				for ( i = 0 ; i < to ; i++ )
 				{
-					verts[i].tu = ( ep->v[i].sx + 30.f ) * DIV1000 + EEsin( ( ep->v[i].sx + 30 ) * DIV200 + (float)FrameTime * DIV1000 ) * DIV28;
-					verts[i].tv = ( ep->v[i].sz + 30.f ) * DIV1000 - EEcos( ( ep->v[i].sz + 30 ) * DIV200 + (float)FrameTime * DIV1000 ) * DIV28;
+					verts[i].tu = ( ep->v[i].sx + 30.f ) * ( 1.0f / 1000 ) + EEsin( ( ep->v[i].sx + 30 ) * ( 1.0f / 200 ) + (float)FrameTime * ( 1.0f / 1000 ) ) * ( 1.0f / 28 );
+					verts[i].tv = ( ep->v[i].sz + 30.f ) * ( 1.0f / 1000 ) - EEcos( ( ep->v[i].sz + 30 ) * ( 1.0f / 200 ) + (float)FrameTime * ( 1.0f / 1000 ) ) * ( 1.0f / 28 );
 
-					if ( ep->type & POLY_FALL ) verts[i].tv += (float)FrameTime * DIV4000;
+					if ( ep->type & POLY_FALL ) verts[i].tv += (float)FrameTime * ( 1.0f / 4000 );
 				}
 
 				EERIEDRAWPRIM(pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
 
 				for ( i = 0 ; i < to ; i++ )
 				{
-					verts[i].tu = ( ep->v[i].sx + 60.f ) * DIV1000 - EEsin( ( ep->v[i].sx + 60 ) * DIV200 + (float)FrameTime * DIV1000 ) * DIV40;
-					verts[i].tv = ( ep->v[i].sz + 60.f ) * DIV1000 - EEcos( ( ep->v[i].sz + 60 ) * DIV200 + (float)FrameTime * DIV1000 ) * DIV40;
+					verts[i].tu = ( ep->v[i].sx + 60.f ) * ( 1.0f / 1000 ) - EEsin( ( ep->v[i].sx + 60 ) * ( 1.0f / 200 ) + (float)FrameTime * ( 1.0f / 1000 ) ) * ( 1.0f / 40 );
+					verts[i].tv = ( ep->v[i].sz + 60.f ) * ( 1.0f / 1000 ) - EEcos( ( ep->v[i].sz + 60 ) * ( 1.0f / 200 ) + (float)FrameTime * ( 1.0f / 1000 ) ) * ( 1.0f / 40 );
 
-					if ( ep->type & POLY_FALL ) verts[i].tv += (float)FrameTime * DIV4000;
+					if ( ep->type & POLY_FALL ) verts[i].tv += (float)FrameTime * ( 1.0f / 4000 );
 				}	
 				EERIEDRAWPRIM(pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
 		}

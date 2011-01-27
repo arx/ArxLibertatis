@@ -403,12 +403,12 @@ long ARX_NPC_GetNextAttainableNodeIncrement(INTERACTIVE_OBJ * io)
 
 	float dist = EEDistance3D(&io->pos, &ACTIVECAM->pos);
 
-	if (dist > ACTIVECAM->cdepth * DIV2)
+	if (dist > ACTIVECAM->cdepth * ( 1.0f / 2 ))
 		return 0;
 
 	long MAX_TEST;
 
-	if (dist < ACTIVECAM->cdepth * DIV4)
+	if (dist < ACTIVECAM->cdepth * ( 1.0f / 4 ))
 		MAX_TEST = 6; //4;
 	else
 		MAX_TEST = 4; //3;
@@ -660,7 +660,7 @@ bool ARX_NPC_LaunchPathfind(INTERACTIVE_OBJ * io, long target)
 	float dist;
 	dist = EEDistance3D(&pos1, &pos2);
 
-	if ((EEDistance3D(&pos1, &ACTIVECAM->pos) < ACTIVECAM->cdepth * DIV2)
+	if ((EEDistance3D(&pos1, &ACTIVECAM->pos) < ACTIVECAM->cdepth * ( 1.0f / 2 ))
 	        &&	(EEfabs(pos1.y - pos2.y) < 50.f)
 	        && (dist < 520) && (io->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
 	        && (!(io->_npcdata->behavior & BEHAVIOUR_SNEAK))
@@ -989,14 +989,14 @@ void ARX_NPC_ChangeMoveMode(INTERACTIVE_OBJ * io, long MOVEMODE)
 void ARX_NPC_ManagePoison(INTERACTIVE_OBJ * io)
 {
 	float cp = io->_npcdata->poisonned;
-	cp *= DIV2 * _framedelay * DIV1000 * DIV2;
+	cp *= ( 1.0f / 2 ) * _framedelay * ( 1.0f / 1000 ) * ( 1.0f / 2 );
 	float faster = 10.f - io->_npcdata->poisonned;
 
 	if (faster < 0.f) faster = 0.f;
 
 	if (rnd() * 100.f > io->_npcdata->resist_poison + faster)
 	{
-		float dmg = cp * DIV3;
+		float dmg = cp * ( 1.0f / 3 );
 
 		if ((io->_npcdata->life > 0) && (io->_npcdata->life - dmg <= 0.f))
 		{
@@ -1006,7 +1006,7 @@ void ARX_NPC_ManagePoison(INTERACTIVE_OBJ * io)
 		}
 		else io->_npcdata->life -= dmg;
 
-		io->_npcdata->poisonned -= cp * DIV10;
+		io->_npcdata->poisonned -= cp * ( 1.0f / 10 );
 	}
 	else io->_npcdata->poisonned -= cp;
 
@@ -1093,7 +1093,7 @@ void ARX_PHYSICS_Apply()
 			if (io->ioflags & IO_NPC)
 			{
 #define LAVA_DAMAGE 10.f
-				ARX_DAMAGES_DamageNPC(io, LAVA_DAMAGE * FrameDiff * DIV100, -1, 0, NULL);
+				ARX_DAMAGES_DamageNPC(io, LAVA_DAMAGE * FrameDiff * ( 1.0f / 100 ), -1, 0, NULL);
 			}
 		}
 
@@ -1180,7 +1180,7 @@ void ARX_PHYSICS_Apply()
 		{
 			if ((io->_npcdata->climb_count != 0.f) && (FrameDiff > 0))
 			{
-				io->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * (float)FrameDiff * DIV1000;
+				io->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * (float)FrameDiff * ( 1.0f / 1000 );
 
 				if (io->_npcdata->climb_count < 0)
 					io->_npcdata->climb_count = 0.f;
@@ -1343,7 +1343,7 @@ void StareAtTarget(INTERACTIVE_OBJ * io)
 	}
 
 	// Needed angle to turn toward target
-	rot *= DIV2;
+	rot *= ( 1.0f / 2 );
 	float HEAD_ANGLE_THRESHOLD;
 
 	if ((io) && (io->ioflags & IO_NPC))
@@ -1362,7 +1362,7 @@ void StareAtTarget(INTERACTIVE_OBJ * io)
 
 	if (io->_npcdata->ex_rotate->group_rotate[0].b < -HEAD_ANGLE_THRESHOLD) io->_npcdata->ex_rotate->group_rotate[0].b = -HEAD_ANGLE_THRESHOLD;
 
-	io->_npcdata->ex_rotate->group_rotate[1].b = io->head_rot * DIV2;
+	io->_npcdata->ex_rotate->group_rotate[1].b = io->head_rot * ( 1.0f / 2 );
 
 	if (io->_npcdata->ex_rotate->group_rotate[1].b > HEAD_ANGLE_THRESHOLD) io->_npcdata->ex_rotate->group_rotate[1].b = HEAD_ANGLE_THRESHOLD;
 
@@ -2556,7 +2556,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 			else if ((ause1->cur_anim == io->anims[ANIM_BARE_STRIKE_LEFT_CYCLE+j*3])
 			         &&	(ause1->cur_anim))
 			{
-				if (((ARXTime > io->_npcdata->aiming_start + io->_npcdata->aimtime) || ((ARXTime > io->_npcdata->aiming_start + io->_npcdata->aimtime * DIV2) && (rnd() > 0.9f)))
+				if (((ARXTime > io->_npcdata->aiming_start + io->_npcdata->aimtime) || ((ARXTime > io->_npcdata->aiming_start + io->_npcdata->aimtime * ( 1.0f / 2 )) && (rnd() > 0.9f)))
 				        &&	(tdist < STRIKE_DISTANCE))
 				{
 					AcquireLastAnim(io);
@@ -2714,7 +2714,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 				else if ((ause1->cur_anim == io->anims[ANIM_1H_STRIKE_LEFT_CYCLE+j*3+ANIMBase])
 				         &&	(ause1->cur_anim))
 				{
-					if (((ARXTime > io->_npcdata->aiming_start + io->_npcdata->aimtime) || ((ARXTime > io->_npcdata->aiming_start + io->_npcdata->aimtime * DIV2) && (rnd() > 0.9f)))
+					if (((ARXTime > io->_npcdata->aiming_start + io->_npcdata->aimtime) || ((ARXTime > io->_npcdata->aiming_start + io->_npcdata->aimtime * ( 1.0f / 2 )) && (rnd() > 0.9f)))
 					        &&	(tdist < STRIKE_DISTANCE))
 					{
 						AcquireLastAnim(io);
@@ -2868,11 +2868,11 @@ void ComputeTolerance(INTERACTIVE_OBJ * io, long targ, float * dst)
 
 		// if target is a marker set to a minimal tolerance
 		if (inter.iobj[targ]->ioflags & IO_MARKER)
-			TOLERANCE = 21.f + (float)io->_npcdata->moveproblem * DIV10;
+			TOLERANCE = 21.f + (float)io->_npcdata->moveproblem * ( 1.0f / 10 );
 	}
 
 	// Tolerance is modified by current moveproblem status
-	TOLERANCE += (float)io->_npcdata->moveproblem * DIV10;
+	TOLERANCE += (float)io->_npcdata->moveproblem * ( 1.0f / 10 );
 	// Now fill our return value with TOLERANCE
 	*dst = TOLERANCE;
 }
@@ -3083,7 +3083,7 @@ void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 				for (long n = 0; n < 4; n++)
 				{
-					io->_npcdata->ex_rotate->group_rotate[n].b -= io->_npcdata->ex_rotate->group_rotate[n].b * DIV3;
+					io->_npcdata->ex_rotate->group_rotate[n].b -= io->_npcdata->ex_rotate->group_rotate[n].b * ( 1.0f / 3 );
 
 					if (fabs(io->_npcdata->ex_rotate->group_rotate[n].b) < 0.01f)
 						io->_npcdata->ex_rotate->group_rotate[n].b = 0.f;
@@ -3099,7 +3099,7 @@ void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 				for (long n = 0; n < 4; n++)
 				{
-					float t = 1.5f - (float)n * DIV5;
+					float t = 1.5f - (float)n * ( 1.0f / 5 );
 					io->_npcdata->ex_rotate->group_rotate[n].b += io->_npcdata->look_around_inc * _framedelay * t;
 				}
 
@@ -3121,7 +3121,7 @@ void ManageNPCMovement(INTERACTIVE_OBJ * io)
 
 			for (long n = 0; n < 4; n++)
 			{
-				io->_npcdata->ex_rotate->group_rotate[n].b -= io->_npcdata->ex_rotate->group_rotate[n].b * DIV3;
+				io->_npcdata->ex_rotate->group_rotate[n].b -= io->_npcdata->ex_rotate->group_rotate[n].b * ( 1.0f / 3 );
 
 				if (fabs(io->_npcdata->ex_rotate->group_rotate[n].b) < 0.01f)
 					io->_npcdata->ex_rotate->group_rotate[n].b = 0.f;
@@ -3422,7 +3422,7 @@ void ManageNPCMovement(INTERACTIVE_OBJ * io)
 		Vector_Copy(&vect, &io->forcedmove);
 		float d = TRUEVector_Magnitude(&vect);
 		TRUEVector_Normalize(&vect);
-		float dd = min(d, (float)FrameDiff * DIV6);
+		float dd = min(d, (float)FrameDiff * ( 1.0f / 6 ));
 		ForcedMove.x = vect.x * dd;
 		ForcedMove.y = vect.y * dd;
 		ForcedMove.z = vect.z * dd;
@@ -4373,7 +4373,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 	else if (io->obj && (io->obj->fastaccess.fire >= 0) && (io->ignition > 0.f))
 	{
 		io->ignition = 25.f;
-		io->durability -= FrameDiff * DIV10000;
+		io->durability -= FrameDiff * ( 1.0f / 10000 );
 
 		if (io->durability <= 0.F)
 		{
@@ -4439,11 +4439,11 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 	}
 	else
 	{
-		io->ignition -= _framedelay * DIV100;
+		io->ignition -= _framedelay * ( 1.0f / 100 );
 
 		if ((!io) || (!io->obj)) return;
 
-		float p = io->ignition * _framedelay * DIV1000 * io->obj->nbfaces * DIV1000;
+		float p = io->ignition * _framedelay * ( 1.0f / 1000 ) * io->obj->nbfaces * ( 1.0f / 1000 );
 
 		if (p > 5.f)
 			p = 5.f;
@@ -4547,10 +4547,10 @@ void ManageIgnition_2(INTERACTIVE_OBJ * io)
 			long id = io->ignit_light;
 			DynLight[id].exist = 1;
 
-			DynLight[id].intensity = max(io->ignition * DIV10, 1.f);
+			DynLight[id].intensity = max(io->ignition * ( 1.0f / 10 ), 1.f);
 			DynLight[id].fallstart = max(io->ignition * 10.f, 100.f);
 			DynLight[id].fallend   = max(io->ignition * 25.f, 240.f);
-			float v = max((io->ignition * DIV10), 0.5f);
+			float v = max((io->ignition * ( 1.0f / 10 )), 0.5f);
 			v = min(v, 1.f);
 			DynLight[id].rgb.r = (1.f - rnd() * 0.2f) * v;
 			DynLight[id].rgb.g = (0.8f - rnd() * 0.2f) * v;

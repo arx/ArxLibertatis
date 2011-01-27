@@ -32,7 +32,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define 	ANIMQUATTYPE_FIRST_PERSON	2
 #define 	ANIMQUATTYPE_NO_RENDER		4
 #define 	MIPMESH_START 				380.f
-#define 	MIPMESH_DIV	  				DIV190
+#define 	MIPMESH_DIV	  				( 1.0f / 190 )
 
 #if CEDRIC
 extern	void	Cedric_AnimateDrawEntity(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,

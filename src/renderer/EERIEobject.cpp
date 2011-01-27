@@ -411,7 +411,7 @@ retry4:
 
 		tkf2015.time_frame = (tkf2015.num_frame) * 1000;
 		lastnum = tkf2015.num_frame;
-		eerie->frames[i].time = tkf2015.time_frame * DIV24;
+		eerie->frames[i].time = tkf2015.time_frame * ( 1.0f / 24 );
 		eerie->anim_time += tkf2015.time_frame;
 		eerie->frames[i].flag = tkf2015.flag_frame;
 
@@ -601,7 +601,7 @@ retry4:
 		if (voidd) eerie->voidgroups[i] = 1;
 	}
 
-	eerie->anim_time = (float)th.nb_frames * 1000.f * DIV24;
+	eerie->anim_time = (float)th.nb_frames * 1000.f * ( 1.0f / 24 );
 
 	if (eerie->anim_time < 1) eerie->anim_time = 1;
 
@@ -964,7 +964,7 @@ retry4:
 			                                        &eerie->vertexlist[eerie->grouplist[i].indexes[o]].v));
 		}
 
-		eerie->grouplist[i].siz = EEsqrt(eerie->grouplist[i].siz) * DIV16;
+		eerie->grouplist[i].siz = EEsqrt(eerie->grouplist[i].siz) * ( 1.0f / 16 );
 		pos += 256;
 	}
 
@@ -1713,9 +1713,9 @@ retry7:
 		}
 
 		memset(seerie->light[i], 0, sizeof(EERIE_LIGHT));
-		seerie->light[i]->rgb.r = (float)tsl3024.red * DIV255;
-		seerie->light[i]->rgb.g = (float)tsl3024.green * DIV255;
-		seerie->light[i]->rgb.b = (float)tsl3024.blue * DIV255;
+		seerie->light[i]->rgb.r = (float)tsl3024.red * ( 1.0f / 255 );
+		seerie->light[i]->rgb.g = (float)tsl3024.green * ( 1.0f / 255 );
+		seerie->light[i]->rgb.b = (float)tsl3024.blue * ( 1.0f / 255 );
 		seerie->light[i]->pos.x = (float)tsl3024.pos.x;
 		seerie->light[i]->pos.y = (float)tsl3024.pos.y;
 		seerie->light[i]->pos.z = (float)tsl3024.pos.z;
@@ -1966,10 +1966,10 @@ void ReCreateUVs(EERIE_3DOBJ * eerie, long flag)
 		}
 		else
 		{
-			sxx = DIV256;
-			syy = DIV256;
-			sxmod = 0.5f * DIV256;
-			symod = 0.5f * DIV256;
+			sxx = ( 1.0f / 256 );
+			syy = ( 1.0f / 256 );
+			sxmod = 0.5f * ( 1.0f / 256 );
+			symod = 0.5f * ( 1.0f / 256 );
 		}
 
 		eerie->facelist[i].u[0] = (float)eerie->facelist[i].ou[0] * sxx; 
@@ -2782,12 +2782,12 @@ retry:
 		ev[0] = (D3DTLVERTEX *)&eerie->vertexlist[eerie->facelist[i].vid[0]].v;
 		ev[1] = (D3DTLVERTEX *)&eerie->vertexlist[eerie->facelist[i].vid[1]].v;
 		ev[2] = (D3DTLVERTEX *)&eerie->vertexlist[eerie->facelist[i].vid[2]].v;
-		eerie->facelist[i].temp = TRUEDistance3D((ev[0]->sx + ev[1]->sx) * DIV2,
-		                          (ev[0]->sy + ev[1]->sy) * DIV2,
-		                          (ev[0]->sz + ev[1]->sz) * DIV2,
+		eerie->facelist[i].temp = TRUEDistance3D((ev[0]->sx + ev[1]->sx) * ( 1.0f / 2 ),
+		                          (ev[0]->sy + ev[1]->sy) * ( 1.0f / 2 ),
+		                          (ev[0]->sz + ev[1]->sz) * ( 1.0f / 2 ),
 		                          ev[2]->sx, ev[2]->sy, ev[2]->sz)
 		                          * TRUEDistance3D(ev[0]->sx, ev[0]->sy, ev[0]->sz,
-		                                  ev[1]->sx, ev[1]->sy, ev[1]->sz) * DIV2;
+		                                  ev[1]->sx, ev[1]->sy, ev[1]->sz) * ( 1.0f / 2 );
 	}
 
 	for (i = 0; i < eerie->nbfaces; i++)
@@ -2878,9 +2878,9 @@ retry:
 			center.x *= divc;
 			center.y *= divc;
 			center.z *= divc;
-			center.x = (center.x + origin.x + origin.x) * DIV3;
-			center.y = (center.y + origin.y + origin.y) * DIV3;
-			center.z = (center.z + origin.z + origin.z) * DIV3;
+			center.x = (center.x + origin.x + origin.x) * ( 1.0f / 3 );
+			center.y = (center.y + origin.y + origin.y) * ( 1.0f / 3 );
+			center.z = (center.z + origin.z + origin.z) * ( 1.0f / 3 );
 			float max_threshold = TRUEEEDistance3D(&origin, &center);
 
 			for (i = 0; i < eerie->grouplist[head_idx].nb_index; i++)

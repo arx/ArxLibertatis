@@ -172,9 +172,9 @@ void SpawnMetalShine(EERIE_3D * pos,long r,long g,long b,long num)
 		pd->scale.x		=	-15.f;
 		pd->scale.y		=	-15.f;
 		pd->scale.z		=	-15.f;
-		pd->r			=	(float)r*DIV64;
-		pd->g			=	(float)g*DIV64;
-		pd->b			=	(float)b*DIV64;
+		pd->r			=	(float)r*( 1.0f / 64 );
+		pd->g			=	(float)g*( 1.0f / 64 );
+		pd->b			=	(float)b*( 1.0f / 64 );
 		pd->special		=	ROTATING | MODULATE_ROTATION | FADE_IN_AND_OUT | FOLLOW_SOURCE;
 		pd->fparam		=	0.001f;
 		pd->source		=	pos;
@@ -290,11 +290,11 @@ void ARX_PARTICLES_Spawn_Rogue_Blood(EERIE_3D * pos,float dmgs,D3DCOLOR col)
 		&&	(!ARXPausedTimer)	)
 	{
 		float power;
-		power=(dmgs*DIV60)+0.9f;
+		power=(dmgs*( 1.0f / 60 ))+0.9f;
 		float r,g,b;
-		r=(float)((long)((col>>16) & 255))*DIV255;
-		g=(float)((long)((col>>8) & 255))*DIV255;
-		b=(float)((long)((col) & 255))*DIV255;
+		r=(float)((long)((col>>16) & 255))*( 1.0f / 255 );
+		g=(float)((long)((col>>8) & 255))*( 1.0f / 255 );
+		b=(float)((long)((col) & 255))*( 1.0f / 255 );
 		ParticleCount++;
 		PARTICLE_DEF * pd=&particle[j];
 		pd->exist=true;
@@ -304,7 +304,7 @@ void ARX_PARTICLES_Spawn_Rogue_Blood(EERIE_3D * pos,float dmgs,D3DCOLOR col)
 		pd->ov.z=pos->z;
 			
 		pd->siz			=	3.1f*power;
-		pd->scale.z		=	pd->scale.y		=	pd->scale.x		=	-pd->siz*DIV4;			
+		pd->scale.z		=	pd->scale.y		=	pd->scale.x		=	-pd->siz*( 1.0f / 4 );			
 		pd->timcreation	=	lARXTime;
 		pd->special		=	PARTICLE_SUB2 | SUBSTRACT | GRAVITY | ROTATING | MODULATE_ROTATION;
 		pd->special		|=	SPLAT_GROUND;
@@ -323,7 +323,7 @@ void ARX_PARTICLES_Spawn_Rogue_Blood(EERIE_3D * pos,float dmgs,D3DCOLOR col)
 		else if (num>5) num=5;
 
 		pd->tc=bloodsplat[num];
-		pd->fparam=rnd()*DIV10-0.05f;
+		pd->fparam=rnd()*( 1.0f / 10 )-0.05f;
 	}
 	
 }
@@ -336,26 +336,26 @@ void ARX_PARTICLES_Spawn_Blood3(EERIE_3D * pos,float dmgs,D3DCOLOR col,long vert
 			&&	(!ARXPausedTimer)	)
 		{
 			float power;
-			power=(dmgs*DIV60)+0.9f;
+			power=(dmgs*( 1.0f / 60 ))+0.9f;
 			float r,g,b;
-			r=(float)((long)((col>>16) & 255))*DIV255;
-			g=(float)((long)((col>>8) & 255))*DIV255;
-			b=(float)((long)((col) & 255))*DIV255;
+			r=(float)((long)((col>>16) & 255))*( 1.0f / 255 );
+			g=(float)((long)((col>>8) & 255))*( 1.0f / 255 );
+			b=(float)((long)((col) & 255))*( 1.0f / 255 );
 			ParticleCount++;
 			PARTICLE_DEF * pd=&particle[j];
 			pd->exist=true;
 			pd->zdec=0;
-		pd->ov.x = pos->x - EEsin((float)ARXTime * DIV1000) * 30.f; 
-		pd->ov.y = pos->y + EEsin((float)ARXTime * DIV1000) * 30.f; 
-		pd->ov.z = pos->z + EEcos((float)ARXTime * DIV1000) * 30.f; 
+		pd->ov.x = pos->x - EEsin((float)ARXTime * ( 1.0f / 1000 )) * 30.f; 
+		pd->ov.y = pos->y + EEsin((float)ARXTime * ( 1.0f / 1000 )) * 30.f; 
+		pd->ov.z = pos->z + EEcos((float)ARXTime * ( 1.0f / 1000 )) * 30.f; 
 
-		pd->siz = 3.5f * power + EEsin((float)ARXTime * DIV1000); 
+		pd->siz = 3.5f * power + EEsin((float)ARXTime * ( 1.0f / 1000 )); 
 				
 			if (!GORE_MODE)
-				pd->siz*=DIV6;
+				pd->siz*=( 1.0f / 6 );
 
 			
-		pd->scale.z = pd->scale.y = pd->scale.x = -pd->siz * DIV2; 
+		pd->scale.z = pd->scale.y = pd->scale.x = -pd->siz * ( 1.0f / 2 ); 
 				
 				
 		pd->timcreation	=	lARXTime;
@@ -373,7 +373,7 @@ void ARX_PARTICLES_Spawn_Blood3(EERIE_3D * pos,float dmgs,D3DCOLOR col,long vert
 			pd->g=g;
 			pd->b=b;
 			pd->tc=bloodsplatter;
-			pd->fparam=rnd()*DIV10-0.05f;
+			pd->fparam=rnd()*( 1.0f / 10 )-0.05f;
 		}
 
 		if (rnd()>0.90f) ARX_PARTICLES_Spawn_Rogue_Blood(pos,dmgs,col);
@@ -396,7 +396,7 @@ void ARX_POLYSPLAT_Add(EERIE_3D * poss,long type,EERIE_RGB * col,float size,long
 	size*=0.75f;
 
 	if ((!GORE_MODE) && (!(flags & 2)))
-		size*=DIV5;
+		size*=( 1.0f / 5 );
 
 
 	switch (pMenuConfig->iLevelOfDetails)
@@ -515,7 +515,7 @@ void ARX_POLYSPLAT_Add(EERIE_3D * poss,long type,EERIE_RGB * col,float size,long
 	if (z1>=ACTIVEBKG->Zsize) z1=ACTIVEBKG->Zsize-1;
 
 	long nbvert;
-	float vratio=size*DIV40;
+	float vratio=size*( 1.0f / 40 );
 
 
 	ARX_CHECK_SHORT(z0);
@@ -555,7 +555,7 @@ void ARX_POLYSPLAT_Add(EERIE_3D * poss,long type,EERIE_RGB * col,float size,long
 					break;
 				}
 
-				if ((PointIn2DPolyXZ(&TheoricalSplat, (ep->v[k].sx+ep->center.x)*DIV2, (ep->v[k].sz+ep->center.z)*DIV2))
+				if ((PointIn2DPolyXZ(&TheoricalSplat, (ep->v[k].sx+ep->center.x)*( 1.0f / 2 ), (ep->v[k].sz+ep->center.z)*( 1.0f / 2 )))
 					&& (EEfabs(ep->v[k].sy-py)<100.f) )
 				{
 					 oki=1;
@@ -659,7 +659,7 @@ void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos,float dmgs,D3DCOLOR col,long vert
 
 		float power;
 
-		power=((float)(io->_npcdata->SPLAT_DAMAGES)*DIV60)+0.9f;
+		power=((float)(io->_npcdata->SPLAT_DAMAGES)*( 1.0f / 60 ))+0.9f;
 
 		EERIE_3D vect;
 		vect.x=pos->x-io->_npcdata->last_splat_pos.x;
@@ -781,7 +781,7 @@ void ARX_PARTICLES_Spawn_Blood(EERIE_3D * pos,EERIE_3D * vect,float dmgs,long so
 			pd->g			=	0.f;
 			pd->b			=	0.f;
 			pd->tc			=	bloodsplatter;
-			pd->fparam		=	rnd()*DIV10-0.05f;			
+			pd->fparam		=	rnd()*( 1.0f / 10 )-0.05f;			
 		}
 	}
 }
@@ -829,7 +829,7 @@ void ARX_PARTICLES_Spawn_Spark(EERIE_3D * pos,float dmgs,long flags)
 				
 			pd->timcreation	=	lARXTime;
 			pd->special		=	PARTICLE_SPARK;
-			float len		=	(float)spawn_nb*DIV3;
+			float len		=	(float)spawn_nb*( 1.0f / 3 );
 
 			if ( len > 8 ) len	=	8;
 
@@ -1463,7 +1463,7 @@ void Add3DBoom(EERIE_3D * position, EERIE_3DOBJ *pObj3DSphere)
 		vect.x=(player.pos.x-position->x)*onedist; 
 		vect.y=(player.pos.y-160.f-position->y)*onedist; 
 		vect.z=(player.pos.z-position->z)*onedist;
-		float power=(300.f-dist)*DIV80;
+		float power=(300.f-dist)*( 1.0f / 80 );
 		player.physics.forces.x+=vect.x*power;
 		player.physics.forces.y+=vect.y*power;
 		player.physics.forces.z+=vect.z*power;
@@ -1782,8 +1782,8 @@ void MakeBookFX(float posx,float posy,float posz)
 			pd->ov.x		=	posx - i * 2; 
 			pd->ov.y		=	posy - i * 2; 
 			pd->ov.z		=	posz;
-			pd->move.x		=	-(float)(i)*DIV2;
-			pd->move.y		=	-(float)(i)*DIV2;
+			pd->move.x		=	-(float)(i)*( 1.0f / 2 );
+			pd->move.y		=	-(float)(i)*( 1.0f / 2 );
 			pd->move.z		=	0.f;
 			pd->scale.y		=	pd->scale.x			=	(float)(i*10);			
 			pd->scale.z		=	0.f;
@@ -1857,12 +1857,12 @@ void ARX_GenereSpheriqueEtincelles(EERIE_3D *pos,float r,TextureContainer *tc,fl
 void ARX_PARTICLES_Spawn_Splat(EERIE_3D * pos,float dmgs,D3DCOLOR col,long vert,INTERACTIVE_OBJ * io,long flags)
 {
 	float power;
-	power=(dmgs*DIV60)+0.9f;
+	power=(dmgs*( 1.0f / 60 ))+0.9f;
 
 	float r,g,b;
-	r=(float)((long)((col>>16) & 255))*DIV255;
-	g=(float)((long)((col>>8) & 255))*DIV255;
-	b=(float)((long)((col) & 255))*DIV255;
+	r=(float)((long)((col>>16) & 255))*( 1.0f / 255 );
+	g=(float)((long)((col>>8) & 255))*( 1.0f / 255 );
+	b=(float)((long)((col) & 255))*( 1.0f / 255 );
 
 	for (long kk=0;kk<20;kk++)
 	{
@@ -2115,7 +2115,7 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 					INTERACTIVE_OBJ * target=inter.iobj[part->sourceionum];
 					EERIE_3D vector;
 					vector.x=part->ov.x-target->pos.x;
-					vector.y=(part->ov.y-target->pos.y)*DIV2;
+					vector.y=(part->ov.y-target->pos.y)*( 1.0f / 2 );
 					vector.z=part->ov.z-target->pos.z;
 					float t=1.f/TRUEVector_Magnitude(&vector);
 					vector.x*=t;
@@ -2177,10 +2177,10 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 					part->r=0.45f;
 					part->g=0.45f;
 					part->b=0.45f;
-					part->move.x*=DIV2;
-					part->move.y*=DIV2;
-					part->move.z*=DIV2;
-					part->siz*=DIV3;			
+					part->move.x*=( 1.0f / 2 );
+					part->move.y*=( 1.0f / 2 );
+					part->move.z*=( 1.0f / 2 );
+					part->siz*=( 1.0f / 3 );			
 					part->special&=~FIRE_TO_SMOKE;
 					part->timcreation=tim;
 					part->tc = smokeparticle; 
@@ -2227,14 +2227,14 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 					pd->r = 1.f; 
 					pd->g = 1.f; 
 					pd->b = 1.f; 
-					pd->move.x*=DIV2;
-					pd->move.y*=DIV2;
-					pd->move.z*=DIV2;
-					pd->siz*=DIV3;			
+					pd->move.x*=( 1.0f / 2 );
+					pd->move.y*=( 1.0f / 2 );
+					pd->move.z*=( 1.0f / 2 );
+					pd->siz*=( 1.0f / 3 );			
 				}
 			}
 			
-			val=(part->tolive-framediff)*DIV100;
+			val=(part->tolive-framediff)*( 1.0f / 100 );
 			
 			if ((part->special & FOLLOW_SOURCE) && (part->sourceionum>=0) && (inter.iobj[part->sourceionum]))
 			{
@@ -2447,7 +2447,7 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 
 				if (part->special & PARTICLE_GOLDRAIN)
 				{
-					float v=(rnd()-0.5f)*DIV5;
+					float v=(rnd()-0.5f)*( 1.0f / 5 );
 
 					if (	(part->r+v<=1.f) && (part->r+v>0.f)
 						&&	(part->g+v<=1.f) && (part->g+v>0.f)
@@ -2486,7 +2486,7 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 				if (part->special & ROTATING) 
 				{
 					if (part->special & MODULATE_ROTATION) rott=MAKEANGLE((float)(tim+framediff2)*part->fparam);
-					else rott=(MAKEANGLE((float)(tim+framediff2*2)*DIV4));
+					else rott=(MAKEANGLE((float)(tim+framediff2*2)*( 1.0f / 4 )));
 
 					if (part->type & PARTICLE_2D) 
 					{}
@@ -2645,7 +2645,7 @@ void TreatBackgroundActions()
 				if (id!=-1)
 				{
 				damages[id].radius = gl->ex_radius; 
-				damages[id].damages = gl->ex_radius * DIV7; 
+				damages[id].damages = gl->ex_radius * ( 1.0f / 7 ); 
 					damages[id].area=DAMAGE_FULL;
 					damages[id].duration=1;
 					damages[id].source=-5;
@@ -2675,9 +2675,9 @@ void TreatBackgroundActions()
 
 			long count;
 
-				if (dist<ACTIVECAM->cdepth*DIV8) count=4;
-			else if (dist<ACTIVECAM->cdepth*DIV6) count=4;
-			else if (dist>ACTIVECAM->cdepth*DIV3) count=3;
+				if (dist<ACTIVECAM->cdepth*( 1.0f / 8 )) count=4;
+			else if (dist<ACTIVECAM->cdepth*( 1.0f / 6 )) count=4;
+			else if (dist>ACTIVECAM->cdepth*( 1.0f / 3 )) count=3;
 			else count=2;
 
 			for (n=0;n<count;n++)
@@ -3020,7 +3020,7 @@ void AddFlare(EERIE_S2D * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 						if (kk==1) 
 						{
 							pd->move.y = 5.f - (float)kk; 
-							pd->siz = 1.f + (float)(kk) * DIV2; 
+							pd->siz = 1.f + (float)(kk) * ( 1.0f / 2 ); 
 						}
 						else pd->siz=1.f+rnd()*1.f;
 
@@ -3163,7 +3163,7 @@ void AddFlare2(EERIE_S2D * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 						if (kk==1) 
 						{
 							pd->move.y = 5.f - (float)kk; 
-							pd->siz = 1.f + (float)(kk) * DIV2; 
+							pd->siz = 1.f + (float)(kk) * ( 1.0f / 2 ); 
 						}
 						else pd->siz=1.f+rnd()*1.f;
 
