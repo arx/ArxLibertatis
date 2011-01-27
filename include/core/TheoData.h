@@ -78,10 +78,23 @@ typedef struct
 	float			y;
 	float			z;
 } THEO_3D; // Aligned 1 2 4
+#pragma pack(pop)
+
+#pragma pack(push,1)
+typedef struct
+{
+	float	w;
+	float	x;
+	float	y;
+	float	z;
+} ArxQuat;
+#pragma pack(pop)
 
 //***********************************************************************
 //*		BEGIN THEO SCN FILE FORMAT structures							*
 //***********************************************************************
+
+#pragma pack(push,1)
 typedef struct
 {
 	unsigned long		version;
@@ -96,7 +109,9 @@ typedef struct
 	long				nb_maps;
 	unsigned long		type_write;
 } TSCN_HEADER; // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 typedef struct
 {
 	long				next_obj;
@@ -107,6 +122,7 @@ typedef struct
 	TBOOL				object_selected;
 
 } TSCN_OBJHEADER; // Aligned 1 2 4
+#pragma pack(pop)
 
 #define	LIGHT_DIRECTIONAL	0
 #define	LIGHT_OMNI			1
@@ -116,6 +132,7 @@ typedef struct
 //#define LIGHT_SPOT			6
 #define LIGHT_SPOT_SHADOW	4
 
+#pragma pack(push,1)
 typedef struct
 {
 	char				light_name[SIZE_NAME];
@@ -137,7 +154,9 @@ typedef struct
 	float				hallow_ray;
 	float				hallow_zmarge;
 } TSCN_LIGHT; // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 typedef struct
 {
 	char				light_name[SIZE_NAME];
@@ -160,6 +179,9 @@ typedef struct
 	float				hallow_ray;
 	float				hallow_zmarge;
 } TSCN_LIGHT_3019; // Aligned 1 2 4
+#pragma pack(pop)
+
+#pragma pack(push,1)
 typedef struct
 {
 	char				light_name[SIZE_NAME];
@@ -183,6 +205,7 @@ typedef struct
 	float				hallow_ray;
 	float				hallow_zmarge;
 } TSCN_LIGHT_3024; // Aligned 1 2 4
+#pragma pack(pop)
 
 //***********************************************************************
 //*		END THEO SCN FILE FORMAT structures								*
@@ -192,6 +215,8 @@ typedef struct
 //***********************************************************************
 //*		BEGIN THEO TEO FILE FORMAT structures							*
 //***********************************************************************
+
+#pragma pack(push,1)
 typedef struct
 {
 	char			identity[SIZE_IDENTITY_OBJECT];
@@ -201,8 +226,9 @@ typedef struct
 	long			nb_maps;
 	unsigned long	type_write;
 } THEO_HEADER; // NOT ALIGNED (SIZE_IDENTITY_OBJECT)
+#pragma pack(pop)
 
-
+#pragma pack(push,1)
 typedef struct
 {
 	char			texture_name[SIZE_NAME];
@@ -217,8 +243,9 @@ typedef struct
 	unsigned long	color_mask;
 	TBOOL			animated_map;
 } THEO_TEXTURE; // Aligned 1 2 4
+#pragma pack(pop)
 
-
+#pragma pack(push,1)
 typedef struct
 {
 	char			texture_name[SIZE_NAME];
@@ -228,7 +255,9 @@ typedef struct
 	long			mipmap_level;
 	TBOOL			animated_map;
 } THEO_SAVE_MAPS_IN; // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 typedef struct
 {
 	char			texture_name[SIZE_NAME];
@@ -239,8 +268,9 @@ typedef struct
 	unsigned long	color_mask;
 	TBOOL			animated_map;
 } THEO_SAVE_MAPS_IN_3019; // Aligned 1 2 4
+#pragma pack(pop)
 
-
+#pragma pack(push,1)
 typedef struct
 {
 	long			vertex_seek;
@@ -250,7 +280,9 @@ typedef struct
 	long			extras_seek;
 	long			groups_seek;
 } THEO_OFFSETS; // Aligned 1 2 4 8
+#pragma pack(pop)
 
+#pragma pack(push,1)
 typedef struct
 {
 	long			nb_vertex;
@@ -260,8 +292,9 @@ typedef struct
 	long			nb_groups;
 	unsigned long	channel;
 } THEO_NB; // Aligned 1 2 4 8
+#pragma pack(pop)
 
-
+#pragma pack(push,1)
 typedef struct
 {
 	float			x;
@@ -271,7 +304,9 @@ typedef struct
 	TBOOL			freeze;
 	TBOOL			isselected;
 } THEO_VERTEX; // Aligned 1 2 4 8
+#pragma pack(pop)
 
+#pragma pack(push,1)
 typedef struct
 {
 	char			name[SIZE_NAME];
@@ -279,8 +314,9 @@ typedef struct
 	long			action;
 	long			num_sfx;
 } THEO_ACTION_POINT; // Aligned 1 2 4
+#pragma pack(pop)
 
-
+#pragma pack(push,1)
 typedef struct
 {
 	long			u1;
@@ -290,14 +326,18 @@ typedef struct
 	long			u3;
 	long			v3;
 } THEO_FACE_UV; // Aligned 1 2 4 8
+#pragma pack(pop)
 
+#pragma pack(push,1)
 typedef struct
 {
 	long r;
 	long g;
 	long b;
 } THEO_FACE_RGB;  // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 typedef struct
 {
 	unsigned long	color;
@@ -323,7 +363,9 @@ typedef struct
 	unsigned long	transparency;
 	float			trans;
 } THEO_FACES; // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 typedef struct
 {
 	unsigned long	color;
@@ -349,7 +391,9 @@ typedef struct
 	TBOOL			transparency;
 	float			trans;
 } THEO_FACES_3006; // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 typedef struct
 {
 	long			alpha;
@@ -360,15 +404,9 @@ typedef struct
 	float			posz;
 	long			origin_index;
 } THEO_EXTRA_DATA; // Aligned 1 2 4
+#pragma pack(pop)
 
-typedef struct
-{
-	float	w;
-	float	x;
-	float	y;
-	float	z;
-} ArxQuat;
-
+#pragma pack(push,1)
 typedef struct
 {
 	long			alpha;
@@ -380,6 +418,7 @@ typedef struct
 	float			posz;
 	long			origin_index;
 } THEO_EXTRA_DATA_3005; // Aligned 1 2 4
+#pragma pack(pop)
 
 #define THEO_OBJECT_TYPE_3D			0
 #define THEO_OBJECT_TYPE_SPRITE		1
@@ -396,13 +435,15 @@ typedef struct
 #define THEO_RENDER_TYPE_PREDATOR		9
 #define THEO_RENDER_TYPE_CHROME			10
 
-
+#pragma pack(push,1)
 typedef struct
 {
 	long			origin;
 	long			nb_index;
 } THEO_GROUPS; // Aligned 1 2 4 8
+#pragma pack(pop)
 
+#pragma pack(push,1)
 typedef struct
 {
 	long			origin;
@@ -418,12 +459,15 @@ typedef struct
 	long			gammamax;
 	long			nb_index;
 } THEO_GROUPS_3011; // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 typedef struct
 {
 	char			name[SIZE_NAME];
 	long			nb_index;
 } THEO_SELECTED; // Aligned 1 2 4
+#pragma pack(pop)
 
 //***********************************************************************
 //*		END THEO TEO FILE FORMAT structures								*
@@ -434,6 +478,8 @@ typedef struct
 //***********************************************************************
 #define		THEO_SIZE_IDENTITY_ANIM 20
 #define		STBOOL					int
+
+#pragma pack(push,1)
 typedef struct
 {
 	char			identity[THEO_SIZE_IDENTITY_ANIM];
@@ -443,7 +489,9 @@ typedef struct
 	long			nb_groups;
 	long			nb_key_frames;
 } THEA_HEADER; // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 typedef struct
 {
 	long			num_frame;
@@ -455,7 +503,9 @@ typedef struct
 	STBOOL			key_morph;
 	long			time_frame;
 } THEA_KEYFRAME; // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 typedef struct
 {
 	long			num_frame;
@@ -468,21 +518,18 @@ typedef struct
 	STBOOL			key_morph;
 	long			time_frame;
 } THEA_KEYFRAME_2015; // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 typedef struct
 {
 	float			x;
 	float			y;
 	float			z;
 } THEA_KEYMOVE; // Aligned 1 2 4
+#pragma pack(pop)
 
-typedef struct
-{
-	unsigned long alpha: 12;
-	unsigned long beta: 12;
-	unsigned long gamma: 12;
-} THEO_ANGLE; // Aligned 1 2 4 ?
-
+#pragma pack(push,1)
 typedef struct
 {
 	long		num_list_morph;
@@ -490,26 +537,29 @@ typedef struct
 	long		nb_inter;
 	long		start_frame;
 } THEA_MORPH; // Aligned 1 2 4 8
+#pragma pack(pop)
 
+#pragma pack(push,1)
 typedef struct
 {
 	TBOOL		key_group;
-	THEO_ANGLE	angle;
+	char angle[8]; // ignored
 	ArxQuat		Quaternion;
 	THEO_3D		translate;
 	THEO_3D		zoom;
 } THEO_GROUPANIM; // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 typedef struct
 {
 	char			sample_name[SIZE_NAME];
 	long			sample_size;
 } THEA_SAMPLE; // Aligned 1 2 4
+#pragma pack(pop)
 
 //***********************************************************************
 //*		END THEO TEA Animation FILE FORMAT structures					*
 //***********************************************************************
-
-#pragma pack(pop)
 
 #endif // THEODATA_H

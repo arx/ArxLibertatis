@@ -291,7 +291,6 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, lo
 	
 	LogDebug << "Loading animation file " << file;
 	
-	THEA_SAMPLE * ts;
 	size_t pos = 0;
 	
 	EERIE_ANIM * eerie = allocStructZero<EERIE_ANIM>("EEAnim");
@@ -308,7 +307,7 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, lo
 	LogDebug << "TEA header size: " << sizeof(THEA_HEADER);
 	LogDebug << "Identity " << th.identity;
 	LogDebug << "Version - " << th.version << "  Frames " << th.nb_frames
-	         << "  Groups " << th.nb_groups << " KeyFrames " << th.nb_key_frames;
+	         << "  Groups " << th.nb_groups << "  KeyFrames " << th.nb_key_frames;
 	
 	eerie->nb_groups = th.nb_groups;
 	eerie->nb_key_frames = th.nb_key_frames;
@@ -325,10 +324,12 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, lo
 		
 		THEA_KEYFRAME_2015 tkf2015;
 		if(th.version >= 2015) {
+			LogDebug << " New keyframe version THEA_KEYFRAME_2015:" << sizeof(THEA_KEYFRAME_2015);
 			memcpy(&tkf2015, adr + pos, sizeof(THEA_KEYFRAME_2015));
 			pos += sizeof(THEA_KEYFRAME_2015);
 		} else {
-			THEA_KEYFRAME			tkf;
+			LogDebug << " Old keyframe version THEA_KEYFRAME:" << sizeof(THEA_KEYFRAME);
+			THEA_KEYFRAME tkf;
 			memcpy(&tkf, adr + pos, sizeof(THEA_KEYFRAME));
 			pos += sizeof(THEA_KEYFRAME);
 			memset(&tkf2015, 0, sizeof(THEA_KEYFRAME_2015));
@@ -357,7 +358,7 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, lo
 		eerie->anim_time += tkf2015.time_frame;
 		eerie->frames[i].flag = tkf2015.flag_frame;
 		
-		LogDebug << "pos " << pos << " - NumFr " << eerie->frames[i].num_frame
+		LogDebug << " pos " << pos << " - NumFr " << eerie->frames[i].num_frame
 		         << " MKF " << tkf2015.master_key_frame << " THEA_KEYFRAME " << sizeof(THEA_KEYFRAME)
 		         << " TIME " << (float)(eerie->frames[i].time / 1000.f) << "s -Move " << tkf2015.key_move
 		         << " Orient " << tkf2015.key_orient << " Morph " << tkf2015.key_morph;
@@ -366,6 +367,10 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, lo
 		if(tkf2015.key_move == true) {
 			THEA_KEYMOVE * tkm = (THEA_KEYMOVE *)(adr + pos);
 			pos += sizeof(THEA_KEYMOVE);
+			
+			LogDebug << " -> move x " << tkm->x << " y " << tkm->y << " z " << tkm->z
+			         << " THEA_KEYMOVE:" << sizeof(THEA_KEYMOVE);
+			
 			eerie->frames[i].translate.x = tkm->x;
 			eerie->frames[i].translate.y = tkm->y;
 			eerie->frames[i].translate.z = tkm->z;
@@ -373,9 +378,13 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, lo
 		
 		// Is There a Global Rotation ?
 		if(tkf2015.key_orient == true) {
-			pos += sizeof(THEO_ANGLE);
+			pos += 8; // THEO_ANGLE
 			ArxQuat * quat = (ArxQuat *)(adr + pos);
-			pos += sizeof(ArxQuat);					
+			pos += sizeof(ArxQuat);
+			
+			LogDebug << " -> rotate x " << quat->x << " y " << quat->y << " z " << quat->z
+			         << " w " << quat->w << " ArxQuat:" << sizeof(ArxQuat);
+			
 			eerie->frames[i].quat.x = quat->x;
 			eerie->frames[i].quat.y = quat->y;
 			eerie->frames[i].quat.z = quat->z;
@@ -384,18 +393,19 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, lo
 		
 		// Is There a Global Morph ? (IGNORED!)
 		if(tkf2015.key_morph == true) {
-			pos += sizeof(THEA_MORPH);
-			
-			LogDebug << "-> Frame " << i << " MORPH - pos " << pos << " THEO_MORPH " << sizeof(THEA_MORPH);
+			pos += 16; // THEA_MORPH
 		}
 		
 		// Now go for Group Rotations/Translations/scaling for each GROUP
 		for(size_t j = 0; j < th.nb_groups; j++) {
 			THEO_GROUPANIM * tga = (THEO_GROUPANIM *)(adr + pos);
 			pos += sizeof(THEO_GROUPANIM);
+			
+			LogDebug << " -> group anim " << j << " THEO_GROUPANIM:" << sizeof(THEO_GROUPANIM);
+			
 			EERIE_GROUP * eg = &eerie->groups[j + i * th.nb_groups];
 			eg->key = tga->key_group;
-
+			
 			eg->quat.x = tga->Quaternion.x;
 			eg->quat.y = tga->Quaternion.y;
 			eg->quat.z = tga->Quaternion.z;
@@ -408,18 +418,21 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, lo
 			eg->zoom.y = tga->zoom.y;
 			eg->zoom.z = tga->zoom.z;
 		}
-
+		
 		// Now Read Sound Data included in this frame
 		long num_sample;
 		memcpy(&num_sample, adr + pos, sizeof(long));
 		pos += sizeof(long);
+		LogDebug << " -> num_sample " << num_sample << " long:" << sizeof(long);
+		
 		eerie->frames[i].sample = -1;
 		if(num_sample != -1) {
 			THEA_SAMPLE * ts = (THEA_SAMPLE *)(adr + pos);
 			pos += sizeof(THEA_SAMPLE);
 			pos += ts->sample_size;
 			
-			LogDebug << "---> Frame " << i << " Sample " << ts->sample_name << " size " << ts->sample_size;
+			LogDebug << " -> sample " << ts->sample_name << " size " << ts->sample_size
+			         << " THEA_SAMPLE:" << sizeof(THEA_SAMPLE);
 			
 			eerie->frames[i].sample = ARX_SOUND_Load(ts->sample_name);
 		}
