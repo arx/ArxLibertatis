@@ -75,7 +75,7 @@ PakFileHandle * PAK_fopen(const char * filename);
 size_t PAK_fread(void * buffer, size_t size, size_t count, PakFileHandle * stream);
 int PAK_fclose(PakFileHandle * stream);
 long PAK_ftell(PakFileHandle * stream);
-bool PAK_DirectoryExist(const char * name);
+bool PAK_DirectoryExist(const std::string& name);
 bool PAK_FileExist(const char * name);
 int PAK_fseek(PakFileHandle * fic, int offset, long origin);
 

@@ -124,23 +124,30 @@ void ClearDirectory(char * dirfile)
 	}
 }
 /*---------------------------------------------------------------*/
-void ClearAbsDirectory(char * pT, const char * d)
+// TODO Figure out of this is right
+void ClearAbsDirectory( std::string& pT, const std::string& d )
 {
+	size_t abs_dir = pT.find( d );
+
+	if ( abs_dir != std::string::npos )
+		pT = pT.substr( abs_dir );
+
+/*
 	char * pTcopy = pT;
 	int i = strlen(pT);
 
 	while (i--)
 	{
 		//todo string
-//		if (!strnicmp(pT, d, strlen(d)))
-//		{
-//			pT += strlen(d);
-//			memmove(pTcopy, pT, strlen(pT - strlen(d)) + 1);
-//			break;
-//		}
+		if (!strnicmp(pT, d, strlen(d)))
+		{
+			pT += strlen(d);
+			memmove(pTcopy, pT, strlen(pT - strlen(d)) + 1);
+			break;
+		}
 
 		pT++;
-	}
+	}*/
 }
 
 /*---------------------------------------------------------------*/

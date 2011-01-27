@@ -60,6 +60,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/ARX_Speech.h"
 #include "core/ARX_Menu.h"
 
+//TODO Remove this!
+size_t strcasecmp( const std::string& str1, const std::string& str2 );
+
 void MakeSpCol();
 extern long WILLRETURNTOCOMBATMODE;
 extern CMenuConfig *pMenuConfig;
@@ -993,7 +996,7 @@ bool MakeSpellName(char * spell, const long &num)
 }
 
 //-----------------------------------------------------------------------------
-long GetSpellId(const char *spell)
+long GetSpellId(const std::string& spell)
 {
 	if (!strcasecmp(spell, "ACTIVATE_PORTAL"))       return SPELL_ACTIVATE_PORTAL;		
 

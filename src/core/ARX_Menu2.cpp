@@ -460,7 +460,7 @@ bool MENU_NoActiveWindow()
 
 //-----------------------------------------------------------------------------
 
-void GetTextSize(HFONT _hFont, std::string _lpszUText, int& _iWidth, int& _iHeight)
+void GetTextSize(HFONT _hFont, const std::string& _lpszUText, int& _iWidth, int& _iHeight)
 {
 	HDC hDC;
 

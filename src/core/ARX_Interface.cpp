@@ -756,7 +756,7 @@ void ARX_INTERFACE_NoteClear()
 }
 
 //-----------------------------------------------------------------------------
-void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type,char * tex)
+void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex)
 {
  
 

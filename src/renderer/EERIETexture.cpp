@@ -3546,10 +3546,12 @@ TextureContainer * D3DTextr_CreateTextureFromFile( const std::string& _strName, 
 // Name: D3DTextr_CreateEmptyTexture()
 // Desc: Creates an empty texture.
 //-----------------------------------------------------------------------------
-HRESULT D3DTextr_CreateEmptyTexture( std::string& strName, DWORD dwWidth,
+HRESULT D3DTextr_CreateEmptyTexture( const std::string& _strName, DWORD dwWidth,
 									DWORD dwHeight, DWORD dwStage,
 									DWORD dwFlags, DWORD flags)
 {
+	std::string strName = _strName;
+
 	if (!(flags & 1)) // no name check
 	{
 		// Check parameters

@@ -149,6 +149,86 @@ extern void ARX_MENU_Clicked_CREDITS();
 extern void ARX_MENU_Launch(LPDIRECT3DDEVICE7 m_pd3dDevice);
 void ARX_INTERFACE_Combat_Mode(long);
 bool ARX_EQUIPMENT_IsPlayerEquip(INTERACTIVE_OBJ * _pIO);
+
+std::vector<SCRIPT_EVENT> AS_EVENT =
+{
+	{"ON NULL"} ,
+	{"ON INIT"} ,
+	{"ON INVENTORYIN"} ,
+	{"ON INVENTORYOUT"} ,
+	{"ON INVENTORYUSE"} ,
+	{"ON SCENEUSE"} ,
+	{"ON EQUIPIN"} ,
+	{"ON EQUIPOUT"},
+	{"ON MAIN"},
+	{"ON RESET"},
+	{"ON CHAT"},
+	{"ON ACTION"},
+	{"ON DEAD"},
+	{"ON REACHEDTARGET"},
+	{"ON FIGHT"},
+	{"ON FLEE"},
+	{"ON HIT"},
+	{"ON DIE"},
+	{"ON LOSTTARGET"},
+	{"ON TREATIN"},
+	{"ON TREATOUT"},
+	{"ON MOVE"},
+	{"ON DETECTPLAYER"},
+	{"ON UNDETECTPLAYER"},
+	{"ON COMBINE"},
+	{"ON NPC_FOLLOW"},
+	{"ON NPC_FIGHT"},
+	{"ON NPC_STAY"},
+	{"ON INVENTORY2_OPEN"},
+	{"ON INVENTORY2_CLOSE"},
+	{"ON CUSTOM"},
+	{"ON ENTER_ZONE"},
+	{"ON LEAVE_ZONE"},
+	{"ON INITEND"} ,
+	{"ON CLICKED"} ,
+	{"ON INSIDEZONE"},
+	{"ON CONTROLLEDZONE_INSIDE"},
+	{"ON LEAVEZONE"},
+	{"ON CONTROLLEDZONE_LEAVE"},
+	{"ON ENTERZONE"},
+	{"ON CONTROLLEDZONE_ENTER"},
+	{"ON LOAD"} ,
+	{"ON SPELLCAST"} ,
+	{"ON RELOAD"} ,
+	{"ON COLLIDE_DOOR"} ,
+	{"ON OUCH"} ,
+	{"ON HEAR"} ,
+	{"ON SUMMONED"} ,
+	{"ON SPELLEND"} ,
+	{"ON SPELLDECISION"} ,
+	{"ON STRIKE"} ,
+	{"ON COLLISION_ERROR"} ,
+	{"ON WAYPOINT"} ,
+	{"ON PATHEND"} ,
+	{"ON CRITICAL"} ,
+	{"ON COLLIDE_NPC"} ,
+	{"ON BACKSTAB"} ,
+	{"ON AGGRESSION"} ,
+	{"ON COLLISION_ERROR_DETAIL"} ,
+	{"ON GAME_READY"} ,
+	{"ON CINE_END"} ,
+	{"ON KEY_PRESSED"} ,
+	{"ON CONTROLS_ON"} ,
+	{"ON CONTROLS_OFF"} ,
+	{"ON PATHFINDER_FAILURE"} ,
+	{"ON PATHFINDER_SUCCESS"} ,
+	{"ON TRAP_DISARMED"} ,
+	{"ON BOOK_OPEN"} ,
+	{"ON BOOK_CLOSE"} ,
+	{"ON IDENTIFY"} ,
+	{"ON BREAK"} ,
+	{"ON STEAL"} ,
+	{"ON COLLIDE_FIELD"},
+	{"ON CURSORMODE"},
+	{"ON EXPLORATIONMODE"},
+	{NULL}
+};
 //*************************************************************************************
 // FindScriptPos																	//
 // Looks for string in script, return pos. Search start position can be set using	//
@@ -2252,85 +2332,6 @@ SCRIPT_VAR * SETVarValueText(SCRIPT_VAR ** svf, long * nb, const char * name, co
 	return tsv;
 }
 
-SCRIPT_EVENT AS_EVENT[] =
-{
-	{"ON NULL"} ,
-	{"ON INIT"} ,
-	{"ON INVENTORYIN"} ,
-	{"ON INVENTORYOUT"} ,
-	{"ON INVENTORYUSE"} ,
-	{"ON SCENEUSE"} ,
-	{"ON EQUIPIN"} ,
-	{"ON EQUIPOUT"},
-	{"ON MAIN"},
-	{"ON RESET"},
-	{"ON CHAT"},
-	{"ON ACTION"},
-	{"ON DEAD"},
-	{"ON REACHEDTARGET"},
-	{"ON FIGHT"},
-	{"ON FLEE"},
-	{"ON HIT"},
-	{"ON DIE"},
-	{"ON LOSTTARGET"},
-	{"ON TREATIN"},
-	{"ON TREATOUT"},
-	{"ON MOVE"},
-	{"ON DETECTPLAYER"},
-	{"ON UNDETECTPLAYER"},
-	{"ON COMBINE"},
-	{"ON NPC_FOLLOW"},
-	{"ON NPC_FIGHT"},
-	{"ON NPC_STAY"},
-	{"ON INVENTORY2_OPEN"},
-	{"ON INVENTORY2_CLOSE"},
-	{"ON CUSTOM"},
-	{"ON ENTER_ZONE"},
-	{"ON LEAVE_ZONE"},
-	{"ON INITEND"} ,
-	{"ON CLICKED"} ,
-	{"ON INSIDEZONE"},
-	{"ON CONTROLLEDZONE_INSIDE"},
-	{"ON LEAVEZONE"},
-	{"ON CONTROLLEDZONE_LEAVE"},
-	{"ON ENTERZONE"},
-	{"ON CONTROLLEDZONE_ENTER"},
-	{"ON LOAD"} ,
-	{"ON SPELLCAST"} ,
-	{"ON RELOAD"} ,
-	{"ON COLLIDE_DOOR"} ,
-	{"ON OUCH"} ,
-	{"ON HEAR"} ,
-	{"ON SUMMONED"} ,
-	{"ON SPELLEND"} ,
-	{"ON SPELLDECISION"} ,
-	{"ON STRIKE"} ,
-	{"ON COLLISION_ERROR"} ,
-	{"ON WAYPOINT"} ,
-	{"ON PATHEND"} ,
-	{"ON CRITICAL"} ,
-	{"ON COLLIDE_NPC"} ,
-	{"ON BACKSTAB"} ,
-	{"ON AGGRESSION"} ,
-	{"ON COLLISION_ERROR_DETAIL"} ,
-	{"ON GAME_READY"} ,
-	{"ON CINE_END"} ,
-	{"ON KEY_PRESSED"} ,
-	{"ON CONTROLS_ON"} ,
-	{"ON CONTROLS_OFF"} ,
-	{"ON PATHFINDER_FAILURE"} ,
-	{"ON PATHFINDER_SUCCESS"} ,
-	{"ON TRAP_DISARMED"} ,
-	{"ON BOOK_OPEN"} ,
-	{"ON BOOK_CLOSE"} ,
-	{"ON IDENTIFY"} ,
-	{"ON BREAK"} ,
-	{"ON STEAL"} ,
-	{"ON COLLIDE_FIELD"},
-	{"ON CURSORMODE"},
-	{"ON EXPLORATIONMODE"},
-	{NULL}
-};
 
 //*************************************************************************************
 //*************************************************************************************
@@ -2965,7 +2966,7 @@ bool IsGlobal(char c)
 
 //*************************************************************************************
 //*************************************************************************************
-void MakeGlobalText(char * tx)
+void MakeGlobalText( std::string& tx)
 {
 	char texx[256];
 
@@ -2974,31 +2975,31 @@ void MakeGlobalText(char * tx)
 		switch (svar[i].type)
 		{
 			case TYPE_G_TEXT:
-				strcat(tx, svar[i].name);
-				strcat(tx, " = ");
-				strcat(tx, svar[i].text);
-				strcat(tx, "\r\n");
+				tx += svar[i].name;
+				tx += " = ";
+				tx += svar[i].text;
+				tx += "\r\n";
 				break;
 			case TYPE_G_LONG:
-				strcat(tx, svar[i].name);
-				strcat(tx, " = ");
+				tx += svar[i].name;
+				tx += " = ";
 				sprintf(texx, "%ld", svar[i].ival);
-				strcat(tx, texx);
-				strcat(tx, "\r\n");
+				tx += texx;
+				tx += "\r\n";
 				break;
 			case TYPE_G_FLOAT:
-				strcat(tx, svar[i].name);
-				strcat(tx, " = ");
+				tx += svar[i].name;
+				tx += " = ";
 				sprintf(texx, "%f", svar[i].fval);
-				strcat(tx, texx);
-				strcat(tx, "\r\n");
+				tx += texx;
+				tx += "\r\n";
 				break;
 		}
 	}
 }
 //*************************************************************************************
 //*************************************************************************************
-void MakeLocalText(EERIE_SCRIPT * es, char * tx)
+void MakeLocalText(EERIE_SCRIPT * es, std::string& tx)
 {
 	char texx[256];
 
@@ -3011,24 +3012,24 @@ void MakeLocalText(EERIE_SCRIPT * es, char * tx)
 		switch (es->lvar[i].type)
 		{
 			case TYPE_L_TEXT:
-				strcat(tx, es->lvar[i].name);
-				strcat(tx, " = ");
-				strcat(tx, es->lvar[i].text);
-				strcat(tx, "\r\n");
+				tx += es->lvar[i].name;
+				tx += " = ";
+				tx += es->lvar[i].text;
+				tx += "\r\n";
 				break;
 			case TYPE_L_LONG:
-				strcat(tx, es->lvar[i].name);
-				strcat(tx, " = ");
+				tx += es->lvar[i].name;
+				tx += " = ";
 				sprintf(texx, "%ld", es->lvar[i].ival);
-				strcat(tx, texx);
-				strcat(tx, "\r\n");
+				tx += texx;
+				tx += "\r\n";
 				break;
 			case TYPE_L_FLOAT:
-				strcat(tx, es->lvar[i].name);
-				strcat(tx, " = ");
+				tx += es->lvar[i].name;
+				tx += " = ";
 				sprintf(texx, "%f", es->lvar[i].fval);
-				strcat(tx, texx);
-				strcat(tx, "\r\n");
+				tx += texx;
+				tx += "\r\n";
 				break;
 		}
 	}
@@ -3977,7 +3978,7 @@ void ARX_SCRIPT_Timer_Clear_For_IO(INTERACTIVE_OBJ * io)
 
 
 
-long ARX_SCRIPT_GetSystemIOScript(INTERACTIVE_OBJ * io, const char * name)
+long ARX_SCRIPT_GetSystemIOScript(INTERACTIVE_OBJ * io, const std::string& name)
 {
 	if (ActiveTimers)
 	{
@@ -13593,7 +13594,7 @@ LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 	return false;
 }
 
-void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const char * name, const char * content)
+void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const std::string& name, const std::string& content)
 {
 	EERIE_SCRIPT * esss = NULL;
 	SCRIPT_VAR * sv = NULL;
@@ -13609,7 +13610,7 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const char * name, const char * con
 
 			if (io) return;
 
-			sv = SETVarValueText(&svar, &NB_GLOBALS, name, content);
+			sv = SETVarValueText(&svar, &NB_GLOBALS, name.c_str(), content.c_str());
 
 			if (sv != NULL)
 				sv->type = TYPE_G_TEXT;
@@ -13619,7 +13620,7 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const char * name, const char * con
 
 			if (io == NULL) return;
 
-			sv = SETVarValueText(&esss->lvar, &esss->nblvar, name, content);
+			sv = SETVarValueText(&esss->lvar, &esss->nblvar, name.c_str(), content.c_str());
 
 			if (sv != NULL)
 				sv->type = TYPE_L_TEXT;
@@ -13629,8 +13630,8 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const char * name, const char * con
 
 			if (io) return;
 
-			ival = atoi(content);
-			sv = SETVarValueLong(&svar, &NB_GLOBALS, name, ival);
+			ival = atoi(content.c_str());
+			sv = SETVarValueLong(&svar, &NB_GLOBALS, name.c_str(), ival);
 
 			if (sv != NULL)
 				sv->type = TYPE_G_LONG;
@@ -13640,8 +13641,8 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const char * name, const char * con
 
 			if (io == NULL) return;
 
-			ival = atoi(content);
-			sv = SETVarValueLong(&esss->lvar, &esss->nblvar, name, ival);
+			ival = atoi(content.c_str());
+			sv = SETVarValueLong(&esss->lvar, &esss->nblvar, name.c_str(), ival);
 
 			if (sv != NULL)
 				sv->type = TYPE_L_LONG;
@@ -13651,8 +13652,8 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const char * name, const char * con
 
 			if (io) return;
 
-			fval = (float)atof(content);
-			sv = SETVarValueFloat(&svar, &NB_GLOBALS, name, fval);
+			fval = (float)atof(content.c_str());
+			sv = SETVarValueFloat(&svar, &NB_GLOBALS, name.c_str(), fval);
 
 			if (sv != NULL)
 				sv->type = TYPE_G_FLOAT;
@@ -13662,8 +13663,8 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const char * name, const char * con
 
 			if (io == NULL) return;
 
-			fval = (float)atof(content);
-			sv = SETVarValueFloat(&esss->lvar, &esss->nblvar, name, fval);
+			fval = (float)atof(content.c_str());
+			sv = SETVarValueFloat(&esss->lvar, &esss->nblvar, name.c_str(), fval);
 
 			if (sv != NULL)
 				sv->type = TYPE_L_FLOAT;

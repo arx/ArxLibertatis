@@ -904,17 +904,17 @@ extern long LOADEDD;
 //*************************************************************************************
 //*************************************************************************************
 
-void WriteIOInfo(INTERACTIVE_OBJ * io, char * dir)
+void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string& dir)
 {
 	char dfile[256];
 	char temp[256];
 	FILE * fic;
 	HERMES_DATE_TIME hdt;
 
-	if (DirectoryExist(dir))
+	if (DirectoryExist(dir.c_str()))
 	{
 		strcpy(temp, GetName(io->filename).c_str());
-		sprintf(dfile, "%s\\%s.log", dir, temp);
+		sprintf(dfile, "%s\\%s.log", dir.c_str(), temp);
 
 		if ((fic = fopen(dfile, "w")) != NULL)
 		{

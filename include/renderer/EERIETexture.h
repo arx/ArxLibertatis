@@ -223,7 +223,7 @@ class TextureContainer
 TextureContainer * D3DTextr_GetSurfaceContainer(const std::string& strName);
 TextureContainer * GetTextureList();
 extern TextureContainer * LastTextureContainer;
-long CountTextures( const std::string& tex, long * memsize, long * memmip);
+long CountTextures( std::string& tex, long * memsize, long * memmip);
  
 //-----------------------------------------------------------------------------
 // Texture invalidation and restoration functions
@@ -253,7 +253,7 @@ void ReloadTexture(TextureContainer * tc);
 
 TextureContainer  * D3DTextr_CreateTextureFromFile( const std::string& strName, DWORD dwStage = 0L,
 		DWORD dwFlags = 0L , long sysflags = 0);
-HRESULT D3DTextr_CreateEmptyTexture(const char * strName, DWORD dwWidth,
+HRESULT D3DTextr_CreateEmptyTexture(const std::string& strName, DWORD dwWidth,
 									DWORD dwHeight, DWORD dwStage,
 									DWORD dwFlags, DWORD flags = 0);
  
@@ -271,8 +271,8 @@ void D3DTextr_KillTexture(TextureContainer * tex);
 void D3DTextr_KillAllTextures();	
 void SpecialBorderSurface(TextureContainer * tc, unsigned long x0, unsigned long y0);
 
-TextureContainer * FindTexture(const char * strTextureName);
-TextureContainer * _FindTexture(const char * strTextureName);
+TextureContainer * FindTexture(const std::string& strTextureName);
+TextureContainer * _FindTexture(const std::string& strTextureName);
 
 bool TextureContainer_Exist(TextureContainer * tc);
 #endif

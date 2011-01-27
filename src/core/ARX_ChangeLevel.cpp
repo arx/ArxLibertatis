@@ -391,7 +391,7 @@ extern long JUST_RELOADED;
 extern void DemoFileCheck();
 extern long FINAL_COMMERCIAL_DEMO;
 //--------------------------------------------------------------------------------------------
-void ARX_CHANGELEVEL_Change(char * level, char * target, long angle, long confirm)
+void ARX_CHANGELEVEL_Change( const std::string& level, const std::string& target, long angle, long confirm)
 {
 	LogData("-----------------------------------");
 	HERMES_DATE_TIME hdt;
@@ -403,7 +403,7 @@ void ARX_CHANGELEVEL_Change(char * level, char * target, long angle, long confir
 		char tex[256];
 		sprintf(tex, "Date: %02ld/%02ld/%ld  Time: %ldh%ld", hdt.days, hdt.months, hdt.years, hdt.hours, hdt.mins);
 		LogData(tex);
-		sprintf(tex, "level %s target %s", level, target);
+		sprintf(tex, "level %s target %s", level.c_str(), target.c_str());
 		LogData(tex);
 	}
 
@@ -427,7 +427,7 @@ void ARX_CHANGELEVEL_Change(char * level, char * target, long angle, long confir
 	FORBID_SAVE = 1;
 	// CurGamePath contains current game temporary savepath
 	char tex[256];
-	sprintf(tex, "LEVEL%s", level);
+	sprintf(tex, "LEVEL%s", level.c_str());
 	long num = GetLevelNumByName(tex);
 
 
@@ -2381,9 +2381,9 @@ void ReleaseTio()
 extern long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io);
 
 //-----------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Pop_IO(char * ident)
+long ARX_CHANGELEVEL_Pop_IO( const std::string& ident)
 {
-	if (!strcasecmp(ident, "NONE")) return -1;
+	if (!strcasecmp(ident.c_str(), "NONE")) return -1;
 
 	char loadfile[256];
 	ARX_CHANGELEVEL_IO_SAVE * ais;
@@ -2391,7 +2391,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 	long pos = 0;
 	size_t size = 0;
 
-	sprintf(loadfile, "%s.sav", ident);
+	sprintf(loadfile, "%s.sav", ident.c_str());
 
 	long t = GetTargetByNameTarget(ident);
 
@@ -2401,7 +2401,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 	if (NEED_LOG)
 	{
 		char temp[256];
-		sprintf(temp, "--> Before ARX_CHANGELEVEL_Pop_IO(%s)", ident);
+		sprintf(temp, "--> Before ARX_CHANGELEVEL_Pop_IO(%s)", ident.c_str());
 		LogData(temp);
 	}
 
@@ -2442,7 +2442,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 	if (!dat)
 	{
 		char tcText[256];
-		sprintf(tcText, "%s", ident, 0);
+		sprintf(tcText, "%s", ident.c_str(), 0);
 		MessageBox(NULL, tcText, "Error while loading...", 0);
 		return -1;
 	}
@@ -2471,7 +2471,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 	if (NEED_LOG)
 	{
 		char temp[256];
-		sprintf(temp, "--> Phase2 ARX_CHANGELEVEL_Pop_IO(%s)", ident);
+		sprintf(temp, "--> Phase2 ARX_CHANGELEVEL_Pop_IO(%s)", ident.c_str());
 		LogData(temp);
 	}
 
@@ -2479,7 +2479,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 	dli.angle.a = ais->angle.a;
 	dli.angle.b = ais->angle.b;
 	dli.angle.g = ais->angle.g;
-	long num = atoi(ident + strlen(ident) - 4);
+	long num = atoi(ident.c_str() + ident.length() - 4);
 
 	dli.ident = num;
 	dli.name = ais->filename;
@@ -3202,7 +3202,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 	else
 	{
 		char temp[512];
-		sprintf(temp, "CHANGELEVEL Error: Unable to load %s", ident);
+		sprintf(temp, "CHANGELEVEL Error: Unable to load %s", ident.c_str());
 
 		if (!FOR_EXTERNAL_PEOPLE)
 			ShowPopup(temp);
@@ -3215,14 +3215,14 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 	if (NEED_LOG)
 	{
 		char temp[256];
-		sprintf(temp, "--> After  ARX_CHANGELEVEL_Pop_IO(%s)", ident);
+		sprintf(temp, "--> After  ARX_CHANGELEVEL_Pop_IO(%s)", ident.c_str());
 		LogData(temp);
 	}
 
 	return GetInterNum(tmp);
 corrupted:
 	char cstring[256];
-	sprintf(cstring, "Save File Is Corrupted\nTrying to Fix %s", ident);
+	sprintf(cstring, "Save File Is Corrupted\nTrying to Fix %s", ident.c_str());
 	ShowPopup(cstring);//"Save file is corrupted.");
 
 	free(dat);
@@ -4071,7 +4071,7 @@ void CopyDirectory(char * _lpszSrc, char * _lpszDest)
 
 //-----------------------------------------------------------------------------
 ///////////////////////// SAVE LOAD
-long ARX_CHANGELEVEL_Save(long instance, char * name)
+long ARX_CHANGELEVEL_Save(long instance, const std::string& name)
 {
 
 	ARX_TIME_Pause();
@@ -4132,7 +4132,7 @@ long ARX_CHANGELEVEL_Save(long instance, char * name)
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;
 	memset(&pld, 0, sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));
 	pld.level = CURRENTLEVEL;
-	strcpy(pld.name, name);
+	strcpy(pld.name, name.c_str());
 	pld.version = ARX_GAMESAVE_VERSION;
 	pld.time = ARX_TIME_GetUL(); //treat warning C4244 conversion from 'float' to 'unsigned long''
 	ARX_CHANGELEVEL_Set_Player_LevelData(&pld, GameSavePath);
@@ -4141,15 +4141,15 @@ long ARX_CHANGELEVEL_Save(long instance, char * name)
 }
 
 //-----------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Set_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pld, char * path)
+long ARX_CHANGELEVEL_Set_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pld, const std::string& path)
 {
 	char sfile[256];
-	sprintf(sfile, "%sGsave.sav", path);
+	sprintf(sfile, "%sGsave.sav", path.c_str());
 	_pSaveBlock = new CSaveBlock(sfile);
 
 	if (!_pSaveBlock->BeginSave(true, 1)) return -1;
 
-	if (!DirectoryExist(path)) return -1;
+	if (!DirectoryExist(path.c_str())) return -1;
 
 	unsigned char * dat;
 	dat = (unsigned char *) malloc(sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));
@@ -4184,10 +4184,10 @@ long ARX_CHANGELEVEL_Set_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 // ARX_CHANGELEVEL_Get_Player_LevelData: Retreives Player Level Data
 // VERIFIED: Cyril 30/11/2001
 //------------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pld, char * path)
+long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pld, const std::string& path)
 {
 	// Checks For Directory
-	if (!DirectoryExist(path)) return -1;
+	if (!DirectoryExist(path.c_str())) return -1;
 
 	std::string loadfile;
 	std::string _error;
@@ -4196,7 +4196,7 @@ long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 
 	// Open Save Block
 	char sfile[256];
-	sprintf(sfile, "%sGsave.sav", path);
+	sprintf(sfile, "%sGsave.sav", path.c_str());
 	_pSaveBlock = new CSaveBlock(sfile);
 
 	if (!_pSaveBlock->BeginRead()) return -1;
@@ -4375,26 +4375,26 @@ long ARX_CHANGELEVEL_Load(long instance)
 //------------------------------------------------------------------------------
 // ARX_CHANGELEVEL_GetInfo: Retreives Name & Time of a Saved game in "path"
 //------------------------------------------------------------------------------
-long ARX_CHANGELEVEL_GetInfo(char * path, char * name, float * version, long * level, unsigned long * time)
+long ARX_CHANGELEVEL_GetInfo( const std::string& path, std::string& name, float& version, long& level, unsigned long& time)
 {
-	if ((!path) || (!name) || (!version) || (!level) || (!time)) return -1;
+	if ((path.empty()) || (name.empty()) || (!version) || (!level) || (!time)) return -1;
 
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;
 
 	if (ARX_CHANGELEVEL_Get_Player_LevelData(&pld, path) == 1)
 	{
-		strcpy(name, pld.name);
-		*version = pld.version;
-		*level = pld.level;
-		*time = (pld.time / 1000);
+		name = pld.name;
+		version = pld.version;
+		level = pld.level;
+		time = (pld.time / 1000);
 		return 1;
 	}
 	else
 	{
-		strcpy(name, "Invalid Save...");
-		*time = 0;
-		*level = 0;
-		*version = 0;
+		name = "Invalid Save...";
+		time = 0;
+		level = 0;
+		version = 0;
 		return -1;
 	}
 }

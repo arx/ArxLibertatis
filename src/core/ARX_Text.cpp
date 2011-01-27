@@ -555,17 +555,17 @@ USHORT LilEndianShort(USHORT ulValue)
 }
 
 //-----------------------------------------------------------------------------
-std::string GetFontName(char * _lpszFileName)
+std::string GetFontName( const std::string& _lpszFileName)
 {
 	DWORD dwSize;
 	DWORD dwRead;
 	int   iResult;
 
-	HANDLE hFile = CreateFile(_lpszFileName, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE hFile = CreateFile(_lpszFileName.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
-		MessageBox(NULL, "FontName :: File not Found", _lpszFileName, MB_OK);
+		MessageBox(NULL, "FontName :: File not Found", _lpszFileName.c_str(), MB_OK);
 		return NULL;
 	}
 

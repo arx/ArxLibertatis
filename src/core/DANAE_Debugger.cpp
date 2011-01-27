@@ -46,6 +46,8 @@ DD_KILL		DD_Kill = NULL;
 DD_GETPARAMS DD_GetParams = NULL;
 DD_GETVERSION DD_GetVersion = NULL;
 
+std::string BIG_DEBUG_STRING;
+
 void DANAE_DEBUGGER_Launch(HWND hWnd)
 {
 	HMODULE hm = LoadLibrary("ARX_SCRIPT_DEBUGGER");

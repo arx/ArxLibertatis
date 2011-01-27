@@ -988,7 +988,8 @@ void ERROR_Log_Init(char * fich)
 	}
 	else ERROR_Log_Write = 0;
 }
-bool ERROR_Log(char * fich)
+
+bool ERROR_Log( const std::string& fich)
 {
 	FILE * fic;
 
@@ -996,7 +997,7 @@ bool ERROR_Log(char * fich)
 	{
 		if ((fic = fopen(ERROR_Log_FIC, "a+")) != NULL)
 		{
-			fprintf(fic, "Error: %s\n", fich);
+			fprintf(fic, "Error: %s\n", fich.c_str());
 			fclose(fic);
 			return true;
 		}
@@ -1004,6 +1005,7 @@ bool ERROR_Log(char * fich)
 
 	return false;
 }
+
 char * HERMES_MEMORY_SECURITY = NULL;
 void HERMES_Memory_Security_On(long size)
 {

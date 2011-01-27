@@ -75,7 +75,7 @@ void LogDirCreation( const char * dir);
 #define	SP_IGNORED	1
 #define	SP_CHILD	2
 
-void WriteIOInfo(INTERACTIVE_OBJ * io, const char * dir);
+void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string& dir);
 
 #pragma pack(push,1)
 typedef struct

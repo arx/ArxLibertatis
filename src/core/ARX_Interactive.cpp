@@ -3393,8 +3393,8 @@ INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fil, 
 	// TODO clean up
 	tex2 = file;
 	SetExt(tex2, "bmp");
-	char temp[256];
-	strcpy( temp, tex2.c_str() );
+	std::string temp;
+	temp = tex2;
 	AddToName( temp, "[Icon]");
 	tex2 = temp;
 

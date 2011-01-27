@@ -146,6 +146,6 @@ void _ShowText(char * text);
 
 void ARX_Text_Init();
 void ARX_Text_Close();
-void FontRenderText(HFONT _hFont, EERIE_3D pos, std::string& _pText, COLORREF _c);
+void FontRenderText(HFONT _hFont, EERIE_3D pos, const std::string& _pText, COLORREF _c);
 
 #endif

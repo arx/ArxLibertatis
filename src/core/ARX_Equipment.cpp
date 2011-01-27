@@ -1677,9 +1677,9 @@ void ARX_EQUIPMENT_IdentifyAll()
 		}
 	}
 }
-float GetHitValue(char * name)
+float GetHitValue( const std::string& name)
 {
-	long len = strlen(name);
+	long len = name.length();
 
 	if (len < 5) return -1;
 
@@ -1688,7 +1688,7 @@ float GetHitValue(char * name)
 	        && ((name[2] == 'T') || (name[1] == 't'))
 	        && (name[3] == '_'))
 	{
-		long val = atoi(name + 4);
+		long val = atoi(name.c_str() + 4);
 		return (float)val;
 	}
 

@@ -125,7 +125,7 @@ void RemoveName( std::string& str );
 std::string GetName( const std::string& str);
 void SetExt( std::string& str, const std::string& new_ext );
 char* GetExt(const std::string& str);
-void AddToName(char *str, const std::string& cat);
+void AddToName( std::string& str, const std::string& cat);
 int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName,const char *filter,HWND hWnd);
 int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName,const char *filter,HWND hWnd);
 long HERMES_CreateFileCheck(const char *name, char *scheck, const long &size, const float &id);

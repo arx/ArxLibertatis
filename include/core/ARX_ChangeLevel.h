@@ -504,7 +504,7 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io);
 long ARX_CHANGELEVEL_Pop_IO( const std::string& ident);
 void ARX_CHANGELEVEL_TestLoad( const std::string& level, std::string& target);
 void ARX_CHANGELEVEL_TestSave( const std::string& level, std::string& target);
-long ARX_CHANGELEVEL_GetInfo( const std::string& path, const std::string& name, float& version, long& level, unsigned long& time);
+long ARX_CHANGELEVEL_GetInfo( const std::string& path, std::string& name, float& version, long& level, unsigned long& time);
 long ARX_CHANGELEVEL_Set_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pld, const std::string& path);
 long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pld, const std::string& path);
 long ARX_CHANGELEVEL_Load(long instance);

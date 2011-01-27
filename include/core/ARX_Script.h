@@ -58,6 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_SCRIPTING_H
 
 #include <string>
+#include <vector>
+
 #include "renderer/EERIEPoly.h"
 #include "renderer/EERIEMeshTweak.h"
 
@@ -375,10 +377,9 @@ typedef struct
 //-----------------------------------------------------------------------------
 extern SCRIPT_VAR * svar;
 extern INTERACTIVE_OBJ * EVENT_SENDER;
-extern SCRIPT_EVENT AS_EVENT[];
+extern std::vector<SCRIPT_EVENT> AS_EVENT;
 extern SCR_TIMER * scr_timer;
 extern std::string ShowTextWindowtext;
-extern std::string BIG_DEBUG_STRING;
 extern long NEED_DEBUG;
 extern long BIG_DEBUG_POS;
 extern long NB_GLOBALS;
@@ -462,7 +463,7 @@ void ARX_IOGROUP_Release(INTERACTIVE_OBJ * io);
 void CloneLocalVars(INTERACTIVE_OBJ * ioo, INTERACTIVE_OBJ * io);
 bool IsIOGroup(INTERACTIVE_OBJ * io, const std::string& group);
 void ARX_SCRIPT_Free_All_Global_Variables();
-void		MakeLocalText(EERIE_SCRIPT * es, const std::string& tx);
-void		MakeGlobalText( const std::string& tx);
+void		MakeLocalText(EERIE_SCRIPT * es, std::string& tx);
+void		MakeGlobalText( std::string& tx);
 
 #endif
