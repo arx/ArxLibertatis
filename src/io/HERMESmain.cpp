@@ -634,12 +634,11 @@ long HERMES_CreateFileCheck(const char * name, char * scheck, const long & size,
 	{
 		char separator = '\\';
 		const char * lastChar = NULL;
-		char *pos      = NULL;
-		
-		unsigned int    i = 0,
+		char *pos = NULL;
+
+		unsigned int i = 0,
 						unixStyle = 0,
-						sepCount = 0; /* number of consecutive separators */
-		
+						sepCount = 0; /* number of consecutive seperators */
 
 	if(!path)
 		return;
@@ -745,38 +744,32 @@ extension:
 			return;
 
 		if(i && (path[i - 1] != '.'))
-		{   path[i++] = '.'; sepCount++; }
-		
+		{ path[i++] = '.'; sepCount++; }
+	
 		for(; pos < lastChar; pos++)
 		{
-			char * lastPathChar = GetLastChar(path) - 1;
+			sepCount = ( (*pos) == '.' ) ? sepCount + 1 : 0;
 			
-			/* backpedal until we get rid of all the dots b/c what's the use of a dot on an extensionless file? */
-			while(lastPathChar > path)
-			{
-				if((*lastPathChar) != '.')
-					break;
-			
-				(*lastPathChar) = '\0';
-				lastPathChar--;
-			}        
+			if(sepCount > 1) { continue; }
+
+			path[i++] = (*pos);
 		}
 
 		NullTerminate(path);
 	}
 	else
 	{
-		lastChar = GetLastChar(path) - 1;
-		
+		char * lastPathChar = GetLastChar(path) - 1;
+
 		/* backpedal until we get rid of all the dots b/c what's the use of a dot on an extensionless file? */
-		while(lastChar > path)
+		while(lastPathChar > path)
 		{
-			if((*lastChar) != '.')
+			if((*lastPathChar) != '.')
 				break;
-		
-			(*lastChar) = '\0';
-			lastChar--;
-		}        
+
+			(*lastPathChar) = '\0';
+			lastPathChar--;
+		}
 	}
 }
 
