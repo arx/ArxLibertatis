@@ -70,7 +70,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "HERMESMain.h"
 
 #include <stdio.h>
-#include <iomanip>
 
 extern float MagicSightFader;
 extern long FINAL_COMMERCIAL_DEMO;
@@ -323,7 +322,7 @@ bool MouseInBookRect(const float x, const float y, const float cx, const float c
 	return ((DANAEMouse.x>=(x+BOOKDECX)*Xratio) 
 		&& (DANAEMouse.x<=(cx+BOOKDECX)*Xratio) 
 		&& (DANAEMouse.y>=(y+BOOKDECY)*Yratio) 
-			&& (DANAEMouse.y <= (cy + BOOKDECY) * Yratio)); 
+	        && (DANAEMouse.y <= (cy + BOOKDECY) * Yratio)); 
 }
 
 //-----------------------------------------------------------------------------
@@ -357,7 +356,7 @@ void ARX_INTERFACE_DrawItem(TextureContainer *tc, const float x, const float y, 
 	if ((tc) && (tc->m_pddsSurface))
 		EERIEDrawBitmap(GDevice,
 		x, y,
-						INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
+		                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
 		z,
 		tc,
 		col);
@@ -502,20 +501,9 @@ void KillInterfaceTextureContainers()
 	D3DTextr_KillTexture(ITC.pTexCornerLeft);
 	D3DTextr_KillTexture(ITC.pTexCornerRight);
 	
-		ITC.lpszULevel.clear();
-	/*if (!ITC.lpszULevel.empty() )
-	{
-		//free (ITC.lpszULevel);
-		//ITC.lpszULevel = NULL;
-	}
-*/
+	ITC.lpszULevel.clear();
 	ITC.lpszUXp.clear();
-	/*if (!ITC.lpszUXp.empty())
-	{
-		free (ITC.lpszUXp);
-		ITC.lpszUXp = NULL;
-	}*/
-	
+
 	ITC.questbook=NULL;
 	ITC.bookmark_char=NULL;
 	ITC.bookmark_magic=NULL;
@@ -768,17 +756,19 @@ void ARX_INTERFACE_NoteClear()
 }
 
 //-----------------------------------------------------------------------------
-void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex)
+void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type,char * tex)
 {
+ 
 
 	if (player.Interface & INTER_NOTE)
-			ARX_INTERFACE_NoteClose();
-
+		ARX_INTERFACE_NoteClose();
+	
 	std::string output;
 	ARX_INTERFACE_BookOpenClose(2);
 	ARX_INTERFACE_NoteClear();
 	Note.type=type;
 	MakeLocalised(tex,output,8096);
+
 	Note.text = output;
 	player.Interface|=INTER_NOTE;
 
@@ -799,51 +789,53 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex
 		D3DTextr_KillTexture(NoteTextureRight);
 		NoteTextureRight=NULL;
 	}
-
-	Note.curpage=0;
-	Note.pages[0]=0;
-	long length=Note.text.length();
-	long curpage=1;
-
-	NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Ingame_books.bmp");
-	RECT rRect;
+	
 
 
-	float fWidth	= NoteTexture->m_dwWidth*DIV2-10.f ; 
-	float fHeight	= NoteTexture->m_dwHeight-40.f ; 
-	ARX_CHECK_INT(fWidth);
-	ARX_CHECK_INT(fHeight);
+		Note.curpage=0;
+		Note.pages[0]=0;
+		long length=Note.text.length();
+		long curpage=1;
+		
+		NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Ingame_books.bmp");
+		RECT rRect;
+		
+
+		float fWidth	= NoteTexture->m_dwWidth*DIV2-10.f ; 
+		float fHeight	= NoteTexture->m_dwHeight-40.f ; 
+		ARX_CHECK_INT(fWidth);
+		ARX_CHECK_INT(fHeight);
 
 	int	tNoteTextMinx = 40; 
-	int	tNoteTextMaxx = ARX_CLEAN_WARN_CAST_INT(fWidth);
+		int	tNoteTextMaxx = ARX_CLEAN_WARN_CAST_INT(fWidth);
 	int	tNoteTextMiny = 40; 
-	int	tNoteTextMaxy = ARX_CLEAN_WARN_CAST_INT(fHeight);
+		int	tNoteTextMaxy = ARX_CLEAN_WARN_CAST_INT(fHeight);
+		
+		float fMinx		= (tNoteTextMaxx-tNoteTextMinx)*Xratio;
+		float fMiny		= (tNoteTextMaxy-tNoteTextMiny)*Yratio;
+		ARX_CHECK_INT(fMinx);
+		ARX_CHECK_INT(fMiny);
 
-	float fMinx		= (tNoteTextMaxx-tNoteTextMinx)*Xratio;
-	float fMiny		= (tNoteTextMaxy-tNoteTextMiny)*Yratio;
-	ARX_CHECK_INT(fMinx);
-	ARX_CHECK_INT(fMiny);
-
-	SetRect(&rRect,0,0,ARX_CLEAN_WARN_CAST_INT(fMinx),ARX_CLEAN_WARN_CAST_INT(fMiny));
+		SetRect(&rRect,0,0,ARX_CLEAN_WARN_CAST_INT(fMinx),ARX_CLEAN_WARN_CAST_INT(fMiny));
 
 
-	int lLenghtCurr=0;
+		int lLenghtCurr=0;
 
-	while(length>0)
-	{
-		long lLengthDraw=ARX_UNICODE_ForceFormattingInRect(	hFontInGameNote,
-															Note.text.c_str() + lLenghtCurr,
-															0,
-															rRect);
-		length-=lLengthDraw;
-		lLenghtCurr+=lLengthDraw;
-		Note.pages[curpage++]=lLenghtCurr;
-	}
+		while(length>0)
+		{
+			long lLengthDraw=ARX_UNICODE_ForceFormattingInRect(	hFontInGameNote,
+																Note.text.substr(lLenghtCurr),
+																0,
+																rRect);
+			length-=lLengthDraw;
+			lLenghtCurr+=lLengthDraw;
+			Note.pages[curpage++]=lLenghtCurr;
+		}
 
-	Note.pages[curpage++]=-1;
-	Note.totpages=curpage;
-	NoteTexture=NULL;
-
+		Note.pages[curpage++]=-1;
+		Note.totpages=curpage;
+		NoteTexture=NULL;
+	
 	if (Note.totpages > 3)
 	{
 		if (Note.type == NOTE_TYPE_NOTE)
@@ -851,7 +843,7 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex
 		else
 			Note.type = NOTE_TYPE_BOOK;
 	}
-
+	
 	switch (Note.type)
 	{
 		case NOTE_TYPE_NOTICE :
@@ -864,12 +856,12 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex
 			ARX_SOUND_PlayInterface(SND_SCROLL_OPEN, 0.9F + 0.2F * rnd());
 			break;
 	}
-
+	
 	if (TRUE_PLAYER_MOUSELOOK_ON && (Note.type == NOTE_TYPE_BOOK))
 	{
 		TRUE_PLAYER_MOUSELOOK_ON&=~1;
 	}
-
+		
 	if ((player.Interface & INTER_INVENTORYALL))
 	{
 		bInventoryClosing = true;
@@ -1041,7 +1033,7 @@ void ARX_INTERFACE_NoteManage()
 				{
 					if(Note.pages[Note.curpage+1]>0)
 					{
-						_tcsncpy(Page_Buffer,Note.text.c_str()+Note.pages[Note.curpage],Note.pages[Note.curpage+1]-Note.pages[Note.curpage]);
+						_tcsncpy(Page_Buffer,Note.text.substr(Note.pages[Note.curpage]).c_str(),Note.pages[Note.curpage+1]-Note.pages[Note.curpage]);
 						Page_Buffer[Note.pages[Note.curpage+1]-Note.pages[Note.curpage]]=_T('\0');
 
 						danaeApp.DANAEEndRender();
@@ -1051,7 +1043,7 @@ void ARX_INTERFACE_NoteManage()
 						
 						if(Note.pages[Note.curpage+2]>0)
 						{
-							_tcsncpy(Page_Buffer,Note.text.c_str()+Note.pages[Note.curpage+1],Note.pages[Note.curpage+2]-Note.pages[Note.curpage+1]);
+							_tcsncpy(Page_Buffer,Note.text.substr(Note.pages[Note.curpage+1]).c_str(),Note.pages[Note.curpage+2]-Note.pages[Note.curpage+1]);
 							Page_Buffer[Note.pages[Note.curpage+2]-Note.pages[Note.curpage+1]]=_T('\0');
 
 							danaeApp.DANAEEndRender();
@@ -1064,7 +1056,7 @@ void ARX_INTERFACE_NoteManage()
 					{
 						if(Note.pages[Note.curpage]>=0)
 						{
-							_tcscpy(Page_Buffer,Note.text.c_str()+Note.pages[Note.curpage]);
+							_tcscpy(Page_Buffer,Note.text.substr(Note.pages[Note.curpage]).c_str());
 
 							danaeApp.DANAEEndRender();
 							DrawBookTextInRect( NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY+NoteTextMaxy,Page_Buffer,0,0x00FF00FF, hFontInGameNote);
@@ -1080,7 +1072,7 @@ void ARX_INTERFACE_NoteManage()
 			else
 			{
 				danaeApp.DANAEEndRender();
-				DrawBookTextInRect( NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY+NoteTextMaxy,Note.text.c_str(),0,0x00FF00FF, hFontInGameNote);
+				DrawBookTextInRect( NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY+NoteTextMaxy,Note.text,0,0x00FF00FF, hFontInGameNote);
 				danaeApp.DANAEStartRender();
 			}
 		}
@@ -1114,6 +1106,12 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 		
 		if(ARXmenu.mda)
 		{
+			for (long i=0;i<MAX_FLYOVER;i++)
+			{
+				ARXmenu.mda->flyover[i].clear();
+			}
+
+			free((void*)ARXmenu.mda);
 			ARXmenu.mda=NULL;
 		}
 	}
@@ -1136,33 +1134,33 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 			ARXmenu.mda = (MENU_DYNAMIC_DATA *)malloc(sizeof(MENU_DYNAMIC_DATA)); 
 			memset(ARXmenu.mda,0,sizeof(MENU_DYNAMIC_DATA));
 			
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STRENGTH],              "system_charsheet_strength");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MIND],                  "system_charsheet_intel");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEXTERITY],             "system_charsheet_Dex");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CONSTITUTION],          "system_charsheet_consti");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STEALTH],               "system_charsheet_stealth");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MECANISM],              "system_charsheet_mecanism");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_INTUITION],             "system_charsheet_intuition");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_ETHERAL_LINK],          "system_charsheet_etheral_link");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_OBJECT_KNOWLEDGE],      "system_charsheet_objknoledge");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CASTING],               "system_charsheet_casting");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_PROJECTILE],            "system_charsheet_projectile");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CLOSE_COMBAT],          "system_charsheet_closecombat");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEFENSE],               "system_charsheet_defense");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_QUICK_GENERATION],    "system_charsheet_quickgenerate");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_DONE],                "system_charsheet_done");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_SKIN],                "system_charsheet_skin");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_ATTRIBUTES],             "system_charsheet_atributes");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_SKILLS],                 "system_charsheet_skills");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_STATUS],                 "system_charsheet_status");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_LEVEL],                  "system_charsheet_level");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_XP],                     "system_charsheet_xpoints");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_HP],                     "system_charsheet_hp");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_MANA],                   "system_charsheet_mana");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_AC],                     "system_charsheet_AC");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_MAGIC],           "system_charsheet_res_magic");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_POISON],          "system_charsheet_res_poison");
-			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_DAMAGE],                 "system_charsheet_damage");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STRENGTH],			"system_charsheet_strength");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MIND],				"system_charsheet_intel");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEXTERITY],			"system_charsheet_Dex");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CONSTITUTION],		"system_charsheet_consti");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STEALTH],			"system_charsheet_stealth");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MECANISM],			"system_charsheet_mecanism");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_INTUITION],			"system_charsheet_intuition");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_ETHERAL_LINK],		"system_charsheet_etheral_link");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_OBJECT_KNOWLEDGE],	"system_charsheet_objknoledge");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CASTING],			"system_charsheet_casting");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_PROJECTILE],		"system_charsheet_projectile");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CLOSE_COMBAT],		"system_charsheet_closecombat");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEFENSE],			"system_charsheet_defense");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_QUICK_GENERATION],"system_charsheet_quickgenerate");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_DONE],			"system_charsheet_done");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_SKIN],			"system_charsheet_skin");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_ATTRIBUTES],			"system_charsheet_atributes");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_SKILLS],				"system_charsheet_skills");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_STATUS],				"system_charsheet_status");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_LEVEL],				"system_charsheet_level");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_XP],					"system_charsheet_xpoints");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_HP],					"system_charsheet_hp");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_MANA],				"system_charsheet_mana");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_AC],					"system_charsheet_AC");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_MAGIC],		"system_charsheet_res_magic");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_POISON],		"system_charsheet_res_poison");
+			ARX_Allocate_Text(ARXmenu.mda->flyover[WND_DAMAGE],				"system_charsheet_damage");
 		}
 	}
 	
@@ -1243,11 +1241,13 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 	}
 
 	std::string tcIndent;
-	char tcIsClass[256];
-	strcpy(tcIndent,COMBINE->filename);
-	strcpy(tcIsClass,GetName(tcIndent).c_str());
-	sprintf(tcIndent,"%s_%04ld",tcIsClass,COMBINE->ident);
-	MakeUpcase(tcIndent);				
+	std::string tcIsClass;
+	tcIndent = COMBINE->filename;
+	tcIsClass = GetName(tcIndent);
+	std::stringstream ss;
+	ss << tcIsClass << '_' << COMBINE->ident;
+	tcIndent = ss.str();
+	MakeUpcase(tcIndent);
 
 		char tTxtCombineDest[256];
 
@@ -1309,7 +1309,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 									memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 									tTxtCombineDest[pEndString-pStartString]=0;
 
-									if(!strcasecmp(tTxtCombineDest,tcIsClass))
+									if(!strcasecmp(tTxtCombineDest,tcIsClass.c_str()))
 									{
 										//same class
 										bCanCombine=true;
@@ -1334,7 +1334,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 										memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 										tTxtCombineDest[pEndString-pStartString]=0;
 
-										if(!strcasecmp(tTxtCombineDest,tcIndent))
+										if(!strcasecmp(tTxtCombineDest,tcIndent.c_str()))
 										{
 											//same class
 											bCanCombine=true;
@@ -1457,7 +1457,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 								memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 								tTxtCombineDest[pEndString-pStartString]=0;
 
-								if(!strcasecmp(tTxtCombineDest,tcIsClass))
+								if(!strcasecmp(tTxtCombineDest,tcIsClass.c_str()))
 								{
 									//same class
 									bCanCombine=true;
@@ -1482,7 +1482,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 									memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 									tTxtCombineDest[pEndString-pStartString]=0;
 
-									if(!strcasecmp(tTxtCombineDest,tcIndent))
+									if(!strcasecmp(tTxtCombineDest,tcIndent.c_str()))
 									{
 										//same class
 										bCanCombine=true;
@@ -1620,6 +1620,65 @@ bool DANAE::ManageEditorControls()
 	{
 		bool bOk = true;
 
+		if (TRUE_PLAYER_MOUSELOOK_ON)
+		{
+			if (!(player.Interface & INTER_COMBATMODE) && (player.doingmagic!=2) && !InInventoryPos(&DANAEMouse))
+			{
+				bOk = false;
+
+				float t=(float)ARXTime;
+
+				if (t-SLID_START>10000.f)
+				{
+					SLID_VALUE+=(float)Original_framedelay*DIV10;
+
+					if (SLID_VALUE>100.f) SLID_VALUE=100.f;
+
+					F2L(SLID_VALUE,&lSLID_VALUE);
+				}
+				else
+				{
+					bOk = true;
+ 
+				}
+				
+			}
+		}
+
+		if (bOk)
+		{
+			SLID_VALUE-=(float)Original_framedelay*DIV10;
+
+			if (SLID_VALUE<0.f) SLID_VALUE=0.f;		
+
+			F2L(SLID_VALUE,&lSLID_VALUE);
+		}
+	}
+
+	// on ferme
+	if ((player.Interface & INTER_COMBATMODE) || (player.doingmagic>=2))
+	{
+		INTERACTIVE_OBJ * io = NULL;
+		
+		if (SecondaryInventory!=NULL)
+		{
+			io = (INTERACTIVE_OBJ *)SecondaryInventory->io;
+		}
+		else if (player.Interface & INTER_STEAL)
+		{
+			io = ioSteal;
+		}
+
+		if (io!=NULL)
+		{
+			InventoryDir=-1;
+			SendIOScriptEvent(io,SM_INVENTORY2_CLOSE,"");
+			TSecondaryInventory=SecondaryInventory;
+			SecondaryInventory=NULL;
+			
+		}
+	}
+
 	
 	if (SMOOTHSLID==1)
 	{
@@ -1742,26 +1801,26 @@ bool DANAE::ManageEditorControls()
 								if (temp->ioflags & IO_GOLD)
 								{
 									_TCHAR UText[256];
-									_stprintf(UText, "%ld %s", temp->_itemdata->price, WILLADDSPEECH);
-									_tcscpy(WILLADDSPEECH, UText);
+									_stprintf(UText, "%ld %s", temp->_itemdata->price, WILLADDSPEECH.c_str());
+									WILLADDSPEECH = UText;
 								}
 
 								if ((temp->poisonous>0) && (temp->poisonous_count!=0))
 								{
-									_TCHAR Text[256];
+									std::string Text;
 									_TCHAR UText[256];
 									MakeLocalised("[Description_Poisoned]",Text,256);
-									_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH, Text, (int)temp->poisonous);
-									_tcscpy(WILLADDSPEECH, UText);
+									_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH.c_str(), Text.c_str(), (int)temp->poisonous);
+									WILLADDSPEECH = UText;
 								}
 
 								if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
 								{
-									_TCHAR Text[256];
+									std::string Text;
 									_TCHAR UText[256];
 									MakeLocalised("[Description_Durability]",Text,256);
-									_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH, Text, temp->durability,temp->max_durability);
-									_tcscpy(WILLADDSPEECH, UText);
+									_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH.c_str(), Text.c_str(), temp->durability,temp->max_durability);
+									WILLADDSPEECH = UText;
 								}
 
 
@@ -2007,7 +2066,7 @@ bool DANAE::ManageEditorControls()
 							if (INTERNATIONAL_MODE)
 							{
 								bForceEscapeFreeLook=true;
-								lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
+							    lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
 							}
 						}
 
@@ -2415,11 +2474,13 @@ bool DANAE::ManageEditorControls()
 			{
 				if (io!=COMBINE)
 				{
-					char temp[256];
+					std::string temp;
 					char temp2[256];
-					strcpy(temp,COMBINE->filename);
-					strcpy(temp2,GetName(temp));
-					sprintf(temp,"%s_%04ld",temp2,COMBINE->ident);
+					temp = COMBINE->filename;
+					strcpy(temp2,GetName(temp).c_str());
+					std::stringstream ss;
+					ss << temp2 << '_' << COMBINE->ident;
+					temp = ss.str();
 					MakeUpcase(temp);				
 					EVENT_SENDER=COMBINE;
 
@@ -2659,7 +2720,7 @@ bool DANAE::ManageEditorControls()
 				if (HERMESFileSelectorOpen(loadfrom,"Load Danae Level","Danae Level File (*.DLF)\0*.DLF\0\0",this->m_hWnd))
 				{
 					char pp[256];
-					strcpy(pp,GetName(loadfrom));
+					strcpy(pp,GetName(loadfrom).c_str());
 					LoadLevelScreen(GDevice,GetLevelNumByName(pp));
 					
 					Pause(true);
@@ -3895,7 +3956,7 @@ void DANAE::ManagePlayerControls()
 								if (SecondaryInventory)
 								{
 									bForceEscapeFreeLook=true;
-									lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
+								    lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
 								}
 							}
 						}							
@@ -3920,7 +3981,7 @@ void DANAE::ManagePlayerControls()
 						if (SecondaryInventory)
 						{
 							bForceEscapeFreeLook=true;
-							lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
+						    lOldTruePlayerMouseLook=!TRUE_PLAYER_MOUSELOOK_ON;
 						}
 					}
 				}
@@ -4485,7 +4546,7 @@ void DANAE::ManagePlayerControls()
 			  Book_Mode = 3;
 			  ARX_INTERFACE_BookOpenClose(0);
 		  }
-					  else if ((player.Interface & INTER_MAP) && (Book_Mode != 3))
+		  			  else if ((player.Interface & INTER_MAP) && (Book_Mode != 3))
 			  {
 				  Book_Mode = 3;
 			  }
@@ -4544,7 +4605,7 @@ void DANAE::ManagePlayerControls()
 			else
 			{
 				  if(	(inter.iobj[0]->animlayer[1].cur_anim==NULL)||
-						(inter.iobj[0]->animlayer[1].cur_anim == inter.iobj[0]->anims[ANIM_WAIT]))
+				        (inter.iobj[0]->animlayer[1].cur_anim == inter.iobj[0]->anims[ANIM_WAIT]))
 				{
 					  lChangeWeapon--;
 					  
@@ -4589,7 +4650,7 @@ void DANAE::ManagePlayerControls()
 	  if(EERIEMouseButton&1) bGToggleCombatModeWithKey=false;
 
 	if( (INTERNATIONAL_MODE)&&
-			(bForceEscapeFreeLook))
+	        (bForceEscapeFreeLook))
 	{
 		TRUE_PLAYER_MOUSELOOK_ON&=~1;
 
@@ -4690,7 +4751,7 @@ void DANAE::ManagePlayerControls()
 	  if (	(EERIEMouseButton & 1)
 		  &&	(EDITION==EDITION_IO)
 		  &&	(!(player.Interface & INTER_COMBATMODE))
-			&&	(!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)) 
+	        &&	(!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)) 
 		  &&	(!EDITMODE)	
 		  &&	(!SpecialCursor)
 		  &&  (PLAYER_MOUSELOOK_ON)
@@ -5173,7 +5234,7 @@ void DANAE::ManageKeyMouse()
 					if(	(EERIEMouseButton & 2) &&
 						(!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK & (Book_Mode !=2))) &&
 						(!(TRUE_PLAYER_MOUSELOOK_ON & 1) || SPECIAL_DRAW_WEAPON)&&
-							(pMenuConfig) && (pMenuConfig->bLinkMouseLookToUse)) 
+					        (pMenuConfig) && (pMenuConfig->bLinkMouseLookToUse)) 
 					{
 						if (SPECIAL_DRAW_WEAPON)
 							SPECIAL_DRAW_WEAPON=0;
@@ -5451,7 +5512,7 @@ void DANAE::ManageKeyMouse()
 					if (bRenderInCursorMode)
 					{
 						if(	(DANAEMouse.x==(DANAESIZX-1))&&
-								(pGetInfoDirectInput->iMouseRX > 8))
+						        (pGetInfoDirectInput->iMouseRX > 8))
 						{
 							EERIEMouseYdep=0;
 							EERIEMouseXdep=pGetInfoDirectInput->iMouseRX;
@@ -5460,7 +5521,7 @@ void DANAE::ManageKeyMouse()
 						else
 						{
 							if( (!DANAEMouse.x)&&
-									(pGetInfoDirectInput->iMouseRX < -8))
+							        (pGetInfoDirectInput->iMouseRX < -8))
 							{
 								EERIEMouseYdep=0;
 								EERIEMouseXdep=pGetInfoDirectInput->iMouseRX;
@@ -5469,7 +5530,7 @@ void DANAE::ManageKeyMouse()
 						}
 
 						if(	(DANAEMouse.y==(DANAESIZY-1))&&
-								(pGetInfoDirectInput->iMouseRY > 8))
+						        (pGetInfoDirectInput->iMouseRY > 8))
 						{
 							EERIEMouseYdep=pGetInfoDirectInput->iMouseRY;
 							EERIEMouseXdep=0;
@@ -5478,7 +5539,7 @@ void DANAE::ManageKeyMouse()
 						else
 						{
 							if(	(!DANAEMouse.y)&&
-									(pGetInfoDirectInput->iMouseRY < -8))
+							        (pGetInfoDirectInput->iMouseRY < -8))
 							{
 								EERIEMouseYdep=pGetInfoDirectInput->iMouseRY;
 								EERIEMouseXdep=0;
@@ -5677,26 +5738,26 @@ void DANAE::ManageKeyMouse()
 							if (temp->ioflags & IO_GOLD)
 							{
 								_TCHAR UText[256];
-								_stprintf(UText, _T("%ld %s"), temp->_itemdata->price, WILLADDSPEECH);
-								_tcscpy(WILLADDSPEECH, UText);
+								_stprintf(UText, _T("%ld %s"), temp->_itemdata->price, WILLADDSPEECH.c_str());
+								WILLADDSPEECH = UText;
 							}
 
 							if ((temp->poisonous>0) && (temp->poisonous_count!=0))
 							{
-								_TCHAR Text[256];
+								std::string Text;
 								_TCHAR UText[256];
 								MakeLocalised("[Description_Poisoned]",Text,256);
-								_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH, Text, (int)temp->poisonous);
-								_tcscpy(WILLADDSPEECH, UText);
+								_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH.c_str(), Text.c_str(), (int)temp->poisonous);
+								WILLADDSPEECH = UText;
 							}
 
 							if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
 							{
-								_TCHAR Text[256];
+								std::string Text;
 								_TCHAR UText[256];
 								MakeLocalised("[Description_Durability]",Text,256);
-								_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH, Text, temp->durability,temp->max_durability);
-								_tcscpy(WILLADDSPEECH, UText);
+								_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH.c_str(), Text.c_str(), temp->durability,temp->max_durability);
+								WILLADDSPEECH = UText;
 							}
 
 					
@@ -5709,7 +5770,7 @@ void DANAE::ManageKeyMouse()
 
 								if( (temp->obj)&&
 									(temp->obj->pbox)&&
-									(temp->obj->pbox->active == 1))
+							        (temp->obj->pbox->active == 1))
 							{
 									bAddText=false;
 								}
@@ -5726,16 +5787,16 @@ void DANAE::ManageKeyMouse()
 									RECT rDraw	=	{	ARX_CLEAN_WARN_CAST_LONG( 120 * Xratio ), 
 														ARX_CLEAN_WARN_CAST_LONG( 14 * Yratio ),
 														ARX_CLEAN_WARN_CAST_LONG( ( 120 + 500 ) * Xratio ),
-													ARX_CLEAN_WARN_CAST_LONG((14 + 200) * Yratio)
-											 };
+								                    ARX_CLEAN_WARN_CAST_LONG((14 + 200) * Yratio)
+								             };
 
 									pTextManage->Clear();
 								pTextManage->AddText(InBookFont,
 																		WILLADDSPEECH,
-																		rDraw,
+																	    rDraw,
 																		RGB(232,204,143),
 																		0x00FF00FF,
-																		2000+_tcslen(WILLADDSPEECH)*60);
+																		2000+WILLADDSPEECH.length()*60);
 								}
 
 								WILLADDSPEECH[0]=0;
@@ -5746,7 +5807,7 @@ void DANAE::ManageKeyMouse()
 					{
 						if(	(INTERNATIONAL_MODE)&&
 							(pMenuConfig)&&
-							(pMenuConfig->bAutoDescription))
+					        (pMenuConfig->bAutoDescription))
 					{
 
 								INTERACTIVE_OBJ * temp;
@@ -5766,26 +5827,26 @@ void DANAE::ManageKeyMouse()
 									if (temp->ioflags & IO_GOLD)
 									{
 										_TCHAR UText[256];
-										_stprintf(UText, _T("%ld %s"), temp->_itemdata->price, WILLADDSPEECH);
-										_tcscpy(WILLADDSPEECH, UText);
+										_stprintf(UText, _T("%ld %s"), temp->_itemdata->price, WILLADDSPEECH.c_str());
+										WILLADDSPEECH = UText;
 									}
 
 									if ((temp->poisonous>0) && (temp->poisonous_count!=0))
 									{
-										_TCHAR Text[256];
+										std::string Text;
 										_TCHAR UText[256];
 										MakeLocalised("[Description_Poisoned]",Text,256);
-										_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH, Text, (int)temp->poisonous);
-										_tcscpy(WILLADDSPEECH, UText);
+										_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH.c_str(), Text.c_str(), (int)temp->poisonous);
+										WILLADDSPEECH = UText;
 									}
 
 									if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
 									{
-										_TCHAR Text[256];
+										std::string Text;
 										_TCHAR UText[256];
 										MakeLocalised("[Description_Durability]",Text,256);
-										_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH, Text, temp->durability,temp->max_durability);
-										_tcscpy(WILLADDSPEECH, UText);
+										_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH.c_str(), Text.c_str(), temp->durability,temp->max_durability);
+										WILLADDSPEECH = UText;
 									}
 
 						
@@ -5795,7 +5856,7 @@ void DANAE::ManageKeyMouse()
 
 									if( (temp->obj)&&
 										(temp->obj->pbox)&&
-									(temp->obj->pbox->active == 1))
+							        (temp->obj->pbox->active == 1))
 							{
 										bAddText=false;
 									}
@@ -5813,13 +5874,13 @@ void DANAE::ManageKeyMouse()
 										RECT rDraw = {	ARX_CLEAN_WARN_CAST_LONG( 120 * Xratio ), 
 														ARX_CLEAN_WARN_CAST_LONG( 14 * Yratio ), 
 														ARX_CLEAN_WARN_CAST_LONG( ( 120 + 500 ) * Xratio ),
-												ARX_CLEAN_WARN_CAST_LONG((14 + 200) * Yratio)
-											 };
+								                ARX_CLEAN_WARN_CAST_LONG((14 + 200) * Yratio)
+								             };
 
 										pTextManage->Clear();
 								pTextManage->AddText(InBookFont,
 																		WILLADDSPEECH,
-																		rDraw,
+																	    rDraw,
 																		RGB(232,204,143),
 																		0x00FF00FF );
 									}
@@ -6225,7 +6286,7 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 						EERIEDrawBitmap(GDevice,
 							px,
 							py,
-										INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
+						                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
 							0.001f,
 							tc,color);
 
@@ -6237,7 +6298,7 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 							EERIEDrawBitmap(GDevice,
 								px,
 								py,
-											INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
+							                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
 								0.001f,
 								tc,
 								D3DCOLORWHITE);
@@ -6256,7 +6317,7 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 								EERIEDrawBitmap(GDevice,
 									px,
 									py,
-												INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
+								                INTERFACE_RATIO_DWORD(tc->m_dwWidth), INTERFACE_RATIO_DWORD(tc->m_dwHeight),
 									0.001f,
 									tc,
 									(dwColor<<16)|(dwColor<<8)|dwColor);
@@ -6423,7 +6484,7 @@ void ARX_INTERFACE_Draw_Stealth_Gauge()
 
 			GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE,false);
 			EERIEDrawBitmap(GDevice,
-							px, py, INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwWidth), INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwHeight), 0.01f,
+			                px, py, INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwWidth), INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwHeight), 0.01f,
 				stealth_gauge_tc,col);
 
 			danaeApp.EnableZBuffer();
@@ -6530,7 +6591,7 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 					D3DCOLOR col=EERIERGB(1.f-ratio,ratio,0);
 					EERIEDrawBitmap2(GDevice,
 						px,py,
-									 INTERFACE_RATIO_DWORD(iconequip[i]->m_dwWidth), INTERFACE_RATIO_DWORD(iconequip[i]->m_dwHeight),
+					                 INTERFACE_RATIO_DWORD(iconequip[i]->m_dwWidth), INTERFACE_RATIO_DWORD(iconequip[i]->m_dwHeight),
 						0.001f,
 						iconequip[i],col);		
 				}
@@ -7098,12 +7159,11 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							
 							SpecialCursor=CURSOR_INTERACTION_ON;
 							FLYING_OVER = i;
-							DrawBookTextCenter( 208, 90, spellicons[i].name.c_str(),0,0x00FF00FF,InBookFont);
+							DrawBookTextCenter( 208, 90, spellicons[i].name,0,0x00FF00FF,InBookFont);
 							
 							for (long li=0;li<MAX_SPEECH;li++)
 							{
-								if (speech[li].timecreation>0)
-									FLYING_OVER=0;
+								if (speech[li].timecreation>0) FLYING_OVER=0;
 							}
 							
 							if(	(OLD_FLYING_OVER != FLYING_OVER)||
@@ -7141,7 +7201,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 									pos.y = (306);
 									DrawBookInterfaceItem(GDevice, 
 										necklace.pTexTab[spellicons[i].symbols[j]]
-														  , pos.x, pos.y);
+									                      , pos.x, pos.y);
 									
 								}
 							}
@@ -7289,6 +7349,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 	
 	if (ARXmenu.currentmode != AMCM_NEWQUEST)
 	{
+ 
  
 		GDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_ALWAYS);
 
@@ -7814,10 +7875,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ARX_PLAYER_ComputePlayerFullStats();
 
 		danaeApp.DANAEEndRender();
-		_stprintf(tex, _T("%s %3d"), ITC.lpszULevel, player.level);
+		_stprintf(tex, _T("%s %3d"), ITC.lpszULevel.c_str(), player.level);
 		DrawBookTextCenter( 398, 74, tex,Color,0x00FF00FF,InBookFont);
 		
-		_stprintf(tex, _T("%s %8ld"), ITC.lpszUXp, player.xp);
+		_stprintf(tex, _T("%s %8ld"), ITC.lpszUXp.c_str(), player.xp);
 		DrawBookTextCenter( 510, 74, tex, Color,0x00FF00FF,InBookFont);
 		danaeApp.DANAEStartRender();
 
@@ -8025,7 +8086,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		}
 		
 		//------------------------------ SEB 04/12/2001
-		if (ARXmenu.mda && ARXmenu.mda->flyover[FLYING_OVER]) //=ARXmenu.mda->flyover[FLYING_OVER];
+		if (ARXmenu.mda && !ARXmenu.mda->flyover[FLYING_OVER].empty()) //=ARXmenu.mda->flyover[FLYING_OVER];
 		{
 			if( (FLYING_OVER!=OLD_FLYING_OVER)||
 				(INTERNATIONAL_MODE) )
@@ -8043,7 +8104,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				if (FLYING_OVER == WND_XP)
 				{
 					_TCHAR tex[512];
-					_stprintf(tex, _T("%s %8ld"), ARXmenu.mda->flyover[WND_XP], GetXPforLevel(player.level+1)-player.xp);
+					_stprintf(tex, _T("%s %8ld"), ARXmenu.mda->flyover[WND_XP].c_str(), GetXPforLevel(player.level+1)-player.xp);
 					UNICODE_ARXDrawTextCenteredScroll(	(DANAESIZX*0.5f),
 						4,
 						(DANAECENTERX)*0.82f,
@@ -8068,7 +8129,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						1000,
 						0.01f,
 						3,
-						INTERNATIONAL_MODE?0:max(3000, int(70*_tcslen(ARXmenu.mda->flyover[FLYING_OVER]))));
+						INTERNATIONAL_MODE?0:max(3000, int(70*ARXmenu.mda->flyover[FLYING_OVER].length())));
 				}
 			}
 		}
@@ -8407,9 +8468,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 			
 			for (long i=0; i<nb_PlayerQuest; i++)
 			{
-				if (PlayerQuest[i].localised != NULL)
+				if (!PlayerQuest[i].localised.empty())
 				{
-					lLenght += _tcslen(PlayerQuest[i].localised);
+					lLenght += PlayerQuest[i].localised.length();
 				}
 			}
 			
@@ -8418,9 +8479,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 			
 			for (int i=0; i<nb_PlayerQuest; i++)
 			{
-				if (PlayerQuest[i].localised != NULL)
+				if (!PlayerQuest[i].localised.empty())
 				{
-					_tcscat(lpszQuests, PlayerQuest[i].localised);
+					_tcscat(lpszQuests, PlayerQuest[i].localised.c_str());
 					_tcscat(lpszQuests, _T("\n\n"));
 					lLenght+=2;
 				}
@@ -8675,18 +8736,18 @@ void ARX_INTERFACE_ManageOpenedBook()
 		EERIE_VERTEX *	vertexlist=(EERIE_VERTEX *)malloc(sizeof(EERIE_VERTEX)*inter.iobj[0]->obj->nbvertex);
 		memcpy(vertexlist,inter.iobj[0]->obj->vertexlist3,sizeof(EERIE_VERTEX)*inter.iobj[0]->obj->nbvertex);
 
-		if (player.useanim.cur_anim != 0) 
+		if (player.useanim.cur_anim != NULL) 
 		{
 
 			ARX_CHECK_ULONG(Original_framedelay);
 			EERIEDrawAnimQuat(GDevice,inter.iobj[0]->obj, &player.useanim,&ePlayerAngle,&pos,
 				ARX_CLEAN_WARN_CAST_ULONG(Original_framedelay),
-				0,D3DCOLORWHITE,0);
+				NULL,D3DCOLORWHITE, 0);
 
 		}
 		else
 		{
-			DrawEERIEInter(GDevice,inter.iobj[0]->obj,&ePlayerAngle,&pos,0);
+			DrawEERIEInter(GDevice,inter.iobj[0]->obj,&ePlayerAngle,&pos,NULL);
 		}
 
 		INVISIBILITY_OVERRIDE=0;
@@ -9100,7 +9161,7 @@ void ARX_INTERFACE_DrawCurrentTorch()
 
 	EERIEDrawBitmap(GDevice,
 		px, py,
-					INTERFACE_RATIO_DWORD(CURRENT_TORCH->inv->m_dwWidth), INTERFACE_RATIO_DWORD(CURRENT_TORCH->inv->m_dwHeight),
+	                INTERFACE_RATIO_DWORD(CURRENT_TORCH->inv->m_dwWidth), INTERFACE_RATIO_DWORD(CURRENT_TORCH->inv->m_dwHeight),
 		0.001f,
 		CURRENT_TORCH->inv,D3DCOLORWHITE);
 	danaeApp.EnableZBuffer();
@@ -9351,7 +9412,7 @@ void DANAE::DrawAllInterface()
 				{
 					ARX_INTERFACE_DrawInventory(sActiveInventory);
 
-
+assert(ITC.hero_inventory != NULL);
 					float fCenterX	= DANAECENTERX + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.hero_inventory->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
 					float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
 					ARX_CHECK_INT(fCenterX);
@@ -9522,7 +9583,7 @@ void DANAE::DrawAllInterface()
 	
 	if ((FlyingOverIO) && !(PLAYER_MOUSELOOK_ON) && !(player.Interface & INTER_COMBATMODE)
 		&& (!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE))
-				|| 
+		        || 
 		((FlyingOverIO) && (pMenuConfig->bAutoReadyWeapon == false) && !(player.Interface & INTER_COMBATMODE)
 		&& (!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE)))
 		)
@@ -10225,18 +10286,18 @@ long Manage3DCursor(long flags)
 		mvecty.z = 0; 
 
 					orgn.x=player.pos.x-(float)EEsin(DEG2RAD(player.angle.b))*(float)EEcos(DEG2RAD(player.angle.a))*50.f
-				 + mvectx.x; 
+		         + mvectx.x; 
 					orgn.y=player.pos.y+(float)EEsin(DEG2RAD(player.angle.a))*50.f
 							+mvectx.y+mvecty.y;
 					orgn.z=player.pos.z+(float)EEcos(DEG2RAD(player.angle.b))*(float)EEcos(DEG2RAD(player.angle.a))*50.f
-				 + mvectx.z; 
+		         + mvectx.z; 
 	
 					dest.x=player.pos.x-(float)EEsin(DEG2RAD(player.angle.b))*(float)EEcos(DEG2RAD(player.angle.a))*10000.f
-				 + mvectx.x; 
+		         + mvectx.x; 
 					dest.y=player.pos.y+(float)EEsin(DEG2RAD(player.angle.a))*10000.f
 							+mvectx.y+mvecty.y*5.f;
 					dest.z=player.pos.z+(float)EEcos(DEG2RAD(player.angle.b))*(float)EEcos(DEG2RAD(player.angle.a))*10000.f
-				 + mvectx.z; 
+		         + mvectx.z; 
 					pos.x=orgn.x;
 					pos.y=orgn.y;
 					pos.z=orgn.z;
@@ -10262,7 +10323,7 @@ long Manage3DCursor(long flags)
 					{
 						maxdist = max(	maxdist,
 											TRUEDistance2D(	objcenter.x, objcenter.z,
-										   io->obj->vertexlist[i].v.x, io->obj->vertexlist[i].v.z) - 4.f);
+			                               io->obj->vertexlist[i].v.x, io->obj->vertexlist[i].v.z) - 4.f);
 					}
 
 					if (io->obj->pbox)
@@ -10273,7 +10334,7 @@ long Manage3DCursor(long flags)
 								TRUEDistance2D(	io->obj->pbox->vert[0].initpos.x,
 												io->obj->pbox->vert[0].initpos.z,
 												io->obj->pbox->vert[i].initpos.x,
-											   io->obj->pbox->vert[i].initpos.z) + 14.f);
+				                               io->obj->pbox->vert[i].initpos.z) + 14.f);
 						}
 					}
 
@@ -10553,7 +10614,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 		}
 		
 		if ((SpecialCursor) || !PLAYER_MOUSELOOK_ON || (DRAGINTER!=NULL)
-				|| ((FlyingOverIO) && PLAYER_MOUSELOOK_ON && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK) 
+		        || ((FlyingOverIO) && PLAYER_MOUSELOOK_ON && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK) 
 			&& (eMouseState != MOUSE_IN_NOTE)
 			&& (FlyingOverIO->ioflags & IO_ITEM)
 			&& (FlyingOverIO->GameFlags & GFLAG_INTERACTIVITY)
@@ -10593,7 +10654,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 			float drop_miny=(float)(DANAECENTERY)-DANAECENTERY*(ag*DIV70);
 
 			if ((DANAEMouse.y>drop_miny) && DRAGINTER && !InInventoryPos(&DANAEMouse)
-					&& !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK))
+			        && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK))
 			{
 				if (Manage3DCursor(1)==0)
 					CANNOT_PUT_IT_HERE = -1; 
@@ -10937,7 +10998,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 						if (surf) 
 						{
 							EERIEDrawBitmap(GDevice,(float)POSX,(float)POSY,
-											INTERFACE_RATIO_DWORD(surf->m_dwWidth), INTERFACE_RATIO_DWORD(surf->m_dwHeight), 0.f,
+							                INTERFACE_RATIO_DWORD(surf->m_dwWidth), INTERFACE_RATIO_DWORD(surf->m_dwHeight), 0.f,
 								surf,D3DCOLORWHITE);
 						}
 					}
