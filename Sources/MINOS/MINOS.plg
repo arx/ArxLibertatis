@@ -1,0 +1,27 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: MINOS - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP167.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /Fp"Debug/MINOS.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\_danae\MINOS\Minos_PathFinder.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP167.tmp" 
+Creating command line "link.exe -lib /nologo /out:"..\lib\MINOS_Debug.lib"  .\Debug\Minos_PathFinder.obj "
+<h3>Output Window</h3>
+Compiling...
+Minos_PathFinder.cpp
+Creating library...
+
+
+
+<h3>Results</h3>
+MINOS_Debug.lib - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

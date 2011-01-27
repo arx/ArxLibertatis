@@ -1,0 +1,106 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: DANAE - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\XWIN\TEMP\RSPB345.TMP" with contents
+[
+/nologo /Zp1 /MTd /W3 /Gm /GX /ZI /Od /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_UNICODE" /D "NODEFAULTLIB:" /FR"Debug/" /Fp"Debug/DANAE.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\Prog\Gaia\DANAE\ARX_ChangeLevel.cpp"
+]
+Creating command line "xicl6.exe @C:\XWIN\TEMP\RSPB345.TMP" 
+Creating temporary file "C:\XWIN\TEMP\RSPB346.TMP" with contents
+[
+implode.lib Mercury_Debug.lib Ceditor_Debug.lib Minos_Debug.lib HERMES_debug.LIB EERIE_debug.LIB eaxguid.lib dinput.lib zlib.lib jpeglib.lib wsock32.lib dxguid.lib dsound.lib winmm.lib comctl32.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib ddraw.lib Advapi32.lib shell32.lib ole32.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/DANAE.pdb" /map:"Debug/DANAE.map" /debug /machine:I386 /out:"Debug/DANAE.exe" /pdbtype:sept 
+.\Debug\ARX_C_cinematique.obj
+.\Debug\ARX_C_fx.obj
+.\Debug\ARX_C_keyframer.obj
+.\Debug\ARX_C_loadsave.obj
+.\Debug\ARX_C_mapp.obj
+.\Debug\ARX_C_sound.obj
+.\Debug\ARX_carte.obj
+.\Debug\ARX_Cedric.obj
+.\Debug\ARX_ChangeLevel.obj
+.\Debug\ARX_Collisions.obj
+.\Debug\ARX_Damages.obj
+.\Debug\ARX_Draw.obj
+.\Debug\ARX_Equipment.obj
+.\Debug\ARX_Fogs.obj
+.\Debug\ARX_FTL.obj
+.\Debug\ARX_GlobalMods.obj
+.\Debug\ARX_HWTransform.obj
+.\Debug\ARX_Input.obj
+.\Debug\ARX_Interactive.obj
+.\Debug\ARX_Interface.obj
+.\Debug\ARX_Intro.obj
+.\Debug\ARX_Inventory.obj
+.\Debug\ARX_Levels.obj
+.\Debug\ARX_Menu.obj
+.\Debug\ARX_Menu2.obj
+.\Debug\ARX_MenuPublic.obj
+.\Debug\ARX_Minimap.obj
+.\Debug\ARX_Missile.obj
+.\Debug\ARX_Network.obj
+.\Debug\ARX_NPC.obj
+.\Debug\ARX_Particles.obj
+.\Debug\ARX_Paths.obj
+.\Debug\ARX_Physics.obj
+.\Debug\ARX_Player.obj
+.\Debug\ARX_Scene.obj
+.\Debug\ARX_Script.obj
+.\Debug\ARX_Snapshot.obj
+.\Debug\ARX_Sound.obj
+.\Debug\ARX_Special.obj
+.\Debug\ARX_Speech.obj
+.\Debug\ARX_Text.obj
+.\Debug\ARX_Time.obj
+.\Debug\ARX_ViewImage.obj
+.\Debug\Danae.obj
+.\Debug\DANAE_Debugger.obj
+.\Debug\DanaeDlg.obj
+.\Debug\DanaeSaveLoad.obj
+.\Debug\ARX_CSpellFx.obj
+.\Debug\ARX_SpellFX_Lvl01.obj
+.\Debug\ARX_SpellFX_Lvl02.obj
+.\Debug\ARX_SpellFX_Lvl03.obj
+.\Debug\ARX_SpellFX_Lvl04.obj
+.\Debug\ARX_SpellFX_Lvl05.obj
+.\Debug\ARX_SpellFX_Lvl06.obj
+.\Debug\ARX_SpellFX_Lvl07.obj
+.\Debug\ARX_SpellFX_Lvl08.obj
+.\Debug\ARX_SpellFX_Lvl09.obj
+.\Debug\ARX_SpellFX_Lvl10.obj
+.\Debug\ARX_Spells.obj
+.\Debug\ARX_CParticle.obj
+.\Debug\ARX_CParticles.obj
+.\Debug\ARX_CParticleSystem.obj
+.\Debug\Arx_Config.obj
+.\Debug\ARX_Loc.obj
+.\Debug\ARX_LocHash.obj
+.\Debug\DANAE.res
+\Prog\Gaia\lib\HERMES_debug.lib
+\Prog\Gaia\lib\MINOS_Debug.lib
+\Prog\Gaia\lib\Ceditor_Debug.lib
+\Prog\Gaia\lib\MERCURY_debug.lib
+\Prog\Gaia\DANAE_Debugger\Debug\ARX_SCRIPT_DEBUGGER.lib
+\Prog\Gaia\lib\EErie_debug.lib
+\Prog\Gaia\lib\Athena.lib
+]
+Creating command line "xilink6.exe @C:\XWIN\TEMP\RSPB346.TMP"
+<h3>Output Window</h3>
+Compiling...
+ARX_ChangeLevel.cpp
+Linking...
+xilink6: executing 'C:\PROGRA~1\MICROS~1\VC98\BIN\link.exe'
+LINK : warning LNK4098: defaultlib "LIBC" conflicts with use of other libs; use /NODEFAULTLIB:library
+
+
+
+<h3>Results</h3>
+DANAE.exe - 0 error(s), 1 warning(s)
+</pre>
+</body>
+</html>

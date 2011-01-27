@@ -1,0 +1,36 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: ARX_SCRIPT_DEBUGGER - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x40c /fo"Debug/SCRIPT_DEBUGGER.res" /d "_DEBUG" "C:\_danae\DANAE_Debugger\SCRIPT_DEBUGGER.rc"" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP15D.tmp" with contents
+[
+/nologo /Zp1 /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ARX_SCRIPT_DEBUGGER_EXPORTS" /D "APIDLL" /FR"Debug/" /Fp"Debug/ARX_SCRIPT_DEBUGGER.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\_danae\DANAE_Debugger\SCRIPT_DEBUGGER_Dialog.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP15D.tmp" 
+Creating temporary file "C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP15E.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib /nologo /dll /incremental:yes /pdb:"Debug/ARX_SCRIPT_DEBUGGER.pdb" /debug /machine:I386 /def:".\SCRIPT_DEBUGGER.def" /out:"../Danae/Debug/ARX_SCRIPT_DEBUGGER.dll" /implib:"Debug/ARX_SCRIPT_DEBUGGER.lib" /pdbtype:sept 
+.\Debug\SCRIPT_DEBUGGER_Dialog.obj
+.\Debug\SCRIPT_DEBUGGER.res
+]
+Creating command line "link.exe @C:\DOCUME~1\ADMINI~1\LOCALS~1\Temp\RSP15E.tmp"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+SCRIPT_DEBUGGER_Dialog.cpp
+Linking...
+   Creating library Debug/ARX_SCRIPT_DEBUGGER.lib and object Debug/ARX_SCRIPT_DEBUGGER.exp
+
+
+
+<h3>Results</h3>
+ARX_SCRIPT_DEBUGGER.dll - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

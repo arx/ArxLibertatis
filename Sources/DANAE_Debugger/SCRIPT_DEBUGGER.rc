@@ -1,0 +1,150 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// French (France) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
+#ifdef _WIN32
+LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_SCRIPT_DEBUGGER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 328
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 280
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_SCRIPT_DEBUGGER DIALOG DISCARDABLE  0, 0, 335, 287
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "ARX - Script Debugger"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "List1",IDC_SCRIPT_DEBUGGER_LIST_GLOBALS,"SysListView32",
+                    LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | 
+                    LVS_SORTASCENDING | LVS_NOLABELWRAP | LVS_AUTOARRANGE | 
+                    LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,5,63,157,98
+    CONTROL         "List1",IDC_SCRIPT_DEBUGGER_LIST_LOCALS,"SysListView32",
+                    LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | 
+                    LVS_SORTASCENDING | LVS_NOLABELWRAP | LVS_AUTOARRANGE | 
+                    LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,171,63,157,98
+    GROUPBOX        "Globals",IDC_STATIC,1,52,166,131
+    GROUPBOX        "Locals",IDC_STATIC,166,52,167,131
+    PUSHBUTTON      "Pause",IDC_SCRIPT_DEBUGGER_BUTTON_PAUSE,283,2,50,14
+    PUSHBUTTON      "Step",IDC_SCRIPT_DEBUGGER_BUTTON_STEP,283,18,50,14
+    LTEXT           "Pos",IDC_STATIC,125,6,14,8
+    EDITTEXT        IDC_SCRIPT_DEBUGGER_EDIT_OBJ_POSX,143,5,25,12,
+                    ES_AUTOHSCROLL
+    EDITTEXT        IDC_SCRIPT_DEBUGGER_EDIT_OBJ_POSY,174,5,25,12,
+                    ES_AUTOHSCROLL
+    EDITTEXT        IDC_SCRIPT_DEBUGGER_EDIT_OBJ_POSZ,205,5,25,12,
+                    ES_AUTOHSCROLL
+    EDITTEXT        IDC_SCRIPT_DEBUGGER_EDIT_OBJ_NAME,44,5,77,12,
+                    ES_AUTOHSCROLL
+    LTEXT           "Value",IDC_STATIC,7,168,21,8
+    EDITTEXT        IDC_SCRIPT_DEBUGGER_EDIT_GLOBAL,31,166,49,12,
+                    ES_AUTOHSCROLL
+    EDITTEXT        IDC_SCRIPT_DEBUGGER_EDIT_TARGET_POSY,174,20,25,12,
+                    ES_AUTOHSCROLL
+    EDITTEXT        IDC_SCRIPT_DEBUGGER_EDIT_TARGET_POSZ,205,20,25,12,
+                    ES_AUTOHSCROLL
+    EDITTEXT        IDC_SCRIPT_DEBUGGER_EDIT_TARGET_NAME,44,20,77,12,
+                    ES_AUTOHSCROLL
+    PUSHBUTTON      "Update",IDC_SCRIPT_DEBUGGER_BUTTON_GLOBAL_UPDATE,83,165,
+                    29,14
+    LTEXT           "Value",IDC_STATIC,182,168,21,8
+    EDITTEXT        IDC_SCRIPT_DEBUGGER_EDIT_LOCAL,206,166,49,12,
+                    ES_AUTOHSCROLL
+    PUSHBUTTON      "Update",IDC_SCRIPT_DEBUGGER_BUTTON_LOCAL_UPDATE,258,165,
+                    29,14
+    EDITTEXT        IDC_SCRIPT_DEBUGGER_EDIT_BEHAVIOR,44,35,288,12,
+                    ES_AUTOHSCROLL
+    LTEXT           "Behavior",IDC_STATIC,9,37,31,8
+    CONTROL         "Events",IDC_SCRIPT_DEBUGGER_CHECK_EVENTS,"Button",
+                    BS_AUTOCHECKBOX | BS_NOTIFY | WS_TABSTOP,234,4,40,10
+    CONTROL         "Timers",IDC_SCRIPT_DEBUGGER_CHECK_TIMERS,"Button",
+                    BS_AUTOCHECKBOX | BS_NOTIFY | WS_TABSTOP,234,14,40,10
+    EDITTEXT        IDC_SCRIPT_DEBUGGER_EDIT_TARGET_POSX,143,20,25,12,
+                    ES_AUTOHSCROLL
+    LTEXT           "Pos",IDC_STATIC,125,22,14,8
+    LTEXT           "Object",IDC_STATIC,9,7,21,8
+    LTEXT           "Target",IDC_STATIC,9,22,21,8
+    EDITTEXT        IDC_SCRIPT_DEBUGGER_EDIT_TIMERS,2,187,331,37,
+                    ES_MULTILINE | ES_AUTOHSCROLL | ES_READONLY | WS_VSCROLL
+    EDITTEXT        IDC_SCRIPT_DEBUGGER_EDIT_EVENTS,2,226,331,60,
+                    ES_MULTILINE | ES_AUTOHSCROLL | ES_READONLY | WS_VSCROLL
+    CONTROL         "Variables",IDC_SCRIPT_DEBUGGER_CHECK_VARIABLES,"Button",
+                    BS_AUTOCHECKBOX | BS_NOTIFY | WS_TABSTOP,234,24,45,10
+END
+
+#endif    // French (France) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
