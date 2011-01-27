@@ -490,9 +490,9 @@ void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, EERIE_3D * a
 			else
 			{
 				Vector_Copy(&vt1, angle);
-				vt1.x *= EEdef_DEGTORAD;
-				vt1.y *= EEdef_DEGTORAD;
-				vt1.z *= EEdef_DEGTORAD;
+				vt1.x = DEGTORAD(vt1.x);
+				vt1.y = DEGTORAD(vt1.y);
+				vt1.z = DEGTORAD(vt1.z);
 				QuatFromAngles(&qt2, &vt1);
 				Quat_Multiply(&obj->bones[i].quatanim, &qt2, &obj->bones[i].quatinit);
 			}
@@ -3153,9 +3153,9 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERIE
 					Vector_Copy(&vt1, &eobj->angle);
 			}
 
-			vt1.x = MAKEANGLE(-vt1.z) * EEdef_DEGTORAD;
-			vt1.y = MAKEANGLE(vt1.y) * EEdef_DEGTORAD;
-			vt1.z = MAKEANGLE(vt1.x) * EEdef_DEGTORAD;
+			vt1.x = DEGTORAD(MAKEANGLE(-vt1.z));
+			vt1.y = DEGTORAD(MAKEANGLE(vt1.y));
+			vt1.z = DEGTORAD(MAKEANGLE(vt1.x));
 			QuatFromAngles(&qInvert, &vt1);
 		}
 	}
@@ -3287,9 +3287,9 @@ void MakeCLight2(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERI
 					Vector_Copy(&vt1, &eobj->angle);
 			}
 
-			vt1.x *= EEdef_DEGTORAD;
-			vt1.y *= EEdef_DEGTORAD;
-			vt1.z *= EEdef_DEGTORAD;
+			vt1.x = DEGTORAD(vt1.x);
+			vt1.y = DEGTORAD(vt1.y);
+			vt1.z = DEGTORAD(vt1.z);
 			QuatFromAngles(&qInvert, &vt1);
 		}
 	}

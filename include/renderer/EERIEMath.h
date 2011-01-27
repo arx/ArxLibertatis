@@ -91,15 +91,12 @@ using std::max;
 //-----------------------------------------------------------------------------
 #define PI					3.14159265358979323846f
 
-#define EEdef_DEGTORAD		0.01745329251994329547f		// Degrees to Radians
-#define EEdef_RADTODEG		57.29577951308232286465f	// Radians to Degrees
-//#define EEdef_HUGE			1.0e+38f					// Huge number for float
 #define EEdef_EPSILON		1.0e-5f						// Tolerance for FLOATs
 #define EEdef_MAXfloat		1.0e+38f
 #define EEdef_MINfloat		-1.0e+38f
 
-#define RAD2DEG(x) ((x)*(float)EEdef_RADTODEG)
-#define DEG2RAD(x) ((x)*(float)EEdef_DEGTORAD)
+#define RAD2DEG(x) ((x)*360.0f/(2*PI))
+#define DEG2RAD(x) ((x)*2*PI/360)
 
 //-----------------------------------------------------------------------------
 // DIVISIONS Optimization List (Mul)
