@@ -81,9 +81,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 
 using std::sprintf;
-using std::fopen;
-using std::fprintf;
-using std::fclose;
 
 long COMPUTE_PORTALS = 1;
 long USE_PORTALS = 3; 
@@ -2958,16 +2955,7 @@ void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret)
 	if ((offset.x == 0) && (offset.y == 0) && (offset.z == 0))
 		return;
 
-	if (!FOR_EXTERNAL_PEOPLE)
-	{
-		FILE * fic;
-
-		if ((fic = fopen("Not_Centered_Objs.txt", "a+")) != NULL)
-		{
-			fprintf(fic, "NOT CENTERED %s\n", ret->file);
-			fclose(fic);
-		}
-	}
+	LogWarning << "NOT CENTERED " << ret->file;
 
 
 	for (long i = 0; i < ret->nbvertex; i++)

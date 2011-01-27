@@ -63,6 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "HERMESPerf.h"
 
+#define NOMINMAX 1
 #include <windows.h>
 
 #include <cstddef>
@@ -125,9 +126,16 @@ void SetExt(char *str, const char * new_ext);
 void AddToName(char *str, const char *cat);
 int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName,const char *filter,HWND hWnd);
 int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName,const char *filter,HWND hWnd);
-long HERMES_CreateFileCheck(const char *name, char *scheck, const long &size, const float &id);
-void ERROR_Log_Init(char * fic);
-bool ERROR_Log(char * fic);
+
+/**
+ * Create a hash of the file. TODO can this be removed?
+ * @param name Name of the file to hash. Must be on the local filesystem and not in a PAK.
+ * @param scheck The destination buffer to which the hash is written.
+ * @param size The size of the destination buffer scheck.
+ * @param id An ID that contributes to the hash.
+ * @return false if the hash was created, true if the file could not be read
+ **/
+bool HERMES_CreateFileCheck(const char *name, char *scheck, size_t size, float id);
 void HERMES_Memory_Security_On(long size);
 void HERMES_Memory_Security_Off();
 long HERMES_Memory_Emergency_Out(long size = 0, const char * info=NULL);

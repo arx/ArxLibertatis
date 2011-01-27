@@ -933,48 +933,18 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, char * dir)
 //*************************************************************************************
 //*************************************************************************************
 
-const char LOG_DIR_CREATION[] = "Dir_Creation.log";
-
-void LogDirCreation(char * dir)
-{
-	FILE * fic;
-	HERMES_DATE_TIME hdt;
-
-	if (DirectoryExist(dir))
-	{
-
-		if ((fic = fopen(LOG_DIR_CREATION, "a+")) != NULL)
-		{
-			char name[256];
-			unsigned num = 255;
-			GetUserName(name, &num);
-			GetDate(&hdt);
-			fprintf(fic, "%02ld/%02ld/%4ld %2ldh%02ld %s  %s\n", hdt.days, hdt.months, hdt.years, hdt.hours, hdt.mins, dir, name);
-			fclose(fic);
-		}
+void LogDirCreation(char * dir) {
+	if(DirectoryExist(dir)) {
+		LogDebug << "LogDirCreation: " << dir;
 	}
 }
 
 //*************************************************************************************
 //*************************************************************************************
 
-void LogDirDestruction(char * dir)
-{
-	FILE * fic;
-	HERMES_DATE_TIME hdt;
-
-	if (DirectoryExist(dir))
-	{
-
-		if ((fic = fopen(LOG_DIR_CREATION, "a+")) != NULL)
-		{
-			char name[256];
-			unsigned num = 255;
-			GetUserName(name, &num);
-			GetDate(&hdt);
-			fprintf(fic, "%02ld/%02ld/%4ld %2ldh%02ld DESTROYED %s  %s\n", hdt.days, hdt.months, hdt.years, hdt.hours, hdt.mins, dir, name);
-			fclose(fic);
-		}
+void LogDirDestruction(char * dir) {
+	if(DirectoryExist(dir)) {
+		LogDebug << "LogDirDestruction: " << dir;
 	}
 }
 

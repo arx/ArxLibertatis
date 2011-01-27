@@ -367,10 +367,10 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 			ofy = mini_offset_y[CURRENTLEVEL];
 			ofy2 = minimap[SHOWLEVEL].yratio;
 		
-			px = startx + ((player.pos.x + ofx - ofx2) * ( 1.0f / 100 ) * casex
-			               + mini_offset_x[CURRENTLEVEL] * ratiooo * mod_x) / mod_x ; //( 1.0f / 100 )*2;
-			py = starty + ((mapmaxy[SHOWLEVEL] - ofy - ofy2) * ( 1.0f / 100 ) * casey
-			               - (player.pos.z + ofy - ofy2) * ( 1.0f / 100 ) * casey + mini_offset_y[CURRENTLEVEL] * ratiooo * mod_z) / mod_z ;    //( 1.0f / 100 )*2;
+			px = startx + ((player.pos.x + ofx - ofx2) * DIV100 * casex
+			               + mini_offset_x[CURRENTLEVEL] * ratiooo * mod_x) / mod_x ; //DIV100*2;
+			py = starty + ((mapmaxy[SHOWLEVEL] - ofy - ofy2) * DIV100 * casey
+			               - (player.pos.z + ofy - ofy2) * DIV100 * casey + mini_offset_y[CURRENTLEVEL] * ratiooo * mod_z) / mod_z ;    //DIV100*2;
 
 			if (flag == 1)
 			{
@@ -529,7 +529,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 							F2L((float)(vv * 255.f), &r);
 
 
-							long ucLevel =  max(r, minimap[SHOWLEVEL].revealed[i][j]);
+							long ucLevel =  max(r, (long)minimap[SHOWLEVEL].revealed[i][j]);
 							ARX_CHECK_UCHAR(ucLevel);
 
 							minimap[SHOWLEVEL].revealed[i][j] = ARX_CLEAN_WARN_CAST_UCHAR(ucLevel);
@@ -596,7 +596,11 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 						oo += v;
 
 						if ((i + 1 < 0) || (i + 1 >= MINIMAP_MAX_X) || (j < 0) || (j >= MINIMAP_MAX_Z)) v = 0;
+<<<<<<< HEAD
 						else v = ((float)minimap[SHOWLEVEL].revealed[min(i+1, MINIMAP_MAX_X-1)][j]) * ( 1.0f / 255 );
+=======
+						else v = ((float)minimap[SHOWLEVEL].revealed[min(i+1, (long)MINIMAP_MAX_X-1)][j]) * DIV255;
+>>>>>>> upstream/master
 
 						if (flag == 1)
 						{
@@ -629,7 +633,11 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 						oo += v;
 
 						if ((i + 1 < 0) || (i + 1 >= MINIMAP_MAX_X) || (j + 1 < 0) || (j + 1 >= MINIMAP_MAX_Z)) v = 0;
+<<<<<<< HEAD
 						else v = ((float)minimap[SHOWLEVEL].revealed[min(i+1, MINIMAP_MAX_X-1)][min(j+1, MINIMAP_MAX_Z-1)]) * ( 1.0f / 255 );
+=======
+						else v = ((float)minimap[SHOWLEVEL].revealed[min(i+1, (long)MINIMAP_MAX_X-1)][min(j+1, (long)MINIMAP_MAX_Z-1)]) * DIV255;
+>>>>>>> upstream/master
 
 						if (flag == 1)
 						{
@@ -663,7 +671,11 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 						oo += v;
 
 						if ((i < 0) || (i >= MINIMAP_MAX_X) || (j + 1 < 0) || (j + 1 >= MINIMAP_MAX_Z)) v = 0;
+<<<<<<< HEAD
 						else v = ((float)minimap[SHOWLEVEL].revealed[i][min(j+1, MINIMAP_MAX_Z-1)]) * ( 1.0f / 255 );
+=======
+						else v = ((float)minimap[SHOWLEVEL].revealed[i][min(j+1, (long)MINIMAP_MAX_Z-1)]) * DIV255;
+>>>>>>> upstream/master
 
 						if (flag == 1)
 						{

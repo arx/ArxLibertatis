@@ -23,7 +23,8 @@ public:
     Info,
     Warning,
     Error,
-    Fatal
+    Fatal,
+		None
   };
   Logger(const std::string& file, int line, LogLevel level);
   virtual ~Logger();
@@ -37,7 +38,7 @@ public:
   static LogLevel logLevel;
 private:
   bool print, fatal;
-  bool isInBlackList(const std::string& file);
+  LogLevel getLogLevel(const std::string & file);
   void log(int mode, int color, const string & level,
 			const string & file, int line);
 };

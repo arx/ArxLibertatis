@@ -439,7 +439,7 @@ void CreateInterfaceTextureContainers()
 	ITC.inventory_close = MakeTCFromFile("Graph\\Interface\\Inventory\\inv_close.bmp", 0);
 	
 	ITC.Icon_Lvl_Up = MakeTCFromFile("Graph\\Interface\\Icons\\lvl_up.bmp", 0);
-	ITC.ingame_sub_inv = NULL;
+	//ITC.ingame_sub_inv = NULL;
 	ITC.backpack = D3DTextr_GetSurfaceContainer("Graph\\Interface\\Icons\\Backpack.bmp");
 	ITC.gold=D3DTextr_GetSurfaceContainer("Graph\\Interface\\Inventory\\Gold.bmp");
 	ITC.book=D3DTextr_GetSurfaceContainer("Graph\\Interface\\Icons\\Book.bmp");

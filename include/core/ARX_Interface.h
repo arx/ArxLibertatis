@@ -83,7 +83,7 @@ typedef struct
 	TextureContainer * inventory_close;
 
 	TextureContainer * ingame_inventory;
-	TextureContainer * ingame_sub_inv;
+	//TextureContainer * ingame_sub_inv;
 	TextureContainer * backpack;
 	TextureContainer * gold;
 	TextureContainer * book;
