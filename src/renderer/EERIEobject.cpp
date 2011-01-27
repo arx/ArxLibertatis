@@ -53,6 +53,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+
+#include "renderer/EERIEObject.h"
+
 #include <cstdio>
 #include <iostream>
 #include <algorithm>
@@ -60,8 +63,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <vector>
 
-#include "core/TheoData.h"
-#include "renderer/EERIEObject.h"
 #include "renderer/EERIETypes.h"
 #include "renderer/EERIEMath.h"
 #include "renderer/EERIEApp.h"
@@ -71,6 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIECollisionSpheres.h"
 #include "renderer/EERIELinkedObj.h"
 
+#include "core/TheoData.h"
 #include "core/ARX_Sound.h"
 #include "core/ARX_Cedric.h"
 
@@ -82,24 +84,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::sprintf;
 
-long COMPUTE_PORTALS = 1;
-long USE_PORTALS = 3; 
-EERIE_PORTAL_DATA * portals = NULL;
-
-extern long DEBUGSYS;
 extern char LastLoadedScene[256];
-extern bool MIPM;
-extern long USEINTERNORM;
-extern float vdist;
-extern long ALLOW_MIPMESHING;
 extern PakManager * pPakManager;
 
 void EERIE_CreateCedricData(EERIE_3DOBJ * eobj);
 void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj);
 void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj);
 void EERIEOBJECT_DeletePFaces(EERIE_3DOBJ * eobj);
-
-long FASTLOADS = 0;
 
 //-----------------------------------------------------------------------------------------------------
 long GetGroupOriginByName(EERIE_3DOBJ * eobj, const char * text)
@@ -289,7 +280,7 @@ T * allocStructZero(const char * desc, size_t n = 1) {
 
 EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, long flags) {
 	
-	LogDebug << "Loading animation file " << file;
+	LogInfo << "Loading animation file " << file;
 	
 	size_t pos = 0;
 	
@@ -401,7 +392,7 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, lo
 			THEO_GROUPANIM * tga = (THEO_GROUPANIM *)(adr + pos);
 			pos += sizeof(THEO_GROUPANIM);
 			
-			LogDebug << " -> group anim " << j << " THEO_GROUPANIM:" << sizeof(THEO_GROUPANIM);
+			// LogDebug << " -> group anim " << j << " THEO_GROUPANIM:" << sizeof(THEO_GROUPANIM);
 			
 			EERIE_GROUP * eg = &eerie->groups[j + i * th.nb_groups];
 			eg->key = tga->key_group;
@@ -540,6 +531,9 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, lo
 //-----------------------------------------------------------------------------------------------------
 void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, long * poss, long version, long flag, long flag2)
 {
+	
+	LogInfo << "_THEObjLoad";
+	
 	THEO_OFFSETS		*	to;
 	THEO_NB					tn;
 	THEO_VERTEX 	*		ptv;
@@ -551,7 +545,6 @@ void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, long * poss, long ver
 	THEO_EXTRA_DATA		*	pted;
 	THEO_EXTRA_DATA_3005 *	pted3005;
 
-	char texx[256];
 	char groupname[256];
 	long pos;
 	long i;
@@ -563,15 +556,9 @@ void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, long * poss, long ver
 	memcpy(&tn, adr + pos, sizeof(THEO_NB));
 	pos += sizeof(THEO_NB);
 
-	if (DEBUGG)
-	{
-		sprintf(texx, "Nb Vertex %ld Nb Action Points %ld Nb Lines %ld",
-		        tn.nb_vertex, tn.nb_action_point, tn.nb_lines);
-		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "Nb Faces %ld Nb Groups %ld",
-		        tn.nb_faces, tn.nb_groups);
-		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-	}
+	LogDebug << "Nb Vertex " << tn.nb_vertex << " Nb Action Points " << tn.nb_action_point
+	         << " Nb Lines " << tn.nb_lines;
+	LogDebug << "Nb Faces " << tn.nb_faces << " Nb Groups " << tn.nb_groups;
 
 	eerie->true_nbvertex = eerie->nbvertex = tn.nb_vertex;
 	eerie->nbfaces = tn.nb_faces;
@@ -1346,12 +1333,6 @@ EERIE_3DSCENE * ScnToEerie(unsigned char * adr, long size, char * fic, long flag
 	long sizmap;
 
 	long pos = 0;
-
-	if (DEBUGSYS)
-	{
-		sprintf(texx, "LoadSCN %s", fic);
-		ForceSendConsole(texx, 1, 0, (HWND)1);
-	}
 
 retry1:
 	;
@@ -2397,7 +2378,7 @@ lasuite:
 	if (temp)
 		free(temp);
 }
-//-----------------------------------------------------------------------------------------------------
+
 void EERIEOBJECT_DeletePFaces(EERIE_3DOBJ * eobj)
 {
 	return;
@@ -2407,7 +2388,7 @@ void EERIEOBJECT_DeletePFaces(EERIE_3DOBJ * eobj)
 	eobj->pfacelist = NULL;
 	eobj->nbpfaces = 0;
 }
-//-----------------------------------------------------------------------------------------------------
+
 bool Is_Svert(EERIE_PFACE * epf, long epi, EERIE_FACE * ef, long ei)
 {
 	if ((epf->vid[epi] == ef->vid[ei])
@@ -2417,7 +2398,7 @@ bool Is_Svert(EERIE_PFACE * epf, long epi, EERIE_FACE * ef, long ei)
 
 	return false;
 }
-//-----------------------------------------------------------------------------------------------------
+
 long Strippable(EERIE_PFACE * epf, EERIE_FACE * ef)
 {
 	if ((Is_Svert(epf, epf->nbvert - 1, ef, 0))
@@ -2431,7 +2412,7 @@ long Strippable(EERIE_PFACE * epf, EERIE_FACE * ef)
 
 	return -1;
 }
-//-----------------------------------------------------------------------------------------------------
+
 bool EERIEOBJECT_AddFaceToPFace(EERIE_3DOBJ * eobj, EERIE_FACE * face, long faceidx)
 {
 	for (long i = 0; i < eobj->nbpfaces; i++)
@@ -2459,7 +2440,7 @@ bool EERIEOBJECT_AddFaceToPFace(EERIE_3DOBJ * eobj, EERIE_FACE * face, long face
 
 	return false;
 }
-//-----------------------------------------------------------------------------------------------------
+
 void EERIEOBJECT_AddFace(EERIE_3DOBJ * eobj, EERIE_FACE * face, long faceidx)
 {
 	if (EERIEOBJECT_AddFaceToPFace(eobj, face, faceidx)) return;
@@ -2486,7 +2467,7 @@ void EERIEOBJECT_AddFace(EERIE_3DOBJ * eobj, EERIE_FACE * face, long faceidx)
 	epf->faceidx[0] = 0;
 	eobj->nbpfaces++;
 }
-//-----------------------------------------------------------------------------------------------------
+
 void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj)
 {
 	return;
@@ -2496,14 +2477,12 @@ void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj)
 		EERIEOBJECT_AddFace(eobj, &eobj->facelist[i], i);
 }
 
-//-----------------------------------------------------------------------------------------------------
-
-#define ALIGN_SPECIAL 0
-
-//-----------------------------------------------------------------------------------------------------
 // Converts a Theo Object to an EERIE object
 EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, const char * fic, long flag, LPDIRECT3DDEVICE7 pd3dDevice, long flag2) // flag 1 progressive alloc 2 SLOW
 {
+	
+	LogWarning << "TheoToEerie " << fic;
+	
 	if (adr == NULL) 	return NULL;
 
 	THEO_HEADER		*		pth;
@@ -2519,12 +2498,6 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, 
 	long pos2;
 	long pos = 0;
 
-	if (DEBUGSYS)
-	{
-		sprintf(texx, "LoadTHEO %s", fic);
-		ForceSendConsole(texx, 1, 0, (HWND)1);
-	}
-
 	if ((texpath == NULL) || (texpath[0] == 0))
 	{
 		txpath = "Graph\\Obj3D\\Textures\\";
@@ -2534,7 +2507,7 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, 
 	if (size < 10) return NULL;
 
 	pth = (THEO_HEADER *)(adr + pos);
-	pos += sizeof(THEO_HEADER) - ALIGN_SPECIAL;
+	pos += sizeof(THEO_HEADER);
 
 	if (DEBUGG)
 	{
@@ -2841,17 +2814,15 @@ retry:
 	return(eerie);
 }
 
-//-----------------------------------------------------------------------------------------------------
+// TODO why is this in EERIEobject
 ACTIONSTRUCT actions[MAX_ACTIONS];
-//-----------------------------------------------------------------------------------------------------
 void RemoveAllBackgroundActions()
 {
 	memset(actions, 0, sizeof(ACTIONSTRUCT)*MAX_ACTIONS);
 
 	for (long i = 0; i < MAX_ACTIONS; i++) actions[i].dl = -1;
 }
- 
-//-----------------------------------------------------------------------------------------------------
+
 void EERIE_3DOBJ_RestoreTextures(EERIE_3DOBJ * eobj)
 {
 	if ((eobj) && (eobj->texturecontainer))
@@ -2866,11 +2837,6 @@ void EERIE_3DOBJ_RestoreTextures(EERIE_3DOBJ * eobj)
 	}
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////
-
-extern long FOR_EXTERNAL_PEOPLE;
 void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret)
 {
 	if (!ret) return;

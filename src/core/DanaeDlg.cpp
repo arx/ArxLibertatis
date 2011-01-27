@@ -79,6 +79,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIETexture.h"
 #include "renderer/EERIEMath.h"
 
+long FASTLOADS = 0;
 
 extern long CURRENTSNAPNUM;
 extern long SnapShotMode;
