@@ -670,7 +670,7 @@ float CLightning::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				{
 					Vector_Copy(&damages[si].pos, &sphere.origin);
 					damages[si].radius = sphere.radius;
-					damages[si].damages = fDamage * spells[spellinstance].caster_level * DIV3; 
+					damages[si].damages = fDamage * spells[spellinstance].caster_level * ( 1.0f / 3 ); 
 					damages[si].area = DAMAGE_FULL;
 					damages[si].duration = 1; 
 					damages[si].source = spells[spellinstance].caster;
@@ -936,7 +936,7 @@ float CConfuse::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	stitepos.y = eCurPos.y;
 	stitepos.z = eCurPos.z;
 
-	stiteangle.b = -RAD2DEG(ARX_TIME_Get() * DIV500);
+	stiteangle.b = -RAD2DEG(ARX_TIME_Get() * ( 1.0f / 500 ));
 	stiteangle.a = 0;
 	stiteangle.g = 0;
 	stitecolor.r = 1;
@@ -1003,9 +1003,9 @@ float CConfuse::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		DynLight[id].intensity = 1.3f;
 		DynLight[id].fallstart = 180.f;
 		DynLight[id].fallend   = 420.f;
-		DynLight[id].rgb.r = 0.3f + rnd() * DIV5;
+		DynLight[id].rgb.r = 0.3f + rnd() * ( 1.0f / 5 );
 		DynLight[id].rgb.g = 0.3f;
-		DynLight[id].rgb.b = 0.5f + rnd() * DIV5;
+		DynLight[id].rgb.b = 0.5f + rnd() * ( 1.0f / 5 );
 		DynLight[id].pos.x = stitepos.x;
 		DynLight[id].pos.y = stitepos.y;
 		DynLight[id].pos.z = stitepos.z;

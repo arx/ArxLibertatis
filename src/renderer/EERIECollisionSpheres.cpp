@@ -105,7 +105,7 @@ void EERIE_COLLISION_Cylinder_Create(INTERACTIVE_OBJ * io)
 
 	if (io->original_height > -40)
 	{
-		float v = (-io->original_height) * DIV40;
+		float v = (-io->original_height) * ( 1.0f / 40 );
 		io->original_radius *= (0.5f + v * 0.5f);
 	}
 
@@ -373,7 +373,7 @@ void EERIE_COLLISION_SPHERES_Create(EERIE_3DOBJ * obj)
 					if (idx > -1)
 						AddCollisionSphere(obj, idx, val, 0);
 
-					val *= DIV2;
+					val *= ( 1.0f / 2 );
 				}
 				else val = 0.15f;
 			

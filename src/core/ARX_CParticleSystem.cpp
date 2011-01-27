@@ -187,9 +187,9 @@ void CParticleSystem::SetParams(CParticleParams & _pp)
 	p3ParticlePos.x = _pp.p3Pos.x;
 	p3ParticlePos.y = _pp.p3Pos.y;
 	p3ParticlePos.z = _pp.p3Pos.z;
-	p3ParticleDirection.x = _pp.p3Direction.x * DIV10;
-	p3ParticleDirection.y = _pp.p3Direction.y * DIV10;
-	p3ParticleDirection.z = _pp.p3Direction.z * DIV10;
+	p3ParticleDirection.x = _pp.p3Direction.x * ( 1.0f / 10 );
+	p3ParticleDirection.y = _pp.p3Direction.y * ( 1.0f / 10 );
+	p3ParticleDirection.z = _pp.p3Direction.z * ( 1.0f / 10 );
 	fParticleAngle = _pp.fAngle;
 	fParticleSpeed = _pp.fSpeed;
 	fParticleSpeedRandom = _pp.fSpeedRandom;
@@ -197,7 +197,7 @@ void CParticleSystem::SetParams(CParticleParams & _pp)
 	p3ParticleGravity.y = _pp.p3Gravity.y;
 	p3ParticleGravity.z = _pp.p3Gravity.z;
 
-	fParticleFlash = _pp.fFlash * DIV100;
+	fParticleFlash = _pp.fFlash * ( 1.0f / 100 );
 
 	if (_pp.fRotation >= 2)
 	{
@@ -485,7 +485,7 @@ void CParticleSystem::Update(long _lTime)
 	ulTime += _lTime;
 	int nbtotal = 0;
 	int iNb;
-	float fTimeSec = _lTime * DIV1000;
+	float fTimeSec = _lTime * ( 1.0f / 1000 );
 	CParticle * pP;
 
 	list<CParticle *>::iterator i;

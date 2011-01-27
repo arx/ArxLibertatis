@@ -367,10 +367,10 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 			ofy = mini_offset_y[CURRENTLEVEL];
 			ofy2 = minimap[SHOWLEVEL].yratio;
 		
-			px = startx + ((player.pos.x + ofx - ofx2) * DIV100 * casex
-			               + mini_offset_x[CURRENTLEVEL] * ratiooo * mod_x) / mod_x ; //DIV100*2;
-			py = starty + ((mapmaxy[SHOWLEVEL] - ofy - ofy2) * DIV100 * casey
-			               - (player.pos.z + ofy - ofy2) * DIV100 * casey + mini_offset_y[CURRENTLEVEL] * ratiooo * mod_z) / mod_z ;    //DIV100*2;
+			px = startx + ((player.pos.x + ofx - ofx2) * ( 1.0f / 100 ) * casex
+			               + mini_offset_x[CURRENTLEVEL] * ratiooo * mod_x) / mod_x ; //( 1.0f / 100 )*2;
+			py = starty + ((mapmaxy[SHOWLEVEL] - ofy - ofy2) * ( 1.0f / 100 ) * casey
+			               - (player.pos.z + ofy - ofy2) * ( 1.0f / 100 ) * casey + mini_offset_y[CURRENTLEVEL] * ratiooo * mod_z) / mod_z ;    //( 1.0f / 100 )*2;
 
 			if (flag == 1)
 			{
@@ -395,7 +395,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 			verts[k].sz = 0.00001f;
 		}
 
-		float div = DIV25;
+		float div = ( 1.0f / 25 );
 		TextureContainer * tc = minimap[SHOWLEVEL].tc;
 		float dw = 1.f / (float)max(tc->m_dwDeviceWidth, tc->m_dwOriginalWidth); 
 		float dh = 1.f / (float)max(tc->m_dwDeviceHeight, tc->m_dwOriginalHeight);
@@ -512,12 +512,12 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 					        && (i >= 0) && (i < MINIMAP_MAX_X)
 					        && (j >= 0) && (j < MINIMAP_MAX_Z))
 					{
-						float d = Distance2D(posx * divXratio + casex * DIV2, posy * divYratio /*-casey * 2 * Yratio*/, px, py);
+						float d = Distance2D(posx * divXratio + casex * ( 1.0f / 2 ), posy * divYratio /*-casey * 2 * Yratio*/, px, py);
 
 						if (d <= 6.f)
 						{
 							long r;
-							float vv = (6 - d) * DIV6;
+							float vv = (6 - d) * ( 1.0f / 6 );
 
 							if (vv >= 0.5f)
 								vv = 1.f;
@@ -563,7 +563,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 						float oo = 0.f;
 
 						if ((i < 0) || (i >= MINIMAP_MAX_X) || (j < 0) || (j >= MINIMAP_MAX_Z)) v = 0;
-						else v = ((float)minimap[SHOWLEVEL].revealed[i][j]) * DIV255;
+						else v = ((float)minimap[SHOWLEVEL].revealed[i][j]) * ( 1.0f / 255 );
 
 						if (flag == 1)
 						{
@@ -589,14 +589,14 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 							else if (_px < MOD20) v *= _px * MOD20DIV;
 						}
 
-						if (fl2) verts[0].color = D3DRGB(v * DIV2, v * DIV2, v * DIV2);
+						if (fl2) verts[0].color = D3DRGB(v * ( 1.0f / 2 ), v * ( 1.0f / 2 ), v * ( 1.0f / 2 ));
 						else
 							verts[0].color = D3DRGB(v, v, v);
 
 						oo += v;
 
 						if ((i + 1 < 0) || (i + 1 >= MINIMAP_MAX_X) || (j < 0) || (j >= MINIMAP_MAX_Z)) v = 0;
-						else v = ((float)minimap[SHOWLEVEL].revealed[min(i+1, (long)MINIMAP_MAX_X-1)][j]) * DIV255;
+						else v = ((float)minimap[SHOWLEVEL].revealed[min(i+1, MINIMAP_MAX_X-1)][j]) * ( 1.0f / 255 );
 
 						if (flag == 1)
 						{
@@ -622,14 +622,14 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 							else if (_px < MOD20) v *= _px * MOD20DIV;
 						}
 
-						if (fl2) verts[1].color = D3DRGB(v * DIV2, v * DIV2, v * DIV2);
+						if (fl2) verts[1].color = D3DRGB(v * ( 1.0f / 2 ), v * ( 1.0f / 2 ), v * ( 1.0f / 2 ));
 						else
 							verts[1].color = D3DRGB(v, v, v);
 
 						oo += v;
 
 						if ((i + 1 < 0) || (i + 1 >= MINIMAP_MAX_X) || (j + 1 < 0) || (j + 1 >= MINIMAP_MAX_Z)) v = 0;
-						else v = ((float)minimap[SHOWLEVEL].revealed[min(i+1, (long)MINIMAP_MAX_X-1)][min(j+1, (long)MINIMAP_MAX_Z-1)]) * DIV255;
+						else v = ((float)minimap[SHOWLEVEL].revealed[min(i+1, MINIMAP_MAX_X-1)][min(j+1, MINIMAP_MAX_Z-1)]) * ( 1.0f / 255 );
 
 						if (flag == 1)
 						{
@@ -656,14 +656,14 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 						}
 						
 
-						if (fl2) verts[2].color = D3DRGB(v * DIV2, v * DIV2, v * DIV2);
+						if (fl2) verts[2].color = D3DRGB(v * ( 1.0f / 2 ), v * ( 1.0f / 2 ), v * ( 1.0f / 2 ));
 						else
 							verts[2].color = D3DRGB(v, v, v);
 
 						oo += v;
 
 						if ((i < 0) || (i >= MINIMAP_MAX_X) || (j + 1 < 0) || (j + 1 >= MINIMAP_MAX_Z)) v = 0;
-						else v = ((float)minimap[SHOWLEVEL].revealed[i][min(j+1, (long)MINIMAP_MAX_Z-1)]) * DIV255;
+						else v = ((float)minimap[SHOWLEVEL].revealed[i][min(j+1, MINIMAP_MAX_Z-1)]) * ( 1.0f / 255 );
 
 						if (flag == 1)
 						{
@@ -689,7 +689,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 							else if (_px < MOD20) v *= _px * MOD20DIV;
 						}
 
-						if (fl2) verts[3].color = D3DRGB(v * DIV2, v * DIV2, v * DIV2);
+						if (fl2) verts[3].color = D3DRGB(v * ( 1.0f / 2 ), v * ( 1.0f / 2 ), v * ( 1.0f / 2 ));
 						else
 							verts[3].color = D3DRGB(v, v, v);
 
@@ -736,9 +736,9 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 				float rx = 0.f;
 				float ry = -val * 1.8f;
-				float rx2 = -val * DIV2;
+				float rx2 = -val * ( 1.0f / 2 );
 				float ry2 = val;
-				float rx3 = val * DIV2;
+				float rx3 = val * ( 1.0f / 2 );
 				float ry3 = val;
 
 				float angle = DEG2RAD(player.angle.b);
@@ -788,18 +788,18 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 									float fpx;
 									float fpy;
 								
-									fpx = sstartx + ((inter.iobj[lnpc]->pos.x - 100 + ofx - ofx2) * DIV100 * casex
+									fpx = sstartx + ((inter.iobj[lnpc]->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * casex
 									                 + mini_offset_x[CURRENTLEVEL] * ratiooo * mod_x) / mod_x; 
-									fpy = sstarty + ((mapmaxy[SHOWLEVEL] - ofy - ofy2) * DIV100 * casey
-									                 - (inter.iobj[lnpc]->pos.z + 200 + ofy - ofy2) * DIV100 * casey + mini_offset_y[CURRENTLEVEL] * ratiooo * mod_z) / mod_z; 
+									fpy = sstarty + ((mapmaxy[SHOWLEVEL] - ofy - ofy2) * ( 1.0f / 100 ) * casey
+									                 - (inter.iobj[lnpc]->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * casey + mini_offset_y[CURRENTLEVEL] * ratiooo * mod_z) / mod_z; 
 
 									if (flag == 1)
 									{
 
-										fpx = startx + ((inter.iobj[lnpc]->pos.x - 100 + ofx - ofx2) * DIV100 * casex
+										fpx = startx + ((inter.iobj[lnpc]->pos.x - 100 + ofx - ofx2) * ( 1.0f / 100 ) * casex
 										                + mini_offset_x[CURRENTLEVEL] * ratiooo * mod_x) / mod_x; 
-										fpy = starty + ((mapmaxy[SHOWLEVEL] - ofy - ofy2) * DIV100 * casey
-										                - (inter.iobj[lnpc]->pos.z + 200 + ofy - ofy2) * DIV100 * casey + mini_offset_y[CURRENTLEVEL] * ratiooo * mod_z) / mod_z; 
+										fpy = starty + ((mapmaxy[SHOWLEVEL] - ofy - ofy2) * ( 1.0f / 100 ) * casey
+										                - (inter.iobj[lnpc]->pos.z + 200 + ofy - ofy2) * ( 1.0f / 100 ) * casey + mini_offset_y[CURRENTLEVEL] * ratiooo * mod_z) / mod_z; 
 
 
 									}
@@ -813,7 +813,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 										if (d > 600.f)
 										{
-											col = 1.f - (d - 600.f) * DIV200;
+											col = 1.f - (d - 600.f) * ( 1.0f / 200 );
 										}
 
 										if (!fl2)

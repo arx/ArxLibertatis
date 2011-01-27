@@ -162,7 +162,7 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 		{
 			for (long o=0;o<5;o++)
 			{
-				float p=(float)o*DIV5;
+				float p=(float)o*( 1.0f / 5 );
 				center.x=(ep->v[n].sx*p+ep->center.x*(1.f-p));
 				center.y=(ep->v[n].sy*p+ep->center.y*(1.f-p));
 				center.z=(ep->v[n].sz*p+ep->center.z*(1.f-p));
@@ -180,9 +180,9 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 		if ((ep->area>2000.f) 
 		        || (flags & CFLAG_EXTRA_PRECISION)  )
 		{
-			center.x=(ep->v[n].sx+ep->v[r].sx)*DIV2;
-			center.y=(ep->v[n].sy+ep->v[r].sy)*DIV2;
-			center.z=(ep->v[n].sz+ep->v[r].sz)*DIV2;
+			center.x=(ep->v[n].sx+ep->v[r].sx)*( 1.0f / 2 );
+			center.y=(ep->v[n].sy+ep->v[r].sy)*( 1.0f / 2 );
+			center.z=(ep->v[n].sz+ep->v[r].sz)*( 1.0f / 2 );
 
 			if (PointInCylinder(cyl, &center)) 
 			{	
@@ -194,9 +194,9 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 
 			if ((ep->area>4000.f) || (flags & CFLAG_EXTRA_PRECISION))
 			{
-				center.x=(ep->v[n].sx+ep->center.x)*DIV2;
-				center.y=(ep->v[n].sy+ep->center.y)*DIV2;
-				center.z=(ep->v[n].sz+ep->center.z)*DIV2;
+				center.x=(ep->v[n].sx+ep->center.x)*( 1.0f / 2 );
+				center.y=(ep->v[n].sy+ep->center.y)*( 1.0f / 2 );
+				center.z=(ep->v[n].sz+ep->center.z)*( 1.0f / 2 );
 
 				if (PointInCylinder(cyl, &center)) 
 				{	
@@ -209,9 +209,9 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 
 			if ((ep->area>6000.f) || (flags & CFLAG_EXTRA_PRECISION))
 			{
-				center.x=(center.x+ep->v[n].sx)*DIV2;
-				center.y=(center.y+ep->v[n].sy)*DIV2;
-				center.z=(center.z+ep->v[n].sz)*DIV2;
+				center.x=(center.x+ep->v[n].sx)*( 1.0f / 2 );
+				center.y=(center.y+ep->v[n].sy)*( 1.0f / 2 );
+				center.z=(center.z+ep->v[n].sz)*( 1.0f / 2 );
 
 				if (PointInCylinder(cyl, &center))
 				{
@@ -288,9 +288,9 @@ inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 	{
 		if (ep->area>2000.f)
 		{
-			center.x=(ep->v[n].sx+ep->v[r].sx)*DIV2;
-			center.y=(ep->v[n].sy+ep->v[r].sy)*DIV2;
-			center.z=(ep->v[n].sz+ep->v[r].sz)*DIV2;
+			center.x=(ep->v[n].sx+ep->v[r].sx)*( 1.0f / 2 );
+			center.y=(ep->v[n].sy+ep->v[r].sy)*( 1.0f / 2 );
+			center.z=(ep->v[n].sz+ep->v[r].sz)*( 1.0f / 2 );
 
 			if (EEDistance3D(&sph->origin, &center) < sph->radius) 
 			{	
@@ -299,9 +299,9 @@ inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 
 			if (ep->area>4000.f)
 			{
-				center.x=(ep->v[n].sx+ep->center.x)*DIV2;
-				center.y=(ep->v[n].sy+ep->center.y)*DIV2;
-				center.z=(ep->v[n].sz+ep->center.z)*DIV2;
+				center.x=(ep->v[n].sx+ep->center.x)*( 1.0f / 2 );
+				center.y=(ep->v[n].sy+ep->center.y)*( 1.0f / 2 );
+				center.z=(ep->v[n].sz+ep->center.z)*( 1.0f / 2 );
 
 				if (EEDistance3D(&sph->origin, &center) < sph->radius) 
 				{	
@@ -311,9 +311,9 @@ inline bool IsPolyInSphere(EERIEPOLY *ep, EERIE_SPHERE * sph)
 
 			if (ep->area>6000.f)
 			{
-				center.x=(center.x+ep->v[n].sx)*DIV2;
-				center.y=(center.y+ep->v[n].sy)*DIV2;
-				center.z=(center.z+ep->v[n].sz)*DIV2;
+				center.x=(center.x+ep->v[n].sx)*( 1.0f / 2 );
+				center.y=(center.y+ep->v[n].sy)*( 1.0f / 2 );
+				center.z=(center.z+ep->v[n].sz)*( 1.0f / 2 );
 
 				if (EEDistance3D(&sph->origin, &center) < sph->radius) 
 				{	
@@ -422,8 +422,8 @@ void PushIO_ON_Top(INTERACTIVE_OBJ * ioo,float ydec)
 							cz+=ep.v[kk].sz=ioo->obj->vertexlist3[ioo->obj->facelist[ii].vid[kk]].v.z;
 						}
 
-						cx*=DIV3;
-						cz*=DIV3;
+						cx*=( 1.0f / 3 );
+						cz*=( 1.0f / 3 );
 							
 						float tval=1.1f;
 
@@ -812,8 +812,8 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 								c.z+=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
 							}
 
-							c.x*=DIV3;
-							c.z*=DIV3;
+							c.x*=( 1.0f / 3 );
+							c.z*=( 1.0f / 3 );
 									c.y = io->bbox3D.min.y; 
 							long res=PointInUnderCylinder(cyl,&c);
 
@@ -1141,8 +1141,8 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 									cz+=ep.v[kk].sz=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
 								}
 
-								cx*=DIV3;
-								cz*=DIV3;
+								cx*=( 1.0f / 3 );
+								cz*=( 1.0f / 3 );
 
 								for (int kk=0;kk<3;kk++)
 								{
@@ -1197,9 +1197,9 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 						if (ef->facetype & POLY_HIDE) continue;
 
 						EERIE_3D fcenter;
-						fcenter.x=(vlist[ef->vid[0]].v.x+vlist[ef->vid[1]].v.x+vlist[ef->vid[2]].v.x)*DIV3;
-						fcenter.y=(vlist[ef->vid[0]].v.y+vlist[ef->vid[1]].v.y+vlist[ef->vid[2]].v.y)*DIV3;
-						fcenter.z=(vlist[ef->vid[0]].v.z+vlist[ef->vid[1]].v.z+vlist[ef->vid[2]].v.z)*DIV3;
+						fcenter.x=(vlist[ef->vid[0]].v.x+vlist[ef->vid[1]].v.x+vlist[ef->vid[2]].v.x)*( 1.0f / 3 );
+						fcenter.y=(vlist[ef->vid[0]].v.y+vlist[ef->vid[1]].v.y+vlist[ef->vid[2]].v.y)*( 1.0f / 3 );
+						fcenter.z=(vlist[ef->vid[0]].v.z+vlist[ef->vid[1]].v.z+vlist[ef->vid[2]].v.z)*( 1.0f / 3 );
 
 						if (	( EEDistance3D(&fcenter,&sphere->origin)< sr30) ||	( EEDistance3D(&vlist[ef->vid[0]].v,&sphere->origin)< sr30)
 							|| (EEDistance3D(&vlist[ef->vid[1]].v,&sphere->origin)< sr30) || (EEDistance3D(&vlist[ef->vid[2]].v,&sphere->origin)< sr30))
@@ -1364,8 +1364,8 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags,long * n
 									cz+=ep.v[kk].sz=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
 								}
 
-								cx*=DIV3;
-								cz*=DIV3;
+								cx*=( 1.0f / 3 );
+								cz*=( 1.0f / 3 );
 
 								for (int kk=0;kk<3;kk++)
 								{
@@ -1591,7 +1591,7 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flag
 
 			if (NPC_IN_CYLINDER)
 			{
-				tolerate=cyl->height*DIV2;
+				tolerate=cyl->height*( 1.0f / 2 );
 			}
 
 			if (anything<tolerate) return false;
@@ -1628,7 +1628,7 @@ bool AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flag
 				float dist;
 				dist=max(TRUEVector_Magnitude(&vector2D),1.f);
 				float pente;		
-				pente = EEfabs(anything) / dist * DIV2; 
+				pente = EEfabs(anything) / dist * ( 1.0f / 2 ); 
 				io->_npcdata->climb_count+=pente;
 
 				if (io->_npcdata->climb_count>MAX_ALLOWED_PER_SECOND)
@@ -1928,7 +1928,7 @@ bool IO_Visible(EERIE_3D * orgn, EERIE_3D * dest,EERIEPOLY * epp,EERIE_3D * hit)
 	float distance;
 	float nearest=distance=EEDistance3D( orgn,dest );
 
-	if (distance<pas) pas=distance*DIV2;
+	if (distance<pas) pas=distance*( 1.0f / 2 );
 
 	dx=(dest->x-orgn->x);
 	adx=EEfabs(dx);
@@ -2117,8 +2117,8 @@ void ANCHOR_BLOCK_By_IO(INTERACTIVE_OBJ * io,long status)
 					cz+=ep.v[kk].sz=io->obj->vertexlist[io->obj->facelist[ii].vid[kk]].v.z+io->pos.z;
 				}
 
-				cx*=DIV3;
-				cz*=DIV3;
+				cx*=( 1.0f / 3 );
+				cz*=( 1.0f / 3 );
 
 				for (int kk=0;kk<3;kk++)
 				{

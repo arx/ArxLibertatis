@@ -419,7 +419,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 			SendIOScriptEvent(inter.iobj[0], SM_ENTERZONE, temp, NULL); 
 
 			if (p->flags & PATH_AMBIANCE && p->ambiance[0])
-				ARX_SOUND_PlayZoneAmbiance(p->ambiance, ARX_SOUND_PLAY_LOOPED, p->amb_max_vol * DIV100);
+				ARX_SOUND_PlayZoneAmbiance(p->ambiance, ARX_SOUND_PLAY_LOOPED, p->amb_max_vol * ( 1.0f / 100 ));
 
 			if (p->flags & PATH_FARCLIP)
 			{
@@ -1271,7 +1271,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	{
 		attack	=	Thrown[thrownum].damages;
 
-		if (rnd() * 100 <= (float)(player.Full_Attribute_Dexterity - 9) * 2.f + (float)((player.Full_Skill_Projectile) * DIV5))
+		if (rnd() * 100 <= (float)(player.Full_Attribute_Dexterity - 9) * 2.f + (float)((player.Full_Skill_Projectile) * ( 1.0f / 5 )))
 		{
 			if (SendIOScriptEvent(io_source, SM_CRITICAL, "BOW", NULL) != REFUSE)
 				critical = true;
@@ -1303,7 +1303,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	if (target == 0)
 	{
 		ac		=	player.Full_armor_class;
-		absorb	=	player.Full_Skill_Defense * DIV2;
+		absorb	=	player.Full_Skill_Defense * ( 1.0f / 2 );
 	}
 	else
 	{
@@ -1336,7 +1336,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	}
 
 	float power;
-	power	=	dmgs * DIV20;
+	power	=	dmgs * ( 1.0f / 20 );
 
 	if (power > 1.f) power = 1.f;
 
@@ -1345,7 +1345,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	ARX_SOUND_PlayCollision(amat, wmat, power, 1.f, &Thrown[thrownum].position, io_source);
 
 	dmgs	*=	backstab;
-	dmgs	-=	dmgs * (absorb * DIV100);
+	dmgs	-=	dmgs * (absorb * ( 1.0f / 100 ));
 
 	float chance	= 100.f - (ac - attack);
 	float dice		= rnd() * 100.f;
@@ -1646,7 +1646,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 				{
 					float rad = -1;
 					rad = GetHitValue(Thrown[i].obj->actionlist[j].name);
-					rad *= DIV2;
+					rad *= ( 1.0f / 2 );
 
 					if (rad == -1) continue;
 
@@ -2117,8 +2117,8 @@ void RK4Integrate(EERIE_3DOBJ * obj, float DeltaTime)
 	PHYSVERT	* source, *target, *accum1, *accum2, *accum3, *accum4;
 	///////////////////////////////////////////////////////////////////////////////
 	float		halfDeltaT, sixthDeltaT;
-	halfDeltaT = DeltaTime * DIV2;		// SOME TIME VALUES I WILL NEED
-	sixthDeltaT = DIV6;
+	halfDeltaT = DeltaTime * ( 1.0f / 2 );		// SOME TIME VALUES I WILL NEED
+	sixthDeltaT = ( 1.0f / 6 );
 
 	PHYSVERT m_TempSys[5][32];//* pv;
 
@@ -2271,7 +2271,7 @@ bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long sour
 	F2L(z * ACTIVEBKG->Zmul, &pz);
 	long ix, iz, ax, az;
 	long n;
-	F2L(obj->pbox->radius * DIV100, &n);
+	F2L(obj->pbox->radius * ( 1.0f / 100 ), &n);
 	n = min(1L, n + 1);
 	ix = max(px - n, 0L);
 	ax = min(px + n, ACTIVEBKG->Xsize - 1L);
@@ -2311,11 +2311,11 @@ bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long sour
 						    ||	(EEDistance3D((EERIE_3D *)&ep->v[0], &obj->pbox->vert[kk].pos) <= radd)
 						    ||	(EEDistance3D((EERIE_3D *)&ep->v[1], &obj->pbox->vert[kk].pos) <= radd)
 						    ||	(EEDistance3D((EERIE_3D *)&ep->v[2], &obj->pbox->vert[kk].pos) <= radd)
-						    ||	(Distance3D((ep->v[0].sx + ep->v[1].sx)*DIV2, (ep->v[0].sy + ep->v[1].sy)*DIV2, (ep->v[0].sz + ep->v[1].sz)*DIV2,
+						    ||	(Distance3D((ep->v[0].sx + ep->v[1].sx)*( 1.0f / 2 ), (ep->v[0].sy + ep->v[1].sy)*( 1.0f / 2 ), (ep->v[0].sz + ep->v[1].sz)*( 1.0f / 2 ),
 						                    obj->pbox->vert[kk].pos.x, obj->pbox->vert[kk].pos.y, obj->pbox->vert[kk].pos.z) <= radd)
-						    ||	(Distance3D((ep->v[2].sx + ep->v[1].sx)*DIV2, (ep->v[2].sy + ep->v[1].sy)*DIV2, (ep->v[2].sz + ep->v[1].sz)*DIV2,
+						    ||	(Distance3D((ep->v[2].sx + ep->v[1].sx)*( 1.0f / 2 ), (ep->v[2].sy + ep->v[1].sy)*( 1.0f / 2 ), (ep->v[2].sz + ep->v[1].sz)*( 1.0f / 2 ),
 						                    obj->pbox->vert[kk].pos.x, obj->pbox->vert[kk].pos.y, obj->pbox->vert[kk].pos.z) <= radd)
-						    ||	(Distance3D((ep->v[0].sx + ep->v[2].sx)*DIV2, (ep->v[0].sy + ep->v[2].sy)*DIV2, (ep->v[0].sz + ep->v[2].sz)*DIV2,
+						    ||	(Distance3D((ep->v[0].sx + ep->v[2].sx)*( 1.0f / 2 ), (ep->v[0].sy + ep->v[2].sy)*( 1.0f / 2 ), (ep->v[0].sz + ep->v[2].sz)*( 1.0f / 2 ),
 						                    obj->pbox->vert[kk].pos.x, obj->pbox->vert[kk].pos.y, obj->pbox->vert[kk].pos.z) <= radd)
 						)
 						{
@@ -2338,20 +2338,20 @@ bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long sour
 							if (kl != kk)
 							{
 								EERIE_3D pos;
-								pos.x = (obj->pbox->vert[kk].pos.x + obj->pbox->vert[kl].pos.x) * DIV2;
-								pos.y = (obj->pbox->vert[kk].pos.y + obj->pbox->vert[kl].pos.y) * DIV2;
-								pos.z = (obj->pbox->vert[kk].pos.z + obj->pbox->vert[kl].pos.z) * DIV2;
+								pos.x = (obj->pbox->vert[kk].pos.x + obj->pbox->vert[kl].pos.x) * ( 1.0f / 2 );
+								pos.y = (obj->pbox->vert[kk].pos.y + obj->pbox->vert[kl].pos.y) * ( 1.0f / 2 );
+								pos.z = (obj->pbox->vert[kk].pos.z + obj->pbox->vert[kl].pos.z) * ( 1.0f / 2 );
 
 								if (
 								    (EEDistance3D(&ep->center, &pos) <= radd)
 								    ||	(EEDistance3D((EERIE_3D *)&ep->v[0], &pos) <= radd)
 								    ||	(EEDistance3D((EERIE_3D *)&ep->v[1], &pos) <= radd)
 								    ||	(EEDistance3D((EERIE_3D *)&ep->v[2], &pos) <= radd)
-								    ||	(Distance3D((ep->v[0].sx + ep->v[1].sx)*DIV2, (ep->v[0].sy + ep->v[1].sy)*DIV2, (ep->v[0].sz + ep->v[1].sz)*DIV2,
+								    ||	(Distance3D((ep->v[0].sx + ep->v[1].sx)*( 1.0f / 2 ), (ep->v[0].sy + ep->v[1].sy)*( 1.0f / 2 ), (ep->v[0].sz + ep->v[1].sz)*( 1.0f / 2 ),
 								                    pos.x, pos.y, pos.z) <= radd)
-								    ||	(Distance3D((ep->v[2].sx + ep->v[1].sx)*DIV2, (ep->v[2].sy + ep->v[1].sy)*DIV2, (ep->v[2].sz + ep->v[1].sz)*DIV2,
+								    ||	(Distance3D((ep->v[2].sx + ep->v[1].sx)*( 1.0f / 2 ), (ep->v[2].sy + ep->v[1].sy)*( 1.0f / 2 ), (ep->v[2].sz + ep->v[1].sz)*( 1.0f / 2 ),
 								                    pos.x, pos.y, pos.z) <= radd)
-								    ||	(Distance3D((ep->v[0].sx + ep->v[2].sx)*DIV2, (ep->v[0].sy + ep->v[2].sy)*DIV2, (ep->v[0].sz + ep->v[2].sz)*DIV2,
+								    ||	(Distance3D((ep->v[0].sx + ep->v[2].sx)*( 1.0f / 2 ), (ep->v[0].sy + ep->v[2].sy)*( 1.0f / 2 ), (ep->v[0].sz + ep->v[2].sz)*( 1.0f / 2 ),
 								                    pos.x, pos.y, pos.z) <= radd)
 								)
 								{
@@ -2458,7 +2458,7 @@ bool ARX_EERIE_PHYSICS_BOX_Compute_Simple(EERIE_3DOBJ * obj, float framediff, fl
 	)
 	{
 		colidd = 1;
-		float power = (EEfabs(obj->pbox->vert[0].velocity.x) + EEfabs(obj->pbox->vert[0].velocity.y) + EEfabs(obj->pbox->vert[0].velocity.z)) * DIV100;
+		float power = (EEfabs(obj->pbox->vert[0].velocity.x) + EEfabs(obj->pbox->vert[0].velocity.y) + EEfabs(obj->pbox->vert[0].velocity.z)) * ( 1.0f / 100 );
 
 
 		if (ValidIONum(source) && (inter.iobj[source]->ioflags & IO_BODY_CHUNK))
@@ -2734,7 +2734,7 @@ void ARX_PrepareBackgroundNRMLs()
 						nrml.y = (ep->norm.y + ep->norm2.y);
 						nrml.z = (ep->norm.z + ep->norm2.z);
 						count = 2.f;
-						ttt = DIV2;
+						ttt = ( 1.0f / 2 );
 					}
 					else
 					{
@@ -2799,9 +2799,9 @@ void ARX_PrepareBackgroundNRMLs()
 											else if ((k2 > 0) && (nbvert2 > 3))
 											{
 												EERIE_3D tnrml;
-												tnrml.x = (ep2->norm.x + ep2->norm2.x) * DIV2;
-												tnrml.y = (ep2->norm.y + ep2->norm2.y) * DIV2;
-												tnrml.z = (ep2->norm.z + ep2->norm2.z) * DIV2;
+												tnrml.x = (ep2->norm.x + ep2->norm2.x) * ( 1.0f / 2 );
+												tnrml.y = (ep2->norm.y + ep2->norm2.y) * ( 1.0f / 2 );
+												tnrml.z = (ep2->norm.z + ep2->norm2.z) * ( 1.0f / 2 );
 
 												if (LittleAngularDiff(&cur_nrml, &tnrml))
 												{

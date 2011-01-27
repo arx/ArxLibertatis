@@ -788,14 +788,14 @@ void QuatFromAngles(EERIE_QUAT * q, const EERIE_3D * angle)
 
 {
 	float A, B;
-	A = angle->yaw * DIV2;
-	B = angle->pitch * DIV2;
+	A = angle->yaw * ( 1.0f / 2 );
+	B = angle->pitch * ( 1.0f / 2 );
 
 	float fSinYaw   = sinf(A);
 	float fCosYaw   = cosf(A);
 	float fSinPitch = sinf(B);
 	float fCosPitch = cosf(B);
-	A = angle->roll * DIV2;
+	A = angle->roll * ( 1.0f / 2 );
 	float fSinRoll  = sinf(A);
 	float fCosRoll  = cosf(A);
 	A = fCosRoll * fCosPitch;
@@ -881,7 +881,7 @@ void QuatFromMatrix(EERIE_QUAT & quat, EERIEMATRIX & mat)
 	if (tr > 0.0f)
 	{
 		s = sqrt(tr + 1.0f);
-		quat.w = s * DIV2;
+		quat.w = s * ( 1.0f / 2 );
 		s = 0.5f / s;
 		quat.x = (m[1][2] - m[2][1]) * s;
 		quat.y = (m[2][0] - m[0][2]) * s;

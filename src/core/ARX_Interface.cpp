@@ -562,7 +562,7 @@ void ARX_INTERFACE_HALO_Render(float _fR, float _fG, float _fB,
 							   TextureContainer * tc2,
 							   float POSX, float POSY, float fRatioX = 1, float fRatioY = 1)
 {
-	float power=0.9f-EEsin(FrameTime*DIV50)*DIV10+rnd()*DIV10;
+	float power=0.9f-EEsin(FrameTime*( 1.0f / 50 ))*( 1.0f / 10 )+rnd()*( 1.0f / 10 );
 
 	if (power>1.f) power=1.f;
 
@@ -817,7 +817,7 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type,char * tex)
 		RECT rRect;
 		
 
-		float fWidth	= NoteTexture->m_dwWidth*DIV2-10.f ; 
+		float fWidth	= NoteTexture->m_dwWidth*( 1.0f / 2 )-10.f ; 
 		float fHeight	= NoteTexture->m_dwHeight-40.f ; 
 		ARX_CHECK_INT(fWidth);
 		ARX_CHECK_INT(fHeight);
@@ -925,7 +925,7 @@ void ARX_INTERFACE_NoteManage()
 
 				if (NoteTexture)
 				{
-					NotePosX = 320-NoteTexture->m_dwWidth*DIV2;
+					NotePosX = 320-NoteTexture->m_dwWidth*( 1.0f / 2 );
 					NotePosY=47.f;
 					NoteTextMinx=30.f;
 					NoteTextMaxx=NoteTexture->m_dwWidth-40.f;
@@ -939,7 +939,7 @@ void ARX_INTERFACE_NoteManage()
 
 				if (NoteTexture)
 				{
-					NotePosX = 320-NoteTexture->m_dwWidth*DIV2;
+					NotePosX = 320-NoteTexture->m_dwWidth*( 1.0f / 2 );
 					NotePosY=47.f;
 					NoteTextMinx=50.f;
 					NoteTextMaxx=NoteTexture->m_dwWidth-50.f;
@@ -966,10 +966,10 @@ void ARX_INTERFACE_NoteManage()
 
 				if (NoteTexture)
 				{
-					NotePosX = 320-NoteTexture->m_dwWidth*DIV2;
+					NotePosX = 320-NoteTexture->m_dwWidth*( 1.0f / 2 );
 					NotePosY=47.f;
 					NoteTextMinx = 40.f;
-					NoteTextMaxx = NoteTexture->m_dwWidth*DIV2-10.f;
+					NoteTextMaxx = NoteTexture->m_dwWidth*( 1.0f / 2 )-10.f;
 					NoteTextMiny = 40.f;
 					NoteTextMaxy = NoteTexture->m_dwHeight-40.f;
 				}					
@@ -1645,7 +1645,7 @@ bool DANAE::ManageEditorControls()
 
 				if (t-SLID_START>10000.f)
 				{
-					SLID_VALUE+=(float)Original_framedelay*DIV10;
+					SLID_VALUE+=(float)Original_framedelay*( 1.0f / 10 );
 
 					if (SLID_VALUE>100.f) SLID_VALUE=100.f;
 
@@ -1662,7 +1662,7 @@ bool DANAE::ManageEditorControls()
 
 		if (bOk)
 		{
-			SLID_VALUE-=(float)Original_framedelay*DIV10;
+			SLID_VALUE-=(float)Original_framedelay*( 1.0f / 10 );
 
 			if (SLID_VALUE<0.f) SLID_VALUE=0.f;		
 
@@ -1697,7 +1697,7 @@ bool DANAE::ManageEditorControls()
 	
 	if (SMOOTHSLID==1)
 	{
-		SLID_VALUE+=(float)Original_framedelay*DIV10;
+		SLID_VALUE+=(float)Original_framedelay*( 1.0f / 10 );
 
 		if (SLID_VALUE > 100.f)
 		{
@@ -1709,7 +1709,7 @@ bool DANAE::ManageEditorControls()
 	}
 	else if (SMOOTHSLID==-1)
 	{
-		SLID_VALUE-=(float)Original_framedelay*DIV10;
+		SLID_VALUE-=(float)Original_framedelay*( 1.0f / 10 );
 
 		if (SLID_VALUE < 0.f)
 		{
@@ -1722,7 +1722,7 @@ bool DANAE::ManageEditorControls()
 	
 	if (CINEMA_INC==1)
 	{
-		CINEMA_DECAL+=(float)Original_framedelay*DIV10;
+		CINEMA_DECAL+=(float)Original_framedelay*( 1.0f / 10 );
 
 		if (CINEMA_DECAL > 100.f)
 		{
@@ -1732,7 +1732,7 @@ bool DANAE::ManageEditorControls()
 	}
 	else if (CINEMA_INC==-1)
 	{
-		CINEMA_DECAL-=(float)Original_framedelay*DIV10;
+		CINEMA_DECAL-=(float)Original_framedelay*( 1.0f / 10 );
 
 		if (CINEMA_DECAL < 0.f)
 		{
@@ -2120,7 +2120,7 @@ bool DANAE::ManageEditorControls()
 
 			if (NoteTexture)
 			{
-				NotePosX = 320-NoteTexture->m_dwWidth*DIV2;
+				NotePosX = 320-NoteTexture->m_dwWidth*( 1.0f / 2 );
 				NotePosY=47.f;
 				NoteTextMinx=30.f;
 				NoteTextMaxx=NoteTexture->m_dwWidth-40.f;
@@ -2134,7 +2134,7 @@ bool DANAE::ManageEditorControls()
 
 			if (NoteTexture)
 			{
-				NotePosX = 320-NoteTexture->m_dwWidth*DIV2;
+				NotePosX = 320-NoteTexture->m_dwWidth*( 1.0f / 2 );
 				NotePosY=47.f;
 				NoteTextMinx=50.f;
 				NoteTextMaxx=NoteTexture->m_dwWidth-50.f;
@@ -2161,10 +2161,10 @@ bool DANAE::ManageEditorControls()
 
 			if (NoteTexture)
 			{
-				NotePosX = 320-NoteTexture->m_dwWidth*DIV2;
+				NotePosX = 320-NoteTexture->m_dwWidth*( 1.0f / 2 );
 				NotePosY=47.f;
 				NoteTextMinx = 40.f;
-				NoteTextMaxx = NoteTexture->m_dwWidth*DIV2-10.f;
+				NoteTextMaxx = NoteTexture->m_dwWidth*( 1.0f / 2 )-10.f;
 				NoteTextMiny = 40.f;
 				NoteTextMaxy = NoteTexture->m_dwHeight-30.f;
 			}
@@ -4106,7 +4106,7 @@ void DANAE::ManagePlayerControls()
 
 				if (!npc)
 				{
-					MagicSightFader+=_framedelay*DIV200;
+					MagicSightFader+=_framedelay*( 1.0f / 200 );
 
 					if (MagicSightFader>1.f) MagicSightFader=1.f;
 				}
@@ -5358,7 +5358,7 @@ void DANAE::ManageKeyMouse()
 
 	if (Project.interpolatemouse) // mouse smoothing...
 	{
-		float v=EERIEMouseXdep*DIV1000;
+		float v=EERIEMouseXdep*( 1.0f / 1000 );
 
 		if (v>3.1415927f) 
 		{
@@ -5371,7 +5371,7 @@ void DANAE::ManageKeyMouse()
 
 		F2L((float)(EEsin(v)*600.f),&EERIEMouseXdep);
 		
-		v=EERIEMouseYdep*DIV1000;
+		v=EERIEMouseYdep*( 1.0f / 1000 );
 
 		if (v>3.1415927f) 
 		{
@@ -5601,7 +5601,7 @@ void DANAE::ManageKeyMouse()
 						fd=200;
 			}
 
-			fd *= ((float)DANAESIZX) * DIV640; 
+			fd *= ((float)DANAESIZX) * ( 1.0f / 640 ); 
 
 			if ((eyeball.exist==2) && (PLAYER_MOUSELOOK_ON||bKeySpecialMove)) 
 			{
@@ -5612,11 +5612,11 @@ void DANAE::ManageKeyMouse()
 					if(	(pMenuConfig)&&
 						(pMenuConfig->bMouseSmoothing) )
 					{
-						ia=((float)EERIEMouseYdep*DIV60)*fd;
+						ia=((float)EERIEMouseYdep*( 1.0f / 60 ))*fd;
 					}
 					else
 					{
-						ia=((float)EERIEMouseYdep*DIV5)*fd;
+						ia=((float)EERIEMouseYdep*( 1.0f / 5 ))*fd;
 					}
 
 					if (INVERTMOUSE) ia=-ia;
@@ -5640,11 +5640,11 @@ void DANAE::ManageKeyMouse()
 					if(	(pMenuConfig)&&
 						(pMenuConfig->bMouseSmoothing) )
 					{
-						ib=((float)EERIEMouseXdep*DIV50)*fd;
+						ib=((float)EERIEMouseXdep*( 1.0f / 50 ))*fd;
 					}
 					else
 					{
-						ib=((float)EERIEMouseXdep*DIV5)*fd;
+						ib=((float)EERIEMouseXdep*( 1.0f / 5 ))*fd;
 					}
 
 					eyeball.angle.b=MAKEANGLE(eyeball.angle.b-ib);			
@@ -5660,11 +5660,11 @@ void DANAE::ManageKeyMouse()
 							if(	(pMenuConfig)&&
 								(pMenuConfig->bMouseSmoothing) )
 							{
-								ia=((float)EERIEMouseYdep*DIV60*fd);
+								ia=((float)EERIEMouseYdep*( 1.0f / 60 )*fd);
 							}
 							else
 							{
-							ia = ((float)EERIEMouseYdep * DIV5 * fd);
+							ia = ((float)EERIEMouseYdep * ( 1.0f / 5 ) * fd);
 							}
 
 							if ((inter.iobj[0]) && EEfabs(ia)>2.f) inter.iobj[0]->lastanimtime=0;
@@ -5692,11 +5692,11 @@ void DANAE::ManageKeyMouse()
 							if(	(pMenuConfig)&&
 								(pMenuConfig->bMouseSmoothing) )
 							{
-								ib=((float)EERIEMouseXdep*DIV50*fd);
+								ib=((float)EERIEMouseXdep*( 1.0f / 50 )*fd);
 							}
 							else
 							{
-							ib = ((float)EERIEMouseXdep * DIV5 * fd); 
+							ib = ((float)EERIEMouseXdep * ( 1.0f / 5 ) * fd); 
 							}
 							
 							if (ib!=0.f) player.Current_Movement|=PLAYER_ROTATE;	
@@ -6179,8 +6179,8 @@ void DANAE::ManageKeyMouse()
 								else 
 								{
 									ARX_SPELLS_Launch(SPELL_SPEED,0);
-									tm.x+=-(float)EEsin(DEG2RAD(player.pos.b))*(float)FrameDiff*DIV3;
-									tm.z+=+(float)EEcos(DEG2RAD(player.pos.b))*(float)FrameDiff*DIV3;
+									tm.x+=-(float)EEsin(DEG2RAD(player.pos.b))*(float)FrameDiff*( 1.0f / 3 );
+									tm.z+=+(float)EEcos(DEG2RAD(player.pos.b))*(float)FrameDiff*( 1.0f / 3 );
 								}
 
 								this->kbd.inkey[INKEY_4]=0;
@@ -6489,7 +6489,7 @@ void ARX_INTERFACE_Draw_Stealth_Gauge()
 			float t=v-CURRENT_PLAYER_COLOR;
 
 			if (t>=15) v=1.f;
-			else v=(t*DIV15)*0.9f+0.1f;
+			else v=(t*( 1.0f / 15 ))*0.9f+0.1f;
 
 			D3DCOLOR col=_EERIERGB(v);
 			SETALPHABLEND(GDevice, true);
@@ -6827,7 +6827,7 @@ void ManageSpellIcon(long i,float rrr,long flag)
 	}
 	else if (flag & 2)
 	{
-		color=D3DRGB(0,rrr*DIV2,rrr);
+		color=D3DRGB(0,rrr*( 1.0f / 2 ),rrr);
 		float px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(110);
 
 		if (px < INTERFACE_RATIO(10)) px = INTERFACE_RATIO(10);
@@ -6950,7 +6950,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							if (necklace.runes[i]->angle.b>300.f)
 								necklace.runes[i]->angle.b=300.f;
 
-							angle.b=EEsin((float)ARX_TIME_Get()*DIV200)*necklace.runes[i]->angle.b*DIV40;
+							angle.b=EEsin((float)ARX_TIME_Get()*( 1.0f / 200 ))*necklace.runes[i]->angle.b*( 1.0f / 40 );
 						}
 
 						necklace.runes[i]->angle.b-=_framedelay*0.2f;
@@ -7210,7 +7210,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							{
 								if (spellicons[i].symbols[j]!=255)
 								{
-									pos.x = (240-(count*32)*DIV2+j*32);
+									pos.x = (240-(count*32)*( 1.0f / 2 )+j*32);
 									pos.y = (306);
 									DrawBookInterfaceItem(GDevice, 
 										necklace.pTexTab[spellicons[i].symbols[j]]
@@ -8447,7 +8447,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			NotePosX = (97 );
 			NotePosY = (64 );
 			NoteTextMinx = 40.f;
-			NoteTextMaxx = ITC.questbook->m_dwWidth*DIV2-10.f;
+			NoteTextMaxx = ITC.questbook->m_dwWidth*( 1.0f / 2 )-10.f;
 			NoteTextMiny = 40.f;
 			NoteTextMaxy = ITC.questbook->m_dwHeight-65.f;
 			float fPosX = 97;
@@ -9104,7 +9104,7 @@ void DANAE::DrawAllInterfaceFinish()
 {
 	currpos = ARX_CLEAN_WARN_CAST_LONG(INTERFACE_RATIO(50.f));
 	float rrr;
-	rrr=1.f-PULSATE*DIV2;
+	rrr=1.f-PULSATE*( 1.0f / 2 );
 
 	if (rrr>1.f) rrr=1.f;
 	else if (rrr<0.f) rrr=0.f;
@@ -9142,7 +9142,7 @@ void DANAE::DrawAllInterfaceFinish()
 
 				if ((Precast[i].launch_time>0) &&(ARXTime>=Precast[i].launch_time))
 				{
-					float tt=(ARXTime-Precast[i].launch_time)*DIV1000;
+					float tt=(ARXTime-Precast[i].launch_time)*( 1.0f / 1000 );
 
 					if (tt>1.f) tt=1.f;
 
@@ -9377,7 +9377,7 @@ void DANAE::DrawAllInterface()
 				if ((player.Interface & INTER_COMBATMODE) || (player.doingmagic>=2))
 				{
 					long t;
-					F2L((float)(Original_framedelay*DIV5)+2,&t);
+					F2L((float)(Original_framedelay*( 1.0f / 5 ))+2,&t);
 					InventoryY += ARX_CLEAN_WARN_CAST_LONG(INTERFACE_RATIO_LONG(t));
 
 					if ( InventoryY > INTERFACE_RATIO( 110.f ) ) InventoryY = ARX_CLEAN_WARN_CAST_LONG( INTERFACE_RATIO( 110.f ) );
@@ -9389,7 +9389,7 @@ void DANAE::DrawAllInterface()
 					if (bInventoryClosing) 
 					{
 						long t;
-						F2L((float)(Original_framedelay*DIV5)+2,&t);
+						F2L((float)(Original_framedelay*( 1.0f / 5 ))+2,&t);
 						InventoryY += ARX_CLEAN_WARN_CAST_LONG(INTERFACE_RATIO_LONG(t));
 
 						if (InventoryY > INTERFACE_RATIO(110))
@@ -9412,7 +9412,7 @@ void DANAE::DrawAllInterface()
 					}
 					else if (InventoryY>0)
 					{
-						InventoryY -= ARX_CLEAN_WARN_CAST_LONG( INTERFACE_RATIO( ( Original_framedelay * DIV5 ) + 2.f ) );
+						InventoryY -= ARX_CLEAN_WARN_CAST_LONG( INTERFACE_RATIO( ( Original_framedelay * ( 1.0f / 5 ) ) + 2.f ) );
 
 
 						if (InventoryY<0) InventoryY=0;
@@ -9501,7 +9501,7 @@ assert(ITC.hero_inventory != NULL);
 			}
 			else if ((player.Interface & INTER_INVENTORYALL) || bInventoryClosing)
 			{
-				float fSpeed = DIV3;
+				float fSpeed = ( 1.0f / 3 );
 
 				if ((player.Interface & INTER_COMBATMODE) || (player.doingmagic>=2))
 				{
@@ -9832,7 +9832,7 @@ assert(ITC.hero_inventory != NULL);
 		float py = 0;
 
 		GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
-		float vv = 0.9f - EEsin(FrameTime*DIV50)*DIV2+rnd()*DIV10;
+		float vv = 0.9f - EEsin(FrameTime*( 1.0f / 50 ))*( 1.0f / 2 )+rnd()*( 1.0f / 10 );
 
 		if ( vv < 0.f ) vv = 0;
 		else if ( vv > 1.f ) vv = 1.f;
@@ -10185,7 +10185,7 @@ long Manage3DCursor(long flags)
 
 	if (ag>180) ag=ag-360;
 
-	float drop_miny=(float)(DANAECENTERY)-DANAECENTERY*(ag*DIV70);
+	float drop_miny=(float)(DANAECENTERY)-DANAECENTERY*(ag*( 1.0f / 70 ));
 
 	if ((DANAEMouse.y<drop_miny) && (!EDITMODE))
 		return 0;
@@ -10219,12 +10219,12 @@ long Manage3DCursor(long flags)
 
 	if (va>180) va=0;
 				
-				float vd=(100.f-va)*DIV90;
+				float vd=(100.f-va)*( 1.0f / 90 );
 				float mod=va-50.f;
 
 				if (mod<0) mod=0;
 
-				mod*=DIV20;
+				mod*=( 1.0f / 20 );
 	va = (vd) * (1.3f + 0.3f * mod); 
 				
 				vd=((1.f-zrange)*0.6f-vd)*150.f;
@@ -10276,9 +10276,9 @@ long Manage3DCursor(long flags)
 
 
 					EERIE_CYLINDER cyl;
-					cyl.origin.x=pos.x-(maxoff.x-minoff.x)*DIV2;
+					cyl.origin.x=pos.x-(maxoff.x-minoff.x)*( 1.0f / 2 );
 					cyl.origin.y=pos.y;
-					cyl.origin.z=pos.z-(maxoff.z-minoff.z)*DIV2;
+					cyl.origin.z=pos.z-(maxoff.z-minoff.z)*( 1.0f / 2 );
 					cyl.height=-50.f;
 					cyl.radius=40.f;
 
@@ -10328,9 +10328,9 @@ long Manage3DCursor(long flags)
 
 					if ( height > -30.f ) height = -30.f;
 					
-		objcenter.x	=	minoff.x + (maxoff.x - minoff.x) * DIV2;  
+		objcenter.x	=	minoff.x + (maxoff.x - minoff.x) * ( 1.0f / 2 );  
 		objcenter.y	=	0;	
-		objcenter.z	=	minoff.z + (maxoff.z - minoff.z) * DIV2;  
+		objcenter.z	=	minoff.z + (maxoff.z - minoff.z) * ( 1.0f / 2 );  
 					
 					for ( int i = 0 ; i < io->obj->nbvertex ; i++ )
 					{
@@ -10664,7 +10664,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 
 			if (ag>180) ag=ag-360;
 
-			float drop_miny=(float)(DANAECENTERY)-DANAECENTERY*(ag*DIV70);
+			float drop_miny=(float)(DANAECENTERY)-DANAECENTERY*(ag*( 1.0f / 70 ));
 
 			if ((DANAEMouse.y>drop_miny) && DRAGINTER && !InInventoryPos(&DANAEMouse)
 			        && !(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK))

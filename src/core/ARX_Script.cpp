@@ -3270,7 +3270,7 @@ void CheckHit(INTERACTIVE_OBJ * io, float ratioaim)
 									}
 								}
 
-								float ratio = ((float)count / ((float)ioo->obj->nbvertex * DIV2));
+								float ratio = ((float)count / ((float)ioo->obj->nbvertex * ( 1.0f / 2 )));
 
 								if (ioo->ioflags & IO_NPC)
 								{
@@ -3986,7 +3986,7 @@ long Manage_Specific_RAT_Timer(SCR_TIMER * st)
 		ARX_INTERACTIVE_Teleport(io, &target);
 		EERIE_3D pos;
 		pos.x = io->pos.x;
-		pos.y = io->pos.y + io->physics.cyl.height * DIV2;
+		pos.y = io->pos.y + io->physics.cyl.height * ( 1.0f / 2 );
 		pos.z = io->pos.z;
 		ARX_PARTICLES_Add_Smoke(&pos, 3, 20);
 		AddRandomSmoke(io, 20);
@@ -4005,7 +4005,7 @@ long Manage_Specific_RAT_Timer(SCR_TIMER * st)
 	{
 		st->times++;
 
-		st->msecs = ARX_CAST_LONG(st->msecs * DIV2);
+		st->msecs = ARX_CAST_LONG(st->msecs * ( 1.0f / 2 ));
 
 
 		if (st->msecs < 100) st->msecs = 100;
@@ -6633,7 +6633,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 
 #endif
 
-							ARX_SOUND_PlayScriptAmbiance(temp, ARX_SOUND_PLAY_LOOPED, volume * DIV100);
+							ARX_SOUND_PlayScriptAmbiance(temp, ARX_SOUND_PLAY_LOOPED, volume * ( 1.0f / 100 ));
 						}
 						else if (iCharIn(temp, 'N'))
 						{
@@ -9737,7 +9737,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					io->invisibility = 1.f + GetVarValueInterpretedAsFloat(temp, esss, io) * DIV100;
+					io->invisibility = 1.f + GetVarValueInterpretedAsFloat(temp, esss, io) * ( 1.0f / 100 );
 
 					if (io->invisibility == 1.f) io->invisibility = 0;
 				}
@@ -9929,7 +9929,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						float t1;
 						pos = GetNextWord(es, pos, temp1);
 						t1 = GetVarValueInterpretedAsFloat(temp1, esss, io);
-						io->scale = t1 * DIV100;
+						io->scale = t1 * ( 1.0f / 100 );
 #ifdef NEEDING_DEBUG
 
 						if (NEED_DEBUG) sprintf(cmd, "SET_SCALE %s", temp1);
