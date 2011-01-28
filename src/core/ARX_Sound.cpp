@@ -341,8 +341,8 @@ static void ARX_SOUND_KillUpdateThread();
 static void ARX_SOUND_ParseIniFile(char * _lpszTextFile, const unsigned long _ulFileSize, ParseIniFileCallback lpSectionCallback, ParseIniFileCallback lpStringCallback);
 void ARX_SOUND_PreloadAll();
 
-extern char pStringModSfx[];
-extern char pStringModSpeech[];
+extern std::string pStringModSfx;
+extern std::string pStringModSpeech;
 
 long ARX_SOUND_Init(HWND hwnd)
 {
@@ -424,13 +424,13 @@ long ARX_SOUND_Init(HWND hwnd)
 	if(FINAL_RELEASE) {
 		
 		if(pStringModSfx[0]) {
-			if(!PAK_AddPak(pStringModSfx)) {
+			if(!PAK_AddPak(pStringModSfx.c_str())) {
 				printf("Unable to Find Mod SFX Data File\n");
 			}
 		}
 		
 		if (pStringModSpeech[0]) {
-			if(!PAK_AddPak(pStringModSpeech)) {
+			if(!PAK_AddPak(pStringModSpeech.c_str())) {
 				printf("Unable to Find Mod Speech Data File\n");
 			}
 		}
