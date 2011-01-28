@@ -673,7 +673,7 @@ std::string GetFontName( const std::string& _lpszFileName)
 
 	CloseHandle(hFile);
 
-	return NULL;
+	return "";
 }
 
 void _ShowText(char * text)
