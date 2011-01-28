@@ -157,7 +157,6 @@ extern long		DeadTime;
 extern long		INTREATZONECOUNT;
 extern long		TOTPDL;
 extern float		ARXTotalPausedTime;
-extern long		accepted;
 extern long		COLLIDED_CLIMB_POLY;
 extern long LOOKING_FOR_SPELL_TARGET;
 extern long PATHFINDER_WAIT;
@@ -5671,13 +5670,6 @@ static float _AvgFrameDiff = 150.f;
 		GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
 		return false;
 	}
-
-	// Little security Feature...
-	#ifdef ASKPASS
-
-		if ((rnd()>0.5f) && (!accepted)) exit(0);
-
-	#endif
 
 	// Sets Danae Screen size depending on windowed/full-screen state
 	DANAESIZX=this->m_pFramework->m_dwRenderWidth;
