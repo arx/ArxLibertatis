@@ -848,14 +848,11 @@ std::string CMenuConfig::ReadConfig( const std::string& _pcSection, const std::s
 
 	int iI = GetPrivateProfileString( _pcSection.c_str(), _pcKey.c_str(), "", tcText, 256, pcName.c_str() );
 
-	if(iI<=0) return NULL;
+	if(iI<=0) return "";
 
-	char *pcText=(char*)malloc(strlen(tcText)+1);
+	std::string prof_str = tcText;
 
-	if(!pcText) return NULL;
-
-	strcpy(pcText,tcText);
-	return pcText;
+	return prof_str;
 }
 
 //-----------------------------------------------------------------------------
@@ -881,7 +878,8 @@ int CMenuConfig::ReadConfigInt( const std::string& _pcSection, const std::string
 //-----------------------------------------------------------------------------
 std::string CMenuConfig::ReadConfigString( const std::string& _pcSection, const std::string& _pcKey)
 {
-	return ReadConfig(_pcSection,_pcKey);
+	std::string temp = ReadConfig( _pcSection,_pcKey);
+	return temp;
 }
 
 //-----------------------------------------------------------------------------
