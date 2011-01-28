@@ -5,6 +5,9 @@ set(INC_DIR include)
 set(SRC_DIR src)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 
+option(ARX_BUILD_TESTS on)
+option(ARX_BUILD_TOOLS on)
+
 include_directories(
 	include
 IF(UNIX)
@@ -74,7 +77,10 @@ add_custom_target(style
         COMMAND ${PYTHON_BIN} scripts/cpplint.py --filter=${STYLE_FILTER} ${ALL_SOURCES} ${ALL_INCLUDES}
 )
 
-add_subdirectory(tests)
-add_subdirectory(tools)
+if(ARX_BUILD_TESTS)
+	add_subdirectory(tests ${CMAKE_SOURCE_DIR}/bin/tests)
+endif()
 
-
+if(ARX_BUILD_TOOLS)
+	add_subdirectory(tools ${CMAKE_SOURCE_DIR}/bin/tools)
+endif()
