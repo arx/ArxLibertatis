@@ -193,15 +193,29 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define INKEY_N				49
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct EERIE_RGBB
 {
+	EERIE_RGBB()
+	{
+		r = g = b = 0;
+	}
+
 	float r;
 	float g;
 	float b;
-} EERIE_RGBB;
+};
 
-typedef struct
+struct PROJECT
 {
+	PROJECT()
+		:
+		  soundmode(0), compatibility(0), ambient(0),
+		  improve(0), detectliving(0), improvespeed(0),
+		  telekinesis(0), multiplayer(0), demo(0),
+		  bits(0), hide(0), TextureSize(0), TextureBits(0), 
+		  interpolatemouse(0), vsync(0)
+	{}
+
 	long            soundmode;
 	long            compatibility;
 	long            ambient;
@@ -220,7 +234,7 @@ typedef struct
 	long            interpolatemouse;
 	long            vsync;
 	std::string     localisationpath;
-} PROJECT;
+};
 
 typedef struct
 {
