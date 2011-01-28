@@ -90,6 +90,7 @@ float Xratio = 1.f;
 float Yratio = 1.f;
 extern long CYRIL_VERSION;
 extern CMenuConfig * pMenuConfig;
+long COMPUTE_PORTALS = 1;
 
 
 bool IntersectLinePlane(EERIE_3D * l1, EERIE_3D * l2, EERIEPOLY * ep, EERIE_3D * intersect);
