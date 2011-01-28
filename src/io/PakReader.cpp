@@ -133,7 +133,7 @@ inline bool safeGet(T & data, const char * & pos, uint32_t & fat_size) {
 }
 
 bool PakReader::Open(const std::string& name) {
-	
+
 	FILE * newfile = fopen(name.c_str(), "rb");
 	
 	if(!newfile) {
@@ -176,7 +176,7 @@ bool PakReader::Open(const std::string& name) {
 		printf("WARNING: unknown PAK key ID 0x%08x, assuming no key\n", *(uint32_t*)newfat);
 	}
 	
-	PakDirectory * newroot = new PakDirectory(NULL, NULL);
+	PakDirectory * newroot = new PakDirectory();
 	
 	const char * pos = newfat;
 	

@@ -70,7 +70,7 @@ public:
 	
 public:
 	
-	PakDirectory(PakDirectory * p, const std::string& n);
+	PakDirectory( PakDirectory * p = 0, const std::string& n = "" );
 	~PakDirectory();
 	
 	PakDirectory * addDirectory(const std::string& sname);

@@ -222,7 +222,7 @@ extern CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer_D3DVERTEX3_T;	// VB using 
 extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBuffer;
 extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBufferTransform;
 
-extern char pStringMod[];
+extern std::string pStringMod;
 //-----------------------------------------------------------------------------
 // Our Main Danae Application.& Instance
 DANAE danaeApp;
@@ -1243,7 +1243,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 		
 		if(pStringMod[0]) {
 			LogInfo << pStringMod;
-			if(PAK_AddPak(pStringMod)) {
+			if(PAK_AddPak(pStringMod.c_str())) {
 				LogInfo << "LoadMode OK";
 			}
 		}
@@ -1252,7 +1252,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 		LogInfo << PAK_DATA;
 		NOBUILDMAP=1;
 		NOCHECKSUM=1;
-		if(PAK_AddPak(PAK_DATA)) {
+		if(PAK_AddPak( PAK_DATA)) {
 			LogInfo << "LoadMode OK";
 		} else {
 			LogError << "Unable to Find Data File";

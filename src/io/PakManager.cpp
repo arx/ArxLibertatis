@@ -69,7 +69,7 @@ using std::vector;
 
 // TODO prefer real files over those in PAK?
 
-PakManager * pPakManager = NULL;
+PakManager * pPakManager = 0;
 
 bool PAK_AddPak(const char * pakfile) {
 	
@@ -275,7 +275,7 @@ bool PakManager::AddPak(const std::string& pakname) {
 			return true;
 		}
 	}
-	
+
 	PakReader * reader = new PakReader();
 	if(!reader->Open(pakname)) {
 		delete reader;
