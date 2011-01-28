@@ -42,8 +42,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEDraw.h"
 #include "window/Mercury_dx_input.h"
 
-#include "io/Logger.h"
-
 using std::wistringstream;
 
 //#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
@@ -473,8 +471,6 @@ bool MENU_NoActiveWindow()
 
 void GetTextSize(HFONT _hFont, const char *_lpszUText, int *_iWidth, int *_iHeight)
 {
-	LogWarning << "GetTextSize";
-	/*
 	HDC hDC;
 
 	if (danaeApp.m_pddsRenderTarget)
@@ -491,9 +487,7 @@ void GetTextSize(HFONT _hFont, const char *_lpszUText, int *_iWidth, int *_iHeig
 
             danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 		}
-	}*/
-	*_iWidth = 10;
-	*_iHeight = 10;
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -2118,8 +2112,7 @@ static void ExtractAllCreditsTextInformations(HDC& _hDC)
 
 static void InitCredits( void )
 {
-	LogWarning << "InitCredits";
-	/*HDC hDC;
+	HDC hDC;
 
 	if( SUCCEEDED( danaeApp.m_pddsRenderTarget->GetDC(&hDC) ) )
 	{
@@ -2127,7 +2120,7 @@ static void InitCredits( void )
 		ExtractAllCreditsTextInformations(hDC);
 		
 		danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-	}*/
+	}
 }
 
 
@@ -2170,8 +2163,6 @@ static void DrawCredits(void)
 		ARXmenu.mda->creditspos-=0.025f*(float)(ARX_TIME_Get( false )-ARXmenu.mda->creditstart);
 		ARXmenu.mda->creditstart=ARX_TIME_Get( false );
 		
-		LogWarning << "DrawCredits";
-		/*
 		if( SUCCEEDED( danaeApp.m_pddsRenderTarget->GetDC(&hDC) ) )
 		{
 			SetBkMode(hDC,TRANSPARENT);	
@@ -2218,7 +2209,7 @@ static void DrawCredits(void)
 
 			}
 			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-		}*/
+		}
 	}
 
 

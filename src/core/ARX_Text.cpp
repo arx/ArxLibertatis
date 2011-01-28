@@ -119,8 +119,6 @@ long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, _TCHAR * _lpszUText, int _i
 
 	if (danaeApp.m_pddsRenderTarget)
 	{
-		LogWarning << "ARX_UNICODE_ForceFormattingInRect";
-		/*
 		HDC hDC;
 
 		if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
@@ -193,7 +191,7 @@ long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, _TCHAR * _lpszUText, int _i
 			}
 
 			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-		}*/
+		}
 	}
 
 	return iTemp;
@@ -317,8 +315,6 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 		{
 			hDC = hHDC;
 		}
-		LogWarning << "ARX_UNICODE_DrawTextInRect";
-		/*
 
 		//TODO(lubosz): text render crash
 //		if (false)
@@ -361,7 +357,7 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 			}
 
 			return n;
-		}*/
+		}
 	}
 
 	return 0;
@@ -426,8 +422,6 @@ long UNICODE_ARXDrawTextCenter(float x, float y, _TCHAR * str, COLORREF col, COL
 	// Get a DC for the surface. Then, write out the buffer
 	if (danaeApp.m_pddsRenderTarget)
 	{
-		LogWarning << "UNICODE_ARXDrawTextCenter";
-		/*
 		if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 		{
 			if (bcol == 0x00FF00FF) SetBkMode(hDC, TRANSPARENT);
@@ -458,7 +452,7 @@ long UNICODE_ARXDrawTextCenter(float x, float y, _TCHAR * str, COLORREF col, COL
 
 			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 			return siz.cx;
-		}*/
+		}
 	}
 
 	return 0;
@@ -699,8 +693,6 @@ void _ShowText(char * text)
 		if (danaeApp.DANAEStartRender())
 		{
 
-			LogWarning << "_ShowText";
-			/*
 			HDC hDC;
 
 			if (danaeApp.m_pddsRenderTarget)
@@ -712,7 +704,7 @@ void _ShowText(char * text)
 					ExtTextOut(hDC, 0, 0, 0, NULL, text, lstrlen(text), NULL);
 					danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 				}
-			}*/
+			}
 
 			danaeApp.DANAEEndRender();
 
@@ -803,8 +795,6 @@ bool CARXTextManager::AddText(HFONT _hFont, _TCHAR * _lpszUText, RECT & _rRect, 
 					HDC hDC;
 					SIZE sSize;
 
-					LogWarning << "CARXTextManager::AddText";
-					/*
 					if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 					{
 						SelectObject(hDC, pArxText->hFont);
@@ -817,10 +807,10 @@ bool CARXTextManager::AddText(HFONT _hFont, _TCHAR * _lpszUText, RECT & _rRect, 
 						sSize.cy *= iNbLigneClipp;
 					}
 					else
-					{*/
+					{
 						sSize.cy = _rRect.bottom - _rRect.top;
 						pArxText->lTailleLigne = sSize.cy;
-					//}
+					}
 
 					SetRect(&pArxText->rRectClipp,
 					        pArxText->rRect.left,
@@ -876,8 +866,6 @@ bool CARXTextManager::AddText(ARX_TEXT * _pArxText)
 					HDC hDC;
 					SIZE sSize;
 
-					LogWarning << "CARXTextManager::AddText";
-					/*
 					if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 					{
 						SelectObject(hDC, pArxText->hFont);
@@ -890,10 +878,10 @@ bool CARXTextManager::AddText(ARX_TEXT * _pArxText)
 						sSize.cy *= pArxText->iNbLineClip;
 					}
 					else
-					{*/
+					{
 						sSize.cy = pArxText->rRect.bottom - pArxText->rRect.top;
 						pArxText->lTailleLigne = sSize.cy;
-					//}
+					}
 
 					SetRect(&pArxText->rRectClipp,
 					        pArxText->rRect.left,
@@ -977,8 +965,6 @@ void CARXTextManager::Render()
 
 	HDC hDC = NULL;
 
-	LogWarning << "CARXTextManager::Render";
-	/*
 	if (danaeApp.m_pddsRenderTarget && vText.size())
 	{
 		danaeApp.m_pddsRenderTarget->GetDC(&hDC);
@@ -1031,7 +1017,7 @@ void CARXTextManager::Render()
 	if (hDC)
 	{
 		danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-	}*/
+	}
 }
 
 //-----------------------------------------------------------------------------

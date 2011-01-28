@@ -5498,12 +5498,12 @@ static float _AvgFrameDiff = 150.f;
 
 	if(bForceGDI)
 	{
-		LogWarning << "bForceGDI";
-		//HDC hDC;
-		//if( SUCCEEDED( m_pddsRenderTarget->GetDC(&hDC) ) )
-		//{
-		//	m_pddsRenderTarget->ReleaseDC(hDC);
-		//}
+		HDC hDC;
+
+		if( SUCCEEDED( m_pddsRenderTarget->GetDC(&hDC) ) )
+		{
+			m_pddsRenderTarget->ReleaseDC(hDC);
+		}
 	}
 
 	if(	(pGetInfoDirectInput)&&

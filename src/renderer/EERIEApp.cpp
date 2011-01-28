@@ -72,7 +72,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/HERMESMain.h"
 #include "io/HERMESNet.h"
 #include "io/PakManager.h"
-#include "io/Logger.h"
 
 using std::max;
 
@@ -1171,8 +1170,7 @@ HRESULT CD3DApplication::SetClipping(float x1, float y1, float x2, float y2)
 VOID CD3DApplication::OutputText(DWORD x, DWORD y, const char * str)
 {
 	HDC hDC;
-	LogWarning << "CD3DApplication::OutputText";
-/*
+
 	// Get a DC for the surface. Then, write out the buffer
 	if (m_pddsRenderTarget)
 	{
@@ -1196,7 +1194,7 @@ VOID CD3DApplication::OutputText(DWORD x, DWORD y, const char * str)
 			ExtTextOut(hDC, x, y, 0, NULL, str, lstrlen(str), NULL);
 			m_pddsRenderTargetLeft->ReleaseDC(hDC);
 		}
-	}*/
+	}
 }
 
 //*************************************************************************************
