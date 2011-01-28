@@ -944,8 +944,8 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string& dir)
 //*************************************************************************************
 //*************************************************************************************
 
-void LogDirCreation(char * dir) {
-	if(DirectoryExist(dir)) {
+void LogDirCreation( const std::string& dir) {
+	if(DirectoryExist(dir.c_str())) {
 		LogDebug << "LogDirCreation: " << dir;
 	}
 }
@@ -953,8 +953,8 @@ void LogDirCreation(char * dir) {
 //*************************************************************************************
 //*************************************************************************************
 
-void LogDirDestruction(char * dir) {
-	if(DirectoryExist(dir)) {
+void LogDirDestruction( const std::string& dir ) {
+	if(DirectoryExist(dir.c_str())) {
 		LogDebug << "LogDirDestruction: " << dir;
 	}
 }

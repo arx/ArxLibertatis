@@ -68,7 +68,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 EERIE_3DOBJ * _LoadTheObj(const char * text, const char * path);
 void SaveIOScript(INTERACTIVE_OBJ * io, long fl);
-void LogDirCreation( const char * dir);
+void LogDirCreation( const std::string& dir);
 
 #define	SP_IGNORED	1
 #define	SP_CHILD	2
@@ -94,7 +94,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& file);
 void DanaeClearLevel(long flags = 0);
 void DanaeClearAll();
 void RestoreLastLoadedLightning();
-void LogDirDestruction(char * dir);
+void LogDirDestruction( const std::string& dir);
 
 void CheckIO_NOT_SAVED();
 INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans);
