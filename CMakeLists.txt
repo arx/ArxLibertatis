@@ -9,7 +9,7 @@ option(ARX_BUILD_TESTS ON)
 option(ARX_BUILD_TOOLS ON)
 
 include_directories(
-	include
+	src
 IF(UNIX)
 	#include wine
 	/usr/include/wine/windows
