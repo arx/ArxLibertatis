@@ -739,7 +739,6 @@ bool CD3DFramework7::EndRender()
 	return true;
 }
 DWORD RenderStartTicks = 0;
-extern bool bForceGDI;
 
 //-----------------------------------------------------------------------------
 // Name: ShowFrame()

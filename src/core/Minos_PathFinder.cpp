@@ -393,7 +393,7 @@ UBool PathFinder::WanderAround(const ULong & flags, const ULong & f, const Float
 
 	for (ULong i(0); i < step_c; i++)
 	{
-		ULong nb = ULong(rad * rnd() * DIV50);
+		ULong nb = ULong(rad * rnd() * ( 1.0f / 50 ));
 		long _current = f;
 
 		while (nb)
@@ -708,7 +708,7 @@ Void PathFinder::AddEnlightmentCost(MINOSNode * node)
 		{
 			Float l_cost(fac3);
 
-			l_cost *= slight_l[i]->intensity * (slight_l[i]->rgb.r + slight_l[i]->rgb.g + slight_l[i]->rgb.b) * DIV3;
+			l_cost *= slight_l[i]->intensity * (slight_l[i]->rgb.r + slight_l[i]->rgb.g + slight_l[i]->rgb.b) * ( 1.0f / 3 );
 
 			if (slight_l[i]->fallstart >= dist)
 				node->g_cost += l_cost;

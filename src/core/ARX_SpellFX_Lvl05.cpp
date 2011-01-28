@@ -137,7 +137,7 @@ void CCurePoison::Create()
 	cp.p3Direction.x = 0;
 	cp.p3Direction.y = -10;
 	cp.p3Direction.z = 0;
-	cp.fAngle = DEG2RAD(5);
+	cp.fAngle = radians(5);
 	cp.fSpeed = 120; 
 	cp.fSpeedRandom = 84; 
 	cp.p3Gravity.x = 0;
@@ -445,8 +445,8 @@ float CRuneOfGuarding::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	stitepos.z = z;
 
 	float gtc = (float)ARX_TIME_Get();
-	float v = EEsin(gtc * DIV1000) * DIV10;
-	stiteangle.b = MAKEANGLE(gtc * DIV1000); 
+	float v = EEsin(gtc * ( 1.0f / 1000 )) * ( 1.0f / 10 );
+	stiteangle.b = MAKEANGLE(gtc * ( 1.0f / 1000 )); 
 	stitecolor.r = 0.4f - v;
 	stitecolor.g = 0.4f - v;
 	stitecolor.b = 0.6f - v;
@@ -527,7 +527,7 @@ void LaunchPoisonExplosion(EERIE_3D * aePos)
 	cp.p3Direction.x = 0;
 	cp.p3Direction.y = 4;
 	cp.p3Direction.z = 0;
-	cp.fAngle = DEG2RAD(360);
+	cp.fAngle = radians(360);
 	cp.fSpeed = 200;
 	cp.fSpeedRandom = 0;
 	cp.p3Gravity.x = 0;
@@ -799,7 +799,7 @@ void CPoisonProjectile::Update(unsigned long _ulTime)
 			cp.p3Direction.y = -eMove.y;
 			cp.p3Direction.z = -eMove.z;
 
-			cp.fAngle = DEG2RAD(4);
+			cp.fAngle = radians(4);
 			cp.fSpeed = 150;
 			cp.fSpeedRandom = 50;//15;
 			cp.p3Gravity.x = 0;
@@ -973,9 +973,9 @@ float CPoisonProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	stitepos.x = lastpos.x;
 	stitepos.y = lastpos.y;
 	stitepos.z = lastpos.z;
-	stiteangle.b = -RAD2DEG(bubu);
+	stiteangle.b = -degrees(bubu);
 	stiteangle.a = 0;
-	stiteangle.g = -90 - RAD2DEG(bubu1);
+	stiteangle.g = -90 - degrees(bubu1);
 	stitecolor.r = 0.7f;
 	stitecolor.g = 0.7f;
 	stitecolor.b = 0.7f;
@@ -1056,15 +1056,15 @@ void CMultiPoisonProjectile::Create(EERIE_3D _eSrc, float _afBeta = 0)
 
 		if (spells[spellinstance].hand_group != -1)
 		{
-			_eSrc.x = spells[spellinstance].hand_pos.x - EEsin(DEG2RAD(afBeta)) * 90;
+			_eSrc.x = spells[spellinstance].hand_pos.x - EEsin(radians(afBeta)) * 90;
 			_eSrc.y = spells[spellinstance].hand_pos.y;
-			_eSrc.z = spells[spellinstance].hand_pos.z + EEcos(DEG2RAD(afBeta)) * 90;
+			_eSrc.z = spells[spellinstance].hand_pos.z + EEcos(radians(afBeta)) * 90;
 		}
 		else
 		{
-			_eSrc.x = player.pos.x - EEsin(DEG2RAD(afBeta)) * 90;
+			_eSrc.x = player.pos.x - EEsin(radians(afBeta)) * 90;
 			_eSrc.y = player.pos.y;
-			_eSrc.z = player.pos.z + EEcos(DEG2RAD(afBeta)) * 90;
+			_eSrc.z = player.pos.z + EEcos(radians(afBeta)) * 90;
 		}
 	}
 	else
@@ -1073,15 +1073,15 @@ void CMultiPoisonProjectile::Create(EERIE_3D _eSrc, float _afBeta = 0)
 
 		if (spells[spellinstance].hand_group != -1)
 		{
-			_eSrc.x = spells[spellinstance].hand_pos.x - EEsin(DEG2RAD(afBeta)) * 90;
+			_eSrc.x = spells[spellinstance].hand_pos.x - EEsin(radians(afBeta)) * 90;
 			_eSrc.y = spells[spellinstance].hand_pos.y;
-			_eSrc.z = spells[spellinstance].hand_pos.z + EEcos(DEG2RAD(afBeta)) * 90;
+			_eSrc.z = spells[spellinstance].hand_pos.z + EEcos(radians(afBeta)) * 90;
 		}
 		else
 		{
-			_eSrc.x = inter.iobj[spells[spellinstance].caster]->pos.x - EEsin(DEG2RAD(afBeta)) * 90;
+			_eSrc.x = inter.iobj[spells[spellinstance].caster]->pos.x - EEsin(radians(afBeta)) * 90;
 			_eSrc.y = inter.iobj[spells[spellinstance].caster]->pos.y;
-			_eSrc.z = inter.iobj[spells[spellinstance].caster]->pos.z + EEcos(DEG2RAD(afBeta)) * 90;
+			_eSrc.z = inter.iobj[spells[spellinstance].caster]->pos.z + EEcos(radians(afBeta)) * 90;
 		}
 	}
 
@@ -1176,8 +1176,8 @@ float CMultiPoisonProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			damages[t].pos.z  = pPoisonProjectile->eCurPos.z;
 			damages[t].radius = 120.f;
 			float v = spells[spellinstance].caster_level;
-			v = 4.f + v * DIV10 * 6.f ;
-			damages[t].damages	= v * DIV1000 * _framedelay;
+			v = 4.f + v * ( 1.0f / 10 ) * 6.f ;
+			damages[t].damages	= v * ( 1.0f / 1000 ) * _framedelay;
 			damages[t].area		= DAMAGE_FULL;
 			damages[t].duration	= ARX_CLEAN_WARN_CAST_LONG(FrameDiff);
 			damages[t].source	= spells[spellinstance].caster;
@@ -1268,7 +1268,7 @@ void CRepelUndead::Create(EERIE_3D aeSrc, float afBeta)
 	eTarget.z = eSrc.z = aeSrc.z;
 
 	fBeta = afBeta;
-	fBetaRad = DEG2RAD(fBeta);
+	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
 
@@ -1326,8 +1326,8 @@ float CRepelUndead::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	rgbObjColor.g = 0.6f;
 	rgbObjColor.b = 0.8f;
 
-	float vv = 1.f + (EEsin(ARX_TIME_Get() * DIV1000)); 
-	vv *= DIV2;
+	float vv = 1.f + (EEsin(ARX_TIME_Get() * ( 1.0f / 1000 ))); 
+	vv *= ( 1.0f / 2 );
 	vv += 1.1f;
 	eObjScale.z = vv;
 	eObjScale.y = vv;
@@ -1472,13 +1472,13 @@ void CLevitate::CreateConeStrip(float rbase, float rhaut, float hauteur, int def
 		*pind++ = ind++;
 		*pind++ = ind++;
 
-		vertex->x = rhaut * EEcos(DEG2RAD(a));
+		vertex->x = rhaut * EEcos(radians(a));
 		vertex->y = -hauteur;
-		vertex->z = rhaut * EEsin(DEG2RAD(a));
+		vertex->z = rhaut * EEsin(radians(a));
 		vertex++;
-		vertex->x = rbase * EEcos(DEG2RAD(a));
+		vertex->x = rbase * EEcos(radians(a));
 		vertex->y = 0.f;
-		vertex->z = rbase * EEsin(DEG2RAD(a));
+		vertex->z = rbase * EEsin(radians(a));
 		vertex++;
 
 		a += da;
@@ -1779,7 +1779,7 @@ float CLevitate::Render(LPDIRECT3DDEVICE7 device)
 					particle[j].exist = 1;
 					particle[j].zdec = 0;
 
-					float a = DEG2RAD(360.f * rnd());
+					float a = radians(360.f * rnd());
 
 					particle[j].ov.x = this->pos.x + this->rbase * EEcos(a);
 					particle[j].ov.y = this->pos.y;
@@ -1862,7 +1862,7 @@ float CLevitate::Render(LPDIRECT3DDEVICE7 device)
 					particle[j].exist = 1;
 					particle[j].zdec = 0;
 
-					float a = DEG2RAD(360.f * rnd());
+					float a = radians(360.f * rnd());
 
 					particle[j].ov.x = this->pos.x + this->rbase * EEcos(a);
 					particle[j].ov.y = this->pos.y;

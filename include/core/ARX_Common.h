@@ -62,6 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 						Include
 ------------------------------------------------------------*/
 
+// TODO remove these
 #include <climits>
 #include <cstdio>
 #include <cstdarg>
@@ -85,7 +86,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #elif defined(_WIN32)
 	#define	ARX_PLATFORM	ARX_PLATFORM_WIN32
 #elif defined(__linux)
-	#define	ARX_PLATFORM	ARX_PLATFORM_LINUX
+    #define	ARX_PLATFORM	ARX_PLATFORM_LINUX
 #else
 	#define	ARX_PLATFORM	ARX_PLATFORM_UNKNOWN
 #endif
@@ -122,12 +123,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 // TODO: Move this in a platform specific file
 #if ARX_COMPILER_MSVC
-	#include <direct.h>
+    #include <direct.h>
 
-	// Windows like to be non-standard... sigh
-	#define strcasecmp  _stricmp
-	#define strncasecmp _strnicmp
-	#define chdir       _chdir
+    // Windows like to be non-standard... sigh
+    #define strcasecmp  _stricmp
+    #define strncasecmp _strnicmp
+    #define chdir       _chdir
 #endif
 
 /* ---------------------------------------------------------

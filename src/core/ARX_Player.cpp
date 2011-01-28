@@ -276,9 +276,9 @@ void ARX_KEYRING_Combine(INTERACTIVE_OBJ * io)
 //*************************************************************************************
 void ARX_PLAYER_FrontPos(EERIE_3D * pos)
 {
-	pos->x = player.pos.x - EEsin(DEG2RAD(MAKEANGLE(player.angle.b))) * 100.f;
+	pos->x = player.pos.x - EEsin(radians(MAKEANGLE(player.angle.b))) * 100.f;
 	pos->y = player.pos.y + 100.f; //-100.f;
-	pos->z = player.pos.z + EEcos(DEG2RAD(MAKEANGLE(player.angle.b))) * 100.f;
+	pos->z = player.pos.z + EEcos(radians(MAKEANGLE(player.angle.b))) * 100.f;
 }
 
 //*************************************************************************************
@@ -417,7 +417,7 @@ void ARX_PLAYER_ManageTorch()
 	if (CURRENT_TORCH)
 	{
 		CURRENT_TORCH->ignition = 0;
-		CURRENT_TORCH->durability -= FrameDiff * DIV10000;
+		CURRENT_TORCH->durability -= FrameDiff * ( 1.0f / 10000 );
 
 		if (CURRENT_TORCH->durability <= 0)
 		{
@@ -702,10 +702,10 @@ float ARX_PLAYER_Get_Skill_Object_Knowledge(long type)
 	{
 		if (type == 0)
 			return (float)player.Skill_Object_Knowledge
-			       + ((player.Attribute_Mind * 3.f + player.Attribute_Dexterity + player.Attribute_Strength) * DIV2);
+			       + ((player.Attribute_Mind * 3.f + player.Attribute_Dexterity + player.Attribute_Strength) * ( 1.0f / 2 ));
 
 		return (float)player.Skill_Object_Knowledge + player.Mod_Skill_Object_Knowledge
-		       + ((player.Attribute_Mind * 3.f + player.Attribute_Dexterity + player.Attribute_Strength) * DIV2);
+		       + ((player.Attribute_Mind * 3.f + player.Attribute_Dexterity + player.Attribute_Strength) * ( 1.0f / 2 ));
 	}
 
 	if (type == 0)
@@ -837,7 +837,7 @@ void ARX_PLAYER_ComputePlayerStats()
 	float t = ARX_PLAYER_Get_Skill_Defense(0);
 
 
-	float fCalc = t * DIV10 - 1 ;
+	float fCalc = t * ( 1.0f / 10 ) - 1 ;
 	ARX_CHECK_UCHAR(fCalc);
 	player.armor_class = ARX_CLEAN_WARN_CAST_UCHAR(fCalc);
 
@@ -846,14 +846,14 @@ void ARX_PLAYER_ComputePlayerStats()
 
 	player.damages = 100;
 	player.resist_magic = (unsigned char)(float)(player.Attribute_Mind * 2.f
-	                      * (1.f + (ARX_PLAYER_Get_Skill_Casting(0)) * DIV200));
+	                      * (1.f + (ARX_PLAYER_Get_Skill_Casting(0)) * ( 1.0f / 200 )));
 
-	fCalc = player.Attribute_Constitution * 2 + ((ARX_PLAYER_Get_Skill_Defense(1) * DIV4));
+	fCalc = player.Attribute_Constitution * 2 + ((ARX_PLAYER_Get_Skill_Defense(1) * ( 1.0f / 4 )));
 	ARX_CHECK_UCHAR(fCalc);
 	player.resist_poison = ARX_CLEAN_WARN_CAST_UCHAR(fCalc);
 
 
-	player.damages = (player.Attribute_Strength - 10) * DIV2;
+	player.damages = (player.Attribute_Strength - 10) * ( 1.0f / 2 );
 
 	if (player.damages < 1.f) player.damages = 1.f;
 
@@ -1160,7 +1160,7 @@ void ARX_PLAYER_ComputePlayerFullStats()
 	if (player.Full_Critical_Hit < 0) player.Full_Critical_Hit = 0;
 
 	player.Full_damages = player.damages + player.Mod_damages
-	                      + player.Full_Skill_Close_Combat * DIV10;
+	                      + player.Full_Skill_Close_Combat * ( 1.0f / 10 );
 
 	if (player.Full_damages < 1) player.Full_damages = 1;
 
@@ -1578,11 +1578,11 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 	{
 		UpdateIOInvisibility(inter.iobj[0]);
 		// Natural LIFE recovery
-		float inc = 0.00008f * Framedelay * (player.Full_Attribute_Constitution + player.Full_Attribute_Strength * DIV2 + player.Full_Skill_Defense) * DIV50;
+		float inc = 0.00008f * Framedelay * (player.Full_Attribute_Constitution + player.Full_Attribute_Strength * ( 1.0f / 2 ) + player.Full_Skill_Defense) * ( 1.0f / 50 );
 
 		if (player.life > 0.f)
 		{
-			float inc_hunger = 0.00008f * Framedelay * (player.Full_Attribute_Constitution + player.Full_Attribute_Strength * DIV2) * DIV50;
+			float inc_hunger = 0.00008f * Framedelay * (player.Full_Attribute_Constitution + player.Full_Attribute_Strength * ( 1.0f / 2 )) * ( 1.0f / 50 );
 
 			// Check for player hungry sample playing
 			if (((player.hunger > 10.f) && (player.hunger - inc_hunger <= 10.f))
@@ -1613,12 +1613,12 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 
 			if (!BLOCK_PLAYER_CONTROLS)
 			{
-				if (player.hunger < 0.f) player.life -= inc * DIV2;
+				if (player.hunger < 0.f) player.life -= inc * ( 1.0f / 2 );
 				else player.life += inc;
 			}
 
 			// Natural MANA recovery
-			player.mana += 0.00008f * Framedelay * ((player.Full_Attribute_Mind + player.Full_Skill_Etheral_Link) * 10) * DIV100; //_framedelay*DIV1000;
+			player.mana += 0.00008f * Framedelay * ((player.Full_Attribute_Mind + player.Full_Skill_Etheral_Link) * 10) * ( 1.0f / 100 ); //_framedelay*( 1.0f / 1000 );
 
 			if (player.mana > player.Full_maxmana) player.mana = player.Full_maxmana;
 		}
@@ -1631,19 +1631,19 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 			if (player.poison > 0.f)
 			{
 				float cp = player.poison;
-				cp *= DIV2 * Framedelay * DIV1000 * DIV2;
+				cp *= ( 1.0f / 2 ) * Framedelay * ( 1.0f / 1000 ) * ( 1.0f / 2 );
 				float faster = 10.f - player.poison;
 
 				if (faster < 0.f) faster = 0.f;
 
 				if (rnd() * 100.f > player.resist_poison + faster)
 				{
-					float dmg = cp * DIV3;
+					float dmg = cp * ( 1.0f / 3 );
 
 					if (player.life - dmg <= 0.f) ARX_DAMAGES_DamagePlayer(dmg, DAMAGE_TYPE_POISON, -1, NULL);
 					else player.life -= dmg;
 
-					player.poison -= cp * DIV10;
+					player.poison -= cp * ( 1.0f / 10 );
 				}
 				else player.poison -= cp;
 			}
@@ -1943,18 +1943,18 @@ void ARX_PLAYER_Manage_Visual()
 				io->halo.color.b = 0.f;
 				io->halo.flags |= HALO_ACTIVE | HALO_DYNLIGHT;
 				io->halo.radius = 20.f;
-				player.life += (float)FrameDiff * DIV10; 
+				player.life += (float)FrameDiff * ( 1.0f / 10 ); 
 				player.life = min(player.life, player.maxlife);
-				player.mana += (float)FrameDiff * DIV10; 
+				player.mana += (float)FrameDiff * ( 1.0f / 10 ); 
 				player.mana = min(player.mana, player.maxmana);
 
 			}
 
 		if (cur_mr == 3)
 		{
-			player.life += (float)FrameDiff * DIV20; 
+			player.life += (float)FrameDiff * ( 1.0f / 20 ); 
 			player.life = min(player.life, player.maxlife);
-			player.mana += (float)FrameDiff * DIV20; 
+			player.mana += (float)FrameDiff * ( 1.0f / 20 ); 
 			player.mana = min(player.mana, player.maxmana);
 		}
 
@@ -2747,7 +2747,7 @@ void ARX_PLAYER_Frame_Update()
 			}
 			else 
 			{
-				v *= DIV10; 
+				v *= ( 1.0f / 10 ); 
 				io->_npcdata->ex_rotate->group_rotate[0].a = v; //head
 				io->_npcdata->ex_rotate->group_rotate[1].a = v; //neck
 				io->_npcdata->ex_rotate->group_rotate[2].a = v * 4; //chest
@@ -2757,7 +2757,7 @@ void ARX_PLAYER_Frame_Update()
 		}
 		else
 		{
-			v *= DIV4; 
+			v *= ( 1.0f / 4 ); 
 			io->_npcdata->ex_rotate->group_rotate[0].a = v; //head
 			io->_npcdata->ex_rotate->group_rotate[1].a = v; //neck
 			io->_npcdata->ex_rotate->group_rotate[2].a = v; //chest
@@ -2863,9 +2863,9 @@ bool Valid_Jump_Pos()
 
 	for (float vv = 0; vv < 360.f; vv += 20.f)
 	{
-		tmpp.origin.x = player.pos.x - EEsin(DEG2RAD(vv)) * 20.f;
+		tmpp.origin.x = player.pos.x - EEsin(radians(vv)) * 20.f;
 		tmpp.origin.y = player.pos.y - PLAYER_BASE_HEIGHT;
-		tmpp.origin.z = player.pos.z + EEcos(DEG2RAD(vv)) * 20.f;
+		tmpp.origin.z = player.pos.z + EEcos(radians(vv)) * 20.f;
 		tmpp.radius = player.physics.cyl.radius;
 		float anything = CheckAnythingInCylinder(&tmpp, inter.iobj[0], CFLAG_JUST_TEST); //-cyl->origin.y;
 
@@ -2992,7 +2992,7 @@ void PlayerMovementIterate(float DeltaTime)
 
 	if ((inter.iobj[0]->_npcdata->climb_count != 0.f) && (FrameDiff > 0))
 	{
-		inter.iobj[0]->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * (float)FrameDiff * DIV10;
+		inter.iobj[0]->_npcdata->climb_count -= MAX_ALLOWED_PER_SECOND * (float)FrameDiff * ( 1.0f / 10 );
 
 		if (inter.iobj[0]->_npcdata->climb_count < 0) inter.iobj[0]->_npcdata->climb_count = 0.f;
 	}
@@ -3051,7 +3051,7 @@ void PlayerMovementIterate(float DeltaTime)
 			player.physics.cyl.origin.z = player.pos.z;
 		}
 
-		if (EEfabs(lastposy - player.pos.y) < DeltaTime * DIV10) 
+		if (EEfabs(lastposy - player.pos.y) < DeltaTime * ( 1.0f / 10 )) 
 			TRUE_FIRM_GROUND = 1;
 		else
 			TRUE_FIRM_GROUND = 0;
@@ -3146,7 +3146,7 @@ void PlayerMovementIterate(float DeltaTime)
 
 				if (fh > 400.f) 
 				{
-					float dmg = (fh - 400.f) * DIV15;
+					float dmg = (fh - 400.f) * ( 1.0f / 15 );
 
 					if (dmg > 0.f)
 					{
@@ -3185,7 +3185,7 @@ void PlayerMovementIterate(float DeltaTime)
 			else
 			{
 				jump_mul = 0.5f;
-				jump_mul += (float)(LAST_JUMP_ENDTIME + 300 - ARXTime) * DIV300;
+				jump_mul += (float)(LAST_JUMP_ENDTIME + 300 - ARXTime) * ( 1.0f / 300 );
 
 				if (jump_mul > 1.f) jump_mul = 1.f;
 			}
@@ -3252,7 +3252,7 @@ void PlayerMovementIterate(float DeltaTime)
 
 		if (player.climbing)
 		{
-			player.physics.velocity.y *= DIV2;
+			player.physics.velocity.y *= ( 1.0f / 2 );
 		}
 
 		if ((mv2.x == 0) && (mv2.y == 0) && (mv2.z == 0))
@@ -3261,7 +3261,7 @@ void PlayerMovementIterate(float DeltaTime)
 		else
 		{
 			float tt = 1.f / TRUEVector_Magnitude(&mv2);
-			tt *= mval * DIV80;
+			tt *= mval * ( 1.0f / 80 );
 
 			mv2.x = mv2.x * tt;
 			mv2.y = mv2.y * tt;
@@ -3324,9 +3324,9 @@ void PlayerMovementIterate(float DeltaTime)
 
 				if ((ep->type & POLY_LAVA) && (EEfabs(epcentery - (player.pos.y - PLAYER_BASE_HEIGHT)) < 30))
 				{
-					float mul = 1.f - (EEfabs(epcentery - (player.pos.y - PLAYER_BASE_HEIGHT)) * DIV30);
+					float mul = 1.f - (EEfabs(epcentery - (player.pos.y - PLAYER_BASE_HEIGHT)) * ( 1.0f / 30 ));
 #define LAVA_DAMAGE 10.f
-					float damages = LAVA_DAMAGE * FrameDiff * DIV100 * mul;
+					float damages = LAVA_DAMAGE * FrameDiff * ( 1.0f / 100 ) * mul;
 					damages = ARX_SPELLS_ApplyFireProtection(inter.iobj[0], damages);
 
 					ARX_DAMAGES_DamagePlayer(damages, DAMAGE_TYPE_FIRE, 0, NULL);
@@ -3489,11 +3489,11 @@ void PlayerMovementIterate(float DeltaTime)
 
 						if (fh > 400.f) 
 						{
-							float dmg = (fh - 400.f) * DIV15;
+							float dmg = (fh - 400.f) * ( 1.0f / 15 );
 
 							if (dmg > 0.f)
 							{
-								Falling_Height = (player.pos.y + Falling_Height * 2) * DIV3;
+								Falling_Height = (player.pos.y + Falling_Height * 2) * ( 1.0f / 3 );
 								ARX_DAMAGES_DamagePlayer(dmg, 0, -1, &player.pos);
 								ARX_DAMAGES_DamagePlayerEquipment(dmg);
 							}
@@ -3566,7 +3566,7 @@ void PlayerMovementIterate(float DeltaTime)
 
 			if (divv > 0.f)
 			{
-				float mul = (float)FrameDiff * DIV1000 * 200.f;
+				float mul = (float)FrameDiff * ( 1.0f / 1000 ) * 200.f;
 				divv = mul / divv;
 				vect.x *= divv;
 				vect.y *= divv;
@@ -3610,17 +3610,17 @@ lasuite:
 	player.grnd_color = (float)(long)(col & 255);
 	player.grnd_color += (float)(long)((col >> 8) & 255);
 	player.grnd_color += (float)(long)((col >> 16) & 255);
-	player.grnd_color *= DIV3;
+	player.grnd_color *= ( 1.0f / 3 );
 	player.grnd_color -= 15.f; 
 	if (CURRENT_PLAYER_COLOR < player.grnd_color)
 	{
-		CURRENT_PLAYER_COLOR += FrameDiff * DIV8;
+		CURRENT_PLAYER_COLOR += FrameDiff * ( 1.0f / 8 );
 		CURRENT_PLAYER_COLOR = min(CURRENT_PLAYER_COLOR, player.grnd_color);
 	}
 
 	if (CURRENT_PLAYER_COLOR > player.grnd_color)
 	{
-		CURRENT_PLAYER_COLOR -= FrameDiff * DIV4;
+		CURRENT_PLAYER_COLOR -= FrameDiff * ( 1.0f / 4 );
 		CURRENT_PLAYER_COLOR = max(CURRENT_PLAYER_COLOR, player.grnd_color);
 	}
 
@@ -3629,12 +3629,12 @@ lasuite:
 		if ((player.Interface & INTER_COMBATMODE) || (player.doingmagic >= 2) || (InventoryDir == -1))
 		{
 			if (InventoryX > -160)
-				InventoryX -= INTERFACE_RATIO(FrameDiff * DIV3);
+				InventoryX -= INTERFACE_RATIO(FrameDiff * ( 1.0f / 3 ));
 		}
 		else
 		{
 			if (InventoryX < 0)
-				InventoryX += InventoryDir * INTERFACE_RATIO(FrameDiff * DIV3);
+				InventoryX += InventoryDir * INTERFACE_RATIO(FrameDiff * ( 1.0f / 3 ));
 		}
 
 		if (InventoryX <= -160)
@@ -3666,7 +3666,7 @@ lasuite:
 void ARX_PLAYER_Manage_Death()
 {
 	PLAYER_PARALYSED = 0;
-	float ratio = (float)(DeadTime - 2000) * DIV5000;
+	float ratio = (float)(DeadTime - 2000) * ( 1.0f / 5000 );
 
 	if (ratio >= 1.f) ratio = 1.f;
 
@@ -3690,7 +3690,7 @@ void ARX_PLAYER_Manage_Death()
 //******************************************************************************
 float GetPlayerStealth()
 {
-	return 15 + player.Full_Skill_Stealth * DIV10;
+	return 15 + player.Full_Skill_Stealth * ( 1.0f / 10 );
 }
 
 //******************************************************************************
@@ -4114,16 +4114,16 @@ void Manage_sp_max()
 
 	if ((sp_max_start != 0) && (v < 20000))
 	{
-		float modi = (20000 - v) * DIV2000 * DIV10;
+		float modi = (20000 - v) * ( 1.0f / 2000 ) * ( 1.0f / 10 );
 		float sizX = 16;
-		float px = (float)DANAECENTERX - (float)sp_max_nb * DIV2 * sizX;
+		float px = (float)DANAECENTERX - (float)sp_max_nb * ( 1.0f / 2 ) * sizX;
 		float py = (float)DANAECENTERY;
 
 		for (long i = 0; i < sp_max_nb; i++)
 		{
 			float dx = px + sizX * (float)i;
 			float dy = py + sp_max_y[i];
-			sp_max_y[i] = EEsin(dx + (float)ARXTime * DIV100) * 30.f * modi;
+			sp_max_y[i] = EEsin(dx + (float)ARXTime * ( 1.0f / 100 )) * 30.f * modi;
 			_TCHAR tex[8];
 			_stprintf(tex, _T("%c"), sp_max_ch[i]);
 			

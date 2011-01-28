@@ -88,7 +88,7 @@ void PushInterBump(TextureContainer *_pTex,D3DTLVERTEX *_pVertex);
 void PopOneInterBump(LPDIRECT3DDEVICE7 _pDevice,TextureContainer *_pTex);
 //-----------------------------------------------------------------------------
 #define MIPMESH_START 380.f
-#define MIPMESH_DIV	  DIV190
+#define MIPMESH_DIV	  ( 1.0f / 190 )
 
 #define MAX_DIST_BUMP_INTER (400.f)
 extern float IN_FRONT_DIVIDER_ITEMS;
@@ -196,7 +196,7 @@ void EERIE_ANIM_Get_Scale_Invisibility(INTERACTIVE_OBJ * io,float &invisibility,
 			{
 				if (player.Full_Skill_Intuition>spells[num].caster_level*10)
 				{
-					invisibility-=(float)player.Full_Skill_Intuition*DIV100+(float)spells[num].caster_level*DIV10;
+					invisibility-=(float)player.Full_Skill_Intuition*( 1.0f / 100 )+(float)spells[num].caster_level*( 1.0f / 10 );
 
 					if (invisibility<0.1f) invisibility=0.1f;
 					else if (invisibility>1.f) invisibility=1.f;
@@ -1651,8 +1651,8 @@ SMY_ZMAPPINFO sZMappInfo;
 	{
 		if(bUp)
 		{
-			sZMappInfo.uv[iI<<1]=(_pobj3dObj->vertexlist3[_piInd[iI]].v.x*DIV50);
-			sZMappInfo.uv[(iI<<1)+1]=(_pobj3dObj->vertexlist3[_piInd[iI]].v.z*DIV50);
+			sZMappInfo.uv[iI<<1]=(_pobj3dObj->vertexlist3[_piInd[iI]].v.x*( 1.0f / 50 ));
+			sZMappInfo.uv[(iI<<1)+1]=(_pobj3dObj->vertexlist3[_piInd[iI]].v.z*( 1.0f / 50 ));
 		}
 		else
 		{
@@ -1701,8 +1701,8 @@ SMY_ZMAPPINFO sZMappInfo;
 	{
 		if(bUp)
 		{
-			sZMappInfo.uv[iI<<1]=(_pobj3dObj->vertexlist3[_piInd[iI]].v.x*DIV50);
-			sZMappInfo.uv[(iI<<1)+1]=(_pobj3dObj->vertexlist3[_piInd[iI]].v.z*DIV50);
+			sZMappInfo.uv[iI<<1]=(_pobj3dObj->vertexlist3[_piInd[iI]].v.x*( 1.0f / 50 ));
+			sZMappInfo.uv[(iI<<1)+1]=(_pobj3dObj->vertexlist3[_piInd[iI]].v.z*( 1.0f / 50 ));
 		}
 		else
 		{
@@ -1807,25 +1807,25 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	if ( angle != NULL )
 	{
 		if ( modinfo )
-			Zsin = (float)DEG2RAD( MAKEANGLE( angle->a + modinfo->rot.a ) );
+			Zsin = (float)radians( MAKEANGLE( angle->a + modinfo->rot.a ) );
 		else
-			Zsin = (float)DEG2RAD( angle->a );
+			Zsin = (float)radians( angle->a );
 
 		Ncam.Xcos	=	Xcos	=	(float)EEcos( Zsin );
 		Ncam.Xsin	=	Xsin	=	(float)EEsin( Zsin );
 
 		if ( modinfo )
-			Zsin	=	(float)DEG2RAD( MAKEANGLE( angle->b + modinfo->rot.b ) );
+			Zsin	=	(float)radians( MAKEANGLE( angle->b + modinfo->rot.b ) );
 		else
-			Zsin	=	(float)DEG2RAD( angle->b );
+			Zsin	=	(float)radians( angle->b );
 
 		Ncam.Ycos	=	Ycos	=	(float)EEcos( Zsin );
 		Ncam.Ysin	=	Ysin	=	(float)EEsin( Zsin );
 		
 		if ( modinfo )
-			Zsin	=	(float)DEG2RAD( MAKEANGLE( angle->g + modinfo->rot.g ) );
+			Zsin	=	(float)radians( MAKEANGLE( angle->g + modinfo->rot.g ) );
 		else
-			Zsin	=	(float)DEG2RAD( angle->g );
+			Zsin	=	(float)radians( angle->g );
 
 		Ncam.Zcos	=	Zcos	=	(float)EEcos( Zsin );
 		Ncam.Zsin	=	Zsin	=	(float)EEsin( Zsin );
@@ -1987,7 +1987,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 
 			if ( io->_npcdata->poisonned > 0.f )
 			{
-				poisonpercent = io->_npcdata->poisonned * DIV20;
+				poisonpercent = io->_npcdata->poisonned * ( 1.0f / 20 );
 
 				if ( poisonpercent > 1.f ) poisonpercent = 1.f;
 			}
@@ -1995,7 +1995,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 
 		if ((io->ioflags & IO_ITEM) && (io->poisonous>0.f) && (io->poisonous_count!=0)) 
 		{
-			poisonpercent=(float)io->poisonous*DIV20;
+			poisonpercent=(float)io->poisonous*( 1.0f / 20 );
 
 			if (poisonpercent>1.f) poisonpercent=1.f;
 		}
@@ -2006,7 +2006,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 
 			if (trappercent>0.f)
 			{
-				trappercent = 0.6f + trappercent * DIV100; 
+				trappercent = 0.6f + trappercent * ( 1.0f / 100 ); 
 
 				if (trappercent<0.6f) trappercent=0.6f;
 
@@ -2020,7 +2020,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 
 			if (secretpercent>0.f)
 			{
-				secretpercent = 0.6f + secretpercent * DIV100; 
+				secretpercent = 0.6f + secretpercent * ( 1.0f / 100 ); 
 
 				if (secretpercent<0.6f) secretpercent=0.6f;
 
@@ -2073,7 +2073,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 				{
 					if ( elapsed < 3000.f ) // 5 seconds to red
 					{
-						float ratio		=	elapsed * DIV3000;
+						float ratio		=	elapsed * ( 1.0f / 3000 );
 						special_color.r	=	1.f;
 						special_color.g	=	1.f - ratio;
 						special_color.b	=	1.f - ratio;
@@ -2081,7 +2081,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 					}
 					else if ( elapsed < 6000.f ) // 5 seconds to White				
 					{
-						float ratio			=	( elapsed - 3000.f ) * DIV3000;
+						float ratio			=	( elapsed - 3000.f ) * ( 1.0f / 3000 );
 						special_color.r		=	1.f;
 						special_color.g		=	ratio;
 						special_color.b		=	ratio;
@@ -2090,7 +2090,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 					}
 					else if ( elapsed < 8000.f ) // 5 seconds to White				
 					{
-						float ratio			=	( elapsed - 6000.f ) * DIV2000;
+						float ratio			=	( elapsed - 6000.f ) * ( 1.0f / 2000 );
 						special_color.r		=	ratio;
 						special_color.g		=	ratio;
 						special_color.b		=	ratio;
@@ -2109,9 +2109,9 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 							AddRandomSmoke(io,50);
 							EERIE_RGB rgb;
 							unsigned long color=io->_npcdata->blood_color;
-							rgb.r=(float)((long)((color>>16) & 255))*DIV255;
-							rgb.g=(float)((long)((color>>8) & 255))*DIV255;
-							rgb.b=(float)((long)((color) & 255))*DIV255;
+							rgb.r=(float)((long)((color>>16) & 255))*( 1.0f / 255 );
+							rgb.g=(float)((long)((color>>8) & 255))*( 1.0f / 255 );
+							rgb.b=(float)((long)((color) & 255))*( 1.0f / 255 );
 							EERIE_SPHERE sp;
 							sp.origin.x=io->pos.x;
 							sp.origin.y=io->pos.y;
@@ -2250,7 +2250,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 			
 			if (fTransp>=2.f)  //MULTIPLICATIVE
 			{
-				fTransp*=DIV2;
+				fTransp*=( 1.0f / 2 );
 				fTransp+=0.5f;
 				
 				{
@@ -2568,7 +2568,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 			Ncam.Xsin = 0.f;
 			Ncam.Zcos = 1.f;
 			Ncam.Zsin = 0.f;
-			float power=DEG2RAD(MAKEANGLE(subj.angle.b));
+			float power=radians(MAKEANGLE(subj.angle.b));
 			Ncam.Ycos = (float)EEcos(power);	
 			Ncam.Ysin = (float)EEsin(power);
 			float tot=0;
@@ -2583,7 +2583,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 				else 
 					_YXZRotatePoint(&eobj->vertexlist[paf[o]].norm,&temporary3D,&Ncam);
 		
-				power=255.f-(float)EEfabs(255.f*(temporary3D.z)*DIV2);
+				power=255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
 
 				if (power>255.f) 
 				{
@@ -2656,7 +2656,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 						memcpy(&vert[2],&workon[second],sizeof(D3DTLVERTEX));
 						memcpy(&vert[3],&workon[second],sizeof(D3DTLVERTEX));						
 
-						float siz=ddist*(io->halo.radius*1.5f*(EEsin((float)(FrameTime+i)*DIV100)*DIV10+0.7f))*0.6f;
+						float siz=ddist*(io->halo.radius*1.5f*(EEsin((float)(FrameTime+i)*( 1.0f / 100 ))*( 1.0f / 10 )+0.7f))*0.6f;
 						vect1.x=workon[first].sx-workon[third].sx;
 						vect1.y=workon[first].sy-workon[third].sy;						
 						float len1=1.f/EEsqrt(vect1.x*vect1.x+vect1.y*vect1.y);
@@ -2713,7 +2713,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 			
 			if (fTransp>=2.f)  //MULTIPLICATIVE
 			{
-				fTransp*=DIV2;
+				fTransp*=( 1.0f / 2 );
 				fTransp+=0.5f;
 				
 				ptvTL=PushVertexInTableCull_TMultiplicativeH(pTex);
@@ -2861,25 +2861,25 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 	if ( angle != NULL )
 	{
 		if ( modinfo )
-			Zsin	=	(float) DEG2RAD( MAKEANGLE( angle->a + modinfo->rot.a ) );
+			Zsin	=	(float) radians( MAKEANGLE( angle->a + modinfo->rot.a ) );
 		else
-			Zsin	=	(float)DEG2RAD( angle->a );
+			Zsin	=	(float)radians( angle->a );
 
 		Ncam.Xcos	=	Xcos	=	(float)EEcos( Zsin );
 		Ncam.Xsin	=	Xsin	=	(float)EEsin( Zsin );
 
 		if ( modinfo )
-			Zsin	=	(float)DEG2RAD( MAKEANGLE( angle->b + modinfo->rot.b ) );
+			Zsin	=	(float)radians( MAKEANGLE( angle->b + modinfo->rot.b ) );
 		else
-			Zsin	=	(float)DEG2RAD( angle->b );
+			Zsin	=	(float)radians( angle->b );
 
 		Ncam.Ycos	=	Ycos	=	(float)EEcos( Zsin );
 		Ncam.Ysin	=	Ysin	=	(float)EEsin( Zsin );
 		
 		if ( modinfo )
-			Zsin	=	(float)DEG2RAD( MAKEANGLE( angle->g + modinfo->rot.g ) );
+			Zsin	=	(float)radians( MAKEANGLE( angle->g + modinfo->rot.g ) );
 		else
-			Zsin	=	(float)DEG2RAD( angle->g );
+			Zsin	=	(float)radians( angle->g );
 
 		Ncam.Zcos	=	Zcos	=	(float)EEcos( Zsin );
 		Ncam.Zsin	=	Zsin	=	(float)EEsin( Zsin );
@@ -3143,7 +3143,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 	{
 		ddist=500.f-Distance3D(pos.x,pos.y,pos.z,ACTIVECAM->pos.x,ACTIVECAM->pos.y,ACTIVECAM->pos.z);
 
-		if (ddist>0.f) ddist=(ddist*DIV500);
+		if (ddist>0.f) ddist=(ddist*( 1.0f / 500 ));
 
 		if ((io) && (io->halo.flags & HALO_DYNLIGHT))
 			HALO_IO_DynLight_Update(io);	
@@ -3176,7 +3176,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 
 			if (io->_npcdata->poisonned>0.f)
 			{
-				poisonpercent=io->_npcdata->poisonned*DIV20;
+				poisonpercent=io->_npcdata->poisonned*( 1.0f / 20 );
 
 				if (poisonpercent>1.f) poisonpercent=1.f;
 			}
@@ -3184,7 +3184,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 
 		if ((io->ioflags & IO_ITEM) && (io->poisonous>0.f) && (io->poisonous_count!=0)) 
 		{
-			poisonpercent=(float)io->poisonous*DIV20;
+			poisonpercent=(float)io->poisonous*( 1.0f / 20 );
 
 			if (poisonpercent>1.f) poisonpercent=1.f;
 		}
@@ -3195,7 +3195,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 
 			if (trappercent>0.f)
 			{
-				trappercent = 0.6f + trappercent * DIV100; 
+				trappercent = 0.6f + trappercent * ( 1.0f / 100 ); 
 
 				if (trappercent<0.6f) trappercent=0.6f;
 
@@ -3209,7 +3209,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 
 			if (secretpercent>0.f)
 			{
-				secretpercent = 0.6f + secretpercent * DIV100; 
+				secretpercent = 0.6f + secretpercent * ( 1.0f / 100 ); 
 
 				if (secretpercent<0.6f) secretpercent=0.6f;
 
@@ -3262,7 +3262,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 				{
 					if (elapsed<3000.f) // 5 seconds to red
 					{
-						float ratio=elapsed*DIV3000;
+						float ratio=elapsed*( 1.0f / 3000 );
 						special_color.r=1.f;
 						special_color.g=1.f-ratio;
 						special_color.b=1.f-ratio;
@@ -3270,7 +3270,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 					}
 					else if (elapsed<6000.f) // 5 seconds to White				
 					{
-						float ratio=(elapsed-3000.f)*DIV3000;
+						float ratio=(elapsed-3000.f)*( 1.0f / 3000 );
 						special_color.r=1.f;
 						special_color.g=ratio;
 						special_color.b=ratio;
@@ -3279,7 +3279,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 					}
 					else if (elapsed<8000.f) // 5 seconds to White				
 					{
-						float ratio=(elapsed-6000.f)*DIV2000;
+						float ratio=(elapsed-6000.f)*( 1.0f / 2000 );
 						special_color.r=ratio;
 						special_color.g=ratio;
 						special_color.b=ratio;
@@ -3297,9 +3297,9 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 							AddRandomSmoke(io,50);
 							EERIE_RGB rgb;
 							unsigned long color=io->_npcdata->blood_color;
-							rgb.r=(float)((long)((color>>16) & 255))*DIV255;
-							rgb.g=(float)((long)((color>>8) & 255))*DIV255;
-							rgb.b=(float)((long)((color) & 255))*DIV255;
+							rgb.r=(float)((long)((color>>16) & 255))*( 1.0f / 255 );
+							rgb.g=(float)((long)((color>>8) & 255))*( 1.0f / 255 );
+							rgb.b=(float)((long)((color) & 255))*( 1.0f / 255 );
 							EERIE_SPHERE sp;
 							sp.origin.x=io->pos.x;
 							sp.origin.y=io->pos.y;
@@ -3407,7 +3407,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 			Ncam.Xsin = 0.f;
 			Ncam.Zcos = 1.f;
 			Ncam.Zsin = 0.f;
-				float power=DEG2RAD(MAKEANGLE(subj.angle.b));
+				float power=radians(MAKEANGLE(subj.angle.b));
 			Ncam.Ycos = (float)EEcos(power);
 			Ncam.Ysin = (float)EEsin(power);
 				float tot=0;
@@ -3490,7 +3490,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 						memcpy(&vert[1],&workon[first],sizeof(D3DTLVERTEX));
 						memcpy(&vert[2],&workon[second],sizeof(D3DTLVERTEX));
 						memcpy(&vert[3],&workon[second],sizeof(D3DTLVERTEX));						
-						float siz=ddist*(io->halo.radius*(EEsin((float)(FrameTime+i)*DIV100)*DIV50+0.7f));
+						float siz=ddist*(io->halo.radius*(EEsin((float)(FrameTime+i)*( 1.0f / 100 ))*( 1.0f / 50 )+0.7f));
 						vect1.x=workon[first].sx-workon[third].sx;
 						vect1.y=workon[first].sy-workon[third].sy;						
 						float len1=1.f/EEsqrt(vect1.x*vect1.x+vect1.y*vect1.y);

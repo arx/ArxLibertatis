@@ -1929,7 +1929,7 @@ static void CalculTextPosition( HDC& _hDC, wstring& phrase, CreditsTextInformati
 	GetTextExtentPoint32W(_hDC, phrase.c_str(), phrase.length(), &(infomations.sPos));
 
 	if (infomations.sPos.cx < DANAESIZX) 
-		infomations.sPos.cx = ARX_CLEAN_WARN_CAST_INT((DANAESIZX - infomations.sPos.cx) * DIV2);
+		infomations.sPos.cx = ARX_CLEAN_WARN_CAST_INT((DANAESIZX - infomations.sPos.cx) * ( 1.0f / 2 ));
 
 	//Calcul height position (must be calculate after GetTextExtendPoint32 because sPos is writted)
 	infomations.sPos.cy = ARX_CLEAN_WARN_CAST_INT(drawpos) ;
@@ -2231,7 +2231,7 @@ bool ProcessFadeInOut(bool _bFadeIn,float _fspeed)
 
 	if(_bFadeIn)
 	{
-		fFadeInOut+=_fspeed*ARXDiffTimeMenu*DIV100;
+		fFadeInOut+=_fspeed*ARXDiffTimeMenu*( 1.0f / 100 );
 
 		if(fFadeInOut>1.f)
 		{
@@ -2241,7 +2241,7 @@ bool ProcessFadeInOut(bool _bFadeIn,float _fspeed)
 	}
 	else
 	{
-		fFadeInOut-=_fspeed*ARXDiffTimeMenu*DIV100;
+		fFadeInOut-=_fspeed*ARXDiffTimeMenu*( 1.0f / 100 );
 
 		if(fFadeInOut<0.f)
 		{
@@ -4637,9 +4637,9 @@ void CMenuState::AddMenuElement(CMenuElement *_me)
 
 	//-----------------------------------------------------------------------------
 
-	MENUSTATE CMenuState::Update(int _iDTime)
-	{
-	fPos += _iDTime*DIV700;
+MENUSTATE CMenuState::Update(int _iDTime)
+{
+	fPos += _iDTime*( 1.0f / 700 );
 
 	pZoneClick=NULL;
 
@@ -5348,7 +5348,7 @@ CWindowMenu::CWindowMenu(int _iPosX,int _iPosY,int _iTailleX,int _iTailleY,int _
 	eCurrentMenuState=NOP;
 
 
-	float fCalc    = fPosXCalc + (fDist * sin(DEG2RAD(fAngle)));
+	float fCalc	= fPosXCalc + (fDist * sin(radians(fAngle)));
 	ARX_CHECK_INT(fCalc);
 
 	iPosX    = ARX_CLEAN_WARN_CAST_INT(fCalc);
@@ -5393,7 +5393,7 @@ void CWindowMenu::Update(int _iDTime)
 {
 
 
-	float fCalc    = fPosXCalc + (fDist * sin(DEG2RAD(fAngle)));
+	float fCalc	= fPosXCalc + (fDist * sin(radians(fAngle)));
 	ARX_CHECK_INT(fCalc);
 
 	iPosX    = ARX_CLEAN_WARN_CAST_INT(fCalc);

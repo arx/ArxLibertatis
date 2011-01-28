@@ -177,7 +177,7 @@ static	void	Cedric_GetScale(float & scale, float & invisibility, INTERACTIVE_OBJ
 			{
 				if (player.Full_Skill_Intuition > spells[num].caster_level * 10)
 				{
-					invisibility -= (float)player.Full_Skill_Intuition * DIV100 + (float)spells[num].caster_level * DIV10;
+					invisibility -= (float)player.Full_Skill_Intuition * ( 1.0f / 100 ) + (float)spells[num].caster_level * ( 1.0f / 10 );
 
 					if (invisibility < 0.1f) invisibility = 0.1f;
 					else if (invisibility > 1.f) invisibility = 1.f;
@@ -221,7 +221,7 @@ static	void	Cedric_GetTime(float & timm, INTERACTIVE_OBJ * io, long typ)
 			}
 			else
 			{
-				timm *= DIV300;
+				timm *= ( 1.0f / 300 );
 
 				if (timm >= 1.f) timm = 0.f;
 				else if (timm < 0.f) timm = 0.f;
@@ -298,9 +298,9 @@ static	void	Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse,
 				ftr.y *= scale;
 				ftr.z *= scale;
 
-				float temp = DEG2RAD(MAKEANGLE(180.f - io->angle.b));
+				float temp = radians(MAKEANGLE(180.f - io->angle.b));
 
-				if (io == inter.iobj[0]) temp = DEG2RAD(MAKEANGLE(180.f - player.angle.b));
+				if (io == inter.iobj[0]) temp = radians(MAKEANGLE(180.f - player.angle.b));
 
 				_YRotatePoint(&ftr, &ftr2, (float)EEcos(temp), (float)EEsin(temp));
 
@@ -494,9 +494,9 @@ void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, EERIE_3D * a
 			else
 			{
 				Vector_Copy(&vt1, angle);
-				vt1.x *= EEdef_DEGTORAD;
-				vt1.y *= EEdef_DEGTORAD;
-				vt1.z *= EEdef_DEGTORAD;
+				vt1.x = radians(vt1.x);
+				vt1.y = radians(vt1.y);
+				vt1.z = radians(vt1.z);
 				QuatFromAngles(&qt2, &vt1);
 				Quat_Multiply(&obj->bones[i].quatanim, &qt2, &obj->bones[i].quatinit);
 			}
@@ -663,7 +663,7 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 
 			if (io->_npcdata->poisonned > 0.f)
 			{
-				poisonpercent = io->_npcdata->poisonned * DIV20;
+				poisonpercent = io->_npcdata->poisonned * ( 1.0f / 20 );
 
 				if (poisonpercent > 1.f) poisonpercent = 1.f;
 			}
@@ -671,7 +671,7 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 
 		if ((io->ioflags & IO_ITEM) && (io->poisonous > 0.f) && (io->poisonous_count != 0))
 		{
-			poisonpercent = (float)io->poisonous * DIV20;
+			poisonpercent = (float)io->poisonous * ( 1.0f / 20 );
 
 			if (poisonpercent > 1.f) poisonpercent = 1.f;
 		}
@@ -682,7 +682,7 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 
 			if (trappercent > 0.f)
 			{
-				trappercent = 0.6f + trappercent * DIV100; 
+				trappercent = 0.6f + trappercent * ( 1.0f / 100 ); 
 
 				if (trappercent < 0.6f) trappercent = 0.6f;
 
@@ -696,7 +696,7 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 
 			if (secretpercent > 0.f)
 			{
-				secretpercent = 0.6f + secretpercent * DIV100; 
+				secretpercent = 0.6f + secretpercent * ( 1.0f / 100 ); 
 				if (secretpercent < 0.6f) secretpercent = 0.6f;
 				else if (secretpercent > 1.f) secretpercent = 1.f;
 			}
@@ -758,7 +758,7 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 				{
 					if (elapsed < 3000.f) // 5 seconds to red
 					{
-						float ratio = elapsed * DIV3000;
+						float ratio = elapsed * ( 1.0f / 3000 );
 						special_color.r = 1.f;
 						special_color.g = 1.f - ratio;
 						special_color.b = 1.f - ratio;
@@ -766,7 +766,7 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 					}
 					else if (elapsed < 6000.f) // 5 seconds to White
 					{
-						float ratio = (elapsed - 3000.f) * DIV3000;
+						float ratio = (elapsed - 3000.f) * ( 1.0f / 3000 );
 						special_color.r = ratio;
 						special_color_flag = 2;
 						AddRandomSmoke(io, 2);
@@ -783,9 +783,9 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 							AddRandomSmoke(io, 50);
 							EERIE_RGB rgb;
 							unsigned long color = io->_npcdata->blood_color;
-							rgb.r = (float)((long)((color >> 16) & 255)) * DIV255;
-							rgb.g = (float)((long)((color >> 8) & 255)) * DIV255;
-							rgb.b = (float)((long)((color) & 255)) * DIV255;
+							rgb.r = (float)((long)((color >> 16) & 255)) * ( 1.0f / 255 );
+							rgb.g = (float)((long)((color >> 8) & 255)) * ( 1.0f / 255 );
+							rgb.b = (float)((long)((color) & 255)) * ( 1.0f / 255 );
 							EERIE_SPHERE sp;
 							sp.origin.x = io->pos.x;
 							sp.origin.y = io->pos.y;
@@ -1175,9 +1175,9 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 void Cedric_PrepareHalo(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, EERIE_3D * pos, EERIE_3D & ftr)
 {
 	EERIE_3D cam_vector, t_vector;
-	cam_vector.x = -EEsin(DEG2RAD(ACTIVECAM->angle.b)) * EEcos(DEG2RAD(ACTIVECAM->angle.a));
-	cam_vector.y = EEsin(DEG2RAD(ACTIVECAM->angle.a));
-	cam_vector.z = EEcos(DEG2RAD(ACTIVECAM->angle.b)) * EEcos(DEG2RAD(ACTIVECAM->angle.a));
+	cam_vector.x = -EEsin(radians(ACTIVECAM->angle.b)) * EEcos(radians(ACTIVECAM->angle.a));
+	cam_vector.y = EEsin(radians(ACTIVECAM->angle.a));
+	cam_vector.z = EEcos(radians(ACTIVECAM->angle.b)) * EEcos(radians(ACTIVECAM->angle.a));
 
 	/* Apply light on all vertices */
 	for (long i = 0; i != obj->nb_bones; i++)
@@ -1282,7 +1282,7 @@ D3DTLVERTEX * GetNewVertexList(EERIE_FACE * _pFace, float _fInvisibility, Textur
 
 		if (fTransp >= 2.f) //MULTIPLICATIVE
 		{
-			fTransp *= DIV2;
+			fTransp *= ( 1.0f / 2 );
 			fTransp += 0.5f;
 
 			return PushVertexInTableCull_TMultiplicative(_pTex);
@@ -1734,7 +1734,7 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 		        ||	(use_io->halo.flags & HALO_ACTIVE))
 		{
 
-			float mdist = ACTIVECAM->cdepth * DIV2;
+			float mdist = ACTIVECAM->cdepth * ( 1.0f / 2 );
 
 			ddist = mdist - Distance3D(pos->x + ftr.x, pos->y + ftr.y, pos->z + ftr.z, ACTIVECAM->pos.x, ACTIVECAM->pos.y, ACTIVECAM->pos.z);
 
@@ -1846,7 +1846,7 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 
 				if (fTransp >= 2.f)    //MULTIPLICATIVE
 				{
-					fTransp *= DIV2;
+					fTransp *= ( 1.0f / 2 );
 					fTransp += 0.5f;
 
 					tv	= PushVertexInTableCull_TMultiplicative(pTex);
@@ -2082,7 +2082,7 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 
 					for (o = 0 ; o < 3 ; o++)
 					{
-						float tttz	= EEfabs(eobj->vertexlist3[paf[o]].norm.z) * DIV2;
+						float tttz	= EEfabs(eobj->vertexlist3[paf[o]].norm.z) * ( 1.0f / 2 );
 						float power	=	255.f - (float)(255.f * tttz);
 						power		*=	(1.f - invisibility);
 
@@ -2159,7 +2159,7 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 							memcpy(&vert[2], &workon[second], sizeof(D3DTLVERTEX));
 							memcpy(&vert[3], &workon[second], sizeof(D3DTLVERTEX));
 
-							float siz = ddist * (curhalo.radius * (EEsin((float)(FrameTime + i) * DIV100) * DIV10 + 1.f)) * 0.6f;
+							float siz = ddist * (curhalo.radius * (EEsin((float)(FrameTime + i) * ( 1.0f / 100 )) * ( 1.0f / 10 ) + 1.f)) * 0.6f;
 
 							if ((io == inter.iobj[0]) && (ddist > 0.8f) && !EXTERNALVIEW)
 								siz *= 1.5f;
@@ -2191,14 +2191,14 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 								valll = 0.005f + (EEfabs(workon[first].sz) - EEfabs(workon[third].sz)
 								                  + EEfabs(workon[second].sz) - EEfabs(workon[third].sz));   
 
-								valll = 0.0001f + valll * DIV10;
+								valll = 0.0001f + valll * ( 1.0f / 10 );
 
 								if (valll < 0.f) valll = 0.f;
 
 								vert[1].sz	+= valll;
 								vert[2].sz	+= valll;
 								vert[0].sz	+= 0.0001f;
-								vert[3].sz	+= 0.0001f;//*DIV2;
+								vert[3].sz	+= 0.0001f;//*( 1.0f / 2 );
 								vert[1].rhw	*= .98f;
 								vert[2].rhw	*= .98f;
 								vert[0].rhw	*= .98f;
@@ -2215,8 +2215,8 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 							vert[2].sx += (vect2.x + 0.2f - rnd() * 0.1f) * siz;  
 							vert[2].sy += (vect2.y + 0.2f - rnd() * 0.1f) * siz;  
 
-							vert[1].sz = (vert[1].sz + MAX_ZEDE) * DIV2;
-							vert[2].sz = (vert[2].sz + MAX_ZEDE) * DIV2;
+							vert[1].sz = (vert[1].sz + MAX_ZEDE) * ( 1.0f / 2 );
+							vert[2].sz = (vert[2].sz + MAX_ZEDE) * ( 1.0f / 2 );
 
 							if (curhalo.flags & HALO_NEGATIVE)
 								vert[2].color = 0x00000000;
@@ -2251,7 +2251,7 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 
 					if (fTransp >= 2.f)    //MULTIPLICATIVE
 					{
-						fTransp *= DIV2;
+						fTransp *= ( 1.0f / 2 );
 						fTransp += 0.5f;
 
 						ptvTL	 = PushVertexInTableCull_TMultiplicativeH(pTex);
@@ -2470,7 +2470,7 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 
 		if (ddist > 0.f)
 		{
-			ddist = (ddist * DIV500);
+			ddist = (ddist * ( 1.0f / 500 ));
 		}
 		else if (ddist < 0.f)
 		{
@@ -2625,7 +2625,7 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 						memcpy(&vert[2], &workon[second], sizeof(D3DTLVERTEX));
 						memcpy(&vert[3], &workon[second], sizeof(D3DTLVERTEX));
 
-						float siz = ddist * (io->halo.radius * (EEsin((float)(FrameTime + i) * DIV100) * DIV50 + 1.f));
+						float siz = ddist * (io->halo.radius * (EEsin((float)(FrameTime + i) * ( 1.0f / 100 )) * ( 1.0f / 50 ) + 1.f));
 
 						vect1.x = workon[first].sx - workon[third].sx;
 						vect1.y = workon[first].sy - workon[third].sy;
@@ -2654,14 +2654,14 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 							vert[1].sz += valll;
 							vert[2].sz += valll;
 							vert[0].sz += 0.0001f;
-							vert[3].sz += 0.0001f; //*DIV2;
+							vert[3].sz += 0.0001f; //*( 1.0f / 2 );
 						}
 						else
 						{
 							vert[1].rhw *= .98f;
 							vert[2].rhw *= .98f;
 							vert[0].rhw *= .98f;
-							vert[3].rhw *= .98f; //*DIV2;
+							vert[3].rhw *= .98f; //*( 1.0f / 2 );
 						}
 
 						vert[2].sx += (vect2.x + 0.2f - rnd() * 0.1f) * siz; //+len2;
@@ -2864,9 +2864,9 @@ void Cedric_ManageExtraRotationsFirst(INTERACTIVE_OBJ * io, EERIE_3DOBJ * obj)
 			{
 				EERIE_3D vt1;
 				EERIE_QUAT quat1;
-				vt1.x = DEG2RAD(io->_npcdata->ex_rotate->group_rotate[k].g);
-				vt1.y = DEG2RAD(io->_npcdata->ex_rotate->group_rotate[k].b);
-				vt1.z = DEG2RAD(io->_npcdata->ex_rotate->group_rotate[k].a);
+				vt1.x = radians(io->_npcdata->ex_rotate->group_rotate[k].g);
+				vt1.y = radians(io->_npcdata->ex_rotate->group_rotate[k].b);
+				vt1.z = radians(io->_npcdata->ex_rotate->group_rotate[k].a);
 				QuatFromAngles(&quat1, &vt1);
 				Quat_Copy(&obj->c_data->bones[i].quatinit, &quat1);
 			}
@@ -3157,9 +3157,9 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERIE
 					Vector_Copy(&vt1, &eobj->angle);
 			}
 
-			vt1.x = MAKEANGLE(-vt1.z) * EEdef_DEGTORAD;
-			vt1.y = MAKEANGLE(vt1.y) * EEdef_DEGTORAD;
-			vt1.z = MAKEANGLE(vt1.x) * EEdef_DEGTORAD;
+			vt1.x = radians(MAKEANGLE(-vt1.z));
+			vt1.y = radians(MAKEANGLE(vt1.y));
+			vt1.z = radians(MAKEANGLE(vt1.x));
 			QuatFromAngles(&qInvert, &vt1);
 		}
 	}
@@ -3291,9 +3291,9 @@ void MakeCLight2(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERI
 					Vector_Copy(&vt1, &eobj->angle);
 			}
 
-			vt1.x *= EEdef_DEGTORAD;
-			vt1.y *= EEdef_DEGTORAD;
-			vt1.z *= EEdef_DEGTORAD;
+			vt1.x = radians(vt1.x);
+			vt1.y = radians(vt1.y);
+			vt1.z = radians(vt1.z);
 			QuatFromAngles(&qInvert, &vt1);
 		}
 	}
@@ -3361,7 +3361,7 @@ void MakeCLight2(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERI
 	
 				cosangle = (eobj->facelist[ii].norm.x * Cur_vLights->x +
 				            eobj->facelist[ii].norm.y * Cur_vLights->y +
-				            eobj->facelist[ii].norm.z * Cur_vLights->z) * DIV2;
+				            eobj->facelist[ii].norm.z * Cur_vLights->z) * ( 1.0f / 2 );
 
 				// If light visible
 				if (cosangle > 0.f)
@@ -3494,7 +3494,7 @@ void ApplyDynLight(EERIEPOLY * ep)
 						v1.x = (el->pos.x - ep->v[j].sx) * divd;
 						v1.y = (el->pos.y - ep->v[j].sy) * divd;
 						v1.z = (el->pos.z - ep->v[j].sz) * divd;
-						nvalue = Vector_DotProduct(&v1, &ep->nrml[j]) * DIV2;
+						nvalue = Vector_DotProduct(&v1, &ep->nrml[j]) * ( 1.0f / 2 );
 
 						if (nvalue > 1.f) nvalue = 1.f;
 						else if (nvalue < 0.f) nvalue = 0.f;

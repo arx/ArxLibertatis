@@ -420,8 +420,8 @@ void FX_DreamPrecalc(C_BITMAP * bi, float amp, float fps)
 	a2 = DreamAng2;
 
 	///////////////////////
-	s1 = bi->nbx * EEcos(DEG2RAD(0));
-	s2 = bi->nby * EEcos(DEG2RAD(0));
+	s1 = bi->nbx * EEcos(radians(0));
+	s2 = bi->nby * EEcos(radians(0));
 	nx = (bi->nbx + 1) << 1;
 	ny = (bi->nby + 1) << 1;
 	nnx = ((float)nx) + s1;
@@ -445,8 +445,8 @@ void FX_DreamPrecalc(C_BITMAP * bi, float amp, float fps)
 		while (nx)
 		{
 
-			s1 = bi->nbx * EEcos(DEG2RAD(a));
-			s2 = bi->nby * EEcos(DEG2RAD(a2));
+			s1 = bi->nbx * EEcos(radians(a));
+			s2 = bi->nby * EEcos(radians(a2));
 			a -= 15.f;
 			a2 += 8.f;
 

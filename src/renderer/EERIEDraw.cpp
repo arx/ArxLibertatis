@@ -247,26 +247,26 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 
 	DeclareEGInfo(ep->v[3].sx,ep->v[3].sy,ep->v[3].sz);
 
-	ep2->center.x=(ep2->v[0].sx+ep2->v[1].sx+ep2->v[2].sx+ep2->v[3].sx)*DIV4;
-	ep2->center.y=(ep2->v[0].sy+ep2->v[1].sy+ep2->v[2].sy+ep2->v[3].sy)*DIV4;
-	ep2->center.z=(ep2->v[0].sz+ep2->v[1].sz+ep2->v[2].sz+ep2->v[3].sz)*DIV4;
-	ep2->max.x=std::max(ep2->max.x,ep2->v[3].sx);
-	ep2->min.x=std::min(ep2->min.x,ep2->v[3].sx);
-	ep2->max.y=std::max(ep2->max.y,ep2->v[3].sy);
-	ep2->min.y=std::min(ep2->min.y,ep2->v[3].sy);
-	ep2->max.z=std::max(ep2->max.z,ep2->v[3].sz);
-	ep2->min.z=std::min(ep2->min.z,ep2->v[3].sz);
+	ep2->center.x=(ep2->v[0].sx+ep2->v[1].sx+ep2->v[2].sx+ep2->v[3].sx)*( 1.0f / 4 );
+	ep2->center.y=(ep2->v[0].sy+ep2->v[1].sy+ep2->v[2].sy+ep2->v[3].sy)*( 1.0f / 4 );
+	ep2->center.z=(ep2->v[0].sz+ep2->v[1].sz+ep2->v[2].sz+ep2->v[3].sz)*( 1.0f / 4 );
+	ep2->max.x=max(ep2->max.x,ep2->v[3].sx);
+	ep2->min.x=min(ep2->min.x,ep2->v[3].sx);
+	ep2->max.y=max(ep2->max.y,ep2->v[3].sy);
+	ep2->min.y=min(ep2->min.y,ep2->v[3].sy);
+	ep2->max.z=max(ep2->max.z,ep2->v[3].sz);
+	ep2->min.z=min(ep2->min.z,ep2->v[3].sz);
 
 	ep2->norm2.x=ep->norm.x;
 	ep2->norm2.y=ep->norm.y;
 	ep2->norm2.z=ep->norm.z;
 	
-	ep2->area+=Distance3D(	(ep2->v[1].sx+ep2->v[2].sx)*DIV2,
-							(ep2->v[1].sy+ep2->v[2].sy)*DIV2,
-							(ep2->v[1].sz+ep2->v[2].sz)*DIV2,
+	ep2->area+=Distance3D(	(ep2->v[1].sx+ep2->v[2].sx)*( 1.0f / 2 ),
+							(ep2->v[1].sy+ep2->v[2].sy)*( 1.0f / 2 ),
+							(ep2->v[1].sz+ep2->v[2].sz)*( 1.0f / 2 ),
 							ep2->v[3].sx,ep2->v[3].sy,ep2->v[3].sz)
 			*Distance3D(	ep2->v[3].sx,ep2->v[3].sy,ep2->v[3].sz,
-							ep2->v[1].sx,ep2->v[1].sy,ep2->v[1].sz)*DIV2;
+							ep2->v[1].sx,ep2->v[1].sy,ep2->v[1].sz)*( 1.0f / 2 );
 
 		return true;
 	}
@@ -284,9 +284,9 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 	cx=(ep->v[0].sx+ep->v[1].sx+ep->v[2].sx);
 	cy=(ep->v[0].sy+ep->v[1].sy+ep->v[2].sy);
 	cz=(ep->v[0].sz+ep->v[1].sz+ep->v[2].sz);
-	F2L(cx*DIV3*ACTIVEBKG->Xmul,&posx);
-	F2L(cy*DIV3*ACTIVEBKG->Xmul+ACTIVEBKG->Xsize*DIV2,&posy);
-	F2L(cz*DIV3*ACTIVEBKG->Zmul,&posz);
+	F2L(cx*( 1.0f / 3 )*ACTIVEBKG->Xmul,&posx);
+	F2L(cy*( 1.0f / 3 )*ACTIVEBKG->Xmul+ACTIVEBKG->Xsize*( 1.0f / 2 ),&posy);
+	F2L(cz*( 1.0f / 3 )*ACTIVEBKG->Zmul,&posz);
 	
 	long dx,dz,fx,fz;
 	dx=std::max(0L,posx-1);
@@ -560,16 +560,16 @@ void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
 						// Water
 						if (ep->type & POLY_LAVA)
 						{
-							verts[i].tu=ep->v[i].sx*DIV1000+EEsin((ep->v[i].sx)*DIV200+(float)FrameTime*DIV2000)*DIV20;
-							verts[i].tv=ep->v[i].sz*DIV1000+EEcos((ep->v[i].sz)*DIV200+(float)FrameTime*DIV2000)*DIV20;
+							verts[i].tu=ep->v[i].sx*( 1.0f / 1000 )+EEsin((ep->v[i].sx)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
+							verts[i].tv=ep->v[i].sz*( 1.0f / 1000 )+EEcos((ep->v[i].sz)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
 						}
 						else
 						{
 							pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE );
-							verts[i].tu=ep->v[i].sx*DIV800+EEsin((ep->v[i].sx)*DIV600+(float)FrameTime*DIV1000)*DIV9;
-							verts[i].tv=ep->v[i].sz*DIV800+EEcos((ep->v[i].sz)*DIV600+(float)FrameTime*DIV1000)*DIV9;
+							verts[i].tu=ep->v[i].sx*( 1.0f / 800 )+EEsin((ep->v[i].sx)*( 1.0f / 600 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 9 );
+							verts[i].tv=ep->v[i].sz*( 1.0f / 800 )+EEcos((ep->v[i].sz)*( 1.0f / 600 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 9 );
 
-							if (ep->type & POLY_FALL) verts[i].tv-=(float)(FrameTime)*DIV200;
+							if (ep->type & POLY_FALL) verts[i].tv-=(float)(FrameTime)*( 1.0f / 200 );
 						}
 					}
 
@@ -579,12 +579,12 @@ void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
 					{
 						for (long i=0;i<to;i++)
 						{
-							verts[i].tu=ep->v[i].sx*DIV1000+EEsin((ep->v[i].sy)*DIV200+(float)FrameTime*DIV600*DIV3)*DIV10;
-							verts[i].tv=ep->v[i].sz*DIV1000+EEcos((ep->v[i].sz+ep->v[i].sx)*DIV200+(float)FrameTime*DIV600*DIV3)*DIV10;
+							verts[i].tu=ep->v[i].sx*( 1.0f / 1000 )+EEsin((ep->v[i].sy)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 600 )*( 1.0f / 3 ))*( 1.0f / 10 );
+							verts[i].tv=ep->v[i].sz*( 1.0f / 1000 )+EEcos((ep->v[i].sz+ep->v[i].sx)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 600 )*( 1.0f / 3 ))*( 1.0f / 10 );
 
 							if (ep->type & POLY_FALL) 
 							{
-								verts[i].tv-=(float)(FrameTime)*DIV200;
+								verts[i].tv-=(float)(FrameTime)*( 1.0f / 200 );
 							}
 						}	
 
@@ -596,14 +596,14 @@ void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
 					{
 						for (long i=0;i<to;i++)
 						{
-							verts[i].tu=ep->v[i].sx*DIV1000+EEsin((ep->v[i].sx)*DIV100+(float)FrameTime*DIV2000)*DIV10;
-							verts[i].tv=ep->v[i].sz*DIV1000+EEcos((ep->v[i].sz)*DIV100+(float)FrameTime*DIV2000)*DIV10;
+							verts[i].tu=ep->v[i].sx*( 1.0f / 1000 )+EEsin((ep->v[i].sx)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
+							verts[i].tv=ep->v[i].sz*( 1.0f / 1000 )+EEcos((ep->v[i].sz)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
 						}	
 						EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
 						for ( int i=0;i<to;i++)
 						{
-							verts[i].tu=ep->v[i].sx*DIV600+EEsin((ep->v[i].sx)*DIV160+(float)FrameTime*DIV2000)*DIV11;
-							verts[i].tv=ep->v[i].sz*DIV600+EEcos((ep->v[i].sz)*DIV160+(float)FrameTime*DIV2000)*DIV11;
+							verts[i].tu=ep->v[i].sx*( 1.0f / 600 )+EEsin((ep->v[i].sx)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
+							verts[i].tv=ep->v[i].sz*( 1.0f / 600 )+EEcos((ep->v[i].sz)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
 							verts[i].color=0xFF666666;
 						}	
 
@@ -779,8 +779,8 @@ void Delayed_EERIEDRAWPRIM( EERIEPOLY * ep)
 							verts[i].sz=ep->tv[i].sz;
 							verts[i].rhw=ep->tv[i].rhw;
 							verts[i].color=0xFFFFFFFF;
-							verts[i].tu=(ep->v[i].sx-ep->tv[i].sx)*DIV800+(EEsin((ep->v[i].sx-ep->tv[i].sx)*DIV200)*DIV8)*ep->tv[i].rhw;
-							verts[i].tv=(ep->v[i].sz-ep->tv[i].sy)*DIV800+(EEcos((ep->v[i].sz-ep->tv[i].sy)*DIV200)*DIV8)*ep->tv[i].rhw;						
+							verts[i].tu=(ep->v[i].sx-ep->tv[i].sx)*( 1.0f / 800 )+(EEsin((ep->v[i].sx-ep->tv[i].sx)*( 1.0f / 200 ))*( 1.0f / 8 ))*ep->tv[i].rhw;
+							verts[i].tv=(ep->v[i].sz-ep->tv[i].sy)*( 1.0f / 800 )+(EEcos((ep->v[i].sz-ep->tv[i].sy)*( 1.0f / 200 ))*( 1.0f / 8 ))*ep->tv[i].rhw;						
 						}
 						EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, verts, to, 0,1,ep);
 					}*/
@@ -1009,10 +1009,10 @@ void EERIEDraw3DCylinder(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CYLINDER * cyl, D3D
 
 	for (long i=0;i<360-STEPCYL;i+=STEPCYL)
 	{
-		float es =EEsin(DEG2RAD(MAKEANGLE((float)i)))*cyl->radius;
-		float ec =EEcos(DEG2RAD(MAKEANGLE((float)i)))*cyl->radius;
-		float es2=EEsin(DEG2RAD(MAKEANGLE((float)(i+STEPCYL))))*cyl->radius;
-		float ec2=EEcos(DEG2RAD(MAKEANGLE((float)(i+STEPCYL))))*cyl->radius;		
+		float es =EEsin(radians(MAKEANGLE((float)i)))*cyl->radius;
+		float ec =EEcos(radians(MAKEANGLE((float)i)))*cyl->radius;
+		float es2=EEsin(radians(MAKEANGLE((float)(i+STEPCYL))))*cyl->radius;
+		float ec2=EEcos(radians(MAKEANGLE((float)(i+STEPCYL))))*cyl->radius;		
 		
 		// Draw low pos
 		from.x=cyl->origin.x+es;
@@ -1048,10 +1048,10 @@ void EERIEDraw3DCylinderBase(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CYLINDER * cyl,
 
 	for (long i=0;i<360-STEPCYL;i+=STEPCYL)
 	{
-		float es =EEsin(DEG2RAD(MAKEANGLE((float)i)))*cyl->radius;
-		float ec =EEcos(DEG2RAD(MAKEANGLE((float)i)))*cyl->radius;
-		float es2=EEsin(DEG2RAD(MAKEANGLE((float)(i+STEPCYL))))*cyl->radius;
-		float ec2=EEcos(DEG2RAD(MAKEANGLE((float)(i+STEPCYL))))*cyl->radius;		
+		float es =EEsin(radians(MAKEANGLE((float)i)))*cyl->radius;
+		float ec =EEcos(radians(MAKEANGLE((float)i)))*cyl->radius;
+		float es2=EEsin(radians(MAKEANGLE((float)(i+STEPCYL))))*cyl->radius;
+		float ec2=EEcos(radians(MAKEANGLE((float)(i+STEPCYL))))*cyl->radius;		
 		
 		// Draw low pos
 		from.x=cyl->origin.x+es;
@@ -1074,7 +1074,7 @@ void EERIEDrawCircle(float x0,float y0,float r,D3DCOLOR col,float z)
 
 	for (long i=0;i<361;i+=10)
 	{
-		t=DEG2RAD((float)i);
+		t=radians((float)i);
 		x=x0-EEsin(t)*r;
 		y=y0+EEcos(t)*r;
 		EERIEDrawLine(lx,ly,x,y,z,col);
@@ -1250,7 +1250,7 @@ void EERIEDrawRotatedSprite(LPDIRECT3DDEVICE7 pd3dDevice,D3DTLVERTEX *in,float s
 
 		for (long i=0;i<4;i++)
 		{
-			tt=DEG2RAD(MAKEANGLE(rot+90.f*i+45+90));
+			tt=radians(MAKEANGLE(rot+90.f*i+45+90));
 			v[i].sx=EEsin(tt)*t+out.sx;
 			v[i].sy=EEcos(tt)*t+out.sy;
 		}		

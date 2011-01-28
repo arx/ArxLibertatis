@@ -83,7 +83,7 @@ typedef struct
 	TextureContainer * inventory_close;
 
 	TextureContainer * ingame_inventory;
-	TextureContainer * ingame_sub_inv;
+	//TextureContainer * ingame_sub_inv;
 	TextureContainer * backpack;
 	TextureContainer * gold;
 	TextureContainer * book;
@@ -327,7 +327,6 @@ extern long LastMouseClick;
 extern long INVERTMOUSE;
 extern long CINEMASCOPE;
 extern long CINEMA_INC;
-extern long ALLOW_MIPMESHING;
 extern long CurrFightPos;
 extern long FORBID_SAVE;
 extern long CONSTANTUPDATELIGHT;

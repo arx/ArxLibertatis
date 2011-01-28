@@ -56,13 +56,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 #include <stdio.h>
 
+// TODO Remove some headers
 #include <fstream>
 #include <string>
 #include <sstream>
 #include <vector>
 
-#include "core/Danae.h"
 #include "core/ARX_Snapshot.h"
+#include "core/Danae.h"
+#include "io/Filesystem.h"
+
 
 SnapShot * pSnapShot;
 SNAPSHOTINFO snapshotdata;
@@ -418,7 +421,7 @@ bool SnapShot::GetSnapShot()
 	//sauvegarde bmp
 	char tTxt[256];
 	sprintf(tTxt, "%s_%ld.bmp", pName, ulNum);
-	FILE * fFile = fopen(tTxt, "wb");
+	FileHandle fFile = FileOpenWrite(tTxt);
 
 	if (!fFile)
 	{
@@ -433,7 +436,7 @@ bool SnapShot::GetSnapShot()
 	bfhBitmapFileHeader.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + ((ddsd2.dwWidth * ddsd2.dwHeight) << 2);
 	bfhBitmapFileHeader.bfReserved1 = bfhBitmapFileHeader.bfReserved2 = 0;
 	bfhBitmapFileHeader.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
-	fwrite(&bfhBitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, fFile);
+	FileWrite(fFile, &bfhBitmapFileHeader, sizeof(BITMAPFILEHEADER));
 
 	BITMAPINFOHEADER bihBitmapInfoHeader;
 	bihBitmapInfoHeader.biSize = sizeof(BITMAPINFOHEADER);
@@ -447,11 +450,11 @@ bool SnapShot::GetSnapShot()
 	bihBitmapInfoHeader.biYPelsPerMeter = 0;
 	bihBitmapInfoHeader.biClrUsed = 0;
 	bihBitmapInfoHeader.biClrImportant = 0;
-	fwrite(&bihBitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, fFile);
+	FileWrite(fFile, &bihBitmapInfoHeader, sizeof(BITMAPINFOHEADER));
 
-	fwrite(pulMemorySnapShot, (ddsd2.dwWidth * ddsd2.dwHeight) << 2, 1, fFile);
+	FileWrite(fFile, pulMemorySnapShot, (ddsd2.dwWidth * ddsd2.dwHeight) << 2);
 
-	fclose(fFile);
+	FileCloseWrite(fFile);
 	delete pulMemorySnapShot;
 	return true;
 }
@@ -624,7 +627,7 @@ bool SnapShot::GetSnapShotDim(int _iWith, int _iHeight)
 	//sauvegarde bmp
 	char tTxt[256];
 	sprintf(tTxt, "%s_%ld.bmp", pName, ulNum);
-	FILE * fFile = fopen(tTxt, "wb");
+	FileHandle fFile = FileOpenWrite(tTxt);
 
 	if (!fFile)
 	{
@@ -639,7 +642,7 @@ bool SnapShot::GetSnapShotDim(int _iWith, int _iHeight)
 	bfhBitmapFileHeader.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + ((ddsd2.dwWidth * ddsd2.dwHeight) * 3);
 	bfhBitmapFileHeader.bfReserved1 = bfhBitmapFileHeader.bfReserved2 = 0;
 	bfhBitmapFileHeader.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
-	fwrite(&bfhBitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, fFile);
+	FileWrite(fFile, &bfhBitmapFileHeader, sizeof(BITMAPFILEHEADER));
 
 	BITMAPINFOHEADER bihBitmapInfoHeader;
 	bihBitmapInfoHeader.biSize = sizeof(BITMAPINFOHEADER);
@@ -653,11 +656,11 @@ bool SnapShot::GetSnapShotDim(int _iWith, int _iHeight)
 	bihBitmapInfoHeader.biYPelsPerMeter = 0;
 	bihBitmapInfoHeader.biClrUsed = 0;
 	bihBitmapInfoHeader.biClrImportant = 0;
-	fwrite(&bihBitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, fFile);
+	FileWrite(fFile, &bihBitmapInfoHeader, sizeof(BITMAPINFOHEADER));
 
-	fwrite(pulMemorySnapShot, (ddsd2.dwWidth * ddsd2.dwHeight) * 3, 1, fFile);
+	FileWrite(fFile, pulMemorySnapShot, (ddsd2.dwWidth * ddsd2.dwHeight) * 3);
 
-	fclose(fFile);
+	FileCloseWrite(fFile);
 	delete pulMemorySnapShot;
 	return true;
 }

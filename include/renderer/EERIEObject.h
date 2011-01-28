@@ -94,7 +94,6 @@ typedef struct
 #define TTE_NPC				64
 
 //-----------------------------------------------------------------------------
-extern long FASTLOADS;
 extern D3DTLVERTEX	vert_list[4];
 extern ACTIONSTRUCT actions[MAX_ACTIONS];
 

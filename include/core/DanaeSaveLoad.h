@@ -62,8 +62,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //Fileformat version
 #define CURRENT_VERSION 1.44f
 
-//#pragma pack(push,1)
-
 //////////////////////
 
 ///////////////////////
@@ -89,8 +87,6 @@ typedef struct
 	float       fpad[16];
 } DANAE_LS_INTER; // Aligned 1 2 4
 #pragma pack(pop)
-
-//#pragma pack(pop)
 
 extern EERIE_3D loddpos;
 long DanaeSaveLevel( const std::string& fic);

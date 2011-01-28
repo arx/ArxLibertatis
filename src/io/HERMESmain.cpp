@@ -425,56 +425,61 @@ void MemFree(void * adr)
 	free(adr);
 }
  
-long HERMES_CreateFileCheck(const char * name, char * scheck, const long & size, const float & id)
+bool HERMES_CreateFileCheck(const char * name, char * scheck, size_t size, const float id)
 {
+	LogWarning << "partially unimplemented HERMES_CreateFileCheck";
+	
+	
 	printf("HERMES_CreateFileCheck(%s, ...)\n", name);
 	WIN32_FILE_ATTRIBUTE_DATA attrib;
-	FILE * file;
+	FileHandle file;
 	long length(size >> 2), i = 7 * 4;
 
+	// TODO port
 	if (!GetFileAttributesEx(name, GetFileExInfoStandard, &attrib)) return true;
 
-	if (!(file = fopen(name, "rb"))) return true;
+	if (!(file = FileOpenRead(name))) return true;
 
-	fseek(file, 0, SEEK_END);
+	FileSeek(file, 0, SEEK_END);
 
 	memset(scheck, 0, size);
 	((float *)scheck)[0] = id;
 	((long *)scheck)[1] = size;
 	memcpy(&((long *)scheck)[2], &attrib.ftCreationTime, sizeof(FILETIME));
 	memcpy(&((long *)scheck)[4], &attrib.ftLastWriteTime, sizeof(FILETIME));
-	((long *)scheck)[6] = ftell(file);
+	((long *)scheck)[6] = FileTell(file);
 	memcpy(&scheck[i], name, strlen(name) + 1);
 	i += strlen(name) + 1;
 	memset(&scheck[i], 0, i % 4);
 	i += i % 4;
 	i >>= 2;
 
-	fseek(file, 0, SEEK_SET);
+	FileSeek(file, 0, SEEK_SET);
 
 	while (i < length)
 	{
 		long crc = 0;
-
-		for (long j(0); j < 256; j++)
+		
+		for (long j = 0; j < 256; j++)
 		{
 			char read;
 
-			if (!fread(&read, 1, 1, file)) break;
+			if (!FileRead(file, &read, 1)) break;
 
 			crc += read;
 		}
 
 		((long *)scheck)[i++] = crc;
 
-		if (feof(file))
-		{
-			memset(&((long *)scheck)[i], 0, (length - i) << 2);
-			break;
-		}
+		// TODO is this actually needed?
+		//if (feof(file))
+		//{
+		//	memset(&((long *)scheck)[i], 0, (length - i) << 2);
+		//	break;
+		//}
 	}
 
-	fclose(file);
+	FileCloseRead(file);
 
 	return false;
 }
@@ -974,38 +979,6 @@ int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName
 
 //-------------------------------------------------------------------------------------
 // Error Logging Funcs...
-char ERROR_Log_FIC[256];
-long ERROR_Log_Write = 0;
-void ERROR_Log_Init(char * fich)
-{
-	strcpy(ERROR_Log_FIC, fich);
-	FILE * fic;
-
-	if ((fic = fopen(ERROR_Log_FIC, "w")) != NULL)
-	{
-		ERROR_Log_Write = 1;
-		fclose(fic);
-	}
-	else ERROR_Log_Write = 0;
-}
-
-bool ERROR_Log( const std::string& fich)
-{
-	FILE * fic;
-
-	if (ERROR_Log_Write)
-	{
-		if ((fic = fopen(ERROR_Log_FIC, "a+")) != NULL)
-		{
-			fprintf(fic, "Error: %s\n", fich.c_str());
-			fclose(fic);
-			return true;
-		}
-	}
-
-	return false;
-}
-
 char * HERMES_MEMORY_SECURITY = NULL;
 void HERMES_Memory_Security_On(long size)
 {

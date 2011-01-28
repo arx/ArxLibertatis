@@ -63,6 +63,8 @@ void ManageConsole();
 #define HERMESCONSOLE_H
 
 #include <string>
+
+#define NOMINMAX 1
 #include <windows.h>
 
 #define MAXW 320

@@ -45,7 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef HERMESDDE_H
 #define HERMESDDE_H
 
-
+#define NOMINMAX 1
 #include <windows.h>
 #include <mmsystem.h>
 #include <math.h>

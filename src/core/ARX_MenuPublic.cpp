@@ -171,8 +171,8 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int 
 			DANAECENTERX = DANAESIZX >> 1;
 			DANAECENTERY = DANAESIZY >> 1;
 
-			Xratio = DANAESIZX * DIV640;
-			Yratio = DANAESIZY * DIV480;
+			Xratio = DANAESIZX * ( 1.0f / 640 );
+			Yratio = DANAESIZY * ( 1.0f / 480 );
 
 			ARXMenu_Options_Video_SetGamma(pMenuConfig->iGamma);
 			pMenuConfig->bNoReturnToWindows = true;
@@ -400,7 +400,7 @@ void ARXMenu_Options_Video_SetDetailsQuality(int _iQuality)
 void ARXMenu_Options_Video_GetLODQuality(int & _iQuality)
 {
 
-	float fForced = FORCED_REDUCTION_VALUE * DIV5000 ;
+	float fForced = FORCED_REDUCTION_VALUE * ( 1.0f / 5000 ) ;
 	ARX_CHECK_INT(fForced);
 
 	pMenuConfig->iMeshReduction = ARX_CLEAN_WARN_CAST_INT(fForced);

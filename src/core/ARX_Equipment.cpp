@@ -702,7 +702,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 
 		attack = player.Full_damages;
 
-		if (rnd() * 100 <= (float)(player.Full_Attribute_Dexterity - 9) * 2.f + (float)(player.Full_Skill_Close_Combat * DIV5))
+		if (rnd() * 100 <= (float)(player.Full_Attribute_Dexterity - 9) * 2.f + (float)(player.Full_Skill_Close_Combat * ( 1.0f / 5 )))
 		{
 			if (SendIOScriptEvent(io_source, SM_CRITICAL, "", NULL) != REFUSE)
 				critical = true;
@@ -713,7 +713,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 
 		if (io_target->_npcdata->npcflags & NPCFLAG_BACKSTAB)
 		{
-			if (rnd() * 100.f <= player.Full_Skill_Stealth * DIV2)
+			if (rnd() * 100.f <= player.Full_Skill_Stealth * ( 1.0f / 2 ))
 			{
 				if (SendIOScriptEvent(io_source, SM_BACKSTAB, "", NULL) != REFUSE)
 					backstab = 1.5f; 
@@ -741,7 +741,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 
 		if (GAME_EDITOR)
 			damages = io_source->_npcdata->damages * ratioaim;
-		else damages = io_source->_npcdata->damages * ratioaim * (rnd() * DIV2 + 0.5f);
+		else damages = io_source->_npcdata->damages * ratioaim * (rnd() * ( 1.0f / 2 ) + 0.5f);
 
 		long value = ARX_SPELLS_GetSpellOn(io_source, SPELL_CURSE);
 
@@ -769,7 +769,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 	if (io_target == inter.iobj[0])
 	{
 		ac = player.Full_armor_class;
-		absorb = player.Full_Skill_Defense * DIV2;
+		absorb = player.Full_Skill_Defense * ( 1.0f / 2 );
 	}
 	else
 	{
@@ -806,14 +806,14 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 	}
 
 	float dmgs = damages * backstab;
-	dmgs -= dmgs * (absorb * DIV100);
+	dmgs -= dmgs * (absorb * ( 1.0f / 100 ));
 
 	EERIE_3D pos;
 	pos.x = io_target->pos.x;
 	pos.y = io_target->pos.y;
 	pos.z = io_target->pos.z;
 	float power;
-	power = dmgs * DIV20;
+	power = dmgs * ( 1.0f / 20 );
 
 	if (power > 1.f) power = 1.f;
 
@@ -834,7 +834,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 
 		EERIE_3D pos;
 		pos.x = io_target->pos.x;
-		pos.y = io_target->pos.y + io_target->physics.cyl.height * DIV2;
+		pos.y = io_target->pos.y + io_target->physics.cyl.height * ( 1.0f / 2 );
 		pos.z = io_target->pos.z;
 
 
@@ -856,9 +856,9 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 				//------- player push START
 				EERIE_3D push;
 				Vector_Copy(&push, &ppos);
-				push.x *= -dmgs * DIV11;
-				push.y *= -dmgs * DIV30;
-				push.z *= -dmgs * DIV11;
+				push.x *= -dmgs * ( 1.0f / 11 );
+				push.y *= -dmgs * ( 1.0f / 30 );
+				push.z *= -dmgs * ( 1.0f / 11 );
 				PUSH_PLAYER_FORCE.x += push.x;
 				PUSH_PLAYER_FORCE.y += push.y;
 				PUSH_PLAYER_FORCE.z += push.z;
@@ -972,7 +972,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 					
 					EERIE_3D vector;
 					vector.x = sphere.origin.x - target->pos.x;
-					vector.y = (sphere.origin.y - target->pos.y) * DIV2;
+					vector.y = (sphere.origin.y - target->pos.y) * ( 1.0f / 2 );
 					vector.z = sphere.origin.z - target->pos.z;
 					float t = 1.f / TRUEVector_Magnitude(&vector);
 					vector.x *= t;
@@ -1059,7 +1059,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 
 								EERIE_SPHERE sp;
 								float power;
-								power = (dmgs * DIV40) + 0.7f;
+								power = (dmgs * ( 1.0f / 40 )) + 0.7f;
 								EERIE_3D vect;
 								vect.x = target->obj->vertexlist3[hitpoint].v.x - io_source->pos.x;
 								vect.y = 0;
@@ -1073,9 +1073,9 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 								if (CheckAnythingInSphere(&sp, 0, 1))
 								{
 									EERIE_RGB rgb;
-									rgb.r = (float)((long)((color >> 16) & 255)) * DIV255;
-									rgb.g = (float)((long)((color >> 8) & 255)) * DIV255;
-									rgb.b = (float)((long)((color) & 255)) * DIV255;
+									rgb.r = (float)((long)((color >> 16) & 255)) * ( 1.0f / 255 );
+									rgb.g = (float)((long)((color >> 8) & 255)) * ( 1.0f / 255 );
+									rgb.b = (float)((long)((color) & 255)) * ( 1.0f / 255 );
 									SpawnGroundSplat(&sp, &rgb, 30, 1);
 								}
 							}
@@ -1578,7 +1578,7 @@ float ARX_EQUIPMENT_ApplyPercent(INTERACTIVE_OBJ * io, long ident, float trueval
 		}
 	}
 
-	return (toadd * trueval * DIV100);
+	return (toadd * trueval * ( 1.0f / 100 ));
 }
  
 //***********************************************************************************************

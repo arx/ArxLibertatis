@@ -116,9 +116,9 @@ void ARX_DAMAGES_IgnitIO(INTERACTIVE_OBJ * io, float dmg)
 		SendIOScriptEvent(io, SM_ENTERZONE, "COOK_S", NULL);
 	}
 
-	if (io->ioflags & IO_FIX) io->ignition += dmg * DIV10;
-	else if (io->ioflags & IO_ITEM) io->ignition += dmg * DIV8;
-	else if (io->ioflags & IO_NPC) io->ignition += dmg * DIV4;
+	if (io->ioflags & IO_FIX) io->ignition += dmg * ( 1.0f / 10 );
+	else if (io->ioflags & IO_ITEM) io->ignition += dmg * ( 1.0f / 8 );
+	else if (io->ioflags & IO_NPC) io->ignition += dmg * ( 1.0f / 4 );
 }
 void ARX_DAMAGES_SCREEN_SPLATS_Init()
 {
@@ -158,11 +158,11 @@ void ARX_DAMAGES_SCREEN_SPLATS_Add(EERIE_3D * pos, float dmgs)
 
 
 		float power;
-		power = (dmgs * DIV60) + 0.9f;
+		power = (dmgs * ( 1.0f / 60 )) + 0.9f;
 		float r, g, b;
-		r = (float)((long)((col >> 16) & 255)) * DIV255;
-		g = (float)((long)((col >> 8) & 255)) * DIV255;
-		b = (float)((long)((col) & 255)) * DIV255;
+		r = (float)((long)((col >> 16) & 255)) * ( 1.0f / 255 );
+		g = (float)((long)((col >> 8) & 255)) * ( 1.0f / 255 );
+		b = (float)((long)((col) & 255)) * ( 1.0f / 255 );
 		ParticleCount++;
 		PARTICLE_DEF * pd = &particle[j];
 		pd->special			=	PARTICLE_SUB2 | SUBSTRACT;
@@ -255,11 +255,11 @@ void ARX_DAMAGE_Show_Hit_Blood(LPDIRECT3DDEVICE7 pd3dDevice)
 			}
 
 			if (duration > Blood_Duration)
-				Blood_Pos += (float)FrameDiff * DIV300;
+				Blood_Pos += (float)FrameDiff * ( 1.0f / 300 );
 
 			duration += ARX_CLEAN_WARN_CAST_LONG(FrameDiff);
 		}
-		else Blood_Pos += (float)FrameDiff * DIV40;
+		else Blood_Pos += (float)FrameDiff * ( 1.0f / 40 );
 	}
 
 	Last_Blood_Pos = Blood_Pos;
@@ -521,7 +521,7 @@ void ARX_DAMAGES_DamageFIX(INTERACTIVE_OBJ * io, float dmg, long source, long fl
 		io->dmg_sum = 0.f;
 	}
 
-	if (rnd() * 100.f > io->durability) io->durability -= dmg * DIV2; //1.f;
+	if (rnd() * 100.f > io->durability) io->durability -= dmg * ( 1.0f / 2 ); //1.f;
 
 	if (io->durability <= 0.f)
 	{
@@ -701,7 +701,7 @@ void ARX_DAMAGES_PushIO(INTERACTIVE_OBJ * io_target, long source, float power)
 	if ((power > 0.f)
 	        &&	(ValidIONum(source)))
 	{
-		power *= DIV20;
+		power *= ( 1.0f / 20 );
 		INTERACTIVE_OBJ * io = inter.iobj[source];
 		EERIE_3D vect;
 		vect.x = io_target->pos.x - io->pos.x;
@@ -739,7 +739,7 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, long flags, E
 
 	if (flags & DAMAGE_TYPE_PER_SECOND)
 	{
-		dmg = dmg * _framedelay * DIV1000;
+		dmg = dmg * _framedelay * ( 1.0f / 1000 );
 	}
 
 	if (target == 0)
@@ -784,13 +784,13 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, long flags, E
 
 		if (flags & DAMAGE_TYPE_PUSH)
 		{
-			ARX_DAMAGES_PushIO(io_target, source, damagesdone * DIV2);
+			ARX_DAMAGES_PushIO(io_target, source, damagesdone * ( 1.0f / 2 ));
 		}
 
 		if ((flags & DAMAGE_TYPE_MAGICAL)
 		        && !(flags & (DAMAGE_TYPE_FIRE | DAMAGE_TYPE_COLD)))
 		{
-			damagesdone -= player.Full_resist_magic * DIV100 * damagesdone;
+			damagesdone -= player.Full_resist_magic * ( 1.0f / 100 ) * damagesdone;
 			damagesdone = max(0.0f, damagesdone);
 		}
 
@@ -841,13 +841,13 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, long flags, E
 
 			if (flags & DAMAGE_TYPE_PUSH)
 			{
-				ARX_DAMAGES_PushIO(io_target, source, damagesdone * DIV2);
+				ARX_DAMAGES_PushIO(io_target, source, damagesdone * ( 1.0f / 2 ));
 			}
 
 			if ((flags & DAMAGE_TYPE_MAGICAL)
 			        && !(flags & (DAMAGE_TYPE_FIRE | DAMAGE_TYPE_COLD)))
 			{
-				damagesdone -= io_target->_npcdata->resist_magic * DIV100 * damagesdone;
+				damagesdone -= io_target->_npcdata->resist_magic * ( 1.0f / 100 ) * damagesdone;
 				damagesdone = max(0.0f, damagesdone);
 			}
 
@@ -1041,7 +1041,7 @@ float ARX_DAMAGES_DamageNPC(INTERACTIVE_OBJ * io, float dmg, long source, long f
 			if ((source != 0)
 			        ||	((source == 0) &&	(player.equiped[EQUIP_SLOT_WEAPON] > 0)))
 			{
-				if ((dmg >= io->_npcdata->maxlife * DIV2) && pos)
+				if ((dmg >= io->_npcdata->maxlife * ( 1.0f / 2 )) && pos)
 					ARX_NPC_TryToCutSomething(io, pos);
 			}
 
@@ -1233,7 +1233,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 			if (tim > damages[j].start_time + damages[j].duration)
 				FD -= damages[j].start_time + damages[j].duration - tim;
 
-			dmg = damages[j].damages * FD * DIV1000;
+			dmg = damages[j].damages * FD * ( 1.0f / 1000 );
 		}
 
 		long validsource = ValidIONum(damages[j].source);
@@ -1306,7 +1306,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 							break;
 							case DAMAGE_AREAHALF:
 							{
-								float ratio = (damages[j].radius - (dist * DIV2)) * divradius;
+								float ratio = (damages[j].radius - (dist * ( 1.0f / 2 ))) * divradius;
 
 								if (ratio > 1.f) ratio = 1.f;
 								else if (ratio < 0.f) ratio = 0.f;
@@ -1382,7 +1382,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 									        &&	(!(damages[j].type & DAMAGE_TYPE_COLD))
 									   )
 									{
-										dmg -= player.Full_resist_magic * DIV100 * dmg;
+										dmg -= player.Full_resist_magic * ( 1.0f / 100 ) * dmg;
 										dmg = max(0.0f, dmg);
 									}
 
@@ -1426,7 +1426,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 									        && (!(damages[j].type & DAMAGE_TYPE_COLD))
 									   )
 									{
-										dmg -= inter.iobj[i]->_npcdata->resist_magic * DIV100 * dmg;
+										dmg -= inter.iobj[i]->_npcdata->resist_magic * ( 1.0f / 100 ) * dmg;
 										dmg = max(0.0f, dmg);
 									}
 
@@ -1442,7 +1442,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 								{
 									EERIE_3D vector;
 									vector.x = damages[j].pos.x - inter.iobj[i]->pos.x;
-									vector.y = (damages[j].pos.y - inter.iobj[i]->pos.y) * DIV2;
+									vector.y = (damages[j].pos.y - inter.iobj[i]->pos.y) * ( 1.0f / 2 );
 									vector.z = damages[j].pos.z - inter.iobj[i]->pos.z;
 									float t = 1.f / TRUEVector_Magnitude(&vector);
 									vector.x *= t;
@@ -1696,9 +1696,9 @@ bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long t
 						if (kk != k)
 						{
 							EERIE_3D posi;
-							posi.x = (inter.iobj[i]->obj->vertexlist3[k].v.x + inter.iobj[i]->obj->vertexlist3[kk].v.x) * DIV2;
-							posi.y = (inter.iobj[i]->obj->vertexlist3[k].v.y + inter.iobj[i]->obj->vertexlist3[kk].v.y) * DIV2;
-							posi.z = (inter.iobj[i]->obj->vertexlist3[k].v.z + inter.iobj[i]->obj->vertexlist3[kk].v.z) * DIV2;
+							posi.x = (inter.iobj[i]->obj->vertexlist3[k].v.x + inter.iobj[i]->obj->vertexlist3[kk].v.x) * ( 1.0f / 2 );
+							posi.y = (inter.iobj[i]->obj->vertexlist3[k].v.y + inter.iobj[i]->obj->vertexlist3[kk].v.y) * ( 1.0f / 2 );
+							posi.z = (inter.iobj[i]->obj->vertexlist3[k].v.z + inter.iobj[i]->obj->vertexlist3[kk].v.z) * ( 1.0f / 2 );
 							dist = EEDistance3D(pos, &posi);
 
 							if (dist <= radius)
@@ -1723,10 +1723,10 @@ bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long t
 				}
 			}
 
-			float ratio = ((float)count / ((float)ioo->obj->nbvertex * DIV2));
+			float ratio = ((float)count / ((float)ioo->obj->nbvertex * ( 1.0f / 2 )));
 
 			if (count2 > count)
-				ratio = ((float)count2 / ((float)ioo->obj->nbvertex * DIV2));
+				ratio = ((float)count2 / ((float)ioo->obj->nbvertex * ( 1.0f / 2 )));
 
 			if (ratio > 2.f) ratio = 2.f;
 
@@ -1740,7 +1740,7 @@ bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long t
 							dmg = dmg * (radius + 30 - mindist) * rad;
 							break;
 						case DAMAGE_AREAHALF:
-							dmg = dmg * (radius + 30 - mindist * DIV2) * rad;
+							dmg = dmg * (radius + 30 - mindist * ( 1.0f / 2 )) * rad;
 							break;
 					}
 
@@ -1828,7 +1828,7 @@ void ARX_DAMAGES_DurabilityRestore(INTERACTIVE_OBJ * io, float percent)
 	}
 	else
 	{
-		float ratio			= percent * DIV100;
+		float ratio			= percent * ( 1.0f / 100 );
 		float to_restore	= (io->max_durability - io->durability) * ratio;
 		float v				= rnd() * 100.f - percent;
 
@@ -1851,7 +1851,7 @@ void ARX_DAMAGES_DurabilityRestore(INTERACTIVE_OBJ * io, float percent)
 			if (v > 50.f)
 				v = 50.f;
 
-			v *= DIV100;
+			v *= ( 1.0f / 100 );
 			float mloss = io->max_durability * v;
 
 			if (io->ioflags & IO_ITEM)
@@ -1893,7 +1893,7 @@ void ARX_DAMAGES_DurabilityLoss(INTERACTIVE_OBJ * io, float loss)
 }
 void ARX_DAMAGES_DamagePlayerEquipment(float damages)
 {
-	float ratio = damages * DIV20;
+	float ratio = damages * ( 1.0f / 20 );
 
 	if (ratio > 1.f) ratio = 1.f;
 

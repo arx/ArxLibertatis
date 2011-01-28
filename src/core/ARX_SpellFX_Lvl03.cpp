@@ -143,9 +143,9 @@ void CFireBall::Create(EERIE_3D aeSrc, float afBeta, float afAlpha, float _fLeve
 	eSrc.y = aeSrc.y;
 	eSrc.z = aeSrc.z + fBetaRadCos * 60;
 
-	eMove.x = - fBetaRadSin * 80 * cos(DEG2RAD(MAKEANGLE(afAlpha)));
-	eMove.y = sin(DEG2RAD(MAKEANGLE(afAlpha))) * 80;
-	eMove.z = + fBetaRadCos * 80 * cos(DEG2RAD(MAKEANGLE(afAlpha)));
+	eMove.x = - fBetaRadSin * 80 * cos(radians(MAKEANGLE(afAlpha)));
+	eMove.y = sin(radians(MAKEANGLE(afAlpha))) * 80;
+	eMove.z = + fBetaRadCos * 80 * cos(radians(MAKEANGLE(afAlpha)));
 
 	fLevel = _fLevel;
 
@@ -161,7 +161,7 @@ void CFireBall::Create(EERIE_3D aeSrc, float afBeta, float afAlpha, float _fLeve
 	cp.p3Direction.x = -eMove.x;
 	cp.p3Direction.y = -eMove.y;
 	cp.p3Direction.z = -eMove.z;
-	cp.fAngle = DEG2RAD(3);
+	cp.fAngle = radians(3);
 	cp.fSpeed = 0;
 	cp.fSpeedRandom = 0;
 	cp.p3Gravity.x = 0;
@@ -209,7 +209,7 @@ void CFireBall::Create(EERIE_3D aeSrc, float afBeta, float afAlpha, float _fLeve
 	cp.p3Direction.x = -eMove.x;
 	cp.p3Direction.y = -eMove.y;
 	cp.p3Direction.z = -eMove.z;
-	cp.fAngle = DEG2RAD(3);
+	cp.fAngle = radians(3);
 	cp.fSpeed = 0;
 	cp.fSpeedRandom = 0;
 	cp.p3Gravity.x = 0;
@@ -256,7 +256,7 @@ void CFireBall::Create(EERIE_3D aeSrc, float afBeta, float afAlpha, float _fLeve
 	cp.p3Direction.x = -eMove.x;
 	cp.p3Direction.y = -eMove.y;
 	cp.p3Direction.z = -eMove.z;
-	cp.fAngle = DEG2RAD(9);
+	cp.fAngle = radians(9);
 	cp.fSpeed = 150; 
 	cp.fSpeedRandom = 150; 
 	cp.p3Gravity.x = 0;
@@ -372,9 +372,9 @@ void CFireBall::Update(unsigned long aulTime)
 			if ((ValidIONum(spells[spellinstance].caster))
 			        && (inter.iobj[spells[spellinstance].caster]->ioflags & IO_NPC))
 			{
-				eCurPos.x -= EEsin(DEG2RAD(inter.iobj[spells[spellinstance].caster]->angle.b)) * 30.f;
+				eCurPos.x -= EEsin(radians(inter.iobj[spells[spellinstance].caster]->angle.b)) * 30.f;
 				eCurPos.y -= 80.f;
-				eCurPos.z += EEcos(DEG2RAD(inter.iobj[spells[spellinstance].caster]->angle.b)) * 30.f;
+				eCurPos.z += EEcos(radians(inter.iobj[spells[spellinstance].caster]->angle.b)) * 30.f;
 			}
 			
 			INTERACTIVE_OBJ * io = inter.iobj[spells[spellinstance].caster];
@@ -385,14 +385,14 @@ void CFireBall::Update(unsigned long aulTime)
 				EERIE_3D p2;
 				Vector_Copy(&p2, &inter.iobj[io->targetinfo]->pos);
 				p2.y -= 60.f;
-				afAlpha = 360.f - (RAD2DEG(GetAngle(p1->y, p1->z, p2.y, p2.z + TRUEDistance2D(p2.x, p2.z, p1->x, p1->z)))); //alpha entre orgn et dest;
+				afAlpha = 360.f - (degrees(GetAngle(p1->y, p1->z, p2.y, p2.z + TRUEDistance2D(p2.x, p2.z, p1->x, p1->z)))); //alpha entre orgn et dest;
 			}
 		}
 
 
-		eMove.x = - fBetaRadSin * 100 * cos(DEG2RAD(MAKEANGLE(afAlpha)));
-		eMove.y = sin(DEG2RAD(MAKEANGLE(afAlpha))) * 100;
-		eMove.z = + fBetaRadCos * 100 * cos(DEG2RAD(MAKEANGLE(afAlpha)));
+		eMove.x = - fBetaRadSin * 100 * cos(radians(MAKEANGLE(afAlpha)));
+		eMove.y = sin(radians(MAKEANGLE(afAlpha))) * 100;
+		eMove.z = + fBetaRadCos * 100 * cos(radians(MAKEANGLE(afAlpha)));
 
 		EERIE_3D vMove;
 		float f = 1.f / TRUEVector_Magnitude(&eMove);
@@ -658,7 +658,7 @@ void CIceProjectile::Update(unsigned long aulTime)
 
 	if (ulDuration - ulCurrentTime < 1000)
 	{
-		fColor = (ulDuration - ulCurrentTime) * DIV1000;
+		fColor = (ulDuration - ulCurrentTime) * ( 1.0f / 1000 );
 
 		for (int i = 0; i < iNumber; i++)
 		{
@@ -713,7 +713,7 @@ float CIceProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		EERIE_3D stitescale;
 		EERIE_RGB stitecolor;
 
-		stiteangle.b = (float) cos(DEG2RAD(tPos[i].x)) * 360;
+		stiteangle.b = (float) cos(radians(tPos[i].x)) * 360;
 		stiteangle.a = 0;
 		stiteangle.g = 0;
 		stitepos.x = tPos[i].x;
@@ -1087,7 +1087,7 @@ void CCreateFood::Create()
 	cp.p3Direction.x = 0;
 	cp.p3Direction.y = -10;
 	cp.p3Direction.z = 0;
-	cp.fAngle = DEG2RAD(5);
+	cp.fAngle = radians(5);
 	cp.fSpeed = 120; 
 	cp.fSpeedRandom = 84; 
 	cp.p3Gravity.x = 0;

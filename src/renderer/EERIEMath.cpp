@@ -640,7 +640,7 @@ bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s)
 	return false;
 }
 
-// Returned in Radians ! use RAD2DEG() to convert it to degrees
+// Returned in Radians ! use degrees() to convert it to degrees
 float	GetAngle(const float x0, const float y0, const float x1, const float y1)
 {
 	register float x, y;
@@ -649,15 +649,15 @@ float	GetAngle(const float x0, const float y0, const float x1, const float y1)
 
 	if (x > 0.f)
 	{
-		if (y >= 0.f)	return (EEdef_PI_0_75 + (EEatan(y / x)));
-		else return (EEdef_PI_0_75 - (EEatan(EEfabs(y) / x)));   
+		if (y >= 0.f)	return (PI * 0.75f + (EEatan(y / x)));
+		else return (PI * 0.75f - (EEatan(EEfabs(y) / x)));   
 	}
 	else if (x < 0.f)
 	{
-		if (y > 0.f)	return (EEdef_PI_DIV_2 - (EEatan(y / EEfabs(x))));
-		else return (EEdef_PI_DIV_2 + (EEatan(y / x)));
+		if (y > 0.f)	return (PI / 2 - (EEatan(y / EEfabs(x))));
+		else return (PI / 2 + (EEatan(y / x)));
 	}
-	else if (y < 0) return EEdef_PI;
+	else if (y < 0) return PI;
 	else return 0.f;
 }
 
@@ -796,14 +796,14 @@ void QuatFromAngles(EERIE_QUAT * q, const EERIE_3D * angle)
 
 {
 	float A, B;
-	A = angle->yaw * DIV2;
-	B = angle->pitch * DIV2;
+	A = angle->yaw * ( 1.0f / 2 );
+	B = angle->pitch * ( 1.0f / 2 );
 
 	float fSinYaw   = sinf(A);
 	float fCosYaw   = cosf(A);
 	float fSinPitch = sinf(B);
 	float fCosPitch = cosf(B);
-	A = angle->roll * DIV2;
+	A = angle->roll * ( 1.0f / 2 );
 	float fSinRoll  = sinf(A);
 	float fCosRoll  = cosf(A);
 	A = fCosRoll * fCosPitch;
@@ -889,7 +889,7 @@ void QuatFromMatrix(EERIE_QUAT & quat, EERIEMATRIX & mat)
 	if (tr > 0.0f)
 	{
 		s = sqrt(tr + 1.0f);
-		quat.w = s * DIV2;
+		quat.w = s * ( 1.0f / 2 );
 		s = 0.5f / s;
 		quat.x = (m[1][2] - m[2][1]) * s;
 		quat.y = (m[2][0] - m[0][2]) * s;
@@ -960,7 +960,7 @@ void VRotateX(EERIE_3D * out, const float angle)
 	in.x = out->x;
 	in.y = out->y;
 	in.z = out->z;
-	register float s = DEG2RAD(angle);
+	register float s = radians(angle);
 	register float c = EEcos(s);
 	s = EEsin(s);
 	out->x = in.x;
@@ -977,7 +977,7 @@ void VRotateY(EERIE_3D * out, const float angle)
 	in.x = out->x;
 	in.y = out->y;
 	in.z = out->z;
-	register float s = DEG2RAD(angle);
+	register float s = radians(angle);
 	register float c = EEcos(s);
 	s = EEsin(s);
 	out->x = (in.x * c) + (in.z * s);
@@ -993,7 +993,7 @@ void VRotateZ(EERIE_3D * out, const float angle)
 	in.x = out->x;
 	in.y = out->y;
 	in.z = out->z;
-	register float s = DEG2RAD(angle);
+	register float s = radians(angle);
 	register float c = EEcos(s);
 	s = EEsin(s);
 	out->x = (in.x * c) + (in.y * s);
@@ -1006,7 +1006,7 @@ void VRotateZ(EERIE_3D * out, const float angle)
 //*************************************************************************************
 void Vector_RotateY(EERIE_3D * dest, const EERIE_3D * src, const float angle)
 {
-	register float s = DEG2RAD(angle);
+	register float s = radians(angle);
 	register float c = EEcos(s);
 	s = EEsin(s);
 	dest->x = (src->x * c) + (src->z * s);
@@ -1018,7 +1018,7 @@ void Vector_RotateY(EERIE_3D * dest, const EERIE_3D * src, const float angle)
 //*************************************************************************************
 void Vector_RotateZ(EERIE_3D * dest, const EERIE_3D * src, const float angle)
 {
-	register float s = DEG2RAD(angle);
+	register float s = radians(angle);
 	register float c = EEcos(s);
 	s = EEsin(s);
 	dest->x = (src->x * c) + (src->y * s);
@@ -1221,10 +1221,10 @@ void GenerateMatrixUsingVector(EERIEMATRIX * matrix, const EERIE_3D * vect, cons
 	// Generate the Z rotation matrix for roll
 	roll._33 = 1.f;
 	roll._44 = 1.f;
-	roll._11 = EEcos(DEG2RAD(rollDegrees));
-	roll._12 = -EEsin(DEG2RAD(rollDegrees));
-	roll._21 = EEsin(DEG2RAD(rollDegrees));
-	roll._22 = EEcos(DEG2RAD(rollDegrees));
+	roll._11 = EEcos(radians(rollDegrees));
+	roll._12 = -EEsin(radians(rollDegrees));
+	roll._21 = EEsin(radians(rollDegrees));
+	roll._22 = EEcos(radians(rollDegrees));
 
 	// Concatinate them for a complete rotation matrix that includes
 	// all rotations
@@ -1297,4 +1297,11 @@ float GetNearestSnappedAngle(float angle)
 	if (angle < 337.5f) return 315.f;
 
 	return 0.f;
+}
+
+float radians(float degrees){
+	return degrees*2*PI/360;
+}
+float degrees(float radians){
+	return radians*360/(2*PI);
 }

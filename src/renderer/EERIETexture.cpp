@@ -1139,10 +1139,15 @@ void CopySurfaceToBumpMap(LPDIRECTDRAWSURFACE7 sSurface, LPDIRECTDRAWSURFACE7 dS
 				long val = ARX_CLEAN_WARN_CAST_LONG((rr + gg + bb) * DIV6);
 				rr = gg = bb = val;
 
+<<<<<<< HEAD
 				dr = ((rr >> (dwRShiftL)) << dwRShiftR) & dwRMask;
 				dg = ((gg >> (dwGShiftL)) << dwGShiftR) & dwGMask;
 				db = ((bb >> (dwBShiftL)) << dwBShiftR) & dwBMask;
 				da = ((255 >> (dwAShiftL)) << dwAShiftR) & dwAMask;
+=======
+			long val = ARX_CLEAN_WARN_CAST_LONG((rr + gg + bb) * ( 1.0f / 6 ));
+			rr = gg = bb = val;
+>>>>>>> 859d9855ff3e73fb080e437e1aa284b38849c320
 
 				if (32 == ddesc.ddpfPixelFormat.dwRGBBitCount)
 					pDstData32[x] = (DWORD)(dr + dg + db + da);
@@ -1544,9 +1549,22 @@ void PnuxSurface(LPDIRECTDRAWSURFACE7 sSurface)
 				gg = g;
 				bb = b;
 
+<<<<<<< HEAD
 				fr = ARX_CLEAN_WARN_CAST_FLOAT(rr);
 				fg = ARX_CLEAN_WARN_CAST_FLOAT(gg);
 				fb = ARX_CLEAN_WARN_CAST_FLOAT(bb);
+=======
+			if (SPECIAL_PNUX == 3)
+			{
+				float power = (fr + fg + fb) * ( 1.0f / 3 ) * 1.2f;
+				fr = power;
+				fg = power;
+				fb = power;
+			}
+			else if (SPECIAL_PNUX == 2)
+			{
+				float power = (fr + fg + fb) * ( 1.0f / 3 );
+>>>>>>> 859d9855ff3e73fb080e437e1aa284b38849c320
 
 				if (SPECIAL_PNUX == 3)
 				{
@@ -1570,9 +1588,22 @@ void PnuxSurface(LPDIRECTDRAWSURFACE7 sSurface)
 						fb = fr * 0.1f;
 					}
 
+<<<<<<< HEAD
 					fr *= 1.3f;
 					fg *= 1.5f;
 					fb *= 1.5f;
+=======
+				if (power > 200.f)
+				{
+					fr += (power - 200.f) * ( 1.0f / 5 );
+					fg += (power - 200.f) * ( 1.0f / 4 );
+					fb += (power - 200.f) * ( 1.0f / 3 );
+				}
+			}
+			else
+			{
+				float power = (fr + fg + fb) * 0.6f;
+>>>>>>> 859d9855ff3e73fb080e437e1aa284b38849c320
 
 					if (power > 200.f)
 					{
@@ -3508,7 +3539,7 @@ TextureContainer * D3DTextr_CreateTextureFromFile( const std::string& _strName, 
 		ptcTexture->m_dx = ptcTexture->m_odx;
 	}
 	else
-		ptcTexture->m_odx = ptcTexture->m_dx = DIV256;
+		ptcTexture->m_odx = ptcTexture->m_dx = ( 1.0f / 256 );
 
 	ptcTexture->m_hdx = 0.5f * ptcTexture->m_dx;
 
@@ -3518,7 +3549,7 @@ TextureContainer * D3DTextr_CreateTextureFromFile( const std::string& _strName, 
 		ptcTexture->m_dy = ptcTexture->m_ody;
 	}
 	else
-		ptcTexture->m_ody = ptcTexture->m_dy = DIV256;
+		ptcTexture->m_ody = ptcTexture->m_dy = ( 1.0f / 256 );
 
 	ptcTexture->m_hdy = 0.5f * ptcTexture->m_dy;
 

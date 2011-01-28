@@ -234,23 +234,26 @@ SCRIPT_EVENT AS_EVENT[] =
 // Looks for string in script, return pos. Search start position can be set using	//
 // poss parameter.																	//
 //*************************************************************************************
-long FindScriptPos(EERIE_SCRIPT * es, const std::string& str, long poss)
+long FindScriptPos(EERIE_SCRIPT * es, const std::string& str)
 {
 
 	if (!es->data) return -1;
 
-	char * pdest = strstr(es->data + poss, str.c_str());
+	char * pdest = strstr(es->data, str.c_str());
+	
+	if(!pdest) {
+		return -1;
+	}
+	
 	long result = pdest - es->data;
 
-	if (result < 0) return -1;
+	assert(result >= 0);
 
 	int len2 = str.length();
+	
+	assert(len2 + result <= es->size);
 
-	if (len2+result > es->size){
-		LogError << "Out of data borders " << str;
-	}else{
-		if (es->data[result+len2] <= 32) return result;
-	}
+	if (es->data[result+len2] <= 32) return result;
 
 	return -1;
 }
@@ -752,11 +755,12 @@ void ARX_SCRIPT_ReleaseLabels(EERIE_SCRIPT * es)
 
 void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT * es)
 {
+	LogDebug << "ARX_SCRIPT_ComputeShortcuts start";
 	long nb = min(MAX_SHORTCUT, SM_MAXCMD);
 
 	for (long j = 1; j < nb; j++)
 	{
-		es->shortcut[j] = FindScriptPos(es, AS_EVENT[j].name, 0);
+		es->shortcut[j] = FindScriptPos(es, AS_EVENT[j].name);
 
 		if (es->shortcut[j] >= 0)
 		{
@@ -775,6 +779,8 @@ void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT * es)
 		}
 
 	}
+	
+	LogDebug << "ARX_SCRIPT_ComputeShortcuts end";
 }
 
 
@@ -3309,7 +3315,7 @@ void CheckHit(INTERACTIVE_OBJ * io, float ratioaim)
 									}
 								}
 
-								float ratio = ((float)count / ((float)ioo->obj->nbvertex * DIV2));
+								float ratio = ((float)count / ((float)ioo->obj->nbvertex * ( 1.0f / 2 )));
 
 								if (ioo->ioflags & IO_NPC)
 								{
@@ -3364,7 +3370,7 @@ bool HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 	dest.y = y1 - 90.f;
 	dest.z = z1;
 	float aa = GetAngle(orgn.x, orgn.z, dest.x, dest.z);
-	aa = MAKEANGLE(RAD2DEG(aa));
+	aa = MAKEANGLE(degrees(aa));
 
 	if ((aa < ab + 90.f) && (aa > ab - 90.f))
 	{
@@ -3464,8 +3470,6 @@ void MakeSSEPARAMS(const char * params)
 		while(params[tokensize] != ' ' && params[tokensize] != '\0') {
 			tokensize++;
 		}
-		
-		LogDebug << "MakeSSEPARAMS tokensize is " << tokensize;
 		
 		assert(tokensize < 64 - 1);
 		memcpy(SSEPARAMS[pos], params, tokensize);
@@ -4017,7 +4021,7 @@ long Manage_Specific_RAT_Timer(SCR_TIMER * st)
 		ARX_INTERACTIVE_Teleport(io, &target);
 		EERIE_3D pos;
 		pos.x = io->pos.x;
-		pos.y = io->pos.y + io->physics.cyl.height * DIV2;
+		pos.y = io->pos.y + io->physics.cyl.height * ( 1.0f / 2 );
 		pos.z = io->pos.z;
 		ARX_PARTICLES_Add_Smoke(&pos, 3, 20);
 		AddRandomSmoke(io, 20);
@@ -4036,7 +4040,7 @@ long Manage_Specific_RAT_Timer(SCR_TIMER * st)
 	{
 		st->times++;
 
-		st->msecs = ARX_CAST_LONG(st->msecs * DIV2);
+		st->msecs = ARX_CAST_LONG(st->msecs * ( 1.0f / 2 ));
 
 
 		if (st->msecs < 100) st->msecs = 100;
@@ -6082,6 +6086,8 @@ INTERACTIVE_OBJ * IO_DEBUG = NULL;
 //*************************************************************************************
 long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info)
 {
+	LogDebug << "SendScriptEvent msg=\"" << msg << "\" params=\"" << params << "\" evname=\"" << evname << "\"";
+	
 	if (io)
 	{
 		if ((io->GameFlags & GFLAG_MEGAHIDE)
@@ -6157,7 +6163,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 	{
 		strcpy(eventname, "ON ");
 		strcat(eventname, evname.c_str());
-		pos = FindScriptPos(es, eventname, 0);
+		pos = FindScriptPos( es, eventname );
 	}
 	else
 	{
@@ -6241,7 +6247,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 					return ACCEPT;
 				}
 
-				pos = FindScriptPos(es, AS_EVENT[msg].name, 0);
+				pos = FindScriptPos(es, AS_EVENT[msg].name);
 			}
 		}
 	}
@@ -6660,7 +6666,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 
 #endif
 
-							ARX_SOUND_PlayScriptAmbiance(temp.c_str(), ARX_SOUND_PLAY_LOOPED, volume * DIV100);
+							ARX_SOUND_PlayScriptAmbiance(temp.c_str(), ARX_SOUND_PLAY_LOOPED, volume * ( 1.0f / 100 ));
 						}
 						else if (iCharIn(temp, 'N'))
 						{
@@ -8609,9 +8615,9 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 									{
 										float dist = inter.iobj[t]->physics.cyl.radius + ioo->physics.cyl.radius + 10;
 										EERIE_3D ofs;
-										ofs.x = -EEsin(DEG2RAD(inter.iobj[t]->angle.b)) * dist;
+										ofs.x = -EEsin(radians(inter.iobj[t]->angle.b)) * dist;
 										ofs.y = 0.f;
-										ofs.z = EEcos(DEG2RAD(inter.iobj[t]->angle.b)) * dist;
+										ofs.z = EEcos(radians(inter.iobj[t]->angle.b)) * dist;
 										ioo->pos.x += ofs.x;
 										ioo->pos.z += ofs.z;
 									}
@@ -9764,7 +9770,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					io->invisibility = 1.f + GetVarValueInterpretedAsFloat(temp, esss, io) * DIV100;
+					io->invisibility = 1.f + GetVarValueInterpretedAsFloat(temp, esss, io) * ( 1.0f / 100 );
 
 					if (io->invisibility == 1.f) io->invisibility = 0;
 				}
@@ -9956,7 +9962,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 						float t1;
 						pos = GetNextWord(es, pos, temp1);
 						t1 = GetVarValueInterpretedAsFloat(temp1, esss, io);
-						io->scale = t1 * DIV100;
+						io->scale = t1 * ( 1.0f / 100 );
 #ifdef NEEDING_DEBUG
 
 						if (NEED_DEBUG) sprintf(cmd, "SET_SCALE %s", temp1);
@@ -13411,8 +13417,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 					pos = GetNextWord(es, pos, temp4);
 					sprintf(cmd, "SCRIPT ERROR: %s_%04ld %s %s %s %s [char %ld]", GetName(io->filename).c_str(), io->ident, temp.c_str(), temp2.c_str(), temp3.c_str(), temp4.c_str(), ppos);
 
-					if (!ERROR_Log(cmd));
-					else ShowPopup(cmd);
+					LogError << cmd;
 
 					io->ioflags |= IO_FREEZESCRIPT;
 					return REFUSE;

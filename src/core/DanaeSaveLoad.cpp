@@ -944,48 +944,18 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string& dir)
 //*************************************************************************************
 //*************************************************************************************
 
-const char LOG_DIR_CREATION[] = "Dir_Creation.log";
-
-void LogDirCreation( const char * dir)
-{
-	FILE * fic;
-	HERMES_DATE_TIME hdt;
-
-	if (DirectoryExist(dir))
-	{
-
-		if ((fic = fopen(LOG_DIR_CREATION, "a+")) != NULL)
-		{
-			char name[256];
-			unsigned num = 255;
-			GetUserName(name, &num);
-			GetDate(&hdt);
-			fprintf(fic, "%02ld/%02ld/%4ld %2ldh%02ld %s  %s\n", hdt.days, hdt.months, hdt.years, hdt.hours, hdt.mins, dir, name);
-			fclose(fic);
-		}
+void LogDirCreation(char * dir) {
+	if(DirectoryExist(dir)) {
+		LogDebug << "LogDirCreation: " << dir;
 	}
 }
 
 //*************************************************************************************
 //*************************************************************************************
 
-void LogDirDestruction( const char * dir)
-{
-	FILE * fic;
-	HERMES_DATE_TIME hdt;
-
-	if (DirectoryExist(dir))
-	{
-
-		if ((fic = fopen(LOG_DIR_CREATION, "a+")) != NULL)
-		{
-			char name[256];
-			unsigned num = 255;
-			GetUserName(name, &num);
-			GetDate(&hdt);
-			fprintf(fic, "%02ld/%02ld/%4ld %2ldh%02ld DESTROYED %s  %s\n", hdt.days, hdt.months, hdt.years, hdt.hours, hdt.mins, dir, name);
-			fclose(fic);
-		}
+void LogDirDestruction(char * dir) {
+	if(DirectoryExist(dir)) {
+		LogDebug << "LogDirDestruction: " << dir;
 	}
 }
 
@@ -1387,15 +1357,15 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fic)
 	}
 	else if (mse != NULL)
 	{
-		Mscenepos.x = -mse->cub.xmin - (mse->cub.xmax - mse->cub.xmin) * DIV2 + ((float)ACTIVEBKG->Xsize * (float)ACTIVEBKG->Xdiv) * DIV2;
+		Mscenepos.x = -mse->cub.xmin - (mse->cub.xmax - mse->cub.xmin) * ( 1.0f / 2 ) + ((float)ACTIVEBKG->Xsize * (float)ACTIVEBKG->Xdiv) * ( 1.0f / 2 );
 
-		Mscenepos.z = -mse->cub.zmin - (mse->cub.zmax - mse->cub.zmin) * DIV2 + ((float)ACTIVEBKG->Zsize * (float)ACTIVEBKG->Zdiv) * DIV2;
+		Mscenepos.z = -mse->cub.zmin - (mse->cub.zmax - mse->cub.zmin) * ( 1.0f / 2 ) + ((float)ACTIVEBKG->Zsize * (float)ACTIVEBKG->Zdiv) * ( 1.0f / 2 );
 		float t1 = (float)(long)(mse->point0.x / BKG_SIZX);
 		float t2 = (float)(long)(mse->point0.z / BKG_SIZZ);
 		t1 = mse->point0.x - t1 * BKG_SIZX;
 		t2 = mse->point0.z - t2 * BKG_SIZZ;
-		Mscenepos.x = (float)((long)(Mscenepos.x / BKG_SIZX)) * BKG_SIZX + (float)BKG_SIZX * DIV2;
-		Mscenepos.z = (float)((long)(Mscenepos.z / BKG_SIZZ)) * BKG_SIZZ + (float)BKG_SIZZ * DIV2;
+		Mscenepos.x = (float)((long)(Mscenepos.x / BKG_SIZX)) * BKG_SIZX + (float)BKG_SIZX * ( 1.0f / 2 );
+		Mscenepos.z = (float)((long)(Mscenepos.z / BKG_SIZZ)) * BKG_SIZZ + (float)BKG_SIZZ * ( 1.0f / 2 );
 		mse->pos.x = Mscenepos.x = Mscenepos.x + BKG_SIZX - t1;
 		mse->pos.z = Mscenepos.z = Mscenepos.z + BKG_SIZZ - t2;
 		Mscenepos.y = mse->pos.y = -mse->cub.ymin - 100.f - mse->point0.y;
@@ -1619,9 +1589,9 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fic)
 			fd->move.z = 0.f;
 			EERIE_3D out;
 			float t;
-			t = DEG2RAD(MAKEANGLE(fd->angle.b));
+			t = radians(MAKEANGLE(fd->angle.b));
 			_YRotatePoint(&fd->move, &out, EEcos(t), EEsin(t));
-			t = DEG2RAD(MAKEANGLE(fd->angle.a));
+			t = radians(MAKEANGLE(fd->angle.a));
 			_XRotatePoint(&out, &fd->move, EEcos(t), EEsin(t));
 		}
 	}

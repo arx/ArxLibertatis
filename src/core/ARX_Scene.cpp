@@ -128,6 +128,8 @@ D3DTLVERTEX InterTransPol[MAX_INTERTRANSPOL][4];
 EERIE_FACE * InterTransFace[MAX_INTERTRANSPOL];
 TextureContainer * InterTransTC[MAX_INTERTRANSPOL];
 
+EERIE_PORTAL_DATA * portals = NULL;
+
 float WATEREFFECT=0.f;
 long INTERTRANSPOLYSPOS=0;
 
@@ -563,12 +565,12 @@ void ManageLavaWater(EERIEPOLY * ep, const long to, const unsigned long tim)
 		if (ep->type & POLY_LAVA)
 			for (long k=0;k<to;k++) 
 			{
-				ep->tv[k].tv-=(float)(tim)*DIV12000;
+				ep->tv[k].tv-=(float)(tim)*( 1.0f / 12000 );
 			}
 			else
 				for (long k=0;k<to;k++) 
 				{
-					ep->tv[k].tv-=(float)(tim)*DIV1000;
+					ep->tv[k].tv-=(float)(tim)*( 1.0f / 1000 );
 				}
 	}
 }
@@ -584,7 +586,7 @@ void ManageWater_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long
 			
 		if(ep->type&POLY_FALL)
 		{
-			ep->tv[k].tv-=(float)(tim)*DIV1000;
+			ep->tv[k].tv-=(float)(tim)*( 1.0f / 1000 );
 		}
 		
 		_pVertex[ep->uslInd[k]].tu=ep->tv[k].tu;
@@ -604,7 +606,7 @@ void ManageLava_VertexBuffer(EERIEPOLY * ep, const long to, const unsigned long 
 			
 		if(ep->type&POLY_FALL)
 		{
-			ep->tv[k].tv-=(float)(tim)*DIV12000;
+			ep->tv[k].tv-=(float)(tim)*( 1.0f / 12000 );
 		}
 		
 		_pVertex[ep->uslInd[k]].tu=ep->tv[k].tu;
@@ -965,9 +967,9 @@ bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io,EERIE_3DOBJ * eobj,EERIE_3D * 
 					if (io)
 					{						
 						EERIE_SPHERE sphere;
-						sphere.origin.x=(io->bbox3D.min.x+io->bbox3D.max.x)*DIV2;
-						sphere.origin.y=(io->bbox3D.min.y+io->bbox3D.max.y)*DIV2;
-						sphere.origin.z=(io->bbox3D.min.z+io->bbox3D.max.z)*DIV2;
+						sphere.origin.x=(io->bbox3D.min.x+io->bbox3D.max.x)*( 1.0f / 2 );
+						sphere.origin.y=(io->bbox3D.min.y+io->bbox3D.max.y)*( 1.0f / 2 );
+						sphere.origin.z=(io->bbox3D.min.z+io->bbox3D.max.z)*( 1.0f / 2 );
 						sphere.radius=TRUEDistance3D(sphere.origin.x,sphere.origin.y,sphere.origin.z,
 											io->bbox3D.min.x,io->bbox3D.min.y,io->bbox3D.min.z)+10.f;
 						
@@ -1137,7 +1139,7 @@ long ARX_PORTALS_GetRoomNumForCamera(float * height)
 
 	while (dist<=20.f)
 	{		
-		float vvv=DEG2RAD(ACTIVECAM->angle.b);
+		float vvv=radians(ACTIVECAM->angle.b);
 		ep=CheckInPolyPrecis(	ACTIVECAM->pos.x+EEsin(vvv)*dist,
 								ACTIVECAM->pos.y,
 								ACTIVECAM->pos.z-EEcos(vvv)*dist);
@@ -1766,24 +1768,24 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 			pVertex->y=-ep->v[0].sy;
 			pVertex->z=ep->v[0].sz;
 			pVertex->color=0xFF505050;
-			float fTu=ep->v[0].sx*DIV1000+EEsin((ep->v[0].sx)*DIV200+(float)FrameTime*DIV1000)*DIV32;
-			float fTv=ep->v[0].sz*DIV1000+EEcos((ep->v[0].sz)*DIV200+(float)FrameTime*DIV1000)*DIV32;
+			float fTu=ep->v[0].sx*( 1.0f / 1000 )+EEsin((ep->v[0].sx)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
+			float fTv=ep->v[0].sz*( 1.0f / 1000 )+EEcos((ep->v[0].sz)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
 
-			if(ep->type&POLY_FALL) fTv+=(float)FrameTime*DIV4000;
+			if(ep->type&POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
 
 			pVertex->tu=fTu;
 			pVertex->tv=fTv;
-			fTu=(ep->v[0].sx+30.f)*DIV1000+EEsin((ep->v[0].sx+30)*DIV200+(float)FrameTime*DIV1000)*DIV28;
-			fTv=(ep->v[0].sz+30.f)*DIV1000-EEcos((ep->v[0].sz+30)*DIV200+(float)FrameTime*DIV1000)*DIV28;
+			fTu=(ep->v[0].sx+30.f)*( 1.0f / 1000 )+EEsin((ep->v[0].sx+30)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
+			fTv=(ep->v[0].sz+30.f)*( 1.0f / 1000 )-EEcos((ep->v[0].sz+30)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
 
-			if (ep->type & POLY_FALL) fTv+=(float)FrameTime*DIV4000;
+			if (ep->type & POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
 
 			pVertex->tu2=fTu;
 			pVertex->tv2=fTv;
-			fTu=(ep->v[0].sx+60.f)*DIV1000-EEsin((ep->v[0].sx+60)*DIV200+(float)FrameTime*DIV1000)*DIV40;
-			fTv=(ep->v[0].sz+60.f)*DIV1000-EEcos((ep->v[0].sz+60)*DIV200+(float)FrameTime*DIV1000)*DIV40;
+			fTu=(ep->v[0].sx+60.f)*( 1.0f / 1000 )-EEsin((ep->v[0].sx+60)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
+			fTv=(ep->v[0].sz+60.f)*( 1.0f / 1000 )-EEcos((ep->v[0].sz+60)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
 
-			if (ep->type & POLY_FALL) fTv+=(float)FrameTime*DIV4000;
+			if (ep->type & POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
 
 			pVertex->tu3=fTu;
 			pVertex->tv3=fTv;
@@ -1792,24 +1794,24 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 			pVertex->y=-ep->v[1].sy;
 			pVertex->z=ep->v[1].sz;
 			pVertex->color=0xFF505050;
-			fTu=ep->v[1].sx*DIV1000+EEsin((ep->v[1].sx)*DIV200+(float)FrameTime*DIV1000)*DIV32;
-			fTv=ep->v[1].sz*DIV1000+EEcos((ep->v[1].sz)*DIV200+(float)FrameTime*DIV1000)*DIV32;
+			fTu=ep->v[1].sx*( 1.0f / 1000 )+EEsin((ep->v[1].sx)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
+			fTv=ep->v[1].sz*( 1.0f / 1000 )+EEcos((ep->v[1].sz)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
 
-			if(ep->type&POLY_FALL) fTv+=(float)FrameTime*DIV4000;
+			if(ep->type&POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
 
 			pVertex->tu=fTu;
 			pVertex->tv=fTv;
-			fTu=(ep->v[1].sx+30.f)*DIV1000+EEsin((ep->v[1].sx+30)*DIV200+(float)FrameTime*DIV1000)*DIV28;
-			fTv=(ep->v[1].sz+30.f)*DIV1000-EEcos((ep->v[1].sz+30)*DIV200+(float)FrameTime*DIV1000)*DIV28;
+			fTu=(ep->v[1].sx+30.f)*( 1.0f / 1000 )+EEsin((ep->v[1].sx+30)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
+			fTv=(ep->v[1].sz+30.f)*( 1.0f / 1000 )-EEcos((ep->v[1].sz+30)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
 
-			if (ep->type & POLY_FALL) fTv+=(float)FrameTime*DIV4000;
+			if (ep->type & POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
 
 			pVertex->tu2=fTu;
 			pVertex->tv2=fTv;
-			fTu=(ep->v[1].sx+60.f)*DIV1000-EEsin((ep->v[1].sx+60)*DIV200+(float)FrameTime*DIV1000)*DIV40;
-			fTv=(ep->v[1].sz+60.f)*DIV1000-EEcos((ep->v[1].sz+60)*DIV200+(float)FrameTime*DIV1000)*DIV40;
+			fTu=(ep->v[1].sx+60.f)*( 1.0f / 1000 )-EEsin((ep->v[1].sx+60)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
+			fTv=(ep->v[1].sz+60.f)*( 1.0f / 1000 )-EEcos((ep->v[1].sz+60)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
 
-			if (ep->type & POLY_FALL) fTv+=(float)FrameTime*DIV4000;
+			if (ep->type & POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
 
 			pVertex->tu3=fTu;
 			pVertex->tv3=fTv;
@@ -1818,24 +1820,24 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 			pVertex->y=-ep->v[2].sy;
 			pVertex->z=ep->v[2].sz;
 			pVertex->color=0xFF505050;
-			fTu=ep->v[2].sx*DIV1000+EEsin((ep->v[2].sx)*DIV200+(float)FrameTime*DIV1000)*DIV32;
-			fTv=ep->v[2].sz*DIV1000+EEcos((ep->v[2].sz)*DIV200+(float)FrameTime*DIV1000)*DIV32;
+			fTu=ep->v[2].sx*( 1.0f / 1000 )+EEsin((ep->v[2].sx)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
+			fTv=ep->v[2].sz*( 1.0f / 1000 )+EEcos((ep->v[2].sz)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
 
-			if(ep->type&POLY_FALL) fTv+=(float)FrameTime*DIV4000;
+			if(ep->type&POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
 
 			pVertex->tu=fTu;
 			pVertex->tv=fTv;
-			fTu=(ep->v[2].sx+30.f)*DIV1000+EEsin((ep->v[2].sx+30)*DIV200+(float)FrameTime*DIV1000)*DIV28;
-			fTv=(ep->v[2].sz+30.f)*DIV1000-EEcos((ep->v[2].sz+30)*DIV200+(float)FrameTime*DIV1000)*DIV28;
+			fTu=(ep->v[2].sx+30.f)*( 1.0f / 1000 )+EEsin((ep->v[2].sx+30)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
+			fTv=(ep->v[2].sz+30.f)*( 1.0f / 1000 )-EEcos((ep->v[2].sz+30)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
 
-			if (ep->type & POLY_FALL) fTv+=(float)FrameTime*DIV4000;
+			if (ep->type & POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
 
 			pVertex->tu2=fTu;
 			pVertex->tv2=fTv;
-			fTu=(ep->v[2].sx+60.f)*DIV1000-EEsin((ep->v[2].sx+60)*DIV200+(float)FrameTime*DIV1000)*DIV40;
-			fTv=(ep->v[2].sz+60.f)*DIV1000-EEcos((ep->v[2].sz+60)*DIV200+(float)FrameTime*DIV1000)*DIV40;
+			fTu=(ep->v[2].sx+60.f)*( 1.0f / 1000 )-EEsin((ep->v[2].sx+60)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
+			fTv=(ep->v[2].sz+60.f)*( 1.0f / 1000 )-EEcos((ep->v[2].sz+60)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
 
-			if (ep->type & POLY_FALL) fTv+=(float)FrameTime*DIV4000;
+			if (ep->type & POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
 
 			pVertex->tu3=fTu;
 			pVertex->tv3=fTv;
@@ -1852,24 +1854,24 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 				pVertex->y=-ep->v[3].sy;
 				pVertex->z=ep->v[3].sz;
 				pVertex->color=0xFF505050;
-				fTu=ep->v[3].sx*DIV1000+EEsin((ep->v[3].sx)*DIV200+(float)FrameTime*DIV1000)*DIV32;
-				fTv=ep->v[3].sz*DIV1000+EEcos((ep->v[3].sz)*DIV200+(float)FrameTime*DIV1000)*DIV32;
+				fTu=ep->v[3].sx*( 1.0f / 1000 )+EEsin((ep->v[3].sx)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
+				fTv=ep->v[3].sz*( 1.0f / 1000 )+EEcos((ep->v[3].sz)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 32 );
 
-				if(ep->type&POLY_FALL) fTv+=(float)FrameTime*DIV4000;
+				if(ep->type&POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
 
 				pVertex->tu=fTu;
 				pVertex->tv=fTv;
-				fTu=(ep->v[3].sx+30.f)*DIV1000+EEsin((ep->v[3].sx+30)*DIV200+(float)FrameTime*DIV1000)*DIV28;
-				fTv=(ep->v[3].sz+30.f)*DIV1000-EEcos((ep->v[3].sz+30)*DIV200+(float)FrameTime*DIV1000)*DIV28;
+				fTu=(ep->v[3].sx+30.f)*( 1.0f / 1000 )+EEsin((ep->v[3].sx+30)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
+				fTv=(ep->v[3].sz+30.f)*( 1.0f / 1000 )-EEcos((ep->v[3].sz+30)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 28 );
 
-				if (ep->type & POLY_FALL) fTv+=(float)FrameTime*DIV4000;
+				if (ep->type & POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
 
 				pVertex->tu2=fTu;
 				pVertex->tv2=fTv;
-				fTu=(ep->v[3].sx+60.f)*DIV1000-EEsin((ep->v[3].sx+60)*DIV200+(float)FrameTime*DIV1000)*DIV40;
-				fTv=(ep->v[3].sz+60.f)*DIV1000-EEcos((ep->v[3].sz+60)*DIV200+(float)FrameTime*DIV1000)*DIV40;
+				fTu=(ep->v[3].sx+60.f)*( 1.0f / 1000 )-EEsin((ep->v[3].sx+60)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
+				fTv=(ep->v[3].sz+60.f)*( 1.0f / 1000 )-EEcos((ep->v[3].sz+60)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 40 );
 
-				if (ep->type & POLY_FALL) fTv+=(float)FrameTime*DIV4000;
+				if (ep->type & POLY_FALL) fTv+=(float)FrameTime*( 1.0f / 4000 );
 
 				pVertex->tu3=fTu;
 				pVertex->tv3=fTv;
@@ -2145,16 +2147,16 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 			pVertex->y=-ep->v[0].sy;
 			pVertex->z=ep->v[0].sz;
 			pVertex->color=0xFF666666;
-			float fTu=ep->v[0].sx*DIV1000+EEsin((ep->v[0].sx)*DIV200+(float)FrameTime*DIV2000)*DIV20;
-			float fTv=ep->v[0].sz*DIV1000+EEcos((ep->v[0].sz)*DIV200+(float)FrameTime*DIV2000)*DIV20;
+			float fTu=ep->v[0].sx*( 1.0f / 1000 )+EEsin((ep->v[0].sx)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
+			float fTv=ep->v[0].sz*( 1.0f / 1000 )+EEcos((ep->v[0].sz)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
 			pVertex->tu=fTu;
 			pVertex->tv=fTv;
-			fTu=ep->v[0].sx*DIV1000+EEsin((ep->v[0].sx)*DIV100+(float)FrameTime*DIV2000)*DIV10;
-			fTv=ep->v[0].sz*DIV1000+EEcos((ep->v[0].sz)*DIV100+(float)FrameTime*DIV2000)*DIV10;
+			fTu=ep->v[0].sx*( 1.0f / 1000 )+EEsin((ep->v[0].sx)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
+			fTv=ep->v[0].sz*( 1.0f / 1000 )+EEcos((ep->v[0].sz)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
 			pVertex->tu2=fTu;
 			pVertex->tv2=fTv;
-			fTu=ep->v[0].sx*DIV600+EEsin((ep->v[0].sx)*DIV160+(float)FrameTime*DIV2000)*DIV11;
-			fTv=ep->v[0].sz*DIV600+EEcos((ep->v[0].sz)*DIV160+(float)FrameTime*DIV2000)*DIV11;
+			fTu=ep->v[0].sx*( 1.0f / 600 )+EEsin((ep->v[0].sx)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
+			fTv=ep->v[0].sz*( 1.0f / 600 )+EEcos((ep->v[0].sz)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
 
 			pVertex->tu3=fTu;
 			pVertex->tv3=fTv;
@@ -2163,16 +2165,16 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 			pVertex->y=-ep->v[1].sy;
 			pVertex->z=ep->v[1].sz;
 			pVertex->color=0xFF666666;
-			fTu=ep->v[1].sx*DIV1000+EEsin((ep->v[1].sx)*DIV200+(float)FrameTime*DIV2000)*DIV20;
-			fTv=ep->v[1].sz*DIV1000+EEcos((ep->v[1].sz)*DIV200+(float)FrameTime*DIV2000)*DIV20;
+			fTu=ep->v[1].sx*( 1.0f / 1000 )+EEsin((ep->v[1].sx)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
+			fTv=ep->v[1].sz*( 1.0f / 1000 )+EEcos((ep->v[1].sz)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
 			pVertex->tu=fTu;
 			pVertex->tv=fTv;
-			fTu=ep->v[1].sx*DIV1000+EEsin((ep->v[1].sx)*DIV100+(float)FrameTime*DIV2000)*DIV10;
-			fTv=ep->v[1].sz*DIV1000+EEcos((ep->v[1].sz)*DIV100+(float)FrameTime*DIV2000)*DIV10;
+			fTu=ep->v[1].sx*( 1.0f / 1000 )+EEsin((ep->v[1].sx)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
+			fTv=ep->v[1].sz*( 1.0f / 1000 )+EEcos((ep->v[1].sz)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
 			pVertex->tu2=fTu;
 			pVertex->tv2=fTv;
-			fTu=ep->v[1].sx*DIV600+EEsin((ep->v[1].sx)*DIV160+(float)FrameTime*DIV2000)*DIV11;
-			fTv=ep->v[1].sz*DIV600+EEcos((ep->v[1].sz)*DIV160+(float)FrameTime*DIV2000)*DIV11;
+			fTu=ep->v[1].sx*( 1.0f / 600 )+EEsin((ep->v[1].sx)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
+			fTv=ep->v[1].sz*( 1.0f / 600 )+EEcos((ep->v[1].sz)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
 
 			pVertex->tu3=fTu;
 			pVertex->tv3=fTv;
@@ -2181,16 +2183,16 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 			pVertex->y=-ep->v[2].sy;
 			pVertex->z=ep->v[2].sz;
 			pVertex->color=0xFF666666;
-			fTu=ep->v[2].sx*DIV1000+EEsin((ep->v[2].sx)*DIV200+(float)FrameTime*DIV2000)*DIV20;
-			fTv=ep->v[2].sz*DIV1000+EEcos((ep->v[2].sz)*DIV200+(float)FrameTime*DIV2000)*DIV20;
+			fTu=ep->v[2].sx*( 1.0f / 1000 )+EEsin((ep->v[2].sx)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
+			fTv=ep->v[2].sz*( 1.0f / 1000 )+EEcos((ep->v[2].sz)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
 			pVertex->tu=fTu;
 			pVertex->tv=fTv;
-			fTu=ep->v[2].sx*DIV1000+EEsin((ep->v[2].sx)*DIV100+(float)FrameTime*DIV2000)*DIV10;
-			fTv=ep->v[2].sz*DIV1000+EEcos((ep->v[2].sz)*DIV100+(float)FrameTime*DIV2000)*DIV10;
+			fTu=ep->v[2].sx*( 1.0f / 1000 )+EEsin((ep->v[2].sx)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
+			fTv=ep->v[2].sz*( 1.0f / 1000 )+EEcos((ep->v[2].sz)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
 			pVertex->tu2=fTu;
 			pVertex->tv2=fTv;
-			fTu=ep->v[2].sx*DIV600+EEsin((ep->v[2].sx)*DIV160+(float)FrameTime*DIV2000)*DIV11;
-			fTv=ep->v[2].sz*DIV600+EEcos((ep->v[2].sz)*DIV160+(float)FrameTime*DIV2000)*DIV11;
+			fTu=ep->v[2].sx*( 1.0f / 600 )+EEsin((ep->v[2].sx)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
+			fTv=ep->v[2].sz*( 1.0f / 600 )+EEcos((ep->v[2].sz)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
 	
 			pVertex->tu3=fTu;
 			pVertex->tv3=fTv;
@@ -2207,16 +2209,16 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 				pVertex->y=-ep->v[3].sy;
 				pVertex->z=ep->v[3].sz;
 				pVertex->color=0xFF666666;
-				fTu=ep->v[3].sx*DIV1000+EEsin((ep->v[3].sx)*DIV200+(float)FrameTime*DIV2000)*DIV20;
-				fTv=ep->v[3].sz*DIV1000+EEcos((ep->v[3].sz)*DIV200+(float)FrameTime*DIV2000)*DIV20;
+				fTu=ep->v[3].sx*( 1.0f / 1000 )+EEsin((ep->v[3].sx)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
+				fTv=ep->v[3].sz*( 1.0f / 1000 )+EEcos((ep->v[3].sz)*( 1.0f / 200 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 20 );
 				pVertex->tu=fTu;
 				pVertex->tv=fTv;
-				fTu=ep->v[3].sx*DIV1000+EEsin((ep->v[3].sx)*DIV100+(float)FrameTime*DIV2000)*DIV10;
-				fTv=ep->v[3].sz*DIV1000+EEcos((ep->v[3].sz)*DIV100+(float)FrameTime*DIV2000)*DIV10;
+				fTu=ep->v[3].sx*( 1.0f / 1000 )+EEsin((ep->v[3].sx)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
+				fTv=ep->v[3].sz*( 1.0f / 1000 )+EEcos((ep->v[3].sz)*( 1.0f / 100 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 10 );
 				pVertex->tu2=fTu;
 				pVertex->tv2=fTv;
-				fTu=ep->v[3].sx*DIV600+EEsin((ep->v[3].sx)*DIV160+(float)FrameTime*DIV2000)*DIV11;
-				fTv=ep->v[3].sz*DIV600+EEcos((ep->v[3].sz)*DIV160+(float)FrameTime*DIV2000)*DIV11;
+				fTu=ep->v[3].sx*( 1.0f / 600 )+EEsin((ep->v[3].sx)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
+				fTv=ep->v[3].sz*( 1.0f / 600 )+EEcos((ep->v[3].sz)*( 1.0f / 160 )+(float)FrameTime*( 1.0f / 2000 ))*( 1.0f / 11 );
 		
 				pVertex->tu3=fTu;
 				pVertex->tv3=fTv;
@@ -3221,8 +3223,8 @@ SMY_D3DVERTEX *pMyVertex;
 						{
 							if ( nrm )
 							{
-								tu[nu]				=	(ep->v[nu].sx * DIV50);
-								tv[nu]				=	(ep->v[nu].sz * DIV50);
+								tu[nu]				=	(ep->v[nu].sx * ( 1.0f / 50 ));
+								tv[nu]				=	(ep->v[nu].sz * ( 1.0f / 50 ));
 							}
 							else
 							{
@@ -3346,8 +3348,8 @@ SMY_D3DVERTEX *pMyVertex;
 					{
 						if (nrm)
 						{
-							tu[nu]=(ep->v[nu].sx*DIV50);
-							tv[nu]=(ep->v[nu].sz*DIV50);
+							tu[nu]=(ep->v[nu].sx*( 1.0f / 50 ));
+							tv[nu]=(ep->v[nu].sz*( 1.0f / 50 ));
 						}
 						else
 						{
@@ -4172,7 +4174,7 @@ long curpixel;
 			if (tot>MAX_OUT) return false;
 		}
 
-		float v=(float)curpixel*DIV5;
+		float v=(float)curpixel*( 1.0f / 5 );
 
 		if (v<1.f) v=1.f;
 
@@ -4343,9 +4345,9 @@ void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag, long param)
 
 	if ((FRAME_COUNT<=0) && (ModeLight & MODE_DYNAMICLIGHT)) PrecalcDynamicLighting(x0,z0,x1,z1);
 
-	float temp0=DEG2RAD(ACTIVECAM->angle.b);
+	float temp0=radians(ACTIVECAM->angle.b);
 	ACTIVECAM->norm.x=-(float)EEsin(temp0);
-	ACTIVECAM->norm.y= (float)EEsin(DEG2RAD(ACTIVECAM->angle.a));
+	ACTIVECAM->norm.y= (float)EEsin(radians(ACTIVECAM->angle.a));
 	ACTIVECAM->norm.z= (float)EEcos(temp0);
 	float dddd=1.f/EEsqrt(ACTIVECAM->norm.x*ACTIVECAM->norm.x+ACTIVECAM->norm.y*ACTIVECAM->norm.y+ACTIVECAM->norm.z*ACTIVECAM->norm.z);
 	ACTIVECAM->norm.x*=dddd;

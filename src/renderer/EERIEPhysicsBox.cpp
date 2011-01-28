@@ -98,20 +98,20 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, EERIE_3D * pos, EERIE_3D * vect
 		ev[0] = (D3DTLVERTEX *)&obj->vertexlist[obj->facelist[i].vid[0]].v;
 		ev[1] = (D3DTLVERTEX *)&obj->vertexlist[obj->facelist[i].vid[1]].v;
 		ev[2] = (D3DTLVERTEX *)&obj->vertexlist[obj->facelist[i].vid[2]].v;
-		surface += TRUEDistance3D((ev[0]->sx + ev[1]->sx) * DIV2,
-		                          (ev[0]->sy + ev[1]->sy) * DIV2,
-		                          (ev[0]->sz + ev[1]->sz) * DIV2,
+		surface += TRUEDistance3D((ev[0]->sx + ev[1]->sx) * ( 1.0f / 2 ),
+		                          (ev[0]->sy + ev[1]->sy) * ( 1.0f / 2 ),
+		                          (ev[0]->sz + ev[1]->sz) * ( 1.0f / 2 ),
 		                          ev[2]->sx, ev[2]->sy, ev[2]->sz)
 		           * TRUEDistance3D(ev[0]->sx, ev[0]->sy, ev[0]->sz,
-		                            ev[1]->sx, ev[1]->sy, ev[1]->sz) * DIV2;
+		                            ev[1]->sx, ev[1]->sy, ev[1]->sz) * ( 1.0f / 2 );
 	}
 
-	float ratio = surface * DIV10000;
+	float ratio = surface * ( 1.0f / 10000 );
 
 	if (ratio > 0.8f) ratio = 0.8f;
 	else if (ratio < 0.f) ratio = 0.f;
 
-	ratio = 1.f - (ratio * DIV4);
+	ratio = 1.f - (ratio * ( 1.0f / 4 ));
 
 	for (int i = 0; i < obj->pbox->nb_physvert; i++)
 	{
@@ -300,9 +300,9 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 	PHYSVERT * vert = obj->pbox->vert;
 
 	EERIE_3D center;
-	center.x = (verts[0].x + verts[1].x + verts[2].x) * DIV3;
-	center.y = (verts[0].y + verts[1].y + verts[2].y) * DIV3;
-	center.z = (verts[0].z + verts[1].z + verts[2].z) * DIV3;
+	center.x = (verts[0].x + verts[1].x + verts[2].x) * ( 1.0f / 3 );
+	center.y = (verts[0].y + verts[1].y + verts[2].y) * ( 1.0f / 3 );
+	center.z = (verts[0].z + verts[1].z + verts[2].z) * ( 1.0f / 3 );
 	float rad = EEDistance3D(&center, &verts[0]);
 
 	if (k == -1)
@@ -821,7 +821,7 @@ bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long sourc
 	F2L(z * ACTIVEBKG->Zmul, &pz);
 	long ix, iz, ax, az;
 	long n;
-	F2L(obj->pbox->radius * DIV100, &n);
+	F2L(obj->pbox->radius * ( 1.0f / 100 ), &n);
 	n = min(2L, n + 1);
 	ix = max(px - n, 0L);
 	ax = min(px + n, ACTIVEBKG->Xsize - 1L);
@@ -938,7 +938,7 @@ long EERIE_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubb
 		pv->temp.z = pv->pos.z;
 	}
 
-	float timing = framediff * rubber * DIV50;
+	float timing = framediff * rubber * ( 1.0f / 50 );
 
 	while (timing > 0.f)
 	{
@@ -1063,9 +1063,9 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 		cubmax.z = max(cubmax.z, obj->vertexlist[k].v.z);
 	}
 
-	obj->pbox->vert[0].pos.x = cubmin.x + (cubmax.x - cubmin.x) * DIV2;
-	obj->pbox->vert[0].pos.y = cubmin.y + (cubmax.y - cubmin.y) * DIV2;
-	obj->pbox->vert[0].pos.z = cubmin.z + (cubmax.z - cubmin.z) * DIV2;
+	obj->pbox->vert[0].pos.x = cubmin.x + (cubmax.x - cubmin.x) * ( 1.0f / 2 );
+	obj->pbox->vert[0].pos.y = cubmin.y + (cubmax.y - cubmin.y) * ( 1.0f / 2 );
+	obj->pbox->vert[0].pos.z = cubmin.z + (cubmax.z - cubmin.z) * ( 1.0f / 2 );
 
 	obj->pbox->vert[13].pos.x = obj->pbox->vert[0].pos.x;
 	obj->pbox->vert[13].pos.y = cubmin.y;
@@ -1104,7 +1104,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 
 		obj->pbox->vert[14].pos.y = cubmax.y;
 		obj->pbox->vert[13].pos.y = cubmin.y;
-		float RATI = diff * DIV8;
+		float RATI = diff * ( 1.0f / 8 );
 
 		for (int k = 0; k < obj->nbvertex; k++)
 		{
@@ -1155,7 +1155,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 	}
 	else
 	{
-		float cut = (cubmax.y - cubmin.y) * DIV3;
+		float cut = (cubmax.y - cubmin.y) * ( 1.0f / 3 );
 		float ysec2 = cubmin.y + cut * 2.f;
 		float ysec1 = cubmin.y + cut;
 
@@ -1197,10 +1197,10 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 	for (int k = 0; k < 4; k++)
 	{
 		if (EEfabs(obj->pbox->vert[5+k].pos.x - obj->pbox->vert[0].pos.x) < 2.f)
-			obj->pbox->vert[5+k].pos.x = (obj->pbox->vert[1+k].pos.x + obj->pbox->vert[9+k].pos.x) * DIV2;
+			obj->pbox->vert[5+k].pos.x = (obj->pbox->vert[1+k].pos.x + obj->pbox->vert[9+k].pos.x) * ( 1.0f / 2 );
 
 		if (EEfabs(obj->pbox->vert[5+k].pos.z - obj->pbox->vert[0].pos.z) < 2.f)
-			obj->pbox->vert[5+k].pos.z = (obj->pbox->vert[1+k].pos.z + obj->pbox->vert[9+k].pos.z) * DIV2;
+			obj->pbox->vert[5+k].pos.z = (obj->pbox->vert[1+k].pos.z + obj->pbox->vert[9+k].pos.z) * ( 1.0f / 2 );
 	}
 
 	obj->pbox->radius = 0.f;

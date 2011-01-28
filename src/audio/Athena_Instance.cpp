@@ -22,11 +22,15 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <math.h>
+
+#include "audio/Athena_Instance.h"
+
 #include "audio/eax.h"
 #include "audio/Athena_Global.h"
-#include "audio/Athena_Instance.h"
 #include "audio/Athena_Stream.h"
+
+#include "io/Logger.h"
+
 
 // TODO find right library
 const GUID DSPROPSETID_EAX20_BufferProperties = { 0x306a6a7, 0xb224, 0x11d2, { 0x99, 0xe5, 0x0, 0x0, 0xe8, 0xd8, 0xc7, 0x22 } };
@@ -54,7 +58,7 @@ namespace ATHENA
 		        GetSampleID(instance->id), GetInstanceID(instance->id),
 		        _time / 60000, _time % 60000 / 1000, _time % 1000,
 		        instance->loop, _text);
-		DebugLog(text);
+		LogDebug << text;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -510,7 +514,7 @@ namespace ATHENA
 
 		lpdsb->Unlock(ptr0, cur0, ptr1, cur1);
 
-		if (debug_log) fprintf(debug_log, "AVV[%f] - AVD[%f]\n", av_vol, av_dev);
+		LogDebug << "AVV[" << av_vol << "] - AVD[" << av_dev << "f]";
 
 		return AAL_OK;
 	}
@@ -564,7 +568,7 @@ namespace ATHENA
 
 			lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0);
 
-			if (debug_log) InstanceDebugLog(this, "QUEUED");
+			InstanceDebugLog(this, "QUEUED");
 
 			return AAL_OK;
 		}
@@ -596,7 +600,7 @@ namespace ATHENA
 		if (lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0))
 			return AAL_ERROR_SYSTEM;
 
-		if (debug_log) InstanceDebugLog(this, "STARTED");
+		InstanceDebugLog(this, "STARTED");
 
 		return AAL_OK;
 	}
@@ -605,7 +609,7 @@ namespace ATHENA
 	{
 		if (status & IS_IDLED) return AAL_OK;
 
-		if (debug_log) InstanceDebugLog(this, "STOPPED");
+		InstanceDebugLog(this, "STOPPED");
 
 		if (lpdsb->Stop() || lpdsb->SetCurrentPosition(0)) return AAL_ERROR_SYSTEM;
 
@@ -619,7 +623,7 @@ namespace ATHENA
 	{
 		if (status & IS_IDLED) return AAL_OK;
 
-		if (debug_log) InstanceDebugLog(this, "PAUSED");
+		InstanceDebugLog(this, "PAUSED");
 
 		lpdsb->Stop();
 		status |= IS_PAUSED;
@@ -631,7 +635,7 @@ namespace ATHENA
 	{
 		if (status & IS_IDLED) return AAL_OK;
 
-		if (debug_log) InstanceDebugLog(this, "RESUMED");
+		InstanceDebugLog(this, "RESUMED");
 
 		status &= ~IS_PAUSED;
 
@@ -695,7 +699,7 @@ namespace ATHENA
 		aalULong cur0, cur1;
 		aalULong to_fill, count;
 
-		if (debug_log) InstanceDebugLog(this, "STREAMED");
+		InstanceDebugLog(this, "STREAMED");
 
 		to_fill = write >= read ? read + size - write : read - write;
 
@@ -790,13 +794,13 @@ namespace ATHENA
 		{
 			if (loop)
 			{
-				if (debug_log) InstanceDebugLog(this, "LOOPED");
+				InstanceDebugLog(this, "LOOPED");
 
 				if (!--loop && !stream) lpdsb->Play(0, 0, 0);
 			}
 			else
 			{
-				if (debug_log) InstanceDebugLog(this, "IDLED");
+				InstanceDebugLog(this, "IDLED");
 
 				status |= IS_IDLED;
 				return AAL_OK;
