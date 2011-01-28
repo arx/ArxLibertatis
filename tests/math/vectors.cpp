@@ -6,8 +6,12 @@ public:
   VectorTest( std::string name ) : CppUnit::TestCase( name ) {}
 
   void runTest() {
-
-    CPPUNIT_ASSERT( 0 == 0 );
+   
+    EERIEMATRIX a, b;
+    
+    MatrixReset(&a);
+	MatrixReset(&b);
+	CPPUNIT_ASSERT( a._11 == b._11 );
   }
 };
 

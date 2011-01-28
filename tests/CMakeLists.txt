@@ -3,7 +3,8 @@ cmake_minimum_required(VERSION 2.8)
 
 set(CMAKE_CXX_COMPILER g++)
 set(CMAKE_C_COMPILER gcc)
-set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -Woverloaded-virtual")
+set(CMAKE_CXX_FLAGS "-m64")
+#set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -Woverloaded-virtual")
 
 include_directories(
 	../include
@@ -14,4 +15,4 @@ add_executable(math
 	../src/renderer/EERIEMath.cpp 
 )
 
-# target_link_libraries(unpak z)
+target_link_libraries(math cppunit)
