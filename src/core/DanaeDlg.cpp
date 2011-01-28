@@ -124,7 +124,6 @@ extern long PROGRESS_TOTAL;
 extern long PAUSED_PRECALC;
 
 COLORREF custcr[16];
-long accepted = 0;
 
  
 INT_PTR CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

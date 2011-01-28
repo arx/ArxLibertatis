@@ -55,7 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-//TODO(lubosz): don't include that much
 #define DIRECTINPUT_VERSION 0x0700
 
 #include <iomanip>
@@ -74,31 +73,23 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/ARX_FTL.h"
 #include "core/ARX_Equipment.h"
 #include "core/ARX_Sound.h"
-#include "core/ARX_Spells.h"
-#include "core/ARX_Levels.h"
 #include "core/ARX_NPC.h"
 #include "core/ARX_Collisions.h"
 #include "core/ARX_ChangeLevel.h"
 #include "core/ARX_Particles.h"
 #include "core/ARX_Damages.h"
 #include "core/ARX_Speech.h"
-#include "core/ARX_Script.h"
 #include "core/ARX_Time.h"
 #include "core/ARX_Scene.h"
 #include "core/ARX_Menu2.h"
 #include "core/DanaeDlg.h"
 
-#include "renderer/EERIEAnim.h"
-#include "renderer/EERIELight.h"
-#include "renderer/EERIEObject.h"
-#include "renderer/EERIEPoly.h"
 #include "renderer/EERIELinkedObj.h"
 #include "renderer/EERIECollisionSpheres.h"
 #include "renderer/EERIEPhysicsBox.h"
 #include "renderer/EERIEProgressive.h"
 #include "renderer/EERIEClothes.h"
 #include "renderer/EERIEDraw.h"
-#include "renderer/EERIEMeshTweak.h"
 
 #include "io/HERMESMain.h"
 #include "io/PakManager.h"
