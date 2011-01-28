@@ -41,7 +41,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #pragma comment(lib, "implode.lib")
 #pragma comment(lib, "winmm.lib")
 
-#include <Athena.h>
+#include "Athena.h"
 #include "Athena_Resource.h"
 #include "Athena_Mixer.h"
 #include "Athena_Sample.h"
@@ -53,7 +53,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <dsound.h>
 #include <eax.h>
-#include <math.h>
+#include <cmath>
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>

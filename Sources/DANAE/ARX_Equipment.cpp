@@ -55,14 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "ARX_Equipment.h"
-#include "HERMESMain.h"
-#include "EERIEMath.h"
-#include "EERIEObject.h"
-#include "EERIEMeshTweak.h"
 #include "ARX_NPC.h"
 #include "ARX_Sound.h"
 #include "ARX_Collisions.h"
@@ -73,6 +66,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_script.h"
 
 #include "EERIELinkedObj.h"
+#include "EERIEMath.h"
+#include "EERIEObject.h"
+#include "EERIEMeshTweak.h"
+
+#include "HERMESMain.h"
+
+#include <cstdio>
+#include <cstdlib>
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
@@ -1170,9 +1171,8 @@ BOOL ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 		}
 
 
-		EERIEPOLY * ep;
-
-		if (ep = CheckBackgroundInSphere(&sphere))
+		EERIEPOLY * ep = CheckBackgroundInSphere(&sphere);
+		if (ep)
 		{
 			if (io_source == inter.iobj[0])
 			{

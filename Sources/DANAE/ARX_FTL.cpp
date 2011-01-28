@@ -58,11 +58,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "ARX_FTL.h"
+
 #include "HERMESMain.h"
+
+#include <cstdio>
+#include <cstdlib>
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
@@ -442,7 +443,8 @@ BOOL ARX_FTL_Save(char * incomplete_fic, char * complete_fic, EERIE_3DOBJ * obj)
 	compressed = STD_Implode((char *)dat, pos, &cpr_pos);
 
 	// Now Saving Whole Buffer
-	if (!(handle = FileOpenWrite(gamefic)))
+	handle = FileOpenWrite(gamefic);
+	if (!handle)
 	{
 		sprintf(_error, "Unable to Open %s for Write...", gamefic);
 		goto error;

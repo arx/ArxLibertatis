@@ -66,17 +66,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_HWTransform.h"
 #include "ARX_menu2.h"
 
-#include <HERMESMain.h>
-#include <EERIELight.h>
-#include <EERIEDraw.h>
-#include <EERIEAnim.h>
-#include <EERIEUtil.h>
-#include <EERIEMath.h>
+#include "HERMESMain.h"
+#include "EERIELight.h"
+#include "EERIEDraw.h"
+#include "EERIEAnim.h"
+#include "EERIEUtil.h"
+#include "EERIEMath.h"
 
 #define DIRECTINPUT_VERSION 0x0700
 #include <dinput.h>
+#include <cstdio>
 
-#include <stdio.h>
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 extern long USE_LIGHT_OPTIM;
@@ -4256,7 +4256,6 @@ void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag, long param)
  
  
  
-	long temp;
 	float dd;
 	long lr;
 	unsigned long tim = ARXTimeUL();

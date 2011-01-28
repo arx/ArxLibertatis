@@ -58,12 +58,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 //-----------------------------------------------------------------------------------//
-#include <ARX_Common.h>
+#include "ARX_Common.h"
+
 #include <windows.h>
-#include <stdio.h>
+#include <cstdio>
 #include <signal.h>
-//#include <ARX_StackLogger.h>
-#include <time.h>
+#include <ctime>
 #include <fcntl.h>
 #include <io.h>
 
@@ -268,11 +268,9 @@ ArxDebug::~ArxDebug()
 
 void ArxDebug::RedirectIOToConsole()
 {
-	int hConHandle;
-	long lStdHandle;
-	FILE * fp;
+	m_bConsoleInitialize = CreateDebugConsole();
 
-	if ((m_bConsoleInitialize = CreateDebugConsole()))
+	if (m_bConsoleInitialize)
 	{
 		freopen("CONOUT$", "wt", stdout);
 		freopen("CONERR$", "wt", stderr);

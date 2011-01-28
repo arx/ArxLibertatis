@@ -730,7 +730,6 @@ bool PakManager::RemovePak(char * _lpszName)
 static void DrawDebugFile(char * _lpszName)
 {
 	return;
-
 }
 
 //-----------------------------------------------------------------------------

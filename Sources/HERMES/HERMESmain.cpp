@@ -61,7 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <io.h>
-#include <time.h>
+#include <ctime>
 #include <direct.h>			// _getcwd
 #include "HERMESmain.h"
 #include "HERMESNet.h"
@@ -456,7 +456,8 @@ long HERMES_CreateFileCheck(const char * name, char * scheck, const long & size,
 
 	if (!GetFileAttributesEx(name, GetFileExInfoStandard, &attrib)) return true;
 
-	if (!(file = fopen(name, "rb"))) return true;
+	file = fopen(name, "rb");
+	if (!file) return true;
 
 	fseek(file, 0, SEEK_END);
 
@@ -1101,7 +1102,7 @@ char * STD_Implode(char * from, long from_size, long * to_size)
 
 	bool bFirst = true; 
 
-	while (1)
+	for (;;)
 	{
 		Param.CompressedSize = 0;
 		Param.UnCompressedSize = from_size;

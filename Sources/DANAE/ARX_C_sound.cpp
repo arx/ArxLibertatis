@@ -22,10 +22,12 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <stdio.h>
+
 #include "arx_c_cinematique.h"
 #include "resource.h"
 #include "arx_sound.h"
+
+#include <cstdio>
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>

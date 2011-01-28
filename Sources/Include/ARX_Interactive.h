@@ -54,6 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+// Nuky - 25/01/11 - uninlined and modified GetInterNum to use a new cache value I added (+6% perfs)
 
 #ifndef ARX_INTERACTIVE_H
 #define ARX_INTERACTIVE_H
@@ -279,20 +280,7 @@ void ARX_INVENTORY_IdentifyAll();
 void ARX_INVENTORY_OpenClose(INTERACTIVE_OBJ *);
 void ARX_INVENTORY_TakeAllFromSecondaryInventory();
 
-//***********************************************************************************************
-// Retreives IO Number with its address
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/16)
-//***********************************************************************************************
-__inline long GetInterNum(INTERACTIVE_OBJ * io)
-{
-	if (io == NULL) return -1;
-
-	for (long i = 0; i < inter.nbmax; i++)
-		if (inter.iobj[i] == io) return i;
-
-	return -1;
-}
+long GetInterNum(INTERACTIVE_OBJ * io);
 float ARX_INTERACTIVE_GetArmorClass(INTERACTIVE_OBJ * io);
 float ARX_INTERACTIVE_fGetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop);
 long  ARX_INTERACTIVE_GetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop);

@@ -54,13 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "danae.h"
-
-#include <EERIEDraw.h>
-#include "EERIELight.h"
-#include <EERIEMath.h>
-#include <EERIEObject.h>
-
 #include "ARX_Spells.h"
 #include "ARX_CSpellFx.h"
 #include "ARX_SpellFx_Lvl05.h"
@@ -69,6 +62,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_CParticles.h"
 #include "ARX_Time.h"
 
+#include "danae.h"
+
+#include "EERIEDraw.h"
+#include "EERIELight.h"
+#include "EERIEMath.h"
+#include "EERIEObject.h"
 
 #include <crtdbg.h>
 #define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
@@ -735,33 +734,33 @@ void CRiseDead::Create(EERIE_3D aeSrc, float afBeta)
 	// check de la conformité du split
 	// sinon recalc de l'un de l'autre ou des deux
 	// espace min
-	if (0)
-		for (i = 0; i < 40; i++)
-		{
-			if (v1a[i].sx > v1b[i].sx)
-			{
-				float fTemp = v1a[i].sx;
-				v1a[i].sx = v1b[i].sx;
-				v1b[i].sx = fTemp;
-			}
+	//if (0)
+	//	for (i = 0; i < 40; i++)
+	//	{
+	//		if (v1a[i].sx > v1b[i].sx)
+	//		{
+	//			float fTemp = v1a[i].sx;
+	//			v1a[i].sx = v1b[i].sx;
+	//			v1b[i].sx = fTemp;
+	//		}
 
-			if (v1a[i].sz > v1b[i].sz)
-			{
-				float fTemp = v1a[i].sz;
-				v1a[i].sz = v1b[i].sz;
-				v1b[i].sz = fTemp;
-			}
+	//		if (v1a[i].sz > v1b[i].sz)
+	//		{
+	//			float fTemp = v1a[i].sz;
+	//			v1a[i].sz = v1b[i].sz;
+	//			v1b[i].sz = fTemp;
+	//		}
 
-			if ((v1b[i].sx - v1a[i].sx) > 20)
-			{
-				v1b[i].sx = v1a[i].sx + rnd() * 20.0f;
-			}
+	//		if ((v1b[i].sx - v1a[i].sx) > 20)
+	//		{
+	//			v1b[i].sx = v1a[i].sx + rnd() * 20.0f;
+	//		}
 
-			if ((v1b[i].sz - v1a[i].sz) > 20)
-			{
-				v1b[i].sz = v1a[i].sz + rnd() * 20.0f;
-			}
-		}
+	//		if ((v1b[i].sz - v1a[i].sz) > 20)
+	//		{
+	//			v1b[i].sz = v1a[i].sz + rnd() * 20.0f;
+	//		}
+	//	}
 
 	for (i = 0; i <= end; i++)
 	{

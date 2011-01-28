@@ -61,16 +61,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 						Include
 ------------------------------------------------------------*/
 
-#include <assert.h>
-#include <limits.h>
-#include <stdio.h>
+#include <cassert>
+#include <climits>
+#include <cstdio>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <stdarg.h>
+#include <cstdarg>
 #include <wtypes.h>
-#include <time.h>
+#include <ctime>
 
 /* ---------------------------------------------------------
 					     Break
@@ -88,7 +88,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 enum ARX_DEBUG_LOG_TYPE
 {
 	eLog,
-	eLogError ,
+	eLogError,
 	eLogWarning
 };
 
@@ -161,13 +161,13 @@ enum ARX_DEBUG_LOG_TYPE
 ------------------------------------------------------------*/
 
 #pragma warning(disable : 4100) //ARX - jycorbel - 2010/06/22 - Disable warning "unreferenced formal parameter"
-#pragma warning(disable : 4101) //ARX - jycorbel - 2010/06/22 - Disable warning "unreferenced local variable"
+//#pragma warning(disable : 4101) //ARX - jycorbel - 2010/06/22 - Disable warning "unreferenced local variable"
 #pragma warning(disable : 4127) //ARX - jycorbel - 2010/06/22 - Disable warning "conditional expression is constant"
 #pragma warning(disable : 4189) //ARX - jycorbel - 2010/06/22 - Disable warning "local variable is initialized but not referenced"
-#pragma warning(disable : 4201) //ARX - jycorbel - 2010/06/22 - Disable warning "nonstandard extension used : nameless struct/union"
+//#pragma warning(disable : 4201) //ARX - jycorbel - 2010/06/22 - Disable warning "nonstandard extension used : nameless struct/union"
 #pragma warning(disable : 4702) //ARX - jycorbel - 2010/06/22 - Disable warning "unreachable code"
 #pragma warning(disable : 4706) //ARX - jycorbel - 2010/06/22 - Disable warning "assignment within conditional expression"
-#pragma warning(disable : 4995) //ARX: xrichter (2010-07-02) - treat warnings for depreciate functions
+//#pragma warning(disable : 4995) //ARX: xrichter (2010-07-02) - treat warnings for depreciate functions
 #pragma warning(disable : 4996) //ARX: xrichter (2010-07-02) - treat warnings for depreciate functions
 
 //ARX_BEGIN: jycorbel (2010-07-02) - Assure compatibility with C code (Mercury).
@@ -228,7 +228,7 @@ class ArxDebug
 	public :
 		static ArxDebug * GetInstance(bool _bLogIntoFile = true);
 		static void CleanInstance();
-		static void NullFunc(const char * _sMessage, ...) {};
+		static void NullFunc(const char * /*_sMessage*/, ...) {};
 		static void Assert(const wchar_t * _sMessage, const wchar_t * _sFile, unsigned _iLine);
 
 		void Log(ARX_DEBUG_LOG_TYPE eType, const char * _sMessage, ...);
@@ -283,22 +283,3 @@ class ArxLogTag
 		}
 
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

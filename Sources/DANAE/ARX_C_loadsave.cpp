@@ -22,12 +22,13 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <stdio.h>
 
-#include <stdlib.h>
 #include "arx_c_cinematique.h"
 #include "HERMES_PAK.h"
 #include "resource.h"
+
+#include <cstdio>
+#include <cstdlib>
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
@@ -60,7 +61,7 @@ void AddDirectory(char * pT, char * dir);
 /*----------------------------------------------------------------------*/
 void ReadString(char * d)
 {
-	while (1)
+	for (;;)
 	{
 		PAK_fread(d, 1, 1, FCurr);
 

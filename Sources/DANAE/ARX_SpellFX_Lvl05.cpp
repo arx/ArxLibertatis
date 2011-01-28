@@ -54,16 +54,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "danae.h"
-
-#include <EERIEDraw.h>
-#include <EERIEMath.h>
-
 #include "ARX_CSpellFx.h"
-#include <ARX_Damages.h>
+#include "ARX_Damages.h"
 #include "ARX_SpellFx_Lvl05.h"
 #include "ARX_SpellFx_Lvl03.h"
-
 #include "ARX_Particles.h"
 #include "ARX_CParticle.h"
 #include "ARX_Spells.h"
@@ -72,7 +66,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Fogs.h"
 #include "ARX_Time.h"
 
+#include "danae.h"
 
+#include "EERIEDraw.h"
+#include "EERIEMath.h"
 #include "EERIELight.h"
 #include "EERIEObject.h"
 
@@ -673,19 +670,19 @@ void CPoisonProjectile::Create(EERIE_3D _eSrc, float _fBeta)
 	pathways[9].sz = e.z;
 	Split(pathways, 0, 9, 10 * fBetaRadCos, 10, 10, 10, 10 * fBetaRadSin, 10);
 
-	if (0)
-		for (i = 0; i < 10; i++)
-		{
-			if (pathways[i].sy >= eSrc.y + 150)
-			{
-				pathways[i].sy = eSrc.y + 150;
-			}
+	//if (0)
+	//	for (i = 0; i < 10; i++)
+	//	{
+	//		if (pathways[i].sy >= eSrc.y + 150)
+	//		{
+	//			pathways[i].sy = eSrc.y + 150;
+	//		}
 
-			if (pathways[i].sy <= eSrc.y + 50)
-			{
-				pathways[i].sy = eSrc.y + 50;
-			}
-		}
+	//		if (pathways[i].sy <= eSrc.y + 50)
+	//		{
+	//			pathways[i].sy = eSrc.y + 50;
+	//		}
+	//	}
 
 	fTrail = -1;
 

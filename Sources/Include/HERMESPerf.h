@@ -58,11 +58,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef HERMESPERF_H
 #define HERMESPERF_H
 
+#include "ARX_Common.h"
 
-#include <stdio.h>
+#include <cstdio>
 #include <windows.h>
-#include <assert.h>
-#include <ARX_Common.h>
+#include <cassert>
 
 typedef struct {
 	unsigned long	chrono;

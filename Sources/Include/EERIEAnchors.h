@@ -37,7 +37,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ///////////////////////////////////////////////////////////////////////////////
 #ifndef  EERIEANCHORS_H
 #define  EERIEANCHORS_H
-#include <EERIETypes.h>
+
+#include "EERIETypes.h"
 #include "EERIEPoly.h"
 #include "EERIEObject.h"
 

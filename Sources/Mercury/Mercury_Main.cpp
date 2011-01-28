@@ -56,11 +56,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2010 ARKANE Studios SA. All rights reserved
 /////////////////////////////////////////////////////////////////////////////////////
 
-
 #include "Mercury_extern.h"
 
+#include <cstdlib>
 
-#include <stdlib.h>
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 
@@ -83,7 +82,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 	free(mem);
 }*/
 /*-------------------------------------------------------------*/
-BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi,LPVOID pvRef)
+BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID /*pvRef*/)
 {
 	INPUT_INFO	*info;
 
@@ -728,8 +727,8 @@ DIDATAFORMAT*	dformat;
 /*-------------------------------------------------------------*/
 DXI_INPUT_INFO * DXI_GetInfoDevice(int num)
 {
-DXI_INPUT_INFO	*dinf;
-INPUT_INFO		*info;
+	DXI_INPUT_INFO	*dinf;
+	INPUT_INFO		*info;
 
 	if(num>=DI_NbInputInfo) return NULL;
 	dinf=(DXI_INPUT_INFO*)malloc(sizeof(DXI_INPUT_INFO));
@@ -761,40 +760,40 @@ INPUT_INFO		*info;
 
 	return dinf;
 }
-BOOL DXI_CleanAxeMouseZ(int id)
+BOOL DXI_CleanAxeMouseZ(int /*id*/)
 {
-DIDEVICEOBJECTDATA	*od;
-DIDEVICEOBJECTDATA	*od2;
-int					nb,flg=0;
+	//DIDEVICEOBJECTDATA	*od;
+	//DIDEVICEOBJECTDATA	*od2;
+	//int					nb,flg=0;
 
-return FALSE;
+	return FALSE;
 
-	nb=DI_MouseState[id]->nbele;
-	if(!nb) return FALSE;
-	od=DI_MouseState[id]->mousestate;
-//	od2=DI_MouseState[id]->old_mousestate;
-	while(nb)
-	{
-		switch(od->dwOfs)
-		{
-		case DIMOFS_X:
-			flg++;
-			break;
-		case DIMOFS_Y:
-			flg++;
-			break;
-		case DIMOFS_Z:
-			od->dwData-=od2->dwData;
-			flg++;
-			break;
-		default:
-			break;
-		}
-		od++;
-		od2++;
-		nb--;
-	}
-	return (flg>0);
+//	nb=DI_MouseState[id]->nbele;
+//	if(!nb) return FALSE;
+//	od=DI_MouseState[id]->mousestate;
+////	od2=DI_MouseState[id]->old_mousestate;
+//	while(nb)
+//	{
+//		switch(od->dwOfs)
+//		{
+//		case DIMOFS_X:
+//			flg++;
+//			break;
+//		case DIMOFS_Y:
+//			flg++;
+//			break;
+//		case DIMOFS_Z:
+//			od->dwData-=od2->dwData;
+//			flg++;
+//			break;
+//		default:
+//			break;
+//		}
+//		od++;
+//		od2++;
+//		nb--;
+//	}
+//	return (flg>0);
 }
 
 /*-------------------------------------------------------------*/
@@ -990,12 +989,6 @@ void * temp;
 BOOL DXI_KeyPressed(int id,int dikkey)
 {
 	if(DI_KeyBoardBuffer[id]->bufferstate[dikkey]&0x80) return TRUE;
-	return FALSE;
-}
-BOOL DXI_OldKeyPressed(int id,int dikkey)
-{
-	//if(DI_InputInfo->old_bufferstate[id*dikkey]&0x80) return TRUE;
-//	if(DI_KeyBoardBuffer[id]->old_bufferstate[dikkey]&0x80) return TRUE;
 	return FALSE;
 }
 /*-------------------------------------------------------------*/
@@ -1466,54 +1459,6 @@ int					state,nb;
 		nb--;
 	}
 	if(!(state&0x80)) return TRUE;
-	return FALSE;
-}
-
-BOOL DXI_OldMouseButtonPressed(int id,int numb)
-{
-DIDEVICEOBJECTDATA	*od;
-int					state,nb;
-
-return FALSE;
-	nb=DI_MouseState[id]->nbele;
-	if(!nb) return FALSE;
-//	od=DI_MouseState[id]->old_mousestate;
-	while(nb)
-	{
-		state=0;
-		switch(numb)
-		{
-		case DXI_BUTTON0:
-			if(od->dwOfs==DIMOFS_BUTTON0) state=od->dwData;
-			break;
-		case DXI_BUTTON1:
-			if(od->dwOfs==DIMOFS_BUTTON1) state=od->dwData;
-			break;
-		case DXI_BUTTON2:
-			if(od->dwOfs==DIMOFS_BUTTON2) state=od->dwData;
-			break;
-		case DXI_BUTTON3:
-			if(od->dwOfs==DIMOFS_BUTTON3) state=od->dwData;
-			break;
-		case DXI_BUTTON4:
-			if(od->dwOfs==DIMOFS_BUTTON4) state=od->dwData;
-			break;
-		case DXI_BUTTON5:
-			if(od->dwOfs==DIMOFS_BUTTON5) state=od->dwData;
-			break;
-		case DXI_BUTTON6:
-			if(od->dwOfs==DIMOFS_BUTTON6) state=od->dwData;
-			break;
-		case DXI_BUTTON7:
-			if(od->dwOfs==DIMOFS_BUTTON7) state=od->dwData;
-			break;
-		default:
-			return FALSE;
-		}
-		if(state&0x80) return TRUE;
-		od++;
-		nb--;
-	}
 	return FALSE;
 }
 
@@ -2121,30 +2066,6 @@ INPUT_INFO	*io;
 		{
 			DIJOYSTATE	*js;
 			js=io->joystate;
-			if(js->rgbButtons[numb]&0x80) return TRUE;
-		}
-	}
-	return FALSE;
-}
-BOOL DXI_OldGetJoyButtonPressed(int id,int numb)
-{
-INPUT_INFO	*io;
-
-return FALSE;
-	io=DI_JoyState[id];
-	if(io->datasid==DFDIJOYSTICK2)
-	{
-		{
-			DIJOYSTATE2	*js;
-//			js=io->old_joystate2;
-			if(js->rgbButtons[numb]&0x80) return TRUE;
-		}
-	}
-	else
-	{
-		{
-			DIJOYSTATE	*js;
-//			js=io->old_joystate;
 			if(js->rgbButtons[numb]&0x80) return TRUE;
 		}
 	}

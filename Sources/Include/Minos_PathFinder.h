@@ -27,12 +27,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define __MINOS_PATHFINDER_VERSION__ "0000"
 
-#include <malloc.h>
-#include <string.h>
 #include "Minos_Common.h"
 #include "Minos_List.h"
 #include "EERIEMath.h"
 #include "EERIEPoly.h"
+
+#include <malloc.h>
+#include <cstring>
 
 using namespace MINOS;
 

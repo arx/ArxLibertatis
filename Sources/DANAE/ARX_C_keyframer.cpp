@@ -22,10 +22,11 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <stdlib.h>
 #include "arx_c_cinematique.h"
 #include "arx_time.h"
 #include "Resource.h"
+
+#include <cstdlib>
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
@@ -298,7 +299,8 @@ BOOL AddKey(C_KEY * key, BOOL writecolor, BOOL writecolord, BOOL writecolorf)
 
 	if (!CKTrack || (key->frame < CKTrack->startframe) || (key->frame > CKTrack->endframe)) return FALSE;
 
-	if (!(k = SearchKey(key->frame, &num)))
+	k = SearchKey(key->frame, &num);
+	if (!k)
 	{
 		if (!CKTrack->nbkey)
 		{

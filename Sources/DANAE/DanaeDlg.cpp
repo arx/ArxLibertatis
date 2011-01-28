@@ -55,11 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 #define _ARX_CEDITOR_  0
-#include <DANAE_VERSION.h>
-#include <stdio.h>
-#include <windows.h>
-#include <direct.h>
-
+#include "DANAE_VERSION.h"
 #include "Danae_Resource.h"
 #include "Danaedlg.h"
 #include "ARX_Interface.h"
@@ -74,15 +70,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Text.h"
 #include "ARX_Time.h"
 
-#include <EERIEUtil.h>
-#include <EERIEClothes.h>
-#include <EERIELight.h>
-#include <EERIETexture.h>
+#include "EERIEUtil.h"
+#include "EERIEClothes.h"
+#include "EERIELight.h"
+#include "EERIETexture.h"
 
-#include <HERMESMain.h>
-#include <EERIEMath.h>
+#include "HERMESMain.h"
+#include "EERIEMath.h"
 
-#include <stdio.h>
+#include <cstdio>
+#include <windows.h>
+#include <direct.h>
+#include <CommDlg.h>
+
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 
@@ -309,10 +309,9 @@ BOOL CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 				                     | ((col >> 8 & 255) << 8)
 				                     | ((col & 255) << 16);
 				thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);
-				HDC dc;
 				InvalidateRect(thWnd, NULL, TRUE);
 
-				if (dc = GetDC(thWnd))
+				if (HDC dc = GetDC(thWnd))
 				{
 					RECT rect;
 					GetClientRect(thWnd, &rect);
@@ -369,10 +368,9 @@ BOOL CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 				                     | ((col >> 8 & 255) << 8)
 				                     | ((col & 255) << 16);
 				thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);
-				HDC dc;
 				InvalidateRect(thWnd, NULL, TRUE);
 
-				if (dc = GetDC(thWnd))
+				if (HDC dc = GetDC(thWnd))
 				{
 					RECT rect;
 					GetClientRect(thWnd, &rect);
@@ -525,10 +523,9 @@ BOOL CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 						ARX_PATHS_SelectedAP->rgb.g = (float)((long)((cc.rgbResult >> 8) & 255)) * DIV255;
 						ARX_PATHS_SelectedAP->rgb.b = (float)((long)((cc.rgbResult >> 16) & 255)) * DIV255;
 						thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);
-						HDC dc;
 						InvalidateRect(thWnd, NULL, TRUE);
 
-						if (dc = GetDC(thWnd))
+						if (HDC dc = GetDC(thWnd))
 						{
 							RECT rect;
 							GetClientRect(thWnd, &rect);
@@ -2805,7 +2802,8 @@ BOOL CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 
 	return FALSE;
-	return WM_INITDIALOG == uMsg ? TRUE : FALSE;
+	// Nuky - unreachable code
+	//return WM_INITDIALOG == uMsg ? TRUE : FALSE;
 }
 extern long CHANGE_LEVEL_PROC_RESULT;
 
@@ -2886,7 +2884,8 @@ BOOL CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 	}
 
 	return FALSE;
-	return WM_INITDIALOG == uMsg ? TRUE : FALSE;
+	// Nuky - unreachable code
+	//return WM_INITDIALOG == uMsg ? TRUE : FALSE;
 }
 
 

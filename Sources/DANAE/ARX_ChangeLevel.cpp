@@ -79,11 +79,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Spells.h"
 #include "ARX_time.h"
 
-#include <HERMESMain.h>
+#include "EERIEMath.h"
+#include "EERIEObject.h"
+#include "EERIEPathfinder.h"
 
-#include <EERIEMath.h>
-#include <EERIEObject.h>
-#include <EERIEPathfinder.h>
+#include "HERMESMain.h"
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
@@ -221,7 +221,7 @@ void ARX_GAMESAVE_CreateNewInstance()
 	long num = 1;
 	sprintf(basepath, "%sSave%s\\", Project.workingdir, LOCAL_SAVENAME);
 
-	while (1)
+	for (;;)
 	{
 		sprintf(testpath, "%sSave%04d", basepath, num);
 
@@ -333,7 +333,7 @@ void ARX_CHANGELEVEL_CreateNewInstance()
 	long num = 1;
 	sprintf(basepath, "%sSave%s\\", Project.workingdir, LOCAL_SAVENAME);
 
-	while (1)
+	for (;;)
 	{
 		sprintf(testpath, "%sCur%04d", basepath, num);
 

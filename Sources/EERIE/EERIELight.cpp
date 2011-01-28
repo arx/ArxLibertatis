@@ -455,93 +455,94 @@ void EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float * epb, EER
 {
 	ARX_EERIE_LIGHT_Make(ep, epr, epg, epb, light, father);
 	return;
-	int		i;				// iterator
-	int		nbvert;			// number or vertices per face (3 or 4)
-	float	distance[4];	// distance from light to each vertex
-	float	fRes;			// value of light intensity for a given vertex
-	EERIE_3D vLight;		// vector (light to vertex)
-	EERIE_3D vNorm;			// vector (interpolated normal of vertex)
 
-	if (ep->type & POLY_IGNORE)
-		return;
+	//int		i;				// iterator
+	//int		nbvert;			// number or vertices per face (3 or 4)
+	//float	distance[4];	// distance from light to each vertex
+	//float	fRes;			// value of light intensity for a given vertex
+	//EERIE_3D vLight;		// vector (light to vertex)
+	//EERIE_3D vNorm;			// vector (interpolated normal of vertex)
 
-	(ep->type & POLY_QUAD) ? nbvert = 4 : nbvert = 3;
+	//if (ep->type & POLY_IGNORE)
+	//	return;
 
-	// compute light - vertex distance
-	for (i = 0; i < nbvert; i++)
-	{
-		distance[i] = TRUEEEDistance3D(&light->pos, (EERIE_3D *)&ep->v[i]);
-	}
+	//(ep->type & POLY_QUAD) ? nbvert = 4 : nbvert = 3;
 
-	for (i = 0; i < nbvert; i++)
-	{
-		fRes = 1.0f;
+	//// compute light - vertex distance
+	//for (i = 0; i < nbvert; i++)
+	//{
+	//	distance[i] = TRUEEEDistance3D(&light->pos, (EERIE_3D *)&ep->v[i]);
+	//}
 
-		if (distance[i] < light->fallend)
-		{
-			//---------------------- start MODE_NORMALS
-			if (ModeLight & MODE_NORMALS)
-			{
-				vLight.x = light->pos.x - ep->v[i].sx;
-				vLight.y = light->pos.y - ep->v[i].sy;
-				vLight.z = light->pos.z - ep->v[i].sz;
-				TRUEVector_Normalize(&vLight);
-				vNorm.x = ep->nrml[i].x;
-				vNorm.y = ep->nrml[i].y;
-				vNorm.z = ep->nrml[i].z;
+	//for (i = 0; i < nbvert; i++)
+	//{
+	//	fRes = 1.0f;
 
-				fRes = Vector_DotProduct(&vLight, &vNorm);
+	//	if (distance[i] < light->fallend)
+	//	{
+	//		//---------------------- start MODE_NORMALS
+	//		if (ModeLight & MODE_NORMALS)
+	//		{
+	//			vLight.x = light->pos.x - ep->v[i].sx;
+	//			vLight.y = light->pos.y - ep->v[i].sy;
+	//			vLight.z = light->pos.z - ep->v[i].sz;
+	//			TRUEVector_Normalize(&vLight);
+	//			vNorm.x = ep->nrml[i].x;
+	//			vNorm.y = ep->nrml[i].y;
+	//			vNorm.z = ep->nrml[i].z;
 
-				if (fRes < 0.0f)
-				{
-					fRes = 0.0f;
-				}
-			}
+	//			fRes = Vector_DotProduct(&vLight, &vNorm);
 
-			//---------------------- end MODE_NORMALS
+	//			if (fRes < 0.0f)
+	//			{
+	//				fRes = 0.0f;
+	//			}
+	//		}
 
-			//---------------------- start MODE_RAYLAUNCH
-			if ((ModeLight & MODE_RAYLAUNCH) && !(light->extras & EXTRAS_NOCASTED))
-			{
-				EERIE_3D orgn, dest, hit;
-				orgn.x = light->pos.x;
-				orgn.y = light->pos.y;
-				orgn.z = light->pos.z;
-				dest.x = ep->v[i].sx;
-				dest.y = ep->v[i].sy;
-				dest.z = ep->v[i].sz;
+	//		//---------------------- end MODE_NORMALS
 
-				if (ModeLight & MODE_SMOOTH)
-					fRes *= my_CheckInPoly(ep->v[i].sx, ep->v[i].sy, ep->v[i].sz, ep, light);
-				else
-					fRes *= Visible(&orgn, &dest, ep, &hit);
-			}
+	//		//---------------------- start MODE_RAYLAUNCH
+	//		if ((ModeLight & MODE_RAYLAUNCH) && !(light->extras & EXTRAS_NOCASTED))
+	//		{
+	//			EERIE_3D orgn, dest, hit;
+	//			orgn.x = light->pos.x;
+	//			orgn.y = light->pos.y;
+	//			orgn.z = light->pos.z;
+	//			dest.x = ep->v[i].sx;
+	//			dest.y = ep->v[i].sy;
+	//			dest.z = ep->v[i].sz;
 
-			//---------------------- fin MODE_RAYLAUNCH
+	//			if (ModeLight & MODE_SMOOTH)
+	//				fRes *= my_CheckInPoly(ep->v[i].sx, ep->v[i].sy, ep->v[i].sz, ep, light);
+	//			else
+	//				fRes *= Visible(&orgn, &dest, ep, &hit);
+	//		}
 
-			float fTemp1 = light->intensity * fRes * GLOBAL_LIGHT_FACTOR;
-			float fr, fg, fb;
+	//		//---------------------- fin MODE_RAYLAUNCH
 
-			if (distance[i] <= light->fallstart)
-			{
-				fr = light->rgb.r * fTemp1;
-				fg = light->rgb.g * fTemp1;
-				fb = light->rgb.b * fTemp1;
-			}
-			else
-			{
-				float intensity = (light->falldiff - (distance[i] - light->fallstart)) * light->falldiffmul;
-				float fTemp2 = fTemp1 * intensity;
-				fr = light->rgb.r * fTemp2;
-				fg = light->rgb.g * fTemp2;
-				fb = light->rgb.b * fTemp2;
-			}
+	//		float fTemp1 = light->intensity * fRes * GLOBAL_LIGHT_FACTOR;
+	//		float fr, fg, fb;
 
-			epr[i] += fr; 
-			epg[i] += fg; 
-			epb[i] += fb; 
-		}
-	}
+	//		if (distance[i] <= light->fallstart)
+	//		{
+	//			fr = light->rgb.r * fTemp1;
+	//			fg = light->rgb.g * fTemp1;
+	//			fb = light->rgb.b * fTemp1;
+	//		}
+	//		else
+	//		{
+	//			float intensity = (light->falldiff - (distance[i] - light->fallstart)) * light->falldiffmul;
+	//			float fTemp2 = fTemp1 * intensity;
+	//			fr = light->rgb.r * fTemp2;
+	//			fg = light->rgb.g * fTemp2;
+	//			fb = light->rgb.b * fTemp2;
+	//		}
+
+	//		epr[i] += fr; 
+	//		epg[i] += fg; 
+	//		epb[i] += fb; 
+	//	}
+	//}
 }
 extern float GLOBAL_LIGHT_FACTOR;
 //*************************************************************************************
@@ -576,16 +577,16 @@ void ComputeLight2DPos(EERIE_LIGHT * _pL)
 		_pL->mins.y = out.sy - t;
 
 
-		if (0)
-			if ((_pL->mins.x >= -200.f) && (_pL->mins.x <= 1000.f))
-				if ((_pL->mins.y >= -200.f) && (_pL->mins.y <= 1000.f))
-				{
+		//if (0)
+		//	if ((_pL->mins.x >= -200.f) && (_pL->mins.x <= 1000.f))
+		//		if ((_pL->mins.y >= -200.f) && (_pL->mins.y <= 1000.f))
+		//		{
 
-					EERIEDraw2DLine(GDevice, _pL->mins.x, _pL->mins.y, _pL->maxs.x, _pL->mins.y, 0.00001f, D3DRGB(1.f, 1.f, 1.f));
-					EERIEDraw2DLine(GDevice, _pL->maxs.x, _pL->mins.y, _pL->maxs.x, _pL->maxs.y, 0.00001f, D3DRGB(1.f, 1.f, 1.f));
-					EERIEDraw2DLine(GDevice, _pL->maxs.x, _pL->maxs.y, _pL->mins.x, _pL->maxs.y, 0.00001f, D3DRGB(1.f, 1.f, 1.f));
-					EERIEDraw2DLine(GDevice, _pL->mins.x, _pL->maxs.y, _pL->mins.x, _pL->mins.y, 0.00001f, D3DRGB(1.f, 1.f, 1.f));
-				}
+		//			EERIEDraw2DLine(GDevice, _pL->mins.x, _pL->mins.y, _pL->maxs.x, _pL->mins.y, 0.00001f, D3DRGB(1.f, 1.f, 1.f));
+		//			EERIEDraw2DLine(GDevice, _pL->maxs.x, _pL->mins.y, _pL->maxs.x, _pL->maxs.y, 0.00001f, D3DRGB(1.f, 1.f, 1.f));
+		//			EERIEDraw2DLine(GDevice, _pL->maxs.x, _pL->maxs.y, _pL->mins.x, _pL->maxs.y, 0.00001f, D3DRGB(1.f, 1.f, 1.f));
+		//			EERIEDraw2DLine(GDevice, _pL->mins.x, _pL->maxs.y, _pL->mins.x, _pL->mins.y, 0.00001f, D3DRGB(1.f, 1.f, 1.f));
+		//		}
 	}
 }
 
@@ -883,82 +884,82 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 
 	}
 
-	if (0)
-	{
-		EERIE_BKG_INFO * eg2;
-		EERIEPOLY * ep2;
-		long i2, j2, k, k2, mai, maj, mii, mij;
-		float totr, totg, totb;
-		float tr, tg, tb, tcd, tc;
+	//if (0)
+	//{
+	//	EERIE_BKG_INFO * eg2;
+	//	EERIEPOLY * ep2;
+	//	long i2, j2, k, k2, mai, maj, mii, mij;
+	//	float totr, totg, totb;
+	//	float tr, tg, tb, tcd, tc;
 
-		for (j = minz; j <= maxz; j++)
-			for (i = minx; i <= maxx; i++)
-			{
-				eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+	//	for (j = minz; j <= maxz; j++)
+	//		for (i = minx; i <= maxx; i++)
+	//		{
+	//			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 
-				for (long l = 0; l < eg->nbpoly; l++)
-				{
-					ep = &eg->polydata[l];
+	//			for (long l = 0; l < eg->nbpoly; l++)
+	//			{
+	//				ep = &eg->polydata[l];
 
-					if (!(ep->type & POLY_IGNORE))
-						for (k = 0; k < 3; k++)
-						{
-							totr = (float)((ep->v[k].color >> 16) & 255) * 2.f;
-							totg = (float)((ep->v[k].color >> 8) & 255) * 2.f;
-							totb = (float)((ep->v[k].color) & 255) * 2.f;
-							tc = 2.f;
-							mai = i + 2;
-							maj = j + 2;
-							mii = i - 2;
-							mij = j - 2;
+	//				if (!(ep->type & POLY_IGNORE))
+	//					for (k = 0; k < 3; k++)
+	//					{
+	//						totr = (float)((ep->v[k].color >> 16) & 255) * 2.f;
+	//						totg = (float)((ep->v[k].color >> 8) & 255) * 2.f;
+	//						totb = (float)((ep->v[k].color) & 255) * 2.f;
+	//						tc = 2.f;
+	//						mai = i + 2;
+	//						maj = j + 2;
+	//						mii = i - 2;
+	//						mij = j - 2;
 
-							if (mij < 0) mij = 0;
+	//						if (mij < 0) mij = 0;
 
-							if (mii < 0) mii = 0;
+	//						if (mii < 0) mii = 0;
 
-							if (maj >= ACTIVEBKG->Zsize) maj = ACTIVEBKG->Zsize - 1;
+	//						if (maj >= ACTIVEBKG->Zsize) maj = ACTIVEBKG->Zsize - 1;
 
-							if (mai >= ACTIVEBKG->Xsize) mai = ACTIVEBKG->Xsize - 1;
+	//						if (mai >= ACTIVEBKG->Xsize) mai = ACTIVEBKG->Xsize - 1;
 
-							for (j2 = mij; j2 < maj; j2++)
-								for (i2 = mii; i2 < mai; i2++)
-								{
-									eg2 = &ACTIVEBKG->Backg[i2+j2*ACTIVEBKG->Xsize];
+	//						for (j2 = mij; j2 < maj; j2++)
+	//							for (i2 = mii; i2 < mai; i2++)
+	//							{
+	//								eg2 = &ACTIVEBKG->Backg[i2+j2*ACTIVEBKG->Xsize];
 
-									for (long l = 0; l < eg2->nbpoly; l++)
-									{
-										ep2 = &eg2->polydata[l];
+	//								for (long l = 0; l < eg2->nbpoly; l++)
+	//								{
+	//									ep2 = &eg2->polydata[l];
 
-										if (!(ep2->type & POLY_IGNORE))
-											if (ep != ep2)
+	//									if (!(ep2->type & POLY_IGNORE))
+	//										if (ep != ep2)
 
-												for (k2 = 0; k2 < 3; k2++)
-												{
-													float dist = Distance3D(ep2->v[k2].sx, ep2->v[k2].sy, ep2->v[k2].sz,
-													                        ep->v[k].sx, ep->v[k].sy, ep->v[k].sz);
+	//											for (k2 = 0; k2 < 3; k2++)
+	//											{
+	//												float dist = Distance3D(ep2->v[k2].sx, ep2->v[k2].sy, ep2->v[k2].sz,
+	//												                        ep->v[k].sx, ep->v[k].sy, ep->v[k].sz);
 
-													if (dist < 50.f)
-													{
-														tr = (float)((ep2->v[k2].color >> 16) & 255);
-														tg = (float)((ep2->v[k2].color >> 8) & 255);
-														tb = (float)((ep2->v[k2].color) & 255);
-														float r = (50.f - dist) * 0.02f;
-														totr += tr * r;
-														totg += tg * r;
-														totb += tb * r;
-														tc += r;
-													}
-												}
-									}
-								}
+	//												if (dist < 50.f)
+	//												{
+	//													tr = (float)((ep2->v[k2].color >> 16) & 255);
+	//													tg = (float)((ep2->v[k2].color >> 8) & 255);
+	//													tb = (float)((ep2->v[k2].color) & 255);
+	//													float r = (50.f - dist) * 0.02f;
+	//													totr += tr * r;
+	//													totg += tg * r;
+	//													totb += tb * r;
+	//													tc += r;
+	//												}
+	//											}
+	//								}
+	//							}
 
-							tcd = 1.f / (float)tc;
-							ep->v[k].color = D3DRGB(totr * tcd * DIV255, totg * tcd * DIV255, totb * tcd * DIV255);
-						}
+	//						tcd = 1.f / (float)tc;
+	//						ep->v[k].color = D3DRGB(totr * tcd * DIV255, totg * tcd * DIV255, totb * tcd * DIV255);
+	//					}
 
-				}
-			}
-	}
+	//			}
+	//		}
+	//}
 }
 
 

@@ -65,7 +65,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "Hermesmain.h"
 #include "danae.h"
 
-#include <stdio.h>
+#include <cstdio>
+
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 
@@ -297,6 +298,14 @@ float DECALX = +40;
 //-----------------------------------------------------------------------------
 void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag, long fl2)
 {
+	// Nuky - centralized some constants and dezoomed ingame minimap
+	static const int FL2_SIZE = 300;
+	static const int FL2_LEFT = 390;
+	static const int FL2_RIGHT = 590;
+	static const int FL2_TOP = 135;
+	static const int FL2_BOTTOM = 295;
+	static const float FL2_PLAYERSIZE = 4.f;
+
 	float sstartx, sstarty;
 
 	if (!pTexDetect)
@@ -332,9 +341,9 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 			if (fl2)
 			{
-				casex = (600) / ((float)MINIMAP_MAX_X);
-				casey = (600) / ((float)MINIMAP_MAX_Z);
-				ratiooo = 600.f / 250.f;
+				casex = (FL2_SIZE) / ((float)MINIMAP_MAX_X);
+				casey = (FL2_SIZE) / ((float)MINIMAP_MAX_Z);
+				ratiooo = FL2_SIZE / 250.f;
 			}
 
 		}
@@ -433,16 +442,16 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 				if (fl2)
 				{
 					//CHECK (DEBUG)
-					ARX_CHECK_LONG((390 + MOD20)*Xratio);
-					ARX_CHECK_LONG((590 - MOD20)*Xratio);
-					ARX_CHECK_LONG((135 + MOD20)*Yratio);
-					ARX_CHECK_LONG((295 - MOD20)*Yratio);
+					ARX_CHECK_LONG((FL2_LEFT + MOD20)*Xratio);
+					ARX_CHECK_LONG((FL2_RIGHT - MOD20)*Xratio);
+					ARX_CHECK_LONG((FL2_TOP + MOD20)*Yratio);
+					ARX_CHECK_LONG((FL2_BOTTOM - MOD20)*Yratio);
 
 					//CAST
-					boundaries.left		=	ARX_CLEAN_WARN_CAST_LONG((390 + MOD20) * Xratio);
-					boundaries.right	=	ARX_CLEAN_WARN_CAST_LONG((590 - MOD20) * Xratio);
-					boundaries.top		=	ARX_CLEAN_WARN_CAST_LONG((135 + MOD20) * Yratio);
-					boundaries.bottom	=	ARX_CLEAN_WARN_CAST_LONG((295 - MOD20) * Yratio);
+					boundaries.left		=	ARX_CLEAN_WARN_CAST_LONG((FL2_LEFT + MOD20) * Xratio);
+					boundaries.right	=	ARX_CLEAN_WARN_CAST_LONG((FL2_RIGHT - MOD20) * Xratio);
+					boundaries.top		=	ARX_CLEAN_WARN_CAST_LONG((FL2_TOP + MOD20) * Yratio);
+					boundaries.bottom	=	ARX_CLEAN_WARN_CAST_LONG((FL2_BOTTOM - MOD20) * Yratio);
 				}
 			}
 
@@ -491,10 +500,10 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 					{
 						okay = 1;
 
-						if	((posx < 390 * Xratio)
-						        ||	(posx > 590 * Xratio)
-						        ||	(posy < 135 * Yratio)
-						        ||	(posy > 295 * Yratio))
+						if	((posx < FL2_LEFT * Xratio)
+						        ||	(posx > FL2_RIGHT * Xratio)
+						        ||	(posy < FL2_TOP * Yratio)
+						        ||	(posy > FL2_BOTTOM * Yratio))
 							okay = 0;
 					}
 
@@ -733,6 +742,8 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 				if (flag == 1) val = 6.f;
 				else val = 3.f;
+
+				if (fl2) val = FL2_PLAYERSIZE;
 
 				float rx = 0.f;
 				float ry = -val * 1.8f;

@@ -5574,15 +5574,11 @@ MENUSTATE CWindowMenu::Render()
 		}
 	}
 
-	vector<CWindowMenuConsole*>::iterator i;
-
-	for (i = vWindowConsoleElement.begin(); i != vWindowConsoleElement.end(); ++i)
+	for (vector<CWindowMenuConsole*>::iterator i = vWindowConsoleElement.begin(); i != vWindowConsoleElement.end(); ++i)
 	{
 		if(eCurrentMenuState==(*i)->eMenuState)
 		{
-			int iNbHide;
-
-			if(iNbHide=((*i)->Render()))
+			if (int iNbHide = (*i)->Render())
 			{
 				SETALPHABLEND(GDevice,false);
 			}
@@ -6215,9 +6211,9 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY,int _Fr
 		for(int iJ=0;iJ<iI;++iJ)
 		{
 			CMenuElement *pMenuElement=(CMenuElement*)MenuAllZone.GetZoneNum(iJ);
-			CMenuElement *CMenuElementShortCut;
+			CMenuElement *CMenuElementShortCut = pMenuElement->OnShortCut();
 
-			if((CMenuElementShortCut=pMenuElement->OnShortCut()))
+			if(CMenuElementShortCut)
 			{
 				pZoneClick=CMenuElementShortCut;
 				MENUSTATE e = pZoneClick->eMenuState;

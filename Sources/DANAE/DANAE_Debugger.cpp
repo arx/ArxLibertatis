@@ -23,15 +23,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include <stdio.h>
-#include <conio.h>
-#include <string.h>
-#include <windows.h>
 #include "..\DANAE_Debugger\SCRIPT_DEBUGGER_Dialog.h"
 #include "arx_interactive.h"
 #include "arx_time.h"
 #include "eeriepoly.h"
-#include <HERMESMain.h>
+#include "HERMESMain.h"
+
+#include <cstdio>
+#include <conio.h>
+#include <cstring>
+#include <windows.h>
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>

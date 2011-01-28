@@ -54,9 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-//-----------------------------------------------------------------------------
-// Included files
-//-----------------------------------------------------------------------------
+// Nuky - 22/01 - added security for negative FrameDiff (would assert in Debug)
+
 #include <windows.h>
 #include <new.h>
 #include <iostream>
@@ -5726,6 +5725,11 @@ HRESULT DANAE::Render()
 	}
 	else
 	{
+		// Nuky - added this security because sometimes when hitting ESC, FrameDiff would get negative
+		if (LastFrameTime>FrameTime)
+		{
+			LastFrameTime=FrameTime;
+		}
 		FrameDiff = FrameTime-LastFrameTime;
 
 		float FD;

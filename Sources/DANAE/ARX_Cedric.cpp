@@ -22,28 +22,35 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include "EERIEAnim.h"
-#include "HermesMain.h"
+// Nuky - 22/01/11 - 20% performance optim by disabling nearly useless call to IsInGroup(). See code comment for details
+
 #include "Arx_Collisions.h"
+#include "Arx_Sound.h"
+#include "Arx_Scene.h"
+#include "Arx_Equipment.h"
+#include "Arx_Damages.h"
+#include "Arx_Particles.h"
+#include "ARX_NPC.h"
+#include "ARX_Time.h"
+#include "arx_menu2.h"
+#include "arx_cedric.h"
+
+#include "danae.h"
+
+#include "EERIEAnim.h"
 #include "EERIEClothes.h"
 #include "EERIEObject.h"
 #include "EERIEMath.h"
 #include "EERIELight.h"
 #include "EERIEPoly.h"
 #include "EERIEDraw.h"
-#include <Arx_Sound.h>
-#include <Arx_Scene.h>
-#include <Arx_Equipment.h>
-#include <Arx_Damages.h>
-#include <Arx_Particles.h>
-#include <ARX_NPC.h>
-#include "ARX_Time.h"
-#include "danae.h"
+
+#include "HermesMain.h"
+
 #include <dinput.h>
-#include "arx_menu2.h"
+
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
-#include 	"arx_cedric.h"
 
 
 #if	CEDRIC
@@ -133,28 +140,28 @@ __forceinline float GetMaxManhattanDistance(const EERIE_3D * _e1, const EERIE_3D
 {
 	return 0;
 
-	if (!TSU_TEST) return 0;
+	//if (!TSU_TEST) return 0;
 
-	register float fMaxX(0);
-	register float fMaxY(0);
-	register float fMaxZ(0);
+	//register float fMaxX(0);
+	//register float fMaxY(0);
+	//register float fMaxZ(0);
 
-	fMaxX = _e1->x - _e2->x;
-	
-	fMaxX = (fMaxX < 0) ? -fMaxX : fMaxX;
+	//fMaxX = _e1->x - _e2->x;
+	//
+	//fMaxX = (fMaxX < 0) ? -fMaxX : fMaxX;
 
-	fMaxY = _e1->y - _e2->y;
-	
-	fMaxY = (fMaxY < 0) ? -fMaxY : fMaxY;
+	//fMaxY = _e1->y - _e2->y;
+	//
+	//fMaxY = (fMaxY < 0) ? -fMaxY : fMaxY;
 
-	fMaxZ = _e1->z - _e2->z;
-	
-	fMaxZ = (fMaxZ < 0) ? -fMaxZ : fMaxZ;
+	//fMaxZ = _e1->z - _e2->z;
+	//
+	//fMaxZ = (fMaxZ < 0) ? -fMaxZ : fMaxZ;
 
-	fMaxX = (fMaxX < fMaxY) ? fMaxY : fMaxX;
-	fMaxX = (fMaxX < fMaxZ) ? fMaxZ : fMaxX;
+	//fMaxX = (fMaxX < fMaxY) ? fMaxY : fMaxX;
+	//fMaxX = (fMaxX < fMaxZ) ? fMaxZ : fMaxX;
 
-	return fMaxX;
+	//return fMaxX;
 }
 
 extern float INVISIBILITY_OVERRIDE;
@@ -1891,13 +1898,18 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 				tv[n].sy	= eobj->vertexlist3[paf[n]].vert.sy;
 				tv[n].sz	= eobj->vertexlist3[paf[n]].vert.sz;
 
-				if (FORCE_FRONT_DRAW)
-				{
-					if (IsInGroup(eobj, paf[n], 1) != -1)
-						tv[n].sz *= IN_FRONT_DIVIDER;
-					else
-						tv[n].sz *= IN_FRONT_DIVIDER_FEET;
-				}
+				// Nuky - this code takes 20% of the whole game performance O_O
+				//        AFAIK it allows to correctly display the blue magic effects
+				//        when one's hands are inside a wall. I've only managed to do that
+				//        while in combat mode, looking straight down, and touching a wall
+				//        So, for the greater good I think it's best to simply skip this test
+				//if (FORCE_FRONT_DRAW)
+				//{
+				//	if (IsInGroup(eobj, paf[n], 1) != -1)
+				//		tv[n].sz *= IN_FRONT_DIVIDER;
+				//	else
+				//		tv[n].sz *= IN_FRONT_DIVIDER_FEET;
+				//}
 
 				tv[n].rhw	= eobj->vertexlist3[paf[n]].vert.rhw;
 				tv[n].tu	= eface->u[n];
@@ -3681,28 +3693,31 @@ extern TILE_LIGHTS tilelights[MAX_BKGX][MAX_BKGZ];
 
 void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_D3DVERTEX * _pVertex, unsigned short _usInd0, unsigned short _usInd1, unsigned short _usInd2, unsigned short _usInd3)
 {
-	long nbvert, i;
-
-	if (ep->type & POLY_QUAD) nbvert = 4;
-	else nbvert = 3;
+	// Nuky - 25/01/11 - harmless refactor to understand what is slow.
+	//        MASSIVE speed up thanks to "harmless refactor", wtf ?
 
 	TILE_LIGHTS * tls = &tilelights[_x][_y];
+	long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
 	if (tls->num == 0)
 	{
-		ep->tv[0].color = _pVertex[_usInd0].color = ep->v[0].color;
-		ep->tv[1].color = _pVertex[_usInd1].color = ep->v[1].color;
-		ep->tv[2].color = _pVertex[_usInd2].color = ep->v[2].color;
+		_pVertex[_usInd0].color = ep->v[0].color;
+		ep->tv[0].color         = ep->v[0].color;
+		_pVertex[_usInd1].color = ep->v[1].color;
+		ep->tv[1].color         = ep->v[1].color;
+		_pVertex[_usInd2].color = ep->v[2].color;
+		ep->tv[2].color         = ep->v[2].color;
 
 		if (nbvert & 4)
 		{
-			ep->tv[3].color = _pVertex[_usInd3].color = ep->v[3].color;
+			_pVertex[_usInd3].color = ep->v[3].color;
+			ep->tv[3].color         = ep->v[3].color;
 		}
 
 		return;
 	}
 
-	long j;
+	long i, j;
 	register float d;
 	register float epr[4];
 	register float epg[4];

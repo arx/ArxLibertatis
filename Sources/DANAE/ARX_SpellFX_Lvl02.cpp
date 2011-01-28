@@ -54,10 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "danae.h"
-
-#include <EERIEMath.h>
-#include <EERIELight.h>
 #include "ARX_Spells.h"
 #include "ARX_CSpellFx.h"
 #include "ARX_SpellFx_Lvl02.h"
@@ -67,6 +63,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_CParticleParams.h"
 #include "ARX_Time.h"
 
+#include "danae.h"
+
+#include "EERIEMath.h"
+#include "EERIELight.h"
 
 #define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 

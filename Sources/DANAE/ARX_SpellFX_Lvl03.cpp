@@ -54,26 +54,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "danae.h"
-
-#include <EERIEDraw.h>
-#include <EERIEMath.h>
-#include <EERIELight.h>
-#include <EERIEObject.h>
-
-#include <ARX_Spells.h>
-#include <ARX_CSpellFx.h>
+#include "ARX_Spells.h"
+#include "ARX_CSpellFx.h"
 #include "ARX_SpellFx_Lvl05.h"
 #include "ARX_SpellFx_Lvl03.h"
-#include <ARX_particles.h>
-
+#include "ARX_particles.h"
 #include "ARX_CParticle.h"
-#include <ARX_CParticles.h>
-#include <ARX_CParticleParams.h>
-#include <ARX_Damages.h>
-#include <EERIEobject.h>
+#include "ARX_CParticles.h"
+#include "ARX_CParticleParams.h"
+#include "ARX_Damages.h"
 #include "ARX_Time.h"
 
+#include "danae.h"
+
+#include "EERIEobject.h"
+#include "EERIEDraw.h"
+#include "EERIEMath.h"
+#include "EERIELight.h"
+#include "EERIEObject.h"
 
 #define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
@@ -1009,7 +1007,7 @@ void CSpeed::DrawRuban(LPDIRECT3DDEVICE7 device, int num, float size, int dec, f
 	int		dg = (gg2 - g1) / dec;
 	int		db = (bb2 - b1) / dec;
 
-	while (1)
+	for (;;)
 	{
 		numsuiv = this->truban[num].next;
 

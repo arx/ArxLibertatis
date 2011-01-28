@@ -55,40 +55,38 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdlib.h>
-
 #include "ARX_Script.h"
+#include "ARX_C_Cinematique.h"
+#include "ARX_Collisions.h"
+#include "ARX_Damages.h"
+#include "ARX_Equipment.h"
+#include "ARX_GlobalMods.h"
+#include "ARX_Interactive.h"
+#include "ARX_Minimap.h"
+#include "ARX_Missile.h"
+#include "ARX_NPC.h"
+#include "ARX_player.h"
+#include "ARX_Particles.h"
+#include "ARX_Paths.h"
+#include "ARX_Scene.h"
+#include "ARX_Sound.h"
+#include "ARX_Special.h"
+#include "ARX_Spells.h"
+#include "ARX_Speech.h"
+#include "ARX_Text.h"
+#include "ARX_Time.h"
 
-
-#include <HERMESMain.h>
-
-#include <EERIEObject.h>
-#include <EERIELinkedObj.h>
-#include <EERIEPathfinder.h>
-#include <EERIECollisionSpheres.h>
-
-#include <ARX_C_Cinematique.h>
-#include <ARX_Collisions.h>
-#include <ARX_Damages.h>
-#include <ARX_Equipment.h>
-#include <ARX_GlobalMods.h>
-#include <ARX_Interactive.h>
-#include <ARX_Minimap.h>
-#include <ARX_Missile.h>
-#include <ARX_NPC.h>
-#include <ARX_player.h>
-#include <ARX_Particles.h>
-#include <ARX_Paths.h>
-#include <ARX_Scene.h>
-#include <ARX_Sound.h>
-#include <ARX_Special.h>
-#include <ARX_Spells.h>
-#include <ARX_Speech.h>
-#include <ARX_Text.h>
-#include <ARX_Time.h>
 #include "danaedlg.h"
-
 #include "Danae_resource.h"
+
+#include "EERIEObject.h"
+#include "EERIELinkedObj.h"
+#include "EERIEPathfinder.h"
+#include "EERIECollisionSpheres.h"
+
+#include "HERMESMain.h"
+
+#include <cstdlib>
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
@@ -1270,8 +1268,9 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 						return TYPE_LONG;
 					}
 
-					*fcontent = 99999999999.f;
-					return TYPE_FLOAT;
+					// Nuky - unreachable code
+					//*fcontent = 99999999999.f;
+					//return TYPE_FLOAT;
 				}
 
 				*lcontent = 0;
@@ -2219,8 +2218,9 @@ float GetVarValueInterpretedAsFloat(char * temp1, EERIE_SCRIPT * esss, INTERACTI
 			case TYPE_LONG:
 				return (float)lv;
 				break;
-				return (fv);
-				break;
+				// Nuky - unreachable code (should it be case TYPE_FLOAT: ?)
+				//return (fv);
+				//break;
 		}
 
 	}
@@ -3439,7 +3439,7 @@ void MakeStandard(char * str)
 	long i = 0;
 	long pos = 0;
 
-	while (1)
+	for (;;)
 	{
 		if (str[i] != '_')
 		{
@@ -3848,7 +3848,7 @@ void ARX_SCRIPT_Timer_GetDefaultName(char * tx)
 	long i = 1;
 	char texx[64];
 
-	while (1)
+	for (;;)
 	{
 		sprintf(texx, "TIMER_%d", i);
 		i++;
@@ -4248,1555 +4248,1556 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 {
 	return 1;
 
-	if (SYNTAXCHECKING == 0) return 1;
-
-	if (io->ioflags & IO_FREEZESCRIPT) return 1;
-
-	long errors = 0;
-	long warnings = 0;
-	long stoppingdebug = 0;
-	long brackets = 0;
-	char errstring[65535];
-	char tem[256];
-
-	if (io == NULL) return 1;
-
-	if (es == NULL) return 1;
-
-	if (!es->data) return 1;
-
-	if (es->data[0] == 0) return 1;
-
-	long returnvalue = 1;
-	errstring[0] = 0;
-	long cb = CountBrackets(es);
-
-	if (cb != 0)
-	{
-		if (cb > 0) sprintf(tem, "Global - Warning: Invalid Number of Closing Brackets. %d '}' missed\n", cb);
-		else sprintf(tem, "Global - Warning: Invalid Number of Opening Brackets. %d '{' missed\n", -cb);
-
-		if (strlen(tem) + strlen(errstring) < 65480) strcat(errstring, tem);
-		else stoppingdebug = 1;
-
-		warnings++;
-	}
-
-	char temp[256];
-	char temp1[64];
-	char temp2[64];
-	char temp3[64];
-
-	char curlinetext[512];
-	long pos = 0;
-	_CURIO = io;
-
-	while (((pos = GetNextWord(es, pos, temp)) >= 0) && (pos >= 0) && (pos < es->size - 1))
-	{
-		MakeStandard(temp);
-		long currentline = GetCurrentLine(es, pos);
-
-		if (currentline == -1)
-		{
-			currentline = GetLastLineNum(es);
-		}
-
-		memset(curlinetext, 0, 512);
-		GetLineAsText(es, currentline, curlinetext);
-		tem[0] = 0;
-		long unknowncommand = 0;
-
-		switch (temp[0])
-		{
-			case '}':
-				brackets--;
-				break;
-			case 'O':
-
-				if (!strcmp(temp, "OBJECTHIDE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "ON"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case '{':
-				brackets++;
-				break;
-			case '/':
-
-				if (temp[1] == '/') pos = GotoNextLine(es, pos);
-				else unknowncommand = 1;
-
-				break;
-			case '>':
-
-				if (temp[1] == '>') pos = GotoNextLine(es, pos);
-				else unknowncommand = 1;
-
-				break;
-			case 'B':
-
-				if (!strcmp(temp, "BOOK"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else if (!strcmp(temp, "BEHAVIOR"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (!stricmp(temp, "STACK"))
-					{
-					}
-					else if (!stricmp(temp, "UNSTACK"))
-					{
-					}
-					else if (!stricmp(temp, "UNSTACKALL"))
-					{
-					}
-					else
-					{
-						if (temp[0] == '-')
-						{
-							pos = GetNextWord(es, pos, temp);
-						}
-
-						if (!stricmp(temp, "FLEE"))
-							pos = GetNextWord(es, pos, temp);
-						else if (!stricmp(temp, "LOOK_FOR"))
-							pos = GetNextWord(es, pos, temp);
-						else if (!stricmp(temp, "HIDE"))
-							pos = GetNextWord(es, pos, temp);
-						else if (!stricmp(temp, "WANDER_AROUND"))
-							pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'A':
-
-				if (!strcmp(temp, "ADDBAG"))
-				{
-				}
-
-				if (!strcmp(temp, "ACTIVATEPHYSICS"))
-				{
-				}
-
-				if (!strcmp(temp, "AMBIANCE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						if (iCharIn(temp, 'V'))
-						{
-							pos = GetNextWord(es, pos, temp);
-
-							pos = GetNextWord(es, pos, temp);
-						}
-						else if (iCharIn(temp, 'N'))
-						{
-							pos = GetNextWord(es, pos, temp);
-						}
-						else if (iCharIn(temp, 'M'))
-						{
-							pos = GetNextWord(es, pos, temp);
-
-							pos = GetNextWord(es, pos, temp);
-
-						}
-						else if (iCharIn(temp, 'U'))
-						{
-
-							pos = GetNextWord(es, pos, temp);
-
-							pos = GetNextWord(es, pos, temp);
-
-						}
-					}
-				}
-				else if (!strcmp(temp, "ATTRACTOR"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-
-					if (stricmp(temp, "OFF"))
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else if (!strcmp(temp, "ACCEPT"))
-				{
-				}
-				else if (!strcmp(temp, "ANCHORBLOCK"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "ADDXP"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "ADDGOLD"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "ATTACHNPCTOPLAYER"))
-				{
-				}
-				else if (!strcmp(temp, "ATTACH"))
-				{
-					pos = GetNextWord(es, pos, temp); // Source IO
-					pos = GetNextWord(es, pos, temp); // source action_point
-					pos = GetNextWord(es, pos, temp); // target IO
-					pos = GetNextWord(es, pos, temp); // target action_point
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'G':
-
-				if (!strcmp(temp, "GOTO"))
-				{
-					char texx[64];
-
-					if ((pos = GetNextWord(es, pos, temp)) == -1)
-					{
-						sprintf(tem, "Line %04d - Error: 'GOTO': No Label specified\n-- %s", currentline, curlinetext);
-						errors++;
-					}
-					else
-					{
-						sprintf(texx, ">>%s", temp);
-						long ppos = FindLabelPos(es, texx);
-
-						if (ppos == -1)
-						{
-							sprintf(tem, "Line %04d - Error: 'GOTO': Label %s NOT FOUND in script\n-- %s", currentline, texx, curlinetext);
-							errors++;
-						}
-					}
-				}
-				else if (!strcmp(temp, "GOSUB"))
-				{
-					char texx[64];
-
-					if ((pos = GetNextWord(es, pos, temp)) == -1)
-					{
-						sprintf(tem, "Line %04d - Error: 'GOSUB': No Label specified\n-- %s", currentline, curlinetext);
-						errors++;
-					}
-					else
-					{
-						sprintf(texx, ">>%s", temp);
-						pos = FindLabelPos(es, texx);
-
-						if (pos == -1)
-						{
-							sprintf(tem, "Line %04d - Error: 'GOSUB': Label %s NOT FOUND in script\n-- %s", currentline, texx, curlinetext);
-							errors++;
-						}
-					}
-				}
-				else if (!strcmp(temp, "GMODE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else
-					unknowncommand = 1;
-
-				break;
-			case 'R':
-
-				if (!strcmp(temp, "REFUSE"))
-				{
-				}
-				else if (!strcmp(temp, "REVIVE"))
-				{
-					long tmp = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = tmp;
-					}
-				}
-				else if (!strcmp(temp, "RIDICULOUS"))
-				{
-				}
-				else if (!strcmp(temp, "REPAIR"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "RANDOM"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "RETURN"))
-					{		}
-				else if (!strcmp(temp, "REPLACEME"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "ROTATE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "RUNE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-						pos = GetNextWord(es, pos, temp);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'C':
-
-				if (!strcmp(temp, "CINE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "COLLISION"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "CAMERACONTROL"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "CONVERSATION"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					long nb_people = 0;
-
-					if (temp[0] == '-')
-					{
-						if (CharIn(temp, '0')) nb_people = 0;
-
-						if (CharIn(temp, '1')) nb_people = 1;
-
-						if (CharIn(temp, '2')) nb_people = 2;
-
-						if (CharIn(temp, '3')) nb_people = 3;
-
-						if (CharIn(temp, '4')) nb_people = 4;
-
-						if (CharIn(temp, '5')) nb_people = 5;
-
-						if (CharIn(temp, '6')) nb_people = 6;
-
-						if (CharIn(temp, '7')) nb_people = 7;
-
-						if (CharIn(temp, '8')) nb_people = 8;
-
-						if (CharIn(temp, '9')) nb_people = 9;
-
-						pos = GetNextWord(es, pos, temp);
-					}
-
-					if (nb_people)
-					{
-						for (long j = 0; j < nb_people; j++)
-						{
-							pos = GetNextWord(es, pos, temp);
-						}
-					}
-				}
-				else if (!strcmp(temp, "CAMERAACTIVATE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "CAMERASMOOTHING"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "CINEMASCOPE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else if (!strcmp(temp, "CAMERAFOCAL"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "CAMERATRANSLATETARGET"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (strcmp(temp, "CLOSE_STEAL_BAG"))   // temp != "CLOSE_STEAL_BAG"
-				{
-					unknowncommand = 1;
-				}
-
-				break;
-			case 'Q':
-
-				if (!strcmp(temp, "QUAKE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "QUEST"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'N':
-
-				if (!strcmp(temp, "NOP"))
-				{
-				}
-				else if (!strcmp(temp, "NOTE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'S':
-
-				if (!strcmp(temp, "SPELLCAST"))
-				{
-					pos = GetNextWord(es, pos, temp); // switch or level
-
-					if (temp[0] == '-')
-					{
-						if (iCharIn(temp1, 'K'))
-						{
-							pos = GetNextWord(es, pos, temp); //spell id
-							goto suite;
-						}
-
-						if (iCharIn(temp1, 'D'))
-							pos = GetNextWord(es, pos, temp); // duration
-
-						pos = GetNextWord(es, pos, temp); // level
-					}
-
-					pos = GetNextWord(es, pos, temp); //spell id
-					pos = GetNextWord(es, pos, temp); //spell target
-				suite:
-					;
-				}
-				else if (!strcmp(temp, "SPEAK")) // speak say_ident actions
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (!stricmp(temp, "KILLALL"))
-					{
-					}
-					else if (temp[0] == '-')
-					{
-						if ((strstr(temp2, "C")) || (strstr(temp2, "c")))
-						{
-							pos = GetNextWord(es, pos, temp2);
-
-							if (!stricmp(temp2, "ZOOM"))
-							{
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-							}
-							else if ((!stricmp(temp2, "CCCTALKER_L"))
-							         || (!stricmp(temp2, "CCCTALKER_R")))
-							{
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-							}
-							else if ((!stricmp(temp2, "CCCLISTENER_L"))
-							         || (!stricmp(temp2, "CCCLISTENER_R")))
-							{
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-							}
-							else if ((!stricmp(temp2, "SIDE"))
-							         || (!stricmp(temp2, "SIDE_L"))
-							         || (!stricmp(temp2, "SIDE_R")))
-							{
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-							}
-						}
-
-						pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else if (!strcmp(temp, "SHOPCATEGORY"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SHOPMULTIPLY"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETPOISONOUS"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETPLATFORM"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETGORE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETUNIQUE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETBLACKSMITH"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETDETECT"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETELEVATOR"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETTRAP"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETSECRET"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETSTEAL"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETLIGHT"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETBLOOD"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETMATERIAL"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETSPEAKPITCH"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETSPEED"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETGROUP"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else if (!strcmp(temp, "SETNPCSTAT"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETXPVALUE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETNAME"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETPLAYERTWEAK"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (!stricmp(temp, "SKIN"))
-						pos = GetNextWord(es, pos, temp);
-
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETCONTROLLEDZONE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if ((!strcmp(temp, "SETSTATUS")) || (!strcmp(temp, "SETMAINEVENT")))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETMOVEMODE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SPAWN"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if ((!strcmp(temp, "NPC")) || (!strcmp(temp, "ITEM")) || (!strcmp(temp, "FIX")))
-					{
-						pos = GetNextWord(es, pos, temp); // object to spawn.
-						pos = GetNextWord(es, pos, temp); // spawn position.
-					}
-				}
-				else if (!strcmp(temp, "SETOBJECTTYPE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else if (!strcmp(temp, "SETRIGHTHAND"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETLEFTHAND"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETHUNGER"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETSHIELD"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETTWOHANDED"))
-				{
-				}
-				else if (!strcmp(temp, "SETINTERACTIVITY"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETEQUIP"))
-				{
-					char temp2[64];
-					char temp3[64];
-					pos = GetNextWord(es, pos, temp3);
-
-					if (temp3[0] == '-')
-					{
-						if (!stricmp(temp3, "-r")) { }
-						else
-						{
-							pos = GetNextWord(es, pos, temp);
-							pos = GetNextWord(es, pos, temp2);
-						}
-					}
-					else
-					{
-						pos = GetNextWord(es, pos, temp2);
-
-					}
-				}
-				else if (!strcmp(temp, "SETONEHANDED"))
-				{
-				}
-				else if (!strcmp(temp, "SETWEAPON"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-						pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETLIFE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETDURABILITY"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-						pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETPATH"))
-				{
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETTARGET"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-
-					if (!strcmp(temp, "PATH"))
-					{
-					}
-					else if (!strcmp(temp, "PLAYER"))
-					{
-					}
-					else if (!strcmp(temp, "NONE"))
-					{
-					}
-					else if (!strcmp(temp, "NODE"))
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-					else if (!strcmp(temp, "OBJECT"))
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-					else
-					{
-						sprintf(tem, "Line %04d - Error: 'SET_TARGET': param1 '%s' is an invalid parameter\n-- %s", currentline, temp, curlinetext);
-						errors++;
-					}
-
-				}
-				else if (!strcmp(temp, "STARTTIMER"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "STOPTIMER"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SENDEVENT"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						if (iCharIn(temp, 'R'))
-							pos = GetNextWord(es, pos, temp);
-
-						if (iCharIn(temp, 'G'))
-							pos = GetNextWord(es, pos, temp);
-
-						pos = GetNextWord(es, pos, temp);
-					}
-
-					pos = GetNextWord_Interpreted(io, es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SET"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "SAY"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETSTEPMATERIAL"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETARMORMATERIAL"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETWEAPONMATERIAL"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETSTRIKESPEECH"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETANGULAR"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETPLAYERCOLLISION"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETPLAYERCONTROLS"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETWORLDCOLLISION"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETSHADOW"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETDETACHABLE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETSTACKABLE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETSHOP"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETMAXCOUNT"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETCOUNT"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETWEIGHT"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETEVENT"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp2);
-					MakeUpcase(temp);
-					MakeUpcase(temp2);
-				}
-				else if (!strcmp(temp, "SETPRICE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETINTERNALNAME"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					sprintf(tem, "Line %04d - Warning: 'SET_INTERNAL_NAME': Obsolete Command.\n-- %s", currentline, curlinetext);
-					warnings++;
-				}
-				else if (!strcmp(temp, "SHOWGLOBALS"))
-				{
-				}
-				else if (!strcmp(temp, "SHOWLOCALS"))
-				{
-				}
-				else if (!strcmp(temp, "SHOWVARS"))
-				{
-				}
-				else if (!strcmp(temp, "SETIRCOLOR"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETSCALE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SPECIALFX"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (!stricmp(temp, "PLAYER_APPEARS"))
-					{
-					}
-					else if (!strcmp(temp, "HEAL"))
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-					else if (!strcmp(temp, "MANA"))
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-					else if (!strcmp(temp, "NEWSPELL"))
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-					else if (!strcmp(temp, "TORCH"))
-					{
-					}
-					else if (!strcmp(temp, "FIERY"))
-					{
-					}
-					else if (!strcmp(temp, "FIERYOFF"))
-					{
-					}
-					else
-					{
-						sprintf(tem, "Line %04d - Error: 'SPECIAL_FX': param1 '%s' is an invalid parameter.\n-- %s", currentline, temp1, curlinetext);
-						errors++;
-					}
-				}
-				else if (!strcmp(temp, "SETBUMP"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if ((!strcmp(temp, "ON")) || (!strcmp(temp, "OFF")))
-					{
-					}
-					else pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "SETZMAP"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if ((!strcmp(temp, "ON")) || (!strcmp(temp, "OFF")))
-					{
-					}
-					else pos = GetNextWord(es, pos, temp);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'Z':
-
-				if (!strcmp(temp, "ZONEPARAM"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (!stricmp(temp, "STACK"))
-					{
-					}
-					else if (!stricmp(temp, "UNSTACK"))
-					{
-					}
-					else
-					{
-						if (temp[0] == '-')
-						{
-							pos = GetNextWord(es, pos, temp);
-						}
-
-						if (!stricmp(temp, "RGB"))
-						{
-							pos = GetNextWord(es, pos, temp);
-							pos = GetNextWord(es, pos, temp);
-							pos = GetNextWord(es, pos, temp);
-						}
-						else if (!stricmp(temp, "ZCLIP"))
-						{
-							pos = GetNextWord(es, pos, temp);
-						}
-						else if (!stricmp(temp, "AMBIANCE"))
-						{
-							pos = GetNextWord(es, pos, temp);
-						}
-
-					}
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'K':
-
-				if (!strcmp(temp, "KILLME"))
-				{
-				}
-				else if (!strcmp(temp, "KEYRINGADD"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'F':
-
-				if (!strcmp(temp, "FORCEANIM"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "FORCEANGLE"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-				}
-
-				else if (!strcmp(temp, "FORCEDEATH"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'P':
-
-				if (!strcmp(temp, "PLAYERLOOKAT"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "PLAYERSTACKSIZE"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "PRECAST"))
-				{
-					pos = GetNextWord(es, pos, temp); // switch or level
-
-					if (temp[0] == '-')
-					{
-						if (iCharIn(temp, 'D'))
-						{
-							pos = GetNextWord(es, pos, temp2); // duration
-						}
-
-						pos = GetNextWord(es, pos, temp); // level
-					}
-
-					pos = GetNextWord(es, pos, temp); //spell id
-				}
-				else if (!strcmp(temp, "POISON"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "PLAYERMANADRAIN"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "PATHFIND"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "PLAYANIM"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-
-					if (temp2[0] == '-')
-						pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "PLAYERINTERFACE"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-
-					if (temp2[0] == '-')
-						pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "PLAY"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-
-					if (temp2[0] == '-') pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "PLAYSPEECH"))
-				{
-					pos = GetNextWord(es, pos, temp2);
-
-				}
-				else if (!strcmp(temp, "POPUP"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "PHYSICAL"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if ((!strcmp(temp, "ON")) || (!strcmp(temp, "OFF")))
-					{
-					}
-					else pos = GetNextWord(es, pos, temp);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'L':
-
-				if (!strcmp(temp, "LOADANIM"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "LINKOBJTOME"))
-				{
-					pos = GetNextWord_Interpreted(io, es, pos, temp);
-					pos = GetNextWord(es, pos, temp1);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'I':
-
-				if (!strcmp(temp, "IF"))
-				{
-					pos = GetNextWord(es, pos, temp1);
-					pos = GetNextWord(es, pos, temp2);
-					pos = GetNextWord(es, pos, temp3);
-
-
-					MakeUpcase(temp2);
-
-					if	(!strcmp(temp2, "==")) {}
-					else if (!strcmp(temp2, "!="))	{}
-					else if (!strcmp(temp2, "<="))	{}
-					else if (!strcmp(temp2, "<"))	{}
-					else if (!strcmp(temp2, ">="))	{}
-					else if (!strcmp(temp2, ">"))	{}
-					else if	(!stricmp(temp2, "isclass"))	{}
-					else if	(!stricmp(temp2, "isgroup"))	{}
-					else if	(!stricmp(temp2, "!isgroup"))	{}
-					else if	(!stricmp(temp2, "iselement"))	{}
-					else if	(!stricmp(temp2, "isin"))	{}
-					else if	(!stricmp(temp2, "istype"))	{}
-					else
-					{
-						sprintf(tem, "Line %04d - Error: 'IF': Unknown Operator %s found.\n-- %s", currentline, temp2, curlinetext);
-						errors++;
-					}
-				}
-				else if (!strcmp(temp, "INC"))
-				{
-					pos = GetNextWord(es, pos, temp1);
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "IFEXISTINTERNAL"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					sprintf(tem, "Line %04d - Warning: 'IF_EXIST_INTERNAL': Obsolete Command.\n-- %s", currentline, curlinetext);
-					warnings++;
-				}
-				else if (!strcmp(temp, "IFVISIBLE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "INVERTEDOBJECT"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "INVULNERABILITY"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else if (!strcmp(temp, "INVENTORY"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					MakeStandard(temp);
-
-					if (!strcmp(temp, "CREATE"))
-					{
-					}
-					else if (!strcmp(temp, "SKIN"))
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-					else if (!strcmp(temp, "PLAYERADDFROMSCENE"))
-					{
-						pos = GetNextWord(es, pos, temp2);
-					}
-					else if (!strcmp(temp, "ADDFROMSCENE"))
-					{
-						pos = GetNextWord(es, pos, temp2);
-					}
-					else if ((!strcmp(temp, "PLAYERADD")) || (!strcmp(temp, "PLAYERADDMULTI")))
-					{
-						pos = GetNextWord(es, pos, temp2);
-
-						if (!strcmp(temp, "PLAYERADDMULTI"))
-						{
-							pos = GetNextWord(es, pos, temp2);
-						}
-					}
-					else if ((!strcmp(temp, "ADD")) || (!strcmp(temp, "ADDMULTI")))
-					{
-						pos = GetNextWord(es, pos, temp2);
-
-						if (!strcmp(temp, "ADDMULTI"))
-						{
-							pos = GetNextWord(es, pos, temp2);
-						}
-					}
-					else if (!strcmp(temp, "DESTROY"))
-					{
-					}
-					else if (!strcmp(temp, "OPEN"))
-					{
-					}
-					else if (!strcmp(temp, "CLOSE"))
-					{
-					}
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'H':
-
-				if (!strcmp(temp, "HEROSAY"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'T':
-
-				if (!strcmp(temp, "TELEPORT"))
-				{
-
-					pos = GetNextWord(es, pos, temp);
-
-					if (0 != stricmp(temp, "behind"))
-					{
-						char temp2[256];
-
-						if (temp[0] == '-')
-						{
-							if (iCharIn(temp, 'A'))
-							{
-								pos = GetNextWord(es, pos, temp2);
-							}
-
-							if (iCharIn(temp, 'L'))
-							{
-								pos = GetNextWord(es, pos, temp2);
-								pos = GetNextWord(es, pos, temp2);
-							}
-
-							if (iCharIn(temp, 'P'))
-							{
-								pos = GetNextWord(es, pos, temp2);
-							}
-						}
-
-					}
-				}
-				else if (!strcmp(temp, "TARGETPLAYERPOS"))
-				{
-					sprintf(tem, "Line %04d - Warning: 'TARGET_PLAYER_POS': Obsolete Command Please Use SET_TARGET PLAYER.\n-- %s", currentline, curlinetext);
-					warnings++;
-				}
-				else if (!strcmp(temp, "TWEAK"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (!strcmp(temp, "HEAD")) {}
-					else if (!strcmp(temp, "TORSO")) {}
-					else if (!strcmp(temp, "LEGS")) {}
-					else if (!strcmp(temp, "ALL")) {}
-					else if (!strcmp(temp, "UPPER")) {}
-					else if (!strcmp(temp, "LOWER")) {}
-					else if (!strcmp(temp, "UP_LO")) {}
-
-					if (!strcmp(temp, "REMOVE"))
-					{
-					}
-					else if (!strcmp(temp, "SKIN"))
-					{
-						pos = GetNextWord(es, pos, temp);
-						pos = GetNextWord(es, pos, temp);
-					}
-					else if (!strcmp(temp, "ICON"))
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-					else
-					{
-						sprintf(tem, "Line %04d - Error: 'TWEAK %s': Unknown parameter %s found.\n-- %s", currentline, temp, temp, curlinetext);
-						errors++;
-					}
-				}
-				else if ((temp[1] == 'I') && (temp[2] == 'M') && (temp[3] == 'E') && (temp[4] == 'R'))
-				{
-					// Timer -m nbtimes duration commands
-					pos = GetNextWord(es, pos, temp2);
-					MakeUpcase(temp2);
-
-					if (!strcmp(temp2, "KILL_LOCAL"))
-					{
-
-					}
-					else
-					{
-						if (!strcmp(temp2, "OFF"))
-						{
-						}
-						else
-						{
-							if (temp2[0] == '-')
-							{
-								pos = GetNextWord(es, pos, temp2);
-							}
-
-							pos = GetNextWord(es, pos, temp3);
-						}
-					}
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'V':
-
-				if (!strcmp(temp, "VIEWBLOCK"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'W':
-
-				if (!strcmp(temp, "WORLDFADE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-					pos = GetNextWord(es, pos, temp1);
-
-					if (!stricmp(temp, "OUT"))
-					{
-						pos = GetNextWord(es, pos, temp1);
-						pos = GetNextWord(es, pos, temp2);
-						pos = GetNextWord(es, pos, temp3);
-					}
-				}
-				else if (!strcmp(temp, "WEAPON"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'U':
-
-				if (!strcmp(temp, "UNSET"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "USEMESH"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "USEPATH"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "UNSETCONTROLLEDZONE"))
-				{
-					pos = GetNextWord(es, pos, temp);
-				}
-				else unknowncommand = 1;
-
-				break;
-
-			case 'E':
-
-				if (!strcmp(temp, "ELSE"))
-				{
-				}
-				else if (!strcmp(temp, "ENDINTRO"))
-				{
-				}
-				else if (!strcmp(temp, "ENDGAME"))
-				{
-				}
-				else if (!strcmp(temp, "EATME"))
-				{
-				}
-				else if (!strcmp(temp, "EQUIP"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'M':
-
-				if (!strcmp(temp, "MUL"))
-				{
-					pos = GetNextWord(es, pos, temp1);
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "MAPMARKER"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if ((!stricmp(temp, "remove")) || (!stricmp(temp, "-r")))
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-					else
-					{
-						pos = GetNextWord(es, pos, temp);
-						pos = GetNextWord(es, pos, temp);
-						pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else if (!strcmp(temp, "MOVE"))
-				{
-					pos = GetNextWord(es, pos, temp1);
-					pos = GetNextWord(es, pos, temp2);
-					pos = GetNextWord(es, pos, temp3);
-				}
-				else if (!strcmp(temp, "MAGIC"))
-				{
-					pos = GetNextWord(es, pos, temp1);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case '-':
-			case '+':
-
-				if ((!strcmp(temp, "++")) ||
-				        (!strcmp(temp, "--")))
-				{
-					pos = GetNextWord(es, pos, temp1);
-				}
-				else unknowncommand = 1;
-
-				break;
-			case 'D':
-
-				if (
-				    (!strcmp(temp, "DEC")) ||
-				    (!strcmp(temp, "DIV")))
-				{
-					pos = GetNextWord(es, pos, temp1);
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else if (!strcmp(temp, "DESTROY"))
-				{
-					pos = GetNextWord(es, pos, temp1);
-				}
-				else if (!strcmp(temp, "DETACHNPCFROMPLAYER"))
-				{
-				}
-				else if (!strcmp(temp, "DODAMAGE"))
-				{
-					pos = GetNextWord(es, pos, temp); // Source IO
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-
-					pos = GetNextWord(es, pos, temp);
-				}
-				else if (!strcmp(temp, "DAMAGER"))
-				{
-					pos = GetNextWord(es, pos, temp);
-
-					if (temp[0] == '-')
-					{
-						pos = GetNextWord(es, pos, temp);
-					}
-				}
-				else if (!strcmp(temp, "DETACH"))
-				{
-					pos = GetNextWord(es, pos, temp); // Source IO
-					pos = GetNextWord(es, pos, temp); // target IO
-				}
-				else if (!strcmp(temp, "DRAWSYMBOL"))
-				{
-					pos = GetNextWord(es, pos, temp1);
-					pos = GetNextWord(es, pos, temp2);
-				}
-				else unknowncommand = 1;
-
-				break;
-			default:
-				unknowncommand = 1;
-
-		}
-
-		if (unknowncommand)
-		{
-			sprintf(tem, "Line %04d - Error: Unknown Command '%s'\n-- %s", currentline, temp, curlinetext);
-			errors++;
-		}
-
-		if (strlen(tem) + strlen(errstring) < 65480) strcat(errstring, tem);
-		else stoppingdebug = 1;
-	}
-
-	if (stoppingdebug) strcat(errstring, "\nToo Many Errors. Stopping Syntax Check...");
-
-
-	if (errstring[0] == 0) returnvalue = 1;
-	else returnvalue = 0;
-
-	if ((errors > 0) || ((warnings > 0) && (SHOWWARNINGS)))
-	{
-		char title[512];
-
-		if (es == &io->over_script)
-		{
-			strcpy(temp, GetName(io->filename));
-			sprintf(title, "%s_%04d", temp, io->ident);
-			strcat(title, " LOCAL SCRIPT.");
-		}
-		else
-		{
-			strcpy(temp, GetName(io->filename));
-			sprintf(title, "%s_%04d", temp, io->ident);
-			strcat(title, " CLASS SCRIPT.");
-		}
-
-		LastErrorPopup = ShowErrorPopup(title, errstring);
-	}
-	else LastErrorPopup = NULL;
-
-	return returnvalue;
+	// Nuky - unreachable code
+	//if (SYNTAXCHECKING == 0) return 1;
+
+	//if (io->ioflags & IO_FREEZESCRIPT) return 1;
+
+	//long errors = 0;
+	//long warnings = 0;
+	//long stoppingdebug = 0;
+	//long brackets = 0;
+	//char errstring[65535];
+	//char tem[256];
+
+	//if (io == NULL) return 1;
+
+	//if (es == NULL) return 1;
+
+	//if (!es->data) return 1;
+
+	//if (es->data[0] == 0) return 1;
+
+	//long returnvalue = 1;
+	//errstring[0] = 0;
+	//long cb = CountBrackets(es);
+
+	//if (cb != 0)
+	//{
+	//	if (cb > 0) sprintf(tem, "Global - Warning: Invalid Number of Closing Brackets. %d '}' missed\n", cb);
+	//	else sprintf(tem, "Global - Warning: Invalid Number of Opening Brackets. %d '{' missed\n", -cb);
+
+	//	if (strlen(tem) + strlen(errstring) < 65480) strcat(errstring, tem);
+	//	else stoppingdebug = 1;
+
+	//	warnings++;
+	//}
+
+	//char temp[256];
+	//char temp1[64];
+	//char temp2[64];
+	//char temp3[64];
+
+	//char curlinetext[512];
+	//long pos = 0;
+	//_CURIO = io;
+
+	//while (((pos = GetNextWord(es, pos, temp)) >= 0) && (pos >= 0) && (pos < es->size - 1))
+	//{
+	//	MakeStandard(temp);
+	//	long currentline = GetCurrentLine(es, pos);
+
+	//	if (currentline == -1)
+	//	{
+	//		currentline = GetLastLineNum(es);
+	//	}
+
+	//	memset(curlinetext, 0, 512);
+	//	GetLineAsText(es, currentline, curlinetext);
+	//	tem[0] = 0;
+	//	long unknowncommand = 0;
+
+	//	switch (temp[0])
+	//	{
+	//		case '}':
+	//			brackets--;
+	//			break;
+	//		case 'O':
+
+	//			if (!strcmp(temp, "OBJECTHIDE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (temp[0] == '-')
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "ON"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		case '{':
+	//			brackets++;
+	//			break;
+	//		case '/':
+
+	//			if (temp[1] == '/') pos = GotoNextLine(es, pos);
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		case '>':
+
+	//			if (temp[1] == '>') pos = GotoNextLine(es, pos);
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		case 'B':
+
+	//			if (!strcmp(temp, "BOOK"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (temp[0] == '-')
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+	//			}
+	//			else if (!strcmp(temp, "BEHAVIOR"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (!stricmp(temp, "STACK"))
+	//				{
+	//				}
+	//				else if (!stricmp(temp, "UNSTACK"))
+	//				{
+	//				}
+	//				else if (!stricmp(temp, "UNSTACKALL"))
+	//				{
+	//				}
+	//				else
+	//				{
+	//					if (temp[0] == '-')
+	//					{
+	//						pos = GetNextWord(es, pos, temp);
+	//					}
+
+	//					if (!stricmp(temp, "FLEE"))
+	//						pos = GetNextWord(es, pos, temp);
+	//					else if (!stricmp(temp, "LOOK_FOR"))
+	//						pos = GetNextWord(es, pos, temp);
+	//					else if (!stricmp(temp, "HIDE"))
+	//						pos = GetNextWord(es, pos, temp);
+	//					else if (!stricmp(temp, "WANDER_AROUND"))
+	//						pos = GetNextWord(es, pos, temp);
+	//				}
+	//			}
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		case 'A':
+
+	//			if (!strcmp(temp, "ADDBAG"))
+	//			{
+	//			}
+
+	//			if (!strcmp(temp, "ACTIVATEPHYSICS"))
+	//			{
+	//			}
+
+	//			if (!strcmp(temp, "AMBIANCE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (temp[0] == '-')
+	//				{
+	//					if (iCharIn(temp, 'V'))
+	//					{
+	//						pos = GetNextWord(es, pos, temp);
+
+	//						pos = GetNextWord(es, pos, temp);
+	//					}
+	//					else if (iCharIn(temp, 'N'))
+	//					{
+	//						pos = GetNextWord(es, pos, temp);
+	//					}
+	//					else if (iCharIn(temp, 'M'))
+	//					{
+	//						pos = GetNextWord(es, pos, temp);
+
+	//						pos = GetNextWord(es, pos, temp);
+
+	//					}
+	//					else if (iCharIn(temp, 'U'))
+	//					{
+
+	//						pos = GetNextWord(es, pos, temp);
+
+	//						pos = GetNextWord(es, pos, temp);
+
+	//					}
+	//				}
+	//			}
+	//			else if (!strcmp(temp, "ATTRACTOR"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (stricmp(temp, "OFF"))
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+	//			}
+	//			else if (!strcmp(temp, "ACCEPT"))
+	//			{
+	//			}
+	//			else if (!strcmp(temp, "ANCHORBLOCK"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "ADDXP"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "ADDGOLD"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "ATTACHNPCTOPLAYER"))
+	//			{
+	//			}
+	//			else if (!strcmp(temp, "ATTACH"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp); // Source IO
+	//				pos = GetNextWord(es, pos, temp); // source action_point
+	//				pos = GetNextWord(es, pos, temp); // target IO
+	//				pos = GetNextWord(es, pos, temp); // target action_point
+	//			}
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		case 'G':
+
+	//			if (!strcmp(temp, "GOTO"))
+	//			{
+	//				char texx[64];
+
+	//				if ((pos = GetNextWord(es, pos, temp)) == -1)
+	//				{
+	//					sprintf(tem, "Line %04d - Error: 'GOTO': No Label specified\n-- %s", currentline, curlinetext);
+	//					errors++;
+	//				}
+	//				else
+	//				{
+	//					sprintf(texx, ">>%s", temp);
+	//					long ppos = FindLabelPos(es, texx);
+
+	//					if (ppos == -1)
+	//					{
+	//						sprintf(tem, "Line %04d - Error: 'GOTO': Label %s NOT FOUND in script\n-- %s", currentline, texx, curlinetext);
+	//						errors++;
+	//					}
+	//				}
+	//			}
+	//			else if (!strcmp(temp, "GOSUB"))
+	//			{
+	//				char texx[64];
+
+	//				if ((pos = GetNextWord(es, pos, temp)) == -1)
+	//				{
+	//					sprintf(tem, "Line %04d - Error: 'GOSUB': No Label specified\n-- %s", currentline, curlinetext);
+	//					errors++;
+	//				}
+	//				else
+	//				{
+	//					sprintf(texx, ">>%s", temp);
+	//					pos = FindLabelPos(es, texx);
+
+	//					if (pos == -1)
+	//					{
+	//						sprintf(tem, "Line %04d - Error: 'GOSUB': Label %s NOT FOUND in script\n-- %s", currentline, texx, curlinetext);
+	//						errors++;
+	//					}
+	//				}
+	//			}
+	//			else if (!strcmp(temp, "GMODE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else
+	//				unknowncommand = 1;
+
+	//			break;
+	//		case 'R':
+
+	//			if (!strcmp(temp, "REFUSE"))
+	//			{
+	//			}
+	//			else if (!strcmp(temp, "REVIVE"))
+	//			{
+	//				long tmp = GetNextWord(es, pos, temp);
+
+	//				if (temp[0] == '-')
+	//				{
+	//					pos = tmp;
+	//				}
+	//			}
+	//			else if (!strcmp(temp, "RIDICULOUS"))
+	//			{
+	//			}
+	//			else if (!strcmp(temp, "REPAIR"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "RANDOM"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "RETURN"))
+	//				{		}
+	//			else if (!strcmp(temp, "REPLACEME"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "ROTATE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//				pos = GetNextWord(es, pos, temp);
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "RUNE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (temp[0] == '-')
+	//					pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		case 'C':
+
+	//			if (!strcmp(temp, "CINE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "COLLISION"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "CAMERACONTROL"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "CONVERSATION"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//				long nb_people = 0;
+
+	//				if (temp[0] == '-')
+	//				{
+	//					if (CharIn(temp, '0')) nb_people = 0;
+
+	//					if (CharIn(temp, '1')) nb_people = 1;
+
+	//					if (CharIn(temp, '2')) nb_people = 2;
+
+	//					if (CharIn(temp, '3')) nb_people = 3;
+
+	//					if (CharIn(temp, '4')) nb_people = 4;
+
+	//					if (CharIn(temp, '5')) nb_people = 5;
+
+	//					if (CharIn(temp, '6')) nb_people = 6;
+
+	//					if (CharIn(temp, '7')) nb_people = 7;
+
+	//					if (CharIn(temp, '8')) nb_people = 8;
+
+	//					if (CharIn(temp, '9')) nb_people = 9;
+
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+
+	//				if (nb_people)
+	//				{
+	//					for (long j = 0; j < nb_people; j++)
+	//					{
+	//						pos = GetNextWord(es, pos, temp);
+	//					}
+	//				}
+	//			}
+	//			else if (!strcmp(temp, "CAMERAACTIVATE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "CAMERASMOOTHING"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "CINEMASCOPE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (temp[0] == '-')
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+	//			}
+	//			else if (!strcmp(temp, "CAMERAFOCAL"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "CAMERATRANSLATETARGET"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//				pos = GetNextWord(es, pos, temp);
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (strcmp(temp, "CLOSE_STEAL_BAG"))   // temp != "CLOSE_STEAL_BAG"
+	//			{
+	//				unknowncommand = 1;
+	//			}
+
+	//			break;
+	//		case 'Q':
+
+	//			if (!strcmp(temp, "QUAKE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//				pos = GetNextWord(es, pos, temp);
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "QUEST"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		case 'N':
+
+	//			if (!strcmp(temp, "NOP"))
+	//			{
+	//			}
+	//			else if (!strcmp(temp, "NOTE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		case 'S':
+
+	//			if (!strcmp(temp, "SPELLCAST"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp); // switch or level
+
+	//				if (temp[0] == '-')
+	//				{
+	//					if (iCharIn(temp1, 'K'))
+	//					{
+	//						pos = GetNextWord(es, pos, temp); //spell id
+	//						goto suite;
+	//					}
+
+	//					if (iCharIn(temp1, 'D'))
+	//						pos = GetNextWord(es, pos, temp); // duration
+
+	//					pos = GetNextWord(es, pos, temp); // level
+	//				}
+
+	//				pos = GetNextWord(es, pos, temp); //spell id
+	//				pos = GetNextWord(es, pos, temp); //spell target
+	//			suite:
+	//				;
+	//			}
+	//			else if (!strcmp(temp, "SPEAK")) // speak say_ident actions
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (!stricmp(temp, "KILLALL"))
+	//				{
+	//				}
+	//				else if (temp[0] == '-')
+	//				{
+	//					if ((strstr(temp2, "C")) || (strstr(temp2, "c")))
+	//					{
+	//						pos = GetNextWord(es, pos, temp2);
+
+	//						if (!stricmp(temp2, "ZOOM"))
+	//						{
+	//							pos = GetNextWord(es, pos, temp2);
+	//							pos = GetNextWord(es, pos, temp2);
+	//							pos = GetNextWord(es, pos, temp2);
+	//							pos = GetNextWord(es, pos, temp2);
+	//							pos = GetNextWord(es, pos, temp2);
+	//							pos = GetNextWord(es, pos, temp2);
+	//						}
+	//						else if ((!stricmp(temp2, "CCCTALKER_L"))
+	//						         || (!stricmp(temp2, "CCCTALKER_R")))
+	//						{
+	//							pos = GetNextWord(es, pos, temp2);
+	//							pos = GetNextWord(es, pos, temp2);
+	//							pos = GetNextWord(es, pos, temp2);
+	//						}
+	//						else if ((!stricmp(temp2, "CCCLISTENER_L"))
+	//						         || (!stricmp(temp2, "CCCLISTENER_R")))
+	//						{
+	//							pos = GetNextWord(es, pos, temp2);
+	//							pos = GetNextWord(es, pos, temp2);
+	//							pos = GetNextWord(es, pos, temp2);
+	//						}
+	//						else if ((!stricmp(temp2, "SIDE"))
+	//						         || (!stricmp(temp2, "SIDE_L"))
+	//						         || (!stricmp(temp2, "SIDE_R")))
+	//						{
+	//							pos = GetNextWord(es, pos, temp2);
+	//							pos = GetNextWord(es, pos, temp2);
+	//							pos = GetNextWord(es, pos, temp2);
+	//							pos = GetNextWord(es, pos, temp2);
+	//							pos = GetNextWord(es, pos, temp2);
+	//							pos = GetNextWord(es, pos, temp2);
+	//						}
+	//					}
+
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+	//			}
+	//			else if (!strcmp(temp, "SHOPCATEGORY"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SHOPMULTIPLY"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETPOISONOUS"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETPLATFORM"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETGORE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETUNIQUE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETBLACKSMITH"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETDETECT"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETELEVATOR"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETTRAP"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETSECRET"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETSTEAL"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETLIGHT"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETBLOOD"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//				pos = GetNextWord(es, pos, temp);
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETMATERIAL"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETSPEAKPITCH"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETSPEED"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETGROUP"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (temp[0] == '-')
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+	//			}
+	//			else if (!strcmp(temp, "SETNPCSTAT"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETXPVALUE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETNAME"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETPLAYERTWEAK"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (!stricmp(temp, "SKIN"))
+	//					pos = GetNextWord(es, pos, temp);
+
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETCONTROLLEDZONE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if ((!strcmp(temp, "SETSTATUS")) || (!strcmp(temp, "SETMAINEVENT")))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETMOVEMODE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SPAWN"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if ((!strcmp(temp, "NPC")) || (!strcmp(temp, "ITEM")) || (!strcmp(temp, "FIX")))
+	//				{
+	//					pos = GetNextWord(es, pos, temp); // object to spawn.
+	//					pos = GetNextWord(es, pos, temp); // spawn position.
+	//				}
+	//			}
+	//			else if (!strcmp(temp, "SETOBJECTTYPE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (temp[0] == '-')
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+	//			}
+	//			else if (!strcmp(temp, "SETRIGHTHAND"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETLEFTHAND"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETHUNGER"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETSHIELD"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETTWOHANDED"))
+	//			{
+	//			}
+	//			else if (!strcmp(temp, "SETINTERACTIVITY"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETEQUIP"))
+	//			{
+	//				char temp2[64];
+	//				char temp3[64];
+	//				pos = GetNextWord(es, pos, temp3);
+
+	//				if (temp3[0] == '-')
+	//				{
+	//					if (!stricmp(temp3, "-r")) { }
+	//					else
+	//					{
+	//						pos = GetNextWord(es, pos, temp);
+	//						pos = GetNextWord(es, pos, temp2);
+	//					}
+	//				}
+	//				else
+	//				{
+	//					pos = GetNextWord(es, pos, temp2);
+
+	//				}
+	//			}
+	//			else if (!strcmp(temp, "SETONEHANDED"))
+	//			{
+	//			}
+	//			else if (!strcmp(temp, "SETWEAPON"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (temp[0] == '-')
+	//					pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETLIFE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETDURABILITY"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (temp[0] == '-')
+	//					pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETPATH"))
+	//			{
+	//				if (temp[0] == '-')
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETTARGET"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (temp[0] == '-')
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+
+	//				if (!strcmp(temp, "PATH"))
+	//				{
+	//				}
+	//				else if (!strcmp(temp, "PLAYER"))
+	//				{
+	//				}
+	//				else if (!strcmp(temp, "NONE"))
+	//				{
+	//				}
+	//				else if (!strcmp(temp, "NODE"))
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+	//				else if (!strcmp(temp, "OBJECT"))
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+	//				else
+	//				{
+	//					sprintf(tem, "Line %04d - Error: 'SET_TARGET': param1 '%s' is an invalid parameter\n-- %s", currentline, temp, curlinetext);
+	//					errors++;
+	//				}
+
+	//			}
+	//			else if (!strcmp(temp, "STARTTIMER"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "STOPTIMER"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SENDEVENT"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (temp[0] == '-')
+	//				{
+	//					if (iCharIn(temp, 'R'))
+	//						pos = GetNextWord(es, pos, temp);
+
+	//					if (iCharIn(temp, 'G'))
+	//						pos = GetNextWord(es, pos, temp);
+
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+
+	//				pos = GetNextWord_Interpreted(io, es, pos, temp);
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SET"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (temp[0] == '-')
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+
+	//				pos = GetNextWord(es, pos, temp2);
+	//			}
+	//			else if (!strcmp(temp, "SAY"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETSTEPMATERIAL"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETARMORMATERIAL"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETWEAPONMATERIAL"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETSTRIKESPEECH"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETANGULAR"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETPLAYERCOLLISION"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETPLAYERCONTROLS"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETWORLDCOLLISION"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETSHADOW"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETDETACHABLE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETSTACKABLE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETSHOP"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETMAXCOUNT"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETCOUNT"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETWEIGHT"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETEVENT"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//				pos = GetNextWord(es, pos, temp2);
+	//				MakeUpcase(temp);
+	//				MakeUpcase(temp2);
+	//			}
+	//			else if (!strcmp(temp, "SETPRICE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETINTERNALNAME"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//				sprintf(tem, "Line %04d - Warning: 'SET_INTERNAL_NAME': Obsolete Command.\n-- %s", currentline, curlinetext);
+	//				warnings++;
+	//			}
+	//			else if (!strcmp(temp, "SHOWGLOBALS"))
+	//			{
+	//			}
+	//			else if (!strcmp(temp, "SHOWLOCALS"))
+	//			{
+	//			}
+	//			else if (!strcmp(temp, "SHOWVARS"))
+	//			{
+	//			}
+	//			else if (!strcmp(temp, "SETIRCOLOR"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//				pos = GetNextWord(es, pos, temp);
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETSCALE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SPECIALFX"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (!stricmp(temp, "PLAYER_APPEARS"))
+	//				{
+	//				}
+	//				else if (!strcmp(temp, "HEAL"))
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+	//				else if (!strcmp(temp, "MANA"))
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+	//				else if (!strcmp(temp, "NEWSPELL"))
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+	//				else if (!strcmp(temp, "TORCH"))
+	//				{
+	//				}
+	//				else if (!strcmp(temp, "FIERY"))
+	//				{
+	//				}
+	//				else if (!strcmp(temp, "FIERYOFF"))
+	//				{
+	//				}
+	//				else
+	//				{
+	//					sprintf(tem, "Line %04d - Error: 'SPECIAL_FX': param1 '%s' is an invalid parameter.\n-- %s", currentline, temp1, curlinetext);
+	//					errors++;
+	//				}
+	//			}
+	//			else if (!strcmp(temp, "SETBUMP"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if ((!strcmp(temp, "ON")) || (!strcmp(temp, "OFF")))
+	//				{
+	//				}
+	//				else pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "SETZMAP"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if ((!strcmp(temp, "ON")) || (!strcmp(temp, "OFF")))
+	//				{
+	//				}
+	//				else pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		case 'Z':
+
+	//			if (!strcmp(temp, "ZONEPARAM"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (!stricmp(temp, "STACK"))
+	//				{
+	//				}
+	//				else if (!stricmp(temp, "UNSTACK"))
+	//				{
+	//				}
+	//				else
+	//				{
+	//					if (temp[0] == '-')
+	//					{
+	//						pos = GetNextWord(es, pos, temp);
+	//					}
+
+	//					if (!stricmp(temp, "RGB"))
+	//					{
+	//						pos = GetNextWord(es, pos, temp);
+	//						pos = GetNextWord(es, pos, temp);
+	//						pos = GetNextWord(es, pos, temp);
+	//					}
+	//					else if (!stricmp(temp, "ZCLIP"))
+	//					{
+	//						pos = GetNextWord(es, pos, temp);
+	//					}
+	//					else if (!stricmp(temp, "AMBIANCE"))
+	//					{
+	//						pos = GetNextWord(es, pos, temp);
+	//					}
+
+	//				}
+	//			}
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		case 'K':
+
+	//			if (!strcmp(temp, "KILLME"))
+	//			{
+	//			}
+	//			else if (!strcmp(temp, "KEYRINGADD"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp2);
+	//			}
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		case 'F':
+
+	//			if (!strcmp(temp, "FORCEANIM"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp2);
+	//			}
+	//			else if (!strcmp(temp, "FORCEANGLE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp2);
+	//			}
+
+	//			else if (!strcmp(temp, "FORCEDEATH"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp2);
+	//			}
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		case 'P':
+
+	//			if (!strcmp(temp, "PLAYERLOOKAT"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp2);
+	//			}
+	//			else if (!strcmp(temp, "PLAYERSTACKSIZE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp2);
+	//			}
+	//			else if (!strcmp(temp, "PRECAST"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp); // switch or level
+
+	//				if (temp[0] == '-')
+	//				{
+	//					if (iCharIn(temp, 'D'))
+	//					{
+	//						pos = GetNextWord(es, pos, temp2); // duration
+	//					}
+
+	//					pos = GetNextWord(es, pos, temp); // level
+	//				}
+
+	//				pos = GetNextWord(es, pos, temp); //spell id
+	//			}
+	//			else if (!strcmp(temp, "POISON"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp2);
+	//			}
+	//			else if (!strcmp(temp, "PLAYERMANADRAIN"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp2);
+	//			}
+	//			else if (!strcmp(temp, "PATHFIND"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp2);
+	//			}
+	//			else if (!strcmp(temp, "PLAYANIM"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp2);
+
+	//				if (temp2[0] == '-')
+	//					pos = GetNextWord(es, pos, temp2);
+	//			}
+	//			else if (!strcmp(temp, "PLAYERINTERFACE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp2);
+
+	//				if (temp2[0] == '-')
+	//					pos = GetNextWord(es, pos, temp2);
+	//			}
+	//			else if (!strcmp(temp, "PLAY"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp2);
+
+	//				if (temp2[0] == '-') pos = GetNextWord(es, pos, temp2);
+	//			}
+	//			else if (!strcmp(temp, "PLAYSPEECH"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp2);
+
+	//			}
+	//			else if (!strcmp(temp, "POPUP"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "PHYSICAL"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if ((!strcmp(temp, "ON")) || (!strcmp(temp, "OFF")))
+	//				{
+	//				}
+	//				else pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		case 'L':
+
+	//			if (!strcmp(temp, "LOADANIM"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (temp[0] == '-')
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+
+	//				pos = GetNextWord(es, pos, temp2);
+	//			}
+	//			else if (!strcmp(temp, "LINKOBJTOME"))
+	//			{
+	//				pos = GetNextWord_Interpreted(io, es, pos, temp);
+	//				pos = GetNextWord(es, pos, temp1);
+	//			}
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		case 'I':
+
+	//			if (!strcmp(temp, "IF"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp1);
+	//				pos = GetNextWord(es, pos, temp2);
+	//				pos = GetNextWord(es, pos, temp3);
+
+
+	//				MakeUpcase(temp2);
+
+	//				if	(!strcmp(temp2, "==")) {}
+	//				else if (!strcmp(temp2, "!="))	{}
+	//				else if (!strcmp(temp2, "<="))	{}
+	//				else if (!strcmp(temp2, "<"))	{}
+	//				else if (!strcmp(temp2, ">="))	{}
+	//				else if (!strcmp(temp2, ">"))	{}
+	//				else if	(!stricmp(temp2, "isclass"))	{}
+	//				else if	(!stricmp(temp2, "isgroup"))	{}
+	//				else if	(!stricmp(temp2, "!isgroup"))	{}
+	//				else if	(!stricmp(temp2, "iselement"))	{}
+	//				else if	(!stricmp(temp2, "isin"))	{}
+	//				else if	(!stricmp(temp2, "istype"))	{}
+	//				else
+	//				{
+	//					sprintf(tem, "Line %04d - Error: 'IF': Unknown Operator %s found.\n-- %s", currentline, temp2, curlinetext);
+	//					errors++;
+	//				}
+	//			}
+	//			else if (!strcmp(temp, "INC"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp1);
+	//				pos = GetNextWord(es, pos, temp2);
+	//			}
+	//			else if (!strcmp(temp, "IFEXISTINTERNAL"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//				sprintf(tem, "Line %04d - Warning: 'IF_EXIST_INTERNAL': Obsolete Command.\n-- %s", currentline, curlinetext);
+	//				warnings++;
+	//			}
+	//			else if (!strcmp(temp, "IFVISIBLE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "INVERTEDOBJECT"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "INVULNERABILITY"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (temp[0] == '-')
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+	//			}
+	//			else if (!strcmp(temp, "INVENTORY"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//				MakeStandard(temp);
+
+	//				if (!strcmp(temp, "CREATE"))
+	//				{
+	//				}
+	//				else if (!strcmp(temp, "SKIN"))
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+	//				else if (!strcmp(temp, "PLAYERADDFROMSCENE"))
+	//				{
+	//					pos = GetNextWord(es, pos, temp2);
+	//				}
+	//				else if (!strcmp(temp, "ADDFROMSCENE"))
+	//				{
+	//					pos = GetNextWord(es, pos, temp2);
+	//				}
+	//				else if ((!strcmp(temp, "PLAYERADD")) || (!strcmp(temp, "PLAYERADDMULTI")))
+	//				{
+	//					pos = GetNextWord(es, pos, temp2);
+
+	//					if (!strcmp(temp, "PLAYERADDMULTI"))
+	//					{
+	//						pos = GetNextWord(es, pos, temp2);
+	//					}
+	//				}
+	//				else if ((!strcmp(temp, "ADD")) || (!strcmp(temp, "ADDMULTI")))
+	//				{
+	//					pos = GetNextWord(es, pos, temp2);
+
+	//					if (!strcmp(temp, "ADDMULTI"))
+	//					{
+	//						pos = GetNextWord(es, pos, temp2);
+	//					}
+	//				}
+	//				else if (!strcmp(temp, "DESTROY"))
+	//				{
+	//				}
+	//				else if (!strcmp(temp, "OPEN"))
+	//				{
+	//				}
+	//				else if (!strcmp(temp, "CLOSE"))
+	//				{
+	//				}
+	//			}
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		case 'H':
+
+	//			if (!strcmp(temp, "HEROSAY"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (temp[0] == '-')
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+	//			}
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		case 'T':
+
+	//			if (!strcmp(temp, "TELEPORT"))
+	//			{
+
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (0 != stricmp(temp, "behind"))
+	//				{
+	//					char temp2[256];
+
+	//					if (temp[0] == '-')
+	//					{
+	//						if (iCharIn(temp, 'A'))
+	//						{
+	//							pos = GetNextWord(es, pos, temp2);
+	//						}
+
+	//						if (iCharIn(temp, 'L'))
+	//						{
+	//							pos = GetNextWord(es, pos, temp2);
+	//							pos = GetNextWord(es, pos, temp2);
+	//						}
+
+	//						if (iCharIn(temp, 'P'))
+	//						{
+	//							pos = GetNextWord(es, pos, temp2);
+	//						}
+	//					}
+
+	//				}
+	//			}
+	//			else if (!strcmp(temp, "TARGETPLAYERPOS"))
+	//			{
+	//				sprintf(tem, "Line %04d - Warning: 'TARGET_PLAYER_POS': Obsolete Command Please Use SET_TARGET PLAYER.\n-- %s", currentline, curlinetext);
+	//				warnings++;
+	//			}
+	//			else if (!strcmp(temp, "TWEAK"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (!strcmp(temp, "HEAD")) {}
+	//				else if (!strcmp(temp, "TORSO")) {}
+	//				else if (!strcmp(temp, "LEGS")) {}
+	//				else if (!strcmp(temp, "ALL")) {}
+	//				else if (!strcmp(temp, "UPPER")) {}
+	//				else if (!strcmp(temp, "LOWER")) {}
+	//				else if (!strcmp(temp, "UP_LO")) {}
+
+	//				if (!strcmp(temp, "REMOVE"))
+	//				{
+	//				}
+	//				else if (!strcmp(temp, "SKIN"))
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+	//				else if (!strcmp(temp, "ICON"))
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+	//				else
+	//				{
+	//					sprintf(tem, "Line %04d - Error: 'TWEAK %s': Unknown parameter %s found.\n-- %s", currentline, temp, temp, curlinetext);
+	//					errors++;
+	//				}
+	//			}
+	//			else if ((temp[1] == 'I') && (temp[2] == 'M') && (temp[3] == 'E') && (temp[4] == 'R'))
+	//			{
+	//				// Timer -m nbtimes duration commands
+	//				pos = GetNextWord(es, pos, temp2);
+	//				MakeUpcase(temp2);
+
+	//				if (!strcmp(temp2, "KILL_LOCAL"))
+	//				{
+
+	//				}
+	//				else
+	//				{
+	//					if (!strcmp(temp2, "OFF"))
+	//					{
+	//					}
+	//					else
+	//					{
+	//						if (temp2[0] == '-')
+	//						{
+	//							pos = GetNextWord(es, pos, temp2);
+	//						}
+
+	//						pos = GetNextWord(es, pos, temp3);
+	//					}
+	//				}
+	//			}
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		case 'V':
+
+	//			if (!strcmp(temp, "VIEWBLOCK"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		case 'W':
+
+	//			if (!strcmp(temp, "WORLDFADE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//				pos = GetNextWord(es, pos, temp1);
+
+	//				if (!stricmp(temp, "OUT"))
+	//				{
+	//					pos = GetNextWord(es, pos, temp1);
+	//					pos = GetNextWord(es, pos, temp2);
+	//					pos = GetNextWord(es, pos, temp3);
+	//				}
+	//			}
+	//			else if (!strcmp(temp, "WEAPON"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//			}
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		case 'U':
+
+	//			if (!strcmp(temp, "UNSET"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "USEMESH"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "USEPATH"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "UNSETCONTROLLEDZONE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else unknowncommand = 1;
+
+	//			break;
+
+	//		case 'E':
+
+	//			if (!strcmp(temp, "ELSE"))
+	//			{
+	//			}
+	//			else if (!strcmp(temp, "ENDINTRO"))
+	//			{
+	//			}
+	//			else if (!strcmp(temp, "ENDGAME"))
+	//			{
+	//			}
+	//			else if (!strcmp(temp, "EATME"))
+	//			{
+	//			}
+	//			else if (!strcmp(temp, "EQUIP"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (temp[0] == '-')
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+	//			}
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		case 'M':
+
+	//			if (!strcmp(temp, "MUL"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp1);
+	//				pos = GetNextWord(es, pos, temp2);
+	//			}
+	//			else if (!strcmp(temp, "MAPMARKER"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if ((!stricmp(temp, "remove")) || (!stricmp(temp, "-r")))
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+	//				else
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//					pos = GetNextWord(es, pos, temp);
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+	//			}
+	//			else if (!strcmp(temp, "MOVE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp1);
+	//				pos = GetNextWord(es, pos, temp2);
+	//				pos = GetNextWord(es, pos, temp3);
+	//			}
+	//			else if (!strcmp(temp, "MAGIC"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp1);
+	//			}
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		case '-':
+	//		case '+':
+
+	//			if ((!strcmp(temp, "++")) ||
+	//			        (!strcmp(temp, "--")))
+	//			{
+	//				pos = GetNextWord(es, pos, temp1);
+	//			}
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		case 'D':
+
+	//			if (
+	//			    (!strcmp(temp, "DEC")) ||
+	//			    (!strcmp(temp, "DIV")))
+	//			{
+	//				pos = GetNextWord(es, pos, temp1);
+	//				pos = GetNextWord(es, pos, temp2);
+	//			}
+	//			else if (!strcmp(temp, "DESTROY"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp1);
+	//			}
+	//			else if (!strcmp(temp, "DETACHNPCFROMPLAYER"))
+	//			{
+	//			}
+	//			else if (!strcmp(temp, "DODAMAGE"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp); // Source IO
+
+	//				if (temp[0] == '-')
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+
+	//				pos = GetNextWord(es, pos, temp);
+	//			}
+	//			else if (!strcmp(temp, "DAMAGER"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp);
+
+	//				if (temp[0] == '-')
+	//				{
+	//					pos = GetNextWord(es, pos, temp);
+	//				}
+	//			}
+	//			else if (!strcmp(temp, "DETACH"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp); // Source IO
+	//				pos = GetNextWord(es, pos, temp); // target IO
+	//			}
+	//			else if (!strcmp(temp, "DRAWSYMBOL"))
+	//			{
+	//				pos = GetNextWord(es, pos, temp1);
+	//				pos = GetNextWord(es, pos, temp2);
+	//			}
+	//			else unknowncommand = 1;
+
+	//			break;
+	//		default:
+	//			unknowncommand = 1;
+
+	//	}
+
+	//	if (unknowncommand)
+	//	{
+	//		sprintf(tem, "Line %04d - Error: Unknown Command '%s'\n-- %s", currentline, temp, curlinetext);
+	//		errors++;
+	//	}
+
+	//	if (strlen(tem) + strlen(errstring) < 65480) strcat(errstring, tem);
+	//	else stoppingdebug = 1;
+	//}
+
+	//if (stoppingdebug) strcat(errstring, "\nToo Many Errors. Stopping Syntax Check...");
+
+
+	//if (errstring[0] == 0) returnvalue = 1;
+	//else returnvalue = 0;
+
+	//if ((errors > 0) || ((warnings > 0) && (SHOWWARNINGS)))
+	//{
+	//	char title[512];
+
+	//	if (es == &io->over_script)
+	//	{
+	//		strcpy(temp, GetName(io->filename));
+	//		sprintf(title, "%s_%04d", temp, io->ident);
+	//		strcat(title, " LOCAL SCRIPT.");
+	//	}
+	//	else
+	//	{
+	//		strcpy(temp, GetName(io->filename));
+	//		sprintf(title, "%s_%04d", temp, io->ident);
+	//		strcat(title, " CLASS SCRIPT.");
+	//	}
+
+	//	LastErrorPopup = ShowErrorPopup(title, errstring);
+	//}
+	//else LastErrorPopup = NULL;
+
+	//return returnvalue;
 }
 HWND LastErrorPopupNO1 = NULL;
 HWND LastErrorPopupNO2 = NULL;

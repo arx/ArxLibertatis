@@ -180,7 +180,7 @@ bool CSaveBlock::BeginRead(void)
 	{
 		char _pT[256], *_pTT = _pT;
 
-		while (1)
+		for (;;)
 		{
 			fread((void *)_pTT, 1, 1, hFile);
 
@@ -276,7 +276,7 @@ bool CSaveBlock::BeginSave(bool _bCont, bool _bReWrite)
 		{
 			char _pT[256], *_pTT = _pT;
 
-			while (1)
+			for (;;)
 			{
 				fread((void *)_pTT, 1, 1, hFile);
 

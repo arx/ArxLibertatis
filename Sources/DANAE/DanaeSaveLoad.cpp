@@ -55,40 +55,39 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <DanaeSaveLoad.h>
+#include "DanaeSaveLoad.h"
 
-#include <stdio.h>
-#include <sys/stat.h>
-#include <io.h>
-#include <fcntl.h>
-#include <time.h>
+#include "HERMESMain.h"
 
-#include <HERMESMain.h>
+#include "EERIEMath.h"
+#include "EERIEPathfinder.h"
+#include "EERIEObject.h"
+#include "EERIECollisionSpheres.h"
+#include "EERIEDraw.h"
 
-#include <EERIEMath.h>
-#include <EERIEPathfinder.h>
-#include <EERIEObject.h>
-#include <EERIECollisionSpheres.h>
-#include <EERIEDraw.h>
-
-#include <ARX_Damages.h>
-#include <ARX_Fogs.h>
-#include <ARX_Levels.h>
+#include "ARX_Damages.h"
+#include "ARX_Fogs.h"
+#include "ARX_Levels.h"
 #include "ARX_Loc.h"
-#include <ARX_Minimap.h>
-#include <ARX_Missile.h>
-#include <ARX_Particles.h>
-#include <ARX_Paths.h>
-#include <ARX_Scene.h>
-#include <ARX_Sound.h>
-#include <ARX_Special.h>
-#include <ARX_Speech.h>
-#include <ARX_Spells.h>
+#include "ARX_Minimap.h"
+#include "ARX_Missile.h"
+#include "ARX_Particles.h"
+#include "ARX_Paths.h"
+#include "ARX_Scene.h"
+#include "ARX_Sound.h"
+#include "ARX_Special.h"
+#include "ARX_Speech.h"
+#include "ARX_Spells.h"
 #include "ARX_HWTransform.h"
 #include "ARX_Time.h"
 #include "DanaeDlg.h"
 
-#include <stdio.h>
+#include <cstdio>
+#include <sys/stat.h>
+#include <io.h>
+#include <fcntl.h>
+#include <ctime>
+
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 
@@ -560,7 +559,8 @@ long DanaeSaveLevel(char * fic)
 	}
 
 	// Now Saving Whole Buffer
-	if (!(handle = FileOpenWrite(fic)))
+	handle = FileOpenWrite(fic);
+	if (!handle)
 	{
 		sprintf(_error, "Unable to Open %s for Write...", fic);
 		goto error;
@@ -687,7 +687,8 @@ long DanaeSaveLevel(char * fic)
 	}
 
 	// Now Saving Whole Buffer
-	if (!(handle = FileOpenWrite(fic2)))
+	handle = FileOpenWrite(fic2);
+	if (!handle)
 	{
 		sprintf(_error, "Unable to Open %s for Write...", fic2);
 		goto error;

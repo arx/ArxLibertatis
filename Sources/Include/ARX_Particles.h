@@ -57,9 +57,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_PARTICLES_H
 #define ARX_PARTICLES_H
 
+#include "EERIETypes.h"
+#include "EERIEPoly.h"
 
-#include <EERIETypes.h>
-#include <EERIEPoly.h>
 #include <tchar.h>
 
 //-----------------------------------------------------------------------------

@@ -54,20 +54,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <limits.h>
+#include "ARX_Menu.h"
+#include "ARX_Player.h"
 
-#include <stdlib.h>
+#include "HERMESMain.h"
 
-#include <ARX_Menu.h>
-#include <ARX_Player.h>
-
-#include <HERMESMain.h>
-
-#include <EERIEMath.h>
-#include <EERIEObject.h>
-#include <EERIEPoly.h>
-#include <EERIEDraw.h>
-#include <EERIEPathfinder.h>
+#include "EERIEMath.h"
+#include "EERIEObject.h"
+#include "EERIEPoly.h"
+#include "EERIEDraw.h"
+#include "EERIEPathfinder.h"
 
 #include "ARX_Changelevel.h"
 #include "ARX_Collisions.h"
@@ -89,8 +85,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Speech.h"
 #include "ARX_Spells.h"
 
+#include <climits>
+#include <cstdlib>
+
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
+
 extern long		USE_NEW_SKILLS;
 extern long		ARX_CONVERSATION;
 extern long		HERO_SHOW_1ST;
@@ -1478,11 +1478,9 @@ long GetXPforLevel(long level)
 		case 14:
 			return 750000;
 			break;
-		default:
-			return level * 60000;
 	}
 
-	return LONG_MAX;
+	return level * 60000;
 }
 
 //*************************************************************************************
@@ -1718,9 +1716,9 @@ void	ARX_PLAYER_Restore_Skin()
 	}
 
 	char tt[256];
-	strcpy(tt, "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp");
+	MakeDir(tt, "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp");
 	MakeUpcase(tt);
-	TextureContainer * tmpTC = _FindTexture(tt);
+	TextureContainer * tmpTC = FindTexture(tt);
 
 	if ((tmpTC) && (tx2[0]))
 	{
@@ -1730,9 +1728,9 @@ void	ARX_PLAYER_Restore_Skin()
 		tmpTC->Restore(GDevice);
 	}
 
-	strcpy(tt, "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp");
+	MakeDir(tt, "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp");
 	MakeUpcase(tt);
-	tmpTC = _FindTexture(tt);
+	tmpTC = FindTexture(tt);
 
 	if ((tmpTC) && (tx3[0]))
 	{
@@ -1742,9 +1740,9 @@ void	ARX_PLAYER_Restore_Skin()
 		tmpTC->Restore(GDevice);
 	}
 
-	strcpy(tt, "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp");
+	MakeDir(tt, "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp");
 	MakeUpcase(tt);
-	tmpTC = _FindTexture(tt);
+	tmpTC = FindTexture(tt);
 
 	if ((tmpTC) && (tx4[0]))
 	{

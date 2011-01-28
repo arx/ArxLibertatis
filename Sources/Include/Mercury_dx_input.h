@@ -26,7 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef MERCURY_DX_INPUT_H
 #define MERCURY_DX_INPUT_H
 
-#include <ARX_Common.h>
+#include "ARX_Common.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -138,8 +138,6 @@ extern "C" {
 	int DXI_SetMouseRelative(int id);
 	int DXI_SetRangeJoy(int id, int axe, int range);
 	BOOL DXI_GetJoyButtonPressed(int id, int numb);
-	BOOL DXI_OldKeyPressed(int id, int dikkey);
-	BOOL DXI_OldGetJoyButtonPressed(int id, int numb);
  
 	/*-----------------------------------------------------------*/
 

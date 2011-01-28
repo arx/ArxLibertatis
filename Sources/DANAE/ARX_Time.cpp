@@ -56,7 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 #include "ARX_Time.h"
 
-#include <stdio.h>
+#include <cstdio>
+
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 
@@ -71,6 +72,7 @@ bool ARXPausedTimer = 0;
 
 //-----------------------------------------------------------------------------
 LARGE_INTEGER	liFrequency;
+LARGE_INTEGER   liInitPerfCounter;        // Nuky - added initial time
 bool			bTimerInit = false;
 
 void _ARX_TIME_Init()
@@ -81,6 +83,7 @@ void _ARX_TIME_Init()
 	}
 
 	QueryPerformanceFrequency(&liFrequency);
+	QueryPerformanceCounter(&liInitPerfCounter);
 	bTimerInit = true;
 
 	ARX_TIME_Init();
@@ -93,8 +96,7 @@ float _ARX_TIME_GetTime()
 	_ARX_TIME_Init();
 
 	QueryPerformanceCounter(&liPerfCounter);
-	return ARX_CLEAN_WARN_CAST_FLOAT((liPerfCounter.QuadPart / (double)liFrequency.QuadPart) * 1000);
-
+	return ARX_CLEAN_WARN_CAST_FLOAT(((double)(liPerfCounter.QuadPart-liInitPerfCounter.QuadPart) / (double)liFrequency.QuadPart) * 1000);
 }
 
 

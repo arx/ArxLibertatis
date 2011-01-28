@@ -31,20 +31,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <ARX_Missile.h>
+#include "ARX_Missile.h"
 
-#include <EERIELight.h>
-#include <EERIEMath.h>
-#include <EERIETexture.h>
+#include "EERIELight.h"
+#include "EERIEMath.h"
+#include "EERIETexture.h"
 
-#include <ARX_Damages.h>
-#include <ARX_Interactive.h>
-#include <ARX_Particles.h>
-#include <ARX_Physics.h>
-#include <ARX_Sound.h>
-#include <ARX_Time.h>
+#include "ARX_Damages.h"
+#include "ARX_Interactive.h"
+#include "ARX_Particles.h"
+#include "ARX_Physics.h"
+#include "ARX_Sound.h"
+#include "ARX_Time.h"
 
-#include <stdio.h>
+#include <cstdio>
+
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 

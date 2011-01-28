@@ -56,24 +56,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "ARX_SpellFx_Lvl01.h"
 
-#include <EERIEDraw.h>
-#include <EERIEMath.h>
-#include <EERIELight.h>
-#include <EERIEObject.h>
-
-#include <ARX_Collisions.h>
-#include <ARX_CParticleParams.h>
-#include <ARX_CParticles.h>
-#include <ARX_CSpellFx.h>
-#include <ARX_Damages.h>
-#include <ARX_Particles.h>
-#include <ARX_Sound.h>
-#include <ARX_Spells.h>
+#include "ARX_Collisions.h"
+#include "ARX_CParticleParams.h"
+#include "ARX_CParticles.h"
+#include "ARX_CSpellFx.h"
+#include "ARX_Damages.h"
+#include "ARX_Particles.h"
+#include "ARX_Sound.h"
+#include "ARX_Spells.h"
 #include "ARX_Time.h"
 #include "ARX_Npc.h"
 #include "ARX_SpellFx_Lvl05.h"
 
-#include <DanaeSaveLoad.h>
+#include "DanaeSaveLoad.h"
+
+#include "EERIEDraw.h"
+#include "EERIEMath.h"
+#include "EERIELight.h"
+#include "EERIEObject.h"
 
 #include <crtdbg.h>
 #define new new(_NORMAL_BLOCK,__FILE__, __LINE__)

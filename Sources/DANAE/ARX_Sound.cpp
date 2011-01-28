@@ -30,22 +30,22 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <stdio.h>
-#include <list>
-
-#include <ARX_SOUND.h>
-#include <HERMESMain.h>
-#include <HERMES_Pak.h>
-#include <EERIEMath.h>
-#include <ARX_NPC.h>
-#include <ARX_Interactive.h>
-#include <ARX_Player.h>
-#include <ARX_Script.h>
-#include <ARX_Particles.h>
-#include <../danae/arx_menu2.h>
-#include <Athena.h>
+#include "ARX_SOUND.h"
+#include "HERMESMain.h"
+#include "HERMES_Pak.h"
+#include "EERIEMath.h"
+#include "ARX_NPC.h"
+#include "ARX_Interactive.h"
+#include "ARX_Player.h"
+#include "ARX_Script.h"
+#include "ARX_Particles.h"
+#include "../danae/arx_menu2.h"
+#include "Athena.h"
 
 #include "eerieapp.h"
+
+#include <cstdio>
+#include <list>
 
 using namespace std;
 

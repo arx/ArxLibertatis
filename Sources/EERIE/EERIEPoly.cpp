@@ -1518,7 +1518,7 @@ int EERIELaunchRay3(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY
 		iy = dy / (adz / pas);
 	}
 
-	while (1)
+	for (;;)
 	{
 		x += ix;
 		y += iy;
@@ -1934,41 +1934,41 @@ void ARX_PORTALS_SWAP_EPs(short px, short py, short ep_idx, short ep_idx2)
 void BKG_VerticalReOrder(EERIE_BACKGROUND * eb)
 {
 	return;
-	EERIE_BKG_INFO * eg;
-	EERIEPOLY * ep;
-	EERIEPOLY * ep2;
-	EERIEPOLY tep;
+	//EERIE_BKG_INFO * eg;
+	//EERIEPOLY * ep;
+	//EERIEPOLY * ep2;
+	//EERIEPOLY tep;
 
-	for (short j = 0; j < eb->Zsize; j++)
-		for (short i = 0; i < eb->Xsize; i++)
-		{
-			eg = &eb->Backg[i+j*eb->Xsize];
+	//for (short j = 0; j < eb->Zsize; j++)
+	//	for (short i = 0; i < eb->Xsize; i++)
+	//	{
+	//		eg = &eb->Backg[i+j*eb->Xsize];
 
-			if (eg->nbpoly > 1)
-			{
-				BOOL Reordered = FALSE;
+	//		if (eg->nbpoly > 1)
+	//		{
+	//			BOOL Reordered = FALSE;
 
-				while (!Reordered)
-				{
-					Reordered = TRUE;
+	//			while (!Reordered)
+	//			{
+	//				Reordered = TRUE;
 
-					for (short k = 0; k < eg->nbpoly - 1; k++)
-					{
-						ep = &eg->polydata[k];
-						ep2 = &eg->polydata[k+1];
+	//				for (short k = 0; k < eg->nbpoly - 1; k++)
+	//				{
+	//					ep = &eg->polydata[k];
+	//					ep2 = &eg->polydata[k+1];
 
-						if (ep->center.y < ep2->center.y)
-						{
-							ARX_PORTALS_SWAP_EPs(i, j, k, k + 1);
-							memcpy(&tep, ep2, sizeof(EERIEPOLY));
-							memcpy(ep2, ep, sizeof(EERIEPOLY));
-							memcpy(ep, &tep, sizeof(EERIEPOLY));
-							Reordered = FALSE;
-						}
-					}
-				}
-			}
-		}
+	//					if (ep->center.y < ep2->center.y)
+	//					{
+	//						ARX_PORTALS_SWAP_EPs(i, j, k, k + 1);
+	//						memcpy(&tep, ep2, sizeof(EERIEPOLY));
+	//						memcpy(ep2, ep, sizeof(EERIEPOLY));
+	//						memcpy(ep, &tep, sizeof(EERIEPOLY));
+	//						Reordered = FALSE;
+	//					}
+	//				}
+	//			}
+	//		}
+	//	}
 }
 
 //*************************************************************************************
@@ -2397,197 +2397,197 @@ void PrepareBackgroundNRMLs()
 {
 	ARX_PrepareBackgroundNRMLs();
 	return;
-	long i, j, k, mai, maj, mii, mij;
-	long i2, j2, k2;
-	EERIE_BKG_INFO * eg;
-	EERIE_BKG_INFO * eg2;
-	EERIEPOLY * ep;
-	EERIEPOLY * ep2;
-	EERIE_3D nrml;
-	EERIE_3D cur_nrml;
-	float count;
-	long nbvert;
-	long nbvert2;
 
-	for (j = 0; j < ACTIVEBKG->Zsize; j++)
-		for (i = 0; i < ACTIVEBKG->Xsize; i++)
-		{
-			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+	//long i, j, k, mai, maj, mii, mij;
+	//long i2, j2, k2;
+	//EERIE_BKG_INFO * eg;
+	//EERIE_BKG_INFO * eg2;
+	//EERIEPOLY * ep;
+	//EERIEPOLY * ep2;
+	//EERIE_3D nrml;
+	//EERIE_3D cur_nrml;
+	//float count;
+	//long nbvert;
+	//long nbvert2;
 
-			for (long l = 0; l < eg->nbpoly; l++)
-			{
-				ep = &eg->polydata[l];
+	//for (j = 0; j < ACTIVEBKG->Zsize; j++)
+	//	for (i = 0; i < ACTIVEBKG->Xsize; i++)
+	//	{
+	//		eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 
-				if (ep->type & POLY_QUAD) nbvert = 4;
-				else nbvert = 3;
+	//		for (long l = 0; l < eg->nbpoly; l++)
+	//		{
+	//			ep = &eg->polydata[l];
 
-				for (k = 0; k < nbvert; k++)
-				{
-					float ttt = 1.f;
+	//			if (ep->type & POLY_QUAD) nbvert = 4;
+	//			else nbvert = 3;
 
-					if (k == 3)
-					{
-						nrml.x = ep->norm2.x;
-						nrml.y = ep->norm2.y;
-						nrml.z = ep->norm2.z;
-						count = 1.f;
-					}
-					else if ((k > 0) && (nbvert > 3))
-					{
-						nrml.x = (ep->norm.x + ep->norm2.x) * DIV2;
-						nrml.y = (ep->norm.y + ep->norm2.y) * DIV2;
-						nrml.z = (ep->norm.z + ep->norm2.z) * DIV2;
-						count = 1.f; 
-					}
-					else
-					{
-						nrml.x = ep->norm.x;
-						nrml.y = ep->norm.y;
-						nrml.z = ep->norm.z;
-						count = 1.f;
-					}
+	//			for (k = 0; k < nbvert; k++)
+	//			{
+	//				float ttt = 1.f;
 
-					cur_nrml.x = nrml.x * ttt;
-					cur_nrml.y = nrml.y * ttt;
-					cur_nrml.z = nrml.z * ttt;
-					
-					mai = i + 2;
-					maj = j + 2;
-					mii = i - 2;
-					mij = j - 2;
+	//				if (k == 3)
+	//				{
+	//					nrml.x = ep->norm2.x;
+	//					nrml.y = ep->norm2.y;
+	//					nrml.z = ep->norm2.z;
+	//					count = 1.f;
+	//				}
+	//				else if ((k > 0) && (nbvert > 3))
+	//				{
+	//					nrml.x = (ep->norm.x + ep->norm2.x) * DIV2;
+	//					nrml.y = (ep->norm.y + ep->norm2.y) * DIV2;
+	//					nrml.z = (ep->norm.z + ep->norm2.z) * DIV2;
+	//					count = 1.f; 
+	//				}
+	//				else
+	//				{
+	//					nrml.x = ep->norm.x;
+	//					nrml.y = ep->norm.y;
+	//					nrml.z = ep->norm.z;
+	//					count = 1.f;
+	//				}
 
-					if (mij < 0) mij = 0;
+	//				cur_nrml.x = nrml.x * ttt;
+	//				cur_nrml.y = nrml.y * ttt;
+	//				cur_nrml.z = nrml.z * ttt;
+	//				
+	//				mai = i + 2;
+	//				maj = j + 2;
+	//				mii = i - 2;
+	//				mij = j - 2;
 
-					if (mii < 0) mii = 0;
+	//				if (mij < 0) mij = 0;
 
-					if (maj >= ACTIVEBKG->Zsize) maj = ACTIVEBKG->Zsize - 1;
+	//				if (mii < 0) mii = 0;
 
-					if (mai >= ACTIVEBKG->Xsize) mai = ACTIVEBKG->Xsize - 1;
+	//				if (maj >= ACTIVEBKG->Zsize) maj = ACTIVEBKG->Zsize - 1;
 
-					for (j2 = mij; j2 < maj; j2++)
-						for (i2 = mii; i2 < mai; i2++)
-						{
-							eg2 = &ACTIVEBKG->Backg[i2+j2*ACTIVEBKG->Xsize];
+	//				if (mai >= ACTIVEBKG->Xsize) mai = ACTIVEBKG->Xsize - 1;
 
-							for (long kr = 0; kr < eg2->nbpoly; kr++)
-							{
-								ep2 = &eg2->polydata[kr];
+	//				for (j2 = mij; j2 < maj; j2++)
+	//					for (i2 = mii; i2 < mai; i2++)
+	//					{
+	//						eg2 = &ACTIVEBKG->Backg[i2+j2*ACTIVEBKG->Xsize];
 
-								if (ep2->type & POLY_QUAD) nbvert2 = 4;
-								else nbvert2 = 3;
+	//						for (long kr = 0; kr < eg2->nbpoly; kr++)
+	//						{
+	//							ep2 = &eg2->polydata[kr];
 
-								if (ep != ep2)
+	//							if (ep2->type & POLY_QUAD) nbvert2 = 4;
+	//							else nbvert2 = 3;
 
-									for (k2 = 0; k2 < nbvert2; k2++)
-									{
-										if ((EEfabs(ep2->v[k2].sx - ep->v[k].sx) < 2.f)
-										        &&	(EEfabs(ep2->v[k2].sy - ep->v[k].sy) < 2.f)
-										        &&	(EEfabs(ep2->v[k2].sz - ep->v[k].sz) < 2.f))
-										{
-											if (k2 == 3)
-											{
-												if (LittleAngularDiff(&cur_nrml, &ep2->norm2))
-												{
-													nrml.x += ep2->norm2.x;
-													nrml.y += ep2->norm2.y;
-													nrml.z += ep2->norm2.z;
-													count += 1.f;
-													nrml.x += cur_nrml.x;
-													nrml.y += cur_nrml.y;
-													nrml.z += cur_nrml.z;
-													count += 1.f;
-												}
-												else
-												{
-													ep->type |= POLY_ANGULAR;
-													ep2->type |= POLY_ANGULAR;
-													ep2->type |= POLY_ANGULAR_IDX3;
-												}
-											}
-											else if ((k2 > 0) && (nbvert2 > 3))
-											{
-												EERIE_3D tnrml;
-												tnrml.x = (ep2->norm.x + ep2->norm2.x) * DIV2;
-												tnrml.y = (ep2->norm.y + ep2->norm2.y) * DIV2;
-												tnrml.z = (ep2->norm.z + ep2->norm2.z) * DIV2;
+	//							if (ep != ep2)
 
-												if (LittleAngularDiff(&cur_nrml, &tnrml))
-												{
-													nrml.x += tnrml.x; 
-													nrml.y += tnrml.y; 
-													nrml.z += tnrml.z; 
-													count += 1; 
-												}
-												else
-												{
-													ep->type |= POLY_ANGULAR;
-													ep2->type |= POLY_ANGULAR;
+	//								for (k2 = 0; k2 < nbvert2; k2++)
+	//								{
+	//									if ((EEfabs(ep2->v[k2].sx - ep->v[k].sx) < 2.f)
+	//									        &&	(EEfabs(ep2->v[k2].sy - ep->v[k].sy) < 2.f)
+	//									        &&	(EEfabs(ep2->v[k2].sz - ep->v[k].sz) < 2.f))
+	//									{
+	//										if (k2 == 3)
+	//										{
+	//											if (LittleAngularDiff(&cur_nrml, &ep2->norm2))
+	//											{
+	//												nrml.x += ep2->norm2.x;
+	//												nrml.y += ep2->norm2.y;
+	//												nrml.z += ep2->norm2.z;
+	//												count += 1.f;
+	//												nrml.x += cur_nrml.x;
+	//												nrml.y += cur_nrml.y;
+	//												nrml.z += cur_nrml.z;
+	//												count += 1.f;
+	//											}
+	//											else
+	//											{
+	//												ep->type |= POLY_ANGULAR;
+	//												ep2->type |= POLY_ANGULAR;
+	//												ep2->type |= POLY_ANGULAR_IDX3;
+	//											}
+	//										}
+	//										else if ((k2 > 0) && (nbvert2 > 3))
+	//										{
+	//											EERIE_3D tnrml;
+	//											tnrml.x = (ep2->norm.x + ep2->norm2.x) * DIV2;
+	//											tnrml.y = (ep2->norm.y + ep2->norm2.y) * DIV2;
+	//											tnrml.z = (ep2->norm.z + ep2->norm2.z) * DIV2;
 
-													if (k2 == 1)
-														ep2->type |= POLY_ANGULAR_IDX1;
-													else
-														ep2->type |= POLY_ANGULAR_IDX2;
-												}
-											}
-											else
-											{
-												if (LittleAngularDiff(&cur_nrml, &ep2->norm))
-												{
-													nrml.x += ep2->norm.x;
-													nrml.y += ep2->norm.y;
-													nrml.z += ep2->norm.z;
-													count += 1.f;
-												}
-												else
-												{
-													ep->type |= POLY_ANGULAR;
-													ep2->type |= POLY_ANGULAR;
-													ep2->type |= POLY_ANGULAR_IDX0;
-												}
-											}
-										}
-									}
-							}
-						}
+	//											if (LittleAngularDiff(&cur_nrml, &tnrml))
+	//											{
+	//												nrml.x += tnrml.x; 
+	//												nrml.y += tnrml.y; 
+	//												nrml.z += tnrml.z; 
+	//												count += 1; 
+	//											}
+	//											else
+	//											{
+	//												ep->type |= POLY_ANGULAR;
+	//												ep2->type |= POLY_ANGULAR;
 
-					count = 1.f / count;
-					ep->tv[k].sx = nrml.x * count;
-					ep->tv[k].sy = nrml.y * count;
-					ep->tv[k].sz = nrml.z * count;
-				}
-			}
-		}
+	//												if (k2 == 1)
+	//													ep2->type |= POLY_ANGULAR_IDX1;
+	//												else
+	//													ep2->type |= POLY_ANGULAR_IDX2;
+	//											}
+	//										}
+	//										else
+	//										{
+	//											if (LittleAngularDiff(&cur_nrml, &ep2->norm))
+	//											{
+	//												nrml.x += ep2->norm.x;
+	//												nrml.y += ep2->norm.y;
+	//												nrml.z += ep2->norm.z;
+	//												count += 1.f;
+	//											}
+	//											else
+	//											{
+	//												ep->type |= POLY_ANGULAR;
+	//												ep2->type |= POLY_ANGULAR;
+	//												ep2->type |= POLY_ANGULAR_IDX0;
+	//											}
+	//										}
+	//									}
+	//								}
+	//						}
+	//					}
 
-	for (j = 0; j < ACTIVEBKG->Zsize; j++)
-		for (i = 0; i < ACTIVEBKG->Xsize; i++)
-		{
-			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+	//				count = 1.f / count;
+	//				ep->tv[k].sx = nrml.x * count;
+	//				ep->tv[k].sy = nrml.y * count;
+	//				ep->tv[k].sz = nrml.z * count;
+	//			}
+	//		}
+	//	}
 
-			for (long l = 0; l < eg->nbpoly; l++)
-			{
-				ep = &eg->polydata[l];
+	//for (j = 0; j < ACTIVEBKG->Zsize; j++)
+	//	for (i = 0; i < ACTIVEBKG->Xsize; i++)
+	//	{
+	//		eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 
-				if (ep->type & POLY_QUAD) nbvert = 4;
-				else nbvert = 3;
+	//		for (long l = 0; l < eg->nbpoly; l++)
+	//		{
+	//			ep = &eg->polydata[l];
 
-				for (k = 0; k < nbvert; k++)
-				{
-					ep->nrml[k].x = ep->tv[k].sx;
-					ep->nrml[k].y = ep->tv[k].sy;
-					ep->nrml[k].z = ep->tv[k].sz;
-				}
+	//			if (ep->type & POLY_QUAD) nbvert = 4;
+	//			else nbvert = 3;
 
-				float dist = 0.f;
+	//			for (k = 0; k < nbvert; k++)
+	//			{
+	//				ep->nrml[k].x = ep->tv[k].sx;
+	//				ep->nrml[k].y = ep->tv[k].sy;
+	//				ep->nrml[k].z = ep->tv[k].sz;
+	//			}
 
-				for (long ii = 0; ii < nbvert; ii++)
-				{
-					dist = __max(dist, TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center));
-				}
+	//			float dist = 0.f;
 
-				ep->v[0].rhw = dist;
-			}
-		}
+	//			for (long ii = 0; ii < nbvert; ii++)
+	//			{
+	//				dist = __max(dist, TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center));
+	//			}
 
+	//			ep->v[0].rhw = dist;
+	//		}
+	//	}
 }
 
 //*************************************************************************************
@@ -4591,7 +4591,8 @@ BOOL FastSceneSave(char * partial_path, EERIE_MULTI3DSCENE * ms)
 	// Now Saving Whole Buffer
 	uh->compressedsize = pos - compressedstart;
 
-	if (!(handle = FileOpenWrite(fic)))
+	handle = FileOpenWrite(fic);
+	if (!handle)
 	{
 		free(dat);
 		return FALSE;

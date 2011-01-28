@@ -53,16 +53,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <EERIEDraw.h>
-#include <EERIELight.h>
-#include <EERIEMath.h>
 
-#include <ARX_CSpellFx.h>
-#include <ARX_Damages.h>
-#include <ARX_Particles.h>
+#include "ARX_CSpellFx.h"
+#include "ARX_Damages.h"
+#include "ARX_Particles.h"
 #include "ARX_SpellFx_Lvl08.h"
-#include <ARX_Spells.h>
-#include <ARX_Time.h>
+#include "ARX_Spells.h"
+#include "ARX_Time.h"
+
+#include "EERIEDraw.h"
+#include "EERIELight.h"
+#include "EERIEMath.h"
 
 //-----------------------------------------------------------------------------
 CExplosion::~CExplosion()

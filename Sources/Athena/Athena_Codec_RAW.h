@@ -25,9 +25,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef __ATHENA_CODEC_RAW_H__
 #define __ATHENA_CODEC_RAW_H__
 
-#include <stdio.h>
-#include <Athena_Types.h>
+#include "Athena_Types.h"
 #include "Athena_Codec.h"
+
+#include <cstdio>
 
 namespace ATHENA
 {

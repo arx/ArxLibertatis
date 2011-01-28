@@ -56,20 +56,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <ARX_Draw.h>
+#include "ARX_Draw.h"
 
-#include <ARX_Interactive.h>
-#include <ARX_Particles.h>
-#include <ARX_Spells.h>
-#include <ARX_time.h>
+#include "ARX_Interactive.h"
+#include "ARX_Particles.h"
+#include "ARX_Spells.h"
+#include "ARX_time.h"
 #include "ARX_menu2.h"
 
-#include <EERIEDraw.h>
-#include <EERIELight.h>
+#include "EERIEDraw.h"
+#include "EERIELight.h"
 #include "EERIEPoly.h"
 #include "EERIEapp.h"
 
-#include <stdio.h>
+#include <cstdio>
+
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 

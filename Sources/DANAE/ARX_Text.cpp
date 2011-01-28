@@ -52,7 +52,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <windows.h>
 
 #include "ARX_Loc.h"
 #include "ARX_Text.h"
@@ -61,9 +60,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEDraw.h"
 #include "HermesMain.h"
 
+#include <windows.h>
+#include <cassert>
+
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
-#include <assert.h>
 
 //-----------------------------------------------------------------------------
 _TCHAR * lpszFontMenu = NULL;
@@ -135,7 +136,7 @@ long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, _TCHAR * _lpszUText, int _i
 
 			SelectObject(hDC, _hFont);
 
-			while (1)
+			for (;;)
 			{
 				bWrite			= true;
 				int iLenghtCurr	= _rRect.left;
@@ -220,7 +221,7 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, _TCHAR * _lpszUText, int _iSpacingY,
 
 	TextOutW Unicows_TextOutW = (TextOutW)GetProcAddress(hUnicodeLibrary, "TextOutW");
 
-	while (1)
+	for (;;)
 	{
 		bWrite = true;
 		int iLenghtCurr = _rRect.left;

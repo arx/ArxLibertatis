@@ -56,16 +56,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+// Nuky - 22/01 - merged _FindTexture() and FindTexture()
+//                removed useless CD3DTextureManager class
+
 #define STRICT
-#include <tchar.h>
-#include <stdio.h>
-
-#include <jpeglib.h>
-#include <jerror.h>
-#include <jconfig.h>
-#include <jmorecfg.h>
-
-#include <zlib.h>
 
 #include "EERIETexture.h"
 #include "EERIEApp.h"
@@ -74,6 +68,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEMath.h"
 
 #include "HERMESMain.h"
+
+#include <tchar.h>
+#include <jpeglib.h>
+#include <jerror.h>
+#include <jconfig.h>
+#include <jmorecfg.h>
+#include <zlib.h>
+#include <cstdio>
+#include <map>
+#include <string>
+#include <utility>
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
@@ -138,10 +143,11 @@ typedef struct
 // Macros, function prototypes and static variable
 //-----------------------------------------------------------------------------
  
-TextureContainer	* g_ptcTextureList = NULL;
-bool				bGlobalTextureStretch;
-char		*		PNGDatas;
-unsigned int		ChunkType, ChunkTaille, ChunkCRC;
+TextureContainer							* g_ptcTextureList = NULL;
+//std::map<std::string, TextureContainer*>	g_mTextureListByName;
+bool										bGlobalTextureStretch;
+char										* PNGDatas;
+unsigned int								ChunkType, ChunkTaille, ChunkCRC;
 
 /*-----------------------------------------------------------------------------*/
 void InverseLong(int * l)
@@ -162,56 +168,33 @@ void InverseLong(int * l)
 
 
 
+TextureContainer* imp_GetTextureFile(char*, long, bool);
 
+// Nuky - refactored MakeTCFromFile() and MakeTCFromFile_NoRefinement() into single function
+TextureContainer * imp_MakeTCFromFile(char * tex, long flag, bool no_refinement)
+{
+	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
+	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
 
+	TextureContainer * tc = imp_GetTextureFile(tex, flag, no_refinement);
+
+	if (tc)
+	{
+		if (tc->m_pddsSurface == NULL)
+			tc->Restore(GDevice);
+	}
+
+	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
+	return tc;
+}
 TextureContainer * MakeTCFromFile(char * tex, long flag)
 {
-	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
-	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
-
-	TextureContainer * tc = GetTextureFile(tex, flag);
-
-	if (tc)
-	{
-		if (tc->m_pddsSurface == NULL)
-			tc->Restore(GDevice);
-	}
-
-	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
-	return tc;
+	return imp_MakeTCFromFile(tex, flag, false);
 }
-
 TextureContainer * MakeTCFromFile_NoRefinement(char * tex, long flag)
 {
-	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
-	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
-
-	TextureContainer * tc = GetTextureFile_NoRefinement(tex, flag);
-
-	if (tc)
-	{
-		if (tc->m_pddsSurface == NULL)
-			tc->Restore(GDevice);
-	}
-
-	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
-	return tc;
+	return imp_MakeTCFromFile(tex, flag, true);
 }
-
-//-----------------------------------------------------------------------------
-// Name: CD3DTextureManager
-// Desc: Class used to automatically construct and destruct the static
-//       texture engine class.
-//-----------------------------------------------------------------------------
-class CD3DTextureManager
-{
-		public:
-		CD3DTextureManager() {}
-		~CD3DTextureManager()
-		{
-			if (g_ptcTextureList) delete g_ptcTextureList;
-		}
-};
 
 //-----------------------------------------------------------------------------
 // Name: struct TEXTURESEARCHINFO
@@ -295,23 +278,40 @@ static HRESULT CALLBACK TextureSearchCallback(DDPIXELFORMAT * pddpf,
 	return DDENUMRET_OK;
 }
 
-//-----------------------------------------------------------------------------
-// Name: FindTexture()
-// Desc: Searches the internal list of textures for a texture specified by
-//       its name. Returns the structure associated with that texture.
-//-----------------------------------------------------------------------------
 TextureContainer * GetTextureList()
 {
 	return g_ptcTextureList;
 }
-
 TextureContainer * GetAnyTexture()
 {
 	return g_ptcTextureList;
 }
 
-TextureContainer * FindTexture(TCHAR * strTextureName)
+//-----------------------------------------------------------------------------
+// Name: FindTexture()
+// Desc: Searches the internal list of textures for a texture specified by
+//       its name. Returns the structure associated with that texture.
+//-----------------------------------------------------------------------------
+//static unsigned long nuky_findtexture_calls = 0;      // num calls to the function
+//static unsigned long nuky_findtexture_visits = 0;     // num visits of linked list elements
+//static unsigned long nuky_findtexture_fails = 0;      // num texture not found cases
+//TextureContainer * FindTexture_InMap(char * strTextureName)
+//{
+//	if (strTextureName && strTextureName[0] && strTextureName[1] == ':')
+//	{
+//		assert(strlen(strTextureName) >= strlen(Project.workingdir));
+//		return FindTexture_InMap(strTextureName + strlen(Project.workingdir));
+//	}
+//
+//	std::map<std::string, TextureContainer*>::iterator it = g_mTextureListByName.find(strTextureName);
+//	return it != g_mTextureListByName.end() ? it->second : NULL;
+//}
+TextureContainer * FindTexture_InList(char * strTextureName)
 {
+	//++nuky_findtexture_calls;
+	//++nuky_findtexture_visits;
+	//if (nuky_findtexture_calls % 100 == 0)
+	//	std::cout << "calls: " << nuky_findtexture_calls << ", visits: " << nuky_findtexture_visits << ", fails: " << nuky_findtexture_fails << std::endl;
 	TextureContainer * ptcTexture = g_ptcTextureList;
 
 	while (ptcTexture)
@@ -320,23 +320,16 @@ TextureContainer * FindTexture(TCHAR * strTextureName)
 			return ptcTexture;
 
 		ptcTexture = ptcTexture->m_pNext;
+		//++nuky_findtexture_visits;
 	}
 
+	//++nuky_findtexture_fails;
 	return NULL;
 }
-TextureContainer * _FindTexture(char * strTextureName)
+TextureContainer * FindTexture(char * strTextureName)
 {
-	TextureContainer * ptcTexture = g_ptcTextureList;
+	return FindTexture_InList(strTextureName);
 
-	while (ptcTexture)
-	{
-		if (strstr(strTextureName, ptcTexture->m_texName))
-			return ptcTexture;
-
-		ptcTexture = ptcTexture->m_pNext;
-	}
-
-	return NULL;
 }
 long BLURTEXTURES = 0;
 long NOMIPMAPS = 0;
@@ -566,6 +559,7 @@ TextureContainer::TextureContainer(TCHAR * strName, char * wd, DWORD dwStage,
 	{
 		m_pNext = g_ptcTextureList;
 		g_ptcTextureList = this;
+		//g_mTextureListByName.insert(std::make_pair(m_texName, this));
 	}
 
 	delayed = NULL;
@@ -631,6 +625,7 @@ TextureContainer::TextureContainer(TCHAR * strName, char * wd, DWORD dwStage,
 	pVertexListCull_TMetalH = NULL;
 }
 
+// Nuky - TODO - store bInList in TextureContainer and test for it
 bool TextureContainer_Exist(TextureContainer * tc)
 {
 	TextureContainer * ptcTexture = g_ptcTextureList;
@@ -655,6 +650,8 @@ TextureContainer::~TextureContainer()
 {
 	if (!TextureContainer_Exist(this))
 		return;
+
+	//g_mTextureListByName.erase(m_texName);
 
 	SAFE_RELEASE(m_pddsSurface);
 	SAFE_RELEASE(m_pddsBumpMap);
@@ -4864,46 +4861,38 @@ HRESULT TextureContainer::CopyPNGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 
 //*************************************************************************************
 //*************************************************************************************
+// Nuky - refactored GetTextureFile() and GetTextureFile_NoRefinement() into single function
+TextureContainer * imp_GetTextureFile(char * tex, long flag, bool no_refinement)
+{
+	DWORD flag_refinement = no_refinement ? D3DTEXTR_NO_REFINEMENT : 0;
+	char dir[256];
+	char dir2[256];
+
+	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
+	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
+	sprintf(dir2, "%s%s", Project.workingdir, tex);
+	File_Standardize(dir2, dir);
+	TextureContainer * returnTc;
+
+	if (flag & 1)
+		returnTc = D3DTextr_CreateTextureFromFile(dir, Project.workingdir, 0, D3DTEXTR_32BITSPERPIXEL | flag_refinement);
+	else
+		returnTc = D3DTextr_CreateTextureFromFile(dir, Project.workingdir, 0, D3DTEXTR_NO_MIPMAP | flag_refinement);
+
+	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
+	return returnTc;
+}
+
 TextureContainer * GetTextureFile(char * tex, long flag)
 {
-	char dir[256];
-	char dir2[256];
-
-	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
-	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
-	sprintf(dir2, "%s%s", Project.workingdir, tex);
-	File_Standardize(dir2, dir);
-	TextureContainer * returnTc;
-
-	if (flag & 1)
-		returnTc = D3DTextr_CreateTextureFromFile(dir, Project.workingdir, 0, D3DTEXTR_32BITSPERPIXEL);
-	else
-		returnTc = D3DTextr_CreateTextureFromFile(dir, Project.workingdir, 0, D3DTEXTR_NO_MIPMAP);
-
-	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
-	return returnTc;
+	return imp_GetTextureFile(tex, flag, false);
 }
-//*************************************************************************************
-//*************************************************************************************
+
 TextureContainer * GetTextureFile_NoRefinement(char * tex, long flag)
 {
-	char dir[256];
-	char dir2[256];
-
-	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
-	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
-	sprintf(dir2, "%s%s", Project.workingdir, tex);
-	File_Standardize(dir2, dir);
-	TextureContainer * returnTc;
-
-	if (flag & 1)
-		returnTc = D3DTextr_CreateTextureFromFile(dir, Project.workingdir, 0, D3DTEXTR_32BITSPERPIXEL | D3DTEXTR_NO_REFINEMENT);
-	else
-		returnTc = D3DTextr_CreateTextureFromFile(dir, Project.workingdir, 0, D3DTEXTR_NO_MIPMAP | D3DTEXTR_NO_REFINEMENT);
-
-	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
-	return returnTc;
+	return imp_GetTextureFile(tex, flag, true);
 }
+
 //*************************************************************************************
 //*************************************************************************************
 bool TextureContainer::CreateHalo(LPDIRECT3DDEVICE7 _lpDevice)

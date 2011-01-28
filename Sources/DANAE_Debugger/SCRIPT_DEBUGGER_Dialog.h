@@ -27,8 +27,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef SCRIPT_DEBUGGER_H
 #define SCRIPT_DEBUGGER_H
 
+#include "ARX_Common.h"
+
 #include <windows.h>
-#include <ARX_Common.h>
 
 #ifndef APIDLL
 #define APIFUNC __declspec(dllimport) WINAPI

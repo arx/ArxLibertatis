@@ -73,10 +73,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEDraw.h"
 #include "EERIEObject.h"
 #include "EERIEPhysicsBox.h"
-extern CMenuConfig *pMenuConfig;
-#include <stdio.h>
+
+#include <cstdio>
+
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
+
+extern CMenuConfig *pMenuConfig;
 
 extern float fZFogEnd;
 extern unsigned long ulBKGColor;
@@ -144,43 +147,44 @@ void SpawnMetalShine(EERIE_3D * pos,long r,long g,long b,long num)
 {
 	return;
 
-	if (num<0) return;
+	// Nuky - unreachable code
+	//if (num<0) return;
 
-	long j=ARX_PARTICLES_GetFree();
+	//long j=ARX_PARTICLES_GetFree();
 
-	if ((j!=-1) && (!ARXPausedTimer))
-	{
-		ParticleCount++;
-		PARTICLE_DEF * pd=&particle[j];
-		pd->exist		=	TRUE;
-		pd->zdec		=	0;
-		pd->ov.x		=	pos->x;
-		pd->ov.y		=	pos->y;
-		pd->ov.z		=	pos->z;
-		pd->move.x		=	0.f;
-		pd->move.y		=	0.f;
-		pd->move.z		=	0.f;
-		pd->timcreation	=	lARXTime;
-		pd->tolive		=	(unsigned long)(500.0F + rnd() * 400.0F);
-		long num		=	(long)(rnd() * 10.f);
+	//if ((j!=-1) && (!ARXPausedTimer))
+	//{
+	//	ParticleCount++;
+	//	PARTICLE_DEF * pd=&particle[j];
+	//	pd->exist		=	TRUE;
+	//	pd->zdec		=	0;
+	//	pd->ov.x		=	pos->x;
+	//	pd->ov.y		=	pos->y;
+	//	pd->ov.z		=	pos->z;
+	//	pd->move.x		=	0.f;
+	//	pd->move.y		=	0.f;
+	//	pd->move.z		=	0.f;
+	//	pd->timcreation	=	lARXTime;
+	//	pd->tolive		=	(unsigned long)(500.0F + rnd() * 400.0F);
+	//	long num		=	(long)(rnd() * 10.f);
 
-		if (num<1) num = 1;
+	//	if (num<1) num = 1;
 
-		if (num>9) num = 9;
+	//	if (num>9) num = 9;
 
-		pd->tc			=	flaretc.shine[num];
-		pd->siz			=	4.f+rnd()*2.f;
-		pd->scale.x		=	-15.f;
-		pd->scale.y		=	-15.f;
-		pd->scale.z		=	-15.f;
-		pd->r			=	(float)r*DIV64;
-		pd->g			=	(float)g*DIV64;
-		pd->b			=	(float)b*DIV64;
-		pd->special		=	ROTATING | MODULATE_ROTATION | FADE_IN_AND_OUT | FOLLOW_SOURCE;
-		pd->fparam		=	0.001f;
-		pd->source		=	pos;
-		pd->sourceionum	=	num;
-	}
+	//	pd->tc			=	flaretc.shine[num];
+	//	pd->siz			=	4.f+rnd()*2.f;
+	//	pd->scale.x		=	-15.f;
+	//	pd->scale.y		=	-15.f;
+	//	pd->scale.z		=	-15.f;
+	//	pd->r			=	(float)r*DIV64;
+	//	pd->g			=	(float)g*DIV64;
+	//	pd->b			=	(float)b*DIV64;
+	//	pd->special		=	ROTATING | MODULATE_ROTATION | FADE_IN_AND_OUT | FOLLOW_SOURCE;
+	//	pd->fparam		=	0.001f;
+	//	pd->source		=	pos;
+	//	pd->sourceionum	=	num;
+	//}
 }
 
 //-----------------------------------------------------------------------------

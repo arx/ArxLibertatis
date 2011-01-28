@@ -231,7 +231,8 @@ unsigned long CLocalisationHash::GetKeyCount(const _TCHAR * _lpszUText)
 			{
 				return pTab[iH1]->vUKeys.size();
 
-				return 0;
+				// Nuky - unreachable code
+				//return 0;
 			}
 		}
 

@@ -77,7 +77,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEDRAW.h"
 #include "EERIEPhysicsBox.h"
 
-#include <stdio.h>
+#include <cstdio>
+
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 
@@ -1965,7 +1966,7 @@ void CRuban::DrawRuban(LPDIRECT3DDEVICE7 device, int num, float size, int dec, f
 	int		dg = (gg2 - g1) / dec;
 	int		db = (bb2 - b1) / dec;
 
-	while (1)
+	for (;;)
 	{
 		numsuiv = truban[num].next;
 

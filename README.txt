@@ -18,3 +18,12 @@ Author: Nuky < tehnuky(at)gmail.com >
 I give no guarantee whatsoever that this will build and/or run anywhere but on my
 computer. I can only hope it does. You can only pray it does. Remember to backup your
 saves and original files (arx.exe, Athena.dll and ARX_SCRIPT_DEBUGGER.dll).
+
+
+
+ v0.01 28/01/11
+----------------
+
+-Increased ingame performance
+-Increased main menu performance
+-Fixed character speed increasing with computer uptime

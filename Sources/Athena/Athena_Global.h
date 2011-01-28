@@ -25,11 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef __ATHENA_GLOBAL_H__
 #define __ATHENA_GLOBAL_H__
 
-#include <windows.h>
-#include <dsound.h>
-#include <stdio.h>
-#include <math.h>
-#include <Athena_Types.h>
+#include "Athena_Types.h"
 #include "Athena_Resource.h"
 #include "Athena_Stream.h"
 #include "Athena_Mixer.h"
@@ -37,6 +33,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "Athena_Sample.h"
 #include "Athena_Ambiance.h"
 #include "Athena_Instance.h"
+
+#include <windows.h>
+#include <dsound.h>
+#include <cstdio>
+#include <cmath>
 
 namespace ATHENA
 {

@@ -465,7 +465,9 @@ typedef struct
 
 typedef struct
 {
-	long				ioflags;			// IO type
+	long				num;		// Nuky - 25/01/11 - cache the InterNum to speed up GetInterNum()
+
+	long				ioflags;	// IO type
 	EERIE_3D			lastpos;	// IO last position
 	EERIE_3D			pos;		// IO position
 	EERIE_3D			move;

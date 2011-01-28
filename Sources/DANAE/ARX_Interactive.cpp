@@ -55,7 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 #define DIRECTINPUT_VERSION 0x0700
-#include <dinput.h>
 
 #include "ARX_Interactive.h"
 #include "ARX_PATHS.h"
@@ -90,7 +89,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEDRAW.h"
 #include "EERIEMeshTweak.h"
 
-#include <stdlib.h>
+#include <dinput.h>
+#include <cstdlib>
+
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 
@@ -511,7 +512,8 @@ EERIE_3DOBJ * TheoToEerie_Fast(char * texpath, char * ficc, long flag, LPDIRECT3
 	File_Standardize(fic + strlen(Project.workingdir) - 1, pfic);
 	EERIE_3DOBJ * ret = NULL;
 
-	if ((ret = ARX_FTL_Load(pfic, fic, NULL)) != NULL)
+	ret = ARX_FTL_Load(pfic, fic, NULL);
+	if (ret)
 	{
 
 		if (!(flag & TTE_NO_PHYSICS_BOX))
@@ -520,7 +522,8 @@ EERIE_3DOBJ * TheoToEerie_Fast(char * texpath, char * ficc, long flag, LPDIRECT3
 		return ret;
 	}
 
-	if (ret = GetExistingEerie(fic))
+	ret = GetExistingEerie(fic);
+	if (ret)
 	{
 		ret = Eerie_Copy(ret);
 
@@ -533,7 +536,8 @@ EERIE_3DOBJ * TheoToEerie_Fast(char * texpath, char * ficc, long flag, LPDIRECT3
 		long FileSize = 0;
 		unsigned char * adr;
 
-		if (adr = (unsigned char *)PAK_FileLoadMalloc(fic, &FileSize))
+		adr = (unsigned char *)PAK_FileLoadMalloc(fic, &FileSize);
+		if (adr)
 		{
 			ret = TheoToEerie(adr, FileSize, texpath, fic, flag, pd3dDevice, flag | TTE_NO_RESTORE); //SLOWLOAD));
 
@@ -1861,6 +1865,8 @@ INTERACTIVE_OBJ * CreateFreeInter(long num)
 
 		memset(inter.iobj[i], 0, sizeof(INTERACTIVE_OBJ));
 		io = inter.iobj[i];
+		// Nuky - added num which caches the index position in global ios table
+		io->num = i;
 		io->room_flags = 1;
 		io->room = -1;
 		io->no_collide = -1;
@@ -3350,7 +3356,7 @@ void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io)
 
 	if (LAST_CHINSTANCE != -1) ARX_Changelevel_CurGame_Open();
 
-	while (1)
+	for (;;)
 	{
 		if (!ExistTemporaryIdent(io, t))
 		{
@@ -3939,8 +3945,8 @@ BOOL ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 								}
 
 								return TRUE;
-								col = TRUE;
-								ret = 1;
+								//col = TRUE;
+								//ret = 1;
 							}
 						}
 					}
@@ -4083,34 +4089,34 @@ BOOL ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 					if (ii != io->obj->origin)
 					{
 
-						if (0)
-						{
-							for (long jii = 1; jii < nbv; jii += step)
-							{
-								sp.origin.x = (vlist[ii].v.x + vlist[jii].v.x) * DIV2;
-								sp.origin.y = (vlist[ii].v.y + vlist[jii].v.y) * DIV2;
-								sp.origin.z = (vlist[ii].v.z + vlist[jii].v.z) * DIV2;
+						//if (0)
+						//{
+						//	for (long jii = 1; jii < nbv; jii += step)
+						//	{
+						//		sp.origin.x = (vlist[ii].v.x + vlist[jii].v.x) * DIV2;
+						//		sp.origin.y = (vlist[ii].v.y + vlist[jii].v.y) * DIV2;
+						//		sp.origin.z = (vlist[ii].v.z + vlist[jii].v.z) * DIV2;
 
-								for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
-									if (EEDistance3D(&obj->pbox->vert[kk].pos, &sp.origin) < sp.radius)
-									{
-										if ((io_source) && (io->GameFlags & GFLAG_DOOR))
-										{
-											if (ARXTime > io->collide_door_time + 500)
-											{
-												EVENT_SENDER = io_source;
-												io->collide_door_time = ARXTimeUL(); 
-												SendIOScriptEvent(io, SM_COLLIDE_DOOR, "", NULL);
-												EVENT_SENDER = io;
-												io->collide_door_time = ARXTimeUL(); 	
-												SendIOScriptEvent(io_source, SM_COLLIDE_DOOR, "", NULL);
-											}
-										}
+						//		for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
+						//			if (EEDistance3D(&obj->pbox->vert[kk].pos, &sp.origin) < sp.radius)
+						//			{
+						//				if ((io_source) && (io->GameFlags & GFLAG_DOOR))
+						//				{
+						//					if (ARXTime > io->collide_door_time + 500)
+						//					{
+						//						EVENT_SENDER = io_source;
+						//						io->collide_door_time = ARXTimeUL(); 
+						//						SendIOScriptEvent(io, SM_COLLIDE_DOOR, "", NULL);
+						//						EVENT_SENDER = io;
+						//						io->collide_door_time = ARXTimeUL(); 	
+						//						SendIOScriptEvent(io_source, SM_COLLIDE_DOOR, "", NULL);
+						//					}
+						//				}
 
-										return TRUE;
-									}
-							}
-						}
+						//				return TRUE;
+						//			}
+						//	}
+						//}
 
 						sp.origin.x = vlist[ii].v.x;
 						sp.origin.y = vlist[ii].v.y;
@@ -4458,11 +4464,11 @@ void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to, long flags)
 			}
 			else dist = EEDistance3D(&ACTIVECAM->pos, &io->pos);
 
-			if ((0) && (inter.iobj[i]->stepmaterial))
-			{
-				free(inter.iobj[i]->stepmaterial);
-				inter.iobj[i]->stepmaterial = NULL;
-			}
+			//if ((0) && (inter.iobj[i]->stepmaterial))
+			//{
+			//	free(inter.iobj[i]->stepmaterial);
+			//	inter.iobj[i]->stepmaterial = NULL;
+			//}
 
 			if ((io) && (io->ioflags & IO_NPC) && (io->_npcdata->pathfind.flags  & PATHFIND_ALWAYS))
 			{
@@ -4793,6 +4799,30 @@ BOOL HaveCommonGroup(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 
 	return FALSE;
 }
+
+//***********************************************************************************************
+// Retreives IO Number with its address
+//-----------------------------------------------------------------------------------------------
+// VERIFIED (Cyril 2001/10/16)
+//***********************************************************************************************
+// Nuky - modified to use cached value first. For now it's safe and will use former method if
+//        the cached value is incorrect, but I think it never happens
+long GetInterNum(INTERACTIVE_OBJ * io)
+{
+	if (io == NULL) return -1;
+
+	if (io->num < inter.nbmax && inter.iobj[io->num] == io)
+		return io->num;
+
+	// Hopefully the code below is never reached
+	assert(false);
+
+	for (long i = 0; i < inter.nbmax; i++)
+		if (inter.iobj[i] == io) return i;
+
+	return -1;
+}
+
 
 float ARX_INTERACTIVE_GetArmorClass(INTERACTIVE_OBJ * io)
 {

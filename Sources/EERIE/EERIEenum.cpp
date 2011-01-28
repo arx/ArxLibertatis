@@ -54,14 +54,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 #define STRICT
-#include <windowsx.h>
-#include <stdio.h>
-#include <tchar.h>
 
 #include "EerieEnum.h"
 #include "EerieUtil.h" // For DEBUG_MSG
 #include "EerieRes.h"  // For dialog controls
 
+#include <windowsx.h>
+#include <cstdio>
+#include <tchar.h>
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>

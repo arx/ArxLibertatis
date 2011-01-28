@@ -55,18 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdlib.h>
-
-#include <ARX_NPC.h>
-#include <HERMESMain.h>
-
-#include <EERIEDraw.h>
-#include <EERIEMath.h>
-#include <EERIEObject.h>
-#include <EERIEPhysicsBox.h>
-#include <EERIEPathfinder.h>
-#include <EERIEAnchors.h>
-
+#include "ARX_NPC.h"
 #include "ARX_Script.h"
 #include "ARX_Collisions.h"
 #include "ARX_Damages.h"
@@ -82,8 +71,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Spells.h"
 #include "ARX_Time.h"
 
+#include "EERIEDraw.h"
+#include "EERIEMath.h"
+#include "EERIEObject.h"
+#include "EERIEPhysicsBox.h"
+#include "EERIEPathfinder.h"
+#include "EERIEAnchors.h"
 #include "EERIECollisionSpheres.h"
 #include "EERIEMeshTweak.h"
+
+#include "HERMESMain.h"
+
+#include <cstdlib>
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
@@ -1427,7 +1426,6 @@ long IsInGroup(EERIE_3DOBJ * obj, long vert, long tw)
 
 	return -1;
 }
-
 //***********************************************************************************************
 //***********************************************************************************************
 long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw)

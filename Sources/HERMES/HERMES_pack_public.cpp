@@ -845,7 +845,7 @@ int EVE_LOADPACK::UnCryptString(unsigned char * _pTxt)
 
 	int iNbChar = 0;
 
-	while (1)
+	for (;;)
 	{
 		UnCryptChar(pTxtCopy);
 

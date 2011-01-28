@@ -50,7 +50,7 @@ ViewImage::ViewImage(char * _pcDir, char * _pExt)
 	char tTxt[256];
 	int iNum = 0;
 
-	while (1)
+	for (;;)
 	{
 		sprintf(tTxt, "%squit%d.bmp", _pcDir + strlen(Project.workingdir), iNum);
 

@@ -77,9 +77,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <vector>
 #include <algorithm>
+#include <cstdio>
+
 using namespace std;
 
-#include <stdio.h>
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 
@@ -1405,16 +1406,16 @@ BOOL PutInInventory()
 					return TRUE;
 				}
 
-				if (0)
-					if (CanBePutInInventory(DRAGINTER))
-					{
-						if (DRAGINTER)
-							DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
+				//if (0)
+				//	if (CanBePutInInventory(DRAGINTER))
+				//	{
+				//		if (DRAGINTER)
+				//			DRAGINTER->show = SHOW_FLAG_IN_INVENTORY;
 
-						ARX_SOUND_PlayInterface(SND_INVSTD);
-						Set_DragInter(NULL);
-						return TRUE;
-					}
+				//		ARX_SOUND_PlayInterface(SND_INVSTD);
+				//		Set_DragInter(NULL);
+				//		return TRUE;
+				//	}
 
 				return FALSE;
 			}

@@ -30,33 +30,35 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include <ARX_Spells.h>
 
-#include <HERMESMain.h>
-#include <EERIEDraw.h>
-#include <EERIEMath.h>
-#include <EERIELight.h>
-#include <EERIEObject.h>
-
-#include "danae.h"
-#include <ARX_Collisions.h>
-#include <ARX_Damages.h>
-#include <ARX_Equipment.h>
-#include <ARX_Fogs.h>
-#include <ARX_Input.h>
-#include <ARX_Interface.h>
-#include <ARX_NPC.h>
+#include "ARX_Spells.h"
+#include "ARX_Collisions.h"
+#include "ARX_Damages.h"
+#include "ARX_Equipment.h"
+#include "ARX_Fogs.h"
+#include "ARX_Input.h"
+#include "ARX_Interface.h"
+#include "ARX_NPC.h"
 #include "ARX_Menu2.h"
 #include "ARX_Minimap.h"
 #include "ARX_Scene.h"
-#include <ARX_Particles.h>
-#include <ARX_Sound.h>
+#include "ARX_Particles.h"
+#include "ARX_Sound.h"
 #include "ARX_SpellFX.h"
-#include <ARX_Speech.h>
-#include <ARX_Menu.h>
+#include "ARX_Speech.h"
+#include "ARX_Menu.h"
+
+#include "danae.h"
+
+#include "HERMESMain.h"
+#include "EERIEDraw.h"
+#include "EERIEMath.h"
+#include "EERIELight.h"
+#include "EERIEObject.h"
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
+
 void MakeSpCol();
 extern long WILLRETURNTOCOMBATMODE;
 extern CMenuConfig *pMenuConfig;

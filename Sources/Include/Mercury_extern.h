@@ -25,14 +25,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef MERCURY_EXTERN_H
 #define MERCURY_EXTERN_H
 
+#include "ARX_Common.h"
+
 #include <windows.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <assert.h>
+#include <cstring>
+#include <cstdlib>
+#include <cstdio>
+#include <cassert>
 #include <conio.h>
 #include <direct.h>
-#include <ARX_Common.h>
 
 #define INITGUID
 #define DIRECTINPUT_VERSION 0x0700

@@ -55,8 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <stdio.h>
-#include <tchar.h>
 
 #include "EerieApp.h"
 #include "EERIEPoly.h"
@@ -73,6 +71,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "HERMESNet.h"
 
 #include "..\danae\danae_resource.h"
+
+#include <cstdio>
+#include <tchar.h>
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
@@ -1473,16 +1474,13 @@ int ShowError(char * funcname, char * message, long fatality)
 			g_pD3DApp->Pause(FALSE);
 			return IDIGNORE;
 			break;
-		default:
-			strcpy(fatall, "Unknown fatality level");
-			sprintf(texx, "An ERROR occured in function: %s\n%s\nFatality Level: %d - %s", funcname, message, fatality, fatall);
-			re = (MessageBox(g_pD3DApp->m_hWnd, texx, "GAIA Error Message", MB_ICONERROR | MB_OK));
-			g_pD3DApp->Pause(FALSE);
-			return re;
-			break;
 	}
 
+	strcpy(fatall, "Unknown fatality level");
+	sprintf(texx, "An ERROR occured in function: %s\n%s\nFatality Level: %d - %s", funcname, message, fatality, fatall);
+	re = (MessageBox(g_pD3DApp->m_hWnd, texx, "GAIA Error Message", MB_ICONERROR | MB_OK));
 	g_pD3DApp->Pause(FALSE);
+	return re;
 }
 
 void SetZBias(const LPDIRECT3DDEVICE7 _pd3dDevice, int _iZBias)

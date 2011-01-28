@@ -33,7 +33,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SOUND_H
 #define ARX_SOUND_H
 
-#include <EERIEPoly.h>
+#include "EERIEPoly.h"
 
 enum
 {

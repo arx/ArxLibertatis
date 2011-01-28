@@ -51,6 +51,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Menu2.h"
 #include "ARX_Interactive.h"
 #include "ARX_speech.h"
+#include "ARX_collisions.h"
+#include "ARX_C_Cinematique.h"
 #include "../danae/Danae_resource.h"
 #include "ARX_Text.h"
 #include "ARX_Time.h"
@@ -63,12 +65,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEDRAW.h"
 #include "EERIEObject.h"
 #include "EERIETexture.h"
-#include "ARX_collisions.h"
-#include "ARX_C_Cinematique.h"
+
 #include "Hermesmain.h"
+
 #include "resource.h"
 
-#include <stdio.h>
+#include <cstdio>
+
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 extern float MagicSightFader;
@@ -427,31 +430,43 @@ void CreateInterfaceTextureContainers()
 {
 	char temp[512];
 	memset(&ITC,0,sizeof(INTERFACE_TC));
-	MakeDir(temp,"Graph\\Interface\\bars\\aim_empty.bmp");
+	//MakeDir(temp,"Graph\\Interface\\bars\\aim_empty.bmp");
+	strcpy(temp,"Graph\\Interface\\bars\\aim_empty.bmp");
 	ITC.aim_empty = MakeTCFromFile(temp, 0);
-	MakeDir(temp,"Graph\\Interface\\bars\\aim_maxi.bmp");
+	//MakeDir(temp,"Graph\\Interface\\bars\\aim_maxi.bmp");
+	strcpy(temp,"Graph\\Interface\\bars\\aim_maxi.bmp");
 	ITC.aim_maxi = MakeTCFromFile(temp, 0);
-	MakeDir(temp,"Graph\\Interface\\bars\\flash_gauge.bmp");
+	//MakeDir(temp,"Graph\\Interface\\bars\\flash_gauge.bmp");
+	strcpy(temp,"Graph\\Interface\\bars\\flash_gauge.bmp");
 	ITC.aim_hit = MakeTCFromFile(temp, 0);
-	MakeDir(temp,"Graph\\Interface\\Inventory\\hero_inventory.bmp");
+	//MakeDir(temp,"Graph\\Interface\\Inventory\\hero_inventory.bmp");
+	strcpy(temp,"Graph\\Interface\\Inventory\\hero_inventory.bmp");
 	ITC.hero_inventory = MakeTCFromFile(temp, 0);
-	MakeDir(temp,"Graph\\Interface\\Inventory\\Ingame_inventory.bmp");
+	//MakeDir(temp,"Graph\\Interface\\Inventory\\Ingame_inventory.bmp");
+	strcpy(temp,"Graph\\Interface\\Inventory\\Ingame_inventory.bmp");
 	BasicInventorySkin = MakeTCFromFile(temp, 0);
-	MakeDir(temp,"Graph\\Interface\\Inventory\\scroll_up.bmp");
+	//MakeDir(temp,"Graph\\Interface\\Inventory\\scroll_up.bmp");
+	strcpy(temp,"Graph\\Interface\\Inventory\\scroll_up.bmp");
 	ITC.hero_inventory_up = MakeTCFromFile(temp, 0);
-	MakeDir(temp,"Graph\\Interface\\Inventory\\scroll_down.bmp");
+	//MakeDir(temp,"Graph\\Interface\\Inventory\\scroll_down.bmp");
+	strcpy(temp,"Graph\\Interface\\Inventory\\scroll_down.bmp");
 	ITC.hero_inventory_down = MakeTCFromFile(temp, 0);
-	MakeDir(temp,"Graph\\Interface\\Inventory\\Hero_inventory_link.bmp");
+	//MakeDir(temp,"Graph\\Interface\\Inventory\\Hero_inventory_link.bmp");
+	strcpy(temp,"Graph\\Interface\\Inventory\\Hero_inventory_link.bmp");
 	ITC.hero_inventory_link = MakeTCFromFile(temp, 0);
 
-	MakeDir(temp,"Graph\\Interface\\Inventory\\inv_pick.bmp");
+	//MakeDir(temp,"Graph\\Interface\\Inventory\\inv_pick.bmp");
+	strcpy(temp,"Graph\\Interface\\Inventory\\inv_pick.bmp");
 	ITC.inventory_pickall = MakeTCFromFile(temp, 0);
-	MakeDir(temp,"Graph\\Interface\\Inventory\\inv_close.bmp");
+	//MakeDir(temp,"Graph\\Interface\\Inventory\\inv_close.bmp");
+	strcpy(temp,"Graph\\Interface\\Inventory\\inv_close.bmp");
 	ITC.inventory_close = MakeTCFromFile(temp, 0);
 	
-	MakeDir(temp,"Graph\\Interface\\Icons\\lvl_up.bmp");
+	//MakeDir(temp,"Graph\\Interface\\Icons\\lvl_up.bmp");
+	strcpy(temp,"Graph\\Interface\\Icons\\lvl_up.bmp");
 	ITC.Icon_Lvl_Up = MakeTCFromFile(temp, 0);
 	ITC.ingame_sub_inv = NULL; 
+
 	MakeDir(temp,"Graph\\Interface\\Icons\\Backpack.bmp");
 	ITC.backpack=D3DTextr_GetSurfaceContainer(temp);
 	MakeDir(temp,"Graph\\Interface\\Inventory\\Gold.bmp");
@@ -1081,9 +1096,8 @@ void ARX_INTERFACE_NoteManage()
 
 						danaeApp.DANAEEndRender();
 						DrawBookTextInRect(NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY+NoteTextMaxy,Page_Buffer,0,0x00FF00FF, hFontInGameNote);
-
 						danaeApp.DANAEStartRender();
-						
+
 						if(Note.pages[Note.curpage+2]>0)
 						{
 							_tcsncpy(Page_Buffer,Note.text+Note.pages[Note.curpage+1],Note.pages[Note.curpage+2]-Note.pages[Note.curpage+1]);
@@ -1091,7 +1105,6 @@ void ARX_INTERFACE_NoteManage()
 
 							danaeApp.DANAEEndRender();
 							DrawBookTextInRect(NotePosX+NoteTextMinx + (NoteTextMaxx-NoteTextMinx) +20, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx + (NoteTextMaxx-NoteTextMinx) +20, NotePosY+NoteTextMaxy,Page_Buffer,0,0x00FF00FF, hFontInGameNote);
-
 							danaeApp.DANAEStartRender();
 						}
 					}
@@ -1103,7 +1116,6 @@ void ARX_INTERFACE_NoteManage()
 
 							danaeApp.DANAEEndRender();
 							DrawBookTextInRect( NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY+NoteTextMaxy,Page_Buffer,0,0x00FF00FF, hFontInGameNote);
-
 							danaeApp.DANAEStartRender();
 						}
 					}
@@ -5598,15 +5610,14 @@ void DANAE::ManageKeyMouse()
 
 			float fd;
 
-			if(	0
-				&&	(danaeApp.m_pFramework->m_bIsFullscreen)
-				&&	(bGLOBAL_DINPUT_GAME) )
+			//if(	0
+			//	&&	(danaeApp.m_pFramework->m_bIsFullscreen)
+			//	&&	(bGLOBAL_DINPUT_GAME) )
+			//{
+			//	fd = (Original_framedelay) * .3f * (640.f / (float)DANAESIZX); 
+			//}
+			//else
 			{
-				fd = (Original_framedelay) * .3f * (640.f / (float)DANAESIZX); 
-			}
-			else
-			{
-
 				fd = (((float)pGetInfoDirectInput->iSensibility) + 1.f) * 0.1f * ((640.f / (float)DANAESIZX));
 
 				if(	(pMenuConfig)&&

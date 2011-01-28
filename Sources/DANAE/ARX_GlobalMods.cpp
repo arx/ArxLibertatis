@@ -22,12 +22,15 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+
 #include "ARX_GlobalMods.h"
-#include "EERIEMath.h"
 #include "arx_menu2.h"
 #include "arx_time.h"
 
-#include <stdio.h>
+#include "EERIEMath.h"
+
+#include <cstdio>
+
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 

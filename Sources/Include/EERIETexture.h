@@ -270,8 +270,7 @@ void D3DTextr_KillTexture(TextureContainer * tex);
 void D3DTextr_KillAllTextures();	
 void SpecialBorderSurface(TextureContainer * tc, unsigned long x0, unsigned long y0);
 
-TextureContainer * FindTexture(TCHAR * strTextureName);
-TextureContainer * _FindTexture(char * strTextureName);
+TextureContainer * FindTexture(char * strTextureName);
 
 bool TextureContainer_Exist(TextureContainer * tc);
 #endif
