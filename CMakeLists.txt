@@ -3,6 +3,7 @@ project(ArxFatalis)
 
 set(INC_DIR include)
 set(SRC_DIR src)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 
 include_directories(
 	include
@@ -62,7 +63,6 @@ add_custom_target(doc
         COMMAND doxygen doc/Doxyfile
 )
 
-
 #find python2
 IF(EXISTS "/usr/bin/python2")
 	SET(PYTHON_BIN "python2")
@@ -74,6 +74,7 @@ add_custom_target(style
         COMMAND ${PYTHON_BIN} scripts/cpplint.py --filter=${STYLE_FILTER} ${ALL_SOURCES} ${ALL_INCLUDES}
 )
 
+add_subdirectory(tests)
 add_subdirectory(tools)
 
 
