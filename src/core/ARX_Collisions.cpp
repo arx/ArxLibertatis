@@ -245,8 +245,8 @@ inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 
 	for (long j=0;j<360;j+=90)
 	{
-		float xx=-EEsin(DEG2RAD((float)j))*cyl->radius;
-		float yy=EEcos(DEG2RAD((float)j))*cyl->radius;
+		float xx=-EEsin(radians((float)j))*cyl->radius;
+		float yy=EEcos(radians((float)j))*cyl->radius;
 		EERIE_3D pos;
 		pos.x=cyl->origin.x+xx;
 
@@ -570,13 +570,13 @@ bool CollidedFromBack(INTERACTIVE_OBJ * io,INTERACTIVE_OBJ * ioo)
 	
 	ep.v[0].sx=io->pos.x;
 	ep.v[0].sz=io->pos.z;
-	float ft=DEG2RAD(135.f+90.f);
+	float ft=radians(135.f+90.f);
 		ep.v[1].sx = EEsin(ft) * 180.f; 
 		ep.v[1].sz = -EEcos(ft) * 180.f; 
-	ft=DEG2RAD(225.f+90.f);
+	ft=radians(225.f+90.f);
 		ep.v[2].sx = EEsin(ft) * 180.f; 
 		ep.v[2].sz = -EEcos(ft) * 180.f; 
-	ft=DEG2RAD(270.f-io->angle.b);
+	ft=radians(270.f-io->angle.b);
 	float ec=EEcos(ft);
 	float es=EEsin(ft);
 	EE_RotateY( &ep.v[1]  , &ep.tv[1]   , ec , es );
@@ -1816,7 +1816,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 			while (rangle<=maxRANGLE) //tries on the Right and Left sides
 			{
 				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER)); 
-				float t=DEG2RAD(MAKEANGLE(rangle));
+				float t=radians(MAKEANGLE(rangle));
 				_YRotatePoint(&mvector,&vecatt,EEcos(t),EEsin(t));
 				test.cyl.origin.x+=vecatt.x*curmovedist;
 				test.cyl.origin.y+=vecatt.y*curmovedist;
@@ -1833,7 +1833,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 				rangle+=ANGLESTEPP;
 
 				memcpy(&test.cyl, &ip->cyl, sizeof(EERIE_CYLINDER)); 
-				t=DEG2RAD(MAKEANGLE(langle));
+				t=radians(MAKEANGLE(langle));
 				_YRotatePoint(&mvector,&vecatt,EEcos(t),EEsin(t));
 				test.cyl.origin.x+=vecatt.x*curmovedist;
 				test.cyl.origin.y+=vecatt.y*curmovedist;

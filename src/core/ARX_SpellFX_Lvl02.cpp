@@ -143,7 +143,7 @@ void CHeal::Create()
 	cp.p3Direction.x = 0;
 	cp.p3Direction.y = -10;
 	cp.p3Direction.z = 0;
-	cp.fAngle = DEG2RAD(5);
+	cp.fAngle = radians(5);
 	cp.fSpeed = 120; 
 	cp.fSpeedRandom = 84; 
 	cp.p3Gravity.x = 0;

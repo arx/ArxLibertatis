@@ -331,7 +331,7 @@ void PutInFrontOfPlayer(INTERACTIVE_OBJ * io, long flag)
 {
 	if (io == NULL) return;
 
-	float t = DEG2RAD(player.angle.b);
+	float t = radians(player.angle.b);
 	io->pos.x = player.pos.x - (float)EEsin(t) * 80.f;
 	io->pos.z = player.pos.z + (float)EEcos(t) * 80.f;
 	io->pos.y = player.pos.y + 20.f; 
@@ -370,7 +370,7 @@ void IO_Drop_Item(INTERACTIVE_OBJ * io_src, INTERACTIVE_OBJ * io)
 	// Validity Check
 	if ((!io) || (!io_src)) return;
 
-	float t = DEG2RAD(io_src->angle.b);
+	float t = radians(io_src->angle.b);
 	io->velocity.y = 0.3f;
 	io->velocity.x = -(float)EEsin(t) * 50.f;
 	io->velocity.z = (float)EEcos(t) * 50.f;

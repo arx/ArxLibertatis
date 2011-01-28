@@ -56,7 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIEMATH_H
 #define EERIEMATH_H
 
-#include <algorithm>
+//#include <algorithm>
 
 #include "d3dwrapper.h"
 #include "EERIETypes.h"
@@ -90,20 +90,10 @@ using std::max;
 // Math constants
 //-----------------------------------------------------------------------------
 #define PI					3.14159265358979323846f
-#define EEdef_PI			3.14159265358979323846f		// Pi
-#define EEdef_2_PI			6.28318530717958623200f		// 2 * Pi
-#define EEdef_PI_DIV_2		1.57079632679489655800f		// Pi / 2
-#define EEdef_PI_DIV_4		0.78539816339744827900f		// Pi / 4
-#define EEdef_PI_0_75		4.7123889803846896397f		//EEdef_2_PI-EEdef_PI_DIV_2
-#define EEdef_DEGTORAD		0.01745329251994329547f		// Degrees to Radians
-#define EEdef_RADTODEG		57.29577951308232286465f	// Radians to Degrees
-#define EEdef_HUGE			1.0e+38f					// Huge number for float
+
 #define EEdef_EPSILON		1.0e-5f						// Tolerance for FLOATs
 #define EEdef_MAXfloat		1.0e+38f
 #define EEdef_MINfloat		-1.0e+38f
-
-#define RAD2DEG(x) ((x)*(float)EEdef_RADTODEG)
-#define DEG2RAD(x) ((x)*(float)EEdef_DEGTORAD)
 
 //-----------------------------------------------------------------------------
 // DIVISIONS Optimization List (Mul)
@@ -574,6 +564,9 @@ inline void specialEE_P(EERIE_3D * in, D3DTLVERTEX * out)
 	out->sy = in->y * ProjectionMatrix._22 * fZTemp + et->ymod;
 	out->rhw = fZTemp; 
 }
+
+float radians(float x);
+float degrees(float x);
 
 #endif
 

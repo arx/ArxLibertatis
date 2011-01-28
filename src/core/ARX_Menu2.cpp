@@ -5474,7 +5474,7 @@ CWindowMenu::CWindowMenu(int _iPosX,int _iPosY,int _iTailleX,int _iTailleY,int _
 	eCurrentMenuState=NOP;
 
 
-	float fCalc	= fPosXCalc + (fDist * sin(DEG2RAD(fAngle)));
+	float fCalc	= fPosXCalc + (fDist * sin(radians(fAngle)));
 	ARX_CHECK_INT(fCalc);
 
 	iPosX	= ARX_CLEAN_WARN_CAST_INT(fCalc);
@@ -5518,7 +5518,7 @@ void CWindowMenu::Update(int _iDTime)
 {
 
 
-	float fCalc	= fPosXCalc + (fDist * sin(DEG2RAD(fAngle)));
+	float fCalc	= fPosXCalc + (fDist * sin(radians(fAngle)));
 	ARX_CHECK_INT(fCalc);
 
 	iPosX	= ARX_CLEAN_WARN_CAST_INT(fCalc);

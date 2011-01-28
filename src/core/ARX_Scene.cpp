@@ -1135,7 +1135,7 @@ long ARX_PORTALS_GetRoomNumForCamera(float * height)
 
 	while (dist<=20.f)
 	{		
-		float vvv=DEG2RAD(ACTIVECAM->angle.b);
+		float vvv=radians(ACTIVECAM->angle.b);
 		ep=CheckInPolyPrecis(	ACTIVECAM->pos.x+EEsin(vvv)*dist,
 								ACTIVECAM->pos.y,
 								ACTIVECAM->pos.z-EEcos(vvv)*dist);
@@ -4341,9 +4341,9 @@ void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag, long param)
 
 	if ((FRAME_COUNT<=0) && (ModeLight & MODE_DYNAMICLIGHT)) PrecalcDynamicLighting(x0,z0,x1,z1);
 
-	float temp0=DEG2RAD(ACTIVECAM->angle.b);
+	float temp0=radians(ACTIVECAM->angle.b);
 	ACTIVECAM->norm.x=-(float)EEsin(temp0);
-	ACTIVECAM->norm.y= (float)EEsin(DEG2RAD(ACTIVECAM->angle.a));
+	ACTIVECAM->norm.y= (float)EEsin(radians(ACTIVECAM->angle.a));
 	ACTIVECAM->norm.z= (float)EEcos(temp0);
 	float dddd=1.f/EEsqrt(ACTIVECAM->norm.x*ACTIVECAM->norm.x+ACTIVECAM->norm.y*ACTIVECAM->norm.y+ACTIVECAM->norm.z*ACTIVECAM->norm.z);
 	ACTIVECAM->norm.x*=dddd;

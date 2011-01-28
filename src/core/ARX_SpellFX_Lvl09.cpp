@@ -196,7 +196,7 @@ void CSummonCreature::Create(EERIE_3D aeSrc, float afBeta)
 	eSrc.z = aeSrc.z;
 
 	fBeta = afBeta;
-	fBetaRad = DEG2RAD(fBeta);
+	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
 	sizeF = 0;
@@ -700,7 +700,7 @@ void CIncinerate::Create(EERIE_3D _eSrc, float _fBeta)
 	cp.p3Direction.x = + fBetaRadSin * 4;
 	cp.p3Direction.y = 0;
 	cp.p3Direction.z = - fBetaRadCos * 4;
-	cp.fAngle = DEG2RAD(1);
+	cp.fAngle = radians(1);
 	cp.fSpeed = 0;
 	cp.fSpeedRandom = 20;
 	cp.p3Gravity.x = 0;
@@ -931,7 +931,7 @@ void CNegateMagic::Create(EERIE_3D aeSrc, float afBeta)
 	eSrc.z = aeSrc.z;
 
 	fBeta = afBeta;
-	fBetaRad = DEG2RAD(fBeta);
+	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
 

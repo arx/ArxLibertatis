@@ -2490,8 +2490,8 @@ void PlayerLaunchArrow_Test(float aimratio,float poisonous,EERIE_3D * pos,EERIE_
 	position.x=pos->x;
 	position.y=pos->y;
 	position.z=pos->z;
-	anglea=DEG2RAD(angle->a);
-	angleb=DEG2RAD(angle->b);
+	anglea=radians(angle->a);
+	angleb=radians(angle->b);
 	vect.x=-EEsin(angleb)*EEcos(anglea);
 	vect.y= EEsin(anglea);
 	vect.z= EEcos(angleb)*EEcos(anglea);
@@ -2564,8 +2564,8 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 		Vector_Copy(&position,&inter.iobj[0]->obj->vertexlist3[inter.iobj[0]->obj->fastaccess.left_attach].v);
 	}
 
-	anglea=DEG2RAD(player.angle.a);
-	angleb=DEG2RAD(player.angle.b);
+	anglea=radians(player.angle.a);
+	angleb=radians(player.angle.b);
 	vect.x=-EEsin(angleb)*EEcos(anglea);
 	vect.y= EEsin(anglea);
 	vect.z= EEcos(angleb)*EEcos(anglea);
@@ -6073,7 +6073,7 @@ static float _AvgFrameDiff = 150.f;
 	}
 	else if (EXTERNALVIEW)
 	{
-		float t=DEG2RAD(player.angle.b);
+		float t=radians(player.angle.b);
 		EERIE_3D tt;
 
 		for (long l=0;l<250;l+=10)
@@ -6227,7 +6227,7 @@ static float _AvgFrameDiff = 150.f;
 			targetpos.x=player.pos.x;
 			targetpos.y=player.pos.y;
 			targetpos.z=player.pos.z;
-			float t=DEG2RAD(player.angle.b);
+			float t=radians(player.angle.b);
 			sourcepos.x=targetpos.x+(float)EEsin(t)*100.f;
 			sourcepos.y=targetpos.y;
 			sourcepos.z=targetpos.z-(float)EEcos(t)*100.f;
@@ -6246,7 +6246,7 @@ static float _AvgFrameDiff = 150.f;
 		if (dist<0.f) dist=(90.f-(dist*( 1.0f / 20 )));
 		else if (dist<90.f) dist=90.f;
 
-		_YRotatePoint(&vect,&vec2,EEcos(DEG2RAD(conversationcamera.size.a)),EEsin(DEG2RAD(conversationcamera.size.a)));
+		_YRotatePoint(&vect,&vec2,EEcos(radians(conversationcamera.size.a)),EEsin(radians(conversationcamera.size.a)));
 		
 		sourcepos.x=targetpos.x-vec2.x*dist;
 		sourcepos.y=targetpos.y-vec2.y*dist;
@@ -6335,9 +6335,9 @@ static float _AvgFrameDiff = 150.f;
 						targetpos.x=acs->pos1.x;
 						targetpos.y=acs->pos1.y;
 						targetpos.z=acs->pos1.z;
-						conversationcamera.pos.x=-EEsin(DEG2RAD(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.x;
-						conversationcamera.pos.y= EEsin(DEG2RAD(MAKEANGLE(io->angle.a+alpha)))*distance+targetpos.y;
-						conversationcamera.pos.z= EEcos(DEG2RAD(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.z;						
+						conversationcamera.pos.x=-EEsin(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.x;
+						conversationcamera.pos.y= EEsin(radians(MAKEANGLE(io->angle.a+alpha)))*distance+targetpos.y;
+						conversationcamera.pos.z= EEcos(radians(MAKEANGLE(io->angle.b+beta)))*distance+targetpos.z;						
 						SetTargetCamera(&conversationcamera,targetpos.x,targetpos.y,targetpos.z);
 						subj.pos.x=conversationcamera.pos.x;
 						subj.pos.y=conversationcamera.pos.y;
@@ -6572,7 +6572,7 @@ static float _AvgFrameDiff = 150.f;
 			if (EEfabs(delta_angle_t) > EEfabs(delta_angle)) delta_angle_t = delta_angle;
 
 			currentbeta += delta_angle_t;
-		float t=DEG2RAD(MAKEANGLE(currentbeta));
+		float t=radians(MAKEANGLE(currentbeta));
 		conversationcamera.pos.x=targetpos.x+(float)EEsin(t)*160.f;
 		conversationcamera.pos.y=targetpos.y+40.f;
 		conversationcamera.pos.z=targetpos.z-(float)EEcos(t)*160.f;
@@ -6679,7 +6679,7 @@ static float _AvgFrameDiff = 150.f;
 	// Set Listener Position
 	EERIE_3D front, up;
 	float t;
-	t=DEG2RAD(MAKEANGLE(ACTIVECAM->angle.b));			
+	t=radians(MAKEANGLE(ACTIVECAM->angle.b));			
 	front.x=-EEsin(t);
 	front.y=0.f;
 	front.z=EEcos(t);

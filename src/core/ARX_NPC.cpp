@@ -492,7 +492,7 @@ long AnchorData_GetNearest(EERIE_3D * pos, EERIE_CYLINDER * cyl)
 long AnchorData_GetNearest_2(float beta, EERIE_3D * pos, EERIE_CYLINDER * cyl)
 {
 	EERIE_3D vect;
-	float d = DEG2RAD(beta);
+	float d = radians(beta);
 	vect.x = -EEsin(d);
 	vect.y = 0;
 	vect.z = EEcos(d);
@@ -1246,7 +1246,7 @@ void FaceTarget2(INTERACTIVE_OBJ * io)
 	if (Distance2D(tv.x, tv.z, io->target.x, io->target.z) <= 5.f) return;
 
 	float cangle, tangle;
-	tangle = MAKEANGLE(180.f + RAD2DEG(GetAngle(io->target.x, io->target.z, tv.x, tv.z)));
+	tangle = MAKEANGLE(180.f + degrees(GetAngle(io->target.x, io->target.z, tv.x, tv.z)));
 	cangle = io->angle.b;
 
 	float tt = (cangle - tangle);
@@ -1313,7 +1313,7 @@ void StareAtTarget(INTERACTIVE_OBJ * io)
 	float rot = 0.27f * _framedelay;
 	float alpha = MAKEANGLE(io->angle.b);
 	float beta = -io->head_rot; 
-	float pouet = MAKEANGLE(180.f + RAD2DEG(GetAngle(io->target.x, io->target.z, tv.x, tv.z)));
+	float pouet = MAKEANGLE(180.f + degrees(GetAngle(io->target.x, io->target.z, tv.x, tv.z)));
 	float A = MAKEANGLE((MAKEANGLE(alpha + beta) - pouet));
 	float B = MAKEANGLE(alpha - pouet);
 
@@ -1754,9 +1754,9 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	io->velocity.z				=	0.f;
 	io->stopped					=	1;
 
-	vector.x					=	-(float)EEsin(DEG2RAD(io->angle.b));
-	vector.y					=	EEsin(DEG2RAD(io->angle.a)) * 2.f; 
-	vector.z					=	(float)EEcos(DEG2RAD(io->angle.b));
+	vector.x					=	-(float)EEsin(radians(io->angle.b));
+	vector.y					=	EEsin(radians(io->angle.a)) * 2.f; 
+	vector.z					=	(float)EEcos(radians(io->angle.b));
 	Vector_Normalize(&vector);
 	pos.x						=	io->pos.x;
 	pos.y						=	io->pos.y;
@@ -2320,7 +2320,7 @@ bool TryIOAnimMove(INTERACTIVE_OBJ * io, long animnum)
 
 	EERIE_3D trans, trans2;
 	GetAnimTotalTranslate(io->anims[animnum], 0, &trans);
-	float temp = DEG2RAD(MAKEANGLE(180.f - io->angle.b));
+	float temp = radians(MAKEANGLE(180.f - io->angle.b));
 	_YRotatePoint(&trans, &trans2, (float)EEcos(temp), (float)EEsin(temp));
 	IO_PHYSICS phys;
 	memcpy(&phys, &io->physics, sizeof(IO_PHYSICS));
@@ -2909,14 +2909,14 @@ void ManageNPCMovement(INTERACTIVE_OBJ * io)
 			aup->_curtime -= 500;
 			ARX_PATHS_Interpolate(aup, &tv);
 			aup->_curtime += 500;
-			io->angle.b = MAKEANGLE(RAD2DEG(GetAngle(tv.x, tv.z, io->pos.x, io->pos.z)));
+			io->angle.b = MAKEANGLE(degrees(GetAngle(tv.x, tv.z, io->pos.x, io->pos.z)));
 		}
 		else
 		{
 			aup->_curtime += 500;
 			ARX_PATHS_Interpolate(aup, &tv);
 			aup->_curtime -= 500;
-			io->angle.b = MAKEANGLE(180.f + RAD2DEG(GetAngle(tv.x, tv.z, io->pos.x, io->pos.z)));
+			io->angle.b = MAKEANGLE(180.f + degrees(GetAngle(tv.x, tv.z, io->pos.x, io->pos.z)));
 		}
 
 		return;
@@ -3901,7 +3901,7 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo)
 
 
 		float aa = GetAngle(orgn.x, orgn.z, dest.x, dest.z);
-		aa = MAKEANGLE(RAD2DEG(aa));
+		aa = MAKEANGLE(degrees(aa));
 
 		if (EEfabs(AngularDifference(aa, ab)) < 110.f)
 		{
@@ -4098,7 +4098,7 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 
 			// Check for Field of vision angle
 			float aa = GetAngle(orgn.x, orgn.z, dest.x, dest.z);
-			aa = MAKEANGLE(RAD2DEG(aa));
+			aa = MAKEANGLE(degrees(aa));
 			float ab = MAKEANGLE(io->angle.b);
 
 			if (EEfabs(AngularDifference(aa, ab)) < 110.f)

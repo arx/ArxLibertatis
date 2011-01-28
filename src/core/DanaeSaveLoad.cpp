@@ -1565,9 +1565,9 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * fic)
 			fd->move.z = 0.f;
 			EERIE_3D out;
 			float t;
-			t = DEG2RAD(MAKEANGLE(fd->angle.b));
+			t = radians(MAKEANGLE(fd->angle.b));
 			_YRotatePoint(&fd->move, &out, EEcos(t), EEsin(t));
-			t = DEG2RAD(MAKEANGLE(fd->angle.a));
+			t = radians(MAKEANGLE(fd->angle.a));
 			_XRotatePoint(&out, &fd->move, EEcos(t), EEsin(t));
 		}
 	}

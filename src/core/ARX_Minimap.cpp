@@ -741,7 +741,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 				float rx3 = val * ( 1.0f / 2 );
 				float ry3 = val;
 
-				float angle = DEG2RAD(player.angle.b);
+				float angle = radians(player.angle.b);
 				float ca = EEcos(angle);
 				float sa = EEsin(angle);
 
