@@ -40,7 +40,7 @@ extern long FRENCH_VERSION;
 extern long CHINESE_VERSION;
 extern long FINAL_COMMERCIAL_GAME;
 
-extern PROJECT			Project;
+extern PROJECT Project;
 extern long FINAL_COMMERCIAL_DEMO;
 using namespace std;
 extern CMenuConfig * pMenuConfig;
@@ -234,9 +234,9 @@ _TCHAR * CleanKey(const _TCHAR * _lpszUText)
 void ParseFile( const std::string& _lpszUTextFile, const unsigned long _ulFileSize)
 {
 	std::string temp = _lpszUTextFile;
-	const char* pFile = temp.c_str();
 	temp.erase( 0, 1 ); // TODO This apparently removes a unicode header?
 	unsigned long ulFileSize = _ulFileSize - 1;
+
 
 	// Remove all comments from the input string
 	while ( true )
@@ -302,7 +302,7 @@ void ParseFile( const std::string& _lpszUTextFile, const unsigned long _ulFileSi
 	}
 */
 
-	list< std::string >::iterator iter;
+	list< std::string >::iterator iter = strings.begin();
 
 	while ( iter != strings.end() )
 	{
@@ -390,27 +390,28 @@ void ARX_Localisation_Init(const char * _lpszExtension)
 		ARX_Localisation_Close();
 	}
 
-	char tx[256];
-	ZeroMemory(tx, 256);
-	sprintf(tx, "localisation\\utext_%s.ini", Project.localisationpath.c_str());
-
+	std::string tx = "localisation\\utext_" + Project.localisationpath + ".ini";
+	
+	std::string temp = tx;
 	size_t LocalisationSize = 0;
 	std::string Localisation;
 
-	Localisation = (char*)PAK_FileLoadMallocZero(tx, LocalisationSize);
+	char* memory = (char*)PAK_FileLoadMallocZero(tx, LocalisationSize);
+	
+	if ( memory ) // Nullpointers do not go well with strings
+		Localisation = (char*) memory;
 
 	if ( Localisation.empty())
 	{
 		if (GERMAN_VERSION || FRENCH_VERSION)
 		{
-			delete pMenuConfig;	
+			delete pMenuConfig;
 			pMenuConfig = NULL;
 			exit(0);
 		}
 
-		ZeroMemory(tx, 256);
 		Project.localisationpath = "english";
-		sprintf(tx, "localisation\\utext_%s.ini", Project.localisationpath.c_str());
+		tx = "localisation\\utext_" + Project.localisationpath + ".ini";
 		Localisation = (char*)PAK_FileLoadMallocZero(tx, LocalisationSize);
 
 	}
