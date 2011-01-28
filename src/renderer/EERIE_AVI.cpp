@@ -37,6 +37,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/ARX_Menu2.h"			// CDirectInput
 
+#include "io/Logger.h"
+
 
 //-----------------------------------------------------------------------------
 #define CLASSNAME "VideoWindow"
@@ -119,9 +121,11 @@ bool PlayFile(HWND hWnd, char * file)
 		pBasicVideo->SetDestinationPosition(lLeft, lTop, w, h);
 		pBasicVideo->SetSourcePosition(lLeft, lTop, w, h);
 
+		LogWarning << "PlayFile";
+		/*
 		HDC hDC = GetDC(hWnd);
 		FillRect(hDC, &grc, (HBRUSH) GetStockObject(BLACK_BRUSH));
-		ReleaseDC(hWnd, hDC);
+		ReleaseDC(hWnd, hDC);*/
 
 		// Run the graph.
 		pMediaControl->Run();
