@@ -1,0 +1,26 @@
+
+ ----------------------------
+| Building Arx Fatalis Fixed |
+ ----------------------------
+
+Requirements:
+ - VS2010
+ - DirectX SDK August 2006 (http://www.microsoft.com/downloads/en/details.aspx?FamilyID=c72d9f1e-53f3-4747-8490-6801d8e8b4ef)
+
+Note: more recent DirectX SDKs won't work (you can have more than one installed though)
+
+
+Steps:
+1) Choose one of the following methods:
+   a] copy your SDK folders Include/ and Lib/x86/ to the Sources/DX/Include and
+      Sources/DX/Lib/x86 directory
+   b] symlink Sources/DX/ to your DirectX SDK directory
+   c] make sure VS2010 can find your DirectX SDK files
+2) Open Sources/Gaia.sln
+3) Build whole solution
+4) Obtain fresh binaries from game/ folder
+5) Profit
+
+Note: On my computer (win7) after installing DX SDK I got compiler errors in one of the
+windows headers. I've been able to fix it by removing/renaming the file Include/rpcsal.h
+from DirectX SDK.
