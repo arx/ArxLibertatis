@@ -109,15 +109,12 @@ class CARXTextManager
 
 //-----------------------------------------------------------------------------
 extern CARXTextManager * pTextManage;
-extern _TCHAR * lpszFontMenu;
-extern _TCHAR * lpszFontIngame;
 
 extern HFONT hFontMainMenu;
 extern HFONT hFontMenu;
 extern HFONT hFontControls;
 extern HFONT hFontCredits;
 extern HFONT InBookFont;
-extern HFONT hFontRedist;
 extern HFONT hFontInGame;
 extern HFONT hFontInGameNote;
 
