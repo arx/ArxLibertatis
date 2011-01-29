@@ -54,6 +54,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+
+#include "renderer/EERIEAnim.h"
+
 #include <cstdio>
 #include <iostream>
 #include <algorithm>
@@ -62,13 +65,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 using std::sprintf;
 
-#include "renderer/EERIEAnim.h"
 #include "renderer/EERIEClothes.h"
 #include "renderer/EERIEObject.h"
 #include "renderer/EERIEMath.h"
 #include "renderer/EERIELight.h"
 #include "renderer/EERIEPoly.h"
 #include "renderer/EERIEDraw.h"
+
 #include "core/ARX_Sound.h"
 #include "core/ARX_Damages.h"
 #include "core/ARX_Particles.h"
@@ -78,8 +81,12 @@ using std::sprintf;
 #include "core/ARX_Time.h"
 #include "core/Danae.h"
 #include "core/ARX_Cedric.h"
+
 #include "io/HERMESMain.h"
 #include "io/PakManager.h"
+
+using std::min;
+using std::max;
 
 #define SOFTNEARCLIPPTANDLZ (60.f)
 

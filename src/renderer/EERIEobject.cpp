@@ -83,6 +83,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 
 using std::sprintf;
+using std::min;
+using std::max;
 
 extern char LastLoadedScene[256];
 extern PakManager * pPakManager;

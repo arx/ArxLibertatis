@@ -54,15 +54,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <stdio.h>
 
 #include "renderer/EERIEMeshTweak.h"
+
+#include <cstdio>
+
 #include "renderer/EERIEApp.h"
 #include "renderer/EERIEObject.h"
 #include "renderer/EERIEMath.h"
+
 #include "io/HERMESMain.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
+
+using std::max;
 
 void EERIE_MESH_ReleaseTransPolys(EERIE_3DOBJ * obj)
 {

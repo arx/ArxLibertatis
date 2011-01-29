@@ -6,7 +6,7 @@
 
 #define NOMINMAX 1
 
-#include <math.h>
+#include <cmath>
 
 #pragma GCC diagnostic ignored "-fpermissive"
 #include <d3d.h>

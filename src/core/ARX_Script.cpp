@@ -55,8 +55,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include "core/ARX_Script.h"
+
 //TODO(lubosz): don't inlcude so much, move to scripting folder
-#include <stdlib.h>
+#include <cstdlib>
 #include <cstdio>
 #include <cassert>
 #include <iostream>
@@ -69,7 +71,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIELinkedObj.h"
 #include "renderer/EERIEPathfinder.h"
 #include "renderer/EERIECollisionSpheres.h"
-#include "core/ARX_Script.h"
+
 #include "core/ARX_CCinematique.h"
 #include "core/ARX_Collisions.h"
 #include "core/ARX_Damages.h"
@@ -92,11 +94,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/ARX_Loc.h"
 #include "core/DanaeDlg.h"
 #include "core/Danae_resource.h"
+
 #include "io/HERMESMain.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
 
 using std::sprintf;
+using std::min;
+using std::max;
 
 extern long GLOBAL_MAGIC_MODE;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;

@@ -54,11 +54,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <stdlib.h>
+
+#include "core/ARX_Speech.h"
+
+#include <cstdlib>
 
 #include "core/Danae.h"
 #include "core/ARX_Interface.h"
-#include "core/ARX_Speech.h"
 #include "core/ARX_Text.h"
 #include "core/ARX_Script.h"
 #include "core/ARX_Sound.h"
@@ -71,6 +73,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/HERMESMain.h"
 #include "io/Logger.h"
+
+using std::min;
+using std::max;
 
 //-----------------------------------------------------------------------------
 extern TextureContainer *	arx_logo_tc;

@@ -54,22 +54,29 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+
+#include "core/ARX_Minimap.h"
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <stdio.h>
+#include <cstdio>
 #include <algorithm>
 
 #include "core/ARX_Text.h"
 #include "core/ARX_Levels.h"
-#include "core/ARX_Minimap.h"
 #include "core/Danae.h"
+
 #include "renderer/EERIELight.h"
 #include "renderer/EERIEPhysicsBox.h"
 #include "renderer/EERIEDraw.h"
 #include "renderer/EERIEObject.h"
+
 #include "io/HERMESMain.h"
 #include "io/PakManager.h"
+
+using std::min;
+using std::max;
 
 MINI_MAP_DATA minimap[MAX_MINIMAPS];
 float mini_offset_x[MAX_MINIMAPS];

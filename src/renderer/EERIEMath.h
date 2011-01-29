@@ -58,8 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "EERIETypes.h"
 #include "EERIEPoly.h"
-using std::min;
-using std::max;
 
 //-----------------------------------------------------------------------------
 // RANDOM Sequences Funcs/Defs
