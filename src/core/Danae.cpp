@@ -7580,8 +7580,6 @@ void ShowInfoText(long COR)
 extern long POLYIN;
 extern long NOT_MOVED_AT_ALL;
 extern long LAST_LLIGHT_COUNT;
-extern long MCache_Number;
-extern long MCache_GetSize();
 extern float PLAYER_CLIMB_THRESHOLD, player_climb;
 extern float TOTAL_CHRONO;
 		
@@ -7616,8 +7614,9 @@ void ShowFPS()
 	danaeApp.OutputText( 70, DANAESIZY-100+32, tex );
 
 	TOTAL_CHRONO=0;
-	sprintf(tex,"%4.0f MCache %ld[%ld] NOT %ld FP %3.0f %3.0f Llights %ld/%ld TOTIOPDL %ld TOTPDL %ld"
-		,inter.iobj[0]->pos.y, MCache_Number,MCache_GetSize(),NOT_MOVED_AT_ALL,Original_framedelay,_framedelay,LAST_LLIGHT_COUNT,MAX_LLIGHTS,TOTIOPDL,TOTPDL);
+//	TODO(lubosz): Don't get this by extern global
+//	sprintf(tex,"%4.0f MCache %ld[%ld] NOT %ld FP %3.0f %3.0f Llights %ld/%ld TOTIOPDL %ld TOTPDL %ld"
+//		,inter.iobj[0]->pos.y, meshCache.size(),MCache_GetSize(),NOT_MOVED_AT_ALL,Original_framedelay,_framedelay,LAST_LLIGHT_COUNT,MAX_LLIGHTS,TOTIOPDL,TOTPDL);
 
 	if (LAST_LLIGHT_COUNT>MAX_LLIGHTS)
 		strcat(tex," EXCEEDING LIMIT !!!");

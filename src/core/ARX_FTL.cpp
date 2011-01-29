@@ -480,18 +480,18 @@ typedef struct
 	std::string name;
 	char * data;
 	size_t size;
-} MCACHE_DATA;
+} MeshData;
 
-MCACHE_DATA * MCache = NULL;
-long MCache_Number = 0;
+vector<MeshData> meshCache;
 
 long MCache_GetSize()
+//Calculate size of all meshes
 {
 	long tot = 0;
 
-	for (long i = 0; i < MCache_Number; i++)
+	for (long i = 0; i < meshCache.size(); i++)
 	{
-		tot += MCache[i].size;
+		tot += meshCache[i].size;
 	}
 
 	return tot;
@@ -507,8 +507,8 @@ long MCache_Get( const std::string file)
 
     File_Standardize(file, fic);
 
-    for (long i = 0; i < MCache_Number; i++)
-        if ( !strcasecmp(MCache[i].name.c_str(), fic.c_str() ) ) return i;
+    for (long i = 0; i < meshCache.size(); i++)
+        if ( !strcasecmp(meshCache[i].name.c_str(), fic.c_str() ) ) return i;
 
     return -1;
 }
@@ -525,11 +525,18 @@ bool MCache_Push( const std::string& file, char * data, size_t size)
 
 	if (MCache_Get(fic.c_str()) != -1) return false; // already cached
 
-	MCache = (MCACHE_DATA *)realloc(MCache, sizeof(MCACHE_DATA) * (MCache_Number + 1));
-	MCache[MCache_Number].name = fic;
-	MCache[MCache_Number].data = data;
-	MCache[MCache_Number].size = size;
-	MCache_Number++;
+	LogDebug << fic  << " " << file << " #" << meshCache.size();
+
+//	MCache = (MCACHE_DATA *)realloc(MCache, sizeof(MCACHE_DATA) * (MCache_Number + 1));
+//	MCache[MCache_Number].size = size;
+//	MCache[MCache_Number].data = data;
+//	MCache[MCache_Number].name = fic;
+//	MCache_Number++;
+	MeshData newMesh;
+	newMesh.size = size;
+	newMesh.data = data;
+	newMesh.name = fic;
+	meshCache.push_back(newMesh);
 
 	return true;
 }
@@ -540,13 +547,7 @@ bool MCache_Push( const std::string& file, char * data, size_t size)
 //-----------------------------------------------------------------------------
 void MCache_ClearAll()
 {
-	for (long i(0); i < MCache_Number; i++)
-	{
-    MCache[i].name.clear();
-		free(MCache[i].data), MCache[i].data = NULL;
-	}
-
-	free(MCache), MCache = NULL, MCache_Number = 0;
+	meshCache.erase(meshCache.begin(),meshCache.end());
 }
 
 //***********************************************************************************************
@@ -560,8 +561,8 @@ char * MCache_Pop( const char * file, size_t * size)
 
 	if (num == -1) return NULL;
 
-	*size = MCache[num].size;
-	return MCache[num].data;
+	*size = meshCache[num].size;
+	return meshCache[num].data;
 }
 
 void EERIE_OBJECT_MakeBH(EERIE_3DOBJ * obj)
