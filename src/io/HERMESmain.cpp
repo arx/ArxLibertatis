@@ -114,14 +114,7 @@ bool IsIn(const char * strin, const char * str)
 
 bool NC_IsIn(const char * strin, const char * str)
 {
-	char * tmp;
-	char t1[4096];
-	char t2[4096];
-	strcpy(t1, strin);
-	strcpy(t2, str);
-	MakeUpcase(t1);
-	MakeUpcase(t2);
-	tmp = strstr(t1, t2);
+	const char * tmp = strcasestr(strin, str);
 	
 	if (tmp == NULL) return false;
 	
