@@ -3368,8 +3368,7 @@ long MakeLocalised(const char * text, char * output, long maxsize)
 	}
 
 	_TCHAR __text[256];
-	//todo cast
-	//MultiByteToWideChar(CP_ACP, 0, text, -1, __text, 256);
+	MultiByteToWideChar(CP_ACP, 0, text, -1, (wchar_t*)__text, 256);
 	return HERMES_UNICODE_GetProfileString(__text, "error", output, maxsize);
 }
 
@@ -3379,8 +3378,7 @@ long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const char * _lpszText, long 
 	_TCHAR __output[4096];
 	memset(__output, 0, 4096);
 	_TCHAR __text[256];
-	//todo cast
-	//MultiByteToWideChar(CP_ACP, 0, _lpszText, -1, __text, 256);
+	MultiByteToWideChar(CP_ACP, 0, _lpszText, -1, (wchar_t*)__text, 256);
 
 	HERMES_UNICODE_GetProfileString(
 	    __text,
@@ -11927,8 +11925,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					else
 					{
 						_TCHAR UText[512];
-//						todo cast
-//						MultiByteToWideChar(CP_ACP, 0, tempp, -1, UText, 256);
+						MultiByteToWideChar(CP_ACP, 0, tempp, -1, (wchar_t*)UText, 256);
 						ARX_SPEECH_Add(NULL, UText);
 					}
 
