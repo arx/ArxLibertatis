@@ -477,9 +477,9 @@ void GetTextSize(HFONT _hFont, _TCHAR *_lpszUText, int *_iWidth, int *_iHeight)
 	HDC hDC;
 
 	if (danaeApp.m_pddsRenderTarget)
-    {
-        if (SUCCEEDED( danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
-        {
+	{
+		if (SUCCEEDED( danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
+		{
 			SelectObject(hDC, _hFont);
 
 			SIZE sSize;
@@ -488,7 +488,7 @@ void GetTextSize(HFONT _hFont, _TCHAR *_lpszUText, int *_iWidth, int *_iHeight)
 			*_iWidth = sSize.cx;
 			*_iHeight = sSize.cy;
 
-            danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
+			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 		}
 	}
 }
@@ -1394,7 +1394,7 @@ bool CMenuConfig::ReadAll()
 		bWarningGore=true;
 	}
 
-    ARX_Localisation_Init();
+	ARX_Localisation_Init();
 
 	bGameNotFirstLaunch = ReadConfigInt("FIRSTRUN","int",bOkTemp)?true:false;
 
@@ -3353,7 +3353,7 @@ int iDecMenuPrincipaleY=50;
 					metemp->SetCheckOff();
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_DEBUGSETTING, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
 
- 					((CMenuCheckButton*)me)->iState=ARXMenu_Options_Video_SetSoftRender();
+					((CMenuCheckButton*)me)->iState=ARXMenu_Options_Video_SetSoftRender();
 
 					pWindowMenuConsole->AddMenuCenterY(me);
 
@@ -3653,21 +3653,19 @@ int iDecMenuPrincipaleY=50;
 					if (!INTERNATIONAL_MODE)
 					{
 						PAK_UNICODE_GetPrivateProfileString(_T("system_menus_options_input_customize_controls_link_use_to_mouselook"), _T("string"), _T("?"), szMenuText, 256, NULL);
-						\
-				pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
-				pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
-				pElementText= new CMenuElementText(-1, hFontControls, szMenuText, CUSTOM_CTRL_X0, 0,lColor,.7f, NOP);
-				me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_LINK, 0, 0, pTex1->m_dwWidth>>1, pTex1, pTex2, pElementText);
-				me->Move(0,fControlPosY);
+						pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
+						pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_on.bmp");
+						pElementText= new CMenuElementText(-1, hFontControls, szMenuText, CUSTOM_CTRL_X0, 0,lColor,.7f, NOP);
+						me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_LINK, 0, 0, pTex1->m_dwWidth>>1, pTex1, pTex2, pElementText);
+						me->Move(0,fControlPosY);
 						pWindowMenuConsole->AddMenu(me);
-						\
-							fControlPosY += ARX_CLEAN_WARN_CAST_LONG(me->GetHeight() + RATIO_Y(3.f));
+						fControlPosY += ARX_CLEAN_WARN_CAST_LONG(me->GetHeight() + RATIO_Y(3.f));
 
-				if(pMenuConfig->bLinkMouseLookToUse)
-				{
-					((CMenuCheckButton*)me)->iState=1;
-				}
-				}
+						if(pMenuConfig->bLinkMouseLookToUse)
+						{
+							((CMenuCheckButton*)me)->iState=1;
+						}
+					}
 
 					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_action_combine",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE2);
 					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_jump",1,BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP2);
@@ -4608,9 +4606,7 @@ CMenuElement* CMenuElementText::OnShortCut()
 
 void CMenuElementText::Render()
 {
-
 	if(WILL_RELOAD_ALL_TEXTURES) return;
-
 	if(bNoMenu) return;
 
 	EERIE_3D ePos;
@@ -4620,10 +4616,8 @@ void CMenuElementText::Render()
 
 	if (bSelected)
 		FontRenderText(pHFont, ePos, lpszText, lColorHighlight);
-
 	else
 		FontRenderText(pHFont, ePos, lpszText, lColor);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -4631,7 +4625,6 @@ void CMenuElementText::Render()
 void CMenuElementText::RenderMouseOver()
 {
 	if(WILL_RELOAD_ALL_TEXTURES) return;
-
 	if(bNoMenu) return;
 
 	pGetInfoDirectInput->SetMouseOver();
@@ -5009,16 +5002,9 @@ CMenuZone * CMenuAllZone::GetZoneNum(int _iNum)
 
 CMenuZone * CMenuAllZone::GetZoneWithID(int _iID)
 {
-	vector<CMenuZone*>::iterator i;
-
-	for(i=vMenuZone.begin();i!=vMenuZone.end();i++)
-	{
-		CMenuZone *zone;
-		CMenuElement *me=(CMenuElement*)(*i);
-		zone=me->GetZoneWithID(_iID);
-
-		if(zone) return zone;
-	}
+	for (vector<CMenuZone*>::iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i)
+		if (CMenuZone *zone = ((CMenuElement*)(*i))->GetZoneWithID(_iID))
+			return zone;
 
 	return NULL;
 }
@@ -5027,12 +5013,8 @@ CMenuZone * CMenuAllZone::GetZoneWithID(int _iID)
 
 void CMenuAllZone::Move(int _iPosX,int _iPosY)
 {
-	vector<CMenuZone*>::iterator i;
-
-	for(i=vMenuZone.begin();i!=vMenuZone.end();i++)
-	{
+	for (vector<CMenuZone*>::iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i)
 		(*i)->Move(_iPosX, _iPosY);
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -5054,11 +5036,9 @@ void CMenuAllZone::DrawZone()
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 	SETALPHABLEND(GDevice,true);
 
-	vector<CMenuZone*>::iterator i;
-
 	SETTC(GDevice,NULL);
 
-	for(i=vMenuZone.begin();i!=vMenuZone.end();i++)
+	for(vector<CMenuZone*>::const_iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i)
 	{
 		CMenuZone *zone=*i;
 
@@ -5093,75 +5073,72 @@ void CMenuAllZone::DrawZone()
 
 //-----------------------------------------------------------------------------
 
-CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTaille,TextureContainer *_pTex1,TextureContainer *_pTex2, CMenuElementText *_pText)
-:CMenuElement(NOP)
+CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX, float _fPosY, int _iTaille, TextureContainer *_pTex1, TextureContainer *_pTex2, CMenuElementText *_pText)
+: CMenuElement(NOP)
+, iState(0)
+, iOldState(-1)
+, iPosX(ARX_CLEAN_WARN_CAST_INT(_fPosX))
+, iPosY(ARX_CLEAN_WARN_CAST_INT(_fPosY))
+, iTaille(_iTaille)
+, pAllCheckZone()
+, vTex()
+, fTexX_()  // ,
+, fTexY_()  // |  these get computed by ComputeTexturesPosition()
+, fTexSX_() // |  called by Move()
+, fTexSY_() // '
+, pText(_pText)
 {
-	iID = _iID;
-	iState	= 0;
-	iOldState = -1;
-
-
 	ARX_CHECK_INT(_fPosX);
 	ARX_CHECK_INT(_fPosY);
-	iPosX	= ARX_CLEAN_WARN_CAST_INT(_fPosX);
-	iPosY	= ARX_CLEAN_WARN_CAST_INT(_fPosY);
 
-
-	iTaille = _iTaille;
-
-	pText	= _pText;
+	// CMenuZone
+	iID = _iID;
 
 	if (_pTex1)
 	{
-
 		float fRatioX = RATIO_X(_pTex1->m_dwWidth) ;
 		float fRatioY = RATIO_Y(_pTex1->m_dwHeight);
 		ARX_CHECK_INT(fRatioX);
 		ARX_CHECK_INT(fRatioY);
 
-		vTex.insert(vTex.end(), _pTex1);
+		vTex.push_back(_pTex1);
 		_iTaille = max (_iTaille, ARX_CLEAN_WARN_CAST_INT(fRatioX) );
 		_iTaille = max (_iTaille, ARX_CLEAN_WARN_CAST_INT(fRatioY) );
-
 	}
 
 	if (_pTex2)
 	{
-
 		float fRatioX = RATIO_X(_pTex2->m_dwWidth) ;
 		float fRatioY = RATIO_Y(_pTex2->m_dwHeight);
 		ARX_CHECK_INT(fRatioX);
 		ARX_CHECK_INT(fRatioY);
 
-		vTex.insert(vTex.end(), _pTex2);
+		vTex.push_back(_pTex2);
 		_iTaille = max (_iTaille, ARX_CLEAN_WARN_CAST_INT(fRatioX));
 		_iTaille = max (_iTaille, ARX_CLEAN_WARN_CAST_INT(fRatioY));
-
 	}
 
-	int x = 0;
-	int y = 0;
+	int text_sx = 0;
+	int text_sy = 0;
 
 	if (pText)
 	{
-		GetTextSize(pText->pHFont, pText->lpszText, &x, &y); 
+		GetTextSize(pText->pHFont, pText->lpszText, &text_sx, &text_sy); 
 
-		_iTaille = max (_iTaille, y);
-		x += pText->rZone.left;
-		pText->Move(iPosX, iPosY + (_iTaille - y) / 2);
+		_iTaille = max (_iTaille, text_sy);
+		text_sx += pText->rZone.left;
+		pText->Move(iPosX, iPosY + (_iTaille - text_sy) / 2);
 	}
-
-
 
 	ARX_CHECK_LONG( _fPosX );
 	ARX_CHECK_LONG( _fPosY );
-	ARX_CHECK_LONG( _fPosX + _iTaille + x );
-	ARX_CHECK_LONG( _fPosY + max(_iTaille, y) );
+	ARX_CHECK_LONG( _fPosX + _iTaille + text_sx );
+	ARX_CHECK_LONG( _fPosY + max(_iTaille, text_sy) );
 	//CAST
 	rZone.left		= ARX_CLEAN_WARN_CAST_LONG( _fPosX );
 	rZone.top		= ARX_CLEAN_WARN_CAST_LONG( _fPosY );
-	rZone.right		= ARX_CLEAN_WARN_CAST_LONG( _fPosX + _iTaille + x );
-	rZone.bottom	= ARX_CLEAN_WARN_CAST_LONG( _fPosY + max(_iTaille, y) );
+	rZone.right		= ARX_CLEAN_WARN_CAST_LONG( _fPosX + _iTaille + text_sx );
+	rZone.bottom	= ARX_CLEAN_WARN_CAST_LONG( _fPosY + max(_iTaille, text_sy) );
 	iId=(int)this;
 
 	if (_pTex2)
@@ -5171,8 +5148,6 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 		rZone.right = ARX_CLEAN_WARN_CAST_LONG ( rZoneR );
 	}
 
-
-
 	Move(iPosX, iPosY);
 }
 
@@ -5180,20 +5155,7 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 
 CMenuCheckButton::~CMenuCheckButton()
 {
-
-	vTex.clear();
-
-	if (pText)
-	{
-		delete pText;
-		pText = NULL;
-	}
-}
-
-//-----------------------------------------------------------------------------
-
-void CMenuCheckButton::Update(int _iDTime)
-{
+	delete pText;
 }
 
 //-----------------------------------------------------------------------------
@@ -5203,9 +5165,9 @@ void CMenuCheckButton::Move(int _iX, int _iY)
 	CMenuElement::Move(_iX, _iY);
 
 	if (pText)
-	{
 		pText->Move(_iX, _iY);
-	}
+
+	ComputeTexturesPosition();
 }
 
 //-----------------------------------------------------------------------------
@@ -5307,7 +5269,7 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton)
 				if(	(pMenuSliderResol)&&
 					(pMenuSliderResol->iOldPos>=0) )
 				{
-			 		pMenuSliderResol->iPos=pMenuSliderResol->iOldPos;
+					pMenuSliderResol->iPos=pMenuSliderResol->iOldPos;
 					pMenuSliderResol->iOldPos=-1;
 					pMenuConfig->iNewWidth=pMenuConfig->iWidth;
 					pMenuConfig->iNewHeight=pMenuConfig->iHeight;
@@ -5316,7 +5278,7 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton)
 				if(	(pMenuSliderBpp)&&
 					(pMenuSliderBpp->iOldPos>=0) )
 				{
-			 		pMenuSliderBpp->iPos=pMenuSliderBpp->iOldPos;
+					pMenuSliderBpp->iPos=pMenuSliderBpp->iOldPos;
 					pMenuSliderBpp->iOldPos=-1;
 					pMenuConfig->iNewBpp=pMenuConfig->iBpp;
 				}
@@ -5324,7 +5286,7 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton)
 				if(	(pMenuSliderTexture)&&
 					(pMenuSliderTexture->iOldPos>=0) )
 				{
-			 		pMenuSliderTexture->iPos=pMenuSliderTexture->iOldPos;
+					pMenuSliderTexture->iPos=pMenuSliderTexture->iOldPos;
 					pMenuSliderTexture->iOldPos=-1;
 					pMenuConfig->iNewTextureResol=pMenuConfig->iTextureResol;
 				}
@@ -5332,7 +5294,7 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton)
 				if(	(pMenuCheckButtonBump)&&
 					(pMenuCheckButtonBump->iOldState>=0) )
 				{
-			 		pMenuCheckButtonBump->iState=pMenuCheckButtonBump->iOldState;
+					pMenuCheckButtonBump->iState=pMenuCheckButtonBump->iOldState;
 					pMenuCheckButtonBump->iOldState=-1;
 					pMenuConfig->bNewBumpMapping=pMenuConfig->bBumpMapping;
 				}
@@ -5347,49 +5309,27 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton)
 
 //-----------------------------------------------------------------------------
 
+void CMenuCheckButton::Update(int /*_iDTime*/)
+{
+}
+
+//-----------------------------------------------------------------------------
+
 void CMenuCheckButton::Render()
 {
 	if(WILL_RELOAD_ALL_TEXTURES) return;
-
 	if(bNoMenu) return;
 
 	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 
-	if (vTex.size())
-	{
-		TextureContainer *pTex = vTex[iState];
-	
-		D3DTLVERTEX v[4];
-		unsigned long color;
-
-		if(bCheck)
-			color = ARX_OPAQUE_WHITE;
-		else
-			color=0xFF3F3F3F;	
-
-		v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;
-		v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
-		
-		float iY = 0;
-
-		{
-			iY = ARX_CLEAN_WARN_CAST_FLOAT(rZone.bottom - rZone.top);
-			iY -= iTaille;
-			iY = rZone.top + iY*0.5f;
-		}
-		
-		//carre
-		EERIEDrawBitmap2(GDevice, ARX_CLEAN_WARN_CAST_FLOAT(rZone.right - iTaille), iY, RATIO_X(iTaille), RATIO_Y(iTaille), 0.f, pTex, color);
-	}
+	if (!vTex.empty())
+		EERIEDrawBitmap2(GDevice, fTexX_, fTexY_, fTexSX_, fTexSY_, 0.f, vTex[iState], bCheck ? ARX_OPAQUE_WHITE : 0xFF3F3F3F);
 
 	if (pText)
-	{
 		pText->Render();
-	}
 
-	//DEBUG
 	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
 }
 
@@ -5398,7 +5338,6 @@ void CMenuCheckButton::Render()
 void CMenuCheckButton::RenderMouseOver()
 {
 	if(WILL_RELOAD_ALL_TEXTURES) return;
-
 	if(bNoMenu) return;
 
 	pGetInfoDirectInput->SetMouseOver();
@@ -5407,34 +5346,39 @@ void CMenuCheckButton::RenderMouseOver()
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 
-	TextureContainer *pTex = vTex[iState];
-
-	if(pTex) SETTC(GDevice, pTex);
-	else SETTC(GDevice,NULL);
-
-	D3DTLVERTEX v[4];
-	v[0].color = v[1].color = v[2].color = v[3].color = ARX_OPAQUE_WHITE;
-	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;	
-	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
-
-	float iY = 0;
-	iY = ARX_CLEAN_WARN_CAST_FLOAT(rZone.bottom - rZone.top);
-	iY -= iTaille;
-	iY = rZone.top + iY*0.5f;
-
-	//carre
-
-	EERIEDrawBitmap2(GDevice, ARX_CLEAN_WARN_CAST_FLOAT(rZone.right - iTaille), iY, RATIO_X(iTaille), RATIO_Y(iTaille), 0.f, pTex, ARX_OPAQUE_WHITE); 
-
-
-	//tick
-	if (pText)
+	if (!vTex.empty())
 	{
-		pText->RenderMouseOver();
+		SETTC(GDevice, vTex[iState]);
+		EERIEDrawBitmap2(GDevice, fTexX_, fTexY_, fTexSX_, fTexSY_, 0.f, vTex[iState], ARX_OPAQUE_WHITE);
 	}
 
-	//DEBUG
+	if (pText)
+		pText->RenderMouseOver();
+
 	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
+}
+
+//-----------------------------------------------------------------------------
+
+// Nuky - merges common code of Render() and RenderMouseOver()
+/// Compute members fTexX, fTexY, fTexSX and fTexSY according to rZone and iTaille
+void CMenuCheckButton::ComputeTexturesPosition()
+{
+	// Nuky - for now I split into 2 cases, because I don't know yet how to fix position with text
+	if (!pText)
+	{
+		fTexX_ = ARX_CLEAN_WARN_CAST_FLOAT(rZone.left);
+		fTexY_ = ARX_CLEAN_WARN_CAST_FLOAT(rZone.top);
+		fTexSX_ = RATIO_X(iTaille);
+		fTexSY_ = RATIO_Y(iTaille);
+	}
+	else
+	{
+		fTexX_ = ARX_CLEAN_WARN_CAST_FLOAT(rZone.right - iTaille);
+		fTexY_ = rZone.top + (ARX_CLEAN_WARN_CAST_FLOAT(rZone.bottom - rZone.top) - iTaille) * 0.5f;
+		fTexSX_ = RATIO_X(iTaille);
+		fTexSY_ = RATIO_Y(iTaille);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -5783,7 +5727,7 @@ static int scan2ascii(DWORD scancode, unsigned short* result)
    static unsigned char State[256];
 
    if (GetKeyboardState(State)==FALSE)
-      return 0;
+	  return 0;
  
    UINT vk=MapVirtualKeyEx(scancode,1,layout);
    return ToAsciiEx(vk,scancode,State,result,0,layout);

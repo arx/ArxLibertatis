@@ -20,6 +20,11 @@ computer. I can only hope it does. You can only pray it does. Remember to backup
 saves and original files (arx.exe, Athena.dll and ARX_SCRIPT_DEBUGGER.dll).
 
 
+ worked on
+-----------
+
+-Fixed main menu back buttons clickable zone to match their appearance
+
 
  v0.01 28/01/11
 ----------------
@@ -27,3 +32,4 @@ saves and original files (arx.exe, Athena.dll and ARX_SCRIPT_DEBUGGER.dll).
 -Increased ingame performance
 -Increased main menu performance
 -Fixed character speed increasing with computer uptime
+-Ingame minimap shows more of the surrounding map

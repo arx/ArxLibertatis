@@ -371,7 +371,7 @@ class CMenuZone
 			return (rZone.bottom - rZone.top);
 		}
 		virtual void Move(int, int);
-		virtual void SetPos(float, float); 
+		virtual void SetPos(float, float);
  
 		void SetCheckOff()
 		{
@@ -608,28 +608,38 @@ class CMenuSlider: public CMenuElement
 };
 
 //-----------------------------------------------------------------------------
+
 class CMenuCheckButton : public CMenuElement
 {
-	public:
-		int					iState;
-		int					iOldState;
-		int					iPosX;
-		int					iPosY;
-		int					iTaille;
-		CMenuAllZone	*	pAllCheckZone;
-		vector<TextureContainer *> vTex;
-		CMenuElementText	* pText;
-
 	public:
 		CMenuCheckButton(int, float, float, int, TextureContainer *, TextureContainer *, CMenuElementText * _pText = NULL); 
 		virtual ~CMenuCheckButton();
 
- 
+	public:
 		void Move(int, int);
 		bool OnMouseClick(int);
 		void Update(int);
 		void Render();
 		void RenderMouseOver();
+
+	public:
+		int					iState;
+		int					iOldState;
+
+	private:
+		void ComputeTexturesPosition();
+
+	private:
+		int					iPosX;
+		int					iPosY;
+		int					iTaille;
+		CMenuAllZone	*	pAllCheckZone;
+		vector<TextureContainer *> vTex;
+		float				fTexX_;			///< x of textures' topleft corner position
+		float				fTexY_;			///< y of textures' topleft corner position
+		float				fTexSX_;		///< width of textures
+		float				fTexSY_;		///< height of textures
+		CMenuElementText	* pText;
 };
 
 //-----------------------------------------------------------------------------
