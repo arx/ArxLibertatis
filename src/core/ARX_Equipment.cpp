@@ -223,7 +223,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				// retreives head sel
 				for (i = 0; i < io->obj->nbselections; i++)
 				{
-					if (!strcasecmp(io->obj->selections[i].name, "head"))
+					if (!strcasecmp(io->obj->selections[i].name.c_str(), "head"))
 					{
 						sel_ = i;
 						break;
@@ -279,7 +279,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				// retreives head sel
 				for (i = 0; i < io->obj->nbselections; i++)
 				{
-					if (!strcasecmp(io->obj->selections[i].name, "chest"))
+					if (!strcasecmp(io->obj->selections[i].name.c_str(), "chest"))
 					{
 						sel_ = i;
 						break;
@@ -335,7 +335,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				// retreives head sel
 				for (i = 0; i < io->obj->nbselections; i++)
 				{
-					if (!strcasecmp(io->obj->selections[i].name, "leggings"))
+					if (!strcasecmp(io->obj->selections[i].name.c_str(), "leggings"))
 					{
 						sel_ = i;
 						break;

@@ -225,21 +225,27 @@ typedef struct
 	float			distbump;
 	unsigned short	uslInd[4];
 } EERIEPOLY; // Aligned 1 2 4
- 
-typedef struct
+
+struct EERIE_OLD_VERTEX
 {
+	D3DTLVERTEX vert;
+	EERIE_3D	v;
+	EERIE_3D	norm;
+}; // Aligned 1 2 4
+
+struct EERIE_VERTEX
+{
+	EERIE_VERTEX() {}
+	EERIE_VERTEX( EERIE_OLD_VERTEX& rhs )
+	:
+		vert(rhs.vert), v(rhs.v), norm(rhs.norm)
+	{}
+
 	D3DTLVERTEX vert;
 	EERIE_3D	v;
 	EERIE_3D	norm;
 	EERIE_3D	vworld;
-} EERIE_VERTEX; // Aligned 1 2 4
-
-typedef struct
-{
-	D3DTLVERTEX vert;
-	EERIE_3D	v;
-	EERIE_3D	norm;
-} EERIE_OLD_VERTEX; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
 #define MATERIAL_NONE		0
 #define MATERIAL_WEAPON		1
@@ -291,7 +297,7 @@ typedef struct
 #define POLY_LATE_MIP		(1<<27)
 #define IOPOLYVERT 3
 
-typedef struct
+struct EERIE_FACE
 {
 	long		facetype;	// 0 = flat  1 = text
 							// 2 = Double-Side
@@ -309,7 +315,7 @@ typedef struct
 	short		ov[IOPOLYVERT];
 	D3DCOLOR	color[IOPOLYVERT];
 
-} EERIE_FACE; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
 #define MAX_PFACE 16
 typedef struct
@@ -325,24 +331,6 @@ typedef struct
 	D3DCOLOR	color[MAX_PFACE];
 } EERIE_PFACE;
 
-typedef struct
-{
-	long		facetype;	// 0 = flat  1 = text
-							// 2 = Double-Side
-	D3DCOLOR	rgb[IOPOLYVERT];
-	unsigned short		vid[IOPOLYVERT];
-	short		texid; 
-	float		u[IOPOLYVERT];
-	float		v[IOPOLYVERT];
-	short		ou[IOPOLYVERT];
-	short		ov[IOPOLYVERT];
-
-	float		transval;
-	EERIE_3D	norm;
-	EERIE_3D	nrmls[IOPOLYVERT];
-	float		temp;
-
-} EERIE_FACE_FTL; // Aligned 1 2 4
 
 //***********************************************************************
 //*		BEGIN EERIE OBJECT STRUCTURES									*
@@ -501,7 +489,7 @@ typedef struct
 
 typedef struct
 {
-	char	name[64];
+	std::string	name;
 	long	nb_selected;
 	long *	selected;
 } EERIE_SELECTIONS; // Aligned 1 2 4
@@ -570,6 +558,7 @@ typedef struct
 	float z;
 	float w;
 } EERIE_3DPAD ;
+
 typedef struct
 {
 	std::string name;

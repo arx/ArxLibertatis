@@ -864,7 +864,7 @@ void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, long * poss, long ver
 
 		if (strlen(pts->name) > 63) pts->name[63] = 0;
 
-		strcpy(eerie->selections[i].name, pts->name);
+		eerie->selections[i].name = pts->name;
 		eerie->selections[i].nb_selected = pts->nb_index;
 
 		if (pts->nb_index > 0)
@@ -1890,7 +1890,7 @@ long EERIE_OBJECT_GetSelection(EERIE_3DOBJ * obj, const char * selname)
 
 	for (long i = 0; i < obj->nbselections; i++)
 	{
-		if (!strcasecmp(obj->selections[i].name, selname)) return i;
+		if (!strcasecmp(obj->selections[i].name.c_str(), selname)) return i;
 	}
 
 	return -1;

@@ -1787,24 +1787,24 @@ extern long GORE_MODE;
 #define	FLAG_CUT_LLEG	(1<<4)
 #define	FLAG_CUT_RLEG	(1<<5)
 
-short GetCutFlag(char * str)
+short GetCutFlag( const std::string& str )
 {
-	if (!strcasecmp(str, "CUT_HEAD"))
+	if (!strcasecmp(str.c_str(), "CUT_HEAD"))
 		return FLAG_CUT_HEAD;
 
-	if (!strcasecmp(str, "CUT_TORSO"))
+	if (!strcasecmp(str.c_str(), "CUT_TORSO"))
 		return FLAG_CUT_TORSO;
 
-	if (!strcasecmp(str, "CUT_LARM"))
+	if (!strcasecmp(str.c_str(), "CUT_LARM"))
 		return FLAG_CUT_LARM;
 
-	if (!strcasecmp(str, "CUT_RARM"))
+	if (!strcasecmp(str.c_str(), "CUT_RARM"))
 		return FLAG_CUT_HEAD;
 
-	if (!strcasecmp(str, "CUT_LLEG"))
+	if (!strcasecmp(str.c_str(), "CUT_LLEG"))
 		return FLAG_CUT_LLEG;
 
-	if (!strcasecmp(str, "CUT_RLEG"))
+	if (!strcasecmp(str.c_str(), "CUT_RLEG"))
 		return FLAG_CUT_RLEG;
 
 	return 0;
@@ -1839,7 +1839,7 @@ long GetCutSelection(INTERACTIVE_OBJ * io, short flag)
 		for (long i = 0; i < io->obj->nbselections; i++)
 		{
 			if ((io->obj->selections[i].nb_selected > 0)
-			        &&	(!strcasecmp(io->obj->selections[i].name, tx)))
+			        &&	(!strcasecmp(io->obj->selections[i].name.c_str(), tx)))
 				return i;
 		}
 	}
@@ -1976,7 +1976,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos)
 		if ((target->obj->selections[i].nb_selected > 0)
 		        &&	(IsIn(target->obj->selections[i].name, "CUT_")))
 		{
-			short fll = GetCutFlag(target->obj->selections[i].name);
+			short fll = GetCutFlag(target->obj->selections[i].name.c_str());
 
 			if (IsAlreadyCut(target, fll))
 				continue;
@@ -2019,7 +2019,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos)
 
 	if (mindist < 60) // can only cut a close part...
 	{
-		short fl = GetCutFlag(target->obj->selections[numsel].name);
+		short fl = GetCutFlag(target->obj->selections[numsel].name.c_str());
 
 		if ((fl)
 		        &&	(!(target->_npcdata->cuts & fl)))
