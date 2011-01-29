@@ -2958,12 +2958,12 @@ HRESULT DANAE::BeforeRun()
 	memset(&necklace,0,sizeof(ARX_NECKLACE));
 	long old=GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE=-1;
-	necklace.lacet=						_LoadTheObj("Graph\\Interface\\book\\runes\\lacet.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_AAM]=			_LoadTheObj("Graph\\Interface\\book\\runes\\runes_aam.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_CETRIUS]=		_LoadTheObj("Graph\\Interface\\book\\runes\\runes_citrius.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_COMUNICATUM]=	_LoadTheObj("Graph\\Interface\\book\\runes\\runes_comunicatum.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_COSUM]=			_LoadTheObj("Graph\\Interface\\book\\runes\\runes_cosum.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_FOLGORA]=		_LoadTheObj("Graph\\Interface\\book\\runes\\runes_folgora.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.lacet =                   _LoadTheObj("Graph\\Interface\\book\\runes\\lacet.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_AAM] =         _LoadTheObj("Graph\\Interface\\book\\runes\\runes_aam.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_CETRIUS] =     _LoadTheObj("Graph\\Interface\\book\\runes\\runes_citrius.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_COMUNICATUM] = _LoadTheObj("Graph\\Interface\\book\\runes\\runes_comunicatum.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_COSUM] =       _LoadTheObj("Graph\\Interface\\book\\runes\\runes_cosum.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_FOLGORA] =      _LoadTheObj("Graph\\Interface\\book\\runes\\runes_folgora.teo","..\\..\\..\\Obj3D\\textures\\");
 	necklace.runes[RUNE_FRIDD]=			_LoadTheObj("Graph\\Interface\\book\\runes\\runes_fridd.teo","..\\..\\..\\Obj3D\\textures\\");
 	necklace.runes[RUNE_KAOM]=			_LoadTheObj("Graph\\Interface\\book\\runes\\runes_kaom.teo","..\\..\\..\\Obj3D\\textures\\");
 	necklace.runes[RUNE_MEGA]=			_LoadTheObj("Graph\\Interface\\book\\runes\\runes_mega.teo","..\\..\\..\\Obj3D\\textures\\");
