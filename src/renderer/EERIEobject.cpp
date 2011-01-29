@@ -111,7 +111,8 @@ long GetActionPointIdx(EERIE_3DOBJ * eobj, const char * text)
 
 	for (long i = 0; i < eobj->nbaction; i++)
 	{
-		if (!strcasecmp(text, eobj->actionlist[i].name.c_str() )) return eobj->actionlist[i].idx;
+//		TODO(lubosz): string crash
+//		if (!strcasecmp(text, eobj->actionlist[i].name.c_str() )) return eobj->actionlist[i].idx;
 	}
 
 	return -1;

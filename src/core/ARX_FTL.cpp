@@ -683,15 +683,15 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	afsh = (ARX_FTL_SECONDARY_HEADER *)(dat + pos);
 	pos += sizeof(ARX_FTL_SECONDARY_HEADER);
 
-	EERIE_3DOBJ * obj = NULL;
+	EERIE_3DOBJ * obj = new EERIE_3DOBJ();
 	
 	// Check For & Load 3D Data
 	if (afsh->offset_3Ddata != -1)
 	{
 
 		//todo free
-		obj = (EERIE_3DOBJ *)malloc(sizeof(EERIE_3DOBJ));
-		memset(obj, 0, sizeof(EERIE_3DOBJ));
+//		obj = (EERIE_3DOBJ *)malloc(sizeof(EERIE_3DOBJ));
+//		memset(obj, 0, sizeof(EERIE_3DOBJ));
 
 		af3Ddh = (ARX_FTL_3D_DATA_HEADER *)(dat + afsh->offset_3Ddata);
 		pos = afsh->offset_3Ddata;
@@ -807,7 +807,8 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		if (obj->nbaction > 0)
 		{
 			//todo free
-			obj->actionlist = (EERIE_ACTIONLIST *)malloc(sizeof(EERIE_ACTIONLIST) * obj->nbaction);
+//			obj->actionlist = (EERIE_ACTIONLIST *)malloc(sizeof(EERIE_ACTIONLIST) * obj->nbaction);
+			obj->actionlist = new EERIE_ACTIONLIST();
 			memcpy(obj->actionlist, dat + pos, sizeof(EERIE_ACTIONLIST)*obj->nbaction);
 			pos += sizeof(EERIE_ACTIONLIST) * obj->nbaction;
 		}
@@ -889,7 +890,8 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		pos += sizeof(EERIE_SPRINGS) * obj->cdata->nb_springs;
 	}
 
-	free(dat);
+//	TODO(lubosz): crash
+//	free(dat);
 
 	if (BH_MODE)
 		EERIE_OBJECT_MakeBH(obj);
