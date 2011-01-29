@@ -61,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 #include <cstdio>
 #include <iostream>
+#include <algorithm>
 
 #include <time.h>
 #include "io/HERMESMain.h"
@@ -129,8 +130,8 @@ void File_Standardize(const char * from, char * to)
 	long size = strlen(from);
 	char * temp = HermesBufferWork;
 	
-	strcpy(temp, from);
-	/*
+	//strcpy(temp, from);
+	
 
 	while (pos < size)
 	{
@@ -141,11 +142,11 @@ void File_Standardize(const char * from, char * to)
 				pos++;
 		}
 
-		temp[pos2++]	= ARX_CLEAN_WARN_CAST_CHAR(toupper(from[pos]));
+		temp[pos2++]	= (char)toupper(from[pos]);
 		pos++;
 	}
 
-	temp[pos2] = 0;*/
+	temp[pos2] = 0;
 
 again:
 	;
@@ -226,6 +227,7 @@ void MakeUpcase(char * str)
 		}
 		str++;
 	}*/
+	std::transform(str, str + strlen(str), str, (int(*)(int))toupper);
 }
 
 HKEY    ConsoleKey = NULL;
