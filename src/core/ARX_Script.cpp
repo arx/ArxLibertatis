@@ -99,14 +99,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakManager.h"
 #include "io/Logger.h"
 
-
-//void _MakeUpcase(char * a) {
-//	std::transform(a, a + strlen(a), a, (int(*)(int))toupper);
-//}
-
-// hack
-//#define MakeUpcase(a) _MakeUpcase(a)
-
 using std::sprintf;
 using std::min;
 using std::max;
