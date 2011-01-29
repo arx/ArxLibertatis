@@ -43,10 +43,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////                                                                                     
 
 #include "renderer/EERIEDraw.h"
+
 #include "renderer/EERIEApp.h"
 #include "renderer/EERIEPoly.h"
 
 #include "io/HERMESMain.h"
+
+using std::min;
+using std::max;
 
 extern void ComputeSingleFogVertex(D3DTLVERTEX*);
 

@@ -57,32 +57,35 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdio.h>
+#include "renderer/EERIETexture.h"
 
+#include <cstdio>
 #include <cassert>
+
 #define STRICT
 #include <tchar.h>
 #include <zlib.h>
-#include "renderer/EERIETexture.h"
-#include "renderer/EERIEApp.h"
-#include "renderer/EERIEUtil.h"
-#include "renderer/EERIEMath.h"
-#include "io/HERMESMain.h"
-#include "io/PakManager.h"
-#include "io/Logger.h"
 
 //boolean and INT32 clash with wine
 #define INT32 INT32_JPEG
 #define boolean boolean_JPEG
 #undef _WIN32
-
 #include <jpeglib.h>
 #include <jerror.h>
 #include <jconfig.h>
 #include <jmorecfg.h>
-
 #undef boolean
 #undef INT32
+
+#include "renderer/EERIEApp.h"
+#include "renderer/EERIEUtil.h"
+#include "renderer/EERIEMath.h"
+
+#include "io/HERMESMain.h"
+#include "io/PakManager.h"
+#include "io/Logger.h"
+
+using std::max;
 
 long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 /*-----------------------------------------------------------------------------*/

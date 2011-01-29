@@ -83,6 +83,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 
 using std::sprintf;
+using std::min;
+using std::max;
 
 extern char LastLoadedScene[256];
 extern PakManager * pPakManager;
@@ -547,6 +549,9 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, lo
 	return eerie;
 }
 
+// Magic conversion constant used for loading rotations in TEO files.
+#define THEO_ROTCONVERT 0.087890625f
+
 //-----------------------------------------------------------------------------------------------------
 void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, long * poss, long version, long flag, long flag2)
 {
@@ -904,9 +909,9 @@ void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, long * poss, long ver
 		eerie->pos.y = pted3005->posy;
 		eerie->pos.z = pted3005->posz;
 
-		eerie->angle.a=(float)(pted3005->alpha & 4095)*ARXROTCONVERT;
-		eerie->angle.b=(float)(pted3005->beta & 4095)*ARXROTCONVERT;
-		eerie->angle.g=(float)(pted3005->gamma & 4095)*ARXROTCONVERT;
+		eerie->angle.a = (float)(pted3005->alpha & 0xfff) * THEO_ROTCONVERT;
+		eerie->angle.b = (float)(pted3005->beta & 0xfff) * THEO_ROTCONVERT;
+		eerie->angle.g = (float)(pted3005->gamma & 0xfff) * THEO_ROTCONVERT;
 
 		eerie->point0.x = eerie->vertexlist[pted3005->origin_index].v.x;
 		eerie->point0.y = eerie->vertexlist[pted3005->origin_index].v.y;
@@ -927,9 +932,9 @@ void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, long * poss, long ver
 		eerie->pos.y = pted->posy;
 		eerie->pos.z = pted->posz;
 
-		eerie->angle.a=(float)(pted->alpha & 4095)*ARXROTCONVERT;
-		eerie->angle.b=(float)(pted->beta & 4095)*ARXROTCONVERT;
-		eerie->angle.g=(float)(pted->gamma & 4095)*ARXROTCONVERT;
+		eerie->angle.a = (float)(pted->alpha & 0xfff) * THEO_ROTCONVERT;
+		eerie->angle.b = (float)(pted->beta & 0xfff) * THEO_ROTCONVERT;
+		eerie->angle.g = (float)(pted->gamma & 0xfff) * THEO_ROTCONVERT;
 
 		eerie->point0.x = eerie->vertexlist[pted->origin_index].v.x;
 		eerie->point0.y = eerie->vertexlist[pted->origin_index].v.y;
