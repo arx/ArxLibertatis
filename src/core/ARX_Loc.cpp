@@ -197,9 +197,9 @@ _TCHAR * CleanKey(const _TCHAR * _lpszUText)
 			bEqual = true;
 		}
 		else if (bEqual && (isalnum(_lpszUText[ul]) ||
-		                    ((_lpszUText[ul] != _T(' ')) &&
-		                     (_lpszUText[ul] != _T('"')))
-		                   ))
+							((_lpszUText[ul] != _T(' ')) &&
+							 (_lpszUText[ul] != _T('"')))
+						   ))
 		{
 			bAlpha = true;
 		}
@@ -463,61 +463,61 @@ void ARX_Localisation_Close()
 
 //-----------------------------------------------------------------------------
 long HERMES_UNICODE_GetProfileString(   const std::string&  sectionname,
-                                        const std::string&  defaultstring,
-                                        std::string&        destination,
-                                        unsigned long       maxsize )
+										const std::string&  defaultstring,
+										std::string&        destination,
+										unsigned long       maxsize )
 {
 
-    destination.clear();
+	destination.clear();
 
-    if (pHashLocalisation)
-    {
-        std::string* t = pHashLocalisation->GetPtrWithString(sectionname);
+	if (pHashLocalisation)
+	{
+		std::string* t = pHashLocalisation->GetPtrWithString(sectionname);
 
-        if (t)
-            destination = *t;
-        else
-            destination = defaultstring;
-    }
-    else
-        destination = defaultstring;
+		if (t)
+			destination = *t;
+		else
+			destination = defaultstring;
+	}
+	else
+		destination = defaultstring;
 
-    return 0;
+	return 0;
 }
 
 //-----------------------------------------------------------------------------
 long HERMES_UNICODE_GetProfileSectionKeyCount(const std::string& sectionname)
 {
-    if (pHashLocalisation)
-        return pHashLocalisation->GetKeyCount(sectionname);
+	if (pHashLocalisation)
+		return pHashLocalisation->GetKeyCount(sectionname);
 
-    return 0;
+	return 0;
 }
 
 static long ltNum = 0;
 
 //-----------------------------------------------------------------------------
 int PAK_UNICODE_GetPrivateProfileString(    const std::string&  _lpszSection,
-                                            const std::string&  _lpszDefault,
-                                            std::string&        _lpszBuffer,
-                                            unsigned long       _lBufferSize )
+											const std::string&  _lpszDefault,
+											std::string&        _lpszBuffer,
+											unsigned long       _lBufferSize )
 {
-    ltNum ++;
-    _lpszBuffer.clear();
+	ltNum ++;
+	_lpszBuffer.clear();
 
-    if ( _lpszSection.empty() )
-    {
-        _lpszBuffer = _lpszDefault + ":NOT FOUND";
-        return 0;
-    }
+	if ( _lpszSection.empty() )
+	{
+		_lpszBuffer = _lpszDefault + ":NOT FOUND";
+		return 0;
+	}
 
-    std::string szSection = "[" + _lpszSection + "]";
+	std::string szSection = "[" + _lpszSection + "]";
 
-    HERMES_UNICODE_GetProfileString( szSection,
-                                    _lpszDefault,
-                                    _lpszBuffer,
-                                    _lBufferSize );
+	HERMES_UNICODE_GetProfileString( szSection,
+									_lpszDefault,
+									_lpszBuffer,
+									_lBufferSize );
 
-    return 1;
+	return 1;
 }
 
