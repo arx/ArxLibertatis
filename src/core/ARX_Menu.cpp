@@ -265,6 +265,7 @@ void ARX_MENU_LaunchAmb(char * _lpszAmb)
 //-----------------------------------------------------------------------------
 void ARX_Menu_Resources_Create(LPDIRECT3DDEVICE7 m_pd3dDevice)
 {
+	//TODO:(lubosz): mda is initialized by malloc
 	return;
 	if (ARXmenu.mda)
 	{

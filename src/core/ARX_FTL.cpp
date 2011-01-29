@@ -578,6 +578,7 @@ long BH_MODE = 0;
 //***********************************************************************************************
 EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 {
+	//TODO:(lubosz): a lot of problems with string structs in EERIE_3DOBJ
 	return new EERIE_3DOBJ();
 	
 	// Creates FTL file name
