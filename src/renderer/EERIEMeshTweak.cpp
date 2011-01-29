@@ -91,12 +91,13 @@ void EERIE_MESH_ReleaseTransPolys(EERIE_3DOBJ * obj)
  
 void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, char * s1, char * s2)
 {
-	LogDebug << "Tweak Skin " << s1 << " " << s2;
-
+	
 	if (obj == NULL || s1 == NULL|| s2 == NULL) {
 		LogError << "Tweak Skin got NULL Pointer";
 		return;
 	}
+	
+	LogDebug << "Tweak Skin " << s1 << " " << s2;
 
 	char skintochange[512];
 	char skinname[512];
