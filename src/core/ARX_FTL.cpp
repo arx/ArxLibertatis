@@ -501,7 +501,7 @@ long MCache_GetSize()
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-long MCache_Get( const std::string file)
+long MCache_Get( const std::string& file)
 {
     std::string fic;
 
@@ -527,11 +527,6 @@ bool MCache_Push( const std::string& file, char * data, size_t size)
 
 	LogDebug << fic  << " " << file << " #" << meshCache.size();
 
-//	MCache = (MCACHE_DATA *)realloc(MCache, sizeof(MCACHE_DATA) * (MCache_Number + 1));
-//	MCache[MCache_Number].size = size;
-//	MCache[MCache_Number].data = data;
-//	MCache[MCache_Number].name = fic;
-//	MCache_Number++;
 	MeshData newMesh;
 	newMesh.size = size;
 	newMesh.data = data;
@@ -547,7 +542,7 @@ bool MCache_Push( const std::string& file, char * data, size_t size)
 //-----------------------------------------------------------------------------
 void MCache_ClearAll()
 {
-	meshCache.erase(meshCache.begin(),meshCache.end());
+	meshCache.clear();
 }
 
 //***********************************************************************************************
@@ -555,13 +550,13 @@ void MCache_ClearAll()
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-char * MCache_Pop( const char * file, size_t * size)
+char * MCache_Pop( const std::string& file, size_t& size)
 {
 	long num = MCache_Get(file);
 
 	if (num == -1) return NULL;
 
-	*size = meshCache[num].size;
+	size = meshCache[num].size;
 	return meshCache[num].data;
 }
 
@@ -576,15 +571,10 @@ long BH_MODE = 0;
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-EERIE_3DOBJ * ARX_FTL_Load(const char * file)
+EERIE_3DOBJ * ARX_FTL_Load( const std::string& file )
 {
-	//TODO:(lubosz): a lot of problems with string structs in EERIE_3DOBJ
-	return new EERIE_3DOBJ();
-	
 	// Creates FTL file name
-	std::string filename;
-	filename += "Game\\";
-	filename += file;
+	std::string filename = "Game\\" + file;
 	SetExt(filename, ".FTL");
 
 	// Checks for FTL file existence
@@ -610,15 +600,18 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	long NOrelease = 1;
 	long NoCheck = 0;
 
+	// Try to load the mesh data from cache first
 	compressedData = MCache_Pop(filename.c_str(), &compressedSize);
 	LogDebug << "File name check " << filename;
 
+	// Fall back to loading from .pak or file
 	if (!compressedData)
 	{
 		compressedData = (char *)PAK_FileLoadMalloc(filename, compressedSize);
 		NOrelease = MCache_Push(filename, compressedData, compressedSize) ? 1 : 0;
 	}
-	else NoCheck = 1;
+	else
+		NoCheck = 1;
 
 	if(!compressedData) {
 		LogError << "ARX_FTL_Load: error loading from PAK/cache " << filename;
@@ -690,10 +683,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	// Check For & Load 3D Data
 	if (afsh->offset_3Ddata != -1)
 	{
-
-		//todo free
-		//obj = (EERIE_3DOBJ *)malloc(sizeof(EERIE_3DOBJ));
-		//memset(obj, 0, sizeof(EERIE_3DOBJ));
 
 		af3Ddh = (ARX_FTL_3D_DATA_HEADER *)(dat + afsh->offset_3Ddata);
 		pos = afsh->offset_3Ddata;

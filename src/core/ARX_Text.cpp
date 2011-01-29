@@ -601,7 +601,6 @@ std::string GetFontName( const std::string& _lpszFileName)
 		szName[3] = HIBYTE(HIWORD(FTH.ulTag));
 		szName[4] = 0;
 
- 
 
 		if (strcmp(szName, "name") == 0)
 		{
