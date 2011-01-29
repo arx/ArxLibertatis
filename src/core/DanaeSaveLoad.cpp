@@ -1074,7 +1074,6 @@ INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans)
 	char temp[512];
 	size_t FileSize;
 	INTERACTIVE_OBJ * io;
-
 	sprintf(nameident, "%s_%04ld", GetName(dli->name).c_str(), dli->ident);
 	long t;
 	t = GetTargetByNameTarget(nameident);
@@ -1419,7 +1418,8 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fic)
 
 		if (!DONT_LOAD_INTERS)
 		{
-			LoadInter_Ex(dli, &trans);
+			//TODO(lubosz): dli is a string struct allocated with malloc!
+//			LoadInter_Ex(dli, &trans);
 		}
 	}
 
@@ -1668,24 +1668,24 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fic)
 		ap->rgb.r		= dlp->rgb.r;
 		ap->rgb.g		= dlp->rgb.g;
 		ap->rgb.b		= dlp->rgb.b;
-
-		ARX_PATHWAY * app = ap->pathways = (ARX_PATHWAY *)malloc(sizeof(ARX_PATHWAY) * dlp->nb_pathways);
-		memset(app, 0, sizeof(ARX_PATHWAY)*dlp->nb_pathways);
-
-		for (long j = 0; j < dlp->nb_pathways; j++)
-		{
-			dlpw = (DANAE_LS_PATHWAYS *)(dat + pos);
-			pos += sizeof(DANAE_LS_PATHWAYS);
-
-			app[j].flag		=	dlpw->flag;
-			app[j].rpos.x	=	dlpw->rpos.x;
-			app[j].rpos.y	=	dlpw->rpos.y;
-			app[j].rpos.z	=	dlpw->rpos.z;
-			app[j]._time	=	ARX_CLEAN_WARN_CAST_FLOAT(dlpw->time);
-		}
+//TODO(lubosz): string related struct crash
+//		ARX_PATHWAY * app = ap->pathways = (ARX_PATHWAY *)malloc(sizeof(ARX_PATHWAY) * dlp->nb_pathways);
+//		memset(app, 0, sizeof(ARX_PATHWAY)*dlp->nb_pathways);
+//
+//		for (long j = 0; j < dlp->nb_pathways; j++)
+//		{
+//			dlpw = (DANAE_LS_PATHWAYS *)(dat + pos);
+//			pos += sizeof(DANAE_LS_PATHWAYS);
+//
+//			app[j].flag		=	dlpw->flag;
+//			app[j].rpos.x	=	dlpw->rpos.x;
+//			app[j].rpos.y	=	dlpw->rpos.y;
+//			app[j].rpos.z	=	dlpw->rpos.z;
+//			app[j]._time	=	ARX_CLEAN_WARN_CAST_FLOAT(dlpw->time);
+//		}
 	}
 
-	ARX_PATH_ComputeAllBoundingBoxes();
+//	ARX_PATH_ComputeAllBoundingBoxes();
 	PROGRESS_BAR_COUNT += 5.f;
 	LoadLevelScreen();
 
