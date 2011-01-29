@@ -6066,8 +6066,9 @@ INTERACTIVE_OBJ * IO_DEBUG = NULL;
 //*************************************************************************************
 long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTIVE_OBJ * io, const char * evname, long info)
 {
-	LogDebug << "SendScriptEvent msg=" << msg << " (" << AS_EVENT[msg].name << ")"
-	         << " params=" << Logger::nullstr(params)
+	LogDebug << "SendScriptEvent msg=" << msg << " ("
+	         << ((msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1) ? AS_EVENT[msg].name : "unknown")
+	         << ")" << " params=" << Logger::nullstr(params)
 	         << " io=" << Logger::nullstr(io ? io->filename : NULL)
 	         << " evame=" << Logger::nullstr(evname) << " info=" << info;
 	
