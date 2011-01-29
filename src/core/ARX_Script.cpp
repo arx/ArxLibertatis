@@ -595,7 +595,7 @@ void ARX_SCRIPT_ResetObject(INTERACTIVE_OBJ * io, long flags)
 		{
 			inter.iobj[num]->script.allowevents = 0;
 
-			if (flags)	SendScriptEvent(&inter.iobj[num]->script, SM_INIT, "", inter.iobj[num], NULL);
+			if (flags)	SendScriptEvent(&inter.iobj[num]->script, SM_INIT, "", inter.iobj[num], "");
 
 
 			if (inter.iobj[num])
@@ -607,7 +607,7 @@ void ARX_SCRIPT_ResetObject(INTERACTIVE_OBJ * io, long flags)
 		{
 			inter.iobj[num]->over_script.allowevents = 0;
 
-			if (flags)	SendScriptEvent(&inter.iobj[num]->over_script, SM_INIT, "", inter.iobj[num], NULL);
+			if (flags)	SendScriptEvent(&inter.iobj[num]->over_script, SM_INIT, "", inter.iobj[num], "");
 
 
 		}
@@ -616,10 +616,10 @@ void ARX_SCRIPT_ResetObject(INTERACTIVE_OBJ * io, long flags)
 		if (flags)
 		{
 			if (inter.iobj[num] && inter.iobj[num]->script.data)
-				SendScriptEvent(&inter.iobj[num]->script, SM_INITEND, "", inter.iobj[num], NULL);
+				SendScriptEvent(&inter.iobj[num]->script, SM_INITEND, "", inter.iobj[num], "");
 
 			if (inter.iobj[num] && inter.iobj[num]->over_script.data)
-				SendScriptEvent(&inter.iobj[num]->over_script, SM_INITEND, "", inter.iobj[num], NULL);
+				SendScriptEvent(&inter.iobj[num]->over_script, SM_INITEND, "", inter.iobj[num], "");
 		}
 
 		if (inter.iobj[num])
@@ -3761,25 +3761,25 @@ long SendInitScriptEvent(INTERACTIVE_OBJ * io)
 		if (inter.iobj[num] && inter.iobj[num]->script.data)
 		{
 			GLOB = 0;
-			SendScriptEvent(&inter.iobj[num]->script, SM_INIT, "", inter.iobj[num], NULL);
+			SendScriptEvent(&inter.iobj[num]->script, SM_INIT, "", inter.iobj[num], "");
 		}
 
 		if (inter.iobj[num] && inter.iobj[num]->over_script.data)
 		{
 			GLOB = 0;
-			SendScriptEvent(&inter.iobj[num]->over_script, SM_INIT, "", inter.iobj[num], NULL);
+			SendScriptEvent(&inter.iobj[num]->over_script, SM_INIT, "", inter.iobj[num], "");
 		}
 
 		if (inter.iobj[num] && inter.iobj[num]->script.data)
 		{
 			GLOB = 0;
-			SendScriptEvent(&inter.iobj[num]->script, SM_INITEND, "", inter.iobj[num], NULL);
+			SendScriptEvent(&inter.iobj[num]->script, SM_INITEND, "", inter.iobj[num], "");
 		}
 
 		if (inter.iobj[num] && inter.iobj[num]->over_script.data)
 		{
 			GLOB = 0;
-			SendScriptEvent(&inter.iobj[num]->over_script, SM_INITEND, "", inter.iobj[num], NULL);
+			SendScriptEvent(&inter.iobj[num]->over_script, SM_INITEND, "", inter.iobj[num], "");
 		}
 	}
 
@@ -4105,7 +4105,7 @@ void ARX_SCRIPT_Timer_Check()
 							&&	(ValidIOAddress(io)))
 					{
 
-						SendScriptEvent(es, SM_EXECUTELINE, "", io, NULL, pos);
+						SendScriptEvent(es, SM_EXECUTELINE, "", io, "", pos);
 					}
 
 				}
