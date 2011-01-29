@@ -42,6 +42,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEPoly.h"
 #include "renderer/EERIEDraw.h"
 #include "window/Mercury_dx_input.h"
+#include "io/Logger.h"
 
 using std::wistringstream;
 
@@ -508,11 +509,13 @@ void FontRenderText(HFONT _hFont, EERIE_3D pos, const std::string& _pText, COLOR
 		pText.lCol = _c;
 		pText.rRect = rRect;
 
-		pTextManage->AddText(    _hFont,
-								_pText,
-							rRect,
-							_c,
-							0x00FF00FF);
+		LogDebug << "pText " << _pText;
+//		TODO(lubosz): crash
+//		pTextManage->AddText(    _hFont,
+//								_pText,
+//							rRect,
+//							_c,
+//							0x00FF00FF);
 	}
 }
 
