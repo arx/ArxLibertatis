@@ -13,13 +13,15 @@ struct LogSetting {
 
 const LogSetting blackList[] = {
 	{ "ARX_FTL.cpp", Logger::Warning },
-	{ "ARX_Script.cpp", Logger::Info },
+	{ "ARX_Script.cpp", Logger::Debug },
 	{ "PakManager.cpp", Logger::Fatal },
 	{ "PakReader.cpp", Logger::Info },
 	{ "Filesystem.cpp", Logger::Fatal },
 	{ "Athena.cpp", Logger::Error },
 	{ "Athena_Instance.cpp", Logger::Info },
 	{ "EERIEobject.cpp", Logger::Warning },
+	{ "ARX_Speech.cpp", Logger::Error },
+	{ "ARX_Text.cpp", Logger::Error },
 };
 
 Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {

@@ -349,7 +349,6 @@ long NO_PLAYER_POSITION_RESET=0;
 long CURRENT_BASE_FOCAL=310;
 long GTE_SIZE;
 long CINE_PRELOAD=0;
-long FOKMOD=0;
 long PLAY_LOADED_CINEMATIC=0;
 long PauseScript=0;
 long A_FLARES=1;
@@ -1600,8 +1599,6 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	LogInfo << "InitializeDanae Success";
 	LogInfo << "DanaeApp RUN";
 	danaeApp.m_bReady = true;
-
-//	LaunchCDROMCheck(0);
 
 	HRESULT hr=danaeApp.Run();
 
@@ -5545,6 +5542,8 @@ static float _AvgFrameDiff = 150.f;
 
 	if (this->m_pFramework->m_bHasMoved)
 	{
+		LogDebug << "has moved";
+		
 		DanaeRestoreFullScreen();
 
 		this->m_pFramework->m_bHasMoved=false;
@@ -5575,12 +5574,14 @@ static float _AvgFrameDiff = 150.f;
 	}
 
 	// Manages Splash Screens if needed
-	if (DANAE_ManageSplashThings())
+	if(DANAE_ManageSplashThings()) {
 		goto norenderend;
+	}
 
 	// Clicked on New Quest ? (TODO:need certainly to be moved somewhere else...)
 	if (START_NEW_QUEST)
 	{
+		LogDebug << "start quest";
 		DANAE_StartNewQuest();
 	}
 
@@ -5605,6 +5606,7 @@ static float _AvgFrameDiff = 150.f;
 		}
 		else
 		{
+			LogDebug << "snapshot";
 			//create a screenshot temporaire pour la sauvegarde
 			::SnapShot *pSnapShot=new ::SnapShot(NULL,"sct",true);
 			pSnapShot->GetSnapShotDim(160,100);
@@ -5626,6 +5628,7 @@ static float _AvgFrameDiff = 150.f;
 	// Project need to reload all textures ???
 	if (WILL_RELOAD_ALL_TEXTURES) 
 	{
+		LogDebug << "reload all textures";
 		ReloadAllTextures(GDevice);
 
 		if(ControlCinematique)
@@ -5640,6 +5643,8 @@ static float _AvgFrameDiff = 150.f;
 	// Are we being teleported ?
 	if ((TELEPORT_TO_LEVEL[0]) && (CHANGE_LEVEL_ICON==200))
 	{
+		LogDebug << "teleport to " << TELEPORT_TO_LEVEL << " " << TELEPORT_TO_POSITION << " "
+		         << TELEPORT_TO_ANGLE;
 		CHANGE_LEVEL_ICON=-1;
 		ARX_CHANGELEVEL_Change(TELEPORT_TO_LEVEL, TELEPORT_TO_POSITION, TELEPORT_TO_ANGLE, 0);
 		memset(TELEPORT_TO_LEVEL,0,64);
@@ -5648,6 +5653,7 @@ static float _AvgFrameDiff = 150.f;
 
 	if (NEED_INTRO_LAUNCH)
 	{
+		LogDebug << "need intro launch";
 		SetEditMode(0);
 		BLOCK_PLAYER_CONTROLS=1;
 		ARX_INTERFACE_PlayerInterfaceModify(0,0);
@@ -5696,7 +5702,7 @@ static float _AvgFrameDiff = 150.f;
 	else Yratio = DANAESIZY * ( 1.0f / 480 );
 
 	// Finally computes current focal
-	BASE_FOCAL=(float)CURRENT_BASE_FOCAL+(float)FOKMOD+(BOW_FOCAL*( 1.0f / 4 ));
+	BASE_FOCAL=(float)CURRENT_BASE_FOCAL+(BOW_FOCAL*( 1.0f / 4 ));
 
 	// SPECIFIC code for Snapshot MODE... to insure constant capture framerate
 	if (	(SnapShotMode)
@@ -6011,7 +6017,7 @@ static float _AvgFrameDiff = 150.f;
 
 			// TODO remove
 			if(!inter.iobj[0]->obj) {
-				printf("missing %s\n", inter.iobj[0]->filename);
+				LogError << "missing " << inter.iobj[0]->filename;
 			}
 			assert(inter.iobj[0]->obj != NULL);
 			EERIEDrawAnimQuat(	m_pd3dDevice,	
@@ -6862,13 +6868,13 @@ static float _AvgFrameDiff = 150.f;
 		DrawImproveVisionInterface(danaeApp.m_pd3dDevice);	
 	else 
 	{
-		if ((subj.focal<BASE_FOCAL+FOKMOD))
+		if ((subj.focal<BASE_FOCAL))
 		{
 			subj.focal+=INC_FOCAL;
 
-			if (subj.focal>BASE_FOCAL+FOKMOD) subj.focal=BASE_FOCAL+FOKMOD;
+			if (subj.focal>BASE_FOCAL) subj.focal=BASE_FOCAL;
 		}
-		else if (subj.focal>BASE_FOCAL+FOKMOD) subj.focal=BASE_FOCAL+FOKMOD;
+		else if (subj.focal>BASE_FOCAL) subj.focal=BASE_FOCAL;
 	}
 
 	if (eyeball.exist!=0)
