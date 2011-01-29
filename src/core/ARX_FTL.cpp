@@ -690,7 +690,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	{
 
 		//todo free
-		obj = new EERIE_3DOBJ();
 		//obj = (EERIE_3DOBJ *)malloc(sizeof(EERIE_3DOBJ));
 		//memset(obj, 0, sizeof(EERIE_3DOBJ));
 
