@@ -509,8 +509,8 @@ void FontRenderText(HFONT _hFont, EERIE_3D pos, const std::string& _pText, COLOR
 		pText.lCol = _c;
 		pText.rRect = rRect;
 
-		LogDebug << "pText " << _pText;
-//		TODO(lubosz): crash
+//		TODO(lubosz): string related crash
+		LogDebug << "Not adding pText " << _pText;
 //		pTextManage->AddText(    _hFont,
 //								_pText,
 //							rRect,

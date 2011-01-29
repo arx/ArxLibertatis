@@ -3698,7 +3698,8 @@ void D3DTextr_KillAllTextures()
 //-----------------------------------------------------------------------------
 HRESULT D3DTextr_DestroyContainer(TextureContainer * ptcTexture)
 {
-	SAFE_DELETE(ptcTexture);
+//	TODO(lubosz): string related crash
+//	SAFE_DELETE(ptcTexture);
 
 	return S_OK;
 }
