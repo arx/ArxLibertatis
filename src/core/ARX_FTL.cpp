@@ -578,7 +578,7 @@ long BH_MODE = 0;
 //***********************************************************************************************
 EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 {
-	
+	return new EERIE_3DOBJ();
 	
 	// Creates FTL file name
 	std::string filename;
@@ -610,6 +610,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	long NoCheck = 0;
 
 	compressedData = MCache_Pop(filename.c_str(), &compressedSize);
+	LogDebug << "File name check " << filename;
 
 	if (!compressedData)
 	{
@@ -891,7 +892,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	}
 
 //	TODO(lubosz): crash
-//	free(dat);
+	free(dat);
 
 	if (BH_MODE)
 		EERIE_OBJECT_MakeBH(obj);

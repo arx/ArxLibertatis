@@ -150,7 +150,7 @@ bool PAK_FileExist(const char* name) {
 }
 
 void * PAK_FileLoadMalloc(const std::string& name, size_t& sizeLoaded) {
-	
+	LogDebug << "File Name " << name;
 	void * ret = NULL;
 	
 	ret = pPakManager->ReadAlloc(name, sizeLoaded);

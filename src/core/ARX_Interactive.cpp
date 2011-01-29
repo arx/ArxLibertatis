@@ -506,7 +506,7 @@ bool ForceNPC_Above_Ground(INTERACTIVE_OBJ * io)
 
 EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * file, long flag, LPDIRECT3DDEVICE7 pd3dDevice)
 {
-	EERIE_3DOBJ * ret = NULL;
+	EERIE_3DOBJ * ret = new EERIE_3DOBJ();
 
 	if ((ret = ARX_FTL_Load(file)) != NULL)
 	{

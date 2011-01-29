@@ -265,13 +265,14 @@ void ARX_MENU_LaunchAmb(char * _lpszAmb)
 //-----------------------------------------------------------------------------
 void ARX_Menu_Resources_Create(LPDIRECT3DDEVICE7 m_pd3dDevice)
 {
+	return;
 	if (ARXmenu.mda)
 	{
 		free(ARXmenu.mda);
 		ARXmenu.mda = NULL;
 	}
 
-	ARXmenu.mda = (MENU_DYNAMIC_DATA *)malloc(sizeof(MENU_DYNAMIC_DATA)); 
+	ARXmenu.mda = (MENU_DYNAMIC_DATA *)malloc(sizeof(MENU_DYNAMIC_DATA));
 	memset(ARXmenu.mda, 0, sizeof(MENU_DYNAMIC_DATA));
 	ARXmenu.mda->Background = NULL; 
 	ARXmenu.mda->pTexCredits = MakeTCFromFile("Graph\\Interface\\menus\\Menu_credits.bmp");
