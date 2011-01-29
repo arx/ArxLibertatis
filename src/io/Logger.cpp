@@ -1,5 +1,8 @@
-#include <stdlib.h>
+
 #include "io/Logger.h"
+
+#include <cstdlib>
+
 #define BASH_COLOR 1
 
 using std::cout;
@@ -13,7 +16,7 @@ struct LogSetting {
 
 const LogSetting blackList[] = {
 	{ "ARX_FTL.cpp", Logger::Warning },
-	{ "ARX_Script.cpp", Logger::Debug },
+	{ "ARX_Script.cpp", Logger::Info },
 	{ "PakManager.cpp", Logger::Fatal },
 	{ "PakReader.cpp", Logger::Info },
 	{ "Filesystem.cpp", Logger::Fatal },
@@ -79,3 +82,15 @@ Logger::LogLevel Logger::getLogLevel(const std::string& file) {
 	}
 	return logLevel;
 }
+
+Logger & Logger::operator<<(const nullstr & s) {
+	if(print) {
+		if(s.str) {
+			*this << "\"" << s.str << "\"";
+		} else {
+			*this << "NULL";
+		}
+	}
+	return *this;
+}
+
