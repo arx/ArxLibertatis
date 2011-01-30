@@ -192,10 +192,10 @@ void PatchReplace()
 	char CopyTxt[256];
 	int j = AllTxt.length();
 	//char * pT = AllTxt;
-
+/*
 	while (j--)
 	{
-		if (!strncasecmp(pT, "uk", strlen("uk")))
+		if (!strncasecmp(AllTxt.c_str(), "uk", strlen("uk")))
 		{
 			*pT = 0;
 			strcpy(CopyTxt, pT + 3);
@@ -215,14 +215,14 @@ void PatchReplace()
 
 		//pT++;
 	//}
-
+*/
 	ClearAbsDirectory(AllTxt, "ARX\\");
 
 	//on enleve "sfx"
 	bool bFound = false;
 	//pT = AllTxt;
 	//j = strlen((const char *)pT);
-
+/*
 	while (j)
 	{
 		if (!strncasecmp((const char *)pT, "sfx\\speech\\", strlen((const char *)"sfx\\speech\\")))
@@ -230,7 +230,7 @@ void PatchReplace()
 			bFound = true;
 			break;
 		}
-
+*/
 		//j--;
 		//pT++;
 	//}

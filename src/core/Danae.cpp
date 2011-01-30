@@ -98,6 +98,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/ARX_MenuPublic.h"
 #include "core/ARX_Snapshot.h"
 
+using std::min;
+using std::max;
+
 void DemoFileCheck();
 
 //-----------------------------------------------------------------------------

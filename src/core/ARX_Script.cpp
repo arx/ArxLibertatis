@@ -59,6 +59,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cassert>
 
+#include <iomanip>
+
 #include "renderer/EERIECollisionSpheres.h"
 #include "core/ARX_CCinematique.h"
 #include "core/ARX_Collisions.h"
@@ -86,7 +88,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::sprintf;
 using std::min;
 using std::max;
-#define NEEDING_DEBUG 1
+//#define NEEDING_DEBUG 1
 extern long GLOBAL_MAGIC_MODE;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern long FINAL_COMMERCIAL_DEMO;
@@ -6080,9 +6082,9 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 {
 	LogDebug << "SendScriptEvent msg=" << msg << " ("
 	         << ((msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1) ? AS_EVENT[msg].name : "unknown")
-	         << ")" << " params=" << Logger::nullstr(params)
+	         << ")" << " params=" << params
 	         << " io=" << Logger::nullstr(io ? io->filename : NULL)
-	         << " evame=" << Logger::nullstr(evname) << " info=" << info;
+	         << " evame=" << evname << " info=" << info;
 	
 	if (io)
 	{
@@ -6355,7 +6357,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 					pos = GetNextWord(es, pos, temp);
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "BEHAVIOR %s ", temp);
+					if (NEED_DEBUG) sprintf(cmd, "BEHAVIOR %s ", temp.c_str());
 
 #endif
 

@@ -1222,10 +1222,10 @@ void ReCenterSequence(char *_pcSequence,int &_iMinX,int &_iMinY,int &_iMaxX,int 
 		GetSymbVector(_pcSequence[iI],&es2dVector);
 		iSizeX+=es2dVector.x;
 		iSizeY+=es2dVector.y;
-		_iMinX=min(_iMinX,iSizeX);
-		_iMinY=min(_iMinY,iSizeY);
-		_iMaxX=max(_iMaxX,iSizeX);
-		_iMaxY=max(_iMaxY,iSizeY);
+		_iMinX=std::min(_iMinX,iSizeX);
+		_iMinY=std::min(_iMinY,iSizeY);
+		_iMaxX=std::max(_iMaxX,iSizeX);
+		_iMaxY=std::max(_iMaxY,iSizeY);
 	}
 }
 
@@ -1271,7 +1271,7 @@ void ARX_SPELLS_UpdateSymbolDraw(LPDIRECT3DDEVICE7 pd3dDevice)
 							io->spellcast_data.symb[j]=io->spellcast_data.symb[j+1];
 
 						io->spellcast_data.symb[3]=255;
-						ARX_SPELLS_RequestSymbolDraw2(io, symb, (1000-(io->spellcast_data.spell_level*60))*max(io->speed_modif+io->basespeed,0.01f));
+						ARX_SPELLS_RequestSymbolDraw2(io, symb, (1000-(io->spellcast_data.spell_level*60))*std::max(io->speed_modif+io->basespeed,0.01f));
 						io->GameFlags &=~GFLAG_INVISIBILITY;
 					}
 					else if (tst)// cast spell !!!
@@ -3244,8 +3244,8 @@ static void ARX_SPEELS_GetMaxRect(const char *_pcName)
 	ReCenterSequence(tcTxt,iMinX,iMinY,iMaxX,iMaxY);
 	iSizeX=iMaxX-iMinX;
 	iSizeY=iMaxY-iMinY;
-	lMaxSymbolDrawSizeX=max(iSizeX,lMaxSymbolDrawSizeX);
-	lMaxSymbolDrawSizeY=max(iSizeY,lMaxSymbolDrawSizeY);
+	lMaxSymbolDrawSizeX=std::max(iSizeX,lMaxSymbolDrawSizeX);
+	lMaxSymbolDrawSizeY=std::max(iSizeY,lMaxSymbolDrawSizeY);
 }
 //-----------------------------------------------------------------------------
 // Initializes Spell engine (Called once at DANAE startup)
@@ -3589,8 +3589,8 @@ float ARX_SPELLS_GetManaCost(long _lNumSpell,long lNumSpellTab)
 {
 	float Player_Magic_Level;
 	Player_Magic_Level = (float) player.Full_Skill_Casting + player.Full_Attribute_Mind;
-	Player_Magic_Level= max(1.0f,Player_Magic_Level*( 1.0f / 10 ));
-	Player_Magic_Level= min(10.0f,Player_Magic_Level);
+	Player_Magic_Level= std::max(1.0f,Player_Magic_Level*( 1.0f / 10 ));
+	Player_Magic_Level= std::min(10.0f,Player_Magic_Level);
 
 	switch (_lNumSpell) 
 	{
@@ -3838,7 +3838,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 
 	if ( sp_max ) 
 	{ 
-		level = max( level, 15L );
+		level = std::max( level, 15L );
 	}
 	
 	if ( ( source == 0 ) && ( FINAL_RELEASE ) )
@@ -3877,8 +3877,8 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		if ( level == -1 )
 		{
 			Player_Magic_Level = (float) player.Full_Skill_Casting + player.Full_Attribute_Mind;
-			Player_Magic_Level = max( 1.0f, Player_Magic_Level * ( 1.0f / 10 ) );
-			Player_Magic_Level = min( 10.0f, Player_Magic_Level );
+			Player_Magic_Level = std::max( 1.0f, Player_Magic_Level * ( 1.0f / 10 ) );
+			Player_Magic_Level = std::min( 10.0f, Player_Magic_Level );
 		}
 		else 
 		{
@@ -4320,7 +4320,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 							sphere.origin.x=pCF->eCurPos.x;
 							sphere.origin.y=pCF->eCurPos.y;
 							sphere.origin.z=pCF->eCurPos.z;
-							sphere.radius=max(spells[i].caster_level*2.f,12.f);
+							sphere.radius=std::max(spells[i].caster_level*2.f,12.f);
 
 							if (EEDistance3D(&target,&sphere.origin)<pIgnit->GetPerimetre()+sphere.radius)
 							{
@@ -4428,7 +4428,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 							sphere.origin.x=pCF->eCurPos.x;
 							sphere.origin.y=pCF->eCurPos.y;
 							sphere.origin.z=pCF->eCurPos.z;
-							sphere.radius=max(spells[i].caster_level*2.f,12.f);
+							sphere.radius=std::max(spells[i].caster_level*2.f,12.f);
 
 							if (EEDistance3D(&target,&sphere.origin)<pDoze->GetPerimetre()+sphere.radius)
 							{
@@ -5650,7 +5650,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			CSpellFx *pCSpellFx = NULL;
 
 			ARX_CHECK_LONG(spells[i].caster_level);   
-			pCSpellFx = new CMultiPoisonProjectile( GDevice, max( ARX_CLEAN_WARN_CAST_LONG( spells[i].caster_level ), 1L ) );
+			pCSpellFx = new CMultiPoisonProjectile( GDevice, std::max( ARX_CLEAN_WARN_CAST_LONG( spells[i].caster_level ), 1L ) );
 
 
 			if (pCSpellFx != NULL)
@@ -7079,7 +7079,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 					
 
 			ARX_CHECK_LONG(spells[i].caster_level);   
-			pCSpellFx = new CMassLightning( GDevice, max( ARX_CLEAN_WARN_CAST_LONG( spells[i].caster_level ), 1L ) );
+			pCSpellFx = new CMassLightning( GDevice, std::max( ARX_CLEAN_WARN_CAST_LONG( spells[i].caster_level ), 1L ) );
 
 		
 			if (pCSpellFx != NULL)
@@ -8054,9 +8054,9 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 							if (ii==0) 
 							{
 								if (!BLOCK_PLAYER_CONTROLS)
-									player.life=min(player.life+gain,player.Full_maxlife);									
+									player.life=std::min(player.life+gain,player.Full_maxlife);									
 							}
-							else inter.iobj[ii]->_npcdata->life=min(inter.iobj[ii]->_npcdata->life+gain,inter.iobj[ii]->_npcdata->maxlife);
+							else inter.iobj[ii]->_npcdata->life=std::min(inter.iobj[ii]->_npcdata->life+gain,inter.iobj[ii]->_npcdata->maxlife);
 						}
 					}
 				}
@@ -8200,7 +8200,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 					sphere.origin.x=pCF->eCurPos.x;
 					sphere.origin.y=pCF->eCurPos.y;
 					sphere.origin.z=pCF->eCurPos.z;
-					sphere.radius=max(spells[i].caster_level*2.f,12.f);
+					sphere.radius=std::max(spells[i].caster_level*2.f,12.f);
 					#define MIN_TIME_FIREBALL 2000 
 
 					if (pCF->pPSFire.iParticleNbMax)
@@ -8374,7 +8374,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 						sphere.origin.x=pCRG->eSrc.x;
 						sphere.origin.y=pCRG->eSrc.y;
 						sphere.origin.z=pCRG->eSrc.z;
-						sphere.radius=max(spells[i].caster_level*15.f,50.f);
+						sphere.radius=std::max(spells[i].caster_level*15.f,50.f);
 
 						if (CheckAnythingInSphere(&sphere,spells[i].caster,CAS_NO_SAME_GROUP | CAS_NO_BACKGROUND_COL | CAS_NO_ITEM_COL| CAS_NO_FIX_COL | CAS_NO_DEAD_COL))
 						{
@@ -9794,7 +9794,7 @@ void ApplySPMax()
 		ARX_SPEECH_Add(NULL, UText);		
 		player.Attribute_Redistribute+=10;
 		player.Skill_Redistribute+=50;
-		player.level=max((int)player.level,10);
+		player.level=std::max((int)player.level,10);
 		player.xp=GetXPforLevel(10);
 	}
 	else

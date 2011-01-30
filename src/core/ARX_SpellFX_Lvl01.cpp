@@ -340,7 +340,7 @@ void CMagicMissile::SetColor1(float faRed, float faGreen, float faBlue)
 void CMagicMissile::SetTTL(unsigned long aulTTL)
 {
 	unsigned long t = ulCurrentTime;
-	ulDuration = min(ulCurrentTime + aulTTL, ulDuration);
+	ulDuration = std::min(ulCurrentTime + aulTTL, ulDuration);
 	SetDuration(ulDuration);
 	ulCurrentTime = t;
 
@@ -674,8 +674,8 @@ void CMultiMagicMissile::Create(EERIE_3D aePos, EERIE_3D angles)
 				ARX_CHECK_LONG(fTime);
 				long	lTime	= ARX_CLEAN_WARN_CAST_LONG(fTime);
 
-				lTime		= max(1000L, lTime);
-				lMax		= max(lMax, lTime);
+				lTime		= std::max(1000L, lTime);
+				lMax		= std::max(lMax, lTime);
 
 				CMagicMissile * pMM = (CMagicMissile *)pTab[i];
 

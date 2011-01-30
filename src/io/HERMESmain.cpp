@@ -137,7 +137,7 @@ void File_Standardize(const std::string& from, std::string& to)
 		pos++;
 	}
 
-	temp[pos2] = 0;
+	temp[pos2] = 0;*/
 
 	again:
 	;
@@ -222,7 +222,7 @@ void MakeUpcase( std::string& str )
 		}
 		str++;
 	}*/
-	std::transform(str, str + strlen(str), str, (int(*)(int))toupper);
+	//std::transform(str, str + strlen(str), str, (int(*)(int))toupper);
 }
 
 HKEY    ConsoleKey = NULL;
