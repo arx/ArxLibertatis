@@ -27,7 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define __ATHENA_VERSION__ "0000"
 
-#include "Athena_Types.h"
+#include "AudioTypes.h"
 
 //#ifdef _WIN32
 //#ifndef AAL_APIDLL

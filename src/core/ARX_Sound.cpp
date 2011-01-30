@@ -57,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEMath.h"
 #include "renderer/EERIEApp.h"
 
-#include "audio/Athena.h"
+#include "audio/Audio.h"
 
 using namespace std;
 

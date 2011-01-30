@@ -25,7 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef __ATHENA_CODEC_H__
 #define __ATHENA_CODEC_H__
 
-#include "Athena_Types.h"
+#include "audio/AudioTypes.h"
 
 class PakFileHandle;
 

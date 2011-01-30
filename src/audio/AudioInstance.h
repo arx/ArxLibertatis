@@ -25,9 +25,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef __ATHENA_INSTANCE_H__
 #define __ATHENA_INSTANCE_H__
 
-#include "Athena_Types.h"
-#include "Athena_Sample.h"
-#include "Athena_Stream.h"
+#include "AudioTypes.h"
+#include "Sample.h"
+#include "Stream.h"
 #include "dsoundfwd.h"
 
 namespace ATHENA

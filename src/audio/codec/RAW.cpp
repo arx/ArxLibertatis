@@ -23,7 +23,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include "audio/Athena_Codec_RAW.h"
+#include "audio/codec/RAW.h"
 #include "io/PakManager.h"
 
 namespace ATHENA
