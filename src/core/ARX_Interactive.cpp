@@ -215,7 +215,7 @@ void ARX_INTERACTIVE_ForceIOLeaveZone(INTERACTIVE_OBJ * io, long flags)
 		MakeUpcase(temp);
 
 		if (flags & 1) // no need when being destroyed !
-			SendIOScriptEvent(io, SM_LEAVEZONE, temp.c_str(), NULL);
+			SendIOScriptEvent(io, SM_LEAVEZONE, temp);
 
 		if (op->controled[0] != 0)
 		{
@@ -227,7 +227,7 @@ void ARX_INTERACTIVE_ForceIOLeaveZone(INTERACTIVE_OBJ * io, long flags)
 				char tex2[128];
 				strcpy(texx, GetName(io->filename).c_str());
 				sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
-				SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2, NULL); 
+				SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2); 
 			}
 		}
 	}
@@ -877,7 +877,7 @@ void PrepareIOTreatZone(long flag)
 			        && (!(io->GameFlags & GFLAG_WASINTREATZONE)))
 			{
 				//coming back; doesn't really matter right now
-				//	SendIOScriptEvent(inter.iobj[i],SM_TREATIN,"");
+				//	SendIOScriptEvent(inter.iobj[i],SM_TREATIN);
 
 			}
 			else if ((!(io->GameFlags & GFLAG_ISINTREATZONE))
@@ -886,7 +886,7 @@ void PrepareIOTreatZone(long flag)
 				//going away;
 				io->GameFlags |= GFLAG_ISINTREATZONE;
 
-				if (SendIOScriptEvent(io, SM_TREATOUT, "") != REFUSE)
+				if (SendIOScriptEvent(io, SM_TREATOUT) != REFUSE)
 				{
 					if (io->ioflags & IO_NPC)
 						io->_npcdata->pathfind.flags &= ~PATHFIND_ALWAYS;
@@ -2521,8 +2521,8 @@ void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const std::string& temp)
 	if (ioo)
 	{
 		MakeTemporaryIOIdent(ioo);
-		SendIOScriptEvent(ioo, SM_INIT, "", NULL);
-		SendIOScriptEvent(ioo, SM_INITEND, "", NULL);
+		SendIOScriptEvent(ioo, SM_INIT);
+		SendIOScriptEvent(ioo, SM_INITEND);
 		io->_npcdata->weapontype = ioo->type_flags;
 		ioo->show = SHOW_FLAG_LINKED;
 		ioo->scriptload = 2;
@@ -2603,7 +2603,7 @@ INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
 	GetIOScript(io, texscript.c_str());
 
 	if (!(flags & NO_ON_LOAD))
-		SendIOScriptEvent(io, SM_LOAD, "", NULL);
+		SendIOScriptEvent(io, SM_LOAD);
 
 	io->spellcast_data.castingspell = -1;
 	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
@@ -3082,7 +3082,7 @@ INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
 	io->_npcdata->stare_factor = 1.f;
 
 	if (!(flags & NO_ON_LOAD))
-		SendIOScriptEvent(io, SM_LOAD, "", NULL);
+		SendIOScriptEvent(io, SM_LOAD);
 
 	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
@@ -3433,7 +3433,7 @@ INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fil, 
 	GetIOScript(io, texscript.c_str());
 
 	if (!(flags & NO_ON_LOAD))
-		SendIOScriptEvent(io, SM_LOAD, "", NULL);
+		SendIOScriptEvent(io, SM_LOAD);
 
 	io->spellcast_data.castingspell = -1;
 	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
@@ -3919,10 +3919,10 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 									{
 										EVENT_SENDER = io_source;
 										io->collide_door_time = ARXTimeUL(); 	
-										SendIOScriptEvent(io, SM_COLLIDE_DOOR, "", NULL);
+										SendIOScriptEvent(io, SM_COLLIDE_DOOR);
 										EVENT_SENDER = io;
 										io->collide_door_time = ARXTimeUL(); 	
-										SendIOScriptEvent(io_source, SM_COLLIDE_DOOR, "", NULL);
+										SendIOScriptEvent(io_source, SM_COLLIDE_DOOR);
 									}
 								}
 
@@ -4088,10 +4088,10 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 											{
 												EVENT_SENDER = io_source;
 												io->collide_door_time = ARXTimeUL(); 
-												SendIOScriptEvent(io, SM_COLLIDE_DOOR, "", NULL);
+												SendIOScriptEvent(io, SM_COLLIDE_DOOR);
 												EVENT_SENDER = io;
 												io->collide_door_time = ARXTimeUL(); 	
-												SendIOScriptEvent(io_source, SM_COLLIDE_DOOR, "", NULL);
+												SendIOScriptEvent(io_source, SM_COLLIDE_DOOR);
 											}
 										}
 
@@ -4113,10 +4113,10 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 									{
 										EVENT_SENDER = io_source;
 										io->collide_door_time = ARXTimeUL(); 	
-										SendIOScriptEvent(io, SM_COLLIDE_DOOR, "", NULL);
+										SendIOScriptEvent(io, SM_COLLIDE_DOOR);
 										EVENT_SENDER = io;
 										io->collide_door_time = ARXTimeUL(); 	
-										SendIOScriptEvent(io_source, SM_COLLIDE_DOOR, "", NULL);
+										SendIOScriptEvent(io_source, SM_COLLIDE_DOOR);
 									}
 								}
 								return true;
@@ -4179,10 +4179,10 @@ void UpdateCameras()
 						char str[16];
 						sprintf(str, "%ld", aup->path->nb_pathways - 1);
 						EVENT_SENDER = NULL;
-						SendIOScriptEvent(io, SM_WAYPOINT, str, NULL);
+						SendIOScriptEvent(io, SM_WAYPOINT, str);
 						sprintf(str, "WAYPOINT%ld", aup->path->nb_pathways - 1);
 						SendIOScriptEvent(io, 0, "", str);
-						SendIOScriptEvent(io, SM_PATHEND, "", NULL);
+						SendIOScriptEvent(io, SM_PATHEND);
 						aup->lastWP = last;
 					}
 					else
@@ -4200,13 +4200,13 @@ void UpdateCameras()
 						char str[16];
 						sprintf(str, "%ld", ii);
 						EVENT_SENDER = NULL;
-						SendIOScriptEvent(io, SM_WAYPOINT, str, NULL);
+						SendIOScriptEvent(io, SM_WAYPOINT, str);
 						sprintf(str, "WAYPOINT%ld", ii);
 						SendIOScriptEvent(io, 0, "", str);
 
 						if (ii == aup->path->nb_pathways)
 						{
-							SendIOScriptEvent(io, SM_PATHEND, "", NULL);
+							SendIOScriptEvent(io, SM_PATHEND);
 						}
 						
 						aup->lastWP = last + 1;

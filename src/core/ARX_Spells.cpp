@@ -8525,7 +8525,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 										EVENT_SENDER=inter.iobj[spells[i].caster];
 									else EVENT_SENDER=NULL;
 
-									SendIOScriptEvent(io,SM_SUMMONED,"",NULL);
+									SendIOScriptEvent(io,SM_SUMMONED);
 										
 									EERIE_3D pos;
 										{
@@ -8993,7 +8993,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 									EVENT_SENDER=inter.iobj[spells[i].caster];
 								else EVENT_SENDER=NULL;
 
-								SendIOScriptEvent(io,SM_SUMMONED,"",NULL);
+								SendIOScriptEvent(io,SM_SUMMONED);
 								
 											EERIE_3D pos;
 								

@@ -527,7 +527,7 @@ long ARX_CHANGELEVEL_PushLevel(long num, long newnum)
 		if (io != NULL)
 		{
 			InventoryDir = -1;
-			SendIOScriptEvent(io, SM_INVENTORY2_CLOSE, "");
+			SendIOScriptEvent(io, SM_INVENTORY2_CLOSE);
 			TSecondaryInventory = SecondaryInventory;
 			SecondaryInventory = NULL;
 		}
@@ -4046,7 +4046,7 @@ long ARX_CHANGELEVEL_Save(long instance, const std::string& name)
 		if (io != NULL)
 		{
 			InventoryDir = -1;
-			SendIOScriptEvent(io, SM_INVENTORY2_CLOSE, "");
+			SendIOScriptEvent(io, SM_INVENTORY2_CLOSE);
 			TSecondaryInventory = SecondaryInventory;
 			SecondaryInventory = NULL;
 		}

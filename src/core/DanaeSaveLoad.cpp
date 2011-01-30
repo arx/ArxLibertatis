@@ -1166,7 +1166,7 @@ suite:
 			}
 		}
 
-		if (SendIOScriptEvent(io, SM_LOAD, "", NULL) == ACCEPT)
+		if (SendIOScriptEvent(io, SM_LOAD) == ACCEPT)
 		{
 			if (io->obj == NULL)
 			{

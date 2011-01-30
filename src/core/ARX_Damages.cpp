@@ -118,7 +118,7 @@ void ARX_DAMAGES_IgnitIO(INTERACTIVE_OBJ * io, float dmg)
 
 	if ((io->ignition <= 0.f) && (io->ignition + dmg > 1.f))
 	{
-		SendIOScriptEvent(io, SM_ENTERZONE, "COOK_S", NULL);
+		SendIOScriptEvent(io, SM_ENTERZONE, "COOK_S");
 	}
 
 	if (io->ioflags & IO_FIX) io->ignition += dmg * ( 1.0f / 10 );
@@ -298,7 +298,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, long type, long source, EERIE_3D * pos
 		inter.iobj[0]->ouch_time = ARXTimeUL();
 		char tex[32];
 		sprintf(tex, "%5.2f", inter.iobj[0]->dmg_sum);
-		SendIOScriptEvent(inter.iobj[0], SM_OUCH, tex, NULL);
+		SendIOScriptEvent( inter.iobj[0], SM_OUCH, tex );
 		EVENT_SENDER = oes;
 		float power = inter.iobj[0]->dmg_sum / player.maxlife * 220.f;
 		AddQuakeFX(power * 3.5f, 500 + power * 3, rnd() * 100.f + power + 200, 0);
@@ -355,7 +355,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, long type, long source, EERIE_3D * pos
 					ARX_SOUND_PlayInterface(SND_PLAYER_DEATH_BY_FIRE);
 				}
 
-				SendIOScriptEvent(inter.iobj[0], SM_DIE, "", NULL);
+				SendIOScriptEvent(inter.iobj[0], SM_DIE);
 
 				for (long i = 1; i < inter.nbmax; i++)
 				{
@@ -522,7 +522,7 @@ void ARX_DAMAGES_DamageFIX(INTERACTIVE_OBJ * io, float dmg, long source, long fl
 		io->ouch_time = ARXTimeUL();
 		char tex[32];
 		sprintf(tex, "%5.2f", io->dmg_sum);
-		SendIOScriptEvent(io, SM_OUCH, tex, NULL);
+		SendIOScriptEvent(io, SM_OUCH, tex);
 		io->dmg_sum = 0.f;
 	}
 
@@ -531,7 +531,7 @@ void ARX_DAMAGES_DamageFIX(INTERACTIVE_OBJ * io, float dmg, long source, long fl
 	if (io->durability <= 0.f)
 	{
 		io->durability = 0.f;
-		SendIOScriptEvent(io, SM_BREAK, "");
+		SendIOScriptEvent(io, SM_BREAK);
 	}
 	else
 	{
@@ -917,7 +917,7 @@ float ARX_DAMAGES_DamageNPC(INTERACTIVE_OBJ * io, float dmg, long source, long f
 		else
 			sprintf(tex, "%5.2f", io->dmg_sum);
 
-		SendIOScriptEvent(io, SM_OUCH, tex, NULL);
+		SendIOScriptEvent(io, SM_OUCH, tex);
 		io->dmg_sum = 0.f;
 		long n = ARX_SPELLS_GetSpellOn(io, SPELL_CONFUSE);
 
@@ -1292,7 +1292,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 								if (damages[j].type & DAMAGE_TYPE_COLD)
 									strcpy(param, "COLD");
 
-								SendIOScriptEvent(io, SM_COLLIDE_FIELD, param, NULL);
+								SendIOScriptEvent(io, SM_COLLIDE_FIELD, param);
 
 							}
 						}
@@ -1893,7 +1893,7 @@ void ARX_DAMAGES_DurabilityLoss(INTERACTIVE_OBJ * io, float loss)
 
 	if (io->durability <= 0)
 	{
-		SendIOScriptEvent(io, SM_BREAK, "", NULL);
+		SendIOScriptEvent(io, SM_BREAK);
 	}
 }
 void ARX_DAMAGES_DamagePlayerEquipment(float damages)

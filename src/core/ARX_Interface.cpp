@@ -1088,7 +1088,7 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 	if (player.Interface & INTER_MAP) 
 	{
 		ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, 0.9F + 0.2F * rnd());
-		SendIOScriptEvent(inter.iobj[0],SM_BOOK_CLOSE,"",NULL);	
+		SendIOScriptEvent(inter.iobj[0],SM_BOOK_CLOSE);
 		player.Interface &=~ INTER_MAP;
 		ARX_MINIMAP_PurgeTC();
 		
@@ -1108,7 +1108,7 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 		SendIOScriptEvent(inter.iobj[0],0,"","BOOK_OPEN");
 		
 		ARX_SOUND_PlayInterface(SND_BOOK_OPEN, 0.9F + 0.2F * rnd());
-		SendIOScriptEvent(inter.iobj[0],SM_BOOK_OPEN,"",NULL);
+		SendIOScriptEvent(inter.iobj[0],SM_BOOK_OPEN);
 		ARX_INTERFACE_NoteClose();
 		player.Interface |= INTER_MAP;
 		Book_MapPage=ARX_LEVELS_GetRealNum(CURRENTLEVEL)+1;
@@ -1660,7 +1660,7 @@ bool DANAE::ManageEditorControls()
 		if (io!=NULL)
 		{
 			InventoryDir=-1;
-			SendIOScriptEvent(io,SM_INVENTORY2_CLOSE,"");
+			SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 			TSecondaryInventory=SecondaryInventory;
 			SecondaryInventory=NULL;
 			
@@ -1781,7 +1781,7 @@ bool DANAE::ManageEditorControls()
 									&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
 									>= CURRENT_TORCH->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
 								{
-									SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY,"");
+									SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
 								}
 
 								MakeLocalised(temp->locname,WILLADDSPEECH,256);
@@ -2049,7 +2049,7 @@ bool DANAE::ManageEditorControls()
 
 						if (SecondaryInventory != NULL)
 						{
-							SendIOScriptEvent(ioSteal, SM_STEAL,"");
+							SendIOScriptEvent(ioSteal, SM_STEAL);
 
 							if (INTERNATIONAL_MODE)
 							{
@@ -2210,7 +2210,7 @@ bool DANAE::ManageEditorControls()
 				{
 					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd()); 
 					InventoryDir=-1;
-					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE,"");
+					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 					TSecondaryInventory=SecondaryInventory;
 					SecondaryInventory=NULL;
 				}
@@ -2231,7 +2231,7 @@ bool DANAE::ManageEditorControls()
 	{
 		if ( FlyingOverIO && ( !DRAGINTER ) )
 		{
-			SendIOScriptEvent( FlyingOverIO, SM_CLICKED, "" );
+			SendIOScriptEvent( FlyingOverIO, SM_CLICKED );
 			bool bOk = true;
 			
 			if ( SecondaryInventory != NULL )
@@ -2345,7 +2345,7 @@ bool DANAE::ManageEditorControls()
 			{	
 				if (Book_Mode == 0)
 				{
-					SendIOScriptEvent(DRAGINTER,SM_INVENTORYUSE,"");
+					SendIOScriptEvent(DRAGINTER,SM_INVENTORYUSE);
 					COMBINE=NULL;
 				}
 			}			
@@ -3916,7 +3916,7 @@ void DANAE::ManagePlayerControls()
 				{
 					if (t->_npcdata->life>0.f)
 					{
-						SendIOScriptEvent(t,SM_CHAT,"");
+						SendIOScriptEvent(t,SM_CHAT);
 						EERIEMouseButton&=~4;
 
 						if (DRAGGING) DRAGGING = 0;
@@ -3974,7 +3974,7 @@ void DANAE::ManagePlayerControls()
 					}
 				}
 				else if (t->script.data!=NULL)
-					SendIOScriptEvent(t,SM_ACTION,"");
+					SendIOScriptEvent(t,SM_ACTION);
 
 				EERIEMouseButton&=~4;
 
@@ -4599,7 +4599,7 @@ void DANAE::ManagePlayerControls()
 					  
 					if (pIOChangeWeapon)
 					{
-						SendIOScriptEvent(pIOChangeWeapon,SM_INVENTORYUSE,"");
+						SendIOScriptEvent(pIOChangeWeapon,SM_INVENTORYUSE);
 						pIOChangeWeapon=NULL;
 					  }
 				  }
@@ -4776,7 +4776,7 @@ void DANAE::ManagePlayerControls()
 				if (!CSEND)
 				{
 					CSEND=1;
-					SendIOScriptEvent(inter.iobj[0],SM_EXPLORATIONMODE,"");
+					SendIOScriptEvent(inter.iobj[0],SM_EXPLORATIONMODE);
 				}
 			}
 		}
@@ -4785,7 +4785,7 @@ void DANAE::ManagePlayerControls()
 			if (CSEND)
 			{
 				CSEND=0;
-				SendIOScriptEvent(inter.iobj[0],SM_CURSORMODE,"");
+				SendIOScriptEvent(inter.iobj[0],SM_CURSORMODE);
 			}
 		}
 
@@ -4837,7 +4837,7 @@ void DANAE::ManagePlayerControls()
 						if (io!=NULL)
 						{
 							InventoryDir=-1;
-							SendIOScriptEvent(io,SM_INVENTORY2_CLOSE,"");
+							SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 							TSecondaryInventory=SecondaryInventory;
 							SecondaryInventory=NULL;
 						}
@@ -4878,7 +4878,7 @@ void DANAE::ManagePlayerControls()
 						if (io!=NULL)
 						{
 							InventoryDir=-1;
-							SendIOScriptEvent(io,SM_INVENTORY2_CLOSE,"");
+							SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 							TSecondaryInventory=SecondaryInventory;
 							SecondaryInventory=NULL;
 						}
@@ -5150,7 +5150,7 @@ void DANAE::ManageKeyMouse()
 						{
 							if (!((FlyingOverIO->_itemdata->playerstacksize <= 1) && (FlyingOverIO->_itemdata->count > 1)))
 							{
-								SendIOScriptEvent(FlyingOverIO,SM_INVENTORYUSE,"");
+								SendIOScriptEvent(FlyingOverIO,SM_INVENTORYUSE);
 
 								if (!((pMenuConfig->bAutoReadyWeapon == false) && (pMenuConfig->bMouseLookToggle)))
 								{
@@ -5718,7 +5718,7 @@ void DANAE::ManageKeyMouse()
 								&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
 								>= FlyingOverIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
 							{
-								SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY,"");
+								SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
 							}
 
 							MakeLocalised(temp->locname,WILLADDSPEECH,256);
@@ -5807,7 +5807,7 @@ void DANAE::ManageKeyMouse()
 										&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
 										>= FlyingOverIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
 									{
-										SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY,"");
+										SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
 									}
 
 									MakeLocalised(temp->locname,WILLADDSPEECH,256);
@@ -9301,7 +9301,7 @@ void DANAE::DrawAllInterface()
 						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd()); 
 
 						InventoryDir=-1;
-						SendIOScriptEvent(io,SM_INVENTORY2_CLOSE,"");
+						SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 						TSecondaryInventory=SecondaryInventory;
 						SecondaryInventory=NULL;
 					}
@@ -9321,7 +9321,7 @@ void DANAE::DrawAllInterface()
 					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd()); 
 
 					InventoryDir=-1;
-					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE,"");
+					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 					TSecondaryInventory=SecondaryInventory;
 					SecondaryInventory=NULL;
 				}

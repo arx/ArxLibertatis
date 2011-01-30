@@ -288,7 +288,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				{
 					temp = op->name;
 					MakeUpcase(temp);
-					SendIOScriptEvent(io, SM_LEAVEZONE, temp.c_str(), NULL); 
+					SendIOScriptEvent(io, SM_LEAVEZONE, temp); 
 
 					if (op->controled[0] != 0)
 					{
@@ -300,7 +300,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 							char tex2[128];
 							strcpy(texx, GetName(io->filename).c_str());
 							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
-							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2, NULL);
+							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2);
 						}
 					}
 				}
@@ -320,7 +320,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 					}
 					else
 					{
-						SendIOScriptEvent(io, SM_ENTERZONE, temp.c_str(), NULL); 
+						SendIOScriptEvent(io, SM_ENTERZONE, temp); 
 
 						if (p->controled[0] != 0)
 						{
@@ -332,7 +332,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 								char tex2[128];
 								strcpy(texx, GetName(io->filename).c_str());
 								sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
-								SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2, NULL); 
+								SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2); 
 							}
 						}
 					}
@@ -341,7 +341,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				{
 					temp = op->name;
 					MakeUpcase(temp);
-					SendIOScriptEvent(io, SM_LEAVEZONE, temp.c_str(), NULL); 
+					SendIOScriptEvent(io, SM_LEAVEZONE, temp); 
 
 					if (op->controled[0] != 0)
 					{
@@ -353,14 +353,14 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 							char tex2[128];
 							strcpy(texx, GetName(io->filename).c_str());
 							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
-							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2, NULL); 
+							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2); 
 						}
 					}
 
 					io->inzone_show = io->show;
 					temp = p->name;
 					MakeUpcase(temp);
-					SendIOScriptEvent(io, SM_ENTERZONE, temp.c_str(), NULL); 
+					SendIOScriptEvent(io, SM_ENTERZONE, temp); 
 
 					if (p->controled[0] != 0)
 					{
@@ -372,7 +372,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 							char tex2[128];
 							strcpy(texx, GetName(io->filename).c_str());
 							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
-							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2, NULL);
+							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2);
 						}
 					}
 				}
@@ -403,7 +403,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 		{
 			temp = op->name;
 			MakeUpcase(temp);
-			SendIOScriptEvent(inter.iobj[0], SM_LEAVEZONE, temp.c_str(), NULL); 
+			SendIOScriptEvent(inter.iobj[0], SM_LEAVEZONE, temp); 
 			CHANGE_LEVEL_ICON = -1;
 
 			if (op->controled[0] != 0)
@@ -414,7 +414,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				{
 					char tex2[128];
 					sprintf(tex2, "PLAYER %s", temp.c_str());
-					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2, NULL); 
+					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2); 
 				}
 			}
 		}
@@ -422,7 +422,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 		{
 			temp = p->name;
 			MakeUpcase(temp);
-			SendIOScriptEvent(inter.iobj[0], SM_ENTERZONE, temp.c_str(), NULL); 
+			SendIOScriptEvent(inter.iobj[0], SM_ENTERZONE, temp); 
 
 			if (p->flags & PATH_AMBIANCE && p->ambiance[0])
 				ARX_SOUND_PlayZoneAmbiance(p->ambiance, ARX_SOUND_PLAY_LOOPED, p->amb_max_vol * ( 1.0f / 100 ));
@@ -453,7 +453,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				{
 					char tex2[128];
 					sprintf(tex2, "PLAYER %s", temp.c_str());
-					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2, NULL); 
+					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2); 
 				}
 			}
 		}
@@ -470,7 +470,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				{
 					char tex2[128];
 					sprintf(tex2, "PLAYER %s", temp.c_str());
-					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2, NULL); 
+					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2); 
 				}
 			}
 
@@ -485,7 +485,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				{
 					char tex2[128];
 					sprintf(tex2, "PLAYER %s", temp.c_str());
-					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2, NULL); 
+					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2); 
 				}
 			}
 		}
@@ -1253,7 +1253,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	INTERACTIVE_OBJ *	io_target		=	inter.iobj[target];
 	INTERACTIVE_OBJ *	io_source		=	inter.iobj[source];
 
-	SendIOScriptEvent(io_target, SM_AGGRESSION, "", NULL);
+	SendIOScriptEvent(io_target, SM_AGGRESSION);
 
 	float				distance		=	EEDistance3D(&Thrown[thrownum].position, &Thrown[thrownum].initial_position);
 	float				distance_modifier =	1.f;
@@ -1279,7 +1279,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 
 		if (rnd() * 100 <= (float)(player.Full_Attribute_Dexterity - 9) * 2.f + (float)((player.Full_Skill_Projectile) * ( 1.0f / 5 )))
 		{
-			if (SendIOScriptEvent(io_source, SM_CRITICAL, "BOW", NULL) != REFUSE)
+			if (SendIOScriptEvent(io_source, SM_CRITICAL, "BOW") != REFUSE)
 				critical = true;
 		}
 
@@ -1289,7 +1289,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 		{
 			if (rnd() * 100.f <= player.Full_Skill_Stealth)
 			{
-				if (SendIOScriptEvent(io_source, SM_BACKSTAB, "BOW", NULL) != REFUSE)
+				if (SendIOScriptEvent(io_source, SM_BACKSTAB, "BOW") != REFUSE)
 					backstab = 1.5f;
 			}
 		}

@@ -780,7 +780,7 @@ failure:
 
 	if (io->_npcdata->pathfind.flags & BEHAVIOUR_NONE) return false;
 
-	SendIOScriptEvent(io, SM_PATHFINDER_FAILURE, "", NULL);
+	SendIOScriptEvent(io, SM_PATHFINDER_FAILURE);
 	return false;
 }
 
@@ -1195,7 +1195,7 @@ void ARX_PHYSICS_Apply()
 
 				if (io->_npcdata->pathfind.listnb == 0) // Not Found
 				{
-					SendIOScriptEvent(io, SM_PATHFINDER_FAILURE, "", NULL);
+					SendIOScriptEvent(io, SM_PATHFINDER_FAILURE);
 					io->_npcdata->pathfind.pathwait = 0;
 
 					if (io->_npcdata->pathfind.list)
@@ -1205,7 +1205,7 @@ void ARX_PHYSICS_Apply()
 				}
 				else if (io->_npcdata->pathfind.listnb > 0) // Found
 				{
-					SendIOScriptEvent(io, SM_PATHFINDER_SUCCESS, "", NULL);
+					SendIOScriptEvent(io, SM_PATHFINDER_SUCCESS);
 					io->_npcdata->pathfind.pathwait = 0;
 					io->_npcdata->pathfind.listpos += (unsigned short)ARX_NPC_GetNextAttainableNodeIncrement(io);
 
@@ -2977,7 +2977,7 @@ void ManageNPCMovement(INTERACTIVE_OBJ * io)
 					io->_npcdata->reachedtime = ARXTimeUL();//treat warning C4244 conversion from 'float' to 'unsigned long'
 
 					if (io->targetinfo != GetInterNum(io))
-						SendIOScriptEvent(io, SM_REACHEDTARGET, "");
+						SendIOScriptEvent(io, SM_REACHEDTARGET);
 				}
 				else if ((ause0->cur_anim == alist[ANIM_WAIT]) && (ause0->flags & EA_ANIMEND))
 				{
@@ -3591,7 +3591,7 @@ void ManageNPCMovement(INTERACTIVE_OBJ * io)
 				else
 					EVENT_SENDER = NULL;
 
-				SendIOScriptEvent(io, SM_LOSTTARGET, "");
+				SendIOScriptEvent(io, SM_LOSTTARGET);
 				io->_npcdata->reachedtarget = 0;
 			}
 
@@ -3759,7 +3759,7 @@ void ManageNPCMovement(INTERACTIVE_OBJ * io)
 					io->animlayer[1].cur_anim = NULL;
 
 				if (io->targetinfo != GetInterNum(io))
-					SendIOScriptEvent(io, SM_REACHEDTARGET, "");
+					SendIOScriptEvent(io, SM_REACHEDTARGET);
 			}
 		}
 	}
@@ -4127,7 +4127,7 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 			{
 				// if visible but was NOT visible, sends an Detectplayer Event
 				EVENT_SENDER = NULL;
-				SendIOScriptEvent(io, SM_DETECTPLAYER, "");
+				SendIOScriptEvent(io, SM_DETECTPLAYER);
 				io->_npcdata->detect = 1;
 			}
 		}
@@ -4137,7 +4137,7 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 	if ((!Visible) && (io->_npcdata->detect))
 	{
 		EVENT_SENDER = NULL;
-		SendIOScriptEvent(io, SM_UNDETECTPLAYER, "");
+		SendIOScriptEvent(io, SM_UNDETECTPLAYER);
 		io->_npcdata->detect = 0;
 	}
 }

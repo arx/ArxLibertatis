@@ -141,9 +141,9 @@ void ARX_INVENTORY_Declare_InventoryIn(INTERACTIVE_OBJ * io)
 		}
 
 		EVENT_SENDER = io;
-		SendIOScriptEvent(inter.iobj[0], SM_INVENTORYIN, "", NULL);
+		SendIOScriptEvent(inter.iobj[0], SM_INVENTORYIN);
 		EVENT_SENDER = inter.iobj[0];
-		SendIOScriptEvent(io, SM_INVENTORYIN, "", NULL);
+		SendIOScriptEvent(io, SM_INVENTORYIN);
 		EVENT_SENDER = NULL;
 	}
 }
@@ -2181,7 +2181,7 @@ void SendInventoryObjectCommand(const char * _lpszText, long _lCommand)
 									if (strcmp(inventory[iNbBag][i][j].io->obj->texturecontainer[lTex]->m_texName.c_str(), _lpszText) == 0)
 									{
 										if (inventory[iNbBag][i][j].io->GameFlags & GFLAG_INTERACTIVITY)
-											SendIOScriptEvent(inventory[iNbBag][i][j].io, _lCommand, "");
+											SendIOScriptEvent(inventory[iNbBag][i][j].io, _lCommand);
 
 										return;
 									}
@@ -2233,7 +2233,7 @@ void ARX_INVENTORY_IdentifyIO(INTERACTIVE_OBJ * _pIO)
 			if (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
 			        >= _pIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value)
 			{
-				SendIOScriptEvent(_pIO, SM_IDENTIFY, "");
+				SendIOScriptEvent(_pIO, SM_IDENTIFY);
 			}
 		}
 	}
@@ -2256,7 +2256,7 @@ void ARX_INVENTORY_IdentifyAll()
 						if (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
 						        >= io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value)
 						{
-							SendIOScriptEvent(io, SM_IDENTIFY, "");
+							SendIOScriptEvent(io, SM_IDENTIFY);
 						}
 					}
 				}
@@ -2270,7 +2270,7 @@ void ARX_INVENTORY_OpenClose(INTERACTIVE_OBJ * _io)
 	if ((_io && (SecondaryInventory == _io->inventory)) || (_io == NULL)) // CLOSING
 	{
 		if (SecondaryInventory && (SecondaryInventory->io != NULL))
-			SendIOScriptEvent((INTERACTIVE_OBJ *)SecondaryInventory->io, SM_INVENTORY2_CLOSE, "");
+			SendIOScriptEvent((INTERACTIVE_OBJ *)SecondaryInventory->io, SM_INVENTORY2_CLOSE);
 
 		InventoryDir = -1;
 		TSecondaryInventory = SecondaryInventory;
@@ -2282,14 +2282,14 @@ void ARX_INVENTORY_OpenClose(INTERACTIVE_OBJ * _io)
 	else
 	{
 		if (TSecondaryInventory
-		        && TSecondaryInventory->io) SendIOScriptEvent((INTERACTIVE_OBJ *)TSecondaryInventory->io, SM_INVENTORY2_CLOSE, "");
+		        && TSecondaryInventory->io) SendIOScriptEvent((INTERACTIVE_OBJ *)TSecondaryInventory->io, SM_INVENTORY2_CLOSE);
 
 		InventoryDir = 1;
 		TSecondaryInventory = SecondaryInventory = (INVENTORY_DATA *)_io->inventory;
 
 		if (SecondaryInventory && SecondaryInventory->io != NULL)
 		{
-			if (SendIOScriptEvent((INTERACTIVE_OBJ *)SecondaryInventory->io, SM_INVENTORY2_OPEN, "") == REFUSE)
+			if (SendIOScriptEvent((INTERACTIVE_OBJ *)SecondaryInventory->io, SM_INVENTORY2_OPEN) == REFUSE)
 			{
 				InventoryDir = -1;
 				TSecondaryInventory = SecondaryInventory = NULL;

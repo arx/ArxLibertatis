@@ -504,9 +504,9 @@ void ARX_EQUIPMENT_UnEquip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * tounequip
 			}
 
 			EVENT_SENDER = tounequip;
-			SendIOScriptEvent(inter.iobj[0], SM_EQUIPOUT, "", NULL);
+			SendIOScriptEvent(inter.iobj[0], SM_EQUIPOUT);
 			EVENT_SENDER = inter.iobj[0];
-			SendIOScriptEvent(tounequip, SM_EQUIPOUT, "", NULL);
+			SendIOScriptEvent(tounequip, SM_EQUIPOUT);
 		}
 	}
 
@@ -658,7 +658,7 @@ void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon()
 float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * io_weapon, INTERACTIVE_OBJ * io_target, float ratioaim, EERIE_3D * position)
 {
 	EVENT_SENDER = io_source;
-	SendIOScriptEvent(io_target, SM_AGGRESSION, "", NULL);
+	SendIOScriptEvent(io_target, SM_AGGRESSION);
 
 	if ((!io_source)
 	        ||	(!io_target))
@@ -707,7 +707,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 
 		if (rnd() * 100 <= (float)(player.Full_Attribute_Dexterity - 9) * 2.f + (float)(player.Full_Skill_Close_Combat * ( 1.0f / 5 )))
 		{
-			if (SendIOScriptEvent(io_source, SM_CRITICAL, "", NULL) != REFUSE)
+			if (SendIOScriptEvent(io_source, SM_CRITICAL) != REFUSE)
 				critical = true;
 		}
 		else critical = false;
@@ -718,7 +718,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 		{
 			if (rnd() * 100.f <= player.Full_Skill_Stealth * ( 1.0f / 2 ))
 			{
-				if (SendIOScriptEvent(io_source, SM_BACKSTAB, "", NULL) != REFUSE)
+				if (SendIOScriptEvent(io_source, SM_BACKSTAB) != REFUSE)
 					backstab = 1.5f; 
 			}
 		}
@@ -755,14 +755,14 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 
 		if (rnd() * 100 <= io_source->_npcdata->critical) 
 		{
-			if (SendIOScriptEvent(io_source, SM_CRITICAL, "", NULL) != REFUSE)
+			if (SendIOScriptEvent(io_source, SM_CRITICAL) != REFUSE)
 				critical = true;
 		}
 		else critical = false;
 
 		if (rnd() * 100.f <= (float)io_source->_npcdata->backstab_skill)
 		{
-			if (SendIOScriptEvent(io_source, SM_BACKSTAB, "", NULL) != REFUSE)
+			if (SendIOScriptEvent(io_source, SM_BACKSTAB) != REFUSE)
 				backstab = 1.5f; 
 		}
 	}
@@ -1674,7 +1674,7 @@ void ARX_EQUIPMENT_IdentifyAll()
 				if (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
 				        >= toequip->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value)
 				{
-					SendIOScriptEvent(toequip, SM_IDENTIFY, "");
+					SendIOScriptEvent(toequip, SM_IDENTIFY);
 				}
 			}
 		}

@@ -440,7 +440,7 @@ void Stack_SendMsgToAllNPC_IO(long msg, const char * dat)
 	{
 		if ((inter.iobj[i]) && (inter.iobj[i]->ioflags & IO_NPC))
 		{
-			Stack_SendIOScriptEvent(inter.iobj[i], msg, dat, "");
+			Stack_SendIOScriptEvent(inter.iobj[i], msg, dat);
 		}
 	}
 }
@@ -452,7 +452,7 @@ long SendMsgToAllIO(long msg, const char * dat)
 	{
 		if (inter.iobj[i])
 		{
-			if (SendIOScriptEvent(inter.iobj[i], msg, dat, "") == REFUSE)
+			if (SendIOScriptEvent(inter.iobj[i], msg, dat) == REFUSE)
 				ret = REFUSE;
 		}
 	}
@@ -701,7 +701,7 @@ void ARX_SCRIPT_AllowInterScriptExec()
 					{
 						if (inter.iobj[i]->mainevent[0])
 							SendIOScriptEvent(inter.iobj[i], 0, "", inter.iobj[i]->mainevent);
-						else SendIOScriptEvent(inter.iobj[i], SM_MAIN, "", "");
+						else SendIOScriptEvent(inter.iobj[i], SM_MAIN);
 					}
 			}
 		}
@@ -3485,7 +3485,7 @@ long GLOB = 0;
 //*************************************************************************************
 long NotifyIOEvent(INTERACTIVE_OBJ * io, long msg)
 {
-	if (SendIOScriptEvent(io, msg, "") != REFUSE)
+	if (SendIOScriptEvent(io, msg) != REFUSE)
 	{
 		switch (msg)
 		{
@@ -7338,7 +7338,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 										{
 											INTERACTIVE_OBJ * oes = EVENT_SENDER;
 											EVENT_SENDER = ioo;
-											Stack_SendIOScriptEvent(io, SM_COLLISION_ERROR_DETAIL, "", "");
+											Stack_SendIOScriptEvent(io, SM_COLLISION_ERROR_DETAIL);
 											EVENT_SENDER = oes;
 											col = 1;
 										}
@@ -7349,7 +7349,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 								{
 									INTERACTIVE_OBJ * oes = EVENT_SENDER;
 									EVENT_SENDER = NULL;
-									Stack_SendIOScriptEvent(io, SM_COLLISION_ERROR, "", "");
+									Stack_SendIOScriptEvent(io, SM_COLLISION_ERROR);
 									EVENT_SENDER = oes;
 								}
 							}
@@ -7643,7 +7643,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 							if ((pio != NULL) && (pio == ioSteal))
 							{
 								InventoryDir = -1;
-								SendIOScriptEvent(pio, SM_INVENTORY2_CLOSE, "");
+								SendIOScriptEvent(pio, SM_INVENTORY2_CLOSE);
 								TSecondaryInventory = SecondaryInventory;
 								SecondaryInventory = NULL;
 							}
@@ -12817,7 +12817,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 						{
 							INTERACTIVE_OBJ * oes = EVENT_SENDER;
 							EVENT_SENDER = inter.iobj[t];
-							Stack_SendIOScriptEvent(io, SM_EQUIPOUT, "", "");
+							Stack_SendIOScriptEvent(io, SM_EQUIPOUT);
 							EVENT_SENDER = oes;
 							ARX_EQUIPMENT_UnEquip(inter.iobj[t], io);
 						}
@@ -12825,7 +12825,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 						{
 							INTERACTIVE_OBJ * oes = EVENT_SENDER;
 							EVENT_SENDER = inter.iobj[t];
-							Stack_SendIOScriptEvent(io, SM_EQUIPIN, "", "");
+							Stack_SendIOScriptEvent(io, SM_EQUIPIN);
 							EVENT_SENDER = oes;
 							ARX_EQUIPMENT_Equip(inter.iobj[t], io);
 						}

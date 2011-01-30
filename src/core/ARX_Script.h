@@ -450,12 +450,12 @@ void ForceAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * ea);
 
 long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const std::string& text, long duration = -1);
 
-long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params, const std::string& eventname = "" );
+long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params = "", const std::string& eventname = "" );
 long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& eventname, long info = 0);
 
 long SendMsgToAllIO(long msg, const char * dat);
 
-void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params, const std::string& eventname);
+void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params = "", const std::string& eventname = "");
 
 
 bool InSubStack(EERIE_SCRIPT * es, long pos);
