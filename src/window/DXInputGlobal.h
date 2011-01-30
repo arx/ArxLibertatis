@@ -35,7 +35,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <dinput.h>
 
 #include "core/Common.h"
-#include "Mercury_dx_input.h"
+#include "DXInput.h"
 
 /*---------------------------------------------------------*/
 #define MALLOC(a)		DI_Init.malloc(a)

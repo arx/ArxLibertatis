@@ -41,7 +41,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEPoly.h"
 #include "renderer/EERIEDraw.h"
 
-#include "window/Mercury_dx_input.h"
+#include "window/DXInput.h"
 
 using std::wistringstream;
 using std::min;

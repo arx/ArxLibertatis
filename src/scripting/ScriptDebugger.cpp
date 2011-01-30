@@ -27,7 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string.h>
 #include <windows.h>
 
-#include "scripting/SCRIPT_DEBUGGER_Dialog.h"
+#include "scripting/ScriptDebuggerDialog.h"
 #include "scene/Interactive.h"
 #include "core/Time.h"
 #include "renderer/EERIEPoly.h"
