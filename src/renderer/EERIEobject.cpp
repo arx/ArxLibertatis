@@ -76,7 +76,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "animation/AnimationRender.h"
 
-#include "io/HERMESMain.h"
+#include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/PakEntry.h"
 #include "io/Filesystem.h"

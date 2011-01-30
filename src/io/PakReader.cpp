@@ -57,7 +57,7 @@ using std::max;
 using std::size_t;
 using std::strlen;
 
-#include "io/blast.h"
+#include "io/Blast.h"
 #include "io/PakReader.h"
 #include "io/PakEntry.h"
 #include "io/HashMap.h"

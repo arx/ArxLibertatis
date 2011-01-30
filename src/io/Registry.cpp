@@ -43,8 +43,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 
 #include <stdio.h>
-#include "io/HERMESNet.h"
-#include "io/HERMESMain.h"
+#include "io/Registry.h"
+#include "io/IO.h"
 
 //-----------------------------------------------------------------------------
 // Name: WriteRegKey()

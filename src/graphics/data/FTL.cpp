@@ -62,11 +62,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdlib.h>
 
 #include "graphics/data/FTL.h"
-#include "io/HERMESMain.h"
+#include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
-#include "io/blast.h"
+#include "io/Blast.h"
 
 //***********************************************************************************************
 //	FTL FILE Structure:

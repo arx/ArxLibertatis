@@ -62,7 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEApp.h"
 #include "renderer/EERIEFrame.h"
 #include "renderer/EERIEUtil.h"
-#include "io/HERMESMain.h"
+#include "io/IO.h"
 
 //-----------------------------------------------------------------------------
 // Name: CD3DFramework7()

@@ -79,7 +79,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Localization.h"
 #include "core/Dialog.h"
 #include "core/Resource.h"
-#include "io/HERMESMain.h"
+#include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
 

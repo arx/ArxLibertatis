@@ -74,11 +74,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuWidgets.h"
 #include "ai/PathFinder.h"
 
-#include "io/HERMESMain.h"
+#include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
-#include "io/blast.h"
+#include "io/Blast.h"
 
 using std::min;
 using std::max;

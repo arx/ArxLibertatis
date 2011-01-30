@@ -54,7 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Dialog.h"
 #include "physics/Collisions.h"
 #include "animation/Cinematic.h"
-#include "io/HERMESMain.h"
+#include "io/IO.h"
 
 using std::min;
 using std::max;

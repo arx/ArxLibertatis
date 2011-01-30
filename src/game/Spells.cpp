@@ -36,7 +36,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 using std::abs;
 
-#include "io/HERMESMain.h"
+#include "io/IO.h"
 
 #include "renderer/EERIEDraw.h"
 #include "renderer/EERIEMath.h"

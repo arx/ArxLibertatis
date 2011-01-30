@@ -31,7 +31,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "core/Time.h"
 #include "renderer/EERIEPoly.h"
-#include "io/HERMESMain.h"
+#include "io/IO.h"
 
 typedef void (APIENTRY * CREATEDIALOG)(HWND, ScriptDebuggerInfos &);
 typedef void (APIENTRY * SETPARAMS)(ScriptDebuggerInfos &);

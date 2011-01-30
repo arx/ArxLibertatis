@@ -42,7 +42,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEPathfinder.h"
 #include "renderer/EERIEMath.h"
 
-#include "io/HERMESMain.h"
+#include "io/IO.h"
 
 #include "core/Core.h"
 #include "gui/Text.h"

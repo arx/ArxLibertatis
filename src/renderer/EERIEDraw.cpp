@@ -47,7 +47,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEApp.h"
 #include "renderer/EERIEPoly.h"
 
-#include "io/HERMESMain.h"
+#include "io/IO.h"
 
 using std::min;
 using std::max;

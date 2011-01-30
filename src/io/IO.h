@@ -61,7 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define HERMES_PATH_SIZE	512
 
-#include "HERMESPerf.h"
+#include "io/Perf.h"
 
 #define NOMINMAX 1
 #include <windows.h>

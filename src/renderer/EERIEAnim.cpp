@@ -82,7 +82,7 @@ using std::sprintf;
 #include "core/Core.h"
 #include "animation/AnimationRender.h"
 
-#include "io/HERMESMain.h"
+#include "io/IO.h"
 #include "io/PakManager.h"
 
 using std::min;

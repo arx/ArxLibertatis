@@ -1,6 +1,6 @@
 /* blast.c
  * Copyright (C) 2003 Mark Adler
- * For conditions of distribution and use, see copyright notice in blast.h
+ * For conditions of distribution and use, see copyright notice in Blast.h
  * version 1.1, 16 Feb 2003
  *
  * blast.c decompresses data compressed by the PKWare Compression Library.
@@ -29,7 +29,7 @@
 #include <cstring>
 #include <cstdlib>
 
-#include "io/blast.h"              /* prototype for blast() */
+#include "io/Blast.h"              /* prototype for blast() */
 #include "io/Logger.h"
 
 #define local static            /* for local function definitions */
@@ -378,7 +378,7 @@ local int decomp(struct state *s)
     return 0;
 }
 
-/* See comments in blast.h */
+/* See comments in Blast.h */
 int blast(blast_in infun, void *inhow, blast_out outfun, void *outhow)
 {
     struct state s;             /* input/output state */

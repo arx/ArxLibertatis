@@ -57,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEPathfinder.h"
 #include "renderer/EERIELight.h"
 
-#include "io/HERMESMain.h"
+#include "io/IO.h"
 #include "ai/PathFinder.h"
 
 static const float PATHFINDER_HEURISTIC_MIN(0.2F);

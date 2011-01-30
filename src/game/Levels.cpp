@@ -70,7 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Speech.h"
 #include "scene/GameSound.h"
 
-#include "io/HERMESMain.h"
+#include "io/IO.h"
 #include "renderer/EERIEPathfinder.h"
 #include "renderer/EERIECollisionSpheres.h"
 
