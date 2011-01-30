@@ -55,18 +55,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 //#define STRICT
 
-#include "renderer/EERIEPoly.h"
+#include "graphics/data/Mesh.h"
 
 #include <cstdlib>
 
-#include "renderer/EERIELight.h"
-#include "renderer/EERIEObject.h"
-#include "renderer/EERIETexture.h"
-#include "renderer/EERIEDraw.h"
-#include "renderer/EERIEUtil.h"
-#include "renderer/EERIEAnim.h"
-#include "renderer/EERIEAnchors.h"
-#include "renderer/EERIEPathfinder.h"
+#include "scene/Light.h"
+#include "scene/Object.h"
+#include "graphics/data/Texture.h"
+#include "graphics/Draw.h"
+#include "graphics/GraphicsUtility.h"
+#include "animation/Animation.h"
+#include "physics/Anchors.h"
+#include "ai/PathFinderManager.h"
 
 #include "graphics/particle/ParticleEffects.h"
 #include "core/Time.h"

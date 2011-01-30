@@ -59,7 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cassert>
 
-#include "renderer/EERIECollisionSpheres.h"
+#include "physics/CollisionShapes.h"
 #include "animation/Cinematic.h"
 #include "physics/Collisions.h"
 #include "game/Damage.h"

@@ -38,8 +38,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef  EERIEANIM_H
 #define  EERIEANIM_H
 
-#include "EERIETypes.h"
-#include "EERIEPoly.h"
+#include "graphics/GraphicsTypes.h"
+#include "graphics/data/Mesh.h"
 
 //-----------------------------------------------------------------------------
 #define HALOMAX 2000

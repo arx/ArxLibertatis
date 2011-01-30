@@ -58,7 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIELIGHT_H
 #define EERIELIGHT_H
 
-#include "EERIETypes.h"
+#include "graphics/GraphicsTypes.h"
 
 //-----------------------------------------------------------------------------
 #define MAX_LIGHTS 1200

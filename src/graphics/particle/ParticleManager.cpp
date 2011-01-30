@@ -81,8 +81,8 @@ todo:
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/ParticleParams.h"
 
-#include "renderer/EERIEDraw.h"
-#include "renderer/EERIEPoly.h"
+#include "graphics/Draw.h"
+#include "graphics/data/Mesh.h"
 
 using namespace std;
 

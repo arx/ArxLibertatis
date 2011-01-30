@@ -77,12 +77,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuWidgets.h"
 #include "core/Dialog.h"
 
-#include "renderer/EERIELinkedObj.h"
-#include "renderer/EERIECollisionSpheres.h"
-#include "renderer/EERIEPhysicsBox.h"
-#include "renderer/EERIEProgressive.h"
-#include "renderer/EERIEClothes.h"
-#include "renderer/EERIEDraw.h"
+#include "scene/LinkedObject.h"
+#include "physics/CollisionShapes.h"
+#include "physics/Box.h"
+#include "graphics/data/Progressive.h"
+#include "physics/Clothes.h"
+#include "graphics/Draw.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"

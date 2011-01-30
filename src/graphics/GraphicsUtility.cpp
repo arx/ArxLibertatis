@@ -61,7 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdio.h>
 #include <tchar.h>
 
-#include "renderer/EERIEUtil.h"
+#include "graphics/GraphicsUtility.h"
 
 //-----------------------------------------------------------------------------
 // Name: D3DUtil_InitSurfaceDesc()

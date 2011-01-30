@@ -28,10 +28,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "core/Time.h"
 
-#include "renderer/d3dwrapper.h"
-#include "renderer/EERIEDraw.h"
-#include "renderer/EERIEMath.h"
-#include "renderer/EERIETexture.h"
+#include "graphics/d3dwrapper.h"
+#include "graphics/Draw.h"
+#include "graphics/Math.h"
+#include "graphics/data/Texture.h"
 
 using std::min;
 using std::max;

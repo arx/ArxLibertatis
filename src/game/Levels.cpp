@@ -71,8 +71,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 
 #include "io/IO.h"
-#include "renderer/EERIEPathfinder.h"
-#include "renderer/EERIECollisionSpheres.h"
+#include "ai/PathFinderManager.h"
+#include "physics/CollisionShapes.h"
 
 extern long LOAD_N_DONT_ERASE;
 extern long DONT_LOAD_SCENE;

@@ -54,8 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 ///////////////////////////////////////////////////////////////////////////////
-#include "renderer/EERIEPathfinder.h"
-#include "renderer/EERIELight.h"
+#include "ai/PathFinderManager.h"
+#include "scene/Light.h"
 
 #include "io/IO.h"
 #include "ai/PathFinder.h"

@@ -45,8 +45,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIE_MESH_TWEAK_H
 #define EERIE_MESH_TWEAK_H
 
-#include "EERIETypes.h"
-#include "EERIEPoly.h"
+#include "graphics/GraphicsTypes.h"
+#include "graphics/data/Mesh.h"
 
 #define	TWEAK_ERROR	0
 #define TWEAK_HEAD	2

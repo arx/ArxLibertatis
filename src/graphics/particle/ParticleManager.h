@@ -29,7 +29,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <list>
 using namespace std;
 
-#include "renderer/EERIETypes.h"
+#include "graphics/GraphicsTypes.h"
 #include "graphics/particle/ParticleParams.h"
 #include "graphics/particle/ParticleSystem.h"
 

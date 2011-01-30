@@ -35,8 +35,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Time.h"
 #include "animation/Cinematic.h"
 
-#include "renderer/EERIEMath.h"
-#include "renderer/EERIEDraw.h"
+#include "graphics/Math.h"
+#include "graphics/Draw.h"
 
 #include "io/IO.h"
 #include "io/Filesystem.h"

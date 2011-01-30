@@ -54,8 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 #include "gui/MenuWidgets.h"
 
-#include "renderer/EERIEMath.h"
-#include "renderer/EERIEApp.h"
+#include "graphics/Math.h"
+#include "core/Application.h"
 
 #include "audio/Audio.h"
 

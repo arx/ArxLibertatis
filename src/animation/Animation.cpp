@@ -55,7 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "renderer/EERIEAnim.h"
+#include "animation/Animation.h"
 
 #include <cstdio>
 #include <iostream>
@@ -65,12 +65,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 using std::sprintf;
 
-#include "renderer/EERIEClothes.h"
-#include "renderer/EERIEObject.h"
-#include "renderer/EERIEMath.h"
-#include "renderer/EERIELight.h"
-#include "renderer/EERIEPoly.h"
-#include "renderer/EERIEDraw.h"
+#include "physics/Clothes.h"
+#include "scene/Object.h"
+#include "graphics/Math.h"
+#include "scene/Light.h"
+#include "graphics/data/Mesh.h"
+#include "graphics/Draw.h"
 
 #include "scene/GameSound.h"
 #include "game/Damage.h"

@@ -25,8 +25,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CARTE_H
 #define ARX_CARTE_H
 
-#include "renderer/EERIEPoly.h"
-#include "renderer/EERIEApp.h"
+#include "graphics/data/Mesh.h"
+#include "core/Application.h"
 
 class C_ARX_Carte
 {

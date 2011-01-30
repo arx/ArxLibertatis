@@ -25,7 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GLOBALMODS_H
 #define ARX_GLOBALMODS_H
 
-#include "renderer/EERIETypes.h"
+#include "graphics/GraphicsTypes.h"
 
 //-----------------------------------------------------------------------------
 typedef struct // Warning !!! used for save

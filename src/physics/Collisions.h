@@ -57,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_COLLISIONS_H
 #define ARX_COLLISIONS_H
 
-#include "renderer/EERIEPoly.h"
+#include "graphics/data/Mesh.h"
 
 //-----------------------------------------------------------------------------
 #define MAX_IN_SPHERE 20

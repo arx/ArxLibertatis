@@ -55,8 +55,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 const int BEZIERPrecision = 32;
 
-#include "renderer/EERIETypes.h"
-#include "renderer/EERIEDraw.h"
+#include "graphics/GraphicsTypes.h"
+#include "graphics/Draw.h"
 
 void EE_RT2(D3DTLVERTEX * in, D3DTLVERTEX * out);
 bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX *, D3DTLVERTEX *, D3DTLVERTEX *, float _fAdd = 0.f);

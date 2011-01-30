@@ -25,8 +25,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef CINEMATIQUE_H
 #define CINEMATIQUE_H
 
-#include "renderer/EERIEApp.h"
-#include "renderer/EERIEDraw.h"
+#include "core/Application.h"
+#include "graphics/Draw.h"
 
 /*-----------------------------------------------------------*/
 #define		VERSION		((1<<16)|76)

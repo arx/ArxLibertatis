@@ -25,7 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIEJPEG_H
 #define EERIEJPEG_H
 
-#include "EERIETexture.h"
+#include "graphics/data/Texture.h"
 
 WORD * LoadJpeg(char * Filename, long * width, long * height);
 

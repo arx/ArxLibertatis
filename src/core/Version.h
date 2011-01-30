@@ -638,7 +638,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //						Fixed Major GetSystemVar bug on Float walues
 //						Added -Z & -R flags to SENDEVENT script command (Zone & Radius)
 //						Corrected SetEditMode Bug (preventing some commands from executing ON INIT)
-//			19/01/2001	Removed EE_RTP3 (useless) & Moved _YXZRotateNorm & _YXZRotatePoint in EERIEMath.h
+//			19/01/2001	Removed EE_RTP3 (useless) & Moved _YXZRotateNorm & _YXZRotatePoint in graphics/Math.h
 //						Increased Dynamic_Normals Performance by removing unneeded computations
 //						Added MARKERS Handling
 //						Added TELEPORT Script Command

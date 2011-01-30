@@ -57,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIECLOTHES_H
 #define EERIECLOTHES_H
 
-#include "EERIETypes.h"
+#include "graphics/GraphicsTypes.h"
 
 extern long DEBUG_MOLLESS;
 extern long MOLLESS_Nb_Interpolations;

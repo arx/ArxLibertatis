@@ -36,11 +36,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "renderer/EERIEAnchors.h"
+#include "physics/Anchors.h"
 
-#include "renderer/EERIEApp.h"
-#include "renderer/EERIEPathfinder.h"
-#include "renderer/EERIEMath.h"
+#include "core/Application.h"
+#include "ai/PathFinderManager.h"
+#include "graphics/Math.h"
 
 #include "io/IO.h"
 

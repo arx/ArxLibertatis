@@ -55,10 +55,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 
 
-#include "renderer/EERIEDraw.h"
-#include "renderer/EERIEMath.h"
-#include "renderer/EERIELight.h"
-#include "renderer/EERIEObject.h"
+#include "graphics/Draw.h"
+#include "graphics/Math.h"
+#include "scene/Light.h"
+#include "scene/Object.h"
 
 #include "core/Core.h"
 #include "graphics/effects/SpellEffects.h"

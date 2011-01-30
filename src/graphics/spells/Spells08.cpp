@@ -53,9 +53,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include "renderer/EERIEDraw.h"
-#include "renderer/EERIELight.h"
-#include "renderer/EERIEMath.h"
+#include "graphics/Draw.h"
+#include "scene/Light.h"
+#include "graphics/Math.h"
 
 #include "graphics/effects/SpellEffects.h"
 #include "game/Damage.h"

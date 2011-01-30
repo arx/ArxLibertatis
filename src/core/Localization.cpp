@@ -28,8 +28,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/LocalizationHash.h"
 #include "core/Localization.h"
 #include "gui/MenuWidgets.h"
-#include "renderer/EERIEApp.h"
-#include "renderer/EERIETexture.h"
+#include "core/Application.h"
+#include "graphics/data/Texture.h"
 #include "io/IO.h"
 #include "io/PakManager.h"
 

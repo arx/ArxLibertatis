@@ -57,8 +57,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIE_LINKED_OBJ_H
 #define EERIE_LINKED_OBJ_H
 
-#include "EERIETypes.h"
-#include "EERIEPoly.h"
+#include "graphics/GraphicsTypes.h"
+#include "graphics/data/Mesh.h"
 
 void EERIE_LINKEDOBJ_InitData(EERIE_3DOBJ * obj);
 void EERIE_LINKEDOBJ_ReleaseData(EERIE_3DOBJ * obj);

@@ -73,10 +73,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/LoadLevel.h"
 #include "gui/ViewImage.h"
 
-#include "renderer/EERIEApp.h"
-#include "renderer/EERIEDraw.h"
-#include "renderer/EERIEMath.h"
-#include "renderer/EERIEObject.h"
+#include "core/Application.h"
+#include "graphics/Draw.h"
+#include "graphics/Math.h"
+#include "scene/Object.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"

@@ -59,9 +59,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define DANAE_H
 
 //-----------------------------------------------------------------------------
-#include "renderer/EERIEApp.h"
-#include "renderer/EERIETypes.h"
-#include "renderer/EERIEPoly.h"
+#include "core/Application.h"
+#include "graphics/GraphicsTypes.h"
+#include "graphics/data/Mesh.h"
 #include "game/Player.h"
 #include "scripting/Script.h"
 #include "physics/Physics.h"

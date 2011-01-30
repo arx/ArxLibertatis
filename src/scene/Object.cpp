@@ -54,7 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "renderer/EERIEObject.h"
+#include "scene/Object.h"
 
 #include <cstdio>
 #include <iostream>
@@ -63,14 +63,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <vector>
 
-#include "renderer/EERIETypes.h"
-#include "renderer/EERIEMath.h"
-#include "renderer/EERIEApp.h"
-#include "renderer/EERIEClothes.h"
-#include "renderer/EERIEProgressive.h"
-#include "renderer/EERIEPhysicsBox.h"
-#include "renderer/EERIECollisionSpheres.h"
-#include "renderer/EERIELinkedObj.h"
+#include "graphics/GraphicsTypes.h"
+#include "graphics/Math.h"
+#include "core/Application.h"
+#include "physics/Clothes.h"
+#include "graphics/data/Progressive.h"
+#include "physics/Box.h"
+#include "physics/CollisionShapes.h"
+#include "scene/LinkedObject.h"
 
 #include "core/TheoData.h"
 #include "scene/GameSound.h"

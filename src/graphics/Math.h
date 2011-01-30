@@ -56,8 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIEMATH_H
 #define EERIEMATH_H
 
-#include "EERIETypes.h"
-#include "EERIEPoly.h"
+#include "graphics/GraphicsTypes.h"
+#include "graphics/data/Mesh.h"
 
 //-----------------------------------------------------------------------------
 // RANDOM Sequences Funcs/Defs

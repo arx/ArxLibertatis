@@ -57,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "renderer/EERIETexture.h"
+#include "graphics/data/Texture.h"
 
 #include <cstdio>
 #include <cassert>
@@ -77,9 +77,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #undef boolean
 #undef INT32
 
-#include "renderer/EERIEApp.h"
-#include "renderer/EERIEUtil.h"
-#include "renderer/EERIEMath.h"
+#include "core/Application.h"
+#include "graphics/GraphicsUtility.h"
+#include "graphics/Math.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"

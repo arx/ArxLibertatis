@@ -64,7 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIETEXTR_H
 #define EERIETEXTR_H
 
-#include "EERIETypes.h"
+#include "graphics/GraphicsTypes.h"
 #include <vector>
 
 //using namespace std;

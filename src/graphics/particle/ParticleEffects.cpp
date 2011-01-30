@@ -71,10 +71,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Damage.h"
 #include "scene/Scene.h"
 
-#include "renderer/EERIEMath.h"
-#include "renderer/EERIEDraw.h"
-#include "renderer/EERIEObject.h"
-#include "renderer/EERIEPhysicsBox.h"
+#include "graphics/Math.h"
+#include "graphics/Draw.h"
+#include "scene/Object.h"
+#include "physics/Box.h"
 
 using std::max;
 

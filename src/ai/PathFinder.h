@@ -31,8 +31,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string.h>
 #include "ai/PathCommon.h"
 #include "ai/PathList.h"
-#include "renderer/EERIEMath.h"
-#include "renderer/EERIEPoly.h"
+#include "graphics/Math.h"
+#include "graphics/data/Mesh.h"
 
 using namespace MINOS;
 

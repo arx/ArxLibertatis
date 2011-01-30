@@ -68,11 +68,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <vector>
 
-#include "renderer/EERIEMath.h"
-#include "renderer/EERIEPathfinder.h"
-#include "renderer/EERIEObject.h"
-#include "renderer/EERIECollisionSpheres.h"
-#include "renderer/EERIEDraw.h"
+#include "graphics/Math.h"
+#include "ai/PathFinderManager.h"
+#include "scene/Object.h"
+#include "physics/CollisionShapes.h"
+#include "graphics/Draw.h"
 
 #include "game/Damage.h"
 #include "graphics/effects/Fog.h"

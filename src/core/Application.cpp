@@ -58,9 +58,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdio.h>
 #include <tchar.h>
 
-#include "renderer/EERIEApp.h"
-#include "renderer/EERIEPoly.h"
-#include "renderer/EERIEUtil.h"
+#include "core/Application.h"
+#include "graphics/data/Mesh.h"
+#include "graphics/GraphicsUtility.h"
 
 #include "gui/Menu.h"
 #include "game/Player.h"

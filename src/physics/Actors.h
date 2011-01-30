@@ -57,8 +57,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SPECIAL_H
 #define ARX_SPECIAL_H
 
-#include "renderer/EERIETypes.h"
-#include "renderer/EERIEPoly.h"
+#include "graphics/GraphicsTypes.h"
+#include "graphics/data/Mesh.h"
 
 //////////////////////////////// ATTRACTOR Funcs
 void ARX_SPECIAL_ATTRACTORS_Reset();

@@ -57,10 +57,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIEOBJECT_H
 #define EERIEOBJECT_H
 
-#include "d3dwrapper.h"
-#include "EERIEApp.h"
-#include "EERIELight.h"
-#include "EERIETexture.h"
+#include "graphics/d3dwrapper.h"
+#include "core/Application.h"
+#include "scene/Light.h"
+#include "graphics/data/Texture.h"
 
 //-----------------------------------------------------------------------------
 typedef struct

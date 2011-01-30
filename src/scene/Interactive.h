@@ -59,7 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_INTERACTIVE_H
 
 #include <tchar.h>
-#include "renderer/EERIEPoly.h"
+#include "graphics/data/Mesh.h"
 
 //-----------------------------------------------------------------------------
 #define MAX_LINKS 12

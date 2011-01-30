@@ -58,8 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_CHANGELEVEL_H
 
 #include "io/ClusterSave.h"
-#include "renderer/EERIETypes.h"
-#include "renderer/EERIEPoly.h"
+#include "graphics/GraphicsTypes.h"
+#include "graphics/data/Mesh.h"
 #include "game/Levels.h"
 #include "gui/MiniMap.h"
 #include "scene/Interactive.h"

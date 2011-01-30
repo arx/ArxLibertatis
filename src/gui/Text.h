@@ -58,8 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <tchar.h>
 #include <vector>
-#include "renderer/EERIEApp.h"
-#include "renderer/EERIETypes.h"
+#include "core/Application.h"
+#include "graphics/GraphicsTypes.h"
 
 using std::vector;
 

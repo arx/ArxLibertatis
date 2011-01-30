@@ -87,11 +87,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Blast.h"
 #include "io/Logger.h"
 
-#include "renderer/d3dwrapper.h"
-#include "renderer/EERIEMath.h"
-#include "renderer/EERIEObject.h"
-#include "renderer/EERIEPathfinder.h"
-#include "renderer/EERIECollisionSpheres.h"
+#include "graphics/d3dwrapper.h"
+#include "graphics/Math.h"
+#include "scene/Object.h"
+#include "ai/PathFinderManager.h"
+#include "physics/CollisionShapes.h"
 
 
 //#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)

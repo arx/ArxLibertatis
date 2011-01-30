@@ -27,7 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_CPARTICLE_H
 
 #include <list>
-#include "renderer/EERIETypes.h"
+#include "graphics/GraphicsTypes.h"
 using namespace std;
 
 //-----------------------------------------------------------------------------

@@ -54,16 +54,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "renderer/EERIEMath.h"
+#include "graphics/Math.h"
 
 #define D3D_OVERLOADS
 #define STRICT
 
 #include <cstdio>
 
-#include "renderer/EERIEApp.h"
-#include "renderer/EERIEPoly.h"
-#include "renderer/EERIETypes.h"
+#include "core/Application.h"
+#include "graphics/data/Mesh.h"
+#include "graphics/GraphicsTypes.h"
 
 using std::min;
 using std::max;

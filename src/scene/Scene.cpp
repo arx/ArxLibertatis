@@ -70,12 +70,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuWidgets.h"
 
 #include "io/IO.h"
-#include "renderer/d3dwrapper.h"
-#include "renderer/EERIELight.h"
-#include "renderer/EERIEDraw.h"
-#include "renderer/EERIEAnim.h"
-#include "renderer/EERIEUtil.h"
-#include "renderer/EERIEMath.h"
+#include "graphics/d3dwrapper.h"
+#include "scene/Light.h"
+#include "graphics/Draw.h"
+#include "animation/Animation.h"
+#include "graphics/GraphicsUtility.h"
+#include "graphics/Math.h"
 
 using namespace std;
 

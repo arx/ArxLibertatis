@@ -42,10 +42,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //            @@@ @@@                           @@             @@        STUDIOS    //
 //////////////////////////////////////////////////////////////////////////////////////                                                                                     
 
-#include "renderer/EERIEDraw.h"
+#include "graphics/Draw.h"
 
-#include "renderer/EERIEApp.h"
-#include "renderer/EERIEPoly.h"
+#include "core/Application.h"
+#include "graphics/data/Mesh.h"
 
 #include "io/IO.h"
 

@@ -30,8 +30,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 using namespace std;
 
-#include "renderer/d3dwrapper.h"
-#include "renderer/EERIETypes.h"
+#include "graphics/d3dwrapper.h"
+#include "graphics/GraphicsTypes.h"
 
 #define PARTICLE_CIRCULAR  1
 #define PARTICLE_BORDER	   2

@@ -57,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIEPATHFINDER_H
 #define EERIEPATHFINDER_H
 
-#include "EERIEPoly.h"
+#include "graphics/data/Mesh.h"
 
 typedef struct
 {

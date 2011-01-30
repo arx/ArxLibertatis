@@ -30,7 +30,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef _ARX_CPARTICLE_PARAMS_H
 #define _ARX_CPARTICLE_PARAMS_H
 
-#include "renderer/EERIETypes.h"
+#include "graphics/GraphicsTypes.h"
 
 typedef EERIE_3D Point3;
 

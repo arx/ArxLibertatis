@@ -46,7 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <math.h>
 #define D3D_OVERLOADS
-#include "d3dwrapper.h"
+#include "graphics/d3dwrapper.h"
 #include "core/Common.h"
 
 class TextureContainer;

@@ -57,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_DRAW_H
 #define ARX_DRAW_H
 
-#include "renderer/EERIETypes.h"
+#include "graphics/GraphicsTypes.h"
 
 extern TextureContainer * lightsource_tc;
 

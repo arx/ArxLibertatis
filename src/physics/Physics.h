@@ -57,8 +57,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_PHYSICS_H
 #define ARX_PHYSICS_H
 
-#include "renderer/EERIETypes.h"
-#include "renderer/EERIEPoly.h"
+#include "graphics/GraphicsTypes.h"
+#include "graphics/data/Mesh.h"
 
 //-----------------------------------------------------------------------------
 extern bool FALLING;

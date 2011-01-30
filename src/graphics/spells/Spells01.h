@@ -58,7 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CSPELLFX_LVL01_H
 #define ARX_CSPELLFX_LVL01_H
 
-#include "renderer/EERIETexture.h"
+#include "graphics/data/Texture.h"
 #include "graphics/effects/SpellEffects.h"
 
 //-----------------------------------------------------------------------------

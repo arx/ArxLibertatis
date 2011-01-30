@@ -65,10 +65,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Time.h"
 #include "gui/MenuWidgets.h"
 
-#include "renderer/EERIEDraw.h"
-#include "renderer/EERIELight.h"
-#include "renderer/EERIEPoly.h"
-#include "renderer/EERIEApp.h"
+#include "graphics/Draw.h"
+#include "scene/Light.h"
+#include "graphics/data/Mesh.h"
+#include "core/Application.h"
 
 // Some external defs needing to be cleaned...
 extern long DANAESIZX;

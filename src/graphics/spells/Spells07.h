@@ -61,8 +61,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_CSPELLFX_LVL07_H
 
 #include "graphics/particle/ParticleManager.h"
-#include "renderer/EERIETypes.h"
-#include "renderer/EERIEPoly.h"
+#include "graphics/GraphicsTypes.h"
+#include "graphics/data/Mesh.h"
 
 class CParticleSystem;
 

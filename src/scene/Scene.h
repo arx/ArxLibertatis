@@ -57,10 +57,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SCENE_H
 #define ARX_SCENE_H
 
-#include "renderer/EERIEApp.h"
-#include "renderer/EERIETypes.h"
-#include "renderer/EERIEPoly.h"
-#include "renderer/EERIEObject.h"
+#include "core/Application.h"
+#include "graphics/GraphicsTypes.h"
+#include "graphics/data/Mesh.h"
+#include "scene/Object.h"
 
 //-----------------------------------------------------------------------------
 #define PARAM_NO_INTERACTIVE	1
