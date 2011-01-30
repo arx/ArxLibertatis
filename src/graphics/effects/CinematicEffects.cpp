@@ -130,7 +130,7 @@ bool FX_Blur(CINEMATIQUE * c, LPDIRECT3DDEVICE7 device, C_BITMAP * tb)
 
 		col = (int)alpha;
 		col = (col << 24) | 0x00FFFFFF;
-		DrawGrille(device, &tb->grille, col, 0, NULL, &c->posgrille, c->angzgrille);
+		DrawGrille(device, &tb->grid, col, 0, NULL, &c->posgrille, c->angzgrille);
 		alpha += dalpha;
 		pos++;
 		az++;
@@ -430,11 +430,11 @@ void FX_DreamPrecalc(C_BITMAP * bi, float amp, float fps)
 
 	///////////////////////
 	t = DreamTable;
-	ny = ((bi->nby * bi->grille.echelle) + 1); 
+	ny = ((bi->nby * bi->grid.echelle) + 1); 
 
 	while (ny)
 	{
-		nx = ((bi->nbx * bi->grille.echelle) + 1); 
+		nx = ((bi->nbx * bi->grid.echelle) + 1); 
 
 		while (nx)
 		{

@@ -135,17 +135,17 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 		{
 			if (echelle > 1)
 			{
-				TabBitmap[id].grille.echelle = echelle;
+				TabBitmap[id].grid.echelle = echelle;
 				c->ReInitMapp(id);
 			}
 			else
 			{
-				TabBitmap[id].grille.echelle = 1;
+				TabBitmap[id].grid.echelle = 1;
 			}
 		}
 		else
 		{
-			TabBitmap[id].grille.echelle = 1;
+			TabBitmap[id].grid.echelle = 1;
 		}
 
 		nb--;
@@ -204,7 +204,7 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 			k.typeinterp = ARX_CLEAN_WARN_CAST_SHORT(k159.typeinterp);
 			k.force = 1;
 			k.idsound[C_LANGUAGE_FRENCH] = -1;
-			k.light.intensite = -1.f;
+			k.light.intensity = -1.f;
 			k.posgrille.x = k.posgrille.y = k.posgrille.z = 0.f;
 			k.angzgrille = 0.f;
 			k.speedtrack = 1.f;
@@ -228,7 +228,7 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 				k.typeinterp = ARX_CLEAN_WARN_CAST_SHORT(k165.typeinterp);
 				k.force = 1;
 				k.idsound[C_LANGUAGE_FRENCH] = k165.idsound;
-				k.light.intensite = -1.f;
+				k.light.intensity = -1.f;
 				k.posgrille.x = k.posgrille.y = k.posgrille.z = 0.f;
 				k.angzgrille = 0.f;
 				k.speedtrack = 1.f;
@@ -250,7 +250,7 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 					k.typeinterp = k170.typeinterp;
 					k.force = k170.force;
 					k.idsound[C_LANGUAGE_FRENCH] = k170.idsound;
-					k.light.intensite = -1.f;
+					k.light.intensity = -1.f;
 					k.posgrille.x = k.posgrille.y = k.posgrille.z = 0.f;
 					k.angzgrille = 0.f;
 					k.speedtrack = 1.f;
@@ -276,7 +276,7 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 
 						if ((k.fx & 0xFF000000) != FX_LIGHT)
 						{
-							k.light.intensite = -1.f;
+							k.light.intensity = -1.f;
 						}
 
 						k.posgrille.x = k.posgrille.y = k.posgrille.z = 0.f;
@@ -306,7 +306,7 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 							k.light.r = k172.light.r;
 							k.light.g = k172.light.g;
 							k.light.b = k172.light.b;
-							k.light.intensite = k172.light.intensite;
+							k.light.intensity = k172.light.intensite;
 							k.light.intensiternd = k172.light.intensiternd;
 							k.posgrille.x = k172.posgrille.x;
 							k.posgrille.y = k172.posgrille.y;
@@ -316,7 +316,7 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 
 							if ((k.fx & 0xFF000000) != FX_LIGHT)
 							{
-								k.light.intensite = -1.f;
+								k.light.intensity = -1.f;
 							}
 						}
 						else
@@ -342,7 +342,7 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 								k.light.r = k174.light.r;
 								k.light.g = k174.light.g;
 								k.light.b = k174.light.b;
-								k.light.intensite = k174.light.intensite;
+								k.light.intensity = k174.light.intensity;
 								k.light.intensiternd = k174.light.intensiternd;
 								k.posgrille.x = k174.posgrille.x;
 								k.posgrille.y = k174.posgrille.y;
@@ -373,7 +373,7 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 									k.light.r = k175.light.r;
 									k.light.g = k175.light.g;
 									k.light.b = k175.light.b;
-									k.light.intensite = k175.light.intensite;
+									k.light.intensity = k175.light.intensity;
 									k.light.intensiternd = k175.light.intensiternd;
 									k.posgrille.x = k175.posgrille.x;
 									k.posgrille.y = k175.posgrille.y;
@@ -464,7 +464,7 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 			switch (kk->fx & 0x0000FF00)
 			{
 				case FX_DREAM:
-					TabBitmap[kk->numbitmap].grille.echelle = 4;
+					TabBitmap[kk->numbitmap].grid.echelle = 4;
 					c->ReInitMapp(kk->numbitmap);
 					break;
 			}

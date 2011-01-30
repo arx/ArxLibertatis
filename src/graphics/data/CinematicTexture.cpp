@@ -40,7 +40,7 @@ extern char DirectoryChoose[];
 
 
 /*-----------------------------------------------------------*/
-void FreeGrille(C_GRILLE * grille);
+void FreeGrille(CinematicGrid * grille);
 void ReajustUV(LPDIRECT3DDEVICE7 device, int id);
 /*-----------------------------------------------------------*/
 void InitMapLoad(CINEMATIQUE * c)
@@ -103,7 +103,7 @@ bool DeleteFreeBitmap(int num)
 	DeleteObject(cb->hbitmap);
 	free((void *)cb->dir);
 	free((void *)cb->name);
-	FreeGrille(&cb->grille);
+	FreeGrille(&cb->grid);
 	memset((void *)cb, 0, sizeof(C_BITMAP));
 
 	NbBitmap--;
@@ -119,11 +119,11 @@ bool KillTexture(LPDIRECT3DDEVICE7 device, int num)
 
 	if (!cb->actif) return false;
 
-	int nb = cb->grille.nbmat;
+	int nb = cb->grid.nbmat;
 
 	while (nb--)
 	{
-		D3DTextr_KillTexture(cb->grille.mats[nb].tex);
+		D3DTextr_KillTexture(cb->grid.mats[nb].tex);
 	}
 
 	return true;
@@ -143,7 +143,7 @@ void DeleteAllBitmap(LPDIRECT3DDEVICE7 device)
 	}
 }
 /*-----------------------------------------------------------*/
-bool AllocGrille(C_GRILLE * grille, int nbx, int nby, float tx, float ty, float dx, float dy, int echelle)
+bool AllocGrille(CinematicGrid * grille, int nbx, int nby, float tx, float ty, float dx, float dy, int echelle)
 {
 	grille->echelle = echelle;
 	int oldnbx = nbx + 1;
@@ -232,7 +232,7 @@ bool AllocGrille(C_GRILLE * grille, int nbx, int nby, float tx, float ty, float 
 	return true;
 }
 /*-----------------------------------------------------------*/
-int AddMaterial(C_GRILLE * grille, TextureContainer * tex)
+int AddMaterial(CinematicGrid * grille, TextureContainer * tex)
 {
 	if (!grille->nbmat)
 	{
@@ -256,7 +256,7 @@ int AddMaterial(C_GRILLE * grille, TextureContainer * tex)
 	return grille->nbmat++;
 }
 /*-----------------------------------------------------------*/
-void FreeGrille(C_GRILLE * grille)
+void FreeGrille(CinematicGrid * grille)
 {
 	if (grille->vertexs)
 	{
@@ -283,7 +283,7 @@ void FreeGrille(C_GRILLE * grille)
 	}
 }
 /*-----------------------------------------------------------*/
-void GetIndNumCube(C_GRILLE * grille, int cx, int cy, int * i1, int * i2, int * i3, int * i4)
+void GetIndNumCube(CinematicGrid * grille, int cx, int cy, int * i1, int * i2, int * i3, int * i4)
 {
 	*i1 = cy * (grille->nbx + 1) + cx;
 	*i2 = *i1 + 1;
@@ -291,7 +291,7 @@ void GetIndNumCube(C_GRILLE * grille, int cx, int cy, int * i1, int * i2, int * 
 	*i4 = *i3 + 1;
 }
 /*-----------------------------------------------------------*/
-void AddPoly(C_GRILLE * grille, int nummat, int i0, int i1, int i2)
+void AddPoly(CinematicGrid * grille, int nummat, int i0, int i1, int i2)
 {
 
 	ARX_CHECK_USHORT(i0);
@@ -312,7 +312,7 @@ void AddPoly(C_GRILLE * grille, int nummat, int i0, int i1, int i2)
 
 }
 /*-----------------------------------------------------------*/
-void AddQuadUVs(C_GRILLE * grille, int depcx, int depcy, int tcx, int tcy, int bitmapposx, int bitmapposy, int bitmapwx, int bitmapwy, TextureContainer * tex)
+void AddQuadUVs(CinematicGrid * grille, int depcx, int depcy, int tcx, int tcy, int bitmapposx, int bitmapposy, int bitmapwx, int bitmapwy, TextureContainer * tex)
 {
 	int nummat = AddMaterial(grille, tex);
 	grille->mats[nummat].bitmapdepx = bitmapposx;
@@ -631,7 +631,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 
 		DeleteObject(bi->hbitmap);
 		KillTexture(GDevice, n);
-		FreeGrille(&bi->grille);
+		FreeGrille(&bi->grid);
 		NbBitmap--;
 
 		h = 0;
@@ -727,7 +727,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 	bi->nbx = nbx;
 	bi->nby = nby;
 
-	AllocGrille(&bi->grille, nbx, nby, (float)bi->w, (float)bi->h, (float)((bi->w > MaxW) ? MaxW : bi->w), (float)((bi->h > MaxH) ? MaxH : bi->h), 1);
+	AllocGrille(&bi->grid, nbx, nby, (float)bi->w, (float)bi->h, (float)((bi->w > MaxW) ? MaxW : bi->w), (float)((bi->h > MaxH) ? MaxH : bi->h), 1);
 
 	num = 0;
 	h = bi->h;
@@ -762,7 +762,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 			}
 
 			TextureContainer * t = FindTexture(AllTxt);
-			AddQuadUVs(&bi->grille, bi->nbx - nbxx, bi->nby - nby, 1, 1, bi->w - w, bi->h - h, w2, h2, t);
+			AddQuadUVs(&bi->grid, bi->nbx - nbxx, bi->nby - nby, 1, 1, bi->w - w, bi->h - h, w2, h2, t);
 
 			dx += (float)w2;
 			w -= MaxW;
@@ -805,7 +805,7 @@ bool ReCreateAllMapsForBitmap(int id, int nmax, CINEMATIQUE * c, LPDIRECT3DDEVIC
 
 	if (!bi->actif) return false;
 
-	FreeGrille(&bi->grille);
+	FreeGrille(&bi->grid);
 
 	nbx = (bi->w / MaxW);
 	nby = (bi->h / MaxH);
@@ -817,7 +817,7 @@ bool ReCreateAllMapsForBitmap(int id, int nmax, CINEMATIQUE * c, LPDIRECT3DDEVIC
 	bi->nbx = nbx;
 	bi->nby = nby;
 
-	AllocGrille(&bi->grille, nbx, nby, (float)bi->w, (float)bi->h, (float)((bi->w > MaxW) ? MaxW : bi->w), (float)((bi->h > MaxH) ? MaxH : bi->h), nmax);
+	AllocGrille(&bi->grid, nbx, nby, (float)bi->w, (float)bi->h, (float)((bi->w > MaxW) ? MaxW : bi->w), (float)((bi->h > MaxH) ? MaxH : bi->h), nmax);
 
 	num = 0;
 	h = bi->h;
@@ -846,7 +846,7 @@ bool ReCreateAllMapsForBitmap(int id, int nmax, CINEMATIQUE * c, LPDIRECT3DDEVIC
 			MakeUpcase(AllTxt);
 
 			TextureContainer * t = FindTexture(AllTxt);
-			AddQuadUVs(&bi->grille, (bi->nbx - nbxx)*nmax, (bi->nby - nby)*nmax, nmax, nmax, bi->w - w, bi->h - h, w2, h2, t);
+			AddQuadUVs(&bi->grid, (bi->nbx - nbxx)*nmax, (bi->nby - nby)*nmax, nmax, nmax, bi->w - w, bi->h - h, w2, h2, t);
 
 			dx += (float)w2;
 			w -= MaxW;
@@ -880,9 +880,9 @@ bool CINEMATIQUE::ActiveTexture(int id)
 
 	if (!cb->actif) return false;
 
-	C_INDEXED	* mat = cb->grille.mats;
+	C_INDEXED	* mat = cb->grid.mats;
  
-	nb = cb->grille.nbmat;
+	nb = cb->grid.nbmat;
 
 	while (nb--)
 	{
@@ -910,10 +910,10 @@ void ReajustUV(LPDIRECT3DDEVICE7 device, int id)
 
 	if (!cb->actif) return;
 
-	C_INDEXED	* mat = cb->grille.mats;
-	C_UV	*	uvs = cb->grille.uvs;
+	C_INDEXED	* mat = cb->grid.mats;
+	C_UV	*	uvs = cb->grid.uvs;
 
-	nb = cb->grille.nbmat;
+	nb = cb->grid.nbmat;
 
 	while (nb--)
 	{

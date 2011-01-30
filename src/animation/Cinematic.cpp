@@ -194,7 +194,7 @@ void FillKeyTemp(EERIE_3D * pos, float az, int frame, int numbitmap, int numfx, 
 	}
 	else
 	{
-		KeyTemp.light.intensite = -2.f;
+		KeyTemp.light.intensity = -2.f;
 	}
 }
 
@@ -205,7 +205,7 @@ void CINEMATIQUE::ReInitMapp(int id)
 
 	if (TabBitmap[id].actif)
 	{
-		ReCreateAllMapsForBitmap(id, TabBitmap[id].grille.echelle, this, GDevice);
+		ReCreateAllMapsForBitmap(id, TabBitmap[id].grid.echelle, this, GDevice);
 	}
 }
 
@@ -516,7 +516,7 @@ void TransformLocalVertex(EERIE_3D * vbase, D3DTLVERTEX * d3dv)
 	d3dv->sz = vbase->z + LocalPos.z;
 }
 /*---------------------------------------------------------------*/
-void DrawGrille(LPDIRECT3DDEVICE7 device, C_GRILLE * grille, int col, int fx, C_LIGHT * light, EERIE_3D * posgrille, float angzgrille)
+void DrawGrille(LPDIRECT3DDEVICE7 device, CinematicGrid * grille, int col, int fx, C_LIGHT * light, EERIE_3D * posgrille, float angzgrille)
 {
 	int nb = grille->nbvertexs;
 	EERIE_3D * v = grille->vertexs;
@@ -752,9 +752,6 @@ HRESULT CINEMATIQUE::Render(float FDIFF)
 		{
 			nb = 0;
 		}
-
-		float * dream, *dreambase;
-		dream = dreambase = DreamTable;
  
 		int stopline = tb->nbx;
 
@@ -766,8 +763,8 @@ HRESULT CINEMATIQUE::Render(float FDIFF)
 
 		C_LIGHT lightt, *l = NULL;
 
-		if ((this->light.intensite >= 0.f) &&
-		        (this->lightd.intensite >= 0.f))
+		if ((this->light.intensity >= 0.f) &&
+		        (this->lightd.intensity >= 0.f))
 		{
 			lightt = this->light;
 			lightt.pos.x += (float)(LargeurRender >> 1);
@@ -778,14 +775,14 @@ HRESULT CINEMATIQUE::Render(float FDIFF)
 			m_flIntensityRND += (flIntensityRNDToReach - m_flIntensityRND) * FDIFF * SPEEDINTENSITYRND;
 			m_flIntensityRND = m_flIntensityRND < 0.f ? 0.f : m_flIntensityRND > 1.f ? 1.f : m_flIntensityRND;
 
-			LightRND = lightt.intensite + (lightt.intensiternd * rnd());
+			LightRND = lightt.intensity + (lightt.intensiternd * rnd());
 
 			if (LightRND > 1.f) LightRND = 1.f;
 
 			l = &lightt;
 		}
 
-		if (tb->grille.nbvertexs) DrawGrille(this->m_pd3dDevice, &tb->grille, col, fx, l, &posgrille, angzgrille);
+		if (tb->grid.nbvertexs) DrawGrille(this->m_pd3dDevice, &tb->grid, col, fx, l, &posgrille, angzgrille);
 
 		//PASS #2
 		if (force & 1)
@@ -813,20 +810,20 @@ HRESULT CINEMATIQUE::Render(float FDIFF)
 
 			l = NULL;
 
-			if ((this->light.intensite >= 0.f) &&
-			        (this->lightd.intensite >= 0.f))
+			if ((this->light.intensity >= 0.f) &&
+			        (this->lightd.intensity >= 0.f))
 			{
 				lightt = this->lightd;
 				lightt.pos.x += (float)(LargeurRender >> 1);
 				lightt.pos.y += (float)(HauteurRender >> 1);
-				LightRND = lightt.intensite + (lightt.intensiternd * rnd());
+				LightRND = lightt.intensity + (lightt.intensiternd * rnd());
 
 				if (LightRND > 1.f) LightRND = 1.f;
 
 				l = &lightt;
 			}
 
-			if (tb->grille.nbvertexs) DrawGrille(this->m_pd3dDevice, &tb->grille, col, fx, l, &posgrillesuiv, angzgrillesuiv);
+			if (tb->grid.nbvertexs) DrawGrille(this->m_pd3dDevice, &tb->grid, col, fx, l, &posgrillesuiv, angzgrillesuiv);
 		}
 
 		//effets qui continuent avec le temps

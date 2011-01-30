@@ -78,7 +78,7 @@ class C_LIGHT
 		float		fallin;
 		float		fallout;
 		float		r, g, b;
-		float		intensite;
+		float		intensity;
 		float		intensiternd;
 		struct CST_KEY * prev;
 		struct CST_KEY * next;
@@ -89,7 +89,7 @@ class C_LIGHT
 			fallin = 100.f;
 			fallout = 200.f;
 			r = g = b = 255.f;
-			intensite = 1.f;
+			intensity = 1.f;
 			intensiternd = 0.2f;
 			next = NULL;
 		};
@@ -134,8 +134,7 @@ typedef struct
 	int				indvertex;
 } C_UV;
 
-typedef struct
-{
+struct CinematicGrid {
 	int				nbvertexs;
 	int				nbfaces;
 	int				nbinds;
@@ -152,7 +151,7 @@ typedef struct
 	int				nbx;
 	int				nby;
 	int				echelle;
-} C_GRILLE;
+};
 /////// END_NEW_DRAW
 
 typedef struct
@@ -165,13 +164,13 @@ typedef struct
 	int			nbx, nby;
 	//	int			nbpoly;
 	//	C_INFOPOLY	*listepoly;
-	C_GRILLE	grille;
+	CinematicGrid	grid;
 	int			dreaming;
 } C_BITMAP;
 
 typedef struct
 {
-	short		actif, load;
+	short		active, load;
 	char	*	dir;
 	char	*	name;
 	char	*	sound;
@@ -434,7 +433,7 @@ int AddSoundToList(char * dir, char * name, int id, int pos);
 bool PlaySoundKeyFramer(int id);
 void StopSoundKeyFramer(void);
 
-void DrawGrille(LPDIRECT3DDEVICE7 device, C_GRILLE * grille, int col, int fx, C_LIGHT * light, EERIE_3D * posgrillesuiv, float angzgrillesuiv);
+void DrawGrille(LPDIRECT3DDEVICE7 device, CinematicGrid * grille, int col, int fx, C_LIGHT * light, EERIE_3D * posgrillesuiv, float angzgrillesuiv);
 void FillKeyTemp(EERIE_3D * pos, float az, int frame, int numbitmap, int numfx, short ti, int color, int colord, int colorf, float speed, int idsound, short force, C_LIGHT * light, EERIE_3D * posgrille, float angzgrille, float speedtrack);
 
 void ClearAbsDirectory(char * pT, const char * d);

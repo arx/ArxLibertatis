@@ -229,7 +229,7 @@ void UpDateKeyLight(int frame)
 	}
 	else
 	{
-		kbase->light.intensite = -1.f;
+		kbase->light.intensity = -1.f;
 		klightprev2 = klightprev;
 		klightnext2 = klightnext;
 	}
@@ -241,7 +241,7 @@ void UpDateKeyLight(int frame)
 	{
 		if (klightprev == kbase)
 		{
-			k->light.intensite = -1.f;
+			k->light.intensity = -1.f;
 		}
 
 		k->light.next = klightnext2;
@@ -259,7 +259,7 @@ void UpDateKeyLight(int frame)
 	{
 		if (klightnext == kbase)
 		{
-			k->light.intensite = -1.f;
+			k->light.intensity = -1.f;
 		}
 
 		k->light.prev = klightprev2;
@@ -360,7 +360,7 @@ bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
 
 	float a = -2.f;
 
-	if (C_NEQUAL_F32(key->light.intensite, a))
+	if (C_NEQUAL_F32(key->light.intensity, a))
 	{
 		k->light = key->light;
 	}
@@ -435,7 +435,7 @@ static bool DiffKey(C_KEY * key1, C_KEY * key2)
 	       (key1->light.pos.x != key2->light.pos.x) || (key1->light.pos.y != key2->light.pos.y) || (key1->light.pos.z != key2->light.pos.z) ||
 	       (key1->light.fallin != key2->light.fallin) || (key1->light.fallout != key2->light.fallout) ||
 	       (key1->light.r != key2->light.r) || (key1->light.g != key2->light.g) || (key1->light.b != key2->light.b) ||
-	       (key1->light.intensite != key2->light.intensite) || (key1->light.intensiternd != key2->light.intensiternd) ||
+	       (key1->light.intensity != key2->light.intensity) || (key1->light.intensiternd != key2->light.intensiternd) ||
 	       (key1->posgrille.x != key2->posgrille.x) || (key1->posgrille.y != key2->posgrille.y) || (key1->posgrille.z != key2->posgrille.z) ||
 	       (key1->angzgrille != key2->angzgrille) ||
 	       (key1->speedtrack != key2->speedtrack)
@@ -619,9 +619,9 @@ consequences on light :
 				C_LIGHT ldep;
 				C_LIGHT lend;
 
-				if (lightprec->light.intensite < 0.f)
+				if (lightprec->light.intensity < 0.f)
 				{
-					c->light.intensite = -1;
+					c->light.intensity = -1;
 					break;
 				}
 				else
@@ -629,7 +629,7 @@ consequences on light :
 					ldep = lightprec->light;
 				}
 
-				if (c->lightd.intensite < 0.f)
+				if (c->lightd.intensity < 0.f)
 				{
 					break;
 				}
@@ -646,7 +646,7 @@ consequences on light :
 				c->light.r			= alight * lend.r + unmoinsalight * ldep.r;
 				c->light.g			= alight * lend.g + unmoinsalight * ldep.g;
 				c->light.b			= alight * lend.b + unmoinsalight * ldep.b;
-				c->light.intensite	= alight * lend.intensite + unmoinsalight * ldep.intensite;
+				c->light.intensity	= alight * lend.intensity + unmoinsalight * ldep.intensity;
 				c->light.intensiternd = alight * lend.intensiternd + unmoinsalight * ldep.intensiternd;
 			}
 			break;
@@ -688,9 +688,9 @@ consequences on light :
 				C_LIGHT ldep;
 				C_LIGHT lend;
 
-				if (lightprec->light.intensite < 0.f)
+				if (lightprec->light.intensity < 0.f)
 				{
-					c->light.intensite = -1;
+					c->light.intensity = -1;
 					break;
 				}
 				else
@@ -698,7 +698,7 @@ consequences on light :
 					ldep = lightprec->light;
 				}
 
-				if (c->lightd.intensite < 0.f)
+				if (c->lightd.intensity < 0.f)
 				{
 					break;
 				}
@@ -715,7 +715,7 @@ consequences on light :
 				c->light.r = alight * lend.r + unmoinsalight * ldep.r;
 				c->light.g = alight * lend.g + unmoinsalight * ldep.g;
 				c->light.b = alight * lend.b + unmoinsalight * ldep.b;
-				c->light.intensite = alight * lend.intensite + unmoinsalight * ldep.intensite;
+				c->light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
 				c->light.intensiternd = alight * lend.intensiternd + unmoinsalight * ldep.intensiternd;
 			}
 			break;
@@ -855,9 +855,9 @@ bool GereTrackNoPlay(CINEMATIQUE * c)
 				C_LIGHT ldep;
 				C_LIGHT lend;
 
-				if (lightprec->light.intensite < 0.f)
+				if (lightprec->light.intensity < 0.f)
 				{
-					c->light.intensite = -1.f;
+					c->light.intensity = -1.f;
 					break;
 				}
 				else
@@ -865,7 +865,7 @@ bool GereTrackNoPlay(CINEMATIQUE * c)
 					ldep = lightprec->light;
 				}
 
-				if (c->lightd.intensite < 0.f)
+				if (c->lightd.intensity < 0.f)
 				{
 					break;
 				}
@@ -882,7 +882,7 @@ bool GereTrackNoPlay(CINEMATIQUE * c)
 				c->light.r		= alight * lend.r + unmoinsalight * ldep.r;
 				c->light.g		= alight * lend.g + unmoinsalight * ldep.g;
 				c->light.b		= alight * lend.b + unmoinsalight * ldep.b;
-				c->light.intensite = alight * lend.intensite + unmoinsalight * ldep.intensite;
+				c->light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
 				c->light.intensiternd = alight * lend.intensiternd + unmoinsalight * ldep.intensiternd;
 			}
 			break;
@@ -922,9 +922,9 @@ bool GereTrackNoPlay(CINEMATIQUE * c)
 				C_LIGHT ldep;
 				C_LIGHT lend;
 
-				if (lightprec->light.intensite < 0.f)
+				if (lightprec->light.intensity < 0.f)
 				{
-					c->light.intensite = -1;
+					c->light.intensity = -1;
 					break;
 				}
 				else
@@ -932,7 +932,7 @@ bool GereTrackNoPlay(CINEMATIQUE * c)
 					ldep = lightprec->light;
 				}
 
-				if (c->lightd.intensite < 0.f)
+				if (c->lightd.intensity < 0.f)
 				{
 					break;
 				}
@@ -949,7 +949,7 @@ bool GereTrackNoPlay(CINEMATIQUE * c)
 				c->light.r = alight * lend.r + unmoinsalight * ldep.r;
 				c->light.g = alight * lend.g + unmoinsalight * ldep.g;
 				c->light.b = alight * lend.b + unmoinsalight * ldep.b;
-				c->light.intensite = alight * lend.intensite + unmoinsalight * ldep.intensite;
+				c->light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
 				c->light.intensiternd = alight * lend.intensiternd + unmoinsalight * ldep.intensiternd;
 			}
 			break;

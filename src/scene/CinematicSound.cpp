@@ -67,7 +67,7 @@ C_SOUND * GetFreeSound(int * num)
 
 	while (nb)
 	{
-		if (!ts->actif)
+		if (!ts->active)
 		{
 			*num = MAX_SOUND - nb;
 			return ts;
@@ -87,7 +87,7 @@ bool DeleteFreeSound(int num)
 
 	cs = &TabSound[num];
 
-	if (!cs->actif) return false;
+	if (!cs->active) return false;
 
 	l = 0;
 
@@ -109,7 +109,7 @@ bool DeleteFreeSound(int num)
 		cs->sound = NULL;
 	}
 
-	cs->actif = 0;
+	cs->active = 0;
 	NbSound--;
 
 	return true;
@@ -160,8 +160,8 @@ int ExistSound(char * dir, char * name)
 
 	while (nb)
 	{
-		if ((cs->actif) &&
-		        ((cs->actif & 0xFF00) == LSoundChoose))
+		if ((cs->active) &&
+		        ((cs->active & 0xFF00) == LSoundChoose))
 		{
 			if (!strcasecmp(dir, cs->dir))
 			{
@@ -271,7 +271,7 @@ int AddSoundToList(char * dir, char * name, int id, int pos)
 	{
 		cs = &TabSound[id];
 
-		if (!cs->actif || cs->load) return -1;
+		if (!cs->active || cs->load) return -1;
 
 		free((void *)cs->name);
 		free((void *)cs->dir);
@@ -324,10 +324,10 @@ int AddSoundToList(char * dir, char * name, int id, int pos)
 
 
 
-	int iActif = 1 | LSoundChoose;
-	ARX_CHECK_SHORT(iActif);
+	int iActive = 1 | LSoundChoose;
+	ARX_CHECK_SHORT(iActive);
 
-	cs->actif = ARX_CLEAN_WARN_CAST_SHORT(iActif);
+	cs->active = static_cast<short>(iActive);
 
 
 	NbSound++;
@@ -340,7 +340,7 @@ bool PlaySoundKeyFramer(int id)
 
 	cs = &TabSound[id];
 
-	if (!cs->actif) return false;
+	if (!cs->active) return false;
 
 	cs->idhandle = ARX_SOUND_PlayCinematic(cs->sound);
 
@@ -357,7 +357,7 @@ void StopSoundKeyFramer(void)
 
 	while (nb)
 	{
-		if (ts->actif)
+		if (ts->active)
 		{
 			ARX_SOUND_Stop(ts->idhandle);
 			ts->idhandle = ARX_SOUND_INVALID_RESOURCE;
