@@ -30,6 +30,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <uuids.h>
 #include <amvideo.h>
 #include <stdio.h>
+#include <tchar.h>
 #include <dshow.h>
 #include "core/ARX_Menu2.h"			// CDirectInput
 

@@ -6620,7 +6620,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 					EERIE_3D	pos,	dir;
 
 					F2L( ( rnd() * 9.f + 4.f ), &lvl );
-					rr		=	radians( i_angle );
+					rr		=	radians( (float) i_angle );
 					r2		=	radians( (float) ( j + 100 ) * ( 1.0f / 200 ) * 360.f ); 
 					pos.x	=	target.x - EEsin(rr) * 360.f;  
 					pos.y	=	target.y;

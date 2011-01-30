@@ -12573,7 +12573,6 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					ARX_INTERACTIVE_USEMESH(io, temp);
 
 					char tex[256];
-					char tex1[256];
 					char tex2[256];
 
 					if (io->ioflags & IO_NPC)	sprintf(tex2, "Graph\\Obj3D\\Interactive\\NPC\\%s", temp);

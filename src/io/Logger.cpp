@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include "core/ARX_Common.h"
 #include "io/Logger.h"
 
 #define BASH_COLOR !ARX_COMPILER_MSVC

@@ -7662,7 +7662,6 @@ CDirectInput::CDirectInput()
 	SetSensibility(2);
 	iMouseAX=0;
 	iMouseAY=0;
-	iMouseAZ=0;
 	fMouseAXTemp=fMouseAYTemp=0.f;
 	iNbOldCoord=0;
 	iMaxOldCoord=40;
@@ -7935,9 +7934,9 @@ int iDTime;
 	{
 		float fDX = 0.f;
 		float fDY = 0.f;
-		iMouseRX = iMouseRY = iMouseRZ = 0;
+		iMouseRX = iMouseRY = 0;
 
-		if( DXI_GetAxeMouseXYZ(DXI_MOUSE1, &iMouseRX, &iMouseRY, &iMouseRZ) )
+		if( DXI_GetAxeMouseXY(DXI_MOUSE1, &iMouseRX, &iMouseRY) )
 		{
 			float fSensMax = 1.f / 6.f;
 			float fSensMin = 2.f;
@@ -7954,8 +7953,6 @@ int iDTime;
 			ARX_CHECK_INT(fMouseAYTemp);
 			iMouseAX  = ARX_CLEAN_WARN_CAST_INT(fMouseAXTemp);
 			iMouseAY  = ARX_CLEAN_WARN_CAST_INT(fMouseAYTemp);
-
-			iMouseAZ += iMouseRZ;
 
 
 			if(iMouseAX<0)
@@ -8012,7 +8009,6 @@ int iDTime;
 		bMouseMove = ((iMouseAX != DANAEMouse.x) || (iMouseAY != DANAEMouse.y));
 		iMouseAX=DANAEMouse.x;
 		iMouseAY=DANAEMouse.y;
-		iMouseAZ=0;
 	}
 
 	int iDx;

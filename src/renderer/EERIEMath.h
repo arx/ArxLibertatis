@@ -120,13 +120,9 @@ bool CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2
 bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s);
 
 // Optimized Float 2 Long Conversion
-inline void F2L(const float f, long * l) {
-    *l = f;
-}
-
-inline void F2L(const float f, int * l)
-{
-	F2L(f, (long*)l);
+template <class T>
+inline void F2L(const float f, T * l) {
+    *l = static_cast<T>(f);
 }
 
 inline D3DCOLOR EERIERGB(float r, float g, float b)

@@ -62,28 +62,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <cassert>
 
-#define STRICT
 #include <tchar.h>
 #include <zlib.h>
 
 //boolean and INT32 clash with wine
 #define INT32 INT32_JPEG
-#undef _WIN32
-#undef FAR
 #define HAVE_BOOLEAN
 #include <jpeglib.h>
-
-//boolean and INT32 clash with wine
-//=======
-//#include <jpeglib.h>
-//#include <jerror.h>
-//#include <jconfig.h>
-//#include <jmorecfg.h>
-//#undef boolean
-//>>>>>>> master:src/renderer/EERIETexture.cpp
 #undef INT32
-#undef FAR
-
 
 #include "renderer/EERIEApp.h"
 #include "renderer/EERIEUtil.h"
