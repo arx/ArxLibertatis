@@ -99,7 +99,6 @@ CD3DApplication		* g_pD3DApp = NULL;
 EERIE_CAMERA		* Kam;
 LPDIRECT3DDEVICE7	GDevice;
 HWND				MSGhwnd = NULL;
-PROJECT				Project;
 bool				bZBUFFER = true;
 float				FPS;
 int					ModeLight = 0;

@@ -214,7 +214,9 @@ struct PROJECT
 		  telekinesis(0), multiplayer(0), demo(0),
 		  bits(0), hide(0), TextureSize(0), TextureBits(0), 
 		  interpolatemouse(0), vsync(0)
-	{}
+	{
+		localisationpath = "";
+	}
 
 	long            soundmode;
 	long            compatibility;

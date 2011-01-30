@@ -110,6 +110,7 @@ void DemoFileCheck();
 #define FFH_GOTO_FINISH 2
 extern INTERACTIVE_OBJ * CURPATHFINDIO;
 
+
 //-----------------------------------------------------------------------------
 
 HRESULT DANAEFinalCleanup();
@@ -226,9 +227,10 @@ extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBufferTransform;
 
 extern std::string pStringMod;
 //-----------------------------------------------------------------------------
-// Our Main Danae Application.& Instance
+// Our Main Danae Application.& Instance and Project
 DANAE danaeApp;
 HINSTANCE hInstance;
+PROJECT Project;
 
 //-----------------------------------------------------------------------------
 EERIE_3D LASTCAMPOS,LASTCAMANGLE;
@@ -1136,8 +1138,6 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	USE_FAST_SCENES = 1;
 	LogDebug << "Danae Start";
 
-	//memset(&Project,0,sizeof(PROJECT));
-	Project = PROJECT();
 	Project.vsync = true;
 	LogInfo << "Project Init";
 

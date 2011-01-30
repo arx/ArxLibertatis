@@ -492,7 +492,7 @@ bool HERMES_CreateFileCheck(const char * name, char * scheck, size_t size, const
 	// from http://acmlm.kafuka.org/board/thread.php?id=3930
 	static void splitpath(const char * path, char * drive, char * dir, char * fName, char * ext)
 	{
-		LogDebug << "Path " << path << "Drive " << drive << "dir " << dir << "fName " << fName << "ext " << ext;
+		LogDebug << "Path: " << path <<  " || Drive: " << drive << " dir: " << dir << " fName: " << fName << " ext: " << ext;
 		char separator = '\\';
 		
 		const char    *endPoint = NULL,
