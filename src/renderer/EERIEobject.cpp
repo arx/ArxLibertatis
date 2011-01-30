@@ -2116,9 +2116,6 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 		}
 	}
 #endif
-
-	if (temp)
-		free(temp);
 }
 
 void EERIEOBJECT_DeletePFaces(EERIE_3DOBJ * eobj)
