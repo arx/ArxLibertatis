@@ -57,37 +57,35 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdio.h>
-#include <algorithm>
-#include <fstream>
-#include <iostream>
-#include <iomanip>
-#include <sstream>
+#include "renderer/EERIETexture.h"
 
+#include <cstdio>
 #include <cassert>
+
 #define STRICT
 #include <tchar.h>
 #include <zlib.h>
-#include "renderer/EERIETexture.h"
-#include "renderer/EERIEApp.h"
-#include "renderer/EERIEUtil.h"
-#include "renderer/EERIEMath.h"
-#include "io/HERMESMain.h"
-#include "io/PakManager.h"
-#include "io/Logger.h"
 
 //boolean and INT32 clash with wine
 #define INT32 INT32_JPEG
 #define boolean boolean_JPEG
 #undef _WIN32
-
 #include <jpeglib.h>
 #include <jerror.h>
 #include <jconfig.h>
 #include <jmorecfg.h>
-
 #undef boolean
 #undef INT32
+
+#include "renderer/EERIEApp.h"
+#include "renderer/EERIEUtil.h"
+#include "renderer/EERIEMath.h"
+
+#include "io/HERMESMain.h"
+#include "io/PakManager.h"
+#include "io/Logger.h"
+
+using std::max;
 
 long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 /*-----------------------------------------------------------------------------*/
@@ -3007,16 +3005,22 @@ int JPEGError;
 METHODDEF(void)
 my_error_exit(j_common_ptr cinfo)
 {
-	char txt[256];
-	(*cinfo->err->output_message)(cinfo); 
-	sprintf(txt, "truc zarb: %s", cinfo->err->jpeg_message_table[cinfo->err->msg_code]);
-	printf("EERIE JPEG Error: %s", txt);
-
+	char errbuf[JMSG_LENGTH_MAX];
+	(*cinfo->err->format_message)(cinfo, errbuf);
+	LogError << errbuf;
+	// Output message to console.
+	//(*cinfo->err->output_message)(cinfo); 
 	JPEGError = 1;
 	return;
 }
-bool JPEG_NO_TRUE_BLACK = true;
-/*--------------------------------------------------------------------------------*/
+
+struct jpeg_membuf {
+	const JOCTET * buf;
+	size_t size;
+};
+
+const bool JPEG_NO_TRUE_BLACK = true;
+
 HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 {
 	// Get a DDraw object to create a temporary surface
@@ -3081,13 +3085,19 @@ HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 	struct	jpeg_decompress_struct	* cinfo = (jpeg_decompress_struct *)m_pJPEGData;
 	long	dx, dy;
 
-	//initialis� d'abord le format output
+	assert(cinfo != NULL);
+	
+	//initialized first output format
 	cinfo->out_color_space = JCS_RGB;
 	cinfo->output_components = 3;
-	jpeg_start_decompress(cinfo);
+	if(!jpeg_start_decompress(cinfo)) {
+		LogError << "JPEG decompression error";
+	}
 
 	if (JPEGError)
 	{
+		// TODO this will never be reached
+		LogError << "JPEG decompression error";
 		JPEGError = 0;
 		pddsTempSurface->Unlock(0);
 		pddsTempSurface->Release();
@@ -3100,7 +3110,8 @@ HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 
 	if (!buffer)
 	{
-		(void)jpeg_finish_decompress(cinfo);
+		LogError << "buffer allocation error";
+		jpeg_finish_decompress(cinfo);
 		pddsTempSurface->Unlock(0);
 		pddsTempSurface->Release();
 		pDD->Release();
@@ -3120,11 +3131,12 @@ HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 
 		if (JPEGError)
 		{
+			LogError << "JPEG decompression error";
 			JPEGError = 0;
 			pddsTempSurface->Unlock(0);
 			pddsTempSurface->Release();
 			pDD->Release();
-			(void)jpeg_finish_decompress(cinfo);
+			jpeg_finish_decompress(cinfo);
 			return 0;
 		}
 
@@ -3163,6 +3175,16 @@ HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 	}
 
 	(void)jpeg_finish_decompress(cinfo);
+	
+	
+	struct jpeg_source_mgr * src = cinfo->src;
+	jpeg_membuf * b = (jpeg_membuf *)cinfo->client_data;
+	
+	src->bytes_in_buffer = b->size;
+	src->next_input_byte = b->buf;
+	
+	jpeg_read_header(cinfo, true);
+	
 //	todo: this is no libjpeg call
 //	(void)jpeg_mem_reinitsrc((void *)cinfo);
 	delete buffer;
@@ -3718,42 +3740,53 @@ TextureContainer * D3DTextr_GetSurfaceContainer( const std::string& _strName)
 }
 
 
-void jpeg_null_function(j_decompress_ptr cinfo) {
+void jpeg_init_source(j_decompress_ptr cinfo) {
+	jpeg_membuf * b = (jpeg_membuf *)cinfo->client_data;
+	cinfo->src->next_input_byte = b->buf;
+	cinfo->src->bytes_in_buffer = b->size;
+}
+
+void jpeg_term_source(j_decompress_ptr cinfo) {
 	// don't do anything
 }
 
 boolean_JPEG fill_input_buffer(j_decompress_ptr cinfo) {
 	// There is nothing to fill.
-	return 0;
+	return false;
 }
 
 void skip_input_data(j_decompress_ptr cinfo, long num_bytes) {
 	struct jpeg_source_mgr * src = cinfo->src;
-	if((size_t)num_bytes >= src->bytes_in_buffer) {
-		src->bytes_in_buffer = 0;
-		return;
+	if(num_bytes > 0) {
+		if((size_t)num_bytes >= src->bytes_in_buffer) {
+			src->bytes_in_buffer = 0;
+			return;
+		}
+		src->bytes_in_buffer -= num_bytes;
+		src->next_input_byte += num_bytes;
 	}
-	src->bytes_in_buffer -= num_bytes;
-	src->next_input_byte += num_bytes;
 }
 
 void jpegDecompressFromMemory(j_decompress_ptr cinfo, const char * buffer, size_t size) {
 	
-	if(cinfo->src == NULL) {
-		cinfo->src = (struct jpeg_source_mgr *)(*cinfo->mem->alloc_small)
-		             ((j_common_ptr) cinfo, JPOOL_IMAGE, sizeof(struct jpeg_source_mgr));
-	}
+	assert(cinfo->src == NULL);
+	assert(cinfo->client_data == NULL);
 	
+	cinfo->src = (struct jpeg_source_mgr *)(*cinfo->mem->alloc_small)
+	             ((j_common_ptr) cinfo, JPOOL_PERMANENT, sizeof(struct jpeg_source_mgr));
+	cinfo->client_data = (*cinfo->mem->alloc_small)
+	                     ((j_common_ptr) cinfo, JPOOL_PERMANENT, sizeof(jpeg_membuf));
 	struct jpeg_source_mgr * src = cinfo->src;
+	jpeg_membuf * b = (jpeg_membuf *)cinfo->client_data;
 	
-	src->next_input_byte = (const JOCTET*)buffer;
-	src->bytes_in_buffer = size;
+	src->next_input_byte = b->buf = (const JOCTET *)buffer;
+	src->bytes_in_buffer = b->size = size;
 	
-	src->init_source = jpeg_null_function;
+	src->init_source = jpeg_init_source;
 	src->fill_input_buffer = fill_input_buffer;
 	src->skip_input_data = skip_input_data;
 	src->resync_to_restart = jpeg_resync_to_restart; // default implementation
-	src->term_source = jpeg_null_function;
+	src->term_source = jpeg_term_source;
 	
 }
 
@@ -3770,6 +3803,8 @@ HRESULT TextureContainer::LoadJpegFileNoDecomp(const std::string& strPathname) {
 		return E_FAIL;
 	}
 	
+	assert(m_pJPEGData == NULL);
+	
 	m_pJPEGData = new unsigned char[sizeof(struct	jpeg_decompress_struct)+sizeof(struct jpeg_error_mgr)];
 	if(!m_pJPEGData) {
 		free(memjpeg);
@@ -3777,7 +3812,8 @@ HRESULT TextureContainer::LoadJpegFileNoDecomp(const std::string& strPathname) {
 	}
 
 	struct jpeg_decompress_struct * cinfo = (struct jpeg_decompress_struct *)m_pJPEGData;
-
+	cinfo->client_data = NULL;
+	
 	struct jpeg_error_mgr * jerr = (struct jpeg_error_mgr *)(m_pJPEGData + sizeof(struct jpeg_decompress_struct));
 
 	cinfo->err = jpeg_std_error(jerr);
@@ -3827,10 +3863,20 @@ HRESULT TextureContainer::LoadJpegFileNoDecomp(const std::string& strPathname) {
 	m_dwWidth = cinfo->image_width;
 	m_dwHeight = cinfo->image_height;
 	m_dwBPP = 24;
+	
+	assert(m_pJPEGData_ex == NULL);
+	
 	m_pJPEGData_ex = memjpeg;
+	
+	struct jpeg_source_mgr * src = cinfo->src;
+	jpeg_membuf * b = (jpeg_membuf *)cinfo->client_data;
+	
+	//b->buf = src->next_input_byte;
+	//b->size = src->bytes_in_buffer;
+	
 //	todo: weird libjpeg call
 //	(void)jpeg_mem_reinitsrc((void *)cinfo);
-
+	
 	return S_OK;
 }
 /*-----------------------------------------------------------------------------*/

@@ -31,45 +31,33 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-//TODO(lubosz): don't include that much
-#include <stdio.h>
+#include "core/ARX_Interface.h"
 
-#include "renderer/d3dwrapper.h"
 #include "renderer/EERIEAnim.h"
-#include "renderer/EERIELight.h"
 #include "renderer/EERIELinkedObj.h"
 #include "renderer/EERIEPhysicsBox.h"
-#include "renderer/EERIEDraw.h"
 #include "renderer/EERIEObject.h"
-#include "renderer/EERIETexture.h"
 
-#include "core/ARX_Interface.h"
-#include "core/ARX_Minimap.h"
 #include "core/ARX_Paths.h"
-#include "core/ARX_Text.h"
 #include "core/ARX_Draw.h"
-#include "core/ARX_Menu.h"
-#include "core/ARX_Input.h"
 #include "core/ARX_Equipment.h"
 #include "core/ARX_Sound.h"
-#include "core/ARX_Spells.h"
-#include "core/ARX_Speech.h"
-#include "core/ARX_Levels.h"
 #include "core/ARX_ChangeLevel.h"
 #include "core/ARX_Particles.h"
 #include "core/ARX_Damages.h"
 #include "core/ARX_NPC.h"
 #include "core/ARX_Menu.h"
 #include "core/ARX_Menu2.h"
-#include "core/ARX_Interactive.h"
 #include "core/ARX_Speech.h"
 #include "core/Danae_resource.h"
-#include "core/ARX_Text.h"
 #include "core/ARX_Time.h"
 #include "core/DanaeDlg.h"
 #include "core/ARX_Collisions.h"
 #include "core/ARX_CCinematique.h"
 #include "io/HERMESMain.h"
+
+using std::min;
+using std::max;
 
 extern float MagicSightFader;
 extern long FINAL_COMMERCIAL_DEMO;

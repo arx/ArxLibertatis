@@ -31,18 +31,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <algorithm>
-#include <fstream>
-#include <sstream>
-#include <vector>
+#include "core/ARX_Spells.h"
+
+#include <cstdlib>
+using std::abs;
 
 #include "io/HERMESMain.h"
+
 #include "renderer/EERIEDraw.h"
 #include "renderer/EERIEMath.h"
 #include "renderer/EERIELight.h"
 #include "renderer/EERIEObject.h"
 
-#include "core/ARX_Spells.h"
 #include "core/Danae.h"
 #include "core/ARX_Collisions.h"
 #include "core/ARX_Damages.h"

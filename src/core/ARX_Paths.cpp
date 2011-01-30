@@ -54,9 +54,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <stdio.h>
 
 #include "core/ARX_Paths.h"
+
+#include <cstdio>
+
 #include "core/ARX_GlobalMods.h"
 #include "core/ARX_Sound.h"
 #include "core/ARX_Collisions.h"
@@ -76,6 +78,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEPhysicsBox.h"
 
 #include "io/HERMESMain.h"
+
+using std::min;
+using std::max;
 
 extern long CHANGE_LEVEL_ICON;
 extern long EDITMODE;

@@ -55,10 +55,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 //TODO(lubosz): too many includes
-#include <stdio.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <time.h>
+
+#include "core/DanaeSaveLoad.h"
+
+#include <cstdio>
+//#include <sys/stat.h>
+//#include <fcntl.h>
+#include <ctime>
 
 #include <iomanip>
 #include <iostream>
@@ -72,7 +75,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIECollisionSpheres.h"
 #include "renderer/EERIEDraw.h"
 
-#include "core/DanaeSaveLoad.h"
 #include "core/ARX_Damages.h"
 #include "core/ARX_Fogs.h"
 #include "core/ARX_Levels.h"
@@ -94,6 +96,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "io/blast.h"
+
+using std::max;
 
 extern float PROGRESS_BAR_COUNT;
 extern float PROGRESS_BAR_TOTAL;
@@ -1395,7 +1399,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fic)
 	MSP.z = trans.z;
 
 	ClearCurLoadInfo();
-	printf("Loading Interactive Objects\n");
+	LogDebug << "Loading Interactive Objects";
 
 
 
@@ -1550,7 +1554,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fic)
 	}
 
 	ClearCurLoadInfo();
-	printf("Loading FOGS\n");
+	LogDebug << "Loading FOGS";
 	ARX_FOGS_Clear();
 
 	for (i = 0; i < dlh.nb_fogs; i++)
@@ -1600,7 +1604,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fic)
 	LoadLevelScreen();
 
 	ClearCurLoadInfo();
-	printf("Loading Nodes\n");
+	LogDebug << "Loading Nodes";
 	ClearNodes();
 
 	for (i = 0; i < dlh.nb_nodes; i++)
@@ -1630,7 +1634,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fic)
 	RestoreNodeNumbers();
 
 	ClearCurLoadInfo();
-	printf("Loading Paths\n");
+	LogDebug << "Loading Paths";
 	ARX_PATH_ReleaseAllPath();
 	DANAE_LS_PATH  * dlp;
 	DANAE_LS_PATHWAYS  * dlpw;
@@ -1701,7 +1705,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fic)
 	}
 
 	ClearCurLoadInfo();
-	printf("Loading LLF Info\n");
+	LogDebug << "Loading LLF Info";
 
 	if (dlh.version >= 1.44f) // using compression
 	{

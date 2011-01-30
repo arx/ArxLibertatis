@@ -39,6 +39,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEMath.h"
 #include "renderer/EERIETexture.h"
 
+using std::min;
+using std::max;
+
 //-----------------------------------------------------------------------------
 extern float	PROGRESS_BAR_TOTAL;
 extern float	PROGRESS_BAR_COUNT;

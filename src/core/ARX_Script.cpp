@@ -55,38 +55,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-//TODO(lubosz): don't inlcude so much, move to scripting folder
-#include <stdlib.h>
-#include <cstdio>
-#include <cassert>
-#include <iostream>
-#include <iomanip>
-#include <fstream>
-#include <sstream>
-#include <algorithm>
-#include <vector>
-
-#include "renderer/EERIEObject.h"
-#include "renderer/EERIELinkedObj.h"
-#include "renderer/EERIEPathfinder.h"
-#include "renderer/EERIECollisionSpheres.h"
 #include "core/ARX_Script.h"
+
+#include <cassert>
+
+#include "renderer/EERIECollisionSpheres.h"
 #include "core/ARX_CCinematique.h"
 #include "core/ARX_Collisions.h"
 #include "core/ARX_Damages.h"
 #include "core/ARX_Equipment.h"
 #include "core/ARX_GlobalMods.h"
-#include "core/ARX_Interactive.h"
 #include "core/ARX_Minimap.h"
 #include "core/ARX_Missile.h"
 #include "core/ARX_NPC.h"
-#include "core/ARX_Player.h"
 #include "core/ARX_Particles.h"
 #include "core/ARX_Paths.h"
 #include "core/ARX_Scene.h"
 #include "core/ARX_Sound.h"
 #include "core/ARX_Special.h"
-#include "core/ARX_Spells.h"
 #include "core/ARX_Speech.h"
 #include "core/ARX_Text.h"
 #include "core/ARX_Time.h"
@@ -98,7 +84,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 
 using std::sprintf;
-
+using std::min;
+using std::max;
+#define NEEDING_DEBUG 1
 extern long GLOBAL_MAGIC_MODE;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern long FINAL_COMMERCIAL_DEMO;
@@ -3421,6 +3409,8 @@ long MakeLocalised( const std::string& text, std::string& output, long maxsize, 
 	}
 
 	std::string __text;
+	// TODO Find replacement
+	//MultiByteToWideChar(CP_ACP, 0, text, -1, (wchar_t*)__text, 256);
 	return HERMES_UNICODE_GetProfileString(__text, "error", output, maxsize);
 }
 
@@ -3432,6 +3422,8 @@ long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const std::string& _lpszText,
 
 	//todo cast
 	//MultiByteToWideChar(CP_ACP, 0, _lpszText, -1, __text, 256);
+	// Find replacement
+	//MultiByteToWideChar(CP_ACP, 0, _lpszText, -1, (wchar_t*)__text, 256);
 
 	HERMES_UNICODE_GetProfileString(
 		__text,
@@ -6086,7 +6078,11 @@ INTERACTIVE_OBJ * IO_DEBUG = NULL;
 //*************************************************************************************
 long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info)
 {
-	LogDebug << "SendScriptEvent msg=\"" << msg << "\" params=\"" << params << "\" evname=\"" << evname << "\"";
+	LogDebug << "SendScriptEvent msg=" << msg << " ("
+	         << ((msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1) ? AS_EVENT[msg].name : "unknown")
+	         << ")" << " params=" << Logger::nullstr(params)
+	         << " io=" << Logger::nullstr(io ? io->filename : NULL)
+	         << " evame=" << Logger::nullstr(evname) << " info=" << info;
 	
 	if (io)
 	{
@@ -6102,10 +6098,10 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 
 #ifdef NEEDING_DEBUG
 
-	if (DEBUGG) NEED_DEBUG = 1;
-	else NEED_DEBUG = 0;
+	/*if (DEBUGG)*/ NEED_DEBUG = 1;
+	//else NEED_DEBUG = 0;
 
-	if (IO_DEBUG == io) NEED_DEBUG |= 2;
+	/*if (IO_DEBUG == io)*/ NEED_DEBUG |= 2;
 
 #endif
 	Event_Total_Count++;
@@ -6272,11 +6268,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 			pos += strlen(eventname); // adding 'ON ' length
 #ifdef NEEDING_DEBUG
 
-			if (NEED_DEBUG)
-			{
-				DEBUG_Notify("\r\n");
-				sprintf(cmd, "%s received_______________________________________________________________________________", eventname);
-				DEBUG_Notify(cmd);
+			if(NEED_DEBUG) {
+				LogDebug << eventname << " received";
 			}
 
 #endif
@@ -6286,11 +6279,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 			pos += AS_EVENT[msg].name.length();
 #ifdef NEEDING_DEBUG
 
-			if (NEED_DEBUG)
-			{
-				DEBUG_Notify("\r\n");
-				sprintf(cmd, "%s received_________________________________________________________________________________", AS_EVENT[msg].name);
-				DEBUG_Notify(cmd);
+			if(NEED_DEBUG) {
+				LogDebug << AS_EVENT[msg].name << " received";
 			}
 
 #endif
@@ -6304,7 +6294,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 
 			if (NEED_DEBUG)
 			{
-				DEBUG_Notify("ERROR: No bracket after event");
+				LogError << "ERROR: No bracket after event";
 			}
 
 #endif
@@ -6318,9 +6308,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 
 		if (NEED_DEBUG)
 		{
-			DEBUG_Notify("\r\n");
-			sprintf(cmd, "EXECUTELINE received______________________________________________________________________________");
-			DEBUG_Notify(cmd);
+			LogDebug << "EXECUTELINE received";
 		}
 
 #endif
@@ -6535,7 +6523,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 
 					if (NEED_DEBUG)
 					{
-						DEBUG_Notify("  ACCEPT");
+						LogDebug << "  ACCEPT";
 					}
 
 #endif
@@ -6904,7 +6892,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 					ret = REFUSE;
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) DEBUG_Notify("  REFUSE");
+					if (NEED_DEBUG) LogDebug << "  REFUSE";
 
 #endif
 					goto end;
@@ -6924,7 +6912,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 					ARX_NPC_Revive(io, init);
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) DEBUG_Notify("REVIVE");
+					if (NEED_DEBUG) LogDebug << "REVIVE";
 
 #endif
 					goto end;
@@ -7254,7 +7242,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "RUNE %d %s", add, temp);
+					if (NEED_DEBUG) sprintf(cmd, "RUNE %ld %s", add, temp);
 
 #endif
 				}
@@ -10908,7 +10896,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "LINKOBJTOME %d %s", t, temp);
+					if (NEED_DEBUG) sprintf(cmd, "LINKOBJTOME %ld %s", t, temp);
 
 #endif
 				}
@@ -11978,8 +11966,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 					else
 					{
 						_TCHAR UText[512];
-//						todo cast
-//						MultiByteToWideChar(CP_ACP, 0, tempp, -1, UText, 256);
+						MultiByteToWideChar(CP_ACP, 0, tempp, -1, (wchar_t*)UText, 256);
 						ARX_SPEECH_Add(NULL, UText);
 					}
 
@@ -13427,8 +13414,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 
 				if (NEED_DEBUG)
 				{
-					sprintf(cmd, "ERROR: %s UNKNOWN COMMAND !!!", temp);
-					DEBUG_Notify(cmd);
+					LogError << "unknown command: " << temp;
 				}
 
 #endif
@@ -13439,9 +13425,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INT
 
 		if ((NEED_DEBUG) && (cmd[0] != 0))
 		{
-			char temp[256];
-			sprintf(temp, "  %s", cmd);
-			DEBUG_Notify(temp);
+			LogDebug << "  " << cmd;
 		}
 
 #endif
@@ -13456,16 +13440,13 @@ end:
 	{
 		if (msg != SM_EXECUTELINE)
 		{
-			if (evname) sprintf(cmd, "%s EVENT Successfully Finished___________________________________________", eventname);
-			else if (msg != SM_DUMMY) sprintf(cmd, "%s EVENT Successfully Finished___________________________________________________", AS_EVENT[msg].name);
-			else  sprintf(cmd, "Dummy EVENT Successfully Finished___________________________________________________");
-
-			DEBUG_Notify(cmd);
+			if (evname) LogDebug << eventname << " EVENT Successfully Finished";
+			else if (msg != SM_DUMMY) LogDebug << AS_EVENT[msg].name << " EVENT Successfully Finished";
+			else LogDebug << "Dummy EVENT Successfully Finished";
 		}
 		else
 		{
-			sprintf(cmd, "EXECUTELINE Successfully Finished_________________________________________________________________");
-			DEBUG_Notify(cmd);
+			LogDebug << "EXECUTELINE Successfully Finished";
 		}
 	}
 

@@ -31,6 +31,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/ARX_CCinematique.h"
 #include "core/ARX_Sound.h"
+#include "io/HERMESMain.h"
 
 
 /*-----------------------------------------------------------*/
@@ -141,12 +142,11 @@ void CutAndAddString(char * pText, const char * pDebText)
 
 	while (i--)
 	{
-		//todo: strings
-//		if (!strnicmp(pText, pDebText, j))
-//		{
-//			bOk = true;
-//			break;
-//		}
+		if (!strncasecmp(pText, pDebText, j))
+		{
+			bOk = true;
+			break;
+		}
 
 		pText++;
 	}
@@ -193,26 +193,25 @@ void PatchReplace()
 	int j = AllTxt.length();
 	//char * pT = AllTxt;
 
-	//while (j--)
-	//{
-		//todo strings
-//		if (!strnicmp(pT, "uk", strlen("uk")))
-//		{
-//			*pT = 0;
-//			strcpy(CopyTxt, pT + 3);
-//			strcat(AllTxt, "english\\");
-//			strcat(AllTxt, CopyTxt);
-//			break;
-//		}
-//
-//		if (!strnicmp(pT, "fr", strlen("fr")))
-//		{
-//			*pT = 0;
-//			strcpy(CopyTxt, pT + 3);
-//			strcat(AllTxt, "francais\\");
-//			strcat(AllTxt, CopyTxt);
-//			break;
-//		}
+	while (j--)
+	{
+		if (!strncasecmp(pT, "uk", strlen("uk")))
+		{
+			*pT = 0;
+			strcpy(CopyTxt, pT + 3);
+			strcat(AllTxt, "english\\");
+			strcat(AllTxt, CopyTxt);
+			break;
+		}
+
+		if (!strncasecmp(pT, "fr", strlen("fr")))
+		{
+			*pT = 0;
+			strcpy(CopyTxt, pT + 3);
+			strcat(AllTxt, "francais\\");
+			strcat(AllTxt, CopyTxt);
+			break;
+		}
 
 		//pT++;
 	//}
@@ -224,14 +223,13 @@ void PatchReplace()
 	//pT = AllTxt;
 	//j = strlen((const char *)pT);
 
-	//while (j)
-	//{
-		//todo strings
-//		if (!strnicmp((const char *)pT, "sfx\\speech\\", strlen((const char *)"sfx\\speech\\")))
-//		{
-//			bFound = true;
-//			break;
-//		}
+	while (j)
+	{
+		if (!strncasecmp((const char *)pT, "sfx\\speech\\", strlen((const char *)"sfx\\speech\\")))
+		{
+			bFound = true;
+			break;
+		}
 
 		//j--;
 		//pT++;
@@ -314,8 +312,7 @@ int AddSoundToList(char * dir, char * name, int id, int pos)
 	AllTxt += name;
 	PatchReplace();
 
-//	todo strings
-//	strupr(AllTxt);
+	MakeUpcase(AllTxt);
 
 	if ( AllTxt.find("SFX") != std::string::npos )
 	{

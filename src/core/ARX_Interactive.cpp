@@ -55,6 +55,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include "core/ARX_Interactive.h"
+
+#include <cstdlib>
+
 #define DIRECTINPUT_VERSION 0x0700
 
 #include <iomanip>
@@ -66,9 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 
 #include <dinput.h>
-#include <stdlib.h>
 
-#include "core/ARX_Interactive.h"
 #include "core/ARX_Paths.h"
 #include "core/ARX_FTL.h"
 #include "core/ARX_Equipment.h"
@@ -94,6 +96,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/HERMESMain.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
+
+using std::min;
 
 extern EERIE_CAMERA TCAM[];
 extern long FRAME_COUNT;

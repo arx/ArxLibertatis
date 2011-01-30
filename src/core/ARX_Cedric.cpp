@@ -22,6 +22,9 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+
+#include "core/ARX_Cedric.h"
+
 #include <dinput.h>
 
 #include <algorithm>
@@ -29,6 +32,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 
 #include "io/HERMESMain.h"
+
 #include "renderer/EERIEAnim.h"
 #include "renderer/EERIEClothes.h"
 #include "renderer/EERIEObject.h"
@@ -36,6 +40,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIELight.h"
 #include "renderer/EERIEPoly.h"
 #include "renderer/EERIEDraw.h"
+
 #include "core/ARX_Collisions.h"
 #include "core/ARX_Sound.h"
 #include "core/ARX_Scene.h"
@@ -46,7 +51,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/ARX_Time.h"
 #include "core/Danae.h"
 #include "core/ARX_Menu2.h"
-#include "core/ARX_Cedric.h"
+
+using std::min;
+using std::max;
 
 #if	CEDRIC
 

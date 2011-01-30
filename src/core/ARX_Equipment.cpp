@@ -79,6 +79,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/ARX_Interface.h"
 #include "core/ARX_Script.h"
 
+using std::min;
+using std::max;
+
 typedef struct
 {
 	char name[64];

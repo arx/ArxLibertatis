@@ -55,9 +55,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdio.h>
-
 #include "core/ARX_Particles.h"
+
+#include <cstdio>
+
 #include "core/ARX_Input.h"
 #include "core/ARX_CSpellFx.h"
 #include "core/ARX_Sound.h"
@@ -74,6 +75,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEDraw.h"
 #include "renderer/EERIEObject.h"
 #include "renderer/EERIEPhysicsBox.h"
+
+using std::max;
 
 //TODO(lubosz): extern globals :(
 extern CMenuConfig *pMenuConfig;

@@ -15,6 +15,7 @@
 
 using std::string;
 
+
 class Logger {
 
 public:
@@ -29,11 +30,22 @@ public:
   Logger(const std::string& file, int line, LogLevel level);
   virtual ~Logger();
   template<class T>
-  Logger& operator<< (T i) {
-    if (print)
-      std::cout<<i;
+  Logger& operator<< (const T & i) {
+    if(print)
+      std::cout << i;
     return *this;
   }
+  
+  struct nullstr {
+		
+		const char * str;
+		
+		inline nullstr(const char * s) : str(s) { };
+		
+	};
+  
+	/* Log a string that may be null. */
+  Logger & operator<<(const nullstr & s);
 
   static LogLevel logLevel;
 private:

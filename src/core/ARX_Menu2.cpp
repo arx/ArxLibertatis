@@ -22,31 +22,31 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//-----------------------------------------------------------------------------
-// Arx_Menu2.cpp
-//-----------------------------------------------------------------------------
-#include <string.h>
-#include <windows.h>
+
+#include "core/ARX_Menu2.h"
+
+#include <cstring>
 #include <tchar.h>
-#include <algorithm>
+
 #include "core/Danae.h"
 #include "core/ARX_Menu.h"
-#include "core/ARX_Menu2.h"
 #include "core/ARX_MenuPublic.h"
 #include "core/ARX_Sound.h"
 #include "core/ARX_Loc.h"
 #include "core/ARX_Text.h"
 #include "core/ARX_Interface.h"
 #include "core/ARX_Time.h"
+
 #include "renderer/EERIETexture.h"
 #include "renderer/EERIEPoly.h"
 #include "renderer/EERIEDraw.h"
+
 #include "window/Mercury_dx_input.h"
 #include "io/Logger.h"
 
 using std::wistringstream;
-
-//#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
+using std::min;
+using std::max;
 
 extern char * GetVersionString();
 

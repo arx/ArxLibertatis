@@ -1,5 +1,8 @@
-#include <stdlib.h>
+
 #include "io/Logger.h"
+
+#include <cstdlib>
+
 #define BASH_COLOR 1
 
 using std::cout;
@@ -20,6 +23,8 @@ const LogSetting blackList[] = {
 	{ "Athena.cpp", Logger::Error },
 	{ "Athena_Instance.cpp", Logger::Info },
 	{ "EERIEobject.cpp", Logger::Warning },
+	{ "ARX_Speech.cpp", Logger::Error },
+	{ "ARX_Text.cpp", Logger::Error },
 };
 
 Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {
@@ -77,3 +82,15 @@ Logger::LogLevel Logger::getLogLevel(const std::string& file) {
 	}
 	return logLevel;
 }
+
+Logger & Logger::operator<<(const nullstr & s) {
+	if(print) {
+		if(s.str) {
+			*this << "\"" << s.str << "\"";
+		} else {
+			*this << "NULL";
+		}
+	}
+	return *this;
+}
+

@@ -53,6 +53,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+
+#include "renderer/EERIEMath.h"
+
 #define D3D_OVERLOADS
 #define STRICT
 
@@ -62,15 +65,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <cstdio>
 
 #include "renderer/EERIEApp.h"
 #include "renderer/EERIEPoly.h"
 #include "renderer/EERIETypes.h"
-#include "renderer/EERIEMath.h"
 
 using std::min;
 using std::max;
 
+// TODO not defined and not threadsafe
 #ifdef ASSEMBLER_OPTIMS	 //////////////////////
 float __mov;
 #endif
