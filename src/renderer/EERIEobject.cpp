@@ -1964,18 +1964,21 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 {
 	char * temp = NULL;
 	long i;
-	eobj->c_data = (EERIE_C_DATA *)malloc(sizeof(EERIE_C_DATA));
+	eobj->c_data = new EERIE_C_DATA();
 	memset(eobj->c_data, 0, sizeof(EERIE_C_DATA));
 
-	if (eobj->nbgroups <= 0)
+	if (eobj->nbgroups <= 0) // If no groups were specified
 	{
+		// Make one bone
 		eobj->c_data->nb_bones = 1;
-		eobj->c_data->bones = (EERIE_BONE *)malloc(sizeof(EERIE_BONE) * eobj->c_data->nb_bones);
+		eobj->c_data->bones = new EERIE_BONE[eobj->c_data->nb_bones];
 		memset(eobj->c_data->bones, 0, sizeof(EERIE_BONE)*eobj->c_data->nb_bones);
 
+		// Add all vertices to the bone
 		for (long i = 0; i < eobj->nbvertex; i++)
 			AddIdxToBone(&eobj->c_data->bones[0], i);
 
+		// Initialize the bone
 		Quat_Init(&eobj->c_data->bones[0].quatinit);
 		Quat_Init(&eobj->c_data->bones[0].quatanim);
 		Vector_Init(&eobj->c_data->bones[0].scaleinit);
@@ -1984,81 +1987,80 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 		Vector_Copy(&eobj->c_data->bones[0].transinit_global, &eobj->c_data->bones[0].transinit);
 		eobj->c_data->bones[0].original_group = NULL;
 		eobj->c_data->bones[0].father = -1;
-		goto lasuite;
 	}
-	
-	memset(eobj->c_data, 0, sizeof(EERIE_C_DATA));
-	eobj->c_data->nb_bones = eobj->nbgroups;
-	eobj->c_data->bones = (EERIE_BONE *)malloc(sizeof(EERIE_BONE) * eobj->c_data->nb_bones);
-	memset(eobj->c_data->bones, 0, sizeof(EERIE_BONE)*eobj->c_data->nb_bones);
-
-	temp = (char *)malloc(eobj->nbvertex);
-	memset(temp, 0, eobj->nbvertex);
-
-	for (i = eobj->nbgroups - 1; i >= 0; i--)
+	else // Groups were specified
 	{
-		EERIE_VERTEX * v_origin = &eobj->vertexlist[eobj->grouplist[i].origin];
+		// Alloc the bones
+		eobj->c_data->nb_bones = eobj->nbgroups;
+		eobj->c_data->bones = new EERIE_BONE[eobj->c_data->nb_bones];
+		memset(eobj->c_data->bones, 0, sizeof(EERIE_BONE)*eobj->c_data->nb_bones);
 
-		for (long j = 0; j < eobj->grouplist[i].nb_index; j++)
+		char temp[eobj->nbvertex];
+		memset(temp, 0, eobj->nbvertex);
+
+		for (i = eobj->nbgroups - 1; i >= 0; i--)
 		{
-			if (temp[eobj->grouplist[i].indexes[j]] == 0)
+			EERIE_VERTEX * v_origin = &eobj->vertexlist[eobj->grouplist[i].origin];
+
+			for (long j = 0; j < eobj->grouplist[i].nb_index; j++)
 			{
-				temp[eobj->grouplist[i].indexes[j]] = 1;
-				AddIdxToBone(&eobj->c_data->bones[i], eobj->grouplist[i].indexes[j]);
-			}
-		}
-
-		Quat_Init(&eobj->c_data->bones[i].quatinit);
-		Quat_Init(&eobj->c_data->bones[i].quatanim);
-		Vector_Init(&eobj->c_data->bones[i].scaleinit);
-		Vector_Init(&eobj->c_data->bones[i].scaleanim);
-		Vector_Init(&eobj->c_data->bones[i].transinit, v_origin->v.x, v_origin->v.y, v_origin->v.z);
-		Vector_Copy(&eobj->c_data->bones[i].transinit_global, &eobj->c_data->bones[i].transinit);
-		eobj->c_data->bones[i].original_group = &eobj->grouplist[i];
-		eobj->c_data->bones[i].father = GetFather(eobj, eobj->grouplist[i].origin, i - 1);
-	}
-
-	// Try to correct lonely vertex
-	for (i = 0; i < eobj->nbvertex; i++)
-	{
-		long ok = 0;
-
-		for (long j = 0; j < eobj->nbgroups; j++)
-		{
-			for (long k = 0; k < eobj->grouplist[j].nb_index; k++)
-			{
-				if (eobj->grouplist[j].indexes[k] == i)
+				if (temp[eobj->grouplist[i].indexes[j]] == 0)
 				{
-					ok = 1;
-					break;
+					temp[eobj->grouplist[i].indexes[j]] = 1;
+					AddIdxToBone(&eobj->c_data->bones[i], eobj->grouplist[i].indexes[j]);
 				}
 			}
 
-			if (ok)
-				break;
+			Quat_Init(&eobj->c_data->bones[i].quatinit);
+			Quat_Init(&eobj->c_data->bones[i].quatanim);
+			Vector_Init(&eobj->c_data->bones[i].scaleinit);
+			Vector_Init(&eobj->c_data->bones[i].scaleanim);
+			Vector_Init(&eobj->c_data->bones[i].transinit, v_origin->v.x, v_origin->v.y, v_origin->v.z);
+			Vector_Copy(&eobj->c_data->bones[i].transinit_global, &eobj->c_data->bones[i].transinit);
+			eobj->c_data->bones[i].original_group = &eobj->grouplist[i];
+			eobj->c_data->bones[i].father = GetFather(eobj, eobj->grouplist[i].origin, i - 1);
 		}
 
-		if (!ok)
+		// Try to correct lonely vertex
+		for (i = 0; i < eobj->nbvertex; i++)
 		{
-			AddIdxToBone(&eobj->c_data->bones[0], i);
+			long ok = 0;
+
+			for (long j = 0; j < eobj->nbgroups; j++)
+			{
+				for (long k = 0; k < eobj->grouplist[j].nb_index; k++)
+				{
+					if (eobj->grouplist[j].indexes[k] == i)
+					{
+						ok = 1;
+						break;
+					}
+				}
+
+				if (ok)
+					break;
+			}
+
+			if (!ok)
+			{
+				AddIdxToBone(&eobj->c_data->bones[0], i);
+			}
 		}
+
+		for (i = eobj->nbgroups - 1; i >= 0; i--)
+		{
+			if (eobj->c_data->bones[i].father >= 0)
+			{
+				eobj->c_data->bones[i].transinit.x -= eobj->c_data->bones[eobj->c_data->bones[i].father].transinit.x;
+				eobj->c_data->bones[i].transinit.y -= eobj->c_data->bones[eobj->c_data->bones[i].father].transinit.y;
+				eobj->c_data->bones[i].transinit.z -= eobj->c_data->bones[eobj->c_data->bones[i].father].transinit.z;
+			}
+
+			Vector_Copy(&eobj->c_data->bones[i].transinit_global, &eobj->c_data->bones[i].transinit);
+		}
+
 	}
 
-	for (i = eobj->nbgroups - 1; i >= 0; i--)
-	{
-		if (eobj->c_data->bones[i].father >= 0)
-		{
-			eobj->c_data->bones[i].transinit.x -= eobj->c_data->bones[eobj->c_data->bones[i].father].transinit.x;
-			eobj->c_data->bones[i].transinit.y -= eobj->c_data->bones[eobj->c_data->bones[i].father].transinit.y;
-			eobj->c_data->bones[i].transinit.z -= eobj->c_data->bones[eobj->c_data->bones[i].father].transinit.z;
-		}
-
-		Vector_Copy(&eobj->c_data->bones[i].transinit_global, &eobj->c_data->bones[i].transinit);
-	}
-
-
-lasuite:
-	;
 #if CEDRIC
 	/* Build proper mesh */
 	{
