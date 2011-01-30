@@ -121,6 +121,7 @@ extern "C" {
 	void DXI_Release(void);
 	int DXI_ChooseInputDevice(HWND hwnd, int id, int num, int mode);
 	void DXI_FreeInfoDevice(DXI_INPUT_INFO * dinf);
+	bool DXI_GetAxeMouseXY(int id,int *mx,int *my);
 	bool DXI_GetAxeMouseXYZ(int id, int * mx, int * my, int * mz);
 	bool DXI_ExecuteAllDevices(bool _bKeept);
 	int DXI_GetSCIDInputDevice(HWND hwnd, int id, int mode, int minbutton, int minaxe);
