@@ -65,7 +65,8 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <StructMemberAlignment>1Byte</StructMemberAlignment>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeaderOutputFile>.\ARX_SCRIPT_DEBUGGER___Win32_Release/ARX_SCRIPT_DEBUGGER.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>.\ARX_SCRIPT_DEBUGGER___Win32_Release/</AssemblerListingLocation>
       <ObjectFileName>.\ARX_SCRIPT_DEBUGGER___Win32_Release/</ObjectFileName>
       <ProgramDataBaseFileName>.\ARX_SCRIPT_DEBUGGER___Win32_Release/</ProgramDataBaseFileName>
@@ -111,9 +112,9 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <StructMemberAlignment>1Byte</StructMemberAlignment>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\Debug/ARX_SCRIPT_DEBUGGER.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>
+      </PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
       <ObjectFileName>.\Debug/</ObjectFileName>
       <ProgramDataBaseFileName>.\Debug/</ProgramDataBaseFileName>
