@@ -56,10 +56,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ///////////////////////////////////////////////////////////////////////////////////////
 #include <stdio.h>
 
-#include "core/ARX_Fogs.h"
-#include "core/ARX_Particles.h"
-#include "core/ARX_Time.h"
-#include "core/ARX_Menu2.h"
+#include "graphics/effects/Fog.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "core/Time.h"
+#include "gui/MenuWidgets.h"
 
 #include "renderer/EERIEMath.h"
 #include "renderer/EERIEDraw.h"

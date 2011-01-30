@@ -60,7 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CSPELLFX_LVL07_H
 #define ARX_CSPELLFX_LVL07_H
 
-#include "core/ARX_CParticles.h"
+#include "graphics/particle/ParticleManager.h"
 #include "renderer/EERIETypes.h"
 #include "renderer/EERIEPoly.h"
 

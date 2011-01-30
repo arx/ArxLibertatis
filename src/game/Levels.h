@@ -54,12 +54,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-//#include "Danae.h"
+//#include "core/Core.h"
 
 #ifndef ARX_LEVELS_H
 #define ARX_LEVELS_H
 
-//#include <ARX_Common.h>
+//#include <Common.h>
 
 //-----------------------------------------------------------------------------
 long GetLevelNumByName(const char * name);

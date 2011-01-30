@@ -62,13 +62,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <fstream>
 #include <sstream>
 
-#include "core/ARX_Levels.h"
-#include "core/DanaeSaveLoad.h"
-#include "core/ARX_Paths.h"
-#include "core/ARX_Scene.h"
-#include "core/ARX_Spells.h"
-#include "core/ARX_Speech.h"
-#include "core/ARX_Sound.h"
+#include "game/Levels.h"
+#include "scene/LoadLevel.h"
+#include "ai/Paths.h"
+#include "scene/Scene.h"
+#include "game/Spells.h"
+#include "gui/Speech.h"
+#include "scene/GameSound.h"
 
 #include "io/HERMESMain.h"
 #include "renderer/EERIEPathfinder.h"

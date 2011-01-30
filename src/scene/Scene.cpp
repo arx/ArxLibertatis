@@ -58,16 +58,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <dinput.h>
 #include <stdio.h>
 
-#include "core/ARX_Scene.h"
-#include "core/ARX_Spells.h"
-#include "core/ARX_Sound.h"
-#include "core/ARX_Particles.h"
-#include "core/ARX_Draw.h"
-#include "core/ARX_Player.h"
-#include "core/ARX_Paths.h"
-#include "core/ARX_Interface.h"
-#include "core/ARX_Time.h"
-#include "core/ARX_Menu2.h"
+#include "scene/Scene.h"
+#include "game/Spells.h"
+#include "scene/GameSound.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "graphics/effects/DrawEffects.h"
+#include "game/Player.h"
+#include "ai/Paths.h"
+#include "gui/Interface.h"
+#include "core/Time.h"
+#include "gui/MenuWidgets.h"
 
 #include "io/HERMESMain.h"
 #include "renderer/d3dwrapper.h"

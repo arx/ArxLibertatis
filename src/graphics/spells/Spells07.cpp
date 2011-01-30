@@ -57,15 +57,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEMath.h"
 #include "renderer/EERIEObject.h"
 
-#include "core/Danae.h"
-#include "core/ARX_Collisions.h"
-#include "core/ARX_CSpellFx.h"
-#include "core/ARX_Damages.h"
-#include "core/ARX_Particles.h"
-#include "core/ARX_SpellFx_Lvl05.h"
-#include "core/ARX_SpellFx_Lvl07.h"
-#include "core/ARX_Spells.h"
-#include "core/ARX_Time.h"
+#include "core/Core.h"
+#include "physics/Collisions.h"
+#include "graphics/effects/SpellEffects.h"
+#include "game/Damage.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "graphics/spells/Spells05.h"
+#include "graphics/spells/Spells07.h"
+#include "game/Spells.h"
+#include "core/Time.h"
 
 
 extern float _framedelay;

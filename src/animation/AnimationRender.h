@@ -24,7 +24,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 #ifndef ARX_CEDRIC_H
 #define ARX_CEDRIC_H
-#include "Danae.h"
+#include "core/Core.h"
 
 
 #define		CEDRIC				1

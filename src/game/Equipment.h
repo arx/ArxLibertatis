@@ -59,7 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_EQUIPMENT_H
 
 #include "renderer/EERIEPoly.h"
-#include "ARX_Player.h"
+#include "game/Player.h"
 
 //-----------------------------------------------------------------------------
 #define WEAPON_BARE				0

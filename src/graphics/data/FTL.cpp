@@ -61,7 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "core/ARX_FTL.h"
+#include "graphics/data/FTL.h"
 #include "io/HERMESMain.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"

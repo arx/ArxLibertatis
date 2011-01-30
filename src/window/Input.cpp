@@ -57,8 +57,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stdio.h>
 
-#include "core/ARX_Input.h"
-#include "core/ARX_Menu2.h" //controls
+#include "window/Input.h"
+#include "gui/MenuWidgets.h" //controls
 
 DXI_INIT	InputInit;
 long ARX_SCID = 0;

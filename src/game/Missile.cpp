@@ -37,13 +37,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEMath.h"
 #include "renderer/EERIETexture.h"
 
-#include "core/ARX_Missile.h"
-#include "core/ARX_Damages.h"
-#include "core/ARX_Interactive.h"
-#include "core/ARX_Particles.h"
-#include "core/ARX_Physics.h"
-#include "core/ARX_Sound.h"
-#include "core/ARX_Time.h"
+#include "game/Missile.h"
+#include "game/Damage.h"
+#include "scene/Interactive.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "physics/Physics.h"
+#include "scene/GameSound.h"
+#include "core/Time.h"
 
 //-----------------------------------------------------------------------------
 typedef struct

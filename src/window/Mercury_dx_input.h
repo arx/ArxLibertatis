@@ -26,7 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef MERCURY_DX_INPUT_H
 #define MERCURY_DX_INPUT_H
 
-#include "core/ARX_Common.h"
+#include "core/Common.h"
 
 #ifdef __cplusplus
 extern "C" {

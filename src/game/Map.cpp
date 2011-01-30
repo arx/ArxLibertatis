@@ -23,10 +23,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include "core/ARX_Carte.h"
+#include "game/Map.h"
 
-#include "core/Danae.h"
-#include "core/ARX_Levels.h"
+#include "core/Core.h"
+#include "game/Levels.h"
 
 #include "renderer/EERIEUtil.h"
 #include "renderer/EERIETexture.h"

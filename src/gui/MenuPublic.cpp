@@ -24,16 +24,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 #include <stdio.h>
 
-#include "core/Danae.h"
-#include "core/ARX_MenuPublic.h"
-#include "core/ARX_Menu.h"
-#include "core/ARX_Interface.h"
-#include "core/ARX_Sound.h"
-#include "core/ARX_Menu.h"
-#include "core/ARX_Menu2.h"
-#include "core/ARX_Loc.h"
-#include "core/ARX_Time.h"
-#include "core/ARX_CCinematique.h"
+#include "core/Core.h"
+#include "gui/MenuPublic.h"
+#include "gui/Menu.h"
+#include "gui/Interface.h"
+#include "scene/GameSound.h"
+#include "gui/Menu.h"
+#include "gui/MenuWidgets.h"
+#include "core/Localization.h"
+#include "core/Time.h"
+#include "animation/Cinematic.h"
 
 #include "renderer/EERIEMath.h"
 #include "renderer/EERIEDraw.h"

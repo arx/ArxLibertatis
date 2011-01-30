@@ -64,7 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <time.h>
 #include <fcntl.h>
 
-#include "core/ARX_Common.h"
+#include "core/Common.h"
 #include "io/Logger.h"
 
 /*

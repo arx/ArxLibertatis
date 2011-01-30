@@ -33,9 +33,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "renderer/d3dwrapper.h"
 #include "renderer/EERIEMath.h"
-#include "core/ARX_Menu2.h"
-#include "core/ARX_GlobalMods.h"
-#include "core/ARX_Time.h"
+#include "gui/MenuWidgets.h"
+#include "graphics/GraphicsModes.h"
+#include "core/Time.h"
 
 using std::min;
 

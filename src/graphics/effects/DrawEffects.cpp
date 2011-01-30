@@ -58,12 +58,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stdio.h>
 
-#include "core/ARX_Draw.h"
-#include "core/ARX_Interactive.h"
-#include "core/ARX_Particles.h"
-#include "core/ARX_Spells.h"
-#include "core/ARX_Time.h"
-#include "core/ARX_Menu2.h"
+#include "graphics/effects/DrawEffects.h"
+#include "scene/Interactive.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "game/Spells.h"
+#include "core/Time.h"
+#include "gui/MenuWidgets.h"
 
 #include "renderer/EERIEDraw.h"
 #include "renderer/EERIELight.h"

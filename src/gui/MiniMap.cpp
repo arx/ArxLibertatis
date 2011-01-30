@@ -55,7 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "core/ARX_Minimap.h"
+#include "gui/MiniMap.h"
 
 #include <iostream>
 #include <fstream>
@@ -63,9 +63,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <algorithm>
 
-#include "core/ARX_Text.h"
-#include "core/ARX_Levels.h"
-#include "core/Danae.h"
+#include "gui/Text.h"
+#include "game/Levels.h"
+#include "core/Core.h"
 
 #include "renderer/EERIELight.h"
 #include "renderer/EERIEPhysicsBox.h"

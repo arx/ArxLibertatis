@@ -62,12 +62,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEApp.h"
 #include "renderer/EERIETypes.h"
 #include "renderer/EERIEPoly.h"
-#include "ARX_Player.h"
-#include "ARX_Script.h"
-#include "ARX_Physics.h"
-#include "ARX_Interactive.h"
-#include "DANAE_Debugger.h"
-#include "DanaeSaveLoad.h"
+#include "game/Player.h"
+#include "scripting/Script.h"
+#include "physics/Physics.h"
+#include "scene/Interactive.h"
+#include "scripting/ScriptDebugger.h"
+#include "scene/LoadLevel.h"
 
 
 //-----------------------------------------------------------------------------

@@ -29,7 +29,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define NOMINMAX 1
 #include <windows.h>
-#include "core/ARX_Common.h"
+#include "core/Common.h"
 
 struct Vars
 {

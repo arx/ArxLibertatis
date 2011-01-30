@@ -23,8 +23,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 #include <stdio.h>
-#include "core/ARX_CCinematique.h"
-#include "core/ARX_Sound.h"
+#include "animation/Cinematic.h"
+#include "scene/GameSound.h"
 #include "io/HERMESMain.h"
 
 

@@ -28,9 +28,9 @@
 #include <windows.h>
 #include <vector>
 
-#include "core/Danae_resource.h"
-#include "core/Danae.h" // pour danaeApp
-#include "core/ARX_Menu2.h"
+#include "core/Resource.h"
+#include "core/Core.h" // pour danaeApp
+#include "gui/MenuWidgets.h"
 
 using namespace std;
 

@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <vector>
 #include <string>
-#include "ARX_Text.h"
+#include "gui/Text.h"
 
 #define NOMINMAX 1
 #include <windows.h>

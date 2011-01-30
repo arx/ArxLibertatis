@@ -56,7 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 //TODO(lubosz): too many includes
 
-#include "core/DanaeSaveLoad.h"
+#include "scene/LoadLevel.h"
 
 #include <cstdio>
 //#include <sys/stat.h>
@@ -74,21 +74,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIECollisionSpheres.h"
 #include "renderer/EERIEDraw.h"
 
-#include "core/ARX_Damages.h"
-#include "core/ARX_Fogs.h"
-#include "core/ARX_Levels.h"
-#include "core/ARX_Loc.h"
-#include "core/ARX_Minimap.h"
-#include "core/ARX_Missile.h"
-#include "core/ARX_Particles.h"
-#include "core/ARX_Paths.h"
-#include "core/ARX_Scene.h"
-#include "core/ARX_Sound.h"
-#include "core/ARX_Special.h"
-#include "core/ARX_Speech.h"
-#include "core/ARX_Spells.h"
-#include "core/ARX_Time.h"
-#include "core/DanaeDlg.h"
+#include "game/Damage.h"
+#include "graphics/effects/Fog.h"
+#include "game/Levels.h"
+#include "core/Localization.h"
+#include "gui/MiniMap.h"
+#include "game/Missile.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "ai/Paths.h"
+#include "scene/Scene.h"
+#include "scene/GameSound.h"
+#include "physics/Actors.h"
+#include "gui/Speech.h"
+#include "game/Spells.h"
+#include "core/Time.h"
+#include "core/Dialog.h"
 
 #include "io/HERMESMain.h"
 #include "io/PakManager.h"

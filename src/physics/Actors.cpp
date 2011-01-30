@@ -58,8 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "renderer/d3dwrapper.h"
 #include "renderer/EERIEMath.h"
-#include "core/ARX_Special.h"
-#include "core/ARX_Interactive.h"
+#include "physics/Actors.h"
+#include "scene/Interactive.h"
 
 typedef struct
 {

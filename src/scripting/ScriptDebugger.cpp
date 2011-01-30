@@ -28,8 +28,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h>
 
 #include "scripting/SCRIPT_DEBUGGER_Dialog.h"
-#include "core/ARX_Interactive.h"
-#include "core/ARX_Time.h"
+#include "scene/Interactive.h"
+#include "core/Time.h"
 #include "renderer/EERIEPoly.h"
 #include "io/HERMESMain.h"
 

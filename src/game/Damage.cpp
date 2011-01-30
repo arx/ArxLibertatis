@@ -55,7 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "core/ARX_Damages.h"
+#include "game/Damage.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -68,17 +68,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEDraw.h"
 #include "renderer/EERIEPoly.h"
 
-#include "core/ARX_Player.h"
-#include "core/ARX_NPC.h"
-#include "core/ARX_Sound.h"
-#include "core/ARX_Speech.h"
-#include "core/ARX_Collisions.h"
-#include "core/ARX_Particles.h"
-#include "core/ARX_Equipment.h"
-#include "core/ARX_Interface.h"
-#include "core/ARX_Paths.h"
-#include "core/ARX_Script.h"
-#include "core/ARX_Time.h"
+#include "game/Player.h"
+#include "game/NPC.h"
+#include "scene/GameSound.h"
+#include "gui/Speech.h"
+#include "physics/Collisions.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "game/Equipment.h"
+#include "gui/Interface.h"
+#include "ai/Paths.h"
+#include "scripting/Script.h"
+#include "core/Time.h"
 
 using std::min;
 using std::max;

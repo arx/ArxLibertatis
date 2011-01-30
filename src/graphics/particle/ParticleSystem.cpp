@@ -27,11 +27,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "renderer/EERIETypes.h"
 #include "renderer/EERIELight.h"
-#include "core/ARX_Time.h"
-#include "core/ARX_CSpellFx.h"
-#include "core/ARX_CParticles.h"
-#include "core/ARX_CParticle.h"
-#include "core/ARX_Common.h"
+#include "core/Time.h"
+#include "graphics/effects/SpellEffects.h"
+#include "graphics/particle/ParticleManager.h"
+#include "graphics/particle/Particle.h"
+#include "core/Common.h"
 
 using namespace std;
 

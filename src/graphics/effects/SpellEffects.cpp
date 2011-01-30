@@ -212,8 +212,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "core/Danae.h"
-#include "core/ARX_CSpellFx.h"
+#include "core/Core.h"
+#include "graphics/effects/SpellEffects.h"
 #include "renderer/EERIEDraw.h"
 
 //-----------------------------------------------------------------------------

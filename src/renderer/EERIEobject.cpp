@@ -73,8 +73,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIELinkedObj.h"
 
 #include "core/TheoData.h"
-#include "core/ARX_Sound.h"
-#include "core/ARX_Cedric.h"
+#include "scene/GameSound.h"
+#include "animation/AnimationRender.h"
 
 #include "io/HERMESMain.h"
 #include "io/PakManager.h"

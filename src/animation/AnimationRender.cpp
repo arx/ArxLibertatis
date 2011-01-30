@@ -23,7 +23,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include "core/ARX_Cedric.h"
+#include "animation/AnimationRender.h"
 
 #include <dinput.h>
 
@@ -37,16 +37,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEPoly.h"
 #include "renderer/EERIEDraw.h"
 
-#include "core/ARX_Collisions.h"
-#include "core/ARX_Sound.h"
-#include "core/ARX_Scene.h"
-#include "core/ARX_Equipment.h"
-#include "core/ARX_Damages.h"
-#include "core/ARX_Particles.h"
-#include "core/ARX_NPC.h"
-#include "core/ARX_Time.h"
-#include "core/Danae.h"
-#include "core/ARX_Menu2.h"
+#include "physics/Collisions.h"
+#include "scene/GameSound.h"
+#include "scene/Scene.h"
+#include "game/Equipment.h"
+#include "game/Damage.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "game/NPC.h"
+#include "core/Time.h"
+#include "core/Core.h"
+#include "gui/MenuWidgets.h"
 
 using std::min;
 using std::max;

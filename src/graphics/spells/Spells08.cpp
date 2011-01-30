@@ -57,12 +57,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIELight.h"
 #include "renderer/EERIEMath.h"
 
-#include "core/ARX_CSpellFx.h"
-#include "core/ARX_Damages.h"
-#include "core/ARX_Particles.h"
-#include "core/ARX_SpellFx_Lvl08.h"
-#include "core/ARX_Spells.h"
-#include "core/ARX_Time.h"
+#include "graphics/effects/SpellEffects.h"
+#include "game/Damage.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "graphics/spells/Spells08.h"
+#include "game/Spells.h"
+#include "core/Time.h"
 
 //-----------------------------------------------------------------------------
 CExplosion::~CExplosion()

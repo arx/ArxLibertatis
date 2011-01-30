@@ -62,12 +62,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEPoly.h"
 #include "renderer/EERIEUtil.h"
 
-#include "core/ARX_Menu.h"
-#include "core/ARX_Player.h"
-#include "core/ARX_Interface.h"
-#include "core/ARX_Time.h"
-#include "core/ARX_Menu2.h"
-#include "core/Danae_resource.h"
+#include "gui/Menu.h"
+#include "game/Player.h"
+#include "gui/Interface.h"
+#include "core/Time.h"
+#include "gui/MenuWidgets.h"
+#include "core/Resource.h"
 
 #include "io/HERMESMain.h"
 #include "io/HERMESNet.h"

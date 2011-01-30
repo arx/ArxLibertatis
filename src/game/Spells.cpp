@@ -31,7 +31,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "core/ARX_Spells.h"
+#include "game/Spells.h"
 
 #include <cstdlib>
 using std::abs;
@@ -43,22 +43,22 @@ using std::abs;
 #include "renderer/EERIELight.h"
 #include "renderer/EERIEObject.h"
 
-#include "core/Danae.h"
-#include "core/ARX_Collisions.h"
-#include "core/ARX_Damages.h"
-#include "core/ARX_Equipment.h"
-#include "core/ARX_Fogs.h"
-#include "core/ARX_Input.h"
-#include "core/ARX_Interface.h"
-#include "core/ARX_NPC.h"
-#include "core/ARX_Menu2.h"
-#include "core/ARX_Minimap.h"
-#include "core/ARX_Scene.h"
-#include "core/ARX_Particles.h"
-#include "core/ARX_Sound.h"
-#include "core/ARX_SpellFx.h"
-#include "core/ARX_Speech.h"
-#include "core/ARX_Menu.h"
+#include "core/Core.h"
+#include "physics/Collisions.h"
+#include "game/Damage.h"
+#include "game/Equipment.h"
+#include "graphics/effects/Fog.h"
+#include "window/Input.h"
+#include "gui/Interface.h"
+#include "game/NPC.h"
+#include "gui/MenuWidgets.h"
+#include "gui/MiniMap.h"
+#include "scene/Scene.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "scene/GameSound.h"
+#include "graphics/spells/SpellsGlobal.h"
+#include "gui/Speech.h"
+#include "gui/Menu.h"
 
 void MakeSpCol();
 extern long WILLRETURNTOCOMBATMODE;

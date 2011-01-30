@@ -44,8 +44,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/HERMESMain.h"
 
-#include "core/Danae.h"
-#include "core/ARX_Text.h"
+#include "core/Core.h"
+#include "gui/Text.h"
 
 using std::min;
 using std::max;

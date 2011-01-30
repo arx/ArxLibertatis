@@ -62,14 +62,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEDraw.h"
 #include "renderer/EERIEObject.h"
 
-#include "core/Danae.h"
-#include "core/ARX_Spells.h"
-#include "core/ARX_CSpellFx.h"
-#include "core/ARX_SpellFx_Lvl09.h"
-#include "core/ARX_SpellFx_Lvl06.h"
-#include "core/ARX_SpellFx_Lvl05.h"
-#include "core/ARX_Particles.h"
-#include "core/ARX_Time.h"
+#include "core/Core.h"
+#include "game/Spells.h"
+#include "graphics/effects/SpellEffects.h"
+#include "graphics/spells/Spells09.h"
+#include "graphics/spells/Spells06.h"
+#include "graphics/spells/Spells05.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "core/Time.h"
 
 //#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 

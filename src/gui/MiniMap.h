@@ -58,7 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_MINIMAP_H
 #define ARX_MINIMAP_H
 
-#include "ARX_Interface.h"
+#include "gui/Interface.h"
 
 #define MINIMAP_MAX_X 50
 #define MINIMAP_MAX_Z 50

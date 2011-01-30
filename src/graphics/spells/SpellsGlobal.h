@@ -138,18 +138,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SPELLFX_H
 #define ARX_SPELLFX_H
 
-#include "ARX_Time.h"
-#include "ARX_CSpellFx.h"
-#include "ARX_SpellFx_Lvl01.h"
-#include "ARX_SpellFx_Lvl02.h"
-#include "ARX_SpellFx_Lvl03.h"
-#include "ARX_SpellFx_Lvl04.h"
-#include "ARX_SpellFx_Lvl05.h"
-#include "ARX_SpellFx_Lvl06.h"
-#include "ARX_SpellFx_Lvl07.h"
-#include "ARX_SpellFx_Lvl08.h"
-#include "ARX_SpellFx_Lvl09.h"
-#include "ARX_SpellFx_Lvl10.h"
+#include "core/Time.h"
+#include "graphics/effects/SpellEffects.h"
+#include "graphics/spells/Spells01.h"
+#include "graphics/spells/Spells02.h"
+#include "graphics/spells/Spells03.h"
+#include "graphics/spells/Spells04.h"
+#include "graphics/spells/Spells05.h"
+#include "graphics/spells/Spells06.h"
+#include "graphics/spells/Spells07.h"
+#include "graphics/spells/Spells08.h"
+#include "graphics/spells/Spells09.h"
+#include "graphics/spells/Spells10.h"
 
 
 #endif

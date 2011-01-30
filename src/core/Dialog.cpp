@@ -59,17 +59,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h>
 #include <stdio.h>
 
-#include "core/DANAE_VERSION.h"
-#include "core/Danae_resource.h"
-#include "core/DanaeDlg.h"
-#include "core/ARX_Interface.h"
-#include "core/ARX_Paths.h"
-#include "core/ARX_Sound.h"
-#include "core/ARX_GlobalMods.h"
-#include "core/ARX_Particles.h"
-#include "core/ARX_Snapshot.h"
-#include "core/ARX_Text.h"
-#include "core/ARX_Time.h"
+#include "core/Version.h"
+#include "core/Resource.h"
+#include "core/Dialog.h"
+#include "gui/Interface.h"
+#include "ai/Paths.h"
+#include "scene/GameSound.h"
+#include "graphics/GraphicsModes.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "io/Screenshot.h"
+#include "gui/Text.h"
+#include "core/Time.h"
 
 #include "io/HERMESMain.h"
 

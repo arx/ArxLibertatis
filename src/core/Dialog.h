@@ -58,7 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef DANAEDLG_H
 #define DANAEDLG_H
 
-#include "Danae.h"
+#include "core/Core.h"
 #define IOTVTYPE_PATH 1
 #define IOTVTYPE_NODE 2
 #define IOTVTYPE_PLAYER 3

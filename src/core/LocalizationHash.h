@@ -32,7 +32,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <vector>
 #include <cstring>
-#include "ARX_Common.h"
+#include "core/Common.h"
 
 using namespace std;
 

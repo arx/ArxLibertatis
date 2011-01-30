@@ -72,15 +72,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEPoly.h"
 #include "renderer/EERIETexture.h"
 
-#include "core/ARX_Input.h"
-#include "core/ARX_Interactive.h"
-#include "core/ARX_Interface.h"
-#include "core/ARX_Equipment.h"
-#include "core/ARX_Menu2.h"
-#include "core/ARX_Paths.h"
-#include "core/ARX_Player.h"
-#include "core/ARX_Script.h"
-#include "core/ARX_Sound.h"
+#include "window/Input.h"
+#include "scene/Interactive.h"
+#include "gui/Interface.h"
+#include "game/Equipment.h"
+#include "gui/MenuWidgets.h"
+#include "ai/Paths.h"
+#include "game/Player.h"
+#include "scripting/Script.h"
+#include "scene/GameSound.h"
 
 using namespace std;
 

@@ -58,7 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIELight.h"
 
 #include "io/HERMESMain.h"
-#include "core/Minos_PathFinder.h"
+#include "ai/PathFinder.h"
 
 static const float PATHFINDER_HEURISTIC_MIN(0.2F);
 static const float PATHFINDER_HEURISTIC_MAX(MINOS_HEURISTIC_MAX);

@@ -55,27 +55,27 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "core/ARX_Interactive.h"
+#include "scene/Interactive.h"
 
 #include <cstdlib>
 
 #define DIRECTINPUT_VERSION 0x0700
 #include <dinput.h>
 
-#include "core/ARX_Paths.h"
-#include "core/ARX_FTL.h"
-#include "core/ARX_Equipment.h"
-#include "core/ARX_Sound.h"
-#include "core/ARX_NPC.h"
-#include "core/ARX_Collisions.h"
-#include "core/ARX_ChangeLevel.h"
-#include "core/ARX_Particles.h"
-#include "core/ARX_Damages.h"
-#include "core/ARX_Speech.h"
-#include "core/ARX_Time.h"
-#include "core/ARX_Scene.h"
-#include "core/ARX_Menu2.h"
-#include "core/DanaeDlg.h"
+#include "ai/Paths.h"
+#include "graphics/data/FTL.h"
+#include "game/Equipment.h"
+#include "scene/GameSound.h"
+#include "game/NPC.h"
+#include "physics/Collisions.h"
+#include "scene/ChangeLevel.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "game/Damage.h"
+#include "gui/Speech.h"
+#include "core/Time.h"
+#include "scene/Scene.h"
+#include "gui/MenuWidgets.h"
+#include "core/Dialog.h"
 
 #include "renderer/EERIELinkedObj.h"
 #include "renderer/EERIECollisionSpheres.h"

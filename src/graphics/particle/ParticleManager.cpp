@@ -76,10 +76,10 @@ todo:
 #include <sstream>
 #include <vector>
 
-#include "core/Danae.h"
-#include "core/ARX_CSpellFx.h"
-#include "core/ARX_CParticles.h"
-#include "core/ARX_CParticleParams.h"
+#include "core/Core.h"
+#include "graphics/effects/SpellEffects.h"
+#include "graphics/particle/ParticleManager.h"
+#include "graphics/particle/ParticleParams.h"
 
 #include "renderer/EERIEDraw.h"
 #include "renderer/EERIEPoly.h"

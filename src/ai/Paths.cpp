@@ -55,23 +55,23 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "core/ARX_Paths.h"
+#include "ai/Paths.h"
 
 #include <cstdio>
 
-#include "core/ARX_GlobalMods.h"
-#include "core/ARX_Sound.h"
-#include "core/ARX_Collisions.h"
-#include "core/ARX_Time.h"
-#include "core/ARX_NPC.h"
-#include "core/ARX_CSpellFx.h"
-#include "core/ARX_Interactive.h"
-#include "core/ARX_Player.h"
-#include "core/ARX_Script.h"
-#include "core/ARX_Particles.h"
-#include "core/ARX_Damages.h"
-#include "core/ARX_Equipment.h"
-#include "core/DanaeDlg.h"
+#include "graphics/GraphicsModes.h"
+#include "scene/GameSound.h"
+#include "physics/Collisions.h"
+#include "core/Time.h"
+#include "game/NPC.h"
+#include "graphics/effects/SpellEffects.h"
+#include "scene/Interactive.h"
+#include "game/Player.h"
+#include "scripting/Script.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "game/Damage.h"
+#include "game/Equipment.h"
+#include "core/Dialog.h"
 
 #include "renderer/EERIELight.h"
 #include "renderer/EERIEDraw.h"

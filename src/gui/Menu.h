@@ -60,7 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <tchar.h>
 #include "renderer/EERIETexture.h"
-#include "ARX_Input.h"
+#include "window/Input.h"
 
 //-----------------------------------------------------------------------------
 #define MAX_FLYOVER	32

@@ -62,11 +62,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEMath.h"
 #include "renderer/EERIEPhysicsBox.h"
 
-#include "core/ARX_Physics.h"
-#include "core/ARX_Collisions.h"
-#include "core/ARX_Player.h"
-#include "core/ARX_Interactive.h"
-#include "core/ARX_Script.h"
+#include "physics/Physics.h"
+#include "physics/Collisions.h"
+#include "game/Player.h"
+#include "scene/Interactive.h"
+#include "scripting/Script.h"
 
 //*************************************************************************************
 //*************************************************************************************

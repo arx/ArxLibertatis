@@ -29,8 +29,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <malloc.h>
 #include <string.h>
-#include "Minos_Common.h"
-#include "Minos_List.h"
+#include "ai/PathCommon.h"
+#include "ai/PathList.h"
 #include "renderer/EERIEMath.h"
 #include "renderer/EERIEPoly.h"
 
