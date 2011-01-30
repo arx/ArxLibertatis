@@ -420,7 +420,7 @@ long ARX_SCRIPT_SearchTextFromPos(EERIE_SCRIPT * es, const std::string& search, 
 		{
 			MakeUpcase(curtline);
 
-			if ( curtline.find( search) )
+			if ( curtline.find( search) != std::string::npos )
 			{
 				*nline = curline;
 				tline = curtline;

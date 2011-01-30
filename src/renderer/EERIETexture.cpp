@@ -328,7 +328,7 @@ TextureContainer * FindTexture( const std::string& strTextureName)
 
 		while (ptcTexture)
 		{
-			if ( strTextureName.find( ptcTexture->m_texName) )
+			if ( strTextureName.find( ptcTexture->m_texName) != std::string::npos )
 				return ptcTexture;
 
 			ptcTexture = ptcTexture->m_pNext;
@@ -343,7 +343,7 @@ TextureContainer * _FindTexture( const std::string& strTextureName)
 
 		while (ptcTexture)
 		{
-			if ( strTextureName.find( ptcTexture->m_texName) )
+			if ( strTextureName.find( ptcTexture->m_texName) != std::string::npos )
 				return ptcTexture;
 
 			ptcTexture = ptcTexture->m_pNext;
@@ -1970,11 +1970,11 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 //	strupr(tTxt);
 
 	//TEXTURE_STRETCH
-	if (tTxt.find("INTERFACE") ||
-			tTxt.find("LEVELS") ||
-			tTxt.find("ITEMS") ||
-			tTxt.find("REFINEMENT") ||
-			tTxt.find("LOGO.BMP"))
+	if ( ( tTxt.find("INTERFACE") != std::string::npos ) ||
+	     ( tTxt.find("LEVELS") != std::string::npos ) ||
+	     ( tTxt.find("ITEMS") != std::string::npos ) ||
+	     ( tTxt.find("REFINEMENT") != std::string::npos ) ||
+	     ( tTxt.find("LOGO.BMP") != std::string::npos ) )
 	{
 		bGlobalTextureStretch = false;
 		this->m_dwFlags |= D3DTEXTR_NO_MIPMAP;
@@ -1983,10 +1983,10 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 	//END_TEXTURE_STRETCH
 
 	//BUMP
-	if (tTxt.find("ITEMS") ||
-			tTxt.find("INTERFACE") ||
-			tTxt.find("REFINEMENT") ||
-			tTxt.find("LOGO.BMP"))
+	if ( ( tTxt.find("ITEMS") != std::string::npos ) ||
+	     ( tTxt.find("INTERFACE") != std::string::npos )||
+	     ( tTxt.find("REFINEMENT") != std::string::npos ) ||
+	     ( tTxt.find("LOGO.BMP") != std::string::npos ) )
 	{
 		bActivateBump = false;
 	}
@@ -2105,8 +2105,8 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 		ddsd.dwHeight	= 8;
 	}
 
-	if (tTxt.find("FILLED_GAUGE_BLUE")
-			|| tTxt.find("FILLED_GAUGE_RED"))
+	if ( ( tTxt.find("FILLED_GAUGE_BLUE") != std::string::npos ) ||
+	     ( tTxt.find("FILLED_GAUGE_RED") != std::string::npos ) )
 	{
 		ddsd.dwWidth = 32;
 
@@ -2239,7 +2239,7 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 
 	if (SPECIAL_PNUX) PnuxSurface(t_m_pddsSurface);
 
-	if (tTxt.find("ARKANE."))
+	if ( tTxt.find("ARKANE.") != std::string::npos )
 	{
 		bColorKey = false;
 		bColorKey2D = true;
@@ -2250,8 +2250,8 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 		{
 			bColorKey = true;
 
-			if ( tTxt.find("INTERFACE") ||
-					tTxt.find("ICON"))
+			if ( ( tTxt.find("INTERFACE") != std::string::npos ) ||
+			     ( tTxt.find("ICON") != std::string::npos ) )
 			{
 				bColorKey2D = true;
 			}
@@ -3334,7 +3334,7 @@ void LookForRefinementMap(TextureContainer * tc)
 				MakeUpcase( str1 );
 				MakeUpcase( name );
 
-				if ( name.find( str1) )
+				if ( name.find( str1) != std::string::npos )
 				{
 					if (!strcasecmp(data.c_str(), "NONE")) tc->TextureRefinement = NULL;
 					else tc->TextureRefinement =
