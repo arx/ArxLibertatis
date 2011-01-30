@@ -127,7 +127,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
     #define strcasecmp  _stricmp
     #define strncasecmp _strnicmp
     #define chdir       _chdir
-    #pragma warning(disable : 4995) // warning C4995: 'function': name was marked as #pragma deprecated
+    char *	strcasestr(const char *haystack, const char *needle);
 #endif
 
 
