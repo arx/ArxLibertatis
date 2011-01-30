@@ -788,7 +788,7 @@ HRESULT TextureContainer::LoadImageData()
 
 		// Can add code here to check for other file formats before failing
 
-	LogError << m_strName <<" not found";
+	LogError << m_strName << " not found";
 	
 	return DDERR_UNSUPPORTED;
 }
@@ -1964,10 +1964,8 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 
 	bGlobalTextureStretch = true;
 	bool bActivateBump = true;
-	std::string tTxt;
-	tTxt = m_strName;
-//	todo: string
-//	strupr(tTxt);
+	std::string tTxt = m_strName;
+	MakeUpcase(tTxt);
 
 	//TEXTURE_STRETCH
 	if ( ( tTxt.find("INTERFACE") != std::string::npos ) ||
