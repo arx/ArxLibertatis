@@ -79,10 +79,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
-extern long USE_LIGHT_OPTIM;
-
 
 using namespace std;
+
+extern long USE_LIGHT_OPTIM;
 
 //-----------------------------------------------------------------------------
 #define MAX_OUT 4 

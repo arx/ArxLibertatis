@@ -31,13 +31,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 namespace ATHENA
 {
 
-	typedef struct
+	struct Callback
 	{
 		aalSampleCallback func;
 		aalVoid * data;
 		aalULong time;
 		aalULong done;
-	} Callback;
+	};
 
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //

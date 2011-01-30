@@ -35,6 +35,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 
+using namespace std;
+
 extern long GERMAN_VERSION;
 extern long FRENCH_VERSION;
 extern long CHINESE_VERSION;
@@ -43,7 +45,6 @@ extern long FINAL_COMMERCIAL_GAME;
 extern PROJECT			Project;
 extern bool bForceInPack;
 extern long FINAL_COMMERCIAL_DEMO;
-using namespace std;
 extern CMenuConfig * pMenuConfig;
 #define MAX_LINE_SIZE 8096
 
@@ -501,10 +502,9 @@ DWORD PAK_UNICODE_GetPrivateProfileString(_TCHAR * _lpszSection,
 }
 
 #include <vector>
-using namespace std;
 
 extern PakManager * pPakManager;
-vector<char *> mlist;
+std::vector<char *> mlist;
 
 //-----------------------------------------------------------------------------
 void ParseCurFile(EVE_TFILE * _e)

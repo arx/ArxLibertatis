@@ -3,22 +3,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -111,7 +111,7 @@ long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 #define PNG_FAVERAGE	3
 #define PNG_FPAETH		4
 
-typedef struct
+struct PNG_IHDR
 {
 	unsigned int		width;
 	unsigned int		height;
@@ -120,14 +120,14 @@ typedef struct
 	char				compression;
 	char				filter;
 	char				interlace;
-} PNG_IHDR;
+};
 
-typedef struct
+struct PNG_PALETTE_ARXX
 {
 	unsigned char r, g, b;
-} PNG_PALETTE_ARXX;
+};
 
-typedef struct
+struct DATAS_PNG
 {
 	unsigned int		pnglzwtaille;
 	unsigned int		pngbpp;
@@ -135,14 +135,14 @@ typedef struct
 	PNG_IHDR		*	pngh;
 	PNG_PALETTE_ARXX	* pngpalette;
 	void		*		pnglzwdatas;
-} DATAS_PNG;
+};
 
 /*-----------------------------------------------------------------------------*/
 // Local list of textures
 //-----------------------------------------------------------------------------
 // Macros, function prototypes and static variable
 //-----------------------------------------------------------------------------
- 
+
 TextureContainer							* g_ptcTextureList = NULL;
 //std::map<std::string, TextureContainer*>	g_mTextureListByName;
 bool										bGlobalTextureStretch;
@@ -579,27 +579,27 @@ TextureContainer::TextureContainer(TCHAR * strName, char * wd, DWORD dwStage,
 
 	ulMaxVertexListCull = 0;
 	ulNbVertexListCull = 0;
-	pVertexListCull = NULL; 
+	pVertexListCull = NULL;
 
-	ulMaxVertexListCull_TNormalTrans = 0; 
+	ulMaxVertexListCull_TNormalTrans = 0;
 	ulNbVertexListCull_TNormalTrans = 0;
-	pVertexListCull_TNormalTrans = NULL; 
+	pVertexListCull_TNormalTrans = NULL;
 
-	ulMaxVertexListCull_TAdditive = 0; 
+	ulMaxVertexListCull_TAdditive = 0;
 	ulNbVertexListCull_TAdditive = 0;
-	pVertexListCull_TAdditive = NULL; 
+	pVertexListCull_TAdditive = NULL;
 
-	ulMaxVertexListCull_TSubstractive = 0; 
+	ulMaxVertexListCull_TSubstractive = 0;
 	ulNbVertexListCull_TSubstractive = 0;
-	pVertexListCull_TSubstractive = NULL; 
+	pVertexListCull_TSubstractive = NULL;
 
-	ulMaxVertexListCull_TMultiplicative = 0; 
+	ulMaxVertexListCull_TMultiplicative = 0;
 	ulNbVertexListCull_TMultiplicative = 0;
-	pVertexListCull_TMultiplicative = NULL; 
+	pVertexListCull_TMultiplicative = NULL;
 
 	ulMaxVertexListCull_TMetal = 0;
 	ulNbVertexListCull_TMetal = 0;
-	pVertexListCull_TMetal = NULL; 
+	pVertexListCull_TMetal = NULL;
 
 	tMatRoom = NULL;
 
@@ -1100,7 +1100,7 @@ void CopySurfaceToBumpMap(LPDIRECTDRAWSURFACE7 sSurface, LPDIRECTDRAWSURFACE7 dS
 	WORD * pDstData16;
 	DWORD * pSrcData32;
 	WORD * pSrcData16;
-	
+
 	DWORD dr, dg, db, da;
 
 	for (ULONG y = 0 ; y < ddesc2.dwHeight ; y++)
@@ -1111,7 +1111,7 @@ void CopySurfaceToBumpMap(LPDIRECTDRAWSURFACE7 sSurface, LPDIRECTDRAWSURFACE7 dS
 		pSrcData16 = (WORD *)sBytes;
 
 		for (ULONG x = 0 ; x < ddesc2.dwWidth ; x++)
-		{		
+		{
 			ARX_CHECK_LONG(x);
 			ARX_CHECK_LONG(y  * LineOffset);
 			posx = x;
@@ -1197,8 +1197,8 @@ bool IsColorKeyInSurface(LPDIRECTDRAWSURFACE7 _pSurface)
 
 	pSrcData32 = (DWORD *)sBytes;
 	pSrcData16 = (WORD *) sBytes;
- 
- 
+
+
 
 	for (ULONG y = 0 ; y < ddesc.dwHeight ; y++)
 	{
@@ -1217,8 +1217,8 @@ bool IsColorKeyInSurface(LPDIRECTDRAWSURFACE7 _pSurface)
 			aa = rr = gg = bb = 0;
 
 			rr = (BYTE)(((dwPixel & dwRMask) >> dwRShiftR) << dwRShiftL);
-			gg = (BYTE)(((dwPixel & dwGMask) >> dwGShiftR) << dwGShiftL);      
-			bb = (BYTE)(((dwPixel & dwBMask) >> dwBShiftR) << dwBShiftL);      
+			gg = (BYTE)(((dwPixel & dwGMask) >> dwGShiftR) << dwGShiftL);
+			bb = (BYTE)(((dwPixel & dwBMask) >> dwBShiftR) << dwBShiftL);
 			aa = (BYTE)(((dwPixel & dwAMask) >> dwAShiftR) << dwAShiftL);
 
 			if ((rr == 0) &&
@@ -1416,12 +1416,12 @@ void StretchCopySurfaceToSurface(LPDIRECTDRAWSURFACE7 sSurface, LPDIRECTDRAWSURF
 
 			rr = gg = bb = 0;
 			long aa = 0;
- 
+
 			for (long n = 0 ; n < 9 ; n++)
 			{
 				r[n] = (BYTE)(((dwPixel[n] & dwRMask2) >> dwRShiftR2) << dwRShiftL2);
-				g[n] = (BYTE)(((dwPixel[n] & dwGMask2) >> dwGShiftR2) << dwGShiftL2);      
-				b[n] = (BYTE)(((dwPixel[n] & dwBMask2) >> dwBShiftR2) << dwBShiftL2);     
+				g[n] = (BYTE)(((dwPixel[n] & dwGMask2) >> dwGShiftR2) << dwGShiftL2);
+				b[n] = (BYTE)(((dwPixel[n] & dwBMask2) >> dwBShiftR2) << dwBShiftL2);
 				a[n] = (BYTE)(((dwPixel[n] & dwAMask2) >> dwAShiftR2) << dwAShiftL2);
 
 				rr += r[n];
@@ -1456,7 +1456,7 @@ void StretchCopySurfaceToSurface(LPDIRECTDRAWSURFACE7 sSurface, LPDIRECTDRAWSURF
 	sSurface->Unlock(NULL);
 }
 
-long SPECIAL_PNUX = 0; 
+long SPECIAL_PNUX = 0;
 
 void PnuxSurface(LPDIRECTDRAWSURFACE7 sSurface)
 {
@@ -1525,8 +1525,8 @@ void PnuxSurface(LPDIRECTDRAWSURFACE7 sSurface)
 			else dwPixel = pSrcData16[offset];
 
 			r = (BYTE)(((dwPixel & dwRMask) >> dwRShiftR) << dwRShiftL);
-			g = (BYTE)(((dwPixel & dwGMask) >> dwGShiftR) << dwGShiftL);       
-			b = (BYTE)(((dwPixel & dwBMask) >> dwBShiftR) << dwBShiftL);      
+			g = (BYTE)(((dwPixel & dwGMask) >> dwGShiftR) << dwGShiftL);
+			b = (BYTE)(((dwPixel & dwBMask) >> dwBShiftR) << dwBShiftL);
 			aa = 255;
 			float fr, fg, fb;
 
@@ -1751,8 +1751,8 @@ void SmoothSurface(LPDIRECTDRAWSURFACE7 sSurface)
 			for (long n = 0 ; n < 9 ; n++)
 			{
 				r[n] = (BYTE)(((dwPixel[n] & dwRMask) >> dwRShiftR) << dwRShiftL);
-				g[n] = (BYTE)(((dwPixel[n] & dwGMask) >> dwGShiftR) << dwGShiftL);      
-				b[n] = (BYTE)(((dwPixel[n] & dwBMask) >> dwBShiftR) << dwBShiftL);      
+				g[n] = (BYTE)(((dwPixel[n] & dwGMask) >> dwGShiftR) << dwGShiftL);
+				b[n] = (BYTE)(((dwPixel[n] & dwBMask) >> dwBShiftR) << dwBShiftL);
 
 				rr += r[n];
 				gg += g[n];
@@ -1763,17 +1763,17 @@ void SmoothSurface(LPDIRECTDRAWSURFACE7 sSurface)
 					nbincrust++;
 				}
 
-				
+
 			}
-			
+
 			rr += r[0] * 7;
 			gg += g[0] * 7;
-			bb += b[0] * 7; 
+			bb += b[0] * 7;
 
 			rr >>= 4;
 			gg >>= 4;
 			bb >>= 4;
-	
+
 			long aa = 255 - nbincrust * 28;
 
 			if (aa < 30) aa = 0;
@@ -1787,7 +1787,7 @@ void SmoothSurface(LPDIRECTDRAWSURFACE7 sSurface)
 			if (32 == ddesc.ddpfPixelFormat.dwRGBBitCount)
 				pSrcData32[offset] = (DWORD)(dr + dg + db + da);
 			else pSrcData16[offset] = (WORD)(dr + dg + db + da);
-			
+
 		}
 	}
 
@@ -2248,7 +2248,7 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 
 			t_m_pddsSurface->SetColorKey(DDCKEY_SRCBLT , &ddsd.ddckCKSrcBlt);
 
-			if (m_pddsBumpMap) 
+			if (m_pddsBumpMap)
 			{
 				m_pddsBumpMap->Release();
 				m_pddsBumpMap = NULL;
@@ -2368,9 +2368,9 @@ void RemoveFakeBlack(BITMAP bm)
 
 				dwPixel = pSrcData32[offset];
 
-				BYTE r1 = (BYTE)(((dwPixel & dwRMask) >> dwRShiftR) << dwRShiftL);    
-				BYTE g1 = (BYTE)(((dwPixel & dwGMask) >> dwGShiftR) << dwGShiftL);     
-				BYTE b1 = (BYTE)(((dwPixel & dwBMask) >> dwBShiftR) << dwBShiftL); 
+				BYTE r1 = (BYTE)(((dwPixel & dwRMask) >> dwRShiftR) << dwRShiftL);
+				BYTE g1 = (BYTE)(((dwPixel & dwGMask) >> dwGShiftR) << dwGShiftL);
+				BYTE b1 = (BYTE)(((dwPixel & dwBMask) >> dwBShiftR) << dwBShiftL);
 				BYTE a1 = (BYTE)(((dwPixel & dwAMask) >> dwAShiftR) << dwAShiftL);
 
 				if ((r1 != 0) && (r1 < 15)) r1 = 15;
@@ -2523,7 +2523,7 @@ HRESULT TextureContainer::CopyBitmapToSurface(LPDIRECTDRAWSURFACE7 Surface)
 		SAFE_RELEASE(pPalette);
 	}
 
-	
+
 	RemoveFakeBlack(bm);
 
 	// Copy the bitmap image to the surface.
@@ -2997,7 +2997,7 @@ METHODDEF(void)
 my_error_exit(j_common_ptr cinfo)
 {
 	char txt[256];
-	(*cinfo->err->output_message)(cinfo); 
+	(*cinfo->err->output_message)(cinfo);
 	sprintf(txt, "truc zarb: %s", cinfo->err->jpeg_message_table[cinfo->err->msg_code]);
 	MessageBox(NULL, txt, "EERIE JPEG Error", 0);
 
@@ -4897,7 +4897,7 @@ TextureContainer * GetTextureFile_NoRefinement(char * tex, long flag)
 //*************************************************************************************
 bool TextureContainer::CreateHalo(LPDIRECT3DDEVICE7 _lpDevice)
 {
-	if (this->TextureHalo) return true; 
+	if (this->TextureHalo) return true;
 
 	this->TextureHalo = this->AddHalo(_lpDevice, 8, 255.f, 255.f, 255.f, this->halodecalX, this->halodecalY);
 

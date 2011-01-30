@@ -146,14 +146,14 @@ extern unsigned long AimTime;
 extern bool ARXPausedTimer;
 extern float FrameTime, LastFrameTime;
 //-----------------------------------------------------------------------------
-typedef struct
+struct QUAKE_FX_STRUCT
 {
 	float intensity;
 	float frequency;
 	unsigned long start;
 	unsigned long duration;
 	long	flags;
-} QUAKE_FX_STRUCT;
+};
 
 //-----------------------------------------------------------------------------
 // Class DANAE

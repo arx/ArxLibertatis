@@ -193,14 +193,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define INKEY_N				49
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct EERIE_RGBB
 {
 	float r;
 	float g;
 	float b;
-} EERIE_RGBB;
+};
 
-typedef struct
+struct PROJECT
 {
 	long		soundmode;
 	long		compatibility;
@@ -221,9 +221,9 @@ typedef struct
 	long		vsync;
 	char		workingdir[256];
 	char		localisationpath[256];
-} PROJECT;
+};
 
-typedef struct
+struct EERIETOOLBAR
 {
 	HWND		hWnd;
 	long		CreationToolBar;
@@ -232,15 +232,15 @@ typedef struct
 	long		Bitmap;
 	char*		String;
 	long		Type;
-} EERIETOOLBAR;
+};
 
-typedef struct
+struct KEYBOARD_MNG
 {
 	short			nbkeydown;
 	unsigned char	inkey[255];
 	char			_CAPS;
 	short			lastkey;
-} KEYBOARD_MNG;
+};
 
 
 //-----------------------------------------------------------------------------

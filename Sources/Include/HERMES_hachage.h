@@ -32,11 +32,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 #include <vector>
 
-typedef struct
+struct T_HACHAGE_DATAS
 {
 	char	*lpszName;
 	void	*pMem;
-}T_HACHAGE_DATAS;
+};
 
 class CHachageString
 {

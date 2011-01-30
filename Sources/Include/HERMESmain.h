@@ -3,22 +3,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -40,7 +40,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@       @@        //
 //@@@    @@@  @@@ @@@@@                          @@            @@@                  //
 //            @@@ @@@                           @@             @@        STUDIOS    //
-//////////////////////////////////////////////////////////////////////////////////////                                                                                     
+//////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 // HERMESMain
 //////////////////////////////////////////////////////////////////////////////////////
@@ -67,31 +67,34 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h>
 #include <io.h>
 
-typedef struct {
+struct HERMES_DATE_TIME
+{
 	long	secs;
 	long	mins;
 	long	hours;
 	long	days;
 	long	months;
 	long	years;
-}HERMES_DATE_TIME;
+};
 
-typedef struct {
+struct DIR_NODE
+{
 	char text[260];
 	void * previous;
 	void * next;
 	void * child;
 	void * father;
-} DIR_NODE;
+};
 
-typedef struct {
+struct HERMESTIMER
+{
 	 long	start;
 	 long	current;
-} HERMESTIMER;
+};
 
 ///////////////////// PACKING
 //Always on for now...
-typedef struct PassedParam
+struct PARAM
 {
    char *pSource;                   /* Pointer to source buffer           */
    char *pDestination;              /* Pointer to destination buffer      */
@@ -102,7 +105,7 @@ typedef struct PassedParam
    unsigned long BufferSize;
    unsigned long Crc;               /* Calculated CRC value               */
    unsigned long OrigCrc;           /* Original CRC value of data         */
-} PARAM;
+};
 
 
 #define	FILE_SEEK_START		0
@@ -117,7 +120,7 @@ extern DIR_NODE mainnode;
 
 void File_Standardize(char * from,char * to);
 char * HERMES_GaiaCOM_Receive();
- 
+
 long KillAllDirectory(char * path);
 void HERMES_InitDebug();
 
@@ -131,21 +134,21 @@ unsigned char NC_IsIn(char * strin, char * str);
 long FileExist(char *name);
 long DirectoryExist(char *name);
 long	FileOpenRead(char *name);
- 
-long	FileOpenWrite(char *name);      
+
+long	FileOpenWrite(char *name);
 long	FileCloseWrite(long h);
 long	FileCloseRead(long h);
 long	FileRead(long h, void *adr, long size);
 long	FileWrite(long h, void *adr, long size);
 void	*FileLoadMalloc(char *name,long * filesize=NULL);
 void	*FileLoadMallocZero(char *name,long * filesize=NULL);
- 
- 
+
+
 void GetDate(HERMES_DATE_TIME * hdt);
 void SendConsole(char * dat,long level,long flag,HWND source);
 void ForceSendConsole(char * dat,long level,long flag,HWND source);
- 
- 
+
+
 void MemFree(void * adr);
 bool OKBox(char * text,char *title);
 void ShowPopup(char * text);

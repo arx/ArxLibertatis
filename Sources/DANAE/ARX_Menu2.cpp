@@ -49,6 +49,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
+using namespace std;
+
 extern char * GetVersionString();
 
 #define NODEBUGZONE

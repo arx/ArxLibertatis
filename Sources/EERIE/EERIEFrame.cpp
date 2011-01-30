@@ -248,11 +248,11 @@ HRESULT CD3DFramework7::CreateEnvironment(GUID * pDriverGUID, GUID * pDeviceGUID
 // Desc: Simply returns the first matching enumerated z-buffer format
 //-----------------------------------------------------------------------------
 
-typedef struct
+struct ZBUFFER_INFO
 {
 	int				iNbZBufferInfo;
 	DDPIXELFORMAT	* pddpfPixelFormat;
-} ZBUFFER_INFO;
+};
 
 ZBUFFER_INFO zbiZBufferInfo;
 

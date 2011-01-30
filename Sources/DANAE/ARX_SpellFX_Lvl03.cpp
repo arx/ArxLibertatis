@@ -104,13 +104,11 @@ void CFireBall::SetTTL(unsigned long aulTTL)
 	SetDuration(ulDuration);
 	ulCurrentTime = t;
 
-	list<CParticle *>::iterator i;
-
+	std::list<CParticle *>::iterator i;
 
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
 	ARX_CHECK_LONG(ulCalc);
 	long ff = 	ARX_CLEAN_WARN_CAST_LONG(ulCalc);
-
 
 	for (i = pPSSmoke.listParticle.begin(); i != pPSSmoke.listParticle.end(); ++i)
 	{
@@ -1160,7 +1158,7 @@ if (ulCurrentTime >= ulDuration)
 			pPS->p3ParticleGravity.y = 0;
 			pPS->p3ParticleGravity.z = 0;
 
-		list<CParticle *>::iterator i;
+		std::list<CParticle *>::iterator i;
 
 		for (i = pPS->listParticle.begin(); i != pPS->listParticle.end(); ++i)
 		{

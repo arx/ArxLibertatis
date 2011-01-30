@@ -102,7 +102,7 @@ class CLightningNode
 };
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct LIGHTNING
 {
 	EERIE_3D eStart;
 	EERIE_3D eEnd;
@@ -121,7 +121,7 @@ typedef struct
 	float fAngleYMax;
 	float fAngleZMin;
 	float fAngleZMax;
-} LIGHTNING;
+};
 
 //-----------------------------------------------------------------------------
 class CLightning: public CSpellFx

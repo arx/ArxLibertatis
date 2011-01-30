@@ -61,7 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEPoly.h"
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct DAMAGE_INFO
 {
 	short		exist;
 	short		active;
@@ -80,7 +80,7 @@ typedef struct
 	long		special;	// slowdown, paralysis...
 	long		special_ID;	// for io localised immunities or any other customization
 	unsigned long lastupd;
-} DAMAGE_INFO;
+};
 
 //-----------------------------------------------------------------------------
 #define DAMAGE_AREA 0

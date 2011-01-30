@@ -3,22 +3,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -66,29 +66,29 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //-----------------------------------------------------------------------------
 #define MAX_LINKS 12
 
-typedef struct
+struct INTERACTIVE_OBJECTS
 {
 	long			init;
 	long			nbmax;
 	INTERACTIVE_OBJ ** iobj;
 	char		*	lock;
-} INTERACTIVE_OBJECTS;
+};
 
-typedef struct
+struct INVENTORY_SLOT
 {
 	INTERACTIVE_OBJ * io;
 	long			show;
-} INVENTORY_SLOT;
+};
 
-typedef struct
+struct INVENTORY_DATA
 {
 	INTERACTIVE_OBJ * io;
 	long			sizex;
 	long			sizey;
 	INVENTORY_SLOT	slot[20][20];
-} INVENTORY_DATA;
+};
 
-typedef struct
+struct ARX_NODE
 {
 	short		exist;
 	short		selected;
@@ -99,14 +99,14 @@ typedef struct
 	EERIE_3D	pos;
 	EERIE_S2D	bboxmin;
 	EERIE_S2D	bboxmax;
-} ARX_NODE;
+};
 
-typedef struct
+struct ARX_NODES
 {
 	long		init;
 	long		nbmax;
 	ARX_NODE	* nodes;
-} ARX_NODES;
+};
 
 //-----------------------------------------------------------------------------
 #define INVENTORY_X			16
@@ -149,7 +149,7 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, long flag = 0);
 BOOL ARX_INTERACTIVE_Attach(long n_source, long n_target, char * ap_source, char * ap_target);
 void ARX_INTERACTIVE_Detach(long n_source, long n_target);
 void ARX_INTERACTIVE_Show_Hide_1st(INTERACTIVE_OBJ * io, long state);
- 
+
 void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io);
 bool ARX_INTERACTIVE_ConvertToValidPosForIO(INTERACTIVE_OBJ * io, EERIE_3D * target);
 void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io);
@@ -164,9 +164,9 @@ void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, EERIE_3D * target, long flag
 bool IsEquipedByPlayer(INTERACTIVE_OBJ * io);
 void CleanScriptLoadedIO();
 void PrepareIOTreatZone(long flag = 0);
- 
+
 void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, char * attach);
- 
+
 void PutInFrontOfPlayer(INTERACTIVE_OBJ * io, long flag = 0);
 BOOL CanBePutInInventory(INTERACTIVE_OBJ * io);
 void SetShield(char * temp);
@@ -178,9 +178,9 @@ BOOL GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos);
 BOOL GetItemWorldPositionSound(INTERACTIVE_OBJ * io, EERIE_3D * pos);
 long GetTargetByNameTarget(char * name);
 void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io);
- 
+
 void SetWeapon_Back(INTERACTIVE_OBJ * io);
- 
+
 void ReloadAllScripts();
 BOOL ForceNPC_Above_Ground(INTERACTIVE_OBJ * io);
 
@@ -208,7 +208,7 @@ long GetInterNum(INTERACTIVE_OBJ * io);
 // io from 0 TO 10000
 INTERACTIVE_OBJ * GetInventoryObj_INVENTORYUSE(EERIE_S2D * pos);
 void CheckForInventoryReplaceMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * old);
- 
+
 void SelectIO(INTERACTIVE_OBJ * io);
 void UnSelectIO(INTERACTIVE_OBJ * io);
 void RotateSelectedIO(EERIE_3D * op);
@@ -216,14 +216,14 @@ void TranslateSelectedIO(EERIE_3D * op);
 void GroundSnapSelectedIO();
 void DeleteSelectedIO();
 void ResetSelectedIORot();
- 
+
 long GetNumberInterWithOutScriptLoadForLevel(long level);
 long IsCollidingAnyFIXInter(float x, float y, float z, EERIE_3D * size);
 BOOL InSecondaryInventoryPos(EERIE_S2D * pos);
 BOOL InPlayerInventoryPos(EERIE_S2D * pos);
 BOOL CanBePutInSecondaryInventory(INVENTORY_DATA * id, INTERACTIVE_OBJ * io, long * xx, long * yy);
 void FreeAllInter();
- 
+
 void SetRightHand(char * temp);
 void SetLeftHand(char * temp);
 void UnlinkAllLinkedObjects();
@@ -231,7 +231,7 @@ void LinkObjectToObject(EERIE_3DOBJ * inter, EERIE_3DOBJ * tolink, char * action
 void UnLinkObjectFromObject(EERIE_3DOBJ * inter, EERIE_3DOBJ * tolink);
 BOOL IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos);
 long IsCollidingAnyInter(float x, float y, float z, EERIE_3D * size);
- 
+
 INTERACTIVE_OBJ * AddInteractive(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long id, long flags = 0);
 INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long flags = 0);
 INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long flags = 0);
@@ -245,17 +245,17 @@ void ReleaseInter(INTERACTIVE_OBJ * io);
 void ExecuteObjectAction(INTERACTIVE_OBJ * io);
 void AddRandomObj(LPDIRECT3DDEVICE7 pd3dDevice);
 void UpdateCameras();
- 
+
 void PlayObjectSound(INTERACTIVE_OBJ * io);
 INTERACTIVE_OBJ * InterClick(EERIE_S2D * pos, long flag = 0);
- 
+
 void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to, long flags = 0);
 INTERACTIVE_OBJ * FlyingOverObject(EERIE_S2D * pos, long flag = 0);
 void MakeIOIdent(INTERACTIVE_OBJ * io);
 void SelectIO(INTERACTIVE_OBJ * io);
 void ForcePlayerLookAtIO(INTERACTIVE_OBJ * io);
 void SetWeapon_On(INTERACTIVE_OBJ * io);
- 
+
 void Prepare_SetWeapon(INTERACTIVE_OBJ * io, char * temp);
 void ComputeVVPos(INTERACTIVE_OBJ * io);
 void SetYlsideDeath(INTERACTIVE_OBJ * io);
@@ -287,13 +287,13 @@ long  ARX_INTERACTIVE_GetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop);
 void IO_UnlinkAllLinkedObjects(INTERACTIVE_OBJ * io);
 void IO_Drop_Item(INTERACTIVE_OBJ * io_src, INTERACTIVE_OBJ * io);
 
-typedef struct
+struct TREATZONE_IO
 {
 	long				num;
 	INTERACTIVE_OBJ *	io;
 	long				ioflags;
 	long				show;
-} TREATZONE_IO;
+};
 extern TREATZONE_IO * treatio;
 extern long TREATZONE_CUR;
 extern long TREATZONE_MAX;
@@ -313,5 +313,5 @@ void ARX_HALO_SetToNative(INTERACTIVE_OBJ * io);
 void ARX_INTERACTIVE_ForceIOLeaveZone(INTERACTIVE_OBJ * io, long flags = 0);
 void ARX_INTERACTIVE_ActivatePhysics(long t);
 void ResetVVPos(INTERACTIVE_OBJ * io);
- 
+
 #endif

@@ -27,12 +27,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_CPARTICLES_H
 
 #include "eerietypes.h"
-#include <list>
-using namespace std;
 
 #include "ARX_CParticleParams.h"
 #include "ARX_CParticleSystem.h"
 //#include "ARX_CParticleContainer.h"
+
+#include <list>
 
 //class CParticleContainer;
 class CParticleSystem;
@@ -41,7 +41,6 @@ class CParticleSystem;
 //typedef int EERIE_3D;
 typedef EERIE_3D Point3;
  
-
 class CParticle;
 class CParticleSystem;
 class CParticleParams;
@@ -51,31 +50,22 @@ class CParticleManager
 {
 	private:
 		//CParticleContainer		ParticleContainer;
-		list<CParticleSystem *> listParticleSystem;
+		std::list<CParticleSystem *> listParticleSystem;
 
 	public:
 		CParticleManager();
 		~CParticleManager();
 
 	public:
- 
- 
- 
- 
-
-	public:
 		bool	Init();
 		void	Shutdown();
 		void	Clear();
-
- 
 
 		void	AddSystem(CParticleSystem *);
  
 		bool	IsAlive(CParticleSystem);
 		void	Update(long alTime);
 		void	Render(LPDIRECT3DDEVICE7 _lpD3DDevice);
- 
 
 		//flag post prod/genre filtre
 };

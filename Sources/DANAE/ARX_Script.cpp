@@ -3547,7 +3547,7 @@ long NotifyIOEvent(INTERACTIVE_OBJ * io, long msg, char * params)
 //*************************************************************************************
 //*************************************************************************************
 #define MAX_EVENT_STACK 800
-typedef struct
+struct STACKED_EVENT
 {
 	INTERACTIVE_OBJ *	sender;
 	long				exist;
@@ -3555,7 +3555,7 @@ typedef struct
 	long				msg;
 	char 		*		params;
 	char 		*		eventname;
-} STACKED_EVENT;
+};
 STACKED_EVENT eventstack[MAX_EVENT_STACK];
 void ARX_SCRIPT_EventStackInit()
 {

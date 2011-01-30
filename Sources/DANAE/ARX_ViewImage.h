@@ -22,6 +22,9 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+#ifndef ARX_VIEWIMAGE_H
+#define ARX_VIEWIMAGE_H
+
 #include <windows.h>
 #include <mmsystem.h>
 #include <commctrl.h>
@@ -29,12 +32,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <process.h>
 #include "EERIETexture.h"
 
-using namespace std;
-
 class ViewImage
 {
 	public:
-		vector<char *>		vListImage;
+		std::vector<char *>	vListImage;
 		WIN32_FIND_DATA		w32fdata;
 		TextureContainer	* pTexCurr;
 
@@ -46,3 +47,5 @@ class ViewImage
 };
 
 void StartImageDemo();
+
+#endif

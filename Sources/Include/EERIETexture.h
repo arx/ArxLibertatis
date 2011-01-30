@@ -65,9 +65,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define EERIETEXTR_H
 
 #include "EERIETypes.h"
-#include <vector>
 
-using namespace std;
+#include <vector>
 
 extern long EERIE_USES_BUMP_MAP;
 #define MAX_MIPS 2
@@ -76,10 +75,10 @@ void ReleaseAllTCWithFlag(long flag);
 #define EERIETEXTUREFLAG_PERMANENT			1
 #define EERIETEXTUREFLAG_LOADSCENE_RELEASE	2
 
-typedef struct
+struct DELAYED_PRIM
 {
 	EERIEPOLY * data;
-} DELAYED_PRIM;
+};
 
 //-----------------------------------------------------------------------------
 // Name: TextureContainer
@@ -124,12 +123,12 @@ class TextureContainer
 		long	delayed_nb;
 		long	delayed_max;
 
-		vector<EERIEPOLY *> vPolyZMap;
-		vector<EERIEPOLY *> vPolyBump;
-		vector<D3DTLVERTEX> vPolyInterBump;
-		vector<SMY_ZMAPPINFO> vPolyInterZMap;
-		vector<D3DTLVERTEX> vPolyInterBumpTANDL;
-		vector<SMY_ZMAPPINFO> vPolyInterZMapTANDL;
+		std::vector<EERIEPOLY *> vPolyZMap;
+		std::vector<EERIEPOLY *> vPolyBump;
+		std::vector<D3DTLVERTEX> vPolyInterBump;
+		std::vector<SMY_ZMAPPINFO> vPolyInterZMap;
+		std::vector<D3DTLVERTEX> vPolyInterBumpTANDL;
+		std::vector<SMY_ZMAPPINFO> vPolyInterZMapTANDL;
 
 		SMY_ARXMAT * tMatRoom;
 
@@ -251,7 +250,7 @@ void ReloadTexture(TextureContainer * tc);
 #define D3DTEXTR_NO_INSERT		  0x80000000
 
 TextureContainer  * D3DTextr_CreateTextureFromFile(TCHAR * strName, char * wd = NULL , DWORD dwStage = 0L,
-        DWORD dwFlags = 0L , long sysflags = 0);
+                                                   DWORD dwFlags = 0L , long sysflags = 0);
 HRESULT D3DTextr_CreateEmptyTexture(TCHAR * strName, DWORD dwWidth,
                                     DWORD dwHeight, DWORD dwStage,
                                     DWORD dwFlags , char * wd, DWORD flags = 0);
@@ -273,4 +272,5 @@ void SpecialBorderSurface(TextureContainer * tc, unsigned long x0, unsigned long
 TextureContainer * FindTexture(char * strTextureName);
 
 bool TextureContainer_Exist(TextureContainer * tc);
+
 #endif

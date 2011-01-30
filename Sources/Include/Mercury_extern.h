@@ -73,7 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define MAXJOY			2
 #define MAXSCID			1
 /*---------------------------------------------------------*/
-typedef struct
+struct INPUT_INFO
 {
 	int						actif;
 	char			*		name;
@@ -101,7 +101,7 @@ typedef struct
 		DIJOYSTATE2		*	old_joystate2;
 		DIDEVICEOBJECTDATA	* old_SCIDstate;
 	};
-} INPUT_INFO;
+};
 /*---------------------------------------------------------*/
 extern HRESULT			DI_Hr;
 extern DXI_INIT			DI_Init;

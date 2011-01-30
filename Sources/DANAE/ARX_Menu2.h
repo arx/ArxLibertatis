@@ -53,8 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <d3d.h>
 #include "arx_text.h"
 
-using namespace std;
-
 //-----------------------------------------------------------------------------
 
 #define BUTTON_MENUMAIN_RESUMEGAME			1
@@ -302,7 +300,7 @@ using namespace std;
 #define DIK_WHEELUP		(0x40000000|0)
 #define DIK_WHEELDOWN	(0x40000000|1)
 
-typedef enum _MENUSTATE
+enum MENUSTATE
 {
 	MAIN,
 	RESUME_GAME,
@@ -342,7 +340,7 @@ typedef enum _MENUSTATE
 	OPTIONS_VIDEO_RESOLUTION_0 = 200,
 	OPTIONS_AUDIO_VOLUME = 300,
 	OPTIONS_INPUT_KEY_0 = 400
-} MENUSTATE;
+};
 
 //-----------------------------------------------------------------------------
 class CMenuZone
@@ -389,7 +387,7 @@ class CMenuZone
 class CMenuAllZone
 {
 	public:
-		vector<CMenuZone *>	vMenuZone;
+		std::vector<CMenuZone *>	vMenuZone;
 	public:
 		CMenuAllZone();
 		virtual ~CMenuAllZone();
@@ -404,7 +402,7 @@ class CMenuAllZone
 		int GetNbZone();
 };
 
-typedef enum _ELEMSTATE
+enum ELEMSTATE
 {
 	TNOP,
 	//Element Text
@@ -412,14 +410,14 @@ typedef enum _ELEMSTATE
 	GETTOUCH,
 	EDIT_TIME,			//etat en cours
 	GETTOUCH_TIME
-} ELEMSTATE;
+};
 
-typedef enum _ELEMPOS
+enum ELEMPOS
 {
 	NOCENTER,
 	CENTER,
 	CENTERY
-} ELEMPOS;
+};
 
 //-----------------------------------------------------------------------------
 class CMenuElement : public CMenuZone
@@ -469,7 +467,7 @@ class CMenuElement : public CMenuZone
 class CMenuPanel : public CMenuElement
 {
 	public:
-		vector<CMenuElement *>	vElement;
+		std::vector<CMenuElement *>	vElement;
 	public:
 		CMenuPanel();
 		virtual ~CMenuPanel();
@@ -525,13 +523,13 @@ class CMenuElementText: public CMenuElement
 class CMenuButton: public CMenuElement
 {
 	public:
-		vector<_TCHAR *>		vText;
-		int					iPos;
-		TextureContainer	* pTex;
-		TextureContainer	* pTexOver;
-		HFONT				pHFont;
-		int					iColor;
-		float				fSize;
+		std::vector<_TCHAR *>	vText;
+		int						iPos;
+		TextureContainer		* pTex;
+		TextureContainer		* pTexOver;
+		HFONT					pHFont;
+		int						iColor;
+		float					fSize;
 
 	public:
 		CMenuButton(int, HFONT, MENUSTATE, int, int, _TCHAR *, float _fSize = 1.f, TextureContainer * _pTex = NULL, TextureContainer * _pTexOver = NULL, int _iColor = -1, int _iTailleX = 0, int _iTailleY = 0);
@@ -556,7 +554,7 @@ class CMenuSliderText: public CMenuElement
 	public:
 		CMenuButton		*	pLeftButton;
 		CMenuButton		*	pRightButton;
-		vector<CMenuElementText *>	vText;
+		std::vector<CMenuElementText *>	vText;
 		int					iPos;
 		int					iOldPos;
 	public:
@@ -634,7 +632,7 @@ class CMenuCheckButton : public CMenuElement
 		int					iPosY;
 		int					iTaille;
 		CMenuAllZone	*	pAllCheckZone;
-		vector<TextureContainer *> vTex;
+		std::vector<TextureContainer *> vTex;
 		float				fTexX_;			///< x of textures' topleft corner position
 		float				fTexY_;			///< y of textures' topleft corner position
 		float				fTexSX_;		///< width of textures
@@ -729,7 +727,7 @@ class CWindowMenu
 		TextureContainer	* pTexMainShadow;
 		TextureContainer	* pTexGlissiere;
 		TextureContainer	* pTexGlissiereButton;
-		vector<CWindowMenuConsole *>	vWindowConsoleElement;
+		std::vector<CWindowMenuConsole *>	vWindowConsoleElement;
 		float				fPosXCalc;
 		float				fDist;
 		float				fAngle;
@@ -745,18 +743,18 @@ class CWindowMenu
 };
 
 //-----------------------------------------------------------------------------
-typedef enum _CURSORSTATE
+enum CURSORSTATE
 {
 	CURSOR_OFF,
 	CURSOR_ON,
-} CURSORSTATE;
+};
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct EERIE_2DI
 {
 	int	x;
 	int	y;
-} EERIE_2DI;
+};
 
 //-----------------------------------------------------------------------------
 class CDirectInput
@@ -830,11 +828,11 @@ class CDirectInput
 };
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct SACTION_KEY
 {
 	int	iKey[2];
 	int iPage;
-} SACTION_KEY;
+};
 
 class CMenuConfig
 {
@@ -921,7 +919,7 @@ class CMenuConfig
 };
 
 //-----------------------------------------------------------------------------
-typedef struct CreditsTextInformations
+struct CreditsTextInformations
 {
 	CreditsTextInformations()
 	{
@@ -930,13 +928,13 @@ typedef struct CreditsTextInformations
 		fColors = 0 ;
 	}
 
-	wstring  sText ;
-	COLORREF fColors ;
-	SIZE sPos;
-} CreditsTextInformations;
+	std::wstring	sText;
+	COLORREF		fColors;
+	SIZE			sPos;
+};
 
 
-typedef struct CreditsInformations
+struct CreditsInformations
 {
   CreditsInformations()
   {
@@ -947,16 +945,16 @@ typedef struct CreditsInformations
   int iFirstLine ;
   int iFontAverageHeight ;
   std::vector<CreditsTextInformations> aCreditsInformations ;
-} CreditsInformations;
+};
 
 
-static CreditsInformations CreditsData ;
+static CreditsInformations CreditsData;
 
 static void InitCredits(void);
 static void CalculAverageWidth(HDC& _hDC) ;
 static void ExtractAllCreditsTextInformations();
-static void ExtractPhraseColor( wstring &phrase, CreditsTextInformations &infomations );
-static void CalculTextPosition( HDC& _hDC, wstring& phrase, CreditsTextInformations &infomations, float& drawpos );
+static void ExtractPhraseColor(std::wstring &phrase, CreditsTextInformations &infomations);
+static void CalculTextPosition(HDC& _hDC, std::wstring& phrase, CreditsTextInformations &infomations, float& drawpos);
 
 
 //-----------------------------------------------------------------------------

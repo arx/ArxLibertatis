@@ -66,6 +66,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 
+using namespace std;
+
 //-----------------------------------------------------------------------------
 _TCHAR * lpszFontMenu = NULL;
 _TCHAR * lpszFontIngame = NULL;

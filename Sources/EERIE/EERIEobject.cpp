@@ -74,6 +74,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 
+using namespace std;
+
 long COMPUTE_PORTALS = 1;
 long USE_PORTALS = 3; 
 EERIE_PORTAL_DATA * portals = NULL;

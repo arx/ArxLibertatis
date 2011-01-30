@@ -89,13 +89,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //***********************************************************************************************
 // FTL File Structures Definitions
 //
-typedef struct
+struct ARX_FTL_PRIMARY_HEADER
 {
 	char			ident[4]; // FTL
 	float			version; // starting with version 1.0f
-} ARX_FTL_PRIMARY_HEADER;
+};
 
-typedef struct
+struct ARX_FTL_SECONDARY_HEADER
 {
 	long	offset_3Ddata;				// -1 = no
 	long	offset_cylinder;			// -1 = no
@@ -103,25 +103,25 @@ typedef struct
 	long	offset_clothes_data;		// -1 = no
 	long	offset_collision_spheres;	// -1 = no
 	long	offset_physics_box;			// -1 = no
-} ARX_FTL_SECONDARY_HEADER;
+};
 
-typedef struct
+struct ARX_FTL_PROGRESSIVE_DATA_HEADER
 {
 	long	nb_vertex;
-} ARX_FTL_PROGRESSIVE_DATA_HEADER;
+};
 
-typedef struct
+struct ARX_FTL_CLOTHES_DATA_HEADER
 {
 	long	nb_cvert;
 	long	nb_springs;
-} ARX_FTL_CLOTHES_DATA_HEADER;
+};
 
-typedef struct
+struct ARX_FTL_COLLISION_SPHERES_DATA_HEADER
 {
 	long	nb_spheres;
-} ARX_FTL_COLLISION_SPHERES_DATA_HEADER;
+};
 
-typedef struct
+struct ARX_FTL_3D_DATA_HEADER
 {
 	long	nb_vertex;			// ...
 	long	nb_faces;			// ...
@@ -131,7 +131,7 @@ typedef struct
 	long	nb_selections;		// data will follow this order
 	long	origin;
 	char	name[256];
-} ARX_FTL_3D_DATA_HEADER;
+};
 // End of Structures definitions
 //***********************************************************************************************
 
@@ -473,12 +473,12 @@ error:
 //***********************************************************************************************
 // MESH cache structure definition & Globals
 //***********************************************************************************************
-typedef struct
+struct MCACHE_DATA
 {
 	char * name;
 	char * data;
 	long size;
-} MCACHE_DATA;
+};
 
 MCACHE_DATA * MCache = NULL;
 long MCache_Number = 0;

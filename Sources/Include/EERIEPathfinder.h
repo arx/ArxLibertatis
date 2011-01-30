@@ -59,7 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "EERIEPoly.h"
 
-typedef struct
+struct PATHFINDER_REQUEST
 {
 	BOOL isvalid;
 	long from;
@@ -69,7 +69,7 @@ typedef struct
 	// Pathfinding is considered finished
 	INTERACTIVE_OBJ * ioid;
 	unsigned short ** returnlist;	//must be NULL
-} PATHFINDER_REQUEST;
+};
 
 extern long PATHFINDER_WORKING;
 extern PATHFINDER_REQUEST pr;

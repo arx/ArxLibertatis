@@ -47,11 +47,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <list>
 
-using namespace std;
-
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 
+using namespace std;
 using namespace ATHENA;
 
 extern long FINAL_RELEASE;
@@ -60,27 +59,27 @@ extern INTERACTIVE_OBJ * CAMERACONTROLLER;
 
 extern CMenuConfig * pMenuConfig;
 
-typedef struct
+struct ARX_SOUND_Material
 {
 	char * name;
 	unsigned long variant_i;
 	unsigned long variant_c;
 	long * variant_l;
-} ARX_SOUND_Material;
+};
 
-typedef struct
+struct ARX_SOUND_CollisionMap
 {
 	char * name;
 	unsigned long material_c;
 	ARX_SOUND_Material * material_l;
-} ARX_SOUND_CollisionMap;
+};
 
-typedef struct
+struct ARX_SOUND_Presence
 {
 	char * name;
 	long name_size;
 	float factor;
-} ARX_SOUND_Presence;
+};
 
 enum ParseIniFileEnum
 {
@@ -98,13 +97,13 @@ static enum PlayingAmbianceType
 	PLAYING_AMBIANCE_ZONE
 };
 
-typedef struct
+struct PlayingAmbiance
 {
 	char name[256];
 	float volume;
 	long loop;
 	long type;
-} PlayingAmbiance;
+};
 
 static const unsigned long ARX_SOUND_UPDATE_INTERVAL(100);  
 static const unsigned long ARX_SOUND_STREAMING_LIMIT(2000); 

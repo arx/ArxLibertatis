@@ -31,8 +31,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 #include <d3d.h>
 
-using namespace std;
-
 #define ARX_FVF_BKG (D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1|D3DFVF_TEXTUREFORMAT2)
 
 void ARX_HWTransform_Init(LPDIRECT3D7 _pDirect3D);

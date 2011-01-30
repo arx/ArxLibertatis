@@ -64,12 +64,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h>
 #include <cassert>
 
-typedef struct {
+struct HPERF_STAT
+{
 	unsigned long	chrono;
 	unsigned long	max_chrono;
 	char			text[256];
 	unsigned long	color;
-} HPERF_STAT;
+};
 
 #define MAX_PERF 50
 extern HPERF_STAT HermesPerf[MAX_PERF];

@@ -31,10 +31,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "danae.h" // pour danaeApp
 #include "ARX_Menu2.h"
 #include <vector>
-using namespace std;
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
+
+using namespace std;
 
 extern CMenuConfig * pMenuConfig;
 extern bool bGATI8500;

@@ -26,12 +26,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CPARTICLE_H
 #define ARX_CPARTICLE_H
 
+#include "eerietypes.h"
+
+#include <list>
+
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
-
-#include "eerietypes.h"
-#include <list>
-using namespace std;
 
 //-----------------------------------------------------------------------------
 typedef EERIE_3D Point3;

@@ -41,7 +41,7 @@ class SnapShot
 };
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct SNAPSHOTINFO
 {
 	long	imgsec;
 	long	xsize;
@@ -50,7 +50,7 @@ typedef struct
 	char	filenames[256];
 	char	path[512];
 	long	flag;
-} SNAPSHOTINFO;
+};
 
 extern SNAPSHOTINFO snapshotdata;
 

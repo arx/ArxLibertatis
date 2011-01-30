@@ -62,17 +62,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "eerieapp.h"
 #include "eerietypes.h"
 
-using namespace std;
-
 //-----------------------------------------------------------------------------
-typedef enum _ARX_TEXT_TYPE
+enum ARX_TEXT_TYPE
 {
 	ARX_TEXT_ONCE,
 	ARX_TEXT_STAY
-} ARX_TEXT_TYPE;
+};
 
 //-----------------------------------------------------------------------------
-typedef struct _ARX_TEXT
+struct ARX_TEXT
 {
 	ARX_TEXT_TYPE	eType;
 	HFONT			hFont;
@@ -87,7 +85,7 @@ typedef struct _ARX_TEXT
 	long			lTimeOut;
 	long			lTailleLigne;
 	int				iNbLineClip;
-} ARX_TEXT;
+};
 
 //-----------------------------------------------------------------------------
 void ARX_Text_Init(ARX_TEXT *);
@@ -96,7 +94,7 @@ void ARX_Text_Init(ARX_TEXT *);
 class CARXTextManager
 {
 	public:
-		vector<ARX_TEXT *>	vText;
+		std::vector<ARX_TEXT *>	vText;
 	public:
 		CARXTextManager();
 		~CARXTextManager();

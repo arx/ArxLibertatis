@@ -64,7 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 //////////////////////
 //Lighting File Header
-typedef struct
+struct DANAE_LLF_HEADER
 {
 	float	version;
 	char	ident[16];
@@ -79,13 +79,13 @@ typedef struct
 	float	fpad[256];
 	char	cpad[4096];
 	BOOL	bpad[256];
-} DANAE_LLF_HEADER; //Aligned 1 2 4
+}; //Aligned 1 2 4
 
 ///////////////////////
 EERIE_3DOBJ * _LoadTheObj(char * text, char * path);
 void SaveIOScript(INTERACTIVE_OBJ * io, long fl);
 void LogDirCreation(char * dir);
-typedef struct
+struct DANAE_LS_HEADER
 {
 	float	version;
 	char	ident[16];
@@ -112,19 +112,19 @@ typedef struct
 	float	fpad[253];
 	char	cpad[4096];
 	BOOL	bpad[256];
-} DANAE_LS_HEADER; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
 #define	SP_IGNORED	1
 #define	SP_CHILD	2
 
-typedef struct
+struct DANAE_LS_SCENE
 {
 	char	name[512];
 	long	pad[16];
 	float	fpad[16];
-} DANAE_LS_SCENE; // Aligned 1 2 4 8
+}; // Aligned 1 2 4 8
 void WriteIOInfo(INTERACTIVE_OBJ * io, char * dir);
-typedef struct
+struct DANAE_LS_INTER
 {
 	char		name[512];
 	EERIE_3D	pos;
@@ -133,33 +133,33 @@ typedef struct
 	long		flags; 
 	long	pad[14];
 	float	fpad[16];
-} DANAE_LS_INTER; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
-typedef struct
+struct DANAE_LS_NODE
 {
 	char		name[64];
 	EERIE_3D	pos;
 	long		pad[16];
 	float		fpad[16];
-} DANAE_LS_NODE; 
+}; 
 // Aligned 1 2 4
 
-typedef struct
+struct DANAE_LS_LIGHTINGHEADER
 {
 	long		nb_values;
 	long		ViewMode;
 	long		ModeLight;
 	long		pad;
-} DANAE_LS_LIGHTINGHEADER; // Aligned 1 2 4 8
+}; // Aligned 1 2 4 8
 
-typedef struct
+struct DANAE_LS_VLIGHTING
 {
 	long		r;
 	long		g;
 	long		b;
-} DANAE_LS_VLIGHTING; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
-typedef struct
+struct DANAE_LS_LIGHT
 {
 	EERIE_3D	pos;
 	EERIE_RGB	rgb;
@@ -176,9 +176,9 @@ typedef struct
 	float		fpadd[24];
 	long		extras;
 	long		lpadd[31];
-} DANAE_LS_LIGHT; //ver 1.003f // Aligned 1 2 4
+}; //ver 1.003f // Aligned 1 2 4
 
-typedef struct
+struct DANAE_LS_PATH
 {
 	char		name[64];
 	short		idx;
@@ -195,9 +195,9 @@ typedef struct
 	long		lpadd[31];
 	char		ambiance[128]; 
 	char		cpadd[128];
-} DANAE_LS_PATH; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
-typedef struct
+struct DANAE_LS_PATHWAYS
 {
 	EERIE_3D		rpos;
 	long			flag;
@@ -205,9 +205,9 @@ typedef struct
 	float		fpadd[2];
 	long		lpadd[2];
 	char		cpadd[32];
-} DANAE_LS_PATHWAYS; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
-typedef struct
+struct DANAE_LS_FOG
 {
 	EERIE_3D	pos;
 	EERIE_RGB	rgb;
@@ -224,7 +224,7 @@ typedef struct
 	float		fpadd[32];
 	long		lpadd[32];
 	char		cpadd[256];
-} DANAE_LS_FOG; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
 extern EERIE_3D loddpos;
 long DanaeSaveLevel(char * fic);

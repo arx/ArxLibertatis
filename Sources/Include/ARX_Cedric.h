@@ -24,8 +24,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 #ifndef ARX_CEDRIC_H
 #define ARX_CEDRIC_H
+
 #include "danae.h"
 
+#include <d3d.h>
 
 #define		CEDRIC				1
 #define		REFERENCE_FPS		(20.0f)
@@ -40,4 +42,5 @@ extern	void	Cedric_AnimateDrawEntity(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ *
         INTERACTIVE_OBJ * io, D3DCOLOR col, long typ);
 
 #endif
+
 #endif

@@ -130,10 +130,10 @@ extern int iTimeToDrawD7;
 extern EERIE_3D LastValidPlayerPos;
 #define MAX_IO_SAVELOAD	1500
 //-----------------------------------------------------------------------------
-typedef struct
+struct TEMP_IO
 {
   char ident[64];
-} TEMP_IO;
+};
 TEMP_IO * tio = NULL;
 
 long nb_tio = 0;

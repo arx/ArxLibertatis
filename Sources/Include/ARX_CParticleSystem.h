@@ -27,10 +27,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_CPARTICLESYSTEM_H
 
 #include "eerietypes.h"
+
 #include <d3d.h>
+
 #include <list>
 #include <vector>
-using namespace std;
 
 #define PARTICLE_CIRCULAR  1
 #define PARTICLE_BORDER	   2
@@ -38,7 +39,6 @@ using namespace std;
 //-----------------------------------------------------------------------------
 typedef EERIE_3D Point3;
  
-
 class CParticle;
 class CParticleParams;
 
@@ -46,7 +46,7 @@ class CParticleParams;
 class CParticleSystem
 {
 	public:
-		list<CParticle *> listParticle;
+		std::list<CParticle *> listParticle;
 
 	public:
 		Point3	p3Pos;

@@ -33,7 +33,7 @@ namespace ATHENA
 
 	// AAFHeader
 	//
-	typedef struct
+	struct AAFHeader
 	{
 		aalULong magic;
 		aalULong version;
@@ -43,7 +43,7 @@ namespace ATHENA
 		aalUWord o_chnl;       //Output channels count
 		aalULong o_size;       //Output data size (uncompressed)
 		aalULong frame_c;      //Frame count
-	} AAFHeader;
+	};
 
 	static const aalULong AAFFreqTable[] =
 	{
@@ -58,13 +58,13 @@ namespace ATHENA
 		48000
 	};
 
-	typedef struct
+	struct AAFFrame
 	{
 		aalUWord v_size;       //Vector size
 		aalULong d_size;       //Frame data size
 		aalSByte * vector;     //Last decoded vector
 		aalSByte * vtable;     //Vector table
-	} AAFFrame;
+	};
 
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //

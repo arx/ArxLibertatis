@@ -63,7 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <TCHAR.h>
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct SCR_TIMER
 {
 	char		*	name;
 	short			exist;
@@ -76,12 +76,12 @@ typedef struct
 	unsigned long	tim;
 	INTERACTIVE_OBJ * io;
 	EERIE_SCRIPT	* es;
-} SCR_TIMER;
+};
 
-typedef struct
+struct SCRIPT_EVENT
 {
 	char		*	name;
-} SCRIPT_EVENT;
+};
 
 //-----------------------------------------------------------------------------
 #define PATHFIND_ALWAYS		1

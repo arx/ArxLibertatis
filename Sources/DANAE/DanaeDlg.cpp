@@ -692,12 +692,12 @@ BOOL CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 HWND InterObjDlg = NULL;
 HWND dlgTreeViewhWnd = NULL;
 WNDPROC lpfnOldWndProc;
-typedef struct
+struct TVINFO
 {
 	HTREEITEM hti;
 	char text[260];
 	INTERACTIVE_OBJ * io;
-} TVINFO;
+};
 
 #define MAXTVV 5000
 TVINFO * tvv[MAXTVV];

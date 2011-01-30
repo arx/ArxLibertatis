@@ -81,11 +81,11 @@ struct TargaHeader
 	BYTE ImageDescriptor;
 } tga;
 
-typedef struct
+struct MEMORYSNAP
 {
 	char name[256];
 	unsigned char buffer[640*480*2];
-} MEMORYSNAP;
+};
 MEMORYSNAP * snaps = NULL;
 long MAXSNAPS = 0;
 long InitMemorySnaps()

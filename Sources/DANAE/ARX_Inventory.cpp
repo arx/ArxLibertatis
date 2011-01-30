@@ -79,10 +79,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <cstdio>
 
-using namespace std;
-
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
+
+using namespace std;
 
 //------------------------------------------------------------------------------------
 extern E_ARX_STATE_MOUSE eMouseState;
@@ -411,13 +411,13 @@ void ForcePlayerInventoryObjectLevel(long level)
 
 //-----------------------------------------------------------------------------
 
-typedef struct _ATRIMAXSIZE: public greater<INTERACTIVE_OBJ *>
+struct ATRIMAXSIZE : public std::greater<INTERACTIVE_OBJ *>
 {
 
 	bool operator()(const INTERACTIVE_OBJ * x, const INTERACTIVE_OBJ * y) const;
 
 
-} ATRIMAXSIZE;
+};
 
 bool ATRIMAXSIZE::operator()(const INTERACTIVE_OBJ * x, const INTERACTIVE_OBJ * y) const
 

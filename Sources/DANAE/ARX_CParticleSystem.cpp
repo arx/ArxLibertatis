@@ -38,10 +38,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <list>
 #include <vector>
-using namespace std;
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
+
+using namespace std;
 
 void CParticleSystem::RecomputeDirection()
 {

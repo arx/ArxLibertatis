@@ -30,14 +30,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define PACK_MAX_FREAD	(256)
 
-typedef struct
+struct PAK_PARAM
 {
 	FILE *file;
 	char *mem;
 	long lSize;
-} PAK_PARAM;
+};
 
-typedef struct
+struct PAK_PARAM_FREAD
 {
 	FILE	*file;
 	char	*mem;
@@ -48,15 +48,15 @@ typedef struct
 	int		iTailleBase;
 	int		iTailleW;
 	int		iTailleFic;
-} PAK_PARAM_FREAD;
+};
 
-typedef struct
+struct PACK_FILE
 {
 	bool		bActif;
 	int			iID;
 	int			iOffset;
 	EVE_TFILE	*pFile;
-} PACK_FILE;
+};
 
 class EVE_LOADPACK
 {

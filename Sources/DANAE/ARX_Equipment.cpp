@@ -80,10 +80,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 
-typedef struct
+struct EQUIP_INFO
 {
 	char name[64];
-} EQUIP_INFO;
+};
 
 #define SP_SPARKING 1
 #define SP_BLOODY	2

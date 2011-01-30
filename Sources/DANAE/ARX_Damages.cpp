@@ -85,7 +85,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern long REFUSE_GAME_RETURN;
 
 
-typedef struct
+struct SCREEN_SPLATS
 {
 	long	exist;
 	float	x;
@@ -94,7 +94,7 @@ typedef struct
 	TextureContainer * tc;
 	long	duration;
 	unsigned long starttime;
-} SCREEN_SPLATS;
+};
 
 #define MAX_SCREEN_SPLATS 12
 DAMAGE_INFO	damages[MAX_DAMAGES];

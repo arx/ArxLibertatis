@@ -63,7 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <tchar.h>
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct FLARES
 {
 	unsigned char	exist;
 	char			type;
@@ -81,17 +81,17 @@ typedef struct
 	long			move;
 	INTERACTIVE_OBJ * io;
 	BOOL		bDrawBitmap;
-} FLARES;
+};
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct BOOM
 {
 	EERIE_3D		pos;
 	long			exist;
-} BOOM;
+};
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct POLYBOOM
 {
 	long				exist;
 	short				tx;
@@ -105,10 +105,10 @@ typedef struct
 	unsigned long		tolive;
 	short				type;
 	short				nbvert;
-} POLYBOOM;
+};
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct PARTICLE_DEF
 {
 	BOOL		exist;
 	long		type;
@@ -133,10 +133,10 @@ typedef struct
 	short		sval;
 	char		cval1;
 	char		cval2;
-} PARTICLE_DEF;
+};
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct FOG_DEF
 {
 	BOOL		exist;
 	long		selected;
@@ -155,16 +155,16 @@ typedef struct
 	long		blend;
 	float		frequency;
 	unsigned long lastupdate;
-} FOG_DEF;
+};
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct FLARETC
 {
 	TextureContainer * lumignon;
 	TextureContainer * lumignon2;
 	TextureContainer * plasm;
 	TextureContainer * shine[11];
-} FLARETC;
+};
 
 //-----------------------------------------------------------------------------
 #define MAX_FOG 100
@@ -279,7 +279,6 @@ void ARX_PARTICLES_SpawnWaterSplash(EERIE_3D *);
 void ARX_BOOMS_ClearAllPolyBooms();
 void ARX_BOOMS_ClearAll();
 void ARX_BOOMS_Add(EERIE_3D * pos, long type = 0);
- 
 
 void ARX_MAGICAL_FLARES_FirstInit();
 void ARX_MAGICAL_FLARES_KillAll();

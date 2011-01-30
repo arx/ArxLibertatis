@@ -78,11 +78,11 @@ todo:
 #include "EERIEPoly.h"
 
 #include <list>
-using namespace std;
-
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
+
+using namespace std;
 
 //-----------------------------------------------------------------------------
 CParticleManager::CParticleManager()

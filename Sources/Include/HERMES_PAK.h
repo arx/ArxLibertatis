@@ -59,12 +59,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define HERMES_PAK_H
 
 #include "hermes_pack_public.h"
+
 #include <vector>
-using namespace std;
 
 extern char PAK_WORKDIR[256];
 extern ULONG g_pak_workdir_len;
-
 
 #define LOAD_TRUEFILE			1
 #define LOAD_PACK				2
@@ -95,7 +94,7 @@ void PAK_Close();
 class PakManager
 {
 public:
-	vector<EVE_LOADPACK*> vLoadPak;
+	std::vector<EVE_LOADPACK*> vLoadPak;
 public:
 	PakManager();
 	~PakManager();
@@ -110,7 +109,7 @@ public:
 	int fRead(void *, int, int, PACK_FILE *);
 	int fSeek(PACK_FILE *,int,int);
 	int fTell(PACK_FILE *);
-	vector<EVE_REPERTOIRE*>* ExistDirectory(char *_lpszName);
+	std::vector<EVE_REPERTOIRE*>* ExistDirectory(char *_lpszName);
 	bool ExistFile(char *_lpszName);
 };
 

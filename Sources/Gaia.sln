@@ -59,7 +59,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		AMDCaPersistentConfig = Debug|Win32
+		AMDCaPersistentConfig = Release|Win32
 		AMDCaPersistentStartup = DANAE
 		AMDCaProjectFile = D:\DevZone\ArxFatalis_1.21_Sources\Sources\CodeAnalyst\Gaia.caw
 	EndGlobalSection

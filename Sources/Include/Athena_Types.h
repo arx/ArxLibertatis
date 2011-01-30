@@ -3,22 +3,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -43,7 +43,7 @@ namespace ATHENA
 	typedef signed short aalSWord;
 	typedef unsigned long aalULong;
 	typedef signed long aalSLong;
- 
+
 	typedef signed aalSInt;
 	typedef float aalFloat;
 
@@ -137,60 +137,60 @@ namespace ATHENA
 	};
 
 	// Output format                                                             //
-	typedef struct
+	struct aalFormat
 	{
 		aalULong frequency;                                                        //Samples per second
 		aalULong quality;                                                          //Bits per sample
 		aalULong channels;                                                         //Output channels count
-	} aalFormat;
+	};
 
 	// Vector                                                                    //
-	typedef struct
+	struct aalVector
 	{
 		aalFloat x, y, z;
-	} aalVector;
+	};
 
 	// Source cone                                                               //
-	typedef struct
+	struct aalCone
 	{
 		aalFloat inner_angle;
 		aalFloat outer_angle;
 		aalFloat outer_volume;
-	} aalCone;
+	};
 
 	// Source falloff                                                            //
-	typedef struct
+	struct aalFalloff
 	{
 		aalFloat start;
 		aalFloat end;
-	} aalFalloff;
+	};
 
 	// Environment obstruction                                                   //
-	typedef struct
+	struct aalObstruction
 	{
 		aalFloat direct;                                                           //Direct attenuation per unit
 		aalFloat direct_lf;                                                        //Direct low frequency attenuation per unit
 		aalFloat reverb;                                                           //Reverberation attenuation per unit
-	} aalObstruction;
+	};
 
 	// Environment reflection                                                    //
-	typedef struct
+	struct aalReflection
 	{
 		aalFloat volume;
 		aalULong delay;
-	} aalReflection;
+	};
 
 	// Environment reverberation                                                 //
-	typedef struct
+	struct aalReverberation
 	{
 		aalFloat volume;
 		aalULong delay;
 		aalULong decay;
 		aalULong hf_decay;
-	} aalReverberation;
+	};
 
 	// Play channel initialization parameters                                    //
-	typedef struct
+	struct aalChannel
 	{
 		aalULong flags;                                                            //A set of aalFlag
 		aalSLong mixer;                                                            //Mixer id
@@ -203,7 +203,7 @@ namespace ATHENA
 		aalVector direction;
 		aalCone cone;
 		aalFalloff falloff;
-	} aalChannel;
+	};
 
 	// Callbacks prototype                                                       //
 	typedef aalVoid(* aalSampleCallback)(aalVoid * reserved, const aalSLong & sample_id, aalVoid * data);

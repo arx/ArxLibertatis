@@ -57,10 +57,10 @@ extern void ComputeSingleFogVertex(D3DTLVERTEX*);
 TextureContainer * EERIE_DRAW_sphere_particle=NULL;
 TextureContainer * EERIE_DRAW_square_particle=NULL;
 
-typedef struct
+struct TODRAWLATER
 {
 	EERIEPOLY * ep;
-} TODRAWLATER;
+};
 
 long curdrawlater=0;
 #define MAX_DRAWLATER 256
@@ -83,7 +83,7 @@ extern bool bSoftRender;
 extern bool bZBUFFER;
 
 /*---------------------------------------------------------------------------------------------------------*/
-typedef struct
+struct D3DTLVERTEX2UV
 {
 	union
 	{
@@ -135,7 +135,7 @@ typedef struct
 		D3DVALUE tv2; 
 		D3DVALUE dvTV2; 
     };
-} D3DTLVERTEX2UV;
+};
 
 
 void CopyVertices(EERIEPOLY * ep,long to, long from)

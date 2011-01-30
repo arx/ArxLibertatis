@@ -3,22 +3,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -51,7 +51,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define		INTERP_NO		-1
 #define		INTERP_BEZIER	0
 #define		INTERP_LINEAR	1
-#define		INTERP_NO_FADE	2		
+#define		INTERP_NO_FADE	2
 
 #define LARGEURS	512
 #define HAUTEURS	384
@@ -71,6 +71,7 @@ BOOL DeleteTrack(void);
 /*-----------------------------------------------------------*/
 //extern char DirectoryChoose[];
 /*-----------------------------------------------------------*/
+struct C_KEY;
 class C_LIGHT
 {
 	public:
@@ -80,8 +81,8 @@ class C_LIGHT
 		float		r, g, b;
 		float		intensite;
 		float		intensiternd;
-		struct CST_KEY * prev;
-		struct CST_KEY * next;
+		C_KEY *		prev;
+		C_KEY *		next;
 	public:
 		C_LIGHT()
 		{
@@ -109,7 +110,7 @@ class C_LIGHT_1_72
 };
 
 /////// NEW_DRAW
-typedef struct
+struct C_INDEXED
 {
 	int					bitmapdepx;
 	int					bitmapdepy;
@@ -119,22 +120,22 @@ typedef struct
 	TextureContainer	* tex;
 	int					startind;
 	int					nbind;
-} C_INDEXED;
+};
 
-typedef struct
+struct C_IND
 {
 	unsigned short	i1;
 	unsigned short	i2;
 	unsigned short	i3;
-} C_IND;
+};
 
-typedef struct
+struct C_UV
 {
 	EERIE_2D		uv;
 	int				indvertex;
-} C_UV;
+};
 
-typedef struct
+struct C_GRILLE
 {
 	int				nbvertexs;
 	int				nbfaces;
@@ -152,10 +153,10 @@ typedef struct
 	int				nbx;
 	int				nby;
 	int				echelle;
-} C_GRILLE;
+};
 /////// END_NEW_DRAW
 
-typedef struct
+struct C_BITMAP
 {
 	short		actif, load;
 	char	*	dir;
@@ -167,18 +168,18 @@ typedef struct
 	//	C_INFOPOLY	*listepoly;
 	C_GRILLE	grille;
 	int			dreaming;
-} C_BITMAP;
+};
 
-typedef struct
+struct C_SOUND
 {
 	short		actif, load;
 	char	*	dir;
 	char	*	name;
 	char	*	sound;
 	long		idhandle;
-} C_SOUND;
+};
 
-typedef struct
+struct C_KEY_1_59
 {
 	int			frame;
 	int			numbitmap;
@@ -190,9 +191,9 @@ typedef struct
 	int			colord;
 	int			colorf;
 	float		speed;
-} C_KEY_1_59;
+};
 
-typedef struct
+struct C_KEY_1_65
 {
 	int			frame;
 	int			numbitmap;
@@ -205,9 +206,9 @@ typedef struct
 	int			colorf;
 	int			idsound;
 	float		speed;
-} C_KEY_1_65;
+};
 
-typedef struct
+struct C_KEY_1_70
 {
 	int			frame;
 	int			numbitmap;
@@ -220,9 +221,9 @@ typedef struct
 	int			colorf;
 	int			idsound;
 	float		speed;
-} C_KEY_1_70;
+};
 
-typedef struct
+struct C_KEY_1_71
 {
 	int			frame;
 	int			numbitmap;
@@ -236,9 +237,9 @@ typedef struct
 	int			idsound;
 	float		speed;
 	C_LIGHT		light;
-} C_KEY_1_71;
+};
 
-typedef struct CS_KEY
+struct C_KEY_1_72
 {
 	int			frame;
 	int			numbitmap;
@@ -254,9 +255,9 @@ typedef struct CS_KEY
 	C_LIGHT_1_72	light;
 	EERIE_3D	posgrille;
 	float		angzgrille;
-} C_KEY_1_72;
+};
 
-typedef struct
+struct C_KEY_1_74
 {
 	int			frame;
 	int			numbitmap;
@@ -272,9 +273,9 @@ typedef struct
 	C_LIGHT		light;
 	EERIE_3D	posgrille;
 	float		angzgrille;
-} C_KEY_1_74;
+};
 
-typedef struct
+struct C_KEY_1_75
 {
 	int			frame;
 	int			numbitmap;
@@ -291,9 +292,9 @@ typedef struct
 	EERIE_3D	posgrille;
 	float		angzgrille;
 	float		speedtrack;
-} C_KEY_1_75;
+};
 
-typedef struct CST_KEY
+struct C_KEY
 {
 	int			frame;
 	int			numbitmap;
@@ -310,9 +311,9 @@ typedef struct CST_KEY
 	float		angzgrille;
 	float		speedtrack;
 	int			idsound[16];	//16 langues max.
-} C_KEY;
+};
 
-typedef struct
+struct C_TRACK
 {
 	int			startframe;
 	int			endframe;
@@ -321,13 +322,13 @@ typedef struct
 	int			nbkey;
 	int			pause;
 	C_KEY	*	key;
-} C_TRACK;
+};
 
 class CINEMATIQUE
 {
 	public:
- 
- 
+
+
 		HRESULT DeleteDeviceObjects();
 	public:
 		LPDIRECT3DDEVICE7 m_pd3dDevice;
@@ -374,7 +375,7 @@ class CINEMATIQUE
 		HRESULT Render(float FDIFF);
 		HRESULT New();
 		void ReInitMapp(int id);
- 
+
 };
 
 /*-----------------------------------------------------------*/
@@ -394,7 +395,7 @@ float GetTrackFPS(void);
 
 C_KEY * GetKey(int f, int * num);
 C_KEY * SearchKey(int f, int * num);
- 
+
 float GetTimeKeyFramer(CINEMATIQUE * c);
 void InitUndo(void);
 void UpDateAllKeyLight(void);

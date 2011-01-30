@@ -35,8 +35,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <dinput.h>
 #include <cstdio>
 
-//-----------------------------------------------------------------------------
-
+using namespace std;
 
 //-----------------------------------------------------------------------------
 void ARX_HWTransform_Init(LPDIRECT3D7 _pDirect3D)

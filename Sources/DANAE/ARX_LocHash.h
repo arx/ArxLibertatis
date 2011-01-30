@@ -36,8 +36,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <tchar.h>
 #include <vector>
 
-using namespace std;
-
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 
@@ -46,7 +44,7 @@ class CLocalisation
 {
 	public:
 		_TCHAR		*	 lpszUSection;
-		vector<_TCHAR *> vUKeys;
+		std::vector<_TCHAR *> vUKeys;
 	
 	public:
 		CLocalisation()

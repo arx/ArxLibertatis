@@ -3,22 +3,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -65,7 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 //-----------------------------------------------------------------------------
 #define MAX_FLYOVER	32
-typedef struct
+struct MENU_DYNAMIC_DATA
 {
 	TextureContainer	* Background;
 	TextureContainer	* BookBackground;
@@ -78,28 +78,28 @@ typedef struct
 	_TCHAR		*		str_button_quickgen;
 	_TCHAR		*		str_button_skin;
 	_TCHAR		*		str_button_done;
-} MENU_DYNAMIC_DATA;
+};
 
 // ARX_MENU_DATA contains all Menu-datas
-typedef struct
+struct ARX_MENU_DATA
 {
-	long				currentmode; 
+	long				currentmode;
 	long				mainmenupos;
 	long				optionspos;
 	long				inputpos;
 	long				custompos;
 	MENU_DYNAMIC_DATA	* mda;
-} ARX_MENU_DATA;
+};
 extern ARX_MENU_DATA ARXmenu;
 
-typedef struct
+struct SaveGame
 {
 	long				num;
 	char				name[256];
 	long				level;
 	float				version;
 	SYSTEMTIME			stime;
-} SaveGame;
+};
 
 //-----------------------------------------------------------------------------
 // Possible values for ARXmenu.currentmode

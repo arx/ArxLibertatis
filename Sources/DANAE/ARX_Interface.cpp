@@ -89,7 +89,7 @@ long IN_BOOK_DRAW=0;
 int TSU_TEST_COLLISIONS = 0;
 extern float INVISIBILITY_OVERRIDE;
 //-----------------------------------------------------------------------------
-typedef struct
+struct ARX_INTERFACE_HALO_STRUCT
 {
 	INTERACTIVE_OBJ  * io;
 	TextureContainer * tc;
@@ -98,7 +98,7 @@ typedef struct
 	float POSY;
 	float fRatioX;
 	float fRatioY;
-} ARX_INTERFACE_HALO_STRUCT;
+};
 //-----------------------------------------------------------------------------
 #define GL_DECAL_ICONS		0
 #define BOOKMARKS_POS_X		216.f
