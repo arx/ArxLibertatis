@@ -77,6 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <vector>
 #include <algorithm>
+#include <functional>
 using namespace std;
 
 #include <stdio.h>

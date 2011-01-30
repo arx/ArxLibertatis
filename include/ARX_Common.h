@@ -75,11 +75,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ------------------------------------------------------------*/
 #define	ARX_PLATFORM_UNKNOWN	0
 #define	ARX_PLATFORM_WIN32		1
-#define	ARX_PLATFORM_PPU		2
+#define	ARX_PLATFORM_PS3_PPU	2
 #define	ARX_PLATFORM_LINUX		3
 
 #if defined(__PPU__)
-	#define ARX_PLATFORM	ARX_PLATFORM_PPU
+	#define ARX_PLATFORM	ARX_PLATFORM_PS3_PPU
 #elif defined(_WIN32)
 	#define	ARX_PLATFORM	ARX_PLATFORM_WIN32
 #elif defined(__linux)
@@ -126,7 +126,34 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
     #define strcasecmp  _stricmp
     #define strncasecmp _strnicmp
     #define chdir       _chdir
+    #pragma warning(disable : 4995) // warning C4995: 'function': name was marked as #pragma deprecated
 #endif
+
+
+/* ---------------------------------------------------------
+					     Types
+------------------------------------------------------------*/
+
+typedef signed char         S8;     //  8 bits integer
+typedef unsigned char       U8;     //  8 bits unsigned integer
+
+typedef signed short        S16;    // 16 bits signed integer
+typedef unsigned short      U16;    // 16 bits unsigned integer
+
+#if ARX_COMPILER_MSVC
+    typedef signed long     S32;    // 32 bits signed integer
+    typedef unsigned long   U32;    // 32 bits unsigned integer
+#else
+    typedef signed int      S32;    // 32 bits signed integer
+    typedef unsigned int    U32;    // 32 bits unsigned integer
+#endif
+
+typedef signed long long    S64;    // 64 bits signed integer
+typedef unsigned long long  U64;    // 64 bits unsigned integer
+
+typedef float               F32;    // 32 bits float
+typedef double              F64;    // 64 bits double float
+
 
 /* ---------------------------------------------------------
 					     Break
@@ -148,7 +175,7 @@ enum ARX_DEBUG_LOG_TYPE
 
 
 #ifdef _DEBUG
-#define	TEST						__LINE__
+#define	TEST						    __LINE__
 #define arx_assert(_Expression) (void)	( (_Expression) ||  (ArxDebug::Assert((#_Expression), (__FILE__), __LINE__),  DebugBreak() , 0) )
 
 //Use only at game's beginning
@@ -185,8 +212,6 @@ enum ARX_DEBUG_LOG_TYPE
 /* ---------------------------------------------------------
 						Define
 ------------------------------------------------------------*/
-
-#define _CRT_SECURE_NO_DEPRECATE //ARX: xrichter (2010-07-02) - treat warnings for depreciate functions
 
 //ARX_BEGIN: jycorbel (2010-06-23) - clear warning signed/unsigned mismatch : add macros + assert
 #define ARX_CHECK_NOT_NEG( _x )  ( arx_assert( ( _x ) >= 0 ) ) //ARX_BEGIN: jycorbel (2010-06-28) - Add description in assert

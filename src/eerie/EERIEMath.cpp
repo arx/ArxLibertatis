@@ -78,8 +78,8 @@ float __mov;
  * result    : returns 1 if the triangles intersect, otherwise 0
  *
  */
-#define USE_EPSILON_TEST false
-#define USE_POINT_IN_TRI false
+#define USE_EPSILON_TEST 0
+#define USE_POINT_IN_TRI 0
 
 #define COMPUTE_INTERVALS(VV0,VV1,VV2,D0,D1,D2,D0D1,D0D2,isect0,isect1) \
 	if(D0D1>0.0f)                                         \
@@ -252,7 +252,7 @@ int coplanar_tri_tri(float N[3], float V0[3], float V1[3], float V2[3],
 	EDGE_AGAINST_TRI_EDGES(V2, V0, U0, U1, U2);
 
 	// Considered Impossible
-#if USE_EPSILON_TEST==true
+#if USE_EPSILON_TEST
 	// finally, test if tri1 is totally contained in tri2 or vice versa
 	POINT_IN_TRI(V0, U0, U1, U2);
 	POINT_IN_TRI(U0, V0, V1, V2);
@@ -310,7 +310,7 @@ int tri_tri_intersect(const EERIE_TRI * VV, const EERIE_TRI * UU)
 	du2 = DOT(N1, U2) + d1;
 
 	/* coplanarity robustness check */
-#if USE_EPSILON_TEST==true
+#if USE_EPSILON_TEST
 
 	if (EEfabs(du0) < EPSILON) du0 = 0.0;
 
@@ -337,7 +337,7 @@ int tri_tri_intersect(const EERIE_TRI * VV, const EERIE_TRI * UU)
 	dv1 = DOT(N2, V1) + d2;
 	dv2 = DOT(N2, V2) + d2;
 
-#if USE_EPSILON_TEST==true
+#if USE_EPSILON_TEST
 
 	if (EEfabs(dv0) < EPSILON) dv0 = 0.0;
 

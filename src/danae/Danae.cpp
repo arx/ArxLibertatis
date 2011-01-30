@@ -318,7 +318,7 @@ HWND MESH_REDUCTION_WINDOW=NULL;
 
 QUAKE_FX_STRUCT QuakeFx;
 bool bALLOW_BUMP = false;
-char * GTE_TITLE;
+const char * GTE_TITLE;
 char * GTE_TEXT;
 char LAST_FAILED_SEQUENCE[128]="None";
 // START - Information for Player Teleport between/in Levels-------------------------------------
@@ -1366,7 +1366,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	if (!FOR_EXTERNAL_PEOPLE)
 	{
 		char stemp[256];
-		unsigned ls = 64;
+		U32 ls = 64;
 		GetComputerName(stemp, &ls);
 
 		if (!strcasecmp(stemp,"max"))
@@ -5674,7 +5674,6 @@ static float _AvgFrameDiff = 150.f;
 		ARX_TIME_UnPause();
 		SPLASH_THINGS_STAGE=14;
 		NEED_INTRO_LAUNCH=0;
-		char loadfrom[256];
 		REFUSE_GAME_RETURN=1;
 		const char RESOURCE_LEVEL_10[] = "Graph\\Levels\\Level10\\level10.dlf";
 		OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;

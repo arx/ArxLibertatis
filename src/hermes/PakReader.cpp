@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 */
 
+#include <ARX_Common.h>
 #include <hermes/PakReader.h>
 #include <hermes/PakEntry.h>
 #include <hermes/HashMap.h>
@@ -64,7 +65,11 @@ using std::strlen;
 
 #include <cassert>
 
-#include <stdint.h>
+#if ARX_COMPILER == ARX_COMPILER_VC9
+    typedef U32 uint32_t;
+#else
+    #include <stdint.h>
+#endif
 
 const char PAK_KEY_DEMO[] = "NSIARKPRQPHBTE50GRIH3AYXJP2AMF3FCEYAVQO5QGA0JGIIH2AYXKVOA1VOGGU5GSQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRI";
 const char PAK_KEY_FULL[] = "AVQF3FCKE50GRIAYXJP2AMEYO5QGA0JGIIH2NHBTVOA1VOGGU5H3GSSIARKPRQPQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRIAYX";

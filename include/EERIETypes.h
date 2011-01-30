@@ -126,7 +126,7 @@ typedef struct
 	EERIE_3D max;
 } EERIE_3D_BBOX; // Aligned 1 2 4
 
-typedef int ArxSound;
+typedef S32 ArxSound;
 
 typedef struct
 {

@@ -1891,7 +1891,7 @@ long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 		return -1;
 	}
 
-	for (long i = 0; i < size; i += 2)
+	for (size_t i = 0; i < size; i += 2)
 		compressed[i] = ~compressed[i];
 
 	long ssize = size;
@@ -1957,7 +1957,7 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num)
 		return -1;
 	}
 
-	for (long i = 0; i < size; i += 2)
+	for (size_t i = 0; i < size; i += 2)
 		compressed[i] = ~compressed[i];
 
 	long ssize = size;
@@ -2129,7 +2129,7 @@ long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVEL_PLA
 
 	_pSaveBlock->Read(loadfile, (char *)compressed);
 
-	for (long i = 0; i < size; i += 2)
+	for (size_t i = 0; i < size; i += 2)
 		compressed[i] = ~compressed[i];
 
 	long ssize = size;
@@ -2424,7 +2424,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 		return -1;
 	}
 
-	for (long i = 0; i < size; i += 2)
+	for (size_t i = 0; i < size; i += 2)
 		compressed[i] = ~compressed[i];
 
 	long ssize = size;
@@ -3500,7 +3500,7 @@ long ARX_CHANGELEVEL_Pop_Globals()
 		return -1;
 	}
 
-	for (long i = 0; i < size; i += 2)
+	for (size_t i = 0; i < size; i += 2)
 	{
 		compressed[i] = ~compressed[i];
 	}
@@ -4229,7 +4229,7 @@ long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 	}
 
 	// Un-Crypt
-	for (long i = 0; i < size; i += 2)
+	for (size_t i = 0; i < size; i += 2)
 		compressed[i] = ~compressed[i];
 
 	// Explode File

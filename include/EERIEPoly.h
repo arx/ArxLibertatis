@@ -465,7 +465,7 @@ typedef struct
 
 #define MAX_ANIMS 200		// max loadable anims per character
 
-typedef int ArxSound;
+typedef S32 ArxSound;
 
 typedef struct
 {

@@ -28,7 +28,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <Athena_Types.h>
 #include "Athena_Codec.h"
 
-class PakFileHandle;
+struct PakFileHandle;
 
 #include <windows.h>
 #include <mmreg.h> // for ADPCMWAVEFORMAT

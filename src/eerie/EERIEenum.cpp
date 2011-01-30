@@ -146,7 +146,7 @@ static HRESULT WINAPI DeviceEnumCallback(TCHAR		*	strDesc,
 	pDeviceInfo->dwTextureOpCaps		= pDesc->dwTextureOpCaps;
 
 	// Select either the HAL or HEL device desc:
-	pDeviceInfo->bHardware = pDesc->dwDevCaps & D3DDEVCAPS_HWRASTERIZATION;
+	pDeviceInfo->bHardware = (pDesc->dwDevCaps & D3DDEVCAPS_HWRASTERIZATION) == D3DDEVCAPS_HWRASTERIZATION;
 	memcpy(&pDeviceInfo->ddDeviceDesc, pDesc, sizeof(D3DDEVICEDESC7));
 
 	// Set up device info for this device
@@ -518,8 +518,8 @@ static INT_PTR CALLBACK ChangeDeviceProc(HWND hDlg, UINT uiMsg, WPARAM wParam,
 		DWORD dwDevice   = ComboBox_GetCurSel(hwndDevice);
 		DWORD dwModeItem = ComboBox_GetCurSel(hwndMode);
 		DWORD dwMode     = ComboBox_GetItemData(hwndMode, dwModeItem);
-		bool  bWindowed  = hwndWindowed ? Button_GetCheck(hwndWindowed) : 0;
-		bool  bStereo    = hwndStereo   ? Button_GetCheck(hwndStereo)   : 0;
+		bool  bWindowed  = hwndWindowed ? Button_GetCheck(hwndWindowed) == 1 : 0;
+		bool  bStereo    = hwndStereo   ? Button_GetCheck(hwndStereo) == 1  : 0;
 
 		D3DEnum_DeviceInfo * pDevice = &pDeviceList[dwDevice];
 

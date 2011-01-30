@@ -61,7 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 #include <vector>
 
-class PakFileHandle;
+struct PakFileHandle;
 class PakReader;
 class PakDirectory;
 

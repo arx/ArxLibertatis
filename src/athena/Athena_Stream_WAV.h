@@ -28,7 +28,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <Athena_Types.h>
 #include "Athena_Stream.h"
 
-class PakFileHandle;
+struct PakFileHandle;
 
 namespace ATHENA
 {

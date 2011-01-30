@@ -34,18 +34,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 namespace ATHENA
 {
 
-	typedef void aalVoid;
-	typedef unsigned char aalUBool;
-	typedef signed char aalSBool;
-	typedef unsigned char aalUByte;
-	typedef signed char aalSByte;
-	typedef unsigned short aalUWord;
-	typedef signed short aalSWord;
-	typedef unsigned int aalULong;
-	typedef signed int aalSLong;
- 
-	typedef signed aalSInt;
-	typedef float aalFloat;
+	typedef void    aalVoid;
+	typedef U8      aalUBool;
+	typedef S8      aalSBool;
+	typedef U8      aalUByte;
+	typedef S8      aalSByte;
+	typedef U16     aalUWord;
+    typedef S16     aalSWord;
+	typedef U32     aalULong;
+	typedef S32     aalSLong;
+ 	typedef F32     aalFloat;
 
 	const aalUBool AAL_UFALSE(0);
 	const aalUBool AAL_UTRUE(1);
