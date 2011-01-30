@@ -72,8 +72,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "..\danae\danae_resource.h"
 
-#include <cstdio>
 #include <tchar.h>
+#include <algorithm>
+#include <cstdio>
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
@@ -297,9 +298,10 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst, TCHAR * strCmdLine)
 		m_bActive = TRUE;
 	}
 
-	// à supprimer au final
-	if (CreationFlags & WCF_ACCEPTFILES)
-		DragAcceptFiles(m_hWnd, TRUE);
+	// Nuky - this isnt used for the game, and I can set WIN32_LEAN_AND_MEAN with it commented
+	//// à supprimer au final
+	//if (CreationFlags & WCF_ACCEPTFILES)
+	//	DragAcceptFiles(m_hWnd, TRUE);
 
 	// Initialize the 3D environment for the app
 	if (FAILED(hr = Initialize3DEnvironment()))
@@ -1488,7 +1490,7 @@ void SetZBias(const LPDIRECT3DDEVICE7 _pd3dDevice, int _iZBias)
 	if (_iZBias < 0)
 	{
 		_iZBias = 0;
-		_iZBias = max(iCurrZBias, -_iZBias);
+		_iZBias = std::max(iCurrZBias, -_iZBias);
 	}
 
 	if (_iZBias == iCurrZBias) return;

@@ -48,6 +48,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "HERMES_pack_public.h"
 
+#include <algorithm>
+
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 
@@ -237,7 +239,7 @@ static void WriteData(char * Buff, unsigned int * Size, void * Param)
 	PAK_PARAM * pPP = (PAK_PARAM *) Param;
 
 	ARX_CHECK_NOT_NEG(pPP->lSize);
-	long lSize = min(ARX_CAST_ULONG(pPP->lSize), *Size);
+	long lSize = std::min(ARX_CAST_ULONG(pPP->lSize), ARX_CAST_ULONG(*Size));
 
 	memcpy((void *) pPP->mem, (const void *) Buff, lSize);
 	pPP->mem   += lSize;
