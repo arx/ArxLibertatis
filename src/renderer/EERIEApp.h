@@ -58,7 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef  EERIEAPP_H
 #define  EERIEAPP_H
 
-#define NOMINMAX 1
 #include <windows.h>
 #include <commctrl.h>
 

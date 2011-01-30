@@ -52,7 +52,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include "ARX_Text.h"
 
-#define NOMINMAX 1
 #include <windows.h>
 
 using std::vector;
@@ -766,7 +765,6 @@ class CDirectInput
 		int					iMouseRZ;
 		int					iMouseAX;
 		int					iMouseAY;
-		int					iMouseAZ;
 		float				fMouseAXTemp;
 		float				fMouseAYTemp;
 		int					iSensibility;
