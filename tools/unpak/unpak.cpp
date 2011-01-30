@@ -1,7 +1,3 @@
-
-#include <hermes/PakReader.h>
-#include <hermes/PakEntry.h>
-
 #include <string>
 #include <cassert>
 using std::string;
@@ -15,6 +11,8 @@ using std::ostringstream;
 #include <algorithm>
 using std::transform;
 
+#include "io/PakReader.h"
+#include "io/PakEntry.h"
 //#define TEST_PAK_FREAD
 
 void dump(PakReader & pak, const PakDirectory * dir, const string  & where = string()) {
