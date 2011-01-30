@@ -567,32 +567,28 @@ std::string GetFontName( const std::string& _lpszFileName)
 
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
-		MessageBox(NULL, "FontName :: File not Found", _lpszFileName.c_str(), MB_OK);
+		LogError << "FontName :: File not Found - " << _lpszFileName;
 		return NULL;
 	}
 
 	dwSize = GetFileSize(hFile, NULL);
 
-	// HEADER
+	// Read the font header
 	SetFilePointer(hFile, 0, NULL, FILE_BEGIN);
 	_FONT_HEADER FH;
 	iResult = ReadFile(hFile, &FH, sizeof(FH), &dwRead, NULL);
 
 	if (iResult == 0)
-	{
-		MessageBox(NULL, "FontName :: Pas lu!", "", MB_OK);
-	}
+		LogWarning << "FontName :: Unable to read font header - " << _lpszFileName;
 
-	// TABLE HEADERS
+	// Read the font table header
 	for (int i = 0; i < FH.usNumTables; i++)
 	{
 		_FONT_TABLE_HEADER FTH;
 		iResult = ReadFile(hFile, &FTH, sizeof(FTH), &dwRead, NULL);
 
 		if (iResult == 0)
-		{
-			MessageBox(NULL, "FontName :: Pas lu!", "", MB_OK);
-		}
+			LogWarning << "FontName :: Unable to read font table header - " << _lpszFileName;
 
 		char szName[5];
 		szName[0] = LOBYTE(LOWORD(FTH.ulTag));
@@ -602,17 +598,19 @@ std::string GetFontName( const std::string& _lpszFileName)
 		szName[4] = 0;
 
 
+		// Check for "name" in the extracted bytes
 		if (strcmp(szName, "name") == 0)
 		{
 			FTH.ulOffset = LilEndianLong(FTH.ulOffset);
 			SetFilePointer(hFile, FTH.ulOffset, NULL, FILE_BEGIN);
 
+			// Read font naming header
 			_FONT_NAMING_HEADER FNH;
 			iResult = ReadFile(hFile, &FNH, sizeof(FNH), &dwRead, NULL);
 
 			if (iResult == 0)
 			{
-				MessageBox(NULL, "FontName :: Pas lu!", "", MB_OK);
+				LogWarning << "FontName :: Unable to read font naming header - " << _lpszFileName;
 			}
 
 			FNH.usNbNameRecords = LilEndianShort(FNH.usNbNameRecords);
@@ -624,9 +622,7 @@ std::string GetFontName( const std::string& _lpszFileName)
 				iResult = ReadFile(hFile, &FNN, sizeof(FNN), &dwRead, NULL);
 
 				if (iResult == 0)
-				{
-					MessageBox(NULL, "FontName :: Pas lu!", "", MB_OK);
-				}
+					LogWarning << "FontName :: Unable to read font naming namerecord - " << _lpszFileName;
 
 				FNN.usNameID = LilEndianShort(FNN.usNameID);
 				FNN.usPlatformID = LilEndianShort(FNN.usPlatformID);
@@ -643,17 +639,13 @@ std::string GetFontName( const std::string& _lpszFileName)
 
 						wchar_t szName[256];
 
-
-
 						ZeroMemory(szName, 256);
 						assert(FNN.usStringLength < 256);
  
 						iResult = ReadFile(hFile, szName, FNN.usStringLength, &dwRead, NULL);
 
 						if (iResult == 0)
-						{
-							MessageBox(NULL, "FontName :: Pas lu!", "", MB_OK);
-						}
+							LogWarning << "FontName :: Unable to read font name - " << _lpszFileName;
 
 						for (int k = 0; k<(FNN.usStringLength >> 1); k++)
 						{
@@ -668,13 +660,12 @@ std::string GetFontName( const std::string& _lpszFileName)
 						return szText;
 					}
 			}
-
 		}
 	}
 
+	LogError << "FontName :: Unable to match \"name\" in any Font Table Header";
 	CloseHandle(hFile);
-
-	return "";
+	return ""; // Return empty font name
 }
 
 void _ShowText(char * text)
