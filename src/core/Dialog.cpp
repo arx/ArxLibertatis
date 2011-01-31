@@ -78,6 +78,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 #include "graphics/data/Texture.h"
 #include "graphics/Math.h"
+#include "io/Logger.h"
 
 long FASTLOADS = 0;
 
@@ -661,7 +662,7 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 						ARX_PATH * ap = ARX_PATHS_ExistName(str2);
 
 						if ((ap != ARX_PATHS_SelectedAP) && (ap != NULL))
-							ShowPopup("This Name is already used by another path, New name ignored...");
+							LogError << ("This Name is already used by another path, New name ignored...");
 						else ARX_PATHS_ChangeName(ARX_PATHS_SelectedAP, str2);
 
 						if (LOWORD(wParam) == IDOK)
@@ -2600,14 +2601,14 @@ INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 					if (FAILED(hr = danaeApp.Change3DEnvironment()))
 					{
-						ShowPopup("Error Changing Environment");
+						LogError << ("Error Changing Environment");
 						return 0;
 					}
 
 					GDevice = danaeApp.m_pd3dDevice;
 					ARX_Text_Init();
 				}
-				else ShowPopup("Error Changing Device");
+				else LogError << ("Error Changing Device");
 			}
 		}
 

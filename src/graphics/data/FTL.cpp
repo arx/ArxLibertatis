@@ -285,7 +285,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 	afph = (ARX_FTL_PRIMARY_HEADER *)dat;
 	pos += sizeof(ARX_FTL_PRIMARY_HEADER);
 
-	if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+	if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 
 	afph->ident[0] = 'F';
 	afph->ident[1] = 'T';
@@ -300,20 +300,20 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 	memcpy(dat + pos, check, 512);
 	pos += 512;
 
-	if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+	if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 
 	// Secondary Header
 	afsh = (ARX_FTL_SECONDARY_HEADER *)(dat + pos);
 	pos += sizeof(ARX_FTL_SECONDARY_HEADER);
 
-	if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+	if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 
 	// 3D Data
 	afsh->offset_3Ddata = pos; //-1;
 	af3Ddh = (ARX_FTL_3D_DATA_HEADER *)(dat + afsh->offset_3Ddata);
 	pos += sizeof(ARX_FTL_3D_DATA_HEADER);
 
-	if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+	if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 
 	af3Ddh->nb_vertex = obj->nbvertex;
 	af3Ddh->nb_faces = obj->nbfaces;
@@ -332,7 +332,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 			pos += sizeof(EERIE_OLD_VERTEX);
 		}
 
-		if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 	}
 
 	// faces
@@ -359,7 +359,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 			}
 
 			pos += sizeof(EERIE_FACE_FTL); 
-			if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+			if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 		}
 	}
 
@@ -375,7 +375,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 		memcpy(dat + pos, ficc, 256);
 		pos += 256;
 
-		if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 	}
 
 	// groups
@@ -384,7 +384,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 		memcpy(dat + pos, obj->grouplist, sizeof(EERIE_GROUPLIST)*af3Ddh->nb_groups);
 		pos += sizeof(EERIE_GROUPLIST) * af3Ddh->nb_groups;
 
-		if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 
 		for (int i = 0; i < af3Ddh->nb_groups; i++)
 		{
@@ -393,7 +393,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 				memcpy(dat + pos, obj->grouplist[i].indexes, sizeof(long)*obj->grouplist[i].nb_index);
 				pos += sizeof(long) * obj->grouplist[i].nb_index;
 
-				if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+				if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 			}
 		}
 	}
@@ -405,7 +405,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 		memcpy(dat + pos, obj->actionlist, sizeof(EERIE_ACTIONLIST)*af3Ddh->nb_action);
 		pos += sizeof(EERIE_ACTIONLIST) * af3Ddh->nb_action;
 
-		if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 	}
 
 	// selections
@@ -414,14 +414,14 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 		memcpy(dat + pos, obj->selections, sizeof(EERIE_SELECTIONS)*af3Ddh->nb_selections);
 		pos += sizeof(EERIE_SELECTIONS) * af3Ddh->nb_selections;
 
-		if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 
 		for (int i = 0; i < af3Ddh->nb_selections; i++)
 		{
 			memcpy(dat + pos, obj->selections[i].selected, sizeof(long)*obj->selections[i].nb_selected);
 			pos += sizeof(long) * obj->selections[i].nb_selected;
 
-			if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+			if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 		}
 
 		strcpy(af3Ddh->name, obj->file.c_str());
@@ -438,14 +438,14 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 		afcsdh = (ARX_FTL_COLLISION_SPHERES_DATA_HEADER *)(dat + afsh->offset_collision_spheres);
 		pos += sizeof(ARX_FTL_COLLISION_SPHERES_DATA_HEADER);
 
-		if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 
 		afcsdh->nb_spheres = obj->sdata->nb_spheres;
 
 		memcpy(dat + pos, obj->sdata->spheres, sizeof(COLLISION_SPHERE)*obj->sdata->nb_spheres);
 		pos += sizeof(COLLISION_SPHERE) * obj->sdata->nb_spheres;
 
-		if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 	}
 	else afsh->offset_collision_spheres = -1;
 
@@ -464,19 +464,19 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 		afcdh->nb_springs = obj->cdata->nb_springs;
 		pos += sizeof(ARX_FTL_CLOTHES_DATA_HEADER);
 
-		if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 
 		// now save cvert
 		memcpy(dat + pos, obj->cdata->cvert, sizeof(CLOTHESVERTEX)*obj->cdata->nb_cvert);
 		pos += sizeof(CLOTHESVERTEX) * obj->cdata->nb_cvert;
 
-		if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 
 		// now saves springs
 		memcpy(dat + pos, obj->cdata->springs, sizeof(EERIE_SPRINGS)*obj->cdata->nb_springs);
 		pos += sizeof(EERIE_SPRINGS) * obj->cdata->nb_springs;
 
-		if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 	}
 
 	afsh->offset_physics_box = -1;
@@ -521,7 +521,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 
 error:
 	;
-	ShowPopup(_error);
+	LogError << (_error);
 	free(dat);
 
 	return false;

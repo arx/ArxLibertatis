@@ -212,7 +212,7 @@ void BIG_PURGE()
 		char text[256];
 		sprintf(text, "Killed: %ld IO; %ld Lights; %ld Paths; %ld Fogs.",
 				IO_count, LIGHT_count, PATH_count, FOG_count);
-		ShowPopup(text);
+		LogError << (text);
 	}
 }
 
@@ -897,7 +897,7 @@ long DanaeSaveLevel( const std::string& _fic )
 	return 1;
 error:
 	;
-	ShowPopup(_error);
+	LogError << (_error);
 
 	if (dat) free(dat);
 
@@ -1036,7 +1036,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 //				_write(fic, io->script.data, strlen(io->script.data));
 //				_close(fic);
 //			}
-//			else ShowPopup("Unable To Save...");
+//			else LogError << ("Unable To Save...");
 
 			ARX_SCRIPT_ComputeShortcuts(&io->script);
 			break;
@@ -1061,11 +1061,11 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 //						_write(fic, io->over_script.data, strlen(io->over_script.data));
 //						_close(fic);
 //					}
-//					else ShowPopup("Unable To Save...");
+//					else LogError << ("Unable To Save...");
 				}
-				else ShowPopup("Local DIR don't Exists...");
+				else LogError << ("Local DIR don't Exists...");
 			}
-			else ShowPopup("NO IDENT...");
+			else LogError << ("NO IDENT...");
 
 			ARX_SCRIPT_ComputeShortcuts(&io->over_script);
 			break;
@@ -1274,7 +1274,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fic)
 
 	if (dlh.version > CURRENT_VERSION) // using compression
 	{
-		ShowPopup("DANAE Version too OLD to load this File... Please upgrade to a new DANAE Version...");
+		LogError << ("DANAE Version too OLD to load this File... Please upgrade to a new DANAE Version...");
 		free(dat);
 		dat = NULL;
 		return -1;
@@ -1877,7 +1877,7 @@ finish:
 //loaderror:
 //	;
 //	FASTmse = 0;
-//	ShowPopup(_error);
+//	LogError << (_error);
 //
 //	if (dat) free(dat);
 //
@@ -2243,7 +2243,7 @@ void ARX_SAVELOAD_DLFCheckAdd(char * path, long num)
 
 	if (dlh.version > CURRENT_VERSION) // using compression
 	{
-		ShowPopup("DANAE Version too OLD to load this File... Please upgrade to a new DANAE Version...");
+		LogError << ("DANAE Version too OLD to load this File... Please upgrade to a new DANAE Version...");
 		free(dat);
 		dat = NULL;
 		return;
@@ -2313,7 +2313,7 @@ void ARX_SAVELOAD_CheckDLFs()
 		if (dlfcheck[n].occurence > 1)
 		{
 			sprintf(text, "Found %ld times : %s in levels %s", dlfcheck[n].occurence, dlfcheck[n].ident, dlfcheck[n].nums);
-			ShowPopup(text);
+			LogError << (text);
 		}
 	}
 

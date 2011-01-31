@@ -58,10 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdio.h>
 #include <tchar.h>
 
-/*#include <fstream>
-#include <sstream>
-#include <vector>
-*/
 #include "core/Application.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/GraphicsUtility.h"
@@ -76,6 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/IO.h"
 #include "io/Registry.h"
 #include "io/PakManager.h"
+#include "io/Logger.h"
 
 using std::max;
 
@@ -506,7 +503,7 @@ LRESULT CD3DApplication::SwitchFullScreen()
 
 	if (FAILED(Change3DEnvironment()))
 	{
-		ShowPopup("ChangeEnvironement Failed");
+		LogError << ("ChangeEnvironement Failed");
 		return 0;
 	}
 
@@ -1399,22 +1396,6 @@ bool OKBox(const char * text, const char * title)
 	if (i == IDCANCEL) return false;
 
 	return true;
-}
-
-//*************************************************************************************
-//*************************************************************************************
-void ShowPopup(const char * text)
-{
-	if (FINAL_COMMERCIAL_DEMO ||
-	        FINAL_COMMERCIAL_GAME)
-	{
-		return;
-
-	}
-
-	g_pD3DApp->Pause(true);
-	MessageBox(g_pD3DApp->m_hWnd, text, "GAIA popup", MB_ICONINFORMATION | MB_OK);
-	g_pD3DApp->Pause(false);
 }
 
 extern void ExitProc();

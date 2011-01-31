@@ -4750,7 +4750,7 @@ void LaunchMoulinex()
 			DANAEFinalCleanup();
 			exit(0);
 		}
-		else ShowPopup("Moulinex Successfull");
+		else LogError << ("Moulinex Successfull");
 
 		return;
 	}
@@ -4807,7 +4807,7 @@ void LaunchMoulinex()
 			DANAEFinalCleanup();
 			exit(0);
 		}
-		else ShowPopup("Moulinex Successfull");
+		else LogError << ("Moulinex Successfull");
 
 		return;
 	}
@@ -8249,7 +8249,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXT, NULL, (DLGPROC)ShowTextDlg);					
 					}
 					else  
-						ShowPopup("No Interactive Object Selected");
+						LogError << ("No Interactive Object Selected");
 
 				break;
 				case DANAE_MENU_MEMORY:
@@ -8287,7 +8287,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_MENU_IMPORTSCN:
 					ARX_TIME_Pause();
 					Pause(true);
-					ShowPopup("Unavailable Command");
+					LogError << ("Unavailable Command");
 					Pause(false);
 					ARX_TIME_UnPause();
 				break;
@@ -8301,21 +8301,21 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_MENU_UPDATESOUNDS:
 					ARX_TIME_Pause();
 					Pause(true);
-					ShowPopup("Unavailable Command");
+					LogError << ("Unavailable Command");
 					Pause(false);
 					ARX_TIME_UnPause();
 				break;
 				case DANAE_MENU_UPDATESCENE:
 					ARX_TIME_Pause();
 					Pause(true);
-					ShowPopup("Unavailable Command");
+					LogError << ("Unavailable Command");
 					Pause(false);
 					ARX_TIME_UnPause();
 				break;
 				case DANAE_MENU_UPDATEALLSCRIPTS:
 
 					if (!EDITMODE)
-						ShowPopup("Command Only Available in EDITOR mode!!!");
+						LogError << ("Command Only Available in EDITOR mode!!!");
 					else
 					{
 						ARX_TIME_Pause();
@@ -8332,7 +8332,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_MENU_UPDATEALLOBJECTS:
 					ARX_TIME_Pause();
 					Pause(true);
-					ShowPopup("Unavailable Command");
+					LogError << ("Unavailable Command");
 					Pause(false);
 					ARX_TIME_UnPause();
 				break;
@@ -8346,7 +8346,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_MENU_UPDATEALLANIMS:
 
 					if (!EDITMODE)
-						ShowPopup("Command Only Available in EDITOR mode!!!");
+						LogError << ("Command Only Available in EDITOR mode!!!");
 					else
 					{					
 						ARX_TIME_Pause();
@@ -8428,7 +8428,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_MENU_SAVELEVEL:                	
 					ARX_TIME_Pause();
 					Pause(true);			
-					ShowPopup("Unavailable Command");
+					LogError << ("Unavailable Command");
 					Pause(false);
 					ARX_TIME_UnPause();					
 				break;

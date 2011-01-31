@@ -32,6 +32,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Time.h"
 #include "graphics/data/Mesh.h"
 #include "io/IO.h"
+#include "io/Logger.h"
 
 typedef void (APIENTRY * CREATEDIALOG)(HWND, ScriptDebuggerInfos &);
 typedef void (APIENTRY * SETPARAMS)(ScriptDebuggerInfos &);
@@ -83,7 +84,7 @@ void DANAE_DEBUGGER_Launch(HWND hWnd)
 
 invalid:
 	;
-	ShowPopup("ARX_SCRIPT_DEBUGGER: Invalid DLL version.");
+	LogError << ("ARX_SCRIPT_DEBUGGER: Invalid DLL version.");
 	return;
 }
 long NEED_DEBUGGER_CLEAR;

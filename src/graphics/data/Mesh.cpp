@@ -4695,7 +4695,7 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms)
 	return true;
 error:
 	;
-	ShowPopup("FTL Memory Problem...");
+	LogError << ("FTL Memory Problem...");
 	free(dat);
 	return false;
 }
