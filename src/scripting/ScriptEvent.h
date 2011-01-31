@@ -21,7 +21,6 @@ public:
 	ScriptEvent();
 	virtual ~ScriptEvent();
 	static long send(EERIE_SCRIPT * es, long msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& eventname, long info = 0);
-	//extern SCRIPT_EVENT AS_EVENT[];
 };
 
 #endif /* SCRIPTEVENT_H_ */
