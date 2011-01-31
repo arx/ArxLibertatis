@@ -283,7 +283,7 @@ bool LoadProject(Cinematic * c, const char * dir, const char * name)
 	}
 
 	//chargement son
-	LSoundChoose = C_LANGUAGE_FRENCH;
+	LSoundChoose = C_KEY::French;
 
 	if (version >= ((1 << 16) | 60))
 	{
@@ -334,7 +334,7 @@ bool LoadProject(Cinematic * c, const char * dir, const char * name)
 			ARX_CHECK_SHORT(k159.typeinterp);
 			k.typeinterp = ARX_CLEAN_WARN_CAST_SHORT(k159.typeinterp);
 			k.force = 1;
-			k.idsound[C_LANGUAGE_FRENCH] = -1;
+			k.idsound[C_KEY::French] = -1;
 			k.light.intensity = -1.f;
 			k.posgrille.x = k.posgrille.y = k.posgrille.z = 0.f;
 			k.angzgrille = 0.f;
@@ -358,7 +358,7 @@ bool LoadProject(Cinematic * c, const char * dir, const char * name)
 				ARX_CHECK_SHORT(k165.typeinterp);
 				k.typeinterp = ARX_CLEAN_WARN_CAST_SHORT(k165.typeinterp);
 				k.force = 1;
-				k.idsound[C_LANGUAGE_FRENCH] = k165.idsound;
+				k.idsound[C_KEY::French] = k165.idsound;
 				k.light.intensity = -1.f;
 				k.posgrille.x = k.posgrille.y = k.posgrille.z = 0.f;
 				k.angzgrille = 0.f;
@@ -380,7 +380,7 @@ bool LoadProject(Cinematic * c, const char * dir, const char * name)
 					k.speed = k170.speed;
 					k.typeinterp = k170.typeinterp;
 					k.force = k170.force;
-					k.idsound[C_LANGUAGE_FRENCH] = k170.idsound;
+					k.idsound[C_KEY::French] = k170.idsound;
 					k.light.intensity = -1.f;
 					k.posgrille.x = k.posgrille.y = k.posgrille.z = 0.f;
 					k.angzgrille = 0.f;
@@ -402,7 +402,7 @@ bool LoadProject(Cinematic * c, const char * dir, const char * name)
 						k.speed = k171.speed;
 						k.typeinterp = k171.typeinterp;
 						k.force = k171.force;
-						k.idsound[C_LANGUAGE_FRENCH] = k171.idsound;
+						k.idsound[C_KEY::French] = k171.idsound;
 						k.light = k171.light;
 
 						if ((k.fx & 0xFF000000) != FX_LIGHT)
@@ -430,7 +430,7 @@ bool LoadProject(Cinematic * c, const char * dir, const char * name)
 							k.speed = k172.speed;
 							k.typeinterp = k172.typeinterp;
 							k.force = k172.force;
-							k.idsound[C_LANGUAGE_FRENCH] = k172.idsound;
+							k.idsound[C_KEY::French] = k172.idsound;
 							k.light.pos = k172.light.pos;
 							k.light.fallin = k172.light.fallin;
 							k.light.fallout = k172.light.fallout;
@@ -466,7 +466,7 @@ bool LoadProject(Cinematic * c, const char * dir, const char * name)
 								k.speed = k174.speed;
 								k.typeinterp = k174.typeinterp;
 								k.force = k174.force;
-								k.idsound[C_LANGUAGE_FRENCH] = k174.idsound;
+								k.idsound[C_KEY::French] = k174.idsound;
 								k.light.pos = k174.light.pos;
 								k.light.fallin = k174.light.fallin;
 								k.light.fallout = k174.light.fallout;
@@ -497,7 +497,7 @@ bool LoadProject(Cinematic * c, const char * dir, const char * name)
 									k.speed = k175.speed;
 									k.typeinterp = k175.typeinterp;
 									k.force = k175.force;
-									k.idsound[C_LANGUAGE_FRENCH] = k175.idsound;
+									k.idsound[C_KEY::French] = k175.idsound;
 									k.light.pos = k175.light.pos;
 									k.light.fallin = k175.light.fallin;
 									k.light.fallout = k175.light.fallout;
@@ -559,7 +559,7 @@ bool LoadProject(Cinematic * c, const char * dir, const char * name)
 			c->colord = c->colorchoosed = k.colord;
 			c->colorflash = c->colorflashchoose = k.colorf;
 			c->speed = c->speedchoose = k.speed;
-			c->idsound = k.idsound[C_LANGUAGE_FRENCH];
+			c->idsound = k.idsound[C_KEY::French];
 			c->force = k.force;
 			c->light = c->lightchoose = k.light;
 			c->posgrille = k.posgrille;
@@ -605,7 +605,7 @@ bool LoadProject(Cinematic * c, const char * dir, const char * name)
 		}
 	}
 
-	LSoundChoose = C_LANGUAGE_ENGLISH << 8;
+	LSoundChoose = C_KEY::English << 8;
 
 	return true;
 }

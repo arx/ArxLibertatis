@@ -268,7 +268,7 @@ HRESULT Cinematic::OneTimeSceneReInit()
 	FlashBlancEnCours = false;
 	SpecialFadeEnCours = false;
 
-	LSoundChoose = C_LANGUAGE_ENGLISH << 8;
+	LSoundChoose = C_KEY::English << 8;
 
 	m_flIntensityRND = 0.f;
 
@@ -310,7 +310,7 @@ HRESULT Cinematic::New()
 
 	ProjectModif = false;
 
-	LSoundChoose = C_LANGUAGE_ENGLISH << 8;
+	LSoundChoose = C_KEY::English << 8;
 
 	return S_OK;
 }

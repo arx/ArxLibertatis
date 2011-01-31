@@ -46,11 +46,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //all time
 #define FX_LIGHT   (1<<24)
 
-#define C_LANGUAGE_FRENCH   0
-#define C_LANGUAGE_GERMAN   1
-#define C_LANGUAGE_SPANISH  2
-#define C_LANGUAGE_ENGLISH  3
-
 
 // TODO cleanup
 class C_KEY;
