@@ -1847,10 +1847,10 @@ SCRIPT_VAR * GetVarAddress(SCRIPT_VAR * svf, long * nb, const std::string& name)
 
 //*************************************************************************************
 //*************************************************************************************
-long GETVarValueLong(SCRIPT_VAR ** svf, long* nb, const std::string& name)
+long GETVarValueLong(SCRIPT_VAR ** svf, long& nb, const std::string& name)
 {
 	SCRIPT_VAR * tsv;
-	tsv = GetVarAddress(*svf, nb, name);
+	tsv = GetVarAddress(*svf, &nb, name);
 
 	if (tsv == NULL) return 0;
 
@@ -1912,13 +1912,13 @@ std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * ess
 	}
 	else if (temp1[0] == '#')
 	{
-		l1 = GETVarValueLong(&svar, &NB_GLOBALS, temp1.c_str());
+		l1 = GETVarValueLong(&svar, NB_GLOBALS, temp1);
 		sprintf(var_text, "%ld", l1);
 		return var_text;
 	}
 	else if (temp1[0] == '\xA7')
 	{
-		l1 = GETVarValueLong(&esss->lvar, &esss->nblvar, temp1.c_str());
+		l1 = GETVarValueLong(&esss->lvar, esss->nblvar, temp1);
 		sprintf(var_text, "%ld", l1);
 		return var_text;
 	}
@@ -1976,8 +1976,8 @@ float GetVarValueInterpretedAsFloat( std::string& temp1, EERIE_SCRIPT * esss, IN
 		}
 
 	}
-	else if (temp1[0] == '#')	return (float)GETVarValueLong(&svar, &NB_GLOBALS, temp1.c_str());
-	else if (temp1[0] == '\xA7') return (float)GETVarValueLong(&esss->lvar, &esss->nblvar, temp1.c_str());
+	else if (temp1[0] == '#')	return (float)GETVarValueLong(&svar, NB_GLOBALS, temp1);
+	else if (temp1[0] == '\xA7') return (float)GETVarValueLong(&esss->lvar, esss->nblvar, temp1);
 	else if (temp1[0] == '&') return GETVarValueFloat(&svar, &NB_GLOBALS, temp1.c_str());
 	else if (temp1[0] == '@') return GETVarValueFloat(&esss->lvar, &esss->nblvar, temp1.c_str());
 
@@ -2601,12 +2601,12 @@ long GetNextWord_Interpreted( INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, s
 	}
 	else if	(temp[0] == '#')
 	{
-		ss << GETVarValueLong(&svar, &NB_GLOBALS, temp);
+		ss << GETVarValueLong(&svar, NB_GLOBALS, temp);
 		temp = ss.str();
 	}
 	else if (temp[0] == '\xA7')
 	{
-		ss << GETVarValueLong(&es->lvar, &es->nblvar, temp);
+		ss << GETVarValueLong(&es->lvar, es->nblvar, temp);
 		temp = ss.str();
 	}
 	else if (temp[0] == '&')

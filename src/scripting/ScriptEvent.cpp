@@ -5304,11 +5304,11 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '#':
 							typ1	=	TYPE_FLOAT;
-							fvar1	=	GETVarValueLong(&svar, &NB_GLOBALS, temp);
+							fvar1	=	GETVarValueLong(&svar, NB_GLOBALS, temp);
 							break;
 						case '\xA7':
 							typ1	=	TYPE_FLOAT;
-							fvar1	=	GETVarValueLong(&esss->lvar, &esss->nblvar, temp);
+							fvar1	=	GETVarValueLong(&esss->lvar, esss->nblvar, temp);
 							break;
 						case '&':
 							typ1	=	TYPE_FLOAT;
@@ -5379,11 +5379,11 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '#':
 							typ2			=	TYPE_FLOAT;
-							fvar2			=	(float)GETVarValueLong(&svar, &NB_GLOBALS, temp3);
+							fvar2			=	(float)GETVarValueLong(&svar, NB_GLOBALS, temp3);
 							break;
 						case '\xA7':
 							typ2			=	TYPE_FLOAT;
-							fvar2			=	(float)GETVarValueLong(&esss->lvar, &esss->nblvar, temp3);
+							fvar2			=	(float)GETVarValueLong(&esss->lvar, esss->nblvar, temp3);
 							break;
 						case '&':
 							typ2			=	TYPE_FLOAT;
@@ -5688,7 +5688,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '#': // GLOBAL LONG
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							fdval = (float)GETVarValueLong(&svar, &NB_GLOBALS, temp1);
+							fdval = (float)GETVarValueLong(&svar, NB_GLOBALS, temp1);
 							fval = fdval + fval;
 							sv = SETVarValueLong(&svar, NB_GLOBALS, temp1, (long)fval);
 
@@ -5697,7 +5697,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '\xA7': // LOCAL LONG
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							fdval = (float)GETVarValueLong(&esss->lvar, &esss->nblvar, temp1);
+							fdval = (float)GETVarValueLong(&esss->lvar, esss->nblvar, temp1);
 							fval = fdval + fval;
 							sv = SETVarValueLong(&esss->lvar, esss->nblvar, temp1, (long)fval);
 
@@ -7175,7 +7175,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '#': // GLOBAL LONG
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							fdval = (float)GETVarValueLong(&svar, &NB_GLOBALS, temp1);
+							fdval = (float)GETVarValueLong(&svar, NB_GLOBALS, temp1);
 							fval = fval * fdval;
 							sv = SETVarValueLong(&svar, NB_GLOBALS, temp1, (long)fval);
 
@@ -7185,7 +7185,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '\xA7': // LOCAL LONG
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							fdval = (float)GETVarValueLong(&esss->lvar, &esss->nblvar, temp1);
+							fdval = (float)GETVarValueLong(&esss->lvar, esss->nblvar, temp1);
 							fval = fval * fdval;
 							sv = SETVarValueLong(&esss->lvar, esss->nblvar, temp1, (long)fval);
 
@@ -7301,7 +7301,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					switch (temp1[0])
 					{
 						case '#':
-							ival = GETVarValueLong(&svar, &NB_GLOBALS, temp1);
+							ival = GETVarValueLong(&svar, NB_GLOBALS, temp1);
 
 							if (!strcmp(temp, "--"))
 							{
@@ -7314,7 +7314,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 							break;
 						case '\xA3':
-							ival = GETVarValueLong(&esss->lvar, &esss->nblvar, temp1);
+							ival = GETVarValueLong(&esss->lvar, esss->nblvar, temp1);
 
 							if (!strcmp(temp, "--"))
 							{
@@ -7406,7 +7406,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '#': // GLOBAL LONG
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							fdval = (float)GETVarValueLong(&svar, &NB_GLOBALS, temp1);
+							fdval = (float)GETVarValueLong(&svar, NB_GLOBALS, temp1);
 
 							if (!strcmp(temp, "DEC")) fval = fdval - fval;
 							else if (!strcmp(temp, "DIV"))
@@ -7421,7 +7421,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '\xA7': // LOCAL LONG
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							fdval = (float)GETVarValueLong(&esss->lvar, &esss->nblvar, temp1);
+							fdval = (float)GETVarValueLong(&esss->lvar, esss->nblvar, temp1);
 
 							if (!strcmp(temp, "DEC")) fval = fdval - fval;
 							else if (!strcmp(temp, "DIV"))
