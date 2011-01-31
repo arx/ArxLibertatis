@@ -91,12 +91,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::sprintf;
 using std::min;
 using std::max;
+
 //#define NEEDING_DEBUG 1
+#define MAX_SSEPARAMS 5
+
 extern long GLOBAL_MAGIC_MODE;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern long FINAL_COMMERCIAL_DEMO;
-
-#define MAX_SSEPARAMS 5
 extern long SP_DBG;
 extern Cinematic * ControlCinematique;
 extern EERIE_3D LASTCAMPOS, LASTCAMANGLE;
@@ -113,16 +114,13 @@ extern long ARX_CONVERSATION;
 extern long ARX_DEMO;
 extern long CHANGE_LEVEL_ICON;
 extern long FRAME_COUNT;
-
 extern long lChangeWeapon;
 extern INTERACTIVE_OBJ * pIOChangeWeapon;
+extern float g_TimeStartCinemascope;
 
 std::string ShowText;
 std::string ShowText2;
 std::string ShowTextWindowtext;
-
-extern float g_TimeStartCinemascope;
-
 INTERACTIVE_OBJ * LASTSPAWNED = NULL;
 INTERACTIVE_OBJ * EVENT_SENDER = NULL;
 SCRIPT_VAR * svar = NULL;
@@ -134,13 +132,8 @@ long NB_GLOBALS = 0;
 SCR_TIMER * scr_timer = NULL;
 long ActiveTimers = 0;
 
-LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-void ResetAllGlobalVars();
-
 extern void ARX_MENU_Clicked_CREDITS();
 extern void ARX_MENU_Launch(LPDIRECT3DDEVICE7 m_pd3dDevice);
-void ARX_INTERFACE_Combat_Mode(long);
 bool ARX_EQUIPMENT_IsPlayerEquip(INTERACTIVE_OBJ * _pIO);
 
 SCRIPT_EVENT AS_EVENT[] =
