@@ -52,6 +52,7 @@ class CinematicGrid;
 
 
 // TODO used for loading
+#pragma pack(push,1)
 class CinematicLight {
 	
 public:
@@ -76,6 +77,7 @@ public:
 	};
 	
 };
+#pragma pack(pop)
 
 
 class Cinematic {
