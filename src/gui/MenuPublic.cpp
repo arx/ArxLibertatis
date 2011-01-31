@@ -39,6 +39,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Localization.h"
 #include "core/Time.h"
 #include "animation/Cinematic.h"
+#include "graphics/data/CinematicTexture.h"
 
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
@@ -58,7 +59,7 @@ extern long WILL_RELOAD_ALL_TEXTURES;
 extern long GAME_EDITOR;
 
 extern long REFUSE_GAME_RETURN;
-extern CINEMATIQUE * ControlCinematique;
+extern Cinematic * ControlCinematique;
 
 bool bForceReInitAllTexture = false;
 extern long CAN_REPLAY_INTRO;

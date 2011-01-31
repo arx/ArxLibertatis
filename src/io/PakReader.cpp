@@ -106,6 +106,7 @@ static void pakDecrypt(char * fat, size_t fat_size, const char * key) {
 	
 }
 
+// TODO useful elsewhere too
 static const char * safeGetString(const char * & pos, uint32_t & fat_size) {
 	
 	const char * begin = pos;
@@ -121,6 +122,7 @@ static const char * safeGetString(const char * & pos, uint32_t & fat_size) {
 	return NULL;
 }
 
+// TODO useful elsewhere too
 template <class T>
 inline bool safeGet(T & data, const char * & pos, uint32_t & fat_size) {
 	if(fat_size < sizeof(T)) {

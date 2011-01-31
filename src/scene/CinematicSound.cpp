@@ -22,21 +22,17 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <stdio.h>
-/*
-#include <algorithm>
-#include <fstream>
-#include <sstream>
-#include <vector>
-*/
+
+#include "scene/CinematicSound.h"
 
 #include "animation/Cinematic.h"
+#include "core/Application.h"
 #include "scene/GameSound.h"
 #include "io/IO.h"
 
 
 /*-----------------------------------------------------------*/
-C_SOUND		TabSound[MAX_SOUND];
+CinematicSound		TabSound[MAX_SOUND];
 int			NbSound;
 /*-----------------------------------------------------------*/
 extern std::string AllTxt;
@@ -45,9 +41,9 @@ extern char DirectoryChoose[];
 extern int	LSoundChoose;
 
 /*-----------------------------------------------------------*/
-void InitSound(CINEMATIQUE * c)
+void InitSound(Cinematic * c)
 {
-	C_SOUND	*	ts;
+	CinematicSound	*	ts;
 	int			nb;
 
 	ts = TabSound;
@@ -55,7 +51,7 @@ void InitSound(CINEMATIQUE * c)
 
 	while (nb)
 	{
-		memset((void *)ts, 0, sizeof(C_SOUND));
+		memset((void *)ts, 0, sizeof(CinematicSound));
 		ts->idhandle = ARX_SOUND_INVALID_RESOURCE;
 		ts++;
 		nb--;
@@ -64,9 +60,9 @@ void InitSound(CINEMATIQUE * c)
 	NbSound = 0;
 }
 /*-----------------------------------------------------------*/
-C_SOUND * GetFreeSound(int * num)
+CinematicSound * GetFreeSound(int * num)
 {
-	C_SOUND	*	ts;
+	CinematicSound	*	ts;
 	int			nb;
 
 	ts = TabSound;
@@ -74,7 +70,7 @@ C_SOUND * GetFreeSound(int * num)
 
 	while (nb)
 	{
-		if (!ts->actif)
+		if (!ts->active)
 		{
 			*num = MAX_SOUND - nb;
 			return ts;
@@ -89,12 +85,12 @@ C_SOUND * GetFreeSound(int * num)
 /*-----------------------------------------------------------*/
 bool DeleteFreeSound(int num)
 {
-	C_SOUND	*	cs;
+	CinematicSound	*	cs;
 	int			l;
 
 	cs = &TabSound[num];
 
-	if (!cs->actif) return false;
+	if (!cs->active) return false;
 
 	l = 0;
 
@@ -116,7 +112,7 @@ bool DeleteFreeSound(int num)
 		cs->sound = NULL;
 	}
 
-	cs->actif = 0;
+	cs->active = 0;
 	NbSound--;
 
 	return true;
@@ -160,15 +156,15 @@ void CutAndAddString(char * pText, const char * pDebText)
 /*-----------------------------------------------------------*/
 int ExistSound(char * dir, char * name)
 {
-	C_SOUND * cs;
+	CinematicSound * cs;
 
 	cs = TabSound;
 	int nb = MAX_SOUND;
 
 	while (nb)
 	{
-		if ((cs->actif) &&
-		        ((cs->actif & 0xFF00) == LSoundChoose))
+		if ((cs->active) &&
+		        ((cs->active & 0xFF00) == LSoundChoose))
 		{
 			if (!strcasecmp(dir, cs->dir))
 			{
@@ -267,7 +263,7 @@ void PatchReplace()
 /*-----------------------------------------------------------*/
 int AddSoundToList(char * dir, char * name, int id, int pos)
 {
-	C_SOUND * cs;
+	CinematicSound * cs;
 	int		num;
 
 	if ((num = ExistSound(dir, name)) >= 0)
@@ -279,7 +275,7 @@ int AddSoundToList(char * dir, char * name, int id, int pos)
 	{
 		cs = &TabSound[id];
 
-		if (!cs->actif || cs->load) return -1;
+		if (!cs->active || cs->load) return -1;
 
 		free((void *)cs->name);
 		free((void *)cs->dir);
@@ -332,10 +328,10 @@ int AddSoundToList(char * dir, char * name, int id, int pos)
 
 
 
-	int iActif = 1 | LSoundChoose;
-	ARX_CHECK_SHORT(iActif);
+	int iActive = 1 | LSoundChoose;
+	ARX_CHECK_SHORT(iActive);
 
-	cs->actif = ARX_CLEAN_WARN_CAST_SHORT(iActif);
+	cs->active = static_cast<short>(iActive);
 
 
 	NbSound++;
@@ -344,11 +340,11 @@ int AddSoundToList(char * dir, char * name, int id, int pos)
 /*-----------------------------------------------------------*/
 bool PlaySoundKeyFramer(int id)
 {
-	C_SOUND * cs;
+	CinematicSound * cs;
 
 	cs = &TabSound[id];
 
-	if (!cs->actif) return false;
+	if (!cs->active) return false;
 
 	cs->idhandle = ARX_SOUND_PlayCinematic(cs->sound);
 
@@ -357,7 +353,7 @@ bool PlaySoundKeyFramer(int id)
 /*-----------------------------------------------------------*/
 void StopSoundKeyFramer(void)
 {
-	C_SOUND	*	ts;
+	CinematicSound	*	ts;
 	int			nb;
 
 	ts = TabSound;
@@ -365,7 +361,7 @@ void StopSoundKeyFramer(void)
 
 	while (nb)
 	{
-		if (ts->actif)
+		if (ts->active)
 		{
 			ARX_SOUND_Stop(ts->idhandle);
 			ts->idhandle = ARX_SOUND_INVALID_RESOURCE;
