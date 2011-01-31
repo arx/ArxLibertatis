@@ -1078,7 +1078,7 @@ float Vector_DotProduct(const EERIE_3D * v1, const EERIE_3D * v2)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
+//TODO(lubosz): empty method
 void EERIEMathPrecalc()
 {
 	
@@ -1086,9 +1086,9 @@ void EERIEMathPrecalc()
 
 long F2L_RoundUp(float val)
 {
-	long l;
-	F2L(val, &l);
-	val = val - (float)l;
+	//TODO(lubosz): should this be done by cast?
+	long l = val;
+	val = val - l;
 
 	if (val > 0.f) return l + 1;
 

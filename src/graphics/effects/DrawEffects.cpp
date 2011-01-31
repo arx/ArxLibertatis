@@ -130,8 +130,8 @@ void ARXDRAW_DrawInterShadows(LPDIRECT3DDEVICE7 pd3dDevice)
 			if ((Project.hide & HIDE_FIXINTER) && (io->ioflags & IO_FIX)) continue;
 
 			long xx,yy;
-			F2L((io->pos.x)*ACTIVEBKG->Xmul,&xx);
-			F2L((io->pos.z)*ACTIVEBKG->Zmul,&yy);
+			xx = io->pos.x * ACTIVEBKG->Xmul;
+			yy = io->pos.z * ACTIVEBKG->Zmul;
 
 			if ( (xx>=1) && (yy>=1) && (xx<ACTIVEBKG->Xsize-1) && (yy<ACTIVEBKG->Zsize-1) )
 			{
@@ -174,9 +174,8 @@ void ARXDRAW_DrawInterShadows(LPDIRECT3DDEVICE7 pd3dDevice)
 							in.sx=io->obj->vertexlist3[k].v.x-s2;						
 							in.sz=io->obj->vertexlist3[k].v.z-s2;
 
-							long lv;
 							r*=255.f;
-							F2L(r,&lv);
+							long lv = r;
 							ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=0xFF000000 | lv<<16 | lv<<8 | lv;
 							
 							if (first)
@@ -231,9 +230,8 @@ void ARXDRAW_DrawInterShadows(LPDIRECT3DDEVICE7 pd3dDevice)
 							in.sx=io->obj->vertexlist3[origin].v.x-s2;						
 							in.sz=io->obj->vertexlist3[origin].v.z-s2;
 
-							long lv;
 							r*=255.f;
-							F2L(r,&lv);						
+							long lv = r;
 							ltv[0].color=	ltv[1].color	=	ltv[2].color	=	ltv[3].color	=	0xFF000000 | lv<<16 | lv<<8 | lv;
 
 							if (first)
@@ -341,8 +339,8 @@ void ARXDRAW_DrawAllLights(LPDIRECT3DDEVICE7 pd3dDevice,long x0,long z0,long x1,
 		if (GLight[i]!=NULL)
 		{
 			
-			F2L(GLight[i]->pos.x*ACTIVEBKG->Xmul,&tx);
-			F2L(GLight[i]->pos.z*ACTIVEBKG->Zmul,&tz);
+			tx = GLight[i]->pos.x * ACTIVEBKG->Xmul;
+			tz = GLight[i]->pos.z * ACTIVEBKG->Zmul;
 			GLight[i]->mins.x=9999999999.f;
 
 			if ((tx>=x0) && (tx<=x1) &&
