@@ -57,14 +57,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SPEECH_H
 #define ARX_SPEECH_H
 
-#define MAX_ACTORS 10
 
 #include <tchar.h>
 #include "core/Application.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/GraphicsTypes.h"
 
-const unsigned long MAX_SPEECH(9);
+#define MAX_ACTORS 10
+const unsigned int MAX_SPEECH = 9;
 
 //-----------------------------------------------------------------------------
 typedef struct

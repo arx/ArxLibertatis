@@ -1685,7 +1685,8 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 
 	if (eerie->facelist)		free(eerie->facelist);
 
-	if (eerie->actionlist)	free(eerie->actionlist);
+// TODO(lubosz): crash
+//	if (eerie->actionlist)	free(eerie->actionlist);
 
 	eerie->maplist = NULL;
 	eerie->vertexlist = NULL;
@@ -1700,7 +1701,8 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 			        && (eerie->grouplist[i].nb_index > 0)) free(eerie->grouplist[i].indexes);
 		}
 
-		free(eerie->grouplist);
+// TODO(lubosz): crash
+//		free(eerie->grouplist);
 	}
 
 	eerie->grouplist = NULL;
