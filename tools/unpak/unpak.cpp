@@ -1,7 +1,3 @@
-
-#include <hermes/PakReader.h>
-#include <hermes/PakEntry.h>
-
 #include <string>
 #include <cassert>
 using std::string;
@@ -9,11 +5,17 @@ using std::string;
 #include <sys/stat.h>
 #include <cstdio>
 #include <cstdlib>
+#include <sstream>
+using std::ostringstream;
 
 #include <algorithm>
 using std::transform;
 
-void dump(PakReader & pak, const PakDirectory * dir, string where = string()) {
+#include "io/PakReader.h"
+#include "io/PakEntry.h"
+//#define TEST_PAK_FREAD
+
+void dump(PakReader & pak, const PakDirectory * dir, const string  & where = string()) {
 	
 	if(!dir) {
 		return;
@@ -65,6 +67,21 @@ void dump(PakReader & pak, const PakDirectory * dir, string where = string()) {
 				fclose(f);
 				exit(1);
 			}
+			
+#ifdef TEST_PAK_FREAD
+			string fdata;
+			PakFileHandle * pfh = pak.fOpen(filename.c_str());
+			assert(pfh != NULL);
+			char buf[10];
+			size_t s;
+			while((s = pak.fRead(buf, 10, 1, pfh))) {
+				fdata.append(buf, s);
+			}
+			pak.fClose(pfh);
+			
+			assert(size == fdata.size());
+			assert(fdata == string(data, size));
+#endif // TEST_PAK_FREAD
 			
 			free(data);
 			

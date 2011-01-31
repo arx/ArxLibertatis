@@ -11,9 +11,10 @@ include_directories(
 
 add_executable(unpaker 
 unpak/unpak.cpp 
-../src/hermes/PakEntry.cpp 
-../src/hermes/PakReader.cpp 
-../src/hermes/HashMap.cpp 
-../src/hermes/blast.cpp)
+../src/io/PakEntry.cpp 
+../src/io/PakReader.cpp 
+../src/io/HashMap.cpp 
+../src/io/Logger.cpp 
+../src/io/Blast.cpp)
 
 # target_link_libraries(unpak z)
