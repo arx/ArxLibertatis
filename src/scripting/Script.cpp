@@ -2004,19 +2004,19 @@ SCRIPT_VAR * SETVarValueLong(SCRIPT_VAR ** svf, long& nb, const std::string& nam
 }
 //*************************************************************************************
 //*************************************************************************************
-SCRIPT_VAR * SETVarValueFloat(SCRIPT_VAR ** svf, long * nb, const char * name, float val)
+SCRIPT_VAR * SETVarValueFloat(SCRIPT_VAR ** svf, long& nb, const std::string& name, float val)
 {
 	SCRIPT_VAR * tsv;
-	tsv = GetVarAddress(*svf, nb, name);
+	tsv = GetVarAddress(*svf, &nb, name);
 
 	if (!tsv)
 	{
-		tsv = GetFreeVarSlot(svf, nb);
+		tsv = GetFreeVarSlot(svf, &nb);
 
 		if (!tsv)
 			return NULL;
 
-		strcpy(tsv->name, name);
+		strcpy(tsv->name, name.c_str());
 	}
 
 	tsv->fval = val;
@@ -5890,7 +5890,7 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const std::string& name, const std:
 			if (io) return;
 
 			fval = (float)atof(content.c_str());
-			sv = SETVarValueFloat(&svar, &NB_GLOBALS, name.c_str(), fval);
+			sv = SETVarValueFloat(&svar, NB_GLOBALS, name, fval);
 
 			if (sv != NULL)
 				sv->type = TYPE_G_FLOAT;
@@ -5901,7 +5901,7 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const std::string& name, const std:
 			if (io == NULL) return;
 
 			fval = (float)atof(content.c_str());
-			sv = SETVarValueFloat(&esss->lvar, &esss->nblvar, name.c_str(), fval);
+			sv = SETVarValueFloat(&esss->lvar, esss->nblvar, name, fval);
 
 			if (sv != NULL)
 				sv->type = TYPE_L_FLOAT;
