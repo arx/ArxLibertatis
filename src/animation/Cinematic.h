@@ -23,18 +23,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
+#ifndef ARX_ANIMATION_CINEMATIC_H
+#define ARX_ANIMATION_CINEMATIC_H
 
 #include <windows.h> // for HRESULT
 
 #include "graphics/d3dwrapper.h" // for LPDIRECT3DDEVICE7
 #include "graphics/GraphicsTypes.h" // for EERIE_2D and EERIE_3D
 
-#ifndef ARX_ANIMATION_CINEMATIC_H
-#define ARX_ANIMATION_CINEMATIC_H
 
-#define MAX_BITMAP 256
-#define MAX_SOUND 256
-
+// TODO macros
 //fx
 #define FX_FADEIN 1
 #define FX_FADEOUT 2
@@ -47,18 +45,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define FX_APPEAR2 (3<<16)
 //all time
 #define FX_LIGHT   (1<<24)
-
-#define INTERP_NO -1
-#define INTERP_BEZIER 0
-#define INTERP_LINEAR 1
-#define INTERP_NO_FADE 2
-
-#define LARGEURS 512
-#define HAUTEURS 384
-
-#define C_MIN_F32 1.175494351e-38F
-#define C_EQUAL_F32(f1,f2) (fabs(f1-f2)<C_MIN_F32)
-#define C_NEQUAL_F32(f1,f2) (fabs(f1-f2)>=C_MIN_F32)
 
 #define C_LANGUAGE_FRENCH   0
 #define C_LANGUAGE_GERMAN   1

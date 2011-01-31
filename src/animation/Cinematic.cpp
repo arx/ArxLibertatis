@@ -32,8 +32,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
 
-#define ADJUSTX(a) (((((a)-(LARGEURS>>1))*((float)LargeurRender/(float)LARGEURS))+(LARGEURS>>1)))*(640.f/(float)LargeurRender) //*((float)LARGEURS/(float)LargeurRender)
-#define ADJUSTY(a) (((((a)-(HAUTEURS>>1))*((float)HauteurRender/(float)HAUTEURS))+(HAUTEURS>>1)))*(480.f/(float)HauteurRender)  //*((float)HAUTEURS/(float)HauteurRender)
+#define WIDTHS 512
+#define HEIGHTS 384
+
+#define ADJUSTX(a) (((((a)-(WIDTHS>>1))*((float)LargeurRender/(float)WIDTHS))+(WIDTHS>>1)))*(640.f/(float)LargeurRender) //*((float)LARGEURS/(float)LargeurRender)
+#define ADJUSTY(a) (((((a)-(HEIGHTS>>1))*((float)HauteurRender/(float)HEIGHTS))+(HEIGHTS>>1)))*(480.f/(float)HauteurRender)  //*((float)HAUTEURS/(float)HauteurRender)
 
 /*---------------------------------------------------------------------------------*/
 
@@ -77,7 +80,6 @@ extern char FileNameChoose[];
 extern int UndoPile;
 extern int NbBitmap;
 extern float SpecialFadeDx;
-extern CinematicSound		TabSound[MAX_SOUND];
 extern long DANAESIZX;
 extern long DANAESIZY;
 extern DANAE danaeApp;
