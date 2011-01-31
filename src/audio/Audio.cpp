@@ -36,7 +36,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <dsound.h>
+#include <AL/al.h>
 #include <math.h>
 #include <cstring>
 
