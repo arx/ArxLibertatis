@@ -1985,18 +1985,18 @@ float GetVarValueInterpretedAsFloat( std::string& temp1, EERIE_SCRIPT * esss, IN
 }
 //*************************************************************************************
 //*************************************************************************************
-SCRIPT_VAR * SETVarValueLong(SCRIPT_VAR ** svf, long * nb, const char * name, long val)
+SCRIPT_VAR * SETVarValueLong(SCRIPT_VAR ** svf, long& nb, const std::string& name, long val)
 {
-	SCRIPT_VAR * tsv = GetVarAddress(*svf, nb, name);
+	SCRIPT_VAR * tsv = GetVarAddress(*svf, &nb, name);
 
 	if (!tsv)
 	{
-		tsv = GetFreeVarSlot(svf, nb);
+		tsv = GetFreeVarSlot(svf, &nb);
 
 		if (!tsv)
 			return NULL;
 
-		strcpy(tsv->name, name);
+		strcpy(tsv->name, name.c_str());
 	}
 
 	tsv->ival = val;
@@ -5868,7 +5868,7 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const std::string& name, const std:
 			if (io) return;
 
 			ival = atoi(content.c_str());
-			sv = SETVarValueLong(&svar, &NB_GLOBALS, name.c_str(), ival);
+			sv = SETVarValueLong(&svar, NB_GLOBALS, name, ival);
 
 			if (sv != NULL)
 				sv->type = TYPE_G_LONG;
@@ -5879,7 +5879,7 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const std::string& name, const std:
 			if (io == NULL) return;
 
 			ival = atoi(content.c_str());
-			sv = SETVarValueLong(&esss->lvar, &esss->nblvar, name.c_str(), ival);
+			sv = SETVarValueLong(&esss->lvar, esss->nblvar, name, ival);
 
 			if (sv != NULL)
 				sv->type = TYPE_L_LONG;
