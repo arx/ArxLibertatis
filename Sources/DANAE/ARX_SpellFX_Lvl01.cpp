@@ -75,6 +75,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIELight.h"
 #include "EERIEObject.h"
 
+#include <algorithm>
+
 #include <crtdbg.h>
 #define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
@@ -346,7 +348,7 @@ void CMagicMissile::SetColor1(float faRed, float faGreen, float faBlue)
 void CMagicMissile::SetTTL(unsigned long aulTTL)
 {
 	unsigned long t = ulCurrentTime;
-	ulDuration = min(ulCurrentTime + aulTTL, ulDuration);
+	ulDuration = std::min(ulCurrentTime + aulTTL, ulDuration);
 	SetDuration(ulDuration);
 	ulCurrentTime = t;
 
@@ -680,8 +682,8 @@ void CMultiMagicMissile::Create(EERIE_3D aePos, EERIE_3D angles)
 				ARX_CHECK_LONG(fTime);
 				long	lTime	= ARX_CLEAN_WARN_CAST_LONG(fTime);
 
-				lTime		= max(1000, lTime);
-				lMax		= max(lMax, lTime);
+				lTime		= std::max(static_cast<long>(1000), lTime);
+				lMax		= std::max(lMax, lTime);
 
 				CMagicMissile * pMM = (CMagicMissile *)pTab[i];
 

@@ -65,6 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "Hermesmain.h"
 #include "danae.h"
 
+#include <algorithm>
 #include <cstdio>
 
 #define _CRTDBG_MAP_ALLOC
@@ -406,8 +407,8 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 		float div = DIV25;
 		TextureContainer * tc = minimap[SHOWLEVEL].tc;
-		float dw = 1.f / (float)max(tc->m_dwDeviceWidth, tc->m_dwOriginalWidth); 
-		float dh = 1.f / (float)max(tc->m_dwDeviceHeight, tc->m_dwOriginalHeight);
+		float dw = 1.f / (float)std::max(tc->m_dwDeviceWidth, tc->m_dwOriginalWidth); 
+		float dh = 1.f / (float)std::max(tc->m_dwDeviceHeight, tc->m_dwOriginalHeight);
 		
 		float vx2 = 4.f * dw * mod_x;
 		float vy2 = 4.f * dh * mod_z;

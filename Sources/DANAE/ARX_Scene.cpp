@@ -73,6 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEUtil.h"
 #include "EERIEMath.h"
 
+#include <algorithm>
 #define DIRECTINPUT_VERSION 0x0700
 #include <dinput.h>
 #include <cstdio>
@@ -241,7 +242,7 @@ void PopOneTriangleListClipp(D3DTLVERTEX *_pVertex,int *_piNbVertex)
 		SMY_D3DVERTEX *pVertex;
 
 
-		int iMin  = min(*_piNbVertex,pDynamicVertexBufferTransform->ussMaxVertex);
+		int iMin  = std::min(*_piNbVertex,static_cast<int>(pDynamicVertexBufferTransform->ussMaxVertex));
 		ARX_CHECK_USHORT(iMin);
 
 		unsigned short iNbVertex=ARX_CLEAN_WARN_CAST_USHORT(iMin); 	
@@ -336,7 +337,7 @@ __declspec(dllexport) HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevic
 		_LPVERTEX_		pVertex			=	NULL;
 		int				iOldNbVertex	=	pDVB->ussNbVertex;
 		pDVB->ussNbIndice				=	0;
-		unsigned short iNbVertex		=	(unsigned short) min( *_piNbVertex, pDVB->ussMaxVertex ); //don't overload VB
+		unsigned short iNbVertex		=	std::min(static_cast<unsigned short>(*_piNbVertex), pDVB->ussMaxVertex); //don't overload VB
 
 		pDVB->ussNbVertex				+=	iNbVertex;
 

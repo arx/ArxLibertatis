@@ -24,15 +24,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 // Code: Didier Pédreno
 
+// Nuky - 30-01-11 - refactored most of this file
+
 #ifndef LOC_HASH_H
 #define LOC_HASH_H
 
 #include "ARX_Common.h"
 
-#include <windows.h>
-#include <cstdio>
-#include <cstdlib>
-#include <string>
 #include <tchar.h>
 #include <vector>
 
@@ -42,78 +40,54 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //-----------------------------------------------------------------------------
 class CLocalisation
 {
-	public:
-		_TCHAR		*	 lpszUSection;
-		std::vector<_TCHAR *> vUKeys;
-	
-	public:
-		CLocalisation()
-		{
-			lpszUSection = NULL;
-		};
-		~CLocalisation()
-		{
-			if (lpszUSection)
-			{
-				free((void *)lpszUSection);
-				lpszUSection = NULL;
-			}
-			
-			for (UINT i = 0 ; i < vUKeys.size() ; i++)
-			{
-				free((void *) vUKeys[i]);
-				vUKeys[i] = NULL;
-			}
-		};
+public:
+	_TCHAR*					section;
+	std::vector<_TCHAR*>	keys;
 
-		void SetSection(_TCHAR * _lpszUSection)
-		{
-			if (lpszUSection)
-			{
-				free(lpszUSection);
-				lpszUSection = NULL;
-			}
+public:
+	CLocalisation();
+	~CLocalisation();
 
-			lpszUSection = (_TCHAR *) malloc((_tcslen(_lpszUSection) + 2) * sizeof(_TCHAR));
-			memset(lpszUSection, 0, (_tcslen(_lpszUSection) + 2) * sizeof(_TCHAR));
-			_tcscpy(lpszUSection, _lpszUSection);
-		};
-		void AddKey(_TCHAR * _lpszUText)
-		{
-			_TCHAR * lpszT = (_TCHAR *) malloc((_tcslen(_lpszUText) + 2) * sizeof(_TCHAR));
-			memset(lpszT, 0, (_tcslen(_lpszUText) + 2) * sizeof(_TCHAR));
-			_tcscpy(lpszT, _lpszUText);
+public:
+	/// Set the section name to \a str.
+	void SetSection(const _TCHAR* str);
+	/// Adds a \a key.
+	void AddKey(const _TCHAR* key);
 
-			vUKeys.push_back(lpszT);
-		};
+private:
+	// No copy
+	CLocalisation(const CLocalisation&);
+	CLocalisation& operator=(const CLocalisation&);
 };
 
 //-----------------------------------------------------------------------------
+/// Hash map container for CLocalisation's. Supposedly fast lookup by section name
 class CLocalisationHash
 {
-	public:
-		unsigned long	iSize;
-		long			iMask;
-		unsigned long	iFill;
-		CLocalisation	** pTab;
-	public:
-		unsigned long	iNbCollisions;
-		unsigned long	iNbNoInsert;
+public:
+	explicit CLocalisationHash(int reservedSize = 1024);
+	~CLocalisationHash();
 
-	private:
-		int				FuncH1(int);
-		int				FuncH2(int);
-		int				GetKey(const _TCHAR *);
+public:
+	/// Add \a loc in the container.
+	/// \note Takes ownership of \a loc if it returns true
+	bool AddElement(CLocalisation* loc);
+	/// Get element whose section matches \a name
+	/// \note case insensitive
+	const CLocalisation* GetElement(const _TCHAR* name) const;
 
-	public:
-		CLocalisationHash(int _iSize = 1024);
-		~CLocalisationHash();
+private:
+	void ReHash();
 
-		void ReHash();
-		bool AddElement(CLocalisation * _pLoc);
- 
-		_TCHAR * GetPtrWithString(const _TCHAR *);
-		unsigned long GetKeyCount(const _TCHAR *);
+private:
+	unsigned long	iSize_;
+	long			iMask_;
+	unsigned long	iFill_;
+	CLocalisation	** pTab_;
+
+	// No copy
+	CLocalisationHash(const CLocalisationHash&);
+	CLocalisationHash& operator=(const CLocalisationHash&);
 };
 
 #endif

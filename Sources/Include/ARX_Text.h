@@ -142,13 +142,13 @@ _TCHAR * GetFontName(char *);
 void _ShowText(char * text);
 
 //-----------------------------------------------------------------------------
-long HERMES_UNICODE_GetProfileString(_TCHAR	*	sectionname,
-                                     _TCHAR	*	t_keyname,
-                                     _TCHAR	*	defaultstring,
-                                     _TCHAR	*	destination,
-                                     unsigned long	maxsize,
-                                     _TCHAR	*	datastream,
-                                     long			lastspeech);
+long HERMES_UNICODE_GetProfileString(const _TCHAR	*	sectionname,
+                                     const _TCHAR	*	t_keyname,
+                                     const _TCHAR	*	defaultstring,
+                                     _TCHAR			*	destination,
+                                     unsigned long		maxsize,
+                                     const _TCHAR	*	datastream,
+                                     long				lastspeech);
 
 //-----------------------------------------------------------------------------
 

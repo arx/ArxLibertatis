@@ -67,6 +67,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEMath.h"
 #include "EERIEDraw.h"
 
+#include <algorithm>
+
 #include <crtdbg.h>
 #define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
@@ -102,7 +104,7 @@ void CMassLightning::Create(EERIE_3D aePos, float afBeta = 0)
 		pTab[i]->Create(aePos, eTarget, 0);
 		long lTime = (long)(ulDuration + rnd() * 5000.0f);
 		pTab[i]->SetDuration(lTime);
-		lMax = max(lMax, lTime);
+		lMax = std::max(lMax, lTime);
 		pTab[i]->spellinstance = this->spellinstance;
 		pTab[i]->SetColor1(1.f, 0.75f, 0.75f); // milieu
 		pTab[i]->SetColor2(0.3f, 0.f, 0.f); // extrémités

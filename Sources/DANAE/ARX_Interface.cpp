@@ -70,6 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "resource.h"
 
+#include <algorithm>
 #include <cstdio>
 
 #define _CRTDBG_MAP_ALLOC
@@ -7232,7 +7233,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 									1000,
 									0.01f,
 									2,
-									INTERNATIONAL_MODE?0:max(3000, 70*_tcslen(spellicons[i].description)));
+									INTERNATIONAL_MODE?0:std::max(3000, static_cast<int>(70*_tcslen(spellicons[i].description))));
 							}
 							
 							
@@ -8165,7 +8166,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						1000,
 						0.01f,
 						3,
-						INTERNATIONAL_MODE?0:max(3000, 70*_tcslen(tex)));
+						INTERNATIONAL_MODE?0:std::max(3000, static_cast<int>(70*_tcslen(tex))));
 				}
 				else
 				{
@@ -8179,7 +8180,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						1000,
 						0.01f,
 						3,
-						INTERNATIONAL_MODE?0:max(3000, 70*_tcslen(ARXmenu.mda->flyover[FLYING_OVER])));
+						INTERNATIONAL_MODE?0:std::max(3000, static_cast<int>(70*_tcslen(ARXmenu.mda->flyover[FLYING_OVER]))));
 				}
 			}
 		}

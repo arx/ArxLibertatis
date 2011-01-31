@@ -4402,7 +4402,6 @@ extern INTERACTIVE_OBJ * DESTROYED_DURING_RENDERING;
 
 extern CDirectInput * pGetInfoDirectInput;
 extern TextureContainer TexMetal;
-extern long FINAL_COMMERCIAL_DEMO;
 bool bRenderInterList = true; //false;
 void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to, long flags)
 {

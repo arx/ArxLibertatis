@@ -24,23 +24,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 // Code: Didier Pédreno
 
+// Nuky - 30-01-11 - cleaned
+
 #ifndef ARX_LOC_H
 #define ARX_LOC_H
 
-#include <tchar.h>
-#include <objbase.h>
 #include "ARX_Common.h"
 
-void ARX_Localisation_Init(char * _lpszExtension = "english");
+#include <tchar.h>
+
+void ARX_Localisation_Init(const char * _lpszExtension = "english");
 void ARX_Localisation_Close();
 
-
-DWORD PAK_UNICODE_GetPrivateProfileString(_TCHAR * _lpszSection,
-        _TCHAR * _lpszKey,
-        _TCHAR * _lpszDefault,
-        _TCHAR * _lpszBuffer,
-        unsigned long	_lBufferSize,
-        char	* _lpszFileName);
+void PAK_UNICODE_GetPrivateProfileString(const _TCHAR * _lpszSection,
+										 const _TCHAR * _lpszKey,
+										 const _TCHAR * _lpszDefault,
+										 _TCHAR * _lpszBuffer,
+										 unsigned long _lBufferSize,
+										 const char * _lpszFileName);
 
 long HERMES_UNICODE_GetProfileSectionKeyCount(const _TCHAR * sectionname);
 

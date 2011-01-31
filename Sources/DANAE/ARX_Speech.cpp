@@ -507,7 +507,6 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, char * data, long param, long mo
 		                                      io->lastspeechflag
 		                                     );
 
-
 		io->lastspeechflag = (short)flg;
 		aspeech[num].text = (_TCHAR *) malloc((_tcslen(_output) + 1) * sizeof(_TCHAR));
 		_tcscpy(aspeech[num].text, _output);

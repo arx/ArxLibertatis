@@ -69,6 +69,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEMath.h"
 #include "EERIEObject.h"
 
+#include <algorithm>
+
 #include <crtdbg.h>
 #define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
@@ -251,12 +253,12 @@ float CCreateField::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		}
 	}
 
-	ysize = min(1.0f, ulCurrentTime * 0.001f);
+	ysize = std::min(1.0f, ulCurrentTime * 0.001f);
 
 	if (ysize >= 1.0f)
 	{
-		size = min(1.0f, (ulCurrentTime - 1000) * 0.001f);
-		size = max(size, 0.1f);
+		size = std::min(1.0f, (ulCurrentTime - 1000) * 0.001f);
+		size = std::max(size, 0.1f);
 	}
 
 	// ondulation
@@ -934,7 +936,7 @@ void CRiseDead::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	// computation des sommets
 	float fTempCos, fTempSin;
 
-	for (i = 0; i <= min(end, fSizeIntro); i++)
+	for (i = 0; i <= std::min(end, static_cast<int>(fSizeIntro)); i++)
 	{
 		if (i <= end * 0.5f)
 		{
@@ -969,7 +971,7 @@ void CRiseDead::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	if (bIntro)
 	{
-		for (i = 0; i < min(end, fSizeIntro); i++)
+		for (i = 0; i < std::min(end, static_cast<int>(fSizeIntro)); i++)
 		{
 			EE_RT2(&v1a[i], &vr[0]);
 			EE_RT2(&v1b[i], &vr[1]);
@@ -986,7 +988,7 @@ void CRiseDead::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	}
 	else
 	{
-		for (i = 0; i < min(end, fSizeIntro); i++)
+		for (i = 0; i < std::min(end, static_cast<int>(fSizeIntro)); i++)
 		{
 			EE_RT2(&va[i], &vr[0]);
 			EE_RT2(&vb[i], &vr[1]);
@@ -1007,7 +1009,7 @@ void CRiseDead::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	vr[0].color = vr[1].color = D3DRGB(0, 0, 0);
 	vr[2].color = vr[3].color = D3DRGB(fColorBorder[0], fColorBorder[1], fColorBorder[2]);
 
-	for (i = 0; i < min(end, fSizeIntro); i++)
+	for (i = 0; i < std::min(end, static_cast<int>(fSizeIntro)); i++)
 	{
 		vt[2].sx = va[i].sx   - (va[i].sx - eSrc.x) * 0.2f;
 		vt[2].sy = va[i].sy   - (va[i].sy - eSrc.y) * 0.2f;
@@ -1453,8 +1455,8 @@ void CParalyse::CreateLittlePrismTriangleList()
 			fd = 40 + rnd() * 80.0f;
 		}
 
-		fd = max(fd, 40);
-		fd = min(fd, 120);
+		fd = std::max(fd, 40.f);
+		fd = std::min(fd, 120.f);
 		tabprism[i].pos.x = pos.x + EEsin(randd) * fd;
 		tabprism[i].pos.y = pos.y;
 		tabprism[i].pos.z = pos.z + EEcos(randd) * fd;
@@ -1469,8 +1471,8 @@ void CParalyse::CreateLittlePrismTriangleList()
 
 			vd->x = vt.x ;
 			float fy = (1 - i * DIV20);
-			fy = max(fy, 0.2f);
-			fy = min(fy, 0.7f);
+			fy = std::max(fy, 0.2f);
+			fy = std::min(fy, 0.7f);
 			vd->y = vt.y * fy;
 			vd->z = vt.z ;
 
@@ -2042,7 +2044,7 @@ float CParalyse::Render(LPDIRECT3DDEVICE7 pD3DDevice)
 				particle[j].siz = 20.f;
 
 
-				float fMin = min(2000 + (rnd() * 2000.f), duration - currduration + 500.0f * rnd());
+				float fMin = std::min(2000 + (rnd() * 2000.f), duration - currduration + 500.0f * rnd());
 				ARX_CHECK_ULONG(fMin);
 
 				particle[j].tolive = ARX_CLEAN_WARN_CAST_ULONG(fMin);
@@ -2083,7 +2085,7 @@ float CParalyse::Render(LPDIRECT3DDEVICE7 pD3DDevice)
 				particle[j].siz = 0.5f;
 
 
-				float fMin = min(2000 + (rnd() * 2000.f), duration - currduration + 500.0f * rnd());
+				float fMin = std::min(2000 + (rnd() * 2000.f), duration - currduration + 500.0f * rnd());
 				ARX_CHECK_ULONG(fMin);
 
 				particle[j].tolive = ARX_CLEAN_WARN_CAST_ULONG(fMin);

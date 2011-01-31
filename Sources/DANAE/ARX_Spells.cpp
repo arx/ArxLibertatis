@@ -8050,9 +8050,9 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 							if (ii==0) 
 							{
 								if (!BLOCK_PLAYER_CONTROLS)
-									player.life=min(player.life+gain,player.Full_maxlife);									
+									player.life=std::min(player.life+gain,player.Full_maxlife);									
 							}
-							else inter.iobj[ii]->_npcdata->life=min(inter.iobj[ii]->_npcdata->life+gain,inter.iobj[ii]->_npcdata->maxlife);
+							else inter.iobj[ii]->_npcdata->life=std::min(inter.iobj[ii]->_npcdata->life+gain,inter.iobj[ii]->_npcdata->maxlife);
 						}
 					}
 				}

@@ -175,10 +175,6 @@ CD3DApplication::CD3DApplication()
 	zbuffer_max_div = 1.f;
 }
 
-
-extern long FINAL_COMMERCIAL_DEMO;
-extern long FINAL_COMMERCIAL_GAME;
-
 //*************************************************************************************
 // Create()
 //*************************************************************************************

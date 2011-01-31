@@ -25,8 +25,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //-----------------------------------------------------------------------------
 // Arx_Menu2.cpp
 //-----------------------------------------------------------------------------
-#include <windows.h>
-#include <tchar.h>
 #include "danae.h"
 #include "arx_menu.h"
 #include "arx_menu2.h"
@@ -43,6 +41,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "eerietexture.h"
 #include "eeriepoly.h"
 #include "eeriedraw.h"
+
+#include <algorithm>
+#include <tchar.h>
+#include <windows.h>
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
@@ -6782,8 +6784,8 @@ void CMenuButton::SetPos(int _iX,int _iY)
 	if (pTex)
 	{
 
-		iWidth  = max ( ARX_CAST_UINT( iWidth ), pTex->m_dwWidth );
-		iHeight = max ( ARX_CAST_UINT( iHeight ), pTex->m_dwHeight );
+		iWidth  = std::max(ARX_CAST_UINT( iWidth ), static_cast<unsigned int>(pTex->m_dwWidth));
+		iHeight = std::max(ARX_CAST_UINT( iHeight ), static_cast<unsigned int>(pTex->m_dwHeight));
 
 		float fRatioX = RATIO_X(iWidth);
 		float fRatioY = RATIO_Y(iHeight);
@@ -6801,8 +6803,8 @@ void CMenuButton::SetPos(int _iX,int _iY)
 
 	if (pTexOver)
 	{
-		iWidth2  = max ( ARX_CAST_UINT( iWidth2 ), pTexOver->m_dwWidth );
-		iHeight2 = max ( ARX_CAST_UINT( iHeight2 ), pTexOver->m_dwHeight );
+		iWidth2  = std::max(ARX_CAST_UINT( iWidth2 ), static_cast<unsigned int>(pTexOver->m_dwWidth));
+		iHeight2 = std::max(ARX_CAST_UINT( iHeight2 ), static_cast<unsigned int>(pTexOver->m_dwHeight));
 
 		float fRatioX = RATIO_X(iWidth2) ;
 		float fRatioY = RATIO_Y(iHeight2);

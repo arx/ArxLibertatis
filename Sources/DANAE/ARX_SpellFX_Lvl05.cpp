@@ -73,6 +73,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIELight.h"
 #include "EERIEObject.h"
 
+#include <algorithm>
+
 #define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
 extern CParticleManager * pParticleManager;
@@ -1091,7 +1093,7 @@ void CMultiPoisonProjectile::Create(EERIE_3D _eSrc, float _afBeta = 0)
 		pTab[i]->Create(_eSrc, afBeta + frand2() * 10.0f);
 		long lTime = ulDuration + (long) rnd() * 5000;
 		pTab[i]->SetDuration(lTime);
-		lMax = max(lMax, lTime);
+		lMax = std::max(lMax, lTime);
 
 		CPoisonProjectile * pPP = (CPoisonProjectile *) pTab[i];
 
