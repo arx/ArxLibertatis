@@ -1844,10 +1844,9 @@ SCRIPT_VAR* GetVarAddress(SCRIPT_VAR svf[], long& nb, const std::string& name)
 
 //*************************************************************************************
 //*************************************************************************************
-long GETVarValueLong(SCRIPT_VAR ** svf, long& nb, const std::string& name)
+long GETVarValueLong(SCRIPT_VAR*& svf, long& nb, const std::string& name)
 {
-	SCRIPT_VAR * tsv;
-	tsv = GetVarAddress(*svf, nb, name);
+	SCRIPT_VAR* tsv = GetVarAddress(svf, nb, name);
 
 	if (tsv == NULL) return 0;
 
@@ -1855,10 +1854,9 @@ long GETVarValueLong(SCRIPT_VAR ** svf, long& nb, const std::string& name)
 }
 //*************************************************************************************
 //*************************************************************************************
-float GETVarValueFloat(SCRIPT_VAR ** svf, long& nb, const std::string& name)
+float GETVarValueFloat(SCRIPT_VAR*& svf, long& nb, const std::string& name)
 {
-	SCRIPT_VAR * tsv;
-	tsv = GetVarAddress(*svf, nb, name);
+	SCRIPT_VAR* tsv = GetVarAddress(svf, nb, name);
 
 	if (tsv == NULL) return 0;
 
@@ -1866,10 +1864,9 @@ float GETVarValueFloat(SCRIPT_VAR ** svf, long& nb, const std::string& name)
 }
 //*************************************************************************************
 //*************************************************************************************
-std::string GETVarValueText(SCRIPT_VAR ** svf, long& nb, const std::string& name)
+std::string GETVarValueText(SCRIPT_VAR*& svf, long& nb, const std::string& name)
 {
-	SCRIPT_VAR * tsv;
-	tsv = GetVarAddress(*svf, nb, name);
+	SCRIPT_VAR* tsv = GetVarAddress(svf, nb, name);
 
 	if (tsv == NULL) return 0;
 
@@ -1909,21 +1906,21 @@ std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * ess
 	}
 	else if (temp1[0] == '#')
 	{
-		l1 = GETVarValueLong(&svar, NB_GLOBALS, temp1);
+		l1 = GETVarValueLong(svar, NB_GLOBALS, temp1);
 		sprintf(var_text, "%ld", l1);
 		return var_text;
 	}
 	else if (temp1[0] == '\xA7')
 	{
-		l1 = GETVarValueLong(&esss->lvar, esss->nblvar, temp1);
+		l1 = GETVarValueLong(esss->lvar, esss->nblvar, temp1);
 		sprintf(var_text, "%ld", l1);
 		return var_text;
 	}
-	else if (temp1[0] == '&') t1 = GETVarValueFloat(&svar, NB_GLOBALS, temp1);
-	else if (temp1[0] == '@') t1 = GETVarValueFloat(&esss->lvar, esss->nblvar, temp1);
+	else if (temp1[0] == '&') t1 = GETVarValueFloat(svar, NB_GLOBALS, temp1);
+	else if (temp1[0] == '@') t1 = GETVarValueFloat(esss->lvar, esss->nblvar, temp1);
 	else if (temp1[0] == '$')
 	{
-		std::string tempo = GETVarValueText(&svar, NB_GLOBALS, temp1);
+		std::string tempo = GETVarValueText(svar, NB_GLOBALS, temp1);
 
 		if (tempo.empty()) strcpy(var_text, "VOID");
 		else strcpy(var_text, tempo.c_str());
@@ -1932,7 +1929,7 @@ std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * ess
 	}
 	else if (temp1[0] == '\xA3')
 	{
-		std::string tempo = GETVarValueText(&esss->lvar, esss->nblvar, temp1);
+		std::string tempo = GETVarValueText(esss->lvar, esss->nblvar, temp1);
 
 		if (tempo.empty()) strcpy(var_text, "VOID");
 		else strcpy(var_text, tempo.c_str());
@@ -1973,22 +1970,22 @@ float GetVarValueInterpretedAsFloat( std::string& temp1, EERIE_SCRIPT * esss, IN
 		}
 
 	}
-	else if (temp1[0] == '#')	return (float)GETVarValueLong(&svar, NB_GLOBALS, temp1);
-	else if (temp1[0] == '\xA7') return (float)GETVarValueLong(&esss->lvar, esss->nblvar, temp1);
-	else if (temp1[0] == '&') return GETVarValueFloat(&svar, NB_GLOBALS, temp1);
-	else if (temp1[0] == '@') return GETVarValueFloat(&esss->lvar, esss->nblvar, temp1);
+	else if (temp1[0] == '#')	return (float)GETVarValueLong(svar, NB_GLOBALS, temp1);
+	else if (temp1[0] == '\xA7') return (float)GETVarValueLong(esss->lvar, esss->nblvar, temp1);
+	else if (temp1[0] == '&') return GETVarValueFloat(svar, NB_GLOBALS, temp1);
+	else if (temp1[0] == '@') return GETVarValueFloat(esss->lvar, esss->nblvar, temp1);
 
 	return (float)atof(temp1.c_str());
 }
 //*************************************************************************************
 //*************************************************************************************
-SCRIPT_VAR * SETVarValueLong(SCRIPT_VAR ** svf, long& nb, const std::string& name, long val)
+SCRIPT_VAR* SETVarValueLong(SCRIPT_VAR*& svf, long& nb, const std::string& name, long val)
 {
-	SCRIPT_VAR * tsv = GetVarAddress(*svf, nb, name);
+	SCRIPT_VAR* tsv = GetVarAddress(svf, nb, name);
 
 	if (!tsv)
 	{
-		tsv = GetFreeVarSlot(*svf, nb);
+		tsv = GetFreeVarSlot(svf, nb);
 
 		if (!tsv)
 			return NULL;
@@ -2001,14 +1998,13 @@ SCRIPT_VAR * SETVarValueLong(SCRIPT_VAR ** svf, long& nb, const std::string& nam
 }
 //*************************************************************************************
 //*************************************************************************************
-SCRIPT_VAR * SETVarValueFloat(SCRIPT_VAR ** svf, long& nb, const std::string& name, float val)
+SCRIPT_VAR* SETVarValueFloat(SCRIPT_VAR*& svf, long& nb, const std::string& name, float val)
 {
-	SCRIPT_VAR * tsv;
-	tsv = GetVarAddress(*svf, nb, name);
+	SCRIPT_VAR* tsv = GetVarAddress(svf, nb, name);
 
 	if (!tsv)
 	{
-		tsv = GetFreeVarSlot(*svf, nb);
+		tsv = GetFreeVarSlot(svf, nb);
 
 		if (!tsv)
 			return NULL;
@@ -2021,14 +2017,13 @@ SCRIPT_VAR * SETVarValueFloat(SCRIPT_VAR ** svf, long& nb, const std::string& na
 }
 //*************************************************************************************
 //*************************************************************************************
-SCRIPT_VAR * SETVarValueText(SCRIPT_VAR ** svf, long& nb, const std::string& name, const std::string& val)
+SCRIPT_VAR* SETVarValueText(SCRIPT_VAR*& svf, long& nb, const std::string& name, const std::string& val)
 {
-	SCRIPT_VAR * tsv;
-	tsv = GetVarAddress(*svf, nb, name);
+	SCRIPT_VAR* tsv = GetVarAddress(svf, nb, name);
 
 	if (!tsv)
 	{
-		tsv = GetFreeVarSlot(*svf, nb);
+		tsv = GetFreeVarSlot(svf, nb);
 
 		if (!tsv)
 			return NULL;
@@ -2598,31 +2593,31 @@ long GetNextWord_Interpreted( INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, s
 	}
 	else if	(temp[0] == '#')
 	{
-		ss << GETVarValueLong(&svar, NB_GLOBALS, temp);
+		ss << GETVarValueLong(svar, NB_GLOBALS, temp);
 		temp = ss.str();
 	}
 	else if (temp[0] == '\xA7')
 	{
-		ss << GETVarValueLong(&es->lvar, es->nblvar, temp);
+		ss << GETVarValueLong(es->lvar, es->nblvar, temp);
 		temp = ss.str();
 	}
 	else if (temp[0] == '&')
 	{
-		ss << GETVarValueFloat(&svar, NB_GLOBALS, temp);
+		ss << GETVarValueFloat(svar, NB_GLOBALS, temp);
 		temp = ss.str();
 	}
 	else if (temp[0] == '@')
 	{
-		ss << GETVarValueFloat(&es->lvar, es->nblvar, temp);
+		ss << GETVarValueFloat(es->lvar, es->nblvar, temp);
 		temp = ss.str();
 	}
 	else if (temp[0] == '$')
 	{
-		temp = GETVarValueText(&svar, NB_GLOBALS, temp);
+		temp = GETVarValueText(svar, NB_GLOBALS, temp);
 	}
 	else if (temp[0] == '\xA3')
 	{
-		temp = GETVarValueText(&es->lvar, es->nblvar, temp);
+		temp = GETVarValueText(es->lvar, es->nblvar, temp);
 	}
 
 	return pos;
@@ -5844,7 +5839,7 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const std::string& name, const std:
 
 			if (io) return;
 
-			sv = SETVarValueText(&svar, NB_GLOBALS, name, content);
+			sv = SETVarValueText(svar, NB_GLOBALS, name, content);
 
 			if (sv != NULL)
 				sv->type = TYPE_G_TEXT;
@@ -5854,7 +5849,7 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const std::string& name, const std:
 
 			if (io == NULL) return;
 
-			sv = SETVarValueText(&esss->lvar, esss->nblvar, name, content);
+			sv = SETVarValueText(esss->lvar, esss->nblvar, name, content);
 
 			if (sv != NULL)
 				sv->type = TYPE_L_TEXT;
@@ -5865,7 +5860,7 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const std::string& name, const std:
 			if (io) return;
 
 			ival = atoi(content.c_str());
-			sv = SETVarValueLong(&svar, NB_GLOBALS, name, ival);
+			sv = SETVarValueLong(svar, NB_GLOBALS, name, ival);
 
 			if (sv != NULL)
 				sv->type = TYPE_G_LONG;
@@ -5876,7 +5871,7 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const std::string& name, const std:
 			if (io == NULL) return;
 
 			ival = atoi(content.c_str());
-			sv = SETVarValueLong(&esss->lvar, esss->nblvar, name, ival);
+			sv = SETVarValueLong(esss->lvar, esss->nblvar, name, ival);
 
 			if (sv != NULL)
 				sv->type = TYPE_L_LONG;
@@ -5887,7 +5882,7 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const std::string& name, const std:
 			if (io) return;
 
 			fval = (float)atof(content.c_str());
-			sv = SETVarValueFloat(&svar, NB_GLOBALS, name, fval);
+			sv = SETVarValueFloat(svar, NB_GLOBALS, name, fval);
 
 			if (sv != NULL)
 				sv->type = TYPE_G_FLOAT;
@@ -5898,7 +5893,7 @@ void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const std::string& name, const std:
 			if (io == NULL) return;
 
 			fval = (float)atof(content.c_str());
-			sv = SETVarValueFloat(&esss->lvar, esss->nblvar, name, fval);
+			sv = SETVarValueFloat(esss->lvar, esss->nblvar, name, fval);
 
 			if (sv != NULL)
 				sv->type = TYPE_L_FLOAT;

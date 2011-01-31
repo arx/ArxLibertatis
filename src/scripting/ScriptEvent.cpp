@@ -3736,7 +3736,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 							if (a) RemoveNumerics(tempp);
 
-							sv = SETVarValueText(&svar, NB_GLOBALS, temp, tempp);
+							sv = SETVarValueText(svar, NB_GLOBALS, temp, tempp);
 
 							if (sv == NULL)
 							{
@@ -3750,7 +3750,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 							if (a) RemoveNumerics(tempp);
 
-							sv = SETVarValueText(&esss->lvar, esss->nblvar, temp, tempp);
+							sv = SETVarValueText(esss->lvar, esss->nblvar, temp, tempp);
 
 							if (sv == NULL)
 							{
@@ -3761,7 +3761,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '#': // GLOBAL LONG
 							ival = (long)GetVarValueInterpretedAsFloat(temp2, esss, io);
-							sv = SETVarValueLong(&svar, NB_GLOBALS, temp, ival);
+							sv = SETVarValueLong(svar, NB_GLOBALS, temp, ival);
 
 							if (sv == NULL)
 							{
@@ -3772,7 +3772,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '\xA7': // LOCAL LONG
 							ival = (long)GetVarValueInterpretedAsFloat(temp2, esss, io);
-							sv = SETVarValueLong(&esss->lvar, esss->nblvar, temp, ival);
+							sv = SETVarValueLong(esss->lvar, esss->nblvar, temp, ival);
 
 							if (sv == NULL)
 							{
@@ -3783,7 +3783,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '&': // GLOBAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							sv = SETVarValueFloat(&svar, NB_GLOBALS, temp, fval);
+							sv = SETVarValueFloat(svar, NB_GLOBALS, temp, fval);
 
 							if (sv == NULL)
 							{
@@ -3794,7 +3794,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '@': // LOCAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							sv = SETVarValueFloat(&esss->lvar, esss->nblvar, temp, fval);
+							sv = SETVarValueFloat(esss->lvar, esss->nblvar, temp, fval);
 
 							if (sv == NULL)
 							{
@@ -5304,23 +5304,23 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '#':
 							typ1	=	TYPE_FLOAT;
-							fvar1	=	GETVarValueLong(&svar, NB_GLOBALS, temp);
+							fvar1	=	GETVarValueLong(svar, NB_GLOBALS, temp);
 							break;
 						case '\xA7':
 							typ1	=	TYPE_FLOAT;
-							fvar1	=	GETVarValueLong(&esss->lvar, esss->nblvar, temp);
+							fvar1	=	GETVarValueLong(esss->lvar, esss->nblvar, temp);
 							break;
 						case '&':
 							typ1	=	TYPE_FLOAT;
-							fvar1	=	GETVarValueFloat(&svar, NB_GLOBALS, temp);
+							fvar1	=	GETVarValueFloat(svar, NB_GLOBALS, temp);
 							break;
 						case '@':
 							typ1	=	TYPE_FLOAT;
-							fvar1	=	GETVarValueFloat(&esss->lvar, esss->nblvar, temp);
+							fvar1	=	GETVarValueFloat(esss->lvar, esss->nblvar, temp);
 							break;
 						case '$':
 							typ1	=	TYPE_TEXT;
-							tempo	=	GETVarValueText(&svar, NB_GLOBALS, temp);
+							tempo	=	GETVarValueText(svar, NB_GLOBALS, temp);
 
 							if ( tempo.empty()) tvar1[0] = 0;
 							else tvar1 = tempo;
@@ -5328,7 +5328,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '\xA3':
 							typ1	=	TYPE_TEXT;
-							tempo	=	GETVarValueText(&esss->lvar, esss->nblvar, temp);
+							tempo	=	GETVarValueText(esss->lvar, esss->nblvar, temp);
 
 							if ( tempo.empty() ) tvar1[0] = 0;
 							else tvar1 = tempo;
@@ -5379,23 +5379,23 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '#':
 							typ2			=	TYPE_FLOAT;
-							fvar2			=	(float)GETVarValueLong(&svar, NB_GLOBALS, temp3);
+							fvar2			=	(float)GETVarValueLong(svar, NB_GLOBALS, temp3);
 							break;
 						case '\xA7':
 							typ2			=	TYPE_FLOAT;
-							fvar2			=	(float)GETVarValueLong(&esss->lvar, esss->nblvar, temp3);
+							fvar2			=	(float)GETVarValueLong(esss->lvar, esss->nblvar, temp3);
 							break;
 						case '&':
 							typ2			=	TYPE_FLOAT;
-							fvar2			=	GETVarValueFloat(&svar, NB_GLOBALS, temp3);
+							fvar2			=	GETVarValueFloat(svar, NB_GLOBALS, temp3);
 							break;
 						case '@':
 							typ2			=	TYPE_FLOAT;
-							fvar2			=	GETVarValueFloat(&esss->lvar, esss->nblvar, temp3);
+							fvar2			=	GETVarValueFloat(esss->lvar, esss->nblvar, temp3);
 							break;
 						case '$':
 							typ2			=	TYPE_TEXT;
-							tempo			=	GETVarValueText(&svar, NB_GLOBALS, temp3);
+							tempo			=	GETVarValueText(svar, NB_GLOBALS, temp3);
 
 							if (tempo.empty()) tvar2[0] = 0;
 							else tvar2 = tempo;
@@ -5403,7 +5403,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '\xA3':
 							typ2			=	TYPE_TEXT;
-							tempo			=	GETVarValueText(&esss->lvar, esss->nblvar, temp3);
+							tempo			=	GETVarValueText(esss->lvar, esss->nblvar, temp3);
 
 							if (tempo.empty()) tvar2[0] = 0;
 							else tvar2 = tempo;
@@ -5688,36 +5688,36 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '#': // GLOBAL LONG
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							fdval = (float)GETVarValueLong(&svar, NB_GLOBALS, temp1);
+							fdval = (float)GETVarValueLong(svar, NB_GLOBALS, temp1);
 							fval = fdval + fval;
-							sv = SETVarValueLong(&svar, NB_GLOBALS, temp1, (long)fval);
+							sv = SETVarValueLong(svar, NB_GLOBALS, temp1, (long)fval);
 
 							if (sv != NULL) sv->type = TYPE_G_LONG;
 
 							break;
 						case '\xA7': // LOCAL LONG
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							fdval = (float)GETVarValueLong(&esss->lvar, esss->nblvar, temp1);
+							fdval = (float)GETVarValueLong(esss->lvar, esss->nblvar, temp1);
 							fval = fdval + fval;
-							sv = SETVarValueLong(&esss->lvar, esss->nblvar, temp1, (long)fval);
+							sv = SETVarValueLong(esss->lvar, esss->nblvar, temp1, (long)fval);
 
 							if (sv != NULL) sv->type = TYPE_L_LONG;
 
 							break;
 						case '&': // GLOBAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							fdval = GETVarValueFloat(&svar, NB_GLOBALS, temp1);
+							fdval = GETVarValueFloat(svar, NB_GLOBALS, temp1);
 							fval = fdval + fval;
-							sv = SETVarValueFloat(&svar, NB_GLOBALS, temp1, fval);
+							sv = SETVarValueFloat(svar, NB_GLOBALS, temp1, fval);
 
 							if (sv != NULL) sv->type = TYPE_G_FLOAT;
 
 							break;
 						case '@': // LOCAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							fdval = GETVarValueFloat(&esss->lvar, esss->nblvar, temp1);
+							fdval = GETVarValueFloat(esss->lvar, esss->nblvar, temp1);
 							fval = fdval + fval;
-							sv = SETVarValueFloat(&esss->lvar, esss->nblvar, temp1, fval);
+							sv = SETVarValueFloat(esss->lvar, esss->nblvar, temp1, fval);
 
 							if (sv != NULL) sv->type = TYPE_L_FLOAT;
 
@@ -7175,9 +7175,9 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '#': // GLOBAL LONG
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							fdval = (float)GETVarValueLong(&svar, NB_GLOBALS, temp1);
+							fdval = (float)GETVarValueLong(svar, NB_GLOBALS, temp1);
 							fval = fval * fdval;
-							sv = SETVarValueLong(&svar, NB_GLOBALS, temp1, (long)fval);
+							sv = SETVarValueLong(svar, NB_GLOBALS, temp1, (long)fval);
 
 							if (sv)
 								sv->type = TYPE_G_LONG;
@@ -7185,9 +7185,9 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '\xA7': // LOCAL LONG
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							fdval = (float)GETVarValueLong(&esss->lvar, esss->nblvar, temp1);
+							fdval = (float)GETVarValueLong(esss->lvar, esss->nblvar, temp1);
 							fval = fval * fdval;
-							sv = SETVarValueLong(&esss->lvar, esss->nblvar, temp1, (long)fval);
+							sv = SETVarValueLong(esss->lvar, esss->nblvar, temp1, (long)fval);
 
 							if (sv)
 								sv->type = TYPE_L_LONG;
@@ -7195,9 +7195,9 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '&': // GLOBAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							fdval = GETVarValueFloat(&svar, NB_GLOBALS, temp1);
+							fdval = GETVarValueFloat(svar, NB_GLOBALS, temp1);
 							fval = fdval * fval;
-							sv = SETVarValueFloat(&svar, NB_GLOBALS, temp1, fval);
+							sv = SETVarValueFloat(svar, NB_GLOBALS, temp1, fval);
 
 							if (sv)
 								sv->type = TYPE_G_FLOAT;
@@ -7205,9 +7205,9 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '@': // LOCAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							fdval = GETVarValueFloat(&esss->lvar, esss->nblvar, temp1);
+							fdval = GETVarValueFloat(esss->lvar, esss->nblvar, temp1);
 							fval = fdval * fval;
-							sv = SETVarValueFloat(&esss->lvar, esss->nblvar, temp1, fval);
+							sv = SETVarValueFloat(esss->lvar, esss->nblvar, temp1, fval);
 
 							if (sv)
 								sv->type = TYPE_L_FLOAT;
@@ -7301,55 +7301,55 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					switch (temp1[0])
 					{
 						case '#':
-							ival = GETVarValueLong(&svar, NB_GLOBALS, temp1);
+							ival = GETVarValueLong(svar, NB_GLOBALS, temp1);
 
 							if (!strcmp(temp, "--"))
 							{
-								sv = SETVarValueLong(&svar, NB_GLOBALS, temp1, ival - 1);
+								sv = SETVarValueLong(svar, NB_GLOBALS, temp1, ival - 1);
 							}
 							else
 							{
-								sv = SETVarValueLong(&svar, NB_GLOBALS, temp1, ival + 1);
+								sv = SETVarValueLong(svar, NB_GLOBALS, temp1, ival + 1);
 							}
 
 							break;
 						case '\xA3':
-							ival = GETVarValueLong(&esss->lvar, esss->nblvar, temp1);
+							ival = GETVarValueLong(esss->lvar, esss->nblvar, temp1);
 
 							if (!strcmp(temp, "--"))
 							{
-								sv = SETVarValueLong(&esss->lvar, esss->nblvar, temp1, ival - 1);
+								sv = SETVarValueLong(esss->lvar, esss->nblvar, temp1, ival - 1);
 							}
 							else
 							{
-								sv = SETVarValueFloat(&esss->lvar, esss->nblvar, temp1, ival + 1.f);
+								sv = SETVarValueFloat(esss->lvar, esss->nblvar, temp1, ival + 1.f);
 							}
 
 							break;
 						case '&':
-							fval = GETVarValueFloat(&svar, NB_GLOBALS, temp1);
+							fval = GETVarValueFloat(svar, NB_GLOBALS, temp1);
 							ARX_CHECK_NO_ENTRY();
 
 							if (!strcmp(temp, "--"))
 							{
-								sv = SETVarValueFloat(&svar, NB_GLOBALS, temp1, fval  - 1.f);
+								sv = SETVarValueFloat(svar, NB_GLOBALS, temp1, fval  - 1.f);
 							}
 							else
 							{
-								sv = SETVarValueFloat(&esss->lvar, esss->nblvar, temp1, fval + 1.f);
+								sv = SETVarValueFloat(esss->lvar, esss->nblvar, temp1, fval + 1.f);
 							}
 
 							break;
 						case '@':
-							fval = GETVarValueFloat(&esss->lvar, esss->nblvar, temp1);
+							fval = GETVarValueFloat(esss->lvar, esss->nblvar, temp1);
 
 							if (!strcmp(temp, "--"))
 							{
-								sv = SETVarValueFloat(&esss->lvar, esss->nblvar, temp1, fval - 1.f);
+								sv = SETVarValueFloat(esss->lvar, esss->nblvar, temp1, fval - 1.f);
 							}
 							else
 							{
-								sv = SETVarValueFloat(&esss->lvar, esss->nblvar, temp1, fval + 1.f);
+								sv = SETVarValueFloat(esss->lvar, esss->nblvar, temp1, fval + 1.f);
 							}
 
 							break;
@@ -7406,7 +7406,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '#': // GLOBAL LONG
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							fdval = (float)GETVarValueLong(&svar, NB_GLOBALS, temp1);
+							fdval = (float)GETVarValueLong(svar, NB_GLOBALS, temp1);
 
 							if (!strcmp(temp, "DEC")) fval = fdval - fval;
 							else if (!strcmp(temp, "DIV"))
@@ -7414,14 +7414,14 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 								if (fval != 0.f)	fval = fdval / fval;
 							}
 
-							sv = SETVarValueLong(&svar, NB_GLOBALS, temp1, (long)fval);
+							sv = SETVarValueLong(svar, NB_GLOBALS, temp1, (long)fval);
 
 							if (sv != NULL) sv->type = TYPE_G_LONG;
 
 							break;
 						case '\xA7': // LOCAL LONG
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							fdval = (float)GETVarValueLong(&esss->lvar, esss->nblvar, temp1);
+							fdval = (float)GETVarValueLong(esss->lvar, esss->nblvar, temp1);
 
 							if (!strcmp(temp, "DEC")) fval = fdval - fval;
 							else if (!strcmp(temp, "DIV"))
@@ -7429,14 +7429,14 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 								if (fval != 0.f)	fval = fdval / fval;
 							}
 
-							sv = SETVarValueLong(&esss->lvar, esss->nblvar, temp1, (long)fval);
+							sv = SETVarValueLong(esss->lvar, esss->nblvar, temp1, (long)fval);
 
 							if (sv != NULL) sv->type = TYPE_L_LONG;
 
 							break;
 						case '&': // GLOBAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							fdval = GETVarValueFloat(&svar, NB_GLOBALS, temp1);
+							fdval = GETVarValueFloat(svar, NB_GLOBALS, temp1);
 
 							if (!strcmp(temp, "DEC")) fval = fdval - fval;
 							else if (!strcmp(temp, "DIV"))
@@ -7444,14 +7444,14 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 								if (fval != 0.f)	fval = fdval / fval;
 							}
 
-							sv = SETVarValueFloat(&svar, NB_GLOBALS, temp1, fval);
+							sv = SETVarValueFloat(svar, NB_GLOBALS, temp1, fval);
 
 							if (sv != NULL) sv->type = TYPE_G_FLOAT;
 
 							break;
 						case '@': // LOCAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							fdval = GETVarValueFloat(&esss->lvar, esss->nblvar, temp1);
+							fdval = GETVarValueFloat(esss->lvar, esss->nblvar, temp1);
 
 							if (!strcmp(temp, "DEC")) fval = fdval - fval;
 							else if (!strcmp(temp, "DIV"))
@@ -7459,7 +7459,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 								if (fval != 0.f)	fval = fdval / fval;
 							}
 
-							sv = SETVarValueFloat(&esss->lvar, esss->nblvar, temp1, fval);
+							sv = SETVarValueFloat(esss->lvar, esss->nblvar, temp1, fval);
 
 							if (sv != NULL) sv->type = TYPE_L_FLOAT;
 

@@ -482,12 +482,17 @@ void ARX_SCRIPT_Timer_GetDefaultName(char * tx);
 void ARX_IOGROUP_Remove(INTERACTIVE_OBJ * io, const std::string& group);
 void ARX_IOGROUP_Add(INTERACTIVE_OBJ * io, const char * group);
 long GetNextWord_Interpreted( INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, std::string& temp );
-SCRIPT_VAR * SETVarValueText(SCRIPT_VAR ** svf, long& nb, const std::string& name, const std::string& val);
-SCRIPT_VAR * SETVarValueLong(SCRIPT_VAR ** svf, long& nb, const std::string& name, long val);
-SCRIPT_VAR * SETVarValueFloat(SCRIPT_VAR ** svf, long& nb, const std::string& name, float val);
-long GETVarValueLong(SCRIPT_VAR ** svf, long& nb, const std::string& name);
-float GETVarValueFloat(SCRIPT_VAR ** svf, long& nb, const std::string& name);
-std::string GETVarValueText(SCRIPT_VAR ** svf, long& nb, const std::string& name);
+
+// Use to set the value of a script variable
+SCRIPT_VAR* SETVarValueText(SCRIPT_VAR*& svf, long& nb, const std::string& name, const std::string& val);
+SCRIPT_VAR* SETVarValueLong(SCRIPT_VAR*& svf, long& nb, const std::string& name, long val);
+SCRIPT_VAR* SETVarValueFloat(SCRIPT_VAR*& svf, long& nb, const std::string& name, float val);
+
+// Use to get the value of a script variable
+long GETVarValueLong(SCRIPT_VAR*& svf, long& nb, const std::string& name);
+float GETVarValueFloat(SCRIPT_VAR*& svf, long& nb, const std::string& name);
+std::string GETVarValueText(SCRIPT_VAR*& svf, long& nb, const std::string& name);
+
 long GetNumAnim( const std::string& name);
 long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _name, std::string& txtcontent,unsigned int txtcontentSize,float * fcontent,long * lcontent);
 void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(INTERACTIVE_OBJ * io);
