@@ -58,35 +58,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scripting/Script.h"
 
 #include <cassert>
-
 #include <iomanip>
 
+#include "ai/Paths.h"
 #include "physics/CollisionShapes.h"
-#include "animation/Cinematic.h"
-#include "physics/Collisions.h"
 #include "game/Damage.h"
 #include "game/Equipment.h"
-#include "graphics/GraphicsModes.h"
-#include "gui/MiniMap.h"
-#include "game/Missile.h"
 #include "game/NPC.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "ai/Paths.h"
 #include "scene/Scene.h"
-#include "scene/GameSound.h"
-#include "physics/Actors.h"
 #include "gui/Speech.h"
-#include "gui/Text.h"
 #include "core/Time.h"
 #include "core/Localization.h"
 #include "core/Dialog.h"
 #include "core/Resource.h"
 #include "io/IO.h"
-#include "io/PakManager.h"
 #include "io/Logger.h"
+#include "graphics/particle/ParticleEffects.h"
 #include "graphics/Math.h"
-#include "graphics/data/Mesh.h"
-#include "graphics/data/MeshManipulation.h"
+
 #include "scripting/ScriptEvent.h"
 
 using std::sprintf;
