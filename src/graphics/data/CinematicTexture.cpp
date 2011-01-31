@@ -853,14 +853,14 @@ bool ReCreateAllMapsForBitmap(int id, int nmax, Cinematic * c, LPDIRECT3DDEVICE7
 			if ((w - MaxW) < 0) w2 = w;
 			else w2 = MaxW;
 
-            std::stringstream ss;
-            ss << bi->name << '_' << std::setw(4) << num;
-            AllTxt = ss.str();
-            //sprintf(AllTxt, "%s_%4d", bi->name, num);
-            MakeUpcase(AllTxt);
+			std::stringstream ss;
+			ss << bi->name << '_' << std::setw(4) << num;
+			AllTxt = ss.str();
+			//sprintf(AllTxt, "%s_%4d", bi->name, num);
+			MakeUpcase(AllTxt);
 
-            TextureContainer * t = FindTexture(AllTxt.c_str());
-            AddQuadUVs(&bi->grid, (bi->nbx - nbxx)*nmax, (bi->nby - nby)*nmax, nmax, nmax, bi->w - w, bi->h - h, w2, h2, t);
+			TextureContainer * t = FindTexture(AllTxt.c_str());
+			AddQuadUVs(&bi->grid, (bi->nbx - nbxx)*nmax, (bi->nby - nby)*nmax, nmax, nmax, bi->w - w, bi->h - h, w2, h2, t);
 
 			dx += (float)w2;
 			w -= MaxW;
