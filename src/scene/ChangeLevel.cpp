@@ -93,6 +93,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "ai/PathFinderManager.h"
 #include "physics/CollisionShapes.h"
+#include "scripting/ScriptEvent.h"
 
 
 //#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
@@ -3339,13 +3340,13 @@ long ARX_CHANGELEVEL_PopAllIO_FINISH(ARX_CHANGELEVEL_INDEX * asi, long reloadfla
 			{
 				if (inter.iobj[i]->script.data != NULL)
 				{
-					SendScriptEvent(&inter.iobj[i]->script, SM_RELOAD, "CHANGE", inter.iobj[i], NULL);
+					ScriptEvent::send(&inter.iobj[i]->script, SM_RELOAD, "CHANGE", inter.iobj[i], NULL);
 				}
 
 				if (inter.iobj[i]
 						&&	inter.iobj[i]->over_script.data)
 				{
-					SendScriptEvent(&inter.iobj[i]->over_script, SM_RELOAD, "CHANGE", inter.iobj[i], NULL);
+					ScriptEvent::send(&inter.iobj[i]->over_script, SM_RELOAD, "CHANGE", inter.iobj[i], NULL);
 				}
 
 				if (inter.iobj[i]
@@ -3373,25 +3374,25 @@ long ARX_CHANGELEVEL_PopAllIO_FINISH(ARX_CHANGELEVEL_INDEX * asi, long reloadfla
 			{
 				if (inter.iobj[i]->script.data)
 				{
-					SendScriptEvent(&inter.iobj[i]->script, SM_INIT, "", inter.iobj[i], NULL);
+					ScriptEvent::send(&inter.iobj[i]->script, SM_INIT, "", inter.iobj[i], NULL);
 				}
 
 				if (inter.iobj[i]
 						&&	inter.iobj[i]->over_script.data)
 				{
-					SendScriptEvent(&inter.iobj[i]->over_script, SM_INIT, "", inter.iobj[i], NULL);
+					ScriptEvent::send(&inter.iobj[i]->over_script, SM_INIT, "", inter.iobj[i], NULL);
 				}
 
 				if (inter.iobj[i]
 						&&	inter.iobj[i]->script.data)
 				{
-					SendScriptEvent(&inter.iobj[i]->script, SM_INITEND, "", inter.iobj[i], NULL);
+					ScriptEvent::send(&inter.iobj[i]->script, SM_INITEND, "", inter.iobj[i], NULL);
 				}
 
 				if (inter.iobj[i]
 						&&	inter.iobj[i]->over_script.data)
 				{
-					SendScriptEvent(&inter.iobj[i]->over_script, SM_INITEND, "", inter.iobj[i], NULL);
+					ScriptEvent::send(&inter.iobj[i]->over_script, SM_INITEND, "", inter.iobj[i], NULL);
 				}
 			}
 		}

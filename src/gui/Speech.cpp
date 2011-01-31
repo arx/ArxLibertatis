@@ -63,6 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Interface.h"
 #include "gui/Text.h"
 #include "scripting/Script.h"
+#include "scripting/ScriptEvent.h"
 #include "scene/GameSound.h"
 #include "window/Input.h"
 #include "gui/Text.h"
@@ -431,7 +432,7 @@ void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io)
 			if ((es)
 					&&	(ValidIOAddress(io)))
 			{
-				SendScriptEvent(es, SM_EXECUTELINE, "", io, NULL, scrpos);
+				ScriptEvent::send(es, SM_EXECUTELINE, "", io, NULL, scrpos);
 			}
 		}
 	}
@@ -460,7 +461,7 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long param, l
 
 				if ((es)
 						&&	(ValidIOAddress(io)))
-					SendScriptEvent(es, SM_EXECUTELINE, "", io, NULL, scrpos);
+					ScriptEvent::send(es, SM_EXECUTELINE, "", io, NULL, scrpos);
 			}
 	}
 
@@ -606,7 +607,7 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 
 				if ((es)
 						&&	(ValidIOAddress(io)))
-					SendScriptEvent(es, SM_EXECUTELINE, "", io, NULL, scrpos);
+					ScriptEvent::send(es, SM_EXECUTELINE, "", io, NULL, scrpos);
 			}
 		}
 	}

@@ -101,6 +101,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Missile.h"
 #include "gui/MenuPublic.h"
 #include "io/Screenshot.h"
+#include "scripting/ScriptEvent.h"
 
 using std::min;
 using std::max;
@@ -5123,22 +5124,22 @@ void DanaeItemAdd()
 		{
 			if (inter.iobj[num] && inter.iobj[num]->script.data) 
 			{
-				SendScriptEvent(&inter.iobj[num]->script,SM_INIT,"",inter.iobj[num],NULL);
+				ScriptEvent::send(&inter.iobj[num]->script,SM_INIT,"",inter.iobj[num],NULL);
 			}
 
 			if (inter.iobj[num] && inter.iobj[num]->over_script.data) 
 			{
-				SendScriptEvent(&inter.iobj[num]->over_script,SM_INIT,"",inter.iobj[num],NULL);
+				ScriptEvent::send(&inter.iobj[num]->over_script,SM_INIT,"",inter.iobj[num],NULL);
 			}
 
 			if (inter.iobj[num] && inter.iobj[num]->script.data) 
 			{
-				SendScriptEvent(&inter.iobj[num]->script,SM_INITEND,"",inter.iobj[num],NULL);
+				ScriptEvent::send(&inter.iobj[num]->script,SM_INITEND,"",inter.iobj[num],NULL);
 			}
 
 			if (inter.iobj[num] && inter.iobj[num]->over_script.data) 
 			{
-				SendScriptEvent(&inter.iobj[num]->over_script,SM_INITEND,"",inter.iobj[num],NULL);
+				ScriptEvent::send(&inter.iobj[num]->over_script,SM_INITEND,"",inter.iobj[num],NULL);
 			}
 		}
 	}

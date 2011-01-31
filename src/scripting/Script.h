@@ -69,11 +69,7 @@ struct ANIM_USE;
 #define MAX_SCRIPTTIMERS 5
 
 //-----------------------------------------------------------------------------
-struct SCRIPT_EVENT
-{
-	SCRIPT_EVENT( const std::string& str ): name( str ) {}
-	std::string name;
-};
+
 
 struct SCRIPT_VAR
 {	
@@ -122,6 +118,10 @@ typedef struct
 } SCR_TIMER;
 
 //-----------------------------------------------------------------------------
+#define TYPE_TEXT	1
+#define TYPE_FLOAT	2
+#define TYPE_LONG	3
+
 #define PATHFIND_ALWAYS		1
 #define PATHFIND_ONCE		2
 #define PATHFIND_NO_UPDATE	4
@@ -414,7 +414,6 @@ typedef struct
 //-----------------------------------------------------------------------------
 extern SCRIPT_VAR * svar;
 extern INTERACTIVE_OBJ * EVENT_SENDER;
-extern SCRIPT_EVENT AS_EVENT[];
 extern SCR_TIMER * scr_timer;
 extern std::string ShowTextWindowtext;
 extern std::string ShowText;
@@ -460,6 +459,7 @@ bool CheckScriptSyntax_Loading(INTERACTIVE_OBJ * io);
 bool CheckScriptSyntax(INTERACTIVE_OBJ * io);
 
 void ManageNPCMovement(INTERACTIVE_OBJ * io);
+void ManageCasseDArme(INTERACTIVE_OBJ * io);
 void ReleaseScript(EERIE_SCRIPT * es);
 long GetNextWord(EERIE_SCRIPT * es, long i, std::string& temp, long flags = 0);
 void ARX_SCRIPT_Init_Event_Stats();
@@ -468,6 +468,32 @@ void InitAllGlobalVars();
 long SendInitScriptEvent(INTERACTIVE_OBJ * io);
 void ClearSubStack(EERIE_SCRIPT * es);
 
+//used by scriptevent
+void MakeSSEPARAMS(const char * params);
+void MakeStandard( std::string& str);
+long GotoNextLine(EERIE_SCRIPT * es, long pos);
+bool iCharIn( const std::string& str, char _char);
+bool CharIn( const std::string& str, char _char);
+float GetVarValueInterpretedAsFloat( std::string& temp1, EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io);
+long FindLabelPos(EERIE_SCRIPT * es, const std::string& string);
+long SkipNextStatement(EERIE_SCRIPT * es, long pos);
+std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io);
+void ARX_SCRIPT_Timer_GetDefaultName(char * tx);
+void ARX_IOGROUP_Remove(INTERACTIVE_OBJ * io, const std::string& group);
+void ARX_IOGROUP_Add(INTERACTIVE_OBJ * io, const char * group);
+long GetNextWord_Interpreted( INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, std::string& temp );
+SCRIPT_VAR * SETVarValueText(SCRIPT_VAR ** svf, long * nb, const char * name, const char * val);
+SCRIPT_VAR * SETVarValueLong(SCRIPT_VAR ** svf, long * nb, const char * name, long val);
+SCRIPT_VAR * SETVarValueFloat(SCRIPT_VAR ** svf, long * nb, const char * name, float val);
+long GETVarValueLong(SCRIPT_VAR ** svf, long* nb, const std::string& name);
+float GETVarValueFloat(SCRIPT_VAR ** svf, long* nb, const std::string& name);
+std::string GETVarValueText(SCRIPT_VAR ** svf, long* nb, const std::string& name);
+long GetNumAnim( const std::string& name);
+long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _name, std::string& txtcontent,unsigned int txtcontentSize,float * fcontent,long * lcontent);
+void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(INTERACTIVE_OBJ * io);
+void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(char * timername, INTERACTIVE_OBJ * io);
+size_t strcasecmp( const std::string& str1, const std::string& str2 );
+size_t strcmp( const std::string& str1, const std::string& str2 );
 //-----------------------------------------------------------------------------
 
 // TODO why is this in ARX_Script?
@@ -484,13 +510,13 @@ void ForceAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * ea);
 long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const std::string& text, long duration = -1);
 
 long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params = "", const std::string& eventname = "" );
-long SendScriptEvent(EERIE_SCRIPT * es, long msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& eventname, long info = 0);
+
 
 long SendMsgToAllIO(long msg, const char * dat);
 
 void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params = "", const std::string& eventname = "");
 
-
+long FindScriptPos(EERIE_SCRIPT * es, const std::string& str);
 bool InSubStack(EERIE_SCRIPT * es, long pos);
 long GetSubStack(EERIE_SCRIPT * es);
 void AttemptMoveToTarget(INTERACTIVE_OBJ * io);
