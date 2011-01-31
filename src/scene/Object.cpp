@@ -1649,7 +1649,7 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 			eerie->selections[i].selected = NULL;
 		}
 
-		free(eerie->selections);
+//		free(eerie->selections);
 		eerie->selections = NULL;
 	}
 

@@ -1101,7 +1101,9 @@ void ARX_PHYSICS_Apply()
 
 		CheckUnderWaterIO(io);
 
-		if (io->obj->pbox)
+		//TODO(lubosz): crash
+		if (false)
+//		if (io->obj->pbox)
 		{
 			io->GameFlags &= ~GFLAG_NOCOMPUTATION;
 
@@ -4079,8 +4081,9 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 		{
 			EERIE_3D orgn, dest;
 			// Retreives Head group position for "eye" pos.
-			long grp = io->obj->fastaccess.head_group_origin; 
-
+//TODO(lubosz): crash
+//			long grp = io->obj->fastaccess.head_group_origin;
+			long grp = 0;
 			if (grp < 0)
 			{
 				orgn.x = io->pos.x;
