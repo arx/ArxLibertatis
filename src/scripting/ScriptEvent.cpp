@@ -40,6 +40,24 @@
 using std::max;
 using std::min;
 
+extern long FINAL_COMMERCIAL_DEMO;
+extern long GLOBAL_MAGIC_MODE;
+extern INTERACTIVE_OBJ * CURRENT_TORCH;
+extern EERIE_3D LASTCAMPOS, LASTCAMANGLE;
+extern INTERACTIVE_OBJ * CAMERACONTROLLER;
+extern char WILL_LAUNCH_CINE[256];
+extern float InventoryDir;
+extern long REFUSE_GAME_RETURN;
+extern long FINAL_RELEASE;
+extern long GAME_EDITOR;
+extern long TELEPORT_TO_CONFIRM;
+extern long CINE_PRELOAD;
+extern long PLAY_LOADED_CINEMATIC;
+extern long ARX_CONVERSATION;
+extern long CHANGE_LEVEL_ICON;
+extern long FRAME_COUNT;
+extern float g_TimeStartCinemascope;
+
 SCRIPT_EVENT AS_EVENT[] =
 {
 	std::string("ON NULL"),
@@ -367,30 +385,11 @@ ScriptEvent::~ScriptEvent() {
 long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info)
 {
 	//TODO(lubosz): globals
-	INTERACTIVE_OBJ * _CURIO = io;
 	INTERACTIVE_OBJ * LASTSPAWNED = NULL;
 	long LINEEND = 0;
-	long EDITMODE = 0;
 	long PauseScript = 0;
 	long GLOB = 0;
-	float g_TimeStartCinemascope = 0;
-	long PLAY_LOADED_CINEMATIC = 0;
-	long CINE_PRELOAD = 0;
-	char WILL_LAUNCH_CINE[256];
-	INTERACTIVE_OBJ * CAMERACONTROLLER = NULL;
-	long ARX_CONVERSATION = 0;
-	long FRAME_COUNT = 0;
-	float InventoryDir = 0;
-	EERIE_3D LASTCAMPOS, LASTCAMANGLE;
-	INTERACTIVE_OBJ * CURRENT_TORCH = NULL;
 	long RELOADING = 0;
-	long TELEPORT_TO_CONFIRM = 1;
-	long CHANGE_LEVEL_ICON = -1;
-	long FINAL_RELEASE = 0;
-	long GAME_EDITOR = 1;
-	long REFUSE_GAME_RETURN = 0;
-	long FINAL_COMMERCIAL_DEMO =0;
-	long GLOBAL_MAGIC_MODE=1;
 
 	LogDebug << "ScriptEvent::send msg=" << msg << " ("
 	         << ((msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1) ? AS_EVENT[msg].name : "unknown")

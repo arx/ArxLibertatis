@@ -96,28 +96,9 @@ using std::max;
 //#define NEEDING_DEBUG 1
 #define MAX_SSEPARAMS 5
 
-extern long GLOBAL_MAGIC_MODE;
-extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern long FINAL_COMMERCIAL_DEMO;
-extern long SP_DBG;
-extern Cinematic * ControlCinematique;
-extern EERIE_3D LASTCAMPOS, LASTCAMANGLE;
-extern INTERACTIVE_OBJ * CAMERACONTROLLER;
-extern char WILL_LAUNCH_CINE[256];
-extern float InventoryDir;
-extern long REFUSE_GAME_RETURN;
-extern long FINAL_RELEASE;
-extern long GAME_EDITOR;
-extern long TELEPORT_TO_CONFIRM;
-extern long CINE_PRELOAD;
-extern long PLAY_LOADED_CINEMATIC;
-extern long ARX_CONVERSATION;
-extern long ARX_DEMO;
-extern long CHANGE_LEVEL_ICON;
-extern long FRAME_COUNT;
 extern long lChangeWeapon;
 extern INTERACTIVE_OBJ * pIOChangeWeapon;
-extern float g_TimeStartCinemascope;
 
 std::string ShowText;
 std::string ShowText2;
