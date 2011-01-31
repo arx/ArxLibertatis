@@ -492,6 +492,8 @@ long GetNumAnim( const std::string& name);
 long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _name, std::string& txtcontent,unsigned int txtcontentSize,float * fcontent,long * lcontent);
 void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(INTERACTIVE_OBJ * io);
 void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(char * timername, INTERACTIVE_OBJ * io);
+size_t strcasecmp( const std::string& str1, const std::string& str2 );
+size_t strcmp( const std::string& str1, const std::string& str2 );
 //-----------------------------------------------------------------------------
 
 // TODO why is this in ARX_Script?
