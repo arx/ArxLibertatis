@@ -157,7 +157,7 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, EERIE_3D * pos, EERIE_3D * vect
 bool IsValidPos3(EERIE_3D * pos)
 {
 	long px, pz;
-	F2L(pos->x * ACTIVEBKG->Xmul, &px);
+	px = pos->x * ACTIVEBKG->Xmul;
 
 	if (px >= ACTIVEBKG->Xsize)
 	{
@@ -169,7 +169,7 @@ bool IsValidPos3(EERIE_3D * pos)
 		return false;
 	}
 
-	F2L(pos->z * ACTIVEBKG->Zmul, &pz);
+	pz = pos->z * ACTIVEBKG->Zmul;
 
 	if (pz >= ACTIVEBKG->Zsize)
 	{
@@ -819,12 +819,11 @@ bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long sourc
 	bool ret = true;
 	long px, pz;
 	float x = obj->pbox->vert[0].pos.x;
-	F2L(x * ACTIVEBKG->Xmul, &px);
+	px = x * ACTIVEBKG->Xmul;
 	float z = obj->pbox->vert[0].pos.z;
-	F2L(z * ACTIVEBKG->Zmul, &pz);
+	pz = z * ACTIVEBKG->Zmul;
 	long ix, iz, ax, az;
-	long n;
-	F2L(obj->pbox->radius * ( 1.0f / 100 ), &n);
+	long n = obj->pbox->radius * ( 1.0f / 100 );
 	n = min(2L, n + 1);
 	ix = max(px - n, 0L);
 	ax = min(px + n, ACTIVEBKG->Xsize - 1L);

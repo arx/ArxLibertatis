@@ -464,19 +464,16 @@ void ApplyWaterFXToVertex(EERIE_3D * odtv,D3DTLVERTEX * dtv,float power)
 void ApplyLavaGlowToVertex(EERIE_3D * odtv,D3DTLVERTEX * dtv,float power)
 {
 	register float f;
-	register long lr,lg,lb;
-	power=1.f-(EEsin((WATEREFFECT+odtv->x+odtv->z))*0.05f)*power;	
-	f=(float)(long)((dtv->color>>16) & 255)*power;
-	F2L(f,&lr);
-	lr=clipByte(lr);
-	
-	f=(float)(long)((dtv->color>>8) & 255)*power;
-	F2L(f,&lg);
-	lg=clipByte(lg);
+	register long lr, lg, lb;
+	power = 1.f - (EEsin((WATEREFFECT+odtv->x+odtv->z)) * 0.05f) * power;
+	f = ((dtv->color >> 16) & 255) * power;
+	lr = clipByte(f);
 
-	f=(float)(long)((dtv->color) & 255)*power;
-	F2L(f,&lb);
-	lb=clipByte(lb);
+	f = ((dtv->color >> 8) & 255) * power;
+	lg = clipByte(f);
+
+	f = ((dtv->color) & 255) * power;
+	lb = clipByte(f);
 
 	dtv->color=0xFF000000L | (lr << 16) | (lg << 8) | lb;
 }
@@ -499,8 +496,7 @@ void ComputeFogVertex(D3DTLVERTEX *v)
 		{
 			//LINEAR
 			float fDist=(fZFogEndWorld-VertexDist)*255.f/(fZFogEndWorld-fZFogStartWorld);
-			long lAlpha;
-			F2L(fDist,&lAlpha);
+			long lAlpha = fDist;
 			v->specular=((lAlpha)<<24);
 		}
 	}
@@ -2520,9 +2516,8 @@ void ARX_PORTALS_RenderRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long ti
 						else fr=max(ffr,fr*255.f);
 
 						fb*=255.f;
-						F2L(fr,&lfr);
-						F2L(fb,&lfb);
-						F2L(fr,&lfr);
+						lfr = fr;
+						lfb = fb;
 						ep->tv[k].color=( 0xff001E00L | ( (lfr & 255) << 16) | (lfb & 255) );
 						//GG component locked at 0x1E
 				}
@@ -2678,9 +2673,8 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 						else fr=max(ffr,fr*255.f);
 
 						fb*=255.f;
-						F2L(fr,&lfr);
-						F2L(fb,&lfb);
-						F2L(fr,&lfr);
+						lfr = fr;
+						lfb = fb;
 						ep->tv[k].color=( 0xff001E00L | ( (lfr & 255) << 16) | (lfb & 255) );
 						//GG component locked at 0x1E
 				}
@@ -2695,6 +2689,7 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 void ApplyDynLight_VertexBuffer(EERIEPOLY *ep,SMY_D3DVERTEX *_pVertex,unsigned short _usInd0,unsigned short _usInd1,unsigned short _usInd2,unsigned short _usInd3);
 void ApplyDynLight_VertexBuffer_2(EERIEPOLY *ep,short x,short y,SMY_D3DVERTEX *_pVertex,unsigned short _usInd0,unsigned short _usInd1,unsigned short _usInd2,unsigned short _usInd3);
 //-----------------------------------------------------------------------------
+//TODO(lubosz): unimplemented
 void ARX_PORTALS_Frustrum_RenderRoomT(long room_num,EERIE_FRUSTRUM_DATA * frustrums,long prec,long tim)
 {
 
@@ -3104,8 +3099,8 @@ SMY_D3DVERTEX *pMyVertex;
 						fr=min(fr,255.f);
 						fb*=255.f;
 						fb=min(fb,255.f);
-						F2L(fr,&lfr);
-						F2L(fb,&lfb);
+						lfr = fr;
+						lfb = fb;
 				
 						ep->tv[k].color=( 0xff001E00L | ( (lfr & 255) << 16) | (lfb & 255) );
 					
@@ -4156,8 +4151,8 @@ long curpixel;
 	while (forr>PASSS)
 	{
 			FAST_BKG_DATA * feg;
-			F2L(x0*ACTIVEBKG->Xmul,&x);
-			F2L(z0*ACTIVEBKG->Zmul,&y);
+			x = x0 * ACTIVEBKG->Xmul;
+			y = z0 * ACTIVEBKG->Zmul;
 			feg=&ACTIVEBKG->fastdata[x][y];
 
 		if (feg!=LAST_eg)
@@ -4295,8 +4290,9 @@ void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag, long param)
 		SuspendThread(LIGHTTHREAD);
 	
 	float cval=(float)ACTIVECAM->clip3D+4;
-	long lcval;
-	F2L(cval,&lcval);
+	long lcval = cval;
+
+	//TODO(lubosz): no if / loop ?
 
 	{
 
@@ -4304,8 +4300,8 @@ void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag, long param)
 		xx=(float)(ACTIVECAM->pos.x*ACTIVEBKG->Xmul);
 		yy=(float)(ACTIVECAM->pos.z*ACTIVEBKG->Zmul);
 		
-		F2L(xx,&ACTIVECAM->Xsnap);
-		F2L(yy,&ACTIVECAM->Zsnap);
+		ACTIVECAM->Xsnap = xx;
+		ACTIVECAM->Zsnap = yy;
 		FORCERANGE(ACTIVECAM->Xsnap,0,ACTIVEBKG->Xsize-1);
 		FORCERANGE(ACTIVECAM->Zsnap,0,ACTIVEBKG->Zsize-1);
 		
@@ -4677,9 +4673,8 @@ else
 						else fr=max(ffr,fr*255.f);
 
 						fb*=255.f;
-						F2L(fr,&lfr);
-						F2L(fb,&lfb);
-						F2L(fr,&lfr);
+						lfb = fb;
+						lfr = fr;
 						ep->tv[k].color=( 0xff001E00L | ( (lfr & 255) << 16) | (lfb & 255) );
 						//GG component locked at 0x1E
 					}

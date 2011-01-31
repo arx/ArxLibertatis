@@ -73,13 +73,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 EERIEPOLY * BCCheckInPoly(float x, float y, float z)
 {
 	long px, pz;
-	F2L(x * ACTIVEBKG->Xmul, &px);
+	px = x * ACTIVEBKG->Xmul;
 
 	if ((px >= ACTIVEBKG->Xsize)
 	        ||	(px < 0))
 		return NULL;
 
-	F2L(z * ACTIVEBKG->Zmul, &pz);
+	pz = z * ACTIVEBKG->Zmul;
 
 	if ((pz >= ACTIVEBKG->Zsize)
 	        ||	(pz < 0))
