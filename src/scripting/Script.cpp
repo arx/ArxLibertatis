@@ -1810,29 +1810,26 @@ void CloneLocalVars(INTERACTIVE_OBJ * ioo, INTERACTIVE_OBJ * io)
 }
 //*************************************************************************************
 //*************************************************************************************
-SCRIPT_VAR * GetFreeVarSlot(SCRIPT_VAR ** _svff, long * _nb)
+SCRIPT_VAR * GetFreeVarSlot(SCRIPT_VAR*& _svff, long& _nb)
 {
 
-	SCRIPT_VAR * svf = (SCRIPT_VAR *) * _svff;
-	*_svff = (SCRIPT_VAR *) realloc(svf, sizeof(SCRIPT_VAR) * ((*_nb) + 1));
-	svf = (SCRIPT_VAR *) * _svff;
-	memset(&svf[*_nb], 0, sizeof(SCRIPT_VAR));
-	(*_nb) ++;
-	return &svf[(*_nb)-1];
+	SCRIPT_VAR * svf = _svff;
+	_svff = (SCRIPT_VAR *) realloc(svf, sizeof(SCRIPT_VAR) * ((_nb) + 1));
+	svf = _svff;
+	memset(&svf[_nb], 0, sizeof(SCRIPT_VAR));
+	_nb++;
+	return &svf[_nb-1];
 }
 
 //*************************************************************************************
 //*************************************************************************************
-SCRIPT_VAR * GetVarAddress(SCRIPT_VAR * svf, long * nb, const std::string& name)
+SCRIPT_VAR* GetVarAddress(SCRIPT_VAR svf[], long& nb, const std::string& name)
 {
-	if (!svf)
-		return NULL;
-
-	for (long i = 0; i < (*nb); i++)
+	for (long i = 0; i < nb; i++)
 	{
 		if (svf[i].type != 0)
 		{
-			if (!strcasecmp(name.c_str(), svf[i].name))
+			if (!strcasecmp(name, svf[i].name))
 				return &svf[i];
 		}
 	}
@@ -1850,7 +1847,7 @@ SCRIPT_VAR * GetVarAddress(SCRIPT_VAR * svf, long * nb, const std::string& name)
 long GETVarValueLong(SCRIPT_VAR ** svf, long& nb, const std::string& name)
 {
 	SCRIPT_VAR * tsv;
-	tsv = GetVarAddress(*svf, &nb, name);
+	tsv = GetVarAddress(*svf, nb, name);
 
 	if (tsv == NULL) return 0;
 
@@ -1861,7 +1858,7 @@ long GETVarValueLong(SCRIPT_VAR ** svf, long& nb, const std::string& name)
 float GETVarValueFloat(SCRIPT_VAR ** svf, long& nb, const std::string& name)
 {
 	SCRIPT_VAR * tsv;
-	tsv = GetVarAddress(*svf, &nb, name);
+	tsv = GetVarAddress(*svf, nb, name);
 
 	if (tsv == NULL) return 0;
 
@@ -1872,7 +1869,7 @@ float GETVarValueFloat(SCRIPT_VAR ** svf, long& nb, const std::string& name)
 std::string GETVarValueText(SCRIPT_VAR ** svf, long& nb, const std::string& name)
 {
 	SCRIPT_VAR * tsv;
-	tsv = GetVarAddress(*svf, &nb, name);
+	tsv = GetVarAddress(*svf, nb, name);
 
 	if (tsv == NULL) return 0;
 
@@ -1987,11 +1984,11 @@ float GetVarValueInterpretedAsFloat( std::string& temp1, EERIE_SCRIPT * esss, IN
 //*************************************************************************************
 SCRIPT_VAR * SETVarValueLong(SCRIPT_VAR ** svf, long& nb, const std::string& name, long val)
 {
-	SCRIPT_VAR * tsv = GetVarAddress(*svf, &nb, name);
+	SCRIPT_VAR * tsv = GetVarAddress(*svf, nb, name);
 
 	if (!tsv)
 	{
-		tsv = GetFreeVarSlot(svf, &nb);
+		tsv = GetFreeVarSlot(*svf, nb);
 
 		if (!tsv)
 			return NULL;
@@ -2007,11 +2004,11 @@ SCRIPT_VAR * SETVarValueLong(SCRIPT_VAR ** svf, long& nb, const std::string& nam
 SCRIPT_VAR * SETVarValueFloat(SCRIPT_VAR ** svf, long& nb, const std::string& name, float val)
 {
 	SCRIPT_VAR * tsv;
-	tsv = GetVarAddress(*svf, &nb, name);
+	tsv = GetVarAddress(*svf, nb, name);
 
 	if (!tsv)
 	{
-		tsv = GetFreeVarSlot(svf, &nb);
+		tsv = GetFreeVarSlot(*svf, nb);
 
 		if (!tsv)
 			return NULL;
@@ -2027,11 +2024,11 @@ SCRIPT_VAR * SETVarValueFloat(SCRIPT_VAR ** svf, long& nb, const std::string& na
 SCRIPT_VAR * SETVarValueText(SCRIPT_VAR ** svf, long& nb, const std::string& name, const std::string& val)
 {
 	SCRIPT_VAR * tsv;
-	tsv = GetVarAddress(*svf, &nb, name);
+	tsv = GetVarAddress(*svf, nb, name);
 
 	if (!tsv)
 	{
-		tsv = GetFreeVarSlot(svf, &nb);
+		tsv = GetFreeVarSlot(*svf, nb);
 
 		if (!tsv)
 			return NULL;
