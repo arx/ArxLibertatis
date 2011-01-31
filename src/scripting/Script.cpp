@@ -485,7 +485,7 @@ void ARX_SCRIPT_LaunchScriptSearch( std::string& search)
 			else
 			{
 				std::stringstream ss;
-				ss << GetName(io->filename) << '_' << std::setw(4) << io->ident;
+				ss << GetName(io->filename) << '_' << std::setfill('0') << std::setw(4) << io->ident;
 				objname = ss.str();
 				//sprintf(objname, "%s_%04d", GetName(io->filename).c_str(), io->ident);
 			}
@@ -1422,7 +1422,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 					else
 					{
 						std::stringstream ss;
-						ss << GetName(EVENT_SENDER->filename) << '_' << EVENT_SENDER->ident;
+						ss << GetName(EVENT_SENDER->filename) << '_' << std::setfill('0') << std::setw(4) << EVENT_SENDER->ident;
 						txtcontent = ss.str();
 					}
 				}

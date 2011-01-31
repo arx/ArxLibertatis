@@ -990,7 +990,7 @@ void CheckIO_NOT_SAVED()
 							strcpy(temp2, GetName(temp).c_str());
 							RemoveName(temp);
 							std::stringstream ss;
-							ss << temp << temp2 << '_' << std::setw(4) << inter.iobj[i]->ident << '.';
+							ss << temp << temp2 << '_' << std::setfill('0') << std::setw(4) << inter.iobj[i]->ident << '.';
 							temp = ss.str();
 							//temp += "%s%s_%04d." temp2 + '_' + inter.iobj[i]->ident + '.';
 
@@ -1125,7 +1125,8 @@ suite:
 			strcpy(tmp2, GetName(tmp).c_str());
 			RemoveName(tmp);
 			std::stringstream ss;
-			ss << tmp << tmp2 << '_' << std::setw(4) << io->ident;
+			ss << tmp << tmp2 << '_';
+			ss << std::setfill('0') << std::setw(4) << io->ident;
 			tmp = ss.str();
 			//sprintf(tmp, "%s%s_%04d", tmp.c_str(), tmp2, io->ident);
 
@@ -1135,7 +1136,15 @@ suite:
 				strcpy(tmp2, GetName(tmp).c_str());
 				RemoveName(tmp);
 				std::stringstream ss;
-				ss << tmp << tmp2 << '_' << std::setw(4) << io->ident << '\\' << tmp2 << ".asl";
+				ss << tmp << tmp2 << '_';
+
+				char fill = ss.fill('0');
+				std::streamsize width = ss.width(4);
+				ss << io->ident;
+				ss.width(width);
+				ss.fill(fill);
+
+				ss << '\\' << tmp2 << ".asl";
 				tmp = ss.str();
 				//sprintf(tmp, "%s%s_%04d\\%s.asl", tmp, tmp2, io->ident, tmp2);
 
@@ -1151,6 +1160,7 @@ suite:
 
 					if (io->over_script.data != NULL)
 					{
+						LogDebug << "Loaded " << tmp;
 						io->over_script.size = FileSize;
 						InitScript(&io->over_script);
 					}
@@ -2277,8 +2287,8 @@ void ARX_SAVELOAD_DLFCheckAdd(char * path, long num)
 		dli = (DANAE_LS_INTER *)(dat + pos);
 		pos += sizeof(DANAE_LS_INTER);
 		std::stringstream ss;
-		ss << GetName(dli->name) << '_' << std::setw(4) << dli->ident;
-	std::string id = ss.str();
+		ss << GetName(dli->name) << '_' << std::setfill('0') << std::setw(4) << dli->ident;
+		std::string id = ss.str();
 		AddIdent( id, num);
 	}
 
