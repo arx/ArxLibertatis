@@ -486,8 +486,8 @@ SCRIPT_VAR * SETVarValueText(SCRIPT_VAR ** svf, long& nb, const std::string& nam
 SCRIPT_VAR * SETVarValueLong(SCRIPT_VAR ** svf, long& nb, const std::string& name, long val);
 SCRIPT_VAR * SETVarValueFloat(SCRIPT_VAR ** svf, long& nb, const std::string& name, float val);
 long GETVarValueLong(SCRIPT_VAR ** svf, long& nb, const std::string& name);
-float GETVarValueFloat(SCRIPT_VAR ** svf, long* nb, const std::string& name);
-std::string GETVarValueText(SCRIPT_VAR ** svf, long* nb, const std::string& name);
+float GETVarValueFloat(SCRIPT_VAR ** svf, long& nb, const std::string& name);
+std::string GETVarValueText(SCRIPT_VAR ** svf, long& nb, const std::string& name);
 long GetNumAnim( const std::string& name);
 long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _name, std::string& txtcontent,unsigned int txtcontentSize,float * fcontent,long * lcontent);
 void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(INTERACTIVE_OBJ * io);

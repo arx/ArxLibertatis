@@ -1858,10 +1858,10 @@ long GETVarValueLong(SCRIPT_VAR ** svf, long& nb, const std::string& name)
 }
 //*************************************************************************************
 //*************************************************************************************
-float GETVarValueFloat(SCRIPT_VAR ** svf, long* nb, const std::string& name)
+float GETVarValueFloat(SCRIPT_VAR ** svf, long& nb, const std::string& name)
 {
 	SCRIPT_VAR * tsv;
-	tsv = GetVarAddress(*svf, nb, name);
+	tsv = GetVarAddress(*svf, &nb, name);
 
 	if (tsv == NULL) return 0;
 
@@ -1869,10 +1869,10 @@ float GETVarValueFloat(SCRIPT_VAR ** svf, long* nb, const std::string& name)
 }
 //*************************************************************************************
 //*************************************************************************************
-std::string GETVarValueText(SCRIPT_VAR ** svf, long* nb, const std::string& name)
+std::string GETVarValueText(SCRIPT_VAR ** svf, long& nb, const std::string& name)
 {
 	SCRIPT_VAR * tsv;
-	tsv = GetVarAddress(*svf, nb, name);
+	tsv = GetVarAddress(*svf, &nb, name);
 
 	if (tsv == NULL) return 0;
 
@@ -1922,11 +1922,11 @@ std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * ess
 		sprintf(var_text, "%ld", l1);
 		return var_text;
 	}
-	else if (temp1[0] == '&') t1 = GETVarValueFloat(&svar, &NB_GLOBALS, temp1.c_str());
-	else if (temp1[0] == '@') t1 = GETVarValueFloat(&esss->lvar, &esss->nblvar, temp1.c_str());
+	else if (temp1[0] == '&') t1 = GETVarValueFloat(&svar, NB_GLOBALS, temp1);
+	else if (temp1[0] == '@') t1 = GETVarValueFloat(&esss->lvar, esss->nblvar, temp1);
 	else if (temp1[0] == '$')
 	{
-		std::string tempo = GETVarValueText(&svar, &NB_GLOBALS, temp1.c_str());
+		std::string tempo = GETVarValueText(&svar, NB_GLOBALS, temp1);
 
 		if (tempo.empty()) strcpy(var_text, "VOID");
 		else strcpy(var_text, tempo.c_str());
@@ -1935,7 +1935,7 @@ std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * ess
 	}
 	else if (temp1[0] == '\xA3')
 	{
-		std::string tempo = GETVarValueText(&esss->lvar, &esss->nblvar, temp1.c_str());
+		std::string tempo = GETVarValueText(&esss->lvar, esss->nblvar, temp1);
 
 		if (tempo.empty()) strcpy(var_text, "VOID");
 		else strcpy(var_text, tempo.c_str());
@@ -1978,8 +1978,8 @@ float GetVarValueInterpretedAsFloat( std::string& temp1, EERIE_SCRIPT * esss, IN
 	}
 	else if (temp1[0] == '#')	return (float)GETVarValueLong(&svar, NB_GLOBALS, temp1);
 	else if (temp1[0] == '\xA7') return (float)GETVarValueLong(&esss->lvar, esss->nblvar, temp1);
-	else if (temp1[0] == '&') return GETVarValueFloat(&svar, &NB_GLOBALS, temp1.c_str());
-	else if (temp1[0] == '@') return GETVarValueFloat(&esss->lvar, &esss->nblvar, temp1.c_str());
+	else if (temp1[0] == '&') return GETVarValueFloat(&svar, NB_GLOBALS, temp1);
+	else if (temp1[0] == '@') return GETVarValueFloat(&esss->lvar, esss->nblvar, temp1);
 
 	return (float)atof(temp1.c_str());
 }
@@ -2611,21 +2611,21 @@ long GetNextWord_Interpreted( INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, s
 	}
 	else if (temp[0] == '&')
 	{
-		ss << GETVarValueFloat(&svar, &NB_GLOBALS, temp);
+		ss << GETVarValueFloat(&svar, NB_GLOBALS, temp);
 		temp = ss.str();
 	}
 	else if (temp[0] == '@')
 	{
-		ss << GETVarValueFloat(&es->lvar, &es->nblvar, temp);
+		ss << GETVarValueFloat(&es->lvar, es->nblvar, temp);
 		temp = ss.str();
 	}
 	else if (temp[0] == '$')
 	{
-		temp = GETVarValueText(&svar, &NB_GLOBALS, temp);
+		temp = GETVarValueText(&svar, NB_GLOBALS, temp);
 	}
 	else if (temp[0] == '\xA3')
 	{
-		temp = GETVarValueText(&es->lvar, &es->nblvar, temp);
+		temp = GETVarValueText(&es->lvar, es->nblvar, temp);
 	}
 
 	return pos;
