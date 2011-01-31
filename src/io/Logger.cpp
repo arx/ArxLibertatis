@@ -17,6 +17,7 @@ struct LogSetting {
 const LogSetting blackList[] = {
 	{ "FTL.cpp", Logger::Warning },
 	{ "Script.cpp", Logger::Info },
+	{ "ScriptEvent.cpp", Logger::Info },
 	{ "PakManager.cpp", Logger::Fatal },
 	{ "PakReader.cpp", Logger::Info },
 	{ "Filesystem.cpp", Logger::Fatal },
@@ -26,7 +27,8 @@ const LogSetting blackList[] = {
 	{ "Speech.cpp", Logger::Error },
 	{ "Text.cpp", Logger::Error },
 	{ "CinematicLoad.cpp", Logger::Info },
-	{ "IO.cpp", Logger::Debug }
+	{ "IO.cpp", Logger::Debug },
+	{ "MenuWidgets.cpp", Logger::Info }
 };
 
 Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {
