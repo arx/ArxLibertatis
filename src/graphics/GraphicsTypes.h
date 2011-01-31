@@ -86,7 +86,7 @@ typedef struct
 } EERIE_2D; // Aligned 1 2 4 8
 
 #pragma pack(push,1)
-typedef struct
+struct EERIE_3D
 {
 	union
 	{
@@ -106,7 +106,7 @@ typedef struct
 		float		g;
 		float		roll;
 	};
-} EERIE_3D; // Aligned 1 2 4
+}; // Aligned 1 2 4
 #pragma pack(pop)
 
 typedef struct
@@ -559,8 +559,82 @@ typedef struct
 	float w;
 } EERIE_3DPAD ;
 
-typedef struct
+struct EERIE_3DOBJ
 {
+	EERIE_3DOBJ()
+	{
+		// TODO Make it possible to use a default
+		// conststructor for these
+		pos.x = pos.y = pos.z = 0;
+		point0 = pos;
+		angle = pos;
+
+		origin = 0;
+		ident = 0;
+		nbvertex = 0;
+		true_nbvertex = 0;
+		nbfaces = 0;
+		nbpfaces = 0;
+		nbmaps = 0;
+		nbgroups = 0;
+		nbaction = 0;
+		nbselections = 0;
+		drawflags = 0;
+
+		vertexlocal = 0;
+		vertexlist = 0;
+		vertexlist3 = 0;
+
+		facelist = 0;
+		pfacelist = 0;
+		maplist = 0;
+		grouplist = 0;
+		actionlist = 0;
+		selections = 0;
+		texturecontainer = 0;
+
+		originaltextures = 0;
+		linked = 0;
+
+		// TODO Make default constructor possible
+		cub.xmin = 0;
+		cub.xmax = 0;
+		cub.ymin = 0;
+		cub.ymax = 0;
+		cub.zmin = 0;
+		cub.zmax = 0;
+
+		// TODO Default constructor
+		quat.x = quat.y = quat.z = quat.w = 0;
+		nblinked = 0;
+
+		pbox = 0;
+		pdata = 0;
+		ndata = 0;
+		cdata = 0;
+		sdata = 0;
+
+		fastaccess.view_attach = 0;
+		fastaccess.primary_attach = 0;
+		fastaccess.left_attach = 0;
+		fastaccess.weapon_attach = 0;
+		fastaccess.secondary_attach = 0;
+		fastaccess.mouth_group = 0;
+		fastaccess.jaw_group = 0;
+		fastaccess.head_group_origin = 0;
+		fastaccess.head_group = 0;
+		fastaccess.mouth_group_origin = 0;
+		fastaccess.V_right = 0;
+		fastaccess.U_right = 0;
+		fastaccess.fire = 0;
+		fastaccess.sel_head = 0;
+		fastaccess.sel_chest = 0;
+		fastaccess.sel_leggings = 0;
+		fastaccess.carry_attach = 0;
+		fastaccess.__padd = 0;
+
+		c_data = 0;
+	}
 	std::string name;
 	std::string file;
 	EERIE_3D			pos;
@@ -604,7 +678,7 @@ typedef struct
 	EERIE_FASTACCESS	fastaccess;
 	EERIE_C_DATA 	*	c_data;
 
-} EERIE_3DOBJ; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
 
 typedef struct
