@@ -284,7 +284,7 @@ void ShowScriptError(const char * tx, const char * cmd)
 {
 	char text[512];
 	sprintf(text, "SCRIPT ERROR\n%s\n\n%s", tx, cmd);
-	ShowPopup(text);
+	LogError << (text);
 }
 
 void Stack_SendMsgToAllNPC_IO(long msg, const char * dat)
@@ -5036,7 +5036,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					if (!(danaeApp.kbd.inkey[INKEY_LEFTSHIFT]) && !(danaeApp.kbd.inkey[INKEY_RIGHTSHIFT]))
 					{
 						ARX_TIME_Pause();
-						ShowPopup(temp.c_str());
+						LogError << (temp.c_str());
 						ARX_TIME_UnPause();
 					}
 

@@ -57,6 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/IO.h"
 #include "graphics/Draw.h"
 #include "graphics/data/CinematicTexture.h"
+#include "io/Logger.h"
 
 using std::min;
 using std::max;
@@ -2752,7 +2753,7 @@ bool DANAE::ManageEditorControls()
 			WILLSAVELEVEL=0;
 
 			if (FORBID_SAVE)
-				ShowPopup("You can't Save Editor Level While a Game is in progress. Please reload an Editor Level to be able to save.");
+				LogError << ("You can't Save Editor Level While a Game is in progress. Please reload an Editor Level to be able to save.");
 			else if (OKBox("Save Current Level ?", "Save Level..."))
 				{
 					char saveto[512];
@@ -3330,7 +3331,7 @@ bool DANAE::ManageEditorControls()
 
 	   if ((ExistNodeName(temp)) && strcmp(temp,nodes.nodes[i].name))
 	   {
-		   ShowPopup("This Name already exists, change to new name please");
+		   LogError << ("This Name already exists, change to new name please");
 		   goto encore;
 	   }
 

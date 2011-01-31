@@ -613,7 +613,7 @@ void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, long * poss, long ver
 	// Lecture des VERTEX THEO
 	pos = to->vertex_seek;
 
-	if (tn.nb_vertex > 65535) ShowPopup("Warning Vertex Number Too High...");
+	if (tn.nb_vertex > 65535) LogError << ("Warning Vertex Number Too High...");
 
 	for (i = 0; i < tn.nb_vertex; i++)
 	{
@@ -2300,7 +2300,7 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, 
 		// LECTURE DE TEXTURE THEO IN_OBJECT
 		char text[512];
 		sprintf(text, "WARNING object %s SAVE MAP IN OBJECT = INVALID... Using Dummy Textures...", fic);
-		ShowPopup(text);
+		LogError << (text);
 
 
 		if (DEBUGG) SendConsole("SAVE_MAP_IN_OBJECT = true", 3, 0, (HWND)MSGhwnd);
