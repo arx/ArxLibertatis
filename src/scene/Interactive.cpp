@@ -97,6 +97,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
+#include "scripting/ScriptEvent.h"
 
 using std::min;
 
@@ -3203,25 +3204,25 @@ void ReloadScript(INTERACTIVE_OBJ * io)
 		if (inter.iobj[num]
 		        &&	inter.iobj[num]->script.data)
 		{
-			SendScriptEvent(&inter.iobj[num]->script, SM_INIT, "", inter.iobj[num], NULL);
+			ScriptEvent::send(&inter.iobj[num]->script, SM_INIT, "", inter.iobj[num], NULL);
 		}
 
 		if (inter.iobj[num]
 		        &&	inter.iobj[num]->over_script.data)
 		{
-			SendScriptEvent(&inter.iobj[num]->over_script, SM_INIT, "", inter.iobj[num], NULL);
+			ScriptEvent::send(&inter.iobj[num]->over_script, SM_INIT, "", inter.iobj[num], NULL);
 		}
 
 		if (inter.iobj[num]
 		        &&	inter.iobj[num]->script.data)
 		{
-			SendScriptEvent(&inter.iobj[num]->script, SM_INITEND, "", inter.iobj[num], NULL);
+			ScriptEvent::send(&inter.iobj[num]->script, SM_INITEND, "", inter.iobj[num], NULL);
 		}
 
 		if (inter.iobj[num]
 		        &&	inter.iobj[num]->over_script.data)
 		{
-			SendScriptEvent(&inter.iobj[num]->over_script, SM_INITEND, "", inter.iobj[num], NULL);
+			ScriptEvent::send(&inter.iobj[num]->over_script, SM_INITEND, "", inter.iobj[num], NULL);
 		}
 	}
 }

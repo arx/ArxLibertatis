@@ -124,6 +124,7 @@ void ARX_MENU_Clicked_QUIT_GAME();
 void ARX_Menu_Resources_Create(LPDIRECT3DDEVICE7 m_pd3dDevice);
 void ARX_Menu_Resources_Release(bool _bNoSound = true);
 void ARX_Menu_Release_Text(void * a);
+void ARX_MENU_Clicked_CREDITS();
 
 //-----------------------------------------------------------------------------
 void LoadSaveGame(const long & i);
