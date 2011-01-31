@@ -483,7 +483,7 @@ void ARX_IOGROUP_Remove(INTERACTIVE_OBJ * io, const std::string& group);
 void ARX_IOGROUP_Add(INTERACTIVE_OBJ * io, const char * group);
 long GetNextWord_Interpreted( INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, std::string& temp );
 SCRIPT_VAR * SETVarValueText(SCRIPT_VAR ** svf, long& nb, const std::string& name, const std::string& val);
-SCRIPT_VAR * SETVarValueLong(SCRIPT_VAR ** svf, long& nb, const std::string& name, long val);
+SCRIPT_VAR * SETVarValueLong(SCRIPT_VAR*& svf, long& nb, const std::string& name, long val);
 SCRIPT_VAR * SETVarValueFloat(SCRIPT_VAR ** svf, long& nb, const std::string& name, float val);
 long GETVarValueLong(SCRIPT_VAR ** svf, long& nb, const std::string& name);
 float GETVarValueFloat(SCRIPT_VAR ** svf, long& nb, const std::string& name);
