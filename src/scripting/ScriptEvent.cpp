@@ -3736,7 +3736,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 							if (a) RemoveNumerics(tempp);
 
-							sv = SETVarValueText(&svar, &NB_GLOBALS, temp.c_str(), tempp);
+							sv = SETVarValueText(&svar, NB_GLOBALS, temp, tempp);
 
 							if (sv == NULL)
 							{
@@ -3750,7 +3750,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 							if (a) RemoveNumerics(tempp);
 
-							sv = SETVarValueText(&esss->lvar, &esss->nblvar, temp.c_str(), tempp);
+							sv = SETVarValueText(&esss->lvar, esss->nblvar, temp, tempp);
 
 							if (sv == NULL)
 							{
