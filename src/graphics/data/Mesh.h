@@ -60,20 +60,23 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsTypes.h"
 
+// TODO Remove when this header is cleaned up
+#include "scripting/Script.h"
+
 void specialEE_RTP(D3DTLVERTEX*,D3DTLVERTEX*);
 void EERIE_CreateMatriceProj(float _fWidth,float _fHeight,float _fFOV,float _fZNear,float _fZFar);
 
 //#pragma pack(push,1)
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct ANIM_HANDLE
 {
 	char			path[256]; // path[0]==0 means an unallocated slot
 	EERIE_ANIM **	anims;
 	long *			sizes;
 	short			alt_nb;
 	long			locks;
-} ANIM_HANDLE;
+};
 
 //minimap special infos
 typedef struct
@@ -183,9 +186,6 @@ typedef struct
 	short max;
 } EERIE_SMINMAX;
 
-#define MAX_GOSUB 10
-#define MAX_SHORTCUT 80
-#define MAX_SCRIPTTIMERS 5
 #define FBD_TREAT		1
 #define FBD_NOTHING		2
 
@@ -228,36 +228,6 @@ typedef struct
 	char		name[256];
 } EERIE_BACKGROUND;
 
-typedef struct 
-{	
-	long	type;
-	long	ival;
-	float	fval;
-	char *	text;  // for a TEXT type ival equals strlen(text).
-	char 	name[64];
-} SCRIPT_VAR;
-typedef struct
-{
-	char *		string;
-	long		idx;
-} LABEL_INFO;
-
-typedef struct
-{
-	long			size;
-	char *			data;
-	long			sub[MAX_GOSUB];
-	long			nblvar;
-	SCRIPT_VAR *	lvar;
-	unsigned long	lastcall;
-	unsigned long	timers[MAX_SCRIPTTIMERS];
-	long			allowevents;
-	void *			master;
-	long			shortcut[MAX_SHORTCUT];
-	long			nb_labels;
-	LABEL_INFO *	labels;
-} EERIE_SCRIPT;
-
 typedef struct
 {
 	float	value;
@@ -271,7 +241,7 @@ typedef struct
 	IO_EQUIPITEM_ELEMENT elements[IO_EQUIPITEM_ELEMENT_Number];
 } IO_EQUIPITEM;
 
-typedef struct
+struct ANIM_USE
 {
 	ANIM_HANDLE *	next_anim;
 	ANIM_HANDLE *	cur_anim;
@@ -283,7 +253,7 @@ typedef struct
 	long			lastframe;
 	float			pour;
 	long			fr;
-} ANIM_USE;
+};
 
 #define MAX_ANIM_LAYERS	4
 typedef struct
@@ -465,7 +435,7 @@ typedef struct
 #define MAX_ANIMS 200		// max loadable anims per character
 
 typedef int ArxSound;
-typedef struct
+struct INTERACTIVE_OBJ
 {
 	long				ioflags;			// IO type
 	EERIE_3D			lastpos;	// IO last position
@@ -604,7 +574,7 @@ typedef struct
 	short				inzone_show;
 	short				summoner;
 	long spark_n_blood;
-} INTERACTIVE_OBJ;
+};
 
 //-----------------------------------------------------------------------------
 #define BEHAVIOUR_NONE			1		// no pathfind

@@ -85,6 +85,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakManager.h"
 #include "io/Logger.h"
 #include "graphics/Math.h"
+#include "graphics/data/Mesh.h"
+#include "graphics/data/MeshManipulation.h"
 
 using std::sprintf;
 using std::min;

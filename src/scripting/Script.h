@@ -59,11 +59,55 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
-#include <tchar.h>
-#include "graphics/data/Mesh.h"
-#include "graphics/data/MeshManipulation.h"
+#include "graphics/GraphicsTypes.h"
+
+//TODO Remove this after cleaning up struct declarations
+struct INTERACTIVE_OBJ;
+struct ANIM_HANDLE;
+struct ANIM_USE;
+
+#define MAX_GOSUB 10
+#define MAX_SHORTCUT 80
+#define MAX_SCRIPTTIMERS 5
 
 //-----------------------------------------------------------------------------
+struct SCRIPT_EVENT
+{
+	SCRIPT_EVENT( const std::string& str ): name( str ) {}
+	std::string name;
+};
+
+struct SCRIPT_VAR
+{	
+	long	type;
+	long	ival;
+	float	fval;
+	char *	text;  // for a TEXT type ival equals strlen(text).
+	char 	name[64];
+};
+
+struct LABEL_INFO
+{
+	char *		string;
+	long		idx;
+};
+
+struct EERIE_SCRIPT
+{
+	long			size;
+	char *			data;
+	long			sub[MAX_GOSUB];
+	long			nblvar;
+	SCRIPT_VAR *	lvar;
+	unsigned long	lastcall;
+	unsigned long	timers[MAX_SCRIPTTIMERS];
+	long			allowevents;
+	void *			master;
+	long			shortcut[MAX_SHORTCUT];
+	long			nb_labels;
+	LABEL_INFO *	labels;
+};
+
 typedef struct
 {
 	std::string         name;
@@ -78,12 +122,6 @@ typedef struct
 	INTERACTIVE_OBJ*    io;
 	EERIE_SCRIPT*       es;
 } SCR_TIMER;
-
-struct SCRIPT_EVENT
-{
-	SCRIPT_EVENT( const std::string& str ): name( str ) {}
-	std::string name;
-};
 
 //-----------------------------------------------------------------------------
 #define PATHFIND_ALWAYS		1

@@ -27,10 +27,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <dinput.h>
 
-/*#include <algorithm>
-#include <string>
-#include <vector>
-*/
 #include "io/IO.h"
 
 #include "animation/Animation.h"
@@ -38,7 +34,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "graphics/Math.h"
 #include "scene/Light.h"
-#include "graphics/data/Mesh.h"
+#include "graphics/data/MeshManipulation.h"
 #include "graphics/Draw.h"
 
 #include "physics/Collisions.h"
