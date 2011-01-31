@@ -611,7 +611,7 @@ void MCache_ClearAll()
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-char * MCache_Pop( const std::string& file, size_t& size)
+char* MCache_Pop( const std::string& file, size_t& size)
 {
 	long num = MCache_Get(file);
 

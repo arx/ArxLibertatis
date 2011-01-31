@@ -243,9 +243,9 @@ EERIE_3DOBJ * _LoadTheObj(const char * text, const char * path)
 //*************************************************************************************
 //*************************************************************************************
 
-void ReplaceSpecifics( std::string& text )
+void ReplaceSpecifics( char* text )
 {
-	std::string temp = text;
+/*	std::string temp = text;
 	MakeUpcase( temp );
 	size_t graph_loc = temp.find_first_of( "GRAPH" );
 
@@ -253,7 +253,7 @@ void ReplaceSpecifics( std::string& text )
 	{
 		text = text.substr( graph_loc );
 	}
-/*
+*/
 	char			temp[512];
 	UINT			size_text = strlen(text);
 
@@ -261,7 +261,9 @@ void ReplaceSpecifics( std::string& text )
 	{
 		memcpy(temp, text + i, 5);
 		temp[5] = 0;
-		MakeUpcase(temp);
+		std::string temp2 = temp;
+		MakeUpcase(temp2);
+		strcpy( temp, temp2.c_str() );
 
 		if (!strcmp(temp, "GRAPH"))
 		{
@@ -271,7 +273,7 @@ void ReplaceSpecifics( std::string& text )
 		}
 	}
 
-	return;*/
+	return;
 }
 
 extern long NODIRCREATION;
@@ -600,7 +602,7 @@ long DanaeSaveLevel( const std::string& _fic )
 			dli.angle.a = io->initangle.a;
 			dli.angle.b = io->initangle.b;
 			dli.angle.g = io->initangle.g;
-			dli.name = io->filename;
+			strcpy( dli.name, io->filename);
 
 			if (io->ident == 0)
 			{
@@ -1084,7 +1086,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans)
 
 	if (FORCE_IO_INDEX != -1)
 	{
-		io = AddInteractive(GDevice, dli->name.c_str(), dli->ident, NO_MESH | NO_ON_LOAD);
+		io = AddInteractive(GDevice, dli->name, dli->ident, NO_MESH | NO_ON_LOAD);
 		goto suite;
 	}
 
@@ -1099,7 +1101,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans)
 
 	ReplaceSpecifics(dli->name);
 
-	io = AddInteractive(GDevice, dli->name.c_str(), dli->ident, NO_MESH | NO_ON_LOAD);
+	io = AddInteractive(GDevice, dli->name, dli->ident, NO_MESH | NO_ON_LOAD);
 suite:
 	;
 
@@ -1423,7 +1425,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fic)
 		if (!DONT_LOAD_INTERS)
 		{
 			//TODO(lubosz): dli is a string struct allocated with malloc!
-//			LoadInter_Ex(dli, &trans);
+			LoadInter_Ex(dli, &trans);
 		}
 	}
 
@@ -1672,24 +1674,24 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fic)
 		ap->rgb.r		= dlp->rgb.r;
 		ap->rgb.g		= dlp->rgb.g;
 		ap->rgb.b		= dlp->rgb.b;
-//TODO(lubosz): string related struct crash
-//		ARX_PATHWAY * app = ap->pathways = (ARX_PATHWAY *)malloc(sizeof(ARX_PATHWAY) * dlp->nb_pathways);
-//		memset(app, 0, sizeof(ARX_PATHWAY)*dlp->nb_pathways);
+
+		ARX_PATHWAY * app = ap->pathways = (ARX_PATHWAY *)malloc(sizeof(ARX_PATHWAY) * dlp->nb_pathways);
+		memset(app, 0, sizeof(ARX_PATHWAY)*dlp->nb_pathways);
 //
-//		for (long j = 0; j < dlp->nb_pathways; j++)
-//		{
-//			dlpw = (DANAE_LS_PATHWAYS *)(dat + pos);
-//			pos += sizeof(DANAE_LS_PATHWAYS);
-//
-//			app[j].flag		=	dlpw->flag;
-//			app[j].rpos.x	=	dlpw->rpos.x;
-//			app[j].rpos.y	=	dlpw->rpos.y;
-//			app[j].rpos.z	=	dlpw->rpos.z;
-//			app[j]._time	=	ARX_CLEAN_WARN_CAST_FLOAT(dlpw->time);
-//		}
+		for (long j = 0; j < dlp->nb_pathways; j++)
+		{
+			dlpw = (DANAE_LS_PATHWAYS *)(dat + pos);
+			pos += sizeof(DANAE_LS_PATHWAYS);
+
+			app[j].flag		=	dlpw->flag;
+			app[j].rpos.x	=	dlpw->rpos.x;
+			app[j].rpos.y	=	dlpw->rpos.y;
+			app[j].rpos.z	=	dlpw->rpos.z;
+			app[j]._time	=	ARX_CLEAN_WARN_CAST_FLOAT(dlpw->time);
+		}
 	}
 
-//	ARX_PATH_ComputeAllBoundingBoxes();
+	ARX_PATH_ComputeAllBoundingBoxes();
 	PROGRESS_BAR_COUNT += 5.f;
 	LoadLevelScreen();
 

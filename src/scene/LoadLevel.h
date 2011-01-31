@@ -78,7 +78,7 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string& dir);
 #pragma pack(push,1)
 typedef struct
 {
-	std::string name;
+	char        name[512];
 	EERIE_3D    pos;
 	EERIE_3D    angle;
 	long        ident; 

@@ -2443,7 +2443,7 @@ long ARX_CHANGELEVEL_Pop_IO( const std::string& ident)
 	long num = atoi(ident.c_str() + ident.length() - 4);
 
 	dli.ident = num;
-	dli.name = ais->filename;
+	strcpy( dli.name, ais->filename );
 	dli.pos.x = ais->pos.x;
 	dli.pos.y = ais->pos.y;
 	dli.pos.z = ais->pos.z;

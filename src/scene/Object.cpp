@@ -89,7 +89,6 @@ using std::max;
 extern char LastLoadedScene[256];
 extern PakManager * pPakManager;
 
-void EERIE_CreateCedricData(EERIE_3DOBJ * eobj);
 void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj);
 void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj);
 void EERIEOBJECT_DeletePFaces(EERIE_3DOBJ * eobj);
@@ -114,7 +113,7 @@ long GetActionPointIdx(EERIE_3DOBJ * eobj, const char * text)
 	for (long i = 0; i < eobj->nbaction; i++)
 	{
 //		TODO(lubosz): string crash
-//		if (!strcasecmp(text, eobj->actionlist[i].name.c_str() )) return eobj->actionlist[i].idx;
+		if (!strcasecmp(text, eobj->actionlist[i].name.c_str() )) return eobj->actionlist[i].idx;
 	}
 
 	return -1;
@@ -2069,8 +2068,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 #if CEDRIC
 	/* Build proper mesh */
 	{
-		int		i;
-		EERIE_C_DATA * obj = eobj->c_data;
+		int i;
+		EERIE_C_DATA* obj = eobj->c_data;
 
 
 		for (i = 0; i != obj->nb_bones; i++)
@@ -2099,7 +2098,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 			}
 		}
 
-		eobj->vertexlocal = (EERIE_3DPAD *)malloc(sizeof(EERIE_3DPAD) * eobj->nbvertex);
+		eobj->vertexlocal = new EERIE_3DPAD[eobj->nbvertex];
 		memset(eobj->vertexlocal, 0, sizeof(EERIE_3DPAD)*eobj->nbvertex);
 
 		for (i = 0; i != obj->nb_bones; i++)
@@ -2125,6 +2124,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 
 void EERIEOBJECT_DeletePFaces(EERIE_3DOBJ * eobj)
 {
+	// todo Why does this return? Nonfunctional?
 	return;
 
 	if (eobj->pfacelist) free(eobj->pfacelist);
@@ -2214,6 +2214,7 @@ void EERIEOBJECT_AddFace(EERIE_3DOBJ * eobj, EERIE_FACE * face, long faceidx)
 
 void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj)
 {
+	// todo Find out why this function doesn't work
 	return;
 	EERIEOBJECT_DeletePFaces(eobj);
 

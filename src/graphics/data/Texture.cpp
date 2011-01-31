@@ -3239,7 +3239,7 @@ HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 // Desc: Enumeration callback routine to find a best-matching texture format.
 //-----------------------------------------------------------------------------
 
-void ConvertData( std::string dat)
+void ConvertData( std::string& dat)
 {
 	if (dat[0] == '"') dat.erase( 0, 1 );
 
@@ -3294,7 +3294,7 @@ void LookForRefinementMap(TextureContainer * tc)
 	{
 		unsigned char * from = (unsigned char *)GlobalRefine;
 		long fromsize = GlobalRefine_size;
-		std::string data;
+		std::string data( 256, '\0' );
 		long pos = 0;
 		std::string name;
 		name = GetName(tc->m_strName);
@@ -3720,8 +3720,7 @@ void D3DTextr_KillAllTextures()
 //-----------------------------------------------------------------------------
 HRESULT D3DTextr_DestroyContainer(TextureContainer * ptcTexture)
 {
-//	TODO(lubosz): string related crash
-//	SAFE_DELETE(ptcTexture);
+	SAFE_DELETE(ptcTexture);
 
 	return S_OK;
 }
