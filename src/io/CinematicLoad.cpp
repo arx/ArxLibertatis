@@ -23,14 +23,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
+#include "io/CinematicLoad.h"
+
+#include <stddef.h>
+#include <stdint.h>
+
 #include "animation/Cinematic.h"
 #include "animation/CinematicKeyframer.h"
 #include "graphics/data/CinematicTexture.h"
 #include "io/PakManager.h"
 #include "scene/CinematicSound.h"
 
-#define CINEMATIC_FILE_VERSION ((1<<16)|76)
-#define INTERP_NO_FADE 2
+const int32_t CINEMATIC_FILE_VERSION = (1<<16) | 76;
+const int16_t INTERP_NO_FADE = 2;
 
 void DrawInfoTrack(void);
 
@@ -248,6 +253,8 @@ bool LoadProject(Cinematic * c, const char * dir, const char * name)
 	C_KEY_1_74	k174;
 	C_KEY_1_75	k175;
 	char	txt[4];
+	
+	size_t pos = 0;
 
 	InitMapLoad(c);
 	InitSound(c);
