@@ -114,10 +114,6 @@ long NB_GLOBALS = 0;
 SCR_TIMER * scr_timer = NULL;
 long ActiveTimers = 0;
 
-extern void ARX_MENU_Clicked_CREDITS();
-extern void ARX_MENU_Launch(LPDIRECT3DDEVICE7 m_pd3dDevice);
-bool ARX_EQUIPMENT_IsPlayerEquip(INTERACTIVE_OBJ * _pIO);
-
 size_t strcasecmp( const std::string& str1, const std::string& str2 )
 {
 	return strcasecmp( str1.c_str(), str2.c_str() );
