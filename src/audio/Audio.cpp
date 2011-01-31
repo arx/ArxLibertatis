@@ -76,34 +76,20 @@ namespace ATHENA
 		//Clean any initialized data
 		aalClean();
 
-		CoInitialize(NULL);
-
 		//Initialize random number generator
 		InitSeed();
 
-		//Create DirectSound device interface
-		if (CoCreateInstance(CLSID_EAXDirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (aalVoid **)&device))
-		{
-			if (CoCreateInstance(CLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (aalVoid **)&device))
-			{
-				if (mutex) ReleaseMutex(mutex);
-
-				return AAL_ERROR_SYSTEM;
-			}
-		}
-		else is_reverb_present = AAL_UTRUE;
-
-		if (device->Initialize(NULL) ||
-		        device->SetCooperativeLevel(IsWindow((HWND)param) ? (HWND)param : GetForegroundWindow(), DSSCL_PRIORITY))
-		{
-			device->Release(), device = NULL;
-
+		// Create OpenAL interface
+		device = alcOpenDevice(NULL);
+		if (device) {
+			context = alcCreateContext(dev, NULL);
+			alcMakeContextCurrent(context);
+		} else {
 			if (mutex) ReleaseMutex(mutex);
-
 			return AAL_ERROR_SYSTEM;
 		}
-
-		hwnd = (HWND)param;
+		alGetError(); // clear error code
+		is_reverb_present = alIsExtensionPresent("EAX2.0") ? AAL_UTRUE : AAL_UFALSE;
 
 		if (mutex) ReleaseMutex(mutex);
 
@@ -112,41 +98,10 @@ namespace ATHENA
 
 	aalError aalInitForceNoEAX(aalVoid * param)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
-			return AAL_ERROR_TIMEOUT;
+		aalError ret = aalInit(param);
+		is_reverb_present = AAL_UFALSE;
 
-		//Clean any initialized data
-		aalClean();
-
-		CoInitialize(NULL);
-
-		//Initialize random number generator
-		InitSeed();
-
-		//Create DirectSound device interface
-
-		if (CoCreateInstance(CLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (aalVoid **)&device))
-		{
-			if (mutex) ReleaseMutex(mutex);
-
-			return AAL_ERROR_SYSTEM;
-		}
-
-		if (device->Initialize(NULL) ||
-		        device->SetCooperativeLevel(IsWindow((HWND)param) ? (HWND)param : GetForegroundWindow(), DSSCL_PRIORITY))
-		{
-			device->Release(), device = NULL;
-
-			if (mutex) ReleaseMutex(mutex);
-
-			return AAL_ERROR_SYSTEM;
-		}
-
-		hwnd = (HWND)param;
-
-		if (mutex) ReleaseMutex(mutex);
-
-		return AAL_OK;
+		return ret;
 	}
 
 	aalError aalClean()
