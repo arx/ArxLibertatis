@@ -22,8 +22,12 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <stdlib.h>
+
 #include "animation/Cinematic.h"
+
+#include "graphics/data/CinematicTexture.h"
+#include "graphics/Math.h"
+#include "graphics/Draw.h"
 
 /*---------------------------------------------------------------------------------*/
 extern HWND HwndPere;
@@ -89,7 +93,7 @@ int FX_FadeOUT(float a, int color, int colord)
 
 float LastTime;
 /*---------------------------------------------------------------------------------*/
-bool FX_Blur(CINEMATIQUE * c, LPDIRECT3DDEVICE7 device, C_BITMAP * tb)
+bool FX_Blur(Cinematic * c, LPDIRECT3DDEVICE7 device, CinematicBitmap * tb)
 {
 	int			nb;
 	EERIE_3D	* pos;
@@ -403,7 +407,7 @@ bool SpecialFadeR(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, f
 float	DreamAng, DreamAng2;
 float	DreamTable[64*64*2];
 /*---------------------------------------------------------------------------------*/
-void FX_DreamPrecalc(C_BITMAP * bi, float amp, float fps)
+void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps)
 {
 	int		nx, ny;
 	float	* t;

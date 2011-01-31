@@ -22,14 +22,17 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <stdio.h>
+
+#include "scene/CinematicSound.h"
+
 #include "animation/Cinematic.h"
+#include "core/Application.h"
 #include "scene/GameSound.h"
 #include "io/IO.h"
 
 
 /*-----------------------------------------------------------*/
-C_SOUND		TabSound[MAX_SOUND];
+CinematicSound		TabSound[MAX_SOUND];
 int			NbSound;
 /*-----------------------------------------------------------*/
 extern char AllTxt[];
@@ -38,9 +41,9 @@ extern char DirectoryChoose[];
 extern int	LSoundChoose;
 
 /*-----------------------------------------------------------*/
-void InitSound(CINEMATIQUE * c)
+void InitSound(Cinematic * c)
 {
-	C_SOUND	*	ts;
+	CinematicSound	*	ts;
 	int			nb;
 
 	ts = TabSound;
@@ -48,7 +51,7 @@ void InitSound(CINEMATIQUE * c)
 
 	while (nb)
 	{
-		memset((void *)ts, 0, sizeof(C_SOUND));
+		memset((void *)ts, 0, sizeof(CinematicSound));
 		ts->idhandle = ARX_SOUND_INVALID_RESOURCE;
 		ts++;
 		nb--;
@@ -57,9 +60,9 @@ void InitSound(CINEMATIQUE * c)
 	NbSound = 0;
 }
 /*-----------------------------------------------------------*/
-C_SOUND * GetFreeSound(int * num)
+CinematicSound * GetFreeSound(int * num)
 {
-	C_SOUND	*	ts;
+	CinematicSound	*	ts;
 	int			nb;
 
 	ts = TabSound;
@@ -82,7 +85,7 @@ C_SOUND * GetFreeSound(int * num)
 /*-----------------------------------------------------------*/
 bool DeleteFreeSound(int num)
 {
-	C_SOUND	*	cs;
+	CinematicSound	*	cs;
 	int			l;
 
 	cs = &TabSound[num];
@@ -153,7 +156,7 @@ void CutAndAddString(char * pText, const char * pDebText)
 /*-----------------------------------------------------------*/
 int ExistSound(char * dir, char * name)
 {
-	C_SOUND * cs;
+	CinematicSound * cs;
 
 	cs = TabSound;
 	int nb = MAX_SOUND;
@@ -259,7 +262,7 @@ void PatchReplace()
 /*-----------------------------------------------------------*/
 int AddSoundToList(char * dir, char * name, int id, int pos)
 {
-	C_SOUND * cs;
+	CinematicSound * cs;
 	int		num;
 
 	if ((num = ExistSound(dir, name)) >= 0)
@@ -336,7 +339,7 @@ int AddSoundToList(char * dir, char * name, int id, int pos)
 /*-----------------------------------------------------------*/
 bool PlaySoundKeyFramer(int id)
 {
-	C_SOUND * cs;
+	CinematicSound * cs;
 
 	cs = &TabSound[id];
 
@@ -349,7 +352,7 @@ bool PlaySoundKeyFramer(int id)
 /*-----------------------------------------------------------*/
 void StopSoundKeyFramer(void)
 {
-	C_SOUND	*	ts;
+	CinematicSound	*	ts;
 	int			nb;
 
 	ts = TabSound;

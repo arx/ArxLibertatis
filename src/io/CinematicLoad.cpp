@@ -22,33 +22,164 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <stdio.h>
 
-#include <stdlib.h>
 #include "animation/Cinematic.h"
+#include "animation/CinematicKeyframer.h"
+#include "graphics/data/CinematicTexture.h"
 #include "io/PakManager.h"
 
-/*----------------------------------------------------------------------*/
+#define CINEMATIC_FILE_VERSION ((1<<16)|76)
+
 void DrawInfoTrack(void);
-/*----------------------------------------------------------------------*/
+
 static PakFileHandle * FCurr;
 static char Dir[256];
 static char Name[256];
-/*----------------------------------------------------------------------*/
+
 extern char		AllTxt[];
 extern int		NbBitmap;
-extern C_BITMAP	TabBitmap[];
+extern CinematicBitmap	TabBitmap[];
 extern int		NbBitmap;
-extern C_TRACK	* CKTrack;
+extern CinematicTrack	* CKTrack;
 char FileNameChoose[256];
 extern bool Restore;
 extern HWND HwndPere;
 extern int		NbSound;
-extern C_SOUND	TabSound[];
+extern CinematicSound	TabSound[];
 extern C_KEY KeyTemp;
 extern int LSoundChoose;
 
-/*----------------------------------------------------------------------*/
+// Version 1.59 structures
+
+struct C_KEY_1_59 {
+	int frame;
+	int numbitmap;
+	int fx; // associated fx
+	int typeinterp;
+	EERIE_3D pos;
+	float angz;
+	int color;
+	int colord;
+	int colorf;
+	float speed;
+};
+
+// Version 1.65 structures
+
+struct C_KEY_1_65 {
+	int frame;
+	int numbitmap;
+	int fx; // associated fx
+	int typeinterp;
+	EERIE_3D pos;
+	float angz;
+	int color;
+	int colord;
+	int colorf;
+	int idsound;
+	float speed;
+};
+
+// Version 1.70 structures
+
+struct C_KEY_1_70 {
+	int frame;
+	int numbitmap;
+	int fx; // associated fx
+	short typeinterp, force;
+	EERIE_3D pos;
+	float angz;
+	int color;
+	int colord;
+	int colorf;
+	int idsound;
+	float speed;
+};
+
+// Version 1.71 structures
+
+struct C_KEY_1_71 {
+	int frame;
+	int numbitmap;
+	int fx; // associated fx
+	short typeinterp, force;
+	EERIE_3D pos;
+	float angz;
+	int color;
+	int colord;
+	int colorf;
+	int idsound;
+	float speed;
+	CinematicLight light;
+};
+
+// Version 1.72 structures
+
+struct CinematicLight_1_72 {
+	EERIE_3D pos;
+	float fallin;
+	float fallout;
+	float r, g, b;
+	float intensite;
+	float intensiternd;
+};
+
+struct C_KEY_1_72 {
+	int frame;
+	int numbitmap;
+	int fx; // associated fx
+	short typeinterp, force;
+	EERIE_3D pos;
+	float angz;
+	int color;
+	int colord;
+	int colorf;
+	int idsound;
+	float speed;
+	CinematicLight_1_72 light;
+	EERIE_3D posgrille;
+	float angzgrille;
+};
+
+// Version 1.74 structures
+
+struct C_KEY_1_74 {
+	int frame;
+	int numbitmap;
+	int fx; //associated fx
+	short typeinterp, force;
+	EERIE_3D pos;
+	float angz;
+	int color;
+	int colord;
+	int colorf;
+	int idsound;
+	float speed;
+	CinematicLight light;
+	EERIE_3D posgrille;
+	float angzgrille;
+};
+
+// Version 1.75 structures
+
+struct C_KEY_1_75 {
+	int frame;
+	int numbitmap;
+	int fx; // associated fx
+	short typeinterp, force;
+	EERIE_3D pos;
+	float angz;
+	int color;
+	int colord;
+	int colorf;
+	int idsound;
+	float speed;
+	CinematicLight light;
+	EERIE_3D posgrille;
+	float angzgrille;
+	float speedtrack;
+};
+
 void ReadString(char * d)
 {
 	while (1)
@@ -60,11 +191,11 @@ void ReadString(char * d)
 		d++;
 	}
 }
-/*----------------------------------------------------------------------*/
-bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
+
+bool LoadProject(Cinematic * c, const char * dir, const char * name)
 {
 	int		nb, version;
-	C_TRACK	t;
+	CinematicTrack	t;
 	C_KEY		k, *kk;
 	C_KEY_1_59	k159;
 	C_KEY_1_65	k165;
@@ -96,7 +227,7 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 
 	PAK_fread(&version, 4, 1, FCurr);
 
-	if (version > VERSION)
+	if (version > CINEMATIC_FILE_VERSION)
 	{
 		PAK_fclose(FCurr);
 		FCurr = NULL;
@@ -180,7 +311,7 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 	}
 
 	//chargement track + key
-	PAK_fread(&t, 1, sizeof(C_TRACK) - 4, FCurr);
+	PAK_fread(&t, 1, sizeof(CinematicTrack) - 4, FCurr);
 	AllocTrack(t.startframe, t.endframe, t.fps);
 
 	nb = t.nbkey;

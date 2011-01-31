@@ -22,7 +22,9 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <stdlib.h>
+
+#include "animation/CinematicKeyframer.h"
+
 #include "animation/Cinematic.h"
 #include "core/Time.h"
 
@@ -43,9 +45,9 @@ extern HWND HwndPere;
 extern bool ProjectModif;
 /*----------------------------------------------------------------------*/
 static bool GereTrackNoPlay2(C_KEY * k, int frame);
-static bool DeleteKey2(CINEMATIQUE * c, int frame);
+static bool DeleteKey2(Cinematic * c, int frame);
 /*----------------------------------------------------------------------*/
-C_TRACK	* CKTrack;
+CinematicTrack	* CKTrack;
 
 int UndoPile;
 static int TotUndoPile, FillUndo;
@@ -56,7 +58,7 @@ bool AllocTrack(int sf, int ef, float fps)
 {
 	if (CKTrack) return false;
 
-	CKTrack = (C_TRACK *)malloc(sizeof(C_TRACK));
+	CKTrack = (CinematicTrack *)malloc(sizeof(CinematicTrack));
 
 	if (!CKTrack) return false;
 
@@ -442,7 +444,7 @@ static bool DiffKey(C_KEY * key1, C_KEY * key2)
 	      );
 }
 /*----------------------------------------------------------------------*/
-void AddDiffKey(CINEMATIQUE * c, C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
+void AddDiffKey(Cinematic * c, C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
 {
 	C_KEY	* k, *ksuiv;
 	int		num;
@@ -508,7 +510,7 @@ float GetAngleInterpolation(float d, float e)
 }
 extern char AllTxt[];
 /*----------------------------------------------------------------------*/
-bool GereTrack(CINEMATIQUE * c, float fpscurr)
+bool GereTrack(Cinematic * c, float fpscurr)
 {
 	C_KEY	* k, *ksuiv;
 	float	a, unmoinsa, alight = 0, unmoinsalight = 0;
@@ -616,8 +618,8 @@ consequences on light :
 			c->speedtrack = a * ksuiv->speedtrack + unmoinsa * k->speedtrack;
 
 			{
-				C_LIGHT ldep;
-				C_LIGHT lend;
+				CinematicLight ldep;
+				CinematicLight lend;
 
 				if (lightprec->light.intensity < 0.f)
 				{
@@ -685,8 +687,8 @@ consequences on light :
 			c->speedtrack = f0 * k->speedtrack + f1 * temp + f2 * p0 + f3 * p1;
 
 			{
-				C_LIGHT ldep;
-				C_LIGHT lend;
+				CinematicLight ldep;
+				CinematicLight lend;
 
 				if (lightprec->light.intensity < 0.f)
 				{
@@ -740,7 +742,7 @@ consequences on light :
 	return true;
 }
 /*----------------------------------------------------------------------*/
-bool GereTrackNoPlay(CINEMATIQUE * c)
+bool GereTrackNoPlay(Cinematic * c)
 {
 	C_KEY	* k, *ksuiv;
 	float	a, unmoinsa, alight = 0, unmoinsalight = 0;
@@ -852,8 +854,8 @@ bool GereTrackNoPlay(CINEMATIQUE * c)
 			c->speedtrack = a * ksuiv->speedtrack + unmoinsa * k->speedtrack;
 
 			{
-				C_LIGHT ldep;
-				C_LIGHT lend;
+				CinematicLight ldep;
+				CinematicLight lend;
 
 				if (lightprec->light.intensity < 0.f)
 				{
@@ -919,8 +921,8 @@ bool GereTrackNoPlay(CINEMATIQUE * c)
 			c->speedtrack = f0 * k->speedtrack + f1 * temp + f2 * p0 + f3 * p1;
 
 			{
-				C_LIGHT ldep;
-				C_LIGHT lend;
+				CinematicLight ldep;
+				CinematicLight lend;
 
 				if (lightprec->light.intensity < 0.f)
 				{
@@ -965,7 +967,7 @@ bool GereTrackNoPlay(CINEMATIQUE * c)
 }
 
 /*----------------------------------------------------------------------*/
-void PlayTrack(CINEMATIQUE * c)
+void PlayTrack(Cinematic * c)
 {
 	if (!CKTrack || !CKTrack->pause) return;
 
@@ -980,7 +982,7 @@ int GetCurrentFrame(void)
 	return (int)CKTrack->currframe;
 }
 /*----------------------------------------------------------------------*/
-float GetTimeKeyFramer(CINEMATIQUE * c)
+float GetTimeKeyFramer(Cinematic * c)
 {
 	if (!CKTrack) return 0.f;
 

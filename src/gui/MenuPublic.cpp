@@ -53,7 +53,7 @@ extern long WILL_RELOAD_ALL_TEXTURES;
 extern long GAME_EDITOR;
 
 extern long REFUSE_GAME_RETURN;
-extern CINEMATIQUE * ControlCinematique;
+extern Cinematic * ControlCinematique;
 
 bool bForceReInitAllTexture = false;
 extern long CAN_REPLAY_INTRO;

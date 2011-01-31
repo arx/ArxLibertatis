@@ -22,14 +22,17 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <stdio.h>
+
+#include "graphics/data/CinematicTexture.h"
 
 #include "animation/Cinematic.h"
+#include "core/Application.h"
+#include "graphics/data/Texture.h"
 #include "io/IO.h"
 #include "io/PakManager.h"
 
 /*-----------------------------------------------------------*/
-C_BITMAP	TabBitmap[MAX_BITMAP];
+CinematicBitmap	TabBitmap[MAX_BITMAP];
 int			MaxW, MaxH;
 int			NbBitmap;
 bool		Restore;
@@ -43,9 +46,9 @@ extern char DirectoryChoose[];
 void FreeGrille(CinematicGrid * grille);
 void ReajustUV(LPDIRECT3DDEVICE7 device, int id);
 /*-----------------------------------------------------------*/
-void InitMapLoad(CINEMATIQUE * c)
+void InitMapLoad(Cinematic * c)
 {
-	C_BITMAP	* tb;
+	CinematicBitmap	* tb;
 	int			nb;
 
 	MaxW = MAX_WIDTH_AND_HEIGHT;
@@ -60,7 +63,7 @@ void InitMapLoad(CINEMATIQUE * c)
 
 	while (nb)
 	{
-		memset((void *)tb, 0, sizeof(C_BITMAP));
+		memset((void *)tb, 0, sizeof(CinematicBitmap));
 		tb++;
 		nb--;
 	}
@@ -69,9 +72,9 @@ void InitMapLoad(CINEMATIQUE * c)
 	Restore = true;
 }
 /*-----------------------------------------------------------*/
-C_BITMAP * GetFreeBitmap(int * num)
+CinematicBitmap * GetFreeBitmap(int * num)
 {
-	C_BITMAP	* tb;
+	CinematicBitmap	* tb;
 	int			nb;
 
 	tb = TabBitmap;
@@ -94,7 +97,7 @@ C_BITMAP * GetFreeBitmap(int * num)
 /*-----------------------------------------------------------*/
 bool DeleteFreeBitmap(int num)
 {
-	C_BITMAP	* cb;
+	CinematicBitmap	* cb;
 
 	cb = &TabBitmap[num];
 
@@ -104,7 +107,7 @@ bool DeleteFreeBitmap(int num)
 	free((void *)cb->dir);
 	free((void *)cb->name);
 	FreeGrille(&cb->grid);
-	memset((void *)cb, 0, sizeof(C_BITMAP));
+	memset((void *)cb, 0, sizeof(CinematicBitmap));
 
 	NbBitmap--;
 
@@ -113,7 +116,7 @@ bool DeleteFreeBitmap(int num)
 /*-----------------------------------------------------------*/
 bool KillTexture(LPDIRECT3DDEVICE7 device, int num)
 {
-	C_BITMAP	* cb;
+	CinematicBitmap	* cb;
 
 	cb = &TabBitmap[num];
 
@@ -610,10 +613,10 @@ HBITMAP LoadBMPImage(char * strPathname)
 
 }
 /*-----------------------------------------------------------*/
-int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int pos)
+int CreateAllMapsForBitmap(char * dir, char * name, Cinematic * c, int n, int pos)
 {
 	int			nbx, nby, w, h, num, id;
-	C_BITMAP	* bi;
+	CinematicBitmap	* bi;
 
 	if (!name || !c) return -1;
 
@@ -794,10 +797,10 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 	return id;
 }
 /*-----------------------------------------------------------*/
-bool ReCreateAllMapsForBitmap(int id, int nmax, CINEMATIQUE * c, LPDIRECT3DDEVICE7 device)
+bool ReCreateAllMapsForBitmap(int id, int nmax, Cinematic * c, LPDIRECT3DDEVICE7 device)
 {
 	int			nbx, nby, w, h, num;
-	C_BITMAP	* bi;
+	CinematicBitmap	* bi;
 
 	if (!c) return false;
 
@@ -865,11 +868,11 @@ bool ReCreateAllMapsForBitmap(int id, int nmax, CINEMATIQUE * c, LPDIRECT3DDEVIC
 	return true;
 }
 /*-----------------------------------------------------------*/
-bool CINEMATIQUE::ActiveTexture(int id)
+bool Cinematic::ActiveTexture(int id)
 {
 
 	TextureContainer	* tc;
-	C_BITMAP		*	cb;
+	CinematicBitmap		*	cb;
 	int					nb;
 
 	if (id >= MAX_BITMAP) return false;
@@ -903,7 +906,7 @@ bool CINEMATIQUE::ActiveTexture(int id)
 void ReajustUV(LPDIRECT3DDEVICE7 device, int id)
 {
 	TextureContainer	* tc;
-	C_BITMAP		*	cb;
+	CinematicBitmap		*	cb;
 	int					nb;
 
 	cb = &TabBitmap[id];
@@ -950,10 +953,10 @@ void ReajustUV(LPDIRECT3DDEVICE7 device, int id)
 	}
 }
 /*-----------------------------------------------------------*/
-bool ActiveAllTexture(CINEMATIQUE * c)
+bool ActiveAllTexture(Cinematic * c)
 {
 	int			nb;
-	C_BITMAP	* cb;
+	CinematicBitmap	* cb;
 	bool		flag = false;
 
 	cb = TabBitmap;
