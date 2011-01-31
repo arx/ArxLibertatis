@@ -78,7 +78,6 @@ extern CinematicBitmap	TabBitmap[];
 extern float	FlashAlpha;
 extern char FileNameDirLoad[];
 extern char FileNameDirSave[];
-extern char FileNameChoose[];
 extern int UndoPile;
 extern int NbBitmap;
 extern float SpecialFadeDx;

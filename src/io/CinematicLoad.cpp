@@ -37,21 +37,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 const int32_t CINEMATIC_FILE_VERSION = (1<<16) | 76;
 const int16_t INTERP_NO_FADE = 2;
 
-void DrawInfoTrack(void);
-
-static PakFileHandle * FCurr;
-static char Dir[256];
-static char Name[256];
-
-extern char		AllTxt[];
-extern int		NbBitmap;
+extern char AllTxt[];
 extern CinematicBitmap	TabBitmap[];
-extern int		NbBitmap;
 extern CinematicTrack	* CKTrack;
-char FileNameChoose[256];
-extern bool Restore;
-extern HWND HwndPere;
-extern int		NbSound;
 extern C_KEY KeyTemp;
 extern int LSoundChoose;
 
@@ -207,9 +195,9 @@ void GetPathDirectory(char * dirfile)
 	if (i) *n = 0;
 }
 
-void ClearDirectory(char * dirfile)
+void ClearDirectory(const char * dirfile, char * dst)
 {
-	char	* n ;
+	const char	* n ;
 	int				i ;
 
 	if (!(i = strlen(dirfile))) return ;
@@ -224,15 +212,15 @@ void ClearDirectory(char * dirfile)
 
 	if (i)
 	{
-		strcpy(FileNameChoose, n + 1) ;
+		strcpy(dst, n + 1) ;
 	}
 }
 
-void ReadString(char * d)
+void ReadString(PakFileHandle * f,  char * d)
 {
 	while (1)
 	{
-		PAK_fread(d, 1, 1, FCurr);
+		PAK_fread(d, 1, 1, f);
 
 		if (!*d) break;
 
@@ -240,8 +228,8 @@ void ReadString(char * d)
 	}
 }
 
-bool LoadProject(Cinematic * c, const char * dir, const char * name)
-{
+bool LoadProject(Cinematic * c, const char * dir, const char * name) {
+	
 	int		nb, version;
 	CinematicTrack	t;
 	C_KEY		k, *kk;
@@ -254,18 +242,19 @@ bool LoadProject(Cinematic * c, const char * dir, const char * name)
 	C_KEY_1_75	k175;
 	char	txt[4];
 	
-	size_t pos = 0;
+	char Dir[256];
+	char Name[256];
 
 	InitMapLoad(c);
 	InitSound(c);
 
 	strcpy(AllTxt, dir);
 	strcat(AllTxt, name);
-	FCurr = PAK_fopen(AllTxt);
+	static PakFileHandle * FCurr = PAK_fopen(AllTxt);
 
 	if (!FCurr) return false;
 
-	ReadString(txt);
+	ReadString(FCurr, txt);
 
 	if (strcmp(txt, "KFA"))
 	{
@@ -288,7 +277,7 @@ bool LoadProject(Cinematic * c, const char * dir, const char * name)
 	if (version >= ((1 << 16) | 61))
 	{
 		char txt[256];
-		ReadString(txt);
+		ReadString(FCurr, txt);
 	}
 
 	//chargement image
@@ -303,12 +292,10 @@ bool LoadProject(Cinematic * c, const char * dir, const char * name)
 			PAK_fread((void *)&echelle, 4, 1, FCurr);
 		}
 
-		ReadString(AllTxt);
+		ReadString(FCurr, AllTxt);
 		strcpy(Dir, AllTxt);
 		GetPathDirectory(Dir);
-		strcpy(Name, AllTxt);
-		ClearDirectory(Name);
-		strcpy(Name, FileNameChoose);
+		ClearDirectory(AllTxt, Name);
 
 		int id = CreateAllMapsForBitmap(Dir, Name, c, -1, 0);
 
@@ -348,12 +335,10 @@ bool LoadProject(Cinematic * c, const char * dir, const char * name)
 				LSoundChoose = il;
 			}
 
-			ReadString(AllTxt);
+			ReadString(FCurr, AllTxt);
 			strcpy(Dir, AllTxt);
 			GetPathDirectory(Dir);
-			strcpy(Name, AllTxt);
-			ClearDirectory(Name);
-			strcpy(Name, FileNameChoose);
+			ClearDirectory(AllTxt, Name);
 
 			AddSoundToList(Dir, Name, -1, 0);
 			nb--;
