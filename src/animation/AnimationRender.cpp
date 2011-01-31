@@ -1025,13 +1025,9 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 				}
 
 				/* PACK color */
-				F2L(r, &ir);
-				F2L(g, &ig);
-				F2L(b, &ib);
-
-				ir = clipByte255(ir);
-				ig = clipByte255(ig);
-				ib = clipByte255(ib);
+				ir = clipByte255(r);
+				ig = clipByte255(g);
+				ib = clipByte255(b);
 	
 				eobj->vertexlist3[obj->bones[i].idxvertices[v]].vert.color = (0xFF000000L | ((ir) << 16) | ((ig) << 8) | (ib));
 			}
@@ -1159,13 +1155,9 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 				}
 
 				/* PACK color */
-				F2L(r, &ir);
-				F2L(g, &ig);
-				F2L(b, &ib);
-
-				ir = clipByte255(ir);
-				ig = clipByte255(ig);
-				ib = clipByte255(ib);
+				ir = clipByte255(r);
+				ig = clipByte255(g);
+				ib = clipByte255(b);
 
 				eobj->vertexlist3[obj->bones[i].idxvertices[v]].vert.color = (0xFF000000L | ((ir) << 16) | ((ig) << 8) | (ib));
 			}
@@ -2097,9 +2089,9 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 						ffb			=	curhalo.color.b * power;
 						tot			+=	power;
 						_ffr[o]		=	power;
-						F2L(ffr, &lfr);
-						F2L(ffg, &lfg);
-						F2L(ffb, &lfb);
+						lfr = ffr;
+						lfg = ffg;
+						lfb = ffb;
 						tv[o].color = (0xFF000000L | (((lfr) & 255) << 16) |	(((lfg) & 255) << 8) | (lfb) & 255);
 					}
 
@@ -2565,9 +2557,9 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 					ffb = io->halo.color.b * power;
 					tot += power;
 					_ffr[o] = power;
-					F2L(ffr, &lfr);
-					F2L(ffg, &lfg);
-					F2L(ffb, &lfb);
+					lfr = ffr;
+					lfg = ffg;
+					lfb = ffb;
 					tv[o].color = (0xFF000000L | (((lfr) & 255) << 16) |	(((lfg) & 255) << 8) | (lfb) & 255);
 				}
 
@@ -2893,8 +2885,8 @@ bool Cedric_IO_Visible(INTERACTIVE_OBJ * io, long typ)
 			return false;
 
 		long xx, yy;
-		F2L(((io->pos.x)*ACTIVEBKG->Xmul), &xx);
-		F2L(((io->pos.z)*ACTIVEBKG->Zmul), &yy);
+		xx = io->pos.x * ACTIVEBKG->Xmul;
+		yy = io->pos.z * ACTIVEBKG->Zmul;
 
 		if ((xx >= 1) && (yy >= 1) && (xx < ACTIVEBKG->Xsize - 1) && (yy < ACTIVEBKG->Zsize - 1))
 		{
@@ -3252,12 +3244,9 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERIE
 					b += infra->b * 400.f;
 			}
 
-			F2L(r, &ir);
-			ir = clipByte255(ir);
-			F2L(g, &ig);
-			ig = clipByte255(ig);
-			F2L(b, &ib);
-			ib = clipByte255(ib);
+			ir = clipByte255(r);
+			ig = clipByte255(g);
+			ib = clipByte255(b);
 			eobj->vertexlist3[i].vert.color = (0xff000000L | (((ir) & 255) << 16) |	(((ig) & 255) << 8) | (ib) & 255);
 		}
 }
@@ -3407,12 +3396,9 @@ void MakeCLight2(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERI
 			b *= infra->b;
 		}
 
-		F2L(r, &ir);
-		ir = clipByte255(ir);
-		F2L(g, &ig);
-		ig = clipByte255(ig);
-		F2L(b, &ib);
-		ib = clipByte255(ib);
+		ir = clipByte255(r);
+		ig = clipByte255(g);
+		ib = clipByte255(b);
 		eobj->vertexlist3[paf[i]].vert.color = (0xff000000L | (((ir) & 255) << 16) |	(((ig) & 255) << 8) | (ib) & 255);
 	}
 }
@@ -3531,12 +3517,9 @@ void ApplyDynLight(EERIEPOLY * ep)
 
 	for (j = 0; j < nbvert; j++)
 	{
-		F2L(epr[j], &lepr);
-		lepr = clipByte255(lepr);
-		F2L(epg[j], &lepg);
-		lepg = clipByte255(lepg);
-		F2L(epb[j], &lepb);
-		lepb = clipByte255(lepb);
+		lepr = clipByte255(epr[j]);
+		lepg = clipByte255(epg[j]);
+		lepb = clipByte255(epb[j]);
 		ep->tv[j].color = (0xFF000000L  |
 		                   (lepr << 16) |
 		                   (lepg << 8) |
@@ -3634,33 +3617,24 @@ void ApplyDynLight_VertexBuffer(EERIEPOLY * ep, SMY_D3DVERTEX * _pVertex, unsign
 
 	long lepr, lepg, lepb;
 
-	F2L(epr[0], &lepr);
-	lepr = clipByte255(lepr);
-	F2L(epg[0], &lepg);
-	lepg = clipByte255(lepg);
-	F2L(epb[0], &lepb);
-	lepb = clipByte255(lepb);
+	lepr = clipByte255(epr[0]);
+	lepg = clipByte255(epg[0]);
+	lepb = clipByte255(epb[0]);
 	ep->tv[0].color = _pVertex[_usInd0].color =	(0xFF000000L  |
 	                  (lepr << 16) |
 	                  (lepg << 8) |
 	                  (lepb));
-	F2L(epr[1], &lepr);
-	lepr = clipByte255(lepr);
-	F2L(epg[1], &lepg);
-	lepg = clipByte255(lepg);
-	F2L(epb[1], &lepb);
-	lepb = clipByte255(lepb);
+	lepr = clipByte255(epr[1]);
+	lepg = clipByte255(epg[1]);
+	lepb = clipByte255(epb[1]);
 	ep->tv[1].color = _pVertex[_usInd1].color =	(0xFF000000L  |
 	                  (lepr << 16) |
 	                  (lepg << 8) |
 	                  (lepb));
 
-	F2L(epr[2], &lepr);
-	lepr = clipByte255(lepr);
-	F2L(epg[2], &lepg);
-	lepg = clipByte255(lepg);
-	F2L(epb[2], &lepb);
-	lepb = clipByte255(lepb);
+	lepr = clipByte255(epr[2]);
+	lepg = clipByte255(epg[2]);
+	lepb = clipByte255(epb[2]);
 	ep->tv[2].color = _pVertex[_usInd2].color =	(0xFF000000L  |
 	                  (lepr << 16) |
 	                  (lepg << 8) |
@@ -3668,12 +3642,9 @@ void ApplyDynLight_VertexBuffer(EERIEPOLY * ep, SMY_D3DVERTEX * _pVertex, unsign
 
 	if (nbvert & 4)
 	{
-		F2L(epr[3], &lepr);
-		lepr = clipByte255(lepr);
-		F2L(epg[3], &lepg);
-		lepg = clipByte255(lepg);
-		F2L(epb[3], &lepb);
-		lepb = clipByte255(lepb);
+		lepr = clipByte255(epr[3]);
+		lepg = clipByte255(epg[3]);
+		lepb = clipByte255(epb[3]);
 		ep->tv[3].color = _pVertex[_usInd3].color =	(0xFF000000L  |
 		                  (lepr << 16) |
 		                  (lepg << 8) |
@@ -3776,33 +3747,24 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_D3DVER
 
 	long lepr, lepg, lepb;
 
-	F2L(epr[0], &lepr);
-	lepr = clipByte255(lepr);
-	F2L(epg[0], &lepg);
-	lepg = clipByte255(lepg);
-	F2L(epb[0], &lepb);
-	lepb = clipByte255(lepb);
+	lepr = clipByte255(epr[0]);
+	lepg = clipByte255(epg[0]);
+	lepb = clipByte255(epb[0]);
 	ep->tv[0].color = _pVertex[_usInd0].color =	(0xFF000000L  |
 	                  (lepr << 16) |
 	                  (lepg << 8) |
 	                  (lepb));
-	F2L(epr[1], &lepr);
-	lepr = clipByte255(lepr);
-	F2L(epg[1], &lepg);
-	lepg = clipByte255(lepg);
-	F2L(epb[1], &lepb);
-	lepb = clipByte255(lepb);
+	lepr = clipByte255(epr[1]);
+	lepg = clipByte255(epg[1]);
+	lepb = clipByte255(epb[1]);
 	ep->tv[1].color = _pVertex[_usInd1].color =	(0xFF000000L  |
 	                  (lepr << 16) |
 	                  (lepg << 8) |
 	                  (lepb));
 
-	F2L(epr[2], &lepr);
-	lepr = clipByte255(lepr);
-	F2L(epg[2], &lepg);
-	lepg = clipByte255(lepg);
-	F2L(epb[2], &lepb);
-	lepb = clipByte255(lepb);
+	lepr = clipByte255(epr[2]);
+	lepg = clipByte255(epg[2]);
+	lepb = clipByte255(epb[2]);
 	ep->tv[2].color = _pVertex[_usInd2].color =	(0xFF000000L  |
 	                  (lepr << 16) |
 	                  (lepg << 8) |
@@ -3810,12 +3772,9 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_D3DVER
 
 	if (nbvert & 4)
 	{
-		F2L(epr[3], &lepr);
-		lepr = clipByte255(lepr);
-		F2L(epg[3], &lepg);
-		lepg = clipByte255(lepg);
-		F2L(epb[3], &lepb);
-		lepb = clipByte255(lepb);
+		lepr = clipByte255(epr[3]);
+		lepg = clipByte255(epg[3]);
+		lepb = clipByte255(epb[3]);
 		ep->tv[3].color = _pVertex[_usInd3].color =	(0xFF000000L  |
 		                  (lepr << 16) |
 		                  (lepg << 8) |

@@ -1065,7 +1065,7 @@ void ARX_PHYSICS_Apply()
 
 			for (long nn = 0; nn < cnt; nn++)
 			{
-				F2L(rnd()*(float)io->obj->nbvertex, &idx);
+				idx = rnd()*io->obj->nbvertex;
 
 				if (idx >= io->obj->nbvertex) idx = io->obj->nbvertex - 1;
 
@@ -2531,7 +2531,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 			        &&	(io->_npcdata->strike_time > 0))
 			{
 				AcquireLastAnim(io);
-				F2L(rnd() * 4, &j);
+				j = rnd() * 4;
 
 				if (j < 0) j = 0;
 
@@ -2691,7 +2691,7 @@ void ARX_NPC_Manage_Anims(INTERACTIVE_OBJ * io, float TOLERANCE)
 				{
 					AcquireLastAnim(io);
 					FinishAnim(io, ause1->cur_anim);
-					F2L(rnd() * 4, &j);
+					j = rnd() * 4;
 
 					if (j < 0) j = 0;
 
@@ -4225,21 +4225,17 @@ void ARX_NPC_SpawnAudibleSound(EERIE_3D * pos, INTERACTIVE_OBJ * source, const f
 
 					if (fdist < max_distance * 1.5f)
 					{
-						long ldistance;
+						long ldistance = fdist;
 						char temp[64];
 
-						F2L(fdist, &ldistance);
 						sprintf(temp, "%ld", ldistance);
 
 						SendIOScriptEvent(inter.iobj[i], SM_HEAR, temp);
 					}
-				}
-				else
-				{
-					long ldistance;
+				} else {
+					long ldistance = distance;
 					char temp[64];
 
-					F2L(distance, &ldistance);
 					sprintf(temp, "%ld", ldistance);
 
 					SendIOScriptEvent(inter.iobj[i], SM_HEAR, temp);
@@ -4294,7 +4290,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 
 				while (notok-- > 0)
 				{
-					F2L((float)(rnd() *(float)io->obj->nbfaces), &num);
+					num = rnd() * io->obj->nbfaces;
 
 					if ((num >= 0) && (num < io->obj->nbfaces))
 					{
@@ -4432,7 +4428,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 
 				while (notok-- > 0)
 				{
-					F2L((float)(rnd() *(float)io->obj->nbfaces), &num);
+					num = rnd() * io->obj->nbfaces;
 
 					if ((num >= 0) && (num < io->obj->nbfaces))
 					{

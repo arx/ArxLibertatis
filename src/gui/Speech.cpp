@@ -515,11 +515,10 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long param, l
 
 		count = HERMES_UNICODE_GetProfileSectionKeyCount(lpszUSection.c_str());
 
-		F2L((float)(rnd() *(float)count), &flg);
+		flg = rnd() * count;
 
-		while ((io->lastspeechflag == flg) && (count > 1))
-		{
-			F2L((float)(rnd() *(float)count), &flg);
+		while ((io->lastspeechflag == flg) && (count > 1)) {
+			flg = rnd() * count;
 		}
 
 		if (flg > count) flg = count;

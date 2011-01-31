@@ -62,7 +62,7 @@ using std::printf;
 EERIEPOLY * ANCHOR_CheckInPolyPrecis(float x, float y, float z)
 {
 	long px, pz;
-	F2L(x * ACTIVEBKG->Xmul, &px);
+	px = x * ACTIVEBKG->Xmul;
 
 	if (px >= ACTIVEBKG->Xsize - 1)
 	{
@@ -74,7 +74,7 @@ EERIEPOLY * ANCHOR_CheckInPolyPrecis(float x, float y, float z)
 		return NULL;
 	}
 
-	F2L(z * ACTIVEBKG->Zmul, &pz);
+	pz = z * ACTIVEBKG->Zmul;
 
 	if (pz >= ACTIVEBKG->Zsize - 1)
 	{
@@ -128,7 +128,7 @@ EERIEPOLY * ANCHOR_CheckInPolyPrecis(float x, float y, float z)
 EERIEPOLY * ANCHOR_CheckInPoly(float x, float y, float z)
 {
 	long px, pz;
-	F2L(x * ACTIVEBKG->Xmul, &px);
+	px = x * ACTIVEBKG->Xmul;
 
 	if (px >= ACTIVEBKG->Xsize)
 	{
@@ -140,7 +140,7 @@ EERIEPOLY * ANCHOR_CheckInPoly(float x, float y, float z)
 		return NULL;
 	}
 
-	F2L(z * ACTIVEBKG->Zmul, &pz);
+	pz = z * ACTIVEBKG->Zmul;
 
 	if (pz >= ACTIVEBKG->Zsize)
 	{
@@ -297,11 +297,10 @@ __inline float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, lon
 // Else returns Y Offset to put cylinder in a proper place
 float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * ioo, long flags)
 {
-	long rad;
-	F2L((cyl->radius + 230)*ACTIVEBKG->Xmul, &rad); 
+	long rad = (cyl->radius + 230) * ACTIVEBKG->Xmul;
 
 	long px, pz;
-	F2L(cyl->origin.x * ACTIVEBKG->Xmul, &px);
+	px = cyl->origin.x * ACTIVEBKG->Xmul;
 
 	if (px > ACTIVEBKG->Xsize - 2 - rad)
 		return 0.f;
@@ -309,7 +308,7 @@ float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * ioo
 	if (px < 1 + rad)
 		return 0.f;
 
-	F2L(cyl->origin.z * ACTIVEBKG->Zmul, &pz);
+	pz = cyl->origin.z * ACTIVEBKG->Zmul;
 
 	if (pz > ACTIVEBKG->Zsize - 2 - rad)
 		return 0.f;
@@ -1016,7 +1015,7 @@ void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb)
 	for (long j = 0; j < eb->Zsize; j++)
 		for (long i = 0; i < eb->Xsize; i++)
 		{
-			F2L((float)count / (float)total * 100.f, &per);
+			per = count / total * 100.f;
 
 			if (per != lastper)
 			{
@@ -1182,7 +1181,7 @@ void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb)
 		for (long i = 0; i < eb->Xsize; i++)
 		{
 			float current_y = 99999999999.f;
-			F2L((float)count / total * 100.f, &per);
+			per = count / total * 100.f;
 
 			if (per != lastper)
 			{
@@ -1344,7 +1343,7 @@ void AnchorData_Create_Original_Method(EERIE_BACKGROUND * eb)
 				}
 
 				float current_y = 99999999999.f;
-				F2L((float)count / total * 100.f, &per);
+				per = count / total * 100.f;
 
 				if (per != lastper)
 				{
@@ -1474,7 +1473,7 @@ void AnchorData_Create_Alternative_Method_I(EERIE_BACKGROUND * eb)
 				}
 
 				float current_y = 99999999999.f;
-				F2L((float)count / total * 100.f, &per);
+				per = count / total * 100.f;
 
 				if (per != lastper)
 				{

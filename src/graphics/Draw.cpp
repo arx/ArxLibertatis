@@ -288,9 +288,9 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 	cx=(ep->v[0].sx+ep->v[1].sx+ep->v[2].sx);
 	cy=(ep->v[0].sy+ep->v[1].sy+ep->v[2].sy);
 	cz=(ep->v[0].sz+ep->v[1].sz+ep->v[2].sz);
-	F2L(cx*( 1.0f / 3 )*ACTIVEBKG->Xmul,&posx);
-	F2L(cy*( 1.0f / 3 )*ACTIVEBKG->Xmul+ACTIVEBKG->Xsize*( 1.0f / 2 ),&posy);
-	F2L(cz*( 1.0f / 3 )*ACTIVEBKG->Zmul,&posz);
+	posx = cx*( 1.0f / 3 )*ACTIVEBKG->Xmul;
+	posy = cy*( 1.0f / 3 )*ACTIVEBKG->Xmul+ACTIVEBKG->Xsize*( 1.0f / 2 );
+	posz = cz*( 1.0f / 3 )*ACTIVEBKG->Zmul;
 	
 	long dx,dz,fx,fz;
 	dx=std::max(0L,posx-1);
@@ -416,7 +416,7 @@ void DRAWLATER_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 					}
 					else 
 					{
-						F2L(val*10200,&tmp);
+						tmp = val*10200;
 						tdl[j].ep->tv[i].color=0xFF000000 | (tmp<<16) | (tmp<<8) | tmp;
 					}
 
@@ -719,7 +719,7 @@ void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
 								}
 								else 
 								{
-									F2L(val*10200,&tmp);
+									tmp = val*10200;
 									verts[j].color=0xFF000000 | (tmp<<16) | (tmp<<8) | tmp;
 								}			
 							}				

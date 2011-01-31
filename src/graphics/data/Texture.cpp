@@ -1352,8 +1352,8 @@ void StretchCopySurfaceToSurface(LPDIRECTDRAWSURFACE7 sSurface, LPDIRECTDRAWSURF
 
 			for (ULONG x = 0 ; x < ddesc2.dwWidth ; x++)
 			{
-				F2L((float)(x * rx), &posx);
-				F2L((float)(y * ry) * LineOffset, &posy);
+				posx = x * rx;
+				posy = y * ry * LineOffset;
 
 				// Pixel Up Left
 				if ((y <= 0.f) || (x <= 0.f)) offset = posx + posy;
@@ -1606,9 +1606,9 @@ void PnuxSurface(LPDIRECTDRAWSURFACE7 sSurface)
 
 				if (fb > 255.f) fb = 255.f;
 
-				F2L(fr, &rr);
-				F2L(fg, &gg);
-				F2L(fb, &bb);
+				rr = fr;
+				gg = fg;
+				bb = fb;
 				dr = ((rr >> (dwRShiftL)) << dwRShiftR) & dwRMask;
 				dg = ((gg >> (dwGShiftL)) << dwGShiftR) & dwGMask;
 				db = ((bb >> (dwBShiftL)) << dwBShiftR) & dwBMask;

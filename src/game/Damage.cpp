@@ -185,8 +185,7 @@ void ARX_DAMAGES_SCREEN_SPLATS_Add(EERIE_3D * pos, float dmgs)
 		pd->scale.z			=	1.f;
 		pd->timcreation		=	lARXTime;
 		pd->tolive			=	1800 + (unsigned long)(rnd() * 400.f);
-		long num;
-		F2L((float)(rnd() * 6.f), &num);
+		long num = rnd() * 6.f;
 
 		if (num < 0) num = 0;
 		else if (num > 5) num = 5;
@@ -392,15 +391,11 @@ float ARX_DAMAGES_DamagePlayer(float dmg, long type, long source, EERIE_3D * pos
 
 		float t = dmg / player.maxlife;
 
-		if (Blood_Pos == 0.f)
-		{
+		if (Blood_Pos == 0.f) {
 			Blood_Pos = 0.000001f;
-			F2L(100 + (float)(t * 200.f), &Blood_Duration);
-		}
-		else
-		{
-			long temp;
-			F2L((float)(t * 800.f), &temp);
+			Blood_Duration = 100 + (t * 200.f);
+		} else {
+			long temp = t * 800.f;
 			Blood_Duration += temp;
 		}
 	}

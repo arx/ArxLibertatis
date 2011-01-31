@@ -6622,7 +6622,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 					float		rr,		r2;
 					EERIE_3D	pos,	dir;
 
-					F2L( ( rnd() * 9.f + 4.f ), &lvl );
+					lvl = rnd() * 9.f + 4.f;
 					rr		=	radians( i_angle );
 					r2		=	radians( (float) ( j + 100 ) * ( 1.0f / 200 ) * 360.f ); 
 					pos.x	=	target.x - EEsin(rr) * 360.f;  
@@ -7154,8 +7154,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				{
 					tcount++;
 					char param[256];
-					long n;
-					F2L(spells[i].caster_level,&n);
+					long n = spells[i].caster_level;
 					sprintf(param,"%s_%04ld %ld"
 						,GetName(tmp_io->filename).c_str()
 						,tmp_io->ident
@@ -8801,7 +8800,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 					if (rnd()>0.8f)
 					{					
-						F2L((rnd()*9.f+4.f),&lvl);
+						lvl = rnd() * 9.f + 4.f;
 						rr=radians(rnd()*360.f);
 						r2=radians(rnd()*360.f);
 						pos.x=DynLight[id].pos.x-EEsin(rr)*260;
@@ -8815,7 +8814,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 					}
 					else if (rnd()>0.76f)
 					{					
-						F2L((rnd()*9.f+4.f),&lvl);
+						lvl = rnd() * 9.f + 4.f;
 						rr=radians(rnd()*360.f);
 						r2=radians(rnd()*360.f);
 						pos.x=DynLight[id].pos.x-EEsin(rr)*260;
@@ -8825,7 +8824,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 					}
 					else if (rnd()>0.66f)
 					{					
-						F2L((rnd()*9.f+4.f),&lvl);
+						lvl = rnd() * 9.f + 4.f;
 						rr=radians(rnd()*360.f);
 						r2=radians(rnd()*360.f);
 						pos.x=DynLight[id].pos.x-EEsin(rr)*160;
@@ -9434,7 +9433,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 						
 							if (spells[i].lastupdate-spells[i].timcreation<=3000)
 							{
-								F2L((float)(spells[i].lastupdate-spells[i].timcreation)*( 1.0f / 30 ),&eyeball.exist);
+								eyeball.exist = spells[i].lastupdate-spells[i].timcreation*( 1.0f / 30 );
 								float d=(float)eyeball.exist*( 1.0f / 100 );
 							
 							eyeball.size.x = 1.f - d; 

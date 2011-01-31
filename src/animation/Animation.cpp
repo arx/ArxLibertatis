@@ -509,7 +509,7 @@ void PrepareAnim(EERIE_3DOBJ * eobj,	ANIM_USE * eanim,unsigned long time,
 	if (	(eanim->flags & EA_STOPEND)
 		&&	(eanim->ctime > eanim->cur_anim->anims[eanim->altidx_cur]->anim_time)	)
 	{
-			F2L(eanim->cur_anim->anims[eanim->altidx_cur]->anim_time,&eanim->ctime);
+		eanim->ctime = eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
 	}
 
 	if ((eanim->flags & EA_LOOP) || (io && (
@@ -529,8 +529,7 @@ void PrepareAnim(EERIE_3DOBJ * eobj,	ANIM_USE * eanim,unsigned long time,
 
 			if (eanim->next_anim==NULL) 
 			{			
-				long t;
-				F2L(eanim->cur_anim->anims[eanim->altidx_cur]->anim_time,&t);
+				long t = eanim->cur_anim->anims[eanim->altidx_cur]->anim_time;
 				eanim->ctime= eanim->ctime % t;
 
 					if (io) FinishAnim(io,eanim->cur_anim);
@@ -691,8 +690,7 @@ void EERIEDrawAnimQuat(		LPDIRECT3DDEVICE7 pd3dDevice,
 
 		if (io->frameloss>1.f) // recover lost time...
 		{
-			long tt;
-			F2L(io->frameloss,&tt);
+			long tt = io->frameloss;
 			io->frameloss-=tt;
 			time+=tt;
 		}
@@ -1766,8 +1764,8 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 			&&	(ACTIVEBKG))   
 	{		
 		long xx, yy;
-		F2L( (pos.x) * ACTIVEBKG->Xmul , &xx );
-		F2L( (pos.z) * ACTIVEBKG->Zmul , &yy );
+		xx = (pos.x) * ACTIVEBKG->Xmul;
+		yy = (pos.z) * ACTIVEBKG->Zmul;
 
 		if ( ( xx >= 1 ) && ( yy >= 1 ) && ( xx < ACTIVEBKG->Xsize - 1 ) && ( yy < ACTIVEBKG->Zsize - 1 ) )
 		{
@@ -2393,8 +2391,8 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 					fr=min(fr,255.f);
 					fb*=255.f;
 					fb=min(fb,255.f);
-					F2L(fr,&lfr);
-					F2L(fb,&lfb);
+					lfr = fr;
+					lfb = fb;
 					vert_list[k].color=( 0xff001E00L | ( (lfr & 255) << 16) | (lfb & 255) );
 				}
 			}
@@ -2602,10 +2600,11 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 				tot+=power;
 				
 				_ffr[o]=power;
-					F2L(io->halo.color.r*power,&lfr);
-					F2L(io->halo.color.g*power,&lfg);
-					F2L(io->halo.color.b*power,&lfb);
-					workon[o].color=(0xFF000000L | ( ((lfr)&255) << 16) | 	(((lfg)&255) << 8) | (lfb)&255);				
+				lfr = io->halo.color.r * power;
+				lfg = io->halo.color.g * power;
+				lfb = io->halo.color.b * power;
+				workon[o].color = (0xFF000000L | (((lfr) & 255) << 16)
+						| (((lfg) & 255) << 8) | (lfb) & 255);
 			}
 
 				if (tot>150.f)
@@ -2825,8 +2824,8 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 	{
 		
 		long xx,yy;
-		F2L((pos.x)*ACTIVEBKG->Xmul,&xx);
-		F2L((pos.z)*ACTIVEBKG->Zmul,&yy);
+		xx = pos.x * ACTIVEBKG->Xmul;
+		yy = pos.z * ACTIVEBKG->Zmul;
 
 		if ( (xx>=1) && (yy>=1) && (xx<ACTIVEBKG->Xsize-1) && (yy<ACTIVEBKG->Zsize-1) )
 		{
@@ -3083,24 +3082,24 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 
 				if (Project.improve) 
 				{
-					F2L(ffr*infra.r,&lfr);
+					lfr = ffr*infra.r;
 
 					lfr=clipByte255(lfr);
-					F2L(ffg*infra.g,&lfg);
+					lfg=ffg*infra.g;
 					lfg=clipByte255(lfg);
 
-					F2L(ffb*infra.b,&lfb);
+					lfb = ffb*infra.b;
 					lfb=clipByte255(lfb);
 				}
 				else
 				{
-					F2L(ffr,&lfr);
+					lfr = ffr;
 					
 					lfr=clipByte255(lfr);
-					F2L(ffg,&lfg);
+					lfg=ffg;
 
 					lfg=clipByte255(lfg);
-					F2L(ffb,&lfb);
+					lfb = ffb;
 				
 					lfb=clipByte255(lfb);
 				}
@@ -3435,9 +3434,9 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 
 					tot+=power;
 					_ffr[o]=power;
-					F2L(io->halo.color.r*power,&lfr);
-					F2L(io->halo.color.g*power,&lfg);
-					F2L(io->halo.color.b*power,&lfb);
+					lfr = io->halo.color.r * power;
+					lfg = io->halo.color.g * power;
+					lfb = io->halo.color.b * power;
 					workon[o].color=(0xFF000000L | ( ((lfr)&255) << 16) | 	(((lfg)&255) << 8) | (lfb)&255);
 				}
 
