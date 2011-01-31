@@ -2946,7 +2946,7 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, long flag)
 				strcpy(temp2, GetName(temp).c_str());
 				RemoveName(temp);
 				std::stringstream ss;
-				ss << temp << temp2 << '_' << std::setw(4) << inter.iobj[i]->ident << '.';
+				ss << temp << temp2 << '_' << std::setfill('0') << std::setw(4) << inter.iobj[i]->ident << '.';
 				temp = ss.str();
 				//sprintf(temp, "%s%s_%04d.", temp, temp2, inter.iobj[i]->ident)
 
@@ -3175,7 +3175,15 @@ void ReloadScript(INTERACTIVE_OBJ * io)
 	strcpy(tmp2, GetName(texscript).c_str());
 	RemoveName(texscript);
 	std::stringstream ss;
-	ss << texscript << tmp2 << '_' << std::setw(4) << io->ident << '\\' << tmp2 << ".asl";
+	ss << texscript << tmp2 << '_';
+
+	char fill = ss.fill('0');
+	std::streamsize width = ss.width(4);
+	ss << io->ident;
+	ss.width(width);
+	ss.fill(fill);
+
+	ss << '\\' << tmp2 << ".asl";
 	texscript = ss.str();
 
 	if (PAK_FileExist(texscript.c_str()))
@@ -3259,7 +3267,7 @@ void MakeIOIdent(INTERACTIVE_OBJ * io)
 		strcpy(temp2, GetName(temp).c_str());
 		RemoveName(temp);
 		std::stringstream ss;
-		ss << temp << temp2 << '_' << std::setw(4) << t << '.';
+		ss << temp << temp2 << '_' << std::setfill('0') << std::setw(4) << t << '.';
 		//(temp, "%s%s_%04d.", temp, temp2, t);
 
 		if (!DirectoryExist(temp.c_str()))
