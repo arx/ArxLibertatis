@@ -7,13 +7,10 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 
 option(ARX_BUILD_TESTS ON)
 option(ARX_BUILD_TOOLS ON)
+option(ARX_MINGW OFF)
 
 include_directories(
 	src
-IF(UNIX)
-	#include wine
-	/usr/include/wine/windows
-ENDIF()
 )
 
 IF (MSVC)
@@ -21,7 +18,7 @@ IF (MSVC)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 	# Source groups
 	set(SOURCE_GROUPS
-		    athena danae debugger eerie hermes minos
+		    ai  animation audio core game graphics gui io physics scene scripting window
 	)
 
 	foreach(SOURCE_GROUP ${SOURCE_GROUPS})
@@ -34,8 +31,8 @@ IF (MSVC)
 ELSE (MSVC)
 	# Set optimal options for gcc:
 	#wine compiler
-	set(CMAKE_CXX_COMPILER /usr/bin/wineg++)
-	set(CMAKE_C_COMPILER /usr/bin/winegcc)
+	set(CMAKE_CXX_COMPILER wineg++)
+	set(CMAKE_C_COMPILER winegcc)
 
 	#set 32bit
 	set(CMAKE_CXX_FLAGS "-m32")
@@ -43,6 +40,11 @@ ELSE (MSVC)
 	#Debug
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3")
 ENDIF (MSVC)
+
+if(ARX_MINGW)
+	set(CMAKE_CXX_COMPILER i486-mingw32-g++)
+	set(CMAKE_C_COMPILER i486-mingw32-gcc)
+endif()
 
 # Preprocessor definitions
 add_definitions(-D_DEBUG)
