@@ -5492,6 +5492,7 @@ static float _AvgFrameDiff = 150.f;
 	{
 		_AvgFrameDiff+= (FrameDiff - _AvgFrameDiff )*0.01f;
 	}
+
 	if (NEED_BENCH)
 	{
 		BENCH_STARTUP=0;
@@ -5608,34 +5609,34 @@ static float _AvgFrameDiff = 150.f;
 		if (ARXmenu.currentmode == AMCM_OFF)
 		{
 			if (CINEMASCOPE)
-		{
+			{
 				if (!FADEDIR)	// Disabling ESC capture while fading in or out.
-		{
-				if (SendMsgToAllIO(SM_KEY_PRESSED,"")!=REFUSE)
 				{
-					REQUEST_SPEECH_SKIP=1;				
+					if (SendMsgToAllIO(SM_KEY_PRESSED,"")!=REFUSE)
+					{
+						REQUEST_SPEECH_SKIP=1;				
+					}
 				}
 			}
-		}
-		else
-		{
-			LogDebug << "snapshot";
-			//create a screenshot temporaire pour la sauvegarde
-			::SnapShot *pSnapShot=new ::SnapShot(NULL,"sct",true);
-			pSnapShot->GetSnapShotDim(160,100);
-			delete pSnapShot;
+			else
+			{
+				LogDebug << "snapshot";
+				//create a screenshot temporaire pour la sauvegarde
+				::SnapShot *pSnapShot=new ::SnapShot(NULL,"sct",true);
+				pSnapShot->GetSnapShotDim(160,100);
+				delete pSnapShot;
 
-			ARX_TIME_Pause();
-			ARXTimeMenu=ARXOldTimeMenu=ARX_TIME_Get();
-			ARX_MENU_Launch(m_pd3dDevice);
-			bFadeInOut=false;	//fade out
-			bFade=true;			//active le fade
-			pGetInfoDirectInput->iOneTouch[DIK_ESCAPE] = 0;
-			TRUE_PLAYER_MOUSELOOK_ON = 0;
+				ARX_TIME_Pause();
+				ARXTimeMenu=ARXOldTimeMenu=ARX_TIME_Get();
+				ARX_MENU_Launch(m_pd3dDevice);
+				bFadeInOut=false;	//fade out
+				bFade=true;			//active le fade
+				pGetInfoDirectInput->iOneTouch[DIK_ESCAPE] = 0;
+				TRUE_PLAYER_MOUSELOOK_ON = 0;
 
-			ARX_PLAYER_PutPlayerInNormalStance(1);
+				ARX_PLAYER_PutPlayerInNormalStance(1);
+			}
 		}
-	}
 	}
 	
 	// Project need to reload all textures ???
