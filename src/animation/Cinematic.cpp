@@ -29,6 +29,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Core.h"
 #include "graphics/GraphicsUtility.h"
 #include "graphics/data/CinematicTexture.h"
+#include "graphics/effects/CinematicEffects.h"
+#include "scene/CinematicSound.h"
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
 
@@ -83,48 +85,8 @@ extern float SpecialFadeDx;
 extern long DANAESIZX;
 extern long DANAESIZY;
 extern DANAE danaeApp;
-/*---------------------------------------------------------------*/
-void GetPathDirectory(char * dirfile)
-{
-	char	* n ;
-	int				i ;
 
-	if (!(i = strlen(dirfile))) return;
 
-	n = dirfile + i;
-
-	while (i && (*n != '\\'))
-	{
-		n--;
-		i--;
-	}
-
-	n++;
-
-	if (i) *n = 0;
-}
-/*---------------------------------------------------------------*/
-void ClearDirectory(char * dirfile)
-{
-	char	* n ;
-	int				i ;
-
-	if (!(i = strlen(dirfile))) return ;
-
-	n = dirfile + i ;
-
-	while (i && (*n != '\\'))
-	{
-		n-- ;
-		i-- ;
-	}
-
-	if (i)
-	{
-		strcpy(FileNameChoose, n + 1) ;
-	}
-}
-/*---------------------------------------------------------------*/
 void ClearAbsDirectory(char * pT, const char * d)
 {
 	char * pTcopy = pT;
@@ -132,25 +94,15 @@ void ClearAbsDirectory(char * pT, const char * d)
 
 	while (i--)
 	{
-		//todo string
-//		if (!strnicmp(pT, d, strlen(d)))
-//		{
-//			pT += strlen(d);
-//			memmove(pTcopy, pT, strlen(pT - strlen(d)) + 1);
-//			break;
-//		}
+		if (!strncasecmp(pT, d, strlen(d)))
+		{
+			pT += strlen(d);
+			memmove(pTcopy, pT, strlen(pT - strlen(d)) + 1);
+			break;
+		}
 
 		pT++;
 	}
-}
-
-/*---------------------------------------------------------------*/
-void AddDirectory(char * pT, const char * dir)
-{
-	char pTCopy[256];
-	strcpy(pTCopy, pT);
-	strcpy(pT, dir);
-	strcat(pT, pTCopy);
 }
 
 /*---------------------------------------------------------------------------------*/

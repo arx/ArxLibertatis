@@ -27,6 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "animation/CinematicKeyframer.h"
 #include "graphics/data/CinematicTexture.h"
 #include "io/PakManager.h"
+#include "scene/CinematicSound.h"
 
 #define CINEMATIC_FILE_VERSION ((1<<16)|76)
 #define INTERP_NO_FADE 2
@@ -179,6 +180,48 @@ struct C_KEY_1_75 {
 	float angzgrille;
 	float speedtrack;
 };
+
+
+void GetPathDirectory(char * dirfile)
+{
+	char	* n ;
+	int				i ;
+
+	if (!(i = strlen(dirfile))) return;
+
+	n = dirfile + i;
+
+	while (i && (*n != '\\'))
+	{
+		n--;
+		i--;
+	}
+
+	n++;
+
+	if (i) *n = 0;
+}
+
+void ClearDirectory(char * dirfile)
+{
+	char	* n ;
+	int				i ;
+
+	if (!(i = strlen(dirfile))) return ;
+
+	n = dirfile + i ;
+
+	while (i && (*n != '\\'))
+	{
+		n-- ;
+		i-- ;
+	}
+
+	if (i)
+	{
+		strcpy(FileNameChoose, n + 1) ;
+	}
+}
 
 void ReadString(char * d)
 {
