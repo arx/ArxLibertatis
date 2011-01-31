@@ -1,24 +1,21 @@
 cmake_minimum_required(VERSION 2.8)
 project(ArxFatalis)
 
-set(INC_DIR include)
-set(SRC_DIR src)
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
-
 option(ARX_BUILD_TESTS ON)
 option(ARX_BUILD_TOOLS ON)
 option(ARX_MINGW OFF)
 
-include_directories(
-	src
-)
+set(SRC_DIR src)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
+
+include_directories(${SRC_DIR})
 
 IF (MSVC)
 	# Set optimal options for msvc:
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 	# Source groups
 	set(SOURCE_GROUPS
-		    ai  animation audio core game graphics gui io physics scene scripting window
+		ai animation audio core game graphics gui io physics scene scripting window
 	)
 
 	foreach(SOURCE_GROUP ${SOURCE_GROUPS})
@@ -26,7 +23,7 @@ IF (MSVC)
 		SOURCE_GROUP("src\\\\${SOURCE_GROUP}" FILES ${SOURCES})
 	endforeach(SOURCE_GROUP)
 	#glob includes
-	file(GLOB_RECURSE ALL_INCLUDES ${INC_DIR}/*.h)
+	file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
 	SOURCE_GROUP("inc" FILES ${ALL_INCLUDES})
 ELSE (MSVC)
 	# Set optimal options for gcc:
@@ -59,13 +56,13 @@ add_executable(arx ${ALL_SOURCES} ${ALL_INCLUDES})
 target_link_libraries(arx dsound dxguid gdi32 shell32 dinput comdlg32 ole32 comctl32 ddraw jpeg z)
 
 add_custom_target(remake
-		#clean and compile with 1 thread per core
-        COMMAND make clean && rm CMakeCache.txt && cmake ${CMAKE_SOURCE_DIR} -G\"Unix Makefiles\" && make -j`getconf _NPROCESSORS_ONLN`
+	#clean and compile with 1 thread per core
+	COMMAND make clean && rm CMakeCache.txt && cmake ${CMAKE_SOURCE_DIR} -G\"Unix Makefiles\" && make -j`getconf _NPROCESSORS_ONLN`
 )
 
 add_custom_target(doc
-		#build the documentation
-        COMMAND cd ${CMAKE_SOURCE_DIR} && doxygen doc/Doxyfile
+	#build the documentation
+	COMMAND cd ${CMAKE_SOURCE_DIR} && doxygen doc/Doxyfile
 )
 
 #find python2
@@ -76,7 +73,7 @@ ELSE()
 ENDIF()
 SET(STYLE_FILTER -readability/casting,-build/header_guard,-build/include,-readability/streams,-whitespace,-runtime/int)
 add_custom_target(style
-        COMMAND ${PYTHON_BIN} ${CMAKE_SOURCE_DIR}/scripts/cpplint.py --filter=${STYLE_FILTER} ${ALL_SOURCES} ${ALL_INCLUDES}
+	COMMAND ${PYTHON_BIN} ${CMAKE_SOURCE_DIR}/scripts/cpplint.py --filter=${STYLE_FILTER} ${ALL_SOURCES} ${ALL_INCLUDES}
 )
 
 if(ARX_BUILD_TESTS)
