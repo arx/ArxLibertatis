@@ -59,8 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
-#include "graphics/GraphicsTypes.h"
-
 //TODO Remove this after cleaning up struct declarations
 struct INTERACTIVE_OBJ;
 struct ANIM_HANDLE;
@@ -428,9 +426,6 @@ extern long ActiveTimers;
 extern long Event_Total_Count;
 extern long FORBID_SCRIPT_IO_CREATION;
 extern long MAX_TIMER_SCRIPT;
-
-extern LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-extern LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 //-----------------------------------------------------------------------------
 void InitScript(EERIE_SCRIPT * es);
