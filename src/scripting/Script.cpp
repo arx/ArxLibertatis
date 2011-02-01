@@ -2452,6 +2452,7 @@ long GetNextWord( EERIE_SCRIPT * es, long i, std::string& temp, long flags )
 		i++;
 	}
 
+	temp.clear();
 	// now take chars until it finds a space or unused char
 	while ((esdat[i] > 32)
 			&& (esdat[i] != '(')
@@ -3003,10 +3004,11 @@ void MakeStandard( std::string& str)
 	{
 		if (str[i] != '_')
 		{
-			str.erase(i, 1);
 			str[i] = toupper(str[i]);
+			i++;
+		} else {
+			str.erase(i, 1);
 		}
-		i++;
 	}
 }
 

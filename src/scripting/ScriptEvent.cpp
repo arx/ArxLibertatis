@@ -6956,8 +6956,8 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					pos = GetNextWord(es, pos, temp2);
 					pos = GetNextWord(es, pos, temp3);
 					pos = GetNextWord(es, pos, temp4);
-					sprintf(cmd, "Script Error for token #%ld '%c' (%s|%s|%s) in file %s_%04ld",
-							ppos,word[0],temp2.c_str(), temp3.c_str(), temp4.c_str(),GetName(io->filename).c_str(),io->ident);
+					sprintf(cmd, "Script Error for token #%ld '%s' (%s|%s|%s) in file %s_%04ld",
+							ppos,word.c_str(),temp2.c_str(), temp3.c_str(), temp4.c_str(),GetName(io->filename).c_str(),io->ident);
 					LogError << cmd;
 
 					io->ioflags |= IO_FREEZESCRIPT;
