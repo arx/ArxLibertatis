@@ -2440,7 +2440,6 @@ long GetNextWord( EERIE_SCRIPT * es, long i, std::string& temp, long flags )
 	long tildes = 0;	// number of tildes
 	long old = i;		// stores start pos in old
 	LINEEND = 0;		// Global LINEEND set to 0 (no LINEEND for now)
-	long j = 0;
 	unsigned char * esdat = (unsigned char *)es->data;
 
 	// First ignores spaces & unused chars
@@ -2472,20 +2471,18 @@ long GetNextWord( EERIE_SCRIPT * es, long i, std::string& temp, long flags )
 				if (esdat[i] == '\n') LINEEND = 1;
 				else if (esdat[i] == '~') tildes++;
 
-				temp[j] = esdat[i];
+				temp.push_back(esdat[i]);
 				i++;
 
 				if (i >= es->size) return -1;
 
-				j++;
 			}
 
-			temp[j] = 0;
 			return i + 1;
 		}
 		else
 		{
-			temp[j] = esdat[i];
+			temp.push_back(esdat[i]);
 
 			if (esdat[i] == '~') tildes++;
 		}
@@ -2494,10 +2491,7 @@ long GetNextWord( EERIE_SCRIPT * es, long i, std::string& temp, long flags )
 
 		if (i >= es->size) return -1;
 
-		j++;
 	}
-
-	temp[j] = 0;
 
 	if (i == old) return -1;
 
