@@ -869,56 +869,24 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							std::string temp2;
 
 							pos = GetNextWord(es, pos, temp2);
-#ifdef NEEDING_DEBUG
-
-							if (NEED_DEBUG)
-							{
-								strcat(cmd, temp2);
-								strcat(cmd, " ");
-							}
-
-#endif
+							LogDebug << temp2;
 
 							ARX_SOUND_SetAmbianceTrackStatus(temp.c_str(), temp2.c_str(), 1); //1 = Mute
 
 							pos = GetNextWord(es, pos, temp);
-#ifdef NEEDING_DEBUG
-
-							if (NEED_DEBUG)
-							{
-								strcat(cmd, temp);
-								strcat(cmd, " ");
-							}
-
-#endif
+							LogDebug << temp;
 						}
 						else if (iCharIn(temp, 'U'))
 						{
 							std::string temp2;
 
 							pos = GetNextWord(es, pos, temp2);
-#ifdef NEEDING_DEBUG
-
-							if (NEED_DEBUG)
-							{
-								strcat(cmd, temp2.c_str());
-								strcat(cmd, " ");
-							}
-
-#endif
+							LogDebug <<  temp2;
 
 							ARX_SOUND_SetAmbianceTrackStatus(temp.c_str(), temp2.c_str(), 0);//0 = unmute
 
 							pos = GetNextWord(es, pos, temp);
-#ifdef NEEDING_DEBUG
-
-							if (NEED_DEBUG)
-							{
-								strcat(cmd, temp);
-								strcat(cmd, " ");
-							}
-
-#endif
+							LogDebug << temp;
 						}
 					}
 					else if (!strcasecmp(temp, "KILL"))
@@ -942,92 +910,35 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				}
 				else if (!strcmp(temp, "ATTACHNPCTOPLAYER"))
 				{
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "ATTACH_NPC_TO_PLAYER ...OBSOLETE...");
-
-#endif
+					LogDebug << "ATTACH_NPC_TO_PLAYER ...OBSOLETE...";
 				}
 				else if (!strcmp(temp, "ATTACH"))
 				{
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						strcpy(cmd, "ATTACH ");
-					}
-
-#endif
+					LogDebug << "ATTACH ";
 					std::string temp1;
 					std::string temp2;
 					pos = GetNextWord(es, pos, temp); // Source IO
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						strcat(cmd, temp.c_str());
-						strcat(cmd, " ");
-					}
-
-#endif
+					LogDebug << temp;
 					long t = GetTargetByNameTarget(temp.c_str());
 
 					if (t == -2) t = GetInterNum(io); //self
 
 					pos = GetNextWord(es, pos, temp1); // source action_point
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						strcat(cmd, temp1);
-						strcat(cmd, " ");
-					}
-
-#endif
+					LogDebug <<  temp1;
 					pos = GetNextWord(es, pos, temp); // target IO
 					long t2 = GetTargetByNameTarget(temp.c_str());
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						strcat(cmd, temp);
-						strcat(cmd, " ");
-					}
-
-#endif
+					LogDebug << temp;
 
 					if (t2 == -2) t2 = GetInterNum(io); //self
 
 					pos = GetNextWord(es, pos, temp2); // target action_point
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						strcat(cmd, temp2);
-						strcat(cmd, " ");
-					}
-
-#endif
-
+					LogDebug << temp2;
 					if (ARX_INTERACTIVE_Attach(t, t2, temp1.c_str(), temp2.c_str()))
 					{
-#ifdef NEEDING_DEBUG
-
-						if (NEED_DEBUG)
-						{
-							strcat(cmd, "--> success");
-						}
-
-#endif
+						LogDebug << "--> success";
 					}
 
-#ifdef NEEDING_DEBUG
-					else if (NEED_DEBUG)
-					{
-						strcat(cmd, "--> failure");
-					}
-
-#endif
+					LogDebug <<  "--> failure";
 				}
 
 				break;
@@ -1047,11 +958,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 					if (pos == -1) return ACCEPT;
 
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "GOTO %s", temp);
-
-#endif
+					LogDebug << "GOTO " << temp;
 				}
 				else if (!strcmp(temp, "GOSUB"))
 				{
@@ -1065,11 +972,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 					if (pos == -1) return ACCEPT;
 
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "GOSUB %s", temp);
-
-#endif
+					LogDebug <<  "GOSUB " << temp;
 				}
 				else if (!strcmp(temp, "GMODE"))
 				{
@@ -1083,11 +986,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				{
 					ClearSubStack(es);
 					ret = REFUSE;
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) LogDebug << "  REFUSE";
-
-#endif
+					LogDebug << "  REFUSE";
 					goto end;
 				}
 				else if (!strcmp(temp, "REVIVE"))
@@ -1103,11 +1002,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					}
 
 					ARX_NPC_Revive(io, init);
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) LogDebug << "REVIVE";
-
-#endif
+					LogDebug << "REVIVE";
 					goto end;
 				}
 				else if (!strcmp(temp, "RIDICULOUS"))
@@ -1145,22 +1040,12 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					{
 						pos = SkipNextStatement(es, pos);
 					}
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "RANDOM %s", temp1);
-
-#endif
+					LogDebug << "RANDOM " << temp1;
 				}
 				else if (!strcmp(temp, "RETURN"))
 				{
 					if ((pos = GetSubStack(es)) == -1) return BIGERROR;
-
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "RETURN");
-
-#endif
+					LogDebug << "RETURN";
 				}
 				else if (!strcmp(temp, "REPLACEME"))
 				{
@@ -1263,18 +1148,10 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							}
 						}
 
-#ifdef NEEDING_DEBUG
-
-						if (NEED_DEBUG) sprintf(cmd, "REPLACE_ME %s", temp);
-
-#endif
+						LogDebug <<  "REPLACE_ME "<< temp;
 					}
 
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "REPLACE_ME %s --> Failure Not An IO", temp);
-
-#endif
+					LogDebug << "REPLACE_ME " << temp << " --> Failure Not An IO";
 				}
 				else if (!strcmp(temp, "ROTATE"))
 				{
@@ -1284,8 +1161,6 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						std::string temp2;
 						std::string temp3;
 						float t1, t2, t3;
-
-
 
 						pos = GetNextWord(es, pos, temp1);
 						pos = GetNextWord(es, pos, temp2);
@@ -1305,11 +1180,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						}
 
 						io->lastanimtime = 0;
-#ifdef NEEDING_DEBUG
-
-						if (NEED_DEBUG) sprintf(cmd, "%s %s %s %s", temp, temp1, temp2, temp3);
-
-#endif
+						LogDebug << temp << " " << temp1 << " " << temp2 << " " << temp3;
 					}
 				}
 				else if (!strcmp(temp, "RUNE"))
@@ -1433,11 +1304,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					else if (!strcasecmp(temp, "ALL"))
 						ARX_PLAYER_Rune_Add_All();
 
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "RUNE %ld %s", add, temp);
-
-#endif
+					LogDebug << "RUNE "<< add << " " << temp;
 				}
 
 				break;
@@ -1446,23 +1313,8 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				if (!strcmp(temp, "CINE")) //CAMERA_ACTIVATE
 				{
 					long preload = 0;
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						strcpy(cmd, "CINE ");
-					}
-
-#endif
 					pos = GetNextWord(es, pos, temp);
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						strcat(cmd, temp);
-					}
-
-#endif
+					LogDebug << "CINE " << temp;
 
 					if (temp[0] == '-')
 					{
