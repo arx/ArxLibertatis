@@ -66,7 +66,6 @@ namespace ATHENA
 	extern ALCdevice *device;
 	extern ALCcontext *context;
 	extern LPDIRECTSOUNDBUFFER primary;
-	extern LPDIRECTSOUND3DLISTENER listener;
 	extern LPKSPROPERTYSET environment;
 	extern aalUBool is_reverb_present;
 	extern aalSLong environment_id;
