@@ -853,13 +853,7 @@ void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, long * poss, long ver
 	THEO_SELECTED * pts;
 	memcpy(&THEO_nb_selected, adr + pos, sizeof(long));
 	pos += sizeof(long);
-	eerie->nbselections = THEO_nb_selected;
-
-	if (eerie->nbselections) {
-		eerie->selections = allocStructZero<EERIE_SELECTIONS>("EESelections", eerie->nbselections); 
-	}
-	else
-		eerie->selections = NULL;
+	eerie->selections.resize(THEO_nb_selected);
 
 	for (i = 0; i < THEO_nb_selected; i++)
 	{
@@ -1605,17 +1599,16 @@ void ReleaseEERIE3DObjFromScene(EERIE_3DOBJ * eerie)
 
 	eerie->grouplist = NULL;
 
-	if ((eerie->nbselections) && (eerie->selections))
+	if (!eerie->selections.empty())
 	{
-		for (i = 0; i < eerie->nbselections; i++)
-		{
+		for (i = 0; i < eerie->selections.size(); i++)
+		{ // TODO iterator
 			if (eerie->selections[i].selected) free(eerie->selections[i].selected);
 
 			eerie->selections[i].selected = NULL;
 		}
 
-		free(eerie->selections);
-		eerie->selections = NULL;
+		eerie->selections.clear();
 	}
 
 	if ((eerie->nblinked) &&
@@ -1639,17 +1632,17 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 		eerie->originaltextures = NULL;
 	}
 
-	if ((eerie->nbselections) && (eerie->selections))
+	if (!eerie->selections.empty())
 	{
-		for (i = 0; i < eerie->nbselections; i++)
-		{
+		for (i = 0; i < eerie->selections.size(); i++)
+		{ // TODO iterator
 			if (eerie->selections[i].selected) free(eerie->selections[i].selected);
 
 			eerie->selections[i].selected = NULL;
 		}
 
-//		free(eerie->selections);
-		eerie->selections = NULL;
+// TODO needed?
+		eerie->selections.clear();
 	}
 
 	if (eerie->maplist != NULL) free(eerie->maplist);
@@ -1684,8 +1677,8 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 
 	if (eerie->facelist)		free(eerie->facelist);
 
-// TODO(lubosz): crash
-//	if (eerie->actionlist)	free(eerie->actionlist);
+	// TODO needed?
+	eerie->actionlist.clear();
 
 	eerie->maplist = NULL;
 	eerie->vertexlist = NULL;
@@ -1700,8 +1693,7 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 			        && (eerie->grouplist[i].nb_index > 0)) free(eerie->grouplist[i].indexes);
 		}
 
-// TODO(lubosz): crash
-//		free(eerie->grouplist);
+		delete eerie->grouplist;
 	}
 
 	eerie->grouplist = NULL;
@@ -1712,8 +1704,7 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 		free((void *)eerie->linked);
 	}
 
-	free(eerie);
-	eerie = NULL;
+	delete eerie;
 }
 //-----------------------------------------------------------------------------------------------------
 void ReCreateUVs(EERIE_3DOBJ * eerie, long flag)
@@ -1832,14 +1823,10 @@ EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj)
 
 	nouvo->actionlist = obj->actionlist;
 
-	if (obj->nbselections)
-	{
-		nouvo->nbselections = obj->nbselections;
+		nouvo->selections = obj->selections;
 
-		nouvo->selections = copyStruct(obj->selections, "EECopySel", obj->nbselections);
-
-		for (long i = 0; i < obj->nbselections; i++)
-		{
+		for (long i = 0; i < obj->selections.size(); i++)
+		{ // TODO iterator
 			if (obj->selections[i].nb_selected)
 			{
 				nouvo->selections[i].nb_selected = obj->selections[i].nb_selected;
@@ -1852,7 +1839,6 @@ EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj)
 				nouvo->selections[i].selected = NULL;
 			}
 		}
-	}
 
 	if (obj->maplist)
 	{
@@ -1888,8 +1874,8 @@ long EERIE_OBJECT_GetSelection(EERIE_3DOBJ * obj, const char * selname)
 {
 	if (!obj) return -1;
 
-	for (long i = 0; i < obj->nbselections; i++)
-	{
+	for (long i = 0; i < obj->selections.size(); i++)
+	{ // TODO iterator
 		if (!strcasecmp(obj->selections[i].name.c_str(), selname)) return i;
 	}
 

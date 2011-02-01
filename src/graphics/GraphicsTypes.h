@@ -491,12 +491,13 @@ typedef struct
 } EERIE_LINKED; // Aligned 1 2 4
 
 
-typedef struct
-{
-	std::string	name;
-	long	nb_selected;
-	long *	selected;
-} EERIE_SELECTIONS; // Aligned 1 2 4
+struct EERIE_SELECTIONS {
+	std::string name;
+	long nb_selected;
+	long * selected;
+	
+	EERIE_SELECTIONS() : name(), nb_selected(0), selected(NULL) { };
+};
 
 #define DRAWFLAG_HIGHLIGHT	1
 
@@ -581,7 +582,6 @@ struct EERIE_3DOBJ
 		nbpfaces = 0;
 		nbmaps = 0;
 		nbgroups = 0;
-		nbselections = 0;
 		drawflags = 0;
 
 		vertexlocal = 0;
@@ -592,7 +592,6 @@ struct EERIE_3DOBJ
 		pfacelist = 0;
 		maplist = 0;
 		grouplist = 0;
-		selections = 0;
 		texturecontainer = 0;
 
 		originaltextures = 0;
@@ -650,7 +649,6 @@ struct EERIE_3DOBJ
 	long				nbpfaces;
 	long				nbmaps;
 	long				nbgroups;
-	long				nbselections;
 	unsigned long		drawflags;
 	EERIE_3DPAD 	*	vertexlocal;
 	EERIE_VERTEX 	*	vertexlist;
@@ -660,8 +658,8 @@ struct EERIE_3DOBJ
 	EERIE_PFACE 	*	pfacelist;
 	EERIE_MAP 	*		maplist;
 	EERIE_GROUPLIST *	grouplist;
-	std::vector<EERIE_ACTIONLIST>	actionlist;
-	EERIE_SELECTIONS *	selections;
+	std::vector<EERIE_ACTIONLIST> actionlist;
+	std::vector<EERIE_SELECTIONS> selections;
 	TextureContainer ** texturecontainer;
 
 	char 		*		originaltextures;

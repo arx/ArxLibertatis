@@ -225,8 +225,8 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				long mapidx = ObjectAddMap(io->obj, temp);
 
 				// retreives head sel
-				for (i = 0; i < io->obj->nbselections; i++)
-				{
+				for (i = 0; i < io->obj->selections.size(); i++)
+				{ // TODO iterator
 					if (!strcasecmp(io->obj->selections[i].name.c_str(), "head"))
 					{
 						sel_ = i;
@@ -281,8 +281,8 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				long mapidx = ObjectAddMap(io->obj, temp);
 
 				// retreives head sel
-				for (i = 0; i < io->obj->nbselections; i++)
-				{
+				for (i = 0; i < io->obj->selections.size(); i++)
+				{ // TODO iterator
 					if (!strcasecmp(io->obj->selections[i].name.c_str(), "chest"))
 					{
 						sel_ = i;
@@ -337,8 +337,8 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				long mapidx = ObjectAddMap(io->obj, temp);
 
 				// retreives head sel
-				for (i = 0; i < io->obj->nbselections; i++)
-				{
+				for (i = 0; i < io->obj->selections.size(); i++)
+				{ // TODO iterator
 					if (!strcasecmp(io->obj->selections[i].name.c_str(), "leggings"))
 					{
 						sel_ = i;

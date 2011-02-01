@@ -251,11 +251,11 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 		}
 	}
 
-	if (obj->nbselections > 0)
+	if (!obj->selections.empty())
 	{
-		allocsize += sizeof(EERIE_SELECTIONS) * obj->nbselections;
+		// TODO allocsize += sizeof(EERIE_SELECTIONS) * obj->nbselections;
 
-		for (long i = 0; i < obj->nbselections; i++)
+		for (long i = 0; i < obj->selections.size(); i++)
 		{
 			allocsize += sizeof(long) * obj->selections[i].nb_selected;
 		}
@@ -321,7 +321,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 	af3Ddh->nb_maps = obj->nbmaps;
 	af3Ddh->nb_groups = obj->nbgroups;
 	// TODO af3Ddh->nb_action = obj->nbaction;
-	af3Ddh->nb_selections = obj->nbselections;
+	af3Ddh->nb_selections = obj->selections.size();
 	af3Ddh->origin = obj->origin;
 
 	// vertexes
@@ -412,7 +412,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 	// selections
 	if (af3Ddh->nb_selections > 0)
 	{
-		memcpy(dat + pos, obj->selections, sizeof(EERIE_SELECTIONS)*af3Ddh->nb_selections);
+		// TODO memcpy(dat + pos, obj->selections, sizeof(EERIE_SELECTIONS)*af3Ddh->nb_selections);
 		pos += sizeof(EERIE_SELECTIONS) * af3Ddh->nb_selections;
 
 		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
@@ -755,7 +755,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		obj->nbmaps = af3Ddh->nb_maps;
 		obj->nbgroups = af3Ddh->nb_groups;
 		obj->actionlist.resize(af3Ddh->nb_action);
-		obj->nbselections = af3Ddh->nb_selections;
+		obj->selections.resize(af3Ddh->nb_selections);
 		obj->origin = af3Ddh->origin;
 		obj->file = af3Ddh->name;
 
@@ -888,16 +888,9 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 				pos += sizeof(EERIE_ACTIONLIST_FTL);
 			}
 
-		// Alloc'n'Copy selections
-		if (obj->nbselections > 0)
-		{
-			// Alloc the selections
-			obj->selections = new EERIE_SELECTIONS[obj->nbselections];
-			//obj->selections = (EERIE_SELECTIONS *)malloc(sizeof(EERIE_SELECTIONS) * obj->nbselections);
-			
 			// Copy in the selections data
-			for ( long i = 0 ; i < obj->nbselections ; i++ )
-			{
+			for ( long i = 0 ; i < obj->selections.size() ; i++ )
+			{ // TODO iterator
 				EERIE_SELECTIONS_FTL* selection = reinterpret_cast<EERIE_SELECTIONS_FTL*>(dat+pos);
 				obj->selections[i].name = selection->name;
 				obj->selections[i].nb_selected = selection->nb_selected;
@@ -915,7 +908,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 				           obj->selections[i].selected );
 				pos += sizeof(long) * obj->selections[i].nb_selected; // Advance to the next selection data block
 			}
-		}
 
 		obj->pbox = NULL; // Reset physics
 	}

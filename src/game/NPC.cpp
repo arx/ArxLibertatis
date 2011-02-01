@@ -1469,7 +1469,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 	if ((!from)
 	        ||	(num < 0)
-	        ||	(num > from->nbselections))
+	        ||	(num > from->selections.size())) // TODO >= ?
 		return;
 
 	EERIE_3DOBJ * nouvo;
@@ -1840,8 +1840,8 @@ long GetCutSelection(INTERACTIVE_OBJ * io, short flag)
 
 	if (tx[0])
 	{
-		for (long i = 0; i < io->obj->nbselections; i++)
-		{
+		for (long i = 0; i < io->obj->selections.size(); i++)
+		{ // TODO iterator
 			if ((io->obj->selections[i].nb_selected > 0)
 			        &&	(!strcasecmp(io->obj->selections[i].name.c_str(), tx)))
 				return i;
@@ -1975,8 +1975,8 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos)
 		}
 	}
 
-	for (int i = 0; i < target->obj->nbselections; i++)
-	{
+	for (int i = 0; i < target->obj->selections.size(); i++)
+	{ // TODO iterator
 		if ((target->obj->selections[i].nb_selected > 0)
 		        &&	(IsIn(target->obj->selections[i].name, "CUT_")))
 		{

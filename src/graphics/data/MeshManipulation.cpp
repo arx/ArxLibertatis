@@ -400,15 +400,15 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	long sel_legs2 = -1;
 
 	// First we retreive selection groups indexes
-	for (i = 0; i < obj1->nbselections; i++)
-	{
+	for (i = 0; i < obj1->selections.size(); i++)
+	{ // TODO iterator
 		if (!strcasecmp(obj1->selections[i].name.c_str(), "head")) sel_head1 = i;
 		else if (!strcasecmp(obj1->selections[i].name.c_str(), "chest")) sel_torso1 = i;
 		else if (!strcasecmp(obj1->selections[i].name.c_str(), "leggings")) sel_legs1 = i;
 	}
 
-	for (i = 0; i < obj2->nbselections; i++)
-	{
+	for (i = 0; i < obj2->selections.size(); i++)
+	{ // TODO iterator
 		if (!strcasecmp(obj2->selections[i].name.c_str(), "head")) sel_head2 = i;
 		else if (!strcasecmp(obj2->selections[i].name.c_str(), "chest")) sel_torso2 = i;
 		else if (!strcasecmp(obj2->selections[i].name.c_str(), "leggings")) sel_legs2 = i;
@@ -674,9 +674,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	}
 
 	// Recreate Selection Groups (only the 3 selections needed to reiterate MeshTweaking !)
-	work->nbselections = 3;
-	work->selections = (EERIE_SELECTIONS *)malloc(sizeof(EERIE_SELECTIONS) * work->nbselections); 
-	memset(work->selections, 0, sizeof(EERIE_SELECTIONS)*work->nbselections);
+	work->selections.resize(3);
 	work->selections[0].name = "head";
 	work->selections[1].name = "chest";
 	work->selections[2].name = "leggings";
@@ -775,14 +773,12 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 		}
 
 	//Now recreates other selections...
-	for (i = 0; i < obj1->nbselections; i++)
-	{
+	for (i = 0; i < obj1->selections.size(); i++)
+	{ // TODO iterator
 		if (EERIE_OBJECT_GetSelection(work, obj1->selections[i].name.c_str()) == -1)
 		{
-			long num = work->nbselections;
-			work->nbselections++;
-			work->selections = (EERIE_SELECTIONS *)realloc(work->selections, sizeof(EERIE_SELECTIONS) * work->nbselections);
-			memset(&work->selections[num], 0, sizeof(EERIE_SELECTIONS));
+			long num = work->selections.size();
+			work->selections.resize(num + 1);
 			work->selections[num].name = obj1->selections[i].name;
 
 			for (long l = 0; l < obj1->selections[i].nb_selected; l++)
@@ -818,14 +814,12 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 		}
 	}
 
-	for (i = 0; i < obj2->nbselections; i++)
-	{
+	for (i = 0; i < obj2->selections.size(); i++)
+	{ // TODO iterator
 		if (EERIE_OBJECT_GetSelection(work, obj2->selections[i].name.c_str()) == -1)
 		{
-			long num = work->nbselections;
-			work->nbselections++;
-			work->selections = (EERIE_SELECTIONS *)realloc(work->selections, sizeof(EERIE_SELECTIONS) * work->nbselections);
-			memset(&work->selections[num], 0, sizeof(EERIE_SELECTIONS));
+			long num = work->selections.size();
+			work->selections.resize(num + 1);
 			work->selections[num].name = obj2->selections[i].name;
 
 			for (long l = 0; l < obj2->selections[i].nb_selected; l++)
