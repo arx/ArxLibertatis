@@ -447,7 +447,7 @@ void ARX_SCRIPT_LaunchScriptSearch( std::string& search);
 void ARX_SCRIPT_ResetObject(INTERACTIVE_OBJ * io, long flags);
 void ARX_SCRIPT_Reset(INTERACTIVE_OBJ * io, long flags);
 long ARX_SCRIPT_GetSystemIOScript(INTERACTIVE_OBJ * io, const std::string& name);
-void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT * es);
+void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT& es);
 void ARX_SCRIPT_AllowInterScriptExec();
 long ARX_SCRIPT_CountTimers();
 void ARX_SCRIPT_Timer_ClearByNum(long num);

@@ -134,27 +134,27 @@ SCRIPT_EVENT AS_EVENT[] =
 	std::string("")
 };
 
-void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT * es)
+void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT& es)
 {
 	LogDebug << "ARX_SCRIPT_ComputeShortcuts start";
 	long nb = min(MAX_SHORTCUT, SM_MAXCMD);
 
 	for (long j = 1; j < nb; j++)
 	{
-		es->shortcut[j] = FindScriptPos(es, AS_EVENT[j].name);
+		es.shortcut[j] = FindScriptPos(&es, AS_EVENT[j].name);
 
-		if (es->shortcut[j] >= 0)
+		if (es.shortcut[j] >= 0)
 		{
 			std::string dest;
-			GetNextWord(es, es->shortcut[j], dest);
+			GetNextWord(&es, es.shortcut[j], dest);
 
 			if (!strcasecmp(dest.c_str(), "{"))
 			{
-				GetNextWord(es, es->shortcut[j], dest);
+				GetNextWord(&es, es.shortcut[j], dest);
 
 				if (!strcasecmp(dest.c_str(), "ACCEPT"))
 				{
-					es->shortcut[j] = -1;
+					es.shortcut[j] = -1;
 				}
 			}
 		}

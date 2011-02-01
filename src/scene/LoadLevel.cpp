@@ -1038,7 +1038,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 //			}
 //			else LogError << ("Unable To Save...");
 
-			ARX_SCRIPT_ComputeShortcuts(&io->script);
+			ARX_SCRIPT_ComputeShortcuts(io->script);
 			break;
 		case 2: //LOCAL SCRIPT
 
@@ -1067,7 +1067,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 			}
 			else LogError << ("NO IDENT...");
 
-			ARX_SCRIPT_ComputeShortcuts(&io->over_script);
+			ARX_SCRIPT_ComputeShortcuts(io->over_script);
 			break;
 	}
 }

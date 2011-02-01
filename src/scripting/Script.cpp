@@ -1237,7 +1237,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 				else
 				{
 					std::stringstream ss;
-					ss << GetName(io->filename) << '_' << io->ident;
+					ss << GetName(io->filename) << '_' << std::setfill('0') << std::setw(4) << io->ident;
 					txtcontent = ss.str();
 				}
 
@@ -5755,7 +5755,7 @@ void InitScript(EERIE_SCRIPT * es)
 
 
 
-	ARX_SCRIPT_ComputeShortcuts(es);
+	ARX_SCRIPT_ComputeShortcuts(*es);
 }
 
 LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
