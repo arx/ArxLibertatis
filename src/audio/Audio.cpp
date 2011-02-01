@@ -120,7 +120,9 @@ namespace ATHENA
 
 		if (primary) primary->Release(), primary = NULL;
 
-		if (device) device->Release(), device = NULL;
+		if (context) alcDestroyContext(context), context = NULL;
+
+		if (device) alcCloseDevice(device), device = NULL;
 
 		free(sample_path), sample_path = NULL;
 		free(ambiance_path), ambiance_path = NULL;
@@ -142,36 +144,17 @@ namespace ATHENA
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
 
-		WAVEFORMATEX formatex;
-		DSBUFFERDESC desc;
-
-		//Set primary settings to default
-		memset(&formatex, 0, sizeof(WAVEFORMATEX));
-		formatex.wFormatTag = WAVE_FORMAT_PCM;
-		formatex.nChannels = (aalUWord)(f.channels);
-		formatex.nSamplesPerSec = f.frequency;
-		formatex.wBitsPerSample = (aalUWord)(f.quality);
-		formatex.nBlockAlign = (aalUWord)(f.channels * f.quality / 8);
-		formatex.nAvgBytesPerSec = formatex.nBlockAlign * f.frequency;
-		memset(&desc, 0, sizeof(DSBUFFERDESC));
-		desc.dwSize = sizeof(DSBUFFERDESC);
-		desc.dwFlags = DSBCAPS_PRIMARYBUFFER | DSBCAPS_GETCURRENTPOSITION2;
-		desc.dwFlags |= DSBCAPS_CTRL3D;
-
 		//Release previously created interfaces
 		if (environment) environment->Release(), environment = NULL;
 
 		if (listener) listener->Release(), listener = NULL;
 
-		if (primary) primary->Release(), primary = NULL;
+		if (primary) alDeleteBuffers(1, primary), primary = NULL;
 
 		//Get new buffer and set its format
-		if (device->CreateSoundBuffer(&desc, &primary, NULL) ||
-		        primary->Play(0, 0, DSBPLAY_LOOPING) ||
-		        primary->SetFormat(&formatex))
-		{
+		alGenBuffers(1, primary);
+		if (alGetError() != AL_NO_ERROR) {
 			if (mutex) ReleaseMutex(mutex);
-
 			return AAL_ERROR_SYSTEM;
 		}
 
@@ -834,7 +817,9 @@ namespace ATHENA
 			return AAL_ERROR_INIT;
 		}
 
-		if (listener->SetPosition(position.x, position.y, position.z, DS3D_DEFERRED))
+		alListener3f(AL_POSITION, position.x, position.y, position.z);
+
+		if ((error = alGetError()) != AL_NO_ERROR)
 		{
 			if (mutex) ReleaseMutex(mutex);
 
@@ -848,17 +833,13 @@ namespace ATHENA
 
 	aalError aalSetListenerDirection(const aalVector & front, const aalVector & up)
 	{
+		ALfloat orientation[] = {front.x, front.y, front.z, up.x, up.y, up.z};
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
 
-		if (!listener)
-		{
-			if (mutex) ReleaseMutex(mutex);
+		alListenerfv(AL_ORIENTATION, orientation);
 
-			return AAL_ERROR_INIT;
-		}
-
-		if (listener->SetOrientation(front.x, front.y, front.z, up.x, up.y, up.z, DS3D_DEFERRED))
+		if ((error = alGetError()) != AL_NO_ERROR)
 		{
 			if (mutex) ReleaseMutex(mutex);
 
