@@ -602,13 +602,13 @@ void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, long * poss, long ver
 
 	if (tn.nb_groups == 0) eerie->grouplist = NULL;
 	else {
-		eerie->grouplist = allocStructZero<EERIE_GROUPLIST>("EEGroupList", tn.nb_groups); 
+		eerie->grouplist = new EERIE_GROUPLIST[tn.nb_groups]; 
 	}
 
-	//if (tn.nb_action_point == 0) eerie->actionlist = NULL;
-	//else {
-		// TODO eerie->actionlist = allocStructZero<EERIE_ACTIONLIST>("EEActionList", tn.nb_action_point); 
-	//}
+	if (tn.nb_action_point == 0) eerie->actionlist.clear();
+	else {
+		eerie->actionlist.resize(tn.nb_action_point); 
+	}
 
 	// Lecture des VERTEX THEO
 	pos = to->vertex_seek;
@@ -1650,7 +1650,7 @@ void ReleaseEERIE3DObjFromScene(EERIE_3DOBJ * eerie)
 			eerie->grouplist[i].indexes = NULL;
 		}
 
-		free(eerie->grouplist);
+		delete eerie->grouplist;
 	}
 
 	eerie->grouplist = NULL;
@@ -1750,7 +1750,8 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 			        && (eerie->grouplist[i].nb_index > 0)) free(eerie->grouplist[i].indexes);
 		}
 
-		delete eerie->grouplist;
+		// TODO why does this crash???
+		//delete eerie->grouplist;
 	}
 
 	eerie->grouplist = NULL;
@@ -1860,7 +1861,8 @@ EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj)
 	{
 		nouvo->nbgroups = obj->nbgroups;
 
-		nouvo->grouplist = copyStruct(obj->grouplist, "EECopyGroupList", obj->nbgroups);
+		nouvo->grouplist = new EERIE_GROUPLIST[obj->nbgroups];
+		std::copy(obj->grouplist, obj->grouplist + obj->nbgroups, nouvo->grouplist);
 
 		for (long i = 0; i < obj->nbgroups; i++)
 		{
