@@ -18,6 +18,7 @@ const LogSetting blackList[] = {
 	{ "FTL.cpp", Logger::Warning },
 //	{ "Script.cpp", Logger::Info },
 //	{ "ScriptEvent.cpp", Logger::Info },
+	{ "LoadLevel.cpp", Logger::Info },
 	{ "PakManager.cpp", Logger::Fatal },
 	{ "PakReader.cpp", Logger::Info },
 	{ "Filesystem.cpp", Logger::Fatal },

@@ -3819,9 +3819,11 @@ void GetLineAsText(EERIE_SCRIPT * es, long curline, char * tex)
 extern long SYNTAXCHECKING;
 long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 {
-	return 1;
+//	return 1;
 
-	if (SYNTAXCHECKING == 0) return 1;
+//	if (SYNTAXCHECKING == 0) return 1;
+	//TODO(lubosz): Make validator functional
+	LogDebug << "LaunchScriptCheck";
 
 	if (io->ioflags & IO_FREEZESCRIPT) return 1;
 
@@ -5369,6 +5371,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 	}
 	else LastErrorPopup = NULL;
 
+	LogDebug << "Tem" << tem;
 	return returnvalue;
 }
 HWND LastErrorPopupNO1 = NULL;
