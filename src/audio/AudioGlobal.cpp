@@ -39,8 +39,7 @@ namespace ATHENA
 	// Audio device interface                                                    //
 	ALCdevice *device(NULL);
 	ALCcontext *context(NULL);
-	LPDIRECTSOUNDBUFFER primary(NULL);
-	LPDIRECTSOUND3DLISTENER listener(NULL);
+	Aluint primary[1] = { 0 };
 	LPKSPROPERTYSET environment(NULL);
 	aalUBool is_reverb_present(AAL_UFALSE);
 	aalSLong environment_id(AAL_SFALSE);

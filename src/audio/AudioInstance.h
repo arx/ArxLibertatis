@@ -25,6 +25,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef __ATHENA_INSTANCE_H__
 #define __ATHENA_INSTANCE_H__
 
+#include <AL/al.h>
+#include <AL/alc.h>
 #include "AudioTypes.h"
 #include "Sample.h"
 #include "Stream.h"
@@ -89,9 +91,12 @@ namespace ATHENA
 			Stream * stream;
 			aalULong read, write;                 //Streaming status
 			aalULong size;                        //Buffer size
-			LPDIRECTSOUNDBUFFER lpdsb;
-			LPDIRECTSOUND3DBUFFER lpds3db;
-			LPKSPROPERTYSET lpeax;
+
+			ALuint source[1];
+			ALuint buffer[1];
+			/* LPDIRECTSOUNDBUFFER lpdsb; */
+			/* LPDIRECTSOUND3DBUFFER lpds3db; */
+			/* LPKSPROPERTYSET lpeax; */
 	};
 
 }//ATHENA::
