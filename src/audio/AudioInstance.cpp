@@ -70,9 +70,9 @@ namespace ATHENA
 		sample(NULL),
 		status(0),
 		loop(0), time(0),
-		stream(NULL), size(0), read(0), write(0),
-		lpdsb(NULL), lpds3db(NULL), lpeax(NULL)
+		stream(NULL), size(0), read(0), write(0)
 	{
+		source[0] = 0;
 	}
 
 	extern  long NBREVERB;
@@ -91,8 +91,8 @@ namespace ATHENA
 	///////////////////////////////////////////////////////////////////////////////
 	aalError Instance::Init(Sample * __sample, const aalChannel & _channel)
 	{
-		DSBUFFERDESC _desc;
-		WAVEFORMATEX _format;
+		// DSBUFFERDESC _desc;
+		// WAVEFORMATEX _format;
 		aalUBool streaming(AAL_UFALSE);
 
 		Clean();
@@ -101,26 +101,26 @@ namespace ATHENA
 		sample->Catch();
 		channel = _channel;
 
-		memset(&_desc, 0, sizeof(DSBUFFERDESC));
-		_desc.dwSize = sizeof(DSBUFFERDESC);
-		_desc.dwFlags = DSBCAPS_GETCURRENTPOSITION2;
+		// memset(&_desc, 0, sizeof(DSBUFFERDESC));
+		// _desc.dwSize = sizeof(DSBUFFERDESC);
+		// _desc.dwFlags = DSBCAPS_GETCURRENTPOSITION2;
 
-		if (channel.flags & AAL_FLAG_VOLUME) _desc.dwFlags |= DSBCAPS_CTRLVOLUME;
-		else if (_mixer[channel.mixer]->flags & AAL_FLAG_VOLUME)
+		// if (channel.flags & AAL_FLAG_VOLUME) _desc.dwFlags |= DSBCAPS_CTRLVOLUME;
+		if (_mixer[channel.mixer]->flags & AAL_FLAG_VOLUME)
 		{
 			channel.flags |= AAL_FLAG_VOLUME;
 			channel.volume = 1.0F;
 		}
 
-		if (channel.flags & AAL_FLAG_PITCH) _desc.dwFlags |= DSBCAPS_CTRLFREQUENCY;
-		else if (_mixer[channel.mixer]->flags & AAL_FLAG_PITCH)
+		// if (channel.flags & AAL_FLAG_PITCH) _desc.dwFlags |= DSBCAPS_CTRLFREQUENCY;
+		if (_mixer[channel.mixer]->flags & AAL_FLAG_PITCH)
 		{
 			channel.flags |= AAL_FLAG_PITCH;
 			channel.pitch = 1.0F;
 		}
 
-		if (channel.flags & AAL_FLAG_PAN) _desc.dwFlags |= DSBCAPS_CTRLPAN;
-		else if (_mixer[channel.mixer]->flags & AAL_FLAG_PAN)
+		// if (channel.flags & AAL_FLAG_PAN) _desc.dwFlags |= DSBCAPS_CTRLPAN;
+		if (_mixer[channel.mixer]->flags & AAL_FLAG_PAN)
 		{
 			channel.flags |= AAL_FLAG_PAN;
 			channel.pan = 0.0F;
@@ -128,22 +128,22 @@ namespace ATHENA
 
 		if (channel.flags & FLAG_ANY_3D_FX)
 		{
-			_desc.dwFlags |= DSBCAPS_CTRL3D;
-			_desc.dwFlags &= ~DSBCAPS_CTRLPAN;
+			// _desc.dwFlags |= DSBCAPS_CTRL3D;
+			// _desc.dwFlags &= ~DSBCAPS_CTRLPAN;
 			channel.flags &= ~AAL_FLAG_PAN;
 		}
 
-		if (channel.flags & AAL_FLAG_BACKGROUND) _desc.dwFlags |= DSBCAPS_GLOBALFOCUS;
+		// if (channel.flags & AAL_FLAG_BACKGROUND) _desc.dwFlags |= DSBCAPS_GLOBALFOCUS;
 
-		_desc.lpwfxFormat = &_format;
+		// _desc.lpwfxFormat = &_format;
 
-		_format.nSamplesPerSec = sample->format.frequency;
-		_format.wBitsPerSample = (aalUWord)sample->format.quality;
-		_format.nChannels = (aalUWord)sample->format.channels;
-		_format.wFormatTag = WAVE_FORMAT_PCM;
-		_format.nBlockAlign = (aalUWord)(sample->format.channels * (sample->format.quality >> 3));
-		_format.nAvgBytesPerSec = _format.nBlockAlign * sample->format.frequency;
-		_format.cbSize = 0;
+		// _format.nSamplesPerSec = sample->format.frequency;
+		// _format.wBitsPerSample = (aalUWord)sample->format.quality;
+		// _format.nChannels = (aalUWord)sample->format.channels;
+		// _format.wFormatTag = WAVE_FORMAT_PCM;
+		// _format.nBlockAlign = (aalUWord)(sample->format.channels * (sample->format.quality >> 3));
+		// _format.nAvgBytesPerSec = _format.nBlockAlign * sample->format.frequency;
+		// _format.cbSize = 0;
 
 		// Get buffer size and determine if streaming must be enable
 		if (sample->length > stream_limit_bytes)
@@ -151,9 +151,17 @@ namespace ATHENA
 		else
 			size = sample->length;
 
-		_desc.dwBufferBytes = size;
+		// _desc.dwBufferBytes = size;
 
-		if (device->CreateSoundBuffer(&_desc, &lpdsb, NULL)) return AAL_ERROR_SYSTEM;
+		// if (device->CreateSoundBuffer(&_desc, &lpdsb, NULL)) return AAL_ERROR_SYSTEM;
+		// FIXME: set the properties of the buffer based on the channel struct
+		alGenBuffers(1, buffer);
+		if (alGetError() != AL_NO_ERROR)
+			return AAL_ERROR_SYSTEM;
+		alGenSources(1, source);
+		if (alGetError() != AL_NO_ERROR)
+			return AAL_ERROR_SYSTEM;
+		
 
 		SetVolume(channel.volume);
 		SetPitch(channel.pitch);
@@ -161,12 +169,14 @@ namespace ATHENA
 		// Create 3D interface if required
 		if (channel.flags & FLAG_ANY_3D_FX)
 		{
-			if (lpdsb->QueryInterface(IID_IDirectSound3DBuffer, (aalVoid **)&lpds3db))
-				return AAL_ERROR_SYSTEM;
+			// if (lpdsb->QueryInterface(IID_IDirectSound3DBuffer, (aalVoid **)&lpds3db))
+			// 	return AAL_ERROR_SYSTEM;
 
-			if (channel.flags & AAL_FLAG_RELATIVE &&
-			        lpds3db->SetMode(DS3DMODE_HEADRELATIVE, DS3D_DEFERRED))
-				return AAL_ERROR_SYSTEM;
+			if (channel.flags & AAL_FLAG_RELATIVE) {
+				alSourcei(source[0], AL_SOURCE_RELATIVE, AL_TRUE);
+				if (alGetError() != AL_NO_ERROR)
+					return AAL_ERROR_SYSTEM;
+			}
 
 			SetPosition(channel.position);
 			SetVelocity(channel.velocity);
@@ -176,24 +186,24 @@ namespace ATHENA
 
 			if (is_reverb_present)
 			{
-				lpds3db->QueryInterface(IID_IKsPropertySet, (aalVoid **)&lpeax);
+				// lpds3db->QueryInterface(IID_IKsPropertySet, (aalVoid **)&lpeax);
 
-				aalSLong value(0);
-				lpeax->Set(DSPROPSETID_EAX_BufferProperties,
-				           DSPROPERTY_EAXBUFFER_FLAGS | DSPROPERTY_EAXBUFFER_DEFERRED,
-				           NULL, 0, &value, sizeof(aalSLong));
+				// aalSLong value(0);
+				// lpeax->Set(DSPROPSETID_EAX_BufferProperties,
+				//            DSPROPERTY_EAXBUFFER_FLAGS | DSPROPERTY_EAXBUFFER_DEFERRED,
+				//            NULL, 0, &value, sizeof(aalSLong));
 
-				if (!environment || !(channel.flags & AAL_FLAG_REVERBERATION))
-				{
-					value = -10000;
-					lpeax->Set(DSPROPSETID_EAX_BufferProperties,
-					           DSPROPERTY_EAXBUFFER_ROOM | DSPROPERTY_EAXBUFFER_DEFERRED,
-					           NULL, 0, &value, sizeof(aalSLong));
+				// if (!environment || !(channel.flags & AAL_FLAG_REVERBERATION))
+				// {
+				// 	value = -10000;
+				// 	lpeax->Set(DSPROPSETID_EAX_BufferProperties,
+				// 	           DSPROPERTY_EAXBUFFER_ROOM | DSPROPERTY_EAXBUFFER_DEFERRED,
+				// 	           NULL, 0, &value, sizeof(aalSLong));
 
-					lpeax->Set(DSPROPSETID_EAX_BufferProperties,
-					           DSPROPERTY_EAXBUFFER_ROOMHF | DSPROPERTY_EAXBUFFER_DEFERRED,
-					           NULL, 0, &value, sizeof(aalSLong));
-				}
+				// 	lpeax->Set(DSPROPSETID_EAX_BufferProperties,
+				// 	           DSPROPERTY_EAXBUFFER_ROOMHF | DSPROPERTY_EAXBUFFER_DEFERRED,
+				// 	           NULL, 0, &value, sizeof(aalSLong));
+				// }
 			}
 		}
 		else SetPan(channel.pan);
@@ -323,14 +333,19 @@ namespace ATHENA
 
 		aalSLong value(aalSLong((volume - 1.0F) * 10000.0F));
 
-		if (lpdsb->SetVolume(value)) return AAL_ERROR_SYSTEM;
+		// FIXME: I think OpenAL does this calculation for us
 
-		if (lpeax)
-		{
-			if (lpeax->Set(DSPROPSETID_EAX_SourceProperties, DSPROPERTY_EAXBUFFER_ROOM | DSPROPERTY_EAXBUFFER_DEFERRED,
-			               NULL, 0, &value, sizeof(aalSLong)))
-				return AAL_ERROR_SYSTEM;
-		}
+		alSourcef(source[0], AL_GAIN, volume);
+		if (alGetError() != AL_NO_ERROR) return AAL_ERROR_SYSTEM;
+
+		// if (lpdsb->SetVolume(value)) return AAL_ERROR_SYSTEM;
+
+		// if (lpeax)
+		// {
+		// 	if (lpeax->Set(DSPROPSETID_EAX_SourceProperties, DSPROPERTY_EAXBUFFER_ROOM | DSPROPERTY_EAXBUFFER_DEFERRED,
+		// 	               NULL, 0, &value, sizeof(aalSLong)))
+		// 		return AAL_ERROR_SYSTEM;
+		// }
 
 		return AAL_OK;
 	}
@@ -352,8 +367,11 @@ namespace ATHENA
 		if (pitch > 2.0F) pitch = 2.0F;
 		else if (pitch < 0.1F) pitch = 0.1F;
 
-		if (lpdsb->SetFrequency(aalULong(channel.pitch * pitch * sample->format.frequency)))
-			return AAL_ERROR_SYSTEM;
+		alSourcef(source[0], AL_PITCH, channel.pitch * pitch);
+		if (alGetError() != AL_NO_ERROR) return AAL_ERROR_SYSTEM;
+
+		// if (lpdsb->SetFrequency(aalULong(channel.pitch * pitch * sample->format.frequency)))
+		// 	return AAL_ERROR_SYSTEM;
 
 		return AAL_OK;
 	}
@@ -383,11 +401,13 @@ namespace ATHENA
 
 	aalError Instance::SetVelocity(const aalVector & velocity)
 	{
-		if (!lpds3db || !(channel.flags & AAL_FLAG_VELOCITY)) return AAL_ERROR_INIT;
+		if (!alIsSource(source[0]) || !(channel.flags & AAL_FLAG_VELOCITY)) return AAL_ERROR_INIT;
 
 		channel.velocity = velocity;
 
-		if (lpds3db->SetVelocity(velocity.x, velocity.y, velocity.z, DS3D_DEFERRED))
+		alSource3f(source[0], AL_VELOCITY, velocity.x, velocity.y, velocity.z);
+
+		if (alGetError() != AL_NO_ERROR)
 			return AAL_ERROR_SYSTEM;
 
 		return AAL_OK;
@@ -395,19 +415,20 @@ namespace ATHENA
 
 	aalError Instance::SetDirection(const aalVector & direction)
 	{
-		if (!lpds3db || !(channel.flags & AAL_FLAG_DIRECTION)) return AAL_ERROR_INIT;
+		if (!alIsSource(source[0]) || !(channel.flags & AAL_FLAG_DIRECTION)) return AAL_ERROR_INIT;
 
 		channel.direction = direction;
 
-		if (lpds3db->SetConeOrientation(direction.x, direction.y, direction.z, DS3D_DEFERRED))
-			return AAL_ERROR_INIT;
+		alSource3f(source[0], AL_DIRECTION, direction.x, direction.y, direction.z);
+		if (alGetError() != AL_NO_ERROR)
+			return AAL_ERROR_SYSTEM;
 
 		return AAL_OK;
 	}
 
 	aalError Instance::SetCone(const aalCone & cone)
 	{
-		if (!lpds3db || !(channel.flags & AAL_FLAG_CONE)) return AAL_ERROR_INIT;
+		if (!alIsSource(source[0]) || !(channel.flags & AAL_FLAG_CONE)) return AAL_ERROR_INIT;
 
 		channel.cone.inner_angle = cone.inner_angle;
 		channel.cone.outer_angle = cone.outer_angle;
@@ -639,7 +660,7 @@ namespace ATHENA
 
 		status &= ~IS_PAUSED;
 
-		if (listener && channel.flags & AAL_FLAG_POSITION && lpds3db && IsTooFar())
+		if (channel.flags & AAL_FLAG_POSITION && lpds3db && IsTooFar())
 			return AAL_OK;
 
 		if (lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0))
@@ -661,15 +682,15 @@ namespace ATHENA
 
 	aalUBool Instance::IsTooFar()
 	{
-		aalVector listener_pos;
 		aalFloat dist, max;
+		ALfloat listener_pos[3];
 
 		lpds3db->GetMaxDistance(&max);
 
 		if (channel.flags & AAL_FLAG_RELATIVE)
-			listener_pos.x = listener_pos.y = listener_pos.z = 0.0F;
+			listener_pos[0] = listener_pos[1] = listener_pos[2] = 0.0F;
 		else
-			listener->GetPosition((D3DVECTOR *)&listener_pos);
+			alGetListenerfv(AL_POSITION, listener_pos);
 
 		dist = Distance(listener_pos, channel.position);
 
@@ -756,7 +777,7 @@ namespace ATHENA
 
 		if (status & (IS_IDLED | IS_PAUSED)) return AAL_OK;
 
-		if (listener && channel.flags & AAL_FLAG_POSITION && lpds3db && IsTooFar())
+		if (channel.flags & AAL_FLAG_POSITION && lpds3db && IsTooFar())
 		{
 			if (! this->loop)
 			{
