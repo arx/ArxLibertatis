@@ -1288,7 +1288,7 @@ EERIE_3DSCENE * ScnToEerie(unsigned char * adr, long size, const std::string& fi
 	if ((psth->version < 3008) || (psth->version > 3024))
 	{
 		sprintf(texx, "\nINVALID Theo Version !!!\nVersion Found    - %lu\nVersion Required - %d to %d\n\nPlease Update File\n%s", psth->version, 3008, 3024, fic.c_str());
-		ShowError("ScnToEerie", texx, 0);
+		LogError << "ScnToEerie " << texx;
 		free(seerie);
 		seerie = NULL;
 		return NULL;
@@ -2283,7 +2283,7 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, 
 		if (!(flag & TTE_NOPOPUP))
 		{
 			sprintf(texx, "\nINVALID Theo Version !!!\nVersion Found    - %lu\nVersion Required - %d to %d\n\nPlease Update File\n%s", pth->version, 3004, 3011, fic);
-			ShowError("TheoToEerie", texx, 0);
+			LogError << "TheoToEerie " << texx;
 		}
 
 		eerie = NULL;
