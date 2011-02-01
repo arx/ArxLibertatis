@@ -414,7 +414,7 @@ extern CD3DApplication * g_pD3DApp;
 //******************************************************************************
 // MESSAGE BOXES
 //******************************************************************************
-//bool	OKBox(const char * text, const char * title);
+bool	OKBox(const char * text, const char * title);
 //int		ShowError(const char * funcname, const char * message, long fatality);
 
 void	ExitApp(int v);
