@@ -136,32 +136,26 @@ SCRIPT_EVENT AS_EVENT[] =
 
 void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT& es)
 {
-	LogDebug << "ARX_SCRIPT_ComputeShortcuts start";
 	long nb = min(MAX_SHORTCUT, SM_MAXCMD);
+	LogDebug << "Compute " << nb << " shortcuts";
 
-	for (long j = 1; j < nb; j++)
-	{
+	for (long j = 1; j < nb; j++) {
 		es.shortcut[j] = FindScriptPos(&es, AS_EVENT[j].name);
 
-		if (es.shortcut[j] >= 0)
-		{
+		if (es.shortcut[j] >= 0) {
 			std::string dest;
 			GetNextWord(&es, es.shortcut[j], dest);
 
-			if (!strcasecmp(dest.c_str(), "{"))
-			{
+			if (!strcasecmp(dest.c_str(), "{")) {
 				GetNextWord(&es, es.shortcut[j], dest);
 
-				if (!strcasecmp(dest.c_str(), "ACCEPT"))
-				{
+				if (!strcasecmp(dest.c_str(), "ACCEPT")) {
 					es.shortcut[j] = -1;
 				}
 			}
 		}
 
 	}
-
-	LogDebug << "ARX_SCRIPT_ComputeShortcuts end";
 }
 
 void ComputeACSPos(ARX_CINEMATIC_SPEECH * acs, INTERACTIVE_OBJ * io, long ionum)
@@ -422,7 +416,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 	long RELOADING = 0;
 
 	long ret = ACCEPT;
-	std::string temp;
+	std::string temp = "";
 	char cmd[256];
 	char eventname[64];
 	long brackets = 0;
@@ -522,57 +516,49 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 	}
 
 	GLOB = 0;
-
-
-
 	MakeSSEPARAMS(params.c_str());
 
-
-	if (msg != SM_EXECUTELINE)
-	{
-		if (!evname.empty())
-		{
+	if (msg != SM_EXECUTELINE) {
+		if (!evname.empty()) {
 			pos += strlen(eventname); // adding 'ON ' length
-			LogDebug << eventname << " received";
-
-		}
-		else
-		{
+			LogDebug << eventname << " received for " << temp.c_str();
+		} else {
 			pos += AS_EVENT[msg].name.length();
-			LogDebug << AS_EVENT[msg].name << " received";
-
+			LogDebug << AS_EVENT[msg].name << " received for " << temp.c_str();
 		}
 
 		if ((pos = GetNextWord(es, pos, temp)) < 0) return ACCEPT;
+//		LogDebug << "Temp is here " << temp.c_str();
 
-		if (temp[0] != '{')
-		{
+		if (temp[0] != '{') {
 			LogError << "ERROR: No bracket after event";
 			return ACCEPT;
 		}
 		else brackets = 1;
-	}
-	else
-	{
+	} else {
 		LogDebug << "EXECUTELINE received";
 		brackets = 0;
 	}
 
-	while (pos >= 0)
-	{
+	while (pos >= 0) {
 
 		cmd[0] = 0;
 
-		if (pos >= es->size - 1) 	return ACCEPT;
+		if (pos >= es->size - 1)
+			return ACCEPT;
 
-		if ((pos = GetNextWord(es, pos, temp)) < 0) 	return ACCEPT;
+		if ((pos = GetNextWord(es, pos, temp)) < 0)
+			return ACCEPT;
 
-		if ((msg == SM_EXECUTELINE) && (LINEEND == 1)) return ACCEPT;
+		if ((msg == SM_EXECUTELINE) && (LINEEND == 1))
+			return ACCEPT;
 
 		MakeStandard(temp);
 
-		switch (temp[0])
-		{
+		//TODO(lubosz): this is one mega switch
+		LogDebug << "Switching! temp="<<temp.c_str();
+
+		switch (temp[0]) {
 			case '}':
 				brackets--;
 				break;
@@ -580,17 +566,12 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				brackets++;
 				break;
 			case '/':
-
 				if (temp[1] == '/') pos = GotoNextLine(es, pos);
-
 				break;
 			case '>':
-
 				if (temp[1] == '>') pos = GotoNextLine(es, pos);
-
 				break;
 			case 'B':
-
 				if (!strcmp(temp, "BEHAVIOR"))
 				{
 					unsigned long behavior = 0; //BEHAVIOUR_NONE;
@@ -1745,6 +1726,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 				suite:
 					;
+					LogDebug << "goto suite";
 				}
 				else if (!strcmp(temp, "SPEAK")) // speak say_ident actions
 				{
@@ -5544,6 +5526,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 				nodraw:
 					;
+					LogDebug << "goto nodraw";
 #ifdef NEEDING_DEBUG
 
 					if (NEED_DEBUG) sprintf(cmd, "HEROSAY %s", temp);
@@ -5812,6 +5795,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 				finishteleport:
 					;
+					LogDebug << "goto finishteleport";
 				}
 				else if (!strcmp(temp, "TARGETPLAYERPOS"))
 				{
@@ -6988,6 +6972,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 end:
 	;
+	LogDebug << "goto end";
 
 	if (msg != SM_EXECUTELINE) {
 		if (evname != "")
