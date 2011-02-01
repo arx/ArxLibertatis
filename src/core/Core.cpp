@@ -5952,8 +5952,7 @@ static float _AvgFrameDiff = 150.f;
 
 		if (speedfactor < 0) speedfactor = 0;
 
-		long tFrameDiff;
-		F2L(Original_framedelay,&tFrameDiff);
+		long tFrameDiff = Original_framedelay;
 	
 		if ((player.Interface & INTER_COMBATMODE) && (STRIKE_TIME))// need some precision for weapon...
 		{

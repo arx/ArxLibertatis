@@ -348,7 +348,7 @@ extern long HIPOLY;
 float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT * light)
 {
 	long px, pz;
-	F2L(x * ACTIVEBKG->Xmul, &px);
+	px = x * ACTIVEBKG->Xmul;
 
 
 	if (px > ACTIVEBKG->Xsize - 3)
@@ -361,7 +361,7 @@ float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT 
 		return 0;
 	}
 
-	F2L(z * ACTIVEBKG->Zmul, &pz);
+	pz = z * ACTIVEBKG->Zmul;
 
 	if (pz > ACTIVEBKG->Zsize - 3)
 	{
@@ -966,9 +966,8 @@ void _RecalcLightZone(float x, float y, float z, long siz)
 {
 	long i, j, x0, x1, z0, z1;
 
-	F2L(x * ACTIVEBKG->Xmul, &i);
-
-	F2L(z * ACTIVEBKG->Zmul, &j);
+	i = x * ACTIVEBKG->Xmul;
+	j = z * ACTIVEBKG->Zmul;
 
 	x0 = i - siz;
 	x1 = i + siz;
@@ -999,9 +998,8 @@ void RecalcLightZone(float x, float y, float z, long siz)
 {
 	long i, j, x0, x1, z0, z1;
 
-	F2L(x * ACTIVEBKG->Xmul, &i);
-
-	F2L(z * ACTIVEBKG->Zmul, &j);
+	i = x * ACTIVEBKG->Xmul;
+	j = z * ACTIVEBKG->Zmul;
 	x0 = i - siz;
 	x1 = i + siz;
 	z0 = j - siz;

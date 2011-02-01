@@ -600,10 +600,9 @@ bool CollidedFromBack(INTERACTIVE_OBJ * io,INTERACTIVE_OBJ * ioo)
 float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long flags)
 {	
 	NPC_IN_CYLINDER=0;
-	long rad;
-	F2L((cyl->radius + 100)*ACTIVEBKG->Xmul, &rad); 
+	long rad = (cyl->radius + 100) * ACTIVEBKG->Xmul;
 	long px,pz;
-	F2L(cyl->origin.x*ACTIVEBKG->Xmul,&px);
+	px = cyl->origin.x*ACTIVEBKG->Xmul;
 
 	if (px>ACTIVEBKG->Xsize-2-rad)  
 		return 0.f;
@@ -611,7 +610,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 	if (px< 1+rad)  
 		return 0.f;
 	
-	F2L(cyl->origin.z*ACTIVEBKG->Zmul,&pz);	
+	pz = cyl->origin.z*ACTIVEBKG->Zmul;
 
 	if (pz>ACTIVEBKG->Zsize-2-rad)  
 		return 0.f;
@@ -1226,12 +1225,11 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 //-----------------------------------------------------------------------------
 EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere) //except source...
 {
-	long rad;
-	F2L(sphere->radius*ACTIVEBKG->Xmul,&rad);
+	long rad = sphere->radius*ACTIVEBKG->Xmul;
 	rad+=2;
 	long px,pz;
-	F2L(sphere->origin.x*ACTIVEBKG->Xmul,&px);	
-	F2L(sphere->origin.z*ACTIVEBKG->Zmul,&pz);
+	px = sphere->origin.x * ACTIVEBKG->Xmul;
+	pz = sphere->origin.z * ACTIVEBKG->Zmul;
 
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;
@@ -1267,12 +1265,11 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags,long * n
 {
 	if (num) *num=-1;
 
-	long rad;
-	F2L(sphere->radius*ACTIVEBKG->Xmul,&rad);
+	long rad = sphere->radius*ACTIVEBKG->Xmul;
 	rad+=2;
 	long px,pz;
-	F2L(sphere->origin.x*ACTIVEBKG->Xmul,&px);	
-	F2L(sphere->origin.z*ACTIVEBKG->Zmul,&pz);
+	px = sphere->origin.x*ACTIVEBKG->Xmul;
+	pz = sphere->origin.z*ACTIVEBKG->Zmul;
 
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;

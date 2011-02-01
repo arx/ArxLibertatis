@@ -791,7 +791,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io,char * name,char * txtc
 			{
 				if (io != NULL)
 				{
-					F2L(EEDistance3D(&player.pos, &io->pos), lcontent);
+					*lcontent = EEDistance3D(&player.pos, &io->pos);
 					return TYPE_LONG;
 				}
 			}
@@ -10356,7 +10356,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						{
 							flags |= SPELLCAST_FLAG_NOCHECKCANCAST;
 							pos = GetNextWord(es, pos, temp2); // duration
-							F2L(GetVarValueInterpretedAsFloat(temp2, esss, io), &duration);
+							duration = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							dur = 1;
 						}
 
@@ -10369,8 +10369,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						pos = GetNextWord(es, pos, temp); // level
 					}
 
-					long level;
-					F2L(GetVarValueInterpretedAsFloat(temp, esss, io), &level);
+					long level = GetVarValueInterpretedAsFloat(temp, esss, io);
 
 					if (level < 1) level = 1;
 					else if (level > 10) level = 10;
@@ -12045,7 +12044,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 								pos = GetNextWord(es, pos, temp2);
 
 								float fangle = GetVarValueInterpretedAsFloat(temp2, esss, io);
-								F2L(fangle, &angle);
+								angle = fangle;
 
 								if (!iCharIn(temp, 'L'))
 									player.desiredangle.b = player.angle.b = fangle;
@@ -12498,7 +12497,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					char temp1[64];
 					pos = GetNextWord(es, pos, temp);
 					pos = GetNextWord(es, pos, temp1); //duration
-					F2L(GetVarValueInterpretedAsFloat(temp1, esss, io), &FADEDURATION);
+					FADEDURATION = GetVarValueInterpretedAsFloat(temp1, esss, io);
 					FADESTART = ARX_TIME_GetUL();
 
 					if (!strcasecmp(temp, "OUT"))
@@ -12933,7 +12932,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 						y = GetVarValueInterpretedAsFloat(temp, esss, io);
 						pos = GetNextWord(es, pos, temp);
 						t = GetVarValueInterpretedAsFloat(temp, esss, io);
-						F2L(t, &lvl);
+						lvl = t;
 						pos = GetNextWord(es, pos, temp);
 						ARX_MAPMARKER_Add(x, y, lvl, temp);
 					}

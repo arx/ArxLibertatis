@@ -2742,7 +2742,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 				case TYPE_L_TEXT:
 					strcpy(io->script.lvar[i].name, avs->name);
 					io->script.lvar[i].fval = avs->fval;
-					F2L(avs->fval, &io->script.lvar[i].ival);
+					io->script.lvar[i].ival = avs->fval;
 					io->script.lvar[i].type = TYPE_L_TEXT;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 
@@ -2770,14 +2770,14 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 				case TYPE_L_LONG:
 					strcpy(io->script.lvar[i].name, avs->name);
 					io->script.lvar[i].fval = avs->fval;
-					F2L(avs->fval, &io->script.lvar[i].ival);
+					io->script.lvar[i].ival = avs->fval;
 					io->script.lvar[i].type = TYPE_L_LONG;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 					break;
 				case TYPE_L_FLOAT:
 					strcpy(io->script.lvar[i].name, avs->name);
 					io->script.lvar[i].fval = avs->fval;
-					F2L(avs->fval, &io->script.lvar[i].ival);
+					io->script.lvar[i].ival = avs->fval;
 					io->script.lvar[i].type = TYPE_L_FLOAT;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 					break;
@@ -2853,7 +2853,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 				case TYPE_L_TEXT:
 					strcpy(io->over_script.lvar[i].name, avs->name);
 					io->over_script.lvar[i].fval = avs->fval;
-					F2L(avs->fval, &io->over_script.lvar[i].ival);
+					io->over_script.lvar[i].ival = avs->fval;
 					io->over_script.lvar[i].type = TYPE_L_TEXT;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 
@@ -2879,14 +2879,14 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 				case TYPE_L_LONG:
 					strcpy(io->over_script.lvar[i].name, avs->name);
 					io->over_script.lvar[i].fval = avs->fval;
-					F2L(avs->fval, &io->over_script.lvar[i].ival);
+					io->over_script.lvar[i].ival = avs->fval;
 					io->over_script.lvar[i].type = TYPE_L_LONG;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 					break;
 				case TYPE_L_FLOAT:
 					strcpy(io->over_script.lvar[i].name, avs->name);
 					io->over_script.lvar[i].fval = avs->fval;
-					F2L(avs->fval, &io->over_script.lvar[i].ival);
+					io->over_script.lvar[i].ival = avs->fval;
 					io->over_script.lvar[i].type = TYPE_L_FLOAT;
 					pos += sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE);
 					break;
@@ -3483,7 +3483,7 @@ long ARX_CHANGELEVEL_Pop_Globals()
 			case TYPE_G_TEXT:
 				strcpy(svar[i].name, av->name);
 				svar[i].fval = av->fval;
-				F2L(av->fval, &svar[i].ival);
+				svar[i].ival = av->fval;
 				svar[i].type = TYPE_G_TEXT;
 
 				if (svar[i].ival)
@@ -3512,7 +3512,7 @@ long ARX_CHANGELEVEL_Pop_Globals()
 				break;
 			case TYPE_G_LONG:
 				strcpy(svar[i].name, av->name);
-				F2L(av->fval, &svar[i].ival);
+				svar[i].ival = av->fval;
 				svar[i].fval = av->fval;
 				svar[i].text = NULL;
 				svar[i].type = TYPE_G_LONG;
@@ -3520,7 +3520,7 @@ long ARX_CHANGELEVEL_Pop_Globals()
 				break;
 			case TYPE_G_FLOAT:
 				strcpy(svar[i].name, av->name);
-				F2L(av->fval, &svar[i].ival);
+				svar[i].ival = av->fval;
 				svar[i].fval = av->fval;
 				svar[i].text = NULL;
 				svar[i].type = TYPE_G_FLOAT;

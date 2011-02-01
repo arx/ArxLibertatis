@@ -373,8 +373,8 @@ EERIEPOLY * CheckInPoly(float x, float y, float z, float * needY)
 	poss.y = y;
 	poss.z = z;
 
-	F2L(poss.x * ACTIVEBKG->Xmul, &px);
-	F2L(poss.z * ACTIVEBKG->Zmul, &pz);
+	px = poss.x * ACTIVEBKG->Xmul;
+	pz = poss.z * ACTIVEBKG->Zmul;
 
 	if ((pz >= ACTIVEBKG->Zsize - 1)
 	        ||	(pz <= 0)
@@ -489,8 +489,8 @@ EERIEPOLY * CheckInPolyPrecis(float x, float y, float z, float * needY)
 	poss.y = y;
 	poss.z = z;
 
-	F2L(poss.x * ACTIVEBKG->Xmul, &px);
-	F2L(poss.z * ACTIVEBKG->Zmul, &pz);
+	px = poss.x * ACTIVEBKG->Xmul;
+	pz = poss.z * ACTIVEBKG->Zmul;
 
 	if ((pz >= ACTIVEBKG->Zsize - 1)
 	        ||	(pz <= 0)
@@ -606,7 +606,7 @@ EERIEPOLY * EECheckInPoly(EERIE_3D * pos, float * needY)
 EERIEPOLY * CheckTopPoly(float x, float y, float z)
 {
 	long px, pz;
-	F2L(x * ACTIVEBKG->Xmul, &px);
+	px = x * ACTIVEBKG->Xmul;
 
 	if (px >= ACTIVEBKG->Xsize)
 	{
@@ -618,7 +618,7 @@ EERIEPOLY * CheckTopPoly(float x, float y, float z)
 		return NULL;
 	}
 
-	F2L(z * ACTIVEBKG->Zmul, &pz);
+	pz = z * ACTIVEBKG->Zmul;
 
 	if (pz >= ACTIVEBKG->Zsize)
 	{
@@ -664,13 +664,13 @@ EERIEPOLY * CheckTopPoly(float x, float y, float z)
 bool IsAnyPolyThere(float x, float z)
 {
 	long px, pz;
-	F2L(x * ACTIVEBKG->Xmul, &px);
+	px = x * ACTIVEBKG->Xmul;
 
 	if (px >= ACTIVEBKG->Xsize)			return false;
 
 	if (px < 0)							return false;
 
-	F2L(z * ACTIVEBKG->Zmul, &pz);
+	pz = z * ACTIVEBKG->Zmul;
 
 	if (pz >= ACTIVEBKG->Zsize)			return false;
 
@@ -704,13 +704,13 @@ float FirstPolyPosY(float x, float z)
 EERIEPOLY * GetMinPoly(float x, float y, float z)
 {
 	long px, pz;
-	F2L(x * ACTIVEBKG->Xmul, &px);
+	px = x * ACTIVEBKG->Xmul;
 
 	if (px >= ACTIVEBKG->Xsize)			return NULL;
 
 	if (px < 0)							return NULL;
 
-	F2L(z * ACTIVEBKG->Zmul, &pz);
+	pz = z * ACTIVEBKG->Zmul;
 
 	if (pz >= ACTIVEBKG->Zsize)			return NULL;
 
@@ -759,13 +759,13 @@ EERIEPOLY * GetMinPoly(float x, float y, float z)
 EERIEPOLY * GetMaxPoly(float x, float y, float z)
 {
 	long px, pz;
-	F2L(x * ACTIVEBKG->Xmul, &px);
+	px = x * ACTIVEBKG->Xmul;
 
 	if (px >= ACTIVEBKG->Xsize)			return NULL;
 
 	if (px < 0)							return NULL;
 
-	F2L(z * ACTIVEBKG->Zmul, &pz);
+	pz = z * ACTIVEBKG->Zmul;
 
 	if (pz >= ACTIVEBKG->Zsize)			return NULL;
 
@@ -814,13 +814,13 @@ EERIEPOLY * GetMaxPoly(float x, float y, float z)
 EERIEPOLY * IsUnderWater(float x, float y, float z)
 {
 	long px, pz;
-	F2L(x * ACTIVEBKG->Xmul, &px);
+	px = x * ACTIVEBKG->Xmul;
 
 	if (px >= ACTIVEBKG->Xsize)		return NULL;
 
 	if (px < 0)						return NULL;
 
-	F2L(z * ACTIVEBKG->Zmul, &pz);
+	pz = z * ACTIVEBKG->Zmul;
 
 	if (pz >= ACTIVEBKG->Zsize)		return NULL;
 
@@ -851,13 +851,13 @@ EERIEPOLY * IsUnderWater(float x, float y, float z)
 EERIEPOLY * EEIsUnderWater(EERIE_3D * pos)
 {
 	long px, pz;
-	F2L(pos->x * ACTIVEBKG->Xmul, &px);
+	px = pos->x * ACTIVEBKG->Xmul;
 
 	if (px >= ACTIVEBKG->Xsize)		return NULL;
 
 	if (px < 0)						return NULL;
 
-	F2L(pos->z * ACTIVEBKG->Zmul, &pz);
+	pz = pos->z * ACTIVEBKG->Zmul;
 
 	if (pz >= ACTIVEBKG->Zsize)		return NULL;
 
@@ -898,10 +898,10 @@ EERIEPOLY* EEIsUnderWaterFast(EERIE_3D * pos)
 	}
 	else
 	{
-		F2L( pos->x * ACTIVEBKG->Xmul, &px );
+		px = pos->x * ACTIVEBKG->Xmul;
 		if ( px >= ACTIVEBKG->Xsize )		return NULL;
 		if ( px < 0 )						return NULL;
-		F2L( pos->z * ACTIVEBKG->Zmul, &pz );
+		pz = pos->z * ACTIVEBKG->Zmul;
 		if ( pz >= ACTIVEBKG->Zsize )		return NULL;
 		if ( pz < 0 )						return NULL;
 
@@ -1283,13 +1283,13 @@ D3DCOLOR GetColorz(float x, float y, float z)
 	}
 
 	ffr = min(ffr, 255.f);
-	F2L(ffr, &lfr);
+	lfr = ffr;
 
 	ffg = min(ffg, 255.f);
-	F2L(ffg, &lfg);
+	lfg = ffg;
 
 	ffb = min(ffb, 255.f);
-	F2L(ffb, &lfb);
+	lfb = ffb;
 	color = (0xFF000000L | ((lfr & 255) << 16) |	((lfg & 255) << 8) | (lfb & 255));
 	return color;
 }
@@ -2600,8 +2600,7 @@ void PrepareBackgroundNRMLs()
 
 void DeclareEGInfo(float x, float y, float z)
 {
-	long posx;
-	F2L((float)(x * ACTIVEBKG->Xmul), &posx);
+	long posx = x * ACTIVEBKG->Xmul;
 
 	if (posx < 0) return;
 	else if (posx >= ACTIVEBKG->Xsize) return;
@@ -3344,8 +3343,7 @@ void SetCameraDepth(float depth)
 	ACTIVECAM->cdepth = depth;
 	ACTIVECAM->Zdiv = depth * 1.2f;
 	ACTIVECAM->Zmul = 1.f / ACTIVECAM->Zdiv;
-	long l;
-	F2L(depth * 0.42f, &l);
+	long l = depth * 0.42f;
 	ACTIVECAM->clip3D = (l / (long)BKG_SIZX) + 1;
 }
 

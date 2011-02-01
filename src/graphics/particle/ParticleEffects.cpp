@@ -232,7 +232,7 @@ void ARX_PARTICLES_Spawn_Lava_Burn(EERIE_3D * poss,float power,INTERACTIVE_OBJ *
 
 		while ( notok-- )
 		{
-			F2L( (float)( rnd() * (float)io->obj->nbfaces ), &num );
+			num = rnd() * io->obj->nbfaces;
 
 			if ( ( num >= 0 ) && ( num < io->obj->nbfaces ) )
 			{
@@ -319,8 +319,7 @@ void ARX_PARTICLES_Spawn_Rogue_Blood(EERIE_3D * pos,float dmgs,D3DCOLOR col)
 		pd->r			=	r;
 		pd->g			=	g;
 		pd->b			=	b;
-		long num;
-		F2L((float)(rnd()*6.f),&num);
+		long num = rnd()*6.f;
 
 		if (num<0) num=0;
 		else if (num>5) num=5;
@@ -494,8 +493,8 @@ void ARX_POLYSPLAT_Add(EERIE_3D * poss,long type,EERIE_RGB * col,float size,long
 		}
 	}
 
-	F2L((poss->x*ACTIVEBKG->Xmul),&x0);
-	F2L((poss->z*ACTIVEBKG->Zmul),&z0);
+	x0 = poss->x * ACTIVEBKG->Xmul;
+	z0 = poss->z * ACTIVEBKG->Zmul;
 	x1 = x0 + 3; 
 	x0 = x0 - 3; 
 	z1 = z0 + 3; 
@@ -586,8 +585,7 @@ void ARX_POLYSPLAT_Add(EERIE_3D * poss,long type,EERIE_RGB * col,float size,long
 
 					pb->exist=1;
 					pb->ep=ep;
-					long num;
-					F2L((float)(rnd()*6.f),&num);
+					long num = rnd()*6.f;
 
 					if (num<0) num=0;
 					else if (num>5) num=5;
@@ -673,8 +671,7 @@ void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos,float dmgs,D3DCOLOR col,long vert
 		vect.x*=div;
 		vect.y*=div;
 		vect.z*=div;
-		long nb;
-		F2L((float)(dist/(4.f*power)),&nb);
+		long nb = dist/4.f*power;
 
 		if (nb==0) nb=1;
 
@@ -797,8 +794,7 @@ void ARX_PARTICLES_Spawn_Spark(EERIE_3D * pos,float dmgs,long flags)
 {
 	if (!pos) return;
 
-	long spawn_nb;	
-	F2L(dmgs,&spawn_nb);
+	long spawn_nb = dmgs;
 	
 	
 	if (SPARK_COUNT<1000)
@@ -890,8 +886,7 @@ void AddRandomSmoke(INTERACTIVE_OBJ * io,long amount)
 
 	while (amount--)
 	{
-		long num;
-		F2L(rnd()*((io->obj->nbvertex>>2)-1),&num);
+		long num = rnd()*((io->obj->nbvertex>>2)-1);
 		num=(num<<2)+1;
 
 			long j=ARX_PARTICLES_GetFree();
@@ -1350,8 +1345,8 @@ void ARX_BOOMS_Add(EERIE_3D * poss,long type)
 	Vector_Copy(&pos,poss);
 
 	typ=0;
-	F2L((poss->x*ACTIVEBKG->Xmul),&x0);
-	F2L((poss->z*ACTIVEBKG->Zmul),&z0);
+	x0 = poss->x * ACTIVEBKG->Xmul;
+	z0 = poss->z * ACTIVEBKG->Zmul;
 	x1=x0+3;
 	x0=x0-3;
 	z1=z0+3;
@@ -2136,8 +2131,8 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 
 			if (!(part->type & PARTICLE_2D))
 			{
-				F2L((part->ov.x*ACTIVEBKG->Xmul),&xx);			
-				F2L((part->ov.z*ACTIVEBKG->Zmul),&yy);
+				xx = part->ov.x * ACTIVEBKG->Xmul;
+				yy = part->ov.z * ACTIVEBKG->Zmul;
 
 				if ((xx<0) || (yy<0) || (xx>ACTIVEBKG->Xsize) || (yy>ACTIVEBKG->Zsize))
 				{
@@ -2474,8 +2469,7 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 				{
 					long animrange=part->cval2-part->cval1;
 					float tt=(float)framediff2/(float)part->tolive*animrange;
-					long num;
-					F2L(tt,&num);
+					long num = tt;
 
 					if (num<part->cval1) num=part->cval1;
 
@@ -3211,40 +3205,40 @@ void FlareLine(EERIE_S2D * pos0, EERIE_S2D * pos1, INTERACTIVE_OBJ * io)
 	{
 		if (x0>x1) 
 		{
-			F2L(x1,&z);
-			x1=x0;
-			x0=(float)z;
-			F2L(y1,&z);
-			y1=y0;
-			y0=(float)z;
+			z = x1;
+			x1 = x0;
+			x0 = z;
+			z = y1;
+			y1 = y0;
+			y0 = z;
 		}
 
 		if (x0<x1) 
 		{
 			m=dy/dx;
 		
-			F2L(x0,&i);
+			i = x0;
 
 			while(i<x1) 
 			{
-				F2L(rnd()*FLARELINERND,&z);
+				z = rnd()*FLARELINERND;
 				z+=FLARELINESTEP;
 				i+=z;
-				y0+=m*(float)z;
+				y0+=m*z;
 				AddLFlare((float)i,y0,io);				
 			}
 		}
 		else 
 		{
-			m=dy/dx;
-			F2L(x1,&i);
+			m = dy / dx;
+			i = x1;
 
 			while(i<x0) 
 			{
-				F2L(rnd()*FLARELINERND,&z);
+				z = rnd()*FLARELINERND;
 				z+=FLARELINESTEP;
 				i+=z;
-				y0+=m*(float)z;
+				y0+=m*z;
 				AddLFlare((float)i,y0,io);				
 			}
 		}				
@@ -3253,39 +3247,39 @@ void FlareLine(EERIE_S2D * pos0, EERIE_S2D * pos1, INTERACTIVE_OBJ * io)
 	{
 		if (y0>y1) 
 		{
-			F2L(x1,&z);
+			z = x1;
 			x1=x0;
-			x0=(float)z;			
-			F2L(y1,&z);
+			x0=z;
+			z = y1;
 			y1=y0;
-			y0=(float)z;
+			y0=z;
 		}
 
 		if (y0<y1) 
 		{
-			m=dx/dy;
-			F2L(y0,&i);
+			m = dx/dy;
+			i = y0;
 
 			while(i<y1) 
 			{
-				F2L(rnd()*FLARELINERND,&z);
+				z = rnd()*FLARELINERND;
 			    z+=FLARELINESTEP;
 				i+=z;
-				x0+=m*(float)z;
+				x0+=m*z;
 				AddLFlare(x0,(float)i,io);				
 			}			
 		} 
 		else 
 		{
 			m=dx/dy;
-			F2L(y1,&i);
+			i = y1;
 
 			while(i<y0) 
 			{
-				F2L(rnd()*FLARELINERND,&z);
+				z = rnd()*FLARELINERND;
 				z+=FLARELINESTEP;
 				i+=z;
-				x0+=m*(float)z;
+				x0+=m*z;
 				AddLFlare(x0,(float)i,io);				
 			} 
 		}	
