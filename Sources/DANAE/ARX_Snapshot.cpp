@@ -153,15 +153,14 @@ void FlushMemorySnaps(long flag)
 	tga.PixelDepth = 16;
 	tga.ImageDescriptor =  32;
 
-
 	danaeApp.Lock();
 	DWORD dwRMask = danaeApp.ddsd.ddpfPixelFormat.dwRBitMask;
 	DWORD dwGMask = danaeApp.ddsd.ddpfPixelFormat.dwGBitMask;
 	DWORD dwBMask = danaeApp.ddsd.ddpfPixelFormat.dwBBitMask;
 	DWORD dwAMask = danaeApp.ddsd.ddpfPixelFormat.dwRGBAlphaBitMask;
- 
 	long pitch = danaeApp.ddsd.lPitch ;
 	danaeApp.Unlock();
+
 	pitch = 640;
 	DWORD dwRShiftL = 8, dwRShiftR = 0;
 	DWORD dwGShiftL = 8, dwGShiftR = 0;

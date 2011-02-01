@@ -55,32 +55,37 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <windows.h>
-#include <fstream>
-#include <stdlib.h>
-
 #include "ARX_Menu.h"
-#include "ARX_ChangeLevel.h"
-#include "ARX_Sound.h"
+
 #include "ARX_CParticle.h"
-#include "ARX_CParticles.h"
 #include "ARX_CParticleParams.h"
+#include "ARX_CParticles.h"
+#include "ARX_ChangeLevel.h"
+#include "ARX_Equipment.h"
 #include "ARX_Loc.h"
 #include "ARX_Menu2.h"
+#include "ARX_Sound.h"
 #include "ARX_Text.h"
 #include "ARX_Time.h"
-#include "ARX_Equipment.h"
 #include "DanaeSaveLoad.h"
-#include "eerieapp.h"
 
-#include "hermesmain.h"
 #include "EERIEDraw.h"
 #include "EERIEMath.h"
 #include "EERIEObject.h"
+#include "EERIEapp.h"
+
+#include "HERMESmain.h"
+
+#include <fstream>
+#include <stdlib.h>
+#include <windows.h>
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
+
 //-----------------------------------------------------------------------------
+// Imported global variables and functions
+
 extern CARXTextManager * pTextManage;
 extern CDirectInput * pGetInfoDirectInput;
 extern CMenuConfig * pMenuConfig;
@@ -117,41 +122,43 @@ extern float ARXDiffTimeMenu;
 
 extern TextureContainer * pTextureLoad;
 
-
-bool bQuickGenFirstClick = true;
-ARX_MENU_DATA ARXmenu;
-long ARXmenu_lastmode = -1;
-long REFUSE_GAME_RETURN = 0;
-unsigned long ARXmenu_starttick = 0;
-
-extern bool bRenderInterList;
-long SP_HEAD = 0;
-//-----------------------------------------------------------------------------
 bool MENU_NoActiveWindow();
-void ClearGame();
 void ClearGameDEVICE();
 
 void GetTextSize(HFONT _hFont, const _TCHAR * _lpszUText, int * _iWidth, int * _iHeight);
 
 //-----------------------------------------------------------------------------
-void ARX_Menu_Release_Text(void * a)
-{
-	if (a)
-	{
-		free(a);
-		a = NULL;
-	}
-}
+// Exported global variables
 
-//-----------------------------------------------------------------------------
-#define ARX_MENU_SIZE_Y 24
-
- 
+bool bQuickGenFirstClick = true;
+ARX_MENU_DATA ARXmenu;
+long REFUSE_GAME_RETURN = 0;
 long save_c(0), save_p(0);
 SaveGame * save_l = NULL;
 
 //-----------------------------------------------------------------------------
+// Static local variables
+
+namespace
+{
+
+long ARXmenu_lastmode = -1;
+unsigned long ARXmenu_starttick = 0;
+long SP_HEAD = 0;
+
+} // \namespace
+
+//-----------------------------------------------------------------------------
+// Forward declarations
+
 void ARX_MENU_Clicked_QUIT();
+
+//-----------------------------------------------------------------------------
+
+void ARX_Menu_Release_Text(void * a)
+{
+	free(a);
+}
 
 //-----------------------------------------------------------------------------
 void CreateSaveGameList()
@@ -212,20 +219,20 @@ void CreateSaveGameList()
 //-----------------------------------------------------------------------------
 void FreeSaveGameList()
 {
-	free(save_l), save_l = NULL, save_c = save_p = 0;
+	free(save_l);
+	save_l = NULL;
+	save_c = save_p = 0;
 }
 
 //-----------------------------------------------------------------------------
 void UpdateSaveGame(const long & i)
 {
-
 	//i == 0 -> new save game
 	//i >  0 -> erase old savegame save_l[i].name
-	if (i <= 0) ARX_CHANGELEVEL_Save(i, save_l[0].name);
+	if (i <= 0)
+		ARX_CHANGELEVEL_Save(i, save_l[0].name);
 	else
-	{
 		ARX_CHANGELEVEL_Save(save_l[i].num, save_l[i].name);
-	}
 }
 
 //-----------------------------------------------------------------------------

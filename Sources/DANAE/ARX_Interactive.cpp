@@ -3724,7 +3724,7 @@ bool IsEquipedByPlayer(INTERACTIVE_OBJ * io)
 }
 
 extern long LOOKING_FOR_SPELL_TARGET;
-INTERACTIVE_OBJ * InterClick(EERIE_S2D * pos, long flag)
+INTERACTIVE_OBJ * InterClick(EERIE_S2D * pos)
 {
 	LASTINTERCLICKNB = -1;
 

@@ -5127,7 +5127,7 @@ void DANAE::ManageKeyMouse()
 					DANAEMouse.y = ARX_CLEAN_WARN_CAST_SHORT(fY);
 
 
-					pIO = FlyingOverObject(&DANAEMouse,1);
+					pIO = FlyingOverObject(&DANAEMouse, true);
 					
 					if (pIO)
 					{
@@ -5137,10 +5137,10 @@ void DANAE::ManageKeyMouse()
 					}
 				}
 				else
-					pIO = FlyingOverObject(&poss,1);
+					pIO = FlyingOverObject(&poss, true);
 			}
 			else
-				pIO = FlyingOverObject(&DANAEMouse,1);
+				pIO = FlyingOverObject(&DANAEMouse, true);
 		}
 		
 		if (pIO && (ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK))

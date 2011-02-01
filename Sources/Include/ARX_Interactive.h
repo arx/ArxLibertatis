@@ -247,10 +247,10 @@ void AddRandomObj(LPDIRECT3DDEVICE7 pd3dDevice);
 void UpdateCameras();
 
 void PlayObjectSound(INTERACTIVE_OBJ * io);
-INTERACTIVE_OBJ * InterClick(EERIE_S2D * pos, long flag = 0);
+INTERACTIVE_OBJ * InterClick(EERIE_S2D * pos);
 
 void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to, long flags = 0);
-INTERACTIVE_OBJ * FlyingOverObject(EERIE_S2D * pos, long flag = 0);
+INTERACTIVE_OBJ * FlyingOverObject(EERIE_S2D * pos, bool mustlock = false);
 void MakeIOIdent(INTERACTIVE_OBJ * io);
 void SelectIO(INTERACTIVE_OBJ * io);
 void ForcePlayerLookAtIO(INTERACTIVE_OBJ * io);

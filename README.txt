@@ -9,6 +9,7 @@
 
 
 Arx Fatalis Fixed is based on the publicly released Arx Fatalis source code.
+GPLv3 - read ARX_PUBLIC_LICENSE.txt
 
 Platform: windows
 Changes: bugfixes + performance
@@ -24,6 +25,7 @@ saves and original files (arx.exe, Athena.dll and ARX_SCRIPT_DEBUGGER.dll).
 -----------
 
 -Fixed main menu back buttons clickable zone to match their appearance
+-Increased main menu left side performance
 
 
  v0.01 28/01/11

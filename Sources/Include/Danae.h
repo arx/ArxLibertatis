@@ -159,7 +159,6 @@ struct QUAKE_FX_STRUCT
 //-----------------------------------------------------------------------------
 class DANAE : public CD3DApplication
 {
-
 	protected:
 		HRESULT OneTimeSceneInit();
 		HRESULT DeleteDeviceObjects();
