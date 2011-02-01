@@ -3324,18 +3324,19 @@ bool DANAE::ManageEditorControls()
 					if ((nodes.nodes[i].exist) && (nodes.nodes[i].selected))
 					{
 						char temp[64];
-				encore:
-					;
-	   strcpy(temp,nodes.nodes[i].name);
-	   TextBox("Change Node Name",temp,63);
+						
+						while(true)
+						{
+							strcpy(temp,nodes.nodes[i].name);
+							TextBox("Change Node Name",temp,63);
 
-	   if ((ExistNodeName(temp)) && strcmp(temp,nodes.nodes[i].name))
-	   {
-		   LogError << ("This Name already exists, change to new name please");
-		   goto encore;
-	   }
+							if ( !((ExistNodeName(temp)) && strcmp(temp,nodes.nodes[i].name)) )
+								break;
 
-	   strcpy(nodes.nodes[i].name,temp);
+							LogError << ("This Name already exists, change to new name please");
+						}
+
+						strcpy(nodes.nodes[i].name,temp);
 					}
 				}
 

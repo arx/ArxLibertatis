@@ -405,15 +405,16 @@ long ScriptEvent::checkInteractiveObject(INTERACTIVE_OBJ * io, long msg) {
 	return 0;
 }
 
+extern long LINEEND; // set by GetNextWord
+extern INTERACTIVE_OBJ * LASTSPAWNED;
+extern long PauseScript;
+extern long GLOB;
+extern long RELOADING;
+
+
 //TODO(lubosz): THIS IS DEFINETLY TOO LONG FOR ONE FUNCTION
 long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info)
 {
-	//TODO(lubosz): globals
-	INTERACTIVE_OBJ * LASTSPAWNED = NULL;
-	long LINEEND = 0;
-	long PauseScript = 0;
-	long GLOB = 0;
-	long RELOADING = 0;
 
 	long ret = ACCEPT;
 	std::string word = "";
@@ -6954,8 +6955,8 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					pos = GetNextWord(es, pos, temp2);
 					pos = GetNextWord(es, pos, temp3);
 					pos = GetNextWord(es, pos, temp4);
-					sprintf(cmd, "Script Error for token #%ld '%c' (%s) in file %s_%04ld",
-							ppos,word[0],temp2.c_str(),GetName(io->filename).c_str(),io->ident);
+					sprintf(cmd, "Script Error for token #%ld '%c' (%s|%s|%s) in file %s_%04ld",
+							ppos,word[0],temp2.c_str(), temp3.c_str(), temp4.c_str(),GetName(io->filename).c_str(),io->ident);
 					LogError << cmd;
 
 					io->ioflags |= IO_FREEZESCRIPT;
