@@ -67,6 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
  
 #include "graphics/GraphicsUtility.h"
+#include "graphics/Draw.h"
 #include "core/AVI.h"
 #include "animation/Animation.h"
 #include "ai/PathFinderManager.h"
@@ -75,7 +76,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Dialog.h"
 #include "core/Resource.h"
 #include "core/Version.h"
-#include "animation/Cinematic.h"
+#include "animation/CinematicKeyframer.h"
+#include "scene/CinematicSound.h"
+#include "io/CinematicLoad.h"
+#include "graphics/data/CinematicTexture.h"
 #include "game/Map.h"
 #include "scene/ChangeLevel.h"
 #include "graphics/particle/ParticleManager.h"
@@ -230,7 +234,7 @@ HINSTANCE hInstance;
 //-----------------------------------------------------------------------------
 EERIE_3D LASTCAMPOS,LASTCAMANGLE;
 EERIE_3D PUSH_PLAYER_FORCE;
-CINEMATIQUE			*ControlCinematique=NULL;	// 2D Cinematic Controller
+Cinematic			*ControlCinematique=NULL;	// 2D Cinematic Controller
 CParticleManager	*pParticleManager = NULL;
 INTERACTIVE_OBJ		*lastCAMERACONTROLLER=NULL;
 TextureContainer *  ombrignon = NULL;
@@ -2936,7 +2940,7 @@ HRESULT DANAE::BeforeRun()
 
 	GDevice=m_pd3dDevice;
 
-	ControlCinematique = new CINEMATIQUE(danaeApp.m_pFramework->GetD3DDevice(), danaeApp.m_pFramework->m_dwRenderWidth, danaeApp.m_pFramework->m_dwRenderHeight);
+	ControlCinematique = new Cinematic(danaeApp.m_pFramework->GetD3DDevice(), danaeApp.m_pFramework->m_dwRenderWidth, danaeApp.m_pFramework->m_dwRenderHeight);
 	LogDebug << "Initializing ControlCinematique " << danaeApp.m_pFramework->m_dwRenderWidth << "x" << danaeApp.m_pFramework->m_dwRenderHeight;
 	memset(&necklace,0,sizeof(ARX_NECKLACE));
 	long old=GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;

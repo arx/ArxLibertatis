@@ -97,8 +97,7 @@ typedef struct
 	float zmod;
 } EERIE_TRANSFORM;
 
-typedef struct
-{
+struct EERIE_CAMERA {
 	EERIE_TRANSFORM transform;
 	EERIE_3D pos; // 0 4 8
 	float	Ycos; // 12
@@ -146,7 +145,7 @@ typedef struct
 	float	cdepth;
 
 	EERIE_3D	size;
-} EERIE_CAMERA;
+};
 
 #define ANCHOR_FLAG_GREEN_DRAW	1
 #define ANCHOR_FLAG_BLOCKED		8

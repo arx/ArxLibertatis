@@ -22,14 +22,17 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <stdio.h>
+
+#include "graphics/data/CinematicTexture.h"
 
 #include "animation/Cinematic.h"
+#include "core/Application.h"
+#include "graphics/data/Texture.h"
 #include "io/IO.h"
 #include "io/PakManager.h"
 
 /*-----------------------------------------------------------*/
-C_BITMAP	TabBitmap[MAX_BITMAP];
+CinematicBitmap	TabBitmap[MAX_BITMAP];
 int			MaxW, MaxH;
 int			NbBitmap;
 bool		Restore;
@@ -40,12 +43,12 @@ extern char DirectoryChoose[];
 
 
 /*-----------------------------------------------------------*/
-void FreeGrille(C_GRILLE * grille);
+void FreeGrille(CinematicGrid * grille);
 void ReajustUV(LPDIRECT3DDEVICE7 device, int id);
 /*-----------------------------------------------------------*/
-void InitMapLoad(CINEMATIQUE * c)
+void InitMapLoad(Cinematic * c)
 {
-	C_BITMAP	* tb;
+	CinematicBitmap	* tb;
 	int			nb;
 
 	MaxW = MAX_WIDTH_AND_HEIGHT;
@@ -60,7 +63,7 @@ void InitMapLoad(CINEMATIQUE * c)
 
 	while (nb)
 	{
-		memset((void *)tb, 0, sizeof(C_BITMAP));
+		memset((void *)tb, 0, sizeof(CinematicBitmap));
 		tb++;
 		nb--;
 	}
@@ -69,9 +72,9 @@ void InitMapLoad(CINEMATIQUE * c)
 	Restore = true;
 }
 /*-----------------------------------------------------------*/
-C_BITMAP * GetFreeBitmap(int * num)
+CinematicBitmap * GetFreeBitmap(int * num)
 {
-	C_BITMAP	* tb;
+	CinematicBitmap	* tb;
 	int			nb;
 
 	tb = TabBitmap;
@@ -94,7 +97,7 @@ C_BITMAP * GetFreeBitmap(int * num)
 /*-----------------------------------------------------------*/
 bool DeleteFreeBitmap(int num)
 {
-	C_BITMAP	* cb;
+	CinematicBitmap	* cb;
 
 	cb = &TabBitmap[num];
 
@@ -103,8 +106,8 @@ bool DeleteFreeBitmap(int num)
 	DeleteObject(cb->hbitmap);
 	free((void *)cb->dir);
 	free((void *)cb->name);
-	FreeGrille(&cb->grille);
-	memset((void *)cb, 0, sizeof(C_BITMAP));
+	FreeGrille(&cb->grid);
+	memset((void *)cb, 0, sizeof(CinematicBitmap));
 
 	NbBitmap--;
 
@@ -113,17 +116,17 @@ bool DeleteFreeBitmap(int num)
 /*-----------------------------------------------------------*/
 bool KillTexture(LPDIRECT3DDEVICE7 device, int num)
 {
-	C_BITMAP	* cb;
+	CinematicBitmap	* cb;
 
 	cb = &TabBitmap[num];
 
 	if (!cb->actif) return false;
 
-	int nb = cb->grille.nbmat;
+	int nb = cb->grid.nbmat;
 
 	while (nb--)
 	{
-		D3DTextr_KillTexture(cb->grille.mats[nb].tex);
+		D3DTextr_KillTexture(cb->grid.mats[nb].tex);
 	}
 
 	return true;
@@ -143,7 +146,7 @@ void DeleteAllBitmap(LPDIRECT3DDEVICE7 device)
 	}
 }
 /*-----------------------------------------------------------*/
-bool AllocGrille(C_GRILLE * grille, int nbx, int nby, float tx, float ty, float dx, float dy, int echelle)
+bool AllocGrille(CinematicGrid * grille, int nbx, int nby, float tx, float ty, float dx, float dy, int echelle)
 {
 	grille->echelle = echelle;
 	int oldnbx = nbx + 1;
@@ -232,7 +235,7 @@ bool AllocGrille(C_GRILLE * grille, int nbx, int nby, float tx, float ty, float 
 	return true;
 }
 /*-----------------------------------------------------------*/
-int AddMaterial(C_GRILLE * grille, TextureContainer * tex)
+int AddMaterial(CinematicGrid * grille, TextureContainer * tex)
 {
 	if (!grille->nbmat)
 	{
@@ -256,7 +259,7 @@ int AddMaterial(C_GRILLE * grille, TextureContainer * tex)
 	return grille->nbmat++;
 }
 /*-----------------------------------------------------------*/
-void FreeGrille(C_GRILLE * grille)
+void FreeGrille(CinematicGrid * grille)
 {
 	if (grille->vertexs)
 	{
@@ -283,7 +286,7 @@ void FreeGrille(C_GRILLE * grille)
 	}
 }
 /*-----------------------------------------------------------*/
-void GetIndNumCube(C_GRILLE * grille, int cx, int cy, int * i1, int * i2, int * i3, int * i4)
+void GetIndNumCube(CinematicGrid * grille, int cx, int cy, int * i1, int * i2, int * i3, int * i4)
 {
 	*i1 = cy * (grille->nbx + 1) + cx;
 	*i2 = *i1 + 1;
@@ -291,7 +294,7 @@ void GetIndNumCube(C_GRILLE * grille, int cx, int cy, int * i1, int * i2, int * 
 	*i4 = *i3 + 1;
 }
 /*-----------------------------------------------------------*/
-void AddPoly(C_GRILLE * grille, int nummat, int i0, int i1, int i2)
+void AddPoly(CinematicGrid * grille, int nummat, int i0, int i1, int i2)
 {
 
 	ARX_CHECK_USHORT(i0);
@@ -312,7 +315,7 @@ void AddPoly(C_GRILLE * grille, int nummat, int i0, int i1, int i2)
 
 }
 /*-----------------------------------------------------------*/
-void AddQuadUVs(C_GRILLE * grille, int depcx, int depcy, int tcx, int tcy, int bitmapposx, int bitmapposy, int bitmapwx, int bitmapwy, TextureContainer * tex)
+void AddQuadUVs(CinematicGrid * grille, int depcx, int depcy, int tcx, int tcy, int bitmapposx, int bitmapposy, int bitmapwx, int bitmapwy, TextureContainer * tex)
 {
 	int nummat = AddMaterial(grille, tex);
 	grille->mats[nummat].bitmapdepx = bitmapposx;
@@ -610,10 +613,10 @@ HBITMAP LoadBMPImage(char * strPathname)
 
 }
 /*-----------------------------------------------------------*/
-int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int pos)
+int CreateAllMapsForBitmap(char * dir, char * name, Cinematic * c, int n, int pos)
 {
 	int			nbx, nby, w, h, num, id;
-	C_BITMAP	* bi;
+	CinematicBitmap	* bi;
 
 	if (!name || !c) return -1;
 
@@ -631,7 +634,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 
 		DeleteObject(bi->hbitmap);
 		KillTexture(GDevice, n);
-		FreeGrille(&bi->grille);
+		FreeGrille(&bi->grid);
 		NbBitmap--;
 
 		h = 0;
@@ -727,7 +730,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 	bi->nbx = nbx;
 	bi->nby = nby;
 
-	AllocGrille(&bi->grille, nbx, nby, (float)bi->w, (float)bi->h, (float)((bi->w > MaxW) ? MaxW : bi->w), (float)((bi->h > MaxH) ? MaxH : bi->h), 1);
+	AllocGrille(&bi->grid, nbx, nby, (float)bi->w, (float)bi->h, (float)((bi->w > MaxW) ? MaxW : bi->w), (float)((bi->h > MaxH) ? MaxH : bi->h), 1);
 
 	num = 0;
 	h = bi->h;
@@ -762,7 +765,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 			}
 
 			TextureContainer * t = FindTexture(AllTxt);
-			AddQuadUVs(&bi->grille, bi->nbx - nbxx, bi->nby - nby, 1, 1, bi->w - w, bi->h - h, w2, h2, t);
+			AddQuadUVs(&bi->grid, bi->nbx - nbxx, bi->nby - nby, 1, 1, bi->w - w, bi->h - h, w2, h2, t);
 
 			dx += (float)w2;
 			w -= MaxW;
@@ -794,10 +797,10 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 	return id;
 }
 /*-----------------------------------------------------------*/
-bool ReCreateAllMapsForBitmap(int id, int nmax, CINEMATIQUE * c, LPDIRECT3DDEVICE7 device)
+bool ReCreateAllMapsForBitmap(int id, int nmax, Cinematic * c, LPDIRECT3DDEVICE7 device)
 {
 	int			nbx, nby, w, h, num;
-	C_BITMAP	* bi;
+	CinematicBitmap	* bi;
 
 	if (!c) return false;
 
@@ -805,7 +808,7 @@ bool ReCreateAllMapsForBitmap(int id, int nmax, CINEMATIQUE * c, LPDIRECT3DDEVIC
 
 	if (!bi->actif) return false;
 
-	FreeGrille(&bi->grille);
+	FreeGrille(&bi->grid);
 
 	nbx = (bi->w / MaxW);
 	nby = (bi->h / MaxH);
@@ -817,7 +820,7 @@ bool ReCreateAllMapsForBitmap(int id, int nmax, CINEMATIQUE * c, LPDIRECT3DDEVIC
 	bi->nbx = nbx;
 	bi->nby = nby;
 
-	AllocGrille(&bi->grille, nbx, nby, (float)bi->w, (float)bi->h, (float)((bi->w > MaxW) ? MaxW : bi->w), (float)((bi->h > MaxH) ? MaxH : bi->h), nmax);
+	AllocGrille(&bi->grid, nbx, nby, (float)bi->w, (float)bi->h, (float)((bi->w > MaxW) ? MaxW : bi->w), (float)((bi->h > MaxH) ? MaxH : bi->h), nmax);
 
 	num = 0;
 	h = bi->h;
@@ -846,7 +849,7 @@ bool ReCreateAllMapsForBitmap(int id, int nmax, CINEMATIQUE * c, LPDIRECT3DDEVIC
 			MakeUpcase(AllTxt);
 
 			TextureContainer * t = FindTexture(AllTxt);
-			AddQuadUVs(&bi->grille, (bi->nbx - nbxx)*nmax, (bi->nby - nby)*nmax, nmax, nmax, bi->w - w, bi->h - h, w2, h2, t);
+			AddQuadUVs(&bi->grid, (bi->nbx - nbxx)*nmax, (bi->nby - nby)*nmax, nmax, nmax, bi->w - w, bi->h - h, w2, h2, t);
 
 			dx += (float)w2;
 			w -= MaxW;
@@ -865,11 +868,11 @@ bool ReCreateAllMapsForBitmap(int id, int nmax, CINEMATIQUE * c, LPDIRECT3DDEVIC
 	return true;
 }
 /*-----------------------------------------------------------*/
-bool CINEMATIQUE::ActiveTexture(int id)
+bool Cinematic::ActiveTexture(int id)
 {
 
 	TextureContainer	* tc;
-	C_BITMAP		*	cb;
+	CinematicBitmap		*	cb;
 	int					nb;
 
 	if (id >= MAX_BITMAP) return false;
@@ -880,9 +883,9 @@ bool CINEMATIQUE::ActiveTexture(int id)
 
 	if (!cb->actif) return false;
 
-	C_INDEXED	* mat = cb->grille.mats;
+	C_INDEXED	* mat = cb->grid.mats;
  
-	nb = cb->grille.nbmat;
+	nb = cb->grid.nbmat;
 
 	while (nb--)
 	{
@@ -903,17 +906,17 @@ bool CINEMATIQUE::ActiveTexture(int id)
 void ReajustUV(LPDIRECT3DDEVICE7 device, int id)
 {
 	TextureContainer	* tc;
-	C_BITMAP		*	cb;
+	CinematicBitmap		*	cb;
 	int					nb;
 
 	cb = &TabBitmap[id];
 
 	if (!cb->actif) return;
 
-	C_INDEXED	* mat = cb->grille.mats;
-	C_UV	*	uvs = cb->grille.uvs;
+	C_INDEXED	* mat = cb->grid.mats;
+	C_UV	*	uvs = cb->grid.uvs;
 
-	nb = cb->grille.nbmat;
+	nb = cb->grid.nbmat;
 
 	while (nb--)
 	{
@@ -950,10 +953,10 @@ void ReajustUV(LPDIRECT3DDEVICE7 device, int id)
 	}
 }
 /*-----------------------------------------------------------*/
-bool ActiveAllTexture(CINEMATIQUE * c)
+bool ActiveAllTexture(Cinematic * c)
 {
 	int			nb;
-	C_BITMAP	* cb;
+	CinematicBitmap	* cb;
 	bool		flag = false;
 
 	cb = TabBitmap;

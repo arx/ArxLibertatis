@@ -26,7 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 #include <cassert>
 
-#include "core/ARX_Common.h"
+#include "core/Common.h"
 #include "io/PakEntry.h"
 #include "io/HashMap.h"
 

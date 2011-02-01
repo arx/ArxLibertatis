@@ -82,6 +82,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
+#include "graphics/Math.h"
 
 using std::sprintf;
 using std::min;
@@ -93,7 +94,7 @@ extern long FINAL_COMMERCIAL_DEMO;
 
 #define MAX_SSEPARAMS 5
 extern long SP_DBG;
-extern CINEMATIQUE * ControlCinematique;
+extern Cinematic * ControlCinematique;
 extern EERIE_3D LASTCAMPOS, LASTCAMANGLE;
 extern INTERACTIVE_OBJ * CAMERACONTROLLER;
 extern char WILL_LAUNCH_CINE[256];

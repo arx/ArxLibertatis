@@ -15,6 +15,6 @@ unpak/unpak.cpp
 ../src/io/PakReader.cpp 
 ../src/io/HashMap.cpp 
 ../src/io/Logger.cpp 
-../src/io/blast.cpp)
+../src/io/Blast.cpp)
 
 # target_link_libraries(unpak z)

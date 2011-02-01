@@ -46,9 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 */
 
-
 #define PAK_READ_BUF_SIZE 1024
-
 
 #include <cstring>
 #include <algorithm>
@@ -60,6 +58,12 @@ using std::size_t;
 using std::strlen;
 
 #include "core/Common.h"
+#if ARX_COMPILER == ARX_COMPILER_VC9
+    typedef U32 uint32_t;
+#else
+    #include <stdint.h>
+#endif
+
 #include "io/Blast.h"
 #include "io/PakReader.h"
 #include "io/PakEntry.h"
@@ -116,6 +120,7 @@ static void pakDecrypt(char * fat, size_t fat_size, const char * key) {
 	
 }
 
+// TODO useful elsewhere too
 static const char * safeGetString(const char * & pos, uint32_t & fat_size) {
 	
 	const char * begin = pos;
@@ -131,6 +136,7 @@ static const char * safeGetString(const char * & pos, uint32_t & fat_size) {
 	return NULL;
 }
 
+// TODO useful elsewhere too
 template <class T>
 inline bool safeGet(T & data, const char * & pos, uint32_t & fat_size) {
 	if(fat_size < sizeof(T)) {

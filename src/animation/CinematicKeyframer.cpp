@@ -22,9 +22,15 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <stdlib.h>
+
+#include "animation/CinematicKeyframer.h"
+
 #include "animation/Cinematic.h"
 #include "core/Time.h"
+
+#define C_MIN_F32 1.175494351e-38F
+#define C_NEQUAL_F32(f1,f2) (fabs(f1-f2)>=C_MIN_F32)
+
 
 /*----------------------------------------------------------------------*/
 //undo/redo
@@ -43,9 +49,9 @@ extern HWND HwndPere;
 extern bool ProjectModif;
 /*----------------------------------------------------------------------*/
 static bool GereTrackNoPlay2(C_KEY * k, int frame);
-static bool DeleteKey2(CINEMATIQUE * c, int frame);
+static bool DeleteKey2(Cinematic * c, int frame);
 /*----------------------------------------------------------------------*/
-C_TRACK	* CKTrack;
+CinematicTrack	* CKTrack;
 
 int UndoPile;
 static int TotUndoPile, FillUndo;
@@ -56,7 +62,7 @@ bool AllocTrack(int sf, int ef, float fps)
 {
 	if (CKTrack) return false;
 
-	CKTrack = (C_TRACK *)malloc(sizeof(C_TRACK));
+	CKTrack = (CinematicTrack *)malloc(sizeof(CinematicTrack));
 
 	if (!CKTrack) return false;
 
@@ -229,7 +235,7 @@ void UpDateKeyLight(int frame)
 	}
 	else
 	{
-		kbase->light.intensite = -1.f;
+		kbase->light.intensity = -1.f;
 		klightprev2 = klightprev;
 		klightnext2 = klightnext;
 	}
@@ -241,7 +247,7 @@ void UpDateKeyLight(int frame)
 	{
 		if (klightprev == kbase)
 		{
-			k->light.intensite = -1.f;
+			k->light.intensity = -1.f;
 		}
 
 		k->light.next = klightnext2;
@@ -259,7 +265,7 @@ void UpDateKeyLight(int frame)
 	{
 		if (klightnext == kbase)
 		{
-			k->light.intensite = -1.f;
+			k->light.intensity = -1.f;
 		}
 
 		k->light.prev = klightprev2;
@@ -360,7 +366,7 @@ bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
 
 	float a = -2.f;
 
-	if (C_NEQUAL_F32(key->light.intensite, a))
+	if (C_NEQUAL_F32(key->light.intensity, a))
 	{
 		k->light = key->light;
 	}
@@ -435,14 +441,14 @@ static bool DiffKey(C_KEY * key1, C_KEY * key2)
 	       (key1->light.pos.x != key2->light.pos.x) || (key1->light.pos.y != key2->light.pos.y) || (key1->light.pos.z != key2->light.pos.z) ||
 	       (key1->light.fallin != key2->light.fallin) || (key1->light.fallout != key2->light.fallout) ||
 	       (key1->light.r != key2->light.r) || (key1->light.g != key2->light.g) || (key1->light.b != key2->light.b) ||
-	       (key1->light.intensite != key2->light.intensite) || (key1->light.intensiternd != key2->light.intensiternd) ||
+	       (key1->light.intensity != key2->light.intensity) || (key1->light.intensiternd != key2->light.intensiternd) ||
 	       (key1->posgrille.x != key2->posgrille.x) || (key1->posgrille.y != key2->posgrille.y) || (key1->posgrille.z != key2->posgrille.z) ||
 	       (key1->angzgrille != key2->angzgrille) ||
 	       (key1->speedtrack != key2->speedtrack)
 	      );
 }
 /*----------------------------------------------------------------------*/
-void AddDiffKey(CINEMATIQUE * c, C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
+void AddDiffKey(Cinematic * c, C_KEY * key, bool writecolor, bool writecolord, bool writecolorf)
 {
 	C_KEY	* k, *ksuiv;
 	int		num;
@@ -508,7 +514,7 @@ float GetAngleInterpolation(float d, float e)
 }
 extern char AllTxt[];
 /*----------------------------------------------------------------------*/
-bool GereTrack(CINEMATIQUE * c, float fpscurr)
+bool GereTrack(Cinematic * c, float fpscurr)
 {
 	C_KEY	* k, *ksuiv;
 	float	a, unmoinsa, alight = 0, unmoinsalight = 0;
@@ -616,12 +622,12 @@ consequences on light :
 			c->speedtrack = a * ksuiv->speedtrack + unmoinsa * k->speedtrack;
 
 			{
-				C_LIGHT ldep;
-				C_LIGHT lend;
+				CinematicLight ldep;
+				CinematicLight lend;
 
-				if (lightprec->light.intensite < 0.f)
+				if (lightprec->light.intensity < 0.f)
 				{
-					c->light.intensite = -1;
+					c->light.intensity = -1;
 					break;
 				}
 				else
@@ -629,7 +635,7 @@ consequences on light :
 					ldep = lightprec->light;
 				}
 
-				if (c->lightd.intensite < 0.f)
+				if (c->lightd.intensity < 0.f)
 				{
 					break;
 				}
@@ -646,7 +652,7 @@ consequences on light :
 				c->light.r			= alight * lend.r + unmoinsalight * ldep.r;
 				c->light.g			= alight * lend.g + unmoinsalight * ldep.g;
 				c->light.b			= alight * lend.b + unmoinsalight * ldep.b;
-				c->light.intensite	= alight * lend.intensite + unmoinsalight * ldep.intensite;
+				c->light.intensity	= alight * lend.intensity + unmoinsalight * ldep.intensity;
 				c->light.intensiternd = alight * lend.intensiternd + unmoinsalight * ldep.intensiternd;
 			}
 			break;
@@ -685,12 +691,12 @@ consequences on light :
 			c->speedtrack = f0 * k->speedtrack + f1 * temp + f2 * p0 + f3 * p1;
 
 			{
-				C_LIGHT ldep;
-				C_LIGHT lend;
+				CinematicLight ldep;
+				CinematicLight lend;
 
-				if (lightprec->light.intensite < 0.f)
+				if (lightprec->light.intensity < 0.f)
 				{
-					c->light.intensite = -1;
+					c->light.intensity = -1;
 					break;
 				}
 				else
@@ -698,7 +704,7 @@ consequences on light :
 					ldep = lightprec->light;
 				}
 
-				if (c->lightd.intensite < 0.f)
+				if (c->lightd.intensity < 0.f)
 				{
 					break;
 				}
@@ -715,7 +721,7 @@ consequences on light :
 				c->light.r = alight * lend.r + unmoinsalight * ldep.r;
 				c->light.g = alight * lend.g + unmoinsalight * ldep.g;
 				c->light.b = alight * lend.b + unmoinsalight * ldep.b;
-				c->light.intensite = alight * lend.intensite + unmoinsalight * ldep.intensite;
+				c->light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
 				c->light.intensiternd = alight * lend.intensiternd + unmoinsalight * ldep.intensiternd;
 			}
 			break;
@@ -740,7 +746,7 @@ consequences on light :
 	return true;
 }
 /*----------------------------------------------------------------------*/
-bool GereTrackNoPlay(CINEMATIQUE * c)
+bool GereTrackNoPlay(Cinematic * c)
 {
 	C_KEY	* k, *ksuiv;
 	float	a, unmoinsa, alight = 0, unmoinsalight = 0;
@@ -852,12 +858,12 @@ bool GereTrackNoPlay(CINEMATIQUE * c)
 			c->speedtrack = a * ksuiv->speedtrack + unmoinsa * k->speedtrack;
 
 			{
-				C_LIGHT ldep;
-				C_LIGHT lend;
+				CinematicLight ldep;
+				CinematicLight lend;
 
-				if (lightprec->light.intensite < 0.f)
+				if (lightprec->light.intensity < 0.f)
 				{
-					c->light.intensite = -1.f;
+					c->light.intensity = -1.f;
 					break;
 				}
 				else
@@ -865,7 +871,7 @@ bool GereTrackNoPlay(CINEMATIQUE * c)
 					ldep = lightprec->light;
 				}
 
-				if (c->lightd.intensite < 0.f)
+				if (c->lightd.intensity < 0.f)
 				{
 					break;
 				}
@@ -882,7 +888,7 @@ bool GereTrackNoPlay(CINEMATIQUE * c)
 				c->light.r		= alight * lend.r + unmoinsalight * ldep.r;
 				c->light.g		= alight * lend.g + unmoinsalight * ldep.g;
 				c->light.b		= alight * lend.b + unmoinsalight * ldep.b;
-				c->light.intensite = alight * lend.intensite + unmoinsalight * ldep.intensite;
+				c->light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
 				c->light.intensiternd = alight * lend.intensiternd + unmoinsalight * ldep.intensiternd;
 			}
 			break;
@@ -919,12 +925,12 @@ bool GereTrackNoPlay(CINEMATIQUE * c)
 			c->speedtrack = f0 * k->speedtrack + f1 * temp + f2 * p0 + f3 * p1;
 
 			{
-				C_LIGHT ldep;
-				C_LIGHT lend;
+				CinematicLight ldep;
+				CinematicLight lend;
 
-				if (lightprec->light.intensite < 0.f)
+				if (lightprec->light.intensity < 0.f)
 				{
-					c->light.intensite = -1;
+					c->light.intensity = -1;
 					break;
 				}
 				else
@@ -932,7 +938,7 @@ bool GereTrackNoPlay(CINEMATIQUE * c)
 					ldep = lightprec->light;
 				}
 
-				if (c->lightd.intensite < 0.f)
+				if (c->lightd.intensity < 0.f)
 				{
 					break;
 				}
@@ -949,7 +955,7 @@ bool GereTrackNoPlay(CINEMATIQUE * c)
 				c->light.r = alight * lend.r + unmoinsalight * ldep.r;
 				c->light.g = alight * lend.g + unmoinsalight * ldep.g;
 				c->light.b = alight * lend.b + unmoinsalight * ldep.b;
-				c->light.intensite = alight * lend.intensite + unmoinsalight * ldep.intensite;
+				c->light.intensity = alight * lend.intensity + unmoinsalight * ldep.intensity;
 				c->light.intensiternd = alight * lend.intensiternd + unmoinsalight * ldep.intensiternd;
 			}
 			break;
@@ -965,7 +971,7 @@ bool GereTrackNoPlay(CINEMATIQUE * c)
 }
 
 /*----------------------------------------------------------------------*/
-void PlayTrack(CINEMATIQUE * c)
+void PlayTrack(Cinematic * c)
 {
 	if (!CKTrack || !CKTrack->pause) return;
 
@@ -980,7 +986,7 @@ int GetCurrentFrame(void)
 	return (int)CKTrack->currframe;
 }
 /*----------------------------------------------------------------------*/
-float GetTimeKeyFramer(CINEMATIQUE * c)
+float GetTimeKeyFramer(Cinematic * c)
 {
 	if (!CKTrack) return 0.f;
 
