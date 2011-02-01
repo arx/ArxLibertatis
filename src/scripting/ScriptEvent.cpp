@@ -521,14 +521,13 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 	if (msg != SM_EXECUTELINE) {
 		if (!evname.empty()) {
 			pos += strlen(eventname); // adding 'ON ' length
-			LogDebug << eventname << " received for " << temp.c_str();
+			LogDebug << eventname << " received";
 		} else {
 			pos += AS_EVENT[msg].name.length();
-			LogDebug << AS_EVENT[msg].name << " received for " << temp.c_str();
+			LogDebug << AS_EVENT[msg].name << " received";
 		}
 
 		if ((pos = GetNextWord(es, pos, temp)) < 0) return ACCEPT;
-//		LogDebug << "Temp is here " << temp.c_str();
 
 		if (temp[0] != '{') {
 			LogError << "ERROR: No bracket after event";
@@ -549,6 +548,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 		if ((pos = GetNextWord(es, pos, temp)) < 0)
 			return ACCEPT;
+		LogDebug << "setting current word " << temp.c_str();
 
 		if ((msg == SM_EXECUTELINE) && (LINEEND == 1))
 			return ACCEPT;
@@ -556,7 +556,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 		MakeStandard(temp);
 
 		//TODO(lubosz): this is one mega switch
-		LogDebug << "Switching! temp="<<temp.c_str();
+		LogDebug << "Switching! current word ="<<temp.c_str();
 
 		switch (temp[0]) {
 			case '}':
