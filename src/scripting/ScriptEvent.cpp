@@ -403,16 +403,6 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 			return ACCEPT;
 	}
 
-
-
-#ifdef NEEDING_DEBUG
-
-	/*if (DEBUGG)*/ NEED_DEBUG = 1;
-	//else NEED_DEBUG = 0;
-
-	/*if (IO_DEBUG == io)*/ NEED_DEBUG |= 2;
-
-#endif
 	Event_Total_Count++;
 
 	if (io)
@@ -572,52 +562,28 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 		if (!evname.empty())
 		{
 			pos += strlen(eventname); // adding 'ON ' length
-#ifdef NEEDING_DEBUG
+			LogDebug << eventname << " received";
 
-			if(NEED_DEBUG) {
-				LogDebug << eventname << " received";
-			}
-
-#endif
 		}
 		else
 		{
 			pos += AS_EVENT[msg].name.length();
-#ifdef NEEDING_DEBUG
+			LogDebug << AS_EVENT[msg].name << " received";
 
-			if(NEED_DEBUG) {
-				LogDebug << AS_EVENT[msg].name << " received";
-			}
-
-#endif
 		}
 
 		if ((pos = GetNextWord(es, pos, temp)) < 0) return ACCEPT;
 
 		if (temp[0] != '{')
 		{
-#ifdef NEEDING_DEBUG
-
-			if (NEED_DEBUG)
-			{
-				LogError << "ERROR: No bracket after event";
-			}
-
-#endif
+			LogError << "ERROR: No bracket after event";
 			return ACCEPT;
 		}
 		else brackets = 1;
 	}
 	else
 	{
-#ifdef NEEDING_DEBUG
-
-		if (NEED_DEBUG)
-		{
-			LogDebug << "EXECUTELINE received";
-		}
-
-#endif
+		LogDebug << "EXECUTELINE received";
 		brackets = 0;
 	}
 
@@ -659,11 +625,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					unsigned long behavior = 0; //BEHAVIOUR_NONE;
 					float behavior_param = 0.f;
 					pos = GetNextWord(es, pos, temp);
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG) sprintf(cmd, "BEHAVIOR %s ", temp.c_str());
-
-#endif
+					LogDebug << "BEHAVIOR "<< temp;
 
 					if (!strcasecmp(temp, "STACK"))
 					{
@@ -710,14 +672,9 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 								io->_npcdata->tactics = 0;
 
 							pos = GetNextWord(es, pos, temp);
-#ifdef NEEDING_DEBUG
 
-							if (NEED_DEBUG)
-							{
-								strcat(cmd, temp);
-							}
+							LogDebug <<  temp;
 
-#endif
 						}
 
 
@@ -825,28 +782,15 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				{
 					ret = ACCEPT;
 					ClearSubStack(es);
-#ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG)
-					{
-						LogDebug << "  ACCEPT";
-					}
-
-#endif
+					LogDebug << "  ACCEPT";
 					goto end;
 				}
 				else if (!strcmp(temp, "ADDBAG"))
 				{
 					ARX_PLAYER_AddBag();
-#ifdef NEEDING_DEBUG
+					LogDebug << "ADD_BAG " << temp;
 
-					if (NEED_DEBUG)
-					{
-						strcpy(cmd, "ADD_BAG ");
-						strcat(cmd, temp);
-					}
-
-#endif
 				}
 				else if (!strcmp(temp, "ACTIVATEPHYSICS"))
 				{
@@ -857,15 +801,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					pos = GetNextWord(es, pos, temp);
 					float val = GetVarValueInterpretedAsFloat(temp, esss, io);
 					ARX_PLAYER_Modify_XP((long)val);
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						strcpy(cmd, "ADD_XP ");
-						strcat(cmd, temp);
-					}
-
-#endif
+					LogDebug << "ADD_XP "<< temp;
 				}
 				else if (!strcmp(temp, "ADDGOLD"))
 				{
@@ -878,15 +814,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					ARX_CHECK_LONG(val);
 					ARX_PLAYER_AddGold(ARX_CLEAN_WARN_CAST_LONG(val));
 
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						strcpy(cmd, "ADD_GOLD ");
-						strcat(cmd, temp);
-					}
-
-#endif
+					LogDebug << "ADD_GOLD " << temp;
 				}
 				else if (!strcmp(temp, "ATTRACTOR"))
 				{
@@ -912,68 +840,27 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				{
 					float volume(1.0F);
 
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						strcpy(cmd, "AMBIANCE ");
-					}
-
-#endif
-
 					pos = GetNextWord(es, pos, temp);
 
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						strcat(cmd, temp);
-						strcat(cmd, " ");
-					}
-
-#endif
+					LogDebug << "AMBIANCE " << temp;
 
 					if (temp[0] == '-')
 					{
 						if (iCharIn(temp, 'V'))
 						{
 							pos = GetNextWord(es, pos, temp);
-#ifdef NEEDING_DEBUG
-
-							if (NEED_DEBUG)
-							{
-								strcat(cmd, temp);
-								strcat(cmd, " ");
-							}
-
-#endif
+							LogDebug << temp;
 							volume = GetVarValueInterpretedAsFloat(temp, esss, io);
 
 							pos = GetNextWord(es, pos, temp);
-#ifdef NEEDING_DEBUG
-
-							if (NEED_DEBUG)
-							{
-								strcat(cmd, temp);
-								strcat(cmd, " ");
-							}
-
-#endif
+							LogDebug << temp;
 
 							ARX_SOUND_PlayScriptAmbiance(temp.c_str(), ARX_SOUND_PLAY_LOOPED, volume * ( 1.0f / 100 ));
 						}
 						else if (iCharIn(temp, 'N'))
 						{
 							pos = GetNextWord(es, pos, temp);
-#ifdef NEEDING_DEBUG
-
-							if (NEED_DEBUG)
-							{
-								strcat(cmd, temp);
-								strcat(cmd, " ");
-							}
-
-#endif
+							LogDebug << temp;
 
 							ARX_SOUND_PlayScriptAmbiance(temp.c_str(), ARX_SOUND_PLAY_ONCE);
 						}
