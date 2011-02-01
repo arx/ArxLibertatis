@@ -166,8 +166,8 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
 	long sel = -1;
 	long selmounocol = -1;
 
-	for (long i = 0; i < obj->nbselections; i++)
-	{
+	for (long i = 0; i < obj->selections.size(); i++)
+	{ // TODO iterator
 		if (!strcasecmp(obj->selections[i].name.c_str(), "mou"))
 		{
 			sel = i;
@@ -175,8 +175,8 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
 		}
 	}
 
-	for (int i = 0; i < obj->nbselections; i++)
-	{
+	for (int i = 0; i < obj->selections.size(); i++)
+	{ // TODO iterator
 		if (!strcasecmp(obj->selections[i].name.c_str(), "mounocol"))
 		{
 			selmounocol = i;

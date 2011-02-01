@@ -35,7 +35,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 CinematicSound		TabSound[MAX_SOUND];
 int			NbSound;
 /*-----------------------------------------------------------*/
-extern std::string AllTxt;
 extern HWND HwndPere;
 extern char DirectoryChoose[];
 extern int	LSoundChoose;
@@ -131,7 +130,7 @@ void DeleteAllSound(void)
 	}
 }
 /*-----------------------------------------------------------*/
-void CutAndAddString(char * pText, const char * pDebText)
+void CutAndAddString(std::string & dest, char * pText, const char * pDebText)
 {
 	int	i = strlen(pText);
 	int j = strlen(pDebText);
@@ -150,7 +149,7 @@ void CutAndAddString(char * pText, const char * pDebText)
 
 	if (bOk)
 	{
-		AllTxt += pText;
+		dest += pText;
 	}
 }
 /*-----------------------------------------------------------*/
@@ -184,20 +183,20 @@ int ExistSound(char * dir, char * name)
 
 /*-----------------------------------------------------------*/
 /* TODO Figure out what this is supposed to do */
-void PatchReplace()
+void PatchReplace(std::string & path)
 {
 	char CopyTxt[256];
-	int j = AllTxt.length();
-	//char * pT = AllTxt;
+	int j = path.length();
+	//char * pT = path.c_str();
 /*
 	while (j--)
 	{
-		if (!strncasecmp(AllTxt.c_str(), "uk", strlen("uk")))
+		if (!strncasecmp(path.c_str(), "uk", strlen("uk")))
 		{
 			*pT = 0;
 			strcpy(CopyTxt, pT + 3);
-			strcat(AllTxt, "english\\");
-			strcat(AllTxt, CopyTxt);
+			strcat(path, "english\\");
+			strcat(path, CopyTxt);
 			break;
 		}
 
@@ -205,19 +204,19 @@ void PatchReplace()
 		{
 			*pT = 0;
 			strcpy(CopyTxt, pT + 3);
-			strcat(AllTxt, "francais\\");
-			strcat(AllTxt, CopyTxt);
+			strcat(path, "francais\\");
+			strcat(path, CopyTxt);
 			break;
 		}
 
 		//pT++;
 	//}
 */
-	ClearAbsDirectory(AllTxt, "ARX\\");
+	ClearAbsDirectory(path, "ARX\\");
 
 	//on enleve "sfx"
 	bool bFound = false;
-	//pT = AllTxt;
+	//pT = path;
 	//j = strlen((const char *)pT);
 /*
 	while (j)
@@ -238,7 +237,7 @@ void PatchReplace()
 	}*/
 
 	//UNIQUEMENT EN MODE GAME!!!!!!
-	std::string pcTxt = strstr(AllTxt.c_str(), "speech\\");
+	std::string pcTxt = strstr(path.c_str(), "speech\\");
 
 	if (!pcTxt.empty())
 	{
@@ -304,16 +303,16 @@ int AddSoundToList(char * dir, char * name, int id, int pos)
 
 	strcpy(cs->name, name);
 
-	AllTxt = "\\\\Arkaneserver\\public\\ARX\\";
-	CutAndAddString(dir, "sfx");
-	AllTxt += name;
-	PatchReplace();
+	std::string path = "\\\\Arkaneserver\\public\\ARX\\";
+	CutAndAddString(path, dir, "sfx");
+	path += name;
+	PatchReplace(path);
 
-	MakeUpcase(AllTxt);
+	MakeUpcase(path);
 
-	if ( AllTxt.find("SFX") != std::string::npos )
+	if ( path.find("SFX") != std::string::npos )
 	{
-		cs->sound = strdup(AllTxt.c_str());
+		cs->sound = strdup(path.c_str());
 	}
 	else
 	{
