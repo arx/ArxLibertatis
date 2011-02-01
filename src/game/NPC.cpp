@@ -1472,13 +1472,11 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	        ||	(num > from->selections.size())) // TODO >= ?
 		return;
 
-	EERIE_3DOBJ * nouvo;
-	nouvo = (EERIE_3DOBJ *)malloc(sizeof(EERIE_3DOBJ)); 
+	EERIE_3DOBJ * nouvo = new EERIE_3DOBJ; 
 
 	if (!nouvo)
 		return;
 
-	memset(nouvo, 0, sizeof(EERIE_3DOBJ));
 	nouvo->nbvertex = from->selections[num].nb_selected;
 
 	long gore = -1;

@@ -636,6 +636,9 @@ struct EERIE_3DOBJ
 
 		c_data = 0;
 	}
+	
+	void clear();
+	
 	std::string name;
 	std::string file;
 	EERIE_3D			pos;

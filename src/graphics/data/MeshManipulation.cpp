@@ -494,10 +494,8 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	memcpy(obj2vertexlist2, obj2->vertexlist, sizeof(EERIE_VERTEX)*obj2->nbvertex);
 
 	// Work will contain the Tweaked object
-	EERIE_3DOBJ * work = NULL;
-	work = (EERIE_3DOBJ *)malloc(sizeof(EERIE_3DOBJ));
+	EERIE_3DOBJ * work = new EERIE_3DOBJ;
 	// TODO string breaker
-	memset(work, 0, sizeof(EERIE_3DOBJ));
 	memcpy(&work->pos, &obj1->pos, sizeof(EERIE_3D));
 	memcpy(&work->angle, &obj1->angle, sizeof(EERIE_3D));
 
