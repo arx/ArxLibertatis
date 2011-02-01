@@ -442,24 +442,24 @@ typedef struct
 } EERIE_MAP; // Aligned 1 2 4
 
 
-typedef struct
-{
+struct EERIE_GROUPLIST {
 	std::string name;
-	long		origin;
-	long		nb_index;
-	long 	*	indexes;
-	float		siz;
-} EERIE_GROUPLIST; // Aligned 1 2 4
+	long origin;
+	long nb_index;
+	long * indexes;
+	float siz;
+	
+	EERIE_GROUPLIST() : name(), origin(0), nb_index(0), indexes(NULL), siz(0.0f) { };
+};
 
-struct EERIE_ACTIONLIST
-{
+struct EERIE_ACTIONLIST {
 	std::string name;
-	long			idx; //index vertex;
-	long			act; //action
-	long			sfx; //sfx
+	long idx; //index vertex;
+	long act; //action
+	long sfx; //sfx
 	
 	EERIE_ACTIONLIST() : name(), idx(0), act(0), sfx(0) { };
-}; // Aligned 1 2 4
+};
 
 typedef struct
 {

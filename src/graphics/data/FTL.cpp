@@ -202,7 +202,7 @@ extern long NOCHECKSUM;
 //***********************************************************************************************
 bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 {
-	LogWarning << "Broken ARX_FTL_Save (EERIE_ACTIONLIST with string)";
+	LogWarning << "Broken ARX_FTL_Save";
     // Need an object to be saved !
     if (obj == NULL) return false;
 
@@ -240,13 +240,13 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 
 	if (obj->nbgroups > 0)
 	{
-		allocsize += sizeof(EERIE_GROUPLIST) * obj->nbgroups;
+		// TODO allocsize += sizeof(EERIE_GROUPLIST) * obj->nbgroups;
 
 		for (long i = 0; i < obj->nbgroups; i++)
 		{
 			if (obj->grouplist[i].nb_index > 0)
 			{
-				allocsize += sizeof(long) * obj->grouplist[i].nb_index;
+				// TODO allocsize += sizeof(long) * obj->grouplist[i].nb_index;
 			}
 		}
 	}
@@ -382,7 +382,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 	// groups
 	if (af3Ddh->nb_groups > 0)
 	{
-		memcpy(dat + pos, obj->grouplist, sizeof(EERIE_GROUPLIST)*af3Ddh->nb_groups);
+		// TODO memcpy(dat + pos, obj->grouplist, sizeof(EERIE_GROUPLIST)*af3Ddh->nb_groups);
 		pos += sizeof(EERIE_GROUPLIST) * af3Ddh->nb_groups;
 
 		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
