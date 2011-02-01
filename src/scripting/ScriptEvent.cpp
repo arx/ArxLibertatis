@@ -6965,12 +6965,17 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 				break;
 			default:
-
-				if (io)	{
-					std::string word;
-					pos = GetNextWord(es, pos, word);
-					LogError << "SCRIPT ERROR: " << GetName(io->filename) << " "
-						<< io->ident << " " << word << " [char" << pos << "]";
+				if (io) {
+					std::string temp2;
+					std::string temp3;
+					std::string temp4;
+					long ppos = pos;
+					pos = GetNextWord(es, pos, temp2);
+					pos = GetNextWord(es, pos, temp3);
+					pos = GetNextWord(es, pos, temp4);
+					sprintf(cmd, "Script Error for token #%ld '%c' (%s) in file %s_%04ld",
+							ppos,temp[0],temp2.c_str(),GetName(io->filename).c_str(),io->ident);
+					LogError << cmd;
 
 					io->ioflags |= IO_FREEZESCRIPT;
 					return REFUSE;
