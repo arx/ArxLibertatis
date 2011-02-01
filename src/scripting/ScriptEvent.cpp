@@ -416,7 +416,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 	long RELOADING = 0;
 
 	long ret = ACCEPT;
-	std::string temp = "";
+	std::string word = "";
 	char cmd[256];
 	char eventname[64];
 	long brackets = 0;
@@ -527,9 +527,9 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 			LogDebug << AS_EVENT[msg].name << " received";
 		}
 
-		if ((pos = GetNextWord(es, pos, temp)) < 0) return ACCEPT;
+		if ((pos = GetNextWord(es, pos, word)) < 0) return ACCEPT;
 
-		if (temp[0] != '{') {
+		if (word[0] != '{') {
 			LogError << "ERROR: No bracket after event";
 			return ACCEPT;
 		}
@@ -546,19 +546,19 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 		if (pos >= es->size - 1)
 			return ACCEPT;
 
-		if ((pos = GetNextWord(es, pos, temp)) < 0)
+		if ((pos = GetNextWord(es, pos, word)) < 0)
 			return ACCEPT;
-		LogDebug << "setting current word " << temp.c_str();
+		LogDebug << "setting current word " << word.c_str();
 
 		if ((msg == SM_EXECUTELINE) && (LINEEND == 1))
 			return ACCEPT;
 
-		MakeStandard(temp);
+		MakeStandard(word);
 
 		//TODO(lubosz): this is one mega switch
-		LogDebug << "Switching! current word ="<<temp.c_str();
+		LogDebug << "Switching! current word ="<<word.c_str();
 
-		switch (temp[0]) {
+		switch (word[0]) {
 			case '}':
 				brackets--;
 				break;
@@ -566,117 +566,117 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				brackets++;
 				break;
 			case '/':
-				if (temp[1] == '/') pos = GotoNextLine(es, pos);
+				if (word[1] == '/') pos = GotoNextLine(es, pos);
 				break;
 			case '>':
-				if (temp[1] == '>') pos = GotoNextLine(es, pos);
+				if (word[1] == '>') pos = GotoNextLine(es, pos);
 				break;
 			case 'B':
-				if (!strcmp(temp, "BEHAVIOR"))
+				if (!strcmp(word, "BEHAVIOR"))
 				{
 					unsigned long behavior = 0; //BEHAVIOUR_NONE;
 					float behavior_param = 0.f;
-					pos = GetNextWord(es, pos, temp);
-					LogDebug << "BEHAVIOR "<< temp;
+					pos = GetNextWord(es, pos, word);
+					LogDebug << "BEHAVIOR "<< word;
 
-					if (!strcasecmp(temp, "STACK"))
+					if (!strcasecmp(word, "STACK"))
 					{
 						ARX_NPC_Behaviour_Stack(io);
 					}
-					else if (!strcasecmp(temp, "UNSTACK"))
+					else if (!strcasecmp(word, "UNSTACK"))
 					{
 						ARX_NPC_Behaviour_UnStack(io);
 					}
-					else if (!strcasecmp(temp, "UNSTACKALL"))
+					else if (!strcasecmp(word, "UNSTACKALL"))
 					{
 						ARX_NPC_Behaviour_Reset(io);
 					}
 					else
 					{
-						if (temp[0] == '-')
+						if (word[0] == '-')
 						{
 
-							if (iCharIn(temp, 'L'))
+							if (iCharIn(word, 'L'))
 								behavior |= BEHAVIOUR_LOOK_AROUND;
 
-							if (iCharIn(temp, 'S'))
+							if (iCharIn(word, 'S'))
 								behavior |= BEHAVIOUR_SNEAK;
 
-							if (iCharIn(temp, 'D'))
+							if (iCharIn(word, 'D'))
 								behavior |= BEHAVIOUR_DISTANT;
 
-							if (iCharIn(temp, 'M'))
+							if (iCharIn(word, 'M'))
 								behavior |= BEHAVIOUR_MAGIC;
 
-							if (iCharIn(temp, 'F'))
+							if (iCharIn(word, 'F'))
 								behavior |= BEHAVIOUR_FIGHT;
 
-							if (iCharIn(temp, 'A'))
+							if (iCharIn(word, 'A'))
 								behavior |= BEHAVIOUR_STARE_AT;
 
-							if (CharIn(temp, '0') && io && (io->ioflags & IO_NPC))
+							if (CharIn(word, '0') && io && (io->ioflags & IO_NPC))
 								io->_npcdata->tactics = 0;
 
-							if (CharIn(temp, '1') && io && (io->ioflags & IO_NPC))
+							if (CharIn(word, '1') && io && (io->ioflags & IO_NPC))
 								io->_npcdata->tactics = 0;
 
-							if (CharIn(temp, '2') && io && (io->ioflags & IO_NPC))
+							if (CharIn(word, '2') && io && (io->ioflags & IO_NPC))
 								io->_npcdata->tactics = 0;
 
-							pos = GetNextWord(es, pos, temp);
+							pos = GetNextWord(es, pos, word);
 
-							LogDebug <<  temp;
+							LogDebug <<  word;
 
 						}
 
 
-						if (!strcasecmp(temp, "GO_HOME"))
+						if (!strcasecmp(word, "GO_HOME"))
 							behavior |= BEHAVIOUR_GO_HOME;
-						else if (!strcasecmp(temp, "FRIENDLY"))
+						else if (!strcasecmp(word, "FRIENDLY"))
 						{
 							if ((io) && (io->ioflags & IO_NPC)) io->_npcdata->movemode = NOMOVEMODE;
 
 							behavior |= BEHAVIOUR_FRIENDLY;
 						}
-						else if (!strcasecmp(temp, "MOVE_TO"))
+						else if (!strcasecmp(word, "MOVE_TO"))
 						{
 							if ((io) && (io->ioflags & IO_NPC)) io->_npcdata->movemode = WALKMODE;
 
 							behavior |= BEHAVIOUR_MOVE_TO;
 						}
-						else if (!strcasecmp(temp, "FLEE"))
+						else if (!strcasecmp(word, "FLEE"))
 						{
 							behavior |= BEHAVIOUR_FLEE;
-							pos = GetNextWord(es, pos, temp);
-							behavior_param = GetVarValueInterpretedAsFloat(temp, esss, io);
+							pos = GetNextWord(es, pos, word);
+							behavior_param = GetVarValueInterpretedAsFloat(word, esss, io);
 
 							if ((io) && (io->ioflags & IO_NPC)) io->_npcdata->movemode = RUNMODE;
 						}
-						else if (!strcasecmp(temp, "LOOK_FOR"))
+						else if (!strcasecmp(word, "LOOK_FOR"))
 						{
 							behavior |= BEHAVIOUR_LOOK_FOR;
-							pos = GetNextWord(es, pos, temp);
-							behavior_param = GetVarValueInterpretedAsFloat(temp, esss, io);
+							pos = GetNextWord(es, pos, word);
+							behavior_param = GetVarValueInterpretedAsFloat(word, esss, io);
 
 							if ((io) && (io->ioflags & IO_NPC)) io->_npcdata->movemode = WALKMODE;
 						}
-						else if (!strcasecmp(temp, "HIDE"))
+						else if (!strcasecmp(word, "HIDE"))
 						{
 							behavior |= BEHAVIOUR_HIDE;
-							pos = GetNextWord(es, pos, temp);
-							behavior_param = GetVarValueInterpretedAsFloat(temp, esss, io);
+							pos = GetNextWord(es, pos, word);
+							behavior_param = GetVarValueInterpretedAsFloat(word, esss, io);
 
 							if ((io) && (io->ioflags & IO_NPC)) io->_npcdata->movemode = WALKMODE;
 						}
-						else if (!strcasecmp(temp, "WANDER_AROUND"))
+						else if (!strcasecmp(word, "WANDER_AROUND"))
 						{
 							behavior |= BEHAVIOUR_WANDER_AROUND;
-							pos = GetNextWord(es, pos, temp);
-							behavior_param = GetVarValueInterpretedAsFloat(temp, esss, io);
+							pos = GetNextWord(es, pos, word);
+							behavior_param = GetVarValueInterpretedAsFloat(word, esss, io);
 
 							if ((io) && (io->ioflags & IO_NPC)) io->_npcdata->movemode = WALKMODE;
 						}
-						else if (!strcasecmp(temp, "GUARD"))
+						else if (!strcasecmp(word, "GUARD"))
 						{
 							behavior |= BEHAVIOUR_GUARD;
 
@@ -699,29 +699,29 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					}
 				}
 
-				if (!strcmp(temp, "BOOK"))
+				if (!strcmp(word, "BOOK"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
-						if (iCharIn(temp, 'A')) //MAGIC
+						if (iCharIn(word, 'A')) //MAGIC
 							Book_Mode = 2;
 
-						if (iCharIn(temp, 'E')) //Equip
+						if (iCharIn(word, 'E')) //Equip
 							Book_Mode = 1;
 
-						if (iCharIn(temp, 'M')) //Map
+						if (iCharIn(word, 'M')) //Map
 							Book_Mode = 3;
 
-						pos = GetNextWord(es, pos, temp);
+						pos = GetNextWord(es, pos, word);
 					}
 
-					if (!strcasecmp(temp, "OPEN"))
+					if (!strcasecmp(word, "OPEN"))
 					{
 						ARX_INTERFACE_BookOpenClose(1);
 					}
-					else if (!strcasecmp(temp, "CLOSE"))
+					else if (!strcasecmp(word, "CLOSE"))
 					{
 						ARX_INTERFACE_BookOpenClose(2);
 					}
@@ -730,7 +730,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				break;
 			case 'A':
 
-				if (!strcmp(temp, "ACCEPT"))
+				if (!strcmp(word, "ACCEPT"))
 				{
 					ret = ACCEPT;
 					ClearSubStack(es);
@@ -738,27 +738,27 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					LogDebug << "  ACCEPT";
 					goto end;
 				}
-				else if (!strcmp(temp, "ADDBAG"))
+				else if (!strcmp(word, "ADDBAG"))
 				{
 					ARX_PLAYER_AddBag();
-					LogDebug << "ADD_BAG " << temp;
+					LogDebug << "ADD_BAG " << word;
 
 				}
-				else if (!strcmp(temp, "ACTIVATEPHYSICS"))
+				else if (!strcmp(word, "ACTIVATEPHYSICS"))
 				{
 					ARX_INTERACTIVE_ActivatePhysics(GetInterNum(io));
 				}
-				else if (!strcmp(temp, "ADDXP"))
+				else if (!strcmp(word, "ADDXP"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					float val = GetVarValueInterpretedAsFloat(temp, esss, io);
+					pos = GetNextWord(es, pos, word);
+					float val = GetVarValueInterpretedAsFloat(word, esss, io);
 					ARX_PLAYER_Modify_XP((long)val);
-					LogDebug << "ADD_XP "<< temp;
+					LogDebug << "ADD_XP "<< word;
 				}
-				else if (!strcmp(temp, "ADDGOLD"))
+				else if (!strcmp(word, "ADDGOLD"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					float val = GetVarValueInterpretedAsFloat(temp, esss, io);
+					pos = GetNextWord(es, pos, word);
+					float val = GetVarValueInterpretedAsFloat(word, esss, io);
 
 					if (val != 0) ARX_SOUND_PlayInterface(SND_GOLD);
 
@@ -766,93 +766,93 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					ARX_CHECK_LONG(val);
 					ARX_PLAYER_AddGold(ARX_CLEAN_WARN_CAST_LONG(val));
 
-					LogDebug << "ADD_GOLD " << temp;
+					LogDebug << "ADD_GOLD " << word;
 				}
-				else if (!strcmp(temp, "ATTRACTOR"))
+				else if (!strcmp(word, "ATTRACTOR"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					long t = GetTargetByNameTarget(temp.c_str());
+					pos = GetNextWord(es, pos, word);
+					long t = GetTargetByNameTarget(word.c_str());
 
 					if (t == -2) t = GetInterNum(io);
 
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 					float val = 0.f;
 					float val2 = 0.f;
 
-					if (strcasecmp(temp, "OFF"))
+					if (strcasecmp(word, "OFF"))
 					{
-						val = GetVarValueInterpretedAsFloat(temp, esss, io);
-						pos = GetNextWord(es, pos, temp);
-						val2 = GetVarValueInterpretedAsFloat(temp, esss, io);
+						val = GetVarValueInterpretedAsFloat(word, esss, io);
+						pos = GetNextWord(es, pos, word);
+						val2 = GetVarValueInterpretedAsFloat(word, esss, io);
 					}
 
 					ARX_SPECIAL_ATTRACTORS_Add(t, val, val2);
 				}
-				else if (!strcmp(temp, "AMBIANCE"))
+				else if (!strcmp(word, "AMBIANCE"))
 				{
 					float volume(1.0F);
 
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					LogDebug << "AMBIANCE " << temp;
+					LogDebug << "AMBIANCE " << word;
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
-						if (iCharIn(temp, 'V'))
+						if (iCharIn(word, 'V'))
 						{
-							pos = GetNextWord(es, pos, temp);
-							LogDebug << temp;
-							volume = GetVarValueInterpretedAsFloat(temp, esss, io);
+							pos = GetNextWord(es, pos, word);
+							LogDebug << word;
+							volume = GetVarValueInterpretedAsFloat(word, esss, io);
 
-							pos = GetNextWord(es, pos, temp);
-							LogDebug << temp;
+							pos = GetNextWord(es, pos, word);
+							LogDebug << word;
 
-							ARX_SOUND_PlayScriptAmbiance(temp.c_str(), ARX_SOUND_PLAY_LOOPED, volume * ( 1.0f / 100 ));
+							ARX_SOUND_PlayScriptAmbiance(word.c_str(), ARX_SOUND_PLAY_LOOPED, volume * ( 1.0f / 100 ));
 						}
-						else if (iCharIn(temp, 'N'))
+						else if (iCharIn(word, 'N'))
 						{
-							pos = GetNextWord(es, pos, temp);
-							LogDebug << temp;
+							pos = GetNextWord(es, pos, word);
+							LogDebug << word;
 
-							ARX_SOUND_PlayScriptAmbiance(temp.c_str(), ARX_SOUND_PLAY_ONCE);
+							ARX_SOUND_PlayScriptAmbiance(word.c_str(), ARX_SOUND_PLAY_ONCE);
 						}
-						else if (iCharIn(temp, 'M'))
+						else if (iCharIn(word, 'M'))
 						{
 							std::string temp2;
 
 							pos = GetNextWord(es, pos, temp2);
 							LogDebug << temp2;
 
-							ARX_SOUND_SetAmbianceTrackStatus(temp.c_str(), temp2.c_str(), 1); //1 = Mute
+							ARX_SOUND_SetAmbianceTrackStatus(word.c_str(), temp2.c_str(), 1); //1 = Mute
 
-							pos = GetNextWord(es, pos, temp);
-							LogDebug << temp;
+							pos = GetNextWord(es, pos, word);
+							LogDebug << word;
 						}
-						else if (iCharIn(temp, 'U'))
+						else if (iCharIn(word, 'U'))
 						{
 							std::string temp2;
 
 							pos = GetNextWord(es, pos, temp2);
 							LogDebug <<  temp2;
 
-							ARX_SOUND_SetAmbianceTrackStatus(temp.c_str(), temp2.c_str(), 0);//0 = unmute
+							ARX_SOUND_SetAmbianceTrackStatus(word.c_str(), temp2.c_str(), 0);//0 = unmute
 
-							pos = GetNextWord(es, pos, temp);
-							LogDebug << temp;
+							pos = GetNextWord(es, pos, word);
+							LogDebug << word;
 						}
 					}
-					else if (!strcasecmp(temp, "KILL"))
+					else if (!strcasecmp(word, "KILL"))
 						ARX_SOUND_KillAmbiances();
 					else
-						ARX_SOUND_PlayScriptAmbiance(temp.c_str());
+						ARX_SOUND_PlayScriptAmbiance(word.c_str());
 				}
-				else if (!strcmp(temp, "ANCHORBLOCK"))
+				else if (!strcmp(word, "ANCHORBLOCK"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if (io)
 					{
-						if ((!strcasecmp(temp, "ON")) || (!strcasecmp(temp, "YES")))
+						if ((!strcasecmp(word, "ON")) || (!strcasecmp(word, "YES")))
 						{
 							ANCHOR_BLOCK_By_IO(io, 1);
 						}
@@ -860,26 +860,26 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							ANCHOR_BLOCK_By_IO(io, 0);
 					}
 				}
-				else if (!strcmp(temp, "ATTACHNPCTOPLAYER"))
+				else if (!strcmp(word, "ATTACHNPCTOPLAYER"))
 				{
 					LogDebug << "ATTACH_NPC_TO_PLAYER ...OBSOLETE...";
 				}
-				else if (!strcmp(temp, "ATTACH"))
+				else if (!strcmp(word, "ATTACH"))
 				{
 					LogDebug << "ATTACH ";
 					std::string temp1;
 					std::string temp2;
-					pos = GetNextWord(es, pos, temp); // Source IO
-					LogDebug << temp;
-					long t = GetTargetByNameTarget(temp.c_str());
+					pos = GetNextWord(es, pos, word); // Source IO
+					LogDebug << word;
+					long t = GetTargetByNameTarget(word.c_str());
 
 					if (t == -2) t = GetInterNum(io); //self
 
 					pos = GetNextWord(es, pos, temp1); // source action_point
 					LogDebug <<  temp1;
-					pos = GetNextWord(es, pos, temp); // target IO
-					long t2 = GetTargetByNameTarget(temp.c_str());
-					LogDebug << temp;
+					pos = GetNextWord(es, pos, word); // target IO
+					long t2 = GetTargetByNameTarget(word.c_str());
+					LogDebug << word;
 
 					if (t2 == -2) t2 = GetInterNum(io); //self
 
@@ -896,80 +896,80 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				break;
 			case 'G':
 
-				if (!strcmp(temp, "GOTO"))
+				if (!strcmp(word, "GOTO"))
 				{
 					if (msg == SM_EXECUTELINE) msg = SM_DUMMY;
 
-					if ((pos = GetNextWord(es, pos, temp)) == -1)
+					if ((pos = GetNextWord(es, pos, word)) == -1)
 					{
 						ret = ACCEPT;
 						goto end;
 					}
 
-					pos = FindLabelPos(es, temp);
+					pos = FindLabelPos(es, word);
 
 					if (pos == -1) return ACCEPT;
 
-					LogDebug << "GOTO " << temp;
+					LogDebug << "GOTO " << word;
 				}
-				else if (!strcmp(temp, "GOSUB"))
+				else if (!strcmp(word, "GOSUB"))
 				{
 					if (msg == SM_EXECUTELINE) msg = SM_DUMMY;
 
-					if ((pos = GetNextWord(es, pos, temp)) == -1) return ACCEPT;
+					if ((pos = GetNextWord(es, pos, word)) == -1) return ACCEPT;
 
 					if (!InSubStack(es, pos)) return BIGERROR;
 
-					pos = FindLabelPos(es, temp);
+					pos = FindLabelPos(es, word);
 
 					if (pos == -1) return ACCEPT;
 
-					LogDebug <<  "GOSUB " << temp;
+					LogDebug <<  "GOSUB " << word;
 				}
-				else if (!strcmp(temp, "GMODE"))
+				else if (!strcmp(word, "GMODE"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 				}
 
 				break;
 			case 'R':
 
-				if (!strcmp(temp, "REFUSE"))
+				if (!strcmp(word, "REFUSE"))
 				{
 					ClearSubStack(es);
 					ret = REFUSE;
 					LogDebug << "  REFUSE";
 					goto end;
 				}
-				else if (!strcmp(temp, "REVIVE"))
+				else if (!strcmp(word, "REVIVE"))
 				{
-					long tmp = GetNextWord(es, pos, temp);
+					long tmp = GetNextWord(es, pos, word);
 					long init = 0;
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
 						pos = tmp;
 
-						if ((iCharIn(temp, 'I'))) init = 1;
+						if ((iCharIn(word, 'I'))) init = 1;
 					}
 
 					ARX_NPC_Revive(io, init);
 					LogDebug << "REVIVE";
 					goto end;
 				}
-				else if (!strcmp(temp, "RIDICULOUS"))
+				else if (!strcmp(word, "RIDICULOUS"))
 				{
 					ARX_PLAYER_MakeFreshHero();
 				}
-				else if (!strcmp(temp, "REPAIR"))
+				else if (!strcmp(word, "REPAIR"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					long t = GetTargetByNameTarget(temp);
+					pos = GetNextWord(es, pos, word);
+					long t = GetTargetByNameTarget(word);
 
 					if (t == -2) t = GetInterNum(io); //self
 
-					pos = GetNextWord(es, pos, temp);
-					float val = GetVarValueInterpretedAsFloat(temp, esss, io);
+					pos = GetNextWord(es, pos, word);
+					float val = GetVarValueInterpretedAsFloat(word, esss, io);
 
 					if (val < 0.f) val = 0.f;
 					else if (val > 100.f) val = 100.f;
@@ -977,7 +977,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					if (ValidIONum(t))
 						ARX_DAMAGES_DurabilityRestore(inter.iobj[t], val);
 				}
-				else if (!strcmp(temp, "RANDOM"))
+				else if (!strcmp(word, "RANDOM"))
 				{
 					std::string temp1;
 					pos = GetNextWord(es, pos, temp1);
@@ -994,14 +994,14 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					}
 					LogDebug << "RANDOM " << temp1;
 				}
-				else if (!strcmp(temp, "RETURN"))
+				else if (!strcmp(word, "RETURN"))
 				{
 					if ((pos = GetSubStack(es)) == -1) return BIGERROR;
 					LogDebug << "RETURN";
 				}
-				else if (!strcmp(temp, "REPLACEME"))
+				else if (!strcmp(word, "REPLACEME"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if (io)
 					{
@@ -1010,11 +1010,11 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						std::string tex2;
 
 						if (io->ioflags & IO_NPC)
-							tex2 = "Graph\\Obj3D\\Interactive\\NPC\\" + temp + ".teo";
+							tex2 = "Graph\\Obj3D\\Interactive\\NPC\\" + word + ".teo";
 						else if (io->ioflags & IO_FIX)
-							tex2 = "Graph\\Obj3D\\Interactive\\FIX_INTER\\" + temp + ".teo";
+							tex2 = "Graph\\Obj3D\\Interactive\\FIX_INTER\\" + word + ".teo";
 						else
-							tex2 = "Graph\\Obj3D\\Interactive\\Items\\" + temp + ".teo";
+							tex2 = "Graph\\Obj3D\\Interactive\\Items\\" + word + ".teo";
 
 						File_Standardize(tex2, tex);
 						EERIE_3D last_angle;
@@ -1100,12 +1100,12 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							}
 						}
 
-						LogDebug <<  "REPLACE_ME "<< temp;
+						LogDebug <<  "REPLACE_ME "<< word;
 					}
 
-					LogDebug << "REPLACE_ME " << temp << " --> Failure Not An IO";
+					LogDebug << "REPLACE_ME " << word << " --> Failure Not An IO";
 				}
-				else if (!strcmp(temp, "ROTATE"))
+				else if (!strcmp(word, "ROTATE"))
 				{
 					if (io != NULL)
 					{
@@ -1132,155 +1132,155 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						}
 
 						io->lastanimtime = 0;
-						LogDebug << temp << " " << temp1 << " " << temp2 << " " << temp3;
+						LogDebug << word << " " << temp1 << " " << temp2 << " " << temp3;
 					}
 				}
-				else if (!strcmp(temp, "RUNE"))
+				else if (!strcmp(word, "RUNE"))
 				{
-					pos		 = GetNextWord(es, pos, temp);
+					pos		 = GetNextWord(es, pos, word);
 					long add = 0;
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
-						if (iCharIn(temp, 'A')) add = 1;
+						if (iCharIn(word, 'A')) add = 1;
 
-						if (iCharIn(temp, 'R')) add = -1;
+						if (iCharIn(word, 'R')) add = -1;
 
-						pos = GetNextWord(es, pos, temp);
+						pos = GetNextWord(es, pos, word);
 					}
-					if( !add && strcmp( temp, "ALL" ) )	//ARX: jycorbel (2010-07-19) - In case of "RUNE ALL" cheat, add is useless it is no risky to keep it uninitialized.
+					if( !add && strcmp( word, "ALL" ) )	//ARX: jycorbel (2010-07-19) - In case of "RUNE ALL" cheat, add is useless it is no risky to keep it uninitialized.
 					{
 						ARX_CHECK_NO_ENTRY(); //add used without being initialized, remove rune
 					}
 
-					if (!strcasecmp(temp, "AAM"))
+					if (!strcasecmp(word, "AAM"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_AAM);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_AAM);
 					}
-					else if (!strcasecmp(temp, "CETRIUS"))
+					else if (!strcasecmp(word, "CETRIUS"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_CETRIUS);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_CETRIUS);
 					}
-					else if (!strcasecmp(temp, "COMUNICATUM"))
+					else if (!strcasecmp(word, "COMUNICATUM"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_COMUNICATUM);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_COMUNICATUM);
 					}
-					else if (!strcasecmp(temp, "COSUM"))
+					else if (!strcasecmp(word, "COSUM"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_COSUM);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_COSUM);
 					}
-					else if (!strcasecmp(temp, "FOLGORA"))
+					else if (!strcasecmp(word, "FOLGORA"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_FOLGORA);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_FOLGORA);
 					}
-					else if (!strcasecmp(temp, "FRIDD"))
+					else if (!strcasecmp(word, "FRIDD"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_FRIDD);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_FRIDD);
 					}
-					else if (!strcasecmp(temp, "KAOM"))
+					else if (!strcasecmp(word, "KAOM"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_KAOM);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_KAOM);
 					}
-					else if (!strcasecmp(temp, "MEGA"))
+					else if (!strcasecmp(word, "MEGA"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_MEGA);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_MEGA);
 					}
-					else if (!strcasecmp(temp, "MORTE"))
+					else if (!strcasecmp(word, "MORTE"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_MORTE);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_MORTE);
 					}
-					else if (!strcasecmp(temp, "MOVIS"))
+					else if (!strcasecmp(word, "MOVIS"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_MOVIS);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_MOVIS);
 					}
-					else if (!strcasecmp(temp, "NHI"))
+					else if (!strcasecmp(word, "NHI"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_NHI);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_NHI);
 					}
-					else if (!strcasecmp(temp, "RHAA"))
+					else if (!strcasecmp(word, "RHAA"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_RHAA);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_RHAA);
 					}
-					else if (!strcasecmp(temp, "SPACIUM"))
+					else if (!strcasecmp(word, "SPACIUM"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_SPACIUM);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_SPACIUM);
 					}
-					else if (!strcasecmp(temp, "STREGUM"))
+					else if (!strcasecmp(word, "STREGUM"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_STREGUM);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_STREGUM);
 					}
-					else if (!strcasecmp(temp, "TAAR"))
+					else if (!strcasecmp(word, "TAAR"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_TAAR);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_TAAR);
 					}
-					else if (!strcasecmp(temp, "TEMPUS"))
+					else if (!strcasecmp(word, "TEMPUS"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_TEMPUS);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_TEMPUS);
 					}
-					else if (!strcasecmp(temp, "TERA"))
+					else if (!strcasecmp(word, "TERA"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_TERA);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_TERA);
 					}
-					else if (!strcasecmp(temp, "VISTA"))
+					else if (!strcasecmp(word, "VISTA"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_VISTA);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_VISTA);
 					}
-					else if (!strcasecmp(temp, "VITAE"))
+					else if (!strcasecmp(word, "VITAE"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_VITAE);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_VITAE);
 					}
-					else if (!strcasecmp(temp, "YOK"))
+					else if (!strcasecmp(word, "YOK"))
 					{
 						if (add == 1) ARX_Player_Rune_Add(FLAG_YOK);
 						else if (add == -1) ARX_Player_Rune_Remove(FLAG_YOK);
 					}
-					else if (!strcasecmp(temp, "ALL"))
+					else if (!strcasecmp(word, "ALL"))
 						ARX_PLAYER_Rune_Add_All();
 
-					LogDebug << "RUNE "<< add << " " << temp;
+					LogDebug << "RUNE "<< add << " " << word;
 				}
 
 				break;
 			case 'C':
 
-				if (!strcmp(temp, "CINE")) //CAMERA_ACTIVATE
+				if (!strcmp(word, "CINE")) //CAMERA_ACTIVATE
 				{
 					long preload = 0;
-					pos = GetNextWord(es, pos, temp);
-					LogDebug << "CINE " << temp;
+					pos = GetNextWord(es, pos, word);
+					LogDebug << "CINE " << word;
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
-						if (iCharIn(temp, 'P'))
+						if (iCharIn(word, 'P'))
 							preload = 1;
 
-						pos = GetNextWord(es, pos, temp);
+						pos = GetNextWord(es, pos, word);
 					}
 
-					if (!strcasecmp(temp, "KILL"))
+					if (!strcasecmp(word, "KILL"))
 					{
 						DANAE_KillCinematic();
 					}
-					else if (!strcasecmp(temp, "PLAY"))
+					else if (!strcasecmp(word, "PLAY"))
 					{
 						PLAY_LOADED_CINEMATIC = 1;
 						ARX_TIME_Pause();
@@ -1290,26 +1290,26 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						{
 							char temp2[256];
 							strcpy(temp2, "Graph\\interface\\illustrations\\");
-							strcat(temp2, temp.c_str());
+							strcat(temp2, word.c_str());
 							strcat(temp2, ".cin");
-							temp += ".cin";
+							word += ".cin";
 
 							if (PAK_FileExist(temp2))
 							{
-								strcpy(WILL_LAUNCH_CINE, temp.c_str());
+								strcpy(WILL_LAUNCH_CINE, word.c_str());
 								CINE_PRELOAD = preload;
 							}
 						}
 					}
 				}
-				else if (!strcmp(temp, "COLLISION"))
+				else if (!strcmp(word, "COLLISION"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					LogDebug <<  "COLLISION " << temp;
+					pos = GetNextWord(es, pos, word);
+					LogDebug <<  "COLLISION " << word;
 
 					if (io)
 					{
-						if ((!strcasecmp(temp, "ON")) || (!strcasecmp(temp, "YES")))
+						if ((!strcasecmp(word, "ON")) || (!strcasecmp(word, "YES")))
 						{
 							if (io->ioflags & IO_NO_COLLISIONS)
 							{
@@ -1347,47 +1347,47 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							io->ioflags |= IO_NO_COLLISIONS;
 					}
 				}
-				else if (!strcmp(temp, "CAMERACONTROL"))
+				else if (!strcmp(word, "CAMERACONTROL"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					LogDebug <<  "CAMERA_CONTROL "<< temp;
+					pos = GetNextWord(es, pos, word);
+					LogDebug <<  "CAMERA_CONTROL "<< word;
 
-					if (!strcasecmp(temp, "ON")) CAMERACONTROLLER = io;
+					if (!strcasecmp(word, "ON")) CAMERACONTROLLER = io;
 					else CAMERACONTROLLER = NULL;
 				}
-				else if (!strcmp(temp, "CONVERSATION"))
+				else if (!strcmp(word, "CONVERSATION"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					LogDebug <<  "CONVERSATION " << temp;
+					pos = GetNextWord(es, pos, word);
+					LogDebug <<  "CONVERSATION " << word;
 					long nb_people = 0;
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
-						if (CharIn(temp, '0')) nb_people = 0;
+						if (CharIn(word, '0')) nb_people = 0;
 
-						if (CharIn(temp, '1')) nb_people = 1;
+						if (CharIn(word, '1')) nb_people = 1;
 
-						if (CharIn(temp, '2')) nb_people = 2;
+						if (CharIn(word, '2')) nb_people = 2;
 
-						if (CharIn(temp, '3')) nb_people = 3;
+						if (CharIn(word, '3')) nb_people = 3;
 
-						if (CharIn(temp, '4')) nb_people = 4;
+						if (CharIn(word, '4')) nb_people = 4;
 
-						if (CharIn(temp, '5')) nb_people = 5;
+						if (CharIn(word, '5')) nb_people = 5;
 
-						if (CharIn(temp, '6')) nb_people = 6;
+						if (CharIn(word, '6')) nb_people = 6;
 
-						if (CharIn(temp, '7')) nb_people = 7;
+						if (CharIn(word, '7')) nb_people = 7;
 
-						if (CharIn(temp, '8')) nb_people = 8;
+						if (CharIn(word, '8')) nb_people = 8;
 
-						if (CharIn(temp, '9')) nb_people = 9;
+						if (CharIn(word, '9')) nb_people = 9;
 
-						pos = GetNextWord(es, pos, temp);
-						LogDebug <<  temp;
+						pos = GetNextWord(es, pos, word);
+						LogDebug <<  word;
 					}
 
-					if (!strcmp(temp, "ON"))
+					if (!strcmp(word, "ON"))
 					{
 						ARX_CONVERSATION = 1;
 					}
@@ -1402,9 +1402,9 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 						for (long j = 0; j < nb_people; j++)
 						{
-							pos = GetNextWord(es, pos, temp);
-							LogDebug <<  temp;
-							long t = GetTargetByNameTarget(temp);
+							pos = GetNextWord(es, pos, word);
+							LogDebug <<  word;
+							long t = GetTargetByNameTarget(word);
 
 							if (t == -2) //self
 							{
@@ -1422,20 +1422,20 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						}
 					}
 				}
-				else if (!strcmp(temp, "CAMERAACTIVATE"))
+				else if (!strcmp(word, "CAMERAACTIVATE"))
 				{
 					FRAME_COUNT = -1;
-					pos = GetNextWord(es, pos, temp);
-					LogDebug <<  "CAMERA_ACTIVATE "<< temp;
+					pos = GetNextWord(es, pos, word);
+					LogDebug <<  "CAMERA_ACTIVATE "<< word;
 
-					if (!strcasecmp(temp, "NONE"))
+					if (!strcasecmp(word, "NONE"))
 					{
 						MasterCamera.exist = 0;
 					}
 					else
 					{
 						FRAME_COUNT = 0;
-						long t = GetTargetByNameTarget(temp);
+						long t = GetTargetByNameTarget(word);
 
 						if (t == -2) t = GetInterNum(io);
 
@@ -1452,54 +1452,54 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						}
 					}
 				}
-				else if (!strcmp(temp, "CAMERASMOOTHING"))
+				else if (!strcmp(word, "CAMERASMOOTHING"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					LogDebug <<  "CAMERA_SMOOTHING "<< temp;
+					pos = GetNextWord(es, pos, word);
+					LogDebug <<  "CAMERA_SMOOTHING "<< word;
 
 					if (io != NULL)
 					{
 						if (io->ioflags & IO_CAMERA)
 						{
-							float fo = GetVarValueInterpretedAsFloat(temp, esss, io);
+							float fo = GetVarValueInterpretedAsFloat(word, esss, io);
 							EERIE_CAMERA * cam = (EERIE_CAMERA *)io->_camdata;
 							cam->smoothing = fo;
 						}
 					}
 				}
-				else if (!strcmp(temp, "CINEMASCOPE"))
+				else if (!strcmp(word, "CINEMASCOPE"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					LogDebug <<  "CINEMASCOPE "<< temp;
+					pos = GetNextWord(es, pos, word);
+					LogDebug <<  "CINEMASCOPE "<< word;
 					long smooth = 0;
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
-						if ((temp[1] == 's') || (temp[1] == 'S'))
+						if ((word[1] == 's') || (word[1] == 'S'))
 						{
 							smooth = 1;
 						}
 
-						pos = GetNextWord(es, pos, temp);
-						LogDebug <<  temp;
+						pos = GetNextWord(es, pos, word);
+						LogDebug <<  word;
 					}
 
-					if (!strcasecmp(temp, "ON"))
+					if (!strcasecmp(word, "ON"))
 					{
 						ARX_INTERFACE_SetCinemascope(1, smooth);
 					}
 					else ARX_INTERFACE_SetCinemascope(0, smooth);
 				}
-				else if (!strcmp(temp, "CAMERAFOCAL"))
+				else if (!strcmp(word, "CAMERAFOCAL"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					LogDebug <<  "CAMERA_FOCAL "<< temp;
+					pos = GetNextWord(es, pos, word);
+					LogDebug <<  "CAMERA_FOCAL "<< word;
 
 					if (io != NULL)
 					{
 						if (io->ioflags & IO_CAMERA)
 						{
-							float fo = GetVarValueInterpretedAsFloat(temp, esss, io);
+							float fo = GetVarValueInterpretedAsFloat(word, esss, io);
 							EERIE_CAMERA * cam = (EERIE_CAMERA *)io->_camdata;
 							cam->focal = fo;
 
@@ -1508,12 +1508,12 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						}
 					}
 				}
-				else if (!strcmp(temp, "CAMERATRANSLATETARGET"))
+				else if (!strcmp(word, "CAMERATRANSLATETARGET"))
 				{
 					std::string temp2;
 					std::string temp3;
 
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 					pos = GetNextWord(es, pos, temp2);
 					pos = GetNextWord(es, pos, temp3);
 
@@ -1522,7 +1522,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						if (io->ioflags & IO_CAMERA)
 						{
 							EERIE_3D fo;
-							fo.x = GetVarValueInterpretedAsFloat(temp, esss, io);
+							fo.x = GetVarValueInterpretedAsFloat(word, esss, io);
 							fo.y = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fo.z = GetVarValueInterpretedAsFloat(temp3, esss, io);
 							EERIE_CAMERA * cam = (EERIE_CAMERA *)io->_camdata;
@@ -1532,9 +1532,9 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						}
 					}
 
-					LogDebug <<  "CAMERA_TRANSLATE_TARGET "<< temp<< " "<< temp2<< " "<< temp3;
+					LogDebug <<  "CAMERA_TRANSLATE_TARGET "<< word<< " "<< temp2<< " "<< temp3;
 				}
-				else if (!strcmp(temp, "CLOSESTEALBAG"))
+				else if (!strcmp(word, "CLOSESTEALBAG"))
 				{
 					if ((io) && (io->ioflags & IO_NPC))
 					{
@@ -1566,74 +1566,74 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				break;
 			case 'Q':
 
-				if (!strcmp(temp, "QUAKE"))
+				if (!strcmp(word, "QUAKE"))
 				{
 					float f1, f2, f3; // intensity duration period
-					pos = GetNextWord(es, pos, temp);
-					f1 = GetVarValueInterpretedAsFloat(temp, esss, io);
-					pos = GetNextWord(es, pos, temp);
-					f2 = GetVarValueInterpretedAsFloat(temp, esss, io);
-					pos = GetNextWord(es, pos, temp);
-					f3 = GetVarValueInterpretedAsFloat(temp, esss, io);
+					pos = GetNextWord(es, pos, word);
+					f1 = GetVarValueInterpretedAsFloat(word, esss, io);
+					pos = GetNextWord(es, pos, word);
+					f2 = GetVarValueInterpretedAsFloat(word, esss, io);
+					pos = GetNextWord(es, pos, word);
+					f3 = GetVarValueInterpretedAsFloat(word, esss, io);
 					AddQuakeFX(f1, f2, f3, 1);
 					LogDebug <<  "QUAKE";
 				}
-				else if (!strcmp(temp, "QUEST"))
+				else if (!strcmp(word, "QUEST"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					ARX_PLAYER_Quest_Add(temp.c_str());
-					LogDebug <<  "QUEST "<< temp;
+					pos = GetNextWord(es, pos, word);
+					ARX_PLAYER_Quest_Add(word.c_str());
+					LogDebug <<  "QUEST "<< word;
 				}
 
 				break;
 			case 'N':
 
-				if (!strcmp(temp, "NOP"))
+				if (!strcmp(word, "NOP"))
 				{
 					LogDebug <<  "NOP";
 				}
-				else if (!strcmp(temp, "NOTE"))
+				else if (!strcmp(word, "NOTE"))
 				{
 					ARX_INTERFACE_NOTE_TYPE type = NOTE_TYPE_UNDEFINED;
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					if (!strcasecmp(temp, "NOTE"))
+					if (!strcasecmp(word, "NOTE"))
 						type = NOTE_TYPE_NOTE;
 
-					if (!strcasecmp(temp, "NOTICE"))
+					if (!strcasecmp(word, "NOTICE"))
 						type = NOTE_TYPE_NOTICE;
 
-					if (!strcasecmp(temp, "BOOK"))
+					if (!strcasecmp(word, "BOOK"))
 						type = NOTE_TYPE_BOOK;
 
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if (player.Interface & INTER_NOTE)
 						ARX_INTERFACE_NoteClose();
 					else
 					{
-						ARX_INTERFACE_NoteOpen(type, temp.c_str());
+						ARX_INTERFACE_NoteOpen(type, word.c_str());
 					}
 				}
 
 				break;
 			case 'S':
 
-				if (!strcmp(temp, "SPELLCAST"))
+				if (!strcmp(word, "SPELLCAST"))
 				{
 
 					std::string temp2;
 					long duration = -1;
 					long flags = 0;
 					long dur = 0;
-					pos = GetNextWord(es, pos, temp); // switch or level
+					pos = GetNextWord(es, pos, word); // switch or level
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
-						if (iCharIn(temp, 'K'))
+						if (iCharIn(word, 'K'))
 						{
-							pos = GetNextWord(es, pos, temp); //spell id
-							long spellid = GetSpellId(temp);
+							pos = GetNextWord(es, pos, word); //spell id
+							long spellid = GetSpellId(word);
 							long from = GetInterNum(io);
 
 							if (ValidIONum(from))
@@ -1649,7 +1649,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							goto suite;
 						}
 
-						if (iCharIn(temp, 'D'))
+						if (iCharIn(word, 'D'))
 						{
 							flags |= SPELLCAST_FLAG_NOCHECKCANCAST;
 							pos = GetNextWord(es, pos, temp2); // duration
@@ -1663,39 +1663,39 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							dur = 1;
 						}
 
-						if (iCharIn(temp, 'X'))
+						if (iCharIn(word, 'X'))
 						{
 							flags |= SPELLCAST_FLAG_NOSOUND;
 						}
 
-						if (iCharIn(temp, 'M'))
+						if (iCharIn(word, 'M'))
 						{
 							flags |= SPELLCAST_FLAG_NOCHECKCANCAST;
 							flags |= SPELLCAST_FLAG_NODRAW;
 						}
 
-						if (iCharIn(temp, 'S'))
+						if (iCharIn(word, 'S'))
 						{
 							flags |= SPELLCAST_FLAG_NOCHECKCANCAST;
 							flags |= SPELLCAST_FLAG_NOANIM;
 						}
 
-						if (iCharIn(temp, 'F'))
+						if (iCharIn(word, 'F'))
 						{
 							flags |= SPELLCAST_FLAG_NOCHECKCANCAST;
 							flags |= SPELLCAST_FLAG_NOMANA;
 						}
 
-						if (iCharIn(temp, 'Z'))
+						if (iCharIn(word, 'Z'))
 						{
 							flags |= SPELLCAST_FLAG_RESTORE;
 						}
 
-						pos = GetNextWord(es, pos, temp); // level
+						pos = GetNextWord(es, pos, word); // level
 					}
 
 					long level;
-					level = (long)GetVarValueInterpretedAsFloat(temp, esss, io);
+					level = (long)GetVarValueInterpretedAsFloat(word, esss, io);
 
 					if (level < 1) level = 1;
 					else if (level > 10) level = 10;
@@ -1703,12 +1703,12 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					if (!dur)
 						duration = 1000 + level * 2000;
 
-					pos = GetNextWord(es, pos, temp); //spell id
+					pos = GetNextWord(es, pos, word); //spell id
 					long spellid;
-					spellid = GetSpellId(temp);
-					pos = GetNextWord(es, pos, temp); //spell target
+					spellid = GetSpellId(word);
+					pos = GetNextWord(es, pos, word); //spell target
 					long t;
-					t = GetTargetByNameTarget(temp);
+					t = GetTargetByNameTarget(word);
 
 					if (t <= -1) t = GetInterNum(io);
 
@@ -1728,7 +1728,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					;
 					LogDebug << "goto suite";
 				}
-				else if (!strcmp(temp, "SPEAK")) // speak say_ident actions
+				else if (!strcmp(word, "SPEAK")) // speak say_ident actions
 				{
 					ARX_CINEMATIC_SPEECH acs;
 					acs.type = ARX_CINE_SPEECH_NONE;
@@ -1943,31 +1943,31 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						}
 					}
 				}
-				else if (!strcmp(temp, "SHOPCATEGORY"))
+				else if (!strcmp(word, "SHOPCATEGORY"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if (io->shop_category) free(io->shop_category);
 
 					io->shop_category = NULL;
-					io->shop_category = (char *)malloc(temp.length() + 1);
+					io->shop_category = (char *)malloc(word.length() + 1);
 
 					if (io->shop_category)
-						strcpy(io->shop_category, temp.c_str());
+						strcpy(io->shop_category, word.c_str());
 				}
-				else if (!strcmp(temp, "SHOPMULTIPLY"))
+				else if (!strcmp(word, "SHOPMULTIPLY"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					io->shop_multiply = GetVarValueInterpretedAsFloat(temp, esss, io);
+					pos = GetNextWord(es, pos, word);
+					io->shop_multiply = GetVarValueInterpretedAsFloat(word, esss, io);
 				}
-				else if (!strcmp(temp, "SETPOISONOUS"))
+				else if (!strcmp(word, "SETPOISONOUS"))
 				{
 					float poisonous = 0.f;
 					float poisonous_count = 0.f;
-					pos = GetNextWord(es, pos, temp);
-					poisonous = GetVarValueInterpretedAsFloat(temp, esss, io);;
-					pos = GetNextWord(es, pos, temp);
-					poisonous_count = GetVarValueInterpretedAsFloat(temp, esss, io);
+					pos = GetNextWord(es, pos, word);
+					poisonous = GetVarValueInterpretedAsFloat(word, esss, io);;
+					pos = GetNextWord(es, pos, word);
+					poisonous_count = GetVarValueInterpretedAsFloat(word, esss, io);
 
 					if (poisonous_count == 0)
 					{
@@ -1985,69 +1985,69 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					}
 
 				}
-				else if (!strcmp(temp, "SETPLATFORM"))
+				else if (!strcmp(word, "SETPLATFORM"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					if (!strcasecmp(temp, "ON"))
+					if (!strcasecmp(word, "ON"))
 					{
 						io->GameFlags |= GFLAG_PLATFORM;
 					}
 					else io->GameFlags &= ~GFLAG_PLATFORM;
 				}
-				else if (!strcmp(temp, "SETGORE"))
+				else if (!strcmp(word, "SETGORE"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					if (!strcasecmp(temp, "ON"))
+					if (!strcasecmp(word, "ON"))
 					{
 						io->GameFlags &= ~GFLAG_NOGORE;
 					}
 					else io->GameFlags |= GFLAG_NOGORE;
 				}
-				else if (!strcmp(temp, "SETUNIQUE"))
+				else if (!strcmp(word, "SETUNIQUE"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					if (!strcasecmp(temp, "ON"))
+					if (!strcasecmp(word, "ON"))
 					{
 						io->ioflags |= IO_UNIQUE;
 					}
 					else io->ioflags &= ~IO_UNIQUE;
 				}
-				else if (!strcmp(temp, "SETBLACKSMITH"))
+				else if (!strcmp(word, "SETBLACKSMITH"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					if (!strcasecmp(temp, "ON"))
+					if (!strcasecmp(word, "ON"))
 					{
 						io->ioflags |= IO_BLACKSMITH;
 					}
 					else io->ioflags &= ~IO_BLACKSMITH;
 				}
-				else if (!strcmp(temp, "SETELEVATOR"))
+				else if (!strcmp(word, "SETELEVATOR"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					if (!strcasecmp(temp, "ON"))
+					if (!strcasecmp(word, "ON"))
 					{
 						io->GameFlags |= GFLAG_ELEVATOR;
 					}
 					else io->GameFlags &= ~GFLAG_ELEVATOR;
 				}
-				else if (!strcmp(temp, "SETTRAP")) // -1 = off
+				else if (!strcmp(word, "SETTRAP")) // -1 = off
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if ((io) && (io->ioflags & IO_FIX))
 					{
-						if (!strcasecmp(temp, "off"))
+						if (!strcasecmp(word, "off"))
 						{
 							io->_fixdata->trapvalue = -1;
 						}
 						else
 						{
-							io->_fixdata->trapvalue = (char)GetVarValueInterpretedAsFloat(temp, esss, io);
+							io->_fixdata->trapvalue = (char)GetVarValueInterpretedAsFloat(word, esss, io);
 
 							if (io->_fixdata->trapvalue < -1) io->_fixdata->trapvalue = -1;
 
@@ -2055,19 +2055,19 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						}
 					}
 				}
-				else if (!strcmp(temp, "SETSECRET")) // -1 = off
+				else if (!strcmp(word, "SETSECRET")) // -1 = off
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if ((io) && (io->ioflags & IO_FIX))
 					{
-						if (!strcasecmp(temp, "off"))
+						if (!strcasecmp(word, "off"))
 						{
 							io->secretvalue = -1;
 						}
 						else
 						{
-							io->secretvalue = (char)GetVarValueInterpretedAsFloat(temp, esss, io);
+							io->secretvalue = (char)GetVarValueInterpretedAsFloat(word, esss, io);
 
 							if (io->secretvalue < -1) io->secretvalue = -1;
 
@@ -2075,19 +2075,19 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						}
 					}
 				}
-				else if (!strcmp(temp, "SETDETECT")) // -1 = off
+				else if (!strcmp(word, "SETDETECT")) // -1 = off
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if ((io) && (io->ioflags & IO_NPC))
 					{
-						if (!strcasecmp(temp, "off"))
+						if (!strcasecmp(word, "off"))
 						{
 							io->_npcdata->fDetect = -1;
 						}
 						else
 						{
-							io->_npcdata->fDetect = (char)GetVarValueInterpretedAsFloat(temp, esss, io);
+							io->_npcdata->fDetect = (char)GetVarValueInterpretedAsFloat(word, esss, io);
 
 							if (io->_npcdata->fDetect < -1)	io->_npcdata->fDetect = -1;
 
@@ -2095,19 +2095,19 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						}
 					}
 				}
-				else if (!strcmp(temp, "SETSTEAL")) // -1 = off
+				else if (!strcmp(word, "SETSTEAL")) // -1 = off
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if ((io) && (io->ioflags & IO_ITEM))
 					{
-						if (!strcasecmp(temp, "off"))
+						if (!strcasecmp(word, "off"))
 						{
 							io->_itemdata->stealvalue = -1;
 						}
 						else
 						{
-							io->_itemdata->stealvalue = (char)GetVarValueInterpretedAsFloat(temp, esss, io);
+							io->_itemdata->stealvalue = (char)GetVarValueInterpretedAsFloat(word, esss, io);
 
 							if (io->_itemdata->stealvalue < -1)	io->_itemdata->stealvalue = -1;
 
@@ -2117,19 +2117,19 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						}
 					}
 				}
-				else if (!strcmp(temp, "SETLIGHT")) // -1 = off  for ITEM only
+				else if (!strcmp(word, "SETLIGHT")) // -1 = off  for ITEM only
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if ((io) && (io->ioflags & IO_ITEM))
 					{
-						if (!strcasecmp(temp, "off"))
+						if (!strcasecmp(word, "off"))
 						{
 							io->_itemdata->stealvalue = -1;
 						}
 						else
 						{
-							io->_itemdata->LightValue = (char)GetVarValueInterpretedAsFloat(temp, esss, io);
+							io->_itemdata->LightValue = (char)GetVarValueInterpretedAsFloat(word, esss, io);
 
 							if (io->_itemdata->LightValue < -1)  io->_itemdata->LightValue = -1;
 
@@ -2137,85 +2137,85 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						}
 					}
 				}
-				else if (!strcmp(temp, "SETBLOOD"))
+				else if (!strcmp(word, "SETBLOOD"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					float r = GetVarValueInterpretedAsFloat(temp, esss, io);
-					pos = GetNextWord(es, pos, temp);
-					float g = GetVarValueInterpretedAsFloat(temp, esss, io);
-					pos = GetNextWord(es, pos, temp);
-					float b = GetVarValueInterpretedAsFloat(temp, esss, io);
+					pos = GetNextWord(es, pos, word);
+					float r = GetVarValueInterpretedAsFloat(word, esss, io);
+					pos = GetNextWord(es, pos, word);
+					float g = GetVarValueInterpretedAsFloat(word, esss, io);
+					pos = GetNextWord(es, pos, word);
+					float b = GetVarValueInterpretedAsFloat(word, esss, io);
 
 					if (io->ioflags & IO_NPC)
 					{
 						io->_npcdata->blood_color = D3DRGB(r, g, b);
 					}
 				}
-				else if (!strcmp(temp, "SETMATERIAL"))
+				else if (!strcmp(word, "SETMATERIAL"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if (io)
 					{
-						io->material = ARX_MATERIAL_GetIdByName(temp.c_str());
+						io->material = ARX_MATERIAL_GetIdByName(word.c_str());
 					}
 
-					LogDebug <<  "SET_MATERIAL "<< temp;
+					LogDebug <<  "SET_MATERIAL "<< word;
 				}
-				else if (!strcmp(temp, "SETSPEAKPITCH"))
+				else if (!strcmp(word, "SETSPEAKPITCH"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if ((io) && (io->ioflags & IO_NPC))
 					{
-						io->_npcdata->speakpitch = GetVarValueInterpretedAsFloat(temp, esss, io);
+						io->_npcdata->speakpitch = GetVarValueInterpretedAsFloat(word, esss, io);
 
 						if (io->_npcdata->speakpitch < 0.6f) io->_npcdata->speakpitch = 0.6f;
 					}
 
-					LogDebug <<  "SET_SPEAK_PITCH "<< temp;
+					LogDebug <<  "SET_SPEAK_PITCH "<< word;
 				}
-				else if (!strcmp(temp, "SETFOOD"))
+				else if (!strcmp(word, "SETFOOD"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if (io->ioflags & IO_ITEM)
 					{
-						io->_itemdata->food_value = (char)GetVarValueInterpretedAsFloat(temp, esss, io);
+						io->_itemdata->food_value = (char)GetVarValueInterpretedAsFloat(word, esss, io);
 					}
 				}
-				else if (!strcmp(temp, "SETSPEED"))
+				else if (!strcmp(word, "SETSPEED"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					io->basespeed = GetVarValueInterpretedAsFloat(temp, esss, io);
+					pos = GetNextWord(es, pos, word);
+					io->basespeed = GetVarValueInterpretedAsFloat(word, esss, io);
 
 					if (io->basespeed < 0.f) io->basespeed = 0.f;
 
 					if (io->basespeed > 10.f) io->basespeed = 10.f;
 				}
-				else if (!strcmp(temp, "SETSTAREFACTOR"))
+				else if (!strcmp(word, "SETSTAREFACTOR"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if ((io) && (io->ioflags & IO_NPC))
 					{
-						io->_npcdata->stare_factor = GetVarValueInterpretedAsFloat(temp, esss, io);
+						io->_npcdata->stare_factor = GetVarValueInterpretedAsFloat(word, esss, io);
 					}
 				}
-				else if (!strcmp(temp, "SETGROUP"))
+				else if (!strcmp(word, "SETGROUP"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 					long remove = 0;
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
-						if (iCharIn(temp, 'R'))
+						if (iCharIn(word, 'R'))
 							remove = 1;
 
-						pos = GetNextWord(es, pos, temp);
+						pos = GetNextWord(es, pos, word);
 					}
 
-					std::string temp1 = GetVarValueInterpretedAsText(temp, esss, io);
+					std::string temp1 = GetVarValueInterpretedAsText(word, esss, io);
 
 					if (remove)
 					{
@@ -2230,44 +2230,44 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						ARX_IOGROUP_Add(io, temp1.c_str());
 					}
 
-					LogDebug <<  "SET_GROUP "<< temp;
+					LogDebug <<  "SET_GROUP "<< word;
 				}
-				else if (!strcmp(temp, "SETNPCSTAT"))
+				else if (!strcmp(word, "SETNPCSTAT"))
 				{
 					std::string temp2;
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 					pos = GetNextWord(es, pos, temp2);
-					ARX_NPC_SetStat(io, temp.c_str(), GetVarValueInterpretedAsFloat(temp2, esss, io));
-					LogDebug <<  "SET_NPC_STAT "<< temp;
+					ARX_NPC_SetStat(io, word.c_str(), GetVarValueInterpretedAsFloat(temp2, esss, io));
+					LogDebug <<  "SET_NPC_STAT "<< word;
 				}
-				else if (!strcmp(temp, "SETXPVALUE"))
+				else if (!strcmp(word, "SETXPVALUE"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if (io && (io->ioflags & IO_NPC))
 					{
-						io->_npcdata->xpvalue = (long)GetVarValueInterpretedAsFloat(temp, esss, io);
+						io->_npcdata->xpvalue = (long)GetVarValueInterpretedAsFloat(word, esss, io);
 
 						if (io->_npcdata->xpvalue < 0) io->_npcdata->xpvalue = 0;
 					}
 
-					LogDebug << "SET_XP_VALUE " << temp;
+					LogDebug << "SET_XP_VALUE " << word;
 				}
-				else if (!strcmp(temp, "SETNAME"))
+				else if (!strcmp(word, "SETNAME"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if (io != NULL)
 					{
-						strcpy(io->locname, temp.c_str());
+						strcpy(io->locname, word.c_str());
 					}
 
-					LogDebug <<  "SETNAME "<< temp;
+					LogDebug <<  "SETNAME "<< word;
 				}
-				else if (!strcmp(temp, "SETPLAYERTWEAK"))
+				else if (!strcmp(word, "SETPLAYERTWEAK"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					LogDebug <<  "SET_PLAYER_TWEAK "<< temp;
+					pos = GetNextWord(es, pos, word);
+					LogDebug <<  "SET_PLAYER_TWEAK "<< word;
 
 					if (io->tweakerinfo == NULL)
 					{
@@ -2279,81 +2279,81 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						}
 					}
 
-					if (!strcasecmp(temp, "SKIN"))
+					if (!strcasecmp(word, "SKIN"))
 					{
 						std::string temp2;
-						pos = GetNextWord(es, pos, temp);
-						LogDebug << temp;
+						pos = GetNextWord(es, pos, word);
+						LogDebug << word;
 						pos = GetNextWord(es, pos, temp2);
 						LogDebug << temp2;
 
 						if (io->tweakerinfo)
 						{
-							strcpy(io->tweakerinfo->skintochange, temp.c_str());
+							strcpy(io->tweakerinfo->skintochange, word.c_str());
 							strcpy(io->tweakerinfo->skinchangeto, temp2.c_str());
 						}
 					}
 					else	// Mesh Tweaker...
 					{
-						pos = GetNextWord(es, pos, temp);
-						LogDebug << temp;
+						pos = GetNextWord(es, pos, word);
+						LogDebug << word;
 
 						if (io->tweakerinfo)
 						{
-							strcpy(io->tweakerinfo->filename, temp.c_str());
+							strcpy(io->tweakerinfo->filename, word.c_str());
 						}
 					}
 				}
-				else if (!strcmp(temp, "SETCONTROLLEDZONE"))
+				else if (!strcmp(word, "SETCONTROLLEDZONE"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					ARX_PATH * ap = ARX_PATH_GetAddressByName(temp.c_str());
+					pos = GetNextWord(es, pos, word);
+					ARX_PATH * ap = ARX_PATH_GetAddressByName(word.c_str());
 
 					if (ap != NULL)
 					{
 						char title[64];
-						temp = GetName(io->filename);
-						sprintf(title, "%s_%04ld", temp.c_str(), io->ident);
+						word = GetName(io->filename);
+						sprintf(title, "%s_%04ld", word.c_str(), io->ident);
 						strcpy(ap->controled, title);
 					}
 
-					LogDebug << "SET_CONTROLLED_ZONE "<< temp;
+					LogDebug << "SET_CONTROLLED_ZONE "<< word;
 				}
-				else if ((!strcmp(temp, "SETSTATUS")) || (!strcmp(temp, "SETMAINEVENT")))
+				else if ((!strcmp(word, "SETSTATUS")) || (!strcmp(word, "SETMAINEVENT")))
 				{
-					pos = GetNextWord(es, pos, temp);
-					ARX_SCRIPT_SetMainEvent(io, temp);
-					LogDebug << "SETMAINEVENT "<< temp;
+					pos = GetNextWord(es, pos, word);
+					ARX_SCRIPT_SetMainEvent(io, word);
+					LogDebug << "SETMAINEVENT "<< word;
 				}
-				else if (!strcmp(temp, "SETMOVEMODE"))
+				else if (!strcmp(word, "SETMOVEMODE"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if ((io != NULL) && (io->ioflags & IO_NPC))
 					{
-						if (!strcmp(temp, "WALK"))	ARX_NPC_ChangeMoveMode(io, WALKMODE);
+						if (!strcmp(word, "WALK"))	ARX_NPC_ChangeMoveMode(io, WALKMODE);
 
-						if (!strcmp(temp, "RUN"))	ARX_NPC_ChangeMoveMode(io, RUNMODE);
+						if (!strcmp(word, "RUN"))	ARX_NPC_ChangeMoveMode(io, RUNMODE);
 
-						if (!strcmp(temp, "NONE"))	ARX_NPC_ChangeMoveMode(io, NOMOVEMODE);
+						if (!strcmp(word, "NONE"))	ARX_NPC_ChangeMoveMode(io, NOMOVEMODE);
 
-						if (!strcmp(temp, "SNEAK"))	ARX_NPC_ChangeMoveMode(io, SNEAKMODE);
+						if (!strcmp(word, "SNEAK"))	ARX_NPC_ChangeMoveMode(io, SNEAKMODE);
 					}
 
-					LogDebug << "SETMOVEMODE %s"<< temp;
+					LogDebug << "SETMOVEMODE %s"<< word;
 				}
-				else if (!strcmp(temp, "SPAWN"))
+				else if (!strcmp(word, "SPAWN"))
 				{
 					std::string temp2;
 					std::string tmptext;
-					pos = GetNextWord(es, pos, temp);
-					LogDebug <<  "SPAWN "<< temp;
-					MakeUpcase(temp);
+					pos = GetNextWord(es, pos, word);
+					LogDebug <<  "SPAWN "<< word;
+					MakeUpcase(word);
 
-					if (!strcmp(temp, "NPC"))
+					if (!strcmp(word, "NPC"))
 					{
-						pos = GetNextWord(es, pos, temp); // object to spawn.
-						LogDebug <<  temp;
+						pos = GetNextWord(es, pos, word); // object to spawn.
+						LogDebug <<  word;
 						pos = GetNextWord(es, pos, temp2); // object ident for position
 						LogDebug << temp2;
 						long t = GetTargetByNameTarget(temp2);
@@ -2363,7 +2363,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						if ((t >= 0) && (t < inter.nbmax))
 						{
 							char tex2[256];
-							sprintf(tex2, "Graph\\Obj3D\\Interactive\\NPC\\%s", temp.c_str());
+							sprintf(tex2, "Graph\\Obj3D\\Interactive\\NPC\\%s", word.c_str());
 							File_Standardize(tex2, tmptext);
 							INTERACTIVE_OBJ * ioo;
 
@@ -2401,10 +2401,10 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							}
 						}
 					}
-					else if (!strcmp(temp, "ITEM"))
+					else if (!strcmp(word, "ITEM"))
 					{
-						pos = GetNextWord(es, pos, temp); // object to spawn.
-						LogDebug << temp;
+						pos = GetNextWord(es, pos, word); // object to spawn.
+						LogDebug << word;
 						pos = GetNextWord(es, pos, temp2); // object ident for position
 						LogDebug <<  temp2;
 						long t = GetTargetByNameTarget(temp2);
@@ -2414,7 +2414,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						if ((t >= 0) && (t < inter.nbmax))
 						{
 							char tex2[256];
-							sprintf(tex2, "Graph\\Obj3D\\Interactive\\ITEMS\\%s", temp.c_str());
+							sprintf(tex2, "Graph\\Obj3D\\Interactive\\ITEMS\\%s", word.c_str());
 							File_Standardize(tex2, tmptext);
 							INTERACTIVE_OBJ * ioo;
 
@@ -2441,7 +2441,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							}
 						}
 					}
-					else if (!strcmp(temp, "FIREBALL"))
+					else if (!strcmp(word, "FIREBALL"))
 					{
 						GetTargetPos(io);
 						EERIE_3D pos;
@@ -2454,60 +2454,60 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						ARX_MISSILES_Spawn(io, MISSILE_FIREBALL, &pos, &io->target);
 					}
 				}
-				else if (!strcmp(temp, "SETOBJECTTYPE"))
+				else if (!strcmp(word, "SETOBJECTTYPE"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 					long val = 1; // flag to add
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
-						if (iCharIn(temp, 'R'))
+						if (iCharIn(word, 'R'))
 						{
 							val = 0; // flag to remove
 						}
 
-						pos = GetNextWord(es, pos, temp);
+						pos = GetNextWord(es, pos, word);
 					}
 
-					ARX_EQUIPMENT_SetObjectType(io, temp.c_str(), val);
-					LogDebug <<  "SET_OBJECT_TYPE "<< temp;
+					ARX_EQUIPMENT_SetObjectType(io, word.c_str(), val);
+					LogDebug <<  "SET_OBJECT_TYPE "<< word;
 				}
-				else if (!strcmp(temp, "SETRIGHTHAND"))
+				else if (!strcmp(word, "SETRIGHTHAND"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					LogDebug <<  "SET_RIGHT_HAND %s ...OBSOLETE..."<< temp;
+					pos = GetNextWord(es, pos, word);
+					LogDebug <<  "SET_RIGHT_HAND %s ...OBSOLETE..."<< word;
 				}
-				else if (!strcmp(temp, "SETHUNGER"))
+				else if (!strcmp(word, "SETHUNGER"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					player.hunger = GetVarValueInterpretedAsFloat(temp, esss, io);
-					LogDebug <<  "SET_HUNGER "<< temp;
+					pos = GetNextWord(es, pos, word);
+					player.hunger = GetVarValueInterpretedAsFloat(word, esss, io);
+					LogDebug <<  "SET_HUNGER "<< word;
 				}
 
-				else if (!strcmp(temp, "SETLEFTHAND"))
+				else if (!strcmp(word, "SETLEFTHAND"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					LogDebug <<  "SET_LEFT_HAND %s ...OBSOLETE..."<< temp;
+					pos = GetNextWord(es, pos, word);
+					LogDebug <<  "SET_LEFT_HAND %s ...OBSOLETE..."<< word;
 				}
-				else if (!strcmp(temp, "SETSHIELD"))
+				else if (!strcmp(word, "SETSHIELD"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					LogDebug <<  "SET_SHIELD %s ...OBSOLETE..."<< temp;
+					pos = GetNextWord(es, pos, word);
+					LogDebug <<  "SET_SHIELD %s ...OBSOLETE..."<< word;
 				}
-				else if (!strcmp(temp, "SETTWOHANDED"))
+				else if (!strcmp(word, "SETTWOHANDED"))
 				{
 					LogDebug <<  "SET_TWO_HANDED ...OBSOLETE...";
 				}
-				else if (!strcmp(temp, "SETINTERACTIVITY"))
+				else if (!strcmp(word, "SETINTERACTIVITY"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					if (!strcasecmp(temp, "NONE"))
+					if (!strcasecmp(word, "NONE"))
 					{
 						io->GameFlags &= ~GFLAG_INTERACTIVITY;
 						io->GameFlags &= ~GFLAG_INTERACTIVITYHIDE;
 					}
-					else if (!strcasecmp(temp, "HIDE"))
+					else if (!strcasecmp(word, "HIDE"))
 					{
 						io->GameFlags &= ~GFLAG_INTERACTIVITY;
 						io->GameFlags |= GFLAG_INTERACTIVITYHIDE;
@@ -2518,9 +2518,9 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						io->GameFlags &= ~GFLAG_INTERACTIVITYHIDE;
 					}
 
-					LogDebug <<  "SET_INTERACTIVITY %s"<< temp;
+					LogDebug <<  "SET_INTERACTIVITY %s"<< word;
 				}
-				else if (!strcmp(temp, "SETEQUIP"))
+				else if (!strcmp(word, "SETEQUIP"))
 				{
 					std::string temp2;
 					temp2[0] = 0;
@@ -2533,15 +2533,15 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						if (!strcasecmp(temp3, "-r"))  ARX_EQUIPMENT_Remove_All_Special(io);
 						else
 						{
-							pos = GetNextWord(es, pos, temp);
-							LogDebug <<  temp;
+							pos = GetNextWord(es, pos, word);
+							LogDebug <<  word;
 							pos = GetNextWord(es, pos, temp2);
 							LogDebug <<  temp2;
 						}
 					}
 					else
 					{
-						temp = temp3;
+						word = temp3;
 						pos = GetNextWord(es, pos, temp2);
 						temp3[0] = 0;
 					}
@@ -2554,99 +2554,99 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					}
 					else flag = 0;
 
-					ARX_EQUIPMENT_SetEquip(io, temp3.c_str(), temp.c_str(), GetVarValueInterpretedAsFloat(temp2, esss, io), flag);
+					ARX_EQUIPMENT_SetEquip(io, temp3.c_str(), word.c_str(), GetVarValueInterpretedAsFloat(temp2, esss, io), flag);
 				}
-				else if (!strcmp(temp, "SETONEHANDED"))
+				else if (!strcmp(word, "SETONEHANDED"))
 				{
 
 					LogDebug <<  "SET_ONE_HANDED ...OBSOLETE...";
 				}
-				else if (!strcmp(temp, "SETWEAPON"))
+				else if (!strcmp(word, "SETWEAPON"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 					io->GameFlags &= ~GFLAG_HIDEWEAPON;
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
-						if (iCharIn(temp, 'H'))	// Hide Weapon
+						if (iCharIn(word, 'H'))	// Hide Weapon
 						{
 							io->GameFlags |= GFLAG_HIDEWEAPON;
 						}
 
-						pos = GetNextWord(es, pos, temp);
+						pos = GetNextWord(es, pos, word);
 					}
 
 					if ((io) && (io->ioflags & IO_NPC))
 					{
 						// temporarily removed for Alpha
-						strcpy(io->_npcdata->weaponname, temp.c_str());
-						Prepare_SetWeapon(io, temp);
+						strcpy(io->_npcdata->weaponname, word.c_str());
+						Prepare_SetWeapon(io, word);
 					}
 
-					LogDebug <<  "SET_WEAPON "<< temp;
+					LogDebug <<  "SET_WEAPON "<< word;
 				}
-				else if (!strcmp(temp, "SETLIFE"))
+				else if (!strcmp(word, "SETLIFE"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if (io != NULL)
 					{
 						if (io->ioflags & IO_NPC)
 						{
-							io->_npcdata->maxlife = io->_npcdata->life = GetVarValueInterpretedAsFloat(temp, esss, io);
+							io->_npcdata->maxlife = io->_npcdata->life = GetVarValueInterpretedAsFloat(word, esss, io);
 						}
 					}
 
-					LogDebug <<  "SET_LIFE "<< temp;
+					LogDebug <<  "SET_LIFE "<< word;
 				}
-				else if (!strcmp(temp, "SETDURABILITY"))
+				else if (!strcmp(word, "SETDURABILITY"))
 				{
 					long current = 0;
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
-						if (iCharIn(temp, 'C')) current = 1;
+						if (iCharIn(word, 'C')) current = 1;
 
-						pos = GetNextWord(es, pos, temp);
+						pos = GetNextWord(es, pos, word);
 					}
 
 					if (io != NULL)
 					{
 						if (!(io->ioflags & IO_NPC))
 						{
-							if (current) io->durability = GetVarValueInterpretedAsFloat(temp, esss, io);
-							else io->max_durability = io->durability = GetVarValueInterpretedAsFloat(temp, esss, io);
+							if (current) io->durability = GetVarValueInterpretedAsFloat(word, esss, io);
+							else io->max_durability = io->durability = GetVarValueInterpretedAsFloat(word, esss, io);
 						}
 					}
 
-					LogDebug <<  "SET_LIFE "<< temp;
+					LogDebug <<  "SET_LIFE "<< word;
 				}
-				else if (!strcmp(temp, "SETPATH"))
+				else if (!strcmp(word, "SETPATH"))
 				{
 					long wormspecific = 0;
 					long followdir = 0;
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
-						if (iCharIn(temp, 'W'))
+						if (iCharIn(word, 'W'))
 						{
 							wormspecific = 1;
 						}
 
-						if (iCharIn(temp, 'F'))
+						if (iCharIn(word, 'F'))
 						{
 							followdir = 1;
 						}
 
-						pos = GetNextWord(es, pos, temp);
+						pos = GetNextWord(es, pos, word);
 					}
 
 					if (io != NULL)
 					{
 
-						if (!strcasecmp(temp, "NONE"))
+						if (!strcasecmp(word, "NONE"))
 						{
 							if (io->usepath != NULL)
 							{
@@ -2656,7 +2656,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						}
 						else
 						{
-							ARX_PATH * ap = ARX_PATH_GetAddressByName(temp.c_str());
+							ARX_PATH * ap = ARX_PATH_GetAddressByName(word.c_str());
 
 							if ((ap != NULL) && (ap != io->usepath))
 							{
@@ -2687,12 +2687,12 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						}
 					}
 
-					LogDebug << "SET_PATH "<< temp;
+					LogDebug << "SET_PATH "<< word;
 				}
-				else if (!strcmp(temp, "SETTARGET"))
+				else if (!strcmp(word, "SETTARGET"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					LogDebug << "SET_TARGET "<< temp;
+					pos = GetNextWord(es, pos, word);
+					LogDebug << "SET_TARGET "<< word;
 					if ((io) && (io->ioflags & IO_NPC))
 					{
 						io->_npcdata->pathfind.flags &= ~PATHFIND_ALWAYS;
@@ -2700,25 +2700,25 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						io->_npcdata->pathfind.flags &= ~PATHFIND_NO_UPDATE;
 					}
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
 						if ((io) && (io->ioflags & IO_NPC))
 						{
-							if (iCharIn(temp, 'S'))
+							if (iCharIn(word, 'S'))
 								io->_npcdata->pathfind.flags |= PATHFIND_ONCE;
 
-							if (iCharIn(temp, 'A'))
+							if (iCharIn(word, 'A'))
 								io->_npcdata->pathfind.flags |= PATHFIND_ALWAYS;
 
-							if (iCharIn(temp, 'N'))
+							if (iCharIn(word, 'N'))
 								io->_npcdata->pathfind.flags |= PATHFIND_NO_UPDATE;
 						}
 
-						pos = GetNextWord(es, pos, temp);
-						LogDebug << temp;
+						pos = GetNextWord(es, pos, word);
+						LogDebug << word;
 					}
 
-					std::string temp1 = GetVarValueInterpretedAsText(temp, esss, io);
+					std::string temp1 = GetVarValueInterpretedAsText(word, esss, io);
 
 					if (io != NULL)
 					{
@@ -2734,11 +2734,11 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 								old_target = -12;
 						}
 
-						if (!strcasecmp(temp, "OBJECT"))
+						if (!strcasecmp(word, "OBJECT"))
 						{
-							pos = GetNextWord(es, pos, temp);
-							LogDebug <<  temp;
-							temp1 = GetVarValueInterpretedAsText(temp, esss, io);
+							pos = GetNextWord(es, pos, word);
+							LogDebug <<  word;
+							temp1 = GetVarValueInterpretedAsText(word, esss, io);
 						}
 
 						long t = GetTargetByNameTarget(temp1);
@@ -2777,18 +2777,18 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						}
 					}
 				}
-				else if (!strcmp(temp, "STARTTIMER"))
+				else if (!strcmp(word, "STARTTIMER"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 					long t = -1;
 
-					if (!strcmp(temp, "TIMER1")) t = 0;
+					if (!strcmp(word, "TIMER1")) t = 0;
 
-					if (!strcmp(temp, "TIMER2")) t = 1;
+					if (!strcmp(word, "TIMER2")) t = 1;
 
-					if (!strcmp(temp, "TIMER3")) t = 2;
+					if (!strcmp(word, "TIMER3")) t = 2;
 
-					if (!strcmp(temp, "TIMER4")) t = 3;
+					if (!strcmp(word, "TIMER4")) t = 3;
 
 					if (t > -1)
 					{
@@ -2797,29 +2797,29 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						if (esss->timers[t] == 0) esss->timers[t] = 1;
 					}
 
-					LogDebug <<  "START_TIMER "<< temp;
+					LogDebug <<  "START_TIMER "<< word;
 				}
-				else if (!strcmp(temp, "STOPTIMER"))
+				else if (!strcmp(word, "STOPTIMER"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 					long t = -1;
 
-					if (!strcmp(temp, "TIMER1")) t = 0;
+					if (!strcmp(word, "TIMER1")) t = 0;
 
-					if (!strcmp(temp, "TIMER2")) t = 1;
+					if (!strcmp(word, "TIMER2")) t = 1;
 
-					if (!strcmp(temp, "TIMER3")) t = 2;
+					if (!strcmp(word, "TIMER3")) t = 2;
 
-					if (!strcmp(temp, "TIMER4")) t = 3;
+					if (!strcmp(word, "TIMER4")) t = 3;
 
 					if (t > -1)
 					{
 						esss->timers[t] = 0;
 					}
 
-					LogDebug <<  "STOP_TIMER "<< temp;
+					LogDebug <<  "STOP_TIMER "<< word;
 				}
-				else if (!strcmp(temp, "SENDEVENT"))
+				else if (!strcmp(word, "SENDEVENT"))
 				{
 					std::string evt;
 					std::string temp1;
@@ -2827,7 +2827,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					std::string temp3;
 					char zonename[128];
 					pos = GetNextWord(es, pos, temp1);
-					LogDebug << "SEND_EVENT "<< temp;
+					LogDebug << "SEND_EVENT "<< word;
 					long radius = 0;
 					long zone = 0;
 					long group = 0;
@@ -3009,7 +3009,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 					EVENT_SENDER = oes;
 				}
-				else if (!strcmp(temp, "SET"))
+				else if (!strcmp(word, "SET"))
 				{
 					std::string temp2;
 					char tempp[256];
@@ -3017,27 +3017,27 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					float fval;
 					SCRIPT_VAR * sv = NULL;
 					long a = 0;
-					pos = GetNextWord(es, pos, temp, 1);
-					LogDebug <<  "SET "<< temp;
+					pos = GetNextWord(es, pos, word, 1);
+					LogDebug <<  "SET "<< word;
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
-						if (iCharIn(temp, 'A')) a = 1;
+						if (iCharIn(word, 'A')) a = 1;
 
-						pos = GetNextWord(es, pos, temp, 1);
-						LogDebug <<  temp;
+						pos = GetNextWord(es, pos, word, 1);
+						LogDebug <<  word;
 					}
 
 					pos = GetNextWord(es, pos, temp2);
 
-					switch (temp[0])
+					switch (word[0])
 					{
 						case '$': // GLOBAL TEXT
 							strcpy(tempp, GetVarValueInterpretedAsText(temp2, esss, io).c_str());
 
 							if (a) RemoveNumerics(tempp);
 
-							sv = SETVarValueText(svar, NB_GLOBALS, temp, tempp);
+							sv = SETVarValueText(svar, NB_GLOBALS, word, tempp);
 
 							if (sv == NULL)
 							{
@@ -3051,7 +3051,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 							if (a) RemoveNumerics(tempp);
 
-							sv = SETVarValueText(esss->lvar, esss->nblvar, temp, tempp);
+							sv = SETVarValueText(esss->lvar, esss->nblvar, word, tempp);
 
 							if (sv == NULL)
 							{
@@ -3062,7 +3062,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '#': // GLOBAL LONG
 							ival = (long)GetVarValueInterpretedAsFloat(temp2, esss, io);
-							sv = SETVarValueLong(svar, NB_GLOBALS, temp, ival);
+							sv = SETVarValueLong(svar, NB_GLOBALS, word, ival);
 
 							if (sv == NULL)
 							{
@@ -3073,7 +3073,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '\xA7': // LOCAL LONG
 							ival = (long)GetVarValueInterpretedAsFloat(temp2, esss, io);
-							sv = SETVarValueLong(esss->lvar, esss->nblvar, temp, ival);
+							sv = SETVarValueLong(esss->lvar, esss->nblvar, word, ival);
 
 							if (sv == NULL)
 							{
@@ -3084,7 +3084,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '&': // GLOBAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							sv = SETVarValueFloat(svar, NB_GLOBALS, temp, fval);
+							sv = SETVarValueFloat(svar, NB_GLOBALS, word, fval);
 
 							if (sv == NULL)
 							{
@@ -3095,7 +3095,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '@': // LOCAL float
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
-							sv = SETVarValueFloat(esss->lvar, esss->nblvar, temp, fval);
+							sv = SETVarValueFloat(esss->lvar, esss->nblvar, word, fval);
 
 							if (sv == NULL)
 							{
@@ -3106,32 +3106,32 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 					}
 
-					LogDebug <<  "SET "<<temp<<" "<< temp2;
+					LogDebug <<  "SET "<<word<<" "<< temp2;
 				}
-				else if (!strcmp(temp, "SAY"))
+				else if (!strcmp(word, "SAY"))
 				{
 					//DO NOTHING
 				}
-				else if (!strcmp(temp, "SETANGULAR"))
+				else if (!strcmp(word, "SETANGULAR"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					if (!strcasecmp(temp, "ON"))	io->ioflags |= IO_ANGULAR;
+					if (!strcasecmp(word, "ON"))	io->ioflags |= IO_ANGULAR;
 					else	io->ioflags &= ~IO_ANGULAR;
 				}
-				else if (!strcmp(temp, "SETPLAYERCOLLISION"))
+				else if (!strcmp(word, "SETPLAYERCOLLISION"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					MakeUpcase(temp);
+					pos = GetNextWord(es, pos, word);
+					MakeUpcase(word);
 
-					if (!strcmp(temp, "ON"))	io->collision |= 1;
+					if (!strcmp(word, "ON"))	io->collision |= 1;
 					else	io->collision &= ~1;
 
-					LogDebug << "SET_PLAYER_COLLISION %s"<< temp;
+					LogDebug << "SET_PLAYER_COLLISION %s"<< word;
 				}
-				else if (!strcmp(temp, "SETSTEPMATERIAL"))
+				else if (!strcmp(word, "SETSTEPMATERIAL"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if (io)
 					{
@@ -3141,15 +3141,15 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							io->stepmaterial = NULL;
 						}
 
-						io->stepmaterial = (char *)malloc(temp.length() + 1);
-						strcpy(io->stepmaterial, temp.c_str());
+						io->stepmaterial = (char *)malloc(word.length() + 1);
+						strcpy(io->stepmaterial, word.c_str());
 					}
 
-					LogDebug << "SET_STEP_MATERIAL %s"<< temp;
+					LogDebug << "SET_STEP_MATERIAL %s"<< word;
 				}
-				else if (!strcmp(temp, "SETARMORMATERIAL"))
+				else if (!strcmp(word, "SETARMORMATERIAL"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if (io)
 					{
@@ -3159,15 +3159,15 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							io->armormaterial = NULL;
 						}
 
-						io->armormaterial = (char *)malloc(temp.length() + 1);
-						strcpy(io->armormaterial, temp.c_str());
+						io->armormaterial = (char *)malloc(word.length() + 1);
+						strcpy(io->armormaterial, word.c_str());
 					}
 
-					LogDebug << "SET_ARMOR_MATERIAL %s"<< temp;
+					LogDebug << "SET_ARMOR_MATERIAL %s"<< word;
 				}
-				else if (!strcmp(temp, "SETWEAPONMATERIAL"))
+				else if (!strcmp(word, "SETWEAPONMATERIAL"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if (io)
 					{
@@ -3175,33 +3175,33 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							free(io->weaponmaterial);
 
 						io->weaponmaterial = NULL;
-						io->weaponmaterial = strdup(temp.c_str());
+						io->weaponmaterial = strdup(word.c_str());
 					}
 
-					LogDebug << "SET_STEP_MATERIAL %s"<< temp;
+					LogDebug << "SET_STEP_MATERIAL %s"<< word;
 				}
-				else if (!strcmp(temp, "SETSTRIKESPEECH"))
+				else if (!strcmp(word, "SETSTRIKESPEECH"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if (io)
 					{
 						if (io->strikespeech) free(io->strikespeech);
 
 						io->strikespeech = NULL;
-						io->strikespeech = strdup(temp.c_str());
+						io->strikespeech = strdup(word.c_str());
 					}
 
-					LogDebug << "SET_STEP_MATERIAL %s"<< temp;
+					LogDebug << "SET_STEP_MATERIAL %s"<< word;
 				}
-				else if (!strcmp(temp, "SETPLAYERCONTROLS"))
+				else if (!strcmp(word, "SETPLAYERCONTROLS"))
 				{
 					INTERACTIVE_OBJ * oes = EVENT_SENDER;
 					EVENT_SENDER = io;
-					pos = GetNextWord(es, pos, temp);
-					MakeUpcase(temp);
+					pos = GetNextWord(es, pos, word);
+					MakeUpcase(word);
 
-					if (!strcmp(temp, "ON"))
+					if (!strcmp(word, "ON"))
 					{
 						if (BLOCK_PLAYER_CONTROLS)
 						{
@@ -3224,166 +3224,166 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					}
 
 					EVENT_SENDER = oes;
-					LogDebug << "SET_PLAYER_CONTROLS %s"<< temp;
+					LogDebug << "SET_PLAYER_CONTROLS %s"<< word;
 				}
-				else if (!strcmp(temp, "SETWORLDCOLLISION"))
+				else if (!strcmp(word, "SETWORLDCOLLISION"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					MakeUpcase(temp);
+					pos = GetNextWord(es, pos, word);
+					MakeUpcase(word);
 
-					if (!strcmp(temp, "ON"))	io->collision |= 2;
+					if (!strcmp(word, "ON"))	io->collision |= 2;
 					else io->collision &= ~2;
 
-					LogDebug << "SET_WORLD_COLLISION %s"<< temp;
+					LogDebug << "SET_WORLD_COLLISION %s"<< word;
 				}
-				else if (!strcmp(temp, "SETSHADOW"))
+				else if (!strcmp(word, "SETSHADOW"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					MakeUpcase(temp);
+					pos = GetNextWord(es, pos, word);
+					MakeUpcase(word);
 
-					if (!strcmp(temp, "ON"))	io->ioflags &= ~IO_NOSHADOW;
+					if (!strcmp(word, "ON"))	io->ioflags &= ~IO_NOSHADOW;
 					else io->ioflags |= IO_NOSHADOW;
 
-					LogDebug << "SET_SHADOW %s"<< temp;
+					LogDebug << "SET_SHADOW %s"<< word;
 				}
-				else if (!strcmp(temp, "SETDETACHABLE"))
+				else if (!strcmp(word, "SETDETACHABLE"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 				}
-				else if (!strcmp(temp, "SETSTACKABLE"))
+				else if (!strcmp(word, "SETSTACKABLE"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 				}
-				else if (!strcmp(temp, "SETSHOP"))
+				else if (!strcmp(word, "SETSHOP"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					MakeUpcase(temp);
+					pos = GetNextWord(es, pos, word);
+					MakeUpcase(word);
 
-					if ((!strcmp(temp, "ON")) || (!strcmp(temp, "YES")))
+					if ((!strcmp(word, "ON")) || (!strcmp(word, "YES")))
 						io->ioflags |= IO_SHOP;
 					else	io->ioflags &= ~IO_SHOP;
 
-					LogDebug << "SET_SHOP %s"<< temp;
+					LogDebug << "SET_SHOP %s"<< word;
 				}
-				else if (!strcmp(temp, "SETMAXCOUNT"))
+				else if (!strcmp(word, "SETMAXCOUNT"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if ((io != NULL) && (io->ioflags & IO_ITEM))
 					{
-						io->_itemdata->maxcount = (short)GetVarValueInterpretedAsFloat(temp, esss, io);
+						io->_itemdata->maxcount = (short)GetVarValueInterpretedAsFloat(word, esss, io);
 
 						if (io->_itemdata->maxcount < 1) io->_itemdata->maxcount = 1;
 					}
 
-					LogDebug << "SET_MAX_COUNT %s"<<temp;
+					LogDebug << "SET_MAX_COUNT %s"<<word;
 				}
-				else if (!strcmp(temp, "SETCOUNT"))
+				else if (!strcmp(word, "SETCOUNT"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					float c = (float)atof(temp.c_str());
+					pos = GetNextWord(es, pos, word);
+					float c = (float)atof(word.c_str());
 
 					if (c < 1.f) c = 1.f;
 
 					if ((io != NULL) && (io->ioflags & IO_ITEM))
 					{
-						io->_itemdata->count = (short)GetVarValueInterpretedAsFloat(temp, esss, io);
+						io->_itemdata->count = (short)GetVarValueInterpretedAsFloat(word, esss, io);
 
 						if (io->_itemdata->count < 1) io->_itemdata->count = 1;
 
 						if (io->_itemdata->count > io->_itemdata->maxcount) io->_itemdata->count = io->_itemdata->maxcount;
 					}
 
-					LogDebug << "SET_COUNT %s"<< temp;
+					LogDebug << "SET_COUNT %s"<< word;
 				}
-				else if (!strcmp(temp, "SETWEIGHT"))
+				else if (!strcmp(word, "SETWEIGHT"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if (io != NULL)
 					{
-						io->weight = GetVarValueInterpretedAsFloat(temp, esss, io);
+						io->weight = GetVarValueInterpretedAsFloat(word, esss, io);
 
 						if (io->weight < 0.f) io->weight = 0.f;
 					}
 
-					LogDebug << "SET_WEIGHT %s"<< temp;
+					LogDebug << "SET_WEIGHT %s"<< word;
 				}
-				else if (!strcmp(temp, "SETTRANSPARENCY"))
+				else if (!strcmp(word, "SETTRANSPARENCY"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					io->invisibility = 1.f + GetVarValueInterpretedAsFloat(temp, esss, io) * ( 1.0f / 100 );
+					io->invisibility = 1.f + GetVarValueInterpretedAsFloat(word, esss, io) * ( 1.0f / 100 );
 
 					if (io->invisibility == 1.f) io->invisibility = 0;
 				}
-				else if (!strcmp(temp, "SETEVENT"))
+				else if (!strcmp(word, "SETEVENT"))
 				{
 					std::string temp2;
 					long t;
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 					pos = GetNextWord(es, pos, temp2);
-					MakeUpcase(temp);
+					MakeUpcase(word);
 					MakeUpcase(temp2);
 
 					if ((!strcmp(temp2, "ON")) || (!strcmp(temp2, "YES"))) t = 1;
 					else t = 0;
 
-					if (!strcmp(temp, "COLLIDE_NPC"))
+					if (!strcmp(word, "COLLIDE_NPC"))
 					{
 						if (t) esss->allowevents &= ~DISABLE_COLLIDE_NPC;
 						else esss->allowevents |= DISABLE_COLLIDE_NPC;
 					}
 
-					if (!strcmp(temp, "CHAT"))
+					if (!strcmp(word, "CHAT"))
 					{
 						if (t) esss->allowevents &= ~DISABLE_CHAT;
 						else esss->allowevents |= DISABLE_CHAT;
 					}
 
-					if (!strcmp(temp, "HIT"))
+					if (!strcmp(word, "HIT"))
 					{
 						if (t) esss->allowevents &= ~DISABLE_HIT;
 						else esss->allowevents |= DISABLE_HIT;
 					}
 
-					if (!strcmp(temp, "INVENTORY2_OPEN"))
+					if (!strcmp(word, "INVENTORY2_OPEN"))
 					{
 						if (t) esss->allowevents &= ~DISABLE_INVENTORY2_OPEN ;
 						else esss->allowevents |= DISABLE_INVENTORY2_OPEN ;
 					}
 
-					if (!strcmp(temp, "DETECTPLAYER"))
+					if (!strcmp(word, "DETECTPLAYER"))
 					{
 						if (t) esss->allowevents &= ~DISABLE_DETECT ;
 						else esss->allowevents |= DISABLE_DETECT;
 					}
 
-					if (!strcmp(temp, "HEAR"))
+					if (!strcmp(word, "HEAR"))
 					{
 						if (t) esss->allowevents &= ~DISABLE_HEAR ;
 						else esss->allowevents |= DISABLE_HEAR ;
 					}
 
-					if (!strcmp(temp, "AGGRESSION"))
+					if (!strcmp(word, "AGGRESSION"))
 					{
 						if (t) esss->allowevents &= ~DISABLE_AGGRESSION ;
 						else esss->allowevents |= DISABLE_AGGRESSION ;
 					}
 
-					if (!strcmp(temp, "MAIN"))
+					if (!strcmp(word, "MAIN"))
 					{
 						if (t) esss->allowevents &= ~DISABLE_MAIN ;
 						else esss->allowevents |= DISABLE_MAIN ;
 					}
 
-					if (!strcmp(temp, "CURSORMODE"))
+					if (!strcmp(word, "CURSORMODE"))
 					{
 						if (t) esss->allowevents &= ~DISABLE_CURSORMODE ;
 						else esss->allowevents |= DISABLE_CURSORMODE ;
 					}
 
-					if (!strcmp(temp, "EXPLORATIONMODE"))
+					if (!strcmp(word, "EXPLORATIONMODE"))
 					{
 						if (t) esss->allowevents &= ~DISABLE_EXPLORATIONMODE ;
 						else esss->allowevents |= DISABLE_EXPLORATIONMODE ;
@@ -3391,19 +3391,19 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "SET_EVENT %s %s", temp, temp2);
+					if (NEED_DEBUG) sprintf(cmd, "SET_EVENT %s %s", word, temp2);
 
 #endif
 				}
-				else if (!strcmp(temp, "SETPRICE"))
+				else if (!strcmp(word, "SETPRICE"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if (io)
 					{
 						if (io->ioflags & IO_ITEM)
 						{
-							io->_itemdata->price = (long)GetVarValueInterpretedAsFloat(temp, esss, io);
+							io->_itemdata->price = (long)GetVarValueInterpretedAsFloat(word, esss, io);
 
 							if (io->_itemdata->price < 0) io->_itemdata->price = 0;
 						}
@@ -3411,21 +3411,21 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "SET_PRICE %s", temp);
+					if (NEED_DEBUG) sprintf(cmd, "SET_PRICE %s", word);
 
 #endif
 				}
-				else if (!strcmp(temp, "SETINTERNALNAME"))
+				else if (!strcmp(word, "SETINTERNALNAME"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "ERROR: SETINTERNALNAME %s - NOT AN IO !!!", temp);
+					if (NEED_DEBUG) sprintf(cmd, "ERROR: SETINTERNALNAME %s - NOT AN IO !!!", word);
 
 #endif
 				}
-				else if (!strcmp(temp, "SHOWGLOBALS"))
+				else if (!strcmp(word, "SHOWGLOBALS"))
 				{
 					ShowText = "";
 					MakeGlobalText(ShowText);
@@ -3440,7 +3440,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #endif
 				}
-				else if (!strcmp(temp, "SHOWLOCALS"))
+				else if (!strcmp(word, "SHOWLOCALS"))
 				{
 					ShowText = "";
 					MakeLocalText(es, ShowText);
@@ -3455,7 +3455,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #endif
 				}
-				else if (!strcmp(temp, "SHOWVARS"))
+				else if (!strcmp(word, "SHOWVARS"))
 				{
 					ShowText = "";
 					ShowText2 = "";
@@ -3472,7 +3472,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #endif
 				}
-				else if (!strcmp(temp, "SETIRCOLOR"))
+				else if (!strcmp(word, "SETIRCOLOR"))
 				{
 					if (io != NULL)
 					{
@@ -3492,12 +3492,12 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						io->infracolor.b = t3;
 #ifdef NEEDING_DEBUG
 
-						if (NEED_DEBUG) sprintf(cmd, "%s %s %s %s", temp, temp1, temp2, temp3);
+						if (NEED_DEBUG) sprintf(cmd, "%s %s %s %s", word, temp1, temp2, temp3);
 
 #endif
 					}
 				}
-				else if (!strcmp(temp, "SETSCALE"))
+				else if (!strcmp(word, "SETSCALE"))
 				{
 					if (io != NULL)
 					{
@@ -3513,7 +3513,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 #endif
 					}
 				}
-				else if (!strcmp(temp, "STEALNPC"))
+				else if (!strcmp(word, "STEALNPC"))
 				{
 					if (player.Interface & INTER_STEAL)
 					{
@@ -3524,7 +3524,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					InventoryDir = 1;
 					ioSteal = io;
 				}
-				else if (!strcmp(temp, "SPECIALFX"))
+				else if (!strcmp(word, "SPECIALFX"))
 				{
 					std::string temp1;
 					pos = GetNextWord(es, pos, temp1);
@@ -3533,7 +3533,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					if (NEED_DEBUG)
 					{
 						strcpy(cmd, "SPECIAL_FX ");
-						strcat(cmd, temp);
+						strcat(cmd, word);
 					}
 
 #endif
@@ -3635,11 +3635,11 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							ARX_PLAYER_ClickedOnTorch(CURRENT_TORCH);
 					}
 				}
-				else if (!strcmp(temp, "SETBUMP"))
+				else if (!strcmp(word, "SETBUMP"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					if (!strcasecmp(temp, "ON"))
+					if (!strcasecmp(word, "ON"))
 					{
 						io->ioflags |= IO_BUMP;
 #ifdef NEEDING_DEBUG
@@ -3648,7 +3648,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #endif
 					}
-					else if (!strcasecmp(temp, "OFF"))
+					else if (!strcasecmp(word, "OFF"))
 					{
 						io->ioflags &= ~IO_BUMP;
 #ifdef NEEDING_DEBUG
@@ -3658,11 +3658,11 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 #endif
 					}
 				}
-				else if (!strcmp(temp, "SETZMAP"))
+				else if (!strcmp(word, "SETZMAP"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					if (!strcasecmp(temp, "ON"))
+					if (!strcasecmp(word, "ON"))
 					{
 						io->ioflags |= IO_ZMAP;
 #ifdef NEEDING_DEBUG
@@ -3671,7 +3671,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #endif
 					}
-					else if (!strcasecmp(temp, "OFF"))
+					else if (!strcasecmp(word, "OFF"))
 					{
 						io->ioflags &= ~IO_ZMAP;
 #ifdef NEEDING_DEBUG
@@ -3685,108 +3685,108 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				break;
 			case 'Z':
 
-				if (!strcmp(temp, "ZONEPARAM"))
+				if (!strcmp(word, "ZONEPARAM"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 #ifdef NEEDING_DEBUG
 
 					if (NEED_DEBUG)
 					{
 						strcpy(cmd, "ZONE_PARAM ");
-						strcat(cmd, temp);
+						strcat(cmd, word);
 					}
 
 #endif
 
-					if (!strcasecmp(temp, "STACK"))
+					if (!strcasecmp(word, "STACK"))
 					{
 						ARX_GLOBALMODS_Stack();
 					}
-					else if (!strcasecmp(temp, "UNSTACK"))
+					else if (!strcasecmp(word, "UNSTACK"))
 					{
 						ARX_GLOBALMODS_UnStack();
 					}
 					else
 					{
-						if (temp[0] == '-')
+						if (word[0] == '-')
 						{
-							pos = GetNextWord(es, pos, temp);
+							pos = GetNextWord(es, pos, word);
 #ifdef NEEDING_DEBUG
 
 							if (NEED_DEBUG)
 							{
 								strcat(cmd, " ");
-								strcat(cmd, temp);
+								strcat(cmd, word);
 							}
 
 #endif
 						}
 
-						if (!strcasecmp(temp, "RGB"))
+						if (!strcasecmp(word, "RGB"))
 						{
-							pos = GetNextWord(es, pos, temp);
-							desired.depthcolor.r = GetVarValueInterpretedAsFloat(temp, esss, io);
+							pos = GetNextWord(es, pos, word);
+							desired.depthcolor.r = GetVarValueInterpretedAsFloat(word, esss, io);
 #ifdef NEEDING_DEBUG
 
 							if (NEED_DEBUG)
 							{
 								strcat(cmd, " ");
-								strcat(cmd, temp);
+								strcat(cmd, word);
 							}
 
 #endif
-							pos = GetNextWord(es, pos, temp);
-							desired.depthcolor.g = GetVarValueInterpretedAsFloat(temp, esss, io);
+							pos = GetNextWord(es, pos, word);
+							desired.depthcolor.g = GetVarValueInterpretedAsFloat(word, esss, io);
 #ifdef NEEDING_DEBUG
 
 							if (NEED_DEBUG)
 							{
 								strcat(cmd, " ");
-								strcat(cmd, temp);
+								strcat(cmd, word);
 							}
 
 #endif
-							pos = GetNextWord(es, pos, temp);
-							desired.depthcolor.b = GetVarValueInterpretedAsFloat(temp, esss, io);
+							pos = GetNextWord(es, pos, word);
+							desired.depthcolor.b = GetVarValueInterpretedAsFloat(word, esss, io);
 #ifdef NEEDING_DEBUG
 
 							if (NEED_DEBUG)
 							{
 								strcat(cmd, " ");
-								strcat(cmd, temp);
+								strcat(cmd, word);
 							}
 
 #endif
 							desired.flags |= GMOD_DCOLOR;
 						}
-						else if (!strcasecmp(temp, "ZCLIP"))
+						else if (!strcasecmp(word, "ZCLIP"))
 						{
-							pos = GetNextWord(es, pos, temp);
-							desired.zclip = GetVarValueInterpretedAsFloat(temp, esss, io);
+							pos = GetNextWord(es, pos, word);
+							desired.zclip = GetVarValueInterpretedAsFloat(word, esss, io);
 #ifdef NEEDING_DEBUG
 
 							if (NEED_DEBUG)
 							{
 								strcat(cmd, " ");
-								strcat(cmd, temp);
+								strcat(cmd, word);
 							}
 
 #endif
 							desired.flags |= GMOD_ZCLIP;
 						}
-						else if (!strcasecmp(temp, "AMBIANCE"))
+						else if (!strcasecmp(word, "AMBIANCE"))
 						{
-							pos = GetNextWord(es, pos, temp);
+							pos = GetNextWord(es, pos, word);
 #ifdef NEEDING_DEBUG
 
 							if (NEED_DEBUG)
 							{
 								strcat(cmd, " ");
-								strcat(cmd, temp);
+								strcat(cmd, word);
 							}
 
 #endif
-							ARX_SOUND_PlayZoneAmbiance(temp.c_str());
+							ARX_SOUND_PlayZoneAmbiance(word.c_str());
 						}
 
 					}
@@ -3795,7 +3795,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				break;
 			case 'K':
 
-				if (!strcmp(temp, "KILLME"))
+				if (!strcmp(word, "KILLME"))
 				{
 					if (io) // can only kill IOs
 					{
@@ -3818,18 +3818,18 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #endif
 				}
-				else if (!strcmp(temp, "KEYRINGADD"))
+				else if (!strcmp(word, "KEYRINGADD"))
 				{
 					std::string temp2;
 					pos = GetNextWord(es, pos, temp2);
-					temp = GetVarValueInterpretedAsText(temp2, esss, io);
-					ARX_KEYRING_Add(temp.c_str());
+					word = GetVarValueInterpretedAsText(temp2, esss, io);
+					ARX_KEYRING_Add(word.c_str());
 				}
 
 				break;
 			case 'F':
 
-				if (!strcmp(temp, "FORCEANIM"))
+				if (!strcmp(word, "FORCEANIM"))
 				{
 					std::string temp2;
 					long num;
@@ -3852,23 +3852,23 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #endif
 				}
-				else if (!strcmp(temp, "FORCEANGLE"))
+				else if (!strcmp(word, "FORCEANGLE"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if (io != NULL)
 					{
 
-						io->angle.b = MAKEANGLE(GetVarValueInterpretedAsFloat(temp, esss, io));
+						io->angle.b = MAKEANGLE(GetVarValueInterpretedAsFloat(word, esss, io));
 					}
 
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "FORCEANGLE %s", temp);
+					if (NEED_DEBUG) sprintf(cmd, "FORCEANGLE %s", word);
 
 #endif
 				}
-				else if (!strcmp(temp, "FORCEDEATH"))
+				else if (!strcmp(word, "FORCEDEATH"))
 				{
 					std::string temp2;
 					long t;
@@ -3901,10 +3901,10 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				break;
 			case 'P':
 
-				if (!strcmp(temp, "PLAYERLOOKAT"))
+				if (!strcmp(word, "PLAYERLOOKAT"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					long t = GetTargetByNameTarget(temp);
+					pos = GetNextWord(es, pos, word);
+					long t = GetTargetByNameTarget(word);
 
 					if (t == -2) t = GetInterNum(io);
 
@@ -3915,17 +3915,17 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "PLAYERLOOKAT %s", temp);
+					if (NEED_DEBUG) sprintf(cmd, "PLAYERLOOKAT %s", word);
 
 #endif
 				}
-				else if (!strcmp(temp, "PLAYERSTACKSIZE"))
+				else if (!strcmp(word, "PLAYERSTACKSIZE"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if ((io) && (io->ioflags & IO_ITEM))
 					{
-						io->_itemdata->playerstacksize = (short)GetVarValueInterpretedAsFloat(temp, esss, io);
+						io->_itemdata->playerstacksize = (short)GetVarValueInterpretedAsFloat(word, esss, io);
 
 						if (io->_itemdata->playerstacksize < 1)
 							io->_itemdata->playerstacksize = 1;
@@ -3934,17 +3934,17 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							io->_itemdata->playerstacksize = 100;
 					}
 				}
-				else if (!strcmp(temp, "PRECAST"))
+				else if (!strcmp(word, "PRECAST"))
 				{
 					std::string temp2;
 					long duration = -1;
 					long flags = 0;
 					long dur = 0;
-					pos = GetNextWord(es, pos, temp); // switch or level
+					pos = GetNextWord(es, pos, word); // switch or level
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
-						if (iCharIn(temp, 'D'))
+						if (iCharIn(word, 'D'))
 						{
 							flags |= SPELLCAST_FLAG_NOCHECKCANCAST;
 							pos = GetNextWord(es, pos, temp2); // duration
@@ -3952,23 +3952,23 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							dur = 1;
 						}
 
-						if (iCharIn(temp, 'F'))
+						if (iCharIn(word, 'F'))
 						{
 							flags |= SPELLCAST_FLAG_NOCHECKCANCAST;
 							flags |= SPELLCAST_FLAG_NOMANA;
 						}
 
-						pos = GetNextWord(es, pos, temp); // level
+						pos = GetNextWord(es, pos, word); // level
 					}
 
-					long level = GetVarValueInterpretedAsFloat(temp, esss, io);
+					long level = GetVarValueInterpretedAsFloat(word, esss, io);
 
 					if (level < 1) level = 1;
 					else if (level > 10) level = 10;
 
-					pos = GetNextWord(es, pos, temp); //spell id
+					pos = GetNextWord(es, pos, word); //spell id
 					long spellid;
-					spellid = GetSpellId(temp);
+					spellid = GetSpellId(word);
 
 					if (spellid != -1)
 					{
@@ -3986,27 +3986,27 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						TryToCastSpell(inter.iobj[0], spellid, level, -1, flags, duration);
 					}
 				}
-				else if (!strcmp(temp, "POISON"))
+				else if (!strcmp(word, "POISON"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					float fval = GetVarValueInterpretedAsFloat(temp, esss, io);
+					pos = GetNextWord(es, pos, word);
+					float fval = GetVarValueInterpretedAsFloat(word, esss, io);
 					ARX_PLAYER_Poison(fval);
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "POISON %s", temp);
+					if (NEED_DEBUG) sprintf(cmd, "POISON %s", word);
 
 #endif
 				}
-				else if (!strcmp(temp, "PLAYERMANADRAIN"))
+				else if (!strcmp(word, "PLAYERMANADRAIN"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					if (!strcasecmp(temp, "ON"))
+					if (!strcasecmp(word, "ON"))
 						player.playerflags &= ~PLAYERFLAGS_NO_MANA_DRAIN;
 					else
 						player.playerflags |= PLAYERFLAGS_NO_MANA_DRAIN;
 				}
-				else if (!strcmp(temp, "PATHFIND"))
+				else if (!strcmp(word, "PATHFIND"))
 				{
 					std::string temp2;
 					pos = GetNextWord(es, pos, temp2);
@@ -4018,7 +4018,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #endif
 				}
-				else if (!strcmp(temp, "PLAYANIM"))
+				else if (!strcmp(word, "PLAYANIM"))
 				{
 					INTERACTIVE_OBJ * iot = io;
 					std::string temp2;
@@ -4033,7 +4033,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					if (NEED_DEBUG)
 					{
 						strcpy(cmd, "PLAY_ANIM ");
-						strcat(cmd, temp);
+						strcat(cmd, word);
 					}
 
 #endif
@@ -4132,7 +4132,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						}
 					}
 				}
-				else if (!strcmp(temp, "PLAYERINTERFACE"))
+				else if (!strcmp(word, "PLAYERINTERFACE"))
 				{
 					std::string temp2;
 					pos = GetNextWord(es, pos, temp2);
@@ -4141,7 +4141,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					if (NEED_DEBUG)
 					{
 						strcpy(cmd, "PLAYER_INTERFACE ");
-						strcat(cmd, temp);
+						strcat(cmd, word);
 					}
 
 #endif
@@ -4173,7 +4173,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						ARX_INTERFACE_PlayerInterfaceModify(1, smooth);
 
 				}
-				else if (!strcmp(temp, "PLAY"))
+				else if (!strcmp(word, "PLAY"))
 				{
 					unsigned long loop(ARX_SOUND_PLAY_ONCE);
 					std::string temp2;
@@ -4189,7 +4189,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					if (NEED_DEBUG)
 					{
 						strcpy(cmd, "PLAY ");
-						strcat(cmd, temp);
+						strcat(cmd, word);
 					}
 
 #endif
@@ -4258,7 +4258,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #endif
 				}
-				else if (!strcmp(temp, "PLAYSPEECH"))
+				else if (!strcmp(word, "PLAYSPEECH"))
 				{
 					std::string temp2;
 
@@ -4278,29 +4278,29 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #endif
 				}
-				else if (!strcmp(temp, "POPUP"))
+				else if (!strcmp(word, "POPUP"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if (!(danaeApp.kbd.inkey[INKEY_LEFTSHIFT]) && !(danaeApp.kbd.inkey[INKEY_RIGHTSHIFT]))
 					{
 						ARX_TIME_Pause();
-						LogError << (temp.c_str());
+						LogError << (word.c_str());
 						ARX_TIME_UnPause();
 					}
 
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "POPUP %s", temp);
+					if (NEED_DEBUG) sprintf(cmd, "POPUP %s", word);
 
 #endif
 				}
-				else if (!strcmp(temp, "PHYSICAL"))
+				else if (!strcmp(word, "PHYSICAL"))
 				{
 					std::string temp2;
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					if (!strcasecmp(temp, "ON"))
+					if (!strcasecmp(word, "ON"))
 					{
 						io->ioflags &= ~IO_PHYSICAL_OFF;
 #ifdef NEEDING_DEBUG
@@ -4309,7 +4309,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #endif
 					}
-					else if (!strcasecmp(temp, "OFF"))
+					else if (!strcasecmp(word, "OFF"))
 					{
 						io->ioflags |= IO_PHYSICAL_OFF;
 #ifdef NEEDING_DEBUG
@@ -4323,7 +4323,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						pos = GetNextWord(es, pos, temp2);
 						float fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 
-						if (!strcasecmp(temp, "HEIGHT"))
+						if (!strcasecmp(word, "HEIGHT"))
 						{
 							if (io)
 							{
@@ -4336,7 +4336,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 								io->physics.cyl.height = io->original_height * io->scale;
 							}
 						}
-						else if (!strcasecmp(temp, "RADIUS"))
+						else if (!strcasecmp(word, "RADIUS"))
 						{
 							if (io)
 							{
@@ -4352,7 +4352,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #ifdef NEEDING_DEBUG
 
-						if (NEED_DEBUG) sprintf(cmd, "PHYSICAL %s %s", temp, temp2);
+						if (NEED_DEBUG) sprintf(cmd, "PHYSICAL %s %s", word, temp2);
 
 #endif
 					}
@@ -4361,17 +4361,17 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				break;
 			case 'L':
 
-				if (!strcmp(temp, "LOADANIM"))
+				if (!strcmp(word, "LOADANIM"))
 				{
 					INTERACTIVE_OBJ * iot = io;
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
-						if (iCharIn(temp, 'P'))
+						if (iCharIn(word, 'P'))
 							iot = inter.iobj[0];
 
-						pos = GetNextWord(es, pos, temp);
+						pos = GetNextWord(es, pos, word);
 					}
 
 					std::string temp2;
@@ -4380,15 +4380,15 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					pos = GetNextWord(es, pos, temp2);
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "LOADANIM %s %s", temp, temp2);
+					if (NEED_DEBUG) sprintf(cmd, "LOADANIM %s %s", word, temp2);
 
 #endif
 
 					if (iot != NULL)
 					{
 						long num = -1;
-						MakeUpcase(temp);
-						num = GetNumAnim(temp);
+						MakeUpcase(word);
+						num = GetNumAnim(word);
 
 						if ((num > -1) && (num < MAX_ANIMS))
 						{
@@ -4425,7 +4425,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 									if (iot->anims[num] == NULL)
 									{
 										char ttmp[512];
-										sprintf(ttmp, "LOADANIM %s %s FAILED", temp.c_str(), temp2.c_str());
+										sprintf(ttmp, "LOADANIM %s %s FAILED", word.c_str(), temp2.c_str());
 										ForceSendConsole(ttmp, 1, 0, (HWND)1);
 									}
 								}
@@ -4433,24 +4433,24 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							else
 							{
 								char ttmp[512];
-								sprintf(ttmp, "LOADANIM %s %s FAILED", temp.c_str(), temp2.c_str());
+								sprintf(ttmp, "LOADANIM %s %s FAILED", word.c_str(), temp2.c_str());
 								ForceSendConsole(ttmp, 1, 0, (HWND)1);
 							}
 						}
 					}
 				}
-				else if (!strcmp(temp, "LINKOBJTOME"))
+				else if (!strcmp(word, "LINKOBJTOME"))
 				{
-					pos = GetNextWord_Interpreted(io, es, pos, temp);
-					long t = GetTargetByNameTarget(temp);
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord_Interpreted(io, es, pos, word);
+					long t = GetTargetByNameTarget(word);
+					pos = GetNextWord(es, pos, word);
 
 					if (ValidIONum(t))
-						LinkObjToMe(io, inter.iobj[t], temp.c_str());
+						LinkObjToMe(io, inter.iobj[t], word.c_str());
 
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "LINKOBJTOME %ld %s", t, temp);
+					if (NEED_DEBUG) sprintf(cmd, "LINKOBJTOME %ld %s", t, word);
 
 #endif
 				}
@@ -4458,7 +4458,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				break;
 			case 'I':
 
-				if ((temp[1] == 'F') && (temp[2] == 0))
+				if ((word[1] == 'F') && (word[2] == 0))
 				{
 					const unsigned int tvSize = 256 ;
 					std::string temp3;
@@ -4471,14 +4471,14 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					std::string tempo;
 
 					fvar1 = fvar2 = 0;
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 #ifdef NEEDING_DEBUG
 
 					if (NEED_DEBUG)
 					{
 						strcpy(cmd, "IF (");
-						strcat(cmd, temp);
+						strcat(cmd, word);
 					}
 
 #endif
@@ -4522,13 +4522,13 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #endif
 
-					switch (temp[0])
+					switch (word[0])
 					{
 						case '^':
 						{
 
 							long lv; float fv; std::string tv;	//Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
-							switch ( GetSystemVar( esss, io, temp, tv,tvSize, &fv, &lv ) )
+							switch ( GetSystemVar( esss, io, word, tv,tvSize, &fv, &lv ) )
 							{
 								case TYPE_TEXT:
 									typ1	=	TYPE_TEXT;
@@ -4553,23 +4553,23 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '#':
 							typ1	=	TYPE_FLOAT;
-							fvar1	=	GETVarValueLong(svar, NB_GLOBALS, temp);
+							fvar1	=	GETVarValueLong(svar, NB_GLOBALS, word);
 							break;
 						case '\xA7':
 							typ1	=	TYPE_FLOAT;
-							fvar1	=	GETVarValueLong(esss->lvar, esss->nblvar, temp);
+							fvar1	=	GETVarValueLong(esss->lvar, esss->nblvar, word);
 							break;
 						case '&':
 							typ1	=	TYPE_FLOAT;
-							fvar1	=	GETVarValueFloat(svar, NB_GLOBALS, temp);
+							fvar1	=	GETVarValueFloat(svar, NB_GLOBALS, word);
 							break;
 						case '@':
 							typ1	=	TYPE_FLOAT;
-							fvar1	=	GETVarValueFloat(esss->lvar, esss->nblvar, temp);
+							fvar1	=	GETVarValueFloat(esss->lvar, esss->nblvar, word);
 							break;
 						case '$':
 							typ1	=	TYPE_TEXT;
-							tempo	=	GETVarValueText(svar, NB_GLOBALS, temp);
+							tempo	=	GETVarValueText(svar, NB_GLOBALS, word);
 
 							if ( tempo.empty()) tvar1[0] = 0;
 							else tvar1 = tempo;
@@ -4577,7 +4577,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							break;
 						case '\xA3':
 							typ1	=	TYPE_TEXT;
-							tempo	=	GETVarValueText(esss->lvar, esss->nblvar, temp);
+							tempo	=	GETVarValueText(esss->lvar, esss->nblvar, word);
 
 							if ( tempo.empty() ) tvar1[0] = 0;
 							else tvar1 = tempo;
@@ -4588,12 +4588,12 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							if ((oper == OPER_ISTYPE) || (oper == OPER_ISGROUP) || (oper == OPER_NOTISGROUP))
 							{
 								typ1 =	TYPE_TEXT;
-								tvar1 = temp;
+								tvar1 = word;
 							}
 							else
 							{
 								typ1 =	TYPE_FLOAT;
-								fvar1 =	(float)atof(temp.c_str());
+								fvar1 =	(float)atof(word.c_str());
 							}
 					}
 
@@ -4901,7 +4901,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #endif
 				}
-				else if (!strcmp(temp, "INC"))
+				else if (!strcmp(word, "INC"))
 				{
 					std::string temp1;
 					std::string temp2;
@@ -4975,15 +4975,15 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "%s %s %s", temp, temp1, temp2);
+					if (NEED_DEBUG) sprintf(cmd, "%s %s %s", word, temp1, temp2);
 
 #endif
 				}
-				else if (!strcmp(temp, "IFEXISTINTERNAL"))
+				else if (!strcmp(word, "IFEXISTINTERNAL"))
 				{
 					long failed = 1;
-					pos = GetNextWord(es, pos, temp);
-					long t = GetTargetByNameTarget(temp);
+					pos = GetNextWord(es, pos, word);
+					long t = GetTargetByNameTarget(word);
 
 					if (t != -1)
 					{
@@ -4999,26 +4999,26 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 					if (NEED_DEBUG)
 					{
-						if (failed) sprintf(cmd, "IFEXISTINTERNAL (%s) -> false", temp);
-						else sprintf(cmd, "IFEXISTINTERNAL (%s) -> true", temp);
+						if (failed) sprintf(cmd, "IFEXISTINTERNAL (%s) -> false", word);
+						else sprintf(cmd, "IFEXISTINTERNAL (%s) -> true", word);
 					}
 
 #endif
 				}
-				else if (!strcmp(temp, "INVULNERABILITY"))
+				else if (!strcmp(word, "INVULNERABILITY"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 					long player = 0;
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
-						if (iCharIn(temp, 'P'))
+						if (iCharIn(word, 'P'))
 							player = 1;
 
-						pos = GetNextWord(es, pos, temp);
+						pos = GetNextWord(es, pos, word);
 					}
 
-					if (!strcasecmp(temp, "ON"))
+					if (!strcasecmp(word, "ON"))
 					{
 						if (player)
 							ARX_PLAYER_Invulnerability(1);
@@ -5033,21 +5033,21 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							io->ioflags &= ~IO_INVULNERABILITY;
 					}
 				}
-				else if (!strcmp(temp, "INVERTEDOBJECT"))
+				else if (!strcmp(word, "INVERTEDOBJECT"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					if (!strcasecmp(temp, "ON"))
+					if (!strcasecmp(word, "ON"))
 					{
 						io->ioflags |= IO_INVERTED;
 					}
 					else io->ioflags &= ~IO_INVERTED;
 				}
-				else if (!strcmp(temp, "IFVISIBLE"))
+				else if (!strcmp(word, "IFVISIBLE"))
 				{
 					long failed = 1;
-					pos = GetNextWord(es, pos, temp);
-					long t = GetTargetByNameTarget(temp);
+					pos = GetNextWord(es, pos, word);
+					long t = GetTargetByNameTarget(word);
 
 					if (ValidIONum(t))
 					{
@@ -5064,30 +5064,30 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 					if (NEED_DEBUG)
 					{
-						if (failed) sprintf(cmd, "IFVISIBLE (%s) -> false", temp);
-						else sprintf(cmd, "IFVISIBLE (%s) -> true", temp);
+						if (failed) sprintf(cmd, "IFVISIBLE (%s) -> false", word);
+						else sprintf(cmd, "IFVISIBLE (%s) -> true", word);
 					}
 
 #endif
 				}
-				else if (!strcmp(temp, "INVENTORY"))
+				else if (!strcmp(word, "INVENTORY"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 #ifdef NEEDING_DEBUG
 
 					if (NEED_DEBUG)
 					{
 						strcpy(cmd, "INVENTORY ");
-						strcat(cmd, temp);
+						strcat(cmd, word);
 					}
 
 #endif
-					MakeStandard(temp);
+					MakeStandard(word);
 					long ion;
 					ion = GetInterNum(io);
 
 					if ((io != NULL) && (ion != -1))
-						if (!strcasecmp(temp, "CREATE"))
+						if (!strcasecmp(word, "CREATE"))
 						{
 							if (inter.iobj[ion]->inventory != NULL)
 							{
@@ -5129,7 +5129,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 								id->io = inter.iobj[ion];
 							}
 						}
-						else if (!strcmp(temp, "SKIN"))
+						else if (!strcmp(word, "SKIN"))
 						{
 							std::string temp2;
 							pos = GetNextWord(es, pos, temp2);
@@ -5141,7 +5141,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 								io->inventory_skin = strdup(temp2.c_str());
 							}
 						}
-						else if (!strcmp(temp, "PLAYERADDFROMSCENE"))
+						else if (!strcmp(word, "PLAYERADDFROMSCENE"))
 						{
 							std::string temp2;
 							pos = GetNextWord(es, pos, temp2);
@@ -5173,7 +5173,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 								}
 							}
 						}
-						else if ((!strcmp(temp, "PLAYERADD")) || (!strcmp(temp, "PLAYERADDMULTI")))
+						else if ((!strcmp(word, "PLAYERADD")) || (!strcmp(word, "PLAYERADDMULTI")))
 						{
 							{
 								std::string temp2;
@@ -5191,7 +5191,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 								if (RELOADING)
 								{
-									if (!strcmp(temp, "PLAYERADDMULTI"))
+									if (!strcmp(word, "PLAYERADDMULTI"))
 									{
 										pos = GetNextWord(es, pos, temp2);
 #ifdef NEEDING_DEBUG
@@ -5222,7 +5222,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 											MakeTemporaryIOIdent(ioo);
 											SendInitScriptEvent(ioo);
 
-											if (!strcmp(temp, "PLAYERADDMULTI"))
+											if (!strcmp(word, "PLAYERADDMULTI"))
 											{
 												pos = GetNextWord(es, pos, temp2);
 
@@ -5254,13 +5254,13 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 									}
 									else
 									{
-										if (!strcmp(temp, "PLAYERADDMULTI"))
+										if (!strcmp(word, "PLAYERADDMULTI"))
 											pos = GetNextWord(es, pos, temp2);
 									}
 								}
 							}
 						}
-						else if (!strcmp(temp, "ADDFROMSCENE"))
+						else if (!strcmp(word, "ADDFROMSCENE"))
 						{
 							long xx, yy;
 							std::string temp2;
@@ -5304,7 +5304,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							}
 
 						}
-						else if ((!strcmp(temp, "ADD")) || (!strcmp(temp, "ADDMULTI")))
+						else if ((!strcmp(word, "ADD")) || (!strcmp(word, "ADDMULTI")))
 						{
 							std::string temp2;
 
@@ -5312,7 +5312,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							{
 								pos = GetNextWord(es, pos, temp2);
 
-								if (!strcmp(temp, "ADDMULTI"))
+								if (!strcmp(word, "ADDMULTI"))
 									pos = GetNextWord(es, pos, temp2);
 							}
 							else if (inter.iobj[ion]->inventory != NULL)
@@ -5332,7 +5332,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 								if (RELOADING)
 								{
-									if (!strcmp(temp, "ADDMULTI"))
+									if (!strcmp(word, "ADDMULTI"))
 									{
 										pos = GetNextWord(es, pos, temp2);
 									}
@@ -5347,7 +5347,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 									{
 										long multi = -1;
 
-										if (!strcmp(temp, "ADDMULTI"))
+										if (!strcmp(word, "ADDMULTI"))
 										{
 											pos = GetNextWord(es, pos, temp2);
 											multi = atoi(temp2.c_str());
@@ -5365,7 +5365,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 											SendInitScriptEvent(ioo);
 
 
-											if (!strcmp(temp, "ADDMULTI"))
+											if (!strcmp(word, "ADDMULTI"))
 											{
 												if (ioo->ioflags & IO_GOLD)
 												{
@@ -5393,13 +5393,13 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 									}
 									else
 									{
-										if (!strcmp(temp, "ADDMULTI"))
+										if (!strcmp(word, "ADDMULTI"))
 											pos = GetNextWord(es, pos, temp2);
 									}
 								}
 							}
 						}
-						else if (!strcmp(temp, "DESTROY"))
+						else if (!strcmp(word, "DESTROY"))
 						{
 							if (inter.iobj[ion]->inventory != NULL)
 							{
@@ -5410,7 +5410,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 								inter.iobj[ion]->inventory = NULL;
 							}
 						}
-						else if (!strcmp(temp, "OPEN"))
+						else if (!strcmp(word, "OPEN"))
 						{
 							if (SecondaryInventory != (INVENTORY_DATA *)inter.iobj[ion]->inventory)
 							{
@@ -5418,7 +5418,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 								ARX_SOUND_PlayInterface(SND_BACKPACK);
 							}
 						}
-						else if (!strcmp(temp, "CLOSE"))
+						else if (!strcmp(word, "CLOSE"))
 						{
 							if (inter.iobj[ion]->inventory != NULL)
 							{
@@ -5431,21 +5431,21 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				break;
 			case 'O':
 
-				if (!strcmp(temp, "OBJECTHIDE"))
+				if (!strcmp(word, "OBJECTHIDE"))
 				{
 					std::string temp1;
 					long megahide = 0;
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
-						if (iCharIn(temp, 'M'))
+						if (iCharIn(word, 'M'))
 							megahide = 1;
 
-						pos = GetNextWord(es, pos, temp);
+						pos = GetNextWord(es, pos, word);
 					}
 
-					long t = GetTargetByNameTarget(temp);
+					long t = GetTargetByNameTarget(word);
 
 					if (t == -2) t = GetInterNum(io);
 
@@ -5483,7 +5483,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "OBJECT_HIDE %s %s", temp, temp1);
+					if (NEED_DEBUG) sprintf(cmd, "OBJECT_HIDE %s %s", word, temp1);
 
 #endif
 				}
@@ -5491,27 +5491,27 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				break;
 			case 'H':
 			{
-				if (!strcmp(temp, "HEROSAY"))
+				if (!strcmp(word, "HEROSAY"))
 				{
 					char tempp[256];
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
-						if (iCharIn(temp, 'D'))
+						if (iCharIn(word, 'D'))
 						{
 							// do not show (debug say)
 							if (FINAL_RELEASE)
 							{
-								pos = GetNextWord(es, pos, temp);
+								pos = GetNextWord(es, pos, word);
 								goto nodraw;
 							}
 						}
 
-						pos = GetNextWord(es, pos, temp);
+						pos = GetNextWord(es, pos, word);
 					}
 
-					strcpy(tempp, GetVarValueInterpretedAsText(temp, esss, io).c_str());
+					strcpy(tempp, GetVarValueInterpretedAsText(word, esss, io).c_str());
 
 					if (tempp[0] == '[')
 					{
@@ -5529,32 +5529,32 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					LogDebug << "goto nodraw";
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "HEROSAY %s", temp);
+					if (NEED_DEBUG) sprintf(cmd, "HEROSAY %s", word);
 
 #endif
 				}
-				else if (!strcmp(temp, "HALO"))
+				else if (!strcmp(word, "HALO"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					MakeUpcase(temp);
+					pos = GetNextWord(es, pos, word);
+					MakeUpcase(word);
 
-					if (iCharIn(temp, 'O'))
+					if (iCharIn(word, 'O'))
 					{
 						if (io) io->halo_native.flags |= HALO_ACTIVE;
 					}
 
-					if (iCharIn(temp, 'F'))
+					if (iCharIn(word, 'F'))
 					{
 						if (io) io->halo_native.flags &= ~HALO_ACTIVE;
 					}
 
-					if (iCharIn(temp, 'N'))
+					if (iCharIn(word, 'N'))
 					{
 						if (io) io->halo_native.flags |= HALO_NEGATIVE;
 					}
 					else if (io) io->halo_native.flags &= ~HALO_NEGATIVE;
 
-					if (iCharIn(temp, 'L'))
+					if (iCharIn(word, 'L'))
 					{
 						if (io) io->halo_native.flags |= HALO_DYNLIGHT;
 					}
@@ -5568,7 +5568,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						io->halo_native.dynlight = -1;
 					}
 
-					if (iCharIn(temp, 'C'))
+					if (iCharIn(word, 'C'))
 					{
 						std::string temp1;
 						std::string temp2;
@@ -5585,7 +5585,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						}
 					}
 
-					if (iCharIn(temp, 'S'))
+					if (iCharIn(word, 'S'))
 					{
 						std::string temp1;
 						pos = GetNextWord(es, pos, temp1);
@@ -5599,7 +5599,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					ARX_HALO_SetToNative(io);
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "HALO %s", temp);
+					if (NEED_DEBUG) sprintf(cmd, "HALO %s", word);
 
 #endif
 				}
@@ -5607,21 +5607,21 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 			break;
 			case 'T':
 
-				if (!strcmp(temp, "TELEPORT"))
+				if (!strcmp(word, "TELEPORT"))
 				{
 					std::string temp2;
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 #ifdef NEEDING_DEBUG
 
 					if (NEED_DEBUG)
 					{
 						strcpy(cmd, "TELEPORT ");
-						strcat(cmd, temp);
+						strcat(cmd, word);
 					}
 
 #endif
 
-					if (!strcasecmp(temp, "behind"))
+					if (!strcasecmp(word, "behind"))
 					{
 						ARX_INTERACTIVE_TeleportBehindTarget(io);
 					}
@@ -5631,52 +5631,52 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						long playr = 0;
 						long initpos = 0;
 
-						if (temp[0] == '-')
+						if (word[0] == '-')
 						{
 							long angle = -1;
 
-							if (iCharIn(temp, 'A'))
+							if (iCharIn(word, 'A'))
 							{
 								pos = GetNextWord(es, pos, temp2);
 
 								float fangle = GetVarValueInterpretedAsFloat(temp2, esss, io);
 								angle = fangle;
 
-								if (!iCharIn(temp, 'L'))
+								if (!iCharIn(word, 'L'))
 									player.desiredangle.b = player.angle.b = fangle;
 
 
 							}
 
-							if (iCharIn(temp, 'N'))
+							if (iCharIn(word, 'N'))
 							{
 								TELEPORT_TO_CONFIRM = 0;
 							}
 
-							if (iCharIn(temp, 'L'))
+							if (iCharIn(word, 'L'))
 							{
-								pos = GetNextWord(es, pos, temp);
+								pos = GetNextWord(es, pos, word);
 #ifdef NEEDING_DEBUG
 
 								if (NEED_DEBUG)
 								{
 									strcat(cmd, " ");
-									strcat(cmd, temp);
+									strcat(cmd, word);
 								}
 
 #endif
-								strcpy(TELEPORT_TO_LEVEL, temp.c_str());
-								pos = GetNextWord(es, pos, temp);
+								strcpy(TELEPORT_TO_LEVEL, word.c_str());
+								pos = GetNextWord(es, pos, word);
 #ifdef NEEDING_DEBUG
 
 								if (NEED_DEBUG)
 								{
 									strcat(cmd, " ");
-									strcat(cmd, temp);
+									strcat(cmd, word);
 								}
 
 #endif
-								strcpy(TELEPORT_TO_POSITION, temp.c_str());
+								strcpy(TELEPORT_TO_POSITION, word.c_str());
 
 								if (angle == -1) TELEPORT_TO_ANGLE	=	ARX_CLEAN_WARN_CAST_LONG(player.angle.b);
 								else TELEPORT_TO_ANGLE = angle;
@@ -5688,22 +5688,22 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 								goto finishteleport;
 							}
 
-							if (iCharIn(temp, 'P'))
+							if (iCharIn(word, 'P'))
 							{
 								playr = 1;
-								pos = GetNextWord(es, pos, temp);
+								pos = GetNextWord(es, pos, word);
 #ifdef NEEDING_DEBUG
 
 								if (NEED_DEBUG)
 								{
 									strcat(cmd, " ");
-									strcat(cmd, temp);
+									strcat(cmd, word);
 								}
 
 #endif
 							}
 
-							if (iCharIn(temp, 'I'))
+							if (iCharIn(word, 'I'))
 								initpos = 1;
 
 						}
@@ -5712,7 +5712,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 						if (initpos == 0)
 						{
-							long t = GetTargetByNameTarget(temp);
+							long t = GetTargetByNameTarget(word);
 
 							if (t == -2) t = GetInterNum(io);
 
@@ -5797,7 +5797,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					;
 					LogDebug << "goto finishteleport";
 				}
-				else if (!strcmp(temp, "TARGETPLAYERPOS"))
+				else if (!strcmp(word, "TARGETPLAYERPOS"))
 				{
 					if (io != NULL)
 					{
@@ -5815,33 +5815,33 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #endif
 				}
-				else if (!strcmp(temp, "TWEAK"))
+				else if (!strcmp(word, "TWEAK"))
 				{
 					if (io != NULL)
 					{
-						pos = GetNextWord(es, pos, temp);
+						pos = GetNextWord(es, pos, word);
 #ifdef NEEDING_DEBUG
 
 						if (NEED_DEBUG)
 						{
 							strcpy(cmd, "TWEAK ");
-							strcat(cmd, temp);
+							strcat(cmd, word);
 						}
 
 #endif
 
 						long tw;
 
-						if (!strcasecmp(temp, "SKIN"))
+						if (!strcasecmp(word, "SKIN"))
 						{
 							std::string temp1;
-							pos = GetNextWord(es, pos, temp);
+							pos = GetNextWord(es, pos, word);
 #ifdef NEEDING_DEBUG
 
 							if (NEED_DEBUG)
 							{
 								strcat(cmd, " ");
-								strcat(cmd, temp);
+								strcat(cmd, word);
 							}
 
 #endif
@@ -5858,34 +5858,34 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 							if (io)
 							{
-								ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_SKIN, temp, temp1);
-								EERIE_MESH_TWEAK_Skin(io->obj, temp, temp1);
+								ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_SKIN, word, temp1);
+								EERIE_MESH_TWEAK_Skin(io->obj, word, temp1);
 							}
 						}
-						else if (!strcasecmp(temp, "ICON"))
+						else if (!strcasecmp(word, "ICON"))
 						{
-							pos = GetNextWord(es, pos, temp);
+							pos = GetNextWord(es, pos, word);
 #ifdef NEEDING_DEBUG
 
 							if (NEED_DEBUG)
 							{
 								strcat(cmd, " ");
-								strcat(cmd, temp);
+								strcat(cmd, word);
 							}
 
 #endif
 
 							if (io)
 							{
-								ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_ICON, temp, NULL);
-								ARX_INTERACTIVE_TWEAK_Icon(io, temp);
+								ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_ICON, word, NULL);
+								ARX_INTERACTIVE_TWEAK_Icon(io, word);
 							}
 						}
 						else
 						{
 							tw = TWEAK_ERROR;
 
-							if (!strcasecmp(temp, "HEAD"))
+							if (!strcasecmp(word, "HEAD"))
 							{
 								if (io->ident == 33)
 								{
@@ -5894,20 +5894,20 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 								tw = TWEAK_HEAD;
 							}
-							else if (!strcasecmp(temp, "TORSO"))
+							else if (!strcasecmp(word, "TORSO"))
 								tw = TWEAK_TORSO;
-							else if (!strcasecmp(temp, "LEGS"))
+							else if (!strcasecmp(word, "LEGS"))
 								tw = TWEAK_LEGS;
-							else if (!strcasecmp(temp, "ALL"))
+							else if (!strcasecmp(word, "ALL"))
 								tw = TWEAK_ALL;
-							else if (!strcasecmp(temp, "UPPER"))
+							else if (!strcasecmp(word, "UPPER"))
 								tw = TWEAK_UPPER;
-							else if (!strcasecmp(temp, "LOWER"))
+							else if (!strcasecmp(word, "LOWER"))
 								tw = TWEAK_LOWER;
-							else if (!strcasecmp(temp, "UP_LO"))
+							else if (!strcasecmp(word, "UP_LO"))
 								tw = TWEAK_UP_LO;
 
-							if (!strcasecmp(temp, "REMOVE"))
+							if (!strcasecmp(word, "REMOVE"))
 							{
 								tw = TWEAK_REMOVE;
 								ARX_INTERACTIVE_MEMO_TWEAK(io, tw, NULL, NULL);
@@ -5915,13 +5915,13 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							}
 							else
 							{
-								pos = GetNextWord(es, pos, temp);
+								pos = GetNextWord(es, pos, word);
 #ifdef NEEDING_DEBUG
 
 								if (NEED_DEBUG)
 								{
 									strcat(cmd, " ");
-									strcat(cmd, temp);
+									strcat(cmd, word);
 								}
 
 #endif
@@ -5933,7 +5933,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 								RemoveName(path);
 								path += "Tweaks\\";
-								path += temp;
+								path += word;
 								path += ".teo";
 
 								if (tw != TWEAK_ERROR)
@@ -5950,7 +5950,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #endif
 				}
-				else if ((temp[1] == 'I') && (temp[2] == 'M') && (temp[3] == 'E') && (temp[4] == 'R'))
+				else if ((word[1] == 'I') && (word[2] == 'M') && (word[3] == 'E') && (word[4] == 'R'))
 				{
 					// Timer -m nbtimes duration commands
 					char timername[64];
@@ -5961,15 +5961,15 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					long msecs = 0;
 
 					// Checks if the timer is named by caller of if it needs a default name
-					if (temp.length() > 5)
-						strcpy(timername, temp.c_str() + 5);
+					if (word.length() > 5)
+						strcpy(timername, word.c_str() + 5);
 					else ARX_SCRIPT_Timer_GetDefaultName(timername);
 
 #ifdef NEEDING_DEBUG
 
 					if (NEED_DEBUG)
 					{
-						strcpy(cmd, temp);
+						strcpy(cmd, word);
 					}
 
 #endif
@@ -6063,22 +6063,22 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				break;
 			case 'V':
 
-				if (!strcmp(temp, "VIEWBLOCK"))
+				if (!strcmp(word, "VIEWBLOCK"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 #ifdef NEEDING_DEBUG
 
 					if (NEED_DEBUG)
 					{
 						strcpy(cmd, "VIEWBLOCK ");
-						strcat(cmd, temp);
+						strcat(cmd, word);
 					}
 
 #endif
 
 					if (io)
 					{
-						if (!strcasecmp(temp, "ON"))
+						if (!strcasecmp(word, "ON"))
 						{
 							io->GameFlags |= GFLAG_VIEW_BLOCKER;
 						}
@@ -6089,15 +6089,15 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				break;
 			case 'W':
 
-				if (!strcmp(temp, "WORLDFADE"))
+				if (!strcmp(word, "WORLDFADE"))
 				{
 					std::string temp1;
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 					pos = GetNextWord(es, pos, temp1); //duration
 					FADEDURATION = GetVarValueInterpretedAsFloat(temp1, esss, io);
 					FADESTART = ARX_TIME_GetUL();
 
-					if (!strcasecmp(temp, "OUT"))
+					if (!strcasecmp(word, "OUT"))
 					{
 
 						std::string temp2;
@@ -6118,17 +6118,17 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "WORLD_FADE %s %s", temp, temp1);
+					if (NEED_DEBUG) sprintf(cmd, "WORLD_FADE %s %s", word, temp1);
 
 #endif
 				}
-				else if (!strcmp(temp, "WEAPON"))
+				else if (!strcmp(word, "WEAPON"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if ((io) && (io->ioflags & IO_NPC))
 					{
-						if ((!strcasecmp(temp, "DRAW")) || (!strcasecmp(temp, "ON")))
+						if ((!strcasecmp(word, "DRAW")) || (!strcasecmp(word, "ON")))
 						{
 							if (io->_npcdata->weaponinhand == 0)
 							{
@@ -6154,28 +6154,28 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				break;
 			case 'U':
 
-				if (!strcmp(temp, "USEMESH"))
+				if (!strcmp(word, "USEMESH"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_MESH, temp, NULL);
+					pos = GetNextWord(es, pos, word);
+					ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_MESH, word, NULL);
 #ifdef NEEDING_DEBUG
 
 					if (NEED_DEBUG)
 					{
 						strcpy(cmd, "USE_MESH ");
-						strcat(cmd, temp);
+						strcat(cmd, word);
 					}
 
 #endif
-					ARX_INTERACTIVE_USEMESH(io, temp);
+					ARX_INTERACTIVE_USEMESH(io, word);
 
 					std::string tex;
 					std::string tex1;
 					std::string tex2;
 
-					if (io->ioflags & IO_NPC)	tex2 = "Graph\\Obj3D\\Interactive\\NPC\\" + temp;
-					else if (io->ioflags & IO_FIX)	tex2 = "Graph\\Obj3D\\Interactive\\FIX_INTER\\" + temp;
-					else if (io->ioflags & IO_ITEM)	tex2 = "Graph\\Obj3D\\Interactive\\Items\\" + temp;
+					if (io->ioflags & IO_NPC)	tex2 = "Graph\\Obj3D\\Interactive\\NPC\\" + word;
+					else if (io->ioflags & IO_FIX)	tex2 = "Graph\\Obj3D\\Interactive\\FIX_INTER\\" + word;
+					else if (io->ioflags & IO_ITEM)	tex2 = "Graph\\Obj3D\\Interactive\\Items\\" + word;
 					else tex2[0] = 0;
 
 					File_Standardize(tex2, tex);
@@ -6206,48 +6206,48 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					}
 				}
 
-				if (!strcmp(temp, "UNSET"))
+				if (!strcmp(word, "UNSET"))
 				{
-					pos = GetNextWord(es, pos, temp, 1);
+					pos = GetNextWord(es, pos, word, 1);
 
-					if (IsGlobal(temp[0]))
+					if (IsGlobal(word[0]))
 					{
-						UNSETVar(svar, &NB_GLOBALS, temp);
+						UNSETVar(svar, &NB_GLOBALS, word);
 					}
 					else
 					{
-						UNSETVar(esss->lvar, &esss->nblvar, temp);
+						UNSETVar(esss->lvar, &esss->nblvar, word);
 					}
 
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "UNSET %s", temp);
+					if (NEED_DEBUG) sprintf(cmd, "UNSET %s", word);
 
 #endif
 				}
-				else if (!strcmp(temp, "USEPATH"))
+				else if (!strcmp(word, "USEPATH"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
 					if (io->usepath)
 					{
 						ARX_USE_PATH * aup = (ARX_USE_PATH *)io->usepath;
 
-						if (iCharIn(temp, 'B'))
+						if (iCharIn(word, 'B'))
 						{
 							aup->aupflags &= ~ARX_USEPATH_PAUSE;
 							aup->aupflags &= ~ARX_USEPATH_FORWARD;
 							aup->aupflags |= ARX_USEPATH_BACKWARD;
 						}
 
-						if (iCharIn(temp, 'F'))
+						if (iCharIn(word, 'F'))
 						{
 							aup->aupflags &= ~ARX_USEPATH_PAUSE;
 							aup->aupflags |= ARX_USEPATH_FORWARD;
 							aup->aupflags &= ~ARX_USEPATH_BACKWARD;
 						}
 
-						if (iCharIn(temp, 'P'))
+						if (iCharIn(word, 'P'))
 						{
 							aup->aupflags |= ARX_USEPATH_PAUSE;
 							aup->aupflags &= ~ARX_USEPATH_FORWARD;
@@ -6255,10 +6255,10 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						}
 					}
 				}
-				else if (!strcmp(temp, "UNSETCONTROLLEDZONE"))
+				else if (!strcmp(word, "UNSETCONTROLLEDZONE"))
 				{
-					pos = GetNextWord(es, pos, temp);
-					ARX_PATH * ap = ARX_PATH_GetAddressByName(temp.c_str());
+					pos = GetNextWord(es, pos, word);
+					ARX_PATH * ap = ARX_PATH_GetAddressByName(word.c_str());
 
 					if (ap != NULL)
 					{
@@ -6267,7 +6267,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "UNSET_CONTROLLED_ZONE %s", temp);
+					if (NEED_DEBUG) sprintf(cmd, "UNSET_CONTROLLED_ZONE %s", word);
 
 #endif
 				}
@@ -6275,7 +6275,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				break;
 			case 'E':
 
-				if (!strcmp(temp, "ELSE"))
+				if (!strcmp(word, "ELSE"))
 				{
 					pos = SkipNextStatement(es, pos);
 #ifdef NEEDING_DEBUG
@@ -6284,11 +6284,11 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #endif
 				}
-				else if (!strcmp(temp, "ENDINTRO"))
+				else if (!strcmp(word, "ENDINTRO"))
 				{
 					ARX_INTERFACE_EndIntro();
 				}
-				else if (!strcmp(temp, "ENDGAME"))
+				else if (!strcmp(word, "ENDGAME"))
 				{
 					REFUSE_GAME_RETURN = 1;
 
@@ -6301,7 +6301,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						ARX_MENU_Clicked_CREDITS();
 					}
 				}
-				else if (!strcmp(temp, "EATME"))
+				else if (!strcmp(word, "EATME"))
 				{
 #ifdef NEEDING_DEBUG
 
@@ -6331,37 +6331,37 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						}
 					}
 				}
-				else if (!strcmp(temp, "EQUIP"))
+				else if (!strcmp(word, "EQUIP"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 #ifdef NEEDING_DEBUG
 
 					if (NEED_DEBUG)
 					{
 						strcpy(cmd, "EQUIP ");
-						strcat(cmd, temp);
+						strcat(cmd, word);
 					}
 
 #endif
 					long unequip = 0;
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
-						if (iCharIn(temp, 'R')) unequip = 1;
+						if (iCharIn(word, 'R')) unequip = 1;
 
-						pos = GetNextWord(es, pos, temp);
+						pos = GetNextWord(es, pos, word);
 #ifdef NEEDING_DEBUG
 
 						if (NEED_DEBUG)
 						{
 							strcat(cmd, " ");
-							strcat(cmd, temp);
+							strcat(cmd, word);
 						}
 
 #endif
 					}
 
-					long t = GetTargetByNameTarget(temp);
+					long t = GetTargetByNameTarget(word);
 
 					if (t == -3) t = 0;
 
@@ -6390,7 +6390,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 			case 'M':
 
 				if (
-					(!strcmp(temp, "MUL")))
+					(!strcmp(word, "MUL")))
 				{
 					std::string temp1;
 					std::string temp2;
@@ -6468,12 +6468,12 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "%s %s %s", temp, temp1, temp2);
+					if (NEED_DEBUG) sprintf(cmd, "%s %s %s", word, temp1, temp2);
 
 #endif
 
 				}
-				else if (!strcmp(temp, "MOVE"))
+				else if (!strcmp(word, "MOVE"))
 				{
 					if (io != NULL)
 					{
@@ -6497,42 +6497,42 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						io->pos.z += t3;
 #ifdef NEEDING_DEBUG
 
-						if (NEED_DEBUG) sprintf(cmd, "%s %s %s %s", temp, temp1, temp2, temp3);
+						if (NEED_DEBUG) sprintf(cmd, "%s %s %s %s", word, temp1, temp2, temp3);
 
 #endif
 					}
 				}
-				else if (!strcmp(temp, "MAGIC"))
+				else if (!strcmp(word, "MAGIC"))
 				{
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					if (!strcasecmp(temp, "OFF"))
+					if (!strcasecmp(word, "OFF"))
 						GLOBAL_MAGIC_MODE = 0;
 					else
 						GLOBAL_MAGIC_MODE = 1;
 				}
-				else if (!strcmp(temp, "MAPMARKER"))
+				else if (!strcmp(word, "MAPMARKER"))
 				{
 					float x, y, t;
 					long lvl;
 
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					if ((!strcasecmp(temp, "remove")) || (!strcasecmp(temp, "-r")))
+					if ((!strcasecmp(word, "remove")) || (!strcasecmp(word, "-r")))
 					{
-						pos = GetNextWord(es, pos, temp);
-						ARX_MAPMARKER_Remove(temp);
+						pos = GetNextWord(es, pos, word);
+						ARX_MAPMARKER_Remove(word);
 					}
 					else
 					{
-						x = GetVarValueInterpretedAsFloat(temp, esss, io);
-						pos = GetNextWord(es, pos, temp);
-						y = GetVarValueInterpretedAsFloat(temp, esss, io);
-						pos = GetNextWord(es, pos, temp);
-						t = GetVarValueInterpretedAsFloat(temp, esss, io);
+						x = GetVarValueInterpretedAsFloat(word, esss, io);
+						pos = GetNextWord(es, pos, word);
+						y = GetVarValueInterpretedAsFloat(word, esss, io);
+						pos = GetNextWord(es, pos, word);
+						t = GetVarValueInterpretedAsFloat(word, esss, io);
 						lvl = t;
-						pos = GetNextWord(es, pos, temp);
-						ARX_MAPMARKER_Add(x, y, lvl, temp);
+						pos = GetNextWord(es, pos, word);
+						ARX_MAPMARKER_Add(x, y, lvl, word);
 					}
 				}
 
@@ -6540,8 +6540,8 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 			case '-':
 			case '+':
 
-				if ((!strcmp(temp, "++")) ||
-						(!strcmp(temp, "--")))
+				if ((!strcmp(word, "++")) ||
+						(!strcmp(word, "--")))
 				{
 					SCRIPT_VAR * sv = NULL;
 					std::string temp1;
@@ -6554,7 +6554,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						case '#':
 							ival = GETVarValueLong(svar, NB_GLOBALS, temp1);
 
-							if (!strcmp(temp, "--"))
+							if (!strcmp(word, "--"))
 							{
 								sv = SETVarValueLong(svar, NB_GLOBALS, temp1, ival - 1);
 							}
@@ -6567,7 +6567,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						case '\xA3':
 							ival = GETVarValueLong(esss->lvar, esss->nblvar, temp1);
 
-							if (!strcmp(temp, "--"))
+							if (!strcmp(word, "--"))
 							{
 								sv = SETVarValueLong(esss->lvar, esss->nblvar, temp1, ival - 1);
 							}
@@ -6581,7 +6581,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							fval = GETVarValueFloat(svar, NB_GLOBALS, temp1);
 							ARX_CHECK_NO_ENTRY();
 
-							if (!strcmp(temp, "--"))
+							if (!strcmp(word, "--"))
 							{
 								sv = SETVarValueFloat(svar, NB_GLOBALS, temp1, fval  - 1.f);
 							}
@@ -6594,7 +6594,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						case '@':
 							fval = GETVarValueFloat(esss->lvar, esss->nblvar, temp1);
 
-							if (!strcmp(temp, "--"))
+							if (!strcmp(word, "--"))
 							{
 								sv = SETVarValueFloat(esss->lvar, esss->nblvar, temp1, fval - 1.f);
 							}
@@ -6610,7 +6610,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "%s %s", temp, temp1);
+					if (NEED_DEBUG) sprintf(cmd, "%s %s", word, temp1);
 
 #endif
 				}
@@ -6618,8 +6618,8 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 			case 'D':
 
 				if (
-					(!strcmp(temp, "DEC")) ||
-					(!strcmp(temp, "DIV")))
+					(!strcmp(word, "DEC")) ||
+					(!strcmp(word, "DIV")))
 				{
 					std::string temp1;
 					std::string temp2;
@@ -6632,7 +6632,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 					if (NEED_DEBUG)
 					{
-						strcpy(cmd, temp);
+						strcpy(cmd, word);
 						strcat(cmd, " ");
 						strcat(cmd, temp1);
 					}
@@ -6658,8 +6658,8 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = (float)GETVarValueLong(svar, NB_GLOBALS, temp1);
 
-							if (!strcmp(temp, "DEC")) fval = fdval - fval;
-							else if (!strcmp(temp, "DIV"))
+							if (!strcmp(word, "DEC")) fval = fdval - fval;
+							else if (!strcmp(word, "DIV"))
 							{
 								if (fval != 0.f)	fval = fdval / fval;
 							}
@@ -6673,8 +6673,8 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = (float)GETVarValueLong(esss->lvar, esss->nblvar, temp1);
 
-							if (!strcmp(temp, "DEC")) fval = fdval - fval;
-							else if (!strcmp(temp, "DIV"))
+							if (!strcmp(word, "DEC")) fval = fdval - fval;
+							else if (!strcmp(word, "DIV"))
 							{
 								if (fval != 0.f)	fval = fdval / fval;
 							}
@@ -6688,8 +6688,8 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = GETVarValueFloat(svar, NB_GLOBALS, temp1);
 
-							if (!strcmp(temp, "DEC")) fval = fdval - fval;
-							else if (!strcmp(temp, "DIV"))
+							if (!strcmp(word, "DEC")) fval = fdval - fval;
+							else if (!strcmp(word, "DIV"))
 							{
 								if (fval != 0.f)	fval = fdval / fval;
 							}
@@ -6703,8 +6703,8 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							fval = GetVarValueInterpretedAsFloat(temp2, esss, io);
 							fdval = GETVarValueFloat(esss->lvar, esss->nblvar, temp1);
 
-							if (!strcmp(temp, "DEC")) fval = fdval - fval;
-							else if (!strcmp(temp, "DIV"))
+							if (!strcmp(word, "DEC")) fval = fdval - fval;
+							else if (!strcmp(word, "DIV"))
 							{
 								if (fval != 0.f)	fval = fdval / fval;
 							}
@@ -6718,16 +6718,16 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #ifdef NEEDING_DEBUG
 
-					if (NEED_DEBUG) sprintf(cmd, "%s %s %s", temp, temp1, temp2);
+					if (NEED_DEBUG) sprintf(cmd, "%s %s %s", word, temp1, temp2);
 
 #endif
 				}
-				else if (!strcmp(temp, "DESTROY"))
+				else if (!strcmp(word, "DESTROY"))
 				{
 					std::string temp2;
 					pos = GetNextWord(es, pos, temp2); // Source IO
-					temp = GetVarValueInterpretedAsText(temp2, esss, io);
-					long t = GetTargetByNameTarget(temp);
+					word = GetVarValueInterpretedAsText(temp2, esss, io);
+					long t = GetTargetByNameTarget(word);
 
 					if (t == -2) t = GetInterNum(io); //self
 
@@ -6749,7 +6749,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #endif
 				}
-				else if (!strcmp(temp, "DETACHNPCFROMPLAYER"))
+				else if (!strcmp(word, "DETACHNPCFROMPLAYER"))
 				{
 #ifdef NEEDING_DEBUG
 
@@ -6757,64 +6757,64 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #endif
 				}
-				else if (!strcmp(temp, "DODAMAGE"))
+				else if (!strcmp(word, "DODAMAGE"))
 				{
-					pos = GetNextWord(es, pos, temp); // Source IO
+					pos = GetNextWord(es, pos, word); // Source IO
 					long type = 0;
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
-						if (iCharIn(temp, 'F'))
+						if (iCharIn(word, 'F'))
 							type |= DAMAGE_TYPE_FIRE;
 
-						if (iCharIn(temp, 'M'))
+						if (iCharIn(word, 'M'))
 							type |= DAMAGE_TYPE_MAGICAL;
 
-						if (iCharIn(temp, 'P'))
+						if (iCharIn(word, 'P'))
 							type |= DAMAGE_TYPE_POISON;
 
-						if (iCharIn(temp, 'L'))
+						if (iCharIn(word, 'L'))
 							type |= DAMAGE_TYPE_LIGHTNING;
 
-						if (iCharIn(temp, 'C'))
+						if (iCharIn(word, 'C'))
 							type |= DAMAGE_TYPE_COLD;
 
-						if (iCharIn(temp, 'G'))
+						if (iCharIn(word, 'G'))
 							type |= DAMAGE_TYPE_GAS;
 
-						if (iCharIn(temp, 'E'))
+						if (iCharIn(word, 'E'))
 							type |= DAMAGE_TYPE_METAL;
 
-						if (iCharIn(temp, 'W'))
+						if (iCharIn(word, 'W'))
 							type |= DAMAGE_TYPE_WOOD;
 
-						if (iCharIn(temp, 'S'))
+						if (iCharIn(word, 'S'))
 							type |= DAMAGE_TYPE_STONE;
 
-						if (iCharIn(temp, 'A'))
+						if (iCharIn(word, 'A'))
 							type |= DAMAGE_TYPE_ACID;
 
-						if (iCharIn(temp, 'O'))
+						if (iCharIn(word, 'O'))
 							type |= DAMAGE_TYPE_ORGANIC;
 
-						if (iCharIn(temp, 'R'))
+						if (iCharIn(word, 'R'))
 							type |= DAMAGE_TYPE_DRAIN_LIFE;
 
-						if (iCharIn(temp, 'N'))
+						if (iCharIn(word, 'N'))
 							type |= DAMAGE_TYPE_DRAIN_MANA;
 
-						if (iCharIn(temp, 'U'))
+						if (iCharIn(word, 'U'))
 							type |= DAMAGE_TYPE_PUSH;
 
-						pos = GetNextWord(es, pos, temp);
+						pos = GetNextWord(es, pos, word);
 					}
 
-					long t = GetTargetByNameTarget(temp);
+					long t = GetTargetByNameTarget(word);
 
 					if (t == -2) t = GetInterNum(io); //self
 
-					pos = GetNextWord(es, pos, temp);
-					float fval = GetVarValueInterpretedAsFloat(temp, esss, io);
+					pos = GetNextWord(es, pos, word);
+					float fval = GetVarValueInterpretedAsFloat(word, esss, io);
 
 					if (ValidIONum(t))
 						ARX_DAMAGES_DealDamages(t, fval, GetInterNum(io), type, &inter.iobj[t]->pos);
@@ -6825,59 +6825,59 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #endif
 				}
-				else if (!strcmp(temp, "DAMAGER"))
+				else if (!strcmp(word, "DAMAGER"))
 				{
 					io->damager_type = DAMAGE_TYPE_PER_SECOND;
-					pos = GetNextWord(es, pos, temp);
+					pos = GetNextWord(es, pos, word);
 
-					if (temp[0] == '-')
+					if (word[0] == '-')
 					{
-						if (iCharIn(temp, 'F'))
+						if (iCharIn(word, 'F'))
 							io->damager_type |= DAMAGE_TYPE_FIRE;
 
-						if (iCharIn(temp, 'M'))
+						if (iCharIn(word, 'M'))
 							io->damager_type |= DAMAGE_TYPE_MAGICAL;
 
-						if (iCharIn(temp, 'P'))
+						if (iCharIn(word, 'P'))
 							io->damager_type |= DAMAGE_TYPE_POISON;
 
-						if (iCharIn(temp, 'L'))
+						if (iCharIn(word, 'L'))
 							io->damager_type |= DAMAGE_TYPE_LIGHTNING;
 
-						if (iCharIn(temp, 'C'))
+						if (iCharIn(word, 'C'))
 							io->damager_type |= DAMAGE_TYPE_COLD;
 
-						if (iCharIn(temp, 'G'))
+						if (iCharIn(word, 'G'))
 							io->damager_type |= DAMAGE_TYPE_GAS;
 
-						if (iCharIn(temp, 'E'))
+						if (iCharIn(word, 'E'))
 							io->damager_type |= DAMAGE_TYPE_METAL;
 
-						if (iCharIn(temp, 'W'))
+						if (iCharIn(word, 'W'))
 							io->damager_type |= DAMAGE_TYPE_WOOD;
 
-						if (iCharIn(temp, 'S'))
+						if (iCharIn(word, 'S'))
 							io->damager_type |= DAMAGE_TYPE_STONE;
 
-						if (iCharIn(temp, 'A'))
+						if (iCharIn(word, 'A'))
 							io->damager_type |= DAMAGE_TYPE_ACID;
 
-						if (iCharIn(temp, 'O'))
+						if (iCharIn(word, 'O'))
 							io->damager_type |= DAMAGE_TYPE_ORGANIC;
 
-						if (iCharIn(temp, 'R'))
+						if (iCharIn(word, 'R'))
 							io->damager_type |= DAMAGE_TYPE_DRAIN_LIFE;
 
-						if (iCharIn(temp, 'N'))
+						if (iCharIn(word, 'N'))
 							io->damager_type |= DAMAGE_TYPE_DRAIN_MANA;
 
-						if (iCharIn(temp, 'U'))
+						if (iCharIn(word, 'U'))
 							io->damager_type |= DAMAGE_TYPE_PUSH;
 
-						pos = GetNextWord(es, pos, temp);
+						pos = GetNextWord(es, pos, word);
 					}
 
-					float fval = GetVarValueInterpretedAsFloat(temp, esss, io);
+					float fval = GetVarValueInterpretedAsFloat(word, esss, io);
 
 
 
@@ -6891,23 +6891,23 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #endif
 				}
-				else if (!strcmp(temp, "DETACH"))
+				else if (!strcmp(word, "DETACH"))
 				{
-					pos = GetNextWord(es, pos, temp); // Source IO
+					pos = GetNextWord(es, pos, word); // Source IO
 #ifdef NEEDING_DEBUG
 
 					if (NEED_DEBUG)
 					{
 						strcpy(cmd, "DETACH ");
-						strcat(cmd, temp);
+						strcat(cmd, word);
 					}
 
 #endif
-					long t = GetTargetByNameTarget(temp);
+					long t = GetTargetByNameTarget(word);
 
 					if (t == -2) t = GetInterNum(io); //self
 
-					pos = GetNextWord(es, pos, temp); // target IO
+					pos = GetNextWord(es, pos, word); // target IO
 #ifdef NEEDING_DEBUG
 
 					if (NEED_DEBUG)
@@ -6917,14 +6917,14 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					}
 
 #endif
-					long t2 = GetTargetByNameTarget(temp);
+					long t2 = GetTargetByNameTarget(word);
 
 					if (t2 == -2) t2 = GetInterNum(io); //self
 
 					ARX_INTERACTIVE_Detach(t, t2);
 				}
 
-				else if (!strcmp(temp, "DRAWSYMBOL")) // DRAWSYMBOL symbol duration
+				else if (!strcmp(word, "DRAWSYMBOL")) // DRAWSYMBOL symbol duration
 				{
 					std::string temp1;
 					std::string temp2;
@@ -6956,14 +6956,14 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					pos = GetNextWord(es, pos, temp3);
 					pos = GetNextWord(es, pos, temp4);
 					sprintf(cmd, "Script Error for token #%ld '%c' (%s) in file %s_%04ld",
-							ppos,temp[0],temp2.c_str(),GetName(io->filename).c_str(),io->ident);
+							ppos,word[0],temp2.c_str(),GetName(io->filename).c_str(),io->ident);
 					LogError << cmd;
 
 					io->ioflags |= IO_FREEZESCRIPT;
 					return REFUSE;
 				}
 
-				LogError << "unknown command: " << temp;
+				LogError << "unknown command: " << word;
 		}
 
 		if (cmd[0] != 0) LogDebug << "CMD " << cmd;
