@@ -20,6 +20,7 @@ class ScriptEvent {
 public:
 	ScriptEvent();
 	virtual ~ScriptEvent();
+	static long checkInteractiveObject(INTERACTIVE_OBJ * io, long msg);
 	static long send(EERIE_SCRIPT * es, long msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& eventname, long info = 0);
 };
 

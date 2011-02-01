@@ -376,6 +376,40 @@ ScriptEvent::~ScriptEvent() {
 	// TODO Auto-generated destructor stub
 }
 
+long ScriptEvent::checkInteractiveObject(INTERACTIVE_OBJ * io, long msg) {
+	io->stat_count++;
+
+	if ((io->GameFlags & GFLAG_MEGAHIDE) && (msg != SM_RELOAD))
+		return ACCEPT;
+
+	if (io->show == SHOW_FLAG_DESTROYED) // destroyed
+		return ACCEPT;
+
+	if (io->ioflags & IO_FREEZESCRIPT) {
+		if (msg == SM_LOAD) return ACCEPT;
+		return REFUSE;
+	}
+
+	if (io->ioflags & IO_NPC
+		&& io->_npcdata->life <= 0.f
+		&& msg != SM_DEAD
+		&& msg != SM_DIE
+		&& msg != SM_EXECUTELINE
+		&& msg != SM_RELOAD
+		&& msg != SM_EXECUTELINE
+		&& msg != SM_INVENTORY2_OPEN
+		&& msg != SM_INVENTORY2_CLOSE) {
+			return ACCEPT;
+	}
+
+	//change weapons if you break
+	if ((io->ioflags & IO_FIX || io->ioflags & IO_ITEM)
+		&&	msg == SM_BREAK) {
+			ManageCasseDArme(io);
+	}
+
+	return 0;
+}
 
 //TODO(lubosz): THIS IS DEFINETLY TOO LONG FOR ONE FUNCTION
 long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info)
@@ -387,63 +421,33 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 	long GLOB = 0;
 	long RELOADING = 0;
 
-	LogDebug << "ScriptEvent::send msg=" << msg << " ("
-	         << ((msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1) ? AS_EVENT[msg].name : "unknown")
-	         << ")" << " params=" << params
-	         << " io=" << Logger::nullstr(io ? io->filename : NULL)
-	         << " evame=" << evname << " info=" << info;
-
-	if (io)
-	{
-		if ((io->GameFlags & GFLAG_MEGAHIDE)
-				&&	(msg != SM_RELOAD))
-			return ACCEPT;
-
-		if (io->show == SHOW_FLAG_DESTROYED) // destroyed
-			return ACCEPT;
-	}
-
-	Event_Total_Count++;
-
-	if (io)
-	{
-		io->stat_count++;
-
-		if (io->ioflags & IO_FREEZESCRIPT)
-		{
-			if (msg == SM_LOAD) return ACCEPT;
-
-			return REFUSE;
-		}
-
-		if (io->ioflags & IO_NPC)
-		{
-			if ((io->_npcdata->life <= 0.f) && (msg != SM_DEAD) && (msg != SM_DIE) && (msg != SM_EXECUTELINE) && (msg != SM_RELOAD)
-					&& (msg != SM_EXECUTELINE)
-					&& (msg != SM_INVENTORY2_OPEN) && (msg != SM_INVENTORY2_CLOSE))
-				return ACCEPT;
-		}
-
-		//changement d'armes si on casse
-		if (((io->ioflags & IO_FIX)	||	(io->ioflags & IO_ITEM))
-				&&	(msg == SM_BREAK))
-		{
-			ManageCasseDArme(io);
-		}
-	}
-
-	if (((EDITMODE) || (PauseScript))
-			&& (msg != SM_LOAD)
-			&& (msg != SM_INIT)
-			&& (msg != SM_INITEND))
-		return ACCEPT;
-
 	long ret = ACCEPT;
 	std::string temp;
 	char cmd[256];
 	char eventname[64];
 	long brackets = 0;
 	long pos;
+
+	LogDebug << "ScriptEvent::send msg=" << msg << " ("
+	         << ((msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1) ? AS_EVENT[msg].name : "unknown")
+	         << ")" << " params=" << params
+	         << " io=" << Logger::nullstr(io ? io->filename : NULL)
+	         << " evame=" << evname << " info=" << info;
+
+	Event_Total_Count++;
+
+	if (io)	{
+		long ioReturn = checkInteractiveObject(io, msg);
+		if (ioReturn != 0) return ioReturn;
+	}
+
+	if ((EDITMODE || PauseScript)
+			&& msg != SM_LOAD
+			&& msg != SM_INIT
+			&& msg != SM_INITEND) {
+		return ACCEPT;
+	}
+
 
 	// Retrieves in esss script pointer to script holding variables.
 	EERIE_SCRIPT * esss = (EERIE_SCRIPT *)es->master;
@@ -7454,46 +7458,25 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					return REFUSE;
 				}
 
-#ifdef NEEDING_DEBUG
-
-				if (NEED_DEBUG)
-				{
-					LogError << "unknown command: " << temp;
-				}
-
-#endif
-
+				LogError << "unknown command: " << temp;
 		}
 
-#ifdef NEEDING_DEBUG
+		if (cmd[0] != 0) LogDebug << "CMD " << cmd;
 
-		if ((NEED_DEBUG) && (cmd[0] != 0))
-		{
-			LogDebug << "  " << cmd;
-		}
-
-#endif
 	}
 
 end:
 	;
 
-#ifdef NEEDING_DEBUG
-
-	if (NEED_DEBUG)
-	{
-		if (msg != SM_EXECUTELINE)
-		{
-			if (evname) LogDebug << eventname << " EVENT Successfully Finished";
-			else if (msg != SM_DUMMY) LogDebug << AS_EVENT[msg].name << " EVENT Successfully Finished";
-			else LogDebug << "Dummy EVENT Successfully Finished";
-		}
-		else
-		{
-			LogDebug << "EXECUTELINE Successfully Finished";
-		}
+	if (msg != SM_EXECUTELINE) {
+		if (evname != "")
+			LogDebug << eventname << " EVENT Successfully Finished";
+		else if (msg != SM_DUMMY)
+			LogDebug << AS_EVENT[msg].name << " EVENT Successfully Finished";
+		else LogDebug << "Dummy EVENT Successfully Finished";
+	} else {
+		LogDebug << "EXECUTELINE Successfully Finished";
 	}
 
-#endif
 	return ret;
 }

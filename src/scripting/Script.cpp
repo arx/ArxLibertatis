@@ -5542,28 +5542,6 @@ INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events_Sent()
 long NEED_DEBUG = 0;
 long BIG_DEBUG_POS = 0;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void ManageCasseDArme(INTERACTIVE_OBJ * io)
 {
 	if ((io->type_flags & OBJECT_TYPE_DAGGER) ||
