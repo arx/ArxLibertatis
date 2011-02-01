@@ -131,7 +131,7 @@ bool MENU_NoActiveWindow();
 void ClearGame();
 void ClearGameDEVICE();
 
-void GetTextSize(HFONT _hFont, _TCHAR * _lpszUText, int * _iWidth, int * _iHeight);
+void GetTextSize(HFONT _hFont, const _TCHAR * _lpszUText, int * _iWidth, int * _iHeight);
 
 //-----------------------------------------------------------------------------
 void ARX_Menu_Release_Text(void * a)

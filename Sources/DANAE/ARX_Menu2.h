@@ -567,10 +567,7 @@ class CMenuSliderText: public CMenuElement
 	public:
 		void Move(int, int);
 		bool OnMouseClick(int);
-		CMenuElement * OnShortCut()
-		{
-			return NULL;
-		};
+		CMenuElement * OnShortCut() { return NULL; }
 		void Update(int);
 		void Render();
 		void RenderMouseOver();
@@ -579,30 +576,31 @@ class CMenuSliderText: public CMenuElement
 };
 
 //-----------------------------------------------------------------------------
+/// Slider with value in the range [0..10]
 class CMenuSlider: public CMenuElement
 {
 	public:
-		CMenuButton		*	pLeftButton;
-		CMenuButton		*	pRightButton;
-		TextureContainer	* pTex1;
-		TextureContainer	* pTex2;
-		int					iPos;
-
-	public:
-		CMenuSlider(int, int, int);//, CMenuButton*, CMenuButton*, TextureContainer*, TextureContainer*);
+		CMenuSlider(int id, int posx, int posy);
 		virtual ~CMenuSlider();
 
 	public:
 		void Move(int, int);
 		bool OnMouseClick(int);
-		CMenuElement * OnShortCut()
-		{
-			return NULL;
-		};
+		CMenuElement * OnShortCut() { return NULL; }
 		void Update(int);
 		void Render();
 		void RenderMouseOver();
 		void EmptyFunction();
+
+		void setValue(int value) { iPos = value; }
+		int getValue() const { return iPos; }
+
+	private:
+		CMenuButton		*	pLeftButton;
+		CMenuButton		*	pRightButton;
+		TextureContainer	* pTex1;
+		TextureContainer	* pTex2;
+		int					iPos;
 };
 
 //-----------------------------------------------------------------------------
@@ -877,7 +875,6 @@ class CMenuConfig
 		int			iMouseSensitivity;
 		SACTION_KEY sakActionKey[MAX_ACTION_KEY];
 		SACTION_KEY sakActionDefaultKey[MAX_ACTION_KEY];
-
 		bool		bLinkMouseLookToUse;
 		//MISC
 		bool		bATI;
@@ -887,35 +884,36 @@ class CMenuConfig
 		unsigned int uiGoreMode;
 
 		bool		bNoReturnToWindows;
-	private:
-		int GetDIKWithASCII(char * _pcTouch);
-		char * ReadConfig(char * _pcSection, char * _pcKey);
-		bool WriteConfig(char * _pcSection, char * _pcKey, char * _pcDatas);
+
 	public:
-		CMenuConfig();
-		CMenuConfig(char *);
+		explicit CMenuConfig(const char *);
 		virtual ~CMenuConfig();
 
+	public:
 		bool SetActionKey(int _iAction, int _iActionNum, int _iVirtualKey);
-		int ReadConfigInt(char * _pcSection, char * _pcKey, bool & _bOk);
- 
-		char * ReadConfigString(char * _pcSection, char * _pcKey);
-		bool WriteConfigInt(char * _pcSection, char * _pcKey, int _iDatas);
- 
-		bool WriteConfigString(char * _pcSection, char * _pcKey, char * _pcDatas);
- 
- 
- 
-		void ResetActionKey();
-		bool WriteConfigKey(char * _pcKey, int _iAction);
-		bool ReadConfigKey(char * _pcKey, int _iAction);
 		void ReInitActionKey(CWindowMenuConsole * _pwmcWindowMenuConsole);
 		void SetDefaultKey();
-		void DefaultValue();
-		void First();
 
 		bool SaveAll();
 		bool ReadAll();
+
+	private:
+		void First();
+		void DefaultValue();
+
+		char * ReadConfig(char * _pcSection, char * _pcKey);
+		int ReadConfigInt(char * _pcSection, char * _pcKey, bool & _bOk);
+		char * ReadConfigString(char * _pcSection, char * _pcKey);
+		bool ReadConfigKey(char * _pcKey, int _iAction);
+
+		bool WriteConfig(char * _pcSection, char * _pcKey, char * _pcDatas);
+		bool WriteConfigInt(char * _pcSection, char * _pcKey, int _iDatas);
+		bool WriteConfigString(char * _pcSection, char * _pcKey, char * _pcDatas);
+		bool WriteConfigKey(char * _pcKey, int _iAction);
+
+		void ResetActionKey();
+
+		int GetDIKWithASCII(char * _pcTouch);
 };
 
 //-----------------------------------------------------------------------------

@@ -119,7 +119,6 @@ void FontError()
 
 long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, _TCHAR * _lpszUText, int _iSpacingY, RECT _rRect)
 {
-
 	int iTemp = 0;
 
 	if (danaeApp.m_pddsRenderTarget)
