@@ -3534,11 +3534,10 @@ void ARX_SCRIPT_Timer_FirstInit(long number)
 
 	MAX_TIMER_SCRIPT = number;
 
-	if (scr_timer) free(scr_timer);
+	if (scr_timer) delete[] scr_timer;
 
 	//todo free
-	scr_timer = (SCR_TIMER *)malloc(sizeof(SCR_TIMER) * MAX_TIMER_SCRIPT);
-	memset(scr_timer, 0, sizeof(SCR_TIMER)*MAX_TIMER_SCRIPT);
+	scr_timer = new SCR_TIMER[MAX_TIMER_SCRIPT];
 	ActiveTimers = 0;
 }
 //*************************************************************************************
@@ -4427,7 +4426,7 @@ long LaunchScriptCheck(EERIE_SCRIPT * es, INTERACTIVE_OBJ * io)
 				{
 					pos = GetNextWord(es, pos, temp);
 
-					if (!strcasecmp(temp, "SKIN"))
+					if (!strcasecmp(temp.c_str(), "SKIN"))
 						pos = GetNextWord(es, pos, temp);
 
 					pos = GetNextWord(es, pos, temp);

@@ -102,8 +102,7 @@ struct EERIE_SCRIPT
 	LABEL_INFO *	labels;
 };
 
-typedef struct
-{
+struct SCR_TIMER {
 	std::string         name;
 	short               exist;
 	short               flags; 
@@ -115,7 +114,24 @@ typedef struct
 	unsigned long       tim;
 	INTERACTIVE_OBJ*    io;
 	EERIE_SCRIPT*       es;
-} SCR_TIMER;
+	
+	inline SCR_TIMER() : name(), exist(0), flags(0), namelength(0), times(0),
+	                     msecs(0), pos(0), longinfo(0), tim(0), io(NULL), es(NULL) { };
+	
+	inline void reset() {
+		name.clear();
+		exist = 0;
+		flags = 0;
+		namelength = 0;
+		times = 0;
+		msecs = 0;
+		pos = 0;
+		longinfo = 0;
+		tim = 0;
+		io = NULL;
+		es = NULL;
+	}
+};
 
 //-----------------------------------------------------------------------------
 #define TYPE_TEXT	1
