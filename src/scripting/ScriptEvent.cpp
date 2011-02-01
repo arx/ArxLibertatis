@@ -5878,7 +5878,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 							if (io)
 							{
-								ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_ICON, word, NULL);
+								ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_ICON, word, string());
 								ARX_INTERACTIVE_TWEAK_Icon(io, word);
 							}
 						}
@@ -5911,8 +5911,8 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							if (!strcasecmp(word, "REMOVE"))
 							{
 								tw = TWEAK_REMOVE;
-								ARX_INTERACTIVE_MEMO_TWEAK(io, tw, NULL, NULL);
-								EERIE_MESH_TWEAK_Do(io, tw, NULL);
+								ARX_INTERACTIVE_MEMO_TWEAK(io, tw, string(), string());
+								EERIE_MESH_TWEAK_Do(io, tw, string());
 							}
 							else
 							{
@@ -5939,7 +5939,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 								if (tw != TWEAK_ERROR)
 								{
-									ARX_INTERACTIVE_MEMO_TWEAK(io, tw, path, NULL);
+									ARX_INTERACTIVE_MEMO_TWEAK(io, tw, path, string());
 									EERIE_MESH_TWEAK_Do(io, tw, path);
 								}
 							}
@@ -6158,7 +6158,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				if (!strcmp(word, "USEMESH"))
 				{
 					pos = GetNextWord(es, pos, word);
-					ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_MESH, word, NULL);
+					ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_MESH, word, string());
 #ifdef NEEDING_DEBUG
 
 					if (NEED_DEBUG)
