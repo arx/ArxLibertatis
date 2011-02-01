@@ -3,22 +3,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -3417,7 +3417,7 @@ BOOL HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 	if ((aa < ab + 90.f) && (aa > ab - 90.f))
 	{
 		//font
-		ARX_TEXT_Draw(GDevice, InBookFont, 300, 320, 0, 0, _T("VISIBLE"), D3DRGB(1.f, 0.f, 0.f));
+		ARX_TEXT_Draw(GDevice, hFontInBook, 300, 320, 0, 0, _T("VISIBLE"), D3DRGB(1.f, 0.f, 0.f));
 		return TRUE;
 	}
 
@@ -7929,8 +7929,8 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 							if (iCharIn(temp2, 'O'))
 							{
 								voixoff	=	2;
-								
-								//Crash when we set speak pitch to 1, 
+
+								//Crash when we set speak pitch to 1,
 								//Variable use for a division, 0 is not possible
 								//To find
 							}
@@ -11023,7 +11023,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 					switch (temp[0])
 					{
 						case '^':
-							
+
 							long lv; float fv; char tv[tvSize];	//Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
 							switch ( GetSystemVar( esss, io, temp, tv,tvSize, &fv, &lv ) )
 							{
@@ -11097,7 +11097,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 					switch ( temp3[0] )
 					{
 						case '^':
-							
+
 							long lv; float fv; char tv[tvSize];
 							switch ( GetSystemVar( esss, io, temp3, tv,tvSize, &fv, &lv ) )
 							{

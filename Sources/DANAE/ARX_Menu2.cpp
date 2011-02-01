@@ -3,22 +3,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -253,7 +253,7 @@ void ARX_QuickSave()
 		( iNbSave1 > 0 ) && ( iNbSave1 < save_c ) )
 	{
 		int	iSave;
-		
+
 		if ( isTimeBefore( sTime0, sTime1 ) )
 			iSave = iNbSave0;
 		else
@@ -324,13 +324,13 @@ void ARX_DrawAfterQuickLoad()
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,D3DBLEND_ONE);
 
-	EERIEDrawBitmap2(	GDevice, 
-						0, 
-						0, 
+	EERIEDrawBitmap2(	GDevice,
+						0,
+						0,
 						INTERFACE_RATIO_DWORD(pTex->m_dwWidth),
 						INTERFACE_RATIO_DWORD(pTex->m_dwHeight),
-						0.f, 
-						pTex, 
+						0.f,
+						pTex,
 						D3DRGB(fColor,fColor,fColor) );
 
 	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,FALSE);
@@ -476,7 +476,7 @@ void GetTextSize(HFONT _hFont, const _TCHAR *_lpszUText, int *_iWidth, int *_iHe
 
 void FontRenderText(HFONT _hFont, EERIE_3D pos, _TCHAR *_pText, COLORREF _c)
 {
-	if(pTextManage)
+	if (pTextManage)
 	{
 		RECT rRect;
 
@@ -484,23 +484,12 @@ void FontRenderText(HFONT _hFont, EERIE_3D pos, _TCHAR *_pText, COLORREF _c)
 		ARX_CHECK_LONG( pos.x );
 		ARX_CHECK_LONG( pos.x + 999 );
 		ARX_CHECK_LONG( pos.y + 999 );
-		//------------
 		rRect.top	=	ARX_CLEAN_WARN_CAST_LONG( pos.y );
 		rRect.left	=	ARX_CLEAN_WARN_CAST_LONG( pos.x );
 		rRect.right	=	ARX_CLEAN_WARN_CAST_LONG( pos.x + 999 );
 		rRect.bottom=	ARX_CLEAN_WARN_CAST_LONG( pos.y + 999 );
 
-		ARX_TEXT pText;
-		ARX_Text_Init(&pText);
-		pText.lpszUText = _pText;
-		pText.lCol = _c;
-		pText.rRect = rRect;
-
-		pTextManage->AddText(	_hFont,
-								_pText,
-								rRect,
-								_c,
-								0x00FF00FF);
+		pTextManage->AddText(_hFont, _pText, rRect, _c, 0x00FF00FF);
 	}
 }
 
@@ -1159,7 +1148,7 @@ bool CMenuConfig::SaveAll()
 	bOk&=WriteConfigInt("VIDEO","contrast",iContrast);
 	bOk&=WriteConfigInt("VIDEO","show_crosshair",bShowCrossHair?1:0);
 	bOk&=WriteConfigInt("VIDEO","antialiasing",bAntiAliasing?1:0);
-	//audio 
+	//audio
 	bOk&=WriteConfigInt("AUDIO","master_volume",iMasterVolume);
 	bOk&=WriteConfigInt("AUDIO","effects_volume",iSFXVolume);
 	bOk&=WriteConfigInt("AUDIO","speech_volume",iSpeechVolume);
@@ -1177,25 +1166,25 @@ bool CMenuConfig::SaveAll()
 	bOk&=WriteConfigKey("magic_mode",CONTROLS_CUST_MAGICMODE);
 	bOk&=WriteConfigKey("stealth_mode",CONTROLS_CUST_STEALTHMODE);
 	bOk&=WriteConfigKey("walk_forward",CONTROLS_CUST_WALKFORWARD);
-	bOk&=WriteConfigKey("walk_backward",CONTROLS_CUST_WALKBACKWARD);	
+	bOk&=WriteConfigKey("walk_backward",CONTROLS_CUST_WALKBACKWARD);
 	bOk&=WriteConfigKey("strafe_left",CONTROLS_CUST_STRAFELEFT);
 	bOk&=WriteConfigKey("strafe_right",CONTROLS_CUST_STRAFERIGHT);
-	bOk&=WriteConfigKey("lean_left",CONTROLS_CUST_LEANLEFT);		
-	bOk&=WriteConfigKey("lean_right",CONTROLS_CUST_LEANRIGHT);		
-	bOk&=WriteConfigKey("crouch",CONTROLS_CUST_CROUCH);		
-	bOk&=WriteConfigKey("mouselook",CONTROLS_CUST_MOUSELOOK);		
+	bOk&=WriteConfigKey("lean_left",CONTROLS_CUST_LEANLEFT);
+	bOk&=WriteConfigKey("lean_right",CONTROLS_CUST_LEANRIGHT);
+	bOk&=WriteConfigKey("crouch",CONTROLS_CUST_CROUCH);
+	bOk&=WriteConfigKey("mouselook",CONTROLS_CUST_MOUSELOOK);
 	bOk&=WriteConfigInt("INPUT","link_mouse_look_to_use",(bLinkMouseLookToUse)?1:0);
-	bOk&=WriteConfigKey("action_combine",CONTROLS_CUST_ACTION);		
-	bOk&=WriteConfigKey("inventory",CONTROLS_CUST_INVENTORY);	
-	bOk&=WriteConfigKey("book",CONTROLS_CUST_BOOK);			
-	bOk&=WriteConfigKey("char_sheet",CONTROLS_CUST_BOOKCHARSHEET);			
-	bOk&=WriteConfigKey("magic_book",CONTROLS_CUST_BOOKSPELL);			
-	bOk&=WriteConfigKey("map",CONTROLS_CUST_BOOKMAP);			
-	bOk&=WriteConfigKey("quest_book",CONTROLS_CUST_BOOKQUEST);			
+	bOk&=WriteConfigKey("action_combine",CONTROLS_CUST_ACTION);
+	bOk&=WriteConfigKey("inventory",CONTROLS_CUST_INVENTORY);
+	bOk&=WriteConfigKey("book",CONTROLS_CUST_BOOK);
+	bOk&=WriteConfigKey("char_sheet",CONTROLS_CUST_BOOKCHARSHEET);
+	bOk&=WriteConfigKey("magic_book",CONTROLS_CUST_BOOKSPELL);
+	bOk&=WriteConfigKey("map",CONTROLS_CUST_BOOKMAP);
+	bOk&=WriteConfigKey("quest_book",CONTROLS_CUST_BOOKQUEST);
 	bOk&=WriteConfigKey("drink_potion_life",CONTROLS_CUST_DRINKPOTIONLIFE);
 	bOk&=WriteConfigKey("drink_potion_mana",CONTROLS_CUST_DRINKPOTIONMANA);
 	bOk&=WriteConfigKey("torch",CONTROLS_CUST_TORCH);
-	
+
 	bOk&=WriteConfigKey("cancel_current_spell",CONTROLS_CUST_CANCELCURSPELL);
 	bOk&=WriteConfigKey("precast_1",CONTROLS_CUST_PRECAST1);
 	bOk&=WriteConfigKey("precast_2",CONTROLS_CUST_PRECAST2);
@@ -1572,7 +1561,7 @@ bool CMenuConfig::ReadAll()
 	{
 		bInvertMouse=(iTemp)?true:false;
 	}
-	
+
 	iTemp=ReadConfigInt("INPUT","auto_ready_weapon",bOkTemp);
 	bOk&=bOkTemp;
 
@@ -1638,13 +1627,13 @@ bool CMenuConfig::ReadAll()
 	bOk2&=ReadConfigKey("magic_mode",CONTROLS_CUST_MAGICMODE);
 	bOk2&=ReadConfigKey("stealth_mode",CONTROLS_CUST_STEALTHMODE);
 	bOk2&=ReadConfigKey("walk_forward",CONTROLS_CUST_WALKFORWARD);
-	bOk2&=ReadConfigKey("walk_backward",CONTROLS_CUST_WALKBACKWARD);	
+	bOk2&=ReadConfigKey("walk_backward",CONTROLS_CUST_WALKBACKWARD);
 	bOk2&=ReadConfigKey("strafe_left",CONTROLS_CUST_STRAFELEFT);
 	bOk2&=ReadConfigKey("strafe_right",CONTROLS_CUST_STRAFERIGHT);
-	bOk2&=ReadConfigKey("lean_left",CONTROLS_CUST_LEANLEFT);		
-	bOk2&=ReadConfigKey("lean_right",CONTROLS_CUST_LEANRIGHT);		
-	bOk2&=ReadConfigKey("crouch",CONTROLS_CUST_CROUCH);		
-	bOk2&=ReadConfigKey("mouselook",CONTROLS_CUST_MOUSELOOK);		
+	bOk2&=ReadConfigKey("lean_left",CONTROLS_CUST_LEANLEFT);
+	bOk2&=ReadConfigKey("lean_right",CONTROLS_CUST_LEANRIGHT);
+	bOk2&=ReadConfigKey("crouch",CONTROLS_CUST_CROUCH);
+	bOk2&=ReadConfigKey("mouselook",CONTROLS_CUST_MOUSELOOK);
 	iTemp=ReadConfigInt("INPUT","link_mouse_look_to_use",bOkTemp);
 
 	if(!bOkTemp)
@@ -1656,13 +1645,13 @@ bool CMenuConfig::ReadAll()
 		bLinkMouseLookToUse=(iTemp)?true:false;
 	}
 
-	bOk2&=ReadConfigKey("action_combine",CONTROLS_CUST_ACTION);		
-	bOk2&=ReadConfigKey("inventory",CONTROLS_CUST_INVENTORY);	
-	bOk2&=ReadConfigKey("book",CONTROLS_CUST_BOOK);			
-	bOk2&=ReadConfigKey("char_sheet",CONTROLS_CUST_BOOKCHARSHEET);			
-	bOk2&=ReadConfigKey("magic_book",CONTROLS_CUST_BOOKSPELL);			
-	bOk2&=ReadConfigKey("map",CONTROLS_CUST_BOOKMAP);			
-	bOk2&=ReadConfigKey("quest_book",CONTROLS_CUST_BOOKQUEST);			
+	bOk2&=ReadConfigKey("action_combine",CONTROLS_CUST_ACTION);
+	bOk2&=ReadConfigKey("inventory",CONTROLS_CUST_INVENTORY);
+	bOk2&=ReadConfigKey("book",CONTROLS_CUST_BOOK);
+	bOk2&=ReadConfigKey("char_sheet",CONTROLS_CUST_BOOKCHARSHEET);
+	bOk2&=ReadConfigKey("magic_book",CONTROLS_CUST_BOOKSPELL);
+	bOk2&=ReadConfigKey("map",CONTROLS_CUST_BOOKMAP);
+	bOk2&=ReadConfigKey("quest_book",CONTROLS_CUST_BOOKQUEST);
 	bOk2&=ReadConfigKey("drink_potion_life",CONTROLS_CUST_DRINKPOTIONLIFE);
 	bOk2&=ReadConfigKey("drink_potion_mana",CONTROLS_CUST_DRINKPOTIONMANA);
 	bOk2&=ReadConfigKey("torch",CONTROLS_CUST_TORCH);
@@ -1931,7 +1920,7 @@ bool CMenuConfig::ReadAll()
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameAmbiance, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuAmbiance));
 
 	ARX_Localisation_Close();
-	
+
 	GORE_MODE = IsNoGore()? 0 : 1;
 	return bOk;
 }
@@ -1943,7 +1932,7 @@ static void CalculTextPosition(HDC& _hDC, std::wstring& phrase, CreditsTextInfor
 	//Center the text on the screen
 	GetTextExtentPoint32W(_hDC, phrase.c_str(), phrase.length(), &(infomations.sPos));
 
-	if (infomations.sPos.cx < DANAESIZX) 
+	if (infomations.sPos.cx < DANAESIZX)
 		infomations.sPos.cx = ARX_CLEAN_WARN_CAST_INT((DANAESIZX - infomations.sPos.cx) * DIV2);
 
 	//Calcul height position (must be calculate after GetTextExtendPoint32 because sPos is writted)
@@ -1958,7 +1947,7 @@ static void ExtractPhraseColor(std::wstring &phrase, CreditsTextInformations &in
 	{
 		phrase[0] = _T(' ');
 		infomations.fColors = RGB(255,255,255);
-	} 
+	}
 	else //print in gold color
 	{
 		infomations.fColors = RGB(232,204,143);
@@ -2011,7 +2000,7 @@ static void ExtractAllCreditsTextInformations(HDC& _hDC)
 
 		//Assign the text modified by ExtractPhase Color
 		infomations.sText = phrase;
-	
+
 		//Bufferize it
 		CreditsData.aCreditsInformations.push_back(infomations);
 	}
@@ -2025,7 +2014,7 @@ static void InitCredits( void )
 	{
 		CalculAverageWidth(hDC);
 		ExtractAllCreditsTextInformations(hDC);
-		
+
 		danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 	}
 }
@@ -2061,7 +2050,7 @@ static void DrawCredits(void)
 		if(ARXmenu.mda->pTexCredits)
 		{
 			EERIEDrawBitmap2(GDevice, 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY + 1), .999f, ARXmenu.mda->pTexCredits, 0xFFFFFFFF);
-		}	
+		}
 
 		danaeApp.DANAEEndRender();
 
@@ -2069,11 +2058,11 @@ static void DrawCredits(void)
 		//ARX_LOG("CreditStart %f, CreditGet ARX_TIME_Get %f  ", ARXmenu.mda->creditstart,ARX_TIME_Get( false ));
 		ARXmenu.mda->creditspos-=0.025f*(float)(ARX_TIME_Get( false )-ARXmenu.mda->creditstart);
 		ARXmenu.mda->creditstart=ARX_TIME_Get( false );
-		
+
 		if( SUCCEEDED( danaeApp.m_pddsRenderTarget->GetDC(&hDC) ) )
 		{
-			SetBkMode(hDC,TRANSPARENT);	
-		
+			SetBkMode(hDC,TRANSPARENT);
+
 
 			std::vector<CreditsTextInformations>::const_iterator it = CreditsData.aCreditsInformations.begin() + CreditsData.iFirstLine ;
 
@@ -2085,7 +2074,7 @@ static void DrawCredits(void)
 				float yy = it->sPos.cy + ARXmenu.mda->creditspos;
 
 				//Display the text only if he is on the viewport
-				if ((yy >= -CreditsData.iFontAverageHeight) && (yy <= DANAESIZY)) 
+				if ((yy >= -CreditsData.iFontAverageHeight) && (yy <= DANAESIZY))
 				{
 					if (oldRef != it->fColors) //Little optimization
 					{
@@ -2096,20 +2085,20 @@ static void DrawCredits(void)
 					SelectObject(hDC, hFontCredits);
 
 					//Display the text on the screen
-					TextOutW( hDC, 
-						it->sPos.cx, 
-						ARX_CLEAN_WARN_CAST_INT(yy), 
-						it->sText.c_str(), 
+					TextOutW( hDC,
+						it->sPos.cx,
+						ARX_CLEAN_WARN_CAST_INT(yy),
+						it->sText.c_str(),
 						it->sText.length()	);
 
 					++drawn;
 				}
-				
+
 				if (yy <= -CreditsData.iFontAverageHeight)
 				{
 					++CreditsData.iFirstLine;
 				}
-				
+
 				if ( yy >= DANAESIZY )
 					break ; //it's useless to continue because next phrase will not be inside the viewport
 
@@ -2152,7 +2141,7 @@ static void DrawCredits(void)
 	danaeApp.DANAEEndRender();
 
 	SETZWRITE(GDevice,true);
-	danaeApp.EnableZBuffer();	
+	danaeApp.EnableZBuffer();
 }
 //-----------------------------------------------------------------------------
 
@@ -2270,8 +2259,8 @@ bool Menu2_Render()
 	ARXOldTimeMenu = ARXTimeMenu;
 	ARXTimeMenu = ARX_TIME_Get( false );
 	ARXDiffTimeMenu = ARXTimeMenu-ARXOldTimeMenu;
-	
-	if (ARXDiffTimeMenu < 0) //this mean ArxTimeMenu is reseted 
+
+	if (ARXDiffTimeMenu < 0) //this mean ArxTimeMenu is reseted
 		ARXDiffTimeMenu = 0 ;
 
 	GDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTFP_LINEAR);
@@ -2525,11 +2514,11 @@ int iDecMenuPrincipaleY=50;
 
 
 					ARX_CHECK_INT(fPosBDAY);
-					
+
 					pPanel->Move(0,
 								ARX_CLEAN_WARN_CAST_INT(fPosBDAY)	);
 
-					
+
 					pWindowMenuConsole->AddMenu(pPanel);
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 					pWindowMenu->eCurrentMenuState=NEW_QUEST;
@@ -2602,9 +2591,9 @@ int iDecMenuPrincipaleY=50;
 								_TCHAR tex[256];
 								_stprintf(tex, _T("%S"),
 									save_l[iI].name);
-								
+
 								CMenuElementText *me02;
-								
+
 								_TCHAR tex2[256];
 								_tcscpy(tex2,tex);
 
@@ -2654,7 +2643,7 @@ int iDecMenuPrincipaleY=50;
 										tex2,
 										256);
 									_tcscat(tex,tex2);
-									
+
 									me02 = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls, tex, fPosX1, 0.f, lColor, 0.8f, NOP);
 
 									me02->lData=iI;
@@ -2690,7 +2679,7 @@ int iDecMenuPrincipaleY=50;
 										tex2,
 										256);
 									_tcscat(tex,tex2);
-									
+
 									me02=new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls,tex, fPosX1,0.f,lColor, 0.8f, NOP);
 								}
 
@@ -2757,7 +2746,7 @@ int iDecMenuPrincipaleY=50;
 
 								_stprintf(tex, _T("%S"),
 									save_l[iI].name);
-								
+
 								_TCHAR tex2[256];
 								_tcscpy(tex2,tex);
 								_tcsupr(tex2);
@@ -2779,7 +2768,7 @@ int iDecMenuPrincipaleY=50;
 										if (b2) continue;
 
 										b2 = true;
-									}									
+									}
 
 									char tex3[256];
 									char tex4[256];
@@ -2806,7 +2795,7 @@ int iDecMenuPrincipaleY=50;
 										tex2,
 										256);
 									_tcscat(tex,tex2);
-									
+
 									me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, tex, fPosX1, 0.f, RGB(127, 127, 127), 0.8f, EDIT_QUEST_SAVE_CONFIRM);
 									me->SetCheckOff();
 
@@ -2843,7 +2832,7 @@ int iDecMenuPrincipaleY=50;
 										tex2,
 										256);
 									_tcscat(tex,tex2);
-									
+
 									me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, tex, fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
 								}
 
@@ -2890,7 +2879,7 @@ int iDecMenuPrincipaleY=50;
 					me = new CMenuCheckButton(-1, 0, 0, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					((CMenuCheckButton *)me)->bCheck = false;
 					pWindowMenuConsole->AddMenuCenter(me);
-					
+
 					PAK_UNICODE_GetPrivateProfileString(_T("system_menu_editquest_newsavegame"), _T("string"), _T("---"), szMenuText, 256, NULL);
 
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, NOP);
@@ -2899,7 +2888,7 @@ int iDecMenuPrincipaleY=50;
 					pWindowMenuConsole->AddMenuCenter(me);
 					me->eState=EDIT;
 					me->ePlace=CENTER;
-					
+
 					pPanel = new CMenuPanel();
 
 					PAK_UNICODE_GetPrivateProfileString(_T("system_menus_main_editquest_save"), _T("string"), _T(""), szMenuText, 256, NULL);
@@ -2916,7 +2905,7 @@ int iDecMenuPrincipaleY=50;
 					pPanel->AddElementNoCenterIn(me);
 
 					pWindowMenuConsole->AddMenu(pPanel);
-					
+
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 					}
 				break;
@@ -2944,24 +2933,24 @@ int iDecMenuPrincipaleY=50;
 					PAK_UNICODE_GetPrivateProfileString(_T("system_menus_options_video"), _T("string"), _T(""), szMenuText, 256, NULL);
 					me = new CMenuElementText(BUTTON_MENUOPTIONSVIDEO_INIT, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_VIDEO);
 					pWindowMenuConsole->AddMenuCenter(me);
-					
+
 					PAK_UNICODE_GetPrivateProfileString(_T("system_menus_options_audio"), _T("string"), _T(""), szMenuText, 256, NULL);
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_AUDIO);
 					pWindowMenuConsole->AddMenuCenter(me);
-					
+
 					PAK_UNICODE_GetPrivateProfileString(_T("system_menus_options_input"), _T("string"), _T(""), szMenuText, 256, NULL);
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_INPUT);
 					pWindowMenuConsole->AddMenuCenter(me);
-					
+
 					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
 					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = MAIN;
 					me->SetShortCut(DIK_ESCAPE);
 					pWindowMenuConsole->AddMenu(me);
-				
+
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 				//------------------ END OPTIONS
-					
+
 				//------------------ START VIDEO
 					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY - (40),iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_VIDEO);
 
@@ -2985,7 +2974,7 @@ int iDecMenuPrincipaleY=50;
 					{
 						{
 							_stprintf(szMenuText,_T("%dx%d"),danaeApp.m_pDeviceInfo->pddsdModes[i].dwWidth,danaeApp.m_pDeviceInfo->pddsdModes[i].dwHeight);
-	
+
 
 							ARX_CHECK_NOT_NEG( iModeBpp );
 
@@ -3005,7 +2994,7 @@ int iDecMenuPrincipaleY=50;
 									danaeApp.m_pDeviceInfo->dwCurrentMode=i;
 								}
 							}
-							
+
 							//bpp
 							bool bExist=false;
 							std::vector<int>::iterator ii;
@@ -3027,10 +3016,10 @@ int iDecMenuPrincipaleY=50;
 					}
 
 
-					float fRatio	= (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth()); 
+					float fRatio	= (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth());
 					ARX_CHECK_INT(fRatio);
 
-					me->Move(	ARX_CLEAN_WARN_CAST_INT(fRatio)	,0); 
+					me->Move(	ARX_CLEAN_WARN_CAST_INT(fRatio)	,0);
 
 
 					pc->AddElement(me);
@@ -3054,10 +3043,10 @@ int iDecMenuPrincipaleY=50;
 					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_VIDEO));
 
 
-					fRatio	= (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth()); 
+					fRatio	= (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth());
 					ARX_CHECK_INT(fRatio);
 
-					me->Move(	ARX_CLEAN_WARN_CAST_INT(fRatio)	,0); 
+					me->Move(	ARX_CLEAN_WARN_CAST_INT(fRatio)	,0);
 
 
 					int iSize = me->GetWidth();
@@ -3091,10 +3080,10 @@ int iDecMenuPrincipaleY=50;
 					((CMenuSliderText *)me)->SetWidth(iSize);
 
 
-					fRatio	= (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth()); 
+					fRatio	= (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth());
 					ARX_CHECK_INT(fRatio);
 
-					me->Move(	ARX_CLEAN_WARN_CAST_INT(fRatio)	,0); 
+					me->Move(	ARX_CLEAN_WARN_CAST_INT(fRatio)	,0);
 
 
 					pc->AddElement(me);
@@ -3116,11 +3105,11 @@ int iDecMenuPrincipaleY=50;
 					PAK_UNICODE_GetPrivateProfileString(_T("system_menus_options_video_texture_high"), _T("string"), _T(""), szMenuText, 256, NULL);
 					((CMenuSliderText *)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f, OPTIONS_OTHERDETAILS));
 
-					
-					fRatio	= (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth()); 
+
+					fRatio	= (RATIO_X(iWindowConsoleWidth-9) - me->GetWidth());
 					ARX_CHECK_INT(fRatio);
 
-					me->Move(	ARX_CLEAN_WARN_CAST_INT(fRatio)	,0); 
+					me->Move(	ARX_CLEAN_WARN_CAST_INT(fRatio)	,0);
 
 
 					pc->AddElement(me);
@@ -3266,10 +3255,10 @@ int iDecMenuPrincipaleY=50;
 
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 					//------------------ END VIDEO
-					
+
 					//------------------ START AUDIO
 					pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_AUDIO);
-					
+
 					pc = new CMenuPanel();
 					PAK_UNICODE_GetPrivateProfileString(_T("system_menus_options_audio_master_volume"), _T("string"), _T(""), szMenuText, 256, NULL);
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO_VOLUME);
@@ -3281,7 +3270,7 @@ int iDecMenuPrincipaleY=50;
 					((CMenuSlider *)me)->setValue(iMaster);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
-					
+
 					pc = new CMenuPanel();
 					PAK_UNICODE_GetPrivateProfileString(_T("system_menus_options_audio_effects_volume"), _T("string"), _T(""), szMenuText, 256, NULL);
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
@@ -3293,7 +3282,7 @@ int iDecMenuPrincipaleY=50;
 					((CMenuSlider *)me)->setValue(iSfx);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
-					
+
 					pc = new CMenuPanel();
 					PAK_UNICODE_GetPrivateProfileString(_T("system_menus_options_audio_speech_volume"), _T("string"), _T(""), szMenuText, 256, NULL);
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
@@ -3337,7 +3326,7 @@ int iDecMenuPrincipaleY=50;
 					}
 
 					pWindowMenuConsole->AddMenuCenterY(me);
-					
+
 					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
 					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = OPTIONS;
@@ -3346,14 +3335,14 @@ int iDecMenuPrincipaleY=50;
 
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 					//------------------ END AUDIO
-					
+
 					//------------------ START INPUT
 					pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_INPUT);
-					
+
 					PAK_UNICODE_GetPrivateProfileString(_T("system_menus_options_input_customize_controls"), _T("string"), _T(""), szMenuText, 256, NULL);
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
 					pWindowMenuConsole->AddMenuCenterY(me);
-					
+
 					PAK_UNICODE_GetPrivateProfileString(_T("system_menus_options_input_invert_mouse"), _T("string"), _T(""), szMenuText, 256, NULL);
 					_tcscat(szMenuText, _T(" "));
 					pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_checkbox_off.bmp");
@@ -3538,7 +3527,7 @@ int iDecMenuPrincipaleY=50;
 
 
 					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
-					
+
 					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_mouselook",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK2);
 
 					if (!INTERNATIONAL_MODE)
@@ -3687,10 +3676,10 @@ int iDecMenuPrincipaleY=50;
 
 
 					ARX_CHECK_INT(fPosBDAY);
-					
+
 					pPanel->Move(0,ARX_CLEAN_WARN_CAST_INT(fPosBDAY));
 
-					
+
 					pWindowMenuConsole->AddMenu(pPanel);
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 					pWindowMenu->eCurrentMenuState=QUIT;
@@ -3713,7 +3702,7 @@ int iDecMenuPrincipaleY=50;
 
 
 		ARX_CHECK_INT(ARXDiffTimeMenu);
-		
+
 		pWindowMenu->Update(ARX_CLEAN_WARN_CAST_INT(ARXDiffTimeMenu));
 
 
@@ -3769,7 +3758,7 @@ int iDecMenuPrincipaleY=50;
 
 		if ((DANAEMouse.y + INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight)) > DANAESIZY)
 		{
-			
+
 			float fOffestY	= iOffsetY - INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight) ;
 			ARX_CHECK_INT(fOffestY);
 			iOffsetY	=	ARX_CLEAN_WARN_CAST_INT(fOffestY);
@@ -3786,7 +3775,7 @@ int iDecMenuPrincipaleY=50;
 
 							0.001f,
 							pTextureLoad,
-			ARX_OPAQUE_WHITE); 
+			ARX_OPAQUE_WHITE);
 
 		SETTC(GDevice,NULL);
 		EERIEDraw2DRect(	GDevice,
@@ -3797,7 +3786,7 @@ int iDecMenuPrincipaleY=50;
 							DANAEMouse.y+iOffsetY+(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
 
 							0.01f,
-			ARX_OPAQUE_WHITE); 
+			ARX_OPAQUE_WHITE);
 
 		pTextureLoadRender=NULL;
 	}
@@ -3935,7 +3924,7 @@ CMenuElementText::CMenuElementText(int _iID, HFONT _pHFont,_TCHAR *_pText,float 
 
 	rZone.right+=rZone.left;
 	rZone.bottom+=rZone.top;
-	
+
 	lColor=_lColor;
 	lColorHighlight=lOldColor=RGB(255, 255, 255);
 
@@ -4176,7 +4165,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 							memset( ml, 0, 256 );
 
 							eMenuState = MAIN;
-							GDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );	
+							GDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 							ARXMenu_LoadQuest( lData );
 
 							bNoMenu=true;
@@ -4724,7 +4713,7 @@ CMenuZone::CMenuZone()
 	lData=0;
 	pData=NULL;
 	lPosition=0;
-	
+
 	rZone.top = 0;
 	rZone.bottom = 0;
 	rZone.left = 0;
@@ -4795,7 +4784,7 @@ long CMenuZone::IsMouseOver(int _iX, int _iY)
 		iYDouble=(rZone.bottom-rZone.top)>>1;
 	}
 
-	if(	bActif && 
+	if(	bActif &&
 		(_iX >= rZone.left) &&
 		(_iY >= (rZone.top-iYDouble)) &&
 		(_iX <= rZone.right) &&
@@ -4810,7 +4799,7 @@ long CMenuZone::IsMouseOver(int _iX, int _iY)
 CMenuAllZone::CMenuAllZone()
 {
 	vMenuZone.clear();
-	
+
 	std::vector<CMenuZone*>::iterator i;
 
 	for(i=vMenuZone.begin();i!=vMenuZone.end();i++)
@@ -4916,7 +4905,7 @@ void CMenuAllZone::DrawZone()
 #ifdef NODEBUGZONE
 	return;
 #endif
-	
+
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 	SETALPHABLEND(GDevice,true);
@@ -4936,18 +4925,18 @@ void CMenuAllZone::DrawZone()
 			v1[1].sy = (float)zone->rZone.bottom;
 			v1[2].sx = (float)zone->rZone.right;
 			v1[2].sy = (float)zone->rZone.bottom;
-			
+
 			v2[0].sx = (float)zone->rZone.left;
 			v2[0].sy = (float)zone->rZone.top;
 			v2[1].sx = (float)zone->rZone.right;
 			v2[1].sy = (float)zone->rZone.top;
 			v2[2].sx = (float)zone->rZone.right;
 			v2[2].sy = (float)zone->rZone.bottom;
-			
-			v1[0].color=v1[1].color=v1[2].color=v2[0].color=v2[1].color=v2[2].color=0xFFFFA000;	
-			v1[0].sz=v1[1].sz=v1[2].sz=v2[0].sz=v2[1].sz=v2[2].sz=0.f;	
-			v1[0].rhw=v1[1].rhw=v1[2].rhw=v2[0].rhw=v2[1].rhw=v2[2].rhw=0.999999f;	
-			
+
+			v1[0].color=v1[1].color=v1[2].color=v2[0].color=v2[1].color=v2[2].color=0xFFFFA000;
+			v1[0].sz=v1[1].sz=v1[2].sz=v2[0].sz=v2[1].sz=v2[2].sz=0.f;
+			v1[0].rhw=v1[1].rhw=v1[2].rhw=v2[0].rhw=v2[1].rhw=v2[2].rhw=0.999999f;
+
 			EERIEDRAWPRIM(GDevice,D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v1,3,0);
 			EERIEDRAWPRIM(GDevice,D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v2,3,0);
 		}
@@ -5008,7 +4997,7 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX, float _fPosY, int _iT
 
 	if (pText)
 	{
-		GetTextSize(pText->pHFont, pText->lpszText, &text_sx, &text_sy); 
+		GetTextSize(pText->pHFont, pText->lpszText, &text_sx, &text_sy);
 
 		_iTaille = std::max(_iTaille, text_sy);
 		text_sx += pText->rZone.left;
@@ -5369,7 +5358,7 @@ MENUSTATE CWindowMenu::Render()
 
 	D3DTLVERTEX v[4];
 	v[0].color = v[1].color = v[2].color = v[3].color = ARX_OPAQUE_WHITE;
-	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;	
+	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
 	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, false);
@@ -5478,7 +5467,7 @@ void CWindowMenuConsole::AddMenuCenterY( CMenuElement * _pMenuElement )
 	}
 
 	int iDepY;
-	
+
 	if( iDy < iHeight )
 	{
 		iDepY = iOY + ( ( iHeight - iDy ) >> 1 );
@@ -5497,8 +5486,8 @@ void CWindowMenuConsole::AddMenuCenterY( CMenuElement * _pMenuElement )
 	}
 
 	//We can't go inside the for-loop
-	else 
-	{ 
+	else
+	{
 		ARX_CHECK( !( 0 < iI ) );
 	}
 
@@ -5533,7 +5522,7 @@ void CWindowMenuConsole::AddMenuCenter( CMenuElement * _pMenuElement )
 
 	int	iDy	=	_pMenuElement->rZone.bottom - _pMenuElement->rZone.top;
 	int	iI	=	MenuAllZone.GetNbZone();
-	
+
 	for( int iJ = 0 ; iJ < iI ; iJ++ )
 	{
 		iDy	+=	iInterligne;
@@ -5613,7 +5602,7 @@ static int scan2ascii(DWORD scancode, unsigned short* result)
 
    if (GetKeyboardState(State)==FALSE)
 	  return 0;
- 
+
    UINT vk=MapVirtualKeyEx(scancode,1,layout);
    return ToAsciiEx(vk,scancode,State,result,0,layout);
 }
@@ -5659,10 +5648,10 @@ void CWindowMenuConsole::UpdateText()
 			bEdit=false;
 			return;
 		}
-		
+
 		bool bKey=false;
 		_TCHAR tText[256];
-		
+
 		CMenuElementText *pZoneText=(CMenuElementText*)pZoneClick;
 
 		if(pGetInfoDirectInput->IsVirtualKeyPressedOneTouch(DIK_BACKSPACE))
@@ -5734,11 +5723,11 @@ void CWindowMenuConsole::UpdateText()
 						tCat[0]=_T('9');
 						tCat[1]=0;
 						break;
-					case DIK_DECIMAL:     
+					case DIK_DECIMAL:
 						tCat[0]=_T('.');
 						tCat[1]=0;
 						break;
-					case DIK_DIVIDE:      
+					case DIK_DIVIDE:
 						tCat[0]=_T('/');
 						tCat[1]=0;
 						break;
@@ -5771,7 +5760,7 @@ void CWindowMenuConsole::UpdateText()
 				tText[_tcslen(tText)-1]=0;
 				pZoneText->SetText(tText);
 			}
-			
+
 			int iDx=pZoneClick->rZone.right-pZoneClick->rZone.left;
 
 			if(pZoneClick->ePlace)
@@ -5787,7 +5776,7 @@ void CWindowMenuConsole::UpdateText()
 			pZoneClick->rZone.right=pZoneClick->rZone.left+iDx;
 		}
 	}
-	
+
 	if (pZoneClick->rZone.top == pZoneClick->rZone.bottom)
 	{
 		int w,h;
@@ -5800,7 +5789,7 @@ void CWindowMenuConsole::UpdateText()
 	SETTC(GDevice,NULL);
 	float col=.5f+rnd()*.5f;
 	v[0].color=v[1].color=v[2].color=v[3].color=D3DRGBA(col,col,col,1.f);
-	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;	
+	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
 	v[0].sx = (float)pZoneClick->rZone.right;
@@ -5888,7 +5877,7 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool _bValidateTest)
 			}
 		}
 
-		_TCHAR *pText; 
+		_TCHAR *pText;
 
 		if (
 			(pText=pGetInfoDirectInput->GetFullNameTouch((iMouseButton&0xc0000000)?iMouseButton:pGetInfoDirectInput->iKeyId)) )
@@ -5899,7 +5888,7 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool _bValidateTest)
 			pZoneText->SetText(pText);
 			free((void*)pText);
 			pText = NULL;
-			
+
 			int iDx=pZoneClick->rZone.right-pZoneClick->rZone.left;
 
 			if(pZoneClick->ePlace)
@@ -5947,7 +5936,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY,int _Fr
 	}
 
 	MenuAllZone.Move((iPosX-iOldPosX),(iPosY-iOldPosY));
-	
+
 	int iI = MenuAllZone.GetNbZone();
 
 	for(int iJ=0;iJ<iI;++iJ)
@@ -5971,7 +5960,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY,int _Fr
 	iOldPosY=iPosY;
 	iPosX=_iPosX;
 	iPosY=_iPosY;
-	
+
 	// Check if mouse over
 	if (bMouseListen)
 	{
@@ -6019,7 +6008,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY,int _Fr
 				if(iR!=-1)
 				{
 					pZoneClick=(CMenuElement*)iR;
-					
+
 					if( pGetInfoDirectInput->GetMouseButtonDoubleClick(DXI_BUTTON0,300) )
 					{
 						bEdit = pZoneClick->OnMouseDoubleClick(0);
@@ -6152,7 +6141,7 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_TORCH,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_TORCH1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL1:
-		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL2:	
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL2:
 			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_CANCELCURSPELL,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CANCELCURSPELL1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_PRECAST1:
@@ -6212,19 +6201,19 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_PREVIOUS,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_PREVIOUS1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT1:
-		case BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT2:	
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT2:
 			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_NEXT,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_NEXT1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE1:
-		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE2:	
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE2:
 			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_CROUCHTOGGLE,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_CROUCHTOGGLE1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON1:
-		case BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON2:	
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON2:
 			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_UNEQUIPWEAPON,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_UNEQUIPWEAPON1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1:
-		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP2:	
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP2:
 			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_MINIMAP,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_MINIMAP1,pGetInfoDirectInput->iKeyId);
 			break;
 		}
@@ -6566,11 +6555,11 @@ long CMenuPanel::IsMouseOver(int _iX, int _iY)
 		(_iY <= rZone.bottom))
 	{
 		std::vector<CMenuElement *>::iterator i;
-		
+
 		for(i=vElement.begin();i!=vElement.end();++i)
 		{
 			if(	(*i)->bCheck &&
-				(*i)->bActif && 
+				(*i)->bActif &&
 				(_iX >= (*i)->rZone.left) &&
 				(_iY >= (*i)->rZone.top) &&
 				(_iX <= (*i)->rZone.right) &&
@@ -6782,7 +6771,7 @@ void CMenuButton::Render()
 		ePos.x = (float)rZone.left;
 		ePos.y = (float)rZone.top;
 		ePos.z = 1;
-		
+
 		FontRenderText(pHFont, ePos, pText, RGB(232, 204, 142));
 
 		GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  false);
@@ -6804,7 +6793,7 @@ void CMenuButton::RenderMouseOver()
 	{
 		D3DTLVERTEX v[4];
 		v[0].color = v[1].color = v[2].color = v[3].color = ARX_OPAQUE_WHITE;
-		v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;	
+		v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;
 		v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
 		SETTC(GDevice,pTexOver);
@@ -6834,14 +6823,14 @@ void CMenuButton::RenderMouseOver()
 		GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  true);
 		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
-		
+
 		EERIE_3D ePos;
 		ePos.x = (float)rZone.left;
 		ePos.y = (float)rZone.top;
 		ePos.z = 1;
-		
+
 		FontRenderText(pHFont, ePos, pText, RGB(255, 255, 255));
-		
+
 		GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  false);
 	}
 }
@@ -6864,7 +6853,7 @@ CMenuSliderText::CMenuSliderText(int _iID, int _iPosX, int _iPosY)
 	rZone.top    = _iPosY;
 	rZone.right  = _iPosX + pLeftButton->GetWidth() + pRightButton->GetWidth();
 	rZone.bottom = _iPosY + std::max(pLeftButton->GetHeight(), pRightButton->GetHeight());
-	
+
 	iId = (int) this;
 }
 
@@ -7307,7 +7296,7 @@ void CMenuSlider::Render()
 
 	D3DTLVERTEX v[4];
 	v[0].color = v[1].color = v[2].color = v[3].color = ARX_OPAQUE_WHITE;
-	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;	
+	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
 	TextureContainer *pTex = pTex1;
@@ -7336,7 +7325,7 @@ void CMenuSlider::Render()
 			}
 		}
 
-		EERIEDrawBitmap2(GDevice, iX, iY, 
+		EERIEDrawBitmap2(GDevice, iX, iY,
 			RATIO_X(pTex->m_dwWidth),
 			RATIO_Y(pTex->m_dwHeight),
 			0,
@@ -7723,7 +7712,7 @@ int iDTime;
 			fDY=( (float)iMouseRY ) * fSens * ( ( (float)DANAESIZY ) / 480.f );
 			fMouseAXTemp += fDX;
 			fMouseAYTemp += fDY;
-			
+
 
 			ARX_CHECK_INT(fMouseAXTemp);
 			ARX_CHECK_INT(fMouseAYTemp);
@@ -7736,7 +7725,7 @@ int iDTime;
 			if(iMouseAX<0)
 			{
 				iMouseAX	 = 0;
-				fMouseAXTemp = 0.f; 
+				fMouseAXTemp = 0.f;
 			}
 
 
@@ -7762,7 +7751,7 @@ int iDTime;
 			{
 
 				iMouseAY		= danaeApp.m_pFramework->m_dwRenderHeight - 1;
-				fMouseAYTemp	= ARX_CLEAN_WARN_CAST_FLOAT( iMouseAY ); 
+				fMouseAYTemp	= ARX_CLEAN_WARN_CAST_FLOAT( iMouseAY );
 			}
 
 
@@ -7919,7 +7908,7 @@ static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,
 
 	float fSize=_fSize/_iNbPt;
 	float fTaille=fSize;
-	
+
 	float fDColorRed=_fRed/_iNbPt;
 	float fColorRed=fDColorRed;
 	float fDColorGreen=_fGreen/_iNbPt;
@@ -7931,13 +7920,13 @@ static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVDESTCOLOR);
 	SETTC(GDevice,NULL);
 	SETALPHABLEND(GDevice,true);
-	
+
 	D3DTLVERTEX v[4];
-	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;	
+	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
 	EERIE_2DI *psOldPoint=_psPoint1++;
-	v[0].color=v[2].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);	
+	v[0].color=v[2].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);
 
 	if(!ComputePer(psOldPoint,_psPoint1,&v[0],&v[2],fTaille))
 	{
@@ -7956,9 +7945,9 @@ static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,
 
 		if(ComputePer(psOldPoint,_psPoint1+1,&v[1],&v[3],fTaille))
 		{
-			v[1].color=v[3].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);	
+			v[1].color=v[3].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);
 			EERIEDRAWPRIM(GDevice,D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
-			
+
 			v[0].sx=v[1].sx;
 			v[0].sy=v[1].sy;
 			v[0].color=v[1].color;
@@ -7975,9 +7964,9 @@ static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,
 	fColorGreen+=fDColorGreen;
 	fColorBlue+=fDColorBlue;
 
-	if(ComputePer(_psPoint1,psOldPoint,&v[1],&v[3],fTaille)) 
+	if(ComputePer(_psPoint1,psOldPoint,&v[1],&v[3],fTaille))
 	{
-		v[1].color=v[3].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);	
+		v[1].color=v[3].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);
 		EERIEDRAWPRIM(GDevice,D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
 	}
 
@@ -8022,7 +8011,7 @@ void CDirectInput::DrawCursor()
 					iNumCursor--;
 				}
 			}
-			
+
 			SetCursorOff();
 			bMouseOver=false;
 		}
@@ -8125,7 +8114,7 @@ _TCHAR * CDirectInput::GetFullNameTouch(int _iVirtualKey)
 	case DIK_MULTIPLY:
 		_tcscpy(pText,_T("_x_"));
 		break;
-	case DIK_SYSRQ:           
+	case DIK_SYSRQ:
 		_tcscpy(pText,_T("?"));
 		break;
 	case DIK_UP:                  // UpArrow on arrow keypad
@@ -8315,7 +8304,7 @@ _TCHAR * CDirectInput::GetFullNameTouch(int _iVirtualKey)
 				free((void*)pText);
 				pText=pText3;
 			}
-  
+
 			if(_tcslen(pText)>8)
 			{
 				pText[8]=0;
