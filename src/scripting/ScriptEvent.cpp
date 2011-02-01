@@ -6667,8 +6667,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 #endif
 
-					switch (temp1[0])
-					{
+					switch (temp1[0]) {
 						case '$': // GLOBAL TEXT
 						case '\xA3': // LOCAL TEXT
 							ShowScriptError("Unable to execute this\nOperation on a String", cmd);
@@ -6967,18 +6966,11 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				break;
 			default:
 
-				if (io)
-				{
-					std::string temp2;
-					std::string temp3;
-					std::string temp4;
-					long ppos = pos;
-					pos = GetNextWord(es, pos, temp2);
-					pos = GetNextWord(es, pos, temp3);
-					pos = GetNextWord(es, pos, temp4);
-					sprintf(cmd, "SCRIPT ERROR: %s_%04ld %s %s %s %s [char %ld]", GetName(io->filename).c_str(), io->ident, temp.c_str(), temp2.c_str(), temp3.c_str(), temp4.c_str(), ppos);
-
-					LogError << cmd;
+				if (io)	{
+					std::string word;
+					pos = GetNextWord(es, pos, word);
+					LogError << "SCRIPT ERROR: " << GetName(io->filename) << " "
+						<< io->ident << " " << word << " [char" << pos << "]";
 
 					io->ioflags |= IO_FREEZESCRIPT;
 					return REFUSE;
