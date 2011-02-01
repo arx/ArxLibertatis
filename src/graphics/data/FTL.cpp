@@ -534,7 +534,7 @@ error:
 typedef struct
 {
 	std::string name;
-	char * data;
+	char* data;
 	size_t size;
 } MeshData;
 
