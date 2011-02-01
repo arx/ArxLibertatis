@@ -203,8 +203,8 @@ long GetActionPoint(EERIE_3DOBJ * obj, const char * name)
 {
 	if (!obj) return -1;
 
-	for (long n = 0; n < obj->nbaction; n++)
-	{
+	for (long n = 0; n < obj->actionlist.size(); n++)
+	{ // TODO iterator
 		if (!strcasecmp(obj->actionlist[n].name.c_str(), name))
 			return obj->actionlist[n].idx;
 	}
@@ -276,28 +276,26 @@ long ObjectAddAction(EERIE_3DOBJ * obj, const char * name, long act,
 	long newvert = ObjectAddVertex(obj, vert);
 
 	if (newvert < 0) return -1;
-
-	if (obj->nbaction == 0)
-	{
-		obj->actionlist = (EERIE_ACTIONLIST *)malloc(sizeof(EERIE_ACTIONLIST)); 
-	}
-	else
-	{
-		for (long i = 0; i < obj->nbaction; i++)
-		{
-			if (!strcmp(obj->actionlist[i].name.c_str(), name))
-				return i;
+	
+	long j = 0;
+	for(vector<EERIE_ACTIONLIST>::iterator i = obj->actionlist.begin();
+	    i != obj->actionlist.end(); ++i) {
+		if(!i->name.compare(name)) {
+			return j;
 		}
-
-		obj->actionlist = (EERIE_ACTIONLIST *)realloc(obj->actionlist, sizeof(EERIE_ACTIONLIST) * (obj->nbaction + 1));
+		j++;
 	}
-
-	obj->actionlist[obj->nbaction].name = name;
-	obj->actionlist[obj->nbaction].act = act;
-	obj->actionlist[obj->nbaction].sfx = sfx;
-	obj->actionlist[obj->nbaction].idx = newvert;
-	obj->nbaction++;
-	return (obj->nbaction - 1);
+	
+	obj->actionlist.push_back(EERIE_ACTIONLIST());
+	
+	EERIE_ACTIONLIST & action = obj->actionlist.back();
+	
+	action.name = name;
+	action.act = act;
+	action.sfx = sfx;
+	action.idx = newvert;
+	
+	return (obj->actionlist.size() - 1);
 }
 //*************************************************************************************
 //*************************************************************************************
@@ -498,6 +496,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	// Work will contain the Tweaked object
 	EERIE_3DOBJ * work = NULL;
 	work = (EERIE_3DOBJ *)malloc(sizeof(EERIE_3DOBJ));
+	// TODO string breaker
 	memset(work, 0, sizeof(EERIE_3DOBJ));
 	memcpy(&work->pos, &obj1->pos, sizeof(EERIE_3D));
 	memcpy(&work->angle, &obj1->angle, sizeof(EERIE_3D));
@@ -545,7 +544,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	}
 
 	// Recreate Action Points included in work object.for Obj1
-	for (i = 0; i < obj1->nbaction; i++)
+	for (i = 0; i < obj1->actionlist.size(); i++)
 	{
 		if ((IsInSelection(obj1, obj1->actionlist[i].idx, iw1) != -1)
 		        ||	(IsInSelection(obj1, obj1->actionlist[i].idx, jw1) != -1)
@@ -559,7 +558,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	}
 
 	// Do the same for Obj2
-	for (i = 0; i < obj2->nbaction; i++)
+	for (i = 0; i < obj2->actionlist.size(); i++)
 	{
 		if ((IsInSelection(obj2, obj2->actionlist[i].idx, tw2) != -1)
 		        || (!strcasecmp(obj1->actionlist[i].name.c_str(), "head2chest"))

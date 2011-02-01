@@ -44,9 +44,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIETYPES_H
 #define EERIETYPES_H
 
-#include <math.h>
-#define D3D_OVERLOADS
+#include <cmath>
+#include <vector>
+
 #include "graphics/d3dwrapper.h"
+
 #include "core/Common.h"
 
 class TextureContainer;
@@ -449,13 +451,15 @@ typedef struct
 	float		siz;
 } EERIE_GROUPLIST; // Aligned 1 2 4
 
-typedef struct
+struct EERIE_ACTIONLIST
 {
 	std::string name;
 	long			idx; //index vertex;
 	long			act; //action
 	long			sfx; //sfx
-} EERIE_ACTIONLIST; // Aligned 1 2 4
+	
+	EERIE_ACTIONLIST() : name(), idx(0), act(0), sfx(0) { };
+}; // Aligned 1 2 4
 
 typedef struct
 {
@@ -577,7 +581,6 @@ struct EERIE_3DOBJ
 		nbpfaces = 0;
 		nbmaps = 0;
 		nbgroups = 0;
-		nbaction = 0;
 		nbselections = 0;
 		drawflags = 0;
 
@@ -589,7 +592,6 @@ struct EERIE_3DOBJ
 		pfacelist = 0;
 		maplist = 0;
 		grouplist = 0;
-		actionlist = 0;
 		selections = 0;
 		texturecontainer = 0;
 
@@ -648,7 +650,6 @@ struct EERIE_3DOBJ
 	long				nbpfaces;
 	long				nbmaps;
 	long				nbgroups;
-	long				nbaction;
 	long				nbselections;
 	unsigned long		drawflags;
 	EERIE_3DPAD 	*	vertexlocal;
@@ -659,7 +660,7 @@ struct EERIE_3DOBJ
 	EERIE_PFACE 	*	pfacelist;
 	EERIE_MAP 	*		maplist;
 	EERIE_GROUPLIST *	grouplist;
-	EERIE_ACTIONLIST *	actionlist;
+	std::vector<EERIE_ACTIONLIST>	actionlist;
 	EERIE_SELECTIONS *	selections;
 	TextureContainer ** texturecontainer;
 

@@ -110,10 +110,10 @@ long GetActionPointIdx(EERIE_3DOBJ * eobj, const char * text)
 {
 	if (!eobj) return -1;
 
-	for (long i = 0; i < eobj->nbaction; i++)
-	{
-//		TODO(lubosz): string crash
-		if (!strcasecmp(text, eobj->actionlist[i].name.c_str() )) return eobj->actionlist[i].idx;
+	for(vector<EERIE_ACTIONLIST>::iterator i = eobj->actionlist.begin();
+	    i != eobj->actionlist.end(); ++i) {
+		// TODO use string compare
+		if (!strcasecmp(text, i->name.c_str() )) return i->idx;
 	}
 
 	return -1;
@@ -556,7 +556,7 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, lo
 void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, long * poss, long version, long flag, long flag2)
 {
 	
-	LogInfo << "_THEObjLoad";
+	LogWarning << "Broken _THEObjLoad";
 	
 	THEO_OFFSETS		*	to;
 	THEO_NB					tn;
@@ -587,7 +587,7 @@ void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, long * poss, long ver
 	eerie->true_nbvertex = eerie->nbvertex = tn.nb_vertex;
 	eerie->nbfaces = tn.nb_faces;
 	eerie->nbgroups = tn.nb_groups;
-	eerie->nbaction = tn.nb_action_point;
+	// TODO eerie->nbaction = tn.nb_action_point;
 
 	eerie->vertexlist = allocStructZero<EERIE_VERTEX>("EEvertexlist", tn.nb_vertex);
 
@@ -605,10 +605,10 @@ void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, long * poss, long ver
 		eerie->grouplist = allocStructZero<EERIE_GROUPLIST>("EEGroupList", tn.nb_groups); 
 	}
 
-	if (tn.nb_action_point == 0) eerie->actionlist = NULL;
-	else {
-		eerie->actionlist = allocStructZero<EERIE_ACTIONLIST>("EEActionList", tn.nb_action_point); 
-	}
+	//if (tn.nb_action_point == 0) eerie->actionlist = NULL;
+	//else {
+		// TODO eerie->actionlist = allocStructZero<EERIE_ACTIONLIST>("EEActionList", tn.nb_action_point); 
+	//}
 
 	// Lecture des VERTEX THEO
 	pos = to->vertex_seek;
@@ -1586,9 +1586,9 @@ void ReleaseEERIE3DObjFromScene(EERIE_3DOBJ * eerie)
 
 	eerie->facelist = NULL;
 
-	if (eerie->actionlist != NULL)	free(eerie->actionlist);
+	//if (eerie->actionlist != NULL)	free(eerie->actionlist);
 
-	eerie->actionlist = NULL;
+	//eerie->actionlist = NULL;
 
 	if (eerie->grouplist != NULL)
 	{
@@ -1624,8 +1624,7 @@ void ReleaseEERIE3DObjFromScene(EERIE_3DOBJ * eerie)
 		free((void *)eerie->linked);
 	}
 
-	free(eerie);
-	eerie = NULL;
+	delete eerie;
 }
 //-----------------------------------------------------------------------------------------------------
 void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
@@ -1831,12 +1830,7 @@ EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj)
 		}
 	}
 
-	if (obj->nbaction)
-	{
-		nouvo->nbaction = obj->nbaction;
-
-		nouvo->actionlist = copyStruct(obj->actionlist, "EECopyActionList", obj->nbaction);
-	}
+	nouvo->actionlist = obj->actionlist;
 
 	if (obj->nbselections)
 	{

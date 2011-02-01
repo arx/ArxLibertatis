@@ -1645,10 +1645,10 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 				}
 
 				// Check for collision MUST be done after DRAWING !!!!
-				long nbact = Thrown[i].obj->nbaction;
+				long nbact = Thrown[i].obj->actionlist.size();
 
 				for (long j = 0; j < nbact; j++)
-				{
+				{ // TODO iterator
 					float rad = -1;
 					rad = GetHitValue(Thrown[i].obj->actionlist[j].name);
 					rad *= ( 1.0f / 2 );

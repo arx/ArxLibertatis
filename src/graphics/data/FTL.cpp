@@ -202,6 +202,7 @@ extern long NOCHECKSUM;
 //***********************************************************************************************
 bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 {
+	LogWarning << "Broken ARX_FTL_Save (EERIE_ACTIONLIST with string)";
     // Need an object to be saved !
     if (obj == NULL) return false;
 
@@ -234,7 +235,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 
 	            +	sizeof(EERIE_FACE_FTL) * obj->nbfaces
 	            +	obj->nbmaps * 256	// texturecontainernames
-	            +	sizeof(EERIE_ACTIONLIST) * obj->nbaction
+	 // TODO           +	sizeof(EERIE_ACTIONLIST) * obj->nbaction
 	            +	128000; // just in case...
 
 	if (obj->nbgroups > 0)
@@ -319,7 +320,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 	af3Ddh->nb_faces = obj->nbfaces;
 	af3Ddh->nb_maps = obj->nbmaps;
 	af3Ddh->nb_groups = obj->nbgroups;
-	af3Ddh->nb_action = obj->nbaction;
+	// TODO af3Ddh->nb_action = obj->nbaction;
 	af3Ddh->nb_selections = obj->nbselections;
 	af3Ddh->origin = obj->origin;
 
@@ -402,7 +403,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 	// actionpoints
 	if (af3Ddh->nb_action > 0)
 	{
-		memcpy(dat + pos, obj->actionlist, sizeof(EERIE_ACTIONLIST)*af3Ddh->nb_action);
+		// TODO memcpy(dat + pos, obj->actionlist, sizeof(EERIE_ACTIONLIST)*af3Ddh->nb_action);
 		pos += sizeof(EERIE_ACTIONLIST) * af3Ddh->nb_action;
 
 		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
@@ -753,7 +754,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		obj->nbfaces = af3Ddh->nb_faces;
 		obj->nbmaps = af3Ddh->nb_maps;
 		obj->nbgroups = af3Ddh->nb_groups;
-		obj->nbaction = af3Ddh->nb_action;
+		obj->actionlist.resize(af3Ddh->nb_action);
 		obj->nbselections = af3Ddh->nb_selections;
 		obj->origin = af3Ddh->origin;
 		obj->file = af3Ddh->name;
@@ -875,15 +876,9 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 				}
 		}
 
-		// Alloc'n'Copy action points
-		if (obj->nbaction > 0)
-		{
-			// Alloc the action points
-			obj->actionlist = new EERIE_ACTIONLIST[obj->nbaction];
-
 			// Copy in the action points data
-			for ( long i = 0 ; i < obj->nbaction ; i++ )
-			{
+			for ( long i = 0 ; i < obj->actionlist.size() ; i++ )
+			{ // TODO iterator
 				EERIE_ACTIONLIST_FTL* action = reinterpret_cast<EERIE_ACTIONLIST_FTL*>(dat+pos);
 				obj->actionlist[i].name = action->name;
 				obj->actionlist[i].idx = action->idx;
@@ -892,7 +887,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 
 				pos += sizeof(EERIE_ACTIONLIST_FTL);
 			}
-		}
 
 		// Alloc'n'Copy selections
 		if (obj->nbselections > 0)
