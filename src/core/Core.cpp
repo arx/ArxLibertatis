@@ -2449,6 +2449,7 @@ EERIE_3D ePos;
 extern EERIE_CAMERA * ACTIVECAM;
 void LaunchWaitingCine()
 {
+	LogDebug << "LaunchWaitingCine " << CINE_PRELOAD;
 
 	if (ACTIVECAM)
 	{
@@ -2472,9 +2473,11 @@ void LaunchWaitingCine()
 		if (LoadProject(ControlCinematique,RESOURCE_GRAPH_INTERFACE_ILLUSTRATIONS,WILL_LAUNCH_CINE))
 		{				
 
-			if (CINE_PRELOAD) PLAY_LOADED_CINEMATIC=0;
-			else
-			{
+			if (CINE_PRELOAD) {
+				LogDebug << "only preloaded cinematic";
+				PLAY_LOADED_CINEMATIC=0;
+			} else {
+				LogDebug << "starting cinematic";
 				PLAY_LOADED_CINEMATIC=1;
 				ARX_TIME_Pause();
 			}
@@ -5058,10 +5061,13 @@ bool DANAE_ManageSplashThings()
 //*************************************************************************************
 long DANAE_Manage_Cinematic()
 {
+	LogDebug << "DANAE_Manage_Cinematic";
+	
 	float FrameTicks=ARX_TIME_Get( false );
 
 	if (PLAY_LOADED_CINEMATIC==1)
 	{
+		LogDebug << "really starting cinematic now";
 		LastFrameTicks=FrameTicks;
 		PLAY_LOADED_CINEMATIC=2;
 	}
