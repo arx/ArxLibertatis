@@ -207,11 +207,9 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 	HDC	hDC;
 	SIZE sSize;
 
-	//TODO(lubosz): Crash
-//	if (false)
 	if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 	{
-//		SelectObject(hDC, InBookFont);
+		SelectObject(hDC, InBookFont);
 
 		GetTextExtentPoint(hDC,_T("p"),1,&sSize);
 
@@ -481,7 +479,7 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long param, l
 
 	long flg = 0;
 
-	std::string lpszUSection( 512, '\0' );
+	std::string lpszUSection = data;
 //	TODO: wchar cast
 //	MultiByteToWideChar(CP_ACP, 0, data, -1, lpszUSection, 512);
 
@@ -651,11 +649,10 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 						if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 						{
 							SelectObject(hDC, InBookFont);
-							//	todo: wchar cast
-//							GetTextExtentPoint32W(hDC,
-//							                      speech->text,
-//							                      _tcslen(speech->text),
-//							                      &sSize);
+							GetTextExtentPoint( hDC,
+							                    speech->text.c_str(),
+							                    speech->text.length(),
+							                    &sSize);
 							danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 						}
 
