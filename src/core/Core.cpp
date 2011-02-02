@@ -5124,22 +5124,22 @@ void DanaeItemAdd()
 		{
 			if (inter.iobj[num] && inter.iobj[num]->script.data) 
 			{
-				ScriptEvent::send(&inter.iobj[num]->script,SM_INIT,"",inter.iobj[num],NULL);
+				ScriptEvent::send(&inter.iobj[num]->script,SM_INIT,"",inter.iobj[num],"");
 			}
 
 			if (inter.iobj[num] && inter.iobj[num]->over_script.data) 
 			{
-				ScriptEvent::send(&inter.iobj[num]->over_script,SM_INIT,"",inter.iobj[num],NULL);
+				ScriptEvent::send(&inter.iobj[num]->over_script,SM_INIT,"",inter.iobj[num],"");
 			}
 
 			if (inter.iobj[num] && inter.iobj[num]->script.data) 
 			{
-				ScriptEvent::send(&inter.iobj[num]->script,SM_INITEND,"",inter.iobj[num],NULL);
+				ScriptEvent::send(&inter.iobj[num]->script,SM_INITEND,"",inter.iobj[num],"");
 			}
 
 			if (inter.iobj[num] && inter.iobj[num]->over_script.data) 
 			{
-				ScriptEvent::send(&inter.iobj[num]->over_script,SM_INITEND,"",inter.iobj[num],NULL);
+				ScriptEvent::send(&inter.iobj[num]->over_script,SM_INITEND,"",inter.iobj[num],"");
 			}
 		}
 	}

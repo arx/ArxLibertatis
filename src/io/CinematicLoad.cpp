@@ -38,7 +38,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 static const int32_t CINEMATIC_FILE_VERSION = (1<<16) | 76;
 static const int16_t INTERP_NO_FADE = 2;
 
-extern char AllTxt[];
 extern CinematicBitmap TabBitmap[];
 extern CinematicTrack * CKTrack;
 extern C_KEY KeyTemp;
@@ -258,11 +257,11 @@ bool LoadProject(Cinematic * c, const char * dir, const char * name) {
 	InitMapLoad(c);
 	InitSound(c);
 	
-	strcpy(AllTxt, dir);
-	strcat(AllTxt, name);
+	string projectfile = dir;
+	projectfile += name;
 	
 	size_t size;
-	char * data = (char*)PAK_FileLoadMalloc(AllTxt, size);
+	char * data = (char*)PAK_FileLoadMalloc(name, size);
 	if(!data) {
 		LogError << "cinematic " << dir << name << " not found";
 		return false;
@@ -335,7 +334,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		char Name[256];
 		strcpy(Dir, path);
 		GetPathDirectory(Dir);
-		ClearDirectory(AllTxt, Name);
+		ClearDirectory(path, Name);
 		
 		LogDebug << "adding bitmap " << i << ": " << Dir << Name;
 		
@@ -386,7 +385,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			char Name[256];
 			strcpy(Dir, path);
 			GetPathDirectory(Dir);
-			ClearDirectory(AllTxt, Name);
+			ClearDirectory(path, Name);
 			
 			LogDebug << "adding sound " << i << ": " << Dir << Name;
 			

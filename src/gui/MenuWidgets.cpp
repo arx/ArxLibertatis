@@ -70,9 +70,6 @@ extern long DANAESIZY;
 
 extern long LastEERIEMouseButton;
 
-extern long save_c;
-extern SaveGame *save_l;
-
 extern bool bForceReInitAllTexture;
 extern bool bALLOW_BUMP;
 extern long WILL_RELOAD_ALL_TEXTURES;
@@ -512,13 +509,11 @@ void FontRenderText(HFONT _hFont, EERIE_3D pos, const std::string& _pText, COLOR
 		pText.lCol = _c;
 		pText.rRect = rRect;
 
-//		TODO(lubosz): string related crash
-		LogDebug << "Not adding pText " << _pText;
-//		pTextManage->AddText(    _hFont,
-//								_pText,
-//							rRect,
-//							_c,
-//							0x00FF00FF);
+		pTextManage->AddText( _hFont,
+		                      _pText,
+		                      rRect,
+		                      _c,
+		                      0x00FF00FF);
 	}
 }
 

@@ -102,8 +102,7 @@ struct EERIE_SCRIPT
 	LABEL_INFO *	labels;
 };
 
-typedef struct
-{
+struct SCR_TIMER {
 	std::string         name;
 	short               exist;
 	short               flags; 
@@ -115,7 +114,24 @@ typedef struct
 	unsigned long       tim;
 	INTERACTIVE_OBJ*    io;
 	EERIE_SCRIPT*       es;
-} SCR_TIMER;
+	
+	inline SCR_TIMER() : name(), exist(0), flags(0), namelength(0), times(0),
+	                     msecs(0), pos(0), longinfo(0), tim(0), io(NULL), es(NULL) { };
+	
+	inline void reset() {
+		name.clear();
+		exist = 0;
+		flags = 0;
+		namelength = 0;
+		times = 0;
+		msecs = 0;
+		pos = 0;
+		longinfo = 0;
+		tim = 0;
+		io = NULL;
+		es = NULL;
+	}
+};
 
 //-----------------------------------------------------------------------------
 #define TYPE_TEXT	1
@@ -442,7 +458,7 @@ void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, const std::string& newevent);
 void ARX_SCRIPT_EventStackExecute();
 void ARX_SCRIPT_EventStackExecuteAll();
 void ARX_SCRIPT_EventStackInit();
-void ARX_SCRIPT_EventStackClear();
+void ARX_SCRIPT_EventStackClear( bool check_exist = true );
 void ARX_SCRIPT_LaunchScriptSearch( std::string& search);
 void ARX_SCRIPT_ResetObject(INTERACTIVE_OBJ * io, long flags);
 void ARX_SCRIPT_Reset(INTERACTIVE_OBJ * io, long flags);

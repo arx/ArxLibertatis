@@ -350,7 +350,7 @@ void DANAE_DEBUGGER_Update()
 		{
 			if ((scr_timer[i].exist)  && (scr_timer[i].io == io))
 			{
-				sprintf(temp, "%s %ld %dms\r\n", scr_timer[i].name.c_str(), scr_timer[i].times, scr_timer[i].msecs);
+				sprintf(temp, "%s %ld %ldms\r\n", scr_timer[i].name.c_str(), scr_timer[i].times, scr_timer[i].msecs);
 				strcat(buf, temp);
 			}
 		}

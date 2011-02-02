@@ -2568,20 +2568,20 @@ void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const char * attac
 //***********************************************************************************
 INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags)
 {
-    std::string tex1 = file;
-    std::string texscript = file;
-    SetExt(texscript, "asl");
-    SetExt(tex1, "teo");
+	std::string tex1 = file;
+	std::string texscript = file;
+	SetExt(texscript, "asl");
+	SetExt(tex1, "teo");
 
-    std::string file2 = "GAME\\";
-    file2 += file;
-    SetExt(file2, ".FTL");
+	std::string file2 = "GAME\\";
+	file2 += file;
+	SetExt(file2, ".FTL");
 
-    if (!PAK_FileExist(file2.c_str())
-            &&	!PAK_FileExist(file))
-    {
-        return NULL;
-    }
+	if (!PAK_FileExist(file2.c_str())
+	   &&	!PAK_FileExist(file))
+	{
+		return NULL;
+	}
 
 	char texx[HERMES_PATH_SIZE];
 	sprintf(texx, "AddFix - %s", file);
@@ -3212,25 +3212,25 @@ void ReloadScript(INTERACTIVE_OBJ * io)
 		if (inter.iobj[num]
 		        &&	inter.iobj[num]->script.data)
 		{
-			ScriptEvent::send(&inter.iobj[num]->script, SM_INIT, "", inter.iobj[num], NULL);
+			ScriptEvent::send(&inter.iobj[num]->script, SM_INIT, "", inter.iobj[num], "");
 		}
 
 		if (inter.iobj[num]
 		        &&	inter.iobj[num]->over_script.data)
 		{
-			ScriptEvent::send(&inter.iobj[num]->over_script, SM_INIT, "", inter.iobj[num], NULL);
+			ScriptEvent::send(&inter.iobj[num]->over_script, SM_INIT, "", inter.iobj[num], "");
 		}
 
 		if (inter.iobj[num]
 		        &&	inter.iobj[num]->script.data)
 		{
-			ScriptEvent::send(&inter.iobj[num]->script, SM_INITEND, "", inter.iobj[num], NULL);
+			ScriptEvent::send(&inter.iobj[num]->script, SM_INITEND, "", inter.iobj[num], "");
 		}
 
 		if (inter.iobj[num]
 		        &&	inter.iobj[num]->over_script.data)
 		{
-			ScriptEvent::send(&inter.iobj[num]->over_script, SM_INITEND, "", inter.iobj[num], NULL);
+			ScriptEvent::send(&inter.iobj[num]->over_script, SM_INITEND, "", inter.iobj[num], "");
 		}
 	}
 }

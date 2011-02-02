@@ -411,8 +411,6 @@ extern long PauseScript;
 extern long GLOB;
 extern long RELOADING;
 
-
-//TODO(lubosz): THIS IS DEFINETLY TOO LONG FOR ONE FUNCTION
 long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info)
 {
 
@@ -430,7 +428,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 	Event_Total_Count++;
 
 	if (io)	{
-		long ioReturn = checkInteractiveObject(io, msg);
+		long ioReturn = ScriptEvent::checkInteractiveObject(io, msg);
 		if (ioReturn != 0) return ioReturn;
 	}
 
@@ -4110,7 +4108,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 											if (num2 > -1)
 											{
-												memset(&scr_timer[num2], 0, sizeof(SCR_TIMER));
+												scr_timer[num2].reset();
 												ActiveTimers++;
 												scr_timer[num2].es = es;
 												scr_timer[num2].exist = 1;
@@ -5877,7 +5875,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 							if (io)
 							{
-								ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_ICON, word, NULL);
+								ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_ICON, word, string());
 								ARX_INTERACTIVE_TWEAK_Icon(io, word);
 							}
 						}
@@ -5910,8 +5908,8 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							if (!strcasecmp(word, "REMOVE"))
 							{
 								tw = TWEAK_REMOVE;
-								ARX_INTERACTIVE_MEMO_TWEAK(io, tw, NULL, NULL);
-								EERIE_MESH_TWEAK_Do(io, tw, NULL);
+								ARX_INTERACTIVE_MEMO_TWEAK(io, tw, string(), string());
+								EERIE_MESH_TWEAK_Do(io, tw, string());
 							}
 							else
 							{
@@ -5938,7 +5936,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 								if (tw != TWEAK_ERROR)
 								{
-									ARX_INTERACTIVE_MEMO_TWEAK(io, tw, path, NULL);
+									ARX_INTERACTIVE_MEMO_TWEAK(io, tw, path, string());
 									EERIE_MESH_TWEAK_Do(io, tw, path);
 								}
 							}
@@ -6043,7 +6041,6 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 								scr_timer[num].io = io;
 								scr_timer[num].msecs = msecs;
 								scr_timer[num].namelength = strlen(timername) + 1;
-								scr_timer[num].name = (char *)malloc(scr_timer[num].namelength);
 								scr_timer[num].name = timername;
 								scr_timer[num].pos = pos;
 								scr_timer[num].tim = ARXTimeUL();
@@ -6157,7 +6154,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				if (!strcmp(word, "USEMESH"))
 				{
 					pos = GetNextWord(es, pos, word);
-					ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_MESH, word, NULL);
+					ARX_INTERACTIVE_MEMO_TWEAK(io, TWEAK_TYPE_MESH, word, string());
 #ifdef NEEDING_DEBUG
 
 					if (NEED_DEBUG)
@@ -6955,8 +6952,8 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					pos = GetNextWord(es, pos, temp2);
 					pos = GetNextWord(es, pos, temp3);
 					pos = GetNextWord(es, pos, temp4);
-					sprintf(cmd, "Script Error for token #%ld '%c' (%s|%s|%s) in file %s_%04ld",
-							ppos,word[0],temp2.c_str(), temp3.c_str(), temp4.c_str(),GetName(io->filename).c_str(),io->ident);
+					sprintf(cmd, "Script Error for token #%ld '%s' (%s|%s|%s) in file %s_%04ld",
+							ppos,word.c_str(),temp2.c_str(), temp3.c_str(), temp4.c_str(),GetName(io->filename).c_str(),io->ident);
 					LogError << cmd;
 
 					io->ioflags |= IO_FREEZESCRIPT;

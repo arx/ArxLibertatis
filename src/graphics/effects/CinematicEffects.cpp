@@ -34,7 +34,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 /*---------------------------------------------------------------------------------*/
 extern HWND HwndPere;
-extern char AllTxt[];
 extern EERIE_CAMERA	Camera;
 /*---------------------------------------------------------------------------------*/
 #define		NBOLDPOS	10

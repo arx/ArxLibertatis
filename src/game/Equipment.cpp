@@ -225,8 +225,8 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				long mapidx = ObjectAddMap(io->obj, temp);
 
 				// retreives head sel
-				for (i = 0; i < io->obj->nbselections; i++)
-				{
+				for (i = 0; i < io->obj->selections.size(); i++)
+				{ // TODO iterator
 					if (!strcasecmp(io->obj->selections[i].name.c_str(), "head"))
 					{
 						sel_ = i;
@@ -281,8 +281,8 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				long mapidx = ObjectAddMap(io->obj, temp);
 
 				// retreives head sel
-				for (i = 0; i < io->obj->nbselections; i++)
-				{
+				for (i = 0; i < io->obj->selections.size(); i++)
+				{ // TODO iterator
 					if (!strcasecmp(io->obj->selections[i].name.c_str(), "chest"))
 					{
 						sel_ = i;
@@ -337,8 +337,8 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				long mapidx = ObjectAddMap(io->obj, temp);
 
 				// retreives head sel
-				for (i = 0; i < io->obj->nbselections; i++)
-				{
+				for (i = 0; i < io->obj->selections.size(); i++)
+				{ // TODO iterator
 					if (!strcasecmp(io->obj->selections[i].name.c_str(), "leggings"))
 					{
 						sel_ = i;
@@ -931,11 +931,11 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 	EXCEPTIONS_LIST_Pos = 0;
 	float rad;
 
-	long nbact = io_weapon->obj->nbaction;
+	long nbact = io_weapon->obj->actionlist.size();
 	float drain_life = ARX_EQUIPMENT_GetSpecialValue(io_weapon, IO_SPECIAL_ELEM_DRAIN_LIFE);
 	float paralyse = ARX_EQUIPMENT_GetSpecialValue(io_weapon, IO_SPECIAL_ELEM_PARALYZE);
 
-	for (long j = 0; j < nbact; j++)
+	for (long j = 0; j < nbact; j++) // TODO iterator
 	{
 		if (!ValidIONum(weapon)) return false;
 

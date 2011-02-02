@@ -123,7 +123,6 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size,const char * fic,long 
 
 EERIE_3DSCENE * ScnToEerie(unsigned char * adr,  long		  size, const std::string& fic,	long flags = 0);
 
-void Clear3DObj(EERIE_3DOBJ	* eerie);
 void Clear3DScene(EERIE_3DSCENE	* eerie);
 void DrawEERIEObj(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, float Xrot, float Yrot, float Zrot, int Xoffs, int Yoffs, float Zoffs, IDirectDrawSurface7 * envir);
 void DrawEERIEAnim(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE_ANIM * eanim, float Xrot, float Yrot, float Zrot, int Xoffs, int Yoffs, float Zoffs, long fr, float pour, long flag);

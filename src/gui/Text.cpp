@@ -305,9 +305,6 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 {
 	HDC hDC = NULL;
 
-	//TODO(lubosz): Fix the text temporalily for crash
-	//_text ="todo";
-
 	// Get a DC for the surface. Then, write out the buffer
 	if (danaeApp.m_pddsRenderTarget)
 	{
@@ -316,8 +313,6 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 			hDC = hHDC;
 		}
 
-		//TODO(lubosz): text render crash
-//		if (false)
 		if (hHDC || SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 		{
 
@@ -751,7 +746,7 @@ bool CARXTextManager::AddText(HFONT _hFont, const std::string& _lpszUText, RECT 
 {
 	if ((!_lpszUText.empty()) && (_hFont))
 	{
-		ARX_TEXT * pArxText = (ARX_TEXT *) malloc(sizeof(ARX_TEXT));
+		ARX_TEXT * pArxText = new ARX_TEXT();
 
 		if (pArxText)
 		{
@@ -807,9 +802,7 @@ bool CARXTextManager::AddText(HFONT _hFont, const std::string& _lpszUText, RECT 
 				return true;
 			}
 
-			free((void *)pArxText);
-			pArxText = NULL;
-
+			delete pArxText;
 		}
 	}
 
