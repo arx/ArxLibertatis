@@ -29,6 +29,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Application.h"
 #include "scene/GameSound.h"
 #include "io/IO.h"
+#include "io/Logger.h"
 
 
 /*-----------------------------------------------------------*/
@@ -312,6 +313,7 @@ int AddSoundToList(char * dir, char * name, int id, int pos)
 
 	if ( path.find("SFX") != std::string::npos )
 	{
+		LogDebug << "adding cinematic sfx " << path;
 		cs->sound = strdup(path.c_str());
 	}
 	else
@@ -320,8 +322,10 @@ int AddSoundToList(char * dir, char * name, int id, int pos)
 		ZeroMemory(szTemp, 1024);
 
 		sprintf(szTemp, "speech\\%s\\%s", Project.localisationpath.c_str(), name);
+		LogDebug << "adding localized cinematic sound " << path;
 		cs->sound = strdup(szTemp);
 	}
+	
 
 	cs->load = 1;
 
