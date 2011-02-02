@@ -3121,42 +3121,42 @@ long NotifyIOEvent(INTERACTIVE_OBJ * io, long msg)
 //*************************************************************************************
 //*************************************************************************************
 #define MAX_EVENT_STACK 800
-typedef struct
+struct STACKED_EVENT
 {
-	INTERACTIVE_OBJ *	sender;
-	long				exist;
-	INTERACTIVE_OBJ *	io;
-	long				msg;
-	char 		*		params;
-	char 		*		eventname;
-} STACKED_EVENT;
+	INTERACTIVE_OBJ* sender;
+	long             exist;
+	INTERACTIVE_OBJ* io;
+	long             msg;
+	std::string      params;
+	std::string      eventname;
+};
+
 STACKED_EVENT eventstack[MAX_EVENT_STACK];
+
 void ARX_SCRIPT_EventStackInit()
 {
-	memset(eventstack, 0, sizeof(STACKED_EVENT)*MAX_EVENT_STACK);
+	ARX_SCRIPT_EventStackClear( false ); // Clear everything in the stack
 }
-void ARX_SCRIPT_EventStackClear()
+void ARX_SCRIPT_EventStackClear( bool check_exist )
 {
 	for (long i = 0; i < MAX_EVENT_STACK; i++)
 	{
-		if (eventstack[i].exist)
-		{
-			if (eventstack[i].params)
-				free(eventstack[i].params);
+		if ( check_exist ) // If we're not blatantly clearing everything
+			if ( !eventstack[i].exist ) // If the Stacked_Event is not being used
+				continue; // Continue on to the next one
 
-			if (eventstack[i].eventname)
-				free(eventstack[i].eventname);
-
+			// Otherwise, clear all the fields in this stacked_event
 			eventstack[i].sender = NULL;
 			eventstack[i].exist = 0;
 			eventstack[i].io = NULL;
 			eventstack[i].msg = 0;
-			eventstack[i].params = NULL;
-			eventstack[i].eventname = NULL;
-		}
+			eventstack[i].params.clear();
+			eventstack[i].eventname.clear();
 	}
 }
+
 long STACK_FLOW = 8;
+
 void ARX_SCRIPT_EventStackClearForIo(INTERACTIVE_OBJ * io)
 {
 	for (long i = 0; i < MAX_EVENT_STACK; i++)
@@ -3165,22 +3165,17 @@ void ARX_SCRIPT_EventStackClearForIo(INTERACTIVE_OBJ * io)
 		{
 			if (eventstack[i].io == io)
 			{
-				if (eventstack[i].params)
-					free(eventstack[i].params);
-
-				if (eventstack[i].eventname)
-					free(eventstack[i].eventname);
-
 				eventstack[i].sender = NULL;
 				eventstack[i].exist = 0;
 				eventstack[i].io = NULL;
 				eventstack[i].msg = 0;
-				eventstack[i].params = NULL;
-				eventstack[i].eventname = NULL;
+				eventstack[i].params.clear();
+				eventstack[i].eventname.clear();
 			}
 		}
 	}
 }
+
 void ARX_SCRIPT_EventStackExecute()
 {
 	long count = 0;
@@ -3201,65 +3196,44 @@ void ARX_SCRIPT_EventStackExecute()
 		kill:
 			;
 
-			if (eventstack[i].params)
-				free(eventstack[i].params);
-
-			if (eventstack[i].eventname)
-				free(eventstack[i].eventname);
-
 			eventstack[i].sender = NULL;
 			eventstack[i].exist = 0;
 			eventstack[i].io = NULL;
 			eventstack[i].msg = 0;
-			eventstack[i].params = NULL;
-			eventstack[i].eventname = NULL;
+			eventstack[i].params.clear();
+			eventstack[i].eventname.clear();
 			count++;
 
 			if (count >= STACK_FLOW) return;
 		}
 	}
 }
+
 void ARX_SCRIPT_EventStackExecuteAll()
 {
 	STACK_FLOW = 9999999;
 	ARX_SCRIPT_EventStackExecute();
 	STACK_FLOW = 20;
 }
+
 void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params, const std::string& eventname)
 {
 	for (long i = 0; i < MAX_EVENT_STACK; i++)
 	{
 		if (!eventstack[i].exist)
 		{
-			if (params.length() != 0)
-			{
-				eventstack[i].params = (char *)malloc(params.length() + 1);
-				strcpy(eventstack[i].params, params.c_str());
-			}
-			else
-			{
-				eventstack[i].params = NULL;
-			}
-
-			if ( eventname.length() != 0)
-			{
-				eventstack[i].eventname = (char *)malloc(eventname.length() + 1);
-				strcpy(eventstack[i].eventname, eventname.c_str());
-			}
-			else
-			{
-				eventstack[i].eventname = NULL;
-			}
-
 			eventstack[i].sender = EVENT_SENDER;
 			eventstack[i].io = io;
 			eventstack[i].msg = msg;
 			eventstack[i].exist = 1;
+			eventstack[i].params = params;
+			eventstack[i].eventname = eventname;
 
 			return;
 		}
 	}
 }
+
 long SendIOScriptEventReverse(INTERACTIVE_OBJ * io, long msg, const std::string& params, const std::string& eventname)
 {
 	// checks invalid IO

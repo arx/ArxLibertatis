@@ -458,7 +458,7 @@ void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, const std::string& newevent);
 void ARX_SCRIPT_EventStackExecute();
 void ARX_SCRIPT_EventStackExecuteAll();
 void ARX_SCRIPT_EventStackInit();
-void ARX_SCRIPT_EventStackClear();
+void ARX_SCRIPT_EventStackClear( bool check_exist = true );
 void ARX_SCRIPT_LaunchScriptSearch( std::string& search);
 void ARX_SCRIPT_ResetObject(INTERACTIVE_OBJ * io, long flags);
 void ARX_SCRIPT_Reset(INTERACTIVE_OBJ * io, long flags);
