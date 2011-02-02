@@ -396,6 +396,7 @@ HBITMAP LoadTargaFile( const char * strPathname)
 
 	if (NULL == dat) return NULL;
 
+#pragma pack(push,1)
 	struct TargaHeader
 	{
 		BYTE IDLength;
@@ -409,6 +410,7 @@ HBITMAP LoadTargaFile( const char * strPathname)
 		BYTE PixelDepth;
 		BYTE ImageDescriptor;
 	} tga;
+#pragma pack(pop)
 
 	long pos = 0;
 	memcpy(&tga, dat + pos, sizeof(TargaHeader));
@@ -533,6 +535,7 @@ HBITMAP LoadBMPImage( const char * strPathname)
 
 	if (!dat) return NULL;
 
+	// TODO packing of BITMAPINFOHEADER?
 	BITMAPINFOHEADER sBitmapH = *((BITMAPINFOHEADER *)(dat + sizeof(BITMAPFILEHEADER)));
 	HDC hHDC = CreateCompatibleDC(NULL);
 
