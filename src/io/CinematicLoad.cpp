@@ -387,9 +387,11 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			GetPathDirectory(Dir);
 			ClearDirectory(path, Name);
 			
-			LogDebug << "adding sound " << i << ": " << Dir << Name;
+			LogDebug << "adding sound " << i << ": " << path;
 			
-			AddSoundToList(Dir, Name, -1, 0);
+			if(AddSoundToList(Dir, Name, -1, 0) < 0) {
+				LogError << "AddSoundToList failed for " << path;
+			}
 			
 		}
 	}
