@@ -8644,7 +8644,8 @@ void ClearGame()
 
 	if (scr_timer)
 	{
-		free(scr_timer);
+//		TODO(lubosz): crash
+//		free(scr_timer);
 		scr_timer=NULL;
 	}
 

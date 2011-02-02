@@ -41,7 +41,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Spells.h"
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct INTERFACE_TC
 {
 	TextureContainer * Icon_Lvl_Up;
 	TextureContainer * ringslot;
@@ -175,7 +175,7 @@ typedef struct
 
 	std::string        lpszULevel;
 	std::string        lpszUXp;
-} INTERFACE_TC;
+} ;
 
 //-----------------------------------------------------------------------------
 typedef struct

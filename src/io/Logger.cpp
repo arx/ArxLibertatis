@@ -16,11 +16,12 @@ struct LogSetting {
 
 const LogSetting blackList[] = {
 	{ "FTL.cpp", Logger::Warning },
-//	{ "Script.cpp", Logger::Info },
-//	{ "ScriptEvent.cpp", Logger::Info },
-	{ "PakManager.cpp", Logger::Fatal },
+	{ "Script.cpp", Logger::Info },
+	{ "ScriptEvent.cpp", Logger::Info },
+	{ "LoadLevel.cpp", Logger::Info },
+	{ "PakManager.cpp", Logger::Warning },
 	{ "PakReader.cpp", Logger::Info },
-	{ "Filesystem.cpp", Logger::Fatal },
+	{ "Filesystem.cpp", Logger::Warning },
 	{ "Audio.cpp", Logger::Error },
 	{ "AudioInstance.cpp", Logger::Info },
 	{ "Object.cpp", Logger::Warning },

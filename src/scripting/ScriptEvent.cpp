@@ -547,7 +547,6 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 		if ((pos = GetNextWord(es, pos, word)) < 0)
 			return ACCEPT;
-		LogDebug << "setting current word " << word.c_str();
 
 		if ((msg == SM_EXECUTELINE) && (LINEEND == 1))
 			return ACCEPT;
@@ -555,7 +554,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 		MakeStandard(word);
 
 		//TODO(lubosz): this is one mega switch
-		LogDebug << "Switching! current word ="<<word.c_str();
+		LogDebug << "Switching! current word '"<<word.c_str()<<"'";
 
 		switch (word[0]) {
 			case '}':
