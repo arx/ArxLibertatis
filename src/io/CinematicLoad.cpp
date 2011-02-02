@@ -261,7 +261,7 @@ bool LoadProject(Cinematic * c, const char * dir, const char * name) {
 	projectfile += name;
 	
 	size_t size;
-	char * data = (char*)PAK_FileLoadMalloc(name, size);
+	char * data = (char*)PAK_FileLoadMalloc(projectfile, size);
 	if(!data) {
 		LogError << "cinematic " << dir << name << " not found";
 		return false;
