@@ -147,7 +147,7 @@ void ARX_Menu_Release_Text(void * a)
 
  
 long save_c(0), save_p(0);
-SaveGame * save_l = NULL;
+std::vector<SaveGame> save_l;
 
 //-----------------------------------------------------------------------------
 void CreateSaveGameList()
@@ -157,10 +157,9 @@ void CreateSaveGameList()
 
 	sprintf(path, "save%s\\save*", LOCAL_SAVENAME);
 
-	if (!(save_l = (SaveGame *)malloc(sizeof(SaveGame)))) return;
+	save_l.resize( save_l.size() + 1 );
 
 	save_l[0].name = "New";
-	memset(&save_l[0].stime, 0, sizeof(SYSTEMTIME));
 	save_c = 1;
 
 	char tTemp[sizeof(WIN32_FIND_DATA)+2];
@@ -172,22 +171,15 @@ void CreateSaveGameList()
 		{
 			if (fdata->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY && fdata->cFileName[0] != '.')
 			{
-				void * ptr;
+				// Make another save game slot at the end
+				save_l.resize( save_l.size() +1 );
 
-				if (!(ptr = realloc(save_l, sizeof(SaveGame) * (save_c + 1))))
-				{
-					free(save_l), save_l = NULL, save_c = 0;
-					return;
-				}
-
-				save_l = (SaveGame *)ptr;
-				std::string text;
-				text = fdata->cFileName + 4;
+				std::string text = fdata->cFileName + 4;
 				save_l[save_c].num = atoi(text.c_str());
-		std::stringstream ss;
-		ss << "save" << LOCAL_SAVENAME << "\\" << fdata->cFileName << "\\";
-		text = ss.str();
-//				sprintf(text, "%ssave%s\\%s\\", Project.workingdir, LOCAL_SAVENAME, fdata->cFileName);
+				std::stringstream ss;
+				ss << "save" << LOCAL_SAVENAME << "\\" << fdata->cFileName << "\\";
+				text = ss.str();
+				//sprintf(text, "%ssave%s\\%s\\", Project.workingdir, LOCAL_SAVENAME, fdata->cFileName);
 				unsigned long pouet;
 
 				if (ARX_CHANGELEVEL_GetInfo(text, save_l[save_c].name, save_l[save_c].version, save_l[save_c].level, pouet) != -1)
@@ -211,7 +203,9 @@ void CreateSaveGameList()
 //-----------------------------------------------------------------------------
 void FreeSaveGameList()
 {
-	free(save_l), save_l = NULL, save_c = save_p = 0;
+	save_l.clear();
+	save_c = 0;
+	save_p = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -262,17 +256,13 @@ void ARX_MENU_LaunchAmb(char * _lpszAmb)
 //-----------------------------------------------------------------------------
 void ARX_Menu_Resources_Create(LPDIRECT3DDEVICE7 m_pd3dDevice)
 {
-	//TODO:(lubosz): mda is initialized by malloc
-	return;
 	if (ARXmenu.mda)
 	{
-		free(ARXmenu.mda);
+		delete ARXmenu.mda;
 		ARXmenu.mda = NULL;
 	}
 
-	ARXmenu.mda = (MENU_DYNAMIC_DATA *)malloc(sizeof(MENU_DYNAMIC_DATA));
-	memset(ARXmenu.mda, 0, sizeof(MENU_DYNAMIC_DATA));
-	ARXmenu.mda->Background = NULL; 
+	ARXmenu.mda = new MENU_DYNAMIC_DATA();
 	ARXmenu.mda->pTexCredits = MakeTCFromFile("Graph\\Interface\\menus\\Menu_credits.bmp");
 	ARXmenu.mda->BookBackground = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\Char_creation_Bg.BMP");
 
