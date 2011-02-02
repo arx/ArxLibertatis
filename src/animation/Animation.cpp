@@ -84,6 +84,7 @@ using std::sprintf;
 
 #include "io/IO.h"
 #include "io/PakManager.h"
+#include "io/Logger.h"
 
 using std::min;
 using std::max;
@@ -374,7 +375,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load( const std::string& _path)
 	unsigned char * adr;
 	size_t FileSize;
 	char path2[256];
-	char pathcount=2;
+	int pathcount = 2;
 
 	for (long i=0;i<MAX_ANIMATIONS;i++)
 	{
@@ -394,13 +395,16 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load( const std::string& _path)
 
 				strcpy(animations[i].path,path.c_str());				
 				animations[i].locks=1;
-				SetExt(path,"");
+
+				//remove extension
+				path = path.substr(0, path.size()-4);
+
 				sprintf(path2,"%s%d.tea",path.c_str(),pathcount);
 
 				while (EERIE_ANIMMANAGER_AddAltAnim(&animations[i],path2))
 				{
 					pathcount++;
-					sprintf(path2,"%s%d.tea",path.c_str(),pathcount);					
+					sprintf(path2,"%s%d.tea",path.c_str(),pathcount);
 				}
 
 				return &animations[i];
