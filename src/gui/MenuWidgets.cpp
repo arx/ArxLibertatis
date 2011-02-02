@@ -70,9 +70,6 @@ extern long DANAESIZY;
 
 extern long LastEERIEMouseButton;
 
-extern long save_c;
-extern SaveGame *save_l;
-
 extern bool bForceReInitAllTexture;
 extern bool bALLOW_BUMP;
 extern long WILL_RELOAD_ALL_TEXTURES;

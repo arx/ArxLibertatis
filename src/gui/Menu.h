@@ -58,15 +58,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_MENU_H
 #define ARX_MENU_H
 
-#include <string>
 #include <tchar.h>
+
+#include <string>
+#include <vector>
+
 #include "graphics/data/Texture.h"
 #include "window/Input.h"
 
 #include <string>
 //-----------------------------------------------------------------------------
 #define MAX_FLYOVER 32
-typedef struct
+struct MENU_DYNAMIC_DATA
 {
 	TextureContainer*   Background;
 	TextureContainer*   BookBackground;
@@ -79,7 +82,12 @@ typedef struct
 	std::string         str_button_quickgen;
 	std::string         str_button_skin;
 	std::string         str_button_done;
-} MENU_DYNAMIC_DATA;
+
+	MENU_DYNAMIC_DATA()
+	: Background(NULL), BookBackground(NULL),
+	  pTexCredits(NULL), creditspos(0), creditstart(0)
+	{}
+};
 
 // ARX_MENU_DATA contains all Menu-datas
 typedef struct
@@ -91,16 +99,21 @@ typedef struct
 	long				custompos;
 	MENU_DYNAMIC_DATA	* mda;
 } ARX_MENU_DATA;
+
 extern ARX_MENU_DATA ARXmenu;
 
-typedef struct
+struct SaveGame
 {
 	long            num;
 	std::string     name;
 	long            level;
 	float           version;
 	SYSTEMTIME      stime;
-} SaveGame;
+
+	SaveGame()
+	: num(0), level(0), version(0)
+		{}
+};
 
 //-----------------------------------------------------------------------------
 // Possible values for ARXmenu.currentmode
@@ -111,7 +124,7 @@ typedef struct
 #define AMCM_CDNOTFOUND	4
 
 //-----------------------------------------------------------------------------
-extern SaveGame * save_l;
+extern std::vector<SaveGame> save_l;
 extern long save_c;
 extern long save_p;
 extern char LOCAL_SAVENAME[64];
