@@ -800,13 +800,24 @@ char* GetExt( const std::string& str )
 	return _ext;
 }
 
-void SetExt( std::string& str, const std::string& new_ext )
-{
-	char temp[512];
-	strcpy( temp, str.c_str() );
-	splitpath(temp, _drv, _dir, _name, _ext);
-	makepath(temp, _drv, _dir, _name, new_ext.c_str());
-	str = temp;
+void SetExt(string & str, const string & new_ext) {
+	size_t extpos = str.find_last_of("./\\");
+	// No extension so far.
+	if(extpos == string::npos || str[extpos] != '.') {
+		if(!new_ext.empty() && new_ext[0] != '.') {
+			str += '.';
+		}
+		str += new_ext;
+		return;
+	}
+	if(!new_ext.empty() && new_ext[0] != '.') {
+		str.resize(extpos + 1 + new_ext.length());
+		str[extpos] = '.';
+		std::copy(new_ext.begin(), new_ext.end(), str.begin() + extpos + 1);
+	} else {
+		str.resize(extpos + new_ext.length());
+		std::copy(new_ext.begin(), new_ext.end(), str.begin() + extpos);
+	}
 }
 
 void AddToName( std::string& str, const std::string& cat )
