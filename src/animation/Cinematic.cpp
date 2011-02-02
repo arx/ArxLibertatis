@@ -93,7 +93,7 @@ void ClearAbsDirectory( std::string& pT, const std::string& d )
 	size_t abs_dir = pT.find( d );
 
 	if ( abs_dir != std::string::npos )
-		pT = pT.substr( abs_dir );
+		pT = pT.substr( abs_dir + d.length() );
 
 /*
 	char * pTcopy = pT;
