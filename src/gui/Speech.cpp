@@ -93,7 +93,8 @@ STRUCT_SPEECH speech[MAX_SPEECH];
 //-----------------------------------------------------------------------------
 void ARX_SPEECH_Init()
 {
-	memset(speech, 0, sizeof(STRUCT_SPEECH)*MAX_SPEECH);
+	for ( int i = 0 ; i < MAX_SPEECH ; i++ )
+		speech[i].clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -106,10 +107,10 @@ void ARX_SPEECH_MoveUp()
 
 	for (long j = 0; j < MAX_SPEECH - 1; j++)
 	{
-		memcpy(&speech[j], &speech[j+1], sizeof(STRUCT_SPEECH));
+		speech[j] = speech[j+1];
 	}
 
-	memset(&speech[MAX_SPEECH-1], 0, sizeof(STRUCT_SPEECH));
+	speech[MAX_SPEECH-1].clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -119,9 +120,10 @@ void ARX_SPEECH_ClearAll()
 	{
 		if (speech[i].timecreation != 0)
 		{
-			speech[i].lpszUText.clear();
+			speech[i].clear();
+			//speech[i].lpszUText.clear();
 
-			speech[i].timecreation = 0;
+			//speech[i].timecreation = 0;
 		}
 	}
 }
@@ -310,7 +312,7 @@ void ARX_SPEECH_Launch_No_Unicode_Seek(const char * string, INTERACTIVE_OBJ * io
 		aspeech[speechnum].flags = 0;
 		ARX_CINEMATIC_SPEECH acs;
 		acs.type = ARX_CINE_SPEECH_NONE;
-		memcpy(&aspeech[speechnum].cine, &acs, sizeof(ARX_CINEMATIC_SPEECH));
+		aspeech[speechnum].cine = acs;
 	}
 }
 
@@ -346,8 +348,10 @@ void ARX_CONVERSATION_CheckAcceleratedSpeech()
 
 void ARX_SPEECH_FirstInit()
 {
-	memset(aspeech, 0, sizeof(ARX_SPEECH)*MAX_ASPEECH);
+	for( int i = 0 ; i < MAX_ASPEECH ; i++ )
+		aspeech[i].clear();
 }
+
 long ARX_SPEECH_GetFree()
 {
 	for (long i = 0; i < MAX_ASPEECH; i++)
@@ -361,7 +365,6 @@ long ARX_SPEECH_GetFree()
 
 	return -1;
 }
-
 
 long ARX_SPEECH_GetIOSpeech(INTERACTIVE_OBJ * io)
 {
@@ -390,9 +393,10 @@ void ARX_SPEECH_Release(long i)
 			aspeech[i].io->animlayer[2].cur_anim = NULL;
 		}
 
-		memset(&aspeech[i], 0, sizeof(ARX_SPEECH));
+		aspeech[i].clear();
 	}
 }
+
 void ARX_SPEECH_ReleaseIOSpeech(INTERACTIVE_OBJ * io)
 {
 	for (long i = 0; i < MAX_ASPEECH; i++)
@@ -405,8 +409,6 @@ void ARX_SPEECH_ReleaseIOSpeech(INTERACTIVE_OBJ * io)
 	}
 }
 
-
- 
 void ARX_SPEECH_Reset()
 {
 	for (long i = 0; i < MAX_ASPEECH; i++)
@@ -432,7 +434,7 @@ void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io)
 			if ((es)
 					&&	(ValidIOAddress(io)))
 			{
-				ScriptEvent::send(es, SM_EXECUTELINE, "", io, NULL, scrpos);
+				ScriptEvent::send(es, SM_EXECUTELINE, "", io, "", scrpos);
 			}
 		}
 	}
@@ -461,7 +463,7 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long param, l
 
 				if ((es)
 						&&	(ValidIOAddress(io)))
-					ScriptEvent::send(es, SM_EXECUTELINE, "", io, NULL, scrpos);
+					ScriptEvent::send(es, SM_EXECUTELINE, "", io, "", scrpos);
 			}
 	}
 
@@ -607,7 +609,7 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 
 				if ((es)
 						&&	(ValidIOAddress(io)))
-					ScriptEvent::send(es, SM_EXECUTELINE, "", io, NULL, scrpos);
+					ScriptEvent::send(es, SM_EXECUTELINE, "", io, "", scrpos);
 			}
 		}
 	}

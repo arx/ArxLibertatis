@@ -108,6 +108,13 @@ struct EERIE_3D
 		float		g;
 		float		roll;
 	};
+
+	void clear()
+	{
+		x = 0;
+		y = 0;
+		z = 0;
+	}
 }; // Aligned 1 2 4
 #pragma pack(pop)
 
