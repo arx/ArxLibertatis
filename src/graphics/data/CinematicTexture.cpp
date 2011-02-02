@@ -673,6 +673,8 @@ int CreateAllMapsForBitmap(char * dir, char * name, Cinematic * c, int n, int po
 	path += name;
 	ClearAbsDirectory(path, "ARX\\");
 	SetExt(path, ".BMP");
+	
+	LogDebug << "loading cinematic texture " << path;
 
 	if (PAK_FileExist(path.c_str()))
 	{
@@ -680,9 +682,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, Cinematic * c, int n, int po
 
 		if (!bi->hbitmap)
 		{
-			std::string error = name;
-			error += " --not found--";
-			// TODO show error?
+			LogError << "error loading " << name;
 			h = 0;
 
 			bi->actif = 1;
@@ -700,9 +700,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, Cinematic * c, int n, int po
 
 			if (!bi->hbitmap)
 			{
-				std::string error = name;
-				error += " --not found--";
-				// TODO show error?
+				LogError << "error loading " << name;
 				h = 0;
 
 				bi->actif = 1;
@@ -712,6 +710,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, Cinematic * c, int n, int po
 		}
 		else
 		{
+			LogError << name << " not found";
 			return -1;
 		}
 	}
