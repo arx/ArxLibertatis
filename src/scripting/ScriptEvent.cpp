@@ -413,6 +413,12 @@ extern long RELOADING;
 
 long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info)
 {
+	
+	LogDebug << "SendScriptEvent msg=" << msg << " ("
+	         << ((msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1) ? AS_EVENT[msg].name : "unknown")
+	         << ")" << " params=\"" << params << "\""
+	         << " io=" << Logger::nullstr(io ? io->filename : NULL)
+	         << " evame=\"" << evname << "\" info=" << info;
 
 	long ret = ACCEPT;
 	std::string word = "";
@@ -489,6 +495,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				case SM_KEY_PRESSED:
 					float dwCurrTime = ARX_TIME_Get();
 					if ((dwCurrTime - g_TimeStartCinemascope) < 3000) {
+						LogDebug << "refusing SM_KEY_PRESSED";
 						return REFUSE;
 					}
 					break;
@@ -500,7 +507,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				if (((msg >= SM_MAXCMD))
 						&& (msg != SM_EXECUTELINE) && (evname.empty()))
 				{
-
+					LogDebug << "unknown message " << msg;
 					return ACCEPT;
 				}
 
@@ -510,6 +517,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 	}
 
 	if (pos <= -1) {
+		LogDebug << "cannot find event handler";
 		GLOB = 1;
 		return ACCEPT;
 	}
@@ -1264,7 +1272,6 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				{
 					long preload = 0;
 					pos = GetNextWord(es, pos, word);
-					LogDebug << "CINE " << word;
 
 					if (word[0] == '-')
 					{
@@ -1273,13 +1280,17 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 						pos = GetNextWord(es, pos, word);
 					}
+					
+					LogWarning << "CINE " << (preload ? "-P " : "") << word;
 
 					if (!strcasecmp(word, "KILL"))
 					{
+						LogWarning << "CINE KILL";
 						DANAE_KillCinematic();
 					}
 					else if (!strcasecmp(word, "PLAY"))
 					{
+						LogWarning << "CINE PLAY";
 						PLAY_LOADED_CINEMATIC = 1;
 						ARX_TIME_Pause();
 					}
@@ -1291,11 +1302,15 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							strcat(temp2, word.c_str());
 							strcat(temp2, ".cin");
 							word += ".cin";
+							
+							LogWarning << "CINE LOAD \"" << word << "\" \"" << temp2 << "\"";
 
 							if (PAK_FileExist(temp2))
 							{
 								strcpy(WILL_LAUNCH_CINE, word.c_str());
 								CINE_PRELOAD = preload;
+							} else {
+								LogError << "unable to load cinematic " << temp2;
 							}
 						}
 					}

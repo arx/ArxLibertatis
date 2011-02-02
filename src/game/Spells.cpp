@@ -61,7 +61,7 @@ using std::abs;
 #include "gui/Menu.h"
 
 //TODO Remove this!
-size_t strcasecmp( const std::string& str1, const std::string& str2 );
+int strcasecmp( const std::string& str1, const std::string& str2 );
 
 void MakeSpCol();
 extern long WILLRETURNTOCOMBATMODE;

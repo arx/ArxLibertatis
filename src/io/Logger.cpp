@@ -19,9 +19,9 @@ const LogSetting blackList[] = {
 	{ "Script.cpp", Logger::Info },
 	{ "ScriptEvent.cpp", Logger::Info },
 	{ "LoadLevel.cpp", Logger::Info },
-	{ "PakManager.cpp", Logger::Warning },
+	{ "PakManager.cpp", Logger::Fatal },
 	{ "PakReader.cpp", Logger::Info },
-	{ "Filesystem.cpp", Logger::Warning },
+	{ "Filesystem.cpp", Logger::Fatal },
 	{ "Audio.cpp", Logger::Error },
 	{ "AudioInstance.cpp", Logger::Info },
 	{ "Object.cpp", Logger::Warning },
@@ -29,7 +29,8 @@ const LogSetting blackList[] = {
 	{ "Text.cpp", Logger::Error },
 	{ "CinematicLoad.cpp", Logger::Info },
 	{ "IO.cpp", Logger::Debug },
-	{ "MenuWidgets.cpp", Logger::Info }
+	{ "MenuWidgets.cpp", Logger::Info },
+	{ "MeshManipulation.cpp", Logger::Info}
 };
 
 Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {

@@ -103,12 +103,12 @@ long NB_GLOBALS = 0;
 SCR_TIMER * scr_timer = NULL;
 long ActiveTimers = 0;
 
-size_t strcasecmp( const std::string& str1, const std::string& str2 )
+int strcasecmp( const std::string& str1, const std::string& str2 )
 {
 	return strcasecmp( str1.c_str(), str2.c_str() );
 }
 
-size_t strcmp( const std::string& str1, const std::string& str2 )
+int strcmp( const std::string& str1, const std::string& str2 )
 {
 	return str1.compare( str2 );
 }
@@ -172,7 +172,7 @@ bool iCharIn( const std::string& str, char _char)
 {
 	std::string temp = str;
 	MakeUpcase(temp);
-	::toupper(_char);
+	_char = ::toupper(_char);
 	return ( temp.find( _char ) != std::string::npos );
 /*
 	char * s = string;
@@ -194,11 +194,8 @@ extern long FOR_EXTERNAL_PEOPLE;
 
 //*************************************************************************************
 // SCRIPT Precomputed Label Offsets Management
-long FindLabelPos(EERIE_SCRIPT * es, const std::string& string)
-{
-	char texx[128];
-	sprintf(texx, ">>%s", string.c_str());
-	return FindScriptPosGOTO(es, texx, 0);
+long FindLabelPos(EERIE_SCRIPT * es, const std::string& string) {
+	return FindScriptPosGOTO(es, ">>" + string, 0);
 }
 
 long ARX_SCRIPT_SearchTextFromPos(EERIE_SCRIPT * es, const std::string& search, long startpos, std::string& tline, long * nline)
@@ -3056,11 +3053,7 @@ long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const std::string& _lpszText,
 //*************************************************************************************
 void MakeSSEPARAMS(const char * params)
 {
-	if(params) {
-		LogDebug << "MakeSSEPARAMS \"" << params << "\"";
-	} else {
-		LogDebug << "MakeSSEPARAMS NULL";
-	}
+	LogDebug << "MakeSSEPARAMS " << Logger::nullstr(params);
 	
 	for (long i = 0; i < MAX_SSEPARAMS; i++)
 	{
