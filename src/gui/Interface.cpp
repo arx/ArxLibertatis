@@ -416,7 +416,8 @@ void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, cons
 //-----------------------------------------------------------------------------
 void CreateInterfaceTextureContainers()
 {
-	memset(&ITC,0,sizeof(INTERFACE_TC));
+//	memset(&ITC,0,sizeof(INTERFACE_TC));
+	ITC = INTERFACE_TC();
 	ITC.aim_empty = MakeTCFromFile("Graph\\Interface\\bars\\aim_empty.bmp", 0);
 	ITC.aim_maxi = MakeTCFromFile("Graph\\Interface\\bars\\aim_maxi.bmp", 0);
 	ITC.aim_hit = MakeTCFromFile("Graph\\Interface\\bars\\flash_gauge.bmp", 0);
