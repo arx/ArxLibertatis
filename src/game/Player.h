@@ -59,9 +59,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_PLAYER_H
 
 #include <string>
+#include <vector>
 #include <tchar.h>
 #include "graphics/data/Mesh.h"
 #include "game/Spells.h"
+
+using std::vector;
 
 //-----------------------------------------------------------------------------
 typedef struct
@@ -254,11 +257,10 @@ typedef struct
 // Quests Management (QuestLogBook)
 //////////////////////////////////////////////
 #define MAX_QUESTS 100
-typedef struct
-{
+struct STRUCT_QUEST {
 	char* ident;
 	std::string localised;
-} STRUCT_QUEST;
+};
 
 //-----------------------------------------------------------------------------
 #define PLAYER_MOVE_WALK_FORWARD	1
@@ -340,7 +342,7 @@ extern ANIM_HANDLE * herowait;
 extern ANIM_HANDLE * herowait2;
 extern ANIM_HANDLE * herowalk;
 extern ANIM_HANDLE * herorun;
-extern STRUCT_QUEST * PlayerQuest;
+extern vector<STRUCT_QUEST> PlayerQuest;
 extern KEYRING_SLOT * Keyring;
 extern float DeadCameraDistance;
 extern long nb_PlayerQuest;

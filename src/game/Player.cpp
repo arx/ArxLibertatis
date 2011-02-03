@@ -177,12 +177,12 @@ INTERACTIVE_OBJ * CURRENT_TORCH = NULL;
 unsigned long FALLING_TIME = 0;
 
 
-STRUCT_QUEST * PlayerQuest = NULL;
+//STRUCT_QUEST * PlayerQuest;
+vector<STRUCT_QUEST> PlayerQuest;
 long nb_PlayerQuest = 0;
 long FistParticles = 0;
 void Manage_sp_max();
-bool ARX_PLAYER_IsInFightMode()
-{
+bool ARX_PLAYER_IsInFightMode() {
 	if (player.Interface & INTER_COMBATMODE) return true;
 
 	if (inter.iobj
@@ -451,19 +451,19 @@ void ARX_PLAYER_ManageTorch()
 //*************************************************************************************
 void ARX_PLAYER_Quest_Init()
 {
-	if (PlayerQuest)
-	{
-		for (long i = 0; i < nb_PlayerQuest; i++)
-		{
-			if (PlayerQuest[i].ident)
-				free((void *)PlayerQuest[i].ident);
-
-			if (!PlayerQuest[i].localised.empty())
-				PlayerQuest[i].localised.clear();
-		}
-
-		free((void *)PlayerQuest);
-		PlayerQuest = NULL;
+	if (PlayerQuest.size() != 0) {
+//		for (long i = 0; i < nb_PlayerQuest; i++)
+//		{
+//			if (PlayerQuest[i].ident)
+//				free((void *)PlayerQuest[i].ident);
+//
+//			if (!PlayerQuest[i].localised.empty())
+//				PlayerQuest[i].localised.clear();
+//		}
+//
+//		free((void *)PlayerQuest);
+//		PlayerQuest = NULL;
+		PlayerQuest.clear();
 	}
 
 	nb_PlayerQuest = 0;
@@ -562,7 +562,8 @@ void ARX_PLAYER_Quest_Add( const char * quest, bool _bLoad)
 
     if (output[0] == 0) return;
 
-    PlayerQuest = (STRUCT_QUEST *)realloc(PlayerQuest, sizeof(STRUCT_QUEST) * (nb_PlayerQuest + 1));
+//    PlayerQuest = (STRUCT_QUEST *)realloc(PlayerQuest, sizeof(STRUCT_QUEST) * (nb_PlayerQuest + 1));
+    PlayerQuest.push_back(STRUCT_QUEST());
     PlayerQuest[nb_PlayerQuest].ident = (char *)malloc(strlen(quest) + 1);
     PlayerQuest[nb_PlayerQuest].localised.resize( output.length() );
     strcpy(PlayerQuest[nb_PlayerQuest].ident, quest);
