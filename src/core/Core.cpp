@@ -549,6 +549,7 @@ void LaunchMoulinex();
 // Sends ON GAME_READY msg to all IOs
 void SendGameReadyMsg()
 {
+	LogDebug << "SendGameReadyMsg";
 	SendMsgToAllIO(SM_GAME_READY,"");
 }
 
@@ -3230,6 +3231,7 @@ extern long FLAG_ALLOW_CLOTHES;
 
 long FirstFrameHandling(LPDIRECT3DDEVICE7 m_pd3dDevice)
 {	
+	LogDebug << "FirstFrameHandling";
 	EERIE_3D trans;
 	FirstFrame=-1;
 		
@@ -5807,6 +5809,7 @@ static float _AvgFrameDiff = 150.f;
 	}
 	else // Manages our first frameS
 	{
+		LogDebug << "first frame";
 		ARX_TIME_Get();
 		long ffh=FirstFrameHandling( m_pd3dDevice);
 
