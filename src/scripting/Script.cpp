@@ -61,7 +61,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iomanip>
 
 #include "ai/Paths.h"
-#include "physics/CollisionShapes.h"
 #include "game/Damage.h"
 #include "game/Equipment.h"
 #include "game/NPC.h"
@@ -3132,6 +3131,7 @@ void ARX_SCRIPT_EventStackInit()
 }
 void ARX_SCRIPT_EventStackClear( bool check_exist )
 {
+	LogDebug << "Event Stack Clear";
 	for (long i = 0; i < MAX_EVENT_STACK; i++)
 	{
 		if ( check_exist ) // If we're not blatantly clearing everything
@@ -3211,6 +3211,7 @@ void ARX_SCRIPT_EventStackExecuteAll()
 
 void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params, const std::string& eventname)
 {
+	LogDebug << "Stack_SendIOScriptEvent "<< eventname;
 	for (long i = 0; i < MAX_EVENT_STACK; i++)
 	{
 		if (!eventstack[i].exist)
@@ -3229,6 +3230,7 @@ void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& 
 
 long SendIOScriptEventReverse(INTERACTIVE_OBJ * io, long msg, const std::string& params, const std::string& eventname)
 {
+	LogDebug << "SendIOScriptEventReverse "<< eventname;
 	// checks invalid IO
 	if (!io) return -1;
 
@@ -3264,6 +3266,8 @@ long SendIOScriptEventReverse(INTERACTIVE_OBJ * io, long msg, const std::string&
 
 long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params, const std::string& eventname)
 {
+	if (msg != 8)
+		LogDebug << "SendIOScriptEvent event '"<< eventname<<"' message " << msg;
 	// checks invalid IO
 	if (!io) return -1;
 
