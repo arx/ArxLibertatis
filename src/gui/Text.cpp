@@ -553,10 +553,9 @@ std::string GetFontName( const std::string& _lpszFileName)
 
 	HANDLE hFile = CreateFile(_lpszFileName.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
-	if (hFile == INVALID_HANDLE_VALUE)
-	{
+	if (hFile == INVALID_HANDLE_VALUE) {
 		LogError << "FontName :: File not Found - " << _lpszFileName;
-		return NULL;
+		return "";
 	}
 
 	dwSize = GetFileSize(hFile, NULL);
