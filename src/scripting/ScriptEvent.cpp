@@ -7,7 +7,6 @@
 
 #include "ScriptEvent.h"
 
-#include "scene/Interactive.h"
 #include "core/Time.h"
 #include "core/Resource.h"
 #include "game/Damage.h"
@@ -27,7 +26,6 @@
 #include "io/Logger.h"
 #include "io/IO.h"
 #include "io/PakManager.h"
-#include "graphics/GraphicsTypes.h"
 #include "graphics/GraphicsModes.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/Math.h"
