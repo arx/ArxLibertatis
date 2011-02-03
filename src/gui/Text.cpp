@@ -488,12 +488,11 @@ long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, const std::st
 }
 
 //-----------------------------------------------------------------------------
-void ARX_Allocate_Text( std::string& dest, const std::string& id_string)
-{
-	LogDebug << "ARX_Allocate_Text id '" << id_string<<"' dest '"<< dest <<"'";
+void ARX_Allocate_Text( std::string& dest, const std::string& id_string) {
 	std::string output;
 	PAK_UNICODE_GetPrivateProfileString(id_string, "default", output, 4096);
 	dest = output;
+	LogDebug << "ARX_Allocate_Text id '" << id_string<<"' dest '"<< dest <<"'";
 }
 
 //-----------------------------------------------------------------------------
