@@ -4583,16 +4583,14 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							typ1	=	TYPE_TEXT;
 							tempo	=	GETVarValueText(svar, NB_GLOBALS, word);
 
-							if ( tempo.empty()) tvar1[0] = 0;
-							else tvar1 = tempo;
+							tvar1 = tempo;
 
 							break;
 						case '\xA3':
 							typ1	=	TYPE_TEXT;
 							tempo	=	GETVarValueText(esss->lvar, esss->nblvar, word);
 
-							if ( tempo.empty() ) tvar1[0] = 0;
-							else tvar1 = tempo;
+							tvar1 = tempo;
 
 							break;
 						default:
@@ -4658,16 +4656,14 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							typ2			=	TYPE_TEXT;
 							tempo			=	GETVarValueText(svar, NB_GLOBALS, temp3);
 
-							if (tempo.empty()) tvar2[0] = 0;
-							else tvar2 = tempo;
+							tvar2 = tempo;
 
 							break;
 						case '\xA3':
 							typ2			=	TYPE_TEXT;
 							tempo			=	GETVarValueText(esss->lvar, esss->nblvar, temp3);
 
-							if (tempo.empty()) tvar2[0] = 0;
-							else tvar2 = tempo;
+							tvar2 = tempo;
 
 							break;
 						default:
