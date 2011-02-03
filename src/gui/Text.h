@@ -64,16 +64,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::vector;
 
-//-----------------------------------------------------------------------------
-typedef enum _ARX_TEXT_TYPE
-{
+enum ARX_TEXT_TYPE {
 	ARX_TEXT_ONCE,
 	ARX_TEXT_STAY
-} ARX_TEXT_TYPE;
+};
 
-//-----------------------------------------------------------------------------
-struct ARX_TEXT
-{
+struct ARX_TEXT {
 	ARX_TEXT_TYPE   eType;
 	HFONT           hFont;
 	RECT            rRect;
@@ -118,9 +114,6 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 void ARX_Allocate_Text( std::string& dest, const std::string& id_string);
 std::string GetFontName( const std::string& );
 void _ShowText(char * text);
-
-//-----------------------------------------------------------------------------
-
 void ARX_Text_Init();
 void ARX_Text_Close();
 void FontRenderText(HFONT _hFont, EERIE_3D pos, const std::string& _pText, COLORREF _c);
