@@ -55,17 +55,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Text.h"
 
-#include <windows.h>
 #include <assert.h>
-#include <string>
-#include <algorithm>
 
 #include "core/Localization.h"
 #include "core/Core.h"
-
 #include "graphics/Draw.h"
-
-#include "io/IO.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 
