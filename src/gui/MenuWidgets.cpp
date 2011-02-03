@@ -7225,8 +7225,8 @@ CMenuSlider::CMenuSlider(int _iID, int _iPosX, int _iPosY)
 
 	TextureContainer *pTexL = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_button_left.bmp");
 	TextureContainer *pTexR = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_button_right.bmp");
-	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, NULL, 1, pTexL, pTexR, -1, pTexL->m_dwWidth, pTexL->m_dwHeight);
-	pRightButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, NULL, 1, pTexR, pTexL, -1, pTexR->m_dwWidth, pTexR->m_dwHeight);
+	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTexL, pTexR, -1, pTexL->m_dwWidth, pTexL->m_dwHeight);
+	pRightButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTexR, pTexL, -1, pTexR->m_dwWidth, pTexR->m_dwHeight);
 	pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_on.bmp");
 	pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_off.bmp");
 
