@@ -418,6 +418,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 	         << ((msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1) ? AS_EVENT[msg].name : "unknown")
 	         << ")" << " params=\"" << params << "\""
 	         << " io=" << Logger::nullstr(io ? io->filename : NULL)
+	         << ":" << io->ident
 	         << " evame=\"" << evname << "\" info=" << info;
 
 	long ret = ACCEPT;
