@@ -5063,7 +5063,6 @@ bool DANAE_ManageSplashThings()
 //*************************************************************************************
 long DANAE_Manage_Cinematic()
 {
-	LogDebug << "DANAE_Manage_Cinematic";
 	
 	float FrameTicks=ARX_TIME_Get( false );
 
