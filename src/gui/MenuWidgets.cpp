@@ -6910,9 +6910,9 @@ CMenuSliderText::CMenuSliderText(int _iID, int _iPosX, int _iPosY)
 {
 	iID = _iID;
 	TextureContainer *pTex = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_button_left.bmp");
-	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, NULL, 1, pTex, pTex, -1, pTex?pTex->m_dwWidth:0, pTex->m_dwHeight);
+	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTex, pTex, -1, pTex?pTex->m_dwWidth:0, pTex->m_dwHeight);
 	pTex = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_button_right.bmp");
-	pRightButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, NULL, 1, pTex, pTex, -1, pTex?pTex->m_dwWidth:0, pTex->m_dwHeight);
+	pRightButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTex, pTex, -1, pTex?pTex->m_dwWidth:0, pTex->m_dwHeight);
 
 	vText.clear();
 
