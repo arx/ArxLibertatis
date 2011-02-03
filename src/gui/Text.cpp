@@ -459,7 +459,7 @@ long UNICODE_ARXDrawTextCenter(float x, float y, const std::string& str, COLORRE
 
 long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, const std::string& str, COLORREF col, COLORREF bcol, HFONT font, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut)
 {
-	LogDebug << "UNICODE_ARXDrawTextCenter " << str;
+	LogDebug << "UNICODE_ARXDrawTextCenteredScroll " << str;
 	RECT rRect;
 	ARX_CHECK_LONG(y);
 	ARX_CHECK_LONG(x + x2);   //IF OK, x - x2 cannot overflow
@@ -490,7 +490,7 @@ long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, const std::st
 //-----------------------------------------------------------------------------
 void ARX_Allocate_Text( std::string& dest, const std::string& id_string)
 {
-	LogDebug << "UNICODE_ARXDrawTextCenter " << id_string;
+	LogDebug << "ARX_Allocate_Text id '" << id_string<<"' dest '"<< dest <<"'";
 	std::string output;
 	PAK_UNICODE_GetPrivateProfileString(id_string, "default", output, 4096);
 	dest = output;
@@ -534,26 +534,17 @@ struct _FONT_NAMING_NAMERECORD
 	USHORT	usStringOffset;		//from start of storage area (in bytes)
 };
 
-//-----------------------------------------------------------------------------
-ULONG LilEndianLong(ULONG ulValue)
-{
-	return (
-			   MAKELONG(
-				   MAKEWORD(HIBYTE(HIWORD(ulValue)), LOBYTE(HIWORD(ulValue))),
-				   MAKEWORD(HIBYTE(LOWORD(ulValue)), LOBYTE(LOWORD(ulValue)))
-			   )
-		   );
+ULONG LilEndianLong(ULONG ulValue) {
+	return MAKELONG(
+			MAKEWORD(HIBYTE(HIWORD(ulValue)), LOBYTE(HIWORD(ulValue))),
+			MAKEWORD(HIBYTE(LOWORD(ulValue)), LOBYTE(LOWORD(ulValue)))
+	);
 }
 
-//-----------------------------------------------------------------------------
-USHORT LilEndianShort(USHORT ulValue)
-{
-	return (
-			   MAKEWORD(HIBYTE(ulValue), LOBYTE(ulValue))//,
-		   );
+USHORT LilEndianShort(USHORT ulValue) {
+	return MAKEWORD(HIBYTE(ulValue), LOBYTE(ulValue));
 }
 
-//-----------------------------------------------------------------------------
 std::string GetFontName( const std::string& _lpszFileName)
 {
 	LogDebug << "GetFontName " << _lpszFileName;
