@@ -32,6 +32,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Texture.h"
 #include "io/IO.h"
 #include "io/PakManager.h"
+#include "io/Logger.h"
 
 using std::sprintf;
 
@@ -46,7 +47,7 @@ using namespace std;
 extern CMenuConfig * pMenuConfig;
 #define MAX_LINE_SIZE 8096
 
-CLocalisationHash * pHashLocalisation = NULL;
+CLocalisationHash * pHashLocalisation;
 
 //-----------------------------------------------------------------------------
 bool isSection( const _TCHAR * _lpszUText)
@@ -505,8 +506,8 @@ int PAK_UNICODE_GetPrivateProfileString(    const std::string&  _lpszSection,
 	ltNum ++;
 	_lpszBuffer.clear();
 
-	if ( _lpszSection.empty() )
-	{
+	if (_lpszSection.empty())	{
+		LogError <<  _lpszDefault << " not found";
 		_lpszBuffer = _lpszDefault + ":NOT FOUND";
 		return 0;
 	}
