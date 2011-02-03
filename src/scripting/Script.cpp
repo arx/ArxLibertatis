@@ -1864,7 +1864,7 @@ std::string GETVarValueText(SCRIPT_VAR*& svf, long& nb, const std::string& name)
 {
 	SCRIPT_VAR* tsv = GetVarAddress(svf, nb, name);
 
-	if (tsv == NULL) return 0;
+	if (!tsv) return "";
 
 	return tsv->text;
 }
