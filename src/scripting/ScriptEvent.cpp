@@ -1280,16 +1280,14 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						pos = GetNextWord(es, pos, word);
 					}
 					
-					LogWarning << "CINE " << (preload ? "-P " : "") << word;
+					LogDebug << "CINE " << (preload ? "-P " : "") << word;
 
 					if (!strcasecmp(word, "KILL"))
 					{
-						LogWarning << "CINE KILL";
 						DANAE_KillCinematic();
 					}
 					else if (!strcasecmp(word, "PLAY"))
 					{
-						LogWarning << "CINE PLAY";
 						PLAY_LOADED_CINEMATIC = 1;
 						ARX_TIME_Pause();
 					}
@@ -1301,8 +1299,6 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							strcat(temp2, word.c_str());
 							strcat(temp2, ".cin");
 							word += ".cin";
-							
-							LogWarning << "CINE LOAD \"" << word << "\" \"" << temp2 << "\"";
 
 							if (PAK_FileExist(temp2))
 							{
