@@ -414,7 +414,7 @@ void DrawBookTextCenter(float x, float y, const std::string& text, COLORREF col,
 long UNICODE_ARXDrawTextCenter(float x, float y, const std::string& str, COLORREF col, COLORREF bcol, HFONT font)
 {
 
-	LogDebug << "UNICODE_ARXDrawTextCenter " << str;
+	LogDebug << "UNICODE_ARXDrawTextCenter '" << str<<"'";
 
 	HDC hDC;
 
