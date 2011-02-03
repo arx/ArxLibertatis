@@ -465,6 +465,9 @@ bool MENU_NoActiveWindow()
 void GetTextSize(HFONT _hFont, const std::string& _lpszUText, int& _iWidth, int& _iHeight)
 {
 	HDC hDC;
+	LogDebug << "GetTextSize " << _lpszUText;
+	//TODO(lubosz): Hardcoded text for klickable menu items
+	string newText = "foo";
 
 	if (danaeApp.m_pddsRenderTarget)
 	{
@@ -474,7 +477,7 @@ void GetTextSize(HFONT _hFont, const std::string& _lpszUText, int& _iWidth, int&
 
 			SIZE sSize;
 
-			GetTextExtentPoint32(hDC, _lpszUText.c_str(), _lpszUText.length(), &sSize);
+			GetTextExtentPoint32(hDC, newText.c_str(), newText.length(), &sSize);
 			_iWidth = sSize.cx;
 			_iHeight = sSize.cy;
 
