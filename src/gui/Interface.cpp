@@ -10794,7 +10794,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 					break;
 				}
 
-				if ((surf))
+				if (surf)
 				{
 
 					if (SpecialCursor == CURSOR_REDIST)

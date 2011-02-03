@@ -365,6 +365,8 @@ long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice,
                    const std::string& car,
                    COLORREF colo, COLORREF bcol)
 {
+	LogDebug << "ARX_TEXT_Draw " << car;
+
 	if (car.empty() ) return 0;
 
 	if (car[0] == 0) return 0;
