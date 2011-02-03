@@ -2686,14 +2686,13 @@ INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
 //***********************************************************************************
 INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
 {
-
 	std::string tex1 = file;;
 	std::string texscript = file;
 
 	SetExt(texscript, "asl");
 	SetExt(tex1, "teo");
 
-	std::string file2 = "GAME\\%s";
+	std::string file2 = "GAME\\";
     file2 += file;
 	SetExt(file2, ".FTL");
 

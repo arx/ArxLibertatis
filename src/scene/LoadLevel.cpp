@@ -1160,7 +1160,7 @@ suite:
 
 					if (io->over_script.data != NULL)
 					{
-						LogDebug << "Loaded " << tmp;
+						LogDebug << "Loaded overscript " << tmp << " for IO " << io->filename;
 						io->over_script.size = FileSize;
 						InitScript(&io->over_script);
 					}
@@ -1411,9 +1411,6 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fic)
 	MSP.z = trans.z;
 
 	ClearCurLoadInfo();
-	LogDebug << "Loading Interactive Objects";
-
-
 
 	if (dlh.nb_inter > 0)
 	{
@@ -1434,7 +1431,6 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fic)
 
 		if (!DONT_LOAD_INTERS)
 		{
-			//TODO(lubosz): dli is a string struct allocated with malloc!
 			LoadInter_Ex(dli, &trans);
 		}
 	}
