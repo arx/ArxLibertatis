@@ -82,7 +82,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakManager.h"
 
 //-----------------------------------------------------------------------------
-extern CARXTextManager * pTextManage;
+extern TextManager * pTextManage;
 extern CDirectInput * pGetInfoDirectInput;
 extern CMenuConfig * pMenuConfig;
 extern EERIE_3D ePlayerAngle;

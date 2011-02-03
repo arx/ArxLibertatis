@@ -153,7 +153,7 @@ extern unsigned char ucFlick;
 extern bool bGATI8500;
 extern bool bSoftRender;
 
-extern CARXTextManager *pTextManageFlyingOver;
+extern TextManager *pTextManageFlyingOver;
 
 bool IsPlayerStriking();
 void OptmizeInventory(unsigned int);

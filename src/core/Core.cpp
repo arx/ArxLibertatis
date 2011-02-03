@@ -125,7 +125,7 @@ void ShowInfoText(long COR);
 //-----------------------------------------------------------------------------
 
 extern long LAST_PORTALS_COUNT;
-extern CARXTextManager	*pTextManage;
+extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
 extern CDirectInput		*pGetInfoDirectInput;
 extern CMenuConfig		*pMenuConfig;

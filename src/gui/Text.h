@@ -58,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 #include <vector>
+#include "gui/TextManager.h"
 #include "core/Application.h"
 #include "graphics/GraphicsTypes.h"
 
@@ -71,7 +72,7 @@ typedef enum _ARX_TEXT_TYPE
 } ARX_TEXT_TYPE;
 
 //-----------------------------------------------------------------------------
-typedef struct _ARX_TEXT
+struct ARX_TEXT
 {
 	ARX_TEXT_TYPE   eType;
 	HFONT           hFont;
@@ -86,30 +87,9 @@ typedef struct _ARX_TEXT
 	long            lTimeOut;
 	long            lTailleLigne;
 	int             iNbLineClip;
-} ARX_TEXT;
-
-//-----------------------------------------------------------------------------
-void ARX_Text_Init(ARX_TEXT *);
-
-//-----------------------------------------------------------------------------
-class CARXTextManager
-{
-	public:
-		vector<ARX_TEXT *>	vText;
-	public:
-		CARXTextManager();
-		~CARXTextManager();
-	public:
-		bool AddText(HFONT, const std::string&, RECT &, long _lCol = -1, long _lBkgCol = 0, long _lTimeOut = 0, long _lTimeScroll = 0, float _fSpeedScroll = 0.f, int iNbLigneClipp = 0);
-		bool AddText(ARX_TEXT *);
-		void Update(float);
-		void Render();
-		void Clear();
 };
 
-//-----------------------------------------------------------------------------
-extern CARXTextManager * pTextManage;
-
+extern TextManager * pTextManage;
 extern HFONT hFontMainMenu;
 extern HFONT hFontMenu;
 extern HFONT hFontControls;
@@ -118,7 +98,7 @@ extern HFONT InBookFont;
 extern HFONT hFontInGame;
 extern HFONT hFontInGameNote;
 
-//-----------------------------------------------------------------------------
+void ARX_Text_Init(ARX_TEXT *);
 long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice, HFONT ef, float x, float y, long spacingx, long spacingy, const std::string& car, COLORREF colo, COLORREF bcol = 0x00FF00FF);
 long ARX_TEXT_DrawRect(LPDIRECT3DDEVICE7 pd3dDevice, HFONT ef, float x, float y, long spacingx, long spacingy, float maxx, float maxy, const std::string& car, COLORREF colo, HRGN hRgn = NULL, COLORREF bcol = 0x00FF00FF, long flags = 0);
 float DrawBookTextInRect(float x, float y, float maxx, float maxy, const std::string& text, COLORREF col, COLORREF col2, HFONT font);
