@@ -60,7 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
-#define NOMINMAX 1
+
 #include <windows.h>
 #include <commctrl.h>
 

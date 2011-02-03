@@ -4,7 +4,7 @@
 
 #define D3D_OVERLOADS
 
-#define NOMINMAX 1
+
 
 #include <cmath>
 

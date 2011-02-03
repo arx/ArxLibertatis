@@ -52,7 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include "gui/Text.h"
 
-#define NOMINMAX 1
+
 #include <windows.h>
 
 using std::vector;
