@@ -70,7 +70,6 @@ typedef struct
 	long                init;
 	long                nbmax;
 	INTERACTIVE_OBJ**   iobj;
-	std::string         lock;
 } INTERACTIVE_OBJECTS;
 
 typedef struct
