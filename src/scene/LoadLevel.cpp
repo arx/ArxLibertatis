@@ -1126,7 +1126,13 @@ suite:
 			RemoveName(tmp);
 			std::stringstream ss;
 			ss << tmp << tmp2 << '_';
-			ss << std::setfill('0') << std::setw(4) << io->ident;
+
+				char fill = ss.fill('0');
+				std::streamsize width = ss.width(4);
+				ss << io->ident;
+				ss.width(width);
+				ss.fill(fill);
+
 			tmp = ss.str();
 			//sprintf(tmp, "%s%s_%04d", tmp.c_str(), tmp2, io->ident);
 
