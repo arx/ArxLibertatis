@@ -9,6 +9,7 @@
 #include "Text.h"
 
 #include "core/Core.h"
+#include "io/Logger.h"
 
 TextManager::TextManager() {
 	vText.clear();
@@ -33,16 +34,15 @@ TextManager::~TextManager() {
 
 bool TextManager::AddText(HFONT _hFont, const std::string& _lpszUText, RECT & _rRect, long _lCol, long _lBkgCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp)
 {
-//	LogDebug << "AddText " << _lpszUText;
-	if ((!_lpszUText.empty()) && (_hFont))
+//	if ((!_lpszUText.empty()) && (_hFont))
 	{
 		ARX_TEXT * pArxText = new ARX_TEXT();
 
-		if (pArxText)
+//		if (pArxText)
 		{
-			pArxText->lpszUText.clear();
+//			pArxText->lpszUText.clear();
 
-			if (!pArxText->lpszUText.empty())
+//			if (!pArxText->lpszUText.empty())
 			{
 				pArxText->hFont = _hFont;
 				pArxText->lpszUText = _lpszUText;
