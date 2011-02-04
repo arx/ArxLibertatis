@@ -1123,8 +1123,9 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 		
 		if(!ARXmenu.mda)
 		{
-			ARXmenu.mda = (MENU_DYNAMIC_DATA *)malloc(sizeof(MENU_DYNAMIC_DATA)); 
-			memset(ARXmenu.mda,0,sizeof(MENU_DYNAMIC_DATA));
+//			ARXmenu.mda = (MENU_DYNAMIC_DATA *)malloc(sizeof(MENU_DYNAMIC_DATA));
+//			memset(ARXmenu.mda,0,sizeof(MENU_DYNAMIC_DATA));
+			ARXmenu.mda = new MENU_DYNAMIC_DATA();
 			
 			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STRENGTH],			"system_charsheet_strength");
 			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MIND],				"system_charsheet_intel");
