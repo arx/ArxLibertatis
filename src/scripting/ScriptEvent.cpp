@@ -406,7 +406,6 @@ long ScriptEvent::checkInteractiveObject(INTERACTIVE_OBJ * io, long msg) {
 extern long LINEEND; // set by GetNextWord
 extern INTERACTIVE_OBJ * LASTSPAWNED;
 extern long PauseScript;
-extern long GLOB;
 extern long RELOADING;
 
 long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info)
@@ -510,7 +509,6 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 	if (pos <= -1) {
 		// TODO very noisy LogDebug << "cannot find event handler";
-		GLOB = 1;
 		return ACCEPT;
 	}
 	
@@ -522,7 +520,6 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 	LogDebug << " io=" << Logger::nullstr(io ? io->filename : NULL)
 	         << ":" << io->ident;
 
-	GLOB = 0;
 	MakeSSEPARAMS(params.c_str());
 
 	if (msg != SM_EXECUTELINE) {

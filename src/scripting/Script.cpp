@@ -3084,8 +3084,6 @@ void MakeSSEPARAMS(const char * params)
 	}
 }
 
-long GLOB = 0;
-
 //*************************************************************************************
 //*************************************************************************************
 long NotifyIOEvent(INTERACTIVE_OBJ * io, long msg)
@@ -3241,7 +3239,6 @@ long SendIOScriptEventReverse(INTERACTIVE_OBJ * io, long msg, const std::string&
 		// if this IO only has a Local script, send event to it
 		if (inter.iobj[num] && !inter.iobj[num]->over_script.data)
 		{
-			GLOB = 0;
 			return ScriptEvent::send(&inter.iobj[num]->script, msg, params, inter.iobj[num], eventname);
 		}
 
@@ -3249,7 +3246,6 @@ long SendIOScriptEventReverse(INTERACTIVE_OBJ * io, long msg, const std::string&
 		// then to local if no overriden by Local
 		if (inter.iobj[num] && (ScriptEvent::send(&inter.iobj[num]->script, msg, params, inter.iobj[num], eventname) != REFUSE))
 		{
-			GLOB = 0;
 
 			if (inter.iobj[num])
 				return (ScriptEvent::send(&inter.iobj[num]->over_script, msg, params, inter.iobj[num], eventname));
@@ -3257,7 +3253,6 @@ long SendIOScriptEventReverse(INTERACTIVE_OBJ * io, long msg, const std::string&
 				return REFUSE;
 		}
 
-		GLOB = 0;
 	}
 
 	// Refused further processing.
@@ -3289,7 +3284,6 @@ long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params
 		// if this IO only has a Local script, send event to it
 		if (inter.iobj[num] && !inter.iobj[num]->over_script.data)
 		{
-			GLOB = 0;
 			long ret = ScriptEvent::send(&inter.iobj[num]->script, msg, params, inter.iobj[num], eventname);
 			EVENT_SENDER = oes;
 			return ret;
@@ -3300,7 +3294,6 @@ long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params
 		if (inter.iobj[num] && (ScriptEvent::send(&inter.iobj[num]->over_script, msg, params, inter.iobj[num], eventname) != REFUSE))
 		{
 			EVENT_SENDER = oes;
-			GLOB = 0;
 
 			if (inter.iobj[num])
 			{
@@ -3312,7 +3305,6 @@ long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params
 				return REFUSE;
 		}
 
-		GLOB = 0;
 	}
 
 	// Refused further processing.
@@ -3338,25 +3330,21 @@ long SendInitScriptEvent(INTERACTIVE_OBJ * io)
 	{
 		if (inter.iobj[num] && inter.iobj[num]->script.data)
 		{
-			GLOB = 0;
 			ScriptEvent::send(&inter.iobj[num]->script, SM_INIT, "", inter.iobj[num], "");
 		}
 
 		if (inter.iobj[num] && inter.iobj[num]->over_script.data)
 		{
-			GLOB = 0;
 			ScriptEvent::send(&inter.iobj[num]->over_script, SM_INIT, "", inter.iobj[num], "");
 		}
 
 		if (inter.iobj[num] && inter.iobj[num]->script.data)
 		{
-			GLOB = 0;
 			ScriptEvent::send(&inter.iobj[num]->script, SM_INITEND, "", inter.iobj[num], "");
 		}
 
 		if (inter.iobj[num] && inter.iobj[num]->over_script.data)
 		{
-			GLOB = 0;
 			ScriptEvent::send(&inter.iobj[num]->over_script, SM_INITEND, "", inter.iobj[num], "");
 		}
 	}
