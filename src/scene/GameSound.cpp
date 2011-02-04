@@ -30,6 +30,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //
 ///////////////////////////////////////////////////////////////////////////////
+
+#include "scene/GameSound.h"
+
 #include <algorithm>
 #include <stdio.h>
 #include <list>
@@ -45,8 +48,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakReader.h"
 #include "io/PakEntry.h"
 #include "io/Filesystem.h"
+#include "io/Logger.h"
 
-#include "scene/GameSound.h"
 #include "game/NPC.h"
 #include "scene/Interactive.h"
 #include "game/Player.h"
@@ -953,14 +956,19 @@ long ARX_SOUND_PlayAnim(ArxSound & sample_id, const EERIE_3D * position)
 	return sample_id;
 }
 
-long ARX_SOUND_PlayCinematic(const char * name)
-{
+long ARX_SOUND_PlayCinematic(const char * name) {
+	
+	LogDebug << "playing cinematic sound";
+	
 	int sample_id;
 	aalChannel channel;
 
 	sample_id = aalCreateSample(name);
 
-	if (sample_id == AAL_SFALSE) return AAL_SFALSE;
+	if(sample_id == AAL_SFALSE) {
+		LogError << "cannot load sound for cinematic: " << name;
+		return AAL_SFALSE;
+	}
 
 	channel.mixer = ARX_SOUND_MixerGameSpeech;
 	channel.flags = AAL_FLAG_VOLUME | AAL_FLAG_AUTOFREE | AAL_FLAG_POSITION | AAL_FLAG_FALLOFF | AAL_FLAG_REVERBERATION | AAL_FLAG_POSITION;
