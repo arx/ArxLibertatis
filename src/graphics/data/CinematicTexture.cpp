@@ -617,14 +617,20 @@ HBITMAP LoadBMPImage( const char * strPathname)
 	return m_hbmBitmap;
 
 }
-/*-----------------------------------------------------------*/
-int CreateAllMapsForBitmap(char * dir, char * name, Cinematic * c, int n, int pos)
-{
-	int			nbx, nby, w, h, num, id;
+
+int CreateAllMapsForBitmap(const string & path, Cinematic * c) {
+	
+	int n = -1;
+	int pos = 0;
+	
+	int nbx, nby, w, h, num, id;
 	CinematicBitmap	* bi;
-
-	if (!name || !c) return -1;
-
+	
+	string name = GetName(path);
+	if(name.empty()) {
+		return -1;
+	}
+	
 	if (n >= 0)
 	{
 		bi = &TabBitmap[n];
@@ -651,41 +657,35 @@ int CreateAllMapsForBitmap(char * dir, char * name, Cinematic * c, int n, int po
 
 		if (!bi) return -1;
 	}
-
-	if (dir)
-	{
-		bi->dir = (char *)malloc(strlen(dir) + 1);
-
-		if (!bi->dir) return -1;
-
-		strcpy(bi->dir, dir);
+	
+	string dir = path;
+	RemoveName(dir);
+	if(!dir.empty()) {
+		bi->dir = strdup(dir.c_str());
+		if(!bi->dir) {
+			return -1;
+		}
+	} else {
+		bi->dir = NULL;
 	}
-	else dir = NULL;
-
-	bi->name = (char *)malloc(strlen(name) + 1);
-
-	if (!bi->name)
-	{
-		free((void *)bi->dir);
+	
+	bi->name = strdup(name.c_str());
+	if(!bi->name) {
+		free(bi->dir);
 		return -1;
 	}
-
-	strcpy(bi->name, name);
-
-	std::string path = dir;
-	path += name;
-	ClearAbsDirectory(path, "ARX\\");
-	SetExt(path, ".BMP");
 	
 	LogDebug << "loading cinematic texture " << path;
-
-	if (PAK_FileExist(path.c_str()))
+	
+	string filename = path;
+	SetExt(filename, ".bmp");
+	if (PAK_FileExist(filename.c_str()))
 	{
-		bi->hbitmap = (HBITMAP)LoadBMPImage(path.c_str());
+		bi->hbitmap = (HBITMAP)LoadBMPImage(filename.c_str());
 
 		if (!bi->hbitmap)
 		{
-			LogError << "error loading " << name;
+			LogError << "error loading " << path;
 			h = 0;
 
 			bi->actif = 1;
@@ -695,15 +695,15 @@ int CreateAllMapsForBitmap(char * dir, char * name, Cinematic * c, int n, int po
 	}
 	else
 	{
-		SetExt(path, ".TGA");
+		SetExt(filename, ".tga");
 
-		if (PAK_FileExist(path.c_str()))
+		if (PAK_FileExist(filename.c_str()))
 		{
-			bi->hbitmap = LoadTargaFile(path.c_str());
+			bi->hbitmap = LoadTargaFile(filename.c_str());
 
 			if (!bi->hbitmap)
 			{
-				LogError << "error loading " << name;
+				LogError << "error loading " << path;
 				h = 0;
 
 				bi->actif = 1;
@@ -713,7 +713,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, Cinematic * c, int n, int po
 		}
 		else
 		{
-			LogError << name << " not found";
+			LogError << path << " not found";
 			return -1;
 		}
 	}

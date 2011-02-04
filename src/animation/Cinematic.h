@@ -135,6 +135,4 @@ public:
 void DrawGrille(LPDIRECT3DDEVICE7 device, CinematicGrid * grille, int col, int fx, CinematicLight * light, EERIE_3D * posgrillesuiv, float angzgrillesuiv);
 void FillKeyTemp(EERIE_3D * pos, float az, int frame, int numbitmap, int numfx, short ti, int color, int colord, int colorf, float speed, int idsound, short force, CinematicLight * light, EERIE_3D * posgrille, float angzgrille, float speedtrack);
 
-void ClearAbsDirectory(std::string& pT, const std::string& d);
-
 #endif // ARX_ANIMATION_CINEMATIC_H

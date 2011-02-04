@@ -28,12 +28,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 #include <stdint.h>
 
+#include <algorithm>
+
 #include "animation/Cinematic.h"
 #include "animation/CinematicKeyframer.h"
+#include "core/Application.h"
 #include "graphics/data/CinematicTexture.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
+#include "io/IO.h"
 #include "scene/CinematicSound.h"
+
+using std::search;
+using std::string;
 
 static const int32_t CINEMATIC_FILE_VERSION = (1<<16) | 76;
 static const int16_t INTERP_NO_FADE = 2;
@@ -178,46 +185,58 @@ struct C_KEY_1_75 {
 
 #pragma pack(pop)
 
-
-void GetPathDirectory(char * dirfile)
-{
-	char	* n ;
-	int				i ;
-
-	if (!(i = strlen(dirfile))) return;
-
-	n = dirfile + i;
-
-	while (i && (*n != '\\'))
-	{
-		n--;
-		i--;
-	}
-
-	n++;
-
-	if (i) *n = 0;
+bool charCaseEqual(char ch1, char ch2) {
+	return toupper(ch1) == toupper(ch2);
 }
 
-void ClearDirectory(const char * dirfile, char * dst)
-{
-	const char	* n ;
-	int				i ;
-
-	if (!(i = strlen(dirfile))) return ;
-
-	n = dirfile + i ;
-
-	while (i && (*n != '\\'))
-	{
-		n-- ;
-		i-- ;
+// TODO useful elsewhere too -> move to shared file
+size_t strcasefind(const string & haystack, const string & needle) {
+	string::const_iterator pos = search(haystack.begin(), haystack.end(), needle.begin(),
+	                                    needle.end(), charCaseEqual);
+	if(pos == haystack.end()) {
+		return string::npos;
+	} else {
+		return pos - haystack.begin();
 	}
+}
 
-	if (i)
-	{
-		strcpy(dst, n + 1) ;
+void clearAbsDirectory(string & path, const string & delimiter) {
+	
+	size_t abs_dir = strcasefind(path, delimiter);
+	
+	if(abs_dir != std::string::npos) {
+		path = path.substr(abs_dir + delimiter.length());
 	}
+}
+
+void fixSoundPath(string & path) {
+	
+	size_t sfx_pos = strcasefind(path, "sfx");
+	
+	if(sfx_pos != string::npos) {
+		// Sfx
+		path.erase(0, sfx_pos);
+		
+		size_t uk_pos = strcasefind(path, "uk");
+		if(uk_pos != string::npos) {
+			path.replace(uk_pos, 3, "english\\");
+		}
+		
+		size_t fr_pos = strcasefind(path, "fr");
+		if(fr_pos != string::npos) {
+			path.replace(fr_pos, 3, "francais\\");
+		}
+		
+		size_t sfxspeech_pos = strcasefind(path, "sfx\\speech\\");
+		if(sfxspeech_pos != string::npos) {
+			path.erase(0, sfxspeech_pos + 4);
+		}
+		
+	} else {
+		// Speech
+		path = "speech\\" + Project.localisationpath + "\\" + GetName(path);
+	}
+	
 }
 
 // TODO useful elsewhere too
@@ -324,21 +343,18 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			}
 		}
 		
-		const char * path = safeGetString(data, size);
-		if(!path) {
+		const char * str = safeGetString(data, size);
+		if(!str) {
 			LogDebug << "error bitmap path";
 			return false;
 		}
+		string path = str;
 		
-		char Dir[256];
-		char Name[256];
-		strcpy(Dir, path);
-		GetPathDirectory(Dir);
-		ClearDirectory(path, Name);
+		clearAbsDirectory(path, "ARX\\");
 		
-		LogDebug << "adding bitmap " << i << ": " << Dir << Name;
+		LogDebug << "adding bitmap " << i << ": " << path;
 		
-		int id = CreateAllMapsForBitmap(Dir, Name, c, -1, 0);
+		int id = CreateAllMapsForBitmap(path, c);
 		
 		if(TabBitmap[id].load) {
 			if(scale > 1) {
@@ -375,21 +391,20 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 				LSoundChoose = il;
 			}
 			
-			const char * path = safeGetString(data, size);
-			if(!path) {
+			const char * str = safeGetString(data, size);
+			if(!str) {
 				LogDebug << "error reading sound path";
 				return false;
 			}
+			string path = str;
 			
-			char Dir[256];
-			char Name[256];
-			strcpy(Dir, path);
-			GetPathDirectory(Dir);
-			ClearDirectory(path, Name);
+			LogDebug << "raw sound path " << i << ": " << path;
+			
+			fixSoundPath(path);
 			
 			LogDebug << "adding sound " << i << ": " << path;
 			
-			if(AddSoundToList(Dir, Name, -1, 0) < 0) {
+			if(AddSoundToList(path) < 0) {
 				LogError << "AddSoundToList failed for " << path;
 			}
 			
