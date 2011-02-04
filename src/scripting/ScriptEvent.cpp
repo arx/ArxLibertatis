@@ -411,13 +411,6 @@ extern long RELOADING;
 
 long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info)
 {
-	
-	LogDebug << "SendScriptEvent msg=" << msg << " ("
-	         << ((msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1) ? AS_EVENT[msg].name : "unknown")
-	         << ")" << " params=\"" << params << "\""
-	         << " io=" << Logger::nullstr(io ? io->filename : NULL)
-	         << ":" << io->ident
-	         << " evame=\"" << evname << "\" info=" << info;
 
 	long ret = ACCEPT;
 	std::string word = "";
@@ -516,10 +509,18 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 	}
 
 	if (pos <= -1) {
-		LogDebug << "cannot find event handler";
+		// TODO very noisy LogDebug << "cannot find event handler";
 		GLOB = 1;
 		return ACCEPT;
 	}
+	
+	
+	LogDebug << "SendScriptEvent msg=" << msg << " ("
+	         << ((msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1) ? AS_EVENT[msg].name : "unknown")
+	         << ")" << " params=\"" << params << "\""
+	         << " evame=\"" << evname << "\" info=" << info;
+	LogDebug << " io=" << Logger::nullstr(io ? io->filename : NULL)
+	         << ":" << io->ident;
 
 	GLOB = 0;
 	MakeSSEPARAMS(params.c_str());
