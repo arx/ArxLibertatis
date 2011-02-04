@@ -345,26 +345,35 @@ void Kill(PakDirectory * r)
 	delete r;
 }
 
-static char * GetFirstDir(const std::string& dir, size_t& l)
-{
-	const char* dirc = dir.c_str();
-
-	l = 1;
-
-	while ((*dirc) &&
-	        (*dirc != '\\' && *dirc != '/'))
-	{
-		l += 1;
-		dirc++;
+static char * GetFirstDir(const std::string & dir, size_t & l) {
+	
+	for(l = 0; l < dir.size(); l++) {
+		if(dir[l] == '\\' || dir[l] == '/') {
+			break;
+		}
 	}
-
-	char * fdir = new char[l+1];
-
-	if (!fdir) return NULL;
-
+	
+	if(l == dir.size()) {
+		return NULL;
+	}
+	
+	l++;
+	
+	char * fdir = new char[l + 1];
+	if(!fdir) {
+		return NULL;
+	}
+	
 	strncpy(fdir, dir.c_str(), l);
 	fdir[l] = 0;
 	fdir[l - 1] = '\\'; // TODO use "/" seperator
-
+	
+	// Skip multiple slashes.
+	for(; l < dir.size(); l++) {
+		if(dir[l] != '\\' && dir[l] != '/') {
+			break;
+		}
+	}
+	
 	return fdir;
 }

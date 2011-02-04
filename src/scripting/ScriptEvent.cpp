@@ -536,8 +536,8 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 		if ((pos = GetNextWord(es, pos, word)) < 0) return ACCEPT;
 
-		if (word[0] != '{') {
-			LogError << "ERROR: No bracket after event";
+		if(word.empty() || word[0] != '{') {
+			LogError << "ERROR: No bracket after event, got \"" << word << "\"";
 			return ACCEPT;
 		}
 		else brackets = 1;
@@ -2349,7 +2349,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						if (!strcmp(word, "SNEAK"))	ARX_NPC_ChangeMoveMode(io, SNEAKMODE);
 					}
 
-					LogDebug << "SETMOVEMODE %s"<< word;
+					LogDebug << "SETMOVEMODE "<< word;
 				}
 				else if (!strcmp(word, "SPAWN"))
 				{
@@ -2484,7 +2484,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				else if (!strcmp(word, "SETRIGHTHAND"))
 				{
 					pos = GetNextWord(es, pos, word);
-					LogDebug <<  "SET_RIGHT_HAND %s ...OBSOLETE..."<< word;
+					LogDebug <<  "SET_RIGHT_HAND ...OBSOLETE...: " << word;
 				}
 				else if (!strcmp(word, "SETHUNGER"))
 				{
@@ -2496,12 +2496,12 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				else if (!strcmp(word, "SETLEFTHAND"))
 				{
 					pos = GetNextWord(es, pos, word);
-					LogDebug <<  "SET_LEFT_HAND %s ...OBSOLETE..."<< word;
+					LogDebug <<  "SET_LEFT_HAND ...OBSOLETE...: "<< word;
 				}
 				else if (!strcmp(word, "SETSHIELD"))
 				{
 					pos = GetNextWord(es, pos, word);
-					LogDebug <<  "SET_SHIELD %s ...OBSOLETE..."<< word;
+					LogDebug <<  "SET_SHIELD ...OBSOLETE...: "<< word;
 				}
 				else if (!strcmp(word, "SETTWOHANDED"))
 				{
@@ -2527,7 +2527,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						io->GameFlags &= ~GFLAG_INTERACTIVITYHIDE;
 					}
 
-					LogDebug <<  "SET_INTERACTIVITY %s"<< word;
+					LogDebug <<  "SET_INTERACTIVITY "<< word;
 				}
 				else if (!strcmp(word, "SETEQUIP"))
 				{
@@ -3136,7 +3136,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					if (!strcmp(word, "ON"))	io->collision |= 1;
 					else	io->collision &= ~1;
 
-					LogDebug << "SET_PLAYER_COLLISION %s"<< word;
+					LogDebug << "SET_PLAYER_COLLISION "<< word;
 				}
 				else if (!strcmp(word, "SETSTEPMATERIAL"))
 				{
@@ -3154,7 +3154,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						strcpy(io->stepmaterial, word.c_str());
 					}
 
-					LogDebug << "SET_STEP_MATERIAL %s"<< word;
+					LogDebug << "SET_STEP_MATERIAL "<< word;
 				}
 				else if (!strcmp(word, "SETARMORMATERIAL"))
 				{
@@ -3172,7 +3172,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						strcpy(io->armormaterial, word.c_str());
 					}
 
-					LogDebug << "SET_ARMOR_MATERIAL %s"<< word;
+					LogDebug << "SET_ARMOR_MATERIAL "<< word;
 				}
 				else if (!strcmp(word, "SETWEAPONMATERIAL"))
 				{
@@ -3187,7 +3187,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						io->weaponmaterial = strdup(word.c_str());
 					}
 
-					LogDebug << "SET_STEP_MATERIAL %s"<< word;
+					LogDebug << "SET_STEP_MATERIAL "<< word;
 				}
 				else if (!strcmp(word, "SETSTRIKESPEECH"))
 				{
@@ -3201,7 +3201,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						io->strikespeech = strdup(word.c_str());
 					}
 
-					LogDebug << "SET_STEP_MATERIAL %s"<< word;
+					LogDebug << "SET_STEP_MATERIAL "<< word;
 				}
 				else if (!strcmp(word, "SETPLAYERCONTROLS"))
 				{
@@ -3233,7 +3233,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					}
 
 					EVENT_SENDER = oes;
-					LogDebug << "SET_PLAYER_CONTROLS %s"<< word;
+					LogDebug << "SET_PLAYER_CONTROLS "<< word;
 				}
 				else if (!strcmp(word, "SETWORLDCOLLISION"))
 				{
@@ -3243,7 +3243,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					if (!strcmp(word, "ON"))	io->collision |= 2;
 					else io->collision &= ~2;
 
-					LogDebug << "SET_WORLD_COLLISION %s"<< word;
+					LogDebug << "SET_WORLD_COLLISION "<< word;
 				}
 				else if (!strcmp(word, "SETSHADOW"))
 				{
@@ -3253,7 +3253,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					if (!strcmp(word, "ON"))	io->ioflags &= ~IO_NOSHADOW;
 					else io->ioflags |= IO_NOSHADOW;
 
-					LogDebug << "SET_SHADOW %s"<< word;
+					LogDebug << "SET_SHADOW "<< word;
 				}
 				else if (!strcmp(word, "SETDETACHABLE"))
 				{
@@ -3272,7 +3272,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						io->ioflags |= IO_SHOP;
 					else	io->ioflags &= ~IO_SHOP;
 
-					LogDebug << "SET_SHOP %s"<< word;
+					LogDebug << "SET_SHOP "<< word;
 				}
 				else if (!strcmp(word, "SETMAXCOUNT"))
 				{
@@ -3285,7 +3285,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						if (io->_itemdata->maxcount < 1) io->_itemdata->maxcount = 1;
 					}
 
-					LogDebug << "SET_MAX_COUNT %s"<<word;
+					LogDebug << "SET_MAX_COUNT "<<word;
 				}
 				else if (!strcmp(word, "SETCOUNT"))
 				{
@@ -3303,7 +3303,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						if (io->_itemdata->count > io->_itemdata->maxcount) io->_itemdata->count = io->_itemdata->maxcount;
 					}
 
-					LogDebug << "SET_COUNT %s"<< word;
+					LogDebug << "SET_COUNT "<< word;
 				}
 				else if (!strcmp(word, "SETWEIGHT"))
 				{
@@ -3316,7 +3316,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						if (io->weight < 0.f) io->weight = 0.f;
 					}
 
-					LogDebug << "SET_WEIGHT %s"<< word;
+					LogDebug << "SET_WEIGHT "<< word;
 				}
 				else if (!strcmp(word, "SETTRANSPARENCY"))
 				{

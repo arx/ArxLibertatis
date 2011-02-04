@@ -211,18 +211,8 @@ void HERMES_InitDebug()
 	DEBUGG = 0;
 }
 
-void MakeUpcase( std::string& str )
-{
+void MakeUpcase( std::string& str ) {
 	std::transform( str.begin(), str.end(), str.begin(), ::toupper );
-/* TODO 
-	while(*str != '\0') {
-		// islower is needed as the are read-only strings passed that are already in upper case?
-		if(islower(*str)) {
-			*str = toupper(*str);
-		}
-		str++;
-	}*/
-	//std::transform(str, str + strlen(str), str, (int(*)(int))toupper);
 }
 
 HKEY    ConsoleKey = NULL;
