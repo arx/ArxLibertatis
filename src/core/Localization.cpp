@@ -23,6 +23,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 #include <tchar.h>
+#include <stdint.h>
+#include <SFML/System.hpp>
 #include <list>
 
 #include "core/LocalizationHash.h"
@@ -91,6 +93,22 @@ bool isSection( const _TCHAR * _lpszUText)
 
 	return false;
 }
+
+bool isSection( const std::string& str )
+{
+	size_t first_bracket, last_bracket;
+
+	first_bracket = str.find_first_of('[');
+	last_bracket = str.find_last_of(']');
+
+	if ( first_bracket == std::string::npos ) return false;
+	if ( last_bracket == std::string::npos ) return false;
+
+	if ( first_bracket > last_bracket ) return false;
+
+	return true;
+}
+ 
 
 //-----------------------------------------------------------------------------
 bool isKey(const _TCHAR * _lpszUText)
@@ -239,6 +257,36 @@ void ParseFile( const std::string& _lpszUTextFile, const unsigned long _ulFileSi
 	unsigned long ulFileSize = _ulFileSize - 1;
 
 
+	std::list<std::string> input_strings;
+	std::stringstream ss( _lpszUTextFile );
+	
+	while ( ss.good() )
+	{
+		// Get a line to process
+		std::string str;
+		std::getline( ss, str );
+
+		// Remove any commented bits until the line end
+		size_t comment_start = std::string::npos;
+		comment_start = str.find("/");
+
+		if ( comment_start != std::string::npos )
+
+		// Whole line was commented, no need to do anything with it. Continue getting the next line
+		if ( comment_start == 0 ) continue;
+
+		// Remove any commented bits from the line
+		if ( comment_start != std::string::npos )
+			str = str.substr(0, comment_start );
+
+		if ( str.empty() ) continue;
+		// Push back the line
+		input_strings.push_back( str );
+	}
+
+	
+
+/*
 	// Remove all comments from the input string
 	while ( true )
 	{
@@ -257,7 +305,7 @@ void ParseFile( const std::string& _lpszUTextFile, const unsigned long _ulFileSi
 		else
 			temp.erase( comment_start );
 	}
-
+*/
 /*
 	for (unsigned long i = 0; i < (ulFileSize - 1); i++)
 	{
@@ -275,7 +323,7 @@ void ParseFile( const std::string& _lpszUTextFile, const unsigned long _ulFileSi
 		}
 	}
 */
-	list< std::string > strings;
+	/*list< std::string > strings;
 
 	// Find lines and put them into the vector
 	while ( !temp.empty() )
@@ -283,7 +331,7 @@ void ParseFile( const std::string& _lpszUTextFile, const unsigned long _ulFileSi
 		size_t line_end = temp.find_first_of( "\r\n" );
 		strings.push_back( temp.substr( 0, line_end ) );
 		temp.erase( 0, line_end );
-	}
+	}*/
 /*		
 	
 	list<_TCHAR *> lUText;
@@ -303,6 +351,36 @@ void ParseFile( const std::string& _lpszUTextFile, const unsigned long _ulFileSi
 	}
 */
 
+	std::list<std::string>::iterator iter = input_strings.begin();
+
+	while( iter != input_strings.end() )
+	{
+		if ( isSection( *iter ) )
+		{
+			CLocalisation* loc = new CLocalisation();
+			std::string section_str = CleanSection( iter->c_str() );
+			loc->SetSection( iter->c_str() );
+
+			iter++;
+
+			while ( ( iter != input_strings.end() ) && ( !isSection( iter->c_str() ) ) )
+			{
+				if ( isKey( iter->c_str() ) )
+				{
+					loc->AddKey( CleanKey( iter->c_str() ) );
+					iter++;
+				}
+				else
+					break; // Done reading the keys for this section, break the loop and continue with the finished loc object
+			}
+
+			pHashLocalisation->AddElement(loc);
+			continue; // Continue loop, the next section or end of input was encountered
+		}
+
+		iter++;
+	}
+/*
 	list< std::string >::iterator iter = strings.begin();
 
 	while ( iter != strings.end() )
@@ -328,7 +406,7 @@ void ParseFile( const std::string& _lpszUTextFile, const unsigned long _ulFileSi
 		}
 
 		iter++;
-	}
+	}*/
 		
 	//list<_TCHAR *>::iterator it;
 /*
@@ -395,14 +473,10 @@ void ARX_Localisation_Init(const char * _lpszExtension)
 	
 	std::string temp = tx;
 	size_t LocalisationSize = 0;
-	std::string Localisation;
 
-	char* memory = (char*)PAK_FileLoadMallocZero(tx, LocalisationSize);
+	uint16_t* Localisation = (uint16_t*)PAK_FileLoadMallocZero(tx, LocalisationSize);
 	
-	if ( memory ) // Nullpointers do not go well with strings
-		Localisation = (char*) memory;
-
-	if ( Localisation.empty())
+	if ( Localisation)
 	{
 		if (GERMAN_VERSION || FRENCH_VERSION)
 		{
@@ -413,17 +487,27 @@ void ARX_Localisation_Init(const char * _lpszExtension)
 
 		Project.localisationpath = "english";
 		tx = "localisation\\utext_" + Project.localisationpath + ".ini";
-		Localisation = (char*)PAK_FileLoadMallocZero(tx, LocalisationSize);
-
+		Localisation = (uint16_t*)PAK_FileLoadMallocZero(tx, LocalisationSize);
 	}
 
-	if (!Localisation.empty() && LocalisationSize)
+	// Scale size to new stride
+	LocalisationSize *= ( 1.0 * sizeof(char)/sizeof(uint16_t) );
+
+	LogDebug << "Loaded localisation file: " << tx << " of size " << LocalisationSize;
+	LogDebug << "UTF-16 size is " << sf::Unicode::GetUTF16Length( Localisation, &Localisation[LocalisationSize] );
+	std::string out;
+	out.resize( sf::Unicode::GetUTF16Length( Localisation, &Localisation[LocalisationSize] ) );
+	LogDebug << "Resized to " << out.length();
+	sf::Unicode::UTF16ToUTF8( Localisation, &Localisation[LocalisationSize], out.begin() );
+	LogDebug << "Converted to UTF8";
+
+	if ( Localisation && LocalisationSize)
 	{
+		LogDebug << "Preparing to parse localisation file";
 		pHashLocalisation = new CLocalisationHash(1 << 13);
-		LocalisationSize = Localisation.length();
-		ParseFile(Localisation, LocalisationSize);
-		Localisation.clear();
-		LocalisationSize = 0;
+
+		LogDebug << "Converting loaded localistation file:";
+		ParseFile( out, out.length() );
 	}
 
 	//CD Check

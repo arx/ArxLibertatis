@@ -366,7 +366,6 @@ long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice,
                    COLORREF colo, COLORREF bcol)
 {
 	LogDebug << "ARX_TEXT_Draw " << car;
-
 	if (car.empty() ) return 0;
 
 	if (car[0] == 0) return 0;
@@ -387,6 +386,7 @@ long ARX_TEXT_DrawRect(LPDIRECT3DDEVICE7 pd3dDevice,
 					   COLORREF bcol,
 					   long flags)
 {
+	LogDebug << "Calling ARX_TEXT_DrawTextInRect";
 
 	bcol = RGB((bcol >> 16) & 255, (bcol >> 8) & 255, (bcol) & 255);
 

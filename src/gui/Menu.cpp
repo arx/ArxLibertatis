@@ -79,6 +79,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 
 #include "io/IO.h"
+#include "io/Logger.h"
 #include "io/PakManager.h"
 
 //-----------------------------------------------------------------------------
@@ -531,6 +532,7 @@ long NEED_INTRO_LAUNCH = 0;
 //-----------------------------------------------------------------------------
 bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 {
+	LogDebug << "Calling ARX_Menu_Render";
 	// Auto-Launch Demo after 60 sec idle on Main Menu
 	if ((ARXmenu.currentmode == AMCM_MAIN) && CAN_REPLAY_INTRO)
 	{
@@ -560,6 +562,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	bool br = Menu2_Render();
 
+	LogDebug << "ARX_Menu_Render - Debug1";
 	if (br)
 	{
 		return br;
