@@ -1220,8 +1220,7 @@ VOID CD3DApplication::DisplayFrameworkError(HRESULT hr, DWORD dwType)
 			                   "EnableRefRast.reg."));
 			break;
 		case D3DENUMERR_ENUMERATIONFAILED:
-			lstrcpy(strMsg, _T("Enumeration failure. Your system may be in an\n"
-			                   "unstable state and may need a reboot :-("));
+			lstrcpy(strMsg, _T("Enumeration failure. Are you missing (32bit) graphics drivers?"));
 			break;
 		case D3DFWERR_INITIALIZATIONFAILED:
 			lstrcpy(strMsg, _T("Generic initialization error.\n\nEnable "
