@@ -483,6 +483,8 @@ long HERMES_UNICODE_GetProfileString(   const std::string&  sectionname,
 	else
 		destination = defaultstring;
 
+	//TODO(lubosz): Hardcode string
+	destination = "foo";
 	return 0;
 }
 
