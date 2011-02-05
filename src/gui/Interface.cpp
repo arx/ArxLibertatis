@@ -57,6 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/IO.h"
 #include "graphics/Draw.h"
 #include "graphics/data/CinematicTexture.h"
+#include "io/Logger.h"
 
 using std::min;
 using std::max;
@@ -109,7 +110,7 @@ extern D3DTLVERTEX LATERDRAWHALO[];
 extern EERIE_LIGHT lightparam;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern STRUCT_SPEECH speech[];
-extern _TCHAR WILLADDSPEECH[];
+extern std::string WILLADDSPEECH;
 extern float PLAYER_ROTATION;
 extern float SLID_VALUE;
 
@@ -152,7 +153,7 @@ extern unsigned char ucFlick;
 extern bool bGATI8500;
 extern bool bSoftRender;
 
-extern CARXTextManager *pTextManageFlyingOver;
+extern TextManager *pTextManageFlyingOver;
 
 bool IsPlayerStriking();
 void OptmizeInventory(unsigned int);
@@ -415,7 +416,8 @@ void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, cons
 //-----------------------------------------------------------------------------
 void CreateInterfaceTextureContainers()
 {
-	memset(&ITC,0,sizeof(INTERFACE_TC));
+//	memset(&ITC,0,sizeof(INTERFACE_TC));
+	ITC = INTERFACE_TC();
 	ITC.aim_empty = MakeTCFromFile("Graph\\Interface\\bars\\aim_empty.bmp", 0);
 	ITC.aim_maxi = MakeTCFromFile("Graph\\Interface\\bars\\aim_maxi.bmp", 0);
 	ITC.aim_hit = MakeTCFromFile("Graph\\Interface\\bars\\flash_gauge.bmp", 0);
@@ -491,18 +493,9 @@ void KillInterfaceTextureContainers()
 	D3DTextr_KillTexture(ITC.pTexCornerLeft);
 	D3DTextr_KillTexture(ITC.pTexCornerRight);
 	
-	if (ITC.lpszULevel)
-	{
-		free (ITC.lpszULevel);
-		ITC.lpszULevel = NULL;
-	}
+	ITC.lpszULevel.clear();
+	ITC.lpszUXp.clear();
 
-	if (ITC.lpszUXp)
-	{
-		free (ITC.lpszUXp);
-		ITC.lpszUXp = NULL;
-	}
-	
 	ITC.questbook=NULL;
 	ITC.bookmark_char=NULL;
 	ITC.bookmark_magic=NULL;
@@ -541,8 +534,6 @@ void KillInterfaceTextureContainers()
 	ITC.pTexSpellBook=NULL;
 	ITC.pTexCornerLeft=NULL;
 	ITC.pTexCornerRight=NULL;
-	ITC.lpszULevel = NULL;
-	ITC.lpszUXp = NULL;
 }
 
 //-----------------------------------------------------------------------------
@@ -722,7 +713,7 @@ void InventoryOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forceclose
 void ARX_INTERFACE_NoteInit()
 {
 	Note.type = NOTE_TYPE_UNDEFINED;
-	Note.text = NULL;
+	Note.text.clear();
 	Note.textsize = 0;
 	
 	QuestBook.curpage=0;
@@ -733,10 +724,7 @@ void ARX_INTERFACE_NoteClear()
 {
 	Note.type = NOTE_TYPE_UNDEFINED;
 
-	if (Note.text)
-		free(Note.text);
-
-	Note.text=NULL;
+	Note.text.clear();
 	Note.textsize=0;
 	player.Interface&=~INTER_NOTE;	
 
@@ -760,22 +748,20 @@ void ARX_INTERFACE_NoteClear()
 }
 
 //-----------------------------------------------------------------------------
-void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type,char * tex)
+void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex)
 {
  
 
 	if (player.Interface & INTER_NOTE)
 		ARX_INTERFACE_NoteClose();
 	
-	_TCHAR output[8096];
+	std::string output;
 	ARX_INTERFACE_BookOpenClose(2);
 	ARX_INTERFACE_NoteClear();
 	Note.type=type;
 	MakeLocalised(tex,output,8096);
-	Note.text = (_TCHAR *)malloc((_tcslen(output)+1)*sizeof(_TCHAR));
 
-	ZeroMemory(Note.text, (_tcslen(output)+1)*sizeof(_TCHAR));
-	_tcscpy(Note.text,output); 	
+	Note.text = output;
 	player.Interface|=INTER_NOTE;
 
 	if (NoteTexture)
@@ -800,7 +786,7 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type,char * tex)
 
 		Note.curpage=0;
 		Note.pages[0]=0;
-		long length=_tcslen(Note.text);
+		long length=Note.text.length();
 		long curpage=1;
 		
 		NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Ingame_books.bmp");
@@ -830,7 +816,7 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type,char * tex)
 		while(length>0)
 		{
 			long lLengthDraw=ARX_UNICODE_ForceFormattingInRect(	hFontInGameNote,
-																Note.text+lLenghtCurr,
+																Note.text.substr(lLenghtCurr),
 																0,
 																rRect);
 			length-=lLengthDraw;
@@ -1039,7 +1025,7 @@ void ARX_INTERFACE_NoteManage()
 				{
 					if(Note.pages[Note.curpage+1]>0)
 					{
-						_tcsncpy(Page_Buffer,Note.text+Note.pages[Note.curpage],Note.pages[Note.curpage+1]-Note.pages[Note.curpage]);
+						_tcsncpy(Page_Buffer,Note.text.substr(Note.pages[Note.curpage]).c_str(),Note.pages[Note.curpage+1]-Note.pages[Note.curpage]);
 						Page_Buffer[Note.pages[Note.curpage+1]-Note.pages[Note.curpage]]=_T('\0');
 
 						danaeApp.DANAEEndRender();
@@ -1049,7 +1035,7 @@ void ARX_INTERFACE_NoteManage()
 						
 						if(Note.pages[Note.curpage+2]>0)
 						{
-							_tcsncpy(Page_Buffer,Note.text+Note.pages[Note.curpage+1],Note.pages[Note.curpage+2]-Note.pages[Note.curpage+1]);
+							_tcsncpy(Page_Buffer,Note.text.substr(Note.pages[Note.curpage+1]).c_str(),Note.pages[Note.curpage+2]-Note.pages[Note.curpage+1]);
 							Page_Buffer[Note.pages[Note.curpage+2]-Note.pages[Note.curpage+1]]=_T('\0');
 
 							danaeApp.DANAEEndRender();
@@ -1062,7 +1048,7 @@ void ARX_INTERFACE_NoteManage()
 					{
 						if(Note.pages[Note.curpage]>=0)
 						{
-							_tcscpy(Page_Buffer,Note.text+Note.pages[Note.curpage]);
+							_tcscpy(Page_Buffer,Note.text.substr(Note.pages[Note.curpage]).c_str());
 
 							danaeApp.DANAEEndRender();
 							DrawBookTextInRect( NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY+NoteTextMaxy,Page_Buffer,0,0x00FF00FF, hFontInGameNote);
@@ -1106,7 +1092,7 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 	if (player.Interface & INTER_MAP) 
 	{
 		ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, 0.9F + 0.2F * rnd());
-		SendIOScriptEvent(inter.iobj[0],SM_BOOK_CLOSE,"",NULL);	
+		SendIOScriptEvent(inter.iobj[0],SM_BOOK_CLOSE);
 		player.Interface &=~ INTER_MAP;
 		ARX_MINIMAP_PurgeTC();
 		
@@ -1114,8 +1100,7 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 		{
 			for (long i=0;i<MAX_FLYOVER;i++)
 			{
-				if (ARXmenu.mda->flyover[i]!=NULL)
-					ARX_Menu_Release_Text(ARXmenu.mda->flyover[i]);
+				ARXmenu.mda->flyover[i].clear();
 			}
 
 			free((void*)ARXmenu.mda);
@@ -1127,7 +1112,7 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 		SendIOScriptEvent(inter.iobj[0],0,"","BOOK_OPEN");
 		
 		ARX_SOUND_PlayInterface(SND_BOOK_OPEN, 0.9F + 0.2F * rnd());
-		SendIOScriptEvent(inter.iobj[0],SM_BOOK_OPEN,"",NULL);
+		SendIOScriptEvent(inter.iobj[0],SM_BOOK_OPEN);
 		ARX_INTERFACE_NoteClose();
 		player.Interface |= INTER_MAP;
 		Book_MapPage=ARX_LEVELS_GetRealNum(CURRENTLEVEL)+1;
@@ -1138,8 +1123,9 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 		
 		if(!ARXmenu.mda)
 		{
-			ARXmenu.mda = (MENU_DYNAMIC_DATA *)malloc(sizeof(MENU_DYNAMIC_DATA)); 
-			memset(ARXmenu.mda,0,sizeof(MENU_DYNAMIC_DATA));
+//			ARXmenu.mda = (MENU_DYNAMIC_DATA *)malloc(sizeof(MENU_DYNAMIC_DATA));
+//			memset(ARXmenu.mda,0,sizeof(MENU_DYNAMIC_DATA));
+			ARXmenu.mda = new MENU_DYNAMIC_DATA();
 			
 			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STRENGTH],			"system_charsheet_strength");
 			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MIND],				"system_charsheet_intel");
@@ -1247,12 +1233,14 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 		return;
 	}
 
-	char tcIndent[256];
-	char tcIsClass[256];
-	strcpy(tcIndent,COMBINE->filename);
-	strcpy(tcIsClass,GetName(tcIndent));
-	sprintf(tcIndent,"%s_%04ld",tcIsClass,COMBINE->ident);
-	MakeUpcase(tcIndent);				
+	std::string tcIndent;
+	std::string tcIsClass;
+	tcIndent = COMBINE->filename;
+	tcIsClass = GetName(tcIndent);
+	std::stringstream ss;
+	ss << tcIsClass << '_' << COMBINE->ident;
+	tcIndent = ss.str();
+	MakeUpcase(tcIndent);
 
 		char tTxtCombineDest[256];
 
@@ -1314,7 +1302,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 									memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 									tTxtCombineDest[pEndString-pStartString]=0;
 
-									if(!strcasecmp(tTxtCombineDest,tcIsClass))
+									if(!strcasecmp(tTxtCombineDest,tcIsClass.c_str()))
 									{
 										//same class
 										bCanCombine=true;
@@ -1339,7 +1327,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 										memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 										tTxtCombineDest[pEndString-pStartString]=0;
 
-										if(!strcasecmp(tTxtCombineDest,tcIndent))
+										if(!strcasecmp(tTxtCombineDest,tcIndent.c_str()))
 										{
 											//same class
 											bCanCombine=true;
@@ -1462,7 +1450,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 								memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 								tTxtCombineDest[pEndString-pStartString]=0;
 
-								if(!strcasecmp(tTxtCombineDest,tcIsClass))
+								if(!strcasecmp(tTxtCombineDest,tcIsClass.c_str()))
 								{
 									//same class
 									bCanCombine=true;
@@ -1487,7 +1475,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 									memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 									tTxtCombineDest[pEndString-pStartString]=0;
 
-									if(!strcasecmp(tTxtCombineDest,tcIndent))
+									if(!strcasecmp(tTxtCombineDest,tcIndent.c_str()))
 									{
 										//same class
 										bCanCombine=true;
@@ -1677,7 +1665,7 @@ bool DANAE::ManageEditorControls()
 		if (io!=NULL)
 		{
 			InventoryDir=-1;
-			SendIOScriptEvent(io,SM_INVENTORY2_CLOSE,"");
+			SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 			TSecondaryInventory=SecondaryInventory;
 			SecondaryInventory=NULL;
 			
@@ -1798,7 +1786,7 @@ bool DANAE::ManageEditorControls()
 									&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
 									>= CURRENT_TORCH->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
 								{
-									SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY,"");
+									SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
 								}
 
 								MakeLocalised(temp->locname,WILLADDSPEECH,256);
@@ -1806,26 +1794,26 @@ bool DANAE::ManageEditorControls()
 								if (temp->ioflags & IO_GOLD)
 								{
 									_TCHAR UText[256];
-									_stprintf(UText, "%ld %s", temp->_itemdata->price, WILLADDSPEECH);
-									_tcscpy(WILLADDSPEECH, UText);
+									_stprintf(UText, "%ld %s", temp->_itemdata->price, WILLADDSPEECH.c_str());
+									WILLADDSPEECH = UText;
 								}
 
 								if ((temp->poisonous>0) && (temp->poisonous_count!=0))
 								{
-									_TCHAR Text[256];
+									std::string Text;
 									_TCHAR UText[256];
 									MakeLocalised("[Description_Poisoned]",Text,256);
-									_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH, Text, (int)temp->poisonous);
-									_tcscpy(WILLADDSPEECH, UText);
+									_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH.c_str(), Text.c_str(), (int)temp->poisonous);
+									WILLADDSPEECH = UText;
 								}
 
 								if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
 								{
-									_TCHAR Text[256];
+									std::string Text;
 									_TCHAR UText[256];
 									MakeLocalised("[Description_Durability]",Text,256);
-									_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH, Text, temp->durability,temp->max_durability);
-									_tcscpy(WILLADDSPEECH, UText);
+									_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH.c_str(), Text.c_str(), temp->durability,temp->max_durability);
+									WILLADDSPEECH = UText;
 								}
 
 
@@ -2066,7 +2054,7 @@ bool DANAE::ManageEditorControls()
 
 						if (SecondaryInventory != NULL)
 						{
-							SendIOScriptEvent(ioSteal, SM_STEAL,"");
+							SendIOScriptEvent(ioSteal, SM_STEAL);
 
 							if (INTERNATIONAL_MODE)
 							{
@@ -2227,7 +2215,7 @@ bool DANAE::ManageEditorControls()
 				{
 					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd()); 
 					InventoryDir=-1;
-					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE,"");
+					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 					TSecondaryInventory=SecondaryInventory;
 					SecondaryInventory=NULL;
 				}
@@ -2248,7 +2236,7 @@ bool DANAE::ManageEditorControls()
 	{
 		if ( FlyingOverIO && ( !DRAGINTER ) )
 		{
-			SendIOScriptEvent( FlyingOverIO, SM_CLICKED, "" );
+			SendIOScriptEvent( FlyingOverIO, SM_CLICKED );
 			bool bOk = true;
 			
 			if ( SecondaryInventory != NULL )
@@ -2362,7 +2350,7 @@ bool DANAE::ManageEditorControls()
 			{	
 				if (Book_Mode == 0)
 				{
-					SendIOScriptEvent(DRAGINTER,SM_INVENTORYUSE,"");
+					SendIOScriptEvent(DRAGINTER,SM_INVENTORYUSE);
 					COMBINE=NULL;
 				}
 			}			
@@ -2479,11 +2467,13 @@ bool DANAE::ManageEditorControls()
 			{
 				if (io!=COMBINE)
 				{
-					char temp[256];
+					std::string temp;
 					char temp2[256];
-					strcpy(temp,COMBINE->filename);
-					strcpy(temp2,GetName(temp));
-					sprintf(temp,"%s_%04ld",temp2,COMBINE->ident);
+					temp = COMBINE->filename;
+					strcpy(temp2,GetName(temp).c_str());
+					std::stringstream ss;
+					ss << temp2 << '_' << COMBINE->ident;
+					temp = ss.str();
 					MakeUpcase(temp);				
 					EVENT_SENDER=COMBINE;
 
@@ -2723,7 +2713,7 @@ bool DANAE::ManageEditorControls()
 				if (HERMESFileSelectorOpen(loadfrom,"Load Danae Level","Danae Level File (*.DLF)\0*.DLF\0\0",this->m_hWnd))
 				{
 					char pp[256];
-					strcpy(pp,GetName(loadfrom));
+					strcpy(pp,GetName(loadfrom).c_str());
 					LoadLevelScreen(GDevice,GetLevelNumByName(pp));
 					
 					Pause(true);
@@ -2765,7 +2755,7 @@ bool DANAE::ManageEditorControls()
 			WILLSAVELEVEL=0;
 
 			if (FORBID_SAVE)
-				ShowPopup("You can't Save Editor Level While a Game is in progress. Please reload an Editor Level to be able to save.");
+				LogError << ("You can't Save Editor Level While a Game is in progress. Please reload an Editor Level to be able to save.");
 			else if (OKBox("Save Current Level ?", "Save Level..."))
 				{
 					char saveto[512];
@@ -3336,18 +3326,19 @@ bool DANAE::ManageEditorControls()
 					if ((nodes.nodes[i].exist) && (nodes.nodes[i].selected))
 					{
 						char temp[64];
-				encore:
-					;
-	   strcpy(temp,nodes.nodes[i].name);
-	   TextBox("Change Node Name",temp,63);
+						
+						while(true)
+						{
+							strcpy(temp,nodes.nodes[i].name);
+							TextBox("Change Node Name",temp,63);
 
-	   if ((ExistNodeName(temp)) && strcmp(temp,nodes.nodes[i].name))
-	   {
-		   ShowPopup("This Name already exists, change to new name please");
-		   goto encore;
-	   }
+							if ( !((ExistNodeName(temp)) && strcmp(temp,nodes.nodes[i].name)) )
+								break;
 
-	   strcpy(nodes.nodes[i].name,temp);
+							LogError << ("This Name already exists, change to new name please");
+						}
+
+						strcpy(nodes.nodes[i].name,temp);
 					}
 				}
 
@@ -3931,7 +3922,7 @@ void DANAE::ManagePlayerControls()
 				{
 					if (t->_npcdata->life>0.f)
 					{
-						SendIOScriptEvent(t,SM_CHAT,"");
+						SendIOScriptEvent(t,SM_CHAT);
 						EERIEMouseButton&=~4;
 
 						if (DRAGGING) DRAGGING = 0;
@@ -3989,7 +3980,7 @@ void DANAE::ManagePlayerControls()
 					}
 				}
 				else if (t->script.data!=NULL)
-					SendIOScriptEvent(t,SM_ACTION,"");
+					SendIOScriptEvent(t,SM_ACTION);
 
 				EERIEMouseButton&=~4;
 
@@ -4614,7 +4605,7 @@ void DANAE::ManagePlayerControls()
 					  
 					if (pIOChangeWeapon)
 					{
-						SendIOScriptEvent(pIOChangeWeapon,SM_INVENTORYUSE,"");
+						SendIOScriptEvent(pIOChangeWeapon,SM_INVENTORYUSE);
 						pIOChangeWeapon=NULL;
 					  }
 				  }
@@ -4791,7 +4782,7 @@ void DANAE::ManagePlayerControls()
 				if (!CSEND)
 				{
 					CSEND=1;
-					SendIOScriptEvent(inter.iobj[0],SM_EXPLORATIONMODE,"");
+					SendIOScriptEvent(inter.iobj[0],SM_EXPLORATIONMODE);
 				}
 			}
 		}
@@ -4800,7 +4791,7 @@ void DANAE::ManagePlayerControls()
 			if (CSEND)
 			{
 				CSEND=0;
-				SendIOScriptEvent(inter.iobj[0],SM_CURSORMODE,"");
+				SendIOScriptEvent(inter.iobj[0],SM_CURSORMODE);
 			}
 		}
 
@@ -4852,7 +4843,7 @@ void DANAE::ManagePlayerControls()
 						if (io!=NULL)
 						{
 							InventoryDir=-1;
-							SendIOScriptEvent(io,SM_INVENTORY2_CLOSE,"");
+							SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 							TSecondaryInventory=SecondaryInventory;
 							SecondaryInventory=NULL;
 						}
@@ -4893,7 +4884,7 @@ void DANAE::ManagePlayerControls()
 						if (io!=NULL)
 						{
 							InventoryDir=-1;
-							SendIOScriptEvent(io,SM_INVENTORY2_CLOSE,"");
+							SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 							TSecondaryInventory=SecondaryInventory;
 							SecondaryInventory=NULL;
 						}
@@ -5165,7 +5156,7 @@ void DANAE::ManageKeyMouse()
 						{
 							if (!((FlyingOverIO->_itemdata->playerstacksize <= 1) && (FlyingOverIO->_itemdata->count > 1)))
 							{
-								SendIOScriptEvent(FlyingOverIO,SM_INVENTORYUSE,"");
+								SendIOScriptEvent(FlyingOverIO,SM_INVENTORYUSE);
 
 								if (!((pMenuConfig->bAutoReadyWeapon == false) && (pMenuConfig->bMouseLookToggle)))
 								{
@@ -5733,7 +5724,7 @@ void DANAE::ManageKeyMouse()
 								&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
 								>= FlyingOverIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
 							{
-								SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY,"");
+								SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
 							}
 
 							MakeLocalised(temp->locname,WILLADDSPEECH,256);
@@ -5741,26 +5732,26 @@ void DANAE::ManageKeyMouse()
 							if (temp->ioflags & IO_GOLD)
 							{
 								_TCHAR UText[256];
-								_stprintf(UText, _T("%ld %s"), temp->_itemdata->price, WILLADDSPEECH);
-								_tcscpy(WILLADDSPEECH, UText);
+								_stprintf(UText, _T("%ld %s"), temp->_itemdata->price, WILLADDSPEECH.c_str());
+								WILLADDSPEECH = UText;
 							}
 
 							if ((temp->poisonous>0) && (temp->poisonous_count!=0))
 							{
-								_TCHAR Text[256];
+								std::string Text;
 								_TCHAR UText[256];
 								MakeLocalised("[Description_Poisoned]",Text,256);
-								_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH, Text, (int)temp->poisonous);
-								_tcscpy(WILLADDSPEECH, UText);
+								_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH.c_str(), Text.c_str(), (int)temp->poisonous);
+								WILLADDSPEECH = UText;
 							}
 
 							if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
 							{
-								_TCHAR Text[256];
+								std::string Text;
 								_TCHAR UText[256];
 								MakeLocalised("[Description_Durability]",Text,256);
-								_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH, Text, temp->durability,temp->max_durability);
-								_tcscpy(WILLADDSPEECH, UText);
+								_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH.c_str(), Text.c_str(), temp->durability,temp->max_durability);
+								WILLADDSPEECH = UText;
 							}
 
 					
@@ -5799,7 +5790,7 @@ void DANAE::ManageKeyMouse()
 																	    rDraw,
 																		RGB(232,204,143),
 																		0x00FF00FF,
-																		2000+_tcslen(WILLADDSPEECH)*60);
+																		2000+WILLADDSPEECH.length()*60);
 								}
 
 								WILLADDSPEECH[0]=0;
@@ -5822,7 +5813,7 @@ void DANAE::ManageKeyMouse()
 										&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
 										>= FlyingOverIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
 									{
-										SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY,"");
+										SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
 									}
 
 									MakeLocalised(temp->locname,WILLADDSPEECH,256);
@@ -5830,26 +5821,26 @@ void DANAE::ManageKeyMouse()
 									if (temp->ioflags & IO_GOLD)
 									{
 										_TCHAR UText[256];
-										_stprintf(UText, _T("%ld %s"), temp->_itemdata->price, WILLADDSPEECH);
-										_tcscpy(WILLADDSPEECH, UText);
+										_stprintf(UText, _T("%ld %s"), temp->_itemdata->price, WILLADDSPEECH.c_str());
+										WILLADDSPEECH = UText;
 									}
 
 									if ((temp->poisonous>0) && (temp->poisonous_count!=0))
 									{
-										_TCHAR Text[256];
+										std::string Text;
 										_TCHAR UText[256];
 										MakeLocalised("[Description_Poisoned]",Text,256);
-										_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH, Text, (int)temp->poisonous);
-										_tcscpy(WILLADDSPEECH, UText);
+										_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH.c_str(), Text.c_str(), (int)temp->poisonous);
+										WILLADDSPEECH = UText;
 									}
 
 									if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
 									{
-										_TCHAR Text[256];
+										std::string Text;
 										_TCHAR UText[256];
 										MakeLocalised("[Description_Durability]",Text,256);
-										_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH, Text, temp->durability,temp->max_durability);
-										_tcscpy(WILLADDSPEECH, UText);
+										_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH.c_str(), Text.c_str(), temp->durability,temp->max_durability);
+										WILLADDSPEECH = UText;
 									}
 
 						
@@ -6769,14 +6760,14 @@ void StdDraw(float posx,float posy,D3DCOLOR color,TextureContainer * tcc,long fl
 						if (flag & 2)
 						{
 							if (Precast[PRECAST_NUM].typ >= 0)
-								_tcscpy(WILLADDSPEECH, spellicons[Precast[PRECAST_NUM].typ].name);
+								WILLADDSPEECH = spellicons[Precast[PRECAST_NUM].typ].name;
 
 							WILLADDSPEECHTIME = ARXTimeUL(); 
 						}
 						else
 						{
 							if (spells[i].type >= 0)
-								_tcscpy(WILLADDSPEECH, spellicons[spells[i].type].name);
+								WILLADDSPEECH = spellicons[spells[i].type].name;
 
 							WILLADDSPEECHTIME = ARXTimeUL(); 
 						}
@@ -7183,7 +7174,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 									1000,
 									0.01f,
 									2,
-									INTERNATIONAL_MODE?0:max(3000, int(70*_tcslen(spellicons[i].description))));
+									INTERNATIONAL_MODE?0:max(3000, int(70*spellicons[i].description.length())));
 							}
 							
 							
@@ -7877,10 +7868,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ARX_PLAYER_ComputePlayerFullStats();
 
 		danaeApp.DANAEEndRender();
-		_stprintf(tex, _T("%s %3d"), ITC.lpszULevel, player.level);
+		_stprintf(tex, _T("%s %3d"), ITC.lpszULevel.c_str(), player.level);
 		DrawBookTextCenter( 398, 74, tex,Color,0x00FF00FF,InBookFont);
 		
-		_stprintf(tex, _T("%s %8ld"), ITC.lpszUXp, player.xp);
+		_stprintf(tex, _T("%s %8ld"), ITC.lpszUXp.c_str(), player.xp);
 		DrawBookTextCenter( 510, 74, tex, Color,0x00FF00FF,InBookFont);
 		danaeApp.DANAEStartRender();
 
@@ -8088,7 +8079,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		}
 		
 		//------------------------------ SEB 04/12/2001
-		if (ARXmenu.mda && ARXmenu.mda->flyover[FLYING_OVER]) //=ARXmenu.mda->flyover[FLYING_OVER];
+		if (ARXmenu.mda && !ARXmenu.mda->flyover[FLYING_OVER].empty()) //=ARXmenu.mda->flyover[FLYING_OVER];
 		{
 			if( (FLYING_OVER!=OLD_FLYING_OVER)||
 				(INTERNATIONAL_MODE) )
@@ -8106,7 +8097,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				if (FLYING_OVER == WND_XP)
 				{
 					_TCHAR tex[512];
-					_stprintf(tex, _T("%s %8ld"), ARXmenu.mda->flyover[WND_XP], GetXPforLevel(player.level+1)-player.xp);
+					_stprintf(tex, _T("%s %8ld"), ARXmenu.mda->flyover[WND_XP].c_str(), GetXPforLevel(player.level+1)-player.xp);
 					UNICODE_ARXDrawTextCenteredScroll(	(DANAESIZX*0.5f),
 						4,
 						(DANAECENTERX)*0.82f,
@@ -8131,7 +8122,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						1000,
 						0.01f,
 						3,
-						INTERNATIONAL_MODE?0:max(3000, int(70*_tcslen(ARXmenu.mda->flyover[FLYING_OVER]))));
+						INTERNATIONAL_MODE?0:max(3000, int(70*ARXmenu.mda->flyover[FLYING_OVER].length())));
 				}
 			}
 		}
@@ -8470,9 +8461,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 			
 			for (long i=0; i<nb_PlayerQuest; i++)
 			{
-				if (PlayerQuest[i].localised != NULL)
+				if (!PlayerQuest[i].localised.empty())
 				{
-					lLenght += _tcslen(PlayerQuest[i].localised);
+					lLenght += PlayerQuest[i].localised.length();
 				}
 			}
 			
@@ -8481,9 +8472,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 			
 			for (int i=0; i<nb_PlayerQuest; i++)
 			{
-				if (PlayerQuest[i].localised != NULL)
+				if (!PlayerQuest[i].localised.empty())
 				{
-					_tcscat(lpszQuests, PlayerQuest[i].localised);
+					_tcscat(lpszQuests, PlayerQuest[i].localised.c_str());
 					_tcscat(lpszQuests, _T("\n\n"));
 					lLenght+=2;
 				}
@@ -9311,7 +9302,7 @@ void DANAE::DrawAllInterface()
 						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd()); 
 
 						InventoryDir=-1;
-						SendIOScriptEvent(io,SM_INVENTORY2_CLOSE,"");
+						SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 						TSecondaryInventory=SecondaryInventory;
 						SecondaryInventory=NULL;
 					}
@@ -9331,7 +9322,7 @@ void DANAE::DrawAllInterface()
 					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd()); 
 
 					InventoryDir=-1;
-					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE,"");
+					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 					TSecondaryInventory=SecondaryInventory;
 					SecondaryInventory=NULL;
 				}
@@ -10800,7 +10791,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 					break;
 				}
 
-				if ((surf))
+				if (surf)
 				{
 
 					if (SpecialCursor == CURSOR_REDIST)

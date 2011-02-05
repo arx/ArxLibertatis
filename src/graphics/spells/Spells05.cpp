@@ -73,6 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/Fog.h"
 #include "core/Time.h"
 
+#include <list>
 //todo what for?
 //#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
@@ -227,7 +228,7 @@ void CCurePoison::Update(unsigned long aulTime)
 		pPS->p3ParticleGravity.y = 0;
 		pPS->p3ParticleGravity.z = 0;
 
-		list<CParticle *>::iterator i;
+		std::list<CParticle *>::iterator i;
 
 		for (i = pPS->listParticle.begin(); i != pPS->listParticle.end(); ++i)	
 		{
@@ -572,7 +573,7 @@ void LaunchPoisonExplosion(EERIE_3D * aePos)
 	pPS->Update(0);
 	pPS->iParticleNbMax = 0;
 
-	list<CParticle *>::iterator i;
+	std::list<CParticle *>::iterator i;
 
 	for (i = pPS->listParticle.begin(); i != pPS->listParticle.end(); ++i)
 	{

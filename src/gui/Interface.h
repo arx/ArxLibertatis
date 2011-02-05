@@ -34,13 +34,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_INTERFACE_H
 #define ARX_INTERFACE_H
 
+#include <string>
 #include <tchar.h>
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
 #include "game/Spells.h"
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct INTERFACE_TC
 {
 	TextureContainer * Icon_Lvl_Up;
 	TextureContainer * ringslot;
@@ -172,22 +173,22 @@ typedef struct
 	TextureContainer * pTexCornerLeft;
 	TextureContainer * pTexCornerRight;
 
-	_TCHAR			*  lpszULevel;
-	_TCHAR			*  lpszUXp;
-} INTERFACE_TC;
+	std::string        lpszULevel;
+	std::string        lpszUXp;
+} ;
 
 //-----------------------------------------------------------------------------
 typedef struct
 {
-	TextureContainer	* tc;
-	_TCHAR		*		name;
-	_TCHAR		*		description;
-	long				level;
-	long				spellid;
-	unsigned char		symbols[6];
-	bool				bSecret;
-	bool				bDuration;
-	bool				bAudibleAtStart;
+	TextureContainer*   tc;
+	std::string         name;
+	std::string         description;
+	long                level;
+	long                spellid;
+	unsigned char       symbols[6];
+	bool                bSecret;
+	bool                bDuration;
+	bool                bAudibleAtStart;
 } SPELL_ICON;
 
 
@@ -204,12 +205,12 @@ enum ARX_INTERFACE_NOTE_TYPE
 
 typedef struct
 {
-	ARX_INTERFACE_NOTE_TYPE		type;
-	_TCHAR		*		text;
-	long				textsize;
-	long				pages[MAX_PAGES];
-	long				curpage;
-	long				totpages;
+	ARX_INTERFACE_NOTE_TYPE type;
+	std::string             text;
+	long                    textsize;
+	long                    pages[MAX_PAGES];
+	long                    curpage;
+	long                    totpages;
 } STRUCT_NOTE;
 
 typedef enum _ARX_STATE_MOUSE
@@ -350,7 +351,7 @@ void ARX_INTERFACE_ManageOpenedBook();
 void ARX_INTERFACE_ManageOpenedBook_Finish();
 void ARX_INTERFACE_NoteManage();
 void ARX_INTERFACE_BookOpenClose(unsigned long t);
-void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, char * tex);
+void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex);
 void ARX_INTERFACE_NoteClose();
 void ARX_INTERFACE_NoteClear();
 void ARX_INTERFACE_NoteInit();

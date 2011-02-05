@@ -30,9 +30,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //
 ///////////////////////////////////////////////////////////////////////////////
+
+#include "scene/GameSound.h"
+
+#include <algorithm>
 #include <stdio.h>
 #include <list>
-#include <algorithm>
 #include <vector>
 #include <string>
 #include <streambuf>
@@ -45,8 +48,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakReader.h"
 #include "io/PakEntry.h"
 #include "io/Filesystem.h"
+#include "io/Logger.h"
 
-#include "scene/GameSound.h"
 #include "game/NPC.h"
 #include "scene/Interactive.h"
 #include "game/Player.h"
@@ -100,7 +103,7 @@ enum ParseIniFileEnum
 
 typedef unsigned long(* ParseIniFileCallback)(const char * lpszText);
 
-static enum PlayingAmbianceType
+enum PlayingAmbianceType
 {
 	PLAYING_AMBIANCE_MENU,
 	PLAYING_AMBIANCE_SCRIPT,
@@ -160,7 +163,6 @@ static ARX_SOUND_Presence * presence_l = NULL;
 
  
 
-// ARX mixers
 ArxSound ARX_SOUND_MixerGame(AAL_SFALSE);
 ArxSound ARX_SOUND_MixerGameSample(AAL_SFALSE);
 ArxSound ARX_SOUND_MixerGameSpeech(AAL_SFALSE);
@@ -342,8 +344,8 @@ static void ARX_SOUND_KillUpdateThread();
 static void ARX_SOUND_ParseIniFile(char * _lpszTextFile, const unsigned long _ulFileSize, ParseIniFileCallback lpSectionCallback, ParseIniFileCallback lpStringCallback);
 void ARX_SOUND_PreloadAll();
 
-extern char pStringModSfx[];
-extern char pStringModSpeech[];
+extern std::string pStringModSfx;
+extern std::string pStringModSpeech;
 
 long ARX_SOUND_Init(HWND hwnd)
 {
@@ -425,13 +427,13 @@ long ARX_SOUND_Init(HWND hwnd)
 	if(FINAL_RELEASE) {
 		
 		if(pStringModSfx[0]) {
-			if(!PAK_AddPak(pStringModSfx)) {
+			if(!PAK_AddPak(pStringModSfx.c_str())) {
 				printf("Unable to Find Mod SFX Data File\n");
 			}
 		}
 		
 		if (pStringModSpeech[0]) {
-			if(!PAK_AddPak(pStringModSpeech)) {
+			if(!PAK_AddPak(pStringModSpeech.c_str())) {
 				printf("Unable to Find Mod Speech Data File\n");
 			}
 		}
@@ -698,7 +700,7 @@ long ARX_SOUND_PlaySpeech(const char * name, const INTERACTIVE_OBJ * io)
 	aalChannel channel;
 	aalSLong sample_id;
 
-	sprintf(file_name, "speech\\%s\\%s.wav", Project.localisationpath, name);
+	sprintf(file_name, "speech\\%s\\%s.wav", Project.localisationpath.c_str(), name);
 
 	sample_id = aalCreateSample(file_name);
 
@@ -954,14 +956,19 @@ long ARX_SOUND_PlayAnim(ArxSound & sample_id, const EERIE_3D * position)
 	return sample_id;
 }
 
-long ARX_SOUND_PlayCinematic(const char * name)
-{
+long ARX_SOUND_PlayCinematic(const char * name) {
+	
+	LogDebug << "playing cinematic sound";
+	
 	S32 sample_id;
 	aalChannel channel;
 
 	sample_id = aalCreateSample(name);
 
-	if (sample_id == AAL_SFALSE) return AAL_SFALSE;
+	if(sample_id == AAL_SFALSE) {
+		LogError << "cannot load sound for cinematic: " << name;
+		return AAL_SFALSE;
+	}
 
 	channel.mixer = ARX_SOUND_MixerGameSpeech;
 	channel.flags = AAL_FLAG_VOLUME | AAL_FLAG_AUTOFREE | AAL_FLAG_POSITION | AAL_FLAG_FALLOFF | AAL_FLAG_REVERBERATION | AAL_FLAG_POSITION;
@@ -1089,18 +1096,16 @@ long ARX_SOUND_PlayScriptAmbiance(const char * name, const int & loop, const flo
 {
 	if (!bIsActive) return AAL_SFALSE;
 
-	char temp[512];
-
-	strcpy(temp, name);
+	std::string temp = name;
 	SetExt(temp, ".amb");
 
-	long ambiance_id(aalGetAmbiance(temp));
+	long ambiance_id(aalGetAmbiance(temp.c_str()));
 
 	if (ambiance_id == AAL_SFALSE)
 	{
 		if (volume == 0.0F) return AAL_SFALSE;
 
-		ambiance_id = aalCreateAmbiance(temp);
+		ambiance_id = aalCreateAmbiance(temp.c_str());
 		aalSetAmbianceUserData(ambiance_id, (void *)PLAYING_AMBIANCE_SCRIPT);
 
 		aalChannel channel;
@@ -1129,9 +1134,7 @@ long ARX_SOUND_PlayZoneAmbiance(const char * name, const int & loop, const float
 {
 	if (!bIsActive) return AAL_SFALSE;
 
-	char temp[512];
-
-	strcpy(temp, name);
+	std::string temp = name;
 	SetExt(temp, ".amb");
 
 	if (!strcasecmp(name, "NONE"))
@@ -1141,11 +1144,11 @@ long ARX_SOUND_PlayZoneAmbiance(const char * name, const int & loop, const float
 		return AAL_SFALSE;
 	}
 
-	long ambiance_id(aalGetAmbiance(temp));
+	long ambiance_id(aalGetAmbiance(temp.c_str()));
 
 	if (ambiance_id == AAL_SFALSE)
 	{
-		ambiance_id = aalCreateAmbiance(temp);
+		ambiance_id = aalCreateAmbiance(temp.c_str());
 		aalSetAmbianceUserData(ambiance_id, (void *)PLAYING_AMBIANCE_ZONE);
 	}
 	else if (ambiance_id == ambiance_zone)
@@ -1168,13 +1171,10 @@ long ARX_SOUND_SetAmbianceTrackStatus(const char * ambiance_name, const char * t
 	if (!bIsActive || !ambiance_name) return AAL_SFALSE;
 
 	S32 ambiance_id, track_id;
-	char temp[512];
-
-	strcpy(temp, ambiance_name);
-	sprintf(temp, "%s", ambiance_name);
+	std::string temp = ambiance_name;
 	SetExt(temp, ".amb");
 
-	ambiance_id = aalGetAmbiance(temp);
+	ambiance_id = aalGetAmbiance(temp.c_str());
 
 	if (ambiance_id == AAL_SFALSE) return AAL_SFALSE;
 
@@ -1419,7 +1419,7 @@ static void ARX_SOUND_CreateEnvironments()
 
 			while (nb--)
 			{
-				aalCreateEnvironment((const char *)et->name);
+				aalCreateEnvironment( et->name.c_str() );
 				et = et->next;
 			}
 		}
@@ -1746,7 +1746,7 @@ static void ARX_SOUND_ReleaseStaticSamples()
 	SND_SPELL_VISION_LOOP = AAL_SFALSE;
 }
 
-long ARX_MATERIAL_GetIdByName(char * name)
+long ARX_MATERIAL_GetIdByName( const char * name)
 {
 	if (!strcasecmp(name, "WEAPON"))	      return MATERIAL_WEAPON;
 
@@ -1996,7 +1996,7 @@ static void ARX_SOUND_CreateCollisionMaps()
 
 		sprintf(path, "%s%s%s", ARX_SOUND_PATH_INI, ARX_SOUND_COLLISION_MAP_NAME[i], ARX_SOUND_FILE_EXTENSION_INI);
 
-		lpszFileText = (char *)PAK_FileLoadMallocZero(path, &lFileSize);
+		lpszFileText = (char *)PAK_FileLoadMallocZero(path, lFileSize);
 
 		if (!lpszFileText) return;
 
@@ -2166,7 +2166,7 @@ static void ARX_SOUND_CreatePresenceMap()
 
 	sprintf(path, "%s%s%s", ARX_SOUND_PATH_INI, ARX_SOUND_PRESENCE_NAME, ARX_SOUND_FILE_EXTENSION_INI);
 
-	lpszFileText = (char *)PAK_FileLoadMallocZero(path, &lFileSize);
+	lpszFileText = (char *)PAK_FileLoadMallocZero(path, lFileSize);
 
 	if (!lpszFileText) return;
 

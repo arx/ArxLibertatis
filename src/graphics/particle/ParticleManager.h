@@ -27,7 +27,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_CPARTICLES_H
 
 #include <list>
-using namespace std;
 
 #include "graphics/GraphicsTypes.h"
 #include "graphics/particle/ParticleParams.h"
@@ -49,7 +48,7 @@ class CParticleManager
 {
 	private:
 		//CParticleContainer		ParticleContainer;
-		list<CParticleSystem *> listParticleSystem;
+		std::list<CParticleSystem *> listParticleSystem;
 
 	public:
 		CParticleManager();

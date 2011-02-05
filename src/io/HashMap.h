@@ -26,13 +26,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define HACHAGE_H
 
 #include <stddef.h>
+#include <string>
 
 class HashMap {
 	
 private:
 	
 	struct Entry {
-		const char * name;
+		std::string name;
 		void * value;
 	};
 	
@@ -44,19 +45,18 @@ private:
 	
 private:
 	
-	size_t FuncH1(size_t);
-	size_t FuncH2(size_t);
-	size_t getHash(const char * );
+	size_t FuncH1( size_t );
+	size_t FuncH2( size_t );
+	size_t getHash( const std::string& );
 	
 public:
 	
 	HashMap(size_t size = 256);
 	~HashMap();
 	
-	bool add(const char * name, void * value = NULL);
+	bool add( const std::string& name, void * value = NULL );
 	
-	void * get(const char * name);
-	
+	void* get( const std::string& name );
 };
 
 #endif

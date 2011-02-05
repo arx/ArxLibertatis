@@ -23,26 +23,26 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 /*
-           _.               _.    .    J)
-        HNMMMM) .      L HNMMMM)  #H   H)     ()
-       (MMMMMM) M)    (M(MMMMMM)  `H)._UL_   JM)
-       `MF" `4) M)    NN`MF" `4)    JMMMMMM#.4F
-        M       #)    M) M         (MF (0DANN.
-        M       (M   .M  M  .NHH#L (N JMMMN.H#
-        M       (M   (M  M   4##HF QQ(MF`"H#(M.
-        M       `M   (N  M         #U(H(N (MJM)
-       .M  __L   M)  M) .M  ___    4)U#NF (M0M)
-       (MMMMMM   M)  M) (MMMMMM)     U#NHLJM(M`
-       (MMMMN#   4) (M  (MMMMM#  _.  (H`HMM)JN
-       (M""      (M (M  (M""   (MM)  (ML____M)
-       (M        (M H)  (M     `"`  ..4MMMMM# D
-       (M        `M M)  (M         JM)  """`  N#
-       (M         MLM`  (M        #MF   (L    `F
-       (M         MMM   (M        H`    (#
-       (M         (MN   (M              (Q
-       `M####H    (M)   `M####H         ``
-        MMMMMM    `M`    NMMMMM
-        `Q###F     "     `4###F   sebastien scieux @2001
+		   _.               _.    .    J)
+		HNMMMM) .      L HNMMMM)  #H   H)     ()
+	   (MMMMMM) M)    (M(MMMMMM)  `H)._UL_   JM)
+	   `MF" `4) M)    NN`MF" `4)    JMMMMMM#.4F
+		M       #)    M) M         (MF (0DANN.
+		M       (M   .M  M  .NHH#L (N JMMMN.H#
+		M       (M   (M  M   4##HF QQ(MF`"H#(M.
+		M       `M   (N  M         #U(H(N (MJM)
+	   .M  __L   M)  M) .M  ___    4)U#NF (M0M)
+	   (MMMMMM   M)  M) (MMMMMM)     U#NHLJM(M`
+	   (MMMMN#   4) (M  (MMMMM#  _.  (H`HMM)JN
+	   (M""      (M (M  (M""   (MM)  (ML____M)
+	   (M        (M H)  (M     `"`  ..4MMMMM# D
+	   (M        `M M)  (M         JM)  """`  N#
+	   (M         MLM`  (M        #MF   (L    `F
+	   (M         MMM   (M        H`    (#
+	   (M         (MN   (M              (Q
+	   `M####H    (M)   `M####H         ``
+		MMMMMM    `M`    NMMMMM
+		`Q###F     "     `4###F   sebastien scieux @2001
 
 */
 
@@ -92,7 +92,6 @@ static const char * selectKey(uint32_t first_bytes) {
 
 PakReader::PakReader() {
 	
-	pakname = NULL;
 	file = 0;
 	root = NULL;
 	fat = NULL;
@@ -148,9 +147,9 @@ inline bool safeGet(T & data, const char * & pos, uint32_t & fat_size) {
 	return true;
 }
 
-bool PakReader::Open(const char * name) {
-	
-	FILE * newfile = fopen(name, "rb");
+bool PakReader::Open(const std::string& name) {
+
+	FILE * newfile = fopen(name.c_str(), "rb");
 	
 	if(!newfile) {
 		LogError <<"Cannot find PAK "<< name;
@@ -192,7 +191,7 @@ bool PakReader::Open(const char * name) {
 		printf("WARNING: unknown PAK key ID 0x%08x, assuming no key\n", *(uint32_t*)newfat);
 	}
 	
-	PakDirectory * newroot = new PakDirectory(NULL, NULL);
+	PakDirectory * newroot = new PakDirectory();
 	
 	const char * pos = newfat;
 	
@@ -265,7 +264,7 @@ bool PakReader::Open(const char * name) {
 	Close();
 	
 	root = newroot;
-	pakname = strdup((const char *)name);
+	pakname = name;
 	fat = newfat;
 	file = newfile;
 	
@@ -284,27 +283,24 @@ error:
 }
 
 void PakReader::Close() {
-	
-	if(pakname) {
-		free((void *)pakname);
-		pakname = NULL;
-	}
-	
+
+	pakname.clear();
+
 	if(file) {
 		fclose(file);
 		file = 0;
 	}
-	
+
 	if(root) {
 		delete root;
 		root = NULL;
 	}
-	
+
 	if(fat) {
 		delete[] fat;
 		fat = NULL;
 	}
-	
+
 }
 
 struct BlastFileInBuffer {
@@ -334,19 +330,19 @@ static int blast(FILE * file, char * buf, size_t size) {
 	return blast(blastInFile, &in, blastOutMem, &out);
 }
 
-PakFile * PakReader::getFile(const char * name) {
-	
-	if(!name || !root) {
+PakFile * PakReader::getFile(const std::string& name) {
+
+	if( name.empty() || !root ) {
 		// Not loaded.
 		return NULL;
 	}
-	
+
 	return root->getFile(name);
 }
 
 
 // TODO unchecked buffer size
-bool PakReader::Read(const char * name, void * buf) {
+bool PakReader::Read(const std::string& name, void * buf) {
 	
 	PakFile * f = getFile(name);
 	if(!f) {
@@ -370,65 +366,56 @@ bool PakReader::Read(const char * name, void * buf) {
 	return true;
 }
 
-void * PakReader::ReadAlloc(const char * name, size_t * sizeRead) {
-	
+void* PakReader::ReadAlloc( const std::string& name, size_t& sizeRead ) {
+
 	PakFile * f = getFile(name);
 	if(!f) {
 		return NULL;
 	}
-	
+
 	fseek(file, f->offset, SEEK_SET);
-	
-	void * mem;
+
+	void* mem;
 	if(f->flags & PAK_FILE_COMPRESSED) {
+
 		mem = malloc(f->uncompressedSize);
 		if(!mem) {
-			if(sizeRead) {
-				*sizeRead = 0;
-			}
+			sizeRead = 0;
 			return NULL;
 		}
-		int r = blast(file, (char *)mem, f->uncompressedSize);
+	
+		int r = blast(file, (char*)mem, f->uncompressedSize);
 		if(r) {
 			LogError << "PakReader::ReadAlloc: blast error " << r << " outSize=" << f->uncompressedSize;
 			free(mem);
-			if(sizeRead) {
-				*sizeRead = 0;
-			}
+			sizeRead = 0;
 			return NULL;
 		}
-		
-		if(sizeRead) {
-			*sizeRead = f->uncompressedSize;
-		}
-		
+
+		sizeRead = f->uncompressedSize;
+	
 	} else {
+
 		mem = malloc(f->size);
 		if(!mem) {
-			if(sizeRead) {
-				*sizeRead = 0;
-			}
+			sizeRead = 0;
 			return NULL;
 		}
-		
+
 		if(fread(mem, f->size, 1, file) != 1) {
 			LogError << "PakReader::ReadAlloc: read error" << f->size;
 			free(mem);
-			if(sizeRead) {
-				*sizeRead = 0;
-			}
+			sizeRead = 0;
 			return NULL;
 		}
-		
-		if(sizeRead) {
-			*sizeRead = f->size;
-		}
+
+		sizeRead = f->size;
 	}
-	
+
 	return mem;
 }
 
-int PakReader::GetSize(const char * name) {
+int PakReader::GetSize(const std::string& name) {
 	
 	PakFile * f = getFile(name);
 	if(!f) {
@@ -442,8 +429,8 @@ int PakReader::GetSize(const char * name) {
 	}
 }
 
-PakFileHandle * PakReader::fOpen(const char * name) {
-	
+PakFileHandle * PakReader::fOpen(const std::string& name )
+{
 	PakFile * f = getFile(name);
 	if(!f) {
 		return NULL;

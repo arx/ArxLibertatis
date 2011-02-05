@@ -101,6 +101,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Missile.h"
 #include "gui/MenuPublic.h"
 #include "io/Screenshot.h"
+#include "scripting/ScriptEvent.h"
+
+using std::min;
+using std::max;
 
 void DemoFileCheck();
 
@@ -111,6 +115,7 @@ void DemoFileCheck();
 #define FFH_GOTO_FINISH 2
 extern INTERACTIVE_OBJ * CURPATHFINDIO;
 
+
 //-----------------------------------------------------------------------------
 
 HRESULT DANAEFinalCleanup();
@@ -120,7 +125,7 @@ void ShowInfoText(long COR);
 //-----------------------------------------------------------------------------
 
 extern long LAST_PORTALS_COUNT;
-extern CARXTextManager	*pTextManage;
+extern TextManager	*pTextManage;
 extern float FORCE_TIME_RESTORE;
 extern CDirectInput		*pGetInfoDirectInput;
 extern CMenuConfig		*pMenuConfig;
@@ -137,9 +142,9 @@ extern EERIE_3D loddpos;
 extern EERIE_3DOBJ * fogobj;
 extern bool		bGameNotFirstLaunch;
 extern bool		bSkipVideoIntro;
-extern char		SCRIPT_SEARCH_TEXT[256];
-extern char		ShowText[65536];
-extern char		ShowText2[65536];
+extern std::string      SCRIPT_SEARCH_TEXT;
+extern std::string      ShowText;
+extern std::string      ShowText2;
 extern float Full_Jump_Height;
 extern float	MAX_ALLOWED_PER_SECOND;
 extern float	InventoryX;
@@ -225,11 +230,12 @@ extern CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer_D3DVERTEX3_T;	// VB using 
 extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBuffer;
 extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBufferTransform;
 
-extern char pStringMod[];
+extern std::string pStringMod;
 //-----------------------------------------------------------------------------
-// Our Main Danae Application.& Instance
+// Our Main Danae Application.& Instance and Project
 DANAE danaeApp;
 HINSTANCE hInstance;
+PROJECT Project;
 
 //-----------------------------------------------------------------------------
 EERIE_3D LASTCAMPOS,LASTCAMANGLE;
@@ -294,7 +300,7 @@ EERIE_CAMERA subj,map,bookcam,raycam,conversationcamera;
 EERIE_CAMERA DynLightCam;
 
 INTERACTIVE_OBJ * CAMERACONTROLLER=NULL;
-_TCHAR WILLADDSPEECH[256];
+std::string WILLADDSPEECH;
 
 EERIE_S2D STARTDRAG;
 INTERACTIVE_OBJ * COMBINE=NULL;
@@ -543,6 +549,7 @@ void LaunchMoulinex();
 // Sends ON GAME_READY msg to all IOs
 void SendGameReadyMsg()
 {
+	LogDebug << "SendGameReadyMsg";
 	SendMsgToAllIO(SM_GAME_READY,"");
 }
 
@@ -1099,7 +1106,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 		FORCE_SHOW_FPS		= 0;
 		FINAL_RELEASE		= 1;
 #ifdef _DEBUG
-        AUTO_FULL_SCREEN	= 0;
+		AUTO_FULL_SCREEN	= 0;
 #endif
 		DEBUG_FRUSTRUM		= 0;
 		USE_D3DFOG			= 1; // <-------------------- FOG
@@ -1133,7 +1140,6 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	USE_FAST_SCENES = 1;
 	LogDebug << "Danae Start";
 
-	memset(&Project,0,sizeof(PROJECT));
 	Project.vsync = true;
 	LogInfo << "Project Init";
 
@@ -1243,7 +1249,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 		
 		if(pStringMod[0]) {
 			LogInfo << pStringMod;
-			if(PAK_AddPak(pStringMod)) {
+			if(PAK_AddPak(pStringMod.c_str())) {
 				LogInfo << "LoadMode OK";
 			}
 		}
@@ -1252,7 +1258,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 		LogInfo << PAK_DATA;
 		NOBUILDMAP=1;
 		NOCHECKSUM=1;
-		if(PAK_AddPak(PAK_DATA)) {
+		if(PAK_AddPak( PAK_DATA)) {
 			LogInfo << "LoadMode OK";
 		} else {
 			LogError << "Unable to Find Data File";
@@ -1492,7 +1498,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	LogInfo << "Application Creation";
 	g_pD3DApp = &danaeApp;
 
-    if( FAILED( danaeApp.Create( hInstance, strCmdLine ) ) )
+	if( FAILED( danaeApp.Create( hInstance, strCmdLine ) ) )
 		return 0;
 
 	LogInfo << "Application Creation Success";
@@ -1565,9 +1571,9 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	LogInfo << "AInput Init Success";
 
 	//read from cfg file
-	if (strlen(Project.localisationpath)==0)
+	if ( Project.localisationpath.length() == 0 )
 	{
-		strcpy(Project.localisationpath,"english");
+		Project.localisationpath = "english";
 		LogWarning << "Falling back to default localisationpath";
 	}
 	ShowWindow(danaeApp.m_hWnd, SW_SHOW);
@@ -1612,10 +1618,10 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 DANAE::DANAE() : CD3DApplication()
 {
 	m_strWindowTitle  = TEXT("ARX Fatalis");
-    m_bAppUseZBuffer  = true;
-    m_bAppUseStereo   = false;
-    m_bShowStats      = true;
-    m_fnConfirmDevice = NULL;
+	m_bAppUseZBuffer  = true;
+	m_bAppUseStereo   = false;
+	m_bShowStats      = true;
+	m_fnConfirmDevice = NULL;
 	m_hWnd=NULL;
 }
 
@@ -1712,12 +1718,15 @@ void LoadSysTextures()
 
 	}
 
-	memset(spellicons, 0, sizeof(SPELL_ICON) * SPELL_COUNT);
+	// TODO(lubosz): this fixed a crash in ARX_Allocate_Text
+//	memset(spellicons, 0, sizeof(SPELL_ICON) * SPELL_COUNT);
 
 	for (i=0;i<SPELL_COUNT;i++)
 	{
 		for (long j = 0; j < 6; j++) spellicons[i].symbols[j] = 255;
-
+		//TODO(lubosz): doesn't this need to be initialized?
+//		spellicons[i].name = "";
+//		spellicons[i].description = "";
 		spellicons[i].level = 0;
 		spellicons[i].spellid = 0;
 		spellicons[i].tc = NULL;
@@ -1729,9 +1738,9 @@ void LoadSysTextures()
 	SPELL_ICON * current;
 
 	// Magic_Sight Level 1
-	current=&spellicons[SPELL_MAGIC_SIGHT];	
-	ARX_Allocate_Text(current->name, _T("system_spell_name_magic_sight"));
-	ARX_Allocate_Text(current->description, _T("system_spell_description_magic_sight"));
+	current=&spellicons[SPELL_MAGIC_SIGHT];
+	ARX_Allocate_Text(current->name, "system_spell_name_magic_sight");
+	ARX_Allocate_Text(current->description, "system_spell_description_magic_sight");
 	current->level=1;
 	current->spellid=SPELL_MAGIC_SIGHT;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_magic_sight.bmp");
@@ -1740,8 +1749,8 @@ void LoadSysTextures()
 
 	// Magic_Missile Level 1
 	current=&spellicons[SPELL_MAGIC_MISSILE];	
-	ARX_Allocate_Text(current->name, _T("system_spell_name_magic_projectile"));
-	ARX_Allocate_Text(current->description, _T("system_spell_description_magic_projectile"));
+	ARX_Allocate_Text(current->name, "system_spell_name_magic_projectile");
+	ARX_Allocate_Text(current->description, "system_spell_description_magic_projectile");
 	current->level=1;
 	current->spellid=SPELL_MAGIC_MISSILE;
 	current->bDuration = false;
@@ -1752,8 +1761,8 @@ void LoadSysTextures()
 
 	// Ignit Level 1
 	current=&spellicons[SPELL_IGNIT];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_ignit"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_ignit"));
+	ARX_Allocate_Text(current->name,"system_spell_name_ignit");
+	ARX_Allocate_Text(current->description,"system_spell_description_ignit");
 	current->level=1;
 	current->spellid=SPELL_IGNIT;
 	current->bDuration = false;
@@ -1763,8 +1772,8 @@ void LoadSysTextures()
 	
 	// Douse Level 1
 	current=&spellicons[SPELL_DOUSE];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_douse"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_douse"));
+	ARX_Allocate_Text(current->name,"system_spell_name_douse");
+	ARX_Allocate_Text(current->description,"system_spell_description_douse");
 	current->level=1;
 	current->spellid=SPELL_DOUSE;
 	current->bDuration = false;
@@ -1774,8 +1783,8 @@ void LoadSysTextures()
 
 	// Activate_Portal Level 1
 	current=&spellicons[SPELL_ACTIVATE_PORTAL];
-	ARX_Allocate_Text(current->name,_T("system_spell_name_activate_portal"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_activate_portal"));
+	ARX_Allocate_Text(current->name,"system_spell_name_activate_portal");
+	ARX_Allocate_Text(current->description,"system_spell_description_activate_portal");
 	current->level=1;
 	current->spellid=SPELL_ACTIVATE_PORTAL;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_activate_portal.bmp");
@@ -1785,8 +1794,8 @@ void LoadSysTextures()
 
 	// Heal Level 2
 	current=&spellicons[SPELL_HEAL];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_heal"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_heal"));
+	ARX_Allocate_Text(current->name,"system_spell_name_heal");
+	ARX_Allocate_Text(current->description,"system_spell_description_heal");
 	current->level=2;
 	current->spellid=SPELL_HEAL;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_heal.bmp");
@@ -1795,8 +1804,8 @@ void LoadSysTextures()
 
 	// Detect_trap Level 2
 	current=&spellicons[SPELL_DETECT_TRAP];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_detect_trap"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_detect_trap"));
+	ARX_Allocate_Text(current->name,"system_spell_name_detect_trap");
+	ARX_Allocate_Text(current->description,"system_spell_description_detect_trap");
 	current->level=2;
 	current->spellid=SPELL_DETECT_TRAP;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_detect_trap.bmp");
@@ -1806,8 +1815,8 @@ void LoadSysTextures()
 
 	// Armor Level 2
 	current=&spellicons[SPELL_ARMOR];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_armor"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_armor"));
+	ARX_Allocate_Text(current->name,"system_spell_name_armor");
+	ARX_Allocate_Text(current->description,"system_spell_description_armor");
 	current->level=2;
 	current->spellid=SPELL_ARMOR;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_armor.bmp");
@@ -1816,8 +1825,8 @@ void LoadSysTextures()
 
 	// Lower Armor Level 2
 	current=&spellicons[SPELL_LOWER_ARMOR];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_lower_armor"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_lower_armor"));
+	ARX_Allocate_Text(current->name,"system_spell_name_lower_armor");
+	ARX_Allocate_Text(current->description,"system_spell_description_lower_armor");
 	current->level=2;
 	current->spellid=SPELL_LOWER_ARMOR;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_lower_armor.bmp");
@@ -1826,8 +1835,8 @@ void LoadSysTextures()
 
 	// Harm Level 2
 	current=&spellicons[SPELL_HARM];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_harm"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_harm"));
+	ARX_Allocate_Text(current->name,"system_spell_name_harm");
+	ARX_Allocate_Text(current->description,"system_spell_description_harm");
 	current->level=2;
 	current->spellid=SPELL_HARM;
 	current->bAudibleAtStart = true;
@@ -1838,8 +1847,8 @@ void LoadSysTextures()
 
 	// Speed Level 3
 	current=&spellicons[SPELL_SPEED];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_speed"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_speed"));
+	ARX_Allocate_Text(current->name,"system_spell_name_speed");
+	ARX_Allocate_Text(current->description,"system_spell_description_speed");
 	current->level=3;
 	current->spellid=SPELL_SPEED;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_speed.bmp");
@@ -1848,8 +1857,8 @@ void LoadSysTextures()
 
 	// Reveal Level 3
 	current=&spellicons[SPELL_DISPELL_ILLUSION];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_reveal"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_reveal"));
+	ARX_Allocate_Text(current->name,"system_spell_name_reveal");
+	ARX_Allocate_Text(current->description,"system_spell_description_reveal");
 	current->level=3;
 	current->spellid=SPELL_DISPELL_ILLUSION;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_reveal.bmp");
@@ -1859,8 +1868,8 @@ void LoadSysTextures()
 
 	// Fireball Level 3
 	current=&spellicons[SPELL_FIREBALL];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_fireball"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_fireball"));
+	ARX_Allocate_Text(current->name,"system_spell_name_fireball");
+	ARX_Allocate_Text(current->description,"system_spell_description_fireball");
 	current->level=3;
 	current->spellid=SPELL_FIREBALL;
 	current->bDuration = false;
@@ -1872,8 +1881,8 @@ void LoadSysTextures()
 
 	// Create Food Level 3
 	current=&spellicons[SPELL_CREATE_FOOD];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_create_food"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_create_food"));
+	ARX_Allocate_Text(current->name,"system_spell_name_create_food");
+	ARX_Allocate_Text(current->description,"system_spell_description_create_food");
 	current->level=3;
 	current->spellid=SPELL_CREATE_FOOD;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_create_food.bmp");
@@ -1883,8 +1892,8 @@ void LoadSysTextures()
 
 	// Ice Projectile Level 3
 	current=&spellicons[SPELL_ICE_PROJECTILE];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_ice_projectile"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_ice_projectile"));
+	ARX_Allocate_Text(current->name,"system_spell_name_ice_projectile");
+	ARX_Allocate_Text(current->description,"system_spell_description_ice_projectile");
 	current->level=3;
 	current->spellid=SPELL_ICE_PROJECTILE;
 	current->bDuration = false;
@@ -1897,8 +1906,8 @@ void LoadSysTextures()
 
 	// Bless Level 4
 	current=&spellicons[SPELL_BLESS];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_sanctify"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_sanctify"));
+	ARX_Allocate_Text(current->name,"system_spell_name_sanctify");
+	ARX_Allocate_Text(current->description,"system_spell_description_sanctify");
 	current->level=4;
 	current->spellid=SPELL_BLESS;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_bless.bmp");
@@ -1908,8 +1917,8 @@ void LoadSysTextures()
 
 	// Dispel_Field Level 4
 	current=&spellicons[SPELL_DISPELL_FIELD];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_dispell_field"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_dispell_field"));
+	ARX_Allocate_Text(current->name,"system_spell_name_dispell_field");
+	ARX_Allocate_Text(current->description,"system_spell_description_dispell_field");
 	current->level=4;
 	current->spellid=SPELL_DISPELL_FIELD;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_dispell_field.bmp");
@@ -1919,8 +1928,8 @@ void LoadSysTextures()
 
 	// Cold Protection Level 4
 	current=&spellicons[SPELL_COLD_PROTECTION];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_cold_protection"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_cold_protection"));
+	ARX_Allocate_Text(current->name,"system_spell_name_cold_protection");
+	ARX_Allocate_Text(current->description,"system_spell_description_cold_protection");
 	current->level=4;
 	current->spellid=SPELL_COLD_PROTECTION;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_protection_cold.bmp");
@@ -1930,8 +1939,8 @@ void LoadSysTextures()
 
 	// Fire Protection Level 4
 	current=&spellicons[SPELL_FIRE_PROTECTION];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_fire_protection"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_fire_protection"));
+	ARX_Allocate_Text(current->name,"system_spell_name_fire_protection");
+	ARX_Allocate_Text(current->description,"system_spell_description_fire_protection");
 	current->level=4;
 	current->spellid=SPELL_FIRE_PROTECTION;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_protection_fire.bmp");
@@ -1940,8 +1949,8 @@ void LoadSysTextures()
 
 	// Telekinesis Level 4
 	current=&spellicons[SPELL_TELEKINESIS];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_telekinesis"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_telekinesis"));
+	ARX_Allocate_Text(current->name,"system_spell_name_telekinesis");
+	ARX_Allocate_Text(current->description,"system_spell_description_telekinesis");
 	current->level=4;
 	current->spellid=SPELL_TELEKINESIS;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_telekinesis.bmp");
@@ -1950,8 +1959,8 @@ void LoadSysTextures()
 
 	// Curse Level 4
 	current=&spellicons[SPELL_CURSE];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_curse"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_curse"));
+	ARX_Allocate_Text(current->name,"system_spell_name_curse");
+	ARX_Allocate_Text(current->description,"system_spell_description_curse");
 	current->level=4;
 	current->spellid=SPELL_CURSE;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_curse.bmp");
@@ -1962,8 +1971,8 @@ void LoadSysTextures()
 
 	// Rune of Guarding Level 5
 	current=&spellicons[SPELL_RUNE_OF_GUARDING];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_rune_guarding"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_rune_guarding"));
+	ARX_Allocate_Text(current->name,"system_spell_name_rune_guarding");
+	ARX_Allocate_Text(current->description,"system_spell_description_rune_guarding");
 	current->level=5;
 	current->spellid=SPELL_RUNE_OF_GUARDING;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_rune_guarding.bmp");
@@ -1973,8 +1982,8 @@ void LoadSysTextures()
 	
 	// Levitate Level 5
 	current=&spellicons[SPELL_LEVITATE];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_levitate"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_levitate"));
+	ARX_Allocate_Text(current->name,"system_spell_name_levitate");
+	ARX_Allocate_Text(current->description,"system_spell_description_levitate");
 	current->level=5;
 	current->spellid=SPELL_LEVITATE;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_levitate.bmp");
@@ -1984,8 +1993,8 @@ void LoadSysTextures()
 	
 	// Cure Poison Level 5
 	current=&spellicons[SPELL_CURE_POISON];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_cure_poison"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_cure_poison"));
+	ARX_Allocate_Text(current->name,"system_spell_name_cure_poison");
+	ARX_Allocate_Text(current->description,"system_spell_description_cure_poison");
 	current->level=5;
 	current->spellid=SPELL_CURE_POISON;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_cure_poison.bmp");
@@ -1994,8 +2003,8 @@ void LoadSysTextures()
 
 	// Repel Undead Level 5
 	current=&spellicons[SPELL_REPEL_UNDEAD];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_repel_undead"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_repel_undead"));
+	ARX_Allocate_Text(current->name,"system_spell_name_repel_undead");
+	ARX_Allocate_Text(current->description,"system_spell_description_repel_undead");
 	current->level=5;
 	current->spellid=SPELL_REPEL_UNDEAD;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_repel_undead.bmp");
@@ -2004,8 +2013,8 @@ void LoadSysTextures()
 
 	// Poison Projection Level 5
 	current=&spellicons[SPELL_POISON_PROJECTILE];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_poison_projection"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_poison_projection"));
+	ARX_Allocate_Text(current->name,"system_spell_name_poison_projection");
+	ARX_Allocate_Text(current->description,"system_spell_description_poison_projection");
 	current->level=5;
 	current->spellid=SPELL_POISON_PROJECTILE;
 	current->bDuration = false;
@@ -2017,8 +2026,8 @@ void LoadSysTextures()
 
 	// Raise Dead Level 6
 	current=&spellicons[SPELL_RISE_DEAD];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_raise_dead"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_raise_dead"));
+	ARX_Allocate_Text(current->name,"system_spell_name_raise_dead");
+	ARX_Allocate_Text(current->description,"system_spell_description_raise_dead");
 	current->level=6;
 	current->spellid=SPELL_RISE_DEAD;
 	current->bAudibleAtStart = true;
@@ -2029,8 +2038,8 @@ void LoadSysTextures()
 
 	// Paralyse Dead Level 6
 	current=&spellicons[SPELL_PARALYSE];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_paralyse"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_paralyse"));
+	ARX_Allocate_Text(current->name,"system_spell_name_paralyse");
+	ARX_Allocate_Text(current->description,"system_spell_description_paralyse");
 	current->level=6;
 	current->spellid=SPELL_PARALYSE;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_paralyse.bmp");
@@ -2039,8 +2048,8 @@ void LoadSysTextures()
 	
 	// Create Field Dead Level 6
 	current=&spellicons[SPELL_CREATE_FIELD];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_create_field"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_create_field"));
+	ARX_Allocate_Text(current->name,"system_spell_name_create_field");
+	ARX_Allocate_Text(current->description,"system_spell_description_create_field");
 	current->level=6;
 	current->spellid=SPELL_CREATE_FIELD;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_create_field.bmp");
@@ -2050,8 +2059,8 @@ void LoadSysTextures()
 	
 	// Disarm Trap Level 6
 	current=&spellicons[SPELL_DISARM_TRAP];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_disarm_trap"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_disarm_trap"));
+	ARX_Allocate_Text(current->name,"system_spell_name_disarm_trap");
+	ARX_Allocate_Text(current->description,"system_spell_description_disarm_trap");
 	current->level=6;
 	current->spellid=SPELL_DISARM_TRAP;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_disarm_trap.bmp");
@@ -2061,8 +2070,8 @@ void LoadSysTextures()
 	
 	// Slow_Down Level 6 // SECRET SPELL
 	current=&spellicons[SPELL_SLOW_DOWN];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_slowdown"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_slowdown"));
+	ARX_Allocate_Text(current->name,"system_spell_name_slowdown");
+	ARX_Allocate_Text(current->description,"system_spell_description_slowdown");
 	current->level=6;
 	current->spellid=SPELL_SLOW_DOWN;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_slow_down.bmp");
@@ -2072,8 +2081,8 @@ void LoadSysTextures()
 
 	// Flying Eye Level 7
 	current=&spellicons[SPELL_FLYING_EYE];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_flying_eye"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_flying_eye"));
+	ARX_Allocate_Text(current->name,"system_spell_name_flying_eye");
+	ARX_Allocate_Text(current->description,"system_spell_description_flying_eye");
 	current->level=7;
 	current->spellid=SPELL_FLYING_EYE;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_flying_eye.bmp");
@@ -2082,8 +2091,8 @@ void LoadSysTextures()
 
 	// Fire Field Eye Level 7
 	current=&spellicons[SPELL_FIRE_FIELD];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_fire_field"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_fire_field"));
+	ARX_Allocate_Text(current->name,"system_spell_name_fire_field");
+	ARX_Allocate_Text(current->description,"system_spell_description_fire_field");
 	current->level=7;
 	current->spellid=SPELL_FIRE_FIELD;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_create_fire_field.bmp");
@@ -2093,8 +2102,8 @@ void LoadSysTextures()
 	
 	// Ice Field Level 7
 	current=&spellicons[SPELL_ICE_FIELD];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_ice_field"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_ice_field"));
+	ARX_Allocate_Text(current->name,"system_spell_name_ice_field");
+	ARX_Allocate_Text(current->description,"system_spell_description_ice_field");
 	current->level=7;
 	current->spellid=SPELL_ICE_FIELD;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_create_cold_field.bmp");
@@ -2105,8 +2114,8 @@ void LoadSysTextures()
 
 	// Lightning Strike Level 7
 	current=&spellicons[SPELL_LIGHTNING_STRIKE];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_lightning_strike"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_lightning_strike"));
+	ARX_Allocate_Text(current->name,"system_spell_name_lightning_strike");
+	ARX_Allocate_Text(current->description,"system_spell_description_lightning_strike");
 	current->level=7;
 	current->spellid=SPELL_LIGHTNING_STRIKE;
 	current->bDuration = false;
@@ -2118,8 +2127,8 @@ void LoadSysTextures()
 	
 	// Confusion Level 7
 	current=&spellicons[SPELL_CONFUSE];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_confuse"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_confuse"));
+	ARX_Allocate_Text(current->name,"system_spell_name_confuse");
+	ARX_Allocate_Text(current->description,"system_spell_description_confuse");
 	current->level=7;
 	current->spellid=SPELL_CONFUSE;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_confuse.bmp");
@@ -2128,8 +2137,8 @@ void LoadSysTextures()
 
 	// Invisibility Level 8
 	current=&spellicons[SPELL_INVISIBILITY];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_invisibility"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_invisibility"));
+	ARX_Allocate_Text(current->name,"system_spell_name_invisibility");
+	ARX_Allocate_Text(current->description,"system_spell_description_invisibility");
 	current->level=8;
 	current->spellid=SPELL_INVISIBILITY;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_invisibility.bmp");
@@ -2138,8 +2147,8 @@ void LoadSysTextures()
 
 	// Mana Drain Level 8
 	current=&spellicons[SPELL_MANA_DRAIN];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_mana_drain"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_mana_drain"));
+	ARX_Allocate_Text(current->name,"system_spell_name_mana_drain");
+	ARX_Allocate_Text(current->description,"system_spell_description_mana_drain");
 	current->level=8;
 	current->spellid=SPELL_MANA_DRAIN;
 	current->bAudibleAtStart = true;
@@ -2149,8 +2158,8 @@ void LoadSysTextures()
 
 	// Explosion Level 8
 	current=&spellicons[SPELL_EXPLOSION];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_explosion"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_explosion"));
+	ARX_Allocate_Text(current->name,"system_spell_name_explosion");
+	ARX_Allocate_Text(current->description,"system_spell_description_explosion");
 	current->level=8;
 	current->spellid=SPELL_EXPLOSION;
 	current->bDuration = false;
@@ -2162,8 +2171,8 @@ void LoadSysTextures()
 	
 	// Enchant Weapon Level 8
 	current=&spellicons[SPELL_ENCHANT_WEAPON];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_enchant_weapon"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_enchant_weapon"));
+	ARX_Allocate_Text(current->name,"system_spell_name_enchant_weapon");
+	ARX_Allocate_Text(current->description,"system_spell_description_enchant_weapon");
 	current->level=8;
 	current->spellid=SPELL_ENCHANT_WEAPON;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_enchant_weapon.bmp");
@@ -2173,8 +2182,8 @@ void LoadSysTextures()
 	
 	// Life Drain Level 8 // SECRET SPELL
 	current=&spellicons[SPELL_LIFE_DRAIN];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_life_drain"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_life_drain"));
+	ARX_Allocate_Text(current->name,"system_spell_name_life_drain");
+	ARX_Allocate_Text(current->description,"system_spell_description_life_drain");
 	current->level=8;
 	current->spellid=SPELL_LIFE_DRAIN;
 	current->bAudibleAtStart = true;
@@ -2185,8 +2194,8 @@ void LoadSysTextures()
 
 	// Summon Creature Level 9
 	current=&spellicons[SPELL_SUMMON_CREATURE];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_summon_creature"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_summon_creature"));
+	ARX_Allocate_Text(current->name,"system_spell_name_summon_creature");
+	ARX_Allocate_Text(current->description,"system_spell_description_summon_creature");
 	current->level=9;
 	current->spellid=SPELL_SUMMON_CREATURE;
 	current->bAudibleAtStart = true;
@@ -2197,8 +2206,8 @@ void LoadSysTextures()
 	
 	// FAKE Summon Creature Level 9
 	current=&spellicons[SPELL_FAKE_SUMMON];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_summon_creature"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_summon_creature"));
+	ARX_Allocate_Text(current->name,"system_spell_name_summon_creature");
+	ARX_Allocate_Text(current->description,"system_spell_description_summon_creature");
 	current->level=9;
 	current->spellid=SPELL_FAKE_SUMMON;
 	current->bAudibleAtStart = true;
@@ -2210,8 +2219,8 @@ void LoadSysTextures()
 	
 	// Negate Magic Level 9
 	current=&spellicons[SPELL_NEGATE_MAGIC];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_negate_magic"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_negate_magic"));
+	ARX_Allocate_Text(current->name,"system_spell_name_negate_magic");
+	ARX_Allocate_Text(current->description,"system_spell_description_negate_magic");
 	current->level=9;
 	current->spellid=SPELL_NEGATE_MAGIC;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_negate_magic.bmp");
@@ -2221,8 +2230,8 @@ void LoadSysTextures()
 	
 	// Incinerate Level 9
 	current=&spellicons[SPELL_INCINERATE];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_incinerate"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_incinerate"));
+	ARX_Allocate_Text(current->name,"system_spell_name_incinerate");
+	ARX_Allocate_Text(current->description,"system_spell_description_incinerate");
 	current->level=9;
 	current->spellid=SPELL_INCINERATE;
 	current->bDuration = false;
@@ -2234,8 +2243,8 @@ void LoadSysTextures()
 	
 	// Mass paralyse Creature Level 9
 	current=&spellicons[SPELL_MASS_PARALYSE];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_mass_paralyse"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_mass_paralyse"));
+	ARX_Allocate_Text(current->name,"system_spell_name_mass_paralyse");
+	ARX_Allocate_Text(current->description,"system_spell_description_mass_paralyse");
 	current->level=9;
 	current->spellid=SPELL_MASS_PARALYSE;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_mass_paralyse.bmp");
@@ -2245,8 +2254,8 @@ void LoadSysTextures()
 	
 	// Mass Lightning Strike Level 10
 	current=&spellicons[SPELL_MASS_LIGHTNING_STRIKE];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_mass_lightning_strike"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_mass_lightning_strike"));
+	ARX_Allocate_Text(current->name,"system_spell_name_mass_lightning_strike");
+	ARX_Allocate_Text(current->description,"system_spell_description_mass_lightning_strike");
 	current->level=10;
 	current->spellid=SPELL_MASS_LIGHTNING_STRIKE;
 	current->bDuration = false;
@@ -2258,8 +2267,8 @@ void LoadSysTextures()
 
 	// Control Target Level 10
 	current=&spellicons[SPELL_CONTROL_TARGET];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_control_target"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_control_target"));
+	ARX_Allocate_Text(current->name,"system_spell_name_control_target");
+	ARX_Allocate_Text(current->description,"system_spell_description_control_target");
 	current->level=10;
 	current->spellid=SPELL_CONTROL_TARGET;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_control_target.bmp");
@@ -2268,8 +2277,8 @@ void LoadSysTextures()
 
 	// Freeze time Level 10
 	current=&spellicons[SPELL_FREEZE_TIME];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_freeze_time"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_freeze_time"));
+	ARX_Allocate_Text(current->name,"system_spell_name_freeze_time");
+	ARX_Allocate_Text(current->description,"system_spell_description_freeze_time");
 	current->level=10;
 	current->spellid=SPELL_FREEZE_TIME;
 	current->tc=_GetTexture_NoRefinement("Graph\\Interface\\Icons\\Spell_freeze_time.bmp");
@@ -2278,8 +2287,8 @@ void LoadSysTextures()
 
 	// Mass incinerate Level 10
 	current=&spellicons[SPELL_MASS_INCINERATE];	
-	ARX_Allocate_Text(current->name,_T("system_spell_name_mass_incinerate"));
-	ARX_Allocate_Text(current->description,_T("system_spell_description_mass_incinerate"));
+	ARX_Allocate_Text(current->name,"system_spell_name_mass_incinerate");
+	ARX_Allocate_Text(current->description,"system_spell_description_mass_incinerate");
 	current->level=10;
 	current->spellid=SPELL_MASS_INCINERATE;
 	current->bDuration = false;
@@ -2410,11 +2419,13 @@ void ClearSysTextures()
 
 	for (i=0;i<SPELL_COUNT;i++)
 	{
-		if (spellicons[i].name)
-			free(spellicons[i].name);
+		if (!spellicons[i].name.empty())
+			//free(spellicons[i].name);
+			spellicons[i].name.clear();
 
-		if (spellicons[i].description)
-			free(spellicons[i].description);
+		if (!spellicons[i].description.empty())
+			//free(spellicons[i].description);
+			spellicons[i].description.clear();
 	}
 }
 
@@ -2431,6 +2442,7 @@ EERIE_3D ePos;
 extern EERIE_CAMERA * ACTIVECAM;
 void LaunchWaitingCine()
 {
+	LogDebug << "LaunchWaitingCine " << CINE_PRELOAD;
 
 	if (ACTIVECAM)
 	{
@@ -2454,9 +2466,11 @@ void LaunchWaitingCine()
 		if (LoadProject(ControlCinematique,RESOURCE_GRAPH_INTERFACE_ILLUSTRATIONS,WILL_LAUNCH_CINE))
 		{				
 
-			if (CINE_PRELOAD) PLAY_LOADED_CINEMATIC=0;
-			else
-			{
+			if (CINE_PRELOAD) {
+				LogDebug << "only preloaded cinematic";
+				PLAY_LOADED_CINEMATIC=0;
+			} else {
+				LogDebug << "starting cinematic";
 				PLAY_LOADED_CINEMATIC=1;
 				ARX_TIME_Pause();
 			}
@@ -2528,7 +2542,7 @@ void PlayerLaunchArrow_Test(float aimratio,float poisonous,EERIE_3D * pos,EERIE_
 										&vect,
 										&upvect,
 										&quat,
-	                        velocity,
+							velocity,
 										damages,
 										poisonous); //damages
 }
@@ -2605,7 +2619,7 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 										&vect,
 										&upvect,
 										&quat,
-	                        velocity,
+							velocity,
 										damages,
 										poisonous); //damages
 
@@ -2706,7 +2720,7 @@ HRESULT DANAE::FrameMove( float fTimeKey )
 		LaunchWaitingCine();	
 	}
 
-    return S_OK;
+	return S_OK;
 }
 
 extern unsigned long LAST_JUMP_ENDTIME;
@@ -2945,27 +2959,27 @@ HRESULT DANAE::BeforeRun()
 	memset(&necklace,0,sizeof(ARX_NECKLACE));
 	long old=GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE=-1;
-	necklace.lacet=						_LoadTheObj("Graph\\Interface\\book\\runes\\lacet.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_AAM]=			_LoadTheObj("Graph\\Interface\\book\\runes\\runes_aam.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_CETRIUS]=		_LoadTheObj("Graph\\Interface\\book\\runes\\runes_citrius.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_COMUNICATUM]=	_LoadTheObj("Graph\\Interface\\book\\runes\\runes_comunicatum.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_COSUM]=			_LoadTheObj("Graph\\Interface\\book\\runes\\runes_cosum.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_FOLGORA]=		_LoadTheObj("Graph\\Interface\\book\\runes\\runes_folgora.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_FRIDD]=			_LoadTheObj("Graph\\Interface\\book\\runes\\runes_fridd.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_KAOM]=			_LoadTheObj("Graph\\Interface\\book\\runes\\runes_kaom.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_MEGA]=			_LoadTheObj("Graph\\Interface\\book\\runes\\runes_mega.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_MORTE]=			_LoadTheObj("Graph\\Interface\\book\\runes\\runes_morte.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_MOVIS]=			_LoadTheObj("Graph\\Interface\\book\\runes\\runes_movis.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_NHI]=			_LoadTheObj("Graph\\Interface\\book\\runes\\runes_nhi.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_RHAA]=			_LoadTheObj("Graph\\Interface\\book\\runes\\runes_rhaa.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_SPACIUM]=		_LoadTheObj("Graph\\Interface\\book\\runes\\runes_spacium.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_STREGUM]=		_LoadTheObj("Graph\\Interface\\book\\runes\\runes_stregum.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_TAAR]=			_LoadTheObj("Graph\\Interface\\book\\runes\\runes_taar.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_TEMPUS]=		_LoadTheObj("Graph\\Interface\\book\\runes\\runes_tempus.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_TERA]=			_LoadTheObj("Graph\\Interface\\book\\runes\\runes_tera.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_VISTA]=			_LoadTheObj("Graph\\Interface\\book\\runes\\runes_vista.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_VITAE]=			_LoadTheObj("Graph\\Interface\\book\\runes\\runes_vitae.teo","..\\..\\..\\Obj3D\\textures\\");
-	necklace.runes[RUNE_YOK]=			_LoadTheObj("Graph\\Interface\\book\\runes\\runes_yok.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.lacet =                   _LoadTheObj("Graph\\Interface\\book\\runes\\lacet.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_AAM] =         _LoadTheObj("Graph\\Interface\\book\\runes\\runes_aam.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_CETRIUS] =     _LoadTheObj("Graph\\Interface\\book\\runes\\runes_citrius.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_COMUNICATUM] = _LoadTheObj("Graph\\Interface\\book\\runes\\runes_comunicatum.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_COSUM] =       _LoadTheObj("Graph\\Interface\\book\\runes\\runes_cosum.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_FOLGORA] =     _LoadTheObj("Graph\\Interface\\book\\runes\\runes_folgora.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_FRIDD] =       _LoadTheObj("Graph\\Interface\\book\\runes\\runes_fridd.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_KAOM] =        _LoadTheObj("Graph\\Interface\\book\\runes\\runes_kaom.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_MEGA] =        _LoadTheObj("Graph\\Interface\\book\\runes\\runes_mega.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_MORTE] =       _LoadTheObj("Graph\\Interface\\book\\runes\\runes_morte.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_MOVIS] =       _LoadTheObj("Graph\\Interface\\book\\runes\\runes_movis.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_NHI] =         _LoadTheObj("Graph\\Interface\\book\\runes\\runes_nhi.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_RHAA] =        _LoadTheObj("Graph\\Interface\\book\\runes\\runes_rhaa.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_SPACIUM] =     _LoadTheObj("Graph\\Interface\\book\\runes\\runes_spacium.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_STREGUM] =     _LoadTheObj("Graph\\Interface\\book\\runes\\runes_stregum.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_TAAR] =        _LoadTheObj("Graph\\Interface\\book\\runes\\runes_taar.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_TEMPUS] =      _LoadTheObj("Graph\\Interface\\book\\runes\\runes_tempus.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_TERA] =        _LoadTheObj("Graph\\Interface\\book\\runes\\runes_tera.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_VISTA] =       _LoadTheObj("Graph\\Interface\\book\\runes\\runes_vista.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_VITAE] =       _LoadTheObj("Graph\\Interface\\book\\runes\\runes_vitae.teo","..\\..\\..\\Obj3D\\textures\\");
+	necklace.runes[RUNE_YOK] =         _LoadTheObj("Graph\\Interface\\book\\runes\\runes_yok.teo","..\\..\\..\\Obj3D\\textures\\");
 
 	necklace.pTexTab[RUNE_AAM]			= MakeTCFromFile_NoRefinement("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_Aam[icon].BMP");
 	necklace.pTexTab[RUNE_CETRIUS]		= MakeTCFromFile_NoRefinement("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_cetrius[icon].BMP");
@@ -3209,6 +3223,7 @@ extern long FLAG_ALLOW_CLOTHES;
 
 long FirstFrameHandling(LPDIRECT3DDEVICE7 m_pd3dDevice)
 {	
+	LogDebug << "FirstFrameHandling";
 	EERIE_3D trans;
 	FirstFrame=-1;
 		
@@ -3529,7 +3544,7 @@ long Player_Arrow_Count()
 
 		if (io)
 		{
-			if (!strcasecmp(GetName(io->filename),"Arrows"))
+			if (!strcasecmp(GetName(io->filename).c_str(),"Arrows"))
 			{
 				if ( io->durability >= 1.f )
 
@@ -3559,7 +3574,7 @@ INTERACTIVE_OBJ * Player_Arrow_Count_Decrease()
 
 		if (ioo)
 		{
-			if (!strcasecmp(GetName(ioo->filename),"Arrows"))
+			if (!strcasecmp(GetName(ioo->filename).c_str(),"Arrows"))
 			{
 				if (ioo->durability >= 1.f)
 				{
@@ -3897,7 +3912,7 @@ void ManageCombatModeAnimations()
 					useanim->flags|=EA_LOOP;
 				}
 				else if ((useanim->cur_anim==alist[ANIM_1H_STRIKE_LEFT_CYCLE+j*3])
-				         && !(EERIEMouseButton & 1))
+						 && !(EERIEMouseButton & 1))
 				{
 					AcquireLastAnim(io);
 					ANIM_Set(useanim,alist[ANIM_1H_STRIKE_LEFT+j*3]);
@@ -4549,7 +4564,7 @@ void RenderAllNodes(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			{
 				xx=nodeobj->vertexlist[nodeobj->origin].vert.sx-40.f;
 				yy=nodeobj->vertexlist[nodeobj->origin].vert.sy-40.f;
-				ARX_TEXT_Draw(m_pd3dDevice, InBookFont, xx, yy, 0, 0, nodes.nodes[i].UName, EERIECOLOR_YELLOW);	//font
+				ARX_TEXT_Draw(m_pd3dDevice, InBookFont, xx, yy, 0, 0, nodes.nodes[i].UName, EERIECOLOR_YELLOW); //font
 			}
 
 			if (nodes.nodes[i].selected)
@@ -4732,7 +4747,7 @@ void LaunchMoulinex()
 			DANAEFinalCleanup();
 			exit(0);
 		}
-		else ShowPopup("Moulinex Successfull");
+		else LogError << ("Moulinex Successfull");
 
 		return;
 	}
@@ -4789,7 +4804,7 @@ void LaunchMoulinex()
 			DANAEFinalCleanup();
 			exit(0);
 		}
-		else ShowPopup("Moulinex Successfull");
+		else LogError << ("Moulinex Successfull");
 
 		return;
 	}
@@ -5040,10 +5055,12 @@ bool DANAE_ManageSplashThings()
 //*************************************************************************************
 long DANAE_Manage_Cinematic()
 {
+	
 	float FrameTicks=ARX_TIME_Get( false );
 
 	if (PLAY_LOADED_CINEMATIC==1)
 	{
+		LogDebug << "really starting cinematic now";
 		LastFrameTicks=FrameTicks;
 		PLAY_LOADED_CINEMATIC=2;
 	}
@@ -5106,22 +5123,22 @@ void DanaeItemAdd()
 		{
 			if (inter.iobj[num] && inter.iobj[num]->script.data) 
 			{
-				SendScriptEvent(&inter.iobj[num]->script,SM_INIT,"",inter.iobj[num],NULL);
+				ScriptEvent::send(&inter.iobj[num]->script,SM_INIT,"",inter.iobj[num],"");
 			}
 
 			if (inter.iobj[num] && inter.iobj[num]->over_script.data) 
 			{
-				SendScriptEvent(&inter.iobj[num]->over_script,SM_INIT,"",inter.iobj[num],NULL);
+				ScriptEvent::send(&inter.iobj[num]->over_script,SM_INIT,"",inter.iobj[num],"");
 			}
 
 			if (inter.iobj[num] && inter.iobj[num]->script.data) 
 			{
-				SendScriptEvent(&inter.iobj[num]->script,SM_INITEND,"",inter.iobj[num],NULL);
+				ScriptEvent::send(&inter.iobj[num]->script,SM_INITEND,"",inter.iobj[num],"");
 			}
 
 			if (inter.iobj[num] && inter.iobj[num]->over_script.data) 
 			{
-				SendScriptEvent(&inter.iobj[num]->over_script,SM_INITEND,"",inter.iobj[num],NULL);
+				ScriptEvent::send(&inter.iobj[num]->over_script,SM_INITEND,"",inter.iobj[num],"");
 			}
 		}
 	}
@@ -5475,6 +5492,7 @@ static float _AvgFrameDiff = 150.f;
 	{
 		_AvgFrameDiff+= (FrameDiff - _AvgFrameDiff )*0.01f;
 	}
+
 	if (NEED_BENCH)
 	{
 		BENCH_STARTUP=0;
@@ -5591,34 +5609,34 @@ static float _AvgFrameDiff = 150.f;
 		if (ARXmenu.currentmode == AMCM_OFF)
 		{
 			if (CINEMASCOPE)
-		{
+			{
 				if (!FADEDIR)	// Disabling ESC capture while fading in or out.
-		{
-				if (SendMsgToAllIO(SM_KEY_PRESSED,"")!=REFUSE)
 				{
-					REQUEST_SPEECH_SKIP=1;				
+					if (SendMsgToAllIO(SM_KEY_PRESSED,"")!=REFUSE)
+					{
+						REQUEST_SPEECH_SKIP=1;				
+					}
 				}
 			}
-		}
-		else
-		{
-			LogDebug << "snapshot";
-			//create a screenshot temporaire pour la sauvegarde
-			::SnapShot *pSnapShot=new ::SnapShot(NULL,"sct",true);
-			pSnapShot->GetSnapShotDim(160,100);
-			delete pSnapShot;
+			else
+			{
+				LogDebug << "snapshot";
+				//create a screenshot temporaire pour la sauvegarde
+				::SnapShot *pSnapShot=new ::SnapShot(NULL,"sct",true);
+				pSnapShot->GetSnapShotDim(160,100);
+				delete pSnapShot;
 
-			ARX_TIME_Pause();
-			ARXTimeMenu=ARXOldTimeMenu=ARX_TIME_Get();
-			ARX_MENU_Launch(m_pd3dDevice);
-			bFadeInOut=false;	//fade out
-			bFade=true;			//active le fade
-			pGetInfoDirectInput->iOneTouch[DIK_ESCAPE] = 0;
-			TRUE_PLAYER_MOUSELOOK_ON = 0;
+				ARX_TIME_Pause();
+				ARXTimeMenu=ARXOldTimeMenu=ARX_TIME_Get();
+				ARX_MENU_Launch(m_pd3dDevice);
+				bFadeInOut=false;	//fade out
+				bFade=true;			//active le fade
+				pGetInfoDirectInput->iOneTouch[DIK_ESCAPE] = 0;
+				TRUE_PLAYER_MOUSELOOK_ON = 0;
 
-			ARX_PLAYER_PutPlayerInNormalStance(1);
+				ARX_PLAYER_PutPlayerInNormalStance(1);
+			}
 		}
-	}
 	}
 	
 	// Project need to reload all textures ???
@@ -5781,6 +5799,7 @@ static float _AvgFrameDiff = 150.f;
 	}
 	else // Manages our first frameS
 	{
+		LogDebug << "first frame";
 		ARX_TIME_Get();
 		long ffh=FirstFrameHandling( m_pd3dDevice);
 
@@ -5865,7 +5884,7 @@ static float _AvgFrameDiff = 150.f;
 	// Are we displaying a 2D cinematic ? Yes = manage it
 	if (	PLAY_LOADED_CINEMATIC
 		&&	ControlCinematique
-	        &&	ControlCinematique->projectload)
+			&&	ControlCinematique->projectload)
 	{
 		if (DANAE_Manage_Cinematic()==1)
 			goto norenderend;		
@@ -5981,7 +6000,7 @@ static float _AvgFrameDiff = 150.f;
 					&inter.iobj[0]->angle,&inter.iobj[0]->pos, 
 					ARX_CLEAN_WARN_CAST_ULONG(iCalc) 
 
-					                  , inter.iobj[0], 0, 4);
+									  , inter.iobj[0], 0, 4);
 
 					if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
 				ManageCombatModeAnimations();
@@ -6593,28 +6612,28 @@ static float _AvgFrameDiff = 150.f;
 
 		if ((pouet!=-1) && (pouet2!=-1))
 		{
-		if (USE_CINEMATICS_CAMERA==2)
-		{
-			subj.pos.x=pos.x;
-			subj.pos.y=pos.y;
-			subj.pos.z=pos.z;		
+			if (USE_CINEMATICS_CAMERA==2)
+			{
+				subj.pos.x=pos.x;
+				subj.pos.y=pos.y;
+				subj.pos.z=pos.z;		
 
-			subj.d_angle.a=subj.angle.a;
-			subj.d_angle.b=subj.angle.b;
-			subj.d_angle.g=subj.angle.g;
-			pos2.x=(pos2.x+pos.x)*( 1.0f / 2 );
-			pos2.y=(pos2.y+pos.y)*( 1.0f / 2 );
-			pos2.z=(pos2.z+pos.z)*( 1.0f / 2 );
-			SetTargetCamera(&subj,pos2.x,pos2.y,pos2.z);
+				subj.d_angle.a=subj.angle.a;
+				subj.d_angle.b=subj.angle.b;
+				subj.d_angle.g=subj.angle.g;
+				pos2.x=(pos2.x+pos.x)*( 1.0f / 2 );
+				pos2.y=(pos2.y+pos.y)*( 1.0f / 2 );
+				pos2.z=(pos2.z+pos.z)*( 1.0f / 2 );
+				SetTargetCamera(&subj,pos2.x,pos2.y,pos2.z);
+			}
+			else
+				DebugSphere(pos.x,pos.y,pos.z,2,50,0xFFFF0000);
 
-		}
-		else DebugSphere(pos.x,pos.y,pos.z,2,50,0xFFFF0000);
-
-		if (USE_CINEMATICS_PATH.path->flags & ARX_USEPATH_FLAG_FINISHED)
-		{
-			USE_CINEMATICS_CAMERA=0;
-			USE_CINEMATICS_PATH.path=NULL;
-		}		
+			if (USE_CINEMATICS_PATH.path->flags & ARX_USEPATH_FLAG_FINISHED)
+			{
+				USE_CINEMATICS_CAMERA=0;
+				USE_CINEMATICS_PATH.path=NULL;
+			}
 		}
 		else
 		{
@@ -6840,8 +6859,10 @@ static float _AvgFrameDiff = 150.f;
 		if (!(Project.hide & HIDE_NODES))
 				RenderAllNodes(m_pd3dDevice);
 
-		_TCHAR texx[80];
-		_stprintf(texx, _T("EDIT MODE - Selected %ld"), NbIOSelected);
+		std::string texx( "EDIT MODE - Selected ");
+		std::stringstream ss( texx );
+		ss <<  NbIOSelected;
+		texx += ss.str();
 		ARX_TEXT_Draw(m_pd3dDevice,InBookFont,100,2,0,0,texx,EERIECOLOR_YELLOW);
 	
 		if (EDITION==EDITION_FOGS)
@@ -6851,7 +6872,7 @@ static float _AvgFrameDiff = 150.f;
 	// To remove for Final Release but needed until then !
 	if (ItemToBeAdded[0]!=0) 
 		DanaeItemAdd();
-	    
+		
 	SETALPHABLEND(danaeApp.m_pd3dDevice,true);
 	SETZWRITE(danaeApp.m_pd3dDevice, false );
 
@@ -7029,73 +7050,73 @@ m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 
 	if (!FINAL_COMMERCIAL_DEMO)
 	{
-	if ((NEED_TEST_TEXT) && (!FINAL_COMMERCIAL_DEMO))
-	{
-		danaeApp.DANAEEndRender();
-		ShowTestText();
-		danaeApp.DANAEStartRender();
-	}
+		if ((NEED_TEST_TEXT) && (!FINAL_COMMERCIAL_DEMO))
+		{
+			danaeApp.DANAEEndRender();
+			ShowTestText();
+			danaeApp.DANAEStartRender();
+		}
 
-	if (!NO_TEXT_AT_ALL)
-	{
-		if (ViewMode & VIEWMODE_INFOTEXT)
+		if (!NO_TEXT_AT_ALL)
 		{
-			ShowInfoText(0);
+			if (ViewMode & VIEWMODE_INFOTEXT)
+			{
+				ShowInfoText(0);
+			}
+			else if ((FORCE_SHOW_FPS) || CYRIL_VERSION)
+			{
+				ShowFPS();
+			}
 		}
-		else if ((FORCE_SHOW_FPS) || CYRIL_VERSION)
-		{
-			ShowFPS();
-		}
-	}	
 	
-	if ((USE_PORTALS) && (NEED_TEST_TEXT) && (!FOR_EXTERNAL_PEOPLE))
-	{
-		char tex[250];
+		if ((USE_PORTALS) && (NEED_TEST_TEXT) && (!FOR_EXTERNAL_PEOPLE))
+		{
+			char tex[250];
 
-		switch(USE_PORTALS)
-		{
-		case 1:
-			sprintf(tex,"2DPortals_ROOM: %ld",LAST_ROOM);
-			break;
-		case 2:
-			sprintf(tex,"3DPortals_ROOM: %ld - Vis %ld",LAST_ROOM,LAST_PORTALS_COUNT);
-			break;
-		case 3:
-			sprintf(tex,"3DPortals_ROOM(Transform): %ld - Vis %ld",LAST_ROOM,LAST_PORTALS_COUNT);
-			break;
-		case 4:
-			sprintf(tex,"3DPortals_ROOM(TransformSC): %ld - Vis %ld",LAST_ROOM,LAST_PORTALS_COUNT);
-			break;
+			switch(USE_PORTALS)
+			{
+			case 1:
+				sprintf(tex,"2DPortals_ROOM: %ld",LAST_ROOM);
+				break;
+			case 2:
+				sprintf(tex,"3DPortals_ROOM: %ld - Vis %ld",LAST_ROOM,LAST_PORTALS_COUNT);
+				break;
+			case 3:
+				sprintf(tex,"3DPortals_ROOM(Transform): %ld - Vis %ld",LAST_ROOM,LAST_PORTALS_COUNT);
+				break;
+			case 4:
+				sprintf(tex,"3DPortals_ROOM(TransformSC): %ld - Vis %ld",LAST_ROOM,LAST_PORTALS_COUNT);
+				break;
+			}
+
+			danaeApp.OutputText( 320, 240, tex );
+
+			if (bRenderInterList)
+			{
+				danaeApp.OutputText( 320, 257, "Seb" );
+			}
+
+			if(bGMergeVertex)
+			{
+				danaeApp.OutputText( 0, 284, "Portal MergeVertex" );
+			}
+			else
+			{
+				danaeApp.OutputText( 0, 284, "Portal Non MergeVertex" );
+			}
 		}
 
-		danaeApp.OutputText( 320, 240, tex );
-
-		if (bRenderInterList)
+		if((NEED_TEST_TEXT) && (!FOR_EXTERNAL_PEOPLE))
 		{
-			danaeApp.OutputText( 320, 257, "Seb" );
+			if(bOLD_CLIPP)
+			{
+				danaeApp.OutputText(0, 240, "New Clipp" );
+			}
+			else
+			{
+				danaeApp.OutputText(0,274,"New Clipp");
+			}
 		}
-
-		if(bGMergeVertex)
-		{
-			danaeApp.OutputText( 0, 284, "Portal MergeVertex" );
-		}
-		else
-		{
-			danaeApp.OutputText( 0, 284, "Portal Non MergeVertex" );
-		}
-	}
-
-	if((NEED_TEST_TEXT) && (!FOR_EXTERNAL_PEOPLE))
-	{
-		if(bOLD_CLIPP)
-		{
-			danaeApp.OutputText(0, 240, "New Clipp" );
-		}
-		else
-		{
-			danaeApp.OutputText(0,274,"New Clipp");
-		}
-	}
 	}
 
 	//----------------------------------------------------------------------------
@@ -7180,7 +7201,7 @@ m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 		}
 	}
 
-    return S_OK;
+	return S_OK;
 }
 
 INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos,long flag=0, EERIE_3D* _pRef=NULL, INTERACTIVE_OBJ** _pTable = NULL, int* _pnNbInTable=NULL );
@@ -7351,7 +7372,7 @@ void DANAE::GoFor2DFX()
 						lv.sy=el->pos.y;
 						lv.sz=el->pos.z;				
 						lv.rhw=1.f;
- 						specialEE_RT((D3DTLVERTEX *)&lv,(EERIE_3D *)&ltvv);
+						specialEE_RT((D3DTLVERTEX *)&lv,(EERIE_3D *)&ltvv);
 						float v=el->temp;
 
 						if (FADEDIR)
@@ -7457,7 +7478,7 @@ void ShowInfoText(long COR)
 		sprintf(tex,"Events %ld (IOmax N/A) Timers %ld",Event_Total_Count,ARX_SCRIPT_CountTimers());
 	else 
 	{
-		strcpy(temp,GetName(io->filename));	
+		strcpy(temp,GetName(io->filename).c_str());	
 		sprintf(tex,"Events %ld (IOmax %s_%04ld %d) Timers %ld",Event_Total_Count,temp,io->ident,io->stat_count,ARX_SCRIPT_CountTimers());
 	}
 
@@ -7467,7 +7488,7 @@ void ShowInfoText(long COR)
 
 	if (io!=NULL)		
 	{
-		strcpy(temp,GetName(io->filename));	
+		strcpy(temp,GetName(io->filename).c_str());	
 		sprintf(tex,"Max SENDER %s_%04ld %d)",temp,io->ident,io->stat_sent);
 		danaeApp.OutputText( 70, 114, tex );
 	}
@@ -7572,8 +7593,6 @@ void ShowInfoText(long COR)
 extern long POLYIN;
 extern long NOT_MOVED_AT_ALL;
 extern long LAST_LLIGHT_COUNT;
-extern long MCache_Number;
-extern long MCache_GetSize();
 extern float PLAYER_CLIMB_THRESHOLD, player_climb;
 extern float TOTAL_CHRONO;
 		
@@ -7608,8 +7627,9 @@ void ShowFPS()
 	danaeApp.OutputText( 70, DANAESIZY-100+32, tex );
 
 	TOTAL_CHRONO=0;
-	sprintf(tex,"%4.0f MCache %ld[%ld] NOT %ld FP %3.0f %3.0f Llights %ld/%ld TOTIOPDL %ld TOTPDL %ld"
-		,inter.iobj[0]->pos.y, MCache_Number,MCache_GetSize(),NOT_MOVED_AT_ALL,Original_framedelay,_framedelay,LAST_LLIGHT_COUNT,MAX_LLIGHTS,TOTIOPDL,TOTPDL);
+//	TODO(lubosz): Don't get this by extern global
+//	sprintf(tex,"%4.0f MCache %ld[%ld] NOT %ld FP %3.0f %3.0f Llights %ld/%ld TOTIOPDL %ld TOTPDL %ld"
+//		,inter.iobj[0]->pos.y, meshCache.size(),MCache_GetSize(),NOT_MOVED_AT_ALL,Original_framedelay,_framedelay,LAST_LLIGHT_COUNT,MAX_LLIGHTS,TOTIOPDL,TOTPDL);
 
 	if (LAST_LLIGHT_COUNT>MAX_LLIGHTS)
 		strcat(tex," EXCEEDING LIMIT !!!");
@@ -7658,20 +7678,20 @@ HRESULT DANAE::InitDeviceObjects()
 	// Setup Base Material
 	D3DMATERIAL7 mtrl;
 	D3DUtil_InitMaterial( mtrl, 1.f, 0.f, 0.f );
-    m_pd3dDevice->SetMaterial( &mtrl );
+	m_pd3dDevice->SetMaterial( &mtrl );
 	// Enable texture perspective RenderState
-    m_pd3dDevice->SetRenderState( D3DRENDERSTATE_TEXTUREPERSPECTIVE , true );
+	m_pd3dDevice->SetRenderState( D3DRENDERSTATE_TEXTUREPERSPECTIVE , true );
 	// Enable Z-buffering RenderState
 	EnableZBuffer();
 	// Setup Ambient Color RenderState
-    m_pd3dDevice->SetRenderState( D3DRENDERSTATE_AMBIENT,  0x0a0a0a0a );
-    // Restore All Textures RenderState
+	m_pd3dDevice->SetRenderState( D3DRENDERSTATE_AMBIENT,  0x0a0a0a0a );
+	// Restore All Textures RenderState
 	ReloadAllTextures(m_pd3dDevice);
 	ARX_PLAYER_Restore_Skin();
 	// Setup Dither Mode
 	m_pd3dDevice->SetRenderState( D3DRENDERSTATE_DITHERENABLE, false );
 	// Setup Specular RenderState
-    m_pd3dDevice->SetRenderState( D3DRENDERSTATE_SPECULARENABLE, false );
+	m_pd3dDevice->SetRenderState( D3DRENDERSTATE_SPECULARENABLE, false );
 	// Setup LastPixel RenderState
 	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_LASTPIXEL, true);
 	// Setup Clipping RenderState
@@ -7733,7 +7753,7 @@ HRESULT DANAEFinalCleanup()
 	ARX_INPUT_Release();
 	ARX_SOUND_Release();
 	KillInterTreeView();
-    return S_OK;
+	return S_OK;
 }
 
 //*************************************************************************************
@@ -7746,7 +7766,7 @@ HRESULT DANAE::FinalCleanup()
 	ARX_INPUT_Release();
 	ARX_SOUND_Release();
 	KillInterTreeView();
-    return S_OK;
+	return S_OK;
 }
 
 //*************************************************************************************
@@ -7756,7 +7776,7 @@ HRESULT DANAE::FinalCleanup()
 //*************************************************************************************
 HRESULT DANAE::DeleteDeviceObjects()
 {
-    D3DTextr_InvalidateAllTextures();
+	D3DTextr_InvalidateAllTextures();
 
 	if(pDynamicVertexBufferTransform)
 	{
@@ -7790,7 +7810,7 @@ HRESULT DANAE::DeleteDeviceObjects()
 
 	EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 
-    return S_OK;
+	return S_OK;
 }
 
 //*************************************************************************************
@@ -7798,7 +7818,7 @@ HRESULT DANAE::DeleteDeviceObjects()
 //   Overrides StdMsgProc
 //*************************************************************************************
 LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
-                                    LPARAM lParam )
+									LPARAM lParam )
 {
 	switch (uMsg) 
 	{
@@ -7893,8 +7913,8 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 			&& !FINAL_COMMERCIAL_GAME
 			)
 			{
-            switch( LOWORD(wParam) )
-		    {
+			switch( LOWORD(wParam) )
+			{
 				case IDM_DLF_CHECK:
 					ARX_SAVELOAD_CheckDLFs();
 				break;
@@ -8165,20 +8185,20 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				break;
 				case DANAE_B013:
 					ARX_TIME_Pause();
-		           	Pause(true);
-                    DialogBox( (HINSTANCE)GetWindowLong( hWnd, GWL_HINSTANCE ),
-                               MAKEINTRESOURCE(IDD_OPTIONS), hWnd, OptionsProc );
+					Pause(true);
+					DialogBox( (HINSTANCE)GetWindowLong( hWnd, GWL_HINSTANCE ),
+							   MAKEINTRESOURCE(IDD_OPTIONS), hWnd, OptionsProc );
 					EERIE_LIGHT_ChangeLighting();
-                    Pause(false);
+					Pause(false);
 					ARX_TIME_UnPause();
-     
+	 
 				break;
 				case DANAE_MENU_UNFREEZEALLINTER:
 					ARX_INTERACTIVE_UnfreezeAll();
 				break;
 				case DANAE_MENU_RESETSHADOWS:
 					ARX_TIME_Pause();
-                	Pause(true);
+					Pause(true);
 
 					if (OKBox("Remove Casts Shadows Flag from all Lights ?","DANAE Confirm Box"))
 					{
@@ -8217,32 +8237,38 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 					if (ValidIONum(LastSelectedIONum))
 					{
-						strcpy(ShowText,"");
+						ShowText = "";
 
 						if (inter.iobj[LastSelectedIONum]->script.data!=NULL)
 							MakeLocalText(&inter.iobj[LastSelectedIONum]->script,ShowText);
 						else if (inter.iobj[LastSelectedIONum]->over_script.data!=NULL)
 							MakeLocalText(&inter.iobj[LastSelectedIONum]->over_script,ShowText);
 
-						strcpy(ShowTextWindowtext,"Local Variables");
+						ShowTextWindowtext = "Local Variables";
 						DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXT, NULL, (DLGPROC)ShowTextDlg);					
 					}
 					else  
-						ShowPopup("No Interactive Object Selected");
+						LogError << ("No Interactive Object Selected");
 
 				break;
 				case DANAE_MENU_MEMORY:
-					strcpy(ShowText,"");
+		{
+					ShowText = "";
 					unsigned long msize;
-					msize=MakeMemoryText(ShowText);
-					sprintf(ShowTextWindowtext,"Allocated Memory %lu bytes %lu Kb",msize,msize>>10);
+					char temp[512];
+					msize=MakeMemoryText( temp );
+					ShowText = temp;
+					std::stringstream ss;
+					ss << "Allocated Memory " << msize << " bytes " << (msize>>10) << " Kb";
+					ShowTextWindowtext = ss.str();
 					CreateDialogParam( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
-                            MAKEINTRESOURCE(IDD_SHOWTEXT), this->m_hWnd, (DLGPROC)ShowTextDlg,0 );
+							MAKEINTRESOURCE(IDD_SHOWTEXT), this->m_hWnd, (DLGPROC)ShowTextDlg,0 );
+		}
 				break;
 				case DANAE_MENU_GLOBALLIST:
-					strcpy(ShowText,"");
+					ShowText = "";
 					MakeGlobalText(ShowText);
-					strcpy(ShowTextWindowtext,"Global Variables");
+					ShowTextWindowtext ="Global Variables";
 					DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXT, NULL, (DLGPROC)ShowTextDlg);					
 				break;
 				case DANAE_MENU_INTEROBJLIST:
@@ -8250,23 +8276,23 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				break;
 				case DANAE_MENU_LANGUAGE:
 					ARX_TIME_Pause();
-                	Pause(true);			
+					Pause(true);			
 					DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
-                            MAKEINTRESOURCE(IDD_LANGUAGEDIALOG), this->m_hWnd, LanguageOptionsProc);
+							MAKEINTRESOURCE(IDD_LANGUAGEDIALOG), this->m_hWnd, LanguageOptionsProc);
 					ARX_Localisation_Init();
 					Pause(false);
 					ARX_TIME_UnPause();
 				break;
 				case DANAE_MENU_IMPORTSCN:
 					ARX_TIME_Pause();
-                	Pause(true);
-					ShowPopup("Unavailable Command");
+					Pause(true);
+					LogError << ("Unavailable Command");
 					Pause(false);
 					ARX_TIME_UnPause();
 				break;
 				case DANAE_MENU_UPDATELOCALISATION:
 					ARX_TIME_Pause();
-                	Pause(true);
+					Pause(true);
 					ARX_Localisation_Init();
 					Pause(false);
 					ARX_TIME_UnPause();
@@ -8274,25 +8300,25 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_MENU_UPDATESOUNDS:
 					ARX_TIME_Pause();
 					Pause(true);
-					ShowPopup("Unavailable Command");
+					LogError << ("Unavailable Command");
 					Pause(false);
 					ARX_TIME_UnPause();
 				break;
 				case DANAE_MENU_UPDATESCENE:
 					ARX_TIME_Pause();
-                	Pause(true);
-					ShowPopup("Unavailable Command");
+					Pause(true);
+					LogError << ("Unavailable Command");
 					Pause(false);
 					ARX_TIME_UnPause();
 				break;
 				case DANAE_MENU_UPDATEALLSCRIPTS:
 
 					if (!EDITMODE)
-						ShowPopup("Command Only Available in EDITOR mode!!!");
+						LogError << ("Command Only Available in EDITOR mode!!!");
 					else
 					{
 						ARX_TIME_Pause();
-                		Pause(true);
+						Pause(true);
 
 						if (OKBox("Reload All Scripts ?","Confirm"))
 						ReloadAllScripts();
@@ -8304,14 +8330,14 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				break;
 				case DANAE_MENU_UPDATEALLOBJECTS:
 					ARX_TIME_Pause();
-                	Pause(true);
-					ShowPopup("Unavailable Command");
+					Pause(true);
+					LogError << ("Unavailable Command");
 					Pause(false);
 					ARX_TIME_UnPause();
 				break;
 				case DANAE_MENU_UPDATEALLTEXTURES:
 					ARX_TIME_Pause();
-                	Pause(true);
+					Pause(true);
 					ReloadAllTextures(GDevice);
 					Pause(false);
 					ARX_TIME_UnPause();
@@ -8319,11 +8345,11 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_MENU_UPDATEALLANIMS:
 
 					if (!EDITMODE)
-						ShowPopup("Command Only Available in EDITOR mode!!!");
+						LogError << ("Command Only Available in EDITOR mode!!!");
 					else
 					{					
 						ARX_TIME_Pause();
-                		Pause(true);
+						Pause(true);
 						EERIE_ANIMMANAGER_ReloadAll();
 						Pause(false);
 						ARX_TIME_UnPause();
@@ -8331,27 +8357,37 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 				break;
 				case DANAE_MENU_ANIMATIONSLIST:
+				{
 					long tr;
 					long memsize;
 					ARX_TIME_Pause();
-                	Pause(true);
+					Pause(true);
 					tr=EERIE_ANIMMANAGER_Count(ShowText,&memsize);
-					sprintf(ShowTextWindowtext,"Animations %ld %ld Ko",tr,memsize>>10);
+					std::stringstream ss;
+					ss << "Animations " << tr << ' ' << (memsize>>10) << " Ko";
+					ShowTextWindowtext = ss.str();
+					//sprintf(ShowTextWindowtext,"Animations %d %d Ko",tr,memsize>>10);
 					DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXTBIG, NULL, (DLGPROC)ShowTextDlg);
 					Pause(false);
 					ARX_TIME_UnPause();
+				}
 				break;
 				case DANAE_MENU_TEXLIST:
+				{
 					long _tr;
 					long _memsize;
 					long _memmip;
 					ARX_TIME_Pause();
-                	Pause(true);
+					Pause(true);
 					_tr=CountTextures(ShowText,&_memsize,&_memmip);
-					sprintf(ShowTextWindowtext,"Textures %ld %ld Ko MIPsize %ld Ko",_tr,_memsize>>10,_memmip>>10);
+					std::stringstream ss;
+					ss << "Textures " << _tr << ' ' << (_memsize>>10) << " Ko MIPsize " << (_memmip>>10) << " Ko";
+					ShowTextWindowtext = ss.str();
+					//sprintf(ShowTextWindowtext,"Textures %d %d Ko MIPsize %d Ko",_tr,_memsize>>10,_memmip>>10);
 					DialogBox(hInstance, (LPCTSTR)IDD_SHOWTEXTBIG, NULL, (DLGPROC)ShowTextDlg);
 					Pause(false);
 					ARX_TIME_UnPause();
+				}
 				break;
 				case DANAE_MENU_PROJECTPATH:
 					//HERMESFolderSelector("","Choose Working Folder"); first param receives folder
@@ -8360,14 +8396,14 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 					break;
 				case DANAE_MENU_NEWLEVEL:
 					ARX_TIME_Pause();
-                	Pause(true);
+					Pause(true);
 
 					if (OKBox("Do You Really Want to Start\na New Level ?","DANAE Confirm Box"))
 						DanaeClearLevel();
 
 					Pause(false);
 					ARX_TIME_UnPause();
-                break;
+				break;
 				case DANAE_MENU_PURGELEVEL:
 
 					if (OKBox("This Can Be REALLY Dangerous !!! Sure ?","Confirm"))
@@ -8390,51 +8426,51 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				break;
 				case DANAE_MENU_SAVELEVEL:                	
 					ARX_TIME_Pause();
-                	Pause(true);			
-					ShowPopup("Unavailable Command");
+					Pause(true);			
+					LogError << ("Unavailable Command");
 					Pause(false);
 					ARX_TIME_UnPause();					
-                break;
+				break;
 				case DANAE_MENU_SAVEAS:
 					WILLSAVELEVEL=1;
-                break;
+				break;
 				case DANAE_MENU_EXIT:
 
 					if (OKBox("Do You Really\nWant to Quit DANAE ?","DANAE Confirm Box"))
 						SendMessage( hWnd, WM_CLOSE, 0, 0 );	                
 
-                break;
+				break;
 				case DANAE_MENU_ABOUT:
 					ARX_TIME_Pause();
-                	Pause(true);
-                    DialogBox( (HINSTANCE)GetWindowLong( hWnd, GWL_HINSTANCE ),
-                               MAKEINTRESOURCE(IDD_DANAEABOUT), hWnd, AboutProc );
-                    Pause(false);
-					ARX_TIME_UnPause();
-                break;
-				case DANAE_MENU_OPTIONS:
-                	ARX_TIME_Pause();
 					Pause(true);
-                    DialogBox( (HINSTANCE)GetWindowLong( hWnd, GWL_HINSTANCE ),
-                               MAKEINTRESOURCE(IDD_OPTIONS), hWnd, OptionsProc );
-                    Pause(false);
-					ARX_TIME_UnPause();
-                break;
-				case DANAE_MENU_OPTIONS2:
-                	ARX_TIME_Pause();
-					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
-                               MAKEINTRESOURCE(IDD_OPTIONS2), this->m_hWnd, OptionsProc_2 );
+					DialogBox( (HINSTANCE)GetWindowLong( hWnd, GWL_HINSTANCE ),
+							   MAKEINTRESOURCE(IDD_DANAEABOUT), hWnd, AboutProc );
 					Pause(false);
 					ARX_TIME_UnPause();
-                break;
+				break;
+				case DANAE_MENU_OPTIONS:
+					ARX_TIME_Pause();
+					Pause(true);
+					DialogBox( (HINSTANCE)GetWindowLong( hWnd, GWL_HINSTANCE ),
+							   MAKEINTRESOURCE(IDD_OPTIONS), hWnd, OptionsProc );
+					Pause(false);
+					ARX_TIME_UnPause();
+				break;
+				case DANAE_MENU_OPTIONS2:
+					ARX_TIME_Pause();
+					Pause(true);
+					DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+							   MAKEINTRESOURCE(IDD_OPTIONS2), this->m_hWnd, OptionsProc_2 );
+					Pause(false);
+					ARX_TIME_UnPause();
+				break;
 			}
-        }
+		}
 
 		break;
 	}
 
-    return CD3DApplication::MsgProc( hWnd, uMsg, wParam, lParam );
+	return CD3DApplication::MsgProc( hWnd, uMsg, wParam, lParam );
 }
 void ReleaseSystemObjects()
 {
@@ -8607,7 +8643,8 @@ void ClearGame()
 
 	if (scr_timer)
 	{
-		free(scr_timer);
+//		TODO(lubosz): crash
+//		free(scr_timer);
 		scr_timer=NULL;
 	}
 

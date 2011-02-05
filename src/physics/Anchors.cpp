@@ -195,8 +195,8 @@ __inline float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, lon
 		return ep->center.y;
 	}
 
-	float minf = min(cyl->origin.y, cyl->origin.y + cyl->height);
-	float maxf = max(cyl->origin.y, cyl->origin.y + cyl->height);
+	float minf = std::min(cyl->origin.y, cyl->origin.y + cyl->height);
+	float maxf = std::max(cyl->origin.y, cyl->origin.y + cyl->height);
 
 	if (minf > ep->max.y) return 999999.f;
 
@@ -225,7 +225,7 @@ __inline float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, lon
 
 				if (PointInCylinder(cyl, &center)) 
 				{
-					anything = min(anything, center.y);
+					anything = std::min(anything, center.y);
 					return anything;
 				}
 			}
@@ -242,7 +242,7 @@ __inline float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, lon
 
 			if (PointInCylinder(cyl, &center)) 
 			{
-				anything = min(anything, center.y);
+				anything = std::min(anything, center.y);
 				return anything;
 			}
 
@@ -254,7 +254,7 @@ __inline float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, lon
 
 				if (PointInCylinder(cyl, &center)) 
 				{
-					anything = min(anything, center.y);
+					anything = std::min(anything, center.y);
 					return anything;
 				}
 			}
@@ -267,7 +267,7 @@ __inline float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, lon
 
 				if (PointInCylinder(cyl, &center)) 
 				{
-					anything = min(anything, center.y);
+					anything = std::min(anything, center.y);
 					return anything;
 				}
 			}
@@ -275,7 +275,7 @@ __inline float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, lon
 
 		if (PointInCylinder(cyl, (EERIE_3D *)&ep->v[n])) 
 		{
-			anything = min(anything, ep->v[n].sy);
+			anything = std::min(anything, ep->v[n].sy);
 			return anything;
 		}
 
@@ -286,7 +286,7 @@ __inline float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, lon
 	}
 
 	if ((anything != 999999.f) && (ep->norm.y < 0.1f) && (ep->norm.y > -0.1f))
-		anything = min(anything, ep->min.y);
+		anything = std::min(anything, ep->min.y);
 
 	return anything;
 }
@@ -345,7 +345,7 @@ float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * ioo
 
 				if (ep->min.y < anything)
 				{
-					float minanything = min(anything, ANCHOR_IsPolyInCylinder(ep, cyl, flags));
+					float minanything = std::min(anything, ANCHOR_IsPolyInCylinder(ep, cyl, flags));
 
 					if (anything != minanything)
 					{
@@ -357,12 +357,12 @@ float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * ioo
 
 	ep = ANCHOR_CheckInPolyPrecis(cyl->origin.x, cyl->origin.y + cyl->height, cyl->origin.z);
 
-	if (ep) anything = min(anything, ep->min.y);
+	if (ep) anything = std::min(anything, ep->min.y);
 
 	float tempo;
 
 	if ((ep) && (GetTruePolyY(ep, &cyl->origin, &tempo)))
-		anything = min(anything, tempo);
+		anything = std::min(anything, tempo);
 
 	anything = anything - cyl->origin.y;
 	return anything;
@@ -425,7 +425,7 @@ bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, 
 				}
 
 				float dist;
-				dist = max(TRUEVector_Magnitude(&vector2D), 1.f);
+				dist = std::max(TRUEVector_Magnitude(&vector2D), 1.f);
 				float pente;
 				pente = EEfabs(anything) / dist * ( 1.0f / 2 ); 
 				io->_npcdata->climb_count += pente;
@@ -509,7 +509,7 @@ bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, f
 	while (distance > 0.f)
 	{
 		// First We compute current increment
-		float curmovedist = min(distance, MOVE_CYLINDER_STEP);
+		float curmovedist = std::min(distance, MOVE_CYLINDER_STEP);
 
 		distance -= curmovedist;
 		//CUR_FRAME_SLICE=curmovedist*onedist;

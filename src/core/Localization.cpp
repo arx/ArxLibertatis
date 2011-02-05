@@ -32,6 +32,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Texture.h"
 #include "io/IO.h"
 #include "io/PakManager.h"
+#include "io/Logger.h"
 
 using std::sprintf;
 
@@ -40,16 +41,16 @@ extern long FRENCH_VERSION;
 extern long CHINESE_VERSION;
 extern long FINAL_COMMERCIAL_GAME;
 
-extern PROJECT			Project;
+extern PROJECT Project;
 extern long FINAL_COMMERCIAL_DEMO;
 using namespace std;
 extern CMenuConfig * pMenuConfig;
 #define MAX_LINE_SIZE 8096
 
-CLocalisationHash * pHashLocalisation = NULL;
+CLocalisationHash * pHashLocalisation;
 
 //-----------------------------------------------------------------------------
-bool isSection(_TCHAR * _lpszUText)
+bool isSection( const _TCHAR * _lpszUText)
 {
 	ULONG i			 = 0;
 	unsigned long ulTextSize = _tcslen(_lpszUText);
@@ -197,9 +198,9 @@ _TCHAR * CleanKey(const _TCHAR * _lpszUText)
 			bEqual = true;
 		}
 		else if (bEqual && (isalnum(_lpszUText[ul]) ||
-		                    ((_lpszUText[ul] != _T(' ')) &&
-		                     (_lpszUText[ul] != _T('"')))
-		                   ))
+							((_lpszUText[ul] != _T(' ')) &&
+							 (_lpszUText[ul] != _T('"')))
+						   ))
 		{
 			bAlpha = true;
 		}
@@ -231,19 +232,33 @@ _TCHAR * CleanKey(const _TCHAR * _lpszUText)
 }
 
 //-----------------------------------------------------------------------------
-void ParseFile(_TCHAR * _lpszUTextFile, const unsigned long _ulFileSize)
+void ParseFile( const std::string& _lpszUTextFile, const unsigned long _ulFileSize)
 {
-	_TCHAR * pULine;
- 
-
-	//-------------------------------------------------------------------------
-	// on skip l'entete unicode
-	_TCHAR * pFile = _lpszUTextFile;
-	pFile ++;
+	std::string temp = _lpszUTextFile;
+	temp.erase( 0, 1 ); // TODO This apparently removes a unicode header?
 	unsigned long ulFileSize = _ulFileSize - 1;
 
-	//-------------------------------------------------------------------------
-	//clean up comments
+
+	// Remove all comments from the input string
+	while ( true )
+	{
+		// Find comment start
+		size_t comment_start = temp.find( "//" );
+
+		// No comments found, break
+		if ( comment_start == std::string::npos ) break;
+
+		// Find comment end after comment start
+		size_t line_end = temp.find_first_of( "\r\n", comment_start );
+
+		// Remove comments until end of line or end if file
+		if ( line_end != std::string::npos )
+			temp.erase( comment_start, line_end - comment_start );
+		else
+			temp.erase( comment_start );
+	}
+
+/*
 	for (unsigned long i = 0; i < (ulFileSize - 1); i++)
 	{
 		if ((pFile[i] == _T('/')) && (pFile[i+1] == _T('/')))
@@ -259,10 +274,18 @@ void ParseFile(_TCHAR * _lpszUTextFile, const unsigned long _ulFileSize)
 			i = j;
 		}
 	}
+*/
+	list< std::string > strings;
 
-	//-------------------------------------------------------------------------
-	// get all lines into list
-
+	// Find lines and put them into the vector
+	while ( !temp.empty() )
+	{
+		size_t line_end = temp.find_first_of( "\r\n" );
+		strings.push_back( temp.substr( 0, line_end ) );
+		temp.erase( 0, line_end );
+	}
+/*		
+	
 	list<_TCHAR *> lUText;
 	pULine = _tcstok(pFile, _T("\r\n"));
 
@@ -278,9 +301,37 @@ void ParseFile(_TCHAR * _lpszUTextFile, const unsigned long _ulFileSize)
 
 		pULine = _tcstok(NULL, _T("\r\n"));
 	}
+*/
 
-	list<_TCHAR *>::iterator it;
+	list< std::string >::iterator iter = strings.begin();
 
+	while ( iter != strings.end() )
+	{
+		if ( isSection((*iter).c_str()) )
+		{
+			CLocalisation* loc = new CLocalisation();
+			std::string section_str = CleanSection( (*iter).c_str() );
+			loc->SetSection( (*iter).c_str() );
+
+			iter++;
+
+			while ((iter != strings.end()) && (!isSection((*iter).c_str())))
+			{
+				if(isKey((*iter).c_str()))
+					loc->AddKey( CleanKey((*iter).c_str() ) );
+				else
+					break;
+			}
+
+			pHashLocalisation->AddElement(loc);
+			continue;
+		}
+
+		iter++;
+	}
+		
+	//list<_TCHAR *>::iterator it;
+/*
 	//-------------------------------------------------------------------------
 	// look up for sections and associated keys
 	it = lUText.begin();
@@ -321,7 +372,7 @@ void ParseFile(_TCHAR * _lpszUTextFile, const unsigned long _ulFileSize)
 
 		it++;
 		t++;
-	}
+	}*/
 }
 
 //-----------------------------------------------------------------------------
@@ -340,46 +391,46 @@ void ARX_Localisation_Init(const char * _lpszExtension)
 		ARX_Localisation_Close();
 	}
 
-	char tx[256];
-	ZeroMemory(tx, 256);
-	sprintf(tx, "localisation\\utext_%s.ini", Project.localisationpath);
-
+	std::string tx = "localisation\\utext_" + Project.localisationpath + ".ini";
+	
+	std::string temp = tx;
 	size_t LocalisationSize = 0;
-	_TCHAR * Localisation = NULL;
+	std::string Localisation;
 
-	Localisation = (_TCHAR *)PAK_FileLoadMallocZero(tx, &LocalisationSize);
+	char* memory = (char*)PAK_FileLoadMallocZero(tx, LocalisationSize);
+	
+	if ( memory ) // Nullpointers do not go well with strings
+		Localisation = (char*) memory;
 
-	if (Localisation == NULL)
+	if ( Localisation.empty())
 	{
 		if (GERMAN_VERSION || FRENCH_VERSION)
 		{
-			delete pMenuConfig;	
+			delete pMenuConfig;
 			pMenuConfig = NULL;
 			exit(0);
 		}
 
-		ZeroMemory(tx, 256);
-		strcpy(Project.localisationpath, "english");
-		sprintf(tx, "localisation\\utext_%s.ini", Project.localisationpath);
-		Localisation = (_TCHAR *)PAK_FileLoadMallocZero(tx, &LocalisationSize);
+		Project.localisationpath = "english";
+		tx = "localisation\\utext_" + Project.localisationpath + ".ini";
+		Localisation = (char*)PAK_FileLoadMallocZero(tx, LocalisationSize);
 
 	}
 
-	if (Localisation && LocalisationSize)
+	if (!Localisation.empty() && LocalisationSize)
 	{
 		pHashLocalisation = new CLocalisationHash(1 << 13);
-		LocalisationSize = _tcslen(Localisation);
+		LocalisationSize = Localisation.length();
 		ParseFile(Localisation, LocalisationSize);
-		free((void *)Localisation);
-		Localisation = NULL;
+		Localisation.clear();
 		LocalisationSize = 0;
 	}
 
 	//CD Check
 	if (FINAL_COMMERCIAL_DEMO)
 	{
-		_TCHAR szMenuText[256];
-		PAK_UNICODE_GetPrivateProfileString("system_menus_main_cdnotfound", "", szMenuText, 256);
+		std::string szMenuText;
+		PAK_UNICODE_GetPrivateProfileString( "system_menus_main_cdnotfound", "", szMenuText, 256);
 
 		if (!szMenuText[0]) //warez
 		{
@@ -389,12 +440,12 @@ void ARX_Localisation_Init(const char * _lpszExtension)
 
 	if (FINAL_COMMERCIAL_GAME)
 	{
-		_TCHAR szMenuText[256] = {0};
-		PAK_UNICODE_GetPrivateProfileString("unicode", "", szMenuText, 256);
+		std::string szMenuText;
+		PAK_UNICODE_GetPrivateProfileString( "unicode", "", szMenuText, 256);
 
 		if (szMenuText[0]) //warez
 		{
-			if (!_tcsicmp(_T("chinese"), szMenuText))
+			if (!szMenuText.compare( "chinese" ) )
 			{
 				CHINESE_VERSION = 1;
 			}
@@ -412,37 +463,33 @@ void ARX_Localisation_Close()
 }
 
 //-----------------------------------------------------------------------------
-long HERMES_UNICODE_GetProfileString(const char * sectionname,
-                                     const char * defaultstring,
-                                     char * destination,
-                                     unsigned long    maxsize)
+long HERMES_UNICODE_GetProfileString(   const std::string&  sectionname,
+										const std::string&  defaultstring,
+										std::string&        destination,
+										unsigned long       maxsize )
 {
 
-	ZeroMemory(destination, maxsize * sizeof(_TCHAR));
+	destination.clear();
 
 	if (pHashLocalisation)
 	{
-		_TCHAR * t = pHashLocalisation->GetPtrWithString(sectionname);
+		std::string* t = pHashLocalisation->GetPtrWithString(sectionname);
 
 		if (t)
-		{
-			_tcsncpy(destination, t, min((size_t)maxsize, strlen(t)));
-		}
+			destination = *t;
 		else
-		{
-			_tcsncpy(destination, defaultstring, min((size_t)maxsize, strlen(defaultstring)));
-		}
+			destination = defaultstring;
 	}
 	else
-	{
-		_tcsncpy(destination, defaultstring, min((size_t)maxsize, strlen(defaultstring)));
-	}
+		destination = defaultstring;
 
+	//TODO(lubosz): Hardcode string
+	destination = "foo";
 	return 0;
 }
 
 //-----------------------------------------------------------------------------
-long HERMES_UNICODE_GetProfileSectionKeyCount(const char * sectionname)
+long HERMES_UNICODE_GetProfileSectionKeyCount(const std::string& sectionname)
 {
 	if (pHashLocalisation)
 		return pHashLocalisation->GetKeyCount(sectionname);
@@ -453,34 +500,27 @@ long HERMES_UNICODE_GetProfileSectionKeyCount(const char * sectionname)
 static long ltNum = 0;
 
 //-----------------------------------------------------------------------------
-DWORD PAK_UNICODE_GetPrivateProfileString(const char * _lpszSection,
-        const char * _lpszDefault,
-        char * _lpszBuffer,
-        unsigned long	_lBufferSize)
+int PAK_UNICODE_GetPrivateProfileString(    const std::string&  _lpszSection,
+											const std::string&  _lpszDefault,
+											std::string&        _lpszBuffer,
+											unsigned long       _lBufferSize )
 {
 	ltNum ++;
-	ZeroMemory(_lpszBuffer, _lBufferSize * sizeof(_TCHAR));
+	_lpszBuffer.clear();
 
-	if (_lpszSection[0] == _T('\0'))
-	{
-		_tcsncpy(_lpszBuffer, _lpszDefault, min((size_t)_lBufferSize, strlen(_lpszDefault)));
-		_stprintf(_lpszBuffer, _T("%s: NOT FOUND"), _lpszSection);
+	if (_lpszSection.empty())	{
+		LogError <<  _lpszDefault << " not found";
+		_lpszBuffer = _lpszDefault + ":NOT FOUND";
 		return 0;
 	}
 
-	_TCHAR szSection[256] = _T("");
-	_stprintf(szSection, _T("[%s]"), _lpszSection);
+	std::string szSection = "[" + _lpszSection + "]";
 
-	HERMES_UNICODE_GetProfileString(
-	    szSection,
-	    _lpszDefault,
-	    _lpszBuffer,
-	    _lBufferSize); //lastspeechflag
+	HERMES_UNICODE_GetProfileString( szSection,
+									_lpszDefault,
+									_lpszBuffer,
+									_lBufferSize );
 
 	return 1;
 }
 
-//#include <vector>
-//using std::vector;
-
-//vector<char *> mlist;

@@ -79,7 +79,6 @@ namespace ATHENA
 	const aalFloat AAL_DEFAULT_CONE_OUTERANGLE(360.0F);                          //All directions
 	const aalFloat AAL_DEFAULT_CONE_OUTERVOLUME(0.0F);                           //No gain
 
-
 	// Flags                                                                     //
 	enum aalFlag
 	{

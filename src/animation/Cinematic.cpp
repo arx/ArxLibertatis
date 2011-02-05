@@ -43,7 +43,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 /*---------------------------------------------------------------------------------*/
 
 EERIE_CAMERA	Camera;
-char			AllTxt[32767];
 bool			LeftButton, RightButton;
 int				 InsertKey;
 C_KEY		*	KeyCopy;
@@ -84,25 +83,6 @@ extern float SpecialFadeDx;
 extern long DANAESIZX;
 extern long DANAESIZY;
 extern DANAE danaeApp;
-
-
-void ClearAbsDirectory(char * pT, const char * d)
-{
-	char * pTcopy = pT;
-	int i = strlen(pT);
-
-	while (i--)
-	{
-		if (!strncasecmp(pT, d, strlen(d)))
-		{
-			pT += strlen(d);
-			memmove(pTcopy, pT, strlen(pT - strlen(d)) + 1);
-			break;
-		}
-
-		pT++;
-	}
-}
 
 /*---------------------------------------------------------------------------------*/
 Cinematic::Cinematic(LPDIRECT3DDEVICE7 _m_pd3dDevice, int _w, int _h)

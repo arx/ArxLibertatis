@@ -185,6 +185,8 @@ class DANAE : public CD3DApplication
 		bool DANAEEndRender();
 };
 extern DANAE danaeApp;
+extern LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+extern LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 //-----------------------------------------------------------------------------
 void SetEditMode(long ed, const bool stop_sound = true);

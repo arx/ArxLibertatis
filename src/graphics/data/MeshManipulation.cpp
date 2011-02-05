@@ -89,19 +89,22 @@ void EERIE_MESH_ReleaseTransPolys(EERIE_3DOBJ * obj)
 	}
 }
  
-void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, char * s1, char * s2)
+void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const std::string& s1, const std::string& s2)
 {
-	
-	if (obj == NULL || s1 == NULL|| s2 == NULL) {
+	LogDebug << "Tweak Skin " << s1 << " " << s2;
+
+	if ( obj == NULL || s1.empty() || s2.empty() )
+	{
 		LogError << "Tweak Skin got NULL Pointer";
 		return;
 	}
 	
 	LogDebug << "Tweak Skin " << s1 << " " << s2;
 
-	char skintochange[512];
+	std::string skintochange;
+	char skinname[512];
 
-	sprintf(skintochange, "Graph\\Obj3D\\Textures\\%s.bmp", s1);
+	skintochange = "Graph\\Obj3D\\Textures\\" + s1 + ".bmp";
 	MakeUpcase(skintochange);
 	TextureContainer * tex = D3DTextr_CreateTextureFromFile(skintochange);
 
@@ -113,7 +116,8 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, char * s1, char * s2)
 		for (long i = 0; i < obj->nbmaps; i++)
 		{
 			if (obj->texturecontainer[i])
-				strcpy(obj->originaltextures + 256 * i, obj->texturecontainer[i]->m_texName);
+				strcpy(obj->originaltextures + 256 * i, obj->texturecontainer[i]->m_texName.c_str());
+
 		}
 	}
 
@@ -121,16 +125,16 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, char * s1, char * s2)
 	{
 		for (long i = 0; i < obj->nbmaps; i++)
 		{
-			if ((strstr(obj->originaltextures + 256 * i, skintochange)))
+			if ((strstr(obj->originaltextures + 256 * i, skintochange.c_str())))
 			{
-				strcpy(skintochange, obj->texturecontainer[i]->m_texName);
+				skintochange = obj->texturecontainer[i]->m_texName;
 				break;
 			}
 		}
 
 //		TODO(lubosz): crash
 //		tex->Restore(GDevice);
-		TextureContainer * tex2 = FindTexture(skintochange);
+		TextureContainer * tex2 = FindTexture(skintochange.c_str());
 
 		if (tex2)
 			for (long i = 0; i < obj->nbmaps; i++)
@@ -199,9 +203,9 @@ long GetActionPoint(EERIE_3DOBJ * obj, const char * name)
 {
 	if (!obj) return -1;
 
-	for (long n = 0; n < obj->nbaction; n++)
-	{
-		if (!strcasecmp(obj->actionlist[n].name, name))
+	for (long n = 0; n < obj->actionlist.size(); n++)
+	{ // TODO iterator
+		if (!strcasecmp(obj->actionlist[n].name.c_str(), name))
 			return obj->actionlist[n].idx;
 	}
 
@@ -266,34 +270,32 @@ long ObjectAddFace(EERIE_3DOBJ * obj, EERIE_FACE * face, EERIE_3DOBJ * srcobj)
 }
 //*************************************************************************************
 //*************************************************************************************
-long ObjectAddAction(EERIE_3DOBJ * obj, char * name, long act,
+long ObjectAddAction(EERIE_3DOBJ * obj, const char * name, long act,
                      long sfx, EERIE_VERTEX * vert) 
 {
 	long newvert = ObjectAddVertex(obj, vert);
 
 	if (newvert < 0) return -1;
-
-	if (obj->nbaction == 0)
-	{
-		obj->actionlist = (EERIE_ACTIONLIST *)malloc(sizeof(EERIE_ACTIONLIST)); 
-	}
-	else
-	{
-		for (long i = 0; i < obj->nbaction; i++)
-		{
-			if (!strcmp(obj->actionlist[i].name, name))
-				return i;
+	
+	long j = 0;
+	for(vector<EERIE_ACTIONLIST>::iterator i = obj->actionlist.begin();
+	    i != obj->actionlist.end(); ++i) {
+		if(!i->name.compare(name)) {
+			return j;
 		}
-
-		obj->actionlist = (EERIE_ACTIONLIST *)realloc(obj->actionlist, sizeof(EERIE_ACTIONLIST) * (obj->nbaction + 1));
+		j++;
 	}
-
-	strcpy(obj->actionlist[obj->nbaction].name, name);
-	obj->actionlist[obj->nbaction].act = act;
-	obj->actionlist[obj->nbaction].sfx = sfx;
-	obj->actionlist[obj->nbaction].idx = newvert;
-	obj->nbaction++;
-	return (obj->nbaction - 1);
+	
+	obj->actionlist.push_back(EERIE_ACTIONLIST());
+	
+	EERIE_ACTIONLIST & action = obj->actionlist.back();
+	
+	action.name = name;
+	action.act = act;
+	action.sfx = sfx;
+	action.idx = newvert;
+	
+	return (obj->actionlist.size() - 1);
 }
 //*************************************************************************************
 //*************************************************************************************
@@ -398,18 +400,18 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	long sel_legs2 = -1;
 
 	// First we retreive selection groups indexes
-	for (i = 0; i < obj1->nbselections; i++)
-	{
-		if (!strcasecmp(obj1->selections[i].name, "head")) sel_head1 = i;
-		else if (!strcasecmp(obj1->selections[i].name, "chest")) sel_torso1 = i;
-		else if (!strcasecmp(obj1->selections[i].name, "leggings")) sel_legs1 = i;
+	for (i = 0; i < obj1->selections.size(); i++)
+	{ // TODO iterator
+		if (!strcasecmp(obj1->selections[i].name.c_str(), "head")) sel_head1 = i;
+		else if (!strcasecmp(obj1->selections[i].name.c_str(), "chest")) sel_torso1 = i;
+		else if (!strcasecmp(obj1->selections[i].name.c_str(), "leggings")) sel_legs1 = i;
 	}
 
-	for (i = 0; i < obj2->nbselections; i++)
-	{
-		if (!strcasecmp(obj2->selections[i].name, "head")) sel_head2 = i;
-		else if (!strcasecmp(obj2->selections[i].name, "chest")) sel_torso2 = i;
-		else if (!strcasecmp(obj2->selections[i].name, "leggings")) sel_legs2 = i;
+	for (i = 0; i < obj2->selections.size(); i++)
+	{ // TODO iterator
+		if (!strcasecmp(obj2->selections[i].name.c_str(), "head")) sel_head2 = i;
+		else if (!strcasecmp(obj2->selections[i].name.c_str(), "chest")) sel_torso2 = i;
+		else if (!strcasecmp(obj2->selections[i].name.c_str(), "leggings")) sel_legs2 = i;
 	}
 
 	if (sel_head1 == -1) return NULL;
@@ -492,9 +494,8 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	memcpy(obj2vertexlist2, obj2->vertexlist, sizeof(EERIE_VERTEX)*obj2->nbvertex);
 
 	// Work will contain the Tweaked object
-	EERIE_3DOBJ * work = NULL;
-	work = (EERIE_3DOBJ *)malloc(sizeof(EERIE_3DOBJ));
-	memset(work, 0, sizeof(EERIE_3DOBJ));
+	EERIE_3DOBJ * work = new EERIE_3DOBJ;
+	// TODO string breaker
 	memcpy(&work->pos, &obj1->pos, sizeof(EERIE_3D));
 	memcpy(&work->angle, &obj1->angle, sizeof(EERIE_3D));
 
@@ -541,28 +542,28 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	}
 
 	// Recreate Action Points included in work object.for Obj1
-	for (i = 0; i < obj1->nbaction; i++)
+	for (i = 0; i < obj1->actionlist.size(); i++)
 	{
 		if ((IsInSelection(obj1, obj1->actionlist[i].idx, iw1) != -1)
 		        ||	(IsInSelection(obj1, obj1->actionlist[i].idx, jw1) != -1)
-		        || (!strcasecmp(obj1->actionlist[i].name, "head2chest"))
-		        || (!strcasecmp(obj1->actionlist[i].name, "chest2leggings"))
+		        || (!strcasecmp(obj1->actionlist[i].name.c_str(), "head2chest"))
+		        || (!strcasecmp(obj1->actionlist[i].name.c_str(), "chest2leggings"))
 		   )
 		{
-			ObjectAddAction(work, obj1->actionlist[i].name, obj1->actionlist[i].act,
+			ObjectAddAction(work, obj1->actionlist[i].name.c_str(), obj1->actionlist[i].act,
 			                obj1->actionlist[i].sfx, &obj1vertexlist2[obj1->actionlist[i].idx]);
 		}
 	}
 
 	// Do the same for Obj2
-	for (i = 0; i < obj2->nbaction; i++)
+	for (i = 0; i < obj2->actionlist.size(); i++)
 	{
 		if ((IsInSelection(obj2, obj2->actionlist[i].idx, tw2) != -1)
-		        || (!strcasecmp(obj1->actionlist[i].name, "head2chest"))
-		        || (!strcasecmp(obj1->actionlist[i].name, "chest2leggings"))
+		        || (!strcasecmp(obj1->actionlist[i].name.c_str(), "head2chest"))
+		        || (!strcasecmp(obj1->actionlist[i].name.c_str(), "chest2leggings"))
 		   )
 		{
-			ObjectAddAction(work, obj2->actionlist[i].name, obj2->actionlist[i].act,
+			ObjectAddAction(work, obj2->actionlist[i].name.c_str(), obj2->actionlist[i].act,
 			                obj2->actionlist[i].sfx, &obj2vertexlist2[obj2->actionlist[i].idx]);
 		}
 	}
@@ -633,13 +634,12 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	}
 
 	// Recreate Groups
-	work->nbgroups = max(obj1->nbgroups, obj2->nbgroups);
-	work->grouplist = (EERIE_GROUPLIST *)malloc(sizeof(EERIE_GROUPLIST) * work->nbgroups); 
-	memset(work->grouplist, 0, sizeof(EERIE_GROUPLIST)*work->nbgroups);
+	work->nbgroups = std::max(obj1->nbgroups, obj2->nbgroups);
+	work->grouplist = new EERIE_GROUPLIST[work->nbgroups];
 
 	for (long k = 0; k < obj1->nbgroups; k++)
 	{
-		strcpy(work->grouplist[k].name, obj1->grouplist[k].name);
+		work->grouplist[k].name = obj1->grouplist[k].name;
 		long v = GetEquivalentVertex(work, &obj1vertexlist2[obj1->grouplist[k].origin]);
 
 		if (v >= 0)
@@ -656,7 +656,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	{
 		if (k >= obj1->nbgroups)
 		{
-			strcpy(work->grouplist[k].name, obj2->grouplist[k].name);
+			work->grouplist[k].name = obj2->grouplist[k].name;
 
 		}
 
@@ -672,12 +672,10 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	}
 
 	// Recreate Selection Groups (only the 3 selections needed to reiterate MeshTweaking !)
-	work->nbselections = 3;
-	work->selections = (EERIE_SELECTIONS *)malloc(sizeof(EERIE_SELECTIONS) * work->nbselections); 
-	memset(work->selections, 0, sizeof(EERIE_SELECTIONS)*work->nbselections);
-	strcpy(work->selections[0].name, "head");
-	strcpy(work->selections[1].name, "chest");
-	strcpy(work->selections[2].name, "leggings");
+	work->selections.resize(3);
+	work->selections[0].name = "head";
+	work->selections[1].name = "chest";
+	work->selections[2].name = "leggings";
 
 	// Re-Creating sel_head
 	if (tw == TWEAK_HEAD)
@@ -773,15 +771,13 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 		}
 
 	//Now recreates other selections...
-	for (i = 0; i < obj1->nbselections; i++)
-	{
-		if (EERIE_OBJECT_GetSelection(work, obj1->selections[i].name) == -1)
+	for (i = 0; i < obj1->selections.size(); i++)
+	{ // TODO iterator
+		if (EERIE_OBJECT_GetSelection(work, obj1->selections[i].name.c_str()) == -1)
 		{
-			long num = work->nbselections;
-			work->nbselections++;
-			work->selections = (EERIE_SELECTIONS *)realloc(work->selections, sizeof(EERIE_SELECTIONS) * work->nbselections);
-			memset(&work->selections[num], 0, sizeof(EERIE_SELECTIONS));
-			strcpy(work->selections[num].name, obj1->selections[i].name);
+			long num = work->selections.size();
+			work->selections.resize(num + 1);
+			work->selections[num].name = obj1->selections[i].name;
 
 			for (long l = 0; l < obj1->selections[i].nb_selected; l++)
 			{
@@ -797,7 +793,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 				}
 			}
 
-			long ii = EERIE_OBJECT_GetSelection(obj2, obj1->selections[i].name);
+			long ii = EERIE_OBJECT_GetSelection(obj2, obj1->selections[i].name.c_str());
 
 			if (ii != -1)
 				for (long l = 0; l < obj2->selections[ii].nb_selected; l++)
@@ -816,15 +812,13 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 		}
 	}
 
-	for (i = 0; i < obj2->nbselections; i++)
-	{
-		if (EERIE_OBJECT_GetSelection(work, obj2->selections[i].name) == -1)
+	for (i = 0; i < obj2->selections.size(); i++)
+	{ // TODO iterator
+		if (EERIE_OBJECT_GetSelection(work, obj2->selections[i].name.c_str()) == -1)
 		{
-			long num = work->nbselections;
-			work->nbselections++;
-			work->selections = (EERIE_SELECTIONS *)realloc(work->selections, sizeof(EERIE_SELECTIONS) * work->nbselections);
-			memset(&work->selections[num], 0, sizeof(EERIE_SELECTIONS));
-			strcpy(work->selections[num].name, obj2->selections[i].name);
+			long num = work->selections.size();
+			work->selections.resize(num + 1);
+			work->selections[num].name = obj2->selections[i].name;
 
 			for (long l = 0; l < obj2->selections[i].nb_selected; l++)
 			{
@@ -884,22 +878,21 @@ long ALLOW_MESH_TWEAKING = 1;
 //*************************************************************************************
 //*************************************************************************************
 
-void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, char * _path)
+void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const std::string& _path)
 {
 	if (!ALLOW_MESH_TWEAKING) return;
 
-	char file2[256];
-	char filet[256];
-	char path[256];
+	std::string file2;
+	std::string filet;
+	std::string path;
 	File_Standardize(_path, path);
 
-	strcpy(filet, "GAME\\");
-	strcat(filet, path);
+	filet = "GAME\\" + path;
 
 	SetExt(filet, ".FTL");
 	File_Standardize(filet, file2);
 
-	if ((!PAK_FileExist(file2)) && (!PAK_FileExist(path))) return;
+	if ((!PAK_FileExist(file2.c_str())) && (!PAK_FileExist(path.c_str()))) return;
 
 	if (tw == TWEAK_ERROR) return;
 
@@ -909,7 +902,7 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, char * _path)
 
 	EERIE_MESH_ReleaseTransPolys(io->obj);
 
-	if ((path == NULL) && (tw == TWEAK_REMOVE))
+	if ( path.empty() && (tw == TWEAK_REMOVE))
 	{
 		if (io->tweaky)
 		{
@@ -926,15 +919,14 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, char * _path)
 	EERIE_3DOBJ * result = NULL;
 	EERIE_3DOBJ * result2 = NULL;
 
-	if ((PAK_FileExist(file2)) || (PAK_FileExist(path)))
+	if ((PAK_FileExist(file2.c_str())) || (PAK_FileExist(path.c_str())))
 	{
-		
-		const char DIR_TEXTURES[] = "Graph\\Obj3D\\Textures\\";
-		
+		const char tex1[] = "Graph\\Obj3D\\Textures\\";
+
 		if (io->ioflags & IO_NPC)
-			tobj = TheoToEerie_Fast(DIR_TEXTURES, path, TTE_NPC);
+			tobj = TheoToEerie_Fast(tex1, path.c_str(), TTE_NPC);
 		else
-			tobj = TheoToEerie_Fast(DIR_TEXTURES, path, 0);
+			tobj = TheoToEerie_Fast(tex1, path.c_str(), 0);
 
 		if (!tobj) return;
 

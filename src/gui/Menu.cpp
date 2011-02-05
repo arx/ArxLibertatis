@@ -82,7 +82,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakManager.h"
 
 //-----------------------------------------------------------------------------
-extern CARXTextManager * pTextManage;
+extern TextManager * pTextManage;
 extern CDirectInput * pGetInfoDirectInput;
 extern CMenuConfig * pMenuConfig;
 extern EERIE_3D ePlayerAngle;
@@ -147,7 +147,7 @@ void ARX_Menu_Release_Text(void * a)
 
  
 long save_c(0), save_p(0);
-SaveGame * save_l = NULL;
+std::vector<SaveGame> save_l;
 
 //-----------------------------------------------------------------------------
 void CreateSaveGameList()
@@ -157,10 +157,9 @@ void CreateSaveGameList()
 
 	sprintf(path, "save%s\\save*", LOCAL_SAVENAME);
 
-	if (!(save_l = (SaveGame *)malloc(sizeof(SaveGame)))) return;
+	save_l.resize( save_l.size() + 1 );
 
-	strcpy(save_l[0].name, "New");
-	memset(&save_l[0].stime, 0, sizeof(SYSTEMTIME));
+	save_l[0].name = "New";
 	save_c = 1;
 
 	char tTemp[sizeof(WIN32_FIND_DATA)+2];
@@ -172,22 +171,18 @@ void CreateSaveGameList()
 		{
 			if (fdata->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY && fdata->cFileName[0] != '.')
 			{
-				void * ptr;
+				// Make another save game slot at the end
+				save_l.resize( save_l.size() +1 );
 
-				if (!(ptr = realloc(save_l, sizeof(SaveGame) * (save_c + 1))))
-				{
-					free(save_l), save_l = NULL, save_c = 0;
-					return;
-				}
-
-				save_l = (SaveGame *)ptr;
-				char text[256];
-				strcpy(text, fdata->cFileName + 4);
-				save_l[save_c].num = atoi(text);
-				sprintf(text, "save%s\\%s\\", LOCAL_SAVENAME, fdata->cFileName);
+				std::string text = fdata->cFileName + 4;
+				save_l[save_c].num = atoi(text.c_str());
+				std::stringstream ss;
+				ss << "save" << LOCAL_SAVENAME << "\\" << fdata->cFileName << "\\";
+				text = ss.str();
+				//sprintf(text, "%ssave%s\\%s\\", Project.workingdir, LOCAL_SAVENAME, fdata->cFileName);
 				unsigned long pouet;
 
-				if (ARX_CHANGELEVEL_GetInfo(text, save_l[save_c].name, &save_l[save_c].version, &save_l[save_c].level, &pouet) != -1)
+				if (ARX_CHANGELEVEL_GetInfo(text, save_l[save_c].name, save_l[save_c].version, save_l[save_c].level, pouet) != -1)
 				{
 					SYSTEMTIME stime;
 					FILETIME fTime;
@@ -208,7 +203,9 @@ void CreateSaveGameList()
 //-----------------------------------------------------------------------------
 void FreeSaveGameList()
 {
-	free(save_l), save_l = NULL, save_c = save_p = 0;
+	save_l.clear();
+	save_c = 0;
+	save_p = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -261,63 +258,61 @@ void ARX_Menu_Resources_Create(LPDIRECT3DDEVICE7 m_pd3dDevice)
 {
 	if (ARXmenu.mda)
 	{
-		free(ARXmenu.mda);
+		delete ARXmenu.mda;
 		ARXmenu.mda = NULL;
 	}
 
-	ARXmenu.mda = (MENU_DYNAMIC_DATA *)malloc(sizeof(MENU_DYNAMIC_DATA)); 
-	memset(ARXmenu.mda, 0, sizeof(MENU_DYNAMIC_DATA));
-	ARXmenu.mda->Background = NULL; 
+	ARXmenu.mda = new MENU_DYNAMIC_DATA();
 	ARXmenu.mda->pTexCredits = MakeTCFromFile("Graph\\Interface\\menus\\Menu_credits.bmp");
 	ARXmenu.mda->BookBackground = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\Char_creation_Bg.BMP");
 
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STRENGTH],			_T("system_charsheet_strength"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MIND],				_T("system_charsheet_intel"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEXTERITY],			_T("system_charsheet_Dex"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CONSTITUTION],		_T("system_charsheet_consti"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STEALTH],			_T("system_charsheet_stealth"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MECANISM],			_T("system_charsheet_mecanism"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_INTUITION],			_T("system_charsheet_intuition"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_ETHERAL_LINK],		_T("system_charsheet_etheral_link"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_OBJECT_KNOWLEDGE],	_T("system_charsheet_objknoledge"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CASTING],			_T("system_charsheet_casting"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_PROJECTILE],		_T("system_charsheet_projectile"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CLOSE_COMBAT],		_T("system_charsheet_closecombat"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEFENSE],			_T("system_charsheet_defense"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_QUICK_GENERATION], _T("system_charsheet_quickgenerate"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_DONE],			_T("system_charsheet_done"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_SKIN],			_T("system_charsheet_skin"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_ATTRIBUTES],			_T("system_charsheet_atributes"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_SKILLS],				_T("system_charsheet_skills"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_STATUS],				_T("system_charsheet_status"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_LEVEL],				_T("system_charsheet_level"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_XP],					_T("system_charsheet_xpoints"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_HP],					_T("system_charsheet_hp"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_MANA],				_T("system_charsheet_mana"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_AC],					_T("system_charsheet_AC"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_MAGIC],		_T("system_charsheet_res_magic"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_POISON],		_T("system_charsheet_res_poison"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_DAMAGE],				_T("system_charsheet_damage"));
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STRENGTH],              "system_charsheet_strength");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MIND],                  "system_charsheet_intel");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEXTERITY],             "system_charsheet_Dex");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CONSTITUTION],          "system_charsheet_consti");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STEALTH],               "system_charsheet_stealth");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MECANISM],              "system_charsheet_mecanism");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_INTUITION],             "system_charsheet_intuition");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_ETHERAL_LINK],          "system_charsheet_etheral_link");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_OBJECT_KNOWLEDGE],      "system_charsheet_objknoledge");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CASTING],               "system_charsheet_casting");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_PROJECTILE],            "system_charsheet_projectile");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CLOSE_COMBAT],          "system_charsheet_closecombat");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEFENSE],               "system_charsheet_defense");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_QUICK_GENERATION],    "system_charsheet_quickgenerate");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_DONE],                "system_charsheet_done");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_SKIN],                "system_charsheet_skin");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_ATTRIBUTES],             "system_charsheet_atributes");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_SKILLS],                 "system_charsheet_skills");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_STATUS],                 "system_charsheet_status");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_LEVEL],                  "system_charsheet_level");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_XP],                     "system_charsheet_xpoints");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_HP],                     "system_charsheet_hp");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_MANA],                   "system_charsheet_mana");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_AC],                     "system_charsheet_AC");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_MAGIC],           "system_charsheet_res_magic");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_POISON],          "system_charsheet_res_poison");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_DAMAGE],                 "system_charsheet_damage");
 
-	ARX_Allocate_Text(ARXmenu.mda->str_button_quickgen,				_T("system_charsheet_button_quickgen"));
-	ARX_Allocate_Text(ARXmenu.mda->str_button_skin,					_T("system_charsheet_button_skin"));
-	ARX_Allocate_Text(ARXmenu.mda->str_button_done,					_T("system_charsheet_button_done"));
+	ARX_Allocate_Text(ARXmenu.mda->str_button_quickgen,                 "system_charsheet_button_quickgen");
+	ARX_Allocate_Text(ARXmenu.mda->str_button_skin,                     "system_charsheet_button_skin");
+	ARX_Allocate_Text(ARXmenu.mda->str_button_done,                     "system_charsheet_button_done");
 
-	size_t size;
+	size_t siz;
 	char szFileName[256];
 
-	sprintf(szFileName, "Localisation\\ucredits_%s.txt", Project.localisationpath);
-	ARXmenu.mda->str_cre_credits = (_TCHAR *) PAK_FileLoadMalloc(szFileName, &size);
+	sprintf(szFileName, "Localisation\\ucredits_%s.txt", Project.localisationpath.c_str());
+	ARXmenu.mda->str_cre_credits = (_TCHAR*) PAK_FileLoadMalloc(szFileName, siz);
 
-	if (ARXmenu.mda->str_cre_credits &&
-	        ARXmenu.mda->str_cre_credits[(size>>1)-1] != 0)
+	if (!ARXmenu.mda->str_cre_credits.empty() &&
+		ARXmenu.mda->str_cre_credits[(siz>>1)-1] != 0)
 	{
-		_TCHAR * pTxt = (_TCHAR *)malloc(size + 2);
-		memcpy(pTxt, ARXmenu.mda->str_cre_credits, size);
-		pTxt[(size>>1)] = 0;
-		free(ARXmenu.mda->str_cre_credits);
+		_TCHAR * pTxt = (_TCHAR *)malloc(siz + 2);
+		memcpy(pTxt, ARXmenu.mda->str_cre_credits.c_str(), siz);
+		pTxt[(siz>>1)] = 0;
 		ARXmenu.mda->str_cre_credits = pTxt;
 	}
+	ARXmenu.mda->str_cre_credits.clear();
 
 	CreateSaveGameList();
 }
@@ -342,19 +337,19 @@ void ARX_Menu_Resources_Release(bool _bNoSound)
 		D3DTextr_KillTexture(ARXmenu.mda->BookBackground);
 		ARXmenu.mda->BookBackground = NULL;
 	}
-
+/*
 	for (long i = 0; i < MAX_FLYOVER; i++)
 	{
-		if (ARXmenu.mda->flyover[i] != NULL)
+		if ( !ARXmenu.mda->flyover[i].empty() )
 			ARX_Menu_Release_Text(ARXmenu.mda->flyover[i]);
-	}
-
+	}*/
+/*
 	ARX_Menu_Release_Text(ARXmenu.mda->str_cre_credits);
 
 	ARX_Menu_Release_Text(ARXmenu.mda->str_button_quickgen);
 	ARX_Menu_Release_Text(ARXmenu.mda->str_button_skin);
 	ARX_Menu_Release_Text(ARXmenu.mda->str_button_done);
-
+*/
 	if (ARXmenu.mda)
 	{
 		free(ARXmenu.mda);
@@ -489,7 +484,7 @@ void ARX_Menu_Manage(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		case AMCM_NEWQUEST:
 		{
 			if (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_ESCAPE)
-			        &&	! bFadeInOut // XS: Disabling ESC capture while fading in or out.
+					&&	! bFadeInOut // XS: Disabling ESC capture while fading in or out.
 			   )
 			{
 				ARX_MENU_CLICKSOUND();
@@ -512,7 +507,7 @@ void ARX_Menu_Manage(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		case AMCM_CREDITS:
 
 			if ((pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_ESCAPE))
-			        || (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_SPACE)))
+					|| (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_SPACE)))
 			{
 				ARX_MENU_CLICKSOUND();
 				bFadeInOut = true;	//fade out
@@ -710,7 +705,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			Xratio = ox;
 			Yratio = oy;
 
-			if (ARXmenu.mda->flyover[FLYING_OVER] != NULL) //=ARXmenu.mda->flyover[FLYING_OVER];
+			if (!ARXmenu.mda->flyover[FLYING_OVER].empty() ) //=ARXmenu.mda->flyover[FLYING_OVER];
 			{
 				if (FLYING_OVER != OLD_FLYING_OVER)
 				{
@@ -724,15 +719,15 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 					pTextManage->Clear();
 					OLD_FLYING_OVER = FLYING_OVER;
 					UNICODE_ARXDrawTextCenteredScroll((DANAESIZX * 0.5f),
-					                                  12,
-					                                  (DANAECENTERX) * 0.82f,
-					                                  ARXmenu.mda->flyover[FLYING_OVER],
-					                                  RGB(232 + t, 204 + t, 143 + t),
-					                                  0x00FF00FF,
-					                                  hFontInGame,
-					                                  1000,
-					                                  0.01f,
-					                                  2);
+													  12,
+													  (DANAECENTERX) * 0.82f,
+													  ARXmenu.mda->flyover[FLYING_OVER],
+													  RGB(232 + t, 204 + t, 143 + t),
+													  0x00FF00FF,
+													  hFontInGame,
+													  1000,
+													  0.01f,
+													  2);
 				}
 			}
 			else
@@ -923,14 +918,14 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		COLORREF Color = 0;
 		int iW;
 		int iH;
-		_TCHAR szText[256];
+		std::string szText;
 
 		Color = RGB(232, 204, 143);
 
 		PAK_UNICODE_GetPrivateProfileString("system_menus_main_cdnotfound", "", szText, 256);
 		iW = 0;
 		iH = 0;
-		GetTextSize(hFontMenu, szText, &iW, &iH);
+		GetTextSize(hFontMenu, szText, iW, iH);
 		ePos.x = (DANAESIZX - iW) * 0.5f;
 		ePos.y = DANAESIZY * 0.4f;
 		FontRenderText(hFontMenu, ePos, szText, Color);
@@ -938,7 +933,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		PAK_UNICODE_GetPrivateProfileString("system_yes", "", szText, 256);
 		iW = 0;
 		iH = 0;
-		GetTextSize(hFontMenu, szText, &iW, &iH);
+		GetTextSize(hFontMenu, szText, iW, iH);
 		ePos.x = (DANAESIZX * 0.5f - iW) * 0.5f;
 		ePos.y = DANAESIZY * 0.5f;
 
@@ -964,7 +959,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		PAK_UNICODE_GetPrivateProfileString("system_no", "", szText, 256);
 		iW = 0;
 		iH = 0;
-		GetTextSize(hFontMenu, szText, &iW, &iH);
+		GetTextSize(hFontMenu, szText, iW, iH);
 		ePos.x = DANAESIZX * 0.5f + (DANAESIZX * 0.5f - iW) * 0.5f;
 
 		if (MouseInRect(ePos.x, ePos.y, ePos.x + iW, ePos.y + iH))

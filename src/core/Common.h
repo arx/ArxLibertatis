@@ -55,7 +55,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2010 ARKANE Studios SA. All rights reserved
 /////////////////////////////////////////////////////////////////////////////////////
-#pragma once
+#ifndef ARX_COMMON_H
+#define ARX_COMMON_H
 
 /* ---------------------------------------------------------
 						Include
@@ -64,12 +65,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // TODO remove these
 #include <climits>
 #include <cstdio>
+#include <cstdarg>
+#include <ctime>
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <cstdarg>
-#include <ctime>
 
 /* ---------------------------------------------------------
 						Platforms
@@ -155,7 +157,7 @@ typedef double              F64;    // 64 bits double float
 
 
 /* ---------------------------------------------------------
-					     Break
+						 Break
 ------------------------------------------------------------*/
 
 #define ARXCOMMON_BUFFERSIZE	512
@@ -277,3 +279,4 @@ class ArxDebug
 		static void Assert(const char * _sMessage, const char * _sFile, unsigned _iLine);
 	
 };
+#endif // ARX_COMMON_H

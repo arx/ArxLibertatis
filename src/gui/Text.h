@@ -56,60 +56,36 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_TEXT_H
 #define ARX_TEXT_H
 
-#include <tchar.h>
+#include <string>
 #include <vector>
+#include "gui/TextManager.h"
 #include "core/Application.h"
 #include "graphics/GraphicsTypes.h"
 
 using std::vector;
 
-//-----------------------------------------------------------------------------
-typedef enum _ARX_TEXT_TYPE
-{
+enum ARX_TEXT_TYPE {
 	ARX_TEXT_ONCE,
 	ARX_TEXT_STAY
-} ARX_TEXT_TYPE;
-
-//-----------------------------------------------------------------------------
-typedef struct _ARX_TEXT
-{
-	ARX_TEXT_TYPE	eType;
-	HFONT			hFont;
-	RECT			rRect;
-	RECT			rRectClipp;
-	_TCHAR		*	lpszUText;
-	float			fDeltaY;
-	float			fSpeedScrollY;
-	long			lCol;
-	long			lBkgCol;
-	long			lTimeScroll;
-	long			lTimeOut;
-	long			lTailleLigne;
-	int				iNbLineClip;
-} ARX_TEXT;
-
-//-----------------------------------------------------------------------------
-void ARX_Text_Init(ARX_TEXT *);
-
-//-----------------------------------------------------------------------------
-class CARXTextManager
-{
-	public:
-		vector<ARX_TEXT *>	vText;
-	public:
-		CARXTextManager();
-		~CARXTextManager();
-	public:
-		bool AddText(HFONT, _TCHAR *, RECT &, long _lCol = -1, long _lBkgCol = 0, long _lTimeOut = 0, long _lTimeScroll = 0, float _fSpeedScroll = 0.f, int iNbLigneClipp = 0);
-		bool AddText(ARX_TEXT *);
-		void Update(float);
-		void Render();
-		void Clear();
 };
 
-//-----------------------------------------------------------------------------
-extern CARXTextManager * pTextManage;
+struct ARX_TEXT {
+	ARX_TEXT_TYPE   eType;
+	HFONT           hFont;
+	RECT            rRect;
+	RECT            rRectClipp;
+	std::string     lpszUText;
+	float           fDeltaY;
+	float           fSpeedScrollY;
+	long            lCol;
+	long            lBkgCol;
+	long            lTimeScroll;
+	long            lTimeOut;
+	long            lTailleLigne;
+	int             iNbLineClip;
+};
 
+extern TextManager * pTextManage;
 extern HFONT hFontMainMenu;
 extern HFONT hFontMenu;
 extern HFONT hFontControls;
@@ -118,33 +94,28 @@ extern HFONT InBookFont;
 extern HFONT hFontInGame;
 extern HFONT hFontInGameNote;
 
-//-----------------------------------------------------------------------------
-long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice, HFONT ef, float x, float y, long spacingx, long spacingy, const char * car, COLORREF colo, COLORREF bcol = 0x00FF00FF);
-long ARX_TEXT_DrawRect(LPDIRECT3DDEVICE7 pd3dDevice, HFONT ef, float x, float y, long spacingx, long spacingy, float maxx, float maxy, _TCHAR * car, COLORREF colo, HRGN hRgn = NULL, COLORREF bcol = 0x00FF00FF, long flags = 0);
-float DrawBookTextInRect(float x, float y, float maxx, float maxy, _TCHAR * text, COLORREF col, COLORREF col2, HFONT font);
-void DrawBookTextCenter(float x, float y, _TCHAR * text, COLORREF col, COLORREF col2, HFONT font);
-long UNICODE_ARXDrawTextCenter(float x, float y, _TCHAR * str, COLORREF col, COLORREF bcol, HFONT font);
+void ARX_Text_Init(ARX_TEXT *);
+long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice, HFONT ef, float x, float y, long spacingx, long spacingy, const std::string& car, COLORREF colo, COLORREF bcol = 0x00FF00FF);
+long ARX_TEXT_DrawRect(LPDIRECT3DDEVICE7 pd3dDevice, HFONT ef, float x, float y, long spacingx, long spacingy, float maxx, float maxy, const std::string& car, COLORREF colo, HRGN hRgn = NULL, COLORREF bcol = 0x00FF00FF, long flags = 0);
+float DrawBookTextInRect(float x, float y, float maxx, float maxy, const std::string& text, COLORREF col, COLORREF col2, HFONT font);
+void DrawBookTextCenter(float x, float y, const std::string& text, COLORREF col, COLORREF col2, HFONT font);
+long UNICODE_ARXDrawTextCenter(float x, float y, const std::string& str, COLORREF col, COLORREF bcol, HFONT font);
  
-long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, _TCHAR * str, COLORREF col, COLORREF bcol, HFONT font, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut = INT_MAX);
-long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, _TCHAR * _lpszUText, int _iSpacingY, RECT _rRect);
+long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, const std::string& str, COLORREF col, COLORREF bcol, HFONT font, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut = INT_MAX);
+long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, const std::string& _lpszUText, int _iSpacingY, RECT _rRect);
 long ARX_UNICODE_DrawTextInRect(float x, float y,
-                                float maxx, float maxy,
-                                const char * _lpszUText,
-                                COLORREF col, COLORREF bcol,
-                                HFONT font,
-                                HRGN hRgn = NULL,
-                                HDC hHDC = NULL);
+								float maxx, float maxy,
+								const std::string& _lpszUText,
+								COLORREF col, COLORREF bcol,
+								HFONT font,
+								HRGN hRgn = NULL,
+								HDC hHDC = NULL);
 
-void ARX_Allocate_Text(char *&dest, const char * id_string);
-_TCHAR * GetFontName(const char *);
+void ARX_Allocate_Text( std::string& dest, const std::string& id_string);
+std::string GetFontName( const std::string& );
 void _ShowText(char * text);
-
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-
 void ARX_Text_Init();
 void ARX_Text_Close();
-void FontRenderText(HFONT _hFont, EERIE_3D pos, _TCHAR * _pText, COLORREF _c);
+void FontRenderText(HFONT _hFont, EERIE_3D pos, const std::string& _pText, COLORREF _c);
 
 #endif

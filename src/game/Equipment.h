@@ -94,9 +94,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //-----------------------------------------------------------------------------
 void ARX_EQUIPMENT_Init();
 void ARX_EQUIPMENT_Remove_All_Special(INTERACTIVE_OBJ * io);
-void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, char * param1, char * param2, float val, short flags);
-void ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ * io, char * temp, long val);
-unsigned long ARX_EQUIPMENT_GetObjectTypeFlag(char * temp);
+void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const char * param1, const char * param2, float val, short flags);
+void ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ * io, const char * temp, long val);
+unsigned long ARX_EQUIPMENT_GetObjectTypeFlag( const char * temp);
 void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip);
 void ARX_EQUIPMENT_UnEquip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip, long flags = 0);
 void ARX_EQUIPMENT_ReleaseAll(INTERACTIVE_OBJ * io);
@@ -117,6 +117,7 @@ void ARX_EQUIPMENT_IdentifyAll();
 
 void ARX_EQUIPMENT_UnEquipAllPlayer();
 float ARX_EQUIPMENT_GetSpecialValue(INTERACTIVE_OBJ * io, long val);
-float GetHitValue(char * name);
+float GetHitValue( const std::string& name);
 void ARX_EQUIPMENT_UnEquipPlayerWeapon();
+bool ARX_EQUIPMENT_IsPlayerEquip(INTERACTIVE_OBJ * _pIO);
 #endif
