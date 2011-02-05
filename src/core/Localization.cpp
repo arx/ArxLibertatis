@@ -51,98 +51,59 @@ extern CMenuConfig * pMenuConfig;
 
 CLocalisationHash * pHashLocalisation;
 
-//-----------------------------------------------------------------------------
-bool isSection( const _TCHAR * _lpszUText)
-{
-	ULONG i			 = 0;
-	unsigned long ulTextSize = _tcslen(_lpszUText);
-	bool bFirst = false;
-	bool bLast  = false;
-
-	while (i < ulTextSize)
-	{
-		if (_lpszUText[i] == _T('['))
-		{
-			if (bFirst)
-				return false;
-			else
-				bFirst = true;
-		}
-		else if (_lpszUText[i] == _T(']'))
-		{
-			if (bFirst)
-				if (bLast)
-					return false;
-				else
-					bLast = true;
-			else
-				return false;
-		}
-		else if (isalnum(_lpszUText[i]))
-		{
-			if (!bFirst)
-				return false;
-			else if (bFirst && bLast)
-				return false;
-		}
-
-		i++;
-	}
-
-	if (bFirst && bLast) return true;
-
-	return false;
-}
-
+/*****************************************************************
+ * Checks a str for square brackets and makes sure they appear
+ * left first, right second. This confirms str as a section line.
+ *****************************************************************/
 bool isSection( const std::string& str )
 {
+	// Location of square brackets in str
 	size_t first_bracket, last_bracket;
 
+	// Get location of '[' and ']' in str
 	first_bracket = str.find_first_of('[');
 	last_bracket = str.find_last_of(']');
 
+	// If either of the brackets are not present, not a section
 	if ( first_bracket == std::string::npos ) return false;
 	if ( last_bracket == std::string::npos ) return false;
 
+	// '[' must be before ']'
 	if ( first_bracket > last_bracket ) return false;
 
+	// It is a section
 	return true;
 }
- 
 
-//-----------------------------------------------------------------------------
-bool isKey(const _TCHAR * _lpszUText)
+
+/*****************************************************************
+ * Checks whether or not str is a valid key line.
+ * Looks for an alphanumeric key followed by
+ * at least one '=' character.
+ ****************************************************************/
+bool isKey( const std::string& str )
 {
-	unsigned long i = 0;
-	unsigned long ulTextSize = _tcslen(_lpszUText);
- 
- 
-	bool bSpace = false;
-	bool bAlpha = false;
-
-	while (i < ulTextSize)
+	// Iterate through str until alphanumeric characters are found
+	for ( int i = 0 ; i < str.length() ; i++ )
 	{
-		if (_lpszUText[i] == _T('='))
-		{
-			if (bSpace)
-				return false;
-			else
-				bSpace = true;
-		}
-		else if (isalnum(_lpszUText[i]))
-		{
-			if (!bAlpha)
-				bAlpha = true;
-		}
+		// If we hit an '=' before other alphanumeric characters, return false
+		if ( str[i] == '=' ) return false;
 
-		i++;
+		// Just one alphanumeric is enough for a key, break out of the loop
+		if ( isalnum(str[i]) )
+			break;
 	}
 
-	if (bSpace && bAlpha) return true;
+	// Now find the location of the first equals sign
+	size_t equals_loc = str.find('=');
 
-	return false;
+	// No equals sign present means not a key, return false
+	if ( equals_loc == std::string::npos ) return false;
+
+	// Value can be empty, no need to check for one. Return true
+	return true;
 }
-
+	
 //-----------------------------------------------------------------------------
 bool isNotEmpty(_TCHAR * _lpszUText)
 {
@@ -162,40 +123,26 @@ bool isNotEmpty(_TCHAR * _lpszUText)
 	return false;
 }
 
-//-----------------------------------------------------------------------------
-_TCHAR * CleanSection(const _TCHAR * _lpszUText)
+/**************************************************************
+ * Removes all characters preceding the first '[' and
+ * proceeding the first ']' in a copy of _str and returns
+ * the result.
+ *************************************************************/
+std::string CleanSection( const std::string& _str )
 {
-	_TCHAR * lpszUText = (_TCHAR *) malloc((_tcslen(_lpszUText) + 2) * sizeof(_TCHAR));
-	ZeroMemory(lpszUText, (_tcslen(_lpszUText) + 2)*sizeof(_TCHAR));
+	std::string str = _str;
 
-	unsigned long ulPos = 0;
-	bool bFirst = false;
-	bool bLast = false;
+	size_t first_bracket = str.find('[');
+	size_t last_bracket = str.find(']');
 
-	for (unsigned long ul = 0; ul < _tcslen(_lpszUText); ul++)
-	{
-		if (_lpszUText[ul] == _T('['))
-		{
-			bFirst = true;
-		}
-		else if (_lpszUText[ul] == _T(']'))
-		{
-			bLast = true;
-		}
+	// Erase all characters up to but not including the '['
+	str.erase( 0, first_bracket );
 
-		if (bFirst)
-		{
-			lpszUText[ulPos] = _lpszUText[ul];
-			ulPos ++;
+	// Erase all characters following but not including the ']'
+	str.erase( last_bracket + 1 );
 
-			if (bLast)
-			{
-				break;
-			}
-		}
-	}
-
-	return lpszUText;
+	// Return the processed string
+	return str;
 }
 
 //-----------------------------------------------------------------------------
@@ -253,9 +200,6 @@ _TCHAR * CleanKey(const _TCHAR * _lpszUText)
 void ParseFile( const std::string& _lpszUTextFile, const unsigned long _ulFileSize)
 {
 	std::string temp = _lpszUTextFile;
-	temp.erase( 0, 1 ); // TODO This apparently removes a unicode header?
-	unsigned long ulFileSize = _ulFileSize - 1;
-
 
 	std::list<std::string> input_strings;
 	std::stringstream ss( _lpszUTextFile );
@@ -358,20 +302,20 @@ void ParseFile( const std::string& _lpszUTextFile, const unsigned long _ulFileSi
 		if ( isSection( *iter ) )
 		{
 			CLocalisation* loc = new CLocalisation();
-			std::string section_str = CleanSection( iter->c_str() );
-			loc->SetSection( iter->c_str() );
+			std::string section_str = CleanSection( *iter );
+			loc->SetSection( section_str );
 
 			iter++;
 
 			while ( ( iter != input_strings.end() ) && ( !isSection( iter->c_str() ) ) )
 			{
-				if ( isKey( iter->c_str() ) )
+				if ( isKey( *iter ) )
 				{
 					loc->AddKey( CleanKey( iter->c_str() ) );
-					iter++;
 				}
-				else
-					break; // Done reading the keys for this section, break the loop and continue with the finished loc object
+				iter++;
+				//else
+				//	break; // Done reading the keys for this section, break the loop and continue with the finished loc object
 			}
 
 			pHashLocalisation->AddElement(loc);
@@ -397,7 +341,7 @@ void ParseFile( const std::string& _lpszUTextFile, const unsigned long _ulFileSi
 			{
 				if(isKey((*iter).c_str()))
 					loc->AddKey( CleanKey((*iter).c_str() ) );
-				else
+				else
 					break;
 			}
 
@@ -568,7 +512,6 @@ long HERMES_UNICODE_GetProfileString(   const std::string&  sectionname,
 		destination = defaultstring;
 
 	//TODO(lubosz): Hardcode string
-	destination = "foo";
 	return 0;
 }
 

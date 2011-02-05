@@ -9,7 +9,6 @@
 #include "Text.h"
 
 #include "core/Core.h"
-#include "io/Logger.h"
 
 TextManager::TextManager() {
 	vText.clear();
@@ -170,7 +169,6 @@ bool TextManager::AddText(ARX_TEXT * _pArxText)
 
 void TextManager::Update(float _fDiffFrame)
 {
-	LogDebug << "TextManager::Update - " << vText.size();
 	vector<ARX_TEXT *>::iterator itManage;
 
 
@@ -219,7 +217,6 @@ void TextManager::Update(float _fDiffFrame)
 
 void TextManager::Render()
 {
-	LogDebug << "Calling TextManager::Render()";
 	vector<ARX_TEXT *>::iterator itManage;
 
 	itManage = vText.begin();
@@ -231,7 +228,6 @@ void TextManager::Render()
 		danaeApp.m_pddsRenderTarget->GetDC(&hDC);
 	}
 
-	LogDebug << "Preparing to render " << vText.size() << " buffered text strings";
 	while (itManage != vText.end())
 	{
 		ARX_TEXT * pArxText = *itManage;
@@ -244,7 +240,6 @@ void TextManager::Render()
 								 pArxText->rRectClipp.right,
 								 pArxText->rRectClipp.bottom);
 
-			LogDebug << "Rendering text " << pArxText->lpszUText;
 			pArxText->rRect.bottom = pArxText->rRect.top + ARX_UNICODE_DrawTextInRect(ARX_CLEAN_WARN_CAST_FLOAT(pArxText->rRect.left),
 									 pArxText->rRect.top - pArxText->fDeltaY,
 									 ARX_CLEAN_WARN_CAST_FLOAT(pArxText->rRect.right),
