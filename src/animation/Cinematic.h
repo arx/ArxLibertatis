@@ -47,8 +47,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define FX_LIGHT   (1<<24)
 
 
-class C_KEY;
-class CinematicGrid;
+struct C_KEY;
+struct CinematicGrid;
 
 
 // TODO used for loading

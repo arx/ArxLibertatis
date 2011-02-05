@@ -2,6 +2,7 @@
 #define LOGGER_H
 
 #include <cstring>
+#include "core/Common.h"
 
 #if !ARX_COMPILER_MSVC
     #define ShortFile std::strrchr(__FILE__, '/')+1

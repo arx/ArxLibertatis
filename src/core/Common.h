@@ -80,17 +80,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define	ARX_PLATFORM_LINUX		3
 
 #if defined(__PPU__)
-	#define ARX_PLATFORM	ARX_PLATFORM_PS3_PPU
+	#define ARX_PLATFORM		ARX_PLATFORM_PS3_PPU
 #elif defined(_WIN32)
-	#define	ARX_PLATFORM	ARX_PLATFORM_WIN32
+	#define	ARX_PLATFORM		ARX_PLATFORM_WIN32
 #elif defined(__linux)
-    #define	ARX_PLATFORM	ARX_PLATFORM_LINUX
-#else
-	#define	ARX_PLATFORM	ARX_PLATFORM_UNKNOWN
+    #define	ARX_PLATFORM		ARX_PLATFORM_LINUX
 #endif
 
 #ifndef ARX_PLATFORM
 	#warning "Unknown target platform"
+	#define	ARX_PLATFORM		ARX_PLATFORM_UNKNOWN
 #endif
 
 /* ---------------------------------------------------------
@@ -109,12 +108,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 	#elif _MSC_VER < 1700
 		#define	ARX_COMPILER	ARX_COMPILER_VC10
 	#endif
-#else
-	#define ARX_COMPILER		ARX_COMPILER_UNKNOWN
 #endif
 
 #ifndef ARX_COMPILER
 	#warning "Unknown compiler"
+	#define ARX_COMPILER		ARX_COMPILER_UNKNOWN
 #endif
 
 #define ARX_COMPILER_MSVC	((ARX_COMPILER == ARX_COMPILER_VC9) || (ARX_COMPILER == ARX_COMPILER_VC10))
@@ -135,18 +133,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 					     Types
 ------------------------------------------------------------*/
 
-typedef signed char         S8;     //  8 bits integer
+typedef signed char         S8;		//  8 bits integer
 typedef unsigned char       U8;     //  8 bits unsigned integer
 
 typedef signed short        S16;    // 16 bits signed integer
 typedef unsigned short      U16;    // 16 bits unsigned integer
 
 #if ARX_COMPILER_MSVC
-    typedef signed long     S32;    // 32 bits signed integer
-    typedef unsigned long   U32;    // 32 bits unsigned integer
+	typedef signed long     S32;    // 32 bits signed integer
+	typedef unsigned long   U32;    // 32 bits unsigned integer
 #else
-    typedef signed int      S32;    // 32 bits signed integer
-    typedef unsigned int    U32;    // 32 bits unsigned integer
+	typedef signed int      S32;    // 32 bits signed integer
+	typedef unsigned int    U32;    // 32 bits unsigned integer
 #endif
 
 typedef signed long long    S64;    // 64 bits signed integer
