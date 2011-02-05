@@ -8261,7 +8261,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 				break;
 				case DANAE_MENU_MEMORY:
-		{
+				{
 					ShowText = "";
 					unsigned long msize;
 					char temp[512];
@@ -8272,7 +8272,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 					ShowTextWindowtext = ss.str();
 					CreateDialogParam( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
 							MAKEINTRESOURCE(IDD_SHOWTEXT), this->m_hWnd, (DLGPROC)ShowTextDlg,0 );
-		}
+				}
 				break;
 				case DANAE_MENU_GLOBALLIST:
 					ShowText = "";

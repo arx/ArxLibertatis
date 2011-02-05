@@ -2257,6 +2257,7 @@ bool ProcessFadeInOut(bool _bFadeIn,float _fspeed)
 
 bool Menu2_Render()
 {
+	LogDebug << "Menu2_Render()";
 	ARXOldTimeMenu = ARXTimeMenu;
 	ARXTimeMenu = ARX_TIME_Get( false );
 	ARXDiffTimeMenu = ARXTimeMenu-ARXOldTimeMenu;

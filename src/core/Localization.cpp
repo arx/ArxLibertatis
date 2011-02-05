@@ -49,6 +49,12 @@ CLocalisationHash * pHashLocalisation;
 char LocalisationLanguage = -1;
 static long ltNum = 0;
 
+bool isKey( const std::string& str );
+bool isSection( const std::string& str );
+std::string CleanKey( std::string str );
+std::string CleanSection( std::string str );
+
+
 /*****************************************************************
  * Checks a str for square brackets and makes sure they appear
  * left first, right second. This confirms str as a section line.
@@ -107,11 +113,8 @@ bool isKey( const std::string& str )
  * proceeding the first ']' in a copy of _str and returns
  * the result.
  *************************************************************/
-std::string CleanSection( const std::string& _str )
+std::string CleanSection( std::string str )
 {
-	// Holds the processed string
-	std::string str = _str;
-
 	// Find the cutoff points for the line trimming
 	size_t first_bracket = str.find('[');
 	size_t last_bracket = str.find(']');
@@ -126,55 +129,30 @@ std::string CleanSection( const std::string& _str )
 	return str;
 }
 
-//-----------------------------------------------------------------------------
-_TCHAR * CleanKey(const _TCHAR * _lpszUText)
+/********************************************************************
+ * Cleans up a key string by removing the type identifier before
+ * '=' appears and extracting the string between the first two ""
+ * marks.
+ *******************************************************************/
+std::string CleanKey( std::string str )
 {
-	_TCHAR * lpszUText = (_TCHAR *) malloc((_tcslen(_lpszUText) + 2) * sizeof(_TCHAR));
-	ZeroMemory(lpszUText, (_tcslen(_lpszUText) + 2)*sizeof(_TCHAR));
+	// The equals sign seperates the type identifier from the value
+	size_t equals_loc = str.find_first_of('=');
 
-	unsigned long ulPos = 0;
-	unsigned long ulTextSize = _tcslen(_lpszUText);
-	bool bAlpha = false;
-	bool bEqual = false;
+	// Find the beginning of the value after the equals sign
+	size_t first_quot_mark = str.find( '"', equals_loc );
 
-	for (unsigned long ul = 0; ul < ulTextSize; ul++)
-	{
-		if (_lpszUText[ul] == _T('='))
-		{
-			bEqual = true;
-		}
-		else if (bEqual && (isalnum(_lpszUText[ul]) ||
-							((_lpszUText[ul] != _T(' ')) &&
-							 (_lpszUText[ul] != _T('"')))
-						   ))
-		{
-			bAlpha = true;
-		}
-		else if ((_lpszUText[ul] == _T('\"')) && (!bAlpha))
-		{
-			continue;
-		}
+	// Cut the string until the beginning of the value
+	str = str.substr( first_quot_mark + 1 );
 
-		if (bEqual && bAlpha)
-		{
-			lpszUText[ulPos] = _lpszUText[ul];
-			ulPos ++;
-		}
-	}
+	// Find the next " mark that shows the end of the value
+	size_t last_quot_mark = str.find('"');
 
-	while (ulPos--)
-	{
-		if (isalnum(lpszUText[ulPos]))
-		{
-			break;
-		}
-		else if (lpszUText[ulPos] == _T('"'))
-		{
-			lpszUText[ulPos] = 0;
-		}
-	}
+	// Cut the string at the end of the value
+	str = str.substr( 0, last_quot_mark );
 
-	return lpszUText;
+	// Return the processed string
+	return str;
 }
 
 /*******************************************************************************
@@ -233,7 +211,7 @@ void ParseFile( const std::string& file_text )
 			{
 				// If a key is found, add it to the localisation entry
 				if ( isKey( *iter ) )
-					loc->AddKey( CleanKey( iter->c_str() ) );
+					loc->AddKey( CleanKey( *iter ) );
 
 				iter++; // Continue looking for more keys
 			}
@@ -287,17 +265,17 @@ void ARX_Localisation_Init()
 	}
 
 	// Scale the loaded size to new stride of uint16_t vs char
-	LocalisationSize *= ( 1.0 * sizeof(char)/sizeof(uint16_t) );
+	loc_file_size *= ( 1.0 * sizeof(char)/sizeof(uint16_t) );
 
-	LogDebug << "Loaded localisation file: " << tx << " of size " << LocalisationSize;
-	LogDebug << "UTF-16 size is " << sf::Unicode::GetUTF16Length( Localisation, &Localisation[LocalisationSize] );
+	LogDebug << "Loaded localisation file: " << tx << " of size " << loc_file_size;
+	LogDebug << "UTF-16 size is " << sf::Unicode::GetUTF16Length( Localisation, &Localisation[loc_file_size] );
 	std::string out;
-	out.resize( sf::Unicode::GetUTF16Length( Localisation, &Localisation[LocalisationSize] ) );
+	out.resize( sf::Unicode::GetUTF16Length( Localisation, &Localisation[loc_file_size] ) );
 	LogDebug << "Resized to " << out.length();
-	sf::Unicode::UTF16ToUTF8( Localisation, &Localisation[LocalisationSize], out.begin() );
+	sf::Unicode::UTF16ToUTF8( Localisation, &Localisation[loc_file_size], out.begin() );
 	LogDebug << "Converted to UTF8";
 
-	if ( Localisation && LocalisationSize)
+	if ( Localisation && loc_file_size)
 	{
 		LogDebug << "Preparing to parse localisation file";
 		pHashLocalisation = new CLocalisationHash(1 << 13);

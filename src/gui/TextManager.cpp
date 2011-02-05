@@ -260,7 +260,7 @@ void TextManager::Render()
 			if (pArxText->eType == ARX_TEXT_ONCE)
 			{
 				pArxText->lpszUText.clear();
-				free((void *)pArxText);
+				delete pArxText;
 				pArxText = NULL;
 				itManage = vText.erase(itManage);
 				continue;
