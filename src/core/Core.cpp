@@ -3378,10 +3378,10 @@ long FirstFrameHandling(LPDIRECT3DDEVICE7 m_pd3dDevice)
  PROGRESS_BAR_COUNT+=1.f;
  LoadLevelScreen();
 		
-	if (ITC.presentation) 
+	if (ITC.Get("presentation")) 
 	{
-		D3DTextr_KillTexture(ITC.presentation);
-		ITC.presentation=NULL;
+        D3DTextr_KillTexture(ITC.Get("presentation"));
+		ITC.Set("presentation", NULL);
 	}
 
 	if (DONT_WANT_PLAYER_INZONE)

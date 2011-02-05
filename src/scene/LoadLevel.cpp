@@ -462,7 +462,7 @@ long DanaeSaveLevel( const std::string& _fic )
 	char						name[64];
 	long nb_inter		=		GetNumberInterWithOutScriptLoadForLevel(CURRENTLEVEL); // Without Player
 	unsigned char * dat	=		NULL;
-	unsigned siz	=		255;
+	U32 siz				=		255;
 	long pos			=		0;
 	FileHandle handle;
 	long bcount;
@@ -925,7 +925,7 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string& dir)
 		if ((fic = fopen(dfile, "w")) != NULL)
 		{
 			char name[256];
-			unsigned num = 255;
+			U32 num = 255;
 			fprintf(fic, "Object   : %s%04ld\n", temp, io->ident);
 			fprintf(fic, "_______________________________\n\n");
 			GetUserName(name, &num);
@@ -1019,7 +1019,6 @@ void CheckIO_NOT_SAVED()
 
 void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 {
-	int fic;
 	std::string temp;
 	char temp2[256];
 	char temp3[256];
@@ -1031,6 +1030,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 			SetExt(temp, "ASL");
 
 //			todo win32api
+//			int fic;
 //			if ((fic = _open(temp, _O_WRONLY | _O_TRUNC  | _O_CREAT | _O_BINARY, _S_IWRITE)) != -1)
 //			{
 //				_write(fic, io->script.data, strlen(io->script.data));
@@ -1056,6 +1056,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 				if (DirectoryExist(temp3))
 				{
 //					todo win32api
+//					int fic;
 //					if ((fic = _open(temp, _O_WRONLY | _O_TRUNC  | _O_CREAT | _O_BINARY, _S_IWRITE)) != -1)
 //					{
 //						_write(fic, io->over_script.data, strlen(io->over_script.data));

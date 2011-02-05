@@ -3011,7 +3011,7 @@ void MakeStandard( std::string& str)
 //*************************************************************************************
 //*************************************************************************************
 
-long MakeLocalised( const std::string& text, std::string& output, long maxsize, long lastspeechflag)
+long MakeLocalised( const std::string& text, std::string& output, long lastspeechflag)
 {
 	if ( text.empty() )
 	{
@@ -3022,7 +3022,7 @@ long MakeLocalised( const std::string& text, std::string& output, long maxsize, 
 	std::string __text;
 	// TODO Find replacement
 	//MultiByteToWideChar(CP_ACP, 0, text, -1, (wchar_t*)__text, 256);
-	return HERMES_UNICODE_GetProfileString(__text, "error", output, maxsize);
+	return HERMES_UNICODE_GetProfileString(__text, "error", output);
 }
 
 //-----------------------------------------------------------------------------
@@ -3039,8 +3039,7 @@ long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const std::string& _lpszText,
 	HERMES_UNICODE_GetProfileString(
 		__text,
 		"Not Found",
-		__output,
-		4095);
+		__output);
 	return (ARX_SPEECH_Add(io, __output, duration));
 }
 

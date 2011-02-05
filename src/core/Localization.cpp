@@ -430,7 +430,7 @@ void ARX_Localisation_Init(const char * _lpszExtension)
 	if (FINAL_COMMERCIAL_DEMO)
 	{
 		std::string szMenuText;
-		PAK_UNICODE_GetPrivateProfileString( "system_menus_main_cdnotfound", "", szMenuText, 256);
+		PAK_UNICODE_GetPrivateProfileString( "system_menus_main_cdnotfound", "", szMenuText );
 
 		if (!szMenuText[0]) //warez
 		{
@@ -441,7 +441,7 @@ void ARX_Localisation_Init(const char * _lpszExtension)
 	if (FINAL_COMMERCIAL_GAME)
 	{
 		std::string szMenuText;
-		PAK_UNICODE_GetPrivateProfileString( "unicode", "", szMenuText, 256);
+		PAK_UNICODE_GetPrivateProfileString( "unicode", "", szMenuText );
 
 		if (szMenuText[0]) //warez
 		{
@@ -465,12 +465,8 @@ void ARX_Localisation_Close()
 //-----------------------------------------------------------------------------
 long HERMES_UNICODE_GetProfileString(   const std::string&  sectionname,
 										const std::string&  defaultstring,
-										std::string&        destination,
-										unsigned long       maxsize )
+										std::string&        destination )
 {
-
-	destination.clear();
-
 	if (pHashLocalisation)
 	{
 		std::string* t = pHashLocalisation->GetPtrWithString(sectionname);
@@ -502,11 +498,9 @@ static long ltNum = 0;
 //-----------------------------------------------------------------------------
 int PAK_UNICODE_GetPrivateProfileString(    const std::string&  _lpszSection,
 											const std::string&  _lpszDefault,
-											std::string&        _lpszBuffer,
-											unsigned long       _lBufferSize )
+											std::string&        _lpszBuffer )
 {
 	ltNum ++;
-	_lpszBuffer.clear();
 
 	if (_lpszSection.empty())	{
 		LogError <<  _lpszDefault << " not found";
@@ -518,8 +512,7 @@ int PAK_UNICODE_GetPrivateProfileString(    const std::string&  _lpszSection,
 
 	HERMES_UNICODE_GetProfileString( szSection,
 									_lpszDefault,
-									_lpszBuffer,
-									_lBufferSize );
+									_lpszBuffer );
 
 	return 1;
 }

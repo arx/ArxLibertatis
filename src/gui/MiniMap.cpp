@@ -883,15 +883,15 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 					{
 						if (Mapmarkers[i].tstring.empty())
 						{
-							std::string output( 4096, '\0' );
-							MakeLocalised(Mapmarkers[i].string, output, 4096, 0);
+							std::string output;
+							MakeLocalised(Mapmarkers[i].string, output);
 							Mapmarkers[i].tstring = output;
 						}
 
 						if ( !Mapmarkers[i].tstring.empty() )
 						{
-							std::string output( 4096, '\0' );
-							MakeLocalised( Mapmarkers[i].string, output, 4096, 0 );
+							std::string output;
+							MakeLocalised( Mapmarkers[i].string, output);
 							Mapmarkers[i].tstring = output;
 						}
 

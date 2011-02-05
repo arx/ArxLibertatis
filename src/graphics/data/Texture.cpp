@@ -3296,18 +3296,12 @@ void LookForRefinementMap(TextureContainer * tc)
 
 		while (pos < GlobalRefine_size)
 		{
-			long pos2 = 0;
-
 			while ((from[pos] != '\n') && (pos < fromsize))
 			{
-				data[pos2++] = from[pos++];
-
-				if (pos2 > 255) pos2 = 255;
+				data += from[pos++];
 
 				if (pos >= GlobalRefine_size) break;
 			}
-
-			data[pos2] = 0;
 
 			while ((pos < fromsize) && (from[pos] < 32)) pos++;
 
@@ -3350,18 +3344,11 @@ void LookForRefinementMap(TextureContainer * tc)
 
 		while (pos < Refine_size)
 		{
-			U32 pos2 = 0;
-
 			while ((from[pos] != '\n') && (pos < fromsize))
 			{
-				data[pos2++] = from[pos++];
-
-				if (pos2 > 255) pos2 = 255;
-
+				data += from[pos++];
 				if (pos >= Refine_size) break;
 			}
-
-			data[pos2] = 0;
 
 			while ((pos < fromsize) && (from[pos] < 32)) pos++;
 

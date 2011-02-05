@@ -2045,7 +2045,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 		eobj->c_data->bones = new EERIE_BONE[eobj->c_data->nb_bones];
 		memset(eobj->c_data->bones, 0, sizeof(EERIE_BONE)*eobj->c_data->nb_bones);
 
-		char temp[eobj->nbvertex];
+		char* temp = (char*)malloc(eobj->nbvertex);
 		memset(temp, 0, eobj->nbvertex);
 
 		for (i = eobj->nbgroups - 1; i >= 0; i--)
@@ -2070,6 +2070,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 			eobj->c_data->bones[i].original_group = &eobj->grouplist[i];
 			eobj->c_data->bones[i].father = GetFather(eobj, eobj->grouplist[i].origin, i - 1);
 		}
+
+		free(temp);
 
 		// Try to correct lonely vertex
 		for (i = 0; i < eobj->nbvertex; i++)
