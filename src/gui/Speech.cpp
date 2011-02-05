@@ -489,8 +489,7 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long param, l
 
 		flg = HERMES_UNICODE_GetProfileString(lpszUSection,
 											  "",
-											  _output,
-											  4096);
+											  _output );
 
 
 		io->lastspeechflag = (short)flg;

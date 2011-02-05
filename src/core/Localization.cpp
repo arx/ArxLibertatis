@@ -22,17 +22,17 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+#include "core/Localization.h"
+
 #include <tchar.h>
 #include <stdint.h>
-#include <SFML/System.hpp>
+
 #include <list>
 
+#include <SFML/System.hpp>
+
 #include "core/LocalizationHash.h"
-#include "core/Localization.h"
 #include "gui/MenuWidgets.h"
-#include "core/Application.h"
-#include "graphics/data/Texture.h"
-#include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
 
@@ -42,14 +42,12 @@ extern long GERMAN_VERSION;
 extern long FRENCH_VERSION;
 extern long CHINESE_VERSION;
 extern long FINAL_COMMERCIAL_GAME;
-
-extern PROJECT Project;
 extern long FINAL_COMMERCIAL_DEMO;
-using namespace std;
 extern CMenuConfig * pMenuConfig;
-#define MAX_LINE_SIZE 8096
 
 CLocalisationHash * pHashLocalisation;
+char LocalisationLanguage = -1;
+static long ltNum = 0;
 
 /*****************************************************************
  * Checks a str for square brackets and makes sure they appear
@@ -104,25 +102,6 @@ bool isKey( const std::string& str )
 	return true;
 }
 	
-//-----------------------------------------------------------------------------
-bool isNotEmpty(_TCHAR * _lpszUText)
-{
-	ULONG i			 = 0;
-	unsigned long ulTextSize = _tcslen(_lpszUText);
-
-	while (i < ulTextSize)
-	{
-		if (isalnum(_lpszUText[i]))
-		{
-			return true;
-		}
-
-		i++;
-	}
-
-	return false;
-}
-
 /**************************************************************
  * Removes all characters preceding the first '[' and
  * proceeding the first ']' in a copy of _str and returns
@@ -130,8 +109,10 @@ bool isNotEmpty(_TCHAR * _lpszUText)
  *************************************************************/
 std::string CleanSection( const std::string& _str )
 {
+	// Holds the processed string
 	std::string str = _str;
 
+	// Find the cutoff points for the line trimming
 	size_t first_bracket = str.find('[');
 	size_t last_bracket = str.find(']');
 
@@ -196,15 +177,18 @@ _TCHAR * CleanKey(const _TCHAR * _lpszUText)
 	return lpszUText;
 }
 
-//-----------------------------------------------------------------------------
-void ParseFile( const std::string& _lpszUTextFile, const unsigned long _ulFileSize)
+/*******************************************************************************
+ * Takes a string as a memory buffer for the contents of a file and extracts
+ * extract lines from it that correspond to sections and keys. It then maps
+ * these sections with corresponding keys into the localization hashmap for
+ * later lookup when the strings are used to display text.
+ ******************************************************************************/
+void ParseFile( const std::string& file_text )
 {
-	std::string temp = _lpszUTextFile;
-
-	std::list<std::string> input_strings;
-	std::stringstream ss( _lpszUTextFile );
+	std::stringstream ss( file_text ); // Input stream to extract lines from
+	std::list<std::string> input_strings; // Resulting list of lines extracted
 	
-	while ( ss.good() )
+	while ( ss.good() ) // While lines remain to be extracted
 	{
 		// Get a line to process
 		std::string str;
@@ -228,213 +212,81 @@ void ParseFile( const std::string& _lpszUTextFile, const unsigned long _ulFileSi
 		input_strings.push_back( str );
 	}
 
-	
-
-/*
-	// Remove all comments from the input string
-	while ( true )
-	{
-		// Find comment start
-		size_t comment_start = temp.find( "//" );
-
-		// No comments found, break
-		if ( comment_start == std::string::npos ) break;
-
-		// Find comment end after comment start
-		size_t line_end = temp.find_first_of( "\r\n", comment_start );
-
-		// Remove comments until end of line or end if file
-		if ( line_end != std::string::npos )
-			temp.erase( comment_start, line_end - comment_start );
-		else
-			temp.erase( comment_start );
-	}
-*/
-/*
-	for (unsigned long i = 0; i < (ulFileSize - 1); i++)
-	{
-		if ((pFile[i] == _T('/')) && (pFile[i+1] == _T('/')))
-		{
-			unsigned long j = i;
-
-			while ((j < (ulFileSize - 1)) && (pFile[j] != _T('\r')) && (pFile[j+1] != _T('\n')))
-			{
-				pFile[j] = _T(' ');
-				j++;
-			}
-
-			i = j;
-		}
-	}
-*/
-	/*list< std::string > strings;
-
-	// Find lines and put them into the vector
-	while ( !temp.empty() )
-	{
-		size_t line_end = temp.find_first_of( "\r\n" );
-		strings.push_back( temp.substr( 0, line_end ) );
-		temp.erase( 0, line_end );
-	}*/
-/*		
-	
-	list<_TCHAR *> lUText;
-	pULine = _tcstok(pFile, _T("\r\n"));
-
-	long t = 0;
-
-	while (pULine != NULL)
-	{
-		if (isNotEmpty(pULine))
-		{
-			t++;
-			lUText.insert(lUText.end(), (pULine)); //_tcsdup
-		}
-
-		pULine = _tcstok(NULL, _T("\r\n"));
-	}
-*/
-
+	// Iterate over all the lines entered into the list earlier
 	std::list<std::string>::iterator iter = input_strings.begin();
-
 	while( iter != input_strings.end() )
 	{
+		// If a section string is found, make en entry for it
 		if ( isSection( *iter ) )
 		{
+			// Create a localisation entry for this section
 			CLocalisation* loc = new CLocalisation();
-			std::string section_str = CleanSection( *iter );
-			loc->SetSection( section_str );
 
+			// Set the section name as the cleaned section string
+			loc->SetSection( CleanSection( *iter ) );
+
+			// Advance to the line after the section string to start looking for keys
 			iter++;
 
+			// Iterate over more strings until a section is encountered or no more strings remain
 			while ( ( iter != input_strings.end() ) && ( !isSection( iter->c_str() ) ) )
 			{
+				// If a key is found, add it to the localisation entry
 				if ( isKey( *iter ) )
-				{
 					loc->AddKey( CleanKey( iter->c_str() ) );
-				}
-				iter++;
-				//else
-				//	break; // Done reading the keys for this section, break the loop and continue with the finished loc object
+
+				iter++; // Continue looking for more keys
 			}
 
 			pHashLocalisation->AddElement(loc);
 			continue; // Continue loop, the next section or end of input was encountered
 		}
 
+		// Only get here if a non-content string managed to escape the earlier culling, advance to the next line
 		iter++;
 	}
-/*
-	list< std::string >::iterator iter = strings.begin();
-
-	while ( iter != strings.end() )
-	{
-		if ( isSection((*iter).c_str()) )
-		{
-			CLocalisation* loc = new CLocalisation();
-			std::string section_str = CleanSection( (*iter).c_str() );
-			loc->SetSection( (*iter).c_str() );
-
-			iter++;
-
-			while ((iter != strings.end()) && (!isSection((*iter).c_str())))
-			{
-				if(isKey((*iter).c_str()))
-					loc->AddKey( CleanKey((*iter).c_str() ) );
-				else
-					break;
-			}
-
-			pHashLocalisation->AddElement(loc);
-			continue;
-		}
-
-		iter++;
-	}*/
-		
-	//list<_TCHAR *>::iterator it;
-/*
-	//-------------------------------------------------------------------------
-	// look up for sections and associated keys
-	it = lUText.begin();
-	t = 0;
-
-	while (it != lUText.end())
-	{
-		if (isSection(*it))
-		{
-			CLocalisation * pLoc = new CLocalisation();
-			_TCHAR * lpszUT = CleanSection(*it);
-			pLoc->SetSection(lpszUT);
-
-			free(lpszUT);
-
-			it++;
-			t++;
-
-			while ((it != lUText.end()) && (!isSection(*it)))
-			{
-				if (isKey(*it))
-				{
-					_TCHAR * lpszUTk = CleanKey(*it);
-					pLoc->AddKey(lpszUTk);
-					free(lpszUTk);
-					it++;
-					t++;
-				}
-				else
-				{
-					break;
-				}
-			}
-
-			pHashLocalisation->AddElement(pLoc);
-			continue;
-		}
-
-		it++;
-		t++;
-	}*/
 }
 
-//-----------------------------------------------------------------------------
-char LocalisationLanguage = -1;
 
-//-----------------------------------------------------------------------------
-// TODO parameter not really used.
-void ARX_Localisation_Init(const char * _lpszExtension) 
+/****************************************************************************
+ * Initializes the localisation hashmap based on the current chosen locale
+ ***************************************************************************/
+void ARX_Localisation_Init() 
 {
-	if (_lpszExtension == NULL)
-		return;
 
-	// nettoyage
+	// If a locale is already initialized, close it
 	if (pHashLocalisation)
-	{
 		ARX_Localisation_Close();
-	}
 
+	// Generate the filename for the localization strings
 	std::string tx = "localisation\\utext_" + Project.localisationpath + ".ini";
 	
-	std::string temp = tx;
-	size_t LocalisationSize = 0;
+	size_t loc_file_size = 0; // Used to report how large the loaded file is
 
-	uint16_t* Localisation = (uint16_t*)PAK_FileLoadMallocZero(tx, LocalisationSize);
-	
-	if ( Localisation)
+	// Attempt loading the selected locale file
+	uint16_t* Localisation = (uint16_t*)PAK_FileLoadMallocZero( tx, loc_file_size );
+
+	// if no file was loaded
+	if ( Localisation )
 	{
+		// No file loaded and locale is set to german or french
 		if (GERMAN_VERSION || FRENCH_VERSION)
 		{
+			// Delete the menuconfig and abort the program
 			delete pMenuConfig;
 			pMenuConfig = NULL;
 			exit(0);
 		}
 
+		// Otherwise default to english locale
 		Project.localisationpath = "english";
 		tx = "localisation\\utext_" + Project.localisationpath + ".ini";
-		Localisation = (uint16_t*)PAK_FileLoadMallocZero(tx, LocalisationSize);
+
+		// Load the default english locale file
+		Localisation = (uint16_t*)PAK_FileLoadMallocZero( tx, loc_file_size );
 	}
 
-	// Scale size to new stride
+	// Scale the loaded size to new stride of uint16_t vs char
 	LocalisationSize *= ( 1.0 * sizeof(char)/sizeof(uint16_t) );
 
 	LogDebug << "Loaded localisation file: " << tx << " of size " << LocalisationSize;
@@ -451,7 +303,7 @@ void ARX_Localisation_Init(const char * _lpszExtension)
 		pHashLocalisation = new CLocalisationHash(1 << 13);
 
 		LogDebug << "Converting loaded localistation file:";
-		ParseFile( out, out.length() );
+		ParseFile( out );
 	}
 
 	//CD Check
@@ -481,37 +333,40 @@ void ARX_Localisation_Init(const char * _lpszExtension)
 	}
 }
 
-//-----------------------------------------------------------------------------
+/***************************************************************
+ * Deinitialize the current locale.
+ * Delete the hashmap and reset the language.
+ * ************************************************************/
 void ARX_Localisation_Close()
 {
 	LocalisationLanguage = -1;
 
-	delete pHashLocalisation;
+	if ( pHashLocalisation)
+		delete pHashLocalisation;
+
 	pHashLocalisation = NULL;
 }
 
 //-----------------------------------------------------------------------------
-long HERMES_UNICODE_GetProfileString(   const std::string&  sectionname,
-										const std::string&  defaultstring,
-										std::string&        destination,
-										unsigned long       maxsize )
+long HERMES_UNICODE_GetProfileString( const std::string&  sectionname,
+                                      const std::string&  defaultstring,
+                                      std::string&        destination )
 {
-
-	destination.clear();
-
+	// If localisation has been initialized
 	if (pHashLocalisation)
 	{
+		// Get the string for this section
 		std::string* t = pHashLocalisation->GetPtrWithString(sectionname);
 
+		// If a string is found matching the section
 		if (t)
-			destination = *t;
+			destination = *t; // Return that string in destination
 		else
-			destination = defaultstring;
+			destination = defaultstring; // Otherwise, return the default value
 	}
 	else
-		destination = defaultstring;
+		destination = defaultstring; // No localisation, return the default string
 
-	//TODO(lubosz): Hardcode string
 	return 0;
 }
 
@@ -524,13 +379,11 @@ long HERMES_UNICODE_GetProfileSectionKeyCount(const std::string& sectionname)
 	return 0;
 }
 
-static long ltNum = 0;
-
 //-----------------------------------------------------------------------------
-int PAK_UNICODE_GetPrivateProfileString(    const std::string&  _lpszSection,
-											const std::string&  _lpszDefault,
-											std::string&        _lpszBuffer,
-											unsigned long       _lBufferSize )
+int PAK_UNICODE_GetPrivateProfileString( const std::string&  _lpszSection,
+                                         const std::string&  _lpszDefault,
+                                         std::string&        _lpszBuffer,
+                                         unsigned long       _lBufferSize )
 {
 	ltNum ++;
 	_lpszBuffer.clear();
@@ -544,9 +397,8 @@ int PAK_UNICODE_GetPrivateProfileString(    const std::string&  _lpszSection,
 	std::string szSection = "[" + _lpszSection + "]";
 
 	HERMES_UNICODE_GetProfileString( szSection,
-									_lpszDefault,
-									_lpszBuffer,
-									_lBufferSize );
+	                                 _lpszDefault,
+	                                 _lpszBuffer );
 
 	return 1;
 }
