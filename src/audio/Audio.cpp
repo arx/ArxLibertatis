@@ -65,11 +65,10 @@ namespace ATHENA
 	//Multithread data
 #ifdef HAVE_PTHREADS	
 	static pthread_mutex_t _mutex = PTHREAD_MUTEX_INITIALIZER;
-	static void *mutex = 1; // just for compilation.  real mutex is above
+	static void *mutex = (void *)1; // just for compilation.  real mutex is above
 	static pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 	static bool _mutex_used = false;
-	const static int WAIT_TIMEOUT = 1;
-#else ifdef WINDOWS
+#elif WINDOWS
 	static HANDLE mutex(NULL);
 #endif	
 	
@@ -105,7 +104,8 @@ namespace ATHENA
 		pthread_cond_signal(&cond);
 		pthread_mutex_unlock(&_mutex);
 	}
-#define CreateMutex(x, y, z) 1
+#undef CreateMutex
+#define CreateMutex(x, y, z) (void *)1
 #endif
 
 	///////////////////////////////////////////////////////////////////////////////
