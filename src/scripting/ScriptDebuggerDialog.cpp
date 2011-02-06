@@ -214,9 +214,9 @@ bool CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 		break;
 		case WM_COMMAND:
 		{
-			switch (LOWORD(wParam))
-			{
-			//		todo: debugger
+            // todo: debugger
+//			switch (LOWORD(wParam))
+//			{
 //				case IDC_SCRIPT_DEBUGGER_BUTTON_PAUSE:
 //				{
 //					sdu.bPause = true;
@@ -236,12 +236,12 @@ bool CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 //				{
 //					sdu.bUpdateLocalVar = true;
 //				}
-				break;
-				default:
-				{
-					//SCRIPT_DEBUGGER_Update_Params();
-				} break;
-			}
+//				break;
+//				default:
+//				{
+//					//SCRIPT_DEBUGGER_Update_Params();
+//				} break;
+//			}
 
 			sdu.bVariables = false;
 			int iRes = SendMessage(iInfo.hVariablesEnabled, BM_GETCHECK, 0, 0);

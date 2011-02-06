@@ -38,6 +38,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef  EERIEANIM_H
 #define  EERIEANIM_H
 
+#include <string>
+
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
 
@@ -52,7 +54,7 @@ extern D3DTLVERTEX LATERDRAWHALO[HALOMAX*4];
 extern EERIE_LIGHT * llights[32];
 
 //-----------------------------------------------------------------------------
-long EERIE_ANIMMANAGER_Count(char * tex, long * memsize);
+long EERIE_ANIMMANAGER_Count( std::string& tex, long * memsize);
 void EERIE_ANIMMANAGER_ClearAll();
 void llightsInit();
 void Preparellights(EERIE_3D * pos);

@@ -132,6 +132,62 @@ typedef struct
 	long	origin;
 	char	name[256];
 } ARX_FTL_3D_DATA_HEADER;
+
+struct Texture_Container_FTL
+{
+	char name[256];
+};
+
+typedef struct
+{
+	long		facetype;	// 0 = flat  1 = text
+							// 2 = Double-Side
+	D3DCOLOR	rgb[IOPOLYVERT];
+	unsigned short		vid[IOPOLYVERT];
+	short		texid; 
+	float		u[IOPOLYVERT];
+	float		v[IOPOLYVERT];
+	short		ou[IOPOLYVERT];
+	short		ov[IOPOLYVERT];
+
+	float		transval;
+	EERIE_3D	norm;
+	EERIE_3D	nrmls[IOPOLYVERT];
+	float		temp;
+
+} EERIE_FACE_FTL; // Aligned 1 2 4
+
+typedef struct
+{
+	char name[256];
+	long		origin;
+	long		nb_index;
+	long 	*	indexes;
+	float		siz;
+} EERIE_GROUPLIST_FTL; // Aligned 1 2 4
+
+typedef struct
+{
+	char name[256];
+	long			idx; //index vertex;
+	long			act; //action
+	long			sfx; //sfx
+} EERIE_ACTIONLIST_FTL; // Aligned 1 2 4
+
+typedef struct
+{
+	char	name[64];
+	long	nb_selected;
+	long *	selected;
+} EERIE_SELECTIONS_FTL; // Aligned 1 2 4
+
+typedef struct
+{
+	short			idx;
+	short			flags;
+	float			radius;
+} COLLISION_SPHERE_FTL; // Aligned 1 2 4
+
 // End of Structures definitions
 //***********************************************************************************************
 
@@ -146,15 +202,16 @@ extern long NOCHECKSUM;
 //***********************************************************************************************
 bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 {
-	// Need an object to be saved !
-	if (obj == NULL) return false;
+	LogWarning << "Broken ARX_FTL_Save";
+    // Need an object to be saved !
+    if (obj == NULL) return false;
 
-	// Generate File name/path and create it
-	char path[256];
-	char gamefic[256];
-	sprintf(gamefic, "Game\\%s", file);
-	SetExt(gamefic, ".FTL");
-	strcpy(path, gamefic);
+    // Generate File name/path and create it
+    std::string gamefic;
+    gamefic = "Game\\";
+    gamefic += file;
+    SetExt(gamefic, ".FTL");
+    std::string path = gamefic;
 	RemoveName(path);
 
 	if (!CreateFullPath(path)) return NULL;
@@ -178,27 +235,27 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 
 	            +	sizeof(EERIE_FACE_FTL) * obj->nbfaces
 	            +	obj->nbmaps * 256	// texturecontainernames
-	            +	sizeof(EERIE_ACTIONLIST) * obj->nbaction
+	 // TODO           +	sizeof(EERIE_ACTIONLIST) * obj->nbaction
 	            +	128000; // just in case...
 
 	if (obj->nbgroups > 0)
 	{
-		allocsize += sizeof(EERIE_GROUPLIST) * obj->nbgroups;
+		// TODO allocsize += sizeof(EERIE_GROUPLIST) * obj->nbgroups;
 
 		for (long i = 0; i < obj->nbgroups; i++)
 		{
 			if (obj->grouplist[i].nb_index > 0)
 			{
-				allocsize += sizeof(long) * obj->grouplist[i].nb_index;
+				// TODO allocsize += sizeof(long) * obj->grouplist[i].nb_index;
 			}
 		}
 	}
 
-	if (obj->nbselections > 0)
+	if (!obj->selections.empty())
 	{
-		allocsize += sizeof(EERIE_SELECTIONS) * obj->nbselections;
+		// TODO allocsize += sizeof(EERIE_SELECTIONS) * obj->nbselections;
 
-		for (long i = 0; i < obj->nbselections; i++)
+		for (size_t i = 0; i < obj->selections.size(); i++)
 		{
 			allocsize += sizeof(long) * obj->selections[i].nb_selected;
 		}
@@ -229,7 +286,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 	afph = (ARX_FTL_PRIMARY_HEADER *)dat;
 	pos += sizeof(ARX_FTL_PRIMARY_HEADER);
 
-	if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+	if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 
 	afph->ident[0] = 'F';
 	afph->ident[1] = 'T';
@@ -238,32 +295,33 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 
 	// Identification
 	char check[512];
-	
-	HERMES_CreateFileCheck(file, check, 512, CURRENT_FTL_VERSION);
+    std::string filename = file;
+    MakeUpcase(filename);
+	HERMES_CreateFileCheck(filename.c_str(), check, 512, CURRENT_FTL_VERSION);
 	memcpy(dat + pos, check, 512);
 	pos += 512;
 
-	if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+	if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 
 	// Secondary Header
 	afsh = (ARX_FTL_SECONDARY_HEADER *)(dat + pos);
 	pos += sizeof(ARX_FTL_SECONDARY_HEADER);
 
-	if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+	if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 
 	// 3D Data
 	afsh->offset_3Ddata = pos; //-1;
 	af3Ddh = (ARX_FTL_3D_DATA_HEADER *)(dat + afsh->offset_3Ddata);
 	pos += sizeof(ARX_FTL_3D_DATA_HEADER);
 
-	if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+	if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 
 	af3Ddh->nb_vertex = obj->nbvertex;
 	af3Ddh->nb_faces = obj->nbfaces;
 	af3Ddh->nb_maps = obj->nbmaps;
 	af3Ddh->nb_groups = obj->nbgroups;
-	af3Ddh->nb_action = obj->nbaction;
-	af3Ddh->nb_selections = obj->nbselections;
+	// TODO af3Ddh->nb_action = obj->nbaction;
+	af3Ddh->nb_selections = obj->selections.size();
 	af3Ddh->origin = obj->origin;
 
 	// vertexes
@@ -275,7 +333,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 			pos += sizeof(EERIE_OLD_VERTEX);
 		}
 
-		if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 	}
 
 	// faces
@@ -302,7 +360,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 			}
 
 			pos += sizeof(EERIE_FACE_FTL); 
-			if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+			if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 		}
 	}
 
@@ -313,21 +371,21 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 		memset(ficc, 0, 256);
 
 		if (obj->texturecontainer[i])
-			strcpy(ficc, obj->texturecontainer[i]->m_texName);
+			strcpy(ficc, obj->texturecontainer[i]->m_texName.c_str());
 
 		memcpy(dat + pos, ficc, 256);
 		pos += 256;
 
-		if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 	}
 
 	// groups
 	if (af3Ddh->nb_groups > 0)
 	{
-		memcpy(dat + pos, obj->grouplist, sizeof(EERIE_GROUPLIST)*af3Ddh->nb_groups);
+		// TODO memcpy(dat + pos, obj->grouplist, sizeof(EERIE_GROUPLIST)*af3Ddh->nb_groups);
 		pos += sizeof(EERIE_GROUPLIST) * af3Ddh->nb_groups;
 
-		if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 
 		for (int i = 0; i < af3Ddh->nb_groups; i++)
 		{
@@ -336,7 +394,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 				memcpy(dat + pos, obj->grouplist[i].indexes, sizeof(long)*obj->grouplist[i].nb_index);
 				pos += sizeof(long) * obj->grouplist[i].nb_index;
 
-				if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+				if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 			}
 		}
 	}
@@ -345,29 +403,29 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 	// actionpoints
 	if (af3Ddh->nb_action > 0)
 	{
-		memcpy(dat + pos, obj->actionlist, sizeof(EERIE_ACTIONLIST)*af3Ddh->nb_action);
+		// TODO memcpy(dat + pos, obj->actionlist, sizeof(EERIE_ACTIONLIST)*af3Ddh->nb_action);
 		pos += sizeof(EERIE_ACTIONLIST) * af3Ddh->nb_action;
 
-		if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 	}
 
 	// selections
 	if (af3Ddh->nb_selections > 0)
 	{
-		memcpy(dat + pos, obj->selections, sizeof(EERIE_SELECTIONS)*af3Ddh->nb_selections);
+		// TODO memcpy(dat + pos, obj->selections, sizeof(EERIE_SELECTIONS)*af3Ddh->nb_selections);
 		pos += sizeof(EERIE_SELECTIONS) * af3Ddh->nb_selections;
 
-		if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 
 		for (int i = 0; i < af3Ddh->nb_selections; i++)
 		{
 			memcpy(dat + pos, obj->selections[i].selected, sizeof(long)*obj->selections[i].nb_selected);
 			pos += sizeof(long) * obj->selections[i].nb_selected;
 
-			if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+			if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 		}
 
-		strcpy(af3Ddh->name, obj->file);
+		strcpy(af3Ddh->name, obj->file.c_str());
 	}
 
 	// Progressive DATA
@@ -381,14 +439,14 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 		afcsdh = (ARX_FTL_COLLISION_SPHERES_DATA_HEADER *)(dat + afsh->offset_collision_spheres);
 		pos += sizeof(ARX_FTL_COLLISION_SPHERES_DATA_HEADER);
 
-		if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 
 		afcsdh->nb_spheres = obj->sdata->nb_spheres;
 
 		memcpy(dat + pos, obj->sdata->spheres, sizeof(COLLISION_SPHERE)*obj->sdata->nb_spheres);
 		pos += sizeof(COLLISION_SPHERE) * obj->sdata->nb_spheres;
 
-		if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 	}
 	else afsh->offset_collision_spheres = -1;
 
@@ -407,19 +465,19 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 		afcdh->nb_springs = obj->cdata->nb_springs;
 		pos += sizeof(ARX_FTL_CLOTHES_DATA_HEADER);
 
-		if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 
 		// now save cvert
 		memcpy(dat + pos, obj->cdata->cvert, sizeof(CLOTHESVERTEX)*obj->cdata->nb_cvert);
 		pos += sizeof(CLOTHESVERTEX) * obj->cdata->nb_cvert;
 
-		if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 
 		// now saves springs
 		memcpy(dat + pos, obj->cdata->springs, sizeof(EERIE_SPRINGS)*obj->cdata->nb_springs);
 		pos += sizeof(EERIE_SPRINGS) * obj->cdata->nb_springs;
 
-		if (pos > allocsize) ShowPopup("Invalid Allocsize in ARX_FTL_Save");
+		if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 	}
 
 	afsh->offset_physics_box = -1;
@@ -432,7 +490,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 
 	if (pos > allocsize)
 	{
-		sprintf(_error, "Badly Allocated SaveBuffer...%s", gamefic);
+		sprintf(_error, "Badly Allocated SaveBuffer...%s", gamefic.c_str());
 		goto error;
 	}
 
@@ -445,15 +503,15 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 	//compressed = STD_Implode((char *)dat, pos, &cpr_pos);
 
 	// Now Saving Whole Buffer
-	if (!(handle = FileOpenWrite(gamefic)))
+	if (!(handle = FileOpenWrite(gamefic.c_str())))
 	{
-		sprintf(_error, "Unable to Open %s for Write...", gamefic);
+		sprintf(_error, "Unable to Open %s for Write...", gamefic.c_str());
 		goto error;
 	}
 
 	if (FileWrite(handle, compressed, cpr_pos) != cpr_pos)
 	{
-		sprintf(_error, "Unable to Write to %s", gamefic);
+		sprintf(_error, "Unable to Write to %s", gamefic.c_str());
 		goto error;
 	}
 
@@ -464,7 +522,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 
 error:
 	;
-	ShowPopup(_error);
+	LogError << (_error);
 	free(dat);
 
 	return false;
@@ -476,21 +534,21 @@ error:
 //***********************************************************************************************
 typedef struct
 {
-	char * name;
-	char * data;
+	std::string name;
+	char* data;
 	size_t size;
-} MCACHE_DATA;
+} MeshData;
 
-MCACHE_DATA * MCache = NULL;
-long MCache_Number = 0;
+vector<MeshData> meshCache;
 
 long MCache_GetSize()
+//Calculate size of all meshes
 {
 	long tot = 0;
 
-	for (long i = 0; i < MCache_Number; i++)
+	for (size_t i = 0; i < meshCache.size(); i++)
 	{
-		tot += MCache[i].size;
+		tot += meshCache[i].size;
 	}
 
 	return tot;
@@ -500,36 +558,42 @@ long MCache_GetSize()
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-long MCache_Get(char * file)
+long MCache_Get( const std::string file)
 {
-	char fic[256];
+    std::string fic;
 
-	File_Standardize(file, fic);
+    File_Standardize(file, fic);
 
-	for (long i = 0; i < MCache_Number; i++)
-		if (!strcasecmp(MCache[i].name, fic)) return i;
+    for (size_t i = 0; i < meshCache.size(); i++)
+        if ( !strcasecmp(meshCache[i].name.c_str(), fic.c_str() ) ) return i;
 
-	return -1;
+    return -1;
 }
 //***********************************************************************************************
 // Pushes a Mesh In Mesh Cache
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-bool MCache_Push(char * file, char * data, size_t size)
+bool MCache_Push( const std::string& file, char * data, size_t size)
 {
-	char fic[256];
+	std::string fic;
 
 	File_Standardize(file, fic);
 
-	if (MCache_Get(fic) != -1) return false; // already cached
+	if (MCache_Get(fic.c_str()) != -1) return false; // already cached
 
-	MCache = (MCACHE_DATA *)realloc(MCache, sizeof(MCACHE_DATA) * (MCache_Number + 1));
-	MCache[MCache_Number].name = (char *)malloc(strlen(file) + 1);
-	strcpy(MCache[MCache_Number].name, fic);
-	MCache[MCache_Number].data = data;
-	MCache[MCache_Number].size = size;
-	MCache_Number++;
+	LogDebug << fic  << " " << file << " #" << meshCache.size();
+
+//	MCache = (MCACHE_DATA *)realloc(MCache, sizeof(MCACHE_DATA) * (MCache_Number + 1));
+//	MCache[MCache_Number].size = size;
+//	MCache[MCache_Number].data = data;
+//	MCache[MCache_Number].name = fic;
+//	MCache_Number++;
+	MeshData newMesh;
+	newMesh.size = size;
+	newMesh.data = data;
+	newMesh.name = fic;
+	meshCache.push_back(newMesh);
 
 	return true;
 }
@@ -540,13 +604,7 @@ bool MCache_Push(char * file, char * data, size_t size)
 //-----------------------------------------------------------------------------
 void MCache_ClearAll()
 {
-	for (long i(0); i < MCache_Number; i++)
-	{
-		free(MCache[i].name), MCache[i].name = NULL;
-		free(MCache[i].data), MCache[i].data = NULL;
-	}
-
-	free(MCache), MCache = NULL, MCache_Number = 0;
+	meshCache.erase(meshCache.begin(),meshCache.end());
 }
 
 //***********************************************************************************************
@@ -554,14 +612,14 @@ void MCache_ClearAll()
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/15)
 //***********************************************************************************************
-char * MCache_Pop(char * file, size_t * size)
+char* MCache_Pop( const std::string& file, size_t& size)
 {
 	long num = MCache_Get(file);
 
 	if (num == -1) return NULL;
 
-	*size = MCache[num].size;
-	return MCache[num].data;
+	size = meshCache[num].size;
+	return meshCache[num].data;
 }
 
 void EERIE_OBJECT_MakeBH(EERIE_3DOBJ * obj)
@@ -577,29 +635,25 @@ long BH_MODE = 0;
 //***********************************************************************************************
 EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 {
-	
-	
 	// Creates FTL file name
-	char filename[256];
-	sprintf(filename, "Game\\%s", file);
+	std::string filename;
+	filename += "Game\\";
+	filename += file;
 	SetExt(filename, ".FTL");
 
 	// Checks for FTL file existence
-	if(!PAK_FileExist(filename)) {
+	if(!PAK_FileExist(filename.c_str())) {
 		LogError << "ARX_FTL_Load: not found in PAK" << filename;
 		return NULL;
 	}
 
 	// Our file exist we can use it
-	unsigned char * dat;
-	long pos = 0;
-	size_t allocsize;
+	unsigned char * dat; // Holds uncompressed data
+	long pos = 0; // The position within the data
+	size_t allocsize; // The size of the data
 
 	ARX_FTL_PRIMARY_HEADER 	*		afph;
 	ARX_FTL_SECONDARY_HEADER 	*		afsh;
-	ARX_FTL_PROGRESSIVE_DATA_HEADER *	afpdh;
-	ARX_FTL_CLOTHES_DATA_HEADER 	*	afcdh;
-	ARX_FTL_COLLISION_SPHERES_DATA_HEADER * afcsdh;
 	ARX_FTL_3D_DATA_HEADER 	*		af3Ddh;
 
 	char * compressedData = NULL;
@@ -607,11 +661,12 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	long NOrelease = 1;
 	long NoCheck = 0;
 
-	compressedData = MCache_Pop(filename, &compressedSize);
+	compressedData = MCache_Pop(filename, compressedSize);
+	LogDebug << "File name check " << filename;
 
 	if (!compressedData)
 	{
-		compressedData = (char *)PAK_FileLoadMalloc(filename, &compressedSize);
+		compressedData = (char *)PAK_FileLoadMalloc(filename, compressedSize);
 		NOrelease = MCache_Push(filename, compressedData, compressedSize) ? 1 : 0;
 	}
 	else NoCheck = 1;
@@ -648,6 +703,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	}
 
 	// Verify FTL file version
+	// TODO Fix float comparison
 	if (afph->version != CURRENT_FTL_VERSION)
 	{
 		LogError << "ARX_FTL_Load: wring version " << afph->version << ", expected "
@@ -681,17 +737,16 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	afsh = (ARX_FTL_SECONDARY_HEADER *)(dat + pos);
 	pos += sizeof(ARX_FTL_SECONDARY_HEADER);
 
-	EERIE_3DOBJ * obj = NULL;
+	// Available from here in whole function
+	EERIE_3DOBJ * obj =0;
 	
 	// Check For & Load 3D Data
 	if (afsh->offset_3Ddata != -1)
 	{
+		// Alloc the EERIE_3DOBJ if header checks out
+		obj = new EERIE_3DOBJ();
 
-		//todo free
-		obj = (EERIE_3DOBJ *)malloc(sizeof(EERIE_3DOBJ));
-		memset(obj, 0, sizeof(EERIE_3DOBJ));
-
-		af3Ddh = (ARX_FTL_3D_DATA_HEADER *)(dat + afsh->offset_3Ddata);
+		af3Ddh = reinterpret_cast<ARX_FTL_3D_DATA_HEADER*>(dat + afsh->offset_3Ddata);
 		pos = afsh->offset_3Ddata;
 		pos += sizeof(ARX_FTL_3D_DATA_HEADER);
 
@@ -699,30 +754,33 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		obj->nbfaces = af3Ddh->nb_faces;
 		obj->nbmaps = af3Ddh->nb_maps;
 		obj->nbgroups = af3Ddh->nb_groups;
-		obj->nbaction = af3Ddh->nb_action;
-		obj->nbselections = af3Ddh->nb_selections;
+		obj->actionlist.resize(af3Ddh->nb_action);
+		obj->selections.resize(af3Ddh->nb_selections);
 		obj->origin = af3Ddh->origin;
-		strcpy(obj->file, af3Ddh->name);
+		obj->file = af3Ddh->name;
 
 		// Alloc'n'Copy vertices
 		if (obj->nbvertex > 0)
 		{
-			//todo free
-			obj->vertexlist = (EERIE_VERTEX *)malloc(sizeof(EERIE_VERTEX) * obj->nbvertex);
+			// Alloc the vertices
+			obj->vertexlist = new EERIE_VERTEX[obj->nbvertex];
+			obj->vertexlist3 = new EERIE_VERTEX[obj->nbvertex];;
 
-			obj->vertexlist3 = (EERIE_VERTEX *)malloc(sizeof(EERIE_VERTEX) * obj->nbvertex);
-
+			// Copy the vertex data in
 			for (long ii = 0; ii < obj->nbvertex; ii++)
 			{
-				memcpy(&obj->vertexlist[ii], dat + pos, sizeof(EERIE_OLD_VERTEX));
-				memcpy(&obj->vertexlist3[ii], dat + pos, sizeof(EERIE_OLD_VERTEX));
-				pos += sizeof(EERIE_OLD_VERTEX); 
+				// Vertices stored as EERIE_OLD_VERTEX, copy in to new one
+				obj->vertexlist[ii] = *reinterpret_cast<EERIE_OLD_VERTEX*>(dat+pos);
+				obj->vertexlist3[ii] = *reinterpret_cast<EERIE_OLD_VERTEX*>(dat+pos);
+				pos += sizeof(EERIE_OLD_VERTEX); // Advance position
 			}
 
+			// Set the origin point of the mesh
 			obj->point0.x = obj->vertexlist[obj->origin].v.x;
 			obj->point0.y = obj->vertexlist[obj->origin].v.y;
 			obj->point0.z = obj->vertexlist[obj->origin].v.z;
 
+			// Color all the vertices
 			for (long i = 0; i < obj->nbvertex; i++)
 			{
 				obj->vertexlist[i].vert.color = 0xFF000000;
@@ -733,21 +791,23 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		// Alloc'n'Copy faces
 		if (obj->nbfaces > 0)
 		{
-			//todo free
-			obj->facelist = (EERIE_FACE *)malloc(sizeof(EERIE_FACE) * obj->nbfaces);
+			// Alloc the list of faces
+			obj->facelist = new EERIE_FACE[obj->nbfaces];
 
+			// Copy the face data in
 			for (long ii = 0; ii < af3Ddh->nb_faces; ii++)
 			{
-				EERIE_FACE_FTL * eff = (EERIE_FACE_FTL *)(dat + pos);
+				EERIE_FACE_FTL* eff = reinterpret_cast<EERIE_FACE_FTL*>(dat + pos);
 				obj->facelist[ii].facetype = eff->facetype;
 				obj->facelist[ii].texid = eff->texid;
 				obj->facelist[ii].transval = eff->transval;
 				obj->facelist[ii].temp = eff->temp;
-				memcpy(&obj->facelist[ii].norm, &eff->norm, sizeof(EERIE_3D));
+				obj->facelist[ii].norm = eff->norm;
 
+				// Copy in all the texture and normals data
 				for (long kk = 0; kk < IOPOLYVERT; kk++)
 				{
-					memcpy(&obj->facelist[ii].nrmls[kk], &eff->nrmls[kk], sizeof(EERIE_3D));
+					obj->facelist[ii].nrmls[kk] = eff->nrmls[kk];
 					obj->facelist[ii].vid[kk] = eff->vid[kk];
 					obj->facelist[ii].u[kk] = eff->u[kk];
 					obj->facelist[ii].v[kk] = eff->v[kk];
@@ -755,6 +815,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 					obj->facelist[ii].ov[kk] = eff->ov[kk];
 				}
 
+				// Advance to the next face
 				pos += sizeof(EERIE_FACE_FTL); 
 			}
 		}
@@ -762,95 +823,119 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		// Alloc'n'Copy textures
 		if (af3Ddh->nb_maps > 0)
 		{
-			char ficc[256];
-			char ficc2[256];
-			char ficc3[256];
+			// Alloc the TextureContainers
+			obj->texturecontainer = new TextureContainer*[af3Ddh->nb_maps];
 
-			//todo free
-			obj->texturecontainer = (TextureContainer **)malloc(sizeof(TextureContainer *) * af3Ddh->nb_maps);
-
+			// Copy in the texture containers
 			for (long i = 0; i < af3Ddh->nb_maps; i++)
 			{
-				memcpy(ficc2, dat + pos, 256);
-				strcpy(ficc3, ficc2);
-				File_Standardize(ficc3, ficc);
+				// Get the name of the texture to load
+				Texture_Container_FTL* tex = reinterpret_cast<Texture_Container_FTL*>(dat+pos);
+				std::string name;
+				File_Standardize( tex->name, name );
 
-				obj->texturecontainer[i] = D3DTextr_CreateTextureFromFile(ficc, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
+				// Create the texture and put it in the container list
+				obj->texturecontainer[i] = D3DTextr_CreateTextureFromFile( name, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
 
 				if (GDevice && obj->texturecontainer[i] && !obj->texturecontainer[i]->m_pddsSurface)
 					obj->texturecontainer[i]->Restore(GDevice);
 
 				MakeUserFlag(obj->texturecontainer[i]);
-				pos += 256;
+				pos += sizeof(Texture_Container_FTL);
 			}
 		}
 
 		// Alloc'n'Copy groups
 		if (obj->nbgroups > 0)
 		{
-			//todo free
-			obj->grouplist = (EERIE_GROUPLIST *)malloc(sizeof(EERIE_GROUPLIST) * obj->nbgroups);
-			memcpy(obj->grouplist, dat + pos, sizeof(EERIE_GROUPLIST) * obj->nbgroups);
-			pos += sizeof(EERIE_GROUPLIST) * obj->nbgroups;
+			// Alloc the grouplists
+			obj->grouplist = new EERIE_GROUPLIST[obj->nbgroups];
 
+			// Copy in the grouplist data
+			for ( long i = 0 ; i < obj->nbgroups ; i++ )
+			{
+				EERIE_GROUPLIST_FTL* group = reinterpret_cast<EERIE_GROUPLIST_FTL*>(dat+pos);
+				obj->grouplist[i].name = group->name;
+				obj->grouplist[i].origin = group->origin;
+				obj->grouplist[i].nb_index = group->nb_index;
+				obj->grouplist[i].indexes = 0; // Nullpointer unless changed
+				obj->grouplist[i].siz = group->siz;
+				pos += sizeof(EERIE_GROUPLIST_FTL); // Advance to next group
+			}
+
+			// Copy in the group index data
 			for (long i = 0; i < obj->nbgroups; i++)
 				if (obj->grouplist[i].nb_index > 0)
 				{
-					//TO DO: FREE+++++++++++++++++++++++
-					obj->grouplist[i].indexes = (long *)malloc(sizeof(long) * obj->grouplist[i].nb_index);
-					memcpy(obj->grouplist[i].indexes, dat + pos, sizeof(long)*obj->grouplist[i].nb_index);
-					pos += sizeof(long) * obj->grouplist[i].nb_index;
+					// Alloc space for the index block
+					obj->grouplist[i].indexes = new long[obj->grouplist[i].nb_index];
+					std::copy( (long*)(dat+pos),
+					           (long*)(dat+pos + sizeof(long) * obj->grouplist[i].nb_index),
+					           obj->grouplist[i].indexes );
+					pos += sizeof(long) * obj->grouplist[i].nb_index; // Advance to the next index block
 				}
 		}
 
-		// Alloc'n'Copy action points
-		if (obj->nbaction > 0)
-		{
-			//todo free
-			obj->actionlist = (EERIE_ACTIONLIST *)malloc(sizeof(EERIE_ACTIONLIST) * obj->nbaction);
-			memcpy(obj->actionlist, dat + pos, sizeof(EERIE_ACTIONLIST)*obj->nbaction);
-			pos += sizeof(EERIE_ACTIONLIST) * obj->nbaction;
-		}
+			// Copy in the action points data
+			for ( size_t i = 0 ; i < obj->actionlist.size() ; i++ )
+			{ // TODO iterator
+				EERIE_ACTIONLIST_FTL* action = reinterpret_cast<EERIE_ACTIONLIST_FTL*>(dat+pos);
+				obj->actionlist[i].name = action->name;
+				obj->actionlist[i].idx = action->idx;
+				obj->actionlist[i].act = action->act;
+				obj->actionlist[i].sfx = action->sfx;
 
-		// Alloc'n'Copy selections
-		if (obj->nbselections > 0)
-		{
-			//todo free++
-			obj->selections = (EERIE_SELECTIONS *)malloc(sizeof(EERIE_SELECTIONS) * obj->nbselections);
-			memcpy(obj->selections, dat + pos, sizeof(EERIE_SELECTIONS)*obj->nbselections);
-			pos += sizeof(EERIE_SELECTIONS) * obj->nbselections;
+				pos += sizeof(EERIE_ACTIONLIST_FTL);
+			}
 
+			// Copy in the selections data
+			for ( size_t i = 0 ; i < obj->selections.size() ; i++ )
+			{ // TODO iterator
+				EERIE_SELECTIONS_FTL* selection = reinterpret_cast<EERIE_SELECTIONS_FTL*>(dat+pos);
+				obj->selections[i].name = selection->name;
+				obj->selections[i].nb_selected = selection->nb_selected;
+				obj->selections[i].selected = 0; // Null unless changed
+
+				pos += sizeof(EERIE_SELECTIONS_FTL);
+			}
+
+			// Copy in the selections selected data
 			for (long i = 0; i < af3Ddh->nb_selections; i++)
 			{
-				//todo free+++
-				obj->selections[i].selected = (long *)malloc(sizeof(long) * obj->selections[i].nb_selected);
-				memcpy(obj->selections[i].selected, dat + pos, sizeof(long)*obj->selections[i].nb_selected);
-				pos += sizeof(long) * obj->selections[i].nb_selected;
+				obj->selections[i].selected = new long[obj->selections[i].nb_selected];
+				std::copy( (long*)(dat+pos),
+				           (long*)(dat+pos + sizeof(long)*obj->selections[i].nb_selected),
+				           obj->selections[i].selected );
+				pos += sizeof(long) * obj->selections[i].nb_selected; // Advance to the next selection data block
 			}
-		}
 
-		obj->pbox = NULL;
+		obj->pbox = NULL; // Reset physics
 	}
-
-	if (!obj)
+	
+	if ( !obj ) // Never created obj object
 	{
 		LogError << "ARX_FTL_Load: error loading data from " << filename;
 		free(dat);
-		return NULL;
+		return 0;
 	}
 
 	// Alloc'n'Copy Collision Spheres Data
 	if (afsh->offset_collision_spheres != -1)
 	{
-		afcsdh = (ARX_FTL_COLLISION_SPHERES_DATA_HEADER *)(dat + afsh->offset_collision_spheres);
+		// Cast to header
+		ARX_FTL_COLLISION_SPHERES_DATA_HEADER * afcsdh;
+		afcsdh = reinterpret_cast<ARX_FTL_COLLISION_SPHERES_DATA_HEADER*>(dat + afsh->offset_collision_spheres);
 		pos = afsh->offset_collision_spheres;
 		pos += sizeof(ARX_FTL_COLLISION_SPHERES_DATA_HEADER);
 
-		obj->sdata = (COLLISION_SPHERES_DATA *)malloc(sizeof(COLLISION_SPHERES_DATA));
+		// Alloc the collision sphere data object
+		obj->sdata = new COLLISION_SPHERES_DATA();
 		obj->sdata->nb_spheres = afcsdh->nb_spheres;
 
-		obj->sdata->spheres = (COLLISION_SPHERE *)malloc(sizeof(COLLISION_SPHERE) * obj->sdata->nb_spheres);
+		// Alloc the collision speheres
+		obj->sdata->spheres = new COLLISION_SPHERE[obj->sdata->nb_spheres];
 
+		// TODO Replace with copy
 		memcpy(obj->sdata->spheres, dat + pos, sizeof(COLLISION_SPHERE)*obj->sdata->nb_spheres);
 		pos += sizeof(COLLISION_SPHERE) * obj->sdata->nb_spheres;
 	}
@@ -858,6 +943,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	// Alloc'n'Copy Progressive DATA
 	if (afsh->offset_progressive_data != -1)
 	{
+		ARX_FTL_PROGRESSIVE_DATA_HEADER *	afpdh;
 		afpdh = (ARX_FTL_PROGRESSIVE_DATA_HEADER *)(dat + afsh->offset_progressive_data);
 		pos = afsh->offset_progressive_data;
 		pos += sizeof(ARX_FTL_PROGRESSIVE_DATA_HEADER);
@@ -867,28 +953,29 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	// Alloc'n'Copy Clothes DATA
 	if (afsh->offset_clothes_data != -1)
 	{
-		obj->cdata = (CLOTHES_DATA *)malloc(sizeof(CLOTHES_DATA));
-		memset(obj->cdata, 0, sizeof(CLOTHES_DATA));
+		obj->cdata = new CLOTHES_DATA();
 
-		afcdh = (ARX_FTL_CLOTHES_DATA_HEADER *)(dat + afsh->offset_clothes_data);
+		ARX_FTL_CLOTHES_DATA_HEADER 	*	afcdh;
+		afcdh = reinterpret_cast<ARX_FTL_CLOTHES_DATA_HEADER*>(dat + afsh->offset_clothes_data);
 		obj->cdata->nb_cvert = (short)afcdh->nb_cvert;
 		obj->cdata->nb_springs = (short)afcdh->nb_springs;
 		pos = afsh->offset_clothes_data;
 		pos += sizeof(ARX_FTL_CLOTHES_DATA_HEADER);
 
 		// now load cvert
-		obj->cdata->cvert = (CLOTHESVERTEX *)malloc(sizeof(CLOTHESVERTEX) * obj->cdata->nb_cvert);
-		obj->cdata->backup = (CLOTHESVERTEX *)malloc(sizeof(CLOTHESVERTEX) * obj->cdata->nb_cvert);
+		obj->cdata->cvert = new CLOTHESVERTEX[obj->cdata->nb_cvert];
+		obj->cdata->backup = new CLOTHESVERTEX[obj->cdata->nb_cvert];
 		memcpy(obj->cdata->cvert, dat + pos, sizeof(CLOTHESVERTEX)*obj->cdata->nb_cvert);
 		memcpy(obj->cdata->backup, dat + pos, sizeof(CLOTHESVERTEX)*obj->cdata->nb_cvert);
 		pos += sizeof(CLOTHESVERTEX) * obj->cdata->nb_cvert;
 
 		// now load springs
-		obj->cdata->springs = (EERIE_SPRINGS *)malloc(sizeof(EERIE_SPRINGS) * obj->cdata->nb_springs);
+		obj->cdata->springs = new EERIE_SPRINGS[obj->cdata->nb_springs];
 		memcpy(obj->cdata->springs, dat + pos, sizeof(EERIE_SPRINGS)*obj->cdata->nb_springs);
 		pos += sizeof(EERIE_SPRINGS) * obj->cdata->nb_springs;
 	}
 
+	// Free the loaded file memory
 	free(dat);
 
 	if (BH_MODE)

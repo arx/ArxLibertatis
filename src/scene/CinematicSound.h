@@ -25,7 +25,7 @@ void DeleteAllSound();
 void InitSound(Cinematic * c);
 CinematicSound * GetFreeSound(int * num);
 bool DeleteFreeSound(int num);
-int AddSoundToList(char * dir, char * name, int id, int pos);
+int AddSoundToList(const std::string & path);
 bool PlaySoundKeyFramer(int id);
 void StopSoundKeyFramer(void);
 

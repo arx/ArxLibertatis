@@ -57,32 +57,87 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SCRIPTING_H
 #define ARX_SCRIPTING_H
 
-#include <tchar.h>
-#include "graphics/data/Mesh.h"
-#include "graphics/data/MeshManipulation.h"
+#include <string>
+
+//TODO Remove this after cleaning up struct declarations
+struct INTERACTIVE_OBJ;
+struct ANIM_HANDLE;
+struct ANIM_USE;
+
+#define MAX_GOSUB 10
+#define MAX_SHORTCUT 80
+#define MAX_SCRIPTTIMERS 5
 
 //-----------------------------------------------------------------------------
-typedef struct
-{
-	char		*	name;
-	short			exist;
-	short			flags; 
-	long			namelength;
-	long			times;
-	long			msecs;
-	long			pos;
-	long			longinfo;
-	unsigned long	tim;
-	INTERACTIVE_OBJ * io;
-	EERIE_SCRIPT	* es;
-} SCR_TIMER;
 
-typedef struct
+
+struct SCRIPT_VAR
+{	
+	long	type;
+	long	ival;
+	float	fval;
+	char *	text;  // for a TEXT type ival equals strlen(text).
+	char 	name[64];
+};
+
+struct LABEL_INFO
 {
-	const char		*	name;
-} SCRIPT_EVENT;
+	char *		string;
+	long		idx;
+};
+
+struct EERIE_SCRIPT
+{
+	long			size;
+	char *			data;
+	long			sub[MAX_GOSUB];
+	long			nblvar;
+	SCRIPT_VAR *	lvar;
+	unsigned long	lastcall;
+	unsigned long	timers[MAX_SCRIPTTIMERS];
+	long			allowevents;
+	void *			master;
+	long			shortcut[MAX_SHORTCUT];
+	long			nb_labels;
+	LABEL_INFO *	labels;
+};
+
+struct SCR_TIMER {
+	std::string         name;
+	short               exist;
+	short               flags; 
+	long                namelength;
+	long                times;
+	long                msecs;
+	long                pos;
+	long                longinfo;
+	unsigned long       tim;
+	INTERACTIVE_OBJ*    io;
+	EERIE_SCRIPT*       es;
+	
+	inline SCR_TIMER() : name(), exist(0), flags(0), namelength(0), times(0),
+	                     msecs(0), pos(0), longinfo(0), tim(0), io(NULL), es(NULL) { };
+	
+	inline void reset() {
+		name.clear();
+		exist = 0;
+		flags = 0;
+		namelength = 0;
+		times = 0;
+		msecs = 0;
+		pos = 0;
+		longinfo = 0;
+		tim = 0;
+		io = NULL;
+		es = NULL;
+	}
+};
 
 //-----------------------------------------------------------------------------
+#define TYPE_TEXT	1
+#define TYPE_FLOAT	2
+#define TYPE_LONG	3
+
 #define PATHFIND_ALWAYS		1
 #define PATHFIND_ONCE		2
 #define PATHFIND_NO_UPDATE	4
@@ -375,21 +430,17 @@ typedef struct
 //-----------------------------------------------------------------------------
 extern SCRIPT_VAR * svar;
 extern INTERACTIVE_OBJ * EVENT_SENDER;
-extern SCRIPT_EVENT AS_EVENT[];
 extern SCR_TIMER * scr_timer;
-extern char ShowTextWindowtext[128];
-extern char ShowText[65536];
-extern char ShowText2[65536];
-extern char BIG_DEBUG_STRING[BIG_DEBUG_SIZE];
+extern std::string ShowTextWindowtext;
+extern std::string ShowText;
+extern std::string ShowText2;
+extern std::string BIG_DEBUG_STRING;
 extern long BIG_DEBUG_POS;
 extern long NB_GLOBALS;
 extern long ActiveTimers;
 extern long Event_Total_Count;
 extern long FORBID_SCRIPT_IO_CREATION;
 extern long MAX_TIMER_SCRIPT;
-
-extern LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-extern LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 //-----------------------------------------------------------------------------
 void InitScript(EERIE_SCRIPT * es);
@@ -403,16 +454,16 @@ void ARX_SCRIPT_Timer_Clear_For_IO(INTERACTIVE_OBJ * io);
 void ARX_SCRIPT_Timer_Clear_By_IO(INTERACTIVE_OBJ * io);
 long ARX_SCRIPT_Timer_GetFree();
  
-void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, const char * newevent);
+void ARX_SCRIPT_SetMainEvent(INTERACTIVE_OBJ * io, const std::string& newevent);
 void ARX_SCRIPT_EventStackExecute();
 void ARX_SCRIPT_EventStackExecuteAll();
 void ARX_SCRIPT_EventStackInit();
-void ARX_SCRIPT_EventStackClear();
-void ARX_SCRIPT_LaunchScriptSearch(char * search);
+void ARX_SCRIPT_EventStackClear( bool check_exist = true );
+void ARX_SCRIPT_LaunchScriptSearch( std::string& search);
 void ARX_SCRIPT_ResetObject(INTERACTIVE_OBJ * io, long flags);
 void ARX_SCRIPT_Reset(INTERACTIVE_OBJ * io, long flags);
-long ARX_SCRIPT_GetSystemIOScript(INTERACTIVE_OBJ * io, const char * name);
-void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT * es);
+long ARX_SCRIPT_GetSystemIOScript(INTERACTIVE_OBJ * io, const std::string& name);
+void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT& es);
 void ARX_SCRIPT_AllowInterScriptExec();
 long ARX_SCRIPT_CountTimers();
 void ARX_SCRIPT_Timer_ClearByNum(long num);
@@ -424,41 +475,78 @@ bool CheckScriptSyntax_Loading(INTERACTIVE_OBJ * io);
 bool CheckScriptSyntax(INTERACTIVE_OBJ * io);
 
 void ManageNPCMovement(INTERACTIVE_OBJ * io);
+void ManageCasseDArme(INTERACTIVE_OBJ * io);
 void ReleaseScript(EERIE_SCRIPT * es);
-long GetNextWord(EERIE_SCRIPT * es, long i, char * temp, long flags = 0);
+long GetNextWord(EERIE_SCRIPT * es, long i, std::string& temp, long flags = 0);
 void ARX_SCRIPT_Init_Event_Stats();
-void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const char * name, const char * content);
+void ARX_SCRIPT_SetVar(INTERACTIVE_OBJ * io, const std::string& name, const std::string& content);
 void InitAllGlobalVars();
 long SendInitScriptEvent(INTERACTIVE_OBJ * io);
 void ClearSubStack(EERIE_SCRIPT * es);
 
+//used by scriptevent
+void MakeSSEPARAMS(const char * params);
+void MakeStandard( std::string& str);
+long GotoNextLine(EERIE_SCRIPT * es, long pos);
+bool iCharIn( const std::string& str, char _char);
+bool CharIn( const std::string& str, char _char);
+float GetVarValueInterpretedAsFloat( std::string& temp1, EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io);
+long FindLabelPos(EERIE_SCRIPT * es, const std::string& string);
+long SkipNextStatement(EERIE_SCRIPT * es, long pos);
+std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * esss, INTERACTIVE_OBJ * io);
+void ARX_SCRIPT_Timer_GetDefaultName(char * tx);
+void ARX_IOGROUP_Remove(INTERACTIVE_OBJ * io, const std::string& group);
+void ARX_IOGROUP_Add(INTERACTIVE_OBJ * io, const char * group);
+long GetNextWord_Interpreted( INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, std::string& temp );
+
+// Use to set the value of a script variable
+SCRIPT_VAR* SETVarValueText(SCRIPT_VAR*& svf, long& nb, const std::string& name, const std::string& val);
+SCRIPT_VAR* SETVarValueLong(SCRIPT_VAR*& svf, long& nb, const std::string& name, long val);
+SCRIPT_VAR* SETVarValueFloat(SCRIPT_VAR*& svf, long& nb, const std::string& name, float val);
+
+// Use to get the value of a script variable
+long GETVarValueLong(SCRIPT_VAR*& svf, long& nb, const std::string& name);
+float GETVarValueFloat(SCRIPT_VAR*& svf, long& nb, const std::string& name);
+std::string GETVarValueText(SCRIPT_VAR*& svf, long& nb, const std::string& name);
+
+long GetNumAnim( const std::string& name);
+long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _name, std::string& txtcontent,unsigned int txtcontentSize,float * fcontent,long * lcontent);
+void ARX_SCRIPT_Timer_Clear_All_Locals_For_IO(INTERACTIVE_OBJ * io);
+void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(char * timername, INTERACTIVE_OBJ * io);
+int strcasecmp( const std::string& str1, const std::string& str2 );
+int strcmp( const std::string& str1, const std::string& str2 );
 //-----------------------------------------------------------------------------
 
 // TODO why is this in ARX_Script?
-long MakeLocalised(const char * text, char * output, long maxsize);
+long MakeLocalised( const std::string& text, std::string& output, long lastspeechflag = 0);
 
 //-----------------------------------------------------------------------------
-long specialstrcmp(const char * text, const char * seek);
+long specialstrcmp( const std::string& text, const std::string& seek);
 void CheckHit(INTERACTIVE_OBJ * io, float ratio);
+
 long NotifyIOEvent(INTERACTIVE_OBJ * io, long msg);
+long NotifyIOEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params);
 void ForceAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * ea);
 
-long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const char * text, long duration = -1);
+long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const std::string& text, long duration = -1);
 
-long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const char * params, const char * eventname = NULL);
-long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTIVE_OBJ * io, const char * eventname, long info = 0);
+long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params = "", const std::string& eventname = "" );
+
+
 long SendMsgToAllIO(long msg, const char * dat);
 
-void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const char * params, const char * eventname);
+void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params = "", const std::string& eventname = "");
+
+long FindScriptPos(EERIE_SCRIPT * es, const std::string& str);
 bool InSubStack(EERIE_SCRIPT * es, long pos);
 long GetSubStack(EERIE_SCRIPT * es);
 void AttemptMoveToTarget(INTERACTIVE_OBJ * io);
 void GetTargetPos(INTERACTIVE_OBJ * io, unsigned long smoothing = 0);
 void ARX_IOGROUP_Release(INTERACTIVE_OBJ * io);
 void CloneLocalVars(INTERACTIVE_OBJ * ioo, INTERACTIVE_OBJ * io);
-bool IsIOGroup(INTERACTIVE_OBJ * io, const char * group);
+bool IsIOGroup(INTERACTIVE_OBJ * io, const std::string& group);
 void ARX_SCRIPT_Free_All_Global_Variables();
-void		MakeLocalText(EERIE_SCRIPT * es, char * tx);
-void		MakeGlobalText(char * tx);
+void		MakeLocalText(EERIE_SCRIPT * es, std::string& tx);
+void		MakeGlobalText( std::string& tx);
 
 #endif

@@ -209,8 +209,8 @@ void ARX_MINIMAP_Load_Offsets()
 	if (PAK_FileExist(INI_MINI_OFFSETS))
 	{
 		size_t siz = 0;
-		char * dat = (char *)PAK_FileLoadMalloc(INI_MINI_OFFSETS, &siz);
-		long pos = 0;
+		char * dat = (char *)PAK_FileLoadMalloc(INI_MINI_OFFSETS, siz);
+		size_t pos = 0;
 
 		if (dat)
 		{
@@ -489,9 +489,9 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 				{
 
 					if	((posx < 360 * Xratio)
-					        ||	(posx > 555 * Xratio)
-					        ||	(posy < 85 * Yratio)
-					        ||	(posy > 355 * Yratio))
+							||	(posx > 555 * Xratio)
+							||	(posy < 85 * Yratio)
+							||	(posy > 355 * Yratio))
 						okay = 0;
 
 					if (fl2)
@@ -499,9 +499,9 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 						okay = 1;
 
 						if	((posx < 390 * Xratio)
-						        ||	(posx > 590 * Xratio)
-						        ||	(posy < 135 * Yratio)
-						        ||	(posy > 295 * Yratio))
+								||	(posx > 590 * Xratio)
+								||	(posy < 135 * Yratio)
+								||	(posy > 295 * Yratio))
 							okay = 0;
 					}
 
@@ -509,15 +509,15 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 				else
 				{
 					if ((posx > 345 * Xratio)
-					        ||	(posy > 290 * Yratio))
+							||	(posy > 290 * Yratio))
 						okay = 0;
 				}
 
 				if (okay)
 				{
 					if ((flag == 2)
-					        && (i >= 0) && (i < MINIMAP_MAX_X)
-					        && (j >= 0) && (j < MINIMAP_MAX_Z))
+							&& (i >= 0) && (i < MINIMAP_MAX_X)
+							&& (j >= 0) && (j < MINIMAP_MAX_Z))
 					{
 						float d = Distance2D(posx * divXratio + casex * ( 1.0f / 2 ), posy * divYratio /*-casey * 2 * Yratio*/, px, py);
 
@@ -548,7 +548,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 					if (!FOR_EXTERNAL_PEOPLE)
 					{
 						if ((i >= 0) && (i < MINIMAP_MAX_X)
-						        &&	(j >= 0) && (j < MINIMAP_MAX_Z))
+								&&	(j >= 0) && (j < MINIMAP_MAX_Z))
 						{
 							minimap[SHOWLEVEL].revealed[i][j] = 255;
 						}
@@ -604,7 +604,6 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 						if ((i + 1 < 0) || (i + 1 >= MINIMAP_MAX_X) || (j < 0) || (j >= MINIMAP_MAX_Z)) v = 0;
 						else v = ((float)minimap[SHOWLEVEL].revealed[min((int)i+1, MINIMAP_MAX_X-1)][j]) * ( 1.0f / 255 );
-
 						if (flag == 1)
 						{
 							long vert = 1;
@@ -671,7 +670,6 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 						if ((i < 0) || (i >= MINIMAP_MAX_X) || (j + 1 < 0) || (j + 1 >= MINIMAP_MAX_Z)) v = 0;
 						else v = ((float)minimap[SHOWLEVEL].revealed[i][min((int)j+1, MINIMAP_MAX_Z-1)]) * ( 1.0f / 255 );
-
 						if (flag == 1)
 						{
 							long vert = 3;
@@ -763,7 +761,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 				if (fl2)
 				{
-					SETALPHABLEND(m_pd3dDevice, true);
+					SETALPHABLEND(m_pd3dDevice, TRUE);
 					verts[0].sx += DECALX * Xratio;
 					verts[0].sy += DECALY * Yratio;
 					verts[1].sx += DECALX * Xratio;
@@ -785,8 +783,8 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 			{
 				if (inter.iobj[lnpc]->_npcdata->life > 0.f)
 					if (!((inter.iobj[lnpc]->GameFlags & GFLAG_MEGAHIDE) ||
-					        (inter.iobj[lnpc]->show == SHOW_FLAG_MEGAHIDE))
-					        && (inter.iobj[lnpc]->show == SHOW_FLAG_IN_SCENE))
+							(inter.iobj[lnpc]->show == SHOW_FLAG_MEGAHIDE))
+							&& (inter.iobj[lnpc]->show == SHOW_FLAG_IN_SCENE))
 						if (!(inter.iobj[lnpc]->show == SHOW_FLAG_HIDDEN))
 							if (inter.iobj[lnpc]->_npcdata->fDetect >= 0)
 							{
@@ -813,7 +811,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 									float d = Distance2D(player.pos.x, player.pos.z, inter.iobj[lnpc]->pos.x, inter.iobj[lnpc]->pos.z);
 
-		
+
 									if ((d <= 800) && (fabs(inter.iobj[0]->pos.y - inter.iobj[lnpc]->pos.y) < 250.f))
 									{
 										float col = 1.f;
@@ -841,7 +839,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 										fpx *= Xratio;
 										fpy *= Yratio;
 										EERIEDrawBitmap(GDevice, fpx, fpy,
-										                5.f * ratiooo, 5.f * ratiooo, 0, pTexDetect, D3DRGB(col, 0, 0));
+														5.f * ratiooo, 5.f * ratiooo, 0, pTexDetect, D3DRGB(col, 0, 0));
 
 										if (!fl2)
 											SETALPHABLEND(m_pd3dDevice, false);
@@ -881,22 +879,27 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 					verts[3].tv = 1.f;
 
 					if ((!fl2)
-					        && (MouseInRect(verts[0].sx, verts[0].sy, verts[2].sx, verts[2].sy)))
+							&& (MouseInRect(verts[0].sx, verts[0].sy, verts[2].sx, verts[2].sy)))
 					{
-						if (!Mapmarkers[i].tstring)
+						if (Mapmarkers[i].tstring.empty())
 						{
-							_TCHAR output[4096];
-							MakeLocalised(Mapmarkers[i].string, output, 4096);
-							Mapmarkers[i].tstring = (_TCHAR *)malloc((_tcslen(output) + 1) * sizeof(_TCHAR));
-							ZeroMemory(Mapmarkers[i].tstring, (_tcslen(output) + 1)*sizeof(_TCHAR));
-							_tcscpy(Mapmarkers[i].tstring, output);
+							std::string output;
+							MakeLocalised(Mapmarkers[i].string, output);
+							Mapmarkers[i].tstring = output;
 						}
 
-						if (Mapmarkers[i].tstring)
+						if ( !Mapmarkers[i].tstring.empty() )
+						{
+							std::string output;
+							MakeLocalised( Mapmarkers[i].string, output);
+							Mapmarkers[i].tstring = output;
+						}
+
+						if ( !Mapmarkers[i].tstring.empty() )
 						{
 							RECT rRect, bRect;
 							SetRect(&bRect	, (140),	(290)
-							        , (140 + 205),	(358));
+									, (140 + 205),	(358));
 
 							float fLeft		= (bRect.left) * Xratio ;
 							float fRight	= (bRect.right) * Xratio ;
@@ -908,24 +911,25 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 							ARX_CHECK_INT(fBottom);
 
 							SetRect(&rRect
-							        , ARX_CLEAN_WARN_CAST_INT(fLeft)
-							        , ARX_CLEAN_WARN_CAST_INT(fTop)
-							        , ARX_CLEAN_WARN_CAST_INT(fRight)
-							        , ARX_CLEAN_WARN_CAST_INT(fBottom));
+									, ARX_CLEAN_WARN_CAST_INT(fLeft)
+									, ARX_CLEAN_WARN_CAST_INT(fTop)
+									, ARX_CLEAN_WARN_CAST_INT(fRight)
+									, ARX_CLEAN_WARN_CAST_INT(fBottom));
 
 
 							long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(
-							                       hFontInGameNote, Mapmarkers[i].tstring, 0, rRect);
+												   hFontInGameNote, Mapmarkers[i].tstring.c_str(), 0, rRect);
 
 							danaeApp.DANAEEndRender();
-							_TCHAR	Page_Buffer[256];
-							_tcsncpy(Page_Buffer, Mapmarkers[i].tstring, lLengthDraw);
-							Page_Buffer[lLengthDraw] = _T('\0');
+							char Page_Buffer[256];
+							//_tcsncpy(Page_Buffer, Mapmarkers[i].tstring, lLengthDraw);
+							strncpy( Page_Buffer, Mapmarkers[i].tstring.c_str(), lLengthDraw );
+							Page_Buffer[lLengthDraw] = '\0';
 
 							DrawBookTextInRect(ARX_CLEAN_WARN_CAST_FLOAT(bRect.left), ARX_CLEAN_WARN_CAST_FLOAT(bRect.top),
-							                   ARX_CLEAN_WARN_CAST_FLOAT(bRect.right), ARX_CLEAN_WARN_CAST_FLOAT(bRect.bottom),
-							                   Page_Buffer, 0, 0x00FF00FF,
-							                   hFontInGameNote);
+											   ARX_CLEAN_WARN_CAST_FLOAT(bRect.right), ARX_CLEAN_WARN_CAST_FLOAT(bRect.bottom),
+											   Page_Buffer, 0, 0x00FF00FF,
+											   hFontInGameNote);
 
 
 							danaeApp.DANAEStartRender();
@@ -954,7 +958,6 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 					EERIEDRAWPRIM(GDevice, D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, 4, 0);
 				}
 			}
-
 	}
 }
 
@@ -964,10 +967,11 @@ void ARX_MAPMARKER_Init()
 	{
 		for (long i = 0; i < Nb_Mapmarkers; i++)
 		{
-			if (Mapmarkers[i].tstring)
-				free(Mapmarkers[i].tstring);
+			if (!Mapmarkers[i].tstring.empty())
+				//free(Mapmarkers[i].tstring);
+				Mapmarkers[i].tstring.clear();
 
-			Mapmarkers[i].tstring = NULL;
+			//Mapmarkers[i].tstring = NULL;
 		}
 
 		free(Mapmarkers);
@@ -976,17 +980,17 @@ void ARX_MAPMARKER_Init()
 	Mapmarkers = NULL;
 	Nb_Mapmarkers = 0;
 }
-long ARX_MAPMARKER_Get(char * str)
+long ARX_MAPMARKER_Get( const std::string& str)
 {
 	for (long i = 0; i < Nb_Mapmarkers; i++)
 	{
-		if (!strcasecmp(Mapmarkers[i].string, str))
+		if (!strcasecmp(Mapmarkers[i].string, str.c_str()))
 			return i;
 	}
 
 	return -1;
 }
-void ARX_MAPMARKER_Add(float x, float y, long lvl, char * temp)
+void ARX_MAPMARKER_Add(float x, float y, long lvl, const std::string& temp)
 {
 	long num = ARX_MAPMARKER_Get(temp);
 
@@ -996,11 +1000,12 @@ void ARX_MAPMARKER_Add(float x, float y, long lvl, char * temp)
 		Mapmarkers[num].x = x;
 		Mapmarkers[num].y = y;
 
-		if (Mapmarkers[num].tstring)
-			free(Mapmarkers[num].tstring);
+		if (!Mapmarkers[num].tstring.empty())
+			//free(Mapmarkers[num].tstring);
+			Mapmarkers[num].tstring.clear();
 
-		Mapmarkers[num].tstring = NULL;
-		strcpy(Mapmarkers[num].string, temp);
+		//Mapmarkers[num].tstring = NULL;
+		strcpy(Mapmarkers[num].string, temp.c_str());
 		return;
 	}
 
@@ -1016,11 +1021,12 @@ void ARX_MAPMARKER_Add(float x, float y, long lvl, char * temp)
 	Mapmarkers[Nb_Mapmarkers].lvl = lvl;
 	Mapmarkers[Nb_Mapmarkers].x = x;
 	Mapmarkers[Nb_Mapmarkers].y = y;
-	Mapmarkers[Nb_Mapmarkers].tstring = NULL;
-	strcpy(Mapmarkers[Nb_Mapmarkers].string, temp);
+	Mapmarkers[Nb_Mapmarkers].tstring.clear();
+	strcpy(Mapmarkers[Nb_Mapmarkers].string, temp.c_str());
 	Nb_Mapmarkers++;
 }
-void ARX_MAPMARKER_Remove(char * temp)
+
+void ARX_MAPMARKER_Remove( const std::string& temp)
 {
 	long num = ARX_MAPMARKER_Get(temp);
 
@@ -1032,10 +1038,11 @@ void ARX_MAPMARKER_Remove(char * temp)
 		return;
 	}
 
-	if (Mapmarkers[num].tstring)
-		free(Mapmarkers[num].tstring);
+	if (!Mapmarkers[num].tstring.empty())
+		//free(Mapmarkers[num].tstring);
+		Mapmarkers[num].tstring.clear();
 
-	Mapmarkers[num].tstring = NULL;
+	//Mapmarkers[num].tstring = NULL;
 
 	for (long i = num; i < Nb_Mapmarkers - 1; i++)
 	{

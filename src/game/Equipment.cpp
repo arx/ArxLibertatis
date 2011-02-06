@@ -58,6 +58,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdio.h>
 #include <stdlib.h>
 
+/*#include <algorithm>
+#include <fstream>
+#include <sstream>
+#include <vector>
+*/
+
 #include "io/IO.h"
 #include "graphics/d3dwrapper.h"
 #include "graphics/Math.h"
@@ -101,7 +107,7 @@ EQUIP_INFO equipinfo[IO_EQUIPITEM_ELEMENT_Number];
 //-----------------------------------------------------------------------------------------------
 // VERIFIED (Cyril 2001/10/29)
 //***********************************************************************************************
-unsigned long ARX_EQUIPMENT_GetObjectTypeFlag(char * temp)
+unsigned long ARX_EQUIPMENT_GetObjectTypeFlag( const char * temp)
 {
 	if (!temp) return 0;
 
@@ -219,9 +225,9 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				long mapidx = ObjectAddMap(io->obj, temp);
 
 				// retreives head sel
-				for (i = 0; i < io->obj->nbselections; i++)
-				{
-					if (!strcasecmp(io->obj->selections[i].name, "head"))
+				for (i = 0; i < io->obj->selections.size(); i++)
+				{ // TODO iterator
+					if (!strcasecmp(io->obj->selections[i].name.c_str(), "head"))
 					{
 						sel_ = i;
 						break;
@@ -232,7 +238,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				for (i = 0; i < io->obj->nbmaps; i++)
 				{
-					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName)))
+					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName).c_str()))
 						textochange = i;
 				}
 
@@ -275,9 +281,9 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				long mapidx = ObjectAddMap(io->obj, temp);
 
 				// retreives head sel
-				for (i = 0; i < io->obj->nbselections; i++)
-				{
-					if (!strcasecmp(io->obj->selections[i].name, "chest"))
+				for (i = 0; i < io->obj->selections.size(); i++)
+				{ // TODO iterator
+					if (!strcasecmp(io->obj->selections[i].name.c_str(), "chest"))
 					{
 						sel_ = i;
 						break;
@@ -288,7 +294,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				for (i = 0; i < io->obj->nbmaps; i++)
 				{
-					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName)))
+					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName).c_str()))
 						textochange = i;
 				}
 
@@ -331,9 +337,9 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				long mapidx = ObjectAddMap(io->obj, temp);
 
 				// retreives head sel
-				for (i = 0; i < io->obj->nbselections; i++)
-				{
-					if (!strcasecmp(io->obj->selections[i].name, "leggings"))
+				for (i = 0; i < io->obj->selections.size(); i++)
+				{ // TODO iterator
+					if (!strcasecmp(io->obj->selections[i].name.c_str(), "leggings"))
 					{
 						sel_ = i;
 						break;
@@ -344,7 +350,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				for (i = 0; i < io->obj->nbmaps; i++)
 				{
-					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName)))
+					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName).c_str()))
 						textochange = i;
 				}
 
@@ -499,9 +505,9 @@ void ARX_EQUIPMENT_UnEquip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * tounequip
 			}
 
 			EVENT_SENDER = tounequip;
-			SendIOScriptEvent(inter.iobj[0], SM_EQUIPOUT, "", NULL);
+			SendIOScriptEvent(inter.iobj[0], SM_EQUIPOUT);
 			EVENT_SENDER = inter.iobj[0];
-			SendIOScriptEvent(tounequip, SM_EQUIPOUT, "", NULL);
+			SendIOScriptEvent(tounequip, SM_EQUIPOUT);
 		}
 	}
 
@@ -653,7 +659,7 @@ void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon()
 float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * io_weapon, INTERACTIVE_OBJ * io_target, float ratioaim, EERIE_3D * position)
 {
 	EVENT_SENDER = io_source;
-	SendIOScriptEvent(io_target, SM_AGGRESSION, "", NULL);
+	SendIOScriptEvent(io_target, SM_AGGRESSION);
 
 	if ((!io_source)
 	        ||	(!io_target))
@@ -702,7 +708,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 
 		if (rnd() * 100 <= (float)(player.Full_Attribute_Dexterity - 9) * 2.f + (float)(player.Full_Skill_Close_Combat * ( 1.0f / 5 )))
 		{
-			if (SendIOScriptEvent(io_source, SM_CRITICAL, "", NULL) != REFUSE)
+			if (SendIOScriptEvent(io_source, SM_CRITICAL) != REFUSE)
 				critical = true;
 		}
 		else critical = false;
@@ -713,7 +719,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 		{
 			if (rnd() * 100.f <= player.Full_Skill_Stealth * ( 1.0f / 2 ))
 			{
-				if (SendIOScriptEvent(io_source, SM_BACKSTAB, "", NULL) != REFUSE)
+				if (SendIOScriptEvent(io_source, SM_BACKSTAB) != REFUSE)
 					backstab = 1.5f; 
 			}
 		}
@@ -750,14 +756,14 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 
 		if (rnd() * 100 <= io_source->_npcdata->critical) 
 		{
-			if (SendIOScriptEvent(io_source, SM_CRITICAL, "", NULL) != REFUSE)
+			if (SendIOScriptEvent(io_source, SM_CRITICAL) != REFUSE)
 				critical = true;
 		}
 		else critical = false;
 
 		if (rnd() * 100.f <= (float)io_source->_npcdata->backstab_skill)
 		{
-			if (SendIOScriptEvent(io_source, SM_BACKSTAB, "", NULL) != REFUSE)
+			if (SendIOScriptEvent(io_source, SM_BACKSTAB) != REFUSE)
 				backstab = 1.5f; 
 		}
 	}
@@ -925,15 +931,15 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 	EXCEPTIONS_LIST_Pos = 0;
 	float rad;
 
-	long nbact = io_weapon->obj->nbaction;
+	long nbact = io_weapon->obj->actionlist.size();
 	float drain_life = ARX_EQUIPMENT_GetSpecialValue(io_weapon, IO_SPECIAL_ELEM_DRAIN_LIFE);
 	float paralyse = ARX_EQUIPMENT_GetSpecialValue(io_weapon, IO_SPECIAL_ELEM_PARALYZE);
 
-	for (long j = 0; j < nbact; j++)
+	for (long j = 0; j < nbact; j++) // TODO iterator
 	{
 		if (!ValidIONum(weapon)) return false;
 
-		rad = GetHitValue(io_weapon->obj->actionlist[j].name);
+		rad = GetHitValue(io_weapon->obj->actionlist[j].name.c_str());
 
 		if (rad == -1) continue;
 
@@ -1192,8 +1198,8 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 
 						char bkg_material[64] = "EARTH";
 
-						if (ep &&  ep->tex && ep->tex->m_texName)
-							GetMaterialString(ep->tex->m_texName, bkg_material);
+						if (ep &&  ep->tex && ep->tex->m_texName.c_str())
+							GetMaterialString(ep->tex->m_texName.c_str(), bkg_material);
 
 						ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, &sphere.origin, io_source);
 					}
@@ -1433,7 +1439,7 @@ void ARX_EQUIPMENT_Equip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * toequip)
 // Sets/unsets an object type flag
 //-----------------------------------------------------------------------------------------------
 //***********************************************************************************************
-void ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ * io, char * temp, long val)
+void ARX_EQUIPMENT_SetObjectType(INTERACTIVE_OBJ * io, const char * temp, long val)
 {
 	// avoid erroneous objects
 	if (!io) return;
@@ -1597,7 +1603,7 @@ float ARX_EQUIPMENT_GetSpecialValue(INTERACTIVE_OBJ * io, long val)
 
 	return -1;
 }
-void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, char * param1, char * param2, float val, short flags)
+void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const char * param1, const char * param2, float val, short flags)
 {
 	if (io == NULL) return;
 
@@ -1669,15 +1675,15 @@ void ARX_EQUIPMENT_IdentifyAll()
 				if (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
 				        >= toequip->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value)
 				{
-					SendIOScriptEvent(toequip, SM_IDENTIFY, "");
+					SendIOScriptEvent(toequip, SM_IDENTIFY);
 				}
 			}
 		}
 	}
 }
-float GetHitValue(char * name)
+float GetHitValue( const std::string& name)
 {
-	long len = strlen(name);
+	long len = name.length();
 
 	if (len < 5) return -1;
 
@@ -1686,7 +1692,7 @@ float GetHitValue(char * name)
 	        && ((name[2] == 'T') || (name[1] == 't'))
 	        && (name[3] == '_'))
 	{
-		long val = atoi(name + 4);
+		long val = atoi(name.c_str() + 4);
 		return (float)val;
 	}
 

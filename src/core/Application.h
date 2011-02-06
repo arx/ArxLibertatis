@@ -58,7 +58,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef  EERIEAPP_H
 #define  EERIEAPP_H
 
-#define NOMINMAX 1
+#include <string>
+
+
 #include <windows.h>
 #include <commctrl.h>
 
@@ -191,34 +193,50 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define INKEY_N				49
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct EERIE_RGBB
 {
+	EERIE_RGBB()
+	{
+		r = g = b = 0;
+	}
+
 	float r;
 	float g;
 	float b;
-} EERIE_RGBB;
+};
 
-typedef struct
+struct PROJECT
 {
-	long		soundmode;
-	long		compatibility;
-	long		ambient;
-	long		improve;
-	long		detectliving;
-	long		improvespeed;
-	long		telekinesis;
-	long		multiplayer;
-	long		demo;
-	long		bits;
-	long		hide;
-	long		TextureSize;
-	long		TextureBits;
-	EERIE_RGBB	interfacergb;
-	EERIE_RGBB	torch;
-	long		interpolatemouse;
-	long		vsync;
-	char		localisationpath[256];
-} PROJECT;
+	PROJECT()
+		:
+		  soundmode(0), compatibility(0), ambient(0),
+		  improve(0), detectliving(0), improvespeed(0),
+		  telekinesis(0), multiplayer(0), demo(0),
+		  bits(0), hide(0), TextureSize(0), TextureBits(0), 
+		  interpolatemouse(0), vsync(0)
+	{
+		localisationpath = "";
+	}
+
+	long            soundmode;
+	long            compatibility;
+	long            ambient;
+	long            improve;
+	long            detectliving;
+	long            improvespeed;
+	long            telekinesis;
+	long            multiplayer;
+	long            demo;
+	long            bits;
+	long            hide;
+	long            TextureSize;
+	long            TextureBits;
+	EERIE_RGBB      interfacergb;
+	EERIE_RGBB      torch;
+	long            interpolatemouse;
+	long            vsync;
+	std::string     localisationpath;
+};
 
 typedef struct
 {
@@ -397,8 +415,7 @@ extern CD3DApplication * g_pD3DApp;
 // MESSAGE BOXES
 //******************************************************************************
 bool	OKBox(const char * text, const char * title);
-void	ShowPopup(const char * text);
-int		ShowError(const char * funcname, const char * message, long fatality);
+//int		ShowError(const char * funcname, const char * message, long fatality);
 
 void	ExitApp(int v);
 void	CalcFPS(bool reset = false);

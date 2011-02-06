@@ -26,19 +26,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/CinematicLoad.h"
 
 #include <stddef.h>
-#include <stdint.h>
+#include <algorithm>
 
+#include "core/Common.h"
 #include "animation/Cinematic.h"
 #include "animation/CinematicKeyframer.h"
+#include "core/Application.h"
 #include "graphics/data/CinematicTexture.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
+#include "io/IO.h"
 #include "scene/CinematicSound.h"
 
-static const int32_t CINEMATIC_FILE_VERSION = (1<<16) | 76;
-static const int16_t INTERP_NO_FADE = 2;
+using std::search;
+using std::string;
 
-extern char AllTxt[];
+static const s32 CINEMATIC_FILE_VERSION = (1<<16) | 76;
+static const s16 INTERP_NO_FADE = 2;
+
 extern CinematicBitmap TabBitmap[];
 extern CinematicTrack * CKTrack;
 extern C_KEY KeyTemp;
@@ -179,46 +184,58 @@ struct C_KEY_1_75 {
 
 #pragma pack(pop)
 
-
-void GetPathDirectory(char * dirfile)
-{
-	char	* n ;
-	int				i ;
-
-	if (!(i = strlen(dirfile))) return;
-
-	n = dirfile + i;
-
-	while (i && (*n != '\\'))
-	{
-		n--;
-		i--;
-	}
-
-	n++;
-
-	if (i) *n = 0;
+bool charCaseEqual(char ch1, char ch2) {
+	return toupper(ch1) == toupper(ch2);
 }
 
-void ClearDirectory(const char * dirfile, char * dst)
-{
-	const char	* n ;
-	int				i ;
-
-	if (!(i = strlen(dirfile))) return ;
-
-	n = dirfile + i ;
-
-	while (i && (*n != '\\'))
-	{
-		n-- ;
-		i-- ;
+// TODO useful elsewhere too -> move to shared file
+size_t strcasefind(const string & haystack, const string & needle) {
+	string::const_iterator pos = search(haystack.begin(), haystack.end(), needle.begin(),
+	                                    needle.end(), charCaseEqual);
+	if(pos == haystack.end()) {
+		return string::npos;
+	} else {
+		return pos - haystack.begin();
 	}
+}
 
-	if (i)
-	{
-		strcpy(dst, n + 1) ;
+void clearAbsDirectory(string & path, const string & delimiter) {
+	
+	size_t abs_dir = strcasefind(path, delimiter);
+	
+	if(abs_dir != std::string::npos) {
+		path = path.substr(abs_dir + delimiter.length());
 	}
+}
+
+void fixSoundPath(string & path) {
+	
+	size_t sfx_pos = strcasefind(path, "sfx");
+	
+	if(sfx_pos != string::npos) {
+		// Sfx
+		path.erase(0, sfx_pos);
+		
+		size_t uk_pos = strcasefind(path, "uk");
+		if(uk_pos != string::npos) {
+			path.replace(uk_pos, 3, "english\\");
+		}
+		
+		size_t fr_pos = strcasefind(path, "fr");
+		if(fr_pos != string::npos) {
+			path.replace(fr_pos, 3, "francais\\");
+		}
+		
+		size_t sfxspeech_pos = strcasefind(path, "sfx\\speech\\");
+		if(sfxspeech_pos != string::npos) {
+			path.erase(0, sfxspeech_pos + 4);
+		}
+		
+	} else {
+		// Speech
+		path = "speech\\" + Project.localisationpath + "\\" + GetName(path);
+	}
+	
 }
 
 // TODO useful elsewhere too
@@ -258,11 +275,11 @@ bool LoadProject(Cinematic * c, const char * dir, const char * name) {
 	InitMapLoad(c);
 	InitSound(c);
 	
-	strcpy(AllTxt, dir);
-	strcat(AllTxt, name);
+	string projectfile = dir;
+	projectfile += name;
 	
 	size_t size;
-	char * data = (char*)PAK_FileLoadMalloc(AllTxt, &size);
+	char * data = (char*)PAK_FileLoadMalloc(projectfile, size);
 	if(!data) {
 		LogError << "cinematic " << dir << name << " not found";
 		return false;
@@ -291,7 +308,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		return false;
 	}
 	
-	int32_t version;
+	s32 version;
 	if(!safeGet(version, data, size)) {
 		LogDebug << "error reading file version";
 		return false;
@@ -309,7 +326,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	}
 	
 	// Load bitmaps.
-	int32_t nbitmaps;
+	s32 nbitmaps;
 	if(!safeGet(nbitmaps, data, size)) {
 		LogDebug << "error reading bitmap count";
 		return false;
@@ -317,7 +334,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	LogDebug << "nbitmaps " << nbitmaps;
 	for(int i = 0; i < nbitmaps; i++) {
 		
-		int32_t scale = 0;
+		s32 scale = 0;
 		if(version >= ((1 << 16) | 71)) {
 			if(!safeGet(scale, data, size)) {
 				LogDebug << "error reading bitmap scale";
@@ -325,21 +342,18 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			}
 		}
 		
-		const char * path = safeGetString(data, size);
-		if(!path) {
+		const char * str = safeGetString(data, size);
+		if(!str) {
 			LogDebug << "error bitmap path";
 			return false;
 		}
+		string path = str;
 		
-		char Dir[256];
-		char Name[256];
-		strcpy(Dir, path);
-		GetPathDirectory(Dir);
-		ClearDirectory(AllTxt, Name);
+		clearAbsDirectory(path, "ARX\\");
 		
-		LogDebug << "adding bitmap " << i << ": " << Dir << Name;
+		LogDebug << "adding bitmap " << i << ": " << path;
 		
-		int id = CreateAllMapsForBitmap(Dir, Name, c, -1, 0);
+		int id = CreateAllMapsForBitmap(path, c);
 		
 		if(TabBitmap[id].load) {
 			if(scale > 1) {
@@ -358,7 +372,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	LSoundChoose = C_KEY::French;
 	if(version >= ((1 << 16) | 60)) {
 		
-		int32_t nsounds;
+		s32 nsounds;
 		if(!safeGet(nsounds, data, size)) {
 			LogDebug << "error reading sound count";
 			return false;
@@ -368,7 +382,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		for(int i = 0; i < nsounds; i++) {
 			
 			if(version >= ((1 << 16) | 76)) {
-				int16_t il;
+				s16 il;
 				if(!safeGet(il, data, size)) {
 					LogDebug << "error reading sound id";
 					return false;
@@ -376,21 +390,22 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 				LSoundChoose = il;
 			}
 			
-			const char * path = safeGetString(data, size);
-			if(!path) {
+			const char * str = safeGetString(data, size);
+			if(!str) {
 				LogDebug << "error reading sound path";
 				return false;
 			}
+			string path = str;
 			
-			char Dir[256];
-			char Name[256];
-			strcpy(Dir, path);
-			GetPathDirectory(Dir);
-			ClearDirectory(AllTxt, Name);
+			LogDebug << "raw sound path " << i << ": " << path;
 			
-			LogDebug << "adding sound " << i << ": " << Dir << Name;
+			fixSoundPath(path);
 			
-			AddSoundToList(Dir, Name, -1, 0);
+			LogDebug << "adding sound " << i << ": " << path;
+			
+			if(AddSoundToList(path) < 0) {
+				LogError << "AddSoundToList failed for " << path;
+			}
 			
 		}
 	}

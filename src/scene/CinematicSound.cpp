@@ -29,13 +29,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Application.h"
 #include "scene/GameSound.h"
 #include "io/IO.h"
+#include "io/Logger.h"
 
 
 /*-----------------------------------------------------------*/
 CinematicSound		TabSound[MAX_SOUND];
 int			NbSound;
 /*-----------------------------------------------------------*/
-extern char AllTxt[];
 extern HWND HwndPere;
 extern char DirectoryChoose[];
 extern int	LSoundChoose;
@@ -130,51 +130,28 @@ void DeleteAllSound(void)
 		nb--;
 	}
 }
-/*-----------------------------------------------------------*/
-void CutAndAddString(char * pText, const char * pDebText)
-{
-	int	i = strlen(pText);
-	int j = strlen(pDebText);
-	bool bOk = false;
 
-	while (i--)
-	{
-		if (!strncasecmp(pText, pDebText, j))
-		{
-			bOk = true;
-			break;
-		}
-
-		pText++;
-	}
-
-	if (bOk)
-	{
-		strcat(AllTxt, pText);
-	}
-}
-/*-----------------------------------------------------------*/
-int ExistSound(char * dir, char * name)
-{
+int ExistSound(const string & dir, const string & name) {
+	
 	CinematicSound * cs;
-
+	
 	cs = TabSound;
 	int nb = MAX_SOUND;
-
+	
 	while (nb)
 	{
 		if ((cs->active) &&
 		        ((cs->active & 0xFF00) == LSoundChoose))
 		{
-			if (!strcasecmp(dir, cs->dir))
+			if (!strcasecmp(dir.c_str(), cs->dir))
 			{
-				if (!strcasecmp(name, cs->name))
+				if (!strcasecmp(name.c_str(), cs->name))
 				{
 					return MAX_SOUND - nb;
 				}
 			}
 		}
-
+		
 		cs++;
 		nb--;
 	}
@@ -182,91 +159,18 @@ int ExistSound(char * dir, char * name)
 	return -1;
 }
 
-/*-----------------------------------------------------------*/
-void PatchReplace()
-{
-	char CopyTxt[256];
-	int j = strlen(AllTxt);
-	char * pT = AllTxt;
-
-	while (j--)
-	{
-		if (!strncasecmp(pT, "uk", strlen("uk")))
-		{
-			*pT = 0;
-			strcpy(CopyTxt, pT + 3);
-			strcat(AllTxt, "english\\");
-			strcat(AllTxt, CopyTxt);
-			break;
-		}
-
-		if (!strncasecmp(pT, "fr", strlen("fr")))
-		{
-			*pT = 0;
-			strcpy(CopyTxt, pT + 3);
-			strcat(AllTxt, "francais\\");
-			strcat(AllTxt, CopyTxt);
-			break;
-		}
-
-		pT++;
-	}
-
-	ClearAbsDirectory(AllTxt, "ARX\\");
-
-	//on enleve "sfx"
-	bool bFound = false;
-	pT = AllTxt;
-	j = strlen((const char *)pT);
-
-	while (j)
-	{
-		if (!strncasecmp((const char *)pT, "sfx\\speech\\", strlen((const char *)"sfx\\speech\\")))
-		{
-			bFound = true;
-			break;
-		}
-
-		j--;
-		pT++;
-	}
-
-	if (bFound)
-	{
-		memmove((void *)pT, (const void *)(pT + 4), strlen((const char *)(pT + 4)) + 1);
-	}
-
-	//UNIQUEMENT EN MODE GAME!!!!!!
-	char * pcTxt = strstr(AllTxt, "speech\\");
-
-	if (pcTxt)
-	{
-		pcTxt += strlen("speech\\");
-		char * pcTxt2 = strdup(pcTxt);
-		char * pcTxt3 = pcTxt2;
-
-		while (*pcTxt3 != '\\')
-		{
-			pcTxt3++;
-		}
-
-		*pcTxt = 0;
-		strcat(pcTxt, Project.localisationpath);
-		strcat(pcTxt, "\\");
-		strcat(pcTxt, pcTxt3 + 1);
-
-		free((void *)pcTxt2);
-	}
-}
-
-/*-----------------------------------------------------------*/
-int AddSoundToList(char * dir, char * name, int id, int pos)
-{
+int AddSoundToList(const std::string & path) {
+	int id = -1;
+	int pos = 0;
+	
 	CinematicSound * cs;
-	int		num;
-
-	if ((num = ExistSound(dir, name)) >= 0)
-	{
+	
+	string dir = path;
+	RemoveName(dir);
+	string name = GetName(path);
+	
+	int num = ExistSound(dir, name);
+	if(num >= 0) {
 		return num;
 	}
 
@@ -287,52 +191,29 @@ int AddSoundToList(char * dir, char * name, int id, int pos)
 		if (!cs) return -1;
 	}
 
-	cs->dir = (char *)malloc(strlen(dir) + 1);
-
-	if (!cs->dir) return -1;
-
-	strcpy(cs->dir, dir);
-
-	cs->name = (char *)malloc(strlen(name) + 1);
-
-	if (!cs->name)
-	{
-		free((void *)cs->dir);
+	cs->dir = strdup(dir.c_str());
+	if(!cs->dir) {
 		return -1;
 	}
-
-	strcpy(cs->name, name);
-
-	strcpy(AllTxt, "\\\\Arkaneserver\\public\\ARX\\");
-	CutAndAddString(dir, "sfx");
-	strcat(AllTxt, name);
-	PatchReplace();
-
-	MakeUpcase(AllTxt);
-
-	if (strstr(AllTxt, "SFX"))
-	{
-		cs->sound = strdup(AllTxt);
+	
+	cs->name = strdup(name.c_str());
+	if(!cs->name) {
+		free(cs->dir);
+		return -1;
 	}
-	else
-	{
-		char szTemp[1024];
-		ZeroMemory(szTemp, 1024);
-
-		sprintf(szTemp, "speech\\%s\\%s", Project.localisationpath, name);
-		cs->sound = strdup(szTemp);
-	}
-
+	
+	string uppath = path;
+	MakeUpcase(uppath);
+	LogDebug << "adding cinematic sound " << uppath;
+	cs->sound = strdup(uppath.c_str());
+	
 	cs->load = 1;
-
-
-
+	
 	int iActive = 1 | LSoundChoose;
 	ARX_CHECK_SHORT(iActive);
-
+	
 	cs->active = static_cast<short>(iActive);
-
-
+	
 	NbSound++;
 	return num;
 }

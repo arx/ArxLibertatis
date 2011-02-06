@@ -59,14 +59,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_HERMES_PAKMANAGER_H
 
 #include <stddef.h>
+#include <string>
 #include <vector>
 
-class PakFileHandle;
+struct PakFileHandle;
 class PakReader;
 class PakDirectory;
 
-void * PAK_FileLoadMalloc(const char * name, size_t * sizeLoaded = NULL);
-void * PAK_FileLoadMallocZero(const char * name, size_t * sizeLoaded = NULL);
+void * PAK_FileLoadMalloc( const std::string& name, size_t& sizeLoaded );
+void * PAK_FileLoadMallocZero( const std::string& name, size_t& sizeLoaded );
 
 bool PAK_AddPak(const char * pakfile);
 
@@ -74,7 +75,7 @@ PakFileHandle * PAK_fopen(const char * filename);
 size_t PAK_fread(void * buffer, size_t size, size_t count, PakFileHandle * stream);
 int PAK_fclose(PakFileHandle * stream);
 long PAK_ftell(PakFileHandle * stream);
-bool PAK_DirectoryExist(const char * name);
+bool PAK_DirectoryExist(const std::string& name);
 bool PAK_FileExist(const char * name);
 int PAK_fseek(PakFileHandle * fic, int offset, long origin);
 
@@ -91,18 +92,18 @@ public:
 	PakManager();
 	~PakManager();
 
-	bool AddPak(const char * pakname);
-	bool RemovePak(const char * pakname);
-	bool Read(const char * filename, void * buffer);
-	void * ReadAlloc(const char * filenme, size_t * sizeRead);
-	size_t GetSize(const char * filename);
-	PakFileHandle * fOpen(const char * filename);
+	bool AddPak( const std::string& pakname );
+	bool RemovePak( const std::string& pakname );
+	bool Read( const std::string& filename, void* buffer );
+	void* ReadAlloc( const std::string& filename, size_t& sizeRead );
+	size_t GetSize( const std::string& filename );
+	PakFileHandle * fOpen( const std::string& filename );
 	int fClose(PakFileHandle * fh);
-	size_t fRead(void * buffer, size_t size, size_t count, PakFileHandle * fh);
-	int fSeek(PakFileHandle * fh, int offset, long whence);
+	int fRead(void * buffer, size_t size, size_t count, PakFileHandle * fh);
+	int fSeek(PakFileHandle * fh, int offset, long whence );
 	int fTell(PakFileHandle * fh);
-	std::vector<PakDirectory*> * ExistDirectory(const char * name);
-	bool ExistFile(const char * name);
+	std::vector<PakDirectory*> * ExistDirectory( const std::string& name);
+	bool ExistFile( const std::string& name );
 	
 };
 

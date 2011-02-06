@@ -28,9 +28,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioTypes.h"
 #include "audio/codec/Codec.h"
 
-class PakFileHandle;
+struct PakFileHandle;
 
-#define NOMINMAX 1
+
 #include <windows.h>
 #include <mmreg.h> // for ADPCMWAVEFORMAT
 

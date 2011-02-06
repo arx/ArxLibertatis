@@ -56,6 +56,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIEMATH_H
 #define EERIEMATH_H
 
+#include <algorithm>
+
+using std::min;
+using std::max;
+
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
 
@@ -141,19 +146,9 @@ inline D3DCOLOR _EERIERGBA(float v)
 
 #define EERIELRGB255(r,g,b) (0xff000000L | ( r << 16) | ( g << 8) | b);
 
-
-#ifdef ASSEMBLER_OPTIMS	 //////////////////////
-extern float __mov;
-//__mov=x;
-#define FLOAT2LONG( x, l) __asm					\
-	{						\
-		__asm fld x \
-		__asm fistp l		\
-	}
-#else					 //////////////////////
 #define FLOAT2LONG(floatx,longx) \
 	longx = (long)floatx
-#endif
+
 
 float	SSQRT(long a);
 
@@ -453,11 +448,13 @@ inline float EEDistance3D(const EERIE_3D * from, const EERIE_3D * to)
 
 inline bool PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)
 {
+    using std::min;
+    using std::max;
 	register float pos1 = cyl->origin.y + cyl->height;
 
-	if (pt->y < std::min(cyl->origin.y, pos1)) return false;
+	if (pt->y < min(cyl->origin.y, pos1)) return false;
 
-	if (pt->y > std::max(cyl->origin.y, pos1)) return false;
+	if (pt->y > max(cyl->origin.y, pos1)) return false;
 
 	if (Distance2D(cyl->origin.x, cyl->origin.z, pt->x, pt->z) <= cyl->radius)
 		return true;
@@ -467,12 +464,14 @@ inline bool PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)
 
 inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)
 {
+    using std::min;
+    using std::max;
 	register float pos1 = cyl->origin.y + cyl->height;
 	long ret = 2;
 
-	if (pt->y < std::min(cyl->origin.y, pos1)) return 0;
+	if (pt->y < min(cyl->origin.y, pos1)) return 0;
 
-	if (pt->y > std::max(cyl->origin.y, pos1)) ret = 1;
+	if (pt->y > max(cyl->origin.y, pos1)) ret = 1;
 
 	if (Distance2D(cyl->origin.x, cyl->origin.z, pt->x, pt->z) <= cyl->radius)
 	{

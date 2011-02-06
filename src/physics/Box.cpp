@@ -68,7 +68,7 @@ using std::max;
 
 //-----------------------------------------------------------------------------
 float VELOCITY_THRESHOLD = 850.f;
-#define FULLTESTS false
+#define FULLTESTS 0
 
 //-----------------------------------------------------------------------------
 extern long DEBUGNPCMOVE;
@@ -350,7 +350,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 		}//MAKE_COLL_TEST
 	}
 
-#if FULLTESTS==true
+#if FULLTESTS
 
 	if ((k == -1) || (k == 1) || (k == 4) || (k == 3))
 	{
@@ -395,7 +395,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 		}//MAKE_COLL_TEST
 	}
 
-#if FULLTESTS==true
+#if FULLTESTS
 
 	if ((k == -1) || (k == 10) || (k == 11) || (k == 12))
 	{
@@ -440,7 +440,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 		}//MAKE_COLL_TEST
 	}
 
-#if FULLTESTS==true
+#if FULLTESTS
 
 	if ((k == -1) || (k == 4) || (k == 5) || (k == 8))
 	{
@@ -485,7 +485,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 		}//MAKE_COLL_TEST
 	}
 
-#if FULLTESTS==true
+#if FULLTESTS
 
 	if ((k == -1) || (k == 8) || (k == 12) || (k == 9))
 	{
@@ -530,7 +530,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 		}//MAKE_COLL_TEST
 	}
 
-#if FULLTESTS==true
+#if FULLTESTS
 
 	if ((k == -1) || (k == 2) || (k == 6) || (k == 7))
 	{
@@ -575,7 +575,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 		}//MAKE_COLL_TEST
 	}
 
-#if FULLTESTS==true
+#if FULLTESTS
 
 	if ((k == -1) || (k == 6) || (k == 10) || (k == 11))
 	{
@@ -620,7 +620,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 		}//MAKE_COLL_TEST
 	}
 
-#if FULLTESTS==true
+#if FULLTESTS
 
 	if ((k == -1) || (k == 1) || (k == 5) || (k == 6))
 	{
@@ -665,7 +665,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 		}//MAKE_COLL_TEST
 	}
 
-#if FULLTESTS==true
+#if FULLTESTS
 
 	if ((k == -1) || (k == 5) || (k == 9) || (k == 10))
 	{
@@ -710,7 +710,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 		}//MAKE_COLL_TEST
 	}
 
-#if FULLTESTS==true
+#if FULLTESTS
 
 	if ((k == -1) || (k == 7) || (k == 8) || (k == 4))
 	{
@@ -755,7 +755,7 @@ bool IsObjectVertexCollidingTriangle(EERIE_3DOBJ * obj, EERIE_3D * verts, long k
 		}//MAKE_COLL_TEST
 	}
 
-#if FULLTESTS==true
+#if FULLTESTS
 
 	if ((k == -1) || (k == 11) || (k == 12) || (k == 8))
 	{

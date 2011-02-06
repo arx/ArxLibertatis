@@ -82,7 +82,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakManager.h"
 
 //-----------------------------------------------------------------------------
-extern CARXTextManager * pTextManage;
+extern TextManager * pTextManage;
 extern CDirectInput * pGetInfoDirectInput;
 extern CMenuConfig * pMenuConfig;
 extern EERIE_3D ePlayerAngle;
@@ -147,7 +147,7 @@ void ARX_Menu_Release_Text(void * a)
 
  
 long save_c(0), save_p(0);
-SaveGame * save_l = NULL;
+std::vector<SaveGame> save_l;
 
 //-----------------------------------------------------------------------------
 void CreateSaveGameList()
@@ -157,10 +157,9 @@ void CreateSaveGameList()
 
 	sprintf(path, "save%s\\save*", LOCAL_SAVENAME);
 
-	if (!(save_l = (SaveGame *)malloc(sizeof(SaveGame)))) return;
+	save_l.resize( save_l.size() + 1 );
 
-	strcpy(save_l[0].name, "New");
-	memset(&save_l[0].stime, 0, sizeof(SYSTEMTIME));
+	save_l[0].name = "New";
 	save_c = 1;
 
 	char tTemp[sizeof(WIN32_FIND_DATA)+2];
@@ -172,22 +171,18 @@ void CreateSaveGameList()
 		{
 			if (fdata->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY && fdata->cFileName[0] != '.')
 			{
-				void * ptr;
+				// Make another save game slot at the end
+				save_l.resize( save_l.size() +1 );
 
-				if (!(ptr = realloc(save_l, sizeof(SaveGame) * (save_c + 1))))
-				{
-					free(save_l), save_l = NULL, save_c = 0;
-					return;
-				}
-
-				save_l = (SaveGame *)ptr;
-				char text[256];
-				strcpy(text, fdata->cFileName + 4);
-				save_l[save_c].num = atoi(text);
-				sprintf(text, "save%s\\%s\\", LOCAL_SAVENAME, fdata->cFileName);
+				std::string text = fdata->cFileName + 4;
+				save_l[save_c].num = atoi(text.c_str());
+				std::stringstream ss;
+				ss << "save" << LOCAL_SAVENAME << "\\" << fdata->cFileName << "\\";
+				text = ss.str();
+				//sprintf(text, "%ssave%s\\%s\\", Project.workingdir, LOCAL_SAVENAME, fdata->cFileName);
 				unsigned long pouet;
 
-				if (ARX_CHANGELEVEL_GetInfo(text, save_l[save_c].name, &save_l[save_c].version, &save_l[save_c].level, &pouet) != -1)
+				if (ARX_CHANGELEVEL_GetInfo(text, save_l[save_c].name, save_l[save_c].version, save_l[save_c].level, pouet) != -1)
 				{
 					SYSTEMTIME stime;
 					FILETIME fTime;
@@ -208,7 +203,9 @@ void CreateSaveGameList()
 //-----------------------------------------------------------------------------
 void FreeSaveGameList()
 {
-	free(save_l), save_l = NULL, save_c = save_p = 0;
+	save_l.clear();
+	save_c = 0;
+	save_p = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -261,63 +258,63 @@ void ARX_Menu_Resources_Create(LPDIRECT3DDEVICE7 m_pd3dDevice)
 {
 	if (ARXmenu.mda)
 	{
-		free(ARXmenu.mda);
+		delete ARXmenu.mda;
 		ARXmenu.mda = NULL;
 	}
 
-	ARXmenu.mda = (MENU_DYNAMIC_DATA *)malloc(sizeof(MENU_DYNAMIC_DATA)); 
-	memset(ARXmenu.mda, 0, sizeof(MENU_DYNAMIC_DATA));
-	ARXmenu.mda->Background = NULL; 
+	ARXmenu.mda = new MENU_DYNAMIC_DATA();
 	ARXmenu.mda->pTexCredits = MakeTCFromFile("Graph\\Interface\\menus\\Menu_credits.bmp");
 	ARXmenu.mda->BookBackground = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\Char_creation_Bg.BMP");
 
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STRENGTH],			_T("system_charsheet_strength"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MIND],				_T("system_charsheet_intel"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEXTERITY],			_T("system_charsheet_Dex"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CONSTITUTION],		_T("system_charsheet_consti"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STEALTH],			_T("system_charsheet_stealth"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MECANISM],			_T("system_charsheet_mecanism"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_INTUITION],			_T("system_charsheet_intuition"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_ETHERAL_LINK],		_T("system_charsheet_etheral_link"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_OBJECT_KNOWLEDGE],	_T("system_charsheet_objknoledge"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CASTING],			_T("system_charsheet_casting"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_PROJECTILE],		_T("system_charsheet_projectile"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CLOSE_COMBAT],		_T("system_charsheet_closecombat"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEFENSE],			_T("system_charsheet_defense"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_QUICK_GENERATION], _T("system_charsheet_quickgenerate"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_DONE],			_T("system_charsheet_done"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_SKIN],			_T("system_charsheet_skin"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_ATTRIBUTES],			_T("system_charsheet_atributes"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_SKILLS],				_T("system_charsheet_skills"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_STATUS],				_T("system_charsheet_status"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_LEVEL],				_T("system_charsheet_level"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_XP],					_T("system_charsheet_xpoints"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_HP],					_T("system_charsheet_hp"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_MANA],				_T("system_charsheet_mana"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_AC],					_T("system_charsheet_AC"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_MAGIC],		_T("system_charsheet_res_magic"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_POISON],		_T("system_charsheet_res_poison"));
-	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_DAMAGE],				_T("system_charsheet_damage"));
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STRENGTH],              "system_charsheet_strength");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MIND],                  "system_charsheet_intel");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEXTERITY],             "system_charsheet_Dex");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CONSTITUTION],          "system_charsheet_consti");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STEALTH],               "system_charsheet_stealth");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MECANISM],              "system_charsheet_mecanism");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_INTUITION],             "system_charsheet_intuition");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_ETHERAL_LINK],          "system_charsheet_etheral_link");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_OBJECT_KNOWLEDGE],      "system_charsheet_objknoledge");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CASTING],               "system_charsheet_casting");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_PROJECTILE],            "system_charsheet_projectile");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_CLOSE_COMBAT],          "system_charsheet_closecombat");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_DEFENSE],               "system_charsheet_defense");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_QUICK_GENERATION],    "system_charsheet_quickgenerate");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_DONE],                "system_charsheet_done");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[BUTTON_SKIN],                "system_charsheet_skin");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_ATTRIBUTES],             "system_charsheet_atributes");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_SKILLS],                 "system_charsheet_skills");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_STATUS],                 "system_charsheet_status");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_LEVEL],                  "system_charsheet_level");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_XP],                     "system_charsheet_xpoints");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_HP],                     "system_charsheet_hp");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_MANA],                   "system_charsheet_mana");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_AC],                     "system_charsheet_AC");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_MAGIC],           "system_charsheet_res_magic");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_RESIST_POISON],          "system_charsheet_res_poison");
+	ARX_Allocate_Text(ARXmenu.mda->flyover[WND_DAMAGE],                 "system_charsheet_damage");
 
-	ARX_Allocate_Text(ARXmenu.mda->str_button_quickgen,				_T("system_charsheet_button_quickgen"));
-	ARX_Allocate_Text(ARXmenu.mda->str_button_skin,					_T("system_charsheet_button_skin"));
-	ARX_Allocate_Text(ARXmenu.mda->str_button_done,					_T("system_charsheet_button_done"));
+	ARX_Allocate_Text(ARXmenu.mda->str_button_quickgen,                 "system_charsheet_button_quickgen");
+	ARX_Allocate_Text(ARXmenu.mda->str_button_skin,                     "system_charsheet_button_skin");
+	ARX_Allocate_Text(ARXmenu.mda->str_button_done,                     "system_charsheet_button_done");
 
-	size_t size;
+	
 	char szFileName[256];
+	sprintf(szFileName, "Localisation\\ucredits_%s.txt", Project.localisationpath.c_str());
 
-	sprintf(szFileName, "Localisation\\ucredits_%s.txt", Project.localisationpath);
-	ARXmenu.mda->str_cre_credits = (_TCHAR *) PAK_FileLoadMalloc(szFileName, &size);
-
-	if (ARXmenu.mda->str_cre_credits &&
-	        ARXmenu.mda->str_cre_credits[(size>>1)-1] != 0)
+	// TODO: BROKEN ACCESS OOB
+	/*
+	size_t siz;
+	ARXmenu.mda->str_cre_credits = (_TCHAR*) PAK_FileLoadMalloc(szFileName, siz);
+	if (!ARXmenu.mda->str_cre_credits.empty() && ARXmenu.mda->str_cre_credits[(siz>>1)-1] != 0)
 	{
-		_TCHAR * pTxt = (_TCHAR *)malloc(size + 2);
-		memcpy(pTxt, ARXmenu.mda->str_cre_credits, size);
-		pTxt[(size>>1)] = 0;
-		free(ARXmenu.mda->str_cre_credits);
+		_TCHAR * pTxt = (_TCHAR *)malloc(siz + 2);
+		memcpy(pTxt, ARXmenu.mda->str_cre_credits.c_str(), siz);
+		pTxt[(siz>>1)] = 0;
 		ARXmenu.mda->str_cre_credits = pTxt;
 	}
+	*/
+	ARXmenu.mda->str_cre_credits.clear();
 
 	CreateSaveGameList();
 }
@@ -342,19 +339,19 @@ void ARX_Menu_Resources_Release(bool _bNoSound)
 		D3DTextr_KillTexture(ARXmenu.mda->BookBackground);
 		ARXmenu.mda->BookBackground = NULL;
 	}
-
+/*
 	for (long i = 0; i < MAX_FLYOVER; i++)
 	{
-		if (ARXmenu.mda->flyover[i] != NULL)
+		if ( !ARXmenu.mda->flyover[i].empty() )
 			ARX_Menu_Release_Text(ARXmenu.mda->flyover[i]);
-	}
-
+	}*/
+/*
 	ARX_Menu_Release_Text(ARXmenu.mda->str_cre_credits);
 
 	ARX_Menu_Release_Text(ARXmenu.mda->str_button_quickgen);
 	ARX_Menu_Release_Text(ARXmenu.mda->str_button_skin);
 	ARX_Menu_Release_Text(ARXmenu.mda->str_button_done);
-
+*/
 	if (ARXmenu.mda)
 	{
 		free(ARXmenu.mda);
@@ -489,7 +486,7 @@ void ARX_Menu_Manage(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		case AMCM_NEWQUEST:
 		{
 			if (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_ESCAPE)
-			        &&	! bFadeInOut // XS: Disabling ESC capture while fading in or out.
+					&&	! bFadeInOut // XS: Disabling ESC capture while fading in or out.
 			   )
 			{
 				ARX_MENU_CLICKSOUND();
@@ -512,7 +509,7 @@ void ARX_Menu_Manage(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		case AMCM_CREDITS:
 
 			if ((pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_ESCAPE))
-			        || (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_SPACE)))
+					|| (pGetInfoDirectInput->IsVirtualKeyPressedNowUnPressed(DIK_SPACE)))
 			{
 				ARX_MENU_CLICKSOUND();
 				bFadeInOut = true;	//fade out
@@ -606,68 +603,69 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	if ((ARXmenu.currentmode == AMCM_NEWQUEST) && (ARXmenu.mda))
 	{
-		if (ITC.questbook == NULL) 
+		if (ITC.Get("questbook") == NULL)
 		{
 			ARX_Menu_Resources_Release(false);
 			ARX_Menu_Resources_Create(m_pd3dDevice);
 
-			ITC.playerbook = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\char_sheet_book.bmp");
-			ITC.ic_casting = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_casting.bmp");
-			ITC.ic_close_combat = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_close_combat.bmp");
-			ITC.ic_constitution = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_constit.bmp");
-			ITC.ic_defense = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_defense.bmp");
-			ITC.ic_dexterity = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_dext.bmp");
-			ITC.ic_etheral_link = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_etheral_link.bmp");
-			ITC.ic_mind = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_intel.bmp");
-			ITC.ic_intuition = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_intuition.bmp");
-			ITC.ic_mecanism = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_mecanism.bmp");
-			ITC.ic_object_knowledge = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_obj_knowledge.bmp");
-			ITC.ic_projectile = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_projectile.bmp");
-			ITC.ic_stealth = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_stealth.bmp");
-			ITC.ic_strength = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_strenght.bmp");
+			ITC.Set("playerbook", "Graph\\Interface\\book\\character_sheet\\char_sheet_book.bmp");
+			ITC.Set("ic_casting", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_casting.bmp");
+			ITC.Set("ic_close_combat", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_close_combat.bmp");
+			ITC.Set("ic_constitution", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_constit.bmp");
+			ITC.Set("ic_defense", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_defense.bmp");
+			ITC.Set("ic_dexterity", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_dext.bmp");
+			ITC.Set("ic_etheral_link", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_etheral_link.bmp");
+			ITC.Set("ic_mind", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_intel.bmp");
+			ITC.Set("ic_intuition", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_intuition.bmp");
+			ITC.Set("ic_mecanism", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_mecanism.bmp");
+			ITC.Set("ic_object_knowledge", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_obj_knowledge.bmp");
+			ITC.Set("ic_projectile", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_projectile.bmp");
+			ITC.Set("ic_stealth", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_stealth.bmp");
+			ITC.Set("ic_strength", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_strenght.bmp");
 
-			ITC.questbook = MakeTCFromFile("Graph\\Interface\\book\\questbook.bmp");
-			ITC.pTexSpellBook = MakeTCFromFile("Graph\\Interface\\book\\SpellBook.bmp");
-			ITC.bookmark_char = MakeTCFromFile("Graph\\Interface\\book\\bookmark_char.bmp");
-			ITC.bookmark_magic = MakeTCFromFile("Graph\\Interface\\book\\bookmark_magic.bmp");
-			ITC.bookmark_map = MakeTCFromFile("Graph\\Interface\\book\\bookmark_map.bmp");
-			ITC.bookmark_quest = MakeTCFromFile("Graph\\Interface\\book\\bookmark_quest.bmp");
+			ITC.Set("questbook", "Graph\\Interface\\book\\questbook.bmp");
+			ITC.Set("pTexSpellBook", "Graph\\Interface\\book\\SpellBook.bmp");
+			ITC.Set("bookmark_char", "Graph\\Interface\\book\\bookmark_char.bmp");
+			ITC.Set("bookmark_magic", "Graph\\Interface\\book\\bookmark_magic.bmp");
+			ITC.Set("bookmark_map", "Graph\\Interface\\book\\bookmark_map.bmp");
+			ITC.Set("bookmark_quest", "Graph\\Interface\\book\\bookmark_quest.bmp");
 
-			ITC.accessible_1 = MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_1.bmp");
-			ITC.accessible_2 = MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_2.bmp");
-			ITC.accessible_3 = MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_3.bmp");
-			ITC.accessible_4 = MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_4.bmp");
-			ITC.accessible_5 = MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_5.bmp");
-			ITC.accessible_6 = MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_6.bmp");
-			ITC.accessible_7 = MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_7.bmp");
-			ITC.accessible_8 = MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_8.bmp");
-			ITC.accessible_9 = MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_9.bmp");
-			ITC.accessible_10 = MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_10.bmp");
-			ITC.current_1 = MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_1.bmp");
-			ITC.current_2 = MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_2.bmp");
-			ITC.current_3 = MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_3.bmp");
-			ITC.current_4 = MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_4.bmp");
-			ITC.current_5 = MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_5.bmp");
-			ITC.current_6 = MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_6.bmp");
-			ITC.current_7 = MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_7.bmp");
-			ITC.current_8 = MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_8.bmp");
-			ITC.current_9 = MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_9.bmp");
-			ITC.current_10 = MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_10.bmp");
-			ITC.heropageleft = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\Hero_left_X24_Y24.BMP");
-			ITC.heropageright = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\Hero_right_X305_Y270.BMP");
-			ITC.symbol_mega = NULL; 
-			ITC.symbol_vista = NULL; 
-			ITC.symbol_aam = NULL; 
-			ITC.symbol_taar = NULL; 
-			ITC.symbol_yok = NULL; 
+			ITC.Set("accessible_1", "Graph\\Interface\\book\\Accessible\\accessible_1.bmp");
+			ITC.Set("accessible_2", "Graph\\Interface\\book\\Accessible\\accessible_2.bmp");
+			ITC.Set("accessible_3", "Graph\\Interface\\book\\Accessible\\accessible_3.bmp");
+			ITC.Set("accessible_4", "Graph\\Interface\\book\\Accessible\\accessible_4.bmp");
+			ITC.Set("accessible_5", "Graph\\Interface\\book\\Accessible\\accessible_5.bmp");
+			ITC.Set("accessible_6", "Graph\\Interface\\book\\Accessible\\accessible_6.bmp");
+			ITC.Set("accessible_7", "Graph\\Interface\\book\\Accessible\\accessible_7.bmp");
+			ITC.Set("accessible_8", "Graph\\Interface\\book\\Accessible\\accessible_8.bmp");
+			ITC.Set("accessible_9", "Graph\\Interface\\book\\Accessible\\accessible_9.bmp");
+			ITC.Set("accessible_10", "Graph\\Interface\\book\\Accessible\\accessible_10.bmp");
+			ITC.Set("current_1", "Graph\\Interface\\book\\Current_Page\\Current_1.bmp");
+			ITC.Set("current_2", "Graph\\Interface\\book\\Current_Page\\Current_2.bmp");
+			ITC.Set("current_3", "Graph\\Interface\\book\\Current_Page\\Current_3.bmp");
+			ITC.Set("current_4", "Graph\\Interface\\book\\Current_Page\\Current_4.bmp");
+			ITC.Set("current_5", "Graph\\Interface\\book\\Current_Page\\Current_5.bmp");
+			ITC.Set("current_6", "Graph\\Interface\\book\\Current_Page\\Current_6.bmp");
+			ITC.Set("current_7", "Graph\\Interface\\book\\Current_Page\\Current_7.bmp");
+			ITC.Set("current_8", "Graph\\Interface\\book\\Current_Page\\Current_8.bmp");
+			ITC.Set("current_9", "Graph\\Interface\\book\\Current_Page\\Current_9.bmp");
+			ITC.Set("current_10", "Graph\\Interface\\book\\Current_Page\\Current_10.bmp");
+			ITC.Set("heropageleft", "Graph\\Interface\\book\\character_sheet\\Hero_left_X24_Y24.BMP");
+			ITC.Set("heropageright", "Graph\\Interface\\book\\character_sheet\\Hero_right_X305_Y270.BMP");
 
-			ITC.pTexCursorRedist = MakeTCFromFile("Graph\\Interface\\cursors\\add_points.bmp");
+			ITC.Set("symbol_mega", NULL);
+			ITC.Set("symbol_vista", NULL);
+			ITC.Set("symbol_aam", NULL);
+			ITC.Set("symbol_taar", NULL);
+			ITC.Set("symbol_yok", NULL);
 
-			ITC.pTexCornerLeft = MakeTCFromFile("Graph\\Interface\\book\\Left_corner_original.bmp");
-			ITC.pTexCornerRight = MakeTCFromFile("Graph\\Interface\\book\\Right_corner_original.bmp");
+			ITC.Set("pTexCursorRedist", "Graph\\Interface\\cursors\\add_points.bmp");
 
-			ARX_Allocate_Text(ITC.lpszULevel, _T("system_charsheet_player_lvl"));
-			ARX_Allocate_Text(ITC.lpszUXp, _T("system_charsheet_player_xp"));
+			ITC.Set("pTexCornerLeft", "Graph\\Interface\\book\\Left_corner_original.bmp");
+			ITC.Set("pTexCornerRight", "Graph\\Interface\\book\\Right_corner_original.bmp");
+
+			ARX_Allocate_Text(ITC.Level, _T("system_charsheet_player_lvl"));
+			ARX_Allocate_Text(ITC.Xp, _T("system_charsheet_player_xp"));
 
 			ANIM_Set(&player.useanim, herowaitbook);
 
@@ -710,7 +708,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			Xratio = ox;
 			Yratio = oy;
 
-			if (ARXmenu.mda->flyover[FLYING_OVER] != NULL) //=ARXmenu.mda->flyover[FLYING_OVER];
+			if (!ARXmenu.mda->flyover[FLYING_OVER].empty() ) //=ARXmenu.mda->flyover[FLYING_OVER];
 			{
 				if (FLYING_OVER != OLD_FLYING_OVER)
 				{
@@ -724,15 +722,15 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 					pTextManage->Clear();
 					OLD_FLYING_OVER = FLYING_OVER;
 					UNICODE_ARXDrawTextCenteredScroll((DANAESIZX * 0.5f),
-					                                  12,
-					                                  (DANAECENTERX) * 0.82f,
-					                                  ARXmenu.mda->flyover[FLYING_OVER],
-					                                  RGB(232 + t, 204 + t, 143 + t),
-					                                  0x00FF00FF,
-					                                  hFontInGame,
-					                                  1000,
-					                                  0.01f,
-					                                  2);
+													  12,
+													  (DANAECENTERX) * 0.82f,
+													  ARXmenu.mda->flyover[FLYING_OVER],
+													  RGB(232 + t, 204 + t, 143 + t),
+													  0x00FF00FF,
+													  hFontInGame,
+													  1000,
+													  0.01f,
+													  2);
 				}
 			}
 			else
@@ -923,22 +921,22 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		COLORREF Color = 0;
 		int iW;
 		int iH;
-		_TCHAR szText[256];
+		std::string szText;
 
 		Color = RGB(232, 204, 143);
 
-		PAK_UNICODE_GetPrivateProfileString("system_menus_main_cdnotfound", "", szText, 256);
+		PAK_UNICODE_GetPrivateProfileString("system_menus_main_cdnotfound", "", szText);
 		iW = 0;
 		iH = 0;
-		GetTextSize(hFontMenu, szText, &iW, &iH);
+		GetTextSize(hFontMenu, szText, iW, iH);
 		ePos.x = (DANAESIZX - iW) * 0.5f;
 		ePos.y = DANAESIZY * 0.4f;
 		FontRenderText(hFontMenu, ePos, szText, Color);
 
-		PAK_UNICODE_GetPrivateProfileString("system_yes", "", szText, 256);
+		PAK_UNICODE_GetPrivateProfileString("system_yes", "", szText);
 		iW = 0;
 		iH = 0;
-		GetTextSize(hFontMenu, szText, &iW, &iH);
+		GetTextSize(hFontMenu, szText, iW, iH);
 		ePos.x = (DANAESIZX * 0.5f - iW) * 0.5f;
 		ePos.y = DANAESIZY * 0.5f;
 
@@ -961,10 +959,10 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 		FontRenderText(hFontMenu, ePos, szText, Color);
 
-		PAK_UNICODE_GetPrivateProfileString("system_no", "", szText, 256);
+		PAK_UNICODE_GetPrivateProfileString("system_no", "", szText);
 		iW = 0;
 		iH = 0;
-		GetTextSize(hFontMenu, szText, &iW, &iH);
+		GetTextSize(hFontMenu, szText, iW, iH);
 		ePos.x = DANAESIZX * 0.5f + (DANAESIZX * 0.5f - iW) * 0.5f;
 
 		if (MouseInRect(ePos.x, ePos.y, ePos.x + iW, ePos.y + iH))

@@ -61,9 +61,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define HERMES_PATH_SIZE	512
 
+#include <string>
+
 #include "io/Perf.h"
 
-#define NOMINMAX 1
+
 #include <windows.h>
 
 #include <cstddef>
@@ -81,15 +83,15 @@ typedef struct {
 //Always on for now...
 typedef struct PassedParam
 {
-   const char * pSource;                   /* Pointer to source buffer           */
-   char * pDestination;              /* Pointer to destination buffer      */
-   std::size_t SourceOffset;      /* Offset into the source buffer      */
-   std::size_t DestinationOffset; /* Offset into the destination buffer */
-   std::size_t CompressedSize;    /* Need this for extracting!          */
-   std::size_t UnCompressedSize;  /* Size of uncompressed data file     */
-   std::size_t BufferSize;
-   unsigned long Crc;               /* Calculated CRC value               */
-   unsigned long OrigCrc;           /* Original CRC value of data         */
+	const char * pSource;                   /* Pointer to source buffer           */
+	char * pDestination;              /* Pointer to destination buffer      */
+	std::size_t SourceOffset;      /* Offset into the source buffer      */
+	std::size_t DestinationOffset; /* Offset into the destination buffer */
+	std::size_t CompressedSize;    /* Need this for extracting!          */
+	std::size_t UnCompressedSize;  /* Size of uncompressed data file     */
+	std::size_t BufferSize;
+	unsigned long Crc;               /* Calculated CRC value               */
+	unsigned long OrigCrc;           /* Original CRC value of data         */
 } PARAM;
 
 
@@ -98,32 +100,33 @@ extern long DEBUGG;
 extern long DebugLvl[6];
 extern unsigned int			GaiaWM;
 
-void File_Standardize(const char * from,char * to);
+void File_Standardize( const std::string& from, std::string& to );
 char * HERMES_GaiaCOM_Receive();
 
 void HERMES_InitDebug();
 
 void SAFEstrcpy(char * dest, const char * src, unsigned long max);
 
-void MakeUpcase(char * str);
-bool IsIn(const char * strin, const char * str);
-bool NC_IsIn(const char * strin, const char * str);
+
+void MakeUpcase( std::string& str);
+bool IsIn( const std::string& strin, const std::string& str );
+bool NC_IsIn( std::string strin, std::string str);
 
 void GetDate(HERMES_DATE_TIME * hdt);
-void SendConsole(const char * dat,long level,long flag,HWND source);
-void ForceSendConsole(const char * dat,long level,long flag,HWND source);
+void SendConsole( const std::string& dat,long level,long flag,HWND source);
+void ForceSendConsole( const std::string& dat,long level,long flag,HWND source);
 
 void MemFree(void * adr);
 unsigned long MakeMemoryText(char * text);
-bool CreateFullPath(const char * path);
+bool CreateFullPath( const std::string& path );
 
 // Strings Funcs
 bool HERMESFolderSelector(char * file_name, const char * title);
-void RemoveName(char *str);
-char * GetName(const char *str);
-char * GetExt(const char *str);
-void SetExt(char *str, const char * new_ext);
-void AddToName(char *str, const char *cat);
+void RemoveName( std::string& str );
+std::string GetName( const std::string& str);
+void SetExt( std::string& str, const std::string& new_ext );
+char* GetExt(const std::string& str);
+void AddToName( std::string& str, const std::string& cat);
 int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName,const char *filter,HWND hWnd);
 int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName,const char *filter,HWND hWnd);
 

@@ -52,7 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include "gui/Text.h"
 
-#define NOMINMAX 1
+
 #include <windows.h>
 
 using std::vector;
@@ -392,7 +392,7 @@ class CMenuZone
 class CMenuAllZone
 {
 	public:
-		vector<CMenuZone *>	vMenuZone;
+		std::vector<CMenuZone *>	vMenuZone;
 	public:
 		CMenuAllZone();
 		virtual ~CMenuAllZone();
@@ -411,9 +411,9 @@ typedef enum _ELEMSTATE
 {
 	TNOP,
 	//Element Text
-	EDIT,				//type d'etat
+	EDIT,           //type d'etat
 	GETTOUCH,
-	EDIT_TIME,			//etat en cours
+	EDIT_TIME,      //etat en cours
 	GETTOUCH_TIME
 } ELEMSTATE;
 
@@ -428,10 +428,10 @@ typedef enum _ELEMPOS
 class CMenuElement : public CMenuZone
 {
 	public:
-		ELEMPOS		ePlace;			//placement de la zone
-		ELEMSTATE	eState;			//etat de l'element en cours
-		MENUSTATE	eMenuState;		//etat de retour de l'element
-		int			iShortCut;
+		ELEMPOS     ePlace;			//placement de la zone
+		ELEMSTATE   eState;			//etat de l'element en cours
+		MENUSTATE   eMenuState;		//etat de retour de l'element
+		int         iShortCut;
 	public:
 		CMenuElement(MENUSTATE);
 		virtual ~CMenuElement();
@@ -457,7 +457,7 @@ class CMenuElement : public CMenuZone
 				return NULL;
 			}
 		};
- 
+
 		void SetShortCut(int _iShortCut)
 		{
 			iShortCut = _iShortCut;
@@ -497,7 +497,7 @@ class CMenuPanel : public CMenuElement
 class CMenuElementText: public CMenuElement
 {
 	public:
-		_TCHAR	* lpszText;
+		std::string lpszText;
 		HFONT	pHFont;
 		long	lColor;
 		long	lOldColor;
@@ -508,14 +508,14 @@ class CMenuElementText: public CMenuElement
 
 	public:
 
-		CMenuElementText(int, HFONT, const char *, float, float, long, float, MENUSTATE); 
+		CMenuElementText(int, HFONT, const std::string&, float, float, long, float, MENUSTATE); 
 		virtual ~CMenuElementText();
 
 		CMenuElement * OnShortCut();
 		bool OnMouseClick(int);
 		void Update(int);
 		void Render();
-		void SetText(_TCHAR * _pText);
+		void SetText( const std::string& _pText);
 		void RenderMouseOver();
  
  
@@ -528,21 +528,21 @@ class CMenuElementText: public CMenuElement
 class CMenuButton: public CMenuElement
 {
 	public:
-		vector<_TCHAR *>		vText;
-		int					iPos;
-		TextureContainer	* pTex;
-		TextureContainer	* pTexOver;
-		HFONT				pHFont;
-		int					iColor;
-		float				fSize;
+		std::string         vText;
+		int                 iPos;
+		TextureContainer*   pTex;
+		TextureContainer*   pTexOver;
+		HFONT               pHFont;
+		int                 iColor;
+		float               fSize;
 
 	public:
-		CMenuButton(int, HFONT, MENUSTATE, int, int, const char *, float _fSize = 1.f, TextureContainer * _pTex = NULL, TextureContainer * _pTexOver = NULL, int _iColor = -1, int _iTailleX = 0, int _iTailleY = 0);
+		CMenuButton(int, HFONT, MENUSTATE, int, int, const std::string&, float _fSize = 1.f, TextureContainer * _pTex = NULL, TextureContainer * _pTexOver = NULL, int _iColor = -1, int _iTailleX = 0, int _iTailleY = 0);
 		~CMenuButton();
 
 	public:
 		void SetPos(int, int);
-		void AddText(const char *);
+		void AddText( const std::string& );
 		CMenuElement * OnShortCut()
 		{
 			return NULL;
@@ -559,7 +559,7 @@ class CMenuSliderText: public CMenuElement
 	public:
 		CMenuButton		*	pLeftButton;
 		CMenuButton		*	pRightButton;
-		vector<CMenuElementText *>	vText;
+		vector<CMenuElementText*>	vText;
 		int					iPos;
 		int					iOldPos;
 	public:
@@ -815,7 +815,7 @@ class CDirectInput
 		bool IsVirtualKeyPressedOneTouch(int);
 		bool IsVirtualKeyPressedNowPressed(int);
 		bool IsVirtualKeyPressedNowUnPressed(int);
-		_TCHAR * GetFullNameTouch(int);
+		std::string GetFullNameTouch(int);
  
  
 		void ResetAll();
@@ -832,7 +832,7 @@ typedef struct
 class CMenuConfig
 {
 	public:
-		char	*	pcName;
+		std::string     pcName;
 		//LANGUAGE
 		//VIDEO
 		int			iWidth;
@@ -883,27 +883,27 @@ class CMenuConfig
 
 		bool		bNoReturnToWindows;
 	private:
-		int GetDIKWithASCII(const char * _pcTouch);
-		char * ReadConfig(const char * _pcSection, const char * _pcKey);
-		bool WriteConfig(const char * _pcSection, const char * _pcKey, char * _pcDatas);
+		int GetDIKWithASCII( const std::string& _pcTouch);
+		std::string ReadConfig( const std::string& _pcSection, const std::string& _pcKey);
+		bool WriteConfig( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas);
 	public:
 		CMenuConfig();
-		CMenuConfig(const char *);
+		CMenuConfig( const std::string& );
 		virtual ~CMenuConfig();
 
 		bool SetActionKey(int _iAction, int _iActionNum, int _iVirtualKey);
-		int ReadConfigInt(const char * _pcSection, const char * _pcKey, bool & _bOk);
+		int ReadConfigInt( const std::string& _pcSection, const std::string& _pcKey, bool & _bOk);
  
-		char * ReadConfigString(const char * _pcSection, const char * _pcKey);
-		bool WriteConfigInt(const char * _pcSection, const char * _pcKey, int _iDatas);
+		std::string ReadConfigString( const std::string& _pcSection, const std::string& _pcKey);
+		bool WriteConfigInt( const std::string& _pcSection, const std::string& _pcKey, int _iDatas);
  
-		bool WriteConfigString(const char * _pcSection, const char * _pcKey, char * _pcDatas);
+		bool WriteConfigString( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas);
  
  
  
 		void ResetActionKey();
-		bool WriteConfigKey(const char * _pcKey, int _iAction);
-		bool ReadConfigKey(const char * _pcKey, int _iAction);
+		bool WriteConfigKey( const std::string& _pcKey, int _iAction);
+		bool ReadConfigKey( const std::string& _pcKey, int _iAction);
 		void ReInitActionKey(CWindowMenuConsole * _pwmcWindowMenuConsole);
 		void SetDefaultKey();
 		void DefaultValue();
@@ -967,6 +967,6 @@ bool ARX_QuickLoad();
 void ARX_QuickSave();
 void ARX_DrawAfterQuickLoad();
 
-void GetTextSize(HFONT _hFont, const char * _lpszUText, int * _iWidth, int * _iHeight);
+void GetTextSize(HFONT _hFont, const std::string& _lpszUText, int& _iWidth, int& _iHeight);
 
 #endif

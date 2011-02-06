@@ -59,6 +59,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define DANAE_H
 
 //-----------------------------------------------------------------------------
+#include <SFML/Window.hpp>
+
 #include "core/Application.h"
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
@@ -184,7 +186,11 @@ class DANAE : public CD3DApplication
 		bool DANAEStartRender();
 		bool DANAEEndRender();
 };
+
+extern sf::Window sfWindow;
 extern DANAE danaeApp;
+extern LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+extern LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 //-----------------------------------------------------------------------------
 void SetEditMode(long ed, const bool stop_sound = true);

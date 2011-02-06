@@ -47,8 +47,8 @@ enum
 	ARX_SOUND_PLAY_ONCE =   1
 };
 
-typedef int ArxSound;
-typedef int ArxMixer;
+typedef s32 ArxSound;
+typedef s32 ArxMixer;
 
 const ArxSound ARX_SOUND_INVALID_RESOURCE(-1);
 
@@ -212,7 +212,7 @@ extern ArxSound SND_SPELL_VISION_START;
 extern ArxSound SND_SPELL_VISION_LOOP;
 
 // inter-material sounds
-long ARX_MATERIAL_GetIdByName(char * name);
+long ARX_MATERIAL_GetIdByName( const char * name );
 bool ARX_MATERIAL_GetNameById(long id, char * name);
 
 long ARX_SOUND_Init(HWND hwnd);

@@ -34,6 +34,8 @@ typedef void * FileHandle;
 #include <stddef.h>
 #include <cstdio> // for FILE
 
+#include <string>
+
 #define PACK_MAX_FREAD	(256)
 
 struct PakFileHandle {
@@ -58,8 +60,7 @@ private:
 	PakFileHandle tPackFile[PACK_MAX_FREAD];
 	
 public:
-	
-	const char * pakname;
+	std::string pakname;
 	PakDirectory * root;
 	
 private:
@@ -72,15 +73,15 @@ public:
 	PakReader();
 	~PakReader();
 	
-	PakFile * getFile(const char * name);
+	PakFile * getFile(const std::string& name);
 	
-	bool Open(const char * pakfile);
+	bool Open(const std::string& pakfile);
 	void Close();
-	bool Read(const char * name, void * buf);
-	void * ReadAlloc(const char * name , size_t * sizeRead);
-	int GetSize(const char * name);
+	bool Read(const std::string& name, void * buf);
+	void * ReadAlloc(const std::string& name , size_t& size);
+	int GetSize(const std::string& name);
 	
-	PakFileHandle * fOpen(const char * name);
+	PakFileHandle * fOpen(const std::string& name );
 	int fClose(PakFileHandle * h);
 	size_t fRead(void * buf, size_t size, size_t n, PakFileHandle * h);
 	int fSeek(PakFileHandle * h, int off, long whence);

@@ -73,10 +73,10 @@ int	CLocalisationHash::FuncH2(int _iKey)
 }
 
 //-----------------------------------------------------------------------------
-int	CLocalisationHash::GetKey(const char * _lpszUText)
+int	CLocalisationHash::GetKey(const std::string& _lpszUText)
 {
 	int iKey = 0;
-	int iLenght = strlen((const char *)_lpszUText);
+	int iLenght = _lpszUText.length();
 	int iLenght2 = iLenght;
 
 	while (iLenght--)
@@ -105,7 +105,7 @@ void CLocalisationHash::ReHash()
 	{
 		if (pTab[i] != NULL)
 		{
-			int iKey = GetKey(pTab[i]->lpszUSection);
+			int iKey = GetKey( pTab[i]->lpszUSection );
 			int	iH1	 = FuncH1(iKey);
 			int	iH2  = FuncH2(iKey);
 
@@ -147,7 +147,7 @@ bool CLocalisationHash::AddElement(CLocalisation * _pLoc)
 		ReHash();
 	}
 
-	if (!(_pLoc && _pLoc->lpszUSection)) return false;
+	if ( !(_pLoc && !_pLoc->lpszUSection.empty()) ) return false;
 
 	int iKey = GetKey(_pLoc->lpszUSection);
 	int	iH1 = FuncH1(iKey);
@@ -177,7 +177,7 @@ bool CLocalisationHash::AddElement(CLocalisation * _pLoc)
 }
 
 //-----------------------------------------------------------------------------
-char * CLocalisationHash::GetPtrWithString(const char * _lpszUText)
+std::string* CLocalisationHash::GetPtrWithString(const std::string& _lpszUText)
 {
 	int iKey = GetKey(_lpszUText);
 	int	iH1 = FuncH1(iKey);
@@ -189,13 +189,13 @@ char * CLocalisationHash::GetPtrWithString(const char * _lpszUText)
 	{
 		iH1 &= iMask;
 
-		if (pTab[iH1])
+		if ( pTab[iH1] )
 		{
-			if (!strcasecmp(_lpszUText, pTab[iH1]->lpszUSection))
+			if (!strcasecmp(_lpszUText.c_str(), pTab[iH1]->lpszUSection.c_str()))
 			{
 				if (pTab[iH1]->vUKeys.size() > 0)
 				{
-					return pTab[iH1]->vUKeys[0];
+					return &pTab[iH1]->vUKeys[0];
 				}
 
 				return NULL;
@@ -210,7 +210,7 @@ char * CLocalisationHash::GetPtrWithString(const char * _lpszUText)
 }
 
 //-----------------------------------------------------------------------------
-unsigned long CLocalisationHash::GetKeyCount(const char * _lpszUText)
+unsigned long CLocalisationHash::GetKeyCount(const std::string& _lpszUText)
 {
 	int iKey = GetKey(_lpszUText);
 	int	iH1 = FuncH1(iKey);
@@ -224,7 +224,7 @@ unsigned long CLocalisationHash::GetKeyCount(const char * _lpszUText)
 
 		if (pTab[iH1])
 		{
-			if (!strcasecmp(_lpszUText, pTab[iH1]->lpszUSection))
+			if (!strcasecmp(_lpszUText.c_str(), pTab[iH1]->lpszUSection.c_str()))
 			{
 				return pTab[iH1]->vUKeys.size();
 

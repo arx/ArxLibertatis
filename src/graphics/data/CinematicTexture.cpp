@@ -25,11 +25,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/data/CinematicTexture.h"
 
+#include <iomanip>
+
 #include "animation/Cinematic.h"
 #include "core/Application.h"
 #include "graphics/data/Texture.h"
 #include "io/IO.h"
 #include "io/PakManager.h"
+#include "io/Logger.h"
 
 /*-----------------------------------------------------------*/
 CinematicBitmap	TabBitmap[MAX_BITMAP];
@@ -37,7 +40,6 @@ int			MaxW, MaxH;
 int			NbBitmap;
 bool		Restore;
 /*-----------------------------------------------------------*/
-extern char AllTxt[];
 extern HWND HwndPere;
 extern char DirectoryChoose[];
 
@@ -384,16 +386,17 @@ void AddQuadUVs(CinematicGrid * grille, int depcx, int depcy, int tcx, int tcy, 
 }
 
 /*-----------------------------------------------------------*/
-HBITMAP LoadTargaFile(TCHAR * strPathname)
+HBITMAP LoadTargaFile( const char * strPathname)
 {
 	if (!PAK_FileExist(strPathname)) return NULL;
 
 	size_t size = 0;
-	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, &size);
+	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, size);
 	// TODO size ignored
 
 	if (NULL == dat) return NULL;
 
+#pragma pack(push,1)
 	struct TargaHeader
 	{
 		BYTE IDLength;
@@ -407,6 +410,7 @@ HBITMAP LoadTargaFile(TCHAR * strPathname)
 		BYTE PixelDepth;
 		BYTE ImageDescriptor;
 	} tga;
+#pragma pack(pop)
 
 	long pos = 0;
 	memcpy(&tga, dat + pos, sizeof(TargaHeader));
@@ -519,18 +523,19 @@ HBITMAP LoadTargaFile(TCHAR * strPathname)
 	return hbitmap;
 }
 
-HBITMAP LoadBMPImage(char * strPathname)
+HBITMAP LoadBMPImage( const char * strPathname)
 {
 	HBITMAP m_hbmBitmap = NULL;
 
 	if (!PAK_FileExist(strPathname)) return NULL;
 
 	size_t siz = 0;
-	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, &siz);
+	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, siz);
 	// TODO siz ignored
 
 	if (!dat) return NULL;
 
+	// TODO packing of BITMAPINFOHEADER?
 	BITMAPINFOHEADER sBitmapH = *((BITMAPINFOHEADER *)(dat + sizeof(BITMAPFILEHEADER)));
 	HDC hHDC = CreateCompatibleDC(NULL);
 
@@ -612,14 +617,20 @@ HBITMAP LoadBMPImage(char * strPathname)
 	return m_hbmBitmap;
 
 }
-/*-----------------------------------------------------------*/
-int CreateAllMapsForBitmap(char * dir, char * name, Cinematic * c, int n, int pos)
-{
-	int			nbx, nby, w, h, num, id;
+
+int CreateAllMapsForBitmap(const string & path, Cinematic * c) {
+	
+	int n = -1;
+	int pos = 0;
+	
+	int nbx, nby, w, h, num, id;
 	CinematicBitmap	* bi;
-
-	if (!name || !c) return -1;
-
+	
+	string name = GetName(path);
+	if(name.empty()) {
+		return -1;
+	}
+	
 	if (n >= 0)
 	{
 		bi = &TabBitmap[n];
@@ -646,40 +657,35 @@ int CreateAllMapsForBitmap(char * dir, char * name, Cinematic * c, int n, int po
 
 		if (!bi) return -1;
 	}
-
-	if (dir)
-	{
-		bi->dir = (char *)malloc(strlen(dir) + 1);
-
-		if (!bi->dir) return -1;
-
-		strcpy(bi->dir, dir);
+	
+	string dir = path;
+	RemoveName(dir);
+	if(!dir.empty()) {
+		bi->dir = strdup(dir.c_str());
+		if(!bi->dir) {
+			return -1;
+		}
+	} else {
+		bi->dir = NULL;
 	}
-	else dir = NULL;
-
-	bi->name = (char *)malloc(strlen(name) + 1);
-
-	if (!bi->name)
-	{
-		free((void *)bi->dir);
+	
+	bi->name = strdup(name.c_str());
+	if(!bi->name) {
+		free(bi->dir);
 		return -1;
 	}
-
-	strcpy(bi->name, name);
-
-	strcpy(AllTxt, dir);
-	strcat(AllTxt, name);
-	ClearAbsDirectory(AllTxt, "ARX\\");
-	SetExt(AllTxt, ".BMP");
-
-	if (PAK_FileExist(AllTxt))
+	
+	LogDebug << "loading cinematic texture " << path;
+	
+	string filename = path;
+	SetExt(filename, ".bmp");
+	if (PAK_FileExist(filename.c_str()))
 	{
-		bi->hbitmap = (HBITMAP)LoadBMPImage(AllTxt);
+		bi->hbitmap = (HBITMAP)LoadBMPImage(filename.c_str());
 
 		if (!bi->hbitmap)
 		{
-			strcpy(AllTxt, name);
-			strcat(AllTxt, " --not found--");
+			LogError << "error loading " << path;
 			h = 0;
 
 			bi->actif = 1;
@@ -689,16 +695,15 @@ int CreateAllMapsForBitmap(char * dir, char * name, Cinematic * c, int n, int po
 	}
 	else
 	{
-		SetExt(AllTxt, ".TGA");
+		SetExt(filename, ".tga");
 
-		if (PAK_FileExist(AllTxt))
+		if (PAK_FileExist(filename.c_str()))
 		{
-			bi->hbitmap = LoadTargaFile(AllTxt);
+			bi->hbitmap = LoadTargaFile(filename.c_str());
 
 			if (!bi->hbitmap)
 			{
-				strcpy(AllTxt, name);
-				strcat(AllTxt, " --not found--");
+				LogError << "error loading " << path;
 				h = 0;
 
 				bi->actif = 1;
@@ -708,6 +713,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, Cinematic * c, int n, int po
 		}
 		else
 		{
+			LogError << path << " not found";
 			return -1;
 		}
 	}
@@ -755,16 +761,18 @@ int CreateAllMapsForBitmap(char * dir, char * name, Cinematic * c, int n, int po
 			if ((w - MaxW) < 0) w2 = w;
 			else w2 = MaxW;
 
-			sprintf(AllTxt, "%s_%4d", name, num);
-			MakeUpcase(AllTxt);
+			std::stringstream ss;
+			ss << name << '_' << std::setw(4) << num;
+			std::string texname = ss.str();
+			//AllTxt, "%s_%4d", name, num);
+			MakeUpcase(texname);
 
-			if (FAILED(D3DTextr_CreateEmptyTexture(AllTxt, w2, h2, 0, D3DTEXTR_NO_MIPMAP, 0)))
+			if (FAILED(D3DTextr_CreateEmptyTexture(texname.c_str(), w2, h2, 0, D3DTEXTR_NO_MIPMAP, 0)))
 			{
-				sprintf(AllTxt, "Creating texture #%d -> x: %ld y %ld w: %d h: %d", num, (long)dx, (long)dy, w2, h2);
-				MessageBox(NULL, AllTxt, "Erreur", 0);
+				LogError<< "Creating texture #" << num << " -> x: " << (long)dx << " y: " << (long)dy << " w: " << w2 << " h: " << h2;
 			}
 
-			TextureContainer * t = FindTexture(AllTxt);
+			TextureContainer * t = FindTexture(texname.c_str());
 			AddQuadUVs(&bi->grid, bi->nbx - nbxx, bi->nby - nby, 1, 1, bi->w - w, bi->h - h, w2, h2, t);
 
 			dx += (float)w2;
@@ -845,10 +853,13 @@ bool ReCreateAllMapsForBitmap(int id, int nmax, Cinematic * c, LPDIRECT3DDEVICE7
 			if ((w - MaxW) < 0) w2 = w;
 			else w2 = MaxW;
 
-			sprintf(AllTxt, "%s_%4d", bi->name, num);
-			MakeUpcase(AllTxt);
+			std::stringstream ss;
+			ss << bi->name << '_' << std::setw(4) << num;
+			std::string texname = ss.str();
+			//sprintf(AllTxt, "%s_%4d", bi->name, num);
+			MakeUpcase(texname);
 
-			TextureContainer * t = FindTexture(AllTxt);
+			TextureContainer * t = FindTexture(texname);
 			AddQuadUVs(&bi->grid, (bi->nbx - nbxx)*nmax, (bi->nby - nby)*nmax, nmax, nmax, bi->w - w, bi->h - h, w2, h2, t);
 
 			dx += (float)w2;

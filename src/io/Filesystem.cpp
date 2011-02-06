@@ -32,8 +32,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 long KillAllDirectory(const char * path) {
 	LogInfo << "KillAllDirectory "<< path;
 	
-	WIN32_FIND_DATA FileInformation;             // File information
-	
 	HANDLE idx;
 	WIN32_FIND_DATA fl;
 	char pathh[512];
@@ -223,7 +221,6 @@ void	* FileLoadMalloc(const char * name, size_t * SizeLoadMalloc)
 	long	size1, size2;
 	unsigned char	* adr;
 
-retry:
 	handle = FileOpenRead(name);
 
 	if (!handle)

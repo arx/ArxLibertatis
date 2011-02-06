@@ -22,6 +22,13 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+#include <stdio.h>
+
+// TODO Remove some headers
+#include <algorithm>
+#include <fstream>
+#include <sstream>
+#include <vector>
 
 #include "game/Map.h"
 
@@ -108,12 +115,12 @@ C_ARX_Carte::C_ARX_Carte(LPDIRECT3DDEVICE7 d,EERIE_BACKGROUND *bkg,int nbpix,int
 //#############################################################################################
 bool C_ARX_Carte::Render(void)
 {
-	if((!this->device)||(!this->background)) return E_FAIL;
+	if((!this->device)||(!this->background)) return false;
 
 	CalcFPS();
 	device->Clear(0,NULL,D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER,0x00000000,1.0f,0L);
 
-	if(!danaeApp.DANAEStartRender()) return E_FAIL;
+	if(!danaeApp.DANAEStartRender()) return false;
 
 	int depx = (int)(this->posx * this->background->Xmul);
 
@@ -203,7 +210,7 @@ bool C_ARX_Carte::Render(void)
 		yecran+=(float)this->nbpixels;
 	}
 
-	return S_OK;
+	return true;
 }
 
 //#############################################################################################

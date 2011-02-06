@@ -1202,9 +1202,9 @@ void ARX_MAGICAL_FLARES_Draw(LPDIRECT3DDEVICE7  m_pd3dDevice,long FRAMETICKS)
 						flare[i].v.sy=flare[i].tv.sy;
 						flare[i].v.sz=flare[i].tv.sz;
 								
-						DynLight[0].rgb.r=max(DynLight[0].rgb.r,r);
-						DynLight[0].rgb.g=max(DynLight[0].rgb.g,g);
-						DynLight[0].rgb.b=max(DynLight[0].rgb.b,b);
+						DynLight[0].rgb.r=std::max(DynLight[0].rgb.r,r);
+						DynLight[0].rgb.g=std::max(DynLight[0].rgb.g,g);
+						DynLight[0].rgb.b=std::max(DynLight[0].rgb.b,b);
 
 						if (ValidDynLight(flare[i].dynlight)) 
 						{
@@ -1787,7 +1787,7 @@ void MakeBookFX(float posx,float posy,float posz)
 			pd->scale.z		=	0.f;
 			pd->timcreation	=	lARXTime;
 			pd->tolive		=	1200+(unsigned long)(rnd()*400.f);
-			pd->tc			=	ITC.book;
+			pd->tc			=	ITC.Get("book");
 			pd->r			=	1.f-(float)i*0.1f;
 			pd->g			=	(float)i*0.1f;
 			pd->b			=	0.5f-(float)i*0.1f;

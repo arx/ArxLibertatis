@@ -72,6 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/IO.h"
 #include "io/Registry.h"
 #include "io/PakManager.h"
+#include "io/Logger.h"
 
 using std::max;
 
@@ -95,7 +96,6 @@ CD3DApplication		* g_pD3DApp = NULL;
 EERIE_CAMERA		* Kam;
 LPDIRECT3DDEVICE7	GDevice;
 HWND				MSGhwnd = NULL;
-PROJECT				Project;
 bool				bZBUFFER = true;
 float				FPS;
 int					ModeLight = 0;
@@ -359,7 +359,7 @@ INT CD3DApplication::Run()
 	HACCEL hAccel = NULL;
 
 	// Now we're ready to recieve and process Windows messages.
-	bool bGotMsg;
+	BOOL bGotMsg;
 	MSG  msg;
 	PeekMessage(&msg, NULL, 0U, 0U, PM_NOREMOVE);
 
@@ -406,7 +406,7 @@ void CD3DApplication::EvictManagedTextures()
 
 int CD3DApplication::WinManageMess()
 {
-	bool bGotMsg = true;
+	BOOL bGotMsg = true;
 	MSG  msg;
 
 	while (bGotMsg)
@@ -503,7 +503,7 @@ LRESULT CD3DApplication::SwitchFullScreen()
 
 	if (FAILED(Change3DEnvironment()))
 	{
-		ShowPopup("ChangeEnvironement Failed");
+		LogError << ("ChangeEnvironement Failed");
 		return 0;
 	}
 
@@ -1220,8 +1220,7 @@ VOID CD3DApplication::DisplayFrameworkError(HRESULT hr, DWORD dwType)
 			                   "EnableRefRast.reg."));
 			break;
 		case D3DENUMERR_ENUMERATIONFAILED:
-			lstrcpy(strMsg, _T("Enumeration failure. Your system may be in an\n"
-			                   "unstable state and may need a reboot :-("));
+			lstrcpy(strMsg, _T("Enumeration failure. Are you missing (32bit) graphics drivers?"));
 			break;
 		case D3DFWERR_INITIALIZATIONFAILED:
 			lstrcpy(strMsg, _T("Generic initialization error.\n\nEnable "
@@ -1385,6 +1384,7 @@ void CD3DApplication::EnableZBuffer()
 //******************************************************************************
 //*************************************************************************************
 //*************************************************************************************
+//TODO(lubosz): is this needed in the game? replace
 bool OKBox(const char * text, const char * title)
 
 {
@@ -1398,86 +1398,8 @@ bool OKBox(const char * text, const char * title)
 	return true;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-void ShowPopup(const char * text)
-{
-	if (FINAL_COMMERCIAL_DEMO ||
-	        FINAL_COMMERCIAL_GAME)
-	{
-		return;
-
-	}
-
-	g_pD3DApp->Pause(true);
-	MessageBox(g_pD3DApp->m_hWnd, text, "GAIA popup", MB_ICONINFORMATION | MB_OK);
-	g_pD3DApp->Pause(false);
-}
-
 extern void ExitProc();
-//*************************************************************************************
-//*************************************************************************************
-int ShowError(const char * funcname, const char * message, long fatality)
-{
-	static char texx[512];
-	char fatall[64];
-	int re;
 
-	if (!g_pD3DApp) return IDIGNORE;
-
-	g_pD3DApp->Pause(true);
-
-	switch (fatality)
-	{
-		case 0:
-			strcpy(fatall, "Non-Fatal");
-			sprintf(texx, "An ERROR occured in function: %s\n%s\n\nFatality Level: %ld - %s\n\nOK to continue, CANCEL to Quit", funcname, message, fatality, fatall);
-			re = MessageBox(g_pD3DApp->m_hWnd, texx, "GAIA Error Message", MB_ICONERROR | MB_OKCANCEL);
-			g_pD3DApp->Pause(false);
-
-			if (re == IDCANCEL) ExitProc();
-
-			return(re);
-			break;
-		case 1:
-			strcpy(fatall, "Please Free Some Memory Then Click RETRY");
-			sprintf(texx, "An ERROR occured in function: %s\n%s\nFatality Level: %ld - %s", funcname, message, fatality, fatall);
-			re = MessageBox(g_pD3DApp->m_hWnd, texx, "GAIA Error Message", MB_ICONSTOP | MB_ABORTRETRYIGNORE);
-			g_pD3DApp->Pause(false);
-
-			if (re == IDABORT) ExitProc();
-
-			return(re);
-			break;
-		case 2:
-			strcpy(fatall, "Fatal with some recoverable datas");
-			sprintf(texx, "An ERROR occured in function: %s\n%s\nFatality Level: %ld - %s", funcname, message, fatality, fatall);
-			re = (MessageBox(g_pD3DApp->m_hWnd, texx, "GAIA Error Message", MB_ICONERROR | MB_OK));
-			g_pD3DApp->Pause(false);
-			return re;
-			break;
-		case 3:
-			strcpy(fatall, "Fatal");
-			sprintf(texx, "An ERROR occured in function: %s\n%s\nFatality Level: %ld - %s", funcname, message, fatality, fatall);
-			re = (MessageBox(g_pD3DApp->m_hWnd, texx, "GAIA Error Message", MB_ICONERROR | MB_OK));
-			g_pD3DApp->Pause(false);
-			return re;
-			break;
-		case 4:
-			g_pD3DApp->Pause(false);
-			return IDIGNORE;
-			break;
-		default:
-			strcpy(fatall, "Unknown fatality level");
-			sprintf(texx, "An ERROR occured in function: %s\n%s\nFatality Level: %ld - %s", funcname, message, fatality, fatall);
-			re = (MessageBox(g_pD3DApp->m_hWnd, texx, "GAIA Error Message", MB_ICONERROR | MB_OK));
-			g_pD3DApp->Pause(false);
-			return re;
-			break;
-	}
-
-	g_pD3DApp->Pause(false);
-}
 
 void SetZBias(const LPDIRECT3DDEVICE7 _pd3dDevice, int _iZBias)
 {

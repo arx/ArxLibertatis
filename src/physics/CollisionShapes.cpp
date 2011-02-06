@@ -89,7 +89,7 @@ void EERIE_COLLISION_Cylinder_Create(INTERACTIVE_OBJ * io)
 		if ((i != obj->origin) && (EEfabs(io->physics.cyl.origin.y - obj->vertexlist[i].v.y) < 20.f))
 		{
 			dist = max(dist, TRUEDistance3D(io->physics.cyl.origin.x, io->physics.cyl.origin.y, io->physics.cyl.origin.z,
-			                                  obj->vertexlist[i].v.x, obj->vertexlist[i].v.y, obj->vertexlist[i].v.z));
+											  obj->vertexlist[i].v.x, obj->vertexlist[i].v.y, obj->vertexlist[i].v.z));
 		}
 
 		height = max(height, io->physics.cyl.origin.y - obj->vertexlist[i].v.y);
@@ -160,10 +160,10 @@ void AddCollisionSphere(EERIE_3DOBJ * obj, long idx, float radius, long flags)
 
 	if (obj->sdata->nb_spheres == 0)
 		obj->sdata->spheres = (COLLISION_SPHERE *)
-		                      malloc(sizeof(COLLISION_SPHERE));
+							  malloc(sizeof(COLLISION_SPHERE));
 
 	else obj->sdata->spheres = (COLLISION_SPHERE *)
-		                           realloc(obj->sdata->spheres, sizeof(COLLISION_SPHERE) * (obj->sdata->nb_spheres + 1));
+								   realloc(obj->sdata->spheres, sizeof(COLLISION_SPHERE) * (obj->sdata->nb_spheres + 1));
 
 	memset(&obj->sdata->spheres[obj->sdata->nb_spheres], 0, sizeof(COLLISION_SPHERE));
 	obj->sdata->spheres[obj->sdata->nb_spheres].idx = (short)idx;
@@ -216,9 +216,9 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, EERIE_3D * center, EERIE_3D * d
 	float div = 0.f;
 	long sel = -1;
 
-	for (long i = 0; i < obj->nbselections; i++)
-	{
-		if (!strcasecmp(obj->selections[i].name, "mou"))
+	for (size_t i = 0; i < obj->selections.size(); i++)
+	{ // TODO iterator
+		if (!strcasecmp(obj->selections[i].name.c_str(), "mou"))
 		{
 			sel = i;
 			break;
@@ -236,7 +236,7 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, EERIE_3D * center, EERIE_3D * d
 		target.y = obj->vertexlist[obj->grouplist[group].indexes[i]].v.y;
 		target.z = obj->vertexlist[obj->grouplist[group].indexes[i]].v.z;
 		float distance = Distance3D(center->x, center->y, center->z,
-		                            target.x, target.y, target.z);
+									target.x, target.y, target.z);
 
 		if (distance < 2.f) continue;
 
@@ -278,14 +278,14 @@ long AddVertexToVertexList(EERIE_3DOBJ * obj, EERIE_3D * center, long group)
 	for (long i = 0; i < obj->nbvertex; i++)
 	{
 		if ((center->x == obj->vertexlist[i].v.x)
-		        &&	(center->y == obj->vertexlist[i].v.y)
-		        &&	(center->z == obj->vertexlist[i].v.z))
+				&&	(center->y == obj->vertexlist[i].v.y)
+				&&	(center->z == obj->vertexlist[i].v.z))
 		{
 			if (IsVertexIdxInGroup(obj, i, group) == false)
 			{
 				if ((obj->vertexlist[i].norm.x == 50.f)
-				        &&	(obj->vertexlist[i].norm.y == 50.f)
-				        &&	(obj->vertexlist[i].norm.z == 50.f)
+						&&	(obj->vertexlist[i].norm.y == 50.f)
+						&&	(obj->vertexlist[i].norm.z == 50.f)
 				   )
 					AddVertexIdxToGroup(obj, group, i);
 			}
@@ -296,17 +296,17 @@ long AddVertexToVertexList(EERIE_3DOBJ * obj, EERIE_3D * center, long group)
 
 	// Must create a new one...
 	obj->vertexlist = (EERIE_VERTEX *)
-	                  realloc(obj->vertexlist, sizeof(EERIE_VERTEX) * (obj->nbvertex + 1));
+					  realloc(obj->vertexlist, sizeof(EERIE_VERTEX) * (obj->nbvertex + 1));
 
 	obj->vertexlist3 = (EERIE_VERTEX *)
-	                   realloc(obj->vertexlist3, sizeof(EERIE_VERTEX) * (obj->nbvertex + 1));
+					   realloc(obj->vertexlist3, sizeof(EERIE_VERTEX) * (obj->nbvertex + 1));
 
 	memset(&obj->vertexlist[obj->nbvertex], 0, sizeof(EERIE_VERTEX));
 
 	if (obj->pdata)
 	{
 		obj->pdata = (PROGRESSIVE_DATA *)
-		             realloc(obj->pdata, sizeof(PROGRESSIVE_DATA) * (obj->nbvertex + 1));
+					 realloc(obj->pdata, sizeof(PROGRESSIVE_DATA) * (obj->nbvertex + 1));
 
 		memset(&obj->pdata[obj->nbvertex], 0, sizeof(PROGRESSIVE_DATA));
 		obj->pdata[obj->nbvertex].collapse_candidate = -1;
@@ -333,7 +333,7 @@ void EERIE_COLLISION_SPHERES_Create(EERIE_3DOBJ * obj)
 
 	EERIE_COLLISION_SPHERES_Release(obj);
 	obj->sdata = (COLLISION_SPHERES_DATA *)
-	             malloc(sizeof(COLLISION_SPHERES_DATA));
+				 malloc(sizeof(COLLISION_SPHERES_DATA));
 
 	memset(obj->sdata, 0, sizeof(COLLISION_SPHERES_DATA));
 

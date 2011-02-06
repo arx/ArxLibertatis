@@ -117,7 +117,7 @@ void ARX_SPELLS_Precast_Reset();
 void ARX_SPELLS_Precast_Add(const long & typ, long level = 1, long flags = 0);
 void ARX_SPELLS_Precast_Launch(const long & num);
 
-long GetSpellId(const char * spell);
+long GetSpellId(const std::string& spell);
 bool MakeSpellName(char * spell, const long & num);
 void TryToCastSpell(INTERACTIVE_OBJ * io, const long & spellid, const long & level, const long & target, const long & flags, const long & duration);
 void ARX_SPELLS_Precast_Check();
@@ -275,7 +275,7 @@ extern long LastSlot;
 extern long CurrPoint;
 extern long NETSPELL;
 
-long ARX_SPELLS_Launch(const long & typ, const long & source, const long & flags = 0, const long & level = -1, const long & target = -1, const long & duration = -1); //const long &net = 0);
+bool ARX_SPELLS_Launch(const long & typ, const long & source, const long & flags = 0, const long & level = -1, const long & target = -1, const long & duration = -1); //const long &net = 0);
 long ARX_SPELLS_GetFree();
 void ARX_SPELLS_ResetRecognition();
 void ARX_SPELLS_AddPoint(const EERIE_S2D * pos);

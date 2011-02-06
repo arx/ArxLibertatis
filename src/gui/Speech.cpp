@@ -63,6 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Interface.h"
 #include "gui/Text.h"
 #include "scripting/Script.h"
+#include "scripting/ScriptEvent.h"
 #include "scene/GameSound.h"
 #include "window/Input.h"
 #include "gui/Text.h"
@@ -92,7 +93,8 @@ STRUCT_SPEECH speech[MAX_SPEECH];
 //-----------------------------------------------------------------------------
 void ARX_SPEECH_Init()
 {
-	memset(speech, 0, sizeof(STRUCT_SPEECH)*MAX_SPEECH);
+	for ( int i = 0 ; i < MAX_SPEECH ; i++ )
+		speech[i].clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -100,19 +102,15 @@ void ARX_SPEECH_MoveUp()
 {
 	if (speech[0].timecreation != 0)
 	{
-		if (speech[0].lpszUText != NULL)
-		{
-			free(speech[0].lpszUText);
-			speech[0].lpszUText = NULL;
-		}
+			speech[0].lpszUText.clear();
 	}
 
 	for (long j = 0; j < MAX_SPEECH - 1; j++)
 	{
-		memcpy(&speech[j], &speech[j+1], sizeof(STRUCT_SPEECH));
+		speech[j] = speech[j+1];
 	}
 
-	memset(&speech[MAX_SPEECH-1], 0, sizeof(STRUCT_SPEECH));
+	speech[MAX_SPEECH-1].clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -122,24 +120,19 @@ void ARX_SPEECH_ClearAll()
 	{
 		if (speech[i].timecreation != 0)
 		{
-			if (speech[i].lpszUText != NULL)
-			{
-				free(speech[i].lpszUText);
-				speech[i].lpszUText = NULL;
-			}
+			speech[i].clear();
+			//speech[i].lpszUText.clear();
 
-			speech[i].timecreation = 0;
+			//speech[i].timecreation = 0;
 		}
 	}
 }
 
 //-----------------------------------------------------------------------------
-long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, _TCHAR * _lpszUText, long duration)
+long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, const std::string& _name, long duration)
 {
 
-	if (_lpszUText == NULL) return -1;
-
-	if (_lpszUText[0] == 0) return -1;
+	if ( _name.empty() ) return -1;
 
 	unsigned long tim = ARXTimeUL(); 
 
@@ -152,10 +145,9 @@ long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, _TCHAR * _lpszUText, long duration)
 	{
 		if (speech[i].timecreation == 0)
 		{
-			long length = _tcslen(_lpszUText);
+			long length = _name.length();
 
-			// We allocate memory for new speech
-			speech[i].lpszUText = (_TCHAR *) malloc(min(length + 1, 4096L) * sizeof(_TCHAR));
+			speech[i].lpszUText.clear();
 
 			// Sets creation time
 			speech[i].timecreation = tim;
@@ -164,12 +156,12 @@ long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, _TCHAR * _lpszUText, long duration)
 			if (duration == -1) speech[i].duration = 2000 + length * 60; 
 			else speech[i].duration = duration;
 
-			if (length > 4095)
+			/*if (length > 4095)
 			{
-				memcpy(&speech[i].lpszUText, &_lpszUText, 4095 * sizeof(_TCHAR));
+				speech[i].lpszUText = _name;
 				speech[i].lpszUText[4095] = 0;
-			}
-			else _tcscpy(speech[i].lpszUText, _lpszUText);
+			}*/
+			speech[i].lpszUText = _name;
 
 			// Sets speech color
 			if (io == NULL)
@@ -180,7 +172,7 @@ long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, _TCHAR * _lpszUText, long duration)
 			else
 			{
 				speech[i].io = io;
-				strcpy(speech[i].name, GetName(io->filename));
+				strcpy(speech[i].name, GetName(io->filename).c_str());
 			}
 
 			speech[i].color = D3DRGB(1.f, 1.f, 1.f);
@@ -198,7 +190,7 @@ bool CheckLastSpeech(int _iI)
 	for (long i = _iI + 1; i < MAX_SPEECH; i++)
 	{
 		if ((speech[i].timecreation != 0) &&
-		        (speech[i].lpszUText != NULL))
+				(!speech[i].lpszUText.empty()))
 		{
 			return false;
 		}
@@ -215,11 +207,9 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 	HDC	hDC;
 	SIZE sSize;
 
-	//TODO(lubosz): Crash
-//	if (false)
 	if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 	{
-//		SelectObject(hDC, InBookFont);
+		SelectObject(hDC, InBookFont);
 
 		GetTextExtentPoint(hDC,_T("p"),1,&sSize);
 
@@ -242,28 +232,28 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 	{
 		if (speech[i].timecreation != 0)
 		{
-			if (speech[i].lpszUText != NULL)
+			if (!speech[i].lpszUText.empty())
 			{
 
 				if ((speech[i].name) && (speech[i].name[0] != ' '))
-					_stprintf(temp, _T("%s > %s"), speech[i].name, speech[i].lpszUText);
+					_stprintf(temp, _T("%s > %s"), speech[i].name, speech[i].lpszUText.c_str());
 				else
-					_stprintf(temp, _T(" %s"), speech[i].lpszUText);//>
+					_stprintf(temp, _T(" %s"), speech[i].lpszUText.c_str());//>
 
 				EERIEDrawBitmap(GDevice,
-				                120 * Xratio - 16 * Xratio, ARX_CLEAN_WARN_CAST_FLOAT(igrec),
-				                16 * Xratio, 16 * Xratio,
-				                0.00001f,
-				                arx_logo_tc,
-				                D3DCOLORWHITE);
+								120 * Xratio - 16 * Xratio, ARX_CLEAN_WARN_CAST_FLOAT(igrec),
+								16 * Xratio, 16 * Xratio,
+								0.00001f,
+								arx_logo_tc,
+								D3DCOLORWHITE);
 
 
 				igrec += ARX_TEXT_DrawRect(pd3dDevice, InBookFont,
-				                           120.f * Xratio, (float)igrec,
-				                           -3, 0,
-				                           500 * Xratio, 200 * Yratio, temp, speech[i].color, NULL, 0x00FF00FF, 1);
+										   120.f * Xratio, (float)igrec,
+										   -3, 0,
+										   500 * Xratio, 200 * Yratio, temp, speech[i].color, NULL, 0x00FF00FF, 1);
 				if ((igrec > iEnd) &&
-				        !CheckLastSpeech(i))
+						!CheckLastSpeech(i))
 				{
 					ARX_SPEECH_MoveUp();
 					break;
@@ -320,7 +310,7 @@ void ARX_SPEECH_Launch_No_Unicode_Seek(const char * string, INTERACTIVE_OBJ * io
 		aspeech[speechnum].flags = 0;
 		ARX_CINEMATIC_SPEECH acs;
 		acs.type = ARX_CINE_SPEECH_NONE;
-		memcpy(&aspeech[speechnum].cine, &acs, sizeof(ARX_CINEMATIC_SPEECH));
+		aspeech[speechnum].cine = acs;
 	}
 }
 
@@ -356,8 +346,10 @@ void ARX_CONVERSATION_CheckAcceleratedSpeech()
 
 void ARX_SPEECH_FirstInit()
 {
-	memset(aspeech, 0, sizeof(ARX_SPEECH)*MAX_ASPEECH);
+	for( int i = 0 ; i < MAX_ASPEECH ; i++ )
+		aspeech[i].clear();
 }
+
 long ARX_SPEECH_GetFree()
 {
 	for (long i = 0; i < MAX_ASPEECH; i++)
@@ -372,13 +364,12 @@ long ARX_SPEECH_GetFree()
 	return -1;
 }
 
-
 long ARX_SPEECH_GetIOSpeech(INTERACTIVE_OBJ * io)
 {
 	for (long i = 0; i < MAX_ASPEECH; i++)
 	{
 		if ((aspeech[i].exist)
-		        &&	(aspeech[i].io == io))
+				&&	(aspeech[i].io == io))
 			return i;
 	}
 
@@ -391,33 +382,31 @@ void ARX_SPEECH_Release(long i)
 	{
 		ARX_SOUND_Stop(aspeech[i].sample);
 
-		if (aspeech[i].text != NULL)
-			free(aspeech[i].text);
+		aspeech[i].text.clear();
 
 		if ((ValidIOAddress(aspeech[i].io))
-		        &&	(aspeech[i].io->animlayer[2].cur_anim))
+				&&	(aspeech[i].io->animlayer[2].cur_anim))
 		{
 			AcquireLastAnim(aspeech[i].io);
 			aspeech[i].io->animlayer[2].cur_anim = NULL;
 		}
 
-		memset(&aspeech[i], 0, sizeof(ARX_SPEECH));
+		aspeech[i].clear();
 	}
 }
+
 void ARX_SPEECH_ReleaseIOSpeech(INTERACTIVE_OBJ * io)
 {
 	for (long i = 0; i < MAX_ASPEECH; i++)
 	{
 		if ((aspeech[i].exist)
-		        &&	(aspeech->io == io))
+				&&	(aspeech->io == io))
 		{
 			ARX_SPEECH_Release(i);
 		}
 	}
 }
 
-
- 
 void ARX_SPEECH_Reset()
 {
 	for (long i = 0; i < MAX_ASPEECH; i++)
@@ -433,7 +422,7 @@ void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io)
 	for (long i = 0; i < MAX_ASPEECH; i++)
 	{
 		if ((aspeech[i].exist)
-		        &&	(aspeech[i].io == io))
+				&&	(aspeech[i].io == io))
 		{
 			EERIE_SCRIPT * es = aspeech[i].es;
 			INTERACTIVE_OBJ * io = aspeech[i].ioscript;
@@ -441,9 +430,9 @@ void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io)
 			ARX_SPEECH_Release(i);
 
 			if ((es)
-			        &&	(ValidIOAddress(io)))
+					&&	(ValidIOAddress(io)))
 			{
-				SendScriptEvent(es, SM_EXECUTELINE, "", io, NULL, scrpos);
+				ScriptEvent::send(es, SM_EXECUTELINE, "", io, "", scrpos);
 			}
 		}
 	}
@@ -471,8 +460,8 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long param, l
 				ARX_SPEECH_Release(i);
 
 				if ((es)
-				        &&	(ValidIOAddress(io)))
-					SendScriptEvent(es, SM_EXECUTELINE, "", io, NULL, scrpos);
+						&&	(ValidIOAddress(io)))
+					ScriptEvent::send(es, SM_EXECUTELINE, "", io, "", scrpos);
 			}
 	}
 
@@ -490,24 +479,20 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long param, l
 
 	long flg = 0;
 
-	_TCHAR lpszUSection[512];
-	MultiByteToWideChar(CP_ACP, 0, data, -1, (wchar_t*)lpszUSection, 512);
+	std::string lpszUSection = data;
+//	TODO: wchar cast
+//	MultiByteToWideChar(CP_ACP, 0, data, -1, lpszUSection, 512);
 
 	if (!(flags & ARX_SPEECH_FLAG_NOTEXT))
 	{
-		_TCHAR _output[4096];
-		ZeroMemory(_output, 4096 * sizeof(_TCHAR));
+		std::string _output;
 
-		flg = HERMES_UNICODE_GetProfileString(lpszUSection,
-		                                      _T(""),
-		                                      _output,
-		                                      4096);
-
+		flg = HERMES_UNICODE_GetProfileString(lpszUSection, "", _output);
 
 		io->lastspeechflag = (short)flg;
-		aspeech[num].text = (_TCHAR *) malloc((_tcslen(_output) + 1) * sizeof(_TCHAR));
-		_tcscpy(aspeech[num].text, _output);
-		aspeech[num].duration = max(aspeech[num].duration, (unsigned long)(strlen(_output) + 1) * 100);
+		aspeech[num].text.clear();
+		aspeech[num].text = _output;
+		aspeech[num].duration = max(aspeech[num].duration, (unsigned long)(strlen(_output.c_str()) + 1) * 100);
 	}
 
 	char speech_label[256];
@@ -520,7 +505,7 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long param, l
 	{
 		long count = 0;
 
-		count = HERMES_UNICODE_GetProfileSectionKeyCount(lpszUSection);
+		count = HERMES_UNICODE_GetProfileSectionKeyCount(lpszUSection.c_str());
 
 		flg = rnd() * count;
 
@@ -592,14 +577,14 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 					ARX_SOUND_RefreshSpeechPosition(aspeech[i].sample, io);
 
 				if (((io != inter.iobj[0]) || ((io == inter.iobj[0])  && (EXTERNALVIEW)))
-				        &&	ValidIOAddress(io))
+						&&	ValidIOAddress(io))
 				{
 					if (io->anims[aspeech[i].mood] == NULL)	aspeech[i].mood = ANIM_TALK_NEUTRAL;
 
 					if (io->anims[aspeech[i].mood] != NULL)
 					{
 						if ((io->animlayer[2].cur_anim != io->anims[aspeech[i].mood])
-						        ||	(io->animlayer[2].flags & EA_ANIMEND))
+								||	(io->animlayer[2].flags & EA_ANIMEND))
 						{
 							AcquireLastAnim(io);
 							ANIM_Set(&io->animlayer[2], io->anims[aspeech[i].mood]);
@@ -617,8 +602,8 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 				ARX_SPEECH_Release(i);
 
 				if ((es)
-				        &&	(ValidIOAddress(io)))
-					SendScriptEvent(es, SM_EXECUTELINE, "", io, NULL, scrpos);
+						&&	(ValidIOAddress(io)))
+					ScriptEvent::send(es, SM_EXECUTELINE, "", io, "", scrpos);
 			}
 		}
 	}
@@ -629,7 +614,7 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 
 		if (speech->exist)
 		{
-			if (speech->text != NULL)
+			if (!speech->text.c_str())
 			{
 				if ((ARX_CONVERSATION) && (speech->io))
 				{
@@ -660,11 +645,10 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 						if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 						{
 							SelectObject(hDC, InBookFont);
-							//	todo: wchar cast
-//							GetTextExtentPoint32W(hDC,
-//							                      speech->text,
-//							                      _tcslen(speech->text),
-//							                      &sSize);
+							GetTextExtentPoint( hDC,
+							                    speech->text.c_str(),
+							                    speech->text.length(),
+							                    &sSize);
 							danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 						}
 
@@ -687,24 +671,24 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 						ARX_CHECK_INT(fAdd);
 
 						hRgn = CreateRectRgn(0,
-						                     ARX_CLEAN_WARN_CAST_INT(fZoneClippY),
-						                     DANAESIZX,
-						                     ARX_CLEAN_WARN_CAST_INT(fAdd));
+											 ARX_CLEAN_WARN_CAST_INT(fZoneClippY),
+											 DANAESIZX,
+											 ARX_CLEAN_WARN_CAST_INT(fAdd));
 
 
 						danaeApp.DANAEEndRender();
 						float iTaille = (float)ARX_TEXT_DrawRect(
-						                    pd3dDevice,
-						                    InBookFont,
-						                    10.f,
-						                    fDepY + fZoneClippHeight,
-						                    -3,
-						                    0,
-						                    -10.f + (float)DANAESIZX,
-						                    0,		//taille recalcul�e
-						                    speech->text,
-						                    RGB(255, 255, 255),
-						                    hRgn);
+											pd3dDevice,
+											InBookFont,
+											10.f,
+											fDepY + fZoneClippHeight,
+											-3,
+											0,
+											-10.f + (float)DANAESIZX,
+											0,		//taille recalcul�e
+											speech->text,
+											RGB(255, 255, 255),
+											hRgn);
 
 						if (hRgn)
 						{
@@ -719,22 +703,22 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 						GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
 						GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
 						EERIEDrawFill2DRectDegrad(GDevice,
-						                          0.f,
-						                          fZoneClippY - 1.f, 
-						                          ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX),
-						                          fZoneClippY + (sSize.cy * 3 / 4),
-						                          0.f,
-						                          RGBA_MAKE(255, 255, 255, 255),
-						                          RGBA_MAKE(0, 0, 0, 255));
+												  0.f,
+												  fZoneClippY - 1.f, 
+												  ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX),
+												  fZoneClippY + (sSize.cy * 3 / 4),
+												  0.f,
+												  RGBA_MAKE(255, 255, 255, 255),
+												  RGBA_MAKE(0, 0, 0, 255));
 
 						EERIEDrawFill2DRectDegrad(GDevice,
-						                          0.f,
-						                          fZoneClippY + fZoneClippHeight - (sSize.cy * 3 / 4),
-						                          ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX),
-						                          fZoneClippY + fZoneClippHeight,
-						                          0.f,
-						                          RGBA_MAKE(0, 0, 0, 255),
-						                          RGBA_MAKE(255, 255, 255, 255));
+												  0.f,
+												  fZoneClippY + fZoneClippHeight - (sSize.cy * 3 / 4),
+												  ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX),
+												  fZoneClippY + fZoneClippHeight,
+												  0.f,
+												  RGBA_MAKE(0, 0, 0, 255),
+												  RGBA_MAKE(255, 255, 255, 255));
 
 						GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 						GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
