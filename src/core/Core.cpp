@@ -60,8 +60,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <windows.h>
 
-#include <SFML/Window.hpp>
-
 #include "io/IO.h"
 #include "io/Registry.h"
 #include "io/PakManager.h"
@@ -238,7 +236,6 @@ extern std::string pStringMod;
 DANAE danaeApp;
 HINSTANCE hInstance;
 PROJECT Project;
-sf::Window sfWindow;
 
 //-----------------------------------------------------------------------------
 EERIE_3D LASTCAMPOS,LASTCAMANGLE;
@@ -1610,7 +1607,7 @@ int main(int, char**)
 	LogInfo << "DanaeApp RUN";
 	danaeApp.m_bReady = true;
 
-	sfWindow.Create( sf::VideoMode(800, 600, 32), "SFML Window");
+//	sfWindow.Create( sf::VideoMode(800, 600, 32), "SFML Window");
 	HRESULT hr=danaeApp.Run();
 
 	return hr;
