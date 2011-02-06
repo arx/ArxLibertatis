@@ -136,25 +136,25 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 					     Types
 ------------------------------------------------------------*/
 
-typedef signed char         S8;		//  8 bits integer
-typedef unsigned char       U8;     //  8 bits unsigned integer
+typedef signed char         s8;		//  8 bits integer
+typedef unsigned char       u8;     //  8 bits unsigned integer
 
-typedef signed short        S16;    // 16 bits signed integer
-typedef unsigned short      U16;    // 16 bits unsigned integer
+typedef signed short        s16;    // 16 bits signed integer
+typedef unsigned short      u16;    // 16 bits unsigned integer
 
 #if ARX_COMPILER_MSVC
-	typedef signed long     S32;    // 32 bits signed integer
-	typedef unsigned long   U32;    // 32 bits unsigned integer
+	typedef signed long     s32;    // 32 bits signed integer
+	typedef unsigned long   u32;    // 32 bits unsigned integer
 #else
-	typedef signed int      S32;    // 32 bits signed integer
-	typedef unsigned int    U32;    // 32 bits unsigned integer
+	typedef signed int      s32;    // 32 bits signed integer
+	typedef unsigned int    u32;    // 32 bits unsigned integer
 #endif
 
-typedef signed long long    S64;    // 64 bits signed integer
-typedef unsigned long long  U64;    // 64 bits unsigned integer
+typedef signed long long    s64;    // 64 bits signed integer
+typedef unsigned long long  u64;    // 64 bits unsigned integer
 
-typedef float               F32;    // 32 bits float
-typedef double              F64;    // 64 bits double float
+typedef float               f32;    // 32 bits float
+typedef double              f64;    // 64 bits double float
 
 
 /* ---------------------------------------------------------

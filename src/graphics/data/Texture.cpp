@@ -64,7 +64,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <iomanip>
 
-#define STRICT
 #include <tchar.h>
 #include <zlib.h>
 
@@ -3238,7 +3237,7 @@ void ConvertData( std::string& dat)
 {
 	if (dat[0] == '"') dat.erase( 0, 1 );
 
-	for ( int i = 1 ; i < dat.length() ; i++)
+	for ( size_t i = 1 ; i < dat.length() ; i++)
 	{
 		if (dat[i] == '"') dat[i] = 0;
 	}
@@ -3288,9 +3287,9 @@ void LookForRefinementMap(TextureContainer * tc)
 	if (GlobalRefine)
 	{
 		unsigned char * from = (unsigned char *)GlobalRefine;
-		U32 fromsize = GlobalRefine_size;
+		u32 fromsize = GlobalRefine_size;
 		std::string data( 256, '\0' );
-		U32 pos = 0;
+		u32 pos = 0;
 		std::string name;
 		name = GetName(tc->m_strName);
 
@@ -3337,9 +3336,9 @@ void LookForRefinementMap(TextureContainer * tc)
 	if (Refine)
 	{
 		unsigned char * from = (unsigned char *)Refine;
-		U32 fromsize = Refine_size;
+		u32 fromsize = Refine_size;
 		std::string data;
-		U32 pos = 0;
+		u32 pos = 0;
 		std::string name = GetName(tc->m_strName);
 
 		while (pos < Refine_size)

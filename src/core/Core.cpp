@@ -1354,7 +1354,7 @@ int main(int, char**)
 	if (!FOR_EXTERNAL_PEOPLE)
 	{
 		char stemp[256];
-		U32 ls = 64;
+		u32 ls = 64;
 		GetComputerName(stemp, &ls);
 
 		if (!strcasecmp(stemp,"max"))

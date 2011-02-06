@@ -41,8 +41,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::search;
 using std::string;
 
-static const S32 CINEMATIC_FILE_VERSION = (1<<16) | 76;
-static const S16 INTERP_NO_FADE = 2;
+static const s32 CINEMATIC_FILE_VERSION = (1<<16) | 76;
+static const s16 INTERP_NO_FADE = 2;
 
 extern CinematicBitmap TabBitmap[];
 extern CinematicTrack * CKTrack;
@@ -308,7 +308,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		return false;
 	}
 	
-	S32 version;
+	s32 version;
 	if(!safeGet(version, data, size)) {
 		LogDebug << "error reading file version";
 		return false;
@@ -326,7 +326,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	}
 	
 	// Load bitmaps.
-	S32 nbitmaps;
+	s32 nbitmaps;
 	if(!safeGet(nbitmaps, data, size)) {
 		LogDebug << "error reading bitmap count";
 		return false;
@@ -334,7 +334,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	LogDebug << "nbitmaps " << nbitmaps;
 	for(int i = 0; i < nbitmaps; i++) {
 		
-		S32 scale = 0;
+		s32 scale = 0;
 		if(version >= ((1 << 16) | 71)) {
 			if(!safeGet(scale, data, size)) {
 				LogDebug << "error reading bitmap scale";
@@ -372,7 +372,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	LSoundChoose = C_KEY::French;
 	if(version >= ((1 << 16) | 60)) {
 		
-		S32 nsounds;
+		s32 nsounds;
 		if(!safeGet(nsounds, data, size)) {
 			LogDebug << "error reading sound count";
 			return false;
@@ -382,7 +382,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 		for(int i = 0; i < nsounds; i++) {
 			
 			if(version >= ((1 << 16) | 76)) {
-				S16 il;
+				s16 il;
 				if(!safeGet(il, data, size)) {
 					LogDebug << "error reading sound id";
 					return false;

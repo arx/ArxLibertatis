@@ -60,12 +60,12 @@ namespace ATHENA
 			{
 				--__count;
 			}
-			inline S32 IsHandled()
+			inline s32 IsHandled()
 			{
 				return __count;
 			}
 		private:
-			S32 __count;
+			s32 __count;
 	};
 
 	///////////////////////////////////////////////////////////////////////////////

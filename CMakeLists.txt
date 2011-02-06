@@ -19,6 +19,9 @@ IF (MSVC)
 	add_definitions(-D_SCL_SECURE_NO_WARNINGS)
 	add_definitions(/wd4995)
 	
+	# TEMP - disable warning caused by the F2L removal
+	add_definitions(/wd4244)    # conversion from 'float' to 'long', possible loss of data
+	
 	# Source groups
 	set(SOURCE_GROUPS
 		ai animation audio core game graphics gui io physics scene scripting window

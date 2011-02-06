@@ -434,7 +434,7 @@ typedef struct
 
 #define MAX_ANIMS 200		// max loadable anims per character
 
-typedef S32 ArxSound;
+typedef s32 ArxSound;
 struct INTERACTIVE_OBJ
 {
 	long				ioflags;			// IO type

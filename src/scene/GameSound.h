@@ -47,8 +47,8 @@ enum
 	ARX_SOUND_PLAY_ONCE =   1
 };
 
-typedef S32 ArxSound;
-typedef S32 ArxMixer;
+typedef s32 ArxSound;
+typedef s32 ArxMixer;
 
 const ArxSound ARX_SOUND_INVALID_RESOURCE(-1);
 

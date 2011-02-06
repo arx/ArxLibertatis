@@ -1597,8 +1597,6 @@ void Clear3DScene(EERIE_3DSCENE * eerie)
 //-----------------------------------------------------------------------------------------------------
 void ReleaseEERIE3DObjFromScene(EERIE_3DOBJ * eerie)
 {
-	long i;
-
 	if (!eerie) return;
 
 	if (eerie->ndata != NULL)
@@ -1647,7 +1645,7 @@ void ReleaseEERIE3DObjFromScene(EERIE_3DOBJ * eerie)
 
 	if (eerie->grouplist != NULL)
 	{
-		for (i = 0; i < eerie->nbgroups; i++)
+		for (long i = 0; i < eerie->nbgroups; i++)
 		{
 			if ((eerie->grouplist[i].indexes != NULL)
 			        && (eerie->grouplist[i].nb_index > 0)) free(eerie->grouplist[i].indexes);
@@ -1662,7 +1660,7 @@ void ReleaseEERIE3DObjFromScene(EERIE_3DOBJ * eerie)
 
 	if (!eerie->selections.empty())
 	{
-		for (i = 0; i < eerie->selections.size(); i++)
+		for (size_t i = 0; i < eerie->selections.size(); i++)
 		{ // TODO iterator
 			if (eerie->selections[i].selected) free(eerie->selections[i].selected);
 
@@ -1684,8 +1682,6 @@ void ReleaseEERIE3DObjFromScene(EERIE_3DOBJ * eerie)
 //-----------------------------------------------------------------------------------------------------
 void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 {
-	long i;
-
 	if (!eerie) return;
 
 	if (eerie->originaltextures != NULL)
@@ -1696,7 +1692,7 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 
 	if (!eerie->selections.empty())
 	{
-		for (i = 0; i < eerie->selections.size(); i++)
+		for (size_t i = 0; i < eerie->selections.size(); i++)
 		{ // TODO iterator
 			if (eerie->selections[i].selected) free(eerie->selections[i].selected);
 
@@ -1749,7 +1745,7 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 
 	if (eerie->grouplist != NULL)
 	{
-		for (i = 0; i < eerie->nbgroups; i++)
+		for (long i = 0; i < eerie->nbgroups; i++)
 		{
 			if ((eerie->grouplist[i].indexes != NULL)
 			        && (eerie->grouplist[i].nb_index > 0)) free(eerie->grouplist[i].indexes);
@@ -1889,7 +1885,7 @@ EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj)
 
 		nouvo->selections = obj->selections;
 
-		for (long i = 0; i < obj->selections.size(); i++)
+		for (size_t i = 0; i < obj->selections.size(); i++)
 		{ // TODO iterator
 			if (obj->selections[i].nb_selected)
 			{
@@ -1938,7 +1934,7 @@ long EERIE_OBJECT_GetSelection(EERIE_3DOBJ * obj, const char * selname)
 {
 	if (!obj) return -1;
 
-	for (long i = 0; i < obj->selections.size(); i++)
+	for (size_t i = 0; i < obj->selections.size(); i++)
 	{ // TODO iterator
 		if (!strcasecmp(obj->selections[i].name.c_str(), selname)) return i;
 	}

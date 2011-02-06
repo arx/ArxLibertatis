@@ -462,7 +462,7 @@ long DanaeSaveLevel( const std::string& _fic )
 	char						name[64];
 	long nb_inter		=		GetNumberInterWithOutScriptLoadForLevel(CURRENTLEVEL); // Without Player
 	unsigned char * dat	=		NULL;
-	U32 siz				=		255;
+	u32 siz				=		255;
 	long pos			=		0;
 	FileHandle handle;
 	long bcount;
@@ -925,7 +925,7 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string& dir)
 		if ((fic = fopen(dfile, "w")) != NULL)
 		{
 			char name[256];
-			U32 num = 255;
+			u32 num = 255;
 			fprintf(fic, "Object   : %s%04ld\n", temp, io->ident);
 			fprintf(fic, "_______________________________\n\n");
 			GetUserName(name, &num);

@@ -59,7 +59,7 @@ using std::strlen;
 
 #include "core/Common.h"
 #if ARX_COMPILER == ARX_COMPILER_VC9
-    typedef U32 uint32_t;
+    typedef u32 uint32_t;
 #else
     #include <stdint.h>
 #endif
@@ -71,7 +71,7 @@ using std::strlen;
 #include "io/Logger.h"
 
 #if ARX_COMPILER == ARX_COMPILER_VC9
-    typedef U32 uint32_t;
+    typedef u32 uint32_t;
 #else
     #include <stdint.h>
 #endif

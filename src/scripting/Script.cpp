@@ -2993,9 +2993,8 @@ void CheckHit(INTERACTIVE_OBJ * io, float ratioaim)
 
 void MakeStandard( std::string& str)
 {
-	long i = 0;
-	long pos = 0;
-
+	size_t i = 0;
+	
 	while ( i < str.length() )
 	{
 		if (str[i] != '_')

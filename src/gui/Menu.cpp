@@ -298,13 +298,13 @@ void ARX_Menu_Resources_Create(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	ARX_Allocate_Text(ARXmenu.mda->str_button_skin,                     "system_charsheet_button_skin");
 	ARX_Allocate_Text(ARXmenu.mda->str_button_done,                     "system_charsheet_button_done");
 
-	size_t siz;
+	
 	char szFileName[256];
-
 	sprintf(szFileName, "Localisation\\ucredits_%s.txt", Project.localisationpath.c_str());
 
 	// TODO: BROKEN ACCESS OOB
 	/*
+	size_t siz;
 	ARXmenu.mda->str_cre_credits = (_TCHAR*) PAK_FileLoadMalloc(szFileName, siz);
 	if (!ARXmenu.mda->str_cre_credits.empty() && ARXmenu.mda->str_cre_credits[(siz>>1)-1] != 0)
 	{
