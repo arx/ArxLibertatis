@@ -21,9 +21,10 @@ computer. I can only hope it does. You can only pray it does. Remember to backup
 saves and original files (arx.exe, Athena.dll and ARX_SCRIPT_DEBUGGER.dll).
 
 
- worked on
------------
+ v0.02 07/02/11
+----------------
 
+-Increased questbook performance, at the cost of font quality for now
 -Fixed main menu back buttons clickable zone to match their appearance
 -Increased main menu left side performance
 

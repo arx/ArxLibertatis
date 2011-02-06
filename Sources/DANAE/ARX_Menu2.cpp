@@ -7022,17 +7022,11 @@ void CMenuSliderText::Render()
 	if(bNoMenu) return;
 
 	pLeftButton->Render();
-
 	pRightButton->Render();
 
 	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, false);
-
-	if(vText[iPos])
-	{
+	if (vText[iPos])
 		vText[iPos]->Render();
-
-	}
-
 	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, false);
 
 }
@@ -7238,7 +7232,6 @@ void CMenuSlider::Render()
 
 	pLeftButton->Render();
 	pRightButton->Render();
-
 
 	float iX = ARX_CLEAN_WARN_CAST_FLOAT( rZone.left + pLeftButton->GetWidth() );
 	float iY = ARX_CLEAN_WARN_CAST_FLOAT( rZone.top );
