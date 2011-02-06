@@ -50,6 +50,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/Stream.h"
 #include "audio/eax.h"
 #include "io/Logger.h"
+#define HAVE_PTHREADS
+#ifdef HAVE_PTHREADS
+#include <pthread.h>
+#include <time.h>
+#include <errno.h>
+#endif
 
 using namespace std;
 
@@ -57,11 +63,50 @@ namespace ATHENA
 {
 
 	//Multithread data
+#ifdef HAVE_PTHREADS	
+	static pthread_mutex_t _mutex = PTHREAD_MUTEX_INITIALIZER;
+	static void *mutex = 1; // just for compilation.  real mutex is above
+	static pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+	static bool _mutex_used = false;
+	const static int WAIT_TIMEOUT = 1;
+#else ifdef WINDOWS
 	static HANDLE mutex(NULL);
+#endif	
+	
 	static const aalULong MUTEX_TIMEOUT(500);
 	static const aalULong MUTEX_ONUPDATE_TIMEOUT(200);
 	static aalError EnableEnvironmentalAudio();
 	HWND hwnd = NULL;
+
+#ifdef HAVE_PTHREADS
+#define WaitForSingleObject(x, y) __mutex_wait(y)
+	int __mutex_wait(aalULong time)
+	{
+		pthread_mutex_lock(&_mutex);
+		if (!_mutex_used) {
+			struct timespec timeout;
+			struct timespec now;
+			clock_gettime(CLOCK_REALTIME, &now);
+			timeout.tv_sec = now.tv_sec;
+			timeout.tv_nsec = now.tv_nsec + (time * 1000);
+			if (pthread_cond_timedwait(&cond, &_mutex, &timeout) == ETIMEDOUT) {
+				pthread_mutex_unlock(&_mutex);
+				return WAIT_TIMEOUT;
+			}
+		}
+		_mutex_used = true;
+		return 0;
+	}
+
+#define ReleaseMutex(x)	__mutex_release()
+	int __mutex_release()
+	{
+		_mutex_used = false;
+		pthread_cond_signal(&cond);
+		pthread_mutex_unlock(&_mutex);
+	}
+#define CreateMutex(x, y, z) 1
+#endif
 
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //
