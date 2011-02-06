@@ -1519,7 +1519,7 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere,long target,long flags)
 				}
 			}
 	
-	return true;	
+	return false;	
 }
 
 
