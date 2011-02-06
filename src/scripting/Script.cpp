@@ -154,7 +154,8 @@ again:
 
 	if (result < 0) return -1;
 
-	if (es->data[result+len2] <= 32) return result + len2;
+	if (es->size >= result+len2 && es->data[result+len2] <= 32)
+		return result + len2;
 
 	if (pdest = strstr(es->data + poss + result + len2, str.c_str()))
 		goto again;
