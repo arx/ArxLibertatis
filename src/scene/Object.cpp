@@ -1055,13 +1055,7 @@ EERIE_MULTI3DSCENE * MultiSceneToEerie(const char * dirr)
 	strcpy(LastLoadedScene, dirr);
 	sprintf(pathh, "%s*.scn", dirr);
 
-	//todo: Implement full function and remove this
-#if !ARX_COMPILER_MSVC
-	printf("\e[1;33mpartially unimplemented MultiSceneToEerie\e[m\n");
-#else
-	printf("partially unimplemented MultiSceneToEerie\n");
-#endif
-
+	LogWarning << "partially unimplemented MultiSceneToEerie";
 //	todo: finddata
 //	long idx;
 //	struct _finddata_t fd;
