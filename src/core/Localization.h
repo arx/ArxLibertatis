@@ -29,8 +29,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
-void ARX_Localisation_Init();
-void ARX_Localisation_Close();
+void Localisation_Init();
+void Localisation_Close();
 
 
 int PAK_UNICODE_GetPrivateProfileString( const std::string& _lpszSection,

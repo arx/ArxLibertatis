@@ -805,7 +805,7 @@ void ARX_Text_Init()
 	std::stringstream ss;
 	ARX_Text_Close();
 
-	ARX_Localisation_Init();
+	Localisation_Init();
 	
 	string tx = getFontFile();
 
@@ -1076,7 +1076,7 @@ lpszFontMenu.clear();
 			 LogError << FontError();// XS : Annoying popup, uncomment if you really want to track something down.
 	}
 */
-	ARX_Localisation_Close();
+	Localisation_Close();
 
 	if (pTextManage)
 	{

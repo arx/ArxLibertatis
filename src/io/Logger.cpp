@@ -29,7 +29,7 @@ const LogSetting blackList[] = {
 	{ "Text.cpp", Logger::Info },
 	{ "CinematicLoad.cpp", Logger::Info },
 	{ "IO.cpp", Logger::Debug },
-	{ "MenuWidgets.cpp", Logger::Info },
+//	{ "MenuWidgets.cpp", Logger::Info },
 	{ "MeshManipulation.cpp", Logger::Info},
 	{ "Core.cpp", Logger::Info},
 	{ "CinematicTexture.cpp", Logger::Info},

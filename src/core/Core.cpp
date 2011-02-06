@@ -60,6 +60,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <windows.h>
 
+#include <SFML/Window.hpp>
+
 #include "io/IO.h"
 #include "io/Registry.h"
 #include "io/PakManager.h"
@@ -236,6 +238,7 @@ extern std::string pStringMod;
 DANAE danaeApp;
 HINSTANCE hInstance;
 PROJECT Project;
+sf::Window sfWindow;
 
 //-----------------------------------------------------------------------------
 EERIE_3D LASTCAMPOS,LASTCAMANGLE;
@@ -1610,6 +1613,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	LogInfo << "DanaeApp RUN";
 	danaeApp.m_bReady = true;
 
+	sfWindow.Create( sf::VideoMode(800, 600, 32), "SFML Window");
 	HRESULT hr=danaeApp.Run();
 
 #ifdef _DEBUG
@@ -3059,7 +3063,7 @@ HRESULT DANAE::BeforeRun()
 
 	danaeApp.GetZBufferMax();
 
-	ARX_Localisation_Init();
+	Localisation_Init();
 	return S_OK;
 }	
 
@@ -8288,7 +8292,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 					Pause(true);			
 					DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
 							MAKEINTRESOURCE(IDD_LANGUAGEDIALOG), this->m_hWnd, LanguageOptionsProc);
-					ARX_Localisation_Init();
+					Localisation_Init();
 					Pause(false);
 					ARX_TIME_UnPause();
 				break;
@@ -8302,7 +8306,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_MENU_UPDATELOCALISATION:
 					ARX_TIME_Pause();
 					Pause(true);
-					ARX_Localisation_Init();
+					Localisation_Init();
 					Pause(false);
 					ARX_TIME_UnPause();
 				break;

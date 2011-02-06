@@ -1308,7 +1308,7 @@ bool CMenuConfig::ReadAll()
 		bWarningGore=true;
 	}
 
-	ARX_Localisation_Init();
+	Localisation_Init();
 
 	bGameNotFirstLaunch = ReadConfigInt("FIRSTRUN","int",bOkTemp)?true:false;
 
@@ -1916,7 +1916,7 @@ bool CMenuConfig::ReadAll()
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameSpeech, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuSpeech));
 	ARX_SOUND_MixerSetVolume(ARX_SOUND_MixerGameAmbiance, ARX_SOUND_MixerGetVolume(ARX_SOUND_MixerMenuAmbiance));
 
-	ARX_Localisation_Close();
+	Localisation_Close();
 
 	GORE_MODE = IsNoGore()? 0 : 1;
 	return bOk;

@@ -24,19 +24,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 #include "core/Localization.h"
 
-#include <tchar.h>
 #include <stdint.h>
 
 #include <list>
-
 #include <SFML/System.hpp>
 
 #include "core/LocalizationHash.h"
 #include "gui/MenuWidgets.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
-
-using std::sprintf;
 
 extern long GERMAN_VERSION;
 extern long FRENCH_VERSION;
@@ -46,8 +42,6 @@ extern long FINAL_COMMERCIAL_DEMO;
 extern CMenuConfig * pMenuConfig;
 
 CLocalisationHash * pHashLocalisation;
-char LocalisationLanguage = -1;
-static long ltNum = 0;
 
 bool isKey( const std::string& str );
 bool isSection( const std::string& str );
@@ -229,12 +223,12 @@ void ParseFile( const std::string& file_text )
 /****************************************************************************
  * Initializes the localisation hashmap based on the current chosen locale
  ***************************************************************************/
-void ARX_Localisation_Init() 
+void Localisation_Init() 
 {
 
 	// If a locale is already initialized, close it
 	if (pHashLocalisation)
-		ARX_Localisation_Close();
+		Localisation_Close();
 
 	// Generate the filename for the localization strings
 	std::string tx = "localisation\\utext_" + Project.localisationpath + ".ini";
@@ -292,7 +286,7 @@ void ARX_Localisation_Init()
 
 		if (!szMenuText[0]) //warez
 		{
-			ARX_Localisation_Init();
+			Localisation_Init();
 		}
 	}
 
@@ -313,11 +307,10 @@ void ARX_Localisation_Init()
 
 /***************************************************************
  * Deinitialize the current locale.
- * Delete the hashmap and reset the language.
+ * Delete the hashmap.
  * ************************************************************/
-void ARX_Localisation_Close()
+void Localisation_Close()
 {
-	LocalisationLanguage = -1;
 
 	if ( pHashLocalisation)
 		delete pHashLocalisation;
@@ -363,7 +356,6 @@ int PAK_UNICODE_GetPrivateProfileString( const std::string&  _lpszSection,
                                          std::string&        _lpszBuffer,
                                          unsigned long       _lBufferSize )
 {
-	ltNum ++;
 	_lpszBuffer.clear();
 
 	if (_lpszSection.empty())	{
