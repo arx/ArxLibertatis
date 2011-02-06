@@ -1607,7 +1607,6 @@ int main(int, char**)
 	LogInfo << "DanaeApp RUN";
 	danaeApp.m_bReady = true;
 
-//	sfWindow.Create( sf::VideoMode(800, 600, 32), "SFML Window");
 	HRESULT hr=danaeApp.Run();
 
 	return hr;
