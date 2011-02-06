@@ -1056,10 +1056,12 @@ bool IsNoGore( void )
 
 //-----------------------------------------------------------------------------
 
-//TODO: non windows main + remove hinstance => messageboxes
-//int main(int argc, char *argv[]) {
-INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
+// Let's use main for now on all platforms
+// TODO: On Windows, we might want to use WinMain in the Release target for example
+int main(int, char**)
 {
+	LPSTR strCmdLine = GetCommandLine();
+	hInstance = GetModuleHandle(0);
 
 	//TODO memleak stuff
 //	_set_new_mode(1);																//memory handler activated for malloc too
@@ -1074,8 +1076,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 //	_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
 	
 	long i;
-	hInstance = _hInstance;
-
+	
 	if (FINAL_COMMERCIAL_GAME)
 	{
 		LogDebug << "FINAL_COMMERCIAL_GAME";

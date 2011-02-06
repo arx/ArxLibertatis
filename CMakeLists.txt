@@ -56,8 +56,8 @@ add_definitions(-DNOMINMAX)
 #glob sources
 file(GLOB_RECURSE ALL_SOURCES ${SRC_DIR}/*.cpp ${SRC_DIR}/*.h)
 
-#build - WIN32 is only here to specify that on Windows, the app is not a console application, but a windows app (with WinMain)
-add_executable(arx WIN32 ${ALL_SOURCES})
+#build
+add_executable(arx ${ALL_SOURCES})
 
 #link
 target_link_libraries(arx dsound dxguid gdi32 shell32 dinput comdlg32 ole32 comctl32 ddraw jpeg z)
