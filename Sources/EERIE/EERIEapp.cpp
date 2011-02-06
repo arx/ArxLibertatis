@@ -482,7 +482,7 @@ void CD3DApplication::EERIEMouseUpdate(short x, short y)
 	}
 
 	if (!((ARXmenu.currentmode == AMCM_NEWQUEST)
-	        ||	(player.Interface & INTER_MAP && (Book_Mode != 2))))
+	        ||	(player.Interface & INTER_MAP && (Book_Mode != BOOKMODE_MINIMAP))))
 		if (mod)
 		{
 			EERIEMouseX = (long)pos.x;

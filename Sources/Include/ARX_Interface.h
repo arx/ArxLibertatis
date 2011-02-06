@@ -308,6 +308,14 @@ enum ARX_INTERFACE_CURSOR_MODE
 	CURSOR_COMBINEOFF
 };
 
+enum ARX_INTERFACE_BOOK_MODE
+{
+	BOOKMODE_STATS = 0,
+	BOOKMODE_SPELLS,
+	BOOKMODE_MINIMAP,
+	BOOKMODE_QUESTS
+};
+
 //-----------------------------------------------------------------------------
 extern INTERFACE_TC ITC;
 extern EERIE_S2D MemoMouse;
@@ -317,7 +325,7 @@ extern SPELL_ICON spellicons[SPELL_COUNT];
 extern char LOADFROM[256];
 extern float CINEMA_DECAL;
 extern long CURRINVCOUNT;
-extern long Book_Mode;
+extern ARX_INTERFACE_BOOK_MODE Book_Mode;
 extern long SpecialCursor;
 
 extern long LastMouseClick;

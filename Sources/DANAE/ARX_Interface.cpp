@@ -75,6 +75,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
+
+#include "../ArxCommon/Timer.h"
+
 extern float MagicSightFader;
 extern long FINAL_COMMERCIAL_DEMO;
 extern long NEED_TEST_TEXT;
@@ -198,6 +201,8 @@ INTERACTIVE_OBJ *	STARTED_ACTION_ON_IO=NULL;
 INTERFACE_TC		ITC;
 STRUCT_NOTE			Note;
 STRUCT_NOTE			QuestBook;
+_TCHAR*				QuestBook_Cache_Text = NULL;		// Cache of screen text
+long				QuestBook_Cache_nbQuests = -42;		// nbQuests when generating cache
 _TCHAR				Page_Buffer[PAGE_CHAR_SIZE+1];
 bool				bBookHalo = false;
 bool				bGoldHalo = false;
@@ -231,7 +236,7 @@ long				LAST_PLAYER_MOUSELOOK_ON=0;
 long				MEMO_PLAYER_MOUSELOOK_ON=0;
 long				COMBINEGOLD=0;
 long				PLAYER_MOUSELOOK_ON=0;
-long				Book_Mode=0;
+ARX_INTERFACE_BOOK_MODE	Book_Mode=BOOKMODE_STATS;
 long				Book_MapPage=1;
 long				Book_SpellPage=1;
 long				CINEMASCOPE=0;
@@ -777,6 +782,7 @@ void ARX_INTERFACE_NoteInit()
 	Note.textsize = 0;
 
 	QuestBook.curpage=0;
+	QuestBook_Cache_nbQuests = -42;
 }
 
 //-----------------------------------------------------------------------------
@@ -2389,7 +2395,7 @@ BOOL DANAE::ManageEditorControls()
 			}
 			else if (ARX_INTERFACE_MouseInBook())
 			{
-				if (Book_Mode == 0)
+				if (Book_Mode == BOOKMODE_STATS)
 				{
 					SendIOScriptEvent(DRAGINTER,SM_INVENTORYUSE,"");
 					COMBINE=NULL;
@@ -4255,377 +4261,380 @@ void DANAE::ManagePlayerControls()
 		moveto.x=player.pos.x+tm.x;
 		moveto.y=player.pos.y+tm.y;
 		moveto.z=player.pos.z+tm.z;
-	  }
+	}
 
-	  if (!USE_PLAYERCOLLISIONS)
-	  {
-		  if (this->kbd.inkey[INKEY_PAGEUP])
-		  {
-			  if (!USE_PLAYERCOLLISIONS) moveto.y=player.pos.y=player.pos.y-10.f;
-		  }
+	if (!USE_PLAYERCOLLISIONS)
+	{
+		if (this->kbd.inkey[INKEY_PAGEUP])
+		{
+			if (!USE_PLAYERCOLLISIONS) moveto.y=player.pos.y=player.pos.y-10.f;
+		}
 
-		  if (this->kbd.inkey[INKEY_PAGEDOWN])
-		  {
-			  moveto.y=player.pos.y=player.pos.y+10.f;
-		  }
-	  }
+		if (this->kbd.inkey[INKEY_PAGEDOWN])
+		{
+			moveto.y=player.pos.y=player.pos.y+10.f;
+		}
+	}
 
-	  // To remove for FINAL_RELEASE---------------------------------------
-	  if (ALLOW_CHEATS || GAME_EDITOR)
-	  {
-		  if (this->kbd.inkey[INKEY_PAD5])
-		  {
-			  moveto.y=player.pos.y=FirstPolyPosY(player.pos.x,player.pos.z)-180.f;
-			  player.angle.a=0.f;
-			  player.desiredangle.a=0.f;
-			  this->kbd.inkey[INKEY_PAD5]=0;
-		  }
+	// To remove for FINAL_RELEASE---------------------------------------
+	if (ALLOW_CHEATS || GAME_EDITOR)
+	{
+		if (this->kbd.inkey[INKEY_PAD5])
+		{
+			moveto.y=player.pos.y=FirstPolyPosY(player.pos.x,player.pos.z)-180.f;
+			player.angle.a=0.f;
+			player.desiredangle.a=0.f;
+			this->kbd.inkey[INKEY_PAD5]=0;
+		}
 
-		  if ((this->kbd.inkey[INKEY_A])
-			  && ((this->kbd.inkey[INKEY_LEFTSHIFT]) || (this->kbd.inkey[INKEY_RIGHTSHIFT]) ) )
-		  {
-			  BLOCK_PLAYER_CONTROLS=0;
-			  player.life=player.Full_maxlife;
-			  player.mana=player.Full_maxmana;
-			  player.poison=0.f;
-			  player.hunger=100;
-			  DeadTime=0;
-			  ARX_SOUND_PlayInterface(SND_PLAYER_FILLLIFEMANA, 0.9F + 0.2F * rnd());
-		  }
-		  }
+		if ((this->kbd.inkey[INKEY_A])
+			&& ((this->kbd.inkey[INKEY_LEFTSHIFT]) || (this->kbd.inkey[INKEY_RIGHTSHIFT]) ) )
+		{
+			BLOCK_PLAYER_CONTROLS=0;
+			player.life=player.Full_maxlife;
+			player.mana=player.Full_maxmana;
+			player.poison=0.f;
+			player.hunger=100;
+			DeadTime=0;
+			ARX_SOUND_PlayInterface(SND_PLAYER_FILLLIFEMANA, 0.9F + 0.2F * rnd());
+		}
+	}
 
-	  // End of things to remove-------------------------------------------
+	// End of things to remove-------------------------------------------
 
-	  // Checks CROUCH Key Status.
+	// Checks CROUCH Key Status.
 	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_CROUCHTOGGLE))
-	  {
-		  bGCroucheToggle=!bGCroucheToggle;
-	  }
+	{
+		bGCroucheToggle=!bGCroucheToggle;
+	}
 
-	  if(	ARX_IMPULSE_Pressed(CONTROLS_CUST_CROUCH)||
-			bGCroucheToggle )
-	  {
-		  player.Current_Movement|=PLAYER_CROUCH;
-	  }
+	if(	ARX_IMPULSE_Pressed(CONTROLS_CUST_CROUCH)||
+		bGCroucheToggle )
+	{
+		player.Current_Movement|=PLAYER_CROUCH;
+	}
 
 	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_UNEQUIPWEAPON))
-	  {
-		  ARX_EQUIPMENT_UnEquipPlayerWeapon();
-	  }
+	{
+		ARX_EQUIPMENT_UnEquipPlayerWeapon();
+	}
 
-	  // Can only lean outside of combat mode
-	  if (!(player.Interface & INTER_COMBATMODE))
-	  {
-		  // Checks LEAN_LEFT Key Status.
-		  if (ARX_IMPULSE_Pressed(CONTROLS_CUST_LEANLEFT) )
-		  {
-			  player.Current_Movement|=PLAYER_LEAN_LEFT;
-		  }
+	// Can only lean outside of combat mode
+	if (!(player.Interface & INTER_COMBATMODE))
+	{
+		// Checks LEAN_LEFT Key Status.
+		if (ARX_IMPULSE_Pressed(CONTROLS_CUST_LEANLEFT) )
+		{
+			player.Current_Movement|=PLAYER_LEAN_LEFT;
+		}
 
-		  // Checks LEAN_RIGHT Key Status.
-		  if (ARX_IMPULSE_Pressed(CONTROLS_CUST_LEANRIGHT) )
-		  {
-			  player.Current_Movement|=PLAYER_LEAN_RIGHT;
-		  }
-	  }
+		// Checks LEAN_RIGHT Key Status.
+		if (ARX_IMPULSE_Pressed(CONTROLS_CUST_LEANRIGHT) )
+		{
+			player.Current_Movement|=PLAYER_LEAN_RIGHT;
+		}
+	}
 
-	  // Checks JUMP Key Status.
-	  if ((player.jumpphase==0) &&
-		  ARX_IMPULSE_NowPressed(CONTROLS_CUST_JUMP) )
-	  {
+	// Checks JUMP Key Status.
+	if ((player.jumpphase==0) &&
+		ARX_IMPULSE_NowPressed(CONTROLS_CUST_JUMP) )
+	{
 		REQUEST_JUMP = ARXTimeUL();
-	  }
+	}
 
 
-	  // MAGIC
-	  if (ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE))
-	  {
-		  if (!(player.Current_Movement & PLAYER_CROUCH) && (!BLOCK_PLAYER_CONTROLS)
-			  && (ARXmenu.currentmode==AMCM_OFF))
-		  {
-			  if (!ARX_SOUND_IsPlaying(SND_MAGIC_AMBIENT))
-				  ARX_SOUND_PlaySFX(SND_MAGIC_AMBIENT, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
-		  }
-	  }
-	  else
-	  {
-		  ARX_SOUND_Stop(SND_MAGIC_AMBIENT);
-		  ARX_SOUND_Stop(SND_MAGIC_DRAW);
-	  }
+	// MAGIC
+	if (ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE))
+	{
+		if (!(player.Current_Movement & PLAYER_CROUCH) && (!BLOCK_PLAYER_CONTROLS)
+			&& (ARXmenu.currentmode==AMCM_OFF))
+		{
+			if (!ARX_SOUND_IsPlaying(SND_MAGIC_AMBIENT))
+				ARX_SOUND_PlaySFX(SND_MAGIC_AMBIENT, NULL, 1.0F, ARX_SOUND_PLAY_LOOPED);
+		}
+	}
+	else
+	{
+		ARX_SOUND_Stop(SND_MAGIC_AMBIENT);
+		ARX_SOUND_Stop(SND_MAGIC_DRAW);
+	}
 
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_DRINKPOTIONLIFE))
-	  {
-		  SendInventoryObjectCommand("GRAPH\\OBJ3D\\TEXTURES\\ITEM_POTION_LIFE.BMP", SM_INVENTORYUSE);
-	  }
+	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_DRINKPOTIONLIFE))
+	{
+		SendInventoryObjectCommand("GRAPH\\OBJ3D\\TEXTURES\\ITEM_POTION_LIFE.BMP", SM_INVENTORYUSE);
+	}
 
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_DRINKPOTIONMANA))
-	  {
-		  SendInventoryObjectCommand("GRAPH\\OBJ3D\\TEXTURES\\ITEM_POTION_MANA.BMP", SM_INVENTORYUSE);
-	  }
+	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_DRINKPOTIONMANA))
+	{
+		SendInventoryObjectCommand("GRAPH\\OBJ3D\\TEXTURES\\ITEM_POTION_MANA.BMP", SM_INVENTORYUSE);
+	}
 
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_TORCH))
-	  {
-		  if (CURRENT_TORCH)
-		  {
-			  ARX_PLAYER_KillTorch();
-		  }
-		  else
-		  {
-			  INTERACTIVE_OBJ * io = ARX_INVENTORY_GetTorchLowestDurability();
+	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_TORCH))
+	{
+		if (CURRENT_TORCH)
+		{
+			ARX_PLAYER_KillTorch();
+		}
+		else
+		{
+			INTERACTIVE_OBJ * io = ARX_INVENTORY_GetTorchLowestDurability();
 
-			  if (io)
-			  {
-				  INTERACTIVE_OBJ * ioo = io;
+			if (io)
+			{
+				INTERACTIVE_OBJ * ioo = io;
 
-				  if (io->_itemdata->count>1)
-				  {
-					  ioo=CloneIOItem(io);
-					  MakeTemporaryIOIdent(ioo);
-					  ioo->show=SHOW_FLAG_NOT_DRAWN;
-					  ioo->scriptload=1;
-					  ioo->_itemdata->count=1;
-					  io->_itemdata->count--;
-				  }
+				if (io->_itemdata->count>1)
+				{
+					ioo=CloneIOItem(io);
+					MakeTemporaryIOIdent(ioo);
+					ioo->show=SHOW_FLAG_NOT_DRAWN;
+					ioo->scriptload=1;
+					ioo->_itemdata->count=1;
+					io->_itemdata->count--;
+				}
 
-				  ARX_PLAYER_ClickedOnTorch(ioo);
-			  }
-		  }
-	  }
+				ARX_PLAYER_ClickedOnTorch(ioo);
+			}
+		}
+	}
 
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_MINIMAP))
-	  {
-		  SHOW_INGAME_MINIMAP=!SHOW_INGAME_MINIMAP;
-	  }
+	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_MINIMAP))
+	{
+		SHOW_INGAME_MINIMAP=!SHOW_INGAME_MINIMAP;
+	}
 
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_PREVIOUS))
-	  {
-		  if (eMouseState == MOUSE_IN_BOOK)
-		  {
-			  if (player.Interface & INTER_MAP)
-			  {
-				  if (Book_Mode > 0)
-				  {
-					  Book_Mode --;
-					  ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-				  }
-			  }
-		  }
+	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_PREVIOUS))
+	{
+		if (eMouseState == MOUSE_IN_BOOK)
+		{
+			if (player.Interface & INTER_MAP)
+			{
+				if (Book_Mode > BOOKMODE_STATS)
+				{
+					if (Book_Mode == BOOKMODE_QUESTS)
+						Book_Mode = BOOKMODE_MINIMAP;
+					else if (Book_Mode == BOOKMODE_MINIMAP)
+						Book_Mode = BOOKMODE_SPELLS;
+					else if (Book_Mode == BOOKMODE_SPELLS)
+						Book_Mode = BOOKMODE_STATS;
+					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+				}
+			}
+		}
 		else if (InPlayerInventoryPos(&DANAEMouse))
-		  {
-			  if (!PLAYER_INTERFACE_HIDE_COUNT)
-			  {
-				  if ((player.Interface & INTER_INVENTORY))
-				  {
-					  if (player.bag)
-					  {
-						  if (sActiveInventory > 0)
-						  {
-							  ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-							  sActiveInventory --;
-						  }
-					  }
-				  }
-			  }
-		  }
-		  else
-		  {
-			  if (player.Interface & INTER_MAP)
-			  {
-				  if (Book_Mode > 0)
-				  {
-					  Book_Mode --;
-					  ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-				  }
-			  }
-			  else
-			  {
-				  if (!PLAYER_INTERFACE_HIDE_COUNT)
-				  {
-					  if ((player.Interface & INTER_INVENTORY))
-					  {
-						  if (player.bag)
-						  {
-							  if (sActiveInventory > 0)
-							  {
-								  ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-								  sActiveInventory --;
-							  }
-						  }
-					  }
-				  }
-			  }
-		  }
-	  }
+		{
+			if (!PLAYER_INTERFACE_HIDE_COUNT)
+			{
+				if ((player.Interface & INTER_INVENTORY))
+				{
+					if (player.bag)
+					{
+						if (sActiveInventory > 0)
+						{
+							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+							sActiveInventory --;
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			if (player.Interface & INTER_MAP)
+			{
+				if (Book_Mode > BOOKMODE_STATS)
+				{
+					if (Book_Mode == BOOKMODE_QUESTS)
+						Book_Mode = BOOKMODE_MINIMAP;
+					else if (Book_Mode == BOOKMODE_MINIMAP)
+						Book_Mode = BOOKMODE_SPELLS;
+					else if (Book_Mode == BOOKMODE_SPELLS)
+						Book_Mode = BOOKMODE_STATS;
+					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+				}
+			}
+			else
+			{
+				if (!PLAYER_INTERFACE_HIDE_COUNT)
+				{
+					if ((player.Interface & INTER_INVENTORY))
+					{
+						if (player.bag)
+						{
+							if (sActiveInventory > 0)
+							{
+								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+								sActiveInventory --;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_NEXT))
-	  {
-		  if (eMouseState == MOUSE_IN_BOOK)
-		  {
-			  if (player.Interface & INTER_MAP)
-			  {
-				  if (Book_Mode < 3)
-				  {
-					  ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-					  Book_Mode ++;
-				  }
-			  }
-		  }
+	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_NEXT))
+	{
+		if (eMouseState == MOUSE_IN_BOOK)
+		{
+			if (player.Interface & INTER_MAP)
+			{
+				if (Book_Mode < BOOKMODE_QUESTS)
+				{
+					if (Book_Mode == BOOKMODE_STATS)
+						Book_Mode = BOOKMODE_SPELLS;
+					else if (Book_Mode == BOOKMODE_SPELLS)
+						Book_Mode = BOOKMODE_MINIMAP;
+					else if (Book_Mode == BOOKMODE_MINIMAP)
+						Book_Mode = BOOKMODE_QUESTS;
+					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+				}
+			}
+		}
 		else if (InPlayerInventoryPos(&DANAEMouse))
-		  {
-			  if (!PLAYER_INTERFACE_HIDE_COUNT)
-			  {
-				  if ((player.Interface & INTER_INVENTORY))
-				  {
-					  if (player.bag)
-					  {
-						  if (sActiveInventory < player.bag - 1)
-						  {
-							  ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-							  sActiveInventory ++;
-						  }
-					  }
-				  }
-			  }
-		  }
-		  else
-		  {
-			  if (player.Interface & INTER_MAP)
-			  {
-				  if (Book_Mode < 3)
-				  {
-					  ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-					  Book_Mode ++;
-				  }
-			  }
-			  else
-			  {
-				  if (!PLAYER_INTERFACE_HIDE_COUNT)
-				  {
-					  if ((player.Interface & INTER_INVENTORY))
-					  {
-						  if (player.bag)
-						  {
-							  if (sActiveInventory < player.bag - 1)
-							  {
-								  ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-								  sActiveInventory ++;
-							  }
-						  }
-					  }
-				  }
-			  }
-		  }
-	  }
+		{
+			if (!PLAYER_INTERFACE_HIDE_COUNT)
+			{
+				if ((player.Interface & INTER_INVENTORY))
+				{
+					if (player.bag)
+					{
+						if (sActiveInventory < player.bag - 1)
+						{
+							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+							sActiveInventory ++;
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			if (player.Interface & INTER_MAP)
+			{
+				if (Book_Mode < BOOKMODE_QUESTS)
+				{
+					if (Book_Mode == BOOKMODE_STATS)
+						Book_Mode = BOOKMODE_SPELLS;
+					else if (Book_Mode == BOOKMODE_SPELLS)
+						Book_Mode = BOOKMODE_MINIMAP;
+					else if (Book_Mode == BOOKMODE_MINIMAP)
+						Book_Mode = BOOKMODE_QUESTS;
+					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+				}
+			}
+			else
+			{
+				if (!PLAYER_INTERFACE_HIDE_COUNT)
+				{
+					if ((player.Interface & INTER_INVENTORY))
+					{
+						if (player.bag)
+						{
+							if (sActiveInventory < player.bag - 1)
+							{
+								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+								sActiveInventory ++;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKCHARSHEET))
-	  {
-		  if (!(player.Interface & INTER_MAP))
-		  {
-			  Book_Mode = 0;
-			  ARX_INTERFACE_BookOpenClose(0);
-		  }
-		else if ((player.Interface & INTER_MAP) && (Book_Mode != 0))
-			  {
-				  Book_Mode = 0;
-			  }
-			  else
-			  {
-				  ARX_INTERFACE_BookOpenClose(2);
-			  }
-	  }
+	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKCHARSHEET))
+	{
+		if (!(player.Interface & INTER_MAP))
+		{
+			Book_Mode = BOOKMODE_STATS;
+			ARX_INTERFACE_BookOpenClose(0);
+		}
+		else if ((player.Interface & INTER_MAP) && (Book_Mode != BOOKMODE_STATS))
+			Book_Mode = BOOKMODE_STATS;
+		else
+			ARX_INTERFACE_BookOpenClose(2);
+	}
 
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKSPELL))
-	  {
-		  if (!(player.Interface & INTER_MAP))
-		  {
-			  if (player.rune_flags)
-			  {
-				  Book_Mode = 1;
-				  ARX_INTERFACE_BookOpenClose(0);
-			  }
-		  }
-			  else if ((player.Interface & INTER_MAP) && (Book_Mode != 1))
-			  {
-				  Book_Mode = 1;
-			  }
-			  else
-		  {
-			  ARX_INTERFACE_BookOpenClose(2);
-		  }
-	  }
+	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKSPELL))
+	{
+		if (!(player.Interface & INTER_MAP))
+		{
+			if (player.rune_flags)
+			{
+				Book_Mode = BOOKMODE_SPELLS;
+				ARX_INTERFACE_BookOpenClose(0);
+			}
+		}
+		else if ((player.Interface & INTER_MAP) && (Book_Mode != BOOKMODE_SPELLS))
+			Book_Mode = BOOKMODE_SPELLS;
+		else
+			ARX_INTERFACE_BookOpenClose(2);
+	}
 
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKMAP))
-	  {
-		  if (!(player.Interface & INTER_MAP))
-		  {
-			  Book_Mode = 2;
-			  ARX_INTERFACE_BookOpenClose(0);
-		  }
-			  else if ((player.Interface & INTER_MAP) && (Book_Mode != 2))
-			  {
-				  Book_Mode = 2;
-			  }
-		  else
-		  {
-			  ARX_INTERFACE_BookOpenClose(2);
-		  }
-	  }
+	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKMAP))
+	{
+		if (!(player.Interface & INTER_MAP))
+		{
+			Book_Mode = BOOKMODE_MINIMAP;
+			ARX_INTERFACE_BookOpenClose(0);
+		}
+		else if ((player.Interface & INTER_MAP) && (Book_Mode != BOOKMODE_MINIMAP))
+			Book_Mode = BOOKMODE_MINIMAP;
+		else
+			ARX_INTERFACE_BookOpenClose(2);
+	}
 
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKQUEST))
-	  {
-		  if (!(player.Interface & INTER_MAP))
-		  {
-			  Book_Mode = 3;
-			  ARX_INTERFACE_BookOpenClose(0);
-		  }
-		  			  else if ((player.Interface & INTER_MAP) && (Book_Mode != 3))
-			  {
-				  Book_Mode = 3;
-			  }
+	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKQUEST))
+	{
+		if (!(player.Interface & INTER_MAP))
+		{
+			Book_Mode = BOOKMODE_QUESTS;
+			ARX_INTERFACE_BookOpenClose(0);
+		}
+		else if ((player.Interface & INTER_MAP) && (Book_Mode != BOOKMODE_QUESTS))
+			Book_Mode = BOOKMODE_QUESTS;
+		else
+			ARX_INTERFACE_BookOpenClose(2);
+	}
 
-		  else
-		  {
-			  ARX_INTERFACE_BookOpenClose(2);
-		  }
-	  }
+	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_CANCELCURSPELL))
+	{
+		for (long i=MAX_SPELLS-1;i>=0;i--)
+		{
+			if ((spells[i].exist) && (spells[i].caster==0))
+				if (spellicons[spells[i].type].bDuration)
+				{
+					ARX_SPELLS_AbortSpellSound();
+					spells[i].tolive=0;
+					break;
+				}
+		}
+	}
 
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_CANCELCURSPELL))
-	  {
-		  for (long i=MAX_SPELLS-1;i>=0;i--)
-		  {
-			  if ((spells[i].exist) && (spells[i].caster==0))
-				  if (spellicons[spells[i].type].bDuration)
-				  {
-					  ARX_SPELLS_AbortSpellSound();
-					  spells[i].tolive=0;
-					  break;
-				  }
-		  }
-	  }
+	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_PRECAST1))
+	{
+		if ((player.Interface & INTER_COMBATMODE) && !bIsAiming || !player.doingmagic)
+			if (Precast[0].typ != -1)
+				ARX_SPELLS_Precast_Launch(0);
+	}
 
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_PRECAST1))
-	  {
-		  if ((player.Interface & INTER_COMBATMODE) && !bIsAiming || !player.doingmagic)
-			  if (Precast[0].typ != -1)
-				  ARX_SPELLS_Precast_Launch(0);
-	  }
+	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_PRECAST2))
+	{
+		if ((player.Interface & INTER_COMBATMODE) && !bIsAiming || !player.doingmagic)
+			if (Precast[1].typ != -1)
+				ARX_SPELLS_Precast_Launch(1);
+	}
 
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_PRECAST2))
-	  {
-		  if ((player.Interface & INTER_COMBATMODE) && !bIsAiming || !player.doingmagic)
-			  if (Precast[1].typ != -1)
-				  ARX_SPELLS_Precast_Launch(1);
-	  }
+	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_PRECAST3))
+	{
+		if ((player.Interface & INTER_COMBATMODE) && !bIsAiming || !player.doingmagic)
+			if (Precast[2].typ != -1)
+				ARX_SPELLS_Precast_Launch(2);
+	}
 
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_PRECAST3))
-	  {
-		  if ((player.Interface & INTER_COMBATMODE) && !bIsAiming || !player.doingmagic)
-			  if (Precast[2].typ != -1)
-				  ARX_SPELLS_Precast_Launch(2);
-	  }
-
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_WEAPON)||lChangeWeapon)
-	  {
+	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_WEAPON)||lChangeWeapon)
+	{
 		bool bGo = true;
 
 		if (lChangeWeapon > 0)
@@ -4633,56 +4642,56 @@ void DANAE::ManagePlayerControls()
 			if (lChangeWeapon == 2)
 			{
 				lChangeWeapon--;
-			  }
+			}
 			else
 			{
-				  if(	(inter.iobj[0]->animlayer[1].cur_anim==NULL)||
-				        (inter.iobj[0]->animlayer[1].cur_anim == inter.iobj[0]->anims[ANIM_WAIT]))
+				if(	(inter.iobj[0]->animlayer[1].cur_anim==NULL)||
+					(inter.iobj[0]->animlayer[1].cur_anim == inter.iobj[0]->anims[ANIM_WAIT]))
 				{
-					  lChangeWeapon--;
+					lChangeWeapon--;
 
 					if (pIOChangeWeapon)
 					{
 						SendIOScriptEvent(pIOChangeWeapon,SM_INVENTORYUSE,"");
 						pIOChangeWeapon=NULL;
-					  }
-				  }
+					}
+				}
 				else
 				{
-					  bGo=false;
-				  }
-			  }
-		  }
+					bGo=false;
+				}
+			}
+		}
 
 		if (bGo)
 		{
-		  if (player.Interface & INTER_COMBATMODE)
-		  {
-			  ARX_INTERFACE_Combat_Mode(0);
-			  bGToggleCombatModeWithKey=false;
-			  SPECIAL_DRAW_WEAPON=0;
+			if (player.Interface & INTER_COMBATMODE)
+			{
+				ARX_INTERFACE_Combat_Mode(0);
+				bGToggleCombatModeWithKey=false;
+				SPECIAL_DRAW_WEAPON=0;
 
-			  if (pMenuConfig->bMouseLookToggle)
-				  TRUE_PLAYER_MOUSELOOK_ON=MEMO_PLAYER_MOUSELOOK_ON;
-		  }
-		  else
-		  {
-			  MEMO_PLAYER_MOUSELOOK_ON=TRUE_PLAYER_MOUSELOOK_ON;
-			  SPECIAL_DRAW_WEAPON=1;
-			  TRUE_PLAYER_MOUSELOOK_ON|=1;
-			  SLID_START=(float)ARXTime;
+				if (pMenuConfig->bMouseLookToggle)
+					TRUE_PLAYER_MOUSELOOK_ON=MEMO_PLAYER_MOUSELOOK_ON;
+			}
+			else
+			{
+				MEMO_PLAYER_MOUSELOOK_ON=TRUE_PLAYER_MOUSELOOK_ON;
+				SPECIAL_DRAW_WEAPON=1;
+				TRUE_PLAYER_MOUSELOOK_ON|=1;
+				SLID_START=(float)ARXTime;
 				lFadeMapTime = lARXTime;
-			  ARX_INTERFACE_Combat_Mode(2);
-			  bGToggleCombatModeWithKey=true;
+				ARX_INTERFACE_Combat_Mode(2);
+				bGToggleCombatModeWithKey=true;
 
-		  }
-		  }
-	  }
+			}
+		}
+	}
 
-	  if(EERIEMouseButton&1) bGToggleCombatModeWithKey=false;
+	if(EERIEMouseButton&1) bGToggleCombatModeWithKey=false;
 
 	if( (INTERNATIONAL_MODE)&&
-	        (bForceEscapeFreeLook))
+		(bForceEscapeFreeLook))
 	{
 		TRUE_PLAYER_MOUSELOOK_ON&=~1;
 
@@ -4695,42 +4704,42 @@ void DANAE::ManagePlayerControls()
 	{
 		if(eMouseState!=MOUSE_IN_INVENTORY_ICON)
 		{
-		if (!pMenuConfig->bMouseLookToggle)
-		{
-			if (ARX_IMPULSE_Pressed(CONTROLS_CUST_FREELOOK))
+			if (!pMenuConfig->bMouseLookToggle)
 			{
-				if (!(TRUE_PLAYER_MOUSELOOK_ON & 1))
+				if (ARX_IMPULSE_Pressed(CONTROLS_CUST_FREELOOK))
 				{
-					TRUE_PLAYER_MOUSELOOK_ON |= 1;
-					SLID_START=(float)ARXTime;
+					if (!(TRUE_PLAYER_MOUSELOOK_ON & 1))
+					{
+						TRUE_PLAYER_MOUSELOOK_ON |= 1;
+						SLID_START=(float)ARXTime;
+					}
+				}
+				else
+				{
+					if(INTERNATIONAL_MODE)
+					{
+						TRUE_PLAYER_MOUSELOOK_ON &= ~1;
+					}
 				}
 			}
 			else
 			{
-				if(INTERNATIONAL_MODE)
+				if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_FREELOOK))
 				{
-					TRUE_PLAYER_MOUSELOOK_ON &= ~1;
-				}
-			}
-		}
-		else
-		{
-			if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_FREELOOK))
-			{
-				if (!(TRUE_PLAYER_MOUSELOOK_ON & 1))
-				{
-					TRUE_PLAYER_MOUSELOOK_ON |= 1;
-					SLID_START=(float)ARXTime;
-				}
-				else
-				{
-					TRUE_PLAYER_MOUSELOOK_ON&=~1;
+					if (!(TRUE_PLAYER_MOUSELOOK_ON & 1))
+					{
+						TRUE_PLAYER_MOUSELOOK_ON |= 1;
+						SLID_START=(float)ARXTime;
+					}
+					else
+					{
+						TRUE_PLAYER_MOUSELOOK_ON&=~1;
 
-					if (player.Interface & INTER_COMBATMODE)
-						ARX_INTERFACE_Combat_Mode(0);
+						if (player.Interface & INTER_COMBATMODE)
+							ARX_INTERFACE_Combat_Mode(0);
+					}
 				}
 			}
-		}
 		}
 	}
 
@@ -4749,64 +4758,64 @@ void DANAE::ManagePlayerControls()
 		}
 	}
 
-	  if (EDITMODE) return;//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	if (EDITMODE) return;//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-	  // Checks INVENTORY Key Status.
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_INVENTORY))
-	  {
-		  if (player.Interface & INTER_COMBATMODE)
-		  {
-			  ARX_INTERFACE_Combat_Mode(0);
-		  }
+	// Checks INVENTORY Key Status.
+	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_INVENTORY))
+	{
+		if (player.Interface & INTER_COMBATMODE)
+		{
+			ARX_INTERFACE_Combat_Mode(0);
+		}
 
 		if (INTERNATIONAL_MODE)
 		{
-			  bInverseInventory=!bInverseInventory;
-			  lOldTruePlayerMouseLook=TRUE_PLAYER_MOUSELOOK_ON;
+			bInverseInventory=!bInverseInventory;
+			lOldTruePlayerMouseLook=TRUE_PLAYER_MOUSELOOK_ON;
 
 			if (!pMenuConfig->bMouseLookToggle)
 			{
 				bForceEscapeFreeLook=true;
-			  }
-		  }
+			}
+		}
 		else
 		{
-			  InventoryOpenClose(0);
-		  }
-	  }
+			InventoryOpenClose(0);
+		}
+	}
 
-	  // Checks BOOK Key Status.
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOK))
-		  ARX_INTERFACE_BookOpenClose(0);
+	// Checks BOOK Key Status.
+	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOK))
+		ARX_INTERFACE_BookOpenClose(0);
 
-	  //	Check For Combat Mode ON/OFF
-	  if (	(EERIEMouseButton & 1)
-		  &&	(EDITION==EDITION_IO)
-		  &&	(!(player.Interface & INTER_COMBATMODE))
-	        &&	(!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK))
-		  &&	(!EDITMODE)
-		  &&	(!SpecialCursor)
-		  &&  (PLAYER_MOUSELOOK_ON)
-		  &&	(DRAGINTER==NULL)
-		  &&	(!InInventoryPos(&DANAEMouse)
-		  && (pMenuConfig->bAutoReadyWeapon))
-		  )
-	  {
-		  if (!(LastMouseClick & 1))
-		  {
+	//	Check For Combat Mode ON/OFF
+	if (	(EERIEMouseButton & 1)
+		&&	(EDITION==EDITION_IO)
+		&&	(!(player.Interface & INTER_COMBATMODE))
+		&&	(!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK))
+		&&	(!EDITMODE)
+		&&	(!SpecialCursor)
+		&&  (PLAYER_MOUSELOOK_ON)
+		&&	(DRAGINTER==NULL)
+		&&	(!InInventoryPos(&DANAEMouse)
+		&& (pMenuConfig->bAutoReadyWeapon))
+		)
+	{
+		if (!(LastMouseClick & 1))
+		{
 			COMBAT_MODE_ON_START_TIME = ARXTimeUL();
-		  }
+		}
 		else
-		  {
-			  if (ARXTime-COMBAT_MODE_ON_START_TIME>10)
-			  {
-				  ARX_INTERFACE_Combat_Mode(1);
+		{
+			if (ARXTime-COMBAT_MODE_ON_START_TIME>10)
+			{
+				ARX_INTERFACE_Combat_Mode(1);
 
-				  if (! pMenuConfig->bAutoReadyWeapon)
-					  bGToggleCombatModeWithKey=true;
-			  }
-		  }
-	  }
+				if (! pMenuConfig->bAutoReadyWeapon)
+					bGToggleCombatModeWithKey=true;
+			}
+		}
+	}
 
 	if (INTERNATIONAL_MODE)
 	{
@@ -5220,7 +5229,7 @@ void DANAE::ManageKeyMouse()
 		}
 
 		if ((eMouseState == MOUSE_IN_WORLD) ||
-			((eMouseState == MOUSE_IN_BOOK) && (!((ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK) && (Book_Mode !=2))))
+			((eMouseState == MOUSE_IN_BOOK) && (!((ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK) && (Book_Mode != BOOKMODE_MINIMAP))))
 			)
 		{
 			if (pMenuConfig->bMouseLookToggle)
@@ -5236,7 +5245,7 @@ void DANAE::ManageKeyMouse()
 								{
 									if (!InInventoryPos(&DANAEMouse))
 									{
-										if (!((player.Interface & INTER_MAP) && Book_Mode != 2))
+										if (!((player.Interface & INTER_MAP) && Book_Mode != BOOKMODE_MINIMAP))
 										{
 											TRUE_PLAYER_MOUSELOOK_ON|=1;
 											EERIEMouseButton &= ~2;
@@ -5264,7 +5273,7 @@ void DANAE::ManageKeyMouse()
 				if (eMouseState != MOUSE_IN_NOTE)
 				{
 					if(	(EERIEMouseButton & 2) &&
-						(!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK & (Book_Mode !=2))) &&
+						(!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK & (Book_Mode != BOOKMODE_MINIMAP))) &&
 						(!(TRUE_PLAYER_MOUSELOOK_ON & 1) || SPECIAL_DRAW_WEAPON)&&
 					        (pMenuConfig) && (pMenuConfig->bLinkMouseLookToUse))
 					{
@@ -5439,7 +5448,7 @@ void DANAE::ManageKeyMouse()
 	{
 		GetInventoryObj_INVENTORYUSE(&DANAEMouse);
 
-		if ((!(player.Interface & INTER_MAP )) || ((player.Interface & INTER_MAP ) && ((!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK & (Book_Mode != 2))/*ARX_INTERFACE_MouseInBook()*/) || (Book_Mode==2) || (Book_Mode==3) || (Book_Mode!=-1)))
+		if ((!(player.Interface & INTER_MAP )) || ((player.Interface & INTER_MAP ) && ((!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK & (Book_Mode != BOOKMODE_MINIMAP))/*ARX_INTERFACE_MouseInBook()*/) || (Book_Mode == BOOKMODE_MINIMAP) || (Book_Mode == BOOKMODE_QUESTS) || (Book_Mode != -1)))
 			||
 			(player.Interface & INTER_COMBATMODE))
 		{
@@ -6897,7 +6906,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 	if ((player.Interface & INTER_MAP ) &&  (!(player.Interface & INTER_COMBATMODE)))
 	{
-		if (Book_Mode==1)
+		if (Book_Mode == BOOKMODE_SPELLS)
 		{
 			EERIE_3D angle;
 			EERIE_3D pos;
@@ -7288,6 +7297,160 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 }
 
 //-----------------------------------------------------------------------------
+// Nuky - split questbook code into separate functions and added cache of
+//        QuestBook_Cache_Text variable. QuestBook_Update will only generate it
+//        when the number of quests has changed (is it enough?)
+
+namespace
+{
+
+/// Update QuestBook_Cache_Text if it needs to. Otherwise does nothing.
+void QuestBook_Update()
+{
+	if (QuestBook_Cache_nbQuests == nb_PlayerQuest)
+		return;
+
+	delete[] QuestBook_Cache_Text;
+
+	NotePosX = 97;
+	NotePosY = 64;
+	NoteTextMinx = 40.f;
+	NoteTextMaxx = ITC.questbook->m_dwWidth * 0.5f - 10.f;
+	NoteTextMiny = 40.f;
+	NoteTextMaxy = ITC.questbook->m_dwHeight - 65.f;
+
+	// calculation of number of pages
+	long lCurPage = 1;
+
+	float fMinX = (NoteTextMaxx - NoteTextMinx) * Xratio;
+	float fMinY = (NoteTextMaxy - NoteTextMiny) * Yratio;
+
+	ARX_CHECK_INT(fMinX);
+	ARX_CHECK_INT(fMinY);
+	RECT rRect;
+	rRect.left = 0;
+	rRect.top = 0;
+	rRect.right = ARX_CLEAN_WARN_CAST_INT(fMinX);
+	rRect.bottom = ARX_CLEAN_WARN_CAST_INT(fMinY);
+
+	int lLenghtCurr = 0;
+	long lLenght = 0;
+
+	QuestBook.pages[0] = 0;
+
+	for (long i = 0; i < nb_PlayerQuest; ++i)
+		if (PlayerQuest[i].localised != NULL)
+			lLenght += _tcslen(PlayerQuest[i].localised);
+
+	QuestBook_Cache_Text = new _TCHAR[lLenght+nb_PlayerQuest*2+1];
+	ZeroMemory(QuestBook_Cache_Text, (lLenght+nb_PlayerQuest*2+1)*sizeof(_TCHAR));
+
+	for (int i = 0; i < nb_PlayerQuest; ++i)
+		if (PlayerQuest[i].localised != NULL)
+		{
+			_tcscat(QuestBook_Cache_Text, PlayerQuest[i].localised);
+			_tcscat(QuestBook_Cache_Text, _T("\n\n"));
+			lLenght += 2;
+		}
+
+	while (lLenght > 0)
+	{
+		// Nuky - 05-02-11 - DANAE*Render not needed ? we do not render
+		//danaeApp.DANAEEndRender();
+		long lLengthDraw=ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, QuestBook_Cache_Text + lLenghtCurr, 0, rRect);
+		//danaeApp.DANAEStartRender();
+		lLenght -= lLengthDraw;
+		lLenghtCurr += lLengthDraw;
+
+		if (lCurPage + 1 < MAX_PAGES)
+			QuestBook.pages[lCurPage++] = lLenghtCurr;
+	}
+
+	if (lCurPage + 1 < MAX_PAGES)
+		QuestBook.pages[lCurPage++] = -1;
+	else
+		QuestBook.pages[MAX_PAGES-1] = -1;
+
+	QuestBook.totpages = lCurPage;
+
+	QuestBook_Cache_nbQuests = nb_PlayerQuest;
+}
+
+void QuestBook_Render()
+{
+	// Clamp curpage in valid interval
+	QuestBook.curpage = std::min(std::max(static_cast<long>(0), QuestBook.curpage), QuestBook.totpages-1);
+
+	// Previous page corner
+	if (QuestBook.curpage > 1)
+	{
+		float x0 =   8 + NotePosX;
+		float y0 =  -6 + NotePosY + ITC.questbook->m_dwHeight - ITC.pTexCornerLeft->m_dwHeight;
+
+		DrawBookInterfaceItem(GDevice, ITC.pTexCornerLeft, x0, y0);
+
+		if (MouseInBookRect(x0, y0, x0 + ITC.pTexCornerLeft->m_dwWidth, y0 + ITC.pTexCornerLeft->m_dwHeight))
+		{
+			SpecialCursor=CURSOR_INTERACTION_ON;
+
+			if (!(EERIEMouseButton & 1) && (LastMouseClick & 1))
+			{
+				ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+				QuestBook.curpage -= 2;
+			}
+		}
+	}
+
+	// Next page corner
+	if (QuestBook.curpage + 4 < QuestBook.totpages)
+	{
+		float x0 = -15 + NotePosX + ITC.questbook->m_dwWidth  - ITC.pTexCornerRight->m_dwWidth;
+		float y0 =  -6 + NotePosY + ITC.questbook->m_dwHeight - ITC.pTexCornerRight->m_dwHeight;
+
+		DrawBookInterfaceItem(GDevice, ITC.pTexCornerRight, x0, y0);
+
+		if (MouseInBookRect(x0, y0, x0 + ITC.pTexCornerRight->m_dwWidth, y0 + ITC.pTexCornerRight->m_dwHeight))
+		{
+			SpecialCursor=CURSOR_INTERACTION_ON;
+
+			if (!(EERIEMouseButton & 1) && (LastMouseClick & 1))
+			{
+				ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+				QuestBook.curpage += 2;
+			}
+		}
+	}
+
+	// Content
+	if (QuestBook.pages[QuestBook.curpage] >= 0)
+	{
+		if (QuestBook.pages[QuestBook.curpage+1] > 0)
+		{
+			_tcsncpy(Page_Buffer, QuestBook_Cache_Text + QuestBook.pages[QuestBook.curpage], QuestBook.pages[QuestBook.curpage+1] - QuestBook.pages[QuestBook.curpage]);
+			Page_Buffer[QuestBook.pages[QuestBook.curpage+1] - QuestBook.pages[QuestBook.curpage]]=_T('\0');
+			DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx, NotePosY + NoteTextMaxy, Page_Buffer, 0, 0x00FF00FF);
+
+			if (QuestBook.pages[QuestBook.curpage+2]>0)
+			{
+				_tcsncpy(Page_Buffer, QuestBook_Cache_Text + QuestBook.pages[QuestBook.curpage+1], QuestBook.pages[QuestBook.curpage+2] - QuestBook.pages[QuestBook.curpage+1]);
+				Page_Buffer[QuestBook.pages[QuestBook.curpage+2] - QuestBook.pages[QuestBook.curpage+1]]=_T('\0');
+				DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx + (NoteTextMaxx - NoteTextMinx) +20, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx + (NoteTextMaxx - NoteTextMinx) +20, NotePosY + NoteTextMaxy, Page_Buffer, 0, 0x00FF00FF);
+			}
+		}
+		else
+		{
+			if (QuestBook.pages[QuestBook.curpage]>=0)
+			{
+				_tcscpy(Page_Buffer, QuestBook_Cache_Text + QuestBook.pages[QuestBook.curpage]);
+				DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY + NoteTextMaxy, Page_Buffer, 0, 0x00FF00FF);
+			}
+		}
+	}
+}
+
+} // \namespace
+
+//-----------------------------------------------------------------------------
 void ARX_INTERFACE_ManageOpenedBook()
 {
 	bool bOldGATI8500	=	bGATI8500;
@@ -7357,9 +7520,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ARX_Allocate_Text(ITC.lpszULevel, _T("system_charsheet_player_lvl"));
 		ARX_Allocate_Text(ITC.lpszUXp, _T("system_charsheet_player_xp"));
 
-		ANIM_Set(&player.useanim,herowaitbook);
+		ANIM_Set(&player.useanim, herowaitbook);
 
-		player.useanim.flags|=EA_LOOP;
+		player.useanim.flags |= EA_LOOP;
 
 		ARXOldTimeMenu=ARXTimeMenu=ARX_TIME_Get();
 		ARXDiffTimeMenu=0;
@@ -7372,43 +7535,28 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 	if (ARXmenu.currentmode != AMCM_NEWQUEST)
 	{
-
-
 		GDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_ALWAYS);
 
-		if (Book_Mode == 0)
-		{
+		if (Book_Mode == BOOKMODE_STATS)
 			DrawBookInterfaceItem(GDevice, ITC.playerbook, 97, 64, 0.9999f);
-		}
-		else if (Book_Mode == 1)
-		{
+		else if (Book_Mode == BOOKMODE_SPELLS)
 			DrawBookInterfaceItem(GDevice, ITC.pTexSpellBook, 97, 64, 0.9999f);
-		}
-		else if (Book_Mode == 2)
-		{
-			DrawBookInterfaceItem(GDevice, ITC.questbook, 97, 64, 0.9999f);
-			  }
-			  else
-			  {
+		else
 			DrawBookInterfaceItem(GDevice,ITC.questbook, 97, 64, 0.9999f);
-		}
 
 		GDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
 	}
 	else
 	{
-		float x, y;
-
-		x = 0;
+		float x = 0;
+		float y = 0;
 
 		if ( ITC.playerbook )
 		{
-
-
 			x = ARX_CLEAN_WARN_CAST_FLOAT( ( 640 - ITC.playerbook->m_dwWidth ) / 2 );
 			y = ARX_CLEAN_WARN_CAST_FLOAT( ( 480 - ITC.playerbook->m_dwHeight ) / 2 );
 
-			DrawBookInterfaceItem( GDevice, ITC.playerbook, x, y );//95.f+2.f,47.f+17.f);
+			DrawBookInterfaceItem( GDevice, ITC.playerbook, x, y );
 		}
 
 		BOOKDECX = x - 97;
@@ -7425,7 +7573,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		// Checks Clicks in bookmarks
 
 		// Character Sheet
-		if (Book_Mode != 0)
+		if (Book_Mode != BOOKMODE_STATS)
 		{
 			float px=BOOKMARKS_POS_X;
 			float py=BOOKMARKS_POS_Y;
@@ -7450,13 +7598,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 				if (bookclick.x!=-1)
 				{
 					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-					Book_Mode=0;
+					Book_Mode = BOOKMODE_STATS;
 					pTextManage->Clear();
 				}
 			}
 		}
 
-		if (Book_Mode != 1)
+		if (Book_Mode != BOOKMODE_SPELLS)
 		{
 			if (player.rune_flags)
 			{
@@ -7492,14 +7640,14 @@ void ARX_INTERFACE_ManageOpenedBook()
 					if (bookclick.x!=-1)
 					{
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						Book_Mode=1;
+						Book_Mode = BOOKMODE_SPELLS;
 						pTextManage->Clear();
 					}
 				}
 			}
 		}
 
-		if (Book_Mode!=2)
+		if (Book_Mode != BOOKMODE_MINIMAP)
 		{
 			float px=BOOKMARKS_POS_X+64;
 			float py=BOOKMARKS_POS_Y;
@@ -7523,13 +7671,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 				if (bookclick.x!=-1)
 				{
 					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-					Book_Mode=2;
+					Book_Mode = BOOKMODE_MINIMAP;
 					pTextManage->Clear();
 				}
 			}
 		}
 
-		if (Book_Mode!=3)
+		if (Book_Mode != BOOKMODE_QUESTS)
 		{
 			float px=BOOKMARKS_POS_X+96;
 			float py=BOOKMARKS_POS_Y;
@@ -7552,57 +7700,44 @@ void ARX_INTERFACE_ManageOpenedBook()
 				if (bookclick.x!=-1)
 				{
 					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-					Book_Mode=3;
+					Book_Mode = BOOKMODE_QUESTS;
 					pTextManage->Clear();
 				}
 			}
 		}
 
-		if (Book_Mode==2) max_onglet=8;
+		if (Book_Mode == BOOKMODE_MINIMAP) max_onglet=8;
 		else max_onglet=10;
 
-		if (Book_Mode==1) Book_Page = Book_SpellPage;
+		if (Book_Mode == BOOKMODE_SPELLS) Book_Page = Book_SpellPage;
 		else Book_Page = Book_MapPage;
 
 		ZeroMemory(&bOnglet, 11*sizeof(bool));
 
 		// calcul de la page de spells
-		if (Book_Mode == 1)
+		if (Book_Mode == BOOKMODE_SPELLS)
 		{
 			max_onglet = 0;
 
-			for (long i=0; i<SPELL_COUNT; i++)
-			{
+			for (long i = 0; i < SPELL_COUNT; ++i)
 				if (spellicons[i].bSecret == false)
 				{
-					long j = 0;
 					bool bOk = true;
 
-					while ((j < 4) && (spellicons[i].symbols[j] != 255))
-					{
+					for (long j = 0; j < 4 && spellicons[i].symbols[j] != 255; ++j)
 						if (!(player.rune_flags & (1<<spellicons[i].symbols[j])))
-						{
 							bOk = false;
-						}
-
-						j++;
-					}
 
 					if (bOk)
-					{
 						bOnglet[spellicons[i].level] = true;
-					}
 				}
-			}
 		}
 		else
-		{
 			memset(&bOnglet, true, (max_onglet+1)*sizeof(bool));
-		}
 
-		if ((Book_Mode==1) || (Book_Mode==2))
+		if ((Book_Mode == BOOKMODE_SPELLS) || (Book_Mode == BOOKMODE_MINIMAP))
 		{
-			static struct {
+			static const struct {
 				float x; float y; TextureContainer* acc; TextureContainer* crt; float botx; float boty;
 			} s_onglet[] = {
 				{ 100.f,  82.f, ITC.accessible_1,  ITC.current_1,  102.f,  82.f },
@@ -7645,16 +7780,16 @@ void ARX_INTERFACE_ManageOpenedBook()
 						DrawBookInterfaceItem(GDevice, s_onglet[p].crt, s_onglet[p].botx, s_onglet[p].boty);
 				}
 
-			if (Book_Mode==1)
+			if (Book_Mode == BOOKMODE_SPELLS)
 				Book_SpellPage = Book_Page;
-			else if (Book_Mode==2)
+			else if (Book_Mode == BOOKMODE_MINIMAP)
 				Book_MapPage = Book_Page;
 		}
 
 		bookclick.x=-1;
 	}
 
-	if (Book_Mode == 0)
+	if (Book_Mode == BOOKMODE_STATS)
 	{
 		FLYING_OVER=NULL;
 		_TCHAR textbuff[64];
@@ -8157,161 +8292,28 @@ void ARX_INTERFACE_ManageOpenedBook()
 		DrawBookTextCenter(hFontInBook, 153, 278, textbuff, Color, 0x00FF00FF);
 		danaeApp.DANAEStartRender();
 	}
-	else if (Book_Mode==2)
+	else if (Book_Mode == BOOKMODE_MINIMAP)
 	{
 		long SHOWLEVEL = Book_MapPage - 1;
 
-		if ((SHOWLEVEL>=0) && (SHOWLEVEL<32))
-			ARX_MINIMAP_Show(GDevice,SHOWLEVEL,0);
+		if (SHOWLEVEL >= 0 && SHOWLEVEL < 32)
+			ARX_MINIMAP_Show(GDevice, SHOWLEVEL, 0);
 
 		SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
 
-		if ((SHOWLEVEL>=0) && (SHOWLEVEL<32))
-			ARX_MINIMAP_Show(GDevice,SHOWLEVEL,1);
+		if (SHOWLEVEL >= 0 && SHOWLEVEL < 32)
+			ARX_MINIMAP_Show(GDevice, SHOWLEVEL, 1);
 	}
-	else if (Book_Mode==3)
+	else if (Book_Mode == BOOKMODE_QUESTS)
 	{
 		if (nb_PlayerQuest > 0)
 		{
-			//-----------------------------------------------------------------
-			// text stuff
-			NotePosX = 97;
-			NotePosY = 64;
-			NoteTextMinx = 40.f;
-			NoteTextMaxx = ITC.questbook->m_dwWidth * DIV2 - 10.f;
-			NoteTextMiny = 40.f;
-			NoteTextMaxy = ITC.questbook->m_dwHeight - 65.f;
-			float fPosX = 97;
-			float fPosY = 64;
-			float x0 = 0;
-			float y0 = 0;
-
-			// calculation of number of pages
-			RECT rRect;
-			long lCurPage = 1;
-
-			float fMinX = (NoteTextMaxx - NoteTextMinx) * Xratio;
-			float fMinY = (NoteTextMaxy - NoteTextMiny) * Yratio;
-
-			ARX_CHECK_INT(fMinX);
-			ARX_CHECK_INT(fMinY);
-			SetRect(&rRect, 0, 0, ARX_CLEAN_WARN_CAST_INT(fMinX), ARX_CLEAN_WARN_CAST_INT(fMinY));
-
-			int lLenghtCurr = 0;
-			long lLenght = 0;
-			_TCHAR *lpszQuests = NULL;
-
-			QuestBook.pages[0] = 0;
-
-			for (long i = 0; i < nb_PlayerQuest; ++i)
-				if (PlayerQuest[i].localised != NULL)
-					lLenght += _tcslen(PlayerQuest[i].localised);
-
-			lpszQuests = new _TCHAR[lLenght+nb_PlayerQuest*2+1];
-			ZeroMemory(lpszQuests, (lLenght+nb_PlayerQuest*2+1)*sizeof(_TCHAR));
-
-			for (int i = 0; i < nb_PlayerQuest; ++i)
-				if (PlayerQuest[i].localised != NULL)
-				{
-					_tcscat(lpszQuests, PlayerQuest[i].localised);
-					_tcscat(lpszQuests, _T("\n\n"));
-					lLenght += 2;
-				}
-
-			while (lLenght > 0)
-			{
-				// Nuky - 05-02-11 - DANAE*Render not needed ? we do not render
-				//danaeApp.DANAEEndRender();
-				long lLengthDraw=ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, lpszQuests + lLenghtCurr, 0, rRect);
-				//danaeApp.DANAEStartRender();
-				lLenght -= lLengthDraw;
-				lLenghtCurr += lLengthDraw;
-
-				if (lCurPage + 1 < MAX_PAGES)
-					QuestBook.pages[lCurPage++] = lLenghtCurr;
-			}
-
-			if (lCurPage + 1 < MAX_PAGES)
-				QuestBook.pages[lCurPage++] = -1;
-			else
-				QuestBook.pages[MAX_PAGES-1] = -1;
-
-			QuestBook.totpages = lCurPage;
-
-			//---------------------------------------------------------------------
-			// render
-			if (QuestBook.curpage >= QuestBook.totpages)
-				QuestBook.curpage = QuestBook.totpages - 1;
-
-			if (QuestBook.curpage < 0)
-				QuestBook.curpage = 0;
-
-			if (QuestBook.curpage > 1)
-			{
-				x0 =   8 + fPosX;
-				y0 =  -6 + fPosY + ITC.questbook->m_dwHeight - ITC.pTexCornerLeft->m_dwHeight;
-				DrawBookInterfaceItem(GDevice, ITC.pTexCornerLeft, x0, y0);
-
-				if (MouseInBookRect(x0, y0, x0 + ITC.pTexCornerLeft->m_dwWidth, y0 + ITC.pTexCornerLeft->m_dwHeight))
-				{
-					SpecialCursor=CURSOR_INTERACTION_ON;
-
-					if (!(EERIEMouseButton & 1) && (LastMouseClick & 1))
-					{
-						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						QuestBook.curpage -= 2;
-					}
-				}
-			}
-
-			if ((QuestBook.curpage + 4) < QuestBook.totpages)
-			{
-				x0 = -15 + fPosX + ITC.questbook->m_dwWidth  - ITC.pTexCornerRight->m_dwWidth;
-				y0 =  -6 + fPosY + ITC.questbook->m_dwHeight - ITC.pTexCornerRight->m_dwHeight;
-				DrawBookInterfaceItem(GDevice, ITC.pTexCornerRight, x0, y0);
-
-				if (MouseInBookRect(x0, y0, x0 + ITC.pTexCornerRight->m_dwWidth, y0 + ITC.pTexCornerRight->m_dwHeight))
-				{
-					SpecialCursor=CURSOR_INTERACTION_ON;
-
-					if (!(EERIEMouseButton & 1) && (LastMouseClick & 1))
-					{
-						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						QuestBook.curpage += 2;
-					}
-				}
-			}
-
-			if (QuestBook.pages[QuestBook.curpage] >= 0)
-			{
-				if (QuestBook.pages[QuestBook.curpage+1] > 0)
-				{
-					_tcsncpy(Page_Buffer, lpszQuests + QuestBook.pages[QuestBook.curpage], QuestBook.pages[QuestBook.curpage+1] - QuestBook.pages[QuestBook.curpage]);
-					Page_Buffer[QuestBook.pages[QuestBook.curpage+1] - QuestBook.pages[QuestBook.curpage]]=_T('\0');
-					DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx, NotePosY + NoteTextMaxy, Page_Buffer, 0, 0x00FF00FF);
-
-					if (QuestBook.pages[QuestBook.curpage+2]>0)
-					{
-						_tcsncpy(Page_Buffer, lpszQuests + QuestBook.pages[QuestBook.curpage+1], QuestBook.pages[QuestBook.curpage+2] - QuestBook.pages[QuestBook.curpage+1]);
-						Page_Buffer[QuestBook.pages[QuestBook.curpage+2] - QuestBook.pages[QuestBook.curpage+1]]=_T('\0');
-						DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx + (NoteTextMaxx - NoteTextMinx) +20, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx + (NoteTextMaxx - NoteTextMinx) +20, NotePosY + NoteTextMaxy, Page_Buffer, 0, 0x00FF00FF);
-					}
-				}
-				else
-				{
-					if (QuestBook.pages[QuestBook.curpage]>=0)
-					{
-						_tcscpy(Page_Buffer, lpszQuests + QuestBook.pages[QuestBook.curpage]);
-						DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY + NoteTextMaxy, Page_Buffer, 0, 0x00FF00FF);
-					}
-				}
-			}
-
-			delete []lpszQuests;
+			QuestBook_Update();
+			QuestBook_Render();
 		}
 	}
 
-	if ((Book_Mode==0) && (inter.iobj[0]->obj!=NULL))
+	if ((Book_Mode == BOOKMODE_STATS) && (inter.iobj[0]->obj != NULL))
 	{
 
 		SETZWRITE(GDevice,true);
@@ -8321,10 +8323,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		if (BOOKZOOM)
 		{
-
 			F2L((float)((118.F+BOOKDECX)*Xratio),&rec.x1);
 			F2L((float)((69.f +BOOKDECY)*Yratio),&rec.y1);
-			F2L((float)((280.f + BOOKDECY)*Xratio), &rec.x2);
+			F2L((float)((280.f+BOOKDECY)*Xratio),&rec.x2);
 			F2L((float)((310.f+BOOKDECY)*Yratio),&rec.y2);
 
 			GDevice->Clear( 1, &rec, D3DCLEAR_ZBUFFER, 0, 1.f, 0L );
@@ -8336,7 +8337,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 		{
 			F2L((float)((118.F+BOOKDECX)*Xratio),&rec.x1);
 			F2L((float)((69.f +BOOKDECY)*Yratio),&rec.y1);
-
 			F2L((float)((300.f+50+BOOKDECX)*Xratio),&rec.x2);
 			F2L((float)((338.f+BOOKDECY)*Yratio),&rec.y2);
 

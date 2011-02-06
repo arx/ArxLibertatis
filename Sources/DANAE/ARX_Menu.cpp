@@ -91,7 +91,7 @@ extern CDirectInput * pGetInfoDirectInput;
 extern CMenuConfig * pMenuConfig;
 extern EERIE_3D ePlayerAngle;
 extern float Xratio, Yratio;
-extern long Book_Mode;
+extern ARX_INTERFACE_BOOK_MODE Book_Mode;
 extern long GAME_EDITOR;
 extern long START_NEW_QUEST;
 extern long INTRO_NOT_LOADED;
@@ -420,7 +420,7 @@ void ARX_MENU_Clicked_NEWQUEST()
 	}
 
 	ARX_PLAYER_Start_New_Quest();
-	Book_Mode = 0;
+	Book_Mode = BOOKMODE_STATS;
 	player.skin = 0;
 	ePlayerAngle.b = -25.f;
 	ARX_PLAYER_Restore_Skin();

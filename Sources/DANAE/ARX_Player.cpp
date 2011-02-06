@@ -224,9 +224,7 @@ bool ARX_PLAYER_IsInFightMode()
 //*************************************************************************************
 void ARX_KEYRING_Init()
 {
-	if (Keyring)
-		free((void *)Keyring);
-
+	free((void *)Keyring);
 	Keyring = NULL;
 	Keyring_Number = 0;
 }

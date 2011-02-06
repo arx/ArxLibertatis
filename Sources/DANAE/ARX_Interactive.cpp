@@ -3616,7 +3616,7 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag, EERIE_3D * _pRe
 		    || (io->GameFlags & GFLAG_ISINTREATZONE))
 
 			// Is Object Displayed on screen ???
-			if ((io->show == SHOW_FLAG_IN_SCENE) || (bPlayerEquiped && flag) || (bPlayerEquiped  && (player.Interface & INTER_MAP) && (Book_Mode == 0))) //((io->show==9) && (player.Interface & INTER_MAP)) )
+			if ((io->show == SHOW_FLAG_IN_SCENE) || (bPlayerEquiped && flag) || (bPlayerEquiped  && (player.Interface & INTER_MAP) && (Book_Mode == BOOKMODE_STATS))) //((io->show==9) && (player.Interface & INTER_MAP)) )
 			{
 				if ((flag == 2) && _pTable && _pnNbInTable && ((*_pnNbInTable) < 256))
 				{
@@ -3708,7 +3708,7 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag, EERIE_3D * _pRe
 bool IsEquipedByPlayer(INTERACTIVE_OBJ * io)
 {
 	if (!io)
-		return FALSE;
+		return false;
 
 	if ((io->ioflags & IO_ICONIC) && (io->show == SHOW_FLAG_ON_PLAYER))
 		return true;
@@ -3720,7 +3720,7 @@ bool IsEquipedByPlayer(INTERACTIVE_OBJ * io)
 		if ((player.equiped[i] != 0) && (player.equiped[i] == num)) return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 extern long LOOKING_FOR_SPELL_TARGET;
@@ -4433,7 +4433,7 @@ void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to, long flags)
 		        &&	(io->GameFlags & GFLAG_ISINTREATZONE))
 		{
 			if ((i == 0) && ((player.Interface & INTER_MAP) && (!(player.Interface & INTER_COMBATMODE)))
-			        && (Book_Mode == 0)) continue;
+			        && (Book_Mode == BOOKMODE_STATS)) continue;
 
 			if (io->show != SHOW_FLAG_IN_SCENE) continue;
 

@@ -180,7 +180,7 @@ void ARX_MINIMAP_ValidatePlayerPos()
 	float dist = Distance2D(AM_LASTPOS_x, AM_LASTPOS_z, player.pos.x, player.pos.z);
 	float req;
 
-	if ((player.Interface & INTER_MAP) && (!(player.Interface & INTER_COMBATMODE)) && (Book_Mode == 2))
+	if ((player.Interface & INTER_MAP) && (!(player.Interface & INTER_COMBATMODE)) && (Book_Mode == BOOKMODE_MINIMAP))
 		req = 20.f;
 	else req = 80.f;
 

@@ -6542,14 +6542,15 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 					if (temp[0] == '-')
 					{
+						// Nuky - hmm those comments don't match the code :S
 						if (iCharIn(temp, 'A')) //MAGIC
-							Book_Mode = 2;
+							Book_Mode = BOOKMODE_MINIMAP;
 
 						if (iCharIn(temp, 'E')) //Equip
-							Book_Mode = 1;
+							Book_Mode = BOOKMODE_SPELLS;
 
 						if (iCharIn(temp, 'M')) //Map
-							Book_Mode = 3;
+							Book_Mode = BOOKMODE_QUESTS;
 
 						pos = GetNextWord(es, pos, temp);
 					}
