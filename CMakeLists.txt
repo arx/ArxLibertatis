@@ -57,10 +57,10 @@ add_definitions(-D_DEBUG)
 add_definitions(-DNOMINMAX)
 
 #glob sources
-file(GLOB_RECURSE ALL_SOURCES ${SRC_DIR}/*.cpp ${SRC_DIR}/*.h)
+file(GLOB_RECURSE ALL_SOURCES ${SRC_DIR}/*.cpp)
 
 #build
-add_executable(arx ${ALL_SOURCES})
+add_executable(arx ${ALL_SOURCES} ${ALL_INCLUDES})
 
 #link
 target_link_libraries(arx dsound dxguid gdi32 shell32 dinput comdlg32 ole32 comctl32 ddraw jpeg z)
