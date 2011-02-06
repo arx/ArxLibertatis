@@ -800,7 +800,7 @@ bool CARXTextManager::HasText() const
 namespace
 {
 
-HFONT CreateFontFromProfile(_TCHAR* faceName, const _TCHAR* section, const _TCHAR* defaultFontSize)
+HFONT CreateFontFromProfile(_TCHAR* faceName, const _TCHAR* section, const _TCHAR* defaultFontSize, bool antialias)
 {
 	if (!hUnicodeLibrary)
 		return NULL;
@@ -823,7 +823,8 @@ HFONT CreateFontFromProfile(_TCHAR* faceName, const _TCHAR* section, const _TCHA
 	HFONT ret = Unicows_CreateFontW(iFontSize, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
 									EAST_EUROPE ? CHINESEBIG5_CHARSET : DEFAULT_CHARSET,
 									OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-									ANTIALIASED_QUALITY, VARIABLE_PITCH, faceName);
+									antialias ? ANTIALIASED_QUALITY : NONANTIALIASED_QUALITY,
+									VARIABLE_PITCH, faceName);
 
 	if (!ret)
 		FontError();
@@ -862,15 +863,15 @@ void ARX_Text_Init()
 
 	pTextManage = new CARXTextManager();
 
-	hFontMainMenu   = CreateFontFromProfile(lpszFont, _T("system_font_mainmenu_size"),     _T("58"));
-	hFontMenu       = CreateFontFromProfile(lpszFont, _T("system_font_menu_size"),         _T("32"));
-	hFontControls   = CreateFontFromProfile(lpszFont, _T("system_font_menucontrols_size"), _T("22"));
-	hFontCredits    = CreateFontFromProfile(lpszFont, _T("system_font_menucredits_size"),  _T("36"));
-	hFontRedist     = CreateFontFromProfile(lpszFont, _T("system_font_redist_size"),       _T("18"));
+	hFontMainMenu   = CreateFontFromProfile(lpszFont, _T("system_font_mainmenu_size"),     _T("58"), true);
+	hFontMenu       = CreateFontFromProfile(lpszFont, _T("system_font_menu_size"),         _T("32"), true);
+	hFontControls   = CreateFontFromProfile(lpszFont, _T("system_font_menucontrols_size"), _T("22"), true);
+	hFontCredits    = CreateFontFromProfile(lpszFont, _T("system_font_menucredits_size"),  _T("36"), true);
+	hFontRedist     = CreateFontFromProfile(lpszFont, _T("system_font_redist_size"),       _T("18"), true);
 	if (Yratio > 1.f) Yratio *= .8f; // NEW QUEST
-	hFontInGame     = CreateFontFromProfile(lpszFont, _T("system_font_book_size"),         _T("18"));
-	hFontInGameNote = CreateFontFromProfile(lpszFont, _T("system_font_note_size"),         _T("18"));
-	hFontInBook     = CreateFontFromProfile(lpszFont, _T("system_font_book_size"),         _T("18"));
+	hFontInGame     = CreateFontFromProfile(lpszFont, _T("system_font_book_size"),         _T("18"), false);
+	hFontInGameNote = CreateFontFromProfile(lpszFont, _T("system_font_note_size"),         _T("18"), false);
+	hFontInBook     = CreateFontFromProfile(lpszFont, _T("system_font_book_size"),         _T("18"), false);
 
 	delete[] lpszFont;
 }
