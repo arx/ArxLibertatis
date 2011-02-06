@@ -67,10 +67,31 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <tchar.h>
 #include <zlib.h>
 
-//boolean and INT32 clash with wine
+// Needed for ARX_PLATFORM_WINDOWS
+#include <core/Common.h>
+
+// boolean and INT32 used by jpeglib clash with wine
 #define INT32 INT32_JPEG
-#define HAVE_BOOLEAN
+#ifndef ARX_PLATFORM_WINDOWS
+# define boolean boolean_JPEG
+# ifdef _WIN32
+#  define HAD_WIN32
+#  undef _WIN32
+# endif
+#else
+# define HAVE_BOOLEAN
+typedef boolean boolean_JPEG;
+#endif
+
 #include <jpeglib.h>
+
+#ifndef ARX_PLATFORM_WINDOWS
+# undef boolean
+# ifdef HAD_WIN32
+#  define _WIN32
+#  undef HAD_WIN32
+# endif
+#endif
 #undef INT32
 
 #include "core/Application.h"
@@ -3730,7 +3751,7 @@ void jpeg_term_source(j_decompress_ptr cinfo) {
 	// don't do anything
 }
 
-boolean fill_input_buffer(j_decompress_ptr cinfo) {
+boolean_JPEG fill_input_buffer(j_decompress_ptr cinfo) {
 	// There is nothing to fill.
 	return false;
 }
