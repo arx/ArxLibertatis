@@ -864,7 +864,7 @@ namespace ATHENA
 
 		alListener3f(AL_POSITION, position.x, position.y, position.z);
 
-		if ((error = alGetError()) != AL_NO_ERROR)
+		if (alGetError() != AL_NO_ERROR)
 		{
 			if (mutex) ReleaseMutex(mutex);
 
@@ -884,7 +884,7 @@ namespace ATHENA
 
 		alListenerfv(AL_ORIENTATION, orientation);
 
-		if ((error = alGetError()) != AL_NO_ERROR)
+		if (alGetError() != AL_NO_ERROR)
 		{
 			if (mutex) ReleaseMutex(mutex);
 
