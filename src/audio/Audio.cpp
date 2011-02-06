@@ -68,6 +68,7 @@ namespace ATHENA
 	static void *mutex = (void *)1; // just for compilation.  real mutex is above
 	static pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 	static bool _mutex_used = false;
+	static const int WAIT_TIMEOUT(1);
 #elif WINDOWS
 	static HANDLE mutex(NULL);
 #endif	
@@ -106,6 +107,7 @@ namespace ATHENA
 	}
 #undef CreateMutex
 #define CreateMutex(x, y, z) (void *)1
+#define CloseHandle(mutex)	
 #endif
 
 	///////////////////////////////////////////////////////////////////////////////
