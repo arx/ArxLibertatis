@@ -39,48 +39,48 @@ using namespace std;
 //-----------------------------------------------------------------------------
 class CLocalisation
 {
-    public:
-        std::string lpszUSection;
-        vector< std::string > vUKeys;
-    
-    public:
-        void SetSection( const std::string& _lpszUSection )
-        {
-            lpszUSection = _lpszUSection;
-        };
+	public:
+		std::string lpszUSection;
+		vector< std::string > vUKeys;
+	
+	public:
+		void SetSection( const std::string& _lpszUSection )
+		{
+			lpszUSection = _lpszUSection;
+		};
 
-        void AddKey( const std::string& _lpszUText )
-        {
-            vUKeys.push_back( _lpszUText );
-        };
+		void AddKey( const std::string& _lpszUText )
+		{
+			vUKeys.push_back( _lpszUText );
+		};
 };
 
 //-----------------------------------------------------------------------------
 class CLocalisationHash
 {
-    public:
-        unsigned long   iSize;
-        long            iMask;
-        unsigned long   iFill;
-        CLocalisation** pTab;
-    public:
-        unsigned long   iNbCollisions;
-        unsigned long   iNbNoInsert;
+	public:
+		unsigned long   iSize;
+		long            iMask;
+		unsigned long   iFill;
+		CLocalisation** pTab;
+	public:
+		unsigned long   iNbCollisions;
+		unsigned long   iNbNoInsert;
 
-    private:
-        int FuncH1(int);
-        int FuncH2(int);
-        int GetKey( const std::string& );
+	private:
+		int FuncH1(int);
+		int FuncH2(int);
+		int GetKey( const std::string& );
 
-    public:
-        CLocalisationHash(int _iSize = 1024);
-        ~CLocalisationHash();
+	public:
+		CLocalisationHash(int _iSize = 1024);
+		~CLocalisationHash();
 
-        void ReHash();
-        bool AddElement(CLocalisation * _pLoc);
+		void ReHash();
+		bool AddElement(CLocalisation * _pLoc);
  
-        std::string* GetPtrWithString( const std::string& );
-        unsigned long GetKeyCount(const std::string& );
+		std::string* GetPtrWithString( const std::string& );
+		unsigned long GetKeyCount(const std::string& );
 };
 
 #endif

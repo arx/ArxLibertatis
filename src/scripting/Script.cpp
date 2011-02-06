@@ -3039,7 +3039,7 @@ long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const std::string& _lpszText,
 	HERMES_UNICODE_GetProfileString(
 		__text,
 		"Not Found",
-		__output);
+		__output );
 	return (ARX_SPEECH_Add(io, __output, duration));
 }
 

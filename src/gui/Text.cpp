@@ -109,7 +109,6 @@ string FontError() {
 
 long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, const std::string& _lpszUText, int _iSpacingY, RECT _rRect)
 {
-	LogDebug << "ARX_UNICODE_ForceFormattingInRect " << _lpszUText;
 	int iTemp = 0;
 
 	if (danaeApp.m_pddsRenderTarget)
@@ -201,7 +200,6 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, std::string& text, int _iSpacingY, R
 	size_t iOldTemp;
 	bool bWrite;
 	sSize.cx = sSize.cy = 0;
-	LogDebug << "ARX_UNICODE_FormattingInRect " << text;
 
 	size_t iTemp = 0;
 
@@ -301,8 +299,6 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 {
 	HDC hDC = NULL;
 
-	LogDebug << "ARX_UNICODE_DrawTextInRect " << _text;
-
 	// Get a DC for the surface. Then, write out the buffer
 	if (danaeApp.m_pddsRenderTarget)
 	{
@@ -365,8 +361,6 @@ long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice,
                    const std::string& car,
                    COLORREF colo, COLORREF bcol)
 {
-	LogDebug << "ARX_TEXT_Draw " << car;
-
 	if (car.empty() ) return 0;
 
 	if (car[0] == 0) return 0;
@@ -414,7 +408,6 @@ void DrawBookTextCenter(float x, float y, const std::string& text, COLORREF col,
 long UNICODE_ARXDrawTextCenter(float x, float y, const std::string& str, COLORREF col, COLORREF bcol, HFONT font)
 {
 
-	LogDebug << "UNICODE_ARXDrawTextCenter '" << str<<"'";
 
 	HDC hDC;
 
@@ -461,7 +454,6 @@ long UNICODE_ARXDrawTextCenter(float x, float y, const std::string& str, COLORRE
 
 long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, const std::string& str, COLORREF col, COLORREF bcol, HFONT font, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut)
 {
-	LogDebug << "UNICODE_ARXDrawTextCenteredScroll " << str;
 	RECT rRect;
 	ARX_CHECK_LONG(y);
 	ARX_CHECK_LONG(x + x2);   //IF OK, x - x2 cannot overflow
@@ -494,7 +486,6 @@ void ARX_Allocate_Text( std::string& dest, const std::string& id_string) {
 	std::string output;
 	PAK_UNICODE_GetPrivateProfileString(id_string, "default", output);
 	dest = output;
-	LogDebug << "ARX_Allocate_Text id '" << id_string<<"' dest '"<< dest <<"'";
 }
 
 //-----------------------------------------------------------------------------
@@ -548,7 +539,6 @@ USHORT LilEndianShort(USHORT ulValue) {
 
 std::string GetFontName( const std::string& _lpszFileName)
 {
-	LogDebug << "GetFontName " << _lpszFileName;
 	DWORD dwSize;
 	DWORD dwRead;
 	int   iResult;
@@ -659,7 +649,6 @@ std::string GetFontName( const std::string& _lpszFileName)
 
 void _ShowText(char * text)
 {
-	LogDebug << "_ShowText " << text;
 	if (GDevice)
 	{
 		GDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0L);
@@ -816,7 +805,7 @@ void ARX_Text_Init()
 	std::stringstream ss;
 	ARX_Text_Close();
 
-	ARX_Localisation_Init();
+	Localisation_Init();
 	
 	string tx = getFontFile();
 
@@ -1087,7 +1076,7 @@ lpszFontMenu.clear();
 			 LogError << FontError();// XS : Annoying popup, uncomment if you really want to track something down.
 	}
 */
-	ARX_Localisation_Close();
+	Localisation_Close();
 
 	if (pTextManage)
 	{

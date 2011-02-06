@@ -4079,7 +4079,7 @@ void ARX_GAME_Reset(long type)
 
 	// Localisation
 	if (!FINAL_RELEASE)
-		ARX_Localisation_Init();
+		Localisation_Init();
 
 	// ARX Debugger
 	NEED_DEBUGGER_CLEAR = 1;

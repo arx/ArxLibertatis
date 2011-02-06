@@ -9,7 +9,6 @@
 #include "Text.h"
 
 #include "core/Core.h"
-#include "io/Logger.h"
 
 TextManager::TextManager() {
 	vText.clear();
@@ -241,7 +240,6 @@ void TextManager::Render()
 								 pArxText->rRectClipp.right,
 								 pArxText->rRectClipp.bottom);
 
-
 			pArxText->rRect.bottom = pArxText->rRect.top + ARX_UNICODE_DrawTextInRect(ARX_CLEAN_WARN_CAST_FLOAT(pArxText->rRect.left),
 									 pArxText->rRect.top - pArxText->fDeltaY,
 									 ARX_CLEAN_WARN_CAST_FLOAT(pArxText->rRect.right),
@@ -262,7 +260,7 @@ void TextManager::Render()
 			if (pArxText->eType == ARX_TEXT_ONCE)
 			{
 				pArxText->lpszUText.clear();
-				free((void *)pArxText);
+				delete pArxText;
 				pArxText = NULL;
 				itManage = vText.erase(itManage);
 				continue;

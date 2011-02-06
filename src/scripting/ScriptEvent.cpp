@@ -218,6 +218,7 @@ void RemoveNumerics(char * tx)
 
 	tx[pos] = 0;
 }
+
 bool IsElement( const char * seek, const char * text)
 {
 	char tex[1024];
