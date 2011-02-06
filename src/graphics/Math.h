@@ -146,19 +146,9 @@ inline D3DCOLOR _EERIERGBA(float v)
 
 #define EERIELRGB255(r,g,b) (0xff000000L | ( r << 16) | ( g << 8) | b);
 
-
-#ifdef ASSEMBLER_OPTIMS	 //////////////////////
-extern float __mov;
-//__mov=x;
-#define FLOAT2LONG( x, l) __asm					\
-	{						\
-		__asm fld x \
-		__asm fistp l		\
-	}
-#else					 //////////////////////
 #define FLOAT2LONG(floatx,longx) \
 	longx = (long)floatx
-#endif
+
 
 float	SSQRT(long a);
 

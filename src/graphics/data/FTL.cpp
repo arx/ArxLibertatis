@@ -255,7 +255,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 	{
 		// TODO allocsize += sizeof(EERIE_SELECTIONS) * obj->nbselections;
 
-		for (long i = 0; i < obj->selections.size(); i++)
+		for (size_t i = 0; i < obj->selections.size(); i++)
 		{
 			allocsize += sizeof(long) * obj->selections[i].nb_selected;
 		}
@@ -546,7 +546,7 @@ long MCache_GetSize()
 {
 	long tot = 0;
 
-	for (long i = 0; i < meshCache.size(); i++)
+	for (size_t i = 0; i < meshCache.size(); i++)
 	{
 		tot += meshCache[i].size;
 	}
@@ -564,7 +564,7 @@ long MCache_Get( const std::string file)
 
     File_Standardize(file, fic);
 
-    for (long i = 0; i < meshCache.size(); i++)
+    for (size_t i = 0; i < meshCache.size(); i++)
         if ( !strcasecmp(meshCache[i].name.c_str(), fic.c_str() ) ) return i;
 
     return -1;
@@ -877,7 +877,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		}
 
 			// Copy in the action points data
-			for ( long i = 0 ; i < obj->actionlist.size() ; i++ )
+			for ( size_t i = 0 ; i < obj->actionlist.size() ; i++ )
 			{ // TODO iterator
 				EERIE_ACTIONLIST_FTL* action = reinterpret_cast<EERIE_ACTIONLIST_FTL*>(dat+pos);
 				obj->actionlist[i].name = action->name;
@@ -889,7 +889,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 			}
 
 			// Copy in the selections data
-			for ( long i = 0 ; i < obj->selections.size() ; i++ )
+			for ( size_t i = 0 ; i < obj->selections.size() ; i++ )
 			{ // TODO iterator
 				EERIE_SELECTIONS_FTL* selection = reinterpret_cast<EERIE_SELECTIONS_FTL*>(dat+pos);
 				obj->selections[i].name = selection->name;

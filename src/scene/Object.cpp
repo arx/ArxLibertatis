@@ -331,7 +331,7 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, lo
 	eerie->anim_time = 0.f;
 	
 	// Go For Keyframes read
-	for(size_t i = 0; i < th.nb_key_frames; i++) {
+	for(long i = 0; i < th.nb_key_frames; i++) {
 		LogDebug << "Loading keyframe " << i;
 		
 		THEA_KEYFRAME_2015 tkf2015;
@@ -376,7 +376,7 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, lo
 		         << " Orient " << tkf2015.key_orient << " Morph " << tkf2015.key_morph;
 		
 		// Is There a Global translation ?
-		if(tkf2015.key_move == true) {
+		if(tkf2015.key_move != 0) {
 			THEA_KEYMOVE * tkm = (THEA_KEYMOVE *)(adr + pos);
 			pos += sizeof(THEA_KEYMOVE);
 			
@@ -389,7 +389,7 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, lo
 		}
 		
 		// Is There a Global Rotation ?
-		if(tkf2015.key_orient == true) {
+		if(tkf2015.key_orient != 0) {
 			pos += 8; // THEO_ANGLE
 			ArxQuat * quat = (ArxQuat *)(adr + pos);
 			pos += sizeof(ArxQuat);
@@ -404,12 +404,12 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, lo
 		}
 		
 		// Is There a Global Morph ? (IGNORED!)
-		if(tkf2015.key_morph == true) {
+		if(tkf2015.key_morph != 0) {
 			pos += 16; // THEA_MORPH
 		}
 		
 		// Now go for Group Rotations/Translations/scaling for each GROUP
-		for(size_t j = 0; j < th.nb_groups; j++) {
+		for(long j = 0; j < th.nb_groups; j++) {
 			THEO_GROUPANIM * tga = (THEO_GROUPANIM *)(adr + pos);
 			pos += sizeof(THEO_GROUPANIM);
 			
@@ -454,7 +454,7 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, lo
 		pos += sizeof(long);
 	}
 	
-	for(size_t i = 0; i < th.nb_key_frames; i++) {
+	for(long i = 0; i < th.nb_key_frames; i++) {
 		
 		if(!eerie->frames[i].f_translate) {
 			
@@ -506,16 +506,16 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, lo
 		}
 	}
 	
-	for(size_t i = 0; i < th.nb_key_frames; i++) {
+	for(long i = 0; i < th.nb_key_frames; i++) {
 		eerie->frames[i].f_translate = true;
 		eerie->frames[i].f_rotate = true;
 	}
 	
 	// Sets Flag for voidgroups (unmodified groups for whole animation)
-	for(size_t i = 0; i < eerie->nb_groups; i++) {
+	for(long i = 0; i < eerie->nb_groups; i++) {
 		
 		bool voidd = true;
-		for(size_t j = 0; j < eerie->nb_key_frames; j++) {
+		for(long j = 0; j < eerie->nb_key_frames; j++) {
 			long pos = i + (j * eerie->nb_groups);
 			
 			if((eerie->groups[pos].quat.x != 0.f)
@@ -1047,34 +1047,39 @@ void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms)
 //-----------------------------------------------------------------------------------------------------
 EERIE_MULTI3DSCENE * MultiSceneToEerie(const char * dirr)
 {
-	char * tex;
-	long idx;
-//	todo: finddata
-//	struct _finddata_t fd;
 	EERIE_MULTI3DSCENE * es;
-	unsigned char * adr;
 	char pathh[512];
-	char path[512];
 
 	es = allocStructZero<EERIE_MULTI3DSCENE>("EEMultiScn");
 
 	strcpy(LastLoadedScene, dirr);
 	sprintf(pathh, "%s*.scn", dirr);
 
+	//todo: Implement full function and remove this
+#if !ARX_COMPILER_MSVC
 	printf("\e[1;33mpartially unimplemented MultiSceneToEerie\e[m\n");
+#else
+	printf("partially unimplemented MultiSceneToEerie\n");
+#endif
+
+//	todo: finddata
+//	long idx;
+//	struct _finddata_t fd;
 //	if ((idx = _findfirst(pathh, &fd)) != -1)
 //	{
 //		do
 //		{
 //			if (!(fd.attrib & _A_SUBDIR))
 //			{
-//				tex = GetExt(fd.name);
+//				char * tex = GetExt(fd.name);
 //
 //				if (!strcasecmp(tex, ".SCN"))
 //				{
+//					char path[512];
 //					sprintf(path, "%s%s", dirr, fd.name);
 //					size_t SizeAlloc = 0;
 //
+//					unsigned char * adr;
 //					if (adr = (unsigned char *)PAK_FileLoadMalloc(path, &SizeAlloc))
 //					{
 //						es->scenes[es->nb_scenes] = (EERIE_3DSCENE *)ScnToEerie(adr, SizeAlloc, path, TTE_NO_NDATA | TTE_NO_PDATA);
@@ -1592,8 +1597,6 @@ void Clear3DScene(EERIE_3DSCENE * eerie)
 //-----------------------------------------------------------------------------------------------------
 void ReleaseEERIE3DObjFromScene(EERIE_3DOBJ * eerie)
 {
-	long i;
-
 	if (!eerie) return;
 
 	if (eerie->ndata != NULL)
@@ -1642,7 +1645,7 @@ void ReleaseEERIE3DObjFromScene(EERIE_3DOBJ * eerie)
 
 	if (eerie->grouplist != NULL)
 	{
-		for (i = 0; i < eerie->nbgroups; i++)
+		for (long i = 0; i < eerie->nbgroups; i++)
 		{
 			if ((eerie->grouplist[i].indexes != NULL)
 			        && (eerie->grouplist[i].nb_index > 0)) free(eerie->grouplist[i].indexes);
@@ -1657,7 +1660,7 @@ void ReleaseEERIE3DObjFromScene(EERIE_3DOBJ * eerie)
 
 	if (!eerie->selections.empty())
 	{
-		for (i = 0; i < eerie->selections.size(); i++)
+		for (size_t i = 0; i < eerie->selections.size(); i++)
 		{ // TODO iterator
 			if (eerie->selections[i].selected) free(eerie->selections[i].selected);
 
@@ -1679,8 +1682,6 @@ void ReleaseEERIE3DObjFromScene(EERIE_3DOBJ * eerie)
 //-----------------------------------------------------------------------------------------------------
 void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 {
-	long i;
-
 	if (!eerie) return;
 
 	if (eerie->originaltextures != NULL)
@@ -1691,7 +1692,7 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 
 	if (!eerie->selections.empty())
 	{
-		for (i = 0; i < eerie->selections.size(); i++)
+		for (size_t i = 0; i < eerie->selections.size(); i++)
 		{ // TODO iterator
 			if (eerie->selections[i].selected) free(eerie->selections[i].selected);
 
@@ -1744,7 +1745,7 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 
 	if (eerie->grouplist != NULL)
 	{
-		for (i = 0; i < eerie->nbgroups; i++)
+		for (long i = 0; i < eerie->nbgroups; i++)
 		{
 			if ((eerie->grouplist[i].indexes != NULL)
 			        && (eerie->grouplist[i].nb_index > 0)) free(eerie->grouplist[i].indexes);
@@ -1884,7 +1885,7 @@ EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj)
 
 		nouvo->selections = obj->selections;
 
-		for (long i = 0; i < obj->selections.size(); i++)
+		for (size_t i = 0; i < obj->selections.size(); i++)
 		{ // TODO iterator
 			if (obj->selections[i].nb_selected)
 			{
@@ -1933,7 +1934,7 @@ long EERIE_OBJECT_GetSelection(EERIE_3DOBJ * obj, const char * selname)
 {
 	if (!obj) return -1;
 
-	for (long i = 0; i < obj->selections.size(); i++)
+	for (size_t i = 0; i < obj->selections.size(); i++)
 	{ // TODO iterator
 		if (!strcasecmp(obj->selections[i].name.c_str(), selname)) return i;
 	}
@@ -2040,7 +2041,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 		eobj->c_data->bones = new EERIE_BONE[eobj->c_data->nb_bones];
 		memset(eobj->c_data->bones, 0, sizeof(EERIE_BONE)*eobj->c_data->nb_bones);
 
-		char temp[eobj->nbvertex];
+		char* temp = (char*)malloc(eobj->nbvertex);
 		memset(temp, 0, eobj->nbvertex);
 
 		for (i = eobj->nbgroups - 1; i >= 0; i--)
@@ -2065,6 +2066,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 			eobj->c_data->bones[i].original_group = &eobj->grouplist[i];
 			eobj->c_data->bones[i].father = GetFather(eobj, eobj->grouplist[i].origin, i - 1);
 		}
+
+		free(temp);
 
 		// Try to correct lonely vertex
 		for (i = 0; i < eobj->nbvertex; i++)

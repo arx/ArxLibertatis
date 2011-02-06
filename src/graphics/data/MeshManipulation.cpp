@@ -101,10 +101,7 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const std::string& s1, const std::
 	
 	LogDebug << "Tweak Skin " << s1 << " " << s2;
 
-	std::string skintochange;
-	char skinname[512];
-
-	skintochange = "Graph\\Obj3D\\Textures\\" + s1 + ".bmp";
+	std::string skintochange = "Graph\\Obj3D\\Textures\\" + s1 + ".bmp";
 	MakeUpcase(skintochange);
 	TextureContainer * tex = D3DTextr_CreateTextureFromFile(skintochange);
 
@@ -203,7 +200,7 @@ long GetActionPoint(EERIE_3DOBJ * obj, const char * name)
 {
 	if (!obj) return -1;
 
-	for (long n = 0; n < obj->actionlist.size(); n++)
+	for (size_t n = 0; n < obj->actionlist.size(); n++)
 	{ // TODO iterator
 		if (!strcasecmp(obj->actionlist[n].name.c_str(), name))
 			return obj->actionlist[n].idx;
@@ -385,7 +382,6 @@ void ObjectAddSelection(EERIE_3DOBJ * obj, long numsel, long vidx)
 //*************************************************************************************
 EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, long tw)
 {
-	long i;
 	long tw1 = -1;
 	long tw2 = -1;
 	long iw1 = -1;
@@ -400,14 +396,14 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	long sel_legs2 = -1;
 
 	// First we retreive selection groups indexes
-	for (i = 0; i < obj1->selections.size(); i++)
+	for (size_t i = 0; i < obj1->selections.size(); i++)
 	{ // TODO iterator
 		if (!strcasecmp(obj1->selections[i].name.c_str(), "head")) sel_head1 = i;
 		else if (!strcasecmp(obj1->selections[i].name.c_str(), "chest")) sel_torso1 = i;
 		else if (!strcasecmp(obj1->selections[i].name.c_str(), "leggings")) sel_legs1 = i;
 	}
 
-	for (i = 0; i < obj2->selections.size(); i++)
+	for (size_t i = 0; i < obj2->selections.size(); i++)
 	{ // TODO iterator
 		if (!strcasecmp(obj2->selections[i].name.c_str(), "head")) sel_head2 = i;
 		else if (!strcasecmp(obj2->selections[i].name.c_str(), "chest")) sel_torso2 = i;
@@ -542,7 +538,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	}
 
 	// Recreate Action Points included in work object.for Obj1
-	for (i = 0; i < obj1->actionlist.size(); i++)
+	for (size_t i = 0; i < obj1->actionlist.size(); i++)
 	{
 		if ((IsInSelection(obj1, obj1->actionlist[i].idx, iw1) != -1)
 		        ||	(IsInSelection(obj1, obj1->actionlist[i].idx, jw1) != -1)
@@ -556,7 +552,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	}
 
 	// Do the same for Obj2
-	for (i = 0; i < obj2->actionlist.size(); i++)
+	for (size_t i = 0; i < obj2->actionlist.size(); i++)
 	{
 		if ((IsInSelection(obj2, obj2->actionlist[i].idx, tw2) != -1)
 		        || (!strcasecmp(obj1->actionlist[i].name.c_str(), "head2chest"))
@@ -569,7 +565,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	}
 
 	// Recreate Vertex using Obj1 Vertexes
-	for (i = 0; i < obj1->nbvertex; i++)
+	for (long i = 0; i < obj1->nbvertex; i++)
 	{
 		if ((IsInSelection(obj1, i, iw1) != -1)
 		        ||	(IsInSelection(obj1, i, jw1) != -1))
@@ -579,7 +575,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	}
 
 	// The same for Obj2
-	for (i = 0; i < obj2->nbvertex; i++)
+	for (long i = 0; i < obj2->nbvertex; i++)
 	{
 		if (IsInSelection(obj2, i, tw2) != -1)
 		{
@@ -593,7 +589,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	// We look for texturecontainers included in the future tweaked object
 	TextureContainer * tc = NULL;
 
-	for (i = 0; i < obj1->nbfaces; i++)
+	for (long i = 0; i < obj1->nbfaces; i++)
 	{
 		if (((IsInSelection(obj1, obj1->facelist[i].vid[0], iw1) != -1)
 		        ||	(IsInSelection(obj1, obj1->facelist[i].vid[0], jw1) != -1))
@@ -615,7 +611,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 		}
 	}
 
-	for (i = 0; i < obj2->nbfaces; i++)
+	for (long i = 0; i < obj2->nbfaces; i++)
 	{
 		if ((IsInSelection(obj2, obj2->facelist[i].vid[0], tw2) != -1)
 		        || (IsInSelection(obj2, obj2->facelist[i].vid[1], tw2) != -1)
@@ -771,7 +767,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 		}
 
 	//Now recreates other selections...
-	for (i = 0; i < obj1->selections.size(); i++)
+	for (size_t i = 0; i < obj1->selections.size(); i++)
 	{ // TODO iterator
 		if (EERIE_OBJECT_GetSelection(work, obj1->selections[i].name.c_str()) == -1)
 		{
@@ -812,7 +808,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 		}
 	}
 
-	for (i = 0; i < obj2->selections.size(); i++)
+	for (size_t i = 0; i < obj2->selections.size(); i++)
 	{ // TODO iterator
 		if (EERIE_OBJECT_GetSelection(work, obj2->selections[i].name.c_str()) == -1)
 		{
@@ -837,7 +833,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	}
 
 	// Recreate Animation-groups vertex
-	for (i = 0; i < obj1->nbgroups; i++)
+	for (long i = 0; i < obj1->nbgroups; i++)
 	{
 		for (long j = 0; j < obj1->grouplist[i].nb_index; j++)
 		{
@@ -845,7 +841,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 		}
 	}
 
-	for (i = 0; i < obj2->nbgroups; i++)
+	for (long i = 0; i < obj2->nbgroups; i++)
 	{
 		for (long j = 0; j < obj2->grouplist[i].nb_index; j++)
 		{
@@ -854,7 +850,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	}
 
 	// Look for Vertices Without Group...
-	for (i = 0; i < work->nbmaps; i++)
+	for (long i = 0; i < work->nbmaps; i++)
 	{
 		work->texturecontainer[i]->Restore(GDevice);
 	}

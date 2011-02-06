@@ -5,12 +5,17 @@
 #define D3D_OVERLOADS
 
 
-
 #include <cmath>
+#include "core/Common.h"
+#if ARX_COMPILER == ARX_COMPILER_GCC
+    #pragma GCC diagnostic ignored "-fpermissive"
+#endif
 
-#pragma GCC diagnostic ignored "-fpermissive"
 #include <d3d.h>
-#pragma GCC diagnostic error "-fpermissive"
 
+#if ARX_COMPILER == ARX_COMPILER_GCC
+    #pragma GCC diagnostic error "-fpermissive"
+#endif
+    
 #endif // ARX_D3DWRAPPER_H
 

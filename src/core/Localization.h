@@ -35,8 +35,7 @@ void Localisation_Close();
 
 int PAK_UNICODE_GetPrivateProfileString( const std::string& _lpszSection,
         const std::string& _lpszDefault,
-        std::string& _lpszBuffer,
-        unsigned long _lBufferSize);
+        std::string& _lpszBuffer);
 
 long HERMES_UNICODE_GetProfileSectionKeyCount( const std::string& sectionname);
 long HERMES_UNICODE_GetProfileString(const std::string& sectionname,

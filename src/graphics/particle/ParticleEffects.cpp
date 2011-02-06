@@ -1787,7 +1787,7 @@ void MakeBookFX(float posx,float posy,float posz)
 			pd->scale.z		=	0.f;
 			pd->timcreation	=	lARXTime;
 			pd->tolive		=	1200+(unsigned long)(rnd()*400.f);
-			pd->tc			=	ITC.book;
+			pd->tc			=	ITC.Get("book");
 			pd->r			=	1.f-(float)i*0.1f;
 			pd->g			=	(float)i*0.1f;
 			pd->b			=	0.5f-(float)i*0.1f;

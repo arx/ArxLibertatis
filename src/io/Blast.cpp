@@ -409,7 +409,7 @@ int blast(blast_in infun, void *inhow, blast_out outfun, void *outhow)
     return err;
 }
 
-#ifdef TEST
+#if 0
 /* Example of how to use blast() */
 #include <stdio.h>
 #include <stdlib.h>

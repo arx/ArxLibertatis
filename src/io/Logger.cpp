@@ -1,9 +1,8 @@
-
+#include <stdlib.h>
+#include "core/Common.h"
 #include "io/Logger.h"
 
-#include <cstdlib>
-
-#define BASH_COLOR 1
+#define BASH_COLOR !ARX_COMPILER_MSVC
 
 using std::cout;
 
@@ -37,6 +36,21 @@ const LogSetting blackList[] = {
 };
 
 Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {
+  writeInfo(file.c_str(), line, level);
+}
+
+Logger::Logger(const char* file, int line, Logger::LogLevel level) {
+  writeInfo(file, line, level);
+}
+
+Logger::~Logger() {
+  if (print)
+    std::cout<<std::endl;
+  if (fatal)
+	  exit(0);
+}
+
+void Logger::writeInfo(const char* file, int line, Logger::LogLevel level) {
   fatal = false;
 	LogLevel curLevel = getLogLevel(file);
   if(level < curLevel || curLevel == None) {
@@ -67,16 +81,9 @@ Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {
   };
 }
 
-Logger::~Logger() {
-  if (print)
-    std::cout<<std::endl;
-  if (fatal)
-	  exit(0);
-}
-
 void Logger::log(int mode, int color, const string & level,
 		const string & file, int line) {
-#ifdef BASH_COLOR
+#if BASH_COLOR
 	cout<<"[\e["<< mode <<";"<< color <<"m" << level << "\e[m]  "
 			<<"\e[0;35m"<<file<<"\e[m:\e[0;33m"<<line<<"\e[m"<<"  ";
 #else

@@ -485,12 +485,9 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long param, l
 
 	if (!(flags & ARX_SPEECH_FLAG_NOTEXT))
 	{
-		std::string _output( 4096, '\0' );
+		std::string _output;
 
-		flg = HERMES_UNICODE_GetProfileString(lpszUSection,
-											  "",
-											  _output );
-
+		flg = HERMES_UNICODE_GetProfileString(lpszUSection, "", _output);
 
 		io->lastspeechflag = (short)flg;
 		aspeech[num].text.clear();

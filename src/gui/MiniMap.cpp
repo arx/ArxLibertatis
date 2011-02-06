@@ -210,7 +210,7 @@ void ARX_MINIMAP_Load_Offsets()
 	{
 		size_t siz = 0;
 		char * dat = (char *)PAK_FileLoadMalloc(INI_MINI_OFFSETS, siz);
-		long pos = 0;
+		size_t pos = 0;
 
 		if (dat)
 		{
@@ -604,7 +604,6 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 						if ((i + 1 < 0) || (i + 1 >= MINIMAP_MAX_X) || (j < 0) || (j >= MINIMAP_MAX_Z)) v = 0;
 						else v = ((float)minimap[SHOWLEVEL].revealed[min((int)i+1, MINIMAP_MAX_X-1)][j]) * ( 1.0f / 255 );
-
 						if (flag == 1)
 						{
 							long vert = 1;
@@ -671,7 +670,6 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 						if ((i < 0) || (i >= MINIMAP_MAX_X) || (j + 1 < 0) || (j + 1 >= MINIMAP_MAX_Z)) v = 0;
 						else v = ((float)minimap[SHOWLEVEL].revealed[i][min((int)j+1, MINIMAP_MAX_Z-1)]) * ( 1.0f / 255 );
-
 						if (flag == 1)
 						{
 							long vert = 3;
@@ -885,15 +883,15 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 					{
 						if (Mapmarkers[i].tstring.empty())
 						{
-							std::string output( 4096, '\0' );
-							MakeLocalised(Mapmarkers[i].string, output, 4096, 0);
+							std::string output;
+							MakeLocalised(Mapmarkers[i].string, output);
 							Mapmarkers[i].tstring = output;
 						}
 
 						if ( !Mapmarkers[i].tstring.empty() )
 						{
-							std::string output( 4096, '\0' );
-							MakeLocalised( Mapmarkers[i].string, output, 4096, 0 );
+							std::string output;
+							MakeLocalised( Mapmarkers[i].string, output);
 							Mapmarkers[i].tstring = output;
 						}
 

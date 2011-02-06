@@ -2993,9 +2993,8 @@ void CheckHit(INTERACTIVE_OBJ * io, float ratioaim)
 
 void MakeStandard( std::string& str)
 {
-	long i = 0;
-	long pos = 0;
-
+	size_t i = 0;
+	
 	while ( i < str.length() )
 	{
 		if (str[i] != '_')
@@ -3011,7 +3010,7 @@ void MakeStandard( std::string& str)
 //*************************************************************************************
 //*************************************************************************************
 
-long MakeLocalised( const std::string& text, std::string& output, long maxsize, long lastspeechflag)
+long MakeLocalised( const std::string& text, std::string& output, long lastspeechflag)
 {
 	if ( text.empty() )
 	{

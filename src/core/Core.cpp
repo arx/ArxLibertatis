@@ -311,7 +311,7 @@ HWND MESH_REDUCTION_WINDOW=NULL;
 
 QUAKE_FX_STRUCT QuakeFx;
 bool bALLOW_BUMP = false;
-char * GTE_TITLE;
+const char * GTE_TITLE;
 char * GTE_TEXT;
 char LAST_FAILED_SEQUENCE[128]="None";
 // START - Information for Player Teleport between/in Levels-------------------------------------
@@ -1059,14 +1059,12 @@ bool IsNoGore( void )
 
 //-----------------------------------------------------------------------------
 
-//TODO: non windows main + remove hinstance => messageboxes
-//int main(int argc, char *argv[]) {
-INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
+// Let's use main for now on all platforms
+// TODO: On Windows, we might want to use WinMain in the Release target for example
+int main(int, char**)
 {
-
-#ifdef _DEBUG
-	ARX_LOG_INIT();
-#endif // _DEBUG
+	LPSTR strCmdLine = GetCommandLine();
+	hInstance = GetModuleHandle(0);
 
 	//TODO memleak stuff
 //	_set_new_mode(1);																//memory handler activated for malloc too
@@ -1081,8 +1079,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 //	_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
 	
 	long i;
-	hInstance = _hInstance;
-
+	
 	if (FINAL_COMMERCIAL_GAME)
 	{
 		LogDebug << "FINAL_COMMERCIAL_GAME";
@@ -1360,7 +1357,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	if (!FOR_EXTERNAL_PEOPLE)
 	{
 		char stemp[256];
-		unsigned ls = 64;
+		u32 ls = 64;
 		GetComputerName(stemp, &ls);
 
 		if (!strcasecmp(stemp,"max"))
@@ -1615,10 +1612,6 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 
 	sfWindow.Create( sf::VideoMode(800, 600, 32), "SFML Window");
 	HRESULT hr=danaeApp.Run();
-
-#ifdef _DEBUG
-	ARX_LOG_CLEAN();
-#endif // _DEBUG
 
 	return hr;
 }
@@ -3390,10 +3383,10 @@ long FirstFrameHandling(LPDIRECT3DDEVICE7 m_pd3dDevice)
  PROGRESS_BAR_COUNT+=1.f;
  LoadLevelScreen();
 		
-	if (ITC.presentation) 
+	if (ITC.Get("presentation")) 
 	{
-		D3DTextr_KillTexture(ITC.presentation);
-		ITC.presentation=NULL;
+        D3DTextr_KillTexture(ITC.Get("presentation"));
+		ITC.Set("presentation", NULL);
 	}
 
 	if (DONT_WANT_PLAYER_INZONE)
@@ -5688,7 +5681,6 @@ static float _AvgFrameDiff = 150.f;
 		ARX_TIME_UnPause();
 		SPLASH_THINGS_STAGE=14;
 		NEED_INTRO_LAUNCH=0;
-		char loadfrom[256];
 		REFUSE_GAME_RETURN=1;
 		const char RESOURCE_LEVEL_10[] = "Graph\\Levels\\Level10\\level10.dlf";
 		OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;

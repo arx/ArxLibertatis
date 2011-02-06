@@ -64,19 +64,34 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <iomanip>
 
-#define STRICT
 #include <tchar.h>
 #include <zlib.h>
 
-//boolean and INT32 clash with wine
+// Needed for ARX_PLATFORM_WINDOWS
+#include <core/Common.h>
+
+// boolean and INT32 used by jpeglib clash with wine
 #define INT32 INT32_JPEG
-#define boolean boolean_JPEG
-#undef _WIN32
+#ifndef ARX_PLATFORM_WINDOWS
+# define boolean boolean_JPEG
+# ifdef _WIN32
+#  define HAD_WIN32
+#  undef _WIN32
+# endif
+#else
+# define HAVE_BOOLEAN
+typedef boolean boolean_JPEG;
+#endif
+
 #include <jpeglib.h>
-#include <jerror.h>
-#include <jconfig.h>
-#include <jmorecfg.h>
-#undef boolean
+
+#ifndef ARX_PLATFORM_WINDOWS
+# undef boolean
+# ifdef HAD_WIN32
+#  define _WIN32
+#  undef HAD_WIN32
+# endif
+#endif
 #undef INT32
 
 #include "core/Application.h"
@@ -3243,7 +3258,7 @@ void ConvertData( std::string& dat)
 {
 	if (dat[0] == '"') dat.erase( 0, 1 );
 
-	for ( int i = 1 ; i < dat.length() ; i++)
+	for ( size_t i = 1 ; i < dat.length() ; i++)
 	{
 		if (dat[i] == '"') dat[i] = 0;
 	}
@@ -3293,26 +3308,20 @@ void LookForRefinementMap(TextureContainer * tc)
 	if (GlobalRefine)
 	{
 		unsigned char * from = (unsigned char *)GlobalRefine;
-		long fromsize = GlobalRefine_size;
+		u32 fromsize = GlobalRefine_size;
 		std::string data( 256, '\0' );
-		long pos = 0;
+		u32 pos = 0;
 		std::string name;
 		name = GetName(tc->m_strName);
 
 		while (pos < GlobalRefine_size)
 		{
-			long pos2 = 0;
-
 			while ((from[pos] != '\n') && (pos < fromsize))
 			{
-				data[pos2++] = from[pos++];
-
-				if (pos2 > 255) pos2 = 255;
+				data += from[pos++];
 
 				if (pos >= GlobalRefine_size) break;
 			}
-
-			data[pos2] = 0;
 
 			while ((pos < fromsize) && (from[pos] < 32)) pos++;
 
@@ -3348,25 +3357,18 @@ void LookForRefinementMap(TextureContainer * tc)
 	if (Refine)
 	{
 		unsigned char * from = (unsigned char *)Refine;
-		long fromsize = Refine_size;
+		u32 fromsize = Refine_size;
 		std::string data;
-		long pos = 0;
+		u32 pos = 0;
 		std::string name = GetName(tc->m_strName);
 
 		while (pos < Refine_size)
 		{
-			long pos2 = 0;
-
 			while ((from[pos] != '\n') && (pos < fromsize))
 			{
-				data[pos2++] = from[pos++];
-
-				if (pos2 > 255) pos2 = 255;
-
+				data += from[pos++];
 				if (pos >= Refine_size) break;
 			}
-
-			data[pos2] = 0;
 
 			while ((pos < fromsize) && (from[pos] < 32)) pos++;
 
@@ -4081,8 +4083,6 @@ int Decomp_PNG(void * mems, DATAS_PNG * dpng) {
 //-----------------------------------------------------------------------------
 HRESULT TextureContainer::LoadPNGFile( const std::string& strPathname)
 {
-	int taille;
-	
 	PakFileHandle * file = PAK_fopen(strPathname.c_str());
 	
 	if(!file) {
@@ -4102,7 +4102,7 @@ HRESULT TextureContainer::LoadPNGFile( const std::string& strPathname)
 	PAK_fseek(file, 0, SEEK_SET);
 
 	char * mempng = (char *)(m_pPNGData + sizeof(DATAS_PNG));
-	PAK_fread((void *)mempng, 1, taille, file);
+	PAK_fread((void *)mempng, 1, size, file);
 	PAK_fclose(file);
 
 	if(Decomp_PNG((void *)mempng, (DATAS_PNG *)m_pPNGData) == PNG_ERROR) {

@@ -282,7 +282,7 @@ void Localisation_Init()
 	if (FINAL_COMMERCIAL_DEMO)
 	{
 		std::string szMenuText;
-		PAK_UNICODE_GetPrivateProfileString( "system_menus_main_cdnotfound", "", szMenuText, 256);
+		PAK_UNICODE_GetPrivateProfileString( "system_menus_main_cdnotfound", "", szMenuText );
 
 		if (!szMenuText[0]) //warez
 		{
@@ -293,7 +293,7 @@ void Localisation_Init()
 	if (FINAL_COMMERCIAL_GAME)
 	{
 		std::string szMenuText;
-		PAK_UNICODE_GetPrivateProfileString( "unicode", "", szMenuText, 256);
+		PAK_UNICODE_GetPrivateProfileString( "unicode", "", szMenuText );
 
 		if (szMenuText[0]) //warez
 		{
@@ -353,11 +353,8 @@ long HERMES_UNICODE_GetProfileSectionKeyCount(const std::string& sectionname)
 //-----------------------------------------------------------------------------
 int PAK_UNICODE_GetPrivateProfileString( const std::string&  _lpszSection,
                                          const std::string&  _lpszDefault,
-                                         std::string&        _lpszBuffer,
-                                         unsigned long       _lBufferSize )
+                                         std::string&        _lpszBuffer )
 {
-	_lpszBuffer.clear();
-
 	if (_lpszSection.empty())	{
 		LogError <<  _lpszDefault << " not found";
 		_lpszBuffer = _lpszDefault + ":NOT FOUND";

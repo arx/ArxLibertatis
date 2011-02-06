@@ -8,7 +8,7 @@
 #ifndef TEXTMANAGER_H_
 #define TEXTMANAGER_H_
 
-#include <windef.h>
+#include <windows.h>
 #include <vector>
 #include <string>
 

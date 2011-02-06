@@ -557,8 +557,8 @@ void ARX_Player_Rune_Remove(unsigned long _ulRune)
 //*************************************************************************************
 void ARX_PLAYER_Quest_Add( const char * quest, bool _bLoad)
 {
-    std::string output( 4096, '\0' );
-    MakeLocalised(quest, output, 4096);
+    std::string output;
+    MakeLocalised(quest, output);
 
     if (output[0] == 0) return;
 

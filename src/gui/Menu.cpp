@@ -298,20 +298,22 @@ void ARX_Menu_Resources_Create(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	ARX_Allocate_Text(ARXmenu.mda->str_button_skin,                     "system_charsheet_button_skin");
 	ARX_Allocate_Text(ARXmenu.mda->str_button_done,                     "system_charsheet_button_done");
 
-	size_t siz;
+	
 	char szFileName[256];
-
 	sprintf(szFileName, "Localisation\\ucredits_%s.txt", Project.localisationpath.c_str());
-	ARXmenu.mda->str_cre_credits = (_TCHAR*) PAK_FileLoadMalloc(szFileName, siz);
 
-	if (!ARXmenu.mda->str_cre_credits.empty() &&
-		ARXmenu.mda->str_cre_credits[(siz>>1)-1] != 0)
+	// TODO: BROKEN ACCESS OOB
+	/*
+	size_t siz;
+	ARXmenu.mda->str_cre_credits = (_TCHAR*) PAK_FileLoadMalloc(szFileName, siz);
+	if (!ARXmenu.mda->str_cre_credits.empty() && ARXmenu.mda->str_cre_credits[(siz>>1)-1] != 0)
 	{
 		_TCHAR * pTxt = (_TCHAR *)malloc(siz + 2);
 		memcpy(pTxt, ARXmenu.mda->str_cre_credits.c_str(), siz);
 		pTxt[(siz>>1)] = 0;
 		ARXmenu.mda->str_cre_credits = pTxt;
 	}
+	*/
 	ARXmenu.mda->str_cre_credits.clear();
 
 	CreateSaveGameList();
@@ -601,68 +603,69 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	if ((ARXmenu.currentmode == AMCM_NEWQUEST) && (ARXmenu.mda))
 	{
-		if (ITC.questbook == NULL) 
+		if (ITC.Get("questbook") == NULL)
 		{
 			ARX_Menu_Resources_Release(false);
 			ARX_Menu_Resources_Create(m_pd3dDevice);
 
-			ITC.playerbook = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\char_sheet_book.bmp");
-			ITC.ic_casting = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_casting.bmp");
-			ITC.ic_close_combat = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_close_combat.bmp");
-			ITC.ic_constitution = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_constit.bmp");
-			ITC.ic_defense = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_defense.bmp");
-			ITC.ic_dexterity = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_dext.bmp");
-			ITC.ic_etheral_link = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_etheral_link.bmp");
-			ITC.ic_mind = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_intel.bmp");
-			ITC.ic_intuition = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_intuition.bmp");
-			ITC.ic_mecanism = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_mecanism.bmp");
-			ITC.ic_object_knowledge = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_obj_knowledge.bmp");
-			ITC.ic_projectile = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_projectile.bmp");
-			ITC.ic_stealth = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_stealth.bmp");
-			ITC.ic_strength = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_strenght.bmp");
+			ITC.Set("playerbook", "Graph\\Interface\\book\\character_sheet\\char_sheet_book.bmp");
+			ITC.Set("ic_casting", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_casting.bmp");
+			ITC.Set("ic_close_combat", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_close_combat.bmp");
+			ITC.Set("ic_constitution", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_constit.bmp");
+			ITC.Set("ic_defense", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_defense.bmp");
+			ITC.Set("ic_dexterity", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_dext.bmp");
+			ITC.Set("ic_etheral_link", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_etheral_link.bmp");
+			ITC.Set("ic_mind", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_intel.bmp");
+			ITC.Set("ic_intuition", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_intuition.bmp");
+			ITC.Set("ic_mecanism", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_mecanism.bmp");
+			ITC.Set("ic_object_knowledge", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_obj_knowledge.bmp");
+			ITC.Set("ic_projectile", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_projectile.bmp");
+			ITC.Set("ic_stealth", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_stealth.bmp");
+			ITC.Set("ic_strength", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_strenght.bmp");
 
-			ITC.questbook = MakeTCFromFile("Graph\\Interface\\book\\questbook.bmp");
-			ITC.pTexSpellBook = MakeTCFromFile("Graph\\Interface\\book\\SpellBook.bmp");
-			ITC.bookmark_char = MakeTCFromFile("Graph\\Interface\\book\\bookmark_char.bmp");
-			ITC.bookmark_magic = MakeTCFromFile("Graph\\Interface\\book\\bookmark_magic.bmp");
-			ITC.bookmark_map = MakeTCFromFile("Graph\\Interface\\book\\bookmark_map.bmp");
-			ITC.bookmark_quest = MakeTCFromFile("Graph\\Interface\\book\\bookmark_quest.bmp");
+			ITC.Set("questbook", "Graph\\Interface\\book\\questbook.bmp");
+			ITC.Set("pTexSpellBook", "Graph\\Interface\\book\\SpellBook.bmp");
+			ITC.Set("bookmark_char", "Graph\\Interface\\book\\bookmark_char.bmp");
+			ITC.Set("bookmark_magic", "Graph\\Interface\\book\\bookmark_magic.bmp");
+			ITC.Set("bookmark_map", "Graph\\Interface\\book\\bookmark_map.bmp");
+			ITC.Set("bookmark_quest", "Graph\\Interface\\book\\bookmark_quest.bmp");
 
-			ITC.accessible_1 = MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_1.bmp");
-			ITC.accessible_2 = MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_2.bmp");
-			ITC.accessible_3 = MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_3.bmp");
-			ITC.accessible_4 = MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_4.bmp");
-			ITC.accessible_5 = MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_5.bmp");
-			ITC.accessible_6 = MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_6.bmp");
-			ITC.accessible_7 = MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_7.bmp");
-			ITC.accessible_8 = MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_8.bmp");
-			ITC.accessible_9 = MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_9.bmp");
-			ITC.accessible_10 = MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_10.bmp");
-			ITC.current_1 = MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_1.bmp");
-			ITC.current_2 = MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_2.bmp");
-			ITC.current_3 = MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_3.bmp");
-			ITC.current_4 = MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_4.bmp");
-			ITC.current_5 = MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_5.bmp");
-			ITC.current_6 = MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_6.bmp");
-			ITC.current_7 = MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_7.bmp");
-			ITC.current_8 = MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_8.bmp");
-			ITC.current_9 = MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_9.bmp");
-			ITC.current_10 = MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_10.bmp");
-			ITC.heropageleft = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\Hero_left_X24_Y24.BMP");
-			ITC.heropageright = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\Hero_right_X305_Y270.BMP");
-			ITC.symbol_mega = NULL; 
-			ITC.symbol_vista = NULL; 
-			ITC.symbol_aam = NULL; 
-			ITC.symbol_taar = NULL; 
-			ITC.symbol_yok = NULL; 
+			ITC.Set("accessible_1", "Graph\\Interface\\book\\Accessible\\accessible_1.bmp");
+			ITC.Set("accessible_2", "Graph\\Interface\\book\\Accessible\\accessible_2.bmp");
+			ITC.Set("accessible_3", "Graph\\Interface\\book\\Accessible\\accessible_3.bmp");
+			ITC.Set("accessible_4", "Graph\\Interface\\book\\Accessible\\accessible_4.bmp");
+			ITC.Set("accessible_5", "Graph\\Interface\\book\\Accessible\\accessible_5.bmp");
+			ITC.Set("accessible_6", "Graph\\Interface\\book\\Accessible\\accessible_6.bmp");
+			ITC.Set("accessible_7", "Graph\\Interface\\book\\Accessible\\accessible_7.bmp");
+			ITC.Set("accessible_8", "Graph\\Interface\\book\\Accessible\\accessible_8.bmp");
+			ITC.Set("accessible_9", "Graph\\Interface\\book\\Accessible\\accessible_9.bmp");
+			ITC.Set("accessible_10", "Graph\\Interface\\book\\Accessible\\accessible_10.bmp");
+			ITC.Set("current_1", "Graph\\Interface\\book\\Current_Page\\Current_1.bmp");
+			ITC.Set("current_2", "Graph\\Interface\\book\\Current_Page\\Current_2.bmp");
+			ITC.Set("current_3", "Graph\\Interface\\book\\Current_Page\\Current_3.bmp");
+			ITC.Set("current_4", "Graph\\Interface\\book\\Current_Page\\Current_4.bmp");
+			ITC.Set("current_5", "Graph\\Interface\\book\\Current_Page\\Current_5.bmp");
+			ITC.Set("current_6", "Graph\\Interface\\book\\Current_Page\\Current_6.bmp");
+			ITC.Set("current_7", "Graph\\Interface\\book\\Current_Page\\Current_7.bmp");
+			ITC.Set("current_8", "Graph\\Interface\\book\\Current_Page\\Current_8.bmp");
+			ITC.Set("current_9", "Graph\\Interface\\book\\Current_Page\\Current_9.bmp");
+			ITC.Set("current_10", "Graph\\Interface\\book\\Current_Page\\Current_10.bmp");
+			ITC.Set("heropageleft", "Graph\\Interface\\book\\character_sheet\\Hero_left_X24_Y24.BMP");
+			ITC.Set("heropageright", "Graph\\Interface\\book\\character_sheet\\Hero_right_X305_Y270.BMP");
 
-			ITC.pTexCursorRedist = MakeTCFromFile("Graph\\Interface\\cursors\\add_points.bmp");
+			ITC.Set("symbol_mega", NULL);
+			ITC.Set("symbol_vista", NULL);
+			ITC.Set("symbol_aam", NULL);
+			ITC.Set("symbol_taar", NULL);
+			ITC.Set("symbol_yok", NULL);
 
-			ITC.pTexCornerLeft = MakeTCFromFile("Graph\\Interface\\book\\Left_corner_original.bmp");
-			ITC.pTexCornerRight = MakeTCFromFile("Graph\\Interface\\book\\Right_corner_original.bmp");
+			ITC.Set("pTexCursorRedist", "Graph\\Interface\\cursors\\add_points.bmp");
 
-			ARX_Allocate_Text(ITC.lpszULevel, _T("system_charsheet_player_lvl"));
-			ARX_Allocate_Text(ITC.lpszUXp, _T("system_charsheet_player_xp"));
+			ITC.Set("pTexCornerLeft", "Graph\\Interface\\book\\Left_corner_original.bmp");
+			ITC.Set("pTexCornerRight", "Graph\\Interface\\book\\Right_corner_original.bmp");
+
+			ARX_Allocate_Text(ITC.Level, _T("system_charsheet_player_lvl"));
+			ARX_Allocate_Text(ITC.Xp, _T("system_charsheet_player_xp"));
 
 			ANIM_Set(&player.useanim, herowaitbook);
 
@@ -922,7 +925,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 		Color = RGB(232, 204, 143);
 
-		PAK_UNICODE_GetPrivateProfileString("system_menus_main_cdnotfound", "", szText, 256);
+		PAK_UNICODE_GetPrivateProfileString("system_menus_main_cdnotfound", "", szText);
 		iW = 0;
 		iH = 0;
 		GetTextSize(hFontMenu, szText, iW, iH);
@@ -930,7 +933,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		ePos.y = DANAESIZY * 0.4f;
 		FontRenderText(hFontMenu, ePos, szText, Color);
 
-		PAK_UNICODE_GetPrivateProfileString("system_yes", "", szText, 256);
+		PAK_UNICODE_GetPrivateProfileString("system_yes", "", szText);
 		iW = 0;
 		iH = 0;
 		GetTextSize(hFontMenu, szText, iW, iH);
@@ -956,7 +959,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 		FontRenderText(hFontMenu, ePos, szText, Color);
 
-		PAK_UNICODE_GetPrivateProfileString("system_no", "", szText, 256);
+		PAK_UNICODE_GetPrivateProfileString("system_no", "", szText);
 		iW = 0;
 		iH = 0;
 		GetTextSize(hFontMenu, szText, iW, iH);
