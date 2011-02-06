@@ -57,36 +57,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_TEXT_H
 #define ARX_TEXT_H
 
-#include "EERIEapp.h"
-#include "EERIETypes.h"
-
 #include <tchar.h>
+#include <windows.h>
 #include <vector>
 
 //-----------------------------------------------------------------------------
 
-enum ARX_TEXT_TYPE
-{
-	ARX_TEXT_ONCE,
-	ARX_TEXT_STAY
-};
+void ARX_Text_Init();
+void ARX_Text_Close();
 
-struct ARX_TEXT
-{
-	ARX_TEXT_TYPE	eType;
-	HFONT			hFont;
-	RECT			rRect;
-	RECT			rRectClipp;
-	_TCHAR		*	lpszUText;
-	float			fDeltaY;
-	float			fSpeedScrollY;
-	long			lCol;
-	long			lBkgCol;
-	long			lTimeScroll;
-	long			lTimeOut;
-	long			lTailleLigne;
-	int				iNbLineClip;
-};
+//-----------------------------------------------------------------------------
+
+class ARXText;
 
 class CARXTextManager
 {
@@ -95,19 +77,40 @@ public:
 	~CARXTextManager();
 
 public:
-	bool AddText(HFONT font, _TCHAR* str, const RECT& rect, long fgcolor = -1, long bgcolor = 0, long timeout = 0, long scrolltime = 0, float scrollspeed = 0.f, int iNbLigneClipp = 0);
+	void AddText(HFONT font, const _TCHAR* str, const RECT& rect, long fgcolor = -1, long bgcolor = 0, long timeout = 0, long scrolltime = 0, float scrollspeed = 0.f, int maxlines = 0);
+	void AddText(HFONT font, const _TCHAR* str, long x, long y, long fgcolor);
 	void Update(float diffFrame);
 	void Render();
 	void Clear();
 	bool HasText() const;
 
 private:
-	std::vector<ARX_TEXT*>	vText_;
+	std::vector<ARXText*> vText_;
 
 	// No copy
 	CARXTextManager(const CARXTextManager&);
 	CARXTextManager& operator=(const CARXTextManager&);
 };
+
+//-----------------------------------------------------------------------------
+
+void ARX_TEXT_Draw(HFONT ef, float x, float y, const _TCHAR* car, COLORREF colo, COLORREF bcol = 0x00FF00FF);
+long ARX_TEXT_DrawRect(HFONT ef, float x, float y, float maxx, float maxy, const _TCHAR* car,
+					   COLORREF colo, HRGN hRgn = NULL, COLORREF bcol = 0x00FF00FF);
+
+void DrawBookTextInRect(HFONT font, float x, float y, float maxx, float maxy, const _TCHAR* text,
+						COLORREF col, COLORREF col2);
+void DrawBookTextCenter(HFONT font, float x, float y, const _TCHAR* text, COLORREF col, COLORREF col2);
+		
+void UNICODE_ARXDrawTextCenter(HFONT font, float x, float y, const _TCHAR* str, COLORREF col, COLORREF bcol);
+void UNICODE_ARXDrawTextCenteredScroll(HFONT font, float x, float y, float x2, const _TCHAR* str, COLORREF col,
+									   COLORREF bcol, int iTimeScroll, float fSpeed,
+									   int iNbLigne, int iTimeOut = INT_MAX);
+
+long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, const _TCHAR* _lpszUText, int _iSpacingY, RECT _rRect);
+
+void ARX_Allocate_Text(_TCHAR*& dest, const _TCHAR* id_string);
+void _ShowText(const char* text);
 
 //-----------------------------------------------------------------------------
 
@@ -121,44 +124,5 @@ extern HFONT hFontInBook;
 extern HFONT hFontRedist;
 extern HFONT hFontInGame;
 extern HFONT hFontInGameNote;
-
-//-----------------------------------------------------------------------------
-
-long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice, HFONT ef, float x, float y, long spacingx, long spacingy, _TCHAR * car, COLORREF colo, COLORREF bcol = 0x00FF00FF);
-long ARX_TEXT_DrawRect(LPDIRECT3DDEVICE7 pd3dDevice, HFONT ef, float x, float y, long spacingx, long spacingy, float maxx, float maxy, _TCHAR * car, COLORREF colo, HRGN hRgn = NULL, COLORREF bcol = 0x00FF00FF, long flags = 0);
-
-float DrawBookTextInRect(float x, float y, float maxx, float maxy, _TCHAR * text, COLORREF col, COLORREF col2, HFONT font);
-void DrawBookTextCenter(float x, float y, _TCHAR * text, COLORREF col, COLORREF col2, HFONT font);
-
-long UNICODE_ARXDrawTextCenter(float x, float y, _TCHAR * str, COLORREF col, COLORREF bcol, HFONT font);
-long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, _TCHAR * str, COLORREF col, COLORREF bcol, HFONT font, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut = INT_MAX);
-
-long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, _TCHAR * _lpszUText, int _iSpacingY, RECT _rRect);
-long ARX_UNICODE_DrawTextInRect(float x, float y,
-                                float maxx, float maxy,
-                                _TCHAR * _lpszUText,
-                                COLORREF col, COLORREF bcol,
-                                HFONT font,
-                                HRGN hRgn = NULL,
-                                HDC hHDC = NULL);
-
-void ARX_Allocate_Text(_TCHAR *&dest, _TCHAR * id_string);
-_TCHAR * GetFontName(char *);
-void _ShowText(char * text);
-
-//-----------------------------------------------------------------------------
-long HERMES_UNICODE_GetProfileString(const _TCHAR	*	sectionname,
-                                     const _TCHAR	*	t_keyname,
-                                     const _TCHAR	*	defaultstring,
-                                     _TCHAR			*	destination,
-                                     unsigned long		maxsize,
-                                     const _TCHAR	*	datastream,
-                                     long				lastspeech);
-
-//-----------------------------------------------------------------------------
-
-void ARX_Text_Init();
-void ARX_Text_Close();
-void FontRenderText(HFONT _hFont, EERIE_3D pos, _TCHAR * _pText, COLORREF _c);
 
 #endif

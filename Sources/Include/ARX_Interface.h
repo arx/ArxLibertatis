@@ -272,8 +272,6 @@ enum ARX_INTERFACE_BOOK_ITEM
 
 };
 
-
-
 // long "EDITION" values (Danae.cpp)
 enum ARX_INTERFACE_EDITION_MODE
 {
@@ -314,7 +312,6 @@ enum ARX_INTERFACE_CURSOR_MODE
 extern INTERFACE_TC ITC;
 extern EERIE_S2D MemoMouse;
 extern EERIE_S2D bookclick;
-
 
 extern SPELL_ICON spellicons[SPELL_COUNT];
 extern char LOADFROM[256];

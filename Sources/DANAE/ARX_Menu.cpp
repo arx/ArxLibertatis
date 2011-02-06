@@ -727,7 +727,7 @@ BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			Xratio = ox;
 			Yratio = oy;
 
-			if (ARXmenu.mda->flyover[FLYING_OVER] != NULL) //=ARXmenu.mda->flyover[FLYING_OVER];
+			if (ARXmenu.mda->flyover[FLYING_OVER] != NULL)
 			{
 				if (FLYING_OVER != OLD_FLYING_OVER)
 				{
@@ -740,16 +740,16 @@ BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 					pTextManage->Clear();
 					OLD_FLYING_OVER = FLYING_OVER;
-					UNICODE_ARXDrawTextCenteredScroll((DANAESIZX * 0.5f),
-					                                  12,
-					                                  (DANAECENTERX) * 0.82f,
-					                                  ARXmenu.mda->flyover[FLYING_OVER],
-					                                  RGB(232 + t, 204 + t, 143 + t),
-					                                  0x00FF00FF,
-					                                  hFontInGame,
-					                                  1000,
-					                                  0.01f,
-					                                  2);
+					UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
+						(DANAESIZX * 0.5f),
+						12,
+						(DANAECENTERX) * 0.82f,
+						ARXmenu.mda->flyover[FLYING_OVER],
+						RGB(232 + t, 204 + t, 143 + t),
+						0x00FF00FF,
+						1000,
+						0.01f,
+						2);
 				}
 			}
 			else
@@ -763,7 +763,6 @@ BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			float fSizeX = 100 * Xratio;
 			float fSizeY = 100 * Yratio;
 
-			EERIE_3D ePos;
 			COLORREF Color = 0;
 
 			//---------------------------------------------------------------------
@@ -804,9 +803,7 @@ BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			else
 				Color = RGB(232, 204, 143);
 
-			ePos.x = fPosX;
-			ePos.y = fPosY;
-			FontRenderText(hFontMenu, ePos, ARXmenu.mda->str_button_quickgen, Color);
+			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_quickgen, static_cast<long>(fPosX), static_cast<long>(fPosY), Color);
 
 			//---------------------------------------------------------------------
 			// Button SKIN
@@ -853,9 +850,7 @@ BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			else
 				Color = RGB(232, 204, 143);
 
-			ePos.x = fPosX;
-			ePos.y = fPosY;
-			FontRenderText(hFontMenu, ePos, ARXmenu.mda->str_button_skin, Color);
+			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_skin, static_cast<long>(fPosX), static_cast<long>(fPosY), Color);
 
 			//---------------------------------------------------------------------
 			// Button DONE
@@ -892,7 +887,7 @@ BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 						ARX_MENU_CLICKSOUND();
 
-						bFadeInOut = true;	//fade out
+						bFadeInOut = true;		//fade out
 						bFade = true;			//active le fade
 						iFadeAction = AMCM_OFF;
 					}
@@ -917,9 +912,7 @@ BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			if (SKIN_MOD < 0)
 				Color = RGB(255, 0, 255);
 
-			ePos.x = fPosX;
-			ePos.y = fPosY;
-			FontRenderText(hFontMenu, ePos, ARXmenu.mda->str_button_done, Color);
+			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_done, static_cast<long>(fPosX), static_cast<long>(fPosY), Color);
 		}
 	}
 
@@ -950,7 +943,7 @@ BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		GetTextSize(hFontMenu, szText, &iW, &iH);
 		ePos.x = (DANAESIZX - iW) * 0.5f;
 		ePos.y = DANAESIZY * 0.4f;
-		FontRenderText(hFontMenu, ePos, szText, Color);
+		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.y), Color);
 
 		PAK_UNICODE_GetPrivateProfileString(_T("system_yes"), _T("string"), _T(""), szText, 256, NULL);
 		iW = 0;
@@ -963,20 +956,15 @@ BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		{
 			SpecialCursor = CURSOR_INTERACTION_ON;
 
-			if (EERIEMouseButton & 1) ;
-			else if ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1))
-			{
+			if ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1))
 				ARX_MENU_CLICKSOUND();
-
-			}
-			else;
 
 			Color = RGB(255, 255, 255);
 		}
 		else
 			Color = RGB(232, 204, 143);
 
-		FontRenderText(hFontMenu, ePos, szText, Color);
+		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), Color);
 
 		PAK_UNICODE_GetPrivateProfileString(_T("system_no"), _T("string"), _T(""), szText, 256, NULL);
 		iW = 0;
@@ -988,20 +976,15 @@ BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		{
 			SpecialCursor = CURSOR_INTERACTION_ON;
 
-			if (EERIEMouseButton & 1) ;
-			else if ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1))
-			{
+			if ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1))
 				ARX_MENU_CLICKSOUND();
-
-			}
-			else;
 
 			Color = RGB(255, 255, 255);
 		}
 		else
 			Color = RGB(232, 204, 143);
 
-		FontRenderText(hFontMenu, ePos, szText, Color);
+		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), Color);
 	}
 
 	
@@ -1036,9 +1019,7 @@ BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 					fFadeInOut = 0.f;
 
 					if (pTextManage)
-					{
 						pTextManage->Clear();
-					}
 
 					break;
 			}

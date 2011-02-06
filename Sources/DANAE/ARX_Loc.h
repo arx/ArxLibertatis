@@ -36,12 +36,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 void ARX_Localisation_Init(const char * _lpszExtension = "english");
 void ARX_Localisation_Close();
 
-void PAK_UNICODE_GetPrivateProfileString(const _TCHAR * _lpszSection,
-										 const _TCHAR * _lpszKey,
-										 const _TCHAR * _lpszDefault,
-										 _TCHAR * _lpszBuffer,
-										 unsigned long _lBufferSize,
-										 const char * _lpszFileName);
+void PAK_UNICODE_GetPrivateProfileString(const _TCHAR*	_lpszSection,
+										 const _TCHAR*	_lpszKey,
+										 const _TCHAR*	_lpszDefault,
+										 _TCHAR*		_lpszBuffer,
+										 unsigned long	_lBufferSize,
+										 const char*	_lpszFileName);
+
+long HERMES_UNICODE_GetProfileString(const _TCHAR*	sectionname,
+									 const _TCHAR*	t_keyname,
+									 const _TCHAR*	defaultstring,
+									 _TCHAR*		destination,
+									 unsigned long	maxsize,
+									 const _TCHAR*	datastream,
+									 long			lastspeech);
 
 long HERMES_UNICODE_GetProfileSectionKeyCount(const _TCHAR * sectionname);
 

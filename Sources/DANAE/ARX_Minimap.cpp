@@ -885,8 +885,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 					verts[3].tu = 0.f;
 					verts[3].tv = 1.f;
 
-					if ((!fl2)
-					        && (MouseInRect(verts[0].sx, verts[0].sy, verts[2].sx, verts[2].sy)))
+					if (!fl2 && MouseInRect(verts[0].sx, verts[0].sy, verts[2].sx, verts[2].sy))
 					{
 						if (!Mapmarkers[i].tstring)
 						{
@@ -900,24 +899,22 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 						if (Mapmarkers[i].tstring)
 						{
 							RECT rRect, bRect;
-							SetRect(&bRect	, (140),	(290)
-							        , (140 + 205),	(358));
+							SetRect(&bRect, 140, 290, 140 + 205, 358);
 
 							float fLeft		= (bRect.left) * Xratio ;
 							float fRight	= (bRect.right) * Xratio ;
 							float fTop		= (bRect.top) * Yratio ;
 							float fBottom	= (bRect.bottom) * Yratio ;
+
 							ARX_CHECK_INT(fLeft);
 							ARX_CHECK_INT(fRight);
 							ARX_CHECK_INT(fTop);
 							ARX_CHECK_INT(fBottom);
-
 							SetRect(&rRect
 							        , ARX_CLEAN_WARN_CAST_INT(fLeft)
 							        , ARX_CLEAN_WARN_CAST_INT(fTop)
 							        , ARX_CLEAN_WARN_CAST_INT(fRight)
 							        , ARX_CLEAN_WARN_CAST_INT(fBottom));
-
 
 							long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(
 							                       hFontInGameNote, Mapmarkers[i].tstring, 0, rRect);
@@ -926,21 +923,15 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 							_TCHAR	Page_Buffer[256];
 							_tcsncpy(Page_Buffer, Mapmarkers[i].tstring, lLengthDraw);
 							Page_Buffer[lLengthDraw] = _T('\0');
-
-							DrawBookTextInRect(ARX_CLEAN_WARN_CAST_FLOAT(bRect.left), ARX_CLEAN_WARN_CAST_FLOAT(bRect.top),
+							DrawBookTextInRect(hFontInGameNote, ARX_CLEAN_WARN_CAST_FLOAT(bRect.left), ARX_CLEAN_WARN_CAST_FLOAT(bRect.top),
 							                   ARX_CLEAN_WARN_CAST_FLOAT(bRect.right), ARX_CLEAN_WARN_CAST_FLOAT(bRect.bottom),
-							                   Page_Buffer, 0, 0x00FF00FF,
-							                   hFontInGameNote);
-
-
+							                   Page_Buffer, 0, 0x00FF00FF);
 							danaeApp.DANAEStartRender();
 						}
 					}
 
 					if (MapMarkerTc == NULL)
-					{
 						MapMarkerTc = MakeTCFromFile("Graph\\interface\\icons\\mapmarker.bmp");
-					}
 
 					SETTC(GDevice, MapMarkerTc);
 
@@ -968,30 +959,22 @@ void ARX_MAPMARKER_Init()
 	if (Mapmarkers)
 	{
 		for (long i = 0; i < Nb_Mapmarkers; i++)
-		{
-			if (Mapmarkers[i].tstring)
-				free(Mapmarkers[i].tstring);
-
-			Mapmarkers[i].tstring = NULL;
-		}
-
+			free(Mapmarkers[i].tstring);
 		free(Mapmarkers);
 	}
 
 	Mapmarkers = NULL;
 	Nb_Mapmarkers = 0;
 }
-long ARX_MAPMARKER_Get(char * str)
+long ARX_MAPMARKER_Get(const char* str)
 {
 	for (long i = 0; i < Nb_Mapmarkers; i++)
-	{
 		if (!stricmp(Mapmarkers[i].string, str))
 			return i;
-	}
 
 	return -1;
 }
-void ARX_MAPMARKER_Add(float x, float y, long lvl, char * temp)
+void ARX_MAPMARKER_Add(float x, float y, long lvl, const char* temp)
 {
 	long num = ARX_MAPMARKER_Get(temp);
 
@@ -1025,7 +1008,7 @@ void ARX_MAPMARKER_Add(float x, float y, long lvl, char * temp)
 	strcpy(Mapmarkers[Nb_Mapmarkers].string, temp);
 	Nb_Mapmarkers++;
 }
-void ARX_MAPMARKER_Remove(char * temp)
+void ARX_MAPMARKER_Remove(const char* temp)
 {
 	long num = ARX_MAPMARKER_Get(temp);
 
@@ -1043,9 +1026,7 @@ void ARX_MAPMARKER_Remove(char * temp)
 	Mapmarkers[num].tstring = NULL;
 
 	for (long i = num; i < Nb_Mapmarkers - 1; i++)
-	{
 		memcpy(&Mapmarkers[i], &Mapmarkers[i+1], sizeof(MAPMARKER_DATA));
-	}
 
 	Mapmarkers = (MAPMARKER_DATA *)realloc(Mapmarkers, sizeof(MAPMARKER_DATA) * (Nb_Mapmarkers - 1));
 	Nb_Mapmarkers--;

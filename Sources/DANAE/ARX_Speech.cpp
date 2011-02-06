@@ -248,8 +248,6 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 				else
 					_stprintf(temp, _T(" %s"), speech[i].lpszUText);//>
 
-
-
 				EERIEDrawBitmap(GDevice,
 				                120 * Xratio - 16 * Xratio, ARX_CLEAN_WARN_CAST_FLOAT(igrec),
 				                16 * Xratio, 16 * Xratio,
@@ -257,13 +255,9 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 				                arx_logo_tc,
 				                D3DCOLORWHITE);
 
-
-				igrec += ARX_TEXT_DrawRect(pd3dDevice, hFontInBook,
-				                           120.f * Xratio, (float)igrec,
-				                           -3, 0,
-				                           500 * Xratio, 200 * Yratio, temp, speech[i].color, NULL, 0x00FF00FF, 1);
-				if ((igrec > iEnd) &&
-				        !CheckLastSpeech(i))
+				igrec += ARX_TEXT_DrawRect(hFontInBook, 120.f * Xratio, (float)igrec, 500 * Xratio,
+										   200 * Yratio, temp, speech[i].color, NULL, 0x00FF00FF);
+				if (igrec > iEnd && !CheckLastSpeech(i))
 				{
 					ARX_SPEECH_MoveUp();
 					break;
@@ -698,12 +692,9 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 
 						danaeApp.DANAEEndRender();
 						float iTaille = (float)ARX_TEXT_DrawRect(
-						                    pd3dDevice,
 						                    hFontInBook,
 						                    10.f,
 						                    fDepY + fZoneClippHeight,
-						                    -3,
-						                    0,
 						                    -10.f + (float)DANAESIZX,
 						                    0,		//taille recalculée
 						                    speech->text,

@@ -3801,12 +3801,10 @@ void ARX_PLAYER_Start_New_Quest()
 //-----------------------------------------------------------------------------
 void ARX_PLAYER_AddBag()
 {
-	player.bag ++;
+	++player.bag;
 
 	if (player.bag > 3)
-	{
 		player.bag = 3;
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -4127,9 +4125,9 @@ void Manage_sp_max()
 			_TCHAR tex[8];
 			_stprintf(tex, _T("%c"), sp_max_ch[i]);
 
-			UNICODE_ARXDrawTextCenter(dx - 1, dy - 1, tex, 0, 0x00FF00FF, hFontInBook);
-			UNICODE_ARXDrawTextCenter(dx + 1, dy + 1, tex, 0, 0x00FF00FF, hFontInBook);
-			UNICODE_ARXDrawTextCenter(dx, dy, tex, sp_max_col[i], 0x00FF00FF, hFontInBook);
+			UNICODE_ARXDrawTextCenter(hFontInBook, dx - 1, dy - 1, tex, 0, 0x00FF00FF);
+			UNICODE_ARXDrawTextCenter(hFontInBook, dx + 1, dy + 1, tex, 0, 0x00FF00FF);
+			UNICODE_ARXDrawTextCenter(hFontInBook, dx, dy, tex, sp_max_col[i], 0x00FF00FF);
 
 		}
 	}

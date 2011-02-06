@@ -784,9 +784,7 @@ void ARX_INTERFACE_NoteClear()
 {
 	Note.type = NOTE_TYPE_UNDEFINED;
 
-	if (Note.text)
-		free(Note.text);
-
+	free(Note.text);
 	Note.text=NULL;
 	Note.textsize=0;
 	player.Interface&=~INTER_NOTE;
@@ -811,23 +809,23 @@ void ARX_INTERFACE_NoteClear()
 }
 
 //-----------------------------------------------------------------------------
-void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type,char * tex)
+void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, char* tex)
 {
-
-
 	if (player.Interface & INTER_NOTE)
 		ARX_INTERFACE_NoteClose();
 
-	_TCHAR output[8096];
 	ARX_INTERFACE_BookOpenClose(2);
 	ARX_INTERFACE_NoteClear();
-	Note.type=type;
-	MakeLocalised(tex,output,8096);
-	Note.text = (_TCHAR *)malloc((_tcslen(output)+1)*sizeof(_TCHAR));
 
+	Note.type = type;
+
+	_TCHAR output[8096];
+	MakeLocalised(tex, output, 8096);
+	Note.text = (_TCHAR *)malloc((_tcslen(output)+1)*sizeof(_TCHAR));
 	ZeroMemory(Note.text, (_tcslen(output)+1)*sizeof(_TCHAR));
-	_tcscpy(Note.text,output);
-	player.Interface|=INTER_NOTE;
+	_tcscpy(Note.text, output);
+
+	player.Interface |= INTER_NOTE;
 
 	if (NoteTexture)
 	{
@@ -847,79 +845,66 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type,char * tex)
 		NoteTextureRight=NULL;
 	}
 
+	Note.curpage = 0;
+	Note.pages[0] = 0;
+	long length = _tcslen(Note.text);
+	long curpage = 1;
 
+	NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Ingame_books.bmp");
+	RECT rRect;
 
-		Note.curpage=0;
-		Note.pages[0]=0;
-		long length=_tcslen(Note.text);
-		long curpage=1;
+	float fWidth	= NoteTexture->m_dwWidth * DIV2 - 10.f;
+	float fHeight	= NoteTexture->m_dwHeight - 40.f;
 
-		NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Ingame_books.bmp");
-		RECT rRect;
-
-
-		float fWidth	= NoteTexture->m_dwWidth*DIV2-10.f ;
-		float fHeight	= NoteTexture->m_dwHeight-40.f ;
-		ARX_CHECK_INT(fWidth);
-		ARX_CHECK_INT(fHeight);
-
+	ARX_CHECK_INT(fWidth);
+	ARX_CHECK_INT(fHeight);
 	int	tNoteTextMinx = 40;
-		int	tNoteTextMaxx = ARX_CLEAN_WARN_CAST_INT(fWidth);
+	int	tNoteTextMaxx = ARX_CLEAN_WARN_CAST_INT(fWidth);
 	int	tNoteTextMiny = 40;
-		int	tNoteTextMaxy = ARX_CLEAN_WARN_CAST_INT(fHeight);
+	int	tNoteTextMaxy = ARX_CLEAN_WARN_CAST_INT(fHeight);
 
-		float fMinx		= (tNoteTextMaxx-tNoteTextMinx)*Xratio;
-		float fMiny		= (tNoteTextMaxy-tNoteTextMiny)*Yratio;
-		ARX_CHECK_INT(fMinx);
-		ARX_CHECK_INT(fMiny);
+	float fMinx = (tNoteTextMaxx - tNoteTextMinx) * Xratio;
+	float fMiny = (tNoteTextMaxy - tNoteTextMiny) * Yratio;
 
-		SetRect(&rRect,0,0,ARX_CLEAN_WARN_CAST_INT(fMinx),ARX_CLEAN_WARN_CAST_INT(fMiny));
+	ARX_CHECK_INT(fMinx);
+	ARX_CHECK_INT(fMiny);
+	SetRect(&rRect, 0, 0, ARX_CLEAN_WARN_CAST_INT(fMinx), ARX_CLEAN_WARN_CAST_INT(fMiny));
 
+	int lLenghtCurr=0;
 
-		int lLenghtCurr=0;
+	while (length > 0)
+	{
+		long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, Note.text+lLenghtCurr, 0, rRect);
+		length -= lLengthDraw;
+		lLenghtCurr += lLengthDraw;
+		Note.pages[curpage++] = lLenghtCurr;
+	}
 
-		while(length>0)
-		{
-			long lLengthDraw=ARX_UNICODE_ForceFormattingInRect(	hFontInGameNote,
-																Note.text+lLenghtCurr,
-																0,
-																rRect);
-			length-=lLengthDraw;
-			lLenghtCurr+=lLengthDraw;
-			Note.pages[curpage++]=lLenghtCurr;
-		}
-
-		Note.pages[curpage++]=-1;
-		Note.totpages=curpage;
-		NoteTexture=NULL;
+	Note.pages[curpage++] = -1;
+	Note.totpages = curpage;
+	NoteTexture = NULL;
 
 	if (Note.totpages > 3)
-	{
-		if (Note.type == NOTE_TYPE_NOTE)
-			Note.type = NOTE_TYPE_BIGNOTE;
-		else
-			Note.type = NOTE_TYPE_BOOK;
-	}
+		Note.type = Note.type == NOTE_TYPE_NOTE ? NOTE_TYPE_BIGNOTE : NOTE_TYPE_BOOK;
 
 	switch (Note.type)
 	{
-		case NOTE_TYPE_NOTICE :
+		case NOTE_TYPE_NOTICE:
 			ARX_SOUND_PlayInterface(SND_MENU_CLICK, 0.9F + 0.2F * rnd());
 			break;
-		case NOTE_TYPE_BOOK   :
+		case NOTE_TYPE_BOOK:
 			ARX_SOUND_PlayInterface(SND_BOOK_OPEN, 0.9F + 0.2F * rnd());
 			break;
-		case NOTE_TYPE_NOTE   :
+		case NOTE_TYPE_NOTE:
 			ARX_SOUND_PlayInterface(SND_SCROLL_OPEN, 0.9F + 0.2F * rnd());
 			break;
+		// Nuky - Note: no sound for BIGNOTE ?
 	}
 
-	if (TRUE_PLAYER_MOUSELOOK_ON && (Note.type == NOTE_TYPE_BOOK))
-	{
-		TRUE_PLAYER_MOUSELOOK_ON&=~1;
-	}
+	if (TRUE_PLAYER_MOUSELOOK_ON && Note.type == NOTE_TYPE_BOOK)
+		TRUE_PLAYER_MOUSELOOK_ON &= ~1;
 
-	if ((player.Interface & INTER_INVENTORYALL))
+	if (player.Interface & INTER_INVENTORYALL)
 	{
 		bInventoryClosing = true;
 		ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
@@ -933,15 +918,16 @@ void ARX_INTERFACE_NoteClose()
 	{
 		switch (Note.type)
 		{
-			case NOTE_TYPE_NOTICE :
+			case NOTE_TYPE_NOTICE:
 				ARX_SOUND_PlayInterface(SND_MENU_CLICK, 0.9F + 0.2F * rnd());
 				break;
-			case NOTE_TYPE_BOOK   :
+			case NOTE_TYPE_BOOK:
 				ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, 0.9F + 0.2F * rnd());
 				break;
-			case NOTE_TYPE_NOTE   :
+			case NOTE_TYPE_NOTE:
 				ARX_SOUND_PlayInterface(SND_SCROLL_CLOSE, 0.9F + 0.2F * rnd());
 				break;
+			// Nuky - Note: no sound for BIGNOTE ?
 		}
 
 		ARX_INTERFACE_NoteClear();
@@ -991,7 +977,6 @@ void ARX_INTERFACE_NoteManage()
 				break;
 			case NOTE_TYPE_BIGNOTE:
 			case NOTE_TYPE_BOOK:
-
 				if (Note.type == NOTE_TYPE_BIGNOTE)
 				{
 					NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Very_BigNote.bmp");
@@ -1021,15 +1006,14 @@ void ARX_INTERFACE_NoteManage()
 
 		if (NoteTexture)
 		{
-			SETTEXTUREWRAPMODE(GDevice,D3DTADDRESS_CLAMP);
+			SETTEXTUREWRAPMODE(GDevice, D3DTADDRESS_CLAMP);
 			DrawBookInterfaceItem(GDevice, NoteTexture, NotePosX, NotePosY);
 
 			if (Note.type==NOTE_TYPE_BOOK || Note.type == NOTE_TYPE_BIGNOTE)
 			{
-
 				float x0, y0;
 
-				if(	(Note.curpage+4)<Note.totpages )
+				if(Note.curpage + 4 < Note.totpages)
 				{
 					x0 = -14 + NotePosX + NoteTexture->m_dwWidth - NoteTextureRight->m_dwWidth - 1;
 					y0 = -6  + NotePosY + NoteTexture->m_dwHeight - NoteTextureRight->m_dwHeight;
@@ -1037,16 +1021,14 @@ void ARX_INTERFACE_NoteManage()
 					if ( Note.type == NOTE_TYPE_BOOK )
 					{
 
-						float fWidth = ARX_CLEAN_WARN_CAST_FLOAT( x0 + NoteTextureRight->m_dwWidth )   ;
-						float fHeight = ARX_CLEAN_WARN_CAST_FLOAT( y0 + NoteTextureRight->m_dwHeight ) ;
+						float fWidth = ARX_CLEAN_WARN_CAST_FLOAT(x0 + NoteTextureRight->m_dwWidth);
+						float fHeight = ARX_CLEAN_WARN_CAST_FLOAT(y0 + NoteTextureRight->m_dwHeight);
 
 						DrawBookInterfaceItem(GDevice, NoteTextureRight,x0, y0);
 
-						if ( MouseInBookRect(x0, y0, fWidth, fHeight) )
-
+						if (MouseInBookRect(x0, y0, fWidth, fHeight))
 						{
 							SpecialCursor=CURSOR_INTERACTION_ON;
-
 
 							if (!(EERIEMouseButton & 1) && (LastMouseClick & 1))
 							{
@@ -1058,7 +1040,7 @@ void ARX_INTERFACE_NoteManage()
 					}
 				}
 
-				if (Note.curpage>1)
+				if (Note.curpage > 1)
 				{
 					x0 =  8 + NotePosX ;
 					y0 = -6 + NotePosY + NoteTexture->m_dwHeight - NoteTextureLeft->m_dwHeight;
@@ -1066,15 +1048,15 @@ void ARX_INTERFACE_NoteManage()
 					if (Note.type == NOTE_TYPE_BOOK)
 					{
 
-						float fWidth  = ARX_CLEAN_WARN_CAST_FLOAT( x0 + NoteTextureLeft->m_dwWidth )   ;
-						float fHeight = ARX_CLEAN_WARN_CAST_FLOAT( y0 + NoteTextureLeft->m_dwHeight ) ;
+						float fWidth  = ARX_CLEAN_WARN_CAST_FLOAT(x0 + NoteTextureLeft->m_dwWidth);
+						float fHeight = ARX_CLEAN_WARN_CAST_FLOAT(y0 + NoteTextureLeft->m_dwHeight);
 
 						DrawBookInterfaceItem(GDevice, NoteTextureLeft, x0, y0);
 
 						if ( MouseInBookRect( x0, y0, fWidth, fHeight) )
 
 						{
-							SpecialCursor=CURSOR_INTERACTION_ON;
+							SpecialCursor = CURSOR_INTERACTION_ON;
 
 							if (!(EERIEMouseButton & 1) && (LastMouseClick & 1))
 							{
@@ -1094,7 +1076,7 @@ void ARX_INTERFACE_NoteManage()
 						Page_Buffer[Note.pages[Note.curpage+1]-Note.pages[Note.curpage]]=_T('\0');
 
 						danaeApp.DANAEEndRender();
-						DrawBookTextInRect(NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY+NoteTextMaxy,Page_Buffer,0,0x00FF00FF, hFontInGameNote);
+						DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY+NoteTextMaxy,Page_Buffer,0,0x00FF00FF);
 						danaeApp.DANAEStartRender();
 
 						if(Note.pages[Note.curpage+2]>0)
@@ -1103,7 +1085,7 @@ void ARX_INTERFACE_NoteManage()
 							Page_Buffer[Note.pages[Note.curpage+2]-Note.pages[Note.curpage+1]]=_T('\0');
 
 							danaeApp.DANAEEndRender();
-							DrawBookTextInRect(NotePosX+NoteTextMinx + (NoteTextMaxx-NoteTextMinx) +20, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx + (NoteTextMaxx-NoteTextMinx) +20, NotePosY+NoteTextMaxy,Page_Buffer,0,0x00FF00FF, hFontInGameNote);
+							DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx + (NoteTextMaxx-NoteTextMinx) +20, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx + (NoteTextMaxx-NoteTextMinx) +20, NotePosY+NoteTextMaxy,Page_Buffer,0,0x00FF00FF);
 							danaeApp.DANAEStartRender();
 						}
 					}
@@ -1114,25 +1096,24 @@ void ARX_INTERFACE_NoteManage()
 							_tcscpy(Page_Buffer,Note.text+Note.pages[Note.curpage]);
 
 							danaeApp.DANAEEndRender();
-							DrawBookTextInRect( NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY+NoteTextMaxy,Page_Buffer,0,0x00FF00FF, hFontInGameNote);
+							DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY+NoteTextMaxy,Page_Buffer,0,0x00FF00FF);
 							danaeApp.DANAEStartRender();
 						}
 					}
 				}
 
-				SETTEXTUREWRAPMODE(GDevice,D3DTADDRESS_WRAP);
+				SETTEXTUREWRAPMODE(GDevice, D3DTADDRESS_WRAP);
 			}
 
 			else
 			{
 				danaeApp.DANAEEndRender();
-				DrawBookTextInRect( NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY+NoteTextMaxy,Note.text,0,0x00FF00FF, hFontInGameNote);
+				DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY+NoteTextMaxy,Note.text,0,0x00FF00FF);
 				danaeApp.DANAEStartRender();
 			}
 		}
 
-		if (NoteTexture)
-		if (MouseInBookRect(NotePosX, NotePosY, NotePosX+NoteTexture->m_dwWidth, NotePosY+NoteTexture->m_dwHeight))
+		if (NoteTexture && MouseInBookRect(NotePosX, NotePosY, NotePosX+NoteTexture->m_dwWidth, NotePosY+NoteTexture->m_dwHeight))
 		{
 			if ((((EERIEMouseButton & 1) && (!(LastMouseClick & 1)) && (TRUE_PLAYER_MOUSELOOK_ON) )||(EERIEMouseButton & 2) && (!(LastMouseClick & 2))) && clicknotmanaged)
 			{
@@ -7209,25 +7190,23 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 							SpecialCursor=CURSOR_INTERACTION_ON;
 							FLYING_OVER = i;
-							DrawBookTextCenter( 208, 90, spellicons[i].name,0,0x00FF00FF,hFontInBook);
+							DrawBookTextCenter(hFontInBook, 208, 90, spellicons[i].name, 0, 0x00FF00FF);
 
-							for (long li=0;li<MAX_SPEECH;li++)
-							{
-								if (speech[li].timecreation>0) FLYING_OVER=0;
-							}
+							for (long si = 0; si < MAX_SPEECH; ++si)
+								if (speech[si].timecreation > 0)
+									FLYING_OVER=0;
 
-							if(	(OLD_FLYING_OVER != FLYING_OVER)||
-								(INTERNATIONAL_MODE) )
+							if (OLD_FLYING_OVER != FLYING_OVER || INTERNATIONAL_MODE)
 							{
-								OLD_FLYING_OVER=FLYING_OVER;
+								OLD_FLYING_OVER = FLYING_OVER;
 								pTextManage->Clear();
-								UNICODE_ARXDrawTextCenteredScroll(ARX_CLEAN_WARN_CAST_FLOAT(DANAECENTERX),
+								UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
+									ARX_CLEAN_WARN_CAST_FLOAT(DANAECENTERX),
 									12,
 									(DANAECENTERX)*0.82f,
 									spellicons[i].description,
 									RGB(232,204,143),
 									0x00FF00FF,
-									hFontInGame,
 									1000,
 									0.01f,
 									2,
@@ -7235,26 +7214,20 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							}
 
 
-							long count=0;
+							long count = 0;
+							
+							for (long j = 0; j < 6; ++j)
+								if (spellicons[i].symbols[j] != 255)
+									++count;
 
-							for (long j=0;j<6;j++)
-							{
-								if (spellicons[i].symbols[j]!=255)
-									count++;
-							}
-
-							for (int j=0;j<6;j++)
-							{
-								if (spellicons[i].symbols[j]!=255)
+							for (int j = 0; j < 6; ++j)
+								if (spellicons[i].symbols[j] != 255)
 								{
 									pos.x = (240-(count*32)*DIV2+j*32);
 									pos.y = (306);
-									DrawBookInterfaceItem(GDevice,
-										necklace.pTexTab[spellicons[i].symbols[j]]
-									                      , pos.x, pos.y);
+									DrawBookInterfaceItem(GDevice, necklace.pTexTab[spellicons[i].symbols[j]], pos.x, pos.y);
 
 								}
-							}
 						}
 
 						if (spellicons[i].tc)
@@ -7629,288 +7602,53 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		if ((Book_Mode==1) || (Book_Mode==2))
 		{
-			if (bOnglet[1])
-			{
-				if (Book_Page!=1)
+			static struct {
+				float x; float y; TextureContainer* acc; TextureContainer* crt; float botx; float boty;
+			} s_onglet[] = {
+				{ 100.f,  82.f, ITC.accessible_1,  ITC.current_1,  102.f,  82.f },
+				{  98.f, 112.f, ITC.accessible_2,  ITC.current_2,  100.f, 114.f },
+				{  97.f, 143.f, ITC.accessible_3,  ITC.current_3,  101.f, 141.f },
+				{  95.f, 170.f, ITC.accessible_4,  ITC.current_4,  100.f, 170.f },
+				{  95.f, 200.f, ITC.accessible_5,  ITC.current_5,   97.f, 199.f },
+				{  94.f, 229.f, ITC.accessible_6,  ITC.current_6,  103.f, 226.f },
+				{  94.f, 259.f, ITC.accessible_7,  ITC.current_7,  101.f, 255.f },
+				{  92.f, 282.f, ITC.accessible_8,  ITC.current_8,   99.f, 283.f },
+				{  90.f, 308.f, ITC.accessible_9,  ITC.current_9,   99.f, 307.f },
+				{  97.f, 331.f, ITC.accessible_10, ITC.current_10, 104.f, 331.f },
+			};
+
+			for (long p = 0; p != 10; ++p)
+				if (bOnglet[p+1])
 				{
-					float px=100.f;
-					float py=82.f;
-					DrawBookInterfaceItem(GDevice,ITC.accessible_1,px,py);
-
-					if (MouseInBookRect(px,py,px+32,py+32))
+					if (Book_Page != p+1)
 					{
-						BOOKINTERFACEITEMCOLOR=0xFF555555;
-						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,TRUE);
-						DrawBookInterfaceItem(GDevice,ITC.accessible_1,px,py);
-						SETALPHABLEND(GDevice,FALSE);
-						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
-						SpecialCursor=CURSOR_INTERACTION_ON;
+						DrawBookInterfaceItem(GDevice, s_onglet[p].acc, s_onglet[p].x, s_onglet[p].y);
 
-						if (bookclick.x!=-1)
+						if (MouseInBookRect(s_onglet[p].x, s_onglet[p].y, s_onglet[p].x+32, s_onglet[p].y+32))
 						{
-							Book_Page=1;
-							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+							BOOKINTERFACEITEMCOLOR = 0xFF555555;
+							SETBLENDMODE(GDevice, D3DBLEND_ONE, D3DBLEND_ONE);
+							SETALPHABLEND(GDevice, TRUE);
+							DrawBookInterfaceItem(GDevice, s_onglet[p].acc, s_onglet[p].x, s_onglet[p].y);
+							SETALPHABLEND(GDevice, FALSE);
+							BOOKINTERFACEITEMCOLOR = 0xFFFFFFFF;
+							SpecialCursor = CURSOR_INTERACTION_ON;
+
+							if (bookclick.x != -1)
+							{
+								Book_Page = p+1;
+								ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+							}
 						}
 					}
+					else
+						DrawBookInterfaceItem(GDevice, s_onglet[p].crt, s_onglet[p].botx, s_onglet[p].boty);
 				}
-				else DrawBookInterfaceItem(GDevice,ITC.current_1,102.f,82.f);
-			}
 
-			if (bOnglet[2])
-			{
-				if (Book_Page!=2)
-				{
-					float px=98.f;
-					float py=112.f;
-					DrawBookInterfaceItem(GDevice,ITC.accessible_2,px,py);
-
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR=0xFF555555;
-						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,TRUE);
-						DrawBookInterfaceItem(GDevice,ITC.accessible_2,px,py);
-						SETALPHABLEND(GDevice,FALSE);
-						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
-						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
-							Book_Page=2;
-							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						}
-					}
-				}
-				else DrawBookInterfaceItem(GDevice,ITC.current_2,100.f,114.f);
-			}
-
-			if (bOnglet[3])
-			{
-				if (Book_Page!=3)
-				{
-					float px=97.f;
-					float py=143.f;
-					DrawBookInterfaceItem(GDevice,ITC.accessible_3,px,py);
-
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR=0xFF555555;
-						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,TRUE);
-						DrawBookInterfaceItem(GDevice,ITC.accessible_3,px,py);
-						SETALPHABLEND(GDevice,FALSE);
-						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
-						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
-							Book_Page=3;
-							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						}
-					}
-				}
-				else DrawBookInterfaceItem(GDevice,ITC.current_3,101.f,141.f);
-			}
-
-			if (bOnglet[4])
-			{
-				if (Book_Page!=4)
-				{
-					float px=95.f;
-					float py=170.f;
-					DrawBookInterfaceItem(GDevice,ITC.accessible_4,px,py);
-
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR=0xFF555555;
-						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,TRUE);
-						DrawBookInterfaceItem(GDevice,ITC.accessible_4,px,py);
-						SETALPHABLEND(GDevice,FALSE);
-						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
-						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
-							Book_Page=4;
-							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						}
-					}
-				}
-				else DrawBookInterfaceItem(GDevice,ITC.current_4,100.f,170.f);
-			}
-
-			if (bOnglet[5])
-			{
-				if (Book_Page!=5)
-				{
-					float px=95.f;
-					float py=200.f;
-					DrawBookInterfaceItem(GDevice,ITC.accessible_5,px,py);
-
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR=0xFF555555;
-						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,TRUE);
-						DrawBookInterfaceItem(GDevice,ITC.accessible_5,px,py);
-						SETALPHABLEND(GDevice,FALSE);
-						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
-						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
-							Book_Page=5;
-							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						}
-					}
-				}
-				else DrawBookInterfaceItem(GDevice,ITC.current_5,97.f,199.f);
-			}
-
-			if (bOnglet[6])
-			{
-				if (Book_Page!=6)
-				{
-					float px=94.f;
-					float py=229.f;
-					DrawBookInterfaceItem(GDevice,ITC.accessible_6,px,py);
-
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR=0xFF555555;
-						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,TRUE);
-						DrawBookInterfaceItem(GDevice,ITC.accessible_6,px,py);
-						SETALPHABLEND(GDevice,FALSE);
-						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
-						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
-							Book_Page=6;
-							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						}
-					}
-				}
-				else DrawBookInterfaceItem(GDevice,ITC.current_6,103.f,226.f);
-			}
-
-			if (bOnglet[7])
-			{
-				if (Book_Page!=7)
-				{
-					float px=94.f;
-					float py=259.f;
-					DrawBookInterfaceItem(GDevice,ITC.accessible_7,px,py);
-
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR=0xFF555555;
-						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,TRUE);
-						DrawBookInterfaceItem(GDevice,ITC.accessible_7,px,py);
-						SETALPHABLEND(GDevice,FALSE);
-						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
-						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
-							Book_Page=7;
-							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						}
-					}
-				}
-				else DrawBookInterfaceItem(GDevice,ITC.current_7,101.f,255.f);
-			}
-
-			if (bOnglet[8])
-			{
-				if (Book_Page!=8)
-				{
-					float px=92.f;
-					float py=282.f;
-					DrawBookInterfaceItem(GDevice,ITC.accessible_8,px,py);
-
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR=0xFF555555;
-						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,TRUE);
-						DrawBookInterfaceItem(GDevice,ITC.accessible_8,px,py);
-						SETALPHABLEND(GDevice,FALSE);
-						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
-						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
-							Book_Page=8;
-							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						}
-					}
-				}
-				else DrawBookInterfaceItem(GDevice,ITC.current_8,99.f,283.f);
-			}
-
-			if (bOnglet[9])
-			{
-				if (Book_Page!=9)
-				{
-					float px=90.f;
-					float py=308.f;
-					DrawBookInterfaceItem(GDevice,ITC.accessible_9,px,py);
-
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR=0xFF555555;
-						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,TRUE);
-						DrawBookInterfaceItem(GDevice,ITC.accessible_9,px,py);
-						SETALPHABLEND(GDevice,FALSE);
-						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
-						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
-							Book_Page=9;
-							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						}
-					}
-				}
-				else DrawBookInterfaceItem(GDevice,ITC.current_9,99.f,307.f);
-			}
-
-			if (bOnglet[10])
-			{
-				if (Book_Page!=10)
-				{
-					float px=97.f;
-					float py=331.f;
-					DrawBookInterfaceItem(GDevice,ITC.accessible_10,px,py);
-
-					if (MouseInBookRect(px,py,px+32,py+32))
-					{
-						BOOKINTERFACEITEMCOLOR=0xFF555555;
-						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
-						SETALPHABLEND(GDevice,TRUE);
-						DrawBookInterfaceItem(GDevice,ITC.accessible_10,px,py);
-						SETALPHABLEND(GDevice,FALSE);
-						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
-						SpecialCursor=CURSOR_INTERACTION_ON;
-
-						if (bookclick.x!=-1)
-						{
-							Book_Page=10;
-							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						}
-					}
-				}
-				else DrawBookInterfaceItem(GDevice,ITC.current_10,104.f,331.f);
-			}
-
-			if (Book_Mode==1) Book_SpellPage=Book_Page;
-			else if (Book_Mode==2) Book_MapPage=Book_Page;
+			if (Book_Mode==1)
+				Book_SpellPage = Book_Page;
+			else if (Book_Mode==2)
+				Book_MapPage = Book_Page;
 		}
 
 		bookclick.x=-1;
@@ -7919,48 +7657,34 @@ void ARX_INTERFACE_ManageOpenedBook()
 	if (Book_Mode == 0)
 	{
 		FLYING_OVER=NULL;
-		_TCHAR tex[64];
+		_TCHAR textbuff[64];
 		COLORREF Color = RGB(0,0,0);
 
 		ARX_PLAYER_ComputePlayerFullStats();
 
 		danaeApp.DANAEEndRender();
-		_stprintf(tex, _T("%s %3d"), ITC.lpszULevel, player.level);
-		DrawBookTextCenter( 398, 74, tex,Color,0x00FF00FF,hFontInBook);
+		_stprintf(textbuff, _T("%s %3d"), ITC.lpszULevel, player.level);
+		DrawBookTextCenter(hFontInBook, 398, 74, textbuff, Color, 0x00FF00FF);
 
-		_stprintf(tex, _T("%s %8d"), ITC.lpszUXp, player.xp);
-		DrawBookTextCenter( 510, 74, tex, Color,0x00FF00FF,hFontInBook);
+		_stprintf(textbuff, _T("%s %8d"), ITC.lpszUXp, player.xp);
+		DrawBookTextCenter(hFontInBook, 510, 74, textbuff, Color, 0x00FF00FF);
 		danaeApp.DANAEStartRender();
 
 		if (MouseInBookRect(463, 74, 550, 94))
-		{
 			FLYING_OVER = WND_XP;
-		}
 
 		if (MouseInBookRect(97+41,64+62, 97+41+32, 64+62+32))
-		{
 			FLYING_OVER = WND_AC;
-		}
 		else if (MouseInBookRect(97+41,64+120, 97+41+32, 64+120+32))
-		{
 			FLYING_OVER = WND_RESIST_MAGIC;
-		}
 		else if (MouseInBookRect(97+41,64+178, 97+41+32, 64+178+32))
-		{
 			FLYING_OVER = WND_RESIST_POISON;
-		}
 		else if (MouseInBookRect(97+211,64+62, 97+211+32, 64+62+32))
-		{
 			FLYING_OVER = WND_HP;
-		}
 		else if (MouseInBookRect(97+211,64+120, 97+211+32, 64+120+32))
-		{
 			FLYING_OVER = WND_MANA;
-		}
 		else if (MouseInBookRect(97+211,64+178, 97+211+32, 64+178+32))
-		{
 			FLYING_OVER = WND_DAMAGE;
-		}
 
 		if (!((player.Attribute_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST)))
 		{
@@ -8071,96 +7795,67 @@ void ARX_INTERFACE_ManageOpenedBook()
 		{
 			//------------------------------------PRIMARY
 			if (MouseInBookRect(379,95, 379+32, 95+32))
-			{
 				FLYING_OVER=BOOK_STRENGTH;
-			}
 			else if (MouseInBookRect(428,95, 428+32, 95+32))
-			{
 				FLYING_OVER=BOOK_MIND;
-			}
 			else if (MouseInBookRect(477,95, 477+32, 95+32))
-			{
 				FLYING_OVER=BOOK_DEXTERITY;
-			}
 			else if (MouseInBookRect(526,95, 526+32, 95+32))
-			{
 				FLYING_OVER=BOOK_CONSTITUTION;
-			}
 
 			//------------------------------------SECONDARY
 			if (MouseInBookRect(389,177, 389+32, 177+32))
-			{
 				FLYING_OVER=BOOK_STEALTH;
-			}
 			else if (MouseInBookRect(453,177, 453+32, 177+32))
-			{
 				FLYING_OVER=BOOK_MECANISM;
-			}
 			else if (MouseInBookRect(516,177, 516+32, 177+32))
-			{
 				FLYING_OVER=BOOK_INTUITION;
-			}
 			else if (MouseInBookRect(389,230, 389+32, 230+32))
-			{
 				FLYING_OVER=BOOK_ETHERAL_LINK;
-			}
 			else if (MouseInBookRect(453,230, 453+32, 230+32))
-			{
 				FLYING_OVER=BOOK_OBJECT_KNOWLEDGE;
-			}
 			else if (MouseInBookRect(516,230, 516+32, 230+32))
-			{
 				FLYING_OVER=BOOK_CASTING;
-			}
 			else if (MouseInBookRect(389,284, 389+32, 284+32))
-			{
 				FLYING_OVER=BOOK_CLOSE_COMBAT;
-			}
 			else if (MouseInBookRect(453,284, 453+32, 284+32))
-			{
 				FLYING_OVER=BOOK_PROJECTILE;
-			}
 			else if (MouseInBookRect(516,284, 516+32, 284+32))
-			{
 				FLYING_OVER=BOOK_DEFENSE;
-			}
 		}
 
 		if (!INTERNATIONAL_MODE)
-		{
-			for (long i=0;i<MAX_SPEECH;i++)
-			{
-				if (speech[i].timecreation>0) FLYING_OVER=NULL;
-			}
-		}
+			for (long i = 0; i < MAX_SPEECH; ++i)
+				if (speech[i].timecreation > 0)
+					FLYING_OVER = NULL;
 
 		//------------------------------ SEB 04/12/2001
-		if (ARXmenu.mda && ARXmenu.mda->flyover[FLYING_OVER]) //=ARXmenu.mda->flyover[FLYING_OVER];
+		if (ARXmenu.mda && ARXmenu.mda->flyover[FLYING_OVER])
 		{
 			if( (FLYING_OVER!=OLD_FLYING_OVER)||
 				(INTERNATIONAL_MODE) )
 			{
 
-				float fRandom	= rnd() * 2 ;
+				float fRandom = rnd() * 2;
 				ARX_CHECK_INT(fRandom);
 
 				int t = ARX_CLEAN_WARN_CAST_INT(fRandom);
 
-
 				pTextManage->Clear();
 				OLD_FLYING_OVER=FLYING_OVER;
 
+				// Nuky Note: the text used never scrolls, centered function with wordwrap would be enough
 				if (FLYING_OVER == WND_XP)
 				{
 					_TCHAR tex[512];
 					_stprintf(tex, _T("%s %8d"), ARXmenu.mda->flyover[WND_XP], GetXPforLevel(player.level+1)-player.xp);
-					UNICODE_ARXDrawTextCenteredScroll(	(DANAESIZX*0.5f),
+					UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
+						(DANAESIZX*0.5f),
 						4,
 						(DANAECENTERX)*0.82f,
 						tex,
 						RGB(232+t,204+t,143+t),
 						0x00FF00FF,
-						hFontInGame,
 						1000,
 						0.01f,
 						3,
@@ -8168,13 +7863,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 				}
 				else
 				{
-					UNICODE_ARXDrawTextCenteredScroll(	(DANAESIZX*0.5f),
+					UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
+						(DANAESIZX*0.5f),
 						4,
 						(DANAECENTERX)*0.82f,
 						ARXmenu.mda->flyover[FLYING_OVER],
 						RGB(232+t,204+t,143+t),
 						0x00FF00FF,
-						hFontInGame,
 						1000,
 						0.01f,
 						3,
@@ -8190,7 +7885,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		//------------------------------
 
 		danaeApp.DANAEEndRender();
-		_stprintf(tex, _T("%3.0f"),player.Full_Attribute_Strength);
+		_stprintf(textbuff, _T("%3.0f"),player.Full_Attribute_Strength);
 
 		if (player.Mod_Attribute_Strength<0.f)
 			Color = 0x000000FF;
@@ -8204,9 +7899,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter( 391, 129, tex, Color, 0x00FF00FF, hFontInBook);
+		DrawBookTextCenter(hFontInBook, 391, 129, textbuff, Color, 0x00FF00FF);
 
-		_stprintf(tex, _T("%3.0f"),player.Full_Attribute_Mind);
+		_stprintf(textbuff, _T("%3.0f"),player.Full_Attribute_Mind);
 
 		if (player.Mod_Attribute_Mind<0.f)
 			Color = 0x000000FF;
@@ -8220,9 +7915,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter( 440, 129, tex, Color, 0x00FF00FF, hFontInBook);
+		DrawBookTextCenter(hFontInBook, 440, 129, textbuff, Color, 0x00FF00FF);
 
-		_stprintf(tex, _T("%3.0f"),player.Full_Attribute_Dexterity);
+		_stprintf(textbuff, _T("%3.0f"),player.Full_Attribute_Dexterity);
 
 		if (player.Mod_Attribute_Dexterity<0.f)
 			Color = 0x000000FF;
@@ -8236,9 +7931,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter( 490, 129, tex, Color, 0x00FF00FF, hFontInBook);
+		DrawBookTextCenter(hFontInBook, 490, 129, textbuff, Color, 0x00FF00FF);
 
-		_stprintf(tex, _T("%3.0f"),player.Full_Attribute_Constitution);
+		_stprintf(textbuff, _T("%3.0f"),player.Full_Attribute_Constitution);
 
 		if (player.Mod_Attribute_Constitution<0.f)
 			Color = 0x000000FF;
@@ -8252,10 +7947,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter( 538, 129, tex, Color, 0x00FF00FF,hFontInBook);
+		DrawBookTextCenter(hFontInBook, 538, 129, textbuff, Color, 0x00FF00FF);
 
 		// Player Skills
-		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Stealth);
+		_stprintf(textbuff, _T("%3.0f"),player.Full_Skill_Stealth);
 
 		if (player.Mod_Skill_Stealth<0.f)
 			Color = 0x000000FF;
@@ -8269,9 +7964,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter( 405, 210, tex, Color, 0x00FF00FF, hFontInBook);
+		DrawBookTextCenter(hFontInBook, 405, 210, textbuff, Color, 0x00FF00FF);
 
-		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Mecanism);
+		_stprintf(textbuff, _T("%3.0f"),player.Full_Skill_Mecanism);
 
 		if (player.Mod_Skill_Mecanism<0.f)
 			Color = 0x000000FF;
@@ -8285,9 +7980,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter( 469, 210, tex, Color, 0x00FF00FF, hFontInBook);
+		DrawBookTextCenter(hFontInBook, 469, 210, textbuff, Color, 0x00FF00FF);
 
-		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Intuition);
+		_stprintf(textbuff, _T("%3.0f"),player.Full_Skill_Intuition);
 
 		if (player.Mod_Skill_Intuition<0.f)
 			Color = 0x000000FF;
@@ -8301,9 +7996,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter( 533, 210, tex, Color, 0x00FF00FF,hFontInBook);
+		DrawBookTextCenter(hFontInBook, 533, 210, textbuff, Color, 0x00FF00FF);
 
-		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Etheral_Link);
+		_stprintf(textbuff, _T("%3.0f"),player.Full_Skill_Etheral_Link);
 
 		if (player.Mod_Skill_Etheral_Link<0.f)
 			Color = 0x000000FF;
@@ -8317,9 +8012,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter( 405, 265, tex, Color, 0x00FF00FF, hFontInBook);
+		DrawBookTextCenter(hFontInBook, 405, 265, textbuff, Color, 0x00FF00FF);
 
-		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Object_Knowledge);
+		_stprintf(textbuff, _T("%3.0f"),player.Full_Skill_Object_Knowledge);
 
 		if (player.Mod_Skill_Object_Knowledge<0.f)
 			Color = 0x000000FF;
@@ -8333,9 +8028,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter( 469, 265, tex, Color, 0x00FF00FF, hFontInBook);
+		DrawBookTextCenter(hFontInBook, 469, 265, textbuff, Color, 0x00FF00FF);
 
-		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Casting);
+		_stprintf(textbuff, _T("%3.0f"),player.Full_Skill_Casting);
 
 		if (player.Mod_Skill_Casting<0.f)
 			Color = 0x000000FF;
@@ -8349,9 +8044,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter( 533, 265, tex, Color, 0x00FF00FF, hFontInBook);
+		DrawBookTextCenter(hFontInBook, 533, 265, textbuff, Color, 0x00FF00FF);
 
-		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Close_Combat);
+		_stprintf(textbuff, _T("%3.0f"),player.Full_Skill_Close_Combat);
 
 		if (player.Mod_Skill_Close_Combat<0.f)
 			Color = 0x000000FF;
@@ -8365,9 +8060,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter( 405, 319, tex, Color, 0x00FF00FF, hFontInBook);
+		DrawBookTextCenter(hFontInBook, 405, 319, textbuff, Color, 0x00FF00FF);
 
-		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Projectile);
+		_stprintf(textbuff, _T("%3.0f"),player.Full_Skill_Projectile);
 
 		if (player.Mod_Skill_Projectile<0.f)
 			Color = 0x000000FF;
@@ -8381,9 +8076,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter( 469, 319, tex, Color, 0x00FF00FF, hFontInBook);
+		DrawBookTextCenter(hFontInBook, 469, 319, textbuff, Color, 0x00FF00FF);
 
-		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Defense);
+		_stprintf(textbuff, _T("%3.0f"),player.Full_Skill_Defense);
 
 		if (player.Mod_Skill_Defense<0.f)
 			Color = 0x000000FF;
@@ -8397,10 +8092,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter( 533, 319, tex, Color, 0x00FF00FF, hFontInBook);
+		DrawBookTextCenter(hFontInBook, 533, 319, textbuff, Color, 0x00FF00FF);
 
 		// Secondary Attributes
-		_stprintf(tex, _T("%d"),F2L_RoundUp(player.Full_maxlife));
+		_stprintf(textbuff, _T("%d"),F2L_RoundUp(player.Full_maxlife));
 
 		if ((player.Mod_maxlife<0.f) || (player.Full_maxlife < player.maxlife))
 			Color = 0x000000FF;
@@ -8408,9 +8103,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 			Color = 0x00FF0000;
 		else Color = 0;
 
-		DrawBookTextCenter( 324, 158, tex, Color,0x00FF00FF, hFontInBook);
+		DrawBookTextCenter(hFontInBook, 324, 158, textbuff, Color,0x00FF00FF);
 
-		_stprintf(tex, _T("%d"),F2L_RoundUp(player.Full_maxmana));
+		_stprintf(textbuff, _T("%d"),F2L_RoundUp(player.Full_maxmana));
 
 		if ((player.Mod_maxmana<0.f) || (player.Full_maxmana < player.maxmana))
 			Color = 0x000000FF;
@@ -8418,9 +8113,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 			Color = 0x00FF0000;
 		else Color = 0;
 
-		DrawBookTextCenter( 324, 218, tex, Color, 0x00FF00FF, hFontInBook);
+		DrawBookTextCenter(hFontInBook, 324, 218, textbuff, Color, 0x00FF00FF);
 
-		_stprintf(tex, _T("%d"), F2L_RoundUp(player.Full_damages));
+		_stprintf(textbuff, _T("%d"), F2L_RoundUp(player.Full_damages));
 
 		if (player.Mod_damages<0.f)
 			Color = 0x000000FF;
@@ -8428,10 +8123,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 			Color = 0x00FF0000;
 		else Color = 0;
 
-		DrawBookTextCenter( 324, 278, tex, Color, 0x00FF00FF, hFontInBook);
+		DrawBookTextCenter(hFontInBook, 324, 278, textbuff, Color, 0x00FF00FF);
 
 		float ac = player.Full_armor_class;
-		_stprintf(tex, _T("%d"),F2L_RoundUp(ac));
+		_stprintf(textbuff, _T("%d"),F2L_RoundUp(ac));
 
 		if (player.Mod_armor_class<0.f)
 			Color = 0x000000FF;
@@ -8439,9 +8134,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 			Color = 0x00FF0000;
 		else Color = 0;
 
-		DrawBookTextCenter( 153, 158, tex, Color, 0x00FF00FF, hFontInBook);
+		DrawBookTextCenter(hFontInBook, 153, 158, textbuff, Color, 0x00FF00FF);
 
-		_stprintf(tex, _T("%3.0f"),player.Full_resist_magic);
+		_stprintf(textbuff, _T("%3.0f"),player.Full_resist_magic);
 
 		if (player.Mod_resist_magic<0.f)
 			Color = 0x000000FF;
@@ -8449,9 +8144,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 			Color = 0x00FF0000;
 		else Color = 0;
 
-		DrawBookTextCenter( 153, 218, tex, Color, 0x00FF00FF, hFontInBook);
+		DrawBookTextCenter(hFontInBook, 153, 218, textbuff, Color, 0x00FF00FF);
 
-		_stprintf(tex, _T("%3.0f"),player.Full_resist_poison);
+		_stprintf(textbuff, _T("%3.0f"),player.Full_resist_poison);
 
 		if (player.Mod_resist_poison<0.f)
 			Color = 0x000000FF;
@@ -8459,7 +8154,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			Color = 0x00FF0000;
 		else Color = 0;
 
-		DrawBookTextCenter( 153, 278, tex, Color, 0x00FF00FF, hFontInBook);
+		DrawBookTextCenter(hFontInBook, 153, 278, textbuff, Color, 0x00FF00FF);
 		danaeApp.DANAEStartRender();
 	}
 	else if (Book_Mode==2)
@@ -8479,71 +8174,56 @@ void ARX_INTERFACE_ManageOpenedBook()
 		if (nb_PlayerQuest > 0)
 		{
 			//-----------------------------------------------------------------
-			// stuff pour le texte
-			NotePosX = (97 );
-			NotePosY = (64 );
+			// text stuff
+			NotePosX = 97;
+			NotePosY = 64;
 			NoteTextMinx = 40.f;
-			NoteTextMaxx = ITC.questbook->m_dwWidth*DIV2-10.f;
+			NoteTextMaxx = ITC.questbook->m_dwWidth * DIV2 - 10.f;
 			NoteTextMiny = 40.f;
-			NoteTextMaxy = ITC.questbook->m_dwHeight-65.f;
+			NoteTextMaxy = ITC.questbook->m_dwHeight - 65.f;
 			float fPosX = 97;
 			float fPosY = 64;
 			float x0 = 0;
 			float y0 = 0;
 
-			// calcul du nombre de pages
+			// calculation of number of pages
 			RECT rRect;
 			long lCurPage = 1;
 
+			float fMinX = (NoteTextMaxx - NoteTextMinx) * Xratio;
+			float fMinY = (NoteTextMaxy - NoteTextMiny) * Yratio;
 
-			float fMinX = (NoteTextMaxx-NoteTextMinx)*Xratio ;
-			float fMinY = (NoteTextMaxy-NoteTextMiny)*Yratio ;
 			ARX_CHECK_INT(fMinX);
 			ARX_CHECK_INT(fMinY);
+			SetRect(&rRect, 0, 0, ARX_CLEAN_WARN_CAST_INT(fMinX), ARX_CLEAN_WARN_CAST_INT(fMinY));
 
-			SetRect(&rRect,
-				0,
-				0,
-				ARX_CLEAN_WARN_CAST_INT(fMinX),
-				ARX_CLEAN_WARN_CAST_INT(fMinY)
-				);
-
-
-			int lLenghtCurr=0;
+			int lLenghtCurr = 0;
 			long lLenght = 0;
 			_TCHAR *lpszQuests = NULL;
 
-			QuestBook.pages[0]=0;
+			QuestBook.pages[0] = 0;
 
-			for (long i=0; i<nb_PlayerQuest; i++)
-			{
+			for (long i = 0; i < nb_PlayerQuest; ++i)
 				if (PlayerQuest[i].localised != NULL)
-				{
 					lLenght += _tcslen(PlayerQuest[i].localised);
-				}
-			}
 
 			lpszQuests = new _TCHAR[lLenght+nb_PlayerQuest*2+1];
 			ZeroMemory(lpszQuests, (lLenght+nb_PlayerQuest*2+1)*sizeof(_TCHAR));
 
-			for (int i=0; i<nb_PlayerQuest; i++)
-			{
+			for (int i = 0; i < nb_PlayerQuest; ++i)
 				if (PlayerQuest[i].localised != NULL)
 				{
 					_tcscat(lpszQuests, PlayerQuest[i].localised);
 					_tcscat(lpszQuests, _T("\n\n"));
-					lLenght+=2;
+					lLenght += 2;
 				}
-			}
 
-			while(lLenght>0)
+			while (lLenght > 0)
 			{
-				danaeApp.DANAEEndRender();
-				long lLengthDraw=ARX_UNICODE_ForceFormattingInRect(	hFontInGameNote,
-					lpszQuests + lLenghtCurr,
-					0,
-					rRect);
-				danaeApp.DANAEStartRender();
+				// Nuky - 05-02-11 - DANAE*Render not needed ? we do not render
+				//danaeApp.DANAEEndRender();
+				long lLengthDraw=ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, lpszQuests + lLenghtCurr, 0, rRect);
+				//danaeApp.DANAEStartRender();
 				lLenght -= lLengthDraw;
 				lLenghtCurr += lLengthDraw;
 
@@ -8561,18 +8241,18 @@ void ARX_INTERFACE_ManageOpenedBook()
 			//---------------------------------------------------------------------
 			// render
 			if (QuestBook.curpage >= QuestBook.totpages)
-				QuestBook.curpage = QuestBook.totpages-1;
+				QuestBook.curpage = QuestBook.totpages - 1;
 
 			if (QuestBook.curpage < 0)
 				QuestBook.curpage = 0;
 
-			if (QuestBook.curpage>1)
+			if (QuestBook.curpage > 1)
 			{
 				x0 =   8 + fPosX;
 				y0 =  -6 + fPosY + ITC.questbook->m_dwHeight - ITC.pTexCornerLeft->m_dwHeight;
-				DrawBookInterfaceItem(GDevice, ITC.pTexCornerLeft,  x0, y0);
+				DrawBookInterfaceItem(GDevice, ITC.pTexCornerLeft, x0, y0);
 
-				if (MouseInBookRect(x0,y0,x0+ITC.pTexCornerLeft->m_dwWidth,y0+ITC.pTexCornerLeft->m_dwHeight))
+				if (MouseInBookRect(x0, y0, x0 + ITC.pTexCornerLeft->m_dwWidth, y0 + ITC.pTexCornerLeft->m_dwHeight))
 				{
 					SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -8590,39 +8270,39 @@ void ARX_INTERFACE_ManageOpenedBook()
 				y0 =  -6 + fPosY + ITC.questbook->m_dwHeight - ITC.pTexCornerRight->m_dwHeight;
 				DrawBookInterfaceItem(GDevice, ITC.pTexCornerRight, x0, y0);
 
-				if (MouseInBookRect(x0,y0,x0+ITC.pTexCornerRight->m_dwWidth,y0+ITC.pTexCornerRight->m_dwHeight))
+				if (MouseInBookRect(x0, y0, x0 + ITC.pTexCornerRight->m_dwWidth, y0 + ITC.pTexCornerRight->m_dwHeight))
 				{
 					SpecialCursor=CURSOR_INTERACTION_ON;
 
 					if (!(EERIEMouseButton & 1) && (LastMouseClick & 1))
 					{
 						ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-						QuestBook.curpage+=2;
+						QuestBook.curpage += 2;
 					}
 				}
 			}
 
-			if (QuestBook.pages[QuestBook.curpage]>=0)
+			if (QuestBook.pages[QuestBook.curpage] >= 0)
 			{
-				if(QuestBook.pages[QuestBook.curpage+1]>0)
+				if (QuestBook.pages[QuestBook.curpage+1] > 0)
 				{
 					_tcsncpy(Page_Buffer, lpszQuests + QuestBook.pages[QuestBook.curpage], QuestBook.pages[QuestBook.curpage+1] - QuestBook.pages[QuestBook.curpage]);
 					Page_Buffer[QuestBook.pages[QuestBook.curpage+1] - QuestBook.pages[QuestBook.curpage]]=_T('\0');
-					DrawBookTextInRect( NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx, NotePosY + NoteTextMaxy, Page_Buffer, 0, 0x00FF00FF, hFontInGameNote);
+					DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx, NotePosY + NoteTextMaxy, Page_Buffer, 0, 0x00FF00FF);
 
-					if(QuestBook.pages[QuestBook.curpage+2]>0)
+					if (QuestBook.pages[QuestBook.curpage+2]>0)
 					{
 						_tcsncpy(Page_Buffer, lpszQuests + QuestBook.pages[QuestBook.curpage+1], QuestBook.pages[QuestBook.curpage+2] - QuestBook.pages[QuestBook.curpage+1]);
 						Page_Buffer[QuestBook.pages[QuestBook.curpage+2] - QuestBook.pages[QuestBook.curpage+1]]=_T('\0');
-						DrawBookTextInRect( NotePosX + NoteTextMinx + (NoteTextMaxx - NoteTextMinx) +20, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx + (NoteTextMaxx - NoteTextMinx) +20, NotePosY + NoteTextMaxy, Page_Buffer, 0, 0x00FF00FF, hFontInGameNote);
+						DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx + (NoteTextMaxx - NoteTextMinx) +20, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx + (NoteTextMaxx - NoteTextMinx) +20, NotePosY + NoteTextMaxy, Page_Buffer, 0, 0x00FF00FF);
 					}
 				}
 				else
 				{
-					if(QuestBook.pages[QuestBook.curpage]>=0)
+					if (QuestBook.pages[QuestBook.curpage]>=0)
 					{
 						_tcscpy(Page_Buffer, lpszQuests + QuestBook.pages[QuestBook.curpage]);
-						DrawBookTextInRect( NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY + NoteTextMaxy, Page_Buffer, 0, 0x00FF00FF, hFontInGameNote);
+						DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY + NoteTextMaxy, Page_Buffer, 0, 0x00FF00FF);
 					}
 				}
 			}
@@ -10876,7 +10556,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 						danaeApp.DANAEEndRender();
 						_TCHAR temp[256];
 						_stprintf(temp, _T("%3d"), lCursorRedistValue);
-						ARX_TEXT_Draw(GDevice, hFontInBook, DANAEMouse.x + 6* Xratio, DANAEMouse.y + 11* Yratio, 999, 999, temp, D3DCOLORBLACK, 0x00FF00FF);
+						ARX_TEXT_Draw(hFontInBook, DANAEMouse.x + 6* Xratio, DANAEMouse.y + 11* Yratio, temp, D3DCOLORBLACK, 0x00FF00FF);
 						danaeApp.DANAEStartRender();
 					}
 					else

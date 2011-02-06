@@ -473,27 +473,6 @@ void GetTextSize(HFONT _hFont, const _TCHAR *_lpszUText, int *_iWidth, int *_iHe
 }
 
 //-----------------------------------------------------------------------------
-
-void FontRenderText(HFONT _hFont, EERIE_3D pos, _TCHAR *_pText, COLORREF _c)
-{
-	if (pTextManage)
-	{
-		RECT rRect;
-
-		ARX_CHECK_LONG( pos.y );
-		ARX_CHECK_LONG( pos.x );
-		ARX_CHECK_LONG( pos.x + 999 );
-		ARX_CHECK_LONG( pos.y + 999 );
-		rRect.top	=	ARX_CLEAN_WARN_CAST_LONG( pos.y );
-		rRect.left	=	ARX_CLEAN_WARN_CAST_LONG( pos.x );
-		rRect.right	=	ARX_CLEAN_WARN_CAST_LONG( pos.x + 999 );
-		rRect.bottom=	ARX_CLEAN_WARN_CAST_LONG( pos.y + 999 );
-
-		pTextManage->AddText(_hFont, _pText, rRect, _c, 0x00FF00FF);
-	}
-}
-
-//-----------------------------------------------------------------------------
 // CMenuConfig
 //-----------------------------------------------------------------------------
 
@@ -4480,18 +4459,10 @@ CMenuElement* CMenuElementText::OnShortCut()
 
 void CMenuElementText::Render()
 {
-	if(WILL_RELOAD_ALL_TEXTURES) return;
-	if(bNoMenu) return;
+	if (WILL_RELOAD_ALL_TEXTURES) return;
+	if (bNoMenu) return;
 
-	EERIE_3D ePos;
-	ePos.x = (float) rZone.left;
-	ePos.y = (float) rZone.top;
-	ePos.z = 1;
-
-	if (bSelected)
-		FontRenderText(pHFont, ePos, lpszText, lColorHighlight);
-	else
-		FontRenderText(pHFont, ePos, lpszText, lColor);
+	pTextManage->AddText(pHFont, lpszText, rZone.left, rZone.top, bSelected ? lColorHighlight : lColor);
 }
 
 //-----------------------------------------------------------------------------
@@ -4507,12 +4478,7 @@ void CMenuElementText::RenderMouseOver()
 	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
 
-	EERIE_3D ePos;
-	ePos.x = (float)rZone.left;
-	ePos.y = (float)rZone.top;
-	ePos.z = 1;
-
-	FontRenderText(pHFont, ePos, lpszText, lColorHighlight);
+	pTextManage->AddText(pHFont, lpszText, rZone.left, rZone.top, lColorHighlight);
 
 	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  false);
 
@@ -6748,7 +6714,7 @@ void CMenuButton::Render()
 	if(bNoMenu) return;
 
 	//affichage de la texture
-	if(pTex)
+	if (pTex)
 	{
 		EERIEDrawBitmap2(GDevice, ARX_CLEAN_WARN_CAST_FLOAT(rZone.left), ARX_CLEAN_WARN_CAST_FLOAT(rZone.top),
 			RATIO_X(pTex->m_dwWidth),
@@ -6759,20 +6725,15 @@ void CMenuButton::Render()
 	}
 
 	//affichage de la font
-	if(vText.size())
+	if (!vText.empty())
 	{
 		_TCHAR *pText=vText[iPos];
 
-		GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  true);
-		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
+		GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, true);
+		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
+		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 
-		EERIE_3D ePos;
-		ePos.x = (float)rZone.left;
-		ePos.y = (float)rZone.top;
-		ePos.z = 1;
-
-		FontRenderText(pHFont, ePos, pText, RGB(232, 204, 142));
+		pTextManage->AddText(pHFont, pText, rZone.left, rZone.top, RGB(232, 204, 142));
 
 		GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  false);
 	}
@@ -6816,7 +6777,7 @@ void CMenuButton::RenderMouseOver()
 		EERIEDRAWPRIM(GDevice,D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
 	}
 
-	if( vText.size() )
+	if (!vText.empty())
 	{
 		_TCHAR *pText=vText[iPos];
 
@@ -6824,12 +6785,7 @@ void CMenuButton::RenderMouseOver()
 		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
 
-		EERIE_3D ePos;
-		ePos.x = (float)rZone.left;
-		ePos.y = (float)rZone.top;
-		ePos.z = 1;
-
-		FontRenderText(pHFont, ePos, pText, RGB(255, 255, 255));
+		pTextManage->AddText(pHFont, pText, rZone.left, rZone.top, RGB(255, 255, 255));
 
 		GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  false);
 	}

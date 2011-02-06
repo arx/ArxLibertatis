@@ -104,7 +104,7 @@ struct MAPMARKER_DATA
 extern MAPMARKER_DATA * Mapmarkers;
 extern long Nb_Mapmarkers;
 
-void ARX_MAPMARKER_Remove(char * temp);
-void ARX_MAPMARKER_Add(float x, float y, long lvl, char * temp);
+void ARX_MAPMARKER_Remove(const char* temp);
+void ARX_MAPMARKER_Add(float x, float y, long lvl, const char* temp);
 void ARX_MAPMARKER_Init();
 #endif
