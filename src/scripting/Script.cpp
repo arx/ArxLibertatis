@@ -3052,7 +3052,7 @@ long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const std::string& _lpszText,
 //*************************************************************************************
 void MakeSSEPARAMS(const char * params)
 {
-	LogDebug << "MakeSSEPARAMS " << Logger::nullstr(params);
+	// LogDebug << "MakeSSEPARAMS " << Logger::nullstr(params);
 	
 	for (long i = 0; i < MAX_SSEPARAMS; i++)
 	{
@@ -3209,7 +3209,7 @@ void ARX_SCRIPT_EventStackExecuteAll()
 
 void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params, const std::string& eventname)
 {
-	LogDebug << "Stack_SendIOScriptEvent "<< eventname;
+	// LogDebug << "Stack_SendIOScriptEvent "<< eventname;
 	for (long i = 0; i < MAX_EVENT_STACK; i++)
 	{
 		if (!eventstack[i].exist)
@@ -3228,7 +3228,7 @@ void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& 
 
 long SendIOScriptEventReverse(INTERACTIVE_OBJ * io, long msg, const std::string& params, const std::string& eventname)
 {
-	LogDebug << "SendIOScriptEventReverse "<< eventname;
+	// LogDebug << "SendIOScriptEventReverse "<< eventname;
 	// checks invalid IO
 	if (!io) return -1;
 
@@ -3261,8 +3261,8 @@ long SendIOScriptEventReverse(INTERACTIVE_OBJ * io, long msg, const std::string&
 
 long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params, const std::string& eventname)
 {
-	if (msg != 8)
-		LogDebug << "SendIOScriptEvent event '"<< eventname<<"' message " << msg;
+	//if (msg != 8)
+	//	LogDebug << "SendIOScriptEvent event '"<< eventname<<"' message " << msg;
 	// checks invalid IO
 	if (!io) return -1;
 

@@ -135,7 +135,7 @@ SCRIPT_EVENT AS_EVENT[] =
 void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT& es)
 {
 	long nb = min(MAX_SHORTCUT, SM_MAXCMD);
-	LogDebug << "Compute " << nb << " shortcuts";
+	// LogDebug << "Compute " << nb << " shortcuts";
 
 	for (long j = 1; j < nb; j++) {
 		es.shortcut[j] = FindScriptPos(&es, AS_EVENT[j].name);
@@ -518,7 +518,8 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 	         << ")" << " params=\"" << params << "\""
 	         << " evame=\"" << evname << "\" info=" << info;
 	LogDebug << " io=" << Logger::nullstr(io ? io->filename : NULL)
-	         << ":" << io->ident;
+	         << ":" << io->ident
+	         << (io == NULL ? "" : es == &io->script ? " primary" : " overriding");
 
 	MakeSSEPARAMS(params.c_str());
 
@@ -559,7 +560,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 		MakeStandard(word);
 
 		//TODO(lubosz): this is one mega switch
-		LogDebug << "Switching! current word '"<<word.c_str()<<"'";
+		LogDebug << "Switching! current word '" << word.c_str() << "'";
 
 		switch (word[0]) {
 			case '}':
@@ -580,7 +581,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					unsigned long behavior = 0; //BEHAVIOUR_NONE;
 					float behavior_param = 0.f;
 					pos = GetNextWord(es, pos, word);
-					LogDebug << "BEHAVIOR "<< word;
+					LogDebug << "BEHAVIOR " << word;
 
 					if (!strcasecmp(word, "STACK"))
 					{
