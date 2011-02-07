@@ -113,7 +113,7 @@ static HRESULT WINAPI ModeEnumCallback(DDSURFACEDESC2 * pddsd,
 	DDSURFACEDESC2 * pddsdNewModes = new DDSURFACEDESC2[pDevice->dwNumModes+1];
 	memcpy(pddsdNewModes, pDevice->pddsdModes,
 	       pDevice->dwNumModes * sizeof(DDSURFACEDESC2));
-	delete pDevice->pddsdModes;
+	delete[] pDevice->pddsdModes;
 	pDevice->pddsdModes = pddsdNewModes;
 
 	// Add the new mode
