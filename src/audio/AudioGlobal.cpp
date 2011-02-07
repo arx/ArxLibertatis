@@ -39,8 +39,9 @@ namespace ATHENA
 	// Audio device interface                                                    //
 	ALCdevice *device(NULL);
 	ALCcontext *context(NULL);
-	Aluint primary[1] = { 0 };
-	LPKSPROPERTYSET environment(NULL);
+	ALuint primary[1] = { 0 };
+	// FIXME -- don't have this
+	//LPKSPROPERTYSET environment(NULL);
 	aalUBool is_reverb_present(AAL_UFALSE);
 	aalSLong environment_id(AAL_SFALSE);
 

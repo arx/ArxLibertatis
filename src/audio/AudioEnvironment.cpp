@@ -52,8 +52,8 @@ namespace ATHENA
 		reverb_delay(aalFloat(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DELAY)),
 		reverb_decay(aalFloat(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DECAY)),
 		reverb_hf_decay(aalFloat(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_HFDECAY)),
-		callback(NULL),
-		lpksps(NULL)
+		callback(NULL)
+		//lpksps(NULL)
 	{
 	}
 
@@ -121,13 +121,16 @@ namespace ATHENA
 	{
 		rolloff = _factor < 0.0F ? 0.0F  : _factor > 10.0F ? 10.0F : _factor;
 
-		if (lpksps)
-		{
-			if (lpksps->Set(DSPROPSETID_EAX_ListenerProperties,
-			                DSPROPERTY_EAXLISTENER_ROOMROLLOFFFACTOR | DSPROPERTY_EAXLISTENER_DEFERRED,
-			                NULL, 0, &rolloff, sizeof(aalFloat)))
-				return AAL_ERROR_SYSTEM;
-		}
+		// if (lpksps)
+		// {
+		// 	if (lpksps->Set(DSPROPSETID_EAX_ListenerProperties,
+		// 	                DSPROPERTY_EAXLISTENER_ROOMROLLOFFFACTOR | DSPROPERTY_EAXLISTENER_DEFERRED,
+		// 	                NULL, 0, &rolloff, sizeof(aalFloat)))
+		// 		return AAL_ERROR_SYSTEM;
+		// }
+
+		// FIXME -- I'm not sure how to do this
+		return AAL_ERROR_SYSTEM;
 
 		return AAL_OK;
 	}
