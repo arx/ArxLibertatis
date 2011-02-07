@@ -93,15 +93,15 @@ void PAK_Close() {
 void * _PAK_FileLoadMallocZero(const std::string& name, size_t& sizeRead) {
 	
 	size_t size = pPakManager->GetSize(name);
-	if(size == 0) {
-		sizeRead = size;
+	if(size == 0 || size == -1) {
+		sizeRead = 0;
 		return NULL;
 	}
 	
 	char * mem = (char *)malloc(size + 2);
 	
 	if(!pPakManager->Read(name, mem)) {
-		delete mem;
+		free(mem);
 		sizeRead = 0;
 		return NULL;
 	}
@@ -366,7 +366,7 @@ size_t PakManager::GetSize(const std::string& _filename) {
 	
 	for (vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
 		int size;
-		if((size = (*i)->GetSize(filename)) > 0) {
+		if((size = (*i)->GetSize(filename)) >= 0) {
 			LogInfo << "Got size in PAK "<< filename << " "<<size;
 			return size;
 		}
