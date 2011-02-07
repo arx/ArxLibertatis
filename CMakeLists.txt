@@ -63,7 +63,7 @@ file(GLOB_RECURSE ALL_SOURCES ${SRC_DIR}/*.cpp)
 add_executable(arx ${ALL_SOURCES} ${ALL_INCLUDES})
 
 #link
-target_link_libraries(arx dsound dxguid gdi32 shell32 dinput comdlg32 ole32 comctl32 ddraw jpeg z sfml-system pthread rt)
+target_link_libraries(arx dsound dxguid gdi32 shell32 dinput comdlg32 ole32 comctl32 ddraw jpeg z sfml-system pthread rt openal)
 
 add_custom_target(remake
 	#clean and compile with 1 thread per core
