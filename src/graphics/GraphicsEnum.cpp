@@ -294,7 +294,10 @@ static BOOL WINAPI DriverEnumCallback(GUID * pGUID, TCHAR * strDesc,
 	pD3D->EnumDevices(DeviceEnumCallback, &d3dDeviceInfo);
 
 	// Clean up and return
-	SAFE_DELETE(d3dDeviceInfo.pddsdModes);
+	if(d3dDeviceInfo.pddsdModes) {
+		delete[] d3dDeviceInfo.pddsdModes;
+		d3dDeviceInfo.pddsdModes = NULL;
+	}
 	pD3D->Release();
 	pDD->Release();
 
