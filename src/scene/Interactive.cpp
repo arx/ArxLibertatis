@@ -2508,7 +2508,7 @@ void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const std::string& temp)
 	}
 
 	std::string tex;
-	const char tex1[] = "Graph\\Obj3D\\Interactive\\Items\\Weapons\\";
+	const std::string tex1 = "Graph\\Obj3D\\Interactive\\Items\\Weapons\\";
 	std::string tx = tex1 + '\\' + temp + '\\' + temp + ".teo";
 	File_Standardize(tx, tex);
 	

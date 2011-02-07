@@ -135,7 +135,7 @@ SCRIPT_EVENT AS_EVENT[] =
 void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT& es)
 {
 	long nb = min(MAX_SHORTCUT, SM_MAXCMD);
-	LogDebug << "Compute " << nb << " shortcuts";
+	// LogDebug << "Compute " << nb << " shortcuts";
 
 	for (long j = 1; j < nb; j++) {
 		es.shortcut[j] = FindScriptPos(&es, AS_EVENT[j].name);
@@ -407,18 +407,10 @@ long ScriptEvent::checkInteractiveObject(INTERACTIVE_OBJ * io, long msg) {
 extern long LINEEND; // set by GetNextWord
 extern INTERACTIVE_OBJ * LASTSPAWNED;
 extern long PauseScript;
-extern long GLOB;
 extern long RELOADING;
 
 long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, INTERACTIVE_OBJ * io, const std::string& evname, long info)
 {
-	
-	LogDebug << "SendScriptEvent msg=" << msg << " ("
-	         << ((msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1) ? AS_EVENT[msg].name : "unknown")
-	         << ")" << " params=\"" << params << "\""
-	         << " io=" << Logger::nullstr(io ? io->filename : NULL)
-	         << ":" << io->ident
-	         << " evame=\"" << evname << "\" info=" << info;
 
 	long ret = ACCEPT;
 	std::string word = "";
@@ -517,12 +509,19 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 	}
 
 	if (pos <= -1) {
-		LogDebug << "cannot find event handler";
-		GLOB = 1;
+		// TODO very noisy LogDebug << "cannot find event handler";
 		return ACCEPT;
 	}
+	
+	
+	LogDebug << "SendScriptEvent msg=" << msg << " ("
+	         << ((msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1) ? AS_EVENT[msg].name : "unknown")
+	         << ")" << " params=\"" << params << "\""
+	         << " evame=\"" << evname << "\" info=" << info;
+	LogDebug << " io=" << Logger::nullstr(io ? io->filename : NULL)
+	         << ":" << io->ident
+	         << (io == NULL ? "" : es == &io->script ? " primary" : " overriding");
 
-	GLOB = 0;
 	MakeSSEPARAMS(params.c_str());
 
 	if (msg != SM_EXECUTELINE) {
@@ -562,7 +561,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 		MakeStandard(word);
 
 		//TODO(lubosz): this is one mega switch
-		LogDebug << "Switching! current word '"<<word.c_str()<<"'";
+		LogDebug << "Switching! current word '" << word.c_str() << "'";
 
 		switch (word[0]) {
 			case '}':
@@ -583,7 +582,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					unsigned long behavior = 0; //BEHAVIOUR_NONE;
 					float behavior_param = 0.f;
 					pos = GetNextWord(es, pos, word);
-					LogDebug << "BEHAVIOR "<< word;
+					LogDebug << "BEHAVIOR " << word;
 
 					if (!strcasecmp(word, "STACK"))
 					{
