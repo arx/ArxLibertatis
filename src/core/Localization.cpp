@@ -351,22 +351,23 @@ long HERMES_UNICODE_GetProfileSectionKeyCount(const std::string& sectionname)
 }
 
 //-----------------------------------------------------------------------------
-int PAK_UNICODE_GetPrivateProfileString( const std::string&  _lpszSection,
-                                         const std::string&  _lpszDefault,
-                                         std::string&        _lpszBuffer )
+bool PAK_UNICODE_GetPrivateProfileString( const std::string&  _in_section,
+                                         const std::string&  _default_return,
+                                         std::string&        _buf )
 {
-	if (_lpszSection.empty())	{
-		LogError <<  _lpszDefault << " not found";
-		_lpszBuffer = _lpszDefault + ":NOT FOUND";
-		return 0;
+	if ( _in_section.empty())
+	{
+		LogError <<  _default_return << " not found";
+		_buf = _default_return + ":NOT FOUND";
+		return false;
 	}
 
-	std::string szSection = "[" + _lpszSection + "]";
+	std::string section = "[" + _in_section + "]";
 
-	HERMES_UNICODE_GetProfileString( szSection,
-	                                 _lpszDefault,
-	                                 _lpszBuffer );
+	HERMES_UNICODE_GetProfileString( section,
+	                                 _default_return,
+	                                 _buf );
 
-	return 1;
+	return true;
 }
 

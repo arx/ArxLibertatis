@@ -33,13 +33,13 @@ void Localisation_Init();
 void Localisation_Close();
 
 
-int PAK_UNICODE_GetPrivateProfileString( const std::string& _lpszSection,
-        const std::string& _lpszDefault,
-        std::string& _lpszBuffer);
+bool PAK_UNICODE_GetPrivateProfileString( const std::string& section,
+                                          const std::string& default_return,
+                                          std::string& buffer);
 
 long HERMES_UNICODE_GetProfileSectionKeyCount( const std::string& sectionname);
-long HERMES_UNICODE_GetProfileString(const std::string& sectionname,
-                                     const std::string& defaultstring,
-                                     std::string& destination );
+long HERMES_UNICODE_GetProfileString( const std::string& sectionname,
+                                      const std::string& defaultstring,
+                                      std::string& destination );
 
 #endif // ARX_LOC_H
