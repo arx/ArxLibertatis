@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/Stream.h"
 #include "audio/eax.h"
 #include "io/Logger.h"
-#define HAVE_PTHREADS
+
 #ifdef HAVE_PTHREADS
 #include <pthread.h>
 #include <time.h>
@@ -68,7 +68,7 @@ namespace ATHENA
 	static void *mutex = (void *)1; // just for compilation.  real mutex is above
 	static pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 	static bool _mutex_used = false;
-#elif WINDOWS
+#elif ARX_PLATFORM_WIN32
 	static HANDLE mutex(NULL);
 #endif	
 	
