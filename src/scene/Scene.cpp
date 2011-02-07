@@ -4248,10 +4248,7 @@ void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag, long param)
 	float fr, fb, ffr; 
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;
- 
- 
- 
-	long temp;
+
 	float dd;
 	long lr;
 	unsigned long tim = ARXTimeUL();

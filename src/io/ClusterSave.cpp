@@ -28,6 +28,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <istream>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 #include <windows.h>
 #include "io/ClusterSave.h"
 #include "io/HashMap.h"
@@ -504,7 +505,7 @@ bool CSaveBlock::Save( const std::string& _pcFileName, void * _pDatas, int _iSiz
 			{
 				pLastClusterCurr = _pClusterCurr;
 				fseek(hFile, _pClusterCurr->iNext + 4, SEEK_SET);
-				iSizeWrite = min(_pClusterCurr->iTaille, iSize);
+                iSizeWrite = std::min(_pClusterCurr->iTaille, iSize);
 				fwrite((const void *)_pDatas, iSizeWrite, 1, hFile);
 				char * _pDatasTemp = (char *)_pDatas;
 				_pDatasTemp += iSizeWrite;

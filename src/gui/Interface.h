@@ -35,146 +35,34 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_INTERFACE_H
 
 #include <string>
-#include <tchar.h>
+#include <map>
+
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
 #include "game/Spells.h"
 
 //-----------------------------------------------------------------------------
-struct INTERFACE_TC
+class INTERFACE_TC
 {
-	TextureContainer * Icon_Lvl_Up;
-	TextureContainer * ringslot;
-	TextureContainer * loading;
-	TextureContainer * questbook;
-	TextureContainer * questbook_map;
-	TextureContainer * bookmark_char;
-	TextureContainer * bookmark_magic;
-	TextureContainer * bookmark_map;
-	TextureContainer * bookmark_quest;
-	TextureContainer * accessible_1;
-	TextureContainer * accessible_2;
-	TextureContainer * accessible_3;
-	TextureContainer * accessible_4;
-	TextureContainer * accessible_5;
-	TextureContainer * accessible_6;
-	TextureContainer * accessible_7;
-	TextureContainer * accessible_8;
-	TextureContainer * accessible_9;
-	TextureContainer * accessible_10;
-	TextureContainer * current_1;
-	TextureContainer * current_2;
-	TextureContainer * current_3;
-	TextureContainer * current_4;
-	TextureContainer * current_5;
-	TextureContainer * current_6;
-	TextureContainer * current_7;
-	TextureContainer * current_8;
-	TextureContainer * current_9;
-	TextureContainer * current_10;
-	TextureContainer * aim_maxi;
-	TextureContainer * aim_empty;
-	TextureContainer * aim_hit;
-	TextureContainer * hero_inventory;
-	TextureContainer * hero_inventory_up;
-	TextureContainer * hero_inventory_down;
-	TextureContainer * hero_inventory_link;
+public:
+	INTERFACE_TC();
+	~INTERFACE_TC();
 
-	TextureContainer * inventory_pickall;
-	TextureContainer * inventory_close;
+	void Set(const std::string& textureName, TextureContainer* pTexture);
+	void Set(const std::string& textureName, const std::string& fileName);
+	TextureContainer* Get(const std::string& name);
 
-	TextureContainer * ingame_inventory;
-	//TextureContainer * ingame_sub_inv;
-	TextureContainer * backpack;
-	TextureContainer * gold;
-	TextureContainer * book;
-	TextureContainer * steal;
-	TextureContainer * item_cant_steal;
-	TextureContainer * empty_gauge_red;
-	TextureContainer * empty_gauge_blue;
-	TextureContainer * filled_gauge_red;
-	TextureContainer * filled_gauge_blue;
-	TextureContainer * heropageleft;
-	TextureContainer * heropageright;
-	TextureContainer * improve_speed;
-	TextureContainer * improve_vision;
-	TextureContainer * target_on;
-	TextureContainer * target_off;
-	TextureContainer * interaction_on;
-	TextureContainer * interaction_off;
-	TextureContainer * magic;
-	TextureContainer * presentation;
-	TextureContainer * symbol_mega;
-	TextureContainer * symbol_vista;
-	TextureContainer * symbol_aam;
-	TextureContainer * symbol_yok;
-	TextureContainer * symbol_taar;
-	TextureContainer * eyeball;
-	TextureContainer * circle;
+	void Reset();
 
-	// icons duration
-	// lvl 1
-	TextureContainer * magic_sight;
-	// lvl 2
-	TextureContainer * detect_trap;
-	TextureContainer * lower_armor;
-	TextureContainer * armor;
-	TextureContainer * harm;
-	// lvl 3
-	TextureContainer * speed;
-	TextureContainer * dispell_illusion;
-	// lvl 4
-	TextureContainer * fire_protection;
-	TextureContainer * ice_protection;
-	TextureContainer * telekinesis;
-	TextureContainer * curse;
-	//?
-	TextureContainer * slowdown;
-	// lvl 5
-	TextureContainer * levitate;
-	TextureContainer * repel_undead;
-	// lvl 6
-	TextureContainer * create_field;
-	TextureContainer * raise_dead;
-	// lvl 7
-	TextureContainer * fire_field;
-	TextureContainer * ice_field;
-	// lvl 8
-	TextureContainer * invisibility;
-	TextureContainer * life_drain;
-	TextureContainer * mana_drain;
-	// lvl 9
-	TextureContainer * summon_creature;
-	TextureContainer * negate_magic;
-	// lvl 10
-	TextureContainer * control;
+public:
+	std::string        Level;
+	std::string        Xp;
 
-	TextureContainer * unknown;
+private:
+	typedef std::map<std::string, TextureContainer*>  TextureDictionary;
 
-	// PlayerBook & icons
-	TextureContainer * playerbook;
-	TextureContainer * ic_casting;
-	TextureContainer * ic_close_combat;
-	TextureContainer * ic_constitution;
-	TextureContainer * ic_defense;
-	TextureContainer * ic_dexterity;
-	TextureContainer * ic_etheral_link;
-	TextureContainer * ic_mind;
-	TextureContainer * ic_intuition;
-	TextureContainer * ic_mecanism;
-	TextureContainer * ic_object_knowledge;
-	TextureContainer * ic_projectile;
-	TextureContainer * ic_stealth;
-	TextureContainer * ic_strength;
-
-	TextureContainer * pTexCursorRedist;
-	TextureContainer * pTexSpellBook;
-
-	TextureContainer * pTexCornerLeft;
-	TextureContainer * pTexCornerRight;
-
-	std::string        lpszULevel;
-	std::string        lpszUXp;
+	TextureDictionary  m_Textures;
+	
 } ;
 
 //-----------------------------------------------------------------------------

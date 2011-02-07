@@ -274,6 +274,8 @@ void ARX_DAMAGE_Show_Hit_Blood(LPDIRECT3DDEVICE7 pd3dDevice)
 //*************************************************************************************
 float ARX_DAMAGES_DamagePlayer(float dmg, long type, long source, EERIE_3D * pos)
 {
+	//TODO(lubosz): Hack for not taking damage (needed due to bugs in scripts)
+	return 0;
 	if (player.playerflags & PLAYERFLAGS_INVULNERABILITY)
 		return 0;
 

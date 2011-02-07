@@ -154,7 +154,8 @@ again:
 
 	if (result < 0) return -1;
 
-	if (es->data[result+len2] <= 32) return result + len2;
+	if (es->size >= result+len2 && es->data[result+len2] <= 32)
+		return result + len2;
 
 	if (pdest = strstr(es->data + poss + result + len2, str.c_str()))
 		goto again;
@@ -2993,9 +2994,8 @@ void CheckHit(INTERACTIVE_OBJ * io, float ratioaim)
 
 void MakeStandard( std::string& str)
 {
-	long i = 0;
-	long pos = 0;
-
+	size_t i = 0;
+	
 	while ( i < str.length() )
 	{
 		if (str[i] != '_')
@@ -3011,7 +3011,7 @@ void MakeStandard( std::string& str)
 //*************************************************************************************
 //*************************************************************************************
 
-long MakeLocalised( const std::string& text, std::string& output, long maxsize, long lastspeechflag)
+long MakeLocalised( const std::string& text, std::string& output, long lastspeechflag)
 {
 	if ( text.empty() )
 	{
@@ -3022,7 +3022,7 @@ long MakeLocalised( const std::string& text, std::string& output, long maxsize, 
 	std::string __text;
 	// TODO Find replacement
 	//MultiByteToWideChar(CP_ACP, 0, text, -1, (wchar_t*)__text, 256);
-	return HERMES_UNICODE_GetProfileString(__text, "error", output, maxsize);
+	return HERMES_UNICODE_GetProfileString(__text, "error", output);
 }
 
 //-----------------------------------------------------------------------------
@@ -3039,8 +3039,7 @@ long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const std::string& _lpszText,
 	HERMES_UNICODE_GetProfileString(
 		__text,
 		"Not Found",
-		__output,
-		4095);
+		__output );
 	return (ARX_SPEECH_Add(io, __output, duration));
 }
 

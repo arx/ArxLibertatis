@@ -275,7 +275,7 @@ extern long LastSlot;
 extern long CurrPoint;
 extern long NETSPELL;
 
-long ARX_SPELLS_Launch(const long & typ, const long & source, const long & flags = 0, const long & level = -1, const long & target = -1, const long & duration = -1); //const long &net = 0);
+bool ARX_SPELLS_Launch(const long & typ, const long & source, const long & flags = 0, const long & level = -1, const long & target = -1, const long & duration = -1); //const long &net = 0);
 long ARX_SPELLS_GetFree();
 void ARX_SPELLS_ResetRecognition();
 void ARX_SPELLS_AddPoint(const EERIE_S2D * pos);

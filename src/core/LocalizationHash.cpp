@@ -30,211 +30,211 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //-----------------------------------------------------------------------------
 CLocalisationHash::CLocalisationHash(int _iSize)
 {
-    pTab = new CLocalisation* [_iSize];
+	pTab = new CLocalisation* [_iSize];
 
-    iSize = _iSize;
-    iFill = 0;
-    iMask = iSize - 1;
+	iSize = _iSize;
+	iFill = 0;
+	iMask = iSize - 1;
 
-    for (unsigned long i = 0; i < iSize; i++)
-    {
-        pTab[i] = NULL;
-    }
+	for (unsigned long i = 0; i < iSize; i++)
+	{
+		pTab[i] = NULL;
+	}
 
-    iNbCollisions = iNbNoInsert = 0;
+	iNbCollisions = iNbNoInsert = 0;
 }
 
 //-----------------------------------------------------------------------------
 CLocalisationHash::~CLocalisationHash()
 {
-    while (iSize--)
-    {
-        if (pTab[iSize] != NULL)
-        {
-            delete pTab[iSize];
-            pTab[iSize] = NULL;
-        }
-    }
+	while (iSize--)
+	{
+		if (pTab[iSize] != NULL)
+		{
+			delete pTab[iSize];
+			pTab[iSize] = NULL;
+		}
+	}
 
-    delete [] pTab;
-    pTab = NULL;
+	delete [] pTab;
+	pTab = NULL;
 }
 
 //-----------------------------------------------------------------------------
 int CLocalisationHash::FuncH1(int _iKey)
 {
-    return _iKey;
+	return _iKey;
 }
 
 //-----------------------------------------------------------------------------
 int	CLocalisationHash::FuncH2(int _iKey)
 {
-    return ((_iKey >> 1) | 1);
+	return ((_iKey >> 1) | 1);
 }
 
 //-----------------------------------------------------------------------------
 int	CLocalisationHash::GetKey(const std::string& _lpszUText)
 {
-    int iKey = 0;
-    int iLenght = _lpszUText.length();
-    int iLenght2 = iLenght;
+	int iKey = 0;
+	int iLenght = _lpszUText.length();
+	int iLenght2 = iLenght;
 
-    while (iLenght--)
-    {
-        iKey += _lpszUText[iLenght] * (iLenght + 1) + _lpszUText[iLenght] * iLenght2;
-    }
+	while (iLenght--)
+	{
+		iKey += _lpszUText[iLenght] * (iLenght + 1) + _lpszUText[iLenght] * iLenght2;
+	}
 
-    return iKey;
+	return iKey;
 }
 
 //-----------------------------------------------------------------------------
 void CLocalisationHash::ReHash()
 {
-    unsigned long	iNewSize = iSize << 1;
-    long	iNewMask = iNewSize - 1;
+	unsigned long	iNewSize = iSize << 1;
+	long	iNewMask = iNewSize - 1;
 
-    CLocalisation ** pTab2 = new CLocalisation *[iNewSize];
+	CLocalisation ** pTab2 = new CLocalisation *[iNewSize];
 
-    for (unsigned long i = 0 ; i < iNewSize ; i++)
-    {
-        pTab2[i] = NULL;
-    }
+	for (unsigned long i = 0 ; i < iNewSize ; i++)
+	{
+		pTab2[i] = NULL;
+	}
 
 
-    for (unsigned int i = 0 ; i < iSize ; i++)
-    {
-        if (pTab[i] != NULL)
-        {
-            int iKey = GetKey( pTab[i]->lpszUSection );
-            int	iH1	 = FuncH1(iKey);
-            int	iH2  = FuncH2(iKey);
+	for (unsigned int i = 0 ; i < iSize ; i++)
+	{
+		if (pTab[i] != NULL)
+		{
+			int iKey = GetKey( pTab[i]->lpszUSection );
+			int	iH1	 = FuncH1(iKey);
+			int	iH2  = FuncH2(iKey);
 
-            unsigned int iNbSolution = 0;
+			unsigned int iNbSolution = 0;
 
-            while (iNbSolution < iNewSize)
-            {
-                iH1 &= iNewMask;
+			while (iNbSolution < iNewSize)
+			{
+				iH1 &= iNewMask;
 
-                if (pTab2[iH1] == NULL)
-                {
-                    pTab2[iH1]	= pTab[i];
-                    pTab[i]		= NULL;
-                    //iFill ++;
-                }
+				if (pTab2[iH1] == NULL)
+				{
+					pTab2[iH1]	= pTab[i];
+					pTab[i]		= NULL;
+					//iFill ++;
+				}
 
-                iNbCollisions ++;
-                iH1 += iH2;
+				iNbCollisions ++;
+				iH1 += iH2;
 
-                iNbSolution ++;
-            }
+				iNbSolution ++;
+			}
 
-            iNbNoInsert ++;
-        }
-    }
+			iNbNoInsert ++;
+		}
+	}
 
-    iSize = iNewSize;
-    iMask = iNewMask;
+	iSize = iNewSize;
+	iMask = iNewMask;
 
-    delete [] pTab;
-    pTab = pTab2;
+	delete [] pTab;
+	pTab = pTab2;
 }
 
 //-----------------------------------------------------------------------------
 bool CLocalisationHash::AddElement(CLocalisation * _pLoc)
 {
-    if (iFill >= iSize * 0.75)
-    {
-        ReHash();
-    }
+	if (iFill >= iSize * 0.75)
+	{
+		ReHash();
+	}
 
-    if ( !(_pLoc && !_pLoc->lpszUSection.empty()) ) return false;
+	if ( !(_pLoc && !_pLoc->lpszUSection.empty()) ) return false;
 
-    int iKey = GetKey(_pLoc->lpszUSection);
-    int	iH1 = FuncH1(iKey);
-    int	iH2 = FuncH2(iKey);
+	int iKey = GetKey(_pLoc->lpszUSection);
+	int	iH1 = FuncH1(iKey);
+	int	iH2 = FuncH2(iKey);
 
-    unsigned long iNbSolution = 0;
+	unsigned long iNbSolution = 0;
 
-    while (iNbSolution < iSize)
-    {
-        iH1 &= iMask;
+	while (iNbSolution < iSize)
+	{
+		iH1 &= iMask;
 
-        if (pTab[iH1] == NULL)
-        {
-            pTab[iH1] = _pLoc;
-            iFill ++;
-            return true;
-        }
+		if (pTab[iH1] == NULL)
+		{
+			pTab[iH1] = _pLoc;
+			iFill ++;
+			return true;
+		}
 
-        iNbCollisions ++;
-        iH1 += iH2;
+		iNbCollisions ++;
+		iH1 += iH2;
 
-        iNbSolution ++;
-    }
+		iNbSolution ++;
+	}
 
-    iNbNoInsert ++;
-    return false;
+	iNbNoInsert ++;
+	return false;
 }
 
 //-----------------------------------------------------------------------------
 std::string* CLocalisationHash::GetPtrWithString(const std::string& _lpszUText)
 {
-    int iKey = GetKey(_lpszUText);
-    int	iH1 = FuncH1(iKey);
-    int	iH2 = FuncH2(iKey);
+	int iKey = GetKey(_lpszUText);
+	int	iH1 = FuncH1(iKey);
+	int	iH2 = FuncH2(iKey);
 
-    unsigned long iNbSolution = 0;
+	unsigned long iNbSolution = 0;
 
-    while (iNbSolution < iSize)
-    {
-        iH1 &= iMask;
+	while (iNbSolution < iSize)
+	{
+		iH1 &= iMask;
 
-        if ( pTab[iH1] )
-        {
-            if (!strcasecmp(_lpszUText.c_str(), pTab[iH1]->lpszUSection.c_str()))
-            {
-                if (pTab[iH1]->vUKeys.size() > 0)
-                {
-                    return &pTab[iH1]->vUKeys[0];
-                }
+		if ( pTab[iH1] )
+		{
+			if (!strcasecmp(_lpszUText.c_str(), pTab[iH1]->lpszUSection.c_str()))
+			{
+				if (pTab[iH1]->vUKeys.size() > 0)
+				{
+					return &pTab[iH1]->vUKeys[0];
+				}
 
-                return NULL;
-            }
-        }
+				return NULL;
+			}
+		}
 
-        iH1 += iH2;
-        iNbSolution++;
-    }
+		iH1 += iH2;
+		iNbSolution++;
+	}
 
-    return NULL;
+	return NULL;
 }
 
 //-----------------------------------------------------------------------------
 unsigned long CLocalisationHash::GetKeyCount(const std::string& _lpszUText)
 {
-    int iKey = GetKey(_lpszUText);
-    int	iH1 = FuncH1(iKey);
-    int	iH2 = FuncH2(iKey);
+	int iKey = GetKey(_lpszUText);
+	int	iH1 = FuncH1(iKey);
+	int	iH2 = FuncH2(iKey);
 
-    unsigned long iNbSolution = 0;
+	unsigned long iNbSolution = 0;
 
-    while (iNbSolution < iSize)
-    {
-        iH1 &= iMask;
+	while (iNbSolution < iSize)
+	{
+		iH1 &= iMask;
 
-        if (pTab[iH1])
-        {
-            if (!strcasecmp(_lpszUText.c_str(), pTab[iH1]->lpszUSection.c_str()))
-            {
-                return pTab[iH1]->vUKeys.size();
+		if (pTab[iH1])
+		{
+			if (!strcasecmp(_lpszUText.c_str(), pTab[iH1]->lpszUSection.c_str()))
+			{
+				return pTab[iH1]->vUKeys.size();
 
-                return 0;
-            }
-        }
+				return 0;
+			}
+		}
 
-        iH1 += iH2;
-        iNbSolution++;
-    }
+		iH1 += iH2;
+		iNbSolution++;
+	}
 
-    return 0;
+	return 0;
 }

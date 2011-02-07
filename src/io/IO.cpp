@@ -68,22 +68,27 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Registry.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
+#include "core/Common.h"
 
-extern "C" {
-#undef __cplusplus
-#include <shlobj.h>
-#include <windows.h>
-#include <unistd.h>
-}
-
-
-using namespace std;
+#if ARX_COMPILER_MSVC
+    #include <shlobj.h>
+    #include <windows.h>
+#else
+    extern "C" {
+    #undef __cplusplus
+    #include <shlobj.h>
+    #include <windows.h>
+    #include <unistd.h>
+    }
 
 // TODO(lubosz): temporary include replacement
-#define _MAX_EXT 3
-#define _MAX_FNAME 512
-#define _MAX_DRIVE 1
-#define _MAX_DIR _MAX_FNAME
+    #define _MAX_EXT 3
+    #define _MAX_FNAME 512
+    #define _MAX_DRIVE 1
+    #define _MAX_DIR _MAX_FNAME
+#endif
+
+using namespace std;
 
 
 char HermesBufferWork[MAX_PATH];    // Used by FileStandardize (avoid malloc/free per call)
@@ -926,7 +931,7 @@ bool HERMESFolderSelector(char * file_name, const char * title)
 }
 bool HERMES_WFSelectorCommon(const char * pstrFileName, const char * pstrTitleName, const char * filter, long flag, long flag_operation, long max_car, HWND hWnd)
 {
-	LONG	value;
+	BOOL	value;
 	char	cwd[MAX_PATH];
 
 	ofn.lStructSize		= sizeof(OPENFILENAME) ;
@@ -964,7 +969,7 @@ bool HERMES_WFSelectorCommon(const char * pstrFileName, const char * pstrTitleNa
 	
 	free(ofn.lpstrFile);
 
-	return value;
+	return value == TRUE;
 }
 
 int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName, const char * filter, HWND hWnd)
