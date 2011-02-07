@@ -57,6 +57,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scripting/Script.h"
 
+#include <stddef.h>
+
 #include <cassert>
 #include <iomanip>
 
@@ -117,12 +119,12 @@ int strcmp( const std::string& str1, const std::string& str2 )
 // Looks for string in script, return pos. Search start position can be set using	//
 // poss parameter.																	//
 //*************************************************************************************
-long FindScriptPos(EERIE_SCRIPT * es, const std::string& str)
+long FindScriptPos(const EERIE_SCRIPT * es, const std::string& str)
 {
 
 	if (!es->data) return -1;
 
-	char * pdest = strstr(es->data, str.c_str());
+	const char * pdest = strstr(es->data, str.c_str());
 	
 	if(!pdest) {
 		return -1;
@@ -141,26 +143,39 @@ long FindScriptPos(EERIE_SCRIPT * es, const std::string& str)
 	return -1;
 }
 
-long FindScriptPosGOTO(EERIE_SCRIPT * es, const std::string& str, long poss)
-{
-	if (!es->data) return -1;
-
-	char * pdest = strstr(es->data + poss, str.c_str());
-	long result;
-	long len2 = str.length();
-again:
-	;
-	result = pdest - es->data;
-
-	if (result < 0) return -1;
-
-	if (es->size >= result+len2 && es->data[result+len2] <= 32)
-		return result + len2;
-
-	if (pdest = strstr(es->data + poss + result + len2, str.c_str()))
-		goto again;
-
-	return -1;
+/**
+ * Finds the first occurence of str in the script that is followed
+ * by a separator (a character of value less then or equal 32)
+ * 
+ * @return The position of str in the script or -1 if str was not found.
+ */
+long FindScriptPosGOTO(const EERIE_SCRIPT * es, const string & str) {
+	
+	if(!es->data) {
+		return -1;
+	}
+	
+	long result = 0;
+	size_t len2 = str.length();
+	
+	while(true) {
+		
+		const char * pdest = strstr(es->data + result, str.c_str());
+		if(!pdest) {
+			return -1;
+		}
+		
+		result = pdest - es->data;
+		
+		assert(result + len2 <= es->size);
+		
+		if(es->data[result + len2] <= 32) {
+			return result + len2;
+		}
+		
+		result += len2;
+	}
+	
 }
 
 bool CharIn( const std::string& str, char _char)
@@ -195,7 +210,7 @@ extern long FOR_EXTERNAL_PEOPLE;
 //*************************************************************************************
 // SCRIPT Precomputed Label Offsets Management
 long FindLabelPos(EERIE_SCRIPT * es, const std::string& string) {
-	return FindScriptPosGOTO(es, ">>" + string, 0);
+	return FindScriptPosGOTO(es, ">>" + string);
 }
 
 long ARX_SCRIPT_SearchTextFromPos(EERIE_SCRIPT * es, const std::string& search, long startpos, std::string& tline, long * nline)
