@@ -82,7 +82,7 @@ namespace ATHENA
 	int __mutex_wait(aalULong time)
 	{
 		pthread_mutex_lock(&_mutex);
-		if (!_mutex_used) {
+		if (_mutex_used) {
 			struct timespec timeout;
 			struct timespec now;
 			clock_gettime(CLOCK_REALTIME, &now);
@@ -94,12 +94,14 @@ namespace ATHENA
 			}
 		}
 		_mutex_used = true;
+		pthread_mutex_unlock(&_mutex);
 		return 0;
 	}
 
 #define ReleaseMutex(x)	__mutex_release()
 	int __mutex_release()
 	{
+		pthread_mutex_lock(&_mutex);
 		_mutex_used = false;
 		pthread_cond_signal(&cond);
 		pthread_mutex_unlock(&_mutex);
