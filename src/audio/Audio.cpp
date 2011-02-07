@@ -50,7 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/Stream.h"
 //#include "audio/eax.h"
 #include "io/Logger.h"
-#define HAVE_PTHREADS
 #ifdef HAVE_PTHREADS
 #include <pthread.h>
 #include <time.h>
@@ -116,39 +115,6 @@ namespace ATHENA
 #undef CreateMutex
 #define CreateMutex(x, y, z) (void *)1
 #define CloseHandle(mutex)	
-#endif
-
-#ifdef HAVE_PTHREADS
-#define WaitForSingleObject(x, y) __mutex_wait(y)
-	int __mutex_wait(aalULong time)
-	{
-		pthread_mutex_lock(&_mutex);
-		if (_mutex_used) {
-			struct timespec timeout;
-			struct timespec now;
-			clock_gettime(CLOCK_REALTIME, &now);
-			timeout.tv_sec = now.tv_sec;
-			timeout.tv_nsec = now.tv_nsec + (time * 1000);
-			if (pthread_cond_timedwait(&cond, &_mutex, &timeout) == ETIMEDOUT) {
-				pthread_mutex_unlock(&_mutex);
-				return WAIT_TIMEOUT;
-			}
-		}
-		_mutex_used = true;
-		pthread_mutex_unlock(&_mutex);
-		return 0;
-	}
-
-#define ReleaseMutex(x)	__mutex_release()
-	int __mutex_release()
-	{
-		pthread_mutex_lock(&_mutex);
-		_mutex_used = false;
-		pthread_cond_signal(&cond);
-		pthread_mutex_unlock(&_mutex);
-	}
-#undef CreateMutex
-#define CreateMutex(x, y, z) (void *)1
 #endif
 
 	///////////////////////////////////////////////////////////////////////////////
