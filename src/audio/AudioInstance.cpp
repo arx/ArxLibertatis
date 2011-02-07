@@ -25,7 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/AudioInstance.h"
 
-#include "audio/eax.h"
+//#include "audio/eax.h"
 #include "audio/AudioGlobal.h"
 #include "audio/Stream.h"
 
@@ -33,9 +33,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 // TODO find right library
-const GUID DSPROPSETID_EAX20_BufferProperties = { 0x306a6a7, 0xb224, 0x11d2, { 0x99, 0xe5, 0x0, 0x0, 0xe8, 0xd8, 0xc7, 0x22 } };
-const GUID DSPROPSETID_EAX20_ListenerProperties = { 0x306a6a8, 0xb224, 0x11d2, { 0x99, 0xe5, 0x0, 0x0, 0xe8, 0xd8, 0xc7, 0x22 } };
-const GUID CLSID_EAXDirectSound = { 0x4ff53b81, 0x1ce0, 0x11d3, { 0xaa, 0xb8, 0x0, 0xa0, 0xc9, 0x59, 0x49, 0xd5 } };
+// const GUID DSPROPSETID_EAX20_BufferProperties = { 0x306a6a7, 0xb224, 0x11d2, { 0x99, 0xe5, 0x0, 0x0, 0xe8, 0xd8, 0xc7, 0x22 } };
+// const GUID DSPROPSETID_EAX20_ListenerProperties = { 0x306a6a8, 0xb224, 0x11d2, { 0x99, 0xe5, 0x0, 0x0, 0xe8, 0xd8, 0xc7, 0x22 } };
+// const GUID CLSID_EAXDirectSound = { 0x4ff53b81, 0x1ce0, 0x11d3, { 0xaa, 0xb8, 0x0, 0xa0, 0xc9, 0x59, 0x49, 0xd5 } };
 
 namespace ATHENA
 {
@@ -220,11 +220,14 @@ namespace ATHENA
 
 			if (stream->SetPosition(0)) return AAL_ERROR_SYSTEM;
 
-			if (lpdsb->Lock(0, 0, &ptr0, &cur0, &ptr1, &cur1, DSBLOCK_ENTIREBUFFER)) return AAL_ERROR_SYSTEM;
+			//if (lpdsb->Lock(0, 0, &ptr0, &cur0, &ptr1, &cur1, DSBLOCK_ENTIREBUFFER)) return AAL_ERROR_SYSTEM;
+			ptr0 = malloc(size);
 
 			stream->Read(ptr0, size, write);
 
-			if (lpdsb->Unlock(ptr0, cur0, ptr1, cur1)) return AAL_ERROR_SYSTEM;
+			//if (lpdsb->Unlock(ptr0, cur0, ptr1, cur1)) return AAL_ERROR_SYSTEM;
+			alBufferData(buffer[0], AL_FORMAT_STEREO16, ptr0, size, sample->format.frequency);
+			// FIXME -- does the above cause a memleak?
 
 			if (write != size)
 				return AAL_ERROR_SYSTEM;
@@ -247,8 +250,10 @@ namespace ATHENA
 		channel = _channel;
 		size = instance->size;
 
-		if (device->DuplicateSoundBuffer(instance->lpdsb, &lpdsb))
-			return AAL_ERROR_SYSTEM;
+		// if (device->DuplicateSoundBuffer(instance->lpdsb, &lpdsb))
+		// 	return AAL_ERROR_SYSTEM;
+
+		buffer[0] = instance->buffer[1];
 
 		SetVolume(channel.volume);
 		SetPitch(channel.pitch);
@@ -256,12 +261,18 @@ namespace ATHENA
 		//Create 3D interface if required
 		if (channel.flags & FLAG_ANY_3D_FX)
 		{
-			if (lpdsb->QueryInterface(IID_IDirectSound3DBuffer, (aalVoid **)&lpds3db))
-				return AAL_ERROR_SYSTEM;
+			// if (lpdsb->QueryInterface(IID_IDirectSound3DBuffer, (aalVoid **)&lpds3db))
+			// 	return AAL_ERROR_SYSTEM;
 
-			if (channel.flags & AAL_FLAG_RELATIVE &&
-			        lpds3db->SetMode(DS3DMODE_HEADRELATIVE, DS3D_DEFERRED))
-				return AAL_ERROR_SYSTEM;
+			// if (channel.flags & AAL_FLAG_RELATIVE &&
+			//         lpds3db->SetMode(DS3DMODE_HEADRELATIVE, DS3D_DEFERRED))
+			// 	return AAL_ERROR_SYSTEM;
+
+			if (channel.flags & AAL_FLAG_RELATIVE) {
+				alSourcei(source[0], AL_SOURCE_RELATIVE, 1);
+				if (alGetError() != AL_NO_ERROR)
+					return AAL_ERROR_SYSTEM;
+			}
 
 			SetPosition(channel.position);
 			SetVelocity(channel.velocity);
@@ -271,24 +282,25 @@ namespace ATHENA
 
 			if (is_reverb_present)
 			{
-				lpds3db->QueryInterface(IID_IKsPropertySet, (aalVoid **)&lpeax);
+				// FIXME
+				// lpds3db->QueryInterface(IID_IKsPropertySet, (aalVoid **)&lpeax);
 
-				aalSLong value(0);
-				lpeax->Set(DSPROPSETID_EAX_BufferProperties,
-				           DSPROPERTY_EAXBUFFER_FLAGS | DSPROPERTY_EAXBUFFER_DEFERRED,
-				           NULL, 0, &value, sizeof(aalSLong));
+				// aalSLong value(0);
+				// lpeax->Set(DSPROPSETID_EAX_BufferProperties,
+				//            DSPROPERTY_EAXBUFFER_FLAGS | DSPROPERTY_EAXBUFFER_DEFERRED,
+				//            NULL, 0, &value, sizeof(aalSLong));
 
-				if (!environment || !(channel.flags & AAL_FLAG_REVERBERATION))
-				{
-					value = -10000;
-					lpeax->Set(DSPROPSETID_EAX_BufferProperties,
-					           DSPROPERTY_EAXBUFFER_ROOM | DSPROPERTY_EAXBUFFER_DEFERRED,
-					           NULL, 0, &value, sizeof(aalSLong));
+				// if (!environment || !(channel.flags & AAL_FLAG_REVERBERATION))
+				// {
+				// 	value = -10000;
+				// 	lpeax->Set(DSPROPSETID_EAX_BufferProperties,
+				// 	           DSPROPERTY_EAXBUFFER_ROOM | DSPROPERTY_EAXBUFFER_DEFERRED,
+				// 	           NULL, 0, &value, sizeof(aalSLong));
 
-					lpeax->Set(DSPROPSETID_EAX_BufferProperties,
-					           DSPROPERTY_EAXBUFFER_ROOMHF | DSPROPERTY_EAXBUFFER_DEFERRED,
-					           NULL, 0, &value, sizeof(aalSLong));
-				}
+				// 	lpeax->Set(DSPROPSETID_EAX_BufferProperties,
+				// 	           DSPROPERTY_EAXBUFFER_ROOMHF | DSPROPERTY_EAXBUFFER_DEFERRED,
+				// 	           NULL, 0, &value, sizeof(aalSLong));
+				// }
 			}
 		}
 		else SetPan(channel.pan);
@@ -298,16 +310,19 @@ namespace ATHENA
 
 	aalError Instance::Clean()
 	{
-		if (lpeax) lpeax->Release(), lpeax = NULL;
+		// if (lpeax) lpeax->Release(), lpeax = NULL;
 
-		if (lpds3db) lpds3db->Release(), lpds3db = NULL;
+		// if (lpds3db) lpds3db->Release(), lpds3db = NULL;
 
-		if (lpdsb)
-		{
-			if (IsPlaying()) lpdsb->Stop();
+		// if (lpdsb)
+		// {
+		// 	if (IsPlaying()) lpdsb->Stop();
 
-			lpdsb->Release(), lpdsb = NULL;
-		}
+		// 	lpdsb->Release(), lpdsb = NULL;
+		// }
+
+		alDeleteSources(1, source);
+		alDeleteBuffers(1, buffer);
 
 		if (stream) DeleteStream(stream);
 
@@ -382,19 +397,29 @@ namespace ATHENA
 
 		channel.pan = p > 1.0F ? 1.0F : p < -1.0F ? -1.0F : p;
 
-		if (lpdsb->SetPan(aalSLong(channel.pan * 10000.0F))) return AAL_ERROR_SYSTEM;
+		// FIXME -- OpenAL doesn't seem to have a pan feature
+		// if (lpdsb->SetPan(aalSLong(channel.pan * 10000.0F))) return AAL_ERROR_SYSTEM;
 
 		return AAL_OK;
 	}
 
 	aalError Instance::SetPosition(const aalVector & position)
 	{
-		if (!lpds3db || !(channel.flags & AAL_FLAG_POSITION)) return AAL_ERROR_INIT;
+		//if (!lpds3db || !(channel.flags & AAL_FLAG_POSITION)) return AAL_ERROR_INIT;
+		if (!alIsSource(source[0]) || !channel.flags & AAL_FLAG_POSITION)
+			return AAL_ERROR_INIT;
 
 		channel.position = position;
 
-		if (lpds3db->SetPosition(position.x, position.y, position.z, DS3D_DEFERRED))
+		const ALfloat pos[3] = {position.x, position.y, position.z};
+
+		alSourcefv(source[0], AL_POSITION, pos);
+
+		if (alGetError() != AL_NO_ERROR)
 			return AAL_ERROR_SYSTEM;
+
+		//if (lpds3db->SetPosition(position.x, position.y, position.z, DS3D_DEFERRED))
+		//return AAL_ERROR_SYSTEM;
 
 		return AAL_OK;
 	}
@@ -434,10 +459,18 @@ namespace ATHENA
 		channel.cone.outer_angle = cone.outer_angle;
 		channel.cone.outer_volume = cone.outer_volume > 1.0F ? 1.0F : cone.outer_volume < 0.0F ? 0.0F : cone.outer_volume;
 
-		if (lpds3db->SetConeAngles(aalULong(channel.cone.inner_angle), aalULong(channel.cone.outer_angle), DS3D_DEFERRED))
-			return AAL_ERROR_SYSTEM;
+		// if (lpds3db->SetConeAngles(aalULong(channel.cone.inner_angle), aalULong(channel.cone.outer_angle), DS3D_DEFERRED))
+		// 	return AAL_ERROR_SYSTEM;
 
-		if (lpds3db->SetConeOutsideVolume(aalSLong((channel.cone.outer_volume - 1.0F) * 10000.0F), DS3D_DEFERRED))
+		// if (lpds3db->SetConeOutsideVolume(aalSLong((channel.cone.outer_volume - 1.0F) * 10000.0F), DS3D_DEFERRED))
+		// 	return AAL_ERROR_SYSTEM;
+
+		
+		alSourcef(source[0], AL_CONE_INNER_ANGLE, channel.cone.inner_angle);
+		alSourcef(source[0], AL_CONE_OUTER_ANGLE, channel.cone.outer_angle);
+		alSourcef(source[0], AL_CONE_OUTER_GAIN, channel.cone.outer_volume);
+
+		if (alGetError() != AL_NO_ERROR)
 			return AAL_ERROR_SYSTEM;
 
 		return AAL_OK;
@@ -445,12 +478,17 @@ namespace ATHENA
 
 	aalError Instance::SetFalloff(const aalFalloff & falloff)
 	{
-		if (!lpds3db || !(channel.flags & AAL_FLAG_FALLOFF)) return AAL_ERROR_INIT;
+		if (!alIsSource(source[0]) || !(channel.flags & AAL_FLAG_FALLOFF)) return AAL_ERROR_INIT;
 
 		channel.falloff = falloff;
 
-		if (lpds3db->SetMinDistance(falloff.start, DS3D_DEFERRED) ||
-		        lpds3db->SetMaxDistance(falloff.end, DS3D_DEFERRED))
+		// if (lpds3db->SetMinDistance(falloff.start, DS3D_DEFERRED) ||
+		//         lpds3db->SetMaxDistance(falloff.end, DS3D_DEFERRED))
+		// 	return AAL_ERROR_SYSTEM;
+
+		alSourcef(source[0], AL_MAX_DISTANCE, falloff.end);
+		// FIXME -- OpenAL doesn't have a AL_MIN_DISTANCE
+		if (alGetError() != AL_NO_ERROR)
 			return AAL_ERROR_SYSTEM;
 
 		return AAL_OK;
@@ -464,87 +502,92 @@ namespace ATHENA
 
 	aalError Instance::GetStatistics(aalFloat & av_vol, aalFloat & av_dev) const
 	{
-		aalULong pos, length(0);
-		aalULong cur0, cur1;
-		aalVoid * ptr0, *ptr1;
+		// aalULong pos, length(0);
+		// aalULong cur0, cur1;
+		// aalVoid * ptr0, *ptr1;
 
-		av_vol = av_dev = 0.0F;
+		// av_vol = av_dev = 0.0F;
 
-		if (lpdsb->GetCurrentPosition(&pos, NULL)) return AAL_ERROR_SYSTEM;
+		// if (lpdsb->GetCurrentPosition(&pos, NULL)) return AAL_ERROR_SYSTEM;
 
-		if (pos > 150) pos -= 150;
+		// if (pos > 150) pos -= 150;
 
-		if (stream) length = write < pos ? write + size : write;
-		else length = sample->length;
+		// if (stream) length = write < pos ? write + size : write;
+		// else length = sample->length;
 
-		length -= pos;
+		// length -= pos;
 
-		aalULong sec(256);
+		// aalULong sec(256);
 
-		if (length > sec) length = sec;
+		// if (length > sec) length = sec;
 
-		if (lpdsb->Lock(pos, length, &ptr0, &cur0, &ptr1, &cur1, 0)) return AAL_ERROR_SYSTEM;
+		// if (lpdsb->Lock(pos, length, &ptr0, &cur0, &ptr1, &cur1, 0)) return AAL_ERROR_SYSTEM;
 
-		length >>= 1;
+		// length >>= 1;
 
-		if (ptr0)
-		{
-			aalUWord * ptr = (aalUWord *)ptr0 + (cur0 >> 1);
+		// if (ptr0)
+		// {
+		// 	aalUWord * ptr = (aalUWord *)ptr0 + (cur0 >> 1);
 
-			while (ptr > ptr0) av_vol += *(--ptr);
-		}
+		// 	while (ptr > ptr0) av_vol += *(--ptr);
+		// }
 
-		if (ptr1)
-		{
-			aalUWord * ptr = (aalUWord *)ptr1 + (cur1 >> 1);
+		// if (ptr1)
+		// {
+		// 	aalUWord * ptr = (aalUWord *)ptr1 + (cur1 >> 1);
 
-			while (ptr > ptr1) av_vol += *(--ptr);
-		}
+		// 	while (ptr > ptr1) av_vol += *(--ptr);
+		// }
 
-		av_vol /= length;
-		av_vol /= 65535.0F;
+		// av_vol /= length;
+		// av_vol /= 65535.0F;
 
-		if (ptr0)
-		{
-			aalFloat dev;
-			aalUWord * ptr = (aalUWord *)ptr0 + (cur0 >> 1);
+		// if (ptr0)
+		// {
+		// 	aalFloat dev;
+		// 	aalUWord * ptr = (aalUWord *)ptr0 + (cur0 >> 1);
 
-			while (ptr > ptr0)
-			{
-				dev = aalFloat(*(--ptr)) / 65535.0F - av_vol;
-				dev *= dev;
-				av_dev += dev;
-			}
-		}
+		// 	while (ptr > ptr0)
+		// 	{
+		// 		dev = aalFloat(*(--ptr)) / 65535.0F - av_vol;
+		// 		dev *= dev;
+		// 		av_dev += dev;
+		// 	}
+		// }
 
-		if (ptr1)
-		{
-			aalFloat dev;
-			aalUWord * ptr = (aalUWord *)ptr1 + (cur1 >> 1);
+		// if (ptr1)
+		// {
+		// 	aalFloat dev;
+		// 	aalUWord * ptr = (aalUWord *)ptr1 + (cur1 >> 1);
 
-			while (ptr > ptr1)
-			{
-				dev = aalFloat(*(--ptr)) / 65535.0F - av_vol;
-				dev *= dev;
-				av_dev += dev;
-			}
-		}
+		// 	while (ptr > ptr1)
+		// 	{
+		// 		dev = aalFloat(*(--ptr)) / 65535.0F - av_vol;
+		// 		dev *= dev;
+		// 		av_dev += dev;
+		// 	}
+		// }
 
-		av_dev /= length;
-		av_dev = (aalFloat)sqrt(av_dev);
+		// av_dev /= length;
+		// av_dev = (aalFloat)sqrt(av_dev);
 
-		lpdsb->Unlock(ptr0, cur0, ptr1, cur1);
+		// lpdsb->Unlock(ptr0, cur0, ptr1, cur1);
 
-		LogDebug << "AVV[" << av_vol << "] - AVD[" << av_dev << "f]";
+		// LogDebug << "AVV[" << av_vol << "] - AVD[" << av_dev << "f]";
 
 		return AAL_OK;
 	}
 
 	aalError Instance::GetPosition(aalVector & position) const
 	{
-		if (!lpds3db || !(channel.flags & AAL_FLAG_POSITION)) return AAL_ERROR_INIT;
+		if (!alIsSource(source[0]) || !(channel.flags & AAL_FLAG_POSITION)) return AAL_ERROR_INIT;
 
-		if (lpds3db->GetPosition((D3DVECTOR *)&position)) return AAL_ERROR_SYSTEM;
+		//if (lpds3db->GetPosition((D3DVECTOR *)&position)) return AAL_ERROR_SYSTEM;
+		ALfloat pos[3];
+		alGetSourcefv(source[0], AL_POSITION, pos);
+		position.x = pos[0];
+		position.y = pos[1];
+		position.z = pos[2];
 
 		return AAL_OK;
 	}
@@ -557,11 +600,12 @@ namespace ATHENA
 
 	aalUBool Instance::IsPlaying()
 	{
-		aalULong value;
+		ALint value;
 
-		if (lpdsb->GetStatus(&value)) value = 0;
+		//if (lpdsb->GetStatus(&value)) value = 0;
+		alGetSourcei(source[0], AL_SOURCE_STATE, &value);
 
-		return value & DSBSTATUS_PLAYING ? AAL_UTRUE : AAL_UFALSE;
+		return value == AL_PLAYING ? AAL_UTRUE : AAL_UFALSE;
 	}
 
 	aalUBool Instance::IsIdled()
@@ -587,7 +631,9 @@ namespace ATHENA
 			if (play_count) loop += play_count;
 			else loop = 0xffffffff;
 
-			lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0);
+			//lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0);
+			// FIXME -- can only toggle looping, no way to set number of repeats
+			alSourcePlay(source[0]);
 
 			InstanceDebugLog(this, "QUEUED");
 
@@ -602,11 +648,16 @@ namespace ATHENA
 
 			if (stream->SetPosition(0)) return AAL_ERROR;
 
-			if (lpdsb->Lock(0, size, &ptr0, &cur0, &ptr1, &cur1, DSBLOCK_ENTIREBUFFER)) return AAL_ERROR_SYSTEM;
+			//if (lpdsb->Lock(0, size, &ptr0, &cur0, &ptr1, &cur1, DSBLOCK_ENTIREBUFFER)) return AAL_ERROR_SYSTEM;
+			ptr0 = malloc(size);
 
 			stream->Read(ptr0, size, write);
 
-			if (lpdsb->Unlock(ptr0, cur0, ptr1, cur1)) return AAL_ERROR_SYSTEM;
+			//if (lpdsb->Unlock(ptr0, cur0, ptr1, cur1)) return AAL_ERROR_SYSTEM;
+			alBufferData(buffer[0], AL_FORMAT_STEREO16, ptr0, size, sample->format.frequency);
+			// FIXME -- does the above cause a memleak?
+
+			//if (lpdsb->Unlock(ptr0, cur0, ptr1, cur1)) return AAL_ERROR_SYSTEM;
 
 			if (write != size) return AAL_ERROR;
 		}
@@ -616,11 +667,16 @@ namespace ATHENA
 		loop = play_count - 1;
 		callb_i = channel.flags & AAL_FLAG_CALLBACK ? 0 : 0xffffffff;
 
-		if (lpdsb->SetCurrentPosition(0)) return AAL_ERROR_SYSTEM;
+		//if (lpdsb->SetCurrentPosition(0)) return AAL_ERROR_SYSTEM;
+		alSourcei(source[0], AL_SEC_OFFSET, 0);
 
-		if (lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0))
+		// if (lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0))
+		// 	return AAL_ERROR_SYSTEM;
+
+		alSourcePlay(source[0]);
+		if (alGetError() != AL_NO_ERROR)
 			return AAL_ERROR_SYSTEM;
-
+		
 		InstanceDebugLog(this, "STARTED");
 
 		return AAL_OK;
@@ -632,7 +688,11 @@ namespace ATHENA
 
 		InstanceDebugLog(this, "STOPPED");
 
-		if (lpdsb->Stop() || lpdsb->SetCurrentPosition(0)) return AAL_ERROR_SYSTEM;
+		//if (lpdsb->Stop() || lpdsb->SetCurrentPosition(0)) return AAL_ERROR_SYSTEM;
+		alSourceStop(source[0]);
+		alSourcei(source[0], AL_SEC_OFFSET, 0);
+		if (alGetError() != AL_NO_ERROR)
+			return AAL_ERROR_SYSTEM;
 
 		status &= ~IS_PAUSED;
 		status |= IS_IDLED;
@@ -646,7 +706,8 @@ namespace ATHENA
 
 		InstanceDebugLog(this, "PAUSED");
 
-		lpdsb->Stop();
+		//lpdsb->Stop();
+		alSourcePause(source[0]);
 		status |= IS_PAUSED;
 
 		return AAL_OK;
@@ -660,10 +721,13 @@ namespace ATHENA
 
 		status &= ~IS_PAUSED;
 
-		if (channel.flags & AAL_FLAG_POSITION && lpds3db && IsTooFar())
+		if (channel.flags & AAL_FLAG_POSITION && alIsSource(source[0]) && IsTooFar())
 			return AAL_OK;
 
-		if (lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0))
+		// if (lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0))
+		// 	return AAL_ERROR_SYSTEM;
+		alSourcePlay(source[0]);
+		if (alGetError() != AL_NO_ERROR)
 			return AAL_ERROR_SYSTEM;
 
 		return AAL_OK;
@@ -683,14 +747,20 @@ namespace ATHENA
 	aalUBool Instance::IsTooFar()
 	{
 		aalFloat dist, max;
-		ALfloat listener_pos[3];
+		ALfloat _listener_pos[3];
+		aalVector listener_pos;
 
-		lpds3db->GetMaxDistance(&max);
+		//lpds3db->GetMaxDistance(&max);
+		alGetSourcef(source[0], AL_MAX_DISTANCE, &max);
 
 		if (channel.flags & AAL_FLAG_RELATIVE)
-			listener_pos[0] = listener_pos[1] = listener_pos[2] = 0.0F;
+			_listener_pos[0] = _listener_pos[1] = _listener_pos[2] = 0.0F;
 		else
-			alGetListenerfv(AL_POSITION, listener_pos);
+			alGetListenerfv(AL_POSITION, _listener_pos);
+
+		listener_pos.x = _listener_pos[0];
+		listener_pos.y = _listener_pos[1];
+		listener_pos.z = _listener_pos[2];
 
 		dist = Distance(listener_pos, channel.position);
 
@@ -699,7 +769,8 @@ namespace ATHENA
 			if (dist > max) return AAL_UTRUE;
 
 			status &= ~IS_TOOFAR;
-			lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0);
+			//lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0);
+			alSourcePlay(source[0]);
 
 			return AAL_UFALSE;
 		}
@@ -708,7 +779,8 @@ namespace ATHENA
 			if (dist <= max) return AAL_UFALSE;
 
 			status |= IS_TOOFAR;
-			lpdsb->Stop();
+			// lpdsb->Stop();
+			alSourceStop(source[0]);
 		}
 
 		return AAL_UTRUE;
@@ -724,47 +796,49 @@ namespace ATHENA
 
 		to_fill = write >= read ? read + size - write : read - write;
 
-		if (!lpdsb->Lock(write, to_fill, &ptr0, &cur0, &ptr1, &cur1, 0))
-		{
-			if (ptr0)
-			{
-				stream->Read(ptr0, cur0, count);
+		// FIXME TODO
 
-				if (count < cur0)
-				{
-					if (loop)
-					{
-						stream->SetPosition(0);
-						stream->Read((aalUByte *)ptr0 + count, cur0 - count, count);
-					}
-					else
-					{
-						memset((aalUByte *)ptr0 + count, 0, cur0 - count);
-					}
-				}
-			}
+		// if (!lpdsb->Lock(write, to_fill, &ptr0, &cur0, &ptr1, &cur1, 0))
+		// {
+		// 	if (ptr0)
+		// 	{
+		// 		stream->Read(ptr0, cur0, count);
 
-			if (ptr1)
-			{
-				stream->Read(ptr1, cur1, count);
+		// 		if (count < cur0)
+		// 		{
+		// 			if (loop)
+		// 			{
+		// 				stream->SetPosition(0);
+		// 				stream->Read((aalUByte *)ptr0 + count, cur0 - count, count);
+		// 			}
+		// 			else
+		// 			{
+		// 				memset((aalUByte *)ptr0 + count, 0, cur0 - count);
+		// 			}
+		// 		}
+		// 	}
 
-				if (count < cur1)
-				{
-					if (loop)
-					{
-						stream->SetPosition(0);
-						stream->Read((aalUByte *)ptr1 + count, cur1 - count, count);
-					}
-					else
-					{
-						memset((aalUByte *)ptr1 + count, 0, cur1 - count);
-						lpdsb->Play(0, 0, 0);
-					}
-				}
-			}
+		// 	if (ptr1)
+		// 	{
+		// 		stream->Read(ptr1, cur1, count);
 
-			lpdsb->Unlock(ptr0, cur0, ptr1, cur1);
-		}
+		// 		if (count < cur1)
+		// 		{
+		// 			if (loop)
+		// 			{
+		// 				stream->SetPosition(0);
+		// 				stream->Read((aalUByte *)ptr1 + count, cur1 - count, count);
+		// 			}
+		// 			else
+		// 			{
+		// 				memset((aalUByte *)ptr1 + count, 0, cur1 - count);
+		// 				lpdsb->Play(0, 0, 0);
+		// 			}
+		// 		}
+		// 	}
+
+		// 	lpdsb->Unlock(ptr0, cur0, ptr1, cur1);
+		// }
 
 		write += to_fill;
 
@@ -777,7 +851,7 @@ namespace ATHENA
 
 		if (status & (IS_IDLED | IS_PAUSED)) return AAL_OK;
 
-		if (channel.flags & AAL_FLAG_POSITION && lpds3db && IsTooFar())
+		if (channel.flags & AAL_FLAG_POSITION && alIsSource(source[0]) && IsTooFar())
 		{
 			if (! this->loop)
 			{
@@ -790,7 +864,8 @@ namespace ATHENA
 		}
 
 		last = read;
-		lpdsb->GetCurrentPosition(&read, NULL);
+		//lpdsb->GetCurrentPosition(&read, NULL);
+		alGetSourcei(source[0], AL_BYTE_OFFSET, (ALint *)&read);
 
 		if (read == last)
 		{
@@ -817,7 +892,8 @@ namespace ATHENA
 			{
 				InstanceDebugLog(this, "LOOPED");
 
-				if (!--loop && !stream) lpdsb->Play(0, 0, 0);
+				if (!--loop && !stream) //lpdsb->Play(0, 0, 0);
+					alSourcePlay(source[0]);
 			}
 			else
 			{
