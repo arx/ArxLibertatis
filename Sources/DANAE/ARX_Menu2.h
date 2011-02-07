@@ -48,8 +48,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_MENU2_H
 #define ARX_MENU2_H
 
-//#include "arx_text.h"
-
 #include <d3d.h>
 #include <tchar.h>
 #include <windows.h>
@@ -363,7 +361,6 @@ class CMenuZone
 		long		lPosition;
 	public:
 		CMenuZone();
-		CMenuZone(int, int, int, int, int);
 		virtual ~CMenuZone();
 
 		int GetWidth()
@@ -703,7 +700,6 @@ class CWindowMenuConsole
 	public:
 		CWindowMenuConsole(int, int, int, int, MENUSTATE);
  
-
 		void AddMenu(CMenuElement *);
 		void AddMenuCenter(CMenuElement *);
 		void AddMenuCenterY(CMenuElement *);

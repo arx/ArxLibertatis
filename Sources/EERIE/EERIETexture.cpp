@@ -3154,7 +3154,7 @@ HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 
 	(void)jpeg_finish_decompress(cinfo);
 	(void)jpeg_mem_reinitsrc((void *)cinfo);
-	delete buffer;
+	delete[] buffer;
 
 	pddsTempSurface->Unlock(0);
 
