@@ -1616,19 +1616,19 @@ void ReleaseEERIE3DObjFromScene(EERIE_3DOBJ * eerie)
 	EERIE_PHYSICS_BOX_Release(eerie);
 	EERIE_COLLISION_SPHERES_Release(eerie);
 
-	if (eerie->texturecontainer != NULL)	free(eerie->texturecontainer);
+	if (eerie->texturecontainer != NULL)	delete[] eerie->texturecontainer;
 
 	eerie->texturecontainer = NULL;
 
-	if (eerie->vertexlist != NULL)	free(eerie->vertexlist);
+	if (eerie->vertexlist != NULL)	delete[] eerie->vertexlist;
 
 	eerie->vertexlist = NULL;
 
-	if (eerie->vertexlist3 != NULL)	free(eerie->vertexlist3);
+	if (eerie->vertexlist3 != NULL)	delete[] eerie->vertexlist3;
 
 	eerie->vertexlist3 = NULL;
 
-	if (eerie->facelist != NULL)		free(eerie->facelist);
+	if (eerie->facelist != NULL)		delete[] eerie->facelist;
 
 	eerie->facelist = NULL;
 
@@ -1641,12 +1641,12 @@ void ReleaseEERIE3DObjFromScene(EERIE_3DOBJ * eerie)
 		for (long i = 0; i < eerie->nbgroups; i++)
 		{
 			if ((eerie->grouplist[i].indexes != NULL)
-			        && (eerie->grouplist[i].nb_index > 0)) free(eerie->grouplist[i].indexes);
+			        && (eerie->grouplist[i].nb_index > 0)) delete[] eerie->grouplist[i].indexes;
 
 			eerie->grouplist[i].indexes = NULL;
 		}
 
-		delete eerie->grouplist;
+		delete[] eerie->grouplist;
 	}
 
 	eerie->grouplist = NULL;
@@ -1655,7 +1655,7 @@ void ReleaseEERIE3DObjFromScene(EERIE_3DOBJ * eerie)
 	{
 		for (size_t i = 0; i < eerie->selections.size(); i++)
 		{ // TODO iterator
-			if (eerie->selections[i].selected) free(eerie->selections[i].selected);
+			if (eerie->selections[i].selected) delete[] eerie->selections[i].selected;
 
 			eerie->selections[i].selected = NULL;
 		}
@@ -1745,7 +1745,7 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 		}
 
 		// TODO why does this crash???
-		delete eerie->grouplist;
+		delete[] eerie->grouplist;
 	}
 
 	eerie->grouplist = NULL;
