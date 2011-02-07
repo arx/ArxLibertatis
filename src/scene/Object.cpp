@@ -1538,7 +1538,6 @@ void EERIE_3DOBJ::clear() {
 
 		facelist = 0;
 		pfacelist = 0;
-		maplist = 0;
 		grouplist = 0;
 		texturecontainer = 0;
 
@@ -1699,7 +1698,6 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 		eerie->selections.clear();
 	}
 
-	if (eerie->maplist != NULL) free(eerie->maplist);
 
 	if (eerie->texturecontainer != NULL)	delete[] eerie->texturecontainer;
 
@@ -1734,7 +1732,6 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 	// TODO needed?
 	eerie->actionlist.clear();
 
-	eerie->maplist = NULL;
 	eerie->vertexlist = NULL;
 	eerie->vertexlist3 = NULL;
 	eerie->facelist = NULL;
@@ -1748,7 +1745,7 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 		}
 
 		// TODO why does this crash???
-		//delete eerie->grouplist;
+		delete eerie->grouplist;
 	}
 
 	eerie->grouplist = NULL;
@@ -1895,11 +1892,6 @@ EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj)
 				nouvo->selections[i].selected = NULL;
 			}
 		}
-
-	if (obj->maplist)
-	{
-		nouvo->maplist = NULL; 
-	}
 
 	if(obj->nbmaps) {
 		nouvo->nbmaps = obj->nbmaps;
@@ -2203,6 +2195,7 @@ bool EERIEOBJECT_AddFaceToPFace(EERIE_3DOBJ * eobj, EERIE_FACE * face, long face
 {
 	for (long i = 0; i < eobj->nbpfaces; i++)
 	{
+		// TODO pfacelist is never really used
 		EERIE_PFACE * epf = &eobj->pfacelist[i];
 
 		if (epf->nbvert >= MAX_PFACE) continue;
@@ -2349,10 +2342,8 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, 
 
 		if (pth->nb_maps > 0)
 		{
-			eerie->maplist = allocStruct<EERIE_MAP>("EEMapList", pth->nb_maps);
-
 			pos2 = pth->maps_seek;
-			eerie->texturecontainer = allocStruct<TextureContainer *>("EETc", pth->nb_maps);
+			eerie->texturecontainer = new TextureContainer*[pth->nb_maps];
 		}
 
 		for (i = 0; i < pth->nb_maps; i++)
