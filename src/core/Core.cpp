@@ -648,6 +648,8 @@ void Danae_Registry_Read(const char * string, char * text, const char * defaults
 			}
 			else text[0]=0;
 		}
+	} else {
+		text[0] = 0;
 	}
 }
 
@@ -665,6 +667,8 @@ void Danae_Registry_ReadValue(const char * string, long * value, long defaultval
 			Danae_Registry_Close();
 		}
 		else *value = defaultvalue;
+	} else {
+		*value = 0;
 	}
 }
 
@@ -1338,7 +1342,6 @@ int main(int, char**)
 
 	Danae_Registry_Read("LastWorkingDir",temp,"");
 
-	// TODO temp is uninitialized if FINAL_RELEASE is true
 	if (temp[0]==0)
 	{
 		Danae_Registry_WriteValue("WND_IO_DlgProc_POSX",0);
