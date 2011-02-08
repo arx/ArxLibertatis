@@ -67,6 +67,7 @@ namespace ATHENA
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 	Instance::Instance() :
+		id((aalSLong)-1), // Otherwise id might be uninitialized for InstanceDebugLog
 		sample(NULL),
 		status(0),
 		loop(0), time(0),
