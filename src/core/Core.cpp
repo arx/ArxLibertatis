@@ -1338,6 +1338,7 @@ int main(int, char**)
 
 	Danae_Registry_Read("LastWorkingDir",temp,"");
 
+	// TODO temp is uninitialized if FINAL_RELEASE is true
 	if (temp[0]==0)
 	{
 		Danae_Registry_WriteValue("WND_IO_DlgProc_POSX",0);

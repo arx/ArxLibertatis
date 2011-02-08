@@ -4125,7 +4125,6 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 												scr_timer[num2].io = io;
 												scr_timer[num2].msecs = max(iot->anims[num]->anims[iot->animlayer[nu].altidx_cur]->anim_time, 1000.0f);
 												scr_timer[num2].namelength = strlen(timername) + 1;
-												scr_timer[num2].name = (char *)malloc(scr_timer[num2].namelength);
 												scr_timer[num2].name = timername;
 												scr_timer[num2].pos = pos;
 												scr_timer[num2].tim = ARXTimeUL();
