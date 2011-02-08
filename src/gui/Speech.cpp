@@ -532,15 +532,10 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long param, l
 	//Next lines must be removed (use callback instead)
 	aspeech[num].duration = (unsigned long)ARX_SOUND_GetDuration(aspeech[num].sample);
 
-	//This div is not good in the intro because speakpitch value is bad
-	//But correct it inside arx_script ligne 7913 create a crash
-	float fDiv = aspeech[num].duration / io->_npcdata->speakpitch;
-	//ARX_CHECK_ULONG(fDiv);
-
-	if ((io->ioflags & IO_NPC) && !(aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE))
-		aspeech[num].duration = ARX_CLEAN_WARN_CAST_ULONG(fDiv);
-
-
+	if ((io->ioflags & IO_NPC) && !(aspeech[num].flags & ARX_SPEECH_FLAG_OFFVOICE)) {
+		float fDiv = aspeech[num].duration /= io->_npcdata->speakpitch;
+		aspeech[num].duration = static_cast<unsigned long>(fDiv);
+	}
 
 	if (aspeech[num].duration < 500) aspeech[num].duration = 2000;
 
