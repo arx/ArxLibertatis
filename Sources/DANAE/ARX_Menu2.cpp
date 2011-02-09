@@ -2352,7 +2352,7 @@ int iDecMenuPrincipaleY=50;
 		_TCHAR twVersion[32];
 		MultiByteToWideChar(CP_ACP, 0, GetVersionString()+3, -1, twVersion, 32 );
 
-		me = new CMenuElementText( -1, hFontControls, twVersion, RATIO_X(580), RATIO_Y(65), lColor, 1.0f, NOP );
+		me = new CMenuElementText( -1, hFontControls, twVersion, RATIO_X(490), RATIO_Y(65), lColor, 1.0f, NOP );
 		me->SetCheckOff();
 		me->lColor=RGB(127,127,127);
 		pMenu->AddMenuElement(me);

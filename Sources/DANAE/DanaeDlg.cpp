@@ -1269,6 +1269,10 @@ char * GetVersionString()
 	}
 
 	strcpy(rett, result);
+
+	// Add Arx Fatalis Fixed version
+	WideCharToMultiByte(CP_ACP, 0, _T(" + [AFF v 0.02]"), -1, rett + strlen(rett), 32, "@", FALSE);
+
 	return rett;
 }
 
