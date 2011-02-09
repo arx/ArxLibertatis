@@ -59,6 +59,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdlib.h>
 #include <fstream>
 
+#include <SFML/System/Unicode.hpp>
+
 #include "gui/Menu.h"
 #include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
@@ -80,6 +82,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/IO.h"
 #include "io/PakManager.h"
+#include "io/Logger.h"
 
 //-----------------------------------------------------------------------------
 extern TextManager * pTextManage;
@@ -131,16 +134,6 @@ long SP_HEAD = 0;
 bool MENU_NoActiveWindow();
 void ClearGame();
 void ClearGameDEVICE();
-
-//-----------------------------------------------------------------------------
-void ARX_Menu_Release_Text(void * a)
-{
-	if (a)
-	{
-		free(a);
-		a = NULL;
-	}
-}
 
 //-----------------------------------------------------------------------------
 #define ARX_MENU_SIZE_Y 24
@@ -299,23 +292,37 @@ void ARX_Menu_Resources_Create(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	ARX_Allocate_Text(ARXmenu.mda->str_button_done,                     "system_charsheet_button_done");
 
 	
-	char szFileName[256];
-	sprintf(szFileName, "Localisation\\ucredits_%s.txt", Project.localisationpath.c_str());
-
-	// TODO: BROKEN ACCESS OOB
-	/*
-	size_t siz;
-	ARXmenu.mda->str_cre_credits = (_TCHAR*) PAK_FileLoadMalloc(szFileName, siz);
-	if (!ARXmenu.mda->str_cre_credits.empty() && ARXmenu.mda->str_cre_credits[(siz>>1)-1] != 0)
-	{
-		_TCHAR * pTxt = (_TCHAR *)malloc(siz + 2);
-		memcpy(pTxt, ARXmenu.mda->str_cre_credits.c_str(), siz);
-		pTxt[(siz>>1)] = 0;
-		ARXmenu.mda->str_cre_credits = pTxt;
+	// Load credits.
+	
+	string creditsFile = "localisation\\ucredits_" +  Project.localisationpath + ".txt";
+	
+	size_t creditsSize;
+	u16 * creditsData = (u16*)PAK_FileLoadMalloc(creditsFile, creditsSize);
+	
+	if(!creditsData) {
+		LogWarning << "unable to read credits file " << creditsFile;
+	} else {
+		
+		u16 * credits = creditsData;
+		
+		creditsSize /= sizeof(*credits);
+		
+		if(creditsSize >= 1 && credits[0] == 0xFEFF) {
+			credits++;
+			creditsSize--;
+		}
+		
+		LogDebug << "Loaded credits file: " << creditsFile << " of size " << creditsSize;
+		
+		ARXmenu.mda->str_cre_credits.reserve(creditsSize);
+		
+		sf::Unicode::UTF16ToUTF8(credits, &credits[creditsSize],
+		                         std::back_inserter(ARXmenu.mda->str_cre_credits));
+		LogDebug << "Converted to UTF8 string of length " << ARXmenu.mda->str_cre_credits.size();
+		
+		free(creditsData);
 	}
-	*/
-	ARXmenu.mda->str_cre_credits.clear();
-
+	
 	CreateSaveGameList();
 }
 
@@ -339,26 +346,8 @@ void ARX_Menu_Resources_Release(bool _bNoSound)
 		D3DTextr_KillTexture(ARXmenu.mda->BookBackground);
 		ARXmenu.mda->BookBackground = NULL;
 	}
-/*
-	for (long i = 0; i < MAX_FLYOVER; i++)
-	{
-		if ( !ARXmenu.mda->flyover[i].empty() )
-			ARX_Menu_Release_Text(ARXmenu.mda->flyover[i]);
-	}*/
-/*
-	ARX_Menu_Release_Text(ARXmenu.mda->str_cre_credits);
-
-	ARX_Menu_Release_Text(ARXmenu.mda->str_button_quickgen);
-	ARX_Menu_Release_Text(ARXmenu.mda->str_button_skin);
-	ARX_Menu_Release_Text(ARXmenu.mda->str_button_done);
-*/
-	if (ARXmenu.mda)
-	{
-		free(ARXmenu.mda);
-		ARXmenu.mda = NULL;
-	}
-
-	free(ARXmenu.mda);
+	
+	delete ARXmenu.mda;
 	ARXmenu.mda = NULL;
 
 	//Synchronize game mixers with menu mixers and switch between them

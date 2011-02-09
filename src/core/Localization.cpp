@@ -257,17 +257,17 @@ void Localisation_Init()
 		// Load the default english locale file
 		Localisation = (uint16_t*)PAK_FileLoadMallocZero( tx, loc_file_size );
 	}
-
+	
 	// Scale the loaded size to new stride of uint16_t vs char
-	loc_file_size *= ( 1.0 * sizeof(char)/sizeof(uint16_t) );
+	loc_file_size *= ( 1.0 * sizeof(char)/sizeof(*Localisation) );
 
 	LogDebug << "Loaded localisation file: " << tx << " of size " << loc_file_size;
-	LogDebug << "UTF-16 size is " << sf::Unicode::GetUTF16Length( Localisation, &Localisation[loc_file_size] );
+	size_t nchars = sf::Unicode::GetUTF16Length( Localisation, &Localisation[loc_file_size] );
+	LogDebug << "UTF-16 size is " << nchars;
 	std::string out;
-	out.resize( sf::Unicode::GetUTF16Length( Localisation, &Localisation[loc_file_size] ) );
-	LogDebug << "Resized to " << out.length();
-	sf::Unicode::UTF16ToUTF8( Localisation, &Localisation[loc_file_size], out.begin() );
-	LogDebug << "Converted to UTF8";
+	out.reserve(loc_file_size);
+	sf::Unicode::UTF16ToUTF8( Localisation, &Localisation[loc_file_size], std::back_inserter(out) );
+	LogDebug << "Converted to UTF8 string of length " << out.size();
 
 	if ( Localisation && loc_file_size)
 	{

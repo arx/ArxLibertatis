@@ -186,12 +186,12 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
 
 	if (sel == -1) return;
 
-	if (obj->selections[sel].nb_selected > 0)
+	if (obj->selections[sel].selected.size() > 0)
 	{
 		obj->cdata = (CLOTHES_DATA *)malloc(sizeof(CLOTHES_DATA)); 
 		memset(obj->cdata, 0, sizeof(CLOTHES_DATA));
 
-		obj->cdata->nb_cvert = (short)obj->selections[sel].nb_selected;
+		obj->cdata->nb_cvert = (short)obj->selections[sel].selected.size();
 		obj->cdata->cvert = (CLOTHESVERTEX *)malloc(sizeof(CLOTHESVERTEX) * obj->cdata->nb_cvert); 
 		memset(obj->cdata->cvert, 0, sizeof(CLOTHESVERTEX)*obj->cdata->nb_cvert);
 
@@ -201,7 +201,7 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
 
 
 	// There is a Mollesse (TM) (C) Selection
-	if (obj->selections[sel].nb_selected > 0)
+	if (obj->selections[sel].selected.size() > 0)
 	{
 		for (int i = 0; i < obj->cdata->nb_cvert; i++)
 		{

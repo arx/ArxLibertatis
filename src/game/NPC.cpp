@@ -1447,7 +1447,7 @@ long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw)
 
 	if (vert < 0) return -1;
 
-	for (long i = 0; i < obj->selections[tw].nb_selected; i++)
+	for (long i = 0; i < obj->selections[tw].selected.size(); i++)
 	{
 		float d = TRUEEEDistance3D(&obj->vertexlist[obj->selections[tw].selected[i]].v,
 		                           &obj->vertexlist[vert].v);
@@ -1477,7 +1477,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	if (!nouvo)
 		return;
 
-	nouvo->nbvertex = from->selections[num].nb_selected;
+	nouvo->nbvertex = from->selections[num].selected.size();
 
 	long gore = -1;
 
@@ -1533,9 +1533,9 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	for (int k = 0 ; k < from->nbvertex ; k++)
 		equival[k] = -1;
 
-	ARX_CHECK(0 < from->selections[num].nb_selected);
+	ARX_CHECK(0 < from->selections[num].selected.size());
 
-	for (int k = 0 ; k < from->selections[num].nb_selected ; k++)
+	for (int k = 0 ; k < from->selections[num].selected.size() ; k++)
 	{
 		inpos						=	from->selections[num].selected[k];
 		equival[from->selections[num].selected[k]]	=	k;
@@ -1551,7 +1551,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 		memcpy(&nouvo->vertexlist3[k], &nouvo->vertexlist[k], sizeof(EERIE_VERTEX));
 	}
 
-	long count = from->selections[num].nb_selected;
+	long count = from->selections[num].selected.size();
 
 	for (int k = 0; k < from->nbfaces; k++)
 	{
@@ -1840,7 +1840,7 @@ long GetCutSelection(INTERACTIVE_OBJ * io, short flag)
 	{
 		for (long i = 0; i < io->obj->selections.size(); i++)
 		{ // TODO iterator
-			if ((io->obj->selections[i].nb_selected > 0)
+			if ((io->obj->selections[i].selected.size() > 0)
 			        &&	(!strcasecmp(io->obj->selections[i].name.c_str(), tx)))
 				return i;
 		}
@@ -1975,7 +1975,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos)
 
 	for (int i = 0; i < target->obj->selections.size(); i++)
 	{ // TODO iterator
-		if ((target->obj->selections[i].nb_selected > 0)
+		if ((target->obj->selections[i].selected.size() > 0)
 		        &&	(IsIn(target->obj->selections[i].name, "CUT_")))
 		{
 			short fll = GetCutFlag(target->obj->selections[i].name.c_str());
