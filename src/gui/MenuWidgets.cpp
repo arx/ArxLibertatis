@@ -8082,7 +8082,7 @@ void CDirectInput::DrawCursor()
 	if(!bDrawCursor) return;
 
 	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  true);
-	DrawLine2D(iOldCoord,iMaxOldCoord,10.f,.725f,.619f,0.56f);
+	DrawLine2D(iOldCoord,iNbOldCoord + 1,10.f,.725f,.619f,0.56f);
 
 	if(pTex[iNumCursor]) SETTC(GDevice, pTex[iNumCursor]);
 	else SETTC(GDevice,NULL);
