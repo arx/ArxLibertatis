@@ -16,18 +16,16 @@
 using std::string;
 
 struct TextManager::ManagedText {
-	HFONT           hFont;
-	RECT            rRect;
-	RECT            rRectClipp;
-	string     lpszUText;
-	float           fDeltaY;
-	float           fSpeedScrollY;
-	long            lCol;
-	long            lBkgCol;
-	long            lTimeScroll;
-	long            lTimeOut;
-	long            lTailleLigne;
-	int             iNbLineClip;
+	HFONT hFont;
+	RECT rRect;
+	RECT rRectClipp;
+	string lpszUText;
+	float fDeltaY;
+	float fSpeedScrollY;
+	long lCol;
+	long lBkgCol;
+	long lTimeScroll;
+	long lTimeOut;
 };
 
 TextManager::TextManager() {
@@ -74,11 +72,9 @@ bool TextManager::AddText(HFONT _hFont, const string & _lpszUText, const RECT & 
 			GetTextExtentPoint(hDC, pArxText->lpszUText.c_str(),
 			                   pArxText->lpszUText.length(), &sSize);
 			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-			pArxText->lTailleLigne = sSize.cy;
 			sSize.cy *= iNbLigneClipp;
 		} else {
 			sSize.cy = _rRect.bottom - _rRect.top;
-			pArxText->lTailleLigne = sSize.cy;
 		}
 		
 		pArxText->rRectClipp.bottom = pArxText->rRect.top + sSize.cy;
@@ -99,7 +95,7 @@ void TextManager::Update(float _fDiffFrame) {
 		
 		ManagedText * pArxText = *itManage;
 		
-		if((pArxText->lTimeOut < 0)) {
+		if(pArxText->lTimeOut < 0) {
 			delete pArxText;
 			itManage = vText.erase(itManage);
 			continue;
@@ -141,9 +137,8 @@ void TextManager::Render() {
 		long height = ARX_UNICODE_DrawTextInRect(static_cast<float>(pArxText->rRect.left),
 		                                         pArxText->rRect.top - pArxText->fDeltaY,
 		                                         static_cast<float>(pArxText->rRect.right),
-		                                         0, pArxText->lpszUText.c_str(),
-		                                         pArxText->lCol, pArxText->lBkgCol,
-		                                         pArxText->hFont, hRgn, hDC);
+		                                         0, pArxText->lpszUText, pArxText->lCol,
+		                                         pArxText->lBkgCol, pArxText->hFont, hRgn, hDC);
 		
 		pArxText->rRect.bottom = pArxText->rRect.top + height;
 		
