@@ -440,15 +440,6 @@ typedef struct
 } PHYSICS_BOX_DATA; // Aligned 1 2 4
 
 
-typedef struct
-{
-	long			sx;
-	long			sy;
-	unsigned long	bpp;
-	unsigned char * bmpdata;
-} EERIE_MAP; // Aligned 1 2 4
-
-
 struct EERIE_GROUPLIST {
 	std::string name;
 	long origin;
@@ -597,7 +588,6 @@ struct EERIE_3DOBJ
 
 		facelist = 0;
 		pfacelist = 0;
-		maplist = 0;
 		grouplist = 0;
 		texturecontainer = 0;
 
@@ -666,7 +656,6 @@ struct EERIE_3DOBJ
 
 	EERIE_FACE 	*	facelist;
 	EERIE_PFACE 	*	pfacelist;
-	EERIE_MAP 	*		maplist;
 	EERIE_GROUPLIST *	grouplist;
 	std::vector<EERIE_ACTIONLIST> actionlist;
 	std::vector<EERIE_SELECTIONS> selections;

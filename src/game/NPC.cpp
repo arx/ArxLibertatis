@@ -1467,7 +1467,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 	EERIE_3DOBJ * from = ioo->obj;
 
-	if ((!from) ||	(num < 0) || (num >= from->selections.size()))
+	if ((!from) ||	(num < 0) || ((size_t)num >= from->selections.size()))
 		return;
 
 	EERIE_3DOBJ * nouvo = new EERIE_3DOBJ; 

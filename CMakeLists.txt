@@ -19,6 +19,12 @@ IF (MSVC)
 	add_definitions(-D_SCL_SECURE_NO_WARNINGS)
 	add_definitions(/wd4995)
 	
+	#Should be defined in debug only
+	add_definitions(-D_CRTDBG_MAP_ALLOC)
+	
+	#SFML libraries
+	set(SFML_LIBS sfml-system-s)
+	
 	# TEMP - disable warning caused by the F2L removal
 	add_definitions(/wd4244)    # conversion from 'float' to 'long', possible loss of data
 	
@@ -34,6 +40,7 @@ IF (MSVC)
 	#glob includes
 	file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
 	SOURCE_GROUP("inc" FILES ${ALL_INCLUDES})
+	
 ELSE (MSVC)
 	# Set optimal options for gcc:
 	#wine compiler
@@ -45,6 +52,14 @@ ELSE (MSVC)
 
 	#Debug
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3")
+	
+	#use posix threads
+	add_definitions(-DHAVE_PTHREADS)
+	set(THREAD_LIBS pthread rt)
+	
+	#SFML libraries
+	set(SFML_LIBS sfml-system)
+	
 ENDIF (MSVC)
 
 if(ARX_MINGW)
@@ -63,7 +78,7 @@ file(GLOB_RECURSE ALL_SOURCES ${SRC_DIR}/*.cpp)
 add_executable(arx ${ALL_SOURCES} ${ALL_INCLUDES})
 
 #link
-target_link_libraries(arx dsound dxguid gdi32 shell32 dinput comdlg32 ole32 comctl32 ddraw jpeg z sfml-system)
+target_link_libraries(arx dsound dxguid gdi32 shell32 dinput comdlg32 ole32 comctl32 ddraw jpeg z ${SFML_LIBS} ${THREAD_LIBS})
 
 add_custom_target(remake
 	#clean and compile with 1 thread per core

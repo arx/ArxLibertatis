@@ -90,11 +90,11 @@ void PAK_Close() {
 	pPakManager = NULL;
 }
 
-void * _PAK_FileLoadMallocZero(const std::string& name, size_t& sizeRead) {
+void * _PAK_FileLoadMallocZero(const string & name, size_t & sizeRead) {
 	
 	size_t size = pPakManager->GetSize(name);
-	if(size == 0 || size == -1) {
-		sizeRead = 0;
+	if(size == (size_t)-1) {
+		sizeRead = size;
 		return NULL;
 	}
 	
@@ -106,8 +106,9 @@ void * _PAK_FileLoadMallocZero(const std::string& name, size_t& sizeRead) {
 		return NULL;
 	}
 	
-	mem[size] = 0;
-	mem[size + 1] = 0;
+	// TODO why use two nullbytes?
+	mem[size] = '\0';
+	mem[size + 1] = '\0';
 	
 	sizeRead = size + 2;
 	

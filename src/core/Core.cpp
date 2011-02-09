@@ -648,6 +648,8 @@ void Danae_Registry_Read(const char * string, char * text, const char * defaults
 			}
 			else text[0]=0;
 		}
+	} else {
+		text[0] = 0;
 	}
 }
 
@@ -665,6 +667,8 @@ void Danae_Registry_ReadValue(const char * string, long * value, long defaultval
 			Danae_Registry_Close();
 		}
 		else *value = defaultvalue;
+	} else {
+		*value = 0;
 	}
 }
 

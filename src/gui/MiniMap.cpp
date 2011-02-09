@@ -74,6 +74,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/IO.h"
 #include "io/PakManager.h"
+#include "io/Logger.h"
 
 using std::min;
 using std::max;
@@ -209,7 +210,7 @@ void ARX_MINIMAP_Load_Offsets()
 	if (PAK_FileExist(INI_MINI_OFFSETS))
 	{
 		size_t siz = 0;
-		char * dat = (char *)PAK_FileLoadMalloc(INI_MINI_OFFSETS, siz);
+		char * dat = (char *)PAK_FileLoadMallocZero(INI_MINI_OFFSETS, siz);
 		size_t pos = 0;
 
 		if (dat)
@@ -217,9 +218,12 @@ void ARX_MINIMAP_Load_Offsets()
 			for (long i = 0; i < 29; i++)
 			{
 				char t[512];
-				sscanf(dat + pos, "%s %f %f", t, &mini_offset_x[i], &mini_offset_y[i]);
+				int nRead = sscanf(dat + pos, "%s %f %f", t, &mini_offset_x[i], &mini_offset_y[i]);
+				if(nRead != 3) {
+					LogError << "Error parsing line " << i << " of mini_offsets.ini: read " << nRead;
+				}
 
-				while ((pos < siz) && (dat[pos] != 10)) pos++;
+				while ((pos < siz) && (dat[pos] != '\n')) pos++;
 
 				pos++;
 
