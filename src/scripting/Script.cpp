@@ -2025,7 +2025,6 @@ SCRIPT_VAR* SETVarValueText(SCRIPT_VAR*& svf, long& nb, const std::string& name,
 		if (!tsv)
 			return NULL;
 
-		tsv->text = NULL;
 		strcpy(tsv->name, name.c_str());
 	}
 
