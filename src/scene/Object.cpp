@@ -863,16 +863,13 @@ void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, long * poss, long ver
 		if (strlen(pts->name) > 63) pts->name[63] = 0;
 
 		eerie->selections[i].name = pts->name;
-		eerie->selections[i].nb_selected = pts->nb_index;
+		eerie->selections[i].selected.resize(pts->nb_index);
 
-		if (pts->nb_index > 0)
-		{
-			eerie->selections[i].selected = allocStructZero<long>("EESelected", pts->nb_index);
-
-			memcpy(eerie->selections[i].selected, adr + pos, sizeof(long)*pts->nb_index);
+		if(pts->nb_index > 0) {
+			long * indices = (long*)(adr + pos);
+			std::copy(indices, indices + pts->nb_index, eerie->selections[i].selected.begin());
 			pos += sizeof(long) * pts->nb_index;
 		}
-		else eerie->selections[i].selected = NULL;
 	}
 
 	// Theo Action Points Read
@@ -1632,10 +1629,6 @@ void ReleaseEERIE3DObjFromScene(EERIE_3DOBJ * eerie)
 
 	eerie->facelist = NULL;
 
-	//if (eerie->actionlist != NULL)	free(eerie->actionlist);
-
-	//eerie->actionlist = NULL;
-
 	if (eerie->grouplist != NULL)
 	{
 		for (long i = 0; i < eerie->nbgroups; i++)
@@ -1650,19 +1643,6 @@ void ReleaseEERIE3DObjFromScene(EERIE_3DOBJ * eerie)
 	}
 
 	eerie->grouplist = NULL;
-
-	if (!eerie->selections.empty())
-	{
-		for (size_t i = 0; i < eerie->selections.size(); i++)
-		{ // TODO iterator
-			if (eerie->selections[i].selected) delete[] eerie->selections[i].selected;
-
-			eerie->selections[i].selected = NULL;
-		}
-
-// TODO needed?
-		eerie->selections.clear();
-	}
 
 	if ((eerie->nblinked) &&
 	        (eerie->linked))
@@ -1681,21 +1661,6 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 	{
 		free(eerie->originaltextures);
 		eerie->originaltextures = NULL;
-	}
-
-	if (!eerie->selections.empty())
-	{
-		for (size_t i = 0; i < eerie->selections.size(); i++)
-		{ // TODO iterator
-			if (eerie->selections[i].selected) {
-				delete[] eerie->selections[i].selected;
-			}
-
-			eerie->selections[i].selected = NULL;
-		}
-
-// TODO needed?
-		eerie->selections.clear();
 	}
 
 
@@ -1729,9 +1694,6 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 
 	if (eerie->facelist)		delete[] eerie->facelist;
 
-	// TODO needed?
-	eerie->actionlist.clear();
-
 	eerie->vertexlist = NULL;
 	eerie->vertexlist3 = NULL;
 	eerie->facelist = NULL;
@@ -1744,7 +1706,6 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 			        && (eerie->grouplist[i].nb_index > 0)) delete[] eerie->grouplist[i].indexes;
 		}
 
-		// TODO why does this crash???
 		delete[] eerie->grouplist;
 	}
 
@@ -1876,22 +1837,7 @@ EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj)
 
 	nouvo->actionlist = obj->actionlist;
 
-		nouvo->selections = obj->selections;
-
-		for (size_t i = 0; i < obj->selections.size(); i++)
-		{ // TODO iterator
-			if (obj->selections[i].nb_selected)
-			{
-				nouvo->selections[i].nb_selected = obj->selections[i].nb_selected;
-
-				nouvo->selections[i].selected = copyStruct(obj->selections[i].selected, "EECopySelected", obj->selections[i].nb_selected);
-			}
-			else
-			{
-				nouvo->selections[i].nb_selected = 0;
-				nouvo->selections[i].selected = NULL;
-			}
-		}
+	nouvo->selections = obj->selections;
 
 	if(obj->nbmaps) {
 		nouvo->nbmaps = obj->nbmaps;

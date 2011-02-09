@@ -151,7 +151,7 @@ long IsInSelection(EERIE_3DOBJ * obj, long vert, long tw)
 
 	if (vert < 0) return -1;
 
-	for (long i = 0; i < obj->selections[tw].nb_selected; i++)
+	for (long i = 0; i < obj->selections[tw].selected.size(); i++)
 	{
 		if (obj->selections[tw].selected[i] == vert)
 			return i;
@@ -360,22 +360,13 @@ void AddVertexIdxToGroup(EERIE_3DOBJ * obj, long group, long val)
 
 void ObjectAddSelection(EERIE_3DOBJ * obj, long numsel, long vidx)
 {
-	for (long i = 0; i < obj->selections[numsel].nb_selected; i++)
+	
+	for (long i = 0; i < obj->selections[numsel].selected.size(); i++)
 	{
 		if (obj->selections[numsel].selected[i] == vidx) return;
 	}
-
-	if (obj->selections[numsel].nb_selected == 0)
-	{
-		obj->selections[numsel].selected = (long *)malloc(sizeof(long)); 
-	}
-	else
-	{
-		obj->selections[numsel].selected = (long *)realloc(obj->selections[numsel].selected, sizeof(long) * (obj->selections[numsel].nb_selected + 1));
-	}
-
-	obj->selections[numsel].selected[obj->selections[numsel].nb_selected] = vidx;
-	obj->selections[numsel].nb_selected++;
+	
+	obj->selections[numsel].selected.push_back(vidx);
 }
 
 //*************************************************************************************
@@ -676,7 +667,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	// Re-Creating sel_head
 	if (tw == TWEAK_HEAD)
 	{
-		for (long l = 0; l < obj2->selections[sel_head2].nb_selected; l++)
+		for (long l = 0; l < obj2->selections[sel_head2].selected.size(); l++)
 		{
 			EERIE_VERTEX temp;
 			temp.v.x = obj2vertexlist2[obj2->selections[sel_head2].selected[l]].v.x;
@@ -690,7 +681,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 			}
 		}
 	}
-	else for (long l = 0; l < obj1->selections[sel_head1].nb_selected; l++)
+	else for (long l = 0; l < obj1->selections[sel_head1].selected.size(); l++)
 		{
 			EERIE_VERTEX temp;
 			temp.v.x = obj1vertexlist2[obj1->selections[sel_head1].selected[l]].v.x;
@@ -707,7 +698,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	// Re-Create sel_torso
 	if (tw == TWEAK_TORSO)
 	{
-		for (long l = 0; l < obj2->selections[sel_torso2].nb_selected; l++)
+		for (long l = 0; l < obj2->selections[sel_torso2].selected.size(); l++)
 		{
 			EERIE_VERTEX temp;
 			temp.v.x = obj2vertexlist2[obj2->selections[sel_torso2].selected[l]].v.x;
@@ -721,7 +712,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 			}
 		}
 	}
-	else for (long l = 0; l < obj1->selections[sel_torso1].nb_selected; l++)
+	else for (long l = 0; l < obj1->selections[sel_torso1].selected.size(); l++)
 		{
 			EERIE_VERTEX temp;
 			temp.v.x = obj1vertexlist2[obj1->selections[sel_torso1].selected[l]].v.x;
@@ -738,7 +729,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	// Re-Create sel_legs
 	if (tw == TWEAK_LEGS)
 	{
-		for (long l = 0; l < obj2->selections[sel_legs2].nb_selected; l++)
+		for (long l = 0; l < obj2->selections[sel_legs2].selected.size(); l++)
 		{
 			EERIE_VERTEX temp;
 			temp.v.x = obj2vertexlist2[obj2->selections[sel_legs2].selected[l]].v.x;
@@ -752,7 +743,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 			}
 		}
 	}
-	else for (long l = 0; l < obj1->selections[sel_legs1].nb_selected; l++)
+	else for (long l = 0; l < obj1->selections[sel_legs1].selected.size(); l++)
 		{
 			EERIE_VERTEX temp;
 			temp.v.x = obj1vertexlist2[obj1->selections[sel_legs1].selected[l]].v.x;
@@ -775,7 +766,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 			work->selections.resize(num + 1);
 			work->selections[num].name = obj1->selections[i].name;
 
-			for (long l = 0; l < obj1->selections[i].nb_selected; l++)
+			for (long l = 0; l < obj1->selections[i].selected.size(); l++)
 			{
 				EERIE_VERTEX temp;
 				temp.v.x = obj1vertexlist2[obj1->selections[i].selected[l]].v.x;
@@ -792,7 +783,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 			long ii = EERIE_OBJECT_GetSelection(obj2, obj1->selections[i].name.c_str());
 
 			if (ii != -1)
-				for (long l = 0; l < obj2->selections[ii].nb_selected; l++)
+				for (long l = 0; l < obj2->selections[ii].selected.size(); l++)
 				{
 					EERIE_VERTEX temp;
 					temp.v.x = obj2vertexlist2[obj2->selections[ii].selected[l]].v.x;
@@ -816,7 +807,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 			work->selections.resize(num + 1);
 			work->selections[num].name = obj2->selections[i].name;
 
-			for (long l = 0; l < obj2->selections[i].nb_selected; l++)
+			for (long l = 0; l < obj2->selections[i].selected.size(); l++)
 			{
 				EERIE_VERTEX temp;
 				temp.v.x = obj2vertexlist2[obj2->selections[i].selected[l]].v.x;
@@ -857,7 +848,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 
 	if (work->nbvertex)
 	{
-		work->vertexlist3 = (EERIE_VERTEX *)malloc(sizeof(EERIE_VERTEX) * work->nbvertex);
+		work->vertexlist3 = new EERIE_VERTEX[work->nbvertex];
 		memcpy(work->vertexlist3, work->vertexlist, sizeof(EERIE_VERTEX)*work->nbvertex);
 	}
 

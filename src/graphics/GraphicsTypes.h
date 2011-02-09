@@ -491,10 +491,7 @@ typedef struct
 
 struct EERIE_SELECTIONS {
 	std::string name;
-	long nb_selected;
-	long * selected;
-	
-	EERIE_SELECTIONS() : name(), nb_selected(0), selected(NULL) { };
+	std::vector<long> selected;
 };
 
 #define DRAWFLAG_HIGHLIGHT	1
