@@ -131,13 +131,13 @@ UBool PathFinder::Move(const ULong & flags, const ULong & f, const ULong & t, SL
 
 	if (flags & MINOS_STEALTH) AddEnlightmentCost(node);
 
-	if (open.Append(node))
-	{
-		free(node);
-		Clean(); // Cyril
-		*rstep = 0;
-		return UFALSE;
-	}
+	open.push_back(node);
+	// TODO on error {
+	//	free(node);
+	//	Clean(); // Cyril
+	//	*rstep = 0;
+	//	return UFALSE;
+	//}
 
 	//A* main loop
 	while (node = GetBestNode())
@@ -145,13 +145,13 @@ UBool PathFinder::Move(const ULong & flags, const ULong & f, const ULong & t, SL
 		//If it's the goal node then we've done
 		if (node->data == _to)
 		{
-			if (close.Append(node))
-			{
-				free(node);
-				Clean(); 
-				*rstep = 0;
-				return UFALSE;
-			}
+			close.push_back(node);
+			// TODO on error {
+			//	free(node);
+			//	Clean(); 
+			//	*rstep = 0;
+			//	return UFALSE;
+			//}
 
 			if (BuildPath(rlist, rstep))
 			{
@@ -191,13 +191,13 @@ UBool PathFinder::Move(const ULong & flags, const ULong & f, const ULong & t, SL
 
 				if (Check(child))
 				{
-					if (open.Append(child))
-					{
-						free(node);
-						free(child);
-						*rstep = 0;
-						return UFALSE;
-					}
+					open.push_back(child);
+					// TODO on error {
+					//	free(node);
+					//	free(child);
+					//	*rstep = 0;
+					//	return UFALSE;
+					//}
 
 					//Get total cost for this node
 					child->f_cost = heuristic * child->g_cost + (1.0F - heuristic) * Distance(map_d[child->data].pos, map_d[_to].pos);
@@ -207,13 +207,13 @@ UBool PathFinder::Move(const ULong & flags, const ULong & f, const ULong & t, SL
 		}
 
 		//Put node onto close list as we have now examined this node
-		if (close.Append(node))
-		{
-			free(node);
-			Clean(); // Cyril
-			*rstep = 0;
-			return UFALSE;
-		}
+		close.push_back(node);
+		// TODO on error {
+		//	free(node);
+		//	Clean(); // Cyril
+		//	*rstep = 0;
+		//	return UFALSE;
+		//}
 	}
 
 	//No path found!!!
@@ -263,13 +263,13 @@ UBool PathFinder::Flee(const ULong & flags, const ULong & f, const EERIE_3D & da
 
 	node->f_cost += node->g_cost;
 
-	if (open.Append(node))
-	{
-		free(node);
-		Clean(); 
-		*rstep = 0;
-		return UFALSE;
-	}
+	open.push_back(node);
+	// TODO on error {
+	//	free(node);
+	//	Clean(); 
+	//	*rstep = 0;
+	//	return UFALSE;
+	//}
 
 	//A* main loop
 	while (node = GetBestNode())
@@ -277,12 +277,12 @@ UBool PathFinder::Flee(const ULong & flags, const ULong & f, const EERIE_3D & da
 		//If it's the goal node then we've done
 		if (Distance(map_d[node->data].pos, danger) >= safe_dist)
 		{
-			if (close.Append(node))
-			{
-				free(node);
-				*rstep = 0;
-				return UFALSE;
-			}
+			close.push_back(node);
+			// TODO on error {
+			//	free(node);
+			//	*rstep = 0;
+			//	return UFALSE;
+			//}
 
 			//BuildPath(rlist, rstep);
 			if (BuildPath(rlist, rstep))
@@ -325,13 +325,13 @@ UBool PathFinder::Flee(const ULong & flags, const ULong & f, const EERIE_3D & da
 				{
 					Float dist;
 
-					if (open.Append(child))
-					{
-						free(node);
-						free(child);
-						*rstep = 0;
-						return UFALSE;
-					}
+					open.push_back(child);
+					// TODO on error {
+					//	free(node);
+					//	free(child);
+					//	*rstep = 0;
+					//	return UFALSE;
+					//}
 
 					//Get total cost for this node
 					child->f_cost = child->g_cost;
@@ -345,13 +345,13 @@ UBool PathFinder::Flee(const ULong & flags, const ULong & f, const EERIE_3D & da
 		}
 
 		//Put node onto close list as we have now examined this node
-		if (close.Append(node))
-		{
-			free(node);
-			Clean(); 
-			*rstep = 0;
-			return UFALSE;
-		}
+		close.push_back(node);
+		// TODO on error {
+		//	free(node);
+		//	Clean(); 
+		//	*rstep = 0;
+		//	return UFALSE;
+		//}
 	}
 
 	Clean(); 
@@ -602,49 +602,57 @@ Void PathFinder::Clean()
 {
 	ULong i;
 
-	for (i = 0; i < close.Count(); i++) free(close[i]);
+	for (i = 0; i < close.size(); i++) free(close[i]);
 
-	close.Free();
+	close.clear();
 
-	for (i = 0; i < open.Count(); i++) free(open[i]);
+	for (i = 0; i < open.size(); i++) free(open[i]);
 
-	open.Free();
+	open.clear();
 }
 
 // Return best node (lower cost) from open list or NULL if list is empty
 MINOSNode * PathFinder::GetBestNode()
 {
 	MINOSNode * node;
-	ULong best(0);
+	nodelist::iterator best = open.begin();
 	Float cost(FLT_MAX);
 
-	if (!open.Count()) return NULL;
+	if (!open.size()) return NULL;
 
-	for (ULong i(0); i < open.Count(); i++)
-		if (open[i]->f_cost < cost) cost = open[i]->f_cost, best = i;
-
-	node = open[best];
-	open.Remove(best);
-
+	for(nodelist::iterator i = open.begin(); i != open.end(); i++) {
+		if((*i)->f_cost < cost) {
+			cost = (*i)->f_cost;
+			best = i;
+		}
+	}
+	
+	node = *best;
+	open.erase(best);
+	
 	return node;
 }
 
-UBool PathFinder::Check(MINOSNode * node)
-{
-	ULong i;
-
+UBool PathFinder::Check(MINOSNode * node) {
+	
+	// TODO use set/map instead of vector?
+	
 	//Check if node is already in close list
-	for (i = 0; i < close.Count(); i++)
-		if (close[i]->data == node->data) return UFALSE;
-
+	for(nodelist::const_iterator i = close.begin(); i != close.end(); ++i) {
+		if((*i)->data == node->data) return UFALSE;
+	}
+	
 	//Check if node is already in open list
-	for (i = 0; i < open.Count(); i++)
-		if (open[i]->data == node->data)
-		{
-			if (open[i]->g_cost < node->g_cost) return UFALSE;
-
-			free(open[i]), open.Remove(i);
+	for(nodelist::iterator i = open.begin(); i != open.end(); ++i) {
+		if((*i)->data == node->data) {
+			if((*i)->g_cost < node->g_cost) {
+				return UFALSE;
+			}
+			
+			free(*i);
+			i = open.erase(i);
 		}
+	}
 
 	return UTRUE;
 }
@@ -656,7 +664,7 @@ SBool PathFinder::BuildPath(UWord ** rlist, SLong * rstep)
 	UWord path_c(0);
 	UWord * path_d = NULL;
 
-	next = close[close.Count() - 1];
+	next = close[close.size() - 1];
 
 	while (next)
 	{
