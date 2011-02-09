@@ -6997,7 +6997,7 @@ m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 	
 	SETTEXTUREWRAPMODE(m_pd3dDevice,D3DTADDRESS_WRAP);
 
-	if(pTextManage && pTextManage->vText.size())
+	if(pTextManage && !pTextManage->empty())
 	{
 		danaeApp.DANAEEndRender();
 

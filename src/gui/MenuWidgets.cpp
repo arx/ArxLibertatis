@@ -502,13 +502,6 @@ void FontRenderText(HFONT _hFont, EERIE_3D pos, const std::string& _pText, COLOR
 		rRect.right    =    ARX_CLEAN_WARN_CAST_LONG( pos.x + 999 );
 		rRect.bottom=    ARX_CLEAN_WARN_CAST_LONG( pos.y + 999 );
 
-
-		ARX_TEXT pText;
-		ARX_Text_Init(&pText);
-		pText.lpszUText = _pText;
-		pText.lCol = _c;
-		pText.rRect = rRect;
-
 		pTextManage->AddText( _hFont,
 		                      _pText,
 		                      rRect,

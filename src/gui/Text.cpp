@@ -677,30 +677,6 @@ void _ShowText(char * text)
 }
 
 //-----------------------------------------------------------------------------
-void ARX_Text_Init(ARX_TEXT * _pArxText)
-{
-	_pArxText->eType		= ARX_TEXT_ONCE;
-	_pArxText->hFont		= hFontInGame;
-	_pArxText->rRect.top    = 0;
-	_pArxText->rRect.left   = 0;
-	_pArxText->rRect.right  = 0;
-	_pArxText->rRect.bottom = 0;
-	_pArxText->rRectClipp.top    = 0;
-	_pArxText->rRectClipp.bottom = 0;
-	_pArxText->rRectClipp.left   = 0;
-	_pArxText->rRectClipp.right  = 0;
-	_pArxText->lpszUText.clear();
-	_pArxText->fDeltaY		= 0;
-	_pArxText->fSpeedScrollY = 0;
-	_pArxText->lCol			= RGB(1, 1, 1);
-	_pArxText->lBkgCol		= 0x00FF00FF;
-	_pArxText->lTimeScroll	= 0;
-	_pArxText->lTimeOut		= 0;
-	_pArxText->lTailleLigne = 0;
-	_pArxText->iNbLineClip  = 0;
-}
-
-//-----------------------------------------------------------------------------
 
 int Traffic(int iFontSize)
 {
