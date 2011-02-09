@@ -209,8 +209,7 @@ typedef struct
 #define BKG_SIZZ	100
 
 
-typedef struct 
-{	
+struct EERIE_BACKGROUND {
 	FAST_BKG_DATA	fastdata[MAX_BKGX][MAX_BKGZ];
 	long		exist;
 	short		Xsize;
@@ -226,7 +225,7 @@ typedef struct
 	long		  nbanchors;	
 	_ANCHOR_DATA * anchors;
 	char		name[256];
-} EERIE_BACKGROUND;
+};
 
 typedef struct
 {
