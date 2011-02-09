@@ -354,11 +354,11 @@ void ARX_Menu_Resources_Release(bool _bNoSound)
 */
 	if (ARXmenu.mda)
 	{
-		free(ARXmenu.mda);
+		delete ARXmenu.mda;
 		ARXmenu.mda = NULL;
 	}
 
-	free(ARXmenu.mda);
+	delete ARXmenu.mda;
 	ARXmenu.mda = NULL;
 
 	//Synchronize game mixers with menu mixers and switch between them
