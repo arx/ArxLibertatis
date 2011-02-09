@@ -29,7 +29,7 @@ public:
 private:
 	
 	struct ManagedText;
-	std::vector<ManagedText *> vText;
+	std::vector<ManagedText *> entries;
 	
 };
 

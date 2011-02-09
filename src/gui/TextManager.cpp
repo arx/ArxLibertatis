@@ -80,7 +80,7 @@ bool TextManager::AddText(HFONT _hFont, const string & _lpszUText, const RECT & 
 		pArxText->rRectClipp.bottom = pArxText->rRect.top + sSize.cy;
 	}
 	
-	vText.push_back(pArxText);
+	entries.push_back(pArxText);
 	
 	return true;
 }
@@ -91,13 +91,13 @@ void TextManager::Update(float _fDiffFrame) {
 	int _iDiffFrame = ARX_CLEAN_WARN_CAST_INT(_fDiffFrame);
 	
 	vector<ManagedText *>::iterator itManage;
-	for(itManage = vText.begin(); itManage != vText.end();) {
+	for(itManage = entries.begin(); itManage != entries.end();) {
 		
 		ManagedText * pArxText = *itManage;
 		
 		if(pArxText->lTimeOut < 0) {
 			delete pArxText;
-			itManage = vText.erase(itManage);
+			itManage = entries.erase(itManage);
 			continue;
 		}
 		
@@ -122,12 +122,12 @@ void TextManager::Update(float _fDiffFrame) {
 void TextManager::Render() {
 	
 	HDC hDC = NULL;
-	if(danaeApp.m_pddsRenderTarget && !vText.empty()) {
+	if(danaeApp.m_pddsRenderTarget && !entries.empty()) {
 		danaeApp.m_pddsRenderTarget->GetDC(&hDC);
 	}
 	
-	vector<ManagedText *>::const_iterator itManage = vText.begin();
-	for(; itManage != vText.end(); itManage++) {
+	vector<ManagedText *>::const_iterator itManage = entries.begin();
+	for(; itManage != entries.end(); itManage++) {
 		
 		ManagedText * pArxText = *itManage;
 		
@@ -156,13 +156,13 @@ void TextManager::Render() {
 void TextManager::Clear() {
 	
 	vector<ManagedText *>::iterator itManage;
-	for(itManage = vText.begin(); itManage < vText.end(); itManage++) {
+	for(itManage = entries.begin(); itManage < entries.end(); itManage++) {
 		delete *itManage;
 	}
 	
-	vText.clear();
+	entries.clear();
 }
 
 bool TextManager::empty() const {
-	return vText.empty();
+	return entries.empty();
 }
