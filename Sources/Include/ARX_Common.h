@@ -162,7 +162,7 @@ enum ARX_DEBUG_LOG_TYPE
 #pragma warning(disable : 4100) //ARX - jycorbel - 2010/06/22 - Disable warning "unreferenced formal parameter"
 //#pragma warning(disable : 4101) //ARX - jycorbel - 2010/06/22 - Disable warning "unreferenced local variable"
 #pragma warning(disable : 4127) //ARX - jycorbel - 2010/06/22 - Disable warning "conditional expression is constant"
-#pragma warning(disable : 4189) //ARX - jycorbel - 2010/06/22 - Disable warning "local variable is initialized but not referenced"
+//#pragma warning(disable : 4189) //ARX - jycorbel - 2010/06/22 - Disable warning "local variable is initialized but not referenced"
 //#pragma warning(disable : 4201) //ARX - jycorbel - 2010/06/22 - Disable warning "nonstandard extension used : nameless struct/union"
 #pragma warning(disable : 4702) //ARX - jycorbel - 2010/06/22 - Disable warning "unreachable code"
 #pragma warning(disable : 4706) //ARX - jycorbel - 2010/06/22 - Disable warning "assignment within conditional expression"

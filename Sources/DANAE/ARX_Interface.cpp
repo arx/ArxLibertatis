@@ -1998,7 +1998,7 @@ BOOL DANAE::ManageEditorControls()
 					else if (((EERIEMouseButton & 1) && !(LastMouseClick & 1)) || flDelay)
 					{
 						if (!flDelay)
-					{
+						{
 							flDelay=ARX_TIME_Get();
 							return false;
 						}

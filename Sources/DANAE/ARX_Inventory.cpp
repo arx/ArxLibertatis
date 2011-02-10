@@ -200,15 +200,13 @@ INTERACTIVE_OBJ * GetInventoryObj(EERIE_S2D * pos)
 {
 	long tx, ty;
 
+	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(45);
+	float fSizY		= DANAESIZY - INTERFACE_RATIO(96) + INTERFACE_RATIO_LONG(InventoryY);
 
-	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
-	float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
 	ARX_CHECK_INT(fCenterX);
 	ARX_CHECK_INT(fSizY);
-
 	int iPosX = ARX_CLEAN_WARN_CAST_INT(fCenterX);
 	int iPosY = ARX_CLEAN_WARN_CAST_INT(fSizY);
-
 
 	if (player.Interface & INTER_INVENTORY)
 	{
@@ -217,9 +215,8 @@ INTERACTIVE_OBJ * GetInventoryObj(EERIE_S2D * pos)
 
 		if ((tx >= 0) && (ty >= 0))
 		{
-
-			ARX_CHECK_LONG(tx / INTERFACE_RATIO(32.f));
-			ARX_CHECK_LONG(ty / INTERFACE_RATIO(32.f));
+			ARX_CHECK_LONG(tx / INTERFACE_RATIO(32));
+			ARX_CHECK_LONG(ty / INTERFACE_RATIO(32));
 			tx = ARX_CLEAN_WARN_CAST_LONG(tx / INTERFACE_RATIO(32));
 			ty = ARX_CLEAN_WARN_CAST_LONG(ty / INTERFACE_RATIO(32));
 
@@ -239,29 +236,25 @@ INTERACTIVE_OBJ * GetInventoryObj(EERIE_S2D * pos)
 	}
 	else if (player.Interface & INTER_INVENTORYALL)
 	{
-
 		float fBag	= (player.bag - 1) * INTERFACE_RATIO(-121);
 		ARX_CHECK_INT(fBag);
 
 		int iY = ARX_CLEAN_WARN_CAST_INT(fBag);
-
 
 		for (int i = 0; i < player.bag; i++)
 		{
 			tx = pos->x - iPosX;
 			ty = pos->y - iPosY - iY;
 
-
 			ARX_CHECK_LONG(tx / INTERFACE_RATIO(32));
 			ARX_CHECK_LONG(ty / INTERFACE_RATIO(32));
 			tx = ARX_CLEAN_WARN_CAST_LONG(tx / INTERFACE_RATIO(32));
 			ty = ARX_CLEAN_WARN_CAST_LONG(ty / INTERFACE_RATIO(32));
 
-
 			if ((tx >= 0) && (tx < INVENTORY_X) && (ty >= 0) && (ty < INVENTORY_Y))
 			{
 				if ((inventory[i][tx][ty].io)
-				        &&	(inventory[i][tx][ty].io->GameFlags & GFLAG_INTERACTIVITY))
+					&&	(inventory[i][tx][ty].io->GameFlags & GFLAG_INTERACTIVITY))
 				{
 					HERO_OR_SECONDARY = 1;
 					return (inventory[i][tx][ty].io);
@@ -270,14 +263,11 @@ INTERACTIVE_OBJ * GetInventoryObj(EERIE_S2D * pos)
 				return NULL;
 			}
 
-
 			float fRatio	= INTERFACE_RATIO(121);
 			ARX_CHECK_INT(iY + fRatio);
 
 			iY	+= ARX_CLEAN_WARN_CAST_INT(fRatio);
-
 		}
-
 	}
 
 	return NULL;
@@ -1477,14 +1467,13 @@ BOOL InPlayerInventoryPos(EERIE_S2D * pos)
 	if (PLAYER_INTERFACE_HIDE_COUNT) return FALSE;
 
 
-	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(35);
-	float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY);
+	float fCenterX	= DANAECENTERX - INTERFACE_RATIO(320) + INTERFACE_RATIO(45);
+	float fSizY		= DANAESIZY - INTERFACE_RATIO(96) + INTERFACE_RATIO_LONG(InventoryY);
 	ARX_CHECK_SHORT(fCenterX);
 	ARX_CHECK_SHORT(fSizY);
 
 	short iPosX = ARX_CLEAN_WARN_CAST_SHORT(fCenterX);
 	short iPosY = ARX_CLEAN_WARN_CAST_SHORT(fSizY);
-
 
 	short tx, ty;
 
@@ -1495,10 +1484,8 @@ BOOL InPlayerInventoryPos(EERIE_S2D * pos)
 
 		if ((tx >= 0) && (ty >= 0))
 		{
-
 			tx = tx / SHORT_INTERFACE_RATIO(32);
 			ty = ty / SHORT_INTERFACE_RATIO(32);
-
 
 			if ((tx >= 0) && (tx <= INVENTORY_X) && (ty >= 0) && (ty < INVENTORY_Y))
 				return TRUE;
@@ -1509,12 +1496,10 @@ BOOL InPlayerInventoryPos(EERIE_S2D * pos)
 	
 	else if (player.Interface & INTER_INVENTORYALL)
 	{
-
 		float fBag	= (player.bag - 1) * INTERFACE_RATIO(-121);
+
 		ARX_CHECK_SHORT(fBag);
-
 		short iY = ARX_CLEAN_WARN_CAST_SHORT(fBag);
-
 
 		if ((
 		            (pos->x >= iPosX) &&
@@ -1530,22 +1515,17 @@ BOOL InPlayerInventoryPos(EERIE_S2D * pos)
 
 			if ((tx >= 0) && (ty >= 0))
 			{
-
 				tx = tx / SHORT_INTERFACE_RATIO(32);
 				ty = ty / SHORT_INTERFACE_RATIO(32);
-
 
 				if ((tx >= 0) && (tx <= INVENTORY_X) && (ty >= 0) && (ty < INVENTORY_Y))
 					return TRUE;
 			}
 
-
 			float fRatio	= INTERFACE_RATIO(121);
+
 			ARX_CHECK_SHORT(iY + fRatio);
-
 			iY	+= ARX_CLEAN_WARN_CAST_SHORT(fRatio);
-
-
 		}
 	}
 
@@ -1559,10 +1539,7 @@ BOOL InPlayerInventoryPos(EERIE_S2D * pos)
 //*************************************************************************************
 BOOL InInventoryPos(EERIE_S2D * pos)
 {
-	if (InSecondaryInventoryPos(pos))
-		return TRUE;
-
-	return (InPlayerInventoryPos(pos));
+	return InSecondaryInventoryPos(pos) || InPlayerInventoryPos(pos);
 }
 
 //*************************************************************************************
@@ -1612,8 +1589,6 @@ INTERACTIVE_OBJ * GetFromInventory(EERIE_S2D * pos)
 
 	if (SecondaryInventory != NULL)
 	{
-
-
 		ARX_CHECK_SHORT(InventoryX);
 		tx = pos->x + ARX_CLEAN_WARN_CAST_SHORT(InventoryX) - SHORT_INTERFACE_RATIO(2);
 		ty = pos->y - SHORT_INTERFACE_RATIO(13);
@@ -1622,7 +1597,6 @@ INTERACTIVE_OBJ * GetFromInventory(EERIE_S2D * pos)
 		{
 			tx = tx / SHORT_INTERFACE_RATIO(32); 
 			ty = ty / SHORT_INTERFACE_RATIO(32); 
-
 
 			if ((tx >= 0) && (tx <= SecondaryInventory->sizex)
 			        && (ty >= 0) && (ty <= SecondaryInventory->sizey))
