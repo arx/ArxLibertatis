@@ -73,6 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuWidgets.h"
 
 #include "io/IO.h"
+#include "io/Logger.h"
 #include "graphics/d3dwrapper.h"
 #include "scene/Light.h"
 #include "graphics/Draw.h"
@@ -2771,10 +2772,7 @@ SMY_D3DVERTEX *pMyVertex;
 		{
 			char tTxt[256];
 			sprintf(tTxt,"portals %ld - Zero Polys",room_num);
-			MessageBox(	NULL,
-						tTxt,
-						"Error Portals",
-						MB_OK|MB_ICONERROR );
+			LogError<< tTxt<<" Error Portals";
 			return;
 		}
 		
