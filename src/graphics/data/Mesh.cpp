@@ -300,7 +300,7 @@ long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest, unsigned int dest
 	boxmax.y = -999999999.f;
 	boxmax.z = -999999999.f;
 
-	for (i = 0; i < io->obj->nbvertex; i++)
+	for (i = 0; i < io->obj->vertexlist.size(); i++)
 	{
 		boxmin.x = std::min(boxmin.x, io->obj->vertexlist3[i].v.x);
 		boxmin.y = std::min(boxmin.y, io->obj->vertexlist3[i].v.y);
@@ -3469,7 +3469,7 @@ void DrawEERIEObjEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	Zcos = (float)EEcos(Zsin);
 	Zsin = (float)EEsin(Zsin);
 
-	for (long i = 0; i < eobj->nbvertex; i++)
+	for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 	{
 		v.sx = eobj->vertexlist[i].v.x * scale->x; 
 		v.sy = eobj->vertexlist[i].v.y * scale->y; 
@@ -3489,7 +3489,7 @@ void DrawEERIEObjEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 
 	D3DCOLOR coll = EERIERGB(col->r, col->g, col->b);
 
-	for (int i = 0; i < eobj->nbfaces; i++)
+	for (size_t i = 0; i < eobj->facelist.size(); i++)
 	{
 		vert_list[0].sx = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.x;
 		vert_list[0].sy = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.y;
@@ -3551,7 +3551,7 @@ void DrawEERIEObjExEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	Zcos = (float)EEcos(Zsin);
 	Zsin = (float)EEsin(Zsin);
 
-	for (long i = 0; i < eobj->nbvertex; i++)
+	for (long i = 0; i < eobj->vertexlist.size(); i++)
 	{
 		v.sx = eobj->vertexlist[i].v.x * scale->x; 
 		v.sy = eobj->vertexlist[i].v.y * scale->y; 
@@ -3569,7 +3569,7 @@ void DrawEERIEObjExEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 		EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
 	}
 
-	for (int i = 0; i < eobj->nbfaces; i++)
+	for (size_t i = 0; i < eobj->facelist.size(); i++)
 	{
 		vert_list[0].sx = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.x;
 		vert_list[0].sy = eobj->vertexlist[eobj->facelist[i].vid[0]].vworld.y;
@@ -3658,7 +3658,7 @@ bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj, long idx, long grs)
 
 	if (eobj == NULL) return false;
 
-	for (long i = 0; i < eobj->grouplist[grs].nb_index; i++)
+	for (long i = 0; i < eobj->grouplist[grs].indexes.size(); i++)
 	{
 		ii = (long)eobj->grouplist[grs].indexes[i];
 
@@ -4842,7 +4842,7 @@ void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 	Zcos = (float)EEcos(Zsin);
 	Zsin = (float)EEsin(Zsin);
 
-	for (i = 0; i < eobj->nbvertex; i++)
+	for (i = 0; i < eobj->vertexlist.size(); i++)
 	{
 		//Local Transform
 		p.x = eobj->vertexlist[i].v.x - eobj->point0.x;
@@ -4867,7 +4867,7 @@ void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 				EERIEPOLY ep;
 				EERIEPOLY epp;
 
-				for (i = 0; i < eobj->nbfaces; i++)
+				for (i = 0; i < eobj->facelist.size(); i++)
 				{
 					for (long kk = 0; kk < 3; kk++)
 					{
@@ -4903,7 +4903,7 @@ void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 		}
 	}
 
-	for (i = 0; i < eobj->nbfaces; i++)
+	for (size_t i = 0; i < eobj->facelist.size(); i++)
 	{
 		vlist[0] = eobj->vertexlist[eobj->facelist[i].vid[0]].vert;
 		vlist[1] = eobj->vertexlist[eobj->facelist[i].vid[1]].vert;

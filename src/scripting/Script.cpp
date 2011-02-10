@@ -2966,7 +2966,7 @@ void CheckHit(INTERACTIVE_OBJ * io, float ratioaim)
 								long count = 0;
 								float mindist = FLT_MAX;
 
-								for (long k = 0; k < ioo->obj->nbvertex; k += 2)
+								for (size_t k = 0; k < ioo->obj->vertexlist.size(); k += 2)
 								{
 									dist = EEDistance3D(&pos, &inter.iobj[i]->obj->vertexlist3[k].v);
 
@@ -2979,7 +2979,7 @@ void CheckHit(INTERACTIVE_OBJ * io, float ratioaim)
 									}
 								}
 
-								float ratio = ((float)count / ((float)ioo->obj->nbvertex * ( 1.0f / 2 )));
+								float ratio = ((float)count / ((float)ioo->obj->vertexlist.size() * ( 1.0f / 2 )));
 
 								if (ioo->ioflags & IO_NPC)
 								{
@@ -3034,27 +3034,19 @@ long MakeLocalised( const std::string& text, std::string& output, long lastspeec
 	}
 
 	std::string __text;
-	// TODO Find replacement
-	//MultiByteToWideChar(CP_ACP, 0, text, -1, (wchar_t*)__text, 256);
-	return HERMES_UNICODE_GetProfileString(__text, "error", output);
+	return HERMES_UNICODE_GetProfileString(text, "error", output);
 }
 
 //-----------------------------------------------------------------------------
-long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const std::string& _lpszText, long duration)
+long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const std::string& text, long duration)
 {
-	std::string __output;
-	std::string __text = _lpszText;
-
-	//todo cast
-	//MultiByteToWideChar(CP_ACP, 0, _lpszText, -1, __text, 256);
-	// Find replacement
-	//MultiByteToWideChar(CP_ACP, 0, _lpszText, -1, (wchar_t*)__text, 256);
+	std::string output;
 
 	HERMES_UNICODE_GetProfileString(
-		__text,
+		text,
 		"Not Found",
-		__output );
-	return (ARX_SPEECH_Add(io, __output, duration));
+		output );
+	return (ARX_SPEECH_Add(io, output, duration));
 }
 
 //*************************************************************************************

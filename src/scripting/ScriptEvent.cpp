@@ -1130,7 +1130,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						io->angle.b += t2;
 						io->angle.g += t3;
 
-						if (io->nb_lastanimvertex != io->obj->nbvertex)
+						if (io->nb_lastanimvertex != io->obj->vertexlist.size())
 						{
 							free(io->lastanimvertex);
 							io->lastanimvertex = NULL;
@@ -5521,11 +5521,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						ARX_SPEECH_AddLocalised(NULL, tempp);
 					}
 					else
-					{
-						_TCHAR UText[512];
-						MultiByteToWideChar(CP_ACP, 0, tempp, -1, (wchar_t*)UText, 256);
-						ARX_SPEECH_Add(NULL, UText);
-					}
+						ARX_SPEECH_Add(NULL, tempp);
 
 				nodraw:
 					;

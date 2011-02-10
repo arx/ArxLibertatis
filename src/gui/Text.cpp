@@ -785,14 +785,13 @@ void ARX_Text_Init()
 	Localisation_Init();
 	
 	string tx = getFontFile();
-	LogInfo << "Adding font " << tx;
 
 	wchar_t wtx[256];
 	MultiByteToWideChar(CP_ACP, 0, tx.c_str() , -1, wtx, 256);		// XS : We need to pass a unicode string to AddFontResourceW
 
 	lpszFontIngame = GetFontName(tx.c_str());
 	
-	LogInfo << "ingame font name: " << lpszFontIngame;
+	LogInfo << "Adding Font " << tx << ": " << lpszFontIngame;
 
 	if(AddFontResource(tx.c_str()) == 0) {
 		LogError << FontError();
@@ -809,14 +808,12 @@ void ARX_Text_Init()
 //
 //	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass an unicode string to AddFontResourceW
 
-	lpszFontMenu = GetFontName(tx.c_str());
-	
-	LogInfo << "menu font name: " << lpszFontMenu;
+	lpszFontMenu = lpszFontIngame; //GetFontName(tx.c_str());
 
-	if (AddFontResourceW(wtx) == 0)
-	{
-		LogError << FontError();
-	}
+	//if (AddFontResourceW(wtx) == 0)
+	//{
+	//	LogError << FontError();
+	//}
 
 
 	pTextManage = new TextManager();
@@ -1059,7 +1056,7 @@ lpszFontMenu.clear();
 
 	string tx = getFontFile();
 
-	LogInfo << "Removing font " << tx;
+	LogDebug << "Removing font " << tx;
 	
 	//MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
 

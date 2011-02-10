@@ -158,7 +158,7 @@ void ARXDRAW_DrawInterShadows(LPDIRECT3DDEVICE7 pd3dDevice)
 
 				if (io->obj->nbgroups<=1)
 				{
-					for (k=0;k<io->obj->nbvertex;k+=9)
+					for (k=0;k<io->obj->vertexlist.size();k+=9)
 					{
 						ep=EECheckInPoly(&io->obj->vertexlist3[k].v);
 
