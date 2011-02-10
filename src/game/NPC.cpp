@@ -1101,9 +1101,7 @@ void ARX_PHYSICS_Apply()
 
 		CheckUnderWaterIO(io);
 
-		//TODO(lubosz): crash
-		if (false)
-//		if (io->obj->pbox)
+		if (io->obj->pbox)
 		{
 			io->GameFlags &= ~GFLAG_NOCOMPUTATION;
 
