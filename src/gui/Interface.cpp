@@ -7831,13 +7831,13 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		danaeApp.DANAEEndRender();
 		std::stringstream ss;
-		ss << ITC.Level << " " << std::setw(3) << player.level;
+		ss << ITC.Level << " " << std::setw(3) << (int)player.level;
 		tex = ss.str();
 		DrawBookTextCenter( 398, 74, tex,Color,0x00FF00FF,InBookFont);
 		
 		std::stringstream ss2;
 		ss2 << ITC.Xp << " " << std::setw(8) << player.xp;
-		tex = ss.str();
+		tex = ss2.str();
 		DrawBookTextCenter( 510, 74, tex, Color,0x00FF00FF,InBookFont);
 		danaeApp.DANAEStartRender();
 
@@ -8101,7 +8101,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		
 		danaeApp.DANAEEndRender();
 		std::stringstream ss3;
-		ss3 << std::setw(3) << std::setprecision(0) << player.Full_Attribute_Strength;
+		ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.Full_Attribute_Strength;
 		tex = ss3.str();
 
 		if (player.Mod_Attribute_Strength<0.f)
