@@ -8393,7 +8393,7 @@ void ClearGameDEVICE()
 void ClearGame() {
 	ARX_Menu_Resources_Release();
 
-	//la configuration
+	//configuration
 	if(pMenuConfig)
 	{
 		pMenuConfig->SaveAll();
@@ -8413,7 +8413,7 @@ void ClearGame() {
 	TREATZONE_Release();
 	ClearTileLights();
 
-	//les textes et les textures
+	//texts and textures
 	ClearSysTextures();
 	FreeSaveGameList();
 
@@ -8431,7 +8431,7 @@ void ClearGame() {
 	ARX_PATH_ReleaseAllPath();
 	ReleaseSystemObjects();
 	
-	//eerie_background
+	//background
 	ClearBackground(ACTIVEBKG);
 
 	//animations
@@ -8466,7 +8466,7 @@ void ClearGame() {
 	ARX_SPEECH_ClearAll();
 	ARX_Text_Close();
 
-	//les objects loaders dans beforerun
+	//object loaders from beforerun
 	ReleaseDanaeBeforeRun();
 	PAK_Close();
 
@@ -8478,7 +8478,7 @@ void ClearGame() {
 
 	ReleaseNode();
 
-	//HAlo
+	//Halo
 	ReleaseHalo();
 	HERMES_Memory_Security_Off();
 	FreeSnapShot();
