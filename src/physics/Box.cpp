@@ -85,7 +85,7 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, EERIE_3D * pos, EERIE_3D * vect
 
 	obj->pbox->storedtiming = 0;
 
-	for (long i = 0; i < obj->nbvertex; i++)
+	for (size_t i = 0; i < obj->vertexlist.size(); i++)
 	{
 		obj->vertexlist[i].vert.sx = obj->vertexlist[i].v.x;
 		obj->vertexlist[i].vert.sy = obj->vertexlist[i].v.y;
@@ -1032,7 +1032,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 
 	EERIE_PHYSICS_BOX_Release(obj);
 
-	if (obj->nbvertex == 0) return;
+	if (obj->vertexlist.empty()) return;
 
 	obj->pbox =	(PHYSICS_BOX_DATA *)
 	            malloc(sizeof(PHYSICS_BOX_DATA));
@@ -1052,7 +1052,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 	cubmax.y = -FLT_MAX;
 	cubmax.z = -FLT_MAX;
 
-	for (long k = 0; k < obj->nbvertex; k++)
+	for (size_t k = 0; k < obj->vertexlist.size(); k++)
 	{
 		if (k == obj->origin) continue;
 
@@ -1108,7 +1108,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 		obj->pbox->vert[13].pos.y = cubmin.y;
 		float RATI = diff * ( 1.0f / 8 );
 
-		for (int k = 0; k < obj->nbvertex; k++)
+		for (size_t k = 0; k < obj->vertexlist.size(); k++)
 		{
 			if (k == obj->origin) continue;
 
@@ -1161,7 +1161,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 		float ysec2 = cubmin.y + cut * 2.f;
 		float ysec1 = cubmin.y + cut;
 
-		for (int k = 0; k < obj->nbvertex; k++)
+		for (size_t k = 0; k < obj->vertexlist.size(); k++)
 		{
 			if (k == obj->origin) continue;
 

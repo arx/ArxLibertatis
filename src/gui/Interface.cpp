@@ -8684,8 +8684,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		FORCE_NO_HIDE=1;
 		IN_BOOK_DRAW=1;
-		EERIE_VERTEX *	vertexlist=(EERIE_VERTEX *)malloc(sizeof(EERIE_VERTEX)*inter.iobj[0]->obj->nbvertex);
-		memcpy(vertexlist,inter.iobj[0]->obj->vertexlist3,sizeof(EERIE_VERTEX)*inter.iobj[0]->obj->nbvertex);
+		vector<EERIE_VERTEX> vertexlist = inter.iobj[0]->obj->vertexlist3;
 
 		if (player.useanim.cur_anim != NULL) 
 		{
@@ -8722,8 +8721,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 		PDL[1]=SavePDL[1];
 		TOTPDL=iSavePDL;
 
-		memcpy(inter.iobj[0]->obj->vertexlist3,vertexlist,sizeof(EERIE_VERTEX)*inter.iobj[0]->obj->nbvertex);
-		free(vertexlist);
+		inter.iobj[0]->obj->vertexlist3 = vertexlist;
+		vertexlist.clear();
 		FORCE_NO_HIDE=0;
 		Project.improve=ti;
 		
@@ -10191,7 +10190,7 @@ long Manage3DCursor(long flags)
 					maxoff.y=minoff.y=io->obj->vertexlist[0].v.y;
 					maxoff.z=minoff.z=io->obj->vertexlist[0].v.z;
 
-					for (long i=0;i<io->obj->nbvertex;i++)
+					for (size_t i=0;i<io->obj->vertexlist.size();i++)
 					{
 						maxoff.x=max(maxoff.x,io->obj->vertexlist[i].v.x);
 						maxoff.y=max(maxoff.y,io->obj->vertexlist[i].v.y);
@@ -10261,7 +10260,7 @@ long Manage3DCursor(long flags)
 		objcenter.y	=	0;	
 		objcenter.z	=	minoff.z + (maxoff.z - minoff.z) * ( 1.0f / 2 );  
 					
-					for ( int i = 0 ; i < io->obj->nbvertex ; i++ )
+					for ( size_t i = 0 ; i < io->obj->vertexlist.size() ; i++ )
 					{
 						maxdist = max(	maxdist,
 											TRUEDistance2D(	objcenter.x, objcenter.z,

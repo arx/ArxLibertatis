@@ -3429,7 +3429,7 @@ long FirstFrameHandling(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		inter.iobj[0]->pos.y+=170.f;
 		INTERACTIVE_OBJ * io=inter.iobj[0];
 
-		for (long i=0;i<io->obj->nbvertex;i++)
+		for (size_t i=0;i<io->obj->vertexlist.size();i++)
 		{
 			io->obj->vertexlist3[i].v.x=io->obj->vertexlist[i].v.x+inter.iobj[0]->pos.x;
 			io->obj->vertexlist3[i].v.y=io->obj->vertexlist[i].v.y+inter.iobj[0]->pos.y;

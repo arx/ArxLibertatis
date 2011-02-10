@@ -1113,7 +1113,7 @@ void ARX_DAMAGES_AddVisual(DAMAGE_INFO * di, EERIE_3D * pos, float dmg, INTERACT
 	{
 		long num = -1;
 
-		if (io != NULL) num = ((long)(float)(rnd() * (io->obj->nbvertex / 4 - 1))) * 4 + 1;
+		if (io != NULL) num = ((long)(float)(rnd() * (io->obj->vertexlist.size() / 4 - 1))) * 4 + 1;
 
 		unsigned long tim = ARXTimeUL();
 
@@ -1497,13 +1497,13 @@ bool SphereInIO(INTERACTIVE_OBJ * io, EERIE_3D * pos, float radius)
 
 	long step;
 
-	if (io->obj->nbvertex < 150) step = 1;
-	else if (io->obj->nbvertex < 300) step = 2;
-	else if (io->obj->nbvertex < 600) step = 4;
-	else if (io->obj->nbvertex < 1200) step = 6;
+	if (io->obj->vertexlist.size() < 150) step = 1;
+	else if (io->obj->vertexlist.size() < 300) step = 2;
+	else if (io->obj->vertexlist.size() < 600) step = 4;
+	else if (io->obj->vertexlist.size() < 1200) step = 6;
 	else step = 7;
 
-	for (long i = 0; i < io->obj->nbvertex; i += step)
+	for (long i = 0; i < io->obj->vertexlist.size(); i += step)
 	{
 		if (EEDistance3D(pos, &io->obj->vertexlist3[i].v) <= radius)
 		{
@@ -1688,11 +1688,11 @@ bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long t
 			long count2 = 0;
 			float mindist = FLT_MAX;
 
-			for (long k = 0; k < ioo->obj->nbvertex; k += 1)
+			for (long k = 0; k < ioo->obj->vertexlist.size(); k += 1)
 			{
-				if (ioo->obj->nbvertex < 120)
+				if (ioo->obj->vertexlist.size() < 120)
 				{
-					for (long kk = 0; kk < ioo->obj->nbvertex; kk += 1)
+					for (long kk = 0; kk < ioo->obj->vertexlist.size(); kk += 1)
 					{
 						if (kk != k)
 						{
@@ -1724,10 +1724,10 @@ bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long t
 				}
 			}
 
-			float ratio = ((float)count / ((float)ioo->obj->nbvertex * ( 1.0f / 2 )));
+			float ratio = ((float)count / ((float)ioo->obj->vertexlist.size() * ( 1.0f / 2 )));
 
 			if (count2 > count)
-				ratio = ((float)count2 / ((float)ioo->obj->nbvertex * ( 1.0f / 2 )));
+				ratio = ((float)count2 / ((float)ioo->obj->vertexlist.size() * ( 1.0f / 2 )));
 
 			if (ratio > 2.f) ratio = 2.f;
 

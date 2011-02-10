@@ -143,7 +143,7 @@ void EERIE_LINKEDOBJ_UnLinkObjectFromObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tou
 			{
 				if (obj->linked[k].obj == tounlink)
 				{
-					for (long i = 0; i < tounlink->nbvertex; i++)
+					for (size_t i = 0; i < tounlink->vertexlist.size(); i++)
 					{
 						tounlink->vertexlist[i].vert.sx = tounlink->vertexlist[i].v.x;
 						tounlink->vertexlist[i].vert.sy = tounlink->vertexlist[i].v.y;

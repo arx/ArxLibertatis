@@ -1522,24 +1522,23 @@ void EERIE_3DOBJ::clear() {
 
 		origin = 0;
 		ident = 0;
-		nbvertex = 0;
 		true_nbvertex = 0;
 		nbpfaces = 0;
 		nbmaps = 0;
 		nbgroups = 0;
 		drawflags = 0;
 
-		vertexlocal = 0;
-		vertexlist = 0;
-		vertexlist3 = 0;
+		vertexlocal = NULL;
+		vertexlist.clear();
+		vertexlist3.clear();
 
 		facelist.clear();
-		pfacelist = 0;
-		grouplist = 0;
-		texturecontainer = 0;
+		pfacelist = NULL;
+		grouplist = NULL;
+		texturecontainer = NULL;
 
-		originaltextures = 0;
-		linked = 0;
+		originaltextures = NULL;
+		linked = NULL;
 
 		// TODO Default constructor
 		quat.x = quat.y = quat.z = quat.w = 0;
@@ -1617,14 +1616,6 @@ void ReleaseEERIE3DObjFromScene(EERIE_3DOBJ * eerie)
 
 	eerie->texturecontainer = NULL;
 
-	if (eerie->vertexlist != NULL)	delete[] eerie->vertexlist;
-
-	eerie->vertexlist = NULL;
-
-	if (eerie->vertexlist3 != NULL)	delete[] eerie->vertexlist3;
-
-	eerie->vertexlist3 = NULL;
-
 	if (eerie->grouplist != NULL)
 	{
 		delete[] eerie->grouplist;
@@ -1675,13 +1666,6 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 	EERIE_RemoveCedricData(eerie);
 	EERIE_PHYSICS_BOX_Release(eerie);
 	EERIE_COLLISION_SPHERES_Release(eerie);
-
-	if (eerie->vertexlist)	delete[] eerie->vertexlist;
-
-	if (eerie->vertexlist3)	delete[] eerie->vertexlist3;
-
-	eerie->vertexlist = NULL;
-	eerie->vertexlist3 = NULL;
 
 	if (eerie->grouplist != NULL)
 	{
@@ -1739,11 +1723,9 @@ EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj)
 {
 	EERIE_3DOBJ * nouvo = new EERIE_3DOBJ(); 
 
-	nouvo->vertexlist = copyStruct(obj->vertexlist, "EECopyVList1", obj->nbvertex);
+	nouvo->vertexlist = obj->vertexlist;
 
-	nouvo->vertexlist3 = copyStruct(obj->vertexlist3, "EECopyVList3", obj->nbvertex);
-
-	nouvo->nbvertex = obj->nbvertex;
+	nouvo->vertexlist3 = obj->vertexlist3;
 
 	nouvo->linked = NULL;
 	nouvo->ndata = NULL;
@@ -1780,7 +1762,7 @@ EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj)
 
 	if (obj->ndata)
 	{
-		nouvo->ndata = copyStruct(obj->ndata, "EECopyNdata", obj->nbvertex);
+		nouvo->ndata = copyStruct(obj->ndata, "EECopyNdata", obj->vertexlist.size());
 	}
 	else nouvo->ndata = NULL;
 
@@ -1912,7 +1894,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 		memset(eobj->c_data->bones, 0, sizeof(EERIE_BONE)*eobj->c_data->nb_bones);
 
 		// Add all vertices to the bone
-		for (long i = 0; i < eobj->nbvertex; i++)
+		for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 			AddIdxToBone(&eobj->c_data->bones[0], i);
 
 		// Initialize the bone
@@ -1933,8 +1915,8 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 		// TODO memset -> use constructor instead
 		memset(eobj->c_data->bones, 0, sizeof(EERIE_BONE)*eobj->c_data->nb_bones);
 
-		bool * temp = new bool[eobj->nbvertex];
-		memset(temp, 0, eobj->nbvertex);
+		bool * temp = new bool[eobj->vertexlist.size()];
+		memset(temp, 0, eobj->vertexlist.size());
 
 		for (i = eobj->nbgroups - 1; i >= 0; i--)
 		{
@@ -1962,7 +1944,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 		delete[] temp;
 
 		// Try to correct lonely vertex
-		for (i = 0; i < eobj->nbvertex; i++)
+		for (i = 0; i < eobj->vertexlist.size(); i++)
 		{
 			long ok = 0;
 
@@ -2034,9 +2016,9 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 			}
 		}
 
-		eobj->vertexlocal = new EERIE_3DPAD[eobj->nbvertex];
+		eobj->vertexlocal = new EERIE_3DPAD[eobj->vertexlist.size()];
 		// TODO constructor is better than memset
-		memset(eobj->vertexlocal, 0, sizeof(EERIE_3DPAD)*eobj->nbvertex);
+		memset(eobj->vertexlocal, 0, sizeof(EERIE_3DPAD)*eobj->vertexlist.size());
 
 		for (i = 0; i != obj->nb_bones; i++)
 		{
@@ -2498,7 +2480,7 @@ void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret)
 	LogWarning << "NOT CENTERED " << ret->file;
 
 
-	for (long i = 0; i < ret->nbvertex; i++)
+	for (long i = 0; i < ret->vertexlist.size(); i++)
 	{
 		ret->vertexlist[i].v.x -= offset.x;
 		ret->vertexlist[i].v.y -= offset.y;

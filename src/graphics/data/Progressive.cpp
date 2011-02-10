@@ -124,11 +124,11 @@ void CreateNeighbours(EERIE_3DOBJ * obj)
 {
 	if (obj->ndata == NULL)
 	{
-		obj->ndata = (NEIGHBOURS_DATA *)malloc(sizeof(NEIGHBOURS_DATA) * obj->nbvertex);
+		obj->ndata = (NEIGHBOURS_DATA *)malloc(sizeof(NEIGHBOURS_DATA) * obj->vertexlist.size());
 	}
-	else memset(obj->ndata, 0, sizeof(NEIGHBOURS_DATA)*obj->nbvertex);
+	else memset(obj->ndata, 0, sizeof(NEIGHBOURS_DATA)*obj->vertexlist.size());
 
-	for (long i = 0; i < obj->nbvertex; i++)
+	for (long i = 0; i < obj->vertexlist.size(); i++)
 	{
 		obj->ndata[i].Nvertex = NULL;
 		obj->ndata[i].Nfaces = NULL;
@@ -154,7 +154,7 @@ void KillNeighbours(EERIE_3DOBJ * obj)
 {
 	if (!obj->ndata) return;
 
-	for (long i = 0; i < obj->nbvertex; i++)
+	for (long i = 0; i < obj->vertexlist.size(); i++)
 	{
 		if (obj->ndata[i].Nfaces) free(obj->ndata[i].Nfaces);
 

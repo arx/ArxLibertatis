@@ -2173,7 +2173,7 @@ void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, EERIE_3D * target, long flag
 			}
 		}
 
-		for (long i = 0; i < io->obj->nbvertex; i++)
+		for (size_t i = 0; i < io->obj->vertexlist.size(); i++)
 		{
 			io->obj->vertexlist3[i].v.x += translate.x;
 			io->obj->vertexlist3[i].v.y += translate.y;
@@ -3806,7 +3806,6 @@ bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 {
 	long nbv;
 	long idx;
-	EERIE_VERTEX * vlist;
 
 	if ((!io)
 	        ||	(!io->obj))
@@ -3814,8 +3813,8 @@ bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 
 	if (Distance3D(pos->x, pos->y, pos->z, io->pos.x, io->pos.y, io->pos.z) < 190.f)
 	{
-		vlist = io->obj->vertexlist3;
-		nbv = io->obj->nbvertex;
+		vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
+		nbv = io->obj->vertexlist.size(); // TODO is this event correct?
 
 		if (io->obj->nbgroups > 4)
 		{
@@ -3894,14 +3893,14 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 				{
 					long step;
 					long nbv;
-					nbv = io->obj->nbvertex;
+					nbv = io->obj->vertexlist.size();
 
 					if (nbv < 300) step = 1;
 					else if (nbv < 600) step = 2;
 					else if (nbv < 1200) step = 4;
 					else step = 6;
 
-					EERIE_VERTEX * vlist = io->obj->vertexlist3;
+					vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 					EERIE_SPHERE sp;
 					sp.radius = 22.f; 
@@ -3999,7 +3998,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 			{
 				long step;
 				long nbv;
-				nbv = io->obj->nbvertex;
+				nbv = io->obj->vertexlist.size();
 				EERIE_SPHERE sp;
 				sp.radius = 28.f;
 
@@ -4012,7 +4011,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 				else if (nbv < 1500) step = 4; 
 				else step = 6;
 
-				EERIE_VERTEX * vlist = io->obj->vertexlist3;
+				vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 
 				if (io->GameFlags & GFLAG_PLATFORM)
@@ -4231,9 +4230,9 @@ void UpdateCameras()
 						{
 							bool Touched = false;
 
-							for (long ri = 0; ri < io->obj->nbvertex; ri += 3)
+							for (long ri = 0; ri < io->obj->vertexlist.size(); ri += 3)
 							{
-								for (long rii = 0; rii < ioo->obj->nbvertex; rii += 3)
+								for (long rii = 0; rii < ioo->obj->vertexlist.size(); rii += 3)
 								{
 									if (EEDistance3D(&io->obj->vertexlist3[ri].v,
 									                 &ioo->obj->vertexlist3[rii].v) < 20.f)

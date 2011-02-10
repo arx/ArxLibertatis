@@ -300,7 +300,7 @@ long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest, unsigned int dest
 	boxmax.y = -999999999.f;
 	boxmax.z = -999999999.f;
 
-	for (i = 0; i < io->obj->nbvertex; i++)
+	for (i = 0; i < io->obj->vertexlist.size(); i++)
 	{
 		boxmin.x = std::min(boxmin.x, io->obj->vertexlist3[i].v.x);
 		boxmin.y = std::min(boxmin.y, io->obj->vertexlist3[i].v.y);
@@ -3469,7 +3469,7 @@ void DrawEERIEObjEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	Zcos = (float)EEcos(Zsin);
 	Zsin = (float)EEsin(Zsin);
 
-	for (long i = 0; i < eobj->nbvertex; i++)
+	for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 	{
 		v.sx = eobj->vertexlist[i].v.x * scale->x; 
 		v.sy = eobj->vertexlist[i].v.y * scale->y; 
@@ -3551,7 +3551,7 @@ void DrawEERIEObjExEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	Zcos = (float)EEcos(Zsin);
 	Zsin = (float)EEsin(Zsin);
 
-	for (long i = 0; i < eobj->nbvertex; i++)
+	for (long i = 0; i < eobj->vertexlist.size(); i++)
 	{
 		v.sx = eobj->vertexlist[i].v.x * scale->x; 
 		v.sy = eobj->vertexlist[i].v.y * scale->y; 
@@ -4842,7 +4842,7 @@ void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 	Zcos = (float)EEcos(Zsin);
 	Zsin = (float)EEsin(Zsin);
 
-	for (i = 0; i < eobj->nbvertex; i++)
+	for (i = 0; i < eobj->vertexlist.size(); i++)
 	{
 		//Local Transform
 		p.x = eobj->vertexlist[i].v.x - eobj->point0.x;

@@ -1053,11 +1053,11 @@ void ARX_PHYSICS_Apply()
 		        &&	((io->GameFlags & GFLAG_GOREEXPLODE)
 		             &&	(ARXTime - io->lastanimtime > 300))
 		        &&	((io->obj)
-		             &&	(io->obj->nbvertex))
+		             &&	!io->obj->vertexlist.empty())
 		   )
 		{
 			long idx;
-			long cnt = (io->obj->nbvertex << 12) + 1;
+			long cnt = (io->obj->vertexlist.size() << 12) + 1;
 
 			if (cnt < 2) cnt = 2;
 
@@ -1065,9 +1065,9 @@ void ARX_PHYSICS_Apply()
 
 			for (long nn = 0; nn < cnt; nn++)
 			{
-				idx = rnd()*io->obj->nbvertex;
+				idx = rnd()*io->obj->vertexlist.size();
 
-				if (idx >= io->obj->nbvertex) idx = io->obj->nbvertex - 1;
+				if (idx >= io->obj->vertexlist.size()) idx = io->obj->vertexlist.size() - 1;
 
 				EERIE_3D vector;
 				vector.x = io->obj->vertexlist3[idx].v.x - io->obj->vertexlist3[0].v.x + (rnd() - rnd()) * 3.f;
@@ -1473,7 +1473,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	if (!nouvo)
 		return;
 
-	nouvo->nbvertex = from->selections[num].selected.size();
+	size_t nvertex = from->selections[num].selected.size();
 
 	long gore = -1;
 
@@ -1495,38 +1495,21 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 			if	((IsNearSelection(from, from->facelist[k].vid[0], num) >= 0)
 			        ||	(IsNearSelection(from, from->facelist[k].vid[1], num) >= 0)
 			        ||	(IsNearSelection(from, from->facelist[k].vid[2], num) >= 0))
-				nouvo->nbvertex += 3;
+				nvertex += 3;
 		}
 	}
 
-	nouvo->vertexlist = new EERIE_VERTEX[nouvo->nbvertex];
-
-	if (!nouvo->vertexlist)
-	{
-		free(nouvo);
-		return;
-	}
-
-	nouvo->vertexlist3 = new EERIE_VERTEX[nouvo->nbvertex];
-
-	if (!nouvo->vertexlist3)
-	{
-		free(nouvo->vertexlist);
-		free(nouvo);
-		return;
-	}
+	nouvo->vertexlist.resize(nvertex);
+	nouvo->vertexlist3.resize(nvertex);
 
 	long	inpos	= 0;
-	long *	equival = (long *)malloc(sizeof(long) * from->nbvertex);
+	long *	equival = (long *)malloc(sizeof(long) * from->vertexlist.size());
 
-	if (!equival)
-	{
-		free(nouvo->vertexlist3);
-		free(nouvo->vertexlist);
-		free(nouvo);
+	if(!equival) {
+		delete nouvo;
 	}
 
-	for (int k = 0 ; k < from->nbvertex ; k++)
+	for (int k = 0 ; k < from->vertexlist.size() ; k++)
 		equival[k] = -1;
 
 	ARX_CHECK(0 < from->selections[num].selected.size());
@@ -1535,7 +1518,10 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	{
 		inpos						=	from->selections[num].selected[k];
 		equival[from->selections[num].selected[k]]	=	k;
-		memcpy(&nouvo->vertexlist[k], &from->vertexlist[from->selections[num].selected[k]], sizeof(EERIE_VERTEX));
+		
+		
+		
+		nouvo->vertexlist[k] = from->vertexlist[from->selections[num].selected[k]];
 		nouvo->vertexlist[k].v.x	=	nouvo->vertexlist[k].vert.sx	=	from->vertexlist3[from->selections[num].selected[k]].v.x - ioo->pos.x;
 		nouvo->vertexlist[k].v.y	=	nouvo->vertexlist[k].vert.sy	=	from->vertexlist3[from->selections[num].selected[k]].v.y - ioo->pos.y;
 		nouvo->vertexlist[k].v.z	=	nouvo->vertexlist[k].vert.sz	=	from->vertexlist3[from->selections[num].selected[k]].v.z - ioo->pos.z;
@@ -1544,7 +1530,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 		nouvo->vertexlist[k].vert.tu	=	from->vertexlist[k].vert.tu;
 		nouvo->vertexlist[k].vert.tv	=	from->vertexlist[k].vert.tv;
 
-		memcpy(&nouvo->vertexlist3[k], &nouvo->vertexlist[k], sizeof(EERIE_VERTEX));
+		nouvo->vertexlist3[k] = nouvo->vertexlist[k];
 	}
 
 	long count = from->selections[num].selected.size();
@@ -1561,7 +1547,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 				{
 					equival[from->facelist[k].vid[j]] = count;
 
-					if (count < nouvo->nbvertex)
+					if (count < nouvo->vertexlist.size())
 					{
 						memcpy(&nouvo->vertexlist[count], &from->vertexlist[from->facelist[k].vid[j]], sizeof(EERIE_VERTEX));
 						nouvo->vertexlist[count].v.x = nouvo->vertexlist[count].vert.sx = from->vertexlist3[from->facelist[k].vid[j]].v.x - ioo->pos.x;
@@ -1581,7 +1567,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	float min = nouvo->vertexlist[0].vert.sy;
 	long nummm = 0;
 
-	for (int k = 1; k < nouvo->nbvertex; k++)
+	for (int k = 1; k < nouvo->vertexlist.size(); k++)
 	{
 		if (nouvo->vertexlist[k].vert.sy > min)
 		{
@@ -1596,7 +1582,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	nouvo->point0.y = nouvo->vertexlist[nouvo->origin].v.y;
 	nouvo->point0.z = nouvo->vertexlist[nouvo->origin].v.z;
 
-	for (int k = 0; k < nouvo->nbvertex; k++)
+	for (int k = 0; k < nouvo->vertexlist.size(); k++)
 	{
 		nouvo->vertexlist[k].vert.sx = nouvo->vertexlist[k].v.x -= nouvo->point0.x;
 		nouvo->vertexlist[k].vert.sy = nouvo->vertexlist[k].v.y -= nouvo->point0.y;
@@ -1676,12 +1662,8 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 		nouvo->texturecontainer = (TextureContainer **)malloc(sizeof(TextureContainer *) * nouvo->nbmaps); 
 
-		if (!nouvo->texturecontainer)
-		{
-			free(equival);
-			free(nouvo->vertexlist3);
-			free(nouvo->vertexlist);
-			free(nouvo);
+		if(!nouvo->texturecontainer) {
+			delete nouvo;
 		}
 
 		memcpy(nouvo->texturecontainer, from->texturecontainer, sizeof(TextureContainer *)*nouvo->nbmaps);

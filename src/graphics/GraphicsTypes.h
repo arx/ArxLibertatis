@@ -570,7 +570,6 @@ struct EERIE_3DOBJ
 
 		origin = 0;
 		ident = 0;
-		nbvertex = 0;
 		true_nbvertex = 0;
 		nbpfaces = 0;
 		nbmaps = 0;
@@ -578,8 +577,6 @@ struct EERIE_3DOBJ
 		drawflags = 0;
 
 		vertexlocal = 0;
-		vertexlist = 0;
-		vertexlist3 = 0;
 
 		pfacelist = 0;
 		grouplist = 0;
@@ -637,15 +634,14 @@ struct EERIE_3DOBJ
 	EERIE_3D			angle;
 	long				origin;
 	long				ident;
-	long				nbvertex;
 	long				true_nbvertex;
 	long				nbpfaces;
 	long				nbmaps;
 	long				nbgroups;
 	unsigned long		drawflags;
 	EERIE_3DPAD 	*	vertexlocal;
-	EERIE_VERTEX 	*	vertexlist;
-	EERIE_VERTEX 	*	vertexlist3;
+	std::vector<EERIE_VERTEX> vertexlist;
+	std::vector<EERIE_VERTEX> vertexlist3;
 
 	std::vector<EERIE_FACE> facelist;
 	EERIE_PFACE 	*	pfacelist;

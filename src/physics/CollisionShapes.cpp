@@ -72,7 +72,7 @@ void EERIE_COLLISION_Cylinder_Create(INTERACTIVE_OBJ * io)
 
 	if (!obj) return;
 
-	if (obj->vertexlist == NULL)
+	if (obj->vertexlist.empty())
 	{
 		io->physics.cyl.height = 0.f;
 		return;
@@ -84,7 +84,7 @@ void EERIE_COLLISION_Cylinder_Create(INTERACTIVE_OBJ * io)
 	float dist = 0.f;
 	float height = 0.f;
 
-	for (long i = 0; i < obj->nbvertex; i++)
+	for (size_t i = 0; i < obj->vertexlist.size(); i++)
 	{
 		if ((i != obj->origin) && (EEfabs(io->physics.cyl.origin.y - obj->vertexlist[i].v.y) < 20.f))
 		{
@@ -273,9 +273,9 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, EERIE_3D * center, EERIE_3D * d
 
 long AddVertexToVertexList(EERIE_3DOBJ * obj, EERIE_3D * center, long group)
 {
-	if (obj->vertexlist == NULL) return -1;
+	if (obj->vertexlist.empty()) return -1;
 
-	for (long i = 0; i < obj->nbvertex; i++)
+	for (long i = 0; i < obj->vertexlist.size(); i++)
 	{
 		if ((center->x == obj->vertexlist[i].v.x)
 				&&	(center->y == obj->vertexlist[i].v.y)
@@ -293,39 +293,36 @@ long AddVertexToVertexList(EERIE_3DOBJ * obj, EERIE_3D * center, long group)
 			return i;
 		}
 	}
+	
+	size_t nvertex = obj->vertexlist.size();
 
 	// Must create a new one...
-	obj->vertexlist = (EERIE_VERTEX *)
-					  realloc(obj->vertexlist, sizeof(EERIE_VERTEX) * (obj->nbvertex + 1));
+	obj->vertexlist.resize(nvertex + 1);
 
-	obj->vertexlist3 = (EERIE_VERTEX *)
-					   realloc(obj->vertexlist3, sizeof(EERIE_VERTEX) * (obj->nbvertex + 1));
-
-	memset(&obj->vertexlist[obj->nbvertex], 0, sizeof(EERIE_VERTEX));
+	memset(&obj->vertexlist[nvertex], 0, sizeof(EERIE_VERTEX));
 
 	if (obj->pdata)
 	{
 		obj->pdata = (PROGRESSIVE_DATA *)
-					 realloc(obj->pdata, sizeof(PROGRESSIVE_DATA) * (obj->nbvertex + 1));
+					 realloc(obj->pdata, sizeof(PROGRESSIVE_DATA) * (nvertex + 1));
 
-		memset(&obj->pdata[obj->nbvertex], 0, sizeof(PROGRESSIVE_DATA));
-		obj->pdata[obj->nbvertex].collapse_candidate = -1;
-		obj->pdata[obj->nbvertex].collapse_cost = 1000000;
+		memset(&obj->pdata[nvertex], 0, sizeof(PROGRESSIVE_DATA));
+		obj->pdata[nvertex].collapse_candidate = -1;
+		obj->pdata[nvertex].collapse_cost = 1000000;
 	}
 
-	obj->vertexlist[obj->nbvertex].v.x = center->x;
-	obj->vertexlist[obj->nbvertex].v.y = center->y;
-	obj->vertexlist[obj->nbvertex].v.z = center->z;
-	obj->vertexlist[obj->nbvertex].norm.x = 50.f;
-	obj->vertexlist[obj->nbvertex].norm.y = 50.f;
-	obj->vertexlist[obj->nbvertex].norm.z = 50.f;
+	obj->vertexlist[nvertex].v.x = center->x;
+	obj->vertexlist[nvertex].v.y = center->y;
+	obj->vertexlist[nvertex].v.z = center->z;
+	obj->vertexlist[nvertex].norm.x = 50.f;
+	obj->vertexlist[nvertex].norm.y = 50.f;
+	obj->vertexlist[nvertex].norm.z = 50.f;
 
-	memcpy(&obj->vertexlist3[obj->nbvertex], &obj->vertexlist[obj->nbvertex], sizeof(EERIE_VERTEX));
-	long num = obj->nbvertex;
-	obj->nbvertex++;
-	AddVertexIdxToGroup(obj, group, num);
+	obj->vertexlist3.push_back(obj->vertexlist[nvertex]);
+	
+	AddVertexIdxToGroup(obj, group, nvertex);
 
-	return num;
+	return nvertex;
 }
 void EERIE_COLLISION_SPHERES_Create(EERIE_3DOBJ * obj)
 {

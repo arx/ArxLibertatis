@@ -2966,7 +2966,7 @@ void CheckHit(INTERACTIVE_OBJ * io, float ratioaim)
 								long count = 0;
 								float mindist = FLT_MAX;
 
-								for (long k = 0; k < ioo->obj->nbvertex; k += 2)
+								for (size_t k = 0; k < ioo->obj->vertexlist.size(); k += 2)
 								{
 									dist = EEDistance3D(&pos, &inter.iobj[i]->obj->vertexlist3[k].v);
 
@@ -2979,7 +2979,7 @@ void CheckHit(INTERACTIVE_OBJ * io, float ratioaim)
 									}
 								}
 
-								float ratio = ((float)count / ((float)ioo->obj->nbvertex * ( 1.0f / 2 )));
+								float ratio = ((float)count / ((float)ioo->obj->vertexlist.size() * ( 1.0f / 2 )));
 
 								if (ioo->ioflags & IO_NPC)
 								{

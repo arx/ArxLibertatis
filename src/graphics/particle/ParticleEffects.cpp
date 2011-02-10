@@ -886,7 +886,7 @@ void AddRandomSmoke(INTERACTIVE_OBJ * io,long amount)
 
 	while (amount--)
 	{
-		long num = rnd()*((io->obj->nbvertex>>2)-1);
+		long num = rnd()*((io->obj->vertexlist.size()>>2)-1);
 		num=(num<<2)+1;
 
 			long j=ARX_PARTICLES_GetFree();

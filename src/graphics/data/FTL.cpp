@@ -750,7 +750,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		pos = afsh->offset_3Ddata;
 		pos += sizeof(ARX_FTL_3D_DATA_HEADER);
 
-		obj->nbvertex = af3Ddh->nb_vertex;
+		obj->vertexlist.resize(af3Ddh->nb_vertex);
 		obj->facelist.resize(af3Ddh->nb_faces);
 		obj->nbmaps = af3Ddh->nb_maps;
 		obj->nbgroups = af3Ddh->nb_groups;
@@ -760,14 +760,13 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		obj->file = af3Ddh->name;
 
 		// Alloc'n'Copy vertices
-		if (obj->nbvertex > 0)
+		if (!obj->vertexlist.empty())
 		{
 			// Alloc the vertices
-			obj->vertexlist = new EERIE_VERTEX[obj->nbvertex];
-			obj->vertexlist3 = new EERIE_VERTEX[obj->nbvertex];;
+			obj->vertexlist3.resize(obj->vertexlist.size());
 
 			// Copy the vertex data in
-			for (long ii = 0; ii < obj->nbvertex; ii++)
+			for (size_t ii = 0; ii < obj->vertexlist.size(); ii++)
 			{
 				// Vertices stored as EERIE_OLD_VERTEX, copy in to new one
 				obj->vertexlist[ii] = *reinterpret_cast<EERIE_OLD_VERTEX*>(dat+pos);
@@ -781,7 +780,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 			obj->point0.z = obj->vertexlist[obj->origin].v.z;
 
 			// Color all the vertices
-			for (long i = 0; i < obj->nbvertex; i++)
+			for (size_t i = 0; i < obj->vertexlist.size(); i++)
 			{
 				obj->vertexlist[i].vert.color = 0xFF000000;
 				obj->vertexlist3[i].vert.color = 0xFF000000;
