@@ -643,7 +643,7 @@ UBool PathFinder::Check(MINOSNode * node) {
 	}
 	
 	//Check if node is already in open list
-	for(nodelist::iterator i = open.begin(); i != open.end(); ++i) {
+	for(nodelist::iterator i = open.begin(); i != open.end();) {
 		if((*i)->data == node->data) {
 			if((*i)->g_cost < node->g_cost) {
 				return UFALSE;
@@ -651,6 +651,8 @@ UBool PathFinder::Check(MINOSNode * node) {
 			
 			free(*i);
 			i = open.erase(i);
+		} else {
+			++i;
 		}
 	}
 

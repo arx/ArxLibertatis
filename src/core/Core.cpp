@@ -483,8 +483,6 @@ unsigned long PlayerWeaponBlockTime=0;
 unsigned long FRAMETICKS=0;
 unsigned long SPLASH_START=0;
 //-----------------------------------------------------------------------------
-long LAST_FVAL=0;
-float LAST_ZVAL=0;
 extern float sp_max_start;
 EERIE_RGB	FADECOLOR;
 
@@ -1723,15 +1721,10 @@ void LoadSysTextures()
 
 	}
 
-	// TODO(lubosz): this fixed a crash in ARX_Allocate_Text
-//	memset(spellicons, 0, sizeof(SPELL_ICON) * SPELL_COUNT);
-
 	for (i=0;i<SPELL_COUNT;i++)
 	{
+		// TODO use constructor for initialization
 		for (long j = 0; j < 6; j++) spellicons[i].symbols[j] = 255;
-		//TODO(lubosz): doesn't this need to be initialized?
-//		spellicons[i].name = "";
-//		spellicons[i].description = "";
 		spellicons[i].level = 0;
 		spellicons[i].spellid = 0;
 		spellicons[i].tc = NULL;
@@ -7274,8 +7267,6 @@ void DANAE::GoFor2DFX()
 						&& (player.Interface & INTER_MAP))
 						continue;
 
-					LAST_ZVAL=ltvv.sz;
-
 					if ((ltvv.rhw > 0.f) &&
 						(ltvv.sx>0.f) &&
 						(ltvv.sy>(CINEMA_DECAL*Yratio)) &&
@@ -7334,14 +7325,6 @@ void DANAE::GoFor2DFX()
 						{
 							el->temp+=temp_increase*2.f;
 						}
-
-						LAST_ZVAL	=	fZFire;
-
-						//TODO(lubosz): zbuffer assertion
-//						LogDebug << "zbuffer_max " << danaeApp.zbuffer_max << " " << LONG_MAX << " " << LONG_MIN;
-//						ARX_CHECK_LONG( danaeApp.zbuffer_max );
-//						LAST_FVAL	=	ARX_CLEAN_WARN_CAST_LONG( danaeApp.zbuffer_max );
-						LAST_FVAL = LONG_MAX;
 
 					}
 
