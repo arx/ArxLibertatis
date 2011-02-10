@@ -4595,7 +4595,7 @@ void LaunchMoulinex()
 
 		if (KILL_AT_MOULINEX_END)
 		{
-			DANAEFinalCleanup();
+			danaeApp.FinalCleanup();
 			exit(0);
 		}
 		else LogError << ("Moulinex Successfull");
@@ -4640,7 +4640,7 @@ void LaunchMoulinex()
 
 		if (PROCESS_ONLY_ONE_LEVEL!=-1)
 		{
-			DANAEFinalCleanup();
+			danaeApp.FinalCleanup();
 			exit(0);
 		}
 	}
@@ -4652,7 +4652,7 @@ void LaunchMoulinex()
 
 		if (KILL_AT_MOULINEX_END)
 		{
-			DANAEFinalCleanup();
+			danaeApp.FinalCleanup();
 			exit(0);
 		}
 		else LogError << ("Moulinex Successfull");
@@ -7572,14 +7572,6 @@ HRESULT DANAE::InitDeviceObjects()
 
 	m_pD3D->EvictManagedTextures();
 
-	return S_OK;
-}
-HRESULT DANAEFinalCleanup()
-{
-	EERIE_PATHFINDER_Release();
-	ARX_INPUT_Release();
-	ARX_SOUND_Release();
-	KillInterTreeView();
 	return S_OK;
 }
 
