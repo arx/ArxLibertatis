@@ -225,16 +225,16 @@ void ARX_PARTICLES_Spawn_Lava_Burn(EERIE_3D * poss,float power,INTERACTIVE_OBJ *
 
 	if (	(io)
 		&&	(io->obj)
-		&&	(io->obj->nbfaces)	)
+		&&	!io->obj->facelist.empty()	)
 	{
 		long notok	=	10;
 		long num	=	0;
 
 		while ( notok-- )
 		{
-			num = rnd() * io->obj->nbfaces;
+			num = rnd() * io->obj->facelist.size();
 
-			if ( ( num >= 0 ) && ( num < io->obj->nbfaces ) )
+			if ( ( num >= 0 ) && ( num < io->obj->facelist.size() ) )
 			{
 				if ( io->obj->facelist[num].facetype & POLY_HIDE ) continue;
 

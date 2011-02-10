@@ -202,9 +202,9 @@ extern long NOCHECKSUM;
 //***********************************************************************************************
 bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 {
-	LogWarning << "Broken ARX_FTL_Save";
+	LogError << "Broken ARX_FTL_Save";
     // Need an object to be saved !
-    if (obj == NULL) return false;
+    /*if (obj == NULL) return false;
 
     // Generate File name/path and create it
     std::string gamefic;
@@ -524,7 +524,7 @@ error:
 	;
 	LogError << (_error);
 	free(dat);
-
+*/
 	return false;
 }
 
@@ -751,7 +751,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		pos += sizeof(ARX_FTL_3D_DATA_HEADER);
 
 		obj->nbvertex = af3Ddh->nb_vertex;
-		obj->nbfaces = af3Ddh->nb_faces;
+		obj->facelist.resize(af3Ddh->nb_faces);
 		obj->nbmaps = af3Ddh->nb_maps;
 		obj->nbgroups = af3Ddh->nb_groups;
 		obj->actionlist.resize(af3Ddh->nb_action);
@@ -789,13 +789,11 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		}
 
 		// Alloc'n'Copy faces
-		if (obj->nbfaces > 0)
+		if (!obj->facelist.empty())
 		{
-			// Alloc the list of faces
-			obj->facelist = new EERIE_FACE[obj->nbfaces];
 
 			// Copy the face data in
-			for (long ii = 0; ii < af3Ddh->nb_faces; ii++)
+			for (size_t ii = 0; ii < af3Ddh->nb_faces; ii++)
 			{
 				EERIE_FACE_FTL* eff = reinterpret_cast<EERIE_FACE_FTL*>(dat + pos);
 				obj->facelist[ii].facetype = eff->facetype;

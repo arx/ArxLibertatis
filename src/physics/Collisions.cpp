@@ -411,7 +411,7 @@ void PushIO_ON_Top(INTERACTIVE_OBJ * ioo,float ydec)
 
 				if ((posy<=maxy) && (posy>=miny+modd))
 				{
-					for (long ii=0;ii<ioo->obj->nbfaces;ii++)
+					for (size_t ii=0;ii<ioo->obj->facelist.size();ii++)
 					{
 						float cx=0;
 						float cz=0;
@@ -798,7 +798,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 							}			
 						}
 
-						for (int ii=0;ii<io->obj->nbfaces;ii++)
+						for (size_t ii=0;ii<io->obj->facelist.size();ii++)
 						{
 							EERIE_3D c;
 							Vector_Init(&c);
@@ -1129,7 +1129,7 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 							EERIEPOLY ep;
 							ep.type=0;
 
-							for (long ii=0;ii<io->obj->nbfaces;ii++)
+							for (size_t ii=0;ii<io->obj->facelist.size();ii++)
 							{
 								float cx=0;
 								float cz=0;
@@ -1190,7 +1190,7 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 					amount=2;
 				}
 
-					for (long ii=0;ii<io->obj->nbfaces;ii+=amount)
+					for (size_t ii=0;ii<io->obj->facelist.size();ii+=amount)
 					{
 						EERIE_FACE * ef=&io->obj->facelist[ii];
 
@@ -1350,7 +1350,7 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags,long * n
 							EERIEPOLY ep;
 							ep.type=0;
 
-							for (long ii=0;ii<io->obj->nbfaces;ii++)
+							for (size_t ii=0;ii<io->obj->facelist.size();ii++)
 							{
 								float cx=0;
 								float cz=0;
@@ -1402,7 +1402,7 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags,long * n
 					amount=2;
 				}
 
-				for (long ii=0;ii<io->obj->nbfaces;ii+=amount)
+				for (size_t ii=0;ii<io->obj->facelist.size();ii+=amount)
 				{
 
 					if (io->obj->facelist[ii].facetype & POLY_HIDE) continue;
@@ -2103,7 +2103,7 @@ void ANCHOR_BLOCK_By_IO(INTERACTIVE_OBJ * io,long status)
 			EERIEPOLY ep;
 			ep.type=0;
 
-			for (long ii=0;ii<io->obj->nbfaces;ii++)
+			for (size_t ii=0;ii<io->obj->facelist.size();ii++)
 			{
 				float cx=0;
 				float cz=0;

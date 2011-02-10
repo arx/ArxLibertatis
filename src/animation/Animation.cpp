@@ -2186,7 +2186,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	float prec;
 	prec=1.f/(ACTIVECAM->cdepth*ACTIVECAM->Zmul);
 
-	for(i=0;i<eobj->nbfaces;i++) 
+	for(i=0;i<eobj->facelist.size();i++) 
 	{
 		long paf[3];
 		paf[0]=eobj->facelist[i].vid[0];
@@ -3365,7 +3365,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 		}
 	}
 
-	for(i=0;i<eobj->nbfaces;i++) 
+	for(i=0;i<eobj->facelist.size();i++) 
 	{
 		if (MIPM)
 		{

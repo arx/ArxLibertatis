@@ -221,7 +221,7 @@ void ARX_NPC_Revive(INTERACTIVE_OBJ * io, long flags)
 		}
 	}
 
-	for (long ll = 0; ll < io->obj->nbfaces; ll++)
+	for (size_t ll = 0; ll < io->obj->facelist.size(); ll++)
 	{
 		if (io->obj->facelist[ll].texid != goretex)
 		{
@@ -1468,7 +1468,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	if ((!from) ||	(num < 0) || ((size_t)num >= from->selections.size()))
 		return;
 
-	EERIE_3DOBJ * nouvo = new EERIE_3DOBJ; 
+	EERIE_3DOBJ * nouvo = new EERIE_3DOBJ(); 
 
 	if (!nouvo)
 		return;
@@ -1488,7 +1488,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 		}
 	}
 
-	for (int k = 0; k < from->nbfaces; k++)
+	for (size_t k = 0; k < from->facelist.size(); k++)
 	{
 		if (from->facelist[k].texid == gore)
 		{
@@ -1499,7 +1499,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 		}
 	}
 
-	nouvo->vertexlist = (EERIE_VERTEX *)malloc(sizeof(EERIE_VERTEX) * nouvo->nbvertex);
+	nouvo->vertexlist = new EERIE_VERTEX[nouvo->nbvertex];
 
 	if (!nouvo->vertexlist)
 	{
@@ -1507,7 +1507,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 		return;
 	}
 
-	nouvo->vertexlist3 = (EERIE_VERTEX *)malloc(sizeof(EERIE_VERTEX) * nouvo->nbvertex);
+	nouvo->vertexlist3 = new EERIE_VERTEX[nouvo->nbvertex];
 
 	if (!nouvo->vertexlist3)
 	{
@@ -1549,7 +1549,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 	long count = from->selections[num].selected.size();
 
-	for (int k = 0; k < from->nbfaces; k++)
+	for (size_t k = 0; k < from->facelist.size(); k++)
 	{
 		if (from->facelist[k].texid == gore)
 		{
@@ -1616,28 +1616,27 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 	nouvo->ndata = NULL;
 
-	nouvo->nbfaces = 0;
-
-	for (int k = 0; k < from->nbfaces; k++)
+	size_t nfaces = 0;
+	for (size_t k = 0; k < from->facelist.size(); k++)
 	{
 		if ((equival[from->facelist[k].vid[0]] != -1)
 		        &&	(equival[from->facelist[k].vid[1]] != -1)
 		        &&	(equival[from->facelist[k].vid[2]] != -1))
-			nouvo->nbfaces++;
+			nfaces++;
 	}
 
-	if (nouvo->nbfaces)
+	if (nfaces)
 	{
-		nouvo->facelist = (EERIE_FACE *)malloc(sizeof(EERIE_FACE) * nouvo->nbfaces);
-		long pos = 0;
+		nouvo->facelist.reserve(nfaces);
+		size_t pos = 0;
 
-		for (long k = 0; k < from->nbfaces; k++)
+		for (size_t k = 0; k < from->facelist.size(); k++)
 		{
 			if ((equival[from->facelist[k].vid[0]] != -1)
 			        &&	(equival[from->facelist[k].vid[1]] != -1)
 			        &&	(equival[from->facelist[k].vid[2]] != -1))
 			{
-				memcpy(&nouvo->facelist[pos], &from->facelist[k], sizeof(EERIE_FACE));
+				nouvo->facelist[pos] = from->facelist[k];
 				nouvo->facelist[pos].vid[0] = (unsigned short)equival[from->facelist[k].vid[0]];
 				nouvo->facelist[pos].vid[1] = (unsigned short)equival[from->facelist[k].vid[1]];
 				nouvo->facelist[pos].vid[2] = (unsigned short)equival[from->facelist[k].vid[2]];
@@ -1658,7 +1657,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 			}
 		}
 
-		for (int k = 0; k < nouvo->nbfaces; k++)
+		for (int k = 0; k < nouvo->facelist.size(); k++)
 		{
 			nouvo->facelist[k].facetype &= ~POLY_HIDE;
 
@@ -1903,7 +1902,7 @@ long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io)
 
 	long hid = 0;
 
-	for (long nn = 0; nn < io->obj->nbfaces; nn++)
+	for (size_t nn = 0; nn < io->obj->facelist.size(); nn++)
 	{
 		io->obj->facelist[nn].facetype &= ~POLY_HIDE;
 	}
@@ -1915,7 +1914,7 @@ long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io)
 
 		if ((io->_npcdata->cuts & flg) && (numsel >= 0))
 		{
-			for (long ll = 0; ll < io->obj->nbfaces; ll++)
+			for (size_t ll = 0; ll < io->obj->facelist.size(); ll++)
 			{
 				if	((IsInSelection(io->obj, io->obj->facelist[ll].vid[0], numsel) != -1)
 				        ||	(IsInSelection(io->obj, io->obj->facelist[ll].vid[1], numsel) != -1)
@@ -1981,7 +1980,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos)
 
 			long out = 0;
 
-			for (long ll = 0; ll < target->obj->nbfaces; ll++)
+			for (size_t ll = 0; ll < target->obj->facelist.size(); ll++)
 			{
 				if (target->obj->facelist[ll].texid != goretex)
 				{
@@ -4277,7 +4276,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 		{
 			p -= 6.f;
 
-			if ((io) && (io->obj) && (io->obj->nbfaces))
+			if ((io) && (io->obj) && !io->obj->facelist.empty())
 			{
 				EERIE_3D	pos;
 				long		notok	=	10;
@@ -4285,9 +4284,9 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 
 				while (notok-- > 0)
 				{
-					num = rnd() * io->obj->nbfaces;
+					num = rnd() * io->obj->facelist.size();
 
-					if ((num >= 0) && (num < io->obj->nbfaces))
+					if ((num >= 0) && (num < io->obj->facelist.size()))
 					{
 						if (io->obj->facelist[num].facetype & POLY_HIDE) continue;
 
@@ -4406,7 +4405,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 
 		if ((!io) || (!io->obj)) return;
 
-		float p = io->ignition * _framedelay * ( 1.0f / 1000 ) * io->obj->nbfaces * ( 1.0f / 1000 );
+		float p = io->ignition * _framedelay * ( 1.0f / 1000 ) * io->obj->facelist.size() * ( 1.0f / 1000 );
 
 		if (p > 5.f)
 			p = 5.f;
@@ -4415,7 +4414,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 		{
 			p -= 0.5f;
 
-			if ((io) && (io->obj) && (io->obj->nbfaces))
+			if ((io) && (io->obj) && !io->obj->facelist.empty())
 			{
 				EERIE_3D	pos;
 				long		notok	=	10;
@@ -4423,9 +4422,9 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 
 				while (notok-- > 0)
 				{
-					num = rnd() * io->obj->nbfaces;
+					num = rnd() * io->obj->facelist.size();
 
-					if ((num >= 0) && (num < io->obj->nbfaces))
+					if ((num >= 0) && (num < io->obj->facelist.size()))
 					{
 						if (io->obj->facelist[num].facetype & POLY_HIDE) continue;
 

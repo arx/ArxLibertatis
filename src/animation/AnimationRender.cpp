@@ -1764,7 +1764,7 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 
 		bBumpOnIO		= ( bALLOW_BUMP ) && ( io ) && ( io->ioflags & IO_BUMP ) && ( fDist < min( max( 0.f, ( ACTIVECAM->cdepth * fZFogStart ) - 200.f ), 600.f ) ) ? true : false ;
 
-		for (i = 0 ; i < eobj->nbfaces ; i++)
+		for (i = 0 ; i < eobj->facelist.size() ; i++)
 		{
 			D3DTLVERTEX		tv_static[3];
 			ARX_D3DVERTEX	* tv			= NULL;
@@ -2491,7 +2491,7 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 
 
 	{
-		for (i = 0; i < eobj->nbfaces; i++)
+		for (i = 0; i < eobj->facelist.size(); i++)
 		{
 			D3DTLVERTEX tv[3];
  

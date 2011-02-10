@@ -572,7 +572,6 @@ struct EERIE_3DOBJ
 		ident = 0;
 		nbvertex = 0;
 		true_nbvertex = 0;
-		nbfaces = 0;
 		nbpfaces = 0;
 		nbmaps = 0;
 		nbgroups = 0;
@@ -582,7 +581,6 @@ struct EERIE_3DOBJ
 		vertexlist = 0;
 		vertexlist3 = 0;
 
-		facelist = 0;
 		pfacelist = 0;
 		grouplist = 0;
 		texturecontainer = 0;
@@ -641,7 +639,6 @@ struct EERIE_3DOBJ
 	long				ident;
 	long				nbvertex;
 	long				true_nbvertex;
-	long				nbfaces;
 	long				nbpfaces;
 	long				nbmaps;
 	long				nbgroups;
@@ -650,7 +647,7 @@ struct EERIE_3DOBJ
 	EERIE_VERTEX 	*	vertexlist;
 	EERIE_VERTEX 	*	vertexlist3;
 
-	EERIE_FACE 	*	facelist;
+	std::vector<EERIE_FACE> facelist;
 	EERIE_PFACE 	*	pfacelist;
 	EERIE_GROUPLIST *	grouplist;
 	std::vector<EERIE_ACTIONLIST> actionlist;

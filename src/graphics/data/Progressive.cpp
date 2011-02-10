@@ -135,7 +135,7 @@ void CreateNeighbours(EERIE_3DOBJ * obj)
 		obj->ndata[i].nb_Nfaces = 0;
 		obj->ndata[i].nb_Nvertex = 0;
 
-		for (long j = 0; j < obj->nbfaces; j++)
+		for (size_t j = 0; j < obj->facelist.size(); j++)
 		{
 			if ((obj->facelist[j].vid[0] == i) ||
 			        (obj->facelist[j].vid[1] == i) ||

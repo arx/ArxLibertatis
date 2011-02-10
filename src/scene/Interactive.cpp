@@ -373,7 +373,7 @@ void ARX_INTERACTIVE_Show_Hide_1st(INTERACTIVE_OBJ * io, long state)
 
 	if (grp != -1)
 	{
-		for (long nn = 0; nn < io->obj->nbfaces; nn++)
+		for (size_t nn = 0; nn < io->obj->facelist.size(); nn++)
 		{
 			EERIE_FACE * ef = &io->obj->facelist[nn];
 
@@ -417,7 +417,7 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io)
 	}
 
 	if (gorenum > -1)
-		for (long nn = 0; nn < io->obj->nbfaces; nn++)
+		for (size_t nn = 0; nn < io->obj->facelist.size(); nn++)
 		{
 			if (io->obj->facelist[nn].texid == gorenum)
 			{
@@ -453,7 +453,7 @@ void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 	}
 
 	if (gorenum > -1)
-		for (long nn = 0; nn < io->obj->nbfaces; nn++)
+		for (size_t nn = 0; nn < io->obj->facelist.size(); nn++)
 		{
 			//Hide Gore Polys...
 			if (io->obj->facelist[nn].texid == gorenum)
@@ -3649,9 +3649,7 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag, EERIE_3D * _pRe
 						goto suite;
 					}
 
-					long j;
-
-					for (j = 0; j < io->obj->nbfaces; j++)
+					for (size_t j = 0; j < io->obj->facelist.size(); j++)
 					{
 						if (io->animlayer[0].cur_anim != NULL)
 						{
@@ -4039,7 +4037,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 									EERIEPOLY ep;
 									ep.type = 0;
 
-									for (long ii = 0; ii < io->obj->nbfaces; ii++)
+									for (size_t ii = 0; ii < io->obj->facelist.size(); ii++)
 									{
 										float cx = 0;
 										float cz = 0;

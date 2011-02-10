@@ -6946,7 +6946,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						{
 							long r=0;
 
-							for (long j=0;j<necklace.runes[i]->nbfaces;j++)
+							for (size_t j=0;j<necklace.runes[i]->facelist.size();j++)
 							{
 								n=PtIn2DPolyProj( necklace.runes[i], &necklace.runes[i]->facelist[j] , (float)DANAEMouse.x, (float)DANAEMouse.y);
 
