@@ -152,9 +152,9 @@ static TextureContainer *pTextureLoadRender=NULL;
 
 int iTimeToDrawD7=-3000;
 
-std::string pStringMod( 256, '\0' );
-std::string pStringModSfx( 256, '\0' );
-std::string pStringModSpeech( 256, '\0' );
+std::string pStringMod;
+std::string pStringModSfx;
+std::string pStringModSpeech;
 
 //-----------------------------------------------------------------------------
 
