@@ -55,9 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <windows.h>
 
-using std::vector;
-using std::wstring;
-
 //-----------------------------------------------------------------------------
 
 #define BUTTON_MENUMAIN_RESUMEGAME			1
@@ -472,7 +469,7 @@ class CMenuElement : public CMenuZone
 class CMenuPanel : public CMenuElement
 {
 	public:
-		vector<CMenuElement *>	vElement;
+		std::vector<CMenuElement *>	vElement;
 	public:
 		CMenuPanel();
 		virtual ~CMenuPanel();
@@ -559,7 +556,7 @@ class CMenuSliderText: public CMenuElement
 	public:
 		CMenuButton		*	pLeftButton;
 		CMenuButton		*	pRightButton;
-		vector<CMenuElementText*>	vText;
+		std::vector<CMenuElementText*>	vText;
 		int					iPos;
 		int					iOldPos;
 	public:
@@ -620,7 +617,7 @@ class CMenuCheckButton : public CMenuElement
 		int					iPosY;
 		int					iTaille;
 		CMenuAllZone	*	pAllCheckZone;
-		vector<TextureContainer *> vTex;
+		std::vector<TextureContainer *> vTex;
 		CMenuElementText	* pText;
 
 	public:
@@ -722,7 +719,7 @@ class CWindowMenu
 		TextureContainer	* pTexMainShadow;
 		TextureContainer	* pTexGlissiere;
 		TextureContainer	* pTexGlissiereButton;
-		vector<CWindowMenuConsole *>	vWindowConsoleElement;
+		std::vector<CWindowMenuConsole *>	vWindowConsoleElement;
 		float				fPosXCalc;
 		float				fDist;
 		float				fAngle;
@@ -912,44 +909,6 @@ class CMenuConfig
 		bool SaveAll();
 		bool ReadAll();
 };
-
-//-----------------------------------------------------------------------------
-typedef struct CreditsTextInformations
-{
-	CreditsTextInformations()
-	{
-		sPos.cx = 0 ;
-		sPos.cy = 0 ;
-		fColors = 0 ;
-	}
-
-	wstring  sText ;
-	COLORREF fColors ;
-	SIZE sPos;
-} CreditsTextInformations;
-
-
-typedef struct CreditsInformations
-{
-  CreditsInformations()
-  {
-	iFontAverageHeight = -1;
-	iFirstLine = 0 ;
-  }
-
-  int iFirstLine ;
-  int iFontAverageHeight ;
-  std::vector<CreditsTextInformations> aCreditsInformations ;
-} CreditsInformations;
-
-
-static CreditsInformations CreditsData ;
-
-static void InitCredits(void);
-static void CalculAverageWidth(HDC& _hDC) ;
-static void ExtractAllCreditsTextInformations();
-static void ExtractPhraseColor( wstring &phrase, CreditsTextInformations &infomations );
-static void CalculTextPosition( HDC& _hDC, wstring& phrase, CreditsTextInformations &infomations, float& drawpos );
 
 
 //-----------------------------------------------------------------------------

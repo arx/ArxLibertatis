@@ -616,7 +616,7 @@ std::string GetFontName( const std::string& _lpszFileName)
 						SetFilePointer(hFile, FTH.ulOffset + FNH.usOffsetStorage + FNN.usStringOffset, NULL, FILE_BEGIN);
 						
 
-						wchar_t szName[256];
+						u16 szName[256];
 
 						ZeroMemory(szName, 256);
 						assert(FNN.usStringLength < 256);
@@ -626,17 +626,17 @@ std::string GetFontName( const std::string& _lpszFileName)
 						if (iResult == 0)
 							LogWarning << "FontName :: Unable to read font name - " << _lpszFileName;
 
-						for (int k = 0; k<(FNN.usStringLength >> 1); k++)
+						string result;
+						result.resize(FNN.usStringLength / 2);
+						for (int k = 0; k < FNN.usStringLength / 2; k++)
 						{
-							szName[k] = LilEndianShort(szName[k]);
+							// TODO quick and dirty hack to convert from UTF-16
+							result[k] = (unsigned char)LilEndianShort(szName[k]);
 						}
-
-
-						_TCHAR * szText = new _TCHAR[(FNN.usStringLength>>1)+1]; //@HACK
-						_tcscpy(szText, (const char*) szName);
+						
 
 						CloseHandle(hFile);
-						return szText;
+						return result;
 					}
 			}
 		}
@@ -674,30 +674,6 @@ void _ShowText(char * text)
 			danaeApp.m_pFramework->ShowFrame();
 		}
 	}
-}
-
-//-----------------------------------------------------------------------------
-void ARX_Text_Init(ARX_TEXT * _pArxText)
-{
-	_pArxText->eType		= ARX_TEXT_ONCE;
-	_pArxText->hFont		= hFontInGame;
-	_pArxText->rRect.top    = 0;
-	_pArxText->rRect.left   = 0;
-	_pArxText->rRect.right  = 0;
-	_pArxText->rRect.bottom = 0;
-	_pArxText->rRectClipp.top    = 0;
-	_pArxText->rRectClipp.bottom = 0;
-	_pArxText->rRectClipp.left   = 0;
-	_pArxText->rRectClipp.right  = 0;
-	_pArxText->lpszUText.clear();
-	_pArxText->fDeltaY		= 0;
-	_pArxText->fSpeedScrollY = 0;
-	_pArxText->lCol			= RGB(1, 1, 1);
-	_pArxText->lBkgCol		= 0x00FF00FF;
-	_pArxText->lTimeScroll	= 0;
-	_pArxText->lTimeOut		= 0;
-	_pArxText->lTailleLigne = 0;
-	_pArxText->iNbLineClip  = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -765,7 +741,7 @@ HFONT _CreateFont(
 	}
 
 	//HFONT  ret = CreateFont(
-	HFONT ret = CreateFontA(
+	HFONT ret = CreateFont(
 	                nHeight,               // height of font
 	                nWidth,                // average character width
 	                nEscapement,           // angle of escapement
@@ -802,21 +778,26 @@ string getFontFile() {
 //-----------------------------------------------------------------------------
 void ARX_Text_Init()
 {
+	
 	std::stringstream ss;
 	ARX_Text_Close();
 
 	Localisation_Init();
 	
 	string tx = getFontFile();
+	LogInfo << "Adding font " << tx;
 
 	wchar_t wtx[256];
 	MultiByteToWideChar(CP_ACP, 0, tx.c_str() , -1, wtx, 256);		// XS : We need to pass a unicode string to AddFontResourceW
 
 	lpszFontIngame = GetFontName(tx.c_str());
+	
+	LogInfo << "ingame font name: " << lpszFontIngame;
 
 	if(AddFontResource(tx.c_str()) == 0) {
 		LogError << FontError();
 	}
+	
 
 
 //	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf");
@@ -829,6 +810,8 @@ void ARX_Text_Init()
 //	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass an unicode string to AddFontResourceW
 
 	lpszFontMenu = GetFontName(tx.c_str());
+	
+	LogInfo << "menu font name: " << lpszFontMenu;
 
 	if (AddFontResourceW(wtx) == 0)
 	{
@@ -861,6 +844,9 @@ void ARX_Text_Init()
 								ANTIALIASED_QUALITY,
 								VARIABLE_PITCH,
 								lpszFontMenu.c_str());
+			if(!hFontMainMenu) {
+				LogError << "error loading main menu font";
+			}
 		}
 	}
 
@@ -885,6 +871,9 @@ void ARX_Text_Init()
 							ANTIALIASED_QUALITY,
 							VARIABLE_PITCH,
 							lpszFontMenu.c_str());
+			if(!hFontMenu) {
+				LogError << "error loading menu font";
+			}
 		}
 	}
 
@@ -909,6 +898,9 @@ void ARX_Text_Init()
 								ANTIALIASED_QUALITY,
 								VARIABLE_PITCH,
 								lpszFontMenu.c_str());
+			if(!hFontControls) {
+				LogError << "error loading controls font";
+			}
 		}
 	}
 
@@ -933,6 +925,9 @@ void ARX_Text_Init()
 							   ANTIALIASED_QUALITY,
 							   VARIABLE_PITCH,
 							   lpszFontMenu.c_str());
+			if(!hFontCredits) {
+				LogError << "error loading credits font";
+			}
 		}
 	}
 
@@ -955,6 +950,9 @@ void ARX_Text_Init()
 						  ANTIALIASED_QUALITY,
 						  VARIABLE_PITCH,
 						  lpszFontIngame.c_str());
+		if(!hFontRedist) {
+			LogError << "error loading redist font";
+		}
 	}
 
 	// NEW QUEST
@@ -984,6 +982,9 @@ void ARX_Text_Init()
 							  ANTIALIASED_QUALITY,
 							  VARIABLE_PITCH,
 							  lpszFontIngame.c_str());
+			if(!hFontInGame) {
+				LogError << "error loading ingame font";
+			}
 		}
 	}
 
@@ -1006,6 +1007,9 @@ void ARX_Text_Init()
 							  ANTIALIASED_QUALITY,
 							  VARIABLE_PITCH,
 							  lpszFontIngame.c_str());
+		if(!hFontInGameNote) {
+			LogError << "error loading ingame note font";
+		}
 	}
 
 	if (!InBookFont)
@@ -1027,6 +1031,9 @@ void ARX_Text_Init()
 						 ANTIALIASED_QUALITY,
 						 VARIABLE_PITCH,
 						 lpszFontIngame.c_str());
+		if(!InBookFont) {
+			LogError << "error loading book font";
+		}
 	}
 }
 
@@ -1052,6 +1059,8 @@ lpszFontMenu.clear();
 
 	string tx = getFontFile();
 
+	LogInfo << "Removing font " << tx;
+	
 	//MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
 
 	lpszFontIngame = GetFontName(tx.c_str());

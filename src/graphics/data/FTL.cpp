@@ -257,7 +257,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 
 		for (size_t i = 0; i < obj->selections.size(); i++)
 		{
-			allocsize += sizeof(long) * obj->selections[i].nb_selected;
+			// TODO allocsize += sizeof(long) * obj->selections[i].nb_selected;
 		}
 	}
 
@@ -419,8 +419,8 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 
 		for (int i = 0; i < af3Ddh->nb_selections; i++)
 		{
-			memcpy(dat + pos, obj->selections[i].selected, sizeof(long)*obj->selections[i].nb_selected);
-			pos += sizeof(long) * obj->selections[i].nb_selected;
+			//memcpy(dat + pos, obj->selections[i].selected, sizeof(long)*obj->selections[i].nb_selected);
+			//pos += sizeof(long) * obj->selections[i].nb_selected;
 
 			if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 		}
@@ -893,8 +893,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 			{ // TODO iterator
 				EERIE_SELECTIONS_FTL* selection = reinterpret_cast<EERIE_SELECTIONS_FTL*>(dat+pos);
 				obj->selections[i].name = selection->name;
-				obj->selections[i].nb_selected = selection->nb_selected;
-				obj->selections[i].selected = 0; // Null unless changed
+				obj->selections[i].selected.resize(selection->nb_selected);
 
 				pos += sizeof(EERIE_SELECTIONS_FTL);
 			}
@@ -902,11 +901,10 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 			// Copy in the selections selected data
 			for (long i = 0; i < af3Ddh->nb_selections; i++)
 			{
-				obj->selections[i].selected = new long[obj->selections[i].nb_selected];
 				std::copy( (long*)(dat+pos),
-				           (long*)(dat+pos + sizeof(long)*obj->selections[i].nb_selected),
-				           obj->selections[i].selected );
-				pos += sizeof(long) * obj->selections[i].nb_selected; // Advance to the next selection data block
+				           (long*)(dat+pos + sizeof(long)*obj->selections[i].selected.size()),
+				           obj->selections[i].selected.begin() );
+				pos += sizeof(long) * obj->selections[i].selected.size(); // Advance to the next selection data block
 			}
 
 		obj->pbox = NULL; // Reset physics

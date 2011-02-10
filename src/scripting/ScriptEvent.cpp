@@ -520,7 +520,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 	         << " evame=\"" << evname << "\" info=" << info;
 	LogDebug << " io=" << Logger::nullstr(io ? io->filename : NULL)
 	         << ":" << io->ident
-	         << (io == NULL ? "" : es == &io->script ? " primary" : " overriding");
+	         << (io == NULL ? "" : es == &io->script ? " base" : " overriding");
 
 	MakeSSEPARAMS(params.c_str());
 

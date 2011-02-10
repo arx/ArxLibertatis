@@ -24,6 +24,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 #include "core/Localization.h"
 
+#include <stdint.h>
+
 #include <list>
 #include <SFML/System/Unicode.hpp>
 
@@ -80,7 +82,7 @@ bool isSection( const std::string& str )
 bool isKey( const std::string& str )
 {
 	// Iterate through str until alphanumeric characters are found
-	for ( size_t i = 0 ; i < str.length() ; i++ )
+	for ( int i = 0 ; i < str.length() ; i++ )
 	{
 		// If we hit an '=' before other alphanumeric characters, return false
 		if ( str[i] == '=' ) return false;
@@ -234,10 +236,10 @@ void Localisation_Init()
 	size_t loc_file_size = 0; // Used to report how large the loaded file is
 
 	// Attempt loading the selected locale file
-	u16* Localisation = (u16*)PAK_FileLoadMallocZero( tx, loc_file_size );
+	uint16_t* Localisation = (uint16_t*)PAK_FileLoadMallocZero( tx, loc_file_size );
 
 	// if no file was loaded
-	if ( Localisation == NULL )
+	if ( Localisation )
 	{
 		// No file loaded and locale is set to german or french
 		if (GERMAN_VERSION || FRENCH_VERSION)
@@ -253,17 +255,19 @@ void Localisation_Init()
 		tx = "localisation\\utext_" + Project.localisationpath + ".ini";
 
 		// Load the default english locale file
-		Localisation = (u16*)PAK_FileLoadMallocZero( tx, loc_file_size );
+		Localisation = (uint16_t*)PAK_FileLoadMallocZero( tx, loc_file_size );
 	}
-
-	// Scale the loaded size to new stride of u16 vs char
-	loc_file_size *= ( 1.0 * sizeof(char)/sizeof(u16) );
+	
+	// Scale the loaded size to new stride of uint16_t vs char
+	loc_file_size *= ( 1.0 * sizeof(char)/sizeof(*Localisation) );
 
 	LogDebug << "Loaded localisation file: " << tx << " of size " << loc_file_size;
-	LogDebug << "UTF-16 size is " << sf::Unicode::GetUTF16Length( Localisation, &Localisation[loc_file_size] );
+	size_t nchars = sf::Unicode::GetUTF16Length( Localisation, &Localisation[loc_file_size] );
+	LogDebug << "UTF-16 size is " << nchars;
 	std::string out;
-	sf::Unicode::UTF16ToUTF8( Localisation, &Localisation[loc_file_size], back_inserter(out) );
-	LogDebug << "Converted to UTF8";
+	out.reserve(loc_file_size);
+	sf::Unicode::UTF16ToUTF8( Localisation, &Localisation[loc_file_size], std::back_inserter(out) );
+	LogDebug << "Converted to UTF8 string of length " << out.size();
 
 	if ( Localisation && loc_file_size)
 	{
