@@ -396,7 +396,6 @@ void ARX_CHANGELEVEL_Change( const std::string& level, const std::string& target
 		LogDebug << "level " << level << " target " << target;
 	}
 
-	DemoFileCheck();
 	PROGRESS_BAR_TOTAL = 238; 
 	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
 

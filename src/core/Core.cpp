@@ -1367,8 +1367,6 @@ int main(int, char**)
 		}
 	}	
 
-	DemoFileCheck();
-
 	ARX_CHANGELEVEL_MakePath();
 	LogInfo << "ACL MakePath";
 
@@ -5251,20 +5249,6 @@ unsigned long oBENCH_SOUND=0;
 long WILL_QUICKLOAD=0;
 long WILL_QUICKSAVE=0;
 
-// do we still need this?
-void DemoFileCheck()
-{
-	return;
-
-	if (!FINAL_COMMERCIAL_DEMO)
-	{
-		const char RESOURCE_UNDEAD_LICH[] = "Graph\\Obj3D\\Interactive\\NPC\\Undead_Liche\\Undead_Liche.asl";
-		if (!PAK_FileExist(RESOURCE_UNDEAD_LICH))
-		{
-			FINAL_COMMERCIAL_DEMO=1;
-		}
-	}
-}
 void CorrectValue(unsigned long * cur,unsigned long * dest)
 {
 	if (*cur=*dest)
