@@ -4122,8 +4122,7 @@ void Manage_sp_max()
 			float dx = px + sizX * (float)i;
 			float dy = py + sp_max_y[i];
 			sp_max_y[i] = EEsin(dx + (float)ARXTime * ( 1.0f / 100 )) * 30.f * modi;
-			_TCHAR tex[8];
-			_stprintf(tex, _T("%c"), sp_max_ch[i]);
+			std::string tex( 1, sp_max_ch[i] );
 			
 			UNICODE_ARXDrawTextCenter(dx - 1, dy - 1, tex, 0, 0x00FF00FF, InBookFont);
 			UNICODE_ARXDrawTextCenter(dx + 1, dy + 1, tex, 0, 0x00FF00FF, InBookFont);
