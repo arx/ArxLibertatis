@@ -2704,18 +2704,6 @@ bool Menu2_Render()
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 					}
 				break;
-			//------------------ END SAVE_QUEST
-			case MULTIPLAYER:
-				{
-				}
-				break;
-			//------------------ START OPTIONS
-			case OPTIONS_INPUT:
-				{
-					MessageBox(0, "", "", 0);
-
-				}
-				break;
 			case OPTIONS:
 				{
 					std::string szMenuText;
