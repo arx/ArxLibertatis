@@ -837,11 +837,29 @@ int CMenuConfig::GetDIKWithASCII( const std::string& _pcTouch)
 //-----------------------------------------------------------------------------
 std::string CMenuConfig::ReadConfig( const std::string& _section, const std::string& _key)
 {
+	string configfile;
+	
+	// TODO GetPrivateProfileString needs an absolute path
+	if(pcName.length() > 2 && pcName[1] != ':') {
+		
+		char cwd[512];
+		GetCurrentDirectory(512, cwd);
+		configfile = cwd;
+		if(*configfile.rbegin() != '\\' && pcName[0] != '\\') {
+			configfile += '\\';
+		}
+		configfile += pcName;
+		
+	} else {
+		configfile = pcName;
+	}
+	
+
+	// TODO unify with localisation loading (and make platform-independent)
 	char text[256];
+	int iI = GetPrivateProfileString( _section.c_str(), _key.c_str(), "", text, 256, configfile.c_str());
 
-	int iI = GetPrivateProfileString( _section.c_str(), _key.c_str(), "", text, 256, pcName.c_str() );
-
-	LogDebug << "Read section: " << _section << " key: " << _key << " from " << pcName << " as:" << text;
+	LogDebug << "Read section: " << _section << " key: " << _key << " from " << configfile << " as:" << text;
 
 	return std::string( text );
 }
