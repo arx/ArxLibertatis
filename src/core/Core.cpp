@@ -1144,23 +1144,19 @@ int main(int, char**)
 	
 	long i;
 	
-	if (FINAL_COMMERCIAL_GAME)
-	{
+	if (FINAL_COMMERCIAL_GAME) {
 		LogDebug << "FINAL_COMMERCIAL_GAME";
 		ARX_SOUND_INIT=1;
 		FOR_EXTERNAL_PEOPLE=1;
 		ARX_DEMO=0;
-	}
-	else if (FINAL_COMMERCIAL_DEMO)
-	{
+	} else if (FINAL_COMMERCIAL_DEMO)	{
 		LogDebug << "FINAL_COMMERCIAL_DEMO";
 		ARX_SOUND_INIT=1;
 		FOR_EXTERNAL_PEOPLE=1;
 		ARX_DEMO=1;
 	}
 
-	if (FOR_EXTERNAL_PEOPLE)
-	{
+	if (FOR_EXTERNAL_PEOPLE) {
 		LogDebug << "FOR_EXTERNAL_PEOPLE";
 		ARX_SOUND_INIT		= 1;
 		ALLOW_CHEATS		= 0;
@@ -1181,9 +1177,7 @@ int main(int, char**)
 		GAME_EDITOR			= 0;
 		NEED_EDITOR			= 0;
 		TRUEFIGHT			= 0;
-	}
-	else if (CEDRIC_VERSION)
-	{
+	} else if (CEDRIC_VERSION) {
 		LogDebug << "CEDRIC_VERSION";
 		ARX_DEMO=0;
 		FAST_SPLASHES=1;
@@ -1198,7 +1192,7 @@ int main(int, char**)
 
 	ARX_MAPMARKER_Init();
 
-	for (i=0;i<8;i++)	scursor[i]=NULL;
+	for (i=0;i<8;i++) scursor[i]=NULL;
 
 	ARX_DAMAGES_SCREEN_SPLATS_Init();
 	ARX_SPELLS_CancelSpellTarget();
@@ -1264,10 +1258,7 @@ int main(int, char**)
 	//delete current for clean save.........
 	char txttemp[256];
 
-	for(	unsigned int uiNum=0;
-			uiNum<20;
-			++uiNum)
-	{
+	for(unsigned uiNum=0; uiNum < 20; ++uiNum) {
 		sprintf(txttemp,"Save%s\\Cur%04d\\",LOCAL_SAVENAME,uiNum);
 
 		if (DirectoryExist(txttemp))
@@ -1282,8 +1273,7 @@ int main(int, char**)
 	ARX_SPELLS_Precast_Reset();
 	LogInfo << "ASP Init";
 	
-	for (long t=0;t<MAX_GOLD_COINS_VISUALS;t++)
-	{
+	for (long t=0;t<MAX_GOLD_COINS_VISUALS;t++)	{
 		GoldCoinsObj[t]=NULL;
 		GoldCoinsTC[t]=NULL;
 	}
@@ -1310,8 +1300,7 @@ int main(int, char**)
 
 	Danae_Registry_Read("LastWorkingDir",temp,"");
 
-	if (temp[0]==0)
-	{
+	if (temp[0]==0)	{
 		Danae_Registry_WriteValue("WND_IO_DlgProc_POSX",0);
 		Danae_Registry_WriteValue("WND_IO_DlgProc_POSY",0);
 		Danae_Registry_WriteValue("WND_LightPrecalc_POSX",0);
@@ -1323,17 +1312,14 @@ int main(int, char**)
 
 	Danae_Registry_Read("LOCAL_SAVENAME",LOCAL_SAVENAME,"",16);
 
-	if (!FOR_EXTERNAL_PEOPLE)
-	{
+	if (!FOR_EXTERNAL_PEOPLE) {
 		char stemp[256];
 		u32 ls = 64;
 		GetComputerName(stemp, &ls);
 
-		if (!strcasecmp(stemp,"max"))
-		{
+		if (!strcasecmp(stemp,"max")) {
 			CYRIL_VERSION=1;
 			AUTO_FULL_SCREEN=0;
-
 		}
 	}	
 
@@ -1355,7 +1341,6 @@ int main(int, char**)
 	lastteleport.x=0.f;
 	lastteleport.y=PLAYER_BASE_HEIGHT;
 	lastteleport.z=0.f;
-	////////////////////
 
 	Project.soundmode = ARX_SOUND_ON;
 	inter.init=0;
@@ -1403,21 +1388,20 @@ int main(int, char**)
 	LogInfo << "After Popup";
 	atexit(ClearGame);
 
-	if (LaunchDemo)
-	{
+	if (LaunchDemo)	{
 		LogInfo << "LaunchDemo";
-		GAME_EDITOR=1;
 
-		if (FINAL_RELEASE) GAME_EDITOR=0;
-
-		{
-			NOBUILDMAP=1;
-			NOCHECKSUM=1;
+		if (FINAL_RELEASE) {
+			GAME_EDITOR=0;
+		} else {
+			GAME_EDITOR=1;
 		}
+
+		NOBUILDMAP=1;
+		NOCHECKSUM=1;
 	}
 
-	if (LAST_CHINSTANCE!=-1)
-	{
+	if (LAST_CHINSTANCE!=-1) {
 		LogWarning << "KillDir";
 		ARX_CHANGELEVEL_MakePath();
 		KillAllDirectory(CurGamePath);
@@ -1429,19 +1413,15 @@ int main(int, char**)
 
 	danaeApp.d_dlgframe=0;
 
-	if (MOULINEX)
-	{
+	if (MOULINEX) {
 		danaeApp.CreationSizeX=800;
 		danaeApp.CreationSizeY = 12;
-	}
-	else
-	{
+	} else {
 		danaeApp.CreationSizeX=648;
 		danaeApp.CreationSizeY = 552;
 	}
 
-	if (((GAME_EDITOR) && (!MOULINEX) && (!(FINAL_RELEASE))) || NEED_EDITOR)
-	{
+	if ((GAME_EDITOR && !MOULINEX && !FINAL_RELEASE) || NEED_EDITOR) {
 		GAME_EDITOR=1;
 		danaeApp.CreationFlags= WCF_NOSTDPOPUP | WCF_ACCEPTFILES ;
 		danaeApp.CreationMenu=IDR_DANAEMENU;
@@ -1454,12 +1434,8 @@ int main(int, char**)
 		danaeApp.ToolBar->ToolBarNb=23;
 		danaeApp.ToolBar->Type=EERIE_TOOLBAR_TOP;
 		danaeApp.ToolBar->String=NULL;
-	}
-	else 
-	{
-
+	} else {
 		danaeApp.CreationFlags= WCF_NOSTDPOPUP;
-
 		if (GAME_EDITOR) danaeApp.CreationFlags|= WCF_ACCEPTFILES;
 	}
 
@@ -1474,19 +1450,18 @@ int main(int, char**)
 	MAIN_PROGRAM_HANDLE=danaeApp.m_hWnd;
 	danaeApp.m_pFramework->bitdepth=Project.bits;
 
-	if ((!MOULINEX) && (!FINAL_RELEASE))
-	{
+	if (!MOULINEX && !FINAL_RELEASE) {
 		char texx[64];
 		strcpy(texx,"GaiaMessages");
 		GaiaWM=RegisterWindowMessage(texx); 
 	}
 
 	LogInfo << "Sound Init";
-	if (	(Project.soundmode != 0)
-		&&	ARX_SOUND_INIT	)
-		ARX_SOUND_Init(MAIN_PROGRAM_HANDLE);
-	LogInfo << "Sound Init Success";
 
+	if (Project.soundmode != 0 && ARX_SOUND_INIT)
+		ARX_SOUND_Init(MAIN_PROGRAM_HANDLE);
+
+	LogInfo << "Sound Init Success";
 	LogInfo << "DInput Init";
 	ARX_INPUT_Init_Game_Impulses();
 	pGetInfoDirectInput = new CDirectInput();
@@ -1496,8 +1471,7 @@ int main(int, char**)
 	
 	const char * config_path = RESOURCE_CONFIG;
 
-	if(!FileExist(RESOURCE_CONFIG))
-	{
+	if(!FileExist(RESOURCE_CONFIG))	{
 		config_path = RESOURCE_CONFIG_DEFAULT;
 	}
 
@@ -1505,8 +1479,7 @@ int main(int, char**)
 	pMenuConfig->ReadAll();
 	LogInfo << "DInput Init Success";
 
-	if (pMenuConfig->bEAX)
-	{
+	if (pMenuConfig->bEAX) {
 		ARXMenu_Options_Audio_SetEAX(true);
 	}
 
@@ -1516,13 +1489,11 @@ int main(int, char**)
 	i = 10;
 	LogInfo << "AInput Init";
 
-	while (!ARX_INPUT_Init(hInstance,danaeApp.m_hWnd))
-	{		
+	while (!ARX_INPUT_Init(hInstance,danaeApp.m_hWnd)) {
 		Sleep(30);
 		i--;
 
-		if (i==0)
-		{
+		if (i==0) {
 			LogError << "Unable To Initialize ARX INPUT, Leaving...";
 			ARX_INPUT_Release();
 
@@ -1539,14 +1510,11 @@ int main(int, char**)
 	LogInfo << "AInput Init Success";
 
 	//read from cfg file
-	if ( Project.localisationpath.length() == 0 )
-	{
+	if ( Project.localisationpath.length() == 0 ) {
 		Project.localisationpath = "english";
 		LogWarning << "Falling back to default localisationpath";
 	}
 	ShowWindow(danaeApp.m_hWnd, SW_SHOW);
-
-	//-------------------------------------------------------------------------
 
 	char tex[512];
 
