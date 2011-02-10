@@ -54,34 +54,22 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <limits.h>
 
-#include <stdlib.h>
-#include <algorithm>
-#include <vector>
-#include <string>
-#include <fstream>
-#include <sstream>
+#include "game/Player.h"
 
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
 #include "gui/Menu.h"
 #include "gui/Text.h"
 #include "gui/Speech.h"
-#include "graphics/Math.h"
-#include "graphics/data/Mesh.h"
 #include "graphics/Draw.h"
 #include "graphics/effects/Fog.h"
-#include "graphics/GraphicsModes.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/ParticleEffects.h"
-#include "game/Player.h"
 #include "game/Damage.h"
 #include "game/Equipment.h"
 #include "game/Missile.h"
 #include "game/NPC.h"
-#include "game/Spells.h"
-#include "scene/Object.h"
 #include "scene/ChangeLevel.h"
 #include "scene/Scene.h"
 #include "scene/GameSound.h"
@@ -89,7 +77,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Actors.h"
 #include "core/Localization.h"
 #include "core/Time.h"
-#include "scripting/Script.h"
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
