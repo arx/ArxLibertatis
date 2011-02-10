@@ -5020,10 +5020,7 @@ void ComputePortalVertexBuffer()
 		{
 			char tTxt[256];
 			sprintf(tTxt, "rooms > 255");
-			MessageBox(NULL,
-					   tTxt,
-					   "Error Portals",
-					   MB_OK | MB_ICONERROR);
+			LogError<<tTxt<<" Error Portals";
 			return;
 		}
 
@@ -5192,10 +5189,7 @@ void ComputePortalVertexBuffer()
 			{
 				char tTxt[256];
 				sprintf(tTxt, "portals %d - Zero Vertex", iNb);
-				MessageBox(NULL,
-						   tTxt,
-						   "Error Portals",
-						   MB_OK | MB_ICONERROR);
+				LogError << tTxt<< " Error Portals";
 
 				vector<SINFO_TEXTURE_VERTEX *>::iterator it;
 
@@ -5235,10 +5229,7 @@ void ComputePortalVertexBuffer()
 
 				char tTxt[256];
 				sprintf(tTxt, "CreateVertexBuffer - NbVertexs %d", iNbVertexForRoom);
-				MessageBox(NULL,
-						   tTxt,
-						   "Error TransForm",
-						   MB_OK | MB_ICONERROR);
+				LogError << tTxt<< " Error TransForm";
 				return;
 			}
 
@@ -5374,10 +5365,7 @@ void ComputePortalVertexBuffer()
 				{
 					char tTxt[256];
 					sprintf(tTxt, "CreateVertexBuffer - Indices>65535");
-					MessageBox(NULL,
-							   tTxt,
-							   "Error TransForm",
-							   MB_OK | MB_ICONERROR);
+					LogError << tTxt<<" Error TransForm";
 				}
 
 				iStartCull +=	(*it)->iNbIndiceCull +
