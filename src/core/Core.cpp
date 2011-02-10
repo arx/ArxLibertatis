@@ -1045,7 +1045,7 @@ int HandlerMemory(size_t stSize)
 		ShowWindow(danaeApp.m_hWnd,SW_MINIMIZE|SW_HIDE);
 	}
 
-	MessageBox(NULL,"Fatal memory error!!!","ARX fatalis",MB_ICONERROR);
+	LogError << "Fatal memory error!!!";
 	exit(-1);
 }
 
@@ -1407,12 +1407,9 @@ int main(int, char**)
 
 	ForceSendConsole("Launching DANAE", 1, 0, (HWND)1);
 
-	if (	(!FINAL_COMMERCIAL_DEMO)
-		&&	(!FINAL_COMMERCIAL_GAME)	)
-	{
-		if (LoadLibrary(("RICHED32.DLL")) == NULL)
-		{
-			MessageBox(NULL, "DanaeScriptEditor :: IDS_RICHED_LOAD_FAIL", "", MB_OK|MB_ICONEXCLAMATION);
+	if (!FINAL_COMMERCIAL_DEMO && !FINAL_COMMERCIAL_GAME) {
+		if (!LoadLibrary("RICHED32.DLL")) {
+			LogError  << "DanaeScriptEditor :: IDS_RICHED_LOAD_FAIL";
 		}
 	}
 
