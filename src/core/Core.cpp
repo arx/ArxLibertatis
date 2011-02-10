@@ -1721,15 +1721,10 @@ void LoadSysTextures()
 
 	}
 
-	// TODO(lubosz): this fixed a crash in ARX_Allocate_Text
-//	memset(spellicons, 0, sizeof(SPELL_ICON) * SPELL_COUNT);
-
 	for (i=0;i<SPELL_COUNT;i++)
 	{
+		// TODO use constructor for initialization
 		for (long j = 0; j < 6; j++) spellicons[i].symbols[j] = 255;
-		//TODO(lubosz): doesn't this need to be initialized?
-//		spellicons[i].name = "";
-//		spellicons[i].description = "";
 		spellicons[i].level = 0;
 		spellicons[i].spellid = 0;
 		spellicons[i].tc = NULL;
