@@ -152,7 +152,7 @@ bool PakReader::Open(const std::string& name) {
 	FILE * newfile = fopen(name.c_str(), "rb");
 	
 	if(!newfile) {
-		LogError <<"Cannot find PAK "<< name;
+		LogError << "Cannot find PAK " << name;
 		return false;
 	}
 	
@@ -268,7 +268,7 @@ bool PakReader::Open(const std::string& name) {
 	fat = newfat;
 	file = newfile;
 	
-	LogInfo <<"Loaded PAK " << name;
+	LogInfo << "Loaded PAK " << name;
 	return true;
 	
 	

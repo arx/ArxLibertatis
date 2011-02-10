@@ -75,11 +75,11 @@ void EERIE_MESH_ReleaseTransPolys(EERIE_3DOBJ * obj)
 
 	for (long i = 0; i < INTERTRANSPOLYSPOS; i++)
 	{
-		for (long ii = 0; ii < obj->nbmaps; ii++)
+		for (size_t ii = 0; ii < obj->texturecontainer.size(); ii++)
 		{
 			if (InterTransTC[i] == obj->texturecontainer[ii])
 			{
-				for (long jj = 0; jj < obj->nbfaces; jj++)
+				for (size_t jj = 0; jj < obj->facelist.size(); jj++)
 				{
 					if (InterTransFace[jj] == &obj->facelist[jj])
 						InterTransFace[jj] = NULL;
@@ -107,10 +107,10 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const std::string& s1, const std::
 
 	if (obj->originaltextures == NULL)
 	{
-		obj->originaltextures = (char *)malloc(256 * obj->nbmaps); 
-		memset(obj->originaltextures, 0, 256 * obj->nbmaps);
+		obj->originaltextures = (char *)malloc(256 * obj->texturecontainer.size()); 
+		memset(obj->originaltextures, 0, 256 * obj->texturecontainer.size());
 
-		for (long i = 0; i < obj->nbmaps; i++)
+		for (size_t i = 0; i < obj->texturecontainer.size(); i++)
 		{
 			if (obj->texturecontainer[i])
 				strcpy(obj->originaltextures + 256 * i, obj->texturecontainer[i]->m_texName.c_str());
@@ -120,7 +120,7 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const std::string& s1, const std::
 
 	if ((tex != NULL) && (obj->originaltextures != NULL))
 	{
-		for (long i = 0; i < obj->nbmaps; i++)
+		for (size_t i = 0; i < obj->texturecontainer.size(); i++)
 		{
 			if ((strstr(obj->originaltextures + 256 * i, skintochange.c_str())))
 			{
@@ -129,12 +129,11 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const std::string& s1, const std::
 			}
 		}
 
-//		TODO(lubosz): crash
-//		tex->Restore(GDevice);
+		tex->Restore(GDevice);
 		TextureContainer * tex2 = FindTexture(skintochange.c_str());
 
 		if (tex2)
-			for (long i = 0; i < obj->nbmaps; i++)
+			for (size_t i = 0; i < obj->texturecontainer.size(); i++)
 			{
 				if (obj->texturecontainer[i] == tex2)  obj->texturecontainer[i] = tex;
 			}
@@ -161,7 +160,7 @@ long IsInSelection(EERIE_3DOBJ * obj, long vert, long tw)
 }
 long GetEquivalentVertex(EERIE_3DOBJ * obj, EERIE_VERTEX * vert)
 {
-	for (long i = 0; i < obj->nbvertex; i++)
+	for (size_t i = 0; i < obj->vertexlist.size(); i++)
 	{
 		if ((obj->vertexlist[i].v.x == vert->v.x)
 		        &&	(obj->vertexlist[i].v.y == vert->v.y)
@@ -176,7 +175,7 @@ long GetEquivalentVertex(EERIE_3DOBJ * obj, EERIE_VERTEX * vert)
 //*************************************************************************************
 long ObjectAddVertex(EERIE_3DOBJ * obj, EERIE_VERTEX * vert)
 {
-	for (long i = 0; i < obj->nbvertex; i++)
+	for (size_t i = 0; i < obj->vertexlist.size(); i++)
 	{
 		if ((obj->vertexlist[i].v.x == vert->v.x)  
 		        &&	(obj->vertexlist[i].v.y == vert->v.y) 
@@ -184,15 +183,8 @@ long ObjectAddVertex(EERIE_3DOBJ * obj, EERIE_VERTEX * vert)
 			return i;
 	}
 
-	if (obj->nbvertex == 0)
-	{
-		obj->vertexlist = (EERIE_VERTEX *)malloc(sizeof(EERIE_VERTEX));
-	}
-	else obj->vertexlist = (EERIE_VERTEX *)realloc(obj->vertexlist, sizeof(EERIE_VERTEX) * (obj->nbvertex + 1));
-
-	memcpy(&obj->vertexlist[obj->nbvertex], vert, sizeof(EERIE_VERTEX));
-	obj->nbvertex++;
-	return (obj->nbvertex - 1);
+	obj->vertexlist.push_back(*vert);
+	return (obj->vertexlist.size() - 1);
 }
 //*************************************************************************************
 //*************************************************************************************
@@ -212,9 +204,8 @@ long GetActionPoint(EERIE_3DOBJ * obj, const char * name)
 //*************************************************************************************
 long ObjectAddFace(EERIE_3DOBJ * obj, EERIE_FACE * face, EERIE_3DOBJ * srcobj)
 {
-	long i;
 
-	for (i = 0; i < obj->nbfaces; i++) // Check Already existing faces
+	for (size_t i = 0; i < obj->facelist.size(); i++) // Check Already existing faces
 	{
 		if ((obj->vertexlist[obj->facelist[i].vid[0]].v.x == srcobj->vertexlist[face->vid[0]].v.x)
 		        &&	(obj->vertexlist[obj->facelist[i].vid[1]].v.x == srcobj->vertexlist[face->vid[1]].v.x)
@@ -237,33 +228,24 @@ long ObjectAddFace(EERIE_3DOBJ * obj, EERIE_FACE * face, EERIE_3DOBJ * srcobj)
 
 	if ((f1 == -1) || (f2 == -1) || (f0 == -1)) return -1;
 
-	if (obj->nbfaces == 0)
-	{
-		obj->facelist = (EERIE_FACE *)malloc(sizeof(EERIE_FACE));
-	}
-	else
-	{
-		obj->facelist = (EERIE_FACE *)realloc(obj->facelist, sizeof(EERIE_FACE) * (obj->nbfaces + 1));
-	}
+	
+	obj->facelist.push_back(*face);
 
-	memcpy(&obj->facelist[obj->nbfaces], face, sizeof(EERIE_FACE));
+	obj->facelist.back().vid[0] = (unsigned short)f0;
+	obj->facelist.back().vid[1] = (unsigned short)f1;
+	obj->facelist.back().vid[2] = (unsigned short)f2;
+	obj->facelist.back().texid = 0; 
 
-	obj->facelist[obj->nbfaces].vid[0] = (unsigned short)f0;
-	obj->facelist[obj->nbfaces].vid[1] = (unsigned short)f1;
-	obj->facelist[obj->nbfaces].vid[2] = (unsigned short)f2;
-	obj->facelist[obj->nbfaces].texid = 0; 
-
-	for (i = 0; i < obj->nbmaps; i++)
+	for (size_t i = 0; i < obj->texturecontainer.size(); i++)
 	{
 		if (obj->texturecontainer[i] == srcobj->texturecontainer[face->texid])
 		{
-			obj->facelist[obj->nbfaces].texid = (short)i;
+			obj->facelist.back().texid = (short)i;
 			break;
 		}
 	}
 
-	obj->nbfaces++;
-	return (obj->nbfaces - 1);
+	return (obj->facelist.size() - 1);
 }
 //*************************************************************************************
 //*************************************************************************************
@@ -300,27 +282,22 @@ long ObjectAddMap(EERIE_3DOBJ * obj, TextureContainer * tc)
 {
 	if (tc == NULL) return -1;
 
-	for (long i = 0; i < obj->nbmaps; i++)
+	for (size_t i = 0; i < obj->texturecontainer.size(); i++)
 	{
 		if (obj->texturecontainer[i] == tc)
 			return i;
 	}
 
-	if (obj->nbmaps == 0)
-		obj->texturecontainer = (TextureContainer **)malloc(sizeof(TextureContainer *)); 
-	else
-		obj->texturecontainer = (TextureContainer **)realloc(obj->texturecontainer, sizeof(TextureContainer *) * (obj->nbmaps + 1));
+	obj->texturecontainer.push_back(tc);
 
-	obj->texturecontainer[obj->nbmaps] = tc;
-	obj->nbmaps++;
-	return (obj->nbmaps - 1);
+	return (obj->texturecontainer.size() - 1);
 }
 //*************************************************************************************
 //*************************************************************************************
 void AddVertexToGroup(EERIE_3DOBJ * obj, long group, EERIE_VERTEX * vert)
 {
 
-	for (long i = 0; i < obj->nbvertex; i++)
+	for (size_t i = 0; i < obj->vertexlist.size(); i++)
 	{
 		if ((obj->vertexlist[i].v.x == vert->v.x)
 		        &&	(obj->vertexlist[i].v.y == vert->v.y)
@@ -331,28 +308,17 @@ void AddVertexToGroup(EERIE_3DOBJ * obj, long group, EERIE_VERTEX * vert)
 	}
 }
 
-void AddVertexIdxToGroupWithoutInheritance(EERIE_3DOBJ * obj, long group, long val)
-{
-	if (obj->grouplist[group].nb_index == 0)
-	{
-		if (obj->grouplist[group].indexes) free(obj->grouplist[group].indexes);
-
-		obj->grouplist[group].indexes = (long *)malloc(sizeof(long)); 
-		obj->grouplist[group].indexes[obj->grouplist[group].nb_index] = val;
-		obj->grouplist[group].nb_index++;
-		return;
+void AddVertexIdxToGroupWithoutInheritance(EERIE_3DOBJ * obj, long group, long val) {
+	
+	for(long i = 0; i < obj->grouplist[group].indexes.size(); i++) {
+		if(obj->grouplist[group].indexes[i] == val) {
+			return;
+		}
 	}
-
-	for (long i = 0; i < obj->grouplist[group].nb_index; i++)
-	{
-		if (obj->grouplist[group].indexes[i] == val) return;
-	}
-
-	obj->grouplist[group].indexes = (long *)realloc(obj->grouplist[group].indexes, sizeof(long) * (obj->grouplist[group].nb_index + 1));
-	obj->grouplist[group].indexes[obj->grouplist[group].nb_index] = val;
-	obj->grouplist[group].nb_index++;
-
+	
+	obj->grouplist[group].indexes.push_back(val);
 }
+
 void AddVertexIdxToGroup(EERIE_3DOBJ * obj, long group, long val)
 {
 	AddVertexIdxToGroupWithoutInheritance(obj, group, val);
@@ -472,13 +438,9 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 
 	}
 
-	// copy vertexes
-	EERIE_VERTEX * obj1vertexlist2 = NULL;
-	EERIE_VERTEX * obj2vertexlist2 = NULL;
-	obj1vertexlist2 = (EERIE_VERTEX *)malloc(sizeof(EERIE_VERTEX) * obj1->nbvertex);
-	obj2vertexlist2 = (EERIE_VERTEX *)malloc(sizeof(EERIE_VERTEX) * obj2->nbvertex);
-	memcpy(obj1vertexlist2, obj1->vertexlist, sizeof(EERIE_VERTEX)*obj1->nbvertex);
-	memcpy(obj2vertexlist2, obj2->vertexlist, sizeof(EERIE_VERTEX)*obj2->nbvertex);
+	// copy vertices
+	vector<EERIE_VERTEX> obj1vertexlist2 = obj1->vertexlist;
+	vector<EERIE_VERTEX> obj2vertexlist2 = obj2->vertexlist;
 
 	// Work will contain the Tweaked object
 	EERIE_3DOBJ * work = new EERIE_3DOBJ;
@@ -556,7 +518,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	}
 
 	// Recreate Vertex using Obj1 Vertexes
-	for (long i = 0; i < obj1->nbvertex; i++)
+	for (size_t i = 0; i < obj1->vertexlist.size(); i++)
 	{
 		if ((IsInSelection(obj1, i, iw1) != -1)
 		        ||	(IsInSelection(obj1, i, jw1) != -1))
@@ -566,7 +528,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	}
 
 	// The same for Obj2
-	for (long i = 0; i < obj2->nbvertex; i++)
+	for (size_t i = 0; i < obj2->vertexlist.size(); i++)
 	{
 		if (IsInSelection(obj2, i, tw2) != -1)
 		{
@@ -580,7 +542,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	// We look for texturecontainers included in the future tweaked object
 	TextureContainer * tc = NULL;
 
-	for (long i = 0; i < obj1->nbfaces; i++)
+	for (size_t i = 0; i < obj1->facelist.size(); i++)
 	{
 		if (((IsInSelection(obj1, obj1->facelist[i].vid[0], iw1) != -1)
 		        ||	(IsInSelection(obj1, obj1->facelist[i].vid[0], jw1) != -1))
@@ -602,7 +564,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 		}
 	}
 
-	for (long i = 0; i < obj2->nbfaces; i++)
+	for (size_t i = 0; i < obj2->facelist.size(); i++)
 	{
 		if ((IsInSelection(obj2, obj2->facelist[i].vid[0], tw2) != -1)
 		        || (IsInSelection(obj2, obj2->facelist[i].vid[1], tw2) != -1)
@@ -826,7 +788,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	// Recreate Animation-groups vertex
 	for (long i = 0; i < obj1->nbgroups; i++)
 	{
-		for (long j = 0; j < obj1->grouplist[i].nb_index; j++)
+		for (long j = 0; j < obj1->grouplist[i].indexes.size(); j++)
 		{
 			AddVertexToGroup(work, i, &obj1vertexlist2[obj1->grouplist[i].indexes[j]]);
 		}
@@ -834,29 +796,19 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 
 	for (long i = 0; i < obj2->nbgroups; i++)
 	{
-		for (long j = 0; j < obj2->grouplist[i].nb_index; j++)
+		for (long j = 0; j < obj2->grouplist[i].indexes.size(); j++)
 		{
 			AddVertexToGroup(work, i, &obj2vertexlist2[obj2->grouplist[i].indexes[j]]);
 		}
 	}
 
 	// Look for Vertices Without Group...
-	for (long i = 0; i < work->nbmaps; i++)
+	for (size_t i = 0; i < work->texturecontainer.size(); i++)
 	{
 		work->texturecontainer[i]->Restore(GDevice);
 	}
 
-	if (work->nbvertex)
-	{
-		work->vertexlist3 = new EERIE_VERTEX[work->nbvertex];
-		memcpy(work->vertexlist3, work->vertexlist, sizeof(EERIE_VERTEX)*work->nbvertex);
-	}
-
-	if (obj1vertexlist2)
-		free(obj1vertexlist2);
-
-	if (obj2vertexlist2)
-		free(obj2vertexlist2);
+	work->vertexlist3 = work->vertexlist;
 
 	return work;
 }
@@ -928,7 +880,7 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const std::string& _path
 				TextureContainer * tc;
 				tc = NULL;
 
-				for (i = 0; i < tobj->nbfaces; i++)
+				for (i = 0; i < tobj->facelist.size(); i++)
 				{
 					if ((tobj->facelist[i].texid >= 0)
 					        &&	(tobj->texturecontainer[tobj->facelist[i].texid]))

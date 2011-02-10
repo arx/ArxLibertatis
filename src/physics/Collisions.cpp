@@ -351,7 +351,7 @@ bool IsCollidingIO(INTERACTIVE_OBJ * io,INTERACTIVE_OBJ * ioo)
 			float old=ioo->physics.cyl.radius;
 			ioo->physics.cyl.radius+=25.f;
 
-			for (long j=0;j<io->obj->nbvertex;j++)
+			for (size_t j=0;j<io->obj->vertexlist3.size();j++)
 			{
 				if (PointInCylinder(&ioo->physics.cyl,&io->obj->vertexlist3[j].v)) 
 				{
@@ -391,7 +391,7 @@ void PushIO_ON_Top(INTERACTIVE_OBJ * ioo,float ydec)
 				float miny=9999999.f;
 				float maxy=-9999999.f;
 
-				for (long ii=0;ii<ioo->obj->nbvertex;ii++)
+				for (size_t ii=0;ii<ioo->obj->vertexlist3.size();ii++)
 				{
 					miny=min(miny,ioo->obj->vertexlist3[ii].v.y);
 					maxy=max(maxy,ioo->obj->vertexlist3[ii].v.y);
@@ -411,7 +411,7 @@ void PushIO_ON_Top(INTERACTIVE_OBJ * ioo,float ydec)
 
 				if ((posy<=maxy) && (posy>=miny+modd))
 				{
-					for (long ii=0;ii<ioo->obj->nbfaces;ii++)
+					for (size_t ii=0;ii<ioo->obj->facelist.size();ii++)
 					{
 						float cx=0;
 						float cz=0;
@@ -786,7 +786,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 						}
 							else 
 						{
-						for (long ii=0;ii<io->obj->nbvertex;ii++)
+						for (size_t ii=0;ii<io->obj->vertexlist3.size();ii++)
 						{
 							long res=PointInUnderCylinder(cyl,&io->obj->vertexlist3[ii].v);
 
@@ -798,7 +798,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 							}			
 						}
 
-						for (int ii=0;ii<io->obj->nbfaces;ii++)
+						for (size_t ii=0;ii<io->obj->facelist.size();ii++)
 						{
 							EERIE_3D c;
 							Vector_Init(&c);
@@ -897,9 +897,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 				}
 				else if (io->ioflags & IO_FIX)
 				{
-					long nbv;
 					long idx;
-					EERIE_VERTEX * vlist;
 					EERIE_SPHERE sp;
 
 					float miny,maxy;
@@ -912,8 +910,8 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 
 					if (In3DBBoxTolerance(&cyl->origin,&io->bbox3D,cyl->radius+30.f))
 					{
-						vlist=io->obj->vertexlist3;
-						nbv=io->obj->nbvertex;
+						vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
+						size_t nbv = io->obj->vertexlist.size();
 
 						if (io->obj->nbgroups>10)
 						{
@@ -1072,7 +1070,6 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 	bool vreturn = false;
 	MAX_IN_SPHERE_Pos=0;
 	
-	EERIE_VERTEX * vlist;	
 	INTERACTIVE_OBJ * io;
 	long ret_idx=-1;
 	
@@ -1129,7 +1126,7 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 							EERIEPOLY ep;
 							ep.type=0;
 
-							for (long ii=0;ii<io->obj->nbfaces;ii++)
+							for (size_t ii=0;ii<io->obj->facelist.size();ii++)
 							{
 								float cx=0;
 								float cz=0;
@@ -1169,7 +1166,7 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 			{
 			
 				long amount=1;
-				vlist=io->obj->vertexlist3;
+				vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 				if (io->obj->nbgroups>4)
 				{
@@ -1190,7 +1187,7 @@ bool CheckEverythingInSphere(EERIE_SPHERE * sphere,long source,long targ) //exce
 					amount=2;
 				}
 
-					for (long ii=0;ii<io->obj->nbfaces;ii+=amount)
+					for (size_t ii=0;ii<io->obj->facelist.size();ii+=amount)
 					{
 						EERIE_FACE * ef=&io->obj->facelist[ii];
 
@@ -1305,7 +1302,6 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags,long * n
 
 	if (flags & CAS_NO_SAME_GROUP) validsource=ValidIONum(source);
 
-	EERIE_VERTEX * vlist;	
 	INTERACTIVE_OBJ * io;
 	float sr30=sphere->radius+20.f;
 	float sr40=sphere->radius+30.f;
@@ -1350,7 +1346,7 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags,long * n
 							EERIEPOLY ep;
 							ep.type=0;
 
-							for (long ii=0;ii<io->obj->nbfaces;ii++)
+							for (size_t ii=0;ii<io->obj->facelist.size();ii++)
 							{
 								float cx=0;
 								float cz=0;
@@ -1385,7 +1381,7 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags,long * n
 			if (EEDistance3D(&io->pos,&sphere->origin)< sr180 )
 			{
 				long amount=1;
-				vlist=io->obj->vertexlist3;
+				vector<EERIE_VERTEX> & vlist=io->obj->vertexlist3;
 
 				if (io->obj->nbgroups>4)
 				{
@@ -1402,7 +1398,7 @@ bool CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags,long * n
 					amount=2;
 				}
 
-				for (long ii=0;ii<io->obj->nbfaces;ii+=amount)
+				for (size_t ii=0;ii<io->obj->facelist.size();ii+=amount)
 				{
 
 					if (io->obj->facelist[ii].facetype & POLY_HIDE) continue;
@@ -1427,7 +1423,6 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere,long target,long flags)
 {
 	if (!ValidIONum(target)) return false;
 
-	EERIE_VERTEX * vlist;		
 	INTERACTIVE_OBJ * io=inter.iobj[target];
 	float sr30 = sphere->radius + 22.f;
 	float sr40 = sphere->radius + 27.f; 
@@ -1442,7 +1437,7 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere,long target,long flags)
 		{
 			if (EEDistance3D(&io->pos,&sphere->origin)< sr180)
 			{
-				vlist=io->obj->vertexlist3;
+				vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 				if (io->obj->nbgroups>10)
 				{
@@ -1465,13 +1460,13 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere,long target,long flags)
 					long count=0;
 					long step;
 
-					if (io->obj->nbvertex<150) step=1;
-					else if (io->obj->nbvertex<300) step=2;
-					else if (io->obj->nbvertex<600) step=4;
-					else if (io->obj->nbvertex<1200) step=6;
+					if (io->obj->vertexlist.size()<150) step=1;
+					else if (io->obj->vertexlist.size()<300) step=2;
+					else if (io->obj->vertexlist.size()<600) step=4;
+					else if (io->obj->vertexlist.size()<1200) step=6;
 					else step=7;
 
-					for (long ii=0;ii<io->obj->nbvertex;ii+=step)
+					for (size_t ii=0;ii<vlist.size();ii+=step)
 					{
 						if (EEDistance3D(&vlist[ii].v,&sphere->origin)< sr30) 
 						{
@@ -1480,9 +1475,9 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere,long target,long flags)
 							if (count>6) return true;
 						}
 
-						if (io->obj->nbvertex<120)
+						if (io->obj->vertexlist.size()<120)
 						{
-							for (long kk=0;kk<io->obj->nbvertex;kk+=1)
+							for (size_t kk=0;kk<vlist.size();kk+=1)
 							{
 								if (kk!=ii)
 								{
@@ -2103,7 +2098,7 @@ void ANCHOR_BLOCK_By_IO(INTERACTIVE_OBJ * io,long status)
 			EERIEPOLY ep;
 			ep.type=0;
 
-			for (long ii=0;ii<io->obj->nbfaces;ii++)
+			for (size_t ii=0;ii<io->obj->facelist.size();ii++)
 			{
 				float cx=0;
 				float cz=0;

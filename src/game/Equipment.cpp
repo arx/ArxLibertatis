@@ -235,14 +235,14 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				long textochange = -1;
 
-				for (long i = 0; i < io->obj->nbmaps; i++)
+				for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 				{
 					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName).c_str()))
 						textochange = i;
 				}
 
 				if ((sel_ != -1) && (textochange != -1))
-					for (long i = 0; i < io->obj->nbfaces; i++)
+					for (size_t i = 0; i < io->obj->facelist.size(); i++)
 					{
 						if ((IsInSelection(io->obj, io->obj->facelist[i].vid[0], sel_) != -1)
 						        &&	(IsInSelection(io->obj, io->obj->facelist[i].vid[1], sel_) != -1)
@@ -291,14 +291,14 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				long textochange = -1;
 
-				for (long i = 0; i < io->obj->nbmaps; i++)
+				for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 				{
 					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName).c_str()))
 						textochange = i;
 				}
 
 				if ((sel_ != -1) && (textochange != -1))
-					for (long i = 0; i < io->obj->nbfaces; i++)
+					for (size_t i = 0; i < io->obj->facelist.size(); i++)
 					{
 						if ((IsInSelection(io->obj, io->obj->facelist[i].vid[0], sel_) != -1)
 						        &&	(IsInSelection(io->obj, io->obj->facelist[i].vid[1], sel_) != -1)
@@ -347,14 +347,14 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				long textochange = -1;
 
-				for (long i = 0; i < io->obj->nbmaps; i++)
+				for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 				{
 					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName).c_str()))
 						textochange = i;
 				}
 
 				if ((sel_ != -1) && (textochange != -1))
-					for (long i = 0; i < io->obj->nbfaces; i++)
+					for (size_t i = 0; i < io->obj->facelist.size(); i++)
 					{
 						if ((IsInSelection(io->obj, io->obj->facelist[i].vid[0], sel_) != -1)
 						        &&	(IsInSelection(io->obj, io->obj->facelist[i].vid[1], sel_) != -1)
@@ -982,7 +982,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 					vector.y *= t;
 					vector.z *= t;
 
-					for (long ii = 0; ii < target->obj->nbfaces; ii++)
+					for (size_t ii = 0; ii < target->obj->facelist.size(); ii++)
 					{
 						if (target->obj->facelist[ii].facetype & POLY_HIDE) continue;
 
