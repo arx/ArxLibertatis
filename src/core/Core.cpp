@@ -1141,18 +1141,6 @@ int main(int, char**)
 {
 	LPSTR strCmdLine = GetCommandLine();
 	hInstance = GetModuleHandle(0);
-
-	//TODO memleak stuff
-//	_set_new_mode(1);																//memory handler activated for malloc too
-//	_set_new_handler(HandlerMemory);
-//
-//	ARX_MINIMAP_Reset();
-//	int flag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG); // Get current flag
-//	flag |= _CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF;// Turn on leak-checking bit
-//	_CrtSetDbgFlag(flag);															// Set flag to the new value
-//	_CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDOUT);
-//	_CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDOUT);
-//	_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
 	
 	long i;
 	
