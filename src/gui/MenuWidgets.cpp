@@ -835,15 +835,12 @@ int CMenuConfig::GetDIKWithASCII( const std::string& _pcTouch)
 }
 
 //-----------------------------------------------------------------------------
-
-std::string CMenuConfig::ReadConfig( const std::string& _pcSection, const std::string& _pcKey)
+std::string CMenuConfig::ReadConfig( const std::string& _section, const std::string& _key)
 {
-	
-	
 	string configfile;
 	
 	// TODO GetPrivateProfileString needs an absolute path
-	if(pcName.length() < 2 && pcName[1] != ':') {
+	if(pcName.length() > 2 && pcName[1] != ':') {
 		
 		char cwd[512];
 		GetCurrentDirectory(512, cwd);
@@ -859,14 +856,12 @@ std::string CMenuConfig::ReadConfig( const std::string& _pcSection, const std::s
 	
 
 	// TODO unify with localisation loading (and make platform-independent)
-	char tcText[256];
-	int iI = GetPrivateProfileString( _pcSection.c_str(), _pcKey.c_str(), "", tcText, 256, configfile.c_str());
+	char text[256];
+	int iI = GetPrivateProfileString( _section.c_str(), _key.c_str(), "", text, 256, configfile.c_str());
 
-	if(iI<=0) return "";
+	LogDebug << "Read section: " << _section << " key: " << _key << " from " << configfile << " as:" << text;
 
-	std::string prof_str = tcText;
-
-	return prof_str;
+	return std::string( text );
 }
 
 //-----------------------------------------------------------------------------
@@ -2171,13 +2166,7 @@ bool Menu2_Render()
 	MACRO_MENU_PRINCIPALE(BUTTON_MENUMAIN_CREDITS,CREDITS,"system_menus_main_credits",0);
 	MACRO_MENU_PRINCIPALE(-1,QUIT,"system_menus_main_quit",0);
 #undef MACRO_MENU_PRINCIPALE
-
-		//version
-		_TCHAR twVersion[32];
-		// TODO Find replacement
-		MultiByteToWideChar(CP_ACP, 0, GetVersionString()+3, -1, (wchar_t*)twVersion, 32 );
-
-		me = new CMenuElementText( -1, hFontControls, twVersion, RATIO_X(580), RATIO_Y(65), lColor, 1.0f, NOP );
+		me = new CMenuElementText( -1, hFontControls, arxVersion, RATIO_X(580), RATIO_Y(65), lColor, 1.0f, NOP );
 		me->SetCheckOff();
 		me->lColor=RGB(127,127,127);
 		pMenu->AddMenuElement(me);
@@ -2703,18 +2692,6 @@ bool Menu2_Render()
 					
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 					}
-				break;
-			//------------------ END SAVE_QUEST
-			case MULTIPLAYER:
-				{
-				}
-				break;
-			//------------------ START OPTIONS
-			case OPTIONS_INPUT:
-				{
-					MessageBox(0, "", "", 0);
-
-				}
 				break;
 			case OPTIONS:
 				{

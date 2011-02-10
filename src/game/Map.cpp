@@ -42,6 +42,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
+#include "io/Logger.h"
 
 
 extern long FINAL_RELEASE;
@@ -374,7 +375,7 @@ float oldposx,oldposz;
 		(ddsd.ddpfPixelFormat.dwRGBBitCount==8)||
 		(ddsd.ddpfPixelFormat.dwRGBBitCount==24) )
 	{
-		MessageBox(NULL,"Desktop not in 16 or 32 bits","Map Generation Error!!!",0);
+		LogError << "Map Generation Error: Desktop not in 16 or 32 bits";
 		SAFE_RELEASE(this->surfacetemp);
 		return false;
 	}

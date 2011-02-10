@@ -1045,18 +1045,95 @@ int HandlerMemory(size_t stSize)
 		ShowWindow(danaeApp.m_hWnd,SW_MINIMIZE|SW_HIDE);
 	}
 
-	MessageBox(NULL,"Fatal memory error!!!","ARX fatalis",MB_ICONERROR);
+	LogError << "Fatal memory error!!!";
 	exit(-1);
 }
 
 //-----------------------------------------------------------------------------
 
-bool IsNoGore( void )
-{
+bool IsNoGore( void ) {
 	return GERMAN_VERSION? true : false;
 }
 
 //-----------------------------------------------------------------------------
+
+void forInternalPeople(LPSTR strCmdLine) {
+	LogDebug << "not FOR_EXTERNAL_PEOPLE";
+	char * param[10];
+	long parampos=0;
+
+	param[0]=strtok(strCmdLine," ");
+
+	for (long j=1;j<10;j++)
+		param[j]=strtok(NULL," ");
+
+	if ((param[parampos] != NULL)) {
+		if (!strcasecmp(param[parampos],"demo")) {
+			ARX_DEMO=1;
+		} else {
+			LogInfo << "PARAMS";
+			FINAL_RELEASE=0;
+			GAME_EDITOR=1;
+
+			if (!strcasecmp(param[parampos],"editor")) {
+				LogInfo << "PARAM EDITOR";
+				NEED_ANCHORS=1;
+			} else {
+				NEED_ANCHORS=1;
+				USE_FAST_SCENES=0;
+				LogInfo << "PARAM MOULINEX";
+
+				if (param[parampos][0]=='-') {
+					long posflags=parampos;
+					PROCESS_NO_POPUP=1;
+					PROCESS_ALL_THEO=0;
+					PROCESS_LEVELS=0;
+					PROCESS_ONLY_ONE_LEVEL=-1;
+
+					if ((IsIn(param[posflags],"u")) || (IsIn(param[posflags],"U"))) {
+						parampos++;
+						PROCESS_ONLY_ONE_LEVEL=atoi(param[parampos]);
+					}
+
+					if ((IsIn(param[posflags],"o")) || (IsIn(param[posflags],"O"))) {
+						PROCESS_ALL_THEO=1;
+					}
+
+					if ((IsIn(param[posflags],"f")) || (IsIn(param[posflags],"F"))) {
+						NEED_ANCHORS=0;
+						USE_FAST_SCENES=1;
+						NOCHECKSUM=1;
+					}
+
+					if ((IsIn(param[posflags],"l")) || (IsIn(param[posflags],"L"))) {
+						PROCESS_LEVELS=1;
+					}
+
+					if ((IsIn(param[posflags],"t")) || (IsIn(param[posflags],"T"))) {
+						TSU_LIGHTING=1;
+					}
+
+					parampos++;
+				} else {
+					PROCESS_ALL_THEO=1;
+					PROCESS_LEVELS=1;
+				}
+
+				if (!strcasecmp(param[parampos],"moulinex")) {
+					LogInfo << "Launching moulinex";
+					MOULINEX=1;
+					KILL_AT_MOULINEX_END=1;
+				}
+			}
+		}
+	} else {
+		LogInfo << "FRGE";
+		GAME_EDITOR=1;
+
+		if (FINAL_RELEASE)
+			GAME_EDITOR=0;
+	}
+}
 
 // Let's use main for now on all platforms
 // TODO: On Windows, we might want to use WinMain in the Release target for example
@@ -1064,38 +1141,22 @@ int main(int, char**)
 {
 	LPSTR strCmdLine = GetCommandLine();
 	hInstance = GetModuleHandle(0);
-
-	//TODO memleak stuff
-//	_set_new_mode(1);																//memory handler activated for malloc too
-//	_set_new_handler(HandlerMemory);
-//
-//	ARX_MINIMAP_Reset();
-//	int flag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG); // Get current flag
-//	flag |= _CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF;// Turn on leak-checking bit
-//	_CrtSetDbgFlag(flag);															// Set flag to the new value
-//	_CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDOUT);
-//	_CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDOUT);
-//	_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
 	
 	long i;
 	
-	if (FINAL_COMMERCIAL_GAME)
-	{
+	if (FINAL_COMMERCIAL_GAME) {
 		LogDebug << "FINAL_COMMERCIAL_GAME";
 		ARX_SOUND_INIT=1;
 		FOR_EXTERNAL_PEOPLE=1;
 		ARX_DEMO=0;
-	}
-	else if (FINAL_COMMERCIAL_DEMO)
-	{
+	} else if (FINAL_COMMERCIAL_DEMO)	{
 		LogDebug << "FINAL_COMMERCIAL_DEMO";
 		ARX_SOUND_INIT=1;
 		FOR_EXTERNAL_PEOPLE=1;
 		ARX_DEMO=1;
 	}
 
-	if (FOR_EXTERNAL_PEOPLE)
-	{
+	if (FOR_EXTERNAL_PEOPLE) {
 		LogDebug << "FOR_EXTERNAL_PEOPLE";
 		ARX_SOUND_INIT		= 1;
 		ALLOW_CHEATS		= 0;
@@ -1103,7 +1164,7 @@ int main(int, char**)
 		NO_TEXT_AT_ALL		= 1;
 
 		if (!FINAL_COMMERCIAL_DEMO)
-			ARX_DEMO		= 0; 
+			ARX_DEMO		= 0;
 
 		FAST_SPLASHES		= 0;
 		FORCE_SHOW_FPS		= 0;
@@ -1116,24 +1177,22 @@ int main(int, char**)
 		GAME_EDITOR			= 0;
 		NEED_EDITOR			= 0;
 		TRUEFIGHT			= 0;
-	}
-	else if (CEDRIC_VERSION)
-	{
+	} else if (CEDRIC_VERSION) {
 		LogDebug << "CEDRIC_VERSION";
-		ARX_DEMO=0; 
+		ARX_DEMO=0;
 		FAST_SPLASHES=1;
 		FORCE_SHOW_FPS=1;
 		FINAL_RELEASE=1; // 1 with pack or 0 without pack
 		AUTO_FULL_SCREEN=0;
-		USE_D3DFOG=1; 
+		USE_D3DFOG=1;
 	}
 
 	CalcFPS(true);
 	HERMES_Memory_Security_On(32000);
-	
+
 	ARX_MAPMARKER_Init();
-	
-	for (i=0;i<8;i++)	scursor[i]=NULL;
+
+	for (i=0;i<8;i++) scursor[i]=NULL;
 
 	ARX_DAMAGES_SCREEN_SPLATS_Init();
 	ARX_SPELLS_CancelSpellTarget();
@@ -1147,102 +1206,7 @@ int main(int, char**)
 	LogDebug << "Project Init";
 
 	if (!FOR_EXTERNAL_PEOPLE)
-	{
-		LogInfo << "not FOR_EXTERNAL_PEOPLE";
-		char * param[10];
-		long parampos=0;
-		
-		param[0]=strtok(strCmdLine," ");
-
-		for (long j=1;j<10;j++)
-			param[j]=strtok(NULL," ");
-
-		if ((param[parampos] != NULL))
-		{
-			if (!strcasecmp(param[parampos],"demo"))
-			{
-				ARX_DEMO=1;
-			}
-			else
-			{
-				LogInfo << "PARAMS";
-				FINAL_RELEASE=0;
-				GAME_EDITOR=1;
-
-				if (!strcasecmp(param[parampos],"editor"))
-				{
-					LogInfo << "PARAM EDITOR";
-					NEED_ANCHORS=1;
-				}
-				else
-				{
-					NEED_ANCHORS=1;
-					USE_FAST_SCENES=0;
-					LogInfo << "PARAM MOULINEX";
-
-					if (param[parampos][0]=='-')
-					{
-						long posflags=parampos;
-						PROCESS_NO_POPUP=1;
-						PROCESS_ALL_THEO=0;
-						PROCESS_LEVELS=0;
-						PROCESS_ONLY_ONE_LEVEL=-1;
-
-						if ((IsIn(param[posflags],"u")) || (IsIn(param[posflags],"U")))
-						{
-							parampos++;
-							PROCESS_ONLY_ONE_LEVEL=atoi(param[parampos]);
-						}				
-
-						if ((IsIn(param[posflags],"o")) || (IsIn(param[posflags],"O")))
-						{
-							PROCESS_ALL_THEO=1;
-						}
-
-						if ((IsIn(param[posflags],"f")) || (IsIn(param[posflags],"F")))
-						{
-							NEED_ANCHORS=0;
-							USE_FAST_SCENES=1;
-							NOCHECKSUM=1;
-						}
-
-						if ((IsIn(param[posflags],"l")) || (IsIn(param[posflags],"L")))
-						{
-							PROCESS_LEVELS=1;
-						}
-
-						if ((IsIn(param[posflags],"t")) || (IsIn(param[posflags],"T")))
-						{
-							TSU_LIGHTING=1;
-						}
-
-						parampos++;
-					}
-					else
-					{
-						PROCESS_ALL_THEO=1;
-						PROCESS_LEVELS=1;
-					}
-
-					if (!strcasecmp(param[parampos],"moulinex"))
-					{
-						LogInfo << "Launching moulinex";
-						MOULINEX=1;
-						KILL_AT_MOULINEX_END=1;
-						
-					}
-				}
-			}
-		}
-		else
-		{
-			LogInfo << "FRGE";
-			GAME_EDITOR=1;
-
-			if (FINAL_RELEASE) 
-				GAME_EDITOR=0;
-		}
-	}
+		forInternalPeople(strCmdLine);
 
 	NOCHECKSUM=0;
 
@@ -1294,10 +1258,7 @@ int main(int, char**)
 	//delete current for clean save.........
 	char txttemp[256];
 
-	for(	unsigned int uiNum=0;
-			uiNum<20;
-			++uiNum)
-	{
+	for(unsigned uiNum=0; uiNum < 20; ++uiNum) {
 		sprintf(txttemp,"Save%s\\Cur%04d\\",LOCAL_SAVENAME,uiNum);
 
 		if (DirectoryExist(txttemp))
@@ -1312,8 +1273,7 @@ int main(int, char**)
 	ARX_SPELLS_Precast_Reset();
 	LogDebug << "Spell Init";
 	
-	for (long t=0;t<MAX_GOLD_COINS_VISUALS;t++)
-	{
+	for (long t=0;t<MAX_GOLD_COINS_VISUALS;t++)	{
 		GoldCoinsObj[t]=NULL;
 		GoldCoinsTC[t]=NULL;
 	}
@@ -1340,8 +1300,7 @@ int main(int, char**)
 
 	Danae_Registry_Read("LastWorkingDir",temp,"");
 
-	if (temp[0]==0)
-	{
+	if (temp[0]==0)	{
 		Danae_Registry_WriteValue("WND_IO_DlgProc_POSX",0);
 		Danae_Registry_WriteValue("WND_IO_DlgProc_POSY",0);
 		Danae_Registry_WriteValue("WND_LightPrecalc_POSX",0);
@@ -1353,21 +1312,16 @@ int main(int, char**)
 
 	Danae_Registry_Read("LOCAL_SAVENAME",LOCAL_SAVENAME,"",16);
 
-	if (!FOR_EXTERNAL_PEOPLE)
-	{
+	if (!FOR_EXTERNAL_PEOPLE) {
 		char stemp[256];
 		u32 ls = 64;
 		GetComputerName(stemp, &ls);
 
-		if (!strcasecmp(stemp,"max"))
-		{
+		if (!strcasecmp(stemp,"max")) {
 			CYRIL_VERSION=1;
 			AUTO_FULL_SCREEN=0;
-
 		}
 	}	
-
-	DemoFileCheck();
 
 	ARX_CHANGELEVEL_MakePath();
 	LogDebug << "ACL MakePath";
@@ -1387,7 +1341,6 @@ int main(int, char**)
 	lastteleport.x=0.f;
 	lastteleport.y=PLAYER_BASE_HEIGHT;
 	lastteleport.z=0.f;
-	////////////////////
 
 	Project.soundmode = ARX_SOUND_ON;
 	inter.init=0;
@@ -1407,12 +1360,9 @@ int main(int, char**)
 
 	LogDebug << "Launching DANAE";
 
-	if (	(!FINAL_COMMERCIAL_DEMO)
-		&&	(!FINAL_COMMERCIAL_GAME)	)
-	{
-		if (LoadLibrary(("RICHED32.DLL")) == NULL)
-		{
-			MessageBox(NULL, "DanaeScriptEditor :: IDS_RICHED_LOAD_FAIL", "", MB_OK|MB_ICONEXCLAMATION);
+	if (!FINAL_COMMERCIAL_DEMO && !FINAL_COMMERCIAL_GAME) {
+		if (!LoadLibrary("RICHED32.DLL")) {
+			LogError  << "DanaeScriptEditor :: IDS_RICHED_LOAD_FAIL";
 		}
 	}
 
@@ -1438,17 +1388,17 @@ int main(int, char**)
 	LogDebug << "After Popup";
 	atexit(ClearGame);
 
-	if (LaunchDemo)
-	{
-		LogDebug << "LaunchDemo";
-		GAME_EDITOR=1;
+	if (LaunchDemo)	{
+		LogInfo << "LaunchDemo";
 
-		if (FINAL_RELEASE) GAME_EDITOR=0;
-
-		{
-			NOBUILDMAP=1;
-			NOCHECKSUM=1;
+		if (FINAL_RELEASE) {
+			GAME_EDITOR=0;
+		} else {
+			GAME_EDITOR=1;
 		}
+
+		NOBUILDMAP=1;
+		NOCHECKSUM=1;
 	}
 
 	if(LAST_CHINSTANCE != -1) {
@@ -1463,19 +1413,15 @@ int main(int, char**)
 
 	danaeApp.d_dlgframe=0;
 
-	if (MOULINEX)
-	{
+	if (MOULINEX) {
 		danaeApp.CreationSizeX=800;
 		danaeApp.CreationSizeY = 12;
-	}
-	else
-	{
+	} else {
 		danaeApp.CreationSizeX=648;
 		danaeApp.CreationSizeY = 552;
 	}
 
-	if (((GAME_EDITOR) && (!MOULINEX) && (!(FINAL_RELEASE))) || NEED_EDITOR)
-	{
+	if ((GAME_EDITOR && !MOULINEX && !FINAL_RELEASE) || NEED_EDITOR) {
 		GAME_EDITOR=1;
 		danaeApp.CreationFlags= WCF_NOSTDPOPUP | WCF_ACCEPTFILES ;
 		danaeApp.CreationMenu=IDR_DANAEMENU;
@@ -1488,12 +1434,8 @@ int main(int, char**)
 		danaeApp.ToolBar->ToolBarNb=23;
 		danaeApp.ToolBar->Type=EERIE_TOOLBAR_TOP;
 		danaeApp.ToolBar->String=NULL;
-	}
-	else 
-	{
-
+	} else {
 		danaeApp.CreationFlags= WCF_NOSTDPOPUP;
-
 		if (GAME_EDITOR) danaeApp.CreationFlags|= WCF_ACCEPTFILES;
 	}
 
@@ -1508,19 +1450,17 @@ int main(int, char**)
 	MAIN_PROGRAM_HANDLE=danaeApp.m_hWnd;
 	danaeApp.m_pFramework->bitdepth=Project.bits;
 
-	if ((!MOULINEX) && (!FINAL_RELEASE))
-	{
+	if (!MOULINEX && !FINAL_RELEASE) {
 		char texx[64];
 		strcpy(texx,"GaiaMessages");
 		GaiaWM=RegisterWindowMessage(texx); 
 	}
 
 	LogDebug << "Sound Init";
-	if (	(Project.soundmode != 0)
-		&&	ARX_SOUND_INIT	)
+	if (Project.soundmode != 0 && ARX_SOUND_INIT)
 		ARX_SOUND_Init(MAIN_PROGRAM_HANDLE);
-	LogInfo << "Sound Init Success";
 
+	LogInfo << "Sound Init Success";
 	LogDebug << "DInput Init";
 	ARX_INPUT_Init_Game_Impulses();
 	pGetInfoDirectInput = new CDirectInput();
@@ -1530,8 +1470,7 @@ int main(int, char**)
 	
 	const char * config_path = RESOURCE_CONFIG;
 
-	if(!FileExist(RESOURCE_CONFIG))
-	{
+	if(!FileExist(RESOURCE_CONFIG))	{
 		config_path = RESOURCE_CONFIG_DEFAULT;
 	}
 
@@ -1539,8 +1478,7 @@ int main(int, char**)
 	pMenuConfig->ReadAll();
 	LogInfo << "DInput Init Success";
 
-	if (pMenuConfig->bEAX)
-	{
+	if (pMenuConfig->bEAX) {
 		ARXMenu_Options_Audio_SetEAX(true);
 	}
 
@@ -1550,13 +1488,11 @@ int main(int, char**)
 	i = 10;
 	LogDebug << "AInput Init";
 
-	while (!ARX_INPUT_Init(hInstance,danaeApp.m_hWnd))
-	{		
+	while (!ARX_INPUT_Init(hInstance,danaeApp.m_hWnd)) {
 		Sleep(30);
 		i--;
 
-		if (i==0)
-		{
+		if (i==0) {
 			LogError << "Unable To Initialize ARX INPUT, Leaving...";
 			ARX_INPUT_Release();
 
@@ -1573,14 +1509,11 @@ int main(int, char**)
 	LogInfo << "AInput Init Success";
 
 	//read from cfg file
-	if ( Project.localisationpath.length() == 0 )
-	{
+	if ( Project.localisationpath.length() == 0 ) {
 		Project.localisationpath = "english";
 		LogWarning << "Falling back to default localisationpath";
 	}
 	ShowWindow(danaeApp.m_hWnd, SW_SHOW);
-
-	//-------------------------------------------------------------------------
 
 	char tex[512];
 
@@ -2405,11 +2338,6 @@ void LoadSysTextures()
 	GetTextureFile_NoRefinement("Graph\\Interface\\bars\\flash_gauge.bmp");
 }
 
-void ARX_SOUND_Reinit()
-{
-
-}
-
 void ClearSysTextures()
 {
 	long i;
@@ -2707,7 +2635,6 @@ HRESULT DANAE::FrameMove( float fTimeKey )
 			else if (this->kbd.inkey[INKEY_O]) 
 			{
 				this->kbd.inkey[INKEY_O]=0;
-				ARX_SOUND_Reinit();
 			}
 		}
 	}
@@ -4650,83 +4577,9 @@ void ManageQuakeFX()
 	}
 }
 
-//TODO(lubosz): only needed for moulinex?
-void ProcessAllTheo(const char * path) {
-	HANDLE idx;
-	char pathh[512];
-	WIN32_FIND_DATA fd;
-	sprintf(pathh,"*.*");
-
-	if ((idx = FindFirstFile(pathh, &fd)) != INVALID_HANDLE_VALUE)
-	{
-		do
-		{
-			LogDebug << "ProcessAllTheo " << fd.cFileName;
-			if (strcmp(fd.cFileName,".") && strcmp(fd.cFileName,".."))
-			{
-				if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-				{
-					char path2[512];
-					sprintf(path2,"%s%s\\",path,fd.cFileName);
-					ProcessAllTheo(path2);
-				}
-				else
-				{
-					char ext[256];
-					strcpy(ext,GetExt(fd.cFileName));
-
-					if (!strcasecmp(ext,".teo"))
-					{
-						char path2[512];
-						char texpath[512];
-						sprintf(path2,"%s%s",path,fd.cFileName);
-						sprintf(texpath,"Graph\\Obj3D\\Textures\\");
-						EERIE_3DOBJ * temp;
-						char tx[1024];
-						sprintf(tx,"Moulinex %s (%s - %s)",fd.cFileName,path2,texpath);
-						ForceSendConsole(tx,1,0,NULL);
-						_ShowText(tx);
-
-						if (strstr(path2,"\\NPC\\"))
-							temp=TheoToEerie_Fast(texpath,path2,TTE_NPC,GDevice);
-						else
-							temp=TheoToEerie_Fast(texpath,path2,0,GDevice);
-
-						if (temp)
-						{
-							ReleaseEERIE3DObj(temp);
-							ReleaseAllTCWithFlag(0);
-						}
-					}
-				}
-			}
-		}
-		while (FindNextFile(idx, &fd));
-
-		FindClose(idx);
-	}
-}
 void LaunchMoulinex()
 {
 	char tx[256];
-
-	if (PROCESS_ALL_THEO)
-	{		
-		sprintf(tx,"Moulinex THEO convertALL START________________");
-		ForceSendConsole(tx,1,0,NULL);
-		_ShowText(tx);
-		ProcessAllTheo(""); // working dir
-		sprintf(tx,"Moulinex THEO convertALL END__________________");
-		ForceSendConsole(tx,1,0,NULL);
-		_ShowText(tx);
-		PROCESS_ALL_THEO=0;
-
-		if (KILL_AT_MOULINEX_END)
-		{
-			DANAEFinalCleanup();
-			exit(0);
-		}
-	}
 
 	if (PROCESS_ONLY_ONE_LEVEL!=-1)
 	{
@@ -4741,7 +4594,7 @@ void LaunchMoulinex()
 
 		if (KILL_AT_MOULINEX_END)
 		{
-			DANAEFinalCleanup();
+			danaeApp.FinalCleanup();
 			exit(0);
 		}
 		else LogError << ("Moulinex Successfull");
@@ -4786,7 +4639,7 @@ void LaunchMoulinex()
 
 		if (PROCESS_ONLY_ONE_LEVEL!=-1)
 		{
-			DANAEFinalCleanup();
+			danaeApp.FinalCleanup();
 			exit(0);
 		}
 	}
@@ -4798,7 +4651,7 @@ void LaunchMoulinex()
 
 		if (KILL_AT_MOULINEX_END)
 		{
-			DANAEFinalCleanup();
+			danaeApp.FinalCleanup();
 			exit(0);
 		}
 		else LogError << ("Moulinex Successfull");
@@ -5327,20 +5180,6 @@ unsigned long oBENCH_SOUND=0;
 long WILL_QUICKLOAD=0;
 long WILL_QUICKSAVE=0;
 
-// do we still need this?
-void DemoFileCheck()
-{
-	return;
-
-	if (!FINAL_COMMERCIAL_DEMO)
-	{
-		const char RESOURCE_UNDEAD_LICH[] = "Graph\\Obj3D\\Interactive\\NPC\\Undead_Liche\\Undead_Liche.asl";
-		if (!PAK_FileExist(RESOURCE_UNDEAD_LICH))
-		{
-			FINAL_COMMERCIAL_DEMO=1;
-		}
-	}
-}
 void CorrectValue(unsigned long * cur,unsigned long * dest)
 {
 	if (*cur=*dest)
@@ -7734,14 +7573,6 @@ HRESULT DANAE::InitDeviceObjects()
 
 	return S_OK;
 }
-HRESULT DANAEFinalCleanup()
-{
-	EERIE_PATHFINDER_Release();
-	ARX_INPUT_Release();
-	ARX_SOUND_Release();
-	KillInterTreeView();
-	return S_OK;
-}
 
 //*************************************************************************************
 // FinalCleanup()
@@ -8558,12 +8389,7 @@ void ClearGameDEVICE()
 	}
 }
 
-void ClearTileLights();
-
-//-----------------------------------------------------------------------------
-
-void ClearGame()
-{
+void ClearGame() {
 	ARX_Menu_Resources_Release();
 
 	//la configuration
