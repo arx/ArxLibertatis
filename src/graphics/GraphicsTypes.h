@@ -443,11 +443,10 @@ typedef struct
 struct EERIE_GROUPLIST {
 	std::string name;
 	long origin;
-	long nb_index;
-	long * indexes;
+	std::vector<long> indexes;
 	float siz;
 	
-	EERIE_GROUPLIST() : name(), origin(0), nb_index(0), indexes(NULL), siz(0.0f) { };
+	EERIE_GROUPLIST() : name(), origin(0), indexes(), siz(0.0f) { };
 };
 
 struct EERIE_ACTIONLIST {

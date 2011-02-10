@@ -3658,7 +3658,7 @@ bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj, long idx, long grs)
 
 	if (eobj == NULL) return false;
 
-	for (long i = 0; i < eobj->grouplist[grs].nb_index; i++)
+	for (long i = 0; i < eobj->grouplist[grs].indexes.size(); i++)
 	{
 		ii = (long)eobj->grouplist[grs].indexes[i];
 

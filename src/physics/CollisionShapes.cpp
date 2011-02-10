@@ -177,7 +177,7 @@ long GetFirstChildGroup(EERIE_3DOBJ * obj, long group)
 
 	for (long k = group + 1; k < obj->nbgroups; k++)
 	{
-		for (long i = 0; i < obj->grouplist[group].nb_index; i++)
+		for (long i = 0; i < obj->grouplist[group].indexes.size(); i++)
 		{
 			if (obj->grouplist[group].indexes[i] == obj->grouplist[k].origin)
 			{
@@ -196,7 +196,7 @@ bool IsExclusiveGroupMember(EERIE_3DOBJ * obj, long idx, long group)
 
 	for (long i = group + 1; i < obj->nbgroups; i++)
 	{
-		for (long j = 0; j < obj->grouplist[i].nb_index; j++)
+		for (long j = 0; j < obj->grouplist[i].indexes.size(); j++)
 		{
 			if (idx == obj->grouplist[i].indexes[j])
 			{
@@ -225,7 +225,7 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, EERIE_3D * center, EERIE_3D * d
 		}
 	}
 
-	for (int i = 0; i < obj->grouplist[group].nb_index; i++)
+	for (int i = 0; i < obj->grouplist[group].indexes.size(); i++)
 	{
 		if (!IsExclusiveGroupMember(obj, obj->grouplist[group].indexes[i], group)) continue;
 

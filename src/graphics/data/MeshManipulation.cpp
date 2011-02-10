@@ -330,28 +330,17 @@ void AddVertexToGroup(EERIE_3DOBJ * obj, long group, EERIE_VERTEX * vert)
 	}
 }
 
-void AddVertexIdxToGroupWithoutInheritance(EERIE_3DOBJ * obj, long group, long val)
-{
-	if (obj->grouplist[group].nb_index == 0)
-	{
-		if (obj->grouplist[group].indexes) free(obj->grouplist[group].indexes);
-
-		obj->grouplist[group].indexes = (long *)malloc(sizeof(long)); 
-		obj->grouplist[group].indexes[obj->grouplist[group].nb_index] = val;
-		obj->grouplist[group].nb_index++;
-		return;
+void AddVertexIdxToGroupWithoutInheritance(EERIE_3DOBJ * obj, long group, long val) {
+	
+	for(long i = 0; i < obj->grouplist[group].indexes.size(); i++) {
+		if(obj->grouplist[group].indexes[i] == val) {
+			return;
+		}
 	}
-
-	for (long i = 0; i < obj->grouplist[group].nb_index; i++)
-	{
-		if (obj->grouplist[group].indexes[i] == val) return;
-	}
-
-	obj->grouplist[group].indexes = (long *)realloc(obj->grouplist[group].indexes, sizeof(long) * (obj->grouplist[group].nb_index + 1));
-	obj->grouplist[group].indexes[obj->grouplist[group].nb_index] = val;
-	obj->grouplist[group].nb_index++;
-
+	
+	obj->grouplist[group].indexes.push_back(val);
 }
+
 void AddVertexIdxToGroup(EERIE_3DOBJ * obj, long group, long val)
 {
 	AddVertexIdxToGroupWithoutInheritance(obj, group, val);
@@ -825,7 +814,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	// Recreate Animation-groups vertex
 	for (long i = 0; i < obj1->nbgroups; i++)
 	{
-		for (long j = 0; j < obj1->grouplist[i].nb_index; j++)
+		for (long j = 0; j < obj1->grouplist[i].indexes.size(); j++)
 		{
 			AddVertexToGroup(work, i, &obj1vertexlist2[obj1->grouplist[i].indexes[j]]);
 		}
@@ -833,7 +822,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 
 	for (long i = 0; i < obj2->nbgroups; i++)
 	{
-		for (long j = 0; j < obj2->grouplist[i].nb_index; j++)
+		for (long j = 0; j < obj2->grouplist[i].indexes.size(); j++)
 		{
 			AddVertexToGroup(work, i, &obj2vertexlist2[obj2->grouplist[i].indexes[j]]);
 		}

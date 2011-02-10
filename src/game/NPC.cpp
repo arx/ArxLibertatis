@@ -1426,7 +1426,7 @@ long IsInGroup(EERIE_3DOBJ * obj, long vert, long tw)
 
 	if (vert < 0) return -1;
 
-	for (long i = 0; i < obj->grouplist[tw].nb_index; i++)
+	for (size_t i = 0; i < obj->grouplist[tw].indexes.size(); i++)
 	{
 		if (obj->grouplist[tw].indexes[i] == vert)
 			return i;

@@ -244,10 +244,10 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 
 		for (long i = 0; i < obj->nbgroups; i++)
 		{
-			if (obj->grouplist[i].nb_index > 0)
-			{
+			//if (obj->grouplist[i].nb_index > 0)
+			//{
 				// TODO allocsize += sizeof(long) * obj->grouplist[i].nb_index;
-			}
+			//}
 		}
 	}
 
@@ -389,13 +389,13 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 
 		for (int i = 0; i < af3Ddh->nb_groups; i++)
 		{
-			if (obj->grouplist[i].nb_index > 0)
-			{
-				memcpy(dat + pos, obj->grouplist[i].indexes, sizeof(long)*obj->grouplist[i].nb_index);
-				pos += sizeof(long) * obj->grouplist[i].nb_index;
+			//if (obj->grouplist[i].nb_index > 0)
+			//{
+				//memcpy(dat + pos, obj->grouplist[i].indexes, sizeof(long)*obj->grouplist[i].nb_index);
+				// TODO pos += sizeof(long) * obj->grouplist[i].nb_index;
 
-				if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
-			}
+				//if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
+			//}
 		}
 	}
 
@@ -857,22 +857,19 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 				EERIE_GROUPLIST_FTL* group = reinterpret_cast<EERIE_GROUPLIST_FTL*>(dat+pos);
 				obj->grouplist[i].name = group->name;
 				obj->grouplist[i].origin = group->origin;
-				obj->grouplist[i].nb_index = group->nb_index;
-				obj->grouplist[i].indexes = 0; // Nullpointer unless changed
+				obj->grouplist[i].indexes.resize(group->nb_index);
 				obj->grouplist[i].siz = group->siz;
 				pos += sizeof(EERIE_GROUPLIST_FTL); // Advance to next group
 			}
 
 			// Copy in the group index data
 			for (long i = 0; i < obj->nbgroups; i++)
-				if (obj->grouplist[i].nb_index > 0)
+				if (!obj->grouplist[i].indexes.empty())
 				{
-					// Alloc space for the index block
-					obj->grouplist[i].indexes = new long[obj->grouplist[i].nb_index];
-					std::copy( (long*)(dat+pos),
-					           (long*)(dat+pos + sizeof(long) * obj->grouplist[i].nb_index),
-					           obj->grouplist[i].indexes );
-					pos += sizeof(long) * obj->grouplist[i].nb_index; // Advance to the next index block
+					size_t oldpos = pos;
+					pos += sizeof(long) * obj->grouplist[i].indexes.size(); // Advance to the next index block
+					std::copy((long*)(dat+oldpos), (long*)(dat+pos), obj->grouplist[i].indexes.begin());
+					
 				}
 		}
 
