@@ -2168,11 +2168,10 @@ bool Menu2_Render()
 #undef MACRO_MENU_PRINCIPALE
 
 		//version
-		_TCHAR twVersion[32];
+//		_TCHAR twVersion[32];
 		// TODO Find replacement
-		MultiByteToWideChar(CP_ACP, 0, GetVersionString()+3, -1, (LPWSTR)twVersion, 32 );
-
-		me = new CMenuElementText( -1, hFontControls, twVersion, RATIO_X(580), RATIO_Y(65), lColor, 1.0f, NOP );
+//		MultiByteToWideChar(CP_ACP, 0, GetVersionString()+3, -1, (LPWSTR)twVersion, 32 );
+		me = new CMenuElementText( -1, hFontControls, arxVersion, RATIO_X(580), RATIO_Y(65), lColor, 1.0f, NOP );
 		me->SetCheckOff();
 		me->lColor=RGB(127,127,127);
 		pMenu->AddMenuElement(me);
