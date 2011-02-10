@@ -570,7 +570,6 @@ struct EERIE_3DOBJ
 
 		origin = 0;
 		ident = 0;
-		true_nbvertex = 0;
 		nbpfaces = 0;
 		nbgroups = 0;
 		drawflags = 0;
@@ -632,7 +631,6 @@ struct EERIE_3DOBJ
 	EERIE_3D angle;
 	long origin;
 	long ident;
-	long true_nbvertex;
 	long nbpfaces;
 	long nbgroups;
 	unsigned long drawflags;

@@ -584,7 +584,7 @@ void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, long * poss, long ver
 	         << " Nb Lines " << tn.nb_lines;
 	LogDebug << "Nb Faces " << tn.nb_faces << " Nb Groups " << tn.nb_groups;
 
-	eerie->true_nbvertex = eerie->nbvertex = tn.nb_vertex;
+	eerie->nbvertex = tn.nb_vertex;
 	eerie->nbfaces = tn.nb_faces;
 	eerie->nbgroups = tn.nb_groups;
 	// TODO eerie->nbaction = tn.nb_action_point;
@@ -1519,7 +1519,6 @@ void EERIE_3DOBJ::clear() {
 
 		origin = 0;
 		ident = 0;
-		true_nbvertex = 0;
 		nbpfaces = 0;
 		nbgroups = 0;
 		drawflags = 0;
@@ -1744,7 +1743,6 @@ EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj)
 	nouvo->origin = obj->origin;
 	Vector_Copy(&nouvo->point0, &obj->point0);
 	Quat_Copy(&nouvo->quat, &obj->quat);
-	nouvo->true_nbvertex = obj->true_nbvertex;
 
 
 	if (obj->ndata)
