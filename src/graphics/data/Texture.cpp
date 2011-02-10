@@ -73,7 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 // boolean and INT32 used by jpeglib clash with wine
 #define INT32 INT32_JPEG
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32
+#ifndef ARX_PLATFORM_WINDOWS
 # define boolean boolean_JPEG
 # ifdef _WIN32
 #  define HAD_WIN32
@@ -86,7 +86,7 @@ typedef boolean boolean_JPEG;
 
 #include <jpeglib.h>
 
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32
+#ifndef ARX_PLATFORM_WINDOWS
 # undef boolean
 # ifdef HAD_WIN32
 #  define _WIN32
