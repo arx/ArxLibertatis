@@ -289,7 +289,6 @@ long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest, unsigned int dest
 	EERIE_3D boxmin;
 	EERIE_3D boxmax;
 	const int tempSize = 128 ;
-	char temp[tempSize];
 	long i;
 
 	if (io == NULL) return -1;
@@ -342,8 +341,9 @@ long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest, unsigned int dest
 						{
 							if (EEfabs(inter.iobj[i]->pos.y - boxmin.y) < 40.f)
 							{
-							int iResult;
 //							todo: string stuff
+//							int iResult;
+//							char temp[tempSize];
 //							iResult = strcat_s(dest,destSize," ");
 //							assert (iResult == 0);
 //							iResult = strncpy_s(temp, tempSize, GetName(inter.iobj[i]->filename), strlen(GetName(inter.iobj[i]->filename)));
@@ -3821,7 +3821,6 @@ bool FastSceneLoad(const char * partial_path)
 	
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
-	char path2[256];
 	
 	//if (uh->count == 0) goto lasuite;
 	
@@ -3829,6 +3828,7 @@ bool FastSceneLoad(const char * partial_path)
 	//c_count = 0;
 	
 	/* TODO This will not work in a PAK file and no .scn files are shipped outside PAKs
+	char path2[256];
 	sprintf(path2, "%s*.scn", partial_path);
 	
 	LogDebug << "Looking for " << path2;
@@ -4338,7 +4338,6 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms)
 	if (!CreateFullPath(path)) return false;
 
 	FileHandle	handle;
-	long idx;
 	long count = 0;
 	unsigned char * dat;
 	long i, j, k, kk;
@@ -4388,26 +4387,23 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms)
 	uh->version = UNIQUE_VERSION;
 	pos += sizeof(UNIQUE_HEADER);
 
-	std::string path2;
-	char path3[256];
-
-	char * text;
-
-	path2 = partial_path;
+	std::string path2 = partial_path;
 	path2 +="*.scn";
 
 //	todo: find
 //	struct _finddata_t fd;
+//  long idx;
 //	if ((idx = _findfirst(path2, &fd)) != -1)
 //	{
 //		do
 //		{
 //			if (!(fd.attrib & _A_SUBDIR))
 //			{
-//				text = GetExt(fd.name);
+//				char * text = GetExt(fd.name);
 //
 //				if (!strcasecmp(text, ".SCN"))
 //				{
+//					char path3[256];
 //					sprintf(path3, "%s%s", partial_path, fd.name);
 //					SetExt(path3, ".scn");
 //					UNIQUE_HEADER2 * uh2 = (UNIQUE_HEADER2 *)(dat + pos);
@@ -5024,10 +5020,7 @@ void ComputePortalVertexBuffer()
 		{
 			char tTxt[256];
 			sprintf(tTxt, "rooms > 255");
-			MessageBox(NULL,
-					   tTxt,
-					   "Error Portals",
-					   MB_OK | MB_ICONERROR);
+			LogError<<tTxt<<" Error Portals";
 			return;
 		}
 
@@ -5196,10 +5189,7 @@ void ComputePortalVertexBuffer()
 			{
 				char tTxt[256];
 				sprintf(tTxt, "portals %d - Zero Vertex", iNb);
-				MessageBox(NULL,
-						   tTxt,
-						   "Error Portals",
-						   MB_OK | MB_ICONERROR);
+				LogError << tTxt<< " Error Portals";
 
 				vector<SINFO_TEXTURE_VERTEX *>::iterator it;
 
@@ -5239,10 +5229,7 @@ void ComputePortalVertexBuffer()
 
 				char tTxt[256];
 				sprintf(tTxt, "CreateVertexBuffer - NbVertexs %d", iNbVertexForRoom);
-				MessageBox(NULL,
-						   tTxt,
-						   "Error TransForm",
-						   MB_OK | MB_ICONERROR);
+				LogError << tTxt<< " Error TransForm";
 				return;
 			}
 
@@ -5378,10 +5365,7 @@ void ComputePortalVertexBuffer()
 				{
 					char tTxt[256];
 					sprintf(tTxt, "CreateVertexBuffer - Indices>65535");
-					MessageBox(NULL,
-							   tTxt,
-							   "Error TransForm",
-							   MB_OK | MB_ICONERROR);
+					LogError << tTxt<<" Error TransForm";
 				}
 
 				iStartCull +=	(*it)->iNbIndiceCull +

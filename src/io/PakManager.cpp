@@ -367,7 +367,7 @@ size_t PakManager::GetSize(const std::string& _filename) {
 	
 	for (vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
 		int size;
-		if((size = (*i)->GetSize(filename)) > 0) {
+		if((size = (*i)->GetSize(filename)) >= 0) {
 			LogInfo << "Got size in PAK "<< filename << " "<<size;
 			return size;
 		}

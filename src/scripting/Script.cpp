@@ -155,7 +155,7 @@ long FindScriptPosGOTO(const EERIE_SCRIPT * es, const string & str) {
 		return -1;
 	}
 	
-	long result = 0;
+	size_t result = 0;
 	size_t len2 = str.length();
 	
 	while(true) {
@@ -167,7 +167,7 @@ long FindScriptPosGOTO(const EERIE_SCRIPT * es, const string & str) {
 		
 		result = pdest - es->data;
 		
-		assert(result + len2 <= es->size);
+		assert(result + len2 <= (size_t)es->size);
 		
 		if(es->data[result + len2] <= 32) {
 			return result + len2;
@@ -2040,7 +2040,6 @@ SCRIPT_VAR* SETVarValueText(SCRIPT_VAR*& svf, long& nb, const std::string& name,
 		if (!tsv)
 			return NULL;
 
-		tsv->text = NULL;
 		strcpy(tsv->name, name.c_str());
 	}
 

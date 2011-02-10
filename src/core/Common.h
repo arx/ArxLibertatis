@@ -164,6 +164,15 @@ typedef double              f64;    // 64 bits double float
 #define ARXCOMMON_BUFFERSIZE	512
 #define DEBUG_INSIDEAFILE       true
 
+#if ARX_COMPILER_MSVC
+	#define ARX_DEBUG_BREAK()	__debugbreak()
+#elif ARX_COMPILER == ARX_COMPILER_GCC
+	#define ARX_DEBUG_BREAK()	__builtin_trap()
+#else
+	#define ARX_DEBUG_BREAK()
+#endif
+
+
 /* ---------------------------------------------------------
 					  Maccro for assertion
 ------------------------------------------------------------*/
@@ -178,7 +187,7 @@ enum ARX_DEBUG_LOG_TYPE
 
 #ifdef _DEBUG
 #define	TEST						    __LINE__
-#define arx_assert(_Expression) (void)	( (_Expression) ||  (ArxDebug::Assert((#_Expression), (__FILE__), __LINE__),  DebugBreak() , 0) )
+#define arx_assert(_Expression) (void)	( (_Expression) ||  (ArxDebug::Assert((#_Expression), (__FILE__), __LINE__),  ARX_DEBUG_BREAK() , 0) )
 
 
 #else //DO_CHECK
