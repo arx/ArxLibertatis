@@ -498,7 +498,7 @@ void ARX_EQUIPMENT_UnEquip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * tounequip
 				}
 				else if (!CanBePutInInventory(tounequip))
 				{
-					PutInFrontOfPlayer(tounequip, 1); 
+					PutInFrontOfPlayer(tounequip);
 				}
 			}
 

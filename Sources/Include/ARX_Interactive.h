@@ -167,7 +167,7 @@ void PrepareIOTreatZone(long flag = 0);
 
 void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, char * attach);
 
-void PutInFrontOfPlayer(INTERACTIVE_OBJ * io, long flag = 0);
+void PutInFrontOfPlayer(INTERACTIVE_OBJ * io);
 BOOL CanBePutInInventory(INTERACTIVE_OBJ * io);
 void SetShield(char * temp);
 void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io);

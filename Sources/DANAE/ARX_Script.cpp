@@ -11666,7 +11666,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 									if (!CanBePutInInventory(inter.iobj[t]))
 									{
-										PutInFrontOfPlayer(inter.iobj[t], 1);
+										PutInFrontOfPlayer(inter.iobj[t]);
 									}
 								}
 							}
@@ -11746,7 +11746,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 											if (!CanBePutInInventory(ioo))
 											{
-												PutInFrontOfPlayer(ioo, 1);
+												PutInFrontOfPlayer(ioo);
 											}
 										}
 									}
@@ -11796,7 +11796,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 									if (!CanBePutInSecondaryInventory((INVENTORY_DATA *)inter.iobj[ion]->inventory, inter.iobj[t], &xx, &yy))
 									{
-										PutInFrontOfPlayer(inter.iobj[t], 1);
+										PutInFrontOfPlayer(inter.iobj[t]);
 									}
 								}
 							}
@@ -11885,7 +11885,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 
 											if (!CanBePutInSecondaryInventory((INVENTORY_DATA *)inter.iobj[ion]->inventory, ioo, &xx, &yy))
 											{
-												PutInFrontOfPlayer(ioo, 1);
+												PutInFrontOfPlayer(ioo);
 											}
 										}
 									}

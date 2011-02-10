@@ -9538,7 +9538,7 @@ void ApplySPWep()
 
 			if (!CanBePutInInventory(ioo))
 			{
-				PutInFrontOfPlayer(ioo,1);
+				PutInFrontOfPlayer(ioo);
 			}
 
 			MakeSpCol();
@@ -9620,7 +9620,7 @@ void ApplySPBow()
 
 			if (!CanBePutInInventory(ioo))
 			{
-				PutInFrontOfPlayer(ioo,1);
+				PutInFrontOfPlayer(ioo);
 			}
 
 			MakeSpCol();
@@ -9667,7 +9667,7 @@ void ApplySPArm()
 
 		if (!CanBePutInInventory(ioo))
 		{
-			PutInFrontOfPlayer(ioo,1);
+			PutInFrontOfPlayer(ioo);
 		}
 
 		MakeSpCol();

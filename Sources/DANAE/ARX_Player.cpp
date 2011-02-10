@@ -312,7 +312,7 @@ void ARX_PLAYER_KillTorch()
 	}
 	else
 	{
-		PutInFrontOfPlayer(CURRENT_TORCH, 1);
+		PutInFrontOfPlayer(CURRENT_TORCH);
 	}
 
 	CURRENT_TORCH = NULL;

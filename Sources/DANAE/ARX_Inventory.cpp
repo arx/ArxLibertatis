@@ -315,9 +315,8 @@ INTERACTIVE_OBJ * GetInventoryObj_INVENTORYUSE(EERIE_S2D * pos)
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
 //   Puts an IO in front of the player
-//   flag=1 don't apply physics
 //*************************************************************************************
-void PutInFrontOfPlayer(INTERACTIVE_OBJ * io, long flag)
+void PutInFrontOfPlayer(INTERACTIVE_OBJ * io)
 {
 	if (io == NULL) return;
 
@@ -333,16 +332,17 @@ void PutInFrontOfPlayer(INTERACTIVE_OBJ * io, long flag)
 	io->angle.g = 0.f;
 	io->stopped = 0;
 	io->show = SHOW_FLAG_IN_SCENE;
-	EERIE_3D pos, vector;
-	vector.x = 0.f; 
-	vector.y = 100.f;
-	vector.z = 0.f;
-	pos.x = io->pos.x;
-	pos.y = io->pos.y;
-	pos.z = io->pos.z;
 
-	if ((flag) && (io) && (io->obj) && (io->obj->pbox))
+	if (io->obj && io->obj->pbox)
 	{
+		EERIE_3D pos, vector;
+		vector.x = 0.f; 
+		vector.y = 100.f;
+		vector.z = 0.f;
+		pos.x = io->pos.x;
+		pos.y = io->pos.y;
+		pos.z = io->pos.z;
+
 		io->soundtime = 0;
 		io->soundcount = 0;
 		EERIE_PHYSICS_BOX_Launch(io->obj, &pos, &vector);
@@ -358,7 +358,7 @@ void PutInFrontOfPlayer(INTERACTIVE_OBJ * io, long flag)
 void IO_Drop_Item(INTERACTIVE_OBJ * io_src, INTERACTIVE_OBJ * io)
 {
 	// Validity Check
-	if ((!io) || (!io_src)) return;
+	if (!io || !io_src) return;
 
 	float t = DEG2RAD(io_src->angle.b);
 	io->velocity.y = 0.3f;
@@ -369,16 +369,17 @@ void IO_Drop_Item(INTERACTIVE_OBJ * io_src, INTERACTIVE_OBJ * io)
 	io->angle.g = 0.f;
 	io->stopped = 0;
 	io->show = SHOW_FLAG_IN_SCENE;
-	EERIE_3D pos, vector;
-	vector.x = 0.f; 
-	vector.y = 100.f;
-	vector.z = 0.f;
-	pos.x = io->pos.x;
-	pos.y = io->pos.y;
-	pos.z = io->pos.z;
 
-	if ((io) && (io->obj) && (io->obj->pbox))
+	if (io->obj && io->obj->pbox)
 	{
+		EERIE_3D pos, vector;
+		vector.x = 0.f; 
+		vector.y = 100.f;
+		vector.z = 0.f;
+		pos.x = io->pos.x;
+		pos.y = io->pos.y;
+		pos.z = io->pos.z;
+
 		io->soundtime = 0;
 		io->soundcount = 0;
 		EERIE_PHYSICS_BOX_Launch_NOCOL(io, io->obj, &pos, &vector);
@@ -1834,7 +1835,7 @@ void CheckForInventoryReplaceMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * old)
 					{
 						if (CanBePutInInventory(io)) return;
 
-						PutInFrontOfPlayer(io, 1); 
+						PutInFrontOfPlayer(io);
 						return;
 					}
 				}
@@ -1856,7 +1857,7 @@ void CheckForInventoryReplaceMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * old)
 
 							if (CanBePutInSecondaryInventory(id, io, &xx, &yy)) return;
 
-							PutInFrontOfPlayer(io, 1); 
+							PutInFrontOfPlayer(io); 
 							return;
 						}
 					}
