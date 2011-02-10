@@ -63,35 +63,33 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <fstream>
 #include <sstream>
 
+#include "ai/PathFinderManager.h"
+#include "ai/Paths.h"
 #include "gui/Menu.h"
-#include "game/Player.h"
-
+#include "gui/Text.h"
+#include "gui/Speech.h"
 #include "graphics/Math.h"
-#include "scene/Object.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/Draw.h"
-#include "ai/PathFinderManager.h"
-
-#include "scene/ChangeLevel.h"
-#include "physics/Collisions.h"
-#include "graphics/particle/ParticleManager.h"
-#include "game/Damage.h"
-#include "game/Equipment.h"
 #include "graphics/effects/Fog.h"
 #include "graphics/GraphicsModes.h"
-#include "core/Localization.h"
+#include "graphics/particle/ParticleManager.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "game/Player.h"
+#include "game/Damage.h"
+#include "game/Equipment.h"
 #include "game/Missile.h"
 #include "game/NPC.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "ai/Paths.h"
-#include "gui/Text.h"
+#include "game/Spells.h"
+#include "scene/Object.h"
+#include "scene/ChangeLevel.h"
+#include "scene/Scene.h"
+#include "scene/GameSound.h"
+#include "physics/Collisions.h"
+#include "physics/Actors.h"
+#include "core/Localization.h"
 #include "core/Time.h"
 #include "scripting/Script.h"
-#include "scene/GameSound.h"
-#include "physics/Actors.h"
-#include "gui/Speech.h"
-#include "game/Spells.h"
-
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
@@ -3863,7 +3861,6 @@ void ARX_PLAYER_Invulnerability(long flag)
 extern INTERACTIVE_OBJ * FlyingOverIO;
 extern long cur_sm;
 extern void ClearDynLights();
-extern void ClearTileLights();
 
 void ARX_GAME_Reset(long type)
 {

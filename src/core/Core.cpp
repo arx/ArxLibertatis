@@ -8390,12 +8390,7 @@ void ClearGameDEVICE()
 	}
 }
 
-void ClearTileLights();
-
-//-----------------------------------------------------------------------------
-
-void ClearGame()
-{
+void ClearGame() {
 	ARX_Menu_Resources_Release();
 
 	//la configuration
