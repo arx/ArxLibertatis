@@ -8291,83 +8291,68 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 	return CD3DApplication::MsgProc( hWnd, uMsg, wParam, lParam );
 }
-void ReleaseSystemObjects()
-{
-	if (hero)
-	{
+
+void ReleaseSystemObjects() {
+	if (hero) {
 		ReleaseEERIE3DObj(hero);
 		hero=NULL;
 	}
 
-	if (inter.iobj[0])
-	{
+	if (inter.iobj[0]) {
 		inter.iobj[0]->obj = NULL;
 		ReleaseInter(inter.iobj[0]);
 		inter.iobj[0] = NULL;
 
-		if (inter.iobj)
-		{
+		if (inter.iobj)	{
 			free(inter.iobj);
 			inter.iobj = NULL;
 		}
 	}
 
-	if (eyeballobj)
-	{
+	if (eyeballobj)	{
 		ReleaseEERIE3DObj(eyeballobj);
 		eyeballobj=NULL;
 	}
 
-	if (cabal)
-	{
+	if (cabal) {
 		ReleaseEERIE3DObj(cabal);
 		cabal=NULL;
 	}
 
-	if (nodeobj)
-	{
+	if (nodeobj) {
 		ReleaseEERIE3DObj(nodeobj);
 		nodeobj=NULL;
 	}
 
-	if (fogobj)
-	{
+	if (fogobj) {
 		ReleaseEERIE3DObj(fogobj);
 		fogobj=NULL;
 	}
 
-	if (cameraobj)
-	{
+	if (cameraobj) {
 		ReleaseEERIE3DObj(cameraobj);
 		cameraobj=NULL;
 	}
 
-	if (markerobj)
-	{
+	if (markerobj) {
 		ReleaseEERIE3DObj(markerobj);
 		markerobj=NULL;
 	}
 
-	if (arrowobj)
-	{
+	if (arrowobj) {
 		ReleaseEERIE3DObj(arrowobj);
 		arrowobj=NULL;
 	}				
 
-	for (long i=0;i<MAX_GOLD_COINS_VISUALS;i++)
-	{
-		if (GoldCoinsObj[i])
-		{
+	for (long i=0;i<MAX_GOLD_COINS_VISUALS;i++) {
+		if (GoldCoinsObj[i]) {
 			ReleaseEERIE3DObj(GoldCoinsObj[i]);
 			GoldCoinsObj[i]=NULL;
 		}		
 	}
 }
 
-//-----------------------------------------------------------------------------
-
-void ClearGameDEVICE()
-{
+void ClearGameDEVICE() {
 	ShowWindow(danaeApp.m_hWnd,SW_MINIMIZE|SW_HIDE);
 
 	ARX_MINIMAP_PurgeTC();
@@ -8376,15 +8361,11 @@ void ClearGameDEVICE()
 		danaeApp.Unlock();
 
 	KillInterfaceTextureContainers();
-
 	Menu2_Close();
-
 	DanaeClearLevel(2);
-
 	D3DTextr_KillAllTextures();
 
-	if(ControlCinematique)
-	{
+	if(ControlCinematique) {
 		delete ControlCinematique;
 		ControlCinematique=NULL;
 	}
@@ -8394,16 +8375,14 @@ void ClearGame() {
 	ARX_Menu_Resources_Release();
 
 	//configuration
-	if(pMenuConfig)
-	{
+	if(pMenuConfig)	{
 		pMenuConfig->SaveAll();
 		delete pMenuConfig;
 		pMenuConfig=NULL;
 	}
 
 	//dinput
-	if(pGetInfoDirectInput)
-	{
+	if(pGetInfoDirectInput)	{
 		delete pGetInfoDirectInput;
 		pGetInfoDirectInput=NULL;
 	}
@@ -8417,8 +8396,7 @@ void ClearGame() {
 	ClearSysTextures();
 	FreeSaveGameList();
 
-	if (pParticleManager)
-	{
+	if (pParticleManager) {
 		delete pParticleManager;
 		pParticleManager = NULL;
 	}
@@ -8438,12 +8416,9 @@ void ClearGame() {
 	EERIE_ANIMMANAGER_ClearAll();
 
 	//Scripts
-	if (svar)
-	{
-		for (long i=0; i<NB_GLOBALS; i++)
-		{
-			if (svar[i].text)
-			{
+	if (svar) {
+		for (long i=0; i<NB_GLOBALS; i++) {
+			if (svar[i].text) {
 				free(svar[i].text);
 				svar[i].text=NULL;
 			}
@@ -8455,8 +8430,7 @@ void ClearGame() {
 
 	ARX_SCRIPT_Timer_ClearAll();
 
-	if (scr_timer)
-	{
+	if (scr_timer) {
 //		TODO(lubosz): crash
 //		free(scr_timer);
 		scr_timer=NULL;
@@ -8470,8 +8444,7 @@ void ClearGame() {
 	ReleaseDanaeBeforeRun();
 	PAK_Close();
 
-	if (danaeApp.ToolBar)
-	{
+	if (danaeApp.ToolBar) {
 		free(danaeApp.ToolBar);
 		danaeApp.ToolBar=NULL;
 	}
