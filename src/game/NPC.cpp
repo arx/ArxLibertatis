@@ -4075,9 +4075,7 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 		{
 			EERIE_3D orgn, dest;
 			// Retreives Head group position for "eye" pos.
-//TODO(lubosz): crash
-//			long grp = io->obj->fastaccess.head_group_origin;
-			long grp = 0;
+			long grp = io->obj->fastaccess.head_group_origin;
 			if (grp < 0)
 			{
 				orgn.x = io->pos.x;
