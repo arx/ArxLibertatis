@@ -1051,12 +1051,89 @@ int HandlerMemory(size_t stSize)
 
 //-----------------------------------------------------------------------------
 
-bool IsNoGore( void )
-{
+bool IsNoGore( void ) {
 	return GERMAN_VERSION? true : false;
 }
 
 //-----------------------------------------------------------------------------
+
+void forInternalPeople(LPSTR strCmdLine) {
+	LogDebug << "not FOR_EXTERNAL_PEOPLE";
+	char * param[10];
+	long parampos=0;
+
+	param[0]=strtok(strCmdLine," ");
+
+	for (long j=1;j<10;j++)
+		param[j]=strtok(NULL," ");
+
+	if ((param[parampos] != NULL)) {
+		if (!strcasecmp(param[parampos],"demo")) {
+			ARX_DEMO=1;
+		} else {
+			LogInfo << "PARAMS";
+			FINAL_RELEASE=0;
+			GAME_EDITOR=1;
+
+			if (!strcasecmp(param[parampos],"editor")) {
+				LogInfo << "PARAM EDITOR";
+				NEED_ANCHORS=1;
+			} else {
+				NEED_ANCHORS=1;
+				USE_FAST_SCENES=0;
+				LogInfo << "PARAM MOULINEX";
+
+				if (param[parampos][0]=='-') {
+					long posflags=parampos;
+					PROCESS_NO_POPUP=1;
+					PROCESS_ALL_THEO=0;
+					PROCESS_LEVELS=0;
+					PROCESS_ONLY_ONE_LEVEL=-1;
+
+					if ((IsIn(param[posflags],"u")) || (IsIn(param[posflags],"U"))) {
+						parampos++;
+						PROCESS_ONLY_ONE_LEVEL=atoi(param[parampos]);
+					}
+
+					if ((IsIn(param[posflags],"o")) || (IsIn(param[posflags],"O"))) {
+						PROCESS_ALL_THEO=1;
+					}
+
+					if ((IsIn(param[posflags],"f")) || (IsIn(param[posflags],"F"))) {
+						NEED_ANCHORS=0;
+						USE_FAST_SCENES=1;
+						NOCHECKSUM=1;
+					}
+
+					if ((IsIn(param[posflags],"l")) || (IsIn(param[posflags],"L"))) {
+						PROCESS_LEVELS=1;
+					}
+
+					if ((IsIn(param[posflags],"t")) || (IsIn(param[posflags],"T"))) {
+						TSU_LIGHTING=1;
+					}
+
+					parampos++;
+				} else {
+					PROCESS_ALL_THEO=1;
+					PROCESS_LEVELS=1;
+				}
+
+				if (!strcasecmp(param[parampos],"moulinex")) {
+					LogInfo << "Launching moulinex";
+					MOULINEX=1;
+					KILL_AT_MOULINEX_END=1;
+				}
+			}
+		}
+	} else {
+		LogInfo << "FRGE";
+		GAME_EDITOR=1;
+
+		if (FINAL_RELEASE)
+			GAME_EDITOR=0;
+	}
+}
 
 // Let's use main for now on all platforms
 // TODO: On Windows, we might want to use WinMain in the Release target for example
@@ -1103,7 +1180,7 @@ int main(int, char**)
 		NO_TEXT_AT_ALL		= 1;
 
 		if (!FINAL_COMMERCIAL_DEMO)
-			ARX_DEMO		= 0; 
+			ARX_DEMO		= 0;
 
 		FAST_SPLASHES		= 0;
 		FORCE_SHOW_FPS		= 0;
@@ -1120,19 +1197,19 @@ int main(int, char**)
 	else if (CEDRIC_VERSION)
 	{
 		LogDebug << "CEDRIC_VERSION";
-		ARX_DEMO=0; 
+		ARX_DEMO=0;
 		FAST_SPLASHES=1;
 		FORCE_SHOW_FPS=1;
 		FINAL_RELEASE=1; // 1 with pack or 0 without pack
 		AUTO_FULL_SCREEN=0;
-		USE_D3DFOG=1; 
+		USE_D3DFOG=1;
 	}
 
 	CalcFPS(true);
 	HERMES_Memory_Security_On(32000);
-	
+
 	ARX_MAPMARKER_Init();
-	
+
 	for (i=0;i<8;i++)	scursor[i]=NULL;
 
 	ARX_DAMAGES_SCREEN_SPLATS_Init();
@@ -1147,102 +1224,7 @@ int main(int, char**)
 	LogInfo << "Project Init";
 
 	if (!FOR_EXTERNAL_PEOPLE)
-	{
-		LogDebug << "not FOR_EXTERNAL_PEOPLE";
-		char * param[10];
-		long parampos=0;
-		
-		param[0]=strtok(strCmdLine," ");
-
-		for (long j=1;j<10;j++)
-			param[j]=strtok(NULL," ");
-
-		if ((param[parampos] != NULL))
-		{
-			if (!strcasecmp(param[parampos],"demo"))
-			{
-				ARX_DEMO=1;
-			}
-			else
-			{
-				LogInfo << "PARAMS";
-				FINAL_RELEASE=0;
-				GAME_EDITOR=1;
-
-				if (!strcasecmp(param[parampos],"editor"))
-				{
-					LogInfo << "PARAM EDITOR";
-					NEED_ANCHORS=1;
-				}
-				else
-				{
-					NEED_ANCHORS=1;
-					USE_FAST_SCENES=0;
-					LogInfo << "PARAM MOULINEX";
-
-					if (param[parampos][0]=='-')
-					{
-						long posflags=parampos;
-						PROCESS_NO_POPUP=1;
-						PROCESS_ALL_THEO=0;
-						PROCESS_LEVELS=0;
-						PROCESS_ONLY_ONE_LEVEL=-1;
-
-						if ((IsIn(param[posflags],"u")) || (IsIn(param[posflags],"U")))
-						{
-							parampos++;
-							PROCESS_ONLY_ONE_LEVEL=atoi(param[parampos]);
-						}				
-
-						if ((IsIn(param[posflags],"o")) || (IsIn(param[posflags],"O")))
-						{
-							PROCESS_ALL_THEO=1;
-						}
-
-						if ((IsIn(param[posflags],"f")) || (IsIn(param[posflags],"F")))
-						{
-							NEED_ANCHORS=0;
-							USE_FAST_SCENES=1;
-							NOCHECKSUM=1;
-						}
-
-						if ((IsIn(param[posflags],"l")) || (IsIn(param[posflags],"L")))
-						{
-							PROCESS_LEVELS=1;
-						}
-
-						if ((IsIn(param[posflags],"t")) || (IsIn(param[posflags],"T")))
-						{
-							TSU_LIGHTING=1;
-						}
-
-						parampos++;
-					}
-					else
-					{
-						PROCESS_ALL_THEO=1;
-						PROCESS_LEVELS=1;
-					}
-
-					if (!strcasecmp(param[parampos],"moulinex"))
-					{
-						LogInfo << "Launching moulinex";
-						MOULINEX=1;
-						KILL_AT_MOULINEX_END=1;
-						
-					}
-				}
-			}
-		}
-		else
-		{
-			LogInfo << "FRGE";
-			GAME_EDITOR=1;
-
-			if (FINAL_RELEASE) 
-				GAME_EDITOR=0;
-		}
-	}
+		forInternalPeople(strCmdLine);
 
 	NOCHECKSUM=0;
 
