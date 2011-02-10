@@ -138,7 +138,7 @@ LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 void ResetAllGlobalVars();
 
 extern void ARX_MENU_Clicked_CREDITS();
-extern void ARX_MENU_Launch(LPDIRECT3DDEVICE7 m_pd3dDevice);
+extern void ARX_MENU_Launch();
 void ARX_INTERFACE_Combat_Mode(long);
 bool ARX_EQUIPMENT_IsPlayerEquip(INTERACTIVE_OBJ * _pIO);
 //*************************************************************************************
@@ -12795,7 +12795,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ
 					else
 					{
 						ARX_SOUND_MixerStop(ARX_SOUND_MixerGame);
-						ARX_MENU_Launch(GDevice);
+						ARX_MENU_Launch();
 						ARX_MENU_Clicked_CREDITS();
 					}
 				}

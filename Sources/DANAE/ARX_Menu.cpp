@@ -76,9 +76,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "HERMESmain.h"
 
+#include "Mercury_dx_input.h"
+
 #include <fstream>
 #include <stdlib.h>
 #include <windows.h>
+#include <dinput.h>
 
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
@@ -268,7 +271,7 @@ void ARX_MENU_LaunchAmb(char * _lpszAmb)
 }
 
 //-----------------------------------------------------------------------------
-void ARX_Menu_Resources_Create(LPDIRECT3DDEVICE7 m_pd3dDevice)
+void ARX_Menu_Resources_Create()
 {
 	if (ARXmenu.mda)
 	{
@@ -477,7 +480,7 @@ void ARX_MENU_Clicked_QUIT_GAME()
 }
 
 //-----------------------------------------------------------------------------
-void ARX_MENU_Launch(LPDIRECT3DDEVICE7 m_pd3dDevice)
+void ARX_MENU_Launch()
 {
 	ARX_TIME_Pause();
 
@@ -488,13 +491,13 @@ void ARX_MENU_Launch(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	ARX_MENU_CLICKSOUND();
 
 	ARXmenu.currentmode = AMCM_MAIN;
-	ARX_Menu_Resources_Create(m_pd3dDevice);
+	ARX_Menu_Resources_Create();
 }
 
 //-----------------------------------------------------------------------------
 // ARX Menu Management Func
 //-----------------------------------------------------------------------------
-void ARX_Menu_Manage(LPDIRECT3DDEVICE7 m_pd3dDevice)
+void ARX_Menu_Manage()
 {
 	// looks for keys for each mode.
 	switch (ARXmenu.currentmode)
@@ -551,7 +554,7 @@ long NEED_INTRO_LAUNCH = 0;
 // ARX Menu Rendering Func
 // returns FALSE if no menu needs to be displayed
 //-----------------------------------------------------------------------------
-BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+BOOL ARX_Menu_Render()
 {
 	// Auto-Launch Demo after 60 sec idle on Main Menu
 	if ((ARXmenu.currentmode == AMCM_MAIN) && CAN_REPLAY_INTRO)
@@ -626,7 +629,7 @@ BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		if (ITC.questbook == NULL) 
 		{
 			ARX_Menu_Resources_Release(false);
-			ARX_Menu_Resources_Create(m_pd3dDevice);
+			ARX_Menu_Resources_Create();
 
 			ITC.playerbook = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\char_sheet_book.bmp");
 			ITC.ic_casting = MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_casting.bmp");

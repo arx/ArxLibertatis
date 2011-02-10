@@ -58,13 +58,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_MENU_H
 #define ARX_MENU_H
 
-#include "eerietexture.h"
-#include "ARX_input.h"
-
 #include <tchar.h>
+#include <windows.h>
 
 //-----------------------------------------------------------------------------
+
+class TextureContainer;
+
 #define MAX_FLYOVER	32
+
 struct MENU_DYNAMIC_DATA
 {
 	TextureContainer	* Background;
@@ -116,11 +118,11 @@ extern long save_p;
 extern char LOCAL_SAVENAME[64];
 
 //-----------------------------------------------------------------------------
-void ARX_Menu_Manage(LPDIRECT3DDEVICE7 m_pd3dDevice);
-BOOL ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice);
-void ARX_MENU_Launch(LPDIRECT3DDEVICE7 m_pd3dDevice);
+void ARX_Menu_Manage();
+BOOL ARX_Menu_Render();
+void ARX_MENU_Launch();
 void ARX_MENU_Clicked_QUIT_GAME();
-void ARX_Menu_Resources_Create(LPDIRECT3DDEVICE7 m_pd3dDevice);
+void ARX_Menu_Resources_Create();
 void ARX_Menu_Resources_Release(bool _bNoSound = true);
 void ARX_Menu_Release_Text(void * a);
 

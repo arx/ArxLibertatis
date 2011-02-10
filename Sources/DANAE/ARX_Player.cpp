@@ -3670,7 +3670,7 @@ void ARX_PLAYER_Manage_Death()
 
 	if (ratio == 1.f)
 	{
-		ARX_MENU_Launch(GDevice);
+		ARX_MENU_Launch();
 		DeadTime = 0;
 	}
 
