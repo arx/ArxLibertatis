@@ -400,12 +400,12 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io)
 {
 	if ((!io)
 	        ||	(!io->obj)
-	        ||	(!io->obj->texturecontainer))
+	        ||	io->obj->texturecontainer.empty())
 		return;
 
 	long gorenum = -1;
 
-	for (long nn = 0; nn < io->obj->nbmaps; nn++)
+	for (size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++)
 	{
 		if (io->obj->texturecontainer[nn]
 		        &&	TextureContainer_Exist(io->obj->texturecontainer[nn])
@@ -429,11 +429,12 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io)
 
 
 // flag & 1 == no unhide non-gore
+// TODO very simmilar to ARX_INTERACTIVE_RemoveGoreOnIO
 void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 {
 	if ((!io)
 	        ||	(!io->obj)
-	        ||	(!io->obj->texturecontainer))
+	        ||	io->obj->texturecontainer.empty())
 		return;
 
 	if ((io == inter.iobj[0]) && (!flag & 1))
@@ -441,7 +442,7 @@ void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 
 	long gorenum = -1;
 
-	for (long nn = 0; nn < io->obj->nbmaps; nn++)
+	for (size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++)
 	{
 		if (io->obj->texturecontainer[nn]
 		        &&	TextureContainer_Exist(io->obj->texturecontainer[nn])

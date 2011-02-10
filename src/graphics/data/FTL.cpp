@@ -752,7 +752,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 
 		obj->vertexlist.resize(af3Ddh->nb_vertex);
 		obj->facelist.resize(af3Ddh->nb_faces);
-		obj->nbmaps = af3Ddh->nb_maps;
+		obj->texturecontainer.resize(af3Ddh->nb_maps);
 		obj->nbgroups = af3Ddh->nb_groups;
 		obj->actionlist.resize(af3Ddh->nb_action);
 		obj->selections.resize(af3Ddh->nb_selections);
@@ -820,8 +820,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		// Alloc'n'Copy textures
 		if (af3Ddh->nb_maps > 0)
 		{
-			// Alloc the TextureContainers
-			obj->texturecontainer = new TextureContainer*[af3Ddh->nb_maps];
 
 			// Copy in the texture containers
 			for (long i = 0; i < af3Ddh->nb_maps; i++)

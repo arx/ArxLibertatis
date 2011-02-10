@@ -210,9 +210,9 @@ void ARX_NPC_Revive(INTERACTIVE_OBJ * io, long flags)
 
 	long goretex = -1;
 
-	for (long i = 0; i < io->obj->nbmaps; i++)
+	for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 	{
-		if (io->obj->texturecontainer
+		if (!io->obj->texturecontainer.empty()
 		        &&	io->obj->texturecontainer[i]
 		        &&	(IsIn(io->obj->texturecontainer[i]->m_strName, "GORE")))
 		{
@@ -1477,10 +1477,9 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 	long gore = -1;
 
-	for (long k = 0; k < from->nbmaps; k++)
+	for (size_t k = 0; k < from->texturecontainer.size(); k++)
 	{
-		if (from->texturecontainer
-		        && from->texturecontainer[k]
+		if (from->texturecontainer[k]
 		        && (IsIn(from->texturecontainer[k]->m_strName, "GORE")))
 		{
 			gore = k;
@@ -1632,10 +1631,9 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 		long gore = -1;
 
-		for (int k = 0; k < from->nbmaps; k++)
+		for (size_t k = 0; k < from->texturecontainer.size(); k++)
 		{
-			if (from->texturecontainer
-			        && from->texturecontainer[k]
+			if (from->texturecontainer[k]
 			        && (IsIn(from->texturecontainer[k]->m_strName, "GORE")))
 			{
 				gore = k;
@@ -1655,19 +1653,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	}
 
 	free(equival);
-	nouvo->nbmaps = from->nbmaps;
-
-	if (from->nbmaps)
-	{
-
-		nouvo->texturecontainer = (TextureContainer **)malloc(sizeof(TextureContainer *) * nouvo->nbmaps); 
-
-		if(!nouvo->texturecontainer) {
-			delete nouvo;
-		}
-
-		memcpy(nouvo->texturecontainer, from->texturecontainer, sizeof(TextureContainer *)*nouvo->nbmaps);
-	}
+	nouvo->texturecontainer = from->texturecontainer;
 
 	nouvo->linked			=	NULL;
 	nouvo->nblinked			=	0;
@@ -1871,10 +1857,9 @@ long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io)
 	ReComputeCutFlags(io);
 	long goretex = -1;
 
-	for (long i = 0; i < io->obj->nbmaps; i++)
+	for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 	{
-		if (io->obj->texturecontainer
-		        &&	io->obj->texturecontainer[i]
+		if (io->obj->texturecontainer[i]
 		        &&	(IsIn(io->obj->texturecontainer[i]->m_strName, "GORE")))
 		{
 			goretex = i;
@@ -1939,10 +1924,9 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos)
 	long numsel = -1;
 	long goretex = -1;
 
-	for (long i = 0; i < target->obj->nbmaps; i++)
+	for (size_t i = 0; i < target->obj->texturecontainer.size(); i++)
 	{
-		if (target->obj->texturecontainer
-		        &&	target->obj->texturecontainer[i]
+		if (target->obj->texturecontainer[i]
 		        &&	(IsIn(target->obj->texturecontainer[i]->m_strName, "GORE")))
 		{
 			goretex = i;

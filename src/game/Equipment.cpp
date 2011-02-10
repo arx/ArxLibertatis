@@ -235,7 +235,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				long textochange = -1;
 
-				for (long i = 0; i < io->obj->nbmaps; i++)
+				for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 				{
 					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName).c_str()))
 						textochange = i;
@@ -291,7 +291,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				long textochange = -1;
 
-				for (long i = 0; i < io->obj->nbmaps; i++)
+				for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 				{
 					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName).c_str()))
 						textochange = i;
@@ -347,7 +347,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				long textochange = -1;
 
-				for (long i = 0; i < io->obj->nbmaps; i++)
+				for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 				{
 					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName).c_str()))
 						textochange = i;

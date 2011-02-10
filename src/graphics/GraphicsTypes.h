@@ -572,18 +572,16 @@ struct EERIE_3DOBJ
 		ident = 0;
 		true_nbvertex = 0;
 		nbpfaces = 0;
-		nbmaps = 0;
 		nbgroups = 0;
 		drawflags = 0;
 
-		vertexlocal = 0;
+		vertexlocal = NULL;
 
-		pfacelist = 0;
-		grouplist = 0;
-		texturecontainer = 0;
+		pfacelist = NULL;
+		grouplist = NULL;
 
-		originaltextures = 0;
-		linked = 0;
+		originaltextures = NULL;
+		linked = NULL;
 
 		// TODO Make default constructor possible
 		cub.xmin = 0;
@@ -622,54 +620,52 @@ struct EERIE_3DOBJ
 		fastaccess.carry_attach = 0;
 		fastaccess.__padd = 0;
 
-		c_data = 0;
+		c_data = NULL;
 	}
 	
 	void clear();
 	
 	std::string name;
 	std::string file;
-	EERIE_3D			pos;
-	EERIE_3D			point0;
-	EERIE_3D			angle;
-	long				origin;
-	long				ident;
-	long				true_nbvertex;
-	long				nbpfaces;
-	long				nbmaps;
-	long				nbgroups;
-	unsigned long		drawflags;
-	EERIE_3DPAD 	*	vertexlocal;
+	EERIE_3D pos;
+	EERIE_3D point0;
+	EERIE_3D angle;
+	long origin;
+	long ident;
+	long true_nbvertex;
+	long nbpfaces;
+	long nbgroups;
+	unsigned long drawflags;
+	EERIE_3DPAD * vertexlocal;
 	std::vector<EERIE_VERTEX> vertexlist;
 	std::vector<EERIE_VERTEX> vertexlist3;
 
 	std::vector<EERIE_FACE> facelist;
-	EERIE_PFACE 	*	pfacelist;
-	EERIE_GROUPLIST *	grouplist;
+	EERIE_PFACE * pfacelist;
+	EERIE_GROUPLIST * grouplist;
 	std::vector<EERIE_ACTIONLIST> actionlist;
 	std::vector<EERIE_SELECTIONS> selections;
-	TextureContainer ** texturecontainer;
+	std::vector<TextureContainer*> texturecontainer;
 
-	char 		*		originaltextures;
-	CUB3D				cub;
-	EERIE_QUAT			quat;
-	EERIE_LINKED 	*	linked;
-	long				nblinked;
+	char * originaltextures;
+	CUB3D cub;
+	EERIE_QUAT quat;
+	EERIE_LINKED * linked;
+	long nblinked;
 
 
-	PHYSICS_BOX_DATA *	pbox;
-	PROGRESSIVE_DATA 		*		pdata;
-	NEIGHBOURS_DATA 		*		ndata;
-	CLOTHES_DATA 		*			cdata;
-	COLLISION_SPHERES_DATA *	sdata;
-	EERIE_FASTACCESS	fastaccess;
-	EERIE_C_DATA 	*	c_data;
-
+	PHYSICS_BOX_DATA * pbox;
+	PROGRESSIVE_DATA * pdata;
+	NEIGHBOURS_DATA * ndata;
+	CLOTHES_DATA * cdata;
+	COLLISION_SPHERES_DATA * sdata;
+	EERIE_FASTACCESS fastaccess;
+	EERIE_C_DATA * c_data;
+	
 }; // Aligned 1 2 4
 
 
-typedef struct
-{
+struct EERIE_3DSCENE {
 	long			nbobj;
 	EERIE_3DOBJ **	objs;
 	EERIE_3D		pos;
@@ -682,7 +678,7 @@ typedef struct
 	float			ambient_g;
 	float			ambient_b;
 	CUB3D			cub;
-} EERIE_3DSCENE; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
 
 #define MAX_SCENES 64

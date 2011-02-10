@@ -75,7 +75,7 @@ void EERIE_MESH_ReleaseTransPolys(EERIE_3DOBJ * obj)
 
 	for (long i = 0; i < INTERTRANSPOLYSPOS; i++)
 	{
-		for (long ii = 0; ii < obj->nbmaps; ii++)
+		for (size_t ii = 0; ii < obj->texturecontainer.size(); ii++)
 		{
 			if (InterTransTC[i] == obj->texturecontainer[ii])
 			{
@@ -107,10 +107,10 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const std::string& s1, const std::
 
 	if (obj->originaltextures == NULL)
 	{
-		obj->originaltextures = (char *)malloc(256 * obj->nbmaps); 
-		memset(obj->originaltextures, 0, 256 * obj->nbmaps);
+		obj->originaltextures = (char *)malloc(256 * obj->texturecontainer.size()); 
+		memset(obj->originaltextures, 0, 256 * obj->texturecontainer.size());
 
-		for (long i = 0; i < obj->nbmaps; i++)
+		for (size_t i = 0; i < obj->texturecontainer.size(); i++)
 		{
 			if (obj->texturecontainer[i])
 				strcpy(obj->originaltextures + 256 * i, obj->texturecontainer[i]->m_texName.c_str());
@@ -120,7 +120,7 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const std::string& s1, const std::
 
 	if ((tex != NULL) && (obj->originaltextures != NULL))
 	{
-		for (long i = 0; i < obj->nbmaps; i++)
+		for (size_t i = 0; i < obj->texturecontainer.size(); i++)
 		{
 			if ((strstr(obj->originaltextures + 256 * i, skintochange.c_str())))
 			{
@@ -133,7 +133,7 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const std::string& s1, const std::
 		TextureContainer * tex2 = FindTexture(skintochange.c_str());
 
 		if (tex2)
-			for (long i = 0; i < obj->nbmaps; i++)
+			for (size_t i = 0; i < obj->texturecontainer.size(); i++)
 			{
 				if (obj->texturecontainer[i] == tex2)  obj->texturecontainer[i] = tex;
 			}
@@ -236,7 +236,7 @@ long ObjectAddFace(EERIE_3DOBJ * obj, EERIE_FACE * face, EERIE_3DOBJ * srcobj)
 	obj->facelist.back().vid[2] = (unsigned short)f2;
 	obj->facelist.back().texid = 0; 
 
-	for (long i = 0; i < obj->nbmaps; i++)
+	for (size_t i = 0; i < obj->texturecontainer.size(); i++)
 	{
 		if (obj->texturecontainer[i] == srcobj->texturecontainer[face->texid])
 		{
@@ -282,20 +282,15 @@ long ObjectAddMap(EERIE_3DOBJ * obj, TextureContainer * tc)
 {
 	if (tc == NULL) return -1;
 
-	for (long i = 0; i < obj->nbmaps; i++)
+	for (size_t i = 0; i < obj->texturecontainer.size(); i++)
 	{
 		if (obj->texturecontainer[i] == tc)
 			return i;
 	}
 
-	if (obj->nbmaps == 0)
-		obj->texturecontainer = (TextureContainer **)malloc(sizeof(TextureContainer *)); 
-	else
-		obj->texturecontainer = (TextureContainer **)realloc(obj->texturecontainer, sizeof(TextureContainer *) * (obj->nbmaps + 1));
+	obj->texturecontainer.push_back(tc);
 
-	obj->texturecontainer[obj->nbmaps] = tc;
-	obj->nbmaps++;
-	return (obj->nbmaps - 1);
+	return (obj->texturecontainer.size() - 1);
 }
 //*************************************************************************************
 //*************************************************************************************
@@ -808,7 +803,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	}
 
 	// Look for Vertices Without Group...
-	for (long i = 0; i < work->nbmaps; i++)
+	for (size_t i = 0; i < work->texturecontainer.size(); i++)
 	{
 		work->texturecontainer[i]->Restore(GDevice);
 	}

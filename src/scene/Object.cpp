@@ -1377,9 +1377,8 @@ EERIE_3DSCENE * ScnToEerie(unsigned char * adr, long size, const std::string& fi
 		// TODO most is done in the constructor already
 		if(seerie->objs[id]) seerie->objs[id]->clear();
 
-		seerie->objs[id]->texturecontainer = copyStruct(seerie->texturecontainer, "ScnObjTC", psth->nb_maps); 
-
-		seerie->objs[id]->nbmaps = seerie->nbtex;
+		seerie->objs[id]->texturecontainer.resize(seerie->nbtex);
+		std::copy(seerie->texturecontainer, seerie->texturecontainer + seerie->nbtex, seerie->objs[id]->texturecontainer.begin());
 
 		if	(psth->version < 3013)	_THEObjLoad(seerie->objs[id], adr, &pos, 3004, TTE_NO_NDATA | TTE_NO_PDATA);
 		else if (psth->version < 3015)	_THEObjLoad(seerie->objs[id], adr, &pos, 3005, TTE_NO_NDATA | TTE_NO_PDATA);
@@ -1393,8 +1392,6 @@ EERIE_3DSCENE * ScnToEerie(unsigned char * adr, long size, const std::string& fi
 		seerie->cub.ymax = max(seerie->cub.ymax, seerie->objs[id]->cub.ymax + seerie->objs[id]->pos.y);
 		seerie->cub.zmin = min(seerie->cub.zmin, seerie->objs[id]->cub.zmin + seerie->objs[id]->pos.z);
 		seerie->cub.zmax = max(seerie->cub.zmax, seerie->objs[id]->cub.zmax + seerie->objs[id]->pos.z);
-
-		seerie->objs[id]->nbmaps = seerie->nbtex;
 
 		if (!strcmp(ptoh->object_name, "map_origin"))
 		{
@@ -1524,7 +1521,6 @@ void EERIE_3DOBJ::clear() {
 		ident = 0;
 		true_nbvertex = 0;
 		nbpfaces = 0;
-		nbmaps = 0;
 		nbgroups = 0;
 		drawflags = 0;
 
@@ -1535,7 +1531,7 @@ void EERIE_3DOBJ::clear() {
 		facelist.clear();
 		pfacelist = NULL;
 		grouplist = NULL;
-		texturecontainer = NULL;
+		texturecontainer.clear();
 
 		originaltextures = NULL;
 		linked = NULL;
@@ -1612,10 +1608,6 @@ void ReleaseEERIE3DObjFromScene(EERIE_3DOBJ * eerie)
 	EERIE_PHYSICS_BOX_Release(eerie);
 	EERIE_COLLISION_SPHERES_Release(eerie);
 
-	if (eerie->texturecontainer != NULL)	delete[] eerie->texturecontainer;
-
-	eerie->texturecontainer = NULL;
-
 	if (eerie->grouplist != NULL)
 	{
 		delete[] eerie->grouplist;
@@ -1641,11 +1633,6 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 		free(eerie->originaltextures);
 		eerie->originaltextures = NULL;
 	}
-
-
-	if (eerie->texturecontainer != NULL)	delete[] eerie->texturecontainer;
-
-	eerie->texturecontainer = NULL;
 
 	if (eerie->ndata != NULL)
 	{
@@ -1685,7 +1672,7 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 //-----------------------------------------------------------------------------------------------------
 void ReCreateUVs(EERIE_3DOBJ * eerie, long flag)
 {
-	if (!eerie->texturecontainer) return;
+	if(eerie->texturecontainer.empty()) return;
 
 	float sxx, syy;
 	float sxmod, symod;
@@ -1778,10 +1765,7 @@ EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj)
 
 	nouvo->selections = obj->selections;
 
-	if(obj->nbmaps) {
-		nouvo->nbmaps = obj->nbmaps;
-		nouvo->texturecontainer = copyStruct(obj->texturecontainer, "EECopyMaps", obj->nbmaps);
-	}
+	nouvo->texturecontainer = obj->texturecontainer;
 	
 	memcpy(&nouvo->fastaccess, &obj->fastaccess, sizeof(EERIE_FASTACCESS));
 	EERIE_CreateCedricData(nouvo);
@@ -2222,12 +2206,11 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, 
 
 		if (DEBUGG) SendConsole("SAVE_MAP_IN_OBJECT = true", 3, 0, (HWND)MSGhwnd);
 
-		eerie->nbmaps = pth->nb_maps;
+		eerie->texturecontainer.resize(pth->nb_maps);
 
 		if (pth->nb_maps > 0)
 		{
 			pos2 = pth->maps_seek;
-			eerie->texturecontainer = new TextureContainer*[pth->nb_maps];
 		}
 
 		for (long i = 0; i < pth->nb_maps; i++)
@@ -2244,14 +2227,9 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, 
 
 		if ((pth->type_write & SAVE_MAP_BMP) || (pth->type_write & SAVE_MAP_TGA))
 		{
-			eerie->nbmaps = pth->nb_maps;
+			eerie->texturecontainer.resize(pth->nb_maps);
 
 			if (DEBUGG)	SendConsole("SAVE_MAP_BMP or TGA = true", 3, 0, (HWND)MSGhwnd);
-
-			if (pth->nb_maps > 0)
-			{
-				eerie->texturecontainer = allocStruct<TextureContainer *>("EETc", pth->nb_maps); 
-			}
 
 			for (long i = 0; i < pth->nb_maps; i++)
 			{
@@ -2455,9 +2433,9 @@ void RemoveAllBackgroundActions()
 
 void EERIE_3DOBJ_RestoreTextures(EERIE_3DOBJ * eobj)
 {
-	if ((eobj) && (eobj->texturecontainer))
+	if ((eobj) && !eobj->texturecontainer.empty())
 	{
-		for (long i = 0; i < eobj->nbmaps; i++)
+		for (size_t i = 0; i < eobj->texturecontainer.size(); i++)
 		{
 			if (eobj->texturecontainer[i])
 			{
