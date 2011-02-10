@@ -1144,11 +1144,11 @@ int main(int, char**)
 	LogDebug << "Danae Start";
 
 	Project.vsync = true;
-	LogInfo << "Project Init";
+	LogDebug << "Project Init";
 
 	if (!FOR_EXTERNAL_PEOPLE)
 	{
-		LogDebug << "not FOR_EXTERNAL_PEOPLE";
+		LogInfo << "not FOR_EXTERNAL_PEOPLE";
 		char * param[10];
 		long parampos=0;
 		
@@ -1251,37 +1251,37 @@ int main(int, char**)
 		LogInfo << "FINAL RELEASE";
 		
 		if(pStringMod[0]) {
-			LogInfo << pStringMod;
+			LogDebug << pStringMod;
 			if(PAK_AddPak(pStringMod.c_str())) {
-				LogInfo << "LoadMode OK";
+				LogDebug << "LoadMode OK";
 			}
 		}
 		
 		const char PAK_DATA[] = "data.pak";
-		LogInfo << PAK_DATA;
+		LogDebug << PAK_DATA;
 		NOBUILDMAP=1;
 		NOCHECKSUM=1;
-		if(PAK_AddPak( PAK_DATA)) {
-			LogInfo << "LoadMode OK";
+		if(PAK_AddPak(PAK_DATA)) {
+			LogDebug << "LoadMode OK";
 		} else {
 			LogError << "Unable to Find Data File";
 			exit(0);
 		}
 		
 		const char PAK_LOC[] = "loc.pak";
-		LogInfo << "LocPAK";
+		LogDebug << "LocPAK";
 		if(!PAK_AddPak(PAK_LOC)) {
 			const char PAK_LOC_DEFAULT[] = "loc_default.pak";
 			if(!PAK_AddPak(PAK_LOC_DEFAULT)) {
-				printf("Unable to Find Localization File\n");
+				LogError << "Unable to Find Localization File";
 				exit(0);
 			}
 		}
 		
-		LogInfo << "data2PAK";
+		LogDebug << "data2PAK";
 		const char PAK_DATA2[] = "data2.pak";
 		if(!PAK_AddPak(PAK_DATA2)) {
-			printf("Unable to Find Aux Data File\n");
+			LogError << "Unable to Find Aux Data File";
 			exit(0);
 		}
 		
@@ -1305,12 +1305,12 @@ int main(int, char**)
 	}
 
 	ARX_INTERFACE_NoteInit();
-	LogInfo << "Note Init";
+	LogDebug << "Note Init";
 	Vector_Init(&PUSH_PLAYER_FORCE);	
 	ARX_SPECIAL_ATTRACTORS_Reset();
-	LogInfo << "Attr Init";
+	LogDebug << "Attractors Init";
 	ARX_SPELLS_Precast_Reset();
-	LogInfo << "ASP Init";
+	LogDebug << "Spell Init";
 	
 	for (long t=0;t<MAX_GOLD_COINS_VISUALS;t++)
 	{
@@ -1318,22 +1318,22 @@ int main(int, char**)
 		GoldCoinsTC[t]=NULL;
 	}
 
-	LogInfo << "GC Init";
+	LogDebug << "GC Init";
 	memset(LOCAL_SAVENAME,0,60);
-	LogInfo << "LSV Init";
+	LogDebug << "LSV Init";
 	ModeLight=MODE_DYNAMICLIGHT | MODE_DEPTHCUEING;
 
 	memset(&DefaultBkg,0,sizeof(EERIE_BACKGROUND));
 	memset(TELEPORT_TO_LEVEL,0,64);
 	memset(TELEPORT_TO_POSITION,0,64);
-	LogInfo << "Mset";
+	LogDebug << "Mset";
 	
 	EERIE_ANIMMANAGER_Init();
-	LogInfo << "AnimManager Init";
+	LogDebug << "AnimManager Init";
 	ARX_SCRIPT_EventStackInit();
-	LogInfo << "EventStack Init";
+	LogDebug << "EventStack Init";
 	ARX_EQUIPMENT_Init();
-	LogInfo << "AEQ Init";
+	LogDebug << "AEQ Init";
 	memset(_CURRENTLOAD_,0,256);
 
 	char temp[256];
@@ -1348,7 +1348,7 @@ int main(int, char**)
 		Danae_Registry_WriteValue("WND_LightPrecalc_POSY",0);
 		Danae_Registry_WriteValue("WND_LightOptions_POSX",0);
 		Danae_Registry_WriteValue("WND_LightOptions_POSY",0);
-		LogInfo << "RegData Read";
+		LogDebug << "RegData Read";
 	}
 
 	Danae_Registry_Read("LOCAL_SAVENAME",LOCAL_SAVENAME,"",16);
@@ -1370,18 +1370,18 @@ int main(int, char**)
 	DemoFileCheck();
 
 	ARX_CHANGELEVEL_MakePath();
-	LogInfo << "ACL MakePath";
+	LogDebug << "ACL MakePath";
 
 	LastLoadedDLF[0]=0;
 	ARX_SCRIPT_Timer_FirstInit(512);
-	LogInfo << "Timer Init";
+	LogDebug << "Timer Init";
 	ARX_FOGS_FirstInit();
-	LogInfo << "FGS Init";
+	LogDebug << "Fogs Init";
 
 	EERIE_LIGHT_GlobalInit();
-	LogInfo << "Lights Init";
+	LogDebug << "Lights Init";
 	
-	LogInfo << "Svars Init";
+	LogDebug << "Svars Init";
 
 	// Script Test
 	lastteleport.x=0.f;
@@ -1405,7 +1405,7 @@ int main(int, char**)
 	ARX_SPEECH_ClearAll();
 	QuakeFx.intensity=0.f;
 
-	ForceSendConsole("Launching DANAE", 1, 0, (HWND)1);
+	LogDebug << "Launching DANAE";
 
 	if (	(!FINAL_COMMERCIAL_DEMO)
 		&&	(!FINAL_COMMERCIAL_GAME)	)
@@ -1417,7 +1417,7 @@ int main(int, char**)
 	}
 
 	if (FINAL_RELEASE) {
-		LogInfo << "FINAL_RELEASE";
+		LogDebug << "FINAL_RELEASE";
 		LaunchDemo=1;
 		Project.TextureSize=0;
 		Project.TextureBits=16;
@@ -1435,12 +1435,12 @@ int main(int, char**)
 		Project.demo=LEVELDEMO2;
 	}
 
-	LogInfo << "After Popup";
+	LogDebug << "After Popup";
 	atexit(ClearGame);
 
 	if (LaunchDemo)
 	{
-		LogInfo << "LaunchDemo";
+		LogDebug << "LaunchDemo";
 		GAME_EDITOR=1;
 
 		if (FINAL_RELEASE) GAME_EDITOR=0;
@@ -1451,13 +1451,12 @@ int main(int, char**)
 		}
 	}
 
-	if (LAST_CHINSTANCE!=-1)
-	{
-		LogWarning << "KillDir";
+	if(LAST_CHINSTANCE != -1) {
 		ARX_CHANGELEVEL_MakePath();
+		LogWarning << "Clearing save game directory " << CurGamePath;
 		KillAllDirectory(CurGamePath);
 		CreateDirectory(CurGamePath,NULL);
-	}	
+	}
 
 	Project.improve=0;
 	Project.interpolatemouse = 0;
@@ -1498,7 +1497,7 @@ int main(int, char**)
 		if (GAME_EDITOR) danaeApp.CreationFlags|= WCF_ACCEPTFILES;
 	}
 
-	LogInfo << "Application Creation";
+	LogDebug << "Application Creation";
 	g_pD3DApp = &danaeApp;
 
 	if( FAILED( danaeApp.Create( hInstance, strCmdLine ) ) )
@@ -1516,13 +1515,13 @@ int main(int, char**)
 		GaiaWM=RegisterWindowMessage(texx); 
 	}
 
-	LogInfo << "Sound Init";
+	LogDebug << "Sound Init";
 	if (	(Project.soundmode != 0)
 		&&	ARX_SOUND_INIT	)
 		ARX_SOUND_Init(MAIN_PROGRAM_HANDLE);
 	LogInfo << "Sound Init Success";
 
-	LogInfo << "DInput Init";
+	LogDebug << "DInput Init";
 	ARX_INPUT_Init_Game_Impulses();
 	pGetInfoDirectInput = new CDirectInput();
 	
@@ -1549,7 +1548,7 @@ int main(int, char**)
 	ForceSendConsole("DANAE Runnning",1,0,(HWND)danaeApp.m_hWnd);
 
 	i = 10;
-	LogInfo << "AInput Init";
+	LogDebug << "AInput Init";
 
 	while (!ARX_INPUT_Init(hInstance,danaeApp.m_hWnd))
 	{		
@@ -1602,11 +1601,11 @@ int main(int, char**)
 	Project.torch.r=1.f;
 	Project.torch.g = 0.8f;
 	Project.torch.b = 0.66666f;
-	LogInfo << "InitializeDanae";
+	LogDebug << "InitializeDanae";
 	InitializeDanae();
 
 	LogInfo << "InitializeDanae Success";
-	LogInfo << "DanaeApp RUN";
+	LogDebug << "DanaeApp RUN";
 	danaeApp.m_bReady = true;
 
 	HRESULT hr=danaeApp.Run();
