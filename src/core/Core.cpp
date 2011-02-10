@@ -4648,83 +4648,9 @@ void ManageQuakeFX()
 	}
 }
 
-//TODO(lubosz): only needed for moulinex?
-void ProcessAllTheo(const char * path) {
-	HANDLE idx;
-	char pathh[512];
-	WIN32_FIND_DATA fd;
-	sprintf(pathh,"*.*");
-
-	if ((idx = FindFirstFile(pathh, &fd)) != INVALID_HANDLE_VALUE)
-	{
-		do
-		{
-			LogDebug << "ProcessAllTheo " << fd.cFileName;
-			if (strcmp(fd.cFileName,".") && strcmp(fd.cFileName,".."))
-			{
-				if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-				{
-					char path2[512];
-					sprintf(path2,"%s%s\\",path,fd.cFileName);
-					ProcessAllTheo(path2);
-				}
-				else
-				{
-					char ext[256];
-					strcpy(ext,GetExt(fd.cFileName));
-
-					if (!strcasecmp(ext,".teo"))
-					{
-						char path2[512];
-						char texpath[512];
-						sprintf(path2,"%s%s",path,fd.cFileName);
-						sprintf(texpath,"Graph\\Obj3D\\Textures\\");
-						EERIE_3DOBJ * temp;
-						char tx[1024];
-						sprintf(tx,"Moulinex %s (%s - %s)",fd.cFileName,path2,texpath);
-						ForceSendConsole(tx,1,0,NULL);
-						_ShowText(tx);
-
-						if (strstr(path2,"\\NPC\\"))
-							temp=TheoToEerie_Fast(texpath,path2,TTE_NPC,GDevice);
-						else
-							temp=TheoToEerie_Fast(texpath,path2,0,GDevice);
-
-						if (temp)
-						{
-							ReleaseEERIE3DObj(temp);
-							ReleaseAllTCWithFlag(0);
-						}
-					}
-				}
-			}
-		}
-		while (FindNextFile(idx, &fd));
-
-		FindClose(idx);
-	}
-}
 void LaunchMoulinex()
 {
 	char tx[256];
-
-	if (PROCESS_ALL_THEO)
-	{		
-		sprintf(tx,"Moulinex THEO convertALL START________________");
-		ForceSendConsole(tx,1,0,NULL);
-		_ShowText(tx);
-		ProcessAllTheo(""); // working dir
-		sprintf(tx,"Moulinex THEO convertALL END__________________");
-		ForceSendConsole(tx,1,0,NULL);
-		_ShowText(tx);
-		PROCESS_ALL_THEO=0;
-
-		if (KILL_AT_MOULINEX_END)
-		{
-			DANAEFinalCleanup();
-			exit(0);
-		}
-	}
 
 	if (PROCESS_ONLY_ONE_LEVEL!=-1)
 	{
