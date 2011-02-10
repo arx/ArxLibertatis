@@ -2339,11 +2339,6 @@ void LoadSysTextures()
 	GetTextureFile_NoRefinement("Graph\\Interface\\bars\\flash_gauge.bmp");
 }
 
-void ARX_SOUND_Reinit()
-{
-
-}
-
 void ClearSysTextures()
 {
 	long i;
@@ -2641,7 +2636,6 @@ HRESULT DANAE::FrameMove( float fTimeKey )
 			else if (this->kbd.inkey[INKEY_O]) 
 			{
 				this->kbd.inkey[INKEY_O]=0;
-				ARX_SOUND_Reinit();
 			}
 		}
 	}
