@@ -483,8 +483,6 @@ unsigned long PlayerWeaponBlockTime=0;
 unsigned long FRAMETICKS=0;
 unsigned long SPLASH_START=0;
 //-----------------------------------------------------------------------------
-long LAST_FVAL=0;
-float LAST_ZVAL=0;
 extern float sp_max_start;
 EERIE_RGB	FADECOLOR;
 
@@ -7274,8 +7272,6 @@ void DANAE::GoFor2DFX()
 						&& (player.Interface & INTER_MAP))
 						continue;
 
-					LAST_ZVAL=ltvv.sz;
-
 					if ((ltvv.rhw > 0.f) &&
 						(ltvv.sx>0.f) &&
 						(ltvv.sy>(CINEMA_DECAL*Yratio)) &&
@@ -7334,14 +7330,6 @@ void DANAE::GoFor2DFX()
 						{
 							el->temp+=temp_increase*2.f;
 						}
-
-						LAST_ZVAL	=	fZFire;
-
-						//TODO(lubosz): zbuffer assertion
-//						LogDebug << "zbuffer_max " << danaeApp.zbuffer_max << " " << LONG_MAX << " " << LONG_MIN;
-//						ARX_CHECK_LONG( danaeApp.zbuffer_max );
-//						LAST_FVAL	=	ARX_CLEAN_WARN_CAST_LONG( danaeApp.zbuffer_max );
-						LAST_FVAL = LONG_MAX;
 
 					}
 
