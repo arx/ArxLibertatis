@@ -2166,11 +2166,6 @@ bool Menu2_Render()
 	MACRO_MENU_PRINCIPALE(BUTTON_MENUMAIN_CREDITS,CREDITS,"system_menus_main_credits",0);
 	MACRO_MENU_PRINCIPALE(-1,QUIT,"system_menus_main_quit",0);
 #undef MACRO_MENU_PRINCIPALE
-
-		//version
-//		_TCHAR twVersion[32];
-		// TODO Find replacement
-//		MultiByteToWideChar(CP_ACP, 0, GetVersionString()+3, -1, (LPWSTR)twVersion, 32 );
 		me = new CMenuElementText( -1, hFontControls, arxVersion, RATIO_X(580), RATIO_Y(65), lColor, 1.0f, NOP );
 		me->SetCheckOff();
 		me->lColor=RGB(127,127,127);
