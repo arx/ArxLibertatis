@@ -86,6 +86,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
 #include "io/Blast.h"
+#include "io/Implode.h"
 #include "io/Logger.h"
 
 #include "graphics/d3dwrapper.h"
@@ -719,19 +720,17 @@ retry:
 			pos += sizeof(ARX_CHANGELEVEL_LIGHT);
 		}
 	}
-
-	char * compressed = NULL;
-	long cpr_pos = 0;
-	printf("IMPLODE NOT IMPLEMENTED\n");
-	// TODO fix
-	//compressed = STD_Implode((char *)dat, pos, &cpr_pos);
+	
+	size_t cpr_pos;
+	char * compressed = implodeAlloc((char *)dat, pos, cpr_pos);
+	
 	free(dat);
 
 	for (int i = 0; i < cpr_pos; i += 2)
 		compressed[i] = ~compressed[i];
 
 	bool ret = _pSaveBlock->Save(savefile, compressed, cpr_pos);
-	free(compressed);
+	delete[] compressed;
 
 	if (!ret) return -1;
 
@@ -832,19 +831,16 @@ retry:
 				break;
 		}
 	}
-
-	char * compressed = NULL;
-	long cpr_pos = 0;
-	printf("IMPLODE NOT IMPLEMENTED\n");
-	// TODO fix
-	//compressed = STD_Implode((char *)dat, pos, &cpr_pos);
+	
+	size_t cpr_pos;
+	char * compressed = implodeAlloc((char *)dat, pos, cpr_pos);
 	free(dat);
 
 	for (int i = 0; i < cpr_pos; i += 2)
 		compressed[i] = ~compressed[i];
 
 	_pSaveBlock->Save(savefile, compressed, cpr_pos);
-	free(compressed);
+	delete[] compressed;
 	return 1;
 }
 //--------------------------------------------------------------------------------------------
@@ -1075,19 +1071,16 @@ retry:
 
 	char savefile[256];
 	sprintf(savefile, "player.sav");
-
-	char * compressed = NULL;
-	long cpr_pos = 0;
-	printf("IMPLODE NOT IMPLEMENTED\n");
-	// TODO fix
-	//compressed = STD_Implode((char *)dat, pos, &cpr_pos);
+	
+	size_t cpr_pos;
+	char * compressed = implodeAlloc((char *)dat, pos, cpr_pos);
 	free(dat);
 
 	for (int i = 0; i < cpr_pos; i += 2)
 		compressed[i] = ~compressed[i];
 
 	_pSaveBlock->Save(savefile, compressed, cpr_pos);
-	free(compressed);
+	delete[] compressed;
 
 	for (int i = 1; i < inter.nbmax; i++)
 	{
@@ -1825,19 +1818,16 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 	{
 		LogError << "SaveBuffer Overflow " << pos << " >> " << allocsize;
 	}
-
-	char * compressed = NULL;
-	long cpr_pos = 0;
-	LogError << "IMPLODE NOT IMPLEMENTED\n";
-	// TODO fix
-	//compressed = STD_Implode((char *)dat, pos, &cpr_pos);
+	
+	size_t cpr_pos;
+	char * compressed = implodeAlloc((char *)dat, pos, cpr_pos);
 	free(dat);
 
 	for (int i = 0; i < cpr_pos; i += 2)
 		compressed[i] = ~compressed[i];
 
 	_pSaveBlock->Save(savefile, compressed, cpr_pos);
-	free(compressed);
+	delete[] compressed;
 	return 1;
 }
 
@@ -4095,18 +4085,15 @@ long ARX_CHANGELEVEL_Set_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 	long pos = sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA);
 	char savefile[256];
 	sprintf(savefile, "pld.sav");
-
-	char * compressed = NULL;
-	long cpr_pos = 0;
-	printf("IMPLODE NOT IMPLEMENTED\n");
-	// TODO fix
-	//compressed = STD_Implode((char *)dat, pos, &cpr_pos);
+	
+	size_t cpr_pos;
+	char * compressed = implodeAlloc((char *)dat, pos, cpr_pos);
 
 	for (long i = 0; i < cpr_pos; i += 2)
 		compressed[i] = ~compressed[i];
 
 	_pSaveBlock->Save(savefile, compressed, cpr_pos);
-	free(compressed);
+	delete[] compressed;
 
 	_pSaveBlock->EndSave();
 	delete _pSaveBlock;
