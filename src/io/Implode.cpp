@@ -145,14 +145,14 @@ ImplodeResult implode(pkstream * pStr) {
 	pStr->pOutPos = pStr->pOutBuffer;
 	
 	// Check for a valid compression type
-	if(pStr->nLitSize != PK_LITERAL_SIZE_FIXED && pStr->nLitSize != PK_LITERAL_SIZE_VARIABLE) {
-		return PK_ERR_INVALID_MODE;
+	if(pStr->nLitSize != IMPLODE_LITERAL_FIXED && pStr->nLitSize != IMPLODE_LITERAL_VARIABLE) {
+		return IMPLODE_INVALID_MODE;
 	}
 	
 	// Only dictionary sizes of 1024, 2048, and 4096 are allowed.
 	// The values 4, 5, and 6 correspond with those sizes
 	if(4 > pStr->nDictSizeByte || pStr->nDictSizeByte > 6) {
-		return PK_ERR_INVALID_DICTSIZE;
+		return IMPLODE_INVALID_DICTSIZE;
 	}
 	
 	// Store actual dictionary size
@@ -167,7 +167,7 @@ ImplodeResult implode(pkstream * pStr) {
 	// If the output buffer size is less than 4, there
 	// is not enough room for the compressed data
 	if(pStr->nOutSize < 4 && !(pStr->nInSize == 0 && pStr->nOutSize == 4)) {
-		return PK_ERR_BUFFER_TOO_SMALL;
+		return IMPLODE_BUFFER_TOO_SMALL;
 	}
 	
 	// Store compression type and dictionary size
@@ -318,7 +318,7 @@ ImplodeResult implode(pkstream * pStr) {
 				while(pStr->nBits >= 8) {
 					// If output buffer has become full, stop immediately!
 					if(pStr->pOutPos >= pStr->pOutBuffer + pStr->nOutSize) {
-						return PK_ERR_BUFFER_TOO_SMALL;
+						return IMPLODE_BUFFER_TOO_SMALL;
 					}
 					
 					*pStr->pOutPos++ = (unsigned char)pStr->nBitBuffer;
@@ -354,7 +354,7 @@ ImplodeResult implode(pkstream * pStr) {
 		
 		// If the copy length was less than two, include the byte as a literal byte
 		if(nMaxCopyLen < 2) {
-			if(pStr->nLitSize == PK_LITERAL_SIZE_FIXED) {
+			if(pStr->nLitSize == IMPLODE_LITERAL_FIXED) {
 				
 				// Store a fixed size literal byte
 				pStr->nBitBuffer += ch << (pStr->nBits + 1);
@@ -385,7 +385,7 @@ ImplodeResult implode(pkstream * pStr) {
 		while(pStr->nBits >= 8) {
 			// If output buffer has become full, stop immediately!
 			if(pStr->pOutPos >= pStr->pOutBuffer + pStr->nOutSize) {
-				return PK_ERR_BUFFER_TOO_SMALL;
+				return IMPLODE_BUFFER_TOO_SMALL;
 			}
 			
 			*pStr->pOutPos++ = (unsigned char)pStr->nBitBuffer;
@@ -405,7 +405,7 @@ ImplodeResult implode(pkstream * pStr) {
 	while(pStr->nBits > 0) {
 		// If output buffer has become full, stop immediately!
 		if(pStr->pOutPos >= pStr->pOutBuffer + pStr->nOutSize) {
-			return PK_ERR_BUFFER_TOO_SMALL;
+			return IMPLODE_BUFFER_TOO_SMALL;
 		}
 			
 		*pStr->pOutPos++ = (unsigned char)pStr->nBitBuffer;
@@ -420,7 +420,7 @@ ImplodeResult implode(pkstream * pStr) {
 	// Store the compressed size
 	pStr->nOutSize = pStr->pOutPos - pStr->pOutBuffer;
 	
-	return PK_ERR_SUCCESS;
+	return IMPLODE_SUCCESS;
 }
 
 char * implodeAlloc(const char * buf, size_t inSize, size_t & outSize) {
@@ -429,7 +429,7 @@ char * implodeAlloc(const char * buf, size_t inSize, size_t & outSize) {
 	
 	strm.pInBuffer = (const unsigned char*)buf;
 	strm.nInSize = inSize;
-	strm.nLitSize = PK_LITERAL_SIZE_FIXED;
+	strm.nLitSize = IMPLODE_LITERAL_FIXED;
 	
 	if(inSize <= 32768) {
 		strm.nDictSizeByte = 4;

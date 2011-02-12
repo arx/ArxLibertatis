@@ -24,15 +24,15 @@
 #include <cstddef>
 
 enum ImplodeLiteralSize {
-	PK_LITERAL_SIZE_FIXED = 0, // Use fixed size literal bytes, used for binary data
-	PK_LITERAL_SIZE_VARIABLE  = 1 // Use variable size literal bytes, used for text
+	IMPLODE_LITERAL_FIXED = 0, // Use fixed size literal bytes, used for binary data
+	IMPLODE_LITERAL_VARIABLE  = 1 // Use variable size literal bytes, used for text
 };
 
 enum ImplodeResult {
-	PK_ERR_SUCCESS = 0, // No errors occurred
-	PK_ERR_INVALID_DICTSIZE = 1, // An invalid dictionary size was selected
-	PK_ERR_INVALID_MODE = 2, // An invalid mode for literal bytes was selected
-	PK_ERR_BUFFER_TOO_SMALL = 4 // Output buffer is too small
+	IMPLODE_SUCCESS = 0, // No errors occurred
+	IMPLODE_INVALID_DICTSIZE = 1, // An invalid dictionary size was selected
+	IMPLODE_INVALID_MODE = 2, // An invalid mode for literal bytes was selected
+	IMPLODE_BUFFER_TOO_SMALL = 4 // Output buffer is too small
 };
 
 struct pkstream {
