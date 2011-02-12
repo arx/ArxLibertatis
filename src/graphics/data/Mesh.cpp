@@ -4683,13 +4683,13 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms) {
 	}
 
 	if(FileWrite(handle, compressed, compressedSize) != compressedSize) {
-		FileCloseWrite(handle);
+		FileClose(handle);
 		free(dat);
 		return false;
 	}
 
 	delete[] compressed;
-	FileCloseWrite(handle);
+	FileClose(handle);
 	free(dat);
 	return true;
 error:

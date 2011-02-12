@@ -476,7 +476,7 @@ bool HERMES_CreateFileCheck(const char * name, char * scheck, size_t size, const
 		//}
 	}
 
-	FileCloseRead(file);
+	FileClose(file);
 
 	return false;
 }

@@ -760,7 +760,7 @@ long DanaeSaveLevel( const std::string& _fic )
 	sizeWritten = FileWrite(handle, compressed, cpr_pos);
 	
 	delete[] compressed;
-	FileCloseWrite(handle);
+	FileClose(handle);
 	
 	if(sizeWritten != cpr_pos) {
 		free(dat);
@@ -881,7 +881,7 @@ long DanaeSaveLevel( const std::string& _fic )
 	sizeWritten2 = FileWrite(handle, compressed, cpr_pos);
 	
 	delete[] compressed;
-	FileCloseWrite(handle);
+	FileClose(handle);
 	
 	if (sizeWritten2 != cpr_pos)
 	{

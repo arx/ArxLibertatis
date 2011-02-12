@@ -227,7 +227,7 @@ int PAK_fclose(PakFileHandle * pfh) {
 		return pfh->reader->fClose(pfh);
 	}
 	
-	int ret = FileCloseRead(pfh->truefile);
+	int ret = FileClose(pfh->truefile);
 	
 	pfh->active = false;
 	delete pfh;

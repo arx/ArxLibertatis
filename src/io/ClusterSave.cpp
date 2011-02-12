@@ -22,16 +22,39 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <vector>
-#include <string>
-#include <streambuf>
-#include <istream>
-#include <fstream>
-#include <sstream>
-#include <algorithm>
-#include <windows.h>
+
 #include "io/ClusterSave.h"
+
+#include <cstdlib>
+
+#include "io/Filesystem.h"
 #include "io/HashMap.h"
+#include "io/Logger.h"
+
+using std::string;
+
+class CCluster{
+public:
+	int			iTaille;
+	int			iNext;
+	CCluster	*pNext;
+public:
+	CCluster(int _iTaille=0);
+	~CCluster();
+};
+
+class CInfoFile{
+public:
+	char		*pcFileName;
+	int			iTaille;
+
+	int			iNbCluster;
+	CCluster	FirstCluster;
+	CCluster*	pLastCluster;
+public:
+	void Set( const char *_pcFileName,int _iTaille);
+	void KillAll();
+};
 
 using std::min;
 
@@ -89,16 +112,9 @@ void CInfoFile::KillAll()
 }
 
 //------------------------------------------------------------------------
-CSaveBlock::CSaveBlock(char * _pcBlockName)
-{
-	if (_pcBlockName)
-	{
-		pcBlockName = strdup(_pcBlockName);
-	}
-	else
-	{
-		pcBlockName = strdup("Save Block");
-	}
+CSaveBlock::CSaveBlock(const string & _savefile) {
+	
+	pcBlockName = _savefile;
 
 	hFile = NULL;
 	iTailleBlock = 0;
@@ -111,12 +127,7 @@ CSaveBlock::CSaveBlock(char * _pcBlockName)
 }
 
 //------------------------------------------------------------------------
-CSaveBlock::~CSaveBlock()
-{
-	if (pcBlockName)
-	{
-		free((void *)pcBlockName);
-	}
+CSaveBlock::~CSaveBlock() {
 
 	while (iNbFiles--)
 	{
@@ -128,7 +139,7 @@ CSaveBlock::~CSaveBlock()
 
 	if (hFile)
 	{
-		fclose(hFile);
+		FileClose(hFile);
 		hFile = NULL;
 	}
 
@@ -151,25 +162,29 @@ void CSaveBlock::ResetFAT(void)
 	iNbFiles = 0;
 }
 
-//------------------------------------------------------------------------
-bool CSaveBlock::BeginRead(void)
-{
-	hFile = fopen((const char *)pcBlockName, (const char *)"rb");
-
-	if (!hFile)
-	{
+bool CSaveBlock::BeginRead() {
+	
+	LogDebug << "reading " << pcBlockName;
+	
+	hFile = FileOpenRead(pcBlockName.c_str());
+	if(!hFile) {
+		LogError << "Error opening save file " << pcBlockName;
 		return false;
 	}
 
 	//READ FAT
 	int _iI;
 
-	fread((void *)&_iI, 1, 4, hFile);
-	fseek(hFile, _iI + 4, SEEK_SET);
+	s32 fatOffset;
+	if(!FileRead(hFile, &fatOffset, 4)) {
+		LogError << "Error reading fat offset for " << pcBlockName;
+	}
+	LogDebug << "FAT offset is " << fatOffset;
+	FileSeek(hFile, fatOffset + 4, SEEK_SET);
 
-	fread((void *)&_iI, 1, 4, hFile);	//version
+	FileRead(hFile, &_iI, 4);	//version
 
-	fread((void *)&_iI, 1, 4, hFile);
+	FileRead(hFile, &_iI, 4);
 
 	int iNbHache = 1;
 
@@ -187,7 +202,7 @@ bool CSaveBlock::BeginRead(void)
 
 		while (1)
 		{
-			fread((void *)_pTT, 1, 1, hFile);
+			FileRead(hFile, _pTT, 1);
 
 			if (!*_pTT) break;
 
@@ -196,14 +211,14 @@ bool CSaveBlock::BeginRead(void)
 
 		ExpandNbFiles();
 		CInfoFile * _pInfoFile = &sInfoFile[iNbFiles-1];
-		fread((void *)&_pInfoFile->iTaille, 1, 4, hFile);
+		FileRead(hFile, &_pInfoFile->iTaille, 4);
 		_pInfoFile->Set(_pT, _pInfoFile->iTaille);
-		fread((void *)&_pInfoFile->iNbCluster, 1, 4, hFile);
-		fseek(hFile, 4, SEEK_CUR);
+		FileRead(hFile, &_pInfoFile->iNbCluster, 4);
+		FileSeek(hFile, 4, SEEK_CUR);
 
 		CCluster * _pCluster = &_pInfoFile->FirstCluster;
-		fread((void *)&_pCluster->iTaille, 1, 4, hFile);
-		fread((void *)&_pCluster->iNext, 1, 4, hFile);
+		FileRead(hFile, &_pCluster->iTaille, 4);
+		FileRead(hFile, &_pCluster->iNext, 4);
 		_pCluster->pNext = NULL;
 
 		int _iJ = _pInfoFile->iNbCluster - 1;
@@ -214,8 +229,8 @@ bool CSaveBlock::BeginRead(void)
 			{
 				_pCluster->pNext = new CCluster(0);
 				_pCluster = _pCluster->pNext;
-				fread((void *)&_pCluster->iTaille, 1, 4, hFile);
-				fread((void *)&_pCluster->iNext, 1, 4, hFile);
+				FileRead(hFile, &_pCluster->iTaille, 4);
+				FileRead(hFile, &_pCluster->iNext, 4);
 			}
 		}
 	}
@@ -235,7 +250,7 @@ void CSaveBlock::EndRead(void)
 {
 	if (hFile)
 	{
-		fclose(hFile);
+		FileClose(hFile);
 		hFile = NULL;
 	}
 
@@ -250,32 +265,32 @@ bool CSaveBlock::BeginSave(bool _bCont, bool _bReWrite)
 {
 	bReWrite = _bReWrite;
 
-	hFile = fopen((const char *)pcBlockName, (const char *)"rb");
+	hFile = FileOpenRead(pcBlockName.c_str());
 
 	if ((!hFile) ||
 	        (!_bCont))
 	{
-		hFile = fopen((const char *)pcBlockName, (const char *)"wb");
+		hFile = FileOpenWrite(pcBlockName.c_str());
 
 		if (!hFile) return false;
 
 		int _iI = 0;
 
-		fwrite((const void *)&_iI, 1, 4, hFile);
+		FileWrite(hFile, &_iI, 4);
 		bFirst = true;
 	}
 	else
 	{
-		fread((void *)&iTailleBlock, 1, 4, hFile);
-		fseek(hFile, iTailleBlock + 4, SEEK_SET);
+		FileRead(hFile, &iTailleBlock, 4);
+		FileSeek(hFile, iTailleBlock + 4, SEEK_SET);
 
 		//READ FAT
 		int _iI;
 
-		fread((void *)&_iI, 1, 4, hFile);	//version
+		FileRead(hFile, &_iI, 4);	//version
 		iVersion = _iI;
 
-		fread((void *)&_iI, 1, 4, hFile);
+		FileRead(hFile, &_iI, 4);
 
 		while (_iI--)
 		{
@@ -283,7 +298,7 @@ bool CSaveBlock::BeginSave(bool _bCont, bool _bReWrite)
 
 			while (1)
 			{
-				fread((void *)_pTT, 1, 1, hFile);
+				FileRead(hFile, _pTT, 1);
 
 				if (!*_pTT) break;
 
@@ -292,14 +307,14 @@ bool CSaveBlock::BeginSave(bool _bCont, bool _bReWrite)
 
 			ExpandNbFiles();
 			CInfoFile * _pInfoFile = &sInfoFile[iNbFiles-1];
-			fread((void *)&_pInfoFile->iTaille, 1, 4, hFile);
+			FileRead(hFile, &_pInfoFile->iTaille, 4);
 			_pInfoFile->Set(_pT, _pInfoFile->iTaille);
-			fread((void *)&_pInfoFile->iNbCluster, 1, 4, hFile);
-			fseek(hFile, 4, SEEK_CUR);
+			FileRead(hFile, &_pInfoFile->iNbCluster, 4);
+			FileSeek(hFile, 4, SEEK_CUR);
 
 			CCluster * _pCluster = &_pInfoFile->FirstCluster;
-			fread((void *)&_pCluster->iTaille, 1, 4, hFile);
-			fread((void *)&_pCluster->iNext, 1, 4, hFile);
+			FileRead(hFile, &_pCluster->iTaille, 4);
+			FileRead(hFile, &_pCluster->iNext, 4);
 			_pCluster->pNext = NULL;
 
 			int _iJ = _pInfoFile->iNbCluster - 1;
@@ -310,24 +325,24 @@ bool CSaveBlock::BeginSave(bool _bCont, bool _bReWrite)
 				{
 					_pCluster->pNext = new CCluster(0);
 					_pCluster = _pCluster->pNext;
-					fread((void *)&_pCluster->iTaille, 1, 4, hFile);
-					fread((void *)&_pCluster->iNext, 1, 4, hFile);
+					FileRead(hFile, &_pCluster->iTaille, 4);
+					FileRead(hFile, &_pCluster->iNext, 4);
 				}
 			}
 		}
 
-		fseek(hFile, 4, SEEK_SET);
+		FileSeek(hFile, 4, SEEK_SET);
 		void * _pPtr = malloc(iTailleBlock);
-		fread((void *)_pPtr, iTailleBlock, 1, hFile);
-		fclose(hFile);
+		FileRead(hFile, _pPtr, iTailleBlock);
+		FileClose(hFile);
 		hFile = NULL;
-		hFile = fopen((const char *)pcBlockName, (const char *)"w+b");
+		hFile = FileOpenReadWrite(pcBlockName.c_str());
 
 		if (!hFile) return false;
 
 		_iI = 0;
-		fwrite((const void *)&_iI, 4, 1, hFile);
-		fwrite((const void *)_pPtr, iTailleBlock, 1, hFile);
+		FileWrite(hFile, &_iI, 4);
+		FileWrite(hFile, _pPtr, iTailleBlock);
 
 		free((void *)_pPtr);
 	}
@@ -344,33 +359,33 @@ bool CSaveBlock::EndSave(void)
 	}
 
 	int _version = PAK_VERSION + 1;
-	fwrite((const void *)&_version, 1, 4, hFile);
+	FileWrite(hFile, &_version, 4);
 
-	fwrite((const void *)&iNbFiles, 1, 4, hFile);
+	FileWrite(hFile, &iNbFiles, 4);
 
 	for (int _iI = 0; _iI < iNbFiles; _iI++)
 	{
-		fwrite((const void *)sInfoFile[_iI].pcFileName, 1, strlen((const char *)sInfoFile[_iI].pcFileName) + 1, hFile);
-		fwrite((const void *)&sInfoFile[_iI].iTaille, 1, 4, hFile);
+		FileWrite(hFile, sInfoFile[_iI].pcFileName, strlen((const char *)sInfoFile[_iI].pcFileName) + 1);
+		FileWrite(hFile, &sInfoFile[_iI].iTaille, 4);
 		int _iT = sInfoFile[_iI].iNbCluster;
-		fwrite((const void *)&_iT, 1, 4, hFile);
+		FileWrite(hFile, &_iT, 4);
 		_iT *= (sizeof(CCluster) - 4) + strlen((const char *)sInfoFile[_iI].pcFileName) + 1 + 20;
-		fwrite((const void *)&_iT, 1, 4, hFile);
+		FileWrite(hFile, &_iT, 4);
 
 		CCluster * _pCluster = &sInfoFile[_iI].FirstCluster;
 
 		while (_pCluster)
 		{
-			fwrite((const void *)&_pCluster->iTaille, 1, 4, hFile);
-			fwrite((const void *)&_pCluster->iNext, 1, 4, hFile);
+			FileWrite(hFile, &_pCluster->iTaille, 4);
+			FileWrite(hFile, &_pCluster->iNext, 4);
 			_pCluster = _pCluster->pNext;
 		}
 	}
 
-	fseek(hFile, 0, SEEK_SET);
-	fwrite((const void *)&iTailleBlock, 1, 4, hFile);
+	FileSeek(hFile, 0, SEEK_SET);
+	FileWrite(hFile, &iTailleBlock, 4);
 
-	fclose(hFile);
+	FileClose(hFile);
 	hFile = NULL;
 	ResetFAT();
 	return true;
@@ -380,12 +395,12 @@ bool CSaveBlock::EndSave(void)
 bool CSaveBlock::Defrag()
 {
 	char txt[256];
-	strcpy(txt, pcBlockName);
+	strcpy(txt, pcBlockName.c_str());
 	strcat(txt, "DFG");
-	FILE * fFileTemp = fopen(txt, "wb");
+	FileHandle fFileTemp = FileOpenWrite(txt);
 
 	int _version = PAK_VERSION + 1;
-	fwrite((const void *)&_version, 1, 4, fFileTemp);
+	FileWrite(fFileTemp, &_version, 4);
 
 	for (int _iI = (iVersion == PAK_VERSION) ? 1 : 0; _iI < iNbFiles; _iI++)
 	{
@@ -396,7 +411,7 @@ bool CSaveBlock::Defrag()
 
 		while (pCluster)
 		{
-			fseek(hFile, pCluster->iNext + 4, SEEK_SET);
+			FileSeek(hFile, pCluster->iNext + 4, SEEK_SET);
 
 			//bug size old version
 			if (iVersion == PAK_VERSION)
@@ -411,46 +426,46 @@ bool CSaveBlock::Defrag()
 
 			iRealSize += pCluster->iTaille;
 
-			fread(pcMem, pCluster->iTaille, 1, hFile);
+			FileRead(hFile, pcMem, pCluster->iTaille);
 			pcMem += pCluster->iTaille;
 			pCluster = pCluster->pNext;
 		}
 
-		fwrite(pMem, sInfoFile[_iI].iTaille, 1, fFileTemp);
+		FileWrite(fFileTemp, pMem, sInfoFile[_iI].iTaille);
 		free(pMem);
 	}
 
-	fwrite((const void *)&_version, 1, 4, fFileTemp);
+	FileWrite(fFileTemp, &_version, 4);
  
 	int iOffset = 0;
 	int iNbFilesTemp = (iVersion == PAK_VERSION) ? iNbFiles - 1 : iNbFiles; //-1;
-	fwrite((const void *)&iNbFilesTemp, 1, 4, fFileTemp);
+	FileWrite(fFileTemp, &iNbFilesTemp, 4);
 
 	for (int _iI = (iVersion == PAK_VERSION) ? 1 : 0; _iI < iNbFiles; _iI++)
 	{
-		fwrite((const void *)sInfoFile[_iI].pcFileName, 1, strlen((const char *)sInfoFile[_iI].pcFileName) + 1, fFileTemp);
-		fwrite((const void *)&sInfoFile[_iI].iTaille, 1, 4, fFileTemp);
+		FileWrite(fFileTemp, sInfoFile[_iI].pcFileName, strlen((const char *)sInfoFile[_iI].pcFileName) + 1);
+		FileWrite(fFileTemp, &sInfoFile[_iI].iTaille, 4);
 		int _iT = 0;
-		fwrite((const void *)&_iT, 1, 4, fFileTemp);
-		fwrite((const void *)&_iT, 1, 4, fFileTemp);
+		FileWrite(fFileTemp, &_iT, 4);
+		FileWrite(fFileTemp, &_iT, 4);
 
 		//cluster
-		fwrite((const void *)&sInfoFile[_iI].iTaille, 1, 4, fFileTemp);
-		fwrite((const void *)&iOffset, 1, 4, fFileTemp);
+		FileWrite(fFileTemp, &sInfoFile[_iI].iTaille, 4);
+		FileWrite(fFileTemp, &iOffset, 4);
 
 		iOffset += sInfoFile[_iI].iTaille;
 	}
 
-	fseek(fFileTemp, 0, SEEK_SET);
-	fwrite((const void *)&iOffset, 1, 4, fFileTemp);
+	FileSeek(fFileTemp, 0, SEEK_SET);
+	FileWrite(fFileTemp, &iOffset, 4);
 
-	fclose(hFile);
+	FileClose(hFile);
 	hFile = NULL;
 	ResetFAT();
 
-	fclose(fFileTemp);
-	DeleteFile(pcBlockName);
-	MoveFile(txt, pcBlockName);
+	FileClose(fFileTemp);
+	FileDelete(pcBlockName);
+	FileMove(txt, pcBlockName.c_str());
 
 	return true;
 } 
@@ -504,9 +519,9 @@ bool CSaveBlock::Save( const std::string& _pcFileName, void * _pDatas, int _iSiz
 			while ((_pClusterCurr) && (iSize > 0))
 			{
 				pLastClusterCurr = _pClusterCurr;
-				fseek(hFile, _pClusterCurr->iNext + 4, SEEK_SET);
+				FileSeek(hFile, _pClusterCurr->iNext + 4, SEEK_SET);
                 iSizeWrite = std::min(_pClusterCurr->iTaille, iSize);
-				fwrite((const void *)_pDatas, iSizeWrite, 1, hFile);
+				FileWrite(hFile, _pDatas, iSizeWrite);
 				char * _pDatasTemp = (char *)_pDatas;
 				_pDatasTemp += iSizeWrite;
 				_pDatas = (void *)_pDatasTemp;
@@ -525,8 +540,8 @@ bool CSaveBlock::Save( const std::string& _pcFileName, void * _pDatas, int _iSiz
 					pLastClusterCurr->pNext->iNext = iTailleBlock;
 					pLastClusterCurr->pNext->pNext = NULL;
 					iTailleBlock += iSize;
-					fseek(hFile, 0, SEEK_END);
-					fwrite((const void *)_pDatas, iSize, 1, hFile);
+					FileSeek(hFile, 0, SEEK_END);
+					FileWrite(hFile, _pDatas, iSize);
 					_pInfoFile->iNbCluster++;
 				}
 			}
@@ -546,7 +561,7 @@ bool CSaveBlock::Save( const std::string& _pcFileName, void * _pDatas, int _iSiz
 				}
 			}
 
-			fseek(hFile, 0, SEEK_END);
+			FileSeek(hFile, 0, SEEK_END);
 
 			return true;
 		}
@@ -572,7 +587,7 @@ bool CSaveBlock::Save( const std::string& _pcFileName, void * _pDatas, int _iSiz
 
 	if (!hFile) return false;
 
-	if (_pDatas) fwrite((const void *)_pDatas, 1, _iSize, hFile);
+	if (_pDatas) FileWrite(hFile, _pDatas, _iSize);
 
 	return true;
 }
@@ -592,8 +607,8 @@ bool CSaveBlock::Read( const std::string& _pcFileName, char* _pPtr)
 
 	while (_pCluster)
 	{
-		fseek(hFile, _pCluster->iNext + 4, SEEK_SET);
-		fread((void *)_pPtr, _pCluster->iTaille, 1, hFile);
+		FileSeek(hFile, _pCluster->iNext + 4, SEEK_SET);
+		FileRead(hFile, _pPtr, _pCluster->iTaille);
 		_pPtr += _pCluster->iTaille;
 		_pCluster = _pCluster->pNext;
 	}

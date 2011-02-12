@@ -245,16 +245,11 @@ void ARX_GAMESAVE_CreateNewInstance()
 		{
 			//The directory may exist but may be empty after crash
 			strcat(testpath, "\\GSAVE.SAV");
-			FileHandle f = FileOpenRead(testpath);
-
-			if (!f) 				
-			{
+			if(!FileExist(testpath)) {
 				CURRENT_GAME_INSTANCE = num;
 				ARX_GAMESAVE_MakePath();
 				return;
 			}
-
-			FileCloseRead(f);			
 		}
 
 		num++;
