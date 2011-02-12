@@ -18,12 +18,8 @@
 /* but it is currently somewhat slow.                                        */
 /*****************************************************************************/
 
-#ifndef __PKCOMP_H__
-#define __PKCOMP_H__
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#ifndef ARX_IO_IMPLODE_H
+#define ARX_IO_IMPLODE_H
 
 #define PK_LITERAL_SIZE_FIXED    0 // Use fixed size literal bytes, used for binary data
 #define PK_LITERAL_SIZE_VARIABLE 1 // Use variable size literal bytes, used for text
@@ -32,9 +28,7 @@ extern "C" {
 #define PK_ERR_SUCCESS          0 // No errors occurred
 #define PK_ERR_INVALID_DICTSIZE 1 // An invalid dictionary size was selected
 #define PK_ERR_INVALID_MODE     2 // An invalid mode for literal bytes was selected
-#define PK_ERR_BAD_DATA         3 // Input buffer contains invalid compressed data
 #define PK_ERR_BUFFER_TOO_SMALL 4 // Output buffer is too small
-#define PK_ERR_INCOMPLETE_INPUT 5 // Input buffer does not contain entire compressed data
 
 struct pkstream {
 	// The first six members of this struct need to be
@@ -62,11 +56,5 @@ struct pkstream {
 
 // Both functions return 0 on success and nonzero value on failure
 int pkimplode(struct pkstream *pStr);
-int pkexplode(struct pkstream *pStr);
 
-#ifdef __cplusplus
-};  // extern "C" 
-#endif
-
-#endif // __PKCOMP_H__
-
+#endif // ARX_IO_IMPLODE_H

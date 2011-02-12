@@ -27,9 +27,10 @@
 /* slow.                                                                     */
 /*****************************************************************************/
 
-#include "pkcomp.h"
+#include "io/Implode.h"
 
-#define TRUNCATE_VALUE(value,bits) ((value) & ((1 << (bits)) - 1)) // Truncate value to a specified number of bits
+// Truncate value to a specified number of bits
+#define TRUNCATE_VALUE(value,bits) ((value) & ((1 << (bits)) - 1))
 
 // Bit sequences used to represent literal bytes
 static unsigned short ChCode[] =
