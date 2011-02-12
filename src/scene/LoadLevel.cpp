@@ -96,6 +96,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "io/Blast.h"
+#include "io/Implode.h"
 
 using std::max;
 
@@ -751,21 +752,20 @@ long DanaeSaveLevel( const std::string& _fic )
 
 	char * compressed;
 	compressed = NULL;
-	long cpr_pos;
+	size_t cpr_pos;
 	cpr_pos = 0;
-	printf("IMPLODE NOT IMPLEMENTED\n");
-	// TODO fix
-	//compressed = STD_Implode((char *)(dat + sizeof(DANAE_LS_HEADER)), pos - sizeof(DANAE_LS_HEADER), &cpr_pos);
+	compressed = implodeAlloc((char *)(dat + sizeof(DANAE_LS_HEADER)), pos - sizeof(DANAE_LS_HEADER), cpr_pos);
 
-	if (FileWrite(handle, compressed, cpr_pos) != cpr_pos)
-	{
+	long sizeWritten;
+	sizeWritten = FileWrite(handle, compressed, cpr_pos);
+	
+	delete[] compressed;
+	FileCloseWrite(handle);
+	
+	if(sizeWritten != cpr_pos) {
 		free(dat);
 		return false;
 	}
-
-	free(compressed);
-
-	FileCloseWrite(handle);
 
 	//////////////////////////////////////////////////////////////////////////////
 	//Now Save Separate IO Ref Sheet
@@ -875,19 +875,21 @@ long DanaeSaveLevel( const std::string& _fic )
 
 	compressed = NULL;
 	cpr_pos = 0;
-	printf("IMPLODE NOT IMPLEMENTED\n");
-	// TODO fix
-	//compressed = STD_Implode((char *)dat, pos, &cpr_pos);
+	compressed = implodeAlloc((char *)dat, pos, cpr_pos);
 
-	if (FileWrite(handle, compressed, cpr_pos) != cpr_pos)
+	long sizeWritten2;
+	sizeWritten2 = FileWrite(handle, compressed, cpr_pos);
+	
+	delete[] compressed;
+	FileCloseWrite(handle);
+	
+	if (sizeWritten2 != cpr_pos)
 	{
-		free(compressed);
 		sprintf(_error, "Unable to Write to %s", fic2.c_str());
 		goto error;
 	}
 
-	free(compressed);
-	FileCloseWrite(handle);
+
 	// End of LLF Save
 	//////////////////////////////////////////////////////////////////////////////
 
