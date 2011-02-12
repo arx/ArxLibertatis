@@ -238,8 +238,16 @@ namespace ATHENA
 			stream->Read(ptr0, size, write);
 
 			//if (lpdsb->Unlock(ptr0, cur0, ptr1, cur1)) return AAL_ERROR_SYSTEM;
-			alBufferData(buffer[0], AL_FORMAT_STEREO16, ptr0, size, sample->format.frequency);
+			alGetError();
+			printf("channels: %d quality: %d frequency: %d\n", sample->format.channels, sample->format.quality, sample->format.frequency);
+			
+			alBufferData(buffer[0], AL_FORMAT_MONO16, ptr0, size, sample->format.frequency);
 			// FIXME -- does the above cause a memleak?
+			printf("post-read size: %d write: %d\n", size, write);
+			printf("alBufferData error: 0x%x is buffer: %d\n", alGetError(), alIsBuffer(buffer[0]));
+
+			printf("queueing buffers\n");
+			alSourceQueueBuffers(source[0], 1, buffer);
 
 			if (write != size)
 				return AAL_ERROR_SYSTEM;
@@ -675,6 +683,11 @@ namespace ATHENA
 
 			//if (lpdsb->Unlock(ptr0, cur0, ptr1, cur1)) return AAL_ERROR_SYSTEM;
 			alBufferData(buffer[0], AL_FORMAT_STEREO16, ptr0, size, sample->format.frequency);
+			alSourceQueueBuffers(source[0], 1, buffer);
+			int error;
+			if ((error = alGetError()) != AL_NO_ERROR) {
+				printf("error: 0x%x as buffer: %d\n", error, alIsBuffer(buffer[0]));
+			}
 			// FIXME -- does the above cause a memleak?
 
 			//if (lpdsb->Unlock(ptr0, cur0, ptr1, cur1)) return AAL_ERROR_SYSTEM;
