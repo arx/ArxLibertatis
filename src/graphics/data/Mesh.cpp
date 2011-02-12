@@ -79,6 +79,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "io/Blast.h"
+#include "io/Implode.h"
 
 using std::min;
 using std::max;
@@ -4329,11 +4330,14 @@ bool FastSceneLoad(const char * partial_path)
 	return true;
 	
 }
-bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms)
-{
+
+bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms) {
+	
 	std::string path;
 	path = "Game\\";
 	path += partial_path;
+	
+	LogDebug << "FastSceneSave" << path;
 
 	if (!CreateFullPath(path)) return false;
 
@@ -4669,23 +4673,22 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms)
 		return false;
 	}
 
+	size_t compressedSize;
 	char * compressed;
-	compressed = NULL;
-	long cpr_pos;
-	cpr_pos = 0;
+	compressed = implodeAlloc((char *)(dat + compressedstart), pos - compressedstart, compressedSize);
+	if(!compressed) {
+		LogError << "error compressing scene";
+		free(dat);
+		return false;
+	}
 
-	printf("IMPLODE NOT IMPLEMENTED\n");
-	// TODO fix
-	//compressed = STD_Implode((char *)(dat + compressedstart), pos - compressedstart, &cpr_pos);
-
-	if (FileWrite(handle, compressed, cpr_pos) != cpr_pos)
-	{
+	if(FileWrite(handle, compressed, compressedSize) != compressedSize) {
 		FileCloseWrite(handle);
 		free(dat);
 		return false;
 	}
 
-	free(compressed);
+	delete[] compressed;
 	FileCloseWrite(handle);
 	free(dat);
 	return true;
