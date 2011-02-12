@@ -29,12 +29,13 @@
 
 #include "io/Implode.h"
 
+#include "io/Logger.h"
+
 // Truncate value to a specified number of bits
 #define TRUNCATE_VALUE(value,bits) ((value) & ((1 << (bits)) - 1))
 
 // Bit sequences used to represent literal bytes
-static unsigned short ChCode[] =
-{
+static unsigned short ChCode[] = {
 	0x0490, 0x0FE0, 0x07E0, 0x0BE0, 0x03E0, 0x0DE0, 0x05E0, 0x09E0, 
 	0x01E0, 0x00B8, 0x0062, 0x0EE0, 0x06E0, 0x0022, 0x0AE0, 0x02E0, 
 	0x0CE0, 0x04E0, 0x08E0, 0x00E0, 0x0F60, 0x0760, 0x0B60, 0x0360, 
@@ -70,8 +71,7 @@ static unsigned short ChCode[] =
 };
 
 // Lengths of bit sequences used to represent literal bytes
-static unsigned char ChBits[] =
-{
+static unsigned char ChBits[] = {
 	0x0B, 0x0C, 0x0C, 0x0C, 0x0C, 0x0C, 0x0C, 0x0C, 0x0C, 0x08, 0x07, 0x0C, 0x0C, 0x07, 0x0C, 0x0C, 
 	0x0C, 0x0C, 0x0C, 0x0C, 0x0C, 0x0C, 0x0C, 0x0C, 0x0C, 0x0C, 0x0D, 0x0C, 0x0C, 0x0C, 0x0C, 0x0C, 
 	0x04, 0x0A, 0x08, 0x0C, 0x0A, 0x0C, 0x0A, 0x08, 0x07, 0x07, 0x08, 0x09, 0x07, 0x06, 0x07, 0x08, 
@@ -91,33 +91,28 @@ static unsigned char ChBits[] =
 };
 
 // Bit sequences used to represent the base values of the copy length
-static unsigned char LenCode[] =
-{
+static unsigned char LenCode[] = {
 	0x05, 0x03, 0x01, 0x06, 0x0A, 0x02, 0x0C, 0x14, 0x04, 0x18, 0x08, 0x30, 0x10, 0x20, 0x40, 0x00
 };
 
 // Lengths of bit sequences used to represent the base values of the copy length
-static unsigned char LenBits[] =
-{
+static unsigned char LenBits[] = {
 	0x03, 0x02, 0x03, 0x03, 0x04, 0x04, 0x04, 0x05, 0x05, 0x05, 0x05, 0x06, 0x06, 0x06, 0x07, 0x07
 };
 
 // Base values used for the copy length
-static unsigned short LenBase[] =
-{
+static unsigned short LenBase[] = {
 	0x0002, 0x0003, 0x0004, 0x0005, 0x0006, 0x0007, 0x0008, 0x0009, 
 	0x000A, 0x000C, 0x0010, 0x0018, 0x0028, 0x0048, 0x0088, 0x0108
 };
 
 // Lengths of extra bits used to represent the copy length
-static unsigned char ExLenBits[] =
-{
+static unsigned char ExLenBits[] = {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
 };
 
 // Bit sequences used to represent the most significant 6 bits of the copy offset
-static unsigned char OffsCode[] =
-{
+static unsigned char OffsCode[] = {
 	0x03, 0x0D, 0x05, 0x19, 0x09, 0x11, 0x01, 0x3E, 0x1E, 0x2E, 0x0E, 0x36, 0x16, 0x26, 0x06, 0x3A, 
 	0x1A, 0x2A, 0x0A, 0x32, 0x12, 0x22, 0x42, 0x02, 0x7C, 0x3C, 0x5C, 0x1C, 0x6C, 0x2C, 0x4C, 0x0C, 
 	0x74, 0x34, 0x54, 0x14, 0x64, 0x24, 0x44, 0x04, 0x78, 0x38, 0x58, 0x18, 0x68, 0x28, 0x48, 0x08, 
@@ -125,143 +120,147 @@ static unsigned char OffsCode[] =
 };
 
 // Lengths of bit sequences used to represent the most significant 6 bits of the copy offset
-static unsigned char OffsBits[] =
-{
+static unsigned char OffsBits[] = {
 	0x02, 0x04, 0x04, 0x05, 0x05, 0x05, 0x05, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 
 	0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 
 	0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 
 	0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08
 };
 
-// Returns 0 on success and non-zero error code on failure
-int pkimplode(struct pkstream *pStr)
-{
+ImplodeResult implode(pkstream * pStr) {
+	
 	unsigned char ch; // Byte from input buffer
 	int nMaxCopyLen; // Length of longest duplicate data in the dictionary
-	unsigned char *pMaxCopyOffs; // Offset to longest duplicate data in the dictionary
+	unsigned char * pMaxCopyOffs; // Offset to longest duplicate data in the dictionary
 	int nCopyLen; // Length of duplicate data in the dictionary
 	int nCopyOffs; // Offset used in actual compressed data
-	unsigned char *pCopyOffs; // Offset to duplicate data in the dictionary
-	unsigned char *pOldCopyOffs; // Temporarily holds previous value of pCopyOffs
-	unsigned char *pNewInPos; // Secondary offset into input buffer
-	unsigned char *pNewDictPos; // Secondary offset into dictionary
+	unsigned char * pCopyOffs; // Offset to duplicate data in the dictionary
+	unsigned char * pOldCopyOffs; // Temporarily holds previous value of pCopyOffs
+	const unsigned char * pNewInPos; // Secondary offset into input buffer
+	unsigned char * pNewDictPos; // Secondary offset into dictionary
 	int i; // Index into tables
-
+	
 	// Initialize buffer positions
 	pStr->pInPos = pStr->pInBuffer;
 	pStr->pOutPos = pStr->pOutBuffer;
-
+	
 	// Check for a valid compression type
-	if (pStr->nLitSize != PK_LITERAL_SIZE_FIXED && pStr->nLitSize != PK_LITERAL_SIZE_VARIABLE)
+	if(pStr->nLitSize != PK_LITERAL_SIZE_FIXED && pStr->nLitSize != PK_LITERAL_SIZE_VARIABLE) {
 		return PK_ERR_INVALID_MODE;
-
+	}
+	
 	// Only dictionary sizes of 1024, 2048, and 4096 are allowed.
 	// The values 4, 5, and 6 correspond with those sizes
-	if (4 > pStr->nDictSizeByte || pStr->nDictSizeByte > 6)
+	if(4 > pStr->nDictSizeByte || pStr->nDictSizeByte > 6) {
 		return PK_ERR_INVALID_DICTSIZE;
-
+	}
+	
 	// Store actual dictionary size
 	pStr->nDictSize = 64 << pStr->nDictSizeByte;
-
+	
 	// Initialize dictionary position
 	pStr->pDictPos = pStr->Dict;
-
+	
 	// Initialize current dictionary size to zero
 	pStr->nCurDictSize = 0;
-
+	
 	// If the output buffer size is less than 4, there
 	// is not enough room for the compressed data
-	if (pStr->nOutSize < 4 && !(pStr->nInSize == 0 && pStr->nOutSize == 4))
+	if(pStr->nOutSize < 4 && !(pStr->nInSize == 0 && pStr->nOutSize == 4)) {
 		return PK_ERR_BUFFER_TOO_SMALL;
-
+	}
+	
 	// Store compression type and dictionary size
 	*pStr->pOutPos++ = pStr->nLitSize;
 	*pStr->pOutPos++ = pStr->nDictSizeByte;
-
+	
 	// Initialize bit buffer
 	pStr->nBitBuffer = 0;
 	pStr->nBits = 0;
-
+	
 	// Compress until input buffer is empty
-	while (pStr->pInPos < pStr->pInBuffer + pStr->nInSize) {
-
+	while(pStr->pInPos < pStr->pInBuffer + pStr->nInSize) {
+		
 		// Get a byte from the input buffer
 		ch = *pStr->pInPos++;
 		nMaxCopyLen = 0;
-
+		
 		// If the dictionary is not empty, search for duplicate data in the dictionary
-		if (pStr->nCurDictSize > 0 && pStr->nInSize - (pStr->pInPos - pStr->pInBuffer) > 0) {
-
+		if(pStr->nCurDictSize > 0 && pStr->nInSize - (pStr->pInPos - pStr->pInBuffer) > 0) {
+			
 			// Initialize offsets and lengths used in search
 			pCopyOffs = pStr->Dict;
 			nCopyLen = 0;
 			pMaxCopyOffs = pCopyOffs;
 			nMaxCopyLen = 0;
-
+			
 			// Store position of last written dictionary byte
 			pNewDictPos = pStr->pDictPos - 1;
-			if (pNewDictPos < pStr->Dict)
+			if(pNewDictPos < pStr->Dict) {
 				pNewDictPos = pStr->Dict + pStr->nCurDictSize - 1;
-
+			}
+			
 			// Search dictionary for duplicate data
-			while (pCopyOffs < pStr->Dict + pStr->nCurDictSize) {
-
+			while(pCopyOffs < pStr->Dict + pStr->nCurDictSize) {
+				
 				// Check for a match with first byte
-				if (ch == *pCopyOffs) {
+				if(ch == *pCopyOffs) {
 					pOldCopyOffs = pCopyOffs;
 					nCopyLen = 0;
 					pNewInPos = pStr->pInPos - 1;
-
+					
 					// If there was a match, check for additional duplicate bytes
 					do {
-
+						
 						// Increment pointers and length
 						nCopyLen++;
 						pNewInPos++;
 						pCopyOffs++;
-
+						
 						// Wrap around pointer to beginning of dictionary buffer if the end of the buffer was reached
-						if (pCopyOffs >= pStr->Dict + pStr->nDictSize)
+						if(pCopyOffs >= pStr->Dict + pStr->nDictSize) {
 							pCopyOffs = pStr->Dict;
-
+						}
+						
 						// Wrap dictionary bytes if end of the dictionary was reached
-						if (pCopyOffs == pStr->pDictPos)
+						if(pCopyOffs == pStr->pDictPos) {
 							pCopyOffs = pOldCopyOffs;
-
+						}
+						
 						// Stop checking for additional bytes if there is no more input or maximum length was reached
-						if (nCopyLen >= 518 || pStr->nInSize - (pNewInPos - pStr->pInBuffer) == 0)
+						if(nCopyLen >= 518 || pStr->nInSize - (pNewInPos - pStr->pInBuffer) == 0) {
 							break;
+						}
 					} while (*pNewInPos == *pCopyOffs);
-
+					
 					// Return the pointer to the beginning of the matching data
 					pCopyOffs = pOldCopyOffs;
-
+					
 					// Copying less than two bytes from dictionary wastes space, so don't do it ;)
-					if (nCopyLen >= 2) {
-
+					if(nCopyLen >= 2) {
+						
 						// Only use the most efficient length and offset in dictionary
-						if (nCopyLen > nMaxCopyLen) {
-
+						if(nCopyLen > nMaxCopyLen) {
+							
 							// Store the offset that will be outputted into the compressed data
 							nCopyOffs = (pNewDictPos - (pCopyOffs - pStr->nCurDictSize)) % pStr->nCurDictSize;
-
-							if (nCopyLen > 2) {
+							
+							if(nCopyLen > 2) {
 								pMaxCopyOffs = pCopyOffs;
 								nMaxCopyLen = nCopyLen;
-							}
-							else {
-
+							} else {
+								
 								// If the copy length is 2, check for a valid dictionary offset
-								if (nCopyOffs <= 255) {
+								if(nCopyOffs <= 255) {
 									pMaxCopyOffs = pCopyOffs;
 									nMaxCopyLen = nCopyLen;
 								}
 							}
 						}
-
+						
 						// If the length is equal, check for a more efficient offset
-						else if (nCopyLen == nMaxCopyLen) {
-							if ((pNewDictPos - (pCopyOffs - pStr->nCurDictSize)) % pStr->nCurDictSize < (pNewDictPos - (pMaxCopyOffs - pStr->nCurDictSize)) % pStr->nCurDictSize) {
+						else if(nCopyLen == nMaxCopyLen) {
+							if((pNewDictPos - (pCopyOffs - pStr->nCurDictSize)) % pStr->nCurDictSize < (pNewDictPos - (pMaxCopyOffs - pStr->nCurDictSize)) % pStr->nCurDictSize) {
 								nCopyOffs = (pNewDictPos - (pCopyOffs - pStr->nCurDictSize)) % pStr->nCurDictSize;
 								pMaxCopyOffs = pCopyOffs;
 								nMaxCopyLen = nCopyLen;
@@ -269,152 +268,191 @@ int pkimplode(struct pkstream *pStr)
 						}
 					}
 				}
-
+				
 				// Increment pointer to the next dictionary offset to check
 				pCopyOffs++;
 			}
-
+			
 			// If there were at least 2 matching bytes in the dictionary that were found, output the length/offset pair
-			if (nMaxCopyLen >= 2) {
-
+			if(nMaxCopyLen >= 2) {
+				
 				// Reset the input pointers to the bytes that will be added to the dictionary
 				pStr->pInPos--;
 				pNewInPos = pStr->pInPos + nMaxCopyLen;
-
-				while (pStr->pInPos < pNewInPos) {
-
+				
+				while(pStr->pInPos < pNewInPos) {
+					
 					// Add a byte to the dictionary
 					*pStr->pDictPos++ = ch;
-
+					
 					// If the dictionary is not full yet, increment the current dictionary size
-					if (pStr->nCurDictSize < pStr->nDictSize)
+					if(pStr->nCurDictSize < pStr->nDictSize)
 						pStr->nCurDictSize++;
-
+					
 					// If the current end of the dictionary is past the end of the buffer,
 					// wrap around back to the start
-					if (pStr->pDictPos >= pStr->Dict + pStr->nDictSize)
+					if(pStr->pDictPos >= pStr->Dict + pStr->nDictSize)
 						pStr->pDictPos = pStr->Dict;
-
+					
 					// Get the next byte to be added
-					if (++pStr->pInPos < pNewInPos)
+					if(++pStr->pInPos < pNewInPos)
 						ch = *pStr->pInPos;
 				}
-
+				
 				// Find bit code for the base value of the length from the table
-				for (i = 0; i < 0x0F; i++) {
-					if (LenBase[i] <= nMaxCopyLen && nMaxCopyLen < LenBase[i+1])
+				for(i = 0; i < 0x0F; i++) {
+					if(LenBase[i] <= nMaxCopyLen && nMaxCopyLen < LenBase[i+1]) {
 						break;
+					}
 				}
-
+				
 				// Store the base value of the length
 				pStr->nBitBuffer += (1 + (LenCode[i] << 1)) << pStr->nBits;
 				pStr->nBits += 1 + LenBits[i];
-
+				
 				// Store the extra bits for the length
 				pStr->nBitBuffer += (nMaxCopyLen - LenBase[i]) << pStr->nBits;
 				pStr->nBits += ExLenBits[i];
-
+				
 				// Output the data from the bit buffer
-				while (pStr->nBits >= 8) {
+				while(pStr->nBits >= 8) {
 					// If output buffer has become full, stop immediately!
-					if (pStr->pOutPos >= pStr->pOutBuffer + pStr->nOutSize)
+					if(pStr->pOutPos >= pStr->pOutBuffer + pStr->nOutSize) {
 						return PK_ERR_BUFFER_TOO_SMALL;
-
+					}
+					
 					*pStr->pOutPos++ = (unsigned char)pStr->nBitBuffer;
 					pStr->nBitBuffer >>= 8;
 					pStr->nBits -= 8;
 				}
-
+				
 				// The most significant 6 bits of the dictionary offset are encoded with a
 				// bit sequence then the first 2 after that if the copy length is 2,
 				// otherwise it is the first 4, 5, or 6 (based on the dictionary size)
-				if (nMaxCopyLen == 2) {
-
+				if(nMaxCopyLen == 2) {
+					
 					// Store most significant 6 bits of offset using bit sequence
 					pStr->nBitBuffer += OffsCode[nCopyOffs >> 2] << pStr->nBits;
 					pStr->nBits += OffsBits[nCopyOffs >> 2];
-
+					
 					// Store the first 2 bits
 					pStr->nBitBuffer += (nCopyOffs & 0x03) << pStr->nBits;
 					pStr->nBits += 2;
 				}
 				else {
-
+					
 					// Store most significant 6 bits of offset using bit sequence
 					pStr->nBitBuffer += OffsCode[nCopyOffs >> pStr->nDictSizeByte] << pStr->nBits;
 					pStr->nBits += OffsBits[nCopyOffs >> pStr->nDictSizeByte];
-
+					
 					// Store the first 4, 5, or 6 bits
 					pStr->nBitBuffer += TRUNCATE_VALUE(nCopyOffs,pStr->nDictSizeByte) << pStr->nBits;
 					pStr->nBits += pStr->nDictSizeByte;
 				}
 			}
 		}
-
+		
 		// If the copy length was less than two, include the byte as a literal byte
-		if (nMaxCopyLen < 2) {
-			if (pStr->nLitSize == PK_LITERAL_SIZE_FIXED) {
-
+		if(nMaxCopyLen < 2) {
+			if(pStr->nLitSize == PK_LITERAL_SIZE_FIXED) {
+				
 				// Store a fixed size literal byte
 				pStr->nBitBuffer += ch << (pStr->nBits + 1);
 				pStr->nBits += 9;
-			}
-			else {
-
+			} else {
+				
 				// Store a variable size literal byte
 				pStr->nBitBuffer += ChCode[ch] << (pStr->nBits + 1);
 				pStr->nBits += 1 + ChBits[ch];
 			}
-
+			
 			// Add the byte into the dictionary
 			*pStr->pDictPos++ = ch;
-
+			
 			// If the dictionary is not full yet, increment the current dictionary size
-			if (pStr->nCurDictSize < pStr->nDictSize)
+			if(pStr->nCurDictSize < pStr->nDictSize) {
 				pStr->nCurDictSize++;
-
+			}
+			
 			// If the current end of the dictionary is past the end of the buffer,
 			// wrap around back to the start
-			if (pStr->pDictPos >= pStr->Dict + pStr->nDictSize)
+			if(pStr->pDictPos >= pStr->Dict + pStr->nDictSize) {
 				pStr->pDictPos = pStr->Dict;
+			}
 		}
-
+		
 		// Write any whole bytes from the bit buffer into the output buffer
-		while (pStr->nBits >= 8) {
+		while(pStr->nBits >= 8) {
 			// If output buffer has become full, stop immediately!
-			if (pStr->pOutPos >= pStr->pOutBuffer + pStr->nOutSize)
+			if(pStr->pOutPos >= pStr->pOutBuffer + pStr->nOutSize) {
 				return PK_ERR_BUFFER_TOO_SMALL;
-
+			}
+			
 			*pStr->pOutPos++ = (unsigned char)pStr->nBitBuffer;
 			pStr->nBitBuffer >>= 8;
 			pStr->nBits -= 8;
 		}
 	}
-
+	
 	// Store the code for the end of the compressed data stream
 	pStr->nBitBuffer += (1 + (LenCode[0x0F] << 1)) << pStr->nBits;
 	pStr->nBits += 1 + LenBits[0x0F];
-
+	
 	pStr->nBitBuffer += 0xFF << pStr->nBits;
 	pStr->nBits += 8;
-
+	
 	// Write any remaining bits from the bit buffer into the output buffer
-	while (pStr->nBits > 0) {
+	while(pStr->nBits > 0) {
 		// If output buffer has become full, stop immediately!
-		if (pStr->pOutPos >= pStr->pOutBuffer + pStr->nOutSize)
+		if(pStr->pOutPos >= pStr->pOutBuffer + pStr->nOutSize) {
 			return PK_ERR_BUFFER_TOO_SMALL;
-
+		}
+			
 		*pStr->pOutPos++ = (unsigned char)pStr->nBitBuffer;
 		pStr->nBitBuffer >>= 8;
-		if (pStr->nBits >= 8)
+		if(pStr->nBits >= 8) {
 			pStr->nBits -= 8;
-		else
+		} else {
 			pStr->nBits = 0;
+		}
 	}
-
+	
 	// Store the compressed size
 	pStr->nOutSize = pStr->pOutPos - pStr->pOutBuffer;
-
+	
 	return PK_ERR_SUCCESS;
 }
 
+char * implodeAlloc(const char * buf, size_t inSize, size_t & outSize) {
+	
+	pkstream strm;
+	
+	strm.pInBuffer = (const unsigned char*)buf;
+	strm.nInSize = inSize;
+	strm.nLitSize = PK_LITERAL_SIZE_FIXED;
+	
+	if(inSize <= 32768) {
+		strm.nDictSizeByte = 4;
+	} else if(inSize <= 131072) {
+		strm.nDictSizeByte = 5;
+	} else {
+		strm.nDictSizeByte = 6;
+	}
+	
+	// TODO what is the maximum size that the data can grow?
+	char * outBuf = new char[inSize * 2];
+	
+	strm.pOutBuffer = (unsigned char *)outBuf;
+	strm.nOutSize = inSize * 2;
+	
+	ImplodeResult res = implode(&strm);
+	if(res) {
+		LogError << "error compressing " << inSize << " bytes: " << res;
+		outSize = 0;
+		delete[] outBuf;
+		return NULL;
+	}
+	
+	outSize = strm.nOutSize;
+	return outBuf;
+}

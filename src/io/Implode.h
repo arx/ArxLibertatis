@@ -21,40 +21,50 @@
 #ifndef ARX_IO_IMPLODE_H
 #define ARX_IO_IMPLODE_H
 
-#define PK_LITERAL_SIZE_FIXED    0 // Use fixed size literal bytes, used for binary data
-#define PK_LITERAL_SIZE_VARIABLE 1 // Use variable size literal bytes, used for text
+#include <stddef.h>
 
-// Error codes
-#define PK_ERR_SUCCESS          0 // No errors occurred
-#define PK_ERR_INVALID_DICTSIZE 1 // An invalid dictionary size was selected
-#define PK_ERR_INVALID_MODE     2 // An invalid mode for literal bytes was selected
-#define PK_ERR_BUFFER_TOO_SMALL 4 // Output buffer is too small
+enum ImplodeLiteralSize {
+	PK_LITERAL_SIZE_FIXED = 0, // Use fixed size literal bytes, used for binary data
+	PK_LITERAL_SIZE_VARIABLE  = 1 // Use variable size literal bytes, used for text
+};
+
+enum ImplodeResult {
+	PK_ERR_SUCCESS = 0, // No errors occurred
+	PK_ERR_INVALID_DICTSIZE = 1, // An invalid dictionary size was selected
+	PK_ERR_INVALID_MODE = 2, // An invalid mode for literal bytes was selected
+	PK_ERR_BUFFER_TOO_SMALL = 4 // Output buffer is too small
+};
 
 struct pkstream {
+	
 	// The first six members of this struct need to be
-	// set when calling pkimplode, but only the first
-	// four members are used when calling pkexplode
-	unsigned char *pInBuffer; // Pointer to input buffer
-	unsigned int nInSize; // Size of input buffer
-	unsigned char *pOutBuffer; // Pointer to output buffer
-	unsigned int nOutSize; // Size of output buffer, will be resulting size when function returns
-	unsigned char nLitSize; // Specifies whether to use fixed or variable size literal bytes
+	// set when calling pkimplode.
+	const unsigned char * pInBuffer; // Pointer to input buffer
+	size_t nInSize; // Size of input buffer
+	unsigned char * pOutBuffer; // Pointer to output buffer
+	size_t nOutSize; // Size of output buffer, will be resulting size when function returns
+	ImplodeLiteralSize nLitSize; // Specifies whether to use fixed or variable size literal bytes
 	unsigned char nDictSizeByte; // Dictionary size; valid values are 4, 5, and 6 which represent 1024, 2048, and 4096 respectively
-
+	
 	// The rest of the members of this struct are used
 	// internally, so setting these values outside
-	// pkimplode or pkexplode has no effect
-	unsigned char *pInPos; // Current position in input buffer
-	unsigned char *pOutPos; // Current position in output buffer
+	// pkimplode has no effect
+	const unsigned char * pInPos; // Current position in input buffer
+	unsigned char * pOutPos; // Current position in output buffer
 	unsigned char nBits; // Number of bits in bit buffer
 	unsigned long nBitBuffer; // Stores bits until there are enough to output a byte of data
-	unsigned char *pDictPos; // Position in dictionary
+	unsigned char * pDictPos; // Position in dictionary
 	unsigned int nDictSize; // Maximum size of dictionary
 	unsigned int nCurDictSize; // Current size of dictionary
 	unsigned char Dict[0x1000]; // Sliding dictionary used for compression and decompression
+	
 };
 
-// Both functions return 0 on success and nonzero value on failure
-int pkimplode(struct pkstream *pStr);
+/**
+ * @return 0 on success and nonzero value on failure
+ */
+ImplodeResult implode(pkstream * pStr);
+
+char * implodeAlloc(const char * buf, size_t inSize, size_t & outSize);
 
 #endif // ARX_IO_IMPLODE_H
