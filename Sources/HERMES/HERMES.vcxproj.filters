@@ -41,6 +41,12 @@
     <ClCompile Include="HERMESPerf.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="explode.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="implode.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\HERMES_ClusterSave.h">
@@ -83,6 +89,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\ResourceHERMESnet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\pklib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

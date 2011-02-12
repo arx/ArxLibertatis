@@ -25,7 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EVE_SAVE
 #define EVE_SAVE
 
-#include "implode.h"
+#include "pklib.h"
 #include "HERMES_pack_types.h"
 #include "HERMES_hachage.h"
 

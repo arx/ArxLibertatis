@@ -76,8 +76,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 
-#include "../ArxCommon/Timer.h"
-
 extern float MagicSightFader;
 extern long FINAL_COMMERCIAL_DEMO;
 extern long NEED_TEST_TEXT;
@@ -7542,25 +7540,19 @@ void ARX_INTERFACE_ManageOpenedBook()
 		else if (Book_Mode == BOOKMODE_SPELLS)
 			DrawBookInterfaceItem(GDevice, ITC.pTexSpellBook, 97, 64, 0.9999f);
 		else
-			DrawBookInterfaceItem(GDevice,ITC.questbook, 97, 64, 0.9999f);
+			DrawBookInterfaceItem(GDevice, ITC.questbook, 97, 64, 0.9999f);
 
 		GDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
 	}
 	else
 	{
-		float x = 0;
-		float y = 0;
+		const float BookCornerX = ARX_CLEAN_WARN_CAST_FLOAT( ( 640 - ITC.playerbook->m_dwWidth ) / 2 );
+		const float BookCornerY = ARX_CLEAN_WARN_CAST_FLOAT( ( 480 - ITC.playerbook->m_dwHeight ) / 2 );
 
-		if ( ITC.playerbook )
-		{
-			x = ARX_CLEAN_WARN_CAST_FLOAT( ( 640 - ITC.playerbook->m_dwWidth ) / 2 );
-			y = ARX_CLEAN_WARN_CAST_FLOAT( ( 480 - ITC.playerbook->m_dwHeight ) / 2 );
+		DrawBookInterfaceItem( GDevice, ITC.playerbook, BookCornerX, BookCornerY );
 
-			DrawBookInterfaceItem( GDevice, ITC.playerbook, x, y );
-		}
-
-		BOOKDECX = x - 97;
-		BOOKDECY = x - 64 + 19;
+		BOOKDECX = BookCornerX - 97;
+		BOOKDECY = BookCornerY - 64 + 19;
 	}
 
 	if (ARXmenu.currentmode != AMCM_NEWQUEST)
@@ -7579,7 +7571,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			float py=BOOKMARKS_POS_Y;
 			DrawBookInterfaceItem(GDevice,ITC.bookmark_char,px,py);
 
-			// Check for cursor on charcter sheet bookmark
+			// Check for cursor on character sheet bookmark
 			if (	ITC.bookmark_char
 				&&	MouseInBookRect(px,py,px+ITC.bookmark_char->m_dwWidth,py+ITC.bookmark_char->m_dwHeight))
 			{
