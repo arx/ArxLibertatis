@@ -21,8 +21,8 @@
   Mark Adler    madler@alumni.caltech.edu
  */
 
-#ifndef ARX_HERMES_BLAST_H
-#define ARX_HERMES_BLAST_H
+#ifndef ARX_IO_BLAST_H
+#define ARX_IO_BLAST_H
 
 #include <cstddef>
 
