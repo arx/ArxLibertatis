@@ -866,6 +866,10 @@ namespace ATHENA
 		aalULong cur0, cur1;
 		aalULong to_fill, count;
 
+		ALuint new_buffers[1];
+
+		alGenBuffers(1, new_buffers);
+
 		printf("Instance::UpdateStreaming\n");
 
 		InstanceDebugLog(this, "STREAMED");
@@ -874,47 +878,18 @@ namespace ATHENA
 
 		// FIXME TODO
 
-		// if (!lpdsb->Lock(write, to_fill, &ptr0, &cur0, &ptr1, &cur1, 0))
-		// {
-		// 	if (ptr0)
-		// 	{
-		// 		stream->Read(ptr0, cur0, count);
-
-		// 		if (count < cur0)
-		// 		{
-		// 			if (loop)
-		// 			{
-		// 				stream->SetPosition(0);
-		// 				stream->Read((aalUByte *)ptr0 + count, cur0 - count, count);
-		// 			}
-		// 			else
-		// 			{
-		// 				memset((aalUByte *)ptr0 + count, 0, cur0 - count);
-		// 			}
-		// 		}
-		// 	}
-
-		// 	if (ptr1)
-		// 	{
-		// 		stream->Read(ptr1, cur1, count);
-
-		// 		if (count < cur1)
-		// 		{
-		// 			if (loop)
-		// 			{
-		// 				stream->SetPosition(0);
-		// 				stream->Read((aalUByte *)ptr1 + count, cur1 - count, count);
-		// 			}
-		// 			else
-		// 			{
-		// 				memset((aalUByte *)ptr1 + count, 0, cur1 - count);
-		// 				lpdsb->Play(0, 0, 0);
-		// 			}
-		// 		}
-		// 	}
-
-		// 	lpdsb->Unlock(ptr0, cur0, ptr1, cur1);
-		// }
+		ptr0 = malloc(to_fill);
+		stream->Read(ptr0, to_fill, count);
+		if (count < to_fill) {
+			if (loop) {
+				stream->SetPosition(0);
+				stream->Read(ptr0 + count, to_fill - count, count);
+			} else {
+				memset(ptr0 + count, 0, to_fill - count);
+			}
+		}
+		alBufferData(new_buffers[0], alformat, ptr0, to_fill, sample->format.frequency);
+		alSourceQueueBuffers(source[0], 1, new_buffers);
 
 		write += to_fill;
 
