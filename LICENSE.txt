@@ -1,3 +1,0 @@
-See ARX_PUBLIC_LICENSE.txt
-
-pkware explode and implode functions from Stormlib (http://www.zezula.net/en/mpq/stormlib.html)

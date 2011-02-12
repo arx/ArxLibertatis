@@ -38,6 +38,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "dsound.lib")
 #pragma comment(lib, "eaxguid.lib")
+#pragma comment(lib, "implode.lib")
 #pragma comment(lib, "winmm.lib")
 
 #include "Athena.h"

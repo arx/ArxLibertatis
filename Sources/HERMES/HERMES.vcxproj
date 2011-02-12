@@ -192,8 +192,6 @@
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MaxSpeed</Optimization>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <ClCompile Include="explode.c" />
-    <ClCompile Include="implode.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\HERMES_ClusterSave.h" />
@@ -208,7 +206,6 @@
     <ClInclude Include="..\Include\HERMESnet.h" />
     <ClInclude Include="..\Include\HERMESPerf.h" />
     <ClInclude Include="..\Include\OtherLibs\IMPLODE.H" />
-    <ClInclude Include="..\Include\pklib.h" />
     <ClInclude Include="..\Include\resource.h" />
     <ClInclude Include="..\Include\ResourceHERMESnet.h" />
   </ItemGroup>

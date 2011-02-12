@@ -92,7 +92,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/NODEFAULTLIB:LIBC %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>ArxCommond.lib;Mercuryd.lib;MINOSd.lib;HERMESd.lib;EEried.lib;eaxguid.lib;dinput.lib;zlib.lib;jpeglib.lib;wsock32.lib;dxguid.lib;dsound.lib;winmm.lib;comctl32.lib;ddraw.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ArxCommond.lib;implode.lib;Mercuryd.lib;MINOSd.lib;HERMESd.lib;EEried.lib;eaxguid.lib;dinput.lib;zlib.lib;jpeglib.lib;wsock32.lib;dxguid.lib;dsound.lib;winmm.lib;comctl32.lib;ddraw.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\lib;..\lib\otherlibs;..\DX\Lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -154,7 +154,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/NODEFAULTLIB:LibC %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>ArxCommon.lib;Mercury.lib;MINOS.lib;HERMES.lib;EErie.lib;eaxguid.lib;dinput.lib;zlib.lib;jpeglib.lib;wsock32.lib;dxguid.lib;dsound.lib;winmm.lib;comctl32.lib;ddraw.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>implode.lib;ArxCommon.lib;Mercury.lib;MINOS.lib;HERMES.lib;EErie.lib;eaxguid.lib;dinput.lib;zlib.lib;jpeglib.lib;wsock32.lib;dxguid.lib;dsound.lib;winmm.lib;comctl32.lib;ddraw.lib;Advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\lib;..\lib\otherlibs;..\DX\Lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
