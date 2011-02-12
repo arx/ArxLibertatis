@@ -21,7 +21,7 @@
 #ifndef ARX_IO_IMPLODE_H
 #define ARX_IO_IMPLODE_H
 
-#include <stddef.h>
+#include <cstddef>
 
 enum ImplodeLiteralSize {
 	PK_LITERAL_SIZE_FIXED = 0, // Use fixed size literal bytes, used for binary data
