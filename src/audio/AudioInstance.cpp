@@ -240,8 +240,19 @@ namespace ATHENA
 			//if (lpdsb->Unlock(ptr0, cur0, ptr1, cur1)) return AAL_ERROR_SYSTEM;
 			alGetError();
 			printf("channels: %d quality: %d frequency: %d\n", sample->format.channels, sample->format.quality, sample->format.frequency);
+
+			switch (sample->format.quality) {
+			case 8:
+				alformat = sample->format.channels == 1 ? AL_FORMAT_MONO8 : AL_FORMAT_STEREO8;
+				break;
+			case 16:
+				alformat = sample->format.channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
+				break;
+			default:
+				exit(0);
+			}
 			
-			alBufferData(buffer[0], AL_FORMAT_MONO16, ptr0, size, sample->format.frequency);
+			alBufferData(buffer[0], alformat, ptr0, size, sample->format.frequency);
 			// FIXME -- does the above cause a memleak?
 			printf("post-read size: %d write: %d\n", size, write);
 			printf("alBufferData error: 0x%x is buffer: %d\n", alGetError(), alIsBuffer(buffer[0]));
@@ -681,8 +692,18 @@ namespace ATHENA
 
 			stream->Read(ptr0, size, write);
 
+			switch (sample->format.quality) {
+			case 8:
+				alformat = sample->format.channels == 1 ? AL_FORMAT_MONO8 : AL_FORMAT_STEREO8;
+				break;
+			case 16:
+				alformat = sample->format.channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
+				break;
+			default:
+				exit(0);
+			}
 			//if (lpdsb->Unlock(ptr0, cur0, ptr1, cur1)) return AAL_ERROR_SYSTEM;
-			alBufferData(buffer[0], AL_FORMAT_STEREO16, ptr0, size, sample->format.frequency);
+			alBufferData(buffer[0], alformat, ptr0, size, sample->format.frequency);
 			alSourceQueueBuffers(source[0], 1, buffer);
 			int error;
 			if ((error = alGetError()) != AL_NO_ERROR) {
@@ -725,8 +746,6 @@ namespace ATHENA
 	aalError Instance::Stop()
 	{
 		if (status & IS_IDLED) return AAL_OK;
-		int error;
-		alGetError(); // Clear error
 		int error;
 		alGetError(); // Clear error
 
