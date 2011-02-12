@@ -147,6 +147,8 @@ namespace ATHENA
 
 		if (mutex) ReleaseMutex(mutex);
 
+		printf("aalInit -- done\n");
+
 		return AAL_OK;
 	}
 
@@ -245,6 +247,8 @@ namespace ATHENA
 	{
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
+
+		printf("aalSetSamplePath\n");
 
 		if (_path)
 		{
@@ -355,6 +359,8 @@ namespace ATHENA
 	aalError aalEnable(const aalULong & flags)
 	{
 		aalError _error(AAL_OK);
+
+		printf("aalEnable\n");
 
 
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
@@ -577,6 +583,8 @@ namespace ATHENA
 	{
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_SFALSE;
+
+		printf("aalCreateSample\n");
 
 		Sample * sample = NULL;
 		aalSLong s_id;
@@ -1308,6 +1316,7 @@ namespace ATHENA
 			return AAL_ERROR_TIMEOUT;
 
 		aalSLong s_id(GetSampleID(sample_id));
+		printf("aalSamplePlay\n");
 
 		sample_id = s_id;
 
@@ -1353,6 +1362,7 @@ namespace ATHENA
 
 		if (!instance)
 		{
+			printf("no instance\n");
 			Sample * sample = _sample[s_id];
 
 			aalULong i(0);
@@ -1368,6 +1378,7 @@ namespace ATHENA
 			if ((i < _inst.Size() ? instance->Init(_inst[i], channel) : instance->Init(_sample[s_id], channel)) ||
 			        (i_id = _inst.Add(instance)) == AAL_SFALSE)
 			{
+				printf("bad instance\n");
 				delete instance;
 
 				if (mutex) ReleaseMutex(mutex);
@@ -1379,14 +1390,17 @@ namespace ATHENA
 		//if (listener && channel.flags & FLAG_ANY_3D_FX) listener->CommitDeferredSettings();
 		// FIXME -- I don't think we need the above
 
+		printf("pre-play\n");
 		if (instance->Play(play_count))
 		{
+			printf("error returned\n");
 			_inst.Delete(i_id);
 
 			if (mutex) ReleaseMutex(mutex);
 
 			return AAL_ERROR_SYSTEM;
 		}
+		printf("no error\n");
 
 		sample_id = instance->id = (i_id << 16) | s_id;
 

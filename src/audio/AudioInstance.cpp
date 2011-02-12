@@ -95,6 +95,8 @@ namespace ATHENA
 		// WAVEFORMATEX _format;
 		aalUBool streaming(AAL_UFALSE);
 
+		printf("Instance::Init no streaming\n");
+
 		Clean();
 
 		sample = __sample;
@@ -155,12 +157,21 @@ namespace ATHENA
 
 		// if (device->CreateSoundBuffer(&_desc, &lpdsb, NULL)) return AAL_ERROR_SYSTEM;
 		// FIXME: set the properties of the buffer based on the channel struct
+		printf("before generating buffer and source\n");
+		alGetError();
 		alGenBuffers(1, buffer);
-		if (alGetError() != AL_NO_ERROR)
+		int error;
+		if ((error = alGetError()) != AL_NO_ERROR) {
+			printf("0x%x %s\n", error, error == AL_OUT_OF_MEMORY ?  "AL_OUT_OF_MEMORY" : "AL_INVALID_VALUE");
 			return AAL_ERROR_SYSTEM;
+		}
+		printf("before generating source\n");
 		alGenSources(1, source);
 		if (alGetError() != AL_NO_ERROR)
 			return AAL_ERROR_SYSTEM;
+
+		printf("generated buffer and source\n");
+
 		
 
 		SetVolume(channel.volume);
@@ -223,6 +234,7 @@ namespace ATHENA
 			//if (lpdsb->Lock(0, 0, &ptr0, &cur0, &ptr1, &cur1, DSBLOCK_ENTIREBUFFER)) return AAL_ERROR_SYSTEM;
 			ptr0 = malloc(size);
 
+			printf("pre-read\n");
 			stream->Read(ptr0, size, write);
 
 			//if (lpdsb->Unlock(ptr0, cur0, ptr1, cur1)) return AAL_ERROR_SYSTEM;
@@ -240,8 +252,11 @@ namespace ATHENA
 
 	aalError Instance::Init(Instance * instance, const aalChannel & _channel)
 	{
+		printf("Instance::Init\n");
 		if (instance->stream || _channel.flags ^ instance->channel.flags)
 			return Init(instance->sample, _channel);
+
+		printf("no stream\n");
 
 		Clean();
 
@@ -270,8 +285,10 @@ namespace ATHENA
 
 			if (channel.flags & AAL_FLAG_RELATIVE) {
 				alSourcei(source[0], AL_SOURCE_RELATIVE, 1);
+				printf("relative\n");
 				if (alGetError() != AL_NO_ERROR)
 					return AAL_ERROR_SYSTEM;
+				printf("no error\n");
 			}
 
 			SetPosition(channel.position);
@@ -304,6 +321,8 @@ namespace ATHENA
 			}
 		}
 		else SetPan(channel.pan);
+
+		printf("all ok\n");
 
 		return AAL_OK;
 	}
@@ -625,6 +644,7 @@ namespace ATHENA
 	///////////////////////////////////////////////////////////////////////////////
 	aalError Instance::Play(const aalULong & play_count)
 	{
+		printf("Instance::Play\n");
 		//Enqueue _loop count if instance is already playing
 		if (IsPlaying())
 		{
@@ -659,7 +679,10 @@ namespace ATHENA
 
 			//if (lpdsb->Unlock(ptr0, cur0, ptr1, cur1)) return AAL_ERROR_SYSTEM;
 
-			if (write != size) return AAL_ERROR;
+			if (write != size) {
+				printf("write != size\n");
+				return AAL_ERROR;
+			}
 		}
 
 		status &= ~IS_PAUSED;
@@ -673,9 +696,13 @@ namespace ATHENA
 		// if (lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0))
 		// 	return AAL_ERROR_SYSTEM;
 
+		int error;
+		alGetError(); // Clear error
 		alSourcePlay(source[0]);
-		if (alGetError() != AL_NO_ERROR)
+		if ((error = alGetError()) != AL_NO_ERROR) {
+			printf("error = 0x%x\n", error);
 			return AAL_ERROR_SYSTEM;
+		}
 		
 		InstanceDebugLog(this, "STARTED");
 
@@ -685,6 +712,10 @@ namespace ATHENA
 	aalError Instance::Stop()
 	{
 		if (status & IS_IDLED) return AAL_OK;
+		int error;
+		alGetError(); // Clear error
+		int error;
+		alGetError(); // Clear error
 
 		InstanceDebugLog(this, "STOPPED");
 
@@ -763,14 +794,24 @@ namespace ATHENA
 		listener_pos.z = _listener_pos[2];
 
 		dist = Distance(listener_pos, channel.position);
+		printf("distance is %f max is %f\n", dist, max);
+		printf("status: 0x%x IS_TOOFAR: 0x%x\n", status, IS_TOOFAR);
 
 		if (status & IS_TOOFAR)
 		{
+			printf("not too far\n");
 			if (dist > max) return AAL_UTRUE;
 
 			status &= ~IS_TOOFAR;
 			//lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0);
+			int error;
+			alGetError();
+			printf("playing 1\n");
 			alSourcePlay(source[0]);
+			if ((error = alGetError()) != AL_NO_ERROR) {
+				printf("error: 0x%x\n", error);
+				exit(0);
+			}
 
 			return AAL_UFALSE;
 		}
@@ -779,6 +820,7 @@ namespace ATHENA
 			if (dist <= max) return AAL_UFALSE;
 
 			status |= IS_TOOFAR;
+			printf("status %d\n", status);
 			// lpdsb->Stop();
 			alSourceStop(source[0]);
 		}
@@ -791,6 +833,8 @@ namespace ATHENA
 		aalVoid * ptr0, *ptr1;
 		aalULong cur0, cur1;
 		aalULong to_fill, count;
+
+		printf("Instance::UpdateStreaming\n");
 
 		InstanceDebugLog(this, "STREAMED");
 
@@ -849,7 +893,11 @@ namespace ATHENA
 	{
 		aalULong last;
 
+		printf("Instance::Update\n");
+
 		if (status & (IS_IDLED | IS_PAUSED)) return AAL_OK;
+
+		printf("not idled or paused\n");
 
 		if (channel.flags & AAL_FLAG_POSITION && alIsSource(source[0]) && IsTooFar())
 		{
@@ -864,6 +912,7 @@ namespace ATHENA
 		}
 
 		last = read;
+		printf("last: %d read: %d\n", last, read);
 		//lpdsb->GetCurrentPosition(&read, NULL);
 		alGetSourcei(source[0], AL_BYTE_OFFSET, (ALint *)&read);
 
@@ -871,6 +920,7 @@ namespace ATHENA
 		{
 			if (!IsPlaying())
 			{
+				printf("stopping\n");
 				Stop();
 			}
 
@@ -878,6 +928,7 @@ namespace ATHENA
 		}
 
 		time += read < last ? read + size - last : read - last;
+		printf("time: %d\n", time);
 
 		//Check if's time to launch a callback
 		if (callb_i < sample->callb_c && sample->callb[callb_i].time <= time)
@@ -892,8 +943,15 @@ namespace ATHENA
 			{
 				InstanceDebugLog(this, "LOOPED");
 
-				if (!--loop && !stream) //lpdsb->Play(0, 0, 0);
+				if (!--loop && !stream) {
+					printf("playing 2\n");
 					alSourcePlay(source[0]);
+					int error;
+					if ((error = alGetError()) != AL_NO_ERROR) {
+						printf("error: 0x%x\n", error);
+						exit(0);
+					}
+				}
 			}
 			else
 			{
