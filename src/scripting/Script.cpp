@@ -588,6 +588,7 @@ void ReleaseScript(EERIE_SCRIPT * es)
 //*************************************************************************************
 long specialstrcmp( const std::string& text, const std::string& seek)
 {
+	
 	if ( text.compare( 0, seek.length(), seek ) == 0 )
 		return 0;
 
@@ -1701,7 +1702,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 					else
 					{
 						std::stringstream ss;
-						ss << GetName(inter.iobj[io->targetinfo]->filename) << '_' << inter.iobj[io->targetinfo]->ident;
+						ss << GetName(inter.iobj[io->targetinfo]->filename) << '_' << std::setfill('0') << std::setw(4) << inter.iobj[io->targetinfo]->ident;
 						txtcontent = ss.str();
 					}
 				}
