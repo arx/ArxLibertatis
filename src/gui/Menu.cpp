@@ -145,6 +145,8 @@ std::vector<SaveGame> save_l;
 //-----------------------------------------------------------------------------
 void CreateSaveGameList()
 {
+	LogInfo << "CreateSaveGameList";
+	
 	char path[512] = "";
 	HANDLE h;
 
@@ -158,12 +160,15 @@ void CreateSaveGameList()
 	char tTemp[sizeof(WIN32_FIND_DATA)+2];
 	WIN32_FIND_DATA * fdata = (WIN32_FIND_DATA *)tTemp;
 
+	LogInfo << "looking for " << path;
+	
 	if ((h = FindFirstFile(path, fdata)) != INVALID_HANDLE_VALUE)
 	{
 		do
 		{
 			if (fdata->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY && fdata->cFileName[0] != '.')
 			{
+				LogInfo << "- found save file " << fdata->cFileName;
 				// Make another save game slot at the end
 				save_l.resize( save_l.size() +1 );
 
@@ -171,25 +176,34 @@ void CreateSaveGameList()
 				save_l[save_c].num = atoi(text.c_str());
 				std::stringstream ss;
 				ss << "save" << LOCAL_SAVENAME << "\\" << fdata->cFileName << "\\";
-				text = ss.str();
 				//sprintf(text, "%ssave%s\\%s\\", Project.workingdir, LOCAL_SAVENAME, fdata->cFileName);
 				unsigned long pouet;
 
-				if (ARX_CHANGELEVEL_GetInfo(text, save_l[save_c].name, save_l[save_c].version, save_l[save_c].level, pouet) != -1)
+				if (ARX_CHANGELEVEL_GetInfo(ss.str(), save_l[save_c].name, save_l[save_c].version, save_l[save_c].level, pouet) != -1)
 				{
 					SYSTEMTIME stime;
 					FILETIME fTime;
 					FileTimeToLocalFileTime(&fdata->ftLastWriteTime, &fTime);
 					FileTimeToSystemTime(&fTime, &stime);
 					save_l[save_c].stime = stime;
-
+					
+					LogInfo << "  which is: " << save_l[save_c].name << " version: " << save_l[save_c].version
+					        << " time: " << stime.wYear << "-" << stime.wMonth << "-" << stime.wDay
+					        << " " << stime.wHour << ":" << stime.wMinute << ":" << stime.wSecond
+					        << ":" << stime.wMilliseconds;
+					
 					save_c++;
+				} else {
+					LogWarning << "unable to get save file info for " << ss.str();
 				}
 			}
 		}
 		while (FindNextFile(h, fdata));
 
+		LogInfo << "found " << (save_c-1) << " savegames";
 		FindClose(h);
+	} else {
+		LogInfo << "no save files found";
 	}
 }
 
