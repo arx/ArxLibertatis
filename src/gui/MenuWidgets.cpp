@@ -2378,9 +2378,9 @@ bool Menu2_Render()
 
 								CMenuElementText *me02;
 
-								std::string tex2 = tex;
-
-								std::transform( tex.begin(), tex2.end(), tex.begin(), ::toupper );
+								std::string tex2;
+								tex2.resize(tex.size());
+								std::transform(tex.begin(), tex.end(), tex2.begin(), ::toupper);
 
 								if( !szMenuText.compare( tex2 ) || !szMenuText1.compare( tex2 ) )
 								{
