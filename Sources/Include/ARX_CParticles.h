@@ -26,7 +26,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CPARTICLES_H
 #define ARX_CPARTICLES_H
 
-#include "eerietypes.h"
+#include "EERIETypes.h"
+#include <list>
+using namespace std;
 
 #include "ARX_CParticleParams.h"
 #include "ARX_CParticleSystem.h"
@@ -41,6 +43,7 @@ class CParticleSystem;
 //typedef int EERIE_3D;
 typedef EERIE_3D Point3;
  
+
 class CParticle;
 class CParticleSystem;
 class CParticleParams;

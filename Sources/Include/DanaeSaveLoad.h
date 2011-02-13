@@ -57,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #ifndef DANAESAVELOAD_H
 #define DANAESAVELOAD_H
-#include "danae.h"
+#include "Danae.h"
 
 //Fileformat version
 #define CURRENT_VERSION 1.44f

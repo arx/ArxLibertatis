@@ -66,7 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Physics.h"
 #include "ARX_Interactive.h"
 #include "DANAE_Debugger.h"
-#include "DANAESaveLoad.h"
+#include "DanaeSaveLoad.h"
 
 
 //-----------------------------------------------------------------------------

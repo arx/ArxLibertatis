@@ -45,21 +45,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // ARX_Lightning
 //////////////////////////////////////////////////////////////////////////////////////
 //
-// Code: Didier Pédreno - Sébastien Scieux
-//
+// Code: Didier PÃ©dreno - SÃ©bastien Scieux
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
 #ifndef ARX_CSPELLFX_H
 #define ARX_CSPELLFX_H
 
-#include "EERIETypes.h"
-#include "EERIEDraw.h"
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+//#define _CRTDBG_MAP_ALLOC
+//#include <crtdbg.h>
 
 const int BEZIERPrecision = 32;
+
+#include <EERIETypes.h>
+#include <EERIEDraw.h>
 
 void EE_RT2(D3DTLVERTEX * in, D3DTLVERTEX * out);
 bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX *, D3DTLVERTEX *, D3DTLVERTEX *, float _fAdd = 0.f);

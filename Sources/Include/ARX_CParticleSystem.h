@@ -26,12 +26,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CPARTICLESYSTEM_H
 #define ARX_CPARTICLESYSTEM_H
 
-#include "eerietypes.h"
-
-#include <d3d.h>
-
+#include "EERIETypes.h"
+//#include <d3d.h>
 #include <list>
 #include <vector>
+using namespace std;
 
 #define PARTICLE_CIRCULAR  1
 #define PARTICLE_BORDER	   2
