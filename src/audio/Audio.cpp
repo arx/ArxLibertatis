@@ -366,7 +366,6 @@ namespace ATHENA
 
 		printf("aalEnable\n");
 
-
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
 
@@ -898,7 +897,7 @@ namespace ATHENA
 		// }
 
 		alListener3f(AL_POSITION, position.x, position.y, position.z);
-		printf("listener pos: (%f, %f, %f)\n", position.x, position.y, position.z);
+		//printf("listener pos: (%f, %f, %f)\n", position.x, position.y, position.z);
 
 		if (alGetError() != AL_NO_ERROR)
 		{
@@ -1632,7 +1631,7 @@ namespace ATHENA
 
 	aalError aalAmbiancePlay(const aalSLong & a_id, const aalChannel & channel, const aalULong & play_count, const aalULong & fade_interval)
 	{
-		printf("aalAmbiancePlay\n");
+		printf("aalAmbiancePlay fade_interval: %d\n", fade_interval);
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
 
@@ -1652,8 +1651,11 @@ namespace ATHENA
 
 	aalError aalAmbianceStop(const aalSLong & a_id, const aalULong & fade_interval)
 	{
+		printf("aalAmbianceStop 1\n");
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
+
+		printf("aalAmbianceStop\n");
 
 		if (_amb.IsNotValid(a_id))
 		{

@@ -898,6 +898,7 @@ namespace ATHENA
 
 	aalError Ambiance::Stop(const aalULong & _fade_interval)
 	{
+		printf("Ambiance::Stop\n");
 		if (!(flags & IS_PLAYING)) return AAL_OK;
 
 		if (flags & IS_PAUSED) Resume();
@@ -940,6 +941,7 @@ namespace ATHENA
 
 	aalError Ambiance::Pause()
 	{
+		printf("Ambiance::Pause\n");
 		if (!(flags & IS_PLAYING)) return AAL_ERROR;
 
 		time = session_time;
