@@ -4323,7 +4323,6 @@ long ARX_CHANGELEVEL_Load(long instance)
 //------------------------------------------------------------------------------
 long ARX_CHANGELEVEL_GetInfo( const std::string& path, std::string& name, float& version, long& level, unsigned long& time)
 {
-	if ((path.empty()) || (name.empty()) || (!version) || (!level) || (!time)) return -1;
 
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;
 
