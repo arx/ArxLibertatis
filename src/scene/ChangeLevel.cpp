@@ -349,7 +349,9 @@ void ARX_Changelevel_CurGame_Open()
 	sprintf(fic, "%sGsave.sav", CurGamePath);
 
 	GLOBAL_pSaveB = new CSaveBlock(fic);
-	GLOBAL_pSaveB->BeginRead();
+	if(!GLOBAL_pSaveB->BeginRead()) {
+		LogError << "cannot open cur game save file" << fic;
+	}
 	return;
 }
 
@@ -379,13 +381,12 @@ extern long FINAL_COMMERCIAL_DEMO;
 //--------------------------------------------------------------------------------------------
 void ARX_CHANGELEVEL_Change( const std::string& level, const std::string& target, long angle, long confirm)
 {
-	LogDebug << "-----------------------------------";
+	LogDebug << "ARX_CHANGELEVEL_Change " << level << " " << target << " " << angle << " " << confirm;
 	HERMES_DATE_TIME hdt;
 	GetDate(&hdt);
 
 	if (NEED_LOG)
 	{
-		LogDebug << "ARX_CHANGELEVEL_Change";
 		char tex[256];
 		sprintf(tex, "Date: %02ld/%02ld/%ld  Time: %ldh%ld", hdt.days, hdt.months, hdt.years, hdt.hours, hdt.mins);
 		LogDebug << tex;
@@ -510,8 +511,10 @@ void ARX_CHANGELEVEL_Change( const std::string& level, const std::string& target
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 //--------------------------------------------------------------------------------------------
-long ARX_CHANGELEVEL_PushLevel(long num, long newnum)
-{
+long ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
+	
+	LogDebug << "ARX_CHANGELEVEL_PushLevel " << num << " " << newnum;
+	
 	ARX_CHANGELEVEL_INDEX asi;
 	ARX_SCRIPT_EventStackExecuteAll();
 
@@ -537,7 +540,10 @@ long ARX_CHANGELEVEL_PushLevel(long num, long newnum)
 	sprintf(sfile, "%sGsave.sav", CurGamePath);
 	_pSaveBlock = new CSaveBlock(sfile);
 
-	if (!_pSaveBlock->BeginSave(true, 1)) return -1;
+	if (!_pSaveBlock->BeginSave(true, 1)) {
+		LogError << "Error writing to save block.";
+		return -1;
+	}
 
 	// Now we can save our things
 	if (ARX_CHANGELEVEL_Push_Index(&asi, num) != 1)
@@ -568,7 +574,10 @@ long ARX_CHANGELEVEL_PushLevel(long num, long newnum)
 		return -1;
 	}
 
-	_pSaveBlock->EndSave();
+	if(!_pSaveBlock->EndSave()) {
+		LogError << "could not complete the save.";
+	}
+	
 	delete _pSaveBlock;
 	_pSaveBlock = NULL;
 	ARX_TIME_UnPause();
@@ -716,17 +725,16 @@ retry:
 		}
 	}
 	
-	size_t cpr_pos;
-	char * compressed = implodeAlloc((char *)dat, pos, cpr_pos);
-	
-	free(dat);
+	// TODO implode
+	size_t cpr_pos = pos;
+	char * compressed = (char*)dat; //implodeAlloc((char *)dat, pos, cpr_pos);
 
-	for (int i = 0; i < cpr_pos; i += 2)
-		compressed[i] = ~compressed[i];
+	//for (int i = 0; i < cpr_pos; i += 2)
+	//	compressed[i] = ~compressed[i];
 
 	bool ret = _pSaveBlock->Save(savefile, compressed, cpr_pos);
-	delete[] compressed;
-
+	//delete[] compressed;
+	free(dat);
 	if (!ret) return -1;
 
 	return 1;
@@ -827,15 +835,16 @@ retry:
 		}
 	}
 	
-	size_t cpr_pos;
-	char * compressed = implodeAlloc((char *)dat, pos, cpr_pos);
-	free(dat);
+	// TODO implode
+	size_t cpr_pos = pos;
+	char * compressed = (char*)dat; //implodeAlloc((char *)dat, pos, cpr_pos);
 
-	for (int i = 0; i < cpr_pos; i += 2)
-		compressed[i] = ~compressed[i];
+	//for (int i = 0; i < cpr_pos; i += 2)
+	//	compressed[i] = ~compressed[i];
 
 	_pSaveBlock->Save(savefile, compressed, cpr_pos);
-	delete[] compressed;
+	free(dat);
+	//delete[] compressed;
 	return 1;
 }
 //--------------------------------------------------------------------------------------------
@@ -1067,15 +1076,16 @@ retry:
 	char savefile[256];
 	sprintf(savefile, "player.sav");
 	
-	size_t cpr_pos;
-	char * compressed = implodeAlloc((char *)dat, pos, cpr_pos);
-	free(dat);
+	// TODO implode
+	size_t cpr_pos = pos;
+	char * compressed = (char*)dat; //implodeAlloc((char *)dat, pos, cpr_pos);
 
-	for (int i = 0; i < cpr_pos; i += 2)
-		compressed[i] = ~compressed[i];
+	//for (int i = 0; i < cpr_pos; i += 2)
+	//	compressed[i] = ~compressed[i];
 
 	_pSaveBlock->Save(savefile, compressed, cpr_pos);
-	delete[] compressed;
+	free(dat);
+	//delete[] compressed;
 
 	for (int i = 1; i < inter.nbmax; i++)
 	{
@@ -1814,15 +1824,16 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 		LogError << "SaveBuffer Overflow " << pos << " >> " << allocsize;
 	}
 	
-	size_t cpr_pos;
-	char * compressed = implodeAlloc((char *)dat, pos, cpr_pos);
-	free(dat);
+	// TODO implode
+	size_t cpr_pos = pos;
+	char * compressed = (char*)dat; //implodeAlloc((char *)dat, pos, cpr_pos);
 
-	for (int i = 0; i < cpr_pos; i += 2)
-		compressed[i] = ~compressed[i];
+	//for (int i = 0; i < cpr_pos; i += 2)
+	//	compressed[i] = ~compressed[i];
 
 	_pSaveBlock->Save(savefile, compressed, cpr_pos);
-	delete[] compressed;
+	free(dat);
+	//delete[] compressed;
 	return 1;
 }
 
@@ -1863,12 +1874,15 @@ long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 		return -1;
 	}
 
-	for (size_t i = 0; i < size; i += 2)
-		compressed[i] = ~compressed[i];
+	// TODO implode
+	//for (size_t i = 0; i < size; i += 2)
+	//	compressed[i] = ~compressed[i];
 
-	long ssize = size;
+	//long ssize = size;
  
-	dat = (unsigned char *)blastMemAlloc(compressed, ssize, size); 
+	//dat = (unsigned char *)blastMemAlloc(compressed, ssize, size); 
+	dat = (unsigned char *)malloc(size);
+	memcpy(dat, compressed, size);
 
 	memcpy(asi, dat, sizeof(ARX_CHANGELEVEL_INDEX));
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
@@ -1928,12 +1942,15 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num)
 		return -1;
 	}
 
-	for (size_t i = 0; i < size; i += 2)
-		compressed[i] = ~compressed[i];
+	// TODO implode
+	//for (size_t i = 0; i < size; i += 2)
+	//	compressed[i] = ~compressed[i];
 
-	long ssize = size;
+	//long ssize = size;
 
-	dat = (unsigned char *)blastMemAlloc(compressed, ssize, size); //pos,&cpr_pos);
+	//dat = (unsigned char *)blastMemAlloc(compressed, ssize, size); //pos,&cpr_pos);
+	dat = (unsigned char *)malloc(size);
+	memcpy(dat, compressed, size);
 
 	// Skip Changelevel Index
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
@@ -2093,12 +2110,16 @@ long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVEL_PLA
 
 	_pSaveBlock->Read(loadfile, compressed);
 
-	for (size_t i = 0; i < size; i += 2)
-		compressed[i] = ~compressed[i];
+	// TODO implode
+	//for (size_t i = 0; i < size; i += 2)
+	//	compressed[i] = ~compressed[i];
 
-	long ssize = size;
+	//long ssize = size;
  
-	char * dat = blastMemAlloc(compressed, ssize, size); 
+	//char * dat = blastMemAlloc(compressed, ssize, size); 
+	char * dat = (char *)malloc(size);
+	memcpy(dat, compressed, size);
+	
 	memcpy(asp, dat, sizeof(ARX_CHANGELEVEL_PLAYER));
 	//free(compressed);
 
@@ -2381,13 +2402,15 @@ long ARX_CHANGELEVEL_Pop_IO( const std::string& ident)
 		return -1;
 	}
 
-	for (size_t i = 0; i < size; i += 2)
-		compressed[i] = ~compressed[i];
+	// TODO implode
+	//for (size_t i = 0; i < size; i += 2)
+	//	compressed[i] = ~compressed[i];
 
-	long ssize = size;
+	//long ssize = size;
  
-	dat = (unsigned char *)blastMemAlloc(compressed, ssize, size);
-
+	//dat = (unsigned char *)blastMemAlloc(compressed, ssize, size);
+	dat = (unsigned char *)malloc(size);
+	memcpy(dat, compressed, size);
 
 	// Ignore object if can't explode file
 	if (!dat)
@@ -3435,14 +3458,17 @@ long ARX_CHANGELEVEL_Pop_Globals()
 		return -1;
 	}
 
-	for (size_t i = 0; i < size; i += 2)
-	{
-		compressed[i] = ~compressed[i];
-	}
+	// TODO implode
+	//for(size_t i = 0; i < size; i += 2) {
+	//	compressed[i] = ~compressed[i];
+	//}
 
-	long ssize = size;
+	//long ssize = size;
  
-	dat = (unsigned char *)blastMemAlloc(compressed, ssize, size);
+	//dat = (unsigned char *)blastMemAlloc(compressed, ssize, size);
+	dat = (unsigned char *)malloc(size);
+	memcpy(dat, compressed, size);
+	
 	acsg = (ARX_CHANGELEVEL_SAVE_GLOBALS *)(dat);
 	pos += sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS);
 
@@ -3598,7 +3624,10 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 	char sfile[256];
 	sprintf(sfile, "%sGsave.sav", CurGamePath);
 	_pSaveBlock = new CSaveBlock(sfile);
-	_pSaveBlock->BeginRead();
+	if(!_pSaveBlock->BeginRead()) {
+		LogError << "cannot open save to pop level: " << sfile;
+		return -1;
+	}
 	LogDebug << "After  Saveblock Access";
 
 	PROGRESS_BAR_COUNT += 2.f;
@@ -3935,7 +3964,7 @@ void CopyDirectory(char * _lpszSrc, char * _lpszDest)
 	//	WIN32_FIND_DATA FindFileData;
 	HANDLE hFind;
 
-	printf("Target file is %s.\n", _lpszSrc);
+	LogDebug << "CopyDirectory " << _lpszSrc << " to " << _lpszDest;
 
 	char path[256];
 	ZeroMemory(path, 256);
@@ -3993,31 +4022,30 @@ void CopyDirectory(char * _lpszSrc, char * _lpszDest)
 ///////////////////////// SAVE LOAD
 long ARX_CHANGELEVEL_Save(long instance, const std::string& name)
 {
+	LogDebug << "ARX_CHANGELEVEL_Save " << instance << " " << name;
 
 	ARX_TIME_Pause();
 
-	if (instance <= 0)
-	{
+	if(instance <= 0) {
 		ARX_GAMESAVE_CreateNewInstance();
 		instance = CURRENT_GAME_INSTANCE;
+		LogDebug << "Created new instance " << instance;
 	}
-
+	
 	CURRENT_GAME_INSTANCE = instance;
-
-	if (instance == -1)
-	{
+	
+	if(instance == -1) {
 		// fatality...
 		LogWarning << "Internal Non-Fatal Error";
 		return 0;
 	}
 
-	if (CURRENTLEVEL == -1)
-	{
+	if(CURRENTLEVEL == -1) {
 		// fatality...
 		LogWarning << "Internal Non-Fatal Error";
 		return 0;
 	}
-
+	
 	ARX_SCRIPT_EventStackExecuteAll();
 	// fill GameSavePath with our savepath.
 	ARX_GAMESAVE_MakePath();
@@ -4081,14 +4109,15 @@ long ARX_CHANGELEVEL_Set_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 	char savefile[256];
 	sprintf(savefile, "pld.sav");
 	
-	size_t cpr_pos;
-	char * compressed = implodeAlloc((char *)dat, pos, cpr_pos);
+	// TODO implode
+	size_t cpr_pos = pos;
+	char * compressed = (char*)dat; //implodeAlloc((char *)dat, pos, cpr_pos);
 
-	for (long i = 0; i < cpr_pos; i += 2)
-		compressed[i] = ~compressed[i];
+	//for (long i = 0; i < cpr_pos; i += 2)
+	//	compressed[i] = ~compressed[i];
 
 	_pSaveBlock->Save(savefile, compressed, cpr_pos);
-	delete[] compressed;
+	//delete[] compressed;
 
 	_pSaveBlock->EndSave();
 	delete _pSaveBlock;
@@ -4115,7 +4144,10 @@ long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 	sprintf(sfile, "%sGsave.sav", path.c_str());
 	_pSaveBlock = new CSaveBlock(sfile);
 
-	if (!_pSaveBlock->BeginRead()) return -1;
+	if(!_pSaveBlock->BeginRead()) {
+		LogError << "cannot open savefile to get player level data: " << sfile;
+		return -1;
+	}
 
 	// Get Size
 	loadfile = "pld.sav";
@@ -4147,14 +4179,17 @@ long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 		return -1;
 	}
 
+	// TODO implode
 	// Un-Crypt
-	for (size_t i = 0; i < size; i += 2)
-		compressed[i] = ~compressed[i];
+	//for (size_t i = 0; i < size; i += 2)
+	//	compressed[i] = ~compressed[i];
 
 	// Explode File
-	long ssize = size;
+	//long ssize = size;
  
-	dat = (unsigned char *)blastMemAlloc(compressed, ssize, size); //pos,&cpr_pos);
+	//dat = (unsigned char *)blastMemAlloc(compressed, ssize, size); //pos,&cpr_pos);
+	dat = (unsigned char *)malloc(size);
+	memcpy(dat, compressed, size);
 
 	if (dat == NULL)
 	{

@@ -487,9 +487,6 @@ extern long FORBID_SAVE;
 //-----------------------------------------------------------------------------
 void ARX_GAMESAVE_MakePath();
 void ARX_GAMESAVE_CreateNewInstance();
-void ARX_GAMESAVE_GetInfo( const std::string& path, const std::string& name, long& time);
-long ARX_GAMESAVE_Save( long instance, const std::string& name);
-long ARX_GAMESAVE_Load( long instance );
 
 void ARX_CHANGELEVEL_MakePath();
 long ARX_CHANGELEVEL_PushLevel(long num, long newnum);
