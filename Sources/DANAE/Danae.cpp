@@ -54,22 +54,41 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-// Nuky - 22/01 - added security for negative FrameDiff (would assert in Debug)
-
-#include "danae.h"
-
-#include "DANAE_VERSION.h"
+//-----------------------------------------------------------------------------
+// Included files
+//-----------------------------------------------------------------------------
+#include <windows.h>
+//srsly?
+//#include <new.h>
+#include <iostream>
+#include <fstream>
+#include "Danae.h"
+#include "DanaeDlg.h"
 #include "Danae_resource.h"
-#include "danaedlg.h"
+#include "DANAE_VERSION.h"
 
-#include "ARX_CParticles.h"
-#include "ARX_C_Cinematique.h"
-#include "ARX_Carte.h"
-#include "ARX_Cedric.h"
-#include "ARX_ChangeLevel.h"
-#include "ARX_Collisions.h"
-#include "ARX_Damages.h"
-#include "ARX_Equipment.h"
+#include <HERMESMain.h>
+#include <HERMESConsole.h>
+#include <HERMESnet.h>
+#include <HERMES_PAK.h>
+ 
+#include <EERIEUtil.h>
+#include <EERIE_AVI.h>
+#include <EERIEAnim.h>
+#include <EERIEPathfinder.h>
+#include <EERIECollisionSpheres.h>
+#include <EERIEPhysicsBox.h>
+#include <EERIEObject.h>
+#include <EERIEPoly.h>
+#include "EERIELinkedObj.h"
+
+#include <ARX_C_Cinematique.h>
+#include <ARX_Carte.h>
+#include <ARX_ChangeLevel.h>
+#include <ARX_CParticles.h>
+#include <ARX_Collisions.h>
+#include <ARX_Damages.h>
+#include <ARX_Equipment.h>
 #include "ARX_FTL.h"
 #include "ARX_Fogs.h"
 #include "ARX_GlobalMods.h"

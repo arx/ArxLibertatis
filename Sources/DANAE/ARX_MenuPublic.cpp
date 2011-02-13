@@ -26,22 +26,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_MenuPublic.h"
 #include "ARX_Menu.h"
 #include "ARX_Interface.h"
-#include "ARX_sound.h"
+#include "ARX_Sound.h"
 #include "ARX_Menu.h"
 #include "ARX_Menu2.h"
-#include "ARX_loc.h"
-#include "ARX_Text.h"
+#include "ARX_Loc.h"
 #include "ARX_Time.h"
-#include "EERIEmath.h"
-#include "EERIEdraw.h"
+#include "EERIEMath.h"
+#include "EERIEDraw.h"
 
-#include "hermesmain.h"
-#include "arx_c_cinematique.h"
+#include "HERMESMain.h"
+#include "ARX_CCinematique.h"
 
-#include <cstdio>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+#include <stdio.h>
 
 extern CMenuConfig * pMenuConfig;
 extern CDirectInput * pGetInfoDirectInput;

@@ -68,23 +68,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Text.h"
 #include "ARX_Time.h"
 #include "DanaeSaveLoad.h"
+#include "EERIEApp.h"
 
+#include "HERMESMain.h"
 #include "EERIEDraw.h"
 #include "EERIEMath.h"
 #include "EERIEObject.h"
-#include "EERIEapp.h"
-
-#include "HERMESmain.h"
-
-#include "Mercury_dx_input.h"
-
-#include <fstream>
-#include <stdlib.h>
-#include <windows.h>
-#include <dinput.h>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 
 //-----------------------------------------------------------------------------
 // Imported global variables and functions
