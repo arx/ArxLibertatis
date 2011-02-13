@@ -96,12 +96,12 @@ __inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 {
 	long flags=flag;
 	POLYIN=0;
-	float min = cyl->origin.y + cyl->height; 
-	float max = cyl->origin.y; 
+	float minf = cyl->origin.y + cyl->height;
+	float maxf = cyl->origin.y;
 
-	if (min>ep->max.y) return 999999.f;
+	if (minf>ep->max.y) return 999999.f;
 
-	if (max<ep->min.y) return 999999.f;
+	if (maxf<ep->min.y) return 999999.f;
 	
 	long to;
 
