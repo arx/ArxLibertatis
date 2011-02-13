@@ -25,24 +25,22 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 //-----------------------------------------------------------------------------
 
-#include "eerielight.h"
-#include "eeriedraw.h"
-#include "eerietypes.h"
-#include "arx_time.h"
-#include "arx_cspellfx.h"
-#include "arx_cparticles.h"
-#include "arx_cparticle.h"
+#include "EERIELight.h"
+#include "EERIEDraw.h"
+#include "EERIETypes.h"
+#include "ARX_Time.h"
+#include "ARX_CSpellFx.h"
+#include "ARX_CParticles.h"
+#include "ARX_CParticle.h"
 #include "ARX_CParticleParams.h"
 
-#include <d3d.h>
+//#include <d3d.h>
 
 #include <list>
 #include <vector>
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-
 using namespace std;
+
 
 void CParticleSystem::RecomputeDirection()
 {
@@ -535,7 +533,7 @@ void CParticleSystem::Update(long _lTime)
 		}
 	}
 
-	// création de particules en fct de la fréquence
+	// crï¿½ation de particules en fct de la frï¿½quence
 	if (iParticleNbAlive < iParticleNbMax)
 	{
 		long t = iParticleNbMax - iParticleNbAlive;

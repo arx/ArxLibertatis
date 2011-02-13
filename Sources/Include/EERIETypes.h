@@ -44,10 +44,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIETYPES_H
 #define EERIETYPES_H
 
-#define D3D_OVERLOADS
-#include <d3d.h>
-
-#include "ARX_Common.h"
+//#define D3D_OVERLOADS
+//#include <d3d.h>
+#include <ARX_Common.h>
 
 #pragma inline_depth (255)
 #pragma inline_recursion (on)
@@ -486,7 +485,7 @@ struct EERIE_MOD_INFO
 
 struct EERIE_LINKED
 {
-	long			lgroup; //linked to group n° if lgroup=-1 NOLINK
+	long			lgroup; //linked to group nï¿½ if lgroup=-1 NOLINK
 	long			lidx;
 	long			lidx2;
 	void *	obj;
