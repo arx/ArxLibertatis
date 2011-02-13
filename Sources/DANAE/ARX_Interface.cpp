@@ -9725,8 +9725,8 @@ void DANAE::DrawAllInterface()
 
 					ARX_CHECK_INT(player.life);
 
-					ARX_SPEECH_Add(NULL,
-						_itot(ARX_CLEAN_WARN_CAST_INT(player.life),txt,10)	);
+					//should use sprintf
+					//ARX_SPEECH_Add(NULL, _itot(ARX_CLEAN_WARN_CAST_INT(player.life), txt, 10));
 
 				}
 			}
@@ -9769,9 +9769,8 @@ void DANAE::DrawAllInterface()
 					_TCHAR txt[256];
 
 					ARX_CHECK_INT(player.mana);
-
-					ARX_SPEECH_Add(NULL,
-						_itot(ARX_CLEAN_WARN_CAST_INT(player.mana),txt,10)	);
+//todo:sprintf
+					//ARX_SPEECH_Add(NULL,_itot(ARX_CLEAN_WARN_CAST_INT(player.mana),txt,10)	);
 
 				}
 			}
@@ -10202,7 +10201,7 @@ long Manage3DCursor(long flags)
 						}
 						else
 						{
-				if (EEfabs(lastanything) > min(EEfabs(height), 12))
+				if (EEfabs(lastanything) > min(EEfabs(height), 12.0f))
 							{
 								INTERACTIVE_OBJ * io=DRAGINTER;
 								ARX_PLAYER_Remove_Invisibility();
