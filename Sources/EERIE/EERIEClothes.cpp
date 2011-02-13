@@ -171,7 +171,7 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
 
 	for (long i = 0; i < obj->nbselections; i++)
 	{
-		if (!stricmp(obj->selections[i].name, "mou"))
+		if (!strcasecmp(obj->selections[i].name, "mou"))
 		{
 			sel = i;
 			break;
@@ -180,7 +180,7 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
 
 	for (int i = 0; i < obj->nbselections; i++)
 	{
-		if (!stricmp(obj->selections[i].name, "mounocol"))
+		if (!strcasecmp(obj->selections[i].name, "mounocol"))
 		{
 			selmounocol = i;
 			break;

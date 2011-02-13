@@ -613,6 +613,23 @@ void CMenuConfig::First()
 	SetDefaultKey();
 	DefaultValue();
 }
+//-----------------------------------------------------------------------------
+
+CMenuConfig::CMenuConfig(char *_pName)
+{
+	if(!strcasecmp((const char*)"cfg",(const char*)_pName))
+	{
+		pcName=strdup("cfg.ini");
+	}
+	else
+	{
+		pcName=strdup(_pName);
+	}
+
+	First();
+}
+
+//-----------------------------------------------------------------------------
 
 void CMenuConfig::DefaultValue()
 {
@@ -1223,8 +1240,8 @@ bool CMenuConfig::ReadAll()
 				pcText=ReadConfigString("LANGUAGE","string");
 
 				if( pcText&&
-					(stricmp(pcText,"francais")&&
-					stricmp(pcText,"deutsch")) )
+					(strcasecmp(pcText,"francais")&&
+					strcasecmp(pcText,"deutsch")) )
 				{
 					free(pcText);
 					pcText = strdup("Francais");
@@ -1253,7 +1270,7 @@ bool CMenuConfig::ReadAll()
 
 	bool bWarningGore=false;
 
-	if (!stricmp(Project.localisationpath, "Deutsch"))
+	if (!strcasecmp(Project.localisationpath, "Deutsch"))
 	{
 		//no gore
 		GERMAN_VERSION=1;

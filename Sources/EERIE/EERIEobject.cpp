@@ -102,7 +102,7 @@ long GetGroupOriginByName(EERIE_3DOBJ * eobj, char * text)
 
 	for (long i = 0; i < eobj->nbgroups; i++)
 	{
-		if (!stricmp(text, eobj->grouplist[i].name)) return eobj->grouplist[i].origin;
+		if (!strcasecmp(text, eobj->grouplist[i].name)) return eobj->grouplist[i].origin;
 	}
 
 	return -1;
@@ -114,7 +114,7 @@ long GetActionPointIdx(EERIE_3DOBJ * eobj, char * text)
 
 	for (long i = 0; i < eobj->nbaction; i++)
 	{
-		if (!stricmp(text, eobj->actionlist[i].name)) return eobj->actionlist[i].idx;
+		if (!strcasecmp(text, eobj->actionlist[i].name)) return eobj->actionlist[i].idx;
 	}
 
 	return -1;
@@ -1211,7 +1211,7 @@ retry10:
 			{
 				tex = GetExt(fd.name);
 
-				if (!stricmp(tex, ".SCN"))
+				if (!strcasecmp(tex, ".SCN"))
 				{
 					sprintf(path, "%s%s", dirr, fd.name);
 					long SizeAlloc = 0;
@@ -1310,7 +1310,7 @@ retry1:
 
 		while (nb--)
 		{
-			if (!stricmp(GetExt((char *)et->name), ".scn"))
+			if (!strcasecmp(GetExt((char *)et->name), ".scn"))
 			{
 				char path2[256];
 				sprintf(path2, "%s%s", dirr, et->name);
@@ -2250,7 +2250,7 @@ long EERIE_OBJECT_GetSelection(EERIE_3DOBJ * obj, char * selname)
 
 	for (long i = 0; i < obj->nbselections; i++)
 	{
-		if (!stricmp(obj->selections[i].name, selname)) return i;
+		if (!strcasecmp(obj->selections[i].name, selname)) return i;
 	}
 
 	return -1;
@@ -2262,7 +2262,7 @@ long EERIE_OBJECT_GetGroup(EERIE_3DOBJ * obj, char * groupname)
 
 	for (long i = 0; i < obj->nbgroups; i++)
 	{
-		if (!stricmp(obj->grouplist[i].name, groupname)) return i;
+		if (!strcasecmp(obj->grouplist[i].name, groupname)) return i;
 	}
 
 	return -1;

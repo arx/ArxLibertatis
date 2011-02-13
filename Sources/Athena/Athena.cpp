@@ -877,7 +877,7 @@ namespace ATHENA
 			return AAL_SFALSE;
 
 		for (aalULong i(0); i < _mixer.Size(); i++)
-			if (_mixer[i] && (!name || !_stricmp(name, _mixer[i]->name)))
+			if (_mixer[i] && (!name || !_strcasecmp(name, _mixer[i]->name)))
 			{
 				if (mutex) ReleaseMutex(mutex);
 
@@ -895,7 +895,7 @@ namespace ATHENA
 			return AAL_SFALSE;
 
 		for (aalULong i(0); i < _amb.Size(); i++)
-			if (_amb[i] && (!name || !_stricmp(name, _amb[i]->name)))
+			if (_amb[i] && (!name || !_strcasecmp(name, _amb[i]->name)))
 			{
 				if (mutex) ReleaseMutex(mutex);
 
@@ -913,7 +913,7 @@ namespace ATHENA
 			return AAL_SFALSE;
 
 		for (aalULong i(0); i < _env.Size(); i++)
-			if (_env[i] && (!name || !_stricmp(name, _env[i]->name)))
+			if (_env[i] && (!name || !_strcasecmp(name, _env[i]->name)))
 			{
 				if (mutex) ReleaseMutex(mutex);
 

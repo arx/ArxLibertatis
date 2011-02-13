@@ -225,7 +225,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				// retreives head sel
 				for (i = 0; i < io->obj->nbselections; i++)
 				{
-					if (!stricmp(io->obj->selections[i].name, "head"))
+					if (!strcasecmp(io->obj->selections[i].name, "head"))
 					{
 						sel_ = i;
 						break;
@@ -236,7 +236,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				for (i = 0; i < io->obj->nbmaps; i++)
 				{
-					if (!stricmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName)))
+					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName)))
 						textochange = i;
 				}
 
@@ -281,7 +281,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				// retreives head sel
 				for (i = 0; i < io->obj->nbselections; i++)
 				{
-					if (!stricmp(io->obj->selections[i].name, "chest"))
+					if (!strcasecmp(io->obj->selections[i].name, "chest"))
 					{
 						sel_ = i;
 						break;
@@ -292,7 +292,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				for (i = 0; i < io->obj->nbmaps; i++)
 				{
-					if (!stricmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName)))
+					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName)))
 						textochange = i;
 				}
 
@@ -337,7 +337,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				// retreives head sel
 				for (i = 0; i < io->obj->nbselections; i++)
 				{
-					if (!stricmp(io->obj->selections[i].name, "leggings"))
+					if (!strcasecmp(io->obj->selections[i].name, "leggings"))
 					{
 						sel_ = i;
 						break;
@@ -348,7 +348,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				for (i = 0; i < io->obj->nbmaps; i++)
 				{
-					if (!stricmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName)))
+					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName)))
 						textochange = i;
 				}
 
@@ -819,7 +819,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 
 	if (power > 1.f) power = 1.f;
 
-	if (!stricmp(wmat, "BARE"))
+	if (!strcasecmp(wmat, "BARE"))
 		power = power * 0.1f + 0.9f;
 	else power = power * 0.1f + 0.9f;
 
@@ -1619,15 +1619,15 @@ void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, char * param1, char * param2, 
 		io->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value = 0;
 	}
 
-	if (!stricmp(param1, "-s"))
+	if (!strcasecmp(param1, "-s"))
 	{
 		for (long i = IO_EQUIPITEM_ELEMENT_SPECIAL_1; i <= IO_EQUIPITEM_ELEMENT_SPECIAL_4; i++)
 		{
 			if (io->_itemdata->equipitem->elements[i].special == IO_SPECIAL_ELEM_NONE)
 			{
-				if (!stricmp(param2, "PARALYSE"))
+				if (!strcasecmp(param2, "PARALYSE"))
 					io->_itemdata->equipitem->elements[i].special = IO_SPECIAL_ELEM_PARALYZE;
-				else if (!stricmp(param2, "DRAINLIFE"))
+				else if (!strcasecmp(param2, "DRAINLIFE"))
 					io->_itemdata->equipitem->elements[i].special = IO_SPECIAL_ELEM_DRAIN_LIFE;
 
 				io->_itemdata->equipitem->elements[i].value = val;
@@ -1641,7 +1641,7 @@ void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, char * param1, char * param2, 
 	else
 		for (long i = 0; i < IO_EQUIPITEM_ELEMENT_Number; i++)
 		{
-			if (!stricmp(param2, equipinfo[i].name))
+			if (!strcasecmp(param2, equipinfo[i].name))
 			{
 				io->_itemdata->equipitem->elements[i].value = val;
 				io->_itemdata->equipitem->elements[i].special = 0;

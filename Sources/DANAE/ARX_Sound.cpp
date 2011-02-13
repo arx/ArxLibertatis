@@ -815,7 +815,7 @@ long ARX_SOUND_PlayCollision(const char * name1, const char * name2, const float
 
 	if (!name1 || !name2) return 0;
 
-	if (stricmp(name2, "WATER") == 0)
+	if (strcasecmp(name2, "WATER") == 0)
 		ARX_PARTICLES_SpawnWaterSplash(position);
 
 
@@ -823,12 +823,12 @@ long ARX_SOUND_PlayCollision(const char * name1, const char * name2, const float
 	{
 		ARX_SOUND_CollisionMap * c_map = &collision_map_l[i];
 
-		if (!stricmp(name1, c_map->name))
+		if (!strcasecmp(name1, c_map->name))
 			for (unsigned long j(0); j < c_map->material_c; j++)
 			{
 				ARX_SOUND_Material * c_material = &c_map->material_l[j];
 
-				if (!stricmp(name2, c_material->name))
+				if (!strcasecmp(name2, c_material->name))
 				{
 					long sample_id;
 
@@ -1146,7 +1146,7 @@ long ARX_SOUND_PlayZoneAmbiance(const char * name, const long & loop, const floa
 	strcpy(temp, name);
 	SetExt(temp, ".amb");
 
-	if (!stricmp(name, "NONE"))
+	if (!strcasecmp(name, "NONE"))
 	{
 		aalAmbianceStop(ambiance_zone, AMBIANCE_FADE_TIME);
 		ambiance_zone = AAL_SFALSE;
@@ -1760,37 +1760,37 @@ static void ARX_SOUND_ReleaseStaticSamples()
 
 long ARX_MATERIAL_GetIdByName(char * name)
 {
-	if (!stricmp(name, "WEAPON"))	      return MATERIAL_WEAPON;
+	if (!strcasecmp(name, "WEAPON"))	      return MATERIAL_WEAPON;
 
-	if (!stricmp(name, "FLESH"))		    return MATERIAL_FLESH;
+	if (!strcasecmp(name, "FLESH"))		    return MATERIAL_FLESH;
 
-	if (!stricmp(name, "METAL"))		    return MATERIAL_METAL;
+	if (!strcasecmp(name, "METAL"))		    return MATERIAL_METAL;
 
-	if (!stricmp(name, "GLASS"))		    return MATERIAL_GLASS;
+	if (!strcasecmp(name, "GLASS"))		    return MATERIAL_GLASS;
 
-	if (!stricmp(name, "CLOTH"))		    return MATERIAL_CLOTH;
+	if (!strcasecmp(name, "CLOTH"))		    return MATERIAL_CLOTH;
 
-	if (!stricmp(name, "WOOD"))		      return MATERIAL_WOOD;
+	if (!strcasecmp(name, "WOOD"))		      return MATERIAL_WOOD;
 
-	if (!stricmp(name, "EARTH"))		    return MATERIAL_EARTH;
+	if (!strcasecmp(name, "EARTH"))		    return MATERIAL_EARTH;
 
-	if (!stricmp(name, "WATER"))		    return MATERIAL_WATER;
+	if (!strcasecmp(name, "WATER"))		    return MATERIAL_WATER;
 
-	if (!stricmp(name, "ICE"))		      return MATERIAL_ICE;
+	if (!strcasecmp(name, "ICE"))		      return MATERIAL_ICE;
 
-	if (!stricmp(name, "GRAVEL"))	      return MATERIAL_GRAVEL;
+	if (!strcasecmp(name, "GRAVEL"))	      return MATERIAL_GRAVEL;
 
-	if (!stricmp(name, "STONE"))		    return MATERIAL_STONE;
+	if (!strcasecmp(name, "STONE"))		    return MATERIAL_STONE;
 
-	if (!stricmp(name, "FOOT_LARGE"))   return MATERIAL_FOOT_LARGE;
+	if (!strcasecmp(name, "FOOT_LARGE"))   return MATERIAL_FOOT_LARGE;
 
-	if (!stricmp(name, "FOOT_BARE"))    return MATERIAL_FOOT_BARE;
+	if (!strcasecmp(name, "FOOT_BARE"))    return MATERIAL_FOOT_BARE;
 
-	if (!stricmp(name, "FOOT_SHOE"))    return MATERIAL_FOOT_SHOE;
+	if (!strcasecmp(name, "FOOT_SHOE"))    return MATERIAL_FOOT_SHOE;
 
-	if (!stricmp(name, "FOOT_METAL"))   return MATERIAL_FOOT_METAL;
+	if (!strcasecmp(name, "FOOT_METAL"))   return MATERIAL_FOOT_METAL;
 
-	if (!stricmp(name, "FOOT_STEALTH")) return MATERIAL_FOOT_STEALTH;
+	if (!strcasecmp(name, "FOOT_STEALTH")) return MATERIAL_FOOT_STEALTH;
 
 	return MATERIAL_NONE;
 }

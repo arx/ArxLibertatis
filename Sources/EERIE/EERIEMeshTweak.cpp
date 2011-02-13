@@ -197,7 +197,7 @@ long GetActionPoint(EERIE_3DOBJ * obj, char * name)
 
 	for (long n = 0; n < obj->nbaction; n++)
 	{
-		if (!stricmp(obj->actionlist[n].name, name))
+		if (!strcasecmp(obj->actionlist[n].name, name))
 			return obj->actionlist[n].idx;
 	}
 
@@ -396,16 +396,16 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	// First we retreive selection groups indexes
 	for (i = 0; i < obj1->nbselections; i++)
 	{
-		if (!stricmp(obj1->selections[i].name, "head")) sel_head1 = i;
-		else if (!stricmp(obj1->selections[i].name, "chest")) sel_torso1 = i;
-		else if (!stricmp(obj1->selections[i].name, "leggings")) sel_legs1 = i;
+		if (!strcasecmp(obj1->selections[i].name, "head")) sel_head1 = i;
+		else if (!strcasecmp(obj1->selections[i].name, "chest")) sel_torso1 = i;
+		else if (!strcasecmp(obj1->selections[i].name, "leggings")) sel_legs1 = i;
 	}
 
 	for (i = 0; i < obj2->nbselections; i++)
 	{
-		if (!stricmp(obj2->selections[i].name, "head")) sel_head2 = i;
-		else if (!stricmp(obj2->selections[i].name, "chest")) sel_torso2 = i;
-		else if (!stricmp(obj2->selections[i].name, "leggings")) sel_legs2 = i;
+		if (!strcasecmp(obj2->selections[i].name, "head")) sel_head2 = i;
+		else if (!strcasecmp(obj2->selections[i].name, "chest")) sel_torso2 = i;
+		else if (!strcasecmp(obj2->selections[i].name, "leggings")) sel_legs2 = i;
 	}
 
 	if (sel_head1 == -1) return NULL;
@@ -541,8 +541,8 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	{
 		if ((IsInSelection(obj1, obj1->actionlist[i].idx, iw1) != -1)
 		        ||	(IsInSelection(obj1, obj1->actionlist[i].idx, jw1) != -1)
-		        || (!stricmp(obj1->actionlist[i].name, "head2chest"))
-		        || (!stricmp(obj1->actionlist[i].name, "chest2leggings"))
+		        || (!strcasecmp(obj1->actionlist[i].name, "head2chest"))
+		        || (!strcasecmp(obj1->actionlist[i].name, "chest2leggings"))
 		   )
 		{
 			ObjectAddAction(work, obj1->actionlist[i].name, obj1->actionlist[i].act,
@@ -554,8 +554,8 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	for (i = 0; i < obj2->nbaction; i++)
 	{
 		if ((IsInSelection(obj2, obj2->actionlist[i].idx, tw2) != -1)
-		        || (!stricmp(obj1->actionlist[i].name, "head2chest"))
-		        || (!stricmp(obj1->actionlist[i].name, "chest2leggings"))
+		        || (!strcasecmp(obj1->actionlist[i].name, "head2chest"))
+		        || (!strcasecmp(obj1->actionlist[i].name, "chest2leggings"))
 		   )
 		{
 			ObjectAddAction(work, obj2->actionlist[i].name, obj2->actionlist[i].act,

@@ -568,7 +568,7 @@ extern INTERACTIVE_OBJ * FlyingOverIO;
 extern MASTER_CAMERA_STRUCT MasterCamera;
 void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_killer)
 {
-	if (!stricmp(io_dead->mainevent, "DEAD"))
+	if (!strcasecmp(io_dead->mainevent, "DEAD"))
 		return;
 
 	INTERACTIVE_OBJ * old_sender = EVENT_SENDER;
@@ -603,7 +603,7 @@ void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_kill
 	//Kill all Timers...
 	ARX_SCRIPT_Timer_Clear_By_IO(io_dead);
 
-	if (stricmp(io_dead->mainevent, "DEAD"))
+	if (strcasecmp(io_dead->mainevent, "DEAD"))
 		NotifyIOEvent(io_dead, SM_DIE, "");
 
 	if (!ValidIOAddress(io_dead))

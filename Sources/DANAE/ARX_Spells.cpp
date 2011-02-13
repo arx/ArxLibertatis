@@ -994,114 +994,114 @@ BOOL MakeSpellName(char * spell, const long &num)
 //-----------------------------------------------------------------------------
 long GetSpellId(const char *spell)
 {
-	if (!stricmp(spell, "ACTIVATE_PORTAL"))       return SPELL_ACTIVATE_PORTAL;		
+	if (!strcasecmp(spell, "ACTIVATE_PORTAL"))       return SPELL_ACTIVATE_PORTAL;		
 
-	if (!stricmp(spell, "DOUSE"))                 return SPELL_DOUSE;
+	if (!strcasecmp(spell, "DOUSE"))                 return SPELL_DOUSE;
 
-	if (!stricmp(spell, "IGNIT"))                 return SPELL_IGNIT;
+	if (!strcasecmp(spell, "IGNIT"))                 return SPELL_IGNIT;
 
-	if (!stricmp(spell, "MAGIC_SIGHT"))           return SPELL_MAGIC_SIGHT;
+	if (!strcasecmp(spell, "MAGIC_SIGHT"))           return SPELL_MAGIC_SIGHT;
 
-	if (!stricmp(spell, "MAGIC_MISSILE"))         return SPELL_MAGIC_MISSILE;
+	if (!strcasecmp(spell, "MAGIC_MISSILE"))         return SPELL_MAGIC_MISSILE;
 
 	// Level 2
-	if (!stricmp(spell, "ARMOR"))                 return SPELL_ARMOR;
+	if (!strcasecmp(spell, "ARMOR"))                 return SPELL_ARMOR;
 
-	if (!stricmp(spell, "DETECT_TRAP"))           return SPELL_DETECT_TRAP;		
+	if (!strcasecmp(spell, "DETECT_TRAP"))           return SPELL_DETECT_TRAP;		
 
-	if (!stricmp(spell, "HARM"))                  return SPELL_HARM;				
+	if (!strcasecmp(spell, "HARM"))                  return SPELL_HARM;				
 
-	if (!stricmp(spell, "HEAL"))                  return SPELL_HEAL;		
+	if (!strcasecmp(spell, "HEAL"))                  return SPELL_HEAL;		
 
-	if (!stricmp(spell, "LOWER_ARMOR"))           return SPELL_LOWER_ARMOR;		
+	if (!strcasecmp(spell, "LOWER_ARMOR"))           return SPELL_LOWER_ARMOR;		
 
 	// Level 3
-	if (!stricmp(spell, "CREATE_FOOD"))           return SPELL_CREATE_FOOD;		
+	if (!strcasecmp(spell, "CREATE_FOOD"))           return SPELL_CREATE_FOOD;		
 
-	if (!stricmp(spell, "DISPELL_ILLUSION"))      return SPELL_DISPELL_ILLUSION;		
+	if (!strcasecmp(spell, "DISPELL_ILLUSION"))      return SPELL_DISPELL_ILLUSION;		
 
-	if (!stricmp(spell, "FIREBALL"))              return SPELL_FIREBALL;				
+	if (!strcasecmp(spell, "FIREBALL"))              return SPELL_FIREBALL;				
 
-	if (!stricmp(spell, "ICE_PROJECTILE"))        return SPELL_ICE_PROJECTILE;		
+	if (!strcasecmp(spell, "ICE_PROJECTILE"))        return SPELL_ICE_PROJECTILE;		
 
-	if (!stricmp(spell, "SPEED"))                 return SPELL_SPEED;
+	if (!strcasecmp(spell, "SPEED"))                 return SPELL_SPEED;
 
 	// Level 4
-	if (!stricmp(spell, "BLESS"))                 return SPELL_BLESS;
+	if (!strcasecmp(spell, "BLESS"))                 return SPELL_BLESS;
 
-	if (!stricmp(spell, "COLD_PROTECTION"))       return SPELL_COLD_PROTECTION;		
+	if (!strcasecmp(spell, "COLD_PROTECTION"))       return SPELL_COLD_PROTECTION;		
 
-	if (!stricmp(spell, "CURSE"))                 return SPELL_CURSE;		
+	if (!strcasecmp(spell, "CURSE"))                 return SPELL_CURSE;		
 
-	if (!stricmp(spell, "DISPELL_FIELD"))         return SPELL_DISPELL_FIELD;		
+	if (!strcasecmp(spell, "DISPELL_FIELD"))         return SPELL_DISPELL_FIELD;		
 
-	if (!stricmp(spell, "FIRE_PROTECTION"))       return SPELL_FIRE_PROTECTION;		
+	if (!strcasecmp(spell, "FIRE_PROTECTION"))       return SPELL_FIRE_PROTECTION;		
 
-	if (!stricmp(spell, "TELEKINESIS"))           return SPELL_TELEKINESIS;		
+	if (!strcasecmp(spell, "TELEKINESIS"))           return SPELL_TELEKINESIS;		
 
 	// Level 5
-	if (!stricmp(spell, "CURE_POISON"))           return SPELL_CURE_POISON;
+	if (!strcasecmp(spell, "CURE_POISON"))           return SPELL_CURE_POISON;
 
-	if (!stricmp(spell, "LEVITATE"))              return SPELL_LEVITATE;
+	if (!strcasecmp(spell, "LEVITATE"))              return SPELL_LEVITATE;
 
-	if (!stricmp(spell, "POISON_PROJECTILE"))     return SPELL_POISON_PROJECTILE;
+	if (!strcasecmp(spell, "POISON_PROJECTILE"))     return SPELL_POISON_PROJECTILE;
 
-	if (!stricmp(spell, "REPEL_UNDEAD"))          return SPELL_REPEL_UNDEAD;
+	if (!strcasecmp(spell, "REPEL_UNDEAD"))          return SPELL_REPEL_UNDEAD;
 
-	if (!stricmp(spell, "RUNE_OF_GUARDING"))      return SPELL_RUNE_OF_GUARDING;
+	if (!strcasecmp(spell, "RUNE_OF_GUARDING"))      return SPELL_RUNE_OF_GUARDING;
 
 	// Level 6
-	if (!stricmp(spell, "CREATE_FIELD"))          return SPELL_CREATE_FIELD;		
+	if (!strcasecmp(spell, "CREATE_FIELD"))          return SPELL_CREATE_FIELD;		
 
-	if (!stricmp(spell, "DISARM_TRAP"))           return SPELL_DISARM_TRAP;		
+	if (!strcasecmp(spell, "DISARM_TRAP"))           return SPELL_DISARM_TRAP;		
 
-	if (!stricmp(spell, "PARALYSE"))              return SPELL_PARALYSE;	
+	if (!strcasecmp(spell, "PARALYSE"))              return SPELL_PARALYSE;	
 
-	if (!stricmp(spell, "RAISE_DEAD"))            return SPELL_RISE_DEAD;
+	if (!strcasecmp(spell, "RAISE_DEAD"))            return SPELL_RISE_DEAD;
 
-	if (!stricmp(spell, "SLOWDOWN"))              return SPELL_SLOW_DOWN;				
+	if (!strcasecmp(spell, "SLOWDOWN"))              return SPELL_SLOW_DOWN;				
 
 	// Level 7
-	if (!stricmp(spell, "CONFUSE"))               return SPELL_CONFUSE;				
+	if (!strcasecmp(spell, "CONFUSE"))               return SPELL_CONFUSE;				
 
-	if (!stricmp(spell, "FIRE_FIELD"))            return SPELL_FIRE_FIELD;		
+	if (!strcasecmp(spell, "FIRE_FIELD"))            return SPELL_FIRE_FIELD;		
 
-	if (!stricmp(spell, "FLYING_EYE"))            return SPELL_FLYING_EYE;		
+	if (!strcasecmp(spell, "FLYING_EYE"))            return SPELL_FLYING_EYE;		
 
-	if (!stricmp(spell, "ICE_FIELD"))             return SPELL_ICE_FIELD;		
+	if (!strcasecmp(spell, "ICE_FIELD"))             return SPELL_ICE_FIELD;		
 
-	if (!stricmp(spell, "LIGHTNING_STRIKE"))      return SPELL_LIGHTNING_STRIKE;		
+	if (!strcasecmp(spell, "LIGHTNING_STRIKE"))      return SPELL_LIGHTNING_STRIKE;		
 
 	// Level 8
-	if (!stricmp(spell, "ENCHANT_WEAPON"))        return SPELL_ENCHANT_WEAPON;		
+	if (!strcasecmp(spell, "ENCHANT_WEAPON"))        return SPELL_ENCHANT_WEAPON;		
 
-	if (!stricmp(spell, "EXPLOSION"))             return SPELL_EXPLOSION;		
+	if (!strcasecmp(spell, "EXPLOSION"))             return SPELL_EXPLOSION;		
 
-	if (!stricmp(spell, "INVISIBILITY"))          return SPELL_INVISIBILITY;		
+	if (!strcasecmp(spell, "INVISIBILITY"))          return SPELL_INVISIBILITY;		
 
-	if (!stricmp(spell, "LIFE_DRAIN"))            return SPELL_LIFE_DRAIN;		
+	if (!strcasecmp(spell, "LIFE_DRAIN"))            return SPELL_LIFE_DRAIN;		
 
-	if (!stricmp(spell, "MANA_DRAIN"))            return SPELL_MANA_DRAIN;		
+	if (!strcasecmp(spell, "MANA_DRAIN"))            return SPELL_MANA_DRAIN;		
 
 	// Level 9
-	if (!stricmp(spell, "INCINERATE"))            return SPELL_INCINERATE;		
+	if (!strcasecmp(spell, "INCINERATE"))            return SPELL_INCINERATE;		
 
-	if (!stricmp(spell, "MASS_PARALYSE"))         return SPELL_MASS_PARALYSE;		
+	if (!strcasecmp(spell, "MASS_PARALYSE"))         return SPELL_MASS_PARALYSE;		
 
-	if (!stricmp(spell, "NEGATE_MAGIC"))          return SPELL_NEGATE_MAGIC;		
+	if (!strcasecmp(spell, "NEGATE_MAGIC"))          return SPELL_NEGATE_MAGIC;		
 
-	if (!stricmp(spell, "SUMMON_CREATURE"))       return SPELL_SUMMON_CREATURE;		
+	if (!strcasecmp(spell, "SUMMON_CREATURE"))       return SPELL_SUMMON_CREATURE;		
 
-	if (!stricmp(spell, "FAKE_SUMMON"))			  return SPELL_FAKE_SUMMON;		
+	if (!strcasecmp(spell, "FAKE_SUMMON"))			  return SPELL_FAKE_SUMMON;		
 
 	// Level 10
-	if (!stricmp(spell, "CONTROL"))               return SPELL_CONTROL_TARGET;		
+	if (!strcasecmp(spell, "CONTROL"))               return SPELL_CONTROL_TARGET;		
 
-	if (!stricmp(spell, "FREEZE_TIME"))           return SPELL_FREEZE_TIME;		
+	if (!strcasecmp(spell, "FREEZE_TIME"))           return SPELL_FREEZE_TIME;		
 
-	if (!stricmp(spell, "MASS_INCINERATE"))       return SPELL_MASS_INCINERATE;		
+	if (!strcasecmp(spell, "MASS_INCINERATE"))       return SPELL_MASS_INCINERATE;		
 
-	if (!stricmp(spell, "MASS_LIGHTNING_STRIKE")) return SPELL_MASS_LIGHTNING_STRIKE;		
+	if (!strcasecmp(spell, "MASS_LIGHTNING_STRIKE")) return SPELL_MASS_LIGHTNING_STRIKE;		
 
 	return -1;
 }

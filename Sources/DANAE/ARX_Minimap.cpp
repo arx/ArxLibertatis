@@ -969,7 +969,8 @@ void ARX_MAPMARKER_Init()
 long ARX_MAPMARKER_Get(const char* str)
 {
 	for (long i = 0; i < Nb_Mapmarkers; i++)
-		if (!stricmp(Mapmarkers[i].string, str))
+	{
+		if (!strcasecmp(Mapmarkers[i].string, str))
 			return i;
 
 	return -1;

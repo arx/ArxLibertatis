@@ -784,86 +784,86 @@ void ARX_NPC_SetStat(INTERACTIVE_OBJ * io, char * statname, float value)
 	        ||	(!(io->ioflags & IO_NPC)))
 		return;
 
-	if (!stricmp(statname, "ARMOR_CLASS"))
+	if (!strcasecmp(statname, "ARMOR_CLASS"))
 	{
 		if (value < 0) value = 0;
 
 		io->_npcdata->armor_class = value;
 	}
-	else if (!stricmp(statname, "BACKSTAB_SKILL"))
+	else if (!strcasecmp(statname, "BACKSTAB_SKILL"))
 	{
 		if (value < 0) value = 0;
 
 		io->_npcdata->backstab_skill = value;
 	}
-	else if (!stricmp(statname, "BACKSTAB"))
+	else if (!strcasecmp(statname, "BACKSTAB"))
 	{
 		if (value == 0) io->_npcdata->npcflags &= ~NPCFLAG_BACKSTAB;
 		else io->_npcdata->npcflags |= NPCFLAG_BACKSTAB;
 	}
-	else if (!stricmp(statname, "REACH"))
+	else if (!strcasecmp(statname, "REACH"))
 	{
 		if (value < 0) value = 0;
 
 		io->_npcdata->reach = value;
 	}
-	else if (!stricmp(statname, "CRITICAL"))
+	else if (!strcasecmp(statname, "CRITICAL"))
 	{
 		if (value < 0) value = 0;
 
 		io->_npcdata->critical = value;
 	}
-	else if (!stricmp(statname, "ABSORB"))
+	else if (!strcasecmp(statname, "ABSORB"))
 	{
 		if (value < 0) value = 0;
 
 		io->_npcdata->absorb = value;
 	}
-	else if (!stricmp(statname, "DAMAGES"))
+	else if (!strcasecmp(statname, "DAMAGES"))
 	{
 		if (value < 0) value = 0;
 
 		io->_npcdata->damages = value;
 	}
-	else if (!stricmp(statname, "TOHIT"))
+	else if (!strcasecmp(statname, "TOHIT"))
 	{
 		if (value < 0) value = 0;
 
 		io->_npcdata->tohit = value;
 	}
-	else if (!stricmp(statname, "AIMTIME"))
+	else if (!strcasecmp(statname, "AIMTIME"))
 	{
 		if (value < 0) value = 0;
 
 		io->_npcdata->aimtime = value;
 	}
-	else if (!stricmp(statname, "LIFE"))
+	else if (!strcasecmp(statname, "LIFE"))
 	{
 		if (value < 0) value = 0.0000001f;
 
 		io->_npcdata->maxlife = io->_npcdata->life = value;
 	}
-	else if (!stricmp(statname, "MANA"))
+	else if (!strcasecmp(statname, "MANA"))
 	{
 		if (value < 0) value = 0;
 
 		io->_npcdata->maxmana = io->_npcdata->mana = value;
 	}
-	else if (!stricmp(statname, "RESISTFIRE"))
+	else if (!strcasecmp(statname, "RESISTFIRE"))
 	{
 		if (value < 0) value = 0;
 		else if (value > 100) value = 100;
 
 		io->_npcdata->resist_fire = (unsigned char)value;
 	}
-	else if (!stricmp(statname, "RESISTPOISON"))
+	else if (!strcasecmp(statname, "RESISTPOISON"))
 	{
 		if (value < 0) value = 0;
 		else if (value > 100) value = 100;
 
 		io->_npcdata->resist_poison = (unsigned char)value;
 	}
-	else if (!stricmp(statname, "RESISTMAGIC"))
+	else if (!strcasecmp(statname, "RESISTMAGIC"))
 	{
 		if (value < 0) value = 0;
 		else if (value > 100) value = 100;
@@ -1782,22 +1782,22 @@ extern long GORE_MODE;
 
 short GetCutFlag(char * str)
 {
-	if (!stricmp(str, "CUT_HEAD"))
+	if (!strcasecmp(str, "CUT_HEAD"))
 		return FLAG_CUT_HEAD;
 
-	if (!stricmp(str, "CUT_TORSO"))
+	if (!strcasecmp(str, "CUT_TORSO"))
 		return FLAG_CUT_TORSO;
 
-	if (!stricmp(str, "CUT_LARM"))
+	if (!strcasecmp(str, "CUT_LARM"))
 		return FLAG_CUT_LARM;
 
-	if (!stricmp(str, "CUT_RARM"))
+	if (!strcasecmp(str, "CUT_RARM"))
 		return FLAG_CUT_HEAD;
 
-	if (!stricmp(str, "CUT_LLEG"))
+	if (!strcasecmp(str, "CUT_LLEG"))
 		return FLAG_CUT_LLEG;
 
-	if (!stricmp(str, "CUT_RLEG"))
+	if (!strcasecmp(str, "CUT_RLEG"))
 		return FLAG_CUT_RLEG;
 
 	return 0;
@@ -1832,7 +1832,7 @@ long GetCutSelection(INTERACTIVE_OBJ * io, short flag)
 		for (long i = 0; i < io->obj->nbselections; i++)
 		{
 			if ((io->obj->selections[i].nb_selected > 0)
-			        &&	(!stricmp(io->obj->selections[i].name, tx)))
+			        &&	(!strcasecmp(io->obj->selections[i].name, tx)))
 				return i;
 		}
 	}

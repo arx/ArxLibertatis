@@ -3303,7 +3303,7 @@ void LookForRefinementMap(TextureContainer * tc)
 
 				if (strstr(name, str1))
 				{
-					if (!_stricmp((char *)data, "NONE")) tc->TextureRefinement = NULL;
+					if (!_strcasecmp((char *)data, "NONE")) tc->TextureRefinement = NULL;
 					else tc->TextureRefinement =
 						    D3DTextr_CreateTextureFromFile(str2, Project.workingdir, 0, D3DTEXTR_16BITSPERPIXEL);
 
@@ -3358,7 +3358,7 @@ void LookForRefinementMap(TextureContainer * tc)
 
 				if (!strcmp(name, str1))
 				{
-					if (!_stricmp((char *)data, "NONE")) tc->TextureRefinement = NULL;
+					if (!_strcasecmp((char *)data, "NONE")) tc->TextureRefinement = NULL;
 					else tc->TextureRefinement =
 						    D3DTextr_CreateTextureFromFile(str2, Project.workingdir, 0, D3DTEXTR_16BITSPERPIXEL);
 

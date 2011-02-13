@@ -1222,7 +1222,7 @@ bool IsNoGore( void )
 	int bIsPending = false;
 	pSteamGetAppPurchaseCountry( 1700, szCountry, 128, &iPurchaseTime, &steamError );
 
-	if( !stricmp( szCountry, "de" ) )
+	if( !strcasecmp( szCountry, "de" ) )
 	{
 		return true;
 	}
@@ -1342,7 +1342,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 
 		if ((param[parampos] != NULL))
 		{
-			if (!stricmp(param[parampos],"demo"))
+			if (!strcasecmp(param[parampos],"demo"))
 			{
 				ARX_DEMO=1;
 			}
@@ -1352,7 +1352,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 				FINAL_RELEASE=0;
 				GAME_EDITOR=1;
 
-				if (!stricmp(param[parampos],"editor"))
+				if (!strcasecmp(param[parampos],"editor"))
 				{
 					Dbg_str("PARAM EDITOR");
 					NEED_ANCHORS=1;
@@ -1417,7 +1417,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 						PROCESS_LEVELS=1;
 					}
 
-					if (!stricmp(param[parampos],"moulinex"))
+					if (!strcasecmp(param[parampos],"moulinex"))
 					{
 						MOULINEX=1;
 						KILL_AT_MOULINEX_END=1;
@@ -1609,7 +1609,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 		unsigned long ls = 64;
 		GetComputerName(stemp, &ls);
 
-		if (!stricmp(stemp,"max"))
+		if (!strcasecmp(stemp,"max"))
 		{
 			CYRIL_VERSION=1;
 			AUTO_FULL_SCREEN=0;
@@ -3785,7 +3785,7 @@ long Player_Arrow_Count()
 
 		if (io)
 		{
-			if (!stricmp(GetName(io->filename),"Arrows"))
+			if (!strcasecmp(GetName(io->filename),"Arrows"))
 			{
 				if ( io->durability >= 1.f )
 
@@ -3815,7 +3815,7 @@ INTERACTIVE_OBJ * Player_Arrow_Count_Decrease()
 
 		if (ioo)
 		{
-			if (!stricmp(GetName(ioo->filename),"Arrows"))
+			if (!strcasecmp(GetName(ioo->filename),"Arrows"))
 			{
 				if (ioo->durability >= 1.f)
 				{
@@ -4918,7 +4918,7 @@ void ProcessAllTheo(char * path)
 					char ext[256];
 					strcpy(ext,GetExt(fd.name));
 
-					if (!stricmp(ext,".teo"))
+					if (!strcasecmp(ext,".teo"))
 					{
 						char path2[512];
 						char texpath[512];
@@ -5059,7 +5059,7 @@ void LaunchMoulinex()
 
 		GetLevelNameByNum(lvl,tx);
 
-		if (stricmp(tx,"NONE"))
+		if (strcasecmp(tx,"NONE"))
 		{
 			sprintf(loadfrom,"%s\\Graph\\Levels\\Level%s\\level%s.dlf",Project.workingdir,tx,tx);
 

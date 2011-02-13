@@ -366,5 +366,56 @@ void PAK_UNICODE_GetPrivateProfileString(const _TCHAR * _lpszSection,
 
 	_TCHAR szSection[256] = _T("");
 	_stprintf(szSection, _T("[%s]"), _lpszSection);
-	HERMES_UNICODE_GetProfileString(szSection, _lpszKey, _lpszDefault, _lpszBuffer, _lBufferSize, NULL, -1); //lastspeechflag
+
+	HERMES_UNICODE_GetProfileString(
+	    szSection,
+	    _lpszKey,
+	    _lpszDefault,
+	    _lpszBuffer,
+	    _lBufferSize,
+	    NULL,
+	    -1); //lastspeechflag
+
 }
+
+#include <vector>
+using namespace std;
+
+extern PakManager * pPakManager;
+vector<char *> mlist;
+
+//-----------------------------------------------------------------------------
+void ParseCurFile(EVE_TFILE * _e)
+{
+	if (!_e) return;
+
+	if (strcasecmp((char *)_e->name, "utext") > 0)
+	{
+		char * t = strdup((char *)_e->name);
+
+		for (UINT i = 0 ; i < strlen(t) ; i++)
+		{
+
+			t[i] = ARX_CLEAN_WARN_CAST_CHAR(tolower(t[i]));
+
+		}
+
+		mlist.insert(mlist.end(), t);
+		//free (t);
+	}
+
+	ParseCurFile(_e->fnext);
+}
+
+//-----------------------------------------------------------------------------
+void ParseCurRep(EVE_REPERTOIRE * _er)
+{
+	if (!_er) return;
+
+	ParseCurFile(_er->fichiers);
+
+	ParseCurRep(_er->fils);
+	ParseCurRep(_er->brothernext);
+}
+
+extern HBITMAP ARX_CONFIG_hBitmap;

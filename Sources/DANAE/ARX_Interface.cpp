@@ -1352,7 +1352,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 									memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 									tTxtCombineDest[pEndString-pStartString]=0;
 
-									if(!stricmp(tTxtCombineDest,tcIsClass))
+									if(!strcasecmp(tTxtCombineDest,tcIsClass))
 									{
 										//same class
 										bCanCombine=true;
@@ -1377,7 +1377,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 										memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 										tTxtCombineDest[pEndString-pStartString]=0;
 
-										if(!stricmp(tTxtCombineDest,tcIndent))
+										if(!strcasecmp(tTxtCombineDest,tcIndent))
 										{
 											//same class
 											bCanCombine=true;
@@ -1415,7 +1415,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 													uiNbGroups++ )
 											{
 
-												if(!stricmp(tTxtCombineDest,COMBINE->iogroups[uiNbGroups].name))
+												if(!strcasecmp(tTxtCombineDest,COMBINE->iogroups[uiNbGroups].name))
 												{
 													//same class
 													bCanCombine=true;
@@ -1500,7 +1500,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 								memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 								tTxtCombineDest[pEndString-pStartString]=0;
 
-								if(!stricmp(tTxtCombineDest,tcIsClass))
+								if(!strcasecmp(tTxtCombineDest,tcIsClass))
 								{
 									//same class
 									bCanCombine=true;
@@ -1525,7 +1525,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 									memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 									tTxtCombineDest[pEndString-pStartString]=0;
 
-									if(!stricmp(tTxtCombineDest,tcIndent))
+									if(!strcasecmp(tTxtCombineDest,tcIndent))
 									{
 										//same class
 										bCanCombine=true;
@@ -1562,7 +1562,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 												uiNbGroups++ )
 										{
 
-											if(!stricmp(tTxtCombineDest,COMBINE->iogroups[uiNbGroups].name))
+											if(!strcasecmp(tTxtCombineDest,COMBINE->iogroups[uiNbGroups].name))
 											{
 												//same class
 												bCanCombine=true;

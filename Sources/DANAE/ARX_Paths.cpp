@@ -314,7 +314,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 
 
 					if ((JUST_RELOADED)
-					        &&	((!stricmp(p->name, "INGOT_MAKER")) || (!stricmp(p->name, "MAULD_USER"))))
+					        &&	((!strcasecmp(p->name, "INGOT_MAKER")) || (!strcasecmp(p->name, "MAULD_USER"))))
 					{
 						ARX_DEAD_CODE(); 
 					}
@@ -563,7 +563,7 @@ ARX_PATH * ARX_PATH_GetAddressByName(char * name)
 		{
 			if (ARXpaths[i])
 			{
-				if (!stricmp(ARXpaths[i]->name, name)) return ARXpaths[i];
+				if (!strcasecmp(ARXpaths[i]->name, name)) return ARXpaths[i];
 			}
 		}
 
@@ -602,7 +602,7 @@ ARX_PATH * ARX_PATHS_ExistName(char * name)
 
 	for (long i = 0; i < nbARXpaths; i++)
 	{
-		if (!stricmp(ARXpaths[i]->name, name))
+		if (!strcasecmp(ARXpaths[i]->name, name))
 			return ARXpaths[i];
 	}
 
