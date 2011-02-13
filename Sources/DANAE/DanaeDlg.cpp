@@ -1267,7 +1267,6 @@ char * GetVersionString()
 		else
 			result[pos++] = 0;
 	}
-	}
 
 	strcpy(rett, result);
 

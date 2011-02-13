@@ -2450,6 +2450,7 @@ lasuite:
 				/* Scale */
 				Vector_Init(&obj->bones[i].scaleanim, 1.0f, 1.0f, 1.0f);
 			}
+		}
 
 		eobj->vertexlocal = (EERIE_3DPAD *)malloc(sizeof(EERIE_3DPAD) * eobj->nbvertex);
 		memset(eobj->vertexlocal, 0, sizeof(EERIE_3DPAD)*eobj->nbvertex);
