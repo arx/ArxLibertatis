@@ -21,8 +21,9 @@ foreach(SOURCE_DIR ${SOURCE_DIRS})
     set(SOURCES ${SOURCES} ${GLOB_RESULT})
 endforeach(SOURCE_DIR)
 
-
+LIST(REMOVE_ITEM SOURCES "/home/bmonkey/workspace/Port/ArxFatalis/Sources/DANAE/ARX_Menu2.cpp")
 #add_library()
+#message(${SOURCES})
 add_executable(arx ${SOURCES})
 #add_executable(arx Sources/DANAE/ARX_CParticleSystem.cpp)
 
