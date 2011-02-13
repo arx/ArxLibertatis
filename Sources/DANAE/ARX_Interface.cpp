@@ -37,7 +37,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Text.h"
 #include "ARX_Draw.h"
 #include "ARX_Menu.h"
-#include "ARX_INPUT.h"
+#include "ARX_Input.h"
 #include "ARX_Equipment.h"
 #include "ARX_Sound.h"
 #include "ARX_Spells.h"
@@ -50,10 +50,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Menu.h"
 #include "ARX_Menu2.h"
 #include "ARX_Interactive.h"
-#include "ARX_speech.h"
-#include "ARX_collisions.h"
-#include "ARX_C_Cinematique.h"
-#include "../danae/Danae_resource.h"
+#include "ARX_Speech.h"
+#include "Danae_resource.h"
 #include "ARX_Text.h"
 #include "ARX_Time.h"
 #include "DanaeDlg.h"
@@ -62,21 +60,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIELight.h"
 #include "EERIELinkedObj.h"
 #include "EERIEPhysicsBox.h"
-#include "EERIEDRAW.h"
+#include "EERIEDraw.h"
 #include "EERIEObject.h"
 #include "EERIETexture.h"
+#include "ARX_Collisions.h"
+#include "ARX_CCinematique.h"
+#include "HERMESMain.h"
+#include "Resource.h"
 
-#include "Hermesmain.h"
+#include <stdio.h>
 
-#include "resource.h"
-
-#include <algorithm>
-#include <cstdio>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-
-#include "../ArxCommon/Timer.h"
+//todo: shouldn't be defined here
+# define GWL_HINSTANCE       (-6)
 
 extern float MagicSightFader;
 extern long FINAL_COMMERCIAL_DEMO;
@@ -1330,9 +1325,8 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 
 					while(pcToken)
 					{
-						pcToken=strtok(NULL,"\r\n");
-						strupr(pcToken);
-
+//						strupr(pcToken);
+	
 						bool bCanCombine=false;
 						char* pStartString;
 						char* pEndString;
@@ -1479,8 +1473,8 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 				while(pcToken)
 				{
 					pcToken=strtok(NULL,"\r\n");
-					strupr(pcToken);
-
+//					strupr(pcToken);
+	
 					bool bCanCombine=false;
 					char* pStartString;
 					char* pEndString;
@@ -7221,7 +7215,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 									1000,
 									0.01f,
 									2,
-									INTERNATIONAL_MODE?0:std::max(3000, static_cast<int>(70*_tcslen(spellicons[i].description))));
+									INTERNATIONAL_MODE?0:max(3000, int(70*_tcslen(spellicons[i].description))));
 							}
 
 
@@ -7996,7 +7990,11 @@ void ARX_INTERFACE_ManageOpenedBook()
 						1000,
 						0.01f,
 						3,
+<<<<<<< HEAD
 						INTERNATIONAL_MODE?0:std::max(3000, static_cast<int>(70*_tcslen(tex))));
+=======
+						INTERNATIONAL_MODE?0:max(3000, int(70*_tcslen(tex))));
+>>>>>>> d593ac2cdec36572f8fd4188709f56d3953cc75b
 				}
 				else
 				{
@@ -8010,7 +8008,11 @@ void ARX_INTERFACE_ManageOpenedBook()
 						1000,
 						0.01f,
 						3,
+<<<<<<< HEAD
 						INTERNATIONAL_MODE?0:std::max(3000, static_cast<int>(70*_tcslen(ARXmenu.mda->flyover[FLYING_OVER]))));
+=======
+						INTERNATIONAL_MODE?0:max(3000, int(70*_tcslen(ARXmenu.mda->flyover[FLYING_OVER]))));
+>>>>>>> d593ac2cdec36572f8fd4188709f56d3953cc75b
 				}
 			}
 		}

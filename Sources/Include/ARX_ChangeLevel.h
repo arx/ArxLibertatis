@@ -62,7 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEPoly.h"
 #include "ARX_Levels.h"
 #include "ARX_Minimap.h"
-#include "ARX_interactive.h"
+#include "ARX_Interactive.h"
 #include "ARX_Spells.h"
 #include "ARX_GlobalMods.h"
 
@@ -276,7 +276,7 @@ struct ARX_CHANGELEVEL_VARIABLE_SAVE
 
 struct IO_LINKED_DATA
 {
-	long			lgroup; //linked to group n° if lgroup=-1 NOLINK
+	long			lgroup; //linked to group nï¿½ if lgroup=-1 NOLINK
 	long			lidx;
 	long			lidx2;
 	EERIE_MOD_INFO	modinfo;

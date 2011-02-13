@@ -58,12 +58,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef DANAEDLG_H
 #define DANAEDLG_H
 
-#include "danae.h"
+#include "Danae.h"
 #define IOTVTYPE_PATH 1
 #define IOTVTYPE_NODE 2
 #define IOTVTYPE_PLAYER 3
 
-#define _ARX_FINAL_VERSION_ " SC-1Ј µ*[aAv|( $!1^;.|(2за1за]_______"
+#define _ARX_FINAL_VERSION_ " SC-1пїЅ пїЅ*[aAv|( $!1^;.|(2пїЅпїЅ1пїЅпїЅ]_______"
 
 extern short	Cross;
 extern long Bilinear;
