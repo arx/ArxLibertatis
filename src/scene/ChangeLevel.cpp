@@ -153,7 +153,7 @@ long CONVERT_CREATED = 0;
 long DONT_WANT_PLAYER_INZONE = 0;
 long FORBID_SAVE = 0;
 long _FIRSTTIME = 0;
-CSaveBlock * _pSaveBlock = NULL;
+SaveBlock * _pSaveBlock = NULL;
 
 
 ARX_CHANGELEVEL_IO_INDEX * idx_io = NULL;
@@ -338,7 +338,7 @@ void ARX_CHANGELEVEL_CreateNewInstance()
 	}
 }
  
-CSaveBlock * GLOBAL_pSaveB = NULL;
+SaveBlock * GLOBAL_pSaveB = NULL;
 void ARX_Changelevel_CurGame_Open() {
 	
 	if(GLOBAL_pSaveB) {
@@ -350,7 +350,7 @@ void ARX_Changelevel_CurGame_Open() {
 	
 	if(FileExist(savefile.c_str())) {
 		
-		GLOBAL_pSaveB = new CSaveBlock(savefile.c_str());
+		GLOBAL_pSaveB = new SaveBlock(savefile.c_str());
 		if(!GLOBAL_pSaveB->BeginRead()) {
 			LogError << "cannot read cur game save file" << savefile;
 		}
@@ -538,7 +538,7 @@ long ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 
 	char sfile[256];
 	sprintf(sfile, "%sGsave.sav", CurGamePath);
-	_pSaveBlock = new CSaveBlock(sfile);
+	_pSaveBlock = new SaveBlock(sfile);
 
 	if (!_pSaveBlock->BeginSave(true, 1)) {
 		LogError << "Error writing to save block.";
@@ -3623,7 +3623,7 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 	// Open Saveblock for read
 	char sfile[256];
 	sprintf(sfile, "%sGsave.sav", CurGamePath);
-	_pSaveBlock = new CSaveBlock(sfile);
+	_pSaveBlock = new SaveBlock(sfile);
 	if(!_pSaveBlock->BeginRead()) {
 		LogError << "cannot open save to pop level: " << sfile;
 		return -1;
@@ -4093,7 +4093,7 @@ long ARX_CHANGELEVEL_Set_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 {
 	char sfile[256];
 	sprintf(sfile, "%sGsave.sav", path.c_str());
-	_pSaveBlock = new CSaveBlock(sfile);
+	_pSaveBlock = new SaveBlock(sfile);
 
 	if (!_pSaveBlock->BeginSave(true, 1)) return -1;
 
@@ -4142,7 +4142,7 @@ long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 	// Open Save Block
 	char sfile[256];
 	sprintf(sfile, "%sGsave.sav", path.c_str());
-	_pSaveBlock = new CSaveBlock(sfile);
+	_pSaveBlock = new SaveBlock(sfile);
 
 	if(!_pSaveBlock->BeginRead()) {
 		LogError << "cannot open savefile to get player level data: " << sfile;

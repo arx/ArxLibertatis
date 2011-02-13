@@ -115,7 +115,7 @@ void CInfoFile::KillAll()
 }
 
 //------------------------------------------------------------------------
-CSaveBlock::CSaveBlock(const string & _savefile) {
+SaveBlock::SaveBlock(const string & _savefile) {
 	
 	pcBlockName = _savefile;
 
@@ -130,7 +130,7 @@ CSaveBlock::CSaveBlock(const string & _savefile) {
 }
 
 //------------------------------------------------------------------------
-CSaveBlock::~CSaveBlock() {
+SaveBlock::~SaveBlock() {
 
 	while (iNbFiles--)
 	{
@@ -151,7 +151,7 @@ CSaveBlock::~CSaveBlock() {
 }
 
 //------------------------------------------------------------------------
-void CSaveBlock::ResetFAT(void)
+void SaveBlock::ResetFAT(void)
 {
 	iTailleBlock = 0;
 
@@ -165,7 +165,7 @@ void CSaveBlock::ResetFAT(void)
 	iNbFiles = 0;
 }
 
-bool CSaveBlock::BeginRead() {
+bool SaveBlock::BeginRead() {
 	
 	LogDebug << "reading savefile " << pcBlockName;
 	
@@ -260,7 +260,7 @@ bool CSaveBlock::BeginRead() {
 }
 
 //------------------------------------------------------------------------
-void CSaveBlock::EndRead(void)
+void SaveBlock::EndRead(void)
 {
 	if (hFile)
 	{
@@ -275,7 +275,7 @@ void CSaveBlock::EndRead(void)
 }
 
 //------------------------------------------------------------------------
-bool CSaveBlock::BeginSave(bool _bCont, bool _bReWrite)
+bool SaveBlock::BeginSave(bool _bCont, bool _bReWrite)
 {
 	bReWrite = _bReWrite;
 
@@ -372,7 +372,7 @@ bool CSaveBlock::BeginSave(bool _bCont, bool _bReWrite)
 }
 
 //------------------------------------------------------------------------
-bool CSaveBlock::EndSave(void)
+bool SaveBlock::EndSave(void)
 {
 	if (!bFirst)
 	{
@@ -412,7 +412,7 @@ bool CSaveBlock::EndSave(void)
 }
 
 //------------------------------------------------------------------------
-bool CSaveBlock::Defrag()
+bool SaveBlock::Defrag()
 {
 	char txt[256];
 	strcpy(txt, pcBlockName.c_str());
@@ -489,7 +489,7 @@ bool CSaveBlock::Defrag()
 	return true;
 } 
  
-bool CSaveBlock::ExpandNbFiles()
+bool SaveBlock::ExpandNbFiles()
 {
 	iNbFiles++;
 	sInfoFile = (CInfoFile *)realloc(sInfoFile, (iNbFiles) * sizeof(CInfoFile));
@@ -498,7 +498,7 @@ bool CSaveBlock::ExpandNbFiles()
 }
 
 //------------------------------------------------------------------------
-bool CSaveBlock::Save( const std::string& _pcFileName, void * _pDatas, int _iSize)
+bool SaveBlock::Save( const std::string& _pcFileName, void * _pDatas, int _iSize)
 {
 	bool _bFound = false;
 	CInfoFile * _pInfoFile = sInfoFile;
@@ -612,7 +612,7 @@ bool CSaveBlock::Save( const std::string& _pcFileName, void * _pDatas, int _iSiz
 }
 
 //------------------------------------------------------------------------
-bool CSaveBlock::Read( const std::string& _pcFileName, char* _pPtr)
+bool SaveBlock::Read( const std::string& _pcFileName, char* _pPtr)
 {
 	CInfoFile * _pInfoFile = (CInfoFile *)pHachage->get(_pcFileName);
 
@@ -636,7 +636,7 @@ bool CSaveBlock::Read( const std::string& _pcFileName, char* _pPtr)
 }
 
 //------------------------------------------------------------------------
-int CSaveBlock::GetSize( const std::string& _pcFileName)
+int SaveBlock::GetSize( const std::string& _pcFileName)
 {
 	CInfoFile * _pInfoFile = NULL;
 
@@ -684,7 +684,7 @@ int CSaveBlock::GetSize( const std::string& _pcFileName)
 	return _iTaille;
 }
 //------------------------------------------------------------------------
-bool CSaveBlock::ExistFile( const std::string& _pcFileName)
+bool SaveBlock::ExistFile( const std::string& _pcFileName)
 {
 	CInfoFile * _pInfoFile = NULL;
 

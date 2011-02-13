@@ -32,7 +32,7 @@ class CInfoFile;
 class HashMap;
 typedef void * FileHandle;
 
-class CSaveBlock {
+class SaveBlock {
 private:
 	
 	FileHandle hFile;
@@ -49,8 +49,8 @@ private:
 	
 public:
 	
-	CSaveBlock(const std::string & savefile);
-	~CSaveBlock();
+	SaveBlock(const std::string & savefile);
+	~SaveBlock();
 	
 	bool Defrag();
 	bool BeginSave(bool _bCont,bool _bReWrite);
