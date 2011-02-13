@@ -378,17 +378,17 @@ namespace ATHENA
 		}
 
 		// I don't think we need to worry about this
-		// if (flags & FLAG_ANY_3D_FX && !listener)
-		// {
-		// 	if (primary->QueryInterface(IID_IDirectSound3DListener, (aalVoid **)&listener))
-		// 	{
-		// 		if (mutex) ReleaseMutex(mutex);
+		if (flags & FLAG_ANY_3D_FX)// && !listener)
+		{
+			// if (primary->QueryInterface(IID_IDirectSound3DListener, (aalVoid **)&listener))
+			// {
+			// 	if (mutex) ReleaseMutex(mutex);
 
-		// 		return AAL_ERROR_SYSTEM;
-		// 	}
+			// 	return AAL_ERROR_SYSTEM;
+			// }
 
-		// 	global_status |= FLAG_ANY_3D_FX & ~FLAG_ANY_ENV_FX;
-		// }
+			global_status |= FLAG_ANY_3D_FX & ~FLAG_ANY_ENV_FX;
+		}
 
 		if (flags & FLAG_ANY_ENV_FX && is_reverb_present)// && !environment)
 		{
@@ -892,6 +892,7 @@ namespace ATHENA
 		// }
 
 		alListener3f(AL_POSITION, position.x, position.y, position.z);
+		printf("listener pos: (%f, %f, %f)\n", position.x, position.y, position.z);
 
 		if (alGetError() != AL_NO_ERROR)
 		{

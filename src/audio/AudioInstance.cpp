@@ -163,12 +163,16 @@ namespace ATHENA
 		int error;
 		if ((error = alGetError()) != AL_NO_ERROR) {
 			printf("0x%x %s\n", error, error == AL_OUT_OF_MEMORY ?  "AL_OUT_OF_MEMORY" : "AL_INVALID_VALUE");
+			exit(0);
 			return AAL_ERROR_SYSTEM;
 		}
 		printf("before generating source\n");
 		alGenSources(1, source);
-		if (alGetError() != AL_NO_ERROR)
+		if (alGetError() != AL_NO_ERROR) {
+			printf("alGenSources\n");
+			exit(0);
 			return AAL_ERROR_SYSTEM;
+		}
 
 		printf("generated buffer and source\n");
 
@@ -180,13 +184,17 @@ namespace ATHENA
 		// Create 3D interface if required
 		if (channel.flags & FLAG_ANY_3D_FX)
 		{
+			printf("FLAG_ANY_3D_FX\n");
 			// if (lpdsb->QueryInterface(IID_IDirectSound3DBuffer, (aalVoid **)&lpds3db))
 			// 	return AAL_ERROR_SYSTEM;
 
 			if (channel.flags & AAL_FLAG_RELATIVE) {
 				alSourcei(source[0], AL_SOURCE_RELATIVE, AL_TRUE);
-				if (alGetError() != AL_NO_ERROR)
+				if (alGetError() != AL_NO_ERROR) {
+					printf("alSourcei AL_SOURCE_RELATIVE\n");
+					exit(0);
 					return AAL_ERROR_SYSTEM;
+				}
 			}
 
 			SetPosition(channel.position);
@@ -251,14 +259,28 @@ namespace ATHENA
 			default:
 				exit(0);
 			}
+
+			alGetError();
 			
 			alBufferData(buffer[0], alformat, ptr0, size, sample->format.frequency);
 			// FIXME -- does the above cause a memleak?
 			printf("post-read size: %d write: %d\n", size, write);
-			printf("alBufferData error: 0x%x is buffer: %d\n", alGetError(), alIsBuffer(buffer[0]));
+			int error = alGetError();
+			if (error != AL_NO_ERROR) {
+				printf("alBufferData error: 0x%x is buffer: %d\n", error, alIsBuffer(buffer[0]));
+				exit(0);
+			}
 
 			printf("queueing buffers\n");
 			alSourceQueueBuffers(source[0], 1, buffer);
+
+			error = alGetError();
+			if (error != AL_NO_ERROR) {
+				printf("alSourceQueueBuffers\n");
+				exit(0);
+			}
+
+			
 
 			if (write != size)
 				return AAL_ERROR_SYSTEM;
@@ -272,6 +294,7 @@ namespace ATHENA
 	aalError Instance::Init(Instance * instance, const aalChannel & _channel)
 	{
 		printf("Instance::Init\n");
+		int error;
 		if (instance->stream || _channel.flags ^ instance->channel.flags)
 			return Init(instance->sample, _channel);
 
@@ -284,10 +307,46 @@ namespace ATHENA
 		channel = _channel;
 		size = instance->size;
 
+		printf("instance->size %d\n", size);
+
 		// if (device->DuplicateSoundBuffer(instance->lpdsb, &lpdsb))
 		// 	return AAL_ERROR_SYSTEM;
 
-		buffer[0] = instance->buffer[1];
+		alGetError();
+		alGenBuffers(1, buffer);
+		error = alGetError();
+		if (error != AL_NO_ERROR) {
+			printf("alGenBuffers\n");
+			exit(0);
+		}
+		
+
+		alformat = instance->alformat;
+
+		void *buffer_data = malloc(size);
+		stream = CreateStream(sample->name);
+		if(buffer_data) {
+			stream->Read(buffer_data, size, write);
+			alBufferData(buffer[0], alformat, buffer_data, size, sample->format.frequency);
+			error = alGetError();
+			if (error != AL_NO_ERROR) {
+				printf("alBufferData\n");
+				exit(0);
+			}
+			free(buffer_data);
+		} else {
+			return AAL_ERROR_SYSTEM;
+		}
+		// buffer[0] = instance->buffer[0];
+		printf("generating new source\n");
+		alGenSources(1, source);
+		alSourceQueueBuffers(source[0], 1, buffer);
+
+		error = alGetError();
+		if (error != AL_NO_ERROR) {
+			printf("alSourceQueueBuffers: 0x%x\n", error);
+			exit(0);
+		}
 
 		SetVolume(channel.volume);
 		SetPitch(channel.pitch);
@@ -295,6 +354,7 @@ namespace ATHENA
 		//Create 3D interface if required
 		if (channel.flags & FLAG_ANY_3D_FX)
 		{
+			printf("FLAG_ANY_3D_FX\n");
 			// if (lpdsb->QueryInterface(IID_IDirectSound3DBuffer, (aalVoid **)&lpds3db))
 			// 	return AAL_ERROR_SYSTEM;
 
@@ -304,10 +364,11 @@ namespace ATHENA
 
 			if (channel.flags & AAL_FLAG_RELATIVE) {
 				alSourcei(source[0], AL_SOURCE_RELATIVE, 1);
-				printf("relative\n");
-				if (alGetError() != AL_NO_ERROR)
+				if ((error = alGetError()) != AL_NO_ERROR) {
+					printf("alSourcei AL_SOURCE_RELATIVE\n");
+					exit(0);
 					return AAL_ERROR_SYSTEM;
-				printf("no error\n");
+				}
 			}
 
 			SetPosition(channel.position);
@@ -341,8 +402,6 @@ namespace ATHENA
 		}
 		else SetPan(channel.pan);
 
-		printf("all ok\n");
-
 		return AAL_OK;
 	}
 
@@ -359,8 +418,10 @@ namespace ATHENA
 		// 	lpdsb->Release(), lpdsb = NULL;
 		// }
 
-		alDeleteSources(1, source);
-		alDeleteBuffers(1, buffer);
+		if (alIsSource(source[0]))
+			alDeleteSources(1, source);
+		if (alIsBuffer(buffer[0]))
+			alDeleteBuffers(1, buffer);
 
 		if (stream) DeleteStream(stream);
 
@@ -388,8 +449,14 @@ namespace ATHENA
 
 		// FIXME: I think OpenAL does this calculation for us
 
+		printf("volume: %f\n", volume);
+
 		alSourcef(source[0], AL_GAIN, volume);
-		if (alGetError() != AL_NO_ERROR) return AAL_ERROR_SYSTEM;
+		if (alGetError() != AL_NO_ERROR) {
+			printf("AL_GAIN\n");
+			exit(0);
+			return AAL_ERROR_SYSTEM;
+		}
 
 		// if (lpdsb->SetVolume(value)) return AAL_ERROR_SYSTEM;
 
@@ -420,8 +487,14 @@ namespace ATHENA
 		if (pitch > 2.0F) pitch = 2.0F;
 		else if (pitch < 0.1F) pitch = 0.1F;
 
+		int error;
+		alGetError();
 		alSourcef(source[0], AL_PITCH, channel.pitch * pitch);
-		if (alGetError() != AL_NO_ERROR) return AAL_ERROR_SYSTEM;
+		if ((error = alGetError()) != AL_NO_ERROR) {
+			printf("AL_PITCH\n");
+			exit(0);
+			return AAL_ERROR_SYSTEM;
+		}
 
 		// if (lpdsb->SetFrequency(aalULong(channel.pitch * pitch * sample->format.frequency)))
 		// 	return AAL_ERROR_SYSTEM;
@@ -447,14 +520,25 @@ namespace ATHENA
 		if (!alIsSource(source[0]) || !channel.flags & AAL_FLAG_POSITION)
 			return AAL_ERROR_INIT;
 
+		printf("Instance::SetPosition (%f, %f, %f)\n", position.x, position.y, position.z);
+
 		channel.position = position;
 
-		const ALfloat pos[3] = {position.x, position.y, position.z};
+		ALfloat pos[3];
+		pos[0] = position.x;
+		pos[1] = position.y;
+		pos[2] = position.z;
+
+		int error;
+		alGetError();
 
 		alSourcefv(source[0], AL_POSITION, pos);
 
-		if (alGetError() != AL_NO_ERROR)
+		if ((error = alGetError()) != AL_NO_ERROR) {
+			printf("AL_POSITION 0x%x\n", error);
+			exit(0);
 			return AAL_ERROR_SYSTEM;
+		}
 
 		//if (lpds3db->SetPosition(position.x, position.y, position.z, DS3D_DEFERRED))
 		//return AAL_ERROR_SYSTEM;
@@ -467,11 +551,14 @@ namespace ATHENA
 		if (!alIsSource(source[0]) || !(channel.flags & AAL_FLAG_VELOCITY)) return AAL_ERROR_INIT;
 
 		channel.velocity = velocity;
+		int error;
 
 		alSource3f(source[0], AL_VELOCITY, velocity.x, velocity.y, velocity.z);
 
-		if (alGetError() != AL_NO_ERROR)
+		if ((error = alGetError()) != AL_NO_ERROR) {
+			printf("AL_VELOCITY: 0x%x\n", error);
 			return AAL_ERROR_SYSTEM;
+		}
 
 		return AAL_OK;
 	}
@@ -481,10 +568,15 @@ namespace ATHENA
 		if (!alIsSource(source[0]) || !(channel.flags & AAL_FLAG_DIRECTION)) return AAL_ERROR_INIT;
 
 		channel.direction = direction;
+		int error;
+		alGetError();
 
 		alSource3f(source[0], AL_DIRECTION, direction.x, direction.y, direction.z);
-		if (alGetError() != AL_NO_ERROR)
+		if ((error = alGetError()) != AL_NO_ERROR) {
+			printf("AL_DIRECTION: 0x%x\n", error);
+			exit(0);
 			return AAL_ERROR_SYSTEM;
+		}
 
 		return AAL_OK;
 	}
@@ -663,7 +755,7 @@ namespace ATHENA
 	///////////////////////////////////////////////////////////////////////////////
 	aalError Instance::Play(const aalULong & play_count)
 	{
-		printf("Instance::Play\n");
+		printf("Instance::Play %d\n", play_count);
 		//Enqueue _loop count if instance is already playing
 		if (IsPlaying())
 		{
@@ -703,13 +795,16 @@ namespace ATHENA
 				exit(0);
 			}
 			//if (lpdsb->Unlock(ptr0, cur0, ptr1, cur1)) return AAL_ERROR_SYSTEM;
-			alBufferData(buffer[0], alformat, ptr0, size, sample->format.frequency);
-			alSourceQueueBuffers(source[0], 1, buffer);
+			ALuint new_buffer[1];
+			alGenBuffers(1, new_buffer);
+			alBufferData(new_buffer[0], alformat, ptr0, size, sample->format.frequency);
+			alSourceQueueBuffers(source[0], 1, new_buffer);
 			int error;
 			if ((error = alGetError()) != AL_NO_ERROR) {
 				printf("error: 0x%x as buffer: %d\n", error, alIsBuffer(buffer[0]));
 			}
 			// FIXME -- does the above cause a memleak?
+			free(ptr0);
 
 			//if (lpdsb->Unlock(ptr0, cur0, ptr1, cur1)) return AAL_ERROR_SYSTEM;
 
@@ -734,7 +829,8 @@ namespace ATHENA
 		alGetError(); // Clear error
 		alSourcePlay(source[0]);
 		if ((error = alGetError()) != AL_NO_ERROR) {
-			printf("error = 0x%x\n", error);
+			printf("error = 0x%x, is source %d\n", error, alIsSource(source[0]));
+			exit(0);
 			return AAL_ERROR_SYSTEM;
 		}
 		
@@ -813,25 +909,35 @@ namespace ATHENA
 		ALfloat _listener_pos[3];
 		aalVector listener_pos;
 
+		int error;
+
 		//lpds3db->GetMaxDistance(&max);
 		alGetSourcef(source[0], AL_MAX_DISTANCE, &max);
+
+		if ((error = alGetError()) != AL_NO_ERROR) {
+			printf("AL_MAX_DISTANCE %d 0x%x\n", __LINE__, error);
+			exit(0);
+		}
 
 		if (channel.flags & AAL_FLAG_RELATIVE)
 			_listener_pos[0] = _listener_pos[1] = _listener_pos[2] = 0.0F;
 		else
 			alGetListenerfv(AL_POSITION, _listener_pos);
 
+		if ((error = alGetError()) != AL_NO_ERROR) {
+			printf("AL_POSITION %d 0x%x\n", __LINE__, error);
+			exit(0);
+		}
 		listener_pos.x = _listener_pos[0];
 		listener_pos.y = _listener_pos[1];
 		listener_pos.z = _listener_pos[2];
 
 		dist = Distance(listener_pos, channel.position);
-		printf("distance is %f max is %f\n", dist, max);
-		printf("status: 0x%x IS_TOOFAR: 0x%x\n", status, IS_TOOFAR);
+
+		printf("dist: %f max: %f\n", dist, max);
 
 		if (status & IS_TOOFAR)
 		{
-			printf("not too far\n");
 			if (dist > max) return AAL_UTRUE;
 
 			status &= ~IS_TOOFAR;
@@ -872,13 +978,20 @@ namespace ATHENA
 
 		printf("Instance::UpdateStreaming\n");
 
+		if (!stream) {
+			printf("no stream\n");
+		}
+
 		InstanceDebugLog(this, "STREAMED");
 
 		to_fill = write >= read ? read + size - write : read - write;
 
-		// FIXME TODO
 
 		ptr0 = malloc(to_fill);
+		if (ptr0  == NULL) {
+			//printf("bad malloc: write: %d read: %d size: %d to_fill: %d\n", write, read, size, to_fill);
+			return;
+		}
 		stream->Read(ptr0, to_fill, count);
 		if (count < to_fill) {
 			if (loop) {
@@ -888,12 +1001,21 @@ namespace ATHENA
 				memset(ptr0 + count, 0, to_fill - count);
 			}
 		}
+		alGetError();
 		alBufferData(new_buffers[0], alformat, ptr0, to_fill, sample->format.frequency);
 		alSourceQueueBuffers(source[0], 1, new_buffers);
+		int error;
+		if ((error = alGetError()) != AL_NO_ERROR) {
+			printf("alBufferData %d 0x%x\n", __LINE__, error);
+			exit(0);
+		}
+
+		free(ptr0);
 
 		write += to_fill;
 
 		if (write >= size) write -= size;
+		printf("end UpdateStreaming, to_fill: %d write: %d size: %d\n", to_fill, write, size);
 	}
 
 	aalError Instance::Update()
@@ -904,12 +1026,13 @@ namespace ATHENA
 
 		if (status & (IS_IDLED | IS_PAUSED)) return AAL_OK;
 
-		printf("not idled or paused\n");
+		printf("not paused\n");
 
 		if (channel.flags & AAL_FLAG_POSITION && alIsSource(source[0]) && IsTooFar())
 		{
 			if (! this->loop)
 			{
+				printf("stopping\n");
 				this->Stop();
 			}
 			else
@@ -919,15 +1042,20 @@ namespace ATHENA
 		}
 
 		last = read;
-		printf("last: %d read: %d\n", last, read);
 		//lpdsb->GetCurrentPosition(&read, NULL);
+		alGetError();
 		alGetSourcei(source[0], AL_BYTE_OFFSET, (ALint *)&read);
+		int error;
+		if ((error = alGetError()) != AL_NO_ERROR) {
+			printf("%d AL_BYTE_OFFSET 0x%x\n", __LINE__, error);
+			exit(0);
+		}
 
 		if (read == last)
 		{
 			if (!IsPlaying())
 			{
-				printf("stopping\n");
+				printf("stopping 2\n");
 				Stop();
 			}
 
@@ -935,11 +1063,11 @@ namespace ATHENA
 		}
 
 		time += read < last ? read + size - last : read - last;
-		printf("time: %d\n", time);
 
 		//Check if's time to launch a callback
 		if (callb_i < sample->callb_c && sample->callb[callb_i].time <= time)
 		{
+			printf("callback\n");
 			sample->callb[callb_i].func(this, id, sample->callb[callb_i].data);
 			callb_i++;
 		}
@@ -948,6 +1076,7 @@ namespace ATHENA
 		{
 			if (loop)
 			{
+				printf("LOOPED\n");
 				InstanceDebugLog(this, "LOOPED");
 
 				if (!--loop && !stream) {
@@ -962,6 +1091,7 @@ namespace ATHENA
 			}
 			else
 			{
+				printf("IDLED\n");
 				InstanceDebugLog(this, "IDLED");
 
 				status |= IS_IDLED;
@@ -973,7 +1103,10 @@ namespace ATHENA
 			time -= sample->length;
 		}
 
-		if (stream) UpdateStreaming();
+		if (stream) {
+			printf("it's a stream\n");
+			UpdateStreaming();
+		}
 
 		return AAL_OK;
 	}
