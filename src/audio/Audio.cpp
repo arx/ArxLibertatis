@@ -117,6 +117,8 @@ namespace ATHENA
 #define CloseHandle(mutex)	
 #endif
 
+	static struct timespec start_timespec;
+
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //
 	// Global setup                                                              //
@@ -187,7 +189,9 @@ namespace ATHENA
 		//session_start = GetTickCount();
 		struct timespec ts;
 		clock_gettime(CLOCK_REALTIME, &ts);
-		session_start = ts.tv_sec;
+		session_start = (ts.tv_sec * 1000000000 + ts.tv_nsec) / 1000000; // session_start shouldn't really be used any more
+		start_timespec.tv_sec = ts.tv_sec;
+		start_timespec.tv_nsec = ts.tv_nsec;
 		session_time = 0;
 		is_reverb_present = AAL_UFALSE;
 
@@ -487,7 +491,9 @@ namespace ATHENA
 		//session_time = GetTickCount() - session_start;
 		struct timespec ts;
 		clock_gettime(CLOCK_REALTIME, &ts);
-		session_time = ts.tv_sec - session_start;
+		unsigned long elapsed_seconds = ts.tv_sec - start_timespec.tv_sec;
+		unsigned long elapsed_nseconds = ts.tv_nsec - start_timespec.tv_nsec;
+		session_time = elapsed_seconds * 1000 + elapsed_nseconds / 1000000;
 
 		aalULong i;
 
