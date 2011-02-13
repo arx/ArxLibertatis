@@ -146,7 +146,7 @@ bool ARX_EQUIPMENT_IsPlayerEquip(INTERACTIVE_OBJ * _pIO);
 // Looks for string in script, return pos. Search start position can be set using	//
 // poss parameter.																	//
 //*************************************************************************************
-__forceinline long FindScriptPos(EERIE_SCRIPT * es, char * str, long poss)
+long FindScriptPos(EERIE_SCRIPT * es, char * str, long poss)
 {
 
 	if (!es->data) return -1;
@@ -162,7 +162,7 @@ __forceinline long FindScriptPos(EERIE_SCRIPT * es, char * str, long poss)
 
 	return -1;
 }
-__forceinline long FindScriptPosGOTO(EERIE_SCRIPT * es, char * str, long poss)
+long FindScriptPosGOTO(EERIE_SCRIPT * es, char * str, long poss)
 {
 	if (!es->data) return -1;
 

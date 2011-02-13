@@ -231,7 +231,7 @@ BOOL CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2
 BOOL SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s);
 
 // Optimized Float 2 Long Conversion
-__forceinline void F2L(const float f, long * l)
+void F2L(const float f, long * l)
 {
 	_asm
 	{
@@ -240,7 +240,7 @@ __forceinline void F2L(const float f, long * l)
 		_asm	fistp DWORD PTR [eax]
 	}
 }
-__forceinline D3DCOLOR EERIERGB(float r, float g, float b)
+D3DCOLOR EERIERGB(float r, float g, float b)
 {
 	long t[3];
 	F2L(r * 255.f, &t[0]);
@@ -249,13 +249,13 @@ __forceinline D3DCOLOR EERIERGB(float r, float g, float b)
 	return (0xff000000L | (t[0] << 16) | (t[1] << 8) | t[2]);
 }
 
-__forceinline D3DCOLOR _EERIERGB(float v)
+D3DCOLOR _EERIERGB(float v)
 {
 	long t;
 	F2L(v * 255.f, &t);
 	return (0xff000000L | (t << 16) | (t << 8) | t);
 }
-__forceinline D3DCOLOR _EERIERGBA(float v)
+D3DCOLOR _EERIERGBA(float v)
 {
 	long t;
 	F2L(v * 255.f, &t);
@@ -401,7 +401,7 @@ __inline void _YXZRotatePoint(EERIE_3D * in, EERIE_3D * out, EERIE_CAMERA * cam)
 //*************************************************************************************
 // Fast normal rotation :p
 //*************************************************************************************
-__forceinline void _YXZRotateNorm(EERIE_3D * in, EERIE_3D * out, EERIE_CAMERA * cam)
+void _YXZRotateNorm(EERIE_3D * in, EERIE_3D * out, EERIE_CAMERA * cam)
 {
 	out->z = (in->y * cam->Xsin) + (((in->z * cam->Ycos) - (in->x * cam->Ysin)) * cam->Xcos);
 }
@@ -625,7 +625,7 @@ void QuatFromAngles(EERIE_QUAT * q, const EERIE_3D * angle);
 
 extern D3DMATRIX ProjectionMatrix;
 
-__forceinline void specialEE_RT(D3DTLVERTEX * in, EERIE_3D * out)
+void specialEE_RT(D3DTLVERTEX * in, EERIE_3D * out)
 {
 	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
 	out->x = in->sx - et->posx;
@@ -638,7 +638,7 @@ __forceinline void specialEE_RT(D3DTLVERTEX * in, EERIE_3D * out)
 	out->y = (out->y * et->xcos) - (temp * et->xsin);
 }
 
-__forceinline void specialEE_P(EERIE_3D * in, D3DTLVERTEX * out)
+void specialEE_P(EERIE_3D * in, D3DTLVERTEX * out)
 {
 	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
 

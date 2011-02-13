@@ -1051,7 +1051,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 	return anything;	
 }
 //-----------------------------------------------------------------------------
-__forceinline BOOL InExceptionList(long val)
+BOOL InExceptionList(long val)
 {
 	for (long i=0;i<EXCEPTIONS_LIST_Pos;i++)
 	{

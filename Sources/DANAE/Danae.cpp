@@ -1087,7 +1087,7 @@ void InitializeDanae()
 void Dbg_str(char * txt)
 {
 }
-__forceinline void LaunchCDROMCheck(long param)
+void LaunchCDROMCheck(long param)
 {
 	return;
 

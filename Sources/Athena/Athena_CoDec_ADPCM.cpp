@@ -236,7 +236,7 @@ namespace ATHENA
 	// Macros!                                                                   //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	__forceinline aalVoid CodecADPCM::GetSample(const aalULong & i, aalSByte adpcm_sample)
+	aalVoid CodecADPCM::GetSample(const aalULong & i, aalSByte adpcm_sample)
 	{
 		aalSLong predict, pcm_sample, old_delta;
 

@@ -968,8 +968,8 @@ void ResetAnim(ANIM_USE * eanim);
 //*************************************************************************************
 //*************************************************************************************
 
-
-__forceinline long EERIERTPPoly(EERIEPOLY *ep)
+	
+long EERIERTPPoly(EERIEPOLY *ep)
 {
 	specialEE_RTP(&ep->v[0],&ep->tv[0]);
 	specialEE_RTP(&ep->v[1],&ep->tv[1]);
