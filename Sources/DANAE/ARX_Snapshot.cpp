@@ -54,13 +54,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include "danae.h"
-#include "ARX_SnapShot.h"
-
 #include <cstdio>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+#include <string.h>
+#include <Danae.h>
+#include "ARX_SnapShot.h"
 
 SnapShot * pSnapShot;
 
@@ -255,7 +252,7 @@ SnapShot::SnapShot(char * _pDir, char * _pName, bool _bReplace)
 
 		strcat(tTxt, _pName);
 		pName = strdup(tTxt);
-		strupr(pName);
+//		strupr(pName);
 
 		strcpy(tTxt, Project.workingdir);
 
@@ -279,7 +276,7 @@ SnapShot::SnapShot(char * _pDir, char * _pName, bool _bReplace)
 				if (!(w32fdata->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
 				{
 					strcpy(tTxt, w32fdata->cFileName);
-					strupr(tTxt);
+//					strupr(tTxt);
 
 					if (strstr(tTxt, pName)) ulNum++;
 				}
