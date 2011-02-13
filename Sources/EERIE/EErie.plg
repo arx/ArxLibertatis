@@ -1,0 +1,183 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: EErie - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\XWIN\TEMP\RSP7330.TMP" with contents
+[
+/nologo /Zp1 /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /FR"Debug/" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\Prog\Gaia\EERIE\EERIE_AVI.cpp"
+"C:\Prog\Gaia\EERIE\EERIEAnim.cpp"
+"C:\Prog\Gaia\EERIE\EERIEapp.cpp"
+"C:\Prog\Gaia\EERIE\EERIEClothes.cpp"
+"C:\Prog\Gaia\EERIE\EERIECollisionSpheres.cpp"
+"C:\Prog\Gaia\EERIE\EERIEDraw.cpp"
+"C:\Prog\Gaia\EERIE\EERIEenum.cpp"
+"C:\Prog\Gaia\EERIE\EERIEFont.cpp"
+"C:\Prog\Gaia\EERIE\EERIEFrame.cpp"
+"C:\Prog\Gaia\EERIE\EERIELight.cpp"
+"C:\Prog\Gaia\EERIE\EERIELightTANDL.cpp"
+"C:\Prog\Gaia\EERIE\EERIELinkedObj.cpp"
+"C:\Prog\Gaia\EERIE\EERIEmath.cpp"
+"C:\Prog\Gaia\EERIE\EERIEMeshTweak.cpp"
+"C:\Prog\Gaia\EERIE\EERIEobject.cpp"
+"C:\Prog\Gaia\EERIE\EERIEOctree.cpp"
+"C:\Prog\Gaia\EERIE\EERIEPathfinder.cpp"
+"C:\Prog\Gaia\EERIE\EERIEPhysicsBox.cpp"
+"C:\Prog\Gaia\EERIE\EERIEPlane.cpp"
+"C:\Prog\Gaia\EERIE\EERIEPoly.cpp"
+"C:\Prog\Gaia\EERIE\EERIEProgressive.cpp"
+"C:\Prog\Gaia\EERIE\EERIEScene.cpp"
+"C:\Prog\Gaia\EERIE\EERIEStrip.cpp"
+"C:\Prog\Gaia\EERIE\EERIEStrip2.cpp"
+"C:\Prog\Gaia\EERIE\EERIEStrip3.cpp"
+"C:\Prog\Gaia\EERIE\EERIETexture.cpp"
+"C:\Prog\Gaia\EERIE\EERIEutil.cpp"
+]
+Creating command line "cl.exe @C:\XWIN\TEMP\RSP7330.TMP" 
+Creating temporary file "C:\XWIN\TEMP\RSP7331.TMP" with contents
+[
+/nologo /out:"..\lib\EErie_debug.lib" 
+.\Debug\EERIE_AVI.obj
+.\Debug\EERIEAnim.obj
+.\Debug\EERIEapp.obj
+.\Debug\EERIEClothes.obj
+.\Debug\EERIECollisionSpheres.obj
+.\Debug\EERIEDraw.obj
+.\Debug\EERIEenum.obj
+.\Debug\EERIEFont.obj
+.\Debug\EERIEFrame.obj
+.\Debug\EERIELight.obj
+.\Debug\EERIELightTANDL.obj
+.\Debug\EERIELinkedObj.obj
+.\Debug\EERIEmath.obj
+.\Debug\EERIEMeshTweak.obj
+.\Debug\EERIEobject.obj
+.\Debug\EERIEOctree.obj
+.\Debug\EERIEPathfinder.obj
+.\Debug\EERIEPhysicsBox.obj
+.\Debug\EERIEPlane.obj
+.\Debug\EERIEPoly.obj
+.\Debug\EERIEProgressive.obj
+.\Debug\EERIEScene.obj
+.\Debug\EERIEStrip.obj
+.\Debug\EERIEStrip2.obj
+.\Debug\EERIEStrip3.obj
+.\Debug\EERIETexture.obj
+.\Debug\EERIEutil.obj
+..\lib\OtherLibs\zlib.lib
+..\lib\OtherLibs\Jpeglib.lib
+\Prog\Gaia\lib\HERMES_debug.lib
+]
+Creating command line "link.exe -lib @C:\XWIN\TEMP\RSP7331.TMP"
+<h3>Output Window</h3>
+Compiling...
+EERIE_AVI.cpp
+EERIEAnim.cpp
+c:\prog\gaia\eerie\eerieanim.cpp(640) : warning C4018: '!=' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerieanim.cpp(642) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerieanim.cpp(655) : warning C4018: '!=' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerieanim.cpp(659) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerieanim.cpp(1135) : warning C4101: 'old' : unreferenced local variable
+EERIEapp.cpp
+EERIEClothes.cpp
+EERIECollisionSpheres.cpp
+EERIEDraw.cpp
+EERIEenum.cpp
+EERIEFont.cpp
+EERIEFrame.cpp
+EERIELight.cpp
+EERIELightTANDL.cpp
+EERIELinkedObj.cpp
+EERIEmath.cpp
+EERIEMeshTweak.cpp
+c:\prog\gaia\eerie\eeriemeshtweak.cpp(229) : warning C4244: '=' : conversion from 'long' to 'unsigned short', possible loss of data
+c:\prog\gaia\eerie\eeriemeshtweak.cpp(230) : warning C4244: '=' : conversion from 'long' to 'unsigned short', possible loss of data
+c:\prog\gaia\eerie\eeriemeshtweak.cpp(231) : warning C4244: '=' : conversion from 'long' to 'unsigned short', possible loss of data
+c:\prog\gaia\eerie\eeriemeshtweak.cpp(237) : warning C4244: '=' : conversion from 'long' to 'short', possible loss of data
+EERIEobject.cpp
+c:\prog\gaia\eerie\eerieobject.cpp(122) : warning C4244: '+=' : conversion from 'float' to 'long', possible loss of data
+c:\prog\gaia\eerie\eerieobject.cpp(381) : warning C4244: 'initializing' : conversion from 'long' to 'float', possible loss of data
+c:\prog\gaia\eerie\eerieobject.cpp(382) : warning C4244: 'initializing' : conversion from 'long' to 'float', possible loss of data
+c:\prog\gaia\eerie\eerieobject.cpp(406) : warning C4244: 'initializing' : conversion from 'long' to 'float', possible loss of data
+c:\prog\gaia\eerie\eerieobject.cpp(407) : warning C4244: 'initializing' : conversion from 'long' to 'float', possible loss of data
+c:\prog\gaia\eerie\eerieobject.cpp(671) : warning C4244: '=' : conversion from 'long' to 'unsigned short', possible loss of data
+c:\prog\gaia\eerie\eerieobject.cpp(672) : warning C4244: '=' : conversion from 'long' to 'unsigned short', possible loss of data
+c:\prog\gaia\eerie\eerieobject.cpp(673) : warning C4244: '=' : conversion from 'long' to 'unsigned short', possible loss of data
+c:\prog\gaia\eerie\eerieobject.cpp(727) : warning C4244: '=' : conversion from 'long' to 'short', possible loss of data
+EERIEOctree.cpp
+EERIEPathfinder.cpp
+EERIEPhysicsBox.cpp
+EERIEPlane.cpp
+EERIEPoly.cpp
+c:\prog\gaia\eerie\eeriepoly.cpp(156) : warning C4409: illegal instruction size
+c:\prog\gaia\eerie\eeriepoly.cpp(4189) : warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+c:\prog\gaia\eerie\eeriepoly.cpp(4221) : warning C4102: 'coolone' : unreferenced label
+c:\prog\gaia\eerie\eeriepoly.cpp(4075) : warning C4101: 'best_pos' : unreferenced local variable
+c:\prog\gaia\eerie\eeriepoly.cpp(4930) : warning C4244: '=' : conversion from 'long' to 'short', possible loss of data
+c:\prog\gaia\eerie\eeriepoly.cpp(4931) : warning C4244: '=' : conversion from 'long' to 'short', possible loss of data
+c:\prog\gaia\eerie\eeriepoly.cpp(4934) : warning C4244: '=' : conversion from 'long' to 'short', possible loss of data
+c:\prog\gaia\eerie\eeriepoly.cpp(4935) : warning C4244: '=' : conversion from 'long' to 'short', possible loss of data
+c:\prog\gaia\eerie\eeriepoly.cpp(7330) : warning C4244: '=' : conversion from 'long' to 'float', possible loss of data
+c:\prog\gaia\eerie\eeriepoly.cpp(7332) : warning C4244: '=' : conversion from 'long' to 'float', possible loss of data
+Generating Code...
+Compiling...
+EERIEProgressive.cpp
+EERIEScene.cpp
+EERIEStrip.cpp
+EERIEStrip2.cpp
+EERIEStrip3.cpp
+EERIETexture.cpp
+c:\prog\gaia\eerie\eerietexture.cpp(989) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(996) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(1130) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(1137) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(1158) : warning C4018: '>=' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(1177) : warning C4018: '>=' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(1184) : warning C4018: '>=' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(1191) : warning C4018: '>=' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(1198) : warning C4018: '>=' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(1198) : warning C4018: '>=' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(1320) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(1323) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(1343) : warning C4018: '>=' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(1363) : warning C4018: '>=' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(1370) : warning C4018: '>=' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(1377) : warning C4018: '>=' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(1384) : warning C4018: '>=' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(1384) : warning C4018: '>=' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(1591) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(1593) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(1917) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(1919) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(1963) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(1965) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(2864) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(4739) : warning C4018: '>' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(4740) : warning C4018: '>' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(4827) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(4846) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(4860) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(4895) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(4968) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(4987) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(5001) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(5036) : warning C4018: '<' : signed/unsigned mismatch
+c:\prog\gaia\eerie\eerietexture.cpp(4786) : warning C4101: 'iG' : unreferenced local variable
+c:\prog\gaia\eerie\eerietexture.cpp(4786) : warning C4101: 'iB' : unreferenced local variable
+c:\prog\gaia\eerie\eerietexture.cpp(4786) : warning C4101: 'iR' : unreferenced local variable
+EERIEutil.cpp
+Generating Code...
+c:\prog\gaia\eerie\eeriestrip.cpp(196) : warning C4700: local variable 'a' used without having been initialized
+Creating library...
+
+
+
+<h3>Results</h3>
+EErie_debug.lib - 0 error(s), 67 warning(s)
+</pre>
+</body>
+</html>

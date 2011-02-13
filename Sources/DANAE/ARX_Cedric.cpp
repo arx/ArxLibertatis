@@ -135,6 +135,7 @@ inline	static	void	Cedric_ResetBoundingBox(INTERACTIVE_OBJ * io)
 }
 
 //-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 __forceinline float GetMaxManhattanDistance(const EERIE_3D * _e1, const EERIE_3D * _e2)
 {

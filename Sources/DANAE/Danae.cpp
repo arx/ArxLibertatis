@@ -4725,8 +4725,8 @@ void CheckMr()
 		else
 		{
 			Mr_tc=MakeTCFromFile_NoRefinement("graph\\particles\\(Fx)_Mr.bmp");
+		}
 	}
-}
 }
 void DrawImproveVisionInterface(LPDIRECT3DDEVICE7 m_pd3dDevice)
 {

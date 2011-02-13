@@ -866,7 +866,6 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 				if (LIGHT_THREAD_STATUS == 3) return;
 
 				eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
-
 				while (PAUSED_PRECALC) Sleep(1000);
 
 				for (long k = 0; k < eg->nbpoly; k++)

@@ -6009,6 +6009,7 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1:
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET2:
+		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET2:
 			bChange=pMenuConfig->SetActionKey(CONTROLS_CUST_BOOKCHARSHEET,pmeElement->iID-BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKCHARSHEET1,pGetInfoDirectInput->iKeyId);
 			break;
 		case BUTTON_MENUOPTIONS_CONTROLS_CUST_BOOKSPELL1:
@@ -6617,6 +6618,7 @@ void CMenuButton::Render()
 void CMenuButton::RenderMouseOver()
 {
 	if(WILL_RELOAD_ALL_TEXTURES) return;
+
 	if(bNoMenu) return;
 
 	pGetInfoDirectInput->SetMouseOver();
@@ -8119,4 +8121,3 @@ void Menu2_Close()
 		pWindowMenu=NULL;
 	}
 }
-

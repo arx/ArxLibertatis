@@ -429,6 +429,7 @@ float oldposx,oldposz;
 
 	for( dwMask=dwRMask; dwMask && !(dwMask&0x1); dwMask>>=1 ) dwRShiftR++;
 
+<<<<<<< HEAD
 	for(               ; dwMask                 ; dwMask>>=1 ) dwRShiftL--;
 
 	for( dwMask=dwGMask; dwMask && !(dwMask&0x1); dwMask>>=1 ) dwGShiftR++;
@@ -442,6 +443,21 @@ float oldposx,oldposz;
 	for( dwMask=dwAMask; dwMask && !(dwMask&0x1); dwMask>>=1 ) dwAShiftR++;
 
 	for(               ; dwMask                 ; dwMask>>=1 ) dwAShiftL--;
+=======
+	for( ; dwMask && 1; dwMask>>=1 ) dwRShiftL--;
+
+	for( dwMask=dwGMask; dwMask && !(dwMask&0x1); dwMask>>=1 ) dwGShiftR++;
+
+	for( ; dwMask && 1; dwMask>>=1 ) dwGShiftL--;
+
+	for( dwMask=dwBMask; dwMask && !(dwMask&0x1); dwMask>>=1 ) dwBShiftR++;
+
+	for( ; dwMask && 1; dwMask>>=1 ) dwBShiftL--;
+
+	for( dwMask=dwAMask; dwMask && !(dwMask&0x1); dwMask>>=1 ) dwAShiftR++;
+
+	for( ; dwMask && 1; dwMask>>=1 ) dwAShiftL--;
+>>>>>>> 1a6c2a67547393d94153390148baab149d3cf98c
 
 	nby=ddsd.dwHeight;
 

@@ -2262,6 +2262,7 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 		}
 	}
 
+
 	/**************/
 	long ox = ddsd.dwWidth;
 	long oy = ddsd.dwHeight;

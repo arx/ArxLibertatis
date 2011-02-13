@@ -1100,6 +1100,7 @@ char * STD_Implode(char * from, long from_size, long * to_size)
 	Param.pSource = from;
 	Param.pDestination = (char *)malloc(from_size);
 
+
 	bool bFirst = true; 
 
 	for (;;)

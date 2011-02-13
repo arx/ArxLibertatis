@@ -272,5 +272,4 @@ void SpecialBorderSurface(TextureContainer * tc, unsigned long x0, unsigned long
 TextureContainer * FindTexture(char * strTextureName);
 
 bool TextureContainer_Exist(TextureContainer * tc);
-
 #endif

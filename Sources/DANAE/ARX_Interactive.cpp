@@ -512,8 +512,7 @@ EERIE_3DOBJ * TheoToEerie_Fast(char * texpath, char * ficc, long flag, LPDIRECT3
 	File_Standardize(fic + strlen(Project.workingdir) - 1, pfic);
 	EERIE_3DOBJ * ret = NULL;
 
-	ret = ARX_FTL_Load(pfic, fic, NULL);
-	if (ret)
+	if ((ret = ARX_FTL_Load(pfic, fic, NULL)) != NULL)
 	{
 
 		if (!(flag & TTE_NO_PHYSICS_BOX))
@@ -522,8 +521,7 @@ EERIE_3DOBJ * TheoToEerie_Fast(char * texpath, char * ficc, long flag, LPDIRECT3
 		return ret;
 	}
 
-	ret = GetExistingEerie(fic);
-	if (ret)
+	if (ret = GetExistingEerie(fic))
 	{
 		ret = Eerie_Copy(ret);
 
@@ -536,8 +534,7 @@ EERIE_3DOBJ * TheoToEerie_Fast(char * texpath, char * ficc, long flag, LPDIRECT3
 		long FileSize = 0;
 		unsigned char * adr;
 
-		adr = (unsigned char *)PAK_FileLoadMalloc(fic, &FileSize);
-		if (adr)
+		if (adr = (unsigned char *)PAK_FileLoadMalloc(fic, &FileSize))
 		{
 			ret = TheoToEerie(adr, FileSize, texpath, fic, flag, pd3dDevice, flag | TTE_NO_RESTORE); //SLOWLOAD));
 
@@ -4797,6 +4794,7 @@ BOOL HaveCommonGroup(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 	}
 
 	return FALSE;
+	return FALSE;
 }
 
 //***********************************************************************************************
@@ -4889,6 +4887,5 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 		io->soundtime = 0;
 		io->soundcount = 0;
 		EERIE_PHYSICS_BOX_Launch(io->obj, &pos, &fallvector);
-
 	}
 }

@@ -169,6 +169,8 @@ extern unsigned char ucFlick;
 extern bool bGATI8500;
 extern bool bSoftRender;
 
+extern CARXTextManager *pTextManageFlyingOver;
+
 BOOL IsPlayerStriking();
 void OptmizeInventory(unsigned int);
 long ARX_SPELLS_GetInstance(const long &);
@@ -850,6 +852,7 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, char* tex)
 		D3DTextr_KillTexture(NoteTextureRight);
 		NoteTextureRight=NULL;
 	}
+	
 
 	Note.curpage = 0;
 	Note.pages[0] = 0;
@@ -1552,7 +1555,6 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 									{
 										memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 										tTxtCombineDest[pEndString-pStartString]=0;
-
 										ARX_CHECK_NOT_NEG( COMBINE->nb_iogroups );
 
 										for(	unsigned int uiNbGroups = 0 ;
@@ -1604,7 +1606,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 		}
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------
 void GetInfosCombine()
 {
 	INTERACTIVE_OBJ * io = NULL;
@@ -10801,4 +10803,3 @@ void ARX_INTERFACE_RenderCursor(long flag)
 		SETTEXTUREWRAPMODE(GDevice,D3DTADDRESS_WRAP);
 	}
 }
-

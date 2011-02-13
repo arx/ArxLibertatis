@@ -663,4 +663,3 @@ void CParticleSystem::Render(LPDIRECT3DDEVICE7 _lpD3DDevice, int _iSRCBLEND, int
 		}
 	}
 }
-

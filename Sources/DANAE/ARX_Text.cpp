@@ -248,6 +248,7 @@ long ARX_UNICODE_FormattingInRect(HDC hdc, const _TCHAR* str, int _iSpacingY, RE
 			break;
 	}
 
+
 	if (bWrite)
 	{
 		iHeight += _iSpacingY + sSize.cy;

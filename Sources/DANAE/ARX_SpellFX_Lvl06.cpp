@@ -734,6 +734,7 @@ void CRiseDead::Create(EERIE_3D aeSrc, float afBeta)
 	this->Split(v1b, 0, end, -80);
 
 	// check de la conformité du split
+
 	// sinon recalc de l'un de l'autre ou des deux
 	// espace min
 	//if (0)
@@ -955,6 +956,7 @@ void CRiseDead::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		va[i].sz   = v1a[i].sz   + sizeF * fTempSin;
 
 		vb[i].sx   = v1b[i].sx   - sizeF * fTempCos;
+		vb[i].sy   = v1b[i].sy;
 		vb[i].sy   = v1b[i].sy;
 		vb[i].sz   = v1b[i].sz   - sizeF * fTempSin;
 

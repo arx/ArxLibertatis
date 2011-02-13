@@ -1713,7 +1713,6 @@ void	ARX_PLAYER_Restore_Skin()
 		}
 	}
 
-	char tt[256];
 	MakeDir(tt, "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp");
 	MakeUpcase(tt);
 	TextureContainer * tmpTC = FindTexture(tt);

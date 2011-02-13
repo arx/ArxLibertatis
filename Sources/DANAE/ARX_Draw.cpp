@@ -67,8 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEDraw.h"
 #include "EERIELight.h"
 #include "EERIEPoly.h"
-#include "EERIEapp.h"
-
+#include "EERIEapp.h"
 #include <cstdio>
 
 #define _CRTDBG_MAP_ALLOC
