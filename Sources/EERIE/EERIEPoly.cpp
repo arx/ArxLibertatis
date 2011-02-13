@@ -3475,9 +3475,6 @@ void DrawEERIEObjEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 		_XRotatePoint((EERIE_3D *)&rv, (EERIE_3D *)&v, Xcos, Xsin);
 		_ZRotatePoint((EERIE_3D *)&v, (EERIE_3D *)&rv, Zcos, Zsin);
 
-		eobj->vertexlist3[i].v.y = rv.sy += pos->y;
-		eobj->vertexlist3[i].v.z = rv.sz += pos->z;
-
 		eobj->vertexlist3[i].v.x = rv.sx += pos->x;
 		eobj->vertexlist3[i].v.y = rv.sy += pos->y;
 		eobj->vertexlist3[i].v.z = rv.sz += pos->z;
