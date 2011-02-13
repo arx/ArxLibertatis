@@ -62,10 +62,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIELinkedObj.h"
 #include "EERIEMath.h"
 #include "EERIEPhysicsBox.h"
-#include "EERIEPoly.H"
-#include "EERIETexture.H"
+#include "EERIEPoly.h"
+#include "EERIETexture.h"
 
-#include "ARX_INPUT.h"
+#include "ARX_Input.h"
 #include "ARX_Interactive.h"
 #include "ARX_Interface.h"
 #include "ARX_Equipment.h"
@@ -77,12 +77,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <vector>
 #include <algorithm>
-#include <cstdio>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-
 using namespace std;
+
+#include <stdio.h>
 
 //------------------------------------------------------------------------------------
 extern E_ARX_STATE_MOUSE eMouseState;
@@ -647,7 +644,7 @@ BOOL CanBePutInInventory(INTERACTIVE_OBJ * io)
 	sx = io->sizex;
 	sy = io->sizey;
 
-	// on essaie de le remettre à son ancienne place --------------------------
+	// on essaie de le remettre ï¿½ son ancienne place --------------------------
 	if (sInventory == 1 &&
 	        (sInventoryX >= 0) &&
 	        (sInventoryX <= INVENTORY_X - sx) &&
@@ -861,7 +858,7 @@ BOOL CanBePutInSecondaryInventory(INVENTORY_DATA * id, INTERACTIVE_OBJ * io, lon
 	sx = io->sizex;
 	sy = io->sizey;
 
-	// on essaie de le remettre à son ancienne place
+	// on essaie de le remettre ï¿½ son ancienne place
 	if (sInventory == 2 &&
 	        (sInventoryX >= 0) &&
 	        (sInventoryX <= id->sizex - sx) &&

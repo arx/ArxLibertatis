@@ -22,14 +22,10 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include "arx_c_cinematique.h"
-#include "arx_time.h"
+#include <stdlib.h>
+#include "ARX_CCinematique.h"
+#include "ARX_Time.h"
 #include "Resource.h"
-
-#include <cstdlib>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 
 /*----------------------------------------------------------------------*/
 //undo/redo
@@ -224,7 +220,7 @@ void UpDateKeyLight(int frame)
 		num2++;
 	}
 
-	//on crépie le range avec ces deux valeurs
+	//on crï¿½pie le range avec ces deux valeurs
 	kbase->light.prev = klightprev;
 	kbase->light.next = klightnext;
 
@@ -299,8 +295,7 @@ BOOL AddKey(C_KEY * key, BOOL writecolor, BOOL writecolord, BOOL writecolorf)
 
 	if (!CKTrack || (key->frame < CKTrack->startframe) || (key->frame > CKTrack->endframe)) return FALSE;
 
-	k = SearchKey(key->frame, &num);
-	if (!k)
+	if (!(k = SearchKey(key->frame, &num)))
 	{
 		if (!CKTrack->nbkey)
 		{
