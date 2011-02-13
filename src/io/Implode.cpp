@@ -445,6 +445,8 @@ char * implodeAlloc(const char * buf, size_t inSize, size_t & outSize) {
 	strm.pOutBuffer = (unsigned char *)outBuf;
 	strm.nOutSize = inSize * 2;
 	
+	LogDebug << "very slow implode " << inSize << " " << strm.nOutSize;
+	
 	ImplodeResult res = implode(&strm);
 	if(res) {
 		LogError << "error compressing " << inSize << " bytes: " << res;
@@ -452,6 +454,11 @@ char * implodeAlloc(const char * buf, size_t inSize, size_t & outSize) {
 		delete[] outBuf;
 		return NULL;
 	}
+	
+	memcpy(outBuf, buf, inSize);
+	strm.nOutSize = inSize;
+	
+	LogDebug << " compressed to " << strm.nOutSize << " " << (((float)strm.nOutSize)/inSize);
 	
 	outSize = strm.nOutSize;
 	return outBuf;
