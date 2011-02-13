@@ -1029,15 +1029,15 @@ BOOL ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 
 							if (drain_life > 0.f)
 							{
-								float life_gain = __min(dmgs, drain_life);
-								life_gain = __min(life_gain, target->_npcdata->life);
-								life_gain = __max(life_gain, 0.f);
+								float life_gain = min(dmgs, drain_life);
+								life_gain = min(life_gain, target->_npcdata->life);
+								life_gain = max(life_gain, 0.f);
 								ARX_DAMAGES_HealInter(io_source, life_gain);
 							}
 
 							if (paralyse > 0.f)
 							{
-								float ptime = __min(dmgs * 1000.f, paralyse);
+								float ptime = min(dmgs * 1000.f, paralyse);
 								ARX_SPELLS_Launch(SPELL_PARALYSE, weapon, SPELLCAST_FLAG_NOMANA | SPELLCAST_FLAG_NOCHECKCANCAST
 								                  , 5, EVERYTHING_IN_SPHERE[jj], (long)(ptime));
 							}

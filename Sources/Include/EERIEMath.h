@@ -578,9 +578,9 @@ __inline BOOL PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)
 {
 	register float pos1 = cyl->origin.y + cyl->height;
 
-	if (pt->y < __min(cyl->origin.y, pos1)) return FALSE;
+	if (pt->y < min(cyl->origin.y, pos1)) return FALSE;
 
-	if (pt->y > __max(cyl->origin.y, pos1)) return FALSE;
+	if (pt->y > max(cyl->origin.y, pos1)) return FALSE;
 
 	if (Distance2D(cyl->origin.x, cyl->origin.z, pt->x, pt->z) <= cyl->radius)
 		return TRUE;
@@ -593,9 +593,9 @@ __inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * 
 	register float pos1 = cyl->origin.y + cyl->height;
 	long ret = 2;
 
-	if (pt->y < __min(cyl->origin.y, pos1)) return 0;
+	if (pt->y < min(cyl->origin.y, pos1)) return 0;
 
-	if (pt->y > __max(cyl->origin.y, pos1)) ret = 1;
+	if (pt->y > max(cyl->origin.y, pos1)) ret = 1;
 
 	if (Distance2D(cyl->origin.x, cyl->origin.z, pt->x, pt->z) <= cyl->radius)
 	{

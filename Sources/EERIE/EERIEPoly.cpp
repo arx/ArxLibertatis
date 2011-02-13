@@ -299,13 +299,13 @@ long MakeTopObjString(INTERACTIVE_OBJ * io,char * dest, unsigned int destSize)
 
 	for (i = 0; i < io->obj->nbvertex; i++)
 	{
-		boxmin.x = __min(boxmin.x, io->obj->vertexlist3[i].v.x);
-		boxmin.y = __min(boxmin.y, io->obj->vertexlist3[i].v.y);
-		boxmin.z = __min(boxmin.z, io->obj->vertexlist3[i].v.z);
+		boxmin.x = min(boxmin.x, io->obj->vertexlist3[i].v.x);
+		boxmin.y = min(boxmin.y, io->obj->vertexlist3[i].v.y);
+		boxmin.z = min(boxmin.z, io->obj->vertexlist3[i].v.z);
 
-		boxmax.x = __max(boxmax.x, io->obj->vertexlist3[i].v.x);
-		boxmax.y = __max(boxmax.y, io->obj->vertexlist3[i].v.y);
-		boxmax.z = __max(boxmax.z, io->obj->vertexlist3[i].v.z);
+		boxmax.x = max(boxmax.x, io->obj->vertexlist3[i].v.x);
+		boxmax.y = max(boxmax.y, io->obj->vertexlist3[i].v.y);
+		boxmax.z = max(boxmax.z, io->obj->vertexlist3[i].v.z);
 	}
 
 	boxmin.y -= 5.f;
@@ -1223,10 +1223,10 @@ D3DCOLOR GetColorz(float x, float y, float z)
 					else dc = p * el->intensity * GLOBAL_LIGHT_FACTOR;
 				}
 
-				dc *= 0.4f * 255.f;
-				ffr = __max(ffr, el->rgb.r * dc);
-				ffg = __max(ffg, el->rgb.g * dc);
-				ffb = __max(ffb, el->rgb.b * dc);
+				dc *= 0.4f * 255.f; 
+				ffr = max(ffr, el->rgb.r * dc);
+				ffg = max(ffg, el->rgb.g * dc);
+				ffb = max(ffb, el->rgb.b * dc);
 			}
 		}
 	}
@@ -1277,13 +1277,13 @@ D3DCOLOR GetColorz(float x, float y, float z)
 		ffb = ffb * ratio2 + _ffb * ratio;
 	}
 
-	ffr = __min(ffr, 255.f);
+	ffr = min(ffr, 255.f);
 	F2L(ffr, &lfr);
 
-	ffg = __min(ffg, 255.f);
+	ffg = min(ffg, 255.f);
 	F2L(ffg, &lfg);
 
-	ffb = __min(ffb, 255.f);
+	ffb = min(ffb, 255.f);
 	F2L(ffb, &lfb);
 	color = (0xFF000000L | ((lfr & 255) << 16) |	((lfg & 255) << 8) | (lfb & 255));
 	return color;
@@ -2023,12 +2023,12 @@ bool GetRoomCenter(long room_num, EERIE_3D * center)
 		FAST_BKG_DATA * feg;
 		feg = &ACTIVEBKG->fastdata[portals->room[room_num].epdata[lll].px][portals->room[room_num].epdata[lll].py];
 		EERIEPOLY * ep = &feg->polydata[portals->room[room_num].epdata[lll].idx];
-		bbox.min.x = __min(bbox.min.x, ep->center.x);
-		bbox.min.y = __min(bbox.min.y, ep->center.y);
-		bbox.min.z = __min(bbox.min.z, ep->center.z);
-		bbox.max.x = __max(bbox.max.x, ep->center.x);
-		bbox.max.y = __max(bbox.max.y, ep->center.y);
-		bbox.max.z = __max(bbox.max.z, ep->center.z);
+		bbox.min.x = min(bbox.min.x, ep->center.x);
+		bbox.min.y = min(bbox.min.y, ep->center.y);
+		bbox.min.z = min(bbox.min.z, ep->center.z);
+		bbox.max.x = max(bbox.max.x, ep->center.x);
+		bbox.max.y = max(bbox.max.y, ep->center.y);
+		bbox.max.z = max(bbox.max.z, ep->center.z);
 	}
 
 	center->x = (bbox.max.x + bbox.min.x) * DIV2;
@@ -2397,197 +2397,197 @@ void PrepareBackgroundNRMLs()
 {
 	ARX_PrepareBackgroundNRMLs();
 	return;
+	long i, j, k, mai, maj, mii, mij;
+	long i2, j2, k2;
+	EERIE_BKG_INFO * eg;
+	EERIE_BKG_INFO * eg2;
+	EERIEPOLY * ep;
+	EERIEPOLY * ep2;
+	EERIE_3D nrml;
+	EERIE_3D cur_nrml;
+	float count;
+	long nbvert;
+	long nbvert2;
 
-	//long i, j, k, mai, maj, mii, mij;
-	//long i2, j2, k2;
-	//EERIE_BKG_INFO * eg;
-	//EERIE_BKG_INFO * eg2;
-	//EERIEPOLY * ep;
-	//EERIEPOLY * ep2;
-	//EERIE_3D nrml;
-	//EERIE_3D cur_nrml;
-	//float count;
-	//long nbvert;
-	//long nbvert2;
+	for (j = 0; j < ACTIVEBKG->Zsize; j++)
+		for (i = 0; i < ACTIVEBKG->Xsize; i++)
+		{
+			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 
-	//for (j = 0; j < ACTIVEBKG->Zsize; j++)
-	//	for (i = 0; i < ACTIVEBKG->Xsize; i++)
-	//	{
-	//		eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+			for (long l = 0; l < eg->nbpoly; l++)
+			{
+				ep = &eg->polydata[l];
 
-	//		for (long l = 0; l < eg->nbpoly; l++)
-	//		{
-	//			ep = &eg->polydata[l];
+				if (ep->type & POLY_QUAD) nbvert = 4;
+				else nbvert = 3;
 
-	//			if (ep->type & POLY_QUAD) nbvert = 4;
-	//			else nbvert = 3;
+				for (k = 0; k < nbvert; k++)
+				{
+					float ttt = 1.f;
 
-	//			for (k = 0; k < nbvert; k++)
-	//			{
-	//				float ttt = 1.f;
+					if (k == 3)
+					{
+						nrml.x = ep->norm2.x;
+						nrml.y = ep->norm2.y;
+						nrml.z = ep->norm2.z;
+						count = 1.f;
+					}
+					else if ((k > 0) && (nbvert > 3))
+					{
+						nrml.x = (ep->norm.x + ep->norm2.x) * DIV2;
+						nrml.y = (ep->norm.y + ep->norm2.y) * DIV2;
+						nrml.z = (ep->norm.z + ep->norm2.z) * DIV2;
+						count = 1.f; 
+					}
+					else
+					{
+						nrml.x = ep->norm.x;
+						nrml.y = ep->norm.y;
+						nrml.z = ep->norm.z;
+						count = 1.f;
+					}
 
-	//				if (k == 3)
-	//				{
-	//					nrml.x = ep->norm2.x;
-	//					nrml.y = ep->norm2.y;
-	//					nrml.z = ep->norm2.z;
-	//					count = 1.f;
-	//				}
-	//				else if ((k > 0) && (nbvert > 3))
-	//				{
-	//					nrml.x = (ep->norm.x + ep->norm2.x) * DIV2;
-	//					nrml.y = (ep->norm.y + ep->norm2.y) * DIV2;
-	//					nrml.z = (ep->norm.z + ep->norm2.z) * DIV2;
-	//					count = 1.f;
-	//				}
-	//				else
-	//				{
-	//					nrml.x = ep->norm.x;
-	//					nrml.y = ep->norm.y;
-	//					nrml.z = ep->norm.z;
-	//					count = 1.f;
-	//				}
+					cur_nrml.x = nrml.x * ttt;
+					cur_nrml.y = nrml.y * ttt;
+					cur_nrml.z = nrml.z * ttt;
+					
+					mai = i + 2;
+					maj = j + 2;
+					mii = i - 2;
+					mij = j - 2;
 
-	//				cur_nrml.x = nrml.x * ttt;
-	//				cur_nrml.y = nrml.y * ttt;
-	//				cur_nrml.z = nrml.z * ttt;
-	//
-	//				mai = i + 2;
-	//				maj = j + 2;
-	//				mii = i - 2;
-	//				mij = j - 2;
+					if (mij < 0) mij = 0;
 
-	//				if (mij < 0) mij = 0;
+					if (mii < 0) mii = 0;
 
-	//				if (mii < 0) mii = 0;
+					if (maj >= ACTIVEBKG->Zsize) maj = ACTIVEBKG->Zsize - 1;
 
-	//				if (maj >= ACTIVEBKG->Zsize) maj = ACTIVEBKG->Zsize - 1;
+					if (mai >= ACTIVEBKG->Xsize) mai = ACTIVEBKG->Xsize - 1;
 
-	//				if (mai >= ACTIVEBKG->Xsize) mai = ACTIVEBKG->Xsize - 1;
+					for (j2 = mij; j2 < maj; j2++)
+						for (i2 = mii; i2 < mai; i2++)
+						{
+							eg2 = &ACTIVEBKG->Backg[i2+j2*ACTIVEBKG->Xsize];
 
-	//				for (j2 = mij; j2 < maj; j2++)
-	//					for (i2 = mii; i2 < mai; i2++)
-	//					{
-	//						eg2 = &ACTIVEBKG->Backg[i2+j2*ACTIVEBKG->Xsize];
+							for (long kr = 0; kr < eg2->nbpoly; kr++)
+							{
+								ep2 = &eg2->polydata[kr];
 
-	//						for (long kr = 0; kr < eg2->nbpoly; kr++)
-	//						{
-	//							ep2 = &eg2->polydata[kr];
+								if (ep2->type & POLY_QUAD) nbvert2 = 4;
+								else nbvert2 = 3;
 
-	//							if (ep2->type & POLY_QUAD) nbvert2 = 4;
-	//							else nbvert2 = 3;
+								if (ep != ep2)
 
-	//							if (ep != ep2)
+									for (k2 = 0; k2 < nbvert2; k2++)
+									{
+										if ((EEfabs(ep2->v[k2].sx - ep->v[k].sx) < 2.f)
+										        &&	(EEfabs(ep2->v[k2].sy - ep->v[k].sy) < 2.f)
+										        &&	(EEfabs(ep2->v[k2].sz - ep->v[k].sz) < 2.f))
+										{
+											if (k2 == 3)
+											{
+												if (LittleAngularDiff(&cur_nrml, &ep2->norm2))
+												{
+													nrml.x += ep2->norm2.x;
+													nrml.y += ep2->norm2.y;
+													nrml.z += ep2->norm2.z;
+													count += 1.f;
+													nrml.x += cur_nrml.x;
+													nrml.y += cur_nrml.y;
+													nrml.z += cur_nrml.z;
+													count += 1.f;
+												}
+												else
+												{
+													ep->type |= POLY_ANGULAR;
+													ep2->type |= POLY_ANGULAR;
+													ep2->type |= POLY_ANGULAR_IDX3;
+												}
+											}
+											else if ((k2 > 0) && (nbvert2 > 3))
+											{
+												EERIE_3D tnrml;
+												tnrml.x = (ep2->norm.x + ep2->norm2.x) * DIV2;
+												tnrml.y = (ep2->norm.y + ep2->norm2.y) * DIV2;
+												tnrml.z = (ep2->norm.z + ep2->norm2.z) * DIV2;
 
-	//								for (k2 = 0; k2 < nbvert2; k2++)
-	//								{
-	//									if ((EEfabs(ep2->v[k2].sx - ep->v[k].sx) < 2.f)
-	//									        &&	(EEfabs(ep2->v[k2].sy - ep->v[k].sy) < 2.f)
-	//									        &&	(EEfabs(ep2->v[k2].sz - ep->v[k].sz) < 2.f))
-	//									{
-	//										if (k2 == 3)
-	//										{
-	//											if (LittleAngularDiff(&cur_nrml, &ep2->norm2))
-	//											{
-	//												nrml.x += ep2->norm2.x;
-	//												nrml.y += ep2->norm2.y;
-	//												nrml.z += ep2->norm2.z;
-	//												count += 1.f;
-	//												nrml.x += cur_nrml.x;
-	//												nrml.y += cur_nrml.y;
-	//												nrml.z += cur_nrml.z;
-	//												count += 1.f;
-	//											}
-	//											else
-	//											{
-	//												ep->type |= POLY_ANGULAR;
-	//												ep2->type |= POLY_ANGULAR;
-	//												ep2->type |= POLY_ANGULAR_IDX3;
-	//											}
-	//										}
-	//										else if ((k2 > 0) && (nbvert2 > 3))
-	//										{
-	//											EERIE_3D tnrml;
-	//											tnrml.x = (ep2->norm.x + ep2->norm2.x) * DIV2;
-	//											tnrml.y = (ep2->norm.y + ep2->norm2.y) * DIV2;
-	//											tnrml.z = (ep2->norm.z + ep2->norm2.z) * DIV2;
+												if (LittleAngularDiff(&cur_nrml, &tnrml))
+												{
+													nrml.x += tnrml.x; 
+													nrml.y += tnrml.y; 
+													nrml.z += tnrml.z; 
+													count += 1; 
+												}
+												else
+												{
+													ep->type |= POLY_ANGULAR;
+													ep2->type |= POLY_ANGULAR;
 
-	//											if (LittleAngularDiff(&cur_nrml, &tnrml))
-	//											{
-	//												nrml.x += tnrml.x;
-	//												nrml.y += tnrml.y;
-	//												nrml.z += tnrml.z;
-	//												count += 1;
-	//											}
-	//											else
-	//											{
-	//												ep->type |= POLY_ANGULAR;
-	//												ep2->type |= POLY_ANGULAR;
+													if (k2 == 1)
+														ep2->type |= POLY_ANGULAR_IDX1;
+													else
+														ep2->type |= POLY_ANGULAR_IDX2;
+												}
+											}
+											else
+											{
+												if (LittleAngularDiff(&cur_nrml, &ep2->norm))
+												{
+													nrml.x += ep2->norm.x;
+													nrml.y += ep2->norm.y;
+													nrml.z += ep2->norm.z;
+													count += 1.f;
+												}
+												else
+												{
+													ep->type |= POLY_ANGULAR;
+													ep2->type |= POLY_ANGULAR;
+													ep2->type |= POLY_ANGULAR_IDX0;
+												}
+											}
+										}
+									}
+							}
+						}
 
-	//												if (k2 == 1)
-	//													ep2->type |= POLY_ANGULAR_IDX1;
-	//												else
-	//													ep2->type |= POLY_ANGULAR_IDX2;
-	//											}
-	//										}
-	//										else
-	//										{
-	//											if (LittleAngularDiff(&cur_nrml, &ep2->norm))
-	//											{
-	//												nrml.x += ep2->norm.x;
-	//												nrml.y += ep2->norm.y;
-	//												nrml.z += ep2->norm.z;
-	//												count += 1.f;
-	//											}
-	//											else
-	//											{
-	//												ep->type |= POLY_ANGULAR;
-	//												ep2->type |= POLY_ANGULAR;
-	//												ep2->type |= POLY_ANGULAR_IDX0;
-	//											}
-	//										}
-	//									}
-	//								}
-	//						}
-	//					}
+					count = 1.f / count;
+					ep->tv[k].sx = nrml.x * count;
+					ep->tv[k].sy = nrml.y * count;
+					ep->tv[k].sz = nrml.z * count;
+				}
+			}
+		}
 
-	//				count = 1.f / count;
-	//				ep->tv[k].sx = nrml.x * count;
-	//				ep->tv[k].sy = nrml.y * count;
-	//				ep->tv[k].sz = nrml.z * count;
-	//			}
-	//		}
-	//	}
+	for (j = 0; j < ACTIVEBKG->Zsize; j++)
+		for (i = 0; i < ACTIVEBKG->Xsize; i++)
+		{
+			eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
 
-	//for (j = 0; j < ACTIVEBKG->Zsize; j++)
-	//	for (i = 0; i < ACTIVEBKG->Xsize; i++)
-	//	{
-	//		eg = &ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+			for (long l = 0; l < eg->nbpoly; l++)
+			{
+				ep = &eg->polydata[l];
 
-	//		for (long l = 0; l < eg->nbpoly; l++)
-	//		{
-	//			ep = &eg->polydata[l];
+				if (ep->type & POLY_QUAD) nbvert = 4;
+				else nbvert = 3;
 
-	//			if (ep->type & POLY_QUAD) nbvert = 4;
-	//			else nbvert = 3;
+				for (k = 0; k < nbvert; k++)
+				{
+					ep->nrml[k].x = ep->tv[k].sx;
+					ep->nrml[k].y = ep->tv[k].sy;
+					ep->nrml[k].z = ep->tv[k].sz;
+				}
 
-	//			for (k = 0; k < nbvert; k++)
-	//			{
-	//				ep->nrml[k].x = ep->tv[k].sx;
-	//				ep->nrml[k].y = ep->tv[k].sy;
-	//				ep->nrml[k].z = ep->tv[k].sz;
-	//			}
+				float dist = 0.f;
 
-	//			float dist = 0.f;
+				for (long ii = 0; ii < nbvert; ii++)
+				{
+					dist = max(dist, TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center));
+				}
 
-	//			for (long ii = 0; ii < nbvert; ii++)
-	//			{
-	//				dist = __max(dist, TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center));
-	//			}
+				ep->v[0].rhw = dist;
+			}
+		}
 
-	//			ep->v[0].rhw = dist;
-	//		}
-	//	}
 }
 
 //*************************************************************************************
@@ -2658,10 +2658,10 @@ void EERIEPOLY_Compute_PolyIn()
 			eg->polyin = NULL;
 			eg->nbpolyin = 0;
 
-			ii = __max(i - 2, 0);
-			ij = __max(j - 2, 0);
-			ai = __min(i + 2, ACTIVEBKG->Xsize - 1);
-			aj = __min(j + 2, ACTIVEBKG->Zsize - 1);
+			ii = max(i - 2, 0);
+			ij = max(j - 2, 0);
+			ai = min(i + 2, ACTIVEBKG->Xsize - 1);
+			aj = min(j + 2, ACTIVEBKG->Zsize - 1);
 
 			EERIE_2D_BBOX bb;
 			bb.min.x = (float)i * ACTIVEBKG->Xdiv - 10;
@@ -2733,8 +2733,8 @@ void EERIEPOLY_Compute_PolyIn()
 			for (long kk = 0; kk < eg->nbpolyin; kk++)
 			{
 				EERIEPOLY * ep = eg->polyin[kk];
-				eg->tile_miny = __min(eg->tile_miny, ep->min.y);
-				eg->tile_maxy = __max(eg->tile_maxy, ep->max.y);
+				eg->tile_miny = min(eg->tile_miny, ep->min.y);
+				eg->tile_maxy = max(eg->tile_maxy, ep->max.y);
 			}
 
 			FAST_BKG_DATA * fbd = &ACTIVEBKG->fastdata[i][j];
@@ -2760,7 +2760,7 @@ float GetTileMinY(long i, long j)
 	for (long kk = 0; kk < eg->nbpolyin; kk++)
 	{
 		EERIEPOLY * ep = eg->polyin[kk];
-		min = __min(min, ep->min.y);
+		min = min(min, ep->min.y);
 	}
 
 	return min;
@@ -2774,7 +2774,7 @@ float GetTileMaxY(long i, long j)
 	for (long kk = 0; kk < eg->nbpolyin; kk++)
 	{
 		EERIEPOLY * ep = eg->polyin[kk];
-		max = __max(max, ep->max.y);
+		max = max(max, ep->max.y);
 	}
 
 	return max;
@@ -2862,12 +2862,12 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms()
 			ep->center.y += ep->v[i].sy;
 			ep->center.z += ep->v[i].sz;
 
-			ep->min.x = __min(ep->min.x, ep->v[i].sx);
-			ep->min.y = __min(ep->min.y, ep->v[i].sy);
-			ep->min.z = __min(ep->min.z, ep->v[i].sz);
-			ep->max.x = __max(ep->max.x, ep->v[i].sx);
-			ep->max.y = __max(ep->max.y, ep->v[i].sy);
-			ep->max.z = __max(ep->max.z, ep->v[i].sz);
+			ep->min.x = min(ep->min.x, ep->v[i].sx);
+			ep->min.y = min(ep->min.y, ep->v[i].sy);
+			ep->min.z = min(ep->min.z, ep->v[i].sz);
+			ep->max.x = max(ep->max.x, ep->v[i].sx);
+			ep->max.y = max(ep->max.y, ep->v[i].sy);
+			ep->max.z = max(ep->max.z, ep->v[i].sz);
 		}
 
 		ep->center.x *= divide;
@@ -2877,7 +2877,7 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms()
 
 		for (long ii = 0; ii < to; ii++)
 		{
-			dist = __max(dist, TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center));
+			dist = max(dist, TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center));
 		}
 
 		ep->norm2.x = dist;
@@ -3014,8 +3014,8 @@ void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, char * name, long px, long py, long i
 		for (int ii = 0; ii < nbvert; ii++)
 		{
 			float fDist = TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center);
-			fDistMin = __min(fDistMin, fDist);
-			fDistMax = __max(fDistMax, fDist);
+			fDistMin = min(fDistMin, fDist);
+			fDistMax = max(fDistMax, fDist);
 		}
 
 		fDistMin = (fDistMax + fDistMin) * .5f;
@@ -3110,23 +3110,23 @@ int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj)
 		epp->tv[j].rhw	= 1.f;
 	}
 
-	epp->center.x = cx;
-	epp->center.y = cy;
-	epp->center.z = cz;
-	epp->max.x = __max(epp->v[0].sx, epp->v[1].sx);
-	epp->max.x = __max(epp->max.x, epp->v[2].sx);
-	epp->min.x = __min(epp->v[0].sx, epp->v[1].sx);
-	epp->min.x = __min(epp->min.x, epp->v[2].sx);
+	epp->center.x = cx; 
+	epp->center.y = cy; 
+	epp->center.z = cz; 
+	epp->max.x = max(epp->v[0].sx, epp->v[1].sx);
+	epp->max.x = max(epp->max.x, epp->v[2].sx);
+	epp->min.x = min(epp->v[0].sx, epp->v[1].sx);
+	epp->min.x = min(epp->min.x, epp->v[2].sx);
 
-	epp->max.y = __max(epp->v[0].sy, epp->v[1].sy);
-	epp->max.y = __max(epp->max.y, epp->v[2].sy);
-	epp->min.y = __min(epp->v[0].sy, epp->v[1].sy);
-	epp->min.y = __min(epp->min.y, epp->v[2].sy);
+	epp->max.y = max(epp->v[0].sy, epp->v[1].sy);
+	epp->max.y = max(epp->max.y, epp->v[2].sy);
+	epp->min.y = min(epp->v[0].sy, epp->v[1].sy);
+	epp->min.y = min(epp->min.y, epp->v[2].sy);
 
-	epp->max.z = __max(epp->v[0].sz, epp->v[1].sz);
-	epp->max.z = __max(epp->max.z, epp->v[2].sz);
-	epp->min.z = __min(epp->v[0].sz, epp->v[1].sz);
-	epp->min.z = __min(epp->min.z, epp->v[2].sz);
+	epp->max.z = max(epp->v[0].sz, epp->v[1].sz);
+	epp->max.z = max(epp->max.z, epp->v[2].sz);
+	epp->min.z = min(epp->v[0].sz, epp->v[1].sz);
+	epp->min.z = min(epp->min.z, epp->v[2].sz);
 	epp->type = ep->type;
 	epp->type &= ~POLY_QUAD;
 
@@ -4022,14 +4022,14 @@ lasuite:
 
 					if (h != 0)
 					{
-						ep2->max.x = __max(ep2->max.x, ep2->v[h].sx);
-						ep2->min.x = __min(ep2->min.x, ep2->v[h].sx);
+						ep2->max.x = max(ep2->max.x, ep2->v[h].sx);
+						ep2->min.x = min(ep2->min.x, ep2->v[h].sx);
 
-						ep2->max.y = __max(ep2->max.y, ep2->v[h].sy);
-						ep2->min.y = __min(ep2->min.y, ep2->v[h].sy);
+						ep2->max.y = max(ep2->max.y, ep2->v[h].sy);
+						ep2->min.y = min(ep2->min.y, ep2->v[h].sy);
 
-						ep2->max.z = __max(ep2->max.z, ep2->v[h].sz);
-						ep2->min.z = __min(ep2->min.z, ep2->v[h].sz);
+						ep2->max.z = max(ep2->max.z, ep2->v[h].sz);
+						ep2->min.z = min(ep2->min.z, ep2->v[h].sz);
 					}
 					else
 					{
@@ -4047,7 +4047,7 @@ lasuite:
 
 				for (int h = 0; h < to; h++)
 				{
-					dist = __max(dist, TRUEEEDistance3D((EERIE_3D *)&ep2->v[h], &ep2->center));
+					dist = max(dist, TRUEEEDistance3D((EERIE_3D *)&ep2->v[h], &ep2->center));
 				}
 
 				ep2->v[0].rhw = dist;
@@ -4948,7 +4948,7 @@ void ComputePortalVertexBuffer()
 
 		vector<SINFO_TEXTURE_VERTEX *> vTextureVertex;
 
-		int iMaxRoom = __min(portals->nb_rooms, 255);
+		int iMaxRoom = min(portals->nb_rooms, 255);
 
 		if (portals->nb_rooms > 255)
 		{

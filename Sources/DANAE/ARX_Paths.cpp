@@ -146,11 +146,11 @@ void ARX_PATH_ComputeBB(ARX_PATH * ap)
 
 	for (long i = 0; i < ap->nb_pathways; i++)
 	{
-		ap->bbmin.x = __min(ap->bbmin.x, ap->pos.x + ap->pathways[i].rpos.x);
-		ap->bbmax.x = __max(ap->bbmax.x, ap->pos.x + ap->pathways[i].rpos.x);
+		ap->bbmin.x = min(ap->bbmin.x, ap->pos.x + ap->pathways[i].rpos.x);
+		ap->bbmax.x = max(ap->bbmax.x, ap->pos.x + ap->pathways[i].rpos.x);
 
-		ap->bbmin.z = __min(ap->bbmin.z, ap->pos.z + ap->pathways[i].rpos.z);
-		ap->bbmax.z = __max(ap->bbmax.z, ap->pos.z + ap->pathways[i].rpos.z);
+		ap->bbmin.z = min(ap->bbmin.z, ap->pos.z + ap->pathways[i].rpos.z);
+		ap->bbmax.z = max(ap->bbmax.z, ap->pos.z + ap->pathways[i].rpos.z);
 	}
 
 	if (ap->height > 0)
@@ -1389,10 +1389,10 @@ EERIEPOLY * CheckArrowPolyCollision(EERIE_3D * start, EERIE_3D * end)
 	F2L(end->z * ACTIVEBKG->Zmul, &pz);
 
 	long ix, ax, iz, az;
-	ix = __max(px - 2, 0);
-	ax = __min(px + 2, ACTIVEBKG->Xsize - 1);
-	iz = __max(pz - 2, 0);
-	az = __min(pz + 2, ACTIVEBKG->Zsize - 1);
+	ix = max(px - 2, 0);
+	ax = min(px + 2, ACTIVEBKG->Xsize - 1);
+	iz = max(pz - 2, 0);
+	az = min(pz + 2, ACTIVEBKG->Zsize - 1);
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;
 
@@ -2279,11 +2279,11 @@ BOOL _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long sour
 	long ix, iz, ax, az;
 	long n;
 	F2L(obj->pbox->radius * DIV100, &n);
-	n = __min(1, n + 1);
-	ix = __max(px - n, 0);
-	ax = __min(px + n, ACTIVEBKG->Xsize - 1);
-	iz = __max(pz - n, 0);
-	az = __min(pz + n, ACTIVEBKG->Zsize - 1);
+	n = min(1, n + 1);
+	ix = max(px - n, 0);
+	ax = min(px + n, ACTIVEBKG->Xsize - 1);
+	iz = max(pz - n, 0);
+	az = min(pz + n, ACTIVEBKG->Zsize - 1);
 	LAST_COLLISION_POLY = NULL;
 	EERIEPOLY * ep;
 	EERIE_BKG_INFO * eg;
@@ -2579,7 +2579,7 @@ long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber
 
 			ComputeForces(obj->pbox->vert, obj->pbox->nb_physvert);
 
-			if (!ARX_EERIE_PHYSICS_BOX_Compute(obj, __min(0.11f, timing * 10), rubber, flags, source))
+			if (!ARX_EERIE_PHYSICS_BOX_Compute(obj, min(0.11f, timing * 10), rubber, flags, source))
 				ret = 1;
 
 			timing -= t_threshold; 
@@ -2868,7 +2868,7 @@ void ARX_PrepareBackgroundNRMLs()
 
 				for (long ii = 0; ii < nbvert; ii++)
 				{
-					dist = __max(dist, TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center));
+					dist = max(dist, TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center));
 				}
 
 				ep->v[0].rhw = dist;

@@ -726,12 +726,12 @@ retry4:
 		eerie->vertexlist[i].v.x = ptv->x;
 		eerie->vertexlist[i].v.y = ptv->y;
 		eerie->vertexlist[i].v.z = ptv->z;
-		eerie->cub.xmin = __min(eerie->cub.xmin, ptv->x);
-		eerie->cub.xmax = __max(eerie->cub.xmax, ptv->x);
-		eerie->cub.ymin = __min(eerie->cub.ymin, ptv->y);
-		eerie->cub.ymax = __max(eerie->cub.ymax, ptv->y);
-		eerie->cub.zmin = __min(eerie->cub.zmin, ptv->z);
-		eerie->cub.zmax = __max(eerie->cub.zmax, ptv->z);
+		eerie->cub.xmin = min(eerie->cub.xmin, ptv->x);
+		eerie->cub.xmax = max(eerie->cub.xmax, ptv->x);
+		eerie->cub.ymin = min(eerie->cub.ymin, ptv->y);
+		eerie->cub.ymax = max(eerie->cub.ymax, ptv->y);
+		eerie->cub.zmin = min(eerie->cub.zmin, ptv->z);
+		eerie->cub.zmax = max(eerie->cub.zmax, ptv->z);
 	}
 
 	// Lecture des FACES THEO
@@ -950,7 +950,7 @@ retry4:
 
 		for (long o = 0; o < ptg3011->nb_index; o++)
 		{
-			eerie->grouplist[i].siz = __max(eerie->grouplist[i].siz,
+			eerie->grouplist[i].siz = max(eerie->grouplist[i].siz,
 			                                EEDistance3D(&eerie->vertexlist[eerie->grouplist[i].origin].v,
 			                                        &eerie->vertexlist[eerie->grouplist[i].indexes[o]].v));
 		}
@@ -1240,12 +1240,12 @@ retry10:
 
 	for (long i = 0; i < es->nb_scenes; i++)
 	{
-		es->cub.xmax = __max(es->cub.xmax, es->scenes[i]->cub.xmax);
-		es->cub.xmin = __min(es->cub.xmin, es->scenes[i]->cub.xmin);
-		es->cub.ymax = __max(es->cub.ymax, es->scenes[i]->cub.ymax);
-		es->cub.ymin = __min(es->cub.ymin, es->scenes[i]->cub.ymin);
-		es->cub.zmax = __max(es->cub.zmax, es->scenes[i]->cub.zmax);
-		es->cub.zmin = __min(es->cub.zmin, es->scenes[i]->cub.zmin);
+		es->cub.xmax = max(es->cub.xmax, es->scenes[i]->cub.xmax);
+		es->cub.xmin = min(es->cub.xmin, es->scenes[i]->cub.xmin);
+		es->cub.ymax = max(es->cub.ymax, es->scenes[i]->cub.ymax);
+		es->cub.ymin = min(es->cub.ymin, es->scenes[i]->cub.ymin);
+		es->cub.zmax = max(es->cub.zmax, es->scenes[i]->cub.zmax);
+		es->cub.zmin = min(es->cub.zmin, es->scenes[i]->cub.zmin);
 		es->pos.x = es->scenes[i]->pos.x;
 		es->pos.y = es->scenes[i]->pos.y;
 		es->pos.z = es->scenes[i]->pos.z;
@@ -1342,12 +1342,12 @@ retry1:
 
 	for (long i = 0; i < es->nb_scenes; i++)
 	{
-		es->cub.xmax = __max(es->cub.xmax, es->scenes[i]->cub.xmax);
-		es->cub.xmin = __min(es->cub.xmin, es->scenes[i]->cub.xmin);
-		es->cub.ymax = __max(es->cub.ymax, es->scenes[i]->cub.ymax);
-		es->cub.ymin = __min(es->cub.ymin, es->scenes[i]->cub.ymin);
-		es->cub.zmax = __max(es->cub.zmax, es->scenes[i]->cub.zmax);
-		es->cub.zmin = __min(es->cub.zmin, es->scenes[i]->cub.zmin);
+		es->cub.xmax = max(es->cub.xmax, es->scenes[i]->cub.xmax);
+		es->cub.xmin = min(es->cub.xmin, es->scenes[i]->cub.xmin);
+		es->cub.ymax = max(es->cub.ymax, es->scenes[i]->cub.ymax);
+		es->cub.ymin = min(es->cub.ymin, es->scenes[i]->cub.ymin);
+		es->cub.zmax = max(es->cub.zmax, es->scenes[i]->cub.zmax);
+		es->cub.zmin = min(es->cub.zmin, es->scenes[i]->cub.zmin);
 		es->pos.x = es->scenes[i]->pos.x;
 		es->pos.y = es->scenes[i]->pos.y;
 		es->pos.z = es->scenes[i]->pos.z;
@@ -1614,12 +1614,12 @@ retry4:
 		else if (psth->version < 3023)	_THEObjLoad(seerie->objs[id], adr, &pos, 3008, TTE_NO_NDATA | TTE_NO_PDATA);
 		else							_THEObjLoad(seerie->objs[id], adr, &pos, 3011, TTE_NO_NDATA | TTE_NO_PDATA);
 
-		seerie->cub.xmin = __min(seerie->cub.xmin, seerie->objs[id]->cub.xmin + seerie->objs[id]->pos.x);
-		seerie->cub.xmax = __max(seerie->cub.xmax, seerie->objs[id]->cub.xmax + seerie->objs[id]->pos.x);
-		seerie->cub.ymin = __min(seerie->cub.ymin, seerie->objs[id]->cub.ymin + seerie->objs[id]->pos.y);
-		seerie->cub.ymax = __max(seerie->cub.ymax, seerie->objs[id]->cub.ymax + seerie->objs[id]->pos.y);
-		seerie->cub.zmin = __min(seerie->cub.zmin, seerie->objs[id]->cub.zmin + seerie->objs[id]->pos.z);
-		seerie->cub.zmax = __max(seerie->cub.zmax, seerie->objs[id]->cub.zmax + seerie->objs[id]->pos.z);
+		seerie->cub.xmin = min(seerie->cub.xmin, seerie->objs[id]->cub.xmin + seerie->objs[id]->pos.x);
+		seerie->cub.xmax = max(seerie->cub.xmax, seerie->objs[id]->cub.xmax + seerie->objs[id]->pos.x);
+		seerie->cub.ymin = min(seerie->cub.ymin, seerie->objs[id]->cub.ymin + seerie->objs[id]->pos.y);
+		seerie->cub.ymax = max(seerie->cub.ymax, seerie->objs[id]->cub.ymax + seerie->objs[id]->pos.y);
+		seerie->cub.zmin = min(seerie->cub.zmin, seerie->objs[id]->cub.zmin + seerie->objs[id]->pos.z);
+		seerie->cub.zmax = max(seerie->cub.zmax, seerie->objs[id]->cub.zmax + seerie->objs[id]->pos.z);
 
 		seerie->objs[id]->nbmaps = seerie->nbtex;
 

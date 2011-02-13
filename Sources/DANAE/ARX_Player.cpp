@@ -1159,9 +1159,9 @@ void ARX_PLAYER_ComputePlayerFullStats()
 	player.Full_life = player.life;
 	player.Full_mana = player.mana;
 	player.Full_maxlife = (float)player.Full_Attribute_Constitution * (float)(player.level + 2) + player.Mod_maxlife;
-	player.life = __min(player.life, player.Full_maxlife);
+	player.life = min(player.life, player.Full_maxlife);
 	player.Full_maxmana = (float)player.Full_Attribute_Mind * (float)(player.level + 1) + player.Mod_maxmana;
-	player.mana = __min(player.mana, player.Full_maxmana);
+	player.mana = min(player.mana, player.Full_maxmana);
 }
 
 //*************************************************************************************
@@ -1941,19 +1941,17 @@ void ARX_PLAYER_Manage_Visual()
 				io->halo.color.b = 0.f;
 				io->halo.flags |= HALO_ACTIVE | HALO_DYNLIGHT;
 				io->halo.radius = 20.f;
-				player.life += (float)FrameDiff * DIV10;
-				player.life = __min(player.life, player.maxlife);
-				player.mana += (float)FrameDiff * DIV10;
-				player.mana = __min(player.mana, player.maxmana);
+				player.life += (float)FrameDiff * DIV10; 
+				player.life = min(player.life, player.maxlife);
+				player.mana += (float)FrameDiff * DIV10; 
 
 			}
 
 		if (cur_mr == 3)
 		{
-			player.life += (float)FrameDiff * DIV20;
-			player.life = __min(player.life, player.maxlife);
-			player.mana += (float)FrameDiff * DIV20;
-			player.mana = __min(player.mana, player.maxmana);
+			player.life += (float)FrameDiff * DIV20; 
+			player.life = min(player.life, player.maxlife);
+			player.mana += (float)FrameDiff * DIV20; 
 		}
 
 		io->pos.x = player.pos.x;
@@ -3613,13 +3611,13 @@ lasuite:
 	if (CURRENT_PLAYER_COLOR < player.grnd_color)
 	{
 		CURRENT_PLAYER_COLOR += FrameDiff * DIV8;
-		CURRENT_PLAYER_COLOR = __min(CURRENT_PLAYER_COLOR, player.grnd_color);
+		CURRENT_PLAYER_COLOR = min(CURRENT_PLAYER_COLOR, player.grnd_color);
 	}
 
 	if (CURRENT_PLAYER_COLOR > player.grnd_color)
 	{
 		CURRENT_PLAYER_COLOR -= FrameDiff * DIV4;
-		CURRENT_PLAYER_COLOR = __max(CURRENT_PLAYER_COLOR, player.grnd_color);
+		CURRENT_PLAYER_COLOR = max(CURRENT_PLAYER_COLOR, player.grnd_color);
 	}
 
 	if (InventoryDir != 0)

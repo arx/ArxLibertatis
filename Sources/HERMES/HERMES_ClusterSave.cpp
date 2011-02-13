@@ -500,7 +500,7 @@ bool CSaveBlock::Save(char * _pcFileName, void * _pDatas, int _iSize)
 			{
 				pLastClusterCurr = _pClusterCurr;
 				fseek(hFile, _pClusterCurr->iNext + 4, SEEK_SET);
-				iSizeWrite = __min(_pClusterCurr->iTaille, iSize);
+				iSizeWrite = min(_pClusterCurr->iTaille, iSize);
 				fwrite((const void *)_pDatas, iSizeWrite, 1, hFile);
 				char * _pDatasTemp = (char *)_pDatas;
 				_pDatasTemp += iSizeWrite;

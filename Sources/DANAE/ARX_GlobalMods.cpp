@@ -139,7 +139,7 @@ void ARX_GLOBALMODS_Apply()
 	{
 		float fZclipp = ((((float)pMenuConfig->iFogDistance) * 1.2f) * (DEFAULT_ZCLIP - DEFAULT_MINZCLIP) / 10.f) + DEFAULT_MINZCLIP;
 		fZclipp += (ACTIVECAM->focal - 310.f) * 5.f;
-		SetCameraDepth(__min(current.zclip, fZclipp));
+		SetCameraDepth(min(current.zclip, fZclipp));
 	}
 	else
 	{

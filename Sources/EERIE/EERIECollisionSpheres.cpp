@@ -88,11 +88,11 @@ void EERIE_COLLISION_Cylinder_Create(INTERACTIVE_OBJ * io)
 	{
 		if ((i != obj->origin) && (EEfabs(io->physics.cyl.origin.y - obj->vertexlist[i].v.y) < 20.f))
 		{
-			dist = __max(dist, TRUEDistance3D(io->physics.cyl.origin.x, io->physics.cyl.origin.y, io->physics.cyl.origin.z,
+			dist = max(dist, TRUEDistance3D(io->physics.cyl.origin.x, io->physics.cyl.origin.y, io->physics.cyl.origin.z,
 			                                  obj->vertexlist[i].v.x, obj->vertexlist[i].v.y, obj->vertexlist[i].v.z));
 		}
 
-		height = __max(height, io->physics.cyl.origin.y - obj->vertexlist[i].v.y);
+		height = max(height, io->physics.cyl.origin.y - obj->vertexlist[i].v.y);
 	}
 
 	if ((dist == 0.f) || (height == 0.f))
@@ -259,7 +259,7 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, EERIE_3D * center, EERIE_3D * d
 
 			curradius += distance;
 			div += 1.f;
-			max = __max(max, distance);
+			max = max(max, distance);
 		}
 	}
 

@@ -120,7 +120,7 @@ __inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 		}		
 	}
 
-	if (nearest>__max(82.f,cyl->radius)) return 999999.f;
+	if (nearest>max(82.f,cyl->radius)) return 999999.f;
 
 	if (	(cyl->radius<30.f)
 		||	(cyl->height>-80.f)
@@ -139,9 +139,9 @@ __inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 		POLYIN = 1;
 		
 		if (ep->norm.y<0.5f)
-			anything=__min(anything,ep->min.y);
+			anything=min(anything,ep->min.y);
 		else
-			anything=__min(anything,ep->center.y);
+			anything=min(anything,ep->center.y);
 
 		if (!(flags & CFLAG_EXTRA_PRECISION)) return anything;
 	}
@@ -165,7 +165,7 @@ __inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 
 				if (PointInCylinder(cyl, &center)) 
 				{	
-					anything=__min(anything,center.y);
+					anything=min(anything,center.y);
 					POLYIN=1;
 
 					if (!(flags & CFLAG_EXTRA_PRECISION)) return anything;
@@ -182,7 +182,7 @@ __inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 
 			if (PointInCylinder(cyl, &center)) 
 			{	
-				anything=__min(anything,center.y);
+				anything=min(anything,center.y);
 				POLYIN=1;
 
 				if (!(flags & CFLAG_EXTRA_PRECISION)) return anything;
@@ -196,7 +196,7 @@ __inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 
 				if (PointInCylinder(cyl, &center)) 
 				{	
-					anything=__min(anything,center.y);
+					anything=min(anything,center.y);
 					POLYIN=1;
 
 					if (!(flags & CFLAG_EXTRA_PRECISION)) return anything;
@@ -211,7 +211,7 @@ __inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 
 				if (PointInCylinder(cyl, &center))
 				{
-					anything=__min(anything,center.y);
+					anything=min(anything,center.y);
 					POLYIN=1;
 
 					if (!(flags & CFLAG_EXTRA_PRECISION)) return anything;
@@ -221,7 +221,7 @@ __inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 
 		if (PointInCylinder(cyl, (EERIE_3D *)&ep->v[n]))
 		{
-			anything=__min(anything,ep->v[n].sy);			
+			anything=min(anything,ep->v[n].sy);			
 			POLYIN=1;
 
 			if (!(flags & CFLAG_EXTRA_PRECISION)) return anything;
@@ -253,14 +253,14 @@ __inline float IsPolyInCylinder(EERIEPOLY *ep, EERIE_CYLINDER * cyl,long flag)
 		{
 			if (GetTruePolyY(ep,&pos,&xx))
 			{				
-				anything=__min(anything,xx);
+				anything=min(anything,xx);
 				return anything;
 			}
 		}
 	} 
 //}*/
 	if ((anything!=999999.f) && (ep->norm.y<0.1f) && (ep->norm.y>-0.1f))
-		anything=__min(anything,ep->min.y);
+		anything=min(anything,ep->min.y);
 
 	return anything;
 }
@@ -387,8 +387,8 @@ void PushIO_ON_Top(INTERACTIVE_OBJ * ioo,float ydec)
 
 				for (long ii=0;ii<ioo->obj->nbvertex;ii++)
 				{
-					miny=__min(miny,ioo->obj->vertexlist3[ii].v.y);
-					maxy=__max(maxy,ioo->obj->vertexlist3[ii].v.y);
+					miny=min(miny,ioo->obj->vertexlist3[ii].v.y);
+					maxy=max(maxy,ioo->obj->vertexlist3[ii].v.y);
 				}
 
 				float posy;
@@ -628,7 +628,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 		&&	(iYBackup <= pz-rad)	
 		)
 	{
-		float minanything = __min(anything,IsPolyInCylinder(pEPBackup,cyl,flags));
+		float minanything = min(anything,IsPolyInCylinder(pEPBackup,cyl,flags));
 
 		if (anything != minanything)
 		{
@@ -678,7 +678,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 			}
 		}
 
-		if (nearest>__max(82.f,cyl->radius)) continue;
+		if (nearest>max(82.f,cyl->radius)) continue;
 
 
 		feg=&ACTIVEBKG->fastdata[i][j];
@@ -703,7 +703,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 			if (ep->min.y<anything)
 			{
 
-				anything= __min(anything,IsPolyInCylinder(ep,cyl,flags));
+				anything= min(anything,IsPolyInCylinder(ep,cyl,flags));
 
 				if (POLYIN) 
 				{
@@ -720,7 +720,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 	
 	if (ep) 
 		{
-			anything=__min(anything,tempo);
+			anything=min(anything,tempo);
 	}
 
 	long dealt = 0;
@@ -789,7 +789,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 							{
 								if (res==2) ON_PLATFORM=1;
 
-										anything = __min(anything, io->obj->vertexlist3[ii].v.y - 10.f); 
+										anything = min(anything, io->obj->vertexlist3[ii].v.y - 10.f); 
 							}			
 						}
 
@@ -803,7 +803,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 							{
 								c.x+=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.x;
 								c.y+=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y;
-								height=__min(height,io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y);
+								height=min(height,io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.y);
 								c.z+=io->obj->vertexlist3[io->obj->facelist[ii].vid[kk]].v.z;
 							}
 
@@ -815,7 +815,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 							if (res>0)
 							{
 								if (res==2) ON_PLATFORM=1;
-										anything = __min(anything, height); 
+										anything = min(anything, height); 
 									}
 									}
 								}
@@ -831,7 +831,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 					if (CylinderInCylinder(cyl,io_cyl))
 					{
  						NPC_IN_CYLINDER=1;
-						anything = __min(anything, io_cyl->origin.y + io_cyl->height); 
+						anything = min(anything, io_cyl->origin.y + io_cyl->height); 
 
 						if (!(flags & CFLAG_JUST_TEST) && ioo)
 						{							
@@ -965,7 +965,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 										}
 									}
 
-									anything=__min(anything,__min(sp.origin.y-sp.radius , io->bbox3D.min.y));
+									anything=min(anything,min(sp.origin.y-sp.radius , io->bbox3D.min.y));
 								}
 							}
 						}
@@ -1031,7 +1031,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 													ARX_DAMAGES_DealDamages(GetInterNum(ioo),io->damager_damages,GetInterNum(io),io->damager_type,&ioo->pos);
 											}
 										}
-										anything=__min(anything,__min(sp.origin.y-sp.radius,io->bbox3D.min.y));
+										anything=min(anything,min(sp.origin.y-sp.radius,io->bbox3D.min.y));
 									}
 								}
 							}
@@ -1230,10 +1230,10 @@ EERIEPOLY * CheckBackgroundInSphere(EERIE_SPHERE * sphere) //except source...
 
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;
-	long spx=__max(px-rad,0);
-	long epx=__min(px+rad,ACTIVEBKG->Xsize-1);
-	long spz=__max(pz-rad,0);
-	long epz=__min(pz+rad,ACTIVEBKG->Zsize-1);
+	long spx=max(px-rad,0);
+	long epx=min(px+rad,ACTIVEBKG->Xsize-1);
+	long spz=max(pz-rad,0);
+	long epz=min(pz+rad,ACTIVEBKG->Zsize-1);
 
 	for (long j=spz;j<=epz;j++)
 	for (long i=spx;i<=epx;i++) 
@@ -1274,10 +1274,10 @@ BOOL CheckAnythingInSphere(EERIE_SPHERE * sphere,long source,long flags,long * n
 
 	if (!(flags & CAS_NO_BACKGROUND_COL))
 	{
-		long spz=__max(pz-rad,0);
-		long epz=__min(pz+rad,ACTIVEBKG->Zsize-1); 
-		long spx=__max(px-rad,0);
-		long epx=__min(px+rad,ACTIVEBKG->Xsize-1); 
+		long spz=max(pz-rad,0);
+		long epz=min(pz+rad,ACTIVEBKG->Zsize-1); 
+		long spx=max(px-rad,0);
+		long epx=min(px+rad,ACTIVEBKG->Xsize-1); 
 
 		for (long j=spz;j<=epz;j++)
 		for (long i=spx;i<=epx;i++) 
@@ -1621,7 +1621,7 @@ BOOL AttemptValidCylinderPos(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * io,long flag
 				}				
 
 				float dist;
-				dist=__max(TRUEVector_Magnitude(&vector2D),1.f);
+				dist=max(TRUEVector_Magnitude(&vector2D),1.f);
 				float pente;		
 				pente = EEfabs(anything) / dist * DIV2; 
 				io->_npcdata->climb_count+=pente;
@@ -1739,7 +1739,7 @@ BOOL ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 	while ((distance>0.f) && (count--))
 	{
 		// First We compute current increment 
-		float curmovedist=__min(distance,MOVE_CYLINDER_STEP);
+		float curmovedist=min(distance,MOVE_CYLINDER_STEP);
 		distance-=curmovedist;
 
 		// Store our cylinder desc into a test struct

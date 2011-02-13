@@ -1297,10 +1297,10 @@ bool BBoxClipPoly(EERIE_2D_BBOX * bbox,EERIEPOLY * ep)
 
 	for (long i=1;i<nbv;i++)
 	{
-		n_bbox.min.x=__min(n_bbox.min.x , ep->tv[i].sx);
-		n_bbox.min.y=__min(n_bbox.min.y , ep->tv[i].sy);
-		n_bbox.max.x=__max(n_bbox.max.x , ep->tv[i].sx);
-		n_bbox.max.y=__max(n_bbox.max.y , ep->tv[i].sy);
+		n_bbox.min.x=min(n_bbox.min.x , ep->tv[i].sx);
+		n_bbox.min.y=min(n_bbox.min.y , ep->tv[i].sy);
+		n_bbox.max.x=max(n_bbox.max.x , ep->tv[i].sx);
+		n_bbox.max.y=max(n_bbox.max.y , ep->tv[i].sy);
 	}
 
 	if (	bbox->min.x > n_bbox.max.x || n_bbox.min.x > bbox->max.x
@@ -1372,10 +1372,10 @@ void ARX_PORTALS_BlendBBox(long room_num,EERIE_2D_BBOX * bbox)
 	}
 	else
 	{
-		RoomDraw[room_num].bbox.min.x=__min(RoomDraw[room_num].bbox.min.x, bbox->min.x);
-		RoomDraw[room_num].bbox.min.y=__min(RoomDraw[room_num].bbox.min.y, bbox->min.y);
-		RoomDraw[room_num].bbox.max.x=__max(RoomDraw[room_num].bbox.max.x, bbox->max.x);
-		RoomDraw[room_num].bbox.max.y=__max(RoomDraw[room_num].bbox.max.y, bbox->max.y);		
+		RoomDraw[room_num].bbox.min.x=min(RoomDraw[room_num].bbox.min.x, bbox->min.x);
+		RoomDraw[room_num].bbox.min.y=min(RoomDraw[room_num].bbox.min.y, bbox->min.y);
+		RoomDraw[room_num].bbox.max.x=max(RoomDraw[room_num].bbox.max.x, bbox->max.x);
+		RoomDraw[room_num].bbox.max.y=max(RoomDraw[room_num].bbox.max.y, bbox->max.y);		
 	}
 }
 void Frustrum_Set(EERIE_FRUSTRUM * fr,long plane,float a,float b,float c,float d)
@@ -2520,7 +2520,7 @@ void ARX_PORTALS_RenderRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long ti
 						fr=((0.6f-dd)*6.f + (EEfabs(ep->nrml[k].z)+EEfabs(ep->nrml[k].y)))*0.125f;//(1.f-dd);						
 
 						if (fr<0.f) fr=0.f;
-						else fr=__max(ffr,fr*255.f);
+						else fr=max(ffr,fr*255.f);
 
 						fb*=255.f;
 						F2L(fr,&lfr);
@@ -2678,7 +2678,7 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 						fr=((0.6f-dd)*6.f + (EEfabs(ep->nrml[k].z)+EEfabs(ep->nrml[k].y)))*0.125f;//(1.f-dd);						
 
 						if (fr<0.f) fr=0.f;
-						else fr=__max(ffr,fr*255.f);
+						else fr=max(ffr,fr*255.f);
 
 						fb*=255.f;
 						F2L(fr,&lfr);
@@ -2797,7 +2797,7 @@ SMY_D3DVERTEX *pMyVertex;
 		EERIEPOLY * ep;
 		EP_DATA *pEPDATA = &portals->room[room_num].epdata[0];
 
-		float fDistBump=__min(__max(0.f,(ACTIVECAM->cdepth*fZFogStart)-200.f),MAX_DIST_BUMP);
+		float fDistBump=min(max(0.f,(ACTIVECAM->cdepth*fZFogStart)-200.f),MAX_DIST_BUMP);
 
 		for (long  lll=0; lll<portals->room[room_num].nb_polys; lll++, *pEPDATA++)
 		{
@@ -2806,10 +2806,10 @@ SMY_D3DVERTEX *pMyVertex;
 
 			if (!feg->treat)
 			{
-				long ix=__max(0,pEPDATA->px-1);
-				long ax=__min(ACTIVEBKG->Xsize-1,pEPDATA->px+1);
-				long iz=__max(0,pEPDATA->py-1);
-				long az=__min(ACTIVEBKG->Zsize-1,pEPDATA->py+1);
+				long ix=max(0,pEPDATA->px-1);
+				long ax=min(ACTIVEBKG->Xsize-1,pEPDATA->px+1);
+				long iz=max(0,pEPDATA->py-1);
+				long az=min(ACTIVEBKG->Zsize-1,pEPDATA->py+1);
 				
 
 				ARX_CHECK_SHORT(iz);
@@ -3102,11 +3102,11 @@ SMY_D3DVERTEX *pMyVertex;
 						fr = ((0.6f - dd) * 6.f + (EEfabs(ep->nrml[k].z) + EEfabs(ep->nrml[k].y))) * 0.125f;
 
 						if (fr<0.f) fr=0.f;
-						else fr=__max(ffr,fr*255.f);
+						else fr=max(ffr,fr*255.f);
 
-						fr=__min(fr,255.f);
+						fr=min(fr,255.f);
 						fb*=255.f;
-						fb=__min(fb,255.f);
+						fb=min(fb,255.f);
 						F2L(fr,&lfr);
 						F2L(fb,&lfb);
 				
@@ -3231,7 +3231,7 @@ SMY_D3DVERTEX *pMyVertex;
 								tv[nu]				=	ep->v[nu].tv * 4.f;
 							}
 
-							float			t		=	__max( 10, EEDistance3D(&ACTIVECAM->pos, (EERIE_3D *)&ep->v[nu]) - 80.f );
+							float			t		=	max( 10, EEDistance3D(&ACTIVECAM->pos, (EERIE_3D *)&ep->v[nu]) - 80.f );
 
 							_fTransp[nu] = (150.f - t) * 0.006666666f;
 
@@ -3356,7 +3356,7 @@ SMY_D3DVERTEX *pMyVertex;
 							tv[nu]=ep->v[nu].tv*4.f;						
 						}
 
-							float			t		=	__max( 10, EEDistance3D(&ACTIVECAM->pos, (EERIE_3D *)&ep->v[nu]) - 80.f );
+							float			t		=	max( 10, EEDistance3D(&ACTIVECAM->pos, (EERIE_3D *)&ep->v[nu]) - 80.f );
 							//if (t < 10.f)	t		=	10.f;
 
 						_fTransp[nu] = (150.f - t) * 0.006666666f;
@@ -3896,12 +3896,12 @@ void ARX_PORTALS_ComputeRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long t
 
 		for (long nn=1;nn<to;nn++)
 		{
-			n_bbox.min.x=__min(n_bbox.min.x , epp->tv[nn].sx);
-			n_bbox.min.y=__min(n_bbox.min.y , epp->tv[nn].sy);
-			n_bbox.max.x=__max(n_bbox.max.x , epp->tv[nn].sx);
-			n_bbox.max.y=__max(n_bbox.max.y , epp->tv[nn].sy);
-			minz=__min(minz,epp->tv[0].sz);
-			maxz=__max(maxz,epp->tv[0].sz);
+			n_bbox.min.x=min(n_bbox.min.x , epp->tv[nn].sx);
+			n_bbox.min.y=min(n_bbox.min.y , epp->tv[nn].sy);
+			n_bbox.max.x=max(n_bbox.max.x , epp->tv[nn].sx);
+			n_bbox.max.y=max(n_bbox.max.y , epp->tv[nn].sy);
+			minz=min(minz,epp->tv[0].sz);
+			maxz=max(maxz,epp->tv[0].sz);
 		}
 
 		if (minz>0.5f) continue;
@@ -3915,10 +3915,10 @@ void ARX_PORTALS_ComputeRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long t
 		else
 			EERIEPOLY_DrawWired(GDevice,epp,0xFF00FF00);
 		
-		n_bbox.min.x=__max(n_bbox.min.x,bbox->min.x);
-		n_bbox.min.y=__max(n_bbox.min.y,bbox->min.y);
-		n_bbox.max.x=__min(n_bbox.max.x,bbox->max.x);
-		n_bbox.max.y=__min(n_bbox.max.y,bbox->max.y);
+		n_bbox.min.x=max(n_bbox.min.x,bbox->min.x);
+		n_bbox.min.y=max(n_bbox.min.y,bbox->min.y);
+		n_bbox.max.x=min(n_bbox.max.x,bbox->max.x);
+		n_bbox.max.y=min(n_bbox.max.y,bbox->max.y);
 		
 		if (po->room_1==room_num)
 		{
@@ -4359,11 +4359,11 @@ void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag, long param)
 
 	long lfr,lfb;
 	long zsnap=ACTIVECAM->Zsnap;
-	zsnap=__min(zsnap,ACTIVEBKG->Zsize-1);
-	zsnap=__max(zsnap,1);
+	zsnap=min(zsnap,ACTIVEBKG->Zsize-1);
+	zsnap=max(zsnap,1);
 	long xsnap=ACTIVECAM->Xsnap;
-	xsnap=__min(xsnap,ACTIVEBKG->Xsize-1);
-	xsnap=__max(xsnap,1);
+	xsnap=min(xsnap,ACTIVEBKG->Xsize-1);
+	xsnap=max(xsnap,1);
 
  
 
@@ -4677,7 +4677,7 @@ else
 						fr=((0.6f-dd)*6.f + (EEfabs(ep->nrml[k].z)+EEfabs(ep->nrml[k].y)))*0.125f;//(1.f-dd);						
 
 						if (fr<0.f) fr=0.f;
-						else fr=__max(ffr,fr*255.f);
+						else fr=max(ffr,fr*255.f);
 
 						fb*=255.f;
 						F2L(fr,&lfr);

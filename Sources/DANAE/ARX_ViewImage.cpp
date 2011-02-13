@@ -198,8 +198,8 @@ void ViewImage::DrawAllImage()
 			if (!danaeApp.DANAEStartRender()) continue;
 
 
-			float fDepX = ARX_CLEAN_WARN_CAST_FLOAT(__max(0, ((DANAESIZX - pTex->m_dwWidth) >> 1)));
-			float fDepY = ARX_CLEAN_WARN_CAST_FLOAT(__max(0, ((DANAESIZY - pTex->m_dwHeight) >> 1)));
+			float fDepX = ARX_CLEAN_WARN_CAST_FLOAT(max(0, ((DANAESIZX - pTex->m_dwWidth) >> 1)));
+			float fDepY = ARX_CLEAN_WARN_CAST_FLOAT(max(0, ((DANAESIZY - pTex->m_dwHeight) >> 1)));
 
 
 
@@ -209,8 +209,8 @@ void ViewImage::DrawAllImage()
 			EERIEDrawBitmap(GDevice,
 			                fDepX,
 			                fDepY,
-			                ARX_CLEAN_WARN_CAST_FLOAT(__min(pTex->m_dwWidth, ARX_CAST_ULONG(DANAESIZX))),
-			                ARX_CLEAN_WARN_CAST_FLOAT(__min(pTex->m_dwHeight, ARX_CAST_ULONG(DANAESIZY))),
+			                ARX_CLEAN_WARN_CAST_FLOAT(min(pTex->m_dwWidth, ARX_CAST_ULONG(DANAESIZX))),
+			                ARX_CLEAN_WARN_CAST_FLOAT(min(pTex->m_dwHeight, ARX_CAST_ULONG(DANAESIZY))),
 			                0.f,
 			                pTex,
 			                D3DRGB(fColor, fColor, fColor));

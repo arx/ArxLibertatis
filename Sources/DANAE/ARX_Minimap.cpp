@@ -125,10 +125,10 @@ void ARX_MINIMAP_GetData(long SHOWLEVEL)
 
 						if (ep)
 						{
-							minx = __min(minx, ep->min.x);
-							maxx = __max(maxx, ep->max.x);
-							miny = __min(miny, ep->min.z);
-							maxy = __max(maxy, ep->max.z);
+							minx = min(minx, ep->min.x);
+							maxx = max(maxx, ep->max.x);
+							miny = min(miny, ep->min.z);
+							maxy = max(maxy, ep->max.z);
 						}
 					}
 				}
@@ -539,7 +539,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 							F2L((float)(vv * 255.f), &r);
 
 
-							long ucLevel =  __max(r, minimap[SHOWLEVEL].revealed[i][j]);
+							long ucLevel =  max(r, minimap[SHOWLEVEL].revealed[i][j]);
 							ARX_CHECK_UCHAR(ucLevel);
 
 							minimap[SHOWLEVEL].revealed[i][j] = ARX_CLEAN_WARN_CAST_UCHAR(ucLevel);
@@ -606,7 +606,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 						oo += v;
 
 						if ((i + 1 < 0) || (i + 1 >= MINIMAP_MAX_X) || (j < 0) || (j >= MINIMAP_MAX_Z)) v = 0;
-						else v = ((float)minimap[SHOWLEVEL].revealed[__min(i+1, MINIMAP_MAX_X-1)][j]) * DIV255;
+						else v = ((float)minimap[SHOWLEVEL].revealed[min(i+1, MINIMAP_MAX_X-1)][j]) * DIV255;
 
 						if (flag == 1)
 						{
@@ -639,7 +639,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 						oo += v;
 
 						if ((i + 1 < 0) || (i + 1 >= MINIMAP_MAX_X) || (j + 1 < 0) || (j + 1 >= MINIMAP_MAX_Z)) v = 0;
-						else v = ((float)minimap[SHOWLEVEL].revealed[__min(i+1, MINIMAP_MAX_X-1)][__min(j+1, MINIMAP_MAX_Z-1)]) * DIV255;
+						else v = ((float)minimap[SHOWLEVEL].revealed[min(i+1, MINIMAP_MAX_X-1)][min(j+1, MINIMAP_MAX_Z-1)]) * DIV255;
 
 						if (flag == 1)
 						{
@@ -673,7 +673,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 						oo += v;
 
 						if ((i < 0) || (i >= MINIMAP_MAX_X) || (j + 1 < 0) || (j + 1 >= MINIMAP_MAX_Z)) v = 0;
-						else v = ((float)minimap[SHOWLEVEL].revealed[i][__min(j+1, MINIMAP_MAX_Z-1)]) * DIV255;
+						else v = ((float)minimap[SHOWLEVEL].revealed[i][min(j+1, MINIMAP_MAX_Z-1)]) * DIV255;
 
 						if (flag == 1)
 						{

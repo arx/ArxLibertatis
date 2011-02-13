@@ -683,8 +683,8 @@ void Danae_Registry_Read(char * string,char * text,char *defaultstr,long maxsize
 		{
 			if ((defaultstr) && (defaultstr[0]!=0))
 			{
-			memcpy(text,defaultstr,__min(maxsize+1,(long)strlen(defaultstr)+1));
-			text[__min(maxsize,(long)strlen(defaultstr))]=0;
+			memcpy(text,defaultstr,min(maxsize+1,(long)strlen(defaultstr)+1));
+			text[min(maxsize,(long)strlen(defaultstr))]=0;
 			}
 			else text[0]=0;
 		}
@@ -6230,7 +6230,7 @@ static float _AvgFrameDiff = 150.f;
 
 			while ((cur<tFrameDiff) && (!(inter.iobj[0]->ioflags & IO_FREEZESCRIPT)))
 			{
-				long step=__min(50,tFrameDiff);
+				long step=min(50,tFrameDiff);
 
 				if (inter.iobj[0]->ioflags & IO_FREEZESCRIPT) step=0;
 
@@ -7665,11 +7665,11 @@ void ShowInfoText(long COR)
 	char tex[256];
 	float fpss2=1000.f/_framedelay;
 	LASTfpscount++;
-
-	float fps2v=__max(fpss2,LASTfps2);
-	float fps2vmin=__min(fpss2,LASTfps2);
-
-	if (LASTfpscount>49)
+	
+	float fps2v=max(fpss2,LASTfps2);
+	float fps2vmin=min(fpss2,LASTfps2);
+	
+	if (LASTfpscount>49) 
 	{
 		LASTfps2=0;
 		LASTfpscount=0;
@@ -7837,13 +7837,13 @@ float LAST_FZSCREEN;
 void ShowFPS()
 {
 	char tex[256];
-	float fpss2=1000.f/_framedelay;
+	float fpss2=1000.f/_framedelay;	
 	LASTfpscount++;
-
-	float fps2v=__max(fpss2,LASTfps2);
-	float fps2vmin=__min(fpss2,LASTfps2);
-
-	if (LASTfpscount>49)
+	
+	float fps2v=max(fpss2,LASTfps2);
+	float fps2vmin=min(fpss2,LASTfps2);
+	
+	if (LASTfpscount>49) 
 	{
 		LASTfps2=0;
 		LASTfpscount=0;
