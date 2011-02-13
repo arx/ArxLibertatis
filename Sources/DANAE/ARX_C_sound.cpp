@@ -22,15 +22,10 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-
-#include "arx_c_cinematique.h"
-#include "resource.h"
-#include "arx_sound.h"
-
-#include <cstdio>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+#include <stdio.h>
+#include "ARX_CCinematique.h"
+#include "Resource.h"
+#include "ARX_Sound.h"
 
 /*-----------------------------------------------------------*/
 C_SOUND		TabSound[MAX_SOUND];
@@ -146,11 +141,12 @@ void CutAndAddString(char * pText, char * pDebText)
 
 	while (i--)
 	{
-		if (!strnicmp(pText, pDebText, j))
-		{
-			bOk = true;
-			break;
-		}
+		//todo: strings
+//		if (!strnicmp(pText, pDebText, j))
+//		{
+//			bOk = true;
+//			break;
+//		}
 
 		pText++;
 	}
@@ -198,23 +194,24 @@ void PatchReplace()
 
 	while (j--)
 	{
-		if (!strnicmp(pT, "uk", strlen("uk")))
-		{
-			*pT = 0;
-			strcpy(CopyTxt, pT + 3);
-			strcat(AllTxt, "english\\");
-			strcat(AllTxt, CopyTxt);
-			break;
-		}
-
-		if (!strnicmp(pT, "fr", strlen("fr")))
-		{
-			*pT = 0;
-			strcpy(CopyTxt, pT + 3);
-			strcat(AllTxt, "francais\\");
-			strcat(AllTxt, CopyTxt);
-			break;
-		}
+		//todo strings
+//		if (!strnicmp(pT, "uk", strlen("uk")))
+//		{
+//			*pT = 0;
+//			strcpy(CopyTxt, pT + 3);
+//			strcat(AllTxt, "english\\");
+//			strcat(AllTxt, CopyTxt);
+//			break;
+//		}
+//
+//		if (!strnicmp(pT, "fr", strlen("fr")))
+//		{
+//			*pT = 0;
+//			strcpy(CopyTxt, pT + 3);
+//			strcat(AllTxt, "francais\\");
+//			strcat(AllTxt, CopyTxt);
+//			break;
+//		}
 
 		pT++;
 	}
@@ -229,11 +226,12 @@ void PatchReplace()
 
 	while (j)
 	{
-		if (!strnicmp((const char *)pT, "sfx\\speech\\", strlen((const char *)"sfx\\speech\\")))
-		{
-			bFound = true;
-			break;
-		}
+		//todo strings
+//		if (!strnicmp((const char *)pT, "sfx\\speech\\", strlen((const char *)"sfx\\speech\\")))
+//		{
+//			bFound = true;
+//			break;
+//		}
 
 		j--;
 		pT++;
@@ -316,7 +314,8 @@ int AddSoundToList(char * dir, char * name, int id, int pos)
 	strcat(AllTxt, name);
 	PatchReplace();
 
-	strupr(AllTxt);
+//	todo strings
+//	strupr(AllTxt);
 
 	if (strstr(AllTxt, "SFX"))
 	{
