@@ -5652,7 +5652,7 @@ void CWindowMenuConsole::UpdateText()
 
 				if(bKey)
 				{
-					if ((_istalnum(tCat[0]) || _istspace(tCat[0]) || _istpunct(tCat[0])) && (tCat[0]!=_T('\t')) && (tCat[0]!=_T('*')))
+					if ((isalnum(tCat[0]) || _istspace(tCat[0]) || _istpunct(tCat[0])) && (tCat[0]!=_T('\t')) && (tCat[0]!=_T('*')))
 						_tcscat(tText,tCat);
 				}
 			}
