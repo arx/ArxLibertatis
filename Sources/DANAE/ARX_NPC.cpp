@@ -60,8 +60,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Collisions.h"
 #include "ARX_Damages.h"
 #include "ARX_Equipment.h"
-#include "ARX_interface.h"
-#include "ARX_interactive.h"
+#include "ARX_Interface.h"
+#include "ARX_Interactive.h"
 #include "ARX_Speech.h"
 #include "ARX_Paths.h"
 #include "ARX_Paths.h"
@@ -79,13 +79,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEAnchors.h"
 #include "EERIECollisionSpheres.h"
 #include "EERIEMeshTweak.h"
-
-#include "HERMESMain.h"
-
-#include <cstdlib>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 
 void CheckNPCEx(INTERACTIVE_OBJ * io);
 

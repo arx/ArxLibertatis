@@ -56,29 +56,26 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 
 #include "ARX_Equipment.h"
+#include "HERMESMain.h"
+#include "EERIEMath.h"
+#include "EERIEObject.h"
+#include "EERIEMeshTweak.h"
 #include "ARX_NPC.h"
 #include "ARX_Sound.h"
 #include "ARX_Collisions.h"
 #include "ARX_Particles.h"
 #include "ARX_Damages.h"
-#include "ARX_interactive.h"
-#include "ARX_interface.h"
-#include "ARX_script.h"
+#include "ARX_Interactive.h"
+#include "ARX_Interface.h"
+#include "ARX_Script.h"
 
 #include "EERIELinkedObj.h"
 #include "EERIEMath.h"
 #include "EERIEObject.h"
 #include "EERIEMeshTweak.h"
 
-#include "HERMESMain.h"
-
 #include <cstdio>
 #include <cstdlib>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-
-
 
 struct EQUIP_INFO
 {

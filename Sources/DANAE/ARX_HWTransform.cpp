@@ -22,6 +22,9 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+#include <stdio.h>
+#define DIRECTINPUT_VERSION 0x0700
+#include <dinput.h>
 #include "ARX_HWTransform.h"
 #include "ARX_menu2.h"
 
@@ -30,10 +33,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEMath.h"
 #include "EERIEDraw.h"
 #include "EERIEUtil.h"
+#include "ARX_Menu2.h"
 
-#define DIRECTINPUT_VERSION 0x0700
-#include <dinput.h>
-#include <cstdio>
+//-----------------------------------------------------------------------------
 
 using namespace std;
 
