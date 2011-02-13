@@ -68,32 +68,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <tchar.h>
 #include <zlib.h>
 
-// Needed for ARX_PLATFORM_WINDOWS
-#include <core/Common.h>
+#include <IL/il.h>
 
-// boolean and INT32 used by jpeglib clash with wine
-#define INT32 INT32_JPEG
-#ifndef ARX_PLATFORM_WINDOWS
-# define boolean boolean_JPEG
-# ifdef _WIN32
-#  define HAD_WIN32
-#  undef _WIN32
-# endif
-#else
-# define HAVE_BOOLEAN
-typedef boolean boolean_JPEG;
-#endif
-
-#include <jpeglib.h>
-
-#ifndef ARX_PLATFORM_WINDOWS
-# undef boolean
-# ifdef HAD_WIN32
-#  define _WIN32
-#  undef HAD_WIN32
-# endif
-#endif
-#undef INT32
+#include "core/Common.h"
 
 #include "core/Application.h"
 #include "graphics/GraphicsUtility.h"
@@ -103,61 +80,8 @@ typedef boolean boolean_JPEG;
 #include "io/PakManager.h"
 #include "io/Logger.h"
 
-using std::max;
 
 long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
-/*-----------------------------------------------------------------------------*/
-#define OR	||
-#define AND &&
-
-#define	PNG_ERROR	0
-#define PNG_OK		1
-
-#define GRAYSCALE_USED	0		//validate value:0,2,3,4,6
-#define	PALETTE_USED	1
-#define COLOR_USED		2
-#define	ALPHA_USED		4
-
-#define PNG_HEADER		0x52444849
-#define PNG_TEXT		0x74584574
-#define PNG_TIME		0x454d4974
-#define PNG_PHYS		0x73594870
-#define PNG_GAMMA		0x414d4167
-#define PNG_DATAS		0x54414449
-#define PNG_END			0x444e4549
-#define PNG_PALETTE		0x45544c50
-
-#define PNG_FNONE		0
-#define PNG_FSUB		1
-#define PNG_FUP			2
-#define PNG_FAVERAGE	3
-#define PNG_FPAETH		4
-
-typedef struct
-{
-	unsigned int		width;
-	unsigned int		height;
-	char				bitdepth;
-	char				colortype;
-	char				compression;
-	char				filter;
-	char				interlace;
-} PNG_IHDR;
-
-typedef struct
-{
-	unsigned char r, g, b;
-} PNG_PALETTE_ARXX;
-
-typedef struct
-{
-	unsigned int		pnglzwtaille;
-	unsigned int		pngbpp;
-	unsigned int		pngmodulos;
-	PNG_IHDR		*	pngh;
-	PNG_PALETTE_ARXX	* pngpalette;
-	void		*		pnglzwdatas;
-} DATAS_PNG;
 
 /*-----------------------------------------------------------------------------*/
 // Local list of textures
@@ -167,29 +91,28 @@ typedef struct
  
 TextureContainer	* g_ptcTextureList = NULL;
 bool				bGlobalTextureStretch;
-char		*		PNGDatas;
-unsigned int		ChunkType, ChunkTaille, ChunkCRC;
 
 /*-----------------------------------------------------------------------------*/
-void InverseLong(int * l)
+
+class DevilLib
 {
-	*l=-(*l);
-//	_asm
-//	{
-//		push ebx;
-//		mov ebx, dword ptr[l];
-//		mov eax, [ebx];
-//		bswap eax;
-//		mov dword ptr[ebx], eax;
-//		pop ebx;
-//	}
-}
+public:
+    DevilLib()
+    {
+        ilInit();
 
+		// Set the origin to be used when loading all images, 
+		// so that any image with a different origin will be
+		// flipped to have the set origin
+		ilOriginFunc( IL_ORIGIN_UPPER_LEFT );
+		ilEnable( IL_ORIGIN_SET );
+    }
 
-
-
-
-
+    ~DevilLib()
+    {
+        ilShutDown();
+    }
+} gDevilLib;
 
 
 TextureContainer * MakeTCFromFile(const char * tex, long flag)
@@ -225,21 +148,6 @@ TextureContainer * MakeTCFromFile_NoRefinement(const char * tex, long flag)
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
 	return tc;
 }
-
-//-----------------------------------------------------------------------------
-// Name: CD3DTextureManager
-// Desc: Class used to automatically construct and destruct the static
-//       texture engine class.
-//-----------------------------------------------------------------------------
-class CD3DTextureManager
-{
-		public:
-		CD3DTextureManager() {}
-		~CD3DTextureManager()
-		{
-			if (g_ptcTextureList) delete g_ptcTextureList;
-		}
-};
 
 //-----------------------------------------------------------------------------
 // Name: struct TEXTURESEARCHINFO
@@ -353,21 +261,6 @@ TextureContainer * FindTexture( const std::string& strTextureName)
 		return NULL;
 }
 
-TextureContainer * _FindTexture( const std::string& strTextureName)
-{
-		TextureContainer * ptcTexture = g_ptcTextureList;
-
-		while (ptcTexture)
-		{
-			if ( strTextureName.find( ptcTexture->m_texName) != std::string::npos )
-				return ptcTexture;
-
-			ptcTexture = ptcTexture->m_pNext;
-		}
-
-		return NULL;
-}
-
 long BLURTEXTURES = 0;
 long NOMIPMAPS = 0;
 
@@ -426,35 +319,10 @@ void ReloadTexture(TextureContainer * ptcTexture)
 
 		SAFE_DELETE_TAB(ptcTexture->m_pRGBAData);
 
-		if (ptcTexture->m_pJPEGData)
-		{
-			struct	jpeg_decompress_struct	* cinfo = (jpeg_decompress_struct *)ptcTexture->m_pJPEGData;
-			jpeg_destroy_decompress(cinfo);
-
-			if (ptcTexture->m_pJPEGData_ex)
-			{
-				free((void *)ptcTexture->m_pJPEGData_ex);
-				ptcTexture->m_pJPEGData_ex = NULL;
-			}
-		}
-
-		SAFE_DELETE_TAB(ptcTexture->m_pJPEGData);
-		SAFE_DELETE_TAB(ptcTexture->m_pPNGData);
-
-		if (ptcTexture->m_hbmBitmap)
-		{
-			DeleteObject(ptcTexture->m_hbmBitmap);
-			ptcTexture->m_hbmBitmap = NULL;
-		}
-
 		ptcTexture->m_pddsSurface = NULL;
 		ptcTexture->m_pddsBumpMap = NULL;
 
-		ptcTexture->m_hbmBitmap   = NULL;
 		ptcTexture->m_pRGBAData   = NULL;
-		ptcTexture->m_pJPEGData = NULL;
-		ptcTexture->m_pJPEGData_ex = NULL;
-		ptcTexture->m_pPNGData = NULL;
 
 		ptcTexture->LoadImageData();
 
@@ -581,11 +449,7 @@ TextureContainer::TextureContainer( const std::string& strName, DWORD dwStage,
 		m_pddsSurface = NULL;
 		m_pddsBumpMap = NULL;
 
-		m_hbmBitmap   = NULL;
 		m_pRGBAData   = NULL;
-		m_pJPEGData = NULL;
-		m_pJPEGData_ex = NULL;
-		m_pPNGData = NULL;
 
 		userflags = 0;
 		TextureRefinement = NULL;
@@ -687,15 +551,8 @@ TextureContainer::~TextureContainer()
 
 		SAFE_RELEASE(m_pddsSurface);
 		SAFE_RELEASE(m_pddsBumpMap);
-		SAFE_DELETE_TAB(m_pPNGData);
 
 		SAFE_DELETE_TAB(m_pRGBAData);
-
-		if (m_hbmBitmap)
-		{
-			DeleteObject(m_hbmBitmap);
-			m_hbmBitmap = NULL;
-		}
 
 		if (vertexbuffer)
 		{
@@ -714,30 +571,6 @@ TextureContainer::~TextureContainer()
 			free(delayed);
 			delayed = NULL;
 		}
-
-		if (m_pJPEGData)
-		{
-			struct	jpeg_decompress_struct	* cinfo = (jpeg_decompress_struct *)m_pJPEGData;
-
-			if (cinfo)
-			{
-				jpeg_destroy_decompress(cinfo);
-			}
-			else
-			{
-				assert(0);
-			}
-
-			if (m_pJPEGData_ex)
-			{
-				free((void *)m_pJPEGData_ex);
-				m_pJPEGData_ex = NULL;
-			}
-		}
-
-		if (m_pJPEGData) delete [] m_pJPEGData;
-
-		m_pJPEGData = NULL;
 
 		// Remove the texture container from the global list
 		if (g_ptcTextureList == this)
@@ -777,267 +610,77 @@ TextureContainer::~TextureContainer()
 //-----------------------------------------------------------------------------
 HRESULT TextureContainer::LoadImageData()
 {
-		std::string strExtension;
-		std::string strPathname;
-		std::string tempstrPathname;
+	std::string tempstrPathname;
+	
+	HRESULT hres;
+	tempstrPathname = m_strName;
 
-		// Check File
-		strPathname = m_strName;
+	SetExt(tempstrPathname, ".png");
+	if ((hres = LoadFile(tempstrPathname)) != E_FAIL) return hres;
 
-		HRESULT hres;
-		tempstrPathname = strPathname;
+	SetExt(tempstrPathname, ".jpg");
+	if ((hres = LoadFile(tempstrPathname)) != E_FAIL) return hres;
 
-		SetExt(tempstrPathname, ".png");
-		if ((hres = LoadPNGFile(tempstrPathname.c_str())) != E_FAIL) return hres;
+	SetExt(tempstrPathname, ".jpeg");
+	if ((hres = LoadFile(tempstrPathname)) != E_FAIL) return hres;
 
-		SetExt(tempstrPathname, ".jpg");
-		if ((hres = LoadJpegFileNoDecomp(tempstrPathname.c_str())) != E_FAIL) return hres;
+	SetExt(tempstrPathname, ".bmp");
+	if ((hres = LoadFile(tempstrPathname)) != E_FAIL) return hres;
 
-		SetExt(tempstrPathname, ".jpeg");
-		if ((hres = LoadJpegFileNoDecomp(tempstrPathname.c_str())) != E_FAIL) return hres;
+	SetExt(tempstrPathname, ".tga");
+	if ((hres = LoadFile(tempstrPathname)) != E_FAIL) return hres;
 
-		SetExt(tempstrPathname, ".bmp");
-		if((hres = LoadBitmapFile(tempstrPathname)) != E_FAIL) return hres;
-
-		SetExt(tempstrPathname, ".tga");
-		if((hres = LoadTargaFile(tempstrPathname)) != E_FAIL) return hres;
-
-		// Can add code here to check for other file formats before failing
-
+	// Can add code here to check for other file formats before failing
 	LogError << m_strName << " not found";
 	
 	return DDERR_UNSUPPORTED;
 }
 
-//-----------------------------------------------------------------------------
-// Name: LoadBitmapFile()
-// Desc: Loads data from a .bmp file, and stores it in a bitmap structure.
-//-----------------------------------------------------------------------------
-HRESULT TextureContainer::LoadBitmapFile(const std::string& strPathname) {
-
-	size_t siz = 0;
-	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname.c_str(), siz);
-	// TODO siz ignored
-
-	if(!dat) {
-		return E_FAIL;
-	}
-
-	BITMAPINFOHEADER sBitmapH = *((BITMAPINFOHEADER *)(dat + sizeof(BITMAPFILEHEADER)));
-	HDC hHDC = CreateCompatibleDC(NULL);
-
-	if (!hHDC)
-	{
-		free(dat);
-		return DDERR_NOTFOUND;
-	}
-
-	char * mem = NULL;
-	int iUsage;
-
-	if (sBitmapH.biBitCount < 8)
-	{
-		free(dat);
-		DeleteDC(hHDC);
-		return DDERR_NOTFOUND;
-	}
-
-	if (sBitmapH.biBitCount == 8)
-	{
-		iUsage = DIB_PAL_COLORS;
-	}
-	else
-	{
-		iUsage = DIB_RGB_COLORS;
-	}
-
-	sBitmapH.biSize = sizeof(sBitmapH);
-	m_hbmBitmap = CreateDIBSection(hHDC, (BITMAPINFO *)&sBitmapH, iUsage, (void **)&mem, NULL, 0);
-
-	if (SelectObject(hHDC, m_hbmBitmap) == NULL)
-	{
-		DeleteDC(hHDC);
-		return DDERR_NOTFOUND;
-	}
-
-	if (!mem)
-	{
-		free(dat);
-		DeleteDC(hHDC);
-		return DDERR_NOTFOUND;
-	}
-
-	if (!m_hbmBitmap)
-	{
-		DeleteDC(hHDC);
-		free(dat);
-		return DDERR_NOTFOUND;
-	}
 
 
-	BITMAPFILEHEADER bh;
-
-	if (iUsage == DIB_PAL_COLORS)
-	{
-		RGBQUAD col[256];
-		memcpy(col, dat + sizeof(BITMAPINFOHEADER) + sizeof(BITMAPFILEHEADER), sizeof(RGBQUAD) * 256);
-		SetDIBColorTable(hHDC,
-						 0,			// color table index of first entry
-						 256,		// number of color table entries
-						 col		// array of color table entries
-						);
-	}
-
-	bh = *((BITMAPFILEHEADER *)(dat));
-	long size = sBitmapH.biSizeImage;
-
-	if (size == 0) size = sBitmapH.biHeight * sBitmapH.biWidth * sBitmapH.biBitCount >> 3;
-
-	memcpy(mem, dat + bh.bfOffBits, size);
-
-	if (sBitmapH.biCompression != BI_RGB)
-	{
-		memset(mem, 64, size);
-	}
-
-	free(dat);
-	DeleteDC(hHDC);
-	return S_OK;
-}
-
-//-----------------------------------------------------------------------------
-// Name: LoadTargaFile()
-// Desc: Loads RGBA data from a .tga file, and stores it in allocated memory
-//       for the specified texture container
-//-----------------------------------------------------------------------------
-HRESULT TextureContainer::LoadTargaFile(const std::string& strPathname)
+HRESULT TextureContainer::LoadFile(const std::string& strPathname)
 {
 	size_t size = 0;
-	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname.c_str(), size);
-	// TODO size ignored
-
-	if(!dat) {
+	char * dat = (char *)PAK_FileLoadMalloc(strPathname.c_str(), size);
+	
+	if(!dat) 
+	{
 		return E_FAIL;
 	}
 
-		struct TargaHeader
-		{
-			BYTE IDLength;
-			BYTE ColormapType;
-			BYTE ImageType;
-			BYTE ColormapSpecification[5];
-			WORD XOrigin;
-			WORD YOrigin;
-			WORD ImageWidth;
-			WORD ImageHeight;
-			BYTE PixelDepth;
-			BYTE ImageDescriptor;
-		} tga;
+	ILuint  imageName;
+    ilGenImages( 1, &imageName );
+    ilBindImage( imageName );    
 
-		long pos = 0;
-		memcpy(&tga, dat + pos, sizeof(TargaHeader));
-		pos += sizeof(TargaHeader);
+	ILenum imageType = ilTypeFromExt(strPathname.c_str());
+	ILboolean bLoaded = ilLoadL(imageType, dat, size);
 
-		// Only true color, non-mapped images are supported
-		if ((0 != tga.ColormapType) ||
-				(tga.ImageType != 10 && tga.ImageType != 2))
-		{
-			free(dat);
-			return E_FAIL;
-		}
+	ILint imgFormat = ilGetInteger( IL_IMAGE_FORMAT );
+	
+	m_dwWidth   = ilGetInteger( IL_IMAGE_WIDTH );
+	m_dwHeight  = ilGetInteger( IL_IMAGE_HEIGHT );
+	m_dwBPP		= ilGetInteger( IL_IMAGE_BYTES_PER_PIXEL );
+	m_bHasAlpha = m_dwBPP == 32;
 
-		// Skip the ID field. The first byte of the header is the length of this field
-		if (tga.IDLength)
-			pos += tga.IDLength;
+	ilConvertImage( IL_RGBA, IL_UNSIGNED_BYTE );
+	m_dwBPP = ilGetInteger( IL_IMAGE_BYTES_PER_PIXEL );
 
-		m_dwWidth   = tga.ImageWidth;
-		m_dwHeight  = tga.ImageHeight;
-		m_dwBPP     = tga.PixelDepth;
-		m_pRGBAData = new DWORD[m_dwWidth*m_dwHeight];
-
-		if (m_pRGBAData == NULL)
-		{
-			free(dat);
-			return E_FAIL;
-		}
-
-		for (DWORD y = 0; y < m_dwHeight; y++)
-		{
-			DWORD dwOffset = y * m_dwWidth;
-
-			if (0 == (tga.ImageDescriptor & 0x0010))
-				dwOffset = (m_dwHeight - y - 1) * m_dwWidth;
-
-			for (DWORD x = 0; x < m_dwWidth; x)
-			{
-				if (tga.ImageType == 10)
-				{
-					BYTE PacketInfo = dat[pos++];
-					WORD PacketType = 0x80 & PacketInfo;
-					WORD PixelCount = (0x007f & PacketInfo) + 1;
-
-					if (PacketType)
-					{
-						DWORD b = dat[pos++];
-						DWORD g = dat[pos++];
-						DWORD r = dat[pos++];
-						DWORD a = 0xff;
-
-						if (m_dwBPP == 32)
-							a = dat[pos++];
-
-						while (PixelCount--)
-						{
-							m_pRGBAData[dwOffset+x] = (r << 24L) + (g << 16L) + (b << 8L) + (a);
-							x++;
-						}
-					}
-					else
-					{
-						while (PixelCount--)
-						{
-							BYTE b = dat[pos++];
-							BYTE g = dat[pos++];
-							BYTE r = dat[pos++];
-							BYTE a = 0xff;
-
-							if (m_dwBPP == 32)
-								a = dat[pos++];
-
-							m_pRGBAData[dwOffset+x] = (r << 24L) + (g << 16L) + (b << 8L) + (a);
-							x++;
-						}
-					}
-				}
-				else
-				{
-					BYTE b = dat[pos++];
-					BYTE g = dat[pos++];
-					BYTE r = dat[pos++];
-					BYTE a = 0xff;
-
-					if (m_dwBPP == 32)
-						a = dat[pos++];
-
-					m_pRGBAData[dwOffset+x] = (r << 24L) + (g << 16L) + (b << 8L) + (a);
-					x++;
-				}
-			}
-		}
-
-		// Check for alpha content
-		for (DWORD i = 0; i < (m_dwWidth * m_dwHeight); i++)
-		{
-
-			if ((m_pRGBAData[i] & 0x000000ff) != 0xff)
-			{
-				m_bHasAlpha = true;
-				break;
-			}
-		}
-
+	m_pRGBAData = new DWORD[m_dwWidth*m_dwHeight];
+	if (m_pRGBAData == NULL)
+	{
+		ilDeleteImages( 1, &imageName );
 		free(dat);
-		return S_OK;
+		return E_FAIL;
+	}
+
+    memcpy( m_pRGBAData, ilGetData(), m_dwWidth*m_dwHeight*m_dwBPP );
+
+	RemoveFakeBlack();
+		
+    ilDeleteImages( 1, &imageName );
+
+	free(dat);
+	return S_OK;
 }
 
 void CopySurfaceToBumpMap(LPDIRECTDRAWSURFACE7 sSurface, LPDIRECTDRAWSURFACE7 dSurface)
@@ -2239,15 +1882,8 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 	if (FAILED(hr))
 		return hr;
 
-	if (m_hbmBitmap)
-		 CopyBitmapToSurface(t_m_pddsSurface);
-
 	if (m_pRGBAData)
 		CopyRGBADataToSurface(t_m_pddsSurface);
-
-	if (m_pJPEGData) CopyJPEGDataToSurface(t_m_pddsSurface);
-
-	if (m_pPNGData) CopyPNGDataToSurface(t_m_pddsSurface);
 
 	if ((!(this->m_dwFlags & D3DTEXTR_NO_MIPMAP)) && BLURTEXTURES) SmoothSurface(t_m_pddsSurface);
 
@@ -2357,318 +1993,76 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 	return S_OK;
 }
 
-void RemoveFakeBlack(BITMAP bm)
+void TextureContainer::RemoveFakeBlack()
 {
-	if (bm.bmBits == NULL) return;
+	BYTE * sBytes = (BYTE *)m_pRGBAData;
 
-	if (bm.bmBitsPixel == 32)
+	DWORD dwRShiftL		= 0;
+	DWORD dwRShiftR		= 0;
+	DWORD dwRMask		= 0x000000FF;
+	DWORD dwGShiftL		= 0;
+	DWORD dwGShiftR		= 8;
+	DWORD dwGMask		= 0x0000FF00;
+	DWORD dwBShiftL		= 0;
+	DWORD dwBShiftR		= 16;
+	DWORD dwBMask		= 0x00FF0000;
+	DWORD dwAShiftL		= 0;
+	DWORD dwAShiftR		= 24;
+	DWORD dwAMask		= 0xFF000000;
+	DWORD * pSrcData32	= (DWORD *)sBytes;
+
+	ARX_CHECK_NOT_NEG(m_dwHeight);
+
+	for (DWORD y = 0 ; y < ARX_CAST_ULONG(m_dwHeight) ; y++)
 	{
-		BYTE * sBytes = (BYTE *)bm.bmBits;
+		ARX_CHECK_NOT_NEG(m_dwWidth);
 
-		DWORD dwRShiftL		= 0;
-		DWORD dwRShiftR		= 0;
-		DWORD dwRMask		= 0x000000FF;
-		DWORD dwGShiftL		= 0;
-		DWORD dwGShiftR		= 8;
-		DWORD dwGMask		= 0x0000FF00;
-		DWORD dwBShiftL		= 0;
-		DWORD dwBShiftR		= 16;
-		DWORD dwBMask		= 0x00FF0000;
-		DWORD dwAShiftL		= 0;
-		DWORD dwAShiftR		= 24;
-		DWORD dwAMask		= 0xFF000000;
-		DWORD * pSrcData32	= (DWORD *)sBytes;
-
-		ARX_CHECK_NOT_NEG(bm.bmHeight);
-
-		for (DWORD y = 0 ; y < ARX_CAST_ULONG(bm.bmHeight) ; y++)
+		for (DWORD x = 0 ; x < ARX_CAST_ULONG(m_dwWidth) ; x++)
 		{
-			ARX_CHECK_NOT_NEG(bm.bmWidth);
+			// Original Pixel
+			DWORD dwPixel;
+			long offset = x + y * m_dwWidth ;
 
-			for (DWORD x = 0 ; x < ARX_CAST_ULONG(bm.bmWidth) ; x++)
-			{
-				// Original Pixel
-				DWORD dwPixel;
-				long offset = x + y * bm.bmWidthBytes ;
+			dwPixel = pSrcData32[offset];
 
-				dwPixel = pSrcData32[offset];
+			BYTE r1 = (BYTE)(((dwPixel & dwRMask) >> dwRShiftR) << dwRShiftL);    
+			BYTE g1 = (BYTE)(((dwPixel & dwGMask) >> dwGShiftR) << dwGShiftL);     
+			BYTE b1 = (BYTE)(((dwPixel & dwBMask) >> dwBShiftR) << dwBShiftL); 
+			BYTE a1 = (BYTE)(((dwPixel & dwAMask) >> dwAShiftR) << dwAShiftL);
 
-				BYTE r1 = (BYTE)(((dwPixel & dwRMask) >> dwRShiftR) << dwRShiftL);    
-				BYTE g1 = (BYTE)(((dwPixel & dwGMask) >> dwGShiftR) << dwGShiftL);     
-				BYTE b1 = (BYTE)(((dwPixel & dwBMask) >> dwBShiftR) << dwBShiftL); 
-				BYTE a1 = (BYTE)(((dwPixel & dwAMask) >> dwAShiftR) << dwAShiftL);
+			if ((r1 != 0) && (r1 < 15)) r1 = 15;
 
-				if ((r1 != 0) && (r1 < 15)) r1 = 15;
+			if ((g1 != 0) && (g1 < 15)) g1 = 15;
 
-				if ((g1 != 0) && (g1 < 15)) g1 = 15;
+			if ((b1 != 0) && (b1 < 15)) b1 = 15;
 
-				if ((b1 != 0) && (b1 < 15)) b1 = 15;
+			long rr	= r1;
+			BYTE r	= (BYTE)rr;
+			long gg	= g1;
+			BYTE g	= (BYTE)gg;
+			long bb	= b1;
+			BYTE b	= (BYTE)bb;
+			long aa	= a1;
+			BYTE a	= (BYTE)aa;
 
-				long rr	= r1;
-				BYTE r	= (BYTE)rr;
-				long gg	= g1;
-				BYTE g	= (BYTE)gg;
-				long bb	= b1;
-				BYTE b	= (BYTE)bb;
-				long aa	= a1;
-				BYTE a	= (BYTE)aa;
+			if ((r1 == 0) && (g1 == 0) && (b1 == 0)) a = 0;
 
-				if ((r1 == 0) && (g1 == 0) && (b1 == 0)) a = 0;
+			DWORD dr = ((r >> (dwRShiftL)) << dwRShiftR) & dwRMask;
+			DWORD dg = ((g >> (dwGShiftL)) << dwGShiftR) & dwGMask;
+			DWORD db = ((b >> (dwBShiftL)) << dwBShiftR) & dwBMask;
+			DWORD da = ((a >> (dwAShiftL)) << dwAShiftR) & dwAMask;
 
-				DWORD dr = ((r >> (dwRShiftL)) << dwRShiftR) & dwRMask;
-				DWORD dg = ((g >> (dwGShiftL)) << dwGShiftR) & dwGMask;
-				DWORD db = ((b >> (dwBShiftL)) << dwBShiftR) & dwBMask;
-				DWORD da = ((a >> (dwAShiftL)) << dwAShiftR) & dwAMask;
-
-				pSrcData32[offset] = (DWORD)(dr + dg + db + da);
-
-			}
-		}
-	}
-	else if (bm.bmBitsPixel == 24)
-	{
-		unsigned char * sBytes = (unsigned char *)bm.bmBits;
-
-		ARX_CHECK_NOT_NEG(bm.bmHeight);
-
-		for (DWORD y = 0 ; y < ARX_CAST_ULONG(bm.bmHeight) ; y++)
-		{
-			ARX_CHECK_NOT_NEG(bm.bmWidth);
-
-			for (DWORD x = 0 ; x < ARX_CAST_ULONG(bm.bmWidth) ; x++)
-			{
-				long offset			  = x * 3 + y * bm.bmWidthBytes;
-				unsigned char dwPixel = sBytes[offset];
-
-				if ((dwPixel != 0) && (dwPixel < 15)) sBytes[offset] = 15;
-
-				dwPixel = sBytes[offset+1];
-
-				if ((dwPixel != 0) && (dwPixel < 15)) sBytes[offset+1] = 15;
-
-				dwPixel = sBytes[offset+2];
-
-				if ((dwPixel != 0) && (dwPixel < 15)) sBytes[offset+2] = 15;
-
-			}
+			pSrcData32[offset] = (DWORD)(dr + dg + db + da);
 		}
 	}
 }
+
 
 //-----------------------------------------------------------------------------
 // Name: CopyBitmapToSurface()
-// Desc: Copies the image of a bitmap into a surface
+// Desc: Copy a bitmap section to the direct draw surface, a restore must have been done prior to calling this function
 //-----------------------------------------------------------------------------
-HRESULT TextureContainer::CopyBitmapToSurface(LPDIRECTDRAWSURFACE7 Surface)
-{
-	// Get a DDraw object to create a temporary surface
-	LPDIRECTDRAW7 pDD;
-	Surface->GetDDInterface((VOID **)&pDD);
-
-	// Get the bitmap structure (to extract width, height, and bpp)
-	BITMAP bm;
-	GetObject(m_hbmBitmap, sizeof(BITMAP), &bm);
-
-	// Setup the new surface desc
-	DDSURFACEDESC2 ddsd;
-	ddsd.dwSize = sizeof(ddsd);
-	Surface->GetSurfaceDesc(&ddsd);
-	float fWidthSurface = (float)ddsd.dwWidth;
-	float fHeightSurface = (float)ddsd.dwHeight;
-	ddsd.dwFlags          = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT |
-							DDSD_TEXTURESTAGE;
-	ddsd.ddsCaps.dwCaps   = DDSCAPS_TEXTURE | DDSCAPS_SYSTEMMEMORY;
-
-	ddsd.ddsCaps.dwCaps2  = 0L;
-	ddsd.dwWidth          = bm.bmWidth;
-	ddsd.dwHeight         = bm.bmHeight;
-
-	// Create a new surface for the texture
-	LPDIRECTDRAWSURFACE7 pddsTempSurface;
-	HRESULT hr;
-
-	if (FAILED(hr = pDD->CreateSurface(&ddsd, &pddsTempSurface, NULL)))
-	{
-		pDD->Release();
-		return hr;
-	}
-
-	// Get a DC for the bitmap
-	HDC hdcBitmap = CreateCompatibleDC(NULL);
-
-	if (NULL == hdcBitmap)
-	{
-		pddsTempSurface->Release();
-		pDD->Release();
-		return hr;
-	}
-
-	SelectObject(hdcBitmap, m_hbmBitmap);
-
-	// Handle palettized textures. Need to attach a palette
-	if (ddsd.ddpfPixelFormat.dwRGBBitCount == 8)
-	{
-		LPDIRECTDRAWPALETTE  pPalette;
-		DWORD dwPaletteFlags = DDPCAPS_8BIT | DDPCAPS_ALLOW256;
-		DWORD pe[256];
-		UINT uiRes = GetDIBColorTable(hdcBitmap, 0, 256, (RGBQUAD *)pe);
-		ARX_CHECK_WORD(uiRes);
-		WORD  wNumColors     = ARX_CLEAN_WARN_CAST_WORD(uiRes);
-
-		// Create the color table
-		for (WORD i = 0; i < wNumColors; i++)
-		{
-			pe[i] = RGB(GetBValue(pe[i]), GetGValue(pe[i]), GetRValue(pe[i]));
-
-			// Handle textures with transparent pixels
-			if (m_dwFlags & (D3DTEXTR_TRANSPARENTWHITE | D3DTEXTR_TRANSPARENTBLACK))
-			{
-				// Set alpha for opaque pixels
-				if (m_dwFlags & D3DTEXTR_TRANSPARENTBLACK)
-				{
-					if (pe[i] != 0x00000000)
-						pe[i] |= 0xff000000;
-				}
-				else if (m_dwFlags & D3DTEXTR_TRANSPARENTWHITE)
-				{
-					if (pe[i] != 0x00ffffff)
-						pe[i] |= 0xff000000;
-				}
-			}
-		}
-
-		// Add DDPCAPS_ALPHA flag for textures with transparent pixels
-		if (m_dwFlags & (D3DTEXTR_TRANSPARENTWHITE | D3DTEXTR_TRANSPARENTBLACK))
-			dwPaletteFlags |= DDPCAPS_ALPHA;
-
-		// Create & attach a palette
-		pDD->CreatePalette(dwPaletteFlags, (PALETTEENTRY *)pe, &pPalette, NULL);
-		pddsTempSurface->SetPalette(pPalette);
-		Surface->SetPalette(pPalette);
-		SAFE_RELEASE(pPalette);
-	}
-
-	
-	RemoveFakeBlack(bm);
-
-	// Copy the bitmap image to the surface.
-	HDC hdcSurface;
-
-	if (SUCCEEDED(pddsTempSurface->GetDC(&hdcSurface)))
-	{
-		BitBlt(hdcSurface, 0, 0, bm.bmWidth, bm.bmHeight, hdcBitmap, 0, 0,
-			   SRCCOPY);
-		pddsTempSurface->ReleaseDC(hdcSurface);
-	}
-
-	DeleteDC(hdcBitmap);
-
-
-
-	// Copy the temp surface to the real texture surface
-	if (bGlobalTextureStretch)
-	{
-		m_dx = .999999f;
-		m_dy = .999999f;
-		Surface->Blt(NULL, pddsTempSurface, NULL, DDBLT_WAIT, NULL);
-	}
-	else
-	{
-		RECT rBlt;
-		SetRect(&rBlt, 0, 0, ddsd.dwWidth, ddsd.dwHeight);
-
-		if (ddsd.dwWidth < fWidthSurface)
-		{
-			m_dx = ((float)ddsd.dwWidth) / fWidthSurface;
-		}
-		else
-		{
-			rBlt.right = (int)fWidthSurface;
-			m_dx = .999999f;
-		}
-
-		if (ddsd.dwHeight < fHeightSurface)
-		{
-			m_dy = ((float)ddsd.dwHeight) / fHeightSurface;
-		}
-		else
-		{
-			rBlt.bottom = (int)fHeightSurface;
-			m_dy = 0.999999f;
-		}
-
-		Surface->Blt(&rBlt, pddsTempSurface, NULL, DDBLT_WAIT, NULL);
-	}
-
-	DDSURFACEDESC2 ddesc, ddesc2;
-	ddesc.dwSize = sizeof(ddesc);
-	ddesc2.dwSize = sizeof(ddesc2);
-
-	// Done with the temp surface
-	pddsTempSurface->Release();
-
-	// For textures with real alpha (not palettized), set transparent bits
-	if (ddsd.ddpfPixelFormat.dwRGBAlphaBitMask)
-	{
-		if (m_dwFlags & (D3DTEXTR_TRANSPARENTWHITE | D3DTEXTR_TRANSPARENTBLACK))
-		{
-			// Lock the texture surface
-			DDSURFACEDESC2 ddsd;
-			ddsd.dwSize = sizeof(ddsd);
-
-			while (Surface->Lock(NULL, &ddsd, 0, NULL) ==
-					DDERR_WASSTILLDRAWING);
-
-			DWORD dwAlphaMask = ddsd.ddpfPixelFormat.dwRGBAlphaBitMask;
-			DWORD dwRGBMask   = (ddsd.ddpfPixelFormat.dwRBitMask |
-								 ddsd.ddpfPixelFormat.dwGBitMask |
-								 ddsd.ddpfPixelFormat.dwBBitMask);
-			DWORD dwColorkey  = 0x00000000; // Colorkey on black
-
-			if (m_dwFlags & D3DTEXTR_TRANSPARENTWHITE)
-				dwColorkey = dwRGBMask;     // Colorkey on white
-
-			// Add an opaque alpha value to each non-colorkeyed pixel
-			for (DWORD y = 0; y < ddsd.dwHeight; y++)
-			{
-				WORD * p16 = (WORD *)((BYTE *)ddsd.lpSurface + y * ddsd.lPitch);
-				DWORD * p32 = (DWORD *)((BYTE *)ddsd.lpSurface + y * ddsd.lPitch);
-
-				for (DWORD x = 0; x < ddsd.dwWidth; x++)
-				{
-					if (ddsd.ddpfPixelFormat.dwRGBBitCount == 16)
-					{
-						if ((*p16 &= dwRGBMask) != dwColorkey)
-							* p16 |= dwAlphaMask;
-
-						p16++;
-					}
-
-					if (ddsd.ddpfPixelFormat.dwRGBBitCount == 32)
-					{
-						if ((*p32 &= dwRGBMask) != dwColorkey)
-							* p32 |= dwAlphaMask;
-
-						p32++;
-					}
-				}
-			}
-
-			Surface->Unlock(NULL);
-		}
-	}
-
-	pDD->Release();
-
-	return S_OK;;
-}
-
-
-//-----------------------------------------------------------------------------
-// Name: CopyBitmapToSurface2()
-// Desc: Copie une partie de bitmap sur la surface, un restore doit avoir ete fait avant!!!  seb
-//-----------------------------------------------------------------------------
-HRESULT TextureContainer::CopyBitmapToSurface2(HBITMAP hbitmap, int depx, int depy, int largeur, int hauteur, long flag)
+HRESULT TextureContainer::CopyBitmapToSurface(HBITMAP hbitmap, int depx, int depy, int largeur, int hauteur)
 {
 	LPDIRECTDRAWSURFACE7 Surface;
 
@@ -2760,8 +2154,6 @@ HRESULT TextureContainer::CopyBitmapToSurface2(HBITMAP hbitmap, int depx, int de
 		Surface->SetPalette(pPalette);
 		SAFE_RELEASE(pPalette);
 	}
-
-	if (!(flag & 1)) RemoveFakeBlack(bm);
 
 	// Copy the bitmap image to the surface.
 	HDC hdcSurface;
@@ -2890,8 +2282,7 @@ HRESULT TextureContainer::CopyRGBADataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 	Surface->GetSurfaceDesc(&ddsd);
 	float fWidthSurface = (float)ddsd.dwWidth;
 	float fHeightSurface = (float)ddsd.dwHeight;
-	ddsd.dwFlags         = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT |
-						   DDSD_TEXTURESTAGE;
+	ddsd.dwFlags         = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT | DDSD_TEXTURESTAGE;
 	ddsd.ddsCaps.dwCaps  = DDSCAPS_TEXTURE | DDSCAPS_SYSTEMMEMORY;
 	ddsd.ddsCaps.dwCaps2 = 0L;
 	ddsd.dwWidth         = m_dwWidth;
@@ -2949,10 +2340,10 @@ HRESULT TextureContainer::CopyRGBADataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 		{
 			DWORD dwPixel = m_pRGBAData[y*ddsd.dwWidth+x];
 
-			BYTE r = (BYTE)((dwPixel >> 24) & 0x000000ff);
-			BYTE g = (BYTE)((dwPixel >> 16) & 0x000000ff);
-			BYTE b = (BYTE)((dwPixel >> 8) & 0x000000ff);
-			BYTE a = (BYTE)((dwPixel >> 0) & 0x000000ff);
+			BYTE r = (BYTE)((dwPixel >> 0)  & 0x000000ff);
+			BYTE g = (BYTE)((dwPixel >> 8)  & 0x000000ff);
+			BYTE b = (BYTE)((dwPixel >> 16) & 0x000000ff);
+			BYTE a = (BYTE)((dwPixel >> 24) & 0x000000ff);
 
 			DWORD dr = ((r >> (dwRShiftL)) << dwRShiftR)&dwRMask;
 			DWORD dg = ((g >> (dwGShiftL)) << dwGShiftR)&dwGMask;
@@ -2967,241 +2358,6 @@ HRESULT TextureContainer::CopyRGBADataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 
 		pBytes += ddsd.lPitch;
 	}
-
-	pddsTempSurface->Unlock(0);
-
-	// Copy the temp surface to the real texture surface
-	if (bGlobalTextureStretch)
-	{
-		m_dx = .999999f;
-		m_dy = .999999f;
-		Surface->Blt(NULL, pddsTempSurface, NULL, DDBLT_WAIT, NULL);
-	}
-	else
-	{
-		RECT rBlt;
-		SetRect(&rBlt, 0, 0, ddsd.dwWidth, ddsd.dwHeight);
-
-		if (ddsd.dwWidth < fWidthSurface)
-		{
-			m_dx = ((float)ddsd.dwWidth) / fWidthSurface;
-		}
-		else
-		{
-			rBlt.right = (int)fWidthSurface;
-			m_dx = .999999f;
-		}
-
-		if (ddsd.dwHeight < fHeightSurface)
-		{
-			m_dy = ((float)ddsd.dwHeight) / fHeightSurface;
-		}
-		else
-		{
-			rBlt.bottom = (int)fHeightSurface;
-			m_dy = 0.999999f;
-		}
-
-		Surface->Blt(&rBlt, pddsTempSurface, NULL, DDBLT_WAIT, NULL);
-	}
-
-	// Done with the temp objects
-	pddsTempSurface->Release();
-	pDD->Release();
-
-	return S_OK;
-}
-
-//-----------------------------------------------------------------------------
-// Name: CopyJPEGDataToSurface()
-// Desc: Invalidates the current texture objects and rebuilds new ones
-//       using the new device.
-//-----------------------------------------------------------------------------
-int JPEGError;
-METHODDEF(void)
-my_error_exit(j_common_ptr cinfo)
-{
-	char errbuf[JMSG_LENGTH_MAX];
-	(*cinfo->err->format_message)(cinfo, errbuf);
-	LogError << errbuf;
-	// Output message to console.
-	//(*cinfo->err->output_message)(cinfo); 
-	JPEGError = 1;
-	return;
-}
-
-struct jpeg_membuf {
-	const JOCTET * buf;
-	size_t size;
-};
-
-const bool JPEG_NO_TRUE_BLACK = true;
-
-HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
-{
-	// Get a DDraw object to create a temporary surface
-	LPDIRECTDRAW7 pDD;
-	Surface->GetDDInterface((VOID **)&pDD);
-
-	// Setup the new surface desc
-	DDSURFACEDESC2 ddsd;
-	ddsd.dwSize = sizeof(ddsd);
-	Surface->GetSurfaceDesc(&ddsd);
-	float fWidthSurface = (float)ddsd.dwWidth;
-	float fHeightSurface = (float)ddsd.dwHeight;
-	ddsd.dwFlags         = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT |
-						   DDSD_TEXTURESTAGE;
-	ddsd.ddsCaps.dwCaps  = DDSCAPS_TEXTURE | DDSCAPS_SYSTEMMEMORY;
-	ddsd.ddsCaps.dwCaps2 = 0L;
-	ddsd.dwWidth         = m_dwWidth;
-	ddsd.dwHeight        = m_dwHeight;
-
-	// Create a new surface for the texture
-	LPDIRECTDRAWSURFACE7 pddsTempSurface;
-	HRESULT hr;
-
-	if (FAILED(hr = pDD->CreateSurface(&ddsd, &pddsTempSurface, NULL)))
-	{
-		pDD->Release();
-		return 0;
-	}
-
-	while (pddsTempSurface->Lock(NULL, &ddsd, 0, 0) == DDERR_WASSTILLDRAWING);
-
-	BYTE * pBytes = (BYTE *)ddsd.lpSurface;
-
-	DWORD dwRMask = ddsd.ddpfPixelFormat.dwRBitMask;
-	DWORD dwGMask = ddsd.ddpfPixelFormat.dwGBitMask;
-	DWORD dwBMask = ddsd.ddpfPixelFormat.dwBBitMask;
-	DWORD dwAMask = ddsd.ddpfPixelFormat.dwRGBAlphaBitMask;
-
-	DWORD dwRShiftL = 8, dwRShiftR = 0;
-	DWORD dwGShiftL = 8, dwGShiftR = 0;
-	DWORD dwBShiftL = 8, dwBShiftR = 0;
-	DWORD dwAShiftL = 8, dwAShiftR = 0;
-
-	DWORD dwMask;
-
-	for (dwMask = dwRMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwRShiftR++;
-
-	for (; dwMask; dwMask >>= 1) dwRShiftL--;
-
-	for (dwMask = dwGMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwGShiftR++;
-
-	for (; dwMask; dwMask >>= 1) dwGShiftL--;
-
-	for (dwMask = dwBMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwBShiftR++;
-
-	for (; dwMask; dwMask >>= 1) dwBShiftL--;
-
-	for (dwMask = dwAMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwAShiftR++;
-
-	for (; dwMask; dwMask >>= 1) dwAShiftL--;
-
-	struct	jpeg_decompress_struct	* cinfo = (jpeg_decompress_struct *)m_pJPEGData;
-	long	dx, dy;
-
-	assert(cinfo != NULL);
-	
-	//initialized first output format
-	cinfo->out_color_space = JCS_RGB;
-	cinfo->output_components = 3;
-	if(!jpeg_start_decompress(cinfo)) {
-		LogError << "JPEG decompression error";
-	}
-
-	if (JPEGError)
-	{
-		// TODO this will never be reached
-		LogError << "JPEG decompression error";
-		JPEGError = 0;
-		pddsTempSurface->Unlock(0);
-		pddsTempSurface->Release();
-		pDD->Release();
-		return 0;
-	}
-
-
-	char * buffer = new char[cinfo->output_width*cinfo->output_height*cinfo->output_components];
-
-	if (!buffer)
-	{
-		LogError << "buffer allocation error";
-		jpeg_finish_decompress(cinfo);
-		pddsTempSurface->Unlock(0);
-		pddsTempSurface->Release();
-		pDD->Release();
-		return 0;
-	}
-
-	unsigned char * bufferconv;
-
-	dy = m_dwHeight;
-
-	while (dy)
-	{
-		DWORD * pDstData32 = (DWORD *)pBytes;
-		WORD * pDstData16 = (WORD *)pBytes;
-
-		jpeg_read_scanlines(cinfo, (unsigned char **)&buffer, 1);
-
-		if (JPEGError)
-		{
-			LogError << "JPEG decompression error";
-			JPEGError = 0;
-			pddsTempSurface->Unlock(0);
-			pddsTempSurface->Release();
-			pDD->Release();
-			jpeg_finish_decompress(cinfo);
-			return 0;
-		}
-
-		bufferconv = (unsigned char *)buffer;
-		dx = m_dwWidth;
-
-		while (dx)
-		{
-			BYTE r = (BYTE) * bufferconv++;
-			BYTE g = (BYTE) * bufferconv++;
-			BYTE b = (BYTE) * bufferconv++;
-			BYTE a = 0xFF;
-
-			if ((JPEG_NO_TRUE_BLACK) && (r < 15) && (g < 15) && (b < 15))
-			{
-				r = 15;
-				g = 15;
-				b = 15;
-			}
-
-			DWORD dr = ((r >> (dwRShiftL)) << dwRShiftR)&dwRMask;
-			DWORD dg = ((g >> (dwGShiftL)) << dwGShiftR)&dwGMask;
-			DWORD db = ((b >> (dwBShiftL)) << dwBShiftR)&dwBMask;
-			DWORD da = ((a >> (dwAShiftL)) << dwAShiftR)&dwAMask;
-
-			if (32 == ddsd.ddpfPixelFormat.dwRGBBitCount)
-				*pDstData32++ = (DWORD)(dr + dg + db + da);
-			else
-				*pDstData16++ = (WORD)(dr + dg + db + da);
-
-			dx--;
-		}
-
-		pBytes += ddsd.lPitch;
-		dy--;
-	}
-
-	(void)jpeg_finish_decompress(cinfo);
-	
-	
-	struct jpeg_source_mgr * src = cinfo->src;
-	jpeg_membuf * b = (jpeg_membuf *)cinfo->client_data;
-	
-	src->bytes_in_buffer = b->size;
-	src->next_input_byte = b->buf;
-	
-	jpeg_read_header(cinfo, true);
-	
-	delete[] buffer;
 
 	pddsTempSurface->Unlock(0);
 
@@ -3459,16 +2615,6 @@ TextureContainer * D3DTextr_CreateTextureFromFile( const std::string& _strName, 
 		return ReturnValue;
 	}
 
-	// Save the image's dimensions
-	if (ptcTexture->m_hbmBitmap)
-	{
-		BITMAP bm;
-		GetObject(ptcTexture->m_hbmBitmap, sizeof(BITMAP), &bm);
-		ptcTexture->m_dwWidth  = (DWORD)bm.bmWidth;
-		ptcTexture->m_dwHeight = (DWORD)bm.bmHeight;
-		ptcTexture->m_dwBPP    = (DWORD)bm.bmBitsPixel;
-	}
-
 	ptcTexture->m_dwDeviceWidth = 0;
 	ptcTexture->m_dwDeviceHeight = 0;
 	ptcTexture->m_dwOriginalWidth = ptcTexture->m_dwWidth;
@@ -3686,1210 +2832,6 @@ TextureContainer * D3DTextr_GetSurfaceContainer( const std::string& _strName)
 	MakeUpcase(strName);
 	TextureContainer * ptcTexture = FindTexture(strName);
 	return ptcTexture;
-}
-
-
-void jpeg_init_source(j_decompress_ptr cinfo) {
-	jpeg_membuf * b = (jpeg_membuf *)cinfo->client_data;
-	cinfo->src->next_input_byte = b->buf;
-	cinfo->src->bytes_in_buffer = b->size;
-}
-
-void jpeg_term_source(j_decompress_ptr cinfo) {
-	// don't do anything
-}
-
-boolean_JPEG fill_input_buffer(j_decompress_ptr cinfo) {
-	// There is nothing to fill.
-	return false;
-}
-
-void skip_input_data(j_decompress_ptr cinfo, long num_bytes) {
-	struct jpeg_source_mgr * src = cinfo->src;
-	if(num_bytes > 0) {
-		if((size_t)num_bytes >= src->bytes_in_buffer) {
-			src->bytes_in_buffer = 0;
-			return;
-		}
-		src->bytes_in_buffer -= num_bytes;
-		src->next_input_byte += num_bytes;
-	}
-}
-
-void jpegDecompressFromMemory(j_decompress_ptr cinfo, const char * buffer, size_t size) {
-	
-	assert(cinfo->src == NULL);
-	assert(cinfo->client_data == NULL);
-	
-	cinfo->src = (struct jpeg_source_mgr *)(*cinfo->mem->alloc_small)
-	             ((j_common_ptr) cinfo, JPOOL_PERMANENT, sizeof(struct jpeg_source_mgr));
-	cinfo->client_data = (*cinfo->mem->alloc_small)
-	                     ((j_common_ptr) cinfo, JPOOL_PERMANENT, sizeof(jpeg_membuf));
-	struct jpeg_source_mgr * src = cinfo->src;
-	jpeg_membuf * b = (jpeg_membuf *)cinfo->client_data;
-	
-	src->next_input_byte = b->buf = (const JOCTET *)buffer;
-	src->bytes_in_buffer = b->size = size;
-	
-	src->init_source = jpeg_init_source;
-	src->fill_input_buffer = fill_input_buffer;
-	src->skip_input_data = skip_input_data;
-	src->resync_to_restart = jpeg_resync_to_restart; // default implementation
-	src->term_source = jpeg_term_source;
-	
-}
-
-//-----------------------------------------------------------------------------
-// Name: LoadJPEGFileNoDeComp()
-// Desc: Loads a .jpeg file, and stores it in allocated memory
-//       for the specified texture container
-//-----------------------------------------------------------------------------
-HRESULT TextureContainer::LoadJpegFileNoDecomp(const std::string& strPathname) {
-	
-	size_t size;
-	char * memjpeg = (char *)PAK_FileLoadMalloc(strPathname, size);
-	if(!memjpeg) {
-		return E_FAIL;
-	}
-	
-	assert(m_pJPEGData == NULL);
-	
-	m_pJPEGData = new unsigned char[sizeof(struct	jpeg_decompress_struct)+sizeof(struct jpeg_error_mgr)];
-	if(!m_pJPEGData) {
-		free(memjpeg);
-		return E_FAIL;
-	}
-
-	struct jpeg_decompress_struct * cinfo = (struct jpeg_decompress_struct *)m_pJPEGData;
-	cinfo->client_data = NULL;
-	
-	struct jpeg_error_mgr * jerr = (struct jpeg_error_mgr *)(m_pJPEGData + sizeof(struct jpeg_decompress_struct));
-
-	cinfo->err = jpeg_std_error(jerr);
-
-	if(JPEGError) {
-		JPEGError = 0;
-		delete memjpeg;
-		delete[] m_pJPEGData;
-		m_pJPEGData = NULL;
-		return E_FAIL;
-	}
-
-	jerr->error_exit = my_error_exit;
-
-	jpeg_create_decompress(cinfo);
-
-	if(JPEGError) {
-		JPEGError = 0;
-		free(memjpeg);
-		delete[] m_pJPEGData;
-		m_pJPEGData = NULL;
-		return E_FAIL;
-	}
-
-	jpegDecompressFromMemory(cinfo, memjpeg, size);
-
-	if(JPEGError) {
-		JPEGError = 0;
-		jpeg_destroy_decompress(cinfo);
-		free(memjpeg);
-		delete[] m_pJPEGData;
-		m_pJPEGData = NULL;
-		return E_FAIL;
-	}
-
-	jpeg_read_header(cinfo, true);
-
-	if (JPEGError) {
-		JPEGError = 0;
-		jpeg_destroy_decompress(cinfo);
-		free(memjpeg);
-		delete[] m_pJPEGData;
-		m_pJPEGData = NULL;
-		return E_FAIL;
-	}
-
-	m_dwWidth = cinfo->image_width;
-	m_dwHeight = cinfo->image_height;
-	m_dwBPP = 24;
-	
-	assert(m_pJPEGData_ex == NULL);
-	
-	m_pJPEGData_ex = memjpeg;
-	
-	struct jpeg_source_mgr * src = cinfo->src;
-	jpeg_membuf * b = (jpeg_membuf *)cinfo->client_data;
-	
-	return S_OK;
-}
-/*-----------------------------------------------------------------------------*/
-/*
-	<< Datas du PNG en memoire;
-	>> PNG_OK si format valide sinon PNG_ERROR
-*/
-int	Read_PNG_Signature(void)
-{
-	int	* dat;
-
-	dat = (int *)PNGDatas;
-
-	if (*dat++ != 0x474e5089) return PNG_ERROR;
-
-	if (*dat++ != 0x0a1a0a0d) return PNG_ERROR;
-
-	PNGDatas = (char *)dat;
-	return PNG_OK;
-}
-
-/*-----------------------------------------------------------------------------*/
-/*
-	a chunk is composed of:
-	4 byte: size data
-	4 byte: type
-	data
-	Byte 4: CRC (could be tested)
-
-	<< Datas PNG in memory.
-	>> type of chunk, chunk size, and CRC
-*/
-void Read_PNG_Chunk(void)
-{
-	unsigned int	* dat;
-
-	dat = (unsigned int *)PNGDatas;
-	ChunkTaille = *dat++;
-	ChunkType = *dat++;
-	PNGDatas = (char *)dat;
-
-	InverseLong((int *)&ChunkTaille);
-	dat = (unsigned int *)(PNGDatas + ChunkTaille);
-	ChunkCRC = *dat;
-}
-/*-----------------------------------------------------------------------------*/
-/*
-	<< PNG data in memory.
-	>> Header crepe + error code
-*/
-int Read_PNG_Header(DATAS_PNG * dpng)
-{
-	PNG_IHDR * pngh = dpng->pngh = (PNG_IHDR *)PNGDatas;
-
-	if ((!pngh->width)OR(!pngh->height)OR(pngh->interlace)) return PNG_ERROR;
-
-	InverseLong((int *)&pngh->width);
-	InverseLong((int *)&pngh->height);
-	PNGDatas += ChunkTaille + 4;
-
-	switch (pngh->colortype)
-	{
-		case GRAYSCALE_USED:
-				dpng->pngbpp = pngh->bitdepth >> 3;
-
-			if (!dpng->pngbpp) dpng->pngbpp = 1;
-
-			break;
-		case COLOR_USED:
-				dpng->pngbpp = (pngh->bitdepth >> 3) * 3;
-			break;
-		case COLOR_USED|PALETTE_USED:
-				dpng->pngbpp = (pngh->bitdepth >> 3);
-
-			if (!dpng->pngbpp) dpng->pngbpp = 1;
-
-			dpng->pngbpp *= 3;
-			break;
-		case ALPHA_USED:
-				dpng->pngbpp = (pngh->bitdepth >> 3) * 2;
-			break;
-		case COLOR_USED|ALPHA_USED:
-				dpng->pngbpp = (pngh->bitdepth >> 3) * 4;
-			break;
-		default:
-				return PNG_ERROR;
-			break;
-	}
-
-	return PNG_OK;
-}
-/*-----------------------------------------------------------------------------*/
-/*
-	<< Datas PNG en memoire.
-*/
-void Read_PNG_Palette(DATAS_PNG * dpng)
-{
-	dpng->pngpalette = (PNG_PALETTE_ARXX *)PNGDatas;
-	PNGDatas += ChunkTaille + 4;
-}
-/*-----------------------------------------------------------------------------*/
-/*
-	<< Datas PNG en memoire.
-	>> datas ptr init
-*/
-void Read_PNG_Datas(DATAS_PNG * dpng)
-{
-	dpng->pnglzwdatas = (void *)PNGDatas;
-	dpng->pnglzwtaille = ChunkTaille;
-	PNGDatas += ChunkTaille + 4;
-}
-/*-----------------------------------------------------------------------------*/
-/*
-	<< Datas PNG en memoire.
-	>> Datas Decompresse.
-*/
-void * PNG_Inflate(DATAS_PNG * dpng)
-{
-	void	*	mem;
-	int			err, tdecomp;
-	z_stream	d_stream;	//stream de decompression
-
-	d_stream.zalloc = (alloc_func)0;
-	d_stream.zfree = (free_func)0;
-	d_stream.opaque = (voidpf)0;
-
-	d_stream.next_in = (Bytef *)dpng->pnglzwdatas;
-	d_stream.avail_in = (uInt)dpng->pnglzwtaille;
-
-	err = inflateInit(&d_stream);
-
-	if (err != Z_OK) return NULL;
-
-	PNG_IHDR * pngh = dpng->pngh;
-
-	tdecomp = ((pngh->width + 1) * pngh->height * dpng->pngbpp);
-	mem = (void *)new char[tdecomp];
-
-	if (!mem) return NULL;
-
-	while (1)
-	{
-		d_stream.next_out = (Bytef *)mem;
-		d_stream.avail_out = (uInt)tdecomp;
-		err = inflate(&d_stream, Z_NO_FLUSH);
-
-		if (err == Z_STREAM_END) break;
-	}
-
-	err = inflateEnd(&d_stream);
-
-	if (err != Z_OK)
-	{
-		free(mem);
-		mem = NULL;
-		return NULL;
-	}
-
-	return mem;
-}
-/*-----------------------------------------------------------------------------*/
-int Decomp_PNG(void * mems, DATAS_PNG * dpng) {
-	
-	int noerr = 1, stop = 1;
-	
-	PNGDatas = (char *)mems;
-	dpng->pngpalette = NULL;
-	dpng->pnglzwdatas = NULL;
-
-	if (!Read_PNG_Signature()) return PNG_ERROR;
-
-	while((noerr) && (stop)) {
-		
-		Read_PNG_Chunk();
-
-		switch (ChunkType) {
-			case PNG_HEADER:
-					noerr = Read_PNG_Header(dpng);
-				break;
-			case PNG_PALETTE:
-					Read_PNG_Palette(dpng);
-				break;
-			case PNG_DATAS:
-					Read_PNG_Datas(dpng);
-				break;
-			case PNG_END:
-					stop = 0;
-				break;
-			default:
-					PNGDatas += ChunkTaille + 4;
-				break;
-		}
-	}
-	
-	if (!noerr) return PNG_ERROR;
-	
-	return PNG_OK;
-}
-//-----------------------------------------------------------------------------
-// Name: LoadPNGFile()
-// Desc: Loads a .png file, and stores it in allocated memory
-//       for the specified texture container, no interlace required
-//-----------------------------------------------------------------------------
-HRESULT TextureContainer::LoadPNGFile( const std::string& strPathname)
-{
-	PakFileHandle * file = PAK_fopen(strPathname.c_str());
-	
-	if(!file) {
-		return E_FAIL;
-	}
-	
-	PAK_fseek(file, 0, SEEK_END);
-	size_t size = PAK_ftell(file);
-	
-	// TODO why allocate the size here?
-	m_pPNGData = new unsigned char[size + sizeof(DATAS_PNG)];
-	if(!m_pPNGData) {
-		PAK_fclose(file);
-		return E_FAIL;
-	}
-
-	PAK_fseek(file, 0, SEEK_SET);
-
-	char * mempng = (char *)(m_pPNGData + sizeof(DATAS_PNG));
-	PAK_fread((void *)mempng, 1, size, file);
-	PAK_fclose(file);
-
-	if(Decomp_PNG((void *)mempng, (DATAS_PNG *)m_pPNGData) == PNG_ERROR) {
-		delete m_pPNGData;
-		m_pPNGData = NULL;
-		return E_FAIL;
-	}
-
-	PNG_IHDR * pngh = ((DATAS_PNG *)m_pPNGData)->pngh;
-
-	if(pngh->colortype & ALPHA_USED) {
-		m_bHasAlpha = true;
-	}
-
-	m_dwWidth = pngh->width;
-	m_dwHeight = pngh->height;
-	m_dwBPP = 24;
-
-	return S_OK;
-}
-/*-----------------------------------------------------------------------------*/
-char * FilteringNone(char * mem, char ** memd, DATAS_PNG * dpng)
-{
-	memcpy((void *)*memd, (const void *)mem, dpng->pngmodulos);
-	*memd += dpng->pngmodulos;
-
-	return (mem + dpng->pngmodulos);
-}
-/*-----------------------------------------------------------------------------*/
-char * FilteringSub(unsigned char * mem, char ** memd, DATAS_PNG * dpng)
-{
-	unsigned char	* ms, *md, *mddep;
-	int				dx;
-
-	ms = mem;
-	md = (unsigned char *) * memd;
-	mddep = md;
-
-	dx = dpng->pngbpp;
-
-	while (dx)
-	{
-		*md++ = *ms++;
-		dx--;
-	}
-
-	dx = dpng->pngmodulos - dpng->pngbpp;
-
-	while (dx)
-	{
-		*md++ = (*ms++) + (*mddep++);
-		dx--;
-	}
-
-
-	*memd = (char *)md;
-	return (char *)ms;
-}
-/*-----------------------------------------------------------------------------*/
-char * FilteringUp(unsigned char * mem, char ** memd, int flg, DATAS_PNG * dpng)
-{
-	unsigned char	* md, *ms, *mdm;
-	int				dx;
-
-	md = (unsigned char *) * memd;
-	ms = mem;
-
-	if (flg)
-	{
-		dx = dpng->pngmodulos;
-
-		while (dx)
-		{
-			*md++ = *ms++;
-			dx--;
-		}
-	}
-	else
-	{
-		mdm = md - dpng->pngmodulos;
-		dx = dpng->pngmodulos;
-
-		while (dx)
-		{
-			*md++ = (*ms++) + (*mdm++);
-			dx--;
-		}
-	}
-
-
-	*memd = (char *)md;
-	return (char *)ms;
-}
-/*-----------------------------------------------------------------------------*/
-char * FilteringAverage(char * mem, char ** memd, int first, DATAS_PNG * dpng)
-{
-	unsigned char	* md, *ms, *mdm, *mddep;
-	int				dx;
-
-	md = (unsigned char *) * memd;
-	mddep = md;
-	ms = (unsigned char *)mem;
-
-	if (first)
-	{
-		dx = dpng->pngbpp;
-
-		while (dx--)
-		{
-			*md++ = *ms++;
-		}
-
-		dx = dpng->pngmodulos - dpng->pngbpp;
-
-		while (dx--)
-		{
-			*md++ = (*ms++) + ((*mddep++) >> 1);
-		}
-	}
-	else
-	{
-		mdm = md - dpng->pngmodulos;
-		dx = dpng->pngbpp;
-
-		while (dx)
-		{
-			*md++ = (*ms++) + ((*mdm++) >> 1);
-			dx--;
-		}
-
-		dx = dpng->pngmodulos - dpng->pngbpp;
-
-		while (dx)
-		{
-			*md++ = (*ms++) + (((*mdm++) + (*mddep++)) >> 1);
-			dx--;
-		}
-	}
-
-	*memd = (char *)md;
-	return (char *)ms;
-}
-/*-----------------------------------------------------------------------------*/
-unsigned char PaethPredictor(unsigned char a, unsigned char b, unsigned char c)
-{
-	int p, pa, pb, pc;
-
-	p = a + b - c;
-	pa = abs(p - a);
-	pb = abs(p - b);
-	pc = abs(p - c);
-
-	if ((pa <= pb)AND(pa <= pc))
-	{
-		return a;
-	}
-	else
-	{
-		if (pb <= pc)
-		{
-			return b;
-		}
-		else
-		{
-			return c;
-		}
-	}
-}
-/*-----------------------------------------------------------------------------*/
-char * FilteringPaeth(unsigned char * mem, char ** memd, int first, DATAS_PNG * dpng)
-{
-	char	* md, *ms, *mddep, *mdm, *mdmdep;
-	int		dx;
-
-	md = *memd;
-	mddep = md;
-	ms = (char *)mem;
-
-	if (first)
-	{
-		dx = dpng->pngbpp;
-
-		while (dx)
-		{
-			*md++ = *ms++;
-			dx--;
-		}
-
-		dx = dpng->pngmodulos - dpng->pngbpp;
-
-		while (dx)
-		{
-			*md++ = (*ms++) + PaethPredictor(*mddep, 0, 0);
-			mddep++;
-			dx--;
-		}
-	}
-	else
-	{
-		mdm = md - dpng->pngmodulos;
-		mdmdep = mdm;
-		dx = dpng->pngbpp;
-
-		while (dx)
-		{
-			*md++ = (*ms++) + PaethPredictor(0, *mdm, 0);
-			mdm++;
-			dx--;
-		}
-
-		dx = dpng->pngmodulos - dpng->pngbpp;
-
-		while (dx)
-		{
-			*md++ = (*ms++) + PaethPredictor(*mddep, *mdm, *mdmdep);
-			mddep++;
-			mdmdep++;
-			mdm++;
-			dx--;
-		}
-	}
-
-	*memd = md;
-	return ms;
-}
-/*-----------------------------------------------------------------------------*/
-HRESULT TextureContainer::CopyPNGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
-{
-	int				dx, dy, t, dec;
-	char		*	memd, *memdc;
-	unsigned char	cc;
-	unsigned short	* memdcw;
-	char			filtre, *mt;
-
-	// Get a DDraw object to create a temporary surface
-	LPDIRECTDRAW7 pDD;
-	Surface->GetDDInterface((VOID **)&pDD);
-
-	// Setup the new surface desc
-	DDSURFACEDESC2 ddsd;
-	ddsd.dwSize = sizeof(ddsd);
-	Surface->GetSurfaceDesc(&ddsd);
-	float fWidthSurface = (float)ddsd.dwWidth;
-	float fHeightSurface = (float)ddsd.dwHeight;
-	ddsd.dwFlags         = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT |
-						   DDSD_TEXTURESTAGE;
-	ddsd.ddsCaps.dwCaps  = DDSCAPS_TEXTURE | DDSCAPS_SYSTEMMEMORY;
-	ddsd.ddsCaps.dwCaps2 = 0L;
-	ddsd.dwWidth         = m_dwWidth;
-	ddsd.dwHeight        = m_dwHeight;
-
-	// Create a new surface for the texture
-	LPDIRECTDRAWSURFACE7 pddsTempSurface;
-	HRESULT hr;
-
-	if (FAILED(hr = pDD->CreateSurface(&ddsd, &pddsTempSurface, NULL)))
-	{
-		pDD->Release();
-		return 0;
-	}
-
-	while (pddsTempSurface->Lock(NULL, &ddsd, 0, 0) == DDERR_WASSTILLDRAWING);
-
-	BYTE * pBytes = (BYTE *)ddsd.lpSurface;
-
-	DWORD dwRMask = ddsd.ddpfPixelFormat.dwRBitMask;
-	DWORD dwGMask = ddsd.ddpfPixelFormat.dwGBitMask;
-	DWORD dwBMask = ddsd.ddpfPixelFormat.dwBBitMask;
-	DWORD dwAMask = ddsd.ddpfPixelFormat.dwRGBAlphaBitMask;
-
-	DWORD dwRShiftL = 8, dwRShiftR = 0;
-	DWORD dwGShiftL = 8, dwGShiftR = 0;
-	DWORD dwBShiftL = 8, dwBShiftR = 0;
-	DWORD dwAShiftL = 8, dwAShiftR = 0;
-
-	DWORD dwMask;
-
-	for (dwMask = dwRMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwRShiftR++;
-
-	for (; dwMask; dwMask >>= 1) dwRShiftL--;
-
-	for (dwMask = dwGMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwGShiftR++;
-
-	for (; dwMask; dwMask >>= 1) dwGShiftL--;
-
-	for (dwMask = dwBMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwBShiftR++;
-
-	for (; dwMask; dwMask >>= 1) dwBShiftL--;
-
-	for (dwMask = dwAMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwAShiftR++;
-
-	for (; dwMask; dwMask >>= 1) dwAShiftL--;
-
-	DATAS_PNG * dpng = (DATAS_PNG *)m_pPNGData;
-	PNG_IHDR * pngh = dpng->pngh;
-
-	switch (pngh->colortype)
-	{
-		case GRAYSCALE_USED:
-				dec = (pngh->bitdepth >> 3);
-
-			if (!dec) dec = 1;
-
-			t = (pngh->width * pngh->height) * dec;
-			break;
-		case COLOR_USED:
-				dec = (pngh->bitdepth >> 3) * 3;
-			t = (pngh->width * pngh->height) * dec;
-			break;
-		case COLOR_USED|PALETTE_USED:
-				dec = (pngh->bitdepth >> 3);
-
-			if (!dec) dec = 1;
-
-			t = (pngh->width * pngh->height) * dec;
-			break;
-		case ALPHA_USED:
-				dec = (pngh->bitdepth >> 3) * 2;
-			t = (pngh->width * pngh->height) * dec;
-			break;
-		case COLOR_USED|ALPHA_USED:
-				dec = (pngh->bitdepth >> 3) * 4;
-			t = (pngh->width * pngh->height) * dec;
-			break;
-		default:
-				pDD->Release();
-			return 0;
-			break;
-	}
-
-	memd = new char[t];
-
-	if (!memd)
-	{
-		pDD->Release();
-		return 0;
-	}
-
-	//depak
-	dpng->pngmodulos = dec * pngh->width;
-
-	char * mems = (char *)PNG_Inflate(dpng);
-	mt = mems;
-	memdc = memd;
-	dy = pngh->height;
-
-	while (dy)
-	{
-		filtre = *mt++;
-
-		switch (filtre)
-		{
-			case PNG_FNONE:
-					mt = FilteringNone(mt, &memdc, dpng);
-				break;
-			case PNG_FSUB:
-					mt = FilteringSub((unsigned char *)mt, &memdc, dpng);
-				break;
-			case PNG_FUP:
-					mt = FilteringUp((unsigned char *)mt, &memdc, (dy == (int)pngh->height) ? 1 : 0, dpng);
-				break;
-			case PNG_FAVERAGE:
-					mt = FilteringAverage(mt, &memdc, (dy == (int)pngh->height) ? 1 : 0, dpng);
-				break;
-			case PNG_FPAETH:
-					mt = FilteringPaeth((unsigned char *)mt, &memdc, (dy == (int)pngh->height) ? 1 : 0, dpng);
-				break;
-			default:
-					delete memd;
-				pDD->Release();
-				return 0;
-				break;
-		}
-
-		dy--;
-	}
-
-	//convertion format RGBA 32 bits
-	switch (pngh->colortype)
-	{
-		case GRAYSCALE_USED:
-
-				switch (pngh->bitdepth)		//TO DO:1/2/4
-				{
-					case 8:
-							memdc = memd;
-						dy = m_dwHeight;
-
-						while (dy)
-						{
-							DWORD * pDstData32 = (DWORD *)pBytes;
-							WORD * pDstData16 = (WORD *)pBytes;
-
-							dx = m_dwWidth;
-
-							while (dx)
-							{
-								cc = *memdc++;
-								BYTE r = (BYTE)cc;
-								BYTE g = (BYTE)cc;
-								BYTE b = (BYTE)cc;
-								BYTE a = 0xFF;
-
-								if ((r != 0) && (r < 15)) r = 15;
-
-								if ((g != 0) && (g < 15)) g = 15;
-
-								if ((b != 0) && (b < 15)) b = 15;
-
-								DWORD dr = ((r >> (dwRShiftL)) << dwRShiftR)&dwRMask;
-								DWORD dg = ((g >> (dwGShiftL)) << dwGShiftR)&dwGMask;
-								DWORD db = ((b >> (dwBShiftL)) << dwBShiftR)&dwBMask;
-								DWORD da = ((a >> (dwAShiftL)) << dwAShiftR)&dwAMask;
-
-								if (32 == ddsd.ddpfPixelFormat.dwRGBBitCount)
-									*pDstData32++ = (DWORD)(dr + dg + db + da);
-								else
-									*pDstData16++ = (WORD)(dr + dg + db + da);
-
-								dx--;
-							}
-
-							pBytes += ddsd.lPitch;
-							dy--;
-						}
-
-						break;
-					case 16:
-							memdcw = (unsigned short *)memd;
-						dy = m_dwHeight;
-
-						while (dy)
-						{
-							DWORD * pDstData32 = (DWORD *)pBytes;
-							WORD * pDstData16 = (WORD *)pBytes;
-
-							dx = m_dwWidth;
-
-							while (dx)
-							{
-								cc = ARX_CLEAN_WARN_CAST_UCHAR((*memdcw++) >> 8);
-								BYTE r = (BYTE)cc;
-								BYTE g = (BYTE)cc;
-								BYTE b = (BYTE)cc;
-								BYTE a = 0xFF;
-
-								if ((r != 0) && (r < 15)) r = 15;
-
-								if ((g != 0) && (g < 15)) g = 15;
-
-								if ((b != 0) && (b < 15)) b = 15;
-
-								DWORD dr = ((r >> (dwRShiftL)) << dwRShiftR)&dwRMask;
-								DWORD dg = ((g >> (dwGShiftL)) << dwGShiftR)&dwGMask;
-								DWORD db = ((b >> (dwBShiftL)) << dwBShiftR)&dwBMask;
-								DWORD da = ((a >> (dwAShiftL)) << dwAShiftR)&dwAMask;
-
-								if (32 == ddsd.ddpfPixelFormat.dwRGBBitCount)
-									*pDstData32++ = (DWORD)(dr + dg + db + da);
-								else
-									*pDstData16++ = (WORD)(dr + dg + db + da);
-
-								dx--;
-							}
-
-							pBytes += ddsd.lPitch;
-							dy--;
-						}
-
-						break;
-				}
-
-			break;
-		case COLOR_USED:
-
-				switch (pngh->bitdepth)
-				{
-					case 8:
-							memdc = memd;
-						dy = m_dwHeight;
-
-						while (dy)
-						{
-							DWORD * pDstData32 = (DWORD *)pBytes;
-							WORD * pDstData16 = (WORD *)pBytes;
-
-							dx = m_dwWidth;
-
-							while (dx)
-							{
-								BYTE r = (BYTE) * memdc++;
-								BYTE g = (BYTE) * memdc++;
-								BYTE b = (BYTE) * memdc++;
-								BYTE a = 0xFF;
-
-								if ((r != 0) && (r < 15)) r = 15;
-
-								if ((g != 0) && (g < 15)) g = 15;
-
-								if ((b != 0) && (b < 15)) b = 15;
-
-								DWORD dr = ((r >> (dwRShiftL)) << dwRShiftR)&dwRMask;
-								DWORD dg = ((g >> (dwGShiftL)) << dwGShiftR)&dwGMask;
-								DWORD db = ((b >> (dwBShiftL)) << dwBShiftR)&dwBMask;
-								DWORD da = ((a >> (dwAShiftL)) << dwAShiftR)&dwAMask;
-
-								if (32 == ddsd.ddpfPixelFormat.dwRGBBitCount)
-									*pDstData32++ = (DWORD)(dr + dg + db + da);
-								else
-									*pDstData16++ = (WORD)(dr + dg + db + da);
-
-								dx--;
-							}
-
-							pBytes += ddsd.lPitch;
-							dy--;
-						}
-
-						break;
-					case 16:
-							memdcw = (unsigned short *)memd;
-						dy = m_dwHeight;
-
-						while (dy)
-						{
-							DWORD * pDstData32 = (DWORD *)pBytes;
-							WORD * pDstData16 = (WORD *)pBytes;
-
-							dx = m_dwWidth;
-
-							while (dx)
-							{
-								BYTE r = (BYTE)((*memdcw++) >> 8);
-								BYTE g = (BYTE)((*memdcw++) >> 8);
-								BYTE b = (BYTE)((*memdcw++) >> 8);
-								BYTE a = 0xFF;
-
-								if ((r != 0) && (r < 15)) r = 15;
-
-								if ((g != 0) && (g < 15)) g = 15;
-
-								if ((b != 0) && (b < 15)) b = 15;
-
-								DWORD dr = ((r >> (dwRShiftL)) << dwRShiftR)&dwRMask;
-								DWORD dg = ((g >> (dwGShiftL)) << dwGShiftR)&dwGMask;
-								DWORD db = ((b >> (dwBShiftL)) << dwBShiftR)&dwBMask;
-								DWORD da = ((a >> (dwAShiftL)) << dwAShiftR)&dwAMask;
-
-								if (32 == ddsd.ddpfPixelFormat.dwRGBBitCount)
-									*pDstData32++ = (DWORD)(dr + dg + db + da);
-								else
-									*pDstData16++ = (WORD)(dr + dg + db + da);
-
-								dx--;
-							}
-
-							pBytes += ddsd.lPitch;
-							dy--;
-						}
-
-						break;
-				}
-
-			break;
-		case COLOR_USED|PALETTE_USED:
-
-				switch (pngh->bitdepth)	//TO_DO 1/2/4
-				{
-					case 8:
-							memdc = memd;
-						dy = m_dwHeight;
-
-						while (dy)
-						{
-							DWORD * pDstData32 = (DWORD *)pBytes;
-							WORD * pDstData16 = (WORD *)pBytes;
-
-							dx = m_dwWidth;
-
-							while (dx)
-							{
-								cc = *memdc++;
-								BYTE r = (BYTE)dpng->pngpalette[cc].r;
-								BYTE g = (BYTE)dpng->pngpalette[cc].g;
-								BYTE b = (BYTE)dpng->pngpalette[cc].b;
-								BYTE a = 0xFF;
-
-								if ((r != 0) && (r < 15)) r = 15;
-
-								if ((g != 0) && (g < 15)) g = 15;
-
-								if ((b != 0) && (b < 15)) b = 15;
-
-								DWORD dr = ((r >> (dwRShiftL)) << dwRShiftR)&dwRMask;
-								DWORD dg = ((g >> (dwGShiftL)) << dwGShiftR)&dwGMask;
-								DWORD db = ((b >> (dwBShiftL)) << dwBShiftR)&dwBMask;
-								DWORD da = ((a >> (dwAShiftL)) << dwAShiftR)&dwAMask;
-
-								if (32 == ddsd.ddpfPixelFormat.dwRGBBitCount)
-									*pDstData32++ = (DWORD)(dr + dg + db + da);
-								else
-									*pDstData16++ = (WORD)(dr + dg + db + da);
-
-								dx--;
-							}
-
-							pBytes += ddsd.lPitch;
-							dy--;
-						}
-
-						break;
-				}
-
-			break;
-		case ALPHA_USED:
-
-				switch (pngh->bitdepth)
-				{
-					case 8:
-							memdc = memd;
-						dy = m_dwHeight;
-
-						while (dy)
-						{
-							DWORD * pDstData32 = (DWORD *)pBytes;
-							WORD * pDstData16 = (WORD *)pBytes;
-
-							dx = m_dwWidth;
-
-							while (dx)
-							{
-								cc = *memdc++;
-								BYTE r = (BYTE)cc;
-								BYTE g = (BYTE)cc;
-								BYTE b = (BYTE)cc;
-								BYTE a = (BYTE) * memdc++;
-
-								if ((r != 0) && (r < 15)) r = 15;
-
-								if ((g != 0) && (g < 15)) g = 15;
-
-								if ((b != 0) && (b < 15)) b = 15;
-
-								DWORD dr = ((r >> (dwRShiftL)) << dwRShiftR)&dwRMask;
-								DWORD dg = ((g >> (dwGShiftL)) << dwGShiftR)&dwGMask;
-								DWORD db = ((b >> (dwBShiftL)) << dwBShiftR)&dwBMask;
-								DWORD da = ((a >> (dwAShiftL)) << dwAShiftR)&dwAMask;
-
-								if (32 == ddsd.ddpfPixelFormat.dwRGBBitCount)
-									*pDstData32++ = (DWORD)(dr + dg + db + da);
-								else
-									*pDstData16++ = (WORD)(dr + dg + db + da);
-
-								dx--;
-							}
-
-							pBytes += ddsd.lPitch;
-							dy--;
-						}
-
-						break;
-					case 16:
-							memdcw = (unsigned short *)memd;
-						dy = m_dwHeight;
-
-						while (dy)
-						{
-							DWORD * pDstData32 = (DWORD *)pBytes;
-							WORD * pDstData16 = (WORD *)pBytes;
-
-							dx = m_dwWidth;
-
-							while (dx)
-							{
-								cc = ARX_CLEAN_WARN_CAST_UCHAR((*memdcw++) >> 8);
-								BYTE r = (BYTE)cc;
-								BYTE g = (BYTE)cc;
-								BYTE b = (BYTE)cc;
-								BYTE a = (BYTE)((*memdcw++) >> 8);
-
-								if ((r != 0) && (r < 15)) r = 15;
-
-								if ((g != 0) && (g < 15)) g = 15;
-
-								if ((b != 0) && (b < 15)) b = 15;
-
-								DWORD dr = ((r >> (dwRShiftL)) << dwRShiftR)&dwRMask;
-								DWORD dg = ((g >> (dwGShiftL)) << dwGShiftR)&dwGMask;
-								DWORD db = ((b >> (dwBShiftL)) << dwBShiftR)&dwBMask;
-								DWORD da = ((a >> (dwAShiftL)) << dwAShiftR)&dwAMask;
-
-								if (32 == ddsd.ddpfPixelFormat.dwRGBBitCount)
-									*pDstData32++ = (DWORD)(dr + dg + db + da);
-								else
-									*pDstData16++ = (WORD)(dr + dg + db + da);
-
-								dx--;
-							}
-
-							pBytes += ddsd.lPitch;
-							dy--;
-						}
-
-						break;
-				}
-
-			break;
-		case COLOR_USED|ALPHA_USED:
-
-				switch (pngh->bitdepth)
-				{
-					case 8:
-							memdc = memd;
-						dy = m_dwHeight;
-
-						while (dy)
-						{
-							DWORD * pDstData32 = (DWORD *)pBytes;
-							WORD * pDstData16 = (WORD *)pBytes;
-
-							dx = m_dwWidth;
-
-							while (dx)
-							{
-								BYTE r = (BYTE) * memdc++;
-								BYTE g = (BYTE) * memdc++;
-								BYTE b = (BYTE) * memdc++;
-								BYTE a = (BYTE) * memdc++;
-
-								if ((r != 0) && (r < 15)) r = 15;
-
-								if ((g != 0) && (g < 15)) g = 15;
-
-								if ((b != 0) && (b < 15)) b = 15;
-
-								DWORD dr = ((r >> (dwRShiftL)) << dwRShiftR)&dwRMask;
-								DWORD dg = ((g >> (dwGShiftL)) << dwGShiftR)&dwGMask;
-								DWORD db = ((b >> (dwBShiftL)) << dwBShiftR)&dwBMask;
-								DWORD da = ((a >> (dwAShiftL)) << dwAShiftR)&dwAMask;
-
-								if (32 == ddsd.ddpfPixelFormat.dwRGBBitCount)
-									*pDstData32++ = (DWORD)(dr + dg + db + da);
-								else
-									*pDstData16++ = (WORD)(dr + dg + db + da);
-
-								dx--;
-							}
-
-							pBytes += ddsd.lPitch;
-							dy--;
-						}
-
-						break;
-					case 16:
-							memdcw = (unsigned short *)memd;
-						dy = m_dwHeight;
-
-						while (dy)
-						{
-							DWORD * pDstData32 = (DWORD *)pBytes;
-							WORD * pDstData16 = (WORD *)pBytes;
-
-							dx = m_dwWidth;
-
-							while (dx)
-							{
-								BYTE r = (BYTE)((*memdcw++) >> 8);
-								BYTE g = (BYTE)((*memdcw++) >> 8);
-								BYTE b = (BYTE)((*memdcw++) >> 8);
-								BYTE a = (BYTE)((*memdcw++) >> 8);
-
-								if ((r != 0) && (r < 15)) r = 15;
-
-								if ((g != 0) && (g < 15)) g = 15;
-
-								if ((b != 0) && (b < 15)) b = 15;
-
-								DWORD dr = ((r >> (dwRShiftL)) << dwRShiftR)&dwRMask;
-								DWORD dg = ((g >> (dwGShiftL)) << dwGShiftR)&dwGMask;
-								DWORD db = ((b >> (dwBShiftL)) << dwBShiftR)&dwBMask;
-								DWORD da = ((a >> (dwAShiftL)) << dwAShiftR)&dwAMask;
-
-								if (32 == ddsd.ddpfPixelFormat.dwRGBBitCount)
-									*pDstData32++ = (DWORD)(dr + dg + db + da);
-								else
-									*pDstData16++ = (WORD)(dr + dg + db + da);
-
-								dx--;
-							}
-
-							pBytes += ddsd.lPitch;
-							dy--;
-						}
-
-						break;
-				}
-
-			break;
-	}
-
-	delete mems;
-	delete memd;
-
-	pddsTempSurface->Unlock(0);
-
-	// Copy the temp surface to the real texture surface
-	if (bGlobalTextureStretch)
-	{
-		m_dx = .999999f;
-		m_dy = .999999f;
-		Surface->Blt(NULL, pddsTempSurface, NULL, DDBLT_WAIT, NULL);
-	}
-	else
-	{
-		RECT rBlt;
-		SetRect(&rBlt, 0, 0, ddsd.dwWidth, ddsd.dwHeight);
-
-		if (ddsd.dwWidth < fWidthSurface)
-		{
-			m_dx = ((float)ddsd.dwWidth) / fWidthSurface;
-		}
-		else
-		{
-			rBlt.right = (int)fWidthSurface;
-			m_dx = .999999f;
-		}
-
-		if (ddsd.dwHeight < fHeightSurface)
-		{
-			m_dy = ((float)ddsd.dwHeight) / fHeightSurface;
-		}
-		else
-		{
-			rBlt.bottom = (int)fHeightSurface;
-			m_dy = 0.999999f;
-		}
-
-		Surface->Blt(&rBlt, pddsTempSurface, NULL, DDBLT_WAIT, NULL);
-	}
-
-	// Done with the temp objects
-	pddsTempSurface->Release();
-	pDD->Release();
-
-	return S_OK;
 }
 
 //*************************************************************************************
@@ -5590,4 +3532,3 @@ TextureContainer * TextureContainer::AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _i
 	pTex->m_pddsSurface->GetSurfaceDesc(&ddsdSurfaceDesc);
 	return pTex;
 }
-
