@@ -3341,6 +3341,7 @@ void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io)
 
 	if (!io) return;
 
+	// TODO do we really need to open this every time?
 	if (LAST_CHINSTANCE != -1) ARX_Changelevel_CurGame_Open();
 
 	while (1)

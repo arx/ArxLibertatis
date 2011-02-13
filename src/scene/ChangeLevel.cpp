@@ -340,35 +340,36 @@ void ARX_CHANGELEVEL_CreateNewInstance()
 }
  
 CSaveBlock * GLOBAL_pSaveB = NULL;
-void ARX_Changelevel_CurGame_Open()
-{
-	if (GLOBAL_pSaveB)
+void ARX_Changelevel_CurGame_Open() {
+	
+	if(GLOBAL_pSaveB) {
 		ARX_Changelevel_CurGame_Close();
-
-	char fic[256];
-	sprintf(fic, "%sGsave.sav", CurGamePath);
-
-	GLOBAL_pSaveB = new CSaveBlock(fic);
-	if(!GLOBAL_pSaveB->BeginRead()) {
-		LogError << "cannot open cur game save file" << fic;
 	}
-	return;
+	
+	string savefile = CurGamePath;
+	savefile += "Gsave.sav";
+	
+	if(FileExist(savefile.c_str())) {
+		
+		GLOBAL_pSaveB = new CSaveBlock(savefile.c_str());
+		if(!GLOBAL_pSaveB->BeginRead()) {
+			LogError << "cannot read cur game save file" << savefile;
+		}
+		
+	}
 }
 
-bool ARX_Changelevel_CurGame_Seek( const std::string& ident )
-{
-	if (GLOBAL_pSaveB)
-	{
-		if (GLOBAL_pSaveB->ExistFile( ident + ".sav" )) return true;
+bool ARX_Changelevel_CurGame_Seek(const std::string & ident) {
+	if(GLOBAL_pSaveB) {
+		if(GLOBAL_pSaveB->ExistFile( ident + ".sav" )) {
+			return true;
+		}
 	}
-
 	return false;
 }
 
-void ARX_Changelevel_CurGame_Close()
-{
-	if (GLOBAL_pSaveB)
-	{
+void ARX_Changelevel_CurGame_Close() {
+	if(GLOBAL_pSaveB) {
 		GLOBAL_pSaveB->EndRead();
 		delete GLOBAL_pSaveB;
 		GLOBAL_pSaveB = NULL;
