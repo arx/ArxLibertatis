@@ -233,12 +233,14 @@ BOOL SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s);
 // Optimized Float 2 Long Conversion
 void F2L(const float f, long * l)
 {
-	_asm
-	{
-		_asm	fld   f
-		_asm	mov eax, DWORD PTR [l]
-		_asm	fistp DWORD PTR [eax]
-	}
+	*l = f;
+	//TODO: Optimize
+//	_asm
+//	{
+//		_asm	fld   f
+//		_asm	mov eax, DWORD PTR [l]
+//		_asm	fistp DWORD PTR [eax]
+//	}
 }
 D3DCOLOR EERIERGB(float r, float g, float b)
 {

@@ -60,11 +60,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 //#define  D3D_OVERLOADS
 //
-//#include <windows.h>
-//#include <commctrl.h>
-//#include <d3d.h>
 #include "EERIEFrame.h"
 #include "EERIEEnum.h"
+#include <windows.h>
+#include <commctrl.h>
+#include <d3d.h>
 //
 //#define _CRTDBG_MAP_ALLOC
 //#include <crtdbg.h>

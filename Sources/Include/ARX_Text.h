@@ -57,9 +57,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_TEXT_H
 #define ARX_TEXT_H
 
-#include <tchar.h>
-#include <windows.h>
 #include <vector>
+#include <tchar.h>
+#include "EERIEApp.h"
+#include "EERIETypes.h"
+
+using std::vector;
+>>>>>>> a39d142d60bac884d0c1a426fd9d4670ef1a5f61
 
 //-----------------------------------------------------------------------------
 

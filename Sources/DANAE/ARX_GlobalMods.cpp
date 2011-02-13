@@ -23,16 +23,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include "ARX_GlobalMods.h"
-#include "arx_menu2.h"
-#include "arx_time.h"
-
-#include "EERIEMath.h"
-
 #include <cstdio>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+#include "ARX_Menu2.h"
+#include "ARX_GlobalMods.h"
+#include "EERIEMath.h"
+#include "ARX_Time.h"
+#include <d3d.h>
 
 
 bool bUSE_D3DFOG_INTER;
@@ -154,7 +150,7 @@ void ARX_GLOBALMODS_Apply()
 
 		ulBKGColor = D3DRGB(current.depthcolor.r, current.depthcolor.g, current.depthcolor.b);
 		
-		//pour compatibilité ATI, etc...
+		//pour compatibilitï¿½ ATI, etc...
 		GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, ulBKGColor);
 		float zval;
 

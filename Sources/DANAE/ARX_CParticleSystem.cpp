@@ -24,6 +24,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 
 //-----------------------------------------------------------------------------
+#include <list>
+#include <vector>
 
 #include "EERIELight.h"
 #include "EERIEDraw.h"
@@ -35,9 +37,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_CParticleParams.h"
 
 //#include <d3d.h>
-
-#include <list>
-#include <vector>
 
 using namespace std;
 

@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Updates: (date) (person) (update)
 //
 // Code:	Cyril Meynier
-//			Sébastien Scieux	(JPEG & PNG)
+//			SÃ©bastien Scieux	(JPEG & PNG)
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 /////////////////////////////////////////////////////////////////////////////////////
@@ -65,8 +65,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define EERIETEXTR_H
 
 #include "EERIETypes.h"
-
 #include <vector>
+
+//using namespace std;
+using std::vector;
 
 extern long EERIE_USES_BUMP_MAP;
 #define MAX_MIPS 2
