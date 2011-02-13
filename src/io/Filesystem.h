@@ -42,7 +42,7 @@ typedef void * FileHandle;
 long KillAllDirectory(const char * path);
 
 bool FileExist(const char * name);
-bool DirectoryExist(const char * name);
+bool DirectoryExist(const std::string & name);
 FileHandle FileOpenRead(const char * name);
 FileHandle FileOpenWrite(const char * name);
 FileHandle FileOpenReadWrite(const char * name);
