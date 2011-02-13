@@ -643,7 +643,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 
 	// Checks for FTL file existence
 	if(!PAK_FileExist(filename.c_str())) {
-		LogError << "ARX_FTL_Load: not found in PAK" << filename;
+		LogError << "ARX_FTL_Load: not found in PAK " << filename;
 		return NULL;
 	}
 
