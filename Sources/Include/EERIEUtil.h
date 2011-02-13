@@ -42,88 +42,83 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //            @@@ @@@                           @@             @@        STUDIOS    //
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
-// ARX_Input
+// EERIEUtil
 //////////////////////////////////////////////////////////////////////////////////////
 //
 // Description:
-//		ARX Input interface (uses MERCURY input system)
 //
 // Updates: (date) (person) (update)
 //
 // Code: Cyril Meynier
 //
-// Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
+// Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#ifndef ARX_INPUT_H
-#define ARX_INPUT_H
 
-#define DIRECTINPUT_VERSION 0x0700
-#include <dinput.h>
-#include "Mercury_dx_input.h"
-#include "Mercury_extern.h"
+// Desc: Helper functions and typing shortcuts for Direct3D programming.
+#ifndef D3DUTIL_H
+#define D3DUTIL_H
 
-//-----------------------------------------------------------------------------
-#define INTERNAL_MOUSE_1	257
-#define INTERNAL_MOUSE_2	258
-#define INTERNAL_MOUSE_3	259
-#define INTERNAL_MOUSE_4	260
-#define INTERNAL_MOUSE_5	261
-#define INTERNAL_MOUSE_6	262
-
-#define INTERNAL_MOUSEWHEEL_DOWN	280
-#define INTERNAL_MOUSEWHEEL_UP		281
-
-#define INTERNAL_SCID			400
-
-#define INTERNAL_JOYSTICK_1		297
-#define INTERNAL_JOYSTICK_2		298
-#define INTERNAL_JOYSTICK_3		299
-#define INTERNAL_JOYSTICK_4		300
-#define INTERNAL_JOYSTICK_5		301
-#define INTERNAL_JOYSTICK_6		302
-#define INTERNAL_JOYSTICK_7		303
-#define INTERNAL_JOYSTICK_8		304
-#define INTERNAL_JOYSTICK_9		305
-#define INTERNAL_JOYSTICK_10	306
-#define INTERNAL_JOYSTICK_11	307
-#define INTERNAL_JOYSTICK_12	308
-#define INTERNAL_JOYSTICK_13	309
-
-#define MAX_IMPULSES						17
-#define MAX_IMPULSES_NB						3
-
-#define ARX_INPUT_IMPULSE_JUMP				0
-#define ARX_INPUT_IMPULSE_COMBAT_MODE		1
-#define ARX_INPUT_IMPULSE_MAGIC_MODE		2
-#define ARX_INPUT_IMPULSE_STEALTH			3
-#define ARX_INPUT_IMPULSE_WALK_FORWARD		4
-#define ARX_INPUT_IMPULSE_WALK_BACKWARD		5
-#define ARX_INPUT_IMPULSE_STRAFE_LEFT		6
-#define ARX_INPUT_IMPULSE_STRAFE_RIGHT		7
-#define ARX_INPUT_IMPULSE_MOUSE_LOOK		8
-#define ARX_INPUT_IMPULSE_ACTION			9
-#define ARX_INPUT_IMPULSE_INVENTORY			10
-#define ARX_INPUT_IMPULSE_BOOK				11
-#define ARX_INPUT_IMPULSE_ROTATE_LEFT		12
-#define ARX_INPUT_IMPULSE_ROTATE_RIGHT		13
-#define ARX_INPUT_IMPULSE_LEAN_RIGHT		14
-#define ARX_INPUT_IMPULSE_LEAN_LEFT			15
-#define ARX_INPUT_IMPULSE_CROUCH			16
+#define D3D_OVERLOADS
+#include <ARX_Common.h>
 
 //-----------------------------------------------------------------------------
-extern long ARX_XBOXPAD;
-extern long GameImpulses[MAX_IMPULSES][MAX_IMPULSES_NB];
-
+// Miscellaneous helper functions
 //-----------------------------------------------------------------------------
-void ARX_INPUT_Init_Game_Impulses();
-BOOL ARX_INPUT_Init(HINSTANCE hInst, HWND hWnd);
-void ARX_INPUT_Release();
-BOOL ARX_INPUT_GetSCIDAxis(int * jx, int * jy, int * jz);
- 
-//-----------------------------------------------------------------------------
-BOOL ARX_IMPULSE_NowPressed(long ident);
-BOOL ARX_IMPULSE_Pressed(long ident);
-BOOL ARX_IMPULSE_NowUnPressed(long ident);
  
 
+#define SAFE_DELETE(p)  { if(p) { delete (p);     (p)=NULL; } }
+#define SAFE_DELETE_TAB(p)  { if(p) { delete[] (p);     (p)=NULL; } }
+#define SAFE_RELEASE(p) { if(p) { (p)->Release(); (p)=NULL; } }
+
+//-----------------------------------------------------------------------------
+// Short cut functions for creating and using DX structures
+//-----------------------------------------------------------------------------
+VOID D3DUtil_InitDeviceDesc(D3DDEVICEDESC7 & ddDevDesc);
+VOID D3DUtil_InitSurfaceDesc(DDSURFACEDESC2 & ddsd, DWORD dwFlags = 0,
+                             DWORD dwCaps = 0);
+VOID D3DUtil_InitMaterial(D3DMATERIAL7 & mtrl, FLOAT r = 0.0f, FLOAT g = 0.0f,
+                          FLOAT b = 0.0f, FLOAT a = 1.0f);
+ 
+//-----------------------------------------------------------------------------
+// D3D Matrix functions. For performance reasons, some functions are inline.
+//-----------------------------------------------------------------------------
+HRESULT D3DUtil_SetViewMatrix(D3DMATRIX & mat, D3DVECTOR & vFrom,
+                              D3DVECTOR & vAt, D3DVECTOR & vUp);
+
+inline VOID D3DUtil_SetIdentityMatrix(D3DMATRIX & m)
+{
+	m._12 = m._13 = m._14 = m._21 = m._23 = m._24 = 0.0f;
+	m._31 = m._32 = m._34 = m._41 = m._42 = m._43 = 0.0f;
+	m._11 = m._22 = m._33 = m._44 = 1.0f;
+}
+
+inline VOID D3DUtil_SetTranslateMatrix(D3DMATRIX & m, FLOAT tx, FLOAT ty,
+                                       FLOAT tz)
+{
+	D3DUtil_SetIdentityMatrix(m);
+	m._41 = tx;
+	m._42 = ty;
+	m._43 = tz;
+}
+
+inline VOID D3DUtil_SetTranslateMatrix(D3DMATRIX & m, D3DVECTOR & v)
+{
+	D3DUtil_SetTranslateMatrix(m, v.x, v.y, v.z);
+}
+
+//-----------------------------------------------------------------------------
+// Debug printing support
+//-----------------------------------------------------------------------------
+
+HRESULT _DbgOut(TCHAR *, DWORD, HRESULT, TCHAR *);
+
+#if defined(DEBUG) | defined(_DEBUG)
+#define DEBUG_MSG(str)    _DbgOut( __FILE__, (DWORD)__LINE__, 0, str )
+#define DEBUG_ERR(hr,str) _DbgOut( __FILE__, (DWORD)__LINE__, hr, str )
+#else
+#define DEBUG_MSG(str)    (0L)
+#define DEBUG_ERR(hr,str) (hr)
 #endif
+
+
+#endif // D3DUTIL_H

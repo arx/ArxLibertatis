@@ -28,21 +28,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Common.h"
 
 #include <windows.h>
-#include <cstring>
-#include <cstdlib>
-#include <cstdio>
-#include <cassert>
-#include <conio.h>
-#include <direct.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <assert.h>
+//#include <conio.h>
+//#include <direct.h>
+#include "ARX_Common.h"
 
-#define INITGUID
+//#define INITGUID
 #define DIRECTINPUT_VERSION 0x0700
 #include <dinput.h>
 
 #include "Mercury_dx_input.h"
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 
 /*---------------------------------------------------------*/
 #define MALLOC(a)		DI_Init.malloc(a)
@@ -107,7 +105,8 @@ extern HRESULT			DI_Hr;
 extern DXI_INIT			DI_Init;
 extern int				DI_NbInputInfo;
 extern INPUT_INFO		DI_InputInfo[];
-extern IDirectInput7	* DI_DInput7;
+//extern IDirectInput7	* DI_DInput7;
+extern LPDIRECTINPUT7 * DI_DInput7;
 extern int				DI_NbKeyboard;
 extern int				DI_NbMouse;
 extern int				DI_NbJoy;
