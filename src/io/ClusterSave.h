@@ -27,9 +27,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define PAK_VERSION	((1<<16)|0)
 
-#define MAX_FILES		1024
-#define EMPTY_CLUSTER	"___EMPTY___"
-
 
 class CInfoFile;
 class HashMap;

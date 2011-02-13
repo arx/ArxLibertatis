@@ -164,48 +164,59 @@ void CSaveBlock::ResetFAT(void)
 
 bool CSaveBlock::BeginRead() {
 	
-	LogDebug << "reading " << pcBlockName;
+	LogDebug << "reading savefile " << pcBlockName;
 	
 	hFile = FileOpenRead(pcBlockName.c_str());
 	if(!hFile) {
-		LogError << "Error opening save file " << pcBlockName;
+		LogWarning << "cannot open save file " << pcBlockName;
 		return false;
 	}
 
 	//READ FAT
-	int _iI;
 
 	s32 fatOffset;
 	if(!FileRead(hFile, &fatOffset, 4)) {
-		LogError << "Error reading fat offset for " << pcBlockName;
+		LogError << "cannot read fat offset for " << pcBlockName;
+		return false;
 	}
 	LogDebug << "FAT offset is " << fatOffset;
-	FileSeek(hFile, fatOffset + 4, SEEK_SET);
+	if(FileSeek(hFile, fatOffset + 4, SEEK_SET) != fatOffset + 4) {
+		LogError << "cannot seek to FAT";
+		return false;
+	}
 
-	FileRead(hFile, &_iI, 4);	//version
+	s32 version;
+	if(!FileRead(hFile, &version, 4)) {
+		LogError << "cannot read save file version";
+		return false;
+	}
+	LogDebug << "Version is " << version;
 
-	FileRead(hFile, &_iI, 4);
+	s32 nFiles;
+	if(!FileRead(hFile, &nFiles, 4)) {
+		LogError << "cannot read file count";
+		return false;
+	}
+	LogDebug << "number of files is " << nFiles;
 
 	int iNbHache = 1;
 
-	while (iNbHache < _iI) iNbHache <<= 1;
+	while (iNbHache < nFiles) iNbHache <<= 1;
 
 	int iNbHacheTroisQuart = (iNbHache * 3) / 4;
 
-	if (_iI > iNbHacheTroisQuart) iNbHache <<= 1;
+	if (nFiles > iNbHacheTroisQuart) iNbHache <<= 1;
 
 	pHachage = new HashMap(iNbHache);
 
-	while (_iI--)
-	{
+	while(nFiles--) {
+		
 		char _pT[256], *_pTT = _pT;
 
-		while (1)
-		{
+		// Read the file name.
+		while(true) {
 			FileRead(hFile, _pTT, 1);
-
-			if (!*_pTT) break;
-
+			if(!*_pTT) break;
 			_pTT++;
 		}
 
@@ -266,13 +277,17 @@ bool CSaveBlock::BeginSave(bool _bCont, bool _bReWrite)
 	bReWrite = _bReWrite;
 
 	hFile = FileOpenRead(pcBlockName.c_str());
+	LogDebug << "FOR " << pcBlockName << " " << (hFile ? "ok" : "failed");
 
 	if ((!hFile) ||
 	        (!_bCont))
 	{
 		hFile = FileOpenWrite(pcBlockName.c_str());
 
-		if (!hFile) return false;
+		if (!hFile) {
+			LogError << "could not open " << pcBlockName << " for writing";
+			return false;
+		}
 
 		int _iI = 0;
 
@@ -338,7 +353,10 @@ bool CSaveBlock::BeginSave(bool _bCont, bool _bReWrite)
 		hFile = NULL;
 		hFile = FileOpenReadWrite(pcBlockName.c_str());
 
-		if (!hFile) return false;
+		if (!hFile) {
+			LogError << "could not open " << pcBlockName << " read/write";
+			return false;
+		}
 
 		_iI = 0;
 		FileWrite(hFile, &_iI, 4);
