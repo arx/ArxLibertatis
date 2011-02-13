@@ -54,6 +54,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include "Danae.h"
+
+#include <EERIEDraw.h>
+#include "EERIELight.h"
+#include <EERIEMath.h>
+#include <EERIEObject.h>
+
 #include "ARX_Spells.h"
 #include "ARX_CSpellFx.h"
 #include "ARX_SpellFx_Lvl05.h"
@@ -62,15 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_CParticles.h"
 #include "ARX_Time.h"
 
-#include "Danae.h"
-
-#include "EERIEDraw.h"
-#include "EERIELight.h"
-#include "EERIEMath.h"
-#include "EERIEObject.h"
-
-#include <algorithm>
-
+//#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
 extern CParticleManager * pParticleManager;
 
@@ -734,33 +733,33 @@ void CRiseDead::Create(EERIE_3D aeSrc, float afBeta)
 
 	// sinon recalc de l'un de l'autre ou des deux
 	// espace min
-	//if (0)
-	//	for (i = 0; i < 40; i++)
-	//	{
-	//		if (v1a[i].sx > v1b[i].sx)
-	//		{
-	//			float fTemp = v1a[i].sx;
-	//			v1a[i].sx = v1b[i].sx;
-	//			v1b[i].sx = fTemp;
-	//		}
+	if (0)
+		for (i = 0; i < 40; i++)
+		{
+			if (v1a[i].sx > v1b[i].sx)
+			{
+				float fTemp = v1a[i].sx;
+				v1a[i].sx = v1b[i].sx;
+				v1b[i].sx = fTemp;
+			}
 
-	//		if (v1a[i].sz > v1b[i].sz)
-	//		{
-	//			float fTemp = v1a[i].sz;
-	//			v1a[i].sz = v1b[i].sz;
-	//			v1b[i].sz = fTemp;
-	//		}
+			if (v1a[i].sz > v1b[i].sz)
+			{
+				float fTemp = v1a[i].sz;
+				v1a[i].sz = v1b[i].sz;
+				v1b[i].sz = fTemp;
+			}
 
-	//		if ((v1b[i].sx - v1a[i].sx) > 20)
-	//		{
-	//			v1b[i].sx = v1a[i].sx + rnd() * 20.0f;
-	//		}
+			if ((v1b[i].sx - v1a[i].sx) > 20)
+			{
+				v1b[i].sx = v1a[i].sx + rnd() * 20.0f;
+			}
 
-	//		if ((v1b[i].sz - v1a[i].sz) > 20)
-	//		{
-	//			v1b[i].sz = v1a[i].sz + rnd() * 20.0f;
-	//		}
-	//	}
+			if ((v1b[i].sz - v1a[i].sz) > 20)
+			{
+				v1b[i].sz = v1a[i].sz + rnd() * 20.0f;
+			}
+		}
 
 	for (i = 0; i <= end; i++)
 	{
@@ -934,7 +933,7 @@ void CRiseDead::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	// computation des sommets
 	float fTempCos, fTempSin;
 
-	for (i = 0; i <= std::min(end, static_cast<int>(fSizeIntro)); i++)
+	for (i = 0; i <= min(end, (int)fSizeIntro); i++)
 	{
 		if (i <= end * 0.5f)
 		{
@@ -970,7 +969,7 @@ void CRiseDead::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	if (bIntro)
 	{
-		for (i = 0; i < std::min(end, static_cast<int>(fSizeIntro)); i++)
+		for (i = 0; i < min(end, (int)fSizeIntro); i++)
 		{
 			EE_RT2(&v1a[i], &vr[0]);
 			EE_RT2(&v1b[i], &vr[1]);
@@ -987,7 +986,7 @@ void CRiseDead::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	}
 	else
 	{
-		for (i = 0; i < std::min(end, static_cast<int>(fSizeIntro)); i++)
+		for (i = 0; i < min(end, (int)fSizeIntro); i++)
 		{
 			EE_RT2(&va[i], &vr[0]);
 			EE_RT2(&vb[i], &vr[1]);
@@ -1008,7 +1007,7 @@ void CRiseDead::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	vr[0].color = vr[1].color = D3DRGB(0, 0, 0);
 	vr[2].color = vr[3].color = D3DRGB(fColorBorder[0], fColorBorder[1], fColorBorder[2]);
 
-	for (i = 0; i < std::min(end, static_cast<int>(fSizeIntro)); i++)
+	for (i = 0; i < min(end, (int)fSizeIntro); i++)
 	{
 		vt[2].sx = va[i].sx   - (va[i].sx - eSrc.x) * 0.2f;
 		vt[2].sy = va[i].sy   - (va[i].sy - eSrc.y) * 0.2f;
@@ -1454,8 +1453,8 @@ void CParalyse::CreateLittlePrismTriangleList()
 			fd = 40 + rnd() * 80.0f;
 		}
 
-		fd = std::max(fd, 40.f);
-		fd = std::min(fd, 120.f);
+		fd = max(fd, 40.0f);
+		fd = min(fd, 120.0f);
 		tabprism[i].pos.x = pos.x + EEsin(randd) * fd;
 		tabprism[i].pos.y = pos.y;
 		tabprism[i].pos.z = pos.z + EEcos(randd) * fd;

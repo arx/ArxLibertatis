@@ -54,15 +54,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "ARX_Spells.h"
-#include "ARX_CSpellFx.h"
+#include "Danae.h"
+
+#include <EERIEDraw.h>
+#include <EERIEMath.h>
+#include <EERIELight.h>
+#include <EERIEObject.h>
+
+#include <ARX_Spells.h>
+#include <ARX_CSpellFx.h>
 #include "ARX_SpellFx_Lvl05.h"
 #include "ARX_SpellFx_Lvl03.h"
-#include "ARX_particles.h"
+#include <ARX_Particles.h>
+
 #include "ARX_CParticle.h"
-#include "ARX_CParticles.h"
-#include "ARX_CParticleParams.h"
-#include "ARX_Damages.h"
+#include <ARX_CParticles.h>
+#include <ARX_CParticleParams.h>
+#include <ARX_Damages.h>
+#include <EERIEObject.h>
 #include "ARX_Time.h"
 
 #include "danae.h"
@@ -75,7 +84,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <algorithm>
 
-#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
+//#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
 extern CParticleManager * pParticleManager;
 
@@ -532,8 +541,8 @@ void CIceProjectile::Create(EERIE_3D aeSrc, float afBeta)
 	s.z					= aeSrc.z;
 	float fspelldist	= ARX_CLEAN_WARN_CAST_FLOAT(iMax * 15);
 
-	fspelldist = std::min(fspelldist, 200.f);
-	fspelldist = std::max(fspelldist, 450.f);
+	fspelldist = min(fspelldist, 200.0f);
+	fspelldist = max(fspelldist, 450.0f);
 	e.x = aeSrc.x - fBetaRadSin * fspelldist;
 	e.y = aeSrc.y - 100;
 	e.z = aeSrc.z + fBetaRadCos * fspelldist;
@@ -743,7 +752,7 @@ float CIceProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	float x, y, z;
 
 	//----------------
-	for (i = 0; i < std::min(iNumber, iMax + 1); i++)
+	for (i = 0; i < min(iNumber, iMax + 1); i++)
 	{
 		float t = rnd();
 
@@ -770,7 +779,7 @@ float CIceProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				particle[j].siz = 20.f;
 
 
-				float fMin = std::min(2000 + (rnd() * 2000.f), ulDuration - ulCurrentTime + 500.0f * rnd());
+				float fMin = min(2000 + (rnd() * 2000.f), ulDuration - ulCurrentTime + 500.0f * rnd());
 				ARX_CHECK_ULONG(fMin);
 					
 				particle[j].tolive = ARX_CLEAN_WARN_CAST_ULONG(fMin);
@@ -811,7 +820,7 @@ float CIceProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				particle[j].siz = 0.5f;
 
 
-				float fMin = std::min(2000 + (rnd() * 1000.f), ulDuration - ulCurrentTime + 500.0f * rnd());
+				float fMin = min(2000 + (rnd() * 1000.f), ulDuration - ulCurrentTime + 500.0f * rnd());
 				ARX_CHECK_ULONG(fMin);
 
 				particle[j].tolive = ARX_CLEAN_WARN_CAST_ULONG(fMin);

@@ -22,16 +22,12 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+#include <stdio.h>
 
-#include "arx_c_cinematique.h"
+#include <stdlib.h>
+#include "ARX_CCinematique.h"
 #include "HERMES_PAK.h"
-#include "resource.h"
-
-#include <cstdio>
-#include <cstdlib>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+#include "Resource.h"
 
 /*----------------------------------------------------------------------*/
 void DrawInfoTrack(void);

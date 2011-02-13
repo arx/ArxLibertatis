@@ -23,16 +23,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 #include <stdlib.h>
-#include "danae.h"
-#include "arx_c_cinematique.h"
+#include "Danae.h"
+#include "ARX_CCinematique.h"
 #include "Resource.h"
-
 #include "EERIEUtil.h"
-
-#include <cstdlib>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 
 #define ADJUSTX(a) (((((a)-(LARGEURS>>1))*((float)LargeurRender/(float)LARGEURS))+(LARGEURS>>1)))*(640.f/(float)LargeurRender) //*((float)LARGEURS/(float)LargeurRender)
 #define ADJUSTY(a) (((((a)-(HAUTEURS>>1))*((float)HauteurRender/(float)HAUTEURS))+(HAUTEURS>>1)))*(480.f/(float)HauteurRender)  //*((float)HAUTEURS/(float)HauteurRender)
@@ -132,12 +126,13 @@ void ClearAbsDirectory(char * pT, char * d)
 
 	while (i--)
 	{
-		if (!strnicmp(pT, d, strlen(d)))
-		{
-			pT += strlen(d);
-			memmove(pTcopy, pT, strlen(pT - strlen(d)) + 1);
-			break;
-		}
+		//todo string
+//		if (!strnicmp(pT, d, strlen(d)))
+//		{
+//			pT += strlen(d);
+//			memmove(pTcopy, pT, strlen(pT - strlen(d)) + 1);
+//			break;
+//		}
 
 		pT++;
 	}
