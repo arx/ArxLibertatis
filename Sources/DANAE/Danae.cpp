@@ -69,7 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <HERMESMain.h>
 #include <HERMESConsole.h>
-#include <HERMESnet.h>
+#include <HERMESNet.h>
 #include <HERMES_PAK.h>
  
 #include <EERIEUtil.h>
@@ -82,7 +82,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <EERIEPoly.h>
 #include "EERIELinkedObj.h"
 
-#include <ARX_C_Cinematique.h>
+#include <ARX_CCinematique.h>
 #include <ARX_Carte.h>
 #include <ARX_ChangeLevel.h>
 #include <ARX_CParticles.h>
