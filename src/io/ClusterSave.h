@@ -25,7 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
-#define PAK_VERSION	((1<<16)|0)
+#include "core/Common.h"
 
 
 class CInfoFile;
@@ -41,7 +41,7 @@ private:
 	bool bReWrite;
 	CInfoFile * sInfoFile;
 	bool bFirst;
-	int iVersion;
+	u32 iVersion;
 	bool ExpandNbFiles();
 	HashMap * pHachage;
 	

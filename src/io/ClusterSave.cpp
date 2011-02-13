@@ -31,6 +31,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/HashMap.h"
 #include "io/Logger.h"
 
+const u32 SAV_VERSION_OLD = (1<<16) | 0;
+const u32 SAV_VERSION = SAV_VERSION_OLD + 1;
+
 using std::string;
 
 class CCluster{
@@ -376,8 +379,7 @@ bool CSaveBlock::EndSave(void)
 		return Defrag();
 	}
 
-	int _version = PAK_VERSION + 1;
-	FileWrite(hFile, &_version, 4);
+	FileWrite(hFile, &SAV_VERSION, 4);
 
 	FileWrite(hFile, &iNbFiles, 4);
 
@@ -417,10 +419,9 @@ bool CSaveBlock::Defrag()
 	strcat(txt, "DFG");
 	FileHandle fFileTemp = FileOpenWrite(txt);
 
-	int _version = PAK_VERSION + 1;
-	FileWrite(fFileTemp, &_version, 4);
+	FileWrite(fFileTemp, &SAV_VERSION, 4);
 
-	for (int _iI = (iVersion == PAK_VERSION) ? 1 : 0; _iI < iNbFiles; _iI++)
+	for (int _iI = (iVersion == SAV_VERSION_OLD) ? 1 : 0; _iI < iNbFiles; _iI++)
 	{
 		CCluster * pCluster = &sInfoFile[_iI].FirstCluster;
 		void * pMem = malloc(sInfoFile[_iI].iTaille);
@@ -432,7 +433,7 @@ bool CSaveBlock::Defrag()
 			FileSeek(hFile, pCluster->iNext + 4, SEEK_SET);
 
 			//bug size old version
-			if (iVersion == PAK_VERSION)
+			if (iVersion == SAV_VERSION_OLD)
 			{
 				if ((iRealSize + pCluster->iTaille) > sInfoFile[_iI].iTaille)
 				{
@@ -453,13 +454,13 @@ bool CSaveBlock::Defrag()
 		free(pMem);
 	}
 
-	FileWrite(fFileTemp, &_version, 4);
+	FileWrite(fFileTemp, &SAV_VERSION, 4);
  
 	int iOffset = 0;
-	int iNbFilesTemp = (iVersion == PAK_VERSION) ? iNbFiles - 1 : iNbFiles; //-1;
+	int iNbFilesTemp = (iVersion == SAV_VERSION_OLD) ? iNbFiles - 1 : iNbFiles; //-1;
 	FileWrite(fFileTemp, &iNbFilesTemp, 4);
 
-	for (int _iI = (iVersion == PAK_VERSION) ? 1 : 0; _iI < iNbFiles; _iI++)
+	for (int _iI = (iVersion == SAV_VERSION_OLD) ? 1 : 0; _iI < iNbFiles; _iI++)
 	{
 		FileWrite(fFileTemp, sInfoFile[_iI].pcFileName, strlen((const char *)sInfoFile[_iI].pcFileName) + 1);
 		FileWrite(fFileTemp, &sInfoFile[_iI].iTaille, 4);
