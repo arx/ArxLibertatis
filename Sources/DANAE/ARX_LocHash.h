@@ -22,7 +22,7 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-// Code: Didier Pédreno
+// Code: Didier Pï¿½dreno
 
 // Nuky - 30-01-11 - refactored most of this file
 
@@ -33,9 +33,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <tchar.h>
 #include <vector>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 
 //-----------------------------------------------------------------------------
 class CLocalisation

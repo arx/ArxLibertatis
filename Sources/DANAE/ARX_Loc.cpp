@@ -22,30 +22,22 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include "ARX_Loc.h"
+#include "EERIEApp.h"
+#include "HERMESMain.h"
 #include "ARX_LocHash.h"
-#include "ARX_Menu2.h"
-
-#include "EERIEapp.h"
-
-#include "HERMES_PAK.h"
-
+#include "ARX_Loc.h"
+#include "ARX_Config.h"
 #include <tchar.h>
-#include <algorithm>
-#include <string>
-#include <vector>
+#include <list>
+#include "ARX_Menu2.h"
+#include "EERIETexture.h"
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-
-
-extern PROJECT Project;
 extern long GERMAN_VERSION;
 extern long FRENCH_VERSION;
 extern long CHINESE_VERSION;
 extern long FINAL_COMMERCIAL_GAME;
 extern long FINAL_COMMERCIAL_DEMO;
-extern bool bForceInPack;
+using namespace std;
 extern CMenuConfig * pMenuConfig;
 
 CLocalisationHash * pHashLocalisation = NULL;
