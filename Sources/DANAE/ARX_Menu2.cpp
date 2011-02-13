@@ -22,34 +22,28 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include "ARX_Menu2.h"
-
-#include "ARX_Interface.h"
-#include "ARX_Loc.h"
+//-----------------------------------------------------------------------------
+// Arx_Menu2.cpp
+//-----------------------------------------------------------------------------
+#include <windows.h>
+#include <tchar.h>
+#include "Danae.h"
 #include "ARX_Menu.h"
+#include "ARX_Menu2.h"
 #include "ARX_MenuPublic.h"
 #include "ARX_Sound.h"
+#include "ARX_Loc.h"
 #include "ARX_Text.h"
 #include "ARX_Time.h"
 #include "ARX_ViewImage.h"
-#include "danae.h"
-
-#include "EERIEDraw.h"
-#include "EERIEPoly.h"
-#include "EERIETexture.h"
+#include "ARX_Interface.h"
 
 #include "Mercury_dx_input.h"
+#include "ARX_Time.h"
 
-#include <algorithm>
-#include <sstream>
-#include <string>
-#include <vector>
-#include <tchar.h>
-#include <windows.h>
-#include <dinput.h>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+#include "EERIETexture.h"
+#include "EERIEPoly.h"
+#include "EERIEDraw.h"
 
 #define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
@@ -6307,9 +6301,9 @@ CMenuPanel::~CMenuPanel()
 
 void CMenuPanel::Move(int _iX, int _iY)
 {
-	rZone.left   += _iX;
-	rZone.top    += _iY;
-	rZone.right  += _iX;
+	rZone.left += _iX;
+	rZone.top += _iY;
+	rZone.right += _iX;
 	rZone.bottom += _iY;
 
 	for (std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
@@ -6338,7 +6332,7 @@ void CMenuPanel::AddElement(CMenuElement* _pElem)
 }
 
 //-----------------------------------------------------------------------------
-// patch on ajoute à droite en ligne
+// patch on ajoute ï¿½ droite en ligne
 void CMenuPanel::AddElementNoCenterIn(CMenuElement* _pElem)
 {
 	vElement.push_back(_pElem);
@@ -7337,7 +7331,7 @@ int iDTime;
 		}
 	}
 
-	if(bTouch)	//priorité des touches
+	if(bTouch)	//prioritï¿½ des touches
 	{
 		switch(iKeyId)
 		{

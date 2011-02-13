@@ -57,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIEPHYSICSBOX_H
 #define EERIEPHYSICSBOX_H
 
-#include "EERIEtypes.h"
+#include "EERIETypes.h"
 
 void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj);
 void EERIE_PHYSICS_BOX_Release(EERIE_3DOBJ * obj);

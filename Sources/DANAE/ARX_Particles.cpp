@@ -61,7 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_CSpellFx.h"
 #include "ARX_Sound.h"
 #include "ARX_Collisions.h"
-#include "ARX_Interface.h" // -> à virer
+#include "ARX_Interface.h" // -> Ã  virer
 #include "ARX_Menu2.h"
 #include "ARX_MenuPublic.h"
 #include "ARX_Paths.h"
@@ -73,13 +73,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEDraw.h"
 #include "EERIEObject.h"
 #include "EERIEPhysicsBox.h"
-
-#include <cstdio>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-
 extern CMenuConfig *pMenuConfig;
+#include <stdio.h>
 
 extern float fZFogEnd;
 extern unsigned long ulBKGColor;

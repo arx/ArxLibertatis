@@ -22,19 +22,14 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-
-#include "danae.h"
+#include <cstdio>
+#include "Danae.h"
 #include "ARX_carte.h"
-#include "ARX_levels.h"
+#include "ARX_Levels.h"
 #include "EERIEUtil.h"
 #include "EERIETexture.h"
-#include "Hermesmain.h"
+#include "HERMESMain.h"
 #include "EERIEDraw.h"
-
-#include <cstdio>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 
 extern long FINAL_RELEASE;
 extern long CURRENTLEVEL;

@@ -29,7 +29,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <mmsystem.h>
 #include <commctrl.h>
 #include <vector>
-#include <process.h>
+// #include <process.h>
 #include "EERIETexture.h"
 
 class ViewImage

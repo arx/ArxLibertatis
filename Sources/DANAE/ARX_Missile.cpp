@@ -46,9 +46,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-
 //-----------------------------------------------------------------------------
 struct ARX_MISSILE
 {
