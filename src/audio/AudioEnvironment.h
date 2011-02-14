@@ -27,7 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "AudioTypes.h"
 #include "AudioResource.h"
-#include "dsoundfwd.h"
+#include <AL/al.h>
 
 namespace ATHENA
 {
@@ -64,7 +64,6 @@ namespace ATHENA
 			aalFloat reverb_decay;
 			aalFloat reverb_hf_decay;
 			aalEnvironmentCallback callback;
-			LPKSPROPERTYSET lpksps;
 	};
 
 }//ATHENA::
