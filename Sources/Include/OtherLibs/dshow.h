@@ -49,9 +49,9 @@
 #include <evcode.h>     // event code definitions
 #include <uuids.h>      // declaration of type GUIDs and well-known clsids
 #include <errors.h>     // HRESULT status and error definitions
-#include <edevdefs.h>   // External device control interface defines
+//#include <edevdefs.h>   // External device control interface defines
 #include <audevcod.h>   // audio filter device error event codes
-#include <dvdevcod.h>   // DVD error event codes
+//#include <dvdevcod.h>   // DVD error event codes
 
 ///////////////////////////////////////////////////////////////////////////
 // Define OLE Automation constants
