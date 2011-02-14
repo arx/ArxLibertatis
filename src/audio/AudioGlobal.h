@@ -27,6 +27,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cmath>
 
+#include <AL/al.h>
+#include <AL/alc.h>
 #include "AudioTypes.h"
 #include "AudioResource.h"
 #include "Stream.h"
@@ -35,8 +37,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "Sample.h"
 #include "Ambient.h"
 #include "AudioInstance.h"
-#include "dsoundfwd.h"
-
 
 namespace ATHENA
 {
@@ -63,10 +63,11 @@ namespace ATHENA
 	                              FLAG_ANY_ENV_FX);
 
 	// Audio device interface                                                    //
-	extern LPDIRECTSOUND device;
-	extern LPDIRECTSOUNDBUFFER primary;
-	extern LPDIRECTSOUND3DLISTENER listener;
-	extern LPKSPROPERTYSET environment;
+	extern ALCdevice *device;
+	extern ALCcontext *context;
+	extern ALuint primary[1];
+	//extern LPDIRECTSOUNDBUFFER primary;
+	//extern LPKSPROPERTYSET environment;
 	extern aalUBool is_reverb_present;
 	extern aalSLong environment_id;
 
