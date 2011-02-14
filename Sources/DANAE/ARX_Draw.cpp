@@ -61,17 +61,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Interactive.h"
 #include "ARX_Particles.h"
 #include "ARX_Spells.h"
-#include "ARX_time.h"
-#include "ARX_menu2.h"
+#include "ARX_Time.h"
+#include "ARX_Menu2.h"
 
 #include "EERIEDraw.h"
 #include "EERIELight.h"
 #include "EERIEPoly.h"
-#include "EERIEapp.h"
-#include <cstdio>
+#include "EERIEApp.h"
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+
+#include <stdio.h>
 
 // Some external defs needing to be cleaned...
 extern long DANAESIZX;
