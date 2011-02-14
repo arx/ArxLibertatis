@@ -247,7 +247,8 @@ void F2L(const float f, LONG * l)
 {
 	*l = f;
 }
-D3DCOLOR EERIERGB(float r, float g, float b)
+
+inline D3DCOLOR EERIERGB(float r, float g, float b)
 {
 	long t[3];
 	F2L(r * 255.f, &t[0]);
@@ -262,7 +263,7 @@ D3DCOLOR _EERIERGB(float v)
 	F2L(v * 255.f, &t);
 	return (0xff000000L | (t << 16) | (t << 8) | t);
 }
-D3DCOLOR _EERIERGBA(float v)
+inline D3DCOLOR _EERIERGBA(float v)
 {
 	long t;
 	F2L(v * 255.f, &t);
@@ -408,7 +409,7 @@ __inline void _YXZRotatePoint(EERIE_3D * in, EERIE_3D * out, EERIE_CAMERA * cam)
 //*************************************************************************************
 // Fast normal rotation :p
 //*************************************************************************************
-void _YXZRotateNorm(EERIE_3D * in, EERIE_3D * out, EERIE_CAMERA * cam)
+inline void _YXZRotateNorm(EERIE_3D * in, EERIE_3D * out, EERIE_CAMERA * cam)
 {
 	out->z = (in->y * cam->Xsin) + (((in->z * cam->Ycos) - (in->x * cam->Ysin)) * cam->Xcos);
 }
@@ -632,7 +633,7 @@ void QuatFromAngles(EERIE_QUAT * q, const EERIE_3D * angle);
 
 extern D3DMATRIX ProjectionMatrix;
 
-void specialEE_RT(D3DTLVERTEX * in, EERIE_3D * out)
+inline void specialEE_RT(D3DTLVERTEX * in, EERIE_3D * out)
 {
 	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
 	out->x = in->sx - et->posx;
@@ -645,7 +646,7 @@ void specialEE_RT(D3DTLVERTEX * in, EERIE_3D * out)
 	out->y = (out->y * et->xcos) - (temp * et->xsin);
 }
 
-void specialEE_P(EERIE_3D * in, D3DTLVERTEX * out)
+inline void specialEE_P(EERIE_3D * in, D3DTLVERTEX * out)
 {
 	register EERIE_TRANSFORM * et = (EERIE_TRANSFORM *)&ACTIVECAM->transform;
 
