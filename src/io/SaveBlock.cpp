@@ -79,7 +79,7 @@ struct SaveBlock::File {
 	const char * compressionName() const {
 		switch(comp) {
 			case SaveBlock::File::None: return "none";
-			case SaveBlock::File::ImplodeCrypt: return "implode + crypt";
+			case SaveBlock::File::ImplodeCrypt: return "implode+crypt";
 			case SaveBlock::File::Deflate: return "deflate";
 			default: return "(unknown)";
 		}
@@ -459,7 +459,7 @@ bool SaveBlock::save(const string & name, const char * data, size_t size) {
 	for(File::ChunkList::iterator chunk = file->chunks.begin();
 	    chunk != file->chunks.end() && remaining; ++chunk) {
 		
-		FileSeek(handle, chunk->size + 4, SEEK_SET);
+		FileSeek(handle, chunk->offset + 4, SEEK_SET);
 		
 		if(chunk->size > remaining) {
 			chunk->size = remaining;
@@ -491,9 +491,9 @@ char * SaveBlock::load(const string & name, size_t & size) const {
 		return NULL;
 	}
 	
-	LogDebug << "Loading " << name << " " << file->storedSize << " bytes in "
+	LogDebug << "Loading " << name << " " << file->storedSize << "b in "
 	         << file->chunks.size() << " chunks, " << file->compressionName()
-	         << " -> " << file->uncompressedSize;
+	         << " -> " << (int)file->uncompressedSize << "b";
 	
 	char * buf = (char*)malloc(file->storedSize);
 	char * p = buf;
