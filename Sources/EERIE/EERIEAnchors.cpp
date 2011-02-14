@@ -37,7 +37,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "EERIEAnchors.h"
-#include "eerieapp.h"
+#include "EERIEApp.h"
 #include "EERIEPathfinder.h"
 #include "EERIEMath.h"
 #include "HERMESMain.h"
@@ -186,12 +186,12 @@ __inline float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, lon
 		return ep->center.y;
 	}
 
-	float min = min(cyl->origin.y, cyl->origin.y + cyl->height);
-	float max = max(cyl->origin.y, cyl->origin.y + cyl->height);
+	float minf = min(cyl->origin.y, cyl->origin.y + cyl->height);
+	float maxf = max(cyl->origin.y, cyl->origin.y + cyl->height);
 
-	if (min > ep->max.y) return 999999.f;
+	if (minf > ep->max.y) return 999999.f;
 
-	if (max < ep->min.y) return 999999.f;
+	if (maxf < ep->min.y) return 999999.f;
 
 	long to;
 

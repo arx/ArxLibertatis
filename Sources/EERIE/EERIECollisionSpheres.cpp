@@ -211,7 +211,7 @@ BOOL IsExclusiveGroupMember(EERIE_3DOBJ * obj, long idx, long group)
 float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, EERIE_3D * center, EERIE_3D * dirvect, long group, float maxi)
 {
 	float curradius = 0.f;
-	float max = 0.f;
+	float maxf = 0.f;
 	float div = 0.f;
 	long sel = -1;
 
@@ -239,7 +239,7 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, EERIE_3D * center, EERIE_3D * d
 
 		if (distance < 2.f) continue;
 
-		if (distance < max) continue;
+		if (distance < maxf) continue;
 
 		EERIE_3D targvect;
 		targvect.x = target.x - center->x;
@@ -258,7 +258,7 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, EERIE_3D * center, EERIE_3D * d
 
 			curradius += distance;
 			div += 1.f;
-			max = max(max, distance);
+			maxf = max(maxf, distance);
 		}
 	}
 

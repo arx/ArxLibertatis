@@ -58,24 +58,23 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdio.h>
 #include <tchar.h>
 
-#include "EerieApp.h"
+#include "EERIEApp.h"
 #include "EERIEPoly.h"
 #include "EERIEUtil.h"
 
-#include "arx_menu.h"
-#include "../danae/arx_menu2.h"
-#include "arx_player.h"
-#include "arx_interface.h"
-
-#include "arx_time.h"
+#include "ARX_Menu.h"
+#include "ARX_Player.h"
+#include "ARX_Interface.h"
+#include "ARX_Time.h"
 
 #include "HERMESMain.h"
 #include "HERMESNet.h"
 
-#include "..\danae\danae_resource.h"
+#include "../DANAE/ARX_Menu2.h"
+#include "../DANAE/Danae_resource.h"
 
-
-
+//todo: dont
+# define GWL_WNDPROC         (-4)
 
 //-----------------------------------------------------------------------------
 extern long USE_OLD_MOUSE_SYSTEM;
@@ -1047,7 +1046,8 @@ VOID CD3DApplication::Cleanup3DEnvironment()
 
 	if (lpDDGammaControl)
 	{
-		lpDDGammaControl->SetGammaRamp(DDSGR_CALIBRATE, &DDGammaOld);
+//		todo: what is DDSGR_CALIBRATE
+//		lpDDGammaControl->SetGammaRamp(DDSGR_CALIBRATE, &DDGammaOld);
 		lpDDGammaControl->Release();
 		lpDDGammaControl = NULL;
 	}

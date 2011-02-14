@@ -52,11 +52,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-// Nuky - 10-02-11 - cleaned whole file
+#include <windows.h>
 
-#include <fstream>
-#include <sstream>
-
+#include "ARX_Loc.h"
 #include "ARX_Text.h"
 #include "Danae.h"
 
@@ -854,13 +852,43 @@ void ARX_Text_Init()
 
 	// Add the font file to the font resources
 	char tx[256];
-	sprintf(tx, "%smisc\\%s", Project.workingdir, "arx.ttf"); // Full path
+
+	sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX.ttf"); // Full path
+
 	if (!FileExist(tx))
-		sprintf(tx, "%smisc\\%s", Project.workingdir, "arx_default.ttf"); // Full path
-	MultiByteToWideChar(CP_ACP, 0, tx , -1, tFontResource, 256);
-	if (Unicows_AddFontResourceW(tFontResource) == 0)
+	{
+		sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX_default.ttf"); // Full path
+	}
+
+	MultiByteToWideChar(CP_ACP, 0, tx , -1, wtx, 256);		// XS : We need to pass a unicode string to AddFontResourceW
+
+	typedef int (APIENTRY * AddFontRessourceW)(const wchar_t *);
+
+	AddFontRessourceW Unicows_AddFontResourceW = (AddFontRessourceW)GetProcAddress(hUnicodeLibrary, "AddFontResourceW");
+
+	lpszFontIngame = GetFontName(tx);
+
+	if (Unicows_AddFontResourceW(wtx) == 0)
+	{
 		FontError();
-	_TCHAR* lpszFont = GetFontName(tx);
+	}
+
+	sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX.ttf");
+
+	if (!FileExist(tx))
+	{
+		sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX_default.ttf"); // Full path
+	}
+
+	MultiByteToWideChar(CP_ACP, 0, tx , -1, wtx, 256);		// XS : We need to pass an unicode string to AddFontResourceW
+
+	lpszFontMenu = GetFontName(tx);
+
+	if (Unicows_AddFontResourceW(wtx) == 0)
+	{
+		FontError();
+	}
+
 
 	pTextManage = new CARXTextManager();
 
@@ -879,14 +907,59 @@ void ARX_Text_Init()
 
 void ARX_Text_Close()
 {
-	if (hUnicodeLibrary)
+	if (!hUnicodeLibrary)
 	{
-		if (Unicows_RemoveResourceW(tFontResource) == 0)
-			FontError();
-		tFontResource[0] = _T('\0');
-		Unicows_AddFontResourceW = NULL;
-		Unicows_CreateFontW = NULL;
-		Unicows_RemoveResourceW = NULL;
+		hUnicodeLibrary = LoadLibraryA("unicows.dll");
+	}
+
+	if (lpszFontIngame)
+	{
+		delete [] lpszFontIngame;
+		lpszFontIngame = NULL;
+	}
+
+	if (lpszFontMenu)
+	{
+		delete [] lpszFontMenu;
+		lpszFontMenu = NULL;
+	}
+
+	typedef ATOM(APIENTRY * RemoveRessourceW)(const wchar_t *);
+
+	RemoveRessourceW Unicows_RemoveRessourceW = (RemoveRessourceW)GetProcAddress(hUnicodeLibrary, "RemoveFontResourceW");
+
+	_TCHAR wtx[256];
+	char tx[256];
+	sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX.ttf"); // Full path
+
+	if (!FileExist(tx))
+	{
+		sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX_default.ttf"); // Full path
+	}
+
+	MultiByteToWideChar(CP_ACP, 0, tx , -1, wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
+
+	lpszFontIngame = GetFontName(tx);
+
+
+	if (Unicows_RemoveRessourceW(wtx) == 0)
+	{
+		//	FontError(); // XS : Annoying popup, uncomment if you really want to track something down.
+	}
+
+	sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX.ttf"); // Full path
+
+	if (!FileExist(tx))
+	{
+		sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX_default.ttf"); // Full path
+	}
+
+	MultiByteToWideChar(CP_ACP, 0, tx , -1, wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
+	lpszFontMenu = GetFontName(tx);
+
+	if (Unicows_RemoveRessourceW(wtx) == 0)
+	{
+		//	FontError();// XS : Annoying popup, uncomment if you really want to track something down.
 	}
 
 	ARX_Localisation_Close();

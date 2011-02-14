@@ -216,7 +216,7 @@ void PatchReplace()
 		pT++;
 	}
 
-	ClearAbsDirectory(AllTxt, "arx\\");
+	ClearAbsDirectory(AllTxt, "ARX\\");
 	AddDirectory(AllTxt, DirectoryAbs);
 
 	//on enleve "sfx"

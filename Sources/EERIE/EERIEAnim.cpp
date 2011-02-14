@@ -73,11 +73,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Cedric.h"
 #include "HERMESMain.h"
 
-
-
-
-using namespace std;
-
 #define SOFTNEARCLIPPTANDLZ (60.f)
 
 //-----------------------------------------------------------------------------
@@ -225,7 +220,7 @@ short ANIM_GetAltIdx(ANIM_HANDLE * ah,long old)
 
 	for (long i=1;i<ah->alt_nb;i++)
 	{
-		tot+=anim_power[min(i,14)];		
+		tot+=anim_power[min(i,14L)];
 	}
 
 	while (1)
@@ -234,7 +229,7 @@ short ANIM_GetAltIdx(ANIM_HANDLE * ah,long old)
 		{
 			float rnd=rnd()*tot;
 
-			if ((rnd<anim_power[min(i,14)]) && (i!=old)) 
+			if ((rnd<anim_power[min((int)i,14)]) && (i!=old))
 				return i;
 		}
 	}

@@ -668,7 +668,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 
 	strcpy(AllTxt, dir);
 	strcat(AllTxt, name);
-	ClearAbsDirectory(AllTxt, "arx\\");
+	ClearAbsDirectory(AllTxt, "ARX\\");
 	AddDirectory(AllTxt, DirectoryAbs);
 	SetExt(AllTxt, ".BMP");
 
