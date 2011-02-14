@@ -399,7 +399,6 @@ protected:
 
 extern CD3DApplication * g_pD3DApp;
 
-<<<<<<< HEAD
 // Nuky - 01-02-11
 /// RAII for Lock() Unlock() on CD3DApplication class
 /// Can be used in conditions to test whether the lock was successfully acquired
@@ -416,8 +415,6 @@ private:
 	CD3DApplicationScopedLock& operator=(const CD3DApplicationScopedLock&);
 };
 
-=======
->>>>>>> b86745dc65740a33b3b8a5b8567eabff9fd33bc3
 //******************************************************************************
 // MESSAGE BOXES
 //******************************************************************************
