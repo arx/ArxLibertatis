@@ -14,7 +14,7 @@ set(CMAKE_CXX_FLAGS "-fpermissive -w") #Debug
 
 #Add liblub sources
 set(SOURCE_DIRS
-        #DANAE
+        DANAE
         EERIE
 )
 foreach(SOURCE_DIR ${SOURCE_DIRS})
@@ -34,4 +34,4 @@ add_executable(arx ${SOURCES})
 #add_executable(arx Sources/DANAE/ARX_CParticleSystem.cpp)
 
 #link
-#target_link_libraries()
+target_link_libraries(arx wine jpeg)
