@@ -81,6 +81,8 @@ namespace ATHENA
 	const aalFloat AAL_DEFAULT_CONE_OUTERANGLE(360.0F);                          //All directions
 	const aalFloat AAL_DEFAULT_CONE_OUTERVOLUME(0.0F);                           //No gain
 
+//todo: qualifiers can only be specified for objects and functions
+	/*
 	// Flags                                                                     //
 	enum aalFlag
 	{
@@ -135,7 +137,7 @@ namespace ATHENA
 		AAL_KEY_SETTING_FLAG_RANDOM      = 0x00000001,
 		AAL_KEY_SETTING_FLAG_INTERPOLATE = 0x00000002
 	};
-
+*/
 	// Output format                                                             //
 	struct aalFormat
 	{

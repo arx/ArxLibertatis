@@ -36,7 +36,7 @@ namespace ATHENA
 	static enum MixerFlag
 	{
 		IS_PAUSED = 0x00000001
-	};
+	} mixerFlag;
 
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //
