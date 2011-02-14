@@ -54,6 +54,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+#include <limits.h>
+
+#include <stdlib.h>
+
 #include "ARX_Menu.h"
 #include "ARX_Player.h"
 
@@ -65,7 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEDraw.h"
 #include "EERIEPathfinder.h"
 
-#include "ARX_Changelevel.h"
+#include "ARX_ChangeLevel.h"
 #include "ARX_Collisions.h"
 #include "ARX_CParticles.h"
 #include "ARX_Damages.h"
@@ -84,12 +88,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Special.h"
 #include "ARX_Speech.h"
 #include "ARX_Spells.h"
-
-#include <climits>
-#include <cstdlib>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 
 extern long		USE_NEW_SKILLS;
 extern long		ARX_CONVERSATION;

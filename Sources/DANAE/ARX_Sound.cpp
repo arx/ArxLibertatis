@@ -30,27 +30,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //
 ///////////////////////////////////////////////////////////////////////////////
-#include "ARX_SOUND.h"
-#include "HERMESMain.h"
-#include "HERMES_Pak.h"
-#include "EERIEMath.h"
-#include "ARX_NPC.h"
-#include "ARX_Interactive.h"
-#include "ARX_Player.h"
-#include "ARX_Script.h"
-#include "ARX_Particles.h"
-#include "../danae/arx_menu2.h"
-#include "Athena.h"
-
-#include "eerieapp.h"
-
-#include <cstdio>
+#include <stdio.h>
 #include <list>
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+#include <ARX_Sound.h>
+#include <HERMESMain.h>
+#include <HERMES_PAK.h>
+#include <EERIEMath.h>
+#include <ARX_NPC.h>
+#include <ARX_Interactive.h>
+#include <ARX_Player.h>
+#include <ARX_Script.h>
+#include <ARX_Particles.h>
+#include "ARX_Menu2.h"
+#include <Athena.h>
+#include "EERIEApp.h"
 
 using namespace std;
+
 using namespace ATHENA;
 
 extern long FINAL_RELEASE;
@@ -1400,7 +1397,7 @@ void ARX_SOUND_AmbianceRestorePlayList(void * _play_list, unsigned long size)
 	}
 }
 
-// PâBôMéJèMçA
+// Pï¿½Bï¿½Mï¿½Jï¿½Mï¿½A
 extern PakManager * pPakManager;
 static void ARX_SOUND_CreateEnvironments()
 {
@@ -1444,21 +1441,22 @@ static void ARX_SOUND_CreateEnvironments()
 	else
 	{
 		char path[512] = "";
-		_finddata_t fdata;
-		long fhandle;
-
-		sprintf(path, "%ssfx\\environment\\*.aef", Project.workingdir);
-
-		if ((fhandle = _findfirst(path, &fdata)) != -1)
-		{
-			do
-			{
-				aalCreateEnvironment(fdata.name);
-			}
-			while (_findnext(fhandle, &fdata));
-
-			_findclose(fhandle);
-		}
+//		todo: find
+//		_finddata_t fdata;
+//		long fhandle;
+//
+//		sprintf(path, "%ssfx\\environment\\*.aef", Project.workingdir);
+//
+//		if ((fhandle = _findfirst(path, &fdata)) != -1)
+//		{
+//			do
+//			{
+//				aalCreateEnvironment(fdata.name);
+//			}
+//			while (_findnext(fhandle, &fdata));
+//
+//			_findclose(fhandle);
+//		}
 	}
 }
 
@@ -2201,8 +2199,9 @@ static void ARX_SOUND_DeletePresenceMap()
 
 static float GetSamplePresenceFactor(const char * name)
 {
-	for (unsigned long i(0); i < presence_c; i++)
-		if (!strnicmp(presence_l[i].name, name, presence_l[i].name_size)) return presence_l[i].factor;
+//	todo: string stuff
+//	for (unsigned long i(0); i < presence_c; i++)
+//		if (!strnicmp(presence_l[i].name, name, presence_l[i].name_size)) return presence_l[i].factor;
 
 	return 1.0F;
 }

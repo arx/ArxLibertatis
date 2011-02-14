@@ -26,10 +26,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "Danae.h"
 #include "ARX_ViewImage.h"
 #include "ARX_Menu2.h"
-#include "arx_time.h"
+#include "ARX_Time.h"
 #include "EERIETexture.h"
 #include "EERIEDraw.h"
-#include "Hermesmain.h"
+#include "HERMESMain.h"
 
 
 //-----------------------------------------------------------------------------
@@ -57,7 +57,8 @@ ViewImage::ViewImage(char * _pcDir, char * _pExt)
 		if (pPakManager->ExistFile(tTxt))
 		{
 			char * pCopy = strdup(tTxt);
-			pCopy = strupr(pCopy);
+//			todo: string
+//			pCopy = strupr(pCopy);
 			vListImage.push_back(pCopy);
 			iNum++;
 		}
@@ -68,7 +69,7 @@ ViewImage::ViewImage(char * _pcDir, char * _pExt)
 			if (pPakManager->ExistFile(tTxt))
 			{
 				char * pCopy = strdup(tTxt);
-				pCopy = strupr(pCopy);
+//				pCopy = strupr(pCopy);
 				vListImage.push_back(pCopy);
 				iNum++;
 			}
@@ -198,8 +199,8 @@ void ViewImage::DrawAllImage()
 			if (!danaeApp.DANAEStartRender()) continue;
 
 
-			float fDepX = ARX_CLEAN_WARN_CAST_FLOAT(max(0, ((DANAESIZX - pTex->m_dwWidth) >> 1)));
-			float fDepY = ARX_CLEAN_WARN_CAST_FLOAT(max(0, ((DANAESIZY - pTex->m_dwHeight) >> 1)));
+			float fDepX = ARX_CLEAN_WARN_CAST_FLOAT(max(0L, ((DANAESIZX - pTex->m_dwWidth) >> 1)));
+			float fDepY = ARX_CLEAN_WARN_CAST_FLOAT(max(0L, ((DANAESIZY - pTex->m_dwHeight) >> 1)));
 
 
 
@@ -209,8 +210,8 @@ void ViewImage::DrawAllImage()
 			EERIEDrawBitmap(GDevice,
 			                fDepX,
 			                fDepY,
-			                ARX_CLEAN_WARN_CAST_FLOAT(min(pTex->m_dwWidth, ARX_CAST_ULONG(DANAESIZX))),
-			                ARX_CLEAN_WARN_CAST_FLOAT(min(pTex->m_dwHeight, ARX_CAST_ULONG(DANAESIZY))),
+			                ARX_CLEAN_WARN_CAST_FLOAT(min((unsigned long)pTex->m_dwWidth, ARX_CAST_ULONG(DANAESIZX))),
+			                ARX_CLEAN_WARN_CAST_FLOAT(min((unsigned long)pTex->m_dwHeight, ARX_CAST_ULONG(DANAESIZY))),
 			                0.f,
 			                pTex,
 			                D3DRGB(fColor, fColor, fColor));

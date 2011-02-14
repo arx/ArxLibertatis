@@ -24,6 +24,7 @@ endforeach(SOURCE_DIR)
 LIST(REMOVE_ITEM SOURCES 
 /home/bmonkey/workspace/Port/ArxFatalis/Sources/DANAE/ARX_Menu2.cpp
 /home/bmonkey/workspace/Port/ArxFatalis/Sources/DANAE/ARX_Minimap.cpp
+/home/bmonkey/workspace/Port/ArxFatalis/Sources/DANAE/ARX_Sound.cpp
 )
 #add_library()
 #message(${SOURCES})
