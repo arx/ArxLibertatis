@@ -40,7 +40,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "eerieapp.h"
 #include "EERIEPathfinder.h"
 #include "EERIEMath.h"
-#include "HermesMain.h"
+#include "HERMESMain.h"
 #include "Danae.h"
 #include "ARX_Text.h"
 

@@ -69,9 +69,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <ARX_Collisions.h>
 #include <ARX_Scene.h>
 #include "ARX_Time.h"
-#include "danae.h" 
+#include "Danae.h" 
 #include "ARX_Cedric.h"
-#include "HermesMain.h"
+#include "HERMESMain.h"
 
 
 
