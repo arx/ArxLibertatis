@@ -61,13 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEApp.h"
 #include "EERIEPoly.h"
 #include "EERIETypes.h"
-#include "EerieMath.h"
-
-
-
-
-
- 
+#include "EERIEMath.h"
 
 #ifdef ASSEMBLER_OPTIMS	 //////////////////////
 float __mov;

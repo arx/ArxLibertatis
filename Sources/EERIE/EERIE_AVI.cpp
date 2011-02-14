@@ -31,10 +31,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <control.h>
 #include <uuids.h>
 #include <amvideo.h>
-#include <edevdefs.h>
+//#include <edevdefs.h>
 #include <dshow.h>
+#include <stdio.h>
 
-#include "../danae/arx_menu2.h"			// CDirectInput
+#include "../DANAE/ARX_Menu2.h"			// CDirectInput
 
 
 
@@ -140,7 +141,7 @@ bool PlayFile(HWND hWnd, char * file)
 				}
 			}
 
-			pMediaEvent->WaitForCompletion(0, &l); //INFINITE
+			pMediaEvent->WaitForCompletion((LONG)0L, (LONG)&l); //INFINITE
 		}
 
 		CleanUp();
