@@ -94,6 +94,8 @@ namespace ATHENA
 
 			ALuint source[1];
 			ALuint buffer[1];
+			ALenum alformat;
+
 			/* LPDIRECTSOUNDBUFFER lpdsb; */
 			/* LPDIRECTSOUND3DBUFFER lpds3db; */
 			/* LPKSPROPERTYSET lpeax; */

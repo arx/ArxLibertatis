@@ -117,6 +117,8 @@ namespace ATHENA
 #define CloseHandle(mutex)	
 #endif
 
+	static struct timespec start_timespec;
+
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //
 	// Global setup                                                              //
@@ -143,6 +145,7 @@ namespace ATHENA
 			return AAL_ERROR_SYSTEM;
 		}
 		alGetError(); // clear error code
+		alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
 		is_reverb_present = alIsExtensionPresent("EAX2.0") ? AAL_UTRUE : AAL_UFALSE;
 
 		if (mutex) ReleaseMutex(mutex);
@@ -185,7 +188,9 @@ namespace ATHENA
 		//session_start = GetTickCount();
 		struct timespec ts;
 		clock_gettime(CLOCK_REALTIME, &ts);
-		session_start = ts.tv_sec;
+		session_start = (ts.tv_sec * 1000000000 + ts.tv_nsec) / 1000000; // session_start shouldn't really be used any more
+		start_timespec.tv_sec = ts.tv_sec;
+		start_timespec.tv_nsec = ts.tv_nsec;
 		session_time = 0;
 		is_reverb_present = AAL_UFALSE;
 
@@ -372,17 +377,17 @@ namespace ATHENA
 		}
 
 		// I don't think we need to worry about this
-		// if (flags & FLAG_ANY_3D_FX && !listener)
-		// {
-		// 	if (primary->QueryInterface(IID_IDirectSound3DListener, (aalVoid **)&listener))
-		// 	{
-		// 		if (mutex) ReleaseMutex(mutex);
+		if (flags & FLAG_ANY_3D_FX)// && !listener)
+		{
+			// if (primary->QueryInterface(IID_IDirectSound3DListener, (aalVoid **)&listener))
+			// {
+			// 	if (mutex) ReleaseMutex(mutex);
 
-		// 		return AAL_ERROR_SYSTEM;
-		// 	}
+			// 	return AAL_ERROR_SYSTEM;
+			// }
 
-		// 	global_status |= FLAG_ANY_3D_FX & ~FLAG_ANY_ENV_FX;
-		// }
+			global_status |= FLAG_ANY_3D_FX & ~FLAG_ANY_ENV_FX;
+		}
 
 		if (flags & FLAG_ANY_ENV_FX && is_reverb_present)// && !environment)
 		{
@@ -481,7 +486,9 @@ namespace ATHENA
 		//session_time = GetTickCount() - session_start;
 		struct timespec ts;
 		clock_gettime(CLOCK_REALTIME, &ts);
-		session_time = ts.tv_sec - session_start;
+		unsigned long elapsed_seconds = ts.tv_sec - start_timespec.tv_sec;
+		unsigned long elapsed_nseconds = ts.tv_nsec - start_timespec.tv_nsec;
+		session_time = elapsed_seconds * 1000 + elapsed_nseconds / 1000000;
 
 		aalULong i;
 
