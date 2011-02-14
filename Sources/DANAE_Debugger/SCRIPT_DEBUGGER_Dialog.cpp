@@ -52,7 +52,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 
 #ifndef  __RESOURCE_H
-#include "Resource.h"
+#include "resource.h"
 #endif
 
 HINSTANCE ghInstance;
@@ -285,7 +285,7 @@ BOOL CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 
 
 //-----------------------------------------------------------------------------
-BOOL WINAPI DllMain(HINSTANCE _hModule, DWORD _fdwreason, LPVOID /*_lpReserved*/)
+BOOL WINAPI DllMain(HINSTANCE _hModule, DWORD _fdwreason, LPVOID _lpReserved)
 //-----------------------------------------------------------------------------
 {
 	switch (_fdwreason)
@@ -315,7 +315,7 @@ unsigned long APIFUNC SCRIPT_DEBUGGER_GetVersion()
 }
 
 //-----------------------------------------------------------------------------
-void APIFUNC SCRIPT_DEBUGGER_CreateDialog(HWND _hWindow, ScriptDebuggerInfos & /*_s*/)
+void APIFUNC SCRIPT_DEBUGGER_CreateDialog(HWND _hWindow, ScriptDebuggerInfos & _s)
 {
 	if (!gbDialog)
 	{
@@ -341,7 +341,7 @@ void APIFUNC SCRIPT_DEBUGGER_CreateDialog(HWND _hWindow, ScriptDebuggerInfos & /
 }
 
 //-----------------------------------------------------------------------------
-int CALLBACK MyCompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM /*lParamSort*/)
+int CALLBACK MyCompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 {
 	char * a = (char *) lParam1;
 	char * b = (char *) lParam2;
@@ -489,16 +489,14 @@ void APIFUNC SCRIPT_DEBUGGER_GetParams(ScriptDebuggerUpdate & _pp)
 
 	char dest[256];
 
-	_pp.bUpdateGlobalVar = sdu.bUpdateGlobalVar;
-	if (_pp.bUpdateGlobalVar)
+	if (_pp.bUpdateGlobalVar = sdu.bUpdateGlobalVar)
 	{
 		GetWindowText(iInfo.hGlobalEdit, dest, 255);
 		strcpy(_pp.globalVar.lpszVarValue, dest);
 		strcpy(_pp.globalVar.lpszVarName, GlobalName);
 	}
 
-	_pp.bUpdateLocalVar = sdu.bUpdateLocalVar;
-	if (_pp.bUpdateLocalVar)
+	if (_pp.bUpdateLocalVar = sdu.bUpdateLocalVar)
 	{
 		GetWindowText(iInfo.hLocalEdit, dest, 255);
 		strcpy(_pp.localVar.lpszVarValue, dest);

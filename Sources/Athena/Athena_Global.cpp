@@ -130,5 +130,4 @@ namespace ATHENA
 		fprintf(debug_log, text);
 		fflush(debug_log);
 	}
-
 }//ATHENA::

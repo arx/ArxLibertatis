@@ -73,5 +73,4 @@ namespace ATHENA
 		PAK_SetLoadMode(global_status & AAL_FLAG_PACKEDRESOURCES ? LOAD_PACK : LOAD_TRUEFILE,
 		                (char *)name);
 	}
-
 }//ATHENA::

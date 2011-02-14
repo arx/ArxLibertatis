@@ -104,7 +104,7 @@ extern DXI_INIT			DI_Init;
 extern int				DI_NbInputInfo;
 extern INPUT_INFO		DI_InputInfo[];
 //extern IDirectInput7	* DI_DInput7;
-extern IDirectInput7W * DI_DInput7;
+extern IDirectInput7A * DI_DInput7;
 extern int				DI_NbKeyboard;
 extern int				DI_NbMouse;
 extern int				DI_NbJoy;

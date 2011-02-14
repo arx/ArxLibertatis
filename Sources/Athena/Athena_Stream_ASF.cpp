@@ -22,12 +22,11 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include "Athena_Stream_ASF.h"
-#include "Athena_FileIO.h"
-
 #include <malloc.h>
 #include <memory.h>
-#include <cstdlib>
+#include <stdlib.h>
+#include "Athena_Stream_ASF.h"
+#include "Athena_FileIO.h"
 
 namespace ATHENA
 {
@@ -207,5 +206,4 @@ namespace ATHENA
 	aalVoid StreamASF::NextVector()
 	{
 	}
-
 }//ATHENA::

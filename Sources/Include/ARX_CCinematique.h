@@ -175,7 +175,7 @@ struct C_SOUND
 	char	*	dir;
 	char	*	name;
 	char	*	sound;
-	long		idhandle;
+	ArxSound		idhandle;
 };
 
 struct C_KEY_1_59

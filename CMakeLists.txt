@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(ArxFatalis)
 
+
 set(SRC_DIR Sources)
 
 include_directories(
@@ -14,19 +15,20 @@ include_directories(
 set(CMAKE_CXX_COMPILER /usr/bin/wineg++)
 set(CMAKE_C_COMPILER /usr/bin/winegcc)
 
-set(CMAKE_CXX_FLAGS "-fpermissive -w") #Debug
+set(CMAKE_CXX_FLAGS "-fpermissive -w -m32") #Debug
+
 
 
 #Add liblub sources
 set(SOURCE_DIRS
 	ArxCommon
 	Athena
-    DANAE
+    danae
     DANAE_Debugger
-    EERIE
-    HERMES
+    eerie
+    hermes
     Mercury
-    MINOS
+    minos
 )
 foreach(SOURCE_DIR ${SOURCE_DIRS})
     file(GLOB GLOB_RESULT ${SRC_DIR}/${SOURCE_DIR}/*.cpp)
@@ -43,4 +45,4 @@ add_executable(arx ${SOURCES})
 #add_executable(arx Sources/DANAE/ARX_CParticleSystem.cpp)
 
 #link
-target_link_libraries(arx wine jpeg)
+target_link_libraries(arx dsound dxguid gdi32 shell32 dinput comdlg32 ole32 comctl32 ddraw jpeg z)

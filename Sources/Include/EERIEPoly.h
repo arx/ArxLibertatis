@@ -463,6 +463,8 @@ struct TWEAK_INFO
 
 #define MAX_ANIMS 200		// max loadable anims per character
 
+typedef int ArxSound;
+
 struct INTERACTIVE_OBJ
 {
 	long				num;		// Nuky - 25/01/11 - cache the InterNum to speed up GetInterNum()
@@ -493,7 +495,7 @@ struct INTERACTIVE_OBJ
 	EERIE_S2D			bbox2;		// 2D bounding box2
 	char *				usemesh;	// Alternate Mesh/path
 	EERIE_3DOBJ *		tweaky;		// tweaked original obj backup
-	long				sound;
+	ArxSound				sound;
 
 	unsigned long		type_flags;			// object type (weapon,goblin...)
 	long				scriptload;			// Is This object Loaded by Script ?
@@ -581,7 +583,7 @@ struct INTERACTIVE_OBJ
 
 	float				ignition;
 	long				ignit_light;
-	long				ignit_sound;
+	ArxSound				ignit_sound;
 	float				head_rot;
 
 	short				damager_damages;
@@ -969,36 +971,7 @@ void ResetAnim(ANIM_USE * eanim);
 //*************************************************************************************
 
 	
-long EERIERTPPoly(EERIEPOLY *ep)
-{
-	specialEE_RTP(&ep->v[0],&ep->tv[0]);
-	specialEE_RTP(&ep->v[1],&ep->tv[1]);
-	specialEE_RTP(&ep->v[2],&ep->tv[2]);
-
-	if (ep->type & POLY_QUAD)
-	{
-		specialEE_RTP(&ep->v[3],&ep->tv[3]);
-
-		if ((ep->tv[0].sz<=0.f) &&
-			(ep->tv[1].sz<=0.f) &&
-			(ep->tv[2].sz<=0.f) &&
-			(ep->tv[3].sz<=0.f) )
-		{
-			return 0;
-		}
-	}
-	else
-	{
-		if ((ep->tv[0].sz<=0.f) &&
-			(ep->tv[1].sz<=0.f) &&
-			(ep->tv[2].sz<=0.f)  )
-		{
-			return 0;
-		}
-	}
-
-	return 1;
-}
+long EERIERTPPoly(EERIEPOLY *ep);
 
 
 void EE_RTP3(EERIE_3D * in, EERIE_3D * out, EERIE_CAMERA * cam);

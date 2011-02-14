@@ -263,7 +263,7 @@ struct SPELL
 
 	long		flags;
 	long lSpellSource;
-	long snd_loop;
+	ArxSound snd_loop;
 	CSpellFx	* pSpellFx;
 	void 	*	misc;
 };

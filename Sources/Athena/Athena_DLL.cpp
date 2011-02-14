@@ -22,7 +22,6 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <windows.h>
 
 ///////////////////////////////////////////////////////////////////////////////
 //                                                                           //
@@ -31,10 +30,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ///////////////////////////////////////////////////////////////////////////////
 
 //PABO
-int ShowError(char *, char *, long)
-{
-	return 0;
-}
+// also defined in EERIEApp
+//int ShowError(char *, char *, long)
+//{
+	//return 0;
+//}
 
 
 

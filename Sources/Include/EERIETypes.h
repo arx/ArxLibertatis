@@ -126,6 +126,8 @@ struct EERIE_3D_BBOX
 	EERIE_3D max;
 }; // Aligned 1 2 4
 
+typedef int ArxSound;
+
 struct EERIE_LIGHT
 {
 	char		exist;
@@ -157,7 +159,7 @@ struct EERIE_LIGHT
 	long		tl;
 	unsigned long	time_creation;
 	long		duration; // will start to fade before the end of duration...
-	long sample;
+	ArxSound sample;
 }; // Aligned 1 2 4
 
 enum EERIE_TYPES_EXTRAS_MODE
@@ -654,7 +656,7 @@ struct EERIE_FRAME
 	float		time;
 	EERIE_3D	translate;
 	EERIE_QUAT	quat;
-	long		sample;
+	ArxSound	sample;
 }; // Aligned 1 2 4
 
 

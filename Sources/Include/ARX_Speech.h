@@ -103,7 +103,7 @@ struct STRUCT_SPEECH
 struct ARX_SPEECH
 {
 	long				exist;
-	long				sample;
+	ArxSound				sample;
 	long				mood;
 	long				flags; 
 	unsigned long		time_creation;

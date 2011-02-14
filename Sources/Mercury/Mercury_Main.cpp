@@ -82,7 +82,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 	free(mem);
 }*/
 /*-------------------------------------------------------------*/
-BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID /*pvRef*/)
+BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi,LPVOID pvRef)
 {
 	INPUT_INFO	*info;
 
@@ -992,6 +992,7 @@ BOOL DXI_KeyPressed(int id,int dikkey)
 	if(DI_KeyBoardBuffer[id]->bufferstate[dikkey]&0x80) return TRUE;
 	return FALSE;
 }
+
 /*-------------------------------------------------------------*/
 int DXI_GetKeyIDPressed(int id)
 {
