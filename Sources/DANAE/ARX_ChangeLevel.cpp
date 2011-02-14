@@ -65,6 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 //-----------------------------------------------------------------------------
 #include <vector>
+#include <algorithm>
 #include "ARX_ChangeLevel.h"
 
 #include "ARX_Damages.h"

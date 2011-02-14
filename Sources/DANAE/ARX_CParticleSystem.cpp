@@ -34,6 +34,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_CParticles.h"
 #include "ARX_CParticle.h"
 //#include "ARX_CParticleParams.h"
+#include "ARX_Common.h"
 
 //#include <d3d.h>
 

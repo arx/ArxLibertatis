@@ -71,10 +71,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Fogs.h"
 #include "ARX_Time.h"
 
-#include "danae.h"
-
-#include "EERIEDraw.h"
-#include "EERIEMath.h"
+#include "ARX_Casts.h"
 #include "EERIELight.h"
 #include "EERIEObject.h"
 

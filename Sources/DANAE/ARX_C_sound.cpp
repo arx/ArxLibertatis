@@ -26,6 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_CCinematique.h"
 #include "Resource.h"
 #include "ARX_Sound.h"
+#include "ARX_Casts.h"
 
 /*-----------------------------------------------------------*/
 C_SOUND		TabSound[MAX_SOUND];

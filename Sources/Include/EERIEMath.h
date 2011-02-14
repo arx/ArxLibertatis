@@ -59,16 +59,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //#define D3D_OVERLOADS
 //
 //#include <d3d.h>
-#include <math.h>
+#include <algorithm>
 #include "EERIETypes.h"
 #include "EERIEPoly.h"
-#include "ARX_Common.h"
-
+//#include "ARX_Common.h"
 using std::min;
 using std::max;
 
-#include <d3d.h>
-#include <cmath>
+#define ARX_CLEAN_WARN_CAST_UCHAR(_x) (static_cast<unsigned char>( _x ))
 
 //-----------------------------------------------------------------------------
 // RANDOM Sequences Funcs/Defs

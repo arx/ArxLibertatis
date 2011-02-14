@@ -62,7 +62,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 #include <windows.h>
-#include <cassert>
+#include <assert.h>
+//#include <ARX_Common.h>
 
 struct HPERF_STAT
 {

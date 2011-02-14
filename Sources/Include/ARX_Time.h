@@ -60,7 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //#include <windows.h>
 //#include <Mmsystem.h>
 #include "Danae.h"
-
+#include "ARX_Casts.h"
 //-----------------------------------------------------------------------------
 extern float ARXPausedTime;
 extern float ARXTotalPausedTime;
