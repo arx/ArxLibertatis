@@ -68,7 +68,7 @@ namespace ATHENA
 	static void *mutex = (void *)1; // just for compilation.  real mutex is above
 	static pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 	static bool _mutex_used = false;
-#elif ARX_PLATFORM_WIN32
+#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 	static HANDLE mutex(NULL);
 #endif	
 	

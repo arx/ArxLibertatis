@@ -772,7 +772,7 @@ int CreateAllMapsForBitmap(const string & path, Cinematic * c) {
 				LogError<< "Creating texture #" << num << " -> x: " << (long)dx << " y: " << (long)dy << " w: " << w2 << " h: " << h2;
 			}
 
-			TextureContainer * t = FindTexture(texname.c_str());
+			TextureContainer * t = FindTexture(texname);
 			AddQuadUVs(&bi->grid, bi->nbx - nbxx, bi->nby - nby, 1, 1, bi->w - w, bi->h - h, w2, h2, t);
 
 			dx += (float)w2;
@@ -906,7 +906,7 @@ bool Cinematic::ActiveTexture(int id)
 
 		if (tc->Restore(GDevice) != S_OK) return false;	
 
-		if (tc->CopyBitmapToSurface2(cb->hbitmap, mat->bitmapdepx, mat->bitmapdepy, mat->bitmapw, mat->bitmaph, 1) != S_OK) return false;
+		if (tc->CopyBitmapToSurface(cb->hbitmap, mat->bitmapdepx, mat->bitmapdepy, mat->bitmapw, mat->bitmaph) != S_OK) return false;
 
 		mat++;
 	}

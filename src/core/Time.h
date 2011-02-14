@@ -74,6 +74,9 @@ void ARX_TIME_UnPause();
 void ARX_TIME_Init();
 void ARX_TIME_Force_Time_Restore(float time);
 
+// Get time (in seconds) since application started
+float ARX_TIME_GetAppTime();
+
 float _ARX_TIME_GetTime();
 
 //-----------------------------------------------------------------------------
