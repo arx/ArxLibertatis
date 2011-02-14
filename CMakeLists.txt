@@ -29,7 +29,7 @@ foreach(SOURCE_DIR ${SOURCE_DIRS})
 endforeach(SOURCE_DIR)
 
 LIST(REMOVE_ITEM SOURCES 
-/home/bmonkey/workspace/Port/ArxFatalis/Sources/DANAE/ARX_Menu2.cpp
+#/home/bmonkey/workspace/Port/ArxFatalis/Sources/DANAE/ARX_Menu2.cpp
 /home/bmonkey/workspace/Port/ArxFatalis/Sources/DANAE/ARX_Sound.cpp
 /home/bmonkey/workspace/Port/ArxFatalis/Sources/DANAE/ARX_Text.cpp
 /home/bmonkey/workspace/Port/ArxFatalis/Sources/HERMES/HERMESmain.cpp

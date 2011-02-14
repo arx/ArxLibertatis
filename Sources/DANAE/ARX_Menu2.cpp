@@ -46,7 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEPoly.h"
 #include "EERIEDraw.h"
 
-#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
+//#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
 extern char* GetVersionString();
 
@@ -228,7 +228,8 @@ void ARX_QuickSave()
 	{
 		_TCHAR	tex2[256];
 		_stprintf( tex2, _T( "%S"), save_l[iI].name );
-		_tcsupr( tex2 );
+//		todo: string
+//		_tcsupr( tex2 );
 
 		if( _tcsstr( szMenuText, tex2 ) )
 		{
@@ -359,7 +360,8 @@ bool ARX_QuickLoad()
 	{
 		_TCHAR	tex2[256];
 		_stprintf( tex2, _T( "%S" ), save_l[iI].name );
-		_tcsupr( tex2 );
+		//todo string
+//		_tcsupr( tex2 );
 
 		if( _tcsstr( szMenuText, tex2 ) )
 		{
@@ -430,9 +432,10 @@ bool GetTextSizeNoCache(HFONT font, const _TCHAR* text, int *width_out, int *hei
 
 			SIZE sSize;
 
-			GetTextExtentPoint32W(hDC, text, _tcslen(text),	&sSize);
-			*width_out = sSize.cx;
-			*height_out = sSize.cy;
+//			todo: cast
+//			GetTextExtentPoint32W(hDC, _lpszUText, _tcslen(_lpszUText),	&sSize);
+			*_iWidth = sSize.cx;
+			*_iHeight = sSize.cy;
 
 			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 			return true;
@@ -700,7 +703,8 @@ int CMenuConfig::GetDIKWithASCII(char *_pcTouch)
 {
 	_TCHAR pcT[256];
 
-	MultiByteToWideChar(CP_ACP, 0, _pcTouch, -1, pcT, strlen(_pcTouch)+1);
+//	TODO: cast
+//	MultiByteToWideChar(CP_ACP, 0, _pcTouch, -1, pcT, strlen(_pcTouch)+1);
 
 	if(!_tcsicmp(pcT,_T("---")))
 	{
@@ -1922,7 +1926,8 @@ bool CMenuConfig::ReadAll()
 static void CalculTextPosition(HDC& _hDC, std::wstring& phrase, CreditsTextInformations &infomations, float& drawpos)
 {
 	//Center the text on the screen
-	GetTextExtentPoint32W(_hDC, phrase.c_str(), phrase.length(), &(infomations.sPos));
+//	todo: cast
+//	GetTextExtentPoint32W(_hDC, phrase.c_str(), phrase.length(), &(infomations.sPos));
 
 	if (infomations.sPos.cx < DANAESIZX)
 		infomations.sPos.cx = ARX_CLEAN_WARN_CAST_INT((DANAESIZX - infomations.sPos.cx) * DIV2);
@@ -1949,12 +1954,13 @@ static void ExtractPhraseColor(std::wstring &phrase, CreditsTextInformations &in
 //Use to calculate an Average height for text fonts
 static void CalculAverageWidth( HDC& _hDC )
 {
-	SelectObject(_hDC, hFontCredits);
-	SIZE size;
+		SelectObject(_hDC, hFontCredits);
+		SIZE size;
 
-	//calculate the average value
-	GetTextExtentPoint32W(_hDC, _T("aA("),3, &size);
-	CreditsData.iFontAverageHeight = size.cy;
+		//calculate the average value
+//		todo cast
+//		GetTextExtentPoint32W(_hDC, _T("aA("),3, &size);
+		CreditsData.iFontAverageHeight = size.cy;
 }
 
 //Use to extract string info from src buffer
@@ -1962,7 +1968,6 @@ static void ExtractAllCreditsTextInformations(HDC& _hDC)
 {
 	//Recupere les lignes à afficher
 	std::wistringstream iss(ARXmenu.mda->str_cre_credits);
-	std::wstring phrase;
 
 	//Use to calculate the positions
 	float drawpos	= ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY);
@@ -2076,12 +2081,13 @@ static void DrawCredits(void)
 
 					SelectObject(hDC, hFontCredits);
 
+
 					//Display the text on the screen
-					TextOutW( hDC,
-						it->sPos.cx,
-						ARX_CLEAN_WARN_CAST_INT(yy),
-						it->sText.c_str(),
-						it->sText.length()	);
+//					todo: cast
+//					TextOutW( hDC,
+//						it->sPos.cx,
+//						ARX_CLEAN_WARN_CAST_INT(yy),
+//						it->sText.c_str(),
 
 					++drawn;
 				}
@@ -2363,7 +2369,8 @@ int iDecMenuPrincipaleY=50;
 
 		//version
 		_TCHAR twVersion[32];
-		MultiByteToWideChar(CP_ACP, 0, GetVersionString()+3, -1, twVersion, 32 );
+//		todo: cast
+//		MultiByteToWideChar(CP_ACP, 0, GetVersionString()+3, -1, twVersion, 32 );
 
 		me = new CMenuElementText( -1, hFontControls, twVersion, RATIO_X(490), RATIO_Y(65), lColor, 1.0f, NOP );
 		me->SetCheckOff();
@@ -2589,7 +2596,8 @@ int iDecMenuPrincipaleY=50;
 								_TCHAR tex2[256];
 								_tcscpy(tex2,tex);
 
-								_tcsupr(tex2);
+//								todo: string
+//								_tcsupr(tex2);
 
 								if(!_tcscmp(szMenuText, tex2) || !_tcscmp(szMenuText1, tex2))
 								{
@@ -2627,13 +2635,13 @@ int iDecMenuPrincipaleY=50;
 										tex3,
 										256);
 									strcat(tex4,tex3);
-
-									MultiByteToWideChar(	CP_ACP,
-										0,
-										tex4,
-										-1,
-										tex2,
-										256);
+// todo: cast
+//									MultiByteToWideChar(	CP_ACP,
+//										0,
+//										tex4,
+//										-1,
+//										tex2,
+//										256);
 									_tcscat(tex,tex2);
 
 									me02 = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls, tex, fPosX1, 0.f, lColor, 0.8f, NOP);
@@ -2664,12 +2672,13 @@ int iDecMenuPrincipaleY=50;
 										256);
 									strcat(tex4,tex3);
 
-									MultiByteToWideChar(	CP_ACP,
-										0,
-										tex4,
-										-1,
-										tex2,
-										256);
+//									todo: cast
+//									MultiByteToWideChar(	CP_ACP,
+//										0,
+//										tex4,
+//										-1,
+//										tex2,
+//										256);
 									_tcscat(tex,tex2);
 
 									me02=new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls,tex, fPosX1,0.f,lColor, 0.8f, NOP);
@@ -2741,7 +2750,8 @@ int iDecMenuPrincipaleY=50;
 
 								_TCHAR tex2[256];
 								_tcscpy(tex2,tex);
-								_tcsupr(tex2);
+//								todo: string
+//								_tcsupr(tex2);
 
 								if(!_tcscmp(szMenuText, tex2) || !_tcscmp(szMenuText1, tex2))
 								{
@@ -2780,12 +2790,13 @@ int iDecMenuPrincipaleY=50;
 										256);
 									strcat(tex4,tex3);
 
-									MultiByteToWideChar(	CP_ACP,
-										0,
-										tex4,
-										-1,
-										tex2,
-										256);
+//									todo: cast
+//									MultiByteToWideChar(	CP_ACP,
+//										0,
+//										tex4,
+//										-1,
+//										tex2,
+//										256);
 									_tcscat(tex,tex2);
 
 									me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, tex, fPosX1, 0.f, RGB(127, 127, 127), 0.8f, EDIT_QUEST_SAVE_CONFIRM);
@@ -2816,13 +2827,13 @@ int iDecMenuPrincipaleY=50;
 										tex3,
 										256);
 									strcat(tex4,tex3);
-
-									MultiByteToWideChar(	CP_ACP,
-										0,
-										tex4,
-										-1,
-										tex2,
-										256);
+//	todo: cast
+//									MultiByteToWideChar(	CP_ACP,
+//										0,
+//										tex4,
+//										-1,
+//										tex2,
+//										256);
 									_tcscat(tex,tex2);
 
 									me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, tex, fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
@@ -3060,7 +3071,8 @@ int iDecMenuPrincipaleY=50;
 
 					for(ii=vBpp.begin();ii!=vBpp.end();ii++)
 					{
-						_itot(*ii,szMenuText,10);
+//						todo: string
+//						_itot(*ii,szMenuText,10);
 						((CMenuSliderText*)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0, lColor, 1.f, (MENUSTATE)(BUTTON_MENUOPTIONSVIDEO_BPP+i)));
 
 						if(*ii==iModeBpp)
@@ -4201,9 +4213,10 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 						_stprintf( szT, _T("%lu - %S"), me->lData, me->lpszText );
 						char ml[256];
 						memset( ml, 0, 256 );
-						WideCharToMultiByte( CP_ACP, 0, me->lpszText, _tcslen( me->lpszText ),
-							ml,  _tcslen( me->lpszText ) + 1,
-							"_", NULL );
+//						todo: cast
+//						WideCharToMultiByte( CP_ACP, 0, me->lpszText, _tcslen( me->lpszText ),
+//							ml,  _tcslen( me->lpszText ) + 1,
+//							"_", NULL );
 
 						strcpy( save_l[me->lData].name, ml );
 						eMenuState = MAIN;
@@ -4233,9 +4246,10 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 
 						char ml[256];
 						memset(ml,0,256);
-						WideCharToMultiByte( CP_ACP, 0, me->lpszText, _tcslen( me->lpszText ),
-							ml,  _tcslen( me->lpszText ) + 1,
-							"_", NULL );
+//						todo: cast
+//						WideCharToMultiByte( CP_ACP, 0, me->lpszText, _tcslen( me->lpszText ),
+//							ml,  _tcslen( me->lpszText ) + 1,
+//							"_", NULL );
 
 						strcpy( save_l[me->lData].name, ml );
 						eMenuState = MAIN;
@@ -5645,7 +5659,7 @@ void CWindowMenuConsole::UpdateText()
 				}
 				else
 				{
-					tCat[0]=_TCHAR(unsigned char(tusOutPut[0]));
+					tCat[0]= (_TCHAR)(tusOutPut[0]);
 					tCat[1]=0;
 					bKey=true;
 				}
@@ -6474,8 +6488,8 @@ CMenuButton::CMenuButton(int _iID, HFONT _pHFont, MENUSTATE _eMenuState, int _iP
 		ARX_CHECK_LONG( rZoneR );
 		ARX_CHECK_LONG( rZoneB );
 
-		rZone.right  = std::max(rZone.right,  ARX_CLEAN_WARN_CAST_LONG(rZoneR) );
-		rZone.bottom = std::max(rZone.bottom, ARX_CLEAN_WARN_CAST_LONG(rZoneB) );
+		rZone.right  = max((long)rZone.right,  ARX_CLEAN_WARN_CAST_LONG(rZoneR) );
+		rZone.bottom = max((long)rZone.bottom, ARX_CLEAN_WARN_CAST_LONG(rZoneB) );
 	}
 
 	if (pTexOver)
@@ -6483,11 +6497,10 @@ CMenuButton::CMenuButton(int _iID, HFONT _pHFont, MENUSTATE _eMenuState, int _iP
 		float rZoneR = rZone.left + RATIO_X(pTexOver->m_dwWidth);
 		float rZoneB = rZone.top + RATIO_Y(pTexOver->m_dwHeight);
 
-		ARX_CHECK_LONG( rZoneR );
 		ARX_CHECK_LONG( rZoneB );
 
-		rZone.right  = std::max(rZone.right, ARX_CLEAN_WARN_CAST_LONG(rZoneR) );
-		rZone.bottom = std::max(rZone.bottom, ARX_CLEAN_WARN_CAST_LONG(rZoneB) );
+		rZone.right  = max((long)rZone.right, ARX_CLEAN_WARN_CAST_LONG(rZoneR) );
+		rZone.bottom = max((long)rZone.bottom, ARX_CLEAN_WARN_CAST_LONG(rZoneB) );
 	}
 
 	iId=(int)this;
@@ -6979,11 +6992,8 @@ CMenuSlider::CMenuSlider(int _iID, int _iPosX, int _iPosY)
 
 	rZone.left   = _iPosX;
 	rZone.top    = _iPosY;
-	rZone.right  = _iPosX + pLeftButton->GetWidth() + pRightButton->GetWidth() + 10*std::max(pTex1->m_dwWidth, pTex2->m_dwWidth);
-	rZone.bottom = _iPosY + std::max(pLeftButton->GetHeight(), pRightButton->GetHeight());
-
-	ARX_CHECK_NOT_NEG( rZone.bottom );
-	rZone.bottom = std::max( ARX_CAST_ULONG( rZone.bottom ), std::max( pTex1->m_dwHeight, pTex2->m_dwHeight ) );
+	rZone.right  = _iPosX + pLeftButton->GetWidth() + pRightButton->GetWidth() + 10*max(pTex1->m_dwWidth, pTex2->m_dwWidth);
+	rZone.bottom = _iPosY + max(pLeftButton->GetHeight(), pRightButton->GetHeight());
 
 	pRightButton->Move(pLeftButton->GetWidth() + 10*std::max(pTex1->m_dwWidth, pTex2->m_dwWidth), 0);
 
@@ -8027,7 +8037,8 @@ _TCHAR * CDirectInput::GetFullNameTouch(int _iVirtualKey)
 		}
 		else
 		{
-			MultiByteToWideChar(CP_ACP, 0, tAnsiText, -1, pText, 256);
+//			todo: cast
+//			MultiByteToWideChar(CP_ACP, 0, tAnsiText, -1, pText, 256);
 
 			if(_iVirtualKey==DIK_LSHIFT)
 			{
