@@ -136,7 +136,7 @@ FileHandle FileOpenWrite(const char * name) {
 }
 
 FileHandle FileOpenReadWrite(const char * name) {
-	return FileOpen(name, GENERIC_READ|GENERIC_WRITE, CREATE_ALWAYS);
+	return FileOpen(name, GENERIC_READ|GENERIC_WRITE, OPEN_ALWAYS);
 }
 
 bool FileDelete(const std::string & file) {

@@ -35,679 +35,408 @@ const u32 SAV_VERSION_OLD = (1<<16) | 0;
 const u32 SAV_VERSION = SAV_VERSION_OLD + 1;
 
 using std::string;
-
-class CCluster{
-public:
-	int			iTaille;
-	int			iNext;
-	CCluster	*pNext;
-public:
-	CCluster(int _iTaille=0);
-	~CCluster();
-};
-
-class CInfoFile{
-public:
-	char		*pcFileName;
-	int			iTaille;
-
-	int			iNbCluster;
-	CCluster	FirstCluster;
-	CCluster*	pLastCluster;
-public:
-	void Set( const char *_pcFileName,int _iTaille);
-	void KillAll();
-};
-
+using std::vector;
 using std::min;
 
-//------------------------------------------------------------------------
-CCluster::CCluster(int _iTaille)
-{
-	iTaille = _iTaille;
-	iNext = -1;
-	pNext = NULL;
-}
+struct FileChunk {
+	
+	size_t size;
+	size_t offset;
+	
+	FileChunk() : size(0), offset(0) { };
+	FileChunk(size_t _size, size_t _offset) : size(_size), offset(_offset) { };
+	
+};
 
-//------------------------------------------------------------------------
-CCluster::~CCluster()
-{
-}
+struct SaveBlock::File {
+	
+	typedef vector<FileChunk> ChunkList;
+	
+	string name;
+	size_t size;
+	ChunkList chunks;
+	
+	File(const string & _name, size_t _size = 0) : name(_name), size(_size), chunks() { };
+	
+};
 
-//------------------------------------------------------------------------
-void CInfoFile::Set( const char * _pcFileName, int _iTaille)
-{
-	if (pcFileName)
-	{
-		free((void *)pcFileName);
-		pcFileName = NULL;
-	}
-
-	pcFileName = strdup(_pcFileName);
-	iTaille = _iTaille;
-	iNbCluster = 0;
-	FirstCluster.iTaille = _iTaille;
-	FirstCluster.iNext = -1;
-	FirstCluster.pNext = NULL;
-}
-
-//------------------------------------------------------------------------
-void CInfoFile::KillAll()
-{
-	if (pcFileName)
-	{
-		free((void *)pcFileName);
-		pcFileName = NULL;
-	}
-
-	CCluster * _pClusterNext = FirstCluster.pNext;
-
-	while (_pClusterNext)
-	{
-		CCluster * _pClusterNextNext = _pClusterNext->pNext;
-		delete _pClusterNext;
-		_pClusterNext = _pClusterNextNext;
-	}
-
-	FirstCluster.iTaille = 0;
-	FirstCluster.iNext = 0;
-	FirstCluster.pNext = NULL;
-}
-
-//------------------------------------------------------------------------
 SaveBlock::SaveBlock(const string & _savefile) {
 	
-	pcBlockName = _savefile;
-
-	hFile = NULL;
-	iTailleBlock = 0;
-	iNbFiles = 0;
-	sInfoFile = NULL;
-
-	bFirst = false;
-
-	pHachage = NULL;
+	savefile = _savefile;
+	
+	handle = NULL;
+	totalSize = 0;
+	
+	firstSave = false;
+	
+	hashMap = NULL;
 }
 
-//------------------------------------------------------------------------
 SaveBlock::~SaveBlock() {
-
-	while (iNbFiles--)
-	{
-		sInfoFile[iNbFiles].KillAll();
+	
+	if(handle) {
+		FileClose(handle);
+		handle = NULL;
 	}
-
-	free(sInfoFile);
-	sInfoFile = NULL;
-
-	if (hFile)
-	{
-		FileClose(hFile);
-		hFile = NULL;
+	
+	if(hashMap) {
+		delete hashMap;
+		hashMap = NULL;
 	}
-
-	delete pHachage;
-	pHachage = NULL;
-}
-
-//------------------------------------------------------------------------
-void SaveBlock::ResetFAT(void)
-{
-	iTailleBlock = 0;
-
-	while (iNbFiles--)
-	{
-		sInfoFile[iNbFiles].KillAll();
-	}
-
-	free(sInfoFile);
-	sInfoFile = NULL;
-	iNbFiles = 0;
 }
 
 bool SaveBlock::BeginRead() {
 	
-	LogDebug << "reading savefile " << pcBlockName;
+	LogDebug << "reading savefile " << savefile;
 	
-	hFile = FileOpenRead(pcBlockName.c_str());
-	if(!hFile) {
-		LogWarning << "cannot open save file " << pcBlockName;
+	handle = FileOpenRead(savefile.c_str());
+	if(!handle) {
+		LogWarning << "cannot open save file " << savefile;
 		return false;
 	}
+	
+	if(!loadFileTable()) {
+		LogError << "broken save file";
+		return false;
+	}
+	
+	for(FileList::iterator i = files.begin(); i != files.end(); ++i) {
+		hashMap->add(i->name, &*i);
+	}
+	
+	return true;
+}
 
-	//READ FAT
-
-	s32 fatOffset;
-	if(!FileRead(hFile, &fatOffset, 4)) {
-		LogError << "cannot read fat offset for " << pcBlockName;
+bool SaveBlock::loadFileTable() {
+	
+	u32 fatOffset;
+	if(FileRead(handle, &fatOffset, 4) != 4) {
 		return false;
 	}
 	LogDebug << "FAT offset is " << fatOffset;
-	if(FileSeek(hFile, fatOffset + 4, SEEK_SET) != fatOffset + 4) {
+	if(FileSeek(handle, fatOffset + 4, SEEK_SET) != fatOffset + 4) {
 		LogError << "cannot seek to FAT";
 		return false;
 	}
-
-	s32 version;
-	if(!FileRead(hFile, &version, 4)) {
-		LogError << "cannot read save file version";
+	
+	if(FileRead(handle, &version, 4) != 4) {
 		return false;
 	}
-	LogDebug << "Version is " << version;
-
-	s32 nFiles;
-	if(!FileRead(hFile, &nFiles, 4)) {
-		LogError << "cannot read file count";
+	if(version !=  SAV_VERSION) {
+		LogDebug << "unexpected savegame version: " << version << " for " << savefile;
+	}
+	
+	u32 nFiles;
+	if(FileRead(handle, &nFiles, 4) != 4) {
 		return false;
 	}
 	LogDebug << "number of files is " << nFiles;
-
-	int iNbHache = 1;
-
-	while (iNbHache < nFiles) iNbHache <<= 1;
-
-	int iNbHacheTroisQuart = (iNbHache * 3) / 4;
-
-	if (nFiles > iNbHacheTroisQuart) iNbHache <<= 1;
-
-	pHachage = new HashMap(iNbHache);
-
+	
+	size_t hashMapSize = 1;
+	while(hashMapSize < nFiles) {
+		hashMapSize <<= 1;
+	}
+	int iNbHacheTroisQuart = (hashMapSize * 3) / 4;
+	if(nFiles > iNbHacheTroisQuart) {
+		hashMapSize <<= 1;
+	}
+	hashMap = new HashMap(hashMapSize);
+	
 	while(nFiles--) {
 		
-		char _pT[256], *_pTT = _pT;
-
 		// Read the file name.
+		string name;
 		while(true) {
-			FileRead(hFile, _pTT, 1);
-			if(!*_pTT) break;
-			_pTT++;
-		}
-
-		ExpandNbFiles();
-		CInfoFile * _pInfoFile = &sInfoFile[iNbFiles-1];
-		FileRead(hFile, &_pInfoFile->iTaille, 4);
-		_pInfoFile->Set(_pT, _pInfoFile->iTaille);
-		FileRead(hFile, &_pInfoFile->iNbCluster, 4);
-		FileSeek(hFile, 4, SEEK_CUR);
-
-		CCluster * _pCluster = &_pInfoFile->FirstCluster;
-		FileRead(hFile, &_pCluster->iTaille, 4);
-		FileRead(hFile, &_pCluster->iNext, 4);
-		_pCluster->pNext = NULL;
-
-		int _iJ = _pInfoFile->iNbCluster - 1;
-
-		if (_iJ > 0)
-		{
-			while (_iJ--)
-			{
-				_pCluster->pNext = new CCluster(0);
-				_pCluster = _pCluster->pNext;
-				FileRead(hFile, &_pCluster->iTaille, 4);
-				FileRead(hFile, &_pCluster->iNext, 4);
+			char c;
+			if(FileRead(handle, &c, 1) != 1) {
+				return false;
 			}
-		}
-	}
-
-	for (int i = 0;
-	        i < iNbFiles;
-	        ++i)
-	{
-		pHachage->add(sInfoFile[i].pcFileName, &sInfoFile[i]);
-	}
-
-	return true;
-}
-
-//------------------------------------------------------------------------
-void SaveBlock::EndRead(void)
-{
-	if (hFile)
-	{
-		FileClose(hFile);
-		hFile = NULL;
-	}
-
-	ResetFAT();
-
-	delete pHachage;
-	pHachage = NULL;
-}
-
-//------------------------------------------------------------------------
-bool SaveBlock::BeginSave(bool _bCont, bool _bReWrite)
-{
-	bReWrite = _bReWrite;
-
-	hFile = FileOpenRead(pcBlockName.c_str());
-	LogDebug << "FOR " << pcBlockName << " " << (hFile ? "ok" : "failed");
-
-	if ((!hFile) ||
-	        (!_bCont))
-	{
-		hFile = FileOpenWrite(pcBlockName.c_str());
-
-		if (!hFile) {
-			LogError << "could not open " << pcBlockName << " for writing";
-			return false;
-		}
-
-		int _iI = 0;
-
-		FileWrite(hFile, &_iI, 4);
-		bFirst = true;
-	}
-	else
-	{
-		FileRead(hFile, &iTailleBlock, 4);
-		FileSeek(hFile, iTailleBlock + 4, SEEK_SET);
-
-		//READ FAT
-		int _iI;
-
-		FileRead(hFile, &_iI, 4);	//version
-		iVersion = _iI;
-
-		FileRead(hFile, &_iI, 4);
-
-		while (_iI--)
-		{
-			char _pT[256], *_pTT = _pT;
-
-			while (1)
-			{
-				FileRead(hFile, _pTT, 1);
-
-				if (!*_pTT) break;
-
-				_pTT++;
-			}
-
-			ExpandNbFiles();
-			CInfoFile * _pInfoFile = &sInfoFile[iNbFiles-1];
-			FileRead(hFile, &_pInfoFile->iTaille, 4);
-			_pInfoFile->Set(_pT, _pInfoFile->iTaille);
-			FileRead(hFile, &_pInfoFile->iNbCluster, 4);
-			FileSeek(hFile, 4, SEEK_CUR);
-
-			CCluster * _pCluster = &_pInfoFile->FirstCluster;
-			FileRead(hFile, &_pCluster->iTaille, 4);
-			FileRead(hFile, &_pCluster->iNext, 4);
-			_pCluster->pNext = NULL;
-
-			int _iJ = _pInfoFile->iNbCluster - 1;
-
-			if (_iJ > 0)
-			{
-				while (_iJ--)
-				{
-					_pCluster->pNext = new CCluster(0);
-					_pCluster = _pCluster->pNext;
-					FileRead(hFile, &_pCluster->iTaille, 4);
-					FileRead(hFile, &_pCluster->iNext, 4);
-				}
-			}
-		}
-
-		FileSeek(hFile, 4, SEEK_SET);
-		void * _pPtr = malloc(iTailleBlock);
-		FileRead(hFile, _pPtr, iTailleBlock);
-		FileClose(hFile);
-		hFile = NULL;
-		hFile = FileOpenReadWrite(pcBlockName.c_str());
-
-		if (!hFile) {
-			LogError << "could not open " << pcBlockName << " read/write";
-			return false;
-		}
-
-		_iI = 0;
-		FileWrite(hFile, &_iI, 4);
-		FileWrite(hFile, _pPtr, iTailleBlock);
-
-		free((void *)_pPtr);
-	}
-
-	return true;
-}
-
-//------------------------------------------------------------------------
-bool SaveBlock::EndSave(void)
-{
-	if (!bFirst)
-	{
-		return Defrag();
-	}
-
-	FileWrite(hFile, &SAV_VERSION, 4);
-
-	FileWrite(hFile, &iNbFiles, 4);
-
-	for (int _iI = 0; _iI < iNbFiles; _iI++)
-	{
-		FileWrite(hFile, sInfoFile[_iI].pcFileName, strlen((const char *)sInfoFile[_iI].pcFileName) + 1);
-		FileWrite(hFile, &sInfoFile[_iI].iTaille, 4);
-		int _iT = sInfoFile[_iI].iNbCluster;
-		FileWrite(hFile, &_iT, 4);
-		_iT *= (sizeof(CCluster) - 4) + strlen((const char *)sInfoFile[_iI].pcFileName) + 1 + 20;
-		FileWrite(hFile, &_iT, 4);
-
-		CCluster * _pCluster = &sInfoFile[_iI].FirstCluster;
-
-		while (_pCluster)
-		{
-			FileWrite(hFile, &_pCluster->iTaille, 4);
-			FileWrite(hFile, &_pCluster->iNext, 4);
-			_pCluster = _pCluster->pNext;
-		}
-	}
-
-	FileSeek(hFile, 0, SEEK_SET);
-	FileWrite(hFile, &iTailleBlock, 4);
-
-	FileClose(hFile);
-	hFile = NULL;
-	ResetFAT();
-	return true;
-}
-
-//------------------------------------------------------------------------
-bool SaveBlock::Defrag()
-{
-	char txt[256];
-	strcpy(txt, pcBlockName.c_str());
-	strcat(txt, "DFG");
-	FileHandle fFileTemp = FileOpenWrite(txt);
-
-	FileWrite(fFileTemp, &SAV_VERSION, 4);
-
-	for (int _iI = (iVersion == SAV_VERSION_OLD) ? 1 : 0; _iI < iNbFiles; _iI++)
-	{
-		CCluster * pCluster = &sInfoFile[_iI].FirstCluster;
-		void * pMem = malloc(sInfoFile[_iI].iTaille);
-		char * pcMem = (char *)pMem;
-		int iRealSize = 0;
-
-		while (pCluster)
-		{
-			FileSeek(hFile, pCluster->iNext + 4, SEEK_SET);
-
-			//bug size old version
-			if (iVersion == SAV_VERSION_OLD)
-			{
-				if ((iRealSize + pCluster->iTaille) > sInfoFile[_iI].iTaille)
-				{
-					pMem = realloc(pMem, iRealSize + pCluster->iTaille);
-					pcMem = ((char *)pMem) + iRealSize;
-					sInfoFile[_iI].iTaille = iRealSize + pCluster->iTaille;
-				}
-			}
-
-			iRealSize += pCluster->iTaille;
-
-			FileRead(hFile, pcMem, pCluster->iTaille);
-			pcMem += pCluster->iTaille;
-			pCluster = pCluster->pNext;
-		}
-
-		FileWrite(fFileTemp, pMem, sInfoFile[_iI].iTaille);
-		free(pMem);
-	}
-
-	FileWrite(fFileTemp, &SAV_VERSION, 4);
- 
-	int iOffset = 0;
-	int iNbFilesTemp = (iVersion == SAV_VERSION_OLD) ? iNbFiles - 1 : iNbFiles; //-1;
-	FileWrite(fFileTemp, &iNbFilesTemp, 4);
-
-	for (int _iI = (iVersion == SAV_VERSION_OLD) ? 1 : 0; _iI < iNbFiles; _iI++)
-	{
-		FileWrite(fFileTemp, sInfoFile[_iI].pcFileName, strlen((const char *)sInfoFile[_iI].pcFileName) + 1);
-		FileWrite(fFileTemp, &sInfoFile[_iI].iTaille, 4);
-		int _iT = 0;
-		FileWrite(fFileTemp, &_iT, 4);
-		FileWrite(fFileTemp, &_iT, 4);
-
-		//cluster
-		FileWrite(fFileTemp, &sInfoFile[_iI].iTaille, 4);
-		FileWrite(fFileTemp, &iOffset, 4);
-
-		iOffset += sInfoFile[_iI].iTaille;
-	}
-
-	FileSeek(fFileTemp, 0, SEEK_SET);
-	FileWrite(fFileTemp, &iOffset, 4);
-
-	FileClose(hFile);
-	hFile = NULL;
-	ResetFAT();
-
-	FileClose(fFileTemp);
-	FileDelete(pcBlockName);
-	FileMove(txt, pcBlockName.c_str());
-
-	return true;
-} 
- 
-bool SaveBlock::ExpandNbFiles()
-{
-	iNbFiles++;
-	sInfoFile = (CInfoFile *)realloc(sInfoFile, (iNbFiles) * sizeof(CInfoFile));
-	memset(&sInfoFile[iNbFiles-1], 0, sizeof(CInfoFile));
-	return true;
-}
-
-//------------------------------------------------------------------------
-bool SaveBlock::Save( const std::string& _pcFileName, void * _pDatas, int _iSize)
-{
-	bool _bFound = false;
-	CInfoFile * _pInfoFile = sInfoFile;
-	int _iI = iNbFiles;
-
-	while (_iI--)
-	{
-		if (!strcasecmp(_pInfoFile->pcFileName, _pcFileName.c_str()))
-		{
-			_bFound = true;
-			break;
-		}
-
-		_pInfoFile++;
-	}
-
-	if (!_bFound)
-	{
-		ExpandNbFiles();
-		_pInfoFile = &sInfoFile[iNbFiles-1];
-		_pInfoFile->Set(_pcFileName.c_str(), _iSize);
-
-		_pInfoFile->FirstCluster.iNext = iTailleBlock;
-	}
-	else
-	{
-		if (bReWrite)
-		{
-			if (!_pDatas) return false;
-
-			int iNbClusters = 0;
-			int iSizeWrite = 0;
-			int iSize = _iSize;
-			CCluster * _pClusterCurr = &_pInfoFile->FirstCluster;
-			CCluster * pLastClusterCurr = NULL;
-
-			while ((_pClusterCurr) && (iSize > 0))
-			{
-				pLastClusterCurr = _pClusterCurr;
-				FileSeek(hFile, _pClusterCurr->iNext + 4, SEEK_SET);
-                iSizeWrite = std::min(_pClusterCurr->iTaille, iSize);
-				FileWrite(hFile, _pDatas, iSizeWrite);
-				char * _pDatasTemp = (char *)_pDatas;
-				_pDatasTemp += iSizeWrite;
-				_pDatas = (void *)_pDatasTemp;
-				iSize -= iSizeWrite;
-				iNbClusters++;
-				_pClusterCurr = _pClusterCurr->pNext;
-			}
-
-			_pInfoFile->iTaille = _iSize;
-
-			if (iSize)
-			{
-				if (pLastClusterCurr)
-				{
-					pLastClusterCurr->pNext = new CCluster(iSize);
-					pLastClusterCurr->pNext->iNext = iTailleBlock;
-					pLastClusterCurr->pNext->pNext = NULL;
-					iTailleBlock += iSize;
-					FileSeek(hFile, 0, SEEK_END);
-					FileWrite(hFile, _pDatas, iSize);
-					_pInfoFile->iNbCluster++;
-				}
-			}
-			else
-			{
-				if (pLastClusterCurr)
-				{
-					if (pLastClusterCurr->iTaille > iSizeWrite)
-					{
-						pLastClusterCurr->iTaille = iSizeWrite;
-					}
-
-					delete pLastClusterCurr->pNext;
-					pLastClusterCurr->pNext = NULL;
-					_pInfoFile->iTaille = _iSize;
-					_pInfoFile->iNbCluster = iNbClusters;
-				}
-			}
-
-			FileSeek(hFile, 0, SEEK_END);
-
-			return true;
-		}
-		else
-		{
-
-			CCluster * _pCluster = &_pInfoFile->FirstCluster;
-
-			while (_pCluster->pNext)
-			{
-				_pCluster = _pCluster->pNext;
-			}
-
-			_pCluster->pNext = new CCluster(_iSize);
-			_pCluster->pNext->iNext = iTailleBlock;
-
-			_pInfoFile->iTaille += _iSize;
-		}
-	}
-
-	_pInfoFile->iNbCluster++;
-	iTailleBlock += _iSize;
-
-	if (!hFile) return false;
-
-	if (_pDatas) FileWrite(hFile, _pDatas, _iSize);
-
-	return true;
-}
-
-//------------------------------------------------------------------------
-bool SaveBlock::Read( const std::string& _pcFileName, char* _pPtr)
-{
-	CInfoFile * _pInfoFile = (CInfoFile *)pHachage->get(_pcFileName);
-
-	if (!_pInfoFile)
-	{
-		return false;
-	}
-
-
-	CCluster * _pCluster = &_pInfoFile->FirstCluster;
-
-	while (_pCluster)
-	{
-		FileSeek(hFile, _pCluster->iNext + 4, SEEK_SET);
-		FileRead(hFile, _pPtr, _pCluster->iTaille);
-		_pPtr += _pCluster->iTaille;
-		_pCluster = _pCluster->pNext;
-	}
-
-	return true;
-}
-
-//------------------------------------------------------------------------
-int SaveBlock::GetSize( const std::string& _pcFileName)
-{
-	CInfoFile * _pInfoFile = NULL;
-
-	if (pHachage)
-	{
-		_pInfoFile = (CInfoFile *)pHachage->get(_pcFileName);
-
-		if (!_pInfoFile)
-		{
-			return -1;
-		}
-	}
-	else
-	{
-		bool _bFound = false;
-		CInfoFile * _pInfoFile = sInfoFile;
-		int _iI = iNbFiles;
-
-		while (_iI--)
-		{
-			if (!strcasecmp(_pInfoFile->pcFileName, _pcFileName.c_str()))
-			{
-				_bFound = true;
+			if(c == '\0') {
 				break;
 			}
-
-			_pInfoFile++;
+			name.push_back(c);
 		}
-
-		if (!_bFound)
-		{
-			return -1;
+		
+		files.push_back(File(name));
+		File & file = files.back();
+		
+		// ignore the size, calculate from chunks
+		FileSeek(handle, 4, SEEK_CUR);
+		
+		u32 nChunks;
+		if(FileRead(handle, &nChunks, 4) != 4) {
+			return false;
 		}
-	}
-
-	int _iTaille = 0;
-	CCluster * _pCluster = &_pInfoFile->FirstCluster;
-
-	while (_pCluster)
-	{
-		_iTaille += _pCluster->iTaille;
-		_pCluster = _pCluster->pNext;
-	}
-
-	return _iTaille;
-}
-//------------------------------------------------------------------------
-bool SaveBlock::ExistFile( const std::string& _pcFileName)
-{
-	CInfoFile * _pInfoFile = NULL;
-
-	if (pHachage)
-	{
-		_pInfoFile = (CInfoFile *)pHachage->get(_pcFileName);
-		return _pInfoFile ? true : false;
-	}
-	else
-	{
-		_pInfoFile = sInfoFile;
-		int _iI = iNbFiles;
-
-		while (_iI--)
-		{
-			if (!strcasecmp(_pInfoFile->pcFileName, _pcFileName.c_str()))
-			{
-				return true;
+		file.chunks.reserve(nChunks);
+		
+		// ignored
+		FileSeek(handle, 4, SEEK_CUR);
+		
+		size_t size = 0;
+		while(nChunks--) {
+			
+			u32 chunkSize;
+			if(FileRead(handle, &chunkSize, 4) != 4) {
+				return false;
 			}
-
-			_pInfoFile++;
+			size += chunkSize;
+			
+			u32 chunkOffset;
+			if(FileRead(handle, &chunkOffset, 4) != 4) {
+			}
+			
+			file.chunks.push_back(FileChunk(chunkSize, chunkOffset));
+			
 		}
+		
+		file.size = size;
+	}
+	
+	// TODO shouldn't this be done when loading the FAT?
+	if(version == SAV_VERSION_OLD && !files.empty()) {
+		files.erase(files.begin());
+	}
+	
+}
 
+bool SaveBlock::BeginSave() {
+	
+	handle = FileOpenRead(savefile.c_str());
+	
+	if(!handle) {
+		
+		handle = FileOpenWrite(savefile.c_str());
+		if(!handle) {
+			LogError << "could not open " << savefile << " for writing";
+			return false;
+		}
+		u32 fakeFATOffset = 0;
+		FileWrite(handle, &fakeFATOffset, 4);
+		firstSave = true;
+		
+	} else {
+		
+		if(!loadFileTable()) {
+			LogError << "broken save file";
+			return false;
+		}
+		
+		FileClose(handle);
+		handle = FileOpenReadWrite(savefile.c_str());
+		if (!handle) {
+			LogError << "could not open " << savefile << " read/write";
+			return false;
+		}
+		
+	}
+	
+	return true;
+}
+
+void SaveBlock::writeFileTable() {
+	
+	size_t fatOffset = totalSize;
+	FileSeek(handle, fatOffset + 4, SEEK_SET);
+	
+	FileWrite(handle, &SAV_VERSION, 4);
+	
+	u32 nFiles = files.size();
+	FileWrite(handle, &nFiles, 4);
+	
+	for(FileList::iterator i = files.begin(); i != files.end(); ++i) {
+		
+		FileWrite(handle, i->name.c_str(), i->name.length() + 1);
+		
+		u32 size = i->size;
+		FileWrite(handle, &size, 4);
+		
+		u32 nChunks = i->chunks.size();
+		FileWrite(handle, &nChunks, 4);
+		
+		// TODO ok....
+		u32 entrySize = nChunks * (sizeof(u32) + sizeof(u32) + i->name.length() + 1 + 20);
+		FileWrite(handle, &entrySize, 4);
+		
+		for(File::ChunkList::iterator chunk = i->chunks.begin();
+		    chunk != i->chunks.end(); ++chunk) {
+			
+			u32 chunkSize = chunk->size;
+			FileWrite(handle, &chunk, 4);
+			
+			u32 chunkOffset = chunk->offset;
+			FileWrite(handle, &chunkOffset, 4);
+			
+		}
+		
+	}
+	
+	FileSeek(handle, 0, SEEK_SET);
+	FileWrite(handle, &fatOffset, 4);
+	
+}
+
+bool SaveBlock::EndSave(void) {
+	
+	if(!firstSave) {
+		return defragment();
+	}
+	
+	writeFileTable();
+	
+	FileClose(handle);
+	handle = NULL;
+	files.clear();
+	
+	return true;
+}
+
+bool SaveBlock::defragment() {
+	
+	string tempFileName = savefile + "DFG";
+	FileHandle tempFile = FileOpenWrite(tempFileName.c_str());
+	
+	u32 fakeFATOffset = 0;
+	FileWrite(tempFile, &fakeFATOffset, 4);
+	
+	totalSize = 0;
+	
+	for(FileList::iterator i = files.begin(); i != files.end(); ++i) {
+		
+		char * buf = new char[i->size];
+		char * p = buf;
+		
+		for(File::ChunkList::iterator chunk = i->chunks.begin();
+		    chunk != i->chunks.end(); ++chunk) {
+			FileSeek(handle, chunk->offset + 4, SEEK_SET);
+			FileRead(handle, p, chunk->size);
+			p += chunk->size;
+		}
+		
+		FileWrite(tempFile, buf, i->size);
+		
+		i->chunks.resize(1);
+		i->chunks.front().offset = totalSize;
+		i->chunks.front().size = i->size;
+		
+		delete[] buf;
+		
+		totalSize += i->size;
+	}
+	
+	FileClose(handle);
+	FileDelete(savefile);
+	
+	handle = tempFile;
+	writeFileTable();
+	
+	FileClose(handle);
+	handle = NULL;
+	files.clear();
+	
+	FileMove(tempFileName, savefile);
+	
+	return true;
+}
+
+SaveBlock::File * SaveBlock::getFile(const std::string & name) {
+	
+	for(FileList::iterator i = files.begin(); i != files.end(); ++i) {
+		if(!strcasecmp(i->name.c_str(), name.c_str())) {
+			return &*i;
+			break;
+		}
+	}
+	
+	return NULL;
+}
+
+bool SaveBlock::save(const string & name, const char * data, size_t size) {
+	
+	if(!handle) {
 		return false;
 	}
+	
+	File * file = getFile(name);
+	if(!file) {
+		files.push_back(File(name, size));
+		file = &files.back();
+	} else {
+		file->size = size;
+	}
+	
+	// TODO implode
+	//implodeAlloc((char *)dat, pos, cpr_pos);
+	//for (long i = 0; i < cpr_pos; i += 2)
+	//	compressed[i] = ~compressed[i];
+	
+	size_t remaining = size;
+	
+	for(File::ChunkList::iterator i = file->chunks.begin();
+	    i != file->chunks.end() && remaining; ++i) {
+		
+		FileSeek(handle, i->size + 4, SEEK_SET);
+		
+		if(i->size > remaining) {
+			i->size = remaining;
+		}
+		
+		FileWrite(handle, data, i->size);
+		data += i->size;
+		remaining -= i->size;
+	}
+	
+	FileSeek(handle, totalSize + 4, SEEK_SET);
+	
+	if(remaining) {
+		file->chunks.push_back(FileChunk(remaining, totalSize));
+		totalSize += remaining;
+		FileWrite(handle, data, remaining);
+	}
+	
+	return true;
+}
+
+char * SaveBlock::load(const string & name, size_t & size) const {
+	
+	const File * file = (const File *)hashMap->get(name);
+	if(!file) {
+		size = 0;
+		return NULL;
+	}
+	
+	char * buf = (char*)malloc(file->size);
+	char * p = buf;
+	
+	for(File::ChunkList::const_iterator i = file->chunks.begin();
+	    i != file->chunks.end(); ++i) {
+		FileSeek(handle, i->offset + 4, SEEK_SET);
+		FileRead(handle, p, i->size);
+		p += i->size;
+	}
+	
+	size = file->size;
+	
+	// TODO implode
+	//for (size_t i = 0; i < size; i += 2)
+	//	compressed[i] = ~compressed[i];
+	//dat = (unsigned char *)blastMemAlloc(compressed, ssize, size); 
+	
+	return buf;
+}
+
+bool SaveBlock::hasFile(const string & name) const {
+	
+	if(hashMap) {
+		File * file = (File *)hashMap->get(name);
+		return file ? true : false;
+	} else {
+		// TODO always create the hashMap
+		for(FileList::const_iterator i = files.begin(); i != files.end(); ++i) {
+			if(!strcasecmp(i->name.c_str(), name.c_str())) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }

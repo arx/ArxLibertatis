@@ -23,45 +23,48 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
+#include <cstddef>
 #include <string>
+#include <vector>
 
 #include "core/Common.h"
 
 
-class CInfoFile;
 class HashMap;
 typedef void * FileHandle;
 
+
 class SaveBlock {
+	
 private:
 	
-	FileHandle hFile;
-	int iTailleBlock;
-	int iNbFiles;
-	bool bReWrite;
-	CInfoFile * sInfoFile;
-	bool bFirst;
-	u32 iVersion;
-	bool ExpandNbFiles();
-	HashMap * pHachage;
+	class File;
+	typedef std::vector<File> FileList;
 	
-	std::string pcBlockName;
+	FileHandle handle;
+	size_t totalSize;
+	FileList files;
+	bool firstSave;
+	u32 version;
+	HashMap * hashMap;
+	std::string savefile;
+	
+	File * getFile(const std::string & name);
+	bool defragment();
+	bool loadFileTable();
+	void writeFileTable();
 	
 public:
 	
 	SaveBlock(const std::string & savefile);
 	~SaveBlock();
 	
-	bool Defrag();
-	bool BeginSave(bool _bCont,bool _bReWrite);
+	bool BeginSave();
 	bool EndSave();
-	bool Save( const std::string& _pcFileName, void* _pDatas, int _iSize);
+	bool save(const std::string & name, const char * data, size_t size);
 	
-	bool BeginRead(void);
-	void EndRead();
-	bool Read( const std::string& _pcFileName, char* _pPtr);
-	int	 GetSize( const std::string& _pcFileName);
-	bool ExistFile( const std::string& _pcFileName);
-	void ResetFAT();
+	bool BeginRead();
+	char * load(const std::string & name, size_t & size) const;
+	bool hasFile(const std::string & name) const;
 	
 };

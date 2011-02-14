@@ -360,7 +360,7 @@ void ARX_Changelevel_CurGame_Open() {
 
 bool ARX_Changelevel_CurGame_Seek(const std::string & ident) {
 	if(GLOBAL_pSaveB) {
-		if(GLOBAL_pSaveB->ExistFile( ident + ".sav" )) {
+		if(GLOBAL_pSaveB->hasFile( ident + ".sav" )) {
 			return true;
 		}
 	}
@@ -369,7 +369,6 @@ bool ARX_Changelevel_CurGame_Seek(const std::string & ident) {
 
 void ARX_Changelevel_CurGame_Close() {
 	if(GLOBAL_pSaveB) {
-		GLOBAL_pSaveB->EndRead();
 		delete GLOBAL_pSaveB;
 		GLOBAL_pSaveB = NULL;
 	}
@@ -540,7 +539,7 @@ long ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	sprintf(sfile, "%sGsave.sav", CurGamePath);
 	_pSaveBlock = new SaveBlock(sfile);
 
-	if (!_pSaveBlock->BeginSave(true, 1)) {
+	if (!_pSaveBlock->BeginSave()) {
 		LogError << "Error writing to save block.";
 		return -1;
 	}
@@ -732,7 +731,7 @@ retry:
 	//for (int i = 0; i < cpr_pos; i += 2)
 	//	compressed[i] = ~compressed[i];
 
-	bool ret = _pSaveBlock->Save(savefile, compressed, cpr_pos);
+	bool ret = _pSaveBlock->save(savefile, compressed, cpr_pos);
 	//delete[] compressed;
 	free(dat);
 	if (!ret) return -1;
@@ -842,7 +841,7 @@ retry:
 	//for (int i = 0; i < cpr_pos; i += 2)
 	//	compressed[i] = ~compressed[i];
 
-	_pSaveBlock->Save(savefile, compressed, cpr_pos);
+	_pSaveBlock->save(savefile, compressed, cpr_pos);
 	free(dat);
 	//delete[] compressed;
 	return 1;
@@ -1083,7 +1082,7 @@ retry:
 	//for (int i = 0; i < cpr_pos; i += 2)
 	//	compressed[i] = ~compressed[i];
 
-	_pSaveBlock->Save(savefile, compressed, cpr_pos);
+	_pSaveBlock->save(savefile, compressed, cpr_pos);
 	free(dat);
 	//delete[] compressed;
 
@@ -1831,7 +1830,7 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 	//for (int i = 0; i < cpr_pos; i += 2)
 	//	compressed[i] = ~compressed[i];
 
-	_pSaveBlock->Save(savefile, compressed, cpr_pos);
+	_pSaveBlock->save(savefile, compressed, cpr_pos);
 	free(dat);
 	//delete[] compressed;
 	return 1;
@@ -1848,7 +1847,6 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 //-----------------------------------------------------------------------------
 long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 {
-	unsigned char * dat;
 	long pos = 0;
 	std::string loadfile;
 	std::stringstream ss;
@@ -1856,33 +1854,14 @@ long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 	ss << "lvl" << std::setw(3) << num << std::setw(8) << ".sav";
 	loadfile = ss.str();
 
-	size_t size = _pSaveBlock->GetSize(loadfile);
-
-	if (size <= 0)
-	{
+	size_t size;
+	char * dat = _pSaveBlock->load(loadfile, size);
+	if(!dat) {
 		LogError << "Unable to Open " << loadfile << " for Read...";
 		return -1;
 	}
-
-	char * compressed = (char *) GetStdBuffer(size);
-
-	if (!compressed) HERMES_Memory_Emergency_Out();
-
-	if ( !_pSaveBlock->Read( loadfile, compressed ) )
-	{
-		LogError << "Unable to Open " << loadfile << " for Read...";
-		return -1;
-	}
-
-	// TODO implode
-	//for (size_t i = 0; i < size; i += 2)
-	//	compressed[i] = ~compressed[i];
-
-	//long ssize = size;
- 
-	//dat = (unsigned char *)blastMemAlloc(compressed, ssize, size); 
-	dat = (unsigned char *)malloc(size);
-	memcpy(dat, compressed, size);
+	
+	// TODO size is not used
 
 	memcpy(asi, dat, sizeof(ARX_CHANGELEVEL_INDEX));
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
@@ -1916,41 +1895,23 @@ long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 //-----------------------------------------------------------------------------
 long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num)
 {
-	unsigned char * dat;
+	
 	long pos = 0;
 	std::string loadfile;
 	std::stringstream ss;
-	size_t size;
+	
 
 	ss << "lvl" << num << ".sav";
 	loadfile = ss.str();
-	size = _pSaveBlock->GetSize(loadfile);
-
-	if (size < 0)
-	{
+	
+	size_t size;
+	char * dat = _pSaveBlock->load(loadfile, size);
+	if(!dat) {
 		LogError << "Unable to Open " << loadfile << " for Read...";
 		return -1;
 	}
-
-	char * compressed = (char *) GetStdBuffer(size); 
-
-	if (!compressed) HERMES_Memory_Emergency_Out();
-
-	if (!_pSaveBlock->Read(loadfile, compressed))
-	{
-		LogError << "Unable to Open " << loadfile << " for Read...";
-		return -1;
-	}
-
-	// TODO implode
-	//for (size_t i = 0; i < size; i += 2)
-	//	compressed[i] = ~compressed[i];
-
-	//long ssize = size;
-
-	//dat = (unsigned char *)blastMemAlloc(compressed, ssize, size); //pos,&cpr_pos);
-	dat = (unsigned char *)malloc(size);
-	memcpy(dat, compressed, size);
+	
+	// TODO size not used
 
 	// Skip Changelevel Index
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
@@ -2091,37 +2052,18 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 	return 1;
 }
 //-----------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVEL_PLAYER * asp)
-{
-	char loadfile[256];
-
-	sprintf(loadfile, "player.sav");
-	size_t size = _pSaveBlock->GetSize(loadfile);
-
-	if (size <= 0)
-	{
+long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVEL_PLAYER * asp) {
+	
+	const string & loadfile = "player.sav";
+	
+	size_t size;
+	char * dat = _pSaveBlock->load(loadfile, size);
+	if(!dat) {
 		LogError << "Unable to Open " << loadfile << " for Read...";
 		return -1;
 	}
-
-	char * compressed = (char *) GetStdBuffer(size);
-
-	if (!compressed) HERMES_Memory_Emergency_Out();
-
-	_pSaveBlock->Read(loadfile, compressed);
-
-	// TODO implode
-	//for (size_t i = 0; i < size; i += 2)
-	//	compressed[i] = ~compressed[i];
-
-	//long ssize = size;
- 
-	//char * dat = blastMemAlloc(compressed, ssize, size); 
-	char * dat = (char *)malloc(size);
-	memcpy(dat, compressed, size);
 	
 	memcpy(asp, dat, sizeof(ARX_CHANGELEVEL_PLAYER));
-	//free(compressed);
 
 	player.AimTime					= asp->AimTime;
 	player.desiredangle.a = player.angle.a = asp->angle.a;
@@ -2335,6 +2277,8 @@ long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVEL_PLA
 	{
 		ARX_CHANGELEVEL_MAPMARKER_DATA * acmd = (ARX_CHANGELEVEL_MAPMARKER_DATA *)(dat + pos);
 		ARX_MAPMARKER_Add(acmd->x, acmd->y, acmd->lvl, acmd->string);
+		
+		// TODO this looks fishy
 		memcpy((char *)(dat + pos), &Mapmarkers[i], sizeof(ARX_CHANGELEVEL_MAPMARKER_DATA));
 		pos += sizeof(ARX_CHANGELEVEL_MAPMARKER_DATA);
 	}
@@ -2343,6 +2287,7 @@ long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVEL_PLA
 
 	ARX_PLAYER_Modify_XP(0);	 
 
+	free(dat);
 	return 1;
 }
 
@@ -2366,10 +2311,8 @@ long ARX_CHANGELEVEL_Pop_IO( const std::string& ident)
 
 	char loadfile[256];
 	ARX_CHANGELEVEL_IO_SAVE * ais;
-	unsigned char * dat;
 	long pos = 0;
-	size_t size = 0;
-
+	
 	sprintf(loadfile, "%s.sav", ident.c_str());
 
 	long t = GetTargetByNameTarget(ident);
@@ -2382,42 +2325,14 @@ long ARX_CHANGELEVEL_Pop_IO( const std::string& ident)
 		LogDebug << "--> Before ARX_CHANGELEVEL_Pop_IO(" << ident << ")";
 	}
 
-	size = _pSaveBlock->GetSize(loadfile);
-
-	if (size < 0)
-	{
+	size_t size = 0;
+	char * dat = _pSaveBlock->load(loadfile, size);
+	if(!dat) {
 		LogError << "Unable to Open " << loadfile << " for Read...";
-
 		return -1;
 	}
-
-	char * compressed = (char *) GetStdBuffer(size);
-
-	if (!compressed) HERMES_Memory_Emergency_Out();
-
-	if (!_pSaveBlock->Read(loadfile, compressed))
-	{
-		LogError << "Unable to Read Data";
-
-		return -1;
-	}
-
-	// TODO implode
-	//for (size_t i = 0; i < size; i += 2)
-	//	compressed[i] = ~compressed[i];
-
-	//long ssize = size;
- 
-	//dat = (unsigned char *)blastMemAlloc(compressed, ssize, size);
-	dat = (unsigned char *)malloc(size);
-	memcpy(dat, compressed, size);
-
-	// Ignore object if can't explode file
-	if (!dat)
-	{
-		LogError << "Error while loading " << ident;
-		return -1;
-	}
+	
+	// TODO size not used
 
 	ais = (ARX_CHANGELEVEL_IO_SAVE *)dat;
 
@@ -3433,41 +3348,19 @@ long ARX_CHANGELEVEL_PopAllIO_FINISH(ARX_CHANGELEVEL_INDEX * asi, long reloadfla
 long ARX_CHANGELEVEL_Pop_Globals()
 {
 	ARX_CHANGELEVEL_SAVE_GLOBALS * acsg;
-	unsigned char * dat;
+	
 	long pos = 0;
 	std::string loadfile = "Globals.sav";
-	size_t size;
+	
 
 	ARX_SCRIPT_Free_All_Global_Variables();
-	size = _pSaveBlock->GetSize(loadfile);
-
-	if (size < 0)
-	{
+	
+	size_t size;
+	char * dat = _pSaveBlock->load(loadfile, size);
+	if(!dat) {
 		LogError << "Unable to Open " << loadfile << " for Read...";
 		return -1;
 	}
-
-
-	char * compressed = (char *) GetStdBuffer(size);
-
-	if (!compressed) HERMES_Memory_Emergency_Out();
-
-	if (!_pSaveBlock->Read(loadfile, compressed))
-	{
-		LogError << "Unable to Open " << loadfile << " for Read...";
-		return -1;
-	}
-
-	// TODO implode
-	//for(size_t i = 0; i < size; i += 2) {
-	//	compressed[i] = ~compressed[i];
-	//}
-
-	//long ssize = size;
- 
-	//dat = (unsigned char *)blastMemAlloc(compressed, ssize, size);
-	dat = (unsigned char *)malloc(size);
-	memcpy(dat, compressed, size);
 	
 	acsg = (ARX_CHANGELEVEL_SAVE_GLOBALS *)(dat);
 	pos += sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS);
@@ -3626,7 +3519,6 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 	_pSaveBlock = new SaveBlock(sfile);
 	if(!_pSaveBlock->BeginRead()) {
 		LogError << "cannot open save to pop level: " << sfile;
-		return -1;
 	}
 	LogDebug << "After  Saveblock Access";
 
@@ -3640,7 +3532,7 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 		FORBID_SCRIPT_IO_CREATION = 0;
 		NO_PLAYER_POSITION_RESET = 0;
 	}
-	else if (_pSaveBlock->GetSize(loadfile) < 0)
+	else if (!_pSaveBlock->hasFile(loadfile))
 	{
 		FirstTime = 1;
 		FORBID_SCRIPT_IO_CREATION = 0;
@@ -3923,7 +3815,6 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 	LogDebug << "After  Memory Release";
 
 	LogDebug << "Before SaveBlock Release";
-	_pSaveBlock->EndRead();
 	delete _pSaveBlock;
 	_pSaveBlock = NULL;
 	LogDebug << "After  SaveBlock Release";
@@ -4095,7 +3986,7 @@ long ARX_CHANGELEVEL_Set_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 	sprintf(sfile, "%sGsave.sav", path.c_str());
 	_pSaveBlock = new SaveBlock(sfile);
 
-	if (!_pSaveBlock->BeginSave(true, 1)) return -1;
+	if (!_pSaveBlock->BeginSave()) return -1;
 
 	if (!DirectoryExist(path.c_str())) return -1;
 
@@ -4116,7 +4007,7 @@ long ARX_CHANGELEVEL_Set_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 	//for (long i = 0; i < cpr_pos; i += 2)
 	//	compressed[i] = ~compressed[i];
 
-	_pSaveBlock->Save(savefile, compressed, cpr_pos);
+	_pSaveBlock->save(savefile, compressed, cpr_pos);
 	//delete[] compressed;
 
 	_pSaveBlock->EndSave();
@@ -4136,8 +4027,6 @@ long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 	if (!DirectoryExist(path.c_str())) return -1;
 
 	std::string loadfile;
-	size_t size;
-	unsigned char * dat;
 
 	// Open Save Block
 	char sfile[256];
@@ -4151,57 +4040,17 @@ long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 
 	// Get Size
 	loadfile = "pld.sav";
-	size = _pSaveBlock->GetSize(loadfile);
-
-	// Checks for Void/Invalid File
-	if (size <= 0)
-	{
-		LogError << "Unable to Open " << loadfile << " for Read1...", loadfile;
-		_pSaveBlock->EndRead();
-		delete _pSaveBlock;
-		_pSaveBlock = 0;
-		return -1;
-	}
-
-	// Allocate Necessary Size
-	char * compressed = (char *) GetStdBuffer(size);
-
-	if (!compressed) HERMES_Memory_Emergency_Out();
-
-	// Read Block
-	if (!_pSaveBlock->Read(loadfile, compressed))
-	{
-		free(compressed);
-		LogError << "Unable to Open " << loadfile << " for Read2...";
-		_pSaveBlock->EndRead();
-		delete _pSaveBlock;
-		_pSaveBlock = 0;
-		return -1;
-	}
-
-	// TODO implode
-	// Un-Crypt
-	//for (size_t i = 0; i < size; i += 2)
-	//	compressed[i] = ~compressed[i];
-
-	// Explode File
-	//long ssize = size;
- 
-	//dat = (unsigned char *)blastMemAlloc(compressed, ssize, size); //pos,&cpr_pos);
-	dat = (unsigned char *)malloc(size);
-	memcpy(dat, compressed, size);
-
-	if (dat == NULL)
-	{
-		LogError << "Unable to Explode " << loadfile;
-		_pSaveBlock->EndRead();
+	
+	size_t size;
+	char * dat = _pSaveBlock->load(loadfile, size);
+	if(!dat) {
+		LogError << "Unable to open " << loadfile << " for read...";
 		delete _pSaveBlock;
 		_pSaveBlock = 0;
 		return -1;
 	}
 
 	// Finishes Read
-	_pSaveBlock->EndRead();
 	delete _pSaveBlock;
 	_pSaveBlock = 0;
 
