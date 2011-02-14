@@ -55,16 +55,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 #define STRICT
 
-#include "EerieEnum.h"
-#include "EerieUtil.h" // For DEBUG_MSG
-#include "EerieRes.h"  // For dialog controls
-
 #include <windowsx.h>
-#include <cstdio>
+#include <stdio.h>
 #include <tchar.h>
 
-
-
+#include "EERIEEnum.h"
+#include "EERIEUtil.h" // For DEBUG_MSG
+#include "EERIERes.h"  // For dialog controls
 
 
 //************************************************************************************

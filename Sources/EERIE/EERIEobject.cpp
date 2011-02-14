@@ -55,7 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 
 #include "TheoData.h"
-#include "EERIEobject.h"
+#include "EERIEObject.h"
 #include "EERIETypes.h"
 #include "EERIEMath.h"
 #include "EERIEApp.h"
@@ -67,7 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "HERMESMain.h"
 
-#include "Arx_sound.h"
+#include "ARX_Sound.h"
 #include "ARX_Cedric.h"
 
 
@@ -1180,7 +1180,8 @@ EERIE_MULTI3DSCENE * MultiSceneToEerie(char * dirr)
 {
 	char * tex;
 	long idx;
-	struct _finddata_t fd;
+//	todo: finddata
+//	struct _finddata_t fd;
 	EERIE_MULTI3DSCENE * es;
 	unsigned char * adr;
 	char pathh[512];
@@ -1200,32 +1201,32 @@ retry10:
 	strcpy(LastLoadedScene, dirr);
 	sprintf(pathh, "%s*.scn", dirr);
 
-	if ((idx = _findfirst(pathh, &fd)) != -1)
-	{
-		do
-		{
-			if (!(fd.attrib & _A_SUBDIR))
-			{
-				tex = GetExt(fd.name);
-
-				if (!strcasecmp(tex, ".SCN"))
-				{
-					sprintf(path, "%s%s", dirr, fd.name);
-					long SizeAlloc = 0;
-
-					if (adr = (unsigned char *)PAK_FileLoadMalloc(path, &SizeAlloc))
-					{
-						es->scenes[es->nb_scenes] = (EERIE_3DSCENE *)ScnToEerie(adr, SizeAlloc, path, TTE_NO_NDATA | TTE_NO_PDATA);
-						es->nb_scenes++;
-						free(adr);
-					}
-				}
-			}
-		}
-		while (!(_findnext(idx, &fd)));
-
-		_findclose(idx);
-	}
+//	if ((idx = _findfirst(pathh, &fd)) != -1)
+//	{
+//		do
+//		{
+//			if (!(fd.attrib & _A_SUBDIR))
+//			{
+//				tex = GetExt(fd.name);
+//
+//				if (!strcasecmp(tex, ".SCN"))
+//				{
+//					sprintf(path, "%s%s", dirr, fd.name);
+//					long SizeAlloc = 0;
+//
+//					if (adr = (unsigned char *)PAK_FileLoadMalloc(path, &SizeAlloc))
+//					{
+//						es->scenes[es->nb_scenes] = (EERIE_3DSCENE *)ScnToEerie(adr, SizeAlloc, path, TTE_NO_NDATA | TTE_NO_PDATA);
+//						es->nb_scenes++;
+//						free(adr);
+//					}
+//				}
+//			}
+//		}
+//		while (!(_findnext(idx, &fd)));
+//
+//		_findclose(idx);
+//	}
 
 	es->cub.xmax = -9999999999.f;
 	es->cub.xmin = 9999999999.f;
