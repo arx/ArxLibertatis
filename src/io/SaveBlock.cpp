@@ -424,43 +424,6 @@ SaveBlock::File * SaveBlock::getFile(const std::string & name) {
 	return NULL;
 }
 
-static bool deflateCompress(const char * src, size_t slen, char * dst, size_t & dlen) {
-	
-	int level = 1;
-	
-	z_stream strm;
-	
-	strm.zalloc = Z_NULL;
-	strm.zfree = Z_NULL;
-	strm.opaque = Z_NULL;
-	int ret = deflateInit(&strm, level);
-	if(ret != Z_OK) {
-		LogWarning << "cannot initialize zlib stream";
-		return false;
-	}
-	
-	strm.next_in = (Bytef*)const_cast<char*>(src);
-	strm.avail_in = slen;
-	strm.next_out = (Bytef*)dst;
-	strm.avail_out = dlen;
-	
-	ret = deflate(&strm, Z_FINISH);
-	assert(ret != Z_STREAM_ERROR);
-	
-	deflateEnd(&strm);
-	
-	if(ret != Z_OK && ret != Z_STREAM_END) {
-		LogWarning << "compression error " << ret;
-	}
-	
-	if(ret == Z_STREAM_END) {
-		dlen -= strm.avail_out;
-		return true;
-	}
-	
-	return false;
-}
-
 bool SaveBlock::save(const string & name, const char * data, size_t size) {
 	
 	if(!handle) {
@@ -473,17 +436,19 @@ bool SaveBlock::save(const string & name, const char * data, size_t size) {
 		file = &files.back();
 	}
 	
-	file->uncompressedSize = size;
+	
 	file->storedSize = size;
 	
+	uLongf compressedSize = size;
 	char * compressed = new char[size];
 	const char * p;
-	
-	if(deflateCompress(data, size, compressed, file->storedSize)) {
+	if(compress2((Bytef*)compressed, &compressedSize, (const Bytef*)data, size, 1) == Z_OK) {
 		file->comp = File::Deflate;
+		file->uncompressedSize = compressedSize;
 		p = compressed;
 	} else {
 		file->comp = File::None;
+		file->uncompressedSize = size;
 		p = data;
 	}
 	
@@ -516,33 +481,6 @@ bool SaveBlock::save(const string & name, const char * data, size_t size) {
 	delete[] compressed;
 	
 	return true;
-}
-
-static bool deflateDecompress(const char * src, size_t slen, char * dst, size_t dlen) {
-	
-	z_stream strm;
-	
-	strm.zalloc = Z_NULL;
-	strm.zfree = Z_NULL;
-	strm.opaque = Z_NULL;
-	
-	strm.next_in = (Bytef*)const_cast<char*>(src);;
-	strm.avail_in = slen;
-	strm.next_out = (Bytef*)dst;
-	strm.avail_out = dlen;
-	
-	int ret = inflateInit(&strm);
-	if(ret != Z_OK) {
-		LogWarning << "cannot initialize zlib stream";
-		return false;
-	}
-	
-	ret = inflate(&strm, Z_FINISH);
-	assert(ret != Z_STREAM_ERROR);
-	
-	inflateEnd(&strm);
-	
-	return (ret == Z_STREAM_END);
 }
 
 char * SaveBlock::load(const string & name, size_t & size) const {
@@ -589,13 +527,19 @@ char * SaveBlock::load(const string & name, size_t & size) const {
 		
 		case File::Deflate: {
 			assert(file->uncompressedSize != (size_t)-1);
-			char * uncompressed = (char*)malloc(file->uncompressedSize);
-			if(!deflateDecompress(buf, file->storedSize, uncompressed, file->uncompressedSize)) {
+			uLongf uncompressedSize = file->uncompressedSize;
+			char * uncompressed = (char*)malloc(uncompressedSize);
+			if(uncompress((Bytef*)uncompressed, &uncompressedSize, (const Bytef*)buf,
+			   file->storedSize) != Z_OK) {
 				LogError << "error decompressing deflated " << name << " in " << savefile;
 				free(buf);
 				free(uncompressed);
 				size = 0;
 				return NULL;
+			}
+			if(uncompressedSize != file->uncompressedSize) {
+				LogError << "unexpedect uncompressed size " << uncompressedSize << " while loading "
+				         << name << " in " << savefile << ", expected " << file->uncompressedSize;
 			}
 			size = file->uncompressedSize;
 			free(buf);
