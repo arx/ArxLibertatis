@@ -186,7 +186,7 @@ void ArxDebug::CreateCrashFile(const char * _sFn , const char * _sMsg , const ch
 
 	oss << "\n Do you want to generate a report into your Log folder ? ";
 
-	nCode = MessageBoxA(NULL, oss.str().c_str(), "Arx Runtime Assertation ", MB_YESNO |
+	nCode = MessageBoxA(NULL, oss.str().c_str(), "ARX Runtime Assertation ", MB_YESNO |
 	                    MB_ICONHAND | MB_SETFOREGROUND | MB_TASKMODAL);
 
 	if ((nCode == IDYES) && CreateLogDirectory())
@@ -290,7 +290,7 @@ bool ArxDebug::CreateDebugConsole()
 		return false ;
 	}
 
-	SetConsoleTitleA("Arx Fatalis Debug Window");
+	SetConsoleTitleA("ARX Fatalis Debug Window");
 
 	// set the screen buffer to be big enough to let us scroll text
 	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &coninfo);

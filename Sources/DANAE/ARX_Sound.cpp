@@ -439,7 +439,7 @@ long ARX_SOUND_Init(HWND hwnd)
 		if (FileExist(pakfile)) aalAddResourcePack(pakfile);
 		else
 		{
-			MessageBox(NULL, "Unable to Find Data File\nPlease Reinstall ARX Fatalis", "Arx Fatalis - Error", MB_ICONEXCLAMATION | MB_OK);
+			MessageBox(NULL, "Unable to Find Data File\nPlease Reinstall ARX Fatalis", "ARX Fatalis - Error", MB_ICONEXCLAMATION | MB_OK);
 			exit(0);
 		}
 
@@ -459,7 +459,7 @@ long ARX_SOUND_Init(HWND hwnd)
 			}
 			else
 			{
-				MessageBox(NULL, "Unable to Find Data File\nPlease Reinstall ARX Fatalis", "Arx Fatalis - Error", MB_ICONEXCLAMATION | MB_OK);
+				MessageBox(NULL, "Unable to Find Data File\nPlease Reinstall ARX Fatalis", "ARX Fatalis - Error", MB_ICONEXCLAMATION | MB_OK);
 				exit(0);
 			}
 		}

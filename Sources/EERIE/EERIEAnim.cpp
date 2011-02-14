@@ -62,9 +62,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEPoly.h"
 #include "EERIEDraw.h"
 
-#include <Arx_Sound.h>
-#include <Arx_Damages.h>
-#include <Arx_Particles.h>
+#include <ARX_Sound.h>
+#include <ARX_Damages.h>
+#include <ARX_Particles.h>
 #include <ARX_NPC.h>
 #include <ARX_Collisions.h>
 #include <ARX_Scene.h>
