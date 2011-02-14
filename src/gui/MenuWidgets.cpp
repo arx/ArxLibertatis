@@ -768,10 +768,8 @@ void CMenuConfig::SetDefaultKey()
 	}
 }
 
-std::string& to_lower( std::string& str )
-{
+void to_lower(std::string & str) {
 	std::transform( str.begin(), str.end(), str.begin(), ::tolower );
-	return str;
 }
 
 //-----------------------------------------------------------------------------
@@ -2526,9 +2524,9 @@ bool Menu2_Render()
 							for(int iI=1;iI<(save_c);iI++)
 							{
 								std::string tex = save_l[iI].name;
-								std::string tex2 = tex;
-
-								std::transform( tex2.begin(), tex2.end(), tex2.begin(), ::toupper );
+								std::string tex2;
+								tex2.resize(tex);
+								std::transform(tex.begin(), tex.end(), tex2.begin(), ::toupper);
 
 								if(!szMenuText.compare( tex2 ) || !szMenuText1.compare( tex2 ) )
 								{
