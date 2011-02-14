@@ -100,6 +100,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Loc.h"
 #include "ARX_Menu.h"
 #include "ARX_Menu2.h"
+#include <ARX_Network.h>
+#include <ARX_NPC.h>
+#include <ARX_Particles.h>
+#include <ARX_Paths.h>
+#include <ARX_Scene.h>
+#include <ARX_Script.h>
+#include <ARX_Sound.h>
+#include <ARX_Special.h>
+#include <ARX_Speech.h>
+#include <ARX_Spells.h>
+#include <ARX_Time.h>
+#include <ARX_Text.h>
+#include "ARX_Missile.h"
+#include "ARX_Cedric.h"
+#include "ARX_HWTransform.h"
 #include "ARX_MenuPublic.h"
 #include "ARX_Missile.h"
 #include "ARX_NPC.h"
@@ -142,10 +157,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #pragma comment(lib,"steam.lib")
 #endif
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-
-void DemoFileCheck();
+void DemoFileCheck();		
 
 bool ARX_IsSteam()
 {
@@ -155,6 +167,9 @@ bool ARX_IsSteam()
 	return false;
 #endif
 }
+
+//todo bad define
+# define GWL_HINSTANCE       (-6)
 
 //-----------------------------------------------------------------------------
 
@@ -1271,17 +1286,18 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 
 #endif
 
-	_set_new_mode(1);																//memory handler activated for malloc too
-	_set_new_handler(HandlerMemory);
-
-	ARX_MINIMAP_Reset();
-	int flag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG); // Get current flag
-	flag |= _CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF;// Turn on leak-checking bit
-	_CrtSetDbgFlag(flag);															// Set flag to the new value
-	_CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDOUT);
-	_CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDOUT);
-	_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
-
+	//todo memleak stuff?
+//	_set_new_mode(1);																//memory handler activated for malloc too
+//	_set_new_handler(HandlerMemory);
+//
+//	ARX_MINIMAP_Reset();
+//	int flag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG); // Get current flag
+//	flag |= _CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF;// Turn on leak-checking bit
+//	_CrtSetDbgFlag(flag);															// Set flag to the new value
+//	_CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDOUT);
+//	_CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDOUT);
+//	_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDOUT);
+	
 	long i;
 	hInstance = _hInstance;
 
@@ -1625,7 +1641,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	if (!FOR_EXTERNAL_PEOPLE)
 	{
 		char stemp[256];
-		unsigned long ls = 64;
+		unsigned ls = 64;
 		GetComputerName(stemp, &ls);
 
 		if (!strcasecmp(stemp,"max"))
@@ -4917,56 +4933,58 @@ void ProcessAllTheo(char * path)
 {
 	long idx;
 	char pathh[512];
-	struct _finddata_t fd;
+	//todo finddata
+//	struct _finddata_t fd;
+	sprintf(pathh,"%s*.*",path);
 	sprintf(pathh,"%s*.*",path);
 
-	if ((idx=_findfirst(pathh,&fd))!=-1)
-	{
-		do
-		{
-			if (strcmp(fd.name,".") && strcmp(fd.name,".."))
-			{
-				if (fd.attrib & _A_SUBDIR)
-				{
-					char path2[512];
-					sprintf(path2,"%s%s\\",path,fd.name);
-					ProcessAllTheo(path2);
-				}
-				else
-				{
-					char ext[256];
-					strcpy(ext,GetExt(fd.name));
-
-					if (!strcasecmp(ext,".teo"))
-					{
-						char path2[512];
-						char texpath[512];
-						sprintf(path2,"%s%s",path,fd.name);
-						sprintf(texpath,"%sGraph\\Obj3D\\Textures\\",Project.workingdir);
-						EERIE_3DOBJ * temp;
-						char tx[1024];
-						sprintf(tx,"Moulinex %s (%s - %s)",fd.name,path2,texpath);
-						ForceSendConsole(tx,1,0,NULL);
-						_ShowText(tx);
-
-						if (strstr(path2,"\\NPC\\"))
-							temp=TheoToEerie_Fast(texpath,path2,TTE_NPC,GDevice);
-						else
-							temp=TheoToEerie_Fast(texpath,path2,0,GDevice);
-
-						if (temp)
-						{
-							ReleaseEERIE3DObj(temp);
-							ReleaseAllTCWithFlag(0);
-						}
-					}
-				}
-			}
-		}
-		while (!(_findnext(idx, &fd)));
-
-		_findclose(idx);
-	}
+//	if ((idx=_findfirst(pathh,&fd))!=-1)
+//	{
+//		do
+//		{
+//			if (strcmp(fd.name,".") && strcmp(fd.name,".."))
+//			{
+//				if (fd.attrib & _A_SUBDIR)
+//				{
+//					char path2[512];
+//					sprintf(path2,"%s%s\\",path,fd.name);
+//					ProcessAllTheo(path2);
+//				}
+//				else
+//				{
+//					char ext[256];
+//					strcpy(ext,GetExt(fd.name));
+//
+//					if (!strcasecmp(ext,".teo"))
+//					{
+//						char path2[512];
+//						char texpath[512];
+//						sprintf(path2,"%s%s",path,fd.name);
+//						sprintf(texpath,"%sGraph\\Obj3D\\Textures\\",Project.workingdir);
+//						EERIE_3DOBJ * temp;
+//						char tx[1024];
+//						sprintf(tx,"Moulinex %s (%s - %s)",fd.name,path2,texpath);
+//						ForceSendConsole(tx,1,0,NULL);
+//						_ShowText(tx);
+//
+//						if (strstr(path2,"\\NPC\\"))
+//							temp=TheoToEerie_Fast(texpath,path2,TTE_NPC,GDevice);
+//						else
+//							temp=TheoToEerie_Fast(texpath,path2,0,GDevice);
+//
+//						if (temp)
+//						{
+//							ReleaseEERIE3DObj(temp);
+//							ReleaseAllTCWithFlag(0);
+//						}
+//					}
+//				}
+//			}
+//		}
+//		while (!(_findnext(idx, &fd)));
+//
+//		_findclose(idx);
+//	}
 }
 void LaunchMoulinex()
 {
@@ -6249,7 +6267,7 @@ static float _AvgFrameDiff = 150.f;
 
 			while ((cur<tFrameDiff) && (!(inter.iobj[0]->ioflags & IO_FREEZESCRIPT)))
 			{
-				long step=min(50,tFrameDiff);
+				long step=min(50L,tFrameDiff);
 
 				if (inter.iobj[0]->ioflags & IO_FREEZESCRIPT) step=0;
 
@@ -8648,7 +8666,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 					char tteexx[512];
 					strcpy(tteexx,Project.workingdir);
 					strcat(tteexx,"GRAPH\\LEVELS\\");
-					_chdir(tteexx);
+					chdir(tteexx);
 					break;
 				case DANAE_MENU_NEWLEVEL:
 					ARX_TIME_Pause();

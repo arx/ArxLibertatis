@@ -24,7 +24,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 #include <cstdio>
 #include "Danae.h"
-#include "ARX_carte.h"
+#include "ARX_Carte.h"
 #include "ARX_Levels.h"
 #include "EERIEUtil.h"
 #include "EERIETexture.h"
