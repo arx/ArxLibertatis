@@ -55,32 +55,26 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 #include "ARX_Paths.h"
-#include "HERMESMain.h"
-
-#include "EERIELight.h"
 #include "ARX_GlobalMods.h"
-#include "ARX_SOUND.h"
+#include "ARX_Sound.h"
 #include "ARX_Collisions.h"
 #include "ARX_Time.h"
-#include "ARX_Npc.h"
-
+#include "ARX_NPC.h"
 #include "ARX_CSpellFx.h"
+#include "ARX_Interactive.h"
+#include "ARX_Player.h"
+#include "ARX_Script.h"
+#include "ARX_Particles.h"
+#include "ARX_Damages.h"
+#include "ARX_Equipment.h"
 
-#include "arx_interactive.h"
-#include "arx_player.h"
-#include "arx_script.h"
-#include "arx_particles.h"
-#include "arx_damages.h"
-#include "arx_equipment.h"
-#include "danaedlg.h"
-
-#include "EERIEDRAW.h"
+#include "EERIELight.h"
+#include "EERIEDraw.h"
 #include "EERIEPhysicsBox.h"
 
-#include <cstdio>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+#include "DanaeDlg.h"
+#include "HERMESMain.h"
+#include <stdio.h>
 
 
 extern long CHANGE_LEVEL_ICON;
@@ -1389,10 +1383,10 @@ EERIEPOLY * CheckArrowPolyCollision(EERIE_3D * start, EERIE_3D * end)
 	F2L(end->z * ACTIVEBKG->Zmul, &pz);
 
 	long ix, ax, iz, az;
-	ix = max(px - 2, 0);
-	ax = min(px + 2, ACTIVEBKG->Xsize - 1);
-	iz = max(pz - 2, 0);
-	az = min(pz + 2, ACTIVEBKG->Zsize - 1);
+	ix = max(px - 2, 0L);
+	ax = min(px + 2, ACTIVEBKG->Xsize - 1L);
+	iz = max(pz - 2, 0L);
+	az = min(pz + 2, ACTIVEBKG->Zsize - 1L);
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;
 
@@ -2279,11 +2273,11 @@ BOOL _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long sour
 	long ix, iz, ax, az;
 	long n;
 	F2L(obj->pbox->radius * DIV100, &n);
-	n = min(1, n + 1);
-	ix = max(px - n, 0);
-	ax = min(px + n, ACTIVEBKG->Xsize - 1);
-	iz = max(pz - n, 0);
-	az = min(pz + n, ACTIVEBKG->Zsize - 1);
+	n = min(1L, n + 1);
+	ix = max(px - n, 0L);
+	ax = min(px + n, ACTIVEBKG->Xsize - 1L);
+	iz = max(pz - n, 0L);
+	az = min(pz + n, ACTIVEBKG->Zsize - 1L);
 	LAST_COLLISION_POLY = NULL;
 	EERIEPOLY * ep;
 	EERIE_BKG_INFO * eg;

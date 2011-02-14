@@ -55,27 +55,35 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Nuky - 10-02-11 - cleaned whole file
 
 #include "ARX_Text.h"
-
-#include "ARX_Loc.h"
-#include "danae.h"
+#include "Danae.h"
 
 #include "EERIEDraw.h"
+#include "HERMESMain.h"
 
-#include "HERMESmain.h"
-
-#include <windows.h>
-#include <cassert>
-#include <map>
-#include <utility>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-
-// Nuky - TEMP
-#include "../ArxCommon/Timer.h"
+#include <assert.h>
 
 //-----------------------------------------------------------------------------
-// Imported global variables
+_TCHAR * lpszFontMenu = NULL;
+_TCHAR * lpszFontIngame = NULL;
+
+_TCHAR tUText[8192];
+
+CARXTextManager * pTextManage = NULL;
+CARXTextManager * pTextManageFlyingOver = NULL;
+
+HMODULE hUnicodeLibrary = NULL;
+//-----------------------------------------------------------------------------
+HFONT InBookFont	= NULL;
+HFONT hFontRedist	= NULL;
+HFONT hFontMainMenu = NULL;
+HFONT hFontMenu		= NULL;
+HFONT hFontControls = NULL;
+HFONT hFontCredits	= NULL;
+
+ 
+HFONT hFontInGame	= NULL;
+HFONT hFontInGameNote = NULL;
+ 
 
 extern long CHINESE_VERSION;
 extern long EAST_EUROPE;
