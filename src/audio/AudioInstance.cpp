@@ -959,6 +959,7 @@ namespace ATHENA
 
 			status |= IS_TOOFAR;
 			// lpdsb->Stop();
+			printf("stopping because too far\n");
 			alSourceStop(source[0]);
 		}
 
@@ -973,12 +974,10 @@ namespace ATHENA
 
 		ALuint new_buffers[1];
 
-		alGenBuffers(1, new_buffers);
 
 		InstanceDebugLog(this, "STREAMED");
 
 		to_fill = write >= read ? read + size - write : read - write;
-
 
 		ptr0 = malloc(to_fill);
 		if (ptr0  == NULL) {
@@ -995,6 +994,7 @@ namespace ATHENA
 			}
 		}
 		alGetError();
+		alGenBuffers(1, new_buffers);
 		alBufferData(new_buffers[0], alformat, ptr0, to_fill, sample->format.frequency);
 		alSourceQueueBuffers(source[0], 1, new_buffers);
 		int error;
@@ -1086,6 +1086,7 @@ namespace ATHENA
 		}
 
 		if (stream) {
+			printf("streaming\n");
 			UpdateStreaming();
 		}
 

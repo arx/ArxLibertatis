@@ -817,7 +817,10 @@ namespace ATHENA
 	{
 		channel = _channel;
 
-		if (flags & (IS_PLAYING | IS_PAUSED)) Stop();
+		if (flags & (IS_PLAYING | IS_PAUSED)) {
+			printf("Stop\n");
+			Stop();
+		}
 
 		if (!play_count) flags |= IS_LOOPED;
 		else flags &= ~IS_LOOPED;
@@ -929,8 +932,10 @@ namespace ATHENA
 			{
 				aalSLong i_id(GetInstanceID(track->s_id));
 
-				if (_inst.IsValid(i_id) && _inst[i_id]->sample == _sample[s_id])
+				if (_inst.IsValid(i_id) && _inst[i_id]->sample == _sample[s_id]) {
+					printf("Ambiance Stop\n");
 					_inst[i_id]->Stop();
+				}
 			}
 
 			s_id |= 0xffff0000;
@@ -1037,6 +1042,7 @@ namespace ATHENA
 
 				if (channel.volume <= 0.0F)
 				{
+					printf("Stop!\n");
 					Stop();
 					return AAL_OK;
 				}
@@ -1307,12 +1313,14 @@ namespace ATHENA
 
 	static aalVoid OnAmbianceSampleStop(aalVoid *, const aalSLong &, aalVoid * data)
 	{
+		printf("OnAmbianceSampleStop\n");
 		Track * track = (Track *)data;
 		Ambiance * ambiance = _amb[track->a_id];
 		TrackKey * key = &track->key_l[track->key_i];
 
 		if (!key->loopc--)
 		{
+			printf("key->loopc\n");
 			//Key end
 			key->delay = key->delay_max;
 			UpdateKeySynch(*key);
@@ -1330,6 +1338,7 @@ namespace ATHENA
 
 					if (ambiance->flags & IS_LOOPED)
 					{
+						printf("IS_LOOPED\n");
 						Track * track2 = &ambiance->track_l[ambiance->track_c];
 
 						while (track2 > ambiance->track_l)
@@ -1341,7 +1350,10 @@ namespace ATHENA
 
 						ambiance->start = session_time;
 					}
-					else ambiance->flags &= ~IS_PLAYING;
+					else {
+						printf("stopping by setting flag\n");
+						ambiance->flags &= ~IS_PLAYING;
+					}
 				}
 			}
 		}

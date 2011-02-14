@@ -1632,7 +1632,7 @@ namespace ATHENA
 
 	aalError aalAmbiancePlay(const aalSLong & a_id, const aalChannel & channel, const aalULong & play_count, const aalULong & fade_interval)
 	{
-		printf("aalAmbiancePlay fade_interval: %d\n", fade_interval);
+		printf("aalAmbiancePlay play_count: %d fade_interval: %d\n", play_count, fade_interval);
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
 
