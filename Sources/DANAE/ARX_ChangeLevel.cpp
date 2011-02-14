@@ -64,7 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 
 //-----------------------------------------------------------------------------
-
+#include <vector>
 #include "ARX_ChangeLevel.h"
 
 #include "ARX_Damages.h"
@@ -77,7 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Sound.h"
 #include "ARX_Speech.h"
 #include "ARX_Spells.h"
-#include "ARX_time.h"
+#include "ARX_Time.h"
 
 #include "EERIEMath.h"
 #include "EERIEObject.h"
@@ -85,10 +85,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "HERMESMain.h"
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-
-#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
+//#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern long GLOBAL_MAGIC_MODE;
@@ -2788,6 +2785,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 						pos += io->script.lvar[i].ival;
 						io->script.lvar[i].ival = strlen(io->script.lvar[i].text) + 1;
 
+
 						if (io->script.lvar[i].text[0] == 'Ì')
 							io->script.lvar[i].text[0] = 0;
 					}
@@ -2820,7 +2818,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 						goto retry;
 					}
 
-					if ((avs->name[0] == '#') || (avs->name[0] == '§'))
+		if ((avs->name[0] == '#') || (avs->name[0] == '§'))
 					{
 						avs->type = TYPE_L_LONG;
 						goto retry;
@@ -2923,9 +2921,9 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 					break;
 				default:
 
-					if ((avs->name[0] == '$') || (avs->name[0] == '£'))
-					{
-						avs->type = TYPE_L_TEXT;
+				if ((avs->name[0] == '$') || (avs->name[0] == '£'))
+				{
+					avs->type = TYPE_L_TEXT;
 						goto retry2;
 					}
 

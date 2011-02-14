@@ -22,35 +22,26 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-// Nuky - 22/01/11 - 20% performance optim by disabling nearly useless call to IsInGroup(). See code comment for details
-
-#include "Arx_Collisions.h"
-#include "Arx_Sound.h"
-#include "Arx_Scene.h"
-#include "Arx_Equipment.h"
-#include "Arx_Damages.h"
-#include "Arx_Particles.h"
-#include "ARX_NPC.h"
-#include "ARX_Time.h"
-#include "arx_menu2.h"
-#include "arx_cedric.h"
-
-#include "danae.h"
-
 #include "EERIEAnim.h"
+#include "HERMESMain.h"
+#include "ARX_Collisions.h"
 #include "EERIEClothes.h"
 #include "EERIEObject.h"
 #include "EERIEMath.h"
 #include "EERIELight.h"
 #include "EERIEPoly.h"
 #include "EERIEDraw.h"
-
-#include "HermesMain.h"
-
+#include <ARX_Sound.h>
+#include <ARX_Scene.h>
+#include <ARX_Equipment.h>
+#include <ARX_Damages.h>
+#include <ARX_Particles.h>
+#include <ARX_NPC.h>
+#include "ARX_Time.h"
+#include "Danae.h"
 #include <dinput.h>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+#include "ARX_Menu2.h"
+#include "ARX_Cedric.h"
 
 
 #if	CEDRIC
