@@ -199,6 +199,9 @@ bool SaveBlock::loadFileTable() {
 		if(FileRead(handle, &nChunks, 4) != 4) {
 			return false;
 		}
+		if(version < SAV_VERSION_CURRENT && nChunks == 0) {
+			nChunks = 1;
+		}
 		LogDebug << " chunks: " << nChunks;
 		file.chunks.reserve(nChunks);
 		
