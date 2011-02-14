@@ -36,7 +36,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Blast.h"
 
 const u32 SAV_VERSION_OLD = (1<<16) | 0;
-const u32 SAV_VERSION_RELEASE = (1<<16) | 0;
+const u32 SAV_VERSION_RELEASE = (1<<16) | 1;
 const u32 SAV_VERSION_CURRENT = (2<<16) | 0;
 
 const u32 SAV_COMP_NONE = 0;
@@ -75,6 +75,15 @@ struct SaveBlock::File {
 	Compression comp;
 	
 	File(const string & _name) : name(_name), chunks() { };
+	
+	const char * compressionName() {
+		switch(comp) {
+			case SaveBlock::File::None: return "none";
+			case SaveBlock::File::ImplodeCrypt: return "implode + crypt";
+			case SaveBlock::File::Deflate: return "deflate";
+			default: return "(unknown)";
+		}
+	}
 	
 };
 
@@ -209,6 +218,8 @@ bool SaveBlock::loadFileTable() {
 			// ignored
 			FileSeek(handle, 4, SEEK_CUR);
 			file.comp = File::ImplodeCrypt;
+			LogDebug << " compression: " << SAV_COMP_IMPLODE << " = "
+			         << file.compressionName();
 		} else {
 			u32 comp;
 			if(FileRead(handle, &comp, 4) != 4) {
@@ -220,7 +231,7 @@ bool SaveBlock::loadFileTable() {
 				case SAV_COMP_DEFLATE: file.comp = File::Deflate; break;
 				default: file.comp = File::Unknown;
 			}
-			LogDebug << " compression: " << comp;
+			LogDebug << " compression: " << comp << " = " << file.compressionName();
 		}
 		
 		size_t size = 0;
@@ -569,7 +580,7 @@ char * SaveBlock::load(const string & name, size_t & size) const {
 			char * uncompressed = blastMemAlloc(buf, file->storedSize, size);
 			free(buf);
 			if(!uncompressed) {
-				LogError << "error decompressing " << name << " in " << savefile;
+				LogError << "error decompressing imploded " << name << " in " << savefile;
 				return NULL;
 			}
 			assert(file->uncompressedSize == (size_t)-1 || size == file->uncompressedSize);
@@ -580,7 +591,7 @@ char * SaveBlock::load(const string & name, size_t & size) const {
 			assert(file->uncompressedSize != (size_t)-1);
 			char * uncompressed = (char*)malloc(file->uncompressedSize);
 			if(!deflateDecompress(buf, file->storedSize, uncompressed, file->uncompressedSize)) {
-				LogError << "error decompressing " << name << " in " << savefile;
+				LogError << "error decompressing deflated " << name << " in " << savefile;
 				free(buf);
 				free(uncompressed);
 				size = 0;
