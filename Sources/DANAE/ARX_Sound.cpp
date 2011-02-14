@@ -34,8 +34,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <fstream>
 #include <list>
-#include <sstream>
+#include <algorithm>
 #include <vector>
+#include <string>
+#include <streambuf>
+#include <istream>
+#include <fstream>
+#include <sstream>
 
 #include <ARX_Sound.h>
 #include <HERMESMain.h>
@@ -96,7 +101,7 @@ enum PlayingAmbianceType
 	PLAYING_AMBIANCE_MENU,
 	PLAYING_AMBIANCE_SCRIPT,
 	PLAYING_AMBIANCE_ZONE
-};
+}playingAmbianceType;
 
 struct PlayingAmbiance
 {
