@@ -63,7 +63,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <tchar.h>
 
 using std::vector;
->>>>>>> a39d142d60bac884d0c1a426fd9d4670ef1a5f61
 
 //TODO: hack
 #define INT_MAX 300000

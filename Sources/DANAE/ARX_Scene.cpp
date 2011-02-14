@@ -337,11 +337,7 @@ __declspec(dllexport) HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevic
 		_LPVERTEX_		pVertex			=	NULL;
 		int				iOldNbVertex	=	pDVB->ussNbVertex;
 		pDVB->ussNbIndice				=	0;
-<<<<<<< HEAD
-		unsigned short iNbVertex		=	std::min(static_cast<unsigned short>(*_piNbVertex), pDVB->ussMaxVertex); //don't overload VB
-=======
 		unsigned short iNbVertex		=	(unsigned short) min( *_piNbVertex, (int)pDVB->ussMaxVertex ); //don't overload VB
->>>>>>> 0a5a079b2122490e3dc77ab2e27f8f04d16ef601
 
 		pDVB->ussNbVertex				+=	iNbVertex;
 
