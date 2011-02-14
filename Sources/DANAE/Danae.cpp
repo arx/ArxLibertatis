@@ -116,40 +116,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Cedric.h"
 #include "ARX_HWTransform.h"
 #include "ARX_MenuPublic.h"
-#include "ARX_Missile.h"
-#include "ARX_NPC.h"
-#include "ARX_Network.h"
-#include "ARX_Particles.h"
-#include "ARX_Paths.h"
-#include "ARX_Scene.h"
-#include "ARX_Script.h"
-#include "ARX_SnapShot.h"
-#include "ARX_Sound.h"
-#include "ARX_Special.h"
-#include "ARX_Speech.h"
-#include "ARX_Spells.h"
-#include "ARX_Text.h"
-#include "ARX_Time.h"
-
-#include "EERIEAnim.h"
-#include "EERIECollisionSpheres.h"
-#include "EERIELinkedObj.h"
-#include "EERIEObject.h"
-#include "EERIEPathfinder.h"
-#include "EERIEPhysicsBox.h"
-#include "EERIEPoly.h"
-#include "EERIEUtil.h"
-#include "EERIE_AVI.h"
-
-#include "HERMESConsole.h"
-#include "HERMES_PAK.h"
-#include "HERMESmain.h"
-#include "HERMESnet.h"
-
-#include <windows.h>
-#include <fstream>
-#include <iostream>
-#include <new.h>
+#include "ARX_Snapshot.h"
 
 #ifdef ARX_STEAM
 #include "../steam/steam.h"

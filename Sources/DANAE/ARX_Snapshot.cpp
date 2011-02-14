@@ -57,7 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <string.h>
 #include <Danae.h>
-#include "ARX_SnapShot.h"
+#include "ARX_Snapshot.h"
 
 SnapShot * pSnapShot;
 

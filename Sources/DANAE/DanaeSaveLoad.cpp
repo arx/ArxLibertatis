@@ -55,19 +55,25 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "DanaeSaveLoad.h"
+#include <DanaeSaveLoad.h>
 
-#include "HERMESMain.h"
+#include <stdio.h>
+#include <sys/stat.h>
+//#include <io.h>
+#include <fcntl.h>
+#include <time.h>
 
-#include "EERIEMath.h"
-#include "EERIEPathfinder.h"
-#include "EERIEObject.h"
-#include "EERIECollisionSpheres.h"
-#include "EERIEDraw.h"
+#include <HERMESMain.h>
 
-#include "ARX_Damages.h"
-#include "ARX_Fogs.h"
-#include "ARX_Levels.h"
+#include <EERIEMath.h>
+#include <EERIEPathfinder.h>
+#include <EERIEObject.h>
+#include <EERIECollisionSpheres.h>
+#include <EERIEDraw.h>
+
+#include <ARX_Damages.h>
+#include <ARX_Fogs.h>
+#include <ARX_Levels.h>
 #include "ARX_Loc.h"
 #include "ARX_Minimap.h"
 #include "ARX_Missile.h"
@@ -82,14 +88,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Time.h"
 #include "DanaeDlg.h"
 
-#include <cstdio>
-#include <sys/stat.h>
-#include <io.h>
-#include <fcntl.h>
-#include <ctime>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+#include <stdio.h>
 
 extern float PROGRESS_BAR_COUNT;
 extern float PROGRESS_BAR_TOTAL;
@@ -285,7 +284,7 @@ long DanaeSaveLevel(char * fic)
 	char						name[64];
 	long nb_inter		=		GetNumberInterWithOutScriptLoadForLevel(CURRENTLEVEL); // Without Player
 	unsigned char * dat	=		NULL;
-	unsigned long siz	=		255;
+	unsigned siz	=		255;
 	long pos			=		0;
 	unsigned long	handle;
 	long bcount;
@@ -385,7 +384,8 @@ long DanaeSaveLevel(char * fic)
 	dlh.angle_edit.g = player.angle.g;
 	dlh.lighting = FALSE; // MUST BE FALSE !!!!
 
-	_time32(&dlh.time);
+//	todo w32 api
+//	_time32(&dlh.time);
 
 	GetUserName(dlh.lastuser, &siz);
 	memcpy(dat, &dlh, sizeof(DANAE_LS_HEADER));
@@ -605,7 +605,8 @@ long DanaeSaveLevel(char * fic)
 	llh.nb_bkgpolys = BKG_CountPolys(ACTIVEBKG);
 	strcpy(llh.ident, "DANAE_LLH_FILE");
 
-	_time32(&llh.time);
+//	todo w32api
+//	_time32(&llh.time);
 
 	GetUserName(llh.lastuser, &siz);
 
@@ -744,7 +745,7 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, char * dir)
 		if ((fic = fopen(dfile, "w")) != NULL)
 		{
 			char name[256];
-			unsigned long num = 255;
+			unsigned num = 255;
 			fprintf(fic, "Object   : %s%04d\n", temp, io->ident);
 			fprintf(fic, "_______________________________\n\n");
 			GetUserName(name, &num);
@@ -782,7 +783,7 @@ void LogDirCreation(char * dir)
 		if ((fic = fopen(dfile, "a+")) != NULL)
 		{
 			char name[256];
-			unsigned long num = 255;
+			unsigned num = 255;
 			GetUserName(name, &num);
 			GetDate(&hdt);
 			fprintf(fic, "%02d/%02d/%4d %2dh%02d %s  %s\n", hdt.days, hdt.months, hdt.years, hdt.hours, hdt.mins, dir, name);
@@ -807,7 +808,7 @@ void LogDirDestruction(char * dir)
 		if ((fic = fopen(dfile, "a+")) != NULL)
 		{
 			char name[256];
-			unsigned long num = 255;
+			unsigned num = 255;
 			GetUserName(name, &num);
 			GetDate(&hdt);
 			fprintf(fic, "%02d/%02d/%4d %2dh%02d DESTROYED %s  %s\n", hdt.days, hdt.months, hdt.years, hdt.hours, hdt.mins, dir, name);
@@ -878,12 +879,13 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 			strcpy(temp, io->filename);
 			SetExt(temp, "ASL");
 
-			if ((fic = _open(temp, _O_WRONLY | _O_TRUNC  | _O_CREAT | _O_BINARY, _S_IWRITE)) != -1)
-			{
-				_write(fic, io->script.data, strlen(io->script.data));
-				_close(fic);
-			}
-			else ShowPopup("Unable To Save...");
+//			todo win32api
+//			if ((fic = _open(temp, _O_WRONLY | _O_TRUNC  | _O_CREAT | _O_BINARY, _S_IWRITE)) != -1)
+//			{
+//				_write(fic, io->script.data, strlen(io->script.data));
+//				_close(fic);
+//			}
+//			else ShowPopup("Unable To Save...");
 
 			ARX_SCRIPT_ComputeShortcuts(&io->script);
 			break;
@@ -899,12 +901,13 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 
 				if (DirectoryExist(temp3))
 				{
-					if ((fic = _open(temp, _O_WRONLY | _O_TRUNC  | _O_CREAT | _O_BINARY, _S_IWRITE)) != -1)
-					{
-						_write(fic, io->over_script.data, strlen(io->over_script.data));
-						_close(fic);
-					}
-					else ShowPopup("Unable To Save...");
+//					todo win32api
+//					if ((fic = _open(temp, _O_WRONLY | _O_TRUNC  | _O_CREAT | _O_BINARY, _S_IWRITE)) != -1)
+//					{
+//						_write(fic, io->over_script.data, strlen(io->over_script.data));
+//						_close(fic);
+//					}
+//					else ShowPopup("Unable To Save...");
 				}
 				else ShowPopup("Local DIR don't Exists...");
 			}
@@ -1064,6 +1067,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, char * fic)
 	char temp[512];
 	EERIE_3D trans;
 	unsigned char * dat = NULL;
+	float increment = 0;
 
 	long pos = 0;
 	long i;
@@ -1230,7 +1234,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, char * fic)
 
 	ShowCurLoadInfo("Loading Interactive Objects");
 
-	float increment = 0.f;
+
 
 	if (dlh.nb_inter > 0)
 	{

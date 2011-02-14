@@ -74,21 +74,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Text.h"
 #include "ARX_Time.h"
 
-#include "EERIEUtil.h"
-#include "EERIEClothes.h"
-#include "EERIELight.h"
-#include "EERIETexture.h"
+#include <EERIEUtil.h>
+#include <EERIEClothes.h>
+#include <EERIELight.h>
+#include <EERIETexture.h>
 
-#include "HERMESMain.h"
-#include "EERIEMath.h"
+#include <HERMESMain.h>
+#include <EERIEMath.h>
 
-#include <cstdio>
-#include <windows.h>
-#include <direct.h>
-#include <CommDlg.h>
+#include <stdio.h>
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+//todo baaad
+# define GWL_HINSTANCE       (-6)
+# define GWL_WNDPROC         (-4)
 
 extern long CURRENTSNAPNUM;
 extern long SnapShotMode;
@@ -1895,7 +1893,7 @@ BOOL CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					char tteexx[512];
 					strcpy(tteexx, Project.workingdir);
 					strcat(tteexx, "GRAPH\\LEVELS\\");
-					_chdir(tteexx);
+					chdir(tteexx);
 
 					thWnd = GetDlgItem(hWnd, IDC_TEXTUREPRECISION);
 					val = SendMessage(thWnd, TBM_GETPOS, TRUE, 0);

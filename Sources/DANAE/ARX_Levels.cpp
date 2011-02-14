@@ -54,7 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include "ARX_LEVELS.h"
+#include <vector>
+#include "ARX_Levels.h"
 #include "DanaeSaveLoad.h"
 #include "time.h"
 #include "ARX_Paths.h"
@@ -68,10 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEPathfinder.h"
 #include "EERIECollisionSpheres.h"
 
-#include <cstdio>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+#include <stdio.h>
 
 extern long LOAD_N_DONT_ERASE;
 extern long DONT_LOAD_SCENE;

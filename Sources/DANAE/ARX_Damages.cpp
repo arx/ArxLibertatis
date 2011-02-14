@@ -54,14 +54,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+#include <stdio.h>
+#include <stdlib.h>
 
 #include "ARX_Damages.h"
 #include "HERMESMain.h"
 
-#include "EERIEpoly.h"
+#include "EERIEPoly.h"
 #include "EERIELinkedObj.h"
 #include "EERIELight.h"
-#include "EERIEDRAW.h"
+#include "EERIEDraw.h"
 #include "EERIEPoly.h"
 
 #include "ARX_Player.h"
@@ -73,14 +75,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Equipment.h"
 #include "ARX_Interface.h"
 #include "ARX_Paths.h"
-#include "ARX_script.h"
-#include "ARX_time.h"
-
-#include <cstdio>
-#include <cstdlib>
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+#include "ARX_Script.h"
+#include "ARX_Time.h"
 
 extern long REFUSE_GAME_RETURN;
 
@@ -129,68 +125,68 @@ extern TextureContainer * bloodsplat[6];
 void ARX_DAMAGES_SCREEN_SPLATS_Add(EERIE_3D * pos, float dmgs)
 {
 	return;
-	//long j = ARX_PARTICLES_GetFree();
+	long j = ARX_PARTICLES_GetFree();
 
-	//if ((j != -1) && (!ARXPausedTimer))
-	//{
-	//	D3DCOLOR col = inter.iobj[0]->_npcdata->blood_color;
-	//	D3DTLVERTEX in, out;
-	//	in.sx = pos->x;
-	//	in.sy = pos->y;
-	//	in.sz = pos->z;
-	//	EERIETreatPoint(&in, &out);
-
-
-	//	if (out.sx < 0)
-	//		out.sx = 0;
-	//	else if (out.sx > DANAESIZX)
-	//		out.sx = ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZX);
+	if ((j != -1) && (!ARXPausedTimer))
+	{
+		D3DCOLOR col = inter.iobj[0]->_npcdata->blood_color;
+		D3DTLVERTEX in, out;
+		in.sx = pos->x;
+		in.sy = pos->y;
+		in.sz = pos->z;
+		EERIETreatPoint(&in, &out);
 
 
-
-
-	//	if (out.sy < 0)
-	//		out.sy = 0;
-	//	else if (out.sy > DANAESIZY)
-	//		out.sy = ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZY);
+		if (out.sx < 0)
+			out.sx = 0;
+		else if (out.sx > DANAESIZX)
+			out.sx = ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZX);
 
 
 
-	//	float power;
-	//	power = (dmgs * DIV60) + 0.9f;
-	//	float r, g, b;
-	//	r = (float)((long)((col >> 16) & 255)) * DIV255;
-	//	g = (float)((long)((col >> 8) & 255)) * DIV255;
-	//	b = (float)((long)((col) & 255)) * DIV255;
-	//	ParticleCount++;
-	//	PARTICLE_DEF * pd = &particle[j];
-	//	pd->special			=	PARTICLE_SUB2 | SUBSTRACT;
-	//	pd->exist			=	TRUE;
-	//	pd->zdec			=	0;
-	//	pd->ov.x			=	out.sx;
-	//	pd->ov.y			=	out.sy;
-	//	pd->ov.z			=	0.0000001f;
-	//	pd->move.x			=	0.f;
-	//	pd->move.y			=	0.f;
-	//	pd->move.z			=	0.f;
-	//	pd->scale.x			=	1.8f;
-	//	pd->scale.y			=	1.8f;
-	//	pd->scale.z			=	1.f;
-	//	pd->timcreation		=	lARXTime;
-	//	pd->tolive			=	1800 + (unsigned long)(rnd() * 400.f);
-	//	long num;
-	//	F2L((float)(rnd() * 6.f), &num);
 
-	//	if (num < 0) num = 0;
-	//	else if (num > 5) num = 5;
+		if (out.sy < 0)
+			out.sy = 0;
+		else if (out.sy > DANAESIZY)
+			out.sy = ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZY);
 
-	//	pd->tc = bloodsplat[num];
-	//	pd->r = r;
-	//	pd->g = g;
-	//	pd->b = b;
-	//	pd->siz = 3.5f * power * 40 * Xratio;
-	//	pd->type = PARTICLE_2D;
-	//}
+
+
+		float power;
+		power = (dmgs * DIV60) + 0.9f;
+		float r, g, b;
+		r = (float)((long)((col >> 16) & 255)) * DIV255;
+		g = (float)((long)((col >> 8) & 255)) * DIV255;
+		b = (float)((long)((col) & 255)) * DIV255;
+		ParticleCount++;
+		PARTICLE_DEF * pd = &particle[j];
+		pd->special			=	PARTICLE_SUB2 | SUBSTRACT;
+		pd->exist			=	TRUE;
+		pd->zdec			=	0;
+		pd->ov.x			=	out.sx;
+		pd->ov.y			=	out.sy;
+		pd->ov.z			=	0.0000001f;
+		pd->move.x			=	0.f;
+		pd->move.y			=	0.f;
+		pd->move.z			=	0.f;
+		pd->scale.x			=	1.8f;
+		pd->scale.y			=	1.8f;
+		pd->scale.z			=	1.f;
+		pd->timcreation		=	lARXTime;
+		pd->tolive			=	1800 + (unsigned long)(rnd() * 400.f);
+		long num;
+		F2L((float)(rnd() * 6.f), &num);
+
+		if (num < 0) num = 0;
+		else if (num > 5) num = 5;
+
+		pd->tc = bloodsplat[num];
+		pd->r = r;
+		pd->g = g;
+		pd->b = b;
+		pd->siz = 3.5f * power * 40 * Xratio;
+		pd->type = PARTICLE_2D;
+	}
 }
 
 void ARX_DAMAGE_Reset_Blood_Info()
@@ -790,7 +786,7 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, long flags, E
 		        && !(flags & (DAMAGE_TYPE_FIRE | DAMAGE_TYPE_COLD)))
 		{
 			damagesdone -= player.Full_resist_magic * DIV100 * damagesdone;
-			damagesdone = max(0, damagesdone);
+			damagesdone = max(0.0f, damagesdone);
 		}
 
 		return damagesdone;
@@ -847,7 +843,7 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, long flags, E
 			        && !(flags & (DAMAGE_TYPE_FIRE | DAMAGE_TYPE_COLD)))
 			{
 				damagesdone -= io_target->_npcdata->resist_magic * DIV100 * damagesdone;
-				damagesdone = max(0, damagesdone);
+				damagesdone = max(0.0f, damagesdone);
 			}
 
 			return damagesdone;
@@ -1382,7 +1378,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 									   )
 									{
 										dmg -= player.Full_resist_magic * DIV100 * dmg;
-										dmg = max(0, dmg);
+										dmg = max(0.0f, dmg);
 									}
 
 									if (damages[j].type & DAMAGE_TYPE_FIRE)
@@ -1426,7 +1422,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 									   )
 									{
 										dmg -= inter.iobj[i]->_npcdata->resist_magic * DIV100 * dmg;
-										dmg = max(0, dmg);
+										dmg = max(0.0f, dmg);
 									}
 
 									if (damages[j].type & DAMAGE_TYPE_COLD)
