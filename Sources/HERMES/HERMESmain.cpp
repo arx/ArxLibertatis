@@ -60,10 +60,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <shlobj.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include <io.h>
-#include <ctime>
-#include <direct.h>			// _getcwd
-#include "HERMESmain.h"
+//#include <io.h>
+#include <time.h>
+//#include <direct.h>			// _getcwd
+#include "HERMESMain.h"
 #include "HERMESNet.h"
 
 
@@ -456,8 +456,7 @@ long HERMES_CreateFileCheck(const char * name, char * scheck, const long & size,
 
 	if (!GetFileAttributesEx(name, GetFileExInfoStandard, &attrib)) return true;
 
-	file = fopen(name, "rb");
-	if (!file) return true;
+	if (!(file = fopen(name, "rb"))) return true;
 
 	fseek(file, 0, SEEK_END);
 

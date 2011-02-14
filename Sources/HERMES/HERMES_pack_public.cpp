@@ -47,9 +47,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 
 #include "HERMES_pack_public.h"
+#include <math.h>
 
-#include <algorithm>
-
+using std::min;
+using std::max;
 
 #define FINAL_COMMERCIAL_GAME
 //#define FINAL_COMMERCIAL_DEMO
@@ -235,9 +236,9 @@ static unsigned int ReadData(char * Buff, unsigned int * Size, void * Param)
 static void WriteData(char * Buff, unsigned int * Size, void * Param)
 {
 	PAK_PARAM * pPP = (PAK_PARAM *) Param;
+	PAK_PARAM * pPP = (PAK_PARAM *) Param;
 
 	ARX_CHECK_NOT_NEG(pPP->lSize);
-	long lSize = std::min(ARX_CAST_ULONG(pPP->lSize), ARX_CAST_ULONG(*Size));
 
 	memcpy((void *) pPP->mem, (const void *) Buff, lSize);
 	pPP->mem   += lSize;

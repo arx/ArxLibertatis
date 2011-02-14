@@ -24,9 +24,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 #include "HERMES_hachage.h"
 
-
-
-
 //-----------------------------------------------------------------------------
 CHachageString::CHachageString(int _iSize)
 {
@@ -62,11 +59,13 @@ CHachageString::~CHachageString()
 //-----------------------------------------------------------------------------
 bool CHachageString::AddString(char * _lpszText, void * _pMem)
 {
-	char * lpszTextLow = _strlwr(_lpszText);
+	//	todo string;
+	char * lpszTextLow = _lpszText;
+//	char * lpszTextLow = strlwr(_lpszText);
 
 	if (iFill >= iSize * 0.75)
 	{
-		//TO DO: recrée toute la table!!!!
+		//TO DO: recrï¿½e toute la table!!!!
 		iSize <<= 1;
 		iMask = iSize - 1;
 		tTab = (T_HACHAGE_DATAS *)realloc(tTab, iSize * sizeof(T_HACHAGE_DATAS));
@@ -104,7 +103,9 @@ bool CHachageString::AddString(char * _lpszText, void * _pMem)
 
 void * CHachageString::GetPtrWithString(char * _lpszText)
 {
-	char * lpszTextLow = _strlwr(_lpszText);
+//	todo string;
+	char * lpszTextLow = _lpszText;
+//	char * lpszTextLow = _strlwr(_lpszText);
 
 	int iKey = GetKey(lpszTextLow);
 	int	iH1 = FuncH1(iKey);

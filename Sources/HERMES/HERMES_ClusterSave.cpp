@@ -22,13 +22,10 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+#include <vector>
+#include <windows.h>
 #include "HERMES_ClusterSave.h"
-#include "windows.h"
 #include "HERMES_hachage.h"
-
-
-
-
 
 //------------------------------------------------------------------------
 CCluster::CCluster(int _iTaille)
