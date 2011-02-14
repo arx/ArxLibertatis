@@ -49,6 +49,39 @@ namespace ATHENA
 		IS_TOOFAR    = 0x00000004
 	};
 
+	static aalError alSourcePlayLoop(ALuint _source, ALint loop_flag)
+	{
+		ALint val;
+		ALint error;
+		alGetError();
+		alGetSourcei(_source, AL_SOURCE_STATE, &val);
+		if ((error = alGetError()) != AL_NO_ERROR) {
+			printf("could not get source state: 0x%x\n", error);
+			return AAL_ERROR_SYSTEM;
+		}
+		alSourcei(_source, AL_LOOPING, loop_flag);
+		if ((error = alGetError()) != AL_NO_ERROR) {
+			printf("could not set loop_flag: 0x%x\n", error);
+			return AAL_ERROR_SYSTEM;
+		}
+
+		if (val == AL_STOPPED || val == AL_INITIAL || val == AL_PAUSED) {
+			printf("gonna play\n");
+			alSourcePlay(_source);
+			if ((error = alGetError()) != AL_NO_ERROR) {
+				printf("could not play: 0x%x\n", error);
+				return AAL_ERROR_SYSTEM;
+			}
+			return AAL_OK;
+		} else if(val == AL_PLAYING) {
+			return AAL_OK;
+		} else {
+			printf("WTF? 0x%x\n", val);
+			return AAL_ERROR;
+		}
+			
+	}
+
 	static aalVoid InstanceDebugLog(Instance * instance, const char * _text)
 	{
 		char text[256];
@@ -169,6 +202,7 @@ namespace ATHENA
 		}
 		printf("before generating source\n");
 		alGenSources(1, source);
+		alSourcei(source[0], AL_LOOPING, AL_FALSE);
 		if (alGetError() != AL_NO_ERROR) {
 			printf("alGenSources\n");
 			exit(0);
@@ -326,8 +360,10 @@ namespace ATHENA
 
 		void *buffer_data = malloc(size);
 		stream = CreateStream(sample->name);
+		stream->SetPosition(0);
 		if(buffer_data) {
 			stream->Read(buffer_data, size, write);
+			printf("size: %d write: %d\n", size, write);
 			alBufferData(buffer[0], alformat, buffer_data, size, sample->format.frequency);
 			error = alGetError();
 			if (error != AL_NO_ERROR) {
@@ -338,6 +374,8 @@ namespace ATHENA
 		} else {
 			return AAL_ERROR_SYSTEM;
 		}
+		DeleteStream(stream);
+		stream = NULL;
 		// buffer[0] = instance->buffer[0];
 		printf("generating new source\n");
 		alGenSources(1, source);
@@ -418,6 +456,8 @@ namespace ATHENA
 
 		// 	lpdsb->Release(), lpdsb = NULL;
 		// }
+
+		alSourceStop(source[0]);
 
 		if (alIsSource(source[0]))
 			alDeleteSources(1, source);
@@ -765,10 +805,7 @@ namespace ATHENA
 			else loop = 0xffffffff;
 
 			//lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0);
-			// FIXME -- can only toggle looping, no way to set number of repeats
-			//alSourcePlay(source[0]);
-			printf("is playing\n");
-
+			alSourcePlayLoop(source[0], loop || stream ? AL_TRUE : AL_FALSE);
 			InstanceDebugLog(this, "QUEUED");
 
 			return AAL_OK;
@@ -830,7 +867,7 @@ namespace ATHENA
 
 		int error;
 		alGetError(); // Clear error
-		alSourcePlay(source[0]);
+		alSourcePlayLoop(source[0], loop || stream ? AL_TRUE : AL_FALSE);
 		if ((error = alGetError()) != AL_NO_ERROR) {
 			printf("error = 0x%x, is source %d\n", error, alIsSource(source[0]));
 			exit(0);
@@ -888,7 +925,7 @@ namespace ATHENA
 
 		// if (lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0))
 		// 	return AAL_ERROR_SYSTEM;
-		alSourcePlay(source[0]);
+		alSourcePlayLoop(source[0], loop || stream ? AL_TRUE : AL_FALSE);
 		if (alGetError() != AL_NO_ERROR)
 			return AAL_ERROR_SYSTEM;
 
@@ -945,7 +982,7 @@ namespace ATHENA
 			//lpdsb->Play(0, 0, loop || stream ? DSBPLAY_LOOPING : 0);
 			int error;
 			alGetError();
-			alSourcePlay(source[0]);
+			alSourcePlayLoop(source[0], loop || stream ? AL_TRUE : AL_FALSE);
 			if ((error = alGetError()) != AL_NO_ERROR) {
 				printf("error: 0x%x\n", error);
 				exit(0);
@@ -1061,10 +1098,11 @@ namespace ATHENA
 		{
 			if (loop)
 			{
+				printf("looping\n");
 				InstanceDebugLog(this, "LOOPED");
 
 				if (!--loop && !stream) {
-					alSourcePlay(source[0]);
+					alSourcePlayLoop(source[0], AL_FALSE);
 					int error;
 					if ((error = alGetError()) != AL_NO_ERROR) {
 						printf("error: 0x%x\n", error);
