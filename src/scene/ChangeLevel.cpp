@@ -163,31 +163,6 @@ ARX_CHANGELEVEL_VARIABLE_SAVE 	*	index_variable = NULL;
 ARX_CHANGELEVEL_INVENTORY_DATA_SAVE ** _Gaids = NULL;
 
 
-
-
-char * StdBuffer = NULL;
-long StdBuffer_size = 0;
-char * GetStdBuffer(long size)
-{
-	if (size > StdBuffer_size)
-	{
-		StdBuffer = (char *)realloc(StdBuffer, size);
-		StdBuffer_size = size;
-	}
-
-	return(StdBuffer);
-}
-void FreeStdBuffer()
-{
-	if (StdBuffer)
-		free(StdBuffer);
-
-	StdBuffer = NULL;
-	StdBuffer_size = 0;
-}
-
-
-
 extern long ARX_CONVERSATION;
 extern HANDLE LIGHTTHREAD;
 extern INTERACTIVE_OBJ * CAMERACONTROLLER;
@@ -196,15 +171,7 @@ long CURRENT_GAME_INSTANCE = -1;
 char GameSavePath[256];
 extern char LOCAL_SAVENAME[64];
  
- 
- 
- 
- 
- 
- 
- 
- 
- 
+
 void ARX_GAMESAVE_MakePath()
 {
 	sprintf(GameSavePath, "Save%s\\", LOCAL_SAVENAME);
@@ -470,8 +437,6 @@ void ARX_CHANGELEVEL_Change( const std::string& level, const std::string& target
 	LogDebug << "Before ARX_CHANGELEVEL_PopLevel";
 	ARX_CHANGELEVEL_PopLevel(num, 1);
 	LogDebug << "After  ARX_CHANGELEVEL_PopLevel";
-
-	FreeStdBuffer();
 
 	// Now restore player pos to destination
 	long t = GetTargetByNameTarget(target);
@@ -3554,7 +3519,6 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 
 		if (ARX_CHANGELEVEL_Pop_Index(&asi, instance) != 1)
 		{
-			FreeStdBuffer();
 
 			LogError << "Cannot Load Index data";
 
@@ -3581,7 +3545,6 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 
 		if (asi.version != ARX_GAMESAVE_VERSION)
 		{
-			FreeStdBuffer();
 			LogError << "Invalid Save Version...";
 			ARX_TIME_UnPause();
 
@@ -3616,7 +3579,6 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 
 	if (ARX_CHANGELEVEL_Pop_Level(&asi, instance, FirstTime) != 1)
 	{
-		FreeStdBuffer();
 
 		LogError << "Cannot Load Level data";
 
@@ -3670,7 +3632,6 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 
 		if (ARX_CHANGELEVEL_PopAllIO(&asi) != 1)
 		{
-			FreeStdBuffer();
 
 			LogError << "Cannot Load IO data";
 
@@ -3702,7 +3663,6 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 
 	if (ARX_CHANGELEVEL_Pop_Player(&asi, &asp) != 1)
 	{
-		FreeStdBuffer();
 
 		LogError << "Cannot Load Player data";
 
@@ -3811,7 +3771,6 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 	FORBID_SCRIPT_IO_CREATION = 0;
 
 	NO_TIME_INIT = 1;
-	FreeStdBuffer();
 	LogDebug << "After  Memory Release";
 
 	LogDebug << "Before SaveBlock Release";
@@ -4143,7 +4102,6 @@ long ARX_CHANGELEVEL_Load(long instance)
 		CURRENTLEVEL				=	pld.level;
 		ARX_CHANGELEVEL_DesiredTime	=	fPldTime;
 		ARX_CHANGELEVEL_PopLevel(pld.level, 0);
-		FreeStdBuffer();
 		ARX_TIME_Force_Time_Restore(fPldTime);
 		NO_TIME_INIT				=	1;
 		FORCE_TIME_RESTORE			=	fPldTime;
