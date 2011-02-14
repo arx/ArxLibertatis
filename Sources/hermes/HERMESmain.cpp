@@ -59,7 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <fcntl.h>
 #include <sys/stat.h>
-#include <time.h>		// _getcwd
+#include <time.h>
 #include "HERMESMain.h"
 #include "HERMESNet.h"
 #include "ARX_Casts.h"
@@ -169,38 +169,41 @@ again:
 	strcpy(to, temp);
 }
 
-long KillAllDirectory(char * path) {/* TODO
-	long idx;
-	struct _finddata_t fl;
+long KillAllDirectory(char * path) {
+	
+	WIN32_FIND_DATA FileInformation;             // File information
+	
+	HANDLE idx;
+	WIN32_FIND_DATA fl;
 	char pathh[512];
 	sprintf(pathh, "%s*.*", path);
-
-	if ((idx = _findfirst(pathh, &fl)) != -1)
-{
+	
+	if ((idx = FindFirstFile(pathh, &fl)) != -1)
+	{
 		do
 		{
-			if (fl.name[0] != '.')
+			if (fl.cFileName[0] != '.')
 			{
-				if (fl.attrib & _A_SUBDIR)
+				if (fl.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 				{
-					sprintf(pathh, "%s%s\\", path, fl.name);
+					sprintf(pathh, "%s%s\\", path, fl.cFileName);
 					KillAllDirectory(pathh);
 					RemoveDirectory(pathh);
 				}
 				else
 				{
-					sprintf(pathh, "%s%s", path, fl.name);
+					sprintf(pathh, "%s%s", path, fl.cFileName);
 					DeleteFile(pathh);
 				}
 			}
 
 		}
-		while (_findnext(idx, &fl) != -1);
+		while (FindNextFile(idx, &fl) != -1);
 
-		_findclose(idx);
+		FindClose(idx);
 	}
 
-	RemoveDirectory(path);*/
+	RemoveDirectory(path);
 	return 1;
 }
 
@@ -517,7 +520,6 @@ char _dir[256];
 char _name[256];
 char _ext[256];
 
-// todo: path stuff
 char * GetName(char * str)
 {
 	//_splitpath(str, _drv, _dir, _name, _ext); TODO
@@ -964,6 +966,7 @@ bool HERMESFolderSelector(char * file_name, char * title)
 	}*/ return false;
 }
 BOOL HERMES_WFSelectorCommon(PSTR pstrFileName, PSTR pstrTitleName, char * filter, long flag, long flag_operation, long max_car, HWND hWnd)
+{/* TODO
 	LONG	value;
 	char	cwd[MAX_PATH];
 
@@ -973,7 +976,7 @@ BOOL HERMES_WFSelectorCommon(PSTR pstrFileName, PSTR pstrTitleName, char * filte
 	ofn.nMaxCustFilter		= 0 ;
 	ofn.nFilterIndex		= 0 ;
 	ofn.lpstrFileTitle		= NULL ;
-	ofn.nMaxFileTitle		= _MAX_FNAME + _MAX_EXT ;
+	ofn.nMaxFileTitle		= _MAX_FNAME + MAX_PATH ;
 	ofn.nFileOffset		= 0 ;
 	ofn.nFileExtension		= 0 ;
 	ofn.lpstrDefExt		= "txt" ;
@@ -1000,7 +1003,7 @@ BOOL HERMES_WFSelectorCommon(PSTR pstrFileName, PSTR pstrTitleName, char * filte
 		value = GetSaveFileName(&ofn);
 	}
 
-	return value;
+	return value;*/ return false;
 }
 
 int HERMESFileSelectorOpen(PSTR pstrFileName, PSTR pstrTitleName, char * filter, HWND hWnd)
