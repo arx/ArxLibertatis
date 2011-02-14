@@ -150,7 +150,7 @@ bool SaveBlock::loadFileTable() {
 	if(FileRead(handle, &fatOffset, 4) != 4) {
 		return false;
 	}
-	LogDebug << "FAT offset is " << fatOffset;
+	//LogDebug << "FAT offset is " << fatOffset;
 	if(FileSeek(handle, fatOffset + 4, SEEK_SET) != fatOffset + 4) {
 		LogError << "cannot seek to FAT";
 		return false;
@@ -169,7 +169,7 @@ bool SaveBlock::loadFileTable() {
 		return false;
 	}
 	files.reserve(nFiles);
-	LogDebug << "number of files is " << nFiles;
+	//LogDebug << "number of files is " << nFiles;
 	
 	while(nFiles--) {
 		
@@ -186,7 +186,7 @@ bool SaveBlock::loadFileTable() {
 			name.push_back(c);
 		}
 		
-		LogDebug << "name: " << name;
+		//LogDebug << "name: " << name;
 		
 		files.push_back(File(name));
 		File & file = files.back();
@@ -201,7 +201,7 @@ bool SaveBlock::loadFileTable() {
 				return false;
 			}
 			file.uncompressedSize = uncompressedSize;
-			LogDebug << " uncompressed: " << uncompressedSize;
+			//LogDebug << " uncompressed: " << uncompressedSize;
 		}
 		
 		u32 nChunks;
@@ -211,15 +211,15 @@ bool SaveBlock::loadFileTable() {
 		if(version < SAV_VERSION_CURRENT && nChunks == 0) {
 			nChunks = 1;
 		}
-		LogDebug << " chunks: " << nChunks;
+		//LogDebug << " chunks: " << nChunks;
 		file.chunks.reserve(nChunks);
 		
 		if(version < SAV_VERSION_CURRENT) {
 			// ignored
 			FileSeek(handle, 4, SEEK_CUR);
 			file.comp = File::ImplodeCrypt;
-			LogDebug << " compression: " << SAV_COMP_IMPLODE << " = "
-			         << file.compressionName();
+			//LogDebug << " compression: " << SAV_COMP_IMPLODE << " = "
+			//         << file.compressionName();
 		} else {
 			u32 comp;
 			if(FileRead(handle, &comp, 4) != 4) {
@@ -231,7 +231,7 @@ bool SaveBlock::loadFileTable() {
 				case SAV_COMP_DEFLATE: file.comp = File::Deflate; break;
 				default: file.comp = File::Unknown;
 			}
-			LogDebug << " compression: " << comp << " = " << file.compressionName();
+			//LogDebug << " compression: " << comp << " = " << file.compressionName();
 		}
 		
 		size_t size = 0;
@@ -241,13 +241,13 @@ bool SaveBlock::loadFileTable() {
 			if(FileRead(handle, &chunkSize, 4) != 4) {
 				return false;
 			}
-			LogDebug << "  chunkSize: " << chunkSize;
+			//LogDebug << "  chunkSize: " << chunkSize;
 			size += chunkSize;
 			
 			u32 chunkOffset;
 			if(FileRead(handle, &chunkOffset, 4) != 4) {
 			}
-			LogDebug << "  chunkOffset: " << chunkOffset;
+			//LogDebug << "  chunkOffset: " << chunkOffset;
 			
 			file.chunks.push_back(FileChunk(chunkSize, chunkOffset));
 			
@@ -436,19 +436,19 @@ bool SaveBlock::save(const string & name, const char * data, size_t size) {
 		file = &files.back();
 	}
 	
-	
-	file->storedSize = size;
+	file->uncompressedSize = size;
 	
 	uLongf compressedSize = size;
 	char * compressed = new char[size];
 	const char * p;
 	if(compress2((Bytef*)compressed, &compressedSize, (const Bytef*)data, size, 1) == Z_OK) {
 		file->comp = File::Deflate;
-		file->uncompressedSize = compressedSize;
+		file->storedSize = compressedSize;
 		p = compressed;
 	} else {
+		LogWarning << "";
 		file->comp = File::None;
-		file->uncompressedSize = size;
+		file->storedSize = size;
 		p = data;
 	}
 	
