@@ -54,8 +54,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 // Nuky - 10-02-11 - cleaned whole file
 
+#include <fstream>
+#include <sstream>
+
 #include "ARX_Text.h"
 #include "Danae.h"
+
 
 #include "EERIEDraw.h"
 #include "HERMESMain.h"
@@ -68,22 +72,10 @@ _TCHAR * lpszFontIngame = NULL;
 
 _TCHAR tUText[8192];
 
-CARXTextManager * pTextManage = NULL;
 CARXTextManager * pTextManageFlyingOver = NULL;
 
 HMODULE hUnicodeLibrary = NULL;
 //-----------------------------------------------------------------------------
-HFONT InBookFont	= NULL;
-HFONT hFontRedist	= NULL;
-HFONT hFontMainMenu = NULL;
-HFONT hFontMenu		= NULL;
-HFONT hFontControls = NULL;
-HFONT hFontCredits	= NULL;
-
- 
-HFONT hFontInGame	= NULL;
-HFONT hFontInGameNote = NULL;
- 
 
 extern long CHINESE_VERSION;
 extern long EAST_EUROPE;

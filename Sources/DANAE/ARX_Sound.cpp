@@ -31,7 +31,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 ///////////////////////////////////////////////////////////////////////////////
 #include <stdio.h>
+
+#include <fstream>
 #include <list>
+#include <sstream>
+#include <vector>
 
 #include <ARX_Sound.h>
 #include <HERMESMain.h>
@@ -87,7 +91,7 @@ enum ParseIniFileEnum
 
 typedef unsigned long(* ParseIniFileCallback)(const char * lpszText);
 
-static enum PlayingAmbianceType
+enum PlayingAmbianceType
 {
 	PLAYING_AMBIANCE_MENU,
 	PLAYING_AMBIANCE_SCRIPT,
