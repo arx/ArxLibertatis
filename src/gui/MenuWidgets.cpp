@@ -2525,7 +2525,7 @@ bool Menu2_Render()
 							{
 								std::string tex = save_l[iI].name;
 								std::string tex2;
-								tex2.resize(tex);
+								tex2.resize(tex.size());
 								std::transform(tex.begin(), tex.end(), tex2.begin(), ::toupper);
 
 								if(!szMenuText.compare( tex2 ) || !szMenuText1.compare( tex2 ) )
