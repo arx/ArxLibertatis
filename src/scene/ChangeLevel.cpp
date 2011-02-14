@@ -68,6 +68,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 #include <algorithm>
 #include <iomanip>
+#include <cassert>
 
 #include "game/Damage.h"
 #include "game/Equipment.h"
@@ -575,7 +576,6 @@ extern GLOBAL_MODS desired;
 //--------------------------------------------------------------------------------------------
 long ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 {
-	unsigned char * dat;
 	long pos = 0;
 
 	asi->version				= ARX_GAMESAVE_VERSION;
@@ -624,7 +624,7 @@ long ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 
 retry:
 	;
-	dat = (unsigned char *)malloc(allocsize);
+	char * dat = new char[allocsize];
 
 	if (!dat)
 	{
@@ -689,25 +689,16 @@ retry:
 		}
 	}
 	
-	// TODO implode
-	size_t cpr_pos = pos;
-	char * compressed = (char*)dat; //implodeAlloc((char *)dat, pos, cpr_pos);
-
-	//for (int i = 0; i < cpr_pos; i += 2)
-	//	compressed[i] = ~compressed[i];
-
-	bool ret = _pSaveBlock->save(savefile, compressed, cpr_pos);
-	//delete[] compressed;
-	free(dat);
-	if (!ret) return -1;
-
-	return 1;
+	bool ret = _pSaveBlock->save(savefile, dat, pos);
+	
+	delete[] dat;
+	
+	return ret ? 1 : -1;
 }
 //--------------------------------------------------------------------------------------------
 long ARX_CHANGELEVEL_Push_Globals(long num)
 {
 	ARX_CHANGELEVEL_SAVE_GLOBALS acsg;
-	unsigned char * dat;
 	long pos = 0;
 
 	memset(&acsg, 0, sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS));
@@ -722,8 +713,7 @@ long ARX_CHANGELEVEL_Push_Globals(long num)
 					 + 48000;
 
 retry:
-	;
-	dat = (unsigned char *)malloc(allocsize);
+	char * dat = new char[allocsize];
 
 	if (!dat)
 	{
@@ -799,16 +789,10 @@ retry:
 		}
 	}
 	
-	// TODO implode
-	size_t cpr_pos = pos;
-	char * compressed = (char*)dat; //implodeAlloc((char *)dat, pos, cpr_pos);
-
-	//for (int i = 0; i < cpr_pos; i += 2)
-	//	compressed[i] = ~compressed[i];
-
-	_pSaveBlock->save(savefile, compressed, cpr_pos);
-	free(dat);
-	//delete[] compressed;
+	_pSaveBlock->save(savefile, dat, pos);
+	
+	delete[] dat;
+	
 	return 1;
 }
 //--------------------------------------------------------------------------------------------
@@ -834,7 +818,6 @@ long ARX_CHANGELEVEL_Push_Player(long num)
 {
 	ARX_CHANGELEVEL_PLAYER * asp;
 
-	unsigned char * dat;
 	long allocsize = sizeof(ARX_CHANGELEVEL_PLAYER) + Keyring_Number * sizeof(KEYRING_SLOT) + 48000;
 	allocsize += 80 * nb_PlayerQuest;
 	allocsize += sizeof(ARX_CHANGELEVEL_MAPMARKER_DATA) * Nb_Mapmarkers;
@@ -842,12 +825,12 @@ long ARX_CHANGELEVEL_Push_Player(long num)
 
 retry:
 	;
-	dat = (unsigned char *) malloc(allocsize);
+	char * dat = new char[allocsize];
 
-	if (!dat)
-	{
-		if (HERMES_Memory_Emergency_Out(allocsize, "ChangeLevel_PushPlayer"))
+	if(!dat) {
+		if(HERMES_Memory_Emergency_Out(allocsize, "ChangeLevel_PushPlayer")) {
 			goto retry;
+		}
 	}
 
 	asp = (ARX_CHANGELEVEL_PLAYER *)dat;
@@ -1035,22 +1018,11 @@ retry:
 	LastValidPlayerPos.x = asp->LAST_VALID_POS.x;
 	LastValidPlayerPos.y = asp->LAST_VALID_POS.y;
 	LastValidPlayerPos.z = asp->LAST_VALID_POS.z;
-
-
-	char savefile[256];
-	sprintf(savefile, "player.sav");
 	
-	// TODO implode
-	size_t cpr_pos = pos;
-	char * compressed = (char*)dat; //implodeAlloc((char *)dat, pos, cpr_pos);
-
-	//for (int i = 0; i < cpr_pos; i += 2)
-	//	compressed[i] = ~compressed[i];
-
-	_pSaveBlock->save(savefile, compressed, cpr_pos);
-	free(dat);
-	//delete[] compressed;
-
+	_pSaveBlock->save("player.sav", dat, pos);
+	
+	delete[] dat;
+	
 	for (int i = 1; i < inter.nbmax; i++)
 	{
 		if ((IsInPlayerInventory(inter.iobj[i]))
@@ -1144,10 +1116,6 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 	// Init Changelevel Main IO Save Structure
 	ARX_CHANGELEVEL_IO_SAVE ais;
 	memset(&ais, 0, sizeof(ARX_CHANGELEVEL_IO_SAVE));
-
-	// Main Buffer
-	unsigned char * dat	= NULL;
-	long pos			= 0;
 
 	// Store IO Data in Main IO Save Structure
 	ais.version			= ARX_GAMESAVE_VERSION;
@@ -1405,7 +1373,8 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 		+ 48000;
 
 	// Allocate Main Save Buffer
-	dat = (unsigned char *) malloc(allocsize);
+	char * dat = new char[allocsize];
+	long pos = 0;
 
 	if (!dat) HERMES_Memory_Emergency_Out();
 
@@ -1788,16 +1757,10 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 		LogError << "SaveBuffer Overflow " << pos << " >> " << allocsize;
 	}
 	
-	// TODO implode
-	size_t cpr_pos = pos;
-	char * compressed = (char*)dat; //implodeAlloc((char *)dat, pos, cpr_pos);
-
-	//for (int i = 0; i < cpr_pos; i += 2)
-	//	compressed[i] = ~compressed[i];
-
-	_pSaveBlock->save(savefile, compressed, cpr_pos);
-	free(dat);
-	//delete[] compressed;
+	_pSaveBlock->save(savefile, dat, pos);
+	
+	delete[] dat;
+	
 	return 1;
 }
 
@@ -3943,14 +3906,16 @@ long ARX_CHANGELEVEL_Set_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 {
 	char sfile[256];
 	sprintf(sfile, "%sGsave.sav", path.c_str());
+	
+	// TODO why use a global here?
+	assert(_pSaveBlock == NULL);
 	_pSaveBlock = new SaveBlock(sfile);
 
 	if (!_pSaveBlock->BeginSave()) return -1;
 
 	if (!DirectoryExist(path.c_str())) return -1;
 
-	unsigned char * dat;
-	dat = (unsigned char *) malloc(sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));
+	char * dat = new char[sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA)];
 
 	if (!dat) HERMES_Memory_Emergency_Out();
 
@@ -3959,21 +3924,14 @@ long ARX_CHANGELEVEL_Set_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 	char savefile[256];
 	sprintf(savefile, "pld.sav");
 	
-	// TODO implode
-	size_t cpr_pos = pos;
-	char * compressed = (char*)dat; //implodeAlloc((char *)dat, pos, cpr_pos);
-
-	//for (long i = 0; i < cpr_pos; i += 2)
-	//	compressed[i] = ~compressed[i];
-
-	_pSaveBlock->save(savefile, compressed, cpr_pos);
-	//delete[] compressed;
-
+	_pSaveBlock->save(savefile, dat, pos);
+	
+	delete[] dat;
+	
 	_pSaveBlock->flush();
 	delete _pSaveBlock;
-	_pSaveBlock = 0;
-
-	free(dat);
+	_pSaveBlock = NULL;
+	
 	return 1;
 }
 //------------------------------------------------------------------------------
