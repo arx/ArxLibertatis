@@ -26,13 +26,22 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/SaveBlock.h"
 
 #include <cstdlib>
+#include <cassert>
+
+#include <zlib.h>
 
 #include "io/Filesystem.h"
 #include "io/HashMap.h"
 #include "io/Logger.h"
+#include "io/Blast.h"
 
 const u32 SAV_VERSION_OLD = (1<<16) | 0;
-const u32 SAV_VERSION = SAV_VERSION_OLD + 1;
+const u32 SAV_VERSION_RELEASE = (1<<16) | 0;
+const u32 SAV_VERSION_CURRENT = (2<<16) | 0;
+
+const u32 SAV_COMP_NONE = 0;
+const u32 SAV_COMP_IMPLODE = 1;
+const u32 SAV_COMP_DEFLATE = 2;
 
 using std::string;
 using std::vector;
@@ -52,11 +61,20 @@ struct SaveBlock::File {
 	
 	typedef vector<FileChunk> ChunkList;
 	
-	string name;
-	size_t size;
-	ChunkList chunks;
+	enum Compression {
+		Unknown,
+		None,
+		ImplodeCrypt,
+		Deflate
+	};
 	
-	File(const string & _name, size_t _size = 0) : name(_name), size(_size), chunks() { };
+	string name;
+	size_t storedSize;
+	size_t uncompressedSize;
+	ChunkList chunks;
+	Compression comp;
+	
+	File(const string & _name) : name(_name), chunks() { };
 	
 };
 
@@ -100,6 +118,16 @@ bool SaveBlock::BeginRead() {
 		return false;
 	}
 	
+	size_t hashMapSize = 1;
+	while(hashMapSize < files.size()) {
+		hashMapSize <<= 1;
+	}
+	int iNbHacheTroisQuart = (hashMapSize * 3) / 4;
+	if(files.size() > iNbHacheTroisQuart) {
+		hashMapSize <<= 1;
+	}
+	hashMap = new HashMap(hashMapSize);
+	
 	for(FileList::iterator i = files.begin(); i != files.end(); ++i) {
 		hashMap->add(i->name, &*i);
 	}
@@ -119,28 +147,20 @@ bool SaveBlock::loadFileTable() {
 		return false;
 	}
 	
+	u32 version;
 	if(FileRead(handle, &version, 4) != 4) {
 		return false;
 	}
-	if(version !=  SAV_VERSION) {
-		LogDebug << "unexpected savegame version: " << version << " for " << savefile;
+	if(version != SAV_VERSION_CURRENT && version != SAV_VERSION_RELEASE) {
+		LogWarning << "unexpected savegame version: " << version << " for " << savefile;
 	}
 	
 	u32 nFiles;
 	if(FileRead(handle, &nFiles, 4) != 4) {
 		return false;
 	}
+	files.reserve(nFiles);
 	LogDebug << "number of files is " << nFiles;
-	
-	size_t hashMapSize = 1;
-	while(hashMapSize < nFiles) {
-		hashMapSize <<= 1;
-	}
-	int iNbHacheTroisQuart = (hashMapSize * 3) / 4;
-	if(nFiles > iNbHacheTroisQuart) {
-		hashMapSize <<= 1;
-	}
-	hashMap = new HashMap(hashMapSize);
 	
 	while(nFiles--) {
 		
@@ -160,8 +180,17 @@ bool SaveBlock::loadFileTable() {
 		files.push_back(File(name));
 		File & file = files.back();
 		
-		// ignore the size, calculate from chunks
-		FileSeek(handle, 4, SEEK_CUR);
+		if(version < SAV_VERSION_CURRENT) {
+			// ignore the size, calculate from chunks
+			FileSeek(handle, 4, SEEK_CUR);
+			file.uncompressedSize = (size_t)-1;
+		} else {
+			u32 uncompressedSize;
+			if(FileRead(handle, &uncompressedSize, 4) != 4) {
+				return false;
+			}
+			file.uncompressedSize = uncompressedSize;
+		}
 		
 		u32 nChunks;
 		if(FileRead(handle, &nChunks, 4) != 4) {
@@ -169,8 +198,22 @@ bool SaveBlock::loadFileTable() {
 		}
 		file.chunks.reserve(nChunks);
 		
-		// ignored
-		FileSeek(handle, 4, SEEK_CUR);
+		if(version < SAV_VERSION_CURRENT) {
+			// ignored
+			FileSeek(handle, 4, SEEK_CUR);
+			file.comp = File::ImplodeCrypt;
+		} else {
+			u32 comp;
+			if(FileRead(handle, &comp, 4) != 4) {
+				return false;
+			}
+			switch(comp) {
+				case SAV_COMP_NONE: file.comp = File::None; break;
+				case SAV_COMP_IMPLODE: file.comp = File::ImplodeCrypt; break;
+				case SAV_COMP_DEFLATE: file.comp = File::Deflate; break;
+				default: file.comp = File::Unknown;
+			}
+		}
 		
 		size_t size = 0;
 		while(nChunks--) {
@@ -189,13 +232,59 @@ bool SaveBlock::loadFileTable() {
 			
 		}
 		
-		file.size = size;
+		file.storedSize = size;
 	}
 	
-	// TODO shouldn't this be done when loading the FAT?
 	if(version == SAV_VERSION_OLD && !files.empty()) {
 		files.erase(files.begin());
 	}
+	
+}
+
+void SaveBlock::writeFileTable() {
+	
+	size_t fatOffset = totalSize;
+	FileSeek(handle, fatOffset + 4, SEEK_SET);
+	
+	FileWrite(handle, &SAV_VERSION_CURRENT, 4);
+	
+	u32 nFiles = files.size();
+	FileWrite(handle, &nFiles, 4);
+	
+	for(FileList::iterator i = files.begin(); i != files.end(); ++i) {
+		
+		FileWrite(handle, i->name.c_str(), i->name.length() + 1);
+		
+		u32 uncompressedSize = i->uncompressedSize;
+		FileWrite(handle, &uncompressedSize, 4);
+		
+		u32 nChunks = i->chunks.size();
+		FileWrite(handle, &nChunks, 4);
+		
+		u32 comp;
+		switch(i->comp) {
+			case File::None: comp = SAV_COMP_NONE; break;
+			case File::ImplodeCrypt: comp = SAV_COMP_IMPLODE; break;
+			case File::Deflate: comp = SAV_COMP_DEFLATE; break;
+			case File::Unknown: comp = (u32)-1; break;
+		}
+		FileWrite(handle, &comp, 4);
+		
+		for(File::ChunkList::iterator chunk = i->chunks.begin();
+		    chunk != i->chunks.end(); ++chunk) {
+			
+			u32 chunkSize = chunk->size;
+			FileWrite(handle, &chunk, 4);
+			
+			u32 chunkOffset = chunk->offset;
+			FileWrite(handle, &chunkOffset, 4);
+			
+		}
+		
+	}
+	
+	FileSeek(handle, 0, SEEK_SET);
+	FileWrite(handle, &fatOffset, 4);
 	
 }
 
@@ -233,50 +322,9 @@ bool SaveBlock::BeginSave() {
 	return true;
 }
 
-void SaveBlock::writeFileTable() {
+bool SaveBlock::flush() {
 	
-	size_t fatOffset = totalSize;
-	FileSeek(handle, fatOffset + 4, SEEK_SET);
-	
-	FileWrite(handle, &SAV_VERSION, 4);
-	
-	u32 nFiles = files.size();
-	FileWrite(handle, &nFiles, 4);
-	
-	for(FileList::iterator i = files.begin(); i != files.end(); ++i) {
-		
-		FileWrite(handle, i->name.c_str(), i->name.length() + 1);
-		
-		u32 size = i->size;
-		FileWrite(handle, &size, 4);
-		
-		u32 nChunks = i->chunks.size();
-		FileWrite(handle, &nChunks, 4);
-		
-		// TODO ok....
-		u32 entrySize = nChunks * (sizeof(u32) + sizeof(u32) + i->name.length() + 1 + 20);
-		FileWrite(handle, &entrySize, 4);
-		
-		for(File::ChunkList::iterator chunk = i->chunks.begin();
-		    chunk != i->chunks.end(); ++chunk) {
-			
-			u32 chunkSize = chunk->size;
-			FileWrite(handle, &chunk, 4);
-			
-			u32 chunkOffset = chunk->offset;
-			FileWrite(handle, &chunkOffset, 4);
-			
-		}
-		
-	}
-	
-	FileSeek(handle, 0, SEEK_SET);
-	FileWrite(handle, &fatOffset, 4);
-	
-}
-
-bool SaveBlock::EndSave(void) {
-	
+	// TODO why defragment every time?
 	if(!firstSave) {
 		return defragment();
 	}
@@ -302,7 +350,7 @@ bool SaveBlock::defragment() {
 	
 	for(FileList::iterator i = files.begin(); i != files.end(); ++i) {
 		
-		char * buf = new char[i->size];
+		char * buf = new char[i->storedSize];
 		char * p = buf;
 		
 		for(File::ChunkList::iterator chunk = i->chunks.begin();
@@ -312,15 +360,15 @@ bool SaveBlock::defragment() {
 			p += chunk->size;
 		}
 		
-		FileWrite(tempFile, buf, i->size);
+		FileWrite(tempFile, buf, i->storedSize);
 		
 		i->chunks.resize(1);
 		i->chunks.front().offset = totalSize;
-		i->chunks.front().size = i->size;
+		i->chunks.front().size = i->storedSize;
 		
 		delete[] buf;
 		
-		totalSize += i->size;
+		totalSize += i->storedSize;
 	}
 	
 	FileClose(handle);
@@ -350,6 +398,34 @@ SaveBlock::File * SaveBlock::getFile(const std::string & name) {
 	return NULL;
 }
 
+static bool deflateCompress(const char * src, size_t slen, char * dst, size_t & dlen) {
+	
+	int level = 1;
+	
+	z_stream strm;
+	
+	strm.zalloc = Z_NULL;
+	strm.zfree = Z_NULL;
+	strm.opaque = Z_NULL;
+	int ret = deflateInit(&strm, level);
+	if(ret != Z_OK) {
+		LogWarning << "cannot initialize zlib stream";
+		return false;
+	}
+	
+	strm.next_in = (Bytef*)const_cast<char*>(src);
+	strm.avail_in = slen;
+	strm.next_out = (Bytef*)dst;
+	strm.avail_out = dlen;
+	
+	ret = deflate(&strm, Z_FINISH);
+	assert(ret != Z_STREAM_ERROR);
+	
+	deflateEnd(&strm);
+	
+	return (ret == Z_STREAM_END);
+}
+
 bool SaveBlock::save(const string & name, const char * data, size_t size) {
 	
 	if(!handle) {
@@ -358,18 +434,25 @@ bool SaveBlock::save(const string & name, const char * data, size_t size) {
 	
 	File * file = getFile(name);
 	if(!file) {
-		files.push_back(File(name, size));
+		files.push_back(File(name));
 		file = &files.back();
-	} else {
-		file->size = size;
 	}
 	
-	// TODO implode
-	//implodeAlloc((char *)dat, pos, cpr_pos);
-	//for (long i = 0; i < cpr_pos; i += 2)
-	//	compressed[i] = ~compressed[i];
+	file->uncompressedSize = size;
+	file->storedSize = size;
 	
-	size_t remaining = size;
+	char * compressed = new char[size];
+	const char * p;
+	
+	if(deflateCompress(data, size, compressed, file->storedSize)) {
+		file->comp = File::Deflate;
+		p = compressed;
+	} else {
+		file->comp = File::None;
+		p = data;
+	}
+	
+	size_t remaining = file->storedSize;
 	
 	for(File::ChunkList::iterator i = file->chunks.begin();
 	    i != file->chunks.end() && remaining; ++i) {
@@ -380,8 +463,8 @@ bool SaveBlock::save(const string & name, const char * data, size_t size) {
 			i->size = remaining;
 		}
 		
-		FileWrite(handle, data, i->size);
-		data += i->size;
+		FileWrite(handle, p, i->size);
+		p += i->size;
 		remaining -= i->size;
 	}
 	
@@ -390,10 +473,39 @@ bool SaveBlock::save(const string & name, const char * data, size_t size) {
 	if(remaining) {
 		file->chunks.push_back(FileChunk(remaining, totalSize));
 		totalSize += remaining;
-		FileWrite(handle, data, remaining);
+		FileWrite(handle, p, remaining);
 	}
 	
+	delete[] compressed;
+	
 	return true;
+}
+
+static bool deflateDecompress(const char * src, size_t slen, char * dst, size_t dlen) {
+	
+	z_stream strm;
+	
+	strm.zalloc = Z_NULL;
+	strm.zfree = Z_NULL;
+	strm.opaque = Z_NULL;
+	
+	strm.next_in = (Bytef*)const_cast<char*>(src);;
+	strm.avail_in = slen;
+	strm.next_out = (Bytef*)dst;
+	strm.avail_out = dlen;
+	
+	int ret = inflateInit(&strm);
+	if(ret != Z_OK) {
+		LogWarning << "cannot initialize zlib stream";
+		return false;
+	}
+	
+	ret = inflate(&strm, Z_FINISH);
+	assert(ret != Z_STREAM_ERROR);
+	
+	inflateEnd(&strm);
+	
+	return (ret == Z_STREAM_END);
 }
 
 char * SaveBlock::load(const string & name, size_t & size) const {
@@ -404,7 +516,7 @@ char * SaveBlock::load(const string & name, size_t & size) const {
 		return NULL;
 	}
 	
-	char * buf = (char*)malloc(file->size);
+	char * buf = (char*)malloc(file->storedSize);
 	char * p = buf;
 	
 	for(File::ChunkList::const_iterator i = file->chunks.begin();
@@ -414,14 +526,51 @@ char * SaveBlock::load(const string & name, size_t & size) const {
 		p += i->size;
 	}
 	
-	size = file->size;
+	size = file->uncompressedSize;
 	
-	// TODO implode
-	//for (size_t i = 0; i < size; i += 2)
-	//	compressed[i] = ~compressed[i];
-	//dat = (unsigned char *)blastMemAlloc(compressed, ssize, size); 
-	
-	return buf;
+	switch(file->comp) {
+		
+		case File::None: {
+			return buf;
+		}
+		
+		case File::ImplodeCrypt: {
+			unsigned char * crypt = (unsigned char *)buf;
+			for(size_t i = 0; i < file->storedSize; i += 2) {
+				crypt[i] = ~crypt[i];
+			}
+			char * uncompressed = blastMemAlloc(buf, file->storedSize, size);
+			free(buf);
+			if(!uncompressed) {
+				LogError << "error decompressing " << name << " in " << savefile;
+				return NULL;
+			}
+			assert(file->uncompressedSize == (size_t)-1 || size == file->uncompressedSize);
+			return uncompressed;
+		}
+		
+		case File::Deflate: {
+			assert(file->uncompressedSize != (size_t)-1);
+			char * uncompressed = (char*)malloc(file->uncompressedSize);
+			if(!deflateDecompress(buf, file->storedSize, uncompressed, file->uncompressedSize)) {
+				LogError << "error decompressing " << name << " in " << savefile;
+				free(buf);
+				free(uncompressed);
+				size = 0;
+				return NULL;
+			}
+			size = file->uncompressedSize;
+			free(buf);
+			return uncompressed;
+		}
+		
+		default: {
+			LogError << "error decompressing " << name << " in " << savefile << ": unknown format";
+			free(buf);
+			return NULL;
+		}
+		
+	}
 }
 
 bool SaveBlock::hasFile(const string & name) const {

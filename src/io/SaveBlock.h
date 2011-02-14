@@ -45,7 +45,6 @@ private:
 	size_t totalSize;
 	FileList files;
 	bool firstSave;
-	u32 version;
 	HashMap * hashMap;
 	std::string savefile;
 	
@@ -60,7 +59,7 @@ public:
 	~SaveBlock();
 	
 	bool BeginSave();
-	bool EndSave();
+	bool flush();
 	bool save(const std::string & name, const char * data, size_t size);
 	
 	bool BeginRead();

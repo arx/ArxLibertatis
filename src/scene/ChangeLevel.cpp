@@ -538,7 +538,7 @@ long ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 		return -1;
 	}
 
-	if(!_pSaveBlock->EndSave()) {
+	if(!_pSaveBlock->flush()) {
 		LogError << "could not complete the save.";
 	}
 	
@@ -3969,7 +3969,7 @@ long ARX_CHANGELEVEL_Set_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 	_pSaveBlock->save(savefile, compressed, cpr_pos);
 	//delete[] compressed;
 
-	_pSaveBlock->EndSave();
+	_pSaveBlock->flush();
 	delete _pSaveBlock;
 	_pSaveBlock = 0;
 
