@@ -22,15 +22,14 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include "Athena_Types.h"
+#include <windows.h>
+#include <mmreg.h>
+#include <Athena_Types.h>
 #include "Athena_Codec_ADPCM.h"
 #include "Athena_FileIO.h"
 
-#include <windows.h>
-#include <mmreg.h>
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+
 
 
 namespace ATHENA

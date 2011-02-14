@@ -57,8 +57,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "hermes_pak.h"
 #include "hermesmain.h"
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+
+
 
 using namespace std;
 

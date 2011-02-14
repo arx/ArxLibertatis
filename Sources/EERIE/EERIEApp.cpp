@@ -55,6 +55,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+#include <stdio.h>
+#include <tchar.h>
 
 #include "EerieApp.h"
 #include "EERIEPoly.h"
@@ -72,12 +74,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "..\danae\danae_resource.h"
 
-#include <tchar.h>
-#include <algorithm>
-#include <cstdio>
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+
 
 //-----------------------------------------------------------------------------
 extern long USE_OLD_MOUSE_SYSTEM;
@@ -174,6 +172,10 @@ CD3DApplication::CD3DApplication()
 	zbuffer_max = 1.f;
 	zbuffer_max_div = 1.f;
 }
+
+
+extern long FINAL_COMMERCIAL_DEMO;
+extern long FINAL_COMMERCIAL_GAME;
 
 //*************************************************************************************
 // Create()

@@ -66,8 +66,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <commctrl.h>
 #include <d3d.h>
 //
-//#define _CRTDBG_MAP_ALLOC
-//#include <crtdbg.h>
+//
+//
 
 //-----------------------------------------------------------------------------
 #define HIDE_BACKGROUND 1

@@ -54,6 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include "TheoData.h"
 #include "EERIEobject.h"
 #include "EERIETypes.h"
 #include "EERIEMath.h"
@@ -64,17 +65,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIECollisionSpheres.h"
 #include "EERIELinkedObj.h"
 
+#include "HERMESMain.h"
+
 #include "Arx_sound.h"
 #include "ARX_Cedric.h"
 
-#include "HERMESMain.h"
 
-#include "TheoData.h"
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-
-using namespace std;
 
 long COMPUTE_PORTALS = 1;
 long USE_PORTALS = 3; 
@@ -1216,8 +1213,7 @@ retry10:
 					sprintf(path, "%s%s", dirr, fd.name);
 					long SizeAlloc = 0;
 
-					adr = (unsigned char *)PAK_FileLoadMalloc(path, &SizeAlloc);
-					if (adr)
+					if (adr = (unsigned char *)PAK_FileLoadMalloc(path, &SizeAlloc))
 					{
 						es->scenes[es->nb_scenes] = (EERIE_3DSCENE *)ScnToEerie(adr, SizeAlloc, path, TTE_NO_NDATA | TTE_NO_PDATA);
 						es->nb_scenes++;
@@ -1316,8 +1312,7 @@ retry1:
 				sprintf(path2, "%s%s", dirr, et->name);
 				long SizeAlloc = 0;
 
-				adr = (unsigned char *)PAK_FileLoadMalloc(path2, &SizeAlloc);
-				if (adr)
+				if (adr = (unsigned char *)PAK_FileLoadMalloc(path2, &SizeAlloc))
 				{
 					es->scenes[es->nb_scenes] = (EERIE_3DSCENE *)ScnToEerie(adr, SizeAlloc, path, TTE_NO_NDATA | TTE_NO_PDATA);
 					es->nb_scenes++;
@@ -2483,10 +2478,10 @@ void EERIEOBJECT_DeletePFaces(EERIE_3DOBJ * eobj)
 {
 	return;
 
-	//if (eobj->pfacelist) free(eobj->pfacelist);
+	if (eobj->pfacelist) free(eobj->pfacelist);
 
-	//eobj->pfacelist = NULL;
-	//eobj->nbpfaces = 0;
+	eobj->pfacelist = NULL;
+	eobj->nbpfaces = 0;
 }
 //-----------------------------------------------------------------------------------------------------
 bool Is_Svert(EERIE_PFACE * epf, long epi, EERIE_FACE * ef, long ei)
@@ -2571,10 +2566,10 @@ void EERIEOBJECT_AddFace(EERIE_3DOBJ * eobj, EERIE_FACE * face, long faceidx)
 void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj)
 {
 	return;
-	//EERIEOBJECT_DeletePFaces(eobj);
+	EERIEOBJECT_DeletePFaces(eobj);
 
-	//for (long i = 0; i < eobj->nbfaces; i++)
-	//	EERIEOBJECT_AddFace(eobj, &eobj->facelist[i], i);
+	for (long i = 0; i < eobj->nbfaces; i++)
+		EERIEOBJECT_AddFace(eobj, &eobj->facelist[i], i);
 }
 
 //-----------------------------------------------------------------------------------------------------

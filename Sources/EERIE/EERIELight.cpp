@@ -56,8 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Time.h"
 #include "ARX_Sound.h"
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+
+
 extern float GLOBAL_LIGHT_FACTOR;
 EERIE_LIGHT * GLight[MAX_LIGHTS];
 EERIE_LIGHT DynLight[MAX_DYNLIGHTS];

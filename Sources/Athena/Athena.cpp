@@ -55,8 +55,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <eax.h>
 #include <cmath>
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+
+
 
 //#include "console_public.h"
 //#pragma comment(lib, "Console DLL")

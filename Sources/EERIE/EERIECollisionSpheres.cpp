@@ -54,15 +54,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+#include <math.h>
 
 #include "EERIECollisionSpheres.h"
 #include "EERIEMath.h"
 #include "EERIEMeshTweak.h"
 
-#include <cmath>
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+
 
 void EERIE_COLLISION_Cylinder_Create(INTERACTIVE_OBJ * io)
 {

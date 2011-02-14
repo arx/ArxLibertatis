@@ -50,8 +50,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <algorithm>
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 
 #define FINAL_COMMERCIAL_GAME
 //#define FINAL_COMMERCIAL_DEMO

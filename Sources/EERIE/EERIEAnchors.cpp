@@ -40,18 +40,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "eerieapp.h"
 #include "EERIEPathfinder.h"
 #include "EERIEMath.h"
-
-#include "ARX_Text.h"
-
-#include "danae.h"
-
 #include "HermesMain.h"
-
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+#include "Danae.h"
+#include "ARX_Text.h"
 
 extern float MAX_ALLOWED_PER_SECOND;
 extern BOOL DIRECT_PATH;
+
+
+
 
 EERIEPOLY * ANCHOR_CheckInPolyPrecis(float x, float y, float z)
 {
@@ -928,26 +925,26 @@ bool AddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, EERIE
 	}
 
 	// avoid to recreate same anchor twice...
-	//if (0)
-	//	for (long k = 0; k < eb->nbanchors; k++)
-	//	{
-	//		_ANCHOR_DATA * ad = &eb->anchors[k];
+	if (0)
+		for (long k = 0; k < eb->nbanchors; k++)
+		{
+			_ANCHOR_DATA * ad = &eb->anchors[k];
 
-	//		if ((ad->pos.x == bestcyl.origin.x)
-	//		        &&	(ad->pos.y == bestcyl.origin.y)
-	//		        &&	(ad->pos.z == bestcyl.origin.z))
-	//		{
-	//			if (ad->radius >= bestcyl.radius)
-	//				return FALSE;
+			if ((ad->pos.x == bestcyl.origin.x)
+			        &&	(ad->pos.y == bestcyl.origin.y)
+			        &&	(ad->pos.z == bestcyl.origin.z))
+			{
+				if (ad->radius >= bestcyl.radius)
+					return FALSE;
 
-	//			if (ad->radius <= bestcyl.radius)
-	//			{
-	//				ad->height = bestcyl.height;
-	//				ad->radius = bestcyl.radius;
-	//				return FALSE;
-	//			}
-	//		}
-	//	}
+				if (ad->radius <= bestcyl.radius)
+				{
+					ad->height = bestcyl.height;
+					ad->radius = bestcyl.radius;
+					return FALSE;
+				}
+			}
+		}
 
 	eg->ianchors = (long *)realloc(eg->ianchors, sizeof(long) * (eg->nbianchors + 1));
 

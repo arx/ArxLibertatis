@@ -56,15 +56,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define D3D_OVERLOADS
 #define STRICT
 
+#include <stdio.h>
+
 #include "EERIEApp.h"
 #include "EERIEPoly.h"
 #include "EERIETypes.h"
 #include "EerieMath.h"
 
-#include <cstdio>
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+
 
 
  

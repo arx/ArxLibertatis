@@ -69,20 +69,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "HERMESMain.h"
 
-#include <tchar.h>
-#include <jpeglib.h>
-#include <jerror.h>
-#include <jconfig.h>
-#include <jmorecfg.h>
-#include <zlib.h>
-#include <algorithm>
-#include <cstdio>
-#include <map>
-#include <string>
-#include <utility>
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+
 
 long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 /*-----------------------------------------------------------------------------*/

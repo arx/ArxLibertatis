@@ -66,8 +66,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "HERMESmain.h"
 #include "HERMESNet.h"
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+
+
 
 
 char HermesBufferWork[_MAX_PATH];	// Used by FileStandardize (avoid malloc/free per call)

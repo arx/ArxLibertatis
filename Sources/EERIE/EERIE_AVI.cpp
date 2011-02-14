@@ -36,8 +36,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "../danae/arx_menu2.h"			// CDirectInput
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+
+
 
 //-----------------------------------------------------------------------------
 #pragma comment (lib, "amstrmid")

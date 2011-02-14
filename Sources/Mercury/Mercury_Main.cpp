@@ -58,10 +58,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Mercury_extern.h"
 
-#include <cstdlib>
 
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+#include <stdlib.h>
+
+
 
 //-----------------------------------------------------------------------------
 #define INPUT_STATE_ADD	(512)
