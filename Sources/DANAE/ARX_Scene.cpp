@@ -71,8 +71,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIELight.h"
 #include "EERIEDraw.h"
 #include "EERIEAnim.h"
-#include "EERIEUtil.h"
 #include "EERIEMath.h"
+#include "EERIEutil.h"
 
 #include <algorithm>
 #define DIRECTINPUT_VERSION 0x0700

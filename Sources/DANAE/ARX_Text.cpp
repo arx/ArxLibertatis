@@ -72,7 +72,6 @@ _TCHAR tUText[8192];
 
 CARXTextManager * pTextManageFlyingOver = NULL;
 
-HMODULE hUnicodeLibrary = NULL;
 //-----------------------------------------------------------------------------
 
 extern long CHINESE_VERSION;
@@ -199,7 +198,7 @@ long ARX_UNICODE_FormattingInRect(HDC hdc, const _TCHAR* str, int _iSpacingY, RE
 
 		for (; i < len; ++i)
 		{
-			GetTextExtentPoint32W(hdc, &str[i], 1, &sSize);
+			GetTextExtentPoint32(hdc, &str[i], 1, &sSize);
 
 			if (str[i] == _T('\n') || str[i] == _T('*'))
 			{
@@ -326,7 +325,7 @@ long ARX_UNICODE_ForceFormattingInRect(HFONT font, const _TCHAR* text, int lines
 
 			for (; i < len; ++i)
 			{
-				GetTextExtentPoint32W(hDC, &text[i], 1, &size);
+				GetTextExtentPoint32(hDC, &text[i], 1, &size);
 
 				if (text[i] == _T('\n') || text[i] == _T('*'))
 				{
@@ -413,9 +412,9 @@ void UNICODE_ARXDrawTextCenter(HFONT font, float x, float y, const _TCHAR* str, 
 		SelectObject(hDC, font);
 
 		SIZE siz;
-		GetTextExtentPoint32W(hDC, str, _tcslen(str), &siz);
+		GetTextExtentPoint32(hDC, str, _tcslen(str), &siz);
 
-		TextOutW(hDC, static_cast<int>(x - siz.cx / 2), static_cast<int>(y), str, _tcslen(str));
+		TextOut(hDC, static_cast<int>(x - siz.cx / 2), static_cast<int>(y), str, _tcslen(str));
 
 		danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 	}
@@ -862,6 +861,7 @@ void ARX_Text_Init()
 
 	MultiByteToWideChar(CP_ACP, 0, tx , -1, wtx, 256);		// XS : We need to pass a unicode string to AddFontResourceW
 
+	wchar_t wtx[256];
 	typedef int (APIENTRY * AddFontRessourceW)(const wchar_t *);
 
 	AddFontRessourceW Unicows_AddFontResourceW = (AddFontRessourceW)GetProcAddress(hUnicodeLibrary, "AddFontResourceW");
