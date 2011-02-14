@@ -145,6 +145,7 @@ namespace ATHENA
 			return AAL_ERROR_SYSTEM;
 		}
 		alGetError(); // clear error code
+		alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
 		is_reverb_present = alIsExtensionPresent("EAX2.0") ? AAL_UTRUE : AAL_UFALSE;
 
 		if (mutex) ReleaseMutex(mutex);
