@@ -15,20 +15,19 @@ include_directories(
 set(CMAKE_CXX_COMPILER /usr/bin/wineg++)
 set(CMAKE_C_COMPILER /usr/bin/winegcc)
 
-set(CMAKE_CXX_FLAGS "-fpermissive -w -m32") #Debug
+#set temporally less gcc problems
+set(CMAKE_CXX_FLAGS "-fpermissive -w")
 
-
-
-#Add liblub sources
+#Add sources
 set(SOURCE_DIRS
 	ArxCommon
-	Athena
-    danae
+	#Athena
+    DANAE
     DANAE_Debugger
-    eerie
-    hermes
+    EERIE
+    HERMES
     Mercury
-    minos
+    MINOS
 )
 foreach(SOURCE_DIR ${SOURCE_DIRS})
     file(GLOB GLOB_RESULT ${SRC_DIR}/${SOURCE_DIR}/*.cpp)
@@ -36,13 +35,10 @@ foreach(SOURCE_DIR ${SOURCE_DIRS})
 endforeach(SOURCE_DIR)
 
 #LIST(REMOVE_ITEM SOURCES 
-#/home/bmonkey/workspace/Port/ArxFatalis/Sources/DANAE/ARX_Sound.cpp
-#/home/bmonkey/workspace/Port/ArxFatalis/Sources/HERMES/HERMESmain.cpp
 #)
-#add_library()
-#message(${SOURCES})
+
+#build
 add_executable(arx ${SOURCES})
-#add_executable(arx Sources/DANAE/ARX_CParticleSystem.cpp)
 
 #link
-target_link_libraries(arx dsound dxguid gdi32 shell32 dinput comdlg32 ole32 comctl32 ddraw jpeg z)
+target_link_libraries(arx wine jpeg)
