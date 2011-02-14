@@ -24,6 +24,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 
 #include <time.h>
+#include <AL/al.h>
+#include <AL/alc.h>
 #include "audio/AudioGlobal.h"
 
 namespace ATHENA
@@ -35,10 +37,11 @@ namespace ATHENA
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 	// Audio device interface                                                    //
-	LPDIRECTSOUND device(NULL);
-	LPDIRECTSOUNDBUFFER primary(NULL);
-	LPDIRECTSOUND3DLISTENER listener(NULL);
-	LPKSPROPERTYSET environment(NULL);
+	ALCdevice *device(NULL);
+	ALCcontext *context(NULL);
+	ALuint primary[1] = { 0 };
+	// FIXME -- don't have this
+	//LPKSPROPERTYSET environment(NULL);
 	aalUBool is_reverb_present(AAL_UFALSE);
 	aalSLong environment_id(AAL_SFALSE);
 

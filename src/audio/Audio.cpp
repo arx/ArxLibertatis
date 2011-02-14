@@ -36,7 +36,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <dsound.h>
+#include <AL/al.h>
 #include <math.h>
 #include <cstring>
 
@@ -48,7 +48,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioInstance.h"
 #include "audio/AudioGlobal.h"
 #include "audio/Stream.h"
-#include "audio/eax.h"
 #include "io/Logger.h"
 
 #ifdef HAVE_PTHREADS
@@ -68,6 +67,7 @@ namespace ATHENA
 	static void *mutex = (void *)1; // just for compilation.  real mutex is above
 	static pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 	static bool _mutex_used = false;
+	static const int WAIT_TIMEOUT(1);
 #elif ARX_PLATFORM == ARX_PLATFORM_WIN32
 	static HANDLE mutex(NULL);
 #endif	
@@ -75,7 +75,7 @@ namespace ATHENA
 	static const aalULong MUTEX_TIMEOUT(500);
 	static const aalULong MUTEX_ONUPDATE_TIMEOUT(200);
 	static aalError EnableEnvironmentalAudio();
-	HWND hwnd = NULL;
+	// HWND hwnd = NULL;
 
 #ifdef HAVE_PTHREADS
 #define WaitForSingleObject(x, y) __mutex_wait(y)
@@ -108,7 +108,10 @@ namespace ATHENA
 	}
 #undef CreateMutex
 #define CreateMutex(x, y, z) (void *)1
+#define CloseHandle(mutex)	
 #endif
+
+	static struct timespec start_timespec;
 
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //
@@ -123,34 +126,21 @@ namespace ATHENA
 		//Clean any initialized data
 		aalClean();
 
-		CoInitialize(NULL);
-
 		//Initialize random number generator
 		InitSeed();
 
-		//Create DirectSound device interface
-		if (CoCreateInstance(CLSID_EAXDirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (aalVoid **)&device))
-		{
-			if (CoCreateInstance(CLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (aalVoid **)&device))
-			{
-				if (mutex) ReleaseMutex(mutex);
-
-				return AAL_ERROR_SYSTEM;
-			}
-		}
-		else is_reverb_present = AAL_UTRUE;
-
-		if (device->Initialize(NULL) ||
-		        device->SetCooperativeLevel(IsWindow((HWND)param) ? (HWND)param : GetForegroundWindow(), DSSCL_PRIORITY))
-		{
-			device->Release(), device = NULL;
-
+		// Create OpenAL interface
+		device = alcOpenDevice(NULL);
+		if (device) {
+			context = alcCreateContext(device, NULL);
+			alcMakeContextCurrent(context);
+		} else {
 			if (mutex) ReleaseMutex(mutex);
-
 			return AAL_ERROR_SYSTEM;
 		}
-
-		hwnd = (HWND)param;
+		alGetError(); // clear error code
+		alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
+		is_reverb_present = alIsExtensionPresent("EAX2.0") ? AAL_UTRUE : AAL_UFALSE;
 
 		if (mutex) ReleaseMutex(mutex);
 
@@ -159,41 +149,10 @@ namespace ATHENA
 
 	aalError aalInitForceNoEAX(aalVoid * param)
 	{
-		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
-			return AAL_ERROR_TIMEOUT;
+		aalError ret = aalInit(param);
+		is_reverb_present = AAL_UFALSE;
 
-		//Clean any initialized data
-		aalClean();
-
-		CoInitialize(NULL);
-
-		//Initialize random number generator
-		InitSeed();
-
-		//Create DirectSound device interface
-
-		if (CoCreateInstance(CLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (aalVoid **)&device))
-		{
-			if (mutex) ReleaseMutex(mutex);
-
-			return AAL_ERROR_SYSTEM;
-		}
-
-		if (device->Initialize(NULL) ||
-		        device->SetCooperativeLevel(IsWindow((HWND)param) ? (HWND)param : GetForegroundWindow(), DSSCL_PRIORITY))
-		{
-			device->Release(), device = NULL;
-
-			if (mutex) ReleaseMutex(mutex);
-
-			return AAL_ERROR_SYSTEM;
-		}
-
-		hwnd = (HWND)param;
-
-		if (mutex) ReleaseMutex(mutex);
-
-		return AAL_OK;
+		return ret;
 	}
 
 	aalError aalClean()
@@ -206,25 +165,23 @@ namespace ATHENA
 		_sample.Clean(false);
 		_env.Clean(false);
 
-		if (environment) environment->Release(), environment = NULL;
+		if (context) alcDestroyContext(context), context = NULL;
 
-		if (listener) listener->Release(), listener = NULL;
-
-		if (primary) primary->Release(), primary = NULL;
-
-		if (device) device->Release(), device = NULL;
+		if (device) alcCloseDevice(device), device = NULL;
 
 		free(sample_path), sample_path = NULL;
 		free(ambiance_path), ambiance_path = NULL;
 		free(environment_path), environment_path = NULL;
 		stream_limit_ms = AAL_DEFAULT_STREAMLIMIT;
-		session_start = GetTickCount();
+		struct timespec ts;
+		clock_gettime(CLOCK_REALTIME, &ts);
+		session_start = (ts.tv_sec * 1000000000 + ts.tv_nsec) / 1000000; // session_start shouldn't really be used any more
+		start_timespec.tv_sec = ts.tv_sec;
+		start_timespec.tv_nsec = ts.tv_nsec;
 		session_time = 0;
 		is_reverb_present = AAL_UFALSE;
 
-		if (mutex) ReleaseMutex(mutex), CloseHandle(mutex), mutex = NULL;
-
-		CoUninitialize();
+		if (mutex) ReleaseMutex(mutex);
 
 		return AAL_OK;
 	}
@@ -234,36 +191,12 @@ namespace ATHENA
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
 
-		WAVEFORMATEX formatex;
-		DSBUFFERDESC desc;
-
-		//Set primary settings to default
-		memset(&formatex, 0, sizeof(WAVEFORMATEX));
-		formatex.wFormatTag = WAVE_FORMAT_PCM;
-		formatex.nChannels = (aalUWord)(f.channels);
-		formatex.nSamplesPerSec = f.frequency;
-		formatex.wBitsPerSample = (aalUWord)(f.quality);
-		formatex.nBlockAlign = (aalUWord)(f.channels * f.quality / 8);
-		formatex.nAvgBytesPerSec = formatex.nBlockAlign * f.frequency;
-		memset(&desc, 0, sizeof(DSBUFFERDESC));
-		desc.dwSize = sizeof(DSBUFFERDESC);
-		desc.dwFlags = DSBCAPS_PRIMARYBUFFER | DSBCAPS_GETCURRENTPOSITION2;
-		desc.dwFlags |= DSBCAPS_CTRL3D;
-
-		//Release previously created interfaces
-		if (environment) environment->Release(), environment = NULL;
-
-		if (listener) listener->Release(), listener = NULL;
-
-		if (primary) primary->Release(), primary = NULL;
+		alDeleteBuffers(1, primary);
 
 		//Get new buffer and set its format
-		if (device->CreateSoundBuffer(&desc, &primary, NULL) ||
-		        primary->Play(0, 0, DSBPLAY_LOOPING) ||
-		        primary->SetFormat(&formatex))
-		{
+		alGenBuffers(1, primary);
+		if (alGetError() != AL_NO_ERROR) {
 			if (mutex) ReleaseMutex(mutex);
-
 			return AAL_ERROR_SYSTEM;
 		}
 
@@ -423,19 +356,20 @@ namespace ATHENA
 
 		}
 
-		if (flags & FLAG_ANY_3D_FX && !listener)
+		// I don't think we need to worry about this
+		if (flags & FLAG_ANY_3D_FX)
 		{
-			if (primary->QueryInterface(IID_IDirectSound3DListener, (aalVoid **)&listener))
-			{
-				if (mutex) ReleaseMutex(mutex);
+			// if (primary->QueryInterface(IID_IDirectSound3DListener, (aalVoid **)&listener))
+			// {
+			// 	if (mutex) ReleaseMutex(mutex);
 
-				return AAL_ERROR_SYSTEM;
-			}
+			// 	return AAL_ERROR_SYSTEM;
+			// }
 
 			global_status |= FLAG_ANY_3D_FX & ~FLAG_ANY_ENV_FX;
 		}
 
-		if (flags & FLAG_ANY_ENV_FX && is_reverb_present && !environment)
+		if (flags & FLAG_ANY_ENV_FX && is_reverb_present)
 		{
 			_error = EnableEnvironmentalAudio();
 
@@ -460,13 +394,7 @@ namespace ATHENA
 			return AAL_ERROR_TIMEOUT;
 
 		if (flags & AAL_FLAG_MULTITHREAD && mutex)
-			ReleaseMutex(mutex), CloseHandle(mutex), mutex = NULL;
-
-		if (flags & FLAG_ANY_ENV_FX && environment)
-			environment->Release(), environment = NULL, global_status &= ~FLAG_ANY_ENV_FX;
-
-		if (flags & (FLAG_ANY_3D_FX & ~FLAG_ANY_ENV_FX) && listener)
-			listener->Release(), listener = NULL, global_status &= FLAG_ANY_3D_FX;
+			ReleaseMutex(mutex);
 
 		if (mutex) ReleaseMutex(mutex);
 
@@ -498,12 +426,12 @@ namespace ATHENA
 			case AAL_FLAG_DIRECTION     :
 			case AAL_FLAG_CONE          :
 			case AAL_FLAG_FALLOFF       :
-				status = listener ? AAL_UTRUE : AAL_UFALSE;
+			        status = AAL_UTRUE;
 				break;
 
 			case AAL_FLAG_REVERBERATION :
 			case AAL_FLAG_OBSTRUCTION   :
-				status = environment ? AAL_UTRUE : AAL_UFALSE;
+				status = AAL_UTRUE;
 				break;
 		}
 
@@ -529,7 +457,11 @@ namespace ATHENA
 			return AAL_ERROR_TIMEOUT;
 
 		// Update global timer
-		session_time = GetTickCount() - session_start;
+		struct timespec ts;
+		clock_gettime(CLOCK_REALTIME, &ts);
+		unsigned long elapsed_seconds = ts.tv_sec - start_timespec.tv_sec;
+		unsigned long elapsed_nseconds = ts.tv_nsec - start_timespec.tv_nsec;
+		session_time = elapsed_seconds * 1000 + elapsed_nseconds / 1000000;
 
 		aalULong i;
 
@@ -585,7 +517,8 @@ namespace ATHENA
 		}
 
 		// Update output buffer with new 3D positional settings
-		if (listener) listener->CommitDeferredSettings();
+		// FIXME -- I don't think we need this
+		//if (listener) listener->CommitDeferredSettings();
 
 		if (mutex) ReleaseMutex(mutex);
 
@@ -873,19 +806,21 @@ namespace ATHENA
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
 
-		if (!listener)
-		{
-			if (mutex) ReleaseMutex(mutex);
+		// if (!listener)
+		// {
+		// 	if (mutex) ReleaseMutex(mutex);
 
-			return AAL_ERROR_INIT;
-		}
+		// 	return AAL_ERROR_INIT;
+		// }
 
-		if (listener->SetDistanceFactor(factor, DS3D_DEFERRED))
-		{
-			if (mutex) ReleaseMutex(mutex);
+		// if (listener->SetDistanceFactor(factor, DS3D_DEFERRED))
+		// {
+		// 	if (mutex) ReleaseMutex(mutex);
 
-			return AAL_ERROR_SYSTEM;
-		}
+		// 	return AAL_ERROR_SYSTEM;
+		// }
+
+		// FIXME -- this doesn't exist in OpenAL
 
 		if (mutex) ReleaseMutex(mutex);
 
@@ -897,19 +832,21 @@ namespace ATHENA
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
 
-		if (!listener)
-		{
-			if (mutex) ReleaseMutex(mutex);
+		// if (!listener)
+		// {
+		// 	if (mutex) ReleaseMutex(mutex);
 
-			return AAL_ERROR_INIT;
-		}
+		// 	return AAL_ERROR_INIT;
+		// }
 
-		if (listener->SetRolloffFactor(factor, DS3D_DEFERRED))
-		{
-			if (mutex) ReleaseMutex(mutex);
+		// if (listener->SetRolloffFactor(factor, DS3D_DEFERRED))
+		// {
+		// 	if (mutex) ReleaseMutex(mutex);
 
-			return AAL_ERROR_SYSTEM;
-		}
+		// 	return AAL_ERROR_SYSTEM;
+		// }
+
+		// FIXME -- this property doesn't exist in OpenAL
 
 		if (mutex) ReleaseMutex(mutex);
 
@@ -921,12 +858,9 @@ namespace ATHENA
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
 
-		if (!listener)
-		{
-			return AAL_ERROR_INIT;
-		}
+		alListener3f(AL_POSITION, position.x, position.y, position.z);
 
-		if (listener->SetPosition(position.x, position.y, position.z, DS3D_DEFERRED))
+		if (alGetError() != AL_NO_ERROR)
 		{
 			if (mutex) ReleaseMutex(mutex);
 
@@ -940,17 +874,13 @@ namespace ATHENA
 
 	aalError aalSetListenerDirection(const aalVector & front, const aalVector & up)
 	{
+		ALfloat orientation[] = {front.x, front.y, front.z, up.x, up.y, up.z};
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
 
-		if (!listener)
-		{
-			if (mutex) ReleaseMutex(mutex);
+		alListenerfv(AL_ORIENTATION, orientation);
 
-			return AAL_ERROR_INIT;
-		}
-
-		if (listener->SetOrientation(front.x, front.y, front.z, up.x, up.y, up.z, DS3D_DEFERRED))
+		if (alGetError() != AL_NO_ERROR)
 		{
 			if (mutex) ReleaseMutex(mutex);
 
@@ -967,12 +897,12 @@ namespace ATHENA
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
 
-		if (!environment)
-		{
-			if (mutex) ReleaseMutex(mutex);
+		// if (!environment)
+		// {
+		// 	if (mutex) ReleaseMutex(mutex);
 
-			return AAL_ERROR_INIT;
-		}
+		// 	return AAL_ERROR_INIT;
+		// }
 
 		if (_env.IsNotValid(e_id))
 		{
@@ -981,54 +911,54 @@ namespace ATHENA
 			return AAL_ERROR_HANDLE;
 		}
 
-		if (_env.IsValid(environment_id)) _env[environment_id]->lpksps = NULL;
+		// if (_env.IsValid(environment_id)) _env[environment_id]->lpksps = NULL;
 
-		environment_id = e_id;
-		_env[environment_id]->lpksps = environment;
-		Environment * env = _env[environment_id];
+		// environment_id = e_id;
+		// _env[environment_id]->lpksps = environment;
+		// Environment * env = _env[environment_id];
 
-		EAXLISTENERPROPERTIES props;
+		// EAXLISTENERPROPERTIES props;
 
-		props.dwEnvironment = 0;
-		props.dwFlags = EAXLISTENERFLAGS_DECAYHFLIMIT;
-		props.flRoomRolloffFactor = 1.0F;
-		props.lRoom = 0;
-		props.lRoomHF = 0;
-		props.flEnvironmentSize = env->size;
-		props.flEnvironmentDiffusion = env->diffusion;
-		props.flAirAbsorptionHF = env->absorption * -100.0F;
+		// props.dwEnvironment = 0;
+		// props.dwFlags = EAXLISTENERFLAGS_DECAYHFLIMIT;
+		// props.flRoomRolloffFactor = 1.0F;
+		// props.lRoom = 0;
+		// props.lRoomHF = 0;
+		// props.flEnvironmentSize = env->size;
+		// props.flEnvironmentDiffusion = env->diffusion;
+		// props.flAirAbsorptionHF = env->absorption * -100.0F;
 
-		if (env->reverb_volume <= 0.0F) props.lReverb = -10000;
-		else if (env->reverb_volume >= 10.0F) props.lReverb = 2000;
-		else props.lReverb = aalSLong(2000 * log10(env->reverb_volume));
+		// if (env->reverb_volume <= 0.0F) props.lReverb = -10000;
+		// else if (env->reverb_volume >= 10.0F) props.lReverb = 2000;
+		// else props.lReverb = aalSLong(2000 * log10(env->reverb_volume));
 
-		if (env->reverb_delay >= 100.0F) props.flReverbDelay = 0.1F;
-		else props.flReverbDelay = aalFloat(env->reverb_delay) * 0.001F;
+		// if (env->reverb_delay >= 100.0F) props.flReverbDelay = 0.1F;
+		// else props.flReverbDelay = aalFloat(env->reverb_delay) * 0.001F;
 
-		if (env->reverb_decay <= 100.0F) props.flDecayTime = 0.1F;
-		else if (env->reverb_decay >= 20000.0F) props.flDecayTime = 20.0F;
-		else props.flDecayTime = aalFloat(env->reverb_decay) * 0.001F;
+		// if (env->reverb_decay <= 100.0F) props.flDecayTime = 0.1F;
+		// else if (env->reverb_decay >= 20000.0F) props.flDecayTime = 20.0F;
+		// else props.flDecayTime = aalFloat(env->reverb_decay) * 0.001F;
 
-		props.flDecayHFRatio = env->reverb_hf_decay / env->reverb_decay;
+		// props.flDecayHFRatio = env->reverb_hf_decay / env->reverb_decay;
 
-		if (props.flDecayHFRatio <= 0.1F) props.flDecayHFRatio = 0.1F;
-		else if (props.flDecayHFRatio >= 2.0F) props.flDecayHFRatio = 2.0F;
+		// if (props.flDecayHFRatio <= 0.1F) props.flDecayHFRatio = 0.1F;
+		// else if (props.flDecayHFRatio >= 2.0F) props.flDecayHFRatio = 2.0F;
 
-		if (env->reflect_volume <= 0.0F) props.lReflections = -10000;
-		else if (env->reflect_volume >= 3.162F) props.lReflections = 1000;
-		else props.lReflections = aalSLong(2000 * log10(env->reflect_volume));
+		// if (env->reflect_volume <= 0.0F) props.lReflections = -10000;
+		// else if (env->reflect_volume >= 3.162F) props.lReflections = 1000;
+		// else props.lReflections = aalSLong(2000 * log10(env->reflect_volume));
 
-		if (env->reflect_delay >= 300.0F) props.flReflectionsDelay = 0.3F;
-		else props.flReflectionsDelay = aalFloat(env->reflect_delay) * 0.001F;
+		// if (env->reflect_delay >= 300.0F) props.flReflectionsDelay = 0.3F;
+		// else props.flReflectionsDelay = aalFloat(env->reflect_delay) * 0.001F;
 
-		if (environment->Set(DSPROPSETID_EAX_ListenerProperties,
-		                     DSPROPERTY_EAXLISTENER_ALLPARAMETERS | DSPROPERTY_EAXLISTENER_DEFERRED,
-		                     NULL, 0, &props, sizeof(EAXLISTENERPROPERTIES)))
-		{
-			if (mutex) ReleaseMutex(mutex);
+		// if (environment->Set(DSPROPSETID_EAX_ListenerProperties,
+		//                      DSPROPERTY_EAXLISTENER_ALLPARAMETERS | DSPROPERTY_EAXLISTENER_DEFERRED,
+		//                      NULL, 0, &props, sizeof(EAXLISTENERPROPERTIES)))
+		// {
+		// 	if (mutex) ReleaseMutex(mutex);
 
-			return AAL_ERROR_SYSTEM;
-		}
+		// 	return AAL_ERROR_SYSTEM;
+		// }
 
 		if (mutex) ReleaseMutex(mutex);
 
@@ -1421,7 +1351,8 @@ namespace ATHENA
 			}
 		}
 
-		if (listener && channel.flags & FLAG_ANY_3D_FX) listener->CommitDeferredSettings();
+		//if (listener && channel.flags & FLAG_ANY_3D_FX) listener->CommitDeferredSettings();
+		// FIXME -- I don't think we need the above
 
 		if (instance->Play(play_count))
 		{
@@ -1698,79 +1629,79 @@ namespace ATHENA
 	///////////////////////////////////////////////////////////////////////////////
 	static aalError EnableEnvironmentalAudio()
 	{
-		WAVEFORMATEX formatex;
-		DSBUFFERDESC desc;
-		LPDIRECTSOUNDBUFFER lpdsbtmp(NULL);
-		LPDIRECTSOUND3DBUFFER lpds3dbtmp(NULL);
+		// WAVEFORMATEX formatex;
+		// DSBUFFERDESC desc;
+		// LPDIRECTSOUNDBUFFER lpdsbtmp(NULL);
+		// LPDIRECTSOUND3DBUFFER lpds3dbtmp(NULL);
 
-		memset(&formatex, 0, sizeof(WAVEFORMATEX));
-		formatex.wFormatTag = WAVE_FORMAT_PCM;
-		formatex.nChannels = (aalUWord)(global_format.channels);
-		formatex.nSamplesPerSec = global_format.frequency;
-		formatex.wBitsPerSample = (aalUWord)(global_format.quality);
-		formatex.nBlockAlign = (aalUWord)(global_format.channels * global_format.quality / 8);
-		formatex.nAvgBytesPerSec = formatex.nBlockAlign * global_format.frequency;
+		// memset(&formatex, 0, sizeof(WAVEFORMATEX));
+		// formatex.wFormatTag = WAVE_FORMAT_PCM;
+		// formatex.nChannels = (aalUWord)(global_format.channels);
+		// formatex.nSamplesPerSec = global_format.frequency;
+		// formatex.wBitsPerSample = (aalUWord)(global_format.quality);
+		// formatex.nBlockAlign = (aalUWord)(global_format.channels * global_format.quality / 8);
+		// formatex.nAvgBytesPerSec = formatex.nBlockAlign * global_format.frequency;
 
-		memset(&desc, 0, sizeof(DSBUFFERDESC));
-		desc.dwSize = sizeof(DSBUFFERDESC);
-		desc.dwBufferBytes = 10000;
-		desc.dwFlags = DSBCAPS_CTRL3D;
-		desc.lpwfxFormat = &formatex;
+		// memset(&desc, 0, sizeof(DSBUFFERDESC));
+		// desc.dwSize = sizeof(DSBUFFERDESC);
+		// desc.dwBufferBytes = 10000;
+		// desc.dwFlags = DSBCAPS_CTRL3D;
+		// desc.lpwfxFormat = &formatex;
 
-		if (device->CreateSoundBuffer(&desc, &lpdsbtmp, NULL) ||
-		        lpdsbtmp->QueryInterface(IID_IDirectSound3DBuffer, (aalVoid **)&lpds3dbtmp) ||
-		        lpds3dbtmp->QueryInterface(IID_IKsPropertySet, (aalVoid **)&environment))
-		{
-			if (lpdsbtmp) lpdsbtmp->Release();
+		// if (device->CreateSoundBuffer(&desc, &lpdsbtmp, NULL) ||
+		//         lpdsbtmp->QueryInterface(IID_IDirectSound3DBuffer, (aalVoid **)&lpds3dbtmp) ||
+		//         lpds3dbtmp->QueryInterface(IID_IKsPropertySet, (aalVoid **)&environment))
+		// {
+		// 	if (lpdsbtmp) lpdsbtmp->Release();
 
-			if (lpds3dbtmp) lpds3dbtmp->Release();
+		// 	if (lpds3dbtmp) lpds3dbtmp->Release();
 
-			return AAL_ERROR_SYSTEM;
-		}
+		// 	return AAL_ERROR_SYSTEM;
+		// }
 
-		lpdsbtmp->Release();
-		lpds3dbtmp->Release();
+		// lpdsbtmp->Release();
+		// lpds3dbtmp->Release();
 
-		aalULong support(0);
+		// aalULong support(0);
 
-		if (environment->QuerySupport(DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_ALLPARAMETERS, &support) ||
-		        ((support & (KSPROPERTY_SUPPORT_GET | KSPROPERTY_SUPPORT_SET)) != (KSPROPERTY_SUPPORT_GET | KSPROPERTY_SUPPORT_SET)))
-		{
-			environment->Release(), environment = NULL;
-			return AAL_ERROR_SYSTEM;
-		}
+		// if (environment->QuerySupport(DSPROPSETID_EAX_ListenerProperties, DSPROPERTY_EAXLISTENER_ALLPARAMETERS, &support) ||
+		//         ((support & (KSPROPERTY_SUPPORT_GET | KSPROPERTY_SUPPORT_SET)) != (KSPROPERTY_SUPPORT_GET | KSPROPERTY_SUPPORT_SET)))
+		// {
+		// 	environment->Release(), environment = NULL;
+		// 	return AAL_ERROR_SYSTEM;
+		// }
 
-		if (environment->QuerySupport(DSPROPSETID_EAX_BufferProperties, DSPROPERTY_EAXBUFFER_ALLPARAMETERS, &support) ||
-		        ((support & (KSPROPERTY_SUPPORT_GET | KSPROPERTY_SUPPORT_SET)) != (KSPROPERTY_SUPPORT_GET | KSPROPERTY_SUPPORT_SET)))
-		{
-			environment->Release(), environment = NULL;
-			return AAL_ERROR_SYSTEM;
-		}
+		// if (environment->QuerySupport(DSPROPSETID_EAX_BufferProperties, DSPROPERTY_EAXBUFFER_ALLPARAMETERS, &support) ||
+		//         ((support & (KSPROPERTY_SUPPORT_GET | KSPROPERTY_SUPPORT_SET)) != (KSPROPERTY_SUPPORT_GET | KSPROPERTY_SUPPORT_SET)))
+		// {
+		// 	environment->Release(), environment = NULL;
+		// 	return AAL_ERROR_SYSTEM;
+		// }
 
-		EAXLISTENERPROPERTIES props;
+		// EAXLISTENERPROPERTIES props;
 
-		props.dwEnvironment = 0;
-		props.dwFlags = EAXLISTENERFLAGS_DECAYHFLIMIT;
-		props.flRoomRolloffFactor = 1.0F;
-		props.lRoom = 0;
-		props.lRoomHF = 0;
-		props.flEnvironmentSize = AAL_DEFAULT_ENVIRONMENT_SIZE;
-		props.flEnvironmentDiffusion = AAL_DEFAULT_ENVIRONMENT_DIFFUSION;
-		props.flAirAbsorptionHF = AAL_DEFAULT_ENVIRONMENT_ABSORPTION * -100.0F;
-		props.lReflections = aalSLong(2000 * log10(AAL_DEFAULT_ENVIRONMENT_REFLECTION_VOLUME));
-		props.flReflectionsDelay = aalFloat(AAL_DEFAULT_ENVIRONMENT_REFLECTION_DELAY) * 0.001F;
-		props.lReverb = aalSLong(2000 * log10(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_VOLUME));
-		props.flReverbDelay = aalFloat(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DELAY) * 0.001F;
-		props.flDecayTime = aalFloat(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DECAY) * 0.001F;
-		props.flDecayHFRatio = AAL_DEFAULT_ENVIRONMENT_REVERBERATION_HFDECAY / AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DECAY;
+		// props.dwEnvironment = 0;
+		// props.dwFlags = EAXLISTENERFLAGS_DECAYHFLIMIT;
+		// props.flRoomRolloffFactor = 1.0F;
+		// props.lRoom = 0;
+		// props.lRoomHF = 0;
+		// props.flEnvironmentSize = AAL_DEFAULT_ENVIRONMENT_SIZE;
+		// props.flEnvironmentDiffusion = AAL_DEFAULT_ENVIRONMENT_DIFFUSION;
+		// props.flAirAbsorptionHF = AAL_DEFAULT_ENVIRONMENT_ABSORPTION * -100.0F;
+		// props.lReflections = aalSLong(2000 * log10(AAL_DEFAULT_ENVIRONMENT_REFLECTION_VOLUME));
+		// props.flReflectionsDelay = aalFloat(AAL_DEFAULT_ENVIRONMENT_REFLECTION_DELAY) * 0.001F;
+		// props.lReverb = aalSLong(2000 * log10(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_VOLUME));
+		// props.flReverbDelay = aalFloat(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DELAY) * 0.001F;
+		// props.flDecayTime = aalFloat(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DECAY) * 0.001F;
+		// props.flDecayHFRatio = AAL_DEFAULT_ENVIRONMENT_REVERBERATION_HFDECAY / AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DECAY;
 
-		if (environment->Set(DSPROPSETID_EAX_ListenerProperties,
-		                     DSPROPERTY_EAXLISTENER_ALLPARAMETERS | DSPROPERTY_EAXLISTENER_DEFERRED,
-		                     NULL, 0, &props, sizeof(EAXLISTENERPROPERTIES)))
-		{
-			environment->Release(), environment = NULL;
-			return AAL_ERROR_SYSTEM;
-		}
+		// if (environment->Set(DSPROPSETID_EAX_ListenerProperties,
+		//                      DSPROPERTY_EAXLISTENER_ALLPARAMETERS | DSPROPERTY_EAXLISTENER_DEFERRED,
+		//                      NULL, 0, &props, sizeof(EAXLISTENERPROPERTIES)))
+		// {
+		// 	environment->Release(), environment = NULL;
+		// 	return AAL_ERROR_SYSTEM;
+		// }
 
 		return AAL_OK;
 	}
