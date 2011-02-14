@@ -15,8 +15,13 @@ set(CMAKE_CXX_FLAGS "-fpermissive -w") #Debug
 #Add liblub sources
 set(SOURCE_DIRS
 	ArxCommon
+	#Athena
     DANAE
+    DANAE_Debugger
     EERIE
+    #HERMES
+    Mercury
+    MINOS
 )
 foreach(SOURCE_DIR ${SOURCE_DIRS})
     file(GLOB GLOB_RESULT ${SRC_DIR}/${SOURCE_DIR}/*.cpp)

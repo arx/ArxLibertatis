@@ -760,22 +760,23 @@ DXI_INPUT_INFO * DXI_GetInfoDevice(int num)
 
 	return dinf;
 }
-BOOL DXI_CleanAxeMouseZ(int /*id*/)
+BOOL DXI_CleanAxeMouseZ(int id)
 {
-	//DIDEVICEOBJECTDATA	*od;
-	//DIDEVICEOBJECTDATA	*od2;
-	//int					nb,flg=0;
+DIDEVICEOBJECTDATA	*od;
+DIDEVICEOBJECTDATA	*od2;
+int					nb,flg=0;
 
-	return FALSE;
+return FALSE;
 
-//	nb=DI_MouseState[id]->nbele;
-//	if(!nb) return FALSE;
-//	od=DI_MouseState[id]->mousestate;
-////	od2=DI_MouseState[id]->old_mousestate;
-//	while(nb)
-//	{
-//		switch(od->dwOfs)
-//		{
+	nb=DI_MouseState[id]->nbele;
+	if(!nb) return FALSE;
+	od=DI_MouseState[id]->mousestate;
+//	od2=DI_MouseState[id]->old_mousestate;
+	while(nb)
+	{
+		switch(od->dwOfs)
+		{
+		//		todo switch cast
 //		case DIMOFS_X:
 //			flg++;
 //			break;
@@ -786,14 +787,14 @@ BOOL DXI_CleanAxeMouseZ(int /*id*/)
 //			od->dwData-=od2->dwData;
 //			flg++;
 //			break;
-//		default:
-//			break;
-//		}
-//		od++;
-//		od2++;
-//		nb--;
-//	}
-//	return (flg>0);
+		default:
+			break;
+		}
+		od++;
+		od2++;
+		nb--;
+	}
+	return (flg>0);
 }
 
 /*-------------------------------------------------------------*/
@@ -1025,14 +1026,15 @@ int					nb,flg=0;
 	{
 		switch(od->dwOfs)
 		{
-		case DIMOFS_X:
-			*mx=od->dwData;
-			flg++;
-			break;
-		case DIMOFS_Y:
-			*my=od->dwData;
-			flg++;
-			break;
+		//		todo switch cast
+//		case DIMOFS_X:
+//			*mx=od->dwData;
+//			flg++;
+//			break;
+//		case DIMOFS_Y:
+//			*my=od->dwData;
+//			flg++;
+//			break;
 		default:
 			break;
 		}
@@ -1056,18 +1058,19 @@ int					nb,flg=0;
 	{
 		switch(od->dwOfs)
 		{
-		case DIMOFS_X:
-			*mx+=od->dwData;
-			flg++;
-			break;
-		case DIMOFS_Y:
-			*my+=od->dwData;
-			flg++;
-			break;
-		case DIMOFS_Z:
-			*mz+=od->dwData;
-			flg++;
-			break;
+		//		todo switch cast
+//		case DIMOFS_X:
+//			*mx+=od->dwData;
+//			flg++;
+//			break;
+//		case DIMOFS_Y:
+//			*my+=od->dwData;
+//			flg++;
+//			break;
+//		case DIMOFS_Z:
+//			*mz+=od->dwData;
+//			flg++;
+//			break;
 		default:
 			break;
 		}
@@ -1679,30 +1682,31 @@ int					nb;
 	{
 		switch(od->dwOfs)
 		{
-		case DIMOFS_BUTTON0:
-			if(od->dwData&0x80) return DXI_BUTTON0;
-			break;
-		case DIMOFS_BUTTON1:
-			if(od->dwData&0x80) return DXI_BUTTON1;
-			break;
-		case DIMOFS_BUTTON2:
-			if(od->dwData&0x80) return DXI_BUTTON2;
-			break;
-		case DIMOFS_BUTTON3:
-			if(od->dwData&0x80) return DXI_BUTTON3;
-			break;
-		case DIMOFS_BUTTON4:
-			if(od->dwData&0x80) return DXI_BUTTON4;
-			break;
-		case DIMOFS_BUTTON5:
-			if(od->dwData&0x80) return DXI_BUTTON5;
-			break;
-		case DIMOFS_BUTTON6:
-			if(od->dwData&0x80) return DXI_BUTTON6;
-			break;
-		case DIMOFS_BUTTON7:
-			if(od->dwData&0x80) return DXI_BUTTON7;
-			break;
+//		todo switch cast
+//		case DIMOFS_BUTTON0:
+//			if(od->dwData&0x80) return DXI_BUTTON0;
+//			break;
+//		case DIMOFS_BUTTON1:
+//			if(od->dwData&0x80) return DXI_BUTTON1;
+//			break;
+//		case DIMOFS_BUTTON2:
+//			if(od->dwData&0x80) return DXI_BUTTON2;
+//			break;
+//		case DIMOFS_BUTTON3:
+//			if(od->dwData&0x80) return DXI_BUTTON3;
+//			break;
+//		case DIMOFS_BUTTON4:
+//			if(od->dwData&0x80) return DXI_BUTTON4;
+//			break;
+//		case DIMOFS_BUTTON5:
+//			if(od->dwData&0x80) return DXI_BUTTON5;
+//			break;
+//		case DIMOFS_BUTTON6:
+//			if(od->dwData&0x80) return DXI_BUTTON6;
+//			break;
+//		case DIMOFS_BUTTON7:
+//			if(od->dwData&0x80) return DXI_BUTTON7;
+//			break;
 		default:
 			break;
 		}

@@ -23,9 +23,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 #include "Minos_PathFinder.h"
-
-#include <cfloat>
-#include <ctime>
+#include <time.h>
 
 
 
@@ -125,8 +123,7 @@ UBool PathFinder::Move(const ULong & flags, const ULong & f, const ULong & t, SL
 	_from = f, _to = t;
 
 	//Create start node and put it on open list
-	node = CreateNode(_from, NULL);
-	if (!node)
+	if (!(node = CreateNode(_from, NULL)))
 	{
 		Clean(); // Cyril
 		*rstep = 0;
@@ -251,8 +248,7 @@ UBool PathFinder::Flee(const ULong & flags, const ULong & f, const EERIE_3D & da
 	_from = f;
 
 	//Create start node and put it on open list
-	node = CreateNode(_from, NULL);
-	if (!node)
+	if (!(node = CreateNode(_from, NULL)))
 	{
 		Clean(); 
 		*rstep = 0;
@@ -439,8 +435,7 @@ UBool PathFinder::WanderAround(const ULong & flags, const ULong & f, const Float
 
 		if (Move(flags, last, next, &temp_c, &temp_d) && temp_c)
 		{
-			ptr = realloc(path_d, sizeof(UWord) * (path_c + temp_c));
-			if (!ptr)
+			if (!(ptr = realloc(path_d, sizeof(UWord) * (path_c + temp_c))))
 			{
 				free(temp_d);
 				free(path_d);
@@ -469,8 +464,7 @@ UBool PathFinder::WanderAround(const ULong & flags, const ULong & f, const Float
 		return UFALSE;
 	}
 
-	ptr = realloc(path_d, sizeof(UWord) * (path_c + temp_c));
-	if (!ptr)
+	if (!(ptr = realloc(path_d, sizeof(UWord) * (path_c + temp_c))))
 	{
 		free(temp_d);
 		free(path_d);
@@ -568,8 +562,7 @@ UBool PathFinder::LookFor(const ULong & flags, const ULong & f, const EERIE_3D &
 				return UFALSE;
 			}
 
-			ptr = realloc(path_d, sizeof(UWord) * (path_c + temp_c - 1));
-			if (!ptr)
+			if (!(ptr = realloc(path_d, sizeof(UWord) * (path_c + temp_c - 1))))
 			{
 				if (temp_d) 
 				{
@@ -671,9 +664,7 @@ SBool PathFinder::BuildPath(UWord ** rlist, SLong * rstep)
 
 	while (next)
 	{
-		ptr = realloc(path_d, (path_c + 1) << 1);
-		if (!ptr)
-			return SFALSE;
+		if (!(ptr = realloc(path_d, (path_c + 1) << 1))) return SFALSE;
 
 		path_d = (UWord *)ptr;
 		path_d[path_c++] = (UWord)next->data;

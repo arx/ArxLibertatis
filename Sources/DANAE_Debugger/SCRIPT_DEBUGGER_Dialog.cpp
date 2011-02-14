@@ -39,9 +39,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //		fix + memory check
 //		+ tests memory leak + patch
 // jeudi 21 juin
-//		points d'entrée
+//		points d'entrï¿½e
 // mercredi 20 juin
-//		création DLL
+//		crï¿½ation DLL
 //		interface
 
 //-----------------------------------------------------------------------------
@@ -136,35 +136,36 @@ BOOL CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 		case WM_CREATE:
 		case WM_INITDIALOG:
 		{
+			//		todo: debugger
 			//-------------------------------------------------------------------------
-			iInfo.hObjName			= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_OBJ_NAME);
-			iInfo.hObjPos[0]		= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_OBJ_POSX);
-			iInfo.hObjPos[1]		= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_OBJ_POSY);
-			iInfo.hObjPos[2]		= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_OBJ_POSZ);
-			iInfo.hTargetName		= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_TARGET_NAME);
-			iInfo.hTargetPos[0]		= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_TARGET_POSX);
-			iInfo.hTargetPos[1]		= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_TARGET_POSY);
-			iInfo.hTargetPos[2]		= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_TARGET_POSZ);
-			iInfo.hVariablesEnabled = GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_CHECK_VARIABLES);
-			iInfo.hGlobals			= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_LIST_GLOBALS);
-			iInfo.hGlobalEdit		= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_GLOBAL);
-			iInfo.hLocals			= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_LIST_LOCALS);
-			iInfo.hLocalEdit		= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_LOCAL);
-			iInfo.hBehavior			= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_BEHAVIOR);
-			iInfo.hEventsEnabled	= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_CHECK_EVENTS);
-			iInfo.hEvents			= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_EVENTS);
-			iInfo.hTimersEnabled	= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_CHECK_TIMERS);
-			iInfo.hTimers			= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_TIMERS);
+//			iInfo.hObjName			= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_OBJ_NAME);
+//			iInfo.hObjPos[0]		= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_OBJ_POSX);
+//			iInfo.hObjPos[1]		= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_OBJ_POSY);
+//			iInfo.hObjPos[2]		= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_OBJ_POSZ);
+//			iInfo.hTargetName		= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_TARGET_NAME);
+//			iInfo.hTargetPos[0]		= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_TARGET_POSX);
+//			iInfo.hTargetPos[1]		= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_TARGET_POSY);
+//			iInfo.hTargetPos[2]		= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_TARGET_POSZ);
+//			iInfo.hVariablesEnabled = GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_CHECK_VARIABLES);
+//			iInfo.hGlobals			= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_LIST_GLOBALS);
+//			iInfo.hGlobalEdit		= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_GLOBAL);
+//			iInfo.hLocals			= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_LIST_LOCALS);
+//			iInfo.hLocalEdit		= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_LOCAL);
+//			iInfo.hBehavior			= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_BEHAVIOR);
+//			iInfo.hEventsEnabled	= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_CHECK_EVENTS);
+//			iInfo.hEvents			= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_EVENTS);
+//			iInfo.hTimersEnabled	= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_CHECK_TIMERS);
+//			iInfo.hTimers			= GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_EDIT_TIMERS);
 
 			SendMessage(iInfo.hVariablesEnabled, BM_SETCHECK, (WPARAM) true, (LPARAM) 0);
 			SendMessage(iInfo.hEventsEnabled, BM_SETCHECK, (WPARAM) true, (LPARAM) 0);
 			SendMessage(iInfo.hTimersEnabled, BM_SETCHECK, (WPARAM) true, (LPARAM) 0);
 
-			HWND hwnd = GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_LIST_GLOBALS);
-			InitList(hwnd);
-
-			hwnd = GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_LIST_LOCALS);
-			InitList(hwnd);
+//			HWND hwnd = GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_LIST_GLOBALS);
+//			InitList(hwnd);
+//
+//			hwnd = GetDlgItem(hWnd, IDC_SCRIPT_DEBUGGER_LIST_LOCALS);
+//			InitList(hwnd);
 		}
 		break;
 		case WM_NOTIFY:
@@ -220,25 +221,26 @@ BOOL CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 		{
 			switch (LOWORD(wParam))
 			{
-				case IDC_SCRIPT_DEBUGGER_BUTTON_PAUSE:
-				{
-					sdu.bPause = true;
-				}
-				break;
-				case IDC_SCRIPT_DEBUGGER_BUTTON_STEP:
-				{
-					sdu.bStep = true;
-				}
-				break;
-				case IDC_SCRIPT_DEBUGGER_BUTTON_GLOBAL_UPDATE:
-				{
-					sdu.bUpdateGlobalVar = true;
-				}
-				break;
-				case IDC_SCRIPT_DEBUGGER_BUTTON_LOCAL_UPDATE:
-				{
-					sdu.bUpdateLocalVar = true;
-				}
+			//		todo: debugger
+//				case IDC_SCRIPT_DEBUGGER_BUTTON_PAUSE:
+//				{
+//					sdu.bPause = true;
+//				}
+//				break;
+//				case IDC_SCRIPT_DEBUGGER_BUTTON_STEP:
+//				{
+//					sdu.bStep = true;
+//				}
+//				break;
+//				case IDC_SCRIPT_DEBUGGER_BUTTON_GLOBAL_UPDATE:
+//				{
+//					sdu.bUpdateGlobalVar = true;
+//				}
+//				break;
+//				case IDC_SCRIPT_DEBUGGER_BUTTON_LOCAL_UPDATE:
+//				{
+//					sdu.bUpdateLocalVar = true;
+//				}
 				break;
 				default:
 				{
@@ -290,7 +292,7 @@ BOOL WINAPI DllMain(HINSTANCE _hModule, DWORD _fdwreason, LPVOID /*_lpReserved*/
 	{
 		case DLL_PROCESS_ATTACH:
 		{
-			// Récupération du handle d'Instance du Module
+			// Rï¿½cupï¿½ration du handle d'Instance du Module
 			InitCommonControls();
 			ghInstance = _hModule;
 			break;
@@ -321,7 +323,8 @@ void APIFUNC SCRIPT_DEBUGGER_CreateDialog(HWND _hWindow, ScriptDebuggerInfos & /
 
 
 		long dw = GetLastError();
-		ghDialog = CreateDialog(ghInstance, MAKEINTRESOURCE(IDD_SCRIPT_DEBUGGER), _hWindow, (DLGPROC) SCRIPT_DEBUGGER_Proc);
+//		todo: debugger
+//		ghDialog = CreateDialog(ghInstance, MAKEINTRESOURCE(IDD_SCRIPT_DEBUGGER), _hWindow, (DLGPROC) SCRIPT_DEBUGGER_Proc);
 		dw = GetLastError();
 		ShowWindow(ghDialog, SW_SHOW);
 
