@@ -596,7 +596,7 @@ _TCHAR* GetFontName(const char* fontFile)
 
 
 						_TCHAR * szText = new _TCHAR[(FNN.usStringLength>>1)+1]; //@HACK
-						_tcscpy(szText, szName);
+						_tcscpy(szText, (const char*) szName);
 
 						CloseHandle(hFile);
 						return szText;
@@ -726,7 +726,6 @@ void CARXTextManager::Update(float dt)
 			text->offsety += text->scrollspeed * (float)delta;
 			if (text->offsety >= (text->rRect.bottom - text->rRectClipp.bottom))
 				text->offsety = ARX_CLEAN_WARN_CAST_FLOAT(text->rRect.bottom - text->rRectClipp.bottom);
-		}
 		else
 			text->scrolltime -= delta;
 
@@ -859,7 +858,8 @@ void ARX_Text_Init()
 		sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX_default.ttf"); // Full path
 	}
 
-	MultiByteToWideChar(CP_ACP, 0, tx , -1, wtx, 256);		// XS : We need to pass a unicode string to AddFontResourceW
+//	todo: cast
+//	MultiByteToWideChar(CP_ACP, 0, tx , -1, wtx, 256);		// XS : We need to pass a unicode string to AddFontResourceW
 
 	wchar_t wtx[256];
 	typedef int (APIENTRY * AddFontRessourceW)(const wchar_t *);
@@ -868,7 +868,7 @@ void ARX_Text_Init()
 
 	lpszFontIngame = GetFontName(tx);
 
-	if (Unicows_AddFontResourceW(wtx) == 0)
+	if (Unicows_AddFontResourceW((wchar_t*)wtx) == 0)
 	{
 		FontError();
 	}
@@ -880,11 +880,11 @@ void ARX_Text_Init()
 		sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX_default.ttf"); // Full path
 	}
 
-	MultiByteToWideChar(CP_ACP, 0, tx , -1, wtx, 256);		// XS : We need to pass an unicode string to AddFontResourceW
+	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass an unicode string to AddFontResourceW
 
 	lpszFontMenu = GetFontName(tx);
 
-	if (Unicows_AddFontResourceW(wtx) == 0)
+	if (Unicows_AddFontResourceW((wchar_t*)wtx) == 0)
 	{
 		FontError();
 	}
@@ -937,12 +937,12 @@ void ARX_Text_Close()
 		sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX_default.ttf"); // Full path
 	}
 
-	MultiByteToWideChar(CP_ACP, 0, tx , -1, wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
+	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
 
 	lpszFontIngame = GetFontName(tx);
 
 
-	if (Unicows_RemoveRessourceW(wtx) == 0)
+	if (Unicows_RemoveRessourceW((wchar_t*)wtx) == 0)
 	{
 		//	FontError(); // XS : Annoying popup, uncomment if you really want to track something down.
 	}
@@ -954,10 +954,10 @@ void ARX_Text_Close()
 		sprintf(tx, "%smisc\\%s", Project.workingdir, "ARX_default.ttf"); // Full path
 	}
 
-	MultiByteToWideChar(CP_ACP, 0, tx , -1, wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
+	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
 	lpszFontMenu = GetFontName(tx);
 
-	if (Unicows_RemoveRessourceW(wtx) == 0)
+	if (Unicows_RemoveRessourceW((wchar_t*)wtx) == 0)
 	{
 		//	FontError();// XS : Annoying popup, uncomment if you really want to track something down.
 	}
