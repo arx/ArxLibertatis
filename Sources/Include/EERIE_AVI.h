@@ -25,9 +25,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIE_AVI_H
 #define EERIE_AVI_H
 
-#include "ARX_Common.h"
-
 #include <windows.h>
+
+#include "ARX_Common.h"
 
 bool LaunchAVI(HWND hWnd, char * dest);
 

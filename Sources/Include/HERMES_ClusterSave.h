@@ -22,11 +22,10 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "ARX_Common.h"
-
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
 
 #define PAK_VERSION	((1<<16)|0)
 

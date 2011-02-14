@@ -408,5 +408,4 @@ void Manage_sp_max();
 long GetXPforLevel(long level);
 bool ARX_PLAYER_IsInFightMode();
 void ARX_PLAYER_Invulnerability(long flag);
-
 #endif

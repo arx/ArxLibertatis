@@ -34,8 +34,6 @@ using namespace std;
 #include "ARX_CParticleSystem.h"
 //#include "ARX_CParticleContainer.h"
 
-#include <list>
-
 //class CParticleContainer;
 class CParticleSystem;
 

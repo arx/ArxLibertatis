@@ -60,18 +60,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 /* ---------------------------------------------------------
 						Include
 ------------------------------------------------------------*/
-#include <cassert>
-#include <climits>
-#include <cstdarg>
-#include <cstdio>
-#include <ctime>
-#include <fstream>
+
+#include <assert.h>
+#include <limits.h>
+#include <stdio.h>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <string>
 #include <stdarg.h>
 //#include <wtypes.h>
-
+#include <time.h>
 
 /* ---------------------------------------------------------
 					     Break
