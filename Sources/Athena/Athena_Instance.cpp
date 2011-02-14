@@ -35,7 +35,7 @@ namespace ATHENA
 {
 
 	// Status flags                                                              //
-	static enum ATHENAInstance
+	enum ATHENAInstance
 	{
 		IS_IDLED     = 0x00000001,
 		IS_PAUSED    = 0x00000002,

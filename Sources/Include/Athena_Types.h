@@ -41,9 +41,9 @@ namespace ATHENA
 	typedef signed char aalSByte;
 	typedef unsigned short aalUWord;
 	typedef signed short aalSWord;
-	typedef unsigned long aalULong;
-	typedef signed long aalSLong;
-
+	typedef unsigned int aalULong;
+	typedef signed int aalSLong;
+ 
 	typedef signed aalSInt;
 	typedef float aalFloat;
 

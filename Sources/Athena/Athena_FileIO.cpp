@@ -24,8 +24,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 #include "Athena_FileIO.h"
 #include "Athena_Global.h"
-#include "Hermes_Pak.h"
 
+
+#include <HERMES_PAK.h>
 
 
 
