@@ -1869,7 +1869,8 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	char fic[256];
 	sprintf(fic,"%sGraph\\Obj3D\\Interactive\\Player\\G.ASL",Project.workingdir);
 
-	LaunchCDROMCheck(0);
+//	LaunchCDROMCheck(0);
+
 	HRESULT hr=danaeApp.Run();
 
 #ifdef ARX_STEAM
@@ -4903,6 +4904,7 @@ void ProcessAllTheo(char * path)
 	//todo finddata
 //	struct _finddata_t fd;
 	sprintf(pathh,"%s*.*",path);
+	printf("unimplemented ProcessAllTheo: %s\n", path);
 
 //	if ((idx=_findfirst(pathh,&fd))!=-1)
 //	{
@@ -6241,6 +6243,7 @@ static float _AvgFrameDiff = 150.f;
 				float iCalc = step*speedfactor ;
 				ARX_CHECK_ULONG(iCalc);
 
+				assert(inter.iobj[0]->obj != NULL);
 				EERIEDrawAnimQuat(	m_pd3dDevice,	inter.iobj[0]->obj,
 					&inter.iobj[0]->animlayer[0],
 					&inter.iobj[0]->angle,&inter.iobj[0]->pos,
@@ -6274,7 +6277,13 @@ static float _AvgFrameDiff = 150.f;
 
 			if (inter.iobj[0]->ioflags & IO_FREEZESCRIPT) val=0;
 
-			EERIEDrawAnimQuat(	m_pd3dDevice,
+			// TODO remove
+			if(!inter.iobj[0]->obj) {
+				printf("missing %s\n", inter.iobj[0]->filename);
+			}
+
+			assert(inter.iobj[0]->obj != NULL);
+			EERIEDrawAnimQuat(	m_pd3dDevice,	
 				inter.iobj[0]->obj,
 					&inter.iobj[0]->animlayer[0],
 					&inter.iobj[0]->angle,
@@ -6975,6 +6984,7 @@ static float _AvgFrameDiff = 150.f;
 
 		if (inter.iobj[0]->invisibility>0.9f) inter.iobj[0]->invisibility=0.9f;
 
+		assert(inter.iobj[0]->obj != NULL);
 		EERIEDrawAnimQuat(	m_pd3dDevice,	inter.iobj[0]->obj,
 				&inter.iobj[0]->animlayer[0],
 				&inter.iobj[0]->angle,&inter.iobj[0]->pos, 0,inter.iobj[0],0,8);

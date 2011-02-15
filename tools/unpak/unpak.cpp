@@ -48,24 +48,29 @@ void dump(PakReader & pak, const PakDirectory * dir, string where = string()) {
 		
 		printf("%s\n", filename.c_str());
 		
-		size_t size;
-		char * data = (char*)pak.ReadAlloc(filename.c_str(), &size);
-		assert(data != NULL);
-		
 		FILE * f = fopen(filename.c_str(), "wb");
 		if(!f) {
 			printf("error opening file for writing: %s\n", filename.c_str());
 			exit(1);
 		}
 		
-		if(fwrite(data, size, 1, f) != 1) {
-			printf("error writing to file for writing: %s\n", filename.c_str());
-			exit(1);
+		if(file->size && (!(file->flags & PAK_FILE_COMPRESSED) || file->uncompressedSize)) {
+			
+			size_t size;
+			char * data = (char*)pak.ReadAlloc(filename.c_str(), &size);
+			assert(data != NULL);
+			
+			if(fwrite(data, size, 1, f) != 1) {
+				printf("error writing to file for writing: %s\n", filename.c_str());
+				fclose(f);
+				exit(1);
+			}
+			
+			free(data);
+			
 		}
 		
 		fclose(f);
-		
-		free(data);
 		
 		file = file->next;
 	}

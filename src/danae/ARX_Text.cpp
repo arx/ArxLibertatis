@@ -69,99 +69,36 @@ _TCHAR * lpszFontIngame = NULL;
 
 _TCHAR tUText[8192];
 
+CARXTextManager * pTextManage = NULL;
 CARXTextManager * pTextManageFlyingOver = NULL;
 
+HMODULE hUnicodeLibrary = NULL;
 //-----------------------------------------------------------------------------
+HFONT InBookFont	= NULL;
+HFONT hFontRedist	= NULL;
+HFONT hFontMainMenu = NULL;
+HFONT hFontMenu		= NULL;
+HFONT hFontControls = NULL;
+HFONT hFontCredits	= NULL;
+
+ 
+HFONT hFontInGame	= NULL;
+HFONT hFontInGameNote = NULL;
+ 
 
 extern long CHINESE_VERSION;
 extern long EAST_EUROPE;
 
 //-----------------------------------------------------------------------------
-// Exported global variables
-
-CARXTextManager * pTextManage = NULL;
-
-HFONT hFontMainMenu		= NULL;
-HFONT hFontMenu			= NULL;
-HFONT hFontControls		= NULL;
-HFONT hFontCredits		= NULL;
-HFONT hFontInBook		= NULL;
-HFONT hFontRedist		= NULL;
-HFONT hFontInGame		= NULL;
-HFONT hFontInGameNote	= NULL;
-
-//-----------------------------------------------------------------------------
-// Static local variables
-
-namespace
-{
-
-HMODULE hUnicodeLibrary = NULL;
-
-// These are only valid if hUnicodeLibrary is not NULL
-_TCHAR tFontResource[256] = {0};
-typedef int (APIENTRY* ptrUnicodeFunc_AddFontResourceW)(const wchar_t *);
-ptrUnicodeFunc_AddFontResourceW Unicows_AddFontResourceW = NULL;
-typedef HFONT (APIENTRY* ptrUnicodeFunc_CreateFontW)(int,int,int,int,int,DWORD,DWORD,DWORD,DWORD,DWORD,DWORD,DWORD,DWORD,LPWSTR);
-ptrUnicodeFunc_CreateFontW Unicows_CreateFontW = NULL;
-typedef ATOM (APIENTRY* ptrUnicodeFunc_RemoveResourceW)(const wchar_t *);
-ptrUnicodeFunc_RemoveResourceW Unicows_RemoveResourceW = NULL;
-typedef bool (APIENTRY* ptrUnicodeFunc_TextOutW)(HDC,int,int,const _TCHAR*,int);
-ptrUnicodeFunc_TextOutW Unicows_TextOutW = NULL;
-
-} // \namespace
-
-//-----------------------------------------------------------------------------
-// Local utility classes
-
-enum ARX_TEXT_TYPE
-{
-	ARX_TEXT_ONCE,
-	ARX_TEXT_STAY
-};
-
-class ARXText
-{
-public:
-	ARXText(HFONT font, const _TCHAR* str, const RECT& rect, long fgcolor, long bgcolor,
-		long timeout, long scrolltime, float scrollspeed, unsigned maxlines);
-
-public:
-	void Update();
-
-public:
-	ARX_TEXT_TYPE	eType;
-	HFONT			hFont;
-	RECT			rRect;
-	RECT			rRectClipp;
-	std::wstring	str;
-	long			fgcolor;
-	long			bgcolor;
-	long			height;
-	long			timeout;		// dynamic
-	float			offsety;		// dynamic
-	float			scrollspeed;
-	long			scrolltime;
-
-private:
-	// no copy
-	ARXText(const ARXText&);
-	ARXText& operator=(const ARXText&);
-};
-
-//-----------------------------------------------------------------------------
-// Local utility functions
-
-namespace
-{
-
 void FontError()
 // XS : Lil' wrapper around FormatMessage & GetLastError
 {
 #ifdef _DEBUG
 	LPVOID lpMsgBuf;
 	FormatMessage(
-		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+	    FORMAT_MESSAGE_ALLOCATE_BUFFER |
+	    FORMAT_MESSAGE_FROM_SYSTEM |
+	    FORMAT_MESSAGE_IGNORE_INSERTS,
 		NULL,
 		GetLastError(),
 		0, // Default language
@@ -170,45 +107,60 @@ void FontError()
 		NULL
 	);
 
-	MessageBox(NULL, (LPCSTR)lpMsgBuf, (LPCSTR)"Font Error", MB_OK | MB_ICONINFORMATION);
+//	MessageBox(NULL, (LPCSTR)lpMsgBuf, (LPCSTR)"Font Error", MB_OK | MB_ICONINFORMATION);
+	printf("Font Error\n");
 #endif
 }
+//-----------------------------------------------------------------------------
 
-long ARX_UNICODE_FormattingInRect(HDC hdc, const _TCHAR* str, int _iSpacingY, RECT& _rRect)
+long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, _TCHAR * _lpszUText, int _iSpacingY, RECT _rRect)
 {
-	if (!hUnicodeLibrary)
-		return 0;
 
-	int	len = _tcslen(str);
+	int iTemp = 0;
+
+	if (danaeApp.m_pddsRenderTarget)
+	{
+		HDC hDC;
+
+		if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
+		{
+			int		iLenght	= _tcslen(_lpszUText);
 	int iHeight = 0;
-	bool bWrite = false;
-
 	SIZE sSize;
-	int prev_i;
+			int		iOldTemp;
+			bool	bWrite;
+
 	sSize.cx = sSize.cy = 0;
 
-	int i = 0;
+			SelectObject(hDC, _hFont);
 
 	for (;;)
 	{
 		bWrite = true;
 		int iLenghtCurr = _rRect.left;
-		prev_i = i;
+				iOldTemp		= iTemp;
 
-		for (; i < len; ++i)
-		{
-			GetTextExtentPoint32(hdc, &str[i], 1, &sSize);
+				ARX_CHECK(iTemp < iLenght);
 
-			if (str[i] == _T('\n') || str[i] == _T('*'))
+				for (; iTemp < iLenght ; iTemp++)
+				{
+//					todo: cast
+//					GetTextExtentPoint32W(hDC,
+//					                      &_lpszUText[iTemp],
+//					                      1,
+//					                      &sSize);
+					{
+						if ((_lpszUText[iTemp] == _T('\n')) ||
+						        (_lpszUText[iTemp] == _T('*')))
 			{
 				iHeight += _iSpacingY + sSize.cy;
 				bWrite = false;
-
-				Unicows_TextOutW(hdc, _rRect.left, _rRect.top, &str[prev_i], i-prev_i);
 				_rRect.top += _iSpacingY + sSize.cy;
-				i++;
+							iTemp++;
 				break;
 			}
+					}
+
 
 			iLenghtCurr += sSize.cx;
 
@@ -218,39 +170,131 @@ long ARX_UNICODE_FormattingInRect(HDC hdc, const _TCHAR* str, int _iSpacingY, RE
 
 				if (CHINESE_VERSION)
 				{
-					_TCHAR * ptexttemp = (_TCHAR *)malloc((i - prev_i + 1) << 1);
-					_tcsncpy(ptexttemp, &str[prev_i], i - prev_i);
-					ptexttemp[i-prev_i] = _T('\0');
-
-					Unicows_TextOutW(hdc, _rRect.left, _rRect.top, ptexttemp, _tcslen(ptexttemp));
-					free((void *)ptexttemp);
-					--i;
+							iTemp--;
 				}
 				else
 				{
-					while (str[i] != _T(' ') && i > 0)
-						--i;
-					Unicows_TextOutW(hdc, _rRect.left, _rRect.top, &str[prev_i], i-prev_i);
+							while ((_lpszUText[iTemp] != _T(' ')) && (iTemp > 0)) iTemp--;
 				}
 
 				bWrite = false;
 				_rRect.top += _iSpacingY + sSize.cy;
-				i++;
+						iTemp++;
 				break;
 			}
 		}
 
-		if (i == len || i == prev_i)
+				if ((iTemp == iLenght) ||
+				        ((_rRect.top + sSize.cy) > _rRect.bottom))
+				{
 			break;
 	}
 
+			}
+
+			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
+		}
+	}
+
+	return iTemp;
+}
+
+//-----------------------------------------------------------------------------
+long ARX_UNICODE_FormattingInRect(HDC _hDC, _TCHAR * _lpszUText, int _iSpacingY, RECT & _rRect)
+{
+	int	iLenght = _tcslen(_lpszUText);
+	int iHeight = 0;
+	SIZE sSize;
+	int iOldTemp;
+	bool bWrite;
+	sSize.cx = sSize.cy = 0;
+
+	int iTemp = 0;
+
+	typedef bool (APIENTRY * TextOutW)(HDC hdc,          // handle to DC
+	                                   int nXStart,       // x-coordinate of starting position
+	                                   int nYStart,       // y-coordinate of starting position
+	                                   _TCHAR * lpString, // character string
+	                                   int cbString       // number of characters
+	                                  );
+
+	TextOutW Unicows_TextOutW = (TextOutW)GetProcAddress(hUnicodeLibrary, "TextOutW");
+
+	while (1)
+	{
+		bWrite = true;
+		int iLenghtCurr = _rRect.left;
+		iOldTemp = iTemp;
+
+		for (; iTemp < iLenght; iTemp++)
+		{
+//			todo: cast
+//			GetTextExtentPoint32W(_hDC,
+//			                      &_lpszUText[iTemp],
+//			                      1,
+//			                      &sSize);
+
+			if ((_lpszUText[iTemp] == _T('\n')) ||
+			        (_lpszUText[iTemp] == _T('*')))
+			{
+				iHeight += _iSpacingY + sSize.cy;
+				_lpszUText[iTemp] = _T('\0');
+				bWrite = false;
+
+				Unicows_TextOutW(_hDC, _rRect.left, _rRect.top, &_lpszUText[iOldTemp], _tcslen(&_lpszUText[iOldTemp]));
+				_rRect.top += _iSpacingY + sSize.cy;
+				iTemp++;
+				break;
+			}
+			
+			iLenghtCurr += sSize.cx;
+
+			if (iLenghtCurr > _rRect.right)
+			{
+				iHeight += _iSpacingY + sSize.cy;
+
+				if (CHINESE_VERSION)
+				{
+					_TCHAR * ptexttemp = (_TCHAR *)malloc((iTemp - iOldTemp + 1) << 1);
+					_tcsncpy(ptexttemp, &_lpszUText[iOldTemp], iTemp - iOldTemp);
+					ptexttemp[iTemp-iOldTemp] = _T('\0');
+
+					Unicows_TextOutW(_hDC, _rRect.left, _rRect.top, ptexttemp, _tcslen(ptexttemp));
+					free((void *)ptexttemp);
+					ptexttemp = NULL;
+					iTemp--;
+				}
+				else
+				{
+					while ((_lpszUText[iTemp] != _T(' ')) && (iTemp > 0)) iTemp--;
+
+					_lpszUText[iTemp] = _T('\0');
+
+					Unicows_TextOutW(_hDC, _rRect.left, _rRect.top, &_lpszUText[iOldTemp], _tcslen(&_lpszUText[iOldTemp]));
+				}
+
+				bWrite = false;
+				_rRect.top += _iSpacingY + sSize.cy;
+				iTemp++;
+				break;
+			}
+
+
+		}
+
+		if (iTemp == iLenght) break;
+
+		if (iTemp == iOldTemp) break;
+	}
 
 	if (bWrite)
 	{
 		iHeight += _iSpacingY + sSize.cy;
 
-		if (!Unicows_TextOutW(hdc, _rRect.left, _rRect.top, &str[prev_i], _tcslen(&str[prev_i])))
+		if (!Unicows_TextOutW(_hDC, _rRect.left, _rRect.top, &_lpszUText[iOldTemp], _tcslen(&_lpszUText[iOldTemp])))
+		{
 			FontError();
+		}
 
 		_rRect.top += _iSpacingY + sSize.cy;
 	}
@@ -258,20 +302,39 @@ long ARX_UNICODE_FormattingInRect(HDC hdc, const _TCHAR* str, int _iSpacingY, RE
 	return iHeight;
 }
 
-long ARX_UNICODE_DrawTextInRect(float x, float y, float maxx, float maxy, const _TCHAR* text,
-								COLORREF col, COLORREF bcol, HFONT font, HRGN hRgn = NULL, HDC hHDC = NULL)
+//-----------------------------------------------------------------------------
+long ARX_UNICODE_DrawTextInRect(float x, float y,
+                                float maxx, float maxy,
+                                _TCHAR * _lpszUText,
+                                COLORREF col,
+                                COLORREF bcol,
+                                HFONT font,
+                                HRGN hRgn,
+                                HDC hHDC
+                               )
 {
-	if (!danaeApp.m_pddsRenderTarget)
-		return 0;
+	HDC hDC = NULL;
 
-	HDC hDC = hHDC;
+	// Get a DC for the surface. Then, write out the buffer
+	if (danaeApp.m_pddsRenderTarget)
+	{
+		if (hHDC)
+		{
+			hDC = hHDC;
+		}
+
 	if (hHDC || SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 	{
-		if (hRgn)
-			SelectClipRgn(hDC, hRgn);
 
-		if (bcol == 0x00FF00FF)
-			SetBkMode(hDC, TRANSPARENT);
+			_tcscpy(tUText, _lpszUText);
+
+		if (hRgn)
+			{
+				SelectClipRgn(hDC,
+				              hRgn);
+			}
+
+			if (bcol == 0x00FF00FF) SetBkMode(hDC, TRANSPARENT);
 		else
 		{
 			SetBkMode(hDC, OPAQUE);
@@ -286,141 +349,127 @@ long ARX_UNICODE_DrawTextInRect(float x, float y, float maxx, float maxy, const 
 		rect.top	= (long)y;
 		rect.left	= (long)x;
 		rect.right	= (long)maxx;
-		long n		= ARX_UNICODE_FormattingInRect(hDC, text, 0, rect);
+			long n		= ARX_UNICODE_FormattingInRect(hDC, tUText, 0, rect);
+			rect.top	= (long)y;
+			rect.bottom	= ((long)y) + n;
 
-		SelectClipRgn(hDC, NULL);
+			SelectClipRgn(hDC,
+			              NULL);
 
 		if (!hHDC)
+			{
 			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
+			}
 
 		return n;
+	}
 	}
 
 	return 0;
 }
 
-} // \namespace
+//-----------------------------------------------------------------------------
+long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice,
+                   HFONT ef,
+                   float x, float y,
+                   long spacingx, long spacingy,
+                   _TCHAR * car,
+                   COLORREF colo, COLORREF bcol)
+{
+	if (car == NULL) return 0;
+
+	if (car[0] == 0) return 0;
+
+	//ArxFont
+	ARX_UNICODE_DrawTextInRect(x, y, 9999.f, 999.f, car, colo, bcol, ef);
+	return 15 + spacingy;
+}
+
+long ARX_TEXT_DrawRect(LPDIRECT3DDEVICE7 pd3dDevice,
+                       HFONT ef,
+                       float x, float y,
+                       long spacingx, long spacingy,
+                       float maxx, float maxy,
+                       _TCHAR * car,
+                       COLORREF colo,
+                       HRGN _hRgn,
+                       COLORREF bcol,
+                       long flags)
+{
+
+	bcol = RGB((bcol >> 16) & 255, (bcol >> 8) & 255, (bcol) & 255);
+
+	colo = RGB((colo >> 16) & 255, (colo >> 8) & 255, (colo) & 255);
+	return ARX_UNICODE_DrawTextInRect(x, y, maxx, maxy, car, colo, bcol, ef, _hRgn);
+}
+
 
 //-----------------------------------------------------------------------------
-long ARX_UNICODE_ForceFormattingInRect(HFONT font, const _TCHAR* text, int linespacing, RECT rect)
+float DrawBookTextInRect(float x, float y, float maxx, float maxy, _TCHAR * text, COLORREF col, COLORREF col2, HFONT font)
 {
-	if (!danaeApp.m_pddsRenderTarget)
-		return 0;
+	return (float)ARX_TEXT_DrawRect(GDevice, font,
+	                                (BOOKDECX + x) * Xratio, (BOOKDECY + y) * Yratio, -3, 0,
+	                                (BOOKDECX + maxx) * Xratio, (BOOKDECY + maxy) * Yratio, text, col, NULL, col2);
+}
 
-	int i = 0;
+//-----------------------------------------------------------------------------
+void DrawBookTextCenter(float x, float y, _TCHAR * text, COLORREF col, COLORREF col2, HFONT font)
+{
+	UNICODE_ARXDrawTextCenter((BOOKDECX + x)*Xratio, (BOOKDECY + y)*Yratio, text, col, col2, font);
+}
+
+//-----------------------------------------------------------------------------
+
+long UNICODE_ARXDrawTextCenter(float x, float y, _TCHAR * str, COLORREF col, COLORREF bcol, HFONT font)
+{
 	HDC hDC;
-	if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
+
+	// Get a DC for the surface. Then, write out the buffer
+	if (danaeApp.m_pddsRenderTarget)
 	{
-		int		len	= _tcslen(text);
-		SIZE	size;
-
-		size.cx = size.cy = 0 ;
-
-		SelectObject(hDC, font);
-
-		for (;;)
+		if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 		{
-			int width = rect.left;
-
-			for (; i < len; ++i)
+			if (bcol == 0x00FF00FF) SetBkMode(hDC, TRANSPARENT);
+			else
 			{
-				GetTextExtentPoint32(hDC, &text[i], 1, &size);
-
-				if (text[i] == _T('\n') || text[i] == _T('*'))
-				{
-					rect.top += linespacing + size.cy;
-					++i;
-					break;
-				}
-
-				width += size.cx;
-
-				if (width > rect.right)
-				{
-					if (CHINESE_VERSION)
-						--i;
-					else
-						while (text[i] != _T(' ') && i > 0)
-							--i;
-
-					rect.top += linespacing + size.cy;
-					++i;
-					break;
-				}
+				SetBkMode(hDC, OPAQUE);
+				SetBkColor(hDC, bcol);
 			}
 
-			if (i == len || (rect.top + size.cy) > rect.bottom)
-				break;
-		}
+			SetTextColor(hDC, col);
 
-		danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
+			SelectObject(hDC,  font);
+
+
+			SIZE siz;
+//			todo: cast
+//			GetTextExtentPoint32W(hDC,         // handle to DC
+//			                        str,           // character string
+//			                        _tcslen(str),   // number of characters
+//			                        &siz          // size
+//			                       );
+			RECT rect;
+			rect.top = (long)y;
+			rect.bottom = (long)999;
+			rect.left = (long)x - (siz.cx >> 1);
+			rect.right = (long)999;
+
+//			todo: cast
+//			TextOutW(hDC, rect.left, rect.top, str, _tcslen(str));
+
+			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
+			return siz.cx;
+		}
 	}
 
-	return i;
-}
+		return 0;
+				}
 
-//-----------------------------------------------------------------------------
-void ARX_TEXT_Draw(HFONT ef, float x, float y, const _TCHAR* car, COLORREF colo, COLORREF bcol)
-{
-	if (!car || car[0] == _T('\0'))
-		return;
 
-	ARX_UNICODE_DrawTextInRect(x, y, 9999.f, 999.f, car, colo, bcol, ef);
-}
 
-long ARX_TEXT_DrawRect(HFONT ef, float x, float y, float maxx, float maxy, const _TCHAR* car,
-					   COLORREF fgcolor, HRGN _hRgn, COLORREF bgcolor)
-{
-	bgcolor = RGB((bgcolor >> 16) & 255, (bgcolor >> 8) & 255, (bgcolor) & 255);
-	fgcolor = RGB((fgcolor >> 16) & 255, (fgcolor >> 8) & 255, (fgcolor) & 255);
+long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, _TCHAR * str, COLORREF col, COLORREF bcol, HFONT font, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut)
+				{
 
-	return ARX_UNICODE_DrawTextInRect(x, y, maxx, maxy, car, fgcolor, bgcolor, ef, _hRgn);
-}
-
-//-----------------------------------------------------------------------------
-void DrawBookTextInRect(HFONT font, float x, float y, float maxx, float maxy, const _TCHAR* text, COLORREF fgcolor, COLORREF bgcolor)
-{
-	ARX_TEXT_DrawRect(font, (BOOKDECX + x) * Xratio, (BOOKDECY + y) * Yratio, (BOOKDECX + maxx) * Xratio,
-					  (BOOKDECY + maxy) * Yratio, text, fgcolor, NULL, bgcolor);
-}
-
-//-----------------------------------------------------------------------------
-void DrawBookTextCenter(HFONT font, float x, float y, const _TCHAR* str, COLORREF fgcol, COLORREF bgcol)
-{
-	UNICODE_ARXDrawTextCenter(font, (BOOKDECX + x) * Xratio, (BOOKDECY + y) * Yratio, str, fgcol, bgcol);
-}
-
-//-----------------------------------------------------------------------------
-
-void UNICODE_ARXDrawTextCenter(HFONT font, float x, float y, const _TCHAR* str, COLORREF fgcol, COLORREF bgcol)
-{
-	HDC hDC;
-
-	if (danaeApp.m_pddsRenderTarget && SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
-	{
-		if (bgcol == 0x00FF00FF)
-			SetBkMode(hDC, TRANSPARENT);
-		else
-		{
-			SetBkMode(hDC, OPAQUE);
-			SetBkColor(hDC, bgcol);
-		}
-
-		SetTextColor(hDC, fgcol);
-
-		SelectObject(hDC, font);
-
-		SIZE siz;
-		GetTextExtentPoint32(hDC, str, _tcslen(str), &siz);
-
-		TextOut(hDC, static_cast<int>(x - siz.cx / 2), static_cast<int>(y), str, _tcslen(str));
-
-		danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-	}
-}
-
-void UNICODE_ARXDrawTextCenteredScroll(HFONT font, float x, float y, float x2, const _TCHAR* str, COLORREF col, COLORREF bcol, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut)
-{
 	RECT rRect;
 	ARX_CHECK_LONG(y);
 	ARX_CHECK_LONG(x + x2);   //IF OK, x - x2 cannot overflow
@@ -428,14 +477,34 @@ void UNICODE_ARXDrawTextCenteredScroll(HFONT font, float x, float y, float x2, c
 	rRect.top	=	ARX_CLEAN_WARN_CAST_LONG(y);
 	rRect.right	=	ARX_CLEAN_WARN_CAST_LONG(x + x2);
 
+
 	if (pTextManage)
-		pTextManage->AddText(font, str, rRect, col, bcol, iTimeOut, iTimeScroll, fSpeed, iNbLigne);
+	{
+		pTextManage->AddText(font,
+		                     str,
+		                     rRect,
+		                     col,
+		                     bcol,
+		                     iTimeOut,
+		                     iTimeScroll,
+		                     fSpeed,
+		                     iNbLigne
+		                    );
+
+		return ARX_CLEAN_WARN_CAST_LONG(x2);
+	}
+
+	return 0;
 }
 
 //-----------------------------------------------------------------------------
-void ARX_Allocate_Text(_TCHAR*& dest, const _TCHAR* id_string)
+void ARX_Allocate_Text(_TCHAR *&dest, _TCHAR * id_string)
+{
+	if (dest != NULL)
 {
 	free(dest);
+		dest = NULL;
+	}
 
 	_TCHAR output[4096];
 	PAK_UNICODE_GetPrivateProfileString(id_string, _T("string"), _T("default"), output, 4096, NULL);
@@ -484,31 +553,34 @@ struct _FONT_NAMING_NAMERECORD
 //-----------------------------------------------------------------------------
 ULONG LilEndianLong(ULONG ulValue)
 {
-	return (MAKELONG(MAKEWORD(HIBYTE(HIWORD(ulValue)), LOBYTE(HIWORD(ulValue))),
-					 MAKEWORD(HIBYTE(LOWORD(ulValue)), LOBYTE(LOWORD(ulValue)))));
+	return (
+	           MAKELONG(
+	               MAKEWORD(HIBYTE(HIWORD(ulValue)), LOBYTE(HIWORD(ulValue))),
+	               MAKEWORD(HIBYTE(LOWORD(ulValue)), LOBYTE(LOWORD(ulValue)))
+	           )
+	       );
 }
 
 //-----------------------------------------------------------------------------
 USHORT LilEndianShort(USHORT ulValue)
 {
-	return (MAKEWORD(HIBYTE(ulValue), LOBYTE(ulValue)));
+	return (
+	           MAKEWORD(HIBYTE(ulValue), LOBYTE(ulValue))//,
+	       );
 }
 
 //-----------------------------------------------------------------------------
-namespace
-{
-
-_TCHAR* GetFontName(const char* fontFile)
+_TCHAR * GetFontName(char * _lpszFileName)
 {
 	DWORD dwSize;
 	DWORD dwRead;
 	int   iResult;
 
-	HANDLE hFile = CreateFile(fontFile, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE hFile = CreateFile(_lpszFileName, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
-		MessageBox(NULL, "FontName :: File not Found", fontFile, MB_OK);
+		MessageBox(NULL, "FontName :: File not Found", _lpszFileName, MB_OK);
 		return NULL;
 	}
 
@@ -578,7 +650,10 @@ _TCHAR* GetFontName(const char* fontFile)
 						SetFilePointer(hFile, 0, NULL, FILE_CURRENT);
 						SetFilePointer(hFile, FTH.ulOffset + FNH.usOffsetStorage + FNN.usStringOffset, NULL, FILE_BEGIN);
 
+
 						wchar_t szName[256];
+
+
 
 						ZeroMemory(szName, 256);
 						assert(FNN.usStringLength < 256);
@@ -622,9 +697,11 @@ void _ShowText(const char* text)
 
 		if (danaeApp.DANAEStartRender())
 		{
+
+			HDC hDC;
+
 			if (danaeApp.m_pddsRenderTarget)
 			{
-				HDC hDC;
 				if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 				{
 					SetTextColor(hDC, RGB(0, 255, 0));
@@ -642,163 +719,451 @@ void _ShowText(const char* text)
 }
 
 //-----------------------------------------------------------------------------
-// ARXText
-//-----------------------------------------------------------------------------
-
-ARXText::ARXText(HFONT font, const _TCHAR* _str, const RECT& rect, long fgcolor, long bgcolor,
-				 long timeout, long scrolltime, float scrollspeed, unsigned maxlines)
-: eType(ARX_TEXT_STAY)
-, hFont(font)
-, rRect(rect)
-, rRectClipp(rect)
-, str(_str)
-, fgcolor(fgcolor)
-, bgcolor(bgcolor)
-, timeout(timeout)
-, offsety(0.f)
-, scrollspeed(scrollspeed)
-, scrolltime(scrolltime)
+void ARX_Text_Init(ARX_TEXT * _pArxText)
 {
-	if (maxlines)
-	{
-		HDC hDC;
-		if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
-		{
-			SIZE sSize;
-			SelectObject(hDC, hFont);
-			GetTextExtentPoint32W(hDC, str.c_str(), str.length(), &sSize);
-			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-			rRectClipp.bottom = rRectClipp.top + sSize.cy * maxlines;
-		}
-	}
+	_pArxText->eType		= ARX_TEXT_ONCE;
+	_pArxText->hFont		= hFontInGame;
+	_pArxText->rRect.top    = 0;
+	_pArxText->rRect.left   = 0;
+	_pArxText->rRect.right  = 0;
+	_pArxText->rRect.bottom = 0;
+	_pArxText->rRectClipp.top    = 0;
+	_pArxText->rRectClipp.bottom = 0;
+	_pArxText->rRectClipp.left   = 0;
+	_pArxText->rRectClipp.right  = 0;
+	_pArxText->lpszUText	= NULL;
+	_pArxText->fDeltaY		= 0;
+	_pArxText->fSpeedScrollY = 0;
+	_pArxText->lCol			= RGB(1, 1, 1);
+	_pArxText->lBkgCol		= 0x00FF00FF;
+	_pArxText->lTimeScroll	= 0;
+	_pArxText->lTimeOut		= 0;
+	_pArxText->lTailleLigne = 0;
+	_pArxText->iNbLineClip  = 0;
 }
 
-//-----------------------------------------------------------------------------
-// CARXTextManager
 //-----------------------------------------------------------------------------
 CARXTextManager::CARXTextManager()
 {
+	vText.clear();
 }
 
+//-----------------------------------------------------------------------------
 CARXTextManager::~CARXTextManager()
 {
-	Clear();
-}
+	vector<ARX_TEXT *>::iterator itManage;
 
-void CARXTextManager::AddText(HFONT font, const _TCHAR* str, const RECT& rect, long fgcolor, long bgcolor, long timeout, long scrolltime, float scrollspeed, int maxlines)
-{
-	if (!str || !font)
-		return;
-
-	ARXText* newText = new ARXText(font, str, rect, fgcolor, bgcolor, timeout, scrolltime, scrollspeed, maxlines);
-	vText_.push_back(newText);
-}
-
-void CARXTextManager::AddText(HFONT font, const _TCHAR* str, long x, long y, long fgcolor)
-{
-	RECT r;
-	r.left = x;
-	r.top = y;
-	r.right = 9999;
-	r.bottom = 9999;
-	AddText(font, str, r, fgcolor, 0x00FF00FF);
-}
-
-void CARXTextManager::Update(float dt)
-{
-	ARX_CHECK_INT(dt);
-	int delta = ARX_CLEAN_WARN_CAST_INT(dt);
-
-	for (std::vector<ARXText*>::iterator it = vText_.begin(); it != vText_.end(); )
+	for (itManage = vText.begin(); itManage < vText.end(); itManage++)
 	{
-		ARXText * text = *it;
-		assert(text);
-
-		if (text->timeout < 0)
+		if (*itManage)
 		{
-			delete text;
-			it = vText_.erase(it);
+			if ((*itManage)->lpszUText)
+			{
+				delete[](*itManage)->lpszUText;
+				(*itManage)->lpszUText = NULL;
+			}
+
+			free((void *)(*itManage));
+			*itManage = NULL;
+		}
+	}
+
+	vText.clear();
+}
+
+//-----------------------------------------------------------------------------
+bool CARXTextManager::AddText(HFONT _hFont, _TCHAR * _lpszUText, RECT & _rRect, long _lCol, long _lBkgCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp)
+{
+	if ((_lpszUText) && (_hFont))
+	{
+		ARX_TEXT * pArxText = (ARX_TEXT *) malloc(sizeof(ARX_TEXT));
+
+		if (pArxText)
+		{
+			pArxText->lpszUText = new _TCHAR[_tcsclen(_lpszUText)+1];
+
+			if (pArxText->lpszUText)
+			{
+				pArxText->hFont = _hFont;
+				_tcscpy(pArxText->lpszUText, _lpszUText);
+				pArxText->eType			= ARX_TEXT_STAY;
+				pArxText->rRect			= _rRect;
+				pArxText->lCol			= _lCol;
+				pArxText->lBkgCol		= _lBkgCol;
+				pArxText->lTimeScroll	= _lTimeScroll;
+				pArxText->fDeltaY		= 0.f;
+				pArxText->fSpeedScrollY	= _fSpeedScroll;
+				pArxText->lTimeOut		= _lTimeOut;
+
+				if (iNbLigneClipp)
+	{
+		HDC hDC;
+					SIZE sSize;
+
+		if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
+		{
+						SelectObject(hDC, pArxText->hFont);
+//						todo: cast
+//						GetTextExtentPoint32W(hDC,
+//						                      pArxText->lpszUText,
+//						                      _tcslen(pArxText->lpszUText),
+//						                      &sSize);
+						danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
+						pArxText->lTailleLigne = sSize.cy;
+						sSize.cy *= iNbLigneClipp;
+					}
+					else
+					{
+						sSize.cy = _rRect.bottom - _rRect.top;
+						pArxText->lTailleLigne = sSize.cy;
+					}
+
+					SetRect(&pArxText->rRectClipp,
+					        pArxText->rRect.left,
+					        pArxText->rRect.top,
+					        pArxText->rRect.right,
+					        pArxText->rRect.top + sSize.cy);
+				}
+				else
+				{
+					pArxText->rRectClipp = pArxText->rRect;
+				}
+
+				vText.insert(vText.end(), pArxText);
+				return true;
+			}
+
+			free((void *)pArxText);
+			pArxText = NULL;
+
+		}
+	}
+
+	return false;
+}
+
+//-----------------------------------------------------------------------------
+bool CARXTextManager::AddText(ARX_TEXT * _pArxText)
+{
+	if ((_pArxText) && (_pArxText->lpszUText) && (_pArxText->hFont))
+	{
+		ARX_TEXT * pArxText = (ARX_TEXT *) malloc(sizeof(ARX_TEXT));
+
+		if (pArxText)
+		{
+			pArxText->lpszUText = new _TCHAR[_tcsclen(_pArxText->lpszUText)+1];
+
+			if (pArxText->lpszUText)
+			{
+				pArxText->hFont			= _pArxText->hFont;
+				_tcscpy(pArxText->lpszUText, _pArxText->lpszUText);
+				pArxText->eType			= _pArxText->eType;
+				pArxText->rRect			= _pArxText->rRect;
+				pArxText->lCol			= _pArxText->lCol;
+				pArxText->lBkgCol		= _pArxText->lBkgCol;
+				pArxText->lTimeScroll	= _pArxText->lTimeScroll;
+				pArxText->fDeltaY		= _pArxText->fDeltaY;
+				pArxText->fSpeedScrollY	= _pArxText->fSpeedScrollY;
+				pArxText->lTimeOut		= _pArxText->lTimeOut;
+				pArxText->iNbLineClip   = _pArxText->iNbLineClip;
+
+				if (pArxText->iNbLineClip)
+				{
+					HDC hDC;
+			SIZE sSize;
+
+					if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
+					{
+						SelectObject(hDC, pArxText->hFont);
+//						todo: cast
+//						GetTextExtentPoint32W(hDC,
+//						                      pArxText->lpszUText,
+//						                      _tcslen(pArxText->lpszUText),
+//						                      &sSize);
+			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
+						pArxText->lTailleLigne = sSize.cy;
+						sSize.cy *= pArxText->iNbLineClip;
+		}
+					else
+					{
+						sSize.cy = pArxText->rRect.bottom - pArxText->rRect.top;
+						pArxText->lTailleLigne = sSize.cy;
+					}
+
+					SetRect(&pArxText->rRectClipp,
+					        pArxText->rRect.left,
+					        pArxText->rRect.top,
+					        pArxText->rRect.right,
+					        pArxText->rRect.top + sSize.cy);
+				}
+				else
+				{
+					pArxText->rRectClipp = pArxText->rRect;
+				}
+
+				vText.insert(vText.end(), pArxText);
+				return true;
+			}
+
+			free((void *)pArxText);
+			pArxText = NULL;
+	}
+}
+
+	return false;
+}
+
+//-----------------------------------------------------------------------------
+void CARXTextManager::Update(float _fDiffFrame)
+{
+	vector<ARX_TEXT *>::iterator itManage;
+
+
+	ARX_CHECK_INT(_fDiffFrame);
+	int _iDiffFrame = ARX_CLEAN_WARN_CAST_INT(_fDiffFrame);
+
+
+
+	for (itManage = vText.begin(); itManage < vText.end();)
+{
+		ARX_TEXT * pArxText = *itManage;
+
+		if (pArxText)
+{
+			if ((pArxText->lTimeOut < 0))
+{
+				delete[] pArxText->lpszUText;
+				pArxText->lpszUText = NULL;
+				free((void *)pArxText);
+				pArxText = NULL;
+				itManage = vText.erase(itManage);
 			continue;
 		}
 
-		text->timeout -= delta;
+			pArxText->lTimeOut -= _iDiffFrame;
 
-		if (text->scrolltime < 0 && text->offsety < (text->rRect.bottom - text->rRectClipp.bottom))
+			if ((pArxText->lTimeScroll < 0) &&
+			        (pArxText->fDeltaY < (pArxText->rRect.bottom - pArxText->rRectClipp.bottom))
+			   )
 		{
-			text->offsety += text->scrollspeed * (float)delta;
-			if (text->offsety >= (text->rRect.bottom - text->rRectClipp.bottom))
-				text->offsety = ARX_CLEAN_WARN_CAST_FLOAT(text->rRect.bottom - text->rRectClipp.bottom);
+				pArxText->fDeltaY += pArxText->fSpeedScrollY * (float)_iDiffFrame;
+
+				if (pArxText->fDeltaY >= (pArxText->rRect.bottom - pArxText->rRectClipp.bottom))
+				{
+					pArxText->fDeltaY = ARX_CLEAN_WARN_CAST_FLOAT(pArxText->rRect.bottom - pArxText->rRectClipp.bottom);
+				}
 		}
 		else
-			text->scrolltime -= delta;
+			{
+				pArxText->lTimeScroll -= _iDiffFrame;
+			}
+		}
 
-		++it;
+		itManage++;
 	}
 }
 
 //-----------------------------------------------------------------------------
 void CARXTextManager::Render()
 {
+	vector<ARX_TEXT *>::iterator itManage;
+
+	itManage = vText.begin();
+
 	HDC hDC = NULL;
 
-	if (danaeApp.m_pddsRenderTarget && !vText_.empty())
-		danaeApp.m_pddsRenderTarget->GetDC(&hDC);
-
-	for (std::vector<ARXText*>::const_iterator it = vText_.begin(); it != vText_.end(); )
+	if (danaeApp.m_pddsRenderTarget && vText.size())
 	{
-		ARXText* text = *it;
-		assert(text);
+		danaeApp.m_pddsRenderTarget->GetDC(&hDC);
+	}
 
+	while (itManage != vText.end())
+	{
+		ARX_TEXT * pArxText = *itManage;
+
+		if (pArxText)
+		{
 		HRGN hRgn = NULL;
-		hRgn = CreateRectRgn(text->rRectClipp.left, text->rRectClipp.top,
-							 text->rRectClipp.right, text->rRectClipp.bottom);
+			hRgn = CreateRectRgn(pArxText->rRectClipp.left,
+			                     pArxText->rRectClipp.top,
+			                     pArxText->rRectClipp.right,
+			                     pArxText->rRectClipp.bottom);
 
-		long text_height = ARX_UNICODE_DrawTextInRect(ARX_CLEAN_WARN_CAST_FLOAT(text->rRect.left),
-			text->rRect.top - text->offsety,
-			ARX_CLEAN_WARN_CAST_FLOAT(text->rRect.right),
+
+			pArxText->rRect.bottom = pArxText->rRect.top + ARX_UNICODE_DrawTextInRect(ARX_CLEAN_WARN_CAST_FLOAT(pArxText->rRect.left),
+			                         pArxText->rRect.top - pArxText->fDeltaY,
+			                         ARX_CLEAN_WARN_CAST_FLOAT(pArxText->rRect.right),
 			0,
-			text->str.c_str(),
-			text->fgcolor,
-			text->bgcolor,
-			text->hFont,
+			                         pArxText->lpszUText,
+			                         pArxText->lCol,
+			                         pArxText->lBkgCol,
+			                         pArxText->hFont,
 			hRgn,
 			hDC);
-		text->rRect.bottom = text->rRect.top + text_height;
+
 
 		if (hRgn)
+			{
 			DeleteObject(hRgn);
+			}
 
-		if (text->eType == ARX_TEXT_ONCE)
+			if (pArxText->eType == ARX_TEXT_ONCE)
 		{
-			delete text;
-			it = vText_.erase(it);
+				delete[] pArxText->lpszUText;
+				pArxText->lpszUText = NULL;
+				free((void *)pArxText);
+				pArxText = NULL;
+				itManage = vText.erase(itManage);
 			continue;
 		}
+		}
 
-		++it;
+		itManage++;
 	}
 
 	if (hDC)
+	{
 		danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 }
-
-void CARXTextManager::Clear()
-{
-	for (std::vector<ARXText*>::iterator it = vText_.begin(), it_end = vText_.end(); it != it_end; ++it)
-		delete *it;
-
-	vText_.clear();
-}
-
-bool CARXTextManager::HasText() const
-{
-	return !vText_.empty();
 }
 
 //-----------------------------------------------------------------------------
-
-namespace
+void CARXTextManager::Clear()
 {
+	vector<ARX_TEXT *>::iterator itManage;
+
+	for (itManage = vText.begin(); itManage < vText.end(); itManage++)
+	{
+		if (*itManage)
+		{
+			if ((*itManage)->lpszUText)
+			{
+				delete[](*itManage)->lpszUText;
+				(*itManage)->lpszUText = NULL;
+}
+
+			free((void *)(*itManage));
+			*itManage = NULL;
+		}
+}
+
+	vText.clear();
+}
+
+int Traffic(int iFontSize)
+{
+	iFontSize = (int)(float)(iFontSize * Yratio);
+
+	if (CHINESE_VERSION)
+	{
+		if (iFontSize < 14)
+			iFontSize = 12;
+		else if (iFontSize < 15)
+			iFontSize = 14;
+		else if (iFontSize < 18)
+			iFontSize = 15;
+		else if (iFontSize <= 29)
+			iFontSize = 18;
+		else
+			iFontSize = 30;
+	}
+
+	return iFontSize;
+}
+
+HFONT _CreateFont(
+    int nHeight,               // height of font
+    int nWidth,                // average character width
+    int nEscapement,           // angle of escapement
+    int nOrientation,          // base-line orientation angle
+    int fnWeight,              // font weight
+    DWORD fdwItalic,           // italic attribute option
+    DWORD fdwUnderline,        // underline attribute option
+    DWORD fdwStrikeOut,        // strikeout attribute option
+    DWORD fdwCharSet,          // character set identifier
+    DWORD fdwOutputPrecision,  // output precision
+    DWORD fdwClipPrecision,    // clipping precision
+    DWORD fdwQuality,          // output quality
+    DWORD fdwPitchAndFamily,   // pitch and family
+    _TCHAR * lpszFace          // typeface name
+)
+{
+
+
+	typedef HFONT(APIENTRY * CreateFontW)(
+	    int nHeight,               // height of font
+	    int nWidth,                // average character width
+	    int nEscapement,           // angle of escapement
+	    int nOrientation,          // base-line orientation angle
+	    int fnWeight,              // font weight
+	    DWORD fdwItalic,           // italic attribute option
+	    DWORD fdwUnderline,        // underline attribute option
+	    DWORD fdwStrikeOut,        // strikeout attribute option
+	    DWORD fdwCharSet,          // character set identifier
+	    DWORD fdwOutputPrecision,  // output precision
+	    DWORD fdwClipPrecision,    // clipping precision
+	    DWORD fdwQuality,          // output quality
+	    DWORD fdwPitchAndFamily,   // pitch and family
+	    LPWSTR wlpszFace           // typeface name
+	);
+
+	if (!hUnicodeLibrary)
+	{
+		return NULL;
+	}
+
+ 
+
+	CreateFontW Unicows_CreateFontW = (CreateFontW)GetProcAddress(hUnicodeLibrary, "CreateFontW");
+	/*
+	ANSI_CHARSET
+	BALTIC_CHARSET
+	CHINESEBIG5_CHARSET
+	DEFAULT_CHARSET
+	EASTEUROPE_CHARSET
+	GB2312_CHARSET
+	GREEK_CHARSET
+	HANGUL_CHARSET
+	MAC_CHARSET
+	OEM_CHARSET
+	RUSSIAN_CHARSET
+	SHIFTJIS_CHARSET
+	SYMBOL_CHARSET
+	TURKISH_CHARSET
+	VIETNAMESE_CHARSET
+	*/
+
+	if (EAST_EUROPE)
+	{
+		fdwCharSet = CHINESEBIG5_CHARSET;
+	}
+
+	//HFONT  ret = CreateFont(
+	HFONT ret = Unicows_CreateFontW(
+	                nHeight,               // height of font
+	                nWidth,                // average character width
+	                nEscapement,           // angle of escapement
+	                nOrientation,          // base-line orientation angle
+	                fnWeight,              // font weight
+	                fdwItalic,           // italic attribute option
+	                fdwUnderline,        // underline attribute option
+	                fdwStrikeOut,        // strikeout attribute option
+	                fdwCharSet,          // character set identifier
+	                fdwOutputPrecision,  // output precision
+	                fdwClipPrecision,    // clipping precision
+	                fdwQuality,          // output quality
+	                fdwPitchAndFamily,   // pitch and family
+	                (LPWSTR)lpszFace     // typeface name
+	            );
+
+	if (!ret)
+	{
+		FontError();
+	}
+
+	return ret;
+}
+
 
 HFONT CreateFontFromProfile(_TCHAR* faceName, const _TCHAR* section, const _TCHAR* defaultFontSize, bool antialias)
 {
@@ -832,26 +1197,22 @@ HFONT CreateFontFromProfile(_TCHAR* faceName, const _TCHAR* section, const _TCHA
 	return ret;
 }
 
-} // \namespace
-
 //-----------------------------------------------------------------------------
-
 void ARX_Text_Init()
 {
 	ARX_Text_Close();
 
-	// Load unicows
+
 	hUnicodeLibrary = LoadLibraryA("unicows.dll");
+
 	if (!hUnicodeLibrary)
+	{
 		exit(0);
-	Unicows_AddFontResourceW = (ptrUnicodeFunc_AddFontResourceW)GetProcAddress(hUnicodeLibrary, "AddFontResourceW");
-	Unicows_CreateFontW      = (ptrUnicodeFunc_CreateFontW)     GetProcAddress(hUnicodeLibrary, "CreateFontW");
-	Unicows_RemoveResourceW  = (ptrUnicodeFunc_RemoveResourceW) GetProcAddress(hUnicodeLibrary, "RemoveFontResourceW");
-	Unicows_TextOutW         = (ptrUnicodeFunc_TextOutW)        GetProcAddress(hUnicodeLibrary, "TextOutW");
+	}
 
 	ARX_Localisation_Init();
 
-	// Add the font file to the font resources
+	_TCHAR wtx[256];
 	char tx[256];
 
 	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf"); // Full path
@@ -864,7 +1225,6 @@ void ARX_Text_Init()
 //	todo: cast
 //	MultiByteToWideChar(CP_ACP, 0, tx , -1, wtx, 256);		// XS : We need to pass a unicode string to AddFontResourceW
 
-	wchar_t wtx[256];
 	typedef int (APIENTRY * AddFontRessourceW)(const wchar_t *);
 
 	AddFontRessourceW Unicows_AddFontResourceW = (AddFontRessourceW)GetProcAddress(hUnicodeLibrary, "AddFontResourceW");
@@ -894,6 +1254,7 @@ void ARX_Text_Init()
 
 
 	pTextManage = new CARXTextManager();
+	pTextManageFlyingOver = new CARXTextManager();
 
 	hFontMainMenu   = CreateFontFromProfile(lpszFont, _T("system_font_mainmenu_size"),     _T("58"), true);
 	hFontMenu       = CreateFontFromProfile(lpszFont, _T("system_font_menu_size"),         _T("32"), true);
@@ -906,7 +1267,7 @@ void ARX_Text_Init()
 	hFontInBook     = CreateFontFromProfile(lpszFont, _T("system_font_book_size"),         _T("18"), false);
 
 	delete[] lpszFont;
-}
+	}
 
 void ARX_Text_Close()
 {

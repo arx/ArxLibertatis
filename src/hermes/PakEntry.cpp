@@ -324,7 +324,11 @@ PakFile * PakDirectory::getFile(const char * name) {
 		}
 	}
 	
-	assert(d->filesMap != NULL);
+	if(!d->filesMap) {
+		assert(d->files == NULL);
+		// Empty directory.
+		return NULL;
+	}
 	
 	const char * file = name + fpos;
 	return (PakFile *)d->filesMap->get(file);

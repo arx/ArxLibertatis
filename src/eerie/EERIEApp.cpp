@@ -967,7 +967,11 @@ HRESULT CD3DApplication::UpdateGamma()
 
 	return 0;
 }
- 
+
+HRESULT CD3DApplication::Render() {
+	return S_OK;
+}
+
 //*************************************************************************************
 // Render3DEnvironment()
 // Draws the scene.
@@ -991,6 +995,7 @@ HRESULT CD3DApplication::Render3DEnvironment()
 	// Check the cooperative level before rendering
 	if (FAILED(hr = m_pDD->TestCooperativeLevel()))
 	{
+		printf("TestCooperativeLevel failed\n");
 		switch (hr)
 		{
 			case DDERR_EXCLUSIVEMODEALREADYSET:
@@ -1006,7 +1011,6 @@ HRESULT CD3DApplication::Render3DEnvironment()
 
 				break;
 		}
-
 		return hr;
 	}
 
@@ -1026,9 +1030,11 @@ HRESULT CD3DApplication::Render3DEnvironment()
 	// Show the frame on the primary surface.
 	if (FAILED(hr = m_pFramework->ShowFrame()))
 	{
+		printf("ShowFrame FAILED\n");
 		if (DDERR_SURFACELOST != hr)
 			return hr;
 
+		printf("RestoreSurfaces\n");
 		m_pFramework->RestoreSurfaces();
 		RestoreSurfaces();
 	}
