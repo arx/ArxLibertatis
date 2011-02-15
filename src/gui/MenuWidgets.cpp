@@ -2439,15 +2439,7 @@ bool Menu2_Render()
 										tex3,
 										256);
 									strcat(tex4,tex3);
-
-// TODO Find replacement
-/*									MultiByteToWideChar(	CP_ACP,
-										0,
-										tex4,
-										-1,
-										(wchar_t*)tex2,
-										256);*/
-									tex += tex2;
+									tex += tex4;
 									
 									me02=new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls,tex, fPosX1,0.f,lColor, 0.8f, NOP);
 								}
