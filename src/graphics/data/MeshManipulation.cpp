@@ -236,12 +236,15 @@ long ObjectAddFace(EERIE_3DOBJ * obj, EERIE_FACE * face, EERIE_3DOBJ * srcobj)
 	obj->facelist.back().vid[2] = (unsigned short)f2;
 	obj->facelist.back().texid = 0; 
 
-	for (size_t i = 0; i < obj->texturecontainer.size(); i++)
+	if(face->texid != -1)
 	{
-		if (obj->texturecontainer[i] == srcobj->texturecontainer[face->texid])
+		for (size_t i = 0; i < obj->texturecontainer.size(); i++)
 		{
-			obj->facelist.back().texid = (short)i;
-			break;
+			if (obj->texturecontainer[i] == srcobj->texturecontainer[face->texid])
+			{
+				obj->facelist.back().texid = (short)i;
+				break;
+			}
 		}
 	}
 
