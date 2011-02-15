@@ -1868,7 +1868,7 @@ long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 	char _error[256];
 	
 	sprintf(loadfile, "lvl%03d.sav", num);
-	long size;
+	size_t size;
 	size = _pSaveBlock->GetSize(loadfile);
 
 	if (size <= 0)
@@ -1932,7 +1932,7 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num)
 	long pos = 0;
 	char loadfile[256];
 	char _error[256];
-	long size;
+	size_t size;
 
 	sprintf(loadfile, "lvl%03d.sav", num);
 	size = _pSaveBlock->GetSize(loadfile);
@@ -2112,7 +2112,7 @@ long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVEL_PLA
 	char _error[256];
 
 	sprintf(loadfile, "player.sav");
-	long size = _pSaveBlock->GetSize(loadfile);
+	size_t size = _pSaveBlock->GetSize(loadfile);
 
 	if (size <= 0)
 	{
@@ -2381,7 +2381,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 	ARX_CHANGELEVEL_IO_SAVE * ais;
 	unsigned char * dat;
 	long pos = 0;
-	long size = 0;
+	size_t size = 0;
 
 	sprintf(loadfile, "%s.sav", ident);
 
@@ -3467,7 +3467,7 @@ long ARX_CHANGELEVEL_Pop_Globals()
 	unsigned char * dat;
 	long pos = 0;
 	char loadfile[256];
-	long size;
+	size_t size;
 	char _error[256];
 
 	ARX_SCRIPT_Free_All_Global_Variables();
@@ -4184,7 +4184,7 @@ long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 
 	char loadfile[256];
 	char _error[256];
-	long size;
+	size_t size;
 	unsigned char * dat;
 
 	// Open Save Block

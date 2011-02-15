@@ -311,18 +311,18 @@ void ARX_Menu_Resources_Create()
 	ARX_Allocate_Text(ARXmenu.mda->str_button_skin,					_T("system_charsheet_button_skin"));
 	ARX_Allocate_Text(ARXmenu.mda->str_button_done,					_T("system_charsheet_button_done"));
 
-	long siz;
+	size_t size;
 	char szFileName[256];
 
 	sprintf(szFileName, "Localisation\\ucredits_%s.txt", Project.localisationpath);
-	ARXmenu.mda->str_cre_credits = (_TCHAR *) PAK_FileLoadMalloc(szFileName, &siz);
+	ARXmenu.mda->str_cre_credits = (_TCHAR *) PAK_FileLoadMalloc(szFileName, &size);
 
 	if (ARXmenu.mda->str_cre_credits &&
-	        ARXmenu.mda->str_cre_credits[(siz>>1)-1] != 0)
+	        ARXmenu.mda->str_cre_credits[(size>>1)-1] != 0)
 	{
-		_TCHAR * pTxt = (_TCHAR *)malloc(siz + 2);
-		memcpy(pTxt, ARXmenu.mda->str_cre_credits, siz);
-		pTxt[(siz>>1)] = 0;
+		_TCHAR * pTxt = (_TCHAR *)malloc(size + 2);
+		memcpy(pTxt, ARXmenu.mda->str_cre_credits, size);
+		pTxt[(size>>1)] = 0;
 		free(ARXmenu.mda->str_cre_credits);
 		ARXmenu.mda->str_cre_credits = pTxt;
 	}

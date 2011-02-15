@@ -342,7 +342,7 @@ void ARX_Localisation_Init(char * _lpszExtension)
 	ZeroMemory(tx, 256);
 	sprintf(tx, "localisation\\utext_%s.ini", Project.localisationpath);
 
-	long LocalisationSize = 0;
+	size_t LocalisationSize = 0;
 	_TCHAR * Localisation = NULL;
 
 	Localisation = (_TCHAR *)PAK_FileLoadMallocZero(tx, &LocalisationSize);

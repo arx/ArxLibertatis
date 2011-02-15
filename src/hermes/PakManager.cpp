@@ -90,12 +90,10 @@ void PAK_Close() {
 	pPakManager = NULL;
 }
 
-// TODO size_t argument
-void * _PAK_FileLoadMallocZero(const char * name, long * sizeRead) {
+void * _PAK_FileLoadMallocZero(const char * name, size_t * sizeRead) {
 	
-	int size;
-	size = pPakManager->GetSize(name);
-	if(size <= 0) {
+	size_t size = pPakManager->GetSize(name);
+	if(size == 0) {
 		if(sizeRead) {
 			*sizeRead = size;
 		}
@@ -122,20 +120,7 @@ void * _PAK_FileLoadMallocZero(const char * name, long * sizeRead) {
 	return mem;
 }
 
-// TODO size_t for argument
-void * _PAK_FileLoadMalloc(const char * name, long * sizeRead) {
-	
-	int size = 0;
-	void * mem = pPakManager->ReadAlloc(name, &size);
-	
-	if(sizeRead) {
-		*sizeRead = size;
-	}
-	
-	return mem;
-}
-
-long _PAK_DirectoryExist(const char * name) {
+bool _PAK_DirectoryExist(const char * name) {
 	
 	size_t len = strlen(name);
 	char temp[256];
@@ -153,39 +138,29 @@ long _PAK_DirectoryExist(const char * name) {
 	return true;
 }
 
-long PAK_DirectoryExist(const char * name) {
+bool PAK_DirectoryExist(const char * name) {
 	
-	long ret = 0;
-	
-	ret = _PAK_DirectoryExist(name);
-	
-	if(!ret) {
-		ret = DirectoryExist(name);
+	if(_PAK_DirectoryExist(name)) {
+		return true;
 	}
 	
-	return ret;
+	return DirectoryExist(name);
 }
 
-// TODO return should be bool
-long PAK_FileExist(const char * name) {
+bool PAK_FileExist(const char * name) {
 	
-	long ret = 0;
-	
-	ret = pPakManager->ExistFile(name) ? 1 : 0;
-	
-	if(!ret) {
-		ret = FileExist(name);
+	if(pPakManager->ExistFile(name)) {
+		return true;
 	}
 	
-	return ret;
+	return FileExist(name);
 }
 
-// TODO parameter should be size_t
-void * PAK_FileLoadMalloc(const char * name, long * sizeLoaded) {
+void * PAK_FileLoadMalloc(const char * name, size_t * sizeLoaded) {
 	
 	void * ret = NULL;
 	
-	ret = _PAK_FileLoadMalloc(name, sizeLoaded);
+	ret = pPakManager->ReadAlloc(name, sizeLoaded);
 	
 	if(!ret) {
 		ret = FileLoadMalloc(name, sizeLoaded);
@@ -194,14 +169,14 @@ void * PAK_FileLoadMalloc(const char * name, long * sizeLoaded) {
 	return ret;
 }
 
-void * PAK_FileLoadMallocZero(const char * name, long * SizeLoadMalloc) {
+void * PAK_FileLoadMallocZero(const char * name, size_t * sizeLoaded) {
 	
 	void * ret = NULL;
 	
-	ret = _PAK_FileLoadMallocZero(name, SizeLoadMalloc);
+	ret = _PAK_FileLoadMallocZero(name, sizeLoaded);
 	
 	if(!ret) {
-		ret = FileLoadMallocZero(name, SizeLoadMalloc);
+		ret = FileLoadMallocZero(name, sizeLoaded);
 	}
 	
 	return ret;
@@ -275,7 +250,7 @@ size_t PAK_fread(void * buffer, size_t size, size_t count, FILE * stream) {
 	return FileRead(pfh->truefile, buffer, size * count);
 }
 
-int PAK_fseek(FILE * stream, long offset, int origin) {
+int PAK_fseek(FILE * stream, int offset, int origin) {
 	
 	PakFileHandle * pfh = (PakFileHandle *)stream;
 	assert(pfh->active);
@@ -354,31 +329,29 @@ bool PakManager::Read(const char * filename, void * buffer) {
 	return false;
 }
 
-void * PakManager::ReadAlloc(const char * filename, int * sizeRead) {
+void * PakManager::ReadAlloc(const char * filename, size_t * sizeRead) {
 	
 	if((filename[0] == '\\') || (filename[0] == '/')) {
 		filename++;
 	}
 	
-	// TODO change parameter type
-	size_t size = *sizeRead;
-	
 	for(vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
 		void * buf;
-		if((buf = (*i)->ReadAlloc(filename, &size))) {
+		if((buf = (*i)->ReadAlloc(filename, sizeRead))) {
 			printf("\e[1;32mRead from PAK (a):\e[m\t%s\n", filename);
-			*sizeRead = size;
 			return buf;
 		}
 	}
 	
 	printf("\e[1;33mRead from PAK (a):\e[m\t%s\n", filename);
-	*sizeRead = size;
+	if(sizeRead) {
+		*sizeRead = 0;
+	}
 	return NULL;
 }
 
 // return should be size_t?
-int PakManager::GetSize(const char * filename) {
+size_t PakManager::GetSize(const char * filename) {
 	
 	if ((filename[0] == '\\') || (filename[0] == '/')) {
 		filename++;
@@ -421,8 +394,7 @@ int PakManager::fClose(PakFileHandle * pfh) {
 	return pfh->reader->fClose(pfh);
 }
 
-// TODO return should be size_t
-int PakManager::fRead(void * buf, int size, int count, PakFileHandle * pfh) {
+size_t PakManager::fRead(void * buf, size_t size, size_t count, PakFileHandle * pfh) {
 	
 	assert(pfh->reader != NULL);
 	

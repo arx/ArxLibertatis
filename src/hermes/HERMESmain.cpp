@@ -1024,7 +1024,7 @@ int WriteUnCompressedNoAlloc(void * Param, unsigned char * buf, size_t len) {
 }
 
 
-char * STD_Explode(char * from, long from_size, long * to_size)
+char * STD_Explode(char * from, size_t from_size, size_t * to_size)
 {
 
 	PARAM Param;
@@ -1047,7 +1047,7 @@ char * STD_Explode(char * from, long from_size, long * to_size)
 	return Param.pDestination;
 }
 
-void STD_ExplodeNoAlloc(char * from, long from_size, char * to, long * to_size)
+void STD_ExplodeNoAlloc(char * from, size_t from_size, char * to, size_t * to_size)
 {
 
 	PARAM Param;

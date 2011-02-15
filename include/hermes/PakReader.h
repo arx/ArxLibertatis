@@ -77,13 +77,13 @@ public:
 	bool Open(const char * pakfile);
 	void Close();
 	bool Read(const char * name, void * buf);
-	void * ReadAlloc(const char * name , size_t * size);
+	void * ReadAlloc(const char * name , size_t * sizeRead);
 	int GetSize(const char * name);
 	
 	PakFileHandle * fOpen(const char * name, const char * mode);
 	int fClose(PakFileHandle * h);
 	std::size_t fRead(void * buf, std::size_t size, std::size_t n, PakFileHandle * h);
-	int fSeek(PakFileHandle * h, long off, int whence);
+	int fSeek(PakFileHandle * h, int off, int whence);
 	long fTell(PakFileHandle * h);
 	
 }; 

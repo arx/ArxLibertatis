@@ -1991,7 +1991,7 @@ static void ARX_SOUND_CreateCollisionMaps()
 	for (unsigned long i = 0; i < ARX_SOUND_COLLISION_MAP_COUNT; i++)
 	{
 		char * lpszFileText;
-		long lFileSize;
+		size_t lFileSize;
 
 		sprintf(path, "%s%s%s", ARX_SOUND_PATH_INI, ARX_SOUND_COLLISION_MAP_NAME[i], ARX_SOUND_FILE_EXTENSION_INI);
 
@@ -2161,7 +2161,7 @@ static void ARX_SOUND_CreatePresenceMap()
 {
 	char path[256];
 	char * lpszFileText;
-	long lFileSize;
+	size_t lFileSize;
 
 	sprintf(path, "%s%s%s", ARX_SOUND_PATH_INI, ARX_SOUND_PRESENCE_NAME, ARX_SOUND_FILE_EXTENSION_INI);
 

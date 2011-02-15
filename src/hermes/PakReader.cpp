@@ -384,7 +384,7 @@ bool PakReader::Read(const char * name, void * buf) {
 	return true;
 }
 
-void * PakReader::ReadAlloc(const char * name, size_t * size) {
+void * PakReader::ReadAlloc(const char * name, size_t * sizeRead) {
 	
 	PakFile * f = getFile(name);
 	if(!f) {
@@ -396,27 +396,45 @@ void * PakReader::ReadAlloc(const char * name, size_t * size) {
 	void * mem;
 	if(f->flags & PAK_FILE_COMPRESSED) {
 		mem = malloc(f->uncompressedSize);
-		*size = f->uncompressedSize;
 		if(!mem) {
+			if(sizeRead) {
+				*sizeRead = 0;
+			}
 			return NULL;
 		}
 		int r = blast(file, (char *)mem, f->uncompressedSize);
 		if(r) {
 			printf("\e[1;35mdecompression error (a) %d:\e[m\tfor \"%s\" in \'%s\"\n", r, f->name, pakname);
 			free(mem);
+			if(sizeRead) {
+				*sizeRead = 0;
+			}
 			return NULL;
+		}
+		
+		if(sizeRead) {
+			*sizeRead = f->uncompressedSize;
 		}
 		
 	} else {
 		mem = malloc(f->size);
-		*size = f->size;
 		if(!mem) {
+			if(sizeRead) {
+				*sizeRead = 0;
+			}
 			return NULL;
 		}
 		
 		if(fread(mem, f->size, 1, file) != 1) {
 			free(mem);
+			if(sizeRead) {
+				*sizeRead = 0;
+			}
 			return NULL;
+		}
+		
+		if(sizeRead) {
+			*sizeRead = f->size;
 		}
 	}
 	
@@ -582,7 +600,7 @@ size_t PakReader::fRead(void * buf, size_t isize, size_t count, PakFileHandle * 
 }
 
 // TODO different return values from fseek in <cstdio>
-int PakReader::fSeek(PakFileHandle * fh, long offset, int whence) {
+int PakReader::fSeek(PakFileHandle * fh, int offset, int whence) {
 	
 	if((!fh) || (!fh->file) || (fh->iID != ((void*)fat))) {
 		return 1;

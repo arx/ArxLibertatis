@@ -67,18 +67,18 @@ class PakDirectory;
 
 #include <cstdio> // TODO remove
 
-void * PAK_FileLoadMalloc(const char * name, long * SizeLoadMalloc = NULL);
-void * PAK_FileLoadMallocZero(const char * name, long * SizeLoadMalloc = NULL);
+void * PAK_FileLoadMalloc(const char * name, size_t * sizeLoaded = NULL);
+void * PAK_FileLoadMallocZero(const char * name, size_t * sizeLoaded = NULL);
 
 bool PAK_AddPak(const char * pakfile);
 
 FILE * PAK_fopen(const char * filename, const char * mode);
-std::size_t PAK_fread(void * buffer, std::size_t size, std::size_t count, FILE * stream);
+std::size_t PAK_fread(void * buffer, size_t size, size_t count, FILE * stream);
 int PAK_fclose(FILE * stream);
 long PAK_ftell(FILE * stream);
-long PAK_DirectoryExist(const char * name);
-long PAK_FileExist(const char * name);
-int PAK_fseek(FILE * fic, long offset, int origin);
+bool PAK_DirectoryExist(const char * name);
+bool PAK_FileExist(const char * name);
+int PAK_fseek(FILE * fic, int offset, int origin);
 
 void PAK_Close();
 
@@ -96,11 +96,11 @@ public:
 	bool AddPak(const char * pakname);
 	bool RemovePak(const char * pakname);
 	bool Read(const char * filename, void * buffer);
-	void * ReadAlloc(const char * filenme, int * sizeRead);
-	int GetSize(const char * filename);
+	void * ReadAlloc(const char * filenme, size_t * sizeRead);
+	size_t GetSize(const char * filename);
 	PakFileHandle * fOpen(const char * filename);
 	int fClose(PakFileHandle * fh);
-	int fRead(void * buffer, int size, int count, PakFileHandle * fh);
+	size_t fRead(void * buffer, size_t size, size_t count, PakFileHandle * fh);
 	int fSeek(PakFileHandle * fh, int offset, int whence);
 	int fTell(PakFileHandle * fh);
 	std::vector<PakDirectory*> * ExistDirectory(const char * name);

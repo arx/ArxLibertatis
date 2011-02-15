@@ -529,7 +529,7 @@ EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * file, long fla
 	{
 	alternateway:
 		;
-		long FileSize = 0;
+		size_t FileSize = 0;
 		unsigned char * adr;
 
 		if (adr = (unsigned char *)PAK_FileLoadMalloc(file, &FileSize))
@@ -2534,7 +2534,7 @@ void GetIOScript(INTERACTIVE_OBJ * io, char * texscript)
 {
 	if (PAK_FileExist(texscript))
 	{
-		long FileSize = 0;
+		size_t FileSize = 0;
 		io->script.data = (char *)PAK_FileLoadMallocZero(texscript, &FileSize);
 
 		if (io->script.data)
@@ -3165,7 +3165,7 @@ void ReloadScript(INTERACTIVE_OBJ * io)
 
 	if (PAK_FileExist(texscript))
 	{
-		long FileSize = 0;
+		size_t FileSize = 0;
 		io->script.data = (char *)PAK_FileLoadMallocZero(texscript, &FileSize);
 
 		if (io->script.data != NULL)
@@ -3187,7 +3187,7 @@ void ReloadScript(INTERACTIVE_OBJ * io)
 
 	if (PAK_FileExist(texscript))
 	{
-		long FileSize = 0;
+		size_t FileSize = 0;
 		io->over_script.data = (char *)PAK_FileLoadMallocZero(texscript, &FileSize);
 
 		if (io->over_script.data != NULL)
