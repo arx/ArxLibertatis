@@ -600,7 +600,7 @@ size_t PakReader::fRead(void * buf, size_t isize, size_t count, PakFileHandle * 
 }
 
 // TODO different return values from fseek in <cstdio>
-int PakReader::fSeek(PakFileHandle * fh, int offset, int whence) {
+int PakReader::fSeek(PakFileHandle * fh, int offset, long whence) {
 	
 	if((!fh) || (!fh->file) || (fh->iID != ((void*)fat))) {
 		return 1;

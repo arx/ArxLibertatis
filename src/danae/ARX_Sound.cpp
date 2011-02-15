@@ -421,8 +421,6 @@ long ARX_SOUND_Init(HWND hwnd)
 
 	if(FINAL_RELEASE) {
 		
-		aalEnable(AAL_FLAG_PACKEDRESOURCES);
-		
 		if(pStringModSfx[0]) {
 			if(!PAK_AddPak(pStringModSfx)) {
 				printf("Unable to Find Mod SFX Data File\n");

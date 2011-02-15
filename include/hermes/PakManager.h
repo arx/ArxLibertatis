@@ -65,20 +65,18 @@ class PakFileHandle;
 class PakReader;
 class PakDirectory;
 
-#include <cstdio> // TODO remove
-
 void * PAK_FileLoadMalloc(const char * name, size_t * sizeLoaded = NULL);
 void * PAK_FileLoadMallocZero(const char * name, size_t * sizeLoaded = NULL);
 
 bool PAK_AddPak(const char * pakfile);
 
-FILE * PAK_fopen(const char * filename, const char * mode);
-std::size_t PAK_fread(void * buffer, size_t size, size_t count, FILE * stream);
-int PAK_fclose(FILE * stream);
-long PAK_ftell(FILE * stream);
+PakFileHandle * PAK_fopen(const char * filename);
+size_t PAK_fread(void * buffer, size_t size, size_t count, PakFileHandle * stream);
+int PAK_fclose(PakFileHandle * stream);
+long PAK_ftell(PakFileHandle * stream);
 bool PAK_DirectoryExist(const char * name);
 bool PAK_FileExist(const char * name);
-int PAK_fseek(FILE * fic, int offset, int origin);
+int PAK_fseek(PakFileHandle * fic, int offset, long origin);
 
 void PAK_Close();
 
@@ -101,7 +99,7 @@ public:
 	PakFileHandle * fOpen(const char * filename);
 	int fClose(PakFileHandle * fh);
 	size_t fRead(void * buffer, size_t size, size_t count, PakFileHandle * fh);
-	int fSeek(PakFileHandle * fh, int offset, int whence);
+	int fSeek(PakFileHandle * fh, int offset, long whence);
 	int fTell(PakFileHandle * fh);
 	std::vector<PakDirectory*> * ExistDirectory(const char * name);
 	bool ExistFile(const char * name);

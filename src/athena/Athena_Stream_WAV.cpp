@@ -22,12 +22,15 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+
+#include <hermes/PakManager.h>
+
 #include "Athena_Stream_WAV.h"
-#include <windows.h>
-#include <mmreg.h>
 #include "Athena_Codec_RAW.h"
 #include "Athena_Codec_ADPCM.h"
-#include "Athena_FileIO.h"
+
+#include <windows.h>
+#include <mmreg.h>
 
 namespace ATHENA
 {
@@ -44,7 +47,7 @@ namespace ATHENA
 	{
 		public:
 			//Constructor and destructor
-			ChunkFile(FILE * file);
+			ChunkFile(PakFileHandle * file);
 			~ChunkFile();
 			//I/O
 			aalSBool Read(aalVoid *, const aalULong &);
@@ -58,7 +61,7 @@ namespace ATHENA
 			aalSBool Restart();
 		private:
 			//Data
-			FILE * file;
+			PakFileHandle * file;
 			aalULong offset;
 	};
 
@@ -91,7 +94,7 @@ namespace ATHENA
 	// Setup                                                                     //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError StreamWAV::SetStream(FILE * _stream)
+	aalError StreamWAV::SetStream(PakFileHandle * _stream)
 	{
 		if (!_stream) return AAL_ERROR_FILEIO;
 
@@ -161,7 +164,7 @@ namespace ATHENA
 		if (AS_FORMAT_PCM(format)->wFormatTag == WAVE_FORMAT_PCM) outsize = size;
 		else outsize *= AS_FORMAT_PCM(format)->nChannels;
 
-		offset = FileTell(stream);
+		offset = PAK_ftell(stream);
 
 		aalError error;
 		error = codec->SetStream(stream);
@@ -192,7 +195,7 @@ namespace ATHENA
 		cursor = position;
 
 		// Reset stream position at the begining of data chunk
-		if (FileSeek(stream, offset, SEEK_SET)) return AAL_ERROR_FILEIO;
+		if (PAK_fseek(stream, offset, SEEK_SET)) return AAL_ERROR_FILEIO;
 
 		return codec->SetPosition(cursor);
 	}
@@ -202,7 +205,7 @@ namespace ATHENA
 	// Status                                                                    //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError StreamWAV::GetStream(FILE *&_stream)
+	aalError StreamWAV::GetStream(PakFileHandle *&_stream)
 	{
 		_stream = stream;
 
@@ -276,7 +279,7 @@ namespace ATHENA
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 	// Constructor                                                               //
-	ChunkFile::ChunkFile(FILE * ptr) : file(ptr), offset(0)
+	ChunkFile::ChunkFile(PakFileHandle * ptr) : file(ptr), offset(0)
 	{
 	}
 
@@ -292,7 +295,7 @@ namespace ATHENA
 	// Read!                                                                     //
 	aalSBool ChunkFile::Read(aalVoid * buffer, const aalULong & size)
 	{
-		if (FileRead(buffer, 1, size, file) != size) return AAL_SFALSE;
+		if (PAK_fread(buffer, 1, size, file) != size) return AAL_SFALSE;
 
 		if (offset) offset -= size;
 
@@ -302,7 +305,7 @@ namespace ATHENA
 	// Skip!                                                                     //
 	aalSBool ChunkFile::Skip(const aalULong & size)
 	{
-		if (FileSeek(file, size, SEEK_CUR)) return AAL_SFALSE;
+		if (PAK_fseek(file, size, SEEK_CUR)) return AAL_SFALSE;
 
 		if (offset) offset -= size;
 
@@ -314,15 +317,15 @@ namespace ATHENA
 	{
 		aalUByte cc[4];
 
-		FileSeek(file, offset, SEEK_CUR);
+		PAK_fseek(file, offset, SEEK_CUR);
 
-		while (FileRead(cc, 4, 1, file))
+		while (PAK_fread(cc, 4, 1, file))
 		{
-			if (!FileRead(&offset, 4, 1, file)) return AAL_SFALSE;
+			if (!PAK_fread(&offset, 4, 1, file)) return AAL_SFALSE;
 
 			if (!memcmp(cc, id, 4)) return AAL_STRUE;
 
-			if (FileSeek(file, offset, SEEK_CUR)) return AAL_SFALSE;
+			if (PAK_fseek(file, offset, SEEK_CUR)) return AAL_SFALSE;
 		}
 
 		return AAL_SFALSE;
@@ -333,7 +336,7 @@ namespace ATHENA
 	{
 		aalUByte cc[4];
 
-		if (!FileRead(cc, 4, 1, file)) return AAL_SFALSE;
+		if (!PAK_fread(cc, 4, 1, file)) return AAL_SFALSE;
 
 		if (memcmp(cc, id, 4)) return AAL_SFALSE;
 
@@ -346,7 +349,7 @@ namespace ATHENA
 	{
 		offset = 0;
 
-		if (FileSeek(file, 0, SEEK_SET)) return AAL_SFALSE;
+		if (PAK_fseek(file, 0, SEEK_SET)) return AAL_SFALSE;
 
 		return AAL_STRUE;
 	}

@@ -22,12 +22,13 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <stdio.h>
+
 #include <eax.h>
 #include <math.h>
 #include "Athena_Environment.h"
 #include "Athena_Global.h"
-#include "Athena_FileIO.h"
+
+#include <hermes/PakManager.h>
 
 
 
@@ -72,25 +73,25 @@ namespace ATHENA
 	///////////////////////////////////////////////////////////////////////////////
 	aalError Environment::Load(const char * _name)
 	{
-		FILE * file = OpenResource(_name, environment_path);
+		PakFileHandle * file = OpenResource(_name, environment_path);
 
 		if (!file) return AAL_ERROR_FILEIO;
 
-		if (!FileRead(&size, 4, 1, file) ||
-		        !FileRead(&diffusion, 4, 1, file) ||
-		        !FileRead(&absorption, 4, 1, file) ||
-		        !FileRead(&reflect_volume, 4, 1, file) ||
-		        !FileRead(&reflect_delay, 4, 1, file) ||
-		        !FileRead(&reverb_volume, 4, 1, file) ||
-		        !FileRead(&reverb_delay, 4, 1, file) ||
-		        !FileRead(&reverb_decay, 4, 1, file) ||
-		        !FileRead(&reverb_hf_decay, 4, 1, file))
+		if (!PAK_fread(&size, 4, 1, file) ||
+		        !PAK_fread(&diffusion, 4, 1, file) ||
+		        !PAK_fread(&absorption, 4, 1, file) ||
+		        !PAK_fread(&reflect_volume, 4, 1, file) ||
+		        !PAK_fread(&reflect_delay, 4, 1, file) ||
+		        !PAK_fread(&reverb_volume, 4, 1, file) ||
+		        !PAK_fread(&reverb_delay, 4, 1, file) ||
+		        !PAK_fread(&reverb_decay, 4, 1, file) ||
+		        !PAK_fread(&reverb_hf_decay, 4, 1, file))
 		{
-			FileClose(file);
+			PAK_fclose(file);
 			return AAL_ERROR_FILEIO;
 		}
 
-		FileClose(file);
+		PAK_fclose(file);
 
 		SetName(_name);
 

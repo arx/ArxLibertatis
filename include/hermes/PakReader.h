@@ -31,7 +31,7 @@ class PakReader;
 
 typedef long FileHandle;
 
-#include <cstddef>
+#include <stddef.h>
 #include <cstdio> // for FILE
 
 #define PACK_MAX_FREAD	(256)
@@ -82,8 +82,8 @@ public:
 	
 	PakFileHandle * fOpen(const char * name, const char * mode);
 	int fClose(PakFileHandle * h);
-	std::size_t fRead(void * buf, std::size_t size, std::size_t n, PakFileHandle * h);
-	int fSeek(PakFileHandle * h, int off, int whence);
+	size_t fRead(void * buf, size_t size, size_t n, PakFileHandle * h);
+	int fSeek(PakFileHandle * h, int off, long whence);
 	long fTell(PakFileHandle * h);
 	
 }; 
