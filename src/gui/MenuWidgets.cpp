@@ -5421,7 +5421,7 @@ void CWindowMenuConsole::UpdateText()
 
 			if( !tText.empty() )
 			{
-				tText[tText.length()-1] = '\0';
+				tText.resize(tText.size() - 1);
 				bKey=true;
 			}
 		}
@@ -5432,7 +5432,7 @@ void CWindowMenuConsole::UpdateText()
 				tText = pZoneText->lpszText;
 
 				unsigned short tusOutPut[2];
-				std::string tCat;
+				char tCat;
 
 				int iKey = pGetInfoDirectInput->iKeyId;
 				int iR = scan2ascii(iKey, tusOutPut);
@@ -5445,52 +5445,40 @@ void CWindowMenuConsole::UpdateText()
 					switch(iKey)
 					{
 					case DIK_NUMPAD0:
-						tCat[0]=_T('0');
-						tCat[1]=0;
+						tCat = '0';
 						break;
 					case DIK_NUMPAD1:
-						tCat[0]=_T('1');
-						tCat[1]=0;
+						tCat = '1';
 						break;
 					case DIK_NUMPAD2:
-						tCat[0]=_T('2');
-						tCat[1]=0;
+						tCat = '2';
 						break;
 					case DIK_NUMPAD3:
-						tCat[0]=_T('3');
-						tCat[1]=0;
+						tCat = '3';
 						break;
 					case DIK_NUMPAD4:
-						tCat[0]=_T('4');
-						tCat[1]=0;
+						tCat = '4';
 						break;
 					case DIK_NUMPAD5:
-						tCat[0]=_T('5');
-						tCat[1]=0;
+						tCat = '5';
 						break;
 					case DIK_NUMPAD6:
-						tCat[0]=_T('6');
-						tCat[1]=0;
+						tCat = '6';
 						break;
 					case DIK_NUMPAD7:
-						tCat[0]=_T('7');
-						tCat[1]=0;
+						tCat = '7';
 						break;
 					case DIK_NUMPAD8:
-						tCat[0]=_T('8');
-						tCat[1]=0;
+						tCat = '8';
 						break;
 					case DIK_NUMPAD9:
-						tCat[0]=_T('9');
-						tCat[1]=0;
+						tCat = '9';
 						break;
 					case DIK_DECIMAL:     
-						tCat[0]=_T('.');
-						tCat[1]=0;
+						tCat = '.';
 						break;
 					case DIK_DIVIDE:      
-						tCat[0]=_T('/');
-						tCat[1]=0;
+						tCat = '/';
 						break;
 					default:
 						bKey=false;
@@ -5499,14 +5487,14 @@ void CWindowMenuConsole::UpdateText()
 				}
 				else
 				{
-					tCat[0]= (_TCHAR)(tusOutPut[0]);
-					tCat[1]=0;
+					// TODO handle non-ASCII characters
+					tCat= (char)(tusOutPut[0]);
 					bKey=true;
 				}
 
 				if(bKey)
 				{
-					if ((isalnum(tCat[0]) || _istspace(tCat[0]) || _istpunct(tCat[0])) && (tCat[0]!=_T('\t')) && (tCat[0]!=_T('*')))
+					if ((isalnum(tCat) || _istspace(tCat) || _istpunct(tCat)) && (tCat != '\t') && (tCat != '*'))
 						tText += tCat;
 				}
 			}
@@ -5518,8 +5506,10 @@ void CWindowMenuConsole::UpdateText()
 
 			if(    (pZoneText->rZone.right-pZoneText->rZone.left)>(iWidth-RATIO_X(64)) )
 			{
-				tText[tText.length()-1]=0;
-				pZoneText->SetText(tText);
+				if(!tText.empty()) {
+					tText.resize(tText.size() - 1);
+					pZoneText->SetText(tText);
+				}
 			}
 			
 			int iDx=pZoneClick->rZone.right-pZoneClick->rZone.left;
