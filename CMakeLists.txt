@@ -20,14 +20,14 @@ set(CMAKE_CXX_FLAGS "-fpermissive -w")
 
 #Add sources
 set(SOURCE_DIRS
-	ArxCommon
-	#Athena
-    DANAE
+    ArxCommon
+    Athena
+    danae
     DANAE_Debugger
-    EERIE
-    HERMES
+    eerie
+    hermes
     Mercury
-    MINOS
+    minos
 )
 foreach(SOURCE_DIR ${SOURCE_DIRS})
     file(GLOB GLOB_RESULT ${SRC_DIR}/${SOURCE_DIR}/*.cpp)

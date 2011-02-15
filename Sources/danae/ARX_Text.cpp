@@ -728,6 +728,7 @@ void CARXTextManager::Update(float dt)
 			text->offsety += text->scrollspeed * (float)delta;
 			if (text->offsety >= (text->rRect.bottom - text->rRectClipp.bottom))
 				text->offsety = ARX_CLEAN_WARN_CAST_FLOAT(text->rRect.bottom - text->rRectClipp.bottom);
+		}
 		else
 			text->scrolltime -= delta;
 
