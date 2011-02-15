@@ -31,31 +31,7 @@ class PakDirectory;
 #include <cstddef>
 #include <cstdio> // for FILE
 
-#define PACK_MAX_FREAD 256
-#define PAK_READ_BUF_SIZE 1024
-struct PAK_PARAM {
-	FILE *file;
-	char *mem;
-	std::size_t lSize;
-	
-	char readbuf[PAK_READ_BUF_SIZE];
-	
-};
-
-struct PAK_PARAM_FREAD {
-	FILE	*file;
-	char	*mem;
-	int		iOffsetCurr;
-	int		iOffset;
-	int		iOffsetBase;
-	int		iTaille;
-	int		iTailleBase;
-	int		iTailleW;
-	int		iTailleFic;
-
-	char readbuf[PAK_READ_BUF_SIZE];
-	
-};
+#define PACK_MAX_FREAD	(256)
 
 struct PakFileHandle {
 	bool		bActif;
@@ -70,11 +46,10 @@ private:
 	
 	const char * fat;
 	FILE * file;
-	int				iSeekPak;
-	PakFileHandle		tPackFile[PACK_MAX_FREAD];
+	PakFileHandle tPackFile[PACK_MAX_FREAD];
 	
 public:
-	const char * pakfile;
+	const char * pakname;
 	PakDirectory * pRoot;
 private:
 	int ReadFAT_int();
