@@ -276,7 +276,7 @@ struct ARX_CHANGELEVEL_VARIABLE_SAVE
 
 struct IO_LINKED_DATA
 {
-	long			lgroup; //linked to group n� if lgroup=-1 NOLINK
+	long			lgroup; //linked to group n° if lgroup=-1 NOLINK
 	long			lidx;
 	long			lidx2;
 	EERIE_MOD_INFO	modinfo;

@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Updates: (date) (person) (update)
 //
-// Code: S�bastien Scieux
+// Code: Sébastien Scieux
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////

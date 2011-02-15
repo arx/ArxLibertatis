@@ -488,7 +488,7 @@ struct EERIE_MOD_INFO
 
 struct EERIE_LINKED
 {
-	long			lgroup; //linked to group n� if lgroup=-1 NOLINK
+	long			lgroup; //linked to group n° if lgroup=-1 NOLINK
 	long			lidx;
 	long			lidx2;
 	void *	obj;

@@ -71,9 +71,6 @@ bool DeleteTrack(void);
 /*-----------------------------------------------------------*/
 //extern char DirectoryChoose[];
 /*-----------------------------------------------------------*/
-
-struct C_KEY;
-
 class C_LIGHT
 {
 	public:
@@ -83,8 +80,8 @@ class C_LIGHT
 		float		r, g, b;
 		float		intensite;
 		float		intensiternd;
-		C_KEY *		prev;
-		C_KEY *		next;
+		struct CST_KEY * prev;
+		struct CST_KEY * next;
 	public:
 		C_LIGHT()
 		{
@@ -181,30 +178,11 @@ struct C_SOUND
 	ArxSound		idhandle;
 };
 
-struct C_KEY
-{
-	int			frame;
-	int			numbitmap;
-	int			fx;				//fx associé
-	short		typeinterp, force;
-	EERIE_3D	pos;
-	float		angz;
-	int			color;
-	int			colord;
-	int			colorf;
-	float		speed;
-	C_LIGHT		light;
-	EERIE_3D	posgrille;
-	float		angzgrille;
-	float		speedtrack;
-	int			idsound[16];	//16 langues max.
-};
-
 struct C_KEY_1_59
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//associated fx
 	int			typeinterp;
 	EERIE_3D	pos;
 	float		angz;
@@ -218,7 +196,7 @@ struct C_KEY_1_65
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//associated fx
 	int			typeinterp;
 	EERIE_3D	pos;
 	float		angz;
@@ -233,7 +211,7 @@ struct C_KEY_1_70
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//associated fx
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
@@ -248,7 +226,7 @@ struct C_KEY_1_71
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//associated fx
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
@@ -264,7 +242,7 @@ struct C_KEY_1_72
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//associated fx
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
@@ -282,7 +260,7 @@ struct C_KEY_1_74
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//associated fx
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
@@ -300,7 +278,7 @@ struct C_KEY_1_75
 {
 	int			frame;
 	int			numbitmap;
-	int			fx;				//fx associé
+	int			fx;				//associated fx
 	short		typeinterp, force;
 	EERIE_3D	pos;
 	float		angz;
@@ -313,6 +291,25 @@ struct C_KEY_1_75
 	EERIE_3D	posgrille;
 	float		angzgrille;
 	float		speedtrack;
+};
+
+typedef struct CST_KEY
+{
+	int			frame;
+	int			numbitmap;
+	int			fx;				//associated fx
+	short		typeinterp, force;
+	EERIE_3D	pos;
+	float		angz;
+	int			color;
+	int			colord;
+	int			colorf;
+	float		speed;
+	C_LIGHT		light;
+	EERIE_3D	posgrille;
+	float		angzgrille;
+	float		speedtrack;
+	int			idsound[16];	//16 languages max.
 };
 
 struct C_TRACK
@@ -337,7 +334,7 @@ class CINEMATIQUE
 
 		EERIE_3D	pos;
 		float		angz;
-		EERIE_3D	possuiv;			//dans le cas d'une non interpolation fadée
+		EERIE_3D	possuiv;			//in the case of a non-fade interpolation
 		float		angzsuiv;
 		int			numbitmap;
 		int			numbitmapsuiv;

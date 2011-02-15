@@ -81,8 +81,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Time.h"
 
 #include "HERMESMain.h"
-#include <hermes/PakManager.h>
-#include <hermes/Filesystem.h>
+#include "hermes/PakManager.h"
 
 #include "EERIEMath.h"
 #include "EERIEObject.h"
@@ -234,7 +233,7 @@ void ARX_GAMESAVE_CreateNewInstance()
 		}
 		else
 		{
-			//le directory peut exister mais peut être vide après un crash
+			//The directory may exist but may be empty after crash
 			strcat(testpath, "\\GSAVE.SAV");
 			FILE * f = fopen(testpath, "rb");
 
@@ -4000,8 +3999,8 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 
 
 //-----------------------------------------------------------------------------
-// copie un rep (récursif sous reps) dans un autre en créant les reps
-// écrase les fichiers pour les mettre à jour
+// copy a dir (recursive sub reps) in another, creating reps
+// overwrites files for update
 void CopyDirectory(char * _lpszSrc, char * _lpszDest)
 {
 	CreateDirectory(_lpszDest, NULL);
