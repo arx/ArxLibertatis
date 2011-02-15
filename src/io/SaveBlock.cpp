@@ -150,11 +150,11 @@ bool SaveBlock::loadFileTable() {
 	if(FileRead(handle, &fatOffset, 4) != 4) {
 		return false;
 	}
-	//LogDebug << "FAT offset is " << fatOffset;
 	if(FileSeek(handle, fatOffset + 4, SEEK_SET) != fatOffset + 4) {
 		LogError << "cannot seek to FAT";
 		return false;
 	}
+	totalSize = fatOffset;
 	
 	u32 version;
 	if(FileRead(handle, &version, 4) != 4) {
@@ -169,7 +169,6 @@ bool SaveBlock::loadFileTable() {
 		return false;
 	}
 	files.reserve(nFiles);
-	//LogDebug << "number of files is " << nFiles;
 	
 	while(nFiles--) {
 		
@@ -201,7 +200,6 @@ bool SaveBlock::loadFileTable() {
 				return false;
 			}
 			file.uncompressedSize = uncompressedSize;
-			//LogDebug << " uncompressed: " << uncompressedSize;
 		}
 		
 		u32 nChunks;
@@ -211,15 +209,12 @@ bool SaveBlock::loadFileTable() {
 		if(version < SAV_VERSION_CURRENT && nChunks == 0) {
 			nChunks = 1;
 		}
-		//LogDebug << " chunks: " << nChunks;
 		file.chunks.reserve(nChunks);
 		
 		if(version < SAV_VERSION_CURRENT) {
 			// ignored
 			FileSeek(handle, 4, SEEK_CUR);
 			file.comp = File::ImplodeCrypt;
-			//LogDebug << " compression: " << SAV_COMP_IMPLODE << " = "
-			//         << file.compressionName();
 		} else {
 			u32 comp;
 			if(FileRead(handle, &comp, 4) != 4) {
@@ -231,7 +226,6 @@ bool SaveBlock::loadFileTable() {
 				case SAV_COMP_DEFLATE: file.comp = File::Deflate; break;
 				default: file.comp = File::Unknown;
 			}
-			//LogDebug << " compression: " << comp << " = " << file.compressionName();
 		}
 		
 		size_t size = 0;
@@ -241,13 +235,11 @@ bool SaveBlock::loadFileTable() {
 			if(FileRead(handle, &chunkSize, 4) != 4) {
 				return false;
 			}
-			//LogDebug << "  chunkSize: " << chunkSize;
 			size += chunkSize;
 			
 			u32 chunkOffset;
 			if(FileRead(handle, &chunkOffset, 4) != 4) {
 			}
-			//LogDebug << "  chunkOffset: " << chunkOffset;
 			
 			file.chunks.push_back(FileChunk(chunkSize, chunkOffset));
 			
@@ -376,6 +368,10 @@ bool SaveBlock::defragment() {
 	
 	for(FileList::iterator file = files.begin(); file != files.end(); ++file) {
 		
+		if(file->storedSize == 0) {
+			continue;
+		}
+		
 		char * buf = new char[file->storedSize];
 		char * p = buf;
 		
@@ -385,6 +381,8 @@ bool SaveBlock::defragment() {
 			FileRead(handle, p, chunk->size);
 			p += chunk->size;
 		}
+		
+		assert(p == buf + file->storedSize);
 		
 		FileWrite(tempFile, buf, file->storedSize);
 		
@@ -438,8 +436,14 @@ bool SaveBlock::save(const string & name, const char * data, size_t size) {
 	
 	file->uncompressedSize = size;
 	
-	uLongf compressedSize = size;
-	char * compressed = new char[size];
+	if(size == 0) {
+		file->comp = File::None;
+		file->storedSize = 0;
+		return true;
+	}
+	
+	uLongf compressedSize = size - 1;
+	char * compressed = new char[compressedSize];
 	const char * p;
 	if(compress2((Bytef*)compressed, &compressedSize, (const Bytef*)data, size, 1) == Z_OK) {
 		file->comp = File::Deflate;
@@ -457,7 +461,7 @@ bool SaveBlock::save(const string & name, const char * data, size_t size) {
 	size_t remaining = file->storedSize;
 	
 	for(File::ChunkList::iterator chunk = file->chunks.begin();
-	    chunk != file->chunks.end() && remaining; ++chunk) {
+	    chunk != file->chunks.end(); ++chunk) {
 		
 		FileSeek(handle, chunk->offset + 4, SEEK_SET);
 		
@@ -468,15 +472,18 @@ bool SaveBlock::save(const string & name, const char * data, size_t size) {
 		FileWrite(handle, p, chunk->size);
 		p += chunk->size;
 		remaining -= chunk->size;
+		
+		if(remaining == 0) {
+			file->chunks.erase(++chunk, file->chunks.end());
+			delete[] compressed;
+			return true;
+		}
 	}
 	
+	file->chunks.push_back(FileChunk(remaining, totalSize));
 	FileSeek(handle, totalSize + 4, SEEK_SET);
-	
-	if(remaining) {
-		file->chunks.push_back(FileChunk(remaining, totalSize));
-		totalSize += remaining;
-		FileWrite(handle, p, remaining);
-	}
+	FileWrite(handle, p, remaining);
+	totalSize += remaining;
 	
 	delete[] compressed;
 	
@@ -535,9 +542,10 @@ char * SaveBlock::load(const string & name, size_t & size) const {
 			assert(file->uncompressedSize != (size_t)-1);
 			uLongf uncompressedSize = file->uncompressedSize;
 			char * uncompressed = (char*)malloc(uncompressedSize);
-			if(uncompress((Bytef*)uncompressed, &uncompressedSize, (const Bytef*)buf,
-			   file->storedSize) != Z_OK) {
-				LogError << "error decompressing deflated " << name << " in " << savefile;
+			int ret = uncompress((Bytef*)uncompressed, &uncompressedSize, (const Bytef*)buf,
+			          file->storedSize);
+			if(ret != Z_OK) {
+				LogError << "error decompressing deflated " << name << " in " << savefile << ": " << ret;
 				free(buf);
 				free(uncompressed);
 				size = 0;
