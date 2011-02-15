@@ -74,13 +74,6 @@ ARX_D3DVERTEX * PushVertexInTableCull_TSubstractive(TextureContainer *);
 ARX_D3DVERTEX * PushVertexInTableCull_TMultiplicative(TextureContainer *);
 ARX_D3DVERTEX * PushVertexInTableCull_TMetal(TextureContainer *);
 
-ARX_D3DVERTEX * PushVertexInTableCullH(TextureContainer *);
-ARX_D3DVERTEX * PushVertexInTableCull_TNormalTransH(TextureContainer *);
-ARX_D3DVERTEX * PushVertexInTableCull_TAdditiveH(TextureContainer *);
-ARX_D3DVERTEX * PushVertexInTableCull_TSubstractiveH(TextureContainer *);
-ARX_D3DVERTEX * PushVertexInTableCull_TMultiplicativeH(TextureContainer *);
-ARX_D3DVERTEX * PushVertexInTableCull_TMetalH(TextureContainer *);
-
 //-----------------------------------------------------------------------------
 void PushInterBump(TextureContainer *, D3DTLVERTEX *);
 void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd, TextureContainer * _pTex, D3DTLVERTEX * _pD3DVertex);

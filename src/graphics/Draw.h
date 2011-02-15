@@ -122,7 +122,4 @@ void EERIEDrawBitmapUVs(LPDIRECT3DDEVICE7 pd3dDevice, float x, float y, float sx
                         , float u3, float v3
                        );
 
-void SET_FORCE_NO_VB( const bool& _NoVB );
-bool GET_FORCE_NO_VB( );
-
 #endif

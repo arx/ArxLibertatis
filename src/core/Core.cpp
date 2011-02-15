@@ -188,7 +188,6 @@ extern float fZFogEnd;
 extern float fZFogStart;
 extern bool bOLD_CLIPP;
 extern bool bForceGDI;
-extern bool bSoftRender;
 extern bool bGMergeVertex;
 extern float OLD_PROGRESS_BAR_COUNT;
 extern E_ARX_STATE_MOUSE	eMouseState;
@@ -6635,16 +6634,8 @@ static float _AvgFrameDiff = 150.f;
 		SETALPHABLEND(m_pd3dDevice,true);
 		ARX_FOGS_Render(0);
 
-		bool bNoVB	=	false;
-		if( bSoftRender )
-		{
-			bNoVB = GET_FORCE_NO_VB();
-			SET_FORCE_NO_VB( true );
-		}
-
 		ARX_PARTICLES_Render(m_pd3dDevice,&subj);		
 		UpdateObjFx(m_pd3dDevice,&subj);
-		if( bSoftRender ) SET_FORCE_NO_VB( bNoVB );
 		
 		SETALPHABLEND(m_pd3dDevice,false);
 		BENCH_PARTICLES=EndBench();

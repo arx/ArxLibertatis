@@ -35,7 +35,6 @@
 using namespace std;
 
 extern CMenuConfig * pMenuConfig;
-extern bool bGATI8500;
 
 //-----------------------------------------------------------------------------
 

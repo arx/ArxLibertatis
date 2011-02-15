@@ -152,9 +152,6 @@ extern bool bGToggleCombatModeWithKey;
 extern long PlayerWeaponBlocked;
 extern unsigned char ucFlick;
 
-extern bool bGATI8500;
-extern bool bSoftRender;
-
 extern TextManager *pTextManageFlyingOver;
 
 bool IsPlayerStriking();
@@ -6811,11 +6808,6 @@ extern float GLOBAL_LIGHT_FACTOR;
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_ManageOpenedBook_Finish()
 {
-	bool bOldGATI8500	=	bGATI8500;
-	bool bOldSoftRender	=	bSoftRender;
-	bGATI8500			=	false;
-	bSoftRender			=	false;
-
 	SETZWRITE(GDevice, true );
 
 	danaeApp.EnableZBuffer();
@@ -7214,20 +7206,11 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			PrepareCamera(oldcam);
 		}
 	}
-
-	// Restore bGATI8500 + bSoftRender.
-	bSoftRender			=	bOldSoftRender;
-	bGATI8500			=	bOldGATI8500;
 }
 
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_ManageOpenedBook()
 {
-	bool bOldGATI8500	=	bGATI8500;
-	bool bOldSoftRender	=	bSoftRender;
-	bGATI8500			=	false;
-	bSoftRender			=	false;
-
 	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false );
 	
 	if (ITC.Get("questbook")==NULL)
@@ -9070,10 +9053,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 			}
 		}
 	}	
-
-	// Restoring bSoftRender (Fix && bGATI8500).
-	bSoftRender	=	bOldSoftRender;
-	bGATI8500	=	bOldGATI8500;
 }
 
 

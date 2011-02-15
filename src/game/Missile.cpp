@@ -249,7 +249,7 @@ void ARX_MISSILES_Update()
 						break;
 					}
 
-					if ( !EECheckInPoly(&dest) || EEIsUnderWaterFast(&dest) ) //ARX: jycorbel (2010-08-20) - rendering issues with bGATI8500: optimize time to render;
+					if ( !EECheckInPoly(&dest) || EEIsUnderWater(&dest) )
 					{
 						ARX_MISSILES_Kill(i);
 						ARX_BOOMS_Add(&dest);

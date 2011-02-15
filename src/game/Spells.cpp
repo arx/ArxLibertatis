@@ -7595,15 +7595,8 @@ float ARX_SPELLS_ApplyColdProtection(INTERACTIVE_OBJ * io,float damages)
 //*************************************************************************************
 // Updates all currently working spells.
 //*************************************************************************************
-extern bool bSoftRender;
 void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 {
-	bool bNoVB	=	false;
-	if( bSoftRender )
-	{
-		bNoVB	=	GET_FORCE_NO_VB();
-		SET_FORCE_NO_VB( true );
-	}
 	register long i;
 	register unsigned long tim;
 	register long framediff,framediff2,framediff3;
@@ -9453,7 +9446,6 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			}		
 		}
 	}
-	if( bSoftRender ) SET_FORCE_NO_VB( bNoVB );
 }
 
 ////////////////////////////////////////////////////////////////////////////

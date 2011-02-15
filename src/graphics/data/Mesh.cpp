@@ -886,43 +886,6 @@ EERIEPOLY * EEIsUnderWater(EERIE_3D * pos)
 	return found;	
 }
 
-extern bool bSoftRender;
-
-EERIEPOLY* EEIsUnderWaterFast(EERIE_3D * pos)
-{
-	long		px, pz;
-	EERIEPOLY * found		=	NULL;
-
-	if ( !bSoftRender )
-	{
-		found = EEIsUnderWater(pos);
-	}
-	else
-	{
-		px = pos->x * ACTIVEBKG->Xmul;
-		if ( px >= ACTIVEBKG->Xsize )		return NULL;
-		if ( px < 0 )						return NULL;
-		pz = pos->z * ACTIVEBKG->Zmul;
-		if ( pz >= ACTIVEBKG->Zsize )		return NULL;
-		if ( pz < 0 )						return NULL;
-
-		EERIEPOLY*		ep;
-		FAST_BKG_DATA*	feg	=	&ACTIVEBKG->fastdata[px][pz];
-
-		for ( short k = 0 ; k < feg->nbpolyin ; k++ )
-		{
-			ep				=	feg->polyin[k];	
-			if ( ( ep->type & POLY_WATER ) && ( ep->max.y < pos->y ) && PointIn2DPolyXZ( ep, pos->x, pos->z ) ) 
-			{
-				found	=	ep;
-				break;
-			}
-		}
-	}
-
-	return found;
-}
-
 bool GetTruePolyY(EERIEPOLY * ep, EERIE_3D * pos, float * ret)
 {
 	register EERIE_3D	n, s21, s31;

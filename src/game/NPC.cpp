@@ -904,7 +904,7 @@ void ARX_TEMPORARY_TrySound(float volume)
 			if (PHYSICS_CURIO->soundcount < 5)
 			{
 
-				if ( EEIsUnderWaterFast( &PHYSICS_CURIO->pos ) ) material = MATERIAL_WATER; //ARX: jycorbel (2010-08-20) - rendering issues with bGATI8500: optimize time to render;
+				if ( EEIsUnderWater( &PHYSICS_CURIO->pos ) ) material = MATERIAL_WATER;
 				else if (PHYSICS_CURIO->material) material = PHYSICS_CURIO->material;
 				else material = MATERIAL_STONE;
 

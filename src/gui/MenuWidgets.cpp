@@ -83,7 +83,6 @@ extern long ARX_DEMO;
 extern long INTRO_NOT_LOADED;
 extern long REFUSE_GAME_RETURN;
 
-extern bool bGATI8500;
 extern bool bForceNoEAX;
 
 extern long _EERIEMouseXdep;
@@ -1239,8 +1238,6 @@ bool CMenuConfig::SaveAll()
 
 	//misc
 	bOk&=WriteConfigInt("MISC","softfog",(bATI)?1:0);
-	bOk&=WriteConfigInt("MISC","clearnearcorrection",(bGATI8500)?1:0);
-	bOk&=WriteConfigInt("MISC","forcesoftrender",(bDebugSetting)?1:0);
 	bOk&=WriteConfigInt("MISC","forcenoeax",(bForceNoEAX)?1:0);
 	bOk&=WriteConfigInt("MISC","forcegdi",(bForceGDI)?1:0);
 	bOk&=WriteConfigInt("MISC","forcemetaltwopass",(bForceMetalTwoPass)?1:0);
@@ -1501,14 +1498,6 @@ bool CMenuConfig::ReadAll()
 
 	bAntiAliasing=iTemp?true:false;
 
-	iTemp=ReadConfigInt("MISC","forcesoftrender",bOkTemp);
-	if(!bOkTemp)
-	{
-		iTemp=0;
-	}
-
-	bDebugSetting=iTemp?true:false;
-
 	//audio
 	iTemp=ReadConfigInt("AUDIO","master_volume",bOkTemp);
 	bOk&=bOkTemp;
@@ -1716,24 +1705,6 @@ bool CMenuConfig::ReadAll()
 		bATI=(iTemp)?true:false;
 	}
 
-	iTemp=ReadConfigInt("MISC","clearnearcorrection",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bGATI8500=false;
-	}
-	else
-	{
-		bGATI8500=(iTemp)?true:false;
-	}
-
-
-	if(bGATI8500)
-	{
-		SOFTNEARCLIPPZ    =    5.f;
-	}
-
 	iTemp=ReadConfigInt("MISC","forcenoeax",bOkTemp);
 	bOk&=bOkTemp;
 
@@ -1895,7 +1866,7 @@ bool CMenuConfig::ReadAll()
 	ARXMenu_Options_Video_SetDetailsQuality(iLevelOfDetails);
 	ARXMenu_Options_Video_SetGamma(iGamma);
 	ARX_SetAntiAliasing();
-	ARXMenu_Options_Video_SetSoftRender();
+	//ARXMenu_Options_Video_SetSoftRender();
 	ARXMenu_Options_Audio_SetMasterVolume(iMasterVolume);
 	ARXMenu_Options_Audio_SetSfxVolume(iSFXVolume);
 	ARXMenu_Options_Audio_SetSpeechVolume(iSpeechVolume);
@@ -2998,14 +2969,6 @@ bool Menu2_Render()
 
 					pWindowMenuConsole->AddMenuCenterY(me);
 					ARX_SetAntiAliasing();
-
-					metemp = new CMenuElementText(-1, hFontMenu, _T("Enable Rendering Fix"), fPosX1, 0.f, lColor, 1.f, NOP);
-					metemp->SetCheckOff();
-					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_DEBUGSETTING, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
-
-					((CMenuCheckButton*)me)->iState=ARXMenu_Options_Video_SetSoftRender();
-
-					pWindowMenuConsole->AddMenuCenterY(me);
 
 					pc = new CMenuPanel();
 					PAK_UNICODE_GetPrivateProfileString("system_menus_video_apply", "", szMenuText);
@@ -4892,15 +4855,6 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton)
 			if(pMenuConfig) pMenuConfig->bAntiAliasing=(iState)?true:false;
 
 			ARX_SetAntiAliasing();
-		}
-		break;
-	case BUTTON_MENUOPTIONSVIDEO_DEBUGSETTING:
-		{
-			if(pMenuConfig)
-			{
-				pMenuConfig->bDebugSetting=(iState)?true:false;
-				pMenuConfig->bDebugSetting=ARXMenu_Options_Video_SetSoftRender()?1:0;
-			}
 		}
 		break;
 	case BUTTON_MENUOPTIONSAUDIO_EAX:
