@@ -191,7 +191,12 @@ enum ARX_DEBUG_LOG_TYPE
 
 #ifdef _DEBUG
 #define	TEST						    __LINE__
-#define arx_assert(_Expression) (void)	( (_Expression) ||  (ArxDebug::Assert((#_Expression), (__FILE__), __LINE__),  ARX_DEBUG_BREAK() , 0) )
+
+#define arx_assert(_Expression)	\
+	(void)( (_Expression) || (ArxDebug::Assert((#_Expression), (__FILE__), __LINE__),  ARX_DEBUG_BREAK() , 0) )
+
+#define arx_assert_msg(_Expression, _Message) \
+	(void)( (_Expression) || (ArxDebug::Assert((#_Expression), (__FILE__), __LINE__, _Message),  ARX_DEBUG_BREAK() , 0) )
 
 
 #else //DO_CHECK
@@ -290,7 +295,7 @@ enum ARX_DEBUG_LOG_TYPE
 class ArxDebug
 {
 	public :
-		static void Assert(const char * _sMessage, const char * _sFile, unsigned _iLine);
+		static void Assert(const char * _sExpression, const char * _sFile, unsigned _iLine, const char * _sMessage = 0);
 	
 };
 #endif // ARX_COMMON_H
