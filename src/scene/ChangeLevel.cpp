@@ -1779,7 +1779,7 @@ long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 	std::string loadfile;
 	std::stringstream ss;
 
-	ss << "lvl" << std::setw(3) << num << std::setw(8) << ".sav";
+	ss << "lvl" << std::setfill('0') << std::setw(3) << num << ".sav";
 	loadfile = ss.str();
 
 	size_t size;
@@ -1829,7 +1829,7 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num)
 	std::stringstream ss;
 	
 
-	ss << "lvl" << num << ".sav";
+	ss << "lvl" << std::setfill('0') << std::setw(3) << num << ".sav";
 	loadfile = ss.str();
 	
 	size_t size;
