@@ -70,6 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <HERMESConsole.h>
 #include <HERMESNet.h>
 #include <hermes/PakManager.h>
+#include <hermes/Filesystem.h>
  
 #include <EERIEUtil.h>
 #include <EERIE_AVI.h>

@@ -63,6 +63,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <assert.h>
 
+#include <hermes/Filesystem.h>
+
 //-----------------------------------------------------------------------------
 _TCHAR * lpszFontMenu = NULL;
 _TCHAR * lpszFontIngame = NULL;

@@ -72,6 +72,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <hermes/PakManager.h>
 #include <hermes/PakEntry.h>
+#include <hermes/Filesystem.h>
+
 #include <cstdio>
 using std::sprintf;
 using std::fopen;

@@ -37,6 +37,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "HERMESMain.h"
 #include "ARX_CCinematique.h"
 
+#include <hermes/Filesystem.h>
+
 #include <stdio.h>
 
 extern CMenuConfig * pMenuConfig;
