@@ -2802,9 +2802,9 @@ bool Menu2_Render()
 
 					for(ii=vBpp.begin();ii!=vBpp.end();ii++)
 					{
-	//                        todo: string
-	//                        _itot(*ii,szMenuText,10);
-						((CMenuSliderText*)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0, lColor, 1.f, (MENUSTATE)(BUTTON_MENUOPTIONSVIDEO_BPP+i)));
+						std::stringstream bpp;
+						bpp << *ii;
+						((CMenuSliderText*)me)->AddText(new CMenuElementText(-1, hFontMenu, bpp.str(), 0, 0, lColor, 1.f, (MENUSTATE)(BUTTON_MENUOPTIONSVIDEO_BPP+i)));
 
 						if(*ii==iModeBpp)
 						{
@@ -3890,27 +3890,14 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 
 					if ( lData )
 					{
-						{
-							/* TODO Does this do nothing?
-							_TCHAR szT[256];
-							_stprintf(szT, _T("%lu - %S"), lData, lpszText);
-							char ml[256];
-							memset( ml, 0, 256 );
-							*/
-
-							eMenuState = MAIN;
-							GDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
-							ARXMenu_LoadQuest( lData );
-
-							bNoMenu=true;
-
-							if( pTextManage )
-							{
-								pTextManage->Clear();
-							}
-
-							break;
+						eMenuState = MAIN;
+						GDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
+						ARXMenu_LoadQuest( lData );
+						bNoMenu=true;
+						if(pTextManage) {
+							pTextManage->Clear();
 						}
+						break;
 					}
 				}
 			}
