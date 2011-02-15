@@ -25,7 +25,7 @@
  */
 
 #include <setjmp.h>             /* for setjmp(), longjmp(), and jmp_buf */
-#include <blast.h>              /* prototype for blast() */
+#include <hermes/blast.h>              /* prototype for blast() */
 
 #define local static            /* for local function definitions */
 #define MAXBITS 13              /* maximum code length */
@@ -36,7 +36,7 @@ struct state {
     /* input state */
     blast_in infun;             /* input function provided by user */
     void *inhow;                /* opaque information passed to infun() */
-    unsigned char *in;          /* next input location */
+    const unsigned char *in;          /* next input location */
     unsigned left;              /* available input at in */
     int bitbuf;                 /* bit buffer */
     int bitcnt;                 /* number of bits in bit buffer */
@@ -333,7 +333,7 @@ local int decomp(struct state *s)
             dist = decode(s, &distcode) << symbol;
             dist += bits(s, symbol);
             dist++;
-            if (s->first && dist > s->next)
+            if (s->first && dist > (int)s->next)
                 return -3;              /* distance too far back */
 
             /* copy length bytes from distance bytes back */
@@ -341,7 +341,7 @@ local int decomp(struct state *s)
                 to = s->out + s->next;
                 from = to - dist;
                 copy = MAXWIN;
-                if (s->next < dist) {
+                if ((int)s->next < dist) {
                     from += copy;
                     copy = dist;
                 }

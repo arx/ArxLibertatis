@@ -59,16 +59,16 @@ using std::max;
 using std::size_t;
 using std::strlen;
 
-#include <blast.h>
+#include <hermes/blast.h>
 
 #include <cassert>
 
 #include <stdint.h>
 
-const uint8_t PAK_KEY_DEMO[] = "NSIARKPRQPHBTE50GRIH3AYXJP2AMF3FCEYAVQO5QGA0JGIIH2AYXKVOA1VOGGU5GSQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRI";
-const uint8_t PAK_KEY_FULL[] = "AVQF3FCKE50GRIAYXJP2AMEYO5QGA0JGIIH2NHBTVOA1VOGGU5H3GSSIARKPRQPQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRIAYX";
+const char PAK_KEY_DEMO[] = "NSIARKPRQPHBTE50GRIH3AYXJP2AMF3FCEYAVQO5QGA0JGIIH2AYXKVOA1VOGGU5GSQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRI";
+const char PAK_KEY_FULL[] = "AVQF3FCKE50GRIAYXJP2AMEYO5QGA0JGIIH2NHBTVOA1VOGGU5H3GSSIARKPRQPQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRIAYX";
 
-static const uint8_t * selectKey(uint32_t first_bytes) {
+static const char * selectKey(uint32_t first_bytes) {
 	switch(first_bytes) {
 		case 0x46515641:
 			return PAK_KEY_FULL;
@@ -79,47 +79,26 @@ static const uint8_t * selectKey(uint32_t first_bytes) {
 	}
 }
 
-//-----------------------------------------------------------------------------
 PakReader::PakReader() {
 	
 	pakname = NULL;
-	file = NULL;
-	pRoot = NULL;
-	
+	file = 0;
+	root = NULL;
 	fat = NULL;
 	
 	int iI = PACK_MAX_FREAD;
 	while(--iI) {
-		tPackFile[iI].bActif = false;
+		tPackFile[iI].active = false;
 		tPackFile[iI].iID = 0;
-		tPackFile[iI].iOffset = 0;
+		tPackFile[iI].offset = 0;
 	}
-	
 }
 
-//-----------------------------------------------------------------------------
 PakReader::~PakReader() {
-	
-	if(pakname) {
-		free((void *)pakname);
-		pakname = NULL;
-	}
-	
-	if(file) {
-		fclose(file);
-	}
-	
-	if(pRoot) {
-		delete pRoot;
-	}
-	
-	if(fat) {
-		delete fat;
-	}
-	
+	Close();
 }
 
-static void pakDecrypt(uint8_t * fat, size_t fat_size, const uint8_t * key) {
+static void pakDecrypt(char * fat, size_t fat_size, const char * key) {
 	
 	size_t keysize = strlen((const char *)key);
 	
@@ -146,7 +125,6 @@ static const char * safeGetString(const char * & pos, uint32_t & fat_size) {
 
 template <class T>
 inline bool safeGet(T & data, const char * & pos, uint32_t & fat_size) {
-	T nfiles;
 	if(fat_size < sizeof(T)) {
 		return false;
 	}
@@ -156,17 +134,11 @@ inline bool safeGet(T & data, const char * & pos, uint32_t & fat_size) {
 	return true;
 }
 
-//-----------------------------------------------------------------------------
 bool PakReader::Open(const char * name) {
 	
-	if(pRoot || pakname || file) {
-		// already loaded
-		return false;
-	}
+	FILE * newfile = fopen(name, "rb");
 	
-	file = fopen(name, "rb");
-	
-	if(!file) {
+	if(!newfile) {
 		printf("\e[1;35mCannot find PAK:\e[m\t%s\n", name);
 		return false;
 	}
@@ -174,26 +146,27 @@ bool PakReader::Open(const char * name) {
 	// Read fat location and size.
 	uint32_t fat_offset;
 	uint32_t fat_size;
-	if(fread(&fat_offset, sizeof(fat_offset), 1, file) != 1) {
+	if(fread(&fat_offset, sizeof(fat_offset), 1, newfile) != 1) {
 		printf("error reading FAT offset\n");
-		fclose(file);
+		fclose(newfile);
 		return false;
 	}
-	if(fseek(file, fat_offset, SEEK_SET)) {
+	if(fseek(newfile, fat_offset, SEEK_SET)) {
 		printf("error seeking to FAT offset\n");
-		fclose(file);
+		fclose(newfile);
 		return false;
 	}
-	if(fread(&fat_size, sizeof(fat_size), 1, file) != 1) {
+	if(fread(&fat_size, sizeof(fat_size), 1, newfile) != 1) {
 		printf("error reading FAT size\n");
-		fclose(file);
+		fclose(newfile);
 		return false;
 	}
 	
 	// Read the whole FAT.
 	char * newfat = new char[fat_size];
-	if(fread(newfat, fat_size, 1, file) != 1) {
+	if(fread(newfat, fat_size, 1, newfile) != 1) {
 		printf("error reading FAT\n");
+		fclose(newfile);
 		return false;
 	}
 	
@@ -219,7 +192,7 @@ bool PakReader::Open(const char * name) {
 		
 		PakDirectory * dir;
 		if(*dirname != '\0') {
-			dir = newroot->AddSousRepertoire((unsigned char *)dirname);
+			dir = newroot->addDirectory(dirname);
 		} else {
 			dir = newroot;
 		}
@@ -230,61 +203,57 @@ bool PakReader::Open(const char * name) {
 			goto error;
 		}
 		
-		if(nfiles && !dir->pHachage) {
-			int hashsize = 1;
+		if(nfiles && !dir->filesMap) {
+			size_t hashsize = 1;
 			while(hashsize < nfiles) {
 				hashsize <<= 1;
 			}
-			int n = (hashsize * 3) / 4;
+			size_t n = (hashsize * 3) / 4;
 			if(nfiles > n) {
 				hashsize <<= 1;
 			}
-			dir->pHachage = new HashMap(hashsize);
+			dir->filesMap = new HashMap(hashsize);
 		}
 		
 		while(nfiles--) {
 			
-			char * filename =  safeGetString(pos, fat_size);
+			const char * filename =  safeGetString(pos, fat_size);
 			if(!filename) {
 				printf("error reading file name from FAT, wrong key?\n");
 				goto error;
 			}
 			
-			PakFile * file = dir->AddFileToSousRepertoire(NULL, filename);
+			PakFile * file = dir->addFile(filename);
+			if(!file) {
+				printf("could not add file while loading PAK\n");
+				goto error;
+			}
 			
-			uint32_t param; // TODO more descriptive names
-			uint32_t param2;
-			uint32_t param3;
+			uint32_t offset;
+			uint32_t flags;
+			uint32_t uncompressedSize;
 			uint32_t size;
 			
-			if(!safeGet(param, pos, fat_size) || !safeGet(param2, pos, fat_size)
-			   || !safeGet(param3, pos, fat_size) || !safeGet(size, pos, fat_size)) {
+			if(!safeGet(offset, pos, fat_size) || !safeGet(flags, pos, fat_size)
+			   || !safeGet(uncompressedSize, pos, fat_size) || !safeGet(size, pos, fat_size)) {
 				printf("error reading file attributes from FAT, wrong key?\n");
 				goto error;
 			}
 			
-			file->offset = param;
-			file->flags = param2;
-			file->param3 = param3;
+			file->offset = offset;
+			file->flags = flags;
+			file->uncompressedSize = uncompressedSize;
 			file->size = size;
 		}
 		
 	}
 	
-	if(pRoot) {
-		delete pRoot;
-	}
-	pRoot = newroot;
+	Close();
 	
-	if(pakname) {
-		free(pakname);
-	}
+	root = newroot;
 	pakname = strdup((const char *)name);
-	
-	if(fat) {
-		delete fat;
-	}
 	fat = newfat;
+	file = newfile;
 	
 	printf("\e[1;32mLoaded PAK:\e[m\t%s\n", name);
 	return true;
@@ -293,34 +262,42 @@ bool PakReader::Open(const char * name) {
 error:
 	
 	delete newroot;
-	
-	delete newfat;
+	delete[] newfat;
+	fclose(newfile);
 	
 	return false;
 	
 }
 
-//-----------------------------------------------------------------------------
-void PakReader::Close()
-{
-	if (file)
-	{
+void PakReader::Close() {
+	
+	if(pakname) {
+		free((void *)pakname);
+		pakname = NULL;
+	}
+	
+	if(file) {
 		fclose(file);
-		file = NULL;
+		file = 0;
 	}
-
-	if (pRoot)
-	{
-		delete pRoot;
-		pRoot = NULL;
+	
+	if(root) {
+		delete root;
+		root = NULL;
 	}
+	
+	if(fat) {
+		delete[] fat;
+		fat = NULL;
+	}
+	
 }
 
 struct PakReadDataFile {
 	
 	FILE * file;
 	
-	char readbuf[PAK_READ_BUF_SIZE];
+	unsigned char readbuf[PAK_READ_BUF_SIZE];
 	
 	PakReadDataFile(FILE * f) : file(f) {};
 	
@@ -336,7 +313,6 @@ struct PakWriteDataMem {
 	
 };
 
-//-----------------------------------------------------------------------------
 size_t ReadData(void * Param, const unsigned char ** buf) {
 	
 	PakReadDataFile * pPP = (PakReadDataFile *)Param;
@@ -344,11 +320,10 @@ size_t ReadData(void * Param, const unsigned char ** buf) {
 	*buf = pPP->readbuf;
 	
 	int nread = fread(pPP->readbuf, 1, PAK_READ_BUF_SIZE, pPP->file);
-
+	
 	return nread;
 }
 
-//-----------------------------------------------------------------------------
 int WriteData(void * Param, unsigned char * buf, size_t len) {
 	
 	PakWriteDataMem * pPP = (PakWriteDataMem *) Param;
@@ -356,7 +331,7 @@ int WriteData(void * Param, unsigned char * buf, size_t len) {
 	if(len > pPP->size) {
 		return 1;
 	}
-
+	
 	memcpy((void *)pPP->buf, (const void *)buf, len);
 	pPP->buf += len;
 	pPP->size -= len;
@@ -364,7 +339,7 @@ int WriteData(void * Param, unsigned char * buf, size_t len) {
 	return 0;
 }
 
-static int blast(const FILE * file, unsigned char * buf, size_t size) {
+static int blast(FILE * file, char * buf, size_t size) {
 	
 	PakReadDataFile read(file);
 	PakWriteDataMem write(buf, size);
@@ -372,413 +347,175 @@ static int blast(const FILE * file, unsigned char * buf, size_t size) {
 	return blast(ReadData, &read, WriteData, &write);
 }
 
-
-
-//-----------------------------------------------------------------------------
-bool PakReader::Read(char * _pcName, void * _mem)
-{
-	if ((!_pcName) ||
-	        (!pRoot)) return false;
-
-	char * pcDir = NULL;
-	char * pcDir1 = (char *)EVEF_GetDirName((unsigned char *)_pcName);
-
-	if (pcDir1)
-	{
-		pcDir = new char[strlen((const char *)pcDir1)+2];
-		strcpy((char *)pcDir, (const char *)pcDir1);
-		strcat((char *)pcDir, "\\");
-		delete [] pcDir1;
-	}
-
-	char * pcFile = (char *)EVEF_GetFileName((unsigned char *)_pcName);
-
-	PakDirectory * pDir;
-
-	if (!pcDir)
-	{
-		pDir = pRoot;
-	}
-	else
-	{
-		pDir = pRoot->GetSousRepertoire((unsigned char *)pcDir);
-	}
-
-	if (!pDir)
-	{
-		if (pcDir) delete [] pcDir;
-
-		if (pcFile) delete [] pcFile;
-
+PakFile * PakReader::getFile(const char * name) {
+	
+	if(!name || !root) {
+		// Not loaded.
 		return NULL;
 	}
+	
+	return root->getFile(name);
+}
 
-	if (!pDir->nbfiles)
-	{
-		if (pcDir) delete [] pcDir;
 
-		if (pcFile) delete [] pcFile;
-
+// TODO unchecked buffer size
+bool PakReader::Read(const char * name, void * buf) {
+	
+	PakFile * f = getFile(name);
+	if(!f) {
 		return false;
 	}
-
-	PakFile * pTFiles = (PakFile *)pDir->pHachage->GetPtrWithString((char *)pcFile);
-
-	if (pTFiles)
-	{
-		fseek(file, pTFiles->offset, SEEK_SET);
-
-		if (pTFiles->flags & PAK_FILE_COMPRESSED)
-		{
-			int r = blast(file, (char *)_mem, pTFiles->param3);
-			if(r) {
-				printf("\e[1;35mdecompression error %d:\e[m\tfor \"%s\" in \'%s\"\n", r, pTFiles->name, pakname);
-				goto error;
-			}
+	
+	fseek(file, f->offset, SEEK_SET);
+	
+	if(f->flags & PAK_FILE_COMPRESSED) {
+		int r = blast(file, (char *)buf, f->uncompressedSize);
+		if(r) {
+			printf("\e[1;35mdecompression error %d:\e[m\tfor \"%s\" in \'%s\"\n", r, f->name, pakname);
+			return false;
 		}
-		else
-		{
-			fread(_mem, 1, pTFiles->size, file);
+	} else {
+		if(fread(buf, f->size, 1, file) != 1) {
+			return false;
 		}
-
-		if (pcDir) delete [] pcDir;
-
-		if (pcFile) delete [] pcFile;
-
-		return true;
 	}
 	
-error:
-
-	if (pcDir) delete [] pcDir;
-
-	if (pcFile) delete [] pcFile;
-
-	return false;
+	return true;
 }
 
-//-----------------------------------------------------------------------------
-void * PakReader::ReadAlloc(char * _pcName, int * _piTaille)
-{
-	if ((!_pcName) ||
-	        (!pRoot)) return NULL;
-
-	char * pcDir = NULL;
-	char * pcDir1 = (char *)EVEF_GetDirName((unsigned char *)_pcName);
-
-	if (pcDir1)
-	{
-		pcDir = new char[strlen((const char *)pcDir1)+2];
-		strcpy((char *)pcDir, (const char *)pcDir1);
-		strcat((char *)pcDir, "\\");
-		delete [] pcDir1;
-	}
-
-	char * pcFile = (char *)EVEF_GetFileName((unsigned char *)_pcName);
-
-	PakDirectory * pDir;
-
-	if (!pcDir)
-	{
-		pDir = pRoot;
-	}
-	else
-	{
-		pDir = pRoot->GetSousRepertoire((unsigned char *)pcDir);
-	}
-
-	if(!pDir) {
-		goto error;
-	}
-
-	if(!pDir->nbfiles) {
-		goto error;
+void * PakReader::ReadAlloc(const char * name, size_t * size) {
+	
+	PakFile * f = getFile(name);
+	if(!f) {
+		return NULL;
 	}
 	
-	{
-
-	PakFile * pTFiles = (PakFile *)pDir->pHachage->GetPtrWithString((char *)pcFile);
-
-	if (pTFiles)
-	{
-		void * mem;
-		fseek(file, pTFiles->offset, SEEK_SET);
-
-		if (pTFiles->flags & PAK_FILE_COMPRESSED)
-		{
-			mem = malloc(pTFiles->param3);
-			*_piTaille = (int)pTFiles->param3;
-
-			if(!mem) {
-				goto error;
-			}
-
-			int r = blast(file, (char *)mem, pTFiles->param3);
-			if(r) {
-				printf("\e[1;35mdecompression error %d:\e[m\tfor \"%s\" in \'%s\"\n", r, pTFiles->name, pakname);
-				delete mem;
-				goto error;
-			}
+	fseek(file, f->offset, SEEK_SET);
+	
+	void * mem;
+	if(f->flags & PAK_FILE_COMPRESSED) {
+		
+		mem = malloc(f->uncompressedSize);
+		*size = (int)f->uncompressedSize;
+		if(!mem) {
+			return NULL;
 		}
-		else
-		{
-			mem = malloc(pTFiles->size);
-			*_piTaille = (int)pTFiles->size;
-
-			if(!mem) {
-				goto error;
-			}
-
-			fread(mem, 1, pTFiles->size, file);
+		
+		int r = blast(file, (char *)mem, f->uncompressedSize);
+		if(r) {
+			printf("\e[1;35mdecompression error (a) %d:\e[m\tfor \"%s\" in \'%s\"\n", r, f->name, pakname);
+			free(mem);
+			return NULL;
 		}
-
-		if (pcDir) delete [] pcDir;
-
-		if (pcFile) delete [] pcFile;
-
-		return mem;
+		
+	} else {
+		
+		mem = malloc(f->size);
+		*size = (int)f->size;
+		if(!mem) {
+			return NULL;
+		}
+		
+		if(fread(mem, f->size, 1, file) != 1) {
+			free(mem);
+			return NULL;
+		}
 	}
 	
-	}
-	
-error:
-	
-	if (pcDir) delete [] pcDir;
-	
-	if (pcFile) delete [] pcFile;
-	
-	return NULL;
+	return mem;
 }
 
-//-----------------------------------------------------------------------------
-int PakReader::GetSize(char * _pcName)
-{
-	if ((!_pcName) ||
-	        (!pRoot)) return -1;
-
-	char * pcDir = NULL;
-	char * pcDir1 = (char *)EVEF_GetDirName((unsigned char *)_pcName);
-
-	if (pcDir1)
-	{
-		pcDir = new char[strlen((const char *)pcDir1)+2];
-		strcpy((char *)pcDir, (const char *)pcDir1);
-		strcat((char *)pcDir, "\\");
-		delete [] pcDir1;
-	}
-
-	char * pcFile = (char *)EVEF_GetFileName((unsigned char *)_pcName);
-
-	PakDirectory * pDir;
-
-	if (!pcDir)
-	{
-		pDir = pRoot;
-	}
-	else
-	{
-		pDir = pRoot->GetSousRepertoire((unsigned char *)pcDir);
-	}
-
-	if (!pDir)
-	{
-		if (pcDir) delete [] pcDir;
-
-		if (pcFile) delete [] pcFile;
-
+int PakReader::GetSize(const char * name) {
+	
+	PakFile * f = getFile(name);
+	if(!f) {
 		return -1;
 	}
-
-	if (!pDir->nbfiles)
-	{
-		if (pcDir) delete [] pcDir;
-
-		if (pcFile) delete [] pcFile;
-
-		return false;
+	
+	if(f->flags & PAK_FILE_COMPRESSED) {
+		return f->uncompressedSize;
+	} else {
+		return f->size;
 	}
-
-	PakFile * pTFiles = (PakFile *)pDir->pHachage->GetPtrWithString((char *)pcFile);
-
-	if (pTFiles)
-	{
-		if (pcDir) delete [] pcDir;
-
-		if (pcFile) delete [] pcFile;
-
-		if (pTFiles->flags & PAK_FILE_COMPRESSED)
-		{
-			return pTFiles->param3;
-		}
-		else
-		{
-			return pTFiles->size;
-		}
-	}
-
-	if (pcDir) delete [] pcDir;
-
-	if (pcFile) delete [] pcFile;
-
-	return -1;
 }
 
-//-----------------------------------------------------------------------------
-PakFileHandle * PakReader::fOpen(const char * _pcName, const char * _pcMode)
-{
+PakFileHandle * PakReader::fOpen(const char * name, const char * mode) {
 	
-	if ((!_pcName) ||
-	        (!pRoot)) return NULL;
-
-	char * pcDir = NULL;
-	char * pcDir1 = (char *)EVEF_GetDirName((unsigned char *)_pcName);
-
-	if (pcDir1)
-	{
-		pcDir = new char[strlen((const char *)pcDir1)+2];
-		strcpy((char *)pcDir, (const char *)pcDir1);
-		strcat((char *)pcDir, "\\");
-		delete [] pcDir1;
-	}
-
-	char * pcFile = (char *)EVEF_GetFileName((unsigned char *)_pcName);
-
-	PakDirectory * pDir;
-
-	if (!pcDir)
-	{
-		pDir = pRoot;
-	}
-	else
-	{
-		pDir = pRoot->GetSousRepertoire((unsigned char *)pcDir);
-	}
-
-	if (!pDir)
-	{
-		if (pcDir) delete [] pcDir;
-
-		if (pcFile) delete [] pcFile;
-
+	(void)mode;
+	
+	PakFile * f = getFile(name);
+	if(!f) {
 		return NULL;
 	}
-
-	if (!pDir->nbfiles)
-	{
-		if (pcDir) delete [] pcDir;
-
-		if (pcFile) delete [] pcFile;
-
-		return false;
-	}
-
-	PakFile * pTFiles = (PakFile *)pDir->pHachage->GetPtrWithString((char *)pcFile);
-
-	if (pTFiles)
-	{
-		if (pcDir) delete [] pcDir;
-
-		if (pcFile) delete [] pcFile;
-
-		int iNb = PACK_MAX_FREAD;
-
-		while (--iNb)
-		{
-			if (!tPackFile[iNb].bActif)
-			{
-				tPackFile[iNb].iID = (int)fat; // TODO why ose the FAT address here?
-				tPackFile[iNb].bActif = true;
-				tPackFile[iNb].iOffset = 0;
-				tPackFile[iNb].pFile = pTFiles;
-				return &tPackFile[iNb];
-			}
+	
+	int iNb = PACK_MAX_FREAD;
+	
+	while(--iNb) {
+		if(!tPackFile[iNb].active) {
+			tPackFile[iNb].iID = (void*)fat; // TODO why use the FAT address here?
+			tPackFile[iNb].active = true;
+			tPackFile[iNb].offset = 0;
+			tPackFile[iNb].file = f;
+			return &tPackFile[iNb];
 		}
-
-		return NULL;
 	}
-
-	if (pcDir) delete [] pcDir;
-
-	if (pcFile) delete [] pcFile;
-
+	
 	return NULL;
 }
 
-//-----------------------------------------------------------------------------
-int PakReader::fClose(PakFileHandle * _pPackFile)
-{
-	if ((!_pPackFile) ||
-	        (!_pPackFile->bActif) ||
-	        (_pPackFile->iID != ((int)fat))) return EOF;
-
-	_pPackFile->bActif = false;
+int PakReader::fClose(PakFileHandle * fh) {
+	if((!fh) || (!fh->active) || (fh->iID != ((void*)fat))) {
+		return EOF;
+	}
+	fh->active = false;
 	return 0;
 }
 
-// TODO why not use PakBlastToBuffer
-struct PAK_PARAM_FREAD {
-	FILE	*file;
-	char	*mem;
-	int		iOffsetCurr;
-	int		iOffset;
-	int		iOffsetBase;
-	int		iTaille;
-	int		iTailleBase;
-	int		iTailleW;
-	int		iTailleFic;
-	
-	char readbuf[PAK_READ_BUF_SIZE];
-	
+struct PakWriteDataMemOffset {
+	char * buf;
+	int iOffsetCurr;
+	int iOffset;
+	int iOffsetBase;
+	int iTaille;
+	int iTailleBase;
+	int iTailleW;
+	int iTailleFic;
 };
 
-//-----------------------------------------------------------------------------
-size_t ReadDataFRead(void * Param, const unsigned char ** buf) {
+int WriteDataOffset(void * Param, unsigned char * buf, size_t len) {
 	
-	PAK_PARAM_FREAD * pPP = (PAK_PARAM_FREAD *)Param;
+	PakWriteDataMemOffset * pPP = (PakWriteDataMemOffset *)Param;
 	
-	*buf = pPP->readbuf;
-
-	int iRead = fread(pPP->readbuf, 1, PAK_READ_BUF_SIZE, pPP->file);
-
-	return (unsigned int)iRead;
-}
-
-//-----------------------------------------------------------------------------
-int WriteDataFRead(void * Param, unsigned char * buf, size_t len) {
-	
-	PAK_PARAM_FREAD * pPP = (PAK_PARAM_FREAD *)Param;
-
 	if(pPP->iTailleW >= pPP->iTailleBase) {
 		return 1;
 	}
-
+	
+	// TODO check this
+	
 	pPP->iOffsetBase -= len;
 	pPP->iOffsetCurr += len;
-
-	if (pPP->iOffset < pPP->iOffsetCurr)
-	{
-		if (pPP->iOffsetBase < 0) pPP->iOffsetBase += len;
-
-		int iSize = len - pPP->iOffsetBase;
-
-		if (pPP->iTaille > iSize)
-		{
-			pPP->iTaille -= iSize;
+	
+	if(pPP->iOffset < pPP->iOffsetCurr) {
+		if(pPP->iOffsetBase < 0) {
+			pPP->iOffsetBase += len;
 		}
-		else
-		{
+		
+		int iSize = len - pPP->iOffsetBase;
+		
+		if(pPP->iTaille > iSize) {
+			pPP->iTaille -= iSize;
+		} else {
 			iSize = pPP->iTaille;
 		}
-
-		if ((pPP->iTailleW + iSize) > pPP->iTailleFic)
-		{
+		
+		if((pPP->iTailleW + iSize) > pPP->iTailleFic) {
 			iSize = pPP->iTailleFic - pPP->iTailleW;
 		}
-
+		
 		pPP->iTailleW += iSize;
-
-		memcpy((void *)pPP->mem, (const void *)(buf + pPP->iOffsetBase), iSize);
-		pPP->mem += iSize;
+		
+		memcpy((void *)pPP->buf, (const void *)(buf + pPP->iOffsetBase), iSize);
+		pPP->buf += iSize;
 		pPP->iOffsetBase = 0;
 		
 		return 0;
@@ -787,145 +524,123 @@ int WriteDataFRead(void * Param, unsigned char * buf, size_t len) {
 	}
 }
 
-//-----------------------------------------------------------------------------
-size_t PakReader::fRead(void * _pMem, size_t _iSize, size_t _iCount, PakFileHandle * _pPackFile)
-{
-	if ((!_pPackFile) ||
-	        (!_pPackFile->pFile) ||
-	        (_pPackFile->iID != ((int) fat))) return 0;
-
-	int iTaille = _iSize * _iCount;
-
-	if ((!_pPackFile) ||
-	        (!iTaille) ||
-	        (!_pPackFile->pFile)) return 0;
-
-	PakFile * pTFiles = _pPackFile->pFile;
-
-	if (pTFiles->flags & PAK_FILE_COMPRESSED)
-	{
-		assert(_pPackFile->iOffset >= 0);
-		if ((unsigned int)_pPackFile->iOffset >= _pPackFile->pFile->param3) return 0;
-
-		fseek(file, pTFiles->offset, SEEK_SET);
-
-		PAK_PARAM_FREAD sPP;
-		sPP.file        = file;
-		sPP.mem         = (char *) _pMem;
-		sPP.iOffsetCurr = 0;
-		sPP.iOffset     = _pPackFile->iOffset;
-		sPP.iOffsetBase = _pPackFile->iOffset;
-		sPP.iTaille     = sPP.iTailleBase = iTaille;
-		sPP.iTailleW    = 0;
-		sPP.iTailleFic  = _pPackFile->pFile->param3;
-		blast(ReadDataFRead, &sPP, WriteDataFRead, &sPP);
-		iTaille         = sPP.iTailleW;
+size_t PakReader::fRead(void * buf, size_t isize, size_t count, PakFileHandle * fh) {
+	
+	if((!fh) || (!fh->file) || (fh->iID != ((void*)fat))) {
+		return 0;
 	}
-	else
-	{
-		assert(_pPackFile->iOffset >= 0);
-		if ((unsigned int)_pPackFile->iOffset >= _pPackFile->pFile->size) return 0;
-
-		fseek(file, pTFiles->offset + _pPackFile->iOffset, SEEK_SET);
-
-		assert(iTaille >= 0);
-
-		if (pTFiles->size < (unsigned int)_pPackFile->iOffset + iTaille)
-		{
-			iTaille -= _pPackFile->iOffset + iTaille - pTFiles->size;
+	
+	int size = isize * count;
+	
+	if((!fh) || (!size) || (!fh->file)) {
+		return 0;
+	}
+	
+	PakFile * f = fh->file;
+	
+	assert(fh->offset >= 0);
+	
+	if((unsigned int)fh->offset >= fh->file->uncompressedSize) {
+		return 0;
+	}
+	
+	if(f->flags & PAK_FILE_COMPRESSED) {
+		
+		fseek(file, f->offset, SEEK_SET);
+		
+		PakReadDataFile read(file);
+		PakWriteDataMemOffset write;
+		
+		write.buf = (char *)buf;
+		write.iOffsetCurr = 0;
+		write.iOffset = fh->offset;
+		write.iOffsetBase = fh->offset;
+		write.iTaille = write.iTailleBase = size;
+		write.iTailleW = 0;
+		write.iTailleFic = fh->file->uncompressedSize;
+		
+		int r = blast(ReadData, &read, WriteDataOffset, &write);
+		if(!r) {
+			printf("\e[1;35mdecompression error (f) %d:\e[m\tfor \"%s\" in \'%s\"\n", r, f->name, pakname);
+			return 0;
 		}
-
-		fread(_pMem, 1, iTaille, file);
+		
+		size = write.iTailleW;
+		
+	} else {
+		
+		fseek(file, f->offset + fh->offset, SEEK_SET);
+		
+		if(f->size < (unsigned int)fh->offset + size) {
+			size -= fh->offset + size - f->size;
+		}
+		
+		size = fread(buf, 1, size, file);
 	}
-
-	_pPackFile->iOffset += iTaille;
-	return iTaille;
+	
+	fh->offset += size;
+	
+	return size; // TODO should this be count?
 }
 
-//-----------------------------------------------------------------------------
-int PakReader::fSeek(PakFileHandle * _pPackFile, long _lOffset, int _iOrigin)
-{
-	if ((!_pPackFile) ||
-	        (!_pPackFile->pFile) ||
-	        (_pPackFile->iID != ((int)fat))) return 1;
-
-	switch (_iOrigin)
-	{
-		case SEEK_SET:
-
-			if (_lOffset < 0) return 1;
-
-			if (_pPackFile->pFile->flags & PAK_FILE_COMPRESSED)
-			{
-				if (_lOffset > _pPackFile->pFile->param3) return 1;
-
-				_pPackFile->iOffset = _lOffset;
-			}
-			else
-			{
-				if (_lOffset > _pPackFile->pFile->size) return 1;
-
-				_pPackFile->iOffset = _lOffset;
-			}
-
-			break;
-		case SEEK_END:
-
-			if (_lOffset < 0) return 1;
-
-			if (_pPackFile->pFile->flags & PAK_FILE_COMPRESSED)
-			{
-				if (_lOffset > _pPackFile->pFile->param3) return 1;
-
-				_pPackFile->iOffset = _pPackFile->pFile->param3 - _lOffset;
-			}
-			else
-			{
-				if (_lOffset > _pPackFile->pFile->size) return 1;
-
-				_pPackFile->iOffset = _pPackFile->pFile->size - _lOffset;
-			}
-
-			break;
-		case SEEK_CUR:
-
-			if (_pPackFile->pFile->flags & PAK_FILE_COMPRESSED)
-			{
-				int iOffset = _pPackFile->iOffset + _lOffset;
-
-				if ((iOffset < 0) ||
-			        ((unsigned int)iOffset > _pPackFile->pFile->param3))
-				{
-					return 1;
-				}
-
-				_pPackFile->iOffset = iOffset;
-			}
-			else
-			{
-				int iOffset = _pPackFile->iOffset + _lOffset;
-
-				if ((iOffset < 0) ||
-			        ((unsigned int)iOffset > _pPackFile->pFile->size))
-				{
-					return 1;
-				}
-
-				_pPackFile->iOffset = iOffset;
-			}
-
-			break;
+// TODO different return values from fseek in <cstdio>
+int PakReader::fSeek(PakFileHandle * fh, long offset, int whence) {
+	
+	if((!fh) || (!fh->file) || (fh->iID != ((void*)fat))) {
+		return 1;
 	}
-
+	
+	size_t size;
+	if(fh->file->flags & PAK_FILE_COMPRESSED) {
+		size = fh->file->uncompressedSize;
+	} else {
+		size = fh->file->size;
+	}
+	
+	switch(whence) {
+		
+		case SEEK_SET:
+			
+			if(offset < 0) {
+				return 1;
+			}
+			
+			if((size_t)offset > size) {
+				return 1;
+			}
+			fh->offset = offset;
+			break;
+			
+		case SEEK_END:
+			
+			if(offset < 0) {
+				return 1;
+			}
+			
+			if((size_t)offset > size) {
+				return 1;
+			}
+			fh->offset = size - offset;
+			break;
+			
+		case SEEK_CUR:
+			
+			int iOffset = fh->offset + offset;
+			if((iOffset < 0) || ((unsigned int)iOffset > size)) {
+				return 1;
+			}
+			fh->offset = iOffset;
+		
+	}
+	
 	return 0;
 }
 
-//-----------------------------------------------------------------------------
-long PakReader::fTell(PakFileHandle * _pPackFile)
-{
-	if ((!_pPackFile) ||
-	        (!_pPackFile->pFile) ||
-	        (_pPackFile->iID != ((int)fat))) return -1;
-
-	return _pPackFile->iOffset;
+long PakReader::fTell(PakFileHandle * fh) {
+	
+	if((!fh) || (!fh->file) || (fh->iID != ((void*)fat))) {
+		return -1;
+	}
+	
+	return fh->offset;
 }

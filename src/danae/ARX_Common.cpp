@@ -240,11 +240,8 @@ void ArxDebug::CleanInstance()
 ArxDebug::ArxDebug(bool _bLogIntoFile /*= true*/)
 {
 
-	m_bConsoleInitialize	= false ;
-	m_bOpenLogFile			= false ;
-	m_uiTabulation			= 0		;
-
-	RedirectIOToConsole();
+	m_bOpenLogFile = false;
+	m_uiTabulation = 0;
 
 	if (_bLogIntoFile)
 	{
@@ -254,62 +251,10 @@ ArxDebug::ArxDebug(bool _bLogIntoFile /*= true*/)
 
 ArxDebug::~ArxDebug()
 {
-	CleanConsole();
 	EndLogSession();
 
 	m_pInstance = NULL ;
 	m_uiTabulation = 0	;
-}
-
-
-/*
-	Create and Clean Console for log
-*/
-
-void ArxDebug::RedirectIOToConsole()
-{
-	m_bConsoleInitialize = CreateDebugConsole();
-
-	if (m_bConsoleInitialize)
-	{
-		freopen("CONOUT$", "wt", stdout);
-		freopen("CONERR$", "wt", stderr);
-		freopen("CONIN$",  "r",  stdin) ;
-	}
-
-}
-
-bool ArxDebug::CreateDebugConsole()
-{
-	CONSOLE_SCREEN_BUFFER_INFO coninfo;
-
-	// allocate a console for this app
-	if (!AllocConsole())
-	{
-		MessageBoxA(NULL, "Cannot create Log Console ", "Log Console Error ", MB_OK | MB_ICONHAND | MB_SETFOREGROUND | MB_TASKMODAL);
-		return false ;
-	}
-
-	SetConsoleTitleA("ARX Fatalis Debug Window");
-
-	// set the screen buffer to be big enough to let us scroll text
-	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &coninfo);
-	coninfo.dwSize.X = ARXCOMMON_MAX_CONSOLE_ROWS ;
-	coninfo.dwSize.Y = ARXCOMMON_MAX_CONSOLE_LINES;
-	SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), coninfo.dwSize);
-	return true ;
-}
-
-
-
-
-
-void ArxDebug::CleanConsole()
-{
-	if (m_bConsoleInitialize)
-	{
-		FreeConsole();
-	}
 }
 
 
@@ -357,16 +302,13 @@ void ArxDebug::LogTypeManager(ARX_DEBUG_LOG_TYPE eType)
 	switch (eType)
 	{
 		case eLogWarning :
-			SetConsoleTextAttribute(hStdOut, ARXDEBUG_COLOR_WARNING);
 			m_ossBuffer << "[Warning : " << t->tm_hour << "h " << t->tm_min << "m " << t->tm_sec << "s] : ";
 			break;
 		case eLogError :
-			SetConsoleTextAttribute(hStdOut, ARXDEBUG_COLOR_ERROR);
 			m_ossBuffer << "[Error : " << t->tm_hour << "h " << t->tm_min << "m " << t->tm_sec << "s] : ";
 			break;
 		case eLog :
 		default:
-			SetConsoleTextAttribute(hStdOut, ARXDEBUG_COLOR_DEFAULT);
 			m_ossBuffer << "[Log : " << t->tm_hour << "h " << t->tm_min << "m " << t->tm_sec << "s] : ";
 	}
 }
@@ -415,11 +357,8 @@ void ArxDebug::Log(ARX_DEBUG_LOG_TYPE eType, const char * _sMessage, ...)
 	}
 
 	//Write the log on the console
-	if (m_bConsoleInitialize)
-	{
-		std::cout << m_ossBuffer.str().c_str();
-		std::cout.flush();
-	}
+	std::cout << m_ossBuffer.str().c_str();
+	std::cout.flush();
 }
 
 
@@ -431,7 +370,7 @@ void ArxDebug::EndLogSession()
 	if (m_bOpenLogFile)
 	{
 		m_fsFile.close();
-		m_bOpenLogFile = false ;
+		m_bOpenLogFile = false;
 	}
 }
 
@@ -456,10 +395,7 @@ void ArxDebug::OpenTag(const char * _sTag)
 	}
 
 	//Write tag inside the console
-	if (m_bConsoleInitialize)
-	{
-		std::cout << m_ossBuffer.str().c_str();
-	}
+	std::cout << m_ossBuffer.str().c_str();
 }
 
 

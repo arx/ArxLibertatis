@@ -30,12 +30,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h>
 #include "ARX_Common.h"
 
-#ifndef APIDLL
-#define APIFUNC __declspec(dllimport) WINAPI
-#else
-#define APIFUNC __declspec(dllexport) WINAPI
-#endif
-
 struct Vars
 {
 	char * lpszVarName;
@@ -82,25 +76,25 @@ struct ScriptDebuggerInfos
 
 
 //-----------------------------------------------------------------------------
-LPSTR			APIFUNC SCRIPT_DEBUGGER_GetName();
+LPSTR			SCRIPT_DEBUGGER_GetName();
 
 //-----------------------------------------------------------------------------
-unsigned long	APIFUNC SCRIPT_DEBUGGER_GetVersion();
+unsigned long	SCRIPT_DEBUGGER_GetVersion();
 
 //-----------------------------------------------------------------------------
 // Création de la boite de dialogue
-void			APIFUNC SCRIPT_DEBUGGER_CreateDialog(HWND, ScriptDebuggerInfos &);
+void			SCRIPT_DEBUGGER_CreateDialog(HWND, ScriptDebuggerInfos &);
 
 //-----------------------------------------------------------------------------
-void			APIFUNC	SCRIPT_DEBUGGER_SetParams(ScriptDebuggerInfos &);
+void			SCRIPT_DEBUGGER_SetParams(ScriptDebuggerInfos &);
 
 //-----------------------------------------------------------------------------
-void			APIFUNC SCRIPT_DEBUGGER_GetParams(ScriptDebuggerUpdate &);
+void			SCRIPT_DEBUGGER_GetParams(ScriptDebuggerUpdate &);
 
 //-----------------------------------------------------------------------------
-bool			APIFUNC SCRIPT_DEBUGGER_WindowOpened();
+bool			SCRIPT_DEBUGGER_WindowOpened();
 
 //-----------------------------------------------------------------------------
-void			APIFUNC SCRIPT_DEBUGGER_Destroy();
+void			SCRIPT_DEBUGGER_Destroy();
 
 #endif

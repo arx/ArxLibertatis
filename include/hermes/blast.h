@@ -21,8 +21,8 @@
   Mark Adler    madler@alumni.caltech.edu
  */
 
-#ifndef BLAST_H
-#define BLAST_H
+#ifndef ARX_HERMES_BLAST_H
+#define ARX_HERMES_BLAST_H
 
 #include <cstddef>
 
@@ -34,15 +34,12 @@
  * incompatible with the implode compression method supported by PKZIP.)
  */
 
-
-typedef std::size_t (*blast_in)(void *how, const unsigned char **buf);
-typedef int (*blast_out)(void *how, unsigned char *buf, std::size_t len);
 /* Definitions for input/output functions passed to blast().  See below for
  * what the provided functions need to do.
  */
+typedef std::size_t (*blast_in)(void *how, const unsigned char **buf);
+typedef int (*blast_out)(void *how, unsigned char *buf, std::size_t len);
 
-
-int blast(blast_in infun, void *inhow, blast_out outfun, void *outhow);
 /* Decompress input to output using the provided infun() and outfun() calls.
  * On success, the return value of blast() is zero.  If there is an error in
  * the source data, i.e. it is not in the proper format, then a negative value
@@ -73,6 +70,6 @@ int blast(blast_in infun, void *inhow, blast_out outfun, void *outhow);
  * At the bottom of blast.c is an example program that uses blast() that can be
  * compiled to produce a command-line decompression filter by defining TEST.
  */
+int blast(blast_in infun, void *inhow, blast_out outfun, void *outhow);
 
-#endif BLAST_H
-
+#endif // ARX_HERMES_BLAST_H
