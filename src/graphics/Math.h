@@ -166,6 +166,32 @@ inline float ffsqrt(float f)
 	return (float &)y;
 }
 
+/**
+ *  Obtain the approximated inverse of the square root of a float.
+ *  @brief  This code compute a fast 1 / sqrtf(v) approximation.
+ *  @note   Originaly from Matthew Jones (Infogrames).
+ *  @param  pValue  a float, the number we want the square root.
+ *  @return The square root of \a fValue, as a float.
+ */
+inline float FastRSqrt( float pValue )    
+{  
+	// Avoid issues with strict aliasing - use a union!
+    union FloatInt
+    {
+        float f;
+        int   i;
+    };
+    FloatInt floatInt;
+    floatInt.f = pValue;
+    
+    const int MAGIC_NUMBER = 0x5f3759df;
+        
+    float v_half = pValue * 0.5f;
+    floatInt.i = MAGIC_NUMBER - (floatInt.i >> 1);
+    pValue = floatInt.f;
+    return pValue * (1.5f - v_half * pValue * pValue);
+}
+
 #define FORCERANGE(a,b,c)	if (a<b) a=b; \
 	if (a>c) a=c;
 
