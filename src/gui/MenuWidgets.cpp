@@ -2575,13 +2575,7 @@ bool Menu2_Render()
 										tex3,
 										256);
 									strcat(tex4,tex3);
-/*									MultiByteToWideChar(	CP_ACP,
-										0,
-										tex4,
-										-1,
-										(wchar_t*)tex2,
-										256);*/
-									tex += tex2;
+									tex += tex4;
 									
 									me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, tex, fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
 								}
@@ -3943,18 +3937,8 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 					pWindowMenu->vWindowConsoleElement[i]->lData = lData;
 					CMenuElementText * me = (CMenuElementText *) p->MenuAllZone.vMenuZone[1];
 
-					if ( me )
-					{
-						std::string szT;
-						std::stringstream ss;
-						ss << me->lData << me->lpszText;
-						std::string ml = ss.str();
-// TODO Find replacement
-/*						WideCharToMultiByte( CP_ACP, 0, (wchar_t*)me->lpszText, _tcslen( me->lpszText ),
-							ml,  _tcslen( me->lpszText ) + 1,
-							"_", NULL );
-*/
-						save_l[me->lData].name = ml;
+					if(me) {
+						save_l[me->lData].name = me->lpszText;
 						eMenuState = MAIN;
 						ARXMenu_SaveQuest( me->lData );
 						break;
@@ -3975,27 +3959,18 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 					pWindowMenu->vWindowConsoleElement[i]->lData = lData;
 					CMenuElementText * me = (CMenuElementText *) p->MenuAllZone.vMenuZone[1];
 
-					if ( me )
-					{
-						std::stringstream ss;
-						ss << me->lData << me->lpszText;
-						std::string ml = ss.str();
-// TODO Find replacement
-/*						WideCharToMultiByte( CP_ACP, 0, (wchar_t*)me->lpszText, _tcslen( me->lpszText ),
-							ml,  _tcslen( me->lpszText ) + 1,
-							"_", NULL );
-*/
-						save_l[me->lData].name = ml;
+					if(me) {
+						save_l[me->lData].name = me->lpszText;
 						eMenuState = MAIN;
 						ARXMenu_DeleteQuest( me->lData );
 						FreeSaveGameList();
 						CreateSaveGameList();
-							break;
-							}
-								}
-							}
-						}
 						break;
+					}
+				}
+			}
+		}
+		break;
 	case BUTTON_MENUOPTIONSVIDEO_APPLY:
 		{
 			//----------BUMP
