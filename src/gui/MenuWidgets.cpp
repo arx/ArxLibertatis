@@ -777,10 +777,7 @@ void to_lower(std::string & str) {
 int CMenuConfig::GetDIKWithASCII( const std::string& _pcTouch)
 {
 	std::string pcT = _pcTouch;
-	to_lower( pcT );
 	
-	// TODO replacement
-	//MultiByteToWideChar(CP_ACP, 0, _pcTouch, -1, (wchar_t*)pcT, strlen(_pcTouch)+1);
 
 	if( strcasecmp(pcT.c_str(), "---"  ) == 0 )
 	{
@@ -790,7 +787,6 @@ int CMenuConfig::GetDIKWithASCII( const std::string& _pcTouch)
 	for(int iI=0;iI<256;iI++)
 	{
 		std::string pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI);
-		to_lower( pcT1 );
 
 		if( !pcT.compare( pcT1 ) )
 			return iI;
