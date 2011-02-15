@@ -536,9 +536,10 @@ void ReloadAllTextures(LPDIRECT3DDEVICE7 pd3dDevice)
 //-----------------------------------------------------------------------------
 TextureContainer::TextureContainer(const char * strName, DWORD dwStage, DWORD dwFlags)
 {
-	MakeUpcase(strName);
 	
+	// TODO why are there two names?
 	strcpy(m_texName, strName);
+	strcpy(m_strName, strName);
 
 	m_dwWidth		= 0;
 	m_dwHeight		= 0;
@@ -757,8 +758,10 @@ HRESULT TextureContainer::LoadImageData()
 	// Check File
 	lstrcpy(strPathname, m_strName);
 
-	if (NULL == (strExtension = strchr(m_strName, '.')))
+	if (NULL == (strExtension = strchr(m_strName, '.'))) {
+		printf("LoadImageData: unsupported (missing extension): %s\n", m_strName);
 		return DDERR_UNSUPPORTED;
+	}
 
 	HRESULT hres;
 	strcpy(tempstrPathname, strPathname);
@@ -781,7 +784,8 @@ HRESULT TextureContainer::LoadImageData()
 	// Load targa files
 	if (!lstrcmpi(strExtension, _T(".tga")))
 		return LoadTargaFile(strPathname);
-
+	
+	printf("LoadImageData: unsupported (unknown extension): %s\n", m_strName);
 	// Can add code here to check for other file formats before failing
 	return DDERR_UNSUPPORTED;
 }
@@ -3003,7 +3007,8 @@ my_error_exit(j_common_ptr cinfo)
 	char txt[256];
 	(*cinfo->err->output_message)(cinfo);
 	sprintf(txt, "truc zarb: %s", cinfo->err->jpeg_message_table[cinfo->err->msg_code]);
-	MessageBox(NULL, txt, "EERIE JPEG Error", 0);
+//	MessageBox(NULL, txt, "EERIE JPEG Error", 0);
+	printf("EERIE JPEG Error: %s", txt);
 
 	JPEGError = 1;
 	return;
@@ -3430,8 +3435,6 @@ TextureContainer * D3DTextr_CreateTextureFromFile(const char * strName, DWORD dw
 		return ReturnValue;
 
 	// Check first to see if the texture is already loaded
-	MakeUpcase(strName);
-
 	if (NULL != (LastTextureContainer = FindTexture(strName)))
 	{
 		if (DEBUGSYS)
