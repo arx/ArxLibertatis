@@ -99,12 +99,12 @@ bool FileExist(const char * name) {
 	
 	FileHandle handle = FileOpenRead(name);
 	if(!handle) {
-		LogError <<"Didn't find "<< name;
+		LogError << "Didn't find " << name;
 		return false;
 	}
 	
 	FileClose(handle);
-	LogInfo <<"Found "<< name;
+	LogInfo << "Found " << name;
 	return true;
 }
 
@@ -117,7 +117,7 @@ static FileHandle FileOpen(const char * name, DWORD mode, DWORD opt) {
 	HANDLE handle = CreateFile(name, mode, 0, NULL, opt, 0, 0);
 
 	if(handle == INVALID_HANDLE_VALUE) {
-		LogError << "Can't open "<< name;
+		LogError << "Can't open " << name;
 		return INVALID_FILE_HANDLE;
 	}
 	LogInfo << "Opened "<< name;

@@ -3439,29 +3439,22 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 	char loadfile[256];
 	long FirstTime;
 	sprintf(loadfile, "lvl%03ld.sav", instance);
-
-	LogDebug << "Before Saveblock Access";
+	
 	// Open Saveblock for read
 	char sfile[256];
 	sprintf(sfile, "%sGsave.sav", CurGamePath);
 	_pSaveBlock = new SaveBlock(sfile);
-	if(!_pSaveBlock->BeginRead()) {
-		LogError << "cannot open save to pop level: " << sfile;
-	}
-	LogDebug << "After  Saveblock Access";
-
-	PROGRESS_BAR_COUNT += 2.f;
-	LoadLevelScreen(GDevice, instance);
-
+	
 	// first time in this level ?
-	if (!FileExist(sfile))
-	{
+	if (!_pSaveBlock->BeginRead()) {
+		LogDebug << "don't have save block \"" << sfile << "\"";
 		FirstTime = 1;
 		FORBID_SCRIPT_IO_CREATION = 0;
 		NO_PLAYER_POSITION_RESET = 0;
 	}
 	else if (!_pSaveBlock->hasFile(loadfile))
 	{
+		LogDebug << "don't have level \"" << loadfile << "\" save block";
 		FirstTime = 1;
 		FORBID_SCRIPT_IO_CREATION = 0;
 		NO_PLAYER_POSITION_RESET = 0;
@@ -3472,6 +3465,8 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 		FORBID_SCRIPT_IO_CREATION = 1;
 		NO_PLAYER_POSITION_RESET = 1;
 	}
+	
+	LogDebug << "FirstTime = " << FirstTime;
 
 	_FIRSTTIME = FirstTime;
 	NEW_LEVEL = instance;
@@ -3821,6 +3816,7 @@ void CopyDirectory(char * _lpszSrc, char * _lpszDest)
 				strcpy(d, _lpszDest);
 				strcat(s, FindFileData->cFileName);
 				strcat(d, FindFileData->cFileName);
+				LogDebug << "copy file " << s << " to " << d;
 				CopyFile(s, d, false);
 			}
 		}

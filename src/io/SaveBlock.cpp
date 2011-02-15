@@ -487,6 +487,7 @@ char * SaveBlock::load(const string & name, size_t & size) const {
 	
 	const File * file = (const File *)hashMap->get(name);
 	if(!file) {
+		LogWarning << "Could not load " << name << " from " << savefile;
 		size = 0;
 		return NULL;
 	}
