@@ -136,7 +136,10 @@ void File_Standardize(const char * from, char * to)
 	long pos = 0;
 	long pos2 = 0;
 	long size = strlen(from);
-	char * temp = from; /*HermesBufferWork;	
+	char * temp = HermesBufferWork;
+	
+	strcpy(temp, from);
+	/*
 
 	while (pos < size)
 	{
@@ -491,11 +494,11 @@ long HERMES_CreateFileCheck(const char * name, char * scheck, const long & size,
     #define NullTerminate(x)    x[i] = '\0'
     
     // from http://acmlm.kafuka.org/board/thread.php?id=3930
-    static void splitpath(const char *path, char *drive, char *dir, char *fName, char *ext)
+    static void splitpath(const char * path, char * drive, char * dir, char * fName, char * ext)
     {
         char separator = '\\';
         
-        char    *endPoint = NULL,
+        const char    *endPoint = NULL,
                 *pos = (char*) path,
                 *temp = NULL,
                 *lastChar = NULL;
@@ -630,7 +633,7 @@ long HERMES_CreateFileCheck(const char * name, char * scheck, const long & size,
     }
     
 		// from http://acmlm.kafuka.org/board/thread.php?id=3930
-    static void makepath(char *path, const char *drive, const char *dir, const char *fName, const char *ext)
+    static void makepath(char *path, char *drive, char *dir, char *fName, char *ext)
     {
         char separator = '\\';
         char *lastChar = NULL;
@@ -929,11 +932,11 @@ bool HERMES_WFSelectorCommon(const char * pstrFileName, const char * pstrTitleNa
 
 	ofn.lpstrFilter			= filter ;
 	ofn.hwndOwner			= hWnd;
-	ofn.lpstrFile			= pstrFileName ;
+	ofn.lpstrFile			= strdup(pstrFileName);
 	ofn.lpstrTitle			= pstrTitleName ;
 	ofn.Flags				= flag;
 
-	GetCurrentDirectory(cwd, MAX_PATH);
+	GetCurrentDirectory(MAX_PATH, cwd);
 	ofn.lpstrInitialDir = cwd;
 	ofn.nMaxFile = max_car;
 
@@ -945,6 +948,8 @@ bool HERMES_WFSelectorCommon(const char * pstrFileName, const char * pstrTitleNa
 	{
 		value = GetSaveFileName(&ofn);
 	}
+	
+	free(ofn.lpstrFile);
 
 	return value;
 }
@@ -970,7 +975,7 @@ size_t ReadCompressed(void * Param, const unsigned char ** buf) {
 	
 	PARAM * Ptr = (PARAM *) Param;
 	
-	*buf = Ptr->pSource + Ptr->SourceOffset;
+	*buf = (const unsigned char *)Ptr->pSource + Ptr->SourceOffset;
 	
 	size_t size = Ptr->CompressedSize;
 	
@@ -1052,7 +1057,7 @@ void STD_ExplodeNoAlloc(char * from, size_t from_size, char * to, size_t * to_si
 
 	PARAM Param;
 	memset(&Param, 0, sizeof(PARAM));
-	Param.BufferSize = to_size;
+	Param.BufferSize = *to_size;
 	Param.pSource = from;
 	Param.pDestination = to; 
 	Param.CompressedSize = from_size;

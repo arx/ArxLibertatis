@@ -129,13 +129,13 @@ bool _PAK_DirectoryExist(const char * name) {
 		strcat(temp, "\\");
 	}
 	
-	vector<PakDirectory *> pvRepertoire(pPakManager->ExistDirectory(temp));
+	vector<PakDirectory *> * pvRepertoire = pPakManager->ExistDirectory(temp);
 	
-	if(pvRepertoire.empty()) {
-		return false;
-	}
+	bool result = !pvRepertoire->empty();
 	
-	return true;
+	delete pvRepertoire;
+	
+	return result;
 }
 
 bool PAK_DirectoryExist(const char * name) {
