@@ -4,6 +4,7 @@
  PKWARE Data Compression Library Reg. U.S. Pat. and Tm. Off.
 ***************************************************************/
 
+#include "stdio.h"
 
 #ifndef IMPLODE_H
 #define IMPLODE_H
@@ -22,7 +23,7 @@ inline	unsigned int implode(
 	    unsigned int * type,
 
 	    unsigned int * dsize) {
-	
+	printf("implode()\n");
 	return 0;
 }
 
@@ -32,10 +33,9 @@ inline	unsigned int explode(
 	    void (*write_buf)(char * buf, unsigned  int * size, void * param),
 	    char     *    work_buf,
 	    void     *    param) {
+	printf("explode()\n");
 	return 0;
 }
-
-	unsigned long crc32(char * buffer, unsigned int * size, unsigned long * old_crc);
 
 #ifdef __cplusplus
 }                         // End of 'extern "C"' declaration

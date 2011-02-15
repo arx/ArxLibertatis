@@ -19,6 +19,8 @@ set(CMAKE_C_COMPILER /usr/bin/winegcc)
 #set temporally less gcc problems
 set(CMAKE_CXX_FLAGS "-fpermissive -w -m32")
 
+add_definitions(-D_DEBUG)
+
 #Add sources
 set(SOURCE_DIRS
 	ArxCommon

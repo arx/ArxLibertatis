@@ -100,14 +100,14 @@ void ArxDebug::cpy_wstr(char * buf, const wchar_t * src, size_t max)
 	Get the callstack informations and create the log file with CreateLogFile function
 */
 
-void ArxDebug::Assert(const wchar_t * _sMessage, const wchar_t * _sFile, unsigned int _iLine)
+void ArxDebug::Assert(const char * _sMessage, const char * _sFile, unsigned int _iLine)
 {
 	char msgbuf[8192];
 	char fn[MAX_PATH + 1], msg[MAX_PATH + 1], iFile[MAX_PATH + 1];
 
 
-	cpy_wstr(msg, _sMessage, MAX_PATH);
-	cpy_wstr(iFile, _sFile, MAX_PATH);
+	strcpy(msg, _sMessage);
+	strcpy(iFile, _sFile);
 
 	if (iFile[0] == 0)
 	{

@@ -1086,6 +1086,7 @@ void InitializeDanae()
 
 void Dbg_str(char * txt)
 {
+	printf("%s\n", txt);
 }
 void LaunchCDROMCheck(long param)
 {

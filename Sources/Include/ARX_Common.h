@@ -95,7 +95,7 @@ enum ARX_DEBUG_LOG_TYPE
 
 #ifdef _DEBUG
 #define	TEST						__LINE__
-#define arx_assert(_Expression) (void)	( (_Expression) ||  (ArxDebug::Assert(_CRT_WIDE(#_Expression), _CRT_WIDE(__FILE__), __LINE__),  DebugBreak() , 0) )
+#define arx_assert(_Expression) (void)	( (_Expression) ||  (ArxDebug::Assert((#_Expression), (__FILE__), __LINE__),  DebugBreak() , 0) )
 
 //Use only at game's beginning
 #define ARX_LOG_INIT()					ArxDebug::GetInstance(DEBUG_INSIDEAFILE)
@@ -229,7 +229,7 @@ class ArxDebug
 		static ArxDebug * GetInstance(bool _bLogIntoFile = true);
 		static void CleanInstance();
 		static void NullFunc(const char * _sMessage, ...) {};
-		static void Assert(const wchar_t * _sMessage, const wchar_t * _sFile, unsigned _iLine);
+		static void Assert(const char * _sMessage, const char * _sFile, unsigned _iLine);
 
 		void Log(ARX_DEBUG_LOG_TYPE eType, const char * _sMessage, ...);
 
