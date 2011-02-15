@@ -37,6 +37,8 @@ const LogSetting blackList[] = {
 	{ "Mesh.cpp", Logger::Info },
 	{ "Localization.cpp", Logger::Info },
 	{ "Credits.cpp", Logger::Info },
+	{ "ChangeLevel.cpp", Logger::Info },
+	{ "SaveBlock.cpp", Logger::Info },
 };
 
 Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {
