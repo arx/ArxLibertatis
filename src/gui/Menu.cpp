@@ -145,7 +145,7 @@ std::vector<SaveGame> save_l;
 //-----------------------------------------------------------------------------
 void CreateSaveGameList()
 {
-	LogInfo << "CreateSaveGameList";
+	LogDebug << "CreateSaveGameList";
 	
 	char path[512] = "";
 	HANDLE h;
@@ -160,7 +160,7 @@ void CreateSaveGameList()
 	char tTemp[sizeof(WIN32_FIND_DATA)+2];
 	WIN32_FIND_DATA * fdata = (WIN32_FIND_DATA *)tTemp;
 
-	LogInfo << "looking for " << path;
+	LogDebug << "looking for " << path;
 	
 	if ((h = FindFirstFile(path, fdata)) != INVALID_HANDLE_VALUE)
 	{
@@ -168,7 +168,7 @@ void CreateSaveGameList()
 		{
 			if (fdata->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY && fdata->cFileName[0] != '.')
 			{
-				LogInfo << "- found save file " << fdata->cFileName;
+				
 				// Make another save game slot at the end
 				save_l.resize( save_l.size() +1 );
 
@@ -187,8 +187,9 @@ void CreateSaveGameList()
 					FileTimeToSystemTime(&fTime, &stime);
 					save_l[save_c].stime = stime;
 					
-					LogInfo << "  which is: " << save_l[save_c].name << " version: " << save_l[save_c].version
-					        << " time: " << stime.wYear << "-" << stime.wMonth << "-" << stime.wDay
+					LogInfo << "- found save file " << fdata->cFileName << ": \""
+					        << save_l[save_c].name << "\" v" << save_l[save_c].version
+					        << " " << stime.wYear << "-" << stime.wMonth << "-" << stime.wDay
 					        << " " << stime.wHour << ":" << stime.wMinute << ":" << stime.wSecond
 					        << ":" << stime.wMilliseconds;
 					
@@ -200,7 +201,7 @@ void CreateSaveGameList()
 		}
 		while (FindNextFile(h, fdata));
 
-		LogInfo << "found " << (save_c-1) << " savegames";
+		LogDebug << "found " << (save_c-1) << " savegames";
 		FindClose(h);
 	} else {
 		LogInfo << "no save files found";
