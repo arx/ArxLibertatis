@@ -427,8 +427,8 @@ int OpenDialogColor(HWND hwnd, int col);
 char * OpenDiagDirectory(HWND hwnd, char * title);
 
 bool SaveProject(char * dir, char * name);
-bool LoadProject(CINEMATIQUE * c, char * dir, char * name);
-bool LoadOldProject(CINEMATIQUE * c, char * dir, char * name);
+bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name);
+bool LoadOldProject(CINEMATIQUE * c, const char * dir, const char * name);
 
 void InitSound(CINEMATIQUE * c);
 C_SOUND * GetFreeSound(int * num);

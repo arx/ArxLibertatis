@@ -503,15 +503,11 @@ bool ForceNPC_Above_Ground(INTERACTIVE_OBJ * io)
 	return false;
 }
 
-EERIE_3DOBJ * TheoToEerie_Fast(char * texpath, char * ficc, long flag, LPDIRECT3DDEVICE7 pd3dDevice)
+EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * file, long flag, LPDIRECT3DDEVICE7 pd3dDevice)
 {
-	char fic[256];
-	char pfic[256];
-	File_Standardize(ficc, fic);
-	File_Standardize(fic + strlen(Project.workingdir) - 1, pfic);
 	EERIE_3DOBJ * ret = NULL;
 
-	if ((ret = ARX_FTL_Load(pfic, fic, NULL)) != NULL)
+	if ((ret = ARX_FTL_Load(file)) != NULL)
 	{
 
 		if (!(flag & TTE_NO_PHYSICS_BOX))
@@ -519,8 +515,10 @@ EERIE_3DOBJ * TheoToEerie_Fast(char * texpath, char * ficc, long flag, LPDIRECT3
 
 		return ret;
 	}
+	
+	// TODO the actual .teo files are not shipped with Arx, only the compressed?/preprocessed?/optimized? .ftl files, so if the ARX_FTL_Load call fails we can give up anyway
 
-	if (ret = GetExistingEerie(fic))
+	if (ret = GetExistingEerie(file))
 	{
 		ret = Eerie_Copy(ret);
 
@@ -533,9 +531,9 @@ EERIE_3DOBJ * TheoToEerie_Fast(char * texpath, char * ficc, long flag, LPDIRECT3
 		long FileSize = 0;
 		unsigned char * adr;
 
-		if (adr = (unsigned char *)PAK_FileLoadMalloc(fic, &FileSize))
+		if (adr = (unsigned char *)PAK_FileLoadMalloc(file, &FileSize))
 		{
-			ret = TheoToEerie(adr, FileSize, texpath, fic, flag, pd3dDevice, flag | TTE_NO_RESTORE); //SLOWLOAD));
+			ret = TheoToEerie(adr, FileSize, texpath, file, flag, pd3dDevice, flag | TTE_NO_RESTORE); //SLOWLOAD));
 
 			if (!ret)
 			{
@@ -575,7 +573,7 @@ EERIE_3DOBJ * TheoToEerie_Fast(char * texpath, char * ficc, long flag, LPDIRECT3
 		if (!(flag & TTE_NO_PHYSICS_BOX))
 			EERIE_PHYSICS_BOX_Create(ret);
 
-		ARX_FTL_Save(pfic, fic, ret);
+		ARX_FTL_Save(file, ret);
 	}
 
 	return ret;
@@ -1268,12 +1266,12 @@ void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, char * temp)
 		return;
 
 	char tex[256];
-	char tex1[256];
+	const char tex1[] = "Graph\\Obj3D\\Textures\\";
 	char tex2[256];
 
-	if (io->ioflags & IO_NPC)	sprintf(tex2, "%sGraph\\Obj3D\\Interactive\\NPC\\%s", Project.workingdir, temp);
-	else if (io->ioflags & IO_FIX)	sprintf(tex2, "%sGraph\\Obj3D\\Interactive\\FIX_INTER\\%s", Project.workingdir, temp);
-	else if (io->ioflags & IO_ITEM)	sprintf(tex2, "%sGraph\\Obj3D\\Interactive\\Items\\%s", Project.workingdir, temp);
+	if (io->ioflags & IO_NPC)	sprintf(tex2, "Graph\\Obj3D\\Interactive\\NPC\\%s", temp);
+	else if (io->ioflags & IO_FIX)	sprintf(tex2, "Graph\\Obj3D\\Interactive\\FIX_INTER\\%s", temp);
+	else if (io->ioflags & IO_ITEM)	sprintf(tex2, "Graph\\Obj3D\\Interactive\\Items\\%s", temp);
 	else tex2[0] = 0;
 
 	File_Standardize(tex2, tex);
@@ -1291,10 +1289,6 @@ void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, char * temp)
 			ReleaseEERIE3DObj(io->obj);
 			io->obj = NULL;
 		}
-
-		char tex2[256];
-		sprintf(tex2, "%sGraph\\Obj3D\\Textures\\", Project.workingdir);
-		File_Standardize(tex2, tex1);
 
 		if (io->ioflags & IO_FIX)
 			io->obj = TheoToEerie_Fast(tex1, tex, TTE_NO_NDATA | TTE_NO_PHYSICS_BOX, GDevice);
@@ -1340,9 +1334,7 @@ void ARX_INTERACTIVE_APPLY_TWEAK_INFO(INTERACTIVE_OBJ * io)
 			ARX_INTERACTIVE_USEMESH(io, io->Tweaks[ii].param1);
 		else
 		{
-			char temp[256];
-			sprintf(temp, "%s%s", Project.workingdir, io->Tweaks[ii].param1);
-			EERIE_MESH_TWEAK_Do(io, io->Tweaks[ii].type, temp);
+			EERIE_MESH_TWEAK_Do(io, io->Tweaks[ii].type, io->Tweaks[ii].param1);
 		}
 	}
 }
@@ -1734,7 +1726,7 @@ void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, char * s1)
 	strcat(icontochange, s1);
 	SetExt(icontochange, ".bmp");
 
-	D3DTextr_CreateTextureFromFile(icontochange, Project.workingdir, 0, D3DTEXTR_NO_REFINEMENT, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
+	D3DTextr_CreateTextureFromFile(icontochange, 0, D3DTEXTR_NO_REFINEMENT, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
 
 	if (GDevice) D3DTextr_Restore(icontochange, GDevice);
 
@@ -1743,8 +1735,8 @@ void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, char * s1)
 
 	if (tc == NULL)
 	{
-		MakeDir(icontochange, "Graph\\Interface\\misc\\Default[Icon].bmp");
-		D3DTextr_CreateTextureFromFile(icontochange, Project.workingdir, 0, D3DTEXTR_NO_REFINEMENT);
+		strcpy(icontochange, "Graph\\Interface\\misc\\Default[Icon].bmp");
+		D3DTextr_CreateTextureFromFile(icontochange, 0, D3DTEXTR_NO_REFINEMENT);
 
 		if (GDevice) D3DTextr_Restore(icontochange, GDevice);
 
@@ -2515,9 +2507,8 @@ void Prepare_SetWeapon(INTERACTIVE_OBJ * io, char * temp)
 	}
 
 	char tex[256];
-	char tex1[256];
+	const char tex1[] = "Graph\\Obj3D\\Interactive\\Items\\Weapons\\";
 	char tx[256];
-	MakeDir(tex1, "Graph\\Obj3D\\Interactive\\Items\\Weapons\\");
 	sprintf(tx, "%s\\%s\\%s.teo", tex1, temp, temp);
 	File_Standardize(tx, tex);
 	
@@ -2578,16 +2569,15 @@ void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, char * attach)
 INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long flags)
 {
 	char tex1[HERMES_PATH_SIZE];
-	char tex5[HERMES_PATH_SIZE];
 	char texscript[HERMES_PATH_SIZE];
 
 	strcpy(texscript, file);
 	SetExt(texscript, "asl");
-	sprintf(tex1, file);
+	strcpy(tex1, file);
 	SetExt(tex1, "teo");
 
 	char file2[256];
-	sprintf(file2, "%sGAME\\%s", Project.workingdir, file + strlen(Project.workingdir));
+	sprintf(file2, "GAME\\%s", file);
 	SetExt(file2, ".FTL");
 
 	if (!PAK_FileExist(file2)
@@ -2653,9 +2643,8 @@ INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long flags)
 		}
 		else
 		{
-			strcpy(tex5, tex1);
-			sprintf(tex1, "%sGraph\\Obj3D\\Textures\\", Project.workingdir);
-			io->obj = TheoToEerie_Fast(tex1, tex5, TTE_NO_PHYSICS_BOX, GDevice);
+			const char texdir[] = "Graph\\Obj3D\\Textures\\";
+			io->obj = TheoToEerie_Fast(texdir, tex1, TTE_NO_PHYSICS_BOX, GDevice);
 		}
 	}
 
@@ -2710,7 +2699,7 @@ INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, char * file)
 	SetExt(tex1, "teo");
 
 	char file2[256];
-	sprintf(file2, "%sGAME\\%s", Project.workingdir, file + strlen(Project.workingdir));
+	sprintf(file2, "GAME\\%s", file);
 	SetExt(file2, ".FTL");
 
 	if (!PAK_FileExist(file2)
@@ -2782,7 +2771,7 @@ INTERACTIVE_OBJ * AddMarker(LPDIRECT3DDEVICE7 pd3dDevice, char * file)
 	SetExt(tex1, "teo");
 
 	char file2[256];
-	sprintf(file2, "%sGAME\\%s", Project.workingdir, file + strlen(Project.workingdir));
+	sprintf(file2, "GAME\\%s", file);
 	SetExt(file2, ".FTL");
 
 	if (!PAK_FileExist(file2)
@@ -3042,7 +3031,6 @@ INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long flags)
 {
 
 	char tex1[HERMES_PATH_SIZE];
-	char tex5[HERMES_PATH_SIZE];
 	char texscript[HERMES_PATH_SIZE];
 
 	// creates script filename
@@ -3050,11 +3038,11 @@ INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long flags)
 	SetExt(texscript, "asl");
 
 	// creates teo filename
-	sprintf(tex1, file);
+	strcpy(tex1, file);
 	SetExt(tex1, "teo");
 
 	char file2[256];
-	sprintf(file2, "%sGAME\\%s", Project.workingdir, file + strlen(Project.workingdir));
+	sprintf(file2, "GAME\\%s", file);
 	SetExt(file2, ".FTL");
 
 	if ((!PAK_FileExist(file2))
@@ -3135,9 +3123,8 @@ INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long flags)
 		}
 		else
 		{
-			strcpy(tex5, tex1);
-			sprintf(tex1, "%sGraph\\Obj3D\\Textures\\", Project.workingdir);
-			io->obj = TheoToEerie_Fast(tex1, tex5, TTE_NO_PHYSICS_BOX | TTE_NPC, GDevice);
+			const char texpath[] = "Graph\\Obj3D\\Textures\\";
+			io->obj = TheoToEerie_Fast(texpath, tex1, TTE_NO_PHYSICS_BOX | TTE_NPC, GDevice);
 		}
 	}
 
@@ -3377,7 +3364,6 @@ INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, char * fil, long flags)
 {
 	char tex1[HERMES_PATH_SIZE];
 	char tex2[HERMES_PATH_SIZE];
-	char tex5[HERMES_PATH_SIZE];
 	char texscript[HERMES_PATH_SIZE];
 	char file[256];
 	long type = IO_ITEM;
@@ -3407,7 +3393,7 @@ INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, char * fil, long flags)
 	AddToName(tex2, "[Icon]");
 
 	char file2[256];
-	sprintf(file2, "%sGAME\\%s", Project.workingdir, file + strlen(Project.workingdir));
+	sprintf(file2, "GAME\\%s", file);
 	SetExt(file2, ".FTL");
 
 	if (!PAK_FileExist(file2)
@@ -3488,10 +3474,9 @@ INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, char * fil, long flags)
 		else
 		{
  
-			strcpy(tex5, tex1);
-			sprintf(tex1, "%sGraph\\Obj3D\\Textures\\", Project.workingdir);
+			const char texdir[] = "Graph\\Obj3D\\Textures\\";
 
-			io->obj = TheoToEerie_Fast(tex1, tex5, 0, GDevice);
+			io->obj = TheoToEerie_Fast(texdir, tex1, 0, GDevice);
 		}
 	}
 
@@ -3503,14 +3488,14 @@ INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, char * fil, long flags)
 		tc = GoldCoinsTC[0];
 	else
 	{
-		D3DTextr_CreateTextureFromFile(tex2, Project.workingdir, 0, D3DTEXTR_NO_REFINEMENT , EERIETEXTUREFLAG_LOADSCENE_RELEASE);
+		D3DTextr_CreateTextureFromFile(tex2, 0, D3DTEXTR_NO_REFINEMENT , EERIETEXTUREFLAG_LOADSCENE_RELEASE);
 		tc = D3DTextr_GetSurfaceContainer(tex2);
 	}
 
 	if (tc == NULL)
 	{
-		MakeDir(tex2, "Graph\\Interface\\misc\\Default[Icon].bmp");
-		D3DTextr_CreateTextureFromFile(tex2, Project.workingdir, 0, D3DTEXTR_NO_REFINEMENT);
+		strcpy(tex2, "Graph\\Interface\\misc\\Default[Icon].bmp"); // TODO copy can be avoided
+		D3DTextr_CreateTextureFromFile(tex2, 0, D3DTEXTR_NO_REFINEMENT);
 		D3DTextr_Restore(tex2, pd3dDevice);
 		tc = D3DTextr_GetSurfaceContainer(tex2);
 	}

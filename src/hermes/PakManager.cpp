@@ -64,6 +64,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <HERMESMain.h>
 #include "ARX_Common.h"
 
+#include <stddef.h>
+
 using std::vector;
 
 bool bForceInPack = true;
@@ -71,42 +73,7 @@ long CURRENT_LOADMODE = LOAD_PACK_THEN_TRUEFILE;
 
 PakManager * pPakManager = NULL;
 
-char PAK_WORKDIR[256];
-unsigned long g_pak_workdir_len = 0;
-char NOT_FOUND_FIC[256];
-long WRITE_NOT_FOUND = 0;
-
-void PAK_NotFoundInit(char * fich)
-{
-	strcpy(NOT_FOUND_FIC, fich);
-	FILE * fic;
-
-	if ((fic = fopen(NOT_FOUND_FIC, "w")) != NULL)
-	{
-		WRITE_NOT_FOUND = 1;
-		fclose(fic);
-	}
-	else WRITE_NOT_FOUND = 0;
-}
-
-bool PAK_NotFound(char * fich)
-{
-	FILE * fic;
-
-	if (WRITE_NOT_FOUND)
-	{
-		if ((fic = fopen(NOT_FOUND_FIC, "a+")) != NULL)
-		{
-			fprintf(fic, "Not Found %s\n", fich);
-			fclose(fic);
-			return true;
-		}
-	}
-
-	return false;
-}
-
-void PAK_SetLoadMode(long mode, char * pakfile, char * workdir)
+void PAK_SetLoadMode(long mode, char * pakfile)
 {
 
 	mode = LOAD_TRUEFILE_THEN_PACK;
@@ -122,17 +89,6 @@ void PAK_SetLoadMode(long mode, char * pakfile, char * workdir)
 		pPakManager->AddPak(pakfile);
 	}
 
-	if (workdir)
-	{
-		strcpy(PAK_WORKDIR, workdir);
-		g_pak_workdir_len = strlen(PAK_WORKDIR);
-	}
-	else
-	{
-		strcpy(PAK_WORKDIR, "");
-		g_pak_workdir_len = 0;
-	}
-
 }
 
 void PAK_Close()
@@ -141,25 +97,19 @@ void PAK_Close()
 
 	pPakManager = NULL;
 }
- 
+
+// TODO size_t argument
 void * _PAK_FileLoadMallocZero(char * name, long * SizeLoadMalloc)
 {
 
-	if (g_pak_workdir_len >= strlen(name))
-	{
-		if (SizeLoadMalloc) *SizeLoadMalloc = 0;
-
-		return NULL;
-	}
-
 	int iTaille;
-	iTaille = pPakManager->GetSize(name + g_pak_workdir_len);
+	iTaille = pPakManager->GetSize(name);
 
 	if (iTaille > 0)
 	{
 		char * mem = (char *)malloc(iTaille + 2);
 
-		pPakManager->Read(name + g_pak_workdir_len, mem);
+		pPakManager->Read(name, mem);
 
 		mem[iTaille]   = 0;
 		mem[iTaille+1] = 0;
@@ -175,22 +125,15 @@ void * _PAK_FileLoadMallocZero(char * name, long * SizeLoadMalloc)
 		return NULL;
 	}
 }
+
+// TODO size_t for argument
 void * _PAK_FileLoadMalloc(char * name, long * SizeLoadMalloc)
 {
 
-	if (g_pak_workdir_len >= strlen(name))
-	{
-		if (SizeLoadMalloc) *SizeLoadMalloc = 0;
-
-		return NULL;
-	}
-
 	int iTaille = 0;
-	void * mem = pPakManager->ReadAlloc(name + g_pak_workdir_len, &iTaille);
+	void * mem = pPakManager->ReadAlloc(name, &iTaille);
 
 	if ((SizeLoadMalloc) && mem) *SizeLoadMalloc = iTaille;
-
-	if (mem == NULL) PAK_NotFound(name);
 
 	return mem;
 }
@@ -199,14 +142,9 @@ long _PAK_DirectoryExist(char * name)
 
 	long leng = strlen(name);
 
-	if (ARX_CAST_LONG(g_pak_workdir_len) >= leng)
-	{
-		return false;
-	}
-
 	char temp[256];
-	strcpy(temp, name + g_pak_workdir_len);
-	long l = leng - g_pak_workdir_len ;
+	strcpy(temp, name); // TODO this copy can be avoided
+	long l = leng ;
 	if (temp[l] != '\\' && temp[l] != '/') strcat(temp, "\\");
 
 	vector<PakDirectory *> pvRepertoire(pPakManager->ExistDirectory(temp));
@@ -259,20 +197,15 @@ long PAK_DirectoryExist(char * name)
 	return ret;
 }
 
+// TODO return should be bool
 long _PAK_FileExist(char * name)
 {
 
-	if (g_pak_workdir_len >= strlen(name))
-	{
-		return false;
-	}
-
 	char path[256];
-	strcpy(path, name + g_pak_workdir_len);
+	strcpy(path, name);
 
 	if (pPakManager->ExistFile(path)) return 1;
 
-	PAK_NotFound(name);
 	return 0;
 }
 
@@ -318,7 +251,7 @@ long PAK_FileExist(char * name)
 	return ret;
 }
 
-void * PAK_FileLoadMalloc(char * name, long * SizeLoadMalloc)
+void * PAK_FileLoadMalloc(const char * name, long * SizeLoadMalloc)
 {
 
 	void * ret = NULL;
@@ -359,7 +292,7 @@ void * PAK_FileLoadMalloc(char * name, long * SizeLoadMalloc)
 	return ret;
 }
 
-void * PAK_FileLoadMallocZero(char * name, long * SizeLoadMalloc)
+void * PAK_FileLoadMallocZero(const char * name, long * SizeLoadMalloc)
 {
 
 	void * ret = NULL;
@@ -444,13 +377,7 @@ long PAK_ftell(FILE * stream)
 
 FILE * _PAK_fopen(const char * filename, const char * mode)
 {
-
-	if (g_pak_workdir_len >= strlen(filename))
-	{
-		return NULL;
-	}
-
-	return (FILE *)pPakManager->fOpen((char *)(filename + g_pak_workdir_len));
+	return (FILE *)pPakManager->fOpen(filename);
 }
 
 FILE * PAK_fopen(const char * filename, const char * mode)
@@ -724,20 +651,25 @@ void * PakManager::ReadAlloc(char * _lpszName, int * _piTaille)
 	{
 		_lpszName++;
 	}
+	
+	// TODO change parameter type
+	size_t size = *_piTaille;
 
 	for (i = vLoadPak.begin(); i < vLoadPak.end(); i++)
 	{
 		void * pMem;
 
-		if ((pMem = (*i)->ReadAlloc(_lpszName, _piTaille)))
+		if ((pMem = (*i)->ReadAlloc(_lpszName, size)))
 		{
 			printf("\e[1;32mRead from PAK (a):\e[m\t%s\n", _lpszName);
+			*_piTaille = size;
 			return pMem;
 		}
 	}
 
 	DrawDebugFile(_lpszName);
 	printf("\e[1;33mRead from PAK (a):\e[m\t%s\n", _lpszName);
+	*_piTaille = size;
 	return NULL;
 }
 

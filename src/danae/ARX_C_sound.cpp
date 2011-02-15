@@ -36,10 +36,6 @@ extern HWND HwndPere;
 extern char DirectoryChoose[];
 extern int	LSoundChoose;
 
-extern char		DirectoryAbs[];
-
-extern ULONG g_pak_workdir_len;
-
 void ClearAbsDirectory(char * pT, char * d);
 void AddDirectory(char * pT, char * dir);
 /*-----------------------------------------------------------*/
@@ -217,7 +213,6 @@ void PatchReplace()
 	}
 
 	ClearAbsDirectory(AllTxt, "ARX\\");
-	AddDirectory(AllTxt, DirectoryAbs);
 
 	//on enleve "sfx"
 	bool bFound = false;
@@ -326,7 +321,7 @@ int AddSoundToList(char * dir, char * name, int id, int pos)
 		char szTemp[1024];
 		ZeroMemory(szTemp, 1024);
 
-		sprintf(szTemp, "%sspeech\\%s\\%s", Project.workingdir, Project.localisationpath, name);
+		sprintf(szTemp, "speech\\%s\\%s", Project.localisationpath, name);
 		cs->sound = strdup(szTemp);
 	}
 
@@ -352,7 +347,7 @@ bool PlaySoundKeyFramer(int id)
 
 	if (!cs->actif) return false;
 
-	cs->idhandle = ARX_SOUND_PlayCinematic(cs->sound + g_pak_workdir_len);
+	cs->idhandle = ARX_SOUND_PlayCinematic(cs->sound);
 
 	return true;
 }

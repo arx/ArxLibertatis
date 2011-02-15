@@ -195,7 +195,7 @@ class TextureContainer
 		HRESULT Use();
 
 		TextureContainer * TextureRefinement;
-		TextureContainer(TCHAR * strName, char * wd, DWORD dwStage, DWORD dwFlags);
+		TextureContainer(const char * strName, DWORD dwStage, DWORD dwFlags);
 		~TextureContainer();
 		long	locks;
 		long systemflags;
@@ -220,7 +220,7 @@ class TextureContainer
 // ASCII name.
 //-----------------------------------------------------------------------------
  
-TextureContainer * D3DTextr_GetSurfaceContainer(TCHAR * strName);
+TextureContainer * D3DTextr_GetSurfaceContainer(const char * strName);
 TextureContainer * GetTextureList();
 extern TextureContainer * LastTextureContainer;
 long CountTextures(char * tex, long * memsize, long * memmip);
@@ -251,27 +251,28 @@ void ReloadTexture(TextureContainer * tc);
 #define D3DTEXTR_NO_REFINEMENT	  (1<<7)
 #define D3DTEXTR_NO_INSERT		  0x80000000
 
-TextureContainer  * D3DTextr_CreateTextureFromFile(TCHAR * strName, char * wd = NULL , DWORD dwStage = 0L,
-                                                   DWORD dwFlags = 0L , long sysflags = 0);
-HRESULT D3DTextr_CreateEmptyTexture(TCHAR * strName, DWORD dwWidth,
+TextureContainer  * D3DTextr_CreateTextureFromFile(const char * strName, DWORD dwStage = 0L,
+        DWORD dwFlags = 0L , long sysflags = 0);
+HRESULT D3DTextr_CreateEmptyTexture(const char * strName, DWORD dwWidth,
                                     DWORD dwHeight, DWORD dwStage,
-                                    DWORD dwFlags , char * wd, DWORD flags = 0);
+                                    DWORD dwFlags, DWORD flags = 0);
  
 HRESULT D3DTextr_DestroyContainer(TextureContainer * ptcTexture);
 
 TextureContainer * GetAnyTexture();
-TextureContainer * MakeTCFromFile(char * tex, long flag = 0);
-TextureContainer * MakeTCFromFile_NoRefinement(char * tex, long flag = 0);
-TextureContainer * GetTextureFile(char * tex, long flag = 0);
-TextureContainer * GetTextureFile_NoRefinement(char * tex, long flag = 0);
+TextureContainer * MakeTCFromFile(const char * tex, long flag = 0);
+TextureContainer * MakeTCFromFile_NoRefinement(const char * tex, long flag = 0);
+TextureContainer * GetTextureFile(const char * tex, long flag = 0);
+TextureContainer * GetTextureFile_NoRefinement(const char * tex, long flag = 0);
 
-void EERIE_ActivateBump(void);
-void EERIE_DesactivateBump(void);
+void EERIE_ActivateBump();
+void EERIE_DesactivateBump();
 void D3DTextr_KillTexture(TextureContainer * tex); 
 void D3DTextr_KillAllTextures();	
 void SpecialBorderSurface(TextureContainer * tc, unsigned long x0, unsigned long y0);
 
-TextureContainer * FindTexture(char * strTextureName);
+TextureContainer * FindTexture(const char * strTextureName);
+TextureContainer * _FindTexture(const char * strTextureName);
 
 bool TextureContainer_Exist(TextureContainer * tc);
 #endif

@@ -508,7 +508,7 @@ bool NeedMapCreation()
 {
 	char name[256];
 	GetLevelNameByNum(CURRENTLEVEL,name);	
-	sprintf(ThisLevelMap,"%s\\Graph\\Levels\\Level%s\\map.bmp",Project.workingdir,name);
+	sprintf(ThisLevelMap,"\\Graph\\Levels\\Level%s\\map.bmp",name);
 
 	if (PAK_FileExist(ThisLevelMap)) return false;
 

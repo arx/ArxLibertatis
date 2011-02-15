@@ -269,7 +269,7 @@ float GetTimeBetweenKeyFrames(EERIE_ANIM * ea, long f1, long f2)
 	return time;
 }
 //-----------------------------------------------------------------------------------------------------
-EERIE_ANIM * TheaToEerie(unsigned char * adr, long size, char * fic, long flags)
+EERIE_ANIM * TheaToEerie(unsigned char * adr, long size, const char * fic, long flags)
 {
 	THEA_HEADER				th;
 	THEA_KEYFRAME			tkf;
@@ -1274,7 +1274,7 @@ retry10:
 	return es;
 }
 //-----------------------------------------------------------------------------------------------------
-EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(char * dirr)
+EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const char * dirr)
 {
 	EERIE_MULTI3DSCENE	* es;
 	unsigned char 	*	adr;
@@ -1293,7 +1293,7 @@ retry1:
 	strcpy(LastLoadedScene, dirr);
 
 	char path[256];
-	strcpy(path, dirr + g_pak_workdir_len);
+	strcpy(path, dirr);
 	RemoveName(path);
 
 	vector<PakDirectory *> *pvRepertoire;
@@ -1375,7 +1375,7 @@ retry1:
 	return es;
 }
 //-----------------------------------------------------------------------------------------------------
-EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(char * dirr)
+EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const char * dirr)
 {
 	EERIE_MULTI3DSCENE * em = NULL;
 
@@ -1422,7 +1422,7 @@ EERIE_3DSCENE * ScnToEerie(unsigned char * adr, long size, char * fic, long flag
 	THEO_SAVE_MAPS_IN_3019	tsmi3019;
 	THEO_SAVE_MAPS_IN_3019 *	ptsmi3019;
 	char mapsname[512];
-	char temp[512];
+	const char * temp = "Graph\\Obj3D\\Textures\\";
 	long				nbo, nbl;
 	char texx[512];
 	long i;
@@ -1493,9 +1493,8 @@ retry1:
 		{
 			memcpy(&tt, adr + pos, sizeof(THEO_TEXTURE));
 			pos += sizeof(THEO_TEXTURE);
-			MakeDir(temp, "Graph\\Obj3D\\Textures\\");
 			sprintf(mapsname, "%s%s.bmp", temp, tt.texture_name);
-			seerie->texturecontainer[i] = D3DTextr_CreateTextureFromFile(mapsname, Project.workingdir, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
+			seerie->texturecontainer[i] = D3DTextr_CreateTextureFromFile(mapsname, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
 			MakeUserFlag(seerie->texturecontainer[i]);
 			sizmap = tt.dx * tt.dy * (tt.bpp / 8);
 		}
@@ -1541,12 +1540,11 @@ retry1:
 
 				if (ptsmi3019->texture_name[0] != 0)
 				{
-					MakeDir(temp, "Graph\\Obj3D\\Textures\\");
 
 					if (psth->type_write & SAVE_MAP_BMP) sprintf(mapsname, "%s%s.bmp", temp, ptsmi3019->texture_name);
 					else sprintf(mapsname, "%s%s.tga", temp, ptsmi3019->texture_name);
 
-					seerie->texturecontainer[i] = D3DTextr_CreateTextureFromFile(mapsname, Project.workingdir, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
+					seerie->texturecontainer[i] = D3DTextr_CreateTextureFromFile(mapsname, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
 					MakeUserFlag(seerie->texturecontainer[i]);
 				}
 			}
@@ -2599,7 +2597,7 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, char * texpath, char *
 	EERIE_3DOBJ 	*		eerie;
 	char mapsname[512];
 	char texx[512];
-	char txpath[256];
+	const char * txpath;
 	long i;
 	long pos2;
 	long pos = 0;
@@ -2612,9 +2610,9 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, char * texpath, char *
 
 	if ((texpath == NULL) || (texpath[0] == 0))
 	{
-		MakeDir(txpath, "Graph\\Obj3D\\Textures\\");
+		txpath = "Graph\\Obj3D\\Textures\\";
 	}
-	else strcpy(txpath, texpath);
+	else txpath = texpath;
 
 	if (size < 10) return NULL;
 
@@ -2759,7 +2757,7 @@ retry:
 				if (pth->type_write & SAVE_MAP_BMP) sprintf(mapsname, "%s%s.bmp", txpath, ptsmi3019->texture_name);
 				else sprintf(mapsname, "%s%s.tga", txpath, ptsmi3019->texture_name);
 
-				eerie->texturecontainer[i] = D3DTextr_CreateTextureFromFile(mapsname, Project.workingdir, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
+				eerie->texturecontainer[i] = D3DTextr_CreateTextureFromFile(mapsname, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
 				MakeUserFlag(eerie->texturecontainer[i]);
 
 				if (eerie->texturecontainer[i])
@@ -2968,11 +2966,9 @@ void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret)
 
 	if (!FOR_EXTERNAL_PEOPLE)
 	{
-		char logfic[256];
-		sprintf(logfic, "%sNot_Centered_Objs.txt", Project.workingdir);
 		FILE * fic;
 
-		if ((fic = fopen(logfic, "a+")) != NULL)
+		if ((fic = fopen("Not_Centered_Objs.txt", "a+")) != NULL)
 		{
 			fprintf(fic, "NOT CENTERED %s\n", ret->file);
 			fclose(fic);

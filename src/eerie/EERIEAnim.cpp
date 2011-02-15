@@ -308,7 +308,7 @@ void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim)
 }
 
 //-----------------------------------------------------------------------------
-ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(char * path)
+ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const char * path)
 {
 	for (long i=0;i<MAX_ANIMATIONS;i++)
 	{
@@ -354,7 +354,7 @@ long EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah,char * path)
 }
 
 //-----------------------------------------------------------------------------
-ANIM_HANDLE * EERIE_ANIMMANAGER_Load(char * path)
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const char * path)
 {
 	ANIM_HANDLE * handl=EERIE_ANIMMANAGER_GetHandle(path);
 
@@ -387,13 +387,15 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load(char * path)
 
 				strcpy(animations[i].path,path);				
 				animations[i].locks=1;
-				SetExt(path,"");
-				sprintf(path2,"%s%d.tea",path,pathcount);
+				char temp[512]; // TODO improve
+				strcpy(temp, path);
+				SetExt(temp,"");
+				sprintf(path2,"%s%d.tea",temp,pathcount);
 
 				while (EERIE_ANIMMANAGER_AddAltAnim(&animations[i],path2))
 				{
 					pathcount++;
-					sprintf(path2,"%s%d.tea",path,pathcount);					
+					sprintf(path2,"%s%d.tea",temp,pathcount);					
 				}
 
 				return &animations[i];
@@ -749,7 +751,7 @@ void DrawEERIEInterMatrix(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 
 void specialEE_P(D3DTLVERTEX *in,D3DTLVERTEX *out);
 
-TextureContainer TexSpecialColor("SPECIALCOLOR_LIST",NULL,0,D3DTEXTR_NO_INSERT);
+TextureContainer TexSpecialColor("SPECIALCOLOR_LIST",0,D3DTEXTR_NO_INSERT);
 //-----------------------------------------------------------------------------
 ARX_D3DVERTEX * PushVertexInTableCull(TextureContainer *pTex)
 {

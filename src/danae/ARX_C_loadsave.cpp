@@ -67,7 +67,7 @@ void ReadString(char * d)
 	}
 }
 /*----------------------------------------------------------------------*/
-bool LoadProject(CINEMATIQUE * c, char * dir, char * name)
+bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 {
 	int		nb, version;
 	C_TRACK	t;

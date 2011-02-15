@@ -341,7 +341,7 @@ void ARX_Localisation_Init(char * _lpszExtension)
 
 	char tx[256];
 	ZeroMemory(tx, 256);
-	sprintf(tx, "%slocalisation\\utext_%s.ini", Project.workingdir, Project.localisationpath);
+	sprintf(tx, "localisation\\utext_%s.ini", Project.localisationpath);
 
 	long LocalisationSize = 0;
 	_TCHAR * Localisation = NULL;
@@ -369,7 +369,7 @@ void ARX_Localisation_Init(char * _lpszExtension)
 
 		ZeroMemory(tx, 256);
 		strcpy(Project.localisationpath, "english");
-		sprintf(tx, "%slocalisation\\utext_%s.ini", Project.workingdir, Project.localisationpath);
+		sprintf(tx, "localisation\\utext_%s.ini", Project.localisationpath);
 		Localisation = (_TCHAR *)PAK_FileLoadMallocZero(tx, &LocalisationSize);
 	}
 
