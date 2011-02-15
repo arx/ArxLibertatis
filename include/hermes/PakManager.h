@@ -55,12 +55,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef HERMES_PAK_H
-#define HERMES_PAK_H
+#ifndef ARX_HERMES_PAKMANAGER_H
+#define ARX_HERMES_PAKMANAGER_H
 
 #include <vector>
-#include "HERMES_pack_public.h"
-using namespace std;
+
+class PakFileHandle;
+class PakReader;
+class PakDirectory;
+
+#include <cstdio>
 
 extern char PAK_WORKDIR[256];
 extern unsigned long g_pak_workdir_len;
@@ -71,14 +75,13 @@ extern unsigned long g_pak_workdir_len;
 #define LOAD_TRUEFILE_THEN_PACK	4
 
 extern long CURRENT_LOADMODE;
-extern EVE_LOADPACK *pLoadPack;
 void * PAK_FileLoadMalloc(char *name,long * SizeLoadMalloc=NULL);
 void * PAK_FileLoadMallocZero(char *name,long * SizeLoadMalloc=NULL);
 
 // use only for READ !!!!
 void PAK_SetLoadMode(long mode,char * pakfile,char * workdir=NULL);
 FILE * PAK_fopen(const char *filename, const char *mode );
-size_t PAK_fread(void *buffer, size_t size, size_t count, FILE *stream );;
+std::size_t PAK_fread(void *buffer, std::size_t size, std::size_t count, FILE *stream );;
 int PAK_fclose(FILE * stream);
 long PAK_ftell(FILE * stream);
 long PAK_DirectoryExist(char *name);
@@ -94,7 +97,7 @@ void PAK_Close();
 class PakManager
 {
 public:
-	std::vector<EVE_LOADPACK*> vLoadPak;
+	std::vector<PakReader*> vLoadPak;
 public:
 	PakManager();
 	~PakManager();
@@ -104,13 +107,13 @@ public:
 	bool Read(char *,void *);
 	void* ReadAlloc(char *,int *);
 	int GetSize(char *);
-	PACK_FILE* fOpen(char *);
-	int fClose(PACK_FILE *);
-	int fRead(void *, int, int, PACK_FILE *);
-	int fSeek(PACK_FILE *,int,int);
-	int fTell(PACK_FILE *);
-	std::vector<EVE_REPERTOIRE*>* ExistDirectory(char *_lpszName);
+	PakFileHandle * fOpen(char *);
+	int fClose(PakFileHandle *);
+	int fRead(void *, int, int, PakFileHandle *);
+	int fSeek(PakFileHandle *,int,int);
+	int fTell(PakFileHandle *);
+	std::vector<PakDirectory*> * ExistDirectory(char *_lpszName);
 	bool ExistFile(char *_lpszName);
 };
 
-#endif
+#endif // ARX_HERMES_PAKMANAGER_H

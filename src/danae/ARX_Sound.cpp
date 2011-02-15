@@ -42,7 +42,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <ARX_Sound.h>
 #include <HERMESMain.h>
-#include <HERMES_PAK.h>
+#include <hermes/PakManager.h>
+#include <hermes/PakReader.h>
+#include <hermes/PakEntry.h>
 #include <EERIEMath.h>
 #include <ARX_NPC.h>
 #include <ARX_Interactive.h>
@@ -1409,7 +1411,7 @@ static void ARX_SOUND_CreateEnvironments()
 {
 	if (FINAL_RELEASE)
 	{
-		vector<EVE_REPERTOIRE *> *pvDirectory = NULL;
+		vector<PakDirectory *> *pvDirectory = NULL;
 		char lpszPakPath[512] = "";
 
 		sprintf(lpszPakPath, "%ssfx.pak", Project.workingdir);
@@ -1426,12 +1428,12 @@ static void ARX_SOUND_CreateEnvironments()
 			return;
 		}
 
-		vector<EVE_REPERTOIRE *>::iterator iv;
+		vector<PakDirectory *>::iterator iv;
 
 		for (iv = pvDirectory->begin(); iv < pvDirectory->end(); iv++)
 		{
 			int nb = (*iv)->nbfiles;
-			EVE_TFILE * et = (*iv)->fichiers;
+			PakFile * et = (*iv)->fichiers;
 
 			while (nb--)
 			{

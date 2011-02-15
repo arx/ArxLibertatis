@@ -89,6 +89,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Speech.h"
 #include "ARX_Spells.h"
 
+#include <hermes/PakManager.h>
+
 extern long		USE_NEW_SKILLS;
 extern long		ARX_CONVERSATION;
 extern long		HERO_SHOW_1ST;

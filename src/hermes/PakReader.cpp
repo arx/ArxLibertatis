@@ -46,183 +46,273 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 */
 
-#include "HERMES_pack_public.h"
-#include "ARX_Casts.h"
+#include <hermes/PakReader.h>
+#include <hermes/PakEntry.h>
+#include <hermes/HashMap.h>
+
+#include <sys/stat.h>
+
+#define PAK 1
+
+#include <cstring>
+#include <algorithm>
 using std::min;
 using std::max;
 using std::size_t;
+using std::strlen;
 
 #include <blast.h>
 
-#include <windows.h>
+#include <cassert>
 
-// TODO crashes when using wrong data files
-#define FINAL_COMMERCIAL_GAME
-//#define FINAL_COMMERCIAL_DEMO
+#include <stdint.h>
+
+const uint8_t PAK_KEY_DEMO[] = "NSIARKPRQPHBTE50GRIH3AYXJP2AMF3FCEYAVQO5QGA0JGIIH2AYXKVOA1VOGGU5GSQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRI";
+const uint8_t PAK_KEY_FULL[] = "AVQF3FCKE50GRIAYXJP2AMEYO5QGA0JGIIH2NHBTVOA1VOGGU5H3GSSIARKPRQPQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRIAYX";
+
+static const uint8_t * selectKey(uint32_t first_bytes) {
+	switch(first_bytes) {
+		case 0x46515641:
+			return PAK_KEY_FULL;
+		case 0x4149534E:
+			return PAK_KEY_DEMO;
+		default:
+			return NULL;
+	}
+}
 
 //-----------------------------------------------------------------------------
-EVE_LOADPACK::EVE_LOADPACK()
-{
-	lpszName = NULL;
-	pfFile = NULL;
+PakReader::PakReader() {
+	
+	pakfile = NULL;
+	file = NULL;
 	pRoot = NULL;
 	iSeekPak = 0;
-
+	
+	fat = NULL;
+	
 	int iI = PACK_MAX_FREAD;
-
-	while (--iI)
-	{
+	while(--iI) {
 		tPackFile[iI].bActif = false;
 		tPackFile[iI].iID = 0;
 		tPackFile[iI].iOffset = 0;
 	}
-
-	iPassKey = 0;
-#ifdef FINAL_COMMERCIAL_GAME
-	strcpy((char *)cKey, "AVQF3FCKE50GRIAYXJP2AMEYO5QGA0JGIIH2NHBTVOA1VOGGU5H3GSSIARKPRQPQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRIAYX");
-#else
-#ifdef FINAL_COMMERCIAL_DEMO
-	strcpy((char *)cKey, "NSIARKPRQPHBTE50GRIH3AYXJP2AMF3FCEYAVQO5QGA0JGIIH2AYXKVOA1VOGGU5GSQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRI");
-#else
-	strcpy((char *)cKey, ""); //NO CRYPT
-#endif
-#endif
-
-	pcFAT = NULL;
-}
-
-//-----------------------------------------------------------------------------
-EVE_LOADPACK::~EVE_LOADPACK()
-{
-	if (lpszName)
-	{
-		free((void *)lpszName);
-		lpszName = NULL;
-	}
-
-	if (pfFile) fclose(pfFile);
-
-	if (pRoot) delete pRoot;
-
-	if (pcFAT)
-	{
-		free((void *)pcFAT);
-		pcFAT = NULL;
-	}
-}
-
-//-----------------------------------------------------------------------------
-int EVE_LOADPACK::ReadFAT_int()
-{
-	int i = *((int *)pcFAT);
-	pcFAT += 4;
-	iTailleFAT -= 4;
-
-	UnCryptInt((unsigned int *)&i);
-
-	return i;
-}
-
-//-----------------------------------------------------------------------------
-char * EVE_LOADPACK::ReadFAT_string()
-{
-	char * t = pcFAT;
-	int i = UnCryptString((unsigned char *)t) + 1;
-	pcFAT += i;
-	iTailleFAT -= i;
-
-	return t;
-}
-
-//-----------------------------------------------------------------------------
-bool EVE_LOADPACK::Open(char * _pcName)
-{
 	
-	pfFile = fopen(_pcName, "rb");
+}
 
-	if(!pfFile) {
-		printf("\e[1;35mCannot find PAK:\e[m\t%s\n", _pcName);
+//-----------------------------------------------------------------------------
+PakReader::~PakReader() {
+	
+	if(pakfile) {
+		free((void *)pakfile);
+		pakfile = NULL;
+	}
+	
+	if(file) {
+		fclose(file);
+	}
+	
+	if(pRoot) {
+		delete pRoot;
+	}
+	
+	if(fat) {
+		delete fat;
+	}
+	
+}
+
+static void pakDecrypt(uint8_t * fat, size_t fat_size, const uint8_t * key) {
+	
+	size_t keysize = strlen((const char *)key);
+	
+	for(size_t i = 0, ki = 0; i < fat_size; i++, ki = (ki + 1) % keysize) {
+		fat[i] ^= key[ki];
+	}
+	
+}
+
+static const char * safeGetString(const char * & pos, uint32_t & fat_size) {
+	
+	const char * begin = pos;
+	
+	for(size_t i = 0; i < fat_size; i++) {
+		if(pos[i] == 0) {
+			fat_size -= i + 1;
+			pos += i + 1;
+			return begin;
+		}
+	}
+	
+	return NULL;
+}
+
+template <class T>
+inline bool safeGet(T & data, const char * & pos, uint32_t & fat_size) {
+	T nfiles;
+	if(fat_size < sizeof(T)) {
 		return false;
 	}
-
-	iPassKey = 0;
-
-	pRoot = new EVE_REPERTOIRE(NULL, NULL);
-	fread((void *)&iTailleFAT, 1, 4, pfFile);
-	fseek(pfFile, iTailleFAT, SEEK_SET);
-	fread((void *)&iTailleFAT, 1, 4, pfFile);		//taille de la FAT
-
-	if (pcFAT)
-	{
-		free((void *)pcFAT);
-		pcFAT = NULL;
-	}
-
-	pcFAT = (char *)malloc(iTailleFAT);
-	char * pcFATCopy = pcFAT;
-	fread((void *)pcFAT, iTailleFAT, 1, pfFile);
-
-	while (iTailleFAT)
-	{
-		char * pcName = ReadFAT_string();
-
-		EVE_REPERTOIRE * pRepertoire = pRoot;
-
-		if (*pcName != 0)
-		{
-			pRoot->AddSousRepertoire((unsigned char *)pcName);
-			pRepertoire = pRoot->GetSousRepertoire((unsigned char *)pcName);
-		}
-		else
-		{
-			pcName = NULL;
-		}
-
-		int iNbFiles = ReadFAT_int();
-
-		if ((pRepertoire) &&
-		        (iNbFiles) &&
-		        !(pRepertoire->pHachage))
-		{
-			int iNbHache = 1;
-
-			while (iNbHache < iNbFiles) iNbHache <<= 1;
-
-			int iNbHacheTroisQuart = (iNbHache * 3) / 4;
-
-			if (iNbFiles > iNbHacheTroisQuart) iNbHache <<= 1;
-
-			pRepertoire->pHachage = new CHachageString(iNbHache);
-		}
-
-		while (iNbFiles--)
-		{
-			char * pcNameFile = ReadFAT_string();
-			EVE_TFILE * pFile = pRoot->AddFileToSousRepertoire((unsigned char *)pcName, (unsigned char *)pcNameFile);
-			pFile->param = ReadFAT_int();
-			pFile->param2 = ReadFAT_int();
-			pFile->param3 = ReadFAT_int();
-			pFile->taille = ReadFAT_int();
-		}
-	}
-
-	pcFAT = pcFATCopy;
-
-	lpszName = strdup((const char *)_pcName);
-
-	fseek(pfFile, 0, SEEK_SET);
-
-	printf("\e[1;32mLoaded PAK:\e[m\t%s\n", _pcName);
+	data = *reinterpret_cast<const T *>(pos);
+	pos += sizeof(T);
+	fat_size -= sizeof(T);
 	return true;
 }
 
 //-----------------------------------------------------------------------------
-void EVE_LOADPACK::Close()
+bool PakReader::Open(const char * name) {
+	
+	if(pRoot || pakfile || file) {
+		// already loaded
+		return false;
+	}
+	
+	file = fopen(name, "rb");
+	
+	if(!file) {
+		printf("\e[1;35mCannot find PAK:\e[m\t%s\n", name);
+		return false;
+	}
+	
+	// Read fat location and size.
+	uint32_t fat_offset;
+	uint32_t fat_size;
+	if(fread(&fat_offset, sizeof(fat_offset), 1, file) != 1) {
+		printf("error reading FAT offset\n");
+		fclose(file);
+		return false;
+	}
+	if(fseek(file, fat_offset, SEEK_SET)) {
+		printf("error seeking to FAT offset\n");
+		fclose(file);
+		return false;
+	}
+	if(fread(&fat_size, sizeof(fat_size), 1, file) != 1) {
+		printf("error reading FAT size\n");
+		fclose(file);
+		return false;
+	}
+	
+	// Read the whole FAT.
+	char * newfat = new char[fat_size];
+	if(fread(newfat, fat_size, 1, file) != 1) {
+		printf("error reading FAT\n");
+		return false;
+	}
+	
+	// Decrypt the FAT.
+	const char * key = selectKey(*(uint32_t*)newfat);
+	if(key) {
+		pakDecrypt(newfat, fat_size, key);
+	} else {
+		printf("WARNING: unknown PAK key ID 0x%08x, assuming no key\n", *(uint32_t*)newfat);
+	}
+	
+	PakDirectory * newroot = new PakDirectory(NULL, NULL);
+	
+	const char * pos = newfat;
+	
+	while(fat_size) {
+		
+		const char * dirname = safeGetString(pos, fat_size);
+		if(!dirname) {
+			printf("error reading directory name from FAT, wrong key?\n");
+			goto error;
+		}
+		
+		PakDirectory * dir;
+		if(*dirname != '\0') {
+			dir = newroot->AddSousRepertoire((unsigned char *)dirname);
+		} else {
+			dir = newroot;
+		}
+		
+		uint32_t nfiles;
+		if(!safeGet(nfiles, pos, fat_size)) {
+			printf("error reading file count from FAT, wrong key?\n");
+			goto error;
+		}
+		
+		if(nfiles && !dir->pHachage) {
+			int hashsize = 1;
+			while(hashsize < nfiles) {
+				hashsize <<= 1;
+			}
+			int n = (hashsize * 3) / 4;
+			if(nfiles > n) {
+				hashsize <<= 1;
+			}
+			dir->pHachage = new HashMap(hashsize);
+		}
+		
+		while(nfiles--) {
+			
+			char * filename =  safeGetString(pos, fat_size);
+			if(!filename) {
+				printf("error reading file name from FAT, wrong key?\n");
+				goto error;
+			}
+			
+			PakFile * file = dir->AddFileToSousRepertoire(NULL, filename);
+			
+			uint32_t param; // TODO more descriptive names
+			uint32_t param2;
+			uint32_t param3;
+			uint32_t size;
+			
+			if(!safeGet(param, pos, fat_size) || !safeGet(param2, pos, fat_size)
+			   || !safeGet(param3, pos, fat_size) || !safeGet(size, pos, fat_size)) {
+				printf("error reading file attributes from FAT, wrong key?\n");
+				goto error;
+			}
+			
+			file->offset = param;
+			file->param2 = param2;
+			file->param3 = param3;
+			file->taille = size;
+		}
+		
+	}
+	
+	if(pRoot) {
+		delete pRoot;
+	}
+	pRoot = newroot;
+	
+	if(pakfile) {
+		free(pakfile);
+	}
+	pakfile = strdup((const char *)name);
+	
+	if(fat) {
+		delete fat;
+	}
+	fat = newfat;
+	
+	fseek(file, 0, SEEK_SET);
+	iSeekPak = 0;
+	
+	printf("\e[1;32mLoaded PAK:\e[m\t%s\n", name);
+	return true;
+	
+	
+error:
+	
+	delete newroot;
+	
+	delete newfat;
+	
+	return false;
+	
+}
+
+//-----------------------------------------------------------------------------
+void PakReader::Close()
 {
-	if (pfFile)
+	if (file)
 	{
-		fclose(pfFile);
-		pfFile = NULL;
+		fclose(file);
+		file = NULL;
 	}
 
 	if (pRoot)
@@ -248,8 +338,6 @@ size_t ReadData(void * Param, const unsigned char ** buf) {
 int WriteData(void * Param, unsigned char * buf, size_t len) {
 	
 	PAK_PARAM * pPP = (PAK_PARAM *) Param;
-
-	ARX_CHECK_NOT_NEG(pPP->lSize);
 	
 	size_t lSize = min(pPP->lSize, len);
 
@@ -261,7 +349,7 @@ int WriteData(void * Param, unsigned char * buf, size_t len) {
 }
 
 //-----------------------------------------------------------------------------
-bool EVE_LOADPACK::Read(char * _pcName, void * _mem)
+bool PakReader::Read(char * _pcName, void * _mem)
 {
 	if ((!_pcName) ||
 	        (!pRoot)) return false;
@@ -279,7 +367,7 @@ bool EVE_LOADPACK::Read(char * _pcName, void * _mem)
 
 	char * pcFile = (char *)EVEF_GetFileName((unsigned char *)_pcName);
 
-	EVE_REPERTOIRE * pDir;
+	PakDirectory * pDir;
 
 	if (!pcDir)
 	{
@@ -308,26 +396,26 @@ bool EVE_LOADPACK::Read(char * _pcName, void * _mem)
 		return false;
 	}
 
-	EVE_TFILE * pTFiles = (EVE_TFILE *)pDir->pHachage->GetPtrWithString((char *)pcFile);
+	PakFile * pTFiles = (PakFile *)pDir->pHachage->GetPtrWithString((char *)pcFile);
 
 	if (pTFiles)
 	{
-		fseek(pfFile, pTFiles->param - iSeekPak, SEEK_CUR);
+		fseek(file, pTFiles->offset - iSeekPak, SEEK_CUR);
 
 		if (pTFiles->param2 & PAK)
 		{
 			PAK_PARAM sPP;
-			sPP.file = pfFile;
+			sPP.file = file;
 			sPP.mem = (char *)_mem;
 			sPP.lSize = pTFiles->param3;
 			blast(ReadData, &sPP, WriteData, &sPP);
 		}
 		else
 		{
-			fread(_mem, 1, pTFiles->taille, pfFile);
+			fread(_mem, 1, pTFiles->taille, file);
 		}
 
-		iSeekPak = ftell(pfFile);
+		iSeekPak = ftell(file);
 
 		if (pcDir) delete [] pcDir;
 
@@ -344,7 +432,7 @@ bool EVE_LOADPACK::Read(char * _pcName, void * _mem)
 }
 
 //-----------------------------------------------------------------------------
-void * EVE_LOADPACK::ReadAlloc(char * _pcName, int * _piTaille)
+void * PakReader::ReadAlloc(char * _pcName, int * _piTaille)
 {
 	if ((!_pcName) ||
 	        (!pRoot)) return NULL;
@@ -362,7 +450,7 @@ void * EVE_LOADPACK::ReadAlloc(char * _pcName, int * _piTaille)
 
 	char * pcFile = (char *)EVEF_GetFileName((unsigned char *)_pcName);
 
-	EVE_REPERTOIRE * pDir;
+	PakDirectory * pDir;
 
 	if (!pcDir)
 	{
@@ -373,47 +461,34 @@ void * EVE_LOADPACK::ReadAlloc(char * _pcName, int * _piTaille)
 		pDir = pRoot->GetSousRepertoire((unsigned char *)pcDir);
 	}
 
-	if (!pDir)
-	{
-		if (pcDir) delete [] pcDir;
-
-		if (pcFile) delete [] pcFile;
-
-		return NULL;
+	if(!pDir) {
+		goto error;
 	}
 
-	if (!pDir->nbfiles)
-	{
-		if (pcDir) delete [] pcDir;
-
-		if (pcFile) delete [] pcFile;
-
-		return false;
+	if(!pDir->nbfiles) {
+		goto error;
 	}
+	
+	{
 
-	EVE_TFILE * pTFiles = (EVE_TFILE *)pDir->pHachage->GetPtrWithString((char *)pcFile);
+	PakFile * pTFiles = (PakFile *)pDir->pHachage->GetPtrWithString((char *)pcFile);
 
 	if (pTFiles)
 	{
 		void * mem;
-		fseek(pfFile, pTFiles->param - iSeekPak, SEEK_CUR);
+		fseek(file, pTFiles->offset - iSeekPak, SEEK_CUR);
 
 		if (pTFiles->param2 & PAK)
 		{
 			mem = malloc(pTFiles->param3);
 			*_piTaille = (int)pTFiles->param3;
 
-			if (!mem)
-			{
-				if (pcDir) delete [] pcDir;
-
-				if (pcFile) delete [] pcFile;
-
-				return NULL;
+			if(!mem) {
+				goto error;
 			}
 
 			PAK_PARAM sPP;
-			sPP.file = pfFile;
+			sPP.file = file;
 			sPP.mem = (char *)mem;
 			sPP.lSize = pTFiles->param3;
 			blast(ReadData, &sPP, WriteData, &sPP);
@@ -423,19 +498,14 @@ void * EVE_LOADPACK::ReadAlloc(char * _pcName, int * _piTaille)
 			mem = malloc(pTFiles->taille);
 			*_piTaille = (int)pTFiles->taille;
 
-			if (!mem)
-			{
-				if (pcDir) delete [] pcDir;
-
-				if (pcFile) delete [] pcFile;
-
-				return NULL;
+			if(!mem) {
+				goto error;
 			}
 
-			fread(mem, 1, pTFiles->taille, pfFile);
+			fread(mem, 1, pTFiles->taille, file);
 		}
 
-		iSeekPak = ftell(pfFile);
+		iSeekPak = ftell(file);
 
 		if (pcDir) delete [] pcDir;
 
@@ -443,16 +513,20 @@ void * EVE_LOADPACK::ReadAlloc(char * _pcName, int * _piTaille)
 
 		return mem;
 	}
-
+	
+	}
+	
+error:
+	
 	if (pcDir) delete [] pcDir;
-
+	
 	if (pcFile) delete [] pcFile;
-
+	
 	return NULL;
 }
 
 //-----------------------------------------------------------------------------
-int EVE_LOADPACK::GetSize(char * _pcName)
+int PakReader::GetSize(char * _pcName)
 {
 	if ((!_pcName) ||
 	        (!pRoot)) return -1;
@@ -470,7 +544,7 @@ int EVE_LOADPACK::GetSize(char * _pcName)
 
 	char * pcFile = (char *)EVEF_GetFileName((unsigned char *)_pcName);
 
-	EVE_REPERTOIRE * pDir;
+	PakDirectory * pDir;
 
 	if (!pcDir)
 	{
@@ -499,7 +573,7 @@ int EVE_LOADPACK::GetSize(char * _pcName)
 		return false;
 	}
 
-	EVE_TFILE * pTFiles = (EVE_TFILE *)pDir->pHachage->GetPtrWithString((char *)pcFile);
+	PakFile * pTFiles = (PakFile *)pDir->pHachage->GetPtrWithString((char *)pcFile);
 
 	if (pTFiles)
 	{
@@ -525,7 +599,7 @@ int EVE_LOADPACK::GetSize(char * _pcName)
 }
 
 //-----------------------------------------------------------------------------
-PACK_FILE * EVE_LOADPACK::fOpen(const char * _pcName, const char * _pcMode)
+PakFileHandle * PakReader::fOpen(const char * _pcName, const char * _pcMode)
 {
 	
 	if ((!_pcName) ||
@@ -544,7 +618,7 @@ PACK_FILE * EVE_LOADPACK::fOpen(const char * _pcName, const char * _pcMode)
 
 	char * pcFile = (char *)EVEF_GetFileName((unsigned char *)_pcName);
 
-	EVE_REPERTOIRE * pDir;
+	PakDirectory * pDir;
 
 	if (!pcDir)
 	{
@@ -573,7 +647,7 @@ PACK_FILE * EVE_LOADPACK::fOpen(const char * _pcName, const char * _pcMode)
 		return false;
 	}
 
-	EVE_TFILE * pTFiles = (EVE_TFILE *)pDir->pHachage->GetPtrWithString((char *)pcFile);
+	PakFile * pTFiles = (PakFile *)pDir->pHachage->GetPtrWithString((char *)pcFile);
 
 	if (pTFiles)
 	{
@@ -587,7 +661,7 @@ PACK_FILE * EVE_LOADPACK::fOpen(const char * _pcName, const char * _pcMode)
 		{
 			if (!tPackFile[iNb].bActif)
 			{
-				tPackFile[iNb].iID = (int)pcFAT;
+				tPackFile[iNb].iID = (int)fat; // TODO why ose the FAT address here?
 				tPackFile[iNb].bActif = true;
 				tPackFile[iNb].iOffset = 0;
 				tPackFile[iNb].pFile = pTFiles;
@@ -606,11 +680,11 @@ PACK_FILE * EVE_LOADPACK::fOpen(const char * _pcName, const char * _pcMode)
 }
 
 //-----------------------------------------------------------------------------
-int EVE_LOADPACK::fClose(PACK_FILE * _pPackFile)
+int PakReader::fClose(PakFileHandle * _pPackFile)
 {
 	if ((!_pPackFile) ||
 	        (!_pPackFile->bActif) ||
-	        (_pPackFile->iID != ((int)pcFAT))) return EOF;
+	        (_pPackFile->iID != ((int)fat))) return EOF;
 
 	_pPackFile->bActif = false;
 	return 0;
@@ -673,11 +747,11 @@ int WriteDataFRead(void * Param, unsigned char * buf, size_t len) {
 }
 
 //-----------------------------------------------------------------------------
-int EVE_LOADPACK::fRead(void * _pMem, int _iSize, int _iCount, PACK_FILE * _pPackFile)
+size_t PakReader::fRead(void * _pMem, size_t _iSize, size_t _iCount, PakFileHandle * _pPackFile)
 {
 	if ((!_pPackFile) ||
 	        (!_pPackFile->pFile) ||
-	        (_pPackFile->iID != ((int) pcFAT))) return 0;
+	        (_pPackFile->iID != ((int) fat))) return 0;
 
 	int iTaille = _iSize * _iCount;
 
@@ -685,17 +759,17 @@ int EVE_LOADPACK::fRead(void * _pMem, int _iSize, int _iCount, PACK_FILE * _pPac
 	        (!iTaille) ||
 	        (!_pPackFile->pFile)) return 0;
 
-	EVE_TFILE * pTFiles = _pPackFile->pFile;
+	PakFile * pTFiles = _pPackFile->pFile;
 
 	if (pTFiles->param2 & PAK)
 	{
-		ARX_CHECK_NOT_NEG(_pPackFile->iOffset);
-		if (ARX_CAST_UINT(_pPackFile->iOffset) >= _pPackFile->pFile->param3) return 0;
+		assert(_pPackFile->iOffset >= 0);
+		if ((unsigned int)_pPackFile->iOffset >= _pPackFile->pFile->param3) return 0;
 
-		fseek(pfFile, pTFiles->param - iSeekPak, SEEK_CUR);
+		fseek(file, pTFiles->offset - iSeekPak, SEEK_CUR);
 
 		PAK_PARAM_FREAD sPP;
-		sPP.file        = pfFile;
+		sPP.file        = file;
 		sPP.mem         = (char *) _pMem;
 		sPP.iOffsetCurr = 0;
 		sPP.iOffset     = _pPackFile->iOffset;
@@ -705,24 +779,24 @@ int EVE_LOADPACK::fRead(void * _pMem, int _iSize, int _iCount, PACK_FILE * _pPac
 		sPP.iTailleFic  = _pPackFile->pFile->param3;
 		blast(ReadDataFRead, &sPP, WriteDataFRead, &sPP);
 		iTaille         = sPP.iTailleW;
-		iSeekPak        = ftell(pfFile);
+		iSeekPak        = ftell(file);
 	}
 	else
 	{
-		ARX_CHECK_NOT_NEG(_pPackFile->iOffset);
-		if (ARX_CAST_UINT(_pPackFile->iOffset) >= _pPackFile->pFile->taille) return 0;
+		assert(_pPackFile->iOffset >= 0);
+		if ((unsigned int)_pPackFile->iOffset >= _pPackFile->pFile->taille) return 0;
 
-		fseek(pfFile, pTFiles->param + _pPackFile->iOffset - iSeekPak, SEEK_CUR);
+		fseek(file, pTFiles->offset + _pPackFile->iOffset - iSeekPak, SEEK_CUR);
 
-		ARX_CHECK_NOT_NEG(iTaille);
+		assert(iTaille >= 0);
 
-		if (pTFiles->taille < ARX_CAST_UINT(_pPackFile->iOffset + iTaille))
+		if (pTFiles->taille < (unsigned int)_pPackFile->iOffset + iTaille)
 		{
 			iTaille -= _pPackFile->iOffset + iTaille - pTFiles->taille;
 		}
 
-		fread(_pMem, 1, iTaille, pfFile);
-		iSeekPak = ftell(pfFile);
+		fread(_pMem, 1, iTaille, file);
+		iSeekPak = ftell(file);
 	}
 
 	_pPackFile->iOffset += iTaille;
@@ -730,11 +804,11 @@ int EVE_LOADPACK::fRead(void * _pMem, int _iSize, int _iCount, PACK_FILE * _pPac
 }
 
 //-----------------------------------------------------------------------------
-int EVE_LOADPACK::fSeek(PACK_FILE * _pPackFile, unsigned long _lOffset, int _iOrigin)
+int PakReader::fSeek(PakFileHandle * _pPackFile, long _lOffset, int _iOrigin)
 {
 	if ((!_pPackFile) ||
 	        (!_pPackFile->pFile) ||
-	        (_pPackFile->iID != ((int)pcFAT))) return 1;
+	        (_pPackFile->iID != ((int)fat))) return 1;
 
 	switch (_iOrigin)
 	{
@@ -781,7 +855,7 @@ int EVE_LOADPACK::fSeek(PACK_FILE * _pPackFile, unsigned long _lOffset, int _iOr
 				int iOffset = _pPackFile->iOffset + _lOffset;
 
 				if ((iOffset < 0) ||
-			        (ARX_CAST_UINT(iOffset) > _pPackFile->pFile->param3))
+			        ((unsigned int)iOffset > _pPackFile->pFile->param3))
 				{
 					return 1;
 				}
@@ -793,7 +867,7 @@ int EVE_LOADPACK::fSeek(PACK_FILE * _pPackFile, unsigned long _lOffset, int _iOr
 				int iOffset = _pPackFile->iOffset + _lOffset;
 
 				if ((iOffset < 0) ||
-			        (ARX_CAST_UINT(iOffset) > _pPackFile->pFile->taille))
+			        ((unsigned int)iOffset > _pPackFile->pFile->taille))
 				{
 					return 1;
 				}
@@ -808,279 +882,11 @@ int EVE_LOADPACK::fSeek(PACK_FILE * _pPackFile, unsigned long _lOffset, int _iOr
 }
 
 //-----------------------------------------------------------------------------
-int EVE_LOADPACK::fTell(PACK_FILE * _pPackFile)
+long PakReader::fTell(PakFileHandle * _pPackFile)
 {
 	if ((!_pPackFile) ||
 	        (!_pPackFile->pFile) ||
-	        (_pPackFile->iID != ((int)pcFAT))) return -1;
+	        (_pPackFile->iID != ((int)fat))) return -1;
 
 	return _pPackFile->iOffset;
-}
-
-//-----------------------------------------------------------------------------
-void EVE_LOADPACK::CryptChar(unsigned char * _pChar)
-{
-#ifdef CRYPT_OFF
-	return;
-#endif
-	unsigned int iTailleKey = strlen((const char *) cKey);
-	int iDecalage = 0;
-	
-	*_pChar = ARX_CLEAN_WARN_CAST_UCHAR(((*_pChar) ^ cKey[iPassKey]) >> iDecalage);
-
-	iPassKey++;
-
-	if (iPassKey >= iTailleKey) iPassKey = 0;
-}
-
-//-----------------------------------------------------------------------------
-void EVE_LOADPACK::UnCryptChar(unsigned char * _pChar)
-{
-#ifdef CRYPT_OFF
-	return;
-#endif
-
-	unsigned int iTailleKey = strlen((const char *) cKey);
-
-	int iDecalage = 0;
-	*_pChar = ARX_CLEAN_WARN_CAST_UCHAR(((*_pChar) ^ cKey[iPassKey]) << iDecalage);
-
-	iPassKey++;
-
-	if (iPassKey >= iTailleKey) iPassKey = 0;
-}
-//-----------------------------------------------------------------------------
-void EVE_LOADPACK::CryptString(unsigned char * _pTxt)
-{
-	unsigned char * pTxtCopy = (unsigned char *)_pTxt;
-	int iTaille = strlen((const char *)_pTxt) + 1;
-
-	while (iTaille--)
-	{
-		CryptChar(pTxtCopy);
-		pTxtCopy++;
-	}
-}
-
-//-----------------------------------------------------------------------------
-int EVE_LOADPACK::UnCryptString(unsigned char * _pTxt)
-{
-	unsigned char * pTxtCopy = (unsigned char *)_pTxt;
-
-	int iNbChar = 0;
-
-	for (;;)
-	{
-		UnCryptChar(pTxtCopy);
-
-		if (!*pTxtCopy)
-		{
-			break;
-		}
-
-		pTxtCopy++;
-		iNbChar++;
-	}
-
-	return iNbChar;
-}
-
-//-----------------------------------------------------------------------------
-void EVE_LOADPACK::CryptShort(unsigned short * _pShort)
-{
-	unsigned char cA, cB;
-	cA = ARX_CLEAN_WARN_CAST_UCHAR((*_pShort) & 0xFF);
-	cB = ARX_CLEAN_WARN_CAST_UCHAR(((*_pShort) >> 8) & 0xFF);
-
-	CryptChar(&cA);
-	CryptChar(&cB);
-	*_pShort = cA | (cB << 8);
-}
-
-//-----------------------------------------------------------------------------
-void EVE_LOADPACK::UnCryptShort(unsigned short * _pShort)
-{
-	unsigned char cA, cB;
-	cA = ARX_CLEAN_WARN_CAST_UCHAR((*_pShort) & 0xFF);
-	cB = ARX_CLEAN_WARN_CAST_UCHAR(((*_pShort) >> 8) & 0xFF);
-
-	UnCryptChar(&cA);
-	UnCryptChar(&cB);
-	*_pShort = cA | (cB << 8);
-}
-
-//-----------------------------------------------------------------------------
-void EVE_LOADPACK::CryptInt(unsigned int * _iInt)
-{
-	unsigned short sA, sB;
-	sA = (*_iInt) & 0xFFFF;
-	sB = ((*_iInt) >> 16) & 0xFFFF;
-
-	CryptShort(&sA);
-	CryptShort(&sB);
-	*_iInt = sA | (sB << 16);
-}
-
-//-----------------------------------------------------------------------------
-void EVE_LOADPACK::UnCryptInt(unsigned int * _iInt)
-{
-	unsigned short sA, sB;
-	sA = (*_iInt) & 0xFFFF;
-	sB = ((*_iInt) >> 16) & 0xFFFF;
-
-	UnCryptShort(&sA);
-	UnCryptShort(&sB);
-	*_iInt = sA | (sB << 16);
-}
-
-//-----------------------------------------------------------------------------
-void EVE_LOADPACK::WriteSousRepertoire(char * pcAbs, EVE_REPERTOIRE * r)
-{
-	char EveTxtFile[256];
-	strcpy((char *)EveTxtFile, pcAbs);
-
-	if (r)
-	{
-		r->ConstructFullNameRepertoire(EveTxtFile);
-	}
-
-	CreateDirectory((const char *)EveTxtFile, NULL);
-
-	EVE_TFILE * f = r->fichiers;
-	int nb = r->nbfiles;
-
-	while (nb--)
-	{
-		char	tTxt[512];
-		strcpy(tTxt, EveTxtFile);
-		strcat(tTxt, (const char *)f->name);
-		int		iTaille;
-		void	* pDat = this->ReadAlloc(tTxt + strlen((const char *)pcAbs), &iTaille);
-
-		if (pDat)
-		{
-			FILE * file;
-			file = fopen(tTxt, "wb");
-
-			if (file)
-			{
-				fwrite(pDat, 1, iTaille, file);
-				fclose(file);
-			}
-
-			free((void *)pDat);
-			f = f->fnext;
-		}
-		else
-		{
-			MessageBox(NULL, tTxt, "No Found!!", 0);
-		}
-	}
-
-
-	EVE_REPERTOIRE * brep = r->fils;
-	nb = r->nbsousreps;
-
-	while (nb--)
-	{
-		EVE_REPERTOIRE * brepnext = brep->brothernext;
-		WriteSousRepertoire(pcAbs, brep);
-		brep = brepnext;
-	}
-}
-
-//-----------------------------------------------------------------------------
-void EVE_LOADPACK::WriteSousRepertoireZarbi(char * pcAbs, EVE_REPERTOIRE * r)
-{
-	char EveTxtFile[256];
-	strcpy((char *)EveTxtFile, pcAbs);
-
-	if (r)
-	{
-		r->ConstructFullNameRepertoire(EveTxtFile);
-	}
-
-	CreateDirectory((const char *)EveTxtFile, NULL);
-
-	EVE_TFILE * f = r->fichiers;
-	int nb = r->nbfiles;
-
-	while (nb--)
-	{
-		char	tTxt[512];
-		strcpy(tTxt, EveTxtFile);
-		strcat(tTxt, (const char *)f->name);
-		int		iTaille;
-
-		void	* pDat = this->ReadAlloc(tTxt + strlen((const char *)pcAbs), &iTaille);
-		int iTaille2 = iTaille;
-
-		if (pDat)
-		{
-			PACK_FILE * pPf = fOpen(tTxt + strlen((const char *)pcAbs), "rb");
-
-			if (!pPf)
-			{
-				MessageBox(NULL, tTxt, "ERROR fopen!!", 0);
-			}
-			else
-			{
-				int nb2;
-				char * pcDat = (char *)pDat;
-
-				while (iTaille)
-				{
-
-					if (iTaille < 50)
-					{
-						nb2 = iTaille;
-					}
-					else
-					{
-						nb2 = rand() % iTaille;
-
-						if (!nb2) continue;
-					}
-
-					iTaille -= nb2;
-					int nb3 = fRead(pcDat, 1, nb2, pPf);
-					pcDat += nb2;
-
-					if (nb3 != nb2)
-					{
-						MessageBox(NULL, tTxt, "ERROR fread!!", 0);
-					}
-				}
-
-				fClose(pPf);
-
-				FILE * file;
-				file = fopen(tTxt, "wb");
-
-				if (file)
-				{
-					fwrite(pDat, 1, iTaille2, file);
-					fclose(file);
-				}
-
-				free((void *)pDat);
-				f = f->fnext;
-			}
-		}
-		else
-		{
-			MessageBox(NULL, tTxt, "No Found!!", 0);
-		}
-	}
-
-
-	EVE_REPERTOIRE * brep = r->fils;
-	nb = r->nbsousreps;
-
-	while (nb--)
-	{
-		EVE_REPERTOIRE * brepnext = brep->brothernext;
-		WriteSousRepertoireZarbi(pcAbs, brep);
-		brep = brepnext;
-	}
 }

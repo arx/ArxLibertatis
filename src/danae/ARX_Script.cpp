@@ -91,6 +91,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "Danae_resource.h"
 
+#include <hermes/PakManager.h>
+
+#include <cstdio>
+using std::sprintf;
 
 //todo remove this define
 //# define GWL_HINSTANCE       (-6)

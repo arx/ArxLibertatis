@@ -22,52 +22,79 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef EVE_SAVE
-#define EVE_SAVE
+#ifndef EVE_LOAD
+#define EVE_LOAD
 
-#include "HERMES_pack_types.h"
-#include "HERMES_hachage.h"
+class PakFile;
+class PakDirectory;
 
-#define PAK	1
+#include <cstddef>
+#include <cstdio> // for FILE
 
-class EVE_TFILE{
-public:
-	EVE_U8		*name;
-	EVE_U32		taille;
-	EVE_TFILE	*fprev,*fnext;
-	EVE_U32		param;
-	EVE_U32		param2;
-	EVE_U32		param3;
-public:
-	EVE_TFILE(EVE_U8 *dir=NULL,EVE_U8 *n=NULL);
-	~EVE_TFILE();
+#define PACK_MAX_FREAD 256
+#define PAK_READ_BUF_SIZE 1024
+struct PAK_PARAM {
+	FILE *file;
+	char *mem;
+	std::size_t lSize;
+	
+	char readbuf[PAK_READ_BUF_SIZE];
+	
 };
 
-class EVE_REPERTOIRE{
-public:
-	EVE_U8			*name;
-	EVE_U32			nbsousreps;
-	EVE_U32			nbfiles;
-	EVE_REPERTOIRE	*parent;
-	EVE_REPERTOIRE	*fils;
-	EVE_REPERTOIRE	*brotherprev,*brothernext;
-	EVE_TFILE		*fichiers;
-	CHachageString	*pHachage;
-	EVE_U32			param;
-public:
-	EVE_REPERTOIRE(EVE_REPERTOIRE *p,EVE_U8 *n);
-	~EVE_REPERTOIRE();
+struct PAK_PARAM_FREAD {
+	FILE	*file;
+	char	*mem;
+	int		iOffsetCurr;
+	int		iOffset;
+	int		iOffsetBase;
+	int		iTaille;
+	int		iTailleBase;
+	int		iTailleW;
+	int		iTailleFic;
 
-	void AddSousRepertoire(EVE_U8 *sname);
-	bool DelSousRepertoire(EVE_U8 *sname);
-	EVE_TFILE* AddFileToSousRepertoire(EVE_U8 *sname,EVE_U8 *name);
- 
-	EVE_REPERTOIRE * GetSousRepertoire(EVE_U8 *sname);
- 
-	void ConstructFullNameRepertoire(char*);
-	friend void Kill(EVE_REPERTOIRE *r);
+	char readbuf[PAK_READ_BUF_SIZE];
+	
 };
 
-EVE_U8 * EVEF_GetDirName(EVE_U8 *dirplusname);
-EVE_U8 * EVEF_GetFileName(EVE_U8 *dirplusname);
+struct PakFileHandle {
+	bool		bActif;
+	int			iID;
+	int			iOffset;
+	PakFile * pFile;
+};
+
+class PakReader
+{
+private:
+	
+	const char * fat;
+	FILE * file;
+	int				iSeekPak;
+	PakFileHandle		tPackFile[PACK_MAX_FREAD];
+	
+public:
+	const char * pakfile;
+	PakDirectory * pRoot;
+private:
+	int ReadFAT_int();
+	char* ReadFAT_string();
+public:
+	PakReader();
+	~PakReader();
+	
+	bool Open(const char * pakfile);
+	void Close();
+	bool Read(char*,void*);
+	void* ReadAlloc(char*,int*);
+	int GetSize(char *_pcName);
+	
+	PakFileHandle * fOpen(const char * name, const char * mode);
+	int fClose(PakFileHandle * h);
+	std::size_t fRead(void * buf, std::size_t size, std::size_t n, PakFileHandle * h);
+	int fSeek(PakFileHandle * h, long off, int whence);
+	long fTell(PakFileHandle * h);
+	
+}; 
+
 #endif

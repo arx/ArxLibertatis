@@ -81,6 +81,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Time.h"
 
 #include "HERMESMain.h"
+#include <hermes/PakManager.h>
 
 #include "EERIEMath.h"
 #include "EERIEObject.h"
@@ -2793,7 +2794,6 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 						memcpy(io->script.lvar[i].text, dat + pos, io->script.lvar[i].ival);
 						pos += io->script.lvar[i].ival;
 						io->script.lvar[i].ival = strlen(io->script.lvar[i].text) + 1;
-
 
 						if (io->script.lvar[i].text[0] == 'Ì')
 							io->script.lvar[i].text[0] = 0;

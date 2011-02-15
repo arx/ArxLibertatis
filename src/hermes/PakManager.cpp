@@ -54,9 +54,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include "HERMES_PAK.h"
-#include "HERMESMain.h"
-#include "ARX_Casts.h"
+#include <hermes/PakManager.h>
+#include <hermes/PakReader.h>
+#include <hermes/PakEntry.h>
+#include <hermes/HashMap.h>
+#include <ARX_Casts.h>
+
+#include <HERMESMain.h>
+
+using std::vector;
 
 bool bForceInPack = true;
 long CURRENT_LOADMODE = LOAD_PACK_THEN_TRUEFILE;
@@ -199,20 +205,15 @@ long _PAK_DirectoryExist(char * name)
 	char temp[256];
 	strcpy(temp, name + g_pak_workdir_len);
 	long l = leng - g_pak_workdir_len ;
-	if (temp[l] != '\\') strcat(temp, "\\");
+	if (temp[l] != '\\' && temp[l] != '/') strcat(temp, "\\");
 
-	vector<EVE_REPERTOIRE *>* pvRepertoire;
-	pvRepertoire = pPakManager->ExistDirectory(temp);
+	vector<PakDirectory *> pvRepertoire(pPakManager->ExistDirectory(temp));
 
-	if (!pvRepertoire->size())
+	if (!pvRepertoire.size())
 	{
-		pvRepertoire->clear();
-		delete pvRepertoire;
 		return false;
 	}
 
-	pvRepertoire->clear();
-	delete pvRepertoire;
 	return true;
 }
 
@@ -399,7 +400,7 @@ void * PAK_FileLoadMallocZero(char * name, long * SizeLoadMalloc)
 
 long _PAK_ftell(FILE * stream)
 {
-	return pPakManager->fTell((PACK_FILE *)stream);
+	return pPakManager->fTell((PakFileHandle *)stream);
 }
 long PAK_ftell(FILE * stream)
 {
@@ -492,7 +493,7 @@ FILE * PAK_fopen(const char * filename, const char * mode)
 
 int _PAK_fclose(FILE * stream)
 {
-	return pPakManager->fClose((PACK_FILE *)stream);
+	return pPakManager->fClose((PakFileHandle *)stream);
 }
 
 int PAK_fclose(FILE * stream)
@@ -534,7 +535,7 @@ int PAK_fclose(FILE * stream)
 
 size_t _PAK_fread(void * buffer, size_t size, size_t count, FILE * stream)
 {
-	return pPakManager->fRead(buffer, size, count, (PACK_FILE *)stream);
+	return pPakManager->fRead(buffer, size, count, (PakFileHandle *)stream);
 }
 
 size_t PAK_fread(void * buffer, size_t size, size_t count, FILE * stream)
@@ -577,7 +578,7 @@ size_t PAK_fread(void * buffer, size_t size, size_t count, FILE * stream)
 
 int _PAK_fseek(FILE * fic, long offset, int origin)
 {
-	return pPakManager->fSeek((PACK_FILE *)fic, offset, origin);
+	return pPakManager->fSeek((PakFileHandle *)fic, offset, origin);
 }
 
 int PAK_fseek(FILE * fic, long offset, int origin)
@@ -629,7 +630,7 @@ PakManager::PakManager()
 //-----------------------------------------------------------------------------
 PakManager::~PakManager()
 {
-	vector<EVE_LOADPACK *>::iterator i;
+	vector<PakReader *>::iterator i;
 
 	for (i = vLoadPak.begin(); i < vLoadPak.end(); i++)
 	{
@@ -642,7 +643,7 @@ PakManager::~PakManager()
 //-----------------------------------------------------------------------------
 bool PakManager::AddPak(char * _lpszName)
 {
-	EVE_LOADPACK * pLoadPak = new EVE_LOADPACK();
+	PakReader * pLoadPak = new PakReader();
 	pLoadPak->Open(_lpszName);
 
 	if (!pLoadPak->pRoot)
@@ -658,15 +659,15 @@ bool PakManager::AddPak(char * _lpszName)
 //-----------------------------------------------------------------------------
 bool PakManager::RemovePak(char * _lpszName)
 {
-	vector<EVE_LOADPACK *>::iterator i;
+	vector<PakReader *>::iterator i;
 
 	for (i = vLoadPak.begin(); i < vLoadPak.end(); i++)
 	{
-		EVE_LOADPACK * pLoadPak = *i;
+		PakReader * pLoadPak = *i;
 
 		if (pLoadPak)
 		{
-			if (!strcasecmp((const char *)_lpszName, pLoadPak->lpszName))
+			if (!strcasecmp((const char *)_lpszName, pLoadPak->pakfile))
 			{
 				delete(*i);
 				vLoadPak.erase(i);
@@ -688,10 +689,10 @@ static void DrawDebugFile(char * _lpszName)
 //-----------------------------------------------------------------------------
 bool PakManager::Read(char * _lpszName, void * _pMem)
 {
-	vector<EVE_LOADPACK *>::iterator i;
+	vector<PakReader *>::iterator i;
 
-	if ((_lpszName[0] == '\\') /*||
-	        (_lpszName[0] == '/')*/)
+	if ((_lpszName[0] == '\\') ||
+	        (_lpszName[0] == '/'))
 	{
 		_lpszName++;
 	}
@@ -714,10 +715,10 @@ bool PakManager::Read(char * _lpszName, void * _pMem)
 //-----------------------------------------------------------------------------
 void * PakManager::ReadAlloc(char * _lpszName, int * _piTaille)
 {
-	vector<EVE_LOADPACK *>::iterator i;
+	vector<PakReader *>::iterator i;
 
-	if ((_lpszName[0] == '\\') /*||
-	        (_lpszName[0] == '/')*/)
+	if ((_lpszName[0] == '\\') ||
+	        (_lpszName[0] == '/'))
 	{
 		_lpszName++;
 	}
@@ -741,10 +742,10 @@ void * PakManager::ReadAlloc(char * _lpszName, int * _piTaille)
 //-----------------------------------------------------------------------------
 int PakManager::GetSize(char * _lpszName)
 {
-	vector<EVE_LOADPACK *>::iterator i;
+	vector<PakReader *>::iterator i;
 
-	if ((_lpszName[0] == '\\') /*||
-	        (_lpszName[0] == '/')*/)
+	if ((_lpszName[0] == '\\') ||
+	        (_lpszName[0] == '/'))
 	{
 		_lpszName++;
 	}
@@ -766,19 +767,19 @@ int PakManager::GetSize(char * _lpszName)
 }
 
 //-----------------------------------------------------------------------------
-PACK_FILE * PakManager::fOpen(char * _lpszName)
+PakFileHandle * PakManager::fOpen(char * _lpszName)
 {
-	vector<EVE_LOADPACK *>::iterator i;
+	vector<PakReader *>::iterator i;
 
-	if ((_lpszName[0] == '\\') /*||
-	        (_lpszName[0] == '/')*/)
+	if ((_lpszName[0] == '\\') ||
+	        (_lpszName[0] == '/'))
 	{
 		_lpszName++;
 	}
 
 	for (i = vLoadPak.begin(); i < vLoadPak.end(); i++)
 	{
-		PACK_FILE * pPakFile;
+		PakFileHandle * pPakFile;
 
 		if ((pPakFile = (*i)->fOpen((const char *)_lpszName, "rb")))
 		{
@@ -793,9 +794,9 @@ PACK_FILE * PakManager::fOpen(char * _lpszName)
 }
 
 //-----------------------------------------------------------------------------
-int PakManager::fClose(PACK_FILE * _pPakFile)
+int PakManager::fClose(PakFileHandle * _pPakFile)
 {
-	vector<EVE_LOADPACK *>::iterator i;
+	vector<PakReader *>::iterator i;
 
 
 	for (i = vLoadPak.begin(); i < vLoadPak.end(); i++)
@@ -810,9 +811,9 @@ int PakManager::fClose(PACK_FILE * _pPakFile)
 }
 
 //-----------------------------------------------------------------------------
-int PakManager::fRead(void * _pMem, int _iSize, int _iCount, PACK_FILE * _pPackFile)
+int PakManager::fRead(void * _pMem, int _iSize, int _iCount, PakFileHandle * _pPackFile)
 {
-	vector<EVE_LOADPACK *>::iterator i;
+	vector<PakReader *>::iterator i;
 
 	for (i = vLoadPak.begin(); i < vLoadPak.end(); i++)
 	{
@@ -828,9 +829,9 @@ int PakManager::fRead(void * _pMem, int _iSize, int _iCount, PACK_FILE * _pPackF
 }
 
 //-----------------------------------------------------------------------------
-int PakManager::fSeek(PACK_FILE * _pPackFile, int _iSeek, int _iMode)
+int PakManager::fSeek(PakFileHandle * _pPackFile, int _iSeek, int _iMode)
 {
-	vector<EVE_LOADPACK *>::iterator i;
+	vector<PakReader *>::iterator i;
 
 	for (i = vLoadPak.begin(); i < vLoadPak.end(); i++)
 	{
@@ -844,9 +845,9 @@ int PakManager::fSeek(PACK_FILE * _pPackFile, int _iSeek, int _iMode)
 }
 
 //-----------------------------------------------------------------------------
-int PakManager::fTell(PACK_FILE * _pPackFile)
+int PakManager::fTell(PakFileHandle * _pPackFile)
 {
-	vector<EVE_LOADPACK *>::iterator i;
+	vector<PakReader *>::iterator i;
 
 	for (i = vLoadPak.begin(); i < vLoadPak.end(); i++)
 	{
@@ -862,9 +863,9 @@ int PakManager::fTell(PACK_FILE * _pPackFile)
 }
 
 //-----------------------------------------------------------------------------
-vector<EVE_REPERTOIRE *>* PakManager::ExistDirectory(char * _lpszName)
+vector<PakDirectory *>* PakManager::ExistDirectory(char * _lpszName)
 {
-	vector<EVE_LOADPACK *>::iterator i;
+	vector<PakReader *>::iterator i;
 
 	if ((_lpszName[0] == '\\') ||
 	        (_lpszName[0] == '/'))
@@ -872,12 +873,12 @@ vector<EVE_REPERTOIRE *>* PakManager::ExistDirectory(char * _lpszName)
 		_lpszName++;
 	}
 
-	vector<EVE_REPERTOIRE *> *pvRepertoire = new vector<EVE_REPERTOIRE *>;
+	vector<PakDirectory *> *pvRepertoire = new vector<PakDirectory *>;
 	pvRepertoire->clear();
 
 	for (i = vLoadPak.begin(); i < vLoadPak.end(); i++)
 	{
-		EVE_REPERTOIRE * pRep;
+		PakDirectory * pRep;
 
 		if ((pRep = (*i)->pRoot->GetSousRepertoire((unsigned char *)_lpszName)))
 		{
@@ -890,10 +891,10 @@ vector<EVE_REPERTOIRE *>* PakManager::ExistDirectory(char * _lpszName)
 //-----------------------------------------------------------------------------
 bool PakManager::ExistFile(char * _lpszName)
 {
-	vector<EVE_LOADPACK *>::iterator i;
+	vector<PakReader *>::iterator i;
 
-	if ((_lpszName[0] == '\\') /*||
-	        (_lpszName[0] == '/')*/)
+	if ((_lpszName[0] == '\\') ||
+	        (_lpszName[0] == '/'))
 	{
 		_lpszName++;
 	}
@@ -913,13 +914,13 @@ bool PakManager::ExistFile(char * _lpszName)
 
 	for (i = vLoadPak.begin(); i < vLoadPak.end(); i++)
 	{
-		EVE_REPERTOIRE * pRep;
+		PakDirectory * pRep;
 
 		if ((pRep = (*i)->pRoot->GetSousRepertoire((unsigned char *)pcDir)))
 		{
 			if (pRep->nbfiles)
 			{
-				EVE_TFILE * pTFiles = (EVE_TFILE *)pRep->pHachage->GetPtrWithString((char *)pcFile);
+				PakFile * pTFiles = (PakFile *)pRep->pHachage->GetPtrWithString((char *)pcFile);
 
 				if (pTFiles)
 				{

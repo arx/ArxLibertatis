@@ -59,12 +59,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 #include <cstring>
-using namespace std;
+#include <cstdio>
 
 #include <time.h>
 #include "HERMESMain.h"
 #include "HERMESNet.h"
 #include "ARX_Casts.h"
+
+
 
 extern "C" {
 #undef __cplusplus
@@ -76,6 +78,8 @@ extern "C" {
 
 
 #include <blast.h>
+
+using namespace std;
 
 // TODO is this correct?
 #define _MAX_EXT 3

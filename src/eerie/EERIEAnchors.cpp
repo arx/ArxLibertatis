@@ -47,6 +47,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern float MAX_ALLOWED_PER_SECOND;
 extern bool DIRECT_PATH;
 
+#include <cstdio>
+using std::printf;
+
 
 
 

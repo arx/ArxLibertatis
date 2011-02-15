@@ -25,39 +25,42 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef HACHAGE_H
 #define HACHAGE_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <vector>
-//#include "ARX_Common.h"
+#include <cstddef>
 
-struct T_HACHAGE_DATAS
-{
-	char	*lpszName;
-	void	*pMem;
-};
-
-class CHachageString
-{
+class HashMap {
+	
 private:
-	int				iSize;
-	int				iMask;
-	int				iFill;
-	T_HACHAGE_DATAS	*tTab;
-public:
-	int		iNbCollisions;
-	int		iNbNoInsert;
+	
+	struct Entry {
+		const char * lpszName;
+		void * pMem;
+	}T_HACHAGE_DATAS;
+	
+	std::size_t iSize;
+	int iMask;
+	std::size_t iFill;
+	
+	Entry * tTab;
+	
+//public:
+	int iNbCollisions;
+	int iNbNoInsert;
+	
 private:
+	
 	int FuncH1(int);
-	int	FuncH2(int);
-	int	GetKey(char*);
+	int FuncH2(int);
+	int GetKey(const char * );
+	
 public:
-	CHachageString(int _iSize=256);
-	~CHachageString();
-
-	bool AddString(char*,void *_pMem=NULL);
- 
-	void* GetPtrWithString(char *_lpszText);
+	
+	HashMap(std::size_t _iSize = 256);
+	~HashMap();
+	
+	bool AddString(const char * name, void * value = NULL);
+	
+	void * GetPtrWithString(const char * name);
+	
 };
 
 #endif

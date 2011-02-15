@@ -22,13 +22,63 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef _EVE_TYPES
-#define _EVE_TYPES
+#ifndef EVE_SAVE
+#define EVE_SAVE
 
-//base
-typedef unsigned char	EVE_U8;
-typedef char			EVE_8;	
-typedef unsigned int	EVE_U32;	
-typedef signed int		EVE_S32;	
+class HashMap;
+
+#include <cstddef>
+
+class PakFile {
+	
+public:
+	
+	const char * name;
+	std::size_t taille;
+	PakFile * fprev;
+	PakFile * fnext;
+	std::size_t offset;
+	unsigned int param2;
+	unsigned int param3;
+	
+public:
+	
+	PakFile(const char * n = NULL);
+	~PakFile();
+	
+};
+
+class PakDirectory {
+	
+public:
+	
+	const char * name;
+	unsigned int nbsousreps;
+	unsigned int nbfiles;
+	PakDirectory * parent;
+	PakDirectory * fils;
+	PakDirectory * brotherprev;
+	PakDirectory * brothernext;
+	PakFile * fichiers;
+	HashMap * pHachage;
+	unsigned int param;
+	
+public:
+	
+	PakDirectory(PakDirectory * p, const char * n);
+	~PakDirectory();
+
+	PakDirectory * AddSousRepertoire(const char * sname);
+	bool DelSousRepertoire(const char * sname);
+	PakFile * AddFileToSousRepertoire(const char * sname, const char * name);
+ 
+	PakDirectory * GetSousRepertoire(const char * sname);
+ 
+	void ConstructFullNameRepertoire(char * );
+	friend void Kill(PakDirectory * r);
+};
+
+char * EVEF_GetDirName(const char * dirplusname);
+char * EVEF_GetFileName(const char * dirplusname);
 
 #endif
