@@ -642,7 +642,7 @@ LRESULT CD3DApplication::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 			}
 
 			break;
-		case WM_MOVE:
+		case WM_MOVE: break; // TODO hack to prevent wrong m_rcScreenRect in EERIEFrame
 
 			// If in windowed mode, move the Framework's window
 			if (m_pFramework && m_bActive && m_bReady && m_pDeviceInfo->bWindowed)
@@ -960,10 +960,6 @@ HRESULT CD3DApplication::UpdateGamma()
 	return 0;
 }
 
-HRESULT CD3DApplication::Render() {
-	return S_OK;
-}
-
 //*************************************************************************************
 // Render3DEnvironment()
 // Draws the scene.
@@ -1022,7 +1018,8 @@ HRESULT CD3DApplication::Render3DEnvironment()
 	// Show the frame on the primary surface.
 	if (FAILED(hr = m_pFramework->ShowFrame()))
 	{
-		printf("ShowFrame FAILED\n");
+		printf("ShowFrame FAILED: %d %d <- look for this in ddraw.h\n", hr&0xFFFF);
+		
 		if (DDERR_SURFACELOST != hr)
 			return hr;
 
