@@ -52,7 +52,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include "ARX_Text.h"
 #include <windows.h>
-#include <d3d.h>
 
 using std::vector;
 using std::wstring;

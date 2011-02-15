@@ -54,7 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#define D3D_OVERLOADS
+#include <d3dwrapper.h>
 #include "ARX_Scene.h"
 #include "ARX_Spells.h"
 #include "ARX_Sound.h"

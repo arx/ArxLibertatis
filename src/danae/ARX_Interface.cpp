@@ -31,6 +31,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+#include <d3dwrapper.h>
+
 #include "ARX_Interface.h"
 #include "ARX_Minimap.h"
 #include "ARX_Paths.h"
