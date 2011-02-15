@@ -29,6 +29,8 @@ class PakFile;
 class PakDirectory;
 class PakReader;
 
+typedef long FileHandle;
+
 #include <cstddef>
 #include <cstdio> // for FILE
 
@@ -43,12 +45,12 @@ struct PakFileHandle {
 	int offset;
 	PakFile * file;
 	
-	FILE * truefile;
+	FileHandle truefile;
 	
 };
 
-class PakReader
-{
+class PakReader {
+	
 private:
 	
 	const char * fat;
@@ -56,12 +58,17 @@ private:
 	PakFileHandle tPackFile[PACK_MAX_FREAD];
 	
 public:
+	
 	const char * pakname;
 	PakDirectory * root;
+	
 private:
+	
 	int ReadFAT_int();
 	char* ReadFAT_string();
+	
 public:
+	
 	PakReader();
 	~PakReader();
 	

@@ -27,19 +27,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <hermes/PakManager.h>
 
-namespace ATHENA
-{
-
+namespace ATHENA {
+	
 	FILE *(* FileOpen)(const char * name, const char * mode) = fopen;
 	int (* FileClose)(FILE * file) = fclose;
 	size_t (* FileRead)(void * buffer, size_t size, size_t count, FILE * file) = fread;
 	int (* FileSeek)(FILE * file, long offset, int origin) = fseek;
 	long(* FileTell)(FILE * file) = ftell;
-
-	aalVoid FileIOInit()
-	{
+	
+	aalVoid FileIOInit() {
+		
 		printf("FileIOInit\n");
-
+		
 		// TODO replace actual uses
 		FileOpen = PAK_fopen;
 		FileClose = PAK_fclose;
@@ -48,10 +47,5 @@ namespace ATHENA
 		FileTell = PAK_ftell;
 		
 	}
-
-	aalVoid AddPack(const char * name)
-	{
-		PAK_AddPak(name);
-	}
-
+	
 }//ATHENA::

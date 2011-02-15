@@ -1425,72 +1425,46 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 
 	NOCHECKSUM=0;
 
-	if ((!MOULINEX) && FINAL_RELEASE)
-	{
+	if((!MOULINEX) && FINAL_RELEASE) {
+		
 		Dbg_str("FINAL RELEASE");
-
-		if(pStringMod[0])
-		{
+		
+		if(pStringMod[0]) {
 			Dbg_str(pStringMod);
-
-			if (FileExist(pStringMod))
-			{
-				Dbg_str("FileExist");
-				PAK_AddPak(pStringMod);
+			if(PAK_AddPak(pStringMod)) {
 				Dbg_str("LoadMode OK");
-
 			}
 		}
 		
 		const char PAK_DATA[] = "data.pak";
 		Dbg_str(PAK_DATA);
-		if(FileExist(PAK_DATA)) {
-			NOBUILDMAP=1;
-			NOCHECKSUM=1;
-			Dbg_str("FileExist");
-			PAK_AddPak(PAK_DATA);
+		NOBUILDMAP=1;
+		NOCHECKSUM=1;
+		if(PAK_AddPak(PAK_DATA)) {
 			Dbg_str("LoadMode OK");
-
-		}
-		else
-		{
-			Dbg_str("Exit");
+		} else {
 			printf("Unable to Find Data File\n");
 			exit(0);
 		}
 		
 		const char PAK_LOC[] = "loc.pak";
 		Dbg_str("LocPAK");
-		if(FileExist(PAK_LOC))
-		{
-			PAK_AddPak(PAK_LOC);
-		}
-		else
-		{
+		if(!PAK_AddPak(PAK_LOC)) {
 			const char PAK_LOC_DEFAULT[] = "loc_default.pak";
-			if(FileExist(PAK_LOC_DEFAULT))
-			{
-				PAK_AddPak(PAK_LOC_DEFAULT);
-			}
-			else
-			{
+			if(!PAK_AddPak(PAK_LOC_DEFAULT)) {
 				printf("Unable to Find Localization File\n");
 				exit(0);
 			}
 		}
-
+		
 		Dbg_str("data2PAK");
 		const char PAK_DATA2[] = "data2.pak";
-		if(FileExist(PAK_DATA2))
-			PAK_AddPak(PAK_DATA2);
-		else
-		{
+		if(!PAK_AddPak(PAK_DATA2)) {
 			printf("Unable to Find Aux Data File\n");
 			exit(0);
 		}
-	}
-	else
-	{
+		
+	} else {
 		Dbg_str("TRUEFILE LM");
 	}
 

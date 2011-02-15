@@ -39,7 +39,6 @@ namespace ATHENA
 	extern long(* FileTell)(FILE * file);
 
 	aalVoid FileIOInit();
-	aalVoid AddPack(const char * name);
 
 }//ATHENA::
 

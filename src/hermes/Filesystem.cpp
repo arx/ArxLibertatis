@@ -67,6 +67,7 @@ long KillAllDirectory(const char * path) {
 	return 1;
 }
 
+// TODO return should be bool
 long DirectoryExist(const char * name)
 {
 	HANDLE idx;
@@ -92,6 +93,7 @@ long DirectoryExist(const char * name)
 	return 1;
 }
 
+// TODO return should be bool
 long FileExist(const char * name)
 {
 	FileHandle i;
@@ -119,7 +121,7 @@ FileHandle	FileOpenRead(const char * name)
 	return(handle + 1);
 }
 
-long	FileSizeHandle(FileHandle handle)
+long	FileTell(FileHandle handle)
 {
 	
 	return (SetFilePointer((int)handle - 1, 0, NULL, FILE_CURRENT));
@@ -193,7 +195,7 @@ void	* FileLoadMallocZero(const char * name, long * SizeLoadMalloc)
 	}
 
 	FileSeek(handle, 0, FILE_SEEK_END);
-	size1 = FileSizeHandle(handle) + 2;
+	size1 = FileTell(handle) + 2;
 	adr = (unsigned char *)malloc(size1);
 
 	if (!adr)
@@ -242,7 +244,7 @@ retry:
 	}
 
 	FileSeek(handle, 0, FILE_SEEK_END);
-	size1 = FileSizeHandle(handle);
+	size1 = FileTell(handle);
 	adr = (unsigned char *)malloc(size1);
 
 	if (!adr)

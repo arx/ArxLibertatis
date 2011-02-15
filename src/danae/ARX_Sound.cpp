@@ -419,47 +419,37 @@ long ARX_SOUND_Init(HWND hwnd)
 	aalSetListenerUnitFactor(ARX_SOUND_UNIT_FACTOR);
 	aalSetListenerRolloffFactor(ARX_SOUND_ROLLOFF_FACTOR);
 
-	if (FINAL_RELEASE)
-	{
-
+	if(FINAL_RELEASE) {
+		
 		aalEnable(AAL_FLAG_PACKEDRESOURCES);
-
-		if (pStringModSfx[0])
-		{
-			if (FileExist(pStringModSfx)) aalAddResourcePack(pStringModSfx);
+		
+		if(pStringModSfx[0]) {
+			if(!PAK_AddPak(pStringModSfx)) {
+				printf("Unable to Find Mod SFX Data File\n");
+			}
 		}
-
-		if (pStringModSpeech[0])
-		{
-			if (FileExist(pStringModSpeech)) aalAddResourcePack(pStringModSpeech);
+		
+		if (pStringModSpeech[0]) {
+			if(!PAK_AddPak(pStringModSpeech)) {
+				printf("Unable to Find Mod Speech Data File\n");
+			}
 		}
-
+		
 		const char PAK_SFX[] = "sfx.pak";
-		if (FileExist(PAK_SFX)) aalAddResourcePack(PAK_SFX);
-		else
-		{
+		if(!PAK_AddPak(PAK_SFX)) {
 			printf("Unable to Find SFX Data File\n");
 			exit(0);
 		}
-
+		
 		const char PAK_SPEECH[] = "speech.pak";
-		if (FileExist(PAK_SPEECH))
-		{
-			aalAddResourcePack(PAK_SPEECH);
-		}
-		else
-		{
+		if(!PAK_AddPak(PAK_SPEECH)) {
 			const char PAK_SPEECH_DEFAULT[] = "speech_default.pak";
-			if (FileExist(PAK_SPEECH_DEFAULT))
-			{
-				aalAddResourcePack(PAK_SPEECH_DEFAULT);
-			}
-			else
-			{
+			if(!PAK_AddPak(PAK_SPEECH_DEFAULT)) {
 				printf("Unable to Find Speech Data File\n");
 				exit(0);
 			}
 		}
+		
 	}
 
 	// Load samples
@@ -1397,7 +1387,7 @@ void ARX_SOUND_AmbianceRestorePlayList(void * _play_list, unsigned long size)
 	}
 }
 
-// P�B�M�J�M�A
+// PâBôMéJèMçA
 extern PakManager * pPakManager;
 static void ARX_SOUND_CreateEnvironments()
 {
