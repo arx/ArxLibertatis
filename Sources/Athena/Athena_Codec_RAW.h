@@ -62,5 +62,4 @@ namespace ATHENA
 	};
 
 }//ATHENA::
-
 #endif//__ATHENA_CODEC_RAW_H__

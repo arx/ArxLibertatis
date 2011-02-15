@@ -71,5 +71,4 @@ void ARX_SPECIAL_ATTRACTORS_ComputeForIO(INTERACTIVE_OBJ * io, EERIE_3D * force)
 
 ////////////////////////////////
 
-
 #endif

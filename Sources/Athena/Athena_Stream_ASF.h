@@ -83,13 +83,13 @@ namespace ATHENA
 			aalError SetLength(const aalULong & length);
 			aalError SetPosition(const aalULong & position);
 			// Status                                                                    //
-			aalVoid GetStream(FILE *&stream);
-			aalVoid GetFormat(aalFormat & format);
-			aalVoid GetLength(aalULong & length);
-			aalVoid GetPosition(aalULong & position);
+			aalError GetStream(FILE *&stream);
+			aalError GetFormat(aalFormat & format);
+			aalError GetLength(aalULong & length);
+			aalError GetPosition(aalULong & position);
 			// File I/O                                                                  //
-			aalVoid Read(aalVoid * buffer, const aalULong & to_read, aalULong & read);
-			aalVoid Write(aalVoid * buffer, const aalULong & to_write, aalULong & write);
+			aalError Read(aalVoid * buffer, const aalULong & to_read, aalULong & read);
+			aalError Write(aalVoid * buffer, const aalULong & to_write, aalULong & write);
 		private:
 			aalVoid NextFrame();
 			aalVoid NextVector();
@@ -107,5 +107,4 @@ namespace ATHENA
 	};
 
 }//ATHENA::
-
 #endif//__ATHENA_STREAM_ASF_H__

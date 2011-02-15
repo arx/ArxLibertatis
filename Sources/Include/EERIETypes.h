@@ -570,6 +570,7 @@ struct EERIE_3DPAD
 	float z;
 	float w;
 };
+
 struct EERIE_3DOBJ
 {
 	char				name[256];
@@ -617,7 +618,6 @@ struct EERIE_3DOBJ
 
 }; // Aligned 1 2 4
 
-
 struct EERIE_3DSCENE
 {
 	long			nbobj;
@@ -634,7 +634,6 @@ struct EERIE_3DSCENE
 	CUB3D			cub;
 }; // Aligned 1 2 4
 
-
 #define MAX_SCENES 64
 struct EERIE_MULTI3DSCENE
 {
@@ -644,7 +643,6 @@ struct EERIE_MULTI3DSCENE
 	EERIE_3D		pos;
 	EERIE_3D		point0;
 }; // Aligned 1 2 4
-
 
 struct EERIE_FRAME
 {

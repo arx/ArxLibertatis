@@ -31,8 +31,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 ///////////////////////////////////////////////////////////////////////////////
 #include <stdio.h>
-
-#include <fstream>
 #include <list>
 #include <algorithm>
 #include <vector>
@@ -837,7 +835,6 @@ long ARX_SOUND_PlayCollision(const char * name1, const char * name2, const float
 				if (!strcasecmp(name2, c_material->name))
 				{
 					int sample_id;
-
 					sample_id = c_material->variant_l[c_material->variant_i];
 
 					if (++c_material->variant_i >= c_material->variant_c) c_material->variant_i = 0;

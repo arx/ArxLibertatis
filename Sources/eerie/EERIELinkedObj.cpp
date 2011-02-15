@@ -187,4 +187,5 @@ BOOL EERIE_LINKEDOBJ_LinkObjectToObject(EERIE_3DOBJ * obj, EERIE_3DOBJ * tolink,
 	obj->linked[n].obj = tolink;
 	obj->linked[n].io = io;
 	return TRUE;
+
 }

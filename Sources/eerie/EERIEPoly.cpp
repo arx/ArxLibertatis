@@ -72,7 +72,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Time.h"
 #include "ARX_Scene.h"
 #include "../danae/ARX_Menu2.h"
-
 #include "HERMESMain.h"
 #include "Minos_PathFinder.h"
 
@@ -5349,7 +5348,6 @@ void ComputePortalVertexBuffer()
 	}
 }
 
-
 long EERIERTPPoly(EERIEPOLY *ep)
 {
 	specialEE_RTP(&ep->v[0],&ep->tv[0]);
@@ -5380,4 +5378,3 @@ long EERIERTPPoly(EERIEPOLY *ep)
 
 	return 1;
 }
- 

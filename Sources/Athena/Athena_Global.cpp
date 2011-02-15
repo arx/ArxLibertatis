@@ -23,7 +23,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 #include "Athena_Global.h"
-
 #include <ctime>
 
 

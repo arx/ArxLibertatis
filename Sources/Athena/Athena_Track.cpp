@@ -25,6 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "Athena_Track.h"
 
 
+
 namespace ATHENA
 {
 	
@@ -577,8 +578,7 @@ namespace ATHENA
 		count = key_c;
 
 		return ATHENA_OK;
-	}
-	
+	}	
 #endif // 0
 
 }//ATHENA::

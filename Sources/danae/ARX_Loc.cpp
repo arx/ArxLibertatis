@@ -36,119 +36,179 @@ extern long GERMAN_VERSION;
 extern long FRENCH_VERSION;
 extern long CHINESE_VERSION;
 extern long FINAL_COMMERCIAL_GAME;
+
+extern PROJECT			Project;
+extern bool bForceInPack;
 extern long FINAL_COMMERCIAL_DEMO;
 using namespace std;
 extern CMenuConfig * pMenuConfig;
+#define MAX_LINE_SIZE 8096
 
 CLocalisationHash * pHashLocalisation = NULL;
 
-namespace
+//-----------------------------------------------------------------------------
+bool isSection(_TCHAR * _lpszUText)
 {
+	ULONG i			 = 0;
+	unsigned long ulTextSize = _tcslen(_lpszUText);
+	bool bFirst = false;
+	bool bLast  = false;
 
-/// Currently loaded localisation language name
-std::string loadedLocalisationLanguage;
+	while (i < ulTextSize)
+	{
+		if (_lpszUText[i] == _T('['))
+		{
+			if (bFirst)
+				return false;
+			else
+				bFirst = true;
+		}
+		else if (_lpszUText[i] == _T(']'))
+		{
+			if (bFirst)
+				if (bLast)
+					return false;
+				else
+					bLast = true;
+			else
+				return false;
+		}
+		else if (isalnum(_lpszUText[i]))
+		{
+			if (!bFirst)
+				return false;
+			else if (bFirst && bLast)
+				return false;
+		}
 
-// Nuky - recoded, can't be too strict because it seems there are many mistakes
-//        in the data files
-/// @return whether str fully matches: "\[.*\][^\0\]:alnum:]*"
-bool isSection(const _TCHAR* str)
-{
-	if (!str)
-		return false;
+		i++;
+	}
 
-	if (*str != _T('['))
-		return false;
-	++str;
-
-	str = _tcschr(str, _T(']'));
-	if (str == NULL)
-		return false;
-	++str;
-
-	while (*str != _T('\0') && *str != _T(']') && !_istalnum(*str))
-		++str;
-
-	return *str == _T('\0');
-}
-
-// Nuky - recoded, can't be too strict because it seems there are many mistakes
-//        in the data files
-/// @return whether str begins by: "[:alnum: ]*="
-bool isKey(const _TCHAR* str)
-{
-	if (!str)
-		return false;
-
-	while (_istalnum(*str) || *str == _T(' '))
-		++str;
-
-	if (*str != _T('='))
-		return false;
-
-	return true;
-}
-
-// Nuky - recoded
-/// @return whether str contains at least one alphanum char
-bool isNotEmpty(const _TCHAR* str)
-{
-	if (!str)
-		return false;
-
-	for (; *str != _T('\0'); ++str)
-		if (_istalnum(*str))
-			return true;
+	if (bFirst && bLast) return true;
 
 	return false;
 }
 
-// Nuky - recoded
-/// @return malloc'ed string containing the content between the first [ and
-/// the first following ] from str (including the [] themselves)
-_TCHAR* CleanSection(const _TCHAR* str)
+//-----------------------------------------------------------------------------
+bool isKey(const _TCHAR * _lpszUText)
 {
-	_TCHAR* result = (_TCHAR *) malloc((_tcslen(str) + 2) * sizeof(_TCHAR));
-	*result = _T('\0');
+	unsigned long i = 0;
+	unsigned long ulTextSize = _tcslen(_lpszUText);
+ 
+ 
+	bool bSpace = false;
+	bool bAlpha = false;
 
-	const _TCHAR* start = _tcschr(str, _T('['));
-	if (!start)
-		return result;
+	while (i < ulTextSize)
+	{
+		if (_lpszUText[i] == _T('='))
+		{
+			if (bSpace)
+				return false;
+			else
+				bSpace = true;
+		}
+		else if (isalnum(_lpszUText[i]))
+		{
+			if (!bAlpha)
+				bAlpha = true;
+		}
 
-	const _TCHAR* end = _tcschr(start, _T(']'));
-	if (!end)
-		return result;
-	++end;
+		i++;
+	}
 
-	_tcsncpy(result, start, end - start);
+	if (bSpace && bAlpha) return true;
 
-	result[end - start] = _T('\0');
-
-	return result;
+	return false;
 }
 
 //-----------------------------------------------------------------------------
-_TCHAR* CleanKey(const _TCHAR* str)
+bool isNotEmpty(_TCHAR * _lpszUText)
 {
-	_TCHAR * lpszUText = (_TCHAR *) malloc((_tcslen(str) + 2) * sizeof(_TCHAR));
-	ZeroMemory(lpszUText, (_tcslen(str) + 2)*sizeof(_TCHAR));
+	ULONG i			 = 0;
+	unsigned long ulTextSize = _tcslen(_lpszUText);
+
+	while (i < ulTextSize)
+	{
+		if (isalnum(_lpszUText[i]))
+		{
+			return true;
+		}
+
+		i++;
+	}
+
+	return false;
+}
+
+//-----------------------------------------------------------------------------
+_TCHAR * CleanSection(const _TCHAR * _lpszUText)
+{
+	_TCHAR * lpszUText = (_TCHAR *) malloc((_tcslen(_lpszUText) + 2) * sizeof(_TCHAR));
+	ZeroMemory(lpszUText, (_tcslen(_lpszUText) + 2)*sizeof(_TCHAR));
 
 	unsigned long ulPos = 0;
-	unsigned long ulTextSize = _tcslen(str);
+	bool bFirst = false;
+	bool bLast = false;
+
+	for (unsigned long ul = 0; ul < _tcslen(_lpszUText); ul++)
+	{
+		if (_lpszUText[ul] == _T('['))
+		{
+			bFirst = true;
+		}
+		else if (_lpszUText[ul] == _T(']'))
+		{
+			bLast = true;
+		}
+
+		if (bFirst)
+		{
+			lpszUText[ulPos] = _lpszUText[ul];
+			ulPos ++;
+
+			if (bLast)
+			{
+				break;
+			}
+		}
+	}
+
+	return lpszUText;
+}
+
+//-----------------------------------------------------------------------------
+_TCHAR * CleanKey(const _TCHAR * _lpszUText)
+{
+	_TCHAR * lpszUText = (_TCHAR *) malloc((_tcslen(_lpszUText) + 2) * sizeof(_TCHAR));
+	ZeroMemory(lpszUText, (_tcslen(_lpszUText) + 2)*sizeof(_TCHAR));
+
+	unsigned long ulPos = 0;
+	unsigned long ulTextSize = _tcslen(_lpszUText);
 	bool bAlpha = false;
 	bool bEqual = false;
 
 	for (unsigned long ul = 0; ul < ulTextSize; ul++)
 	{
-		if (str[ul] == _T('='))
+		if (_lpszUText[ul] == _T('='))
+		{
 			bEqual = true;
-		else if (bEqual && (_istalnum(str[ul]) || (str[ul] != _T(' ') && str[ul] != _T('"'))))
+		}
+		else if (bEqual && (isalnum(_lpszUText[ul]) ||
+		                    ((_lpszUText[ul] != _T(' ')) &&
+		                     (_lpszUText[ul] != _T('"')))
+		                   ))
+		{
 			bAlpha = true;
-		else if (str[ul] == _T('\"') && !bAlpha)
+		}
+		else if ((_lpszUText[ul] == _T('\"')) && (!bAlpha))
+		{
 			continue;
+		}
 
 		if (bEqual && bAlpha)
 		{
-			lpszUText[ulPos] = str[ul];
+			lpszUText[ulPos] = _lpszUText[ul];
 			ulPos ++;
 		}
 	}
@@ -156,8 +216,11 @@ _TCHAR* CleanKey(const _TCHAR* str)
 	while (ulPos--)
 	{
 		if (isalnum(lpszUText[ulPos]))
+		{
 			break;
+		}
 		else if (lpszUText[ulPos] == _T('"'))
+		{
 			lpszUText[ulPos] = 0;
 		}
 	}
@@ -166,67 +229,113 @@ _TCHAR* CleanKey(const _TCHAR* str)
 }
 
 //-----------------------------------------------------------------------------
-// Nuky - Recoded - use reserved vector instead of list for performance
-/// Loads sections and corresponding keys into the global variable pHashLocalisation
-/// @note textFile gets modified ! (comments are replaced by spaces)
-void ParseIniFile(_TCHAR* textFile, unsigned long textFileSize)
+void ParseFile(_TCHAR * _lpszUTextFile, const unsigned long _ulFileSize)
 {
-	// skip unicode header
-	++textFile;
-	--textFileSize;
+	_TCHAR * pULine;
+ 
 
-	// clean up comments from textFile
-	for (unsigned long i = 0; i < textFileSize - 1; ++i)
-		if ((textFile[i] == _T('/')) && (textFile[i+1] == _T('/')))
-			for (; i < textFileSize - 1 && textFile[i] != _T('\r') && textFile[i+1] != _T('\n'); ++i)
-				textFile[i] = _T(' ');
+	//-------------------------------------------------------------------------
+	// on skip l'entete unicode
+	_TCHAR * pFile = _lpszUTextFile;
+	pFile ++;
+	unsigned long ulFileSize = _ulFileSize - 1;
 
-	// get all lines
-	std::vector<_TCHAR*> lines;
-	lines.reserve(textFileSize / 16); // 16 chars long lines average, guesstimate
-	for (_TCHAR* line = _tcstok(textFile, _T("\r\n")); line; line = _tcstok(NULL, _T("\r\n")))
-		if (isNotEmpty(line))
-			lines.push_back(line);
+	//-------------------------------------------------------------------------
+	//clean up comments
+	for (unsigned long i = 0; i < (ulFileSize - 1); i++)
+	{
+		if ((pFile[i] == _T('/')) && (pFile[i+1] == _T('/')))
+		{
+			unsigned long j = i;
 
+			while ((j < (ulFileSize - 1)) && (pFile[j] != _T('\r')) && (pFile[j+1] != _T('\n')))
+			{
+				pFile[j] = _T(' ');
+				j++;
+			}
+
+			i = j;
+		}
+	}
+
+	//-------------------------------------------------------------------------
+	// get all lines into list
+
+	list<_TCHAR *> lUText;
+	pULine = _tcstok(pFile, _T("\r\n"));
+
+	long t = 0;
+
+	while (pULine != NULL)
+	{
+		if (isNotEmpty(pULine))
+		{
+			t++;
+			lUText.insert(lUText.end(), (pULine)); //_tcsdup
+		}
+
+		pULine = _tcstok(NULL, _T("\r\n"));
+	}
+
+	list<_TCHAR *>::iterator it;
+
+	//-------------------------------------------------------------------------
 	// look up for sections and associated keys
-	for (std::vector<_TCHAR*>::const_iterator it = lines.begin(), it_end = lines.end(); it != it_end; )
+	it = lUText.begin();
+	t = 0;
+
+	while (it != lUText.end())
 	{
 		if (isSection(*it))
 		{
-			CLocalisation* loc = new CLocalisation();
-			_TCHAR* section = CleanSection(*it);
-			loc->SetSection(section);
-			free(section);
-			++it;
+			CLocalisation * pLoc = new CLocalisation();
+			_TCHAR * lpszUT = CleanSection(*it);
+			pLoc->SetSection(lpszUT);
 
-			while (it != it_end && !isSection(*it) && isKey(*it))
+			free(lpszUT);
+
+			it++;
+			t++;
+
+			while ((it != lUText.end()) && (!isSection(*it)))
 			{
-				_TCHAR* key = CleanKey(*it);
-				loc->AddKey(key);
-				free(key);
-				++it;
+				if (isKey(*it))
+				{
+					_TCHAR * lpszUTk = CleanKey(*it);
+					pLoc->AddKey(lpszUTk);
+					free(lpszUTk);
+					it++;
+					t++;
+				}
+				else
+				{
+					break;
+				}
 			}
 
-			pHashLocalisation->AddElement(loc);
+			pHashLocalisation->AddElement(pLoc);
 			continue;
 		}
 
-		++it;
+		it++;
+		t++;
 	}
 }
 
-} // \namespace
+//-----------------------------------------------------------------------------
+char LocalisationLanguage = -1;
 
 //-----------------------------------------------------------------------------
-void ARX_Localisation_Init(const char * _lpszExtension) 
+void ARX_Localisation_Init(char * _lpszExtension) 
 {
-	// Nuky - no need to reload the already loaded language
-	if (loadedLocalisationLanguage == _lpszExtension)
+	if (_lpszExtension == NULL)
 		return;
 
-	// cleanup before loading new one
+	// nettoyage
 	if (pHashLocalisation)
+	{
 		ARX_Localisation_Close();
+	}
 
 	char tx[256];
 	ZeroMemory(tx, 256);
@@ -266,7 +375,7 @@ void ARX_Localisation_Init(const char * _lpszExtension)
 	{
 		pHashLocalisation = new CLocalisationHash(1 << 13);
 		LocalisationSize = _tcslen(Localisation);
-		ParseIniFile(Localisation, LocalisationSize);
+		ParseFile(Localisation, LocalisationSize);
 		free((void *)Localisation);
 		Localisation = NULL;
 		LocalisationSize = 0;
@@ -299,35 +408,45 @@ void ARX_Localisation_Init(const char * _lpszExtension)
 			}
 		}
 	}
-
-	loadedLocalisationLanguage = _lpszExtension;
 }
 
 //-----------------------------------------------------------------------------
 void ARX_Localisation_Close()
 {
-	loadedLocalisationLanguage.clear();
+	LocalisationLanguage = -1;
 
 	delete pHashLocalisation;
 	pHashLocalisation = NULL;
 }
 
 //-----------------------------------------------------------------------------
-long HERMES_UNICODE_GetProfileString(const _TCHAR * sectionname,
-									 const _TCHAR * t_keyname,
-									 const _TCHAR * defaultstring,
-									 _TCHAR * destination,
-									 unsigned long maxsize,
-									 const _TCHAR * datastream,
-									 long lastspeech)
+long HERMES_UNICODE_GetProfileString(_TCHAR * sectionname,
+                                     _TCHAR * t_keyname,
+                                     _TCHAR * defaultstring,
+                                     _TCHAR * destination,
+                                     unsigned long    maxsize,
+                                     _TCHAR * datastream,
+                                     long    lastspeech)
 {
 	ZeroMemory(destination, maxsize * sizeof(_TCHAR));
 
-	if (const CLocalisation* loc = pHashLocalisation ? pHashLocalisation->GetElement(sectionname) : NULL)
-		if (!loc->keys.empty())
-			defaultstring = loc->keys[0];
+	if (pHashLocalisation)
+	{
+		_TCHAR * t = pHashLocalisation->GetPtrWithString(sectionname);
 
-	_tcsncpy(destination, defaultstring, std::min(static_cast<size_t>(maxsize), _tcslen(defaultstring)));
+		if (t)
+		{
+			_tcsncpy(destination, t, min((size_t)maxsize, strlen(t)));
+		}
+		else
+		{
+			_tcsncpy(destination, defaultstring, min((size_t)maxsize, strlen(defaultstring)));
+		}
+	}
+	else
+	{
+		_tcsncpy(destination, defaultstring, min((size_t)maxsize, strlen(defaultstring)));
+	}
 
 	return 0;
 }
@@ -335,26 +454,30 @@ long HERMES_UNICODE_GetProfileString(const _TCHAR * sectionname,
 //-----------------------------------------------------------------------------
 long HERMES_UNICODE_GetProfileSectionKeyCount(const _TCHAR * sectionname)
 {
-	if (const CLocalisation* loc = pHashLocalisation ? pHashLocalisation->GetElement(sectionname) : NULL)
-		return loc->keys.size();
+	if (pHashLocalisation)
+		return pHashLocalisation->GetKeyCount(sectionname);
+
 	return 0;
 }
 
+static long ltNum = 0;
+
 //-----------------------------------------------------------------------------
-void PAK_UNICODE_GetPrivateProfileString(const _TCHAR * _lpszSection,
-										 const _TCHAR * _lpszKey,
-										 const _TCHAR * _lpszDefault,
-										 _TCHAR * _lpszBuffer,
-										 unsigned long _lBufferSize,
-										 const char * _lpszFileName)
+DWORD PAK_UNICODE_GetPrivateProfileString(_TCHAR * _lpszSection,
+        _TCHAR * _lpszKey,
+        _TCHAR * _lpszDefault,
+        _TCHAR * _lpszBuffer,
+        unsigned long	_lBufferSize,
+        char	* _lpszFileName)
 {
+	ltNum ++;
 	ZeroMemory(_lpszBuffer, _lBufferSize * sizeof(_TCHAR));
 
 	if (_lpszSection[0] == _T('\0'))
 	{
-		_tcsncpy(_lpszBuffer, _lpszDefault, std::min(static_cast<size_t>(_lBufferSize), _tcslen(_lpszDefault)));
+		_tcsncpy(_lpszBuffer, _lpszDefault, min((size_t)_lBufferSize, strlen(_lpszDefault)));
 		_stprintf(_lpszBuffer, _T("%s: NOT FOUND"), _lpszSection);
-		return;
+		return 0;
 	}
 
 	_TCHAR szSection[256] = _T("");
@@ -369,6 +492,7 @@ void PAK_UNICODE_GetPrivateProfileString(const _TCHAR * _lpszSection,
 	    NULL,
 	    -1); //lastspeechflag
 
+	return 1;
 }
 
 #include <vector>

@@ -131,7 +131,7 @@ typedef union
 #endif /* USE_MSDOS_MEMMGR */
 
 #ifdef USE_MAC_MEMMGR		/* Mac-specific junk */
-#include <files.h>
+#include <Files.h>
 #endif /* USE_MAC_MEMMGR */
 
 

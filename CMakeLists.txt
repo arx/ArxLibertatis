@@ -15,13 +15,14 @@ include_directories(
 set(CMAKE_CXX_COMPILER /usr/bin/wineg++)
 set(CMAKE_C_COMPILER /usr/bin/winegcc)
 
+
 #set temporally less gcc problems
-set(CMAKE_CXX_FLAGS "-fpermissive -w")
+set(CMAKE_CXX_FLAGS "-fpermissive -w -m32")
 
 #Add sources
 set(SOURCE_DIRS
-    ArxCommon
-    Athena
+	ArxCommon
+	Athena
     danae
     DANAE_Debugger
     eerie
@@ -41,4 +42,8 @@ endforeach(SOURCE_DIR)
 add_executable(arx ${SOURCES})
 
 #link
-target_link_libraries(arx wine jpeg)
+target_link_libraries(arx dsound dxguid gdi32 shell32 dinput comdlg32 ole32 comctl32 ddraw jpeg z)
+
+add_custom_target(remake
+        COMMAND make clean && rm CMakeCache.txt && cmake . -G\"Unix Makefiles\" && make -j`getconf _NPROCESSORS_ONLN`
+)
