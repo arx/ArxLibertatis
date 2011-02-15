@@ -88,6 +88,7 @@ PakReader::PakReader() {
 	
 	int iI = PACK_MAX_FREAD;
 	while(--iI) {
+		tPackFile[iI].reader = this;
 		tPackFile[iI].active = false;
 		tPackFile[iI].iID = 0;
 		tPackFile[iI].offset = 0;

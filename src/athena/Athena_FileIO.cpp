@@ -27,8 +27,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <hermes/PakManager.h>
 
-extern long CURRENT_LOADMODE;
-
 namespace ATHENA
 {
 
@@ -41,32 +39,19 @@ namespace ATHENA
 	aalVoid FileIOInit()
 	{
 		printf("FileIOInit\n");
-		//if (global_status & AAL_FLAG_PACKEDRESOURCES)
-		//{
-			CURRENT_LOADMODE = LOAD_PACK;
 
-			FileOpen = PAK_fopen;
-			FileClose = PAK_fclose;
-			FileRead = PAK_fread;
-			FileSeek = PAK_fseek;
-			FileTell = PAK_ftell;
-		//}
-		//else
-		//{
-		//	CURRENT_LOADMODE = LOAD_TRUEFILE;
-
-		//	FileOpen =	::fopen;
-		//	FileClose = ::fclose;
-		//	FileRead =	::fread;
-		//	FileSeek =	::fseek;
-		//	FileTell =	::ftell;
-		//}
+		// TODO replace actual uses
+		FileOpen = PAK_fopen;
+		FileClose = PAK_fclose;
+		FileRead = PAK_fread;
+		FileSeek = PAK_fseek;
+		FileTell = PAK_ftell;
+		
 	}
 
 	aalVoid AddPack(const char * name)
 	{
-		PAK_SetLoadMode(global_status & AAL_FLAG_PACKEDRESOURCES ? LOAD_PACK : LOAD_TRUEFILE,
-		                (char *)name);
+		PAK_AddPak(name);
 	}
 
 }//ATHENA::

@@ -79,19 +79,6 @@ typedef struct {
 	long	years;
 }HERMES_DATE_TIME;
 
-typedef struct {
-	char text[260];
-	void * previous;
-	void * next;
-	void * child;
-	void * father;
-} DIR_NODE;
-
-typedef struct {
-	 long	start;
-	 long	current;
-} HERMESTIMER;
-
 ///////////////////// PACKING
 //Always on for now...
 typedef struct PassedParam
@@ -116,7 +103,6 @@ extern HWND		MAIN_PROGRAM_HANDLE;
 extern long DEBUGG;
 extern long DebugLvl[6];
 extern unsigned int			GaiaWM;
-extern DIR_NODE mainnode;
 
 void File_Standardize(const char * from,char * to);
 char * HERMES_GaiaCOM_Receive();
@@ -127,12 +113,9 @@ void HERMES_InitDebug();
 void SAFEstrcpy(char * dest, char * src, unsigned long max);
 
 
-void MakeUpcase_real(char * str);
 void MakeUpcase(char * str);
 unsigned char IsIn(char * strin, char * str);
 unsigned char NC_IsIn(char * strin, char * str);
-
-bool GetWorkingDirectory(char * dest);
 
 long FileExist(char *name);
 long DirectoryExist(char *name);
@@ -160,7 +143,6 @@ unsigned long MakeMemoryText(char * text);
 bool CreateFullPath(const char * path);
 
 // Strings Funcs
-char *StringCopy(char * destination,char * source,long maxsize);
 bool HERMESFolderSelector(char *file_name,char *title);
 void RemoveName(char *str);
 char * GetName(char *str);
@@ -177,7 +159,6 @@ bool ERROR_Log(char * fic);
 void HERMES_Memory_Security_On(long size);
 void HERMES_Memory_Security_Off();
 long HERMES_Memory_Emergency_Out(long size=0,char * info=NULL);
-extern LARGE_INTEGER	start_chrono;
 void StartBench();
 unsigned long EndBench();
 extern long NEED_BENCH;

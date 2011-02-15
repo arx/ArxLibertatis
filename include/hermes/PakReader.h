@@ -27,6 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class PakFile;
 class PakDirectory;
+class PakReader;
 
 #include <cstddef>
 #include <cstdio> // for FILE
@@ -34,10 +35,16 @@ class PakDirectory;
 #define PACK_MAX_FREAD	(256)
 
 struct PakFileHandle {
+	
+	PakReader * reader;
+	
 	bool active;
 	void * iID;
 	int offset;
 	PakFile * file;
+	
+	FILE * truefile;
+	
 };
 
 class PakReader

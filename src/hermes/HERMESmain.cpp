@@ -273,17 +273,6 @@ void MakeUpcase(char * str)
 	}*/
 }
 
-void MakeUpcase_real(char * str)
-{
-	while(*str != '\0') {
-		// islower is needed as the are read-only strings passed that are already in upper case?
-		if(islower(*str)) {
-			*str = toupper(*str);
-		}
-		str++;
-	}
-}
-
 HKEY    ConsoleKey = NULL;
 #define CONSOLEKEY_KEY     TEXT("Software\\Arkane_Studios\\ASMODEE")
 
@@ -928,24 +917,6 @@ bool CreateFullPath(const char * path) {
 	if (DirectoryExist(path)) return true;
 
 	return false;
-}
-
-
-bool GetWorkingDirectory(char * dest)
-{
-	char text[256];
-
-	if(!getcwd(text, sizeof(text) / sizeof(char))) {
-		return false;
-	}
-
-	long len=strlen(text);
-
-	if (text[len]!=PATH_SEPERATOR_CHR) strcat(text,PATH_SEPERATOR_STR);
-
-	strcpy(dest,text);
-	printf("GetWorkingDirectory() -> %s\n", dest);
-	return true;
 }
 
 long FileExist(char * name)

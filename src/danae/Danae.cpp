@@ -1435,7 +1435,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 			if (FileExist(pStringMod))
 			{
 				Dbg_str("FileExist");
-				PAK_SetLoadMode(LOAD_PACK, pStringMod);
+				PAK_AddPak(pStringMod);
 				Dbg_str("LoadMode OK");
 
 			}
@@ -1447,7 +1447,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 			NOBUILDMAP=1;
 			NOCHECKSUM=1;
 			Dbg_str("FileExist");
-			PAK_SetLoadMode(LOAD_PACK, PAK_DATA);
+			PAK_AddPak(PAK_DATA);
 			Dbg_str("LoadMode OK");
 
 		}
@@ -1462,14 +1462,14 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 		Dbg_str("LocPAK");
 		if(FileExist(PAK_LOC))
 		{
-			PAK_SetLoadMode(LOAD_PACK, PAK_LOC);
+			PAK_AddPak(PAK_LOC);
 		}
 		else
 		{
 			const char PAK_LOC_DEFAULT[] = "loc_default.pak";
 			if(FileExist(PAK_LOC_DEFAULT))
 			{
-				PAK_SetLoadMode(LOAD_PACK, PAK_LOC_DEFAULT);
+				PAK_AddPak(PAK_LOC_DEFAULT);
 			}
 			else
 			{
@@ -1481,7 +1481,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 		Dbg_str("data2PAK");
 		const char PAK_DATA2[] = "data2.pak";
 		if(FileExist(PAK_DATA2))
-			PAK_SetLoadMode(LOAD_PACK, PAK_DATA2);
+			PAK_AddPak(PAK_DATA2);
 		else
 		{
 			printf("Unable to Find Aux Data File\n");
@@ -1491,7 +1491,6 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	else
 	{
 		Dbg_str("TRUEFILE LM");
-		PAK_SetLoadMode(LOAD_TRUEFILE,"");
 	}
 
 	//delete current for clean save.........
@@ -3552,9 +3551,7 @@ long FirstFrameHandling(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	if ((CURRENTLEVEL>=0) && !(NOBUILDMAP) && GAME_EDITOR)
 	{
-		if (CURRENT_LOADMODE!=LOAD_TRUEFILE)
-			iCreateMap=0;
-		else if (NeedMapCreation())
+		if (NeedMapCreation())	
 			iCreateMap=1;
 		else
 			iCreateMap=0;

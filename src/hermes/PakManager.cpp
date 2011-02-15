@@ -63,23 +63,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <hermes/HashMap.h>
 #include <HERMESMain.h>
 #include "ARX_Common.h"
+#include <cassert>
 
 #include <stddef.h>
 
 using std::vector;
 
-bool bForceInPack = true;
-long CURRENT_LOADMODE = LOAD_PACK_THEN_TRUEFILE;
+
+// TODO prefer real files over those in PAK?
 
 PakManager * pPakManager = NULL;
 
-void PAK_SetLoadMode(long mode, const char * pakfile)
+// TODO remove param
+void PAK_AddPak(const char * pakfile)
 {
-
-	mode = LOAD_TRUEFILE_THEN_PACK;
-	// nust be remed for editor mode
-
-	CURRENT_LOADMODE = mode;
 
 	if (FileExist(pakfile))
 	{
@@ -110,7 +107,7 @@ void * _PAK_FileLoadMallocZero(const char * name, long * sizeRead)
 		char * mem = (char *)malloc(size + 2);
 
 		pPakManager->Read(name, mem);
-
+		
 		mem[size] = 0;
 		mem[size + 1] = 0;
 
@@ -158,386 +155,134 @@ long _PAK_DirectoryExist(const char * name) {
 }
 
 long PAK_DirectoryExist(const char * name) {
-
+	
 	long ret = 0;
-
-	switch (CURRENT_LOADMODE)
-	{
-		case LOAD_TRUEFILE:
-			ret = DirectoryExist(name);
-			break;
-		case LOAD_PACK:
-			ret = _PAK_DirectoryExist(name);
-			break;
-		case LOAD_PACK_THEN_TRUEFILE:
-			ret = _PAK_DirectoryExist(name);
-
-			if (!ret)
-				ret = DirectoryExist(name);
-
-			break;
-		case LOAD_TRUEFILE_THEN_PACK:
-
-			if (bForceInPack)
-			{
-				ret = _PAK_DirectoryExist(name);
-			}
-			else
-			{
-				ret = DirectoryExist(name);
-
-				if (!ret)
-					ret = _PAK_DirectoryExist(name);
-			}
-
-			break;
+	
+	ret = _PAK_DirectoryExist(name);
+	
+	if(!ret) {
+		ret = DirectoryExist(name);
 	}
-
+	
 	return ret;
 }
 
 // TODO return should be bool
-long _PAK_FileExist(const char * name) {
-	return pPakManager->ExistFile(name) ? 1 : 0;
-}
-
-
-long PAK_FileExist(const char * name)
-{
+long PAK_FileExist(const char * name) {
+	
 	long ret = 0;
 
-	switch (CURRENT_LOADMODE)
-	{
-		case LOAD_TRUEFILE:
-			ret	=	FileExist(name);
-			break;
-		case LOAD_PACK:
-			ret	=	_PAK_FileExist(name);
-			break;
-		case LOAD_PACK_THEN_TRUEFILE:
-			ret	=	_PAK_FileExist(name);
-
-			if (!ret)
-				ret	=	FileExist(name);
-
-			break;
-		case LOAD_TRUEFILE_THEN_PACK:
-
-			if (bForceInPack)
-			{
-				ret	=	_PAK_FileExist(name);
-			}
-			else
-			{
-				ret	=	FileExist(name);
-
-				if (!ret)
-					ret	= _PAK_FileExist(name);
-			}
-
-			break;
+	ret = pPakManager->ExistFile(name) ? 1 : 0;
+	
+	if(!ret) {
+		ret = FileExist(name);
 	}
-
+	
 	return ret;
 }
 
-void * PAK_FileLoadMalloc(const char * name, long * SizeLoadMalloc)
-{
-
+// TODO parameter should be size_t
+void * PAK_FileLoadMalloc(const char * name, long * sizeLoaded) {
+	
 	void * ret = NULL;
-
-	switch (CURRENT_LOADMODE)
-	{
-		case LOAD_TRUEFILE:
-			ret	=	FileLoadMalloc(name, SizeLoadMalloc);
-			break;
-		case LOAD_PACK:
-			ret	=	_PAK_FileLoadMalloc(name, SizeLoadMalloc);
-			break;
-		case LOAD_PACK_THEN_TRUEFILE:
-			ret	=	_PAK_FileLoadMalloc(name, SizeLoadMalloc);
-
-			if (ret == NULL)
-				if (PAK_FileExist(name))
-					ret = FileLoadMalloc(name, SizeLoadMalloc);
-
-			break;
-		case LOAD_TRUEFILE_THEN_PACK:
-
-			if (bForceInPack)
-			{
-				ret	=	_PAK_FileLoadMalloc(name, SizeLoadMalloc);
-			}
-			else
-			{
-				ret	=	FileLoadMalloc(name, SizeLoadMalloc);
-
-				if (ret == NULL)
-					ret	= _PAK_FileLoadMalloc(name, SizeLoadMalloc);
-			}
-
-			break;
+	
+	ret = _PAK_FileLoadMalloc(name, sizeLoaded);
+	
+	if(!ret) {
+		ret = FileLoadMalloc(name, sizeLoaded);
 	}
-
+	
 	return ret;
 }
 
-void * PAK_FileLoadMallocZero(const char * name, long * SizeLoadMalloc)
-{
-
+void * PAK_FileLoadMallocZero(const char * name, long * SizeLoadMalloc) {
+	
 	void * ret = NULL;
-
-	switch (CURRENT_LOADMODE)
-	{
-		case LOAD_TRUEFILE:
-			ret	=	FileLoadMallocZero(name, SizeLoadMalloc);
-			break;
-		case LOAD_PACK:
-			ret	=	_PAK_FileLoadMallocZero(name, SizeLoadMalloc);
-			break;
-		case LOAD_PACK_THEN_TRUEFILE:
-			ret	=	_PAK_FileLoadMallocZero(name, SizeLoadMalloc);
-
-			if (ret == NULL)
-				if (PAK_FileExist(name))
-					ret = FileLoadMallocZero(name, SizeLoadMalloc);
-
-			break;
-		case LOAD_TRUEFILE_THEN_PACK:
-
-			if (bForceInPack)
-			{
-				ret	=	_PAK_FileLoadMallocZero(name, SizeLoadMalloc);
-			}
-			else
-			{
-				ret	=	FileLoadMallocZero(name, SizeLoadMalloc);
-
-				if (ret == NULL)
-					ret	=	_PAK_FileLoadMallocZero(name, SizeLoadMalloc);
-			}
-
-			break;
+	
+	ret = _PAK_FileLoadMallocZero(name, SizeLoadMalloc);
+	
+	if(!ret) {
+		ret = FileLoadMallocZero(name, SizeLoadMalloc);
 	}
-
+	
 	return ret;
 }
 
-long _PAK_ftell(FILE * stream)
-{
-	return pPakManager->fTell((PakFileHandle *)stream);
-}
-long PAK_ftell(FILE * stream)
-{
-
-	long ret = 0;
-
-	switch (CURRENT_LOADMODE)
-	{
-		case LOAD_TRUEFILE:
-			ret = ftell(stream);
-			break;
-		case LOAD_PACK:
-			ret = _PAK_ftell(stream);
-			break;
-		case LOAD_PACK_THEN_TRUEFILE:
-			ret = _PAK_ftell(stream);
-
-			if (ret < 0)
-				ret = ftell(stream);
-
-			break;
-		case LOAD_TRUEFILE_THEN_PACK:
-
-			//if (ferror(stream) && (!bForceInPack)) // TODO hack
-			//{
-			//	ret = ftell(stream);
-			//}
-			//else
-			{
-				ret = _PAK_ftell(stream);
-			}
-
-			break;
+long PAK_ftell(FILE * stream) {
+	
+	PakFileHandle * pfh = (PakFileHandle *)stream;
+	assert(pfh->active);
+	
+	if(pfh->reader) {
+		return pfh->reader->fTell(pfh);
 	}
+	
+	return ftell(pfh->truefile);
+}
 
+FILE * PAK_fopen(const char * filename, const char * mode) {
+	
+	PakFileHandle * pfh = pPakManager->fOpen(filename);
+	if(pfh) {
+		return (FILE *)pfh;
+	}
+	
+	FILE * fh = fopen(filename, mode);
+	if(!fh) {
+		return NULL;
+	}
+	
+	pfh = new PakFileHandle;
+	if(!pfh) {
+		return NULL;
+	}
+	
+	pfh->active = true;
+	pfh->reader = NULL;
+	pfh->truefile = fh;
+	
+	return (FILE *)pfh;
+}
+
+int PAK_fclose(FILE * stream) {
+	
+	PakFileHandle * pfh = (PakFileHandle *)stream;
+	assert(pfh->active);
+	
+	if(pfh->reader) {
+		return pfh->reader->fClose(pfh);
+	}
+	
+	int ret = fclose(pfh->truefile);
+	
+	pfh->active = false;
+	delete pfh;
+	
 	return ret;
 }
 
-
-FILE * _PAK_fopen(const char * filename, const char * mode)
-{
-	return (FILE *)pPakManager->fOpen(filename);
-}
-
-FILE * PAK_fopen(const char * filename, const char * mode)
-{
-
-	FILE * ret = NULL;
-
-	switch (CURRENT_LOADMODE)
-	{
-		case LOAD_TRUEFILE:
-			ret = fopen(filename, mode);
-			break;
-		case LOAD_PACK:
-			ret = _PAK_fopen(filename, mode);
-			break;
-		case LOAD_PACK_THEN_TRUEFILE:
-			ret = _PAK_fopen(filename, mode);
-
-			if (ret == NULL)
-				ret = fopen(filename, mode);
-
-			break;
-		case LOAD_TRUEFILE_THEN_PACK:
-
-			if (bForceInPack)
-			{
-				ret = _PAK_fopen(filename, mode);
-			}
-			else
-			{
-				ret = fopen(filename, mode);
-
-				if (ret == NULL)
-					ret = _PAK_fopen(filename, mode);
-			}
-
-			break;
+size_t PAK_fread(void * buffer, size_t size, size_t count, FILE * stream) {
+	
+	PakFileHandle * pfh = (PakFileHandle *)stream;
+	assert(pfh->active);
+	
+	if(pfh->reader) {
+		return pfh->reader->fRead(buffer, size, count, pfh);
 	}
-
-	return ret;
+	
+	return fread(buffer, size, count, pfh->truefile);
 }
 
-int _PAK_fclose(FILE * stream)
-{
-	return pPakManager->fClose((PakFileHandle *)stream);
-}
-
-int PAK_fclose(FILE * stream)
-{
-
-	int ret = 0;
-
-	switch (CURRENT_LOADMODE)
-	{
-		case LOAD_TRUEFILE:
-			ret = fclose(stream);
-			break;
-		case LOAD_PACK:
-			ret = _PAK_fclose(stream);
-			break;
-		case LOAD_PACK_THEN_TRUEFILE:
-			ret = _PAK_fclose(stream);
-
-			if (ret == EOF)
-				ret = fclose(stream);
-
-			break;
-		case LOAD_TRUEFILE_THEN_PACK:
-
-			//if (ferror(stream) && (!bForceInPack)) TODO hack
-			//{
-			//	ret = fclose(stream);
-			//}
-			//else
-			{
-				ret = _PAK_fclose(stream);
-			}
-
-			break;
+int PAK_fseek(FILE * stream, long offset, int origin) {
+	
+	PakFileHandle * pfh = (PakFileHandle *)stream;
+	assert(pfh->active);
+	
+	if(pfh->reader) {
+		return pfh->reader->fSeek(pfh, offset, origin);
 	}
-
-	return ret;
-}
-
-size_t _PAK_fread(void * buffer, size_t size, size_t count, FILE * stream)
-{
-	return pPakManager->fRead(buffer, size, count, (PakFileHandle *)stream);
-}
-
-size_t PAK_fread(void * buffer, size_t size, size_t count, FILE * stream)
-{
-
-	size_t ret = 0;
-
-	switch (CURRENT_LOADMODE)
-	{
-		case LOAD_TRUEFILE:
-			ret = fread(buffer, size, count, stream);
-			break;
-		case LOAD_PACK:
-			ret = _PAK_fread(buffer, size, count, stream);
-			break;
-		case LOAD_PACK_THEN_TRUEFILE:
-			ret = _PAK_fread(buffer, size, count, stream);
-
-			if (ret == NULL)
-				ret = fread(buffer, size, count, stream);
-
-			break;
-		case LOAD_TRUEFILE_THEN_PACK:
-
-			//if (ferror(stream) && (!bForceInPack)) TODO hack
-			//{
-			//	ret = fread(buffer, size, count, stream);
-			//}
-			//else
-			{
-				ret = _PAK_fread(buffer, size, count, stream);
-			}
-
-			break;
-	}
-
-	return ret;
-}
-
-
-int _PAK_fseek(FILE * fic, long offset, int origin)
-{
-	return pPakManager->fSeek((PakFileHandle *)fic, offset, origin);
-}
-
-int PAK_fseek(FILE * fic, long offset, int origin)
-{
-
-	int ret = 1;
-
-	switch (CURRENT_LOADMODE)
-	{
-		case LOAD_TRUEFILE:
-			
-			ret = fseek(fic, offset, origin);
-			break;
-		case LOAD_PACK:
-			
-			ret = _PAK_fseek(fic, offset, origin);
-			break;
-		case LOAD_PACK_THEN_TRUEFILE:
-			
-			ret = _PAK_fseek(fic, offset, origin);
-
-			if (ret == 1)
-				ret = fseek(fic, offset, origin);
-
-			break;
-		case LOAD_TRUEFILE_THEN_PACK:
-
-			//if (ferror(fic) && (!bForceInPack)) TODO hack
-			//{
-			//	ret = fseek(fic, offset, origin);
-			//}
-			//else
-			{
-				ret = _PAK_fseek(fic, offset, origin);
-			}
-
-			break;
-	}
-
-	return ret;
+	
+	return fseek(pfh->truefile, offset, origin);
 }
 
 //-----------------------------------------------------------------------------
