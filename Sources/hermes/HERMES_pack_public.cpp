@@ -235,9 +235,9 @@ static unsigned int ReadData(char * Buff, unsigned int * Size, void * Param)
 static void WriteData(char * Buff, unsigned int * Size, void * Param)
 {
 	PAK_PARAM * pPP = (PAK_PARAM *) Param;
-	PAK_PARAM * pPP = (PAK_PARAM *) Param;
 
 	ARX_CHECK_NOT_NEG(pPP->lSize);
+	long lSize = min(ARX_CAST_ULONG(pPP->lSize), (unsigned long)*Size);
 
 	memcpy((void *) pPP->mem, (const void *) Buff, lSize);
 	pPP->mem   += lSize;

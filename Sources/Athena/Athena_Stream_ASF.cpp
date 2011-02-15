@@ -123,29 +123,25 @@ namespace ATHENA
 	// Status                                                                    //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError StreamASF::GetStream(FILE *&file)
+	aalVoid StreamASF::GetStream(FILE *&file)
 	{
 		file = stream;
-		return AAL_OK;
 	}
 
-	aalError StreamASF::GetFormat(aalFormat & _format)
+	aalVoid StreamASF::GetFormat(aalFormat & _format)
 	{
 		_format.frequency = header.o_freq;
 		_format.quality = header.o_qual;
 		_format.channels = header.o_chnl;
-		return AAL_OK;
 	}
 
-	aalError StreamASF::GetLength(aalULong & _length)
+	aalVoid StreamASF::GetLength(aalULong & _length)
 	{
 		_length = header.o_size;
-		return AAL_OK;
 	}
 
-	aalError StreamASF::GetPosition(aalULong &)
+	aalVoid StreamASF::GetPosition(aalULong &)
 	{
-		return AAL_ERROR;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -153,7 +149,7 @@ namespace ATHENA
 	// I/O                                                                       //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError StreamASF::Read(aalVoid * buffer, const aalULong & to_read, aalULong & read)
+	aalVoid StreamASF::Read(aalVoid * buffer, const aalULong & to_read, aalULong & read)
 	{
 		read = 0;
 
@@ -186,12 +182,10 @@ namespace ATHENA
 			cursor += count;
 			read += count;
 		}
-		return AAL_OK;
 	}
 
-	aalError StreamASF::Write(aalVoid *, const aalULong &, aalULong &)
+	aalVoid StreamASF::Write(aalVoid *, const aalULong &, aalULong &)
 	{
-		return AAL_ERROR;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////

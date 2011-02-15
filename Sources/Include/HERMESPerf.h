@@ -58,9 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef HERMESPERF_H
 #define HERMESPERF_H
 
-#include "ARX_Common.h"
 
-#include <cstdio>
+#include <stdio.h>
 #include <windows.h>
 #include <assert.h>
 //#include <ARX_Common.h>

@@ -66,7 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Paths.h"
 #include "ARX_Sound.h"
 #if _ARX_CEDITOR_
-#include "ceditor_ceditor.h"
+#include "Ceditor_Ceditor.h"
 #endif // _ARX_CEDITOR_
 #include "ARX_GlobalMods.h"
 #include "ARX_Particles.h"

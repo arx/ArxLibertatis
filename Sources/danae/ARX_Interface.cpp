@@ -787,7 +787,9 @@ void ARX_INTERFACE_NoteClear()
 {
 	Note.type = NOTE_TYPE_UNDEFINED;
 
-	free(Note.text);
+	if (Note.text)
+		free(Note.text);
+
 	Note.text=NULL;
 	Note.textsize=0;
 	player.Interface&=~INTER_NOTE;
@@ -1325,6 +1327,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 
 					while(pcToken)
 					{
+						pcToken=strtok(NULL,"\r\n");
 //						strupr(pcToken);
 	
 						bool bCanCombine=false;
@@ -1549,6 +1552,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 									{
 										memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 										tTxtCombineDest[pEndString-pStartString]=0;
+
 										ARX_CHECK_NOT_NEG( COMBINE->nb_iogroups );
 
 										for(	unsigned int uiNbGroups = 0 ;
@@ -4450,64 +4454,64 @@ void DANAE::ManagePlayerControls()
 				}
 			}
 			else
-			{
-				if (!PLAYER_INTERFACE_HIDE_COUNT)
-				{
-					if ((player.Interface & INTER_INVENTORY))
-					{
-						if (player.bag)
-						{
-							if (sActiveInventory > 0)
-							{
-								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-								sActiveInventory --;
-							}
-						}
-					}
-				}
-			}
+		  {
+			  if (!PLAYER_INTERFACE_HIDE_COUNT)
+			  {
+				  if ((player.Interface & INTER_INVENTORY))
+				  {
+					  if (player.bag)
+					  {
+						  if (sActiveInventory > 0)
+						  {
+							  ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+							  sActiveInventory --;
+						  }
+					  }
+				  }
+			  }
+		  }
 		}
 	}
 
 	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_NEXT))
 	{
 		if (eMouseState == MOUSE_IN_BOOK)
-		{
-			if (player.Interface & INTER_MAP)
-			{
+		  {
+			  if (player.Interface & INTER_MAP)
+			  {
 				if (Book_Mode < BOOKMODE_QUESTS)
-				{
+				  {
 					if (Book_Mode == BOOKMODE_STATS)
 						Book_Mode = BOOKMODE_SPELLS;
 					else if (Book_Mode == BOOKMODE_SPELLS)
 						Book_Mode = BOOKMODE_MINIMAP;
 					else if (Book_Mode == BOOKMODE_MINIMAP)
 						Book_Mode = BOOKMODE_QUESTS;
-					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-				}
-			}
-		}
+					  ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+				  }
+			  }
+		  }
 		else if (InPlayerInventoryPos(&DANAEMouse))
-		{
-			if (!PLAYER_INTERFACE_HIDE_COUNT)
-			{
-				if ((player.Interface & INTER_INVENTORY))
-				{
-					if (player.bag)
-					{
-						if (sActiveInventory < player.bag - 1)
-						{
-							ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-							sActiveInventory ++;
-						}
-					}
-				}
-			}
-		}
-		else
-		{
-			if (player.Interface & INTER_MAP)
-			{
+		  {
+			  if (!PLAYER_INTERFACE_HIDE_COUNT)
+			  {
+				  if ((player.Interface & INTER_INVENTORY))
+				  {
+					  if (player.bag)
+					  {
+						  if (sActiveInventory < player.bag - 1)
+						  {
+							  ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+							  sActiveInventory ++;
+						  }
+					  }
+				  }
+			  }
+		  }
+		  else
+		  {
+			  if (player.Interface & INTER_MAP)
+			  {
 				if (Book_Mode < BOOKMODE_QUESTS)
 				{
 					if (Book_Mode == BOOKMODE_STATS)
@@ -4516,178 +4520,186 @@ void DANAE::ManagePlayerControls()
 						Book_Mode = BOOKMODE_MINIMAP;
 					else if (Book_Mode == BOOKMODE_MINIMAP)
 						Book_Mode = BOOKMODE_QUESTS;
-					ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-				}
-			}
-			else
-			{
-				if (!PLAYER_INTERFACE_HIDE_COUNT)
-				{
-					if ((player.Interface & INTER_INVENTORY))
-					{
-						if (player.bag)
-						{
-							if (sActiveInventory < player.bag - 1)
-							{
-								ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-								sActiveInventory ++;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKCHARSHEET))
-	{
-		if (!(player.Interface & INTER_MAP))
-		{
+					  ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+				  }
+			  }
+			  else
+			  {
+				  if (!PLAYER_INTERFACE_HIDE_COUNT)
+				  {
+					  if ((player.Interface & INTER_INVENTORY))
+					  {
+						  if (player.bag)
+						  {
+							  if (sActiveInventory < player.bag - 1)
+							  {
+								  ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+								  sActiveInventory ++;
+							  }
+						  }
+					  }
+				  }
+			  }
+		  }
+	  }
+	  
+	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKCHARSHEET))
+	  {
+		  if (!(player.Interface & INTER_MAP))
+		  {
 			Book_Mode = BOOKMODE_STATS;
-			ARX_INTERFACE_BookOpenClose(0);
-		}
+			  ARX_INTERFACE_BookOpenClose(0);
+		  }
 		else if ((player.Interface & INTER_MAP) && (Book_Mode != BOOKMODE_STATS))
 			Book_Mode = BOOKMODE_STATS;
-		else
-			ARX_INTERFACE_BookOpenClose(2);
-	}
-
-	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKSPELL))
-	{
-		if (!(player.Interface & INTER_MAP))
-		{
-			if (player.rune_flags)
-			{
+			  else
+			  {
+				  ARX_INTERFACE_BookOpenClose(2);
+			  }
+	  }
+	  
+	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKSPELL))
+	  {
+		  if (!(player.Interface & INTER_MAP))
+		  {
+			  if (player.rune_flags)
+			  {
 				Book_Mode = BOOKMODE_SPELLS;
-				ARX_INTERFACE_BookOpenClose(0);
-			}
-		}
+				  ARX_INTERFACE_BookOpenClose(0);
+			  }
+		  }
 		else if ((player.Interface & INTER_MAP) && (Book_Mode != BOOKMODE_SPELLS))
 			Book_Mode = BOOKMODE_SPELLS;
-		else
-			ARX_INTERFACE_BookOpenClose(2);
-	}
-
-	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKMAP))
-	{
-		if (!(player.Interface & INTER_MAP))
-		{
+			  else
+		  {
+			  ARX_INTERFACE_BookOpenClose(2);
+		  }	  
+	  }
+	  
+	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKMAP))
+	  {
+		  if (!(player.Interface & INTER_MAP))
+		  {
 			Book_Mode = BOOKMODE_MINIMAP;
-			ARX_INTERFACE_BookOpenClose(0);
-		}
+			  ARX_INTERFACE_BookOpenClose(0);
+		  }
 		else if ((player.Interface & INTER_MAP) && (Book_Mode != BOOKMODE_MINIMAP))
 			Book_Mode = BOOKMODE_MINIMAP;
-		else
-			ARX_INTERFACE_BookOpenClose(2);
-	}
-
-	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKQUEST))
-	{
-		if (!(player.Interface & INTER_MAP))
-		{
+		  else
+		  {
+			  ARX_INTERFACE_BookOpenClose(2);
+		  }
+	  }
+	  
+	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKQUEST))
+	  {
+		  if (!(player.Interface & INTER_MAP))
+		  {
 			Book_Mode = BOOKMODE_QUESTS;
-			ARX_INTERFACE_BookOpenClose(0);
-		}
+			  ARX_INTERFACE_BookOpenClose(0);
+		  }
 		else if ((player.Interface & INTER_MAP) && (Book_Mode != BOOKMODE_QUESTS))
 			Book_Mode = BOOKMODE_QUESTS;
-		else
-			ARX_INTERFACE_BookOpenClose(2);
-	}
+		  else
+		  {
+			  ARX_INTERFACE_BookOpenClose(2);
+		  }
+	  }
+	  
+	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_CANCELCURSPELL))
+	  {
+		  for (long i=MAX_SPELLS-1;i>=0;i--)
+		  {
+			  if ((spells[i].exist) && (spells[i].caster==0))
+				  if (spellicons[spells[i].type].bDuration)
+				  {
+					  ARX_SPELLS_AbortSpellSound();
+					  spells[i].tolive=0;
+					  break;
+				  }
+		  }
+	  }
 
-	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_CANCELCURSPELL))
-	{
-		for (long i=MAX_SPELLS-1;i>=0;i--)
-		{
-			if ((spells[i].exist) && (spells[i].caster==0))
-				if (spellicons[spells[i].type].bDuration)
-				{
-					ARX_SPELLS_AbortSpellSound();
-					spells[i].tolive=0;
-					break;
-				}
-		}
-	}
+	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_PRECAST1))
+	  {
+		  if ((player.Interface & INTER_COMBATMODE) && !bIsAiming || !player.doingmagic)
+			  if (Precast[0].typ != -1)
+				  ARX_SPELLS_Precast_Launch(0);
+	  }
 
-	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_PRECAST1))
-	{
-		if ((player.Interface & INTER_COMBATMODE) && !bIsAiming || !player.doingmagic)
-			if (Precast[0].typ != -1)
-				ARX_SPELLS_Precast_Launch(0);
-	}
+	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_PRECAST2))
+	  {
+		  if ((player.Interface & INTER_COMBATMODE) && !bIsAiming || !player.doingmagic)
+			  if (Precast[1].typ != -1)
+				  ARX_SPELLS_Precast_Launch(1);
+	  }
 
-	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_PRECAST2))
-	{
-		if ((player.Interface & INTER_COMBATMODE) && !bIsAiming || !player.doingmagic)
-			if (Precast[1].typ != -1)
-				ARX_SPELLS_Precast_Launch(1);
-	}
+	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_PRECAST3))
+	  {
+		  if ((player.Interface & INTER_COMBATMODE) && !bIsAiming || !player.doingmagic)
+			  if (Precast[2].typ != -1)
+				  ARX_SPELLS_Precast_Launch(2);
+	  }
 
-	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_PRECAST3))
-	{
-		if ((player.Interface & INTER_COMBATMODE) && !bIsAiming || !player.doingmagic)
-			if (Precast[2].typ != -1)
-				ARX_SPELLS_Precast_Launch(2);
-	}
-
-	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_WEAPON)||lChangeWeapon)
-	{
-		bool bGo = true;
+	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_WEAPON)||lChangeWeapon)
+	  {
+		bool bGo = true; 
 
 		if (lChangeWeapon > 0)
 		{
 			if (lChangeWeapon == 2)
 			{
 				lChangeWeapon--;
-			}
+			  }
 			else
 			{
-				if(	(inter.iobj[0]->animlayer[1].cur_anim==NULL)||
-					(inter.iobj[0]->animlayer[1].cur_anim == inter.iobj[0]->anims[ANIM_WAIT]))
+				  if(	(inter.iobj[0]->animlayer[1].cur_anim==NULL)||
+				        (inter.iobj[0]->animlayer[1].cur_anim == inter.iobj[0]->anims[ANIM_WAIT]))
 				{
-					lChangeWeapon--;
-
+					  lChangeWeapon--;
+					  
 					if (pIOChangeWeapon)
 					{
 						SendIOScriptEvent(pIOChangeWeapon,SM_INVENTORYUSE,"");
 						pIOChangeWeapon=NULL;
-					}
-				}
+					  }
+				  }
 				else
 				{
-					bGo=false;
-				}
-			}
-		}
+					  bGo=false;
+				  }
+			  }
+		  }
 
 		if (bGo)
 		{
-			if (player.Interface & INTER_COMBATMODE)
-			{
-				ARX_INTERFACE_Combat_Mode(0);
-				bGToggleCombatModeWithKey=false;
-				SPECIAL_DRAW_WEAPON=0;
-
-				if (pMenuConfig->bMouseLookToggle)
-					TRUE_PLAYER_MOUSELOOK_ON=MEMO_PLAYER_MOUSELOOK_ON;
-			}
-			else
-			{
-				MEMO_PLAYER_MOUSELOOK_ON=TRUE_PLAYER_MOUSELOOK_ON;
-				SPECIAL_DRAW_WEAPON=1;
-				TRUE_PLAYER_MOUSELOOK_ON|=1;
-				SLID_START=(float)ARXTime;
+		  if (player.Interface & INTER_COMBATMODE)
+		  {
+			  ARX_INTERFACE_Combat_Mode(0);
+			  bGToggleCombatModeWithKey=false;
+			  SPECIAL_DRAW_WEAPON=0;
+			  
+			  if (pMenuConfig->bMouseLookToggle)
+				  TRUE_PLAYER_MOUSELOOK_ON=MEMO_PLAYER_MOUSELOOK_ON;
+		  }
+		  else
+		  {
+			  MEMO_PLAYER_MOUSELOOK_ON=TRUE_PLAYER_MOUSELOOK_ON;
+			  SPECIAL_DRAW_WEAPON=1;
+			  TRUE_PLAYER_MOUSELOOK_ON|=1;
+			  SLID_START=(float)ARXTime;
 				lFadeMapTime = lARXTime;
-				ARX_INTERFACE_Combat_Mode(2);
-				bGToggleCombatModeWithKey=true;
+			  ARX_INTERFACE_Combat_Mode(2);
+			  bGToggleCombatModeWithKey=true;
+			  
+		  }
+		  }
+	  }
 
-			}
-		}
-	}
-
-	if(EERIEMouseButton&1) bGToggleCombatModeWithKey=false;
+	  if(EERIEMouseButton&1) bGToggleCombatModeWithKey=false;
 
 	if( (INTERNATIONAL_MODE)&&
-		(bForceEscapeFreeLook))
+	        (bForceEscapeFreeLook))
 	{
 		TRUE_PLAYER_MOUSELOOK_ON&=~1;
 
@@ -4700,42 +4712,42 @@ void DANAE::ManagePlayerControls()
 	{
 		if(eMouseState!=MOUSE_IN_INVENTORY_ICON)
 		{
-			if (!pMenuConfig->bMouseLookToggle)
+		if (!pMenuConfig->bMouseLookToggle)
+		{
+			if (ARX_IMPULSE_Pressed(CONTROLS_CUST_FREELOOK))
 			{
-				if (ARX_IMPULSE_Pressed(CONTROLS_CUST_FREELOOK))
+				if (!(TRUE_PLAYER_MOUSELOOK_ON & 1))
 				{
-					if (!(TRUE_PLAYER_MOUSELOOK_ON & 1))
-					{
-						TRUE_PLAYER_MOUSELOOK_ON |= 1;
-						SLID_START=(float)ARXTime;
-					}
-				}
-				else
-				{
-					if(INTERNATIONAL_MODE)
-					{
-						TRUE_PLAYER_MOUSELOOK_ON &= ~1;
-					}
+					TRUE_PLAYER_MOUSELOOK_ON |= 1;
+					SLID_START=(float)ARXTime;
 				}
 			}
 			else
 			{
-				if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_FREELOOK))
+				if(INTERNATIONAL_MODE)
 				{
-					if (!(TRUE_PLAYER_MOUSELOOK_ON & 1))
-					{
-						TRUE_PLAYER_MOUSELOOK_ON |= 1;
-						SLID_START=(float)ARXTime;
-					}
-					else
-					{
-						TRUE_PLAYER_MOUSELOOK_ON&=~1;
-
-						if (player.Interface & INTER_COMBATMODE)
-							ARX_INTERFACE_Combat_Mode(0);
-					}
+					TRUE_PLAYER_MOUSELOOK_ON &= ~1;
 				}
 			}
+		}
+		else
+		{
+			if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_FREELOOK))
+			{
+				if (!(TRUE_PLAYER_MOUSELOOK_ON & 1))
+				{
+					TRUE_PLAYER_MOUSELOOK_ON |= 1;
+					SLID_START=(float)ARXTime;
+				}
+				else
+				{
+					TRUE_PLAYER_MOUSELOOK_ON&=~1;
+
+					if (player.Interface & INTER_COMBATMODE)
+						ARX_INTERFACE_Combat_Mode(0);			
+				}
+			}
+		}
 		}
 	}
 
@@ -4753,65 +4765,65 @@ void DANAE::ManagePlayerControls()
 			ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon();
 		}
 	}
+	  
+	  if (EDITMODE) return;//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-	if (EDITMODE) return;//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-	// Checks INVENTORY Key Status.
-	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_INVENTORY))
-	{
-		if (player.Interface & INTER_COMBATMODE)
-		{
-			ARX_INTERFACE_Combat_Mode(0);
-		}
+	  // Checks INVENTORY Key Status.
+	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_INVENTORY))
+	  {
+		  if (player.Interface & INTER_COMBATMODE)
+		  {
+			  ARX_INTERFACE_Combat_Mode(0);
+		  }
 
 		if (INTERNATIONAL_MODE)
 		{
-			bInverseInventory=!bInverseInventory;
-			lOldTruePlayerMouseLook=TRUE_PLAYER_MOUSELOOK_ON;
+			  bInverseInventory=!bInverseInventory;
+			  lOldTruePlayerMouseLook=TRUE_PLAYER_MOUSELOOK_ON;
 
 			if (!pMenuConfig->bMouseLookToggle)
 			{
 				bForceEscapeFreeLook=true;
-			}
-		}
+			  }
+		  }
 		else
 		{
-			InventoryOpenClose(0);
-		}
-	}
+			  InventoryOpenClose(0);
+		  }
+	  }
 
-	// Checks BOOK Key Status.
-	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOK))
-		ARX_INTERFACE_BookOpenClose(0);
-
-	//	Check For Combat Mode ON/OFF
-	if (	(EERIEMouseButton & 1)
-		&&	(EDITION==EDITION_IO)
-		&&	(!(player.Interface & INTER_COMBATMODE))
-		&&	(!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK))
-		&&	(!EDITMODE)
-		&&	(!SpecialCursor)
-		&&  (PLAYER_MOUSELOOK_ON)
-		&&	(DRAGINTER==NULL)
-		&&	(!InInventoryPos(&DANAEMouse)
-		&& (pMenuConfig->bAutoReadyWeapon))
-		)
-	{
-		if (!(LastMouseClick & 1))
-		{
+	  // Checks BOOK Key Status.
+	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOK))
+		  ARX_INTERFACE_BookOpenClose(0);
+	  
+	  //	Check For Combat Mode ON/OFF
+	  if (	(EERIEMouseButton & 1)
+		  &&	(EDITION==EDITION_IO)
+		  &&	(!(player.Interface & INTER_COMBATMODE))
+	        &&	(!(ARX_MOUSE_OVER & ARX_MOUSE_OVER_BOOK)) 
+		  &&	(!EDITMODE)	
+		  &&	(!SpecialCursor)
+		  &&  (PLAYER_MOUSELOOK_ON)
+		  &&	(DRAGINTER==NULL)
+		  &&	(!InInventoryPos(&DANAEMouse)
+		  && (pMenuConfig->bAutoReadyWeapon))
+		  )
+	  {
+		  if (!(LastMouseClick & 1))
+		  {
 			COMBAT_MODE_ON_START_TIME = ARXTimeUL();
-		}
-		else
-		{
-			if (ARXTime-COMBAT_MODE_ON_START_TIME>10)
-			{
-				ARX_INTERFACE_Combat_Mode(1);
+		  }
+		else 
+		  {
+			  if (ARXTime-COMBAT_MODE_ON_START_TIME>10)
+			  {
+				  ARX_INTERFACE_Combat_Mode(1);
 
-				if (! pMenuConfig->bAutoReadyWeapon)
-					bGToggleCombatModeWithKey=true;
-			}
-		}
-	}
+				  if (! pMenuConfig->bAutoReadyWeapon)
+					  bGToggleCombatModeWithKey=true;
+			  }
+		  }
+	  }
 
 	if (INTERNATIONAL_MODE)
 	{
@@ -4829,7 +4841,7 @@ void DANAE::ManagePlayerControls()
 				}
 			}
 		}
-		else
+		else				
 		{
 			if (CSEND)
 			{
@@ -4858,15 +4870,15 @@ void DANAE::ManagePlayerControls()
 
 					lTimeToDrawMecanismCursor=0;
 					lNbToDrawMecanismCursor=0;
-
+				
 					if (player.Interface & INTER_INVENTORYALL)
 					{
 						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 						bInventoryClosing = true;
 						lOldInterfaceTemp=INTER_INVENTORYALL;
 					}
-
-
+					
+					
 					bRenderInCursorMode=false;
 					InventoryOpenClose(2);
 
@@ -4902,16 +4914,16 @@ void DANAE::ManagePlayerControls()
 		}
 		else
 		{
-			if (bInverseInventory)
+			if(bInverseInventory)
 			{
-				if (!bInventoryClosing)
+				if(!bInventoryClosing)
 				{
 
 					bRenderInCursorMode=false;
 
 					InventoryOpenClose(2);
 
-					if ((player.Interface & INTER_INVENTORY))
+					if((player.Interface &INTER_INVENTORY))
 					{
 						INTERACTIVE_OBJ * io = NULL;
 
@@ -4963,7 +4975,6 @@ void DANAE::ManagePlayerControls()
 				else
 				{
 					InventoryOpenClose(1);
-				}
 				}
 			}
 		}
@@ -5397,18 +5408,18 @@ void DANAE::ManageKeyMouse()
 
 		v=EERIEMouseYdep*DIV1000;
 
-		if (v>3.1415927f)
+		if (v>3.1415927f) 
 		{
 			v=3.1415927f;
 		}
-		else if (v<-3.1415927f)
+		else if (v<-3.1415927f) 
 		{
 			v=-3.1415927f;
 		}
 
 		F2L((float)(EEsin(v)*600.f),&EERIEMouseYdep);
 
-	}
+		}
 
 	ARX_Menu_Manage();
 	EERIE_3D tm;
@@ -5487,7 +5498,7 @@ void DANAE::ManageKeyMouse()
 			if (USE_PLAYERCOLLISIONS)
 			{
 
-				float fTime		= ARX_TIME_Get();
+				float fTime		= ARX_TIME_Get();	
 				ARX_CHECK_INT(fTime);
 
 				int	iTime		=  ARX_CLEAN_WARN_CAST_INT(fTime);

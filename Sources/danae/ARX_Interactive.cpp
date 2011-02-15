@@ -4457,11 +4457,11 @@ void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to, long flags)
 			}
 			else dist = EEDistance3D(&ACTIVECAM->pos, &io->pos);
 
-			//if ((0) && (inter.iobj[i]->stepmaterial))
-			//{
-			//	free(inter.iobj[i]->stepmaterial);
-			//	inter.iobj[i]->stepmaterial = NULL;
-			//}
+			if ((0) && (inter.iobj[i]->stepmaterial))
+			{
+				free(inter.iobj[i]->stepmaterial);
+				inter.iobj[i]->stepmaterial = NULL;
+			}
 
 			if ((io) && (io->ioflags & IO_NPC) && (io->_npcdata->pathfind.flags  & PATHFIND_ALWAYS))
 			{

@@ -4528,7 +4528,7 @@ CMenuElement* CMenuElementText::OnShortCut()
 void CMenuElementText::Render()
 {
 	if (WILL_RELOAD_ALL_TEXTURES) return;
-	if (bNoMenu) return;
+	if(bNoMenu) return;
 
 	pTextManage->AddText(pHFont, lpszText, rZone.left, rZone.top, bSelected ? lColorHighlight : lColor);
 }
@@ -7200,7 +7200,7 @@ void CMenuSlider::RenderMouseOver()
 
 	pGetInfoDirectInput->SetMouseOver();
 
-	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
+	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, true);
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 

@@ -284,13 +284,6 @@ struct THEO_ACTION_POINT
 	long			num_sfx;
 }; // Aligned 1 2 4
 
-
-
-
-
-
-
-
 struct THEO_FACE_UV
 {
 	long			u1;

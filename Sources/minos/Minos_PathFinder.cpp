@@ -23,7 +23,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 #include "Minos_PathFinder.h"
-
+//#include <Float.h>
 #include <time.h>
 
 const Float MIN_RADIUS(110.F);

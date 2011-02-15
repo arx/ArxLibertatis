@@ -282,8 +282,6 @@ _TCHAR * CLocalisationHash::GetPtrWithString(const _TCHAR * _lpszUText)
 
 	return NULL;
 }
-<<<<<<< HEAD:Sources/DANAE/ARX_LocHash.cpp
-=======
 
 //-----------------------------------------------------------------------------
 unsigned long CLocalisationHash::GetKeyCount(const _TCHAR * _lpszUText)

@@ -27,9 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "Athena_Global.h"
 #include "Athena_Instance.h"
 
-#include <cstdlib>
-#include <cstring>
-using namespace std;
+
 
 
 namespace ATHENA
