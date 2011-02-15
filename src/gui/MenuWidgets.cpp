@@ -2400,29 +2400,21 @@ bool Menu2_Render()
 									}
 
 									char tex3[256];
-									std::string tex4 = "  ";
+									tex += "  ";
 									GetDateFormat(    LOCALE_SYSTEM_DEFAULT,
 										0,
 										&save_l[iI].stime,
 										"MMM dd yyyy",
 										tex3,
 										256);
-									tex4 +=  tex3;
+									tex +=  tex3;
 									GetTimeFormat(    LOCALE_SYSTEM_DEFAULT,
 										0,
 										&save_l[iI].stime,
 										"   HH:mm",
 										tex3,
 										256);
-									tex4 += tex3;
-// TODO Find replacement
-/*									MultiByteToWideChar(	CP_ACP,
-										0,
-										tex4,
-										-1,
-										(wchar_t*)tex2,
-										256);*/
-									tex += tex2;
+									tex += tex3;
 									
 									me02 = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls, tex, fPosX1, 0.f, lColor, 0.8f, NOP);
 
@@ -2564,15 +2556,8 @@ bool Menu2_Render()
 										tex3,
 										256);
 									strcat(tex4,tex3);
-
-// TODO Find replacement
-									MultiByteToWideChar(	CP_ACP,
-										0,
-										tex4,
-										-1,
-										(wchar_t*)tex2.c_str(),
-										256);
-									tex += tex2;
+									
+									tex += tex4;
 									
 									me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, tex, fPosX1, 0.f, RGB(127, 127, 127), 0.8f, EDIT_QUEST_SAVE_CONFIRM);
 									me->SetCheckOff();
@@ -7925,45 +7910,38 @@ bool CDirectInput::GetMouseButtonNowUnPressed(int _iNumButton)
 
 //-----------------------------------------------------------------------------
 
-std::string CDirectInput::GetFullNameTouch(int _iVirtualKey)
-{
+std::string CDirectInput::GetFullNameTouch(int _iVirtualKey) {
+	
 	std::string pText;
-
+	
 	long lParam;
-
+	
 	std::string pText2;
-
-	if( ( _iVirtualKey != -1 ) && ( _iVirtualKey & ~0xC000FFFF ) ) //COMBINAISON
-	{
-		pText2=GetFullNameTouch((_iVirtualKey>>16)&0x3FFF);
+	
+	if( _iVirtualKey != -1 && (_iVirtualKey&~0xC000FFFF)) {
+		// key combination
+		pText2 = GetFullNameTouch((_iVirtualKey>>16)&0x3FFF);
 	}
-
+	
 	lParam=((_iVirtualKey)&0x7F)<<16;
-
-	switch(_iVirtualKey)
-	{
+	
+	switch(_iVirtualKey) {
 	case DIK_HOME:
-
 		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_home", "---", pText );
 		break;
 	case DIK_NEXT:
-
 		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_pagedown", "---", pText );
 		break;
 	case DIK_END:
-
 		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_end", "---", pText );
 		break;
 	case DIK_INSERT:
-
 		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_insert", "---", pText );
 		break;
 	case DIK_DELETE:
-
 		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_delete", "---", pText );
 		break;
 	case DIK_NUMLOCK:
-
 		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_numlock", "---", pText );
 		break;
 	case DIK_DIVIDE:
@@ -7976,23 +7954,18 @@ std::string CDirectInput::GetFullNameTouch(int _iVirtualKey)
 		pText = "?";
 		break;
 	case DIK_UP:                  // UpArrow on arrow keypad
-
 		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_up", "---", pText);
 		break;
 	case DIK_PRIOR:               // PgUp on arrow keypad
-
 		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_pageup", "---", pText);
 		break;
 	case DIK_LEFT:                // LeftArrow on arrow keypad
-
 		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_left", "---", pText);
 		break;
 	case DIK_RIGHT:               // RightArrow on arrow keypad
-
 		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_right", "---", pText);
 		break;
 	case DIK_DOWN:                // DownArrow on arrow keypad
-
 		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_down", "---", pText);
 		break;
 	case DIK_BUTTON1:
@@ -8103,89 +8076,57 @@ std::string CDirectInput::GetFullNameTouch(int _iVirtualKey)
 	default:
 		{
 		char tAnsiText[256];
-		GetKeyNameText(lParam,tAnsiText,256);
-		int i=strlen(tAnsiText);
-
-		if(!i)
-		{
+		GetKeyNameText(lParam, tAnsiText, 256);
+		
+		if(tAnsiText[0] == '\0') {
 			std::stringstream ss;
 			ss << "Key_" << _iVirtualKey;
 			pText = ss.str();
 		}
-		else
-		{
-			// TODO Find replacement
-			//MultiByteToWideChar(CP_ACP, 0, tAnsiText, -1, (wchar_t*)pText.c_str(), 256);
-
-			if(_iVirtualKey==DIK_LSHIFT)
-			{
+		else {
+			
+			pText = tAnsiText;
+			
+			if(_iVirtualKey == DIK_LSHIFT) {
 				std::string tText2;
-				std::string pText3;
 				PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_left", "---", tText2);
-				tText2[1] = 0;
-				pText3 = tText2;
-				pText3 += pText;
-				pText = pText3;
+				pText = tText2.substr(0, min((size_t)1, tText2.size())) + pText;
 			}
-
-			if(_iVirtualKey==DIK_LCONTROL)
-			{
+			
+			if(_iVirtualKey == DIK_LCONTROL) {
 				std::string tText2;
-				std::string pText3;
 				PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_left", "---", tText2);
-				tText2[1]=0;
-				pText3 = tText2;
-				pText3 += pText;
-				pText = pText3;
+				pText = tText2.substr(0, min((size_t)1, tText2.size())) + pText;
 			}
-
-			if(_iVirtualKey==DIK_LALT)
-			{
+			
+			if(_iVirtualKey == DIK_LALT) {
 				std::string tText2;
-				std::string pText3;
 				PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_left", "---", tText2);
-				tText2[1]=0;
-				pText3 = tText2;
-				pText3 += pText;
-				pText=pText3;
+				pText = tText2.substr(0, min((size_t)1, tText2.size())) + pText;
 			}
-
-			if (_iVirtualKey == DIK_NUMPADENTER)
-			{
-				std::string pText3;
-				pText3 = pText;
-				pText3 += "0";
-				pText = pText3;
+			
+			if(_iVirtualKey == DIK_NUMPADENTER) {
+				pText += "0";
 			}
-
-			if( pText.length() > 8 )
-			{
-				pText[8]=0;
-				int iI=8;
-
-				while(iI--)
-				{
-					if( pText[iI] == ' ' )
-					{
-						pText[iI] = 0;
+			
+			if(pText.length() > 8) {
+				size_t size = 8;
+				for(; size != 0; size--) {
+					if(pText[size - 1] != ' ') {
+						break;
 					}
-					else break;
 				}
+				pText.resize(size);
 			}
 		}
 		}
 		break;
 	}
-
-	if( !pText2.empty() )
-	{
-		std::string pText3 = pText2;
-		pText3 += "+";
-		pText3 += pText;
-		pText = pText3;
-
+	
+	if(!pText2.empty()) {
+		pText = pText2 + "+" + pText;
 	}
-
+	
 	return pText;
 }
 
