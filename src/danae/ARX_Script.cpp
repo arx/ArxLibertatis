@@ -58,7 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdlib.h>
 
 #include "ARX_Script.h"
-#include "ARX_Casts.h"
 
 #include "HERMESMain.h"
 
@@ -95,9 +94,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 using std::sprintf;
-
-//todo remove this define
-//# define GWL_HINSTANCE       (-6)
 
 extern long GLOBAL_MAGIC_MODE;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;

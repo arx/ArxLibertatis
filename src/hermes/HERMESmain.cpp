@@ -64,9 +64,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <time.h>
 #include "HERMESMain.h"
 #include "HERMESNet.h"
-#include "ARX_Casts.h"
-
-
 
 extern "C" {
 #undef __cplusplus
@@ -85,7 +82,7 @@ using namespace std;
 #define _MAX_EXT 3
 #define _MAX_FNAME 512
 #define _MAX_DRIVE 1
-#define _MAX_DIR            _MAX_FNAME
+#define _MAX_DIR _MAX_FNAME
 
 char HermesBufferWork[MAX_PATH];	// Used by FileStandardize (avoid malloc/free per call)
 
@@ -110,9 +107,9 @@ unsigned char IsIn(char * strin, char * str)
 {
 	char * tmp;
 	tmp = strstr(strin, str);
-
+	
 	if (tmp == NULL) return 0;
-
+	
 	return 1;
 }
 
@@ -126,9 +123,9 @@ unsigned char NC_IsIn(char * strin, char * str)
 	MakeUpcase(t1);
 	MakeUpcase(t2);
 	tmp = strstr(t1, t2);
-
+	
 	if (tmp == NULL) return 0;
-
+	
 	return 1;
 }
 
@@ -213,7 +210,7 @@ long KillAllDirectory(char * path) {
 					DeleteFile(pathh);
 				}
 			}
-//	todo io.h
+
 		}
 		while(FindNextFile(idx, &fl));
 
@@ -230,8 +227,8 @@ void GetDate(HERMES_DATE_TIME * hdt)
  
 	time_t long_time;
 
-	time(&long_time);                  /* Get time as long integer. */
-	newtime = localtime(&long_time);   /* Convert to local time. */
+	time(&long_time);                  // Get time as long integer.
+	newtime = localtime(&long_time);   // Convert to local time.
 
 	if (newtime)
 	{
@@ -279,7 +276,7 @@ void MakeUpcase(char * str)
 void MakeUpcase_real(char * str)
 {
 	while(*str != '\0') {
-//	todo: string
+		// islower is needed as the are read-only strings passed that are already in upper case?
 		if(islower(*str)) {
 			*str = toupper(*str);
 		}
@@ -1033,7 +1030,7 @@ long	FileSeek(long handle, long offset, long mode)
 {
 	return SetFilePointer((int)handle - 1, offset, NULL, mode);
 }
-//	return(_lseek((int)handle - 1, (long)offset, (int)mode));
+
 void ExitApp(int v)
 {
 	if (MAIN_PROGRAM_HANDLE != NULL)
