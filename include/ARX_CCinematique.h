@@ -71,6 +71,9 @@ bool DeleteTrack(void);
 /*-----------------------------------------------------------*/
 //extern char DirectoryChoose[];
 /*-----------------------------------------------------------*/
+
+struct C_KEY;
+
 class C_LIGHT
 {
 	public:
@@ -176,6 +179,25 @@ struct C_SOUND
 	char	*	name;
 	char	*	sound;
 	ArxSound		idhandle;
+};
+
+struct C_KEY
+{
+	int			frame;
+	int			numbitmap;
+	int			fx;				//fx associé
+	short		typeinterp, force;
+	EERIE_3D	pos;
+	float		angz;
+	int			color;
+	int			colord;
+	int			colorf;
+	float		speed;
+	C_LIGHT		light;
+	EERIE_3D	posgrille;
+	float		angzgrille;
+	float		speedtrack;
+	int			idsound[16];	//16 langues max.
 };
 
 struct C_KEY_1_59
@@ -291,25 +313,6 @@ struct C_KEY_1_75
 	EERIE_3D	posgrille;
 	float		angzgrille;
 	float		speedtrack;
-};
-
-struct C_KEY
-{
-	int			frame;
-	int			numbitmap;
-	int			fx;				//fx associé
-	short		typeinterp, force;
-	EERIE_3D	pos;
-	float		angz;
-	int			color;
-	int			colord;
-	int			colorf;
-	float		speed;
-	C_LIGHT		light;
-	EERIE_3D	posgrille;
-	float		angzgrille;
-	float		speedtrack;
-	int			idsound[16];	//16 langues max.
 };
 
 struct C_TRACK

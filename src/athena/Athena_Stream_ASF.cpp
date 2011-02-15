@@ -140,7 +140,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalVoid StreamASF::GetLength(aalULong & _length)
+	aalError StreamASF::GetLength(aalULong & _length)
 	{
 		_length = header.o_size;
 		return AAL_OK;

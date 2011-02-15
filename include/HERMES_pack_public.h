@@ -27,7 +27,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "HERMES_pack.h"
 
-#define PACK_MAX_FREAD	(256)
+#define PACK_MAX_FREAD 256
+#define PAK_READ_BUF_SIZE 1024
 
 struct PAK_PARAM
 {

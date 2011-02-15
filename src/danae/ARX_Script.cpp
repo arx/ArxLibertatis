@@ -73,6 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Equipment.h"
 #include "ARX_GlobalMods.h"
 #include "ARX_Interactive.h"
+#include "ARX_Loc.h"
 #include "ARX_Minimap.h"
 #include "ARX_Missile.h"
 #include "ARX_NPC.h"
@@ -3420,13 +3421,8 @@ bool HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 	if ((aa < ab + 90.f) && (aa > ab - 90.f))
 	{
 		//font
-<<<<<<< HEAD:Sources/danae/ARX_Script.cpp
 		ARX_TEXT_Draw(hFontInBook, 300, 320, _T("VISIBLE"), D3DRGB(1.f, 0.f, 0.f));
 		return TRUE;
-=======
-		ARX_TEXT_Draw(GDevice, InBookFont, 300, 320, 0, 0, _T("VISIBLE"), D3DRGB(1.f, 0.f, 0.f));
-		return true;
->>>>>>> e7e1a155cf3072b88b9c3b4a81029ee68ba70a60:src/danae/ARX_Script.cpp
 	}
 
 	return false;

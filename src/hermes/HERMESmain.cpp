@@ -351,7 +351,6 @@ long HERMES_KEEP_MEMORY_TRACE = 0;
 #else
 long HERMES_KEEP_MEMORY_TRACE = 0;
 #endif
-#endif
 #define SIZE_STRING_MEMO_TRACE 24
 struct MEMO_TRACE
 {
