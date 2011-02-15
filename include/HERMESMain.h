@@ -67,6 +67,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "HERMES_PAK.h"
 #include "HERMESPerf.h"
 
+#include <windows.h>
+
 typedef struct {
 	long	secs;
 	long	mins;
@@ -112,7 +114,7 @@ typedef struct PassedParam
 extern HWND		MAIN_PROGRAM_HANDLE;
 extern long DEBUGG;
 extern long DebugLvl[6];
-extern UINT			GaiaWM;
+extern unsigned int			GaiaWM;
 extern DIR_NODE mainnode;
 
 void File_Standardize(const char * from,char * to);
@@ -164,8 +166,8 @@ char * GetName(char *str);
 char * GetExt(char *str);
 void SetExt(char *str,char *new_ext);
 void AddToName(char *str,char *cat);
-int HERMESFileSelectorOpen(PSTR pstrFileName, PSTR pstrTitleName,char *filter,HWND hWnd);
-int HERMESFileSelectorSave(PSTR pstrFileName, PSTR pstrTitleName,char *filter,HWND hWnd);
+int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName,char *filter,HWND hWnd);
+int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName,char *filter,HWND hWnd);
 long HERMES_CreateFileCheck(const char *name, char *scheck, const long &size, const float &id);
 char * STD_Explode(char * from,long from_size,long * to_size);
 void STD_ExplodeNoAlloc(char * from,long from_size,char * to,long * to_size);

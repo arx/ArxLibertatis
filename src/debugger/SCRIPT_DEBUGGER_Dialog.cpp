@@ -50,20 +50,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <commctrl.h>
 #include <cstdio>
 
-#include "Resource.h"
-
 HINSTANCE ghInstance;
 HWND ghDialog;
 
 char GlobalName[128];
 char LocalName[128];
 
-
 bool gbDialog = false;
 
-
 bool CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
 
 ScriptDebuggerUpdate sdu;
 

@@ -58,12 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef HERMESPERF_H
 #define HERMESPERF_H
 
-
-#include <stdio.h>
-#include <windows.h>
-#include <assert.h>
-//#include <ARX_Common.h>
-
 struct HPERF_STAT
 {
 	unsigned long	chrono;
@@ -85,4 +79,5 @@ extern HPERF_STAT HermesPerf[MAX_PERF];
 
 extern long USE_HERMES_PERF;
 void HERMES_PERF_Reset();
-#endif
+
+#endif // HERMESPERF_H

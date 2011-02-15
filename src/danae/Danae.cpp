@@ -58,8 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Included files
 //-----------------------------------------------------------------------------
 #include <windows.h>
-//srsly?
-//#include <new.h>
+
 #include <iostream>
 #include <fstream>
 #include "Danae.h"
@@ -133,9 +132,6 @@ bool ARX_IsSteam()
 	return false;
 #endif
 }
-
-//todo bad define
-# define GWL_HINSTANCE       (-6)
 
 //-----------------------------------------------------------------------------
 
@@ -1236,6 +1232,8 @@ bool IsNoGore( void )
 
 //-----------------------------------------------------------------------------
 
+//TODO: non windows main + remove hinstance => messageboxes
+//int main(int argc, char *argv[]) {
 INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 {
 
@@ -1253,7 +1251,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 
 #endif
 
-	//todo memleak stuff?
+	//TODO memleak stuff
 //	_set_new_mode(1);																//memory handler activated for malloc too
 //	_set_new_handler(HandlerMemory);
 //
@@ -1684,7 +1682,8 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 		NOCHECKSUM=1;
 	}
 	else if (!MOULINEX)
-		DialogBox( hInstance,MAKEINTRESOURCE(IDD_STARTOPTIONS), NULL, StartProc );
+//		DialogBox( hInstance,MAKEINTRESOURCE(IDD_STARTOPTIONS), NULL, StartProc );
+		printf("ERROR: %s %s", MAKEINTRESOURCE(IDD_STARTOPTIONS), StartProc);
 	else
 	{
 		Project.demo=LEVELDEMO2;

@@ -92,7 +92,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 //todo remove this define
-# define GWL_HINSTANCE       (-6)
+//# define GWL_HINSTANCE       (-6)
 
 extern long GLOBAL_MAGIC_MODE;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;

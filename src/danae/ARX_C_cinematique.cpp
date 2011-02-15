@@ -25,7 +25,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdlib.h>
 #include "Danae.h"
 #include "ARX_CCinematique.h"
-#include "Resource.h"
 #include "EERIEUtil.h"
 
 #define ADJUSTX(a) (((((a)-(LARGEURS>>1))*((float)LargeurRender/(float)LARGEURS))+(LARGEURS>>1)))*(640.f/(float)LargeurRender) //*((float)LARGEURS/(float)LargeurRender)

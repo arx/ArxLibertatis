@@ -25,7 +25,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdlib.h>
 #include "ARX_CCinematique.h"
 #include "ARX_Time.h"
-#include "Resource.h"
 
 /*----------------------------------------------------------------------*/
 //undo/redo

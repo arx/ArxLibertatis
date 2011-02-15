@@ -1,12 +1,12 @@
 # Arx Fatalis Port
 
-(Arx Libertis?)
-Port to GCC / OpenGL / Unix
+(Arx Libertatis?)
+Port to x64_86 / GCC / OpenGL / Unix
 
 ## Dependencies
 
-Currently wine and libjpeg, and maybe some other headers like zlib.h.
-Wine is only a temporary solution.
+Currently wine and libjpeg8 32bit, and maybe some other headers like zlib.h.
+Wine and 32bit is only a temporary solution.
 
 ## Compile
 
@@ -17,7 +17,7 @@ Wine is only a temporary solution.
 ## Run
 
 Rename all .pak files in the Arx Fatalis installation to lowercase and the run from the directory containing the .pak files (replacing "path/to/" with the path to the executable): 
-`$ WINEDEBUG=-all wine path/to/arx.exe.so`
+`$ WINEDEBUG=-all ./arx.exe`
 
 ## Chat
 
