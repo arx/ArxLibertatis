@@ -127,16 +127,17 @@ void * _PAK_FileLoadMallocZero(const char * name, long * sizeRead)
 }
 
 // TODO size_t for argument
-void * _PAK_FileLoadMalloc(const char * name, long * SizeLoadMalloc)
+void * _PAK_FileLoadMalloc(const char * name, long * sizeRead)
 {
 
-	int iTaille = 0;
-	void * mem = pPakManager->ReadAlloc(name, &iTaille);
+	int size = 0;
+	void * mem = pPakManager->ReadAlloc(name, &size);
 
-	if ((SizeLoadMalloc) && mem) *SizeLoadMalloc = iTaille;
+	if (sizeRead && mem) *sizeRead = size;
 
 	return mem;
 }
+
 long _PAK_DirectoryExist(const char * name) {
 
 	long leng = strlen(name);
@@ -601,13 +602,6 @@ bool PakManager::RemovePak(const char * _lpszName)
 }
 
 //-----------------------------------------------------------------------------
-static void DrawDebugFile(char * _lpszName)
-{
-	return;
-
-}
-
-//-----------------------------------------------------------------------------
 bool PakManager::Read(const char * filename, void * buffer)
 {
 	vector<PakReader *>::iterator i;
@@ -626,8 +620,6 @@ bool PakManager::Read(const char * filename, void * buffer)
 			return true;
 		}
 	}
-
-	DrawDebugFile(filename);
 
 	printf("\e[1;33mCan't read from PAK:\e[m\t%s\n", filename);
 	return false;
@@ -651,7 +643,7 @@ void * PakManager::ReadAlloc(const char * filename, int * sizeRead)
 	{
 		void * pMem;
 
-		if ((pMem = (*i)->ReadAlloc(filename, size)))
+		if ((pMem = (*i)->ReadAlloc(filename, &size)))
 		{
 			printf("\e[1;32mRead from PAK (a):\e[m\t%s\n", filename);
 			*sizeRead = size;
@@ -659,7 +651,6 @@ void * PakManager::ReadAlloc(const char * filename, int * sizeRead)
 		}
 	}
 
-	DrawDebugFile(filename);
 	printf("\e[1;33mRead from PAK (a):\e[m\t%s\n", filename);
 	*sizeRead = size;
 	return NULL;
@@ -688,7 +679,6 @@ int PakManager::GetSize(const char * filename)
 		}
 	}
 
-	DrawDebugFile(filename);
 	printf("\e[1;33mCan't get size in PAK:\e[m\t%s\n", filename);
 	return -1;
 }
@@ -715,7 +705,6 @@ PakFileHandle * PakManager::fOpen(const char * filename)
 		}
 	}
 
-	DrawDebugFile(filename);
 	printf("\e[1;33mCan't open from PAK:\e[m\t%s\n", filename);
 	return NULL;
 }
@@ -827,8 +816,6 @@ bool PakManager::ExistFile(const char * name) {
 			return true;
 		}
 	}
-	
-	DrawDebugFile(name);
 	
 	printf("\e[1;33mCan't find in PAK:\e[m\t%s\n", name);
 	return false;
