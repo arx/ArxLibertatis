@@ -922,7 +922,7 @@ class CMenuConfig
 };
 
 //-----------------------------------------------------------------------------
-typedef struct CreditsTextInformations
+struct CreditsTextInformations
 {
 	CreditsTextInformations()
 	{

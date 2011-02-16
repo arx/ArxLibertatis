@@ -114,7 +114,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <ARX_Text.h>
 #include "ARX_Missile.h"
 #include "ARX_Cedric.h"
-#include "ARX_HWTransform.h"
 #include "ARX_MenuPublic.h"
 #include "ARX_Snapshot.h"
 
@@ -6868,7 +6867,7 @@ static float _AvgFrameDiff = 150.f;
 
 		_TCHAR texx[80];
 		_stprintf(texx, _T("EDIT MODE - Selected %ld"), NbIOSelected);
-		ARX_TEXT_Draw(hFontInBook, 100,2,0,0,texx,EERIECOLOR_YELLOW);
+		ARX_TEXT_Draw(hFontInBook, 100,2,texx,EERIECOLOR_YELLOW);
 	
 		if (EDITION==EDITION_FOGS)
 			ARX_FOGS_RenderAll( m_pd3dDevice);
@@ -6997,7 +6996,7 @@ m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 
 	SETTEXTUREWRAPMODE(m_pd3dDevice,D3DTADDRESS_WRAP);
 
-	if(pTextManage && pTextManage->vText.size())
+	if(pTextManage && pTextManage->HasText())
 	{
 		danaeApp.DANAEEndRender();
 		pTextManage->Update(FrameDiff);

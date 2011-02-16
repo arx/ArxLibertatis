@@ -91,6 +91,7 @@ struct ARX_Text
 };
 
 //-----------------------------------------------------------------------------
+void ARX_Text_Init();
 void ARX_Text_Init(ARX_Text *);
 
 class CARXTextManager

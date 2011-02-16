@@ -105,7 +105,7 @@ CLocalisationHash::CLocalisationHash(int reservedSize)
 //, iNbCollisions_(0)
 //, iNbNoInsert_(0)
 {
-	memset(pTab, NULL, reservedSize * sizeof(*pTab));
+	memset(pTab, 0, reservedSize * sizeof(*pTab));
 }
 
 CLocalisationHash::~CLocalisationHash()

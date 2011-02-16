@@ -1717,7 +1717,7 @@ void	ARX_PLAYER_Restore_Skin()
 	}
 
 	char tt[256];
-	MakeDir(tt, "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp");
+	strcpy(tt, "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp");
 	MakeUpcase(tt);
 	TextureContainer * tmpTC = FindTexture(tt);
 
@@ -1729,7 +1729,7 @@ void	ARX_PLAYER_Restore_Skin()
 		tmpTC->Restore(GDevice);
 	}
 
-	MakeDir(tt, "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp");
+	strcpy(tt, "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp");
 	MakeUpcase(tt);
 	tmpTC = FindTexture(tt);
 
@@ -1741,7 +1741,7 @@ void	ARX_PLAYER_Restore_Skin()
 		tmpTC->Restore(GDevice);
 	}
 
-	MakeDir(tt, "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp");
+	strcpy(tt, "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp");
 	MakeUpcase(tt);
 	tmpTC = FindTexture(tt);
 
@@ -4124,9 +4124,9 @@ void Manage_sp_max()
 			_TCHAR tex[8];
 			_stprintf(tex, _T("%c"), sp_max_ch[i]);
 
-			UNICODE_ARXDrawTextCenter(hFontInBook, dx - 1, dy - 1, tex, 0, 0x00FF00FF);
-			UNICODE_ARXDrawTextCenter(hFontInBook, dx + 1, dy + 1, tex, 0, 0x00FF00FF);
-			UNICODE_ARXDrawTextCenter(hFontInBook, dx, dy, tex, sp_max_col[i], 0x00FF00FF);
+			UNICODE_ARXDrawTextCenter(dx - 1, dy - 1, tex, 0, 0x00FF00FF, hFontInBook);
+			UNICODE_ARXDrawTextCenter(dx + 1, dy + 1, tex, 0, 0x00FF00FF, hFontInBook);
+			UNICODE_ARXDrawTextCenter(dx, dy, tex, sp_max_col[i], 0x00FF00FF, hFontInBook);
 
 		}
 	}

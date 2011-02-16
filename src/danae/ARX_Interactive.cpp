@@ -93,6 +93,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <hermes/PakManager.h>
 #include <hermes/Filesystem.h>
 
+#include <cassert>
+
 #include <stdlib.h>
 
 extern EERIE_CAMERA TCAM[];
