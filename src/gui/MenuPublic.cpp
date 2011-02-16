@@ -687,7 +687,6 @@ void ARXMenu_DeleteQuest(long num)
 
 		sprintf(temp, "Save%s\\save%04ld\\", LOCAL_SAVENAME, save_l[num].num);
 		KillAllDirectory(temp);
-		FreeSaveGameList();
 		CreateSaveGameList();
 	}
 }
@@ -705,7 +704,6 @@ void ARXMenu_SaveQuest(long num)
 	ARXMenu_Options_Video_SetGamma(iOldGamma);
 	ARX_SOUND_MixerResume(ARX_SOUND_MixerMenu);
 
-	FreeSaveGameList();
 	CreateSaveGameList();
 }
 

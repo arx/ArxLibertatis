@@ -218,7 +218,6 @@ void ARX_QuickSave()
 {
 	if( REFUSE_GAME_RETURN ) return;
 
-	FreeSaveGameList();
 	CreateSaveGameList();
 
 	std::string szMenuText = QUICK_SAVE_ID;
@@ -355,7 +354,6 @@ void ARX_DrawAfterQuickLoad()
 
 bool ARX_QuickLoad()
 {
-	FreeSaveGameList();
 	CreateSaveGameList();
 
 	std::string szMenuText = QUICK_SAVE_ID;
@@ -3950,7 +3948,6 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 						save_l[me->lData].name = me->lpszText;
 						eMenuState = MAIN;
 						ARXMenu_DeleteQuest( me->lData );
-						FreeSaveGameList();
 						CreateSaveGameList();
 						break;
 					}

@@ -4085,6 +4085,7 @@ long ARX_CHANGELEVEL_GetInfo( const std::string& path, std::string& name, float&
 
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;
 
+	// IMPROVE this will load the whole save file FAT just to get one file!
 	if (ARX_CHANGELEVEL_Get_Player_LevelData(&pld, path) == 1)
 	{
 		name = pld.name;
