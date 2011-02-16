@@ -3696,6 +3696,46 @@ TextureContainer * D3DTextr_GetSurfaceContainer(const char * strName)
 	return ptcTexture;
 }
 
+
+void jpeg_null_function(j_decompress_ptr cinfo) {
+	// don't do anything
+}
+
+boolean_JPEG fill_input_buffer(j_decompress_ptr cinfo) {
+	// There is nothing to fill.
+	return 0;
+}
+
+void skip_input_data(j_decompress_ptr cinfo, long num_bytes) {
+	struct jpeg_source_mgr * src = cinfo->src;
+	if((size_t)num_bytes >= src->bytes_in_buffer) {
+		src->bytes_in_buffer = 0;
+		return;
+	}
+	src->bytes_in_buffer -= num_bytes;
+	src->next_input_byte += num_bytes;
+}
+
+void jpegDecompressFromMemory(j_decompress_ptr cinfo, const char * buffer, size_t size) {
+	
+	if(cinfo->src == NULL) {
+		cinfo->src = (struct jpeg_source_mgr *)(*cinfo->mem->alloc_small)
+		             ((j_common_ptr) cinfo, JPOOL_IMAGE, sizeof(struct jpeg_source_mgr));
+	}
+	
+	struct jpeg_source_mgr * src = cinfo->src;
+	
+	src->next_input_byte = (const JOCTET*)buffer;
+	src->bytes_in_buffer = size;
+	
+	src->init_source = jpeg_null_function;
+	src->fill_input_buffer = fill_input_buffer;
+	src->skip_input_data = skip_input_data;
+	src->resync_to_restart = jpeg_resync_to_restart; // default implementation
+	src->term_source = jpeg_null_function;
+	
+}
+
 //-----------------------------------------------------------------------------
 // Name: LoadJPEGFileNoDeComp()
 // Desc: Loads a .jpeg file, and stores it in allocated memory
@@ -3704,7 +3744,7 @@ TextureContainer * D3DTextr_GetSurfaceContainer(const char * strName)
 HRESULT TextureContainer::LoadJpegFileNoDecomp(const char * strPathname) {
 	
 	size_t size;
-	unsigned char * memjpeg = (unsigned char *)PAK_FileLoadMalloc(strPathname, &size);
+	char * memjpeg = (char *)PAK_FileLoadMalloc(strPathname, &size);
 	if(!memjpeg) {
 		return E_FAIL;
 	}
@@ -3741,7 +3781,7 @@ HRESULT TextureContainer::LoadJpegFileNoDecomp(const char * strPathname) {
 		return E_FAIL;
 	}
 
-	jpeg_mem_src(cinfo, memjpeg, size);
+	jpegDecompressFromMemory(cinfo, memjpeg, size);
 
 	if(JPEGError) {
 		JPEGError = 0;
