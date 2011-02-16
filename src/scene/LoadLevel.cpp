@@ -1128,7 +1128,7 @@ suite:
 			strcpy(tmp2, GetName(tmp).c_str());
 			RemoveName(tmp);
 			std::stringstream ss;
-			ss << tmp << tmp2 << '_' << std::setfill('0') << std::setw(4) << ss << io->ident;
+			ss << tmp << tmp2 << '_' << std::setfill('0') << std::setw(4) << io->ident;
 			tmp = ss.str();
 			//sprintf(tmp, "%s%s_%04d", tmp.c_str(), tmp2, io->ident);
 
