@@ -88,6 +88,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Time.h"
 #include "DanaeDlg.h"
 
+#include <cassert>
+
 #include "Danae_resource.h"
 
 #include <hermes/PakManager.h>
@@ -3404,25 +3406,32 @@ long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, char * _lpszText, long durati
 // returns ACCEPT to accept default EVENT processing								//
 // returns REFUSE to refuse default EVENT processing								//
 //*************************************************************************************
-void MakeSSEPARAMS(char * params)
+void MakeSSEPARAMS(const char * params)
 {
 	for (long i = 0; i < MAX_SSEPARAMS; i++)
 	{
 		SSEPARAMS[i][0] = 0;
 	}
 
-	if ((params == NULL) || (params[0] == 0)) return;
+	if ((params == NULL)) return;
 
-	char * token;
 	long pos = 0;
-	token = strtok(params, " ");
 
-	while (token != NULL)
-	{
-		if (pos < MAX_SSEPARAMS) strcpy(SSEPARAMS[pos], token);
-
+	while(*params != '\0' && pos < MAX_SSEPARAMS) {
+		
+		size_t tokensize = strchr(params, ' ') - params;
+		
+		assert(tokensize < 64 - 1);
+		memcpy(SSEPARAMS[pos], params, tokensize);
+		SSEPARAMS[pos][tokensize] = 0;
+		
+		params += tokensize;
+		
+		if(*params != '\0') {
+			params++;
+		}
+		
 		pos++;
-		token = strtok(NULL, " ");
 	}
 }
 
@@ -3594,7 +3603,7 @@ void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, char * params, char
 		}
 	}
 }
-long SendIOScriptEventReverse(INTERACTIVE_OBJ * io, long msg, char * params, char * eventname)
+long SendIOScriptEventReverse(INTERACTIVE_OBJ * io, long msg, const char * params, const char * eventname)
 {
 	// checks invalid IO
 	if (!io) return -1;
@@ -3628,7 +3637,7 @@ long SendIOScriptEventReverse(INTERACTIVE_OBJ * io, long msg, char * params, cha
 	// Refused further processing.
 	return REFUSE;
 }
-long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, char * params, char * eventname)
+long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const char * params, const char * eventname)
 {
 	// checks invalid IO
 	if (!io) return -1;
@@ -6042,7 +6051,7 @@ void ManageCasseDArme(INTERACTIVE_OBJ * io)
 INTERACTIVE_OBJ * IO_DEBUG = NULL;
 //*************************************************************************************
 //*************************************************************************************
-long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ * io, char * evname, long info)
+long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTIVE_OBJ * io, const char * evname, long info)
 {
 	if (io)
 	{

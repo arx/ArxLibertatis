@@ -446,8 +446,8 @@ void ForceAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * ea);
 long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, char * text, long duration = -1);
 long ARX_SPEECH_ForceLocalised(INTERACTIVE_OBJ * io, char * text, long duration = -1);
 
-long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, char * params, char * eventname = NULL);
-long SendScriptEvent(EERIE_SCRIPT * es, long msg, char * params, INTERACTIVE_OBJ * io, char * eventname, long info = 0);
+long SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const char * params, const char * eventname = NULL);
+long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTIVE_OBJ * io, const char * eventname, long info = 0);
 long SendMsgToAllIO(long msg, char * dat);
 
 void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, char * params, char * eventname);
