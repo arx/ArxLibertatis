@@ -102,6 +102,7 @@ public:
 public:
 	bool AddText(HFONT font, const _TCHAR* str, const RECT& rect, long fgcolor = -1, long bgcolor = 0, long timeout = 0, long scrolltime = 0, float scrollspeed = 0.f, int maxlines = 0);
 	bool AddText(HFONT font, const _TCHAR* str, long x, long y, long fgcolor);
+	bool AddText( ARX_Text* );
 	void Update(float diffFrame);
 	void Render();
 	void Clear();
@@ -116,6 +117,8 @@ private:
 };
 
 //-----------------------------------------------------------------------------
+//
+void ARX_Text_Close();
 
 void ARX_TEXT_Draw(HFONT ef, float x, float y, const _TCHAR* car, COLORREF colo, COLORREF bcol = 0x00FF00FF);
 long ARX_TEXT_DrawRect(HFONT ef, float x, float y, float maxx, float maxy, const _TCHAR* car,
@@ -125,7 +128,7 @@ void DrawBookTextInRect(HFONT font, float x, float y, float maxx, float maxy, co
 						COLORREF col, COLORREF col2);
 void DrawBookTextCenter(HFONT font, float x, float y, const _TCHAR* text, COLORREF col, COLORREF col2);
 		
-void UNICODE_ARXDrawTextCenter(HFONT font, float x, float y, const _TCHAR* str, COLORREF col, COLORREF bcol);
+void UNICODE_ARXDrawTextCenter(float x, float y, const _TCHAR* str, COLORREF col, COLORREF bcol, HFONT font );
 void UNICODE_ARXDrawTextCenteredScroll(HFONT font, float x, float y, float x2, const _TCHAR* str, COLORREF col,
 									   COLORREF bcol, int iTimeScroll, float fSpeed,
 									   int iNbLigne, int iTimeOut = INT_MAX);

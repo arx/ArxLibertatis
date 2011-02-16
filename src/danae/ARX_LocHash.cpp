@@ -38,15 +38,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 namespace
 {
 
-_TCHAR* tchardup(const _TCHAR* str)
+char* tchardup(const char* str)
 {
 	// Nuky - TODO: replace by strdup ? but why the + 2 here ? some other code
 	//        might be buggy and depend on it ..
-	const size_t size = (_tcslen(str) + 2) * sizeof(_TCHAR);
+	const size_t size = (strlen(str) + 2) * sizeof(char);
 
-	_TCHAR* result = (_TCHAR *)malloc(size);
+	char* result = (char *)malloc(size);
 	memset(result, 0, size);	//superfluous
-	_tcscpy(result, str);
+	strcpy(result, str);
 
 	return result;
 }
@@ -54,30 +54,18 @@ _TCHAR* tchardup(const _TCHAR* str)
 } // \namespace
 
 CLocalisation::CLocalisation()
-: section(NULL)
-, keys()
+: lpszUSection(NULL)
+, vUKeys()
 {
 }
 
 CLocalisation::~CLocalisation()
 {
-	free(section);
+	free(lpszUSection);
 
-	for (size_t i = 0, i_end = keys.size(); i != i_end; ++i)
-		free(keys[i]);
+	for (size_t i = 0, i_end = vUKeys.size(); i != i_end; ++i)
+		free(vUKeys[i]);
 }
-
-void CLocalisation::SetSection(const _TCHAR* newsection)
-{
-	free(section);
-	section = tchardup(newsection);
-};
-
-void CLocalisation::AddKey(const _TCHAR* key)
-{
-	keys.push_back(tchardup(key));
-};
-
 
 //----------------------------------------------------------------------------
 // CLocalisationHash
@@ -86,9 +74,9 @@ void CLocalisation::AddKey(const _TCHAR* key)
 namespace
 {
 
-int	GetHash(const _TCHAR* str)
+int	GetHash(const char* str)
 {
-	const size_t len = _tcslen(str);
+	const size_t len = strlen(str);
 	int result = 0;
 
 	for (size_t i = 0; i != len; ++i)
@@ -110,14 +98,14 @@ int	FuncH2(int k)
 } // \namespace
 
 CLocalisationHash::CLocalisationHash(int reservedSize)
-: iSize_(reservedSize)
-, iMask_(reservedSize - 1)
-, iFill_(0)
-, pTab_(new CLocalisation*[reservedSize])
+: iSize(reservedSize)
+, iMask(reservedSize - 1)
+, iFill(0)
+, pTab(new CLocalisation*[reservedSize])
 //, iNbCollisions_(0)
 //, iNbNoInsert_(0)
 {
-	memset(pTab_, NULL, reservedSize * sizeof(*pTab_));
+	memset(pTab, NULL, reservedSize * sizeof(*pTab));
 }
 
 CLocalisationHash::~CLocalisationHash()

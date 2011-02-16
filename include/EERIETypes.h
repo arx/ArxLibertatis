@@ -739,6 +739,7 @@ struct EP_DATA
 };
 #pragma pack(pop)
 
+#pragma pack(push,1)
 struct EERIE_ROOM_DATA
 {
 	long nb_portals;
@@ -752,7 +753,9 @@ struct EERIE_ROOM_DATA
 	unsigned long				usNbTextures;
 	TextureContainer		**	ppTextureContainer;
 };
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct EERIE_SAVE_ROOM_DATA
 {
 	long nb_portals;

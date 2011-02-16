@@ -44,24 +44,8 @@ public:
 		vector<char *> vUKeys;
 
 public:
-		CLocalisation()
-		{
-			lpszUSection = NULL;
-		};
-		~CLocalisation()
-		{
-			if (lpszUSection)
-			{
-				free((void *)lpszUSection);
-				lpszUSection = NULL;
-			}
-
-			for (unsigned int i = 0 ; i < vUKeys.size() ; i++)
-			{
-				free((void *) vUKeys[i]);
-				vUKeys[i] = NULL;
-			}
-};
+		CLocalisation();
+		~CLocalisation();
 
 		void SetSection(char * _lpszUSection)
 		{

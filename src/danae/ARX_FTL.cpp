@@ -480,7 +480,7 @@ struct MCACHE_DATA
 	char * name;
 	char * data;
 	size_t size;
-} MCACHE_DATA;
+};
 
 MCACHE_DATA * MCache = NULL;
 long MCache_Number = 0;

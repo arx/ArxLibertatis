@@ -297,8 +297,8 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
                                 COLORREF col,
                                 COLORREF bcol,
                                 HFONT font,
-                                HRGN hRgn,
-                                HDC hHDC
+                                HRGN hRgn = NULL,
+                                HDC hHDC = NULL
                                )
 {
 	HDC hDC = NULL;
@@ -321,41 +321,35 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 
 			_tcscpy(tUText, _lpszUText);
 
-		if (hRgn)
+			if (hRgn)
+					SelectClipRgn(hDC, hRgn);
+
+			if (bcol == 0x00FF00FF)
+				SetBkMode(hDC, TRANSPARENT);
+			else
 			{
-				SelectClipRgn(hDC,
-				              hRgn);
+				SetBkMode(hDC, OPAQUE);
+				SetBkColor(hDC, bcol);
 			}
 
-			if (bcol == 0x00FF00FF) SetBkMode(hDC, TRANSPARENT);
-		else
-		{
-			SetBkMode(hDC, OPAQUE);
-			SetBkColor(hDC, bcol);
-		}
+			SetTextColor(hDC, col);
 
-		SetTextColor(hDC, col);
+			SelectObject(hDC, font);
 
-		SelectObject(hDC, font);
-
-		RECT rect;
-		rect.top	= (long)y;
-		rect.left	= (long)x;
-		rect.right	= (long)maxx;
-			long n		= ARX_UNICODE_FormattingInRect(hDC, tUText, 0, rect);
+			RECT rect;
 			rect.top	= (long)y;
+			rect.left	= (long)x;
+			rect.right	= (long)maxx;
+			long n		= ARX_UNICODE_FormattingInRect(hDC, tUText, 0, rect);
 			rect.bottom	= ((long)y) + n;
 
-			SelectClipRgn(hDC,
-			              NULL);
+			SelectClipRgn(hDC, NULL);
 
-		if (!hHDC)
-			{
-			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-			}
+			if (!hHDC)
+				danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 
-		return n;
-	}
+			return n;
+		}
 	}
 
 	return 0;
@@ -384,8 +378,7 @@ long ARX_TEXT_DrawRect(HFONT ef,
                        _TCHAR * car,
                        COLORREF colo,
                        HRGN _hRgn,
-                       COLORREF bcol,
-                       long flags)
+                       COLORREF bcol)
 {
 
 	bcol = RGB((bcol >> 16) & 255, (bcol >> 8) & 255, (bcol) & 255);
@@ -398,7 +391,7 @@ long ARX_TEXT_DrawRect(HFONT ef,
 //-----------------------------------------------------------------------------
 float DrawBookTextInRect(float x, float y, float maxx, float maxy, _TCHAR * text, COLORREF col, COLORREF col2, HFONT font)
 {
-	return (float)ARX_TEXT_DrawRect(GDevice, font,
+	return (float)ARX_TEXT_DrawRect( font,
 	                                (BOOKDECX + x) * Xratio, (BOOKDECY + y) * Yratio, -3, 0,
 	                                (BOOKDECX + maxx) * Xratio, (BOOKDECY + maxy) * Yratio, text, col, NULL, col2);
 }
@@ -763,7 +756,7 @@ bool CARXTextManager::AddText(HFONT _hFont, const _TCHAR * _lpszUText, const REC
 {
 	if ((_lpszUText) && (_hFont))
 	{
-		ARX_TEXT * pArxText = (ARX_TEXT *) malloc(sizeof(ARX_TEXT));
+		ARX_Text * pArxText = (ARX_Text *) malloc(sizeof(ARX_Text));
 
 		if (pArxText)
 		{

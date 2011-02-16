@@ -71,6 +71,9 @@ bool DeleteTrack(void);
 /*-----------------------------------------------------------*/
 //extern char DirectoryChoose[];
 /*-----------------------------------------------------------*/
+
+struct C_KEY;
+
 class C_LIGHT
 {
 	public:
@@ -80,8 +83,8 @@ class C_LIGHT
 		float		r, g, b;
 		float		intensite;
 		float		intensiternd;
-		struct CST_KEY * prev;
-		struct CST_KEY * next;
+		C_KEY *		prev;
+		C_KEY *		next;
 	public:
 		C_LIGHT()
 		{
@@ -293,7 +296,7 @@ struct C_KEY_1_75
 	float		speedtrack;
 };
 
-typedef struct CST_KEY
+struct C_KEY
 {
 	int			frame;
 	int			numbitmap;
