@@ -82,6 +82,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "HERMESMain.h"
 #include "hermes/PakManager.h"
+#include "hermes/Filesystem.h"
+#include "hermes/blast.h"
 
 #include "EERIEMath.h"
 #include "EERIEObject.h"
@@ -235,7 +237,7 @@ void ARX_GAMESAVE_CreateNewInstance()
 		{
 			//The directory may exist but may be empty after crash
 			strcat(testpath, "\\GSAVE.SAV");
-			FILE * f = fopen(testpath, "rb");
+			FileHandle f = FileOpenRead(testpath);
 
 			if (!f) 				
 			{
@@ -244,7 +246,7 @@ void ARX_GAMESAVE_CreateNewInstance()
 				return;
 			}
 
-			fclose(f);			
+			FileCloseRead(f);			
 		}
 
 		num++;
@@ -1894,7 +1896,7 @@ long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 
 	long ssize = size;
  
-	dat = (unsigned char *)STD_Explode(compressed, ssize, &size); 
+	dat = (unsigned char *)blastMemAlloc(compressed, ssize, size); 
 
 	memcpy(asi, dat, sizeof(ARX_CHANGELEVEL_INDEX));
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
@@ -1960,7 +1962,7 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num)
 
 	long ssize = size;
 
-	dat = (unsigned char *)STD_Explode(compressed, ssize, &size); //pos,&cpr_pos);
+	dat = (unsigned char *)blastMemAlloc(compressed, ssize, size); //pos,&cpr_pos);
 
 	// Skip Changelevel Index
 	pos += sizeof(ARX_CHANGELEVEL_INDEX);
@@ -2132,7 +2134,7 @@ long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVEL_PLA
 
 	long ssize = size;
  
-	char * dat = (char *)STD_Explode(compressed, ssize, &size); 
+	char * dat = blastMemAlloc(compressed, ssize, size); 
 	memcpy(asp, dat, sizeof(ARX_CHANGELEVEL_PLAYER));
 	//free(compressed);
 
@@ -2427,7 +2429,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 
 	long ssize = size;
  
-	dat = (unsigned char *)STD_Explode(compressed, ssize, &size);
+	dat = (unsigned char *)blastMemAlloc(compressed, ssize, size);
 
 
 	// Ignore object if can't explode file
@@ -3505,7 +3507,7 @@ long ARX_CHANGELEVEL_Pop_Globals()
 
 	long ssize = size;
  
-	dat = (unsigned char *)STD_Explode(compressed, ssize, &size);
+	dat = (unsigned char *)blastMemAlloc(compressed, ssize, size);
 	acsg = (ARX_CHANGELEVEL_SAVE_GLOBALS *)(dat);
 	pos += sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS);
 
@@ -4233,7 +4235,7 @@ long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 	// Explode File
 	long ssize = size;
  
-	dat = (unsigned char *)STD_Explode(compressed, ssize, &size); //pos,&cpr_pos);
+	dat = (unsigned char *)blastMemAlloc(compressed, ssize, size); //pos,&cpr_pos);
 	free(compressed);
 
 	if (dat == NULL)

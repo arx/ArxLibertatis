@@ -80,7 +80,7 @@ struct SCR_TIMER
 struct SCRIPT_EVENT
 {
 	const char		*	name;
-} SCRIPT_EVENT;
+};
 
 //-----------------------------------------------------------------------------
 #define PATHFIND_ALWAYS		1

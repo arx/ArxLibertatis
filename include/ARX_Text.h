@@ -66,14 +66,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::vector;
 
 //-----------------------------------------------------------------------------
-typedef enum _ARX_TEXT_TYPE
+typedef enum ARX_TEXT_TYPE
 {
 	ARX_TEXT_ONCE,
 	ARX_TEXT_STAY
 } ARX_TEXT_TYPE;
 
 //-----------------------------------------------------------------------------
-struct _ARX_TEXT
+struct ARX_Text
 {
 	ARX_TEXT_TYPE	eType;
 	HFONT			hFont;
@@ -91,7 +91,7 @@ struct _ARX_TEXT
 };
 
 //-----------------------------------------------------------------------------
-void ARX_Text_Init(ARX_TEXT *);
+void ARX_Text_Init(ARX_Text *);
 
 class CARXTextManager
 {
@@ -108,7 +108,7 @@ public:
 	bool HasText() const;
 
 private:
-	std::vector<ARXText*> vText_;
+	std::vector<ARX_Text*> vText;
 
 	// No copy
 	CARXTextManager(const CARXTextManager&);

@@ -406,8 +406,8 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 		float div = DIV25;
 		TextureContainer * tc = minimap[SHOWLEVEL].tc;
-		float dw = 1.f / (float)std::max(tc->m_dwDeviceWidth, tc->m_dwOriginalWidth); 
-		float dh = 1.f / (float)std::max(tc->m_dwDeviceHeight, tc->m_dwOriginalHeight);
+		float dw = 1.f / (float)max(tc->m_dwDeviceWidth, tc->m_dwOriginalWidth); 
+		float dh = 1.f / (float)max(tc->m_dwDeviceHeight, tc->m_dwOriginalHeight);
 		
 		float vx2 = 4.f * dw * mod_x;
 		float vy2 = 4.f * dh * mod_z;
@@ -976,7 +976,6 @@ void ARX_MAPMARKER_Init()
 long ARX_MAPMARKER_Get(const char* str)
 {
 	for (long i = 0; i < Nb_Mapmarkers; i++)
-	{
 		if (!strcasecmp(Mapmarkers[i].string, str))
 			return i;
 

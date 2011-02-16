@@ -24,8 +24,13 @@
  * 1.1  16 Feb 2003     - Fixed distance check for > 4 GB uncompressed data
  */
 
-#include <setjmp.h>             /* for setjmp(), longjmp(), and jmp_buf */
+#include <csetjmp> /* for setjmp(), longjmp(), and jmp_buf */
+
+#include <cstring>
+#include <cstdlib>
+
 #include <hermes/blast.h>              /* prototype for blast() */
+#include <hermes/Logger.h>
 
 #define local static            /* for local function definitions */
 #define MAXBITS 13              /* maximum code length */
@@ -442,3 +447,90 @@ int main(void)
     return ret;
 }
 #endif
+
+// Additional functions.
+
+int blastOutMem(void * Param, unsigned char * buf, size_t len) {
+	
+	BlastMemOutBuffer * p = (BlastMemOutBuffer *)Param;
+	
+	if(len > p->size) {
+		return 1;
+	}
+	
+	memcpy(p->buf, buf, len);
+	p->buf += len;
+	p->size -= len;
+	
+	return 0;
+}
+
+size_t blastInMem(void * Param, const unsigned char ** buf) {
+	
+	BlastMemInBuffer * p = (BlastMemInBuffer *)Param;
+	
+	*buf = (const unsigned char *)p->buf;
+	
+	size_t size = p->size;
+	
+	p->buf += size;
+	p->size = 0;
+
+	return size;
+}
+
+int blastOutMemRealloc(void * Param, unsigned char * buf, size_t len) {
+	
+	BlastMemOutBufferRealloc * p = (BlastMemOutBufferRealloc *)Param;
+	
+	if(p->fillSize + len > p->allocSize) {
+		p->allocSize = (p->fillSize + len) * 4 / 3;
+		char * newBuf = (char *)realloc(p->buf, p->allocSize);
+		if(!newBuf) {
+			free(p->buf);
+			p->allocSize = 0;
+			p->fillSize = 0;
+			return 1;
+		}
+		p->buf = newBuf;
+	}
+	
+	memcpy(p->buf + p->fillSize, buf, len);
+	
+	p->fillSize += len;
+	
+	return 0;
+}
+
+char * blastMemAlloc(const char * from, size_t fromSize, size_t & toSize) {
+	
+	BlastMemInBuffer in(from, fromSize);
+	BlastMemOutBufferRealloc out;
+	
+	int error = blast(blastInMem, &in, blastOutMemRealloc, &out);
+	if(error) {
+		LogError << "blastMemAlloc error " << error << " for " << fromSize;
+		toSize = 0;
+		return NULL;
+	}
+	
+	// TODO realloc to fit fill size?
+	
+	toSize = out.fillSize;
+	return out.buf;
+}
+
+
+size_t blastMem(const char * from, size_t fromSize, char * to, size_t toSize) {
+	
+	BlastMemInBuffer in(from, fromSize);
+	BlastMemOutBuffer out(to, toSize);
+	
+	int error = blast(blastInMem, &in, blastOutMem, &out);
+	if(error) {
+		LogError << "blastMem error " << error << " for " << fromSize << "/" << toSize;
+		return 0;
+	}
+	
+	return toSize - out.size;
+}

@@ -67,6 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <hermes/PakManager.h>
 #include <hermes/Filesystem.h>
 #include <hermes/Logger.h>
+#include <hermes/blast.h>
 
 //***********************************************************************************************
 //	FTL FILE Structure:
@@ -586,7 +587,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 
 	// Checks for FTL file existence
 	if(!PAK_FileExist(filename)) {
-		LogError<<"ARX_FTL_Load: not found in PAK" << filename;
+		LogError << "ARX_FTL_Load: not found in PAK" << filename;
 		return NULL;
 	}
 
@@ -617,7 +618,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	else NoCheck = 1;
 
 	if(!compressedData) {
-		printf("ARX_FTL_Load: error loading from PAK\n");
+		LogError << "ARX_FTL_Load: error loading from PAK/cache " << filename;
 		return NULL;
 	}
 
@@ -625,11 +626,11 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 
 	DontCheck = 1;
 
-	dat = (unsigned char *)STD_Explode(compressedData, compressedSize, &allocsize);//pos,&cpr_pos);
+	dat = (unsigned char *)blastMemAlloc(compressedData, compressedSize, allocsize);//pos,&cpr_pos);
 	// TODO size ignored
 
 	if(!dat) {
-		printf("ARX_FTL_Load: error decompressing\n");
+		LogError << "ARX_FTL_Load: error decompressing " << filename;
 		return NULL;
 	}
 
@@ -642,7 +643,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	// Verify FTL file Signature
 	if ((afph->ident[0] != 'F') && (afph->ident[1] != 'T') && (afph->ident[2] != 'L'))
 	{
-		printf("ARX_FTL_Load: wrong magic number\n");
+		LogError << "ARX_FTL_Load: wrong magic number in " << filename;
 		free(dat);
 		return NULL;
 	}
@@ -650,7 +651,8 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	// Verify FTL file version
 	if (afph->version != CURRENT_FTL_VERSION)
 	{
-		printf("ARX_FTL_Load: wrong version: %f, expected %f\n", afph->version, CURRENT_FTL_VERSION);
+		LogError << "ARX_FTL_Load: wring version " << afph->version << ", expected "
+		         << CURRENT_FTL_VERSION << " in " << filename;
 		free(dat);
 		return NULL;
 	}
@@ -667,7 +669,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		for (long i = 0; i < 512; i++)
 			if (check[i] != pouet[i])
 			{
-				printf("ARX_FTL_Load: checksum error\n");
+				LogError << "ARX_FTL_Load: checksum error in " << filename;
 				free(dat);
 				return NULL;
 			}
@@ -833,7 +835,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 
 	if (!obj)
 	{
-		printf("ARX_FTL_Load: error loading data\n");
+		LogError << "ARX_FTL_Load: error loading data from " << filename;
 		free(dat);
 		return NULL;
 	}
@@ -898,6 +900,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	EERIEOBJECT_CreatePFaces(obj);
 	// Now we can release our cool FTL file
 	EERIE_Object_Precompute_Fast_Access(obj);
-	LogInfo<<"loaded "<< file;
+	LogInfo << "ARX_FTL_Load: loaded object " << filename;
 	return obj;
 }

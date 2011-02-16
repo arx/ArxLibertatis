@@ -358,8 +358,7 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 }
 
 //-----------------------------------------------------------------------------
-long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice,
-                   HFONT ef,
+long ARX_TEXT_Draw(HFONT ef,
                    float x, float y,
                    long spacingx, long spacingy,
                    const char * car,
@@ -374,8 +373,7 @@ long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice,
 	return 15 + spacingy;
 }
 
-long ARX_TEXT_DrawRect(LPDIRECT3DDEVICE7 pd3dDevice,
-                       HFONT ef,
+long ARX_TEXT_DrawRect(HFONT ef,
                        float x, float y,
                        long spacingx, long spacingy,
                        float maxx, float maxy,
@@ -488,7 +486,7 @@ long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, _TCHAR * str,
 void ARX_Allocate_Text(char *&dest, const char * id_string)
 {
 	if (dest != NULL)
-{
+	{
 	free(dest);
 		dest = NULL;
 	}
@@ -674,8 +672,6 @@ _TCHAR * GetFontName(const char * _lpszFileName)
 	return NULL;
 }
 
-} // \namespace
-
 void _ShowText(const char* text)
 {
 	if (GDevice)
@@ -706,7 +702,7 @@ void _ShowText(const char* text)
 }
 
 //-----------------------------------------------------------------------------
-void ARX_Text_Init(ARX_TEXT * _pArxText)
+void ARX_Text_Init( ARX_Text * _pArxText)
 {
 	_pArxText->eType		= ARX_TEXT_ONCE;
 	_pArxText->hFont		= hFontInGame;
@@ -738,7 +734,7 @@ CARXTextManager::CARXTextManager()
 //-----------------------------------------------------------------------------
 CARXTextManager::~CARXTextManager()
 {
-	vector<ARX_TEXT *>::iterator itManage;
+	vector<ARX_Text *>::iterator itManage;
 
 	for (itManage = vText.begin(); itManage < vText.end(); itManage++)
 	{
@@ -759,7 +755,7 @@ CARXTextManager::~CARXTextManager()
 }
 
 //-----------------------------------------------------------------------------
-bool CARXTextManager::AddText(HFONT _hFont, _TCHAR * _lpszUText, RECT & _rRect, long _lCol, long _lBkgCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp)
+bool CARXTextManager::AddText(HFONT _hFont, const _TCHAR * _lpszUText, const RECT & _rRect, long _lCol, long _lBkgCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp)
 {
 	if ((_lpszUText) && (_hFont))
 	{
@@ -829,11 +825,11 @@ bool CARXTextManager::AddText(HFONT _hFont, _TCHAR * _lpszUText, RECT & _rRect, 
 }
 
 //-----------------------------------------------------------------------------
-bool CARXTextManager::AddText(ARX_TEXT * _pArxText)
+bool CARXTextManager::AddText(ARX_Text * _pArxText)
 {
 	if ((_pArxText) && (_pArxText->lpszUText) && (_pArxText->hFont))
 	{
-		ARX_TEXT * pArxText = (ARX_TEXT *) malloc(sizeof(ARX_TEXT));
+		ARX_Text * pArxText = (ARX_Text *) malloc(sizeof(ARX_Text));
 
 		if (pArxText)
 		{
@@ -901,7 +897,7 @@ bool CARXTextManager::AddText(ARX_TEXT * _pArxText)
 //-----------------------------------------------------------------------------
 void CARXTextManager::Update(float _fDiffFrame)
 {
-	vector<ARX_TEXT *>::iterator itManage;
+	vector<ARX_Text *>::iterator itManage;
 
 
 	ARX_CHECK_INT(_fDiffFrame);
@@ -911,7 +907,7 @@ void CARXTextManager::Update(float _fDiffFrame)
 
 	for (itManage = vText.begin(); itManage < vText.end();)
 {
-		ARX_TEXT * pArxText = *itManage;
+		ARX_Text * pArxText = *itManage;
 
 		if (pArxText)
 {
@@ -951,7 +947,7 @@ void CARXTextManager::Update(float _fDiffFrame)
 //-----------------------------------------------------------------------------
 void CARXTextManager::Render()
 {
-	vector<ARX_TEXT *>::iterator itManage;
+	vector<ARX_Text *>::iterator itManage;
 
 	itManage = vText.begin();
 
@@ -964,7 +960,7 @@ void CARXTextManager::Render()
 
 	while (itManage != vText.end())
 	{
-		ARX_TEXT * pArxText = *itManage;
+		ARX_Text * pArxText = *itManage;
 
 		if (pArxText)
 		{
@@ -1015,7 +1011,7 @@ void CARXTextManager::Render()
 //-----------------------------------------------------------------------------
 void CARXTextManager::Clear()
 {
-	vector<ARX_TEXT *>::iterator itManage;
+	vector<ARX_Text *>::iterator itManage;
 
 	for (itManage = vText.begin(); itManage < vText.end(); itManage++)
 	{
@@ -1130,38 +1126,6 @@ string getFontFile() {
 		tx = "misc" PATH_SEPERATOR_STR "ARX_default.ttf"; // Full path
 	}
 	return tx;
-}
-
-HFONT CreateFontFromProfile(_TCHAR* faceName, const _TCHAR* section, const _TCHAR* defaultFontSize, bool antialias)
-{
-	if (!hUnicodeLibrary)
-		return NULL;
-
-	_TCHAR szUT[256];
-	PAK_UNICODE_GetPrivateProfileString(section, _T("string"), defaultFontSize, szUT, 256, NULL);
-	int iFontSize = _ttoi(szUT);
-
-	// Apply fixes to iFontSize
-	iFontSize = (int)(float)(iFontSize * Yratio);
-	if (CHINESE_VERSION)
-	{
-		if      (iFontSize < 14)	iFontSize = 12;
-		else if (iFontSize < 15)	iFontSize = 14;
-		else if (iFontSize < 18)	iFontSize = 15;
-		else if (iFontSize < 30)	iFontSize = 18;
-		else						iFontSize = 30;
-	}
-
-	HFONT ret = Unicows_CreateFontW(iFontSize, 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
-									EAST_EUROPE ? CHINESEBIG5_CHARSET : DEFAULT_CHARSET,
-									OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
-									antialias ? ANTIALIASED_QUALITY : NONANTIALIASED_QUALITY,
-									VARIABLE_PITCH, faceName);
-
-	if (!ret)
-		FontError();
-
-	return ret;
 }
 
 //-----------------------------------------------------------------------------

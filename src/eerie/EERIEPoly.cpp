@@ -78,6 +78,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <hermes/PakManager.h>
 #include <hermes/Filesystem.h>
 #include <hermes/Logger.h>
+#include <hermes/blast.h>
 
 
 void ComputeFastBkgData(EERIE_BACKGROUND * eb);
@@ -3869,7 +3870,7 @@ lasuite:
 
 	if (dat == NULL) goto release;
 
-	STD_ExplodeNoAlloc(compressed,cpr_pos-pos,(char *)dat,&cpr_pos);
+	cpr_pos = blastMem(compressed,cpr_pos-pos,(char *)dat,cpr_pos);
 
 	if (dat == NULL) goto release;
 
