@@ -322,35 +322,30 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const char * path)
 }
 
 //-----------------------------------------------------------------------------
-long EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah,char * path)
-{
-	if (!ah) return 0;
-
-	if (!ah->path[0]) return 0;
-
-	unsigned char * adr;
-	size_t FileSize;
-	EERIE_ANIM * temp;
-
-	if (!PAK_FileExist(path)) return 0;
-
-	if ((adr=(unsigned char *)PAK_FileLoadMalloc(path,&FileSize))!=NULL)
-	{
-		temp=TheaToEerie(adr,FileSize,path,TEA_PLAYER_SAMPLES);
-		free(adr);
-
-		if (temp)
-		{
-			ah->alt_nb++;
-			ah->anims=(EERIE_ANIM **)realloc(ah->anims,sizeof(EERIE_ANIM *)*ah->alt_nb);
-			ah->sizes=(long *)realloc(ah->sizes,sizeof(long)*ah->alt_nb);
-			ah->anims[ah->alt_nb-1]=temp;
-			ah->sizes[ah->alt_nb-1]=FileSize;		
-			return 1;
-		}
+long EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah, char * path) {
+	
+	if(!ah || !ah->path[0]) {
+		return 0;
 	}
-
-	return 0;
+	
+	size_t FileSize;
+	unsigned char * adr = (unsigned char *)PAK_FileLoadMalloc(path,&FileSize);
+	if(!adr) {
+		return 0;
+	}
+	
+	EERIE_ANIM * temp = TheaToEerie(adr,FileSize,path,TEA_PLAYER_SAMPLES);
+	free(adr);
+	if(!temp) {
+		return 0;
+	}
+	
+	ah->alt_nb++;
+	ah->anims=(EERIE_ANIM **)realloc(ah->anims,sizeof(EERIE_ANIM *)*ah->alt_nb);
+	ah->sizes=(long *)realloc(ah->sizes,sizeof(long)*ah->alt_nb);
+	ah->anims[ah->alt_nb-1]=temp;
+	ah->sizes[ah->alt_nb-1]=FileSize;		
+	return 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -389,7 +384,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const char * path)
 				animations[i].locks=1;
 				char temp[512]; // TODO improve
 				strcpy(temp, path);
-				SetExt(temp,"");
+				SetExt(temp, "");
 				sprintf(path2,"%s%d.tea",temp,pathcount);
 
 				while (EERIE_ANIMMANAGER_AddAltAnim(&animations[i],path2))
@@ -432,7 +427,7 @@ long EERIE_ANIMMANAGER_Count(char *tex,long * memsize)
 			for (long k=0;k<animations[i].alt_nb;k++)
 				totsize+=animations[i].sizes[k];
 
-			sprintf(temp,"%3d[%3d] %s size %d Locks %d Alt %d\r\n",count,i,txx,totsize,animations[i].locks,animations[i].alt_nb-1);
+			sprintf(temp,"%3ld[%3ld] %s size %ld Locks %ld Alt %d\r\n",count,i,txx,totsize,animations[i].locks,animations[i].alt_nb-1);
 			memsize+=totsize;
 			strcat(tex,temp);
 		}

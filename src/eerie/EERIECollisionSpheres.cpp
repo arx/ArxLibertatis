@@ -61,8 +61,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEMeshTweak.h"
 
 
-
-
 void EERIE_COLLISION_Cylinder_Create(INTERACTIVE_OBJ * io)
 {
 	if (io == NULL) return;

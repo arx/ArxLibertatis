@@ -66,7 +66,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIETexture.h"
 #include "EERIEApp.h"
 #include "EERIEUtil.h"
-#include "EERIEJpeg.h"
 #include "EERIEMath.h"
 #include "HERMESMain.h"
 #include <hermes/PakManager.h>
@@ -369,10 +368,10 @@ long CountTextures(char * tex, long * memsize, long * memmip)
 		if (tex != NULL)
 		{
 			if (ptcTexture->m_dwFlags & D3DTEXTR_NO_MIPMAP)
-				sprintf(temp, "%3d %s %dx%dx%d %d %s\r\n", count, ptcTexture->m_strName, ptcTexture->m_dwWidth, ptcTexture->m_dwHeight, ptcTexture->m_dwBPP, ptcTexture->locks, GetName(ptcTexture->m_texName));
+				sprintf(temp, "%3ld %s %dx%dx%d %ld %s\r\n", count, ptcTexture->m_strName, ptcTexture->m_dwWidth, ptcTexture->m_dwHeight, ptcTexture->m_dwBPP, ptcTexture->locks, GetName(ptcTexture->m_texName));
 			else
 			{
-				sprintf(temp, "%3d %s %dx%dx%d %d MIP %s\r\n", count, ptcTexture->m_strName, ptcTexture->m_dwWidth, ptcTexture->m_dwHeight, ptcTexture->m_dwBPP, ptcTexture->locks, GetName(ptcTexture->m_texName));
+				sprintf(temp, "%3ld %s %dx%dx%d %ld MIP %s\r\n", count, ptcTexture->m_strName, ptcTexture->m_dwWidth, ptcTexture->m_dwHeight, ptcTexture->m_dwBPP, ptcTexture->locks, GetName(ptcTexture->m_texName));
 
 				for (long k = 1; k <= NB_MIPMAP_LEVELS; k++)
 				{
@@ -784,15 +783,15 @@ HRESULT TextureContainer::LoadImageData() {
 // Name: LoadBitmapFile()
 // Desc: Loads data from a .bmp file, and stores it in a bitmap structure.
 //-----------------------------------------------------------------------------
-HRESULT TextureContainer::LoadBitmapFile(TCHAR * strPathname)
-{
-	if (!PAK_FileExist(strPathname)) return E_FAIL;
+HRESULT TextureContainer::LoadBitmapFile(const char * strPathname) {
 
 	size_t siz = 0;
 	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, &siz);
 	// TODO siz ignored
 
-	if (!dat) return E_FAIL;
+	if(!dat) {
+		return E_FAIL;
+	}
 
 	BITMAPINFOHEADER sBitmapH = *((BITMAPINFOHEADER *)(dat + sizeof(BITMAPFILEHEADER)));
 	HDC hHDC = CreateCompatibleDC(NULL);
@@ -881,16 +880,15 @@ HRESULT TextureContainer::LoadBitmapFile(TCHAR * strPathname)
 // Desc: Loads RGBA data from a .tga file, and stores it in allocated memory
 //       for the specified texture container
 //-----------------------------------------------------------------------------
-HRESULT TextureContainer::LoadTargaFile(TCHAR * strPathname)
+HRESULT TextureContainer::LoadTargaFile(const char * strPathname)
 {
-	if (!PAK_FileExist(strPathname)) return E_FAIL;
-
 	size_t size = 0;
 	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(strPathname, &size);
 	// TODO size ignored
 
-	if (NULL == dat)
+	if(!dat) {
 		return E_FAIL;
+	}
 
 	struct TargaHeader
 	{
@@ -3702,22 +3700,16 @@ TextureContainer * D3DTextr_GetSurfaceContainer(const char * strName)
 // Desc: Loads a .jpeg file, and stores it in allocated memory
 //       for the specified texture container
 //-----------------------------------------------------------------------------
-HRESULT TextureContainer::LoadJpegFileNoDecomp(TCHAR * strPathname)
-{
-
-	if (!PAK_FileExist(strPathname))
-		return E_FAIL;
-
+HRESULT TextureContainer::LoadJpegFileNoDecomp(const char * strPathname) {
+	
 	size_t size;
 	unsigned char * memjpeg = (unsigned char *)PAK_FileLoadMalloc(strPathname, &size);
-
-	if (!memjpeg)
+	if(!memjpeg) {
 		return E_FAIL;
-
+	}
+	
 	m_pJPEGData = new unsigned char[sizeof(struct	jpeg_decompress_struct)+sizeof(struct jpeg_error_mgr)];
-
-	if (!m_pJPEGData)
-	{
+	if(!m_pJPEGData) {
 		free(memjpeg);
 		return E_FAIL;
 	}
@@ -3728,8 +3720,7 @@ HRESULT TextureContainer::LoadJpegFileNoDecomp(TCHAR * strPathname)
 
 	cinfo->err = jpeg_std_error(jerr);
 
-	if (JPEGError)
-	{
+	if(JPEGError) {
 		JPEGError = 0;
 		delete memjpeg;
 		delete[] m_pJPEGData;
@@ -3741,8 +3732,7 @@ HRESULT TextureContainer::LoadJpegFileNoDecomp(TCHAR * strPathname)
 
 	jpeg_create_decompress(cinfo);
 
-	if (JPEGError)
-	{
+	if(JPEGError) {
 		JPEGError = 0;
 		free(memjpeg);
 		delete[] m_pJPEGData;
@@ -3752,8 +3742,7 @@ HRESULT TextureContainer::LoadJpegFileNoDecomp(TCHAR * strPathname)
 
 	jpeg_mem_src(cinfo, memjpeg, size);
 
-	if (JPEGError)
-	{
+	if(JPEGError) {
 		JPEGError = 0;
 		jpeg_destroy_decompress(cinfo);
 		free(memjpeg);
@@ -3764,8 +3753,7 @@ HRESULT TextureContainer::LoadJpegFileNoDecomp(TCHAR * strPathname)
 
 	jpeg_read_header(cinfo, true);
 
-	if (JPEGError)
-	{
+	if (JPEGError) {
 		JPEGError = 0;
 		jpeg_destroy_decompress(cinfo);
 		free(memjpeg);
@@ -3941,22 +3929,21 @@ void * PNG_Inflate(DATAS_PNG * dpng)
 	return mem;
 }
 /*-----------------------------------------------------------------------------*/
-int Decomp_PNG(void * mems, DATAS_PNG * dpng)
-{
-	int	noerr = 1, stop = 1;
-
+int Decomp_PNG(void * mems, DATAS_PNG * dpng) {
+	
+	int noerr = 1, stop = 1;
+	
 	PNGDatas = (char *)mems;
 	dpng->pngpalette = NULL;
 	dpng->pnglzwdatas = NULL;
 
 	if (!Read_PNG_Signature()) return PNG_ERROR;
 
-	while ((noerr)AND(stop))
-	{
+	while((noerr) && (stop)) {
+		
 		Read_PNG_Chunk();
 
-		switch (ChunkType)
-		{
+		switch (ChunkType) {
 			case PNG_HEADER:
 					noerr = Read_PNG_Header(dpng);
 				break;
@@ -3974,50 +3961,51 @@ int Decomp_PNG(void * mems, DATAS_PNG * dpng)
 				break;
 		}
 	}
-
+	
 	if (!noerr) return PNG_ERROR;
-
+	
 	return PNG_OK;
 }
 //-----------------------------------------------------------------------------
 // Name: LoadPNGFile()
-// Desc: Loads a .jpeg file, and stores it in allocated memory
+// Desc: Loads a .png file, and stores it in allocated memory
 //       for the specified texture container, no interlace required
 //-----------------------------------------------------------------------------
-HRESULT TextureContainer::LoadPNGFile(TCHAR * strPathname)
-{
-	int	taille;
-
-	FILE * file = fopen(strPathname, "rb");
-
-	if (NULL == file) return E_FAIL;
-
-	fseek(file, 0, SEEK_END);
-	m_pPNGData = new unsigned char[(taille=ftell(file))+sizeof(DATAS_PNG)];
-
-	if (!m_pPNGData)
-	{
-		fclose(file);
+HRESULT TextureContainer::LoadPNGFile(const char * strPathname) {
+	
+	int taille;
+	
+	PakFileHandle * file = PAK_fopen(strPathname);
+	
+	if(!file) {
+		return E_FAIL;
+	}
+	
+	PAK_fseek(file, 0, SEEK_END);
+	size_t size = PAK_ftell(file);
+	
+	// TODO why allocode the size here?
+	m_pPNGData = new unsigned char[size + sizeof(DATAS_PNG)];
+	if(!m_pPNGData) {
+		PAK_fclose(file);
 		return E_FAIL;
 	}
 
-	fseek(file, 0, SEEK_SET);
+	PAK_fseek(file, 0, SEEK_SET);
 
 	char * mempng = (char *)(m_pPNGData + sizeof(DATAS_PNG));
-	fread((void *)mempng, 1, taille, file);
-	fclose(file);
+	PAK_fread((void *)mempng, 1, taille, file);
+	PAK_fclose(file);
 
-	if (Decomp_PNG((void *)mempng, (DATAS_PNG *)m_pPNGData) == PNG_ERROR)
-	{
+	if(Decomp_PNG((void *)mempng, (DATAS_PNG *)m_pPNGData) == PNG_ERROR) {
 		delete m_pPNGData;
 		m_pPNGData = NULL;
 		return E_FAIL;
 	}
 
-	PNG_IHDR * pngh = (PNG_IHDR *)(((DATAS_PNG *)m_pPNGData)->pngh);
+	PNG_IHDR * pngh = ((DATAS_PNG *)m_pPNGData)->pngh;
 
-	if (pngh->colortype & ALPHA_USED)
-	{
+	if(pngh->colortype & ALPHA_USED) {
 		m_bHasAlpha = true;
 	}
 

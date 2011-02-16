@@ -71,7 +71,6 @@ namespace ATHENA
 	extern aalSLong environment_id;
 
 	// Global settings                                                           //
-	extern char * root_path;
 	extern char * sample_path;
 	extern char * ambiance_path;
 	extern char * environment_path;

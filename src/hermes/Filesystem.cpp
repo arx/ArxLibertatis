@@ -27,6 +27,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h>
 #include <cstdio>
 
+#include <cassert>
+
 long KillAllDirectory(const char * path) {
 	printf("KillAllDirectory(%s)\n", path);
 	
@@ -93,84 +95,86 @@ bool DirectoryExist(const char * name)
 	return true;
 }
 
-// TODO return should be bool
-bool FileExist(const char * name)
-{
-	FileHandle i;
+// File handle 0 is reserved for error.
+#define GETHANDLE(x)  (HANDLE)((ULONG_PTR)(handle) - 1)
+#define MAKEHANDLE(x) (FileHandle)((ULONG_PTR)(handle) + 1)
+const FileHandle INVALID_FILE_HANDLE = (FileHandle)NULL;
 
-	if((i = FileOpenRead(name)) == 0) {
+FileHandle FileOpenRead(const char * name) {
+	
+	HANDLE handle = CreateFile(name, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, 0);
+
+	if(handle == INVALID_HANDLE_VALUE) {
+		printf("\e[1;31mCan't open\e[m\t%s\n", name);
+		return INVALID_FILE_HANDLE;
+	}
+	printf("\e[1;32mOpened\e[m\t%s\n", name);
+	
+	assert(MAKEHANDLE(handle) != INVALID_FILE_HANDLE);
+	
+	return MAKEHANDLE(handle);
+}
+
+bool FileExist(const char * name) {
+	
+	FileHandle handle = FileOpenRead(name);
+	if(!handle) {
 		printf("\e[1;31mDidn't find\e[m\t%s\n", name);
 		return false;
 	}
 	
-	FileCloseRead(i);
+	FileCloseRead(handle);
 	printf("\e[1;32mFound\e[m\t%s\n", name);
 	return true;
 }
 
-FileHandle	FileOpenRead(const char * name)
-{
-	FileHandle handle = CreateFile(name, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, 0);
-
-	if(handle < 0) {
-		printf("\e[1;31mCan't open\e[m\t%s\n", name);
-		return(0);
-	}
-	printf("\e[1;32mOpened\e[m\t%s\n", name);
-	return(handle);
+long FileTell(FileHandle handle) {
+	return (SetFilePointer(GETHANDLE(handle), 0, NULL, FILE_CURRENT));
 }
 
-long	FileTell(FileHandle handle)
-{
+FileHandle FileOpenWrite(const char * name) {
 	
-	return (SetFilePointer((HANDLE)handle, 0, NULL, FILE_CURRENT));
-}
-
-FileHandle	FileOpenWrite(const char * name)
-{
 	printf("FileOpenWrite(%s)\n", name);
-	FileHandle	handle;
-
+	HANDLE handle;
+	
 	handle = CreateFile(name, GENERIC_READ | GENERIC_WRITE, TRUNCATE_EXISTING, NULL, 0, 0, 0);
-
-	if (handle < 0)	{
-		return(0);
+	if(handle == INVALID_HANDLE_VALUE) {
+		return INVALID_FILE_HANDLE;
 	}
-
+	
 	CloseHandle(handle);
 	handle = CreateFile(name, GENERIC_WRITE, 0, NULL, 0, 0, 0);
-
-	if (handle < 0) {
-		return(0);
+	if(handle == INVALID_HANDLE_VALUE) {
+		return INVALID_FILE_HANDLE;
 	}
-
-	return(handle);
+	
+	assert(MAKEHANDLE(handle) != INVALID_FILE_HANDLE);
+	
+	return MAKEHANDLE(handle);
 }
 
 long FileCloseRead(FileHandle handle) {
-	return CloseHandle((FileHandle)handle);
+	return CloseHandle(GETHANDLE(handle));
 }
 
 long FileCloseWrite(FileHandle handle) {
-	return CloseHandle((FileHandle)handle);
+	return CloseHandle(GETHANDLE(handle));
 }
 
 long FileRead(FileHandle handle, void * adr, long size) {
 	DWORD ret;
-	ReadFile(handle, adr, size, &ret, NULL);
+	ReadFile(GETHANDLE(handle), adr, size, &ret, NULL);
 	return ret;
 }
 
-long	FileWrite(FileHandle handle, const void * adr, long size)
-{
+long FileWrite(FileHandle handle, const void * adr, long size) {
 	DWORD ret;
-	WriteFile(handle, adr, size, &ret, NULL);
+	WriteFile(GETHANDLE(handle), adr, size, &ret, NULL);
 	return ret;
 }
 
-long	FileSeek(FileHandle handle, int offset, long mode)
-{
-	return SetFilePointer(handle, offset, NULL, mode);
+long FileSeek(FileHandle handle, int offset, long mode) {
+	return SetFilePointer(GETHANDLE(handle), offset, NULL, mode);
 }
 
 void	* FileLoadMallocZero(const char * name, size_t * SizeLoadMalloc)

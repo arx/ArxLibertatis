@@ -5079,6 +5079,7 @@ bool DANAE_ManageSplashThings()
 		if (SPLASH_THINGS_STAGE==11)
 		{
 			// Playing the videos in startupvids.txt
+			// TODO The file doesn't exist, OK
 			char startupvidsPath[256];
 			sprintf(startupvidsPath,"misc\\startupvids.txt");
 

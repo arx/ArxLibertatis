@@ -336,7 +336,7 @@ void * PakManager::ReadAlloc(const char * filename, size_t * sizeRead) {
 		}
 	}
 	
-	printf("\e[1;33mRead from PAK (a):\e[m\t%s\n", filename);
+	printf("\e[1;33mCan't read from PAK (a):\e[m\t%s\n", filename);
 	if(sizeRead) {
 		*sizeRead = 0;
 	}
