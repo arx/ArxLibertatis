@@ -6698,11 +6698,9 @@ static float _AvgFrameDiff = 150.f;
 		if (!(Project.hide & HIDE_NODES))
 				RenderAllNodes(m_pd3dDevice);
 
-		std::string texx( "EDIT MODE - Selected ");
-		std::stringstream ss( texx );
+		std::stringstream ss("EDIT MODE - Selected ");
 		ss <<  NbIOSelected;
-		texx += ss.str();
-		ARX_TEXT_Draw(m_pd3dDevice,InBookFont,100,2,0,0,texx,EERIECOLOR_YELLOW);
+		ARX_TEXT_Draw(m_pd3dDevice,InBookFont,100,2,0,0,ss.str(),EERIECOLOR_YELLOW);
 	
 		if (EDITION==EDITION_FOGS)
 			ARX_FOGS_RenderAll( m_pd3dDevice);	
