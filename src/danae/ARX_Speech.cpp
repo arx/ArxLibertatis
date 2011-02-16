@@ -70,6 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEDraw.h"
 
 #include "HERMESMain.h"
+#include "hermes/Logger.h"
 
 //-----------------------------------------------------------------------------
 extern TextureContainer *	arx_logo_tc;
@@ -130,6 +131,7 @@ void ARX_SPEECH_ClearAll()
 //-----------------------------------------------------------------------------
 long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, _TCHAR * _lpszUText, long duration)
 {
+
 	if (_lpszUText == NULL) return -1;
 
 	if (_lpszUText[0] == 0) return -1;
@@ -208,15 +210,14 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 	HDC	hDC;
 	SIZE sSize;
 
+	//TODO(lubosz): Crash
+//	if (false)
 	if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 	{
 		SelectObject(hDC, hFontInBook);
 
-//		todo: wchar
-//		GetTextExtentPoint32W(hDC,
-//		                      _T(foo),
-//		                      1,
-//		                      &sSize);
+		GetTextExtentPoint(hDC,_T("p"),1,&sSize);
+
 		danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 
 		sSize.cy *= 3;
@@ -243,8 +244,6 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 					_stprintf(temp, _T("%s > %s"), speech[i].name, speech[i].lpszUText);
 				else
 					_stprintf(temp, _T(" %s"), speech[i].lpszUText);//>
-
-
 
 				EERIEDrawBitmap(GDevice,
 				                120 * Xratio - 16 * Xratio, ARX_CLEAN_WARN_CAST_FLOAT(igrec),
@@ -483,8 +482,7 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long param, l
 	long flg = 0;
 
 	_TCHAR lpszUSection[512];
-//	todo: wchar cast
-//	MultiByteToWideChar(CP_ACP, 0, data, -1, lpszUSection, 512);
+	MultiByteToWideChar(CP_ACP, 0, data, -1, (wchar_t*)lpszUSection, 512);
 
 	if (!(flags & ARX_SPEECH_FLAG_NOTEXT))
 	{

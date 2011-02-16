@@ -54,7 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 #include <windows.h>
 #include <assert.h>
-
 #include <string>
 
 #include "ARX_Loc.h"
@@ -142,8 +141,8 @@ long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, _TCHAR * _lpszUText, int _i
 
 				for (; iTemp < iLenght ; iTemp++)
 				{
-					GetTextExtentPoint32A(hDC,
-					                      &_lpszUText[iTemp],
+					GetTextExtentPoint32(hDC,
+							&_lpszUText[iTemp],
 					                      1,
 					                      &sSize);
 					{
@@ -216,8 +215,8 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, char * text, int _iSpacingY, RECT & 
 
 		for (; iTemp < iLenght; iTemp++)
 		{
-			GetTextExtentPoint32A(_hDC,
-			                      &text[iTemp],
+			GetTextExtentPoint32(_hDC,
+					&text[iTemp],
 			                      1,
 			                      &sSize);
 
@@ -304,6 +303,9 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 {
 	HDC hDC = NULL;
 
+	//TODO(lubosz): Fix the text temporalily for crash
+	_lpszUText ="todo";
+
 	// Get a DC for the surface. Then, write out the buffer
 	if (danaeApp.m_pddsRenderTarget)
 	{
@@ -312,8 +314,10 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 			hDC = hHDC;
 		}
 
-	if (hHDC || SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
-	{
+		//TODO(lubosz): text render crash
+//		if (false)
+		if (hHDC || SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
+		{
 
 			_tcscpy(tUText, _lpszUText);
 
@@ -429,7 +433,7 @@ long UNICODE_ARXDrawTextCenter(float x, float y, _TCHAR * str, COLORREF col, COL
 
 
 			SIZE siz;
-			GetTextExtentPoint32A(hDC,         // handle to DC
+			GetTextExtentPoint32(hDC,         // handle to DC
 			                        str,           // character string
 			                        _tcslen(str),   // number of characters
 			                        &siz          // size
@@ -1137,49 +1141,220 @@ void ARX_Text_Init()
 	
 	string tx = getFontFile();
 
-//	todo: cast
-//	MultiByteToWideChar(CP_ACP, 0, tx , -1, wtx, 256);		// XS : We need to pass a unicode string to AddFontResourceW
+	wchar_t wtx[256];
+	MultiByteToWideChar(CP_ACP, 0, tx.c_str() , -1, wtx, 256);		// XS : We need to pass a unicode string to AddFontResourceW
 
 	lpszFontIngame = GetFontName(tx.c_str());
 
-	if(AddFontResourceA(tx.c_str()) == 0) {
+	if(AddFontResource(tx.c_str()) == 0) {
 		LogError << FontError();
 	}
 
-/*
-	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf");
 
-	if (!FileExist(tx))
-	{
-		sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
-	}
+//	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf");
+//
+//	if (!FileExist(tx))
+//	{
+//		sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
+//	}
+//
+//	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass an unicode string to AddFontResourceW
 
-	//MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass an unicode string to AddFontResourceW
+	lpszFontMenu = GetFontName(tx.c_str());
 
-	lpszFontMenu = GetFontName(tx);
-
-	if (AddFontResourceA(wtx) == 0)
+	if (AddFontResourceW(wtx) == 0)
 	{
 		LogError << FontError();
-	}*/
+	}
 
 
 	pTextManage = new CARXTextManager();
 	pTextManageFlyingOver = new CARXTextManager();
 
-	hFontMainMenu   = CreateFontFromProfile(lpszFont, _T("system_font_mainmenu_size"),     _T("58"), true);
-	hFontMenu       = CreateFontFromProfile(lpszFont, _T("system_font_menu_size"),         _T("32"), true);
-	hFontControls   = CreateFontFromProfile(lpszFont, _T("system_font_menucontrols_size"), _T("22"), true);
-	hFontCredits    = CreateFontFromProfile(lpszFont, _T("system_font_menucredits_size"),  _T("36"), true);
-	hFontRedist     = CreateFontFromProfile(lpszFont, _T("system_font_redist_size"),       _T("18"), true);
-	if (Yratio > 1.f) Yratio *= .8f; // NEW QUEST
-	hFontInGame     = CreateFontFromProfile(lpszFont, _T("system_font_book_size"),         _T("18"), false);
-	hFontInGameNote = CreateFontFromProfile(lpszFont, _T("system_font_note_size"),         _T("18"), false);
-	hFontInBook     = CreateFontFromProfile(lpszFont, _T("system_font_book_size"),         _T("18"), false);
 
-	delete[] lpszFont;
+	if (!hFontMainMenu)
+	{
+		int iFontSize = 48;//58;
+
+		_TCHAR szUT[256];
+		PAK_UNICODE_GetPrivateProfileString("system_font_mainmenu_size", "58", szUT, 256);
+		iFontSize = _ttoi(szUT);
+		iFontSize = Traffic(iFontSize);
+
+		if (!hFontMainMenu)
+		{
+			hFontMainMenu = _CreateFont(
+			                    iFontSize,
+			                    0, 0, 0, FW_NORMAL, false, false, false,
+			                    DEFAULT_CHARSET,
+			                    OUT_DEFAULT_PRECIS,
+			                    CLIP_DEFAULT_PRECIS,
+			                    ANTIALIASED_QUALITY,
+			                    VARIABLE_PITCH,
+			                    lpszFontMenu);
+		}
 	}
 
+	if (!hFontMenu)
+	{
+		int iFontSize = 32;
+
+		_TCHAR szUT[256];
+		PAK_UNICODE_GetPrivateProfileString("system_font_menu_size", "32", szUT, 256);
+		iFontSize = _ttoi(szUT);
+		iFontSize = Traffic(iFontSize);
+
+		if (!hFontMenu)
+		{
+			hFontMenu = _CreateFont(
+			                iFontSize,
+			                0, 0, 0, FW_NORMAL, false, false, false,
+			                DEFAULT_CHARSET,
+			                OUT_DEFAULT_PRECIS,
+			                CLIP_DEFAULT_PRECIS,
+			                ANTIALIASED_QUALITY,
+			                VARIABLE_PITCH,
+			                lpszFontMenu);
+		}
+	}
+
+	if (!hFontControls)
+	{
+		int iFontSize = 16;
+
+		_TCHAR szUT[256];
+		PAK_UNICODE_GetPrivateProfileString("system_font_menucontrols_size", "22", szUT, 256);
+		iFontSize = _ttoi(szUT);
+		iFontSize = Traffic(iFontSize);
+
+		if (!hFontControls)
+		{
+			hFontControls = _CreateFont(
+			                    iFontSize,
+			                    0, 0, 0, FW_NORMAL, false, false, false,
+			                    DEFAULT_CHARSET,
+			                    OUT_DEFAULT_PRECIS,
+			                    CLIP_DEFAULT_PRECIS,
+			                    ANTIALIASED_QUALITY,
+			                    VARIABLE_PITCH,
+			                    lpszFontMenu);
+		}
+	}
+
+	if (!hFontCredits)
+	{
+		int iFontSize = 32;
+
+		_TCHAR szUT[256];
+		PAK_UNICODE_GetPrivateProfileString("system_font_menucredits_size", "36", szUT, 256);
+		iFontSize = _ttoi(szUT);
+		iFontSize = Traffic(iFontSize);
+
+		if (!hFontCredits)
+		{
+			hFontCredits = _CreateFont(
+			                   iFontSize,
+			                   0, 0, 0, FW_NORMAL, false, false, false,
+			                   DEFAULT_CHARSET,
+			                   OUT_DEFAULT_PRECIS,
+			                   CLIP_DEFAULT_PRECIS,
+			                   ANTIALIASED_QUALITY,
+			                   VARIABLE_PITCH,
+			                   lpszFontMenu);
+		}
+	}
+
+	if (!hFontRedist)
+	{
+		int iFontSize = 16;
+
+		_TCHAR szUT[256];
+		PAK_UNICODE_GetPrivateProfileString("system_font_redist_size", "18", szUT, 256);
+		iFontSize = _ttoi(szUT);
+		iFontSize = Traffic(iFontSize);
+
+		hFontRedist = _CreateFont(
+		                  iFontSize,
+		                  0, 0, 0, FW_NORMAL, false, false, false,
+		                  DEFAULT_CHARSET,
+		                  OUT_DEFAULT_PRECIS,
+		                  CLIP_DEFAULT_PRECIS,
+		                  ANTIALIASED_QUALITY,
+		                  VARIABLE_PITCH,
+		                  lpszFontIngame);
+	}
+
+	// NEW QUEST
+	if (Yratio > 1.f)
+	{
+		Yratio *= .8f;
+	}
+
+	if (!hFontInGame)
+	{
+		int iFontSize = 16;
+
+		_TCHAR szUT[256];
+		PAK_UNICODE_GetPrivateProfileString("system_font_book_size", "18", szUT, 256);
+		iFontSize = _ttoi(szUT);
+		iFontSize = Traffic(iFontSize);
+
+		if (!hFontInGame)
+		{
+			hFontInGame = _CreateFont(
+			                  iFontSize,
+			                  0, 0, 0, FW_NORMAL, false, false, false,
+			                  DEFAULT_CHARSET,
+			                  OUT_DEFAULT_PRECIS,
+			                  CLIP_DEFAULT_PRECIS,
+			                  ANTIALIASED_QUALITY,
+			                  VARIABLE_PITCH,
+			                  lpszFontIngame);
+		}
+	}
+
+	if (!hFontInGameNote)
+	{
+		int iFontSize = 16;//18;
+
+		_TCHAR szUT[256];
+		PAK_UNICODE_GetPrivateProfileString("system_font_note_size", "18", szUT, 256);
+		iFontSize = _ttoi(szUT);
+		iFontSize = Traffic(iFontSize);
+
+		hFontInGameNote = _CreateFont(
+		                      iFontSize,
+		                      0, 0, 0, FW_NORMAL, false, false, false,
+		                      DEFAULT_CHARSET,
+		                      OUT_DEFAULT_PRECIS,
+		                      CLIP_DEFAULT_PRECIS,
+		                      ANTIALIASED_QUALITY,
+		                      VARIABLE_PITCH,
+		                      lpszFontIngame);
+	}
+
+	if (!InBookFont)
+	{
+		int iFontSize = 16;
+
+		_TCHAR szUT[256];
+		PAK_UNICODE_GetPrivateProfileString("system_font_book_size", "18", szUT, 256);
+		iFontSize = _ttoi(szUT);
+		iFontSize = Traffic(iFontSize);
+
+		InBookFont = _CreateFont(
+		                 iFontSize,
+		                 0, 0, 0, FW_NORMAL, false, false, false,
+		                 DEFAULT_CHARSET,
+		                 OUT_DEFAULT_PRECIS,
+		                 CLIP_DEFAULT_PRECIS,
+		                 ANTIALIASED_QUALITY,
+		                 VARIABLE_PITCH,
+		                 lpszFontIngame);
+	}
+}
+
+//-----------------------------------------------------------------------------
 void ARX_Text_Close()
 {
 
