@@ -318,7 +318,7 @@ void PopOneTriangleListClipp(D3DTLVERTEX *_pVertex,int *_piNbVertex)
  *	@return S_OK if function exit correctly.
 /************************************************************************/
 template<class _LPVERTEX_>
-__declspec(dllexport) HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevice, 
+HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevice,
 													D3DPRIMITIVETYPE			_dptPrimitiveType, 
 													DWORD						_dwVertexTypeDesc,
 													_LPVERTEX_					_pVertex, 
