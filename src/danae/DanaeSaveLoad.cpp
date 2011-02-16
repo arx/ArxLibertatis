@@ -1048,7 +1048,7 @@ long DONT_LOAD_INTERS = 0;
 long FAKE_DIR = 0;
 long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * fic)
 {
-	char _error[512];
+//	char _error[512];
 	DANAE_LS_HEADER				dlh;
 	DANAE_LS_SCENE		*		dls;
 	DANAE_LS_INTER		*		dli;
@@ -1075,15 +1075,17 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * fic)
 	ForceSendConsole(tstr, 1, 0, (HWND)1);
 	char fileDlf[512];
 	strcpy(fileDlf, fic);
-	SetExt(fileDlf, ".DLF");
+//	SetExt(fileDlf, ".DLF");
 	char fic2[512];
 	strcpy(fic2, fic);
 	SetExt(fic2, ".LLF");
 
-	if (!PAK_FileExist(fileDlf))
-	{
-		sprintf(_error, "Unable to find %s", fileDlf);
-		goto loaderror;
+	LogDebug << "fic2 " << fic2;
+	LogDebug << "fileDlf " << fileDlf;
+
+	if (!PAK_FileExist(fileDlf)) {
+		LogError <<"Unable to find "<< fileDlf;
+		return -1;
 	}
 
 	strcpy(LastLoadedDLF, fileDlf);
@@ -1093,6 +1095,8 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * fic)
 	LoadLevelScreen();
 	memcpy(&dlh, dat, sizeof(DANAE_LS_HEADER));
 	pos += sizeof(DANAE_LS_HEADER);
+
+	LogDebug << "dlh.version " << dlh.version;
 
 	if (dlh.version > CURRENT_VERSION) // using compression
 	{
@@ -1110,15 +1114,14 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * fic)
 		cpr_pos = 0;
 		dat = (unsigned char *)STD_Explode(compressed, FileSize - pos, &FileSize);
 
-		if (dat == NULL)
-		{
-			free(torelease);
-			goto loaderror;
-		}
-
 		free(torelease);
 		compressed = NULL;
 		pos = 0;
+
+		if (dat == NULL) {
+			LogError <<"STD_Explode did not return anything "<< fileDlf;
+			return -1;
+		}
 	}
 
 	loddpos.x = subj.pos.x = dlh.pos_edit.x;
@@ -1130,14 +1133,16 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * fic)
 
 	if (strcmp(dlh.ident, "DANAE_FILE"))
 	{
-		sprintf(_error, "File %s is not a valid file", fileDlf);
-		goto loaderror;
+		LogError << "Not a valid file "<< fileDlf;
+		return -1;
 	}
 
 	if (dlh.version < 1.001f)
 	{
 		dlh.nb_nodes = 0;
 	}
+
+	LogDebug << "Loading Scene";
 
 	// Loading Scene
 	if (dlh.nb_scn >= 1)
@@ -1688,16 +1693,16 @@ finish:
 	USE_PLAYERCOLLISIONS = 1;
 	return 1;
 
-loaderror:
-	;
-	FASTmse = 0;
-	ShowPopup(_error);
-
-	if (dat) free(dat);
-
-	LOADEDD = 1;
-	ARX_SCENE_Render(NULL, 3);
-	return -1;
+//loaderror:
+//	;
+//	FASTmse = 0;
+//	ShowPopup(_error);
+//
+//	if (dat) free(dat);
+//
+//	LOADEDD = 1;
+//	ARX_SCENE_Render(NULL, 3);
+//	return -1;
 }
 extern void MCache_ClearAll();
 extern TextureContainer * MapMarkerTc;
