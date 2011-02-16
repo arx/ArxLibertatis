@@ -362,7 +362,7 @@ long DanaeSaveLevel(char * fic)
 	dlh.nb_inter = nb_inter;
 	dlh.nb_zones = 0;
 
-	if (dlh.nb_scn != NULL)
+	if (dlh.nb_scn != 0)
 	{
 		dlh.pos_edit.x = subj.pos.x - Mscenepos.x;
 		dlh.pos_edit.y = subj.pos.y - Mscenepos.y;
@@ -404,7 +404,7 @@ long DanaeSaveLevel(char * fic)
 			INTERACTIVE_OBJ * io = inter.iobj[i];
 			memset(&dli, 0, sizeof(DANAE_LS_INTER));
 
-			if (dlh.nb_scn != NULL)
+			if (dlh.nb_scn != 0)
 			{
 				dli.pos.x = io->initpos.x - Mscenepos.x;
 				dli.pos.y = io->initpos.y - Mscenepos.y;

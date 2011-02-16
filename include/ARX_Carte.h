@@ -68,4 +68,4 @@ extern int iCreateMap;
 bool NeedMapCreation();
 void DANAE_Manage_CreateMap();
 
-#endif ARX_CARTE_H
+#endif

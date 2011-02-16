@@ -355,24 +355,24 @@ float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT 
 
 	if (px > ACTIVEBKG->Xsize - 3)
 	{
-		return NULL;
+		return 0;
 	}
 
 	if (px < 2)
 	{
-		return NULL;
+		return 0;
 	}
 
 	F2L(z * ACTIVEBKG->Zmul, &pz);
 
 	if (pz > ACTIVEBKG->Zsize - 3)
 	{
-		return NULL;
+		return 0;
 	}
 
 	if (pz < 2)
 	{
-		return NULL;
+		return 0;
 	}
 
 	float nb_shadowvertexinpoly = 0.0f;
@@ -612,7 +612,7 @@ void TreatBackgroundDynlights()
 
 			if (GLight[i]->status == 0)
 			{
-				// vient de s'éteindre
+				// vient de s'ï¿½teindre
 				if (GLight[i]->tl > 0)
 				{
 					DynLight[GLight[i]->tl].exist = 0;

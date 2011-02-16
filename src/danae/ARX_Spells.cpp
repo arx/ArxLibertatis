@@ -1815,11 +1815,11 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 289823898:
 		case 2989238:
 		case 29829:
-		case 2389823898:
+		case 2389823898u:
 		case 2393239:
 		case 38239:
-		case 2982323989:
-		case 3298232329:
+		case 2982323989u:
+		case 3298232329u:
 		case 239829:
 		case 2898239:
 		case 28982898:
@@ -1840,7 +1840,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 28298:
 		case 298289:
 		case 38929:
-		case 2389238989:
+		case 2389238989u:
 		case 289298989:
 		case 23892398:
 		case 238239:
@@ -1850,7 +1850,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 2389829:
 		case 239239:
 		case 282398:
-		case 2398982398:
+		case 2398982398u:
 		case 2389239:
 		case 2929898:
 		case 3292398:

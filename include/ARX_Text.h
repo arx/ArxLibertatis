@@ -64,9 +64,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::vector;
 
-//TODO: hack
-#define INT_MAX 300000
-
 //-----------------------------------------------------------------------------
 
 void ARX_Text_Init();

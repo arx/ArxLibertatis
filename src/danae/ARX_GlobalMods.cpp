@@ -46,7 +46,7 @@ GLOBAL_MODS stacked;
 extern long USE_D3DFOG;
 extern long EDITMODE;
 
-// changement du clipping Z valeur max & min
+// change the clipping Z max & min
 #define DEFAULT_ZCLIP		6400.f 
 #define DEFAULT_MINZCLIP	1200.f 
 
@@ -56,7 +56,7 @@ extern float fZFogStart;
 extern bool bZBUFFER;
 extern D3DMATRIX ProjectionMatrix;
 
-extern unsigned long ulBKGColor = 0;
+unsigned long ulBKGColor = 0;
 
 void ARX_GLOBALMODS_Reset()
 {

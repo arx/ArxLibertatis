@@ -3158,7 +3158,7 @@ INT_PTR CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 			if ((CDP_EditLight) && (CDP_EditLight->tl != -1))
 			{
 				DynLight[CDP_EditLight->tl].exist = 0;
-				CDP_EditLight->tl = NULL;
+				CDP_EditLight->tl = 0;
 			}
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER11);

@@ -648,7 +648,7 @@ void ARX_PATHS_Delete(ARX_PATH * ap)
 //*************************************************************************************
 long ARX_PATHS_AddPathWay(ARX_PATH * ap, long insert)
 {
-	if (ap == NULL) return(NULL);
+	if (ap == NULL) return 0;
 
 	if (insert < 0) insert = 0;
 	else if (insert > ap->nb_pathways) insert = ap->nb_pathways;

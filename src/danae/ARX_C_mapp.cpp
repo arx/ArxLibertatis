@@ -636,7 +636,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 		FreeGrille(&bi->grille);
 		NbBitmap--;
 
-		h = NULL;
+		h = 0;
 		id = n;
 	}
 	else
@@ -679,7 +679,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 		{
 			strcpy(AllTxt, name);
 			strcat(AllTxt, " --not found--");
-			h = NULL;
+			h = 0;
 
 			bi->actif = 1;
 			NbBitmap++;
@@ -698,7 +698,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 			{
 				strcpy(AllTxt, name);
 				strcat(AllTxt, " --not found--");
-				h = NULL;
+				h = 0;
 
 				bi->actif = 1;
 				NbBitmap++;
@@ -757,7 +757,7 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 			sprintf(AllTxt, "%s_%4d", name, num);
 			MakeUpcase(AllTxt);
 
-			if (FAILED(D3DTextr_CreateEmptyTexture(AllTxt, w2, h2, 0, D3DTEXTR_NO_MIPMAP, NULL)))
+			if (FAILED(D3DTextr_CreateEmptyTexture(AllTxt, w2, h2, 0, D3DTEXTR_NO_MIPMAP, 0)))
 			{
 				sprintf(AllTxt, "Creating texture #%d -> x: %d y %d w: %d h: %d", num, (long)dx, (long)dy, w2, h2);
 				MessageBox(NULL, AllTxt, "Erreur", 0);
@@ -783,11 +783,11 @@ int CreateAllMapsForBitmap(char * dir, char * name, CINEMATIQUE * c, int n, int 
 
 	if (n >= 0)
 	{
-		h = NULL;
+		h = 0;
 	}
 	else
 	{
-		h = NULL;
+		h = 0;
 	}
 
 	c->ActiveTexture(id);
