@@ -307,7 +307,7 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, _TCHAR * _lpszUText, int _iSpacingY,
 //-----------------------------------------------------------------------------
 long ARX_UNICODE_DrawTextInRect(float x, float y,
                                 float maxx, float maxy,
-                                _TCHAR * _lpszUText,
+                                const char * _lpszUText,
                                 COLORREF col,
                                 COLORREF bcol,
                                 HFONT font,
@@ -375,7 +375,7 @@ long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice,
                    HFONT ef,
                    float x, float y,
                    long spacingx, long spacingy,
-                   _TCHAR * car,
+                   const char * car,
                    COLORREF colo, COLORREF bcol)
 {
 	if (car == NULL) return 0;
@@ -500,7 +500,7 @@ long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, _TCHAR * str,
 }
 
 //-----------------------------------------------------------------------------
-void ARX_Allocate_Text(_TCHAR *&dest, _TCHAR * id_string)
+void ARX_Allocate_Text(char *&dest, const char * id_string)
 {
 	if (dest != NULL)
 {
@@ -509,7 +509,7 @@ void ARX_Allocate_Text(_TCHAR *&dest, _TCHAR * id_string)
 	}
 
 	_TCHAR output[4096];
-	PAK_UNICODE_GetPrivateProfileString(id_string, _T("string"), _T("default"), output, 4096, NULL);
+	PAK_UNICODE_GetPrivateProfileString(id_string, "default", output, 4096);
 	dest = (_TCHAR *)malloc((_tcslen(output) + 1) * sizeof(_TCHAR));
 	_tcscpy(dest, output);
 }

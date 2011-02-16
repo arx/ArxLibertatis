@@ -64,7 +64,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_Paths.h"
 #include "ARX_Interface.h"
 #include "ARX_Time.h"
-#include "ARX_HWTransform.h"
 #include "ARX_Menu2.h"
 
 #include "HERMESMain.h"
@@ -2775,7 +2774,7 @@ SMY_D3DVERTEX *pMyVertex;
 		if(!portals->room[room_num].pVertexBuffer)
 		{
 			char tTxt[256];
-			sprintf(tTxt,"portals %d - Zero Polys",room_num);
+			sprintf(tTxt,"portals %ld - Zero Polys",room_num);
 			MessageBox(	NULL,
 						tTxt,
 						"Error Portals",
@@ -4237,7 +4236,6 @@ void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag, long param)
 
 	if (D3DTRANSFORM) 
 	{
-		ARX_HWTransform_Render();
 		return;
 	}
 		

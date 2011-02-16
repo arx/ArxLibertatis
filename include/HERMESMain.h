@@ -102,32 +102,29 @@ char * HERMES_GaiaCOM_Receive();
 
 void HERMES_InitDebug();
 
-void SAFEstrcpy(char * dest, char * src, unsigned long max);
+void SAFEstrcpy(char * dest, const char * src, unsigned long max);
 
 void MakeUpcase(char * str);
 bool IsIn(const char * strin, const char * str);
 bool NC_IsIn(const char * strin, const char * str);
 
 void GetDate(HERMES_DATE_TIME * hdt);
-void SendConsole(char * dat,long level,long flag,HWND source);
-void ForceSendConsole(char * dat,long level,long flag,HWND source);
+void SendConsole(const char * dat,long level,long flag,HWND source);
+void ForceSendConsole(const char * dat,long level,long flag,HWND source);
 
 void MemFree(void * adr);
-bool OKBox(char * text,char *title);
-void ShowPopup(const char * text);
-int ShowError(char * funcname, char * message, long fatality);
 unsigned long MakeMemoryText(char * text);
 bool CreateFullPath(const char * path);
 
 // Strings Funcs
-bool HERMESFolderSelector(char *file_name,char *title);
+bool HERMESFolderSelector(char * file_name, const char * title);
 void RemoveName(char *str);
 char * GetName(const char *str);
 char * GetExt(const char *str);
 void SetExt(char *str, const char * new_ext);
 void AddToName(char *str, const char *cat);
-int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName,char *filter,HWND hWnd);
-int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName,char *filter,HWND hWnd);
+int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName,const char *filter,HWND hWnd);
+int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName,const char *filter,HWND hWnd);
 long HERMES_CreateFileCheck(const char *name, char *scheck, const long &size, const float &id);
 char * STD_Explode(char * from, size_t from_size, size_t * to_size);
 void STD_ExplodeNoAlloc(char * from, size_t from_size,char * to,size_t * to_size);

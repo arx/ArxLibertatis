@@ -82,7 +82,7 @@ struct DANAE_LLF_HEADER
 }; //Aligned 1 2 4
 
 ///////////////////////
-EERIE_3DOBJ * _LoadTheObj(char * text, char * path);
+EERIE_3DOBJ * _LoadTheObj(const char * text, const char * path);
 void SaveIOScript(INTERACTIVE_OBJ * io, long fl);
 void LogDirCreation(char * dir);
 struct DANAE_LS_HEADER

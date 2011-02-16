@@ -58,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_TEXT_H
 
 #include <vector>
+//#include <list>
 #include "EERIEApp.h"
 #include "EERIETypes.h"
 #include <tchar.h>
@@ -65,13 +66,32 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::vector;
 
 //-----------------------------------------------------------------------------
-
-void ARX_Text_Init();
-void ARX_Text_Close();
+typedef enum _ARX_TEXT_TYPE
+{
+	ARX_TEXT_ONCE,
+	ARX_TEXT_STAY
+} ARX_TEXT_TYPE;
 
 //-----------------------------------------------------------------------------
+struct _ARX_TEXT
+{
+	ARX_TEXT_TYPE	eType;
+	HFONT			hFont;
+	RECT			rRect;
+	RECT			rRectClipp;
+	_TCHAR		*	lpszUText;
+	float			fDeltaY;
+	float			fSpeedScrollY;
+	long			lCol;
+	long			lBkgCol;
+	long			lTimeScroll;
+	long			lTimeOut;
+	long			lTailleLigne;
+	int				iNbLineClip;
+};
 
-class ARXText;
+//-----------------------------------------------------------------------------
+void ARX_Text_Init(ARX_TEXT *);
 
 class CARXTextManager
 {
@@ -80,8 +100,8 @@ public:
 	~CARXTextManager();
 
 public:
-	void AddText(HFONT font, const _TCHAR* str, const RECT& rect, long fgcolor = -1, long bgcolor = 0, long timeout = 0, long scrolltime = 0, float scrollspeed = 0.f, int maxlines = 0);
-	void AddText(HFONT font, const _TCHAR* str, long x, long y, long fgcolor);
+	bool AddText(HFONT font, const _TCHAR* str, const RECT& rect, long fgcolor = -1, long bgcolor = 0, long timeout = 0, long scrolltime = 0, float scrollspeed = 0.f, int maxlines = 0);
+	bool AddText(HFONT font, const _TCHAR* str, long x, long y, long fgcolor);
 	void Update(float diffFrame);
 	void Render();
 	void Clear();
@@ -118,6 +138,8 @@ void _ShowText(const char* text);
 //-----------------------------------------------------------------------------
 
 extern CARXTextManager * pTextManage;
+extern _TCHAR * lpszFontMenu;
+extern _TCHAR * lpszFontIngame;
 
 extern HFONT hFontMainMenu;
 extern HFONT hFontMenu;

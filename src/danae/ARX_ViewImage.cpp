@@ -47,7 +47,7 @@ extern PakManager * pPakManager;
  
 
 //-----------------------------------------------------------------------------
-ViewImage::ViewImage(char * _pcDir, char * _pExt)
+ViewImage::ViewImage(const char * _pcDir, const char * _pExt)
 {
 	vListImage.clear();
 

@@ -165,7 +165,7 @@ void ARX_PATHS_ChangeName(ARX_PATH * ap, char * newname);
 ARX_PATH * ARX_PATHS_ExistName(char * name);
 void ARX_PATHS_Delete(ARX_PATH * ap);
 void ARX_PATHS_RedrawAll(LPDIRECT3DDEVICE7 pd3dDevice);
-ARX_PATH * ARX_PATHS_Create(char * name, EERIE_3D * pos);
+ARX_PATH * ARX_PATHS_Create(const char * name, EERIE_3D * pos);
 ARX_PATH * ARX_PATHS_AddNew(EERIE_3D * pos);
 void ARX_PATHS_Delete(ARX_PATH * ap);
 long ARX_PATHS_AddPathWay(ARX_PATH * ap, long insert);

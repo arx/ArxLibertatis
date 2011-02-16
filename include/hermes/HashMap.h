@@ -25,7 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef HACHAGE_H
 #define HACHAGE_H
 
-#include <cstddef>
+#include <stddef.h>
 
 class HashMap {
 	
@@ -36,21 +36,21 @@ private:
 		void * value;
 	};
 	
-	std::size_t size;
-	std::size_t mask;
-	std::size_t fill;
+	size_t size;
+	size_t mask;
+	size_t fill;
 	
 	Entry * data;
 	
 private:
 	
-	std::size_t FuncH1(std::size_t);
-	std::size_t FuncH2(std::size_t);
-	std::size_t getHash(const char * );
+	size_t FuncH1(size_t);
+	size_t FuncH2(size_t);
+	size_t getHash(const char * );
 	
 public:
 	
-	HashMap(std::size_t size = 256);
+	HashMap(size_t size = 256);
 	~HashMap();
 	
 	bool add(const char * name, void * value = NULL);

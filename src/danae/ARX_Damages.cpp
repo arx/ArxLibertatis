@@ -367,7 +367,7 @@ float ARX_DAMAGES_DamagePlayer(float dmg, long type, long source, EERIE_3D * pos
 							{
 								char temp[256];
 								strcpy(temp, GetName(inter.iobj[source]->filename));
-								sprintf(killer, "%s_%04d", temp, inter.iobj[source]->ident);
+								sprintf(killer, "%s_%04ld", temp, inter.iobj[source]->ident);
 							}
 
 							SendIOScriptEvent(inter.iobj[i], 0, killer, "TARGET_DEATH");
@@ -600,7 +600,7 @@ void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_kill
 	ARX_SCRIPT_Timer_Clear_By_IO(io_dead);
 
 	if (strcasecmp(io_dead->mainevent, "DEAD"))
-		NotifyIOEvent(io_dead, SM_DIE, "");
+		NotifyIOEvent(io_dead, SM_DIE);
 
 	if (!ValidIOAddress(io_dead))
 		return;
@@ -628,7 +628,7 @@ void ARX_DAMAGES_ForceDeath(INTERACTIVE_OBJ * io_dead, INTERACTIVE_OBJ * io_kill
 		{
 			char temp[256];
 			strcpy(temp, GetName(io_killer->filename));
-			sprintf(killer, "%s_%04d", temp, io_killer->ident);
+			sprintf(killer, "%s_%04ld", temp, io_killer->ident);
 		}
 	}
 

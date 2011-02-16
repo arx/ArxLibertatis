@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Name: WriteRegKey()
 // Desc: Writes a registry key 
 //-----------------------------------------------------------------------------
-HRESULT WriteRegKey( HKEY hKey, TCHAR* strName, TCHAR* strValue )
+HRESULT WriteRegKey( HKEY hKey, const char * strName, const char * strValue )
 {
 	LONG bResult;
 
@@ -62,7 +62,7 @@ HRESULT WriteRegKey( HKEY hKey, TCHAR* strName, TCHAR* strValue )
     return S_OK;
 }
 
-HRESULT WriteRegKeyValue( HKEY hKey, TCHAR* strName, DWORD val )
+HRESULT WriteRegKeyValue( HKEY hKey, const char * strName, DWORD val )
 {
 	LONG bResult;
 
@@ -78,8 +78,8 @@ HRESULT WriteRegKeyValue( HKEY hKey, TCHAR* strName, DWORD val )
 // Name: ReadRegKey()
 // Desc: Read a registry key 
 //-----------------------------------------------------------------------------
-HRESULT ReadRegKey( HKEY hKey, TCHAR* strName, TCHAR* strValue, 
-                    DWORD dwLength, TCHAR* strDefault )
+HRESULT ReadRegKey( HKEY hKey, const char * strName, TCHAR* strValue, 
+                    DWORD dwLength, const char * strDefault )
 {
 	DWORD dwType;
 	LONG bResult;
@@ -91,7 +91,7 @@ HRESULT ReadRegKey( HKEY hKey, TCHAR* strName, TCHAR* strValue,
 
     return S_OK;
 }
-HRESULT ReadRegKeyValue( HKEY hKey, TCHAR* strName, long * val, long defaultt )
+HRESULT ReadRegKeyValue( HKEY hKey, const char * strName, long * val, long defaultt )
 {
 	DWORD dwType;
 	unsigned int dwLength=4;

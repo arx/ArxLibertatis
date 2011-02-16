@@ -1123,7 +1123,7 @@ void SPELLCAST_Notify(long num)
 				else EVENT_SENDER = NULL;
 
 				char param[256];
-				sprintf(param,"%s %d",spell,(long)spells[num].caster_level);
+				sprintf(param,"%s %ld",spell,(long)spells[num].caster_level);
 				SendIOScriptEvent(inter.iobj[i], SM_SPELLCAST, param);
 			}
 		}	
@@ -1148,7 +1148,7 @@ void SPELLCAST_NotifyOnlyTarget(long num)
 		else EVENT_SENDER = NULL;
 
 		char param[256];
-		sprintf(param,"%s %d",spell,(long)spells[num].caster_level);
+		sprintf(param,"%s %ld",spell,(long)spells[num].caster_level);
 		SendIOScriptEvent(inter.iobj[spells[num].target], SM_SPELLCAST, param);
 	}	
 }
@@ -1176,7 +1176,7 @@ void SPELLEND_Notify(long num)
 			{
 				char param[128];
 				INTERACTIVE_OBJ * targ= inter.iobj[spells[num].target];
-				sprintf(param,"%s %d",spell,(long)spells[num].caster_level);
+				sprintf(param,"%s %ld",spell,(long)spells[num].caster_level);
 				SendIOScriptEvent(targ,SM_SPELLEND,param);
 			}
 		}
@@ -1196,7 +1196,7 @@ void SPELLEND_Notify(long num)
 				else 
 					EVENT_SENDER = NULL;
 
-				sprintf(param,"%s %d",spell,(long)spells[num].caster_level);
+				sprintf(param,"%s %ld",spell,(long)spells[num].caster_level);
 				SendIOScriptEvent(inter.iobj[i],SM_SPELLEND,param);
 			}
 }
@@ -2111,7 +2111,7 @@ void ARX_SPELLS_AnalyseSYMBOL()
 
 			if (!NO_TEXT_AT_ALL) 
 			{
-				_stprintf(tex, _T("Unknown Symbol - %S"), SpellMoves);
+				_stprintf(tex, _T("Unknown Symbol - %s"), SpellMoves);
 				ARX_SPEECH_Add(NULL, tex);
 			}
 		}
@@ -3227,7 +3227,7 @@ void ARX_SPELLS_Analyse()
 //KNOWNSPELLS knownspells;
 
 //-----------------------------------------------------------------------------
-static void ARX_SPEELS_GetMaxRect(char *_pcName)
+static void ARX_SPEELS_GetMaxRect(const char *_pcName)
 {
 	char tcTxt[32];
 	int iMinX,iMinY,iMaxX,iMaxY;
@@ -6446,7 +6446,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 						EVENT_SENDER = NULL;
 
 					char param[256];
-					sprintf(param,"%s %d",spell,(long)spells[i].caster_level);
+					sprintf(param,"%s %ld",spell,(long)spells[i].caster_level);
 					SendIOScriptEvent(inter.iobj[spells[i].target], SM_SPELLCAST, param);
 				}
 			}	
@@ -7149,7 +7149,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 					char param[256];
 					long n;
 					F2L(spells[i].caster_level,&n);
-					sprintf(param,"%s_%04d %d"
+					sprintf(param,"%s_%04ld %ld"
 						,GetName(tmp_io->filename)
 						,tmp_io->ident
 						,n

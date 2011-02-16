@@ -119,7 +119,7 @@ class CParticleSystem
 	public:
 		void	SetParams(CParticleParams & app);
  
-		void	SetTexture(char *, int, int, bool _bLoop = true);
+		void	SetTexture(const char *, int, int, bool _bLoop = true);
 		void	SetPos(Point3 ap3);
 		void	SetColor(float, float, float);
  

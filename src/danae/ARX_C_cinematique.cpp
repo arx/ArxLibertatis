@@ -116,7 +116,7 @@ void ClearDirectory(char * dirfile)
 	}
 }
 /*---------------------------------------------------------------*/
-void ClearAbsDirectory(char * pT, char * d)
+void ClearAbsDirectory(char * pT, const char * d)
 {
 	char * pTcopy = pT;
 	int i = strlen(pT);
@@ -136,7 +136,7 @@ void ClearAbsDirectory(char * pT, char * d)
 }
 
 /*---------------------------------------------------------------*/
-void AddDirectory(char * pT, char * dir)
+void AddDirectory(char * pT, const char * dir)
 {
 	char pTCopy[256];
 	strcpy(pTCopy, pT);

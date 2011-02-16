@@ -437,5 +437,8 @@ void StopSoundKeyFramer(void);
 void DrawGrille(LPDIRECT3DDEVICE7 device, C_GRILLE * grille, int col, int fx, C_LIGHT * light, EERIE_3D * posgrillesuiv, float angzgrillesuiv);
 void FillKeyTemp(EERIE_3D * pos, float az, int frame, int numbitmap, int numfx, short ti, int color, int colord, int colorf, float speed, int idsound, short force, C_LIGHT * light, EERIE_3D * posgrille, float angzgrille, float speedtrack);
 
+void ClearAbsDirectory(char * pT, const char * d);
+void AddDirectory(char * pT, const char * dir);
+
 void ReInitStandardCam(EERIE_CAMERA * cam);
 #endif

@@ -73,6 +73,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "DanaeSaveLoad.h"
 #include "EERIEApp.h"
 
+#include "ARX_ViewImage.h"
+
 #include "HERMESMain.h"
 #include "EERIEDraw.h"
 #include "EERIEMath.h"
@@ -129,33 +131,36 @@ void GetTextSize(HFONT _hFont, const _TCHAR * _lpszUText, int * _iWidth, int * _
 
 bool bQuickGenFirstClick = true;
 ARX_MENU_DATA ARXmenu;
+long ARXmenu_lastmode = -1;
 long REFUSE_GAME_RETURN = 0;
+unsigned long ARXmenu_starttick = 0;
+
+extern bool bRenderInterList;
+long SP_HEAD = 0;
+//-----------------------------------------------------------------------------
+bool MENU_NoActiveWindow();
+void ClearGame();
+void ClearGameDEVICE();
+
+//-----------------------------------------------------------------------------
+void ARX_Menu_Release_Text(void * a)
+{
+	if (a)
+	{
+		free(a);
+		a = NULL;
+	}
+}
+
+//-----------------------------------------------------------------------------
+#define ARX_MENU_SIZE_Y 24
+
+ 
 long save_c(0), save_p(0);
 SaveGame * save_l = NULL;
 
 //-----------------------------------------------------------------------------
-// Static local variables
-
-namespace
-{
-
-long ARXmenu_lastmode = -1;
-unsigned long ARXmenu_starttick = 0;
-long SP_HEAD = 0;
-
-} // \namespace
-
-//-----------------------------------------------------------------------------
-// Forward declarations
-
 void ARX_MENU_Clicked_QUIT();
-
-//-----------------------------------------------------------------------------
-
-void ARX_Menu_Release_Text(void * a)
-{
-	free(a);
-}
 
 //-----------------------------------------------------------------------------
 void CreateSaveGameList()
@@ -442,7 +447,6 @@ void ARX_MENU_Clicked_CREDITS()
 	ARX_MENU_LaunchAmb(AMB_CREDITS);
 }
 extern long FINAL_COMMERCIAL_DEMO;
-void StartImageDemo();
 bool ARX_IsSteam();
 
 //-----------------------------------------------------------------------------
@@ -934,7 +938,7 @@ bool ARX_Menu_Render()
 
 		Color = RGB(232, 204, 143);
 
-		PAK_UNICODE_GetPrivateProfileString(_T("system_menus_main_cdnotfound"), _T("string"), _T(""), szText, 256, NULL);
+		PAK_UNICODE_GetPrivateProfileString("system_menus_main_cdnotfound", "", szText, 256);
 		iW = 0;
 		iH = 0;
 		GetTextSize(hFontMenu, szText, &iW, &iH);
@@ -942,7 +946,7 @@ bool ARX_Menu_Render()
 		ePos.y = DANAESIZY * 0.4f;
 		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.y), Color);
 
-		PAK_UNICODE_GetPrivateProfileString(_T("system_yes"), _T("string"), _T(""), szText, 256, NULL);
+		PAK_UNICODE_GetPrivateProfileString("system_yes", "", szText, 256);
 		iW = 0;
 		iH = 0;
 		GetTextSize(hFontMenu, szText, &iW, &iH);
@@ -963,7 +967,7 @@ bool ARX_Menu_Render()
 
 		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), Color);
 
-		PAK_UNICODE_GetPrivateProfileString(_T("system_no"), _T("string"), _T(""), szText, 256, NULL);
+		PAK_UNICODE_GetPrivateProfileString("system_no", "", szText, 256);
 		iW = 0;
 		iH = 0;
 		GetTextSize(hFontMenu, szText, &iW, &iH);

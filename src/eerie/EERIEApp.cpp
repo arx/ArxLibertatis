@@ -1388,7 +1388,7 @@ void CD3DApplication::EnableZBuffer()
 //******************************************************************************
 //*************************************************************************************
 //*************************************************************************************
-bool OKBox(char * text, char * title)
+bool OKBox(const char * text, const char * title)
 
 {
 	int i;
@@ -1420,7 +1420,7 @@ void ShowPopup(const char * text)
 extern void ExitProc();
 //*************************************************************************************
 //*************************************************************************************
-int ShowError(char * funcname, char * message, long fatality)
+int ShowError(const char * funcname, const char * message, long fatality)
 {
 	static char texx[512];
 	char fatall[64];

@@ -105,14 +105,14 @@ EERIE_MULTI3DSCENE	* PAK_MultiSceneToEerie(const char * dir);
 void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms);
 void ReleaseScene(EERIE_3DSCENE	*	scene);
 void MakeUserFlag(TextureContainer	* tc);
-long EERIE_OBJECT_GetGroup(EERIE_3DOBJ * obj, char * groupname);
-long EERIE_OBJECT_GetSelection(EERIE_3DOBJ * obj, char * selname);
+long EERIE_OBJECT_GetGroup(EERIE_3DOBJ * obj, const char * groupname);
+long EERIE_OBJECT_GetSelection(EERIE_3DOBJ * obj, const char * selname);
  
 void GlobalInitLight();
 void MoveAllLights(EERIE_3D * trans);
 void ReCreateUVs(EERIE_3DOBJ * eerie, long flag = 0);
-long GetGroupOriginByName(EERIE_3DOBJ * eobj, char * text);
-long GetActionPointIdx(EERIE_3DOBJ * eobj, char * text);
+long GetGroupOriginByName(EERIE_3DOBJ * eobj, const char * text);
+long GetActionPointIdx(EERIE_3DOBJ * eobj, const char * text);
 long GetActionPointGroup(EERIE_3DOBJ * eobj, long idx);
 void XRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s);
 void YRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s);
