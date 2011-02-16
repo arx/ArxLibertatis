@@ -283,14 +283,14 @@ long CountTextures( std::string& tex, long * memsize, long * memmip)
 
 			if (ptcTexture->m_dwFlags & D3DTEXTR_NO_MIPMAP) {
 				std::stringstream ss;
-				ss << std::setprecision(3) << count << ' ' << std::setprecision(10) << ptcTexture->m_strName << ' ' << ptcTexture->m_dwWidth << 'x' << ptcTexture->m_dwHeight << 'x' << ptcTexture->m_dwBPP << ' ' << ptcTexture->locks << ' ' << GetName(ptcTexture->m_texName) << "\r\n";
+				ss << std::setw(3) << count << std::setw(0) << ' ' << ptcTexture->m_strName << ' ' << ptcTexture->m_dwWidth << 'x' << ptcTexture->m_dwHeight << 'x' << ptcTexture->m_dwBPP << ' ' << ptcTexture->locks << ' ' << GetName(ptcTexture->m_texName) << "\r\n";
 					temp = ss.str();
 				//sprintf(temp, "%3ld %s %dx%dx%d %ld %s\r\n", count, ptcTexture->m_strName, ptcTexture->m_dwWidth, ptcTexture->m_dwHeight, ptcTexture->m_dwBPP, ptcTexture->locks, GetName(ptcTexture->m_texName));
 			}
 			else
 			{
 				std::stringstream ss;
-				ss << std::setprecision(3) << count << ' ' << std::setprecision(10) << ptcTexture->m_strName << ' ' << ptcTexture->m_dwWidth << 'x' << ptcTexture->m_dwHeight << 'x' << ptcTexture->m_dwBPP << ' ' << ptcTexture->locks << " MIP " << GetName(ptcTexture->m_texName) << "\r\n";
+				ss << std::setw(3) << count << ' ' << std::setw(0) << ptcTexture->m_strName << ' ' << ptcTexture->m_dwWidth << 'x' << ptcTexture->m_dwHeight << 'x' << ptcTexture->m_dwBPP << ' ' << ptcTexture->locks << " MIP " << GetName(ptcTexture->m_texName) << "\r\n";
 				temp = ss.str();
 				//sprintf(temp, "%3ld %s %dx%dx%ld %d MIP %s\r\n", count, ptcTexture->m_strName, ptcTexture->m_dwWidth, ptcTexture->m_dwHeight, ptcTexture->m_dwBPP, ptcTexture->locks, GetName(ptcTexture->m_texName));
 
