@@ -14,12 +14,13 @@ ENDIF()
 
 IF (MSVC)
 	# Set optimal options for msvc:
+	
+	# Disable deprecation warnings
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+	add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
+	
 	# Source groups
-	set(SOURCE_GROUPS
-		    athena danae debugger eerie hermes minos
-	)
-
+	set(SOURCE_GROUPS athena danae debugger eerie hermes minos)
 	foreach(SOURCE_GROUP ${SOURCE_GROUPS})
 		file(GLOB_RECURSE SOURCES ${SRC_DIR}/${SOURCE_GROUP}/*.cpp)
 		SOURCE_GROUP("src\\\\${SOURCE_GROUP}" FILES ${SOURCES})
@@ -39,6 +40,7 @@ ENDIF (MSVC)
 
 # Preprocessor definitions
 add_definitions(-D_DEBUG)
+add_definitions(-DNOMINMAX)			# Prevent <windows.h> from defining min/max macros that can clash with std::min/std::max
 
 #glob all sources and includes
 file(GLOB_RECURSE ALL_INCLUDES ${INC_DIR}/*.h)
@@ -46,8 +48,8 @@ SOURCE_GROUP("inc" FILES ${ALL_INCLUDES})
 
 file(GLOB_RECURSE ALL_SOURCES ${SRC_DIR}/*.cpp)
 
-#build
-add_executable(arx ${ALL_SOURCES} ${ALL_INCLUDES})
+#build - WIN32 is only here to specify that on Windows, the app is not a console application, but a windows app (with WinMain)
+add_executable(arx WIN32 ${ALL_SOURCES} ${ALL_INCLUDES})
 
 #link
 target_link_libraries(arx dsound dxguid gdi32 shell32 dinput comdlg32 ole32 comctl32 ddraw jpeg z)

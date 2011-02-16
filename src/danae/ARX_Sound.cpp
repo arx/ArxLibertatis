@@ -749,7 +749,7 @@ long ARX_SOUND_PlayCollision(const long & mat1, const long & mat2, const float &
 	if (mat1 == MATERIAL_WATER || mat2 == MATERIAL_WATER)
 		ARX_PARTICLES_SpawnWaterSplash(position);
 
-	int sample_id;
+	S32 sample_id;
 
 	sample_id = Inter_Materials[mat1][mat2][0];
 
@@ -789,7 +789,7 @@ long ARX_SOUND_PlayCollision(const long & mat1, const long & mat2, const float &
 	channel.volume = volume;
 	aalSamplePlay(sample_id, channel);
 
-	unsigned int length;
+	U32 length;
 	aalGetSampleLength(sample_id, length);
 
 	return (long)(channel.pitch * length);
@@ -816,7 +816,7 @@ long ARX_SOUND_PlayCollision(const char * name1, const char * name2, const float
 
 				if (!strcasecmp(name2, c_material->name))
 				{
-					int sample_id;
+					S32 sample_id;
 					sample_id = c_material->variant_l[c_material->variant_i];
 
 					if (++c_material->variant_i >= c_material->variant_c) c_material->variant_i = 0;
@@ -856,7 +856,7 @@ long ARX_SOUND_PlayCollision(const char * name1, const char * name2, const float
 					channel.volume = volume;
 					aalSamplePlay(sample_id, channel);
 
-					unsigned int length;
+					U32 length;
 					aalGetSampleLength(sample_id, length);
 
 					return (long)(channel.pitch * length);
@@ -872,7 +872,7 @@ long ARX_SOUND_PlayScript(const char * name, const INTERACTIVE_OBJ * io, const f
 	if (!bIsActive) return AAL_SFALSE;
 
 	aalChannel channel;
-	int sample_id;
+	S32 sample_id;
 
 	sample_id = aalCreateSample(name);
 
@@ -953,7 +953,7 @@ long ARX_SOUND_PlayAnim(ArxSound & sample_id, const EERIE_3D * position)
 
 long ARX_SOUND_PlayCinematic(const char * name)
 {
-	int sample_id;
+	S32 sample_id;
 	aalChannel channel;
 
 	sample_id = aalCreateSample(name);
@@ -1164,7 +1164,7 @@ long ARX_SOUND_SetAmbianceTrackStatus(const char * ambiance_name, const char * t
 {
 	if (!bIsActive || !ambiance_name) return AAL_SFALSE;
 
-	int ambiance_id, track_id;
+	S32 ambiance_id, track_id;
 	char temp[512];
 
 	strcpy(temp, ambiance_name);

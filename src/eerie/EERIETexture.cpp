@@ -73,16 +73,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 //boolean and INT32 clash with wine
 #define INT32 INT32_JPEG
-#define boolean boolean_JPEG
 #undef _WIN32
-
+#undef FAR
+#define HAVE_BOOLEAN
 #include <jpeglib.h>
-#include <jerror.h>
-#include <jconfig.h>
-#include <jmorecfg.h>
 
-#undef boolean
+//boolean and INT32 clash with wine
 #undef INT32
+#undef FAR
+
 
 long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 /*-----------------------------------------------------------------------------*/
@@ -3256,9 +3255,9 @@ void LookForRefinementMap(TextureContainer * tc)
 	if (GlobalRefine)
 	{
 		unsigned char * from = (unsigned char *)GlobalRefine;
-		long fromsize = GlobalRefine_size;
+		U32 fromsize = GlobalRefine_size;
 		unsigned char data[256];
-		long pos = 0;
+		U32 pos = 0;
 		char name[256];
 		strcpy(name, GetName(tc->m_strName));
 
@@ -3311,15 +3310,15 @@ void LookForRefinementMap(TextureContainer * tc)
 	if (Refine)
 	{
 		unsigned char * from = (unsigned char *)Refine;
-		long fromsize = Refine_size;
+		U32 fromsize = Refine_size;
 		unsigned char data[256];
-		long pos = 0;
+		U32 pos = 0;
 		char name[256];
 		strcpy(name, GetName(tc->m_strName));
 
 		while (pos < Refine_size)
 		{
-			long pos2 = 0;
+			U32 pos2 = 0;
 
 			while ((from[pos] != '\n') && (pos < fromsize))
 			{
@@ -3701,7 +3700,7 @@ void jpeg_null_function(j_decompress_ptr cinfo) {
 	// don't do anything
 }
 
-boolean_JPEG fill_input_buffer(j_decompress_ptr cinfo) {
+boolean fill_input_buffer(j_decompress_ptr cinfo) {
 	// There is nothing to fill.
 	return 0;
 }
@@ -4014,8 +4013,6 @@ int Decomp_PNG(void * mems, DATAS_PNG * dpng) {
 //-----------------------------------------------------------------------------
 HRESULT TextureContainer::LoadPNGFile(const char * strPathname) {
 	
-	int taille;
-	
 	PakFileHandle * file = PAK_fopen(strPathname);
 	
 	if(!file) {
@@ -4035,7 +4032,7 @@ HRESULT TextureContainer::LoadPNGFile(const char * strPathname) {
 	PAK_fseek(file, 0, SEEK_SET);
 
 	char * mempng = (char *)(m_pPNGData + sizeof(DATAS_PNG));
-	PAK_fread((void *)mempng, 1, taille, file);
+	PAK_fread((void *)mempng, 1, size, file);
 	PAK_fclose(file);
 
 	if(Decomp_PNG((void *)mempng, (DATAS_PNG *)m_pPNGData) == PNG_ERROR) {

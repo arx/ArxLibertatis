@@ -30,6 +30,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 #include <cassert>
 
+#include "ARX_Common.h"
 
 static char * GetFirstDir(const char * dir, size_t * l);
 

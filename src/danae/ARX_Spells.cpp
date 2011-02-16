@@ -2717,12 +2717,12 @@ bool ARX_SPELLS_AnalyseSPELL()
 		player.SpellToMemorize.bSpell = false;
 	}
 
-	return -1;
+	return false;
 }
-long No_MagicAllowed()
+bool No_MagicAllowed()
 {
 	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
-	return -1;
+	return false;
 }
 extern long PLAYER_PARALYSED;
 //*************************************************************************************
@@ -2889,7 +2889,7 @@ void ARX_SPELLS_ManageMagic()
 
 		if (CurrSpellSymbol != 0)
 		{
-			if (ARX_SPELLS_AnalyseSPELL()!=-1)
+			if (!ARX_SPELLS_AnalyseSPELL())
 			{
 				if (inter.iobj[0]->anims[ANIM_CAST])
 				{
@@ -3817,7 +3817,7 @@ float ARX_SPELLS_GetManaCost(long _lNumSpell,long lNumSpellTab)
 
 //-----------------------------------------------------------------------------
 // Function used to launch a spell, returns Created Spell Ident
-long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss, const long& levell, const long& target, const long& duration) //const long &netspell)
+bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss, const long& levell, const long& target, const long& duration) //const long &netspell)
 {
 	long flags = flagss;
 	long level = levell;
@@ -3847,7 +3847,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 					CurrSpellSymbol = 0;
 					ARX_SPELLS_ResetRecognition();
 					
-					return -1;
+					return false;
 				}
 			}
 		}
@@ -3899,7 +3899,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		long flgs=flags;
 		flgs&=~SPELLCAST_FLAG_PRECAST;
 		ARX_SPELLS_Precast_Add( typ, l, flgs, duration);
-		return -2;
+		return true;
 	}
 
 	if ( flags & SPELLCAST_FLAG_NOMANA )
@@ -3929,7 +3929,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			t_spell.level					= level;
 			t_spell.target					= target;
 			t_spell.duration				= duration;
-			return -1;
+			return false;
 		}			
 		case SPELL_ENCHANT_WEAPON:		
 		{
@@ -3941,7 +3941,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			t_spell.level					= level;
 			t_spell.target					= target;
 			t_spell.duration				= duration;
-			return -1;
+			return false;
 		}	
 		break;
 		case SPELL_CONTROL_TARGET:
@@ -3950,7 +3950,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			EERIE_3D	cpos;
 
 			if ( !ValidIONum( source ) )
-				return -1;
+				return false;
 
 			Vector_Copy( &cpos, &inter.iobj[source]->pos );
 
@@ -3973,7 +3973,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if ( tcount == 0 ) 
 			{
 				ARX_SOUND_PlaySFX( SND_MAGIC_FIZZLE, &cpos );
-				return -1;
+				return false;
 			}
 
 			ARX_SOUND_PlaySpeech( "Player_follower_attack" );
@@ -3985,7 +3985,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			t_spell.level					= level;
 			t_spell.target					= target;
 			t_spell.duration				= duration;
-			return -1;
+			return false;
 		}
 		break;
 	}
@@ -4001,7 +4001,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 
 	if ( i < 0 )
 	{
-		return -1;
+		return false;
 	}
 
 	if ( source >= 0 && source < inter.nbmax )
@@ -4140,9 +4140,9 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		// LEVEL 1 SPELLS -----------------------------------------------------------------------------
 		case SPELL_MAGIC_SIGHT: // Launching MAGIC_SIGHT
 
-			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return -1;
+			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return false;
 
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -4168,7 +4168,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------------------------
 		case SPELL_MAGIC_MISSILE: // Launching MAGIC_MISSILE
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -4215,7 +4215,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------------------------
 		case SPELL_IGNIT:// Launching IGNIT
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -4340,7 +4340,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//---------------------------------------------------------------------------------------------
 		case SPELL_DOUSE:// Launching DOUSE
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -4468,7 +4468,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//---------------------------------------------------------------------------------------------
 		case SPELL_ACTIVATE_PORTAL:// Launching ACTIVATE_PORTAL
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -4484,9 +4484,9 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		case SPELL_HEAL:// Launching HEAL
 		{		
 		//	return No_MagicAllowed();
-			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return -1;
+			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return false;
 
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -4520,7 +4520,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//---------------------------------------------------------------------------------------------
 		case SPELL_DETECT_TRAP:// Launching DETECT_TRAP
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -4553,7 +4553,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//---------------------------------------------------------------------------------------------
 		case SPELL_ARMOR:// Launching ARMOR
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -4625,7 +4625,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//------------------------------------------------------------------------------------------------
 		case SPELL_LOWER_ARMOR:// Launching LOWER_ARMOR
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -4637,7 +4637,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				spells[idx].tolive = 0;
 			}
 
-			if (spells[i].target<0) return -1;
+			if (spells[i].target<0) return false;
 
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_ARMOR,spells[i].caster);
 
@@ -4694,7 +4694,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//------------------------------------------------------------------------------------------------
 		case SPELL_HARM:// Launching HARM
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -4763,7 +4763,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		// LEVEL 3 SPELLS -----------------------------------------------------------------------------
 		case SPELL_SPEED:// Launching SPEED
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -4815,7 +4815,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//--------------------------------------------------------------------------------------------------
 		case SPELL_DISPELL_ILLUSION:// Launching DISPELL_ILLUSION (REVEAL)
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -4857,7 +4857,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		
 		case SPELL_FIREBALL:// Launching FIREBALL
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -4952,7 +4952,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//-------------------------------------------------------------------------------------------------
 		case SPELL_CREATE_FOOD:// Launching CREATE_FOOD
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -4985,7 +4985,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------------------------
 		case SPELL_ICE_PROJECTILE:// Launching ICE_PROJECTILE
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -5034,10 +5034,10 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		{
 			if (ARX_SPELLS_ExistAnyInstance(typ)) 
 			{
-				return -1;
+				return false;
 			}
 
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -5086,7 +5086,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//-----------------------------------------------------------------------------------------------
 		case SPELL_DISPELL_FIELD:// Launching DISPELL_FIELD
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;					
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;					
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -5218,7 +5218,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//-----------------------------------------------------------------------------------------------
 		case SPELL_FIRE_PROTECTION:// Launching FIRE_PROTECTION
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -5286,7 +5286,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------------------------
 		case SPELL_COLD_PROTECTION:// Launching COLD_PROTECTION
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -5352,9 +5352,9 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------------------------
 		case SPELL_TELEKINESIS:// Launching TELEKINESIS
 		{
-			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(SPELL_TELEKINESIS,spells[i].caster)) return -1;			
+			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(SPELL_TELEKINESIS,spells[i].caster)) return false;			
 
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -5376,7 +5376,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//-----------------------------------------------------------------------------------------------
 		case SPELL_CURSE:// Launching CURSE
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -5428,7 +5428,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		// LEVEL 5 SPELLS -----------------------------------------------------------------------------
 		case SPELL_RUNE_OF_GUARDING:
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -5468,7 +5468,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------
 		case SPELL_LEVITATE:
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -5525,7 +5525,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------
 		case SPELL_CURE_POISON:
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -5583,7 +5583,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------
 		case SPELL_REPEL_UNDEAD:
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -5631,7 +5631,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------
 		case SPELL_POISON_PROJECTILE:
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -5669,7 +5669,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		// LEVEL 6 -----------------------------------------------------------------------------
 		case SPELL_RISE_DEAD:
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -5713,7 +5713,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if (!ARX_INTERACTIVE_ConvertToValidPosForIO(NULL, &target))
 			{
 				ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
-				return -1;
+				return false;
 			}
 
 			Vector_Copy(&spells[i].target_pos,&target);
@@ -5776,7 +5776,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------
 		case SPELL_PARALYSE:
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;			
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;			
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -5834,7 +5834,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------
 		case SPELL_CREATE_FIELD:
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -5953,7 +5953,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------
 		case SPELL_DISARM_TRAP:
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -6019,7 +6019,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------
 		case SPELL_SLOW_DOWN:
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -6034,7 +6034,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				{
 					bOk = false;
 					spells[i].exist = false;
-					return -1;
+					return false;
 				}
 			}
 
@@ -6088,11 +6088,11 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		// LEVEL 7 SPELLS -----------------------------------------------------------------------------
 		case SPELL_FLYING_EYE:
 		{	
-			if (eyeball.exist!=0) return -1;
+			if (eyeball.exist!=0) return false;
 
-			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return -1;
+			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return false;
 
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -6101,7 +6101,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				spells[i].target=0;
 
 			if (spells[i].target!=0)
-				return -1;
+				return false;
 
 			ARX_SOUND_PlaySFX(SND_SPELL_EYEBALL_IN);
 			spells[i].exist=true;
@@ -6163,7 +6163,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		{
 			if ( !CanPayMana( i, ARX_SPELLS_GetManaCost( typ, i ) ) )
 			{
-				return -1;
+				return false;
 			}
 
 			if ( !GLOBAL_MAGIC_MODE )
@@ -6266,7 +6266,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		{
 			if ( !CanPayMana( i, ARX_SPELLS_GetManaCost( typ, i ) ) )
 			{
-				return -1;
+				return false;
 			}
 
 			if ( !GLOBAL_MAGIC_MODE )
@@ -6367,7 +6367,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------
 		case SPELL_LIGHTNING_STRIKE:
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -6403,7 +6403,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------
 		case SPELL_CONFUSE:
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -6457,9 +6457,9 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		// LEVEL 8 SPELLS -----------------------------------------------------------------------------
 		case SPELL_INVISIBILITY:
 		{
-			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return -1;
+			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return false;
 
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -6484,7 +6484,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------
 		case SPELL_MANA_DRAIN:
 		{
-			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return -1;
+			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return false;
 			
 			long iCancel = ARX_SPELLS_GetInstanceForThisCaster(SPELL_LIFE_DRAIN,spells[i].caster);
 
@@ -6500,7 +6500,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				spells[iCancel].tolive = 0;
 			}
 
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -6551,7 +6551,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------
 		case SPELL_EXPLOSION:
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -6652,7 +6652,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------
 		case SPELL_ENCHANT_WEAPON:
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -6666,9 +6666,9 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------
 		case SPELL_LIFE_DRAIN:
 		{
-			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return -1;
+			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return false;
 
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -6737,9 +6737,9 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		{
 			if (spells[i].caster_level>=9)
 			{
-				if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+				if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 			}
-			else if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			else if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -6791,7 +6791,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			{
 				spells[i].exist = false;
 				ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
-				return -1;
+				return false;
 			}
 
 			if ((spells[i].caster==0) && (cur_mega==10))
@@ -6842,13 +6842,13 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		{
 			if (spells[i].caster_level>=9)
 			{
-				if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+				if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 			}
-			else if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			else if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (	(spells[i].caster<=0)
 				||	(!ValidIONum(spells[i].target))		)
-				return -1;
+				return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -6917,7 +6917,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------
 		case SPELL_NEGATE_MAGIC:
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -6960,7 +6960,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------
 		case SPELL_INCINERATE:
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -6968,7 +6968,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			INTERACTIVE_OBJ * tio=inter.iobj[spells[i].target];
 
 			if	((tio->ioflags & IO_NPC) && (tio->_npcdata->life<=0.f))
-				return -1;
+				return false;
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_INCINERATE);
 			spells[i].exist = true;
@@ -6986,7 +6986,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------
 		case SPELL_MASS_PARALYSE:
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -7030,7 +7030,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		// LEVEL 10 SPELLS -----------------------------------------------------------------------------
 		case SPELL_MASS_LIGHTNING_STRIKE:
 		{	
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -7120,12 +7120,12 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------
 		case SPELL_CONTROL_TARGET:
 		{
-			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return -1;
+			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return false;
 
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!ValidIONum(spells[i].target))
-				return -1;
+				return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -7159,7 +7159,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				}
 			}
 
-			if (tcount==0) return -1;
+			if (tcount==0) return false;
 			
 			ARX_SOUND_PlaySFX(SND_SPELL_CONTROL_TARGET);
 			spells[i].exist = true;
@@ -7188,9 +7188,9 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------	
 		case SPELL_FREEZE_TIME:
 		{	
-			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return -1;
+			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return false;
 
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -7214,7 +7214,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------
 		case SPELL_MASS_INCINERATE:
 		{
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -7255,9 +7255,9 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		//----------------------------------------------------------------------------
 		case SPELL_TELEPORT:
 		{
-			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return -1;
+			if (ARX_SPELLS_ExistAnyInstanceForThisCaster(typ,spells[i].caster)) return false;
 
-			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return -1;
+			if (!CanPayMana(i,ARX_SPELLS_GetManaCost(typ,i))) return false;
 
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
@@ -7273,7 +7273,7 @@ long ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		break;
 	}
 
-	return i;
+	return true;
 }
 
 //*************************************************************************************

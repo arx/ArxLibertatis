@@ -465,7 +465,7 @@ struct TWEAK_INFO
 
 #define MAX_ANIMS 200		// max loadable anims per character
 
-typedef int ArxSound;
+typedef S32 ArxSound;
 
 struct INTERACTIVE_OBJ
 {

@@ -126,7 +126,7 @@ struct EERIE_3D_BBOX
 	EERIE_3D max;
 }; // Aligned 1 2 4
 
-typedef int ArxSound;
+typedef S32 ArxSound;
 
 struct EERIE_LIGHT
 {

@@ -362,7 +362,7 @@ INT CD3DApplication::Run()
 	HACCEL hAccel = NULL;
 
 	// Now we're ready to recieve and process Windows messages.
-	bool bGotMsg;
+	BOOL bGotMsg;
 	MSG  msg;
 	PeekMessage(&msg, NULL, 0U, 0U, PM_NOREMOVE);
 
@@ -409,7 +409,7 @@ void CD3DApplication::EvictManagedTextures()
 
 int CD3DApplication::WinManageMess()
 {
-	bool bGotMsg = true;
+	BOOL bGotMsg = true;
 	MSG  msg;
 
 	while (bGotMsg)

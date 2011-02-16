@@ -654,12 +654,25 @@ CMenuConfig::CMenuConfig(const char *_pName)
 {
 	if(!strcasecmp("cfg", _pName))
 	{
-		pcName=strdup("cfg.ini");
+		_pName = "cfg.ini";
 	}
-	else
-	{
-		pcName=strdup(_pName);
-	}
+	
+    char szFullPath[MAX_PATH] = "";
+
+#if ARX_PLATFORM == ARX_PLATFORM_WIN32
+    // GetPrivateProfileString & friends expect full paths to files
+    // Otherwise, they will look under the Windows directory...
+    // So here we append the application directory to the filepath.
+    char szAppPath[MAX_PATH]      = "";
+    ::GetModuleFileName(0, szAppPath, sizeof(szAppPath) - 1);
+
+    // Extract directory
+    strncpy(szFullPath, szAppPath, strrchr(szAppPath, '\\') - szAppPath + 1);
+    szFullPath[sizeof(szFullPath) - 1] = '\0';
+#endif
+
+    strcat(szFullPath, _pName);
+    pcName = strdup(szFullPath);
 
 	First();
 }
@@ -859,7 +872,11 @@ int CMenuConfig::GetDIKWithASCII(const char *_pcTouch)
 
 char * CMenuConfig::ReadConfig(const char *_pcSection, const char *_pcKey)
 {
+<<<<<<< HEAD
 	char tcText[256];
+=======
+    char tcText[256];
+>>>>>>> 9c8ee72f685048ed83baad677c240339cf020326
 
 	int iI=GetPrivateProfileString(_pcSection,_pcKey,"",tcText,256,pcName);
 
@@ -6619,14 +6636,14 @@ void CMenuButton::SetPos(int _iX,int _iY)
 {
 	CMenuZone::SetPos(ARX_CLEAN_WARN_CAST_FLOAT(_iX), ARX_CLEAN_WARN_CAST_FLOAT(_iY));
 
-	int iWidth		= 0;
-	int iHeight		= 0;
+	U32 iWidth = 0;
+	U32 iHeight = 0;
 
 	if (pTex)
 	{
 
-		iWidth  = std::max(ARX_CAST_UINT( iWidth ), static_cast<unsigned int>(pTex->m_dwWidth));
-		iHeight = std::max(ARX_CAST_UINT( iHeight ), static_cast<unsigned int>(pTex->m_dwHeight));
+		iWidth  = max ( iWidth, pTex->m_dwWidth );
+		iHeight = max ( iHeight, pTex->m_dwHeight );
 
 		float fRatioX = RATIO_X(iWidth);
 		float fRatioY = RATIO_Y(iHeight);
@@ -6639,13 +6656,13 @@ void CMenuButton::SetPos(int _iX,int _iY)
 
 	}
 
-	int iWidth2		= 0;
-	int iHeight2	= 0;
+	U32 iWidth2		= 0;
+	U32 iHeight2	= 0;
 
 	if (pTexOver)
 	{
-		iWidth2  = std::max(ARX_CAST_UINT( iWidth2 ), static_cast<unsigned int>(pTexOver->m_dwWidth));
-		iHeight2 = std::max(ARX_CAST_UINT( iHeight2 ), static_cast<unsigned int>(pTexOver->m_dwHeight));
+		iWidth2  = max ( iWidth2, pTexOver->m_dwWidth );
+		iHeight2 = max ( iHeight2, pTexOver->m_dwHeight );
 
 		float fRatioX = RATIO_X(iWidth2) ;
 		float fRatioY = RATIO_Y(iHeight2);

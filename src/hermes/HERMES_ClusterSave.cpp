@@ -28,6 +28,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <istream>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 #include <windows.h>
 #include "HERMES_ClusterSave.h"
 #include "hermes/HashMap.h"
@@ -502,7 +503,7 @@ bool CSaveBlock::Save(char * _pcFileName, void * _pDatas, int _iSize)
 			{
 				pLastClusterCurr = _pClusterCurr;
 				fseek(hFile, _pClusterCurr->iNext + 4, SEEK_SET);
-				iSizeWrite = min(_pClusterCurr->iTaille, iSize);
+                iSizeWrite = std::min(_pClusterCurr->iTaille, iSize);
 				fwrite((const void *)_pDatas, iSizeWrite, 1, hFile);
 				char * _pDatasTemp = (char *)_pDatas;
 				_pDatasTemp += iSizeWrite;

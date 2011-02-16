@@ -97,7 +97,6 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, char * s1, char * s2)
 	if (s2 == NULL) return;
 
 	char skintochange[512];
-	char skinname[512];
 
 	sprintf(skintochange, "Graph\\Obj3D\\Textures\\%s.bmp", s1);
 	MakeUpcase(skintochange);

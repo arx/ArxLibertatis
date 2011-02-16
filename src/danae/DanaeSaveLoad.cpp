@@ -445,7 +445,7 @@ long DanaeSaveLevel(char * fic)
 	char						name[64];
 	long nb_inter		=		GetNumberInterWithOutScriptLoadForLevel(CURRENTLEVEL); // Without Player
 	unsigned char * dat	=		NULL;
-	unsigned siz	=		255;
+	U32				siz	=		255;
 	long pos			=		0;
 	FileHandle handle;
 	long bcount;
@@ -908,7 +908,7 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, char * dir)
 		if ((fic = fopen(dfile, "w")) != NULL)
 		{
 			char name[256];
-			unsigned num = 255;
+			U32 num = 255;
 			fprintf(fic, "Object   : %s%04ld\n", temp, io->ident);
 			fprintf(fic, "_______________________________\n\n");
 			GetUserName(name, &num);
@@ -946,7 +946,7 @@ void LogDirCreation(char * dir)
 		if ((fic = fopen(LOG_DIR_CREATION, "a+")) != NULL)
 		{
 			char name[256];
-			unsigned num = 255;
+			U32 num = 255;
 			GetUserName(name, &num);
 			GetDate(&hdt);
 			fprintf(fic, "%02ld/%02ld/%4ld %2ldh%02ld %s  %s\n", hdt.days, hdt.months, hdt.years, hdt.hours, hdt.mins, dir, name);
@@ -969,7 +969,7 @@ void LogDirDestruction(char * dir)
 		if ((fic = fopen(LOG_DIR_CREATION, "a+")) != NULL)
 		{
 			char name[256];
-			unsigned num = 255;
+			U32 num = 255;
 			GetUserName(name, &num);
 			GetDate(&hdt);
 			fprintf(fic, "%02ld/%02ld/%4ld %2ldh%02ld DESTROYED %s  %s\n", hdt.days, hdt.months, hdt.years, hdt.hours, hdt.mins, dir, name);
@@ -1029,7 +1029,6 @@ void CheckIO_NOT_SAVED()
 
 void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 {
-	int fic;
 	char temp[256];
 	char temp2[256];
 	char temp3[256];
@@ -1041,6 +1040,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 			SetExt(temp, "ASL");
 
 //			todo win32api
+//			int fic;
 //			if ((fic = _open(temp, _O_WRONLY | _O_TRUNC  | _O_CREAT | _O_BINARY, _S_IWRITE)) != -1)
 //			{
 //				_write(fic, io->script.data, strlen(io->script.data));
