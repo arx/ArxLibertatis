@@ -498,8 +498,6 @@ long ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	}
 
 	ForcePlayerInventoryObjectLevel(newnum);
-	char lvltxt[64];
-	sprintf(lvltxt, "l%03ld", num);
 
 	char sfile[256];
 	sprintf(sfile, "%sGsave.sav", CurGamePath);
