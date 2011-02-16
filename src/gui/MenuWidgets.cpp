@@ -1248,7 +1248,6 @@ extern bool IsNoGore( void );
 
 bool CMenuConfig::ReadAll()
 {
-	std::stringstream ss;
 	std::string pcText;
 	bool bOk = false; 
 	bool bOkTemp;

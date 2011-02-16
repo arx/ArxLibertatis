@@ -2279,7 +2279,8 @@ void ARX_SAVELOAD_DLFCheckAdd(char * path, long num)
 		pos += sizeof(DANAE_LS_INTER);
 		std::stringstream ss;
 		ss << GetName(dli->name) << '_' << std::setfill('0') << std::setw(4) << dli->ident;
-		AddIdent(ss.str(), num);
+		string id = ss.str();
+		AddIdent(id, num);
 	}
 
 	free(dat);
