@@ -895,6 +895,7 @@ retry:
 
 	if (player.inzone)
 	{
+		// TODO does this do anything?
 		ARX_PATH * ap = (ARX_PATH *)asp->inzone;
 		strcpy(asp->inzone, ap->name);
 	}
