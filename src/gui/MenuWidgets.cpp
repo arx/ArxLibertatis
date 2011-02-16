@@ -242,7 +242,7 @@ void ARX_QuickSave()
 	ZeroMemory( &sTime1, sizeof(SYSTEMTIME) );// will be used if iNbSave0>0 (iNbSave1==0 will so mean NOTFOUND and sTime1 will not be used)
 
 
-	for( int iI = 1 ; iI < (save_c) ; iI++ )
+	for( int iI = 1 ; iI < (save_l.size()) ; iI++ )
 	{
 		std::string tex2 = save_l[iI].name;
 		MakeUpcase( tex2 );
@@ -262,8 +262,8 @@ void ARX_QuickSave()
 	}
 
 	if ( bFound0 && bFound1 &&
-		( iNbSave0 > 0 ) && ( iNbSave0 < save_c ) &&
-		( iNbSave1 > 0 ) && ( iNbSave1 < save_c ) )
+		( iNbSave0 > 0 ) && ( iNbSave0 < save_l.size() ) &&
+		( iNbSave1 > 0 ) && ( iNbSave1 < save_l.size() ) )
 	{
 		int    iSave;
 		
@@ -372,7 +372,7 @@ bool ARX_QuickLoad()
 	ZeroMemory( &sTime1, sizeof(SYSTEMTIME) );// will be used if iNbSave0>0 (iNbSave1==0 will so mean NOTFOUND ans sTime1 will not be used)
 
 
-	for( int iI = 1 ; iI < (save_c) ; iI++ )
+	for( int iI = 1 ; iI < save_l.size() ; iI++ )
 	{
 		std::string tex2 = save_l[iI].name;
 		MakeUpcase( tex2 );
@@ -394,8 +394,8 @@ bool ARX_QuickLoad()
 	ARX_SOUND_MixerPause( ARX_SOUND_MixerGame );
 
 	if ( bFound0 && bFound1 &&
-		( iNbSave0 > 0 ) && ( iNbSave0 < save_c ) &&
-		( iNbSave1 > 0 ) && ( iNbSave1 < save_c ) )
+		( iNbSave0 > 0 ) && ( iNbSave0 < save_l.size() ) &&
+		( iNbSave1 > 0 ) && ( iNbSave1 < save_l.size() ) )
 	{
 		int iSave;
 
@@ -2366,7 +2366,7 @@ bool Menu2_Render()
 
 						while(iFirst>=0)
 						{
-							for(iI=1; iI<(save_c); iI++)
+							for(iI=1; iI<(save_l.size()); iI++)
 							{
 								std::string tex = save_l[iI].name;
 
@@ -2499,9 +2499,9 @@ bool Menu2_Render()
 
 					while(iFirst>=0)
 					{
-						if(save_c!=1)
+						if(save_l.size()!=1)
 						{
-							for(int iI=1;iI<(save_c);iI++)
+							for(int iI=1;iI<(save_l.size());iI++)
 							{
 								std::string tex = save_l[iI].name;
 								std::string tex2;
@@ -2590,7 +2590,7 @@ bool Menu2_Render()
 
 					pTex = MakeTCFromFile("\\Graph\\interface\\Icons\\Arx_logo_08.bmp");
 
-					for(int iI=save_c; iI<=15; iI++)
+					for(int iI=save_l.size(); iI<=15; iI++)
 					{
 						_TCHAR tex[256];
 						_stprintf(tex, _T("-%04d-")

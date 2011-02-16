@@ -125,8 +125,6 @@ struct SaveGame
 
 //-----------------------------------------------------------------------------
 extern std::vector<SaveGame> save_l;
-extern long save_c;
-extern long save_p;
 extern char LOCAL_SAVENAME[64];
 
 //-----------------------------------------------------------------------------

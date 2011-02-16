@@ -685,11 +685,10 @@ void ARXMenu_DeleteQuest(long num)
 	{
 		char temp[256];
 
-		sprintf(temp, "Save%s\\save%04ld\\", LOCAL_SAVENAME, save_l[num+save_p].num);
+		sprintf(temp, "Save%s\\save%04ld\\", LOCAL_SAVENAME, save_l[num].num);
 		KillAllDirectory(temp);
 		FreeSaveGameList();
 		CreateSaveGameList();
-		save_p = 0;
 	}
 }
 
@@ -702,7 +701,7 @@ void ARXMenu_SaveQuest(long num)
 	ARX_SOUND_MixerPause(ARX_SOUND_MixerMenu);
 	ARXMenu_Options_Video_GetGamma(iOldGamma);
 	ARXMenu_Options_Video_SetGamma((iOldGamma - 1) < 0 ? 0 : (iOldGamma - 1));
-	UpdateSaveGame(save_p + num);
+	UpdateSaveGame(num);
 	ARXMenu_Options_Video_SetGamma(iOldGamma);
 	ARX_SOUND_MixerResume(ARX_SOUND_MixerMenu);
 
