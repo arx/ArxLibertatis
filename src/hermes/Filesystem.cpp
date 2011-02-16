@@ -168,9 +168,9 @@ long	FileWrite(FileHandle handle, const void * adr, long size)
 	return ret;
 }
 
-long	FileSeek(long handle, int offset, long mode)
+long	FileSeek(FileHandle handle, int offset, long mode)
 {
-	return SetFilePointer((FileHandle)handle - 1, offset, NULL, mode);
+	return SetFilePointer(handle - 1, offset, NULL, mode);
 }
 
 void	* FileLoadMallocZero(const char * name, size_t * SizeLoadMalloc)

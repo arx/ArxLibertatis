@@ -649,9 +649,9 @@ void CMenuConfig::First()
 
 //-----------------------------------------------------------------------------
 
-CMenuConfig::CMenuConfig(char *_pName)
+CMenuConfig::CMenuConfig(const char *_pName)
 {
-	if(!strcasecmp((const char*)"cfg",(const char*)_pName))
+	if(!strcasecmp("cfg", _pName))
 	{
 		pcName=strdup("cfg.ini");
 	}
@@ -2035,7 +2035,9 @@ static void CalculAverageWidth( HDC& _hDC )
 static void ExtractAllCreditsTextInformations(HDC& _hDC)
 {
 	//Recupere les lignes à afficher
-	std::wistringstream iss(ARXmenu.mda->str_cre_credits);
+	// TODO check this cast
+	wistringstream iss((const wchar_t *)ARXmenu.mda->str_cre_credits);
+	wstring phrase;
 
 	//Use to calculate the positions
 	float drawpos	= ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY);
@@ -2156,6 +2158,7 @@ static void DrawCredits(void)
 //						it->sPos.cx,
 //						ARX_CLEAN_WARN_CAST_INT(yy),
 //						it->sText.c_str(),
+//						it->sText.length()	);
 
 					++drawn;
 				}
@@ -7084,7 +7087,11 @@ CMenuSlider::CMenuSlider(int _iID, int _iPosX, int _iPosY)
 	rZone.right  = _iPosX + pLeftButton->GetWidth() + pRightButton->GetWidth() + 10*max(pTex1->m_dwWidth, pTex2->m_dwWidth);
 	rZone.bottom = _iPosY + max(pLeftButton->GetHeight(), pRightButton->GetHeight());
 
-	pRightButton->Move(pLeftButton->GetWidth() + 10*std::max(pTex1->m_dwWidth, pTex2->m_dwWidth), 0);
+	ARX_CHECK_NOT_NEG( rZone.bottom );
+	rZone.bottom = max( ARX_CAST_ULONG( rZone.bottom ), (unsigned long)max( pTex1->m_dwHeight, pTex2->m_dwHeight ) );
+
+
+	pRightButton->Move(pLeftButton->GetWidth() + 10*max(pTex1->m_dwWidth, pTex2->m_dwWidth), 0);
 
 	iId = (int) this;
 }

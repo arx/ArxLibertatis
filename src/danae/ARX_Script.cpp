@@ -700,7 +700,7 @@ void ReleaseScript(EERIE_SCRIPT * es)
 // returns 0 if "seek" is at the start of "text"
 // else returns 1
 //*************************************************************************************
-long specialstrcmp(char * text, char * seek)
+long specialstrcmp(const char * text, const char * seek)
 {
 
 	long len = strlen(seek);

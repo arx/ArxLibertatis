@@ -104,17 +104,16 @@ void SAFEstrcpy(char * dest, char * src, unsigned long max)
 }
 
 
-unsigned char IsIn(char * strin, char * str)
+bool IsIn(const char * strin, const char * str)
 {
-	char * tmp;
-	tmp = strstr(strin, str);
+	const char * tmp = strstr(strin, str);
 	
-	if (tmp == NULL) return 0;
+	if (tmp == NULL) return false;
 	
-	return 1;
+	return true;
 }
 
-unsigned char NC_IsIn(char * strin, char * str)
+bool NC_IsIn(const char * strin, const char * str)
 {
 	char * tmp;
 	char t1[4096];
@@ -125,9 +124,9 @@ unsigned char NC_IsIn(char * strin, char * str)
 	MakeUpcase(t2);
 	tmp = strstr(t1, t2);
 	
-	if (tmp == NULL) return 0;
+	if (tmp == NULL) return false;
 	
-	return 1;
+	return true;
 }
 
 void File_Standardize(const char * from, char * to)
@@ -788,13 +787,13 @@ char _dir[256];
 char _name[256];
 char _ext[256];
 
-char * GetName(char * str)
+char * GetName(const char * str)
 {
 	splitpath(str, _drv, _dir, _name, _ext);
 	return _name;
 }
 
-char * GetExt(char * str)
+char * GetExt(const char * str)
 {
 	splitpath(str, _drv, _dir, _name, _ext);
 	return _ext;

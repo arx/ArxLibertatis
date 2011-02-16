@@ -4270,7 +4270,7 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms)
 
 	if (!CreateFullPath(path)) return false;
 
-	unsigned long	handle;
+	FileHandle	handle;
 	long idx;
 	long count = 0;
 	unsigned char * dat;

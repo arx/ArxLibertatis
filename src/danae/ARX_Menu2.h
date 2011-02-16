@@ -360,6 +360,7 @@ class CMenuZone
 		long		lPosition;
 	public:
 		CMenuZone();
+		CMenuZone(int, int, int, int, int);
 		virtual ~CMenuZone();
 
 		int GetWidth()
@@ -569,7 +570,10 @@ class CMenuSliderText: public CMenuElement
 	public:
 		void Move(int, int);
 		bool OnMouseClick(int);
-		CMenuElement * OnShortCut() { return NULL; }
+		CMenuElement * OnShortCut()
+		{
+			return NULL;
+		};
 		void Update(int);
 		void Render();
 		void RenderMouseOver();
@@ -918,7 +922,7 @@ class CMenuConfig
 };
 
 //-----------------------------------------------------------------------------
-struct CreditsTextInformations
+typedef struct CreditsTextInformations
 {
 	CreditsTextInformations()
 	{

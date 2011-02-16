@@ -237,7 +237,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 
 	// Identification
 	char check[512];
-	MakeUpcase(file);
+	
 	HERMES_CreateFileCheck(file, check, 512, CURRENT_FTL_VERSION);
 	memcpy(dat + pos, check, 512);
 	pos += 512;
@@ -426,7 +426,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 	afsh->offset_cylinder = -1;
 
 	// Now we can flush our cool FTL file to the hard drive
-	unsigned long	handle;
+	FileHandle handle;
 	char _error[512];
 
 	if (pos > allocsize)

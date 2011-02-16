@@ -320,7 +320,7 @@ TextureContainer * FindTexture(const char * strTextureName)
 
 	while (ptcTexture)
 	{
-		if (strstr(strTextureName, ptcTexture->m_texName))
+		if (strstr(strTextureName, ptcTexture->m_texName)) // TODO should probably be strcasecmp
 			return ptcTexture;
 
 		ptcTexture = ptcTexture->m_pNext;
@@ -3536,7 +3536,7 @@ HRESULT D3DTextr_CreateEmptyTexture(const char * strName, DWORD dwWidth,
 			return E_INVALIDARG;
 
 		// Check first to see if the texture is already loaded
-		MakeUpcase(strName);
+		//MakeUpcase(strName);
 
 		if (NULL != FindTexture(strName))
 			return E_FAIL;
@@ -3689,7 +3689,7 @@ HRESULT D3DTextr_DestroyContainer(TextureContainer * ptcTexture)
 
 TextureContainer * D3DTextr_GetSurfaceContainer(const char * strName)
 {
-	MakeUpcase(strName);
+	//MakeUpcase(strName);
 	TextureContainer * ptcTexture = FindTexture(strName);
 	return ptcTexture;
 }
@@ -3747,7 +3747,7 @@ HRESULT TextureContainer::LoadJpegFileNoDecomp(TCHAR * strPathname)
 		return E_FAIL;
 	}
 
-	jpeg_mem_src(cinfo, (char *)memjpeg, size);
+	jpeg_mem_src(cinfo, memjpeg, size);
 
 	if (JPEGError)
 	{

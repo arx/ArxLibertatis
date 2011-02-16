@@ -462,7 +462,7 @@ void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 }
 extern long GORE_MODE;
  
-EERIE_3DOBJ * GetExistingEerie(char * file)
+EERIE_3DOBJ * GetExistingEerie(const char * file)
 {
 	for (long i = 1; i < inter.nbmax; i++)
 	{
@@ -2412,7 +2412,7 @@ void ReleaseInter(INTERACTIVE_OBJ * io)
 // Creates an IO Ident for added object if necessary
 // flags can be IO_IMMEDIATELOAD (1) to FORCE loading
 //***********************************************************************************
-INTERACTIVE_OBJ * AddInteractive(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long id, long flags)
+INTERACTIVE_OBJ * AddInteractive(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long id, long flags)
 {
 	INTERACTIVE_OBJ * io = NULL;
 	char ficc[HERMES_PATH_SIZE];
@@ -2567,7 +2567,7 @@ void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, char * attach)
 // AddFix
 // Adds a FIX INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long flags)
+INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags)
 {
 	char tex1[HERMES_PATH_SIZE];
 	char texscript[HERMES_PATH_SIZE];
@@ -2688,7 +2688,7 @@ INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long flags)
 // AddCamera
 // Adds a CAMERA INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, char * file)
+INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
 {
 
 	char tex1[HERMES_PATH_SIZE];
@@ -2761,7 +2761,7 @@ INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, char * file)
 // AddMarker
 // Adds a MARKER INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddMarker(LPDIRECT3DDEVICE7 pd3dDevice, char * file)
+INTERACTIVE_OBJ * AddMarker(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
 {
 	char tex1[HERMES_PATH_SIZE];
 	char texscript[HERMES_PATH_SIZE];
@@ -3028,7 +3028,7 @@ void GroundSnapSelectedIO()
 // AddNPC
 // Adds a NPC INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, char * file, long flags)
+INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags)
 {
 
 	char tex1[HERMES_PATH_SIZE];
@@ -3361,14 +3361,13 @@ extern long SP_DBG;
 // AddItem
 // Adds an ITEM INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, char * fil, long flags)
+INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const char * fil, long flags)
 {
 	char tex1[HERMES_PATH_SIZE];
 	char tex2[HERMES_PATH_SIZE];
 	char texscript[HERMES_PATH_SIZE];
 	char file[256];
 	long type = IO_ITEM;
-	MakeUpcase(fil);
 
 	if (!specialstrcmp(GetName(fil), "GOLD_COIN"))
 	{

@@ -1186,7 +1186,7 @@ void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms)
 	free(ms);
 }
 //-----------------------------------------------------------------------------------------------------
-EERIE_MULTI3DSCENE * MultiSceneToEerie(char * dirr)
+EERIE_MULTI3DSCENE * MultiSceneToEerie(const char * dirr)
 {
 	char * tex;
 	long idx;
@@ -2572,7 +2572,7 @@ void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj)
 
 //-----------------------------------------------------------------------------------------------------
 // Converts a Theo Object to an EERIE object
-EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, char * texpath, char * fic, long flag, LPDIRECT3DDEVICE7 pd3dDevice, long flag2) // flag 1 progressive alloc 2 SLOW
+EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, const char * fic, long flag, LPDIRECT3DDEVICE7 pd3dDevice, long flag2) // flag 1 progressive alloc 2 SLOW
 {
 	if (adr == NULL) 	return NULL;
 
