@@ -166,9 +166,7 @@ void ParseFile( const std::string& file_text )
 
 		// Remove any commented bits until the line end
 		size_t comment_start = std::string::npos;
-		comment_start = str.find("/");
-
-		if ( comment_start != std::string::npos )
+		comment_start = str.find("//");
 
 		// Whole line was commented, no need to do anything with it. Continue getting the next line
 		if ( comment_start == 0 ) continue;
