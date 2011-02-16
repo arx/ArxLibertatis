@@ -71,6 +71,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <HERMESNet.h>
 #include <hermes/PakManager.h>
 #include <hermes/Filesystem.h>
+#include <hermes/Logger.h>
  
 #include <EERIEUtil.h>
 #include <EERIE_AVI.h>
@@ -113,6 +114,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <ARX_Text.h>
 #include "ARX_Missile.h"
 #include "ARX_Cedric.h"
+#include "ARX_HWTransform.h"
 #include "ARX_MenuPublic.h"
 #include "ARX_Snapshot.h"
 
@@ -387,6 +389,7 @@ float GLOBAL_LIGHT_FACTOR=0.85f;
 // Don't touch FINAL_COMMERCIAL_DEMO anymore
 // Comment #define REAL_DEMO for non-demo Version
 // UNcomment #define REAL_DEMO for demo Version
+//TODO(lubosz): uncommenting this define causes stack overflow
 //#define REAL_DEMO
 #ifdef REAL_DEMO
 long FINAL_COMMERCIAL_DEMO =1;
@@ -1061,10 +1064,6 @@ void InitializeDanae()
 		LaunchInteractiveObjectsApp( danaeApp.m_hWnd);
 	}
 
-void Dbg_str(const char * txt)
-{
-	printf("%s\n", txt);
-}
 void LaunchCDROMCheck(long param)
 {
 	return;
@@ -1128,12 +1127,14 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 
 	if (FINAL_COMMERCIAL_GAME)
 	{
+		LogDebug << "FINAL_COMMERCIAL_GAME";
 		ARX_SOUND_INIT=1;
 		FOR_EXTERNAL_PEOPLE=1;
 		ARX_DEMO=0;
 	}
 	else if (FINAL_COMMERCIAL_DEMO)
 	{
+		LogDebug << "FINAL_COMMERCIAL_DEMO";
 		ARX_SOUND_INIT=1;
 		FOR_EXTERNAL_PEOPLE=1;
 		ARX_DEMO=1;
@@ -1141,6 +1142,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 
 	if (FOR_EXTERNAL_PEOPLE)
 	{
+		LogDebug << "FOR_EXTERNAL_PEOPLE";
 		ARX_SOUND_INIT		= 1;
 		ALLOW_CHEATS		= 0;
 		CEDRIC_VERSION		= 0;
@@ -1163,7 +1165,8 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	}
 	else if (CEDRIC_VERSION)
 	{
-		ARX_DEMO=0;
+		LogDebug << "CEDRIC_VERSION";
+		ARX_DEMO=0; 
 		FAST_SPLASHES=1;
 		FORCE_SHOW_FPS=1;
 		FINAL_RELEASE=1; // 1 with pack or 0 without pack
@@ -1184,14 +1187,15 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	for (i=0;i<MAX_EXPLO;i++) explo[i]=NULL;
 
 	USE_FAST_SCENES = 1;
-	Dbg_str("Danae Start");
+	LogDebug << "Danae Start";
 
 	memset(&Project,0,sizeof(PROJECT));
 	Project.vsync = true;
-	Dbg_str("Project Init");
+	LogInfo << "Project Init";
 
 	if (!FOR_EXTERNAL_PEOPLE)
 	{
+		LogDebug << "not FOR_EXTERNAL_PEOPLE";
 		char * param[10];
 		long parampos=0;
 
@@ -1208,20 +1212,20 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 			}
 			else
 			{
-				Dbg_str("PARAMS");
+				LogInfo << "PARAMS";
 				FINAL_RELEASE=0;
 				GAME_EDITOR=1;
 
 				if (!strcasecmp(param[parampos],"editor"))
 				{
-					Dbg_str("PARAM EDITOR");
+					LogInfo << "PARAM EDITOR";
 					NEED_ANCHORS=1;
 				}
 				else
 				{
 					NEED_ANCHORS=1;
 					USE_FAST_SCENES=0;
-					Dbg_str("PARAM MOULINEX");
+					LogInfo << "PARAM MOULINEX";
 
 					if (param[parampos][0]=='-')
 					{
@@ -1269,6 +1273,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 
 					if (!strcasecmp(param[parampos],"moulinex"))
 					{
+						LogInfo << "Launching moulinex";
 						MOULINEX=1;
 						KILL_AT_MOULINEX_END=1;
 
@@ -1278,7 +1283,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 		}
 		else
 		{
-			Dbg_str("FRGE");
+			LogInfo << "FRGE";
 			GAME_EDITOR=1;
 
 			if (FINAL_RELEASE)
@@ -1290,28 +1295,28 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 
 	if((!MOULINEX) && FINAL_RELEASE) {
 		
-		Dbg_str("FINAL RELEASE");
+		LogInfo << "FINAL RELEASE";
 		
 		if(pStringMod[0]) {
-			Dbg_str(pStringMod);
+			LogInfo << pStringMod;
 			if(PAK_AddPak(pStringMod)) {
-				Dbg_str("LoadMode OK");
+				LogInfo << "LoadMode OK";
 			}
 		}
 		
 		const char PAK_DATA[] = "data.pak";
-		Dbg_str(PAK_DATA);
+		LogInfo << PAK_DATA;
 		NOBUILDMAP=1;
 		NOCHECKSUM=1;
 		if(PAK_AddPak(PAK_DATA)) {
-			Dbg_str("LoadMode OK");
+			LogInfo << "LoadMode OK";
 		} else {
-			printf("Unable to Find Data File\n");
+			LogError << "Unable to Find Data File";
 			exit(0);
 		}
 		
 		const char PAK_LOC[] = "loc.pak";
-		Dbg_str("LocPAK");
+		LogInfo << "LocPAK";
 		if(!PAK_AddPak(PAK_LOC)) {
 			const char PAK_LOC_DEFAULT[] = "loc_default.pak";
 			if(!PAK_AddPak(PAK_LOC_DEFAULT)) {
@@ -1320,7 +1325,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 			}
 		}
 		
-		Dbg_str("data2PAK");
+		LogInfo << "data2PAK";
 		const char PAK_DATA2[] = "data2.pak";
 		if(!PAK_AddPak(PAK_DATA2)) {
 			printf("Unable to Find Aux Data File\n");
@@ -1328,7 +1333,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 		}
 		
 	} else {
-		Dbg_str("TRUEFILE LM");
+		LogInfo << "TRUEFILE LM";
 	}
 
 	//delete current for clean save.........
@@ -1345,35 +1350,35 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	}
 
 	ARX_INTERFACE_NoteInit();
-	Dbg_str("Note Init");
-	Vector_Init(&PUSH_PLAYER_FORCE);
+	LogInfo << "Note Init";
+	Vector_Init(&PUSH_PLAYER_FORCE);	
 	ARX_SPECIAL_ATTRACTORS_Reset();
-	Dbg_str("Attr Init");
+	LogInfo << "Attr Init";
 	ARX_SPELLS_Precast_Reset();
-	Dbg_str("ASP Init");
-
+	LogInfo << "ASP Init";
+	
 	for (long t=0;t<MAX_GOLD_COINS_VISUALS;t++)
 	{
 		GoldCoinsObj[t]=NULL;
 		GoldCoinsTC[t]=NULL;
 	}
 
-	Dbg_str("GC Init");
+	LogInfo << "GC Init";
 	memset(LOCAL_SAVENAME,0,60);
-	Dbg_str("LSV Init");
+	LogInfo << "LSV Init";
 	ModeLight=MODE_DYNAMICLIGHT | MODE_DEPTHCUEING;
 
 	memset(&DefaultBkg,0,sizeof(EERIE_BACKGROUND));
 	memset(TELEPORT_TO_LEVEL,0,64);
 	memset(TELEPORT_TO_POSITION,0,64);
-	Dbg_str("Mset");
-
+	LogInfo << "Mset";
+	
 	EERIE_ANIMMANAGER_Init();
-	Dbg_str("AnimManager Init");
+	LogInfo << "AnimManager Init";
 	ARX_SCRIPT_EventStackInit();
-	Dbg_str("EventStack Init");
+	LogInfo << "EventStack Init";
 	ARX_EQUIPMENT_Init();
-	Dbg_str("AEQ Init");
+	LogInfo << "AEQ Init";
 	memset(_CURRENTLOAD_,0,256);
 
 	char temp[256];
@@ -1388,7 +1393,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 		Danae_Registry_WriteValue("WND_LightPrecalc_POSY",0);
 		Danae_Registry_WriteValue("WND_LightOptions_POSX",0);
 		Danae_Registry_WriteValue("WND_LightOptions_POSY",0);
-		Dbg_str("RegData Read");
+		LogInfo << "RegData Read";
 	}
 
 	Danae_Registry_Read("LOCAL_SAVENAME",LOCAL_SAVENAME,"",16);
@@ -1410,18 +1415,18 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	DemoFileCheck();
 
 	ARX_CHANGELEVEL_MakePath();
-	Dbg_str("ACL MakePath");
+	LogInfo << "ACL MakePath";
 
 	LastLoadedDLF[0]=0;
 	ARX_SCRIPT_Timer_FirstInit(512);
-	Dbg_str("Timer Init");
+	LogInfo << "Timer Init";
 	ARX_FOGS_FirstInit();
-	Dbg_str("FGS Init");
+	LogInfo << "FGS Init";
 
 	EERIE_LIGHT_GlobalInit();
-	Dbg_str("Lights Init");
-
-	Dbg_str("Svars Init");
+	LogInfo << "Lights Init";
+	
+	LogInfo << "Svars Init";
 
 	// Script Test
 	lastteleport.x=0.f;
@@ -1470,18 +1475,18 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	}
 	else if (!MOULINEX)
 //		DialogBox( hInstance,MAKEINTRESOURCE(IDD_STARTOPTIONS), NULL, StartProc );
-		printf("ERROR: %s\n", MAKEINTRESOURCE(IDD_STARTOPTIONS));
+		printf("ERROR: %s %s", MAKEINTRESOURCE(IDD_STARTOPTIONS), StartProc);
 	else
 	{
 		Project.demo=LEVELDEMO2;
 	}
 
-	Dbg_str("After Popup");
+	LogInfo << "After Popup";
 	atexit(ClearGame);
 
 	if (LaunchDemo)
 	{
-		Dbg_str("LaunchDemo");
+		LogInfo << "LaunchDemo";
 		GAME_EDITOR=1;
 
 		if (FINAL_RELEASE) GAME_EDITOR=0;
@@ -1494,7 +1499,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 
 	if (LAST_CHINSTANCE!=-1)
 	{
-		Dbg_str("KillDir");
+		LogWarning << "KillDir";
 		ARX_CHANGELEVEL_MakePath();
 		KillAllDirectory(CurGamePath);
 		CreateDirectory(CurGamePath,NULL);
@@ -1539,13 +1544,13 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 		if (GAME_EDITOR) danaeApp.CreationFlags|= WCF_ACCEPTFILES;
 	}
 
-	Dbg_str("Application Creation");
+	LogInfo << "Application Creation";
 	g_pD3DApp = &danaeApp;
 
     if( FAILED( danaeApp.Create( hInstance, strCmdLine ) ) )
 		return 0;
 
-	Dbg_str("Application Creation Success");
+	LogInfo << "Application Creation Success";
 	ShowWindow(danaeApp.m_hWnd, SW_HIDE);
 	MAIN_PROGRAM_HANDLE=danaeApp.m_hWnd;
 	danaeApp.m_pFramework->bitdepth=Project.bits;
@@ -1557,15 +1562,15 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 		GaiaWM=RegisterWindowMessage(texx);
 	}
 
-	Dbg_str("Sound Init");
+	LogInfo << "Sound Init";
 
 	if (	(Project.soundmode != 0)
 		&&	ARX_SOUND_INIT	)
 		ARX_SOUND_Init(MAIN_PROGRAM_HANDLE);
+	
+	LogInfo << "Sound Init Success";
 
-	Dbg_str("Sound Init Success");
-
-	Dbg_str("DInput Init");
+	LogInfo << "DInput Init";
 	ARX_INPUT_Init_Game_Impulses();
 	pGetInfoDirectInput = new CDirectInput();
 	
@@ -1581,7 +1586,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 
 	pMenuConfig=new CMenuConfig(config_path);
 	pMenuConfig->ReadAll();
-	Dbg_str("DInput Init Success");
+	LogInfo << "DInput Init Success";
 
 	if (pMenuConfig->bEAX)
 	{
@@ -1592,7 +1597,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	ForceSendConsole("DANAE Runnning",1,0,(HWND)danaeApp.m_hWnd);
 
 	i = 10;
-	Dbg_str("AInput Init");
+	LogInfo << "AInput Init";
 
 	while (!ARX_INPUT_Init(hInstance,danaeApp.m_hWnd))
 	{
@@ -1614,14 +1619,14 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 		SetWindowPos(danaeApp.m_hWnd,HWND_TOP,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
 	}
 
-	Dbg_str("AInput Init Success");
+	LogInfo << "AInput Init Success";
 
 	//read from cfg file
 	if (strlen(Project.localisationpath)==0)
 	{
 		strcpy(Project.localisationpath,"english");
+		LogWarning << "Falling back to default localisationpath";
 	}
-
 	ShowWindow(danaeApp.m_hWnd, SW_SHOW);
 
 	//-------------------------------------------------------------------------
@@ -1645,11 +1650,11 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	Project.torch.r=1.f;
 	Project.torch.g = 0.8f;
 	Project.torch.b = 0.66666f;
-	Dbg_str("InitializeDanae");
+	LogInfo << "InitializeDanae";
 	InitializeDanae();
 
-	Dbg_str("InitializeDanae Success");
-	Dbg_str("DanaeApp RUN");
+	LogInfo << "InitializeDanae Success";
+	LogInfo << "DanaeApp RUN";
 	danaeApp.m_bReady = true;
 
 //	LaunchCDROMCheck(0);
@@ -4672,62 +4677,61 @@ void ManageQuakeFX()
 	}
 }
 
-void ProcessAllTheo()
-{
-	//long idx;
-	//char pathh[512];
-	//todo finddata
-//	struct _finddata_t fd;
-	//sprintf(pathh,"*.*");
-	printf("unimplemented ProcessAllTheo\n");
+//TODO(lubosz): only needed for moulinex?
+void ProcessAllTheo(char * path) {
+	HANDLE idx;
+	char pathh[512];
+	WIN32_FIND_DATA fd;
+	sprintf(pathh,"*.*");
 
-//	if ((idx=_findfirst(pathh,&fd))!=-1)
-//	{
-//		do
-//		{
-//			if (strcmp(fd.name,".") && strcmp(fd.name,".."))
-//			{
-//				if (fd.attrib & _A_SUBDIR)
-//				{
-//					char path2[512];
-//					sprintf(path2,"%s%s\\",path,fd.name);
-//					ProcessAllTheo(path2);
-//				}
-//				else
-//				{
-//					char ext[256];
-//					strcpy(ext,GetExt(fd.name));
-//
-//					if (!strcasecmp(ext,".teo"))
-//					{
-//						char path2[512];
-//						char texpath[512];
-//						sprintf(path2,"%s%s",path,fd.name);
-//						sprintf(texpath,"Graph\\Obj3D\\Textures\\");
-//						EERIE_3DOBJ * temp;
-//						char tx[1024];
-//						sprintf(tx,"Moulinex %s (%s - %s)",fd.name,path2,texpath);
-//						ForceSendConsole(tx,1,0,NULL);
-//						_ShowText(tx);
-//
-//						if (strstr(path2,"\\NPC\\"))
-//							temp=TheoToEerie_Fast(texpath,path2,TTE_NPC,GDevice);
-//						else
-//							temp=TheoToEerie_Fast(texpath,path2,0,GDevice);
-//
-//						if (temp)
-//						{
-//							ReleaseEERIE3DObj(temp);
-//							ReleaseAllTCWithFlag(0);
-//						}
-//					}
-//				}
-//			}
-//		}
-//		while (!(_findnext(idx, &fd)));
-//
-//		_findclose(idx);
-//	}
+	if ((idx = FindFirstFile(pathh, &fd)) != INVALID_HANDLE_VALUE)
+	{
+		do
+		{
+			LogDebug << "ProcessAllTheo " << fd.cFileName;
+			if (strcmp(fd.cFileName,".") && strcmp(fd.cFileName,".."))
+			{
+				if (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+				{
+					char path2[512];
+					sprintf(path2,"%s%s\\",path,fd.cFileName);
+					ProcessAllTheo(path2);
+				}
+				else
+				{
+					char ext[256];
+					strcpy(ext,GetExt(fd.cFileName));
+
+					if (!strcasecmp(ext,".teo"))
+					{
+						char path2[512];
+						char texpath[512];
+						sprintf(path2,"%s%s",path,fd.cFileName);
+						sprintf(texpath,"Graph\\Obj3D\\Textures\\");
+						EERIE_3DOBJ * temp;
+						char tx[1024];
+						sprintf(tx,"Moulinex %s (%s - %s)",fd.cFileName,path2,texpath);
+						ForceSendConsole(tx,1,0,NULL);
+						_ShowText(tx);
+
+						if (strstr(path2,"\\NPC\\"))
+							temp=TheoToEerie_Fast(texpath,path2,TTE_NPC,GDevice);
+						else
+							temp=TheoToEerie_Fast(texpath,path2,0,GDevice);
+
+						if (temp)
+						{
+							ReleaseEERIE3DObj(temp);
+							ReleaseAllTCWithFlag(0);
+						}
+					}
+				}
+			}
+		}
+		while (FindNextFile(idx, &fd));
+
+		FindClose(idx);
+	}
 }
 void LaunchMoulinex()
 {
@@ -4738,7 +4742,7 @@ void LaunchMoulinex()
 		sprintf(tx,"Moulinex THEO convertALL START________________");
 		ForceSendConsole(tx,1,0,NULL);
 		_ShowText(tx);
-		ProcessAllTheo();
+		ProcessAllTheo(""); // working dir
 		sprintf(tx,"Moulinex THEO convertALL END__________________");
 		ForceSendConsole(tx,1,0,NULL);
 		_ShowText(tx);
@@ -5347,6 +5351,8 @@ unsigned long oBENCH_SOUND=0;
 
 long WILL_QUICKLOAD=0;
 long WILL_QUICKSAVE=0;
+
+// do we still need this?
 void DemoFileCheck()
 {
 	return;

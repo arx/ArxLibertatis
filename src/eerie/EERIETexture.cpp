@@ -69,6 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEMath.h"
 #include "HERMESMain.h"
 #include <hermes/PakManager.h>
+#include <hermes/Logger.h>
 
 //boolean and INT32 clash with wine
 #define INT32 INT32_JPEG
@@ -774,7 +775,7 @@ HRESULT TextureContainer::LoadImageData() {
 	
 	// Can add code here to check for other file formats before failing
 	
-	printf("\e[1;31mLoadImageData: not found: %s\e[m\n", m_strName);
+	LogError << m_strName <<" not found";
 	
 	return DDERR_UNSUPPORTED;
 }

@@ -66,6 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <hermes/PakManager.h>
 #include <hermes/Filesystem.h>
+#include <hermes/Logger.h>
 
 //***********************************************************************************************
 //	FTL FILE Structure:
@@ -439,7 +440,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 	compressed = NULL;
 	long cpr_pos;
 	cpr_pos = 0;
-	printf("IMPLODE NOT IMPLEMENTED\n");
+	LogError <<"IMPLODE NOT IMPLEMENTED";
 	// TODO fix
 	//compressed = STD_Implode((char *)dat, pos, &cpr_pos);
 
@@ -577,7 +578,6 @@ long BH_MODE = 0;
 EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 {
 	
-	printf("ARX_FTL_Load(%s)\n", file);
 	
 	// Creates FTL file name
 	char filename[256];
@@ -586,7 +586,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 
 	// Checks for FTL file existence
 	if(!PAK_FileExist(filename)) {
-		printf("ARX_FTL_Load: not found in PAK\n");
+		LogError<<"ARX_FTL_Load: not found in PAK" << filename;
 		return NULL;
 	}
 
@@ -898,6 +898,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	EERIEOBJECT_CreatePFaces(obj);
 	// Now we can release our cool FTL file
 	EERIE_Object_Precompute_Fast_Access(obj);
-	printf("ARX_FTL_Load: loaded\n");
+	LogInfo<<"loaded "<< file;
 	return obj;
 }
