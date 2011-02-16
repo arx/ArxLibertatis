@@ -779,7 +779,6 @@ string getFontFile() {
 void ARX_Text_Init()
 {
 	
-	std::stringstream ss;
 	ARX_Text_Close();
 
 	Localisation_Init();
@@ -826,7 +825,7 @@ void ARX_Text_Init()
 
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_mainmenu_size", "58", szUT);
-		ss << szUT;
+		std::istringstream ss(szUT);
 		ss >> iFontSize;
 		iFontSize = Traffic(iFontSize);
 
@@ -853,7 +852,7 @@ void ARX_Text_Init()
 
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_menu_size", "32", szUT);
-		ss << szUT;
+		std::istringstream ss(szUT);
 		ss >> iFontSize;
 		iFontSize = Traffic(iFontSize);
 
@@ -880,7 +879,7 @@ void ARX_Text_Init()
 
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_menucontrols_size", "22", szUT);
-		ss << szUT;
+		std::istringstream ss(szUT);
 		ss >> iFontSize;
 		iFontSize = Traffic(iFontSize);
 
@@ -907,7 +906,7 @@ void ARX_Text_Init()
 
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_menucredits_size", "36", szUT);
-		ss << szUT;
+		std::istringstream ss(szUT);
 		ss >> iFontSize;
 		iFontSize = Traffic(iFontSize);
 
@@ -934,7 +933,7 @@ void ARX_Text_Init()
 
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_redist_size", "18", szUT );
-		ss << szUT;
+		std::istringstream ss(szUT);
 		ss >> iFontSize;
 		iFontSize = Traffic(iFontSize);
 
@@ -964,7 +963,7 @@ void ARX_Text_Init()
 
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_book_size", "18", szUT );
-		ss << szUT;
+		std::istringstream ss(szUT);
 		ss >> iFontSize;
 		iFontSize = Traffic(iFontSize);
 
@@ -991,7 +990,7 @@ void ARX_Text_Init()
 
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_note_size", "18", szUT );
-		ss << szUT;
+		std::istringstream ss(szUT);
 		ss >> iFontSize;
 		iFontSize = Traffic(iFontSize);
 
@@ -1015,7 +1014,7 @@ void ARX_Text_Init()
 
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_book_size", "18", szUT );
-		ss << szUT;
+		std::istringstream ss(szUT);
 		ss >> iFontSize;
 		iFontSize = Traffic(iFontSize);
 
