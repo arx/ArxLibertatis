@@ -144,7 +144,7 @@ bool ArxDebug::CreateLogDirectory()
 	bool bReturn = true ;
 
 	//Verify if the log folder exist, otherwise create him
-	const char sLogReposiriry[] = "..\\Log";
+	const char sLogReposiriry[] = "Log";
 
 	if (CreateDirectoryA(sLogReposiriry, NULL) == 0)
 	{
@@ -268,7 +268,7 @@ void ArxDebug::StartLogSession()
 		unsigned int uiID = static_cast<unsigned int>(time(NULL));
 
 		std::ostringstream ossFileName ;
-		ossFileName << "..\\Log\\Log__" << uiID << ".txt";
+		ossFileName << "Log/Log__" << uiID << ".txt";
 		m_fsFile.open(ossFileName.str().c_str(), std::ios::out | std::ios::app);
 
 		if (m_fsFile)

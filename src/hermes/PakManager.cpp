@@ -63,6 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <hermes/PakReader.h>
 #include <hermes/PakEntry.h>
 #include <hermes/Filesystem.h>
+#include "hermes/Logger.h"
 
 
 using std::vector;
@@ -433,11 +434,11 @@ bool PakManager::ExistFile(const char * name) {
 	
 	for(vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
 		if((*i)->getFile(name)) {
-			printf("\e[1;32mFound in PAK:\e[m\t%s\n", name);
+			LogInfo << "Found in PAK "<< name;
 			return true;
 		}
 	}
 	
-	printf("\e[1;33mCan't find in PAK:\e[m\t%s\n", name);
+	LogError << "Can't find in PAK "<< name;
 	return false;
 }

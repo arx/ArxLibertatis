@@ -14,6 +14,7 @@ unpak/unpak.cpp
 ../src/hermes/PakEntry.cpp 
 ../src/hermes/PakReader.cpp 
 ../src/hermes/HashMap.cpp 
+../src/hermes/Logger.cpp 
 ../src/hermes/blast.cpp)
 
 # target_link_libraries(unpak z)
