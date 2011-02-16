@@ -322,7 +322,8 @@ void ARX_SCRIPT_LaunchScriptSearch( std::string& search)
 				if (pos > 0)
 				{
 					std::stringstream ss;
-					ss << objname << " - GLOBAL - Line " << nline << " : " << tline << '\n';
+					ss << objname << " - GLOBAL - Line " << std::setw(4) << nline
+					   << std::setw(0) << " : " << tline << '\n';
 					//sprintf(toadd, "%s - GLOBAL - Line %4d : %s\n", objname, nline, tline);
 					toadd = ss.str();
 
@@ -350,7 +351,8 @@ void ARX_SCRIPT_LaunchScriptSearch( std::string& search)
 				if (pos > 0)
 				{
 					std::stringstream ss;
-					ss << objname << " - LOCAL  - Line " << nline << " : " << tline << '\n';
+					ss << objname << " - LOCAL  - Line " << std::setw(4) << nline
+					   << std::setw(0) << " : " << tline << '\n';
 					toadd = ss.str();
 					//toadd, "%s - LOCAL  - Line %4ld : %s\n", objname, nline, tline);
 
@@ -1196,7 +1198,8 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 					else
 					{
 						std::stringstream ss;
-						ss << GetName(EVENT_SENDER->filename) << '_' << std::setfill('0') << std::setw(4) << EVENT_SENDER->ident;
+						ss << GetName(EVENT_SENDER->filename) << '_'
+						   << std::setfill('0') << std::setw(4) << EVENT_SENDER->ident;
 						txtcontent = ss.str();
 					}
 				}
@@ -1351,7 +1354,8 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 				if (LASTSPAWNED)
 				{
 					std::stringstream ss;
-					ss << GetName(LASTSPAWNED->filename) << '_' << LASTSPAWNED->ident;
+					ss << GetName(LASTSPAWNED->filename) << '_'
+					   << std::setfill('0') << std::setw(4) << LASTSPAWNED->ident;
 					txtcontent = ss.str();
 				}
 				else txtcontent = "NONE";
@@ -1681,7 +1685,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 				else if (ioo)
 				{
 					std::stringstream ss;
-					ss << GetName(ioo->filename) << '_' << ioo->ident;
+					ss << GetName(ioo->filename) << '_' << std::setfill('0') << std::setw(4) << ioo->ident;
 					txtcontent = ss.str();
 				}
 				else 	txtcontent = "NONE";
@@ -1702,7 +1706,8 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 					else
 					{
 						std::stringstream ss;
-						ss << GetName(inter.iobj[io->targetinfo]->filename) << '_' << std::setfill('0') << std::setw(4) << inter.iobj[io->targetinfo]->ident;
+						ss << GetName(inter.iobj[io->targetinfo]->filename) << '_'
+						   << std::setfill('0') << std::setw(4) << inter.iobj[io->targetinfo]->ident;
 						txtcontent = ss.str();
 					}
 				}
@@ -1748,7 +1753,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 		else
 		{
 			std::stringstream ss;
-			ss << GetName(io->filename) << '_' << io->ident;
+			ss << GetName(io->filename) << '_' << std::setfill('0') << std::setw(4) << io->ident;
 			txtcontent = ss.str();
 		}
 
