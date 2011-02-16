@@ -99,7 +99,6 @@ extern D3DTLVERTEX	vert_list[4];
 extern ACTIONSTRUCT actions[MAX_ACTIONS];
 
 //-----------------------------------------------------------------------------
-EERIE_MULTI3DSCENE	* MultiSceneToEerie(const char * dir);
 EERIE_MULTI3DSCENE	* PAK_MultiSceneToEerie(const char * dir);
 
 void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms);

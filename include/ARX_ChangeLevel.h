@@ -71,6 +71,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define MAX_LINKED_SAVE	16
 #define SAVEFLAGS_EXTRA_ROTATE 1
 
+//#pragma pack(push,1)
+
 struct ARX_VARIABLE_SAVE
 {
 	long	type;
@@ -84,7 +86,6 @@ struct ARX_SCRIPT_SAVE
 	unsigned long	lastcall;
 	long			allowevents;
 }; // Aligned 1 2 4
-
 
 struct ARX_CHANGELEVEL_INDEX
 {
@@ -467,6 +468,8 @@ struct ARX_CHANGELEVEL_PLAYER_LEVEL_DATA
 	unsigned long time;
 	long	padd[32];
 };
+
+//#pragma pack(pop)
 
 //-----------------------------------------------------------------------------
 #define SYSTEM_FLAG_TWEAKER_INFO	1

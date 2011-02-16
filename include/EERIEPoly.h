@@ -63,6 +63,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 void specialEE_RTP(D3DTLVERTEX*,D3DTLVERTEX*);
 void EERIE_CreateMatriceProj(float _fWidth,float _fHeight,float _fFOV,float _fZNear,float _fZFar);
 
+//#pragma pack(push,1)
+
 //-----------------------------------------------------------------------------
 struct ANIM_HANDLE
 {
@@ -121,7 +123,7 @@ struct EERIE_CAMERA
 	EERIE_3D lasttarget;
 	EERIE_3D lastpos;
 	EERIE_3D translatetarget;
-	bool	lastinfovalid;
+	BOOL	lastinfovalid;
 	EERIE_3D norm;
 	EERIE_RGB	fadecolor;
 	RECT	clip;
@@ -767,7 +769,7 @@ extern long MAX_ANIMATIONS;
 #define TRANSFORMED		2
 #define ALPHABLEND		1
 #define NOCULL			2
-#define TEXTURE3		1 // poly texturé 3
+#define TEXTURE3		1 // poly texture 3
 #define FLAT3			2 // poly flat 3
 
 //-----------------------------------------------------------------------------
@@ -1075,13 +1077,6 @@ extern long NbRoomDraw;
 #define NPC_ITEMS__AMBIENT_VALUE_255	35
 #define NPC_ITEMS__AMBIENT_VALUE		0.1372549f
 
-struct ROOM_DIST_DATA_SAVE
-{
-	float	distance; // -1 means use truedist
-	EERIE_3D startpos;
-	EERIE_3D endpos;
-};
-
 struct ROOM_DIST_DATA
 {
 	float	distance; // -1 means use truedist
@@ -1106,5 +1101,7 @@ struct TILE_LIGHTS
 	short			max;
 	EERIE_LIGHT **	el;
 };
+
+//#pragma pack(pop)
 
 #endif

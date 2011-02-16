@@ -3669,6 +3669,7 @@ bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj, long idx, long grs)
 #define NON_PORTAL_VERSION 0.136f
 #define UNIQUE_VERSION 0.141f
 
+#pragma pack(push,1)
 struct UNIQUE_HEADER
 {
 	char path[256];
@@ -3677,16 +3678,19 @@ struct UNIQUE_HEADER
 	long	compressedsize;
 	long	pad[3];
 };
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct UNIQUE_HEADER2
 {
 	char path[256];
 };
+#pragma pack(pop)
 
 
 #define SIZ_WRK 10
 
-
+#pragma pack(push,1)
 struct FAST_VERTEX
 {
 	float	sy;
@@ -3695,7 +3699,9 @@ struct FAST_VERTEX
 	float	stu;
 	float	stv;
 };
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct FAST_EERIEPOLY
 {
 	FAST_VERTEX		v[4];
@@ -3709,8 +3715,9 @@ struct FAST_EERIEPOLY
 	short			room;
 	short			paddy;
 };
+#pragma pack(pop)
 
-
+#pragma pack(push,1)
 struct FAST_SCENE_HEADER
 {
 	float	version;
@@ -3726,14 +3733,18 @@ struct FAST_SCENE_HEADER
 	long	nb_rooms;
 
 };
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct FAST_TEXTURE_CONTAINER
 {
 	TextureContainer * tc;
 	TextureContainer * temp;
 	char		fic[256];
 };
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct FAST__ANCHOR_DATA
 {
 	EERIE_3D	pos;
@@ -3743,12 +3754,24 @@ struct FAST__ANCHOR_DATA
 	short		flags;
 
 };
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct FAST_SCENE_INFO
 {
 	long	nbpoly;
 	long	nbianchors;
 };
+#pragma pack(pop)
+
+#pragma pack(push,1)
+struct ROOM_DIST_DATA_SAVE
+{
+	float	distance; // -1 means use truedist
+	EERIE_3D startpos;
+	EERIE_3D endpos;
+};
+#pragma pack(pop)
 
 extern void LoadLevelScreen(LPDIRECT3DDEVICE7 pd3dDevice = NULL, long lev = -1, float v = 0.f);
 extern float PROGRESS_BAR_COUNT;
@@ -3756,48 +3779,60 @@ long NOCHECKSUM = 0;
 long USE_FAST_SCENES = 1;
 bool FastSceneLoad(const char * partial_path)
 {
+	// TODO bounds checking
+	
 	LogDebug << "Fast Scene Load " << partial_path;
-	if (!USE_FAST_SCENES) return false;
-
+	if(!USE_FAST_SCENES) {
+		LogDebug << "Not using fast scenes.";
+		return false;
+	}
+	
 	char path[256];
 	sprintf(path, "Game\\%s", partial_path);
-
-	long count = 0;
-	char fic[256];
-
-	sprintf(fic, "%sfast.fts", path);
-	LogDebug << "Fast Scene Load " << fic;
-
-	if (!PAK_FileExist(fic)) return false;
-
-	size_t size;
 	
-	unsigned char * dat = (unsigned char *)PAK_FileLoadMalloc(fic, &size);
-
-	if (dat == NULL) return false;
-
-	long pos = 0;
+	char fic[256];
+	
+	sprintf(fic, "%sfast.fts", path);
+	
+	size_t size;
+	char * dat = (char *)PAK_FileLoadMalloc(fic, &size);
+	if(!dat) {
+		LogError << "FastSceneLoad: could not find " << fic;
+	}
+	
+	size_t pos = 0;
 	UNIQUE_HEADER * uh = (UNIQUE_HEADER *)dat;
-	pos += sizeof(UNIQUE_HEADER);
-
-	if (!NOCHECKSUM) if (strcasecmp(uh->path, path)) goto release;
-
-	if (uh->version != UNIQUE_VERSION) goto release;
-
+	//pos += sizeof(UNIQUE_HEADER);
+	
+	if (!NOCHECKSUM) if (strcasecmp(uh->path, path)) {
+		LogError << "FastSceneLoad path mismatch: \"" << path << "\" and \"" << uh->path << "\"";
+		free(dat);
+		return false;
+	}
+	
+	if (uh->version != UNIQUE_VERSION) {
+		LogError << "FastSceneLoad version mistmatch: got " << uh->version << " expected " << UNIQUE_VERSION;
+		free(dat);
+		return false;
+	}
+	
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
 	char path2[256];
-
-	if (uh->count == 0) goto lasuite;
-
-	long c_count;
-	c_count = 0;
+	
+	//if (uh->count == 0) goto lasuite;
+	
+	//long c_count;
+	//c_count = 0;
+	
+	/* TODO This will not work in a PAK file and no .scn files are shipped outside PAKs
 	sprintf(path2, "%s*.scn", partial_path);
-
+	
 	LogDebug << "Looking for " << path2;
-
+	
 	HANDLE idx;
 	WIN32_FIND_DATA fd;
+	
 	if ((idx = FindFirstFile(path2, &fd)) != INVALID_HANDLE_VALUE)
 	{
 		do
@@ -3809,13 +3844,15 @@ bool FastSceneLoad(const char * partial_path)
 			}
 		}
 		while (FindNextFile(idx, &fd));
-
+		
 		FindClose(idx);
 	}
-
-	count = 0;
-
-	while (count < uh->count)
+	*/
+	
+	//long count;
+	//count = 0;
+	
+	/* while (count < uh->count) TODO there are no .scn files in the sources
 	{
 		UNIQUE_HEADER2 * uh2 = (UNIQUE_HEADER2 *)(dat + pos);
 		pos += sizeof(UNIQUE_HEADER2);
@@ -3824,85 +3861,105 @@ bool FastSceneLoad(const char * partial_path)
 		pos += 512;
 		sprintf(path2, "%s%s", partial_path, uh2->path);
 		SetExt(path2, ".scn");
-
+		
 		LogDebug << "Looking for " << path2;
-
+		
 		if (PAK_FileExist(path2))
 		{
 			if (!NOCHECKSUM)
 			{
 				HERMES_CreateFileCheck(path2, check, 512, UNIQUE_VERSION);
-
+				
 				for (long jj = 0; jj < 512; jj++)
 					if (check[jj] != check2[jj]) goto release;
 			}
+		} else {
+			LogDebug << "Didn't find " << path2;
 		}
-
+		
 		count++;
-
+		
 		if (count > 60)	goto release;
 	}
-
+	
+	LogDebug << "FastSceneLoad: done counting files";
+	
+	LogDebug << "count is " << count;
+	
+	
 	if (c_count != uh->count)
 	{
+		LogDebug << "FastSceneLoad: count mismatch, was " << c_count << " expected " << uh->count;
 		if (NOCHECKSUM)
-		{
+		{ */
 			pos = sizeof(UNIQUE_HEADER) + uh->count * (512 + sizeof(UNIQUE_HEADER2));
-		}
+		/*}
 		else goto release;
-	}
+	}*/
 
-lasuite:
-	;
-	long i, j, k, kk;
+//lasuite:
+//	;
+	
 	InitBkg(ACTIVEBKG, MAX_BKGX, MAX_BKGZ, BKG_SIZX, BKG_SIZZ);
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
-	char * compressed;
-	size_t cpr_pos;
-	cpr_pos = size;
-	compressed = (char *)(dat + pos);
-	char * torelease;
-	torelease = (char *)dat;
-
-
-	dat = (unsigned char *)malloc(uh->compressedsize);
-
-	if (dat == NULL) goto release;
-
-	cpr_pos = blastMem(compressed,cpr_pos-pos,(char *)dat,cpr_pos);
-
-	if (dat == NULL) goto release;
-
-	free(torelease);
+	
+	char * rawdata = new char[uh->compressedsize];
+	if(rawdata == NULL) {
+		LogError << "FastSceneLoad: can't allocate buffer for uncompressed data";
+		free(dat);
+		return false;
+	}
+	
+	size_t rawsize = blastMem(dat + pos, size - pos, rawdata, uh->compressedsize);
+	free(dat);
+	if(!rawsize) {
+		LogDebug << "FastSceneLoad: blastMem didn't return anything " << size << " " << pos;
+		delete[] rawdata;
+		return false;
+	}
+	
+	long i, j, k, kk;
+	
 	PROGRESS_BAR_COUNT += 3.f;
 	LoadLevelScreen();
 	pos = 0;
-
-	FAST_SCENE_HEADER * fsh;
-	fsh = (FAST_SCENE_HEADER *)(dat + pos);
+	
+	FAST_SCENE_HEADER * fsh = (FAST_SCENE_HEADER *)(rawdata + pos);
 	pos += sizeof(FAST_SCENE_HEADER);
-
-	if (fsh->version != UNIQUE_VERSION) goto release;
-
-	if (fsh->sizex != ACTIVEBKG->Xsize) goto release;
-
-	if (fsh->sizez != ACTIVEBKG->Zsize) goto release;
-
+	
+	if (fsh->version != UNIQUE_VERSION) {
+		LogError << "FastSceneLoad: version mismatch in FAST_SCENE_HEADER";
+		delete[] rawdata;
+		return false;
+	}
+	
+	if(fsh->sizex != ACTIVEBKG->Xsize) {
+		LogError << "FastSceneLoad: sizex mismatch in FAST_SCENE_HEADER";
+		delete[] rawdata;
+		return false;
+	}
+	
+	if(fsh->sizez != ACTIVEBKG->Zsize) {
+		LogError << "FastSceneLoad: sizez mismatch in FAST_SCENE_HEADER";
+		delete[] rawdata;
+		return false;
+	}
+	
 	player.pos.x = fsh->playerpos.x;
 	player.pos.y = fsh->playerpos.y;
 	player.pos.z = fsh->playerpos.z;
 	Mscenepos.x = fsh->Mscenepos.x;
 	Mscenepos.y = fsh->Mscenepos.y;
 	Mscenepos.z = fsh->Mscenepos.z;
-
+	
 	unsigned char * tex;
-	tex = (unsigned char *)(dat + pos);
-
+	tex = (unsigned char *)(rawdata + pos);
+	
 	//ReCreate textures...
 	for (k = 0; k < fsh->nb_textures; k++)
 	{
-		FAST_TEXTURE_CONTAINER * ftc = (FAST_TEXTURE_CONTAINER *)(dat + pos);
+		FAST_TEXTURE_CONTAINER * ftc = (FAST_TEXTURE_CONTAINER *)(rawdata + pos);
 		char fic[256];
 		sprintf(fic, "%s", ftc->fic);
 		ftc->temp = D3DTextr_CreateTextureFromFile(fic, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
@@ -3918,7 +3975,7 @@ lasuite:
 	for (j = 0; j < fsh->sizez; j++)
 		for (i = 0; i < fsh->sizex; i++)
 		{
-			FAST_SCENE_INFO * fsi = (FAST_SCENE_INFO *)(dat + pos);
+			FAST_SCENE_INFO * fsi = (FAST_SCENE_INFO *)(rawdata + pos);
 			pos += sizeof(FAST_SCENE_INFO);
 			ACTIVEBKG->Backg[i+j * fsh->sizex].nbianchors = (short)fsi->nbianchors;
 			ACTIVEBKG->Backg[i+j * fsh->sizex].nbpoly = (short)fsi->nbpoly;
@@ -3948,7 +4005,7 @@ lasuite:
 
 			for (k = 0; k < fsi->nbpoly; k++)
 			{
-				FAST_EERIEPOLY * ep = (FAST_EERIEPOLY *)(dat + pos);
+				FAST_EERIEPOLY * ep = (FAST_EERIEPOLY *)(rawdata + pos);
 				pos += sizeof(FAST_EERIEPOLY);
 
 				if (ep->tex != NULL)
@@ -4083,7 +4140,7 @@ lasuite:
 
 			for (k = 0; k < fsi->nbianchors; k++)
 			{
-				long * ianch = (long *)(dat + pos);
+				long * ianch = (long *)(rawdata + pos);
 				pos += sizeof(long);
 				ACTIVEBKG->Backg[i+j * fsh->sizex].ianchors[k] = *ianch;
 			}
@@ -4106,7 +4163,7 @@ lasuite:
 
 	for (i = 0; i < fsh->nb_anchors; i++)
 	{
-		FAST__ANCHOR_DATA * fad = (FAST__ANCHOR_DATA *)(dat + pos);
+		FAST__ANCHOR_DATA * fad = (FAST__ANCHOR_DATA *)(rawdata + pos);
 		pos += sizeof(FAST__ANCHOR_DATA);
 		ACTIVEBKG->anchors[i].flags = fad->flags;
 		ACTIVEBKG->anchors[i].pos.x = fad->pos.x;
@@ -4127,7 +4184,7 @@ lasuite:
 
 		for (long kk = 0; kk < fad->nb_linked; kk++)
 		{
-			long * lng = (long *)(dat + pos);
+			long * lng = (long *)(rawdata + pos);
 			pos += sizeof(long);
 			ACTIVEBKG->anchors[i].linked[kk] = *lng;
 		}
@@ -4150,7 +4207,7 @@ lasuite:
 
 		for (i = 0; i < portals->nb_total; i++)
 		{
-			EERIE_SAVE_PORTALS * epo = (EERIE_SAVE_PORTALS *)(dat + pos);
+			EERIE_SAVE_PORTALS * epo = (EERIE_SAVE_PORTALS *)(rawdata + pos);
 			pos += sizeof(EERIE_SAVE_PORTALS);
 			memset(&portals->portals[i], 0, sizeof(EERIE_PORTALS));
 			portals->portals[i].room_1 = epo->room_1;
@@ -4178,7 +4235,7 @@ lasuite:
 
 		for (i = 0; i < portals->nb_rooms + 1; i++)
 		{
-			EERIE_SAVE_ROOM_DATA * erd = (EERIE_SAVE_ROOM_DATA *)(dat + pos);
+			EERIE_SAVE_ROOM_DATA * erd = (EERIE_SAVE_ROOM_DATA *)(rawdata + pos);
 			pos += sizeof(EERIE_SAVE_ROOM_DATA);
 			memset(&portals->room[i], 0, sizeof(EERIE_ROOM_DATA));
 			portals->room[i].nb_portals = erd->nb_portals;
@@ -4188,7 +4245,7 @@ lasuite:
 			{
 				portals->room[i].portals =	(long *)	malloc(sizeof(long) * portals->room[i].nb_portals);
 
-				long * lng = (long *)(dat + pos);
+				long * lng = (long *)(rawdata + pos);
 				pos += sizeof(long) * portals->room[i].nb_portals;
 				memcpy(portals->room[i].portals, lng, sizeof(long)*portals->room[i].nb_portals);
 			}
@@ -4200,7 +4257,7 @@ lasuite:
 			if (portals->room[i].nb_polys)
 			{
 				portals->room[i].epdata =	(EP_DATA *)	malloc(sizeof(EP_DATA) * portals->room[i].nb_polys);
-				EP_DATA * ed = (EP_DATA *)(dat + pos);
+				EP_DATA * ed = (EP_DATA *)(rawdata + pos);
 				pos += sizeof(EP_DATA) * portals->room[i].nb_polys;
 				memcpy(portals->room[i].epdata, ed, sizeof(EP_DATA)*portals->room[i].nb_polys);
 			}
@@ -4239,7 +4296,7 @@ lasuite:
 		for (long n = 0; n < NbRoomDistance; n++)
 			for (long m = 0; m < NbRoomDistance; m++)
 			{
-				ROOM_DIST_DATA_SAVE * rdds = (ROOM_DIST_DATA_SAVE *)(dat + pos);
+				ROOM_DIST_DATA_SAVE * rdds = (ROOM_DIST_DATA_SAVE *)(rawdata + pos);
 				pos += sizeof(ROOM_DIST_DATA_SAVE);
 				SetRoomDistance(m, n, rdds->distance, &rdds->startpos, &rdds->endpos);
 			}
@@ -4252,7 +4309,7 @@ lasuite:
 	EERIEPOLY_Compute_PolyIn();
 	PROGRESS_BAR_COUNT += 3.f;
 	LoadLevelScreen();
-	eb = (EERIE_BACKGROUND *)ACTIVEBKG;
+	eb = ACTIVEBKG;
 	EERIE_PATHFINDER_Create(eb);
 	EERIE_PORTAL_Blend_Portals_And_Rooms();
 	PROGRESS_BAR_COUNT += 1.f;
@@ -4262,13 +4319,11 @@ lasuite:
 
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
-	free(dat);
+	delete[] rawdata;
+	
+	LogDebug << "FastSceneLoad: done loading.";
 	return true;
-
-release:
-	;
-	free(dat);
-	return false;
+	
 }
 bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms)
 {

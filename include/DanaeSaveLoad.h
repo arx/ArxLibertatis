@@ -62,24 +62,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //Fileformat version
 #define CURRENT_VERSION 1.44f
 
-//////////////////////
-//Lighting File Header
-struct DANAE_LLF_HEADER
-{
-	float	version;
-	char	ident[16];
-	char	lastuser[256];
-	long	time;
+//#pragma pack(push,1)
 
-	long	nb_lights;
-	long	nb_Shadow_Polys;
-	long	nb_IGNORED_Polys;
-	long	nb_bkgpolys;
-	long	pad[256];
-	float	fpad[256];
-	char	cpad[4096];
-	bool	bpad[256];
-}; //Aligned 1 2 4
+//////////////////////
 
 ///////////////////////
 
@@ -90,14 +75,10 @@ void LogDirCreation(char * dir);
 #define	SP_IGNORED	1
 #define	SP_CHILD	2
 
-struct DANAE_LS_SCENE
-{
-	char	name[512];
-	long	pad[16];
-	float	fpad[16];
-}; // Aligned 1 2 4 8
 void WriteIOInfo(INTERACTIVE_OBJ * io, char * dir);
-struct DANAE_LS_INTER
+
+#pragma pack(push,1)
+typedef struct
 {
 	char		name[512];
 	EERIE_3D	pos;
@@ -106,98 +87,10 @@ struct DANAE_LS_INTER
 	long		flags; 
 	long	pad[14];
 	float	fpad[16];
-}; // Aligned 1 2 4
+} DANAE_LS_INTER; // Aligned 1 2 4
+#pragma pack(pop)
 
-struct DANAE_LS_NODE
-{
-	char		name[64];
-	EERIE_3D	pos;
-	long		pad[16];
-	float		fpad[16];
-}; 
-// Aligned 1 2 4
-
-struct DANAE_LS_LIGHTINGHEADER
-{
-	long		nb_values;
-	long		ViewMode;
-	long		ModeLight;
-	long		pad;
-}; // Aligned 1 2 4 8
-
-struct DANAE_LS_VLIGHTING
-{
-	long		r;
-	long		g;
-	long		b;
-}; // Aligned 1 2 4
-
-struct DANAE_LS_LIGHT
-{
-	EERIE_3D	pos;
-	EERIE_RGB	rgb;
-	float		fallstart;
-	float		fallend;
-	float		intensity;
-	float		i;
-	EERIE_RGB	ex_flicker;
-	float		ex_radius;
-	float		ex_frequency;
-	float		ex_size;
-	float		ex_speed;
-	float		ex_flaresize;
-	float		fpadd[24];
-	long		extras;
-	long		lpadd[31];
-}; //ver 1.003f // Aligned 1 2 4
-
-struct DANAE_LS_PATH
-{
-	char		name[64];
-	short		idx;
-	short		flags;
-	EERIE_3D	initpos;
-	EERIE_3D	pos;
-	long		nb_pathways;
-	EERIE_RGB	rgb; 
-	float		farclip; 
-	float		reverb;
-	float		amb_max_vol; 
-	float		fpadd[26];
-	long		height;
-	long		lpadd[31];
-	char		ambiance[128]; 
-	char		cpadd[128];
-}; // Aligned 1 2 4
-
-struct DANAE_LS_PATHWAYS
-{
-	EERIE_3D		rpos;
-	long			flag;
-	unsigned long	time;
-	float		fpadd[2];
-	long		lpadd[2];
-	char		cpadd[32];
-}; // Aligned 1 2 4
-
-struct DANAE_LS_FOG
-{
-	EERIE_3D	pos;
-	EERIE_RGB	rgb;
-	float		size;
-	long		special;
-	float		scale;
-	EERIE_3D	move;
-	EERIE_3D	angle;
-	float		speed;
-	float		rotatespeed;
-	long		tolive;
-	long		blend;
-	float		frequency;
-	float		fpadd[32];
-	long		lpadd[32];
-	char		cpadd[256];
-}; // Aligned 1 2 4
+//#pragma pack(pop)
 
 extern EERIE_3D loddpos;
 long DanaeSaveLevel(char * fic);

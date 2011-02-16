@@ -51,12 +51,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class TextureContainer;
 
+//#pragma pack(push,1)
+
+#pragma pack(push,1)
 struct EERIE_RGB
 {
 	float r;
 	float g;
 	float b;
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
 
 struct EERIE_QUAT
@@ -81,6 +85,7 @@ struct EERIE_2D
 	};
 }; // Aligned 1 2 4 8
 
+#pragma pack(push,1)
 struct EERIE_3D
 {
 	union
@@ -102,6 +107,7 @@ struct EERIE_3D
 		float		roll;
 	};
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
 struct EERIE_TRI
 {
@@ -683,6 +689,7 @@ struct EERIE_ANIM
 
 //-------------------------------------------------------------------------
 //Portal Data;
+#pragma pack(push,1)
 struct SAVE_EERIEPOLY
 {
 	long 			type;	// at least 16 bits
@@ -700,7 +707,9 @@ struct SAVE_EERIEPOLY
 	short			room;
 	short			misc;
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct EERIE_SAVE_PORTALS
 {
 	SAVE_EERIEPOLY	poly;
@@ -709,6 +718,7 @@ struct EERIE_SAVE_PORTALS
 	short		useportal;
 	short		paddy;
 };
+#pragma pack(pop)
 
 struct EERIE_PORTALS
 {
@@ -719,7 +729,7 @@ struct EERIE_PORTALS
 	short		paddy;
 };
 
-
+#pragma pack(push,1)
 struct EP_DATA
 {
 	short	px;
@@ -727,6 +737,7 @@ struct EP_DATA
 	short	idx;
 	short	padd;
 };
+#pragma pack(pop)
 
 struct EERIE_ROOM_DATA
 {
@@ -748,6 +759,7 @@ struct EERIE_SAVE_ROOM_DATA
 	long nb_polys;
 	long padd[6];
 };
+#pragma pack(pop)
 
 struct EERIE_PORTAL_DATA
 {
@@ -841,6 +853,8 @@ class CMY_DYNAMIC_VERTEXBUFFER
 		void * Lock(unsigned int);
 		bool UnLock();
 };
+
+//#pragma pack(pop)
 
 #define FVF_D3DVERTEX	(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1|D3DFVF_TEXTUREFORMAT2)
 #define FVF_D3DVERTEX2	(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX2|D3DFVF_TEXTUREFORMAT2)
