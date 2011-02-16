@@ -116,22 +116,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ARX_MenuPublic.h"
 #include "ARX_Snapshot.h"
 
-#ifdef ARX_STEAM
-#include "../steam/steam.h"
-
-#pragma comment(lib,"steam.lib")
-#endif
-
-void DemoFileCheck();		
-
-bool ARX_IsSteam()
-{
-#ifdef ARX_STEAM
-	return true;
-#else
-	return false;
-#endif
-}
+void DemoFileCheck();
 
 //-----------------------------------------------------------------------------
 
@@ -1110,120 +1095,9 @@ int HandlerMemory(size_t stSize)
 
 //-----------------------------------------------------------------------------
 
-HMODULE hSteamLibrary = NULL;
-
-#ifdef ARX_STEAM
-typedef int (STEAM_CALL *SteamStartupFn)( unsigned int uUsingMask, TSteamError *pError );
-typedef int (STEAM_CALL *SteamCleanupFn)( TSteamError *pError );
-typedef int	(STEAM_CALL	*SteamGetAppPurchaseCountryFn)( unsigned int uAppId, char *szCountryBuf, unsigned int uBufSize, int * pPurchaseTime, TSteamError *pError );
-typedef int	(STEAM_CALL	*SteamIsSubscribedFn)( unsigned int uSubscriptionId, int *pbIsSubscribed, int *pbIsSubscriptionPending, TSteamError *pError );
-
-SteamStartupFn pSteamStartup = NULL;
-SteamCleanupFn pSteamCleanup = NULL;
-SteamGetAppPurchaseCountryFn pSteamGetAppPurchaseCountry = NULL;
-SteamIsSubscribedFn pSteamIsSubscribed = NULL;
-
-bool InitSteam()
-{
-	hSteamLibrary = LoadLibrary( "steam.dll" );
-
-	if( hSteamLibrary )
-	{
-		pSteamStartup = (SteamStartupFn)GetProcAddress( hSteamLibrary, "SteamStartup" );
-		pSteamCleanup = (SteamCleanupFn)GetProcAddress( hSteamLibrary, "SteamCleanup" );
-		pSteamGetAppPurchaseCountry = (SteamGetAppPurchaseCountryFn)GetProcAddress( hSteamLibrary, "SteamGetAppPurchaseCountry" );
-		pSteamIsSubscribed = (SteamIsSubscribedFn)GetProcAddress( hSteamLibrary, "SteamIsSubscribed" );
-
-		if(
-			(!pSteamStartup)||
-			(!pSteamCleanup)||
-			(!pSteamGetAppPurchaseCountry)||
-			(!pSteamIsSubscribed)
-			)
-		{
-
-			exit(0);
-		}
-
-		TSteamError Error;
-		SteamStartEngine( &Error );
-
-		if( !pSteamStartup( STEAM_USING_LOGGING|STEAM_USING_ACCOUNT|STEAM_USING_USERID, &Error ) )
-		{
-
-			exit(0);
-		}
-	}
-
-	return hSteamLibrary? true : false;
-}
-
-//-----------------------------------------------------------------------------
-
-bool ReleaseSteam()
-{
-	if( hSteamLibrary )
-	{
-		if( pSteamCleanup )
-		{
-			TSteamError Error;
-			pSteamCleanup(&Error);
-		}
-
-		FreeLibrary( hSteamLibrary );
-	}
-
-	return true;
-}
-
-//-----------------------------------------------------------------------------
-
-bool IsDemo()
-{
-	TSteamError steamError;
-	int isSubscribed = 0, isPending = 1;
-	int retVal;
-
-	retVal = SteamIsAppSubscribed( 1700, &isSubscribed, &isPending, &steamError ); // ARKANE : modified for MM on steam
-
-	if ( retVal && steamError.eSteamError == eSteamErrorNone )
-	{
-		if ( !isSubscribed ) // if they don't own HL2 this must be the demo!
-		{
-			return true;
-		}
-	}
-
-	return false;
-}
-#endif
-
-//-----------------------------------------------------------------------------
-
 bool IsNoGore( void )
 {
-#ifdef ARX_STEAM
-	char szCountry[128];
-	int iPurchaseTime;
-	bool bReducedGore = false;
-	TSteamError steamError;
-	memset( szCountry, 0, 128 );
-	iPurchaseTime = 0;
-
-	int bIsSubscribed1 = false;
-	int bIsSubscribed2 = false;
-	int bIsPending = false;
-	pSteamGetAppPurchaseCountry( 1700, szCountry, 128, &iPurchaseTime, &steamError );
-
-	if( !strcasecmp( szCountry, "de" ) )
-	{
-		return true;
-	}
-
-	return false;
-#else
 	return GERMAN_VERSION? true : false;
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -1236,16 +1110,6 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 #ifdef _DEBUG
 	ARX_LOG_INIT();
 #endif // _DEBUG
-
-#ifdef ARX_STEAM
-	InitSteam();
-
-	if( IsDemo() )
-	{
-		FINAL_COMMERCIAL_DEMO = 1;
-	}
-
-#endif
 
 	//TODO memleak stuff
 //	_set_new_mode(1);																//memory handler activated for malloc too
@@ -1791,11 +1655,6 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 //	LaunchCDROMCheck(0);
 
 	HRESULT hr=danaeApp.Run();
-
-#ifdef ARX_STEAM
-	ReleaseSteam();
-#endif
-
 
 #ifdef _DEBUG
 	ARX_LOG_CLEAN();
