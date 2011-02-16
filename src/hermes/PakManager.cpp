@@ -276,6 +276,13 @@ PakManager::~PakManager() {
 
 bool PakManager::AddPak(const char * pakname) {
 	
+	for(vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
+		if((*i)->pakname != NULL && !strcmp(pakname, (*i)->pakname)) {
+			// Already loaded.
+			return true;
+		}
+	}
+	
 	PakReader * reader = new PakReader();
 	if(!reader->Open(pakname)) {
 		delete reader;
@@ -286,8 +293,6 @@ bool PakManager::AddPak(const char * pakname) {
 		delete reader;
 		return false;
 	}
-	
-	RemovePak(pakname);
 	
 	loadedPaks.push_back(reader);
 	return true;
@@ -377,7 +382,7 @@ PakFileHandle * PakManager::fOpen(const char * filename) {
 	
 	for (vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
 		PakFileHandle * pfh;
-		if((pfh = (*i)->fOpen(filename, "rb"))) {
+		if((pfh = (*i)->fOpen(filename))) {
 			LogInfo << "Opened from PAK "<< filename;
 			return pfh;
 		}

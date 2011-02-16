@@ -89,6 +89,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <hermes/PakManager.h>
 #include <hermes/Filesystem.h>
+#include <hermes/Logger.h>
 
 #include <stdio.h>
 
@@ -1066,7 +1067,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * fic)
 	size_t FileSize = 0;
 	char tstr[128];
 	HERMES_DATE_TIME hdt;
-	printf("Starting Level Loading\n");
+	LogInfo << "Loading Level " << fic;
 	ClearCurLoadInfo();
 	CURRENTLEVEL = GetLevelNumByName(fic);
 	GetDate(&hdt);

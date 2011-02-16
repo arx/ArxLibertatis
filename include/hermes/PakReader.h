@@ -80,7 +80,7 @@ public:
 	void * ReadAlloc(const char * name , size_t * sizeRead);
 	int GetSize(const char * name);
 	
-	PakFileHandle * fOpen(const char * name, const char * mode);
+	PakFileHandle * fOpen(const char * name);
 	int fClose(PakFileHandle * h);
 	size_t fRead(void * buf, size_t size, size_t n, PakFileHandle * h);
 	int fSeek(PakFileHandle * h, int off, long whence);

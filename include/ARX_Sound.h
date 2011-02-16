@@ -67,9 +67,9 @@ extern char AMB_CREDITS[];
 
 // Menu samples
 extern ArxSound SND_MENU_CLICK;
-extern ArxSound SND_MENU_CREDITS_LOOP;
-extern ArxSound SND_MENU_LOOP;
-extern ArxSound SND_MENU_OPTIONS_LOOP;
+//extern ArxSound SND_MENU_CREDITS_LOOP;
+//extern ArxSound SND_MENU_LOOP;
+//extern ArxSound SND_MENU_OPTIONS_LOOP;
 extern ArxSound SND_MENU_PUSH;
 extern ArxSound SND_MENU_RELEASE;
 
@@ -98,8 +98,8 @@ extern ArxSound SND_PLAYER_DEATH;
 extern ArxSound SND_PLAYER_DEATH_BY_FIRE;
 extern ArxSound SND_PLAYER_FILLLIFEMANA;
 extern ArxSound SND_PLAYER_HEART_BEAT;
-extern ArxSound SND_PLAYER_JUMP;
-extern ArxSound SND_PLAYER_JUMP_END;
+//extern ArxSound SND_PLAYER_JUMP;
+//extern ArxSound SND_PLAYER_JUMP_END;
 extern ArxSound SND_PLAYER_LEVEL_UP;
 extern ArxSound SND_PLAYER_POISONED;
 
@@ -176,7 +176,7 @@ extern ArxSound SND_SPELL_LIGHTNING_START;
 extern ArxSound SND_SPELL_LIGHTNING_LOOP;
 extern ArxSound SND_SPELL_LIGHTNING_END;
 
-extern ArxSound SND_SPELL_MASS_LIGHTNING_END;
+//extern ArxSound SND_SPELL_MASS_LIGHTNING_END;
 extern ArxSound SND_SPELL_FIRE_FIELD_START;
 extern ArxSound SND_SPELL_FIRE_FIELD_LOOP;
 extern ArxSound SND_SPELL_FIRE_FIELD_END;
