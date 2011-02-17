@@ -58,7 +58,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdio.h>
 #include <vector>
 #include <algorithm>
-#include <functional>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 #include "io/Perf.h"
 

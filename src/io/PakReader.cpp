@@ -46,9 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 */
 
-
 #define PAK_READ_BUF_SIZE 1024
-
 
 #include <cstring>
 #include <algorithm>
@@ -60,17 +58,17 @@ using std::size_t;
 using std::strlen;
 
 #include "core/Common.h"
-#include "io/Blast.h"
-#include "io/PakReader.h"
-#include "io/PakEntry.h"
-#include "io/HashMap.h"
-#include "io/Logger.h"
-
 #if ARX_COMPILER == ARX_COMPILER_VC9
     typedef U32 uint32_t;
 #else
     #include <stdint.h>
 #endif
+
+#include "io/Blast.h"
+#include "io/PakReader.h"
+#include "io/PakEntry.h"
+#include "io/HashMap.h"
+#include "io/Logger.h"
 
 const char PAK_KEY_DEMO[] = "NSIARKPRQPHBTE50GRIH3AYXJP2AMF3FCEYAVQO5QGA0JGIIH2AYXKVOA1VOGGU5GSQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRI";
 const char PAK_KEY_FULL[] = "AVQF3FCKE50GRIAYXJP2AMEYO5QGA0JGIIH2NHBTVOA1VOGGU5H3GSSIARKPRQPQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRIAYX";
