@@ -92,6 +92,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/ARX_Time.h"
 
 using std::sprintf;
+using std::min;
+using std::max;
 
 void CheckNPCEx(INTERACTIVE_OBJ * io);
 

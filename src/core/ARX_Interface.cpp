@@ -31,8 +31,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+#include "core/ARX_Interface.h"
+
 //TODO(lubosz): don't include that much
-#include <stdio.h>
+#include <cstdio>
 
 #include "renderer/d3dwrapper.h"
 #include "renderer/EERIEAnim.h"
@@ -43,7 +45,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEObject.h"
 #include "renderer/EERIETexture.h"
 
-#include "core/ARX_Interface.h"
 #include "core/ARX_Minimap.h"
 #include "core/ARX_Paths.h"
 #include "core/ARX_Text.h"
@@ -70,6 +71,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/ARX_Collisions.h"
 #include "core/ARX_CCinematique.h"
 #include "io/HERMESMain.h"
+
+using std::min;
+using std::max;
 
 extern float MagicSightFader;
 extern long FINAL_COMMERCIAL_DEMO;

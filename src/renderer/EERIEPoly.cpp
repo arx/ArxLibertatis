@@ -55,10 +55,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 //#define STRICT
 
-
-#include <malloc.h>
-
 #include "renderer/EERIEPoly.h"
+
+#include <cstdlib>
+
 #include "renderer/EERIELight.h"
 #include "renderer/EERIEObject.h"
 #include "renderer/EERIETexture.h"
@@ -67,16 +67,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEAnim.h"
 #include "renderer/EERIEAnchors.h"
 #include "renderer/EERIEPathfinder.h"
+
 #include "core/ARX_Particles.h"
 #include "core/ARX_Time.h"
 #include "core/ARX_Scene.h"
 #include "core/ARX_Menu2.h"
 #include "core/Minos_PathFinder.h"
+
 #include "io/HERMESMain.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "io/blast.h"
+
+using std::min;
+using std::max;
 
 void ComputeFastBkgData(EERIE_BACKGROUND * eb);
 extern long ParticleCount;

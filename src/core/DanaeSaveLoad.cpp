@@ -55,10 +55,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 //TODO(lubosz): too many includes
-#include <stdio.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <time.h>
+
+#include "core/DanaeSaveLoad.h"
+
+#include <cstdio>
+//#include <sys/stat.h>
+//#include <fcntl.h>
+#include <ctime>
 
 #include <iostream>
 #include <fstream>
@@ -71,7 +74,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIECollisionSpheres.h"
 #include "renderer/EERIEDraw.h"
 
-#include "core/DanaeSaveLoad.h"
 #include "core/ARX_Damages.h"
 #include "core/ARX_Fogs.h"
 #include "core/ARX_Levels.h"
@@ -93,6 +95,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "io/blast.h"
+
+using std::max;
 
 extern float PROGRESS_BAR_COUNT;
 extern float PROGRESS_BAR_TOTAL;

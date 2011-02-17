@@ -54,8 +54,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <stdio.h>
-#include <stdlib.h>
+
+#include "core/ARX_Damages.h"
+
+#include <cstdio>
+#include <cstdlib>
 
 #include "io/HERMESMain.h"
 
@@ -65,7 +68,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEDraw.h"
 #include "renderer/EERIEPoly.h"
 
-#include "core/ARX_Damages.h"
 #include "core/ARX_Player.h"
 #include "core/ARX_NPC.h"
 #include "core/ARX_Sound.h"
@@ -77,6 +79,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/ARX_Paths.h"
 #include "core/ARX_Script.h"
 #include "core/ARX_Time.h"
+
+using std::min;
+using std::max;
 
 extern long REFUSE_GAME_RETURN;
 

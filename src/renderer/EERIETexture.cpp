@@ -57,31 +57,35 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdio.h>
+#include "renderer/EERIETexture.h"
 
+#include <cstdio>
 #include <cassert>
+
 #define STRICT
 #include <tchar.h>
 #include <zlib.h>
-#include "renderer/EERIETexture.h"
+
+//boolean and INT32 clash with wine
+#define INT32 INT32_JPEG
+#define boolean boolean_JPEG
+#undef _WIN32
+#include <jpeglib.h>
+#include <jerror.h>
+#include <jconfig.h>
+#include <jmorecfg.h>
+#undef boolean
+#undef INT32
+
 #include "renderer/EERIEApp.h"
 #include "renderer/EERIEUtil.h"
 #include "renderer/EERIEMath.h"
+
 #include "io/HERMESMain.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
 
-//boolean and INT32 clash with wine
-#define INT32 INT32_JPEG
-#undef _WIN32
-#undef FAR
-#define HAVE_BOOLEAN
-#include <jpeglib.h>
-
-//boolean and INT32 clash with wine
-#undef INT32
-#undef FAR
-
+using std::max;
 
 long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 /*-----------------------------------------------------------------------------*/
@@ -634,7 +638,6 @@ TextureContainer::TextureContainer(const char * strName, DWORD dwStage, DWORD dw
 	pVertexListCull_TMetalH = NULL;
 }
 
-// Nuky - TODO - store bInList in TextureContainer and test for it
 bool TextureContainer_Exist(TextureContainer * tc)
 {
 	TextureContainer * ptcTexture = g_ptcTextureList;
@@ -3255,9 +3258,9 @@ void LookForRefinementMap(TextureContainer * tc)
 	if (GlobalRefine)
 	{
 		unsigned char * from = (unsigned char *)GlobalRefine;
-		U32 fromsize = GlobalRefine_size;
+		long fromsize = GlobalRefine_size;
 		unsigned char data[256];
-		U32 pos = 0;
+		long pos = 0;
 		char name[256];
 		strcpy(name, GetName(tc->m_strName));
 
@@ -3700,7 +3703,7 @@ void jpeg_null_function(j_decompress_ptr cinfo) {
 	// don't do anything
 }
 
-boolean fill_input_buffer(j_decompress_ptr cinfo) {
+boolean_JPEG fill_input_buffer(j_decompress_ptr cinfo) {
 	// There is nothing to fill.
 	return 0;
 }
@@ -4012,6 +4015,8 @@ int Decomp_PNG(void * mems, DATAS_PNG * dpng) {
 //       for the specified texture container, no interlace required
 //-----------------------------------------------------------------------------
 HRESULT TextureContainer::LoadPNGFile(const char * strPathname) {
+	
+	int taille;
 	
 	PakFileHandle * file = PAK_fopen(strPathname);
 	

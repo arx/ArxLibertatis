@@ -37,12 +37,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "renderer/EERIEAnchors.h"
+
 #include "renderer/EERIEApp.h"
 #include "renderer/EERIEPathfinder.h"
 #include "renderer/EERIEMath.h"
+
 #include "io/HERMESMain.h"
+
 #include "core/Danae.h"
 #include "core/ARX_Text.h"
+
+using std::min;
+using std::max;
 
 extern float MAX_ALLOWED_PER_SECOND;
 extern bool DIRECT_PATH;
