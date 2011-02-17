@@ -381,7 +381,6 @@ extern char ShowTextWindowtext[128];
 extern char ShowText[65536];
 extern char ShowText2[65536];
 extern char BIG_DEBUG_STRING[BIG_DEBUG_SIZE];
-extern long NEED_DEBUG;
 extern long BIG_DEBUG_POS;
 extern long NB_GLOBALS;
 extern long ActiveTimers;

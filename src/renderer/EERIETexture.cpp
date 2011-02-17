@@ -3002,7 +3002,7 @@ my_error_exit(j_common_ptr cinfo)
 	JPEGError = 1;
 	return;
 }
-bool JPEG_NO_TRUE_BLACK = true;
+const bool JPEG_NO_TRUE_BLACK = true;
 /*--------------------------------------------------------------------------------*/
 HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 {

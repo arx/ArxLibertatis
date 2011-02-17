@@ -60,6 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 #include <cstdio>
 #include <iostream>
+#include <algorithm>
 
 #include <time.h>
 #include "io/HERMESMain.h"
@@ -117,14 +118,7 @@ bool IsIn(const char * strin, const char * str)
 
 bool NC_IsIn(const char * strin, const char * str)
 {
-	char * tmp;
-	char t1[4096];
-	char t2[4096];
-	strcpy(t1, strin);
-	strcpy(t2, str);
-	MakeUpcase(t1);
-	MakeUpcase(t2);
-	tmp = strstr(t1, t2);
+	const char * tmp = strcasestr(strin, str);
 	
 	if (tmp == NULL) return false;
 	
@@ -139,8 +133,8 @@ void File_Standardize(const char * from, char * to)
 	long size = strlen(from);
 	char * temp = HermesBufferWork;
 	
-	strcpy(temp, from);
-	/*
+	//strcpy(temp, from);
+	
 
 	while (pos < size)
 	{
@@ -151,11 +145,11 @@ void File_Standardize(const char * from, char * to)
 				pos++;
 		}
 
-		temp[pos2++]	= ARX_CLEAN_WARN_CAST_CHAR(toupper(from[pos]));
+		temp[pos2++]	= (char)toupper(from[pos]);
 		pos++;
 	}
 
-	temp[pos2] = 0;*/
+	temp[pos2] = 0;
 
 again:
 	;
@@ -236,6 +230,7 @@ void MakeUpcase(char * str)
 		}
 		str++;
 	}*/
+	std::transform(str, str + strlen(str), str, (int(*)(int))toupper);
 }
 
 HKEY    ConsoleKey = NULL;

@@ -16,7 +16,7 @@ struct LogSetting {
 
 const LogSetting blackList[] = {
 	{ "ARX_FTL.cpp", Logger::Warning },
-	{ "ARX_Script.cpp", Logger::Info },
+	{ "ARX_Script.cpp", Logger::Debug },
 	{ "PakManager.cpp", Logger::Fatal },
 	{ "PakReader.cpp", Logger::Info },
 	{ "Filesystem.cpp", Logger::Fatal },
