@@ -72,16 +72,28 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define TBOOL int
 
 #pragma pack(push,1)
-typedef struct
+struct THEO_3D
 {
 	float			x;
 	float			y;
 	float			z;
 }; // Aligned 1 2 4
+#pragma pack(pop)
+
+#pragma pack(push,1)
+struct ArxQuat
+{
+	float	w;
+	float	x;
+	float	y;
+	float	z;
+};
+#pragma pack(pop)
 
 //***********************************************************************
 //*		BEGIN THEO SCN FILE FORMAT structures							*
 //***********************************************************************
+#pragma pack(push,1)
 struct TSCN_HEADER
 {
 	unsigned long		version;
@@ -96,7 +108,9 @@ struct TSCN_HEADER
 	long				nb_maps;
 	unsigned long		type_write;
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct TSCN_OBJHEADER
 {
 	long				next_obj;
@@ -107,6 +121,7 @@ struct TSCN_OBJHEADER
 	TBOOL				object_selected;
 
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
 #define	LIGHT_DIRECTIONAL	0
 #define	LIGHT_OMNI			1
@@ -116,6 +131,7 @@ struct TSCN_OBJHEADER
 //#define LIGHT_SPOT			6
 #define LIGHT_SPOT_SHADOW	4
 
+#pragma pack(push,1)
 struct TSCN_LIGHT
 {
 	char				light_name[SIZE_NAME];
@@ -137,7 +153,9 @@ struct TSCN_LIGHT
 	float				hallow_ray;
 	float				hallow_zmarge;
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct TSCN_LIGHT_3019
 {
 	char				light_name[SIZE_NAME];
@@ -160,6 +178,9 @@ struct TSCN_LIGHT_3019
 	float				hallow_ray;
 	float				hallow_zmarge;
 }; // Aligned 1 2 4
+#pragma pack(pop)
+
+#pragma pack(push,1)
 struct TSCN_LIGHT_3024
 {
 	char				light_name[SIZE_NAME];
@@ -183,6 +204,7 @@ struct TSCN_LIGHT_3024
 	float				hallow_ray;
 	float				hallow_zmarge;
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
 //***********************************************************************
 //*		END THEO SCN FILE FORMAT structures								*
@@ -192,6 +214,8 @@ struct TSCN_LIGHT_3024
 //***********************************************************************
 //*		BEGIN THEO TEO FILE FORMAT structures							*
 //***********************************************************************
+
+#pragma pack(push,1)
 struct THEO_HEADER
 {
 	char			identity[SIZE_IDENTITY_OBJECT];
@@ -201,8 +225,9 @@ struct THEO_HEADER
 	long			nb_maps;
 	unsigned long	type_write;
 }; // NOT ALIGNED (SIZE_IDENTITY_OBJECT)
+#pragma pack(pop)
 
-
+#pragma pack(push,1)
 struct THEO_TEXTURE
 {
 	char			texture_name[SIZE_NAME];
@@ -217,8 +242,9 @@ struct THEO_TEXTURE
 	unsigned long	color_mask;
 	TBOOL			animated_map;
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
-
+#pragma pack(push,1)
 struct THEO_SAVE_MAPS_IN
 {
 	char			texture_name[SIZE_NAME];
@@ -228,7 +254,9 @@ struct THEO_SAVE_MAPS_IN
 	long			mipmap_level;
 	TBOOL			animated_map;
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct THEO_SAVE_MAPS_IN_3019
 {
 	char			texture_name[SIZE_NAME];
@@ -239,8 +267,9 @@ struct THEO_SAVE_MAPS_IN_3019
 	unsigned long	color_mask;
 	TBOOL			animated_map;
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
-
+#pragma pack(push,1)
 struct THEO_OFFSETS
 {
 	long			vertex_seek;
@@ -250,7 +279,9 @@ struct THEO_OFFSETS
 	long			extras_seek;
 	long			groups_seek;
 }; // Aligned 1 2 4 8
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct THEO_NB
 {
 	long			nb_vertex;
@@ -260,8 +291,9 @@ struct THEO_NB
 	long			nb_groups;
 	unsigned long	channel;
 }; // Aligned 1 2 4 8
+#pragma pack(pop)
 
-
+#pragma pack(push,1)
 struct THEO_VERTEX
 {
 	float			x;
@@ -271,7 +303,9 @@ struct THEO_VERTEX
 	TBOOL			freeze;
 	TBOOL			isselected;
 }; // Aligned 1 2 4 8
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct THEO_ACTION_POINT
 {
 	char			name[SIZE_NAME];
@@ -279,7 +313,9 @@ struct THEO_ACTION_POINT
 	long			action;
 	long			num_sfx;
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 typedef struct
 {
 	long			u1;
@@ -289,14 +325,18 @@ typedef struct
 	long			u3;
 	long			v3;
 }; // Aligned 1 2 4 8
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct THEO_FACE_RGB
 {
 	long r;
 	long g;
 	long b;
 };  // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct THEO_FACES
 {
 	unsigned long	color;
@@ -322,7 +362,9 @@ struct THEO_FACES
 	unsigned long	transparency;
 	float			trans;
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct THEO_FACES_3006
 {
 	unsigned long	color;
@@ -348,7 +390,9 @@ struct THEO_FACES_3006
 	TBOOL			transparency;
 	float			trans;
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct THEO_EXTRA_DATA
 {
 	long			alpha;
@@ -359,15 +403,9 @@ struct THEO_EXTRA_DATA
 	float			posz;
 	long			origin_index;
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
-struct ArxQuat
-{
-	float	w;
-	float	x;
-	float	y;
-	float	z;
-};
-
+#pragma pack(push,1)
 struct THEO_EXTRA_DATA_3005
 {
 	long			alpha;
@@ -379,6 +417,7 @@ struct THEO_EXTRA_DATA_3005
 	float			posz;
 	long			origin_index;
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
 #define THEO_OBJECT_TYPE_3D			0
 #define THEO_OBJECT_TYPE_SPRITE		1
@@ -395,13 +434,15 @@ struct THEO_EXTRA_DATA_3005
 #define THEO_RENDER_TYPE_PREDATOR		9
 #define THEO_RENDER_TYPE_CHROME			10
 
-
+#pragma pack(push,1)
 struct THEO_GROUPS
 {
 	long			origin;
 	long			nb_index;
 }; // Aligned 1 2 4 8
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct THEO_GROUPS_3011
 {
 	long			origin;
@@ -417,12 +458,15 @@ struct THEO_GROUPS_3011
 	long			gammamax;
 	long			nb_index;
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct THEO_SELECTED
 {
 	char			name[SIZE_NAME];
 	long			nb_index;
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
 //***********************************************************************
 //*		END THEO TEO FILE FORMAT structures								*
@@ -433,6 +477,8 @@ struct THEO_SELECTED
 //***********************************************************************
 #define		THEO_SIZE_IDENTITY_ANIM 20
 #define		STBOOL					int
+
+#pragma pack(push,1)
 struct THEA_HEADER
 {
 	char			identity[THEO_SIZE_IDENTITY_ANIM];
@@ -442,7 +488,9 @@ struct THEA_HEADER
 	long			nb_groups;
 	long			nb_key_frames;
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct THEA_KEYFRAME
 {
 	long			num_frame;
@@ -454,7 +502,9 @@ struct THEA_KEYFRAME
 	STBOOL			key_morph;
 	long			time_frame;
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct THEA_KEYFRAME_2015
 {
 	long			num_frame;
@@ -467,21 +517,18 @@ struct THEA_KEYFRAME_2015
 	STBOOL			key_morph;
 	long			time_frame;
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct THEA_KEYMOVE
 {
 	float			x;
 	float			y;
 	float			z;
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
-struct THEO_ANGLE
-{
-	unsigned long alpha: 12;
-	unsigned long beta: 12;
-	unsigned long gamma: 12;
-}; // Aligned 1 2 4 ?
-
+#pragma pack(push,1)
 struct THEA_MORPH
 {
 	long		num_list_morph;
@@ -489,26 +536,29 @@ struct THEA_MORPH
 	long		nb_inter;
 	long		start_frame;
 }; // Aligned 1 2 4 8
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct THEO_GROUPANIM
 {
 	TBOOL		key_group;
-	THEO_ANGLE	angle;
+	char angle[8]; // ignored
 	ArxQuat		Quaternion;
 	THEO_3D		translate;
 	THEO_3D		zoom;
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
+#pragma pack(push,1)
 struct THEA_SAMPLE
 {
 	char			sample_name[SIZE_NAME];
 	long			sample_size;
 }; // Aligned 1 2 4
+#pragma pack(pop)
 
 //***********************************************************************
 //*            END THEO TEA Animation FILE FORMAT structures            *
 //***********************************************************************
-
-#pragma pack(pop)
 
 #endif // THEODATA_H
