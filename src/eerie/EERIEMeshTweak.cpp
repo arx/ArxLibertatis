@@ -64,7 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "HERMESMain.h"
 
 #include <hermes/PakManager.h>
-
+#include <hermes/Logger.h>
 
 
 
@@ -90,11 +90,12 @@ void EERIE_MESH_ReleaseTransPolys(EERIE_3DOBJ * obj)
  
 void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, char * s1, char * s2)
 {
-	if (obj == NULL) return;
+	LogDebug << "Tweak Skin " << s1 << " " << s2;
 
-	if (s1 == NULL) return;
-
-	if (s2 == NULL) return;
+	if (obj == NULL || s1 == NULL|| s2 == NULL) {
+		LogError << "Tweak Skin got NULL Pointer";
+		return;
+	}
 
 	char skintochange[512];
 
@@ -125,7 +126,8 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, char * s1, char * s2)
 			}
 		}
 
-		tex->Restore(GDevice);
+//		TODO(lubosz): crash
+//		tex->Restore(GDevice);
 		TextureContainer * tex2 = FindTexture(skintochange);
 
 		if (tex2)

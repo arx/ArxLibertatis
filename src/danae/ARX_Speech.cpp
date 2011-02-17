@@ -214,7 +214,7 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 //	if (false)
 	if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 	{
-		SelectObject(hDC, hFontInBook);
+//		SelectObject(hDC, InBookFont);
 
 		GetTextExtentPoint(hDC,_T("p"),1,&sSize);
 

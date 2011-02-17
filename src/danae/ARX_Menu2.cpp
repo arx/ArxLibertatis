@@ -432,10 +432,9 @@ bool GetTextSizeNoCache(HFONT font, const _TCHAR* text, int *width_out, int *hei
 
 			SIZE sSize;
 
-//			todo: cast
-//			GetTextExtentPoint32W(hDC, _lpszUText, _tcslen(_lpszUText),	&sSize);
-			*width_out = sSize.cx;
-			*height_out = sSize.cy;
+			GetTextExtentPoint32(hDC, _lpszUText, _tcslen(_lpszUText),	&sSize);
+			*_iWidth = sSize.cx;
+			*_iHeight = sSize.cy;
 
 			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 			return true;
@@ -756,8 +755,7 @@ int CMenuConfig::GetDIKWithASCII(const char *_pcTouch)
 {
 	_TCHAR pcT[256];
 
-//	TODO: cast
-//	MultiByteToWideChar(CP_ACP, 0, _pcTouch, -1, pcT, strlen(_pcTouch)+1);
+	MultiByteToWideChar(CP_ACP, 0, _pcTouch, -1, (wchar_t*)pcT, strlen(_pcTouch)+1);
 
 	if(!_tcsicmp(pcT,_T("---")))
 	{
@@ -2006,8 +2004,7 @@ bool CMenuConfig::ReadAll()
 static void CalculTextPosition(HDC& _hDC, std::wstring& phrase, CreditsTextInformations &infomations, float& drawpos)
 {
 	//Center the text on the screen
-//	todo: cast
-//	GetTextExtentPoint32W(_hDC, phrase.c_str(), phrase.length(), &(infomations.sPos));
+	GetTextExtentPoint32W(_hDC, phrase.c_str(), phrase.length(), &(infomations.sPos));
 
 	if (infomations.sPos.cx < DANAESIZX)
 		infomations.sPos.cx = ARX_CLEAN_WARN_CAST_INT((DANAESIZX - infomations.sPos.cx) * DIV2);
@@ -2038,15 +2035,18 @@ static void CalculAverageWidth( HDC& _hDC )
 		SIZE size;
 
 		//calculate the average value
-//		todo cast
-//		GetTextExtentPoint32W(_hDC, _T("aA("),3, &size);
+		GetTextExtentPoint32(_hDC, _T("aA("),3, &size);
 		CreditsData.iFontAverageHeight = size.cy;
 }
 
 //Use to extract string info from src buffer
 static void ExtractAllCreditsTextInformations(HDC& _hDC)
 {
+<<<<<<< HEAD
 	//Recupere les lignes à afficher
+=======
+	// Retrieve the rows to display
+>>>>>>> 60e47019f3d1cc65ccba843ec50b268e1c00797a
 	// TODO check this cast
 	wistringstream iss((const wchar_t *)ARXmenu.mda->str_cre_credits);
 	wstring phrase;
@@ -2165,12 +2165,11 @@ static void DrawCredits(void)
 
 
 					//Display the text on the screen
-//					todo: cast
-//					TextOutW( hDC,
-//						it->sPos.cx,
-//						ARX_CLEAN_WARN_CAST_INT(yy),
-//						it->sText.c_str(),
-//						it->sText.length()	);
+					TextOutW( hDC,
+						it->sPos.cx,
+						ARX_CLEAN_WARN_CAST_INT(yy),
+						it->sText.c_str(),
+						it->sText.length()	);
 
 					++drawn;
 				}
@@ -2452,8 +2451,7 @@ int iDecMenuPrincipaleY=50;
 
 		//version
 		_TCHAR twVersion[32];
-//		todo: cast
-//		MultiByteToWideChar(CP_ACP, 0, GetVersionString()+3, -1, twVersion, 32 );
+		MultiByteToWideChar(CP_ACP, 0, GetVersionString()+3, -1, (wchar_t*)twVersion, 32 );
 
 		me = new CMenuElementText( -1, hFontControls, twVersion, RATIO_X(490), RATIO_Y(65), lColor, 1.0f, NOP );
 		me->SetCheckOff();
@@ -2718,13 +2716,12 @@ int iDecMenuPrincipaleY=50;
 										tex3,
 										256);
 									strcat(tex4,tex3);
-// todo: cast
-//									MultiByteToWideChar(	CP_ACP,
-//										0,
-//										tex4,
-//										-1,
-//										tex2,
-//										256);
+									MultiByteToWideChar(	CP_ACP,
+										0,
+										tex4,
+										-1,
+										(wchar_t*)tex2,
+										256);
 									_tcscat(tex,tex2);
 
 									me02 = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls, tex, fPosX1, 0.f, lColor, 0.8f, NOP);
@@ -2755,13 +2752,12 @@ int iDecMenuPrincipaleY=50;
 										256);
 									strcat(tex4,tex3);
 
-//									todo: cast
-//									MultiByteToWideChar(	CP_ACP,
-//										0,
-//										tex4,
-//										-1,
-//										tex2,
-//										256);
+									MultiByteToWideChar(	CP_ACP,
+										0,
+										tex4,
+										-1,
+										(wchar_t*)tex2,
+										256);
 									_tcscat(tex,tex2);
 
 									me02=new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls,tex, fPosX1,0.f,lColor, 0.8f, NOP);
@@ -2873,13 +2869,12 @@ int iDecMenuPrincipaleY=50;
 										256);
 									strcat(tex4,tex3);
 
-//									todo: cast
-//									MultiByteToWideChar(	CP_ACP,
-//										0,
-//										tex4,
-//										-1,
-//										tex2,
-//										256);
+									MultiByteToWideChar(	CP_ACP,
+										0,
+										tex4,
+										-1,
+										(wchar_t*)tex2,
+										256);
 									_tcscat(tex,tex2);
 
 									me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, tex, fPosX1, 0.f, RGB(127, 127, 127), 0.8f, EDIT_QUEST_SAVE_CONFIRM);
@@ -2910,13 +2905,12 @@ int iDecMenuPrincipaleY=50;
 										tex3,
 										256);
 									strcat(tex4,tex3);
-//	todo: cast
-//									MultiByteToWideChar(	CP_ACP,
-//										0,
-//										tex4,
-//										-1,
-//										tex2,
-//										256);
+									MultiByteToWideChar(	CP_ACP,
+										0,
+										tex4,
+										-1,
+										(wchar_t*)tex2,
+										256);
 									_tcscat(tex,tex2);
 
 									me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, tex, fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
@@ -4303,10 +4297,9 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 						_stprintf( szT, _T("%lu - %s"), me->lData, me->lpszText );
 						char ml[256];
 						memset( ml, 0, 256 );
-//						todo: cast
-//						WideCharToMultiByte( CP_ACP, 0, me->lpszText, _tcslen( me->lpszText ),
-//							ml,  _tcslen( me->lpszText ) + 1,
-//							"_", NULL );
+						WideCharToMultiByte( CP_ACP, 0, (wchar_t*)me->lpszText, _tcslen( me->lpszText ),
+							ml,  _tcslen( me->lpszText ) + 1,
+							"_", NULL );
 
 						strcpy( save_l[me->lData].name, ml );
 						eMenuState = MAIN;
@@ -4336,10 +4329,9 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 
 						char ml[256];
 						memset(ml,0,256);
-//						todo: cast
-//						WideCharToMultiByte( CP_ACP, 0, me->lpszText, _tcslen( me->lpszText ),
-//							ml,  _tcslen( me->lpszText ) + 1,
-//							"_", NULL );
+						WideCharToMultiByte( CP_ACP, 0, (wchar_t*)me->lpszText, _tcslen( me->lpszText ),
+							ml,  _tcslen( me->lpszText ) + 1,
+							"_", NULL );
 
 						strcpy( save_l[me->lData].name, ml );
 						eMenuState = MAIN;
@@ -8139,8 +8131,7 @@ _TCHAR * CDirectInput::GetFullNameTouch(int _iVirtualKey)
 		}
 		else
 		{
-//			todo: cast
-//			MultiByteToWideChar(CP_ACP, 0, tAnsiText, -1, pText, 256);
+			MultiByteToWideChar(CP_ACP, 0, tAnsiText, -1, (wchar_t*)pText, 256);
 
 			if(_iVirtualKey==DIK_LSHIFT)
 			{
