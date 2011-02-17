@@ -4,7 +4,10 @@ project(ArxFatalis)
 ##############################################################################
 # enable_unity_build
 function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)  
-	set(files ${${SOURCE_VARIABLE_NAME}})  
+	set(files ${${SOURCE_VARIABLE_NAME}})
+
+	# Sort the file list to ensure we get the same files order on all machines	
+	LIST(SORT files)
 
 	# Generate a unique filename for the unity build translation unit  
 	set(unit_build_file ${CMAKE_CURRENT_BINARY_DIR}/ub_${UB_SUFFIX}.cpp)  
@@ -33,6 +36,8 @@ endfunction(enable_unity_build)
 option(ARX_BUILD_TESTS ON)
 option(ARX_BUILD_TOOLS ON)
 option(ARX_MINGW OFF)
+option(ARX_USE_UNITYBUILD OFF)
+
 
 set(SRC_DIR src)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
@@ -109,8 +114,8 @@ add_definitions(-DNOMINMAX)
 #glob sources
 file(GLOB_RECURSE ALL_SOURCES ${SRC_DIR}/*.cpp)
 
-#add this env var to use unity builds: ARX_USE_UNITYBUILD=1
-IF($ENV{ARX_USE_UNITYBUILD})
+#enable unity build if requested
+if(ARX_USE_UNITYBUILD)
   enable_unity_build(arx ALL_SOURCES)
 ENDIF()
 
