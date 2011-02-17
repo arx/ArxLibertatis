@@ -55,6 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Collisions.h"
 #include "animation/Cinematic.h"
 #include "io/IO.h"
+#include "graphics/Draw.h"
 
 using std::min;
 using std::max;
@@ -141,7 +142,7 @@ extern float ARXTimeMenu;
 extern float ARXOldTimeMenu;
 extern float ARXDiffTimeMenu;
 
-extern CINEMATIQUE *ControlCinematique;
+extern Cinematic *ControlCinematique;
 extern bool bRenderInterList;
 extern bool bGToggleCombatModeWithKey;
 extern long PlayerWeaponBlocked;

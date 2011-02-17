@@ -22,33 +22,164 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <stdio.h>
 
-#include <stdlib.h>
 #include "animation/Cinematic.h"
+#include "animation/CinematicKeyframer.h"
+#include "graphics/data/CinematicTexture.h"
 #include "io/PakManager.h"
 
-/*----------------------------------------------------------------------*/
+#define CINEMATIC_FILE_VERSION ((1<<16)|76)
+
 void DrawInfoTrack(void);
-/*----------------------------------------------------------------------*/
+
 static PakFileHandle * FCurr;
 static char Dir[256];
 static char Name[256];
-/*----------------------------------------------------------------------*/
+
 extern char		AllTxt[];
 extern int		NbBitmap;
-extern C_BITMAP	TabBitmap[];
+extern CinematicBitmap	TabBitmap[];
 extern int		NbBitmap;
-extern C_TRACK	* CKTrack;
+extern CinematicTrack	* CKTrack;
 char FileNameChoose[256];
 extern bool Restore;
 extern HWND HwndPere;
 extern int		NbSound;
-extern C_SOUND	TabSound[];
+extern CinematicSound	TabSound[];
 extern C_KEY KeyTemp;
 extern int LSoundChoose;
 
-/*----------------------------------------------------------------------*/
+// Version 1.59 structures
+
+struct C_KEY_1_59 {
+	int frame;
+	int numbitmap;
+	int fx; // associated fx
+	int typeinterp;
+	EERIE_3D pos;
+	float angz;
+	int color;
+	int colord;
+	int colorf;
+	float speed;
+};
+
+// Version 1.65 structures
+
+struct C_KEY_1_65 {
+	int frame;
+	int numbitmap;
+	int fx; // associated fx
+	int typeinterp;
+	EERIE_3D pos;
+	float angz;
+	int color;
+	int colord;
+	int colorf;
+	int idsound;
+	float speed;
+};
+
+// Version 1.70 structures
+
+struct C_KEY_1_70 {
+	int frame;
+	int numbitmap;
+	int fx; // associated fx
+	short typeinterp, force;
+	EERIE_3D pos;
+	float angz;
+	int color;
+	int colord;
+	int colorf;
+	int idsound;
+	float speed;
+};
+
+// Version 1.71 structures
+
+struct C_KEY_1_71 {
+	int frame;
+	int numbitmap;
+	int fx; // associated fx
+	short typeinterp, force;
+	EERIE_3D pos;
+	float angz;
+	int color;
+	int colord;
+	int colorf;
+	int idsound;
+	float speed;
+	CinematicLight light;
+};
+
+// Version 1.72 structures
+
+struct CinematicLight_1_72 {
+	EERIE_3D pos;
+	float fallin;
+	float fallout;
+	float r, g, b;
+	float intensite;
+	float intensiternd;
+};
+
+struct C_KEY_1_72 {
+	int frame;
+	int numbitmap;
+	int fx; // associated fx
+	short typeinterp, force;
+	EERIE_3D pos;
+	float angz;
+	int color;
+	int colord;
+	int colorf;
+	int idsound;
+	float speed;
+	CinematicLight_1_72 light;
+	EERIE_3D posgrille;
+	float angzgrille;
+};
+
+// Version 1.74 structures
+
+struct C_KEY_1_74 {
+	int frame;
+	int numbitmap;
+	int fx; //associated fx
+	short typeinterp, force;
+	EERIE_3D pos;
+	float angz;
+	int color;
+	int colord;
+	int colorf;
+	int idsound;
+	float speed;
+	CinematicLight light;
+	EERIE_3D posgrille;
+	float angzgrille;
+};
+
+// Version 1.75 structures
+
+struct C_KEY_1_75 {
+	int frame;
+	int numbitmap;
+	int fx; // associated fx
+	short typeinterp, force;
+	EERIE_3D pos;
+	float angz;
+	int color;
+	int colord;
+	int colorf;
+	int idsound;
+	float speed;
+	CinematicLight light;
+	EERIE_3D posgrille;
+	float angzgrille;
+	float speedtrack;
+};
+
 void ReadString(char * d)
 {
 	for (;;)
@@ -60,11 +191,11 @@ void ReadString(char * d)
 		d++;
 	}
 }
-/*----------------------------------------------------------------------*/
-bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
+
+bool LoadProject(Cinematic * c, const char * dir, const char * name)
 {
 	int		nb, version;
-	C_TRACK	t;
+	CinematicTrack	t;
 	C_KEY		k, *kk;
 	C_KEY_1_59	k159;
 	C_KEY_1_65	k165;
@@ -96,7 +227,7 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 
 	PAK_fread(&version, 4, 1, FCurr);
 
-	if (version > VERSION)
+	if (version > CINEMATIC_FILE_VERSION)
 	{
 		PAK_fclose(FCurr);
 		FCurr = NULL;
@@ -135,17 +266,17 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 		{
 			if (echelle > 1)
 			{
-				TabBitmap[id].grille.echelle = echelle;
+				TabBitmap[id].grid.echelle = echelle;
 				c->ReInitMapp(id);
 			}
 			else
 			{
-				TabBitmap[id].grille.echelle = 1;
+				TabBitmap[id].grid.echelle = 1;
 			}
 		}
 		else
 		{
-			TabBitmap[id].grille.echelle = 1;
+			TabBitmap[id].grid.echelle = 1;
 		}
 
 		nb--;
@@ -180,7 +311,7 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 	}
 
 	//chargement track + key
-	PAK_fread(&t, 1, sizeof(C_TRACK) - 4, FCurr);
+	PAK_fread(&t, 1, sizeof(CinematicTrack) - 4, FCurr);
 	AllocTrack(t.startframe, t.endframe, t.fps);
 
 	nb = t.nbkey;
@@ -204,7 +335,7 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 			k.typeinterp = ARX_CLEAN_WARN_CAST_SHORT(k159.typeinterp);
 			k.force = 1;
 			k.idsound[C_LANGUAGE_FRENCH] = -1;
-			k.light.intensite = -1.f;
+			k.light.intensity = -1.f;
 			k.posgrille.x = k.posgrille.y = k.posgrille.z = 0.f;
 			k.angzgrille = 0.f;
 			k.speedtrack = 1.f;
@@ -228,7 +359,7 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 				k.typeinterp = ARX_CLEAN_WARN_CAST_SHORT(k165.typeinterp);
 				k.force = 1;
 				k.idsound[C_LANGUAGE_FRENCH] = k165.idsound;
-				k.light.intensite = -1.f;
+				k.light.intensity = -1.f;
 				k.posgrille.x = k.posgrille.y = k.posgrille.z = 0.f;
 				k.angzgrille = 0.f;
 				k.speedtrack = 1.f;
@@ -250,7 +381,7 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 					k.typeinterp = k170.typeinterp;
 					k.force = k170.force;
 					k.idsound[C_LANGUAGE_FRENCH] = k170.idsound;
-					k.light.intensite = -1.f;
+					k.light.intensity = -1.f;
 					k.posgrille.x = k.posgrille.y = k.posgrille.z = 0.f;
 					k.angzgrille = 0.f;
 					k.speedtrack = 1.f;
@@ -276,7 +407,7 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 
 						if ((k.fx & 0xFF000000) != FX_LIGHT)
 						{
-							k.light.intensite = -1.f;
+							k.light.intensity = -1.f;
 						}
 
 						k.posgrille.x = k.posgrille.y = k.posgrille.z = 0.f;
@@ -306,7 +437,7 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 							k.light.r = k172.light.r;
 							k.light.g = k172.light.g;
 							k.light.b = k172.light.b;
-							k.light.intensite = k172.light.intensite;
+							k.light.intensity = k172.light.intensite;
 							k.light.intensiternd = k172.light.intensiternd;
 							k.posgrille.x = k172.posgrille.x;
 							k.posgrille.y = k172.posgrille.y;
@@ -316,7 +447,7 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 
 							if ((k.fx & 0xFF000000) != FX_LIGHT)
 							{
-								k.light.intensite = -1.f;
+								k.light.intensity = -1.f;
 							}
 						}
 						else
@@ -342,7 +473,7 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 								k.light.r = k174.light.r;
 								k.light.g = k174.light.g;
 								k.light.b = k174.light.b;
-								k.light.intensite = k174.light.intensite;
+								k.light.intensity = k174.light.intensity;
 								k.light.intensiternd = k174.light.intensiternd;
 								k.posgrille.x = k174.posgrille.x;
 								k.posgrille.y = k174.posgrille.y;
@@ -373,7 +504,7 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 									k.light.r = k175.light.r;
 									k.light.g = k175.light.g;
 									k.light.b = k175.light.b;
-									k.light.intensite = k175.light.intensite;
+									k.light.intensity = k175.light.intensity;
 									k.light.intensiternd = k175.light.intensiternd;
 									k.posgrille.x = k175.posgrille.x;
 									k.posgrille.y = k175.posgrille.y;
@@ -464,7 +595,7 @@ bool LoadProject(CINEMATIQUE * c, const char * dir, const char * name)
 			switch (kk->fx & 0x0000FF00)
 			{
 				case FX_DREAM:
-					TabBitmap[kk->numbitmap].grille.echelle = 4;
+					TabBitmap[kk->numbitmap].grid.echelle = 4;
 					c->ReInitMapp(kk->numbitmap);
 					break;
 			}

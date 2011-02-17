@@ -22,10 +22,15 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <stdlib.h>
-#include "core/Core.h"
+
 #include "animation/Cinematic.h"
+
+#include "animation/CinematicKeyframer.h"
+#include "core/Core.h"
 #include "graphics/GraphicsUtility.h"
+#include "graphics/data/CinematicTexture.h"
+#include "graphics/Math.h"
+#include "graphics/Draw.h"
 
 #define ADJUSTX(a) (((((a)-(LARGEURS>>1))*((float)LargeurRender/(float)LARGEURS))+(LARGEURS>>1)))*(640.f/(float)LargeurRender) //*((float)LARGEURS/(float)LargeurRender)
 #define ADJUSTY(a) (((((a)-(HAUTEURS>>1))*((float)HauteurRender/(float)HAUTEURS))+(HAUTEURS>>1)))*(480.f/(float)HauteurRender)  //*((float)HAUTEURS/(float)HauteurRender)
@@ -64,7 +69,7 @@ int				LSoundChoose;
 /*---------------------------------------------------------------------------------*/
  
 /*---------------------------------------------------------------------------------*/
-extern C_BITMAP	TabBitmap[];
+extern CinematicBitmap	TabBitmap[];
 extern float	FlashAlpha;
 extern char FileNameDirLoad[];
 extern char FileNameDirSave[];
@@ -72,7 +77,7 @@ extern char FileNameChoose[];
 extern int UndoPile;
 extern int NbBitmap;
 extern float SpecialFadeDx;
-extern C_SOUND		TabSound[MAX_SOUND];
+extern CinematicSound		TabSound[MAX_SOUND];
 extern long DANAESIZX;
 extern long DANAESIZY;
 extern DANAE danaeApp;
@@ -145,7 +150,7 @@ void AddDirectory(char * pT, const char * dir)
 }
 
 /*---------------------------------------------------------------------------------*/
-CINEMATIQUE::CINEMATIQUE(LPDIRECT3DDEVICE7 _m_pd3dDevice, int _w, int _h)
+Cinematic::Cinematic(LPDIRECT3DDEVICE7 _m_pd3dDevice, int _w, int _h)
 {
 	LargeurRender = _w;
 	HauteurRender = _h;
@@ -168,7 +173,7 @@ CINEMATIQUE::CINEMATIQUE(LPDIRECT3DDEVICE7 _m_pd3dDevice, int _w, int _h)
 	m_flIntensityRND = 0.f;
 }
 /*-------------------------------------------------------------------*/
-void FillKeyTemp(EERIE_3D * pos, float az, int frame, int numbitmap, int numfx, short ti, int color, int colord, int colorf, float speed, int idsound, short force, C_LIGHT * light, EERIE_3D * posgrille, float azgrille, float speedtrack)
+void FillKeyTemp(EERIE_3D * pos, float az, int frame, int numbitmap, int numfx, short ti, int color, int colord, int colorf, float speed, int idsound, short force, CinematicLight * light, EERIE_3D * posgrille, float azgrille, float speedtrack)
 {
 	KeyTemp.frame = frame;
 	KeyTemp.numbitmap = numbitmap;
@@ -192,23 +197,23 @@ void FillKeyTemp(EERIE_3D * pos, float az, int frame, int numbitmap, int numfx, 
 	}
 	else
 	{
-		KeyTemp.light.intensite = -2.f;
+		KeyTemp.light.intensity = -2.f;
 	}
 }
 
 /* Recreation d'une mapp */
-void CINEMATIQUE::ReInitMapp(int id)
+void Cinematic::ReInitMapp(int id)
 {
 	if (id < 0) return;
 
 	if (TabBitmap[id].actif)
 	{
-		ReCreateAllMapsForBitmap(id, TabBitmap[id].grille.echelle, this, GDevice);
+		ReCreateAllMapsForBitmap(id, TabBitmap[id].grid.echelle, this, GDevice);
 	}
 }
 
 /* Reinit */
-HRESULT CINEMATIQUE::OneTimeSceneReInit()
+HRESULT Cinematic::OneTimeSceneReInit()
 {
 	Camera.size.y = 160.f;
 	Camera.size.x = 60.f;
@@ -265,7 +270,7 @@ HRESULT CINEMATIQUE::OneTimeSceneReInit()
 
 	return S_OK;
 }
-HRESULT CINEMATIQUE::New()
+HRESULT Cinematic::New()
 {
 	projectload = false;
 
@@ -309,7 +314,7 @@ HRESULT CINEMATIQUE::New()
 // InitDeviceObjects()
 // Sets RenderStates
 //*************************************************************************************
-HRESULT CINEMATIQUE::InitDeviceObjects()
+HRESULT Cinematic::InitDeviceObjects()
 {
 	m_pd3dDevice = GDevice;
 
@@ -388,7 +393,7 @@ HRESULT CINEMATIQUE::InitDeviceObjects()
 	return S_OK;
 }
 
-HRESULT CINEMATIQUE::DeleteDeviceObjects()
+HRESULT Cinematic::DeleteDeviceObjects()
 {
 	m_pd3dDevice = GDevice;		
 
@@ -461,7 +466,7 @@ float LightRND;
 
 /*---------------------------------------------------------------*/
 
-int CalculLight(C_LIGHT * light, float x, float y, int col)
+int CalculLight(CinematicLight * light, float x, float y, int col)
 {
 	float	ra = (float)sqrt((light->pos.x - x) * (light->pos.x - x) + (light->pos.y - y) * (light->pos.y - y));
 
@@ -514,7 +519,7 @@ void TransformLocalVertex(EERIE_3D * vbase, D3DTLVERTEX * d3dv)
 	d3dv->sz = vbase->z + LocalPos.z;
 }
 /*---------------------------------------------------------------*/
-void DrawGrille(LPDIRECT3DDEVICE7 device, C_GRILLE * grille, int col, int fx, C_LIGHT * light, EERIE_3D * posgrille, float angzgrille)
+void DrawGrille(LPDIRECT3DDEVICE7 device, CinematicGrid * grille, int col, int fx, CinematicLight * light, EERIE_3D * posgrille, float angzgrille)
 {
 	int nb = grille->nbvertexs;
 	EERIE_3D * v = grille->vertexs;
@@ -648,10 +653,10 @@ void DrawGrille(LPDIRECT3DDEVICE7 device, C_GRILLE * grille, int col, int fx, C_
 	}
 }
 /*---------------------------------------------------------------*/
-HRESULT CINEMATIQUE::Render(float FDIFF)
+HRESULT Cinematic::Render(float FDIFF)
 {
 	int			nb, col;
-	C_BITMAP	* tb;
+	CinematicBitmap	* tb;
 
 
 	m_pd3dDevice = GDevice;
@@ -750,9 +755,6 @@ HRESULT CINEMATIQUE::Render(float FDIFF)
 		{
 			nb = 0;
 		}
-
-		float * dream, *dreambase;
-		dream = dreambase = DreamTable;
  
 		int stopline = tb->nbx;
 
@@ -762,10 +764,10 @@ HRESULT CINEMATIQUE::Render(float FDIFF)
 
 		col |= alpha;
 
-		C_LIGHT lightt, *l = NULL;
+		CinematicLight lightt, *l = NULL;
 
-		if ((this->light.intensite >= 0.f) &&
-		        (this->lightd.intensite >= 0.f))
+		if ((this->light.intensity >= 0.f) &&
+		        (this->lightd.intensity >= 0.f))
 		{
 			lightt = this->light;
 			lightt.pos.x += (float)(LargeurRender >> 1);
@@ -776,14 +778,14 @@ HRESULT CINEMATIQUE::Render(float FDIFF)
 			m_flIntensityRND += (flIntensityRNDToReach - m_flIntensityRND) * FDIFF * SPEEDINTENSITYRND;
 			m_flIntensityRND = m_flIntensityRND < 0.f ? 0.f : m_flIntensityRND > 1.f ? 1.f : m_flIntensityRND;
 
-			LightRND = lightt.intensite + (lightt.intensiternd * rnd());
+			LightRND = lightt.intensity + (lightt.intensiternd * rnd());
 
 			if (LightRND > 1.f) LightRND = 1.f;
 
 			l = &lightt;
 		}
 
-		if (tb->grille.nbvertexs) DrawGrille(this->m_pd3dDevice, &tb->grille, col, fx, l, &posgrille, angzgrille);
+		if (tb->grid.nbvertexs) DrawGrille(this->m_pd3dDevice, &tb->grid, col, fx, l, &posgrille, angzgrille);
 
 		//PASS #2
 		if (force & 1)
@@ -811,20 +813,20 @@ HRESULT CINEMATIQUE::Render(float FDIFF)
 
 			l = NULL;
 
-			if ((this->light.intensite >= 0.f) &&
-			        (this->lightd.intensite >= 0.f))
+			if ((this->light.intensity >= 0.f) &&
+			        (this->lightd.intensity >= 0.f))
 			{
 				lightt = this->lightd;
 				lightt.pos.x += (float)(LargeurRender >> 1);
 				lightt.pos.y += (float)(HauteurRender >> 1);
-				LightRND = lightt.intensite + (lightt.intensiternd * rnd());
+				LightRND = lightt.intensity + (lightt.intensiternd * rnd());
 
 				if (LightRND > 1.f) LightRND = 1.f;
 
 				l = &lightt;
 			}
 
-			if (tb->grille.nbvertexs) DrawGrille(this->m_pd3dDevice, &tb->grille, col, fx, l, &posgrillesuiv, angzgrillesuiv);
+			if (tb->grid.nbvertexs) DrawGrille(this->m_pd3dDevice, &tb->grid, col, fx, l, &posgrillesuiv, angzgrillesuiv);
 		}
 
 		//effets qui continuent avec le temps
