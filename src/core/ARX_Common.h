@@ -180,34 +180,16 @@ enum ARX_DEBUG_LOG_TYPE
 #define	TEST						__LINE__
 #define arx_assert(_Expression) (void)	( (_Expression) ||  (ArxDebug::Assert((#_Expression), (__FILE__), __LINE__),  DebugBreak() , 0) )
 
-//Use only at game's beginning
-#define ARX_LOG_INIT()					ArxDebug::GetInstance(DEBUG_INSIDEAFILE)
-#define ARX_LOG_CLEAN()					ArxDebug::GetInstance(false)->CleanInstance()
-
-#define ARX_LOG(_sFmt,...)				ArxDebug::GetInstance(false)->Log(eLog,_sFmt,__VA_ARGS__)
-#define ARX_LOG_ERROR(_sFmt,...)		ArxDebug::GetInstance(false)->Log(eLogError,_sFmt,__VA_ARGS__)
-#define ARX_LOG_WARNING(_sFmt,...)		ArxDebug::GetInstance(false)->Log(eLogWarning,_sFmt,__VA_ARGS__)
-#define ARX_LOG_TAG(_iId,_sTag)			ArxLogTag	_logTag_##_iId	(_sTag)
-
 
 #else //DO_CHECK
 #ifndef NDEBUG
 	#define NDEBUG	//For suppress assert.
 #endif
-#define ARX_LOG(_sFmt,...)				ArxDebug::NullFunc(_sFmt,__VA_ARGS__)
-#define ARX_LOG_ERROR(_sFmt,...)		ArxDebug::NullFunc(_sFmt,__VA_ARGS__)
-#define ARX_LOG_WARNING(_sFmt,...)		ArxDebug::NullFunc(_sFmt,__VA_ARGS__)
 
 #if _MSC_VER  // MS compilers support noop which discards everything inside the parens
-#define ARX_LOG_INIT()							__noop
-#define ARX_LOG_CLEAN()							__noop
 #define arx_assert(_Expression)					__noop
-#define ARX_LOG_TAG(_iId,_sTag)					__noop
 #else
 #define arx_assert(_Expression)						{}
-#define ARX_LOG_INIT()								{}
-#define ARX_LOG_CLEAN()								{}
-#define ARX_LOG_TAG(_iId,_sTag)						{}
 #endif
 #endif
 
@@ -294,22 +276,7 @@ enum ARX_DEBUG_LOG_TYPE
 
 class ArxDebug
 {
-		friend class ArxLogTag;
-
 	public :
-		static ArxDebug * GetInstance(bool _bLogIntoFile = true);
-		static void CleanInstance();
-		static void NullFunc(const char * _sMessage, ...) {};
 		static void Assert(const char * _sMessage, const char * _sFile, unsigned _iLine);
-
-		void Log(ARX_DEBUG_LOG_TYPE eType, const char * _sMessage, ...);
-
-		~ArxDebug();
-
-	private :
-		static ArxDebug * m_pInstance ;
-
-	private :
-		ArxDebug(bool _bLogIntoFile);
 	
 };

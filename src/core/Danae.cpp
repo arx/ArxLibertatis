@@ -1050,10 +1050,6 @@ bool IsNoGore( void )
 INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 {
 
-#ifdef _DEBUG
-	ARX_LOG_INIT();
-#endif // _DEBUG
-
 	//TODO memleak stuff
 //	_set_new_mode(1);																//memory handler activated for malloc too
 //	_set_new_handler(HandlerMemory);
@@ -1601,10 +1597,6 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	danaeApp.m_bReady = true;
 
 	HRESULT hr=danaeApp.Run();
-
-#ifdef _DEBUG
-	ARX_LOG_CLEAN();
-#endif // _DEBUG
 
 	return hr;
 }

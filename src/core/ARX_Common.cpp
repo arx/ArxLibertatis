@@ -68,12 +68,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 
 /*
-	static var initialize
-*/
-ArxDebug		*	ArxDebug::m_pInstance				= NULL	;
-
-
-/*
 	Get the callstack informations and create the log file with CreateLogFile function
 */
 
@@ -107,67 +101,6 @@ void ArxDebug::Assert(const char * _sMessage, const char * _sFile, unsigned int 
 	        fn, iFile, _iLine, msg);
 
 	LogError << msgbuf;
-}
-
-/*
-	Singleton Getter/Cleaner
-*/
-ArxDebug * ArxDebug::GetInstance(bool _bLogIntoFile /*= true*/)
-{
-	if (!m_pInstance)
-	{
-		m_pInstance = new ArxDebug(_bLogIntoFile);
-	}
-
-	return m_pInstance;
-}
-
-
-void ArxDebug::CleanInstance()
-{
-	if (m_pInstance)
-	{
-		delete m_pInstance ;
-	}
-}
-
-
-/*
-	Constructor & Destructor
-*/
-ArxDebug::ArxDebug(bool _bLogIntoFile /*= true*/) {
-}
-
-ArxDebug::~ArxDebug() {
-}
-
-/*
-	Use to log a message
-*/
-// TODO use Logger directly
-void ArxDebug::Log(ARX_DEBUG_LOG_TYPE eType, const char * _sMessage, ...) {
-	//Use to stack the message and the params
-	char sBuffer[ARXCOMMON_BUFFERSIZE];
-
-	//Treat the ... Params
-	va_list arg_ptr ;
-	va_start(arg_ptr, _sMessage);
-	vsnprintf(sBuffer, ARXCOMMON_BUFFERSIZE, _sMessage, arg_ptr);
-	va_end(arg_ptr) ;
-	
-	switch (eType)
-	{
-		case eLogWarning :
-			LogWarning << sBuffer;
-			break;
-		case eLogError :
-			LogError << sBuffer;
-			break;
-		case eLog :
-		default:
-			LogInfo << sBuffer;
-	}
-	
 }
 
 
