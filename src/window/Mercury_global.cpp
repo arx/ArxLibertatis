@@ -56,8 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 /////////////////////////////////////////////////////////////////////////////////////
 
 
-#include "Mercury_extern.h"
 #include <dinput.h>
+#include "window/Mercury_extern.h"
 
 /*-----------------------------------------------------*/
 HRESULT			DI_Hr;

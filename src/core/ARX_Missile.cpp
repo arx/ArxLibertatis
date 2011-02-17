@@ -31,20 +31,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "ARX_Missile.h"
+#include <stdio.h>
 
-#include "EERIELight.h"
-#include "EERIEMath.h"
-#include "EERIETexture.h"
+#include "renderer/EERIELight.h"
+#include "renderer/EERIEMath.h"
+#include "renderer/EERIETexture.h"
 
-#include "ARX_Damages.h"
-#include "ARX_Interactive.h"
-#include "ARX_Particles.h"
-#include "ARX_Physics.h"
-#include "ARX_Sound.h"
-#include "ARX_Time.h"
-
-#include <cstdio>
+#include "core/ARX_Missile.h"
+#include "core/ARX_Damages.h"
+#include "core/ARX_Interactive.h"
+#include "core/ARX_Particles.h"
+#include "core/ARX_Physics.h"
+#include "core/ARX_Sound.h"
+#include "core/ARX_Time.h"
 
 //-----------------------------------------------------------------------------
 struct ARX_MISSILE

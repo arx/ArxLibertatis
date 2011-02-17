@@ -54,12 +54,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <d3dwrapper.h>
-#include "ARX_Special.h"
-#include "ARX_Interactive.h"
-#include "EERIEMath.h"
+#include <stdio.h>
 
-#include <cstdio>
+#include "renderer/d3dwrapper.h"
+#include "renderer/EERIEMath.h"
+#include "core/ARX_Special.h"
+#include "core/ARX_Interactive.h"
 
 struct ARX_SPECIAL_ATTRACTOR
 {

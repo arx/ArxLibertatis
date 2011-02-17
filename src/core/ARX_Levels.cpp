@@ -54,25 +54,25 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+#include <stdio.h>
+#include <time.h>
+
 #include <vector>
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "ARX_Levels.h"
-#include "DanaeSaveLoad.h"
-#include "time.h"
-#include "ARX_Paths.h"
-#include "ARX_Scene.h"
-//#include "ARX_Test.h"
-#include "ARX_Spells.h"
-#include "ARX_Speech.h"
-#include "ARX_Sound.h"
 
-#include "HERMESMain.h"
-#include "EERIEPathfinder.h"
-#include "EERIECollisionSpheres.h"
+#include "core/ARX_Levels.h"
+#include "core/DanaeSaveLoad.h"
+#include "core/ARX_Paths.h"
+#include "core/ARX_Scene.h"
+#include "core/ARX_Spells.h"
+#include "core/ARX_Speech.h"
+#include "core/ARX_Sound.h"
 
-#include <stdio.h>
+#include "io/HERMESMain.h"
+#include "renderer/EERIEPathfinder.h"
+#include "renderer/EERIECollisionSpheres.h"
 
 extern long LOAD_N_DONT_ERASE;
 extern long DONT_LOAD_SCENE;

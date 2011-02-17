@@ -54,29 +54,32 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include "EERIEAnim.h"
-#include "EERIEClothes.h"
-#include "EERIEObject.h"
-#include "EERIEMath.h"
-#include "EERIELight.h"
-#include "EERIEPoly.h"
-#include "EERIEDraw.h"
-
-#include <ARX_Sound.h>
-#include <ARX_Damages.h>
-#include <ARX_Particles.h>
-#include <ARX_NPC.h>
-#include <ARX_Collisions.h>
-#include <ARX_Scene.h>
-#include "ARX_Time.h"
-#include "Danae.h" 
-#include "ARX_Cedric.h"
-#include "HERMESMain.h"
-
-#include <hermes/PakManager.h>
-
 #include <cstdio>
+#include <iostream>
+#include <algorithm>
+#include <fstream>
+#include <sstream>
+#include <vector>
 using std::sprintf;
+
+#include "renderer/EERIEAnim.h"
+#include "renderer/EERIEClothes.h"
+#include "renderer/EERIEObject.h"
+#include "renderer/EERIEMath.h"
+#include "renderer/EERIELight.h"
+#include "renderer/EERIEPoly.h"
+#include "renderer/EERIEDraw.h"
+#include "core/ARX_Sound.h"
+#include "core/ARX_Damages.h"
+#include "core/ARX_Particles.h"
+#include "core/ARX_NPC.h"
+#include "core/ARX_Collisions.h"
+#include "core/ARX_Scene.h"
+#include "core/ARX_Time.h"
+#include "core/Danae.h"
+#include "core/ARX_Cedric.h"
+#include "io/HERMESMain.h"
+#include "io/PakManager.h"
 
 #define SOFTNEARCLIPPTANDLZ (60.f)
 

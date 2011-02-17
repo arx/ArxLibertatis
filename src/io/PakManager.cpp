@@ -60,14 +60,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 #include <cstdlib>
 
-#include <hermes/PakManager.h>
-#include <hermes/PakReader.h>
-#include <hermes/PakEntry.h>
-#include <hermes/Filesystem.h>
-#include "hermes/Logger.h"
+#include "io/PakManager.h"
+#include "io/PakReader.h"
+#include "io/PakEntry.h"
+#include "io/Filesystem.h"
+#include "io/Logger.h"
 
 using std::vector;
-
 
 // TODO prefer real files over those in PAK?
 

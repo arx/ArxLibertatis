@@ -55,49 +55,47 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-
-
+//TODO(lubosz): don't inlcude so much, move to scripting folder
 #include <stdlib.h>
-
-#include "ARX_Script.h"
-
-#include "HERMESMain.h"
-
-#include "EERIEObject.h"
-#include "EERIELinkedObj.h"
-#include "EERIEPathfinder.h"
-#include "EERIECollisionSpheres.h"
-
-#include "ARX_CCinematique.h"
-#include "ARX_Collisions.h"
-#include "ARX_Damages.h"
-#include "ARX_Equipment.h"
-#include "ARX_GlobalMods.h"
-#include "ARX_Interactive.h"
-#include "ARX_Minimap.h"
-#include "ARX_Missile.h"
-#include "ARX_NPC.h"
-#include "ARX_Player.h"
-#include "ARX_Particles.h"
-#include "ARX_Paths.h"
-#include "ARX_Scene.h"
-#include "ARX_Sound.h"
-#include "ARX_Special.h"
-#include "ARX_Spells.h"
-#include "ARX_Speech.h"
-#include "ARX_Text.h"
-#include "ARX_Time.h"
-#include "ARX_Loc.h"
-#include "DanaeDlg.h"
-
-#include <cassert>
-
-#include "Danae_resource.h"
-
-#include <hermes/PakManager.h>
-#include "hermes/Logger.h"
-
 #include <cstdio>
+#include <cassert>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+#include <vector>
+
+#include "renderer/EERIEObject.h"
+#include "renderer/EERIELinkedObj.h"
+#include "renderer/EERIEPathfinder.h"
+#include "renderer/EERIECollisionSpheres.h"
+#include "core/ARX_Script.h"
+#include "core/ARX_CCinematique.h"
+#include "core/ARX_Collisions.h"
+#include "core/ARX_Damages.h"
+#include "core/ARX_Equipment.h"
+#include "core/ARX_GlobalMods.h"
+#include "core/ARX_Interactive.h"
+#include "core/ARX_Minimap.h"
+#include "core/ARX_Missile.h"
+#include "core/ARX_NPC.h"
+#include "core/ARX_Player.h"
+#include "core/ARX_Particles.h"
+#include "core/ARX_Paths.h"
+#include "core/ARX_Scene.h"
+#include "core/ARX_Sound.h"
+#include "core/ARX_Special.h"
+#include "core/ARX_Spells.h"
+#include "core/ARX_Speech.h"
+#include "core/ARX_Text.h"
+#include "core/ARX_Time.h"
+#include "core/ARX_Loc.h"
+#include "core/DanaeDlg.h"
+#include "core/Danae_resource.h"
+#include "io/HERMESMain.h"
+#include "io/PakManager.h"
+#include "io/Logger.h"
+
 using std::sprintf;
 
 extern long GLOBAL_MAGIC_MODE;

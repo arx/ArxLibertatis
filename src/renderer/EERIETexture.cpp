@@ -63,13 +63,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define STRICT
 #include <tchar.h>
 #include <zlib.h>
-#include "EERIETexture.h"
-#include "EERIEApp.h"
-#include "EERIEUtil.h"
-#include "EERIEMath.h"
-#include "HERMESMain.h"
-#include <hermes/PakManager.h>
-#include <hermes/Logger.h>
+#include "renderer/EERIETexture.h"
+#include "renderer/EERIEApp.h"
+#include "renderer/EERIEUtil.h"
+#include "renderer/EERIEMath.h"
+#include "io/HERMESMain.h"
+#include "io/PakManager.h"
+#include "io/Logger.h"
 
 //boolean and INT32 clash with wine
 #define INT32 INT32_JPEG
@@ -3399,7 +3399,7 @@ TextureContainer * LastTextureContainer = NULL;
 // Desc: Is passed a filename and creates a local Bitmap from that file.
 //       The texture can not be used until it is restored, however.
 //-----------------------------------------------------------------------------
-#include "HERMESMain.h"
+
 extern long DEBUGSYS;
 
 TextureContainer * D3DTextr_CreateTextureFromFile(const char * strName, DWORD dwStage,

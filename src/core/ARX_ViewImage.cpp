@@ -22,17 +22,25 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <d3dwrapper.h>
-#include "Danae.h"
-#include "ARX_ViewImage.h"
-#include "ARX_Menu2.h"
-#include "ARX_Time.h"
-#include "EERIETexture.h"
-#include "EERIEDraw.h"
-#include "HERMESMain.h"
-#include <hermes/PakManager.h>
-
 #include <cstdio>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+#include <vector>
+
+#include "core/Danae.h"
+#include "core/ARX_ViewImage.h"
+#include "core/ARX_Menu2.h"
+#include "core/ARX_Time.h"
+
+#include "renderer/d3dwrapper.h"
+#include "renderer/EERIETexture.h"
+#include "renderer/EERIEDraw.h"
+
+#include "io/HERMESMain.h"
+#include "io/PakManager.h"
+
 using std::sprintf;
 
 

@@ -22,11 +22,11 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include "ARX_CCinematique.h"
-#include "HERMESMain.h"
-#include <hermes/PakManager.h>
-
 #include <stdio.h>
+
+#include "core/ARX_CCinematique.h"
+#include "io/HERMESMain.h"
+#include "io/PakManager.h"
 
 /*-----------------------------------------------------------*/
 C_BITMAP	TabBitmap[MAX_BITMAP];

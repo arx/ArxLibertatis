@@ -22,15 +22,16 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include "EERIEApp.h"
-#include "HERMESMain.h"
-#include "ARX_LocHash.h"
-#include "ARX_Loc.h"
 #include <tchar.h>
 #include <list>
-#include "ARX_Menu2.h"
-#include "EERIETexture.h"
-#include <hermes/PakManager.h>
+
+#include "core/ARX_LocHash.h"
+#include "core/ARX_Loc.h"
+#include "core/ARX_Menu2.h"
+#include "renderer/EERIEApp.h"
+#include "renderer/EERIETexture.h"
+#include "io/HERMESMain.h"
+#include "io/PakManager.h"
 
 using std::sprintf;
 

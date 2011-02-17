@@ -58,9 +58,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdio.h>
 #include <tchar.h>
 
-#include "EERIEEnum.h"
-#include "EERIEUtil.h" // For DEBUG_MSG
-#include "EERIERes.h"  // For dialog controls
+#include "renderer/EERIEEnum.h"
+#include "renderer/EERIEUtil.h" // For DEBUG_MSG
+#include "renderer/EERIERes.h"  // For dialog controls
 
 
 //************************************************************************************

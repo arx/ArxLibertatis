@@ -24,14 +24,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 
 #include <stdio.h>
-// #include <conio.h>
 #include <string.h>
 #include <windows.h>
-#include "../scripting/SCRIPT_DEBUGGER_Dialog.h"
-#include "ARX_Interactive.h"
-#include "ARX_Time.h"
-#include "EERIEPoly.h"
-#include "HERMESMain.h"
+
+#include "scripting/SCRIPT_DEBUGGER_Dialog.h"
+#include "core/ARX_Interactive.h"
+#include "core/ARX_Time.h"
+#include "renderer/EERIEPoly.h"
+#include "io/HERMESMain.h"
 
 typedef void (APIENTRY * CREATEDIALOG)(HWND, ScriptDebuggerInfos &);
 typedef void (APIENTRY * SETPARAMS)(ScriptDebuggerInfos &);

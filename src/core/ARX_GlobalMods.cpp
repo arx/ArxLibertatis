@@ -23,18 +23,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include <d3dwrapper.h>
+#include <stdio.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <string>
-#include <stdio.h>
-#include "EERIEMath.h"
-#include "ARX_Menu2.h"
-#include "ARX_GlobalMods.h"
-#include "ARX_Time.h"
+#include <algorithm>
 
+#include "renderer/d3dwrapper.h"
+#include "renderer/EERIEMath.h"
+#include "core/ARX_Menu2.h"
+#include "core/ARX_GlobalMods.h"
+#include "core/ARX_Time.h"
 
 bool bUSE_D3DFOG_INTER;
 float fZFogStartWorld;

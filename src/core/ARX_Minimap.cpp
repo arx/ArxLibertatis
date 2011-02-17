@@ -59,18 +59,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <stdio.h>
 #include <algorithm>
-#include "ARX_Text.h"
-#include "ARX_Levels.h"
-#include "ARX_Minimap.h"
-#include "EERIELight.h"
-#include "EERIEPhysicsBox.h"
-#include "EERIEDraw.h"
-#include "EERIEObject.h"
-#include "HERMESMain.h"
-#include "Danae.h"
 
-
-#include <hermes/PakManager.h>
+#include "core/ARX_Text.h"
+#include "core/ARX_Levels.h"
+#include "core/ARX_Minimap.h"
+#include "core/Danae.h"
+#include "renderer/EERIELight.h"
+#include "renderer/EERIEPhysicsBox.h"
+#include "renderer/EERIEDraw.h"
+#include "renderer/EERIEObject.h"
+#include "io/HERMESMain.h"
+#include "io/PakManager.h"
 
 MINI_MAP_DATA minimap[MAX_MINIMAPS];
 float mini_offset_x[MAX_MINIMAPS];

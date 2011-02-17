@@ -55,13 +55,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "EERIEClothes.h"
-#include "EERIEMeshTweak.h"
-#include "EERIEDraw.h"
-#include "EERIEMath.h"
-
-
-
+#include "renderer/EERIEClothes.h"
+#include "renderer/EERIEMeshTweak.h"
+#include "renderer/EERIEDraw.h"
+#include "renderer/EERIEMath.h"
 
 #define MOLLESS_USEGRAVITY 1
 #define MOLLESS_USEDAMPING 1

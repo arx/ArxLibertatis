@@ -56,17 +56,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 
 // Desc: HERMES main functionalities   //FILES MEMORY
-#include "ARX_Common.h"
 
 #include <cstring>
 #include <cstdio>
 #include <iostream>
 
 #include <time.h>
-#include "HERMESMain.h"
-#include "HERMESNet.h"
-#include <hermes/Filesystem.h>
-#include <hermes/Logger.h>
+#include "io/HERMESMain.h"
+#include "io/HERMESNet.h"
+#include "io/Filesystem.h"
+#include "io/Logger.h"
 
 #if ARX_COMPILER_MSVC
     #include <shlobj.h>

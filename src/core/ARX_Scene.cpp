@@ -54,33 +54,28 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <d3dwrapper.h>
-#include "ARX_Scene.h"
-#include "ARX_Spells.h"
-#include "ARX_Sound.h"
-#include "ARX_Particles.h"
-#include "ARX_Draw.h"
-#include "ARX_Player.h"
-#include "ARX_Paths.h"
-#include "ARX_Interface.h"
-#include "ARX_Time.h"
-#include "ARX_Menu2.h"
-
-#include "HERMESMain.h"
-#include "EERIELight.h"
-#include "EERIEDraw.h"
-#include "EERIEAnim.h"
-#include "EERIEUtil.h"
-#include "EERIEMath.h"
-
-#include <algorithm>
 #define DIRECTINPUT_VERSION 0x0700
 #include <dinput.h>
-
 #include <stdio.h>
 
-extern long USE_LIGHT_OPTIM;
+#include "core/ARX_Scene.h"
+#include "core/ARX_Spells.h"
+#include "core/ARX_Sound.h"
+#include "core/ARX_Particles.h"
+#include "core/ARX_Draw.h"
+#include "core/ARX_Player.h"
+#include "core/ARX_Paths.h"
+#include "core/ARX_Interface.h"
+#include "core/ARX_Time.h"
+#include "core/ARX_Menu2.h"
 
+#include "io/HERMESMain.h"
+#include "renderer/d3dwrapper.h"
+#include "renderer/EERIELight.h"
+#include "renderer/EERIEDraw.h"
+#include "renderer/EERIEAnim.h"
+#include "renderer/EERIEUtil.h"
+#include "renderer/EERIEMath.h"
 
 using namespace std;
 
@@ -93,6 +88,7 @@ using namespace std;
 #define MAX_DIST_BUMP			(400.f)
 
 //-----------------------------------------------------------------------------
+extern long USE_LIGHT_OPTIM;
 extern HANDLE LIGHTTHREAD;
 extern EERIE_3DOBJ * eyeballobj;
 extern long NEED_TEST_TEXT;

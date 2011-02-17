@@ -55,27 +55,28 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-//#include "Danae.h"
-#include "ARX_Particles.h"
-#include "ARX_Input.h"
-#include "ARX_CSpellFx.h"
-#include "ARX_Sound.h"
-#include "ARX_Collisions.h"
-#include "ARX_Interface.h" // -> à virer
-#include "ARX_Menu2.h"
-#include "ARX_MenuPublic.h"
-#include "ARX_Paths.h"
-#include "ARX_Time.h"
-#include "ARX_Damages.h"
-#include "ARX_Scene.h"
-
-#include "EERIEMath.h"
-#include "EERIEDraw.h"
-#include "EERIEObject.h"
-#include "EERIEPhysicsBox.h"
-extern CMenuConfig *pMenuConfig;
 #include <stdio.h>
 
+#include "core/ARX_Particles.h"
+#include "core/ARX_Input.h"
+#include "core/ARX_CSpellFx.h"
+#include "core/ARX_Sound.h"
+#include "core/ARX_Collisions.h"
+#include "core/ARX_Interface.h"
+#include "core/ARX_Menu2.h"
+#include "core/ARX_MenuPublic.h"
+#include "core/ARX_Paths.h"
+#include "core/ARX_Time.h"
+#include "core/ARX_Damages.h"
+#include "core/ARX_Scene.h"
+
+#include "renderer/EERIEMath.h"
+#include "renderer/EERIEDraw.h"
+#include "renderer/EERIEObject.h"
+#include "renderer/EERIEPhysicsBox.h"
+
+//TODO(lubosz): extern globals :(
+extern CMenuConfig *pMenuConfig;
 extern float fZFogEnd;
 extern unsigned long ulBKGColor;
 extern bool bSoftRender;

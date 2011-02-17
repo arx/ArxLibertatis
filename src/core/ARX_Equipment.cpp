@@ -55,30 +55,26 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <d3dwrapper.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "ARX_Equipment.h"
-#include "HERMESMain.h"
-#include "EERIEMath.h"
-#include "EERIEObject.h"
-#include "EERIEMeshTweak.h"
-#include "ARX_NPC.h"
-#include "ARX_Sound.h"
-#include "ARX_Collisions.h"
-#include "ARX_Particles.h"
-#include "ARX_Damages.h"
-#include "ARX_Interactive.h"
-#include "ARX_Interface.h"
-#include "ARX_Script.h"
+#include "io/HERMESMain.h"
+#include "renderer/d3dwrapper.h"
+#include "renderer/EERIEMath.h"
+#include "renderer/EERIEObject.h"
+#include "renderer/EERIEMeshTweak.h"
+#include "renderer/EERIELinkedObj.h"
+#include "core/ARX_Equipment.h"
+#include "core/ARX_NPC.h"
+#include "core/ARX_Sound.h"
+#include "core/ARX_Collisions.h"
+#include "core/ARX_Particles.h"
+#include "core/ARX_Damages.h"
+#include "core/ARX_Interactive.h"
+#include "core/ARX_Interface.h"
+#include "core/ARX_Script.h"
 
-#include "EERIELinkedObj.h"
-#include "EERIEMath.h"
-#include "EERIEObject.h"
-#include "EERIEMeshTweak.h"
-
-struct EQUIP_INFO
+typedef struct
 {
 	char name[64];
 };

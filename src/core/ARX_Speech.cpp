@@ -56,21 +56,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 #include <stdlib.h>
 
-#include "Danae.h"
-#include "ARX_Interface.h"
-#include "ARX_Speech.h"
-#include "ARX_Text.h"
-#include "ARX_Script.h"
-#include "ARX_Sound.h"
-#include "ARX_Input.h"
-#include "ARX_Text.h"
-#include "ARX_Loc.h"
-#include "ARX_Time.h"
+#include "core/Danae.h"
+#include "core/ARX_Interface.h"
+#include "core/ARX_Speech.h"
+#include "core/ARX_Text.h"
+#include "core/ARX_Script.h"
+#include "core/ARX_Sound.h"
+#include "core/ARX_Input.h"
+#include "core/ARX_Text.h"
+#include "core/ARX_Loc.h"
+#include "core/ARX_Time.h"
 
-#include "EERIEDraw.h"
+#include "renderer/EERIEDraw.h"
 
-#include "HERMESMain.h"
-#include "hermes/Logger.h"
+#include "io/HERMESMain.h"
+#include "io/Logger.h"
 
 //-----------------------------------------------------------------------------
 extern TextureContainer *	arx_logo_tc;

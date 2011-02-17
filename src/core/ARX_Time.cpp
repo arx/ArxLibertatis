@@ -54,9 +54,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include "ARX_Time.h"
 
 #include <stdio.h>
+#include "core/ARX_Time.h"
 
 extern float FrameTime, LastFrameTime;	//ARX: jycorbel (2010-07-19) - Add external vars for resetting them on ARX_TIME_Init call.
 

@@ -56,12 +56,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 #include <cstdio>
 #include <string.h>
-#include <Danae.h>
-#include "ARX_Snapshot.h"
-#include <hermes/Filesystem.h>
+#include "core/Danae.h"
+#include "core/ARX_Snapshot.h"
 
 SnapShot * pSnapShot;
-
 SNAPSHOTINFO snapshotdata;
 long CURRENTSNAPNUM = 0;
  

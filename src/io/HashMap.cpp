@@ -23,8 +23,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include "hermes/HashMap.h"
-
 #include <cstring>
 #include <cassert>
 
@@ -33,6 +31,8 @@ using std::transform;
 
 #include <string>
 using std::string;
+
+#include "io/HashMap.h"
 
 HashMap::HashMap(size_t sz) {
 	

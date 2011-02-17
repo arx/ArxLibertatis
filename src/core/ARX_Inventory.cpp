@@ -55,32 +55,34 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 //------------------------------------------------------------------------------------
-#include "HERMESPerf.h"
-
-#include "EERIEApp.h"
-#include "EERIELight.h"
-#include "EERIELinkedObj.h"
-#include "EERIEMath.h"
-#include "EERIEPhysicsBox.h"
-#include "EERIEPoly.h"
-#include "EERIETexture.h"
-
-#include "ARX_Input.h"
-#include "ARX_Interactive.h"
-#include "ARX_Interface.h"
-#include "ARX_Equipment.h"
-#include "ARX_Menu2.h"
-#include "ARX_Paths.h"
-#include "ARX_Player.h"
-#include "ARX_Script.h"
-#include "ARX_Sound.h"
-
+#include <stdio.h>
 #include <vector>
 #include <algorithm>
-#include <functional>
-using namespace std;
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
-#include <stdio.h>
+#include "io/HERMESPerf.h"
+
+#include "renderer/EERIEApp.h"
+#include "renderer/EERIELight.h"
+#include "renderer/EERIELinkedObj.h"
+#include "renderer/EERIEMath.h"
+#include "renderer/EERIEPhysicsBox.h"
+#include "renderer/EERIEPoly.h"
+#include "renderer/EERIETexture.h"
+
+#include "core/ARX_Input.h"
+#include "core/ARX_Interactive.h"
+#include "core/ARX_Interface.h"
+#include "core/ARX_Equipment.h"
+#include "core/ARX_Menu2.h"
+#include "core/ARX_Paths.h"
+#include "core/ARX_Player.h"
+#include "core/ARX_Script.h"
+#include "core/ARX_Sound.h"
+
+using namespace std;
 
 //------------------------------------------------------------------------------------
 extern E_ARX_STATE_MOUSE eMouseState;

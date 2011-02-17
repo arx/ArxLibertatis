@@ -22,24 +22,24 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include "Danae.h"
-#include "ARX_MenuPublic.h"
-#include "ARX_Menu.h"
-#include "ARX_Interface.h"
-#include "ARX_Sound.h"
-#include "ARX_Menu.h"
-#include "ARX_Menu2.h"
-#include "ARX_Loc.h"
-#include "ARX_Time.h"
-#include "EERIEMath.h"
-#include "EERIEDraw.h"
-
-#include "HERMESMain.h"
-#include "ARX_CCinematique.h"
-
-#include <hermes/Filesystem.h>
-
 #include <stdio.h>
+
+#include "core/Danae.h"
+#include "core/ARX_MenuPublic.h"
+#include "core/ARX_Menu.h"
+#include "core/ARX_Interface.h"
+#include "core/ARX_Sound.h"
+#include "core/ARX_Menu.h"
+#include "core/ARX_Menu2.h"
+#include "core/ARX_Loc.h"
+#include "core/ARX_Time.h"
+#include "core/ARX_CCinematique.h"
+
+#include "renderer/EERIEMath.h"
+#include "renderer/EERIEDraw.h"
+
+#include "io/HERMESMain.h"
+#include "io/Filesystem.h"
 
 extern CMenuConfig * pMenuConfig;
 extern CDirectInput * pGetInfoDirectInput;

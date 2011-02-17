@@ -26,10 +26,12 @@
 //
 
 #include <windows.h>
-#include "Danae_resource.h"
-#include "Danae.h" // pour danaeApp
-#include "ARX_Menu2.h"
 #include <vector>
+
+#include "core/Danae_resource.h"
+#include "core/Danae.h" // pour danaeApp
+#include "core/ARX_Menu2.h"
+
 using namespace std;
 
 extern CMenuConfig * pMenuConfig;

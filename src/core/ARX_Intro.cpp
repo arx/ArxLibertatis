@@ -22,17 +22,16 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <d3dwrapper.h>
+#include "core/ARX_Interface.h"
+#include "core/ARX_Levels.h"
+#include "core/ARX_Menu.h"
+#include "core/ARX_Sound.h"
+#include "core/ARX_Time.h"
 
-#include "ARX_Interface.h"
-#include "ARX_Levels.h"
-#include "ARX_Menu.h"
-#include "ARX_Sound.h"
-#include "ARX_Time.h"
-
-#include "EERIEDraw.h"
-#include "EERIEMath.h"
-#include "EERIETexture.h"
+#include "renderer/d3dwrapper.h"
+#include "renderer/EERIEDraw.h"
+#include "renderer/EERIEMath.h"
+#include "renderer/EERIETexture.h"
 
 //-----------------------------------------------------------------------------
 extern float	PROGRESS_BAR_TOTAL;

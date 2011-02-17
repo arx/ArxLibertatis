@@ -22,12 +22,9 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include "Athena_Codec_RAW.h"
 
-#include <hermes/PakManager.h>
-
-
-
+#include "audio/Athena_Codec_RAW.h"
+#include "io/PakManager.h"
 
 namespace ATHENA
 {

@@ -23,14 +23,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 #include <iostream>
-
-#include <hermes/PakEntry.h>
-#include <hermes/HashMap.h>
-
 #include <cstring>
 #include <cassert>
 
-#include "ARX_Common.h"
+#include "io/PakEntry.h"
+#include "io/HashMap.h"
 
 static char * GetFirstDir(const char * dir, size_t * l);
 

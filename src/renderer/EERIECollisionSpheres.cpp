@@ -56,10 +56,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 #include <math.h>
 
-#include "EERIECollisionSpheres.h"
-#include "EERIEMath.h"
-#include "EERIEMeshTweak.h"
-
+#include "renderer/EERIECollisionSpheres.h"
+#include "renderer/EERIEMath.h"
+#include "renderer/EERIEMeshTweak.h"
 
 void EERIE_COLLISION_Cylinder_Create(INTERACTIVE_OBJ * io)
 {

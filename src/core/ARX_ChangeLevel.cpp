@@ -63,32 +63,33 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <d3dwrapper.h>
 #include <vector>
 #include <algorithm>
-#include "ARX_ChangeLevel.h"
 
-#include "ARX_Damages.h"
-#include "ARX_Equipment.h"
-#include "ARX_Interactive.h"
-#include "ARX_Minimap.h"
-#include "ARX_NPC.h"
-#include "ARX_Particles.h"
-#include "ARX_Paths.h"
-#include "ARX_Sound.h"
-#include "ARX_Speech.h"
-#include "ARX_Spells.h"
-#include "ARX_Time.h"
+#include "core/ARX_ChangeLevel.h"
+#include "core/ARX_Damages.h"
+#include "core/ARX_Equipment.h"
+#include "core/ARX_Interactive.h"
+#include "core/ARX_Minimap.h"
+#include "core/ARX_NPC.h"
+#include "core/ARX_Particles.h"
+#include "core/ARX_Paths.h"
+#include "core/ARX_Sound.h"
+#include "core/ARX_Speech.h"
+#include "core/ARX_Spells.h"
+#include "core/ARX_Time.h"
+#include "core/DanaeDlg.h"
 
-#include "HERMESMain.h"
-#include "hermes/PakManager.h"
-#include "hermes/Filesystem.h"
-#include "hermes/blast.h"
-#include "hermes/Logger.h"
+#include "io/HERMESMain.h"
+#include "io/PakManager.h"
+#include "io/Filesystem.h"
+#include "io/blast.h"
 
-#include "EERIEMath.h
-#include "EERIEObject.h"
-#include "EERIEPathfinder.h"
+#include "renderer/d3dwrapper.h"
+#include "renderer/EERIEMath.h"
+#include "renderer/EERIEObject.h"
+#include "renderer/EERIEPathfinder.h"
+#include "renderer/EERIECollisionSpheres.h"
 
 //#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
@@ -3550,8 +3551,7 @@ void ReleaseGaids()
 }
 
 extern long NODIRCREATION;
-#include <EERIECollisionSpheres.h>
-#include "DanaeDlg.h"
+
 void ReplaceSpecifics(char * text);
 
 //-----------------------------------------------------------------------------

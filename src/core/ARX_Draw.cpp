@@ -56,21 +56,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "ARX_Draw.h"
-
-#include "ARX_Interactive.h"
-#include "ARX_Particles.h"
-#include "ARX_Spells.h"
-#include "ARX_Time.h"
-#include "ARX_Menu2.h"
-
-#include "EERIEDraw.h"
-#include "EERIELight.h"
-#include "EERIEPoly.h"
-#include "EERIEApp.h"
-
-
 #include <stdio.h>
+
+#include "core/ARX_Draw.h"
+#include "core/ARX_Interactive.h"
+#include "core/ARX_Particles.h"
+#include "core/ARX_Spells.h"
+#include "core/ARX_Time.h"
+#include "core/ARX_Menu2.h"
+
+#include "renderer/EERIEDraw.h"
+#include "renderer/EERIELight.h"
+#include "renderer/EERIEPoly.h"
+#include "renderer/EERIEApp.h"
 
 // Some external defs needing to be cleaned...
 extern long DANAESIZX;

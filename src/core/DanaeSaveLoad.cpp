@@ -54,45 +54,45 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-
-#include <DanaeSaveLoad.h>
-
+//TODO(lubosz): too many includes
 #include <stdio.h>
 #include <sys/stat.h>
-//#include <io.h>
 #include <fcntl.h>
 #include <time.h>
 
-#include <HERMESMain.h>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
 
-#include <EERIEMath.h>
-#include <EERIEPathfinder.h>
-#include <EERIEObject.h>
-#include <EERIECollisionSpheres.h>
-#include <EERIEDraw.h>
+#include "renderer/EERIEMath.h"
+#include "renderer/EERIEPathfinder.h"
+#include "renderer/EERIEObject.h"
+#include "renderer/EERIECollisionSpheres.h"
+#include "renderer/EERIEDraw.h"
 
-#include <ARX_Damages.h>
-#include <ARX_Fogs.h>
-#include <ARX_Levels.h>
-#include "ARX_Loc.h"
-#include "ARX_Minimap.h"
-#include "ARX_Missile.h"
-#include "ARX_Particles.h"
-#include "ARX_Paths.h"
-#include "ARX_Scene.h"
-#include "ARX_Sound.h"
-#include "ARX_Special.h"
-#include "ARX_Speech.h"
-#include "ARX_Spells.h"
-#include "ARX_Time.h"
-#include "DanaeDlg.h"
+#include "core/DanaeSaveLoad.h"
+#include "core/ARX_Damages.h"
+#include "core/ARX_Fogs.h"
+#include "core/ARX_Levels.h"
+#include "core/ARX_Loc.h"
+#include "core/ARX_Minimap.h"
+#include "core/ARX_Missile.h"
+#include "core/ARX_Particles.h"
+#include "core/ARX_Paths.h"
+#include "core/ARX_Scene.h"
+#include "core/ARX_Sound.h"
+#include "core/ARX_Special.h"
+#include "core/ARX_Speech.h"
+#include "core/ARX_Spells.h"
+#include "core/ARX_Time.h"
+#include "core/DanaeDlg.h"
 
-#include <hermes/PakManager.h>
-#include <hermes/Filesystem.h>
-#include <hermes/Logger.h>
-#include <hermes/blast.h>
-
-#include <stdio.h>
+#include "io/HERMESMain.h"
+#include "io/PakManager.h"
+#include "io/Filesystem.h"
+#include "io/Logger.h"
+#include "io/blast.h"
 
 extern float PROGRESS_BAR_COUNT;
 extern float PROGRESS_BAR_TOTAL;

@@ -25,89 +25,26 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Code: Didier Pédreno
 // todo remover les strIcmp
 
-// Nuky - 30-01-11 - refactored most of this file
+#include "core/ARX_LocHash.h"
 
-#include "ARX_LocHash.h"
-
-#include <cstring>
-
-//----------------------------------------------------------------------------
-// CLocalisation
-//----------------------------------------------------------------------------
-
-namespace
+//-----------------------------------------------------------------------------
+CLocalisationHash::CLocalisationHash(int _iSize)
 {
+	pTab = new CLocalisation* [_iSize];
 
-char* tchardup(const char* str)
-{
-	// Nuky - TODO: replace by strdup ? but why the + 2 here ? some other code
-	//        might be buggy and depend on it ..
-	const size_t size = (strlen(str) + 2) * sizeof(char);
+	iSize = _iSize;
+	iFill = 0;
+	iMask = iSize - 1;
 
-	char* result = (char *)malloc(size);
-	memset(result, 0, size);	//superfluous
-	strcpy(result, str);
+	for (unsigned long i = 0; i < iSize; i++)
+	{
+		pTab[i] = NULL;
+	}
 
-	return result;
+	iNbCollisions = iNbNoInsert = 0;
 }
 
-} // \namespace
-
-CLocalisation::CLocalisation()
-: lpszUSection(NULL)
-, vUKeys()
-{
-}
-
-CLocalisation::~CLocalisation()
-{
-	free(lpszUSection);
-
-	for (size_t i = 0, i_end = vUKeys.size(); i != i_end; ++i)
-		free(vUKeys[i]);
-}
-
-//----------------------------------------------------------------------------
-// CLocalisationHash
-//----------------------------------------------------------------------------
-
-namespace
-{
-
-int	GetHash(const char* str)
-{
-	const size_t len = strlen(str);
-	int result = 0;
-
-	for (size_t i = 0; i != len; ++i)
-		result += str[i] * (i + 1) + str[i] * len;
-
-	return result;
-}
-
-int FuncH1(int k)
-{
-	return k;
-}
-
-int	FuncH2(int k)
-{
-	return ((k >> 1) | 1);
-}
-
-} // \namespace
-
-CLocalisationHash::CLocalisationHash(int reservedSize)
-: iSize(reservedSize)
-, iMask(reservedSize - 1)
-, iFill(0)
-, pTab(new CLocalisation*[reservedSize])
-//, iNbCollisions_(0)
-//, iNbNoInsert_(0)
-{
-	memset(pTab, 0, reservedSize * sizeof(*pTab));
-}
-
+//-----------------------------------------------------------------------------
 CLocalisationHash::~CLocalisationHash()
 {
 	while (iSize--)
@@ -266,6 +203,7 @@ char * CLocalisationHash::GetPtrWithString(const char * _lpszUText)
 		}
 
 		iH1 += iH2;
+		iNbSolution++;
 	}
 
 	return NULL;

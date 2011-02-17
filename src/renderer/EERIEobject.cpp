@@ -53,33 +53,37 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-
-#include "TheoData.h"
-#include "EERIEObject.h"
-#include "EERIETypes.h"
-#include "EERIEMath.h"
-#include "EERIEApp.h"
-#include "EERIEClothes.h"
-#include "EERIEProgressive.h"
-#include "EERIEPhysicsBox.h"
-#include "EERIECollisionSpheres.h"
-#include "EERIELinkedObj.h"
-
-#include "HERMESMain.h"
-
-#include "ARX_Sound.h"
-#include "ARX_Cedric.h"
-
-#include <hermes/PakManager.h>
-#include <hermes/PakEntry.h>
-#include <hermes/Filesystem.h>
-#include <hermes/Logger.h>
-
 #include <cstdio>
+#include <iostream>
+#include <algorithm>
+#include <fstream>
+#include <sstream>
+#include <vector>
+
+#include "core/TheoData.h"
+#include "renderer/EERIEObject.h"
+#include "renderer/EERIETypes.h"
+#include "renderer/EERIEMath.h"
+#include "renderer/EERIEApp.h"
+#include "renderer/EERIEClothes.h"
+#include "renderer/EERIEProgressive.h"
+#include "renderer/EERIEPhysicsBox.h"
+#include "renderer/EERIECollisionSpheres.h"
+#include "renderer/EERIELinkedObj.h"
+
+#include "core/ARX_Sound.h"
+#include "core/ARX_Cedric.h"
+
+#include "io/HERMESMain.h"
+#include "io/PakManager.h"
+#include "io/PakEntry.h"
+#include "io/Filesystem.h"
+#include "io/Logger.h"
+
 using std::sprintf;
-
-
-
+using std::fopen;
+using std::fprintf;
+using std::fclose;
 
 long COMPUTE_PORTALS = 1;
 long USE_PORTALS = 3; 

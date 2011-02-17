@@ -54,18 +54,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "Danae.h"
-
-#include "EERIEDraw.h"
-#include "EERIEMath.h"
-#include "EERIEObject.h"
-#include "ARX_CSpellFx.h"
-#include "ARX_SpellFx_Lvl05.h"
-#include "ARX_SpellFx_Lvl04.h"
-#include "ARX_Particles.h"
-#include "ARX_CParticles.h"
-#include "ARX_Spells.h"
-#include "ARX_Time.h"
+#include "renderer/EERIEDraw.h"
+#include "renderer/EERIEMath.h"
+#include "renderer/EERIEObject.h"
+#include "core/Danae.h"
+#include "core/ARX_CSpellFx.h"
+#include "core/ARX_SpellFx_Lvl05.h"
+#include "core/ARX_SpellFx_Lvl04.h"
+#include "core/ARX_Particles.h"
+#include "core/ARX_CParticles.h"
+#include "core/ARX_Spells.h"
+#include "core/ARX_Time.h"
 
 
 //-----------------------------------------------------------------------------

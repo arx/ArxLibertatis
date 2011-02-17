@@ -53,16 +53,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <EERIEDraw.h>
-#include <EERIELight.h>
-#include <EERIEMath.h>
+#include "renderer/EERIEDraw.h"
+#include "renderer/EERIELight.h"
+#include "renderer/EERIEMath.h"
 
-#include "ARX_CSpellFx.h"
-#include "ARX_Damages.h"
-#include "ARX_Particles.h"
-#include "ARX_SpellFx_Lvl08.h"
-#include "ARX_Spells.h"
-#include "ARX_Time.h"
+#include "core/ARX_CSpellFx.h"
+#include "core/ARX_Damages.h"
+#include "core/ARX_Particles.h"
+#include "core/ARX_SpellFx_Lvl08.h"
+#include "core/ARX_Spells.h"
+#include "core/ARX_Time.h"
 
 //-----------------------------------------------------------------------------
 CExplosion::~CExplosion()
@@ -131,7 +131,7 @@ void CExplosion::Update(unsigned long _ulTime)
 			scale = a;
 			break;
 		case 1:
-			//avancé du disque
+			//avancï¿½ du disque
 			scale = (float)ulCurrentTime / (float)ulDuration;
 
 			if (!ARXPausedTimer) ulCurrentTime += _ulTime;
@@ -415,7 +415,7 @@ float CExplosion::Render(LPDIRECT3DDEVICE7 device)
 			break;
 	}
 
-	//tracé du disque
+	//tracï¿½ du disque
 	SETCULL(device, D3DCULL_NONE);
 	device->SetTexture(0, NULL);
 	device->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, disqued3d, disquenbvertex, (unsigned short *)disqueind, disquenbvertex + 2, 0);

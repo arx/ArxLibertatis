@@ -56,17 +56,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 #include <stdio.h>
 
-#include "EERIEMeshTweak.h"
-#include "EERIEApp.h"
-#include "EERIEObject.h"
-#include "EERIEMath.h"
-
-#include "HERMESMain.h"
-
-#include <hermes/PakManager.h>
-#include <hermes/Logger.h>
-
-
+#include "renderer/EERIEMeshTweak.h"
+#include "renderer/EERIEApp.h"
+#include "renderer/EERIEObject.h"
+#include "renderer/EERIEMath.h"
+#include "io/HERMESMain.h"
+#include "io/PakManager.h"
+#include "io/Logger.h"
 
 void EERIE_MESH_ReleaseTransPolys(EERIE_3DOBJ * obj)
 {

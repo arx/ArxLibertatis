@@ -24,14 +24,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 
 #include <math.h>
-#include "Athena_Global.h"
-#include "Athena_Sample.h"
-#include "Athena_Ambiance.h"
-
 #include <cstdlib>
 #include <cstring>
 
-#include <hermes/PakManager.h>
+#include "audio/Athena_Global.h"
+#include "audio/Athena_Sample.h"
+#include "audio/Athena_Ambiance.h"
+
+#include "io/PakManager.h"
 
 
 using namespace std;

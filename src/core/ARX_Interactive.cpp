@@ -54,48 +54,46 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+
+//TODO(lubosz): don't include that much
 #define DIRECTINPUT_VERSION 0x0700
 #include <dinput.h>
-
-#include "ARX_Interactive.h"
-#include "ARX_Paths.h"
-#include "ARX_FTL.h"
-#include "ARX_Equipment.h"
-#include "ARX_Sound.h"
-#include "ARX_Spells.h"
-#include "ARX_Levels.h"
-#include "ARX_NPC.h"
-#include "ARX_Collisions.h"
-#include "ARX_ChangeLevel.h"
-#include "ARX_Particles.h"
-#include "ARX_Damages.h"
-#include "ARX_Speech.h"
-#include "ARX_Script.h"
-#include "ARX_Time.h"
-#include "ARX_Scene.h"
-#include "ARX_Menu2.h"
-#include "DanaeDlg.h"
-
-#include "HERMESMain.h"
-
-#include "EERIEAnim.h"
-#include "EERIELight.h"
-#include "EERIEObject.h"
-#include "EERIEPoly.h"
-#include "EERIELinkedObj.h"
-#include "EERIECollisionSpheres.h"
-#include "EERIEPhysicsBox.h"
-#include "EERIEProgressive.h"
-#include "EERIEClothes.h"
-#include "EERIEDraw.h"
-#include "EERIEMeshTweak.h"
-
-#include <hermes/PakManager.h>
-#include <hermes/Filesystem.h>
-
-#include <cassert>
-
 #include <stdlib.h>
+
+#include "core/ARX_Interactive.h"
+#include "core/ARX_Paths.h"
+#include "core/ARX_FTL.h"
+#include "core/ARX_Equipment.h"
+#include "core/ARX_Sound.h"
+#include "core/ARX_Spells.h"
+#include "core/ARX_Levels.h"
+#include "core/ARX_NPC.h"
+#include "core/ARX_Collisions.h"
+#include "core/ARX_ChangeLevel.h"
+#include "core/ARX_Particles.h"
+#include "core/ARX_Damages.h"
+#include "core/ARX_Speech.h"
+#include "core/ARX_Script.h"
+#include "core/ARX_Time.h"
+#include "core/ARX_Scene.h"
+#include "core/ARX_Menu2.h"
+#include "core/DanaeDlg.h"
+
+#include "renderer/EERIEAnim.h"
+#include "renderer/EERIELight.h"
+#include "renderer/EERIEObject.h"
+#include "renderer/EERIEPoly.h"
+#include "renderer/EERIELinkedObj.h"
+#include "renderer/EERIECollisionSpheres.h"
+#include "renderer/EERIEPhysicsBox.h"
+#include "renderer/EERIEProgressive.h"
+#include "renderer/EERIEClothes.h"
+#include "renderer/EERIEDraw.h"
+#include "renderer/EERIEMeshTweak.h"
+
+#include "io/HERMESMain.h"
+#include "io/PakManager.h"
+#include "io/Filesystem.h"
 
 extern EERIE_CAMERA TCAM[];
 extern long FRAME_COUNT;

@@ -53,21 +53,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+#include "renderer/EERIEDraw.h"
+#include "renderer/EERIEMath.h"
+#include "renderer/EERIEObject.h"
 
-#include "Danae.h"
-
-#include <EERIEDraw.h>
-#include <EERIEMath.h>
-#include <EERIEObject.h>
-
-#include <ARX_Collisions.h>
-#include <ARX_CSpellFx.h>
-#include <ARX_Damages.h>
-#include <ARX_Particles.h>
-#include "ARX_SpellFx_Lvl05.h"
-#include "ARX_SpellFx_Lvl07.h"
-#include <ARX_Spells.h>
-#include "ARX_Time.h"
+#include "core/Danae.h"
+#include "core/ARX_Collisions.h"
+#include "core/ARX_CSpellFx.h"
+#include "core/ARX_Damages.h"
+#include "core/ARX_Particles.h"
+#include "core/ARX_SpellFx_Lvl05.h"
+#include "core/ARX_SpellFx_Lvl07.h"
+#include "core/ARX_Spells.h"
+#include "core/ARX_Time.h"
 
 
 extern float _framedelay;

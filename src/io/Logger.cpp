@@ -1,24 +1,18 @@
 #include <stdlib.h>
-#include "hermes/Logger.h"
-
-#define BASH_COLOR !ARX_COMPILER_MSVC
+#include "io/Logger.h"
+#define BASH_COLOR 1
 
 using std::cout;
 
 Logger::LogLevel Logger::logLevel = Logger::Debug;
 
-struct LogSetting {
-	string codefile;
-	Logger::LogLevel logLevel;
-};
-
-const LogSetting blackList[] = {
-	{ "ARX_FTL.cpp", Logger::Warning },
-	{ "ARX_Script.cpp", Logger::Warning },
-	{ "PakManager.cpp", Logger::Fatal },
-	{ "PakReader.cpp", Logger::Info },
-	{ "Filesystem.cpp", Logger::Fatal },
-	{ "Athena.cpp", Logger::Error }
+const string blackList[] = {
+		"ARX_FTL.cpp",
+		"ARX_Script.cpp",
+		"PakManager.cpp",
+		/*"PakReader.cpp",*/
+		"Filesystem.cpp",
+		"Athena.cpp"
 };
 
 Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {

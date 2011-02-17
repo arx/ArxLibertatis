@@ -58,28 +58,25 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <malloc.h>
 
-#include "EERIEPoly.h"
-
-#include "EERIELight.h"
-#include "EERIEObject.h"
-#include "EERIETexture.h"
-#include "EERIEDraw.h"
-#include "EERIEUtil.h"
-#include "EERIEAnim.h"
-#include "EERIEAnchors.h"
-#include "EERIEPathfinder.h"
-#include "ARX_Particles.h"
-#include "ARX_Time.h"
-#include "ARX_Scene.h"
-#include "../core/ARX_Menu2.h"
-#include "HERMESMain.h"
-#include "Minos_PathFinder.h"
-
-#include <hermes/PakManager.h>
-#include <hermes/Filesystem.h>
-#include <hermes/Logger.h>
-#include <hermes/blast.h>
-
+#include "renderer/EERIEPoly.h"
+#include "renderer/EERIELight.h"
+#include "renderer/EERIEObject.h"
+#include "renderer/EERIETexture.h"
+#include "renderer/EERIEDraw.h"
+#include "renderer/EERIEUtil.h"
+#include "renderer/EERIEAnim.h"
+#include "renderer/EERIEAnchors.h"
+#include "renderer/EERIEPathfinder.h"
+#include "core/ARX_Particles.h"
+#include "core/ARX_Time.h"
+#include "core/ARX_Scene.h"
+#include "core/ARX_Menu2.h"
+#include "core/Minos_PathFinder.h"
+#include "io/HERMESMain.h"
+#include "io/PakManager.h"
+#include "io/Filesystem.h"
+#include "io/Logger.h"
+#include "io/blast.h"
 
 void ComputeFastBkgData(EERIE_BACKGROUND * eb);
 extern long ParticleCount;

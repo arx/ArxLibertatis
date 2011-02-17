@@ -54,11 +54,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+//TODO(lubosz): empty file!
 #include <stdio.h>
-#include "ARX_Player.h"
-#include "ARX_Network.h"
 
-#include "HERMESMain.h"
-#include "HERMESNet.h"
+#include "core/ARX_Player.h"
+#include "core/ARX_Network.h"
 
-#include <stdio.h>
+#include "io/HERMESMain.h"
+#include "io/HERMESNet.h"
+

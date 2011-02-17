@@ -55,38 +55,42 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <d3dwrapper.h>
 #include <stdlib.h>
-
-#include <ARX_NPC.h>
-#include <HERMESMain.h>
-
-#include <EERIEDraw.h>
-#include <EERIEMath.h>
-#include <EERIEObject.h>
-#include <EERIEPhysicsBox.h>
-#include <EERIEPathfinder.h>
-#include <EERIEAnchors.h>
-
-#include "ARX_Script.h"
-#include "ARX_Collisions.h"
-#include "ARX_Damages.h"
-#include "ARX_Equipment.h"
-#include "ARX_Interface.h"
-#include "ARX_Interactive.h"
-#include "ARX_Speech.h"
-#include "ARX_Paths.h"
-#include "ARX_Paths.h"
-#include "ARX_Particles.h"
-#include "ARX_Scene.h"
-#include "ARX_Sound.h"
-#include "ARX_Spells.h"
-#include "ARX_Time.h"
-
-#include "EERIECollisionSpheres.h"
-#include "EERIEMeshTweak.h"
-
 #include <cstdio>
+#include <iostream>
+#include <sstream>
+#include <algorithm>
+#include <fstream>
+#include <vector>
+
+#include "io/HERMESMain.h"
+
+#include "renderer/d3dwrapper.h"
+#include "renderer/EERIEDraw.h"
+#include "renderer/EERIEMath.h"
+#include "renderer/EERIEObject.h"
+#include "renderer/EERIEPhysicsBox.h"
+#include "renderer/EERIEPathfinder.h"
+#include "renderer/EERIEAnchors.h"
+#include "renderer/EERIECollisionSpheres.h"
+#include "renderer/EERIEMeshTweak.h"
+
+#include "core/ARX_NPC.h"
+#include "core/ARX_Script.h"
+#include "core/ARX_Collisions.h"
+#include "core/ARX_Damages.h"
+#include "core/ARX_Equipment.h"
+#include "core/ARX_Interface.h"
+#include "core/ARX_Interactive.h"
+#include "core/ARX_Speech.h"
+#include "core/ARX_Paths.h"
+#include "core/ARX_Paths.h"
+#include "core/ARX_Particles.h"
+#include "core/ARX_Scene.h"
+#include "core/ARX_Sound.h"
+#include "core/ARX_Spells.h"
+#include "core/ARX_Time.h"
+
 using std::sprintf;
 
 void CheckNPCEx(INTERACTIVE_OBJ * io);

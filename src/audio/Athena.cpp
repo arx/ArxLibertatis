@@ -36,22 +36,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "Athena.h"
-#include "Athena_Resource.h"
-#include "Athena_Mixer.h"
-#include "Athena_Sample.h"
-#include "Athena_Ambiance.h"
-#include "Athena_Instance.h"
-#include "Athena_Global.h"
-#include "Athena_Stream.h"
-
 #include <dsound.h>
-#include <eax.h>
-#include <cmath>
-
-#include <hermes/Logger.h>
-
+#include <math.h>
 #include <cstring>
+
+#include "audio/Athena.h"
+#include "audio/Athena_Resource.h"
+#include "audio/Athena_Mixer.h"
+#include "audio/Athena_Sample.h"
+#include "audio/Athena_Ambiance.h"
+#include "audio/Athena_Instance.h"
+#include "audio/Athena_Global.h"
+#include "audio/Athena_Stream.h"
+#include "audio/eax.h"
+#include "io/Logger.h"
+
 using namespace std;
 
 namespace ATHENA
@@ -167,6 +166,8 @@ namespace ATHENA
 		if (primary) primary->Release(), primary = NULL;
 
 		if (device) device->Release(), device = NULL;
+
+		if (debug_log) fclose(debug_log), debug_log = NULL;
 
 		free(sample_path), sample_path = NULL;
 		free(ambiance_path), ambiance_path = NULL;
@@ -366,6 +367,22 @@ namespace ATHENA
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
 
+		if (flags & AAL_FLAG_DEBUG)
+		{
+			if (debug_log) fclose(debug_log);
+
+			debug_log = fopen("athena.log", "w");
+
+			if (!debug_log)
+			{
+				if (mutex) ReleaseMutex(mutex);
+
+				return AAL_ERROR_FILEIO;
+			}
+
+			global_status |= AAL_FLAG_DEBUG;
+		}
+
 		if (flags & AAL_FLAG_MULTITHREAD && !mutex)
 		{
 			mutex = CreateMutex(NULL, false, NULL);
@@ -413,6 +430,9 @@ namespace ATHENA
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
 
+		if (flags & AAL_FLAG_DEBUG && debug_log)
+			fclose(debug_log), debug_log = NULL;
+
 		if (flags & AAL_FLAG_MULTITHREAD && mutex)
 			ReleaseMutex(mutex), CloseHandle(mutex), mutex = NULL;
 
@@ -442,6 +462,9 @@ namespace ATHENA
 
 		switch (flag)
 		{
+			case AAL_FLAG_DEBUG         :
+				status = debug_log ? AAL_UTRUE : AAL_UFALSE;
+				break;
 
 			case AAL_FLAG_MULTITHREAD   :
 				status = mutex ? AAL_UTRUE : AAL_UFALSE;
@@ -591,7 +614,7 @@ namespace ATHENA
 		{
 			delete sample;
 			
-			LogWarning << "Sample " << name << " not found";
+			LogError << "Sample " << name << " not found";
 
 			if (mutex) ReleaseMutex(mutex);
 

@@ -54,28 +54,28 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include "ARX_Paths.h"
-#include "ARX_GlobalMods.h"
-#include "ARX_Sound.h"
-#include "ARX_Collisions.h"
-#include "ARX_Time.h"
-#include "ARX_NPC.h"
-#include "ARX_CSpellFx.h"
-#include "ARX_Interactive.h"
-#include "ARX_Player.h"
-#include "ARX_Script.h"
-#include "ARX_Particles.h"
-#include "ARX_Damages.h"
-#include "ARX_Equipment.h"
-
-#include "EERIELight.h"
-#include "EERIEDraw.h"
-#include "EERIEPhysicsBox.h"
-
-#include "DanaeDlg.h"
-#include "HERMESMain.h"
 #include <stdio.h>
 
+#include "core/ARX_Paths.h"
+#include "core/ARX_GlobalMods.h"
+#include "core/ARX_Sound.h"
+#include "core/ARX_Collisions.h"
+#include "core/ARX_Time.h"
+#include "core/ARX_NPC.h"
+#include "core/ARX_CSpellFx.h"
+#include "core/ARX_Interactive.h"
+#include "core/ARX_Player.h"
+#include "core/ARX_Script.h"
+#include "core/ARX_Particles.h"
+#include "core/ARX_Damages.h"
+#include "core/ARX_Equipment.h"
+#include "core/DanaeDlg.h"
+
+#include "renderer/EERIELight.h"
+#include "renderer/EERIEDraw.h"
+#include "renderer/EERIEPhysicsBox.h"
+
+#include "io/HERMESMain.h"
 
 extern long CHANGE_LEVEL_ICON;
 extern long EDITMODE;
