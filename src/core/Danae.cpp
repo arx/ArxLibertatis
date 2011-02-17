@@ -1587,7 +1587,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 
 		if (i==0)
 		{
-			ShowPopup("Unable To Initialize ARX INPUT, Leaving...");
+			LogError << "Unable To Initialize ARX INPUT, Leaving...";
 			ARX_INPUT_Release();
 
 			if (MAIN_PROGRAM_HANDLE!=NULL)
