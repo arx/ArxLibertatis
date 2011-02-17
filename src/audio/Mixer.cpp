@@ -36,7 +36,7 @@ namespace ATHENA
 
 	static enum MixerFlag
 	{
-		IS_PAUSED = 0x00000001
+		MIXER_PAUSED = 0x00000001
 	} mixerFlag;
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -150,7 +150,7 @@ namespace ATHENA
 
 	aalUBool Mixer::IsPaused() const
 	{
-		return status & IS_PAUSED ? AAL_UTRUE : AAL_UFALSE;
+		return status & MIXER_PAUSED ? AAL_UTRUE : AAL_UFALSE;
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -191,7 +191,7 @@ namespace ATHENA
 				_inst.Delete(i);
 		}
 
-		status &= ~IS_PAUSED;
+		status &= ~MIXER_PAUSED;
 
 		return AAL_OK;
 	}
@@ -212,13 +212,13 @@ namespace ATHENA
 			if (_inst[i] && _mixer[_inst[i]->channel.mixer] == this)
 				_inst[i]->Pause();
 
-		status |= IS_PAUSED;
+		status |= MIXER_PAUSED;
 		return AAL_OK;
 	}
 
 	aalError Mixer::Resume()
 	{
-		if (!(status & IS_PAUSED)) return AAL_OK;
+		if (!(status & MIXER_PAUSED)) return AAL_OK;
 
 		aalULong i;
 
@@ -234,7 +234,7 @@ namespace ATHENA
 			if (_inst[i] && _mixer[_inst[i]->channel.mixer] == this)
 				_inst[i]->Resume();
 
-		status &= ~IS_PAUSED;
+		status &= ~MIXER_PAUSED;
 		return AAL_OK;
 	}
 

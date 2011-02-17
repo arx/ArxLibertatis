@@ -53,8 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //																					//
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved						//
 //////////////////////////////////////////////////////////////////////////////////////
-//#define STRICT
-
 #include "graphics/data/Mesh.h"
 
 #include <cstdlib>
@@ -106,8 +104,6 @@ int RayIn3DPolyNoCull(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPO
 D3DMATRIX ProjectionMatrix;
 
 bool bGMergeVertex = false;
-
-bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX *, D3DTLVERTEX *, D3DTLVERTEX *, float _fAdd = 0.f);
 
 void ReleaseAnimFromIO(INTERACTIVE_OBJ * io, long num)
 {
@@ -3739,7 +3735,9 @@ typedef struct
 } ROOM_DIST_DATA_SAVE;
 #pragma pack(pop)
 
-extern void LoadLevelScreen(LPDIRECT3DDEVICE7 pd3dDevice = NULL, long lev = -1, float v = 0.f);
+extern void LoadLevelScreen();
+extern void LoadLevelScreen(long lev);
+
 extern float PROGRESS_BAR_COUNT;
 long NOCHECKSUM = 0;
 long USE_FAST_SCENES = 1;

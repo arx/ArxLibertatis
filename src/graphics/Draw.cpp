@@ -592,7 +592,6 @@ void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
 					}
 				}
 					
-#define MAX_DIST_BUMP			600.f
 #define ONE_ONE_MAX_DIST_BUMP	(1.f/MAX_DIST_BUMP)
 #define MAX_BUMP				.8f
 

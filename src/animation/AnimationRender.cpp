@@ -88,34 +88,6 @@ float SOFTNEARCLIPPZ=1.f;
 
 void EE_P2(D3DTLVERTEX * in, D3DTLVERTEX * out);
 
- 
-
-__inline void ResetBBox3D(INTERACTIVE_OBJ * io)
-{
-	if (io)
-	{
-		io->bbox3D.min.x = 99999999.f;
-		io->bbox3D.min.y = 99999999.f;
-		io->bbox3D.min.z = 99999999.f;
-		io->bbox3D.max.x = -99999999.f;
-		io->bbox3D.max.y = -99999999.f;
-		io->bbox3D.max.z = -99999999.f;
-	}
-}
-__inline void AddToBBox3D(INTERACTIVE_OBJ * io, EERIE_3D * pos)
-{
-	if (io)
-	{
-		io->bbox3D.min.x = min(io->bbox3D.min.x, pos->x);
-		io->bbox3D.min.y = min(io->bbox3D.min.y, pos->y);
-		io->bbox3D.min.z = min(io->bbox3D.min.z, pos->z);
-		io->bbox3D.max.x = max(io->bbox3D.max.x, pos->x);
-		io->bbox3D.max.y = max(io->bbox3D.max.y, pos->y);
-		io->bbox3D.max.z = max(io->bbox3D.max.z, pos->z);
-	}
-}
-
-
 /* Init bounding box */
 inline	static	void	Cedric_ResetBoundingBox(INTERACTIVE_OBJ * io)
 {
@@ -1525,6 +1497,11 @@ int ARX_SoftClippZ(EERIE_VERTEX * _pVertex1, EERIE_VERTEX * _pVertex2, EERIE_VER
 }
 extern long IsInGroup(EERIE_3DOBJ * obj, long vert, long tw);
 //-----------------------------------------------------------------------------
+bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX * _pVertex1, D3DTLVERTEX * _pVertex2, D3DTLVERTEX * _pVertex3)
+{
+	return ARX_DrawPrimitive_SoftClippZ(_pVertex1, _pVertex2, _pVertex3, 0.0f);
+}
+
 bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX * _pVertex1, D3DTLVERTEX * _pVertex2, D3DTLVERTEX * _pVertex3, float _fAddZ)
 {
 	int iClipp = 0;

@@ -22,7 +22,8 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-
+#ifndef _VIEW_IMAGE_H_
+#define _VIEW_IMAGE_H_
 
 #include <windows.h>
 #include <mmsystem.h>
@@ -49,3 +50,5 @@ class ViewImage
 };
 
 void StartImageDemo();
+
+#endif // _VIEW_IMAGE_H_

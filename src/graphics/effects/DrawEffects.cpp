@@ -88,7 +88,9 @@ extern unsigned long ulBKGColor;
 extern CMenuConfig *pMenuConfig;
 
 void EE_RT2(D3DTLVERTEX*,D3DTLVERTEX*);
-bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX*,D3DTLVERTEX*,D3DTLVERTEX*,float _fAdd=0.f);
+
+bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX*,D3DTLVERTEX*,D3DTLVERTEX*);
+bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX*,D3DTLVERTEX*,D3DTLVERTEX*,float _fAdd);
 
 //***********************************************************************************************
 // hum... to be checked again for performance and result quality.

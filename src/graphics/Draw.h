@@ -50,6 +50,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define EERIE_USEVB		0x8000	// using vertex buffer for EERIEDRAWPRIM
 #define EERIE_NOCOUNT	0x4000	// do not incr EERIEDrawnPolys for EERIEDRAWPRIM
 
+#define MAX_DIST_BUMP	600.f
+
 #include "graphics/d3dwrapper.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/data/Texture.h"
@@ -122,4 +124,8 @@ void EERIEDrawBitmapUVs(LPDIRECT3DDEVICE7 pd3dDevice, float x, float y, float sx
                         , float u3, float v3
                        );
 
+bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX *, D3DTLVERTEX *, D3DTLVERTEX *);
+bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX *, D3DTLVERTEX *, D3DTLVERTEX *, float _fAdd);
+
 #endif
+
