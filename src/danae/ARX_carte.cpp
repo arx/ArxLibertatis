@@ -32,6 +32,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "EERIEDraw.h"
 
 #include <hermes/PakManager.h>
+#include <hermes/Filesystem.h>
 
 extern long FINAL_RELEASE;
 extern long CURRENTLEVEL;
@@ -486,14 +487,11 @@ float oldposx,oldposz;
 	//sauvegarde
 	nby=0;
 
-	FILE	*f;
-
-	f=fopen(name,"wb");
-
-	fwrite((void*)&bm,1,sizeof(BITMAPFILEHEADER),f);
-	fwrite((void*)&bi,1,sizeof(BITMAPINFO)-4,f);
-	fwrite((void*)mem,1,tailleraw,f);
-	fclose(f);
+	FileHandle f = FileOpenWrite(name);
+	FileWrite(f, &bm, sizeof(BITMAPFILEHEADER));
+	FileWrite(f, &bi, sizeof(BITMAPINFO) - 4);
+	FileWrite(f, mem, tailleraw);
+	FileCloseWrite(f);
 
 	free((void*)mem);
 	SAFE_RELEASE(this->surfacetemp);
