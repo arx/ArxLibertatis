@@ -287,4 +287,3 @@ class ArxDebug
 		ArxDebug(bool _bLogIntoFile);
 	
 };
-
