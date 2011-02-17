@@ -3,9 +3,13 @@ project(ArxFatalis)
 
 set(INC_DIR include)
 set(SRC_DIR src)
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
+
+option(ARX_BUILD_TESTS ON)
+option(ARX_BUILD_TOOLS ON)
 
 include_directories(
-	include
+	src
 IF(UNIX)
 	#include wine
 	/usr/include/wine/windows
@@ -25,6 +29,9 @@ IF (MSVC)
 		file(GLOB_RECURSE SOURCES ${SRC_DIR}/${SOURCE_GROUP}/*.cpp)
 		SOURCE_GROUP("src\\\\${SOURCE_GROUP}" FILES ${SOURCES})
 	endforeach(SOURCE_GROUP)
+	#glob includes
+	file(GLOB_RECURSE ALL_INCLUDES ${INC_DIR}/*.h)
+	SOURCE_GROUP("inc" FILES ${ALL_INCLUDES})
 ELSE (MSVC)
 	# Set optimal options for gcc:
 	#wine compiler
@@ -42,10 +49,7 @@ ENDIF (MSVC)
 add_definitions(-D_DEBUG)
 add_definitions(-DNOMINMAX)			# Prevent <windows.h> from defining min/max macros that can clash with std::min/std::max
 
-#glob all sources and includes
-file(GLOB_RECURSE ALL_INCLUDES ${INC_DIR}/*.h)
-SOURCE_GROUP("inc" FILES ${ALL_INCLUDES})
-
+#glob sources
 file(GLOB_RECURSE ALL_SOURCES ${SRC_DIR}/*.cpp)
 
 #build - WIN32 is only here to specify that on Windows, the app is not a console application, but a windows app (with WinMain)
@@ -64,7 +68,6 @@ add_custom_target(doc
         COMMAND doxygen doc/Doxyfile
 )
 
-
 #find python2
 IF(EXISTS "/usr/bin/python2")
 	SET(PYTHON_BIN "python2")
@@ -76,6 +79,10 @@ add_custom_target(style
         COMMAND ${PYTHON_BIN} scripts/cpplint.py --filter=${STYLE_FILTER} ${ALL_SOURCES} ${ALL_INCLUDES}
 )
 
-add_subdirectory(tools)
+if(ARX_BUILD_TESTS)
+	add_subdirectory(tests ${CMAKE_SOURCE_DIR}/bin/tests)
+endif()
 
-
+if(ARX_BUILD_TOOLS)
+	add_subdirectory(tools ${CMAKE_SOURCE_DIR}/bin/tools)
+endif()
