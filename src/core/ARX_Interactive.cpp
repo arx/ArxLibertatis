@@ -4790,9 +4790,6 @@ long GetInterNum(INTERACTIVE_OBJ * io)
 	if (io->num < inter.nbmax && inter.iobj[io->num] == io)
 		return io->num;
 
-	// Hopefully the code below is never reached
-	assert(false);
-
 	for (long i = 0; i < inter.nbmax; i++)
 		if (inter.iobj[i] == io) return i;
 

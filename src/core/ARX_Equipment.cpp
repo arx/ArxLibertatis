@@ -77,7 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-typedef struct
+struct EQUIP_INFO
 {
 	char name[64];
 };

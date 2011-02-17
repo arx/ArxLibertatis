@@ -431,9 +431,9 @@ bool GetTextSizeNoCache(HFONT font, const char* text, int *width_out, int *heigh
 
 			SIZE sSize;
 
-			GetTextExtentPoint32(hDC, _lpszUText, _tcslen(_lpszUText),	&sSize);
-			*_iWidth = sSize.cx;
-			*_iHeight = sSize.cy;
+			GetTextExtentPoint32(hDC, text, strlen(text), &sSize);
+			*width_out = sSize.cx;
+			*height_out = sSize.cy;
 
 			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 			return true;
@@ -6019,10 +6019,6 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY,int _Fr
 					MENUSTATE e = pZoneClick->eMenuState;
 					bEdit = pZoneClick->OnMouseClick(0);
 					return e;
-				}
-				else
-				{
-					pZoneClick->EmptyFunction();
 				}
 			}
 		}

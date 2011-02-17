@@ -655,7 +655,7 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 
 						if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 						{
-							SelectObject(hDC, InBookFont);
+							SelectObject(hDC, hFontInBook);
 							//	todo: wchar cast
 //							GetTextExtentPoint32W(hDC,
 //							                      speech->text,

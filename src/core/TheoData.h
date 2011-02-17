@@ -316,7 +316,7 @@ struct THEO_ACTION_POINT
 #pragma pack(pop)
 
 #pragma pack(push,1)
-typedef struct
+struct THEO_FACE_UV
 {
 	long			u1;
 	long			v1;
