@@ -4,6 +4,8 @@
 
 #define D3D_OVERLOADS
 
+#define NOMINMAX 1
+
 #include <math.h>
 #include "ARX_Common.h"
 

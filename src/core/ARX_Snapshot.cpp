@@ -54,10 +54,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <cstdio>
-#include <string.h>
+
+#include "core/ARX_Snapshot.h"
+
 #include "core/Danae.h"
 #include "core/ARX_Snapshot.h"
+
+#include "io/Filesystem.h"
+
 
 SnapShot * pSnapShot;
 SNAPSHOTINFO snapshotdata;

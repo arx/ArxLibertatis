@@ -2004,8 +2004,8 @@ static void CalculTextPosition(HDC& _hDC, std::wstring& phrase, CreditsTextInfor
 	//Center the text on the screen
 	GetTextExtentPoint32W(_hDC, phrase.c_str(), phrase.length(), &(infomations.sPos));
 
-	if (infomations.sPos.cx < DANAESIZX)
-		infomations.sPos.cx = ARX_CLEAN_WARN_CAST_INT((DANAESIZX - infomations.sPos.cx) * DIV2);
+	if (infomations.sPos.cx < DANAESIZX) 
+		infomations.sPos.cx = ARX_CLEAN_WARN_CAST_INT((DANAESIZX - infomations.sPos.cx) * ( 1.0f / 2 ));
 
 	//Calcul height position (must be calculate after GetTextExtendPoint32 because sPos is writted)
 	infomations.sPos.cy = ARX_CLEAN_WARN_CAST_INT(drawpos) ;
@@ -2308,7 +2308,7 @@ bool ProcessFadeInOut(bool _bFadeIn,float _fspeed)
 
 	if(_bFadeIn)
 	{
-		fFadeInOut+=_fspeed*ARXDiffTimeMenu*DIV100;
+		fFadeInOut+=_fspeed*ARXDiffTimeMenu*( 1.0f / 100 );
 
 		if(fFadeInOut>1.f)
 		{
@@ -2318,7 +2318,7 @@ bool ProcessFadeInOut(bool _bFadeIn,float _fspeed)
 	}
 	else
 	{
-		fFadeInOut-=_fspeed*ARXDiffTimeMenu*DIV100;
+		fFadeInOut-=_fspeed*ARXDiffTimeMenu*( 1.0f / 100 );
 
 		if(fFadeInOut<0.f)
 		{
@@ -4697,7 +4697,7 @@ void CMenuState::AddMenuElement(CMenuElement *_me)
 
 MENUSTATE CMenuState::Update(int _iDTime)
 {
-	fPos += _iDTime*DIV700;
+	fPos += _iDTime*( 1.0f / 700 );
 
 	pZoneClick=NULL;
 
@@ -4790,6 +4790,22 @@ CMenuZone::CMenuZone()
 	rZone.bottom = 0;
 	rZone.left   = 0;
 	rZone.right  = 0;
+}
+
+//-----------------------------------------------------------------------------
+
+CMenuZone::CMenuZone(int _iX1,int _iY1,int _iX2,int _iY2,int _iId)
+{
+	bActif=true;
+	rZone.left=_iX1;
+	rZone.top=_iY1;
+	rZone.right=_iX2;
+	rZone.bottom=_iY2;
+	iId=_iId;
+
+	iID=-1;
+	lData=0;
+	pData=NULL;
 }
 
 //-----------------------------------------------------------------------------
@@ -7272,16 +7288,6 @@ void CMenuSlider::RenderMouseOver()
 	}
 
 	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
-}
-
-void CMenuSlider::EmptyFunction()
-{
-	//Touche pour la selection
-	if (pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(DIK_LEFT))
-		iPos = std::max(0, iPos-1);
-	else if (pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(DIK_RIGHT))
-		iPos = std::min(iPos+1, 10);
-
 }
 
 //-----------------------------------------------------------------------------

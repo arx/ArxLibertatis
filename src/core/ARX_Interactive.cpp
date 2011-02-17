@@ -323,9 +323,9 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io)
 					ioo->angle.a = rnd() * 40.f + 340.f;
 					ioo->angle.b = rnd() * 360.f;
 					ioo->angle.g = 0;
-					vector.x = -(float)EEsin(DEG2RAD(ioo->angle.b)) * DIV2;
+					vector.x = -(float)EEsin(DEG2RAD(ioo->angle.b)) * ( 1.0f / 2 );
 					vector.y = EEsin(DEG2RAD(ioo->angle.a));
-					vector.z = (float)EEcos(DEG2RAD(ioo->angle.b)) * DIV2;
+					vector.z = (float)EEcos(DEG2RAD(ioo->angle.b)) * ( 1.0f / 2 );
 					ioo->soundtime = 0;
 					ioo->soundcount = 0;
 					EERIE_PHYSICS_BOX_Launch_NOCOL(ioo, ioo->obj, &pos, &vector, 2, &ioo->angle);
@@ -1992,8 +1992,8 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(INTERACTIVE_OBJ * io, EERIE_3D * tar
 
 	while (count < 600)
 	{
-		modx = -EEsin(count) * (float)count * DIV3;
-		modz = EEcos(count) * (float)count * DIV3;
+		modx = -EEsin(count) * (float)count * ( 1.0f / 3 );
+		modz = EEcos(count) * (float)count * ( 1.0f / 3 );
 		phys.origin.x = target->x + modx;
 		phys.origin.z = target->z + modz;
 		float anything = CheckAnythingInCylinder(&phys, io, CFLAG_JUST_TEST);
@@ -2044,7 +2044,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io)
 			ARX_PARTICLES_Add_Smoke(&io->pos, 3, 20);
 			EERIE_3D pos;
 			pos.x = inter.iobj[t]->pos.x;
-			pos.y = inter.iobj[t]->pos.y + inter.iobj[t]->physics.cyl.height * DIV2;
+			pos.y = inter.iobj[t]->pos.y + inter.iobj[t]->physics.cyl.height * ( 1.0f / 2 );
 			pos.z = inter.iobj[t]->pos.z;
 			io->room_flags |= 1;
 			io->room = -1;
@@ -2083,17 +2083,17 @@ void ComputeVVPos(INTERACTIVE_OBJ * io)
 		}
 		else
 		{
-			mul = ((fdiff * DIV120) * 0.9f + 0.6f);
+			mul = ((fdiff * ( 1.0f / 120 )) * 0.9f + 0.6f);
 
 			if ((eediff < 15.f))
 			{
-				float val = (float)FrameDiff * DIV4 * mul;
+				float val = (float)FrameDiff * ( 1.0f / 4 ) * mul;
 
 				if (eediff < 10.f)
-					val *= DIV10;
+					val *= ( 1.0f / 10 );
 				else
 				{
-					float ratio = (eediff - 10.f) * DIV5;
+					float ratio = (eediff - 10.f) * ( 1.0f / 5 );
 					val = val * ratio + val * (1.f - ratio); 
 				}
 
@@ -2101,7 +2101,7 @@ void ComputeVVPos(INTERACTIVE_OBJ * io)
 			}
 			else
 			{
-				fdiff -= (float)FrameDiff * DIV4 * mul;
+				fdiff -= (float)FrameDiff * ( 1.0f / 4 ) * mul;
 			}
 		}
 
@@ -4045,8 +4045,8 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 											cz			+=	ep.v[idx].sz	=	io->obj->vertexlist3[ io->obj->facelist[ii].vid[idx] ].v.z;
 										}
 
-										cx *= DIV3;
-										cz *= DIV3;
+										cx *= ( 1.0f / 3 );
+										cz *= ( 1.0f / 3 );
 
 										for (kk = 0; kk < 3; kk++)
 										{
@@ -4074,9 +4074,9 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 						{
 							for (long jii = 1; jii < nbv; jii += step)
 							{
-								sp.origin.x = (vlist[ii].v.x + vlist[jii].v.x) * DIV2;
-								sp.origin.y = (vlist[ii].v.y + vlist[jii].v.y) * DIV2;
-								sp.origin.z = (vlist[ii].v.z + vlist[jii].v.z) * DIV2;
+								sp.origin.x = (vlist[ii].v.x + vlist[jii].v.x) * ( 1.0f / 2 );
+								sp.origin.y = (vlist[ii].v.y + vlist[jii].v.y) * ( 1.0f / 2 );
+								sp.origin.z = (vlist[ii].v.z + vlist[jii].v.z) * ( 1.0f / 2 );
 
 								for (long kk = 0; kk < obj->pbox->nb_physvert; kk++)
 									if (EEDistance3D(&obj->pbox->vert[kk].pos, &sp.origin) < sp.radius)
@@ -4270,8 +4270,8 @@ void UpdateCameras()
 
 						if (vv > 8000) vv = 8000;
 
-						vv = (8000 - vv) * DIV4000;
-						float vll = _framedelay * DIV1000 * vv;
+						vv = (8000 - vv) * ( 1.0f / 4000 );
+						float vll = _framedelay * ( 1.0f / 1000 ) * vv;
 						EERIE_3D oldvector;
 						EERIE_3D newvector;
 						oldvector.x = io->_camdata->cam.lasttarget.x - io->_camdata->cam.lastpos.x;
@@ -4361,13 +4361,13 @@ void UpdateIOInvisibility(INTERACTIVE_OBJ * io)
 	{
 		if ((io->GameFlags & GFLAG_INVISIBILITY) && (io->invisibility < 1.f))
 		{
-			io->invisibility += _framedelay * DIV1000;
+			io->invisibility += _framedelay * ( 1.0f / 1000 );
 
 			if (io->invisibility > 1.f) io->invisibility = 1.f;
 		}
 		else if ((!(io->GameFlags & GFLAG_INVISIBILITY)) && (io->invisibility != 0.f))
 		{
-			io->invisibility -= _framedelay * DIV1000;
+			io->invisibility -= _framedelay * ( 1.0f / 1000 );
 
 			if (io->invisibility < 0.f) io->invisibility = 0.f;
 		}
@@ -4492,9 +4492,9 @@ void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to, long flags)
 				up.y += io->obj->pbox->vert[11].pos.y - io->obj->pbox->vert[12].pos.y;
 				up.z += io->obj->pbox->vert[11].pos.z - io->obj->pbox->vert[12].pos.z;
 
-				up.x *= DIV4;
-				up.y *= DIV4;
-				up.z *= DIV4;
+				up.x *= ( 1.0f / 4 );
+				up.y *= ( 1.0f / 4 );
+				up.z *= ( 1.0f / 4 );
 				MatrixSetByVectors(&mat, &up, &tmp);
 				mat._14 = mat._24 = mat._34 = 0.f;
 				mat._41 = mat._42 = mat._43 = mat._44 = 0.f;

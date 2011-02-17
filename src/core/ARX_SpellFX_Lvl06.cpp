@@ -1467,9 +1467,9 @@ void CParalyse::CreateLittlePrismTriangleList()
 			vt.z = v->z * sc * .85f;
 
 			vd->x = vt.x ;
-			float fy = (1 - i * DIV20);
-			fy = std::max(fy, 0.2f);
-			fy = std::min(fy, 0.7f);
+			float fy = (1 - i * ( 1.0f / 20 ));
+			fy = max(fy, 0.2f);
+			fy = min(fy, 0.7f);
 			vd->y = vt.y * fy;
 			vd->z = vt.z ;
 
@@ -1949,9 +1949,9 @@ float CParalyse::Render(LPDIRECT3DDEVICE7 pD3DDevice)
 
 			if (this->lLightId >= 0)
 			{
-				DynLight[this->lLightId].rgb.r = (((float)((col >> 16) & 0xFF)) * 1.9f) * DIV255;
-				DynLight[this->lLightId].rgb.g = (((float)((col >> 8) & 0xFF)) * 1.9f) * DIV255;
-				DynLight[this->lLightId].rgb.b = (((float)(col & 0xFF)) * 1.9f) * DIV255;
+				DynLight[this->lLightId].rgb.r = (((float)((col >> 16) & 0xFF)) * 1.9f) * ( 1.0f / 255 );
+				DynLight[this->lLightId].rgb.g = (((float)((col >> 8) & 0xFF)) * 1.9f) * ( 1.0f / 255 );
+				DynLight[this->lLightId].rgb.b = (((float)(col & 0xFF)) * 1.9f) * ( 1.0f / 255 );
 			}
 
 

@@ -23,6 +23,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
+#include "io/HashMap.h"
+
 #include <cstring>
 #include <cassert>
 
@@ -32,7 +34,8 @@ using std::transform;
 #include <string>
 using std::string;
 
-#include "io/HashMap.h"
+#include "io/Logger.h"
+
 
 HashMap::HashMap(size_t sz) {
 	
@@ -93,6 +96,7 @@ bool HashMap::add(const char * name, void * value) {
 		h1 += h2;
 	}
 	
+	LogWarning << "not inserting into hash map: " << name;
 	return false;
 }
 

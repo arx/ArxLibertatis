@@ -263,7 +263,7 @@ TextureContainer *	TC_smoke=NULL;
 TextureContainer *	TC_missile=NULL;
 TextureContainer *	Z_map=NULL;
 TextureContainer *	Boom=NULL;
-TextureContainer *	zbtex=NULL;
+//TextureContainer *	zbtex=NULL;
 TextureContainer *	mecanism_tc=NULL;
 TextureContainer *	arrow_left_tc=NULL;
 EERIE_MULTI3DSCENE * mse=NULL;
@@ -536,22 +536,6 @@ void LaunchMoulinex();
 
 //-----------------------------------------------------------------------------
 
-bool GetARXInstallPath(char * dest)
-{
-	char text[256];
-
-	GetCurrentDirectory( 256, text );
-
-	if (text[0]==0) return false;
-
-	long len=strlen(text);
-
-	if (text[len]!='\\') strcat(text,"\\");
-
-	strcpy(dest,text);
-	return true;
-}
-
 // Sends ON GAME_READY msg to all IOs
 void SendGameReadyMsg()
 {
@@ -737,8 +721,8 @@ void DanaeSwitchFullScreen()
 	DANAECENTERX=DANAESIZX>>1;
 	DANAECENTERY=DANAESIZY>>1;
 
-	Xratio=DANAESIZX*DIV640;
-	Yratio=DANAESIZY*DIV480;
+	Xratio=DANAESIZX*( 1.0f / 640 ); 
+	Yratio=DANAESIZY*( 1.0f / 480 ); 
 
 	ARX_Text_Init();
 
@@ -774,8 +758,8 @@ void DanaeRestoreFullScreen()
 	DANAECENTERX=DANAESIZX>>1;
 	DANAECENTERY=DANAESIZY>>1;
 
-	Xratio=DANAESIZX*DIV640;
-	Yratio=DANAESIZY*DIV480;
+	Xratio=DANAESIZX*( 1.0f / 640 ); 
+	Yratio=DANAESIZY*( 1.0f / 480 ); 
 
 	ARX_Text_Init();
 
@@ -2308,7 +2292,7 @@ void LoadSysTextures()
 	TC_fire=			_GetTexture_NoRefinement("Graph\\particles\\fire.bmp");
 	TC_fire2=			_GetTexture_NoRefinement("Graph\\particles\\fire2.bmp");
 	TC_smoke=			_GetTexture_NoRefinement("Graph\\particles\\smoke.bmp");
-	zbtex=				_GetTexture_NoRefinement("Graph\\particles\\zbtex.bmp");
+	//zbtex=				_GetTexture_NoRefinement("Graph\\particles\\zbtex.bmp");
 	TC_missile=			_GetTexture_NoRefinement("Graph\\particles\\missile.bmp");
 	Z_map=				_GetTexture_NoRefinement("Graph\\interface\\misc\\z-map.bmp");
 	Boom=				_GetTexture_NoRefinement("Graph\\Particles\\boom.bmp");
@@ -2356,7 +2340,7 @@ void LoadSysTextures()
 	GetTextureFile_NoRefinement("Graph\\Interface\\Inventory\\scroll_down.bmp");
 	GetTextureFile_NoRefinement("Graph\\Interface\\Inventory\\Hero_inventory_link.bmp");
 	GetTextureFile_NoRefinement("Graph\\Interface\\Inventory\\ingame_inventory.bmp");
-	GetTextureFile_NoRefinement("Graph\\Interface\\Inventory\\ingame_sub_inv.bmp");
+	//GetTextureFile_NoRefinement("Graph\\Interface\\Inventory\\ingame_sub_inv.bmp");
 	GetTextureFile_NoRefinement("Graph\\Interface\\Inventory\\Gold.bmp");
 
 	GetTextureFile_NoRefinement("Graph\\Interface\\Inventory\\inv_pick.bmp");
@@ -2521,7 +2505,7 @@ void PlayerLaunchArrow_Test(float aimratio,float poisonous,EERIE_3D * pos,EERIE_
 	float damages=
 		weapon_damages
 		*(1.f+
-		(float)(player.Full_Skill_Projectile + player.Full_Attribute_Dexterity )*DIV50);
+		(float)(player.Full_Skill_Projectile + player.Full_Attribute_Dexterity )*( 1.0f / 50 ));
 
 	ARX_THROWN_OBJECT_Throw(ATO_TYPE_ARROW,
 										0, //source
@@ -2598,7 +2582,7 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 	float damages=
 		weapon_damages
 		*(1.f+
-		(float)(player.Full_Skill_Projectile + player.Full_Attribute_Dexterity )*DIV50);
+		(float)(player.Full_Skill_Projectile + player.Full_Attribute_Dexterity )*( 1.0f / 50 ));
 
 	ARX_THROWN_OBJECT_Throw(ATO_TYPE_ARROW,
 										0, //source
@@ -3245,14 +3229,14 @@ long FirstFrameHandling(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	}
 	else if (mse)
 	{
-		Mscenepos.x=-mse->cub.xmin-(mse->cub.xmax-mse->cub.xmin)*DIV2+((float)ACTIVEBKG->Xsize*(float)ACTIVEBKG->Xdiv)*DIV2;
-		Mscenepos.z=-mse->cub.zmin-(mse->cub.zmax-mse->cub.zmin)*DIV2+((float)ACTIVEBKG->Zsize*(float)ACTIVEBKG->Zdiv)*DIV2;
+		Mscenepos.x=-mse->cub.xmin-(mse->cub.xmax-mse->cub.xmin)*( 1.0f / 2 )+((float)ACTIVEBKG->Xsize*(float)ACTIVEBKG->Xdiv)*( 1.0f / 2 );
+		Mscenepos.z=-mse->cub.zmin-(mse->cub.zmax-mse->cub.zmin)*( 1.0f / 2 )+((float)ACTIVEBKG->Zsize*(float)ACTIVEBKG->Zdiv)*( 1.0f / 2 );
 		float t1=(float)(long)(mse->point0.x/BKG_SIZX);
 		float t2=(float)(long)(mse->point0.z/BKG_SIZZ);
 		t1=mse->point0.x-t1*BKG_SIZX;
 		t2=mse->point0.z-t2*BKG_SIZZ;
-		Mscenepos.x=(float)((long)(Mscenepos.x/BKG_SIZX))*BKG_SIZX+(float)BKG_SIZX*DIV2;
-		Mscenepos.z=(float)((long)(Mscenepos.z/BKG_SIZZ))*BKG_SIZZ+(float)BKG_SIZZ*DIV2;
+		Mscenepos.x=(float)((long)(Mscenepos.x/BKG_SIZX))*BKG_SIZX+(float)BKG_SIZX*( 1.0f / 2 );
+		Mscenepos.z=(float)((long)(Mscenepos.z/BKG_SIZZ))*BKG_SIZZ+(float)BKG_SIZZ*( 1.0f / 2 );
 		mse->pos.x=Mscenepos.x=Mscenepos.x+BKG_SIZX-t1;
 		mse->pos.z=Mscenepos.z=Mscenepos.z+BKG_SIZZ-t2;
 		Mscenepos.y=mse->pos.y=-mse->cub.ymin-100.f-mse->point0.y;
@@ -4465,7 +4449,7 @@ void CheckMr()
 				Mr_tc->Restore(GDevice);
 
 			EERIEDrawBitmap(GDevice,DANAESIZX-(128.f*Xratio),0.f,(float)128*Xratio,(float)128*Yratio,0.0001f,
-				Mr_tc,_EERIERGB(0.5f+PULSATE*DIV10));
+				Mr_tc,_EERIERGB(0.5f+PULSATE*( 1.0f / 10 )));		
 		}
 		else
 		{
@@ -4479,7 +4463,7 @@ void DrawImproveVisionInterface(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	{
 		float mod = 0.6f + PULSATE * 0.35f;
 		EERIEDrawBitmap(m_pd3dDevice,0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
-			ombrignon,EERIERGB((0.5f+PULSATE*DIV10)*mod,0.f,0.f));
+			ombrignon,EERIERGB((0.5f+PULSATE*( 1.0f / 10 ))*mod,0.f,0.f));		
 	}
 }
 float MagicSightFader=0.f;
@@ -4490,14 +4474,14 @@ void DrawMagicSightInterface(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	if (Flying_Eye && Flying_Eye->m_pddsSurface)
 	{
 		m_pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-		m_pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );
-		float col=(0.75f+PULSATE*DIV20);
+		m_pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );										
+		float col=(0.75f+PULSATE*( 1.0f / 20 ));
 
 		if (col>1.f) col=1.f;
 
 		if (eyeball.exist<0)
 		{
-			col=(float)(-eyeball.exist)*DIV100;
+			col=(float)(-eyeball.exist)*( 1.0f / 100 );
 		}
 		else if (eyeball.exist>2)
 		{
@@ -4511,8 +4495,8 @@ void DrawMagicSightInterface(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		{
 			col=MagicSightFader;
 			EERIEDrawBitmap(m_pd3dDevice,0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
-				NULL,_EERIERGB(col));
-			MagicSightFader-=Original_framedelay*DIV400;
+				NULL,_EERIERGB(col));		
+			MagicSightFader-=Original_framedelay*( 1.0f / 400 );
 
 			if (MagicSightFader<0.f)
 				MagicSightFader=0.f;
@@ -4580,7 +4564,7 @@ void AddQuakeFX(float intensity,float duration,float period,long flags)
 
 		QuakeFx.duration+=(unsigned long)duration;
 		QuakeFx.frequency+=period;
-		QuakeFx.frequency*=DIV2;
+		QuakeFx.frequency*=( 1.0f / 2 );
 		QuakeFx.flags|=flags;
 
 		if (flags & 1)
@@ -4623,13 +4607,13 @@ void ManageQuakeFX()
 		}
 
 		float itmod=1.f-(tim/QuakeFx.duration);
-		float periodicity=EEsin((float)FrameTime*QuakeFx.frequency*DIV100);
+		float periodicity=EEsin((float)FrameTime*QuakeFx.frequency*( 1.0f / 100 ));
 
 		if ((periodicity>0.5f) && (QuakeFx.flags & 1))
 			ARX_SOUND_PlaySFX(SND_QUAKE, NULL, 1.0F - 0.5F * QuakeFx.intensity);
 
-		float truepower=periodicity*QuakeFx.intensity*itmod*DIV100;
-		float halfpower=truepower*DIV2;
+		float truepower=periodicity*QuakeFx.intensity*itmod*( 1.0f / 100 );
+		float halfpower=truepower*( 1.0f / 2 );
 		ACTIVECAM->pos.x+=rnd()*truepower-halfpower;
 		ACTIVECAM->pos.y+=rnd()*truepower-halfpower;
 		ACTIVECAM->pos.z+=rnd()*truepower-halfpower;
@@ -5410,7 +5394,7 @@ void ShowValue(unsigned long * cur,unsigned long * dest, const char * str)
 	}
 
 	col=EERIERGB(rgb.r,rgb.g,rgb.b);
-	float width=(float)(*cur)*DIV500;
+	float width=(float)(*cur)*( 1.0f / 500 );
 	EERIEDrawBitmap(danaeApp.m_pd3dDevice, 0, ARX_CLEAN_WARN_CAST_FLOAT(iVPOS * 16), width, 8, 0.000091f, NULL, col);
 	danaeApp.OutputText(ARX_CLEAN_WARN_CAST_DWORD(width), iVPOS * 16 - 2, str);
 
@@ -5561,9 +5545,9 @@ static float _AvgFrameDiff = 150.f;
 
 		DANAECENTERX=DANAESIZX>>1;
 		DANAECENTERY=DANAESIZY>>1;
-
-		Xratio=DANAESIZX*DIV640;
-		Yratio=DANAESIZY*DIV480;
+		
+		Xratio=DANAESIZX*( 1.0f / 640 ); 
+		Yratio=DANAESIZY*( 1.0f / 480 ); 
 	}
 
 	// Get DirectInput Infos
@@ -5696,13 +5680,13 @@ static float _AvgFrameDiff = 150.f;
 
 	// Computes X & Y screen ratios compared to a standard 640x480 screen
 	if (DANAESIZX == 640) Xratio = 1.f;
-	else Xratio = DANAESIZX * DIV640;
+	else Xratio = DANAESIZX * ( 1.0f / 640 );
 
 	if (DANAESIZY == 480) Yratio = 1.f;
-	else Yratio = DANAESIZY * DIV480;
+	else Yratio = DANAESIZY * ( 1.0f / 480 );
 
 	// Finally computes current focal
-	BASE_FOCAL=(float)CURRENT_BASE_FOCAL+(float)FOKMOD+(BOW_FOCAL*DIV4);
+	BASE_FOCAL=(float)CURRENT_BASE_FOCAL+(float)FOKMOD+(BOW_FOCAL*( 1.0f / 4 ));
 
 	// SPECIFIC code for Snapshot MODE... to insure constant capture framerate
 	if (	(SnapShotMode)
@@ -5711,9 +5695,9 @@ static float _AvgFrameDiff = 150.f;
 		ARXTotalPausedTime+=ARXTime-(LastFrameTime+(1000/snapshotdata.imgsec));
 	}
 
-	PULSATE=EEsin(FrameTime*DIV800);
-	METALdecal=EEsin(FrameTime*DIV50)*DIV200;
-	PULSS=EEsin(FrameTime*DIV200)*DIVPI*DIV4+0.25f;
+	PULSATE=EEsin(FrameTime / 800);
+	METALdecal=EEsin(FrameTime / 50) / 200 ;
+	PULSS=(EEsin(FrameTime / 200) / (4*PI) )+0.25f;
 	EERIEDrawnPolys=0;
 
 	// EditMode Specific code
@@ -6141,9 +6125,9 @@ static float _AvgFrameDiff = 150.f;
 
 	if (EXTERNALVIEW)
 	{
-		subj.pos.x=(subj.pos.x+subj.d_pos.x)*DIV2;
-		subj.pos.y=(subj.pos.y+subj.d_pos.y)*DIV2;
-		subj.pos.z=(subj.pos.z+subj.d_pos.z)*DIV2;
+		subj.pos.x=(subj.pos.x+subj.d_pos.x)*( 1.0f / 2 );
+		subj.pos.y=(subj.pos.y+subj.d_pos.y)*( 1.0f / 2 );
+		subj.pos.z=(subj.pos.z+subj.d_pos.z)*( 1.0f / 2 );
 
 		subj.angle.a=InterpolateAngle(subj.angle.a,subj.d_angle.a,0.1f);
 		subj.angle.b=InterpolateAngle(subj.angle.b,subj.d_angle.b,0.1f);
@@ -6187,11 +6171,11 @@ static float _AvgFrameDiff = 150.f;
 			conversationcamera.d_angle.b=0.f;
 			conversationcamera.d_angle.g=0.f;
 
-			if (rnd()>0.4f) conversationcamera.d_angle.a=(1.f-rnd()*2.f)*DIV30;
+			if (rnd()>0.4f) conversationcamera.d_angle.a=(1.f-rnd()*2.f)*( 1.0f / 30 );
 
-			if (rnd()>0.4f) conversationcamera.d_angle.b=(1.f-rnd()*1.2f)*DIV5;
+			if (rnd()>0.4f) conversationcamera.d_angle.b=(1.f-rnd()*1.2f)*( 1.0f / 5 );
 
-			if (rnd()>0.4f) conversationcamera.d_angle.g=(1.f-rnd()*2.f)*DIV40;
+			if (rnd()>0.4f) conversationcamera.d_angle.g=(1.f-rnd()*2.f)*( 1.0f / 40 );
 
 			if (rnd()>0.5f)
 			{
@@ -6242,7 +6226,7 @@ static float _AvgFrameDiff = 150.f;
 		vect.z*=mag;
 		float dist=250.f-conversationcamera.size.g;
 
-		if (dist<0.f) dist=(90.f-(dist*DIV20));
+		if (dist<0.f) dist=(90.f-(dist*( 1.0f / 20 )));
 		else if (dist<90.f) dist=90.f;
 
 		_YRotatePoint(&vect,&vec2,EEcos(DEG2RAD(conversationcamera.size.a)),EEsin(DEG2RAD(conversationcamera.size.a)));
@@ -6252,7 +6236,7 @@ static float _AvgFrameDiff = 150.f;
 		sourcepos.z=targetpos.z-vec2.z*dist;
 
 		if (conversationcamera.size.b!=0.f)
-			sourcepos.y+=120.f-conversationcamera.size.b*DIV10;
+			sourcepos.y+=120.f-conversationcamera.size.b*( 1.0f / 10 );
 
 		conversationcamera.pos.x=sourcepos.x;
 		conversationcamera.pos.y=sourcepos.y;
@@ -6380,12 +6364,12 @@ static float _AvgFrameDiff = 150.f;
 							vect2.z*=distance;
 							dist=TRUEEEDistance3D(&from,&to);
 							EERIE_3D tfrom,tto;
-							tfrom.x=from.x+vect.x*acs->startpos*DIV100*dist;
-							tfrom.y=from.y+vect.y*acs->startpos*DIV100*dist;
-							tfrom.z=from.z+vect.z*acs->startpos*DIV100*dist;
-							tto.x=from.x+vect.x*acs->endpos*DIV100*dist;
-							tto.y=from.y+vect.y*acs->endpos*DIV100*dist;
-							tto.z=from.z+vect.z*acs->endpos*DIV100*dist;
+							tfrom.x=from.x+vect.x*acs->startpos*( 1.0f / 100 )*dist;
+							tfrom.y=from.y+vect.y*acs->startpos*( 1.0f / 100 )*dist;
+							tfrom.z=from.z+vect.z*acs->startpos*( 1.0f / 100 )*dist;
+							tto.x=from.x+vect.x*acs->endpos*( 1.0f / 100 )*dist;
+							tto.y=from.y+vect.y*acs->endpos*( 1.0f / 100 )*dist;
+							tto.z=from.z+vect.z*acs->endpos*( 1.0f / 100 )*dist;
 							targetpos.x=tfrom.x*itime+tto.x*rtime;
 							targetpos.y=tfrom.y*itime+tto.y*rtime+acs->f2;
 							targetpos.z=tfrom.z*itime+tto.z*rtime;
@@ -6436,9 +6420,9 @@ static float _AvgFrameDiff = 150.f;
 								targetpos.y=acs->pos2.y;
 								targetpos.z=acs->pos2.z;
 							}
-
-							distance=(acs->startpos*itime+acs->endpos*rtime)*DIV100;
-
+							
+							distance=(acs->startpos*itime+acs->endpos*rtime)*( 1.0f / 100 );						
+							
 							EERIE_3D vect,vect3;
 							vect.x=conversationcamera.pos.x-targetpos.x;
 							vect.y=conversationcamera.pos.y-targetpos.y;
@@ -6494,7 +6478,7 @@ static float _AvgFrameDiff = 150.f;
 	{
 			DeadTime	+=	ARX_CLEAN_WARN_CAST_LONG(FrameDiff);
 		float mdist	=	EEfabs(player.physics.cyl.height)-60;
-		DeadCameraDistance+=(float)FrameDiff*DIV80*((mdist-DeadCameraDistance)/mdist)*2.f;
+		DeadCameraDistance+=(float)FrameDiff*( 1.0f / 80 )*((mdist-DeadCameraDistance)/mdist)*2.f;
 
 		if (DeadCameraDistance>mdist) DeadCameraDistance=mdist;
 
@@ -6566,7 +6550,7 @@ static float _AvgFrameDiff = 150.f;
 		targetpos.z=CAMERACONTROLLER->pos.z;
 
 			float delta_angle = AngleDifference(currentbeta, CAMERACONTROLLER->angle.b);
-			float delta_angle_t = delta_angle * FrameDiff * DIV1000;
+			float delta_angle_t = delta_angle * FrameDiff * ( 1.0f / 1000 );
 
 			if (EEfabs(delta_angle_t) > EEfabs(delta_angle)) delta_angle_t = delta_angle;
 
@@ -6609,9 +6593,9 @@ static float _AvgFrameDiff = 150.f;
 			subj.d_angle.a=subj.angle.a;
 			subj.d_angle.b=subj.angle.b;
 			subj.d_angle.g=subj.angle.g;
-			pos2.x=(pos2.x+pos.x)*DIV2;
-			pos2.y=(pos2.y+pos.y)*DIV2;
-			pos2.z=(pos2.z+pos.z)*DIV2;
+			pos2.x=(pos2.x+pos.x)*( 1.0f / 2 );
+			pos2.y=(pos2.y+pos.y)*( 1.0f / 2 );
+			pos2.z=(pos2.z+pos.z)*( 1.0f / 2 );
 			SetTargetCamera(&subj,pos2.x,pos2.y,pos2.z);
 
 		}
@@ -7220,7 +7204,7 @@ void DANAE::GoFor2DFX()
 		int nNbInTableIO = 0;
 
 		LAST_LOCK_SUCCESSFULL=1;
-		float temp_increase=_framedelay*DIV1000*4.f;
+		float temp_increase=_framedelay*( 1.0f / 1000 )*4.f;
 		DURING_LOCK=1;
 		{
 			bool bComputeIO = false;

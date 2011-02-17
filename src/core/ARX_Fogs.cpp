@@ -209,19 +209,19 @@ void AddPoisonFog(EERIE_3D * pos, float power)
 			particle[j].ov.y		=	pos->y + 100.f - 200.f * rnd();
 			particle[j].ov.z		=	pos->z + 100.f - 200.f * rnd();
 			float speed				=	1.f;
-			float fval				=	speed * DIV5;
+			float fval				=	speed * ( 1.0f / 5 );
 			particle[j].scale.x		=	particle[j].scale.y		=	particle[j].scale.z		=	10.f;
 			particle[j].move.x		=	(speed - rnd()) * fval;
-			particle[j].move.y		=	(speed - speed * rnd()) * DIV15;
+			particle[j].move.y		=	(speed - speed * rnd()) * ( 1.0f / 15 );
 			particle[j].move.z		=	(speed - rnd()) * fval;
 			particle[j].scale.x		=	particle[j].scale.y		=	8;
 			particle[j].timcreation	=	ARX_CLEAN_WARN_CAST_LONG(ARX_TIME_Get());
 			particle[j].tolive		=	4500 + (unsigned long)(rnd() * 4500);
 			particle[j].tc			=	TC_smoke;
-			particle[j].siz			=	(80 + rnd() * 80 * 2.f) * DIV3;
-			particle[j].r			=	rnd() * DIV3;
+			particle[j].siz			=	(80 + rnd() * 80 * 2.f) * ( 1.0f / 3 );
+			particle[j].r			=	rnd() * ( 1.0f / 3 );
 			particle[j].g			=	1.f;
-			particle[j].b			=	rnd() * DIV10;
+			particle[j].b			=	rnd() * ( 1.0f / 10 );
 			particle[j].fparam		=	0.001f;
 		}
 	}
@@ -274,7 +274,7 @@ void ARX_FOGS_Render(long init)
 						particle[j].ov.x = fogs[i].pos.x;
 						particle[j].ov.y = fogs[i].pos.y;
 						particle[j].ov.z = fogs[i].pos.z;
-						fval = fogs[i].speed * DIV10;
+						fval = fogs[i].speed * ( 1.0f / 10 );
 						particle[j].move.x = (fogs[i].move.x * fval);
 						particle[j].move.y = (fogs[i].move.y * fval);
 						particle[j].move.z = (fogs[i].move.z * fval);
@@ -284,9 +284,9 @@ void ARX_FOGS_Render(long init)
 						particle[j].ov.x = fogs[i].pos.x + 100.f - 200.f * rnd();
 						particle[j].ov.y = fogs[i].pos.y + 100.f - 200.f * rnd();
 						particle[j].ov.z = fogs[i].pos.z + 100.f - 200.f * rnd();
-						fval = fogs[i].speed * DIV5;
+						fval = fogs[i].speed * ( 1.0f / 5 );
 						particle[j].move.x = (fogs[i].speed - rnd() * 2.f) * fval;
-						particle[j].move.y = (fogs[i].speed - rnd() * 2.f) * DIV15;
+						particle[j].move.y = (fogs[i].speed - rnd() * 2.f) * ( 1.0f / 15 );
 						particle[j].move.z = (fogs[i].speed - rnd() * 2.f) * fval;
 					}
 
@@ -294,7 +294,7 @@ void ARX_FOGS_Render(long init)
 					particle[j].timcreation	=	lARXTime;
 					particle[j].tolive		=	fogs[i].tolive + (unsigned long)(rnd() * fogs[i].tolive);
 					particle[j].tc			=	TC_smoke;
-					particle[j].siz			=	(fogs[i].size + rnd() * fogs[i].size * 2.f) * DIV3;
+					particle[j].siz			=	(fogs[i].size + rnd() * fogs[i].size * 2.f) * ( 1.0f / 3 );
 					particle[j].r			=	fogs[i].rgb.r;
 					particle[j].g			=	fogs[i].rgb.g;
 					particle[j].b			=	fogs[i].rgb.b;

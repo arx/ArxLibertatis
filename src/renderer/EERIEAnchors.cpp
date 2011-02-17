@@ -212,7 +212,7 @@ __inline float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, lon
 		{
 			for (long o = 0; o < 5; o++)
 			{
-				float p = (float)o * DIV5;
+				float p = (float)o * ( 1.0f / 5 );
 				center.x = (ep->v[n].sx * p + ep->center.x * (1.f - p));
 				center.y = (ep->v[n].sy * p + ep->center.y * (1.f - p));
 				center.z = (ep->v[n].sz * p + ep->center.z * (1.f - p));
@@ -230,9 +230,9 @@ __inline float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, lon
 		        || (flags & CFLAG_EXTRA_PRECISION)
 		   )
 		{
-			center.x = (ep->v[n].sx + ep->v[r].sx) * DIV2;
-			center.y = (ep->v[n].sy + ep->v[r].sy) * DIV2;
-			center.z = (ep->v[n].sz + ep->v[r].sz) * DIV2;
+			center.x = (ep->v[n].sx + ep->v[r].sx) * ( 1.0f / 2 );
+			center.y = (ep->v[n].sy + ep->v[r].sy) * ( 1.0f / 2 );
+			center.z = (ep->v[n].sz + ep->v[r].sz) * ( 1.0f / 2 );
 
 			if (PointInCylinder(cyl, &center)) 
 			{
@@ -242,9 +242,9 @@ __inline float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, lon
 
 			if ((ep->area > 4000.f) || (flags & CFLAG_EXTRA_PRECISION))
 			{
-				center.x = (ep->v[n].sx + ep->center.x) * DIV2;
-				center.y = (ep->v[n].sy + ep->center.y) * DIV2;
-				center.z = (ep->v[n].sz + ep->center.z) * DIV2;
+				center.x = (ep->v[n].sx + ep->center.x) * ( 1.0f / 2 );
+				center.y = (ep->v[n].sy + ep->center.y) * ( 1.0f / 2 );
+				center.z = (ep->v[n].sz + ep->center.z) * ( 1.0f / 2 );
 
 				if (PointInCylinder(cyl, &center)) 
 				{
@@ -255,9 +255,9 @@ __inline float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, lon
 
 			if ((ep->area > 6000.f) || (flags & CFLAG_EXTRA_PRECISION))
 			{
-				center.x = (center.x + ep->v[n].sx) * DIV2;
-				center.y = (center.y + ep->v[n].sy) * DIV2;
-				center.z = (center.z + ep->v[n].sz) * DIV2;
+				center.x = (center.x + ep->v[n].sx) * ( 1.0f / 2 );
+				center.y = (center.y + ep->v[n].sy) * ( 1.0f / 2 );
+				center.z = (center.z + ep->v[n].sz) * ( 1.0f / 2 );
 
 				if (PointInCylinder(cyl, &center)) 
 				{
@@ -422,7 +422,7 @@ bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, 
 				float dist;
 				dist = max(TRUEVector_Magnitude(&vector2D), 1.f);
 				float pente;
-				pente = EEfabs(anything) / dist * DIV2; 
+				pente = EEfabs(anything) / dist * ( 1.0f / 2 ); 
 				io->_npcdata->climb_count += pente;
 
 				if (io->_npcdata->climb_count > MAX_ALLOWED_PER_SECOND)
@@ -1606,9 +1606,9 @@ void AnchorData_Create_Alternative_Method_I(EERIE_BACKGROUND * eb)
 						{
 							// found 2 usable anchors
 							EERIE_3D pos;
-							pos.x=(p1.x+p2.x)*DIV2;
-							pos.y=(p1.y+p2.y)*DIV2;
-							pos.z=(p1.z+p2.z)*DIV2;
+							pos.x=(p1.x+p2.x)*( 1.0f / 2 );
+							pos.y=(p1.y+p2.y)*( 1.0f / 2 );
+							pos.z=(p1.z+p2.z)*( 1.0f / 2 );
 							if (AddAnchor(eb,eg,&pos,MUST_BE_BIG))
 								usable++;
 						}

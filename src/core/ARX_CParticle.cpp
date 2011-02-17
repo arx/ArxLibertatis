@@ -127,7 +127,7 @@ void CParticle::Update(long _lTime)
 {
 	ulTime += _lTime;
 	iTexTime += _lTime;
-	fTimeSec = _lTime * DIV1000;
+	fTimeSec = _lTime * ( 1.0f / 1000 );
 
 	if (ulTime < ulTTL)
 	{

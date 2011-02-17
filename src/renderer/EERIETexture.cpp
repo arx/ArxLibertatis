@@ -1123,7 +1123,7 @@ void CopySurfaceToBumpMap(LPDIRECTDRAWSURFACE7 sSurface, LPDIRECTDRAWSURFACE7 dS
 			gg = (BYTE)(((dwPixel & dwGMask2) >> dwGShiftR2) << dwGShiftL2);
 			bb = (BYTE)(((dwPixel & dwBMask2) >> dwBShiftR2) << dwBShiftL2);
 
-			long val = ARX_CLEAN_WARN_CAST_LONG((rr + gg + bb) * DIV6);
+			long val = ARX_CLEAN_WARN_CAST_LONG((rr + gg + bb) * ( 1.0f / 6 ));
 			rr = gg = bb = val;
 
 			dr = ((rr >> (dwRShiftL)) << dwRShiftR) & dwRMask;
@@ -1537,14 +1537,14 @@ void PnuxSurface(LPDIRECTDRAWSURFACE7 sSurface)
 
 			if (SPECIAL_PNUX == 3)
 			{
-				float power = (fr + fg + fb) * DIV3 * 1.2f;
+				float power = (fr + fg + fb) * ( 1.0f / 3 ) * 1.2f;
 				fr = power;
 				fg = power;
 				fb = power;
 			}
 			else if (SPECIAL_PNUX == 2)
 			{
-				float power = (fr + fg + fb) * DIV3;
+				float power = (fr + fg + fb) * ( 1.0f / 3 );
 
 				if (power > fr * 0.75f)
 				{
@@ -1563,9 +1563,9 @@ void PnuxSurface(LPDIRECTDRAWSURFACE7 sSurface)
 
 				if (power > 200.f)
 				{
-					fr += (power - 200.f) * DIV5;
-					fg += (power - 200.f) * DIV4;
-					fb += (power - 200.f) * DIV3;
+					fr += (power - 200.f) * ( 1.0f / 5 );
+					fg += (power - 200.f) * ( 1.0f / 4 );
+					fb += (power - 200.f) * ( 1.0f / 3 );
 				}
 			}
 			else
@@ -3488,7 +3488,7 @@ TextureContainer * D3DTextr_CreateTextureFromFile(const char * strName, DWORD dw
 		ptcTexture->m_dx = ptcTexture->m_odx;
 	}
 	else
-		ptcTexture->m_odx = ptcTexture->m_dx = DIV256;
+		ptcTexture->m_odx = ptcTexture->m_dx = ( 1.0f / 256 );
 
 	ptcTexture->m_hdx = 0.5f * ptcTexture->m_dx;
 
@@ -3498,7 +3498,7 @@ TextureContainer * D3DTextr_CreateTextureFromFile(const char * strName, DWORD dw
 		ptcTexture->m_dy = ptcTexture->m_ody;
 	}
 	else
-		ptcTexture->m_ody = ptcTexture->m_dy = DIV256;
+		ptcTexture->m_ody = ptcTexture->m_dy = ( 1.0f / 256 );
 
 	ptcTexture->m_hdy = 0.5f * ptcTexture->m_dy;
 

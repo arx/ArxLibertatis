@@ -22,9 +22,8 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef ARX_VIEWIMAGE_H
-#define ARX_VIEWIMAGE_H
 
+#define NOMINMAX 1
 #include <windows.h>
 #include <mmsystem.h>
 #include <commctrl.h>
@@ -32,6 +31,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <vector>
 
 #include "renderer/EERIETexture.h"
+
+using namespace std;
 
 class ViewImage
 {
@@ -48,5 +49,3 @@ class ViewImage
 };
 
 void StartImageDemo();
-
-#endif

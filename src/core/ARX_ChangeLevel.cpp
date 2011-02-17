@@ -63,10 +63,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include "core/ARX_ChangeLevel.h"
+
 #include <vector>
 #include <algorithm>
 
-#include "core/ARX_ChangeLevel.h"
 #include "core/ARX_Damages.h"
 #include "core/ARX_Equipment.h"
 #include "core/ARX_Interactive.h"
@@ -84,12 +85,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
 #include "io/blast.h"
+#include "io/Logger.h"
 
 #include "renderer/d3dwrapper.h"
 #include "renderer/EERIEMath.h"
 #include "renderer/EERIEObject.h"
 #include "renderer/EERIEPathfinder.h"
 #include "renderer/EERIECollisionSpheres.h"
+
 
 //#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 

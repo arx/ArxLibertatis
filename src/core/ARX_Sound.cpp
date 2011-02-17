@@ -1406,7 +1406,7 @@ static void ARX_SOUND_CreateEnvironments()
 
 		if (!pvDirectory)
 		{
-			pPakManager->RemovePak(PAK_SFX);
+			//pPakManager->RemovePak(PAK_SFX);
 			return;
 		}
 
@@ -1424,7 +1424,7 @@ static void ARX_SOUND_CreateEnvironments()
 			}
 		}
 
-		pPakManager->RemovePak(PAK_SFX);
+		//pPakManager->RemovePak(PAK_SFX);
 		pvDirectory->clear();
 		delete pvDirectory;
 	}

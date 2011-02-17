@@ -182,7 +182,7 @@ INT_PTR CALLBACK MeshReductionProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 		case WM_NOTIFY:
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER_REDUCTION);
 			t = SendMessage(thWnd, TBM_GETPOS, true, 0);
-			FORCED_REDUCTION_VALUE = (float)t * DIV10000;
+			FORCED_REDUCTION_VALUE = (float)t * ( 1.0f / 10000 );
 			break;
 		case WM_CLOSE:
 			MESH_REDUCTION_WINDOW = NULL;
@@ -201,7 +201,7 @@ INT_PTR CALLBACK MeshReductionProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 				case IDOK:
 					thWnd = GetDlgItem(hWnd, IDC_SLIDER_REDUCTION);
 					t = SendMessage(thWnd, TBM_GETPOS, true, 0);
-					FORCED_REDUCTION_VALUE = (float)t * DIV10000;
+					FORCED_REDUCTION_VALUE = (float)t * ( 1.0f / 10000 );
 					MESH_REDUCTION_WINDOW = NULL;
 					EndDialog(hWnd, true);
 					break;
@@ -285,7 +285,7 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER1);
 			val = (long)SendMessage(thWnd, TBM_GETPOS, true, 0);
-			fval = (float)(val) * DIV10;
+			fval = (float)(val) * ( 1.0f / 10 );
 			thWnd = GetDlgItem(hWnd, IDC_FCLIPTEXT);
 			sprintf(temp, "%3.1f m", fval);
 			SetWindowText(thWnd, temp);
@@ -418,7 +418,7 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 				if (ARX_PATHS_SelectedAP->flags & PATH_FARCLIP)
 				{
 					SetCheck(hWnd, IDC_CLIPPINGFAR, CHECK);
-					long t = ARX_CLEAN_WARN_CAST_LONG((long)ARX_PATHS_SelectedAP->farclip * DIV10);
+					long t = ARX_CLEAN_WARN_CAST_LONG((long)ARX_PATHS_SelectedAP->farclip * ( 1.0f / 10 ));
 					SendMessage(thWnd, TBM_SETPOS, true, (LPARAM)(t));
 				}
 				else
@@ -513,9 +513,9 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 						cc.lpCustColors = custcr;
 						cc.Flags = CC_ANYCOLOR | CC_FULLOPEN | CC_RGBINIT;
 						ChooseColor(&cc);
-						ARX_PATHS_SelectedAP->rgb.r = (float)((long)(cc.rgbResult & 255)) * DIV255;
-						ARX_PATHS_SelectedAP->rgb.g = (float)((long)((cc.rgbResult >> 8) & 255)) * DIV255;
-						ARX_PATHS_SelectedAP->rgb.b = (float)((long)((cc.rgbResult >> 16) & 255)) * DIV255;
+						ARX_PATHS_SelectedAP->rgb.r = (float)((long)(cc.rgbResult & 255)) * ( 1.0f / 255 );
+						ARX_PATHS_SelectedAP->rgb.g = (float)((long)((cc.rgbResult >> 8) & 255)) * ( 1.0f / 255 );
+						ARX_PATHS_SelectedAP->rgb.b = (float)((long)((cc.rgbResult >> 16) & 255)) * ( 1.0f / 255 );
 						thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);
 						InvalidateRect(thWnd, NULL, true);
 
@@ -1614,7 +1614,7 @@ INT_PTR CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			else if (LIGHTTHREAD != NULL)
 			{
 				char tex[32];
-				t *= DIV10;
+				t *= ( 1.0f / 10 );
 				sprintf(tex, "Working... ( %ld%% )", (long)t);
 				SetWindowText(thWnd, tex);
 			}
@@ -1960,7 +1960,7 @@ INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					sprintf(temp, "Texture Size: 256x256");
 					break;
 				case 7:
-					sprintf(temp, "Texture Size: DIV2");
+					sprintf(temp, "Texture Size: ( 1.0f / 2 )");
 					break;
 				default:
 					sprintf(temp, "Texture Size: ANY");
@@ -2549,10 +2549,10 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					LPpower = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 
 					thWnd = GetDlgItem(hWnd, IDC_POWERSLIDER2);
-					BIGLIGHTPOWER = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * DIV100;
+					BIGLIGHTPOWER = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * ( 1.0f / 100 );
 
 					thWnd = GetDlgItem(hWnd, IDC_TIMESLIDER);
-					TIMEFACTOR = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * DIV100;
+					TIMEFACTOR = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * ( 1.0f / 100 );
 
 					thWnd = GetDlgItem(hWnd, IDC_EDITNBINTERPOLATIONS);
 					char tex[64];
@@ -2623,9 +2623,9 @@ INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 			if (ChooseColor(&cc))
 			{
-				Project.interfacergb.b = (float)((cc.rgbResult >> 16 & 255)) * DIV255;
-				Project.interfacergb.g = (float)((cc.rgbResult >> 8 & 255)) * DIV255;
-				Project.interfacergb.r = (float)((cc.rgbResult & 255)) * DIV255;
+				Project.interfacergb.b = (float)((cc.rgbResult >> 16 & 255)) * ( 1.0f / 255 );
+				Project.interfacergb.g = (float)((cc.rgbResult >> 8 & 255)) * ( 1.0f / 255 );
+				Project.interfacergb.r = (float)((cc.rgbResult & 255)) * ( 1.0f / 255 );
 			}
 		}
 
@@ -2643,9 +2643,9 @@ INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 			if (ChooseColor(&cc))
 			{
-				Project.torch.b = (float)((cc.rgbResult >> 16 & 255)) * DIV255;
-				Project.torch.g = (float)((cc.rgbResult >> 8 & 255)) * DIV255;
-				Project.torch.r = (float)((cc.rgbResult & 255)) * DIV255;
+				Project.torch.b = (float)((cc.rgbResult >> 16 & 255)) * ( 1.0f / 255 );
+				Project.torch.g = (float)((cc.rgbResult >> 8 & 255)) * ( 1.0f / 255 );
+				Project.torch.r = (float)((cc.rgbResult & 255)) * ( 1.0f / 255 );
 			}
 		}
 
@@ -2884,25 +2884,25 @@ void LightApply(HWND hWnd)
 		else lightparam.extras &= ~EXTRAS_FLARE;
 
 		thWnd = GetDlgItem(hWnd, IDC_SLIDER14);
-		lightparam.ex_flicker.r = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * DIV100;
+		lightparam.ex_flicker.r = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * ( 1.0f / 100 );
 
 		thWnd = GetDlgItem(hWnd, IDC_SLIDER15);
-		lightparam.ex_flicker.g = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * DIV100;
+		lightparam.ex_flicker.g = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * ( 1.0f / 100 );
 
 		thWnd = GetDlgItem(hWnd, IDC_SLIDER16);
-		lightparam.ex_flicker.b = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * DIV100;
+		lightparam.ex_flicker.b = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * ( 1.0f / 100 );
 
 		thWnd = GetDlgItem(hWnd, IDC_SLIDER17);
 		lightparam.ex_radius = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
 
 		thWnd = GetDlgItem(hWnd, IDC_SLIDER18);
-		lightparam.ex_frequency = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * DIV100;
+		lightparam.ex_frequency = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * ( 1.0f / 100 );
 
 		thWnd = GetDlgItem(hWnd, IDC_SLIDER19);
-		lightparam.ex_size = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * DIV10;
+		lightparam.ex_size = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * ( 1.0f / 10 );
 
 		thWnd = GetDlgItem(hWnd, IDC_SLIDER20);
-		lightparam.ex_speed = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * DIV100;
+		lightparam.ex_speed = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * ( 1.0f / 100 );
 
 		thWnd = GetDlgItem(hWnd, IDC_SLIDER21);
 		lightparam.ex_flaresize = (float)SendMessage(thWnd, TBM_GETPOS, true, 0);
@@ -3011,9 +3011,9 @@ INT_PTR CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 
 					if (ChooseColor(&cc))
 					{
-						lightparam.rgb.b = (float)((cc.rgbResult >> 16 & 255)) * DIV255;
-						lightparam.rgb.g = (float)((cc.rgbResult >> 8 & 255)) * DIV255;
-						lightparam.rgb.r = (float)((cc.rgbResult & 255)) * DIV255;
+						lightparam.rgb.b = (float)((cc.rgbResult >> 16 & 255)) * ( 1.0f / 255 );
+						lightparam.rgb.g = (float)((cc.rgbResult >> 8 & 255)) * ( 1.0f / 255 );
+						lightparam.rgb.r = (float)((cc.rgbResult & 255)) * ( 1.0f / 255 );
 					}
 
 					if (!INITT) if (CONSTANTUPDATELIGHT) LightApply(hWnd);
@@ -3265,7 +3265,7 @@ INT_PTR CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER13);
-			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * DIV100;
+			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * ( 1.0f / 100 );
 			thWnd = GetDlgItem(hWnd, IDC_STATIC13);
 			sprintf(temp, "%2.2f", val);
 			SetWindowText(thWnd, temp);
@@ -3375,9 +3375,9 @@ INT_PTR CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 				if (ChooseColor(&cc))
 				{
-					fogparam.rgb.b = (float)((cc.rgbResult >> 16 & 255)) * DIV255;
-					fogparam.rgb.g = (float)((cc.rgbResult >> 8 & 255)) * DIV255;
-					fogparam.rgb.r = (float)((cc.rgbResult & 255)) * DIV255;
+					fogparam.rgb.b = (float)((cc.rgbResult >> 16 & 255)) * ( 1.0f / 255 );
+					fogparam.rgb.g = (float)((cc.rgbResult >> 8 & 255)) * ( 1.0f / 255 );
+					fogparam.rgb.r = (float)((cc.rgbResult & 255)) * ( 1.0f / 255 );
 				}
 			}
 
@@ -3578,7 +3578,7 @@ INT_PTR CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 			SetWindowText(thWnd, temp);
 
 			thWnd = GetDlgItem(hWnd, IDC_SLIDER_DURATION);
-			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * DIV10;
+			val = (float)SendMessage(thWnd, TBM_GETPOS, true, 0) * ( 1.0f / 10 );
 			thWnd = GetDlgItem(hWnd, IDC_STATIC6);
 			sprintf(temp, "%4.2fs", val);
 			SetWindowText(thWnd, temp);

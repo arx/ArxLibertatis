@@ -775,7 +775,7 @@ void CMultiMagicMissile::CheckCollision(float _fPlayer_Magic_Level)
 							damages[ttt].pos.y	= pMM->eCurPos.y;
 							damages[ttt].pos.z	= pMM->eCurPos.z;
 							damages[ttt].radius	= 80.f;
-							damages[ttt].damages = (4 + spells[spellinstance].caster_level * DIV5) * .8f; 
+							damages[ttt].damages = (4 + spells[spellinstance].caster_level * ( 1.0f / 5 )) * .8f; 
 							damages[ttt].area	= DAMAGE_FULL;
 							damages[ttt].duration = -1;
 							damages[ttt].source	= spells[spellinstance].caster;

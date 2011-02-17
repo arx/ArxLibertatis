@@ -25,6 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIE_AVI_H
 #define EERIE_AVI_H
 
+#define NOMINMAX 1
 #include <windows.h>
 #include "core/ARX_Common.h"
 

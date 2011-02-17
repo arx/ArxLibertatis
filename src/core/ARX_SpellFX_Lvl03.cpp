@@ -656,7 +656,7 @@ void CIceProjectile::Update(unsigned long aulTime)
 
 	if (ulDuration - ulCurrentTime < 1000)
 	{
-		fColor = (ulDuration - ulCurrentTime) * DIV1000;
+		fColor = (ulDuration - ulCurrentTime) * ( 1.0f / 1000 );
 
 		for (int i = 0; i < iNumber; i++)
 		{

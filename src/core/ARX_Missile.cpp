@@ -286,7 +286,7 @@ void ARX_MISSILES_Update()
 					particle[j].timcreation = tim;
 					particle[j].tolive = 500 + (unsigned long)(rnd() * 500.f);
 					particle[j].tc = tc;
-					particle[j].siz = 12.0F * (float)(missiles[i].tolive - framediff3) * DIV4000;
+					particle[j].siz = 12.0F * (float)(missiles[i].tolive - framediff3) * ( 1.0f / 4000 );
 					particle[j].scale.x = 15.0F + rnd() * 5.0F;
 					particle[j].scale.y = 15.0F + rnd() * 5.0F;
 					particle[j].scale.z = 15.0F + rnd() * 5.0F;

@@ -55,9 +55,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2010 ARKANE Studios SA. All rights reserved
 /////////////////////////////////////////////////////////////////////////////////////
 
+#include "window/Mercury_extern.h"
 
 #include <dinput.h>
-#include "window/Mercury_extern.h"
 
 /*-----------------------------------------------------*/
 HRESULT			DI_Hr;

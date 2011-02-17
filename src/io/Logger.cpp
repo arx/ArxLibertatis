@@ -6,31 +6,22 @@ using std::cout;
 
 Logger::LogLevel Logger::logLevel = Logger::Debug;
 
-const string blackList[] = {
-		"ARX_FTL.cpp",
-		"ARX_Script.cpp",
-		"PakManager.cpp",
-		/*"PakReader.cpp",*/
-		"Filesystem.cpp",
-		"Athena.cpp"
+struct LogSetting {
+	string codefile;
+	Logger::LogLevel logLevel;
+};
+
+const LogSetting blackList[] = {
+	{ "ARX_FTL.cpp", Logger::Warning },
+	{ "ARX_Script.cpp", Logger::Info },
+	{ "PakManager.cpp", Logger::Fatal },
+	{ "PakReader.cpp", Logger::Info },
+	{ "Filesystem.cpp", Logger::Fatal },
+	{ "Athena.cpp", Logger::Error },
+	{ "Athena_Instance.cpp", Logger::Info }
 };
 
 Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {
-  writeInfo(file.c_str(), line, level);
-}
-
-Logger::Logger(const char* file, int line, Logger::LogLevel level) {
-  writeInfo(file, line, level);
-}
-
-Logger::~Logger() {
-  if (print)
-    std::cout<<std::endl;
-  if (fatal)
-	  exit(0);
-}
-
-void Logger::writeInfo(const char* file, int line, Logger::LogLevel level) {
   fatal = false;
 	LogLevel curLevel = getLogLevel(file);
   if(level < curLevel || curLevel == None) {
@@ -61,9 +52,16 @@ void Logger::writeInfo(const char* file, int line, Logger::LogLevel level) {
   };
 }
 
+Logger::~Logger() {
+  if (print)
+    std::cout<<std::endl;
+  if (fatal)
+	  exit(0);
+}
+
 void Logger::log(int mode, int color, const string & level,
 		const string & file, int line) {
-#if BASH_COLOR
+#ifdef BASH_COLOR
 	cout<<"[\e["<< mode <<";"<< color <<"m" << level << "\e[m]  "
 			<<"\e[0;35m"<<file<<"\e[m:\e[0;33m"<<line<<"\e[m"<<"  ";
 #else
