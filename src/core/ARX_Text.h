@@ -141,8 +141,6 @@ void _ShowText(const char* text);
 //-----------------------------------------------------------------------------
 
 extern CARXTextManager * pTextManage;
-extern _TCHAR * lpszFontMenu;
-extern _TCHAR * lpszFontIngame;
 
 extern HFONT hFontMainMenu;
 extern HFONT hFontMenu;

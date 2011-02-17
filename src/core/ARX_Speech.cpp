@@ -212,21 +212,20 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 
 	//TODO(lubosz): Crash
 //	if (false)
-	LogWarning << "GetDC";
-	//if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
-	//{
-	//	SelectObject(hDC, InBookFont);
-//
-	//	GetTextExtentPoint(hDC,_T("p"),1,&sSize);
-//
-	//	danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-//
-	//	sSize.cy *= 3;
-	//}
-	//else
-	//{
+	if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
+	{
+//		SelectObject(hDC, InBookFont);
+
+		GetTextExtentPoint(hDC,_T("p"),1,&sSize);
+
+		danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
+
+		sSize.cy *= 3;
+	}
+	else
+	{
 		sSize.cy = DANAESIZY >> 1;
-	//}
+	}
 
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
@@ -649,22 +648,21 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 
 						sSize.cx = sSize.cy = 0;
 
-						LogWarning << "GetDC";
-						//if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
-					//	{
-							//SelectObject(hDC, InBookFont);
+						if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
+						{
+							SelectObject(hDC, InBookFont);
 							//	todo: wchar cast
 //							GetTextExtentPoint32W(hDC,
 //							                      speech->text,
 //							                      _tcslen(speech->text),
 //							                      &sSize);
-							//danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-						//}
+							danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
+						}
 
-						//else
-						//{
-						//	ARX_CHECK_NO_ENTRY();
-						//}
+						else
+						{
+							ARX_CHECK_NO_ENTRY();
+						}
 
 
 

@@ -42,8 +42,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEDraw.h"
 #include "window/Mercury_dx_input.h"
 
-#include "io/Logger.h"
-
 using std::wistringstream;
 
 //#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
@@ -420,10 +418,8 @@ bool MENU_NoActiveWindow()
 //                   possible problem: it does not check for the hDC, but does it matter?
 //                   code cleaning: this needs to be somewhere else. local? global?
 //                   effects: faster main menu creation (ie: Options)
-bool GetTextSizeNoCache(HFONT font, const _TCHAR* text, int *width_out, int *height_out)
+bool GetTextSizeNoCache(HFONT font, const char* text, int *width_out, int *height_out)
 {
-	LogWarning << "GetTextSize";
-	
 	HDC hDC;
 
 	if (danaeApp.m_pddsRenderTarget)
@@ -2085,8 +2081,7 @@ static void ExtractAllCreditsTextInformations(HDC& _hDC)
 
 static void InitCredits( void )
 {
-	LogWarning << "InitCredits";
-	/*HDC hDC;
+	HDC hDC;
 
 	if( SUCCEEDED( danaeApp.m_pddsRenderTarget->GetDC(&hDC) ) )
 	{
@@ -2094,7 +2089,7 @@ static void InitCredits( void )
 		ExtractAllCreditsTextInformations(hDC);
 
 		danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-	}*/
+	}
 }
 
 
@@ -2137,8 +2132,6 @@ static void DrawCredits(void)
 		ARXmenu.mda->creditspos-=0.025f*(float)(ARX_TIME_Get( false )-ARXmenu.mda->creditstart);
 		ARXmenu.mda->creditstart=ARX_TIME_Get( false );
 		
-		LogWarning << "DrawCredits";
-		/*
 		if( SUCCEEDED( danaeApp.m_pddsRenderTarget->GetDC(&hDC) ) )
 		{
 			SetBkMode(hDC,TRANSPARENT);
@@ -2186,7 +2179,7 @@ static void DrawCredits(void)
 
 			}
 			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-		}*/
+		}
 	}
 
 

@@ -60,12 +60,12 @@ target_link_libraries(arx dsound dxguid gdi32 shell32 dinput comdlg32 ole32 comc
 
 add_custom_target(remake
 		#clean and compile with 1 thread per core
-        COMMAND make clean && rm CMakeCache.txt && cmake . -G\"Unix Makefiles\" && make -j`getconf _NPROCESSORS_ONLN`
+        COMMAND make clean && rm CMakeCache.txt && cmake ${CMAKE_SOURCE_DIR} -G\"Unix Makefiles\" && make -j`getconf _NPROCESSORS_ONLN`
 )
 
 add_custom_target(doc
 		#build the documentation
-        COMMAND doxygen doc/Doxyfile
+        COMMAND cd ${CMAKE_SOURCE_DIR} && doxygen doc/Doxyfile
 )
 
 #find python2
@@ -76,7 +76,7 @@ ELSE()
 ENDIF()
 SET(STYLE_FILTER -readability/casting,-build/header_guard,-build/include,-readability/streams,-whitespace,-runtime/int)
 add_custom_target(style
-        COMMAND ${PYTHON_BIN} scripts/cpplint.py --filter=${STYLE_FILTER} ${ALL_SOURCES} ${ALL_INCLUDES}
+        COMMAND ${PYTHON_BIN} ${CMAKE_SOURCE_DIR}/scripts/cpplint.py --filter=${STYLE_FILTER} ${ALL_SOURCES} ${ALL_INCLUDES}
 )
 
 if(ARX_BUILD_TESTS)

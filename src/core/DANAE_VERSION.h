@@ -24,13 +24,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 #define DANAE_VERSION 1.864f
 //#define NOEDITOR
-//#define ASKPASS
-//#define BLUEBYTE
-//#define ETRANGELIB
-//#define ASKPASS
-#ifdef ETRANGELIB
-#define ASKPASS
-#endif
 
 //////////////////////////////////////////////////////////////////////////////
 // TO REMEMBER:
