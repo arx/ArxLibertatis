@@ -78,7 +78,7 @@ CARXTextManager * pTextManage = NULL;
 CARXTextManager * pTextManageFlyingOver = NULL;
 
 //-----------------------------------------------------------------------------
-HFONT InBookFont	= NULL;
+HFONT hFontInBook	= NULL;
 HFONT hFontRedist	= NULL;
 HFONT hFontMainMenu = NULL;
 HFONT hFontMenu		= NULL;
@@ -110,7 +110,7 @@ string FontError() {
 }
 //-----------------------------------------------------------------------------
 
-long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, _TCHAR * _lpszUText, int _iSpacingY, RECT _rRect)
+long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, const char* _lpszUText, int _iSpacingY, RECT _rRect)
 {
 
 	int iTemp = 0;
@@ -195,7 +195,6 @@ long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, _TCHAR * _lpszUText, int _i
 	return iTemp;
 }
 
-//-----------------------------------------------------------------------------
 long ARX_UNICODE_FormattingInRect(HDC _hDC, char * text, int _iSpacingY, RECT & _rRect)
 {
 	size_t	iLenght = strlen(text);
@@ -358,7 +357,6 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 //-----------------------------------------------------------------------------
 long ARX_TEXT_Draw(HFONT ef,
                    float x, float y,
-                   long spacingx, long spacingy,
                    const char * car,
                    COLORREF colo, COLORREF bcol)
 {
@@ -368,14 +366,13 @@ long ARX_TEXT_Draw(HFONT ef,
 
 	//ArxFont
 	ARX_UNICODE_DrawTextInRect(x, y, 9999.f, 999.f, car, colo, bcol, ef);
-	return 15 + spacingy;
+	return 15;
 }
 
 long ARX_TEXT_DrawRect(HFONT ef,
                        float x, float y,
-                       long spacingx, long spacingy,
                        float maxx, float maxy,
-                       _TCHAR * car,
+                       const char* car,
                        COLORREF colo,
                        HRGN _hRgn,
                        COLORREF bcol)
@@ -389,22 +386,28 @@ long ARX_TEXT_DrawRect(HFONT ef,
 
 
 //-----------------------------------------------------------------------------
-float DrawBookTextInRect(float x, float y, float maxx, float maxy, _TCHAR * text, COLORREF col, COLORREF col2, HFONT font)
+void DrawBookTextInRect( HFONT font, float x, float y, float maxx, float maxy, const char* text, COLORREF col, COLORREF col2)
 {
-	return (float)ARX_TEXT_DrawRect( font,
-	                                (BOOKDECX + x) * Xratio, (BOOKDECY + y) * Yratio, -3, 0,
-	                                (BOOKDECX + maxx) * Xratio, (BOOKDECY + maxy) * Yratio, text, col, NULL, col2);
+	ARX_TEXT_DrawRect( font,
+	                   (BOOKDECX + x) * Xratio,
+	                   (BOOKDECY + y) * Yratio,
+	                   -3,
+	                   0,
+	                   text,
+	                   col,
+	                   NULL,
+	                   col2);
 }
 
 //-----------------------------------------------------------------------------
-void DrawBookTextCenter(float x, float y, _TCHAR * text, COLORREF col, COLORREF col2, HFONT font)
+void DrawBookTextCenter( HFONT font, float x, float y, const char* text, COLORREF col, COLORREF col2)
 {
-	UNICODE_ARXDrawTextCenter((BOOKDECX + x)*Xratio, (BOOKDECY + y)*Yratio, text, col, col2, font);
+	UNICODE_ARXDrawTextCenter(font, (BOOKDECX + x)*Xratio, (BOOKDECY + y)*Yratio, text, col, col2);
 }
 
 //-----------------------------------------------------------------------------
 
-long UNICODE_ARXDrawTextCenter(float x, float y, _TCHAR * str, COLORREF col, COLORREF bcol, HFONT font)
+long UNICODE_ARXDrawTextCenter( HFONT font, float x, float y, const char* str, COLORREF col, COLORREF bcol)
 {
 	HDC hDC;
 
@@ -449,7 +452,7 @@ long UNICODE_ARXDrawTextCenter(float x, float y, _TCHAR * str, COLORREF col, COL
 
 
 
-long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, _TCHAR * str, COLORREF col, COLORREF bcol, HFONT font, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut)
+long UNICODE_ARXDrawTextCenteredScroll( HFONT font, float x, float y, float x2, const char* str, COLORREF col, COLORREF bcol, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut)
 				{
 
 	RECT rRect;
@@ -752,7 +755,7 @@ CARXTextManager::~CARXTextManager()
 }
 
 //-----------------------------------------------------------------------------
-bool CARXTextManager::AddText(HFONT _hFont, const _TCHAR * _lpszUText, const RECT & _rRect, long _lCol, long _lBkgCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp)
+bool CARXTextManager::AddText(HFONT _hFont, const char* _lpszUText, const RECT & _rRect, long _lCol, long _lBkgCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp)
 {
 	if ((_lpszUText) && (_hFont))
 	{
@@ -819,6 +822,16 @@ bool CARXTextManager::AddText(HFONT _hFont, const _TCHAR * _lpszUText, const REC
 	}
 
 	return false;
+}
+
+bool CARXTextManager::AddText(HFONT font, const char* str, long x, long y, long fgcolor)
+{
+	RECT r;
+	r.left = x;
+	r.top = y;
+	r.right = 9999;
+	r.bottom = 9999;
+	return AddText(font, str, r, fgcolor, 0x00FF00FF);
 }
 
 //-----------------------------------------------------------------------------
@@ -1008,24 +1021,15 @@ void CARXTextManager::Render()
 //-----------------------------------------------------------------------------
 void CARXTextManager::Clear()
 {
-	vector<ARX_Text *>::iterator itManage;
-
-	for (itManage = vText.begin(); itManage < vText.end(); itManage++)
-	{
-		if (*itManage)
-		{
-			if ((*itManage)->lpszUText)
-			{
-				delete[](*itManage)->lpszUText;
-				(*itManage)->lpszUText = NULL;
-}
-
-			free((void *)(*itManage));
-			*itManage = NULL;
-		}
-}
+	for (std::vector<ARX_Text*>::iterator it = vText.begin(), it_end = vText.end(); it != it_end; ++it)
+		delete *it;
 
 	vText.clear();
+}
+
+bool CARXTextManager::HasText() const
+{
+	return !vText.empty();
 }
 
 int Traffic(int iFontSize)
@@ -1326,7 +1330,7 @@ void ARX_Text_Init()
 		                      lpszFontIngame);
 	}
 
-	if (!InBookFont)
+	if (!hFontInBook)
 	{
 		int iFontSize = 16;
 
@@ -1335,7 +1339,7 @@ void ARX_Text_Init()
 		iFontSize = _ttoi(szUT);
 		iFontSize = Traffic(iFontSize);
 
-		InBookFont = _CreateFont(
+		hFontInBook = _CreateFont(
 		                 iFontSize,
 		                 0, 0, 0, FW_NORMAL, false, false, false,
 		                 DEFAULT_CHARSET,
@@ -1403,10 +1407,10 @@ void ARX_Text_Close()
 		pTextManageFlyingOver = NULL;
 	}
 
-	if (InBookFont)
+	if (hFontInBook)
 	{
-		DeleteObject(InBookFont);
-		InBookFont = NULL;
+		DeleteObject(hFontInBook);
+		hFontInBook = NULL;
 	}
 
 	if (hFontRedist)

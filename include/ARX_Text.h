@@ -101,8 +101,8 @@ public:
 	~CARXTextManager();
 
 public:
-	bool AddText(HFONT font, const _TCHAR* str, const RECT& rect, long fgcolor = -1, long bgcolor = 0, long timeout = 0, long scrolltime = 0, float scrollspeed = 0.f, int maxlines = 0);
-	bool AddText(HFONT font, const _TCHAR* str, long x, long y, long fgcolor);
+	bool AddText(HFONT font, const char* str, const RECT& rect, long fgcolor = -1, long bgcolor = 0, long timeout = 0, long scrolltime = 0, float scrollspeed = 0.f, int maxlines = 0);
+	bool AddText(HFONT font, const char* str, long x, long y, long fgcolor);
 	bool AddText( ARX_Text* );
 	void Update(float diffFrame);
 	void Render();
@@ -121,22 +121,22 @@ private:
 //
 void ARX_Text_Close();
 
-void ARX_TEXT_Draw(HFONT ef, float x, float y, const _TCHAR* car, COLORREF colo, COLORREF bcol = 0x00FF00FF);
-long ARX_TEXT_DrawRect(HFONT ef, float x, float y, float maxx, float maxy, const _TCHAR* car,
+long ARX_TEXT_Draw(HFONT ef, float x, float y, const char* car, COLORREF colo, COLORREF bcol = 0x00FF00FF);
+long ARX_TEXT_DrawRect(HFONT ef, float x, float y, float maxx, float maxy, const char* car,
 					   COLORREF colo, HRGN hRgn = NULL, COLORREF bcol = 0x00FF00FF);
 
-void DrawBookTextInRect(HFONT font, float x, float y, float maxx, float maxy, const _TCHAR* text,
+void DrawBookTextInRect(HFONT font, float x, float y, float maxx, float maxy, const char* text,
 						COLORREF col, COLORREF col2);
-void DrawBookTextCenter(HFONT font, float x, float y, const _TCHAR* text, COLORREF col, COLORREF col2);
+void DrawBookTextCenter(HFONT font, float x, float y, const char* text, COLORREF col, COLORREF col2);
 		
-void UNICODE_ARXDrawTextCenter(float x, float y, const _TCHAR* str, COLORREF col, COLORREF bcol, HFONT font );
-void UNICODE_ARXDrawTextCenteredScroll(HFONT font, float x, float y, float x2, const _TCHAR* str, COLORREF col,
+long UNICODE_ARXDrawTextCenter( HFONT font, float x, float y, const char* str, COLORREF col, COLORREF bcol );
+long UNICODE_ARXDrawTextCenteredScroll(HFONT font, float x, float y, float x2, const char* str, COLORREF col,
 									   COLORREF bcol, int iTimeScroll, float fSpeed,
 									   int iNbLigne, int iTimeOut = INT_MAX);
 
-long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, const _TCHAR* _lpszUText, int _iSpacingY, RECT _rRect);
+long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, const char* _lpszUText, int _iSpacingY, RECT _rRect);
 
-void ARX_Allocate_Text(_TCHAR*& dest, const _TCHAR* id_string);
+void ARX_Allocate_Text(_TCHAR*& dest, const char* id_string);
 void _ShowText(const char* text);
 
 //-----------------------------------------------------------------------------
