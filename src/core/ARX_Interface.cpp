@@ -9667,12 +9667,10 @@ assert(ITC.hero_inventory != NULL);
 				if(	(EERIEMouseButton & 1)&&
 					(!(LastMouseClick & 1)) )
 				{
-					_TCHAR txt[256];
-
-
 					ARX_CHECK_INT(player.life);
 
-					//should use sprintf
+					//TODO: should use sprintf
+					//_TCHAR txt[256];
 					//ARX_SPEECH_Add(NULL, _itot(ARX_CLEAN_WARN_CAST_INT(player.life), txt, 10));
 
 				}
@@ -9713,12 +9711,10 @@ assert(ITC.hero_inventory != NULL);
 				if(	(EERIEMouseButton & 1)&&
 					(!(LastMouseClick & 1)) )
 				{
-					_TCHAR txt[256];
-
 					ARX_CHECK_INT(player.mana);
-//todo:sprintf
+					//todo:sprintf
+					//_TCHAR txt[256];
 					//ARX_SPEECH_Add(NULL,_itot(ARX_CLEAN_WARN_CAST_INT(player.mana),txt,10)	);
-
 				}
 			}
 		}

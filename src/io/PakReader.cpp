@@ -46,16 +46,25 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 */
 
+
 #define PAK_READ_BUF_SIZE 1024
 
-#include <stdint.h>
+
 #include <cstring>
 #include <algorithm>
 #include <cassert>
+
 using std::min;
 using std::max;
 using std::size_t;
 using std::strlen;
+
+#include "core/ARX_Common.h"
+#if ARX_COMPILER == ARX_COMPILER_VC9
+    typedef U32 uint32_t;
+#else
+    #include <stdint.h>
+#endif
 
 #include "io/blast.h"
 #include "io/PakReader.h"

@@ -288,8 +288,6 @@ long MakeTopObjString(INTERACTIVE_OBJ * io,char * dest, unsigned int destSize)
 {
 	EERIE_3D boxmin;
 	EERIE_3D boxmax;
-	const int tempSize = 128 ;
-	char temp[tempSize];
 	long i;
 
 	if (io == NULL) return -1;
@@ -342,8 +340,10 @@ long MakeTopObjString(INTERACTIVE_OBJ * io,char * dest, unsigned int destSize)
 						{
 							if (EEfabs(inter.iobj[i]->pos.y - boxmin.y) < 40.f)
 							{
-							int iResult;
 //							todo: string stuff
+//							int iResult;
+//							const int tempSize = 128 ;
+//							char temp[tempSize];
 //							iResult = strcat_s(dest,destSize," ");
 //							assert (iResult == 0);
 //							iResult = strncpy_s(temp, tempSize, GetName(inter.iobj[i]->filename), strlen(GetName(inter.iobj[i]->filename)));
@@ -3821,7 +3821,6 @@ bool FastSceneLoad(const char * partial_path)
 	
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
-	char path2[256];
 	
 	//if (uh->count == 0) goto lasuite;
 	
@@ -3829,6 +3828,7 @@ bool FastSceneLoad(const char * partial_path)
 	//c_count = 0;
 	
 	/* TODO This will not work in a PAK file and no .scn files are shipped outside PAKs
+	char path2[256];
 	sprintf(path2, "%s*.scn", partial_path);
 	
 	LogDebug << "Looking for " << path2;
@@ -4336,7 +4336,6 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms)
 	if (!CreateFullPath(path)) return false;
 
 	FileHandle	handle;
-	long idx;
 	long count = 0;
 	unsigned char * dat;
 	long i, j, k, kk;
@@ -4386,22 +4385,19 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms)
 	uh->version = UNIQUE_VERSION;
 	pos += sizeof(UNIQUE_HEADER);
 
-	char path2[256];
-	char path3[256];
-
-	char * text;
-
-	sprintf(path2, "%s*.scn", partial_path);
-
 //	todo: find
+//	char path2[256];
+//	char path3[256];
+//	sprintf(path2, "%s*.scn", partial_path);
 //	struct _finddata_t fd;
+//  long idx;
 //	if ((idx = _findfirst(path2, &fd)) != -1)
 //	{
 //		do
 //		{
 //			if (!(fd.attrib & _A_SUBDIR))
 //			{
-//				text = GetExt(fd.name);
+//				char * text = GetExt(fd.name);
 //
 //				if (!strcasecmp(text, ".SCN"))
 //				{

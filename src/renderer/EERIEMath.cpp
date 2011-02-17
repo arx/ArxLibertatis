@@ -57,7 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEMath.h"
 
 #define D3D_OVERLOADS
-#define STRICT
 
 #include <cstdio>
 

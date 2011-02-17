@@ -45,6 +45,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdio.h>
 #include "io/HERMESNet.h"
 #include "io/HERMESMain.h"
+#include "core/ARX_Common.h"
 
 //-----------------------------------------------------------------------------
 // Name: WriteRegKey()
@@ -93,8 +94,8 @@ HRESULT ReadRegKey( HKEY hKey, const char * strName, TCHAR* strValue,
 }
 HRESULT ReadRegKeyValue( HKEY hKey, const char * strName, long * val, long defaultt )
 {
-	DWORD dwType;
-	unsigned int dwLength=4;
+	U32 dwType;
+	U32 dwLength=4;
 	LONG bResult;
 
 	bResult = RegQueryValueEx( hKey, strName, 0, &dwType, 

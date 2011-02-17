@@ -59,8 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/DanaeSaveLoad.h"
 
 #include <cstdio>
-//#include <sys/stat.h>
-//#include <fcntl.h>
 #include <ctime>
 
 #include <iostream>
@@ -449,7 +447,7 @@ long DanaeSaveLevel(char * fic)
 	char						name[64];
 	long nb_inter		=		GetNumberInterWithOutScriptLoadForLevel(CURRENTLEVEL); // Without Player
 	unsigned char * dat	=		NULL;
-	unsigned siz	=		255;
+	U32				siz	=		255;
 	long pos			=		0;
 	FileHandle handle;
 	long bcount;
@@ -912,7 +910,7 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, char * dir)
 		if ((fic = fopen(dfile, "w")) != NULL)
 		{
 			char name[256];
-			unsigned num = 255;
+			U32 num = 255;
 			fprintf(fic, "Object   : %s%04ld\n", temp, io->ident);
 			fprintf(fic, "_______________________________\n\n");
 			GetUserName(name, &num);
@@ -938,16 +936,13 @@ void WriteIOInfo(INTERACTIVE_OBJ * io, char * dir)
 //*************************************************************************************
 
 void LogDirCreation(char * dir) {
-	if(DirectoryExist(dir)) {
+	if (DirectoryExist(dir)) {
 		LogDebug << "LogDirCreation: " << dir;
 	}
 }
 
-//*************************************************************************************
-//*************************************************************************************
-
 void LogDirDestruction(char * dir) {
-	if(DirectoryExist(dir)) {
+	if (DirectoryExist(dir)) {
 		LogDebug << "LogDirDestruction: " << dir;
 	}
 }
@@ -1003,7 +998,6 @@ void CheckIO_NOT_SAVED()
 
 void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 {
-	int fic;
 	char temp[256];
 	char temp2[256];
 	char temp3[256];
@@ -1015,6 +1009,7 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 			SetExt(temp, "ASL");
 
 //			todo win32api
+//			int fic;
 //			if ((fic = _open(temp, _O_WRONLY | _O_TRUNC  | _O_CREAT | _O_BINARY, _S_IWRITE)) != -1)
 //			{
 //				_write(fic, io->script.data, strlen(io->script.data));

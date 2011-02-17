@@ -62,19 +62,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <cassert>
 
-#define STRICT
 #include <tchar.h>
 #include <zlib.h>
 
 //boolean and INT32 clash with wine
 #define INT32 INT32_JPEG
-#define boolean boolean_JPEG
-#undef _WIN32
+#define HAVE_BOOLEAN
 #include <jpeglib.h>
-#include <jerror.h>
-#include <jconfig.h>
-#include <jmorecfg.h>
-#undef boolean
 #undef INT32
 
 #include "renderer/EERIEApp.h"
@@ -3285,9 +3279,9 @@ void LookForRefinementMap(TextureContainer * tc)
 	if (GlobalRefine)
 	{
 		unsigned char * from = (unsigned char *)GlobalRefine;
-		long fromsize = GlobalRefine_size;
+		U32 fromsize = GlobalRefine_size;
 		unsigned char data[256];
-		long pos = 0;
+		U32 pos = 0;
 		char name[256];
 		strcpy(name, GetName(tc->m_strName));
 
@@ -3736,7 +3730,7 @@ void jpeg_term_source(j_decompress_ptr cinfo) {
 	// don't do anything
 }
 
-boolean_JPEG fill_input_buffer(j_decompress_ptr cinfo) {
+boolean fill_input_buffer(j_decompress_ptr cinfo) {
 	// There is nothing to fill.
 	return false;
 }
@@ -4066,8 +4060,6 @@ int Decomp_PNG(void * mems, DATAS_PNG * dpng) {
 //       for the specified texture container, no interlace required
 //-----------------------------------------------------------------------------
 HRESULT TextureContainer::LoadPNGFile(const char * strPathname) {
-	
-	int taille;
 	
 	PakFileHandle * file = PAK_fopen(strPathname);
 	

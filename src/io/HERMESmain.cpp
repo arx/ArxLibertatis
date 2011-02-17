@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 
 // Desc: HERMES main functionalities   //FILES MEMORY
+#include "io/HERMESMain.h"
 
 #include <cstring>
 #include <cstdio>
@@ -63,10 +64,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 
 #include <time.h>
-#include "io/HERMESMain.h"
 #include "io/HERMESNet.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
+#include "core/ARX_Common.h"
 
 #if ARX_COMPILER_MSVC
     #include <shlobj.h>
@@ -79,7 +80,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
     #include <unistd.h>
     }
 
-    // TODO is this correct?
+// TODO(lubosz): temporary include replacement
     #define _MAX_EXT 3
     #define _MAX_FNAME 512
     #define _MAX_DRIVE 1
