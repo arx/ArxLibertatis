@@ -29,7 +29,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h> // for HRESULT
 
 #include "graphics/d3dwrapper.h" // for LPDIRECT3DDEVICE7
-#include "graphics/GraphicsTypes.h" // for EERIE_2D and EERIE_3D
+#include "graphics/GraphicsTypes.h" // for EERIE_3D
 
 
 // TODO macros
@@ -46,21 +46,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //all time
 #define FX_LIGHT   (1<<24)
 
-#define C_LANGUAGE_FRENCH   0
-#define C_LANGUAGE_GERMAN   1
-#define C_LANGUAGE_SPANISH  2
-#define C_LANGUAGE_ENGLISH  3
 
-
-// TODO cleanup
 class C_KEY;
-class CinematicBitmap;
-class CinematicSound;
 class CinematicGrid;
-class EERIE_CAMERA;
 
 
 // TODO used for loading
+#pragma pack(push,1)
 class CinematicLight {
 	
 public:
@@ -85,6 +77,7 @@ public:
 	};
 	
 };
+#pragma pack(pop)
 
 
 class Cinematic {
@@ -139,72 +132,9 @@ public:
 	
 };
 
-void DeleteAllBitmap(LPDIRECT3DDEVICE7 device);
-void DeleteAllSound(void);
-bool DeleteTrack(void);
-
-bool AllocTrack(int sf, int ef, float fps);
-bool AddKey(C_KEY * key, bool writecolor, bool writecolord, bool writecolorf);
-bool AddKeyLoad(C_KEY * key);
-void AddDiffKey(Cinematic * c, C_KEY * key, bool writecolor, bool writecolord, bool writecolorf);
-bool GereTrack(Cinematic * c, float fpscurr);
-
-void PlayTrack(Cinematic * c);
-int GetCurrentFrame();
-int GetStartFrame();
-int GetEndFrame();
-void SetCurrFrame(int frame);
-bool GereTrackNoPlay(Cinematic * c);
-float GetTrackFPS();
-
-C_KEY * GetKey(int f, int * num);
-C_KEY * SearchKey(int f, int * num);
- 
-float GetTimeKeyFramer(Cinematic * c);
-void InitUndo();
-void UpDateAllKeyLight();
-
-void InitMapLoad(Cinematic * c);
-CinematicBitmap * GetFreeBitmap(int * num);
-bool DeleteFreeBitmap(int num);
-bool KillTexture(LPDIRECT3DDEVICE7 device, int num);
-int CreateAllMapsForBitmap(char * dir, char * name, Cinematic * c, int num, int pos);
-bool ActiveAllTexture(Cinematic * c);
-
-bool ReCreateAllMapsForBitmap(int id, int nmax, Cinematic * c, LPDIRECT3DDEVICE7 device);
-
-int FX_FadeIN(float a, int color, int colord);
-int FX_FadeOUT(float a, int color, int colord);
-bool FX_FlashBlanc(LPDIRECT3DDEVICE7 device, float w, float h, float speed, int color, float fps, float currfps);
-bool FX_Blur(Cinematic * c, LPDIRECT3DDEVICE7 device, CinematicBitmap * tb);
-bool SpecialFade(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, float h, float speed, float fps, float fpscurr);
-bool SpecialFadeR(LPDIRECT3DDEVICE7 device, TextureContainer * mask, float ws, float h, float speed, float fps, float fpscurr);
-void FX_DreamPrecalc(CinematicBitmap * bi, float amp, float fps);
-
-void GetPathDirectory(char * dirfile);
-void ClearDirectory(char * dirfile);
-bool OpenDialogRead(char * titlename, HWND hwnd, unsigned long numfilter);
-bool OpenDialogSave(char * titlename, HWND hwnd, unsigned long numfilter);
-int OpenDialogColor(HWND hwnd, int col);
-char * OpenDiagDirectory(HWND hwnd, char * title);
-
-bool SaveProject(char * dir, char * name);
-bool LoadProject(Cinematic * c, const char * dir, const char * name);
-bool LoadOldProject(Cinematic * c, const char * dir, const char * name);
-
-void InitSound(Cinematic * c);
-CinematicSound * GetFreeSound(int * num);
-bool DeleteFreeSound(int num);
-int AddSoundToList(char * dir, char * name, int id, int pos);
-bool PlaySoundKeyFramer(int id);
-void StopSoundKeyFramer(void);
-
 void DrawGrille(LPDIRECT3DDEVICE7 device, CinematicGrid * grille, int col, int fx, CinematicLight * light, EERIE_3D * posgrillesuiv, float angzgrillesuiv);
 void FillKeyTemp(EERIE_3D * pos, float az, int frame, int numbitmap, int numfx, short ti, int color, int colord, int colorf, float speed, int idsound, short force, CinematicLight * light, EERIE_3D * posgrille, float angzgrille, float speedtrack);
 
 void ClearAbsDirectory(char * pT, const char * d);
-void AddDirectory(char * pT, const char * dir);
-
-void ReInitStandardCam(EERIE_CAMERA * cam);
 
 #endif // ARX_ANIMATION_CINEMATIC_H
