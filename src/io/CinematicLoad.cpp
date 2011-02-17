@@ -29,6 +29,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakManager.h"
 
 #define CINEMATIC_FILE_VERSION ((1<<16)|76)
+#define INTERP_NO_FADE 2
 
 void DrawInfoTrack(void);
 
@@ -45,7 +46,6 @@ char FileNameChoose[256];
 extern bool Restore;
 extern HWND HwndPere;
 extern int		NbSound;
-extern CinematicSound	TabSound[];
 extern C_KEY KeyTemp;
 extern int LSoundChoose;
 
