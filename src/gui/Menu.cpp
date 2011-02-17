@@ -229,7 +229,7 @@ void LoadSaveGame(const long & i)
 	PROGRESS_BAR_TOTAL = 238;
 	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
 	PROGRESS_BAR_COUNT += 1.f;
-	LoadLevelScreen(GDevice, save_l[i].level);
+	LoadLevelScreen(save_l[i].level);
 	DanaeClearLevel();
 	ARX_CHANGELEVEL_Load(save_l[i].num);
 	REFUSE_GAME_RETURN = 0;

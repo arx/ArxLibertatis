@@ -409,7 +409,7 @@ bool ARX_QuickLoad()
 		PROGRESS_BAR_TOTAL        =    238;
 		OLD_PROGRESS_BAR_COUNT    =    PROGRESS_BAR_COUNT=0;
 		PROGRESS_BAR_COUNT        +=    1.f;
-		LoadLevelScreen( GDevice, save_l[iSave].level );
+		LoadLevelScreen( save_l[iSave].level );
 		DanaeClearLevel();
 		ARX_CHANGELEVEL_Load( save_l[iSave].num );
 		REFUSE_GAME_RETURN        =    0;
@@ -424,7 +424,7 @@ bool ARX_QuickLoad()
 		PROGRESS_BAR_TOTAL        =    238;
 		OLD_PROGRESS_BAR_COUNT    =    PROGRESS_BAR_COUNT=0;
 		PROGRESS_BAR_COUNT        +=    1.f;
-		LoadLevelScreen( GDevice, save_l[iNbSave0].level );
+		LoadLevelScreen( save_l[iNbSave0].level );
 		DanaeClearLevel();
 		ARX_CHANGELEVEL_Load( save_l[iNbSave0].num );
 		REFUSE_GAME_RETURN        =    0;
@@ -439,7 +439,7 @@ bool ARX_QuickLoad()
 		PROGRESS_BAR_TOTAL        =    238;
 		OLD_PROGRESS_BAR_COUNT    =    PROGRESS_BAR_COUNT=0;
 		PROGRESS_BAR_COUNT        +=    1.f;
-		LoadLevelScreen( GDevice, save_l[iNbSave1].level );
+		LoadLevelScreen( save_l[iNbSave1].level );
 		DanaeClearLevel();
 		ARX_CHANGELEVEL_Load( save_l[iNbSave1].num );
 		REFUSE_GAME_RETURN        =    0;
@@ -2410,7 +2410,7 @@ bool Menu2_Render()
 										tex3,
 										256);
 									tex4 +=  tex3;
-									GetTimeFormat(    LOCALE_SYSTEM_DEFAULT,
+									GetTimeFormatA(    LOCALE_SYSTEM_DEFAULT,
 										0,
 										&save_l[iI].stime,
 										"   HH:mm",
@@ -2446,7 +2446,7 @@ bool Menu2_Render()
 										tex3,
 										256);
 									strcat(tex4,tex3);
-									GetTimeFormat(    LOCALE_SYSTEM_DEFAULT,
+									GetTimeFormatA(    LOCALE_SYSTEM_DEFAULT,
 										0,
 										&save_l[iI].stime,
 										"   HH:mm",
@@ -2559,7 +2559,7 @@ bool Menu2_Render()
 										tex3,
 										256);
 									strcat(tex4,tex3);
-									GetTimeFormat(    LOCALE_SYSTEM_DEFAULT,
+									GetTimeFormatA(    LOCALE_SYSTEM_DEFAULT,
 										0,
 										&save_l[iI].stime,
 										"   HH:mm",
@@ -2597,7 +2597,7 @@ bool Menu2_Render()
 										tex3,
 										256);
 									strcat(tex4,tex3);
-									GetTimeFormat(    LOCALE_SYSTEM_DEFAULT,
+									GetTimeFormatA(    LOCALE_SYSTEM_DEFAULT,
 										0,
 										&save_l[iI].stime,
 										"   HH:mm",

@@ -67,7 +67,7 @@ HashMap::~HashMap() {
 bool HashMap::add(const std::string& name, void* value) {
 	
 	string lname = name;
-	transform(lname.begin(), lname.end(), lname.begin(), tolower);
+	transform(lname.begin(), lname.end(), lname.begin(), (int (*)(int))tolower);
 	
 	if(fill >= (size * 3) / 4) {
 		// TODO recreate the table
@@ -103,7 +103,7 @@ bool HashMap::add(const std::string& name, void* value) {
 void * HashMap::get(const std::string& name) {
 	
 	string lname = name;
-	transform(lname.begin(), lname.end(), lname.begin(), tolower);
+	transform(lname.begin(), lname.end(), lname.begin(), (int (*)(int))tolower);
 	
 	size_t hash = getHash(lname.c_str());
 	size_t h1 = FuncH1(hash);
