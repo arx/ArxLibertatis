@@ -61,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "renderer/EERIEEnum.h"
 #include "renderer/EERIEUtil.h" // For DEBUG_MSG
 #include "renderer/EERIERes.h"  // For dialog controls
+#include "io/Logger.h"
 
 
 //************************************************************************************
@@ -250,7 +251,7 @@ static BOOL WINAPI DriverEnumCallback(GUID * pGUID, TCHAR * strDesc,
 
 	if (FAILED(hr))
 	{
-		DEBUG_MSG("Can't create DDraw during enumeration!");
+		LogError << "Can't create DDraw during enumeration!";
 		return D3DENUMRET_OK;
 	}
 
@@ -260,7 +261,7 @@ static BOOL WINAPI DriverEnumCallback(GUID * pGUID, TCHAR * strDesc,
 	if (FAILED(hr))
 	{
 		pDD->Release();
-		DEBUG_MSG("Can't query IDirect3D7 during enumeration!");
+		LogError << "Can't query IDirect3D7 during enumeration!";
 		return D3DENUMRET_OK;
 	}
 
@@ -324,14 +325,14 @@ HRESULT D3DEnum_EnumerateDevices(HRESULT(*AppConfirmFn)(DDCAPS *, D3DDEVICEDESC7
 	// Make sure devices were actually enumerated
 	if (0 == g_dwNumDevicesEnumerated)
 	{
-		DEBUG_MSG(_T("No devices and/or modes were enumerated!"));
+		LogError << "No devices and/or modes were enumerated!";
 		return D3DENUMERR_ENUMERATIONFAILED;
 	}
 
 	if (0 == g_dwNumDevices)
 	{
-		DEBUG_MSG(_T("No enumerated devices were accepted!"));
-		DEBUG_MSG(_T("Try enabling the D3D Reference Rasterizer."));
+		LogError << "No enumerated devices were accepted!";
+		LogError << "Try enabling the D3D Reference Rasterizer.";
 		return D3DENUMERR_SUGGESTREFRAST;
 	}
 
