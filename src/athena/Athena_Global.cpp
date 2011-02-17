@@ -48,7 +48,6 @@ namespace ATHENA
 	char * sample_path = NULL;
 	char * ambiance_path = NULL;
 	char * environment_path = NULL;
-	FILE * debug_log = NULL;
 	aalULong stream_limit_ms(AAL_DEFAULT_STREAMLIMIT);
 	aalULong stream_limit_bytes = 0;
 	aalULong session_start(0);
@@ -121,12 +120,6 @@ namespace ATHENA
 		}
 
 		return v;
-	}
-
-	aalVoid DebugLog(const char * text)
-	{
-		fprintf(debug_log, "%s", text);
-		fflush(debug_log);
 	}
 
 }//ATHENA::

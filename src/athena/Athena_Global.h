@@ -25,8 +25,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef __ATHENA_GLOBAL_H__
 #define __ATHENA_GLOBAL_H__
 
-#include <stdio.h>
-#include <math.h>
 #include "Athena_Types.h"
 #include "Athena_Resource.h"
 #include "Athena_Stream.h"
@@ -37,6 +35,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "Athena_Instance.h"
 
 #include <dsoundfwd.h>
+
+#include <cmath>
 
 namespace ATHENA
 {
@@ -74,7 +74,6 @@ namespace ATHENA
 	extern char * sample_path;
 	extern char * ambiance_path;
 	extern char * environment_path;
-	extern FILE * debug_log;
 	extern aalULong stream_limit_ms;
 	extern aalULong stream_limit_bytes;
 	extern aalULong session_start;
@@ -107,9 +106,6 @@ namespace ATHENA
 	{
 		return 0.2F * (float)log10(volume) + 1.0F;
 	}
-
-	// Debug                                                                     //
-	aalVoid DebugLog(const char * text);
 
 	// Validity                                                                  //
 	inline aalSLong GetSampleID(const aalSLong & id)
