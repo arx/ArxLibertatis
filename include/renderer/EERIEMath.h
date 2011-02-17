@@ -95,9 +95,6 @@ using std::max;
 #define EEdef_MAXfloat		1.0e+38f
 #define EEdef_MINfloat		-1.0e+38f
 
-#define RAD2DEG(x) ((x)*360.0f/(2*PI))
-#define DEG2RAD(x) ((x)*2*PI/360)
-
 //-----------------------------------------------------------------------------
 // DIVISIONS Optimization List (Mul)
 //-----------------------------------------------------------------------------
@@ -571,6 +568,9 @@ inline void specialEE_P(EERIE_3D * in, D3DTLVERTEX * out)
 	out->sy = in->y * ProjectionMatrix._22 * fZTemp + et->ymod;
 	out->rhw = fZTemp; 
 }
+
+float radians(float x);
+float degrees(float x);
 
 #endif
 

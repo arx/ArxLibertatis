@@ -323,9 +323,9 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io)
 					ioo->angle.a = rnd() * 40.f + 340.f;
 					ioo->angle.b = rnd() * 360.f;
 					ioo->angle.g = 0;
-					vector.x = -(float)EEsin(DEG2RAD(ioo->angle.b)) * ( 1.0f / 2 );
-					vector.y = EEsin(DEG2RAD(ioo->angle.a));
-					vector.z = (float)EEcos(DEG2RAD(ioo->angle.b)) * ( 1.0f / 2 );
+					vector.x = -(float)EEsin(radians(ioo->angle.b)) * ( 1.0f / 2 );
+					vector.y = EEsin(radians(ioo->angle.a));
+					vector.z = (float)EEcos(radians(ioo->angle.b)) * ( 1.0f / 2 );
 					ioo->soundtime = 0;
 					ioo->soundcount = 0;
 					EERIE_PHYSICS_BOX_Launch_NOCOL(ioo, ioo->obj, &pos, &vector, 2, &ioo->angle);
@@ -2608,9 +2608,9 @@ INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
 		SendIOScriptEvent(io, SM_LOAD, "", NULL);
 
 	io->spellcast_data.castingspell = -1;
-	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(DEG2RAD(player.angle.b)) * 140.f;
+	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
-	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(DEG2RAD(player.angle.b)) * 140.f;
+	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(radians(player.angle.b)) * 140.f;
 	io->lastpos.x = io->initpos.x = (float)((long)(io->initpos.x / 20)) * 20.f;
 	io->lastpos.z = io->initpos.z = (float)((long)(io->initpos.z / 20)) * 20.f;
 
@@ -2720,9 +2720,9 @@ INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
 
 	GetIOScript(io, texscript);
 
-	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(DEG2RAD(player.angle.b)) * 140.f;
+	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
-	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(DEG2RAD(player.angle.b)) * 140.f;
+	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(radians(player.angle.b)) * 140.f;
 	io->lastpos.x = io->initpos.x = (float)((long)(io->initpos.x / 20)) * 20.f;
 	io->lastpos.z = io->initpos.z = (float)((long)(io->initpos.z / 20)) * 20.f;
 	float tempo;
@@ -2792,9 +2792,9 @@ INTERACTIVE_OBJ * AddMarker(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
 
 	GetIOScript(io, texscript);
 	
-	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(DEG2RAD(player.angle.b)) * 140.f;
+	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
-	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(DEG2RAD(player.angle.b)) * 140.f;
+	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(radians(player.angle.b)) * 140.f;
 	io->lastpos.x = io->initpos.x = (float)((long)(io->initpos.x / 20)) * 20.f;
 	io->lastpos.z = io->initpos.z = (float)((long)(io->initpos.z / 20)) * 20.f;
 	ep = CheckInPoly(io->pos.x, io->pos.y + PLAYER_BASE_HEIGHT, io->pos.z);
@@ -3089,9 +3089,9 @@ INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
 	if (!(flags & NO_ON_LOAD))
 		SendIOScriptEvent(io, SM_LOAD, "", NULL);
 
-	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(DEG2RAD(player.angle.b)) * 140.f;
+	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
-	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(DEG2RAD(player.angle.b)) * 140.f;
+	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(radians(player.angle.b)) * 140.f;
 	io->lastpos.x = io->initpos.x = (float)((long)(io->initpos.x / 20)) * 20.f;
 	io->lastpos.z = io->initpos.z = (float)((long)(io->initpos.z / 20)) * 20.f;
 	ep = CheckInPoly(io->pos.x, io->pos.y + PLAYER_BASE_HEIGHT, io->pos.z);
@@ -3435,9 +3435,9 @@ INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const char * fil, long f
 		SendIOScriptEvent(io, SM_LOAD, "", NULL);
 
 	io->spellcast_data.castingspell = -1;
-	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(DEG2RAD(player.angle.b)) * 140.f;
+	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
-	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(DEG2RAD(player.angle.b)) * 140.f;
+	io->lastpos.z = io->initpos.z = io->pos.z = player.pos.z + (float)EEcos(radians(player.angle.b)) * 140.f;
 	io->lastpos.x = io->initpos.x = (float)((long)(io->initpos.x / 20)) * 20.f;
 	io->lastpos.z = io->initpos.z = (float)((long)(io->initpos.z / 20)) * 20.f;
 
@@ -4327,7 +4327,7 @@ void UpdateCameras()
 				}	
 				else // no target...
 				{
-					float tr = DEG2RAD(MAKEANGLE(io->angle.b + 90));
+					float tr = radians(MAKEANGLE(io->angle.b + 90));
 					io->target.x = io->pos.x - (float)EEsin(tr) * 20.f;
 					io->target.y = io->pos.y; 
 					io->target.z = io->pos.z + (float)EEcos(tr) * 20.f;

@@ -194,7 +194,7 @@ void LaunchDummyParticle()
 		PARTICLE_DEF * pd=&particle[j];
 		pd->exist=true;
 		pd->zdec=0;
-		float f=DEG2RAD(player.angle.b);
+		float f=radians(player.angle.b);
 		pd->ov.x		=	player.pos.x+EEsin(f)*100.f;
 		pd->ov.y		=	player.pos.y;
 		pd->ov.z		=	player.pos.z-EEcos(f)*100.f;
@@ -1622,12 +1622,12 @@ void UpdateObjFx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CAMERA * cam)
 					t1=100.f*scale.x;
 					t2=100.f*scale.y;
 					t3=100.f*scale.z;
-					v[1].sx-=EEsin(DEG2RAD(objfx[i].spe[k].b))*t1;
-					v[1].sy+=EEsin(DEG2RAD(objfx[i].spe[k].a))*t2;
-					v[1].sz+=EEcos(DEG2RAD(objfx[i].spe[k].b))*t3;
-					v[2].sx=v[0].sx-EEsin(DEG2RAD(MAKEANGLE(objfx[i].spe[k].b+bb)))*t1;
-					v[2].sy=v[0].sy+EEsin(DEG2RAD(MAKEANGLE(objfx[i].spe[k].a+aa)))*t2;
-					v[2].sz=v[0].sz+EEcos(DEG2RAD(MAKEANGLE(objfx[i].spe[k].b+bb)))*t3;
+					v[1].sx-=EEsin(radians(objfx[i].spe[k].b))*t1;
+					v[1].sy+=EEsin(radians(objfx[i].spe[k].a))*t2;
+					v[1].sz+=EEcos(radians(objfx[i].spe[k].b))*t3;
+					v[2].sx=v[0].sx-EEsin(radians(MAKEANGLE(objfx[i].spe[k].b+bb)))*t1;
+					v[2].sy=v[0].sy+EEsin(radians(MAKEANGLE(objfx[i].spe[k].a+aa)))*t2;
+					v[2].sz=v[0].sz+EEcos(radians(MAKEANGLE(objfx[i].spe[k].b+bb)))*t3;
 					EE_RTP(&v[0],&v2[0]);
 					EE_RTP(&v[1],&v2[1]);
 					EE_RTP(&v[2],&v2[2]);
@@ -1841,8 +1841,8 @@ void ARX_GenereSpheriqueEtincelles(EERIE_3D *pos,float r,TextureContainer *tc,fl
 	{
 		EERIE_3D dir;
 
-		float a = DEG2RAD(rnd()*360.f);
-		float b = DEG2RAD(rnd()*360.f);
+		float a = radians(rnd()*360.f);
+		float b = radians(rnd()*360.f);
 		dir.x=(float) r*EEsin(a)*EEcos(b);
 		dir.z=(float) r*EEsin(a)*EEsin(b);
 		dir.y=(float) r*EEcos(a);
@@ -2894,9 +2894,9 @@ void AddFlare(EERIE_S2D * pos,float sm,short typ,INTERACTIVE_OBJ * io)
 			
 			if (io)
 			{
-				fl->v.sx=io->pos.x-(float)EEsin(DEG2RAD(MAKEANGLE(io->angle.b+vx)))*100.f;
-				fl->v.sy=io->pos.y+(float)EEsin(DEG2RAD(MAKEANGLE(io->angle.a+vy)))*100.f-150.f;
-				fl->v.sz=io->pos.z+(float)EEcos(DEG2RAD(MAKEANGLE(io->angle.b+vx)))*100.f;
+				fl->v.sx=io->pos.x-(float)EEsin(radians(MAKEANGLE(io->angle.b+vx)))*100.f;
+				fl->v.sy=io->pos.y+(float)EEsin(radians(MAKEANGLE(io->angle.a+vy)))*100.f-150.f;
+				fl->v.sz=io->pos.z+(float)EEcos(radians(MAKEANGLE(io->angle.b+vx)))*100.f;
 				
 			}
 			else

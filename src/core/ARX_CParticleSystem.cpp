@@ -394,7 +394,7 @@ void CParticleSystem::SetParticleParams(CParticle * pP)
 	vv1.z = 0;
 
 	VectorRotateZ(vv1, vvz, fAngleX); 
-	VectorRotateY(vvz, vv1, DEG2RAD(rnd() * 360.0f));
+	VectorRotateY(vvz, vv1, radians(rnd() * 360.0f));
 	VectorMatrixMultiply(&vvz, &vv1, &eMat);
 
 	float fSpeed = fParticleSpeed + rnd() * fParticleSpeedRandom;

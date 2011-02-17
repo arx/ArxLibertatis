@@ -140,8 +140,8 @@ float CBless::Render(LPDIRECT3DDEVICE7 _pD3DDevice)
 	D3DTLVERTEX v3[4];
 
 	float ff = ((float)spells[spellinstance].caster_level + 10) * 6.f;
-	float fBetaRadCos = (float) cos(DEG2RAD(MAKEANGLE(player.angle.b))) * ff;
-	float fBetaRadSin = (float) sin(DEG2RAD(MAKEANGLE(player.angle.b))) * ff;
+	float fBetaRadCos = (float) cos(radians(MAKEANGLE(player.angle.b))) * ff;
+	float fBetaRadSin = (float) sin(radians(MAKEANGLE(player.angle.b))) * ff;
 
 	unsigned long color = D3DRGB(1, 1, 1);
 
@@ -239,7 +239,7 @@ void CDispellField::Create(EERIE_3D aeSrc, float afBeta)
 	eSrc.z = aeSrc.z;
 
 	fBeta = afBeta;
-	fBetaRad = DEG2RAD(fBeta);
+	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
 
@@ -437,7 +437,7 @@ void CTelekinesis::Create(EERIE_3D aeSrc, float afBeta)
 	eSrc.z = aeSrc.z;
 
 	fBeta = afBeta;
-	fBetaRad = DEG2RAD(fBeta);
+	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
 
@@ -471,9 +471,9 @@ float CTelekinesis::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		/*		if (bDone)
 				{
 					EERIE_3D target,source;
-					target.x=player.pos.x;// - EEsin(DEG2RAD(MAKEANGLE(player.angle.b)))*1000.f;
+					target.x=player.pos.x;// - EEsin(radians(MAKEANGLE(player.angle.b)))*1000.f;
 					target.y=player.pos.y;//+30.f;
-					target.z=player.pos.z;// + EEcos(DEG2RAD(MAKEANGLE(player.angle.b)))*1000.f;
+					target.z=player.pos.z;// + EEcos(radians(MAKEANGLE(player.angle.b)))*1000.f;
 					source.x = x;
 					source.y = y;
 					source.z = z;
@@ -543,7 +543,7 @@ float CTelekinesis::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 					particle[j].exist=1;
 					particle[j].zdec=0;
 
-					//float randd=DEG2RAD((float)j*10.f);
+					//float randd=radians((float)j*10.f);
 					particle[j].ov.x = x + 5.f - rnd()*10.f;
 					particle[j].ov.y = y + 5.f - rnd()*10.f;
 					particle[j].ov.z = z + 5.f - rnd()*10.f;
@@ -605,11 +605,11 @@ float CTelekinesis::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	z = player.pos.z;
 
 	stiteangle.b = (float) ulCurrentTime * fOneOnDuration * 120; //+=(float)FrameDiff*0.1f;
-	stiteangle.a = 0;//abs(cos (DEG2RAD(tPos[i].x)))*10;
-	stiteangle.g = 0;//cos (DEG2RAD(tPos[i].x))*360;
-	stitepos.x = x;//tPos[i].x;//player.pos.x;//-(float)EEsin(DEG2RAD(player.angle.b))*(100.f) ;
+	stiteangle.a = 0;//abs(cos (radians(tPos[i].x)))*10;
+	stiteangle.g = 0;//cos (radians(tPos[i].x))*360;
+	stitepos.x = x;//tPos[i].x;//player.pos.x;//-(float)EEsin(radians(player.angle.b))*(100.f) ;
 	stitepos.y = y;//player.pos.y+60.f-mov;
-	stitepos.z = z;//tPos[i].z;//player.pos.z;//+(float)EEcos(DEG2RAD(player.angle.b))*(100.f) ;
+	stitepos.z = z;//tPos[i].z;//player.pos.z;//+(float)EEcos(radians(player.angle.b))*(100.f) ;
 
 	SETALPHABLEND(m_pd3dDevice, true);
 
@@ -694,7 +694,7 @@ void CCurse::Create(EERIE_3D aeSrc, float afBeta)
 	eSrc.z = aeSrc.z;
 
 	fBeta = afBeta;
-	fBetaRad = DEG2RAD(fBeta);
+	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
 
@@ -728,9 +728,9 @@ float CCurse::Render(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D * pos)
 		/*		if (bDone)
 				{
 					EERIE_3D target,source;
-					target.x=player.pos.x;// - EEsin(DEG2RAD(MAKEANGLE(player.angle.b)))*1000.f;
+					target.x=player.pos.x;// - EEsin(radians(MAKEANGLE(player.angle.b)))*1000.f;
 					target.y=player.pos.y;//+30.f;
-					target.z=player.pos.z;// + EEcos(DEG2RAD(MAKEANGLE(player.angle.b)))*1000.f;
+					target.z=player.pos.z;// + EEcos(radians(MAKEANGLE(player.angle.b)))*1000.f;
 					source.x = x;
 					source.y = y;
 					source.z = z;
@@ -1180,7 +1180,7 @@ void CFieldProtectionPentagram::Render(LPDIRECT3DDEVICE7 device)
 
 	//affichage du pentagram
 	D3DTLVERTEX v[4],v2[4];
-	float fBetaRad = DEG2RAD(this->angpat);
+	float fBetaRad = radians(this->angpat);
 	float fBetaRadCos = (float) cos(fBetaRad);
 	float fBetaRadSin = (float) sin(fBetaRad);
 
@@ -1282,9 +1282,9 @@ EERIE_3D	*lvertex;
 		*ind++=indc++;
 		*ind++=indc++;
 
-		lvertex->x=this->rayon*EEsin(DEG2RAD(a));
+		lvertex->x=this->rayon*EEsin(radians(a));
 		lvertex->y=hm;
-		lvertex->z=this->rayon*EEcos(DEG2RAD(a));
+		lvertex->z=this->rayon*EEcos(radians(a));
 		lvertex++;
 		lvertex->x=(lvertex-1)->x;
 		lvertex->y=hp;
@@ -1339,9 +1339,9 @@ EERIE_3D	*lvertex;
 		nb=this->def;
 		while(nb)
 		{
-			lvertex->x=this->rayon*EEsin(DEG2RAD(a));
+			lvertex->x=this->rayon*EEsin(radians(a));
 			lvertex->y=hp;
-			lvertex->z=this->rayon*EEcos(DEG2RAD(a));
+			lvertex->z=this->rayon*EEcos(radians(a));
 			lvertex++;
 			a+=da;
 			nb--;
@@ -1504,10 +1504,10 @@ int				nb,j;
 		{
 			b=(float)this->timedu/2500.f;
 			this->timedu+=t;
-			this->angdu=0.999999f*EEsin(DEG2RAD(360.f*a));
+			this->angdu=0.999999f*EEsin(radians(360.f*a));
 		}
 		this->timedv+=t;
-		this->angdv=0.999999f*2*EEsin(DEG2RAD(360.f*a));
+		this->angdv=0.999999f*2*EEsin(radians(360.f*a));
 
 		//calcul du cylindre
 		a=this->angdu;
@@ -1683,7 +1683,7 @@ int				nb,j;
 		}
 		b=(float)this->timedu/2500.f;
 		this->timedu+=t;
-		this->angdu=0.999999f*EEsin(DEG2RAD(360.f*a));
+		this->angdu=0.999999f*EEsin(radians(360.f*a));
 		this->timedv+=t;
 
 		//calcul du cylindre
@@ -1702,7 +1702,7 @@ int				nb,j;
 		nb2=this->def+1;
 		while(nb2--)
 		{
-			float depl=(1.f+EEsin(DEG2RAD(*ft)))*.5f;
+			float depl=(1.f+EEsin(radians(*ft)))*.5f;
 
 			a=this->angdu;
 			nb=this->def;
@@ -1958,9 +1958,9 @@ int	num;
 	if(num>=0)
 	{
 		this->truban[num].actif=1;
-		this->truban[num].pos.x=this->pos.x+this->rayon*EEcos(DEG2RAD(*ang))+this->rayon*.5f*(float)tanh(DEG2RAD(*ang));
+		this->truban[num].pos.x=this->pos.x+this->rayon*EEcos(radians(*ang))+this->rayon*.5f*(float)tanh(radians(*ang));
 		this->truban[num].pos.y=this->pos.y+*h;
-		this->truban[num].pos.z=this->pos.z+this->rayon*EEsin(DEG2RAD(*ang))+this->rayon*.3f*(float)tanh(DEG2RAD(*ang));
+		this->truban[num].pos.z=this->pos.z+this->rayon*EEsin(radians(*ang))+this->rayon*.3f*(float)tanh(radians(*ang));
 
 		if(*f<0)
 		{
@@ -1995,7 +1995,7 @@ int	num;
 		}
 	}
 
-	*h=this->hpersosurdeux*EEsin(DEG2RAD(*ang*.2f));
+	*h=this->hpersosurdeux*EEsin(radians(*ang*.2f));
 	*ang+=(s*(float)t)/25.f;
 }
 

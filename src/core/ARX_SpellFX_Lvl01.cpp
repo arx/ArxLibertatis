@@ -91,7 +91,7 @@ void LaunchMagicMissileExplosion(EERIE_3D & _ePos, int t = 0, long spellinstance
 	cp.p3Direction.x = 0;
 	cp.p3Direction.y = -10;
 	cp.p3Direction.z = 0;
-	cp.fAngle = DEG2RAD(360);
+	cp.fAngle = radians(360);
 	cp.fSpeed = 130;
 	cp.fSpeedRandom = 100;
 	cp.p3Gravity.x = 0;
@@ -287,7 +287,7 @@ void CMagicMissile::Create(EERIE_3D aeSrc, EERIE_3D angles)
 
 	i = 40;
 	e.x -= fBetaRadSin * 50 * i;
-	e.y += sin(DEG2RAD(MAKEANGLE(this->angles.a))) * 50 * i;
+	e.y += sin(radians(MAKEANGLE(this->angles.a))) * 50 * i;
 	e.z += fBetaRadCos * 50 * i;
 
 	pathways[0].sx = eSrc.x;
@@ -496,9 +496,9 @@ float CMagicMissile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	Vector_Copy(&stitepos, &lastpos);
 
-	stiteangle.b = -RAD2DEG(bubu);
+	stiteangle.b = -degrees(bubu);
 	stiteangle.a = 0;
-	stiteangle.g = -(RAD2DEG(bubu1));
+	stiteangle.g = -(degrees(bubu1));
 
 	if (av.x < 0)
 		stiteangle.g -= 90;
@@ -598,9 +598,9 @@ void CMultiMagicMissile::Create(EERIE_3D aePos, EERIE_3D angles)
 			afBeta = player.angle.b;
 			afAlpha = player.angle.a;
 			EERIE_3D vector;
-			vector.x = -EEsin(DEG2RAD(afBeta)) * EEcos(DEG2RAD(afAlpha)) * 60.f;
-			vector.y = EEsin(DEG2RAD(afAlpha)) * 60.f;
-			vector.z = EEcos(DEG2RAD(afBeta)) * EEcos(DEG2RAD(afAlpha)) * 60.f;
+			vector.x = -EEsin(radians(afBeta)) * EEcos(radians(afAlpha)) * 60.f;
+			vector.y = EEsin(radians(afAlpha)) * 60.f;
+			vector.z = EEcos(radians(afBeta)) * EEcos(radians(afAlpha)) * 60.f;
 
 			if (spells[spellinstance].hand_group != -1)
 			{
@@ -610,9 +610,9 @@ void CMultiMagicMissile::Create(EERIE_3D aePos, EERIE_3D angles)
 			}
 			else
 			{
-				aePos.x = player.pos.x - EEsin(DEG2RAD(afBeta)) + vector.x; 
+				aePos.x = player.pos.x - EEsin(radians(afBeta)) + vector.x; 
 				aePos.y = player.pos.y + vector.y; //;
-				aePos.z = player.pos.z + EEcos(DEG2RAD(afBeta)) + vector.z; 
+				aePos.z = player.pos.z + EEcos(radians(afBeta)) + vector.z; 
 			}
 		}
 		else
@@ -620,9 +620,9 @@ void CMultiMagicMissile::Create(EERIE_3D aePos, EERIE_3D angles)
 			afAlpha = 0;
 			afBeta = inter.iobj[spells[spellinstance].caster]->angle.b;
 			EERIE_3D vector;
-			vector.x = -EEsin(DEG2RAD(afBeta)) * EEcos(DEG2RAD(afAlpha)) * 60;
-			vector.y = EEsin(DEG2RAD(afAlpha)) * 60;
-			vector.z = EEcos(DEG2RAD(afBeta)) * EEcos(DEG2RAD(afAlpha)) * 60;
+			vector.x = -EEsin(radians(afBeta)) * EEcos(radians(afAlpha)) * 60;
+			vector.y = EEsin(radians(afAlpha)) * 60;
+			vector.z = EEcos(radians(afBeta)) * EEcos(radians(afAlpha)) * 60;
 
 			if (spells[spellinstance].hand_group != -1)
 			{
@@ -643,13 +643,13 @@ void CMultiMagicMissile::Create(EERIE_3D aePos, EERIE_3D angles)
 			{
 				EERIE_3D * p1 = &spells[spellinstance].caster_pos;
 				EERIE_3D * p2 = &inter.iobj[io->targetinfo]->pos;
-				afAlpha = -(RAD2DEG(GetAngle(p1->y, p1->z, p2->y, p2->z + TRUEDistance2D(p2->x, p2->z, p1->x, p1->z)))); //alpha entre orgn et dest;
+				afAlpha = -(degrees(GetAngle(p1->y, p1->z, p2->y, p2->z + TRUEDistance2D(p2->x, p2->z, p1->x, p1->z)))); //alpha entre orgn et dest;
 			}
 			else if (ValidIONum(spells[spellinstance].target))
 			{
 				EERIE_3D * p1 = &spells[spellinstance].caster_pos;
 				EERIE_3D * p2 = &inter.iobj[spells[spellinstance].target]->pos;
-				afAlpha = -(RAD2DEG(GetAngle(p1->y, p1->z, p2->y, p2->z + TRUEDistance2D(p2->x, p2->z, p1->x, p1->z)))); //alpha entre orgn et dest;
+				afAlpha = -(degrees(GetAngle(p1->y, p1->z, p2->y, p2->z + TRUEDistance2D(p2->x, p2->z, p1->x, p1->z)))); //alpha entre orgn et dest;
 			}
 		}
 
@@ -1121,7 +1121,7 @@ void DrawArcElectrique(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D * tabdef, int nb
 		astart.z = tabdef[i].z;
 
 		zz = 5; // size
-		xx = (float)(5 * cos(DEG2RAD(fBeta)));
+		xx = (float)(5 * cos(radians(fBeta)));
 
 		float ax = tabdef[i+1].x;
 		float ay = tabdef[i+1].y;
@@ -1164,7 +1164,7 @@ void DrawArcElectrique(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D * tabdef, int nb
 		                             &v2[2],
 		                             &v2[3]);
 
-		zz *= (float) sin(DEG2RAD(fBeta));
+		zz *= (float) sin(radians(fBeta));
 
 		v[0].sx = astart.x + xx;
 		v[0].sy = astart.y;
@@ -1419,9 +1419,9 @@ float CPortal::Render(LPDIRECT3DDEVICE7 device)
 			particle[j].ov.x	=	this->pos.x;
 			particle[j].ov.y	=	this->pos.y;
 			particle[j].ov.z	=	this->pos.z;
-			particle[j].move.x	=	rr * EEsin(DEG2RAD(a)) * EEcos(DEG2RAD(b));
-			particle[j].move.y	=	rr * EEcos(DEG2RAD(a));
-			particle[j].move.z	=	rr * EEsin(DEG2RAD(a)) * EEsin(DEG2RAD(b));
+			particle[j].move.x	=	rr * EEsin(radians(a)) * EEcos(radians(b));
+			particle[j].move.y	=	rr * EEcos(radians(a));
+			particle[j].move.z	=	rr * EEsin(radians(a)) * EEsin(radians(b));
 			particle[j].siz		=	10.f;
 			particle[j].tolive	=	1000 + (unsigned long)(float)(rnd() * 1000.f);
 			particle[j].scale.x	=	1.f;

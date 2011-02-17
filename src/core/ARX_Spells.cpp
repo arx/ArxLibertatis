@@ -620,9 +620,9 @@ void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ *io, const char *name, const f
 	sd->starttime = ARXTimeUL();
 	sd->lasttim = 0;
 	sd->symbol = (short)symb;
-	sd->lastpos.x = io->pos.x - EEsin(DEG2RAD(MAKEANGLE(io->angle.b - 45.0F + iPosX*2))) * 60.0F;
+	sd->lastpos.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.b - 45.0F + iPosX*2))) * 60.0F;
 	sd->lastpos.y = io->pos.y - 120.0F - iPosY*5;
-	sd->lastpos.z = io->pos.z + EEcos(DEG2RAD(MAKEANGLE(io->angle.b - 45.0F + iPosX*2))) * 60.0F;
+	sd->lastpos.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b - 45.0F + iPosX*2))) * 60.0F;
 	
 
 	ARX_CHECK_CHAR(iPosX);
@@ -726,9 +726,9 @@ void ARX_SPELLS_RequestSymbolDraw2(INTERACTIVE_OBJ *io, const long &symb, const 
 	sd->lasttim = 0;
 	sd->symbol = (short)_symb;
 	
-	sd->lastpos.x = io->pos.x - EEsin(DEG2RAD(MAKEANGLE(io->angle.b - 45.0F + iPosX*2))) * 60.0F;
+	sd->lastpos.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.b - 45.0F + iPosX*2))) * 60.0F;
 	sd->lastpos.y = io->pos.y - 120.0F - iPosY*5;
-	sd->lastpos.z = io->pos.z + EEcos(DEG2RAD(MAKEANGLE(io->angle.b - 45.0F + iPosX*2))) * 60.0F;
+	sd->lastpos.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b - 45.0F + iPosX*2))) * 60.0F;
 	
 
 	ARX_CHECK_CHAR(iPosX);
@@ -1293,9 +1293,9 @@ void ARX_SPELLS_UpdateSymbolDraw(LPDIRECT3DDEVICE7 pd3dDevice)
 
 				if (io->dynlight!=-1)
 				{
-					DynLight[io->dynlight].pos.x=io->pos.x-EEsin(DEG2RAD(MAKEANGLE(io->angle.b-45.f)))*60.f;
+					DynLight[io->dynlight].pos.x=io->pos.x-EEsin(radians(MAKEANGLE(io->angle.b-45.f)))*60.f;
 					DynLight[io->dynlight].pos.y=io->pos.y-120.f;
-					DynLight[io->dynlight].pos.z=io->pos.z+EEcos(DEG2RAD(MAKEANGLE(io->angle.b-45.f)))*60.f;
+					DynLight[io->dynlight].pos.z=io->pos.z+EEcos(radians(MAKEANGLE(io->angle.b-45.f)))*60.f;
 					DynLight[io->dynlight].fallstart=140.f+(float)io->flarecount*0.333333f+rr*5.f;
 					DynLight[io->dynlight].fallend=220.f+(float)io->flarecount*0.5f+rr*5.f;
 					DynLight[io->dynlight].intensity=1.6f;
@@ -4072,9 +4072,9 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 	{
 		if (source==0) // no target... player spell targeted by sight
 		{
-			spells[i].target_pos.x=player.pos.x-EEsin(DEG2RAD(player.angle.b))*60.f;
-			spells[i].target_pos.y=player.pos.y+EEsin(DEG2RAD(player.angle.a))*60.f;
-			spells[i].target_pos.z=player.pos.z+EEcos(DEG2RAD(player.angle.b))*60.f;
+			spells[i].target_pos.x=player.pos.x-EEsin(radians(player.angle.b))*60.f;
+			spells[i].target_pos.y=player.pos.y+EEsin(radians(player.angle.a))*60.f;
+			spells[i].target_pos.z=player.pos.z+EEcos(radians(player.angle.b))*60.f;
 
 			spells[i].target_angle.a=0.f;
 			spells[i].target_angle.b=0.f;
@@ -4082,9 +4082,9 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 		}
 		else
 		{
-			spells[i].target_pos.x=inter.iobj[target]->pos.x-EEsin(DEG2RAD(inter.iobj[target]->angle.b))*60.f;
+			spells[i].target_pos.x=inter.iobj[target]->pos.x-EEsin(radians(inter.iobj[target]->angle.b))*60.f;
 			spells[i].target_pos.y=inter.iobj[target]->pos.y-120.f;
-			spells[i].target_pos.z=inter.iobj[target]->pos.z+EEcos(DEG2RAD(inter.iobj[target]->angle.b))*60.f;
+			spells[i].target_pos.z=inter.iobj[target]->pos.z+EEcos(radians(inter.iobj[target]->angle.b))*60.f;
 
 			spells[i].target_angle.a=0.f;
 			spells[i].target_angle.b=0.f;
@@ -4891,9 +4891,9 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 					if ((ValidIONum(spells[i].caster))
 						&& (inter.iobj[spells[i].caster]->ioflags & IO_NPC))
 					{
-						target.x-=EEsin(DEG2RAD(inter.iobj[spells[i].caster]->angle.b))*30.f;
+						target.x-=EEsin(radians(inter.iobj[spells[i].caster]->angle.b))*30.f;
 						target.y-=80.f;
-						target.z+=EEcos(DEG2RAD(inter.iobj[spells[i].caster]->angle.b))*30.f;
+						target.z+=EEcos(radians(inter.iobj[spells[i].caster]->angle.b))*30.f;
 					}
 				}
 			
@@ -4930,7 +4930,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 					{
 						EERIE_3D * p1=&eCurPos;
 						EERIE_3D * p2=&inter.iobj[_io->targetinfo]->pos;
-						angle=(RAD2DEG(GetAngle(p1->y,p1->z,p2->y,p2->z+TRUEDistance2D(p2->x,p2->z,p1->x,p1->z))));//alpha entre orgn et dest;				
+						angle=(degrees(GetAngle(p1->y,p1->z,p2->y,p2->z+TRUEDistance2D(p2->x,p2->z,p1->x,p1->z))));//alpha entre orgn et dest;				
 					}
 
 					cf->Create(target,MAKEANGLE(inter.iobj[spells[i].caster]->angle.b),angle,spells[i].caster_level);					
@@ -5004,17 +5004,17 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 
 				if (spells[i].caster==0)
 				{
-					target.x = player.pos.x - EEsin(DEG2RAD(MAKEANGLE(player.angle.b)))*150.0f;
+					target.x = player.pos.x - EEsin(radians(MAKEANGLE(player.angle.b)))*150.0f;
 					target.y = player.pos.y+160;
-					target.z = player.pos.z + EEcos(DEG2RAD(MAKEANGLE(player.angle.b)))*150.0f;
+					target.z = player.pos.z + EEcos(radians(MAKEANGLE(player.angle.b)))*150.0f;
 					CIceProjectile *pIP = (CIceProjectile*)pCSpellFx;
 					pIP->Create(target, MAKEANGLE(player.angle.b), spells[i].caster_level);
 				}
 				else
 				{
-					target.x = inter.iobj[spells[i].caster]->pos.x - EEsin(DEG2RAD(MAKEANGLE(inter.iobj[spells[i].caster]->angle.b)))*150.0f;
+					target.x = inter.iobj[spells[i].caster]->pos.x - EEsin(radians(MAKEANGLE(inter.iobj[spells[i].caster]->angle.b)))*150.0f;
 					target.y = inter.iobj[spells[i].caster]->pos.y;
-					target.z = inter.iobj[spells[i].caster]->pos.z + EEcos(DEG2RAD(MAKEANGLE(inter.iobj[spells[i].caster]->angle.b)))*150.0f;
+					target.z = inter.iobj[spells[i].caster]->pos.z + EEcos(radians(MAKEANGLE(inter.iobj[spells[i].caster]->angle.b)))*150.0f;
 					CIceProjectile *pIP = (CIceProjectile*)pCSpellFx;
 					pIP->Create(target, MAKEANGLE(inter.iobj[spells[i].caster]->angle.b), spells[i].caster_level);
 				}
@@ -5685,9 +5685,9 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 
 			if (spells[i].caster==0)
 			{
-				target.x=player.pos.x - EEsin(DEG2RAD(MAKEANGLE(player.angle.b)))*300.f;
+				target.x=player.pos.x - EEsin(radians(MAKEANGLE(player.angle.b)))*300.f;
 				target.y = player.pos.y + 170.f; 
-				target.z=player.pos.z + EEcos(DEG2RAD(MAKEANGLE(player.angle.b)))*300.f;
+				target.z=player.pos.z + EEcos(radians(MAKEANGLE(player.angle.b)))*300.f;
 				beta=MAKEANGLE(player.angle.b);
 				
 			}
@@ -5695,9 +5695,9 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			{
 				if (inter.iobj[spells[i].caster]->ioflags & IO_NPC)
 				{
-					target.x=inter.iobj[spells[i].caster]->pos.x - EEsin(DEG2RAD(MAKEANGLE(inter.iobj[spells[i].caster]->angle.b)))*300.f;
+					target.x=inter.iobj[spells[i].caster]->pos.x - EEsin(radians(MAKEANGLE(inter.iobj[spells[i].caster]->angle.b)))*300.f;
 					target.y = inter.iobj[spells[i].caster]->pos.y; 
-					target.z=inter.iobj[spells[i].caster]->pos.z + EEcos(DEG2RAD(MAKEANGLE(inter.iobj[spells[i].caster]->angle.b)))*300.f;					
+					target.z=inter.iobj[spells[i].caster]->pos.z + EEcos(radians(MAKEANGLE(inter.iobj[spells[i].caster]->angle.b)))*300.f;					
 				}
 				else
 				{
@@ -5861,9 +5861,9 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 
 			if (spells[i].caster==0)
 			{
-				target.x = inter.iobj[0]->pos.x - EEsin(DEG2RAD(MAKEANGLE(player.angle.b)))*250.f;
+				target.x = inter.iobj[0]->pos.x - EEsin(radians(MAKEANGLE(player.angle.b)))*250.f;
 				target.y = inter.iobj[0]->pos.y;
-				target.z = inter.iobj[0]->pos.z + EEcos(DEG2RAD(MAKEANGLE(player.angle.b)))*250.f;
+				target.z = inter.iobj[0]->pos.z + EEcos(radians(MAKEANGLE(player.angle.b)))*250.f;
 			}
 			else			
 			{
@@ -5873,9 +5873,9 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 
 					if (io->ioflags & IO_NPC)
 					{
-						target.x = io->pos.x - EEsin(DEG2RAD(MAKEANGLE(io->angle.b)))*250.f;
+						target.x = io->pos.x - EEsin(radians(MAKEANGLE(io->angle.b)))*250.f;
 						target.y = io->pos.y;
-						target.z = io->pos.z + EEcos(DEG2RAD(MAKEANGLE(io->angle.b)))*250.f;
+						target.z = io->pos.z + EEcos(radians(MAKEANGLE(io->angle.b)))*250.f;
 					}
 					else
 					{
@@ -6109,9 +6109,9 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 3.2f;
 			eyeball.exist=1;
-			eyeball.pos.x=player.pos.x-(float)EEsin(DEG2RAD(MAKEANGLE(player.angle.b)))*200.f;
+			eyeball.pos.x=player.pos.x-(float)EEsin(radians(MAKEANGLE(player.angle.b)))*200.f;
 			eyeball.pos.y=player.pos.y+50.f;
-			eyeball.pos.z=player.pos.z+(float)EEcos(DEG2RAD(MAKEANGLE(player.angle.b)))*200.f;
+			eyeball.pos.z=player.pos.z+(float)EEcos(radians(MAKEANGLE(player.angle.b)))*200.f;
 			eyeball.angle.a=player.angle.a;
 			spells[i].v.y=eyeball.angle.b=player.angle.b;
 			eyeball.angle.g=player.angle.g;
@@ -6198,9 +6198,9 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 
 				if ( spells[i].caster == 0 )
 				{					
-					target.x = player.pos.x - EEsin(DEG2RAD(MAKEANGLE(player.angle.b)))*250.f;
+					target.x = player.pos.x - EEsin(radians(MAKEANGLE(player.angle.b)))*250.f;
 					target.y = player.pos.y + 170;
-					target.z = player.pos.z + EEcos(DEG2RAD(MAKEANGLE(player.angle.b)))*250.f;
+					target.z = player.pos.z + EEcos(radians(MAKEANGLE(player.angle.b)))*250.f;
 				}
 				else			
 				{
@@ -6210,9 +6210,9 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 
 						if ( io->ioflags & IO_NPC )
 						{
-							target.x = io->pos.x - EEsin( DEG2RAD( MAKEANGLE( io->angle.b ) ) ) * 250.f;
+							target.x = io->pos.x - EEsin( radians( MAKEANGLE( io->angle.b ) ) ) * 250.f;
 							target.y = io->pos.y;
-							target.z = io->pos.z + EEcos( DEG2RAD( MAKEANGLE( io->angle.b ) ) ) * 250.f;
+							target.z = io->pos.z + EEcos( radians( MAKEANGLE( io->angle.b ) ) ) * 250.f;
 						}
 						else
 						{
@@ -6302,9 +6302,9 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 
 				if ( spells[i].caster == 0 )						
 				{
-					target.x = player.pos.x - EEsin( DEG2RAD( MAKEANGLE( player.angle.b ) ) ) * 250.f;
+					target.x = player.pos.x - EEsin( radians( MAKEANGLE( player.angle.b ) ) ) * 250.f;
 					target.y = player.pos.y + 170;
-					target.z = player.pos.z + EEcos( DEG2RAD( MAKEANGLE( player.angle.b ) ) ) * 250.f;
+					target.z = player.pos.z + EEcos( radians( MAKEANGLE( player.angle.b ) ) ) * 250.f;
 				}
 				else			
 				{
@@ -6314,9 +6314,9 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 
 						if ( io->ioflags & IO_NPC )
 						{
-							target.x = io->pos.x - EEsin( DEG2RAD( MAKEANGLE( io->angle.b ) ) ) * 250.f;
+							target.x = io->pos.x - EEsin( radians( MAKEANGLE( io->angle.b ) ) ) * 250.f;
 							target.y = io->pos.y;
-							target.z = io->pos.z + EEcos( DEG2RAD( MAKEANGLE( io->angle.b ) ) ) * 250.f;
+							target.z = io->pos.z + EEcos( radians( MAKEANGLE( io->angle.b ) ) ) * 250.f;
 						}
 						else
 						{
@@ -6615,8 +6615,8 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 					EERIE_3D	pos,	dir;
 
 					F2L( ( rnd() * 9.f + 4.f ), &lvl );
-					rr		=	DEG2RAD( i_angle );
-					r2		=	DEG2RAD( (float) ( j + 100 ) * ( 1.0f / 200 ) * 360.f ); 
+					rr		=	radians( i_angle );
+					r2		=	radians( (float) ( j + 100 ) * ( 1.0f / 200 ) * 360.f ); 
 					pos.x	=	target.x - EEsin(rr) * 360.f;  
 					pos.y	=	target.y;
 					pos.z	=	target.z + EEcos(rr) * 360.f;  
@@ -6762,9 +6762,9 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 
 			if (spells[i].caster==0)
 			{
-				target.x=player.pos.x - EEsin(DEG2RAD(MAKEANGLE(player.angle.b)))*300.f;
+				target.x=player.pos.x - EEsin(radians(MAKEANGLE(player.angle.b)))*300.f;
 				target.y = player.pos.y + 170.f; 
-				target.z=player.pos.z + EEcos(DEG2RAD(MAKEANGLE(player.angle.b)))*300.f;
+				target.z=player.pos.z + EEcos(radians(MAKEANGLE(player.angle.b)))*300.f;
 				beta=MAKEANGLE(player.angle.b);
 				
 			}
@@ -6772,9 +6772,9 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			{
 				if (inter.iobj[spells[i].caster]->ioflags & IO_NPC)
 				{
-					target.x=inter.iobj[spells[i].caster]->pos.x - EEsin(DEG2RAD(MAKEANGLE(inter.iobj[spells[i].caster]->angle.b)))*300.f;
+					target.x=inter.iobj[spells[i].caster]->pos.x - EEsin(radians(MAKEANGLE(inter.iobj[spells[i].caster]->angle.b)))*300.f;
 					target.y = inter.iobj[spells[i].caster]->pos.y;
-					target.z=inter.iobj[spells[i].caster]->pos.z + EEcos(DEG2RAD(MAKEANGLE(inter.iobj[spells[i].caster]->angle.b)))*300.f;					
+					target.z=inter.iobj[spells[i].caster]->pos.z + EEcos(radians(MAKEANGLE(inter.iobj[spells[i].caster]->angle.b)))*300.f;					
 				}
 				else
 				{
@@ -7082,17 +7082,17 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 
 				if (spells[i].caster==0)
 				{
-					target.x=player.pos.x  - EEsin(DEG2RAD(MAKEANGLE(player.angle.b)))*500.f;
+					target.x=player.pos.x  - EEsin(radians(MAKEANGLE(player.angle.b)))*500.f;
 					target.y=player.pos.y  + 150.f;
-					target.z=player.pos.z  + EEcos(DEG2RAD(MAKEANGLE(player.angle.b)))*500.f;
+					target.z=player.pos.z  + EEcos(radians(MAKEANGLE(player.angle.b)))*500.f;
 					beta=player.angle.b;
 				}
 				else
 				{
 					INTERACTIVE_OBJ * io=inter.iobj[spells[i].caster];
-					target.x=io->pos.x  - EEsin(DEG2RAD(MAKEANGLE(io->angle.b)))*500.f;
+					target.x=io->pos.x  - EEsin(radians(MAKEANGLE(io->angle.b)))*500.f;
 					target.y=io->pos.y  - 20.f;
-					target.z=io->pos.z  + EEcos(DEG2RAD(MAKEANGLE(io->angle.b)))*500.f;
+					target.z=io->pos.z  + EEcos(radians(MAKEANGLE(io->angle.b)))*500.f;
 					beta=io->angle.b;
 				}
 
@@ -8113,7 +8113,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 						refpos=inter.iobj[spells[i].caster]->pos.y-scaley;							
 					}
 
-					float Es=EEsin((float)FrameTime*( 1.0f / 800 ) + DEG2RAD(scaley));
+					float Es=EEsin((float)FrameTime*( 1.0f / 800 ) + radians(scaley));
 
 					if (spells[i].longinfo2!=-1)
 					{
@@ -8794,8 +8794,8 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 					if (rnd()>0.8f)
 					{					
 						F2L((rnd()*9.f+4.f),&lvl);
-						rr=DEG2RAD(rnd()*360.f);
-						r2=DEG2RAD(rnd()*360.f);
+						rr=radians(rnd()*360.f);
+						r2=radians(rnd()*360.f);
 						pos.x=DynLight[id].pos.x-EEsin(rr)*260;
 						pos.y=DynLight[id].pos.y-EEsin(r2)*260;
 						pos.z=DynLight[id].pos.z+EEcos(rr)*260;						
@@ -8808,8 +8808,8 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 					else if (rnd()>0.76f)
 					{					
 						F2L((rnd()*9.f+4.f),&lvl);
-						rr=DEG2RAD(rnd()*360.f);
-						r2=DEG2RAD(rnd()*360.f);
+						rr=radians(rnd()*360.f);
+						r2=radians(rnd()*360.f);
 						pos.x=DynLight[id].pos.x-EEsin(rr)*260;
 						pos.y=DynLight[id].pos.y-EEsin(r2)*260;
 						pos.z=DynLight[id].pos.z+EEcos(rr)*260;						
@@ -8818,8 +8818,8 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 					else if (rnd()>0.66f)
 					{					
 						F2L((rnd()*9.f+4.f),&lvl);
-						rr=DEG2RAD(rnd()*360.f);
-						r2=DEG2RAD(rnd()*360.f);
+						rr=radians(rnd()*360.f);
+						r2=radians(rnd()*360.f);
 						pos.x=DynLight[id].pos.x-EEsin(rr)*160;
 						pos.y=DynLight[id].pos.y-EEsin(r2)*160;
 						pos.z=DynLight[id].pos.z+EEcos(rr)*160;						
@@ -9252,7 +9252,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 							refpos=inter.iobj[spells[i].caster]->pos.y-scaley;							
 						}
 
-						float Es=EEsin((float)FrameTime*( 1.0f / 800 ) + DEG2RAD(scaley));
+						float Es=EEsin((float)FrameTime*( 1.0f / 800 ) + radians(scaley));
 
 						if (spells[i].longinfo2!=-1)
 						{
@@ -9351,7 +9351,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 							refpos=inter.iobj[spells[i].caster]->pos.y-scaley;							
 						}
 
-						float Es=EEsin((float)FrameTime*( 1.0f / 800 ) + DEG2RAD(scaley));
+						float Es=EEsin((float)FrameTime*( 1.0f / 800 ) + radians(scaley));
 
 						if (spells[i].longinfo2!=-1)
 						{

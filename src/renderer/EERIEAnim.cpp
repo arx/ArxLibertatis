@@ -1810,25 +1810,25 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	if ( angle != NULL )
 	{
 		if ( modinfo )
-			Zsin = (float)DEG2RAD( MAKEANGLE( angle->a + modinfo->rot.a ) );
+			Zsin = (float)radians( MAKEANGLE( angle->a + modinfo->rot.a ) );
 		else
-			Zsin = (float)DEG2RAD( angle->a );
+			Zsin = (float)radians( angle->a );
 
 		Ncam.Xcos	=	Xcos	=	(float)EEcos( Zsin );
 		Ncam.Xsin	=	Xsin	=	(float)EEsin( Zsin );
 
 		if ( modinfo )
-			Zsin	=	(float)DEG2RAD( MAKEANGLE( angle->b + modinfo->rot.b ) );
+			Zsin	=	(float)radians( MAKEANGLE( angle->b + modinfo->rot.b ) );
 		else
-			Zsin	=	(float)DEG2RAD( angle->b );
+			Zsin	=	(float)radians( angle->b );
 
 		Ncam.Ycos	=	Ycos	=	(float)EEcos( Zsin );
 		Ncam.Ysin	=	Ysin	=	(float)EEsin( Zsin );
 		
 		if ( modinfo )
-			Zsin	=	(float)DEG2RAD( MAKEANGLE( angle->g + modinfo->rot.g ) );
+			Zsin	=	(float)radians( MAKEANGLE( angle->g + modinfo->rot.g ) );
 		else
-			Zsin	=	(float)DEG2RAD( angle->g );
+			Zsin	=	(float)radians( angle->g );
 
 		Ncam.Zcos	=	Zcos	=	(float)EEcos( Zsin );
 		Ncam.Zsin	=	Zsin	=	(float)EEsin( Zsin );
@@ -2571,7 +2571,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 			Ncam.Xsin = 0.f;
 			Ncam.Zcos = 1.f;
 			Ncam.Zsin = 0.f;
-			float power=DEG2RAD(MAKEANGLE(subj.angle.b));
+			float power=radians(MAKEANGLE(subj.angle.b));
 			Ncam.Ycos = (float)EEcos(power);	
 			Ncam.Ysin = (float)EEsin(power);
 			float tot=0;
@@ -2864,25 +2864,25 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 	if ( angle != NULL )
 	{
 		if ( modinfo )
-			Zsin	=	(float) DEG2RAD( MAKEANGLE( angle->a + modinfo->rot.a ) );
+			Zsin	=	(float) radians( MAKEANGLE( angle->a + modinfo->rot.a ) );
 		else
-			Zsin	=	(float)DEG2RAD( angle->a );
+			Zsin	=	(float)radians( angle->a );
 
 		Ncam.Xcos	=	Xcos	=	(float)EEcos( Zsin );
 		Ncam.Xsin	=	Xsin	=	(float)EEsin( Zsin );
 
 		if ( modinfo )
-			Zsin	=	(float)DEG2RAD( MAKEANGLE( angle->b + modinfo->rot.b ) );
+			Zsin	=	(float)radians( MAKEANGLE( angle->b + modinfo->rot.b ) );
 		else
-			Zsin	=	(float)DEG2RAD( angle->b );
+			Zsin	=	(float)radians( angle->b );
 
 		Ncam.Ycos	=	Ycos	=	(float)EEcos( Zsin );
 		Ncam.Ysin	=	Ysin	=	(float)EEsin( Zsin );
 		
 		if ( modinfo )
-			Zsin	=	(float)DEG2RAD( MAKEANGLE( angle->g + modinfo->rot.g ) );
+			Zsin	=	(float)radians( MAKEANGLE( angle->g + modinfo->rot.g ) );
 		else
-			Zsin	=	(float)DEG2RAD( angle->g );
+			Zsin	=	(float)radians( angle->g );
 
 		Ncam.Zcos	=	Zcos	=	(float)EEcos( Zsin );
 		Ncam.Zsin	=	Zsin	=	(float)EEsin( Zsin );
@@ -3410,7 +3410,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 			Ncam.Xsin = 0.f;
 			Ncam.Zcos = 1.f;
 			Ncam.Zsin = 0.f;
-				float power=DEG2RAD(MAKEANGLE(subj.angle.b));
+				float power=radians(MAKEANGLE(subj.angle.b));
 			Ncam.Ycos = (float)EEcos(power);
 			Ncam.Ysin = (float)EEsin(power);
 				float tot=0;

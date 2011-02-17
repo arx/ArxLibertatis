@@ -1009,10 +1009,10 @@ void EERIEDraw3DCylinder(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CYLINDER * cyl, D3D
 
 	for (long i=0;i<360-STEPCYL;i+=STEPCYL)
 	{
-		float es =EEsin(DEG2RAD(MAKEANGLE((float)i)))*cyl->radius;
-		float ec =EEcos(DEG2RAD(MAKEANGLE((float)i)))*cyl->radius;
-		float es2=EEsin(DEG2RAD(MAKEANGLE((float)(i+STEPCYL))))*cyl->radius;
-		float ec2=EEcos(DEG2RAD(MAKEANGLE((float)(i+STEPCYL))))*cyl->radius;		
+		float es =EEsin(radians(MAKEANGLE((float)i)))*cyl->radius;
+		float ec =EEcos(radians(MAKEANGLE((float)i)))*cyl->radius;
+		float es2=EEsin(radians(MAKEANGLE((float)(i+STEPCYL))))*cyl->radius;
+		float ec2=EEcos(radians(MAKEANGLE((float)(i+STEPCYL))))*cyl->radius;		
 		
 		// Draw low pos
 		from.x=cyl->origin.x+es;
@@ -1048,10 +1048,10 @@ void EERIEDraw3DCylinderBase(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CYLINDER * cyl,
 
 	for (long i=0;i<360-STEPCYL;i+=STEPCYL)
 	{
-		float es =EEsin(DEG2RAD(MAKEANGLE((float)i)))*cyl->radius;
-		float ec =EEcos(DEG2RAD(MAKEANGLE((float)i)))*cyl->radius;
-		float es2=EEsin(DEG2RAD(MAKEANGLE((float)(i+STEPCYL))))*cyl->radius;
-		float ec2=EEcos(DEG2RAD(MAKEANGLE((float)(i+STEPCYL))))*cyl->radius;		
+		float es =EEsin(radians(MAKEANGLE((float)i)))*cyl->radius;
+		float ec =EEcos(radians(MAKEANGLE((float)i)))*cyl->radius;
+		float es2=EEsin(radians(MAKEANGLE((float)(i+STEPCYL))))*cyl->radius;
+		float ec2=EEcos(radians(MAKEANGLE((float)(i+STEPCYL))))*cyl->radius;		
 		
 		// Draw low pos
 		from.x=cyl->origin.x+es;
@@ -1074,7 +1074,7 @@ void EERIEDrawCircle(float x0,float y0,float r,D3DCOLOR col,float z)
 
 	for (long i=0;i<361;i+=10)
 	{
-		t=DEG2RAD((float)i);
+		t=radians((float)i);
 		x=x0-EEsin(t)*r;
 		y=y0+EEcos(t)*r;
 		EERIEDrawLine(lx,ly,x,y,z,col);
@@ -1250,7 +1250,7 @@ void EERIEDrawRotatedSprite(LPDIRECT3DDEVICE7 pd3dDevice,D3DTLVERTEX *in,float s
 
 		for (long i=0;i<4;i++)
 		{
-			tt=DEG2RAD(MAKEANGLE(rot+90.f*i+45+90));
+			tt=radians(MAKEANGLE(rot+90.f*i+45+90));
 			v[i].sx=EEsin(tt)*t+out.sx;
 			v[i].sy=EEcos(tt)*t+out.sy;
 		}		

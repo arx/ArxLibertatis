@@ -139,9 +139,9 @@ void CLightning::BuildS(LIGHTNING * pLInfo)
 		float fAngleZ = frand2() * (pLInfo->fAngleZMax - pLInfo->fAngleZMin) + pLInfo->fAngleZMin;
 
 		EERIE_3D av;
-		av.x = (float) cos(acos(avect.x) - DEG2RAD(fAngleX));
-		av.y = (float) sin(asin(avect.y) - DEG2RAD(fAngleY));
-		av.z = (float) tan(atan(avect.z) - DEG2RAD(fAngleZ));
+		av.x = (float) cos(acos(avect.x) - radians(fAngleX));
+		av.y = (float) sin(asin(avect.y) - radians(fAngleY));
+		av.z = (float) tan(atan(avect.z) - radians(fAngleZ));
 
 		TRUEVector_Normalize(&av);
 		avect.x = av.x;
@@ -559,14 +559,14 @@ float CLightning::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				EERIE_3D * p1 = &spells[spellinstance].caster_pos;
 				EERIE_3D p2;
 				GetChestPos(io->targetinfo, &p2); 
-				falpha = MAKEANGLE(RAD2DEG(GetAngle(p1->y, p1->z, p2.y, p2.z + TRUEDistance2D(p2.x, p2.z, p1->x, p1->z)))); //alpha entre orgn et dest;
+				falpha = MAKEANGLE(degrees(GetAngle(p1->y, p1->z, p2.y, p2.z + TRUEDistance2D(p2.x, p2.z, p1->x, p1->z)))); //alpha entre orgn et dest;
 			}
 			else if (ValidIONum(spells[spellinstance].target))
 			{
 				EERIE_3D * p1 = &spells[spellinstance].caster_pos;
 				EERIE_3D p2;
 				GetChestPos(spells[spellinstance].target, &p2); //
-				falpha = MAKEANGLE(RAD2DEG(GetAngle(p1->y, p1->z, p2.y, p2.z + TRUEDistance2D(p2.x, p2.z, p1->x, p1->z)))); //alpha entre orgn et dest;
+				falpha = MAKEANGLE(degrees(GetAngle(p1->y, p1->z, p2.y, p2.z + TRUEDistance2D(p2.x, p2.z, p1->x, p1->z)))); //alpha entre orgn et dest;
 			}
 		}
 
@@ -614,7 +614,7 @@ float CLightning::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		zzz = cnodetab[cnodetab[i].parent].fx + frand2() * temp;
 
 		zz = cnodetab[i].size + cnodetab[i].size * 0.3f * rnd();
-		xx = (float)(cnodetab[i].size * cos(DEG2RAD(-fbeta)));
+		xx = (float)(cnodetab[i].size * cos(radians(-fbeta)));
 
 		cnodetab[i].fx = zzx ;
 		cnodetab[i].fy = zzy ;
@@ -748,7 +748,7 @@ float CLightning::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		                             &v2[3]);
 
 	
-		zz *= (float) sin(DEG2RAD(fbeta));
+		zz *= (float) sin(radians(fbeta));
 
 		v2[1].tu = 1.0f;
 		v2[1].tv = 0;
@@ -936,7 +936,7 @@ float CConfuse::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	stitepos.y = eCurPos.y;
 	stitepos.z = eCurPos.z;
 
-	stiteangle.b = -RAD2DEG(ARX_TIME_Get() * ( 1.0f / 500 ));
+	stiteangle.b = -degrees(ARX_TIME_Get() * ( 1.0f / 500 ));
 	stiteangle.a = 0;
 	stiteangle.g = 0;
 	stitecolor.r = 1;
@@ -959,7 +959,7 @@ float CConfuse::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			particle[j].exist = 1;
 			particle[j].zdec = 0;
 
-			float ang				=	DEG2RAD(rnd() * 360.f);
+			float ang				=	radians(rnd() * 360.f);
 			float rad				=	rnd() * 15.f;
 			particle[j].ov.x		=	stitepos.x - EEsin(ang) * rad;
 			particle[j].ov.y		=	stitepos.y;
@@ -1109,7 +1109,7 @@ void CFireField::Create(float largeur, EERIE_3D * pos, int _ulDuration)
 	cp.p3Direction.x = 0;
 	cp.p3Direction.y = -2;
 	cp.p3Direction.z = 0;
-	cp.fAngle = DEG2RAD(10);
+	cp.fAngle = radians(10);
 	cp.fSpeed = 0;
 	cp.fSpeedRandom = 0;
 	cp.p3Gravity.x = 0;
@@ -1262,7 +1262,7 @@ void CIceField::Create(EERIE_3D aeSrc, float afBeta)
 	eSrc.z = aeSrc.z;
 
 	fBeta = afBeta;
-	fBetaRad = DEG2RAD(fBeta);
+	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
 
@@ -1388,7 +1388,7 @@ float CIceField::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		EERIE_3D stitescale;
 		EERIE_RGB stitecolor;
 
-		stiteangle.b = (float) cos(DEG2RAD(tPos[i].x)) * 360; 
+		stiteangle.b = (float) cos(radians(tPos[i].x)) * 360; 
 		stiteangle.a = 0;
 		stiteangle.g = 0;
 		stitepos.x = tPos[i].x;

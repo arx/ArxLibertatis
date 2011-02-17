@@ -294,9 +294,9 @@ static	void	Cedric_AnimCalcTranslation(INTERACTIVE_OBJ * io, ANIM_USE * animuse,
 				ftr.y *= scale;
 				ftr.z *= scale;
 
-				float temp = DEG2RAD(MAKEANGLE(180.f - io->angle.b));
+				float temp = radians(MAKEANGLE(180.f - io->angle.b));
 
-				if (io == inter.iobj[0]) temp = DEG2RAD(MAKEANGLE(180.f - player.angle.b));
+				if (io == inter.iobj[0]) temp = radians(MAKEANGLE(180.f - player.angle.b));
 
 				_YRotatePoint(&ftr, &ftr2, (float)EEcos(temp), (float)EEsin(temp));
 
@@ -490,9 +490,9 @@ void	Cedric_ConcatenateTM(INTERACTIVE_OBJ * io, EERIE_C_DATA * obj, EERIE_3D * a
 			else
 			{
 				Vector_Copy(&vt1, angle);
-				vt1.x = DEGTORAD(vt1.x);
-				vt1.y = DEGTORAD(vt1.y);
-				vt1.z = DEGTORAD(vt1.z);
+				vt1.x = radians(vt1.x);
+				vt1.y = radians(vt1.y);
+				vt1.z = radians(vt1.z);
 				QuatFromAngles(&qt2, &vt1);
 				Quat_Multiply(&obj->bones[i].quatanim, &qt2, &obj->bones[i].quatinit);
 			}
@@ -1171,9 +1171,9 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 void Cedric_PrepareHalo(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, EERIE_3D * pos, EERIE_3D & ftr)
 {
 	EERIE_3D cam_vector, t_vector;
-	cam_vector.x = -EEsin(DEG2RAD(ACTIVECAM->angle.b)) * EEcos(DEG2RAD(ACTIVECAM->angle.a));
-	cam_vector.y = EEsin(DEG2RAD(ACTIVECAM->angle.a));
-	cam_vector.z = EEcos(DEG2RAD(ACTIVECAM->angle.b)) * EEcos(DEG2RAD(ACTIVECAM->angle.a));
+	cam_vector.x = -EEsin(radians(ACTIVECAM->angle.b)) * EEcos(radians(ACTIVECAM->angle.a));
+	cam_vector.y = EEsin(radians(ACTIVECAM->angle.a));
+	cam_vector.z = EEcos(radians(ACTIVECAM->angle.b)) * EEcos(radians(ACTIVECAM->angle.a));
 
 	/* Apply light on all vertices */
 	for (long i = 0; i != obj->nb_bones; i++)
@@ -2865,9 +2865,9 @@ void Cedric_ManageExtraRotationsFirst(INTERACTIVE_OBJ * io, EERIE_3DOBJ * obj)
 			{
 				EERIE_3D vt1;
 				EERIE_QUAT quat1;
-				vt1.x = DEG2RAD(io->_npcdata->ex_rotate->group_rotate[k].g);
-				vt1.y = DEG2RAD(io->_npcdata->ex_rotate->group_rotate[k].b);
-				vt1.z = DEG2RAD(io->_npcdata->ex_rotate->group_rotate[k].a);
+				vt1.x = radians(io->_npcdata->ex_rotate->group_rotate[k].g);
+				vt1.y = radians(io->_npcdata->ex_rotate->group_rotate[k].b);
+				vt1.z = radians(io->_npcdata->ex_rotate->group_rotate[k].a);
 				QuatFromAngles(&quat1, &vt1);
 				Quat_Copy(&obj->c_data->bones[i].quatinit, &quat1);
 			}
@@ -3158,9 +3158,9 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERIE
 					Vector_Copy(&vt1, &eobj->angle);
 			}
 
-			vt1.x = DEGTORAD(MAKEANGLE(-vt1.z));
-			vt1.y = DEGTORAD(MAKEANGLE(vt1.y));
-			vt1.z = DEGTORAD(MAKEANGLE(vt1.x));
+			vt1.x = radians(MAKEANGLE(-vt1.z));
+			vt1.y = radians(MAKEANGLE(vt1.y));
+			vt1.z = radians(MAKEANGLE(vt1.x));
 			QuatFromAngles(&qInvert, &vt1);
 		}
 	}
@@ -3292,9 +3292,9 @@ void MakeCLight2(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERI
 					Vector_Copy(&vt1, &eobj->angle);
 			}
 
-			vt1.x = DEGTORAD(vt1.x);
-			vt1.y = DEGTORAD(vt1.y);
-			vt1.z = DEGTORAD(vt1.z);
+			vt1.x = radians(vt1.x);
+			vt1.y = radians(vt1.y);
+			vt1.z = radians(vt1.z);
 			QuatFromAngles(&qInvert, &vt1);
 		}
 	}

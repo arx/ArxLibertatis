@@ -717,9 +717,9 @@ void InterTreeViewGotoPosition(HTREEITEM hitem)
 			{
 				if (tvv[i]->io != NULL)
 				{
-					TVCONTROLEDplayerpos.x = tvv[i]->io->pos.x + (float)EEsin(DEG2RAD(player.angle.b)) * 100.f;
+					TVCONTROLEDplayerpos.x = tvv[i]->io->pos.x + (float)EEsin(radians(player.angle.b)) * 100.f;
 					TVCONTROLEDplayerpos.y = tvv[i]->io->pos.y - 80.f;
-					TVCONTROLEDplayerpos.z = tvv[i]->io->pos.z - (float)EEcos(DEG2RAD(player.angle.b)) * 100.f;
+					TVCONTROLEDplayerpos.z = tvv[i]->io->pos.z - (float)EEcos(radians(player.angle.b)) * 100.f;
 					TVCONTROLED = 1;
 				}
 			}
@@ -736,9 +736,9 @@ void InterTreeViewGotoPosition(HTREEITEM hitem)
 
 				if (ap != NULL)
 				{
-					TVCONTROLEDplayerpos.x = ap->initpos.x + (float)EEsin(DEG2RAD(player.angle.b)) * 100.f;
+					TVCONTROLEDplayerpos.x = ap->initpos.x + (float)EEsin(radians(player.angle.b)) * 100.f;
 					TVCONTROLEDplayerpos.y = ap->initpos.y - 80.f;
-					TVCONTROLEDplayerpos.z = ap->initpos.z - (float)EEcos(DEG2RAD(player.angle.b)) * 100.f;
+					TVCONTROLEDplayerpos.z = ap->initpos.z - (float)EEcos(radians(player.angle.b)) * 100.f;
 					TVCONTROLED = 1;
 				}
 			}

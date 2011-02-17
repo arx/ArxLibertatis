@@ -3327,7 +3327,7 @@ bool HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 	dest.y = y1 - 90.f;
 	dest.z = z1;
 	float aa = GetAngle(orgn.x, orgn.z, dest.x, dest.z);
-	aa = MAKEANGLE(RAD2DEG(aa));
+	aa = MAKEANGLE(degrees(aa));
 
 	if ((aa < ab + 90.f) && (aa > ab - 90.f))
 	{
@@ -8585,9 +8585,9 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 									{
 										float dist = inter.iobj[t]->physics.cyl.radius + ioo->physics.cyl.radius + 10;
 										EERIE_3D ofs;
-										ofs.x = -EEsin(DEG2RAD(inter.iobj[t]->angle.b)) * dist;
+										ofs.x = -EEsin(radians(inter.iobj[t]->angle.b)) * dist;
 										ofs.y = 0.f;
-										ofs.z = EEcos(DEG2RAD(inter.iobj[t]->angle.b)) * dist;
+										ofs.z = EEcos(radians(inter.iobj[t]->angle.b)) * dist;
 										ioo->pos.x += ofs.x;
 										ioo->pos.z += ofs.z;
 									}

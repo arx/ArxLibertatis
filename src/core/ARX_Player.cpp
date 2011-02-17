@@ -269,9 +269,9 @@ void ARX_KEYRING_Combine(INTERACTIVE_OBJ * io)
 //*************************************************************************************
 void ARX_PLAYER_FrontPos(EERIE_3D * pos)
 {
-	pos->x = player.pos.x - EEsin(DEG2RAD(MAKEANGLE(player.angle.b))) * 100.f;
+	pos->x = player.pos.x - EEsin(radians(MAKEANGLE(player.angle.b))) * 100.f;
 	pos->y = player.pos.y + 100.f; //-100.f;
-	pos->z = player.pos.z + EEcos(DEG2RAD(MAKEANGLE(player.angle.b))) * 100.f;
+	pos->z = player.pos.z + EEcos(radians(MAKEANGLE(player.angle.b))) * 100.f;
 }
 
 //*************************************************************************************
@@ -2861,9 +2861,9 @@ bool Valid_Jump_Pos()
 
 	for (float vv = 0; vv < 360.f; vv += 20.f)
 	{
-		tmpp.origin.x = player.pos.x - EEsin(DEG2RAD(vv)) * 20.f;
+		tmpp.origin.x = player.pos.x - EEsin(radians(vv)) * 20.f;
 		tmpp.origin.y = player.pos.y - PLAYER_BASE_HEIGHT;
-		tmpp.origin.z = player.pos.z + EEcos(DEG2RAD(vv)) * 20.f;
+		tmpp.origin.z = player.pos.z + EEcos(radians(vv)) * 20.f;
 		tmpp.radius = player.physics.cyl.radius;
 		float anything = CheckAnythingInCylinder(&tmpp, inter.iobj[0], CFLAG_JUST_TEST); //-cyl->origin.y;
 

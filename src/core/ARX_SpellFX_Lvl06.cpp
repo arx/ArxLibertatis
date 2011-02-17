@@ -145,21 +145,21 @@ void CCreateField::RenderQuad(LPDIRECT3DDEVICE7 m_pd3dDevice, D3DTLVERTEX p1, D3
 
 		float patchsize = 0.005f; 
 
-		v[0].sx += (float) sin(DEG2RAD((v[0].sx - eSrc.x) * patchsize + fwrap)) * 5;
-		v[0].sy += (float) sin(DEG2RAD((v[0].sy - eSrc.y) * patchsize + fwrap)) * 5;
-		v[0].sz += (float) sin(DEG2RAD((v[0].sz - eSrc.z) * patchsize + fwrap)) * 5;
-		v[1].sx += (float) sin(DEG2RAD((v[1].sx - eSrc.x) * patchsize + fwrap)) * 5;
-		v[1].sy += (float) sin(DEG2RAD((v[1].sy - eSrc.y) * patchsize + fwrap)) * 5;
-		v[1].sz += (float) sin(DEG2RAD((v[1].sz - eSrc.z) * patchsize + fwrap)) * 5;
-		v[2].sx += (float) sin(DEG2RAD((v[2].sx - eSrc.x) * patchsize + fwrap)) * 5;
-		v[2].sy += (float) sin(DEG2RAD((v[2].sy - eSrc.y) * patchsize + fwrap)) * 5;
-		v[2].sz += (float) sin(DEG2RAD((v[2].sz - eSrc.z) * patchsize + fwrap)) * 5;
-		v[3].sx += (float) sin(DEG2RAD((v[3].sx - eSrc.x) * patchsize + fwrap)) * 5;
-		v[3].sy += (float) sin(DEG2RAD((v[3].sy - eSrc.y) * patchsize + fwrap)) * 5;
-		v[3].sz += (float) sin(DEG2RAD((v[3].sz - eSrc.z) * patchsize + fwrap)) * 5;
-		v[4].sx += (float) sin(DEG2RAD((v[4].sx - eSrc.x) * patchsize + fwrap)) * 5;
-		v[4].sy += (float) sin(DEG2RAD((v[4].sy - eSrc.y) * patchsize + fwrap)) * 5;
-		v[4].sz += (float) sin(DEG2RAD((v[4].sz - eSrc.z) * patchsize + fwrap)) * 5;
+		v[0].sx += (float) sin(radians((v[0].sx - eSrc.x) * patchsize + fwrap)) * 5;
+		v[0].sy += (float) sin(radians((v[0].sy - eSrc.y) * patchsize + fwrap)) * 5;
+		v[0].sz += (float) sin(radians((v[0].sz - eSrc.z) * patchsize + fwrap)) * 5;
+		v[1].sx += (float) sin(radians((v[1].sx - eSrc.x) * patchsize + fwrap)) * 5;
+		v[1].sy += (float) sin(radians((v[1].sy - eSrc.y) * patchsize + fwrap)) * 5;
+		v[1].sz += (float) sin(radians((v[1].sz - eSrc.z) * patchsize + fwrap)) * 5;
+		v[2].sx += (float) sin(radians((v[2].sx - eSrc.x) * patchsize + fwrap)) * 5;
+		v[2].sy += (float) sin(radians((v[2].sy - eSrc.y) * patchsize + fwrap)) * 5;
+		v[2].sz += (float) sin(radians((v[2].sz - eSrc.z) * patchsize + fwrap)) * 5;
+		v[3].sx += (float) sin(radians((v[3].sx - eSrc.x) * patchsize + fwrap)) * 5;
+		v[3].sy += (float) sin(radians((v[3].sy - eSrc.y) * patchsize + fwrap)) * 5;
+		v[3].sz += (float) sin(radians((v[3].sz - eSrc.z) * patchsize + fwrap)) * 5;
+		v[4].sx += (float) sin(radians((v[4].sx - eSrc.x) * patchsize + fwrap)) * 5;
+		v[4].sy += (float) sin(radians((v[4].sy - eSrc.y) * patchsize + fwrap)) * 5;
+		v[4].sz += (float) sin(radians((v[4].sz - eSrc.z) * patchsize + fwrap)) * 5;
 
 		RenderQuad(m_pd3dDevice, p1, v[4], v[0], v[1], rec, norm);
 		RenderQuad(m_pd3dDevice, v[4], p2, v[2], v[0], rec, norm);
@@ -168,7 +168,7 @@ void CCreateField::RenderQuad(LPDIRECT3DDEVICE7 m_pd3dDevice, D3DTLVERTEX p1, D3
 	}
 	else if (rec == 3)
 	{
-		float zab = (float) sin(DEG2RAD(ft));
+		float zab = (float) sin(radians(ft));
 		v2[0].tu = 0 + zab;
 		v2[0].tv = 0 + zab;
 		v2[1].tu = 1 + zab;
@@ -264,7 +264,7 @@ float CCreateField::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		ft = 0.0f;
 	}
 
-	falpha = (float) sin(DEG2RAD(fglow)) + rnd() * 0.2f;
+	falpha = (float) sin(radians(fglow)) + rnd() * 0.2f;
 
 	if (falpha > 1.0f)
 		falpha = 1.0f;
@@ -440,7 +440,7 @@ void CSlowDown::Create(EERIE_3D aeSrc, float afBeta)
 	eSrc.z = aeSrc.z;
 
 	fBeta = afBeta;
-	fBetaRad = DEG2RAD(fBeta);
+	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
 
@@ -690,7 +690,7 @@ void CRiseDead::Create(EERIE_3D aeSrc, float afBeta)
 	eSrc.z = aeSrc.z;
 
 	fBeta = afBeta;
-	fBetaRad = DEG2RAD(fBeta);
+	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
 	sizeF = 0;
@@ -1370,9 +1370,9 @@ void CParalyse::CreatePrismTriangleList(float arayon, float ahcapuchon, float ah
 
 	while (nb)
 	{
-		v->x = arayon * EEcos(DEG2RAD(a));
+		v->x = arayon * EEcos(radians(a));
 		v->y = -ahauteur + rnd() * ahauteur * 0.2f;
-		v->z = arayon * EEsin(DEG2RAD(a));
+		v->z = arayon * EEsin(radians(a));
 		v++;
 		v->x = (v - 1)->x * 0.90f;
 		v->y = 0.f;
@@ -1437,9 +1437,9 @@ void CParalyse::CreateLittlePrismTriangleList()
 		beta = 0;
 		float g = frand2();
 		g = 20 + rnd() * 45.f; 
-		gamma = DEG2RAD(g);
+		gamma = radians(g);
 		//xz
-		beta2 = DEG2RAD(rnd() * 360); 
+		beta2 = radians(rnd() * 360); 
 
 		v = prismvertex;
 		vd = tabprism[i].vertex;
@@ -1552,7 +1552,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 	cp.p3Direction.x = 0;
 	cp.p3Direction.y = -10;
 	cp.p3Direction.z = 0;
-	cp.fAngle = DEG2RAD(360);
+	cp.fAngle = radians(360);
 	cp.fSpeed = 10;
 	cp.fSpeedRandom = 10;
 	cp.p3Gravity.x = 0;
@@ -1614,7 +1614,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 	cp.p3Direction.x = 0;
 	cp.p3Direction.y = -10;
 	cp.p3Direction.z = 0;
-	cp.fAngle = DEG2RAD(144);
+	cp.fAngle = radians(144);
 	cp.fSpeed = 10;
 	cp.fSpeedRandom = 10;
 	cp.p3Gravity.x = 0;
@@ -2191,7 +2191,7 @@ void CDisarmTrap::Create(EERIE_3D aeSrc, float afBeta)
 	eSrc.z = aeSrc.z;
 
 	fBeta = afBeta;
-	fBetaRad = DEG2RAD(fBeta);
+	fBetaRad = radians(fBeta);
 	fBetaRadCos = (float) cos(fBetaRad);
 	fBetaRadSin = (float) sin(fBetaRad);
 
