@@ -56,50 +56,36 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIEMATH_H
 #define EERIEMATH_H
 
-//#include <algorithm>
-
-#include "d3dwrapper.h"
 #include "EERIETypes.h"
 #include "EERIEPoly.h"
 using std::min;
 using std::max;
 
-#define ARX_CLEAN_WARN_CAST_UCHAR(_x) (static_cast<unsigned char>( _x ))
-
 //-----------------------------------------------------------------------------
 // RANDOM Sequences Funcs/Defs
 //-----------------------------------------------------------------------------
-#define ornd()  (((float)rand() ) / RAND_MAX)
-#define rnd()  (((float)rand() ) * 0.00003051850947599f)
+#define rnd()  (((float)rand() ) * (1.0f / RAND_MAX))
 
 //Approximative Methods
-#define EEsqrt(val)	(float)ffsqrt(val)
-#define EEcos(val)	(float)cos((float)val)
-#define EEsin(val)	(float)sin((float)val)
-#define EEfabs(val)	(float)fabs(val)
+#define EEsqrt(val) (float)ffsqrt(val)
+#define EEcos(val)  (float)cos((float)val)
+#define EEsin(val)  (float)sin((float)val)
+#define EEfabs(val) (float)fabs(val)
 #define EEatan(val) (float)atan(val)
 
 //True Methods
-#define TRUEsqrt(val)	(float)sqrt(val)
-#define TRUEcos(val)	(float)cos(val)
-#define TRUEsin(val)	(float)sin(val)
-#define TRUEfabs(val)	(float)fabs(val)
-#define TRUEatan(val)	(float)atan(val)
+// TODO just use sqrt directly
+#define TRUEsqrt(val) (float)sqrt(val)
 
 //-----------------------------------------------------------------------------
 // Math constants
 //-----------------------------------------------------------------------------
-#define PI					3.14159265358979323846f
+#define PI 3.14159265358979323846f
 
-#define EEdef_EPSILON		1.0e-5f						// Tolerance for FLOATs
-#define EEdef_MAXfloat		1.0e+38f
-#define EEdef_MINfloat		-1.0e+38f
-
-//-----------------------------------------------------------------------------
-// DIVISIONS Optimization List (Mul)
-//-----------------------------------------------------------------------------
-
-#define ARXROTCONVERT	0.087890625f 
+// TODO consider replacing these with defines from #include <cfloat>
+#define EEdef_EPSILON   1.0e-5f  // Tolerance for FLOATs
+#define EEdef_MAXfloat  1.0e+38f
+#define EEdef_MINfloat  -1.0e+38f
 
 //-----------------------------------------------------------------------------
 
@@ -113,22 +99,18 @@ inline bool In3DBBoxTolerance(const EERIE_3D * pos, const EERIE_3D_BBOX * bbox, 
 	        &&	(pos->z <= bbox->max.z + tolerance));
 }
 
-extern EERIE_QUAT LocalUseQuat;
-extern float Eatan[];
-extern float Esin[];
-
 
 //-----------------------------------------------------------------------------
 inline unsigned __int8 clipByte(int value)
 {
 	value = (0 & (-(int)(value < 0))) | (value & (-(int)!(value < 0)));
 	value = (255 & (-(int)(value > 255))) | (value & (-(int)!(value > 255)));
-	return  ARX_CLEAN_WARN_CAST_UCHAR(value);
+	return  static_cast<unsigned char>(value);
 }
 inline unsigned __int8 clipByte255(int value)
 {
 	value = (255 & (-(int)(value > 255))) | (value & (-(int)!(value > 255)));
-	return ARX_CLEAN_WARN_CAST_UCHAR(value);
+	return static_cast<unsigned char>(value);
 }
 
 long F2L_RoundUp(float val);
@@ -498,9 +480,9 @@ inline bool PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)
 {
 	register float pos1 = cyl->origin.y + cyl->height;
 
-	if (pt->y < min(cyl->origin.y, pos1)) return false;
+	if (pt->y < std::min(cyl->origin.y, pos1)) return false;
 
-	if (pt->y > max(cyl->origin.y, pos1)) return false;
+	if (pt->y > std::max(cyl->origin.y, pos1)) return false;
 
 	if (Distance2D(cyl->origin.x, cyl->origin.z, pt->x, pt->z) <= cyl->radius)
 		return true;
@@ -513,9 +495,9 @@ inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt
 	register float pos1 = cyl->origin.y + cyl->height;
 	long ret = 2;
 
-	if (pt->y < min(cyl->origin.y, pos1)) return 0;
+	if (pt->y < std::min(cyl->origin.y, pos1)) return 0;
 
-	if (pt->y > max(cyl->origin.y, pos1)) ret = 1;
+	if (pt->y > std::max(cyl->origin.y, pos1)) ret = 1;
 
 	if (Distance2D(cyl->origin.x, cyl->origin.z, pt->x, pt->z) <= cyl->radius)
 	{

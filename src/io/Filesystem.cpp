@@ -41,7 +41,7 @@ long KillAllDirectory(const char * path) {
 	{
 		do
 		{
-			printf(" - \"%s\"\n", fl.cFileName);
+			LogDebug << " - \"" << fl.cFileName << "\"\n";
 			if (fl.cFileName[0] != '.')
 			{
 				if (fl.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)

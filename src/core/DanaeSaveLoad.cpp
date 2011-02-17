@@ -1372,7 +1372,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * fic)
 	MSP.z = trans.z;
 
 	ClearCurLoadInfo();
-	printf("Loading Interactive Objects\n");
+	LogDebug << "Loading Interactive Objects";
 
 
 
@@ -1526,7 +1526,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * fic)
 	}
 
 	ClearCurLoadInfo();
-	printf("Loading FOGS\n");
+	LogDebug << "Loading FOGS";
 	ARX_FOGS_Clear();
 
 	for (i = 0; i < dlh.nb_fogs; i++)
@@ -1576,7 +1576,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * fic)
 	LoadLevelScreen();
 
 	ClearCurLoadInfo();
-	printf("Loading Nodes\n");
+	LogDebug << "Loading Nodes";
 	ClearNodes();
 
 	for (i = 0; i < dlh.nb_nodes; i++)
@@ -1606,7 +1606,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * fic)
 	RestoreNodeNumbers();
 
 	ClearCurLoadInfo();
-	printf("Loading Paths\n");
+	LogDebug << "Loading Paths";
 	ARX_PATH_ReleaseAllPath();
 	DANAE_LS_PATH  * dlp;
 	DANAE_LS_PATHWAYS  * dlpw;
@@ -1677,7 +1677,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * fic)
 	}
 
 	ClearCurLoadInfo();
-	printf("Loading LLF Info\n");
+	LogDebug << "Loading LLF Info";
 
 	if (dlh.version >= 1.44f) // using compression
 	{
