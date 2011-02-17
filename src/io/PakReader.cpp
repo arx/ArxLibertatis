@@ -470,7 +470,9 @@ int blastOutMemOffset(void * Param, unsigned char * buf, size_t len) {
 	
 	BlastMemOutBufferOffset * p = (BlastMemOutBufferOffset *)Param;
 	
-	if(p->currentOffset >= p->endOffset) {
+	assert(p->currentOffset <= p->endOffset);
+	
+	if(p->currentOffset == p->endOffset) {
 		return 1;
 	}
 	
@@ -520,8 +522,9 @@ size_t PakReader::fRead(void * buf, size_t isize, size_t count, PakFileHandle * 
 			return 0;
 		}
 		
-		if(size != fh->file->uncompressedSize) {
-			LogWarning << "partially reading a compressed file - ineffixent!";
+		if(size < fh->file->uncompressedSize) {
+			LogWarning << "partially reading a compressed file - inefficent: " << f->name
+			           << " size=" << size << " offset=" << fh->offset << " total=" << f->uncompressedSize;
 		}
 		
 		fseek(file, f->offset, SEEK_SET);
@@ -534,14 +537,18 @@ size_t PakReader::fRead(void * buf, size_t isize, size_t count, PakFileHandle * 
 		out.startOffset = fh->offset;
 		out.endOffset = min(fh->offset + size, f->uncompressedSize);
 		
+		if(out.endOffset <= out.startOffset) {
+			return 0;
+		}
+		
 		// TODO this is really inefficient
 		int r = blast(blastInFile, &in, blastOutMemOffset, &out);
-		if(r) {
+		if(r && (r != 1 || (size == f->uncompressedSize && fh->offset == 0))) {
 			LogError << "PakReader::fRead: blast error " << r << " outSize=" << f->uncompressedSize;
 			return 0;
 		}
 		
-		size = min((size_t)0, out.currentOffset - out.startOffset);
+		size = out.currentOffset - out.startOffset;
 		
 	} else {
 		

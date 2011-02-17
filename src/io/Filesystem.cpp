@@ -67,30 +67,21 @@ long KillAllDirectory(const char * path) {
 	return 1;
 }
 
-// TODO return should be bool
-bool DirectoryExist(const char * name)
-{
+bool DirectoryExist(const char * name) {
+	
 	HANDLE idx;
 	WIN32_FIND_DATA fd;
-
-	if (!(idx = FindFirstFile(name, &fd)))
-	{
+	if ((idx = FindFirstFile(name, &fd)) != INVALID_HANDLE_VALUE) {
 		FindClose(idx);
 		char initial[256];
 		GetCurrentDirectory(255, initial);
-
-		if (SetCurrentDirectory(name) == 0) // success
-		{
-			SetCurrentDirectory(initial);
+		
+		if(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
 			return true;
 		}
-
-		SetCurrentDirectory(initial);
-		return false;
 	}
-
-	FindClose(idx);
-	return true;
+	
+	return false;
 }
 
 // File handle 0 is reserved for error.
