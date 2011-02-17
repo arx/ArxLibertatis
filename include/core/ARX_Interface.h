@@ -332,7 +332,6 @@ extern long LastMouseClick;
 extern long INVERTMOUSE;
 extern long CINEMASCOPE;
 extern long CINEMA_INC;
-extern long ALLOW_MIPMESHING;
 extern long CurrFightPos;
 extern long FORBID_SAVE;
 extern long CONSTANTUPDATELIGHT;
