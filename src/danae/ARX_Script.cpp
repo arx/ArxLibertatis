@@ -13380,8 +13380,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					pos = GetNextWord(es, pos, temp4);
 					sprintf(cmd, "SCRIPT ERROR: %s_%04ld %s %s %s %s [char %ld]", GetName(io->filename), io->ident, temp, temp2, temp3, temp4, ppos);
 
-					if (!ERROR_Log(cmd));
-					else ShowPopup(cmd);
+					LogError << cmd;
 
 					io->ioflags |= IO_FREEZESCRIPT;
 					return REFUSE;
