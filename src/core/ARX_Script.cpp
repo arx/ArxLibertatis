@@ -57,55 +57,31 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/ARX_Script.h"
 
-//TODO(lubosz): don't inlcude so much, move to scripting folder
-#include <cstdlib>
-#include <cstdio>
 #include <cassert>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <algorithm>
-#include <vector>
 
-#include "renderer/EERIEObject.h"
-#include "renderer/EERIELinkedObj.h"
-#include "renderer/EERIEPathfinder.h"
 #include "renderer/EERIECollisionSpheres.h"
-
 #include "core/ARX_CCinematique.h"
 #include "core/ARX_Collisions.h"
 #include "core/ARX_Damages.h"
 #include "core/ARX_Equipment.h"
 #include "core/ARX_GlobalMods.h"
-#include "core/ARX_Interactive.h"
 #include "core/ARX_Minimap.h"
 #include "core/ARX_Missile.h"
 #include "core/ARX_NPC.h"
-#include "core/ARX_Player.h"
 #include "core/ARX_Particles.h"
 #include "core/ARX_Paths.h"
 #include "core/ARX_Scene.h"
 #include "core/ARX_Sound.h"
 #include "core/ARX_Special.h"
-#include "core/ARX_Spells.h"
 #include "core/ARX_Speech.h"
 #include "core/ARX_Text.h"
 #include "core/ARX_Time.h"
 #include "core/ARX_Loc.h"
 #include "core/DanaeDlg.h"
 #include "core/Danae_resource.h"
-
 #include "io/HERMESMain.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
-
-
-//void _MakeUpcase(char * a) {
-//	std::transform(a, a + strlen(a), a, (int(*)(int))toupper);
-//}
-
-// hack
-//#define MakeUpcase(a) _MakeUpcase(a)
 
 using std::sprintf;
 using std::min;
@@ -3394,8 +3370,7 @@ long MakeLocalised(const char * text, char * output, long maxsize)
 	}
 
 	_TCHAR __text[256];
-	//todo cast
-	//MultiByteToWideChar(CP_ACP, 0, text, -1, __text, 256);
+	MultiByteToWideChar(CP_ACP, 0, text, -1, (wchar_t*)__text, 256);
 	return HERMES_UNICODE_GetProfileString(__text, "error", output, maxsize);
 }
 
@@ -3405,8 +3380,7 @@ long ARX_SPEECH_AddLocalised(INTERACTIVE_OBJ * io, const char * _lpszText, long 
 	_TCHAR __output[4096];
 	memset(__output, 0, 4096);
 	_TCHAR __text[256];
-	//todo cast
-	//MultiByteToWideChar(CP_ACP, 0, _lpszText, -1, __text, 256);
+	MultiByteToWideChar(CP_ACP, 0, _lpszText, -1, (wchar_t*)__text, 256);
 
 	HERMES_UNICODE_GetProfileString(
 	    __text,
@@ -11954,8 +11928,7 @@ long SendScriptEvent(EERIE_SCRIPT * es, long msg, const char * params, INTERACTI
 					else
 					{
 						_TCHAR UText[512];
-//						todo cast
-//						MultiByteToWideChar(CP_ACP, 0, tempp, -1, UText, 256);
+						MultiByteToWideChar(CP_ACP, 0, tempp, -1, (wchar_t*)UText, 256);
 						ARX_SPEECH_Add(NULL, UText);
 					}
 
