@@ -138,6 +138,9 @@ bool bForceGDI;
 
 TextureContainer *pTextureLoad=NULL;
 
+#define QUICK_SAVE_ID "ARX_QUICK_ARX"
+#define QUICK_SAVE_ID1 "ARX_QUICK_ARX1"
+
 int iTimeToDrawD7=-3000;
 
 char pStringMod[256];
@@ -431,8 +434,8 @@ bool GetTextSizeNoCache(HFONT font, const _TCHAR* text, int *width_out, int *hei
 
 //			todo: cast
 //			GetTextExtentPoint32W(hDC, _lpszUText, _tcslen(_lpszUText),	&sSize);
-			*_iWidth = sSize.cx;
-			*_iHeight = sSize.cy;
+			*width_out = sSize.cx;
+			*height_out = sSize.cy;
 
 			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 			return true;
@@ -443,12 +446,12 @@ bool GetTextSizeNoCache(HFONT font, const _TCHAR* text, int *width_out, int *hei
 
 #include <map>
 #include <utility>
-typedef std::pair<HFONT, std::wstring> textsize_key;
+typedef std::pair<HFONT, const char*> textsize_key;
 typedef std::pair<int, int> textsize_value;
 typedef std::map<textsize_key, textsize_value> textsize_map;
 static textsize_map cache;
 
-void GetTextSizeCached(HFONT font, const _TCHAR* text, int& width_out, int& height_out)
+void GetTextSizeCached(HFONT font, const char* text, int& width_out, int& height_out)
 {
 	textsize_key key(font, text);
 
@@ -486,7 +489,7 @@ void FontRenderText(HFONT _hFont, EERIE_3D pos, _TCHAR *_pText, COLORREF _c)
 		rRect.bottom=	ARX_CLEAN_WARN_CAST_LONG( pos.y + 999 );
 
 
-		ARX_TEXT pText;
+		ARX_Text pText;
 		ARX_Text_Init(&pText);
 		pText.lpszUText = _pText;
 		pText.lCol = _c;
@@ -504,17 +507,6 @@ void FontRenderText(HFONT _hFont, EERIE_3D pos, _TCHAR *_pText, COLORREF _c)
 //-----------------------------------------------------------------------------
 // CMenuConfig
 //-----------------------------------------------------------------------------
-
-CMenuConfig::CMenuConfig(const char* _pName)
-: pcName(strdup(_pName))
-{
-	First();
-}
-
-CMenuConfig::~CMenuConfig()
-{
-	free((void*)pcName);
-}
 
 void CMenuConfig::First()
 {
@@ -872,11 +864,7 @@ int CMenuConfig::GetDIKWithASCII(const char *_pcTouch)
 
 char * CMenuConfig::ReadConfig(const char *_pcSection, const char *_pcKey)
 {
-<<<<<<< HEAD
 	char tcText[256];
-=======
-    char tcText[256];
->>>>>>> 9c8ee72f685048ed83baad677c240339cf020326
 
 	int iI=GetPrivateProfileString(_pcSection,_pcKey,"",tcText,256,pcName);
 
@@ -5091,7 +5079,6 @@ void CMenuCheckButton::Move(int _iX, int _iY)
 	CMenuElement::Move(_iX, _iY);
 
 	if (pText)
-	{
 		pText->Move(_iX, _iY);
 
 	ComputeTexturesPosition();

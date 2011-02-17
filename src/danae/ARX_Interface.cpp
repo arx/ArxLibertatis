@@ -4500,10 +4500,10 @@ void DANAE::ManagePlayerControls()
 				  }
 			  }
 		  }
-	  }
+	}
 	  
 	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKCHARSHEET))
-	  {
+	{
 		  if (!(player.Interface & INTER_MAP))
 		  {
 			Book_Mode = BOOKMODE_STATS;
@@ -4515,10 +4515,10 @@ void DANAE::ManagePlayerControls()
 			  {
 				  ARX_INTERFACE_BookOpenClose(2);
 			  }
-	  }
+	}
 	  
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKSPELL))
-	  {
+	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKSPELL))
+	{
 		  if (!(player.Interface & INTER_MAP))
 		  {
 			  if (player.rune_flags)
@@ -4533,10 +4533,10 @@ void DANAE::ManagePlayerControls()
 		  {
 			  ARX_INTERFACE_BookOpenClose(2);
 		  }	  
-	  }
+	}
 	  
 	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKMAP))
-	  {
+	{
 		  if (!(player.Interface & INTER_MAP))
 		  {
 			Book_Mode = BOOKMODE_MINIMAP;
@@ -4548,10 +4548,10 @@ void DANAE::ManagePlayerControls()
 		  {
 			  ARX_INTERFACE_BookOpenClose(2);
 		  }
-	  }
+	}
 	  
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKQUEST))
-	  {
+	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_BOOKQUEST))
+	{
 		  if (!(player.Interface & INTER_MAP))
 		  {
 			Book_Mode = BOOKMODE_QUESTS;
@@ -4563,10 +4563,10 @@ void DANAE::ManagePlayerControls()
 		  {
 			  ARX_INTERFACE_BookOpenClose(2);
 		  }
-	  }
+	}
 	  
-	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_CANCELCURSPELL))
-	  {
+	if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_CANCELCURSPELL))
+	{
 		  for (long i=MAX_SPELLS-1;i>=0;i--)
 		  {
 			  if ((spells[i].exist) && (spells[i].caster==0))
@@ -4577,7 +4577,7 @@ void DANAE::ManagePlayerControls()
 					  break;
 				  }
 		  }
-	  }
+	}
 
 	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_PRECAST1))
 	  {
@@ -4602,56 +4602,56 @@ void DANAE::ManagePlayerControls()
 
 	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_WEAPON)||lChangeWeapon)
 	  {
-		bool bGo = true; 
+			bool bGo = true; 
 
-		if (lChangeWeapon > 0)
-		{
-			if (lChangeWeapon == 2)
+			if (lChangeWeapon > 0)
 			{
-				lChangeWeapon--;
-			  }
-			else
-			{
-				  if(	(inter.iobj[0]->animlayer[1].cur_anim==NULL)||
-				        (inter.iobj[0]->animlayer[1].cur_anim == inter.iobj[0]->anims[ANIM_WAIT]))
+				if (lChangeWeapon == 2)
 				{
-					  lChangeWeapon--;
-					  
-					if (pIOChangeWeapon)
-					{
-						SendIOScriptEvent(pIOChangeWeapon,SM_INVENTORYUSE,"");
-						pIOChangeWeapon=NULL;
-					  }
+					lChangeWeapon--;
 				  }
 				else
 				{
-					  bGo=false;
+					  if(	(inter.iobj[0]->animlayer[1].cur_anim==NULL)||
+							(inter.iobj[0]->animlayer[1].cur_anim == inter.iobj[0]->anims[ANIM_WAIT]))
+					{
+						  lChangeWeapon--;
+						  
+						if (pIOChangeWeapon)
+						{
+							SendIOScriptEvent(pIOChangeWeapon,SM_INVENTORYUSE,"");
+							pIOChangeWeapon=NULL;
+						  }
+					  }
+					else
+					{
+						  bGo=false;
+					  }
 				  }
 			  }
-		  }
 
-		if (bGo)
-		{
-		  if (player.Interface & INTER_COMBATMODE)
-		  {
-			  ARX_INTERFACE_Combat_Mode(0);
-			  bGToggleCombatModeWithKey=false;
-			  SPECIAL_DRAW_WEAPON=0;
-			  
-			  if (pMenuConfig->bMouseLookToggle)
-				  TRUE_PLAYER_MOUSELOOK_ON=MEMO_PLAYER_MOUSELOOK_ON;
-		  }
-		  else
-		  {
-			  MEMO_PLAYER_MOUSELOOK_ON=TRUE_PLAYER_MOUSELOOK_ON;
-			  SPECIAL_DRAW_WEAPON=1;
-			  TRUE_PLAYER_MOUSELOOK_ON|=1;
-			  SLID_START=(float)ARXTime;
-				lFadeMapTime = lARXTime;
-			  ARX_INTERFACE_Combat_Mode(2);
-			  bGToggleCombatModeWithKey=true;
-			  
-		  }
+			if (bGo)
+			{
+			  if (player.Interface & INTER_COMBATMODE)
+			  {
+				  ARX_INTERFACE_Combat_Mode(0);
+				  bGToggleCombatModeWithKey=false;
+				  SPECIAL_DRAW_WEAPON=0;
+				  
+				  if (pMenuConfig->bMouseLookToggle)
+					  TRUE_PLAYER_MOUSELOOK_ON=MEMO_PLAYER_MOUSELOOK_ON;
+			  }
+			  else
+			  {
+				  MEMO_PLAYER_MOUSELOOK_ON=TRUE_PLAYER_MOUSELOOK_ON;
+				  SPECIAL_DRAW_WEAPON=1;
+				  TRUE_PLAYER_MOUSELOOK_ON|=1;
+				  SLID_START=(float)ARXTime;
+					lFadeMapTime = lARXTime;
+				  ARX_INTERFACE_Combat_Mode(2);
+				  bGToggleCombatModeWithKey=true;
+				  
+			  }
 		  }
 	  }
 
@@ -4919,34 +4919,33 @@ void DANAE::ManagePlayerControls()
 				if(MAGICMODE<0)
 				{
 
-				if(lOldInterfaceTemp)
-				{
-					lOldInterface=lOldInterfaceTemp;
-					lOldInterfaceTemp=0;
-					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
-				}
+					if(lOldInterfaceTemp)
+					{
+						lOldInterface=lOldInterfaceTemp;
+						lOldInterfaceTemp=0;
+						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
+					}
 
-				if(lOldInterface)
-				{
-					player.Interface|=lOldInterface;
-					player.Interface&=~INTER_INVENTORY;
-				}
-				else
-				{
-					InventoryOpenClose(1);
+					if(lOldInterface)
+					{
+						player.Interface|=lOldInterface;
+						player.Interface&=~INTER_INVENTORY;
+					}
+					else
+						InventoryOpenClose(1);
 				}
 			}
-		}
 
-		if (bRenderInCursorMode)
-		{
-			if (eyeball.exist != 0)
+			if (bRenderInCursorMode)
 			{
-				long lNumSpell=ARX_SPELLS_GetInstance(SPELL_FLYING_EYE);
-
-				if (lNumSpell >= 0)
+				if (eyeball.exist != 0)
 				{
-					ARX_SPELLS_Kill(lNumSpell);
+					long lNumSpell=ARX_SPELLS_GetInstance(SPELL_FLYING_EYE);
+
+					if (lNumSpell >= 0)
+					{
+						ARX_SPELLS_Kill(lNumSpell);
+					}
 				}
 			}
 		}
@@ -7765,10 +7764,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ARX_PLAYER_ComputePlayerFullStats();
 
 		danaeApp.DANAEEndRender();
-		_stprintf(tex, _T("%s %3d"), ITC.lpszULevel, player.level);
+		_stprintf(textbuff, _T("%s %3d"), ITC.lpszULevel, player.level);
 		DrawBookTextCenter(hFontInBook, 398, 74, textbuff,Color,0x00FF00FF);
 		
-		_stprintf(tex, _T("%s %8ld"), ITC.lpszUXp, player.xp);
+		_stprintf(textbuff, _T("%s %8ld"), ITC.lpszUXp, player.xp);
 		DrawBookTextCenter(hFontInBook, 510, 74, textbuff, Color,0x00FF00FF);
 		danaeApp.DANAEStartRender();
 
@@ -8197,7 +8196,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		DrawBookTextCenter(hFontInBook, 533, 319, textbuff, Color, 0x00FF00FF);
 
 		// Secondary Attributes
-		_stprintf(tex, _T("%ld"),F2L_RoundUp(player.Full_maxlife));
+		_stprintf(textbuff, _T("%ld"),F2L_RoundUp(player.Full_maxlife));
 
 		if ((player.Mod_maxlife<0.f) || (player.Full_maxlife < player.maxlife))
 			Color = 0x000000FF;
@@ -8205,9 +8204,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 			Color = 0x00FF0000;
 		else Color = 0;
 
-		DrawBookTextCenter( 324, 158, tex, Color,0x00FF00FF, InBookFont);
+		DrawBookTextCenter( hFontInBook, 324, 158, textbuff, Color,0x00FF00FF);
 		
-		_stprintf(tex, _T("%ld"),F2L_RoundUp(player.Full_maxmana));
+		_stprintf(textbuff, _T("%ld"),F2L_RoundUp(player.Full_maxmana));
 
 		if ((player.Mod_maxmana<0.f) || (player.Full_maxmana < player.maxmana))
 			Color = 0x000000FF;
@@ -8215,9 +8214,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 			Color = 0x00FF0000;
 		else Color = 0;
 
-		DrawBookTextCenter( 324, 218, tex, Color, 0x00FF00FF, InBookFont);
+		DrawBookTextCenter( hFontInBook, 324, 218, textbuff, Color, 0x00FF00FF);
 		
-		_stprintf(tex, _T("%ld"), F2L_RoundUp(player.Full_damages));
+		_stprintf(textbuff, _T("%ld"), F2L_RoundUp(player.Full_damages));
 
 		if (player.Mod_damages<0.f)
 			Color = 0x000000FF;
@@ -8228,7 +8227,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		DrawBookTextCenter(hFontInBook, 324, 278, textbuff, Color, 0x00FF00FF);
 
 		float ac = player.Full_armor_class;
-		_stprintf(tex, _T("%ld"),F2L_RoundUp(ac));
+		_stprintf(textbuff, _T("%ld"),F2L_RoundUp(ac));
 
 		if (player.Mod_armor_class<0.f)
 			Color = 0x000000FF;
@@ -10522,7 +10521,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 						danaeApp.DANAEEndRender();
 						_TCHAR temp[256];
 						_stprintf(temp, _T("%3ld"), lCursorRedistValue);
-						ARX_TEXT_Draw(hFontInBook, DANAEMouse.x + 6* Xratio, DANAEMouse.y + 11* Yratio, 999, 999, temp, D3DCOLORBLACK, 0x00FF00FF);
+						ARX_TEXT_Draw(hFontInBook, DANAEMouse.x + 6* Xratio, DANAEMouse.y + 11* Yratio, temp, D3DCOLORBLACK, 0x00FF00FF);
 						danaeApp.DANAEStartRender();
 					}
 					else
