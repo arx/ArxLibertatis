@@ -71,7 +71,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define TBOOL int
 
-struct THEO_3D
+#pragma pack(push,1)
+typedef struct
 {
 	float			x;
 	float			y;
@@ -218,11 +219,6 @@ struct THEO_TEXTURE
 }; // Aligned 1 2 4
 
 
-
-
-
-
-
 struct THEO_SAVE_MAPS_IN
 {
 	char			texture_name[SIZE_NAME];
@@ -284,7 +280,7 @@ struct THEO_ACTION_POINT
 	long			num_sfx;
 }; // Aligned 1 2 4
 
-struct THEO_FACE_UV
+typedef struct
 {
 	long			u1;
 	long			v1;
@@ -512,5 +508,7 @@ struct THEA_SAMPLE
 //***********************************************************************
 //*            END THEO TEA Animation FILE FORMAT structures            *
 //***********************************************************************
+
+#pragma pack(pop)
 
 #endif // THEODATA_H

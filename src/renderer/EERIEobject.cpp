@@ -275,8 +275,9 @@ float GetTimeBetweenKeyFrames(EERIE_ANIM * ea, long f1, long f2)
 //-----------------------------------------------------------------------------------------------------
 EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * fic, long flags)
 {
+	LogDebug << "Loading animation file " << fic;
+	
 	THEA_HEADER				th;
-	THEA_KEYFRAME			tkf;
 	THEA_KEYFRAME_2015		tkf2015;
 	THEA_KEYMOVE		*	tkm;
 	THEO_GROUPANIM		*	tga;
@@ -289,12 +290,6 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * fic, lon
 	char texx[512];
 	long i, j, lastnum;
 	ArxQuat * quat;
-
-	if (DEBUGSYS)
-	{
-		sprintf(texx, "THEALoad %s", fic);
-		ForceSendConsole(texx, 1, 0, (HWND)1);
-	}
 
 retry1:
 	;
@@ -386,6 +381,7 @@ retry4:
 		}
 		else
 		{
+			THEA_KEYFRAME			tkf;
 			memcpy(&tkf, adr + pos, sizeof(THEA_KEYFRAME));
 			pos += sizeof(THEA_KEYFRAME);
 			memset(&tkf2015, 0, sizeof(THEA_KEYFRAME_2015));
@@ -463,7 +459,7 @@ retry4:
 			
 			tga = (THEO_GROUPANIM *)(adr + pos);
 			pos += sizeof(THEO_GROUPANIM);
-			eg = (EERIE_GROUP *)&eerie->groups[j+i*th.nb_groups];
+			eg = &eerie->groups[j+i*th.nb_groups];
 			eg->key = tga->key_group;
 
 			eg->quat.x = tga->Quaternion.x;
