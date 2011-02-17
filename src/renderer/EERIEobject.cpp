@@ -272,115 +272,65 @@ float GetTimeBetweenKeyFrames(EERIE_ANIM * ea, long f1, long f2)
 
 	return time;
 }
-//-----------------------------------------------------------------------------------------------------
-EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * fic, long flags)
-{
-	LogDebug << "Loading animation file " << fic;
+
+void * safeAllocZero(size_t size, const char * desc) {
+	void * result;
+	do {
+		result = malloc(size); 
+		if(!result) {
+			HERMES_Memory_Emergency_Out(size, desc);
+		}
+	} while(!result);
+	memset(result, 0, size);
+	return result;
+}
+
+template <class T>
+T * allocStructZero(const char * desc, size_t n = 1) {
+	return (T*)safeAllocZero(n * sizeof(T), desc);
+}
+
+EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, long flags) {
 	
-	THEA_HEADER				th;
-	THEA_KEYFRAME_2015		tkf2015;
-	THEA_KEYMOVE		*	tkm;
-	THEO_GROUPANIM		*	tga;
-	THEA_SAMPLE	 	*		ts;
-	long					num_sample;
-	long					num_sfx;
-	EERIE_ANIM		*		eerie;
-	EERIE_GROUP 	*		eg;
-	long pos = 0;
-	char texx[512];
-	long i, j, lastnum;
-	ArxQuat * quat;
-
-retry1:
-	;
-	eerie = (EERIE_ANIM *)malloc(sizeof(EERIE_ANIM)); 
-
-	if (!eerie)
-	{
-		if (HERMES_Memory_Emergency_Out(sizeof(EERIE_ANIM), "EEAnim"))
-			goto retry1;
-	}
-
-	memset(eerie, 0, sizeof(EERIE_ANIM));
-
+	LogDebug << "Loading animation file " << file;
+	
+	THEA_SAMPLE * ts;
+	size_t pos = 0;
+	
+	EERIE_ANIM * eerie = allocStructZero<EERIE_ANIM>("EEAnim");
+	
+	THEA_HEADER th;
 	memcpy(&th, adr + pos, sizeof(THEA_HEADER));
-
-	if (th.version < 2014)
-	{
-		sprintf(texx, "\nInvalid TEA Version !!!\n%s  %ld", fic, th.version);
-		ShowError("TheaToEerie", texx, 0);
+	if(th.version < 2014) {
+		LogError << "Invalid TEA Version " << th.version << " in " << file;
 		free(eerie);
-		eerie = NULL;
 		return NULL;
 	}
-
 	pos += sizeof(THEA_HEADER);
-
-	if (DEBUGG)
-	{
-		sprintf(texx, "THEAtoEERIE");
-		SendConsole(texx, 2, 0, (HWND)MSGhwnd);
-		sprintf(texx, "-----------TEA FILE-----------");
-		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "----------TEA header---------- size %d", sizeof(THEA_HEADER));
-		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "Identity----------------------- %s", th.identity);
-		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "Version - %ld  Frames %ld  Groups %ld KeyFrames %ld", th.version, th.nb_frames, th.nb_groups, th.nb_key_frames);
-		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-	}
-
+	
+	LogDebug << "TEA header size: " << sizeof(THEA_HEADER);
+	LogDebug << "Identity " << th.identity;
+	LogDebug << "Version - " << th.version << "  Frames " << th.nb_frames
+	         << "  Groups " << th.nb_groups << " KeyFrames " << th.nb_key_frames;
+	
 	eerie->nb_groups = th.nb_groups;
 	eerie->nb_key_frames = th.nb_key_frames;
-
-retry2:
-	;
-	eerie->frames = (EERIE_FRAME *)malloc(sizeof(EERIE_FRAME) * th.nb_key_frames); 
-
-	if (!eerie->frames)
-	{
-		if (HERMES_Memory_Emergency_Out(sizeof(EERIE_FRAME)*th.nb_key_frames, "EEAnimFrames"))
-			goto retry2;
-	}
-
-	memset(eerie->frames, 0, sizeof(EERIE_FRAME)*th.nb_key_frames);
-
-retry3:
-	;
-	eerie->groups = (EERIE_GROUP *)malloc(sizeof(EERIE_GROUP) * th.nb_key_frames * th.nb_groups); 
-
-	if (!eerie->groups)
-	{
-		if (HERMES_Memory_Emergency_Out(sizeof(EERIE_GROUP)*th.nb_key_frames * th.nb_groups, "EEAnimGroups"))
-			goto retry3;
-	}
-
-	memset(eerie->groups, 0, sizeof(EERIE_GROUP)*th.nb_key_frames * th.nb_groups);
-
-retry4:
-	;
-	eerie->voidgroups = (unsigned char *)malloc(th.nb_groups);
-
-	if (!eerie->voidgroups)
-	{
-		if (HERMES_Memory_Emergency_Out(th.nb_groups, "EEAnimVoidGroups"))
-			goto retry4;
-	}
-
-	memset(eerie->voidgroups, 0, th.nb_groups);
+	
+	eerie->frames = allocStructZero<EERIE_FRAME>("EEAnimFrames", th.nb_key_frames);
+	eerie->groups = allocStructZero<EERIE_GROUP>("EEAnimGroups", th.nb_key_frames * th.nb_groups);
+	eerie->voidgroups = allocStructZero<unsigned char>("EEAnimVoidGroups", th.nb_groups);
+	
 	eerie->anim_time = 0.f;
-	lastnum = 0;
-
+	
 	// Go For Keyframes read
-	for (i = 0; i < th.nb_key_frames; i++)
-	{
-		if (th.version >= 2015)
-		{
+	for(size_t i = 0; i < th.nb_key_frames; i++) {
+		LogDebug << "Loading keyframe " << i;
+		
+		THEA_KEYFRAME_2015 tkf2015;
+		if(th.version >= 2015) {
 			memcpy(&tkf2015, adr + pos, sizeof(THEA_KEYFRAME_2015));
 			pos += sizeof(THEA_KEYFRAME_2015);
-		}
-		else
-		{
+		} else {
 			THEA_KEYFRAME			tkf;
 			memcpy(&tkf, adr + pos, sizeof(THEA_KEYFRAME));
 			pos += sizeof(THEA_KEYFRAME);
@@ -394,72 +344,59 @@ retry4:
 			tkf2015.key_morph = tkf.key_morph;
 			tkf2015.time_frame = tkf.time_frame;
 		}
-
+		
 		eerie->frames[i].master_key_frame = tkf2015.master_key_frame;
 		eerie->frames[i].num_frame = tkf2015.num_frame;
-
+		
 		long lKeyOrient = tkf2015.key_orient ;
 		long lKeyMove = tkf2015.key_move ;
 		ARX_CHECK_SHORT(tkf2015.key_orient);
 		ARX_CHECK_SHORT(tkf2015.key_move);
 		eerie->frames[i].f_rotate = ARX_CLEAN_WARN_CAST_SHORT(lKeyOrient);
 		eerie->frames[i].f_translate = ARX_CLEAN_WARN_CAST_SHORT(lKeyMove);
-
-		tkf2015.time_frame = (tkf2015.num_frame) * 1000;
-		lastnum = tkf2015.num_frame;
+		
+		tkf2015.time_frame = (tkf2015.num_frame) * 1000; // TODO this looks like a hack
 		eerie->frames[i].time = tkf2015.time_frame * ( 1.0f / 24 );
 		eerie->anim_time += tkf2015.time_frame;
 		eerie->frames[i].flag = tkf2015.flag_frame;
-
-		if (DEBUGG)
-		{
-			sprintf(texx, "pos %ld - NumFr %ld MKF %d THEA_KEYFRAME %d TIME %fs -Move %d Orient %d Morph %d",
-			        pos, eerie->frames[i].num_frame, tkf2015.master_key_frame, sizeof(THEA_KEYFRAME), (float)(eerie->frames[i].time / 1000.f), tkf2015.key_move, tkf2015.key_orient, tkf2015.key_morph);
-			SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		}
-
+		
+		LogDebug << "pos " << pos << " - NumFr " << eerie->frames[i].num_frame
+		         << " MKF " << tkf2015.master_key_frame << " THEA_KEYFRAME " << sizeof(THEA_KEYFRAME)
+		         << " TIME " << (float)(eerie->frames[i].time / 1000.f) << "s -Move " << tkf2015.key_move
+		         << " Orient " << tkf2015.key_orient << " Morph " << tkf2015.key_morph;
+		
 		// Is There a Global translation ?
-		if (tkf2015.key_move == true)
-		{
-			tkm = (THEA_KEYMOVE *)(adr + pos);
+		if(tkf2015.key_move == true) {
+			THEA_KEYMOVE * tkm = (THEA_KEYMOVE *)(adr + pos);
 			pos += sizeof(THEA_KEYMOVE);
 			eerie->frames[i].translate.x = tkm->x;
 			eerie->frames[i].translate.y = tkm->y;
 			eerie->frames[i].translate.z = tkm->z;
 		}
-
+		
 		// Is There a Global Rotation ?
-		if (tkf2015.key_orient == true)
-		{
+		if(tkf2015.key_orient == true) {
 			pos += sizeof(THEO_ANGLE);
-			quat = ( ArxQuat* ) ( adr + pos );		
-			
-			pos+=sizeof(ArxQuat);					
+			ArxQuat * quat = (ArxQuat *)(adr + pos);
+			pos += sizeof(ArxQuat);					
 			eerie->frames[i].quat.x = quat->x;
 			eerie->frames[i].quat.y = quat->y;
 			eerie->frames[i].quat.z = quat->z;
 			eerie->frames[i].quat.w = quat->w;
 		}
-
+		
 		// Is There a Global Morph ? (IGNORED!)
-		if (tkf2015.key_morph == true)
-		{
+		if(tkf2015.key_morph == true) {
 			pos += sizeof(THEA_MORPH);
-
-			if (DEBUGG)
-			{
-				sprintf(texx, "-> Frame %ld MORPH - pos %ld THEO_MORPH %d", i, pos, sizeof(THEA_MORPH));
-				SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-			}
-		}
-
-		// Now go for Group Rotations/Translations/scaling for each GROUP
-		for (j = 0; j < th.nb_groups; j++)
-		{
 			
-			tga = (THEO_GROUPANIM *)(adr + pos);
+			LogDebug << "-> Frame " << i << " MORPH - pos " << pos << " THEO_MORPH " << sizeof(THEA_MORPH);
+		}
+		
+		// Now go for Group Rotations/Translations/scaling for each GROUP
+		for(size_t j = 0; j < th.nb_groups; j++) {
+			THEO_GROUPANIM * tga = (THEO_GROUPANIM *)(adr + pos);
 			pos += sizeof(THEO_GROUPANIM);
-			eg = &eerie->groups[j+i*th.nb_groups];
+			EERIE_GROUP * eg = &eerie->groups[j + i * th.nb_groups];
 			eg->key = tga->key_group;
 
 			eg->quat.x = tga->Quaternion.x;
@@ -476,49 +413,40 @@ retry4:
 		}
 
 		// Now Read Sound Data included in this frame
+		long num_sample;
 		memcpy(&num_sample, adr + pos, sizeof(long));
 		pos += sizeof(long);
 		eerie->frames[i].sample = -1;
-
-		if (num_sample != -1)
-		{
-			ts = (THEA_SAMPLE *)(adr + pos);
+		if(num_sample != -1) {
+			THEA_SAMPLE * ts = (THEA_SAMPLE *)(adr + pos);
 			pos += sizeof(THEA_SAMPLE);
 			pos += ts->sample_size;
- 
-			if (DEBUGG)
-			{
-				sprintf(texx, "---> Frame %ld Sample %s size %ld", i, ts->sample_name, ts->sample_size);
-				ForceSendConsole(texx, 3, 0, (HWND)MSGhwnd);
-			}
-
+			
+			LogDebug << "---> Frame " << i << " Sample " << ts->sample_name << " size " << ts->sample_size;
+			
 			eerie->frames[i].sample = ARX_SOUND_Load(ts->sample_name);
 		}
-
-		memcpy(&num_sfx, adr + pos, sizeof(long));
+		
+		//long num_sfx;
+		//memcpy(&num_sfx, adr + pos, sizeof(long));
 		pos += sizeof(long);
 	}
-
-	for (i = 0; i < th.nb_key_frames; i++)
-	{
-		if (!eerie->frames[i].f_translate)
-		{
+	
+	for(size_t i = 0; i < th.nb_key_frames; i++) {
+		
+		if(!eerie->frames[i].f_translate) {
+			
 			long k = i;
-
-			while ((k >= 0) && (!eerie->frames[k].f_translate))
-			{
+			while((k >= 0) && (!eerie->frames[k].f_translate)) {
 				k--;
 			}
-
+			
 			long j = i;
-
-			while ((j < th.nb_key_frames) && (!eerie->frames[j].f_translate))
-			{
+			while((j < th.nb_key_frames) && (!eerie->frames[j].f_translate)) {
 				j++;
 			}
-
-			if ((j < th.nb_key_frames) && (k >= 0))
-			{
+			
+			if((j < th.nb_key_frames) && (k >= 0)) {
 				float r1 = GetTimeBetweenKeyFrames(eerie, k, i);
 				float r2 = GetTimeBetweenKeyFrames(eerie, i, j);
 				float tot = 1.f / (r1 + r2);
@@ -529,25 +457,20 @@ retry4:
 				eerie->frames[i].translate.z = eerie->frames[j].translate.z * r1 + eerie->frames[k].translate.z * r2;
 			}
 		}
-
-		if (!eerie->frames[i].f_rotate)
-		{
+		
+		if(!eerie->frames[i].f_rotate) {
+			
 			long k = i;
-
-			while ((k >= 0) && (!eerie->frames[k].f_rotate))
-			{
+			while((k >= 0) && (!eerie->frames[k].f_rotate)) {
 				k--;
 			}
-
+			
 			long j = i;
-
-			while ((j < th.nb_key_frames) && (!eerie->frames[j].f_rotate))
-			{
+			while ((j < th.nb_key_frames) && (!eerie->frames[j].f_rotate)) {
 				j++;
 			}
-
-			if ((j < th.nb_key_frames) && (k >= 0))
-			{
+			
+			if ((j < th.nb_key_frames) && (k >= 0)) {
 				float r1 = GetTimeBetweenKeyFrames(eerie, k, i);
 				float r2 = GetTimeBetweenKeyFrames(eerie, i, j);
 				float tot = 1.f / (r1 + r2);
@@ -560,53 +483,47 @@ retry4:
 			}
 		}
 	}
-
-	for (i = 0; i < th.nb_key_frames; i++)
-	{
+	
+	for(size_t i = 0; i < th.nb_key_frames; i++) {
 		eerie->frames[i].f_translate = true;
 		eerie->frames[i].f_rotate = true;
 	}
-
-
+	
 	// Sets Flag for voidgroups (unmodified groups for whole animation)
-	for (i = 0; i < eerie->nb_groups; i++)
-	{
-		long voidd = 1;
-
-		for (j = 0; j < eerie->nb_key_frames; j++)
-		{
+	for(size_t i = 0; i < eerie->nb_groups; i++) {
+		
+		bool voidd = true;
+		for(size_t j = 0; j < eerie->nb_key_frames; j++) {
 			long pos = i + (j * eerie->nb_groups);
-
-			if	((eerie->groups[pos].quat.x != 0.f)
-			        || (eerie->groups[pos].quat.y != 0.f)
-			        || (eerie->groups[pos].quat.z != 0.f)
-			        || (eerie->groups[pos].quat.w != 1.f)
-			        || (eerie->groups[pos].translate.x != 0.f)
-			        || (eerie->groups[pos].translate.y != 0.f)
-			        || (eerie->groups[pos].translate.z != 0.f)
-			        || (eerie->groups[pos].zoom.x != 0.f)
-			        || (eerie->groups[pos].zoom.y != 0.f)
-			        || (eerie->groups[pos].zoom.z != 0.f)
-			   )
-			{
-				voidd = 0;
+			
+			if((eerie->groups[pos].quat.x != 0.f)
+			   || (eerie->groups[pos].quat.y != 0.f)
+			   || (eerie->groups[pos].quat.z != 0.f)
+			   || (eerie->groups[pos].quat.w != 1.f)
+			   || (eerie->groups[pos].translate.x != 0.f)
+			   || (eerie->groups[pos].translate.y != 0.f)
+			   || (eerie->groups[pos].translate.z != 0.f)
+			   || (eerie->groups[pos].zoom.x != 0.f)
+			   || (eerie->groups[pos].zoom.y != 0.f)
+			   || (eerie->groups[pos].zoom.z != 0.f)
+			   ) {
+				voidd = false;
 				break;
 			}
 		}
-
-		if (voidd) eerie->voidgroups[i] = 1;
+		
+		if(voidd) {
+			eerie->voidgroups[i] = 1;
+		}
 	}
-
+	
 	eerie->anim_time = (float)th.nb_frames * 1000.f * ( 1.0f / 24 );
-
-	if (eerie->anim_time < 1) eerie->anim_time = 1;
-
-	if (DEBUGG)
-	{
-		sprintf(texx, "Finished Conversion TEA -> EERIE - %f seconds", (float)(eerie->anim_time / 1000));
-		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
+	if(eerie->anim_time < 1) {
+		eerie->anim_time = 1;
 	}
-
+	
+	LogDebug << "Finished Conversion TEA -> EERIE - " << (eerie->anim_time / 1000) << " seconds";
+	
 	return eerie;
 }
 
