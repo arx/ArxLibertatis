@@ -55,7 +55,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#define DIRECTINPUT_VERSION 0x0700
+#ifndef DIRECTINPUT_VERSION
+	#define DIRECTINPUT_VERSION 0x0700
+#endif
+
 #include <dinput.h>
 #include <stdio.h>
 
@@ -88,8 +91,6 @@ using namespace std;
 #define VAL_THRESHOLD 100.f
 #define PASSS 0.5f 
 #define PASS 50.f 
-
-#define MAX_DIST_BUMP			(400.f)
 
 //-----------------------------------------------------------------------------
 extern long USE_LIGHT_OPTIM;

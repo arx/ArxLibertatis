@@ -56,7 +56,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 // Desc: Shortcut macros and functions for using DX objects
 #define D3D_OVERLOADS
-#define STRICT
 #include <math.h>
 #include <stdio.h>
 #include <tchar.h>

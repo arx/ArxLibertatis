@@ -44,9 +44,9 @@ namespace ATHENA
 
 	enum ATHENAInstance
 	{
-		IS_IDLED     = 0x00000001,
-		IS_PAUSED    = 0x00000002,
-		IS_TOOFAR    = 0x00000004
+		ATHENA_IDLED     = 0x00000001,
+		ATHENA_PAUSED    = 0x00000002,
+		ATHENA_TOOFAR    = 0x00000004
 	};
 
 	static aalError alSourcePlayLoop(ALuint _source, ALint loop_flag)
@@ -653,7 +653,7 @@ namespace ATHENA
 
 	aalUBool Instance::IsIdled()
 	{
-		return status & IS_IDLED ? AAL_UTRUE : AAL_UFALSE;
+		return status & ATHENA_IDLED ? AAL_UTRUE : AAL_UFALSE;
 	}
 
 	aalULong Instance::Time(const aalUnit & unit)
@@ -719,7 +719,7 @@ namespace ATHENA
 			}
 		}
 
-		status &= ~IS_PAUSED;
+		status &= ~ATHENA_PAUSED;
 		time = read = write = 0;
 		loop = play_count - 1;
 		callb_i = channel.flags & AAL_FLAG_CALLBACK ? 0 : 0xffffffff;
@@ -740,9 +740,7 @@ namespace ATHENA
 
 	aalError Instance::Stop()
 	{
-		if (status & IS_IDLED) return AAL_OK;
-		int error;
-		alGetError(); // Clear error
+		if (status & ATHENA_IDLED) return AAL_OK;
 
 		InstanceDebugLog(this, "STOPPED");
 
@@ -751,31 +749,31 @@ namespace ATHENA
 		if (alGetError() != AL_NO_ERROR)
 			return AAL_ERROR_SYSTEM;
 
-		status &= ~IS_PAUSED;
-		status |= IS_IDLED;
+		status &= ~ATHENA_PAUSED;
+		status |= ATHENA_IDLED;
 
 		return AAL_OK;
 	}
 
 	aalError Instance::Pause()
 	{
-		if (status & IS_IDLED) return AAL_OK;
+		if (status & ATHENA_IDLED) return AAL_OK;
 
 		InstanceDebugLog(this, "PAUSED");
 
 		alSourcePause(source[0]);
-		status |= IS_PAUSED;
+		status |= ATHENA_PAUSED;
 
 		return AAL_OK;
 	}
 
 	aalError Instance::Resume()
 	{
-		if (status & IS_IDLED) return AAL_OK;
+		if (status & ATHENA_IDLED) return AAL_OK;
 
 		InstanceDebugLog(this, "RESUMED");
 
-		status &= ~IS_PAUSED;
+		status &= ~ATHENA_PAUSED;
 
 		if (channel.flags & AAL_FLAG_POSITION && alIsSource(source[0]) && IsTooFar())
 			return AAL_OK;
@@ -826,10 +824,11 @@ namespace ATHENA
 
 		dist = Distance(listener_pos, channel.position);
 
-		if (status & IS_TOOFAR)
+		if (status & ATHENA_TOOFAR)
 		{
 			if (dist > max) return AAL_UTRUE;
 
+			status &= ~ATHENA_TOOFAR;
 			status &= ~IS_TOOFAR;
 			int error;
 			alGetError();
@@ -844,7 +843,7 @@ namespace ATHENA
 		{
 			if (dist <= max) return AAL_UFALSE;
 
-			status |= IS_TOOFAR;
+			status |= ATHENA_TOOFAR;
 			alSourceStop(source[0]);
 		}
 
@@ -895,7 +894,7 @@ namespace ATHENA
 	{
 		aalULong last;
 
-		if (status & (IS_IDLED | IS_PAUSED)) return AAL_OK;
+		if (status & (ATHENA_IDLED | ATHENA_PAUSED)) return AAL_OK;
 
 		if (channel.flags & AAL_FLAG_POSITION && alIsSource(source[0]) && IsTooFar())
 		{
@@ -954,7 +953,7 @@ namespace ATHENA
 			{
 				InstanceDebugLog(this, "IDLED");
 
-				status |= IS_IDLED;
+				status |= ATHENA_IDLED;
 				return AAL_OK;
 			}
 
