@@ -829,7 +829,6 @@ namespace ATHENA
 			if (dist > max) return AAL_UTRUE;
 
 			status &= ~ATHENA_TOOFAR;
-			status &= ~IS_TOOFAR;
 			int error;
 			alGetError();
 			alSourcePlayLoop(source[0], loop || stream ? AL_TRUE : AL_FALSE);
