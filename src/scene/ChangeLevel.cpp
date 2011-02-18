@@ -390,7 +390,7 @@ void ARX_CHANGELEVEL_Change( const std::string& level, const std::string& target
 			&&	(num != 1))
 		return;
 
-	LoadLevelScreen(GDevice, num);
+	LoadLevelScreen(num);
 
 	if (num == -1)
 	{
@@ -428,7 +428,7 @@ void ARX_CHANGELEVEL_Change( const std::string& level, const std::string& target
 
 	ARX_TIME_Pause();
 	PROGRESS_BAR_COUNT += 1.f;
-	LoadLevelScreen(GDevice, num);
+	LoadLevelScreen(num);
 
 	LogDebug << "Before ARX_CHANGELEVEL_PushLevel";
 	ARX_CHANGELEVEL_PushLevel(CURRENTLEVEL, NEW_LEVEL);
@@ -1928,7 +1928,7 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 		return 0;
 	}
 
-	LoadLevelScreen(GDevice, num);
+	LoadLevelScreen(num);
 	SetEditMode(1, false);
 
 	if (ARX_CHANGELEVEL_Pop_Globals() != 1)
@@ -3465,6 +3465,9 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 		NO_PLAYER_POSITION_RESET = 1;
 	}
 	
+	PROGRESS_BAR_COUNT += 2.f;
+	LoadLevelScreen(instance);
+	
 	LogDebug << "FirstTime = " << FirstTime;
 
 	_FIRSTTIME = FirstTime;
@@ -3531,7 +3534,7 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 	}
 
 	PROGRESS_BAR_COUNT += 2.f;
-	LoadLevelScreen(GDevice, instance);
+	LoadLevelScreen(instance);
 	LogDebug << "Before ARX_CHANGELEVEL_Pop_Level";
 
 	if (ARX_CHANGELEVEL_Pop_Level(&asi, instance, FirstTime) != 1)
@@ -3562,7 +3565,7 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 
 	LogDebug << "After  ARX_CHANGELEVEL_Pop_Index";
 	PROGRESS_BAR_COUNT += 20.f;
-	LoadLevelScreen(GDevice, instance);
+	LoadLevelScreen(instance);
 
 	if (FirstTime)
 	{
@@ -3615,7 +3618,7 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 	}
 
 	PROGRESS_BAR_COUNT += 20.f;
-	LoadLevelScreen(GDevice, instance);
+	LoadLevelScreen(instance);
 	LogDebug << "Before ARX_CHANGELEVEL_Pop_Player";
 
 	if (ARX_CHANGELEVEL_Pop_Player(&asi, &asp) != 1)
@@ -4040,7 +4043,7 @@ long ARX_CHANGELEVEL_Load(long instance)
 	if (ARX_CHANGELEVEL_Get_Player_LevelData(&pld, CurGamePath) == 1)
 	{
 		PROGRESS_BAR_COUNT += 2.f;
-		LoadLevelScreen(GDevice, pld.level);
+		LoadLevelScreen(pld.level);
 
 		if (pld.level == CURRENTLEVEL)
 			DONT_CLEAR_SCENE = 1;
@@ -4051,7 +4054,7 @@ long ARX_CHANGELEVEL_Load(long instance)
 		float fPldTime = ARX_CLEAN_WARN_CAST_FLOAT(pld.time);
 		DanaeClearLevel();
 		PROGRESS_BAR_COUNT			+=	2.f;
-		LoadLevelScreen(GDevice, pld.level);
+		LoadLevelScreen(pld.level);
 		CURRENTLEVEL				=	pld.level;
 		ARX_CHANGELEVEL_DesiredTime	=	fPldTime;
 		ARX_CHANGELEVEL_PopLevel(pld.level, 0);

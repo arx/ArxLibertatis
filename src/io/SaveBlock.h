@@ -22,6 +22,8 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+#ifndef _CLUSTER_SAVE_H_
+#define _CLUSTER_SAVE_H_
 
 #include <cstddef>
 #include <string>
@@ -67,3 +69,5 @@ public:
 	bool hasFile(const std::string & name) const;
 	
 };
+
+#endif // _CLUSTER_SAVE_H_

@@ -95,7 +95,7 @@ extern EERIE_CAMERA bookcam;
 extern HINSTANCE hInstance;
 extern HINSTANCE hInst;
 extern EERIE_S2D DANAEMouse;
-extern EERIE_CAMERA subj, map;
+extern EERIE_CAMERA subj, mapcam;
 extern EERIE_3D moveto;
 extern EERIE_S2D STARTDRAG;
 extern EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];

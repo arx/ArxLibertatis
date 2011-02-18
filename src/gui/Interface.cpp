@@ -2674,7 +2674,7 @@ bool DANAE::ManageEditorControls()
 				{
 					char pp[256];
 					strcpy(pp,GetName(loadfrom).c_str());
-					LoadLevelScreen(GDevice,GetLevelNumByName(pp));
+					LoadLevelScreen(GetLevelNumByName(pp));
 					
 					Pause(true);
 

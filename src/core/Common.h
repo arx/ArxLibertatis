@@ -286,11 +286,41 @@ enum ARX_DEBUG_LOG_TYPE
 #define ARXDEBUG_COLOR_WARNING	FOREGROUND_GREEN
 #define ARXDEBUG_COLOR_DEFAULT  FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED
 
-
 class ArxDebug
 {
 	public :
 		static void Assert(const char * _sMessage, const char * _sFile, unsigned _iLine);
 	
 };
+
+
+/* ---------------------------------------------------------
+					String utilities
+------------------------------------------------------------*/
+template <class STYPE>
+inline const char * safeGetString(const char * & pos, STYPE & size) {	
+	const char * begin = pos;
+	
+	for(size_t i = 0; i < size; i++) {
+		if(pos[i] == 0) {
+			size -= i + 1;
+			pos += i + 1;
+			return begin;
+		}
+	}
+	
+	return NULL;
+}
+
+template <class T, class STYPE>
+inline bool safeGet(T & data, const char * & pos, STYPE & size) {
+	if(size < sizeof(T)) {
+		return false;
+	}
+	data = *reinterpret_cast<const T *>(pos);
+	pos += sizeof(T);
+	size -= sizeof(T);
+	return true;
+}
+
 #endif // ARX_COMMON_H

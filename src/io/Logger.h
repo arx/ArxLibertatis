@@ -4,23 +4,16 @@
 #include <cstring>
 #include "core/Common.h"
 
-#if !ARX_COMPILER_MSVC
-    #define ShortFile std::strrchr(__FILE__, '/')+1
-#else
-    #define ShortFile std::strrchr(__FILE__, '\\')+1
-#endif
-
-#define LogDebug    Logger(ShortFile,__LINE__, Logger::Debug)
-#define LogError    Logger(ShortFile,__LINE__, Logger::Error)
-#define LogWarning  Logger(ShortFile,__LINE__, Logger::Warning)
-#define LogInfo     Logger(ShortFile,__LINE__, Logger::Info)
-#define LogFatal    Logger(ShortFile,__LINE__, Logger::Fatal)
+#define LogDebug    Logger(__FILE__,__LINE__, Logger::Debug)
+#define LogError    Logger(__FILE__,__LINE__, Logger::Error)
+#define LogWarning  Logger(__FILE__,__LINE__, Logger::Warning)
+#define LogInfo     Logger(__FILE__,__LINE__, Logger::Info)
+#define LogFatal    Logger(__FILE__,__LINE__, Logger::Fatal)
 
 #include <iostream>
 #include <string>
 
 using std::string;
-
 
 class Logger {
 

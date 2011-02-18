@@ -59,7 +59,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdlib>
 
-#define DIRECTINPUT_VERSION 0x0700
+#ifndef DIRECTINPUT_VERSION
+	#define DIRECTINPUT_VERSION 0x0700
+#endif
 
 #include <iomanip>
 #include <algorithm>
@@ -3545,7 +3547,6 @@ INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fil, 
 extern float LAST_FZPOS;
 extern float LAST_FZSCREEN;
 extern long USE_CEDRIC_ANIM;
-INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag = 0, EERIE_3D * _pRef = NULL, INTERACTIVE_OBJ ** _pTable = NULL, int * _pnNbInTable = NULL);
 
 //*************************************************************************************
 // Returns nearest interactive object found at position x,y

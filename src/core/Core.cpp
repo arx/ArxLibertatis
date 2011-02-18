@@ -299,7 +299,7 @@ EERIE_3DOBJ * eyeballobj=NULL;			// EyeBall 3D Object	// NEEDTO: Load dynamicall
 EERIE_3DOBJ * cabal=NULL;				// Cabalistic 3D Object // NEEDTO: Load dynamically
 EERIE_BACKGROUND DefaultBkg;
 EERIE_CAMERA TCAM[32];
-EERIE_CAMERA subj,map,bookcam,raycam,conversationcamera;
+EERIE_CAMERA subj,mapcam,bookcam,raycam,conversationcamera;
 EERIE_CAMERA DynLightCam;
 
 INTERACTIVE_OBJ * CAMERACONTROLLER=NULL;
@@ -320,7 +320,7 @@ char TELEPORT_TO_POSITION[64];
 long TELEPORT_TO_ANGLE;
 long TELEPORT_TO_CONFIRM=1;
 // END -   Information for Player Teleport between/in Levels---------------------------------------
-char LastLoadedDLF[256];
+char LastLoadedDLF[512];
 char ItemToBeAdded[1024];
 char WILL_LAUNCH_CINE[256];
 char LOCAL_SAVENAME[64];
@@ -968,29 +968,29 @@ void InitializeDanae()
 	bookcam.pos.z=0.f;
 	bookcam.focal=BASE_FOCAL;
 
-	map.pos.x=1500.f;
-	map.pos.y=-6000.f;
-	map.pos.z=1500.f;
-	map.angle.a=90.f;
-	map.angle.b=0.f;
-	map.angle.g=0.f;
-	map.clip.left=0; 
-	map.clip.top=0;
-	map.clip.right=640;
-	map.clip.bottom=480;
-	map.clipz0=0.001f;
-	map.clipz1=0.999f;
-	map.centerx=(map.clip.right-map.clip.left)/2;
-	map.centery=(map.clip.bottom-map.clip.top)/2;
-	map.AddX=320.f;
-	map.AddY=240.f;
-	map.focal=400.f;
-	map.Zdiv=3000.f;
-	map.Zmul=1.f/map.Zdiv;
-	map.clip3D=1000;
-	map.type=CAM_TOPVIEW;
-	map.bkgcolor=0x001F1F55;
-	SetActiveCamera(&map);
+	mapcam.pos.x=1500.f;
+	mapcam.pos.y=-6000.f;
+	mapcam.pos.z=1500.f;
+	mapcam.angle.a=90.f;
+	mapcam.angle.b=0.f;
+	mapcam.angle.g=0.f;
+	mapcam.clip.left=0; 
+	mapcam.clip.top=0;
+	mapcam.clip.right=640;
+	mapcam.clip.bottom=480;
+	mapcam.clipz0=0.001f;
+	mapcam.clipz1=0.999f;
+	mapcam.centerx=(mapcam.clip.right-mapcam.clip.left)/2;
+	mapcam.centery=(mapcam.clip.bottom-mapcam.clip.top)/2;
+	mapcam.AddX=320.f;
+	mapcam.AddY=240.f;
+	mapcam.focal=400.f;
+	mapcam.Zdiv=3000.f;
+	mapcam.Zmul=1.f/mapcam.Zdiv;
+	mapcam.clip3D=1000;
+	mapcam.type=CAM_TOPVIEW;
+	mapcam.bkgcolor=0x001F1F55;
+	SetActiveCamera(&mapcam);
 	SetCameraDepth(10000.f);
 	danaeApp.MustRefresh=true;
 
@@ -3256,9 +3256,9 @@ long FirstFrameHandling(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	
 	_NB_++;
 	Kam=&subj;
-	map.pos.x = lastteleport.x=subj.pos.x=moveto.x=player.pos.x;
+	mapcam.pos.x = lastteleport.x=subj.pos.x=moveto.x=player.pos.x;
 				lastteleport.y=subj.pos.y=moveto.y=player.pos.y;
-	map.pos.z = lastteleport.z=subj.pos.z=moveto.z=player.pos.z;
+	mapcam.pos.z = lastteleport.z=subj.pos.z=moveto.z=player.pos.z;
 	lastteleport.y+=PLAYER_BASE_HEIGHT;
 
 	subj.angle.a=player.angle.a;
@@ -3391,7 +3391,7 @@ long FirstFrameHandling(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
  PROGRESS_BAR_COUNT+=1.f;
  LoadLevelScreen();
-	LoadLevelScreen(NULL, -2);
+	LoadLevelScreen(-2);
 	
 	if (	(!CheckInPolyPrecis(player.pos.x,player.pos.y,player.pos.z))
 		&&	(LastValidPlayerPos.x!=0.f)
@@ -4706,7 +4706,7 @@ void DANAE_StartNewQuest()
 	player.Interface = INTER_LIFE_MANA | INTER_MINIBACK | INTER_MINIBOOK;
 	PROGRESS_BAR_TOTAL = 108;
 	OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
-	LoadLevelScreen(GDevice,1);
+	LoadLevelScreen(1);
 	char loadfrom[256];
 	sprintf(loadfrom,"Graph\\Levels\\Level1\\Level1.dlf");
 	DONT_ERASE_PLAYER=1;							
@@ -4859,7 +4859,7 @@ bool DANAE_ManageSplashThings()
 			if (CEDRIC_VERSION)
 			{
 				sprintf(loadfrom,"Graph\\Levels\\LevelDemo2\\levelDemo2.dlf");
-				LoadLevelScreen(GDevice,29);	
+				LoadLevelScreen(29);	
 			}
 			else
 			{
@@ -4867,7 +4867,7 @@ bool DANAE_ManageSplashThings()
 				sprintf(loadfrom,"Graph\\Levels\\Level10\\level10.dlf");
 				OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
 				PROGRESS_BAR_TOTAL = 108;
-				LoadLevelScreen(GDevice,10);	
+				LoadLevelScreen(10);	
 			}
 
 			DanaeLoadLevel(GDevice,loadfrom);
@@ -5519,7 +5519,7 @@ static float _AvgFrameDiff = 150.f;
 		const char RESOURCE_LEVEL_10[] = "Graph\\Levels\\Level10\\level10.dlf";
 		OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
 		PROGRESS_BAR_TOTAL = 108;
-		LoadLevelScreen(GDevice,10);	
+		LoadLevelScreen(10);	
 		DanaeLoadLevel(GDevice,RESOURCE_LEVEL_10);
 		FORBID_SAVE=0;
 		FirstFrame=1;
@@ -7040,8 +7040,6 @@ m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 
 	return S_OK;
 }
-
-INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos,long flag=0, EERIE_3D* _pRef=NULL, INTERACTIVE_OBJ** _pTable = NULL, int* _pnNbInTable=NULL );
 
 void DANAE::GoFor2DFX()
 {

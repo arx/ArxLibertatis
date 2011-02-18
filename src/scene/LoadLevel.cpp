@@ -1379,8 +1379,8 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fic)
 		mse->pos.x = Mscenepos.x = Mscenepos.x + BKG_SIZX - t1;
 		mse->pos.z = Mscenepos.z = Mscenepos.z + BKG_SIZZ - t2;
 		Mscenepos.y = mse->pos.y = -mse->cub.ymin - 100.f - mse->point0.y;
-		lastteleport.x = map.pos.x = player.pos.x = subj.pos.x = moveto.x = mse->pos.x + mse->point0.x;
-		lastteleport.z = map.pos.z = player.pos.z = subj.pos.z = moveto.z = mse->pos.z + mse->point0.z;
+		lastteleport.x = mapcam.pos.x = player.pos.x = subj.pos.x = moveto.x = mse->pos.x + mse->point0.x;
+		lastteleport.z = mapcam.pos.z = player.pos.z = subj.pos.z = moveto.z = mse->pos.z + mse->point0.z;
 		lastteleport.y         = player.pos.y = subj.pos.y = moveto.y = mse->pos.y + mse->point0.y;
 		lastteleport.y -= 180.f;
 		player.pos.y = subj.pos.y -= 180.f;
