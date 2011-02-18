@@ -868,9 +868,9 @@ namespace ATHENA
 		if (count < to_fill) {
 			if (loop) {
 				stream->SetPosition(0);
-				stream->Read(ptr0 + count, to_fill - count, count);
+				stream->Read((void *)((char *)ptr0 + count), to_fill - count, count);
 			} else {
-				memset(ptr0 + count, 0, to_fill - count);
+				memset((void *)((char *)ptr0 + count), 0, to_fill - count);
 			}
 		}
 		alGetError();
