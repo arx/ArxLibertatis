@@ -2096,8 +2096,7 @@ void ARX_PLAYER_Manage_Visual()
 			        ||	(ause0->cur_anim == alist[ANIM_U_TURN_LEFT_FIGHT]))
 			{
 				float fv = PLAYER_ROTATION * 5;
-				long vv;
-				F2L(fv, &vv);
+				long vv = fv;
 				io->frameloss -= fv - (float)vv;
 
 				if (io->frameloss < 0) io->frameloss = 0;
@@ -2110,10 +2109,8 @@ void ARX_PLAYER_Manage_Visual()
 			else if ((ause0->cur_anim == alist[ANIM_U_TURN_RIGHT])
 			         ||	(ause0->cur_anim == alist[ANIM_U_TURN_RIGHT_FIGHT]))
 			{
-				long vv;
-				F2L(PLAYER_ROTATION * 5, &vv);
+				long vv = PLAYER_ROTATION * 5;
 				float fv = PLAYER_ROTATION * 5;
-				F2L(fv, &vv);
 				io->frameloss += fv - (float)vv;
 
 				if (io->frameloss < 0) io->frameloss = 0;
@@ -3194,7 +3191,7 @@ void PlayerMovementIterate(float DeltaTime)
 			GetAnimTotalTranslate(inter.iobj[0]->animlayer[0].cur_anim, inter.iobj[0]->animlayer[0].altidx_cur, &mv);
 			TheoricalMove = TRUEVector_Magnitude(&mv);
 
-			F2L(inter.iobj[0]->animlayer[0].cur_anim->anims[inter.iobj[0]->animlayer[0].altidx_cur]->anim_time, &time);
+			time = inter.iobj[0]->animlayer[0].cur_anim->anims[inter.iobj[0]->animlayer[0].altidx_cur]->anim_time;
 
 			if ((levitate) && (!player.climbing))
 			{

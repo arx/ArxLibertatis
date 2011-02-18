@@ -1383,9 +1383,8 @@ EERIEPOLY * CheckArrowPolyCollision(EERIE_3D * start, EERIE_3D * end)
 	Vector_Copy(&pol.v[1], end);
 	
 	long px, pz;
-	F2L(end->x * ACTIVEBKG->Xmul, &px);
-
-	F2L(end->z * ACTIVEBKG->Zmul, &pz);
+	px = end->x * ACTIVEBKG->Xmul;
+	pz = end->z * ACTIVEBKG->Zmul;
 
 	long ix, ax, iz, az;
 	ix = max(px - 2, 0L);
@@ -1476,8 +1475,8 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 			if (dist > ACTIVECAM->cdepth * fZFogEnd + 50.f) continue;
 
 			long xx, yy;
-			F2L((Thrown[i].position.x)*ACTIVEBKG->Xmul, &xx);
-			F2L((Thrown[i].position.z)*ACTIVEBKG->Zmul, &yy);
+			xx = (Thrown[i].position.x)*ACTIVEBKG->Xmul;
+			yy = (Thrown[i].position.z)*ACTIVEBKG->Zmul;
 
 			if (xx < 0)
 				continue;
@@ -1544,7 +1543,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 						while (notok-- > 0)
 						{
-							F2L((float)(rnd() *(float)Thrown[i].obj->nbfaces), &num);
+							num = (rnd() *(float)Thrown[i].obj->nbfaces);
 
 							if ((num >= 0) && (num < Thrown[i].obj->nbfaces))
 							{
@@ -2272,12 +2271,12 @@ bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long sour
 	bool ret = true;
 	long px, pz;
 	float x = obj->pbox->vert[0].pos.x;
-	F2L(x * ACTIVEBKG->Xmul, &px);
+	px = x * ACTIVEBKG->Xmul;
 	float z = obj->pbox->vert[0].pos.z;
-	F2L(z * ACTIVEBKG->Zmul, &pz);
+	pz = z * ACTIVEBKG->Zmul;
 	long ix, iz, ax, az;
 	long n;
-	F2L(obj->pbox->radius * ( 1.0f / 100 ), &n);
+	n = obj->pbox->radius * ( 1.0f / 100 );
 	n = min(1L, n + 1);
 	ix = max(px - n, 0L);
 	ax = min(px + n, ACTIVEBKG->Xsize - 1L);

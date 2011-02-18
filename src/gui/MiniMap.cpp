@@ -541,7 +541,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 							else
 								vv = 0.f;
 
-							F2L((float)(vv * 255.f), &r);
+							r = vv * 255.f;
 
 
 							long ucLevel =  max(r, (long)minimap[SHOWLEVEL].revealed[i][j]);

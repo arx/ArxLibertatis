@@ -188,12 +188,8 @@ float ARX_INTERACTIVE_fGetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop)
 	return io->_itemdata->price * shop_multiply * durability_ratio;
 
 }
-long ARX_INTERACTIVE_GetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop)
-{
-	long lresult;
-	F2L(ARX_INTERACTIVE_fGetPrice(io, shop), &lresult);
-	return lresult;
-
+long ARX_INTERACTIVE_GetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop) {
+	return ARX_INTERACTIVE_fGetPrice(io, shop);
 }
 void ARX_INTERACTIVE_ForceIOLeaveZone(INTERACTIVE_OBJ * io, long flags)
 {
@@ -1154,7 +1150,7 @@ void MakeNodeName(long i)
 	{
 		//f=rnd()*99999999.f;
 		//o=(long)f;
-		F2L(rnd() * 99999999.f, &o);
+		o = rnd() * 99999999.f;
 		sprintf(name, "NODE_%08ld", o);
 	}
 
@@ -2027,7 +2023,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io)
 			scr_timer[num].es = NULL;
 			scr_timer[num].exist = 1;
 			scr_timer[num].io = io;
-			F2L(rnd() * 3000 + 3000, &scr_timer[num].msecs);
+			scr_timer[num].msecs = rnd() * 3000 + 3000;
 			scr_timer[num].namelength = 8;
 			scr_timer[num].name = (char *)malloc(8);
 			strcpy(scr_timer[num].name, "_R_A_T_");

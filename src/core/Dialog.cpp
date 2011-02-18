@@ -440,8 +440,7 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 					SetCheck(hWnd, IDC_REVERB, UNCHECK);
 				}
 
-				long t;
-				F2L((float)(ARX_PATHS_SelectedAP->amb_max_vol), &t);
+				long t = ARX_PATHS_SelectedAP->amb_max_vol;
 
 				if (t <= 1) t = 100;
 

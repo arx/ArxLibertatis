@@ -110,7 +110,7 @@ long SPECIALPOLYSNB = 0;
 bool CanPurge(EERIE_3D * pos)
 {
 	long px, pz;
-	F2L(pos->x * ACTIVEBKG->Xmul, &px);
+	px = pos->x * ACTIVEBKG->Xmul;
 
 	if (px > ACTIVEBKG->Xsize - 3)
 	{
@@ -122,7 +122,7 @@ bool CanPurge(EERIE_3D * pos)
 		return true;
 	}
 
-	F2L(pos->z * ACTIVEBKG->Zmul, &pz);
+	pz = pos->z * ACTIVEBKG->Zmul;
 
 	if (pz > ACTIVEBKG->Zsize - 3)
 	{

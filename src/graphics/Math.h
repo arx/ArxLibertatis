@@ -119,31 +119,23 @@ bool PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt);
 bool CylinderInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_CYLINDER * cyl2);
 bool SphereInCylinder(const EERIE_CYLINDER * cyl1, const EERIE_SPHERE * s);
 
-// Optimized Float 2 Long Conversion
-template <class T>
-inline void F2L(const float f, T * l) {
-    *l = static_cast<T>(f);
-}
-
 inline D3DCOLOR EERIERGB(float r, float g, float b)
 {
 	long t[3];
-	F2L(r * 255.f, &t[0]);
-	F2L(g * 255.f, &t[1]);
-	F2L(b * 255.f, &t[2]);
+	t[0] = r * 255.f;
+	t[1] = g * 255.f;
+	t[2] = b * 255.f;
 	return (0xff000000L | (t[0] << 16) | (t[1] << 8) | t[2]);
 }
 
 inline D3DCOLOR _EERIERGB(float v)
 {
-	long t;
-	F2L(v * 255.f, &t);
+	long t = v * 255.f;
 	return (0xff000000L | (t << 16) | (t << 8) | t);
 }
 inline D3DCOLOR _EERIERGBA(float v)
 {
-	long t;
-	F2L(v * 255.f, &t);
+	long t = v * 255.f;
 	return (0x00000000L | (t << 24) | (t << 16) | (t << 8) | t);
 }
 

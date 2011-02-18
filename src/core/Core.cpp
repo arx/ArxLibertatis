@@ -1347,7 +1347,7 @@ INT WINAPI WinMain( HINSTANCE _hInstance, HINSTANCE, LPSTR strCmdLine, INT )
 	if (!FOR_EXTERNAL_PEOPLE)
 	{
 		char stemp[256];
-		unsigned ls = 64;
+		U32 ls = 64;
 		GetComputerName(stemp, &ls);
 
 		if (!strcasecmp(stemp,"max"))
@@ -5642,7 +5642,6 @@ static float _AvgFrameDiff = 150.f;
 		ARX_TIME_UnPause();
 		SPLASH_THINGS_STAGE=14;
 		NEED_INTRO_LAUNCH=0;
-		char loadfrom[256];
 		REFUSE_GAME_RETURN=1;
 		const char RESOURCE_LEVEL_10[] = "Graph\\Levels\\Level10\\level10.dlf";
 		OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
@@ -5937,9 +5936,8 @@ static float _AvgFrameDiff = 150.f;
 
 		if (speedfactor < 0) speedfactor = 0;
 
-		long tFrameDiff;
-		F2L(Original_framedelay,&tFrameDiff);
-
+		long tFrameDiff = Original_framedelay;
+	
 		if ((player.Interface & INTER_COMBATMODE) && (STRIKE_TIME))// need some precision for weapon...
 		{
 			float restore=ACTIVECAM->use_focal;

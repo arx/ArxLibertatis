@@ -768,17 +768,14 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, char* tex)
 	if (player.Interface & INTER_NOTE)
 		ARX_INTERFACE_NoteClose();
 
+	_TCHAR output[8096];
 	ARX_INTERFACE_BookOpenClose(2);
 	ARX_INTERFACE_NoteClear();
-
 	Note.type = type;
-
-	_TCHAR output[8096];
 	MakeLocalised(tex, output, 8096);
 	Note.text = (_TCHAR *)malloc((_tcslen(output)+1)*sizeof(_TCHAR));
 	ZeroMemory(Note.text, (_tcslen(output)+1)*sizeof(_TCHAR));
 	_tcscpy(Note.text, output);
-
 	player.Interface |= INTER_NOTE;
 
 	if (NoteTexture)
@@ -1624,7 +1621,7 @@ bool DANAE::ManageEditorControls()
 
 					if (SLID_VALUE>100.f) SLID_VALUE=100.f;
 
-					F2L(SLID_VALUE,&lSLID_VALUE);
+					lSLID_VALUE = SLID_VALUE;
 				}
 				else
 				{
@@ -1641,7 +1638,7 @@ bool DANAE::ManageEditorControls()
 
 			if (SLID_VALUE<0.f) SLID_VALUE=0.f;
 
-			F2L(SLID_VALUE,&lSLID_VALUE);
+			lSLID_VALUE = SLID_VALUE;
 		}
 	}
 
@@ -1680,7 +1677,7 @@ bool DANAE::ManageEditorControls()
 			SMOOTHSLID = 0;
 		}
 
-		F2L(SLID_VALUE,&lSLID_VALUE);
+		lSLID_VALUE = SLID_VALUE;
 	}
 	else if (SMOOTHSLID==-1)
 	{
@@ -1692,7 +1689,7 @@ bool DANAE::ManageEditorControls()
 			SMOOTHSLID = 0;
 		}
 
-		F2L(SLID_VALUE,&lSLID_VALUE);
+		lSLID_VALUE = SLID_VALUE;
 	}
 
 	if (CINEMA_INC==1)
@@ -5025,7 +5022,7 @@ void ARX_INTERFACE_PlayerInterfaceModify(long showhide,long smooth)
 		if (showhide) SLID_VALUE=0.f;
 		else SLID_VALUE=100.f;
 
-		F2L(SLID_VALUE,&lSLID_VALUE);
+		lSLID_VALUE = SLID_VALUE;
 	}
 }
 extern void ARX_PrepareBackgroundNRMLs();
@@ -5353,7 +5350,7 @@ void DANAE::ManageKeyMouse()
 			v=-3.1415927f;
 		}
 
-		F2L((float)(EEsin(v)*600.f),&EERIEMouseXdep);
+		EERIEMouseXdep = EEsin(v) * 600.f;
 		
 		v=EERIEMouseYdep*( 1.0f / 1000 );
 
@@ -5366,9 +5363,9 @@ void DANAE::ManageKeyMouse()
 			v=-3.1415927f;
 		}
 
-		F2L((float)(EEsin(v)*600.f),&EERIEMouseYdep);
-
-		}
+		EERIEMouseYdep = EEsin(v) * 600.f;
+		
+	}
 
 	ARX_Menu_Manage();
 	EERIE_3D tm;
@@ -6797,9 +6794,8 @@ void StdDraw(float posx,float posy,D3DCOLOR color,TextureContainer * tcc,long fl
 //---------------------------------------------------------------------------
 void ManageSpellIcon(long i,float rrr,long flag)
 {
-	float POSX=DANAESIZX-INTERFACE_RATIO(35);
-	long lPOSX;
-	F2L(POSX,&lPOSX);
+	float POSX = DANAESIZX-INTERFACE_RATIO(35);
+	long lPOSX = POSX;
 	D3DCOLOR color;
 	float posx = POSX+lSLID_VALUE;
 	float posy = (float)currpos;
@@ -6916,8 +6912,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			{
 				if (necklace.runes[i])
 				{
-					F2L((382+xpos*45+BOOKDECX)*Xratio,&bookcam.centerx);
-					F2L((100+ypos*64+BOOKDECY)*Yratio,&bookcam.centery);
+					bookcam.centerx = (382 + xpos * 45 + BOOKDECX) * Xratio;
+					bookcam.centery = (100 + ypos * 64 + BOOKDECY) * Yratio;
 
 					SetActiveCamera(&bookcam);
 					PrepareCamera(&bookcam);
@@ -6943,9 +6939,9 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 
 						DynLight[0].exist=0;
 						float tt;
-
-						F2L((382+xpos*45+BOOKDECX+3)*Xratio,&bookcam.centerx);
-						F2L((100+ypos*64+BOOKDECY+2)*Yratio,&bookcam.centery);
+						
+						bookcam.centerx = (382 + xpos * 45 + BOOKDECX + 3) * Xratio;
+						bookcam.centery = (100 + ypos * 64 + BOOKDECY + 2) * Yratio;
 						SetActiveCamera(&bookcam);
 						PrepareCamera(&bookcam);
 
@@ -6959,8 +6955,8 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						SETALPHABLEND(GDevice,false);
 						DynLight[0].exist=1;	
 						
-						F2L((382+xpos*45+BOOKDECX)*Xratio,&bookcam.centerx);
-						F2L((100+ypos*64+BOOKDECY)*Yratio,&bookcam.centery);
+						bookcam.centerx = (382 + xpos * 45 + BOOKDECX) * Xratio;
+						bookcam.centery = (100 + ypos * 64 + BOOKDECY) * Yratio;
 						SetActiveCamera(&bookcam);
 						PrepareCamera(&bookcam);
 
@@ -8278,25 +8274,23 @@ void ARX_INTERFACE_ManageOpenedBook()
 		SetFilteringMode(GDevice,1);
 		D3DRECT rec;
 
-		if (BOOKZOOM)
-		{
-			F2L((float)((118.F+BOOKDECX)*Xratio),&rec.x1);
-			F2L((float)((69.f +BOOKDECY)*Yratio),&rec.y1);
-			F2L((float)((280.f+BOOKDECY)*Xratio),&rec.x2);
-			F2L((float)((310.f+BOOKDECY)*Yratio),&rec.y2);
+		if (BOOKZOOM) {
+ 
+			rec.x1 = (118.F + BOOKDECX) * Xratio;
+			rec.y1 = (69.f + BOOKDECY) * Yratio;
+			rec.x2 = (280.f + BOOKDECY) * Xratio;
+			rec.y2 = (310.f + BOOKDECY) * Yratio;
 
 			GDevice->Clear( 1, &rec, D3DCLEAR_ZBUFFER, 0, 1.f, 0L );
 
 			if (ARXmenu.currentmode!=AMCM_OFF)
 				danaeApp.SetClipping(139.f*Xratio,0,139.f*Xratio,310.f*Yratio);
-		}
-		else
-		{
-			F2L((float)((118.F+BOOKDECX)*Xratio),&rec.x1);
-			F2L((float)((69.f +BOOKDECY)*Yratio),&rec.y1);
-			F2L((float)((300.f+50+BOOKDECX)*Xratio),&rec.x2);
-			F2L((float)((338.f+BOOKDECY)*Yratio),&rec.y2);
-
+		} else {
+			rec.x1 = (118.F + BOOKDECX) * Xratio;
+			rec.y1 = (69.f + BOOKDECY) * Yratio;
+			rec.x2 = (300.f + 50 + BOOKDECX) * Xratio;
+			rec.y2 = (338.f + BOOKDECY) * Yratio;
+			
 			GDevice->Clear( 1, &rec, D3DCLEAR_ZBUFFER, 0, 1.f, 0L );
 			rec.x2 -= 50;
 		}
@@ -9049,8 +9043,7 @@ void DANAE::DrawAllInterface()
 
 				if ((player.Interface & INTER_COMBATMODE) || (player.doingmagic>=2))
 				{
-					long t;
-					F2L((float)(Original_framedelay*( 1.0f / 5 ))+2,&t);
+					long t = Original_framedelay * ( 1.0f / 5 ) + 2;
 					InventoryY += ARX_CLEAN_WARN_CAST_LONG(INTERFACE_RATIO_LONG(t));
 
 					if ( InventoryY > INTERFACE_RATIO( 110.f ) ) InventoryY = ARX_CLEAN_WARN_CAST_LONG( INTERFACE_RATIO( 110.f ) );
@@ -9061,8 +9054,7 @@ void DANAE::DrawAllInterface()
 				{
 					if (bInventoryClosing)
 					{
-						long t;
-						F2L((float)(Original_framedelay*( 1.0f / 5 ))+2,&t);
+						long t = Original_framedelay * ( 1.0f / 5 ) + 2;
 						InventoryY += ARX_CLEAN_WARN_CAST_LONG(INTERFACE_RATIO_LONG(t));
 
 						if (InventoryY > INTERFACE_RATIO(110))
@@ -9645,17 +9637,15 @@ assert(ITC.hero_inventory != NULL);
 		if (player.poison>0.f)
 		{
 				float val = min(player.poison, 0.2f) * 255.f * 5.f; 
-			long g;
-			F2L(val,&g);
-			ulColor=0xFF000000 | ((255-g) <<16) | (g & 255)<<8;
+			long g = val;
+			ulColor=0xFF000000 | ((255-g) <<16) | (g & 255)<<8;	
 		}
 
 		if ((fInterfaceRatio>1.9f) && ITC.filled_gauge_blue)
 		{
 			float vuv=(1.f-fnl)*ITC.filled_gauge_red->m_dwHeight;
-			long vvv;
-			F2L(vuv,&vvv);
-				vuv = (float)vvv / ITC.filled_gauge_red->m_dwHeight;
+			long vvv = vuv;
+				vuv = (float)vvv / ITC.filled_gauge_red->m_dwHeight; 
 			//ir=
 				EERIEDrawBitmap2DecalY(GDevice, fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), INTERFACE_RATIO_DWORD(ITC.filled_gauge_red->m_dwWidth), INTERFACE_RATIO_DWORD(ITC.filled_gauge_red->m_dwHeight), 0.f, ITC.filled_gauge_red, ulColor, vuv);
 		}
@@ -9697,9 +9687,8 @@ assert(ITC.hero_inventory != NULL);
 		if ((fInterfaceRatio>1.9f) && ITC.filled_gauge_blue)
 		{
 			float vuv=(1.f-fnm)*ITC.filled_gauge_blue->m_dwHeight;
-			long vvv;
-			F2L(vuv,&vvv);
-				vuv = (float)vvv / ITC.filled_gauge_blue->m_dwHeight;
+			long vvv = vuv;
+				vuv = (float)vvv / ITC.filled_gauge_blue->m_dwHeight; 
 			//ir=
 				EERIEDrawBitmap2DecalY(GDevice, DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE, DANAESIZY - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f, ITC.filled_gauge_blue, ARX_OPAQUE_WHITE /*-1*/, vuv);
 		}
@@ -10399,9 +10388,8 @@ void ARX_INTERFACE_RenderCursor(long flag)
 							float v=ARX_DAMAGES_ComputeRepairPrice(COMBINE,FlyingOverIO);
 
 							if (v>0.f)
-							{
-								long t;
-								F2L(v,&t);
+							{								
+								long t = v;
 								ARX_INTERFACE_DrawNumber(POSX+MODIF-16,POSY+MODIF-10,t,6,0xFF00FFFF);
 							}
 						}
