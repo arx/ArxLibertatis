@@ -646,8 +646,8 @@ float	GetAngle(const float x0, const float y0, const float x1, const float y1)
 
 	if (x > 0.f)
 	{
-		if (y >= 0.f)	return (PI * 0.75f + (EEatan(y / x)));
-		else return (PI * 0.75f - (EEatan(EEfabs(y) / x)));   
+		if (y >= 0.f)	return (PI * 1.5f + (EEatan(y / x)));
+		else return (PI * 1.5f - (EEatan(EEfabs(y) / x)));   
 	}
 	else if (x < 0.f)
 	{

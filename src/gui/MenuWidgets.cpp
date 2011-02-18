@@ -652,13 +652,9 @@ CMenuConfig::CMenuConfig(const char *_pName)
 #if ARX_PLATFORM == ARX_PLATFORM_WIN32
     // GetPrivateProfileString & friends expect full paths to files
     // Otherwise, they will look under the Windows directory...
-    // So here we append the application directory to the filepath.
-    char szAppPath[MAX_PATH]      = "";
-    ::GetModuleFileName(0, szAppPath, sizeof(szAppPath) - 1);
-
-    // Extract directory
-    strncpy(szFullPath, szAppPath, strrchr(szAppPath, '\\') - szAppPath + 1);
-    szFullPath[sizeof(szFullPath) - 1] = '\0';
+    // So here we append the working directory to the filepath.
+    ::GetCurrentDirectory(MAX_PATH, szFullPath);
+    strcat(szFullPath, "\\");
 #endif
 
     strcat(szFullPath, _pName);
