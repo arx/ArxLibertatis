@@ -28,6 +28,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "AudioTypes.h"
 #include "AudioResource.h"
 #include <AL/al.h>
+#include <AL/alc.h>
+#include <AL/alext.h>
 
 namespace ATHENA
 {
@@ -50,6 +52,7 @@ namespace ATHENA
 			// Setup                                                                     //
 			aalError SetName(const char * name);
 			aalError SetRolloffFactor(const aalFloat & factor);
+			aalError SetEffect(const int type, const aalFloat val);
 
 			// Data                                                                      //
 			char * name;
@@ -64,6 +67,7 @@ namespace ATHENA
 			aalFloat reverb_decay;
 			aalFloat reverb_hf_decay;
 			aalEnvironmentCallback callback;
+			ALuint effect[1];
 	};
 
 }//ATHENA::

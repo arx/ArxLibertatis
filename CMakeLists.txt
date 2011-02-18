@@ -113,6 +113,7 @@ endif()
 # Preprocessor definitions
 add_definitions(-D_DEBUG)
 add_definitions(-DNOMINMAX)
+add_definitions(-DAL_ALEXT_PROTOTYPES)
 
 #glob sources
 file(GLOB_RECURSE ALL_SOURCES ${SRC_DIR}/*.cpp)

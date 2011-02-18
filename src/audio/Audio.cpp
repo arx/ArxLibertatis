@@ -140,7 +140,7 @@ namespace ATHENA
 		}
 		alGetError(); // clear error code
 		alDistanceModel(AL_LINEAR_DISTANCE_CLAMPED);
-		is_reverb_present = alIsExtensionPresent("EAX2.0") ? AAL_UTRUE : AAL_UFALSE;
+		is_reverb_present = alcIsExtensionPresent(device, "ALC_EXT_EFX") ? AAL_UTRUE : AAL_UFALSE;
 
 		if (mutex) ReleaseMutex(mutex);
 
@@ -897,13 +897,6 @@ namespace ATHENA
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
 
-		// if (!environment)
-		// {
-		// 	if (mutex) ReleaseMutex(mutex);
-
-		// 	return AAL_ERROR_INIT;
-		// }
-
 		if (_env.IsNotValid(e_id))
 		{
 			if (mutex) ReleaseMutex(mutex);
@@ -911,11 +904,8 @@ namespace ATHENA
 			return AAL_ERROR_HANDLE;
 		}
 
-		// if (_env.IsValid(environment_id)) _env[environment_id]->lpksps = NULL;
-
-		// environment_id = e_id;
-		// _env[environment_id]->lpksps = environment;
-		// Environment * env = _env[environment_id];
+		environment_id = e_id;
+		Environment * env = _env[environment_id];
 
 		// EAXLISTENERPROPERTIES props;
 
@@ -925,40 +915,32 @@ namespace ATHENA
 		// props.lRoom = 0;
 		// props.lRoomHF = 0;
 		// props.flEnvironmentSize = env->size;
-		// props.flEnvironmentDiffusion = env->diffusion;
-		// props.flAirAbsorptionHF = env->absorption * -100.0F;
+		env->SetEffect(AL_REVERB_DIFFUSION, env->diffusion);
+		env->SetEffect(AL_REVERB_AIR_ABSORPTION_GAINHF, env->absorption * -100.0F);
 
-		// if (env->reverb_volume <= 0.0F) props.lReverb = -10000;
-		// else if (env->reverb_volume >= 10.0F) props.lReverb = 2000;
-		// else props.lReverb = aalSLong(2000 * log10(env->reverb_volume));
+		aalFloat reverb_volume = std::max(env->reverb_volume, 0.0f);
+		reverb_volume = std::min(reverb_volume, 1.0f);
+		env->SetEffect(AL_REVERB_LATE_REVERB_GAIN, reverb_volume);
 
-		// if (env->reverb_delay >= 100.0F) props.flReverbDelay = 0.1F;
-		// else props.flReverbDelay = aalFloat(env->reverb_delay) * 0.001F;
+		if (env->reverb_delay >= 100.0F) env->SetEffect(AL_REVERB_LATE_REVERB_DELAY, 0.1F);
+		else env->SetEffect(AL_REVERB_LATE_REVERB_DELAY, aalFloat(env->reverb_delay) * 0.001F);
 
-		// if (env->reverb_decay <= 100.0F) props.flDecayTime = 0.1F;
-		// else if (env->reverb_decay >= 20000.0F) props.flDecayTime = 20.0F;
-		// else props.flDecayTime = aalFloat(env->reverb_decay) * 0.001F;
+		if (env->reverb_decay <= 100.0F) env->SetEffect(AL_REVERB_DECAY_TIME, 0.1F);
+		else if (env->reverb_decay >= 20000.0F) env->SetEffect(AL_REVERB_DECAY_TIME, 20.0F);
+		else env->SetEffect(AL_REVERB_DECAY_TIME, aalFloat(env->reverb_decay) * 0.001F);
 
-		// props.flDecayHFRatio = env->reverb_hf_decay / env->reverb_decay;
+		aalFloat flDecayHFRatio = env->reverb_hf_decay / env->reverb_decay;
 
-		// if (props.flDecayHFRatio <= 0.1F) props.flDecayHFRatio = 0.1F;
-		// else if (props.flDecayHFRatio >= 2.0F) props.flDecayHFRatio = 2.0F;
+		if (flDecayHFRatio <= 0.1F) flDecayHFRatio = 0.1F;
+		else if (flDecayHFRatio >= 2.0F) flDecayHFRatio = 2.0F;
+		env->SetEffect(AL_REVERB_DECAY_HFRATIO, flDecayHFRatio);
 
-		// if (env->reflect_volume <= 0.0F) props.lReflections = -10000;
-		// else if (env->reflect_volume >= 3.162F) props.lReflections = 1000;
-		// else props.lReflections = aalSLong(2000 * log10(env->reflect_volume));
+		aalFloat reflect_volume = std::max(env->reflect_volume, 0.0f);
+		reflect_volume = std::min(env->reflect_volume, 1.0f);
+		env->SetEffect(AL_REVERB_REFLECTIONS_GAIN, LinearToLogVolume(reflect_volume));
 
-		// if (env->reflect_delay >= 300.0F) props.flReflectionsDelay = 0.3F;
-		// else props.flReflectionsDelay = aalFloat(env->reflect_delay) * 0.001F;
-
-		// if (environment->Set(DSPROPSETID_EAX_ListenerProperties,
-		//                      DSPROPERTY_EAXLISTENER_ALLPARAMETERS | DSPROPERTY_EAXLISTENER_DEFERRED,
-		//                      NULL, 0, &props, sizeof(EAXLISTENERPROPERTIES)))
-		// {
-		// 	if (mutex) ReleaseMutex(mutex);
-
-		// 	return AAL_ERROR_SYSTEM;
-		// }
+		if (env->reflect_delay >= 300.0F) env->SetEffect(AL_REVERB_REFLECTIONS_DELAY, 0.3F);
+		else env->SetEffect(AL_REVERB_REFLECTIONS_DELAY, aalFloat(env->reflect_delay) * 0.001F);
 
 		if (mutex) ReleaseMutex(mutex);
 
