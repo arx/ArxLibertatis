@@ -4405,8 +4405,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			spells[i].tolive = 1000;
 			SPELLCAST_Notify(i);
 
-			for (long n=0;n<MAX_SPELLS;n++)
-			{
+			for(size_t n = 0; n < MAX_SPELLS; n++) {
 				if (!spells[n].exist) continue;
 
 				if (spells[n].target==spells[i].caster) continue;
