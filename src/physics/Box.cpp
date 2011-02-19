@@ -94,7 +94,7 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, EERIE_3D * pos, EERIE_3D * vect
 
 	float surface = 0.f;
 
-	for (int i = 0; i < obj->facelist.size(); i++)
+	for (size_t i = 0; i < obj->facelist.size(); i++)
 	{
 
 		D3DTLVERTEX * ev[3];
