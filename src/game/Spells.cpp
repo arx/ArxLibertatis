@@ -7173,16 +7173,15 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		bNoVB	=	GET_FORCE_NO_VB();
 		SET_FORCE_NO_VB( true );
 	}
-	register long i;
-	register unsigned long tim;
-	register long framediff,framediff2,framediff3;
+	
+	unsigned long tim;
+	long framediff,framediff2,framediff3;
 
 	ucFlick++;
 
 	tim = ARXTimeUL();
 
-	for (i=0;i<MAX_SPELLS;i++)
-	{
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		if (!m_pd3dDevice) spells[i].exist=0;
 
 		if (!GLOBAL_MAGIC_MODE) spells[i].tolive=0;
