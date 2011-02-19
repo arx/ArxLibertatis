@@ -86,7 +86,7 @@ void EERIE_COLLISION_Cylinder_Create(INTERACTIVE_OBJ * io)
 
 	for (size_t i = 0; i < obj->vertexlist.size(); i++)
 	{
-		if ((i != obj->origin) && (EEfabs(io->physics.cyl.origin.y - obj->vertexlist[i].v.y) < 20.f))
+		if ((i != (size_t)obj->origin) && (EEfabs(io->physics.cyl.origin.y - obj->vertexlist[i].v.y) < 20.f))
 		{
 			dist = max(dist, TRUEDistance3D(io->physics.cyl.origin.x, io->physics.cyl.origin.y, io->physics.cyl.origin.z,
 											  obj->vertexlist[i].v.x, obj->vertexlist[i].v.y, obj->vertexlist[i].v.z));
