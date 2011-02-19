@@ -100,7 +100,7 @@ enum ARX_SPELLS_SPELLCAST_FLAG
 	SPELLCAST_FLAG_RESTORE			= (1 << 7),
 };
 
-const unsigned long MAX_PRECAST = 3;
+const size_t MAX_PRECAST = 3;
 
 typedef struct
 {
@@ -288,6 +288,10 @@ void ARX_SPELLS_Init();
 void ARX_SPELLS_ClearAll();
 void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice);
 void ARX_SPELLS_Fizzle(const long & num);
+
+/**
+ * Plays the sound of Fizzling spell plus "NO MANA" speech
+ **/
 void ARX_SPELLS_FizzleNoMana(const long & num);
 void ARX_SPELLS_Kill(const long & i);
 void ARX_SPELLS_ManageMagic();

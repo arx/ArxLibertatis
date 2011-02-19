@@ -2964,44 +2964,46 @@ void ARX_SPELLS_AbortSpellSound() {
 }
 
 // Plays the sound of Fizzling spell
-void ARX_SPELLS_Fizzle(const long &num)
-{
-	if (num < 0) ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE); // player fizzle
-	else
-	{
+void ARX_SPELLS_Fizzle(const long & num) {
+	
+	if(num < 0) {
+		ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE); // player fizzle
+	} else {
 		spells[num].tolive = 0;
-
-		if (spells[num].caster >= 0)
+		
+		if(spells[num].caster >= 0) {
 			ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE, &spells[num].caster_pos);
-	}
-}
-void ARX_SPELLS_FizzleAllSpellsFromCaster(long num_caster)
-{
-	for (long i(0); i < MAX_SPELLS; i++)
-	{
-		if (	(spells[i].exist)
-			&&	(spells[i].caster == num_caster)	)
-		{
-			spells[i].tolive=0;
 		}
 	}
 }
-// Plays the sound of Fizzling spell plus "NO MANA" speech
-void ARX_SPELLS_FizzleNoMana(const long &num)
-{
-	if (num < 0) return;
 
-	if (spells[num].caster >= 0)
-	{
+void ARX_SPELLS_FizzleAllSpellsFromCaster(long num_caster) {
+	
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		if(spells[i].exist && spells[i].caster == num_caster) {
+			spells[i].tolive = 0;
+		}
+	}
+}
+
+void ARX_SPELLS_FizzleNoMana(const long & num) {
+	
+	if(num < 0) {
+		return;
+	}
+	
+	if(spells[num].caster >= 0) {
 		spells[num].tolive = 0;
 		ARX_SPELLS_Fizzle(num);
 	}
 }
 
 PRECAST_STRUCT Precast[MAX_PRECAST];
-void ARX_SPELLS_Precast_Reset()
-{
-	for (long i = 0; i < MAX_PRECAST; i++) Precast[i].typ = -1;
+
+void ARX_SPELLS_Precast_Reset() {
+	for(size_t i = 0; i < MAX_PRECAST; i++) {
+		Precast[i].typ = -1;
+	}
 }
 
 void ARX_SPELLS_Precast_Add(const long &typ, const long _level,long flags,long duration)
