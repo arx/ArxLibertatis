@@ -769,7 +769,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 			work->selections.resize(num + 1);
 			work->selections[num].name = obj2->selections[i].name;
 
-			for (long l = 0; l < obj2->selections[i].selected.size(); l++)
+			for (size_t l = 0; l < obj2->selections[i].selected.size(); l++)
 			{
 				EERIE_VERTEX temp;
 				temp.v.x = obj2vertexlist2[obj2->selections[i].selected[l]].v.x;
@@ -788,7 +788,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	// Recreate Animation-groups vertex
 	for (long i = 0; i < obj1->nbgroups; i++)
 	{
-		for (long j = 0; j < obj1->grouplist[i].indexes.size(); j++)
+		for (size_t j = 0; j < obj1->grouplist[i].indexes.size(); j++)
 		{
 			AddVertexToGroup(work, i, &obj1vertexlist2[obj1->grouplist[i].indexes[j]]);
 		}
@@ -796,7 +796,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 
 	for (long i = 0; i < obj2->nbgroups; i++)
 	{
-		for (long j = 0; j < obj2->grouplist[i].indexes.size(); j++)
+		for (size_t j = 0; j < obj2->grouplist[i].indexes.size(); j++)
 		{
 			AddVertexToGroup(work, i, &obj2vertexlist2[obj2->grouplist[i].indexes[j]]);
 		}
