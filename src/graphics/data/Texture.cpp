@@ -654,8 +654,10 @@ HRESULT TextureContainer::LoadFile(const std::string& strPathname)
 
 	ILenum imageType = ilTypeFromExt(strPathname.c_str());
 	ILboolean bLoaded = ilLoadL(imageType, dat, size);
-
-	ILint imgFormat = ilGetInteger( IL_IMAGE_FORMAT );
+	if(!bLoaded) {
+		free(dat);
+		return E_FAIL;
+	}
 	
 	m_dwWidth   = ilGetInteger( IL_IMAGE_WIDTH );
 	m_dwHeight  = ilGetInteger( IL_IMAGE_HEIGHT );
