@@ -110,7 +110,6 @@ void ARXDRAW_DrawInterShadows(LPDIRECT3DDEVICE7 pd3dDevice)
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,0);
 	SetZBias(pd3dDevice,1);
 
-	long k;
 	long first=1;
 	
 	for (long i=0;i<TREATZONE_CUR;i++) 
@@ -160,7 +159,7 @@ void ARXDRAW_DrawInterShadows(LPDIRECT3DDEVICE7 pd3dDevice)
 
 				if (io->obj->nbgroups<=1)
 				{
-					for (k=0;k<io->obj->vertexlist.size();k+=9)
+					for (size_t k=0;k<io->obj->vertexlist.size();k+=9)
 					{
 						ep=EECheckInPoly(&io->obj->vertexlist3[k].v);
 
@@ -213,7 +212,7 @@ void ARXDRAW_DrawInterShadows(LPDIRECT3DDEVICE7 pd3dDevice)
 				}
 				else 
 				{
-					for (k=0;k<io->obj->nbgroups;k++)
+					for (long k=0;k<io->obj->nbgroups;k++)
 					{
 						long origin=io->obj->grouplist[k].origin;
 						ep=EECheckInPoly(	&io->obj->vertexlist3[origin].v );
