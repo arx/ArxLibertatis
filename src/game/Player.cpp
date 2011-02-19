@@ -3726,8 +3726,7 @@ void ARX_PLAYER_PutPlayerInNormalStance(long val)
 	ARX_SOUND_Stop(SND_MAGIC_DRAW);
 
 	if (!val)
-		for (long i = 0; i < MAX_SPELLS; i++)
-		{
+		for(size_t i = 0; i < MAX_SPELLS; i++) {
 			if ((spells[i].exist)
 			        && ((spells[i].caster == 0) || (spells[i].target == 0)))
 			{
