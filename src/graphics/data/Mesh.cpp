@@ -4830,7 +4830,6 @@ void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 	float       Xcos, Ycos, Zcos, Xsin, Ysin, Zsin;
 	EERIE_3D      p, rp;
 
-	long i;
 	D3DTLVERTEX vlist[3];
 	Zsin = radians(eobj->angle.a);
 	Xcos = (float)EEcos(Zsin);
@@ -4842,7 +4841,7 @@ void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 	Zcos = (float)EEcos(Zsin);
 	Zsin = (float)EEsin(Zsin);
 
-	for (i = 0; i < eobj->vertexlist.size(); i++)
+	for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 	{
 		//Local Transform
 		p.x = eobj->vertexlist[i].v.x - eobj->point0.x;
@@ -4867,7 +4866,7 @@ void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 				EERIEPOLY ep;
 				EERIEPOLY epp;
 
-				for (i = 0; i < eobj->facelist.size(); i++)
+				for (size_t i = 0; i < eobj->facelist.size(); i++)
 				{
 					for (long kk = 0; kk < 3; kk++)
 					{
@@ -4886,7 +4885,9 @@ void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 					else break;
 				}
 
-				if (i > 0) EERIE_PORTAL_Poly_Add(&epp, eobj->name.c_str(), -1, -1, -1);
+				if(!eobj->facelist.empty()) {
+					EERIE_PORTAL_Poly_Add(&epp, eobj->name.c_str(), -1, -1, -1);
+				}
 
 				return;
 			}
