@@ -756,7 +756,7 @@ long DanaeSaveLevel( const std::string& _fic )
 	cpr_pos = 0;
 	compressed = implodeAlloc((char *)(dat + sizeof(DANAE_LS_HEADER)), pos - sizeof(DANAE_LS_HEADER), cpr_pos);
 
-	long sizeWritten;
+	size_t sizeWritten;
 	sizeWritten = FileWrite(handle, compressed, cpr_pos);
 	
 	delete[] compressed;
