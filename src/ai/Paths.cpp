@@ -1540,7 +1540,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 					{
 						EERIE_3D	pos;
 						long		notok	=	10;
-						long		num		=	0;
+						size_t num = 0;
 
 						while (notok-- > 0)
 						{
