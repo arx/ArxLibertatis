@@ -139,7 +139,7 @@ UBool PathFinder::Move(const ULong & flags, const ULong & f, const ULong & t, SL
 	//}
 
 	//A* main loop
-	while (node = GetBestNode())
+	while ((node = GetBestNode()))
 	{
 		//If it's the goal node then we've done
 		if (node->data == _to)
