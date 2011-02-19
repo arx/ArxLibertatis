@@ -515,7 +515,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 	
 	
 	LogDebug << "SendScriptEvent msg=" << msg << " ("
-	         << ((msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1) ? AS_EVENT[msg].name : "unknown")
+	         << (((size_t)msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1) ? AS_EVENT[msg].name : "unknown")
 	         << ")" << " params=\"" << params << "\""
 	         << " evame=\"" << evname << "\" info=" << info;
 	LogDebug << " io=" << Logger::nullstr(io ? io->filename : NULL)
