@@ -112,7 +112,7 @@ static HRESULT WINAPI ModeEnumCallback(DDSURFACEDESC2 * pddsd,
 	// Reallocate storage for the modes
 	DDSURFACEDESC2 * pddsdNewModes = new DDSURFACEDESC2[pDevice->dwNumModes+1];
 	memcpy(pddsdNewModes, pDevice->pddsdModes,
-		   pDevice->dwNumModes * sizeof(DDSURFACEDESC2));
+	       pDevice->dwNumModes * sizeof(DDSURFACEDESC2));
 	delete[] pDevice->pddsdModes;
 	pDevice->pddsdModes = pddsdNewModes;
 
@@ -130,9 +130,9 @@ static HRESULT WINAPI ModeEnumCallback(DDSURFACEDESC2 * pddsd,
 // Callback function for enumerating devices
 //************************************************************************************
 static HRESULT WINAPI DeviceEnumCallback(TCHAR		*	strDesc,
-		TCHAR		*	strName,
-		D3DDEVICEDESC7	* pDesc,
-		VOID		*		pParentInfo)
+        TCHAR		*	strName,
+        D3DDEVICEDESC7	* pDesc,
+        VOID		*		pParentInfo)
 {
 	// Keep track of # of devices that were enumerated
 	g_dwNumDevicesEnumerated++;
@@ -180,7 +180,7 @@ static HRESULT WINAPI DeviceEnumCallback(TCHAR		*	strDesc,
 	// Give the app a chance to accept or reject this device.
 	if (g_fnAppConfirmFn)
 		if (FAILED(g_fnAppConfirmFn(&pDeviceInfo->ddDriverCaps,
-									&pDeviceInfo->ddDeviceDesc)))
+		                            &pDeviceInfo->ddDeviceDesc)))
 		{
 			return D3DENUMRET_OK;
 		}
@@ -294,8 +294,10 @@ static BOOL WINAPI DriverEnumCallback(GUID * pGUID, TCHAR * strDesc,
 	pD3D->EnumDevices(DeviceEnumCallback, &d3dDeviceInfo);
 
 	// Clean up and return
-	delete[] d3dDeviceInfo.pddsdModes;
-	d3dDeviceInfo.pddsdModes = NULL;
+	if(d3dDeviceInfo.pddsdModes) {
+		delete[] d3dDeviceInfo.pddsdModes;
+		d3dDeviceInfo.pddsdModes = NULL;
+	}
 	pD3D->Release();
 	pDD->Release();
 

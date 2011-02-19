@@ -24,8 +24,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 #include "core/Localization.h"
 
-#include <stdint.h>
-
 #include <list>
 #include <SFML/System/Unicode.hpp>
 
@@ -82,7 +80,7 @@ bool isSection( const std::string& str )
 bool isKey( const std::string& str )
 {
 	// Iterate through str until alphanumeric characters are found
-	for ( int i = 0 ; i < str.length() ; i++ )
+	for ( size_t i = 0 ; i < str.length() ; i++ )
 	{
 		// If we hit an '=' before other alphanumeric characters, return false
 		if ( str[i] == '=' ) return false;
@@ -236,10 +234,10 @@ void Localisation_Init()
 	size_t loc_file_size = 0; // Used to report how large the loaded file is
 
 	// Attempt loading the selected locale file
-	uint16_t* Localisation = (uint16_t*)PAK_FileLoadMallocZero( tx, loc_file_size );
+	u16* Localisation = (u16*)PAK_FileLoadMallocZero( tx, loc_file_size );
 
 	// if no file was loaded
-	if ( Localisation )
+	if ( Localisation == NULL )
 	{
 		// No file loaded and locale is set to german or french
 		if (GERMAN_VERSION || FRENCH_VERSION)
@@ -255,18 +253,16 @@ void Localisation_Init()
 		tx = "localisation\\utext_" + Project.localisationpath + ".ini";
 
 		// Load the default english locale file
-		Localisation = (uint16_t*)PAK_FileLoadMallocZero( tx, loc_file_size );
+		Localisation = (u16*)PAK_FileLoadMallocZero( tx, loc_file_size );
 	}
 
-	// Scale the loaded size to new stride of uint16_t vs char
-	loc_file_size *= ( 1.0 * sizeof(char)/sizeof(uint16_t) );
+	// Scale the loaded size to new stride of u16 vs char
+	loc_file_size *= ( 1.0 * sizeof(char)/sizeof(u16) );
 
 	LogDebug << "Loaded localisation file: " << tx << " of size " << loc_file_size;
 	LogDebug << "UTF-16 size is " << sf::Unicode::GetUTF16Length( Localisation, &Localisation[loc_file_size] );
 	std::string out;
-	out.resize( sf::Unicode::GetUTF16Length( Localisation, &Localisation[loc_file_size] ) );
-	LogDebug << "Resized to " << out.length();
-	sf::Unicode::UTF16ToUTF8( Localisation, &Localisation[loc_file_size], out.begin() );
+	sf::Unicode::UTF16ToUTF8( Localisation, &Localisation[loc_file_size], back_inserter(out) );
 	LogDebug << "Converted to UTF8";
 
 	if ( Localisation && loc_file_size)
@@ -351,22 +347,23 @@ long HERMES_UNICODE_GetProfileSectionKeyCount(const std::string& sectionname)
 }
 
 //-----------------------------------------------------------------------------
-int PAK_UNICODE_GetPrivateProfileString( const std::string&  _lpszSection,
-                                         const std::string&  _lpszDefault,
-                                         std::string&        _lpszBuffer )
+bool PAK_UNICODE_GetPrivateProfileString( const std::string&  _in_section,
+                                         const std::string&  _default_return,
+                                         std::string&        _buf )
 {
-	if (_lpszSection.empty())	{
-		LogError <<  _lpszDefault << " not found";
-		_lpszBuffer = _lpszDefault + ":NOT FOUND";
-		return 0;
+	if ( _in_section.empty())
+	{
+		LogError <<  _default_return << " not found";
+		_buf = _default_return + ":NOT FOUND";
+		return false;
 	}
 
-	std::string szSection = "[" + _lpszSection + "]";
+	std::string section = "[" + _in_section + "]";
 
-	HERMES_UNICODE_GetProfileString( szSection,
-	                                 _lpszDefault,
-	                                 _lpszBuffer );
+	HERMES_UNICODE_GetProfileString( section,
+	                                 _default_return,
+	                                 _buf );
 
-	return 1;
+	return true;
 }
 

@@ -72,7 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 // boolean and INT32 used by jpeglib clash with wine
 #define INT32 INT32_JPEG
-#ifndef ARX_PLATFORM_WINDOWS
+#if ARX_PLATFORM != ARX_PLATFORM_WIN32
 # define boolean boolean_JPEG
 # ifdef _WIN32
 #  define HAD_WIN32
@@ -85,7 +85,7 @@ typedef boolean boolean_JPEG;
 
 #include <jpeglib.h>
 
-#ifndef ARX_PLATFORM_WINDOWS
+#if ARX_PLATFORM != ARX_PLATFORM_WIN32
 # undef boolean
 # ifdef HAD_WIN32
 #  define _WIN32
@@ -3200,9 +3200,7 @@ HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 	
 	jpeg_read_header(cinfo, true);
 	
-//	todo: this is no libjpeg call
-//	(void)jpeg_mem_reinitsrc((void *)cinfo);
-	delete buffer;
+	delete[] buffer;
 
 	pddsTempSurface->Unlock(0);
 
@@ -3872,12 +3870,6 @@ HRESULT TextureContainer::LoadJpegFileNoDecomp(const std::string& strPathname) {
 	struct jpeg_source_mgr * src = cinfo->src;
 	jpeg_membuf * b = (jpeg_membuf *)cinfo->client_data;
 	
-	//b->buf = src->next_input_byte;
-	//b->size = src->bytes_in_buffer;
-	
-//	todo: weird libjpeg call
-//	(void)jpeg_mem_reinitsrc((void *)cinfo);
-	
 	return S_OK;
 }
 /*-----------------------------------------------------------------------------*/
@@ -4092,7 +4084,7 @@ HRESULT TextureContainer::LoadPNGFile( const std::string& strPathname)
 	PAK_fseek(file, 0, SEEK_END);
 	size_t size = PAK_ftell(file);
 	
-	// TODO why allocode the size here?
+	// TODO why allocate the size here?
 	m_pPNGData = new unsigned char[size + sizeof(DATAS_PNG)];
 	if(!m_pPNGData) {
 		PAK_fclose(file);

@@ -1101,9 +1101,7 @@ void ARX_PHYSICS_Apply()
 
 		CheckUnderWaterIO(io);
 
-		//TODO(lubosz): crash
-		if (false)
-//		if (io->obj->pbox)
+		if (io->obj->pbox)
 		{
 			io->GameFlags &= ~GFLAG_NOCOMPUTATION;
 
@@ -1467,9 +1465,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 	EERIE_3DOBJ * from = ioo->obj;
 
-	if ((!from)
-	        ||	(num < 0)
-	        ||	(num > from->selections.size())) // TODO >= ?
+	if ((!from) ||	(num < 0) || ((size_t)num >= from->selections.size()))
 		return;
 
 	EERIE_3DOBJ * nouvo = new EERIE_3DOBJ; 
@@ -1838,7 +1834,7 @@ long GetCutSelection(INTERACTIVE_OBJ * io, short flag)
 
 	if (tx[0])
 	{
-		for (long i = 0; i < io->obj->selections.size(); i++)
+		for (size_t i = 0; i < io->obj->selections.size(); i++)
 		{ // TODO iterator
 			if ((io->obj->selections[i].nb_selected > 0)
 			        &&	(!strcasecmp(io->obj->selections[i].name.c_str(), tx)))
@@ -1973,7 +1969,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos)
 		}
 	}
 
-	for (int i = 0; i < target->obj->selections.size(); i++)
+	for (size_t i = 0; i < target->obj->selections.size(); i++)
 	{ // TODO iterator
 		if ((target->obj->selections[i].nb_selected > 0)
 		        &&	(IsIn(target->obj->selections[i].name, "CUT_")))
