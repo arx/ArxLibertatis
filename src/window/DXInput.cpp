@@ -770,40 +770,18 @@ void * temp;
 //			info->old_mousestate=temp;
 			switch(GET_DIDEVICE_TYPE(info->type))
 			{
-
-			//ARX_BEGIN: xrichter (2010-06-30) - treat warnings C4057 for 'LPDWORD' differs in indirection to slightly different base types from 'int *'
+			
 			case DIDEVTYPE_MOUSE:
 				nbele=info->nbbuttons+info->nbaxes+INPUT_STATE_ADD;
-				dwNbele=(DWORD)nbele; 
-				//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->GetDeviceData(info->inputdevice7,sizeof(DIDEVICEOBJECTDATA),info->mousestate,&dwNbele,(_bKeept)?DIGDD_PEEK:0 ))) 
+				dwNbele=(DWORD)nbele;
 				if(FAILED(DI_Hr=info->inputdevice7->GetDeviceData(sizeof(DIDEVICEOBJECTDATA),info->mousestate,&dwNbele,(_bKeept)?DIGDD_PEEK:0 ))) 
 				{
 					nbele=info->nbbuttons+info->nbaxes+INPUT_STATE_ADD;
-					dwNbele=(DWORD)nbele; 
-					//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->GetDeviceData(info->inputdevice7,sizeof(DIDEVICEOBJECTDATA),info->mousestate,&dwNbele,(_bKeept)?DIGDD_PEEK:0 ))) 
+					dwNbele=(DWORD)nbele;
 					if(FAILED(DI_Hr=info->inputdevice7->GetDeviceData(sizeof(DIDEVICEOBJECTDATA),info->mousestate,&dwNbele,(_bKeept)?DIGDD_PEEK:0 ))) 
 					{
-						//Old : info->inputdevice7->lpVtbl->GetDeviceData(info->inputdevice7,sizeof(DIDEVICEOBJECTDATA),info->mousestate,&dwNbele,(_bKeept)?DIGDD_PEEK:0 );
 						info->inputdevice7->GetDeviceData(sizeof(DIDEVICEOBJECTDATA),info->mousestate,&dwNbele,(_bKeept)?DIGDD_PEEK:0 );
-			//ARX_END: xrichter (2010-06-30)	
-
-//					DXI_RestoreAllDevices();
-				//	info->actif=DEVICENOACTIF;
-					/*
-					if (DIERR_INPUTLOST == DI_Hr) 
-					{
-				//		DXI_RestoreAllDevices();
-					}
-					if (DIERR_NOTACQUIRED  == DI_Hr)
-					{
-				//		DXI_RestoreAllDevices();
-						//info->inputdevice7->Acquire
-					}
-				/*	if (DIERR_INVALIDPARAM  == DI_Hr) MessageBox(NULL,"DIERR_INVALIDPARAM ","",0);
-					if (DIERR_NOTACQUIRED  == DI_Hr) MessageBox(NULL,"DIERR_NOTACQUIRED ","",0);
-					if (DIERR_NOTINITIALIZED  == DI_Hr) MessageBox(NULL,"DIERR_NOTINITIALIZED ","",0);
-					if (E_PENDING  == DI_Hr) MessageBox(NULL,"E_PENDING ","",0);
-*/
+						
 					flg=false;
 					}
 				}
@@ -827,34 +805,6 @@ void * temp;
 					//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->GetDeviceState(info->inputdevice7,256,(void*)info->bufferstate))) 
 					if(FAILED(DI_Hr=info->inputdevice7->GetDeviceState(256,(void*)info->bufferstate))) 
 					{
-//					DXI_RestoreAllDevices();
-
-					/*
-					if (DIERR_INPUTLOST == DI_Hr) 
-					{
-						//DXI_RestoreAllDevices(); 
-						//Old : info->inputdevice7->lpVtbl->Acquire(info->inputdevice7);
-						info->inputdevice7->Acquire(info->inputdevice7);
-					}
-					if (DIERR_NOTACQUIRED  == DI_Hr)
-					{
-						//DXI_RestoreAllDevices(); 
-						//Old : info->inputdevice7->lpVtbl->Acquire(info->inputdevice7);
-						info->inputdevice7->Acquire(info->inputdevice7);
-					}
-					if (DIERR_NOTINITIALIZED  == DI_Hr) 
-					{	//Old : info->inputdevice7->lpVtbl->Acquire(info->inputdevice7);
-						info->inputdevice7->Acquire(info->inputdevice7);
-						//MessageBox(NULL,"DIERR_NOTINITIALIZED ","",0);
-					}
-					/*
-					if (DIERR_INVALIDPARAM  == DI_Hr) MessageBox(NULL,"DIERR_INVALIDPARAM ","",0);
-					if (DIERR_NOTACQUIRED  == DI_Hr) MessageBox(NULL,"DIERR_NOTACQUIRED ","",0);
-					if (DIERR_NOTINITIALIZED  == DI_Hr) MessageBox(NULL,"DIERR_NOTINITIALIZED ","",0);
-					if (E_PENDING  == DI_Hr) MessageBox(NULL,"E_PENDING ","",0);
-					*/		
-					//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->GetDeviceState(info->inputdevice7,256,(void*)info->bufferstate))) 
-//					if(FAILED(DI_Hr=info->inputdevice7->GetDeviceState(256,(void*)info->bufferstate))) 
 						memset(info->bufferstate,0,256); //seb 27/03/2002
 						flg=false;					
 					}
