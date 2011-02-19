@@ -2068,7 +2068,7 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 						lfr = ffr;
 						lfg = ffg;
 						lfb = ffb;
-						tv[o].color = (0xFF000000L | (((lfr) & 255) << 16) |	(((lfg) & 255) << 8) | (lfb) & 255);
+						tv[o].color = 0xFF000000L | (((lfr) & 255) << 16) |	(((lfg) & 255) << 8) | ((lfb) & 255);
 					}
 
 					//SETCULL(pd3dDevice,D3DCULL_NONE);
