@@ -3373,7 +3373,7 @@ void MakeCLight2(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERI
 		ir = clipByte255(r);
 		ig = clipByte255(g);
 		ib = clipByte255(b);
-		eobj->vertexlist3[paf[i]].vert.color = (0xff000000L | (((ir) & 255) << 16) |	(((ig) & 255) << 8) | (ib) & 255);
+		eobj->vertexlist3[paf[i]].vert.color = 0xff000000L | (((ir) & 255) << 16) | (((ig) & 255) << 8) | ((ib) & 255);
 	}
 }
 
