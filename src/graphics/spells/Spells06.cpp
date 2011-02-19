@@ -1605,7 +1605,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 
 	// syst�me de partoches pour la poussi�re au sol
 	pPS = new CParticleSystem();
-	cp;
+	
 	cp.iNbMax = 20;
 	cp.fLife = 1000; //2000
 	cp.fLifeRandom = 2000;
