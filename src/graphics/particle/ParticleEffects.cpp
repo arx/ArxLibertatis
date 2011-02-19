@@ -1680,7 +1680,7 @@ void ARX_PARTICLES_ClearAll()
 //-----------------------------------------------------------------------------
 long ARX_PARTICLES_GetFree()
 {	
-	for ( long i = 0 ; i < MAX_PARTICLES ; i++)
+	for ( size_t i = 0 ; i < MAX_PARTICLES ; i++)
 		if ( !particle[i].exist )
 		{
 			PARTICLE_DEF *pd	= &particle[i];
