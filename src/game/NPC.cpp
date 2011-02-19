@@ -1531,9 +1531,9 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 		nouvo->vertexlist3[k] = nouvo->vertexlist[k];
 	}
 
-	long count = from->selections[num].selected.size();
+	size_t count = from->selections[num].selected.size();
 
-	for (size_t k = 0; k < from->facelist.size(); k++)
+	for(size_t k = 0; k < from->facelist.size(); k++)
 	{
 		if (from->facelist[k].texid == gore)
 		{
