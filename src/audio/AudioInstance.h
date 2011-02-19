@@ -31,6 +31,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "AudioTypes.h"
 #include "Sample.h"
 #include "Stream.h"
+#include <vector>
+using namespace std;
 
 namespace ATHENA
 {
@@ -92,6 +94,8 @@ namespace ATHENA
 			Stream * stream;
 			aalULong read, write;                 //Streaming status
 			aalULong size;                        //Buffer size
+
+			vector<ALuint *> buffers;
 
 			ALuint source[1];
 			ALuint buffer[1];

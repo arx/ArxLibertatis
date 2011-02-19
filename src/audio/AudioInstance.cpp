@@ -246,6 +246,7 @@ namespace ATHENA
 			alGetError();
 			
 			alBufferData(buffer[0], alformat, ptr0, size, sample->format.frequency);
+			free(ptr0);
 			// FIXME -- does the above cause a memleak?
 			int error = alGetError();
 			if (error != AL_NO_ERROR) {
@@ -370,6 +371,10 @@ namespace ATHENA
 
 		if (alIsSource(source[0]))
 			alDeleteSources(1, source);
+		for (int i = 0; i < buffers.size(); i++) {
+			alDeleteBuffers(1, buffers[i]);
+		}
+		fflush(stdout);
 		if (alIsBuffer(buffer[0]))
 			alDeleteBuffers(1, buffer);
 
@@ -707,6 +712,7 @@ namespace ATHENA
 			alGenBuffers(1, new_buffer);
 			alBufferData(new_buffer[0], alformat, ptr0, size, sample->format.frequency);
 			alSourceQueueBuffers(source[0], 1, new_buffer);
+			buffers.push_back(new_buffer);
 			int error;
 			if ((error = alGetError()) != AL_NO_ERROR) {
 				return AAL_ERROR_SYSTEM;
@@ -876,6 +882,7 @@ namespace ATHENA
 		alGetError();
 		alGenBuffers(1, new_buffers);
 		alBufferData(new_buffers[0], alformat, ptr0, to_fill, sample->format.frequency);
+		buffers.push_back(new_buffers);
 		alSourceQueueBuffers(source[0], 1, new_buffers);
 		int error;
 		if ((error = alGetError()) != AL_NO_ERROR) {
