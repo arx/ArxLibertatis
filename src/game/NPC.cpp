@@ -4379,7 +4379,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 			{
 				EERIE_3D	pos;
 				long		notok	=	10;
-				long		num		=	0;
+				size_t num = 0;
 
 				while (notok-- > 0)
 				{
