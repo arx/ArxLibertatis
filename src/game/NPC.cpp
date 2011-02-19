@@ -1056,7 +1056,6 @@ void ARX_PHYSICS_Apply()
 		             &&	!io->obj->vertexlist.empty())
 		   )
 		{
-			long idx;
 			long cnt = (io->obj->vertexlist.size() << 12) + 1;
 
 			if (cnt < 2) cnt = 2;
@@ -1065,7 +1064,7 @@ void ARX_PHYSICS_Apply()
 
 			for (long nn = 0; nn < cnt; nn++)
 			{
-				idx = rnd()*io->obj->vertexlist.size();
+				size_t idx = rnd() * io->obj->vertexlist.size();
 
 				if (idx >= io->obj->vertexlist.size()) idx = io->obj->vertexlist.size() - 1;
 
