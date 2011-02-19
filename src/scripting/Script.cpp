@@ -1644,7 +1644,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 
 				if (id >= 0)
 				{
-					for (long i = 0; i < MAX_SPELLS; i++)
+					for (size_t i = 0; i < MAX_SPELLS; i++)
 					{
 						if (spells[i].exist)
 						{
