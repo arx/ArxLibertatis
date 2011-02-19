@@ -949,17 +949,17 @@ int					nb,flg=0;
 	od=DI_MouseState[id]->mousestate;
 	while(nb)
 	{
-		if(od->dwOfs == DIMOFS_X)
+		if(od->dwOfs == (DWORD)DIMOFS_X)
 		{
 			*mx+=od->dwData;
 			flg++;
 		}
-		else if(od->dwOfs == DIMOFS_Y)
+		else if(od->dwOfs == (DWORD)DIMOFS_Y)
 		{
 			*my+=od->dwData;
 			flg++;
 		}
-		else if(od->dwOfs == DIMOFS_Z)
+		else if(od->dwOfs == (DWORD)DIMOFS_Z)
 		{
 			*mz+=od->dwData;
 			flg++;
@@ -991,7 +991,7 @@ static FILE *fTemp=NULL;
 		switch(numb)
 		{
 		case DXI_BUTTON0:
-			if(od->dwOfs==DIMOFS_BUTTON0)
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON0)
 			{
 				state=od->dwData;
 				if(state&0x80)
@@ -1005,7 +1005,7 @@ static FILE *fTemp=NULL;
 			}
 			break;
 		case DXI_BUTTON1:
-			if(od->dwOfs==DIMOFS_BUTTON1)
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON1)
 			{
 				state=od->dwData;
 				if(state&0x80)
@@ -1059,7 +1059,7 @@ int					state,nb;
 		switch(numb)
 		{
 		case DXI_BUTTON0:
-			if(od->dwOfs==DIMOFS_BUTTON0)
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON0)
 			{
 				state=od->dwData;
 				if(state&0x80)
@@ -1073,7 +1073,7 @@ int					state,nb;
 			}
 			break;
 		case DXI_BUTTON1:
-			if(od->dwOfs==DIMOFS_BUTTON1)
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON1)
 			{
 				state=od->dwData;
 				if(state&0x80)
@@ -1087,7 +1087,7 @@ int					state,nb;
 			}
 			break;
 		case DXI_BUTTON2:
-			if(od->dwOfs==DIMOFS_BUTTON2)
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON2)
 			{
 				state=od->dwData;
 				if(state&0x80)
@@ -1101,7 +1101,7 @@ int					state,nb;
 			}
 			break;
 		case DXI_BUTTON3:
-			if(od->dwOfs==DIMOFS_BUTTON3)
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON3)
 			{
 				state=od->dwData;
 				if(state&0x80)
@@ -1115,7 +1115,7 @@ int					state,nb;
 			}
 			break;
 		case DXI_BUTTON4:
-			if(od->dwOfs==DIMOFS_BUTTON4)
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON4)
 			{
 				state=od->dwData;
 				if(state&0x80)
@@ -1129,7 +1129,7 @@ int					state,nb;
 			}
 			break;
 		case DXI_BUTTON5:
-			if(od->dwOfs==DIMOFS_BUTTON5)
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON5)
 			{
 				state=od->dwData;
 				if(state&0x80)
@@ -1143,7 +1143,7 @@ int					state,nb;
 			}
 			break;
 		case DXI_BUTTON6:
-			if(od->dwOfs==DIMOFS_BUTTON6)
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON6)
 			{
 				state=od->dwData;
 				if(state&0x80)
@@ -1157,7 +1157,7 @@ int					state,nb;
 			}
 			break;
 		case DXI_BUTTON7:
-			if(od->dwOfs==DIMOFS_BUTTON7)
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON7)
 			{
 				state=od->dwData;
 				if(state&0x80)
@@ -1196,7 +1196,7 @@ bool				bResult;
 		switch(numb)
 		{
 		case DXI_BUTTON0:
-			if(od->dwOfs==DIMOFS_BUTTON0)
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON0)
 			{
 				state=od->dwData;
 				if(state&0x80)
@@ -1206,7 +1206,7 @@ bool				bResult;
 			}
 			break;
 		case DXI_BUTTON1:
-			if(od->dwOfs==DIMOFS_BUTTON1)
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON1)
 			{
 				state=od->dwData;
 				if(state&0x80)
@@ -1216,7 +1216,7 @@ bool				bResult;
 			}
 			break;
 		case DXI_BUTTON2:
-			if(od->dwOfs==DIMOFS_BUTTON2)
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON2)
 			{
 				state=od->dwData;
 				if(state&0x80)
@@ -1226,7 +1226,7 @@ bool				bResult;
 			}
 			break;
 		case DXI_BUTTON3:
-			if(od->dwOfs==DIMOFS_BUTTON3)
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON3)
 			{
 				state=od->dwData;
 				if(state&0x80)
@@ -1236,7 +1236,7 @@ bool				bResult;
 			}
 			break;
 		case DXI_BUTTON4:
-			if(od->dwOfs==DIMOFS_BUTTON4)
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON4)
 			{
 				state=od->dwData;
 				if(state&0x80)
@@ -1246,7 +1246,7 @@ bool				bResult;
 			}
 			break;
 		case DXI_BUTTON5:
-			if(od->dwOfs==DIMOFS_BUTTON5)
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON5)
 			{
 				state=od->dwData;
 				if(state&0x80)
@@ -1256,7 +1256,7 @@ bool				bResult;
 			}
 			break;
 		case DXI_BUTTON6:
-			if(od->dwOfs==DIMOFS_BUTTON6)
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON6)
 			{
 				state=od->dwData;
 				if(state&0x80)
@@ -1266,7 +1266,7 @@ bool				bResult;
 			}
 			break;
 		case DXI_BUTTON7:
-			if(od->dwOfs==DIMOFS_BUTTON7)
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON7)
 			{
 				state=od->dwData;
 				if(state&0x80)
@@ -1322,28 +1322,28 @@ int					state,nb;
 		switch(numb)
 		{
 		case DXI_BUTTON0:
-			if(od->dwOfs==DIMOFS_BUTTON0) state=od->dwData;
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON0) state=od->dwData;
 			break;
 		case DXI_BUTTON1:
-			if(od->dwOfs==DIMOFS_BUTTON1) state=od->dwData;
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON1) state=od->dwData;
 			break;
 		case DXI_BUTTON2:
-			if(od->dwOfs==DIMOFS_BUTTON2) state=od->dwData;
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON2) state=od->dwData;
 			break;
 		case DXI_BUTTON3:
-			if(od->dwOfs==DIMOFS_BUTTON3) state=od->dwData;
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON3) state=od->dwData;
 			break;
 		case DXI_BUTTON4:
-			if(od->dwOfs==DIMOFS_BUTTON4) state=od->dwData;
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON4) state=od->dwData;
 			break;
 		case DXI_BUTTON5:
-			if(od->dwOfs==DIMOFS_BUTTON5) state=od->dwData;
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON5) state=od->dwData;
 			break;
 		case DXI_BUTTON6:
-			if(od->dwOfs==DIMOFS_BUTTON6) state=od->dwData;
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON6) state=od->dwData;
 			break;
 		case DXI_BUTTON7:
-			if(od->dwOfs==DIMOFS_BUTTON7) state=od->dwData;
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON7) state=od->dwData;
 			break;
 		default:
 			return false;
@@ -1371,28 +1371,28 @@ return false;
 		switch(numb)
 		{
 		case DXI_BUTTON0:
-			if(od->dwOfs==DIMOFS_BUTTON0) state=od->dwData;
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON0) state=od->dwData;
 			break;
 		case DXI_BUTTON1:
-			if(od->dwOfs==DIMOFS_BUTTON1) state=od->dwData;
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON1) state=od->dwData;
 			break;
 		case DXI_BUTTON2:
-			if(od->dwOfs==DIMOFS_BUTTON2) state=od->dwData;
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON2) state=od->dwData;
 			break;
 		case DXI_BUTTON3:
-			if(od->dwOfs==DIMOFS_BUTTON3) state=od->dwData;
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON3) state=od->dwData;
 			break;
 		case DXI_BUTTON4:
-			if(od->dwOfs==DIMOFS_BUTTON4) state=od->dwData;
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON4) state=od->dwData;
 			break;
 		case DXI_BUTTON5:
-			if(od->dwOfs==DIMOFS_BUTTON5) state=od->dwData;
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON5) state=od->dwData;
 			break;
 		case DXI_BUTTON6:
-			if(od->dwOfs==DIMOFS_BUTTON6) state=od->dwData;
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON6) state=od->dwData;
 			break;
 		case DXI_BUTTON7:
-			if(od->dwOfs==DIMOFS_BUTTON7) state=od->dwData;
+			if(od->dwOfs==(DWORD)DIMOFS_BUTTON7) state=od->dwData;
 			break;
 		default:
 			return false;
@@ -1553,21 +1553,21 @@ int					nb;
 	{
 		if(od->dwData&0x80)
 		{
-			if(od->dwOfs == DIMOFS_BUTTON0)
+			if(od->dwOfs == (DWORD)DIMOFS_BUTTON0)
 				return DXI_BUTTON0;
-			else if(od->dwOfs == DIMOFS_BUTTON1)
+			else if(od->dwOfs == (DWORD)DIMOFS_BUTTON1)
 				return DXI_BUTTON1;
-			else if(od->dwOfs == DIMOFS_BUTTON2)
+			else if(od->dwOfs == (DWORD)DIMOFS_BUTTON2)
 				return DXI_BUTTON2;
-			else if(od->dwOfs == DIMOFS_BUTTON3)
+			else if(od->dwOfs == (DWORD)DIMOFS_BUTTON3)
 				return DXI_BUTTON3;
-			else if(od->dwOfs == DIMOFS_BUTTON4)
+			else if(od->dwOfs == (DWORD)DIMOFS_BUTTON4)
 				return DXI_BUTTON4;
-			else if(od->dwOfs == DIMOFS_BUTTON5)
+			else if(od->dwOfs == (DWORD)DIMOFS_BUTTON5)
 				return DXI_BUTTON5;
-			else if(od->dwOfs == DIMOFS_BUTTON6)
+			else if(od->dwOfs == (DWORD)DIMOFS_BUTTON6)
 				return DXI_BUTTON6;
-			else if(od->dwOfs == DIMOFS_BUTTON7)
+			else if(od->dwOfs == (DWORD)DIMOFS_BUTTON7)
 				return DXI_BUTTON7;
 		}
 
