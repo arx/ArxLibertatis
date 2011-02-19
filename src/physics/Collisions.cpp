@@ -991,9 +991,9 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 							else if (nbv<1200) step=4;
 							else step=6;
 
-							for (long ii=1;ii<nbv;ii+=step)
+							for (size_t ii=1;ii<nbv;ii+=step)
 							{
-								if (ii!=io->obj->origin)
+								if (ii != (size_t)io->obj->origin)
 								{
 									sp.origin.x=vlist[ii].v.x;
 									sp.origin.y=vlist[ii].v.y;
