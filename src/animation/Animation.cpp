@@ -3078,9 +3078,10 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 					lfb=clipByte255(lfb);
 				}
 
-				eobj->vertexlist3[i].vert.color=(0xff000000L | ( ((lfr)&255) << 16) | 	(((lfg)&255) << 8) | (lfb)&255);				
+				eobj->vertexlist3[i].vert.color = 0xff000000L | (((lfr)&255) << 16)
+				                                  | (((lfg)&255) << 8) | ((lfb)&255);
 				
-			}						
+			}
 		}
 	}
 
