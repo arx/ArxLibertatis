@@ -3983,8 +3983,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 					ARX_PLAYER_ClickedOnTorch(CURRENT_TORCH);
 				}
 
-				for (long n=0;n<MAX_SPELLS;n++)
-				{
+				for(size_t n = 0; n < MAX_SPELLS; n++) {
 					if (!spells[n].exist) continue;
 
 					switch (spells[n].type)
