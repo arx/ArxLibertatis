@@ -130,7 +130,7 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const std::string& s1, const std::
 		}
 
 		tex->Restore(GDevice);
-		TextureContainer * tex2 = FindTexture(skintochange.c_str());
+		TextureContainer * tex2 = FindTexture(skintochange);
 
 		if (tex2)
 			for (size_t i = 0; i < obj->texturecontainer.size(); i++)

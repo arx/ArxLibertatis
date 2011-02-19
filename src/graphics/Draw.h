@@ -50,6 +50,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define EERIE_USEVB		0x8000	// using vertex buffer for EERIEDRAWPRIM
 #define EERIE_NOCOUNT	0x4000	// do not incr EERIEDrawnPolys for EERIEDRAWPRIM
 
+#define MAX_DIST_BUMP	600.f
+
 #include "graphics/d3dwrapper.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/data/Texture.h"
@@ -101,9 +103,7 @@ void EERIEDrawSprite(LPDIRECT3DDEVICE7 pd3dDevice, D3DTLVERTEX * in, float siz, 
 void EERIEDrawRotatedSprite(LPDIRECT3DDEVICE7 pd3dDevice, D3DTLVERTEX * in, float siz, TextureContainer * tex, D3DCOLOR col, float Zpos, float rot);
 
 void SETTEXTURE0(LPDIRECT3DDEVICE7 pd3dDevice, IDirectDrawSurface7 * tex);
-
 void SETTC(LPDIRECT3DDEVICE7 pd3dDevice, TextureContainer * tc);
-
 void SETCULL(LPDIRECT3DDEVICE7 pd3dDevice, DWORD state);
 void SETZWRITE(LPDIRECT3DDEVICE7 pd3dDevice, DWORD state);
 void SETALPHABLEND(LPDIRECT3DDEVICE7 pd3dDevice, DWORD state);
@@ -123,6 +123,9 @@ void EERIEDrawBitmapUVs(LPDIRECT3DDEVICE7 pd3dDevice, float x, float y, float sx
                         , float u2, float v2
                         , float u3, float v3
                        );
+
+bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX *, D3DTLVERTEX *, D3DTLVERTEX *);
+bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX *, D3DTLVERTEX *, D3DTLVERTEX *, float _fAdd);
 
 void SET_FORCE_NO_VB( const bool& _NoVB );
 bool GET_FORCE_NO_VB( );

@@ -55,13 +55,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include "gui/Menu.h"
+
 #include <windows.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include <fstream>
 
 #include <SFML/System/Unicode.hpp>
 
-#include "gui/Menu.h"
 #include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
 #include "graphics/particle/Particle.h"
@@ -146,66 +147,105 @@ void ClearGameDEVICE();
 #define ARX_MENU_SIZE_Y 24
 
  
-long save_c(0), save_p(0);
 std::vector<SaveGame> save_l;
+
+int saveTimeCompare(const SaveGame & a, const SaveGame & b) {
+	if(a.stime.wYear != b.stime.wYear) {
+		return (a.stime.wYear > b.stime.wYear);
+	} else 	if(a.stime.wMonth != b.stime.wMonth) {
+		return (a.stime.wMonth > b.stime.wMonth);
+	} else 	if(a.stime.wDay != b.stime.wDay) {
+		return (a.stime.wDay > b.stime.wDay);
+	} else 	if(a.stime.wHour != b.stime.wHour) {
+		return (a.stime.wHour > b.stime.wHour);
+	} else 	if(a.stime.wMinute != b.stime.wMinute) {
+		return (a.stime.wMinute > b.stime.wMinute);
+	} else 	if(a.stime.wSecond != b.stime.wSecond) {
+		return (a.stime.wSecond > b.stime.wSecond);
+	}
+	return (a.stime.wMilliseconds > b.stime.wMilliseconds);
+}
 
 //-----------------------------------------------------------------------------
 void CreateSaveGameList()
 {
+	LogDebug << "CreateSaveGameList";
+	
 	char path[512] = "";
 	HANDLE h;
 
 	sprintf(path, "save%s\\save*", LOCAL_SAVENAME);
-
-	save_l.resize( save_l.size() + 1 );
+	
+	save_l.resize(1);
 
 	save_l[0].name = "New";
-	save_c = 1;
 
 	char tTemp[sizeof(WIN32_FIND_DATA)+2];
 	WIN32_FIND_DATA * fdata = (WIN32_FIND_DATA *)tTemp;
 
+	LogDebug << "looking for " << path;
+	
 	if ((h = FindFirstFile(path, fdata)) != INVALID_HANDLE_VALUE)
 	{
 		do
 		{
 			if (fdata->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY && fdata->cFileName[0] != '.')
 			{
-				// Make another save game slot at the end
-				save_l.resize( save_l.size() +1 );
-
-				std::string text = fdata->cFileName + 4;
-				save_l[save_c].num = atoi(text.c_str());
+				
+				
 				std::stringstream ss;
 				ss << "save" << LOCAL_SAVENAME << "\\" << fdata->cFileName << "\\";
-				text = ss.str();
-				//sprintf(text, "%ssave%s\\%s\\", Project.workingdir, LOCAL_SAVENAME, fdata->cFileName);
-				unsigned long pouet;
-
-				if (ARX_CHANGELEVEL_GetInfo(text, save_l[save_c].name, save_l[save_c].version, save_l[save_c].level, pouet) != -1)
-				{
+				
+				string name;
+				float version;
+				long level;
+				
+				unsigned long ignored;
+				if(ARX_CHANGELEVEL_GetInfo(ss.str(), name, version, level, ignored) != -1) {
+					
+					// Make another save game slot at the end
+					save_l.resize(save_l.size() + 1);
+					
+					save_l.back().name = name;
+					save_l.back().version = version;
+					save_l.back().level = level;
+					
+					istringstream num(fdata->cFileName + 4);
+					num >> save_l.back().num;
+					
 					SYSTEMTIME stime;
 					FILETIME fTime;
 					FileTimeToLocalFileTime(&fdata->ftLastWriteTime, &fTime);
 					FileTimeToSystemTime(&fTime, &stime);
-					save_l[save_c].stime = stime;
-
-					save_c++;
+					save_l.back().stime = stime;
+					
+					LogInfo << "found " << fdata->cFileName << ": \""
+					        << name << "\"   v" << version
+					        << "   " << stime.wYear << "-" << stime.wMonth << "-" << stime.wDay
+					        << " " << stime.wHour << ":" << stime.wMinute << ":" << stime.wSecond
+					        << ":" << stime.wMilliseconds;
+					
+				} else {
+					LogWarning << "unable to get save file info for " << ss.str();
 				}
 			}
 		}
 		while (FindNextFile(h, fdata));
+		
+		if(save_l.size() > 1) {
+			std::sort(save_l.begin() + 1, save_l.end(), saveTimeCompare);
+		}
 
+		LogDebug << "found " << (save_l.size()-1) << " savegames";
 		FindClose(h);
+	} else {
+		LogInfo << "no save files found";
 	}
 }
 
 //-----------------------------------------------------------------------------
-void FreeSaveGameList()
-{
+void FreeSaveGameList() {
 	save_l.clear();
-	save_c = 0;
-	save_p = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -234,7 +274,7 @@ void LoadSaveGame(const long & i)
 	PROGRESS_BAR_TOTAL = 238;
 	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
 	PROGRESS_BAR_COUNT += 1.f;
-	LoadLevelScreen(GDevice, save_l[i].level);
+	LoadLevelScreen(save_l[i].level);
 	DanaeClearLevel();
 	ARX_CHANGELEVEL_Load(save_l[i].num);
 	REFUSE_GAME_RETURN = 0;

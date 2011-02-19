@@ -59,7 +59,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdlib>
 
-#define DIRECTINPUT_VERSION 0x0700
+#ifndef DIRECTINPUT_VERSION
+	#define DIRECTINPUT_VERSION 0x0700
+#endif
 
 #include <iomanip>
 #include <algorithm>
@@ -2949,7 +2951,8 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, long flag)
 				strcpy(temp2, GetName(temp).c_str());
 				RemoveName(temp);
 				std::stringstream ss;
-				ss << temp << temp2 << '_' << std::setfill('0') << std::setw(4) << inter.iobj[i]->ident << '.';
+				ss << temp << temp2 << '_' << std::setfill('0') << std::setw(4) << inter.iobj[i]->ident 
+				   << std::setw(0) << '.';
 				temp = ss.str();
 				//sprintf(temp, "%s%s_%04d.", temp, temp2, inter.iobj[i]->ident)
 
@@ -3151,7 +3154,6 @@ INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
 void ReloadScript(INTERACTIVE_OBJ * io)
 {
 	std::string texscript = io->filename;
-	char tmp2[HERMES_PATH_SIZE];
 	SetExt(texscript, "asl");
 	ARX_SCRIPT_Timer_Clear_For_IO(io);
 	ReleaseScript(&io->over_script);
@@ -3175,18 +3177,11 @@ void ReloadScript(INTERACTIVE_OBJ * io)
 	}
 
 	texscript = io->filename;
-	strcpy(tmp2, GetName(texscript).c_str());
+	string tmp2 = GetName(texscript);
 	RemoveName(texscript);
 	std::stringstream ss;
-	ss << texscript << tmp2 << '_';
-
-	char fill = ss.fill('0');
-	std::streamsize width = ss.width(4);
-	ss << io->ident;
-	ss.width(width);
-	ss.fill(fill);
-
-	ss << '\\' << tmp2 << ".asl";
+	ss << texscript << tmp2 << '_' << std::setfill('0') << std::setw(4) << io->ident;
+	ss << std::setw(0) << '\\' << tmp2 << ".asl";
 	texscript = ss.str();
 
 	if (PAK_FileExist(texscript.c_str()))
@@ -3270,7 +3265,7 @@ void MakeIOIdent(INTERACTIVE_OBJ * io)
 		strcpy(temp2, GetName(temp).c_str());
 		RemoveName(temp);
 		std::stringstream ss;
-		ss << temp << temp2 << '_' << std::setfill('0') << std::setw(4) << t << '.';
+		ss << temp << temp2 << '_' << std::setfill('0') << std::setw(4) << t << std::setw(0) << '.';
 		//(temp, "%s%s_%04d.", temp, temp2, t);
 
 		if (!DirectoryExist(temp.c_str()))
@@ -3343,6 +3338,7 @@ void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io)
 
 	if (!io) return;
 
+	// TODO do we really need to open this every time?
 	if (LAST_CHINSTANCE != -1) ARX_Changelevel_CurGame_Open();
 
 	for (;;)
@@ -3553,7 +3549,6 @@ INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fil, 
 extern float LAST_FZPOS;
 extern float LAST_FZSCREEN;
 extern long USE_CEDRIC_ANIM;
-INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag = 0, EERIE_3D * _pRef = NULL, INTERACTIVE_OBJ ** _pTable = NULL, int * _pnNbInTable = NULL);
 
 //*************************************************************************************
 // Returns nearest interactive object found at position x,y

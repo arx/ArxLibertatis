@@ -180,17 +180,13 @@ class TextureContainer
 		float	m_ody;						// precalculated 1.f/height
  
 		HRESULT LoadImageData();
-		HRESULT LoadBitmapFile( const std::string& strPathname);
-		HRESULT LoadTargaFile( const std::string& strPathname);
- 
-		HRESULT LoadJpegFileNoDecomp( const std::string& strPathname );
-		HRESULT LoadPNGFile( const std::string& strPathname );
+
+		HRESULT LoadFile(const std::string& strPathname);
+		
 		HRESULT Restore(LPDIRECT3DDEVICE7 pd3dDevice);
-		HRESULT CopyBitmapToSurface(LPDIRECTDRAWSURFACE7 Surface);
-		HRESULT CopyBitmapToSurface2(HBITMAP hbitmap, int depx, int depy, int largeur, int hauteur, long flag = 0);
+	
 		HRESULT CopyRGBADataToSurface(LPDIRECTDRAWSURFACE7 Surface);
-		HRESULT CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface);
-		HRESULT CopyPNGDataToSurface(LPDIRECTDRAWSURFACE7 Surface);
+		HRESULT CopyBitmapToSurface(HBITMAP hbitmap, int depx, int depy, int largeur, int hauteur);
 		HRESULT Use();
 
 		TextureContainer * TextureRefinement;
@@ -210,6 +206,9 @@ class TextureContainer
 		float fHaloRed;
 		float fHaloGreen;
 		float fHaloBlue;
+	
+	private:
+		void RemoveFakeBlack();
 };
 
 
@@ -271,7 +270,6 @@ void D3DTextr_KillAllTextures();
 void SpecialBorderSurface(TextureContainer * tc, unsigned long x0, unsigned long y0);
 
 TextureContainer * FindTexture(const std::string& strTextureName);
-TextureContainer * _FindTexture(const std::string& strTextureName);
 
 bool TextureContainer_Exist(TextureContainer * tc);
 #endif

@@ -37,6 +37,8 @@ const LogSetting blackList[] = {
 	{ "Mesh.cpp", Logger::Info },
 	{ "Localization.cpp", Logger::Info },
 	{ "Credits.cpp", Logger::Info },
+	{ "ChangeLevel.cpp", Logger::Info },
+	{ "SaveBlock.cpp", Logger::Info },
 };
 
 Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {
@@ -44,7 +46,7 @@ Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {
 }
 
 Logger::Logger(const char* file, int line, Logger::LogLevel level) {
-  writeInfo(file, line, level);
+	writeInfo(file, line, level);
 }
 
 Logger::~Logger() {
@@ -54,7 +56,11 @@ Logger::~Logger() {
 	  exit(0);
 }
 
-void Logger::writeInfo(const char* file, int line, Logger::LogLevel level) {
+void Logger::writeInfo(const char* longFile, int line, Logger::LogLevel level) {
+  const char* file = std::strrchr(longFile, '/')+1;
+  if(file == 0)
+    file = std::strrchr(longFile, '\\')+1;
+
   fatal = false;
 	LogLevel curLevel = getLogLevel(file);
   if(level < curLevel || curLevel == None) {

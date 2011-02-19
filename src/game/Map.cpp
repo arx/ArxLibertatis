@@ -502,7 +502,7 @@ float oldposx,oldposz;
 	FileWrite(f, &bm, sizeof(BITMAPFILEHEADER));
 	FileWrite(f, &bi, sizeof(BITMAPINFO) - 4);
 	FileWrite(f, mem, tailleraw);
-	FileCloseWrite(f);
+	FileClose(f);
 
 	free((void*)mem);
 	SAFE_RELEASE(this->surfacetemp);

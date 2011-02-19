@@ -96,6 +96,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "io/Blast.h"
+#include "io/Implode.h"
 
 using std::max;
 
@@ -751,21 +752,20 @@ long DanaeSaveLevel( const std::string& _fic )
 
 	char * compressed;
 	compressed = NULL;
-	long cpr_pos;
+	size_t cpr_pos;
 	cpr_pos = 0;
-	printf("IMPLODE NOT IMPLEMENTED\n");
-	// TODO fix
-	//compressed = STD_Implode((char *)(dat + sizeof(DANAE_LS_HEADER)), pos - sizeof(DANAE_LS_HEADER), &cpr_pos);
+	compressed = implodeAlloc((char *)(dat + sizeof(DANAE_LS_HEADER)), pos - sizeof(DANAE_LS_HEADER), cpr_pos);
 
-	if (FileWrite(handle, compressed, cpr_pos) != cpr_pos)
-	{
+	long sizeWritten;
+	sizeWritten = FileWrite(handle, compressed, cpr_pos);
+	
+	delete[] compressed;
+	FileClose(handle);
+	
+	if(sizeWritten != cpr_pos) {
 		free(dat);
 		return false;
 	}
-
-	free(compressed);
-
-	FileCloseWrite(handle);
 
 	//////////////////////////////////////////////////////////////////////////////
 	//Now Save Separate IO Ref Sheet
@@ -875,19 +875,21 @@ long DanaeSaveLevel( const std::string& _fic )
 
 	compressed = NULL;
 	cpr_pos = 0;
-	printf("IMPLODE NOT IMPLEMENTED\n");
-	// TODO fix
-	//compressed = STD_Implode((char *)dat, pos, &cpr_pos);
+	compressed = implodeAlloc((char *)dat, pos, cpr_pos);
 
-	if (FileWrite(handle, compressed, cpr_pos) != cpr_pos)
+	long sizeWritten2;
+	sizeWritten2 = FileWrite(handle, compressed, cpr_pos);
+	
+	delete[] compressed;
+	FileClose(handle);
+	
+	if (sizeWritten2 != cpr_pos)
 	{
-		free(compressed);
 		sprintf(_error, "Unable to Write to %s", fic2.c_str());
 		goto error;
 	}
 
-	free(compressed);
-	FileCloseWrite(handle);
+
 	// End of LLF Save
 	//////////////////////////////////////////////////////////////////////////////
 
@@ -971,7 +973,6 @@ void LogDirDestruction( const std::string& dir ) {
 void CheckIO_NOT_SAVED()
 {
 	std::string temp;
-	char temp2[512];
 	std::string temp3;
 
 	if (ADDED_IO_NOT_SAVED)
@@ -987,10 +988,11 @@ void CheckIO_NOT_SAVED()
 						if (inter.iobj[i]->ident > 0)
 						{
 							temp = inter.iobj[i]->filename;
-							strcpy(temp2, GetName(temp).c_str());
+							string temp2 = GetName(temp);
 							RemoveName(temp);
 							std::stringstream ss;
-							ss << temp << temp2 << '_' << std::setfill('0') << std::setw(4) << inter.iobj[i]->ident << '.';
+							ss << temp << temp2 << '_' << std::setfill('0') << std::setw(4) << inter.iobj[i]->ident;
+							ss << std::setw(0) << '.';
 							temp = ss.str();
 							//temp += "%s%s_%04d." temp2 + '_' + inter.iobj[i]->ident + '.';
 
@@ -1126,14 +1128,7 @@ suite:
 			strcpy(tmp2, GetName(tmp).c_str());
 			RemoveName(tmp);
 			std::stringstream ss;
-			ss << tmp << tmp2 << '_';
-
-				char fill = ss.fill('0');
-				std::streamsize width = ss.width(4);
-				ss << io->ident;
-				ss.width(width);
-				ss.fill(fill);
-
+			ss << tmp << tmp2 << '_' << std::setfill('0') << std::setw(4) << io->ident;
 			tmp = ss.str();
 			//sprintf(tmp, "%s%s_%04d", tmp.c_str(), tmp2, io->ident);
 
@@ -1143,15 +1138,8 @@ suite:
 				strcpy(tmp2, GetName(tmp).c_str());
 				RemoveName(tmp);
 				std::stringstream ss;
-				ss << tmp << tmp2 << '_';
-
-				char fill = ss.fill('0');
-				std::streamsize width = ss.width(4);
-				ss << io->ident;
-				ss.width(width);
-				ss.fill(fill);
-
-				ss << '\\' << tmp2 << ".asl";
+				ss << tmp << tmp2 << '_' << std::setfill('0') << std::setw(4) << io->ident;
+				ss << std::setw(0) << '\\' << tmp2 << ".asl";
 				tmp = ss.str();
 				//sprintf(tmp, "%s%s_%04d\\%s.asl", tmp, tmp2, io->ident, tmp2);
 
@@ -1391,8 +1379,8 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fic)
 		mse->pos.x = Mscenepos.x = Mscenepos.x + BKG_SIZX - t1;
 		mse->pos.z = Mscenepos.z = Mscenepos.z + BKG_SIZZ - t2;
 		Mscenepos.y = mse->pos.y = -mse->cub.ymin - 100.f - mse->point0.y;
-		lastteleport.x = map.pos.x = player.pos.x = subj.pos.x = moveto.x = mse->pos.x + mse->point0.x;
-		lastteleport.z = map.pos.z = player.pos.z = subj.pos.z = moveto.z = mse->pos.z + mse->point0.z;
+		lastteleport.x = mapcam.pos.x = player.pos.x = subj.pos.x = moveto.x = mse->pos.x + mse->point0.x;
+		lastteleport.z = mapcam.pos.z = player.pos.z = subj.pos.z = moveto.z = mse->pos.z + mse->point0.z;
 		lastteleport.y         = player.pos.y = subj.pos.y = moveto.y = mse->pos.y + mse->point0.y;
 		lastteleport.y -= 180.f;
 		player.pos.y = subj.pos.y -= 180.f;
@@ -2291,8 +2279,8 @@ void ARX_SAVELOAD_DLFCheckAdd(char * path, long num)
 		pos += sizeof(DANAE_LS_INTER);
 		std::stringstream ss;
 		ss << GetName(dli->name) << '_' << std::setfill('0') << std::setw(4) << dli->ident;
-		std::string id = ss.str();
-		AddIdent( id, num);
+		string id = ss.str();
+		AddIdent(id, num);
 	}
 
 	free(dat);

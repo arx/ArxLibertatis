@@ -24,8 +24,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 #include "core/Localization.h"
 
-#include <stdint.h>
-
 #include <list>
 #include <SFML/System/Unicode.hpp>
 
@@ -82,7 +80,7 @@ bool isSection( const std::string& str )
 bool isKey( const std::string& str )
 {
 	// Iterate through str until alphanumeric characters are found
-	for ( int i = 0 ; i < str.length() ; i++ )
+	for ( size_t i = 0 ; i < str.length() ; i++ )
 	{
 		// If we hit an '=' before other alphanumeric characters, return false
 		if ( str[i] == '=' ) return false;
@@ -168,9 +166,7 @@ void ParseFile( const std::string& file_text )
 
 		// Remove any commented bits until the line end
 		size_t comment_start = std::string::npos;
-		comment_start = str.find("/");
-
-		if ( comment_start != std::string::npos )
+		comment_start = str.find("//");
 
 		// Whole line was commented, no need to do anything with it. Continue getting the next line
 		if ( comment_start == 0 ) continue;
@@ -236,7 +232,7 @@ void Localisation_Init()
 	size_t loc_file_size = 0; // Used to report how large the loaded file is
 
 	// Attempt loading the selected locale file
-	uint16_t* Localisation = (uint16_t*)PAK_FileLoadMallocZero( tx, loc_file_size );
+	u16* Localisation = (u16*)PAK_FileLoadMallocZero( tx, loc_file_size );
 
 	// if no file was loaded
 	if ( Localisation )
@@ -255,7 +251,7 @@ void Localisation_Init()
 		tx = "localisation\\utext_" + Project.localisationpath + ".ini";
 
 		// Load the default english locale file
-		Localisation = (uint16_t*)PAK_FileLoadMallocZero( tx, loc_file_size );
+		Localisation = (u16*)PAK_FileLoadMallocZero( tx, loc_file_size );
 	}
 	
 	// Scale the loaded size to new stride of uint16_t vs char

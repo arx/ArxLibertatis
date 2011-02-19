@@ -238,34 +238,6 @@ void fixSoundPath(string & path) {
 	
 }
 
-// TODO useful elsewhere too
-static const char * safeGetString(const char * & pos, size_t & size) {
-	
-	const char * begin = pos;
-	
-	for(size_t i = 0; i < size; i++) {
-		if(pos[i] == 0) {
-			size -= i + 1;
-			pos += i + 1;
-			return begin;
-		}
-	}
-	
-	return NULL;
-}
-
-// TODO useful elsewhere too
-template <class T>
-inline bool safeGet(T & data, const char * & pos, size_t & size) {
-	if(size < sizeof(T)) {
-		return false;
-	}
-	data = *reinterpret_cast<const T *>(pos);
-	pos += sizeof(T);
-	size -= sizeof(T);
-	return true;
-}
-
 bool parseCinematic(Cinematic * c, const char * data, size_t size);
 
 bool LoadProject(Cinematic * c, const char * dir, const char * name) {

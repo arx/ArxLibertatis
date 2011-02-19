@@ -205,7 +205,12 @@ static float fFadeSens = 0.f;
 static float fFadeColor = 0.f;
 
 //-----------------------------------------------------------------------------
-void LoadLevelScreen(LPDIRECT3DDEVICE7 _pd3dDevice, long num, float ratio)
+void LoadLevelScreen()
+{
+	LoadLevelScreen(-1);
+}
+
+void LoadLevelScreen(long num)
 {
 	Project.vsync = 0;
 
@@ -258,6 +263,8 @@ void LoadLevelScreen(LPDIRECT3DDEVICE7 _pd3dDevice, long num, float ratio)
 		fFadeSens = .01f;
 		fFadeColor = 0.f;
 	}
+
+	float ratio = 0;
 
 	while ((OLD_PROGRESS_BAR_COUNT < PROGRESS_BAR_COUNT) ||
 	        ((fFadeSens < 0.f) && (fFadeColor > 0.f)))

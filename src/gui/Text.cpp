@@ -57,6 +57,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <assert.h>
 
+#include <SFML/System/Unicode.hpp>
+
 #include "core/Localization.h"
 #include "core/Core.h"
 #include "graphics/Draw.h"
@@ -624,15 +626,16 @@ std::string GetFontName( const std::string& _lpszFileName)
 						if (iResult == 0)
 							LogWarning << "FontName :: Unable to read font name - " << _lpszFileName;
 
-						string result;
-						result.resize(FNN.usStringLength / 2);
-						for (int k = 0; k < FNN.usStringLength / 2; k++)
-						{
-							// TODO quick and dirty hack to convert from UTF-16
-							result[k] = (unsigned char)LilEndianShort(szName[k]);
+						size_t len = FNN.usStringLength / 2;
+						
+						for(int i = 0; i < len; i++) {
+							szName[i] = LilEndianShort(szName[i]);
 						}
 						
-
+						string result;
+						result.reserve(len);
+						sf::Unicode::UTF16ToUTF8(szName, &szName[len], std::back_inserter(result));
+						
 						CloseHandle(hFile);
 						return result;
 					}
@@ -777,17 +780,12 @@ string getFontFile() {
 void ARX_Text_Init()
 {
 	
-	std::stringstream ss;
 	ARX_Text_Close();
 
 	Localisation_Init();
 	
 	string tx = getFontFile();
-
-	wchar_t wtx[256];
-	MultiByteToWideChar(CP_ACP, 0, tx.c_str() , -1, wtx, 256);		// XS : We need to pass a unicode string to AddFontResourceW
-
-	lpszFontIngame = GetFontName(tx.c_str());
+	lpszFontIngame = GetFontName(tx);
 	
 	LogInfo << "Adding Font " << tx << ": " << lpszFontIngame;
 
@@ -795,24 +793,7 @@ void ARX_Text_Init()
 		LogError << FontError();
 	}
 	
-
-
-//	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf");
-//
-//	if (!FileExist(tx))
-//	{
-//		sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
-//	}
-//
-//	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass an unicode string to AddFontResourceW
-
-	lpszFontMenu = lpszFontIngame; //GetFontName(tx.c_str());
-
-	//if (AddFontResourceW(wtx) == 0)
-	//{
-	//	LogError << FontError();
-	//}
-
+	lpszFontMenu = lpszFontIngame;
 
 	pTextManage = new TextManager();
 	pTextManageFlyingOver = new TextManager();
@@ -824,7 +805,7 @@ void ARX_Text_Init()
 
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_mainmenu_size", "58", szUT);
-		ss << szUT;
+		std::istringstream ss(szUT);
 		ss >> iFontSize;
 		iFontSize = Traffic(iFontSize);
 
@@ -851,7 +832,7 @@ void ARX_Text_Init()
 
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_menu_size", "32", szUT);
-		ss << szUT;
+		std::istringstream ss(szUT);
 		ss >> iFontSize;
 		iFontSize = Traffic(iFontSize);
 
@@ -878,7 +859,7 @@ void ARX_Text_Init()
 
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_menucontrols_size", "22", szUT);
-		ss << szUT;
+		std::istringstream ss(szUT);
 		ss >> iFontSize;
 		iFontSize = Traffic(iFontSize);
 
@@ -905,7 +886,7 @@ void ARX_Text_Init()
 
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_menucredits_size", "36", szUT);
-		ss << szUT;
+		std::istringstream ss(szUT);
 		ss >> iFontSize;
 		iFontSize = Traffic(iFontSize);
 
@@ -932,7 +913,7 @@ void ARX_Text_Init()
 
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_redist_size", "18", szUT );
-		ss << szUT;
+		std::istringstream ss(szUT);
 		ss >> iFontSize;
 		iFontSize = Traffic(iFontSize);
 
@@ -962,7 +943,7 @@ void ARX_Text_Init()
 
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_book_size", "18", szUT );
-		ss << szUT;
+		std::istringstream ss(szUT);
 		ss >> iFontSize;
 		iFontSize = Traffic(iFontSize);
 
@@ -989,7 +970,7 @@ void ARX_Text_Init()
 
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_note_size", "18", szUT );
-		ss << szUT;
+		std::istringstream ss(szUT);
 		ss >> iFontSize;
 		iFontSize = Traffic(iFontSize);
 
@@ -1013,7 +994,7 @@ void ARX_Text_Init()
 
 		std::string szUT;
 		PAK_UNICODE_GetPrivateProfileString( "system_font_book_size", "18", szUT );
-		ss << szUT;
+		std::istringstream ss(szUT);
 		ss >> iFontSize;
 		iFontSize = Traffic(iFontSize);
 
@@ -1033,53 +1014,21 @@ void ARX_Text_Init()
 }
 
 //-----------------------------------------------------------------------------
-void ARX_Text_Close()
-{
-
-	/*if (!lpszFontIngame.empty())
-	{
-		delete [] lpszFontIngame;
-		lpszFontIngame = NULL;
-	}*/
-lpszFontIngame.clear();
-
-/*
-	if (lpszFontMenu)
-	{
-		delete [] lpszFontMenu;
-		lpszFontMenu = NULL;
-	}
-*/
-lpszFontMenu.clear();
-
+void ARX_Text_Close() {
+	
+	lpszFontIngame.clear();
+	lpszFontMenu.clear();
+	
 	string tx = getFontFile();
-
+	
 	LogDebug << "Removing font " << tx;
 	
-	//MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
-
-	lpszFontIngame = GetFontName(tx.c_str());
-
-
+	lpszFontIngame = GetFontName(tx);
+	
 	if(!RemoveFontResource(tx.c_str())) {
-			 LogError << FontError() << " while removing font " << tx; // XS : Annoying popup, uncomment if you really want to track something down.
+		LogError << FontError() << " while removing font " << tx;
 	}
-/*
-	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf"); // Full path
-
-	if (!FileExist(tx))
-	{
-		sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
-	}
-
-	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
-	lpszFontMenu = GetFontName(tx);
-
-	if (RemoveFontResource(wtx) == 0)
-	{
-			 LogError << FontError();// XS : Annoying popup, uncomment if you really want to track something down.
-	}
-*/
+	
 	Localisation_Close();
 
 	if (pTextManage)

@@ -26,7 +26,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuWidgets.h"
 
 #include <cstring>
-#include <tchar.h>
 
 #include <algorithm>
 
@@ -191,7 +190,6 @@ void ARX_QuickSave()
 {
 	if( REFUSE_GAME_RETURN ) return;
 
-	FreeSaveGameList();
 	CreateSaveGameList();
 
 	std::string szMenuText = QUICK_SAVE_ID;
@@ -215,7 +213,7 @@ void ARX_QuickSave()
 	ZeroMemory( &sTime1, sizeof(SYSTEMTIME) );// will be used if iNbSave0>0 (iNbSave1==0 will so mean NOTFOUND and sTime1 will not be used)
 
 
-	for( int iI = 1 ; iI < (save_c) ; iI++ )
+	for( int iI = 1 ; iI < (save_l.size()) ; iI++ )
 	{
 		std::string tex2 = save_l[iI].name;
 		MakeUpcase( tex2 );
@@ -235,8 +233,8 @@ void ARX_QuickSave()
 	}
 
 	if ( bFound0 && bFound1 &&
-		( iNbSave0 > 0 ) && ( iNbSave0 < save_c ) &&
-		( iNbSave1 > 0 ) && ( iNbSave1 < save_c ) )
+		( iNbSave0 > 0 ) && ( iNbSave0 < save_l.size() ) &&
+		( iNbSave1 > 0 ) && ( iNbSave1 < save_l.size() ) )
 	{
 		int	iSave;
 
@@ -325,7 +323,6 @@ void ARX_DrawAfterQuickLoad()
 
 bool ARX_QuickLoad()
 {
-	FreeSaveGameList();
 	CreateSaveGameList();
 
 	std::string szMenuText = QUICK_SAVE_ID;
@@ -341,7 +338,7 @@ bool ARX_QuickLoad()
 	ZeroMemory( &sTime0, sizeof(SYSTEMTIME) );// will be used if iNbSave0>0 (iNbSave0==0 will so mean NOTFOUND and sTime0 will not be used)
 	ZeroMemory( &sTime1, sizeof(SYSTEMTIME) );// will be used if iNbSave1>0 (iNbSave1==0 will so mean NOTFOUND ans sTime1 will not be used)
 
-	for( int iI = 1 ; iI < (save_c) ; iI++ )
+	for( int iI = 1 ; iI < save_l.size() ; iI++ )
 	{
 		std::string tex2 = save_l[iI].name;
 		MakeUpcase( tex2 );
@@ -363,8 +360,8 @@ bool ARX_QuickLoad()
 	ARX_SOUND_MixerPause( ARX_SOUND_MixerGame );
 
 	if ( bFound0 && bFound1 &&
-		( iNbSave0 > 0 ) && ( iNbSave0 < save_c ) &&
-		( iNbSave1 > 0 ) && ( iNbSave1 < save_c ) )
+		( iNbSave0 > 0 ) && ( iNbSave0 < save_l.size() ) &&
+		( iNbSave1 > 0 ) && ( iNbSave1 < save_l.size() ) )
 	{
 		int iSave;
 
@@ -378,7 +375,7 @@ bool ARX_QuickLoad()
 		PROGRESS_BAR_TOTAL        =    238;
 		OLD_PROGRESS_BAR_COUNT    =    PROGRESS_BAR_COUNT=0;
 		PROGRESS_BAR_COUNT        +=    1.f;
-		LoadLevelScreen( GDevice, save_l[iSave].level );
+		LoadLevelScreen( save_l[iSave].level );
 		DanaeClearLevel();
 		ARX_CHANGELEVEL_Load( save_l[iSave].num );
 		REFUSE_GAME_RETURN        =    0;
@@ -393,7 +390,7 @@ bool ARX_QuickLoad()
 		PROGRESS_BAR_TOTAL        =    238;
 		OLD_PROGRESS_BAR_COUNT    =    PROGRESS_BAR_COUNT=0;
 		PROGRESS_BAR_COUNT        +=    1.f;
-		LoadLevelScreen( GDevice, save_l[iNbSave0].level );
+		LoadLevelScreen( save_l[iNbSave0].level );
 		DanaeClearLevel();
 		ARX_CHANGELEVEL_Load( save_l[iNbSave0].num );
 		REFUSE_GAME_RETURN        =    0;
@@ -408,7 +405,7 @@ bool ARX_QuickLoad()
 		PROGRESS_BAR_TOTAL        =    238;
 		OLD_PROGRESS_BAR_COUNT    =    PROGRESS_BAR_COUNT=0;
 		PROGRESS_BAR_COUNT        +=    1.f;
-		LoadLevelScreen( GDevice, save_l[iNbSave1].level );
+		LoadLevelScreen( save_l[iNbSave1].level );
 		DanaeClearLevel();
 		ARX_CHANGELEVEL_Load( save_l[iNbSave1].num );
 		REFUSE_GAME_RETURN        =    0;
@@ -662,6 +659,19 @@ CMenuConfig::CMenuConfig( const std::string& _pName)
 	{
 		pcName = _pName;
 	}
+	
+	// TODO GetPrivateProfileString needs an absolute path
+	if(pcName.length() > 2 && pcName[1] != ':') {
+		
+		char cwd[512];
+		GetCurrentDirectory(512, cwd);
+		if(cwd[strlen(cwd)-1] != '\\' && pcName[0] != '\\') {
+			pcName = cwd + ('\\' + pcName);
+		} else {
+			pcName = cwd + pcName;
+		}
+		
+	}
 
 	First();
 }
@@ -742,10 +752,8 @@ void CMenuConfig::SetDefaultKey()
 	}
 }
 
-std::string& to_lower( std::string& str )
-{
+void to_lower(std::string & str) {
 	std::transform( str.begin(), str.end(), str.begin(), ::tolower );
-	return str;
 }
 
 //-----------------------------------------------------------------------------
@@ -753,10 +761,7 @@ std::string& to_lower( std::string& str )
 int CMenuConfig::GetDIKWithASCII( const std::string& _pcTouch)
 {
 	std::string pcT = _pcTouch;
-	to_lower( pcT );
 	
-	// TODO replacement
-	//MultiByteToWideChar(CP_ACP, 0, _pcTouch, -1, (wchar_t*)pcT, strlen(_pcTouch)+1);
 
 	if( strcasecmp(pcT.c_str(), "---"  ) == 0 )
 	{
@@ -766,7 +771,6 @@ int CMenuConfig::GetDIKWithASCII( const std::string& _pcTouch)
 	for(int iI=0;iI<256;iI++)
 	{
 		std::string pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI);
-		to_lower( pcT1 );
 
 		if( !pcT.compare( pcT1 ) )
 			return iI;
@@ -822,31 +826,13 @@ int CMenuConfig::GetDIKWithASCII( const std::string& _pcTouch)
 }
 
 //-----------------------------------------------------------------------------
-std::string CMenuConfig::ReadConfig( const std::string& _section, const std::string& _key)
-{
-	string configfile;
+std::string CMenuConfig::ReadConfig( const std::string& _section, const std::string& _key) {
 	
-	// TODO GetPrivateProfileString needs an absolute path
-	if(pcName.length() > 2 && pcName[1] != ':') {
-		
-		char cwd[512];
-		GetCurrentDirectory(512, cwd);
-		configfile = cwd;
-		if(*configfile.rbegin() != '\\' && pcName[0] != '\\') {
-			configfile += '\\';
-		}
-		configfile += pcName;
-		
-	} else {
-		configfile = pcName;
-	}
-	
-
 	// TODO unify with localisation loading (and make platform-independent)
 	char text[256];
-	int iI = GetPrivateProfileString( _section.c_str(), _key.c_str(), "", text, 256, configfile.c_str());
-
-	LogDebug << "Read section: " << _section << " key: " << _key << " from " << configfile << " as:" << text;
+	int iI = GetPrivateProfileString( _section.c_str(), _key.c_str(), "", text, 256, pcName.c_str());
+	
+	LogDebug << "Read section: " << _section << " key: " << _key << " from " << pcName << " as:" << text;
 
 	return std::string( text );
 }
@@ -1100,23 +1086,23 @@ bool CMenuConfig::ReadConfigKey( const std::string& _pcKey, int _iAction )
 	int iDIK;
 	strcpy(tcTxt2,tcTxt);
 	strcat(tcTxt2,"_k0");
-	pcText=ReadConfigString("KEY",tcTxt2);
+	pcText = ReadConfigString( "KEY", tcTxt2 );
 
 	if( pcText.empty() )
 		bOk=false;
 	else
 	{
-		iDIK=GetDIKWithASCII(pcText);
+		iDIK = GetDIKWithASCII( pcText );
 
-		if(iDIK==-1)
+		if( iDIK == -1 )
 			sakActionKey[_iAction].iKey[0]=-1;
 		else
-			SetActionKey(_iAction,0,iDIK);
+			SetActionKey( _iAction, 0, iDIK) ;
 	}
 
-	strcpy(tcTxt2,tcTxt);
-	strcat(tcTxt2,"_k1");
-	pcText=ReadConfigString("KEY",tcTxt2);
+	strcpy( tcTxt2, tcTxt );
+	strcat( tcTxt2, "_k1" );
+	pcText = ReadConfigString( "KEY", tcTxt2 );
 
 	if( pcText.empty() )
 		bOk = false;
@@ -1130,7 +1116,7 @@ bool CMenuConfig::ReadConfigKey( const std::string& _pcKey, int _iAction )
 		}
 		else
 		{
-			SetActionKey(_iAction,1,iDIK);
+			SetActionKey( _iAction, 1, iDIK );
 		}
 	}
 
@@ -1249,7 +1235,6 @@ extern bool IsNoGore( void );
 
 bool CMenuConfig::ReadAll()
 {
-	std::stringstream ss;
 	std::string pcText;
 	bool bOk = false; 
 	bool bOkTemp;
@@ -2364,15 +2349,15 @@ bool Menu2_Render()
 
 						while(iFirst>=0)
 						{
-							for(iI=1; iI<(save_c); iI++)
+							for(iI=1; iI<(save_l.size()); iI++)
 							{
 								std::string tex = save_l[iI].name;
 
 								CMenuElementText *me02;
 
-								std::string tex2 = tex;
-
-								std::transform( tex.begin(), tex2.end(), tex.begin(), ::toupper );
+								std::string tex2;
+								tex2.resize(tex.size());
+								std::transform(tex.begin(), tex.end(), tex2.begin(), ::toupper);
 
 								if( !szMenuText.compare( tex2 ) || !szMenuText1.compare( tex2 ) )
 								{
@@ -2394,29 +2379,21 @@ bool Menu2_Render()
 									}
 
 									char tex3[256];
-									std::string tex4 = "  ";
+									tex += "  ";
 									GetDateFormat(    LOCALE_SYSTEM_DEFAULT,
 										0,
 										&save_l[iI].stime,
 										"MMM dd yyyy",
 										tex3,
 										256);
-									tex4 +=  tex3;
+									tex +=  tex3;
 									GetTimeFormat(    LOCALE_SYSTEM_DEFAULT,
 										0,
 										&save_l[iI].stime,
 										"   HH:mm",
 										tex3,
 										256);
-									tex4 += tex3;
-// TODO Find replacement
-/*									MultiByteToWideChar(	CP_ACP,
-										0,
-										tex4,
-										-1,
-										(wchar_t*)tex2,
-										256);*/
-									tex += tex2;
+									tex += tex3;
 									
 									me02 = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls, tex, fPosX1, 0.f, lColor, 0.8f, NOP);
 
@@ -2438,22 +2415,14 @@ bool Menu2_Render()
 										tex3,
 										256);
 									strcat(tex4,tex3);
-									GetTimeFormat(    LOCALE_SYSTEM_DEFAULT,
+									GetTimeFormatA(    LOCALE_SYSTEM_DEFAULT,
 										0,
 										&save_l[iI].stime,
 										"   HH:mm",
 										tex3,
 										256);
 									strcat(tex4,tex3);
-
-// TODO Find replacement
-/*									MultiByteToWideChar(	CP_ACP,
-										0,
-										tex4,
-										-1,
-										(wchar_t*)tex2,
-										256);*/
-									tex += tex2;
+									tex += tex4;
 									
 									me02=new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls,tex, fPosX1,0.f,lColor, 0.8f, NOP);
 								}
@@ -2513,14 +2482,14 @@ bool Menu2_Render()
 
 					while(iFirst>=0)
 					{
-						if(save_c!=1)
+						if(save_l.size()!=1)
 						{
-							for(int iI=1;iI<(save_c);iI++)
+							for(int iI=1;iI<(save_l.size());iI++)
 							{
 								std::string tex = save_l[iI].name;
-								std::string tex2 = tex;
-
-								std::transform( tex2.begin(), tex2.end(), tex2.begin(), ::toupper );
+								std::string tex2;
+								tex2.resize(tex.size());
+								std::transform(tex.begin(), tex.end(), tex2.begin(), ::toupper);
 
 								if(!szMenuText.compare( tex2 ) || !szMenuText1.compare( tex2 ) )
 								{
@@ -2551,22 +2520,15 @@ bool Menu2_Render()
 										tex3,
 										256);
 									strcat(tex4,tex3);
-									GetTimeFormat(    LOCALE_SYSTEM_DEFAULT,
+									GetTimeFormatA(    LOCALE_SYSTEM_DEFAULT,
 										0,
 										&save_l[iI].stime,
 										"   HH:mm",
 										tex3,
 										256);
 									strcat(tex4,tex3);
-
-// TODO Find replacement
-									MultiByteToWideChar(	CP_ACP,
-										0,
-										tex4,
-										-1,
-										(wchar_t*)tex2.c_str(),
-										256);
-									tex += tex2;
+									
+									tex += tex4;
 									
 									me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, tex, fPosX1, 0.f, RGB(127, 127, 127), 0.8f, EDIT_QUEST_SAVE_CONFIRM);
 									me->SetCheckOff();
@@ -2589,20 +2551,14 @@ bool Menu2_Render()
 										tex3,
 										256);
 									strcat(tex4,tex3);
-									GetTimeFormat(    LOCALE_SYSTEM_DEFAULT,
+									GetTimeFormatA(    LOCALE_SYSTEM_DEFAULT,
 										0,
 										&save_l[iI].stime,
 										"   HH:mm",
 										tex3,
 										256);
 									strcat(tex4,tex3);
-/*									MultiByteToWideChar(	CP_ACP,
-										0,
-										tex4,
-										-1,
-										(wchar_t*)tex2,
-										256);*/
-									tex += tex2;
+									tex += tex4;
 									
 									me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, tex, fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
 								}
@@ -2617,7 +2573,7 @@ bool Menu2_Render()
 
 					pTex = MakeTCFromFile("\\Graph\\interface\\Icons\\Arx_logo_08.bmp");
 
-					for(int iI=save_c; iI<=15; iI++)
+					for(int iI=save_l.size(); iI<=15; iI++)
 					{
 						_TCHAR tex[256];
 						_stprintf(tex, _T("-%04d-")
@@ -2829,9 +2785,9 @@ bool Menu2_Render()
 
 					for(ii=vBpp.begin();ii!=vBpp.end();ii++)
 					{
-	//                        todo: string
-	//                        _itot(*ii,szMenuText,10);
-						((CMenuSliderText*)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0, lColor, 1.f, (MENUSTATE)(BUTTON_MENUOPTIONSVIDEO_BPP+i)));
+						std::stringstream bpp;
+						bpp << *ii;
+						((CMenuSliderText*)me)->AddText(new CMenuElementText(-1, hFontMenu, bpp.str(), 0, 0, lColor, 1.f, (MENUSTATE)(BUTTON_MENUOPTIONSVIDEO_BPP+i)));
 
 						if(*ii==iModeBpp)
 						{
@@ -3916,27 +3872,14 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 
 					if ( lData )
 					{
-						{
-							/* TODO Does this do nothing?
-							_TCHAR szT[256];
-							_stprintf(szT, _T("%lu - %S"), lData, lpszText);
-							char ml[256];
-							memset( ml, 0, 256 );
-							*/
-
-							eMenuState = MAIN;
-							GDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
-							ARXMenu_LoadQuest( lData );
-
-							bNoMenu=true;
-
-							if( pTextManage )
-							{
-								pTextManage->Clear();
-							}
-
-							break;
+						eMenuState = MAIN;
+						GDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
+						ARXMenu_LoadQuest( lData );
+						bNoMenu=true;
+						if(pTextManage) {
+							pTextManage->Clear();
 						}
+						break;
 					}
 				}
 			}
@@ -3963,18 +3906,8 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 					pWindowMenu->vWindowConsoleElement[i]->lData = lData;
 					CMenuElementText * me = (CMenuElementText *) p->MenuAllZone.vMenuZone[1];
 
-					if ( me )
-					{
-						std::string szT;
-						std::stringstream ss;
-						ss << me->lData << me->lpszText;
-						std::string ml = ss.str();
-// TODO Find replacement
-/*						WideCharToMultiByte( CP_ACP, 0, (wchar_t*)me->lpszText, _tcslen( me->lpszText ),
-							ml,  _tcslen( me->lpszText ) + 1,
-							"_", NULL );
-*/
-						save_l[me->lData].name = ml;
+					if(me) {
+						save_l[me->lData].name = me->lpszText;
 						eMenuState = MAIN;
 						ARXMenu_SaveQuest( me->lData );
 						break;
@@ -3995,27 +3928,17 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 					pWindowMenu->vWindowConsoleElement[i]->lData = lData;
 					CMenuElementText * me = (CMenuElementText *) p->MenuAllZone.vMenuZone[1];
 
-					if ( me )
-					{
-						std::stringstream ss;
-						ss << me->lData << me->lpszText;
-						std::string ml = ss.str();
-// TODO Find replacement
-/*						WideCharToMultiByte( CP_ACP, 0, (wchar_t*)me->lpszText, _tcslen( me->lpszText ),
-							ml,  _tcslen( me->lpszText ) + 1,
-							"_", NULL );
-*/
-						save_l[me->lData].name = ml;
+					if(me) {
+						save_l[me->lData].name = me->lpszText;
 						eMenuState = MAIN;
 						ARXMenu_DeleteQuest( me->lData );
-						FreeSaveGameList();
 						CreateSaveGameList();
-							break;
-							}
-								}
-							}
-						}
 						break;
+					}
+				}
+			}
+		}
+		break;
 	case BUTTON_MENUOPTIONSVIDEO_APPLY:
 		{
 			//----------BUMP
@@ -4244,6 +4167,17 @@ void CMenuElementText::Render()
 
 	if(bNoMenu) return;
 
+	/*EERIE_3D ePos;
+	ePos.x = (float) rZone.left;
+	ePos.y = (float) rZone.top;
+	ePos.z = 1;
+
+	if (bSelected)
+		FontRenderText(pHFont, ePos, lpszText, lColorHighlight);
+
+	else
+		FontRenderText(pHFont, ePos, lpszText, lColor);
+*/
 	pTextManage->AddText(pHFont, lpszText, rZone.left, rZone.top, bSelected ? lColorHighlight : lColor);
 }
 
@@ -4261,6 +4195,13 @@ void CMenuElementText::RenderMouseOver()
 	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
 
+	/*EERIE_3D ePos;
+	ePos.x = (float)rZone.left;
+	ePos.y = (float)rZone.top;
+	ePos.z = 1;
+
+	FontRenderText(pHFont, ePos, lpszText, lColorHighlight);
+	*/
 	pTextManage->AddText(pHFont, lpszText, rZone.left, rZone.top, lColorHighlight);
 
 	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  false);
@@ -4983,6 +4924,7 @@ void CMenuCheckButton::Render()
 	if (pText)
 		pText->Render();
 
+	//DEBUG
 	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
 }
 
@@ -5024,6 +4966,7 @@ void CMenuCheckButton::RenderMouseOver()
 	if (pText)
 		pText->RenderMouseOver();
 
+	//DEBUG
 	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
 }
 
@@ -5437,7 +5380,7 @@ void CWindowMenuConsole::UpdateText()
 
 			if( !tText.empty() )
 			{
-				tText[tText.length()-1] = '\0';
+				tText.resize(tText.size() - 1);
 				bKey=true;
 			}
 		}
@@ -5448,7 +5391,7 @@ void CWindowMenuConsole::UpdateText()
 				tText = pZoneText->lpszText;
 
 				unsigned short tusOutPut[2];
-				std::string tCat;
+				char tCat;
 
 				int iKey = pGetInfoDirectInput->iKeyId;
 				int iR = scan2ascii(iKey, tusOutPut);
@@ -5461,52 +5404,40 @@ void CWindowMenuConsole::UpdateText()
 					switch(iKey)
 					{
 					case DIK_NUMPAD0:
-						tCat[0]=_T('0');
-						tCat[1]=0;
+						tCat = '0';
 						break;
 					case DIK_NUMPAD1:
-						tCat[0]=_T('1');
-						tCat[1]=0;
+						tCat = '1';
 						break;
 					case DIK_NUMPAD2:
-						tCat[0]=_T('2');
-						tCat[1]=0;
+						tCat = '2';
 						break;
 					case DIK_NUMPAD3:
-						tCat[0]=_T('3');
-						tCat[1]=0;
+						tCat = '3';
 						break;
 					case DIK_NUMPAD4:
-						tCat[0]=_T('4');
-						tCat[1]=0;
+						tCat = '4';
 						break;
 					case DIK_NUMPAD5:
-						tCat[0]=_T('5');
-						tCat[1]=0;
+						tCat = '5';
 						break;
 					case DIK_NUMPAD6:
-						tCat[0]=_T('6');
-						tCat[1]=0;
+						tCat = '6';
 						break;
 					case DIK_NUMPAD7:
-						tCat[0]=_T('7');
-						tCat[1]=0;
+						tCat = '7';
 						break;
 					case DIK_NUMPAD8:
-						tCat[0]=_T('8');
-						tCat[1]=0;
+						tCat = '8';
 						break;
 					case DIK_NUMPAD9:
-						tCat[0]=_T('9');
-						tCat[1]=0;
+						tCat = '9';
 						break;
-					case DIK_DECIMAL:
-						tCat[0]=_T('.');
-						tCat[1]=0;
+					case DIK_DECIMAL:     
+						tCat = '.';
 						break;
-					case DIK_DIVIDE:
-						tCat[0]=_T('/');
-						tCat[1]=0;
+					case DIK_DIVIDE:      
+						tCat = '/';
 						break;
 					default:
 						bKey=false;
@@ -5515,14 +5446,14 @@ void CWindowMenuConsole::UpdateText()
 				}
 				else
 				{
-					tCat[0]= (_TCHAR)(tusOutPut[0]);
-					tCat[1]=0;
+					// TODO handle non-ASCII characters
+					tCat= (char)(tusOutPut[0]);
 					bKey=true;
 				}
 
 				if(bKey)
 				{
-					if ((isalnum(tCat[0]) || _istspace(tCat[0]) || _istpunct(tCat[0])) && (tCat[0]!=_T('\t')) && (tCat[0]!=_T('*')))
+					if ((isalnum(tCat) || _istspace(tCat) || _istpunct(tCat)) && (tCat != '\t') && (tCat != '*'))
 						tText += tCat;
 				}
 			}
@@ -5534,8 +5465,10 @@ void CWindowMenuConsole::UpdateText()
 
 			if(    (pZoneText->rZone.right-pZoneText->rZone.left)>(iWidth-RATIO_X(64)) )
 			{
-				tText[tText.length()-1]=0;
-				pZoneText->SetText(tText);
+				if(!tText.empty()) {
+					tText.resize(tText.size() - 1);
+					pZoneText->SetText(tText);
+				}
 			}
 
 			int iDx=pZoneClick->rZone.right-pZoneClick->rZone.left;
@@ -7315,7 +7248,7 @@ void CDirectInput::GetInput()
 		}
 	}
 
-	if(bTouch)    //prioritï¿½ des touches
+	if(bTouch)    //prioritê des touches
 	{
 		switch(iKeyId)
 		{
@@ -7805,45 +7738,38 @@ bool CDirectInput::GetMouseButtonNowUnPressed(int _iNumButton)
 
 //-----------------------------------------------------------------------------
 
-std::string CDirectInput::GetFullNameTouch(int _iVirtualKey)
-{
+std::string CDirectInput::GetFullNameTouch(int _iVirtualKey) {
+	
 	std::string pText;
-
+	
 	long lParam;
-
+	
 	std::string pText2;
-
-	if( ( _iVirtualKey != -1 ) && ( _iVirtualKey & ~0xC000FFFF ) ) //COMBINAISON
-	{
-		pText2=GetFullNameTouch((_iVirtualKey>>16)&0x3FFF);
+	
+	if( _iVirtualKey != -1 && (_iVirtualKey&~0xC000FFFF)) {
+		// key combination
+		pText2 = GetFullNameTouch((_iVirtualKey>>16)&0x3FFF);
 	}
-
+	
 	lParam=((_iVirtualKey)&0x7F)<<16;
-
-	switch(_iVirtualKey)
-	{
+	
+	switch(_iVirtualKey) {
 	case DIK_HOME:
-
 		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_home", "---", pText );
 		break;
 	case DIK_NEXT:
-
 		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_pagedown", "---", pText );
 		break;
 	case DIK_END:
-
 		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_end", "---", pText );
 		break;
 	case DIK_INSERT:
-
 		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_insert", "---", pText );
 		break;
 	case DIK_DELETE:
-
 		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_delete", "---", pText );
 		break;
 	case DIK_NUMLOCK:
-
 		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_numlock", "---", pText );
 		break;
 	case DIK_DIVIDE:
@@ -7856,23 +7782,18 @@ std::string CDirectInput::GetFullNameTouch(int _iVirtualKey)
 		pText = "?";
 		break;
 	case DIK_UP:                  // UpArrow on arrow keypad
-
 		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_up", "---", pText);
 		break;
 	case DIK_PRIOR:               // PgUp on arrow keypad
-
 		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_pageup", "---", pText);
 		break;
 	case DIK_LEFT:                // LeftArrow on arrow keypad
-
 		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_left", "---", pText);
 		break;
 	case DIK_RIGHT:               // RightArrow on arrow keypad
-
 		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_right", "---", pText);
 		break;
 	case DIK_DOWN:                // DownArrow on arrow keypad
-
 		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_down", "---", pText);
 		break;
 	case DIK_BUTTON1:
@@ -7983,89 +7904,57 @@ std::string CDirectInput::GetFullNameTouch(int _iVirtualKey)
 	default:
 		{
 		char tAnsiText[256];
-		GetKeyNameText(lParam,tAnsiText,256);
-		int i=strlen(tAnsiText);
-
-		if(!i)
-		{
+		GetKeyNameText(lParam, tAnsiText, 256);
+		
+		if(tAnsiText[0] == '\0') {
 			std::stringstream ss;
 			ss << "Key_" << _iVirtualKey;
 			pText = ss.str();
 		}
-		else
-		{
-			// TODO Find replacement
-			//MultiByteToWideChar(CP_ACP, 0, tAnsiText, -1, (wchar_t*)pText.c_str(), 256);
-
-			if(_iVirtualKey==DIK_LSHIFT)
-			{
+		else {
+			
+			pText = tAnsiText;
+			
+			if(_iVirtualKey == DIK_LSHIFT) {
 				std::string tText2;
-				std::string pText3;
 				PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_left", "---", tText2);
-				tText2[1] = 0;
-				pText3 = tText2;
-				pText3 += pText;
-				pText = pText3;
+				pText = tText2.substr(0, min((size_t)1, tText2.size())) + pText;
 			}
-
-			if(_iVirtualKey==DIK_LCONTROL)
-			{
+			
+			if(_iVirtualKey == DIK_LCONTROL) {
 				std::string tText2;
-				std::string pText3;
 				PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_left", "---", tText2);
-				tText2[1]=0;
-				pText3 = tText2;
-				pText3 += pText;
-				pText = pText3;
+				pText = tText2.substr(0, min((size_t)1, tText2.size())) + pText;
 			}
-
-			if(_iVirtualKey==DIK_LALT)
-			{
+			
+			if(_iVirtualKey == DIK_LALT) {
 				std::string tText2;
-				std::string pText3;
 				PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_left", "---", tText2);
-				tText2[1]=0;
-				pText3 = tText2;
-				pText3 += pText;
-				pText=pText3;
+				pText = tText2.substr(0, min((size_t)1, tText2.size())) + pText;
 			}
-
-			if (_iVirtualKey == DIK_NUMPADENTER)
-			{
-				std::string pText3;
-				pText3 = pText;
-				pText3 += "0";
-				pText = pText3;
+			
+			if(_iVirtualKey == DIK_NUMPADENTER) {
+				pText += "0";
 			}
-
-			if( pText.length() > 8 )
-			{
-				pText[8]=0;
-				int iI=8;
-
-				while(iI--)
-				{
-					if( pText[iI] == ' ' )
-					{
-						pText[iI] = 0;
+			
+			if(pText.length() > 8) {
+				size_t size = 8;
+				for(; size != 0; size--) {
+					if(pText[size - 1] != ' ') {
+						break;
 					}
-					else break;
 				}
+				pText.resize(size);
 			}
 		}
 		}
 		break;
 	}
-
-	if( !pText2.empty() )
-	{
-		std::string pText3 = pText2;
-		pText3 += "+";
-		pText3 += pText;
-		pText = pText3;
-
+	
+	if(!pText2.empty()) {
+		pText = pText2 + "+" + pText;
 	}
-
+	
 	return pText;
 }
 

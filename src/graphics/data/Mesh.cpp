@@ -53,8 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //																					//
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved						//
 //////////////////////////////////////////////////////////////////////////////////////
-//#define STRICT
-
 #include "graphics/data/Mesh.h"
 
 #include <cstdlib>
@@ -79,6 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "io/Blast.h"
+#include "io/Implode.h"
 
 using std::min;
 using std::max;
@@ -105,8 +104,6 @@ int RayIn3DPolyNoCull(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPO
 D3DMATRIX ProjectionMatrix;
 
 bool bGMergeVertex = false;
-
-bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX *, D3DTLVERTEX *, D3DTLVERTEX *, float _fAdd = 0.f);
 
 void ReleaseAnimFromIO(INTERACTIVE_OBJ * io, long num)
 {
@@ -3775,7 +3772,9 @@ struct ROOM_DIST_DATA_SAVE
 };
 #pragma pack(pop)
 
-extern void LoadLevelScreen(LPDIRECT3DDEVICE7 pd3dDevice = NULL, long lev = -1, float v = 0.f);
+extern void LoadLevelScreen();
+extern void LoadLevelScreen(long lev);
+
 extern float PROGRESS_BAR_COUNT;
 long NOCHECKSUM = 0;
 long USE_FAST_SCENES = 1;
@@ -4329,11 +4328,14 @@ bool FastSceneLoad(const char * partial_path)
 	return true;
 	
 }
-bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms)
-{
+
+bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms) {
+	
 	std::string path;
 	path = "Game\\";
 	path += partial_path;
+	
+	LogDebug << "FastSceneSave" << path;
 
 	if (!CreateFullPath(path)) return false;
 
@@ -4669,24 +4671,23 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms)
 		return false;
 	}
 
+	size_t compressedSize;
 	char * compressed;
-	compressed = NULL;
-	long cpr_pos;
-	cpr_pos = 0;
-
-	printf("IMPLODE NOT IMPLEMENTED\n");
-	// TODO fix
-	//compressed = STD_Implode((char *)(dat + compressedstart), pos - compressedstart, &cpr_pos);
-
-	if (FileWrite(handle, compressed, cpr_pos) != cpr_pos)
-	{
-		FileCloseWrite(handle);
+	compressed = implodeAlloc((char *)(dat + compressedstart), pos - compressedstart, compressedSize);
+	if(!compressed) {
+		LogError << "error compressing scene";
 		free(dat);
 		return false;
 	}
 
-	free(compressed);
-	FileCloseWrite(handle);
+	if(FileWrite(handle, compressed, compressedSize) != compressedSize) {
+		FileClose(handle);
+		free(dat);
+		return false;
+	}
+
+	delete[] compressed;
+	FileClose(handle);
 	free(dat);
 	return true;
 error:

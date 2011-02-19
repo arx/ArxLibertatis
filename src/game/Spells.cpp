@@ -9789,8 +9789,6 @@ void ApplySPMax()
 		
 		ARX_PLAYER_Rune_Add_All();
 		std::string text = "!!!!!!! FanTomAciE !!!!!!!";
-//		todo cast
-//		MultiByteToWideChar(CP_ACP, 0, "!!!!!!! FanTomAciE !!!!!!!", -1, UText, 256);
 		ARX_SPEECH_Add(NULL, text);
 		player.Attribute_Redistribute+=10;
 		player.Skill_Redistribute+=50;

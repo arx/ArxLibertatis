@@ -57,7 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CHANGELEVEL_H
 #define ARX_CHANGELEVEL_H
 
-#include "io/ClusterSave.h"
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
 #include "game/Levels.h"
@@ -487,9 +486,6 @@ extern long FORBID_SAVE;
 //-----------------------------------------------------------------------------
 void ARX_GAMESAVE_MakePath();
 void ARX_GAMESAVE_CreateNewInstance();
-void ARX_GAMESAVE_GetInfo( const std::string& path, const std::string& name, long& time);
-long ARX_GAMESAVE_Save( long instance, const std::string& name);
-long ARX_GAMESAVE_Load( long instance );
 
 void ARX_CHANGELEVEL_MakePath();
 long ARX_CHANGELEVEL_PushLevel(long num, long newnum);

@@ -1707,7 +1707,7 @@ void	ARX_PLAYER_Restore_Skin()
 
 	std::string tt = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
 	MakeUpcase(tt);
-	TextureContainer * tmpTC = _FindTexture(tt.c_str());
+	TextureContainer * tmpTC = FindTexture(tt);
 
 	if ((tmpTC) && (tx2[0]))
 	{
@@ -1719,7 +1719,7 @@ void	ARX_PLAYER_Restore_Skin()
 
 	tt = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
 	MakeUpcase(tt);
-	tmpTC = _FindTexture(tt.c_str());
+	tmpTC = FindTexture(tt);
 
 	if ((tmpTC) && (tx3[0]))
 	{
@@ -1731,7 +1731,7 @@ void	ARX_PLAYER_Restore_Skin()
 
 	tt = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
 	MakeUpcase(tt);
-	tmpTC = _FindTexture(tt.c_str());
+	tmpTC = FindTexture(tt);
 
 	if ((tmpTC) && (tx4[0]))
 	{

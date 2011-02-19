@@ -1186,7 +1186,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 	tcIndent = COMBINE->filename;
 	tcIsClass = GetName(tcIndent);
 	std::stringstream ss;
-	ss << tcIsClass << '_' << COMBINE->ident;
+	ss << tcIsClass << '_' << std::setfill('0') << std::setw(4) << COMBINE->ident;
 	tcIndent = ss.str();
 	MakeUpcase(tcIndent);
 
@@ -1760,7 +1760,7 @@ bool DANAE::ManageEditorControls()
 									std::string Text;
 									MakeLocalised("[Description_Durability]",Text);
 									std::stringstream ss;
-									ss << WILLADDSPEECH << " " << Text << " " << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
+									ss << WILLADDSPEECH << " " << Text << " " << std::setw(3) << std::setprecision(0) << temp->durability << std::setw(0) << "/" << std::setw(3) << temp->max_durability;
 									WILLADDSPEECH = ss.str();
 								}
 
@@ -2421,7 +2421,7 @@ bool DANAE::ManageEditorControls()
 					temp = COMBINE->filename;
 					strcpy(temp2,GetName(temp).c_str());
 					std::stringstream ss;
-					ss << temp2 << '_' << COMBINE->ident;
+					ss << temp2 << '_' << std::setfill('0') << std::setw(4) << COMBINE->ident;
 					temp = ss.str();
 					MakeUpcase(temp);				
 					EVENT_SENDER=COMBINE;
@@ -2663,7 +2663,7 @@ bool DANAE::ManageEditorControls()
 				{
 					char pp[256];
 					strcpy(pp,GetName(loadfrom).c_str());
-					LoadLevelScreen(GDevice,GetLevelNumByName(pp));
+					LoadLevelScreen(GetLevelNumByName(pp));
 					
 					Pause(true);
 
