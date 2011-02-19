@@ -142,7 +142,6 @@ void AddSpring(EERIE_3DOBJ * obj, short vert1, short vert2, float constant, floa
 	obj->cdata->springs[obj->cdata->nb_springs-1].restlength =
 	    TRUEDistance3D(obj->cdata->cvert[vert1].pos.x, obj->cdata->cvert[vert1].pos.y, obj->cdata->cvert[vert1].pos.z,
 	                   obj->cdata->cvert[vert2].pos.x, obj->cdata->cvert[vert2].pos.y, obj->cdata->cvert[vert2].pos.z);
-	obj->cdata->springs[obj->cdata->nb_springs-1].restlength;
 	obj->cdata->springs[obj->cdata->nb_springs-1].constant = constant;
 	obj->cdata->springs[obj->cdata->nb_springs-1].damping = damping;
 	obj->cdata->springs[obj->cdata->nb_springs-1].type = type;
