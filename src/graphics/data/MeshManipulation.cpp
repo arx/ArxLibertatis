@@ -876,16 +876,12 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const std::string& _path
 				if (io->tweaky == NULL) io->tweaky = io->obj;
 				else ReleaseEERIE3DObj(io->obj);
 
-				long i;
-				TextureContainer * tc;
-				tc = NULL;
-
-				for (i = 0; i < tobj->facelist.size(); i++)
+				for (size_t i = 0; i < tobj->facelist.size(); i++)
 				{
 					if ((tobj->facelist[i].texid >= 0)
 					        &&	(tobj->texturecontainer[tobj->facelist[i].texid]))
 					{
-						tc = tobj->texturecontainer[tobj->facelist[i].texid];
+						TextureContainer * tc = tobj->texturecontainer[tobj->facelist[i].texid];
 
 						if (!tc->m_pddsSurface)
 							tc->Restore(GDevice);
