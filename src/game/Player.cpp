@@ -565,14 +565,11 @@ void ARX_PLAYER_Quest_Add( const char * quest, bool _bLoad)
 // FUNCTION/RESULT:
 //   Removes player invisibility by killing Invisibility spells on him
 //*************************************************************************************
-void ARX_PLAYER_Remove_Invisibility()
-{
-	for (long i = 0; i < MAX_SPELLS; i++)
-	{
-		if ((spells[i].exist)
-		        &&	(spells[i].type == SPELL_INVISIBILITY)
-		        && (spells[i].caster == 0))
+void ARX_PLAYER_Remove_Invisibility() {
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		if(spells[i].exist && spells[i].type == SPELL_INVISIBILITY && spells[i].caster == 0) {
 			spells[i].tolive = 0;
+		}
 	}
 }
 
