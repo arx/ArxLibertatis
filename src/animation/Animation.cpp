@@ -1773,7 +1773,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 
 	float					Xcos = 0, Ycos = 0, Zcos = 0, Xsin = 0, Ysin = 0, Zsin = 0;
 	register D3DTLVERTEX	vert_list_static[4]; 	
-	long					i, k;
+	long					k;
 	
 	long			lfr, lfg, lfb;		
 	EERIE_3D		temporary3D;
@@ -2161,8 +2161,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	float prec;
 	prec=1.f/(ACTIVECAM->cdepth*ACTIVECAM->Zmul);
 
-	for(i=0;i<eobj->facelist.size();i++) 
-	{
+	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		long paf[3];
 		paf[0]=eobj->facelist[i].vid[0];
 		paf[1]=eobj->facelist[i].vid[1];
