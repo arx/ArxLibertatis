@@ -1431,22 +1431,21 @@ static void ARX_SOUND_CreateEnvironments()
 	else
 	{
 		char path[512] = "";
-//		todo: find
-//		_finddata_t fdata;
-//		long fhandle;
-//
-//		sprintf(path, "sfx\\environment\\*.aef");
-//
-//		if ((fhandle = _findfirst(path, &fdata)) != -1)
-//		{
-//			do
-//			{
-//				aalCreateEnvironment(fdata.name);
-//			}
-//			while (_findnext(fhandle, &fdata));
-//
-//			_findclose(fhandle);
-//		}
+		WIN32_FIND_DATA fdata;
+		HANDLE fhandle;
+
+		sprintf(path, "sfx\\environment\\*.aef");
+
+		if ((fhandle = FindFirstFile(path, &fdata)) != INVALID_HANDLE_VALUE)
+		{
+			do
+			{
+				aalCreateEnvironment(fdata.cFileName);
+			}
+			while (FindNextFile(fhandle, &fdata));
+
+			CloseHandle(fhandle);
+		}
 	}
 }
 
