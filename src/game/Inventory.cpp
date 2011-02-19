@@ -2158,23 +2158,25 @@ void SendInventoryObjectCommand(const char * _lpszText, long _lCommand)
 				for (long i = 0; i < INVENTORY_X; i++)
 				{
 					if ((inventory[iNbBag][i][j].io)
-					        &&	(inventory[iNbBag][i][j].io->obj))
-						for (long lTex = 0; lTex < inventory[iNbBag][i][j].io->obj->nbmaps; lTex++)
+					        &&	(inventory[iNbBag][i][j].io->obj)) {
+						INTERACTIVE_OBJ * item = inventory[iNbBag][i][j].io;
+						for (size_t lTex = 0; lTex < item->obj->texturecontainer.size(); lTex++)
 						{
-							if (inventory[iNbBag][i][j].io->obj->texturecontainer)
+							if (!item->obj->texturecontainer.empty())
 							{
-								if (inventory[iNbBag][i][j].io->obj->texturecontainer[lTex])
+								if (item->obj->texturecontainer[lTex])
 								{
-									if (strcmp(inventory[iNbBag][i][j].io->obj->texturecontainer[lTex]->m_texName.c_str(), _lpszText) == 0)
+									if (strcmp(item->obj->texturecontainer[lTex]->m_texName.c_str(), _lpszText) == 0)
 									{
-										if (inventory[iNbBag][i][j].io->GameFlags & GFLAG_INTERACTIVITY)
-											SendIOScriptEvent(inventory[iNbBag][i][j].io, _lCommand);
+										if (item->GameFlags & GFLAG_INTERACTIVITY)
+											SendIOScriptEvent(item, _lCommand);
 
 										return;
 									}
 								}
 							}
 						}
+					}
 				}
 }
 

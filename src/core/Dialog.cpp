@@ -1241,41 +1241,13 @@ void KillInterTreeView()
 char rett[128];
 extern long FINAL_COMMERCIAL_DEMO;
 
-//-----------------------------------------------------------------------------------
-char * GetVersionString()
-{
-	char temp[128];
-	char result[128];
-
-	if (FINAL_COMMERCIAL_DEMO)
-		strcpy(temp, " SCDaAe$!m^;o|(_______"); //Demo v1.0
-	else
-		strcpy(temp, _ARX_FINAL_VERSION_ );
-
-	long length = strlen(temp);
-	long pos = 0;
-
-	for (long i = 0; i < length; i += 3)
-	{
-		if (temp[i] != '_')
-			result[pos++] = temp[i];
-		else
-			result[pos++] = 0;
-	}
-
-	strcpy(rett, result);
-	// Add Arx Fatalis Fixed version
-	//WideCharToMultiByte(CP_ACP, 0, _T(" + [AFF v 0.02]"), -1, rett + strlen(rett), 32, "@", FALSE);
-	return rett;
-}
-
 //*************************************************************************************
 // Sets DANAE Main Window Title
 //*************************************************************************************
 void SetWindowTitle(HWND hWnd, const char * tex) {
 	char texx[512];
 	strcpy(texx, tex);
-	strcat(texx, GetVersionString());
+	strcat(texx, arxVersion.c_str());
 	SetWindowText(hWnd, texx);
 }
 

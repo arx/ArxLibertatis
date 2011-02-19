@@ -1846,7 +1846,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	{
 		ResetBBox3D( io );
 
-		for( i = 0 ; i < eobj->nbvertex ; i++ ) 
+		for( i = 0 ; i < eobj->vertexlist.size() ; i++ ) 
 		{
 			if ( (modinfo) && !angle && BIGMAT )
 			{
@@ -2186,7 +2186,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	float prec;
 	prec=1.f/(ACTIVECAM->cdepth*ACTIVECAM->Zmul);
 
-	for(i=0;i<eobj->nbfaces;i++) 
+	for(i=0;i<eobj->facelist.size();i++) 
 	{
 		long paf[3];
 		paf[0]=eobj->facelist[i].vid[0];
@@ -2902,7 +2902,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 	ResetBBox3D(io);
 
 	// Transforms vertex
-	for(i=0;i<eobj->nbvertex;i++) 
+	for(i=0;i<eobj->vertexlist.size();i++) 
 	{
 		if ((MIPM) && (!eobj->pdata[i].need_computing)) continue;
 
@@ -3026,7 +3026,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 		Vector_Init(&l_pos,pos.x,pos.y-60.f,pos.z);
 		Preparellights(&l_pos);	
 
-		for(i=0;i<eobj->nbvertex;i++) 
+		for(i=0;i<eobj->vertexlist.size();i++) 
 		{
 			if ((MIPM) && (!eobj->pdata[i].need_computing)) continue;
 			
@@ -3118,7 +3118,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 		{
 			float r1;
 
-			for(i=0;i<eobj->nbvertex;i++) 
+			for(i=0;i<eobj->vertexlist.size();i++) 
 			{
 				if (eobj->pdata[i].collapse_ratio!=0.f)
 				{
@@ -3365,7 +3365,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 		}
 	}
 
-	for(i=0;i<eobj->nbfaces;i++) 
+	for(i=0;i<eobj->facelist.size();i++) 
 	{
 		if (MIPM)
 		{

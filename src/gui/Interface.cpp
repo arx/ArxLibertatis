@@ -33,6 +33,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Interface.h"
 
+#include <iomanip>
+
 #include "animation/Animation.h"
 #include "scene/LinkedObject.h"
 #include "physics/Box.h"
@@ -188,8 +190,8 @@ INTERFACE_TC		ITC;
 STRUCT_NOTE			Note;
 STRUCT_NOTE			QuestBook;
 _TCHAR*				QuestBook_Cache_Text = NULL;		// Cache of screen text
-long				QuestBook_Cache_nbQuests = -42;		// nbQuests when generating cache
-_TCHAR				Page_Buffer[PAGE_CHAR_SIZE+1];
+long				QuestBook_Cache_nbQuests = -42;
+std::string Page_Buffer;
 bool				bBookHalo = false;
 bool				bGoldHalo = false;
 bool				bHitFlash = false;
@@ -982,8 +984,7 @@ void ARX_INTERFACE_NoteManage()
 				{
 					if(Note.pages[Note.curpage+1]>0)
 					{
-						_tcsncpy(Page_Buffer,Note.text.substr(Note.pages[Note.curpage]).c_str(),Note.pages[Note.curpage+1]-Note.pages[Note.curpage]);
-						Page_Buffer[Note.pages[Note.curpage+1]-Note.pages[Note.curpage]]=_T('\0');
+						Page_Buffer = Note.text.substr( Note.pages[Note.curpage], Note.pages[Note.curpage+1] - Note.pages[Note.curpage] );
 
 						danaeApp.DANAEEndRender();
 						DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY+NoteTextMaxy,Page_Buffer,0,0x00FF00FF);
@@ -991,8 +992,7 @@ void ARX_INTERFACE_NoteManage()
 
 						if(Note.pages[Note.curpage+2]>0)
 						{
-							_tcsncpy(Page_Buffer,Note.text.substr(Note.pages[Note.curpage+1]).c_str(),Note.pages[Note.curpage+2]-Note.pages[Note.curpage+1]);
-							Page_Buffer[Note.pages[Note.curpage+2]-Note.pages[Note.curpage+1]]=_T('\0');
+							Page_Buffer = Note.text.substr( Note.pages[Note.curpage+1], Note.pages[Note.curpage+2] - Note.pages[Note.curpage+1] );
 
 							danaeApp.DANAEEndRender();
 							DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx + (NoteTextMaxx-NoteTextMinx) +20, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx + (NoteTextMaxx-NoteTextMinx) +20, NotePosY+NoteTextMaxy,Page_Buffer,0,0x00FF00FF);
@@ -1003,7 +1003,7 @@ void ARX_INTERFACE_NoteManage()
 					{
 						if(Note.pages[Note.curpage]>=0)
 						{
-							_tcscpy(Page_Buffer,Note.text.substr(Note.pages[Note.curpage]).c_str());
+							Page_Buffer = Note.text.substr(Note.pages[Note.curpage]);
 
 							danaeApp.DANAEEndRender();
 							DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY+NoteTextMaxy,Page_Buffer,0,0x00FF00FF);
@@ -1746,27 +1746,27 @@ bool DANAE::ManageEditorControls()
 
 								if (temp->ioflags & IO_GOLD)
 								{
-									_TCHAR UText[256];
-									_stprintf(UText, "%ld %s", temp->_itemdata->price, WILLADDSPEECH.c_str());
-									WILLADDSPEECH = UText;
+									std::stringstream ss;
+									ss << temp->_itemdata->price << " " << WILLADDSPEECH;
+									WILLADDSPEECH = ss.str();
 								}
 
 								if ((temp->poisonous>0) && (temp->poisonous_count!=0))
 								{
 									std::string Text;
-									_TCHAR UText[256];
 									MakeLocalised("[Description_Poisoned]",Text);
-									_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH.c_str(), Text.c_str(), (int)temp->poisonous);
-									WILLADDSPEECH = UText;
+									std::stringstream ss;
+									ss << WILLADDSPEECH << " (" << Text << " " << (int)temp->poisonous << ")";
+									WILLADDSPEECH = ss.str();
 								}
 
 								if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
 								{
 									std::string Text;
-									_TCHAR UText[256];
 									MakeLocalised("[Description_Durability]",Text);
-									_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH.c_str(), Text.c_str(), temp->durability,temp->max_durability);
-									WILLADDSPEECH = UText;
+									std::stringstream ss;
+									ss << WILLADDSPEECH << " " << Text << " " << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
+									WILLADDSPEECH = ss.str();
 								}
 
 
@@ -5694,27 +5694,27 @@ void DANAE::ManageKeyMouse()
 
 							if (temp->ioflags & IO_GOLD)
 							{
-								_TCHAR UText[256];
-								_stprintf(UText, _T("%ld %s"), temp->_itemdata->price, WILLADDSPEECH.c_str());
-								WILLADDSPEECH = UText;
+								std::stringstream ss;
+								ss << temp->_itemdata->price << " " << WILLADDSPEECH;
+								WILLADDSPEECH = ss.str();
 							}
 
 							if ((temp->poisonous>0) && (temp->poisonous_count!=0))
 							{
 								std::string Text;
-								_TCHAR UText[256];
 								MakeLocalised("[Description_Poisoned]",Text);
-								_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH.c_str(), Text.c_str(), (int)temp->poisonous);
-								WILLADDSPEECH = UText;
+								std::stringstream ss;
+								ss << WILLADDSPEECH << " (" << Text << " " << (int)temp->poisonous << ")";
+								WILLADDSPEECH = ss.str();
 							}
 
 							if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
 							{
 								std::string Text;
-								_TCHAR UText[256];
 								MakeLocalised("[Description_Durability]",Text);
-								_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH.c_str(), Text.c_str(), temp->durability,temp->max_durability);
-								WILLADDSPEECH = UText;
+								std::stringstream ss;
+								ss << WILLADDSPEECH << " " << Text << " " << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
+								WILLADDSPEECH = ss.str();
 							}
 
 
@@ -5783,27 +5783,27 @@ void DANAE::ManageKeyMouse()
 
 									if (temp->ioflags & IO_GOLD)
 									{
-										_TCHAR UText[256];
-										_stprintf(UText, _T("%ld %s"), temp->_itemdata->price, WILLADDSPEECH.c_str());
-										WILLADDSPEECH = UText;
+										std::stringstream ss;
+										ss << temp->_itemdata->price << " " << WILLADDSPEECH;
+										WILLADDSPEECH = ss.str();
 									}
 
 									if ((temp->poisonous>0) && (temp->poisonous_count!=0))
 									{
 										std::string Text;
-										_TCHAR UText[256];
 										MakeLocalised("[Description_Poisoned]",Text);
-										_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH.c_str(), Text.c_str(), (int)temp->poisonous);
-										WILLADDSPEECH = UText;
+										std::stringstream ss;
+										ss << WILLADDSPEECH << " (" << Text << " " << (int)temp->poisonous << ")";
+										WILLADDSPEECH = ss.str();
 									}
 
 									if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
 									{
 										std::string Text;
-										_TCHAR UText[256];
 										MakeLocalised("[Description_Durability]",Text);
-										_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH.c_str(), Text.c_str(), temp->durability,temp->max_durability);
-										WILLADDSPEECH = UText;
+										std::stringstream ss;
+										ss << WILLADDSPEECH << " " << Text << " " << std::setw(3) << std::setprecision(0) << temp->durability << "/" << temp->max_durability;
+										WILLADDSPEECH = ss.str();
 									}
 
 
@@ -6949,7 +6949,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						{
 							long r=0;
 
-							for (long j=0;j<necklace.runes[i]->nbfaces;j++)
+							for (size_t j=0;j<necklace.runes[i]->facelist.size();j++)
 							{
 								n=PtIn2DPolyProj( necklace.runes[i], &necklace.runes[i]->facelist[j] , (float)DANAEMouse.x, (float)DANAEMouse.y);
 
@@ -7967,17 +7967,21 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 	if (Book_Mode == BOOKMODE_STATS)
 	{
-		FLYING_OVER=0;
-		_TCHAR tex[64];
+		FLYING_OVER = 0;
+		std::string tex;
 		COLORREF Color = RGB(0,0,0);
 
 		ARX_PLAYER_ComputePlayerFullStats();
 
 		danaeApp.DANAEEndRender();
-		_stprintf(tex, _T("%s %3d"), ITC.Level.c_str(), player.level);
+		std::stringstream ss;
+		ss << ITC.Level << " " << std::setw(3) << (int)player.level;
+		tex = ss.str();
 		DrawBookTextCenter( 398, 74, tex,Color,0x00FF00FF,InBookFont);
 		
-		_stprintf(tex, _T("%s %8ld"), ITC.Xp.c_str(), player.xp);
+		std::stringstream ss2;
+		ss2 << ITC.Xp << " " << std::setw(8) << player.xp;
+		tex = ss2.str();
 		DrawBookTextCenter( 510, 74, tex, Color,0x00FF00FF,InBookFont);
 		danaeApp.DANAEStartRender();
 
@@ -8158,18 +8162,18 @@ void ARX_INTERFACE_ManageOpenedBook()
 				// Nuky Note: the text used never scrolls, centered function with wordwrap would be enough
 				if (FLYING_OVER == WND_XP)
 				{
-					_TCHAR tex[512];
-					_stprintf(tex, _T("%s %8ld"), ARXmenu.mda->flyover[WND_XP].c_str(), GetXPforLevel(player.level+1)-player.xp);
+					std::stringstream ss;
+					ss << ARXmenu.mda->flyover[WND_XP] << " " << std::setw(8) << GetXPforLevel(player.level+1)-player.xp;
 					UNICODE_ARXDrawTextCenteredScroll(	(DANAESIZX*0.5f),
 						4,
 						(DANAECENTERX)*0.82f,
-						tex,
+						ss.str(),
 						RGB(232+t,204+t,143+t),
 						0x00FF00FF,
 						1000,
 						0.01f,
 						3,
-						INTERNATIONAL_MODE?0:max(3000, int(70*_tcslen(tex))));
+						INTERNATIONAL_MODE?0:max(3000, int(70*tex.length())));
 				}
 				else
 				{
@@ -8195,7 +8199,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		//------------------------------
 
 		danaeApp.DANAEEndRender();
-		_stprintf(tex, _T("%3.0f"),player.Full_Attribute_Strength);
+		std::stringstream ss3;
+		ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.Full_Attribute_Strength;
+		tex = ss3.str();
 
 		if (player.Mod_Attribute_Strength<0.f)
 			Color = 0x000000FF;
@@ -8210,8 +8216,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		}
 
 		DrawBookTextCenter(hFontInBook, 391, 129, tex, Color, 0x00FF00FF);
-
-		_stprintf(tex, _T("%3.0f"),player.Full_Attribute_Mind);
+		
+		ss3.str(""); // clear the stream
+		ss3 << player.Full_Attribute_Mind;
+		tex = ss3.str();
 
 		if (player.Mod_Attribute_Mind<0.f)
 			Color = 0x000000FF;
@@ -8226,8 +8234,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		}
 
 		DrawBookTextCenter(hFontInBook, 440, 129, tex, Color, 0x00FF00FF);
-
-		_stprintf(tex, _T("%3.0f"),player.Full_Attribute_Dexterity);
+		
+		ss3.str("");
+		ss3 << player.Full_Attribute_Dexterity;
+		tex = ss3.str();
 
 		if (player.Mod_Attribute_Dexterity<0.f)
 			Color = 0x000000FF;
@@ -8242,8 +8252,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		}
 
 		DrawBookTextCenter(hFontInBook, 490, 129, tex, Color, 0x00FF00FF);
-
-		_stprintf(tex, _T("%3.0f"),player.Full_Attribute_Constitution);
+		ss3.str("");
+		ss3 << player.Full_Attribute_Constitution;
+		tex = ss3.str();
 
 		if (player.Mod_Attribute_Constitution<0.f)
 			Color = 0x000000FF;
@@ -8260,7 +8271,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		DrawBookTextCenter(hFontInBook, 538, 129, tex, Color, 0x00FF00FF);
 
 		// Player Skills
-		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Stealth);
+		ss3.str("");
+		ss3 << player.Full_Skill_Stealth;
+		tex = ss3.str();
 
 		if (player.Mod_Skill_Stealth<0.f)
 			Color = 0x000000FF;
@@ -8275,8 +8288,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		}
 
 		DrawBookTextCenter(hFontInBook, 405, 210, tex, Color, 0x00FF00FF);
-
-		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Mecanism);
+		
+		ss3.str("");
+		ss3 << player.Full_Skill_Mecanism;
+		tex = ss3.str();
 
 		if (player.Mod_Skill_Mecanism<0.f)
 			Color = 0x000000FF;
@@ -8291,8 +8306,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		}
 
 		DrawBookTextCenter(hFontInBook, 469, 210, tex, Color, 0x00FF00FF);
-
-		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Intuition);
+		
+		ss3.str("");
+		ss3 << player.Full_Skill_Intuition;
+		tex = ss3.str();
 
 		if (player.Mod_Skill_Intuition<0.f)
 			Color = 0x000000FF;
@@ -8307,8 +8324,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		}
 
 		DrawBookTextCenter(hFontInBook, 533, 210, tex, Color, 0x00FF00FF);
-
-		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Etheral_Link);
+		
+		ss3.str("");
+		ss3 << player.Full_Skill_Etheral_Link;
+		tex = ss3.str();
 
 		if (player.Mod_Skill_Etheral_Link<0.f)
 			Color = 0x000000FF;
@@ -8323,8 +8342,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		}
 
 		DrawBookTextCenter(hFontInBook, 405, 265, tex, Color, 0x00FF00FF);
-
-		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Object_Knowledge);
+		
+		ss3.str("");
+		ss3 << player.Full_Skill_Object_Knowledge;
+		tex = ss3.str();
 
 		if (player.Mod_Skill_Object_Knowledge<0.f)
 			Color = 0x000000FF;
@@ -8339,8 +8360,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		}
 
 		DrawBookTextCenter(hFontInBook, 469, 265, tex, Color, 0x00FF00FF);
-
-		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Casting);
+		
+		ss3.str("");
+		ss3 << player.Full_Skill_Casting;
+		tex = ss3.str();
 
 		if (player.Mod_Skill_Casting<0.f)
 			Color = 0x000000FF;
@@ -8355,8 +8378,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		}
 
 		DrawBookTextCenter(hFontInBook, 533, 265, tex, Color, 0x00FF00FF);
-
-		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Close_Combat);
+		
+		ss3.str("");
+		ss3 << player.Full_Skill_Close_Combat;
+		tex = ss3.str();
 
 		if (player.Mod_Skill_Close_Combat<0.f)
 			Color = 0x000000FF;
@@ -8372,7 +8397,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		DrawBookTextCenter(hFontInBook, 405, 319, tex, Color, 0x00FF00FF);
 
-		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Projectile);
+		
+		ss3.str("");
+		ss3 << player.Full_Skill_Projectile;
+		tex = ss3.str();
 
 		if (player.Mod_Skill_Projectile<0.f)
 			Color = 0x000000FF;
@@ -8387,8 +8415,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		}
 
 		DrawBookTextCenter(hFontInBook, 469, 319, tex, Color, 0x00FF00FF);
-
-		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Defense);
+		
+		ss3.str("");
+		ss3 << player.Full_Skill_Defense;
+		tex = ss3.str();
 
 		if (player.Mod_Skill_Defense<0.f)
 			Color = 0x000000FF;
@@ -8405,7 +8435,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		DrawBookTextCenter(hFontInBook, 533, 319, tex, Color, 0x00FF00FF);
 
 		// Secondary Attributes
-		_stprintf(tex, _T("%ld"),F2L_RoundUp(player.Full_maxlife));
+		std::stringstream ss4;
+		ss4.str("");
+		ss4 << F2L_RoundUp(player.Full_maxlife);
+		tex = ss4.str();
 
 		if ((player.Mod_maxlife<0.f) || (player.Full_maxlife < player.maxlife))
 			Color = 0x000000FF;
@@ -8415,7 +8448,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		DrawBookTextCenter( hFontInBook, 324, 158, tex, Color,0x00FF00FF);
 		
-		_stprintf(tex, _T("%ld"),F2L_RoundUp(player.Full_maxmana));
+		ss4.str("");
+		ss4 << F2L_RoundUp(player.Full_maxmana);
+		tex = ss4.str();
 
 		if ((player.Mod_maxmana<0.f) || (player.Full_maxmana < player.maxmana))
 			Color = 0x000000FF;
@@ -8425,7 +8460,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		DrawBookTextCenter( hFontInBook, 324, 218, tex, Color, 0x00FF00FF);
 		
-		_stprintf(tex, _T("%ld"), F2L_RoundUp(player.Full_damages));
+		ss4.str("");
+		ss4 << F2L_RoundUp(player.Full_damages);
+		tex = ss4.str();
 
 		if (player.Mod_damages<0.f)
 			Color = 0x000000FF;
@@ -8436,7 +8473,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 		DrawBookTextCenter(hFontInBook, 324, 278, tex, Color, 0x00FF00FF);
 
 		float ac = player.Full_armor_class;
-		_stprintf(tex, _T("%ld"),F2L_RoundUp(ac));
+		ss4.str("");
+		ss4 << F2L_RoundUp(ac);
+		tex = ss4.str();
 
 		if (player.Mod_armor_class<0.f)
 			Color = 0x000000FF;
@@ -8446,7 +8485,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		DrawBookTextCenter(hFontInBook, 153, 158, tex, Color, 0x00FF00FF);
 
-		_stprintf(tex, _T("%3.0f"),player.Full_resist_magic);
+		ss4.str("");
+		ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.Full_resist_magic );
+		tex = ss4.str();
 
 		if (player.Mod_resist_magic<0.f)
 			Color = 0x000000FF;
@@ -8455,8 +8496,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 		else Color = 0;
 
 		DrawBookTextCenter(hFontInBook, 153, 218, tex, Color, 0x00FF00FF);
-
-		_stprintf(textbuff, _T("%3.0f"),player.Full_resist_poison);
+		
+		ss4.str("");
+		ss4 << F2L_RoundUp( player.Full_resist_poison );
+		tex = ss4.str();
 
 		if (player.Mod_resist_poison<0.f)
 			Color = 0x000000FF;
@@ -8635,8 +8678,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		FORCE_NO_HIDE=1;
 		IN_BOOK_DRAW=1;
-		EERIE_VERTEX *	vertexlist=(EERIE_VERTEX *)malloc(sizeof(EERIE_VERTEX)*inter.iobj[0]->obj->nbvertex);
-		memcpy(vertexlist,inter.iobj[0]->obj->vertexlist3,sizeof(EERIE_VERTEX)*inter.iobj[0]->obj->nbvertex);
+		vector<EERIE_VERTEX> vertexlist = inter.iobj[0]->obj->vertexlist3;
 
 		if (player.useanim.cur_anim != NULL)
 		{
@@ -8673,8 +8715,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 		PDL[1]=SavePDL[1];
 		TOTPDL=iSavePDL;
 
-		memcpy(inter.iobj[0]->obj->vertexlist3,vertexlist,sizeof(EERIE_VERTEX)*inter.iobj[0]->obj->nbvertex);
-		free(vertexlist);
+		inter.iobj[0]->obj->vertexlist3 = vertexlist;
+		vertexlist.clear();
 		FORCE_NO_HIDE=0;
 		Project.improve=ti;
 
@@ -9883,10 +9925,9 @@ void DANAE::DrawAllInterface()
 				{
 					ARX_CHECK_INT(player.life);
 
-					//TODO: should use sprintf
-					//_TCHAR txt[256];
-					//ARX_SPEECH_Add(NULL, _itot(ARX_CLEAN_WARN_CAST_INT(player.life), txt, 10));
-
+					std::stringstream ss;
+					ss << (int)player.life;
+					ARX_SPEECH_Add( NULL, ss.str() );
 				}
 			}
 		}
@@ -9925,9 +9966,9 @@ void DANAE::DrawAllInterface()
 					(!(LastMouseClick & 1)) )
 				{
 					ARX_CHECK_INT(player.mana);
-					//todo:sprintf
-					//_TCHAR txt[256];
-					//ARX_SPEECH_Add(NULL,_itot(ARX_CLEAN_WARN_CAST_INT(player.mana),txt,10)	);
+					std::stringstream ss;
+					ss << (int)player.mana;
+					ARX_SPEECH_Add( NULL, ss.str() );
 				}
 			}
 		}
@@ -10142,7 +10183,7 @@ long Manage3DCursor(long flags)
 					maxoff.y=minoff.y=io->obj->vertexlist[0].v.y;
 					maxoff.z=minoff.z=io->obj->vertexlist[0].v.z;
 
-					for (long i=0;i<io->obj->nbvertex;i++)
+					for (size_t i=0;i<io->obj->vertexlist.size();i++)
 					{
 						maxoff.x=max(maxoff.x,io->obj->vertexlist[i].v.x);
 						maxoff.y=max(maxoff.y,io->obj->vertexlist[i].v.y);
@@ -10212,7 +10253,7 @@ long Manage3DCursor(long flags)
 		objcenter.y	=	0;	
 		objcenter.z	=	minoff.z + (maxoff.z - minoff.z) * ( 1.0f / 2 );  
 					
-					for ( int i = 0 ; i < io->obj->nbvertex ; i++ )
+					for ( size_t i = 0 ; i < io->obj->vertexlist.size() ; i++ )
 					{
 						maxdist = max(	maxdist,
 											TRUEDistance2D(	objcenter.x, objcenter.z,
@@ -10714,10 +10755,10 @@ void ARX_INTERFACE_RenderCursor(long flag)
 							surf->m_dwHeight * Yratio,
 							0.f,
 							surf,D3DCOLORWHITE);
-
-						danaeApp.DANAEEndRender();
-						_TCHAR temp[256];
-						_stprintf(temp, _T("%3ld"), lCursorRedistValue);
+						
+						danaeApp.DANAEEndRender();	
+						std::stringstream ss;
+						ss << std::setw(3) << lCursorRedistValue;
 						ARX_TEXT_Draw(hFontInBook, DANAEMouse.x + 6* Xratio, DANAEMouse.y + 11* Yratio, temp, D3DCOLORBLACK, 0x00FF00FF);
 						danaeApp.DANAEStartRender();
 					}

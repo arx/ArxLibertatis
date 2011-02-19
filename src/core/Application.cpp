@@ -1202,104 +1202,81 @@ VOID CD3DApplication::OutputText(DWORD x, DWORD y, const char * str)
 // DisplayFrameworkError()
 // Displays error messages in a message box
 //*************************************************************************************
-VOID CD3DApplication::DisplayFrameworkError(HRESULT hr, DWORD dwType)
-{
-	TCHAR strMsg[512];
-
-	switch (hr)
-	{
+VOID CD3DApplication::DisplayFrameworkError(HRESULT hr, DWORD dwType) {
+	switch (hr)	{
 		case D3DENUMERR_NODIRECTDRAW:
-			lstrcpy(strMsg, _T("Unable to create DirectDraw"));
+			LogError << "Unable to create DirectDraw";
 			break;
 		case D3DENUMERR_NOCOMPATIBLEDEVICES:
-			lstrcpy(strMsg, _T("Unable to find any compatible Direct3D\n"
-			                   "devices."));
+			LogError << "Unable to find any compatible Direct3D devices.";
 			break;
 		case D3DENUMERR_SUGGESTREFRAST:
-			lstrcpy(strMsg, _T("Unable to find a compatible devices.\n\n"
-			                   "Try to enable the reference rasterizer using\n"
-			                   "EnableRefRast.reg."));
+			LogError << "Unable to find a compatible devices. Try to enable the reference rasterizer using EnableRefRast.reg.";
 			break;
 		case D3DENUMERR_ENUMERATIONFAILED:
-			lstrcpy(strMsg, _T("Enumeration failure. Are you missing (32bit) graphics drivers?"));
+			LogError << "Enumeration failure. Are you missing (32bit) graphics drivers?";
 			break;
 		case D3DFWERR_INITIALIZATIONFAILED:
-			lstrcpy(strMsg, _T("Generic initialization error.\n\nEnable "
-			                   "debug output for detailed information."));
+			LogError << "Generic initialization error. Enable debug output for detailed information.";
 			break;
 		case D3DFWERR_NODIRECTDRAW:
-			lstrcpy(strMsg, _T("No DirectDraw"));
+			LogError << "No DirectDraw";
 			break;
 		case D3DFWERR_NODIRECT3D:
-			lstrcpy(strMsg, _T("No Direct3D"));
+			LogError << "No Direct3D";
 			break;
 		case D3DFWERR_INVALIDMODE:
-			lstrcpy(strMsg, _T("This Programe requires 16-bits (or higher) "
-			                   "display mode\nto run in a window."));
+			LogError << "This Programe requires 16-bits (or higher) display mode to run in a window.";
 			break;
 		case D3DFWERR_COULDNTSETCOOPLEVEL:
-			lstrcpy(strMsg, _T("Unable to set Cooperative Level"));
+			LogError << "Unable to set Cooperative Level";
 			break;
 		case D3DFWERR_NO3DDEVICE:
-			lstrcpy(strMsg, _T("Unable to create Direct3DDevice object."));
-
+			LogError << "Unable to create Direct3DDevice object.";
 			if (MSGWARN_SWITCHEDTOSOFTWARE == dwType)
-				lstrcat(strMsg, _T("\nYour 3D hardware chipset may not support"
-				                   "\nrendering in the current display mode."));
-
+				LogError << "Your 3D hardware chipset may not support rendering in the current display mode.";
 			break;
 		case D3DFWERR_NOZBUFFER:
-			lstrcpy(strMsg, _T("No ZBuffer"));
+			LogError << "No ZBuffer";
 			break;
 		case D3DFWERR_INVALIDZBUFFERDEPTH:
-			lstrcpy(strMsg, _T("Invalid Z-buffer depth. Try switching modes\n"
-			                   "from 16- to 32-bit (or vice versa)"));
+			LogError << "Invalid Z-buffer depth. Try switching modes from 16- to 32-bit (or vice versa)";
 			break;
 		case D3DFWERR_NOVIEWPORT:
-			lstrcpy(strMsg, _T("No Viewport"));
+			LogError << "No Viewport";
 			break;
 		case D3DFWERR_NOPRIMARY:
-			lstrcpy(strMsg, _T("No primary"));
+			LogError << "No primary";
 			break;
 		case D3DFWERR_NOCLIPPER:
-			lstrcpy(strMsg, _T("No Clipper"));
+			LogError << "No Clipper";
 			break;
 		case D3DFWERR_BADDISPLAYMODE:
-			lstrcpy(strMsg, _T("Bad display mode"));
+			LogError << "Bad display mode";
 			break;
 		case D3DFWERR_NOBACKBUFFER:
-			lstrcpy(strMsg, _T("No backbuffer"));
+			LogError << "No backbuffer";
 			break;
 		case D3DFWERR_NONZEROREFCOUNT:
-			lstrcpy(strMsg, _T("A DDraw object has a non-zero reference\n"
-			                   "count (meaning it was not properly cleaned up)."));
+			LogError << "A DDraw object has a non-zero reference count (meaning it was not properly cleaned up).";
 			break;
 		case D3DFWERR_NORENDERTARGET:
-			lstrcpy(strMsg, _T("No render target"));
+			LogError << "No render target";
 			break;
 		case E_OUTOFMEMORY:
-			lstrcpy(strMsg, _T("Not enough memory!"));
+			LogError << "Not enough memory!";
 			break;
 		case DDERR_OUTOFVIDEOMEMORY:
-			lstrcpy(strMsg, _T("There was insufficient video memory "
-			                   "to use the\nhardware device."));
+			LogError << "There was insufficient video memory to use the hardware device.";
 			break;
 		default:
-			lstrcpy(strMsg, _T("Generic application error.\n\nEnable "
-			                   "debug output for detailed information."));
+			LogError << "Generic application error. Enable debug output for detailed information.";
 	}
 
-	if (MSGERR_APPMUSTEXIT == dwType)
-	{
-		lstrcat(strMsg, _T("\n\nThis Program will now exit."));
-		MessageBox(NULL, strMsg, m_strWindowTitle, MB_ICONERROR | MB_OK);
-	}
-	else
-	{
-		if (MSGWARN_SWITCHEDTOSOFTWARE == dwType)
-			lstrcat(strMsg, _T("\n\nSwitching to software rasterizer."));
-
-		MessageBox(NULL, strMsg, m_strWindowTitle, MB_ICONWARNING | MB_OK);
+	if (MSGERR_APPMUSTEXIT == dwType) {
+		LogError <<"This Program will now exit.";
+	} else if (MSGWARN_SWITCHEDTOSOFTWARE == dwType){
+		LogError <<"Switching to software rasterizer.";
 	}
 }
  

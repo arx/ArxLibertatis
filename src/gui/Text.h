@@ -62,29 +62,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Application.h"
 #include "graphics/GraphicsTypes.h"
 
-using std::vector;
-
-enum ARX_TEXT_TYPE {
-	ARX_TEXT_ONCE,
-	ARX_TEXT_STAY
-};
-
-struct ARX_TEXT {
-	ARX_TEXT_TYPE   eType;
-	HFONT           hFont;
-	RECT            rRect;
-	RECT            rRectClipp;
-	std::string     lpszUText;
-	float           fDeltaY;
-	float           fSpeedScrollY;
-	long            lCol;
-	long            lBkgCol;
-	long            lTimeScroll;
-	long            lTimeOut;
-	long            lTailleLigne;
-	int             iNbLineClip;
-};
-
 extern TextManager * pTextManage;
 extern HFONT hFontMainMenu;
 extern HFONT hFontMenu;
@@ -95,7 +72,6 @@ extern HFONT hFontRedist;
 extern HFONT hFontInGame;
 extern HFONT hFontInGameNote;
 
-void ARX_Text_Init(ARX_TEXT *);
 long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice, HFONT ef, float x, float y, long spacingx, long spacingy, const std::string& car, COLORREF colo, COLORREF bcol = 0x00FF00FF);
 long ARX_TEXT_DrawRect(LPDIRECT3DDEVICE7 pd3dDevice, HFONT ef, float x, float y, long spacingx, long spacingy, float maxx, float maxy, const std::string& car, COLORREF colo, HRGN hRgn = NULL, COLORREF bcol = 0x00FF00FF, long flags = 0);
 float DrawBookTextInRect(float x, float y, float maxx, float maxy, const std::string& text, COLORREF col, COLORREF col2, HFONT font);

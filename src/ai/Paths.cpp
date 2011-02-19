@@ -1544,9 +1544,9 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 
 						while (notok-- > 0)
 						{
-							num = (rnd() *(float)Thrown[i].obj->nbfaces);
+							num = (rnd() *(float)Thrown[i].obj->facelist.size());
 
-							if ((num >= 0) && (num < Thrown[i].obj->nbfaces))
+							if ((num >= 0) && (num < Thrown[i].obj->facelist.size()))
 							{
 								if (Thrown[i].obj->facelist[num].facetype & POLY_HIDE) continue;
 
@@ -1738,7 +1738,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 											long		hitpoint	=	-1;
 											float		curdist		=	999999.f;
 
-											for (long ii = 0 ; ii < target->obj->nbfaces ; ii++)
+											for (size_t ii = 0 ; ii < target->obj->facelist.size() ; ii++)
 											{
 												if (target->obj->facelist[ii].facetype & POLY_HIDE) continue;
 

@@ -1023,9 +1023,9 @@ long HERMES_Memory_Emergency_Out(long size, const char * info)
 	else
 		sprintf(out, "FATAL ERROR: Unable To Allocate Memory...");
 
-	int re = MessageBox(NULL, out, "ARX Fatalis", MB_RETRYCANCEL    | MB_ICONSTOP);
+	LogError << out;
 
-	if ((re == IDRETRY) && (size > 0))
+	if (size > 0)
 		return 1;
 
 	exit(0);

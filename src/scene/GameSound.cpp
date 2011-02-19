@@ -2231,7 +2231,7 @@ static void ARX_SOUND_KillUpdateThread()
 	bExitUpdateThread = true;
 
 	if (WaitForSingleObject(hUpdateThread, 5000) == WAIT_TIMEOUT)
-		MessageBox(NULL, "Failed while killing audio thread", "ARX Fatalis - Error", MB_OK);
+		LogError << "Failed while killing audio thread";
 
 	CloseHandle(hUpdateThread), hUpdateThread = NULL;
 }

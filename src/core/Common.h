@@ -73,6 +73,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <string>
 
+using std::string;
+
+const string arxVersion = "0.1";
+
 /* ---------------------------------------------------------
 						Platforms
 ------------------------------------------------------------*/

@@ -55,9 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <windows.h>
 
-using std::vector;
-using std::wstring;
-
 //-----------------------------------------------------------------------------
 
 #define BUTTON_MENUMAIN_RESUMEGAME			1
@@ -559,7 +556,7 @@ class CMenuSliderText: public CMenuElement
 	public:
 		CMenuButton		*	pLeftButton;
 		CMenuButton		*	pRightButton;
-		std::vector<CMenuElementText *>	vText;
+		std::vector<CMenuElementText*>	vText;
 		int					iPos;
 		int					iOldPos;
 	public:
@@ -621,7 +618,7 @@ class CMenuCheckButton : public CMenuElement
 		int					iPosY;
 		int					iTaille;
 		CMenuAllZone	*	pAllCheckZone;
-		vector<TextureContainer *> vTex;
+		std::vector<TextureContainer *> vTex;
 		CMenuElementText	* pText;
 
 	public:
@@ -911,44 +908,6 @@ class CMenuConfig
 		bool SaveAll();
 		bool ReadAll();
 };
-
-//-----------------------------------------------------------------------------
-struct CreditsTextInformations
-{
-	CreditsTextInformations()
-	{
-		sPos.cx = 0 ;
-		sPos.cy = 0 ;
-		fColors = 0 ;
-	}
-
-	std::wstring	sText;
-	COLORREF		fColors;
-	SIZE			sPos;
-};
-
-
-struct CreditsInformations
-{
-  CreditsInformations()
-  {
-	iFontAverageHeight = -1;
-	iFirstLine = 0 ;
-  }
-
-  int iFirstLine ;
-  int iFontAverageHeight ;
-  std::vector<CreditsTextInformations> aCreditsInformations ;
-};
-
-
-static CreditsInformations CreditsData;
-
-static void InitCredits(void);
-static void CalculAverageWidth(HDC& _hDC) ;
-static void ExtractAllCreditsTextInformations();
-static void ExtractPhraseColor(std::wstring &phrase, CreditsTextInformations &infomations);
-static void CalculTextPosition(HDC& _hDC, std::wstring& phrase, CreditsTextInformations &infomations, float& drawpos);
 
 
 //-----------------------------------------------------------------------------

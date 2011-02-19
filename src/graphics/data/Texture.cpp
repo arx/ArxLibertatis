@@ -63,6 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cassert>
 
 #include <iomanip>
+#include <map>
 
 #include <tchar.h>
 #include <zlib.h>
@@ -72,7 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 // boolean and INT32 used by jpeglib clash with wine
 #define INT32 INT32_JPEG
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32
+#ifndef ARX_PLATFORM_WINDOWS
 # define boolean boolean_JPEG
 # ifdef _WIN32
 #  define HAD_WIN32
@@ -85,7 +86,7 @@ typedef boolean boolean_JPEG;
 
 #include <jpeglib.h>
 
-#if ARX_PLATFORM != ARX_PLATFORM_WIN32
+#ifndef ARX_PLATFORM_WINDOWS
 # undef boolean
 # ifdef HAD_WIN32
 #  define _WIN32
@@ -3246,169 +3247,118 @@ HRESULT TextureContainer::CopyJPEGDataToSurface(LPDIRECTDRAWSURFACE7 Surface)
 	return S_OK;
 }
 
-
-//-----------------------------------------------------------------------------
-// Name: D3DTextr_SetTexturePath()
-// Desc: Enumeration callback routine to find a best-matching texture format.
-//-----------------------------------------------------------------------------
-
 void ConvertData( std::string& dat)
 {
-	if (dat[0] == '"') dat.erase( 0, 1 );
+	size_t substrStart = 0;
+	size_t substrLen = std::string::npos;
 
-	for ( size_t i = 1 ; i < dat.length() ; i++)
+	size_t posStart = dat.find_first_of('"');
+	if( posStart != std::string::npos )
+		substrStart = posStart + 1;
+
+	size_t posEnd = dat.find_last_of('"');
+	if( posEnd != std::string::npos )
+		substrLen = posEnd - substrStart;
+
+	dat = dat.substr(substrStart, substrLen);
+}
+
+void LoadRefinementMap(const char* fileName, std::map<string, string>& refinementMap)
+{
+	char * fileContent = NULL;
+	size_t fileSize = 0;
+	
+	if (PAK_FileExist(fileName))
+		fileContent = (char *)PAK_FileLoadMallocZero(fileName, fileSize);
+
+	if (fileContent)
 	{
-		if (dat[i] == '"') dat[i] = 0;
+		unsigned char * from = (unsigned char *)fileContent;
+		u32 fromSize = fileSize;
+		std::string data;
+		u32 pos = 0;
+		long count = 0;	
+
+		std::string str1;
+		
+		while (pos < fileSize)
+		{
+			data.resize(0);
+
+			while ((from[pos] != '\n') && (pos < fromSize))
+			{
+				data += from[pos++];
+
+				if (pos >= fileSize) break;
+			}
+
+			while ((pos < fromSize) && (from[pos] < 32)) pos++;
+
+			if (count == 2)
+			{
+				count = 0;
+				continue;
+			}
+
+			ConvertData(data);
+
+			if (count == 0)
+				str1 = data;
+			
+			if (count == 1)
+			{
+				MakeUpcase( str1 );
+				MakeUpcase( data );
+
+				if(strcmp(data.c_str(), "NONE") != 0)
+					refinementMap[str1] = data;
+			}
+
+			count++;
+		}
+
+		free(fileContent);
 	}
 }
 
+typedef std::map<string, string> RefinementMap;
+RefinementMap g_GlobalRefine;
+RefinementMap g_Refine;
+
 void LookForRefinementMap(TextureContainer * tc)
 {
-	char * GlobalRefine = NULL;
-	size_t GlobalRefine_size = 0;
-	char * Refine = NULL;
-	size_t Refine_size = 0;
 	long count = 0;
 	std::string str1;
 	std::string str2;
 	tc->TextureRefinement = NULL;
 
-	if (GlobalRefine == NULL)
+	static bool loadedRefinements = false;
+	if (!loadedRefinements)
 	{
-		if (GlobalRefine_size == 0)
-		{
-			const char INI_REFINEMENT_GLOBAL[] ="Graph\\Obj3D\\Textures\\Refinement\\GlobalRefinement.ini";
+		const char INI_REFINEMENT_GLOBAL[] = "Graph\\Obj3D\\Textures\\Refinement\\GlobalRefinement.ini";
+		const char INI_REFINEMENT[] = "Graph\\Obj3D\\Textures\\Refinement\\Refinement.ini";
 
-			if (PAK_FileExist(INI_REFINEMENT_GLOBAL))
-			{
-				GlobalRefine = (char *)PAK_FileLoadMallocZero(INI_REFINEMENT_GLOBAL, GlobalRefine_size);
-			}
+		LoadRefinementMap(INI_REFINEMENT_GLOBAL, g_GlobalRefine);
+		LoadRefinementMap(INI_REFINEMENT, g_Refine);
 
-			if (GlobalRefine == NULL) GlobalRefine_size = -1;
-		}
+        loadedRefinements = true;
 	}
 
-	if (Refine == NULL)
+	std::string name = GetName(tc->m_strName);
+	MakeUpcase( name );
+
+	RefinementMap::const_iterator it = g_GlobalRefine.find(name);
+	if( it != g_GlobalRefine.end() )
 	{
-		if (Refine_size == 0)
-		{
-			const char INI_REFINEMENT[] = "Graph\\Obj3D\\Textures\\Refinement\\Refinement.ini";
-
-			if (PAK_FileExist(INI_REFINEMENT))
-			{
-				Refine = (char *)PAK_FileLoadMallocZero(INI_REFINEMENT, Refine_size);
-			}
-
-			if (Refine == NULL) Refine_size = -1;
-		}
+		str2 = "Graph\\Obj3D\\Textures\\Refinement\\" + (*it).second + ".bmp";
+		tc->TextureRefinement = D3DTextr_CreateTextureFromFile(str2.c_str(), 0, D3DTEXTR_16BITSPERPIXEL);
 	}
 
-	if (GlobalRefine)
+	it = g_Refine.find(name);
+	if( it != g_Refine.end() )
 	{
-		unsigned char * from = (unsigned char *)GlobalRefine;
-		u32 fromsize = GlobalRefine_size;
-		std::string data( 256, '\0' );
-		u32 pos = 0;
-		std::string name;
-		name = GetName(tc->m_strName);
-
-		while (pos < GlobalRefine_size)
-		{
-			while ((from[pos] != '\n') && (pos < fromsize))
-			{
-				data += from[pos++];
-
-				if (pos >= GlobalRefine_size) break;
-			}
-
-			while ((pos < fromsize) && (from[pos] < 32)) pos++;
-
-			if (count == 2)
-			{
-				count = 0;
-				continue;
-			}
-
-			ConvertData(data);
-
-			if (count == 0) str1 = data;
-
-			if (count == 1)
-			{
-				str2 = "Graph\\Obj3D\\Textures\\Refinement\\" + data + ".bmp";
-				MakeUpcase( str1 );
-				MakeUpcase( name );
-
-				if ( name.find( str1) != std::string::npos )
-				{
-					if (!strcasecmp(data.c_str(), "NONE")) tc->TextureRefinement = NULL;
-					else tc->TextureRefinement =
-							D3DTextr_CreateTextureFromFile(str2.c_str(), 0, D3DTEXTR_16BITSPERPIXEL);
-
-				}
-			}
-
-			count++;
-		}
-	}
-
-	if (Refine)
-	{
-		unsigned char * from = (unsigned char *)Refine;
-		u32 fromsize = Refine_size;
-		std::string data;
-		u32 pos = 0;
-		std::string name = GetName(tc->m_strName);
-
-		while (pos < Refine_size)
-		{
-			while ((from[pos] != '\n') && (pos < fromsize))
-			{
-				data += from[pos++];
-				if (pos >= Refine_size) break;
-			}
-
-			while ((pos < fromsize) && (from[pos] < 32)) pos++;
-
-			if (count == 2)
-			{
-				count = 0;
-				continue;
-			}
-
-			ConvertData(data);
-
-			if (count == 0) str1 = data;
-
-			if (count == 1)
-			{
-				str2 = "Graph\\Obj3D\\Textures\\Refinement\\" + data + ".bmp";
-				MakeUpcase( str1 );
-				MakeUpcase( name );
-
-				if ( !name.compare( str1 ) )
-				{
-					if (!strcasecmp(data.c_str(), "NONE")) tc->TextureRefinement = NULL;
-					else tc->TextureRefinement =
-							D3DTextr_CreateTextureFromFile(str2.c_str(), 0, D3DTEXTR_16BITSPERPIXEL);
-
-				}
-			}
-
-			count++;
-		}
-	}
-
-	if (GlobalRefine)
-	{
-		free((void *)GlobalRefine);
-		GlobalRefine = NULL;
-	}
-
-	if (Refine)
-	{
-		free((void *)Refine);
-		Refine = NULL;
+		str2 = "Graph\\Obj3D\\Textures\\Refinement\\" + (*it).second + ".bmp";
+		tc->TextureRefinement = D3DTextr_CreateTextureFromFile(str2.c_str(), 0, D3DTEXTR_16BITSPERPIXEL);
 	}
 }
 

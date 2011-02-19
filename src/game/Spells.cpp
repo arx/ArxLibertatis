@@ -183,7 +183,7 @@ EERIE_S2D Lm;
 
 static const long MAX_POINTS(200);
 static EERIE_S2D plist[MAX_POINTS];
-static char SpellMoves[MAX_POINTS];
+std::string SpellMoves;
 long SpellSymbol[MAX_SPELL_SYMBOLS];
 long CurrSpellSymbol=0;
 
@@ -1511,7 +1511,7 @@ void ARX_SPELLS_ClearAllSymbolDraw()
 void ARX_SPELLS_AnalyseSYMBOL()
 {
 	long csymb = -1;
-	long sm = atoi(SpellMoves);
+	long sm = atoi(SpellMoves.c_str());
 
 	switch (sm)
 	{
@@ -2110,16 +2110,16 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		{
 		failed:
 			;
-			_TCHAR tex[512];
+			std::string tex;
 
-			if (strlen(SpellMoves)>=127)
-				SpellMoves[127]=0;
+			if (SpellMoves.length()>=127)
+				SpellMoves.resize(127);
 
-			strcpy(LAST_FAILED_SEQUENCE,SpellMoves);
+			strcpy(LAST_FAILED_SEQUENCE,SpellMoves.c_str());
 
 			if (!NO_TEXT_AT_ALL) 
 			{
-				_stprintf(tex, _T("Unknown Symbol - %s"), SpellMoves);
+				tex = "Unknown Symbol - " + SpellMoves;
 				ARX_SPEECH_Add(NULL, tex);
 			}
 		}
@@ -3170,7 +3170,7 @@ void ARX_SPELLS_Analyse()
 		yy = y;
 	}
 
-	strcpy( SpellMoves, "" );
+	SpellMoves.clear();
 	
 	if ( cdir > 0 )
 	{
@@ -3183,49 +3183,49 @@ void ARX_SPELLS_Analyse()
 				case AUP:
 					strcat( chaine, "UP \n " );
 					spell[CurrSlot].SlotDir = 0;
-					strcat( SpellMoves, "8" ); //uses PAD values
+					SpellMoves += "8"; //uses PAD values
 					break;
 
 				case ADOWN:
 					strcat( chaine, "DOWN \n " );
 					spell[CurrSlot].SlotDir = 4;
-					strcat( SpellMoves, "2" );
+					SpellMoves += "2";
 					break;
 
 				case ALEFT:
 					strcat( chaine, "LEFT \n " );
 					spell[CurrSlot].SlotDir = 6;
-					strcat( SpellMoves, "4" );
+					SpellMoves += "4";
 					break;
 
 				case ARIGHT:
 					strcat( chaine, "RIGHT \n " );
 					spell[CurrSlot].SlotDir = 2;
-					strcat( SpellMoves, "6" );
+					SpellMoves += "6";
 					break;
 
 				case AUPRIGHT:
 					strcat( chaine, "UP-RIGHT \n " );
 					spell[CurrSlot].SlotDir = 1;
-					strcat( SpellMoves, "9" );
+					SpellMoves += "9";
 					break;
 
 				case ADOWNRIGHT:
 					strcat( chaine, "DOWN-RIGHT \n " );
 					spell[CurrSlot].SlotDir = 3;
-					strcat( SpellMoves, "3" );
+					SpellMoves += "3";
 					break;
 
 				case AUPLEFT:
 					strcat( chaine, "UP-LEFT \n " );
 					spell[CurrSlot].SlotDir = 7;
-					strcat( SpellMoves, "7" );
+					SpellMoves += "7";
 					break;
 
 				case ADOWNLEFT:
 					strcat( chaine, "DOWN-LEFT \n " );
 					spell[CurrSlot].SlotDir = 5;
-					strcat( SpellMoves, "1" );
+					SpellMoves += "1";
 					break;
 			}
 		}
@@ -9788,10 +9788,10 @@ void ApplySPMax()
 			ARX_EQUIPMENT_RecreatePlayerMesh();
 		
 		ARX_PLAYER_Rune_Add_All();
-		_TCHAR UText[512];
+		std::string text = "!!!!!!! FanTomAciE !!!!!!!";
 //		todo cast
 //		MultiByteToWideChar(CP_ACP, 0, "!!!!!!! FanTomAciE !!!!!!!", -1, UText, 256);
-		ARX_SPEECH_Add(NULL, UText);		
+		ARX_SPEECH_Add(NULL, text);
 		player.Attribute_Redistribute+=10;
 		player.Skill_Redistribute+=50;
 		player.level=std::max((int)player.level,10);

@@ -443,11 +443,10 @@ struct PHYSICS_BOX_DATA
 struct EERIE_GROUPLIST {
 	std::string name;
 	long origin;
-	long nb_index;
-	long * indexes;
+	std::vector<long> indexes;
 	float siz;
 	
-	EERIE_GROUPLIST() : name(), origin(0), nb_index(0), indexes(NULL), siz(0.0f) { };
+	EERIE_GROUPLIST() : name(), origin(0), indexes(), siz(0.0f) { };
 };
 
 struct EERIE_ACTIONLIST {
@@ -491,10 +490,7 @@ struct EERIE_LINKED
 
 struct EERIE_SELECTIONS {
 	std::string name;
-	long nb_selected;
-	long * selected;
-	
-	EERIE_SELECTIONS() : name(), nb_selected(0), selected(NULL) { };
+	std::vector<long> selected;
 };
 
 #define DRAWFLAG_HIGHLIGHT	1
@@ -574,25 +570,17 @@ struct EERIE_3DOBJ
 
 		origin = 0;
 		ident = 0;
-		nbvertex = 0;
-		true_nbvertex = 0;
-		nbfaces = 0;
 		nbpfaces = 0;
-		nbmaps = 0;
 		nbgroups = 0;
 		drawflags = 0;
 
-		vertexlocal = 0;
-		vertexlist = 0;
-		vertexlist3 = 0;
+		vertexlocal = NULL;
 
-		facelist = 0;
-		pfacelist = 0;
-		grouplist = 0;
-		texturecontainer = 0;
+		pfacelist = NULL;
+		grouplist = NULL;
 
-		originaltextures = 0;
-		linked = 0;
+		originaltextures = NULL;
+		linked = NULL;
 
 		// TODO Make default constructor possible
 		cub.xmin = 0;
@@ -631,56 +619,51 @@ struct EERIE_3DOBJ
 		fastaccess.carry_attach = 0;
 		fastaccess.__padd = 0;
 
-		c_data = 0;
+		c_data = NULL;
 	}
 	
 	void clear();
 	
 	std::string name;
 	std::string file;
-	EERIE_3D			pos;
-	EERIE_3D			point0;
-	EERIE_3D			angle;
-	long				origin;
-	long				ident;
-	long				nbvertex;
-	long				true_nbvertex;
-	long				nbfaces;
-	long				nbpfaces;
-	long				nbmaps;
-	long				nbgroups;
-	unsigned long		drawflags;
-	EERIE_3DPAD 	*	vertexlocal;
-	EERIE_VERTEX 	*	vertexlist;
-	EERIE_VERTEX 	*	vertexlist3;
+	EERIE_3D pos;
+	EERIE_3D point0;
+	EERIE_3D angle;
+	long origin;
+	long ident;
+	long nbpfaces;
+	long nbgroups;
+	unsigned long drawflags;
+	EERIE_3DPAD * vertexlocal;
+	std::vector<EERIE_VERTEX> vertexlist;
+	std::vector<EERIE_VERTEX> vertexlist3;
 
-	EERIE_FACE 	*	facelist;
-	EERIE_PFACE 	*	pfacelist;
-	EERIE_GROUPLIST *	grouplist;
+	std::vector<EERIE_FACE> facelist;
+	EERIE_PFACE * pfacelist;
+	EERIE_GROUPLIST * grouplist;
 	std::vector<EERIE_ACTIONLIST> actionlist;
 	std::vector<EERIE_SELECTIONS> selections;
-	TextureContainer ** texturecontainer;
+	std::vector<TextureContainer*> texturecontainer;
 
-	char 		*		originaltextures;
-	CUB3D				cub;
-	EERIE_QUAT			quat;
-	EERIE_LINKED 	*	linked;
-	long				nblinked;
+	char * originaltextures;
+	CUB3D cub;
+	EERIE_QUAT quat;
+	EERIE_LINKED * linked;
+	long nblinked;
 
 
-	PHYSICS_BOX_DATA *	pbox;
-	PROGRESSIVE_DATA 		*		pdata;
-	NEIGHBOURS_DATA 		*		ndata;
-	CLOTHES_DATA 		*			cdata;
-	COLLISION_SPHERES_DATA *	sdata;
-	EERIE_FASTACCESS	fastaccess;
-	EERIE_C_DATA 	*	c_data;
-
+	PHYSICS_BOX_DATA * pbox;
+	PROGRESSIVE_DATA * pdata;
+	NEIGHBOURS_DATA * ndata;
+	CLOTHES_DATA * cdata;
+	COLLISION_SPHERES_DATA * sdata;
+	EERIE_FASTACCESS fastaccess;
+	EERIE_C_DATA * c_data;
+	
 }; // Aligned 1 2 4
 
 
-struct EERIE_3DSCENE
-{
+struct EERIE_3DSCENE {
 	long			nbobj;
 	EERIE_3DOBJ **	objs;
 	EERIE_3D		pos;
@@ -694,6 +677,7 @@ struct EERIE_3DSCENE
 	float			ambient_b;
 	CUB3D			cub;
 }; // Aligned 1 2 4
+
 
 #define MAX_SCENES 64
 struct EERIE_MULTI3DSCENE
