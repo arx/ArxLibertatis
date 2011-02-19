@@ -3089,8 +3089,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 		{
 			float r1;
 
-			for(i=0;i<eobj->vertexlist.size();i++) 
-			{
+			for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 				if (eobj->pdata[i].collapse_ratio!=0.f)
 				{
 					// Full collapse
