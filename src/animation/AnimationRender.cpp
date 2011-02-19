@@ -2654,10 +2654,10 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 				{
 					for (long j = 0; j < 3; j++)
 					{
-						tv[j].color = (0xFF000000L
+						tv[j].color = 0xFF000000L
 						               | (((long)((float)((long)((tv[j].color >> 16) & 255)) * (special_color.r)) & 255) << 16)
 						               | (((long)((float)((long)((tv[j].color >> 8) & 255)) * special_color.g) & 255) << 8)
-						               | (long)((float)((long)(tv[j].color & 255)) * (special_color.b)) & 255);
+						               | ((long)((float)((long)(tv[j].color & 255)) * (special_color.b)) & 255);
 					}
 				}
 				else if (special_color_flag & 2)
@@ -3221,7 +3221,7 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERIE
 			ir = clipByte255(r);
 			ig = clipByte255(g);
 			ib = clipByte255(b);
-			eobj->vertexlist3[i].vert.color = (0xff000000L | (((ir) & 255) << 16) |	(((ig) & 255) << 8) | (ib) & 255);
+			eobj->vertexlist3[i].vert.color = 0xff000000L | (((ir) & 255) << 16) | (((ig) & 255) << 8) | ((ib) & 255);
 		}
 }
 
