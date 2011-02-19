@@ -2878,27 +2878,25 @@ void ARX_SPELLS_CancelAll() {
 }
 
 // Clears All Spells.
-void ARX_SPELLS_ClearAll() 
-{
-	long i;
-
-	for (i = 0; i < MAX_SPELLS; i++)
-	{
-		if (spells[i].exist)
-		{
+void ARX_SPELLS_ClearAll() {
+	
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		if(spells[i].exist) {
 			spells[i].tolive = 0;
 			spells[i].exist = false;
-
-			if (spells[i].pSpellFx)
-			{
+			
+			if(spells[i].pSpellFx) {
 				delete spells[i].pSpellFx;
 				spells[i].pSpellFx = NULL;
 			}
 		}
 	}
-
-	for (i = 0; i < inter.nbmax; i++) 
-		if (inter.iobj[i]) ARX_SPELLS_RemoveAllSpellsOn(inter.iobj[i]);
+	
+	for(long i = 0; i < inter.nbmax; i++) {
+		if(inter.iobj[i]) {
+			ARX_SPELLS_RemoveAllSpellsOn(inter.iobj[i]);
+		}
+	}
 }
 
 // Obtains a Free Spell slot
