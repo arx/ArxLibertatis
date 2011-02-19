@@ -228,7 +228,7 @@ void ARX_PARTICLES_Spawn_Lava_Burn(EERIE_3D * poss,float power,INTERACTIVE_OBJ *
 		&&	!io->obj->facelist.empty()	)
 	{
 		long notok	=	10;
-		long num	=	0;
+		size_t num	=	0;
 
 		while ( notok-- )
 		{
