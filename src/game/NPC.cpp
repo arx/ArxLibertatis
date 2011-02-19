@@ -1565,7 +1565,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	float min = nouvo->vertexlist[0].vert.sy;
 	long nummm = 0;
 
-	for (int k = 1; k < nouvo->vertexlist.size(); k++)
+	for (size_t k = 1; k < nouvo->vertexlist.size(); k++)
 	{
 		if (nouvo->vertexlist[k].vert.sy > min)
 		{
