@@ -23,8 +23,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include <time.h>
 #include "ai/PathFinder.h"
+
+#include <ctime>
 
 const Float MIN_RADIUS(110.F);
 
@@ -52,20 +53,18 @@ ULong InitSeed()
 
 #define frnd() (1.0F - 2 * rnd())
 
-///////////////////////////////////////////////////////////////////////////////
-//                                                                           //
-// Constructor and destructor                                                //
-//                                                                           //
-///////////////////////////////////////////////////////////////////////////////
-// Default constructor                                                       //
 PathFinder::PathFinder(const ULong & map_size, _ANCHOR_DATA * map_data,
                        const ULong & slight_count, EERIE_LIGHT ** slight_list,
                        const ULong & dlight_count, EERIE_LIGHT ** dlight_list) :
+	radius(MINOS_DEFAULT_RADIUS),
+	height(MINOS_DEFAULT_HEIGHT),
 	heuristic(MINOS_DEFAULT_HEURISTIC),
-	map_s(map_size), map_d(map_data),
-	slight_c(slight_count), slight_l(slight_list),
-	dlight_c(dlight_count), dlight_l(dlight_list),
-	height(MINOS_DEFAULT_RADIUS), radius(MINOS_DEFAULT_HEIGHT)
+	map_s(map_size),
+	map_d(map_data),
+	slight_c(slight_count),
+	dlight_c(dlight_count),
+	slight_l(slight_list),
+	dlight_l(dlight_list)
 {
 	InitSeed();
 }
