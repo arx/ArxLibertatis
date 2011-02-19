@@ -2985,13 +2985,11 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 			}
 		}
 
-		for (i=0;i<TOTIOPDL;i++)
-		{
+		for(long i = 0; i < TOTIOPDL; i++) {
 			Insertllight(IO_PDL[i], EEDistance3D(&IO_PDL[i]->pos, &pos)); 
 		}
 
-		for (i=0;i<TOTPDL;i++)
-		{
+		for(long i = 0; i < TOTPDL; i++) {
 			Insertllight(PDL[i], EEDistance3D(&PDL[i]->pos, &pos)); 
 		}
 
@@ -2999,8 +2997,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 		Vector_Init(&l_pos,pos.x,pos.y-60.f,pos.z);
 		Preparellights(&l_pos);	
 
-		for(i=0;i<eobj->vertexlist.size();i++) 
-		{
+		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 			if ((MIPM) && (!eobj->pdata[i].need_computing)) continue;
 			
 			if (BIGMAT!=NULL)
