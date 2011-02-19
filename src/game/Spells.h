@@ -40,8 +40,7 @@ class CSpellFx;
 void ARX_SPELLS_CancelAll();
 
 // Spells symbol list
-enum ARX_SPELLS_SYMBOL
-{
+enum ARX_SPELLS_SYMBOL {
 	SYMBOL_AAM,         // Create
 	SYMBOL_NHI,         // Negate
 	SYMBOL_MEGA,        // Improve
@@ -133,9 +132,9 @@ typedef struct
 
 extern EYEBALL_DEF eyeball;
 
-const unsigned long MAX_SPELL_SYMBOLS = 6;
-extern long SpellSymbol[MAX_SPELL_SYMBOLS];
-extern long CurrSpellSymbol;
+const size_t MAX_SPELL_SYMBOLS = 6;
+extern ARX_SPELLS_SYMBOL SpellSymbol[MAX_SPELL_SYMBOLS];
+extern size_t CurrSpellSymbol;
 
 
 // Spell list
@@ -220,8 +219,8 @@ enum ARX_SPELLS_SPELLS
 extern float TELEPORT;
 extern float LASTTELEPORT;
 
-const unsigned long MAX_LINFO(20);
-const unsigned long MAX_SPELLS(20);
+const size_t MAX_LINFO = 20;
+const size_t MAX_SPELLS = 20;
 
 typedef struct
 {

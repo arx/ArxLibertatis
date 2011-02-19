@@ -183,8 +183,8 @@ EERIE_S2D Lm;
 static const long MAX_POINTS(200);
 static EERIE_S2D plist[MAX_POINTS];
 std::string SpellMoves;
-long SpellSymbol[MAX_SPELL_SYMBOLS];
-long CurrSpellSymbol=0;
+ARX_SPELLS_SYMBOL SpellSymbol[MAX_SPELL_SYMBOLS];
+size_t CurrSpellSymbol=0;
 
 Scan spell[MAX_SLOT + 1];
 
@@ -1511,6 +1511,8 @@ void ARX_SPELLS_AnalyseSYMBOL()
 	long csymb = -1;
 	long sm = atoi(SpellMoves.c_str());
 
+	assert(CurrSpellSymbol >= 0);
+	
 	switch (sm)
 	{
 		
@@ -1522,7 +1524,9 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 6248   :
 				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_COSUM;
 
-				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
+				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
+					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
+				}
 
 				ARX_SOUND_PlaySFX(SND_SYMB_COSUM);
 			break;
@@ -1535,7 +1539,9 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 62426  :
 				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_COMUNICATUM;
 
-				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
+				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
+					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
+				}
 
 				ARX_SOUND_PlaySFX(SND_SYMB_COMUNICATUM);
 			break;
@@ -1550,7 +1556,9 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 93     :
 				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_FOLGORA;
 
-				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
+				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
+					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
+				}
 
 				ARX_SOUND_PlaySFX(SND_SYMB_FOLGORA);
 			break;
@@ -1562,7 +1570,9 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 4268   :
 				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_SPACIUM;
 
-				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
+				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
+					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
+				}
 
 				ARX_SOUND_PlaySFX(SND_SYMB_SPACIUM);
 			break;
@@ -1575,7 +1585,9 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 926    :
 				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_TERA;
 
-				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
+				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
+					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
+				}
 
 				ARX_SOUND_PlaySFX(SND_SYMB_TERA);
 			break;
@@ -1590,7 +1602,9 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 386   :
 				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_CETRIUS;
 
-				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
+				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
+					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
+				}
 
 				ARX_SOUND_PlaySFX(SND_SYMB_CETRIUS);
 			break;
@@ -1600,7 +1614,9 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 2     :
 				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_RHAA;
 
-				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
+				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
+					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
+				}
 
 				ARX_SOUND_PlaySFX(SND_SYMB_RHAA);
 			break;
@@ -1613,7 +1629,9 @@ void ARX_SPELLS_AnalyseSYMBOL()
 		case 862	:
 				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_FRIDD;
 
-				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
+				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
+					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
+				}
 
 				ARX_SOUND_PlaySFX(SND_SYMB_FRIDD);
 			break;
@@ -1639,7 +1657,9 @@ void ARX_SPELLS_AnalyseSYMBOL()
 
 				csymb=SpellSymbol[CurrSpellSymbol++]=SYMBOL_KAOM;
 
-				if (CurrSpellSymbol>=MAX_SPELL_SYMBOLS) CurrSpellSymbol=MAX_SPELL_SYMBOLS-1;
+				if((size_t)CurrSpellSymbol >= MAX_SPELL_SYMBOLS) {
+					CurrSpellSymbol = MAX_SPELL_SYMBOLS - 1;
+				}
 
 				ARX_SOUND_PlaySFX(SND_SYMB_KAOM);
 			break;
@@ -2994,7 +3014,7 @@ void ARX_SPELLS_ResetRecognition()
 {
 	for (int i = 0; i<MAX_SPELL_SYMBOLS; i++)
 	{
-		SpellSymbol[i] = 255;
+		SpellSymbol[i] = SYMBOL_NONE;
 	}
 
 	for (int i=0;i<6;i++)
