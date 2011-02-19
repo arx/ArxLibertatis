@@ -552,7 +552,7 @@ bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, f
 			// Must Attempt To Slide along collisions
 			register EERIE_3D	vecatt;
 			EERIE_3D			rpos		= {{0},{0},{0}};
-			EERIE_3D			lpos		= { 0, 0, 0 };
+			EERIE_3D			lpos		= {{0},{0},{0}};
 			long				RFOUND		=	0;
 			long				LFOUND		=	0;
 			long				maxRANGLE	=	90;
