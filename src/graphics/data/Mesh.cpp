@@ -4679,7 +4679,7 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms) {
 		return false;
 	}
 
-	if(FileWrite(handle, compressed, compressedSize) != compressedSize) {
+	if((size_t)FileWrite(handle, compressed, compressedSize) != compressedSize) {
 		FileClose(handle);
 		free(dat);
 		return false;
