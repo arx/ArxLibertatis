@@ -327,7 +327,7 @@ void AddVertexIdxToGroup(EERIE_3DOBJ * obj, long group, long val)
 void ObjectAddSelection(EERIE_3DOBJ * obj, long numsel, long vidx)
 {
 	
-	for (long i = 0; i < obj->selections[numsel].selected.size(); i++)
+	for (size_t i = 0; i < obj->selections[numsel].selected.size(); i++)
 	{
 		if (obj->selections[numsel].selected[i] == vidx) return;
 	}
