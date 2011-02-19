@@ -920,12 +920,12 @@ int					nb,flg=0;
 	od=DI_MouseState[id]->mousestate;
 	while(nb)
 	{
-		if(od->dwOfs == DIMOFS_X)
+		if(od->dwOfs == (DWORD)DIMOFS_X)
 		{
 			*mx=od->dwData;
 			flg++;
 		}
-		else if(od->dwOfs == DIMOFS_Y)
+		else if(od->dwOfs == (DWORD)DIMOFS_Y)
 		{
 			*my=od->dwData;
 			flg++;
