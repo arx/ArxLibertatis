@@ -1865,15 +1865,13 @@ void ARX_PLAYER_BecomesDead()
 		DeadTime = 0;
 	}
 
-	for (long i = 0; i < MAX_SPELLS; i++)
-	{
-		if ((spells[i].exist)
-		        &&	(spells[i].caster == 0))
-		{
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		if(spells[i].exist && spells[i].caster == 0) {
 			spells[i].tolive = 0;
 		}
 	}
 }
+
 float LASTPLAYERA = 0;
 extern long ON_PLATFORM;
 long LAST_ON_PLATFORM = 0;
