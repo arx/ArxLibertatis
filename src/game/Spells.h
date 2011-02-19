@@ -114,7 +114,7 @@ typedef struct
 extern PRECAST_STRUCT Precast[MAX_PRECAST];
 
 void ARX_SPELLS_Precast_Reset();
-void ARX_SPELLS_Precast_Add(const long & typ, long level = 1, long flags = 0);
+void ARX_SPELLS_Precast_Add(long typ, long level = 1, long flags = 0);
 void ARX_SPELLS_Precast_Launch(const long & num);
 
 long GetSpellId(const std::string& spell);

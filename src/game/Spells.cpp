@@ -3006,30 +3006,30 @@ void ARX_SPELLS_Precast_Reset() {
 	}
 }
 
-void ARX_SPELLS_Precast_Add(const long &typ, const long _level,long flags,long duration)
-{
-	long found=-1;
-
-	for (long i = 0; i < MAX_PRECAST; i++)
-		if (Precast[i].typ == -1)
-		{
+void ARX_SPELLS_Precast_Add(long typ, long _level, long flags, long duration) {
+	
+	long found = -1;
+	
+	for(size_t i = 0; i < MAX_PRECAST; i++) {
+		if(Precast[i].typ == -1) {
 			found = i;
 			break;
 		}
-
-	if (found == -1)
-	{
-		for (long i = 1; i < MAX_PRECAST; i++)
-			memcpy(&Precast[i - 1], &Precast[i],sizeof(PRECAST_STRUCT));
-
+	}
+	
+	if(found == -1) {
+		for(size_t i = 1; i < MAX_PRECAST; i++) {
+			memcpy(&Precast[i - 1], &Precast[i], sizeof(PRECAST_STRUCT));
+		}
+		
 		found = MAX_PRECAST - 1;
 	}
-
-	Precast[found].typ			= typ;
-	Precast[found].level		= _level;
-	Precast[found].launch_time	= 0;
-	Precast[found].flags		= flags;
-	Precast[found].duration     = duration;
+	
+	Precast[found].typ = typ;
+	Precast[found].level = _level;
+	Precast[found].launch_time = 0;
+	Precast[found].flags = flags;
+	Precast[found].duration = duration;
 }
 
 unsigned long LAST_PRECAST_TIME=0;
