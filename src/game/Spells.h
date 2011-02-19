@@ -121,7 +121,7 @@ long GetSpellId(const std::string& spell);
 bool MakeSpellName(char * spell, const long & num);
 void TryToCastSpell(INTERACTIVE_OBJ * io, const long & spellid, const long & level, const long & target, const long & flags, const long & duration);
 void ARX_SPELLS_Precast_Check();
-void ARX_SPELLS_Precast_Launch2(const long & num);
+void ARX_SPELLS_Precast_Launch2();
 typedef struct
 {
 	long	exist;

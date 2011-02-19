@@ -3117,14 +3117,13 @@ void ARX_SPELLS_Precast_Check()
 					}
 				}
 			}
-			else ARX_SPELLS_Precast_Launch2(i);
+			else ARX_SPELLS_Precast_Launch2();
 		}
 	}
 }
-void ARX_SPELLS_Precast_Launch2(const long &num)
-{
-	ANIM_USE *ause1 = &inter.iobj[0]->animlayer[1];
-
+void ARX_SPELLS_Precast_Launch2() {
+	
+	ANIM_USE * ause1 = &inter.iobj[0]->animlayer[1];
 	AcquireLastAnim(inter.iobj[0]);
 	FinishAnim(inter.iobj[0], ause1->cur_anim);
 	ANIM_Set(ause1, inter.iobj[0]->anims[ANIM_CAST]);	
