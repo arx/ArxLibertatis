@@ -1065,7 +1065,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							finishit:
 								;
 
-								for (long i = 0; i < MAX_SPELLS; i++)
+								for (size_t i = 0; i < MAX_SPELLS; i++)
 								{
 									if ((spells[i].exist) && (spells[i].caster == oldd))
 									{
