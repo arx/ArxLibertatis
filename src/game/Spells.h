@@ -41,7 +41,7 @@ void ARX_SPELLS_CancelAll();
 
 // Spells symbol list
 enum ARX_SPELLS_SYMBOL {
-	SYMBOL_AAM,         // Create
+	SYMBOL_AAM = 0,     // Create
 	SYMBOL_NHI,         // Negate
 	SYMBOL_MEGA,        // Improve
 	SYMBOL_YOK,         // Fire

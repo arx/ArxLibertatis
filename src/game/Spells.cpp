@@ -2172,7 +2172,7 @@ static void addSpell(const ARX_SPELLS_SYMBOL symbols[MAX_SPELL_SYMBOLS], ARX_SPE
 		if(symbols[i] == SYMBOL_NONE) {
 			break;
 		}
-		assert(symbols[i] >= 0 && symbols[i] < ARX_SPELLS_SYMBOL_COUNT);
+		assert(symbols[i] >= 0 && (size_t)symbols[i] < ARX_SPELLS_SYMBOL_COUNT);
 		if(def->next[symbols[i]] == NULL) {
 			def->next[symbols[i]] = new SpellDefinition();
 		}
@@ -2192,7 +2192,7 @@ static ARX_SPELLS_SPELLS getSpell(const ARX_SPELLS_SYMBOL symbols[MAX_SPELL_SYMB
 		if(symbols[i] == SYMBOL_NONE) {
 			break;
 		}
-		assert(symbols[i] >= 0 && symbols[i] < ARX_SPELLS_SYMBOL_COUNT);
+		assert(symbols[i] >= 0 && (size_t)symbols[i] < ARX_SPELLS_SYMBOL_COUNT);
 		if(def->next[symbols[i]] == NULL) {
 			return SPELL_NONE;
 		}
