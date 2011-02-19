@@ -1628,8 +1628,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 		long gore = -1;
 
-		for (size_t k = 0; k < from->texturecontainer.size(); k++)
-		{
+		for(size_t k = 0; k < from->texturecontainer.size(); k++) {
 			if (from->texturecontainer[k]
 			        && (IsIn(from->texturecontainer[k]->m_strName, "GORE")))
 			{
@@ -1638,8 +1637,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 			}
 		}
 
-		for (int k = 0; k < nouvo->facelist.size(); k++)
-		{
+		for(size_t k = 0; k < nouvo->facelist.size(); k++) {
 			nouvo->facelist[k].facetype &= ~POLY_HIDE;
 
 			if (nouvo->facelist[k].texid == gore)
