@@ -1130,7 +1130,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						io->angle.b += t2;
 						io->angle.g += t3;
 
-						if (io->nb_lastanimvertex != io->obj->vertexlist.size())
+						if ((size_t)io->nb_lastanimvertex != io->obj->vertexlist.size())
 						{
 							free(io->lastanimvertex);
 							io->lastanimvertex = NULL;
