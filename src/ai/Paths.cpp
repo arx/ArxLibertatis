@@ -2212,7 +2212,7 @@ bool IsPointInField(EERIE_3D * pos)
 }
 bool IsObjectInField(EERIE_3DOBJ * obj, long source)
 {
-	for (long i = 0; i < MAX_SPELLS; i++)
+	for (size_t i = 0; i < MAX_SPELLS; i++)
 	{
 		if ((spells[i].exist)
 		        &&	(spells[i].type == SPELL_CREATE_FIELD))
