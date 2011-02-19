@@ -484,14 +484,14 @@ void SCRIPT_DEBUGGER_GetParams(ScriptDebuggerUpdate & _pp)
 
 	char dest[256];
 
-	if (_pp.bUpdateGlobalVar = sdu.bUpdateGlobalVar)
+	if ((_pp.bUpdateGlobalVar = sdu.bUpdateGlobalVar))
 	{
 		GetWindowText(iInfo.hGlobalEdit, dest, 255);
 		strcpy(_pp.globalVar.lpszVarValue, dest);
 		strcpy(_pp.globalVar.lpszVarName, GlobalName);
 	}
 
-	if (_pp.bUpdateLocalVar = sdu.bUpdateLocalVar)
+	if ((_pp.bUpdateLocalVar = sdu.bUpdateLocalVar))
 	{
 		GetWindowText(iInfo.hLocalEdit, dest, 255);
 		strcpy(_pp.localVar.lpszVarValue, dest);
