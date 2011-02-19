@@ -1163,7 +1163,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 
 		for (size_t k = 0; k < obj->vertexlist.size(); k++)
 		{
-			if (k == obj->origin) continue;
+			if (k == (size_t)obj->origin) continue;
 
 			EERIE_3D curr;
 			memcpy(&curr, &obj->vertexlist[k].v, sizeof(EERIE_3D));
