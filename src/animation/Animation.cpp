@@ -2401,10 +2401,10 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 		{
 			for ( long j = 0 ; j < 3 ; j++ )
 			{	
-				vert_list[j].color	=	(0xFF000000L 
-									|	( ( (long)( (float)( (long)( ( vert_list[j].color >> 16 ) & 255) ) * ( special_color.r ) ) & 255 ) << 16 ) 
-					|  (((long)((float)((long)((vert_list[j].color>>8) & 255))*special_color.g)&255) << 8) 
-					|    (long)((float)((long) (vert_list[j].color & 255))*(special_color.b))&255);
+				vert_list[j].color = 0xFF000000L 
+				                     | (((long)((float)((long)((vert_list[j].color >> 16) & 255)) * (special_color.r ) ) & 255 ) << 16 ) 
+				                     | (((long)((float)((long)((vert_list[j].color >> 8) & 255))*special_color.g)&255) << 8) 
+				                     | ((long)((float)((long) (vert_list[j].color & 255))*(special_color.b))&255);
 			}
 		}
 	}			
