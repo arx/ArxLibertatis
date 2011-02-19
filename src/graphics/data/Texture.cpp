@@ -2485,7 +2485,6 @@ RefinementMap g_Refine;
 
 void LookForRefinementMap(TextureContainer * tc)
 {
-	long count = 0;
 	std::string str1;
 	std::string str2;
 	tc->TextureRefinement = NULL;
