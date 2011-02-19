@@ -59,21 +59,21 @@ typedef struct
 	long		owner;
 } ARX_MISSILE;
 
-//-----------------------------------------------------------------------------
-const unsigned long MAX_MISSILES(100);
+const size_t MAX_MISSILES = 100;
 ARX_MISSILE missiles[MAX_MISSILES];
 
-//-----------------------------------------------------------------------------
 // Gets a Free Projectile Slot
-long ARX_MISSILES_GetFree()
-{
-	for (long i(0); i < MAX_MISSILES; i++)
-		if (missiles[i].type == MISSILE_NONE) return i;
-
+long ARX_MISSILES_GetFree() {
+	
+	for(size_t i = 0; i < MAX_MISSILES; i++) {
+		if(missiles[i].type == MISSILE_NONE) {
+			return i;
+		}
+	}
+	
 	return -1;
 }
 
-//-----------------------------------------------------------------------------
 // Kills a missile
 void ARX_MISSILES_Kill(long i)
 {
