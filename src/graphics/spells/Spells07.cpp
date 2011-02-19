@@ -72,10 +72,9 @@ extern float _framedelay;
 
 //------------------------------------------------------------------------------
 CLightning::CLightning(TextureContainer * aTC) :
-	lNbSegments(40),  
-	invNbSegments(1.0f / 40.0f), 
 	nbtotal(0),
-	falpha(1.0f),
+	lNbSegments(40),
+	invNbSegments(1.0f / 40.0f),
 	fSize(100.0f),
 	fLengthMin(5.0f),  
 	fLengthMax(40.0f),  
@@ -85,16 +84,15 @@ CLightning::CLightning(TextureContainer * aTC) :
 	fAngleYMax(32.0f),
 	fAngleZMin(5.0f),
 	fAngleZMax(32.0f),
+	falpha(1.0f),
 	fDamage(1)
 {
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
-	SetColor1(1.0f, 0.0f, 0.0f);
-	SetColor2(1.0f, 0.5f, 0.5f);
-
+	
 	SetColor1(1.0f, 1.0f, 1.0f);
 	SetColor2(0.0f, 0.0f, 0.2f);
-
+	
 	tex_light = NULL;
 }
 
