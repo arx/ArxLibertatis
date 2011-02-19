@@ -792,7 +792,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		{
 
 			// Copy the face data in
-			for (size_t ii = 0; ii < af3Ddh->nb_faces; ii++)
+			for (long ii = 0; ii < af3Ddh->nb_faces; ii++)
 			{
 				EERIE_FACE_FTL* eff = reinterpret_cast<EERIE_FACE_FTL*>(dat + pos);
 				obj->facelist[ii].facetype = eff->facetype;
