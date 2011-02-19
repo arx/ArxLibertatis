@@ -2414,8 +2414,6 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 		return;
 	}
 
-	int			i;
-
 	// Finally we can draw polys !!!
 	SETCULL(pd3dDevice, D3DCULL_NONE);
 
@@ -2467,7 +2465,7 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 
 
 	{
-		for (i = 0; i < eobj->facelist.size(); i++)
+		for (size_t i = 0; i < eobj->facelist.size(); i++)
 		{
 			D3DTLVERTEX tv[3];
  
