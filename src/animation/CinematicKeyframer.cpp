@@ -527,7 +527,7 @@ bool GereTrack(Cinematic * c, float fpscurr)
 	if (CKTrack->pause) return true;
 
 	k = GetKey((int)CKTrack->currframe, &num);
-	ksuiv = (num == CKTrack->nbkey) ? ksuiv = k : ksuiv = k + 1;
+	ksuiv = (num == CKTrack->nbkey) ? k : k + 1;
 
 	if (ksuiv->frame != k->frame)
 		a = (CKTrack->currframe - (float)k->frame) / ((float)(ksuiv->frame - k->frame));
