@@ -589,7 +589,7 @@ bool MCache_Push( const std::string& file, char * data, size_t size)
 //	MCache[MCache_Number].data = data;
 //	MCache[MCache_Number].name = fic;
 //	MCache_Number++;
-	MCACHER_DATA newMesh;
+	MCACHE_DATA newMesh;
 	newMesh.size = size;
 	newMesh.data = data;
 	newMesh.name = fic;

@@ -480,9 +480,9 @@ void GetTextSizeCached(HFONT font, const char* text, int& width_out, int& height
 		cache.insert(lb, textsize_map::value_type(key, textsize_map::mapped_type(width_out, height_out)));
 }
 
-void GetTextSize(HFONT _hFont, const _TCHAR *_lpszUText, int *_iWidth, int *_iHeight)
+void GetTextSize(HFONT _hFont, const std::string& _lpszUText, int& _iWidth, int& _iHeight)
 {
-	GetTextSizeCached(_hFont, _lpszUText, *_iWidth, *_iHeight);
+	GetTextSizeCached(_hFont, _lpszUText.c_str(), _iWidth, _iHeight);
 }
 
 void FontRenderText(HFONT _hFont, EERIE_3D pos, const std::string& _pText, COLORREF _c)
@@ -501,14 +501,7 @@ void FontRenderText(HFONT _hFont, EERIE_3D pos, const std::string& _pText, COLOR
 		rRect.left    =    ARX_CLEAN_WARN_CAST_LONG( pos.x );
 		rRect.right    =    ARX_CLEAN_WARN_CAST_LONG( pos.x + 999 );
 		rRect.bottom=    ARX_CLEAN_WARN_CAST_LONG( pos.y + 999 );
-
-
-		ARX_Text pText;
-		ARX_Text_Init(&pText);
-		pText.lpszUText = _pText;
-		pText.lCol = _c;
-		pText.rRect = rRect;
-
+		
 		pTextManage->AddText( _hFont,
 		                      _pText,
 		                      rRect,
@@ -516,7 +509,6 @@ void FontRenderText(HFONT _hFont, EERIE_3D pos, const std::string& _pText, COLOR
 		                      0x00FF00FF);
 	}
 }
-
 
 CMenuConfig::CMenuConfig()
 {
@@ -4796,12 +4788,6 @@ CMenuCheckButton::~CMenuCheckButton()
 
 //-----------------------------------------------------------------------------
 
-void CMenuCheckButton::Update(int _iDTime)
-{
-}
-
-//-----------------------------------------------------------------------------
-
 void CMenuCheckButton::Move(int _iX, int _iY)
 {
 	CMenuElement::Move(_iX, _iY);
@@ -5048,7 +5034,8 @@ void CMenuCheckButton::RenderMouseOver()
 void CMenuCheckButton::ComputeTexturesPosition()
 {
 	// Nuky - for now I split into 2 cases, because I don't know yet how to fix position with text
-	if (!pText)
+	// TODO Merge with master
+	/*if (!pText)
 	{
 		fTexX_ = ARX_CLEAN_WARN_CAST_FLOAT(rZone.left);
 		fTexY_ = ARX_CLEAN_WARN_CAST_FLOAT(rZone.top);
@@ -5061,7 +5048,7 @@ void CMenuCheckButton::ComputeTexturesPosition()
 		fTexY_ = rZone.top + (ARX_CLEAN_WARN_CAST_FLOAT(rZone.bottom - rZone.top) - iTaille) * 0.5f;
 		fTexSX_ = RATIO_X(iTaille);
 		fTexSY_ = RATIO_Y(iTaille);
-	}
+	}*/
 }
 
 //-----------------------------------------------------------------------------

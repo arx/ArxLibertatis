@@ -293,8 +293,8 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
                                 COLORREF col,
                                 COLORREF bcol,
                                 HFONT font,
-                                HRGN hRgn = NULL,
-                                HDC hHDC = NULL
+                                HRGN hRgn,
+                                HDC hHDC
                                )
 {
 	HDC hDC = NULL;
@@ -365,6 +365,7 @@ long ARX_TEXT_Draw(HFONT ef,
 
 long ARX_TEXT_DrawRect(HFONT ef,
                        float x, float y,
+                       long spacingx, long spacingy,
                        float maxx, float maxy,
                        const std::string& car,
                        COLORREF colo,
@@ -382,11 +383,13 @@ long ARX_TEXT_DrawRect(HFONT ef,
 //-----------------------------------------------------------------------------
 float DrawBookTextInRect(HFONT font, float x, float y, float maxx, float maxy, const std::string& text, COLORREF col, COLORREF col2)
 {
-	ARX_TEXT_DrawRect( font,
+	return ARX_TEXT_DrawRect( font,
 	                   (BOOKDECX + x) * Xratio,
 	                   (BOOKDECY + y) * Yratio,
 	                   -3,
 	                   0,
+	                   (BOOKDECX + maxx) * Xratio,
+	                   (BOOKDECY + maxy) * Yratio,
 	                   text,
 	                   col,
 	                   NULL,
@@ -394,14 +397,14 @@ float DrawBookTextInRect(HFONT font, float x, float y, float maxx, float maxy, c
 }
 
 //-----------------------------------------------------------------------------
-void DrawBookTextCenter( HFONT font, float x, float y, const char* text, COLORREF col, COLORREF col2)
+void DrawBookTextCenter( HFONT font, float x, float y, const std::string& text, COLORREF col, COLORREF col2)
 {
 	UNICODE_ARXDrawTextCenter(font, (BOOKDECX + x)*Xratio, (BOOKDECY + y)*Yratio, text, col, col2);
 }
 
 //-----------------------------------------------------------------------------
 
-long UNICODE_ARXDrawTextCenter( HFONT font, float x, float y, const char* str, COLORREF col, COLORREF bcol)
+long UNICODE_ARXDrawTextCenter( HFONT font, float x, float y, const std::string& str, COLORREF col, COLORREF bcol)
 {
 
 
@@ -444,11 +447,9 @@ long UNICODE_ARXDrawTextCenter( HFONT font, float x, float y, const char* str, C
 	}
 
 		return 0;
-				}
+}
 
-
-
-long UNICODE_ARXDrawTextCenteredScroll( HFONT font, float x, float y, float x2, const char* str, COLORREF col, COLORREF bcol, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut)
+long UNICODE_ARXDrawTextCenteredScroll( HFONT font, float x, float y, float x2, const std::string& str, COLORREF col, COLORREF bcol, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut)
 				{
 
 	RECT rRect;
@@ -1016,7 +1017,7 @@ void ARX_Text_Init()
 		ss >> iFontSize;
 		iFontSize = Traffic(iFontSize);
 
-		InBookFont = _CreateFont(
+		hFontInBook = _CreateFont(
 						 iFontSize,
 						 0, 0, 0, FW_NORMAL, false, false, false,
 						 DEFAULT_CHARSET,
@@ -1025,7 +1026,7 @@ void ARX_Text_Init()
 						 ANTIALIASED_QUALITY,
 						 VARIABLE_PITCH,
 						 lpszFontIngame.c_str());
-		if(!InBookFont) {
+		if(!hFontInBook) {
 			LogError << "error loading book font";
 		}
 	}

@@ -209,7 +209,7 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 
 	if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 	{
-		SelectObject(hDC, InBookFont);
+		SelectObject(hDC, hFontInBook);
 
 		GetTextExtentPoint(hDC,_T("p"),1,&sSize);
 
@@ -247,7 +247,7 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 								arx_logo_tc,
 								D3DCOLORWHITE);
 
-				igrec += ARX_TEXT_DrawRect(hFontInBook, 120.f * Xratio, (float)igrec, 500 * Xratio,
+				igrec += ARX_TEXT_DrawRect(hFontInBook, 120.f * Xratio, (float)igrec, -3, 0, 500 * Xratio,
 										   200 * Yratio, temp, speech[i].color, NULL, 0x00FF00FF);
 				if (igrec > iEnd && !CheckLastSpeech(i))
 				{
@@ -635,7 +635,7 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 
 						if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 						{
-							SelectObject(hDC, InBookFont);
+							SelectObject(hDC, hFontInBook);
 							GetTextExtentPoint( hDC,
 							                    speech->text.c_str(),
 							                    speech->text.length(),
@@ -672,6 +672,8 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 						                    hFontInBook,
 						                    10.f,
 						                    fDepY + fZoneClippHeight,
+						                    -3,
+						                    0,
 						                    -10.f + (float)DANAESIZX,
 						                    0,		//taille recalcul�e
 						                    speech->text,

@@ -749,25 +749,20 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex
 
 	Note.curpage = 0;
 	Note.pages[0] = 0;
-	long length = _tcslen(Note.text);
+	long length = Note.text.length();
 	long curpage = 1;
 
-		Note.curpage=0;
-		Note.pages[0]=0;
-		long length=Note.text.length();
-		long curpage=1;
-		
-		NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Ingame_books.bmp");
-		RECT rRect;
-		
+	NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Ingame_books.bmp");
+	RECT rRect;
 
-		float fWidth	= NoteTexture->m_dwWidth*( 1.0f / 2 )-10.f ; 
-		float fHeight	= NoteTexture->m_dwHeight-40.f ; 
-		ARX_CHECK_INT(fWidth);
-		ARX_CHECK_INT(fHeight);
+
+	float fWidth	= NoteTexture->m_dwWidth*( 1.0f / 2 )-10.f ; 
+	float fHeight	= NoteTexture->m_dwHeight-40.f ; 
+	ARX_CHECK_INT(fWidth);
+	ARX_CHECK_INT(fHeight);
 
 	int	tNoteTextMinx = 40; 
-		int	tNoteTextMaxx = ARX_CLEAN_WARN_CAST_INT(fWidth);
+	int	tNoteTextMaxx = ARX_CLEAN_WARN_CAST_INT(fWidth);
 	int	tNoteTextMiny = 40; 
 		int	tNoteTextMaxy = ARX_CLEAN_WARN_CAST_INT(fHeight);
 		
@@ -7234,9 +7229,9 @@ void QuestBook_Update()
 	NotePosX = 97;
 	NotePosY = 64;
 	NoteTextMinx = 40.f;
-	NoteTextMaxx = ITC.questbook->m_dwWidth * 0.5f - 10.f;
+	NoteTextMaxx = ITC.Get("questbook")->m_dwWidth * 0.5f - 10.f;
 	NoteTextMiny = 40.f;
-	NoteTextMaxy = ITC.questbook->m_dwHeight - 65.f;
+	NoteTextMaxy = ITC.Get("questbook")->m_dwHeight - 65.f;
 
 	// calculation of number of pages
 	long lCurPage = 1;
@@ -7258,16 +7253,16 @@ void QuestBook_Update()
 	QuestBook.pages[0] = 0;
 
 	for (long i = 0; i < nb_PlayerQuest; ++i)
-		if (PlayerQuest[i].localised != NULL)
-			lLenght += _tcslen(PlayerQuest[i].localised);
+		if (PlayerQuest[i].localised.size())
+			lLenght += PlayerQuest[i].localised.length();
 
 	QuestBook_Cache_Text = new _TCHAR[lLenght+nb_PlayerQuest*2+1];
 	ZeroMemory(QuestBook_Cache_Text, (lLenght+nb_PlayerQuest*2+1)*sizeof(_TCHAR));
 
 	for (int i = 0; i < nb_PlayerQuest; ++i)
-		if (PlayerQuest[i].localised != NULL)
+		if ( PlayerQuest[i].localised.size() )
 		{
-			_tcscat(QuestBook_Cache_Text, PlayerQuest[i].localised);
+			_tcscat(QuestBook_Cache_Text, PlayerQuest[i].localised.c_str());
 			_tcscat(QuestBook_Cache_Text, _T("\n\n"));
 			lLenght += 2;
 		}
@@ -7304,11 +7299,11 @@ void QuestBook_Render()
 	if (QuestBook.curpage > 1)
 	{
 		float x0 =   8 + NotePosX;
-		float y0 =  -6 + NotePosY + ITC.questbook->m_dwHeight - ITC.pTexCornerLeft->m_dwHeight;
+		float y0 =  -6 + NotePosY + ITC.Get("questbook")->m_dwHeight - ITC.Get("pTexCornerLeft")->m_dwHeight;
 
-		DrawBookInterfaceItem(GDevice, ITC.pTexCornerLeft, x0, y0);
+		DrawBookInterfaceItem(GDevice, ITC.Get("pTexCornerLeft"), x0, y0);
 
-		if (MouseInBookRect(x0, y0, x0 + ITC.pTexCornerLeft->m_dwWidth, y0 + ITC.pTexCornerLeft->m_dwHeight))
+		if (MouseInBookRect(x0, y0, x0 + ITC.Get("pTexCornerLeft")->m_dwWidth, y0 + ITC.Get("pTexCornerLeft")->m_dwHeight))
 		{
 			SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7323,12 +7318,12 @@ void QuestBook_Render()
 	// Next page corner
 	if (QuestBook.curpage + 4 < QuestBook.totpages)
 	{
-		float x0 = -15 + NotePosX + ITC.questbook->m_dwWidth  - ITC.pTexCornerRight->m_dwWidth;
-		float y0 =  -6 + NotePosY + ITC.questbook->m_dwHeight - ITC.pTexCornerRight->m_dwHeight;
+		float x0 = -15 + NotePosX + ITC.Get("questbook")->m_dwWidth  - ITC.Get("pTexCornerRight")->m_dwWidth;
+		float y0 =  -6 + NotePosY + ITC.Get("questbook")->m_dwHeight - ITC.Get("pTexCornerRight")->m_dwHeight;
 
-		DrawBookInterfaceItem(GDevice, ITC.pTexCornerRight, x0, y0);
+		DrawBookInterfaceItem(GDevice, ITC.Get("pTexCornerRight"), x0, y0);
 
-		if (MouseInBookRect(x0, y0, x0 + ITC.pTexCornerRight->m_dwWidth, y0 + ITC.pTexCornerRight->m_dwHeight))
+		if (MouseInBookRect(x0, y0, x0 + ITC.Get("pTexCornerRight")->m_dwWidth, y0 + ITC.Get("pTexCornerRight")->m_dwHeight))
 		{
 			SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -7345,14 +7340,12 @@ void QuestBook_Render()
 	{
 		if (QuestBook.pages[QuestBook.curpage+1] > 0)
 		{
-			_tcsncpy(Page_Buffer, QuestBook_Cache_Text + QuestBook.pages[QuestBook.curpage], QuestBook.pages[QuestBook.curpage+1] - QuestBook.pages[QuestBook.curpage]);
-			Page_Buffer[QuestBook.pages[QuestBook.curpage+1] - QuestBook.pages[QuestBook.curpage]]=_T('\0');
+			Page_Buffer = std::string( QuestBook_Cache_Text + QuestBook.pages[QuestBook.curpage], QuestBook.pages[QuestBook.curpage+1] - QuestBook.pages[QuestBook.curpage] );
 			DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx, NotePosY + NoteTextMaxy, Page_Buffer, 0, 0x00FF00FF);
 
 			if (QuestBook.pages[QuestBook.curpage+2]>0)
 			{
-				_tcsncpy(Page_Buffer, QuestBook_Cache_Text + QuestBook.pages[QuestBook.curpage+1], QuestBook.pages[QuestBook.curpage+2] - QuestBook.pages[QuestBook.curpage+1]);
-				Page_Buffer[QuestBook.pages[QuestBook.curpage+2] - QuestBook.pages[QuestBook.curpage+1]]=_T('\0');
+				Page_Buffer = std::string( QuestBook_Cache_Text + QuestBook.pages[QuestBook.curpage+1], QuestBook.pages[QuestBook.curpage+2] - QuestBook.pages[QuestBook.curpage+1] );
 				DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx + (NoteTextMaxx - NoteTextMinx) +20, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx + (NoteTextMaxx - NoteTextMinx) +20, NotePosY + NoteTextMaxy, Page_Buffer, 0, 0x00FF00FF);
 			}
 		}
@@ -7360,7 +7353,7 @@ void QuestBook_Render()
 		{
 			if (QuestBook.pages[QuestBook.curpage]>=0)
 			{
-				_tcscpy(Page_Buffer, QuestBook_Cache_Text + QuestBook.pages[QuestBook.curpage]);
+				Page_Buffer = std::string( QuestBook_Cache_Text + QuestBook.pages[QuestBook.curpage] );
 				DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY + NoteTextMaxy, Page_Buffer, 0, 0x00FF00FF);
 			}
 		}
@@ -7977,12 +7970,12 @@ void ARX_INTERFACE_ManageOpenedBook()
 		std::stringstream ss;
 		ss << ITC.Level << " " << std::setw(3) << (int)player.level;
 		tex = ss.str();
-		DrawBookTextCenter( 398, 74, tex,Color,0x00FF00FF,InBookFont);
-		
+		DrawBookTextCenter( hFontInBook, 398, 74, tex,Color,0x00FF00FF );
+
 		std::stringstream ss2;
 		ss2 << ITC.Xp << " " << std::setw(8) << player.xp;
 		tex = ss2.str();
-		DrawBookTextCenter( 510, 74, tex, Color,0x00FF00FF,InBookFont);
+		DrawBookTextCenter( hFontInBook, 510, 74, tex, Color,0x00FF00FF );
 		danaeApp.DANAEStartRender();
 
 		if (MouseInBookRect(463, 74, 550, 94))
@@ -8164,16 +8157,17 @@ void ARX_INTERFACE_ManageOpenedBook()
 				{
 					std::stringstream ss;
 					ss << ARXmenu.mda->flyover[WND_XP] << " " << std::setw(8) << GetXPforLevel(player.level+1)-player.xp;
-					UNICODE_ARXDrawTextCenteredScroll(	(DANAESIZX*0.5f),
-						4,
-						(DANAECENTERX)*0.82f,
-						ss.str(),
-						RGB(232+t,204+t,143+t),
-						0x00FF00FF,
-						1000,
-						0.01f,
-						3,
-						INTERNATIONAL_MODE?0:max(3000, int(70*tex.length())));
+					UNICODE_ARXDrawTextCenteredScroll( hFontInGame,
+					                                   (DANAESIZX*0.5f),
+					                                   4,
+					                                   (DANAECENTERX)*0.82f,
+					                                   ss.str(),
+					                                   RGB(232+t,204+t,143+t),
+					                                   0x00FF00FF,
+					                                   1000,
+					                                   0.01f,
+					                                   3,
+					                                   INTERNATIONAL_MODE?0:max(3000, int(70*tex.length())));
 				}
 				else
 				{
@@ -10759,7 +10753,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 						danaeApp.DANAEEndRender();	
 						std::stringstream ss;
 						ss << std::setw(3) << lCursorRedistValue;
-						ARX_TEXT_Draw(hFontInBook, DANAEMouse.x + 6* Xratio, DANAEMouse.y + 11* Yratio, temp, D3DCOLORBLACK, 0x00FF00FF);
+						ARX_TEXT_Draw(hFontInBook, DANAEMouse.x + 6* Xratio, DANAEMouse.y + 11* Yratio, 999, 999, ss.str(), D3DCOLORBLACK, 0x00FF00FF);
 						danaeApp.DANAEStartRender();
 					}
 					else

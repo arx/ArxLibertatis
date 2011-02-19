@@ -73,7 +73,7 @@ extern HFONT hFontInGame;
 extern HFONT hFontInGameNote;
 
 long ARX_TEXT_Draw(HFONT ef, float x, float y, long spacingx, long spacingy, const std::string& car, COLORREF colo, COLORREF bcol = 0x00FF00FF);
-long ARX_TEXT_DrawRect(HFONT ef, float x, float y, long spacingx, long spacingy, float maxx, float maxy, const std::string& car, COLORREF colo, HRGN hRgn = NULL, COLORREF bcol = 0x00FF00FF, long flags = 0);
+long ARX_TEXT_DrawRect(HFONT ef, float x, float y, long spacingx, long spacingy, float maxx, float maxy, const std::string& car, COLORREF colo, HRGN hRgn = NULL, COLORREF bcol = 0x00FF00FF);
 float DrawBookTextInRect(HFONT font, float x, float y, float maxx, float maxy, const std::string& text, COLORREF col, COLORREF col2);
 void DrawBookTextCenter(HFONT font, float x, float y, const std::string& text, COLORREF col, COLORREF col2);
 long UNICODE_ARXDrawTextCenter(HFONT font, float x, float y, const std::string& str, COLORREF col, COLORREF bcol);
@@ -90,7 +90,7 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 
 void ARX_Allocate_Text( std::string& dest, const std::string& id_string);
 std::string GetFontName( const std::string& );
-void _ShowText(char * text);
+void _ShowText( const char * text);
 void ARX_Text_Init();
 void ARX_Text_Close();
 void FontRenderText(HFONT _hFont, EERIE_3D pos, const std::string& _pText, COLORREF _c);

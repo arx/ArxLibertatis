@@ -591,6 +591,9 @@ class CMenuSlider: public CMenuElement
 		TextureContainer	* pTex2;
 		int					iPos;
 
+		void setValue(int value) { iPos = value; }
+		int getValue() const { return iPos; }
+
 	public:
 		CMenuSlider(int, int, int);//, CMenuButton*, CMenuButton*, TextureContainer*, TextureContainer*);
 		virtual ~CMenuSlider();
@@ -611,6 +614,8 @@ class CMenuSlider: public CMenuElement
 //-----------------------------------------------------------------------------
 class CMenuCheckButton : public CMenuElement
 {
+	void ComputeTexturesPosition();
+
 	public:
 		int					iState;
 		int					iOldState;

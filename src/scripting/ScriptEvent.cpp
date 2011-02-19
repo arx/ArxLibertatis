@@ -5171,7 +5171,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 									if (!CanBePutInInventory(inter.iobj[t]))
 									{
-										PutInFrontOfPlayer(inter.iobj[t], 1);
+										PutInFrontOfPlayer(inter.iobj[t]);
 									}
 								}
 							}
@@ -5251,7 +5251,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 											if (!CanBePutInInventory(ioo))
 											{
-												PutInFrontOfPlayer(ioo, 1);
+												PutInFrontOfPlayer(ioo);
 											}
 										}
 									}
@@ -5301,7 +5301,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 									if (!CanBePutInSecondaryInventory((INVENTORY_DATA *)inter.iobj[ion]->inventory, inter.iobj[t], &xx, &yy))
 									{
-										PutInFrontOfPlayer(inter.iobj[t], 1);
+										PutInFrontOfPlayer(inter.iobj[t]);
 									}
 								}
 							}
@@ -5390,7 +5390,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 											if (!CanBePutInSecondaryInventory((INVENTORY_DATA *)inter.iobj[ion]->inventory, ioo, &xx, &yy))
 											{
-												PutInFrontOfPlayer(ioo, 1);
+												PutInFrontOfPlayer(ioo);
 											}
 										}
 									}
