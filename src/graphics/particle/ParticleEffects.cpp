@@ -2067,18 +2067,17 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 
 	if 	(ParticleCount==0) return;
 
-	register long i;
-	register long xx,yy;
-	register unsigned  long tim;
+	long xx,yy;
+	unsigned  long tim;
 	long framediff;
 	long framediff2;
 	long t;
-	register D3DTLVERTEX in,inn,out;
-	register D3DCOLOR color;
-	register float siz,siz2,r;
-	register float val;
-	register float fd;
-	register float rott;
+	D3DTLVERTEX in,inn,out;
+	D3DCOLOR color;
+	float siz,siz2,r;
+	float val;
+	float fd;
+	float rott;
 	
 	tim = ARXTimeUL();//treat warning C4244 conversion from 'float' to 'unsigned long'	
 	
@@ -2089,8 +2088,7 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 	TextureContainer * tc=NULL;
 	long pcc=ParticleCount;
 
-	for (i=0;i<MAX_PARTICLES;i++) 
-	{
+	for(size_t i = 0; i < MAX_PARTICLES; i++) {
 		PARTICLE_DEF * part=&particle[i];
 
 		if (part->exist) 
