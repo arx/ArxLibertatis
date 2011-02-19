@@ -56,6 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 
 #include <cstdlib>
+#include <sstream>
+#include <iomanip>
 
 #include "scene/Light.h"
 #include "scene/Object.h"
@@ -285,7 +287,6 @@ long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest, unsigned int dest
 {
 	EERIE_3D boxmin;
 	EERIE_3D boxmax;
-	const int tempSize = 128 ;
 
 	if (io == NULL) return -1;
 
@@ -337,17 +338,15 @@ long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest, unsigned int dest
 						{
 							if (EEfabs(inter.iobj[i]->pos.y - boxmin.y) < 40.f)
 							{
-//							todo: string stuff
-//							int iResult;
-//							char temp[tempSize];
-//							iResult = strcat_s(dest,destSize," ");
-//							assert (iResult == 0);
-//							iResult = strncpy_s(temp, tempSize, GetName(inter.iobj[i]->filename), strlen(GetName(inter.iobj[i]->filename)));
-//							assert (iResult == 0);
-//							iResult = sprintf_s(temp,tempSize,"%s_%04d",temp,inter.iobj[i]->ident) ;
-//							assert (iResult >= 0);
-//							iResult = strcat_s(dest,destSize,temp);
-//							assert (iResult == 0);
+								
+								dest += " ";
+								
+								std::stringstream ss;
+								ss << GetName(inter.iobj[i]->filename) << '_'
+								   << std::setfill('0') << std::setw(4) << inter.iobj[i]->ident;
+								
+								dest += ss.str();
+								
 							}
 						}
 
