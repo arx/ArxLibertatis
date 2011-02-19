@@ -4273,17 +4273,11 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 					long num = ARX_SOUND_PlaySpeech(temp2.c_str(), io && io->show == 1 ? io : NULL);
 
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						if (num == ARX_SOUND_INVALID_RESOURCE)
-							sprintf(cmd, "PLAYSPEECH %s - UNABLE TO LOAD FILE", temp2);
-						else
-							sprintf(cmd, "PLAYSPEECH %s - Success DanaePlaySample", temp2);
-					}
-
-#endif
+					if (num == ARX_SOUND_INVALID_RESOURCE)
+						sprintf(cmd, "PLAYSPEECH %s - UNABLE TO LOAD FILE", temp2.c_str());
+					else
+						sprintf(cmd, "PLAYSPEECH %s - Success DanaePlaySample", temp2.c_str());
+					
 				}
 				else if (!strcmp(word, "POPUP"))
 				{
