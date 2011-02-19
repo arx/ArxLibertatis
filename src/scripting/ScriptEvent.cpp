@@ -5083,7 +5083,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					long ion;
 					ion = GetInterNum(io);
 
-					if ((io != NULL) && (ion != -1))
+					if ((io != NULL) && (ion != -1)) {
 						if (!strcasecmp(word, "CREATE"))
 						{
 							if (inter.iobj[ion]->inventory != NULL)
@@ -5423,6 +5423,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 								ARX_SOUND_PlayInterface(SND_BACKPACK);
 							}
 						}
+					}
 				}
 
 				break;
