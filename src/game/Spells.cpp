@@ -3405,7 +3405,6 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 {
 	long flags = flagss;
 	long level = levell;
-	long i;
 
 	if ( cur_rf == 3 )
 	{ 
@@ -3421,8 +3420,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 	if ( ( source == 0 ) && ( FINAL_RELEASE ) )
 	if ( !( flags & SPELLCAST_FLAG_NOCHECKCANCAST ) )
 	{
-		for ( i = 0 ; i < MAX_SPELL_SYMBOLS ; i++ )
-		{
+		for (size_t i = 0; i < MAX_SPELL_SYMBOLS; i++) {
 			if ( SpellSymbol[i] != 255 )
 			{
 				if ( !( player.rune_flags & ( 1 << SpellSymbol[i] ) ) )
@@ -3581,7 +3579,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 
 
 	// Try to create a new spell instance
-	i = ARX_SPELLS_GetFree();
+	long i = ARX_SPELLS_GetFree();
 
 	if ( i < 0 )
 	{
