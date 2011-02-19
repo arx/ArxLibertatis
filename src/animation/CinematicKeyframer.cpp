@@ -760,7 +760,7 @@ bool GereTrackNoPlay(Cinematic * c)
 
 	if (!k) return false;
 
-	ksuiv = (num == CKTrack->nbkey) ? ksuiv = k : ksuiv = k + 1;
+	ksuiv = (num == CKTrack->nbkey) ? k : k + 1;
 
 	if (ksuiv->frame != k->frame)
 		a = (CKTrack->currframe - (float)k->frame) / ((float)(ksuiv->frame - k->frame));
