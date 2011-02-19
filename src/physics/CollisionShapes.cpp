@@ -222,7 +222,7 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, EERIE_3D * center, EERIE_3D * d
 		}
 	}
 
-	for (int i = 0; i < obj->grouplist[group].indexes.size(); i++)
+	for (size_t i = 0; i < obj->grouplist[group].indexes.size(); i++)
 	{
 		if (!IsExclusiveGroupMember(obj, obj->grouplist[group].indexes[i], group)) continue;
 
