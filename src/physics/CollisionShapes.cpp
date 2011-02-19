@@ -177,7 +177,7 @@ long GetFirstChildGroup(EERIE_3DOBJ * obj, long group)
 
 	for (long k = group + 1; k < obj->nbgroups; k++)
 	{
-		for (long i = 0; i < obj->grouplist[group].indexes.size(); i++)
+		for (size_t i = 0; i < obj->grouplist[group].indexes.size(); i++)
 		{
 			if (obj->grouplist[group].indexes[i] == obj->grouplist[k].origin)
 			{
