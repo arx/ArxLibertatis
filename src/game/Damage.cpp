@@ -1503,14 +1503,12 @@ bool SphereInIO(INTERACTIVE_OBJ * io, EERIE_3D * pos, float radius)
 	else if (io->obj->vertexlist.size() < 1200) step = 6;
 	else step = 7;
 
-	for (long i = 0; i < io->obj->vertexlist.size(); i += step)
-	{
-		if (EEDistance3D(pos, &io->obj->vertexlist3[i].v) <= radius)
-		{
+	for(size_t i = 0; i < io->obj->vertexlist.size(); i += step) {
+		if(EEDistance3D(pos, &io->obj->vertexlist3[i].v) <= radius) {
 			return true;
 		}
 	}
-
+	
 	return false;
 }
 bool ARX_DAMAGES_TryToDoDamage(EERIE_3D * pos, float dmg, float radius, long source)
