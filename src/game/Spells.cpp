@@ -2903,7 +2903,7 @@ void ARX_SPELLS_ClearAll() {
 long ARX_SPELLS_GetFree() {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		if(spells[i].exist == false) {
+		if(!spells[i].exist) {
 			spells[i].longinfo = spells[i].longinfo2 = -1;
 			spells[i].misc = NULL;
 			return i;
@@ -2914,11 +2914,14 @@ long ARX_SPELLS_GetFree() {
 }
 
 // Checks for an existing instance of this spelltype
-bool ARX_SPELLS_ExistAnyInstance(const long &typ) 
-{
-	for (long i = 0; i < MAX_SPELLS; i++) 
-		if (spells[i].exist && (spells[i].type==typ)) return true;
-
+bool ARX_SPELLS_ExistAnyInstance(const long &typ) {
+	
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		if(spells[i].exist && (spells[i].type == typ)) {
+			return true;
+		}
+	}
+	
 	return false;
 }
 
