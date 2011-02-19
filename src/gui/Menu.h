@@ -68,7 +68,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 //-----------------------------------------------------------------------------
-<<<<<<< HEAD
 #define MAX_FLYOVER	32
 struct MENU_DYNAMIC_DATA
 {
