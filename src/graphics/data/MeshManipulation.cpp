@@ -310,7 +310,7 @@ void AddVertexToGroup(EERIE_3DOBJ * obj, long group, EERIE_VERTEX * vert)
 
 void AddVertexIdxToGroupWithoutInheritance(EERIE_3DOBJ * obj, long group, long val) {
 	
-	for(long i = 0; i < obj->grouplist[group].indexes.size(); i++) {
+	for(size_t i = 0; i < obj->grouplist[group].indexes.size(); i++) {
 		if(obj->grouplist[group].indexes[i] == val) {
 			return;
 		}
