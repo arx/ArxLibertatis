@@ -1884,10 +1884,10 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 				{
 					for (long j = 0 ; j < 3 ; j++)
 					{
-						tv[j].color = (0xFF000000L
+						tv[j].color = 0xFF000000L
 						               | (((long)((float)((long)((tv[j].color >> 16) & 255)) * (special_color.r)) & 255) << 16)
 						               | (((long)((float)((long)((tv[j].color >> 8) & 255)) * special_color.g) & 255) << 8)
-						               | (long)((float)((long)(tv[j].color & 255)) * (special_color.b)) & 255);
+						               | ((long)((float)((long)(tv[j].color & 255)) * (special_color.b)) & 255);
 					}
 				}
 				else if (special_color_flag & 2)
