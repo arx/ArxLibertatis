@@ -2581,8 +2581,8 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 				lfr = io->halo.color.r * power;
 				lfg = io->halo.color.g * power;
 				lfb = io->halo.color.b * power;
-				workon[o].color = (0xFF000000L | (((lfr) & 255) << 16)
-						| (((lfg) & 255) << 8) | (lfb) & 255);
+				workon[o].color = 0xFF000000L | (((lfr) & 255) << 16)
+				                  | ((((lfg) & 255) << 8) | (lfb) & 255);
 			}
 
 				if (tot>150.f)
