@@ -1686,11 +1686,11 @@ bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long t
 			long count2 = 0;
 			float mindist = FLT_MAX;
 
-			for (long k = 0; k < ioo->obj->vertexlist.size(); k += 1)
+			for (size_t k = 0; k < ioo->obj->vertexlist.size(); k += 1)
 			{
 				if (ioo->obj->vertexlist.size() < 120)
 				{
-					for (long kk = 0; kk < ioo->obj->vertexlist.size(); kk += 1)
+					for (size_t kk = 0; kk < ioo->obj->vertexlist.size(); kk += 1)
 					{
 						if (kk != k)
 						{
