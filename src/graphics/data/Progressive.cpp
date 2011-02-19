@@ -154,7 +154,7 @@ void KillNeighbours(EERIE_3DOBJ * obj)
 {
 	if (!obj->ndata) return;
 
-	for (long i = 0; i < obj->vertexlist.size(); i++)
+	for (size_t i = 0; i < obj->vertexlist.size(); i++)
 	{
 		if (obj->ndata[i].Nfaces) free(obj->ndata[i].Nfaces);
 
