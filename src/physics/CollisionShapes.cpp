@@ -272,7 +272,7 @@ long AddVertexToVertexList(EERIE_3DOBJ * obj, EERIE_3D * center, long group)
 {
 	if (obj->vertexlist.empty()) return -1;
 
-	for (long i = 0; i < obj->vertexlist.size(); i++)
+	for (size_t i = 0; i < obj->vertexlist.size(); i++)
 	{
 		if ((center->x == obj->vertexlist[i].v.x)
 				&&	(center->y == obj->vertexlist[i].v.y)
