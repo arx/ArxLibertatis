@@ -271,7 +271,7 @@ UBool PathFinder::Flee(const ULong & flags, const ULong & f, const EERIE_3D & da
 	//}
 
 	//A* main loop
-	while (node = GetBestNode())
+	while ((node = GetBestNode()))
 	{
 		//If it's the goal node then we've done
 		if (Distance(map_d[node->data].pos, danger) >= safe_dist)
