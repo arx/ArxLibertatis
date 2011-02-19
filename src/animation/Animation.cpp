@@ -1821,7 +1821,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	{
 		ResetBBox3D( io );
 
-		for( i = 0 ; i < eobj->vertexlist.size() ; i++ ) 
+		for(size_t i = 0 ; i < eobj->vertexlist.size() ; i++ ) 
 		{
 			if ( (modinfo) && !angle && BIGMAT )
 			{
