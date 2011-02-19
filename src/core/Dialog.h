@@ -95,7 +95,7 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
  
 INT_PTR CALLBACK LanguageOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-bool CALLBACK PassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+INT_PTR CALLBACK PassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK MeshReductionProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                                 LPARAM lParam);

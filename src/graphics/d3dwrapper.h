@@ -4,9 +4,9 @@
 
 #define D3D_OVERLOADS
 
-#include <math.h>
-#include "core/Common.h"
 
+#include <cmath>
+#include "core/Common.h"
 #if ARX_COMPILER == ARX_COMPILER_GCC
     #pragma GCC diagnostic ignored "-fpermissive"
 #endif

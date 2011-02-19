@@ -76,7 +76,7 @@ CMassLightning::CMassLightning(LPDIRECT3DDEVICE7 m_pd3dDevice, long nbmissiles)
 {
 	SetDuration(2000);
 	pTab = new CLightning*[10];
-	number = min(10L, nbmissiles);
+	number = std::min(10L, nbmissiles);
 
 	TextureContainer * pTex = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_lightning_red.bmp");
 

@@ -39,55 +39,23 @@ using namespace std;
 //-----------------------------------------------------------------------------
 class CLocalisation
 {
-public:
-		char *  lpszUSection;
-		vector<char *> vUKeys;
-
-public:
-
-		CLocalisation()
+	public:
+		std::string lpszUSection;
+		vector< std::string > vUKeys;
+	
+	public:
+		void SetSection( const std::string& _lpszUSection )
 		{
-			lpszUSection = NULL;
+			lpszUSection = _lpszUSection;
 		};
 
-		~CLocalisation()
+		void AddKey( const std::string& _lpszUText )
 		{
-			if (lpszUSection)
-			{
-				free((void *)lpszUSection);
-				lpszUSection = NULL;
-			}
-			
-			for (unsigned int i = 0 ; i < vUKeys.size() ; i++)
-			{
-				free((void *) vUKeys[i]);
-				vUKeys[i] = NULL;
-			}
-		};
-
-		void SetSection(char * _lpszUSection)
-		{
-			if (lpszUSection)
-			{
-				free(lpszUSection);
-				lpszUSection = NULL;
-			}
-
-			lpszUSection = (char *) malloc((strlen(_lpszUSection) + 2) * sizeof(char));
-			std::memset(lpszUSection, 0, (strlen(_lpszUSection) + 2) * sizeof(char));
-			std::strcpy(lpszUSection, _lpszUSection);
-		};
-		void AddKey(char * _lpszUText)
-		{
-			char * lpszT = (char *) malloc((strlen(_lpszUText) + 2) * sizeof(char));
-			memset(lpszT, 0, (strlen(_lpszUText) + 2) * sizeof(char));
-			strcpy(lpszT, _lpszUText);
-
-			vUKeys.push_back(lpszT);
+			vUKeys.push_back( _lpszUText );
 		};
 };
+
 //-----------------------------------------------------------------------------
-/// Hash map container for CLocalisation's. Supposedly fast lookup by section name
 class CLocalisationHash
 {
 public:
@@ -96,13 +64,13 @@ public:
 		unsigned long	iFill;
 		CLocalisation	** pTab;
 	public:
-		unsigned long	iNbCollisions;
-		unsigned long	iNbNoInsert;
+		unsigned long   iNbCollisions;
+		unsigned long   iNbNoInsert;
 
 	private:
-		int				FuncH1(int);
-		int				FuncH2(int);
-		int				GetKey(const char *);
+		int FuncH1(int);
+		int FuncH2(int);
+		int GetKey( const std::string& );
 
 	public:
 		CLocalisationHash(int _iSize = 1024);
@@ -110,9 +78,9 @@ public:
 
 		void ReHash();
 		bool AddElement(CLocalisation * _pLoc);
-	/// Add \a loc in the container.
-		char * GetPtrWithString(const char *);
-		unsigned long GetKeyCount(const char *);
+ 
+		std::string* GetPtrWithString( const std::string& );
+		unsigned long GetKeyCount(const std::string& );
 };
 
 #endif

@@ -30,6 +30,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct PakFileHandle;
 
+
 #include <windows.h>
 #include <mmreg.h> // for ADPCMWAVEFORMAT
 

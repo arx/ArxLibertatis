@@ -78,6 +78,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Light.h"
 #include "graphics/data/Texture.h"
 #include "graphics/Math.h"
+#include "io/Logger.h"
 
 long FASTLOADS = 0;
 
@@ -131,6 +132,7 @@ INT_PTR CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 long InitMemorySnaps();
 void FlushMemorySnaps(long snap);
 
+std::string SCRIPT_SEARCH_TEXT;
 
 #define CHECK 1
 #define UNCHECK 0
@@ -657,7 +659,7 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 						ARX_PATH * ap = ARX_PATHS_ExistName(str2);
 
 						if ((ap != ARX_PATHS_SelectedAP) && (ap != NULL))
-							ShowPopup("This Name is already used by another path, New name ignored...");
+							LogError << ("This Name is already used by another path, New name ignored...");
 						else ARX_PATHS_ChangeName(ARX_PATHS_SelectedAP, str2);
 
 						if (LOWORD(wParam) == IDOK)
@@ -1008,7 +1010,7 @@ void AddIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, const char * name, long type
 	if (type == IOTVTYPE_PLAYER) strcpy(temp, "PLAYER");
 	else if (io != NULL)
 	{
-		strcpy(temp, GetName(io->filename));
+		strcpy(temp, GetName(io->filename).c_str());
 		sprintf(temp2, "_%04ld", io->ident);
 		strcat(temp, temp2);
 	}
@@ -2008,35 +2010,36 @@ INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	return false;
 }
-char SCRIPT_SEARCH_TEXT[256];
 INT_PTR CALLBACK ScriptSearchProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 {
-	if (WM_COMMAND == uMsg)
-	{
-		switch (LOWORD(wParam))
-		{
-			case IDOK:
-				HWND thWnd;
-				thWnd = GetDlgItem(hWnd, IDC_SEARCHEDIT);
-				GetWindowText(thWnd, SCRIPT_SEARCH_TEXT, 255);
-				EndDialog(hWnd, true);
-				break;
-			case IDCANCEL:
-				EndDialog(hWnd, true);
-				break;
-		}
-	}
+    if (WM_COMMAND == uMsg)
+    {
+        switch (LOWORD(wParam))
+        {
+            case IDOK:
+                HWND thWnd;
+                thWnd = GetDlgItem(hWnd, IDC_SEARCHEDIT);
+                char temp[256];
+                GetWindowText(thWnd, temp, 255);
+                SCRIPT_SEARCH_TEXT = temp;
+                EndDialog(hWnd, true);
+                break;
+            case IDCANCEL:
+                EndDialog(hWnd, true);
+                break;
+        }
+    }
 
-	if (uMsg == WM_INITDIALOG)
-	{
-		SCRIPT_SEARCH_TEXT[0] = 0;
-		HWND thWnd;
-		thWnd = GetDlgItem(hWnd, IDC_SEARCHEDIT);
-		SetFocus(thWnd); 
-		return true;
-	}
+    if (uMsg == WM_INITDIALOG)
+    {
+        SCRIPT_SEARCH_TEXT[0] = 0;
+        HWND thWnd;
+        thWnd = GetDlgItem(hWnd, IDC_SEARCHEDIT);
+        SetFocus(thWnd); 
+        return true;
+    }
 
-	return false;
+    return false;
 }
 
 //*************************************************************************************
@@ -2597,14 +2600,14 @@ INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 					if (FAILED(hr = danaeApp.Change3DEnvironment()))
 					{
-						ShowPopup("Error Changing Environment");
+						LogError << ("Error Changing Environment");
 						return 0;
 					}
 
 					GDevice = danaeApp.m_pd3dDevice;
 					ARX_Text_Init();
 				}
-				else ShowPopup("Error Changing Device");
+				else LogError << ("Error Changing Device");
 			}
 		}
 
@@ -3957,7 +3960,7 @@ INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 				// Isis Athena
 				char temp[256];
 				thWnd = GetDlgItem(hWnd, IDC_OBJNAME);
-				strcpy(temp, GetName(CDP_EditIO->filename));
+				strcpy(temp, GetName(CDP_EditIO->filename).c_str());
 				sprintf(temp, "%s_%04ld", temp, CDP_EditIO->ident);
 				SetWindowText(thWnd, temp);
 
@@ -4066,12 +4069,12 @@ INT_PTR CALLBACK LanguageOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM
 
 				if (IsChecked(hWnd, IDC_LANGUAGE1))
 				{
-					strcpy(Project.localisationpath, "english");
+					Project.localisationpath = "english";
 				}
 
 				if (IsChecked(hWnd, IDC_LANGUAGE2))
 				{
-					strcpy(Project.localisationpath, "fr");
+					Project.localisationpath = "fr";
 				}
 
 				EndDialog(hWnd, true);

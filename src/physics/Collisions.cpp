@@ -61,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <vector>
 
 #include "graphics/Math.h"
 #include "io/IO.h"
@@ -846,17 +847,17 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 								io->collide_door_time = ARXTimeUL(); 	
 
 								if (CollidedFromBack(io,ioo))
-									SendIOScriptEvent(io,SM_COLLIDE_NPC,"BACK",NULL);
+									SendIOScriptEvent(io,SM_COLLIDE_NPC,"BACK");
 								else
-									SendIOScriptEvent(io,SM_COLLIDE_NPC,"",NULL);
+									SendIOScriptEvent(io,SM_COLLIDE_NPC);
 
 								EVENT_SENDER=io;
 								io->collide_door_time = ARXTimeUL(); 
 
 								if (CollidedFromBack(ioo,io))
-									SendIOScriptEvent(ioo,SM_COLLIDE_NPC,"BACK",NULL);
+									SendIOScriptEvent(ioo,SM_COLLIDE_NPC,"BACK");
 								else
-									SendIOScriptEvent(ioo,SM_COLLIDE_NPC,"",NULL);
+									SendIOScriptEvent(ioo,SM_COLLIDE_NPC);
 							}
 
 							if ((!dealt) && ((ioo->damager_damages>0) || (io->damager_damages>0)))
@@ -888,7 +889,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 								if (!io->_npcdata->reachedtarget)
 								{							
 									EVENT_SENDER=ioo;
-									SendIOScriptEvent(io,SM_REACHEDTARGET,"");
+									SendIOScriptEvent(io,SM_REACHEDTARGET);
 									io->_npcdata->reachedtarget=1;			
 								}
 							}
@@ -944,10 +945,10 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 											{
 												EVENT_SENDER=ioo;									
 												io->collide_door_time = ARXTimeUL(); 	
-												SendIOScriptEvent(io,SM_COLLIDE_DOOR,"",NULL);
+												SendIOScriptEvent(io,SM_COLLIDE_DOOR);
 												EVENT_SENDER=io;
 												io->collide_door_time = ARXTimeUL(); 	
-												SendIOScriptEvent(ioo,SM_COLLIDE_DOOR,"",NULL);
+												SendIOScriptEvent(ioo,SM_COLLIDE_DOOR);
 											}
 										}
 
@@ -955,7 +956,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 										{
 											EVENT_SENDER=NULL;									
 											io->collide_door_time = ARXTimeUL(); 	
-											SendIOScriptEvent(ioo,SM_COLLIDE_FIELD,"",NULL);
+											SendIOScriptEvent(ioo,SM_COLLIDE_FIELD);
 										}
 
 										if ((!dealt) && ((ioo->damager_damages>0) || (io->damager_damages>0)))
@@ -1011,10 +1012,10 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 												{
 													EVENT_SENDER=ioo;									
 													io->collide_door_time = ARXTimeUL(); 	
-													SendIOScriptEvent(io,SM_COLLIDE_DOOR,"",NULL);
+													SendIOScriptEvent(io,SM_COLLIDE_DOOR);
 													EVENT_SENDER=io;
 													io->collide_door_time = ARXTimeUL(); 	
-													SendIOScriptEvent(ioo,SM_COLLIDE_DOOR,"",NULL);
+													SendIOScriptEvent(ioo,SM_COLLIDE_DOOR);
 												}
 											}
 
@@ -1022,7 +1023,7 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 										{
 											EVENT_SENDER=NULL;									
 												io->collide_door_time = ARXTimeUL(); 	
-											SendIOScriptEvent(ioo,SM_COLLIDE_FIELD,"",NULL);
+											SendIOScriptEvent(ioo,SM_COLLIDE_FIELD);
 										}
 					
 											if ((!dealt) && ioo && ((ioo->damager_damages > 0) || (io->damager_damages > 0)))
@@ -1519,7 +1520,7 @@ bool CheckIOInSphere(EERIE_SPHERE * sphere,long target,long flags)
 				}
 			}
 	
-	return true;	
+	return false;	
 }
 
 

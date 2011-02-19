@@ -60,6 +60,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 
 #define DIRECTINPUT_VERSION 0x0700
+
+#include <iomanip>
+#include <algorithm>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <sstream>
+
 #include <dinput.h>
 
 #include "ai/Paths.h"
@@ -83,10 +92,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Progressive.h"
 #include "physics/Clothes.h"
 #include "graphics/Draw.h"
+#include "graphics/data/MeshManipulation.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
+#include "scripting/ScriptEvent.h"
 
 using std::min;
 
@@ -197,12 +208,12 @@ void ARX_INTERACTIVE_ForceIOLeaveZone(INTERACTIVE_OBJ * io, long flags)
 
 	if (op)
 	{
-		char temp[256];
-		strcpy(temp, op->name);
+		std::string temp;
+		temp = op->name;
 		MakeUpcase(temp);
 
 		if (flags & 1) // no need when being destroyed !
-			SendIOScriptEvent(io, SM_LEAVEZONE, temp, NULL);
+			SendIOScriptEvent(io, SM_LEAVEZONE, temp);
 
 		if (op->controled[0] != 0)
 		{
@@ -212,9 +223,9 @@ void ARX_INTERACTIVE_ForceIOLeaveZone(INTERACTIVE_OBJ * io, long flags)
 			{
 				char texx[128];
 				char tex2[128];
-				strcpy(texx, GetName(io->filename));
-				sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp);
-				SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2, NULL); 
+				strcpy(texx, GetName(io->filename).c_str());
+				sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
+				SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2); 
 			}
 		}
 	}
@@ -330,7 +341,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io)
 }
 
 
-bool ARX_INTERACTIVE_Attach(long n_source, long n_target, char * ap_source, char * ap_target)
+bool ARX_INTERACTIVE_Attach(long n_source, long n_target, const char * ap_source, const char * ap_target)
 {
 	if (!ValidIONum(n_source)
 	        ||	!ValidIONum(n_target))
@@ -398,7 +409,7 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io)
 	{
 		if (io->obj->texturecontainer[nn]
 		        &&	TextureContainer_Exist(io->obj->texturecontainer[nn])
-		        &&	strstr(io->obj->texturecontainer[nn]->m_strName, "GORE"))
+		        &&	strstr(io->obj->texturecontainer[nn]->m_strName.c_str(), "GORE"))
 		{
 			gorenum = nn;
 			break;
@@ -434,7 +445,7 @@ void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 	{
 		if (io->obj->texturecontainer[nn]
 		        &&	TextureContainer_Exist(io->obj->texturecontainer[nn])
-		        &&	strstr(io->obj->texturecontainer[nn]->m_strName, "GORE"))
+		        &&	strstr(io->obj->texturecontainer[nn]->m_strName.c_str(), "GORE"))
 		{
 			gorenum = nn;
 			break;
@@ -462,7 +473,7 @@ EERIE_3DOBJ * GetExistingEerie(const char * file)
 		        &&	(inter.iobj[i]->obj))
 		{
 			if	((!inter.iobj[i]->obj->originaltextures)
-			        &&	(!strcmp(file, inter.iobj[i]->obj->file)))
+			        &&	(!strcmp(file, inter.iobj[i]->obj->file.c_str())))
 			{
 				return inter.iobj[i]->obj;
 			}
@@ -497,7 +508,7 @@ bool ForceNPC_Above_Ground(INTERACTIVE_OBJ * io)
 
 EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * file, long flag, LPDIRECT3DDEVICE7 pd3dDevice)
 {
-	EERIE_3DOBJ * ret = NULL;
+	EERIE_3DOBJ * ret = new EERIE_3DOBJ();
 
 	if ((ret = ARX_FTL_Load(file)) != NULL)
 	{
@@ -523,7 +534,7 @@ EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * file, long fla
 		size_t FileSize = 0;
 		unsigned char * adr;
 
-		if (adr = (unsigned char *)PAK_FileLoadMalloc(file, &FileSize))
+		if (adr = (unsigned char *)PAK_FileLoadMalloc(file, FileSize))
 		{
 			ret = TheoToEerie(adr, FileSize, texpath, file, flag, pd3dDevice, flag | TTE_NO_RESTORE); //SLOWLOAD));
 
@@ -864,7 +875,7 @@ void PrepareIOTreatZone(long flag)
 			        && (!(io->GameFlags & GFLAG_WASINTREATZONE)))
 			{
 				//coming back; doesn't really matter right now
-				//	SendIOScriptEvent(inter.iobj[i],SM_TREATIN,"");
+				//	SendIOScriptEvent(inter.iobj[i],SM_TREATIN);
 
 			}
 			else if ((!(io->GameFlags & GFLAG_ISINTREATZONE))
@@ -873,7 +884,7 @@ void PrepareIOTreatZone(long flag)
 				//going away;
 				io->GameFlags |= GFLAG_ISINTREATZONE;
 
-				if (SendIOScriptEvent(io, SM_TREATOUT, "") != REFUSE)
+				if (SendIOScriptEvent(io, SM_TREATOUT) != REFUSE)
 				{
 					if (io->ioflags & IO_NPC)
 						io->_npcdata->pathfind.flags &= ~PATHFIND_ALWAYS;
@@ -1251,46 +1262,47 @@ void RestoreInitialIOStatus()
 		RestoreInitialIOStatusOfIO(inter.iobj[i]);
 	}
 }
-void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, char * temp)
+
+void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const std::string& temp)
 {
-	if ((!io)
-	        ||	(!temp))
-		return;
+    if ((!io)
+            ||	(temp.empty()))
+        return;
 
-	char tex[256];
-	const char tex1[] = "Graph\\Obj3D\\Textures\\";
-	char tex2[256];
+    std::string tex;
+    const char tex1[] = "Graph\\Obj3D\\Textures\\";
+    std::string tex2;
 
-	if (io->ioflags & IO_NPC)	sprintf(tex2, "Graph\\Obj3D\\Interactive\\NPC\\%s", temp);
-	else if (io->ioflags & IO_FIX)	sprintf(tex2, "Graph\\Obj3D\\Interactive\\FIX_INTER\\%s", temp);
-	else if (io->ioflags & IO_ITEM)	sprintf(tex2, "Graph\\Obj3D\\Interactive\\Items\\%s", temp);
-	else tex2[0] = 0;
+    if (io->ioflags & IO_NPC)	tex2 = "Graph\\Obj3D\\Interactive\\NPC\\" + temp;
+    else if (io->ioflags & IO_FIX)	tex2 = "Graph\\Obj3D\\Interactive\\FIX_INTER\\" + temp;
+    else if (io->ioflags & IO_ITEM)	tex2 = "Graph\\Obj3D\\Interactive\\Items\\" + temp;
+    else tex2.clear();
 
-	File_Standardize(tex2, tex);
+    File_Standardize(tex2, tex);
 
-	if (tex[0] != 0)
-	{
-		if (io->usemesh == NULL)
-			io->usemesh = (char *)malloc(256);
-		else if (!strcasecmp(io->usemesh, tex)) return; //already tweaked with this mesh !
+    if ( tex.empty() )
+    {
+        if (io->usemesh == NULL)
+            io->usemesh = (char *)malloc(256);
+        else if (!strcasecmp(io->usemesh, tex.c_str())) return; //already tweaked with this mesh !
 
-		strcpy(io->usemesh, tex);
+        strcpy(io->usemesh, tex.c_str());
 
-		if (io->obj != NULL)
-		{
-			ReleaseEERIE3DObj(io->obj);
-			io->obj = NULL;
-		}
+        if (io->obj != NULL)
+        {
+            ReleaseEERIE3DObj(io->obj);
+            io->obj = NULL;
+        }
 
-		if (io->ioflags & IO_FIX)
-			io->obj = TheoToEerie_Fast(tex1, tex, TTE_NO_NDATA | TTE_NO_PHYSICS_BOX, GDevice);
-		else if (io->ioflags & IO_NPC)
-			io->obj = TheoToEerie_Fast(tex1, tex, TTE_NO_PHYSICS_BOX | TTE_NPC, GDevice);
-		else
-			io->obj = TheoToEerie_Fast(tex1, tex, 0, GDevice);
+        if (io->ioflags & IO_FIX)
+            io->obj = TheoToEerie_Fast(tex1, tex.c_str(), TTE_NO_NDATA | TTE_NO_PHYSICS_BOX, GDevice);
+        else if (io->ioflags & IO_NPC)
+            io->obj = TheoToEerie_Fast(tex1, tex.c_str(), TTE_NO_PHYSICS_BOX | TTE_NPC, GDevice);
+        else
+            io->obj = TheoToEerie_Fast(tex1, tex.c_str(), 0, GDevice);
 
-		EERIE_COLLISION_Cylinder_Create(io);
-	}
+        EERIE_COLLISION_Cylinder_Create(io);
+    }
 }
 void ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(INTERACTIVE_OBJ * io)
 {
@@ -1300,15 +1312,15 @@ void ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(INTERACTIVE_OBJ * io)
 	io->Tweaks = NULL;
 	io->Tweak_nb = 0;
 }
-void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, long type, char * param1, char * param2)
+void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, long type, const std::string& param1, const std::string& param2)
 {
 	io->Tweaks = (TWEAK_INFO *)realloc(io->Tweaks, sizeof(TWEAK_INFO) * (io->Tweak_nb + 1));
 	memset(&io->Tweaks[io->Tweak_nb], 0, sizeof(TWEAK_INFO));
 	io->Tweaks[io->Tweak_nb].type = type;
 
-	if (param1) strcpy(io->Tweaks[io->Tweak_nb].param1, param1);
+	if (!param1.empty()) strcpy(io->Tweaks[io->Tweak_nb].param1, param1.c_str());
 
-	if (param2) strcpy(io->Tweaks[io->Tweak_nb].param2, param2);
+	if (!param2.empty()) strcpy(io->Tweaks[io->Tweak_nb].param2, param2.c_str());
 
 	io->Tweak_nb++;
 }
@@ -1705,34 +1717,33 @@ void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io)
 	}
 }
 
-void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, char * s1)
+void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const std::string& s1)
 {
-	if ((!io)
-	        ||	(!s1))
+	if ((!io) || (s1.empty()))
 		return;
 
-	char icontochange[HERMES_PATH_SIZE];
+	std::string icontochange;
 
-	strcpy(icontochange, io->filename);
+	icontochange = io->filename;
 	RemoveName(icontochange);
-	strcat(icontochange, s1);
+	icontochange += s1;
 	SetExt(icontochange, ".bmp");
 
 	D3DTextr_CreateTextureFromFile(icontochange, 0, D3DTEXTR_NO_REFINEMENT, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
 
-	if (GDevice) D3DTextr_Restore(icontochange, GDevice);
+	if (GDevice) D3DTextr_Restore(icontochange.c_str(), GDevice);
 
 	TextureContainer * tc;
-	tc = D3DTextr_GetSurfaceContainer(icontochange);
+	tc = D3DTextr_GetSurfaceContainer(icontochange.c_str());
 
 	if (tc == NULL)
 	{
-		strcpy(icontochange, "Graph\\Interface\\misc\\Default[Icon].bmp");
+		icontochange = "Graph\\Interface\\misc\\Default[Icon].bmp";
 		D3DTextr_CreateTextureFromFile(icontochange, 0, D3DTEXTR_NO_REFINEMENT);
 
-		if (GDevice) D3DTextr_Restore(icontochange, GDevice);
+		if (GDevice) D3DTextr_Restore(icontochange.c_str(), GDevice);
 
-		tc = D3DTextr_GetSurfaceContainer(icontochange);
+		tc = D3DTextr_GetSurfaceContainer(icontochange.c_str());
 	}
 
 	if (tc != NULL)
@@ -2026,7 +2037,7 @@ void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io)
 			scr_timer[num].msecs = rnd() * 3000 + 3000;
 			scr_timer[num].namelength = 8;
 			scr_timer[num].name = (char *)malloc(8);
-			strcpy(scr_timer[num].name, "_R_A_T_");
+			scr_timer[num].name = "_R_A_T_";
 			scr_timer[num].pos = -1; 
 			scr_timer[num].tim = ARXTimeUL();
 			scr_timer[num].times = 1;
@@ -2178,28 +2189,28 @@ void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, EERIE_3D * target, long flag
 //*************************************************************************************
 // Finds IO number by name
 //*************************************************************************************
-long GetTargetByNameTarget(const char * name)
+long GetTargetByNameTarget(const std::string& name)
 {
 	char temp[256];
 
-	if (name == NULL) return -1;
+	if (name.empty()) return -1;
 
-	if (!strcasecmp(name, "self"))		return -2;
+	if (!strcasecmp(name.c_str(), "self"))		return -2;
 
-	if (!strcasecmp(name, "none"))		return -1;
+	if (!strcasecmp(name.c_str(), "none"))		return -1;
 
-	if (!strcasecmp(name, "me"))		return -2;
+	if (!strcasecmp(name.c_str(), "me"))		return -2;
 
-	if (!strcasecmp(name, "player"))	return 0;     ///player is now an io with index 0
+	if (!strcasecmp(name.c_str(), "player"))	return 0;     ///player is now an io with index 0
 
 	for (long i = 0 ; i < inter.nbmax ; i++)
 	{
 		if ((inter.iobj[i] != NULL)
 		        &&	(inter.iobj[i]->ident > -1))
 		{
-			sprintf(temp, "%s_%04ld", GetName(inter.iobj[i]->filename), inter.iobj[i]->ident);
+			sprintf(temp, "%s_%04ld", GetName(inter.iobj[i]->filename).c_str(), inter.iobj[i]->ident);
 
-			if (!strcasecmp(name, temp)) return i;
+			if (!strcasecmp(name.c_str(), temp)) return i;
 		}
 	}
 
@@ -2406,8 +2417,8 @@ void ReleaseInter(INTERACTIVE_OBJ * io)
 INTERACTIVE_OBJ * AddInteractive(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long id, long flags)
 {
 	INTERACTIVE_OBJ * io = NULL;
-	char ficc[HERMES_PATH_SIZE];
-	strcpy(ficc, file);
+	std::string ficc;
+	ficc = file;
 	MakeUpcase(ficc);
 
 	if (IsIn(ficc, "ITEMS"))
@@ -2484,7 +2495,7 @@ void SetWeapon_Back(INTERACTIVE_OBJ * io)
 	}
 }
 
-void Prepare_SetWeapon(INTERACTIVE_OBJ * io, char * temp)
+void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const std::string& temp)
 {
 	if (!io
 	        ||	!(io->ioflags & IO_NPC))
@@ -2498,21 +2509,20 @@ void Prepare_SetWeapon(INTERACTIVE_OBJ * io, char * temp)
 		ReleaseInter(ioo);
 	}
 
-	char tex[256];
+	std::string tex;
 	const char tex1[] = "Graph\\Obj3D\\Interactive\\Items\\Weapons\\";
-	char tx[256];
-	sprintf(tx, "%s\\%s\\%s.teo", tex1, temp, temp);
+	std::string tx = tex1 + '\\' + temp + '\\' + temp + ".teo";
 	File_Standardize(tx, tex);
 	
-	io->_npcdata->weapon = AddItem(GDevice, tex, IO_IMMEDIATELOAD);
+	io->_npcdata->weapon = AddItem(GDevice, tex.c_str(), IO_IMMEDIATELOAD);
 
 	INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)io->_npcdata->weapon;
 
 	if (ioo)
 	{
 		MakeTemporaryIOIdent(ioo);
-		SendIOScriptEvent(ioo, SM_INIT, "", NULL);
-		SendIOScriptEvent(ioo, SM_INITEND, "", NULL);
+		SendIOScriptEvent(ioo, SM_INIT);
+		SendIOScriptEvent(ioo, SM_INITEND);
 		io->_npcdata->weapontype = ioo->type_flags;
 		ioo->show = SHOW_FLAG_LINKED;
 		ioo->scriptload = 2;
@@ -2521,12 +2531,12 @@ void Prepare_SetWeapon(INTERACTIVE_OBJ * io, char * temp)
 	}
 }
 
-void GetIOScript(INTERACTIVE_OBJ * io, char * texscript)
+void GetIOScript(INTERACTIVE_OBJ * io, const char * texscript)
 {
 	if (PAK_FileExist(texscript))
 	{
 		size_t FileSize = 0;
-		io->script.data = (char *)PAK_FileLoadMallocZero(texscript, &FileSize);
+		io->script.data = (char *)PAK_FileLoadMallocZero(texscript, FileSize);
 
 		if (io->script.data)
 		{
@@ -2544,7 +2554,7 @@ void GetIOScript(INTERACTIVE_OBJ * io, char * texscript)
 //***********************************************************************************
 // Links an Interactive Object to another interactive object using an attach point
 //***********************************************************************************
-void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, char * attach)
+void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const char * attach)
 {
 	if ((!io)
 	        ||	(!io2))
@@ -2560,20 +2570,17 @@ void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, char * attach)
 //***********************************************************************************
 INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags)
 {
-	char tex1[HERMES_PATH_SIZE];
-	char texscript[HERMES_PATH_SIZE];
-
-	strcpy(texscript, file);
+	std::string tex1 = file;
+	std::string texscript = file;
 	SetExt(texscript, "asl");
-	strcpy(tex1, file);
 	SetExt(tex1, "teo");
 
-	char file2[256];
-	sprintf(file2, "GAME\\%s", file);
+	std::string file2 = "GAME\\";
+	file2 += file;
 	SetExt(file2, ".FTL");
 
-	if (!PAK_FileExist(file2)
-	        &&	!PAK_FileExist(file))
+	if (!PAK_FileExist(file2.c_str())
+	   &&	!PAK_FileExist(file))
 	{
 		return NULL;
 	}
@@ -2593,10 +2600,10 @@ INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
 	io->ioflags = IO_FIX;
 	io->_fixdata->trapvalue = -1;
 
-	GetIOScript(io, texscript);
+	GetIOScript(io, texscript.c_str());
 
 	if (!(flags & NO_ON_LOAD))
-		SendIOScriptEvent(io, SM_LOAD, "", NULL);
+		SendIOScriptEvent(io, SM_LOAD);
 
 	io->spellcast_data.castingspell = -1;
 	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
@@ -2624,7 +2631,7 @@ INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
 		io->lastpos.y = io->initpos.y = io->pos.y = min(io->pos.y, ep->v[2].sy);
 	}
 
-	strcpy(io->filename, tex1);
+	strcpy(io->filename, tex1.c_str());
 
 	if (!io->obj)
 	{
@@ -2636,7 +2643,7 @@ INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
 		else
 		{
 			const char texdir[] = "Graph\\Obj3D\\Textures\\";
-			io->obj = TheoToEerie_Fast(texdir, tex1, TTE_NO_PHYSICS_BOX, GDevice);
+			io->obj = TheoToEerie_Fast(texdir, tex1.c_str(), TTE_NO_PHYSICS_BOX, GDevice);
 		}
 	}
 
@@ -2681,20 +2688,17 @@ INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
 //***********************************************************************************
 INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
 {
+	std::string tex1 = file;;
+	std::string texscript = file;
 
-	char tex1[HERMES_PATH_SIZE];
-	char texscript[HERMES_PATH_SIZE];
-
-	strcpy(texscript, file);
 	SetExt(texscript, "asl");
-	strcpy(tex1, file);
 	SetExt(tex1, "teo");
 
-	char file2[256];
-	sprintf(file2, "GAME\\%s", file);
+	std::string file2 = "GAME\\";
+    file2 += file;
 	SetExt(file2, ".FTL");
 
-	if (!PAK_FileExist(file2)
+	if (!PAK_FileExist(file2.c_str())
 	        &&	!PAK_FileExist(file))
 	{
 		return NULL;
@@ -2709,7 +2713,7 @@ INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
 
 	if (!io) return NULL;
 
-	GetIOScript(io, texscript);
+	GetIOScript(io, texscript.c_str());
 
 	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
@@ -2734,7 +2738,7 @@ INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
 
 	io->lastpos.y = io->initpos.y = io->pos.y += PLAYER_BASE_HEIGHT;
 
-	strcpy(io->filename, tex1);
+	strcpy(io->filename, tex1.c_str());
  
 	io->obj = cameraobj;
 
@@ -2754,19 +2758,18 @@ INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
 //***********************************************************************************
 INTERACTIVE_OBJ * AddMarker(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
 {
-	char tex1[HERMES_PATH_SIZE];
-	char texscript[HERMES_PATH_SIZE];
+	std::string tex1 = file;
+	std::string texscript = file;
 
-	strcpy(texscript, file);
 	SetExt(texscript, "asl");
-	strcpy(tex1, file);
 	SetExt(tex1, "teo");
 
-	char file2[256];
-	sprintf(file2, "GAME\\%s", file);
+	std::string file2;
+	file2 = "GAME\\";
+    file2 += file;
 	SetExt(file2, ".FTL");
 
-	if (!PAK_FileExist(file2)
+	if (!PAK_FileExist(file2.c_str())
 	        &&	!PAK_FileExist(file))
 	{
 		return NULL;
@@ -2781,7 +2784,7 @@ INTERACTIVE_OBJ * AddMarker(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
 
 	if (!io) return NULL;
 
-	GetIOScript(io, texscript);
+	GetIOScript(io, texscript.c_str());
 	
 	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
@@ -2808,7 +2811,7 @@ INTERACTIVE_OBJ * AddMarker(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
 
 	io->lastpos.y = io->initpos.y = io->pos.y += PLAYER_BASE_HEIGHT;
 
-	strcpy(io->filename, tex1);
+	strcpy(io->filename, tex1.c_str());
  
 	io->obj = markerobj;
 	io->ioflags = IO_MARKER;
@@ -2930,7 +2933,7 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, long flag)
 	        ||	(i >= inter.nbmax))
 		return;
 
-	char temp[HERMES_PATH_SIZE];
+	std::string temp;
 	char temp2[HERMES_PATH_SIZE];
 	char temp3[HERMES_PATH_SIZE];
 
@@ -2941,15 +2944,18 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, long flag)
 		{
 			if (inter.iobj[i]->ident > 0)
 			{
-				strcpy(temp, inter.iobj[i]->filename);
-				strcpy(temp2, GetName(temp));
+				temp = inter.iobj[i]->filename;
+				strcpy(temp2, GetName(temp).c_str());
 				RemoveName(temp);
-				sprintf(temp, "%s%s_%04ld.", temp, temp2, inter.iobj[i]->ident);
+				std::stringstream ss;
+				ss << temp << temp2 << '_' << std::setfill('0') << std::setw(4) << inter.iobj[i]->ident << '.';
+				temp = ss.str();
+				//sprintf(temp, "%s%s_%04d.", temp, temp2, inter.iobj[i]->ident)
 
-				if (DirectoryExist(temp))
+				if (DirectoryExist(temp.c_str()))
 				{
 					long _delete = 0;
-					sprintf(temp3, "Really remove Directory & Directory Contents ?\n\n%s", temp);
+					sprintf(temp3, "Really remove Directory & Directory Contents ?\n\n%s", temp.c_str());
 
 					if (flag & FLAG_NOCONFIRM)
 					{
@@ -2964,8 +2970,8 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, long flag)
 
 					if (_delete)
 					{
-						strcat(temp, "\\");
-						KillAllDirectory(temp);
+						temp += "\\";
+						KillAllDirectory(temp.c_str());
 					}
 				}
 			}
@@ -3021,23 +3027,20 @@ void GroundSnapSelectedIO()
 //***********************************************************************************
 INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags)
 {
+    // creates script filename
+    std::string texscript = file;;
+    SetExt(texscript, "asl");
 
-	char tex1[HERMES_PATH_SIZE];
-	char texscript[HERMES_PATH_SIZE];
+    // creates teo filename
+    std::string tex1 = file;
+    SetExt(tex1, "teo");
 
-	// creates script filename
-	strcpy(texscript, file);
-	SetExt(texscript, "asl");
+    std::string file2;
+    file2 = "GAME\\";
+    file2 += file;
+    SetExt(file2, ".FTL");
 
-	// creates teo filename
-	strcpy(tex1, file);
-	SetExt(tex1, "teo");
-
-	char file2[256];
-	sprintf(file2, "GAME\\%s", file);
-	SetExt(file2, ".FTL");
-
-	if ((!PAK_FileExist(file2))
+	if ((!PAK_FileExist(file2.c_str()))
 	        &&	(!PAK_FileExist(file))
 	   )
 	{
@@ -3060,7 +3063,7 @@ INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
 	memset(io->_npcdata, 0, sizeof(IO_NPCDATA));
 	io->ioflags = IO_NPC;
 
-	GetIOScript(io, texscript);
+	GetIOScript(io, texscript.c_str());
 	
 	io->spellcast_data.castingspell = -1;
 	io->_npcdata->life = io->_npcdata->maxlife = 20.f;
@@ -3078,7 +3081,7 @@ INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
 	io->_npcdata->stare_factor = 1.f;
 
 	if (!(flags & NO_ON_LOAD))
-		SendIOScriptEvent(io, SM_LOAD, "", NULL);
+		SendIOScriptEvent(io, SM_LOAD);
 
 	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
 	io->lastpos.y = io->initpos.y = io->pos.y = player.pos.y;
@@ -3104,7 +3107,7 @@ INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
 	}
 
 	
-	strcpy(io->filename, tex1);
+	strcpy(io->filename, tex1.c_str());
 
 	if (!io->obj)
 	{
@@ -3116,7 +3119,7 @@ INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
 		else
 		{
 			const char texpath[] = "Graph\\Obj3D\\Textures\\";
-			io->obj = TheoToEerie_Fast(texpath, tex1, TTE_NO_PHYSICS_BOX | TTE_NPC, GDevice);
+			io->obj = TheoToEerie_Fast(texpath, tex1.c_str(), TTE_NO_PHYSICS_BOX | TTE_NPC, GDevice);
 		}
 	}
 
@@ -3146,18 +3149,17 @@ INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
 //*************************************************************************************
 void ReloadScript(INTERACTIVE_OBJ * io)
 {
-	char texscript[HERMES_PATH_SIZE];
+	std::string texscript = io->filename;
 	char tmp2[HERMES_PATH_SIZE];
-	strcpy(texscript, io->filename);
 	SetExt(texscript, "asl");
 	ARX_SCRIPT_Timer_Clear_For_IO(io);
 	ReleaseScript(&io->over_script);
 	ReleaseScript(&io->script);
 
-	if (PAK_FileExist(texscript))
+	if (PAK_FileExist(texscript.c_str()))
 	{
 		size_t FileSize = 0;
-		io->script.data = (char *)PAK_FileLoadMallocZero(texscript, &FileSize);
+		io->script.data = (char *)PAK_FileLoadMallocZero(texscript, FileSize);
 
 		if (io->script.data != NULL)
 		{
@@ -3171,15 +3173,25 @@ void ReloadScript(INTERACTIVE_OBJ * io)
 		io->script.data = NULL;
 	}
 
-	strcpy(texscript, io->filename);
-	strcpy(tmp2, GetName(texscript));
+	texscript = io->filename;
+	strcpy(tmp2, GetName(texscript).c_str());
 	RemoveName(texscript);
-	sprintf(texscript, "%s%s_%04ld\\%s.asl", texscript, tmp2, io->ident, tmp2);
+	std::stringstream ss;
+	ss << texscript << tmp2 << '_';
 
-	if (PAK_FileExist(texscript))
+	char fill = ss.fill('0');
+	std::streamsize width = ss.width(4);
+	ss << io->ident;
+	ss.width(width);
+	ss.fill(fill);
+
+	ss << '\\' << tmp2 << ".asl";
+	texscript = ss.str();
+
+	if (PAK_FileExist(texscript.c_str()))
 	{
 		size_t FileSize = 0;
-		io->over_script.data = (char *)PAK_FileLoadMallocZero(texscript, &FileSize);
+		io->over_script.data = (char *)PAK_FileLoadMallocZero(texscript, FileSize);
 
 		if (io->over_script.data != NULL)
 		{
@@ -3201,25 +3213,25 @@ void ReloadScript(INTERACTIVE_OBJ * io)
 		if (inter.iobj[num]
 		        &&	inter.iobj[num]->script.data)
 		{
-			SendScriptEvent(&inter.iobj[num]->script, SM_INIT, "", inter.iobj[num], NULL);
+			ScriptEvent::send(&inter.iobj[num]->script, SM_INIT, "", inter.iobj[num], "");
 		}
 
 		if (inter.iobj[num]
 		        &&	inter.iobj[num]->over_script.data)
 		{
-			SendScriptEvent(&inter.iobj[num]->over_script, SM_INIT, "", inter.iobj[num], NULL);
+			ScriptEvent::send(&inter.iobj[num]->over_script, SM_INIT, "", inter.iobj[num], "");
 		}
 
 		if (inter.iobj[num]
 		        &&	inter.iobj[num]->script.data)
 		{
-			SendScriptEvent(&inter.iobj[num]->script, SM_INITEND, "", inter.iobj[num], NULL);
+			ScriptEvent::send(&inter.iobj[num]->script, SM_INITEND, "", inter.iobj[num], "");
 		}
 
 		if (inter.iobj[num]
 		        &&	inter.iobj[num]->over_script.data)
 		{
-			SendScriptEvent(&inter.iobj[num]->over_script, SM_INITEND, "", inter.iobj[num], NULL);
+			ScriptEvent::send(&inter.iobj[num]->over_script, SM_INITEND, "", inter.iobj[num], "");
 		}
 	}
 }
@@ -3243,27 +3255,29 @@ bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t);
 //*************************************************************************************
 void MakeIOIdent(INTERACTIVE_OBJ * io)
 {
-	char temp[HERMES_PATH_SIZE];
+	std::string temp;
 	char temp2[HERMES_PATH_SIZE];
 	long t = 1;
 
 	if ((NODIRCREATION)
-	        ||	!io)
+	       ||	!io)
 		return;
 
 	while (io->ident == 0)
 	{
-		strcpy(temp, io->filename);
-		strcpy(temp2, GetName(temp));
+		temp = io->filename;
+		strcpy(temp2, GetName(temp).c_str());
 		RemoveName(temp);
-		sprintf(temp, "%s%s_%04ld.", temp, temp2, t);
+		std::stringstream ss;
+		ss << temp << temp2 << '_' << std::setfill('0') << std::setw(4) << t << '.';
+		//(temp, "%s%s_%04d.", temp, temp2, t);
 
-		if (!DirectoryExist(temp))
+		if (!DirectoryExist(temp.c_str()))
 		{
 			io->ident = t;
-			CreateDirectory(temp, NULL);
-			LogDirCreation(temp);
-			WriteIOInfo(io, temp);
+			CreateDirectory(temp.c_str(), NULL);
+			LogDirCreation(temp.c_str());
+			WriteIOInfo(io, temp.c_str());
 		}
 
 		t++;
@@ -3281,7 +3295,7 @@ bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t)
 
 	char name1[256];
 	char ident[256];;
-	strcpy(name1, GetName(io->filename));
+	strcpy(name1, GetName(io->filename).c_str());
 	sprintf(ident, "%s_%04ld", name1, t);
 
 	for (long i = 0; i < inter.nbmax; i++)
@@ -3292,7 +3306,7 @@ bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t)
 			        &&	(io != inter.iobj[i]))
 			{
 				char name2[256];
-				strcpy(name2, GetName(inter.iobj[i]->filename));
+				strcpy(name2, GetName(inter.iobj[i]->filename).c_str());
 
 				if (!strcasecmp(name1, name2))
 				{
@@ -3302,12 +3316,11 @@ bool ExistTemporaryIdent(INTERACTIVE_OBJ * io, long t)
 		}
 	}
 
-	char file2[256];
-	strcpy(file2, io->filename);
+	std::string file2 = io->filename;
 	RemoveName(file2);
-	sprintf(file2, "%s%s", file2, ident);
+	file2 += ident;
 
-	if (PAK_DirectoryExist(file2))
+	if (PAK_DirectoryExist(file2.c_str()))
 		return true;
 
 	if (LAST_CHINSTANCE != -1)
@@ -3352,48 +3365,52 @@ extern long SP_DBG;
 // AddItem
 // Adds an ITEM INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const char * fil, long flags)
+INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fil, long flags)
 {
-	char tex1[HERMES_PATH_SIZE];
-	char tex2[HERMES_PATH_SIZE];
-	char texscript[HERMES_PATH_SIZE];
-	char file[256];
+	std::string tex1;
+	std::string tex2;
+	std::string texscript;
+	std::string file;
 	long type = IO_ITEM;
 
 	if (!specialstrcmp(GetName(fil), "GOLD_COIN"))
 	{
-		strcpy(file, fil);
+		file = fil;
 		RemoveName(file);
-		strcat(file, "GOLD_COIN.asl");
+		file += "GOLD_COIN.asl";
 		type = IO_ITEM | IO_GOLD;
 	}
-	else strcpy(file, fil);
+	else file = fil;
 
 	if (IsIn(fil, "MOVABLE"))
 	{
 		type = IO_ITEM | IO_MOVABLE;
 	}
 
-	strcpy(texscript, file);
+	texscript = file;
 	SetExt(texscript, "asl");
-	strcpy(tex1, file);
+	tex1 = file;
 	SetExt(tex1, "teo");
 
-	strcpy(tex2, file);
+	// TODO clean up
+	tex2 = file;
 	SetExt(tex2, "bmp");
-	AddToName(tex2, "[Icon]");
+	std::string temp;
+	temp = tex2;
+	AddToName( temp, "[Icon]");
+	tex2 = temp;
 
-	char file2[256];
-	sprintf(file2, "GAME\\%s", file);
+	std::string file2;
+	file2 = "GAME\\" + file;
 	SetExt(file2, ".FTL");
 
-	if (!PAK_FileExist(file2)
-	        &&	!PAK_FileExist(file))
+	if (!PAK_FileExist(file2.c_str())
+	        &&	!PAK_FileExist(file.c_str()))
 	{
 		return NULL;
 	}
 
-	if (!PAK_FileExist(tex2)) 	return NULL;
+	if (!PAK_FileExist(tex2.c_str())) 	return NULL;
 
 	INTERACTIVE_OBJ * io = CreateFreeInter();
 
@@ -3420,10 +3437,10 @@ INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const char * fil, long f
 
 	io->_itemdata->playerstacksize = 1;
 
-	GetIOScript(io, texscript);
+	GetIOScript(io, texscript.c_str());
 
 	if (!(flags & NO_ON_LOAD))
-		SendIOScriptEvent(io, SM_LOAD, "", NULL);
+		SendIOScriptEvent(io, SM_LOAD);
 
 	io->spellcast_data.castingspell = -1;
 	io->lastpos.x = io->initpos.x = io->pos.x = player.pos.x - (float)EEsin(radians(player.angle.b)) * 140.f;
@@ -3451,7 +3468,7 @@ INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const char * fil, long f
 	}
 
 
-	strcpy(io->filename, tex1);
+	strcpy(io->filename, tex1.c_str());
 
 	if (io->ioflags & IO_GOLD)
 		io->obj = GoldCoinsObj[0];
@@ -3467,7 +3484,7 @@ INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const char * fil, long f
  
 			const char texdir[] = "Graph\\Obj3D\\Textures\\";
 
-			io->obj = TheoToEerie_Fast(texdir, tex1, 0, GDevice);
+			io->obj = TheoToEerie_Fast(texdir, tex1.c_str(), 0, GDevice);
 		}
 	}
 
@@ -3480,15 +3497,15 @@ INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const char * fil, long f
 	else
 	{
 		D3DTextr_CreateTextureFromFile(tex2, 0, D3DTEXTR_NO_REFINEMENT , EERIETEXTUREFLAG_LOADSCENE_RELEASE);
-		tc = D3DTextr_GetSurfaceContainer(tex2);
+		tc = D3DTextr_GetSurfaceContainer(tex2.c_str());
 	}
 
 	if (tc == NULL)
 	{
-		strcpy(tex2, "Graph\\Interface\\misc\\Default[Icon].bmp"); // TODO copy can be avoided
+		tex2 = "Graph\\Interface\\misc\\Default[Icon].bmp"; // TODO copy can be avoided
 		D3DTextr_CreateTextureFromFile(tex2, 0, D3DTEXTR_NO_REFINEMENT);
-		D3DTextr_Restore(tex2, pd3dDevice);
-		tc = D3DTextr_GetSurfaceContainer(tex2);
+		D3DTextr_Restore(tex2.c_str(), pd3dDevice);
+		tc = D3DTextr_GetSurfaceContainer(tex2.c_str());
 	}
 
 	if (tc)
@@ -3909,10 +3926,10 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 									{
 										EVENT_SENDER = io_source;
 										io->collide_door_time = ARXTimeUL(); 	
-										SendIOScriptEvent(io, SM_COLLIDE_DOOR, "", NULL);
+										SendIOScriptEvent(io, SM_COLLIDE_DOOR);
 										EVENT_SENDER = io;
 										io->collide_door_time = ARXTimeUL(); 	
-										SendIOScriptEvent(io_source, SM_COLLIDE_DOOR, "", NULL);
+										SendIOScriptEvent(io_source, SM_COLLIDE_DOOR);
 									}
 								}
 
@@ -4078,10 +4095,10 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 											{
 												EVENT_SENDER = io_source;
 												io->collide_door_time = ARXTimeUL(); 
-												SendIOScriptEvent(io, SM_COLLIDE_DOOR, "", NULL);
+												SendIOScriptEvent(io, SM_COLLIDE_DOOR);
 												EVENT_SENDER = io;
 												io->collide_door_time = ARXTimeUL(); 	
-												SendIOScriptEvent(io_source, SM_COLLIDE_DOOR, "", NULL);
+												SendIOScriptEvent(io_source, SM_COLLIDE_DOOR);
 											}
 										}
 
@@ -4103,10 +4120,10 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 									{
 										EVENT_SENDER = io_source;
 										io->collide_door_time = ARXTimeUL(); 	
-										SendIOScriptEvent(io, SM_COLLIDE_DOOR, "", NULL);
+										SendIOScriptEvent(io, SM_COLLIDE_DOOR);
 										EVENT_SENDER = io;
 										io->collide_door_time = ARXTimeUL(); 	
-										SendIOScriptEvent(io_source, SM_COLLIDE_DOOR, "", NULL);
+										SendIOScriptEvent(io_source, SM_COLLIDE_DOOR);
 									}
 								}
 								return true;
@@ -4169,10 +4186,10 @@ void UpdateCameras()
 						char str[16];
 						sprintf(str, "%ld", aup->path->nb_pathways - 1);
 						EVENT_SENDER = NULL;
-						SendIOScriptEvent(io, SM_WAYPOINT, str, NULL);
+						SendIOScriptEvent(io, SM_WAYPOINT, str);
 						sprintf(str, "WAYPOINT%ld", aup->path->nb_pathways - 1);
 						SendIOScriptEvent(io, 0, "", str);
-						SendIOScriptEvent(io, SM_PATHEND, "", NULL);
+						SendIOScriptEvent(io, SM_PATHEND);
 						aup->lastWP = last;
 					}
 					else
@@ -4190,13 +4207,13 @@ void UpdateCameras()
 						char str[16];
 						sprintf(str, "%ld", ii);
 						EVENT_SENDER = NULL;
-						SendIOScriptEvent(io, SM_WAYPOINT, str, NULL);
+						SendIOScriptEvent(io, SM_WAYPOINT, str);
 						sprintf(str, "WAYPOINT%ld", ii);
 						SendIOScriptEvent(io, 0, "", str);
 
 						if (ii == aup->path->nb_pathways)
 						{
-							SendIOScriptEvent(io, SM_PATHEND, "", NULL);
+							SendIOScriptEvent(io, SM_PATHEND);
 						}
 						
 						aup->lastWP = last + 1;
@@ -4860,4 +4877,35 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 		io->soundcount = 0;
 		EERIE_PHYSICS_BOX_Launch(io->obj, &pos, &fallvector);
 	}
+}
+
+//-------------------------------------------------------------------------
+void GetMaterialString( const char * origin, char * dest)
+{
+	// need to be precomputed !!!
+	if (IsIn(origin, "STONE"))	strcpy(dest, "STONE");
+	else if (IsIn(origin, "MARBLE"))	strcpy(dest, "STONE");
+	else if (IsIn(origin, "ROCK"))	strcpy(dest, "STONE");
+	else if (IsIn(origin, "WOOD"))	strcpy(dest, "WOOD");
+	else if (IsIn(origin, "WET"))	strcpy(dest, "WET");
+	else if (IsIn(origin, "MUD"))	strcpy(dest, "WET");
+	else if (IsIn(origin, "BLOOD"))	strcpy(dest, "WET");
+	else if (IsIn(origin, "BONE"))	strcpy(dest, "WET");
+	else if (IsIn(origin, "FLESH"))	strcpy(dest, "WET");
+	else if (IsIn(origin, "SHIT"))	strcpy(dest, "WET");
+	else if (IsIn(origin, "SOIL"))	strcpy(dest, "GRAVEL");
+	else if (IsIn(origin, "GRAVEL"))	strcpy(dest, "GRAVEL");
+	else if (IsIn(origin, "EARTH"))	strcpy(dest, "GRAVEL");
+	else if (IsIn(origin, "DUST"))	strcpy(dest, "GRAVEL");
+	else if (IsIn(origin, "SAND"))	strcpy(dest, "GRAVEL");
+	else if (IsIn(origin, "STRAW"))	strcpy(dest, "GRAVEL");
+	else if (IsIn(origin, "METAL"))	strcpy(dest, "METAL");
+	else if (IsIn(origin, "IRON"))	strcpy(dest, "METAL");
+	else if (IsIn(origin, "GLASS"))	strcpy(dest, "METAL");
+	else if (IsIn(origin, "RUST"))	strcpy(dest, "METAL");
+	else if (IsIn(origin, "EARTH"))	strcpy(dest, "EARTH");
+	else if (IsIn(origin, "ICE"))	strcpy(dest, "ICE");
+	else if (IsIn(origin, "FABRIC")) strcpy(dest, "CARPET");
+	else if (IsIn(origin, "MOSS"))	strcpy(dest, "CARPET");
+	else strcpy(dest, "UNKNOWN");
 }

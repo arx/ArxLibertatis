@@ -44,9 +44,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIETYPES_H
 #define EERIETYPES_H
 
-#include <math.h>
-#define D3D_OVERLOADS
+#include <cmath>
+#include <vector>
+
 #include "graphics/d3dwrapper.h"
+
 #include "core/Common.h"
 
 class TextureContainer;
@@ -106,6 +108,13 @@ struct EERIE_3D
 		float		g;
 		float		roll;
 	};
+
+	void clear()
+	{
+		x = 0;
+		y = 0;
+		z = 0;
+	}
 }; // Aligned 1 2 4
 #pragma pack(pop)
 
@@ -126,7 +135,7 @@ struct EERIE_3D_BBOX
 	EERIE_3D max;
 }; // Aligned 1 2 4
 
-typedef S32 ArxSound;
+typedef s32 ArxSound;
 
 struct EERIE_LIGHT
 {
@@ -226,19 +235,25 @@ struct EERIEPOLY
 	unsigned short	uslInd[4];
 }; // Aligned 1 2 4
 
-struct EERIE_VERTEX
-{
-	D3DTLVERTEX vert;
-	EERIE_3D	v;
-	EERIE_3D	norm;
-	EERIE_3D	vworld;
-}; // Aligned 1 2 4
-
 struct EERIE_OLD_VERTEX
 {
 	D3DTLVERTEX vert;
 	EERIE_3D	v;
 	EERIE_3D	norm;
+}; // Aligned 1 2 4
+
+struct EERIE_VERTEX
+{
+	EERIE_VERTEX() {}
+	EERIE_VERTEX( EERIE_OLD_VERTEX& rhs )
+	:
+		vert(rhs.vert), v(rhs.v), norm(rhs.norm)
+	{}
+
+	D3DTLVERTEX vert;
+	EERIE_3D	v;
+	EERIE_3D	norm;
+	EERIE_3D	vworld;
 }; // Aligned 1 2 4
 
 #define MATERIAL_NONE		0
@@ -325,24 +340,6 @@ struct EERIE_PFACE
 	D3DCOLOR	color[MAX_PFACE];
 };
 
-struct EERIE_FACE_FTL
-{
-	long		facetype;	// 0 = flat  1 = text
-							// 2 = Double-Side
-	D3DCOLOR	rgb[IOPOLYVERT];
-	unsigned short		vid[IOPOLYVERT];
-	short		texid;
-	float		u[IOPOLYVERT];
-	float		v[IOPOLYVERT];
-	short		ou[IOPOLYVERT];
-	short		ov[IOPOLYVERT];
-
-	float		transval;
-	EERIE_3D	norm;
-	EERIE_3D	nrmls[IOPOLYVERT];
-	float		temp;
-
-}; // Aligned 1 2 4
 
 //***********************************************************************
 //*		BEGIN EERIE OBJECT STRUCTURES									*
@@ -449,25 +446,27 @@ struct EERIE_MAP
 	long			sy;
 	unsigned long	bpp;
 	unsigned char * bmpdata;
-}; // Aligned 1 2 4
+} EERIE_MAP; // Aligned 1 2 4
 
 
-struct EERIE_GROUPLIST
-{
-	char		name[256];
-	long		origin;
-	long		nb_index;
-	long 	*	indexes;
-	float		siz;
-}; // Aligned 1 2 4
+struct EERIE_GROUPLIST {
+	std::string name;
+	long origin;
+	long nb_index;
+	long * indexes;
+	float siz;
+	
+	EERIE_GROUPLIST() : name(), origin(0), nb_index(0), indexes(NULL), siz(0.0f) { };
+};
 
-struct EERIE_ACTIONLIST
-{
-	char			name[256];
-	long			idx; //index vertex;
-	long			act; //action
-	long			sfx; //sfx
-}; // Aligned 1 2 4
+struct EERIE_ACTIONLIST {
+	std::string name;
+	long idx; //index vertex;
+	long act; //action
+	long sfx; //sfx
+	
+	EERIE_ACTIONLIST() : name(), idx(0), act(0), sfx(0) { };
+};
 
 struct CUB3D
 {
@@ -499,12 +498,13 @@ struct EERIE_LINKED
 }; // Aligned 1 2 4
 
 
-struct EERIE_SELECTIONS
-{
-	char	name[64];
-	long	nb_selected;
-	long *	selected;
-}; // Aligned 1 2 4
+struct EERIE_SELECTIONS {
+	std::string name;
+	long nb_selected;
+	long * selected;
+	
+	EERIE_SELECTIONS() : name(), nb_selected(0), selected(NULL) { };
+};
 
 #define DRAWFLAG_HIGHLIGHT	1
 
@@ -573,8 +573,81 @@ struct EERIE_3DPAD
 
 struct EERIE_3DOBJ
 {
-	char				name[256];
-	char				file[256];
+	EERIE_3DOBJ()
+	{
+		// TODO Make it possible to use a default
+		// conststructor for these
+		pos.x = pos.y = pos.z = 0;
+		point0 = pos;
+		angle = pos;
+
+		origin = 0;
+		ident = 0;
+		nbvertex = 0;
+		true_nbvertex = 0;
+		nbfaces = 0;
+		nbpfaces = 0;
+		nbmaps = 0;
+		nbgroups = 0;
+		drawflags = 0;
+
+		vertexlocal = 0;
+		vertexlist = 0;
+		vertexlist3 = 0;
+
+		facelist = 0;
+		pfacelist = 0;
+		maplist = 0;
+		grouplist = 0;
+		texturecontainer = 0;
+
+		originaltextures = 0;
+		linked = 0;
+
+		// TODO Make default constructor possible
+		cub.xmin = 0;
+		cub.xmax = 0;
+		cub.ymin = 0;
+		cub.ymax = 0;
+		cub.zmin = 0;
+		cub.zmax = 0;
+
+		// TODO Default constructor
+		quat.x = quat.y = quat.z = quat.w = 0;
+		nblinked = 0;
+
+		pbox = 0;
+		pdata = 0;
+		ndata = 0;
+		cdata = 0;
+		sdata = 0;
+
+		fastaccess.view_attach = 0;
+		fastaccess.primary_attach = 0;
+		fastaccess.left_attach = 0;
+		fastaccess.weapon_attach = 0;
+		fastaccess.secondary_attach = 0;
+		fastaccess.mouth_group = 0;
+		fastaccess.jaw_group = 0;
+		fastaccess.head_group_origin = 0;
+		fastaccess.head_group = 0;
+		fastaccess.mouth_group_origin = 0;
+		fastaccess.V_right = 0;
+		fastaccess.U_right = 0;
+		fastaccess.fire = 0;
+		fastaccess.sel_head = 0;
+		fastaccess.sel_chest = 0;
+		fastaccess.sel_leggings = 0;
+		fastaccess.carry_attach = 0;
+		fastaccess.__padd = 0;
+
+		c_data = 0;
+	}
+	
+	void clear();
+	
+	std::string name;
+	std::string file;
 	EERIE_3D			pos;
 	EERIE_3D			point0;
 	EERIE_3D			angle;
@@ -586,8 +659,6 @@ struct EERIE_3DOBJ
 	long				nbpfaces;
 	long				nbmaps;
 	long				nbgroups;
-	long				nbaction;
-	long				nbselections;
 	unsigned long		drawflags;
 	EERIE_3DPAD 	*	vertexlocal;
 	EERIE_VERTEX 	*	vertexlist;
@@ -597,8 +668,8 @@ struct EERIE_3DOBJ
 	EERIE_PFACE 	*	pfacelist;
 	EERIE_MAP 	*		maplist;
 	EERIE_GROUPLIST *	grouplist;
-	EERIE_ACTIONLIST *	actionlist;
-	EERIE_SELECTIONS *	selections;
+	std::vector<EERIE_ACTIONLIST> actionlist;
+	std::vector<EERIE_SELECTIONS> selections;
 	TextureContainer ** texturecontainer;
 
 	char 		*		originaltextures;
@@ -617,6 +688,7 @@ struct EERIE_3DOBJ
 	EERIE_C_DATA 	*	c_data;
 
 }; // Aligned 1 2 4
+
 
 struct EERIE_3DSCENE
 {
@@ -739,7 +811,6 @@ struct EP_DATA
 };
 #pragma pack(pop)
 
-#pragma pack(push,1)
 struct EERIE_ROOM_DATA
 {
 	long nb_portals;
@@ -753,7 +824,6 @@ struct EERIE_ROOM_DATA
 	unsigned long				usNbTextures;
 	TextureContainer		**	ppTextureContainer;
 };
-#pragma pack(pop)
 
 #pragma pack(push,1)
 struct EERIE_SAVE_ROOM_DATA

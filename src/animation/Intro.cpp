@@ -22,6 +22,13 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+/*
+#include <algorithm>
+#include <fstream>
+#include <sstream>
+#include <vector>
+*/
+
 #include "gui/Interface.h"
 #include "game/Levels.h"
 #include "gui/Menu.h"

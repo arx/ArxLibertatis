@@ -84,6 +84,7 @@ using std::sprintf;
 
 #include "io/IO.h"
 #include "io/PakManager.h"
+#include "io/Logger.h"
 
 using std::min;
 using std::max;
@@ -339,7 +340,7 @@ long EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah, char * path) {
 	}
 	
 	size_t FileSize;
-	unsigned char * adr = (unsigned char *)PAK_FileLoadMalloc(path,&FileSize);
+	unsigned char * adr = (unsigned char *)PAK_FileLoadMalloc( path, FileSize );
 	if(!adr) {
 		return 0;
 	}
@@ -359,9 +360,11 @@ long EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah, char * path) {
 }
 
 //-----------------------------------------------------------------------------
-ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const char * path)
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load( const std::string& _path)
 {
-	ANIM_HANDLE * handl=EERIE_ANIMMANAGER_GetHandle(path);
+	std::string path = _path;
+
+	ANIM_HANDLE * handl=EERIE_ANIMMANAGER_GetHandle(path.c_str());
 
 	if (handl) 
 	{
@@ -372,35 +375,36 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const char * path)
 	unsigned char * adr;
 	size_t FileSize;
 	char path2[256];
-	char pathcount=2;
+	int pathcount = 2;
 
 	for (long i=0;i<MAX_ANIMATIONS;i++)
 	{
 		if (animations[i].path[0]==0)
 		{				
-			if ((adr=(unsigned char *)PAK_FileLoadMalloc(path,&FileSize))!=NULL)
+			if ((adr=(unsigned char *)PAK_FileLoadMalloc(path,FileSize))!=NULL)
 			{
 				animations[i].anims=(EERIE_ANIM **)malloc(sizeof(EERIE_ANIM *));
 				animations[i].sizes=(long *)malloc(sizeof(long));
 
-				animations[i].anims[0]=TheaToEerie(adr,FileSize,path,TEA_PLAYER_SAMPLES);
+				animations[i].anims[0]=TheaToEerie(adr,FileSize,path.c_str(),TEA_PLAYER_SAMPLES);
 				animations[i].sizes[0]=FileSize;
 				animations[i].alt_nb=1;
 				free(adr);
 
 				if (animations[i].anims[0]==NULL) return NULL;			
 
-				strcpy(animations[i].path,path);				
+				strcpy(animations[i].path,path.c_str());				
 				animations[i].locks=1;
-				char temp[512]; // TODO improve
-				strcpy(temp, path);
-				SetExt(temp, "");
-				sprintf(path2,"%s%d.tea",temp,pathcount);
+
+				//remove extension
+				path = path.substr(0, path.size()-4);
+
+				sprintf(path2,"%s%d.tea",path.c_str(),pathcount);
 
 				while (EERIE_ANIMMANAGER_AddAltAnim(&animations[i],path2))
 				{
 					pathcount++;
-					sprintf(path2,"%s%d.tea",temp,pathcount);					
+					sprintf(path2,"%s%d.tea",path.c_str(),pathcount);
 				}
 
 				return &animations[i];
@@ -415,14 +419,11 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const char * path)
 
 //-----------------------------------------------------------------------------
 // tex Must be of sufficient size...
-long EERIE_ANIMMANAGER_Count(char *tex,long * memsize)
+long EERIE_ANIMMANAGER_Count( std::string& tex, long * memsize)
 {
 	char temp[512];
 	long count=0;
 	*memsize=0;
-
-	if (tex!=NULL) 
-		strcpy(tex,"");
 
 	for (long i=0;i<MAX_ANIMATIONS;i++)
 	{
@@ -439,11 +440,11 @@ long EERIE_ANIMMANAGER_Count(char *tex,long * memsize)
 
 			sprintf(temp,"%3ld[%3ld] %s size %ld Locks %ld Alt %d\r\n",count,i,txx,totsize,animations[i].locks,animations[i].alt_nb-1);
 			memsize+=totsize;
-			strcat(tex,temp);
+			tex += temp;
 		}
 	}	
 
-    return count;
+	return count;
 }
 
 //*************************************************************************************
@@ -979,7 +980,7 @@ void PopOneTriangleList(TextureContainer *_pTex,bool _bUpdate)
 		if(_bUpdate) _pTex->ulNbVertexListCull = 0;
 	}
 	
- 	PopOneTriangleListClipp(_pTex->pVertexListCullH,(int*)&_pTex->ulNbVertexListCullH);
+	PopOneTriangleListClipp(_pTex->pVertexListCullH,(int*)&_pTex->ulNbVertexListCullH);
 	val=GLOBAL_MIPMAP_BIAS;
 	GDevice->SetTextureStageState( 0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD) (&val))  );
 }
@@ -1761,10 +1762,10 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	// Avoids To treat an object that isn't Visible
 	if (	( io )
 		&&	( io != inter.iobj[0] )
-	 	&&	( !modinfo ) 
-	        &&	(!ForceIODraw)
+		&&	( !modinfo ) 
+			&&	(!ForceIODraw)
 		&&	( !__MUST_DRAW )
-	        &&	(ACTIVEBKG))   
+			&&	(ACTIVEBKG))   
 	{		
 		long xx, yy;
 		xx = (pos.x) * ACTIVEBKG->Xmul;
@@ -2845,7 +2846,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 				if (!ok) return; 
 		}
 
-    }
+	}
 	
 	
 
@@ -3519,7 +3520,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 						{
 					
 							valll=0.005f+(EEfabs(workon[first].sz-workon[third].sz)
-						                  + EEfabs(workon[second].sz - workon[third].sz)) ;
+										  + EEfabs(workon[second].sz - workon[third].sz)) ;
 
 							vert[1].sz+=valll;
 							vert[2].sz+=valll;

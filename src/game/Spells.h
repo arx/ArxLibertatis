@@ -117,7 +117,7 @@ void ARX_SPELLS_Precast_Reset();
 void ARX_SPELLS_Precast_Add(const long & typ, long level = 1, long flags = 0);
 void ARX_SPELLS_Precast_Launch(const long & num);
 
-long GetSpellId(const char * spell);
+long GetSpellId(const std::string& spell);
 bool MakeSpellName(char * spell, const long & num);
 void TryToCastSpell(INTERACTIVE_OBJ * io, const long & spellid, const long & level, const long & target, const long & flags, const long & duration);
 void ARX_SPELLS_Precast_Check();

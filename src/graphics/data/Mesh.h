@@ -60,6 +60,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsTypes.h"
 
+// TODO Remove when this header is cleaned up
+#include "scripting/Script.h"
+
 void specialEE_RTP(D3DTLVERTEX*,D3DTLVERTEX*);
 void EERIE_CreateMatriceProj(float _fWidth,float _fHeight,float _fFOV,float _fZNear,float _fZFar);
 
@@ -184,9 +187,6 @@ struct EERIE_SMINMAX
 	short max;
 };
 
-#define MAX_GOSUB 10
-#define MAX_SHORTCUT 80
-#define MAX_SCRIPTTIMERS 5
 #define FBD_TREAT		1
 #define FBD_NOTHING		2
 
@@ -227,36 +227,6 @@ struct EERIE_BACKGROUND
 	long		  nbanchors;
 	_ANCHOR_DATA * anchors;
 	char		name[256];
-};
-
-struct SCRIPT_VAR
-{
-	long	type;
-	long	ival;
-	float	fval;
-	char *	text;  // for a TEXT type ival equals strlen(text).
-	char 	name[64];
-};
-struct LABEL_INFO
-{
-	char *		string;
-	long		idx;
-};
-
-struct EERIE_SCRIPT
-{
-	long			size;
-	char *			data;
-	long			sub[MAX_GOSUB];
-	long			nblvar;
-	SCRIPT_VAR *	lvar;
-	unsigned long	lastcall;
-	unsigned long	timers[MAX_SCRIPTTIMERS];
-	long			allowevents;
-	void *			master;
-	long			shortcut[MAX_SHORTCUT];
-	long			nb_labels;
-	LABEL_INFO *	labels;
 };
 
 struct IO_EQUIPITEM_ELEMENT
@@ -465,8 +435,7 @@ struct TWEAK_INFO
 
 #define MAX_ANIMS 200		// max loadable anims per character
 
-typedef S32 ArxSound;
-
+typedef s32 ArxSound;
 struct INTERACTIVE_OBJ
 {
 	long				num;		// Nuky - 25/01/11 - cache the InterNum to speed up GetInterNum()
@@ -962,7 +931,7 @@ void PrepareActiveCamera();
 
 
 void ApplyLight(EERIEPOLY *ep);
-long MakeTopObjString(INTERACTIVE_OBJ * io, char * dest, unsigned int destSize);
+long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest, unsigned int destSize);
 void DeclareEGInfo(float x,float y,float z);
 bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj);
 void ApplyWaterFXToVertex(EERIE_3D * odtv,D3DTLVERTEX * dtv,float power);
@@ -1000,7 +969,7 @@ void EERIE_ANIMMANAGER_Init();
 void EERIE_ANIMMANAGER_PurgeUnused();
 void EERIE_ANIMMANAGER_ReleaseHandle(ANIM_HANDLE * anim);
 ANIM_HANDLE * EERIE_ANIMMANAGER_GetHandle(const char * path);
-ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const char * path);
+ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const std::string& path);
 void BkgAddShadowPoly(EERIEPOLY * ep,EERIEPOLY * father);
 
 EERIEPOLY * GetMinNextPoly(long i,long j,EERIEPOLY * ep);
@@ -1093,7 +1062,7 @@ float CEDRIC_PtIn2DPolyProjV2(EERIE_3DOBJ * obj,EERIE_FACE * ef, float x, float 
 void EERIE_PORTAL_ReleaseOnlyVertexBuffer();
 void ComputePortalVertexBuffer();
 float GetRoomDistance(long i,long j,EERIE_3D * p1,EERIE_3D * p2);
-bool GetNameInfo(char * name1,long * type,long * val1,long * val2);
+bool GetNameInfo( const std::string& name1,long& type,long& val1,long& val2);
 
 struct TILE_LIGHTS
 {

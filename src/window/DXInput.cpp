@@ -67,6 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 { 
 	return malloc(t);
 }
+*/
 /*-------------------------------------------------------------*/
 /*static void * DXI_Realloc(void *mem,int t)
 {

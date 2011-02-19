@@ -27,24 +27,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_LOC_H
 #define ARX_LOC_H
 
-#include <tchar.h>
-#include <objbase.h>
-#include "core/Common.h"
+#include <string>
 
-void ARX_Localisation_Init(const char * _lpszExtension = "english");
-void ARX_Localisation_Close();
+void Localisation_Init();
+void Localisation_Close();
 
 
-DWORD PAK_UNICODE_GetPrivateProfileString(const char * _lpszSection,
-        const char * _lpszDefault,
-        char * _lpszBuffer,
-        unsigned long	_lBufferSize);
+int PAK_UNICODE_GetPrivateProfileString( const std::string& _lpszSection,
+        const std::string& _lpszDefault,
+        std::string& _lpszBuffer);
 
-long HERMES_UNICODE_GetProfileSectionKeyCount(const char * sectionname);
+long HERMES_UNICODE_GetProfileSectionKeyCount( const std::string& sectionname);
+long HERMES_UNICODE_GetProfileString(const std::string& sectionname,
+                                     const std::string& defaultstring,
+                                     std::string& destination );
 
-long HERMES_UNICODE_GetProfileString(const char	*	sectionname,
-                                     const char	*	defaultstring,
-                                     char	*	destination,
-                                     unsigned long	maxsize);
-
-#endif
+#endif // ARX_LOC_H

@@ -68,33 +68,33 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 EERIE_3DOBJ * _LoadTheObj(const char * text, const char * path);
 void SaveIOScript(INTERACTIVE_OBJ * io, long fl);
-void LogDirCreation(char * dir);
+void LogDirCreation( const std::string& dir);
 
 #define	SP_IGNORED	1
 #define	SP_CHILD	2
 
-void WriteIOInfo(INTERACTIVE_OBJ * io, char * dir);
+void WriteIOInfo(INTERACTIVE_OBJ * io, const std::string& dir);
 
 #pragma pack(push,1)
 typedef struct
 {
-	char		name[512];
-	EERIE_3D	pos;
-	EERIE_3D	angle;
-	long		ident; 
-	long		flags; 
-	long	pad[14];
-	float	fpad[16];
+	char        name[512];
+	EERIE_3D    pos;
+	EERIE_3D    angle;
+	long        ident; 
+	long        flags; 
+	long        pad[14];
+	float       fpad[16];
 } DANAE_LS_INTER; // Aligned 1 2 4
 #pragma pack(pop)
 
 extern EERIE_3D loddpos;
-long DanaeSaveLevel(char * fic);
-long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const char * file);
+long DanaeSaveLevel( const std::string& fic);
+long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& file);
 void DanaeClearLevel(long flags = 0);
 void DanaeClearAll();
 void RestoreLastLoadedLightning();
-void LogDirDestruction(char * dir);
+void LogDirDestruction( const std::string& dir);
 
 void CheckIO_NOT_SAVED();
 INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans);

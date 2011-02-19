@@ -145,11 +145,11 @@ void ARX_PATH_ComputeBB(ARX_PATH * ap)
 
 	for (long i = 0; i < ap->nb_pathways; i++)
 	{
-		ap->bbmin.x = min(ap->bbmin.x, ap->pos.x + ap->pathways[i].rpos.x);
-		ap->bbmax.x = max(ap->bbmax.x, ap->pos.x + ap->pathways[i].rpos.x);
+		ap->bbmin.x = std::min(ap->bbmin.x, ap->pos.x + ap->pathways[i].rpos.x);
+		ap->bbmax.x = std::max(ap->bbmax.x, ap->pos.x + ap->pathways[i].rpos.x);
 
-		ap->bbmin.z = min(ap->bbmin.z, ap->pos.z + ap->pathways[i].rpos.z);
-		ap->bbmax.z = max(ap->bbmax.z, ap->pos.z + ap->pathways[i].rpos.z);
+		ap->bbmin.z = std::min(ap->bbmin.z, ap->pos.z + ap->pathways[i].rpos.z);
+		ap->bbmax.z = std::max(ap->bbmax.z, ap->pos.z + ap->pathways[i].rpos.z);
 	}
 
 	if (ap->height > 0)
@@ -242,12 +242,13 @@ ARX_PATH * ARX_PATH_CheckPlayerInZone()
 	return NULL;
 }
 long JUST_RELOADED = 0;
+
 void ARX_PATH_UpdateAllZoneInOutInside()
 {
 	if (EDITMODE) return;
 
 	static long count = 1;
-	char temp[64];
+	std::string temp;
 
 	long f	=	ARX_CLEAN_WARN_CAST_LONG(FrameDiff);
 
@@ -285,9 +286,9 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				}
 				else if ((op != NULL) && (p == NULL)) // Leaving Zone OP
 				{
-					strcpy(temp, op->name);
+					temp = op->name;
 					MakeUpcase(temp);
-					SendIOScriptEvent(io, SM_LEAVEZONE, temp, NULL); 
+					SendIOScriptEvent(io, SM_LEAVEZONE, temp); 
 
 					if (op->controled[0] != 0)
 					{
@@ -297,9 +298,9 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 						{
 							char texx[128];
 							char tex2[128];
-							strcpy(texx, GetName(io->filename));
-							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp);
-							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2, NULL);
+							strcpy(texx, GetName(io->filename).c_str());
+							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
+							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2);
 						}
 					}
 				}
@@ -308,7 +309,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 					io->inzone_show = io->show;
 				entering:
 					;
-					strcpy(temp, p->name);
+					temp = p->name;
 					MakeUpcase(temp);
 
 
@@ -319,7 +320,7 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 					}
 					else
 					{
-						SendIOScriptEvent(io, SM_ENTERZONE, temp, NULL); 
+						SendIOScriptEvent(io, SM_ENTERZONE, temp); 
 
 						if (p->controled[0] != 0)
 						{
@@ -329,18 +330,18 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 							{
 								char texx[128];
 								char tex2[128];
-								strcpy(texx, GetName(io->filename));
-								sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp);
-								SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2, NULL); 
+								strcpy(texx, GetName(io->filename).c_str());
+								sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
+								SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2); 
 							}
 						}
 					}
 				}
 				else 
 				{
-					strcpy(temp, op->name);
+					temp = op->name;
 					MakeUpcase(temp);
-					SendIOScriptEvent(io, SM_LEAVEZONE, temp, NULL); 
+					SendIOScriptEvent(io, SM_LEAVEZONE, temp); 
 
 					if (op->controled[0] != 0)
 					{
@@ -350,16 +351,16 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 						{
 							char texx[128];
 							char tex2[128];
-							strcpy(texx, GetName(io->filename));
-							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp);
-							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2, NULL); 
+							strcpy(texx, GetName(io->filename).c_str());
+							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
+							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2); 
 						}
 					}
 
 					io->inzone_show = io->show;
-					strcpy(temp, p->name);
+					temp = p->name;
 					MakeUpcase(temp);
-					SendIOScriptEvent(io, SM_ENTERZONE, temp, NULL); 
+					SendIOScriptEvent(io, SM_ENTERZONE, temp); 
 
 					if (p->controled[0] != 0)
 					{
@@ -369,9 +370,9 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 						{
 							char texx[128];
 							char tex2[128];
-							strcpy(texx, GetName(io->filename));
-							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp);
-							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2, NULL);
+							strcpy(texx, GetName(io->filename).c_str());
+							sprintf(tex2, "%s_%04ld %s", texx, io->ident, temp.c_str());
+							SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2);
 						}
 					}
 				}
@@ -400,9 +401,9 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 		}
 		else if ((op != NULL) && (p == NULL)) // Leaving Zone OP
 		{
-			strcpy(temp, op->name);
+			temp = op->name;
 			MakeUpcase(temp);
-			SendIOScriptEvent(inter.iobj[0], SM_LEAVEZONE, temp, NULL); 
+			SendIOScriptEvent(inter.iobj[0], SM_LEAVEZONE, temp); 
 			CHANGE_LEVEL_ICON = -1;
 
 			if (op->controled[0] != 0)
@@ -412,16 +413,16 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				if (t >= 0)
 				{
 					char tex2[128];
-					sprintf(tex2, "PLAYER %s", temp);
-					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2, NULL); 
+					sprintf(tex2, "PLAYER %s", temp.c_str());
+					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2); 
 				}
 			}
 		}
 		else if ((op == NULL) && (p != NULL)) // Entering Zone P
 		{
-			strcpy(temp, p->name);
+			temp = p->name;
 			MakeUpcase(temp);
-			SendIOScriptEvent(inter.iobj[0], SM_ENTERZONE, temp, NULL); 
+			SendIOScriptEvent(inter.iobj[0], SM_ENTERZONE, temp); 
 
 			if (p->flags & PATH_AMBIANCE && p->ambiance[0])
 				ARX_SOUND_PlayZoneAmbiance(p->ambiance, ARX_SOUND_PLAY_LOOPED, p->amb_max_vol * ( 1.0f / 100 ));
@@ -451,14 +452,14 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				if (t >= 0)
 				{
 					char tex2[128];
-					sprintf(tex2, "PLAYER %s", temp);
-					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2, NULL); 
+					sprintf(tex2, "PLAYER %s", temp.c_str());
+					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2); 
 				}
 			}
 		}
 		else 
 		{
-			strcpy(temp, op->name);
+			temp = op->name;
 			MakeUpcase(temp);
 
 			if (op->controled[0] != 0)
@@ -468,12 +469,12 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				if (t >= 0)
 				{
 					char tex2[128];
-					sprintf(tex2, "PLAYER %s", temp);
-					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2, NULL); 
+					sprintf(tex2, "PLAYER %s", temp.c_str());
+					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_LEAVE, tex2); 
 				}
 			}
 
-			strcpy(temp, p->name);
+			temp = p->name;
 			MakeUpcase(temp);
 
 			if (p->controled[0] != 0)
@@ -483,8 +484,8 @@ void ARX_PATH_UpdateAllZoneInOutInside()
 				if (t >= 0)
 				{
 					char tex2[128];
-					sprintf(tex2, "PLAYER %s", temp);
-					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2, NULL); 
+					sprintf(tex2, "PLAYER %s", temp.c_str());
+					SendIOScriptEvent(inter.iobj[t], SM_CONTROLLEDZONE_ENTER, tex2); 
 				}
 			}
 		}
@@ -554,7 +555,7 @@ void ARX_PATHS_ChangeName(ARX_PATH * ap, char * newname)
 }
 //*************************************************************************************
 //*************************************************************************************
-ARX_PATH * ARX_PATH_GetAddressByName(char * name)
+ARX_PATH * ARX_PATH_GetAddressByName( const char * name)
 {
 
 	if ((name) && (name[0]) && (ARXpaths))
@@ -1252,7 +1253,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 	INTERACTIVE_OBJ *	io_target		=	inter.iobj[target];
 	INTERACTIVE_OBJ *	io_source		=	inter.iobj[source];
 
-	SendIOScriptEvent(io_target, SM_AGGRESSION, "", NULL);
+	SendIOScriptEvent(io_target, SM_AGGRESSION);
 
 	float				distance		=	EEDistance3D(&Thrown[thrownum].position, &Thrown[thrownum].initial_position);
 	float				distance_modifier =	1.f;
@@ -1278,7 +1279,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 
 		if (rnd() * 100 <= (float)(player.Full_Attribute_Dexterity - 9) * 2.f + (float)((player.Full_Skill_Projectile) * ( 1.0f / 5 )))
 		{
-			if (SendIOScriptEvent(io_source, SM_CRITICAL, "BOW", NULL) != REFUSE)
+			if (SendIOScriptEvent(io_source, SM_CRITICAL, "BOW") != REFUSE)
 				critical = true;
 		}
 
@@ -1288,7 +1289,7 @@ float ARX_THROWN_ComputeDamages(long thrownum, long source, long target)
 		{
 			if (rnd() * 100.f <= player.Full_Skill_Stealth)
 			{
-				if (SendIOScriptEvent(io_source, SM_BACKSTAB, "BOW", NULL) != REFUSE)
+				if (SendIOScriptEvent(io_source, SM_BACKSTAB, "BOW") != REFUSE)
 					backstab = 1.5f;
 			}
 		}
@@ -1387,10 +1388,10 @@ EERIEPOLY * CheckArrowPolyCollision(EERIE_3D * start, EERIE_3D * end)
 	pz = end->z * ACTIVEBKG->Zmul;
 
 	long ix, ax, iz, az;
-	ix = max(px - 2, 0L);
-	ax = min(px + 2, ACTIVEBKG->Xsize - 1L);
-	iz = max(pz - 2, 0L);
-	az = min(pz + 2, ACTIVEBKG->Zsize - 1L);
+	ix = std::max(px - 2, 0L);
+	ax = std::min(px + 2, ACTIVEBKG->Xsize - 1L);
+	iz = std::max(pz - 2, 0L);
+	az = std::min(pz + 2, ACTIVEBKG->Zsize - 1L);
 	EERIEPOLY * ep;
 	FAST_BKG_DATA * feg;
 
@@ -1644,10 +1645,10 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 				}
 
 				// Check for collision MUST be done after DRAWING !!!!
-				long nbact = Thrown[i].obj->nbaction;
+				long nbact = Thrown[i].obj->actionlist.size();
 
 				for (long j = 0; j < nbact; j++)
-				{
+				{ // TODO iterator
 					float rad = -1;
 					rad = GetHitValue(Thrown[i].obj->actionlist[j].name);
 					rad *= ( 1.0f / 2 );
@@ -1678,8 +1679,8 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 						char weapon_material[64]	= "DAGGER";
 						char bkg_material[64]		= "EARTH";
 
-						if (ep &&  ep->tex && ep->tex->m_texName)
-							GetMaterialString(ep->tex->m_texName, bkg_material);
+						if (ep &&  ep->tex && !ep->tex->m_texName.empty())
+							GetMaterialString(ep->tex->m_texName.c_str(), bkg_material);
 
 						if (ValidIONum(Thrown[i].source))
 							ARX_SOUND_PlayCollision(weapon_material, bkg_material, 1.f, 1.f, v0, inter.iobj[Thrown[i].source]);
@@ -2577,7 +2578,7 @@ long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber
 
 			ComputeForces(obj->pbox->vert, obj->pbox->nb_physvert);
 
-			if (!ARX_EERIE_PHYSICS_BOX_Compute(obj, min(0.11f, timing * 10), rubber, flags, source))
+			if (!ARX_EERIE_PHYSICS_BOX_Compute(obj, std::min(0.11f, timing * 10), rubber, flags, source))
 				ret = 1;
 
 			timing -= t_threshold; 
@@ -2866,7 +2867,7 @@ void ARX_PrepareBackgroundNRMLs()
 
 				for (long ii = 0; ii < nbvert; ii++)
 				{
-					dist = max(dist, TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center));
+					dist = std::max(dist, TRUEEEDistance3D((EERIE_3D *)&ep->v[ii], &ep->center));
 				}
 
 				ep->v[0].rhw = dist;

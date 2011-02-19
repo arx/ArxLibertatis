@@ -67,7 +67,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsTypes.h"
 #include <vector>
 
-//using namespace std;
 using std::vector;
 
 extern long EERIE_USES_BUMP_MAP;
@@ -90,10 +89,10 @@ struct DELAYED_PRIM
 class TextureContainer
 {
 	public:
-		TextureContainer * m_pNext;			// Linked list ptr
+		TextureContainer * m_pNext;         // Linked list ptr
 
-		char	m_strName[256];				// Image filename
-		char	m_texName[256];				// Name of texture
+		std::string m_strName;              // Image filename
+		std::string m_texName;              // Name of texture
 		DWORD   m_dwWidth;
 		DWORD   m_dwHeight;
 		DWORD	m_dwOriginalWidth;
@@ -181,11 +180,11 @@ class TextureContainer
 		float	m_ody;						// precalculated 1.f/height
  
 		HRESULT LoadImageData();
-		HRESULT LoadBitmapFile(const char * strPathname);
-		HRESULT LoadTargaFile(const char * strPathname);
+		HRESULT LoadBitmapFile( const std::string& strPathname);
+		HRESULT LoadTargaFile( const std::string& strPathname);
  
-		HRESULT LoadJpegFileNoDecomp(const char * strPathname);
-		HRESULT LoadPNGFile(const char * strPathname);
+		HRESULT LoadJpegFileNoDecomp( const std::string& strPathname );
+		HRESULT LoadPNGFile( const std::string& strPathname );
 		HRESULT Restore(LPDIRECT3DDEVICE7 pd3dDevice);
 		HRESULT CopyBitmapToSurface(LPDIRECTDRAWSURFACE7 Surface);
 		HRESULT CopyBitmapToSurface2(HBITMAP hbitmap, int depx, int depy, int largeur, int hauteur, long flag = 0);
@@ -195,7 +194,7 @@ class TextureContainer
 		HRESULT Use();
 
 		TextureContainer * TextureRefinement;
-		TextureContainer(const char * strName, DWORD dwStage, DWORD dwFlags);
+		TextureContainer( const std::string& strName, DWORD dwStage, DWORD dwFlags);
 		~TextureContainer();
 		long	locks;
 		long systemflags;
@@ -220,16 +219,16 @@ class TextureContainer
 // ASCII name.
 //-----------------------------------------------------------------------------
  
-TextureContainer * D3DTextr_GetSurfaceContainer(const char * strName);
+TextureContainer * D3DTextr_GetSurfaceContainer(const std::string& strName);
 TextureContainer * GetTextureList();
 extern TextureContainer * LastTextureContainer;
-long CountTextures(char * tex, long * memsize, long * memmip);
+long CountTextures( std::string& tex, long * memsize, long * memmip);
  
 //-----------------------------------------------------------------------------
 // Texture invalidation and restoration functions
 //-----------------------------------------------------------------------------
  
-HRESULT D3DTextr_Restore(TCHAR * strName, LPDIRECT3DDEVICE7 pd3dDevice);
+HRESULT D3DTextr_Restore( const std::string& strName, LPDIRECT3DDEVICE7 pd3dDevice);
 HRESULT D3DTextr_InvalidateAllTextures();
 HRESULT D3DTextr_RestoreAllTextures(LPDIRECT3DDEVICE7 pd3dDevice);
 HRESULT D3DTextr_TESTRestoreAllTextures(LPDIRECT3DDEVICE7 pd3dDevice);
@@ -251,11 +250,11 @@ void ReloadTexture(TextureContainer * tc);
 #define D3DTEXTR_NO_REFINEMENT	  (1<<7)
 #define D3DTEXTR_NO_INSERT		  0x80000000
 
-TextureContainer  * D3DTextr_CreateTextureFromFile(const char * strName, DWORD dwStage = 0L,
-        DWORD dwFlags = 0L , long sysflags = 0);
-HRESULT D3DTextr_CreateEmptyTexture(const char * strName, DWORD dwWidth,
-                                    DWORD dwHeight, DWORD dwStage,
-                                    DWORD dwFlags, DWORD flags = 0);
+TextureContainer  * D3DTextr_CreateTextureFromFile( const std::string& strName, DWORD dwStage = 0L,
+		DWORD dwFlags = 0L , long sysflags = 0);
+HRESULT D3DTextr_CreateEmptyTexture(const std::string& strName, DWORD dwWidth,
+									DWORD dwHeight, DWORD dwStage,
+									DWORD dwFlags, DWORD flags = 0);
  
 HRESULT D3DTextr_DestroyContainer(TextureContainer * ptcTexture);
 
@@ -271,8 +270,8 @@ void D3DTextr_KillTexture(TextureContainer * tex);
 void D3DTextr_KillAllTextures();	
 void SpecialBorderSurface(TextureContainer * tc, unsigned long x0, unsigned long y0);
 
-TextureContainer * FindTexture(const char * strTextureName);
-TextureContainer * _FindTexture(const char * strTextureName);
+TextureContainer * FindTexture(const std::string& strTextureName);
+TextureContainer * _FindTexture(const std::string& strTextureName);
 
 bool TextureContainer_Exist(TextureContainer * tc);
 #endif

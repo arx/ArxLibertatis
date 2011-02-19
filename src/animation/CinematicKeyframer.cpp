@@ -512,7 +512,6 @@ float GetAngleInterpolation(float d, float e)
 
 	return da;
 }
-extern char AllTxt[];
 /*----------------------------------------------------------------------*/
 bool GereTrack(Cinematic * c, float fpscurr)
 {

@@ -77,7 +77,7 @@ void InitMapLoad(Cinematic * c);
 CinematicBitmap * GetFreeBitmap(int * num);
 bool DeleteFreeBitmap(int num);
 bool KillTexture(LPDIRECT3DDEVICE7 device, int num);
-int CreateAllMapsForBitmap(char * dir, char * name, Cinematic * c, int num, int pos);
+int CreateAllMapsForBitmap(const std::string & path, Cinematic * c);
 bool ActiveAllTexture(Cinematic * c);
 
 bool ReCreateAllMapsForBitmap(int id, int nmax, Cinematic * c, LPDIRECT3DDEVICE7 device);

@@ -94,8 +94,8 @@ HRESULT ReadRegKey( HKEY hKey, const char * strName, TCHAR* strValue,
 }
 HRESULT ReadRegKeyValue( HKEY hKey, const char * strName, long * val, long defaultt )
 {
-	U32 dwType;
-	U32 dwLength=4;
+	u32 dwType;
+	u32 dwLength=4;
 	LONG bResult;
 
 	bResult = RegQueryValueEx( hKey, strName, 0, &dwType, 

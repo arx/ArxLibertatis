@@ -72,6 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Damage.h"
 #include "core/Time.h"
 
+#include <list>
 
 //#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 

@@ -780,13 +780,13 @@ failure:
 
 	if (io->_npcdata->pathfind.flags & BEHAVIOUR_NONE) return false;
 
-	SendIOScriptEvent(io, SM_PATHFINDER_FAILURE, "", NULL);
+	SendIOScriptEvent(io, SM_PATHFINDER_FAILURE);
 	return false;
 }
 
 //***********************************************************************************************
 //***********************************************************************************************
-void ARX_NPC_SetStat(INTERACTIVE_OBJ * io, char * statname, float value)
+void ARX_NPC_SetStat(INTERACTIVE_OBJ * io, const char * statname, float value)
 {
 	if ((!io)
 	        ||	(!(io->ioflags & IO_NPC)))
@@ -1101,7 +1101,9 @@ void ARX_PHYSICS_Apply()
 
 		CheckUnderWaterIO(io);
 
-		if (io->obj->pbox)
+		//TODO(lubosz): crash
+		if (false)
+//		if (io->obj->pbox)
 		{
 			io->GameFlags &= ~GFLAG_NOCOMPUTATION;
 
@@ -1195,7 +1197,7 @@ void ARX_PHYSICS_Apply()
 
 				if (io->_npcdata->pathfind.listnb == 0) // Not Found
 				{
-					SendIOScriptEvent(io, SM_PATHFINDER_FAILURE, "", NULL);
+					SendIOScriptEvent(io, SM_PATHFINDER_FAILURE);
 					io->_npcdata->pathfind.pathwait = 0;
 
 					if (io->_npcdata->pathfind.list)
@@ -1205,7 +1207,7 @@ void ARX_PHYSICS_Apply()
 				}
 				else if (io->_npcdata->pathfind.listnb > 0) // Found
 				{
-					SendIOScriptEvent(io, SM_PATHFINDER_SUCCESS, "", NULL);
+					SendIOScriptEvent(io, SM_PATHFINDER_SUCCESS);
 					io->_npcdata->pathfind.pathwait = 0;
 					io->_npcdata->pathfind.listpos += (unsigned short)ARX_NPC_GetNextAttainableNodeIncrement(io);
 
@@ -1467,16 +1469,14 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 	if ((!from)
 	        ||	(num < 0)
-	        ||	(num > from->nbselections))
+	        ||	(num > from->selections.size())) // TODO >= ?
 		return;
 
-	EERIE_3DOBJ * nouvo;
-	nouvo = (EERIE_3DOBJ *)malloc(sizeof(EERIE_3DOBJ)); 
+	EERIE_3DOBJ * nouvo = new EERIE_3DOBJ; 
 
 	if (!nouvo)
 		return;
 
-	memset(nouvo, 0, sizeof(EERIE_3DOBJ));
 	nouvo->nbvertex = from->selections[num].nb_selected;
 
 	long gore = -1;
@@ -1789,24 +1789,24 @@ extern long GORE_MODE;
 #define	FLAG_CUT_LLEG	(1<<4)
 #define	FLAG_CUT_RLEG	(1<<5)
 
-short GetCutFlag(char * str)
+short GetCutFlag( const std::string& str )
 {
-	if (!strcasecmp(str, "CUT_HEAD"))
+	if (!strcasecmp(str.c_str(), "CUT_HEAD"))
 		return FLAG_CUT_HEAD;
 
-	if (!strcasecmp(str, "CUT_TORSO"))
+	if (!strcasecmp(str.c_str(), "CUT_TORSO"))
 		return FLAG_CUT_TORSO;
 
-	if (!strcasecmp(str, "CUT_LARM"))
+	if (!strcasecmp(str.c_str(), "CUT_LARM"))
 		return FLAG_CUT_LARM;
 
-	if (!strcasecmp(str, "CUT_RARM"))
+	if (!strcasecmp(str.c_str(), "CUT_RARM"))
 		return FLAG_CUT_HEAD;
 
-	if (!strcasecmp(str, "CUT_LLEG"))
+	if (!strcasecmp(str.c_str(), "CUT_LLEG"))
 		return FLAG_CUT_LLEG;
 
-	if (!strcasecmp(str, "CUT_RLEG"))
+	if (!strcasecmp(str.c_str(), "CUT_RLEG"))
 		return FLAG_CUT_RLEG;
 
 	return 0;
@@ -1838,10 +1838,10 @@ long GetCutSelection(INTERACTIVE_OBJ * io, short flag)
 
 	if (tx[0])
 	{
-		for (long i = 0; i < io->obj->nbselections; i++)
-		{
+		for (long i = 0; i < io->obj->selections.size(); i++)
+		{ // TODO iterator
 			if ((io->obj->selections[i].nb_selected > 0)
-			        &&	(!strcasecmp(io->obj->selections[i].name, tx)))
+			        &&	(!strcasecmp(io->obj->selections[i].name.c_str(), tx)))
 				return i;
 		}
 	}
@@ -1973,12 +1973,12 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos)
 		}
 	}
 
-	for (int i = 0; i < target->obj->nbselections; i++)
-	{
+	for (int i = 0; i < target->obj->selections.size(); i++)
+	{ // TODO iterator
 		if ((target->obj->selections[i].nb_selected > 0)
 		        &&	(IsIn(target->obj->selections[i].name, "CUT_")))
 		{
-			short fll = GetCutFlag(target->obj->selections[i].name);
+			short fll = GetCutFlag(target->obj->selections[i].name.c_str());
 
 			if (IsAlreadyCut(target, fll))
 				continue;
@@ -2021,7 +2021,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos)
 
 	if (mindist < 60) // can only cut a close part...
 	{
-		short fl = GetCutFlag(target->obj->selections[numsel].name);
+		short fl = GetCutFlag(target->obj->selections[numsel].name.c_str());
 
 		if ((fl)
 		        &&	(!(target->_npcdata->cuts & fl)))
@@ -2977,7 +2977,7 @@ void ManageNPCMovement(INTERACTIVE_OBJ * io)
 					io->_npcdata->reachedtime = ARXTimeUL();//treat warning C4244 conversion from 'float' to 'unsigned long'
 
 					if (io->targetinfo != GetInterNum(io))
-						SendIOScriptEvent(io, SM_REACHEDTARGET, "");
+						SendIOScriptEvent(io, SM_REACHEDTARGET);
 				}
 				else if ((ause0->cur_anim == alist[ANIM_WAIT]) && (ause0->flags & EA_ANIMEND))
 				{
@@ -3591,7 +3591,7 @@ void ManageNPCMovement(INTERACTIVE_OBJ * io)
 				else
 					EVENT_SENDER = NULL;
 
-				SendIOScriptEvent(io, SM_LOSTTARGET, "");
+				SendIOScriptEvent(io, SM_LOSTTARGET);
 				io->_npcdata->reachedtarget = 0;
 			}
 
@@ -3759,7 +3759,7 @@ void ManageNPCMovement(INTERACTIVE_OBJ * io)
 					io->animlayer[1].cur_anim = NULL;
 
 				if (io->targetinfo != GetInterNum(io))
-					SendIOScriptEvent(io, SM_REACHEDTARGET, "");
+					SendIOScriptEvent(io, SM_REACHEDTARGET);
 			}
 		}
 	}
@@ -4079,8 +4079,9 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 		{
 			EERIE_3D orgn, dest;
 			// Retreives Head group position for "eye" pos.
-			long grp = io->obj->fastaccess.head_group_origin; 
-
+//TODO(lubosz): crash
+//			long grp = io->obj->fastaccess.head_group_origin;
+			long grp = 0;
 			if (grp < 0)
 			{
 				orgn.x = io->pos.x;
@@ -4127,7 +4128,7 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 			{
 				// if visible but was NOT visible, sends an Detectplayer Event
 				EVENT_SENDER = NULL;
-				SendIOScriptEvent(io, SM_DETECTPLAYER, "");
+				SendIOScriptEvent(io, SM_DETECTPLAYER);
 				io->_npcdata->detect = 1;
 			}
 		}
@@ -4137,41 +4138,11 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 	if ((!Visible) && (io->_npcdata->detect))
 	{
 		EVENT_SENDER = NULL;
-		SendIOScriptEvent(io, SM_UNDETECTPLAYER, "");
+		SendIOScriptEvent(io, SM_UNDETECTPLAYER);
 		io->_npcdata->detect = 0;
 	}
 }
 
-//-------------------------------------------------------------------------
-void GetMaterialString(char * origin, char * dest)
-{
-	// need to be precomputed !!!
-	if (IsIn(origin, "STONE"))	strcpy(dest, "STONE");
-	else if (IsIn(origin, "MARBLE"))	strcpy(dest, "STONE");
-	else if (IsIn(origin, "ROCK"))	strcpy(dest, "STONE");
-	else if (IsIn(origin, "WOOD"))	strcpy(dest, "WOOD");
-	else if (IsIn(origin, "WET"))	strcpy(dest, "WET");
-	else if (IsIn(origin, "MUD"))	strcpy(dest, "WET");
-	else if (IsIn(origin, "BLOOD"))	strcpy(dest, "WET");
-	else if (IsIn(origin, "BONE"))	strcpy(dest, "WET");
-	else if (IsIn(origin, "FLESH"))	strcpy(dest, "WET");
-	else if (IsIn(origin, "SHIT"))	strcpy(dest, "WET");
-	else if (IsIn(origin, "SOIL"))	strcpy(dest, "GRAVEL");
-	else if (IsIn(origin, "GRAVEL"))	strcpy(dest, "GRAVEL");
-	else if (IsIn(origin, "EARTH"))	strcpy(dest, "GRAVEL");
-	else if (IsIn(origin, "DUST"))	strcpy(dest, "GRAVEL");
-	else if (IsIn(origin, "SAND"))	strcpy(dest, "GRAVEL");
-	else if (IsIn(origin, "STRAW"))	strcpy(dest, "GRAVEL");
-	else if (IsIn(origin, "METAL"))	strcpy(dest, "METAL");
-	else if (IsIn(origin, "IRON"))	strcpy(dest, "METAL");
-	else if (IsIn(origin, "GLASS"))	strcpy(dest, "METAL");
-	else if (IsIn(origin, "RUST"))	strcpy(dest, "METAL");
-	else if (IsIn(origin, "EARTH"))	strcpy(dest, "EARTH");
-	else if (IsIn(origin, "ICE"))	strcpy(dest, "ICE");
-	else if (IsIn(origin, "FABRIC")) strcpy(dest, "CARPET");
-	else if (IsIn(origin, "MOSS"))	strcpy(dest, "CARPET");
-	else strcpy(dest, "UNKNOWN");
-}
 //-------------------------------------------------------------------------
 void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, EERIE_3D * pos, const float volume, const float power)
 {
@@ -4185,8 +4156,8 @@ void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, EERIE_3D * pos, const float vol
 		EERIEPOLY * ep;
 		ep = CheckInPoly(pos->x, pos->y - 100.0F, pos->z);
 
-		if (ep &&  ep->tex && ep->tex->m_texName)
-			GetMaterialString(ep->tex->m_texName, floor_material);
+		if (ep &&  ep->tex && !ep->tex->m_texName.empty())
+			GetMaterialString(ep->tex->m_texName.c_str(), floor_material);
 	}
 
 	if (io && io->stepmaterial)

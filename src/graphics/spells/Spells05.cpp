@@ -73,6 +73,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/Fog.h"
 #include "core/Time.h"
 
+#include <list>
 //todo what for?
 //#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 

@@ -293,10 +293,10 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 	posz = cz*( 1.0f / 3 )*ACTIVEBKG->Zmul;
 	
 	long dx,dz,fx,fz;
-	dx=max(0L,posx-1);
-	fx=min(posx+1,ACTIVEBKG->Xsize-1L);
-	dz=max(0L,posz-1);
-	fz=min(posz+1,ACTIVEBKG->Zsize-1L);
+	dx=std::max(0L,posx-1);
+	fx=std::min(posx+1,ACTIVEBKG->Xsize-1L);
+	dz=std::max(0L,posz-1);
+	fz=std::min(posz+1,ACTIVEBKG->Zsize-1L);
 	float tolerance=0.1f;
 
 	for (long kl = 0; kl < 2; kl++)
@@ -308,7 +308,7 @@ bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj)
 		if (COMPUTE_PORTALS)
 		{
 
-			if (!GetNameInfo(eobj->name,&type,&val1,&val2))
+			if (!GetNameInfo(eobj->name, type, val1, val2))
 				return false;
 
 			if (type!=TYPE_ROOM)
@@ -750,14 +750,17 @@ void Delayed_EERIEDRAWPRIM( EERIEPOLY * ep)
 
 	if (tc->delayed_nb>=tc->delayed_max)
 	{
-	retry:
-		;
-		tc->delayed=(DELAYED_PRIM *)realloc(tc->delayed,sizeof(DELAYED_PRIM)*(tc->delayed_nb+1));
-
-		if (!tc->delayed) 
+		while(true)
 		{
-			if (HERMES_Memory_Emergency_Out(sizeof(DELAYED_PRIM)*(tc->delayed_nb+1),"tc->delayed"))
-				goto retry;
+			tc->delayed=(DELAYED_PRIM *)realloc(tc->delayed,sizeof(DELAYED_PRIM)*(tc->delayed_nb+1));
+
+			if (!tc->delayed) 
+			{
+				if (HERMES_Memory_Emergency_Out(sizeof(DELAYED_PRIM)*(tc->delayed_nb+1),"tc->delayed"))
+					continue; // Try again
+
+					break; // Got the memory we wanted, break out
+			}
 		}
 
 		tc->delayed_max=tc->delayed_nb+1;
@@ -1112,7 +1115,7 @@ void EERIEDrawTrue3DLine(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3D * orgn, EERIE_3D 
 	while (m>0)
 	{
 		EERIE_3D tpos;
-		float dep=min(m,30.f);
+		float dep=std::min(m,30.f);
 		tpos.x=cpos.x+vect.x*dep;
 		tpos.y=cpos.y+vect.y*dep;
 		tpos.z=cpos.z+vect.z*dep;

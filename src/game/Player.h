@@ -58,9 +58,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_PLAYER_H
 #define ARX_PLAYER_H
 
+#include <string>
+#include <vector>
 #include <tchar.h>
 #include "graphics/data/Mesh.h"
 #include "game/Spells.h"
+
+using std::vector;
 
 //-----------------------------------------------------------------------------
 struct ARX_NECKLACE
@@ -252,10 +256,9 @@ struct KEYRING_SLOT
 // Quests Management (QuestLogBook)
 //////////////////////////////////////////////
 #define MAX_QUESTS 100
-struct STRUCT_QUEST
-{
-	char	* ident;
-	_TCHAR	* localised;
+struct STRUCT_QUEST {
+	char* ident;
+	std::string localised;
 };
 
 //-----------------------------------------------------------------------------
@@ -338,7 +341,7 @@ extern ANIM_HANDLE * herowait;
 extern ANIM_HANDLE * herowait2;
 extern ANIM_HANDLE * herowalk;
 extern ANIM_HANDLE * herorun;
-extern STRUCT_QUEST * PlayerQuest;
+extern vector<STRUCT_QUEST> PlayerQuest;
 extern KEYRING_SLOT * Keyring;
 extern float DeadCameraDistance;
 extern long nb_PlayerQuest;
@@ -359,7 +362,7 @@ void	ARX_PLAYER_Frame_Update();
 void	ARX_PLAYER_Manage_Movement();
 void	ARX_PLAYER_Manage_Death();
 void	ARX_PLAYER_GotoAnyPoly();
-void	ARX_PLAYER_Quest_Add(char * quest, bool _bLoad = false);
+void	ARX_PLAYER_Quest_Add( const char * quest, bool _bLoad = false);
 void	ARX_PLAYER_Quest_Init();
 void	ARX_PLAYER_Quest_FirstInit();
 void	ARX_PLAYER_FrontPos(EERIE_3D * pos);
@@ -381,7 +384,7 @@ void	ARX_PLAYER_AddBag();
 bool	ARX_PLAYER_CanStealItem(INTERACTIVE_OBJ *);
 
 void	ARX_KEYRING_Init();
-void	ARX_KEYRING_Add(char * key);
+void	ARX_KEYRING_Add( const char* key);
 void	ARX_KEYRING_Combine(INTERACTIVE_OBJ * io);
 
 void	ARX_PLAYER_Reset_Fall();

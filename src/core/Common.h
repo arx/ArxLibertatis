@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
 ===========================================================================
 ARX FATALIS GPL Source Code
@@ -55,7 +56,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2010 ARKANE Studios SA. All rights reserved
 /////////////////////////////////////////////////////////////////////////////////////
-#pragma once
+#ifndef ARX_COMMON_H
+#define ARX_COMMON_H
 
 /* ---------------------------------------------------------
 						Include
@@ -64,12 +66,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // TODO remove these
 #include <climits>
 #include <cstdio>
+#include <cstdarg>
+#include <ctime>
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <cstdarg>
-#include <ctime>
 
 /* ---------------------------------------------------------
 						Platforms
@@ -122,10 +125,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
     #include <direct.h>
 
     // Windows like to be non-standard... sigh
-    #define strcasecmp  _stricmp
-    #define strncasecmp _strnicmp
-    #define chdir       _chdir
-    char *	strcasestr(const char *haystack, const char *needle);
+	inline int strcasecmp(const char* str1, const char* str2) { return _stricmp(str1, str2); }
+	inline int strncasecmp(const char* str1, const char* str2, size_t maxCount) { return _strnicmp(str1, str2, maxCount); }
+	inline int chdir(const char* path) { return _chdir(path); }
+
+    char* strcasestr(const char *haystack, const char *needle);
 #endif
 
 
@@ -133,29 +137,29 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 					     Types
 ------------------------------------------------------------*/
 
-typedef signed char         S8;		//  8 bits integer
-typedef unsigned char       U8;     //  8 bits unsigned integer
+typedef signed char         s8;		//  8 bits integer
+typedef unsigned char       u8;     //  8 bits unsigned integer
 
-typedef signed short        S16;    // 16 bits signed integer
-typedef unsigned short      U16;    // 16 bits unsigned integer
+typedef signed short        s16;    // 16 bits signed integer
+typedef unsigned short      u16;    // 16 bits unsigned integer
 
 #if ARX_COMPILER_MSVC
-	typedef signed long     S32;    // 32 bits signed integer
-	typedef unsigned long   U32;    // 32 bits unsigned integer
+	typedef signed long     s32;    // 32 bits signed integer
+	typedef unsigned long   u32;    // 32 bits unsigned integer
 #else
-	typedef signed int      S32;    // 32 bits signed integer
-	typedef unsigned int    U32;    // 32 bits unsigned integer
+	typedef signed int      s32;    // 32 bits signed integer
+	typedef unsigned int    u32;    // 32 bits unsigned integer
 #endif
 
-typedef signed long long    S64;    // 64 bits signed integer
-typedef unsigned long long  U64;    // 64 bits unsigned integer
+typedef signed long long    s64;    // 64 bits signed integer
+typedef unsigned long long  u64;    // 64 bits unsigned integer
 
-typedef float               F32;    // 32 bits float
-typedef double              F64;    // 64 bits double float
+typedef float               f32;    // 32 bits float
+typedef double              f64;    // 64 bits double float
 
 
 /* ---------------------------------------------------------
-					     Break
+						 Break
 ------------------------------------------------------------*/
 
 #define ARXCOMMON_BUFFERSIZE	512
@@ -277,3 +281,4 @@ class ArxDebug
 		static void Assert(const char * _sMessage, const char * _sFile, unsigned _iLine);
 	
 };
+#endif // ARX_COMMON_H

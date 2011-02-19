@@ -27,7 +27,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_CPARTICLES_H
 
 #include <list>
-using namespace std;
 
 #include "graphics/GraphicsTypes.h"
 #include "graphics/particle/ParticleParams.h"

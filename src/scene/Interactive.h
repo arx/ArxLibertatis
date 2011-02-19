@@ -58,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_INTERACTIVE_H
 #define ARX_INTERACTIVE_H
 
+#include <string>
 #include <tchar.h>
 #include "graphics/data/Mesh.h"
 
@@ -69,7 +70,6 @@ struct INTERACTIVE_OBJECTS
 	long			init;
 	long			nbmax;
 	INTERACTIVE_OBJ ** iobj;
-	char		*	lock;
 };
 
 struct INVENTORY_SLOT
@@ -88,42 +88,42 @@ struct INVENTORY_DATA
 
 struct ARX_NODE
 {
-	short		exist;
-	short		selected;
-	_TCHAR		UName[64];
-	char		name[64];
-	long		link[MAX_LINKS];
-	char		lnames[MAX_LINKS][64];
-	EERIE_3D	pos;
-	EERIE_S2D	bboxmin;
-	EERIE_S2D	bboxmax;
+	short       exist;
+	short       selected;
+	std::string UName;
+	char        name[64];
+	long        link[MAX_LINKS];
+	char        lnames[MAX_LINKS][64];
+	EERIE_3D    pos;
+	EERIE_S2D   bboxmin;
+	EERIE_S2D   bboxmax;
 };
 
 struct ARX_NODES
 {
-	long		init;
-	long		nbmax;
-	ARX_NODE	* nodes;
+	long        init;
+	long        nbmax;
+	ARX_NODE*   nodes;
 };
 
 //-----------------------------------------------------------------------------
-#define INVENTORY_X			16
-#define INVENTORY_Y			3
-#define EQUIP_RIGHTHAND		1
-#define EQUIP_LEFTHAND		2
-#define EQUIP_SECONDARY		3
-#define EQUIP_SHIELD		4
-#define TARGET_PATH			-3
-#define TARGET_NONE			-2
-#define TARGET_PLAYER		0 //-1
-#define TARGET_NODE			50000
-#define NO_IDENT			1
-#define NO_MESH				2
-#define NO_ON_LOAD			4
-#define IO_IMMEDIATELOAD	8
+#define INVENTORY_X         16
+#define INVENTORY_Y         3
+#define EQUIP_RIGHTHAND     1
+#define EQUIP_LEFTHAND      2
+#define EQUIP_SECONDARY     3
+#define EQUIP_SHIELD        4
+#define TARGET_PATH         -3
+#define TARGET_NONE         -2
+#define TARGET_PLAYER       0 //-1
+#define TARGET_NODE         50000
+#define NO_IDENT            1
+#define NO_MESH             2
+#define NO_ON_LOAD          4
+#define IO_IMMEDIATELOAD    8
 #define RENDER_INTER_FLAG_DUMMY_DRAW 1
-#define FLAG_NOCONFIRM		1
-#define FLAG_DONTKILLDIR	2
+#define FLAG_NOCONFIRM      1
+#define FLAG_DONTKILLDIR    2
 
 //-----------------------------------------------------------------------------
 extern ARX_NODES nodes;
@@ -140,11 +140,11 @@ extern long NbIOSelected;
 
 //-----------------------------------------------------------------------------
 void ARX_INTERACTIVE_UnfreezeAll();
-void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, char * s1);
+void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const std::string& s1 );
 void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io);
 void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag = 0);
 void ARX_INTERACTIVE_DeleteByIndex(long i, long flag = 0);
-bool ARX_INTERACTIVE_Attach(long n_source, long n_target, char * ap_source, char * ap_target);
+bool ARX_INTERACTIVE_Attach(long n_source, long n_target, const char * ap_source, const char * ap_target);
 void ARX_INTERACTIVE_Detach(long n_source, long n_target);
 void ARX_INTERACTIVE_Show_Hide_1st(INTERACTIVE_OBJ * io, long state);
 
@@ -153,19 +153,19 @@ bool ARX_INTERACTIVE_ConvertToValidPosForIO(INTERACTIVE_OBJ * io, EERIE_3D * tar
 void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io);
 bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source = -1);
 void ARX_INTERACTIVE_DestroyIO(INTERACTIVE_OBJ * ioo);
-void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, long type, char * param1, char * param2);
+void ARX_INTERACTIVE_MEMO_TWEAK(INTERACTIVE_OBJ * io, long type, const std::string& param1, const std::string& param2);
 void ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(INTERACTIVE_OBJ * io);
 void ARX_INTERACTIVE_APPLY_TWEAK_INFO(INTERACTIVE_OBJ * io);
-void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, char * temp);
+void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const std::string& temp);
 void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, EERIE_3D * target, long flags = 0);
 
 bool IsEquipedByPlayer(INTERACTIVE_OBJ * io);
 void CleanScriptLoadedIO();
 void PrepareIOTreatZone(long flag = 0);
-
-void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, char * attach);
-
-void PutInFrontOfPlayer(INTERACTIVE_OBJ * io);
+ 
+void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const char * attach);
+ 
+void PutInFrontOfPlayer(INTERACTIVE_OBJ * io, long flag = 0);
 bool CanBePutInInventory(INTERACTIVE_OBJ * io);
 void SetShield(char * temp);
 void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io);
@@ -174,7 +174,7 @@ long ValidIONum(long num);
 long ValidIOAddress(INTERACTIVE_OBJ * io);
 bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos);
 bool GetItemWorldPositionSound(INTERACTIVE_OBJ * io, EERIE_3D * pos);
-long GetTargetByNameTarget(const char * name);
+long GetTargetByNameTarget(const std::string& name);
 void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io);
 
 void SetWeapon_Back(INTERACTIVE_OBJ * io);
@@ -233,7 +233,7 @@ long IsCollidingAnyInter(float x, float y, float z, EERIE_3D * size);
 INTERACTIVE_OBJ * AddInteractive(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long id, long flags = 0);
 INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags = 0);
 INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags = 0);
-INTERACTIVE_OBJ  * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags = 0);
+INTERACTIVE_OBJ  * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& file, long flags = 0);
 INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, const char * file);
 INTERACTIVE_OBJ * AddMarker(LPDIRECT3DDEVICE7 pd3dDevice, const char * file);
 
@@ -253,11 +253,11 @@ void MakeIOIdent(INTERACTIVE_OBJ * io);
 void SelectIO(INTERACTIVE_OBJ * io);
 void ForcePlayerLookAtIO(INTERACTIVE_OBJ * io);
 void SetWeapon_On(INTERACTIVE_OBJ * io);
-
-void Prepare_SetWeapon(INTERACTIVE_OBJ * io, char * temp);
+ 
+void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const std::string& temp);
 void ComputeVVPos(INTERACTIVE_OBJ * io);
 void SetYlsideDeath(INTERACTIVE_OBJ * io);
-void GetMaterialString(char * origin, char * dest);
+void GetMaterialString( const char * origin, char * dest);
 INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src);
 
 // TODO create separate header fro functions from ARX_Invetory.cpp

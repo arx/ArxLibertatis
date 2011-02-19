@@ -59,25 +59,35 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_MENU_H
 
 #include <tchar.h>
+
+#include <string>
+#include <vector>
+
 #include "graphics/data/Texture.h"
 #include "window/Input.h"
 
+#include <string>
 //-----------------------------------------------------------------------------
+<<<<<<< HEAD
 #define MAX_FLYOVER	32
-
 struct MENU_DYNAMIC_DATA
 {
-	TextureContainer	* Background;
-	TextureContainer	* BookBackground;
-	TextureContainer	* pTexCredits;
-	float				creditspos;
-	float				creditstart;
-	_TCHAR		*		flyover[MAX_FLYOVER];
-	_TCHAR		*		str_cre_credits;
+	TextureContainer*   Background;
+	TextureContainer*   BookBackground;
+	TextureContainer*   pTexCredits;
+	float               creditspos;
+	float               creditstart;
+	std::string         flyover[MAX_FLYOVER];
+	std::string         str_cre_credits;
 	// New Quest Buttons Strings
-	_TCHAR		*		str_button_quickgen;
-	_TCHAR		*		str_button_skin;
-	_TCHAR		*		str_button_done;
+	std::string         str_button_quickgen;
+	std::string         str_button_skin;
+	std::string         str_button_done;
+
+	MENU_DYNAMIC_DATA()
+	: Background(NULL), BookBackground(NULL),
+	  pTexCredits(NULL), creditspos(0), creditstart(0)
+	{}
 };
 
 // ARX_MENU_DATA contains all Menu-datas
@@ -90,15 +100,20 @@ struct ARX_MENU_DATA
 	long				custompos;
 	MENU_DYNAMIC_DATA	* mda;
 };
+
 extern ARX_MENU_DATA ARXmenu;
 
 struct SaveGame
 {
-	long				num;
-	char				name[256];
-	long				level;
-	float				version;
-	SYSTEMTIME			stime;
+	long            num;
+	std::string     name;
+	long            level;
+	float           version;
+	SYSTEMTIME      stime;
+
+	SaveGame()
+	: num(0), level(0), version(0)
+		{}
 };
 
 //-----------------------------------------------------------------------------
@@ -110,7 +125,7 @@ struct SaveGame
 #define AMCM_CDNOTFOUND	4
 
 //-----------------------------------------------------------------------------
-extern SaveGame * save_l;
+extern std::vector<SaveGame> save_l;
 extern long save_c;
 extern long save_p;
 extern char LOCAL_SAVENAME[64];
@@ -123,6 +138,7 @@ void ARX_MENU_Clicked_QUIT_GAME();
 void ARX_Menu_Resources_Create();
 void ARX_Menu_Resources_Release(bool _bNoSound = true);
 void ARX_Menu_Release_Text(void * a);
+void ARX_MENU_Clicked_CREDITS();
 
 //-----------------------------------------------------------------------------
 void LoadSaveGame(const long & i);

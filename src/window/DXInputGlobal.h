@@ -25,6 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef MERCURY_EXTERN_H
 #define MERCURY_EXTERN_H
 
+
 #include <windows.h>
 #include <string.h>
 #include <stdlib.h>

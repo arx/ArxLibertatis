@@ -27,6 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef SCRIPT_DEBUGGER_H
 #define SCRIPT_DEBUGGER_H
 
+
 #include <windows.h>
 #include "core/Common.h"
 

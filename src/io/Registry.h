@@ -46,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define HERMESNET_H
 #define GAIA_NETWORK
 
+
 #include <windows.h>
 HRESULT WriteRegKey( HKEY hKey, const char * strName, const char * strValue );
 HRESULT WriteRegKeyValue( HKEY hKey, const char * strName, DWORD val );

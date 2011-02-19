@@ -57,6 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/IO.h"
 #include "graphics/Draw.h"
 #include "graphics/data/CinematicTexture.h"
+#include "io/Logger.h"
 
 using std::min;
 using std::max;
@@ -109,7 +110,7 @@ extern D3DTLVERTEX LATERDRAWHALO[];
 extern EERIE_LIGHT lightparam;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern STRUCT_SPEECH speech[];
-extern _TCHAR WILLADDSPEECH[];
+extern std::string WILLADDSPEECH;
 extern float PLAYER_ROTATION;
 extern float SLID_VALUE;
 
@@ -152,7 +153,7 @@ extern unsigned char ucFlick;
 extern bool bGATI8500;
 extern bool bSoftRender;
 
-extern CARXTextManager *pTextManageFlyingOver;
+extern TextManager *pTextManageFlyingOver;
 
 bool IsPlayerStriking();
 void OptmizeInventory(unsigned int);
@@ -417,35 +418,35 @@ void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, cons
 //-----------------------------------------------------------------------------
 void CreateInterfaceTextureContainers()
 {
-	memset(&ITC,0,sizeof(INTERFACE_TC));
-	ITC.aim_empty = MakeTCFromFile("Graph\\Interface\\bars\\aim_empty.bmp", 0);
-	ITC.aim_maxi = MakeTCFromFile("Graph\\Interface\\bars\\aim_maxi.bmp", 0);
-	ITC.aim_hit = MakeTCFromFile("Graph\\Interface\\bars\\flash_gauge.bmp", 0);
-	ITC.hero_inventory = MakeTCFromFile("Graph\\Interface\\Inventory\\hero_inventory.bmp", 0);
-	BasicInventorySkin = MakeTCFromFile("Graph\\Interface\\Inventory\\Ingame_inventory.bmp", 0);
-	ITC.hero_inventory_up = MakeTCFromFile("Graph\\Interface\\Inventory\\scroll_up.bmp", 0);
-	ITC.hero_inventory_down = MakeTCFromFile("Graph\\Interface\\Inventory\\scroll_down.bmp", 0);
-	ITC.hero_inventory_link = MakeTCFromFile("Graph\\Interface\\Inventory\\Hero_inventory_link.bmp", 0);
+    ITC.Reset();
 
-	ITC.inventory_pickall = MakeTCFromFile("Graph\\Interface\\Inventory\\inv_pick.bmp", 0);
-	ITC.inventory_close = MakeTCFromFile("Graph\\Interface\\Inventory\\inv_close.bmp", 0);
+	ITC.Set("aim_empty", "Graph\\Interface\\bars\\aim_empty.bmp");
+	ITC.Set("aim_maxi", "Graph\\Interface\\bars\\aim_maxi.bmp");
+	ITC.Set("aim_hit", "Graph\\Interface\\bars\\flash_gauge.bmp");
+	ITC.Set("hero_inventory", "Graph\\Interface\\Inventory\\hero_inventory.bmp");
+	ITC.Set("hero_inventory_up", "Graph\\Interface\\Inventory\\scroll_up.bmp");
+	ITC.Set("hero_inventory_down", "Graph\\Interface\\Inventory\\scroll_down.bmp");
+	ITC.Set("hero_inventory_link", "Graph\\Interface\\Inventory\\Hero_inventory_link.bmp");
+	ITC.Set("inventory_pickall", "Graph\\Interface\\Inventory\\inv_pick.bmp");
+	ITC.Set("inventory_close", "Graph\\Interface\\Inventory\\inv_close.bmp");
+	ITC.Set("Icon_Lvl_Up", "Graph\\Interface\\Icons\\lvl_up.bmp");
+
+	ITC.Set("backpack", D3DTextr_GetSurfaceContainer("Graph\\Interface\\Icons\\Backpack.bmp"));
+	ITC.Set("gold", D3DTextr_GetSurfaceContainer("Graph\\Interface\\Inventory\\Gold.bmp"));
+	ITC.Set("book", D3DTextr_GetSurfaceContainer("Graph\\Interface\\Icons\\Book.bmp"));
+	ITC.Set("steal", D3DTextr_GetSurfaceContainer("Graph\\Interface\\Icons\\Steal.bmp"));
+	ITC.Set("item_cant_steal", D3DTextr_GetSurfaceContainer("Graph\\Interface\\Icons\\cant_steal_item.bmp"));
+	ITC.Set("empty_gauge_red", D3DTextr_GetSurfaceContainer("Graph\\interface\\bars\\Empty_gauge_Red.bmp"));
+	ITC.Set("empty_gauge_blue", D3DTextr_GetSurfaceContainer("Graph\\interface\\bars\\Empty_gauge_Blue.bmp"));
+	ITC.Set("filled_gauge_red", D3DTextr_GetSurfaceContainer("Graph\\interface\\bars\\Filled_gauge_Red.bmp"));
+	ITC.Set("filled_gauge_blue", D3DTextr_GetSurfaceContainer("Graph\\interface\\bars\\Filled_gauge_Blue.bmp"));
+	ITC.Set("target_on", D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\target_on.bmp"));
+	ITC.Set("target_off", D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\target_off.bmp"));
+	ITC.Set("interaction_on", D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\interaction_on.bmp"));
+	ITC.Set("interaction_off", D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\interaction_off.bmp"));
+	ITC.Set("magic", D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\magic.bmp"));
 	
-	ITC.Icon_Lvl_Up = MakeTCFromFile("Graph\\Interface\\Icons\\lvl_up.bmp", 0);
-	//ITC.ingame_sub_inv = NULL;
-	ITC.backpack = D3DTextr_GetSurfaceContainer("Graph\\Interface\\Icons\\Backpack.bmp");
-	ITC.gold=D3DTextr_GetSurfaceContainer("Graph\\Interface\\Inventory\\Gold.bmp");
-	ITC.book=D3DTextr_GetSurfaceContainer("Graph\\Interface\\Icons\\Book.bmp");
-	ITC.steal=D3DTextr_GetSurfaceContainer("Graph\\Interface\\Icons\\Steal.bmp");
-	ITC.item_cant_steal=D3DTextr_GetSurfaceContainer("Graph\\Interface\\Icons\\cant_steal_item.bmp");
-	ITC.empty_gauge_red=D3DTextr_GetSurfaceContainer("Graph\\interface\\bars\\Empty_gauge_Red.bmp");
-	ITC.empty_gauge_blue=D3DTextr_GetSurfaceContainer("Graph\\interface\\bars\\Empty_gauge_Blue.bmp");
-	ITC.filled_gauge_red=D3DTextr_GetSurfaceContainer("Graph\\interface\\bars\\Filled_gauge_Red.bmp");
-	ITC.filled_gauge_blue=D3DTextr_GetSurfaceContainer("Graph\\interface\\bars\\Filled_gauge_Blue.bmp");
-	ITC.target_on=D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\target_on.bmp");
-	ITC.target_off=D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\target_off.bmp");
-	ITC.interaction_on=D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\interaction_on.bmp");
-	ITC.interaction_off=D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\interaction_off.bmp");
-	ITC.magic=D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\magic.bmp");
+	BasicInventorySkin = MakeTCFromFile("Graph\\Interface\\Inventory\\Ingame_inventory.bmp");
 	ThrowObject = D3DTextr_GetSurfaceContainer("Graph\\Interface\\cursors\\throw.bmp");
 }
 
@@ -453,98 +454,47 @@ void CreateInterfaceTextureContainers()
 
 void KillInterfaceTextureContainers()
 {
-	D3DTextr_KillTexture(ITC.questbook);
-	D3DTextr_KillTexture(ITC.bookmark_char);
-	D3DTextr_KillTexture(ITC.bookmark_magic);
-	D3DTextr_KillTexture(ITC.bookmark_map);
-	D3DTextr_KillTexture(ITC.bookmark_quest);
-	D3DTextr_KillTexture(ITC.accessible_1);
-	D3DTextr_KillTexture(ITC.accessible_2);
-	D3DTextr_KillTexture(ITC.accessible_3);
-	D3DTextr_KillTexture(ITC.accessible_4);
-	D3DTextr_KillTexture(ITC.accessible_5);
-	D3DTextr_KillTexture(ITC.accessible_6);
-	D3DTextr_KillTexture(ITC.accessible_7);
-	D3DTextr_KillTexture(ITC.accessible_8);
-	D3DTextr_KillTexture(ITC.accessible_9);
-	D3DTextr_KillTexture(ITC.accessible_10);
-	D3DTextr_KillTexture(ITC.current_1);
-	D3DTextr_KillTexture(ITC.current_2);
-	D3DTextr_KillTexture(ITC.current_3);
-	D3DTextr_KillTexture(ITC.current_4);
-	D3DTextr_KillTexture(ITC.current_5);
-	D3DTextr_KillTexture(ITC.current_6);
-	D3DTextr_KillTexture(ITC.current_7);
-	D3DTextr_KillTexture(ITC.current_8);
-	D3DTextr_KillTexture(ITC.current_9);
-	D3DTextr_KillTexture(ITC.current_10);
+	ITC.Reset();
+}
 
-	D3DTextr_KillTexture(ITC.heropageleft);
-	D3DTextr_KillTexture(ITC.heropageright);
+INTERFACE_TC::INTERFACE_TC()
+{
+}
 
-	D3DTextr_KillTexture(ITC.symbol_mega);
-	D3DTextr_KillTexture(ITC.symbol_vista);
-	D3DTextr_KillTexture(ITC.symbol_aam);
-	D3DTextr_KillTexture(ITC.symbol_taar);
-	D3DTextr_KillTexture(ITC.symbol_yok);
-	D3DTextr_KillTexture(ITC.pTexCursorRedist);
-	D3DTextr_KillTexture(ITC.pTexSpellBook);
+INTERFACE_TC::~INTERFACE_TC()
+{
+	Reset();
+}
 
-	D3DTextr_KillTexture(ITC.pTexCornerLeft);
-	D3DTextr_KillTexture(ITC.pTexCornerRight);
+void INTERFACE_TC::Set(const std::string& textureName, TextureContainer* pTexture)
+{
+	m_Textures[textureName] = pTexture;
+}
 
-	if (ITC.lpszULevel)
+void INTERFACE_TC::Set(const std::string& textureName, const std::string& fileName)
+{
+	m_Textures[textureName] = MakeTCFromFile(fileName.c_str());
+}
+
+TextureContainer* INTERFACE_TC::Get(const std::string& name)
+{
+	TextureDictionary::iterator it = m_Textures.find(name);
+	return it != m_Textures.end() ? (*it).second : NULL;		
+}
+
+void INTERFACE_TC::Reset()
+{
+	// For each item in the map...
+	for(TextureDictionary::iterator it = m_Textures.begin(); it != m_Textures.end(); ++it)
 	{
-		free (ITC.lpszULevel);
-		ITC.lpszULevel = NULL;
+		// Free the textures...
+		D3DTextr_KillTexture((*it).second);
 	}
 
-	if (ITC.lpszUXp)
-	{
-		free (ITC.lpszUXp);
-		ITC.lpszUXp = NULL;
-	}
+	m_Textures.clear();
 
-	ITC.questbook=NULL;
-	ITC.bookmark_char=NULL;
-	ITC.bookmark_magic=NULL;
-	ITC.bookmark_map=NULL;
-	ITC.bookmark_quest=NULL;
-	ITC.accessible_1=NULL;
-	ITC.accessible_2=NULL;
-	ITC.accessible_3=NULL;
-	ITC.accessible_4=NULL;
-	ITC.accessible_5=NULL;
-	ITC.accessible_6=NULL;
-	ITC.accessible_7=NULL;
-	ITC.accessible_8=NULL;
-	ITC.accessible_9=NULL;
-	ITC.accessible_10=NULL;
-	ITC.current_1=NULL;
-	ITC.current_2=NULL;
-	ITC.current_3=NULL;
-	ITC.current_4=NULL;
-	ITC.current_5=NULL;
-	ITC.current_6=NULL;
-	ITC.current_7=NULL;
-	ITC.current_8=NULL;
-	ITC.current_9=NULL;
-	ITC.current_10=NULL;
-
-	ITC.heropageleft=NULL;
-	ITC.heropageright=NULL;
-
-	ITC.symbol_mega=NULL;
-	ITC.symbol_vista=NULL;
-	ITC.symbol_aam=NULL;
-	ITC.symbol_taar=NULL;
-	ITC.symbol_yok=NULL;
-	ITC.pTexCursorRedist=NULL;
-	ITC.pTexSpellBook=NULL;
-	ITC.pTexCornerLeft=NULL;
-	ITC.pTexCornerRight=NULL;
-	ITC.lpszULevel = NULL;
-	ITC.lpszUXp = NULL;
+	ITC.Level.clear();
+	ITC.Xp.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -724,7 +674,7 @@ void InventoryOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forceclose
 void ARX_INTERFACE_NoteInit()
 {
 	Note.type = NOTE_TYPE_UNDEFINED;
-	Note.text = NULL;
+	Note.text.clear();
 	Note.textsize = 0;
 
 	QuestBook.curpage=0;
@@ -736,10 +686,7 @@ void ARX_INTERFACE_NoteClear()
 {
 	Note.type = NOTE_TYPE_UNDEFINED;
 
-	if (Note.text)
-		free(Note.text);
-
-	Note.text=NULL;
+	Note.text.clear();
 	Note.textsize=0;
 	player.Interface&=~INTER_NOTE;
 
@@ -763,20 +710,21 @@ void ARX_INTERFACE_NoteClear()
 }
 
 //-----------------------------------------------------------------------------
-void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, char* tex)
+void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex)
 {
+ 
+
 	if (player.Interface & INTER_NOTE)
 		ARX_INTERFACE_NoteClose();
-
-	_TCHAR output[8096];
+	
+	std::string output;
 	ARX_INTERFACE_BookOpenClose(2);
 	ARX_INTERFACE_NoteClear();
-	Note.type = type;
-	MakeLocalised(tex, output, 8096);
-	Note.text = (_TCHAR *)malloc((_tcslen(output)+1)*sizeof(_TCHAR));
-	ZeroMemory(Note.text, (_tcslen(output)+1)*sizeof(_TCHAR));
-	_tcscpy(Note.text, output);
-	player.Interface |= INTER_NOTE;
+	Note.type=type;
+	MakeLocalised(tex,output);
+
+	Note.text = output;
+	player.Interface|=INTER_NOTE;
 
 	if (NoteTexture)
 	{
@@ -802,9 +750,14 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, char* tex)
 	long length = _tcslen(Note.text);
 	long curpage = 1;
 
-	NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Ingame_books.bmp");
-	RECT rRect;
-
+		Note.curpage=0;
+		Note.pages[0]=0;
+		long length=Note.text.length();
+		long curpage=1;
+		
+		NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Ingame_books.bmp");
+		RECT rRect;
+		
 
 		float fWidth	= NoteTexture->m_dwWidth*( 1.0f / 2 )-10.f ; 
 		float fHeight	= NoteTexture->m_dwHeight-40.f ; 
@@ -825,17 +778,20 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, char* tex)
 
 	int lLenghtCurr=0;
 
-	while (length > 0)
-	{
-		long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, Note.text+lLenghtCurr, 0, rRect);
-		length -= lLengthDraw;
-		lLenghtCurr += lLengthDraw;
-		Note.pages[curpage++] = lLenghtCurr;
-	}
+		while(length>0)
+		{
+			long lLengthDraw=ARX_UNICODE_ForceFormattingInRect(	hFontInGameNote,
+																Note.text.substr(lLenghtCurr),
+																0,
+																rRect);
+			length-=lLengthDraw;
+			lLenghtCurr+=lLengthDraw;
+			Note.pages[curpage++]=lLenghtCurr;
+		}
 
-	Note.pages[curpage++] = -1;
-	Note.totpages = curpage;
-	NoteTexture = NULL;
+		Note.pages[curpage++]=-1;
+		Note.totpages=curpage;
+		NoteTexture=NULL;
 
 	if (Note.totpages > 3)
 		Note.type = Note.type == NOTE_TYPE_NOTE ? NOTE_TYPE_BIGNOTE : NOTE_TYPE_BOOK;
@@ -930,6 +886,7 @@ void ARX_INTERFACE_NoteManage()
 				break;
 			case NOTE_TYPE_BIGNOTE:
 			case NOTE_TYPE_BOOK:
+
 				if (Note.type == NOTE_TYPE_BIGNOTE)
 				{
 					NoteTexture=MakeTCFromFile("Graph\\Interface\\book\\Very_BigNote.bmp");
@@ -1025,7 +982,7 @@ void ARX_INTERFACE_NoteManage()
 				{
 					if(Note.pages[Note.curpage+1]>0)
 					{
-						_tcsncpy(Page_Buffer,Note.text+Note.pages[Note.curpage],Note.pages[Note.curpage+1]-Note.pages[Note.curpage]);
+						_tcsncpy(Page_Buffer,Note.text.substr(Note.pages[Note.curpage]).c_str(),Note.pages[Note.curpage+1]-Note.pages[Note.curpage]);
 						Page_Buffer[Note.pages[Note.curpage+1]-Note.pages[Note.curpage]]=_T('\0');
 
 						danaeApp.DANAEEndRender();
@@ -1034,7 +991,7 @@ void ARX_INTERFACE_NoteManage()
 
 						if(Note.pages[Note.curpage+2]>0)
 						{
-							_tcsncpy(Page_Buffer,Note.text+Note.pages[Note.curpage+1],Note.pages[Note.curpage+2]-Note.pages[Note.curpage+1]);
+							_tcsncpy(Page_Buffer,Note.text.substr(Note.pages[Note.curpage+1]).c_str(),Note.pages[Note.curpage+2]-Note.pages[Note.curpage+1]);
 							Page_Buffer[Note.pages[Note.curpage+2]-Note.pages[Note.curpage+1]]=_T('\0');
 
 							danaeApp.DANAEEndRender();
@@ -1046,7 +1003,7 @@ void ARX_INTERFACE_NoteManage()
 					{
 						if(Note.pages[Note.curpage]>=0)
 						{
-							_tcscpy(Page_Buffer,Note.text+Note.pages[Note.curpage]);
+							_tcscpy(Page_Buffer,Note.text.substr(Note.pages[Note.curpage]).c_str());
 
 							danaeApp.DANAEEndRender();
 							DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY+NoteTextMaxy,Page_Buffer,0,0x00FF00FF);
@@ -1088,7 +1045,7 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 	if (player.Interface & INTER_MAP)
 	{
 		ARX_SOUND_PlayInterface(SND_BOOK_CLOSE, 0.9F + 0.2F * rnd());
-		SendIOScriptEvent(inter.iobj[0],SM_BOOK_CLOSE,"",NULL);
+		SendIOScriptEvent(inter.iobj[0],SM_BOOK_CLOSE);
 		player.Interface &=~ INTER_MAP;
 		ARX_MINIMAP_PurgeTC();
 
@@ -1096,8 +1053,7 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 		{
 			for (long i=0;i<MAX_FLYOVER;i++)
 			{
-				if (ARXmenu.mda->flyover[i]!=NULL)
-					ARX_Menu_Release_Text(ARXmenu.mda->flyover[i]);
+				ARXmenu.mda->flyover[i].clear();
 			}
 
 			free((void*)ARXmenu.mda);
@@ -1109,7 +1065,7 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 		SendIOScriptEvent(inter.iobj[0],0,"","BOOK_OPEN");
 
 		ARX_SOUND_PlayInterface(SND_BOOK_OPEN, 0.9F + 0.2F * rnd());
-		SendIOScriptEvent(inter.iobj[0],SM_BOOK_OPEN,"",NULL);
+		SendIOScriptEvent(inter.iobj[0],SM_BOOK_OPEN);
 		ARX_INTERFACE_NoteClose();
 		player.Interface |= INTER_MAP;
 		Book_MapPage=ARX_LEVELS_GetRealNum(CURRENTLEVEL)+1;
@@ -1120,8 +1076,9 @@ void ARX_INTERFACE_BookOpenClose(unsigned long t) // 0 switch 1 forceopen 2 forc
 
 		if(!ARXmenu.mda)
 		{
-			ARXmenu.mda = (MENU_DYNAMIC_DATA *)malloc(sizeof(MENU_DYNAMIC_DATA));
-			memset(ARXmenu.mda,0,sizeof(MENU_DYNAMIC_DATA));
+//			ARXmenu.mda = (MENU_DYNAMIC_DATA *)malloc(sizeof(MENU_DYNAMIC_DATA));
+//			memset(ARXmenu.mda,0,sizeof(MENU_DYNAMIC_DATA));
+			ARXmenu.mda = new MENU_DYNAMIC_DATA();
 			
 			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_STRENGTH],			"system_charsheet_strength");
 			ARX_Allocate_Text(ARXmenu.mda->flyover[BOOK_MIND],				"system_charsheet_intel");
@@ -1229,12 +1186,14 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 		return;
 	}
 
-	char tcIndent[256];
-	char tcIsClass[256];
-	strcpy(tcIndent,COMBINE->filename);
-	strcpy(tcIsClass,GetName(tcIndent));
-	sprintf(tcIndent,"%s_%04ld",tcIsClass,COMBINE->ident);
-	MakeUpcase(tcIndent);				
+	std::string tcIndent;
+	std::string tcIsClass;
+	tcIndent = COMBINE->filename;
+	tcIsClass = GetName(tcIndent);
+	std::stringstream ss;
+	ss << tcIsClass << '_' << COMBINE->ident;
+	tcIndent = ss.str();
+	MakeUpcase(tcIndent);
 
 		char tTxtCombineDest[256];
 
@@ -1296,7 +1255,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 									memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 									tTxtCombineDest[pEndString-pStartString]=0;
 
-									if(!strcasecmp(tTxtCombineDest,tcIsClass))
+									if(!strcasecmp(tTxtCombineDest,tcIsClass.c_str()))
 									{
 										//same class
 										bCanCombine=true;
@@ -1321,7 +1280,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 										memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 										tTxtCombineDest[pEndString-pStartString]=0;
 
-										if(!strcasecmp(tTxtCombineDest,tcIndent))
+										if(!strcasecmp(tTxtCombineDest,tcIndent.c_str()))
 										{
 											//same class
 											bCanCombine=true;
@@ -1444,7 +1403,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 								memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 								tTxtCombineDest[pEndString-pStartString]=0;
 
-								if(!strcasecmp(tTxtCombineDest,tcIsClass))
+								if(!strcasecmp(tTxtCombineDest,tcIsClass.c_str()))
 								{
 									//same class
 									bCanCombine=true;
@@ -1469,7 +1428,7 @@ void GetInfosCombineWithIO(INTERACTIVE_OBJ * _pWithIO)
 									memcpy(tTxtCombineDest,pStartString,pEndString-pStartString);
 									tTxtCombineDest[pEndString-pStartString]=0;
 
-									if(!strcasecmp(tTxtCombineDest,tcIndent))
+									if(!strcasecmp(tTxtCombineDest,tcIndent.c_str()))
 									{
 										//same class
 										bCanCombine=true;
@@ -1659,7 +1618,7 @@ bool DANAE::ManageEditorControls()
 		if (io!=NULL)
 		{
 			InventoryDir=-1;
-			SendIOScriptEvent(io,SM_INVENTORY2_CLOSE,"");
+			SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 			TSecondaryInventory=SecondaryInventory;
 			SecondaryInventory=NULL;
 
@@ -1780,34 +1739,34 @@ bool DANAE::ManageEditorControls()
 									&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
 									>= CURRENT_TORCH->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
 								{
-									SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY,"");
+									SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
 								}
 
-								MakeLocalised(temp->locname,WILLADDSPEECH,256);
+								MakeLocalised(temp->locname,WILLADDSPEECH);
 
 								if (temp->ioflags & IO_GOLD)
 								{
 									_TCHAR UText[256];
-									_stprintf(UText, "%ld %s", temp->_itemdata->price, WILLADDSPEECH);
-									_tcscpy(WILLADDSPEECH, UText);
+									_stprintf(UText, "%ld %s", temp->_itemdata->price, WILLADDSPEECH.c_str());
+									WILLADDSPEECH = UText;
 								}
 
 								if ((temp->poisonous>0) && (temp->poisonous_count!=0))
 								{
-									_TCHAR Text[256];
+									std::string Text;
 									_TCHAR UText[256];
-									MakeLocalised("[Description_Poisoned]",Text,256);
-									_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH, Text, (int)temp->poisonous);
-									_tcscpy(WILLADDSPEECH, UText);
+									MakeLocalised("[Description_Poisoned]",Text);
+									_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH.c_str(), Text.c_str(), (int)temp->poisonous);
+									WILLADDSPEECH = UText;
 								}
 
 								if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
 								{
-									_TCHAR Text[256];
+									std::string Text;
 									_TCHAR UText[256];
-									MakeLocalised("[Description_Durability]",Text,256);
-									_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH, Text, temp->durability,temp->max_durability);
-									_tcscpy(WILLADDSPEECH, UText);
+									MakeLocalised("[Description_Durability]",Text);
+									_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH.c_str(), Text.c_str(), temp->durability,temp->max_durability);
+									WILLADDSPEECH = UText;
 								}
 
 
@@ -2048,7 +2007,7 @@ bool DANAE::ManageEditorControls()
 
 						if (SecondaryInventory != NULL)
 						{
-							SendIOScriptEvent(ioSteal, SM_STEAL,"");
+							SendIOScriptEvent(ioSteal, SM_STEAL);
 
 							if (INTERNATIONAL_MODE)
 							{
@@ -2072,10 +2031,11 @@ bool DANAE::ManageEditorControls()
 	{
 		px = 97 * Xratio;
 		py = 64 * Yratio;
-
-		if (ITC.playerbook)
+		
+		TextureContainer* playerbook = ITC.Get("playerbook");
+		if (playerbook)
 		{
-			if (MouseInRect(px, py, px + ITC.playerbook->m_dwWidth * Xratio, py + ITC.playerbook->m_dwHeight * Yratio))
+			if (MouseInRect(px, py, px + playerbook->m_dwWidth * Xratio, py + playerbook->m_dwHeight * Yratio))
 			{
 				eMouseState = MOUSE_IN_BOOK;
 			}
@@ -2209,7 +2169,7 @@ bool DANAE::ManageEditorControls()
 				{
 					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 					InventoryDir=-1;
-					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE,"");
+					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 					TSecondaryInventory=SecondaryInventory;
 					SecondaryInventory=NULL;
 				}
@@ -2230,7 +2190,7 @@ bool DANAE::ManageEditorControls()
 	{
 		if ( FlyingOverIO && ( !DRAGINTER ) )
 		{
-			SendIOScriptEvent( FlyingOverIO, SM_CLICKED, "" );
+			SendIOScriptEvent( FlyingOverIO, SM_CLICKED );
 			bool bOk = true;
 
 			if ( SecondaryInventory != NULL )
@@ -2344,7 +2304,7 @@ bool DANAE::ManageEditorControls()
 			{
 				if (Book_Mode == BOOKMODE_STATS)
 				{
-					SendIOScriptEvent(DRAGINTER,SM_INVENTORYUSE,"");
+					SendIOScriptEvent(DRAGINTER,SM_INVENTORYUSE);
 					COMBINE=NULL;
 				}
 			}
@@ -2461,11 +2421,13 @@ bool DANAE::ManageEditorControls()
 			{
 				if (io!=COMBINE)
 				{
-					char temp[256];
+					std::string temp;
 					char temp2[256];
-					strcpy(temp,COMBINE->filename);
-					strcpy(temp2,GetName(temp));
-					sprintf(temp,"%s_%04ld",temp2,COMBINE->ident);
+					temp = COMBINE->filename;
+					strcpy(temp2,GetName(temp).c_str());
+					std::stringstream ss;
+					ss << temp2 << '_' << COMBINE->ident;
+					temp = ss.str();
 					MakeUpcase(temp);				
 					EVENT_SENDER=COMBINE;
 
@@ -2526,7 +2488,7 @@ bool DANAE::ManageEditorControls()
 			if (player.bag)
 			{
 
-					float fCenterX	= DANAECENTERX + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.hero_inventory->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
+					float fCenterX	= DANAECENTERX + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
 					float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
 
 
@@ -2705,7 +2667,7 @@ bool DANAE::ManageEditorControls()
 				if (HERMESFileSelectorOpen(loadfrom,"Load Danae Level","Danae Level File (*.DLF)\0*.DLF\0\0",this->m_hWnd))
 				{
 					char pp[256];
-					strcpy(pp,GetName(loadfrom));
+					strcpy(pp,GetName(loadfrom).c_str());
 					LoadLevelScreen(GDevice,GetLevelNumByName(pp));
 					
 					Pause(true);
@@ -2747,7 +2709,7 @@ bool DANAE::ManageEditorControls()
 			WILLSAVELEVEL=0;
 
 			if (FORBID_SAVE)
-				ShowPopup("You can't Save Editor Level While a Game is in progress. Please reload an Editor Level to be able to save.");
+				LogError << ("You can't Save Editor Level While a Game is in progress. Please reload an Editor Level to be able to save.");
 			else if (OKBox("Save Current Level ?", "Save Level..."))
 				{
 					char saveto[512];
@@ -3318,18 +3280,19 @@ bool DANAE::ManageEditorControls()
 					if ((nodes.nodes[i].exist) && (nodes.nodes[i].selected))
 					{
 						char temp[64];
-				encore:
-					;
-	   strcpy(temp,nodes.nodes[i].name);
-	   TextBox("Change Node Name",temp,63);
+						
+						while(true)
+						{
+							strcpy(temp,nodes.nodes[i].name);
+							TextBox("Change Node Name",temp,63);
 
-	   if ((ExistNodeName(temp)) && strcmp(temp,nodes.nodes[i].name))
-	   {
-		   ShowPopup("This Name already exists, change to new name please");
-		   goto encore;
-	   }
+							if ( !((ExistNodeName(temp)) && strcmp(temp,nodes.nodes[i].name)) )
+								break;
 
-	   strcpy(nodes.nodes[i].name,temp);
+							LogError << ("This Name already exists, change to new name please");
+						}
+
+						strcpy(nodes.nodes[i].name,temp);
 					}
 				}
 
@@ -3913,7 +3876,7 @@ void DANAE::ManagePlayerControls()
 				{
 					if (t->_npcdata->life>0.f)
 					{
-						SendIOScriptEvent(t,SM_CHAT,"");
+						SendIOScriptEvent(t,SM_CHAT);
 						EERIEMouseButton&=~4;
 
 						if (DRAGGING) DRAGGING = 0;
@@ -3971,7 +3934,7 @@ void DANAE::ManagePlayerControls()
 					}
 				}
 				else if (t->script.data!=NULL)
-					SendIOScriptEvent(t,SM_ACTION,"");
+					SendIOScriptEvent(t,SM_ACTION);
 
 				EERIEMouseButton&=~4;
 
@@ -4784,7 +4747,7 @@ void DANAE::ManagePlayerControls()
 				if (!CSEND)
 				{
 					CSEND=1;
-					SendIOScriptEvent(inter.iobj[0],SM_EXPLORATIONMODE,"");
+					SendIOScriptEvent(inter.iobj[0],SM_EXPLORATIONMODE);
 				}
 			}
 		}
@@ -4793,7 +4756,7 @@ void DANAE::ManagePlayerControls()
 			if (CSEND)
 			{
 				CSEND=0;
-				SendIOScriptEvent(inter.iobj[0],SM_CURSORMODE,"");
+				SendIOScriptEvent(inter.iobj[0],SM_CURSORMODE);
 			}
 		}
 
@@ -4845,7 +4808,7 @@ void DANAE::ManagePlayerControls()
 						if (io!=NULL)
 						{
 							InventoryDir=-1;
-							SendIOScriptEvent(io,SM_INVENTORY2_CLOSE,"");
+							SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 							TSecondaryInventory=SecondaryInventory;
 							SecondaryInventory=NULL;
 						}
@@ -4886,7 +4849,7 @@ void DANAE::ManagePlayerControls()
 						if (io!=NULL)
 						{
 							InventoryDir=-1;
-							SendIOScriptEvent(io,SM_INVENTORY2_CLOSE,"");
+							SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 							TSecondaryInventory=SecondaryInventory;
 							SecondaryInventory=NULL;
 						}
@@ -5156,7 +5119,7 @@ void DANAE::ManageKeyMouse()
 						{
 							if (!((FlyingOverIO->_itemdata->playerstacksize <= 1) && (FlyingOverIO->_itemdata->count > 1)))
 							{
-								SendIOScriptEvent(FlyingOverIO,SM_INVENTORYUSE,"");
+								SendIOScriptEvent(FlyingOverIO,SM_INVENTORYUSE);
 
 								if (!((pMenuConfig->bAutoReadyWeapon == false) && (pMenuConfig->bMouseLookToggle)))
 								{
@@ -5724,34 +5687,34 @@ void DANAE::ManageKeyMouse()
 								&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
 								>= FlyingOverIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
 							{
-								SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY,"");
+								SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
 							}
 
-							MakeLocalised(temp->locname,WILLADDSPEECH,256);
+							MakeLocalised(temp->locname,WILLADDSPEECH);
 
 							if (temp->ioflags & IO_GOLD)
 							{
 								_TCHAR UText[256];
-								_stprintf(UText, _T("%ld %s"), temp->_itemdata->price, WILLADDSPEECH);
-								_tcscpy(WILLADDSPEECH, UText);
+								_stprintf(UText, _T("%ld %s"), temp->_itemdata->price, WILLADDSPEECH.c_str());
+								WILLADDSPEECH = UText;
 							}
 
 							if ((temp->poisonous>0) && (temp->poisonous_count!=0))
 							{
-								_TCHAR Text[256];
+								std::string Text;
 								_TCHAR UText[256];
-								MakeLocalised("[Description_Poisoned]",Text,256);
-								_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH, Text, (int)temp->poisonous);
-								_tcscpy(WILLADDSPEECH, UText);
+								MakeLocalised("[Description_Poisoned]",Text);
+								_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH.c_str(), Text.c_str(), (int)temp->poisonous);
+								WILLADDSPEECH = UText;
 							}
 
 							if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
 							{
-								_TCHAR Text[256];
+								std::string Text;
 								_TCHAR UText[256];
-								MakeLocalised("[Description_Durability]",Text,256);
-								_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH, Text, temp->durability,temp->max_durability);
-								_tcscpy(WILLADDSPEECH, UText);
+								MakeLocalised("[Description_Durability]",Text);
+								_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH.c_str(), Text.c_str(), temp->durability,temp->max_durability);
+								WILLADDSPEECH = UText;
 							}
 
 
@@ -5790,7 +5753,7 @@ void DANAE::ManageKeyMouse()
 																	    rDraw,
 																		RGB(232,204,143),
 																		0x00FF00FF,
-																		2000+_tcslen(WILLADDSPEECH)*60);
+																		2000+WILLADDSPEECH.length()*60);
 								}
 
 								WILLADDSPEECH[0]=0;
@@ -5813,34 +5776,34 @@ void DANAE::ManageKeyMouse()
 										&& (player.Full_Skill_Object_Knowledge + player.Full_Attribute_Mind
 										>= FlyingOverIO->_itemdata->equipitem->elements[IO_EQUIPITEM_ELEMENT_Identify_Value].value) )
 									{
-										SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY,"");
+										SendIOScriptEvent(FlyingOverIO,SM_IDENTIFY);
 									}
 
-									MakeLocalised(temp->locname,WILLADDSPEECH,256);
+									MakeLocalised(temp->locname,WILLADDSPEECH);
 
 									if (temp->ioflags & IO_GOLD)
 									{
 										_TCHAR UText[256];
-										_stprintf(UText, _T("%ld %s"), temp->_itemdata->price, WILLADDSPEECH);
-										_tcscpy(WILLADDSPEECH, UText);
+										_stprintf(UText, _T("%ld %s"), temp->_itemdata->price, WILLADDSPEECH.c_str());
+										WILLADDSPEECH = UText;
 									}
 
 									if ((temp->poisonous>0) && (temp->poisonous_count!=0))
 									{
-										_TCHAR Text[256];
+										std::string Text;
 										_TCHAR UText[256];
-										MakeLocalised("[Description_Poisoned]",Text,256);
-										_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH, Text, (int)temp->poisonous);
-										_tcscpy(WILLADDSPEECH, UText);
+										MakeLocalised("[Description_Poisoned]",Text);
+										_stprintf(UText, _T("%s (%s %d)"),  WILLADDSPEECH.c_str(), Text.c_str(), (int)temp->poisonous);
+										WILLADDSPEECH = UText;
 									}
 
 									if ((temp->ioflags & IO_ITEM) && (temp->durability<100.f))
 									{
-										_TCHAR Text[256];
+										std::string Text;
 										_TCHAR UText[256];
-										MakeLocalised("[Description_Durability]",Text,256);
-										_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH, Text, temp->durability,temp->max_durability);
-										_tcscpy(WILLADDSPEECH, UText);
+										MakeLocalised("[Description_Durability]",Text);
+										_stprintf(UText, _T("%s %s %3.0f/%3.0f"),  WILLADDSPEECH.c_str(), Text.c_str(), temp->durability,temp->max_durability);
+										WILLADDSPEECH = UText;
 									}
 
 
@@ -6205,15 +6168,17 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 		sprintf(temp,"Graph\\Interface\\Inventory\\%s.bmp",TSecondaryInventory->io->inventory_skin);
 		TextureContainer * tc=MakeTCFromFile(temp);
 
-		if (tc) ITC.ingame_inventory=tc;
-		else ITC.ingame_inventory=BasicInventorySkin;
+		if (tc)
+			ITC.Set("ingame_inventory", tc);
+		else 
+			ITC.Set("ingame_inventory", BasicInventorySkin);
 	}
-	else if (ITC.ingame_inventory!=BasicInventorySkin)
+	else if (ITC.Get("ingame_inventory") != BasicInventorySkin)
 	{
-		ITC.ingame_inventory=BasicInventorySkin;
+		ITC.Set("ingame_inventory", BasicInventorySkin);
 	}
 
-	ARX_INTERFACE_DrawItem(ITC.ingame_inventory,INTERFACE_RATIO(InventoryX),0.f);
+	ARX_INTERFACE_DrawItem(ITC.Get("ingame_inventory"),INTERFACE_RATIO(InventoryX),0.f);
 
 
 	long i,j;
@@ -6240,7 +6205,7 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 					if (!ARX_PLAYER_CanStealItem(io))
 					{
 						bItemSteal = true;
-						tc = ITC.item_cant_steal;
+						tc = ITC.Get("item_cant_steal");
 						tc2 = NULL;
 					}
 				}
@@ -6352,8 +6317,8 @@ void ARX_INTERFACE_DrawInventory(short _sNum, int _iX=0, int _iY=0)
 
 
 
-	ARX_INTERFACE_DrawItem(ITC.hero_inventory, fPosX, fPosY - INTERFACE_RATIO(5));
-
+	ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory"), fPosX, fPosY - INTERFACE_RATIO(5));
+	
 	RECT rect;
 	rect.top=0;
 	rect.bottom=0;
@@ -6728,9 +6693,10 @@ void StdDraw(float posx,float posy,D3DCOLOR color,TextureContainer * tcc,long fl
 
 	if (tcc==NULL)
 	{
-		if (ITC.unknown==NULL) ITC.unknown= MakeTCFromFile("Graph\\interface\\icons\\spell_unknown.bmp");
+		if (ITC.Get("unknown")==NULL)
+			ITC.Set("unknown", MakeTCFromFile("Graph\\interface\\icons\\spell_unknown.bmp"));
 
-		tc=ITC.unknown;
+		tc=ITC.Get("unknown");
 	}
 	else tc=tcc;
 
@@ -6760,14 +6726,14 @@ void StdDraw(float posx,float posy,D3DCOLOR color,TextureContainer * tcc,long fl
 						if (flag & 2)
 						{
 							if (Precast[PRECAST_NUM].typ >= 0)
-								_tcscpy(WILLADDSPEECH, spellicons[Precast[PRECAST_NUM].typ].name);
+								WILLADDSPEECH = spellicons[Precast[PRECAST_NUM].typ].name;
 
 							WILLADDSPEECHTIME = ARXTimeUL();
 						}
 						else
 						{
 							if (spells[i].type >= 0)
-								_tcscpy(WILLADDSPEECH, spellicons[spells[i].type].name);
+								WILLADDSPEECH = spellicons[spells[i].type].name;
 
 							WILLADDSPEECHTIME = ARXTimeUL();
 						}
@@ -7172,7 +7138,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 									1000,
 									0.01f,
 									2,
-									INTERNATIONAL_MODE?0:max(3000, int(70*_tcslen(spellicons[i].description))));
+									INTERNATIONAL_MODE?0:max(3000, int(70*spellicons[i].description.length())));
 							}
 
 
@@ -7413,67 +7379,67 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false );
 	
-	if (ITC.questbook==NULL)
+	if (ITC.Get("questbook")==NULL)
 	{
-		ITC.playerbook=MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\char_sheet_book.bmp");
-		ITC.ic_casting=MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_casting.bmp");
-		ITC.ic_close_combat=MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_close_combat.bmp");
-		ITC.ic_constitution =MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_constit.bmp");
-		ITC.ic_defense=MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_defense.bmp");
-		ITC.ic_dexterity=MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_dext.bmp");
-		ITC.ic_etheral_link=MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_etheral_link.bmp");
-		ITC.ic_mind=MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_intel.bmp");
-		ITC.ic_intuition=MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_intuition.bmp");
-		ITC.ic_mecanism=MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_mecanism.bmp");
-		ITC.ic_object_knowledge=MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_obj_knowledge.bmp");
-		ITC.ic_projectile=MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_projectile.bmp");
-		ITC.ic_stealth=MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_stealth.bmp");
-		ITC.ic_strength=MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_strenght.bmp");
+		ITC.Set("playerbook", "Graph\\Interface\\book\\character_sheet\\char_sheet_book.bmp");
+		ITC.Set("ic_casting", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_casting.bmp");
+		ITC.Set("ic_close_combat", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_close_combat.bmp");
+		ITC.Set("ic_constitution", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_constit.bmp");
+		ITC.Set("ic_defense", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_defense.bmp");
+		ITC.Set("ic_dexterity", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_dext.bmp");
+		ITC.Set("ic_etheral_link", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_etheral_link.bmp");
+		ITC.Set("ic_mind", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_intel.bmp");
+		ITC.Set("ic_intuition", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_intuition.bmp");
+		ITC.Set("ic_mecanism", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_mecanism.bmp");
+		ITC.Set("ic_object_knowledge", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_obj_knowledge.bmp");
+		ITC.Set("ic_projectile", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_projectile.bmp");
+		ITC.Set("ic_stealth", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_stealth.bmp");
+		ITC.Set("ic_strength", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_strenght.bmp");
+		
+		ITC.Set("questbook", "Graph\\Interface\\book\\questbook.bmp");
+		ITC.Set("pTexSpellBook", "Graph\\Interface\\book\\SpellBook.bmp");
+		ITC.Set("bookmark_char", "Graph\\Interface\\book\\bookmark_char.bmp");
+		ITC.Set("bookmark_magic", "Graph\\Interface\\book\\bookmark_magic.bmp");
+		ITC.Set("bookmark_map", "Graph\\Interface\\book\\bookmark_map.bmp");
+		ITC.Set("bookmark_quest", "Graph\\Interface\\book\\bookmark_quest.bmp");
 
-		ITC.questbook=MakeTCFromFile("Graph\\Interface\\book\\questbook.bmp");
-		ITC.pTexSpellBook = MakeTCFromFile("Graph\\Interface\\book\\SpellBook.bmp");
-		ITC.bookmark_char=MakeTCFromFile("Graph\\Interface\\book\\bookmark_char.bmp");
-		ITC.bookmark_magic=MakeTCFromFile("Graph\\Interface\\book\\bookmark_magic.bmp");
-		ITC.bookmark_map=MakeTCFromFile("Graph\\Interface\\book\\bookmark_map.bmp");
-		ITC.bookmark_quest=MakeTCFromFile("Graph\\Interface\\book\\bookmark_quest.bmp");
-
-		ITC.accessible_1=MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_1.bmp");
-		ITC.accessible_2=MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_2.bmp");
-		ITC.accessible_3=MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_3.bmp");
-		ITC.accessible_4=MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_4.bmp");
-		ITC.accessible_5=MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_5.bmp");
-		ITC.accessible_6=MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_6.bmp");
-		ITC.accessible_7=MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_7.bmp");
-		ITC.accessible_8=MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_8.bmp");
-		ITC.accessible_9=MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_9.bmp");
-		ITC.accessible_10=MakeTCFromFile("Graph\\Interface\\book\\Accessible\\accessible_10.bmp");
-		ITC.current_1=MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_1.bmp");
-		ITC.current_2=MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_2.bmp");
-		ITC.current_3=MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_3.bmp");
-		ITC.current_4=MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_4.bmp");
-		ITC.current_5=MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_5.bmp");
-		ITC.current_6=MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_6.bmp");
-		ITC.current_7=MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_7.bmp");
-		ITC.current_8=MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_8.bmp");
-		ITC.current_9=MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_9.bmp");
-		ITC.current_10=MakeTCFromFile("Graph\\Interface\\book\\Current_Page\\Current_10.bmp");
-		ITC.heropageleft=MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\Hero_left_X24_Y24.BMP" );
-		ITC.heropageright=MakeTCFromFile("Graph\\Interface\\book\\character_sheet\\Hero_right_X305_Y270.BMP" );
-		ITC.symbol_mega = NULL;
-		ITC.symbol_vista = NULL;
-		ITC.symbol_aam = NULL;
-		ITC.symbol_taar = NULL;
-		ITC.symbol_yok = NULL;
-
-		ITC.pTexCursorRedist=MakeTCFromFile("Graph\\Interface\\cursors\\add_points.bmp" );
-
-		ITC.pTexCornerLeft=MakeTCFromFile("Graph\\Interface\\book\\Left_corner_original.bmp");
-		ITC.pTexCornerRight=MakeTCFromFile("Graph\\Interface\\book\\Right_corner_original.bmp");
-
-		ARX_Allocate_Text(ITC.lpszULevel, _T("system_charsheet_player_lvl"));
-		ARX_Allocate_Text(ITC.lpszUXp, _T("system_charsheet_player_xp"));
-
-		ANIM_Set(&player.useanim, herowaitbook);
+		ITC.Set("accessible_1", "Graph\\Interface\\book\\Accessible\\accessible_1.bmp");
+		ITC.Set("accessible_2", "Graph\\Interface\\book\\Accessible\\accessible_2.bmp");
+		ITC.Set("accessible_3", "Graph\\Interface\\book\\Accessible\\accessible_3.bmp");
+		ITC.Set("accessible_4", "Graph\\Interface\\book\\Accessible\\accessible_4.bmp");
+		ITC.Set("accessible_5", "Graph\\Interface\\book\\Accessible\\accessible_5.bmp");
+		ITC.Set("accessible_6", "Graph\\Interface\\book\\Accessible\\accessible_6.bmp");
+		ITC.Set("accessible_7", "Graph\\Interface\\book\\Accessible\\accessible_7.bmp");
+		ITC.Set("accessible_8", "Graph\\Interface\\book\\Accessible\\accessible_8.bmp");
+		ITC.Set("accessible_9", "Graph\\Interface\\book\\Accessible\\accessible_9.bmp");
+		ITC.Set("accessible_10", "Graph\\Interface\\book\\Accessible\\accessible_10.bmp");
+		ITC.Set("current_1", "Graph\\Interface\\book\\Current_Page\\Current_1.bmp");
+		ITC.Set("current_2", "Graph\\Interface\\book\\Current_Page\\Current_2.bmp");
+		ITC.Set("current_3", "Graph\\Interface\\book\\Current_Page\\Current_3.bmp");
+		ITC.Set("current_4", "Graph\\Interface\\book\\Current_Page\\Current_4.bmp");
+		ITC.Set("current_5", "Graph\\Interface\\book\\Current_Page\\Current_5.bmp");
+		ITC.Set("current_6", "Graph\\Interface\\book\\Current_Page\\Current_6.bmp");
+		ITC.Set("current_7", "Graph\\Interface\\book\\Current_Page\\Current_7.bmp");
+		ITC.Set("current_8", "Graph\\Interface\\book\\Current_Page\\Current_8.bmp");
+		ITC.Set("current_9", "Graph\\Interface\\book\\Current_Page\\Current_9.bmp");
+		ITC.Set("current_10", "Graph\\Interface\\book\\Current_Page\\Current_10.bmp");
+		ITC.Set("heropageleft", "Graph\\Interface\\book\\character_sheet\\Hero_left_X24_Y24.BMP" );
+		ITC.Set("heropageright", "Graph\\Interface\\book\\character_sheet\\Hero_right_X305_Y270.BMP" );
+		ITC.Set("symbol_mega", NULL);
+		ITC.Set("symbol_vista", NULL);
+		ITC.Set("symbol_aam", NULL);
+		ITC.Set("symbol_taar", NULL);
+		ITC.Set("symbol_yok", NULL);
+		
+		ITC.Set("pTexCursorRedist", "Graph\\Interface\\cursors\\add_points.bmp");
+		
+		ITC.Set("pTexCornerLeft", "Graph\\Interface\\book\\Left_corner_original.bmp");
+		ITC.Set("pTexCornerRight", "Graph\\Interface\\book\\Right_corner_original.bmp");
+		
+		ARX_Allocate_Text(ITC.Level, _T("system_charsheet_player_lvl"));
+		ARX_Allocate_Text(ITC.Xp, _T("system_charsheet_player_xp"));
+		
+		ANIM_Set(&player.useanim,herowaitbook);
 
 		player.useanim.flags |= EA_LOOP;
 
@@ -7491,11 +7457,21 @@ void ARX_INTERFACE_ManageOpenedBook()
 		GDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_ALWAYS);
 
 		if (Book_Mode == BOOKMODE_STATS)
-			DrawBookInterfaceItem(GDevice, ITC.playerbook, 97, 64, 0.9999f);
+		{
+			DrawBookInterfaceItem(GDevice, ITC.Get("playerbook"), 97, 64, 0.9999f); 
+		}
 		else if (Book_Mode == BOOKMODE_SPELLS)
-			DrawBookInterfaceItem(GDevice, ITC.pTexSpellBook, 97, 64, 0.9999f);
+		{
+			DrawBookInterfaceItem(GDevice, ITC.Get("pTexSpellBook"), 97, 64, 0.9999f);
+		}
+		else if (Book_Mode == 2)
+		{
+			DrawBookInterfaceItem(GDevice, ITC.Get("questbook"), 97, 64, 0.9999f);
+		}
 		else
-			DrawBookInterfaceItem(GDevice,ITC.questbook, 97, 64, 0.9999f);
+		{
+			DrawBookInterfaceItem(GDevice,ITC.Get("questbook"), 97, 64, 0.9999f);
+		}
 
 		GDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
 	}
@@ -7504,12 +7480,14 @@ void ARX_INTERFACE_ManageOpenedBook()
 		float x = 0;
 		float y = 0;
 
-		if ( ITC.playerbook )
+		x = 0;
+		
+		if ( ITC.Get("playerbook") )
 		{
-			x = ARX_CLEAN_WARN_CAST_FLOAT( ( 640 - ITC.playerbook->m_dwWidth ) / 2 );
-			y = ARX_CLEAN_WARN_CAST_FLOAT( ( 480 - ITC.playerbook->m_dwHeight ) / 2 );
+			x = ARX_CLEAN_WARN_CAST_FLOAT( ( 640 - ITC.Get("playerbook")->m_dwWidth ) / 2 );
+			y = ARX_CLEAN_WARN_CAST_FLOAT( ( 480 - ITC.Get("playerbook")->m_dwHeight ) / 2 );
 
-			DrawBookInterfaceItem( GDevice, ITC.playerbook, x, y );
+			DrawBookInterfaceItem( GDevice, ITC.Get("playerbook"), x, y );//95.f+2.f,47.f+17.f);
 		}
 
 		BOOKDECX = x - 97;
@@ -7530,17 +7508,18 @@ void ARX_INTERFACE_ManageOpenedBook()
 		{
 			float px=BOOKMARKS_POS_X;
 			float py=BOOKMARKS_POS_Y;
-			DrawBookInterfaceItem(GDevice,ITC.bookmark_char,px,py);
+			TextureContainer* tcBookmarkChar = ITC.Get("bookmark_char");
+			DrawBookInterfaceItem(GDevice,tcBookmarkChar,px,py);
 
 			// Check for cursor on charcter sheet bookmark
-			if (	ITC.bookmark_char
-				&&	MouseInBookRect(px,py,px+ITC.bookmark_char->m_dwWidth,py+ITC.bookmark_char->m_dwHeight))
+			if (	tcBookmarkChar
+				&&	MouseInBookRect(px,py,px+tcBookmarkChar->m_dwWidth,py+tcBookmarkChar->m_dwHeight))
 			{
 				// Draw highlighted Character sheet icon
 				BOOKINTERFACEITEMCOLOR=0xFF555555;
 				SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
 				SETALPHABLEND(GDevice,true);
-				DrawBookInterfaceItem(GDevice,ITC.bookmark_char,px,py);
+				DrawBookInterfaceItem(GDevice,tcBookmarkChar,px,py);
 				SETALPHABLEND(GDevice,false);
 				BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 
@@ -7563,7 +7542,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			{
 				float px=BOOKMARKS_POS_X+32;
 				float py=BOOKMARKS_POS_Y;
-				DrawBookInterfaceItem(GDevice,ITC.bookmark_magic,px,py);
+				DrawBookInterfaceItem(GDevice,ITC.Get("bookmark_magic"),px,py);
 
 				//////////////// TO BE REDONE/REMOVED - START
 				if (NewSpell==1)
@@ -7574,15 +7553,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 				}
 
 				//////////////// TO BE REDONE/REMOVED - END
-				if (	ITC.bookmark_magic
-					&&	MouseInBookRect(px,py,px+ITC.bookmark_magic->m_dwWidth,py+ITC.bookmark_magic->m_dwHeight))
+				if (	ITC.Get("bookmark_magic") 
+					&&	MouseInBookRect(px,py,px+ITC.Get("bookmark_magic")->m_dwWidth,py+ITC.Get("bookmark_magic")->m_dwHeight))				
 				{
 					// Draw highlighted Magic sheet icon
 					BOOKINTERFACEITEMCOLOR=0xFF555555;
 					SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
 
 					SETALPHABLEND(GDevice,true);
-					DrawBookInterfaceItem(GDevice,ITC.bookmark_magic,px,py);
+					DrawBookInterfaceItem(GDevice,ITC.Get("bookmark_magic"),px,py);
 					SETALPHABLEND(GDevice,false);
 					BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 
@@ -7605,15 +7584,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 			float px=BOOKMARKS_POS_X+64;
 			float py=BOOKMARKS_POS_Y;
 
-			DrawBookInterfaceItem(GDevice,ITC.bookmark_map,px,py);
+			DrawBookInterfaceItem(GDevice,ITC.Get("bookmark_map"),px,py);			
 
-			if (	ITC.bookmark_map
-				&&	MouseInBookRect(px,py,px+ITC.bookmark_map->m_dwWidth,py+ITC.bookmark_map->m_dwHeight))
+			if (	ITC.Get("bookmark_map")
+				&&	MouseInBookRect(px,py,px+ITC.Get("bookmark_map")->m_dwWidth,py+ITC.Get("bookmark_map")->m_dwHeight))				
 			{
 				BOOKINTERFACEITEMCOLOR=0xFF555555;
 				SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
 				SETALPHABLEND(GDevice,true);
-				DrawBookInterfaceItem(GDevice,ITC.bookmark_map,px,py);			
+				DrawBookInterfaceItem(GDevice,ITC.Get("bookmark_map"),px,py);			
 				SETALPHABLEND(GDevice,false);
 				BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 
@@ -7634,15 +7613,15 @@ void ARX_INTERFACE_ManageOpenedBook()
 		{
 			float px=BOOKMARKS_POS_X+96;
 			float py=BOOKMARKS_POS_Y;
-			DrawBookInterfaceItem(GDevice,ITC.bookmark_quest,px,py);
+			DrawBookInterfaceItem(GDevice,ITC.Get("bookmark_quest"),px,py);
 
-			if (	ITC.bookmark_quest
-				&&	MouseInBookRect(px,py,px+ITC.bookmark_quest->m_dwWidth,py+ITC.bookmark_quest->m_dwHeight))
+			if (	ITC.Get("bookmark_quest")
+				&&	MouseInBookRect(px,py,px+ITC.Get("bookmark_quest")->m_dwWidth,py+ITC.Get("bookmark_quest")->m_dwHeight))				
 			{
 				BOOKINTERFACEITEMCOLOR=0xFF555555;
 				SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
 				SETALPHABLEND(GDevice,true);
-				DrawBookInterfaceItem(GDevice,ITC.bookmark_quest,px,py);
+				DrawBookInterfaceItem(GDevice,ITC.Get("bookmark_quest"),px,py);
 				SETALPHABLEND(GDevice,false);
 				BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
 
@@ -7673,70 +7652,314 @@ void ARX_INTERFACE_ManageOpenedBook()
 			max_onglet = 0;
 
 			for (long i = 0; i < SPELL_COUNT; ++i)
+			{
 				if (spellicons[i].bSecret == false)
 				{
+					long j = 0;
 					bool bOk = true;
 
 					for (long j = 0; j < 4 && spellicons[i].symbols[j] != 255; ++j)
+					{
 						if (!(player.rune_flags & (1<<spellicons[i].symbols[j])))
 							bOk = false;
+
+						j++;
+					}
 
 					if (bOk)
 						bOnglet[spellicons[i].level] = true;
 				}
+			}
 		}
 		else
-			memset(&bOnglet, true, (max_onglet+1)*sizeof(bool));
-
-		if ((Book_Mode == BOOKMODE_SPELLS) || (Book_Mode == BOOKMODE_MINIMAP))
 		{
-			static const struct {
-				float x; float y; TextureContainer* acc; TextureContainer* crt; float botx; float boty;
-			} s_onglet[] = {
-				{ 100.f,  82.f, ITC.accessible_1,  ITC.current_1,  102.f,  82.f },
-				{  98.f, 112.f, ITC.accessible_2,  ITC.current_2,  100.f, 114.f },
-				{  97.f, 143.f, ITC.accessible_3,  ITC.current_3,  101.f, 141.f },
-				{  95.f, 170.f, ITC.accessible_4,  ITC.current_4,  100.f, 170.f },
-				{  95.f, 200.f, ITC.accessible_5,  ITC.current_5,   97.f, 199.f },
-				{  94.f, 229.f, ITC.accessible_6,  ITC.current_6,  103.f, 226.f },
-				{  94.f, 259.f, ITC.accessible_7,  ITC.current_7,  101.f, 255.f },
-				{  92.f, 282.f, ITC.accessible_8,  ITC.current_8,   99.f, 283.f },
-				{  90.f, 308.f, ITC.accessible_9,  ITC.current_9,   99.f, 307.f },
-				{  97.f, 331.f, ITC.accessible_10, ITC.current_10, 104.f, 331.f },
-			};
-
-			for (long p = 0; p != 10; ++p)
-				if (bOnglet[p+1])
+			memset(&bOnglet, true, (max_onglet+1)*sizeof(bool));
+		}
+		
+		if ((Book_Mode==1) || (Book_Mode==2))
+		{
+			if (bOnglet[1])
+			{
+				if (Book_Page!=1) 
 				{
-					if (Book_Page != p+1)
+					float px=100.f;
+					float py=82.f;
+					DrawBookInterfaceItem(GDevice,ITC.Get("accessible_1"),px,py);
+
+					if (MouseInBookRect(px,py,px+32,py+32))
 					{
-						DrawBookInterfaceItem(GDevice, s_onglet[p].acc, s_onglet[p].x, s_onglet[p].y);
+						BOOKINTERFACEITEMCOLOR=0xFF555555;
+						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+						SETALPHABLEND(GDevice,true);
+						DrawBookInterfaceItem(GDevice,ITC.Get("accessible_1"),px,py);
+						SETALPHABLEND(GDevice,false);
+						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+						SpecialCursor=CURSOR_INTERACTION_ON;
 
-						if (MouseInBookRect(s_onglet[p].x, s_onglet[p].y, s_onglet[p].x+32, s_onglet[p].y+32))
+						if (bookclick.x!=-1)
 						{
-							BOOKINTERFACEITEMCOLOR = 0xFF555555;
-							SETBLENDMODE(GDevice, D3DBLEND_ONE, D3DBLEND_ONE);
-							SETALPHABLEND(GDevice, TRUE);
-							DrawBookInterfaceItem(GDevice, s_onglet[p].acc, s_onglet[p].x, s_onglet[p].y);
-							SETALPHABLEND(GDevice, FALSE);
-							BOOKINTERFACEITEMCOLOR = 0xFFFFFFFF;
-							SpecialCursor = CURSOR_INTERACTION_ON;
-
-							if (bookclick.x != -1)
-							{
-								Book_Page = p+1;
-								ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
-							}
+							Book_Page=1;
+							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
 						}
 					}
-					else
-						DrawBookInterfaceItem(GDevice, s_onglet[p].crt, s_onglet[p].botx, s_onglet[p].boty);
 				}
+				else DrawBookInterfaceItem(GDevice,ITC.Get("current_1"),102.f,82.f);
+			}
 
-			if (Book_Mode == BOOKMODE_SPELLS)
-				Book_SpellPage = Book_Page;
-			else if (Book_Mode == BOOKMODE_MINIMAP)
-				Book_MapPage = Book_Page;
+			if (bOnglet[2])
+			{
+				if (Book_Page!=2) 
+				{
+					float px=98.f;
+					float py=112.f;
+					DrawBookInterfaceItem(GDevice,ITC.Get("accessible_2"),px,py);
+
+					if (MouseInBookRect(px,py,px+32,py+32))
+					{
+						BOOKINTERFACEITEMCOLOR=0xFF555555;
+						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+						SETALPHABLEND(GDevice,true);
+						DrawBookInterfaceItem(GDevice,ITC.Get("accessible_2"),px,py);
+						SETALPHABLEND(GDevice,false);
+						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+
+						if (bookclick.x!=-1)
+						{
+							Book_Page=2;
+							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+						}
+					}
+				}
+				else DrawBookInterfaceItem(GDevice,ITC.Get("current_2"),100.f,114.f);
+			}
+
+			if (bOnglet[3])
+			{
+				if (Book_Page!=3) 
+				{
+					float px=97.f;
+					float py=143.f;
+					DrawBookInterfaceItem(GDevice,ITC.Get("accessible_3"),px,py);
+
+					if (MouseInBookRect(px,py,px+32,py+32))
+					{
+						BOOKINTERFACEITEMCOLOR=0xFF555555;
+						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+						SETALPHABLEND(GDevice,true);
+						DrawBookInterfaceItem(GDevice,ITC.Get("accessible_3"),px,py);
+						SETALPHABLEND(GDevice,false);
+						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+
+						if (bookclick.x!=-1)
+						{
+							Book_Page=3;
+							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+						}
+					}
+				}
+				else DrawBookInterfaceItem(GDevice,ITC.Get("current_3"),101.f,141.f);
+			}
+
+			if (bOnglet[4])
+			{
+				if (Book_Page!=4)
+				{
+					float px=95.f;
+					float py=170.f;
+					DrawBookInterfaceItem(GDevice,ITC.Get("accessible_4"),px,py);
+
+					if (MouseInBookRect(px,py,px+32,py+32))
+					{
+						BOOKINTERFACEITEMCOLOR=0xFF555555;
+						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+						SETALPHABLEND(GDevice,true);
+						DrawBookInterfaceItem(GDevice,ITC.Get("accessible_4"),px,py);
+						SETALPHABLEND(GDevice,false);
+						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+
+						if (bookclick.x!=-1)
+						{
+							Book_Page=4;
+							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+						}
+					}
+				}
+				else DrawBookInterfaceItem(GDevice,ITC.Get("current_4"),100.f,170.f);
+			}
+
+			if (bOnglet[5])
+			{
+				if (Book_Page!=5) 
+				{
+					float px=95.f;
+					float py=200.f;
+					DrawBookInterfaceItem(GDevice,ITC.Get("accessible_5"),px,py);
+
+					if (MouseInBookRect(px,py,px+32,py+32))
+					{
+						BOOKINTERFACEITEMCOLOR=0xFF555555;
+						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+						SETALPHABLEND(GDevice,true);
+						DrawBookInterfaceItem(GDevice,ITC.Get("accessible_5"),px,py);
+						SETALPHABLEND(GDevice,false);
+						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+
+						if (bookclick.x!=-1)
+						{
+							Book_Page=5;
+							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+						}
+					}
+				}
+				else DrawBookInterfaceItem(GDevice,ITC.Get("current_5"),97.f,199.f);
+			}
+
+			if (bOnglet[6])
+			{
+				if (Book_Page!=6) 
+				{
+					float px=94.f;
+					float py=229.f;
+					DrawBookInterfaceItem(GDevice,ITC.Get("accessible_6"),px,py);
+
+					if (MouseInBookRect(px,py,px+32,py+32))
+					{
+						BOOKINTERFACEITEMCOLOR=0xFF555555;
+						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+						SETALPHABLEND(GDevice,true);
+						DrawBookInterfaceItem(GDevice,ITC.Get("accessible_6"),px,py);
+						SETALPHABLEND(GDevice,false);
+						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+
+						if (bookclick.x!=-1)
+						{
+							Book_Page=6;
+							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+						}
+					}
+				}
+				else DrawBookInterfaceItem(GDevice,ITC.Get("current_6"),103.f,226.f);
+			}
+
+			if (bOnglet[7])
+			{
+				if (Book_Page!=7)
+				{
+					float px=94.f;
+					float py=259.f;
+					DrawBookInterfaceItem(GDevice,ITC.Get("accessible_7"),px,py);
+
+					if (MouseInBookRect(px,py,px+32,py+32))
+					{
+						BOOKINTERFACEITEMCOLOR=0xFF555555;
+						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+						SETALPHABLEND(GDevice,true);
+						DrawBookInterfaceItem(GDevice,ITC.Get("accessible_7"),px,py);
+						SETALPHABLEND(GDevice,false);
+						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+
+						if (bookclick.x!=-1)
+						{
+							Book_Page=7;
+							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+						}
+					}
+				}
+				else DrawBookInterfaceItem(GDevice,ITC.Get("current_7"),101.f,255.f);
+			}
+
+			if (bOnglet[8])
+			{
+				if (Book_Page!=8) 
+				{
+					float px=92.f;
+					float py=282.f;
+					DrawBookInterfaceItem(GDevice,ITC.Get("accessible_8"),px,py);
+
+					if (MouseInBookRect(px,py,px+32,py+32))
+					{
+						BOOKINTERFACEITEMCOLOR=0xFF555555;
+						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+						SETALPHABLEND(GDevice,true);
+						DrawBookInterfaceItem(GDevice,ITC.Get("accessible_8"),px,py);
+						SETALPHABLEND(GDevice,false);
+						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+
+						if (bookclick.x!=-1)
+						{
+							Book_Page=8;
+							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+						}
+					}
+				}
+				else DrawBookInterfaceItem(GDevice,ITC.Get("current_8"),99.f,283.f);
+			}
+
+			if (bOnglet[9])
+			{
+				if (Book_Page!=9) 
+				{
+					float px=90.f;
+					float py=308.f;
+					DrawBookInterfaceItem(GDevice,ITC.Get("accessible_9"),px,py);
+
+					if (MouseInBookRect(px,py,px+32,py+32))
+					{
+						BOOKINTERFACEITEMCOLOR=0xFF555555;
+						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+						SETALPHABLEND(GDevice,true);
+						DrawBookInterfaceItem(GDevice,ITC.Get("accessible_9"),px,py);
+						SETALPHABLEND(GDevice,false);
+						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+
+						if (bookclick.x!=-1)
+						{
+							Book_Page=9;
+							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+						}
+					}
+				}
+				else DrawBookInterfaceItem(GDevice,ITC.Get("current_9"),99.f,307.f);
+			}
+
+			if (bOnglet[10])
+			{
+				if (Book_Page!=10) 
+				{
+					float px=97.f;
+					float py=331.f;
+					DrawBookInterfaceItem(GDevice,ITC.Get("accessible_10"),px,py);
+
+					if (MouseInBookRect(px,py,px+32,py+32))
+					{
+						BOOKINTERFACEITEMCOLOR=0xFF555555;
+						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
+						SETALPHABLEND(GDevice,true);
+						DrawBookInterfaceItem(GDevice,ITC.Get("accessible_10"),px,py);
+						SETALPHABLEND(GDevice,false);
+						BOOKINTERFACEITEMCOLOR=0xFFFFFFFF;
+						SpecialCursor=CURSOR_INTERACTION_ON;
+
+						if (bookclick.x!=-1)
+						{
+							Book_Page=10;
+							ARX_SOUND_PlayInterface(SND_BOOK_PAGE_TURN, 0.9F + 0.2F * rnd());
+						}
+					}
+				}
+				else DrawBookInterfaceItem(GDevice,ITC.Get("current_10"),104.f,331.f);
+			}		
+
+			if (Book_Mode==1) Book_SpellPage=Book_Page;
+			else if (Book_Mode==2) Book_MapPage=Book_Page;
 		}
 
 		bookclick.x=-1;
@@ -7745,17 +7968,17 @@ void ARX_INTERFACE_ManageOpenedBook()
 	if (Book_Mode == BOOKMODE_STATS)
 	{
 		FLYING_OVER=0;
-		_TCHAR textbuff[64];
+		_TCHAR tex[64];
 		COLORREF Color = RGB(0,0,0);
 
 		ARX_PLAYER_ComputePlayerFullStats();
 
 		danaeApp.DANAEEndRender();
-		_stprintf(textbuff, _T("%s %3d"), ITC.lpszULevel, player.level);
-		DrawBookTextCenter(hFontInBook, 398, 74, textbuff,Color,0x00FF00FF);
+		_stprintf(tex, _T("%s %3d"), ITC.Level.c_str(), player.level);
+		DrawBookTextCenter( 398, 74, tex,Color,0x00FF00FF,InBookFont);
 		
-		_stprintf(textbuff, _T("%s %8ld"), ITC.lpszUXp, player.xp);
-		DrawBookTextCenter(hFontInBook, 510, 74, textbuff, Color,0x00FF00FF);
+		_stprintf(tex, _T("%s %8ld"), ITC.Xp.c_str(), player.xp);
+		DrawBookTextCenter( 510, 74, tex, Color,0x00FF00FF,InBookFont);
 		danaeApp.DANAEStartRender();
 
 		if (MouseInBookRect(463, 74, 550, 94))
@@ -7777,28 +8000,28 @@ void ARX_INTERFACE_ManageOpenedBook()
 		if (!((player.Attribute_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST)))
 		{
 			// Main Player Attributes
-			if (CheckAttributeClick(379,95,&player.Attribute_Strength,		ITC.ic_strength))
+			if (CheckAttributeClick(379,95,&player.Attribute_Strength,		ITC.Get("ic_strength")))
 			{
 				FLYING_OVER=BOOK_STRENGTH;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Attribute_Redistribute;
 			}
 
-			if (CheckAttributeClick(428,95,&player.Attribute_Mind,			ITC.ic_mind))
+			if (CheckAttributeClick(428,95,&player.Attribute_Mind,			ITC.Get("ic_mind")))
 			{
 				FLYING_OVER=BOOK_MIND;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Attribute_Redistribute;
 			}
 
-			if (CheckAttributeClick(477,95,&player.Attribute_Dexterity,		ITC.ic_dexterity))
+			if (CheckAttributeClick(477,95,&player.Attribute_Dexterity,		ITC.Get("ic_dexterity")))
 			{
 				FLYING_OVER=BOOK_DEXTERITY;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Attribute_Redistribute;
 			}
 
-			if (CheckAttributeClick(526,95,&player.Attribute_Constitution,	ITC.ic_constitution))
+			if (CheckAttributeClick(526,95,&player.Attribute_Constitution,	ITC.Get("ic_constitution")))
 			{
 				FLYING_OVER=BOOK_CONSTITUTION;
 				SpecialCursor = CURSOR_REDIST;
@@ -7808,35 +8031,35 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		if (!((player.Skill_Redistribute == 0) && (ARXmenu.currentmode != AMCM_NEWQUEST)))
 		{
-			if (CheckSkillClick(389,177,&player.Skill_Stealth,		ITC.ic_stealth,&player.Old_Skill_Stealth))
+			if (CheckSkillClick(389,177,&player.Skill_Stealth,		ITC.Get("ic_stealth"),&player.Old_Skill_Stealth))
 			{
 				FLYING_OVER=BOOK_STEALTH;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if (CheckSkillClick(453,177,&player.Skill_Mecanism,		ITC.ic_mecanism,&player.Old_Skill_Mecanism))
+			if (CheckSkillClick(453,177,&player.Skill_Mecanism,		ITC.Get("ic_mecanism"),&player.Old_Skill_Mecanism))
 			{
 				FLYING_OVER=BOOK_MECANISM;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if (CheckSkillClick(516,177,&player.Skill_Intuition,	ITC.ic_intuition,&player.Old_Skill_Intuition))
+			if (CheckSkillClick(516,177,&player.Skill_Intuition,	ITC.Get("ic_intuition"),&player.Old_Skill_Intuition))
 			{
 				FLYING_OVER=BOOK_INTUITION;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if (CheckSkillClick(389,230,&player.Skill_Etheral_Link,	ITC.ic_etheral_link,&player.Old_Skill_Etheral_Link))
+			if (CheckSkillClick(389,230,&player.Skill_Etheral_Link,	ITC.Get("ic_etheral_link"),&player.Old_Skill_Etheral_Link))
 			{
 				FLYING_OVER=BOOK_ETHERAL_LINK;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if (CheckSkillClick(453,230,&player.Skill_Object_Knowledge,ITC.ic_object_knowledge,&player.Old_Skill_Object_Knowledge))
+			if (CheckSkillClick(453,230,&player.Skill_Object_Knowledge,ITC.Get("ic_object_knowledge"),&player.Old_Skill_Object_Knowledge))
 			{
 				FLYING_OVER=BOOK_OBJECT_KNOWLEDGE;
 				SpecialCursor = CURSOR_REDIST;
@@ -7851,28 +8074,28 @@ void ARX_INTERFACE_ManageOpenedBook()
 				ARX_PLAYER_ComputePlayerFullStats();
 			}
 
-			if (CheckSkillClick(516,230,&player.Skill_Casting,		ITC.ic_casting,&player.Old_Skill_Casting))
+			if (CheckSkillClick(516,230,&player.Skill_Casting,		ITC.Get("ic_casting"),&player.Old_Skill_Casting))
 			{
 				FLYING_OVER=BOOK_CASTING;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if (CheckSkillClick(389,284,&player.Skill_Close_Combat,	ITC.ic_close_combat,&player.Old_Skill_Close_Combat))
+			if (CheckSkillClick(389,284,&player.Skill_Close_Combat,	ITC.Get("ic_close_combat"),&player.Old_Skill_Close_Combat))
 			{
 				FLYING_OVER=BOOK_CLOSE_COMBAT;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if (CheckSkillClick(453,284,&player.Skill_Projectile,	ITC.ic_projectile,&player.Old_Skill_Projectile))
+			if (CheckSkillClick(453,284,&player.Skill_Projectile,	ITC.Get("ic_projectile"),&player.Old_Skill_Projectile))
 			{
 				FLYING_OVER=BOOK_PROJECTILE;
 				SpecialCursor = CURSOR_REDIST;
 				lCursorRedistValue = player.Skill_Redistribute;
 			}
 
-			if (CheckSkillClick(516,284,&player.Skill_Defense,		ITC.ic_defense,&player.Old_Skill_Defense))
+			if (CheckSkillClick(516,284,&player.Skill_Defense,		ITC.Get("ic_defense"),&player.Old_Skill_Defense))
 			{
 				FLYING_OVER=BOOK_DEFENSE;
 				SpecialCursor = CURSOR_REDIST;
@@ -7918,7 +8141,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 					FLYING_OVER = 0;
 
 		//------------------------------ SEB 04/12/2001
-		if (ARXmenu.mda && ARXmenu.mda->flyover[FLYING_OVER])
+		if (ARXmenu.mda && !ARXmenu.mda->flyover[FLYING_OVER].empty()) //=ARXmenu.mda->flyover[FLYING_OVER];
 		{
 			if( (FLYING_OVER!=OLD_FLYING_OVER)||
 				(INTERNATIONAL_MODE) )
@@ -7936,9 +8159,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 				if (FLYING_OVER == WND_XP)
 				{
 					_TCHAR tex[512];
-					_stprintf(tex, _T("%s %8ld"), ARXmenu.mda->flyover[WND_XP], GetXPforLevel(player.level+1)-player.xp);
-					UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
-						(DANAESIZX*0.5f),
+					_stprintf(tex, _T("%s %8ld"), ARXmenu.mda->flyover[WND_XP].c_str(), GetXPforLevel(player.level+1)-player.xp);
+					UNICODE_ARXDrawTextCenteredScroll(	(DANAESIZX*0.5f),
 						4,
 						(DANAECENTERX)*0.82f,
 						tex,
@@ -7947,7 +8169,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						1000,
 						0.01f,
 						3,
-						INTERNATIONAL_MODE?0:std::max(3000, static_cast<int>(70*_tcslen(tex))));
+						INTERNATIONAL_MODE?0:max(3000, int(70*_tcslen(tex))));
 				}
 				else
 				{
@@ -7961,7 +8183,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 						1000,
 						0.01f,
 						3,
-						INTERNATIONAL_MODE?0:max(3000, int(70*_tcslen(ARXmenu.mda->flyover[FLYING_OVER]))));
+						INTERNATIONAL_MODE?0:max(3000, int(70*ARXmenu.mda->flyover[FLYING_OVER].length())));
 				}
 			}
 		}
@@ -7973,7 +8195,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		//------------------------------
 
 		danaeApp.DANAEEndRender();
-		_stprintf(textbuff, _T("%3.0f"),player.Full_Attribute_Strength);
+		_stprintf(tex, _T("%3.0f"),player.Full_Attribute_Strength);
 
 		if (player.Mod_Attribute_Strength<0.f)
 			Color = 0x000000FF;
@@ -7987,9 +8209,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 391, 129, textbuff, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 391, 129, tex, Color, 0x00FF00FF);
 
-		_stprintf(textbuff, _T("%3.0f"),player.Full_Attribute_Mind);
+		_stprintf(tex, _T("%3.0f"),player.Full_Attribute_Mind);
 
 		if (player.Mod_Attribute_Mind<0.f)
 			Color = 0x000000FF;
@@ -8003,9 +8225,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 440, 129, textbuff, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 440, 129, tex, Color, 0x00FF00FF);
 
-		_stprintf(textbuff, _T("%3.0f"),player.Full_Attribute_Dexterity);
+		_stprintf(tex, _T("%3.0f"),player.Full_Attribute_Dexterity);
 
 		if (player.Mod_Attribute_Dexterity<0.f)
 			Color = 0x000000FF;
@@ -8019,9 +8241,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 490, 129, textbuff, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 490, 129, tex, Color, 0x00FF00FF);
 
-		_stprintf(textbuff, _T("%3.0f"),player.Full_Attribute_Constitution);
+		_stprintf(tex, _T("%3.0f"),player.Full_Attribute_Constitution);
 
 		if (player.Mod_Attribute_Constitution<0.f)
 			Color = 0x000000FF;
@@ -8035,10 +8257,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 538, 129, textbuff, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 538, 129, tex, Color, 0x00FF00FF);
 
 		// Player Skills
-		_stprintf(textbuff, _T("%3.0f"),player.Full_Skill_Stealth);
+		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Stealth);
 
 		if (player.Mod_Skill_Stealth<0.f)
 			Color = 0x000000FF;
@@ -8052,9 +8274,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 405, 210, textbuff, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 405, 210, tex, Color, 0x00FF00FF);
 
-		_stprintf(textbuff, _T("%3.0f"),player.Full_Skill_Mecanism);
+		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Mecanism);
 
 		if (player.Mod_Skill_Mecanism<0.f)
 			Color = 0x000000FF;
@@ -8068,9 +8290,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 469, 210, textbuff, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 469, 210, tex, Color, 0x00FF00FF);
 
-		_stprintf(textbuff, _T("%3.0f"),player.Full_Skill_Intuition);
+		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Intuition);
 
 		if (player.Mod_Skill_Intuition<0.f)
 			Color = 0x000000FF;
@@ -8084,9 +8306,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 533, 210, textbuff, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 533, 210, tex, Color, 0x00FF00FF);
 
-		_stprintf(textbuff, _T("%3.0f"),player.Full_Skill_Etheral_Link);
+		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Etheral_Link);
 
 		if (player.Mod_Skill_Etheral_Link<0.f)
 			Color = 0x000000FF;
@@ -8100,9 +8322,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 405, 265, textbuff, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 405, 265, tex, Color, 0x00FF00FF);
 
-		_stprintf(textbuff, _T("%3.0f"),player.Full_Skill_Object_Knowledge);
+		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Object_Knowledge);
 
 		if (player.Mod_Skill_Object_Knowledge<0.f)
 			Color = 0x000000FF;
@@ -8116,9 +8338,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 469, 265, textbuff, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 469, 265, tex, Color, 0x00FF00FF);
 
-		_stprintf(textbuff, _T("%3.0f"),player.Full_Skill_Casting);
+		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Casting);
 
 		if (player.Mod_Skill_Casting<0.f)
 			Color = 0x000000FF;
@@ -8132,9 +8354,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 533, 265, textbuff, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 533, 265, tex, Color, 0x00FF00FF);
 
-		_stprintf(textbuff, _T("%3.0f"),player.Full_Skill_Close_Combat);
+		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Close_Combat);
 
 		if (player.Mod_Skill_Close_Combat<0.f)
 			Color = 0x000000FF;
@@ -8148,9 +8370,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 405, 319, textbuff, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 405, 319, tex, Color, 0x00FF00FF);
 
-		_stprintf(textbuff, _T("%3.0f"),player.Full_Skill_Projectile);
+		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Projectile);
 
 		if (player.Mod_Skill_Projectile<0.f)
 			Color = 0x000000FF;
@@ -8164,9 +8386,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 469, 319, textbuff, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 469, 319, tex, Color, 0x00FF00FF);
 
-		_stprintf(textbuff, _T("%3.0f"),player.Full_Skill_Defense);
+		_stprintf(tex, _T("%3.0f"),player.Full_Skill_Defense);
 
 		if (player.Mod_Skill_Defense<0.f)
 			Color = 0x000000FF;
@@ -8180,10 +8402,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 533, 319, textbuff, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 533, 319, tex, Color, 0x00FF00FF);
 
 		// Secondary Attributes
-		_stprintf(textbuff, _T("%ld"),F2L_RoundUp(player.Full_maxlife));
+		_stprintf(tex, _T("%ld"),F2L_RoundUp(player.Full_maxlife));
 
 		if ((player.Mod_maxlife<0.f) || (player.Full_maxlife < player.maxlife))
 			Color = 0x000000FF;
@@ -8191,9 +8413,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 			Color = 0x00FF0000;
 		else Color = 0;
 
-		DrawBookTextCenter( hFontInBook, 324, 158, textbuff, Color,0x00FF00FF);
+		DrawBookTextCenter( hFontInBook, 324, 158, tex, Color,0x00FF00FF);
 		
-		_stprintf(textbuff, _T("%ld"),F2L_RoundUp(player.Full_maxmana));
+		_stprintf(tex, _T("%ld"),F2L_RoundUp(player.Full_maxmana));
 
 		if ((player.Mod_maxmana<0.f) || (player.Full_maxmana < player.maxmana))
 			Color = 0x000000FF;
@@ -8201,9 +8423,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 			Color = 0x00FF0000;
 		else Color = 0;
 
-		DrawBookTextCenter( hFontInBook, 324, 218, textbuff, Color, 0x00FF00FF);
+		DrawBookTextCenter( hFontInBook, 324, 218, tex, Color, 0x00FF00FF);
 		
-		_stprintf(textbuff, _T("%ld"), F2L_RoundUp(player.Full_damages));
+		_stprintf(tex, _T("%ld"), F2L_RoundUp(player.Full_damages));
 
 		if (player.Mod_damages<0.f)
 			Color = 0x000000FF;
@@ -8211,10 +8433,10 @@ void ARX_INTERFACE_ManageOpenedBook()
 			Color = 0x00FF0000;
 		else Color = 0;
 
-		DrawBookTextCenter(hFontInBook, 324, 278, textbuff, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 324, 278, tex, Color, 0x00FF00FF);
 
 		float ac = player.Full_armor_class;
-		_stprintf(textbuff, _T("%ld"),F2L_RoundUp(ac));
+		_stprintf(tex, _T("%ld"),F2L_RoundUp(ac));
 
 		if (player.Mod_armor_class<0.f)
 			Color = 0x000000FF;
@@ -8222,9 +8444,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 			Color = 0x00FF0000;
 		else Color = 0;
 
-		DrawBookTextCenter(hFontInBook, 153, 158, textbuff, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 153, 158, tex, Color, 0x00FF00FF);
 
-		_stprintf(textbuff, _T("%3.0f"),player.Full_resist_magic);
+		_stprintf(tex, _T("%3.0f"),player.Full_resist_magic);
 
 		if (player.Mod_resist_magic<0.f)
 			Color = 0x000000FF;
@@ -8232,7 +8454,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			Color = 0x00FF0000;
 		else Color = 0;
 
-		DrawBookTextCenter(hFontInBook, 153, 218, textbuff, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 153, 218, tex, Color, 0x00FF00FF);
 
 		_stprintf(textbuff, _T("%3.0f"),player.Full_resist_poison);
 
@@ -8242,7 +8464,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			Color = 0x00FF0000;
 		else Color = 0;
 
-		DrawBookTextCenter(hFontInBook, 153, 278, textbuff, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 153, 278, tex, Color, 0x00FF00FF);
 		danaeApp.DANAEStartRender();
 	}
 	else if (Book_Mode == BOOKMODE_MINIMAP)
@@ -8924,10 +9146,10 @@ void DANAE::DrawAllInterface()
 			SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
 
 			GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, true );
-			ARX_INTERFACE_DrawItem(ITC.aim_maxi, DANAECENTERX + INTERFACE_RATIO(-320+262.f), DANAESIZY + INTERFACE_RATIO(-72.f), 0.0001f, D3DRGB(j,j,j));
+			ARX_INTERFACE_DrawItem(ITC.Get("aim_maxi"), DANAECENTERX + INTERFACE_RATIO(-320+262.f), DANAESIZY + INTERFACE_RATIO(-72.f), 0.0001f, D3DRGB(j,j,j));
 			GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, false );
-			ARX_INTERFACE_DrawItem(ITC.aim_empty, DANAECENTERX + INTERFACE_RATIO(-320+262.f), DANAESIZY + INTERFACE_RATIO(-72.f), 0.0001f, D3DRGB(1,1,1));
-
+			ARX_INTERFACE_DrawItem(ITC.Get("aim_empty"), DANAECENTERX + INTERFACE_RATIO(-320+262.f), DANAESIZY + INTERFACE_RATIO(-72.f), 0.0001f, D3DRGB(1,1,1));
+			
 			if (bHitFlash)
 			{
 				if (player.Full_Skill_Etheral_Link >= 40)
@@ -8943,7 +9165,7 @@ void DANAE::DrawAllInterface()
 					else
 						col = D3DRGB(1,fHitFlash,0);
 
-					ARX_INTERFACE_DrawItem(ITC.aim_hit, DANAECENTERX + INTERFACE_RATIO(-320+262.f-25), DANAESIZY + INTERFACE_RATIO(-72.f-30), 0.0001f, col);
+					ARX_INTERFACE_DrawItem(ITC.Get("aim_hit"), DANAECENTERX + INTERFACE_RATIO(-320+262.f-25), DANAESIZY + INTERFACE_RATIO(-72.f-30), 0.0001f, col);
 					GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
 				}
 			}
@@ -8993,7 +9215,7 @@ void DANAE::DrawAllInterface()
 						ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 
 						InventoryDir=-1;
-						SendIOScriptEvent(io,SM_INVENTORY2_CLOSE,"");
+						SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 						TSecondaryInventory=SecondaryInventory;
 						SecondaryInventory=NULL;
 					}
@@ -9013,7 +9235,7 @@ void DANAE::DrawAllInterface()
 					ARX_SOUND_PlayInterface(SND_BACKPACK, 0.9F + 0.2F * rnd());
 
 					InventoryDir=-1;
-					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE,"");
+					SendIOScriptEvent(io,SM_INVENTORY2_CLOSE);
 					TSecondaryInventory=SecondaryInventory;
 					SecondaryInventory=NULL;
 				}
@@ -9090,8 +9312,8 @@ void DANAE::DrawAllInterface()
 				{
 					ARX_INTERFACE_DrawInventory(sActiveInventory);
 
-assert(ITC.hero_inventory != NULL);
-					float fCenterX	= DANAECENTERX + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.hero_inventory->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
+					assert(ITC.Get("hero_inventory") != NULL);
+					float fCenterX	= DANAECENTERX + INTERFACE_RATIO(-320 + 35) + INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) - INTERFACE_RATIO(32 + 3) ;
 					float fSizY		= DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(- 3 + 25) ;
 					ARX_CHECK_INT(fCenterX);
 					ARX_CHECK_INT(fSizY);
@@ -9104,14 +9326,14 @@ assert(ITC.hero_inventory != NULL);
 
 					if (sActiveInventory > 0)
 					{
-						ARX_INTERFACE_DrawItem(ITC.hero_inventory_up,	posx, posy);
+						ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"),	posx, posy);
 
 						if (MouseInRect(posx, posy, posx+INTERFACE_RATIO(32), posy+INTERFACE_RATIO(32)))
 						{
 							SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
 							SETALPHABLEND(GDevice,true);
 							SpecialCursor=CURSOR_INTERACTION_ON;
-							ARX_INTERFACE_DrawItem(ITC.hero_inventory_up, posx, posy);
+							ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_up"), posx, posy);
 							SETALPHABLEND(GDevice,false);
 							SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -9138,13 +9360,13 @@ assert(ITC.hero_inventory != NULL);
 						posy	+= ARX_CLEAN_WARN_CAST_INT(fRatio);
 
 
-						ARX_INTERFACE_DrawItem(ITC.hero_inventory_down,	posx, DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
+						ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	posx, DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
 
 						if (MouseInRect(posx, posy, posx+INTERFACE_RATIO(32), posy+INTERFACE_RATIO(32)))
 						{
 							SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
 							SETALPHABLEND(GDevice,true);
-							ARX_INTERFACE_DrawItem(ITC.hero_inventory_down,	posx, DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
+							ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_down"),	posx, DANAESIZY - INTERFACE_RATIO(101) + INTERFACE_RATIO_LONG(InventoryY) + INTERFACE_RATIO(-3 + 64));
 							SETALPHABLEND(GDevice,false);
 							SpecialCursor=CURSOR_INTERACTION_ON;
 
@@ -9225,10 +9447,10 @@ assert(ITC.hero_inventory != NULL);
 
 				for (int i=0; i<player.bag; i++)
 				{
-					ARX_INTERFACE_DrawItem(ITC.hero_inventory_link, posx + INTERFACE_RATIO(45), ARX_CLEAN_WARN_CAST_FLOAT(posy + iOffsetY)) ;
+					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx + INTERFACE_RATIO(45), ARX_CLEAN_WARN_CAST_FLOAT(posy + iOffsetY)) ;
 
-					ARX_INTERFACE_DrawItem(ITC.hero_inventory_link, posx+INTERFACE_RATIO_DWORD(ITC.hero_inventory->m_dwWidth)*0.5f + INTERFACE_RATIO(-16), posy+iOffsetY + INTERFACE_RATIO(-5));
-					ARX_INTERFACE_DrawItem(ITC.hero_inventory_link, posx+INTERFACE_RATIO_DWORD(ITC.hero_inventory->m_dwWidth) + INTERFACE_RATIO(-45-32), posy+iOffsetY + INTERFACE_RATIO(-15));
+					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx+INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth)*0.5f + INTERFACE_RATIO(-16), posy+iOffsetY + INTERFACE_RATIO(-5));
+					ARX_INTERFACE_DrawItem(ITC.Get("hero_inventory_link"), posx+INTERFACE_RATIO_DWORD(ITC.Get("hero_inventory")->m_dwWidth) + INTERFACE_RATIO(-45-32), posy+iOffsetY + INTERFACE_RATIO(-15));
 
 
 
@@ -9323,26 +9545,26 @@ assert(ITC.hero_inventory != NULL);
 			// Draw/Manage Book Icon
 			float px=DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
 			float py=DANAESIZY - INTERFACE_RATIO(148);
-			ARX_INTERFACE_DrawItem(ITC.book, px, py);
+			ARX_INTERFACE_DrawItem(ITC.Get("book"), px, py);
 
 			if (eMouseState == MOUSE_IN_BOOK_ICON)
 			{
 				SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
 				SETALPHABLEND(GDevice,true);
-				ARX_INTERFACE_DrawItem(ITC.book, px, py);
+				ARX_INTERFACE_DrawItem(ITC.Get("book"), px, py);
 				SETALPHABLEND(GDevice,false);
 			}
 
 			// Draw/Manage BackPack Icon
 			px=DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
 			py=DANAESIZY - INTERFACE_RATIO(113);
-			ARX_INTERFACE_DrawItem(ITC.backpack,px,py);
+			ARX_INTERFACE_DrawItem(ITC.Get("backpack"),px,py);
 
 			if (eMouseState == MOUSE_IN_INVENTORY_ICON)
 			{
 				SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
 				SETALPHABLEND(GDevice,true);
-				ARX_INTERFACE_DrawItem(ITC.backpack,px,py);
+				ARX_INTERFACE_DrawItem(ITC.Get("backpack"),px,py);
 				SETALPHABLEND(GDevice,false);
 			}
 
@@ -9351,13 +9573,13 @@ assert(ITC.hero_inventory != NULL);
 			{
 					px = ARX_CLEAN_WARN_CAST_FLOAT(-lSLID_VALUE);
 				py = DANAESIZY - INTERFACE_RATIO(78.f + 32);
-				ARX_INTERFACE_DrawItem(ITC.steal, px, py);
+				ARX_INTERFACE_DrawItem(ITC.Get("steal"), px, py);
 
 				if (eMouseState == MOUSE_IN_STEAL_ICON)
 				{
 					SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
 					SETALPHABLEND(GDevice,true);
-					ARX_INTERFACE_DrawItem(ITC.steal, px, py);
+					ARX_INTERFACE_DrawItem(ITC.Get("steal"), px, py);
 					SETALPHABLEND(GDevice,false);
 				}
 			}
@@ -9371,26 +9593,26 @@ assert(ITC.hero_inventory != NULL);
 
 				if (temp && !(temp->ioflags & IO_SHOP) && !(temp == ioSteal))
 				{
-					ARX_INTERFACE_DrawItem(ITC.inventory_pickall, px, py);
+					ARX_INTERFACE_DrawItem(ITC.Get("inventory_pickall"), px, py);
 
 					if (eMouseState == MOUSE_IN_INVENTORY_PICKALL_ICON)
 					{
 						SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
 						SETALPHABLEND(GDevice,true);
-						ARX_INTERFACE_DrawItem(ITC.inventory_pickall, px, py);
+						ARX_INTERFACE_DrawItem(ITC.Get("inventory_pickall"), px, py);
 						SETALPHABLEND(GDevice,false);
 					}
 				}
 
 					px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO_DWORD(BasicInventorySkin->m_dwWidth) - INTERFACE_RATIO(32);
 
-				ARX_INTERFACE_DrawItem(ITC.inventory_close, px, py);
+				ARX_INTERFACE_DrawItem(ITC.Get("inventory_close"), px, py);
 
 				if (eMouseState == MOUSE_IN_INVENTORY_CLOSE_ICON)
 				{
 					SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
 					SETALPHABLEND(GDevice,true);
-					ARX_INTERFACE_DrawItem(ITC.inventory_close, px, py);
+					ARX_INTERFACE_DrawItem(ITC.Get("inventory_close"), px, py);
 					SETALPHABLEND(GDevice,false);
 				}
 			}
@@ -9400,15 +9622,15 @@ assert(ITC.hero_inventory != NULL);
 			{
 				px=DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE+GL_DECAL_ICONS;
 				py=DANAESIZY - INTERFACE_RATIO(218);
-				ARX_INTERFACE_DrawItem(ITC.Icon_Lvl_Up,px,py);
+				ARX_INTERFACE_DrawItem(ITC.Get("Icon_Lvl_Up"),px,py);		
 
 				if (eMouseState == MOUSE_IN_REDIST_ICON)
 				{
 					SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
 					SETALPHABLEND(GDevice,true);
-					ARX_INTERFACE_DrawItem(ITC.Icon_Lvl_Up,px,py);
-					SETALPHABLEND(GDevice,false);
-				}
+					ARX_INTERFACE_DrawItem(ITC.Get("Icon_Lvl_Up"),px,py);		
+					SETALPHABLEND(GDevice,false);	
+				}			  
 			}
 
 			// Draw/Manage Gold Purse Icon
@@ -9416,14 +9638,14 @@ assert(ITC.hero_inventory != NULL);
 			{
 				px = DANAESIZX - INTERFACE_RATIO(35) + lSLID_VALUE+2+GL_DECAL_ICONS;
 				py = DANAESIZY - INTERFACE_RATIO(183);
-				ARX_INTERFACE_DrawItem(ITC.gold, px, py);
+				ARX_INTERFACE_DrawItem(ITC.Get("gold"), px, py);
 
 				if (eMouseState == MOUSE_IN_GOLD_ICON)
 				{
 					SETBLENDMODE(GDevice,D3DBLEND_ONE,D3DBLEND_ONE);
 					SETALPHABLEND(GDevice,true);
 					SpecialCursor=CURSOR_INTERACTION_ON;
-					ARX_INTERFACE_DrawItem(ITC.gold, px, py);
+					ARX_INTERFACE_DrawItem(ITC.Get("gold"), px, py);
 					SETALPHABLEND(GDevice,false);
 					ARX_INTERFACE_DrawNumber(px-INTERFACE_RATIO(30),py + INTERFACE_RATIO(10-25), player.gold, 6, D3DRGB(1,1,1));
 				}
@@ -9443,11 +9665,11 @@ assert(ITC.hero_inventory != NULL);
 					bGoldHalo = false;
 				}
 
-				TextureContainer *tc = ITC.gold;
+				TextureContainer *tc = ITC.Get("gold");
 				TextureContainer *tc2 = NULL;
 
-				if (ITC.gold->CreateHalo(GDevice))
-					tc2=ITC.gold->TextureHalo;
+				if (ITC.Get("gold")->CreateHalo(GDevice))
+					tc2=ITC.Get("gold")->TextureHalo;
 
 				if (tc2 != NULL)
 				{
@@ -9471,11 +9693,11 @@ assert(ITC.hero_inventory != NULL);
 
 				float POSX = DANAESIZX-INTERFACE_RATIO(35)+lSLID_VALUE+GL_DECAL_ICONS;
 				float POSY = DANAESIZY-INTERFACE_RATIO(148);
-				TextureContainer *tc = ITC.book;
-					TextureContainer * tc2 = NULL;
+				TextureContainer *tc = ITC.Get("book");
+					TextureContainer * tc2 = NULL; 
 
-				if (ITC.book->CreateHalo(GDevice))
-					tc2=ITC.book->TextureHalo;
+				if (ITC.Get("book")->CreateHalo(GDevice))
+					tc2=ITC.Get("book")->TextureHalo;
 
 				if (tc2 != NULL)
 				{
@@ -9623,7 +9845,7 @@ assert(ITC.hero_inventory != NULL);
 		GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
 		px = DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE;
 		py = DANAESIZY - INTERFACE_RATIO(81);
-		ARX_INTERFACE_DrawItem(ITC.empty_gauge_blue, px, py, 0.f); //399
+		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_blue"), px, py, 0.f); //399
 
 		float fnl=(float)player.life/(float)player.Full_maxlife;
 		float fnm=(float)player.mana/(float)player.Full_maxmana;
@@ -9641,20 +9863,20 @@ assert(ITC.hero_inventory != NULL);
 			ulColor=0xFF000000 | ((255-g) <<16) | (g & 255)<<8;	
 		}
 
-		if ((fInterfaceRatio>1.9f) && ITC.filled_gauge_blue)
+		if ((fInterfaceRatio>1.9f) && ITC.Get("filled_gauge_blue"))
 		{
-			float vuv=(1.f-fnl)*ITC.filled_gauge_red->m_dwHeight;
+			float vuv=(1.f-fnl)*ITC.Get("filled_gauge_red")->m_dwHeight;
 			long vvv = vuv;
-				vuv = (float)vvv / ITC.filled_gauge_red->m_dwHeight; 
+				vuv = (float)vvv / ITC.Get("filled_gauge_red")->m_dwHeight; 
 			//ir=
-				EERIEDrawBitmap2DecalY(GDevice, fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), INTERFACE_RATIO_DWORD(ITC.filled_gauge_red->m_dwWidth), INTERFACE_RATIO_DWORD(ITC.filled_gauge_red->m_dwHeight), 0.f, ITC.filled_gauge_red, ulColor, vuv);
+				EERIEDrawBitmap2DecalY(GDevice, fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight), 0.f, ITC.Get("filled_gauge_red"), ulColor, vuv);
 		}
 		else
-				EERIEDrawBitmap2DecalY(GDevice, fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), INTERFACE_RATIO_DWORD(ITC.filled_gauge_red->m_dwWidth), INTERFACE_RATIO_DWORD(ITC.filled_gauge_red->m_dwHeight), 0.f, ITC.filled_gauge_red, ulColor, (1.f - fnl));
+				EERIEDrawBitmap2DecalY(GDevice, fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight), 0.f, ITC.Get("filled_gauge_red"), ulColor, (1.f - fnl));
 
 		if (!(player.Interface & INTER_COMBATMODE))
 		{
-				if (MouseInRect(fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), fSLID_VALUE_neg + INTERFACE_RATIO_DWORD(ITC.filled_gauge_red->m_dwWidth), DANAESIZY - INTERFACE_RATIO(78) + INTERFACE_RATIO_DWORD(ITC.filled_gauge_red->m_dwHeight)))
+				if (MouseInRect(fSLID_VALUE_neg, DANAESIZY - INTERFACE_RATIO(78), fSLID_VALUE_neg + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwWidth), DANAESIZY - INTERFACE_RATIO(78) + INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_red")->m_dwHeight)))
 			{
 				if(	(EERIEMouseButton & 1)&&
 					(!(LastMouseClick & 1)) )
@@ -9675,25 +9897,25 @@ assert(ITC.hero_inventory != NULL);
 		GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
 		px = 0.f-lSLID_VALUE;
 		py = DANAESIZY - INTERFACE_RATIO(78);
-		ARX_INTERFACE_DrawItem(ITC.empty_gauge_red, px, py, 0.001f);
-
+		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_red"), px, py, 0.001f);
+		
 		//---------------------------------------------------------------------
 		//BLUE GAUGE
 
-		float LARGG=INTERFACE_RATIO_DWORD(ITC.filled_gauge_blue->m_dwWidth);
-		float HAUTT=INTERFACE_RATIO_DWORD(ITC.filled_gauge_blue->m_dwHeight);
+		float LARGG=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwWidth);
+		float HAUTT=INTERFACE_RATIO_DWORD(ITC.Get("filled_gauge_blue")->m_dwHeight);
 
 
-		if ((fInterfaceRatio>1.9f) && ITC.filled_gauge_blue)
+		if ((fInterfaceRatio>1.9f) && ITC.Get("filled_gauge_blue"))
 		{
-			float vuv=(1.f-fnm)*ITC.filled_gauge_blue->m_dwHeight;
+			float vuv=(1.f-fnm)*ITC.Get("filled_gauge_blue")->m_dwHeight;
 			long vvv = vuv;
-				vuv = (float)vvv / ITC.filled_gauge_blue->m_dwHeight; 
+				vuv = (float)vvv / ITC.Get("filled_gauge_blue")->m_dwHeight; 
 			//ir=
-				EERIEDrawBitmap2DecalY(GDevice, DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE, DANAESIZY - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f, ITC.filled_gauge_blue, ARX_OPAQUE_WHITE /*-1*/, vuv);
+				EERIEDrawBitmap2DecalY(GDevice, DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE, DANAESIZY - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f, ITC.Get("filled_gauge_blue"), ARX_OPAQUE_WHITE /*-1*/, vuv);
 		}
 		else
-				EERIEDrawBitmap2DecalY(GDevice, DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE, DANAESIZY - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f, ITC.filled_gauge_blue, ARX_OPAQUE_WHITE /*-1*/, (1.f - fnm));
+				EERIEDrawBitmap2DecalY(GDevice, DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE, DANAESIZY - INTERFACE_RATIO(81), LARGG, HAUTT, 0.f, ITC.Get("filled_gauge_blue"), ARX_OPAQUE_WHITE /*-1*/, (1.f - fnm));
 
 		if (!(player.Interface & INTER_COMBATMODE))
 		{
@@ -10228,7 +10450,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 			&&	(	((LOOKING_FOR_SPELL_TARGET & 1) && (FlyingOverIO->ioflags & IO_NPC))
 			|| ((LOOKING_FOR_SPELL_TARGET & 2) && (FlyingOverIO->ioflags & IO_ITEM))	)	)
 		{
-			surf=ITC.target_on;
+			surf=ITC.Get("target_on");
 
 			if (!(EERIEMouseButton & 1) && (LastMouseClick & 1))
 			{
@@ -10237,7 +10459,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 		}
 		else
 		{
-			surf=ITC.target_off;
+			surf=ITC.Get("target_off");
 
 			if(ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE))
 			{
@@ -10405,16 +10627,16 @@ void ARX_INTERFACE_RenderCursor(long flag)
 				{
 				case CURSOR_REDIST:
 					{
-						surf = ITC.pTexCursorRedist;
+						surf = ITC.Get("pTexCursorRedist");
 					}
 					break;
 				case CURSOR_COMBINEOFF:
-					surf=ITC.target_off;
+					surf=ITC.Get("target_off");
 						POSX -= 16.f;
 						POSY -= 16.f;
 					break;
 				case CURSOR_COMBINEON:
-					surf=ITC.target_on;
+					surf=ITC.Get("target_on");
 
 					if (surf)
 							POSX -= 16.f;
@@ -10422,7 +10644,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 						POSY -= 16.f;
 					break;
 				case CURSOR_FIREBALLAIM:
-					surf=ITC.target_on;
+					surf=ITC.Get("target_on");
 
 					if (surf)
 					{
@@ -10482,7 +10704,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 					break;
 				}
 
-				if ((surf))
+				if (surf)
 				{
 
 					if (SpecialCursor == CURSOR_REDIST)
@@ -10529,7 +10751,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 						MAGICMODE=1;
 					}
 
-					surf=ITC.magic;
+					surf=ITC.Get("magic");
 
 					float POSX=DANAEMouse.x;
 					float POSY=DANAEMouse.y;
@@ -10710,7 +10932,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 
 						if (!surf)
 						{
-							surf=ITC.target_off;
+							surf=ITC.Get("target_off");
 						}
 
 						if (surf)

@@ -57,6 +57,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <limits.h>
 
 #include <stdlib.h>
+#include <algorithm>
+#include <vector>
+#include <string>
+#include <fstream>
+#include <sstream>
 
 #include "gui/Menu.h"
 #include "game/Player.h"
@@ -172,12 +177,12 @@ INTERACTIVE_OBJ * CURRENT_TORCH = NULL;
 unsigned long FALLING_TIME = 0;
 
 
-STRUCT_QUEST * PlayerQuest = NULL;
+//STRUCT_QUEST * PlayerQuest;
+vector<STRUCT_QUEST> PlayerQuest;
 long nb_PlayerQuest = 0;
 long FistParticles = 0;
 void Manage_sp_max();
-bool ARX_PLAYER_IsInFightMode()
-{
+bool ARX_PLAYER_IsInFightMode() {
 	if (player.Interface & INTER_COMBATMODE) return true;
 
 	if (inter.iobj
@@ -224,7 +229,9 @@ bool ARX_PLAYER_IsInFightMode()
 //*************************************************************************************
 void ARX_KEYRING_Init()
 {
+	if (Keyring)
 	free((void *)Keyring);
+
 	Keyring = NULL;
 	Keyring_Number = 0;
 }
@@ -234,7 +241,7 @@ void ARX_KEYRING_Init()
 // FUNCTION/RESULT:
 //   Add a key to Keyring
 //*************************************************************************************
-void ARX_KEYRING_Add(char * key)
+void ARX_KEYRING_Add( const char * key)
 {
 	Keyring = (KEYRING_SLOT *)realloc(Keyring, sizeof(KEYRING_SLOT) * (Keyring_Number + 1));
 	memset(&Keyring[Keyring_Number], 0, sizeof(KEYRING_SLOT));
@@ -444,19 +451,19 @@ void ARX_PLAYER_ManageTorch()
 //*************************************************************************************
 void ARX_PLAYER_Quest_Init()
 {
-	if (PlayerQuest)
-	{
-		for (long i = 0; i < nb_PlayerQuest; i++)
-		{
-			if (PlayerQuest[i].ident)
-				free((void *)PlayerQuest[i].ident);
-
-			if (PlayerQuest[i].localised)
-				free((void *)PlayerQuest[i].localised);
-		}
-
-		free((void *)PlayerQuest);
-		PlayerQuest = NULL;
+	if (PlayerQuest.size() != 0) {
+//		for (long i = 0; i < nb_PlayerQuest; i++)
+//		{
+//			if (PlayerQuest[i].ident)
+//				free((void *)PlayerQuest[i].ident);
+//
+//			if (!PlayerQuest[i].localised.empty())
+//				PlayerQuest[i].localised.clear();
+//		}
+//
+//		free((void *)PlayerQuest);
+//		PlayerQuest = NULL;
+		PlayerQuest.clear();
 	}
 
 	nb_PlayerQuest = 0;
@@ -548,21 +555,23 @@ void ARX_Player_Rune_Remove(unsigned long _ulRune)
 // FUNCTION/RESULT:
 //   Add quest "quest" to player Questbook
 //*************************************************************************************
-void ARX_PLAYER_Quest_Add(char * quest, bool _bLoad)
+void ARX_PLAYER_Quest_Add( const char * quest, bool _bLoad)
 {
-	_TCHAR output[4096];
-	MakeLocalised(quest, output, 4096);
+    std::string output;
+    MakeLocalised(quest, output);
 
-	if (output[0] == 0) return;
+    if (output[0] == 0) return;
 
-	PlayerQuest = (STRUCT_QUEST *)realloc(PlayerQuest, sizeof(STRUCT_QUEST) * (nb_PlayerQuest + 1));
-	PlayerQuest[nb_PlayerQuest].ident = (char *)malloc(strlen(quest) + 1);
-	PlayerQuest[nb_PlayerQuest].localised = (_TCHAR *)malloc((_tcslen(output) + 1) * sizeof(_TCHAR));
-	strcpy(PlayerQuest[nb_PlayerQuest].ident, quest);
-	_tcscpy(PlayerQuest[nb_PlayerQuest].localised, output);
-	nb_PlayerQuest++;
-	bBookHalo = !_bLoad;//true;
-	ulBookHaloTime = 0;
+//    PlayerQuest = (STRUCT_QUEST *)realloc(PlayerQuest, sizeof(STRUCT_QUEST) * (nb_PlayerQuest + 1));
+    PlayerQuest.push_back(STRUCT_QUEST());
+    PlayerQuest[nb_PlayerQuest].ident = (char *)malloc(strlen(quest) + 1);
+    PlayerQuest[nb_PlayerQuest].localised.resize( output.length() );
+    strcpy(PlayerQuest[nb_PlayerQuest].ident, quest);
+    PlayerQuest[nb_PlayerQuest].localised = output;
+    PlayerQuest[nb_PlayerQuest].localised = output;
+    nb_PlayerQuest++;
+    bBookHalo = !_bLoad;//true;
+    ulBookHaloTime = 0;
 }
 
 //*************************************************************************************
@@ -1159,9 +1168,9 @@ void ARX_PLAYER_ComputePlayerFullStats()
 	player.Full_life = player.life;
 	player.Full_mana = player.mana;
 	player.Full_maxlife = (float)player.Full_Attribute_Constitution * (float)(player.level + 2) + player.Mod_maxlife;
-	player.life = min(player.life, player.Full_maxlife);
+	player.life = std::min(player.life, player.Full_maxlife);
 	player.Full_maxmana = (float)player.Full_Attribute_Mind * (float)(player.level + 1) + player.Mod_maxmana;
-	player.mana = min(player.mana, player.Full_maxmana);
+	player.mana = std::min(player.mana, player.Full_maxmana);
 }
 
 //*************************************************************************************
@@ -1648,58 +1657,54 @@ TextureContainer * PLAYER_SKIN_TC = NULL;
 void	ARX_PLAYER_Restore_Skin()
 {
 
-	char tx[256];
-	char tx2[256];
-	char tx3[256];
-	char tx4[256];
-	tx[0] = 0;
-	tx2[0] = 0;
-	tx3[0] = 0;
-	tx4[0] = 0;
+	std::string tx;
+	std::string tx2;
+	std::string tx3;
+	std::string tx4;
 
 	switch (player.skin)
 	{
 		case 0:
-			strcpy(tx, "Graph\\Obj3D\\Textures\\npc_human_base_hero_head.bmp");
-			strcpy(tx2, "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp");
-			strcpy(tx3, "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp");
-			strcpy(tx4, "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp");
+			tx = "Graph\\Obj3D\\Textures\\npc_human_base_hero_head.bmp";
+			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
+			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
+			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
 			break;
 		case 1:
-			strcpy(tx, "Graph\\Obj3D\\Textures\\npc_human_base_hero2_head.bmp");
-			strcpy(tx2, "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero2_head.bmp");
-			strcpy(tx3, "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero2_head.bmp");
-			strcpy(tx4, "Graph\\Obj3D\\Textures\\npc_human_leather_hero2_head.bmp");
+			tx = "Graph\\Obj3D\\Textures\\npc_human_base_hero2_head.bmp";
+			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero2_head.bmp";
+			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero2_head.bmp";
+			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero2_head.bmp";
 			break;
 		case 2:
-			strcpy(tx, "Graph\\Obj3D\\Textures\\npc_human_base_hero3_head.bmp");
-			strcpy(tx2, "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero3_head.bmp");
-			strcpy(tx3, "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero3_head.bmp");
-			strcpy(tx4, "Graph\\Obj3D\\Textures\\npc_human_leather_hero3_head.bmp");
+			tx = "Graph\\Obj3D\\Textures\\npc_human_base_hero3_head.bmp";
+			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero3_head.bmp";
+			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero3_head.bmp";
+			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero3_head.bmp";
 			break;
 		case 3:
-			strcpy(tx, "Graph\\Obj3D\\Textures\\npc_human_base_hero4_head.bmp");
-			strcpy(tx2, "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero4_head.bmp");
-			strcpy(tx3, "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero4_head.bmp");
-			strcpy(tx4, "Graph\\Obj3D\\Textures\\npc_human_leather_hero4_head.bmp");
+			tx = "Graph\\Obj3D\\Textures\\npc_human_base_hero4_head.bmp";
+			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero4_head.bmp";
+			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero4_head.bmp";
+			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero4_head.bmp";
 			break;
 		case 4:
-			strcpy(tx, "Graph\\Obj3D\\Textures\\npc_human_cm_hero_head.bmp");
-			strcpy(tx2, "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp");
-			strcpy(tx3, "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp");
-			strcpy(tx4, "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp");
+			tx = "Graph\\Obj3D\\Textures\\npc_human_cm_hero_head.bmp";
+			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
+			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
+			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
 			break;
 		case 5:
-			strcpy(tx, "Graph\\Obj3D\\Textures\\npc_human__base_hero_head.bmp");
-			strcpy(tx2, "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp");
-			strcpy(tx3, "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp");
-			strcpy(tx4, "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp");
+			tx = "Graph\\Obj3D\\Textures\\npc_human__base_hero_head.bmp";
+			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
+			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
+			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
 			break;
 		case 6: //just in case
-			strcpy(tx, "Graph\\Obj3D\\Textures\\npc_human__base_hero_head.bmp");
-			strcpy(tx2, "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp");
-			strcpy(tx3, "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp");
-			strcpy(tx4, "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp");
+			tx ="Graph\\Obj3D\\Textures\\npc_human__base_hero_head.bmp";
+			tx2 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
+			tx3 = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
+			tx4 = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
 			break;
 	}
 
@@ -1709,45 +1714,44 @@ void	ARX_PLAYER_Restore_Skin()
 		if (tx[0])
 		{
 			MakeUpcase(tx);
-			strcpy((char *)PLAYER_SKIN_TC->m_strName, (char *)tx);
+			PLAYER_SKIN_TC->m_strName = tx;
 			ReloadTexture(PLAYER_SKIN_TC);
 			PLAYER_SKIN_TC->Restore(GDevice);
 		}
 	}
 
-	char tt[256];
-	strcpy(tt, "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp");
+	std::string tt = "Graph\\Obj3D\\Textures\\npc_human_chainmail_hero_head.bmp";
 	MakeUpcase(tt);
-	TextureContainer * tmpTC = FindTexture(tt);
+	TextureContainer * tmpTC = _FindTexture(tt.c_str());
 
 	if ((tmpTC) && (tx2[0]))
 	{
 		MakeUpcase(tx2);
-		strcpy((char *)tmpTC->m_strName, (char *)tx2);
+		tmpTC->m_strName = tx2;
 		ReloadTexture(tmpTC);
 		tmpTC->Restore(GDevice);
 	}
 
-	strcpy(tt, "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp");
+	tt = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
 	MakeUpcase(tt);
-	tmpTC = FindTexture(tt);
+	tmpTC = _FindTexture(tt.c_str());
 
 	if ((tmpTC) && (tx3[0]))
 	{
 		MakeUpcase(tx3);
-		strcpy((char *)tmpTC->m_strName, (char *)tx3);
+		tmpTC->m_strName = tx3;
 		ReloadTexture(tmpTC);
 		tmpTC->Restore(GDevice);
 	}
 
-	strcpy(tt, "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp");
+	tt = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
 	MakeUpcase(tt);
-	tmpTC = FindTexture(tt);
+	tmpTC = _FindTexture(tt.c_str());
 
 	if ((tmpTC) && (tx4[0]))
 	{
 		MakeUpcase(tx4);
-		strcpy((char *)tmpTC->m_strName, (char *)tx4);
+		tmpTC->m_strName = tx4;
 		ReloadTexture(tmpTC);
 		tmpTC->Restore(GDevice);
 	}
@@ -1797,14 +1801,13 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 	//todo free
 	io->armormaterial = strdup("LEATHER");
 	strcpy(io->filename, "graph\\obj3D\\Interactive\\Player\\Player.teo");
-	char texscript[256];
-	strcpy(texscript, io->filename);
+	std::string texscript = io->filename;
 	SetExt(texscript, ".asl");
 
-	if (PAK_FileExist(texscript))
+	if (PAK_FileExist(texscript.c_str()))
 	{
 		size_t FileSize = 0;
-		io->script.data = (char *)PAK_FileLoadMalloc(texscript, &FileSize);
+		io->script.data = (char *)PAK_FileLoadMalloc(texscript, FileSize);
 
 		if (io->script.data != NULL)
 		{
@@ -1942,18 +1945,18 @@ void ARX_PLAYER_Manage_Visual()
 				io->halo.flags |= HALO_ACTIVE | HALO_DYNLIGHT;
 				io->halo.radius = 20.f;
 				player.life += (float)FrameDiff * ( 1.0f / 10 ); 
-				player.life = min(player.life, player.maxlife);
+				player.life = std::min(player.life, player.maxlife);
 				player.mana += (float)FrameDiff * ( 1.0f / 10 ); 
-				player.mana = min(player.mana, player.maxmana);
+				player.mana = std::min(player.mana, player.maxmana);
 
 			}
 
 		if (cur_mr == 3)
 		{
 			player.life += (float)FrameDiff * ( 1.0f / 20 ); 
-			player.life = min(player.life, player.maxlife);
+			player.life = std::min(player.life, player.maxlife);
 			player.mana += (float)FrameDiff * ( 1.0f / 20 ); 
-			player.mana = min(player.mana, player.maxmana);
+			player.mana = std::min(player.mana, player.maxmana);
 		}
 
 		io->pos.x = player.pos.x;
@@ -3610,13 +3613,13 @@ lasuite:
 	if (CURRENT_PLAYER_COLOR < player.grnd_color)
 	{
 		CURRENT_PLAYER_COLOR += FrameDiff * ( 1.0f / 8 );
-		CURRENT_PLAYER_COLOR = min(CURRENT_PLAYER_COLOR, player.grnd_color);
+		CURRENT_PLAYER_COLOR = std::min(CURRENT_PLAYER_COLOR, player.grnd_color);
 	}
 
 	if (CURRENT_PLAYER_COLOR > player.grnd_color)
 	{
 		CURRENT_PLAYER_COLOR -= FrameDiff * ( 1.0f / 4 );
-		CURRENT_PLAYER_COLOR = max(CURRENT_PLAYER_COLOR, player.grnd_color);
+		CURRENT_PLAYER_COLOR = std::max(CURRENT_PLAYER_COLOR, player.grnd_color);
 	}
 
 	if (InventoryDir != 0)
@@ -4074,7 +4077,7 @@ void ARX_GAME_Reset(long type)
 
 	// Localisation
 	if (!FINAL_RELEASE)
-		ARX_Localisation_Init();
+		Localisation_Init();
 
 	// ARX Debugger
 	NEED_DEBUGGER_CLEAR = 1;

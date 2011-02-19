@@ -57,14 +57,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SPEECH_H
 #define ARX_SPEECH_H
 
-#define MAX_ACTORS 10
 
 #include <tchar.h>
 #include "core/Application.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/GraphicsTypes.h"
 
-const unsigned long MAX_SPEECH(9);
+#define MAX_ACTORS 10
+const unsigned int MAX_SPEECH = 9;
 
 //-----------------------------------------------------------------------------
 struct ARX_CINEMATIC_SPEECH
@@ -81,6 +81,21 @@ struct ARX_CINEMATIC_SPEECH
 	long				ionum;
 	EERIE_3D			pos1;
 	EERIE_3D			pos2;
+
+	void clear()
+	{
+		type = 0;
+		startangle.clear();
+		endangle.clear();
+		startpos = 0;
+		endpos = 0;
+		f0 = 0;
+		f1 = 0;
+		f3 = 0;
+		ionum = 0;
+		pos1.clear();
+		pos2.clear();
+	}
 };
 
 struct ARX_CONVERSATION_STRUCT
@@ -92,32 +107,62 @@ struct ARX_CONVERSATION_STRUCT
 
 struct STRUCT_SPEECH
 {
-	unsigned long	timecreation;
-	unsigned long	duration;
-	D3DCOLOR		color;
-	char			name[64];
-	_TCHAR		*	lpszUText;
-	INTERACTIVE_OBJ * io;
+	unsigned long       timecreation;
+	unsigned long       duration;
+	D3DCOLOR            color;
+	char                name[64];
+	std::string         lpszUText;
+	INTERACTIVE_OBJ*    io;
+
+	void clear()
+	{
+		timecreation = 0;
+		duration = 0;
+		color = 0;
+		name[0] = 0;
+		lpszUText.clear();
+		io = NULL;
+	}
 };
 
 struct ARX_SPEECH
 {
-	long				exist;
-	ArxSound				sample;
-	long				mood;
-	long				flags; 
-	unsigned long		time_creation;
-	unsigned long		duration;
-	float				fDeltaY;
-	int					iTimeScroll;
-	float				fPixelScroll;
-	D3DCOLOR			color;
-	_TCHAR		*		text;
-	INTERACTIVE_OBJ	*	io;
-	INTERACTIVE_OBJ	*	ioscript;
-	ARX_CINEMATIC_SPEECH cine;
-	EERIE_SCRIPT	*	es;
-	long				scrpos;
+	long                    exist;
+	ArxSound                sample;
+	long                    mood;
+	long                    flags; 
+	unsigned long           time_creation;
+	unsigned long           duration;
+	float                   fDeltaY;
+	int                     iTimeScroll;
+	float                   fPixelScroll;
+	D3DCOLOR                color;
+	std::string             text;
+	INTERACTIVE_OBJ*        io;
+	INTERACTIVE_OBJ*        ioscript;
+	ARX_CINEMATIC_SPEECH    cine;
+	EERIE_SCRIPT*           es;
+	long                    scrpos;
+
+	void clear()
+	{
+		exist = 0;
+		sample = 0;
+		mood = 0;
+		flags = 0;
+		time_creation = 0;
+		duration = 0;
+		fDeltaY = 0;
+		iTimeScroll = 0;
+		fPixelScroll = 0;
+		color = 0;
+		text.clear();
+		io = NULL;
+		ioscript = NULL;
+		cine.clear();
+		es = NULL;
+		scrpos = 0;
+	}
 };
 
 #define MAX_ASPEECH						100
@@ -159,7 +204,7 @@ void ARX_SPEECH_Reset();
 void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice);
 void ARX_SPEECH_Init();
 void ARX_SPEECH_Check(LPDIRECT3DDEVICE7 pd3dDevice);
-long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, _TCHAR * _lpszUText, long duration = -1);
+long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, const std::string& _lpszUText, long duration = -1);
 void ARX_SPEECH_ClearAll();
 // data can be either a direct text or a localised string
 // a localised string will be used to look for the duration of the sample

@@ -67,6 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <vector>
 #include <algorithm>
+#include <iomanip>
 
 #include "game/Damage.h"
 #include "game/Equipment.h"
@@ -92,6 +93,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "ai/PathFinderManager.h"
 #include "physics/CollisionShapes.h"
+#include "scripting/ScriptEvent.h"
 
 
 //#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
@@ -267,7 +269,7 @@ INTERACTIVE_OBJ * ConvertToValidIO(char * str)
 	CONVERT_CREATED = 0;
 
 	if ((!str)
-	        ||	(str[0] == 0)) return NULL;
+			||	(str[0] == 0)) return NULL;
 
 	long t = GetTargetByNameTarget(str);
 
@@ -291,7 +293,7 @@ INTERACTIVE_OBJ * ConvertToValidIO(char * str)
 long GetIOAnimIdx2(INTERACTIVE_OBJ * io, ANIM_HANDLE * anim)
 {
 	if ((!io)
-	        ||	(!anim))
+			||	(!anim))
 		return -1;
 
 	for (long i = 0; i < MAX_ANIMS; i++)
@@ -354,18 +356,17 @@ void ARX_Changelevel_CurGame_Open()
 	GLOBAL_pSaveB->BeginRead();
 	return;
 }
-bool ARX_Changelevel_CurGame_Seek(char * ident)
+
+bool ARX_Changelevel_CurGame_Seek( const std::string& ident )
 {
 	if (GLOBAL_pSaveB)
 	{
-		char fic[256];
-		sprintf(fic, "%s.sav", ident);
-
-		if (GLOBAL_pSaveB->ExistFile(fic)) return true;
+		if (GLOBAL_pSaveB->ExistFile( ident + ".sav" )) return true;
 	}
 
 	return false;
 }
+
 void ARX_Changelevel_CurGame_Close()
 {
 	if (GLOBAL_pSaveB)
@@ -380,7 +381,7 @@ extern long JUST_RELOADED;
 extern void DemoFileCheck();
 extern long FINAL_COMMERCIAL_DEMO;
 //--------------------------------------------------------------------------------------------
-void ARX_CHANGELEVEL_Change(char * level, char * target, long angle, long confirm)
+void ARX_CHANGELEVEL_Change( const std::string& level, const std::string& target, long angle, long confirm)
 {
 	LogDebug << "-----------------------------------";
 	HERMES_DATE_TIME hdt;
@@ -415,15 +416,15 @@ void ARX_CHANGELEVEL_Change(char * level, char * target, long angle, long confir
 	FORBID_SAVE = 1;
 	// CurGamePath contains current game temporary savepath
 	char tex[256];
-	sprintf(tex, "LEVEL%s", level);
+	sprintf(tex, "LEVEL%s", level.c_str());
 	long num = GetLevelNumByName(tex);
 
 
 	if ((FINAL_COMMERCIAL_DEMO)
-	        &&	(num != 10)
-	        &&	(num != 12)
-	        &&	(num != 15)
-	        &&	(num != 1))
+			&&	(num != 10)
+			&&	(num != 12)
+			&&	(num != 15)
+			&&	(num != 1))
 		return;
 
 	LoadLevelScreen(GDevice, num);
@@ -527,7 +528,7 @@ long ARX_CHANGELEVEL_PushLevel(long num, long newnum)
 		if (io != NULL)
 		{
 			InventoryDir = -1;
-			SendIOScriptEvent(io, SM_INVENTORY2_CLOSE, "");
+			SendIOScriptEvent(io, SM_INVENTORY2_CLOSE);
 			TSecondaryInventory = SecondaryInventory;
 			SecondaryInventory = NULL;
 		}
@@ -622,9 +623,9 @@ long ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 	for (long i = 1; i < inter.nbmax; i++)
 	{
 		if ((inter.iobj[i] != NULL)
-		        &&	(!(inter.iobj[i]->ioflags & IO_NOSAVE))
-		        &&	(!IsInPlayerInventory(inter.iobj[i]))
-		        &&	(!IsPlayerEquipedWith(inter.iobj[i]))
+				&&	(!(inter.iobj[i]->ioflags & IO_NOSAVE))
+				&&	(!IsInPlayerInventory(inter.iobj[i]))
+				&&	(!IsPlayerEquipedWith(inter.iobj[i]))
 		   )
 		{
 			asi->nb_inter++;
@@ -643,9 +644,9 @@ long ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 	sprintf(savefile, "lvl%03ld.sav", num);
 
 	long allocsize = sizeof(ARX_CHANGELEVEL_INDEX)
-	                 + sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter
-	                 + sizeof(ARX_CHANGELEVEL_PATH) * asi->nb_paths
-	                 + sizeof(ARX_CHANGELEVEL_LIGHT) * asi->nb_lights;
+					 + sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter
+					 + sizeof(ARX_CHANGELEVEL_PATH) * asi->nb_paths
+					 + sizeof(ARX_CHANGELEVEL_LIGHT) * asi->nb_lights;
 	+48000;
 
 	void * playlist = NULL;
@@ -672,9 +673,9 @@ retry:
 	for (int i = 1; i < inter.nbmax; i++)
 	{
 		if ((inter.iobj[i] != NULL)
-		        &&	(!(inter.iobj[i]->ioflags & IO_NOSAVE))
-		        &&	(!IsInPlayerInventory(inter.iobj[i]))
-		        &&	(!IsPlayerEquipedWith(inter.iobj[i]))
+				&&	(!(inter.iobj[i]->ioflags & IO_NOSAVE))
+				&&	(!IsInPlayerInventory(inter.iobj[i]))
+				&&	(!IsPlayerEquipedWith(inter.iobj[i]))
 		   )
 		{
 			strcpy(aii.filename, inter.iobj[i]->filename);
@@ -752,8 +753,8 @@ long ARX_CHANGELEVEL_Push_Globals(long num)
 	sprintf(savefile, "Globals.sav");
 
 	long allocsize = sizeof(ARX_VARIABLE_SAVE) * acsg.nb_globals
-	                 + sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS) + 1000
-	                 + 48000;
+					 + sizeof(ARX_CHANGELEVEL_SAVE_GLOBALS) + 1000
+					 + 48000;
 
 retry:
 	;
@@ -851,12 +852,12 @@ retry:
 void FillIOIdent(char * tofill, INTERACTIVE_OBJ * io)
 {
 	if ((!io)
-	        ||	(!ValidIOAddress(io))
-	        ||	(io->filename[0] == 0)
+			||	(!ValidIOAddress(io))
+			||	(io->filename[0] == 0)
 	   )
 		strcpy(tofill, "NONE");
 	else
-		sprintf(tofill, "%s_%04ld", GetName(io->filename), io->ident);
+		sprintf(tofill, "%s_%04ld", GetName(io->filename).c_str(), io->ident);
 }
 extern long sp_max;
 extern long cur_rf;
@@ -1043,7 +1044,7 @@ retry:
 	for (long k = 0; k < MAX_EQUIPED; k++)
 	{
 		if (ValidIONum(player.equiped[k])
-		        &&	(player.equiped[k] > 0))
+				&&	(player.equiped[k] > 0))
 			FillIOIdent(asp->equiped[k], inter.iobj[player.equiped[k]]);
 		else
 			strcpy(asp->equiped[k], "");
@@ -1092,7 +1093,7 @@ retry:
 	for (int i = 1; i < inter.nbmax; i++)
 	{
 		if ((IsInPlayerInventory(inter.iobj[i]))
-		        ||	(IsPlayerEquipedWith(inter.iobj[i])))
+				||	(IsPlayerEquipedWith(inter.iobj[i])))
 			ARX_CHANGELEVEL_Push_IO(inter.iobj[i]);
 	}
 
@@ -1107,9 +1108,9 @@ long ARX_CHANGELEVEL_Push_AllIO(long num)
 	{
 
 		if ((inter.iobj[i] != NULL)
-		        &&	(!(inter.iobj[i]->ioflags & IO_NOSAVE))
-		        &&	(!IsInPlayerInventory(inter.iobj[i]))
-		        &&	(!IsPlayerEquipedWith(inter.iobj[i]))
+				&&	(!(inter.iobj[i]->ioflags & IO_NOSAVE))
+				&&	(!IsInPlayerInventory(inter.iobj[i]))
+				&&	(!IsPlayerEquipedWith(inter.iobj[i]))
 		   )
 		{
 			ARX_CHANGELEVEL_Push_IO(inter.iobj[i]);
@@ -1147,7 +1148,7 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 
 	// Sets Savefile Name
 	char savefile[256];
-	sprintf(savefile, "%s_%04ld.sav", GetName(io->filename), io->ident);
+	sprintf(savefile, "%s_%04ld.sav", GetName(io->filename).c_str(), io->ident);
 
 	// Define Type & Affiliated Structure Size
 	long type;
@@ -1196,8 +1197,8 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 	ais.ioflags			= io->ioflags;
 
 	if ((ais.ioflags & IO_FREEZESCRIPT)
-	        &&	((ARX_SPELLS_GetSpellOn(io, SPELL_PARALYSE) >= 0)
-	             ||	(ARX_SPELLS_GetSpellOn(io, SPELL_MASS_PARALYSE) >= 0)))
+			&&	((ARX_SPELLS_GetSpellOn(io, SPELL_PARALYSE) >= 0)
+				 ||	(ARX_SPELLS_GetSpellOn(io, SPELL_MASS_PARALYSE) >= 0)))
 		ais.ioflags &= ~IO_FREEZESCRIPT;
 
 	ais.pos.x			= io->pos.x;
@@ -1205,8 +1206,8 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 	ais.pos.z			= io->pos.z;
 
 	if ((io->obj)
-	        &&	(io->obj->pbox)
-	        &&	(io->obj->pbox->active))
+			&&	(io->obj->pbox)
+			&&	(io->obj->pbox->active))
 		ais.pos.y -= io->obj->pbox->vert[0].initpos.y;
 
 	ais.lastpos.x		= io->lastpos.x;
@@ -1430,17 +1431,17 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 	ais.nbtimers = count;
 
 	long allocsize =
-	    sizeof(ARX_CHANGELEVEL_IO_SAVE)
-	    + sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE)
-	    + io->script.nblvar * (sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE) + 500)
-	    + sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE)
-	    + io->over_script.nblvar * (sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE) + 500)
-	    + struct_size
-	    + sizeof(IO_TWEAKER_INFO)
-	    + sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE) + 1024
-	    + sizeof(IO_GROUP_DATA) * io->nb_iogroups
-	    + sizeof(TWEAK_INFO) * io->Tweak_nb
-	    + 48000;
+		sizeof(ARX_CHANGELEVEL_IO_SAVE)
+		+ sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE)
+		+ io->script.nblvar * (sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE) + 500)
+		+ sizeof(ARX_CHANGELEVEL_SCRIPT_SAVE)
+		+ io->over_script.nblvar * (sizeof(ARX_CHANGELEVEL_VARIABLE_SAVE) + 500)
+		+ struct_size
+		+ sizeof(IO_TWEAKER_INFO)
+		+ sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE) + 1024
+		+ sizeof(IO_GROUP_DATA) * io->nb_iogroups
+		+ sizeof(TWEAK_INFO) * io->Tweak_nb
+		+ 48000;
 
 	// Allocate Main Save Buffer
 	dat = (unsigned char *) malloc(allocsize);
@@ -1464,7 +1465,7 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 				memset(ats, 0, sizeof(ARX_CHANGELEVEL_TIMERS_SAVE));
 				ats->longinfo = scr_timer[i].longinfo;
 				ats->msecs = scr_timer[i].msecs;
-				strcpy(ats->name, scr_timer[i].name);
+				strcpy(ats->name, scr_timer[i].name.c_str());
 				ats->pos = scr_timer[i].pos;
 
 				if (scr_timer[i].es == &io->script)
@@ -1687,8 +1688,8 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 			for (iii = 0; iii < MAX_STACKED_BEHAVIOR; iii++)
 			{
 				if ((io->_npcdata->stacked[iii].exist)
-				        && (ValidIONum(io->_npcdata->stacked[iii].target)
-				            || io->_npcdata->stacked[iii].target == -2))
+						&& (ValidIONum(io->_npcdata->stacked[iii].target)
+							|| io->_npcdata->stacked[iii].target == -2))
 				{
 					long trg = io->_npcdata->stacked[iii].target;
 
@@ -1854,11 +1855,13 @@ long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 {
 	unsigned char * dat;
 	long pos = 0;
-	char loadfile[256];
-	
-	sprintf(loadfile, "lvl%03ld.sav", num);
-	size_t size;
-	size = _pSaveBlock->GetSize(loadfile);
+	std::string loadfile;
+	std::stringstream ss;
+
+	ss << "lvl" << std::setw(3) << num << std::setw(8) << ".sav";
+	loadfile = ss.str();
+
+	size_t size = _pSaveBlock->GetSize(loadfile);
 
 	if (size <= 0)
 	{
@@ -1866,11 +1869,11 @@ long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 		return -1;
 	}
 
-	char * compressed = (char *) GetStdBuffer(size); 
+	char * compressed = (char *) GetStdBuffer(size);
 
 	if (!compressed) HERMES_Memory_Emergency_Out();
 
-	if (!_pSaveBlock->Read(loadfile, (char *)compressed))
+	if ( !_pSaveBlock->Read( loadfile, compressed ) )
 	{
 		LogError << "Unable to Open " << loadfile << " for Read...";
 		return -1;
@@ -1917,10 +1920,12 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num)
 {
 	unsigned char * dat;
 	long pos = 0;
-	char loadfile[256];
+	std::string loadfile;
+	std::stringstream ss;
 	size_t size;
 
-	sprintf(loadfile, "lvl%03ld.sav", num);
+	ss << "lvl" << num << ".sav";
+	loadfile = ss.str();
 	size = _pSaveBlock->GetSize(loadfile);
 
 	if (size < 0)
@@ -1933,7 +1938,7 @@ long ARX_CHANGELEVEL_Pop_Zones_n_Lights(ARX_CHANGELEVEL_INDEX * asi, long num)
 
 	if (!compressed) HERMES_Memory_Emergency_Out();
 
-	if (!_pSaveBlock->Read(loadfile, (char *)compressed))
+	if (!_pSaveBlock->Read(loadfile, compressed))
 	{
 		LogError << "Unable to Open " << loadfile << " for Read...";
 		return -1;
@@ -2098,11 +2103,11 @@ long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVEL_PLA
 		return -1;
 	}
 
-	char * compressed = (char *) GetStdBuffer(size); 
+	char * compressed = (char *) GetStdBuffer(size);
 
 	if (!compressed) HERMES_Memory_Emergency_Out();
 
-	_pSaveBlock->Read(loadfile, (char *)compressed);
+	_pSaveBlock->Read(loadfile, compressed);
 
 	for (size_t i = 0; i < size; i += 2)
 		compressed[i] = ~compressed[i];
@@ -2350,9 +2355,9 @@ void ReleaseTio()
 extern long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io);
 
 //-----------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Pop_IO(char * ident)
+long ARX_CHANGELEVEL_Pop_IO( const std::string& ident)
 {
-	if (!strcasecmp(ident, "NONE")) return -1;
+	if (!strcasecmp(ident.c_str(), "NONE")) return -1;
 
 	char loadfile[256];
 	ARX_CHANGELEVEL_IO_SAVE * ais;
@@ -2360,7 +2365,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 	long pos = 0;
 	size_t size = 0;
 
-	sprintf(loadfile, "%s.sav", ident);
+	sprintf(loadfile, "%s.sav", ident.c_str());
 
 	long t = GetTargetByNameTarget(ident);
 
@@ -2381,11 +2386,11 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 		return -1;
 	}
 
-	char * compressed = (char *)GetStdBuffer(size); 
+	char * compressed = (char *) GetStdBuffer(size);
 
 	if (!compressed) HERMES_Memory_Emergency_Out();
 
-	if (!_pSaveBlock->Read(loadfile, (char *)compressed))
+	if (!_pSaveBlock->Read(loadfile, compressed))
 	{
 		LogError << "Unable to Read Data";
 
@@ -2421,7 +2426,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 	pos += sizeof(ARX_CHANGELEVEL_IO_SAVE);
 
 	if ((ais->show == SHOW_FLAG_DESTROYED)
-	        ||	(ais->ioflags & IO_NOSAVE))
+			||	(ais->ioflags & IO_NOSAVE))
 	{
 		free(dat);
 		return -1;
@@ -2436,10 +2441,10 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 	dli.angle.a = ais->angle.a;
 	dli.angle.b = ais->angle.b;
 	dli.angle.g = ais->angle.g;
-	long num = atoi(ident + strlen(ident) - 4);
+	long num = atoi(ident.c_str() + ident.length() - 4);
 
 	dli.ident = num;
-	strcpy(dli.name, ais->filename);
+	strcpy( dli.name, ais->filename );
 	dli.pos.x = ais->pos.x;
 	dli.pos.y = ais->pos.y;
 	dli.pos.z = ais->pos.z;
@@ -2622,9 +2627,9 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 				if (io->anims[i] == NULL)
 				{
 					if (io->ioflags & IO_NPC)
-						sprintf(tex, "GRAPH\\OBJ3D\\ANIMS\\NPC\\%s%s", GetName(ais->anims[i]), GetExt(ais->anims[i]));
+						sprintf(tex, "GRAPH\\OBJ3D\\ANIMS\\NPC\\%s%s", GetName(ais->anims[i]).c_str(), GetExt(ais->anims[i]));
 					else
-						sprintf(tex, "GRAPH\\OBJ3D\\ANIMS\\FIX_Inter\\%s%s", GetName(ais->anims[i]), GetExt(ais->anims[i]));
+						sprintf(tex, "GRAPH\\OBJ3D\\ANIMS\\FIX_Inter\\%s%s", GetName(ais->anims[i]).c_str(), GetExt(ais->anims[i]));
 
 					io->anims[i] = EERIE_ANIMMANAGER_Load(tex);
 				}
@@ -2679,9 +2684,9 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 				scr_timer[num].namelength = strlen(ats->name) + 1;
 				scr_timer[num].name = (char *) malloc(scr_timer[num].namelength);
 
-				if (!scr_timer[num].name) HERMES_Memory_Emergency_Out();
+				//if (!scr_timer[num].name) HERMES_Memory_Emergency_Out();
 
-				strcpy(scr_timer[num].name, ats->name);
+				scr_timer[num].name = ats->name;
 				scr_timer[num].pos = ats->pos;
 
 
@@ -3048,9 +3053,9 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 		{
 
 			memcpy(_Gaids[Gaids_Number], dat + pos,
-			       sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE)
-			       - SIZE_ID - SIZE_ID - MAX_LINKED_SAVE * SIZE_ID
-			       - SIZE_ID * MAX_STACKED_BEHAVIOR);
+				   sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE)
+				   - SIZE_ID - SIZE_ID - MAX_LINKED_SAVE * SIZE_ID
+				   - SIZE_ID * MAX_STACKED_BEHAVIOR);
 
 			pos += sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE);
 
@@ -3148,7 +3153,7 @@ long ARX_CHANGELEVEL_Pop_IO(char * ident)
 		long hidegore;
 
 		if ((io->ioflags & IO_NPC)
-		        &&	(io->_npcdata->life > 0.f))
+				&&	(io->_npcdata->life > 0.f))
 			hidegore = 1;
 		else
 			hidegore = 0;
@@ -3206,7 +3211,7 @@ long ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi)
 		PROGRESS_BAR_COUNT += increment;
 		LoadLevelScreen();
 		char tempo[256];
-		sprintf(tempo, "%s_%04ld", GetName(idx_io[i].filename), idx_io[i].ident);
+		sprintf(tempo, "%s_%04ld", GetName(idx_io[i].filename).c_str(), idx_io[i].ident);
 		ARX_CHANGELEVEL_Pop_IO(tempo);
 	}
 
@@ -3247,7 +3252,7 @@ long ARX_CHANGELEVEL_PopAllIO_FINISH(ARX_CHANGELEVEL_INDEX * asi, long reloadfla
 							converted += CONVERT_CREATED;
 
 							if ((aids->sizex != 3)
-							        ||	(aids->sizey != 11))
+									||	(aids->sizey != 11))
 							{
 								inv->sizex = 3;
 								inv->sizey = 11;
@@ -3335,17 +3340,17 @@ long ARX_CHANGELEVEL_PopAllIO_FINISH(ARX_CHANGELEVEL_INDEX * asi, long reloadfla
 			{
 				if (inter.iobj[i]->script.data != NULL)
 				{
-					SendScriptEvent(&inter.iobj[i]->script, SM_RELOAD, "CHANGE", inter.iobj[i], NULL);
+					ScriptEvent::send(&inter.iobj[i]->script, SM_RELOAD, "CHANGE", inter.iobj[i], "");
 				}
 
 				if (inter.iobj[i]
-				        &&	inter.iobj[i]->over_script.data)
+						&&	inter.iobj[i]->over_script.data)
 				{
-					SendScriptEvent(&inter.iobj[i]->over_script, SM_RELOAD, "CHANGE", inter.iobj[i], NULL);
+					ScriptEvent::send(&inter.iobj[i]->over_script, SM_RELOAD, "CHANGE", inter.iobj[i], "");
 				}
 
 				if (inter.iobj[i]
-				        &&	(inter.iobj[i]->ioflags & IO_NPC))
+						&&	(inter.iobj[i]->ioflags & IO_NPC))
 				{
 					if (ValidIONum(inter.iobj[i]->targetinfo))
 					{
@@ -3369,25 +3374,25 @@ long ARX_CHANGELEVEL_PopAllIO_FINISH(ARX_CHANGELEVEL_INDEX * asi, long reloadfla
 			{
 				if (inter.iobj[i]->script.data)
 				{
-					SendScriptEvent(&inter.iobj[i]->script, SM_INIT, "", inter.iobj[i], NULL);
+					ScriptEvent::send(&inter.iobj[i]->script, SM_INIT, "", inter.iobj[i], "");
 				}
 
 				if (inter.iobj[i]
-				        &&	inter.iobj[i]->over_script.data)
+						&&	inter.iobj[i]->over_script.data)
 				{
-					SendScriptEvent(&inter.iobj[i]->over_script, SM_INIT, "", inter.iobj[i], NULL);
+					ScriptEvent::send(&inter.iobj[i]->over_script, SM_INIT, "", inter.iobj[i], "");
 				}
 
 				if (inter.iobj[i]
-				        &&	inter.iobj[i]->script.data)
+						&&	inter.iobj[i]->script.data)
 				{
-					SendScriptEvent(&inter.iobj[i]->script, SM_INITEND, "", inter.iobj[i], NULL);
+					ScriptEvent::send(&inter.iobj[i]->script, SM_INITEND, "", inter.iobj[i], "");
 				}
 
 				if (inter.iobj[i]
-				        &&	inter.iobj[i]->over_script.data)
+						&&	inter.iobj[i]->over_script.data)
 				{
-					SendScriptEvent(&inter.iobj[i]->over_script, SM_INITEND, "", inter.iobj[i], NULL);
+					ScriptEvent::send(&inter.iobj[i]->over_script, SM_INITEND, "", inter.iobj[i], "");
 				}
 			}
 		}
@@ -3399,7 +3404,7 @@ long ARX_CHANGELEVEL_PopAllIO_FINISH(ARX_CHANGELEVEL_INDEX * asi, long reloadfla
 			if (inter.iobj[i])
 			{
 				if (inter.iobj[i]
-				        &&	(inter.iobj[i]->ioflags & IO_NPC))
+						&&	(inter.iobj[i]->ioflags & IO_NPC))
 				{
 					if (ValidIONum(inter.iobj[i]->targetinfo))
 					{
@@ -3423,11 +3428,10 @@ long ARX_CHANGELEVEL_Pop_Globals()
 	ARX_CHANGELEVEL_SAVE_GLOBALS * acsg;
 	unsigned char * dat;
 	long pos = 0;
-	char loadfile[256];
+	std::string loadfile = "Globals.sav";
 	size_t size;
 
 	ARX_SCRIPT_Free_All_Global_Variables();
-	sprintf(loadfile, "Globals.sav");
 	size = _pSaveBlock->GetSize(loadfile);
 
 	if (size < 0)
@@ -3436,11 +3440,12 @@ long ARX_CHANGELEVEL_Pop_Globals()
 		return -1;
 	}
 
-	char * compressed = (char *) GetStdBuffer(size); 
+
+	char * compressed = (char *) GetStdBuffer(size);
 
 	if (!compressed) HERMES_Memory_Emergency_Out();
 
-	if (!_pSaveBlock->Read(loadfile, (char *)compressed))
+	if (!_pSaveBlock->Read(loadfile, compressed))
 	{
 		LogError << "Unable to Open " << loadfile << " for Read...";
 		return -1;
@@ -4002,7 +4007,7 @@ void CopyDirectory(char * _lpszSrc, char * _lpszDest)
 
 //-----------------------------------------------------------------------------
 ///////////////////////// SAVE LOAD
-long ARX_CHANGELEVEL_Save(long instance, char * name)
+long ARX_CHANGELEVEL_Save(long instance, const std::string& name)
 {
 
 	ARX_TIME_Pause();
@@ -4042,7 +4047,7 @@ long ARX_CHANGELEVEL_Save(long instance, char * name)
 		if (io != NULL)
 		{
 			InventoryDir = -1;
-			SendIOScriptEvent(io, SM_INVENTORY2_CLOSE, "");
+			SendIOScriptEvent(io, SM_INVENTORY2_CLOSE);
 			TSecondaryInventory = SecondaryInventory;
 			SecondaryInventory = NULL;
 		}
@@ -4063,7 +4068,7 @@ long ARX_CHANGELEVEL_Save(long instance, char * name)
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;
 	memset(&pld, 0, sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));
 	pld.level = CURRENTLEVEL;
-	strcpy(pld.name, name);
+	strcpy(pld.name, name.c_str());
 	pld.version = ARX_GAMESAVE_VERSION;
 	pld.time = ARX_TIME_GetUL(); //treat warning C4244 conversion from 'float' to 'unsigned long''
 	ARX_CHANGELEVEL_Set_Player_LevelData(&pld, GameSavePath);
@@ -4072,15 +4077,15 @@ long ARX_CHANGELEVEL_Save(long instance, char * name)
 }
 
 //-----------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Set_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pld, char * path)
+long ARX_CHANGELEVEL_Set_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pld, const std::string& path)
 {
 	char sfile[256];
-	sprintf(sfile, "%sGsave.sav", path);
+	sprintf(sfile, "%sGsave.sav", path.c_str());
 	_pSaveBlock = new CSaveBlock(sfile);
 
 	if (!_pSaveBlock->BeginSave(true, 1)) return -1;
 
-	if (!DirectoryExist(path)) return -1;
+	if (!DirectoryExist(path.c_str())) return -1;
 
 	unsigned char * dat;
 	dat = (unsigned char *) malloc(sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA));
@@ -4115,24 +4120,24 @@ long ARX_CHANGELEVEL_Set_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 // ARX_CHANGELEVEL_Get_Player_LevelData: Retreives Player Level Data
 // VERIFIED: Cyril 30/11/2001
 //------------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pld, char * path)
+long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pld, const std::string& path)
 {
 	// Checks For Directory
-	if (!DirectoryExist(path)) return -1;
+	if (!DirectoryExist(path.c_str())) return -1;
 
-	char loadfile[256];
+	std::string loadfile;
 	size_t size;
 	unsigned char * dat;
 
 	// Open Save Block
 	char sfile[256];
-	sprintf(sfile, "%sGsave.sav", path);
+	sprintf(sfile, "%sGsave.sav", path.c_str());
 	_pSaveBlock = new CSaveBlock(sfile);
 
 	if (!_pSaveBlock->BeginRead()) return -1;
 
 	// Get Size
-	sprintf(loadfile, "pld.sav");
+	loadfile = "pld.sav";
 	size = _pSaveBlock->GetSize(loadfile);
 
 	// Checks for Void/Invalid File
@@ -4146,12 +4151,12 @@ long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 	}
 
 	// Allocate Necessary Size
-	char * compressed = (char *) malloc(size);
+	char * compressed = (char *) GetStdBuffer(size);
 
 	if (!compressed) HERMES_Memory_Emergency_Out();
 
 	// Read Block
-	if (!_pSaveBlock->Read(loadfile, (char *)compressed))
+	if (!_pSaveBlock->Read(loadfile, compressed))
 	{
 		free(compressed);
 		LogError << "Unable to Open " << loadfile << " for Read2...";
@@ -4169,7 +4174,6 @@ long ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 	long ssize = size;
  
 	dat = (unsigned char *)blastMemAlloc(compressed, ssize, size); //pos,&cpr_pos);
-	free(compressed);
 
 	if (dat == NULL)
 	{
@@ -4300,26 +4304,26 @@ long ARX_CHANGELEVEL_Load(long instance)
 //------------------------------------------------------------------------------
 // ARX_CHANGELEVEL_GetInfo: Retreives Name & Time of a Saved game in "path"
 //------------------------------------------------------------------------------
-long ARX_CHANGELEVEL_GetInfo(char * path, char * name, float * version, long * level, unsigned long * time)
+long ARX_CHANGELEVEL_GetInfo( const std::string& path, std::string& name, float& version, long& level, unsigned long& time)
 {
-	if ((!path) || (!name) || (!version) || (!level) || (!time)) return -1;
+	if ((path.empty()) || (name.empty()) || (!version) || (!level) || (!time)) return -1;
 
 	ARX_CHANGELEVEL_PLAYER_LEVEL_DATA pld;
 
 	if (ARX_CHANGELEVEL_Get_Player_LevelData(&pld, path) == 1)
 	{
-		strcpy(name, pld.name);
-		*version = pld.version;
-		*level = pld.level;
-		*time = (pld.time / 1000);
+		name = pld.name;
+		version = pld.version;
+		level = pld.level;
+		time = (pld.time / 1000);
 		return 1;
 	}
 	else
 	{
-		strcpy(name, "Invalid Save...");
-		*time = 0;
-		*level = 0;
-		*version = 0;
+		name = "Invalid Save...";
+		time = 0;
+		level = 0;
+		version = 0;
 		return -1;
 	}
 }

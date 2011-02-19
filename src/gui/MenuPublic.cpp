@@ -24,6 +24,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 #include <stdio.h>
 
+/*#include <algorithm>
+#include <fstream>
+#include <sstream>
+#include <vector>
+*/
 #include "core/Core.h"
 #include "gui/MenuPublic.h"
 #include "gui/Menu.h"
@@ -41,6 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/IO.h"
 #include "io/Filesystem.h"
+#include "io/Logger.h"
 
 extern CMenuConfig * pMenuConfig;
 extern CDirectInput * pGetInfoDirectInput;
@@ -153,7 +159,7 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int 
 
 		if (FAILED(hr = danaeApp.Change3DEnvironment()))
 		{
-			ShowPopup("Error Changing Environment");
+			LogError << "Error Changing Environment";
 		}
 		else
 		{
