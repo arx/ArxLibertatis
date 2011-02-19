@@ -2826,7 +2826,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 
 	float					Xcos = 0, Ycos = 0, Zcos = 0, Xsin = 0, Ysin = 0, Zsin = 0;
 	register D3DTLVERTEX	vert_list[4]; 	
-	long					i, k;
+	long k;
 	
 	long					lfr, lfg, lfb;		
 	float					dd, ffr, ffg, ffb;
@@ -3335,8 +3335,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 		}
 	}
 
-	for(i=0;i<eobj->facelist.size();i++) 
-	{
+	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		if (MIPM)
 		{
 			for (lm=0;lm<3;lm++)				
@@ -3581,7 +3580,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 					|    (long)((float)((long) (vert_list[j].color & 255))*(special_color.b))&255);
 			}
 		}
-	}			
+	}
 
 		// Treat WATER Polys (modify UVs)
 		if (eobj->facelist[i].facetype & POLY_WATER)
