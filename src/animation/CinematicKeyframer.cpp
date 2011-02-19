@@ -45,11 +45,7 @@ typedef struct
 	C_KEY	key;
 } C_UNDOPILE;
 /*----------------------------------------------------------------------*/
-extern HWND HwndPere;
 extern bool ProjectModif;
-/*----------------------------------------------------------------------*/
-static bool GereTrackNoPlay2(C_KEY * k, int frame);
-static bool DeleteKey2(Cinematic * c, int frame);
 /*----------------------------------------------------------------------*/
 CinematicTrack	* CKTrack;
 
