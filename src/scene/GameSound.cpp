@@ -326,12 +326,10 @@ ArxSound SND_SPELL_VISION_LOOP(AAL_SFALSE);
 
 bool bForceNoEAX = false;
 
-static void ARX_SOUND_CreateEnvironment();
 static void ARX_SOUND_CreateEnvironments();
 static void ARX_SOUND_CreateStaticSamples();
 static void ARX_SOUND_ReleaseStaticSamples();
 static void ARX_SOUND_LoadCollision(const long & mat1, const long & mat2, const char * name);
-static void ARX_SOUND_CreateCollisionMap(const char * file_name);
 static void ARX_SOUND_CreateCollisionMaps();
 static void ARX_SOUND_DeleteCollisionMaps();
 static void ARX_SOUND_CreateMaterials();
