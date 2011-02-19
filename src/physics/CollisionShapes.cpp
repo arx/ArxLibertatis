@@ -196,7 +196,7 @@ bool IsExclusiveGroupMember(EERIE_3DOBJ * obj, long idx, long group)
 
 	for (long i = group + 1; i < obj->nbgroups; i++)
 	{
-		for (long j = 0; j < obj->grouplist[i].indexes.size(); j++)
+		for (size_t j = 0; j < obj->grouplist[i].indexes.size(); j++)
 		{
 			if (idx == obj->grouplist[i].indexes[j])
 			{
