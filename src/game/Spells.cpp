@@ -2914,7 +2914,7 @@ long ARX_SPELLS_GetFree() {
 }
 
 // Checks for an existing instance of this spelltype
-bool ARX_SPELLS_ExistAnyInstance(const long &typ) {
+bool ARX_SPELLS_ExistAnyInstance(const long & typ) {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		if(spells[i].exist && spells[i].type == typ) {
@@ -2925,10 +2925,10 @@ bool ARX_SPELLS_ExistAnyInstance(const long &typ) {
 	return false;
 }
 
-long ARX_SPELLS_GetInstance(const long &typ) {
+long ARX_SPELLS_GetInstance(const long & typ) {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		if(spells[i].exist && spells[i].type==typ) {
+		if(spells[i].exist && spells[i].type == typ) {
 			return i;
 		}
 	}
@@ -2936,27 +2936,30 @@ long ARX_SPELLS_GetInstance(const long &typ) {
 	return -1;
 }
 
-long ARX_SPELLS_GetInstanceForThisCaster(const long &typ, const long &caster)
-{
-	for (long i(0); i < MAX_SPELLS; i++)
-		if (spells[i].exist && (spells[i].type == typ) && (spells[i].caster == caster))
+long ARX_SPELLS_GetInstanceForThisCaster(const long & typ, const long & caster) {
+	
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		if(spells[i].exist && spells[i].type == typ && spells[i].caster == caster) {
 			return i;
-
+		}
+	}
+	
 	return -1;
 }
 
-bool ARX_SPELLS_ExistAnyInstanceForThisCaster(const long &typ, const long &caster) 
-{
-	for (long i(0); i < MAX_SPELLS; i++)
-		if (spells[i].exist && (spells[i].type == typ) && (spells[i].caster == caster))
+bool ARX_SPELLS_ExistAnyInstanceForThisCaster(const long & typ, const long & caster) {
+	
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		if(spells[i].exist && spells[i].type == typ && spells[i].caster == caster) {
 			return true;
-
+		}
+	}
+	
 	return false;
 }
 
 // Plays the sound of aborted spell
-void ARX_SPELLS_AbortSpellSound()
-{
+void ARX_SPELLS_AbortSpellSound() {
 	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
 }
 
