@@ -644,9 +644,11 @@ EERIEPOLY * CheckTopPoly(float x, float y, float z)
 		{
 			if ((EEfabs(ep->max.y - ep->min.y) > 50.f) &&	(y - ep->center.y < 60.f)) continue;
 
-			if (ep->tex != NULL)
-				if (found == NULL) found = ep;
-				else if (ep->min.y > found->min.y) found = ep;
+			if (ep->tex != NULL) {
+				if (found == NULL || ep->min.y > found->min.y) {
+					found = ep;
+				}
+			}
 		}
 	}
 
