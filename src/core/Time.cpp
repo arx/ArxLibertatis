@@ -74,6 +74,7 @@ bool ARXPausedTimer = 0;
 //-----------------------------------------------------------------------------
 LARGE_INTEGER	liFrequency;
 bool			bTimerInit = false;
+float			startupTime = 0;
 
 void _ARX_TIME_Init()
 {
@@ -86,6 +87,8 @@ void _ARX_TIME_Init()
 	bTimerInit = true;
 
 	ARX_TIME_Init();
+
+	startupTime = _ARX_TIME_GetTime();
 }
 
 float _ARX_TIME_GetTime()
@@ -96,9 +99,12 @@ float _ARX_TIME_GetTime()
 
 	QueryPerformanceCounter(&liPerfCounter);
 	return ARX_CLEAN_WARN_CAST_FLOAT((liPerfCounter.QuadPart / (double)liFrequency.QuadPart) * 1000);
-
 }
 
+float ARX_TIME_GetAppTime()
+{
+	return (_ARX_TIME_GetTime() - startupTime) / 1000.0f;
+}
 
 //-----------------------------------------------------------------------------
 void ARX_TIME_Init()

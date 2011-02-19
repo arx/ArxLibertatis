@@ -162,31 +162,6 @@ D3DTLVERTEX tD3DTLVERTEXTab2[4000];
 
 void CalculTriangleBump( const D3DTLVERTEX& v0, const D3DTLVERTEX& v1, const D3DTLVERTEX& v2, float *du, float *dv );
 
-//-----------------------------------------------------------------------------
-__inline void ResetBBox3D(INTERACTIVE_OBJ * io)
-{
-	if (io)
-	{
-		io->bbox3D.min.x=99999999.f;
-		io->bbox3D.min.y=99999999.f;
-		io->bbox3D.min.z=99999999.f;
-		io->bbox3D.max.x=-99999999.f;
-		io->bbox3D.max.y=-99999999.f;
-		io->bbox3D.max.z=-99999999.f;
-	}
-}
-__inline void AddToBBox3D(INTERACTIVE_OBJ * io,EERIE_3D * pos)
-{
-	if (io)
-	{
-		io->bbox3D.min.x=min(io->bbox3D.min.x,pos->x);
-		io->bbox3D.min.y=min(io->bbox3D.min.y,pos->y);
-		io->bbox3D.min.z=min(io->bbox3D.min.z,pos->z);
-		io->bbox3D.max.x=max(io->bbox3D.max.x,pos->x);
-		io->bbox3D.max.y=max(io->bbox3D.max.y,pos->y);
-		io->bbox3D.max.z=max(io->bbox3D.max.z,pos->z);
-	}
-}
 extern long EXTERNALVIEW;
 void EERIE_ANIM_Get_Scale_Invisibility(INTERACTIVE_OBJ * io,float &invisibility,float &scale)
 {
@@ -1846,7 +1821,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	{
 		ResetBBox3D( io );
 
-		for( i = 0 ; i < eobj->nbvertex ; i++ ) 
+		for( i = 0 ; i < eobj->vertexlist.size() ; i++ ) 
 		{
 			if ( (modinfo) && !angle && BIGMAT )
 			{
@@ -2186,7 +2161,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	float prec;
 	prec=1.f/(ACTIVECAM->cdepth*ACTIVECAM->Zmul);
 
-	for(i=0;i<eobj->nbfaces;i++) 
+	for(i=0;i<eobj->facelist.size();i++) 
 	{
 		long paf[3];
 		paf[0]=eobj->facelist[i].vid[0];
@@ -2902,7 +2877,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 	ResetBBox3D(io);
 
 	// Transforms vertex
-	for(i=0;i<eobj->nbvertex;i++) 
+	for(i=0;i<eobj->vertexlist.size();i++) 
 	{
 		if ((MIPM) && (!eobj->pdata[i].need_computing)) continue;
 
@@ -3026,7 +3001,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 		Vector_Init(&l_pos,pos.x,pos.y-60.f,pos.z);
 		Preparellights(&l_pos);	
 
-		for(i=0;i<eobj->nbvertex;i++) 
+		for(i=0;i<eobj->vertexlist.size();i++) 
 		{
 			if ((MIPM) && (!eobj->pdata[i].need_computing)) continue;
 			
@@ -3118,7 +3093,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 		{
 			float r1;
 
-			for(i=0;i<eobj->nbvertex;i++) 
+			for(i=0;i<eobj->vertexlist.size();i++) 
 			{
 				if (eobj->pdata[i].collapse_ratio!=0.f)
 				{
@@ -3365,7 +3340,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 		}
 	}
 
-	for(i=0;i<eobj->nbfaces;i++) 
+	for(i=0;i<eobj->facelist.size();i++) 
 	{
 		if (MIPM)
 		{

@@ -22,69 +22,53 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "core/Common.h"
+#ifndef _CLUSTER_SAVE_H_
+#define _CLUSTER_SAVE_H_
+
+#include <string>
 
 #define PAK_VERSION	((1<<16)|0)
 
 #define MAX_FILES		1024
 #define EMPTY_CLUSTER	"___EMPTY___"
 
-class CCluster{
-public:
-	int			iTaille;
-	int			iNext;
-	CCluster	*pNext;
-public:
-	CCluster(int _iTaille=0);
-	~CCluster();
-};
 
-class CInfoFile{
-public:
-	char		*pcFileName;
-	int			iTaille;
-
-	int			iNbCluster;
-	CCluster	FirstCluster;
-	CCluster*	pLastCluster;
-public:
-	void Set( const char *_pcFileName,int _iTaille);
-	void KillAll();
-};
-
-
+class CInfoFile;
 class HashMap;
+typedef void * FileHandle;
 
-class CSaveBlock{
+class CSaveBlock {
 private:
 	
-	FILE		*hFile;
-	int			iTailleBlock;
-	int			iNbFiles;
-	bool		bReWrite;
-	CInfoFile *	sInfoFile;
-	bool		bFirst;
-	int			iVersion;
+	FileHandle hFile;
+	int iTailleBlock;
+	int iNbFiles;
+	bool bReWrite;
+	CInfoFile * sInfoFile;
+	bool bFirst;
+	int iVersion;
 	bool ExpandNbFiles();
-	HashMap* pHachage;
-
+	HashMap * pHachage;
+	
+	std::string pcBlockName;
+	
 public:
-	char		*pcBlockName;
-	CSaveBlock(char *_pcBlockName=NULL);
+	
+	CSaveBlock(const std::string & savefile);
 	~CSaveBlock();
-
+	
 	bool Defrag();
 	bool BeginSave(bool _bCont,bool _bReWrite);
 	bool EndSave();
 	bool Save( const std::string& _pcFileName, void* _pDatas, int _iSize);
-
+	
 	bool BeginRead(void);
 	void EndRead();
 	bool Read( const std::string& _pcFileName, char* _pPtr);
 	int	 GetSize( const std::string& _pcFileName);
 	bool ExistFile( const std::string& _pcFileName);
 	void ResetFAT();
+	
 };
+
+#endif // _CLUSTER_SAVE_H_

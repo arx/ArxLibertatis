@@ -55,7 +55,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#define DIRECTINPUT_VERSION 0x0700
+#ifndef DIRECTINPUT_VERSION
+	#define DIRECTINPUT_VERSION 0x0700
+#endif
+
 #include <dinput.h>
 #include <stdio.h>
 
@@ -73,6 +76,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuWidgets.h"
 
 #include "io/IO.h"
+#include "io/Logger.h"
 #include "graphics/d3dwrapper.h"
 #include "scene/Light.h"
 #include "graphics/Draw.h"
@@ -87,8 +91,6 @@ using namespace std;
 #define VAL_THRESHOLD 100.f
 #define PASSS 0.5f 
 #define PASS 50.f 
-
-#define MAX_DIST_BUMP			(400.f)
 
 //-----------------------------------------------------------------------------
 extern long USE_LIGHT_OPTIM;
@@ -2771,10 +2773,7 @@ SMY_D3DVERTEX *pMyVertex;
 		{
 			char tTxt[256];
 			sprintf(tTxt,"portals %ld - Zero Polys",room_num);
-			MessageBox(	NULL,
-						tTxt,
-						"Error Portals",
-						MB_OK|MB_ICONERROR );
+			LogError<< tTxt<<" Error Portals";
 			return;
 		}
 		

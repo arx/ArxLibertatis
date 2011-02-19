@@ -89,7 +89,9 @@ extern CMenuConfig *pMenuConfig;
 extern bool bSoftRender;
 
 void EE_RT2(D3DTLVERTEX*,D3DTLVERTEX*);
-bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX*,D3DTLVERTEX*,D3DTLVERTEX*,float _fAdd=0.f);
+
+bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX*,D3DTLVERTEX*,D3DTLVERTEX*);
+bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX*,D3DTLVERTEX*,D3DTLVERTEX*,float _fAdd);
 
 //***********************************************************************************************
 // hum... to be checked again for performance and result quality.
@@ -158,7 +160,7 @@ void ARXDRAW_DrawInterShadows(LPDIRECT3DDEVICE7 pd3dDevice)
 
 				if (io->obj->nbgroups<=1)
 				{
-					for (k=0;k<io->obj->nbvertex;k+=9)
+					for (k=0;k<io->obj->vertexlist.size();k+=9)
 					{
 						ep=EECheckInPoly(&io->obj->vertexlist3[k].v);
 

@@ -53,7 +53,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#define STRICT
 #include <windowsx.h>
 #include <stdio.h>
 #include <tchar.h>
@@ -113,7 +112,7 @@ static HRESULT WINAPI ModeEnumCallback(DDSURFACEDESC2 * pddsd,
 	DDSURFACEDESC2 * pddsdNewModes = new DDSURFACEDESC2[pDevice->dwNumModes+1];
 	memcpy(pddsdNewModes, pDevice->pddsdModes,
 	       pDevice->dwNumModes * sizeof(DDSURFACEDESC2));
-	delete pDevice->pddsdModes;
+	delete[] pDevice->pddsdModes;
 	pDevice->pddsdModes = pddsdNewModes;
 
 	// Add the new mode
@@ -294,7 +293,10 @@ static BOOL WINAPI DriverEnumCallback(GUID * pGUID, TCHAR * strDesc,
 	pD3D->EnumDevices(DeviceEnumCallback, &d3dDeviceInfo);
 
 	// Clean up and return
-	SAFE_DELETE(d3dDeviceInfo.pddsdModes);
+	if(d3dDeviceInfo.pddsdModes) {
+		delete[] d3dDeviceInfo.pddsdModes;
+		d3dDeviceInfo.pddsdModes = NULL;
+	}
 	pD3D->Release();
 	pDD->Release();
 

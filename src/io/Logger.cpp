@@ -29,11 +29,14 @@ const LogSetting blackList[] = {
 	{ "CinematicLoad.cpp", Logger::Info },
 	{ "IO.cpp", Logger::Debug },
 	{ "MenuWidgets.cpp", Logger::Info },
-	{ "MeshManipulation.cpp", Logger::Info},
-	{ "Core.cpp", Logger::Info},
-	{ "CinematicTexture.cpp", Logger::Info},
-	{ "Mesh.cpp", Logger::Info},
-	{ "Localization.cpp", Logger::Info}
+	{ "Menu.cpp", Logger::Info },
+	{ "MeshManipulation.cpp", Logger::Info },
+	{ "Core.cpp", Logger::Info },
+	{ "CinematicTexture.cpp", Logger::Info },
+	{ "CinematicSound.cpp", Logger::Info },
+	{ "Mesh.cpp", Logger::Info },
+	{ "Localization.cpp", Logger::Info },
+	{ "Credits.cpp", Logger::Info },
 };
 
 Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {
@@ -41,7 +44,7 @@ Logger::Logger(const std::string& file, int line, Logger::LogLevel level) {
 }
 
 Logger::Logger(const char* file, int line, Logger::LogLevel level) {
-  writeInfo(file, line, level);
+	writeInfo(file, line, level);
 }
 
 Logger::~Logger() {
@@ -51,7 +54,11 @@ Logger::~Logger() {
 	  exit(0);
 }
 
-void Logger::writeInfo(const char* file, int line, Logger::LogLevel level) {
+void Logger::writeInfo(const char* longFile, int line, Logger::LogLevel level) {
+  const char* file = std::strrchr(longFile, '/')+1;
+  if(file == 0)
+    file = std::strrchr(longFile, '\\')+1;
+
   fatal = false;
 	LogLevel curLevel = getLogLevel(file);
   if(level < curLevel || curLevel == None) {

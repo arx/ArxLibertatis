@@ -27,7 +27,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_HERMES_FILESYSTEM_H
 #define ARX_HERMES_FILESYSTEM_H
 
-#include <stddef.h>
+#include <cstddef>
+#include <string>
 
 #define PATH_SEPERATOR_STR "/"
 #define PATH_SEPERATOR_CHR '/'
@@ -44,13 +45,15 @@ bool FileExist(const char * name);
 bool DirectoryExist(const char * name);
 FileHandle FileOpenRead(const char * name);
 FileHandle FileOpenWrite(const char * name);
-long FileCloseWrite(FileHandle h);
-long FileCloseRead(FileHandle h);
-long FileRead(FileHandle h, void * adr, long size);
-long FileWrite(FileHandle h, const void * adr, long size);
+FileHandle FileOpenReadWrite(const char * name);
+long FileClose(FileHandle h);
+long FileRead(FileHandle h, void * adr, size_t size);
+long FileWrite(FileHandle h, const void * adr, size_t size);
 void * FileLoadMalloc(const char * name, size_t * sizeLoaded = 0);
 void * FileLoadMallocZero(const char * name, size_t * sizeLoaded = 0);
 long FileSeek(FileHandle handle, int offset, long mode);
 long FileTell(FileHandle handle);
+bool FileDelete(const std::string & file);
+bool FileMove(const std::string & oldname, const std::string & newname);
 
 #endif // ARX_HERMES_FILESYSTEM_H

@@ -94,34 +94,6 @@ void PushInterBumpTANDL(TextureContainer * _pTex, D3DTLVERTEX * _pVertex, EERIE_
 
 void EE_P2(D3DTLVERTEX * in, D3DTLVERTEX * out);
 
- 
-
-__inline void ResetBBox3D(INTERACTIVE_OBJ * io)
-{
-	if (io)
-	{
-		io->bbox3D.min.x = 99999999.f;
-		io->bbox3D.min.y = 99999999.f;
-		io->bbox3D.min.z = 99999999.f;
-		io->bbox3D.max.x = -99999999.f;
-		io->bbox3D.max.y = -99999999.f;
-		io->bbox3D.max.z = -99999999.f;
-	}
-}
-__inline void AddToBBox3D(INTERACTIVE_OBJ * io, EERIE_3D * pos)
-{
-	if (io)
-	{
-		io->bbox3D.min.x = min(io->bbox3D.min.x, pos->x);
-		io->bbox3D.min.y = min(io->bbox3D.min.y, pos->y);
-		io->bbox3D.min.z = min(io->bbox3D.min.z, pos->z);
-		io->bbox3D.max.x = max(io->bbox3D.max.x, pos->x);
-		io->bbox3D.max.y = max(io->bbox3D.max.y, pos->y);
-		io->bbox3D.max.z = max(io->bbox3D.max.z, pos->z);
-	}
-}
-
-
 /* Init bounding box */
 inline	static	void	Cedric_ResetBoundingBox(INTERACTIVE_OBJ * io)
 {
@@ -528,13 +500,13 @@ extern long INTERPOLATE_BETWEEN_BONES;
 /* Transform object vertices  */
 int		Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, EERIE_3D * pos, EERIE_3D * angle)
 {
-	int				i, v;
+	int v;
 
 	EERIE_3DPAD * inVert;
 	EERIE_VERTEX * outVert;
 
  	/* Transform & project all vertices */
-	for (i = 0; i != obj->nb_bones; i++)
+	for (long i = 0; i != obj->nb_bones; i++)
 	{
 		EERIEMATRIX	 matrix;
 		EERIE_3D	vector;
@@ -572,7 +544,7 @@ int		Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DAT
 
 	if (FLAG_ALLOW_CLOTHES && eobj->cdata && eobj->sdata)
 	{
-		for (i = 0; i < eobj->nbvertex; i++)
+		for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 		{
 			eobj->vertexlist[i].vert.sx = eobj->vertexlist3[i].v.x - pos->x;
 			eobj->vertexlist[i].vert.sy = eobj->vertexlist3[i].v.y - pos->y;
@@ -580,7 +552,7 @@ int		Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DAT
 		}
 	}
 
-	for (i = 0; i < eobj->nbvertex; i++)
+	for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 	{
 		outVert = &eobj->vertexlist3[i];
 		AddToBBox3D(io, &outVert->v);
@@ -1531,6 +1503,11 @@ int ARX_SoftClippZ(EERIE_VERTEX * _pVertex1, EERIE_VERTEX * _pVertex2, EERIE_VER
 }
 extern long IsInGroup(EERIE_3DOBJ * obj, long vert, long tw);
 //-----------------------------------------------------------------------------
+bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX * _pVertex1, D3DTLVERTEX * _pVertex2, D3DTLVERTEX * _pVertex3)
+{
+	return ARX_DrawPrimitive_SoftClippZ(_pVertex1, _pVertex2, _pVertex3, 0.0f);
+}
+
 bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX * _pVertex1, D3DTLVERTEX * _pVertex2, D3DTLVERTEX * _pVertex3, float _fAddZ)
 {
 	int iClipp = 0;
@@ -1747,7 +1724,7 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 			need_halo	= 1;
 			MAX_ZEDE	= 0.f;
 
-			for (long i = 0 ; i < eobj->nbvertex ; i++)
+			for (size_t i = 0 ; i < eobj->vertexlist.size() ; i++)
 			{
 				if (eobj->vertexlist3[i].vert.rhw > 0.f)
 					MAX_ZEDE = max(eobj->vertexlist3[i].vert.sz, MAX_ZEDE);
@@ -1764,7 +1741,7 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 
 		bBumpOnIO		= ( bALLOW_BUMP ) && ( io ) && ( io->ioflags & IO_BUMP ) && ( fDist < min( max( 0.f, ( ACTIVECAM->cdepth * fZFogStart ) - 200.f ), 600.f ) ) ? true : false ;
 
-		for (i = 0 ; i < eobj->nbfaces ; i++)
+		for (i = 0 ; i < eobj->facelist.size() ; i++)
 		{
 			D3DTLVERTEX		tv_static[3];
 			ARX_D3DVERTEX	* tv			= NULL;
@@ -2491,7 +2468,7 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 
 
 	{
-		for (i = 0; i < eobj->nbfaces; i++)
+		for (i = 0; i < eobj->facelist.size(); i++)
 		{
 			D3DTLVERTEX tv[3];
  
@@ -3161,7 +3138,7 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERIE
 
 
 		
-		for (int i = 0; i < eobj->nbvertex; i++)
+		for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 		{
 			float r, g, b;
 			long ir, ig, ib;

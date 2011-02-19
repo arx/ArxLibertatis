@@ -209,8 +209,7 @@ typedef struct
 #define BKG_SIZZ	100
 
 
-typedef struct 
-{	
+struct EERIE_BACKGROUND {
 	FAST_BKG_DATA	fastdata[MAX_BKGX][MAX_BKGZ];
 	long		exist;
 	short		Xsize;
@@ -226,7 +225,7 @@ typedef struct
 	long		  nbanchors;	
 	_ANCHOR_DATA * anchors;
 	char		name[256];
-} EERIE_BACKGROUND;
+};
 
 typedef struct
 {
@@ -926,6 +925,35 @@ void PrepareActiveCamera();
 // CAMERA FUNCTIONS END
 //****************************************************************************
 
+//****************************************************************************
+// BBOX FUNCTIONS START
+__inline void ResetBBox3D(INTERACTIVE_OBJ * io)
+{
+	if (io)
+	{
+		io->bbox3D.min.x=99999999.f;
+		io->bbox3D.min.y=99999999.f;
+		io->bbox3D.min.z=99999999.f;
+		io->bbox3D.max.x=-99999999.f;
+		io->bbox3D.max.y=-99999999.f;
+		io->bbox3D.max.z=-99999999.f;
+	}
+}
+
+__inline void AddToBBox3D(INTERACTIVE_OBJ * io,EERIE_3D * pos)
+{
+	if (io)
+	{
+		io->bbox3D.min.x=std::min(io->bbox3D.min.x,pos->x);
+		io->bbox3D.min.y=std::min(io->bbox3D.min.y,pos->y);
+		io->bbox3D.min.z=std::min(io->bbox3D.min.z,pos->z);
+		io->bbox3D.max.x=std::max(io->bbox3D.max.x,pos->x);
+		io->bbox3D.max.y=std::max(io->bbox3D.max.y,pos->y);
+		io->bbox3D.max.z=std::max(io->bbox3D.max.z,pos->z);
+	}
+}
+// BBOX FUNCTIONS END
+//****************************************************************************
 
 void ApplyLight(EERIEPOLY *ep);
 long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest, unsigned int destSize);

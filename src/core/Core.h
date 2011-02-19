@@ -58,9 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef DANAE_H
 #define DANAE_H
 
-//-----------------------------------------------------------------------------
-#include <SFML/Window.hpp>
-
 #include "core/Application.h"
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
@@ -98,7 +95,7 @@ extern EERIE_CAMERA bookcam;
 extern HINSTANCE hInstance;
 extern HINSTANCE hInst;
 extern EERIE_S2D DANAEMouse;
-extern EERIE_CAMERA subj, map;
+extern EERIE_CAMERA subj, mapcam;
 extern EERIE_3D moveto;
 extern EERIE_S2D STARTDRAG;
 extern EERIE_3DOBJ * GoldCoinsObj[MAX_GOLD_COINS_VISUALS];
@@ -168,7 +165,6 @@ class DANAE : public CD3DApplication
 		HRESULT DeleteDeviceObjects();
 		HRESULT Render();
 		HRESULT FrameMove(float fTimeKey);
-		HRESULT FinalCleanup();
 		void ManageKeyMouse();
 		bool ManageEditorControls();
 		void ManagePlayerControls();
@@ -178,6 +174,7 @@ class DANAE : public CD3DApplication
 		HRESULT BeforeRun();
 	public:
 		HRESULT InitDeviceObjects();
+		HRESULT FinalCleanup();
  
 		LRESULT MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 		DANAE();
@@ -187,7 +184,6 @@ class DANAE : public CD3DApplication
 		bool DANAEEndRender();
 };
 
-extern sf::Window sfWindow;
 extern DANAE danaeApp;
 extern LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 extern LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);

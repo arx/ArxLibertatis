@@ -537,7 +537,7 @@ long SendMsgToAllIO(long msg, const char * dat);
 
 void Stack_SendIOScriptEvent(INTERACTIVE_OBJ * io, long msg, const std::string& params = "", const std::string& eventname = "");
 
-long FindScriptPos(EERIE_SCRIPT * es, const std::string& str);
+long FindScriptPos(const EERIE_SCRIPT * es, const std::string& str);
 bool InSubStack(EERIE_SCRIPT * es, long pos);
 long GetSubStack(EERIE_SCRIPT * es);
 void AttemptMoveToTarget(INTERACTIVE_OBJ * io);

@@ -119,40 +119,12 @@ static void pakDecrypt(char * fat, size_t fat_size, const char * key) {
 	
 }
 
-// TODO useful elsewhere too
-static const char * safeGetString(const char * & pos, uint32_t & fat_size) {
-	
-	const char * begin = pos;
-	
-	for(size_t i = 0; i < fat_size; i++) {
-		if(pos[i] == 0) {
-			fat_size -= i + 1;
-			pos += i + 1;
-			return begin;
-		}
-	}
-	
-	return NULL;
-}
-
-// TODO useful elsewhere too
-template <class T>
-inline bool safeGet(T & data, const char * & pos, uint32_t & fat_size) {
-	if(fat_size < sizeof(T)) {
-		return false;
-	}
-	data = *reinterpret_cast<const T *>(pos);
-	pos += sizeof(T);
-	fat_size -= sizeof(T);
-	return true;
-}
-
 bool PakReader::Open(const std::string& name) {
 
 	FILE * newfile = fopen(name.c_str(), "rb");
 	
 	if(!newfile) {
-		LogError <<"Cannot find PAK "<< name;
+		LogError << "Cannot find PAK " << name;
 		return false;
 	}
 	
@@ -268,7 +240,7 @@ bool PakReader::Open(const std::string& name) {
 	fat = newfat;
 	file = newfile;
 	
-	LogInfo <<"Loaded PAK " << name;
+	LogInfo << "Loaded PAK " << name;
 	return true;
 	
 	

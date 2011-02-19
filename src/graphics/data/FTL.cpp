@@ -202,9 +202,9 @@ extern long NOCHECKSUM;
 //***********************************************************************************************
 bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 {
-	LogWarning << "Broken ARX_FTL_Save";
+	LogError << "Broken ARX_FTL_Save";
     // Need an object to be saved !
-    if (obj == NULL) return false;
+    /*if (obj == NULL) return false;
 
     // Generate File name/path and create it
     std::string gamefic;
@@ -244,10 +244,10 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 
 		for (long i = 0; i < obj->nbgroups; i++)
 		{
-			if (obj->grouplist[i].nb_index > 0)
-			{
+			//if (obj->grouplist[i].nb_index > 0)
+			//{
 				// TODO allocsize += sizeof(long) * obj->grouplist[i].nb_index;
-			}
+			//}
 		}
 	}
 
@@ -257,7 +257,7 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 
 		for (size_t i = 0; i < obj->selections.size(); i++)
 		{
-			allocsize += sizeof(long) * obj->selections[i].nb_selected;
+			// TODO allocsize += sizeof(long) * obj->selections[i].nb_selected;
 		}
 	}
 
@@ -389,13 +389,13 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 
 		for (int i = 0; i < af3Ddh->nb_groups; i++)
 		{
-			if (obj->grouplist[i].nb_index > 0)
-			{
-				memcpy(dat + pos, obj->grouplist[i].indexes, sizeof(long)*obj->grouplist[i].nb_index);
-				pos += sizeof(long) * obj->grouplist[i].nb_index;
+			//if (obj->grouplist[i].nb_index > 0)
+			//{
+				//memcpy(dat + pos, obj->grouplist[i].indexes, sizeof(long)*obj->grouplist[i].nb_index);
+				// TODO pos += sizeof(long) * obj->grouplist[i].nb_index;
 
-				if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
-			}
+				//if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
+			//}
 		}
 	}
 
@@ -419,8 +419,8 @@ bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 
 		for (int i = 0; i < af3Ddh->nb_selections; i++)
 		{
-			memcpy(dat + pos, obj->selections[i].selected, sizeof(long)*obj->selections[i].nb_selected);
-			pos += sizeof(long) * obj->selections[i].nb_selected;
+			//memcpy(dat + pos, obj->selections[i].selected, sizeof(long)*obj->selections[i].nb_selected);
+			//pos += sizeof(long) * obj->selections[i].nb_selected;
 
 			if (pos > allocsize) LogError << ("Invalid Allocsize in ARX_FTL_Save");
 		}
@@ -524,7 +524,7 @@ error:
 	;
 	LogError << (_error);
 	free(dat);
-
+*/
 	return false;
 }
 
@@ -750,9 +750,9 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		pos = afsh->offset_3Ddata;
 		pos += sizeof(ARX_FTL_3D_DATA_HEADER);
 
-		obj->nbvertex = af3Ddh->nb_vertex;
-		obj->nbfaces = af3Ddh->nb_faces;
-		obj->nbmaps = af3Ddh->nb_maps;
+		obj->vertexlist.resize(af3Ddh->nb_vertex);
+		obj->facelist.resize(af3Ddh->nb_faces);
+		obj->texturecontainer.resize(af3Ddh->nb_maps);
 		obj->nbgroups = af3Ddh->nb_groups;
 		obj->actionlist.resize(af3Ddh->nb_action);
 		obj->selections.resize(af3Ddh->nb_selections);
@@ -760,14 +760,13 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		obj->file = af3Ddh->name;
 
 		// Alloc'n'Copy vertices
-		if (obj->nbvertex > 0)
+		if (!obj->vertexlist.empty())
 		{
 			// Alloc the vertices
-			obj->vertexlist = new EERIE_VERTEX[obj->nbvertex];
-			obj->vertexlist3 = new EERIE_VERTEX[obj->nbvertex];;
+			obj->vertexlist3.resize(obj->vertexlist.size());
 
 			// Copy the vertex data in
-			for (long ii = 0; ii < obj->nbvertex; ii++)
+			for (size_t ii = 0; ii < obj->vertexlist.size(); ii++)
 			{
 				// Vertices stored as EERIE_OLD_VERTEX, copy in to new one
 				obj->vertexlist[ii] = *reinterpret_cast<EERIE_OLD_VERTEX*>(dat+pos);
@@ -781,7 +780,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 			obj->point0.z = obj->vertexlist[obj->origin].v.z;
 
 			// Color all the vertices
-			for (long i = 0; i < obj->nbvertex; i++)
+			for (size_t i = 0; i < obj->vertexlist.size(); i++)
 			{
 				obj->vertexlist[i].vert.color = 0xFF000000;
 				obj->vertexlist3[i].vert.color = 0xFF000000;
@@ -789,13 +788,11 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		}
 
 		// Alloc'n'Copy faces
-		if (obj->nbfaces > 0)
+		if (!obj->facelist.empty())
 		{
-			// Alloc the list of faces
-			obj->facelist = new EERIE_FACE[obj->nbfaces];
 
 			// Copy the face data in
-			for (long ii = 0; ii < af3Ddh->nb_faces; ii++)
+			for (size_t ii = 0; ii < af3Ddh->nb_faces; ii++)
 			{
 				EERIE_FACE_FTL* eff = reinterpret_cast<EERIE_FACE_FTL*>(dat + pos);
 				obj->facelist[ii].facetype = eff->facetype;
@@ -823,8 +820,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		// Alloc'n'Copy textures
 		if (af3Ddh->nb_maps > 0)
 		{
-			// Alloc the TextureContainers
-			obj->texturecontainer = new TextureContainer*[af3Ddh->nb_maps];
 
 			// Copy in the texture containers
 			for (long i = 0; i < af3Ddh->nb_maps; i++)
@@ -857,22 +852,19 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 				EERIE_GROUPLIST_FTL* group = reinterpret_cast<EERIE_GROUPLIST_FTL*>(dat+pos);
 				obj->grouplist[i].name = group->name;
 				obj->grouplist[i].origin = group->origin;
-				obj->grouplist[i].nb_index = group->nb_index;
-				obj->grouplist[i].indexes = 0; // Nullpointer unless changed
+				obj->grouplist[i].indexes.resize(group->nb_index);
 				obj->grouplist[i].siz = group->siz;
 				pos += sizeof(EERIE_GROUPLIST_FTL); // Advance to next group
 			}
 
 			// Copy in the group index data
 			for (long i = 0; i < obj->nbgroups; i++)
-				if (obj->grouplist[i].nb_index > 0)
+				if (!obj->grouplist[i].indexes.empty())
 				{
-					// Alloc space for the index block
-					obj->grouplist[i].indexes = new long[obj->grouplist[i].nb_index];
-					std::copy( (long*)(dat+pos),
-					           (long*)(dat+pos + sizeof(long) * obj->grouplist[i].nb_index),
-					           obj->grouplist[i].indexes );
-					pos += sizeof(long) * obj->grouplist[i].nb_index; // Advance to the next index block
+					size_t oldpos = pos;
+					pos += sizeof(long) * obj->grouplist[i].indexes.size(); // Advance to the next index block
+					std::copy((long*)(dat+oldpos), (long*)(dat+pos), obj->grouplist[i].indexes.begin());
+					
 				}
 		}
 
@@ -893,8 +885,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 			{ // TODO iterator
 				EERIE_SELECTIONS_FTL* selection = reinterpret_cast<EERIE_SELECTIONS_FTL*>(dat+pos);
 				obj->selections[i].name = selection->name;
-				obj->selections[i].nb_selected = selection->nb_selected;
-				obj->selections[i].selected = 0; // Null unless changed
+				obj->selections[i].selected.resize(selection->nb_selected);
 
 				pos += sizeof(EERIE_SELECTIONS_FTL);
 			}
@@ -902,11 +893,10 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 			// Copy in the selections selected data
 			for (long i = 0; i < af3Ddh->nb_selections; i++)
 			{
-				obj->selections[i].selected = new long[obj->selections[i].nb_selected];
 				std::copy( (long*)(dat+pos),
-				           (long*)(dat+pos + sizeof(long)*obj->selections[i].nb_selected),
-				           obj->selections[i].selected );
-				pos += sizeof(long) * obj->selections[i].nb_selected; // Advance to the next selection data block
+				           (long*)(dat+pos + sizeof(long)*obj->selections[i].selected.size()),
+				           obj->selections[i].selected.begin() );
+				pos += sizeof(long) * obj->selections[i].selected.size(); // Advance to the next selection data block
 			}
 
 		obj->pbox = NULL; // Reset physics

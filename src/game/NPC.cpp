@@ -210,9 +210,9 @@ void ARX_NPC_Revive(INTERACTIVE_OBJ * io, long flags)
 
 	long goretex = -1;
 
-	for (long i = 0; i < io->obj->nbmaps; i++)
+	for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 	{
-		if (io->obj->texturecontainer
+		if (!io->obj->texturecontainer.empty()
 		        &&	io->obj->texturecontainer[i]
 		        &&	(IsIn(io->obj->texturecontainer[i]->m_strName, "GORE")))
 		{
@@ -221,7 +221,7 @@ void ARX_NPC_Revive(INTERACTIVE_OBJ * io, long flags)
 		}
 	}
 
-	for (long ll = 0; ll < io->obj->nbfaces; ll++)
+	for (size_t ll = 0; ll < io->obj->facelist.size(); ll++)
 	{
 		if (io->obj->facelist[ll].texid != goretex)
 		{
@@ -1053,11 +1053,11 @@ void ARX_PHYSICS_Apply()
 		        &&	((io->GameFlags & GFLAG_GOREEXPLODE)
 		             &&	(ARXTime - io->lastanimtime > 300))
 		        &&	((io->obj)
-		             &&	(io->obj->nbvertex))
+		             &&	!io->obj->vertexlist.empty())
 		   )
 		{
 			long idx;
-			long cnt = (io->obj->nbvertex << 12) + 1;
+			long cnt = (io->obj->vertexlist.size() << 12) + 1;
 
 			if (cnt < 2) cnt = 2;
 
@@ -1065,9 +1065,9 @@ void ARX_PHYSICS_Apply()
 
 			for (long nn = 0; nn < cnt; nn++)
 			{
-				idx = rnd()*io->obj->nbvertex;
+				idx = rnd()*io->obj->vertexlist.size();
 
-				if (idx >= io->obj->nbvertex) idx = io->obj->nbvertex - 1;
+				if (idx >= io->obj->vertexlist.size()) idx = io->obj->vertexlist.size() - 1;
 
 				EERIE_3D vector;
 				vector.x = io->obj->vertexlist3[idx].v.x - io->obj->vertexlist3[0].v.x + (rnd() - rnd()) * 3.f;
@@ -1101,9 +1101,7 @@ void ARX_PHYSICS_Apply()
 
 		CheckUnderWaterIO(io);
 
-		//TODO(lubosz): crash
-		if (false)
-//		if (io->obj->pbox)
+		if (io->obj->pbox)
 		{
 			io->GameFlags &= ~GFLAG_NOCOMPUTATION;
 
@@ -1428,7 +1426,7 @@ long IsInGroup(EERIE_3DOBJ * obj, long vert, long tw)
 
 	if (vert < 0) return -1;
 
-	for (long i = 0; i < obj->grouplist[tw].nb_index; i++)
+	for (size_t i = 0; i < obj->grouplist[tw].indexes.size(); i++)
 	{
 		if (obj->grouplist[tw].indexes[i] == vert)
 			return i;
@@ -1447,7 +1445,7 @@ long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw)
 
 	if (vert < 0) return -1;
 
-	for (long i = 0; i < obj->selections[tw].nb_selected; i++)
+	for (long i = 0; i < obj->selections[tw].selected.size(); i++)
 	{
 		float d = TRUEEEDistance3D(&obj->vertexlist[obj->selections[tw].selected[i]].v,
 		                           &obj->vertexlist[vert].v);
@@ -1467,24 +1465,21 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 	EERIE_3DOBJ * from = ioo->obj;
 
-	if ((!from)
-	        ||	(num < 0)
-	        ||	(num > from->selections.size())) // TODO >= ?
+	if ((!from) ||	(num < 0) || ((size_t)num >= from->selections.size()))
 		return;
 
-	EERIE_3DOBJ * nouvo = new EERIE_3DOBJ; 
+	EERIE_3DOBJ * nouvo = new EERIE_3DOBJ(); 
 
 	if (!nouvo)
 		return;
 
-	nouvo->nbvertex = from->selections[num].nb_selected;
+	size_t nvertex = from->selections[num].selected.size();
 
 	long gore = -1;
 
-	for (long k = 0; k < from->nbmaps; k++)
+	for (size_t k = 0; k < from->texturecontainer.size(); k++)
 	{
-		if (from->texturecontainer
-		        && from->texturecontainer[k]
+		if (from->texturecontainer[k]
 		        && (IsIn(from->texturecontainer[k]->m_strName, "GORE")))
 		{
 			gore = k;
@@ -1492,54 +1487,40 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 		}
 	}
 
-	for (int k = 0; k < from->nbfaces; k++)
+	for (size_t k = 0; k < from->facelist.size(); k++)
 	{
 		if (from->facelist[k].texid == gore)
 		{
 			if	((IsNearSelection(from, from->facelist[k].vid[0], num) >= 0)
 			        ||	(IsNearSelection(from, from->facelist[k].vid[1], num) >= 0)
 			        ||	(IsNearSelection(from, from->facelist[k].vid[2], num) >= 0))
-				nouvo->nbvertex += 3;
+				nvertex += 3;
 		}
 	}
 
-	nouvo->vertexlist = (EERIE_VERTEX *)malloc(sizeof(EERIE_VERTEX) * nouvo->nbvertex);
-
-	if (!nouvo->vertexlist)
-	{
-		free(nouvo);
-		return;
-	}
-
-	nouvo->vertexlist3 = (EERIE_VERTEX *)malloc(sizeof(EERIE_VERTEX) * nouvo->nbvertex);
-
-	if (!nouvo->vertexlist3)
-	{
-		free(nouvo->vertexlist);
-		free(nouvo);
-		return;
-	}
+	nouvo->vertexlist.resize(nvertex);
+	nouvo->vertexlist3.resize(nvertex);
 
 	long	inpos	= 0;
-	long *	equival = (long *)malloc(sizeof(long) * from->nbvertex);
+	long *	equival = (long *)malloc(sizeof(long) * from->vertexlist.size());
 
-	if (!equival)
-	{
-		free(nouvo->vertexlist3);
-		free(nouvo->vertexlist);
-		free(nouvo);
+	if(!equival) {
+		delete nouvo;
 	}
 
-	for (int k = 0 ; k < from->nbvertex ; k++)
+	for (int k = 0 ; k < from->vertexlist.size() ; k++)
 		equival[k] = -1;
 
-	ARX_CHECK(0 < from->selections[num].nb_selected);
+	ARX_CHECK(0 < from->selections[num].selected.size());
 
-	for (int k = 0 ; k < from->selections[num].nb_selected ; k++)
+	for (int k = 0 ; k < from->selections[num].selected.size() ; k++)
 	{
 		inpos						=	from->selections[num].selected[k];
 		equival[from->selections[num].selected[k]]	=	k;
-		memcpy(&nouvo->vertexlist[k], &from->vertexlist[from->selections[num].selected[k]], sizeof(EERIE_VERTEX));
+		
+		
+		
+		nouvo->vertexlist[k] = from->vertexlist[from->selections[num].selected[k]];
 		nouvo->vertexlist[k].v.x	=	nouvo->vertexlist[k].vert.sx	=	from->vertexlist3[from->selections[num].selected[k]].v.x - ioo->pos.x;
 		nouvo->vertexlist[k].v.y	=	nouvo->vertexlist[k].vert.sy	=	from->vertexlist3[from->selections[num].selected[k]].v.y - ioo->pos.y;
 		nouvo->vertexlist[k].v.z	=	nouvo->vertexlist[k].vert.sz	=	from->vertexlist3[from->selections[num].selected[k]].v.z - ioo->pos.z;
@@ -1548,12 +1529,12 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 		nouvo->vertexlist[k].vert.tu	=	from->vertexlist[k].vert.tu;
 		nouvo->vertexlist[k].vert.tv	=	from->vertexlist[k].vert.tv;
 
-		memcpy(&nouvo->vertexlist3[k], &nouvo->vertexlist[k], sizeof(EERIE_VERTEX));
+		nouvo->vertexlist3[k] = nouvo->vertexlist[k];
 	}
 
-	long count = from->selections[num].nb_selected;
+	long count = from->selections[num].selected.size();
 
-	for (int k = 0; k < from->nbfaces; k++)
+	for (size_t k = 0; k < from->facelist.size(); k++)
 	{
 		if (from->facelist[k].texid == gore)
 		{
@@ -1565,7 +1546,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 				{
 					equival[from->facelist[k].vid[j]] = count;
 
-					if (count < nouvo->nbvertex)
+					if (count < nouvo->vertexlist.size())
 					{
 						memcpy(&nouvo->vertexlist[count], &from->vertexlist[from->facelist[k].vid[j]], sizeof(EERIE_VERTEX));
 						nouvo->vertexlist[count].v.x = nouvo->vertexlist[count].vert.sx = from->vertexlist3[from->facelist[k].vid[j]].v.x - ioo->pos.x;
@@ -1585,7 +1566,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	float min = nouvo->vertexlist[0].vert.sy;
 	long nummm = 0;
 
-	for (int k = 1; k < nouvo->nbvertex; k++)
+	for (int k = 1; k < nouvo->vertexlist.size(); k++)
 	{
 		if (nouvo->vertexlist[k].vert.sy > min)
 		{
@@ -1600,7 +1581,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	nouvo->point0.y = nouvo->vertexlist[nouvo->origin].v.y;
 	nouvo->point0.z = nouvo->vertexlist[nouvo->origin].v.z;
 
-	for (int k = 0; k < nouvo->nbvertex; k++)
+	for (int k = 0; k < nouvo->vertexlist.size(); k++)
 	{
 		nouvo->vertexlist[k].vert.sx = nouvo->vertexlist[k].v.x -= nouvo->point0.x;
 		nouvo->vertexlist[k].vert.sy = nouvo->vertexlist[k].v.y -= nouvo->point0.y;
@@ -1620,28 +1601,27 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 	nouvo->ndata = NULL;
 
-	nouvo->nbfaces = 0;
-
-	for (int k = 0; k < from->nbfaces; k++)
+	size_t nfaces = 0;
+	for (size_t k = 0; k < from->facelist.size(); k++)
 	{
 		if ((equival[from->facelist[k].vid[0]] != -1)
 		        &&	(equival[from->facelist[k].vid[1]] != -1)
 		        &&	(equival[from->facelist[k].vid[2]] != -1))
-			nouvo->nbfaces++;
+			nfaces++;
 	}
 
-	if (nouvo->nbfaces)
+	if (nfaces)
 	{
-		nouvo->facelist = (EERIE_FACE *)malloc(sizeof(EERIE_FACE) * nouvo->nbfaces);
-		long pos = 0;
+		nouvo->facelist.reserve(nfaces);
+		size_t pos = 0;
 
-		for (long k = 0; k < from->nbfaces; k++)
+		for (size_t k = 0; k < from->facelist.size(); k++)
 		{
 			if ((equival[from->facelist[k].vid[0]] != -1)
 			        &&	(equival[from->facelist[k].vid[1]] != -1)
 			        &&	(equival[from->facelist[k].vid[2]] != -1))
 			{
-				memcpy(&nouvo->facelist[pos], &from->facelist[k], sizeof(EERIE_FACE));
+				nouvo->facelist[pos] = from->facelist[k];
 				nouvo->facelist[pos].vid[0] = (unsigned short)equival[from->facelist[k].vid[0]];
 				nouvo->facelist[pos].vid[1] = (unsigned short)equival[from->facelist[k].vid[1]];
 				nouvo->facelist[pos].vid[2] = (unsigned short)equival[from->facelist[k].vid[2]];
@@ -1651,10 +1631,9 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 		long gore = -1;
 
-		for (int k = 0; k < from->nbmaps; k++)
+		for (size_t k = 0; k < from->texturecontainer.size(); k++)
 		{
-			if (from->texturecontainer
-			        && from->texturecontainer[k]
+			if (from->texturecontainer[k]
 			        && (IsIn(from->texturecontainer[k]->m_strName, "GORE")))
 			{
 				gore = k;
@@ -1662,7 +1641,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 			}
 		}
 
-		for (int k = 0; k < nouvo->nbfaces; k++)
+		for (int k = 0; k < nouvo->facelist.size(); k++)
 		{
 			nouvo->facelist[k].facetype &= ~POLY_HIDE;
 
@@ -1674,23 +1653,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	}
 
 	free(equival);
-	nouvo->nbmaps = from->nbmaps;
-
-	if (from->nbmaps)
-	{
-
-		nouvo->texturecontainer = (TextureContainer **)malloc(sizeof(TextureContainer *) * nouvo->nbmaps); 
-
-		if (!nouvo->texturecontainer)
-		{
-			free(equival);
-			free(nouvo->vertexlist3);
-			free(nouvo->vertexlist);
-			free(nouvo);
-		}
-
-		memcpy(nouvo->texturecontainer, from->texturecontainer, sizeof(TextureContainer *)*nouvo->nbmaps);
-	}
+	nouvo->texturecontainer = from->texturecontainer;
 
 	nouvo->linked			=	NULL;
 	nouvo->nblinked			=	0;
@@ -1838,9 +1801,9 @@ long GetCutSelection(INTERACTIVE_OBJ * io, short flag)
 
 	if (tx[0])
 	{
-		for (long i = 0; i < io->obj->selections.size(); i++)
+		for (size_t i = 0; i < io->obj->selections.size(); i++)
 		{ // TODO iterator
-			if ((io->obj->selections[i].nb_selected > 0)
+			if ((io->obj->selections[i].selected.size() > 0)
 			        &&	(!strcasecmp(io->obj->selections[i].name.c_str(), tx)))
 				return i;
 		}
@@ -1894,10 +1857,9 @@ long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io)
 	ReComputeCutFlags(io);
 	long goretex = -1;
 
-	for (long i = 0; i < io->obj->nbmaps; i++)
+	for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 	{
-		if (io->obj->texturecontainer
-		        &&	io->obj->texturecontainer[i]
+		if (io->obj->texturecontainer[i]
 		        &&	(IsIn(io->obj->texturecontainer[i]->m_strName, "GORE")))
 		{
 			goretex = i;
@@ -1907,7 +1869,7 @@ long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io)
 
 	long hid = 0;
 
-	for (long nn = 0; nn < io->obj->nbfaces; nn++)
+	for (size_t nn = 0; nn < io->obj->facelist.size(); nn++)
 	{
 		io->obj->facelist[nn].facetype &= ~POLY_HIDE;
 	}
@@ -1919,7 +1881,7 @@ long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io)
 
 		if ((io->_npcdata->cuts & flg) && (numsel >= 0))
 		{
-			for (long ll = 0; ll < io->obj->nbfaces; ll++)
+			for (size_t ll = 0; ll < io->obj->facelist.size(); ll++)
 			{
 				if	((IsInSelection(io->obj, io->obj->facelist[ll].vid[0], numsel) != -1)
 				        ||	(IsInSelection(io->obj, io->obj->facelist[ll].vid[1], numsel) != -1)
@@ -1962,10 +1924,9 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos)
 	long numsel = -1;
 	long goretex = -1;
 
-	for (long i = 0; i < target->obj->nbmaps; i++)
+	for (size_t i = 0; i < target->obj->texturecontainer.size(); i++)
 	{
-		if (target->obj->texturecontainer
-		        &&	target->obj->texturecontainer[i]
+		if (target->obj->texturecontainer[i]
 		        &&	(IsIn(target->obj->texturecontainer[i]->m_strName, "GORE")))
 		{
 			goretex = i;
@@ -1973,9 +1934,9 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos)
 		}
 	}
 
-	for (int i = 0; i < target->obj->selections.size(); i++)
+	for (size_t i = 0; i < target->obj->selections.size(); i++)
 	{ // TODO iterator
-		if ((target->obj->selections[i].nb_selected > 0)
+		if ((target->obj->selections[i].selected.size() > 0)
 		        &&	(IsIn(target->obj->selections[i].name, "CUT_")))
 		{
 			short fll = GetCutFlag(target->obj->selections[i].name.c_str());
@@ -1985,7 +1946,7 @@ void ARX_NPC_TryToCutSomething(INTERACTIVE_OBJ * target, EERIE_3D * pos)
 
 			long out = 0;
 
-			for (long ll = 0; ll < target->obj->nbfaces; ll++)
+			for (size_t ll = 0; ll < target->obj->facelist.size(); ll++)
 			{
 				if (target->obj->facelist[ll].texid != goretex)
 				{
@@ -4079,9 +4040,7 @@ void CheckNPCEx(INTERACTIVE_OBJ * io)
 		{
 			EERIE_3D orgn, dest;
 			// Retreives Head group position for "eye" pos.
-//TODO(lubosz): crash
-//			long grp = io->obj->fastaccess.head_group_origin;
-			long grp = 0;
+			long grp = io->obj->fastaccess.head_group_origin;
 			if (grp < 0)
 			{
 				orgn.x = io->pos.x;
@@ -4283,7 +4242,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 		{
 			p -= 6.f;
 
-			if ((io) && (io->obj) && (io->obj->nbfaces))
+			if ((io) && (io->obj) && !io->obj->facelist.empty())
 			{
 				EERIE_3D	pos;
 				long		notok	=	10;
@@ -4291,9 +4250,9 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 
 				while (notok-- > 0)
 				{
-					num = rnd() * io->obj->nbfaces;
+					num = rnd() * io->obj->facelist.size();
 
-					if ((num >= 0) && (num < io->obj->nbfaces))
+					if ((num >= 0) && (num < io->obj->facelist.size()))
 					{
 						if (io->obj->facelist[num].facetype & POLY_HIDE) continue;
 
@@ -4412,7 +4371,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 
 		if ((!io) || (!io->obj)) return;
 
-		float p = io->ignition * _framedelay * ( 1.0f / 1000 ) * io->obj->nbfaces * ( 1.0f / 1000 );
+		float p = io->ignition * _framedelay * ( 1.0f / 1000 ) * io->obj->facelist.size() * ( 1.0f / 1000 );
 
 		if (p > 5.f)
 			p = 5.f;
@@ -4421,7 +4380,7 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 		{
 			p -= 0.5f;
 
-			if ((io) && (io->obj) && (io->obj->nbfaces))
+			if ((io) && (io->obj) && !io->obj->facelist.empty())
 			{
 				EERIE_3D	pos;
 				long		notok	=	10;
@@ -4429,9 +4388,9 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 
 				while (notok-- > 0)
 				{
-					num = rnd() * io->obj->nbfaces;
+					num = rnd() * io->obj->facelist.size();
 
-					if ((num >= 0) && (num < io->obj->nbfaces))
+					if ((num >= 0) && (num < io->obj->facelist.size()))
 					{
 						if (io->obj->facelist[num].facetype & POLY_HIDE) continue;
 

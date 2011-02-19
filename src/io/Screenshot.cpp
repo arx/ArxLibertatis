@@ -458,7 +458,7 @@ bool SnapShot::GetSnapShot()
 
 	FileWrite(fFile, pulMemorySnapShot, (ddsd2.dwWidth * ddsd2.dwHeight) << 2);
 
-	FileCloseWrite(fFile);
+	FileClose(fFile);
 	delete pulMemorySnapShot;
 	return true;
 }
@@ -664,7 +664,7 @@ bool SnapShot::GetSnapShotDim(int _iWith, int _iHeight)
 
 	FileWrite(fFile, pulMemorySnapShot, (ddsd2.dwWidth * ddsd2.dwHeight) * 3);
 
-	FileCloseWrite(fFile);
+	FileClose(fFile);
 	delete pulMemorySnapShot;
 	return true;
 }

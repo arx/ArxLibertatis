@@ -27,10 +27,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #define __MINOS_PATHFINDER_VERSION__ "0000"
 
-#include <malloc.h>
-#include <string.h>
+#include <vector>
+
 #include "ai/PathCommon.h"
-#include "ai/PathList.h"
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 
@@ -103,7 +102,11 @@ class PathFinder
 		_ANCHOR_DATA * map_d;               //Map data
 		ULong slight_c, dlight_c;           //Static and dynamic lights count
 		EERIE_LIGHT ** slight_l, **dlight_l; //Static and dynamic lights data
-		List<MINOSNode *> open, close;
+		
+		typedef std::vector<MINOSNode *> nodelist;
+		
+		nodelist open;
+		nodelist close;
 };
 
 #endif//__MINOS_PATHFINDER_H__

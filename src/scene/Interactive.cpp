@@ -59,7 +59,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdlib>
 
-#define DIRECTINPUT_VERSION 0x0700
+#ifndef DIRECTINPUT_VERSION
+	#define DIRECTINPUT_VERSION 0x0700
+#endif
 
 #include <iomanip>
 #include <algorithm>
@@ -373,7 +375,7 @@ void ARX_INTERACTIVE_Show_Hide_1st(INTERACTIVE_OBJ * io, long state)
 
 	if (grp != -1)
 	{
-		for (long nn = 0; nn < io->obj->nbfaces; nn++)
+		for (size_t nn = 0; nn < io->obj->facelist.size(); nn++)
 		{
 			EERIE_FACE * ef = &io->obj->facelist[nn];
 
@@ -400,12 +402,12 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io)
 {
 	if ((!io)
 	        ||	(!io->obj)
-	        ||	(!io->obj->texturecontainer))
+	        ||	io->obj->texturecontainer.empty())
 		return;
 
 	long gorenum = -1;
 
-	for (long nn = 0; nn < io->obj->nbmaps; nn++)
+	for (size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++)
 	{
 		if (io->obj->texturecontainer[nn]
 		        &&	TextureContainer_Exist(io->obj->texturecontainer[nn])
@@ -417,7 +419,7 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io)
 	}
 
 	if (gorenum > -1)
-		for (long nn = 0; nn < io->obj->nbfaces; nn++)
+		for (size_t nn = 0; nn < io->obj->facelist.size(); nn++)
 		{
 			if (io->obj->facelist[nn].texid == gorenum)
 			{
@@ -429,11 +431,12 @@ void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io)
 
 
 // flag & 1 == no unhide non-gore
+// TODO very simmilar to ARX_INTERACTIVE_RemoveGoreOnIO
 void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 {
 	if ((!io)
 	        ||	(!io->obj)
-	        ||	(!io->obj->texturecontainer))
+	        ||	io->obj->texturecontainer.empty())
 		return;
 
 	if ((io == inter.iobj[0]) && (!flag & 1))
@@ -441,7 +444,7 @@ void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 
 	long gorenum = -1;
 
-	for (long nn = 0; nn < io->obj->nbmaps; nn++)
+	for (size_t nn = 0; nn < io->obj->texturecontainer.size(); nn++)
 	{
 		if (io->obj->texturecontainer[nn]
 		        &&	TextureContainer_Exist(io->obj->texturecontainer[nn])
@@ -453,7 +456,7 @@ void ARX_INTERACTIVE_HideGore(INTERACTIVE_OBJ * io, long flag)
 	}
 
 	if (gorenum > -1)
-		for (long nn = 0; nn < io->obj->nbfaces; nn++)
+		for (size_t nn = 0; nn < io->obj->facelist.size(); nn++)
 		{
 			//Hide Gore Polys...
 			if (io->obj->facelist[nn].texid == gorenum)
@@ -2173,7 +2176,7 @@ void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, EERIE_3D * target, long flag
 			}
 		}
 
-		for (long i = 0; i < io->obj->nbvertex; i++)
+		for (size_t i = 0; i < io->obj->vertexlist.size(); i++)
 		{
 			io->obj->vertexlist3[i].v.x += translate.x;
 			io->obj->vertexlist3[i].v.y += translate.y;
@@ -2508,7 +2511,7 @@ void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const std::string& temp)
 	}
 
 	std::string tex;
-	const char tex1[] = "Graph\\Obj3D\\Interactive\\Items\\Weapons\\";
+	const std::string tex1 = "Graph\\Obj3D\\Interactive\\Items\\Weapons\\";
 	std::string tx = tex1 + '\\' + temp + '\\' + temp + ".teo";
 	File_Standardize(tx, tex);
 	
@@ -3550,7 +3553,6 @@ INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fil, 
 extern float LAST_FZPOS;
 extern float LAST_FZSCREEN;
 extern long USE_CEDRIC_ANIM;
-INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag = 0, EERIE_3D * _pRef = NULL, INTERACTIVE_OBJ ** _pTable = NULL, int * _pnNbInTable = NULL);
 
 //*************************************************************************************
 // Returns nearest interactive object found at position x,y
@@ -3649,9 +3651,7 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag, EERIE_3D * _pRe
 						goto suite;
 					}
 
-					long j;
-
-					for (j = 0; j < io->obj->nbfaces; j++)
+					for (size_t j = 0; j < io->obj->facelist.size(); j++)
 					{
 						if (io->animlayer[0].cur_anim != NULL)
 						{
@@ -3808,7 +3808,6 @@ bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 {
 	long nbv;
 	long idx;
-	EERIE_VERTEX * vlist;
 
 	if ((!io)
 	        ||	(!io->obj))
@@ -3816,8 +3815,8 @@ bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 
 	if (Distance3D(pos->x, pos->y, pos->z, io->pos.x, io->pos.y, io->pos.z) < 190.f)
 	{
-		vlist = io->obj->vertexlist3;
-		nbv = io->obj->nbvertex;
+		vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
+		nbv = io->obj->vertexlist.size(); // TODO is this event correct?
 
 		if (io->obj->nbgroups > 4)
 		{
@@ -3896,14 +3895,14 @@ bool ARX_INTERACTIVE_CheckCollision(EERIE_3DOBJ * obj, long kk, long source)
 				{
 					long step;
 					long nbv;
-					nbv = io->obj->nbvertex;
+					nbv = io->obj->vertexlist.size();
 
 					if (nbv < 300) step = 1;
 					else if (nbv < 600) step = 2;
 					else if (nbv < 1200) step = 4;
 					else step = 6;
 
-					EERIE_VERTEX * vlist = io->obj->vertexlist3;
+					vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 					EERIE_SPHERE sp;
 					sp.radius = 22.f; 
@@ -4001,7 +4000,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 			{
 				long step;
 				long nbv;
-				nbv = io->obj->nbvertex;
+				nbv = io->obj->vertexlist.size();
 				EERIE_SPHERE sp;
 				sp.radius = 28.f;
 
@@ -4014,7 +4013,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 				else if (nbv < 1500) step = 4; 
 				else step = 6;
 
-				EERIE_VERTEX * vlist = io->obj->vertexlist3;
+				vector<EERIE_VERTEX> & vlist = io->obj->vertexlist3;
 
 
 				if (io->GameFlags & GFLAG_PLATFORM)
@@ -4039,7 +4038,7 @@ bool ARX_INTERACTIVE_CheckFULLCollision(EERIE_3DOBJ * obj, long source)
 									EERIEPOLY ep;
 									ep.type = 0;
 
-									for (long ii = 0; ii < io->obj->nbfaces; ii++)
+									for (size_t ii = 0; ii < io->obj->facelist.size(); ii++)
 									{
 										float cx = 0;
 										float cz = 0;
@@ -4233,9 +4232,9 @@ void UpdateCameras()
 						{
 							bool Touched = false;
 
-							for (long ri = 0; ri < io->obj->nbvertex; ri += 3)
+							for (long ri = 0; ri < io->obj->vertexlist.size(); ri += 3)
 							{
-								for (long rii = 0; rii < ioo->obj->nbvertex; rii += 3)
+								for (long rii = 0; rii < ioo->obj->vertexlist.size(); rii += 3)
 								{
 									if (EEDistance3D(&io->obj->vertexlist3[ri].v,
 									                 &ioo->obj->vertexlist3[rii].v) < 20.f)

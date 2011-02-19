@@ -86,6 +86,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
 #include "io/Blast.h"
+#include "io/Implode.h"
 #include "io/Logger.h"
 
 #include "graphics/d3dwrapper.h"
@@ -244,16 +245,11 @@ void ARX_GAMESAVE_CreateNewInstance()
 		{
 			//The directory may exist but may be empty after crash
 			strcat(testpath, "\\GSAVE.SAV");
-			FileHandle f = FileOpenRead(testpath);
-
-			if (!f) 				
-			{
+			if(!FileExist(testpath)) {
 				CURRENT_GAME_INSTANCE = num;
 				ARX_GAMESAVE_MakePath();
 				return;
 			}
-
-			FileCloseRead(f);			
 		}
 
 		num++;
@@ -396,7 +392,6 @@ void ARX_CHANGELEVEL_Change( const std::string& level, const std::string& target
 		LogDebug << "level " << level << " target " << target;
 	}
 
-	DemoFileCheck();
 	PROGRESS_BAR_TOTAL = 238; 
 	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
 
@@ -427,7 +422,7 @@ void ARX_CHANGELEVEL_Change( const std::string& level, const std::string& target
 			&&	(num != 1))
 		return;
 
-	LoadLevelScreen(GDevice, num);
+	LoadLevelScreen(num);
 
 	if (num == -1)
 	{
@@ -465,7 +460,7 @@ void ARX_CHANGELEVEL_Change( const std::string& level, const std::string& target
 
 	ARX_TIME_Pause();
 	PROGRESS_BAR_COUNT += 1.f;
-	LoadLevelScreen(GDevice, num);
+	LoadLevelScreen(num);
 
 	LogDebug << "Before ARX_CHANGELEVEL_PushLevel";
 	ARX_CHANGELEVEL_PushLevel(CURRENTLEVEL, NEW_LEVEL);
@@ -720,19 +715,17 @@ retry:
 			pos += sizeof(ARX_CHANGELEVEL_LIGHT);
 		}
 	}
-
-	char * compressed = NULL;
-	long cpr_pos = 0;
-	printf("IMPLODE NOT IMPLEMENTED\n");
-	// TODO fix
-	//compressed = STD_Implode((char *)dat, pos, &cpr_pos);
+	
+	size_t cpr_pos;
+	char * compressed = implodeAlloc((char *)dat, pos, cpr_pos);
+	
 	free(dat);
 
 	for (int i = 0; i < cpr_pos; i += 2)
 		compressed[i] = ~compressed[i];
 
 	bool ret = _pSaveBlock->Save(savefile, compressed, cpr_pos);
-	free(compressed);
+	delete[] compressed;
 
 	if (!ret) return -1;
 
@@ -833,19 +826,16 @@ retry:
 				break;
 		}
 	}
-
-	char * compressed = NULL;
-	long cpr_pos = 0;
-	printf("IMPLODE NOT IMPLEMENTED\n");
-	// TODO fix
-	//compressed = STD_Implode((char *)dat, pos, &cpr_pos);
+	
+	size_t cpr_pos;
+	char * compressed = implodeAlloc((char *)dat, pos, cpr_pos);
 	free(dat);
 
 	for (int i = 0; i < cpr_pos; i += 2)
 		compressed[i] = ~compressed[i];
 
 	_pSaveBlock->Save(savefile, compressed, cpr_pos);
-	free(compressed);
+	delete[] compressed;
 	return 1;
 }
 //--------------------------------------------------------------------------------------------
@@ -1076,19 +1066,16 @@ retry:
 
 	char savefile[256];
 	sprintf(savefile, "player.sav");
-
-	char * compressed = NULL;
-	long cpr_pos = 0;
-	printf("IMPLODE NOT IMPLEMENTED\n");
-	// TODO fix
-	//compressed = STD_Implode((char *)dat, pos, &cpr_pos);
+	
+	size_t cpr_pos;
+	char * compressed = implodeAlloc((char *)dat, pos, cpr_pos);
 	free(dat);
 
 	for (int i = 0; i < cpr_pos; i += 2)
 		compressed[i] = ~compressed[i];
 
 	_pSaveBlock->Save(savefile, compressed, cpr_pos);
-	free(compressed);
+	delete[] compressed;
 
 	for (int i = 1; i < inter.nbmax; i++)
 	{
@@ -1826,19 +1813,16 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 	{
 		LogError << "SaveBuffer Overflow " << pos << " >> " << allocsize;
 	}
-
-	char * compressed = NULL;
-	long cpr_pos = 0;
-	LogError << "IMPLODE NOT IMPLEMENTED\n";
-	// TODO fix
-	//compressed = STD_Implode((char *)dat, pos, &cpr_pos);
+	
+	size_t cpr_pos;
+	char * compressed = implodeAlloc((char *)dat, pos, cpr_pos);
 	free(dat);
 
 	for (int i = 0; i < cpr_pos; i += 2)
 		compressed[i] = ~compressed[i];
 
 	_pSaveBlock->Save(savefile, compressed, cpr_pos);
-	free(compressed);
+	delete[] compressed;
 	return 1;
 }
 
@@ -2039,7 +2023,7 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 		return 0;
 	}
 
-	LoadLevelScreen(GDevice, num);
+	LoadLevelScreen(num);
 	SetEditMode(1, false);
 
 	if (ARX_CHANGELEVEL_Pop_Globals() != 1)
@@ -3618,7 +3602,7 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 	LogDebug << "After  Saveblock Access";
 
 	PROGRESS_BAR_COUNT += 2.f;
-	LoadLevelScreen(GDevice, instance);
+	LoadLevelScreen(instance);
 
 	// first time in this level ?
 	if (!FileExist(sfile))
@@ -3706,7 +3690,7 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 	}
 
 	PROGRESS_BAR_COUNT += 2.f;
-	LoadLevelScreen(GDevice, instance);
+	LoadLevelScreen(instance);
 	LogDebug << "Before ARX_CHANGELEVEL_Pop_Level";
 
 	if (ARX_CHANGELEVEL_Pop_Level(&asi, instance, FirstTime) != 1)
@@ -3738,7 +3722,7 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 
 	LogDebug << "After  ARX_CHANGELEVEL_Pop_Index";
 	PROGRESS_BAR_COUNT += 20.f;
-	LoadLevelScreen(GDevice, instance);
+	LoadLevelScreen(instance);
 
 	if (FirstTime)
 	{
@@ -3792,7 +3776,7 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 	}
 
 	PROGRESS_BAR_COUNT += 20.f;
-	LoadLevelScreen(GDevice, instance);
+	LoadLevelScreen(instance);
 	LogDebug << "Before ARX_CHANGELEVEL_Pop_Player";
 
 	if (ARX_CHANGELEVEL_Pop_Player(&asi, &asp) != 1)
@@ -4096,18 +4080,15 @@ long ARX_CHANGELEVEL_Set_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA * pl
 	long pos = sizeof(ARX_CHANGELEVEL_PLAYER_LEVEL_DATA);
 	char savefile[256];
 	sprintf(savefile, "pld.sav");
-
-	char * compressed = NULL;
-	long cpr_pos = 0;
-	printf("IMPLODE NOT IMPLEMENTED\n");
-	// TODO fix
-	//compressed = STD_Implode((char *)dat, pos, &cpr_pos);
+	
+	size_t cpr_pos;
+	char * compressed = implodeAlloc((char *)dat, pos, cpr_pos);
 
 	for (long i = 0; i < cpr_pos; i += 2)
 		compressed[i] = ~compressed[i];
 
 	_pSaveBlock->Save(savefile, compressed, cpr_pos);
-	free(compressed);
+	delete[] compressed;
 
 	_pSaveBlock->EndSave();
 	delete _pSaveBlock;
@@ -4263,7 +4244,7 @@ long ARX_CHANGELEVEL_Load(long instance)
 	if (ARX_CHANGELEVEL_Get_Player_LevelData(&pld, CurGamePath) == 1)
 	{
 		PROGRESS_BAR_COUNT += 2.f;
-		LoadLevelScreen(GDevice, pld.level);
+		LoadLevelScreen(pld.level);
 
 		if (pld.level == CURRENTLEVEL)
 			DONT_CLEAR_SCENE = 1;
@@ -4274,7 +4255,7 @@ long ARX_CHANGELEVEL_Load(long instance)
 		float fPldTime = ARX_CLEAN_WARN_CAST_FLOAT(pld.time);
 		DanaeClearLevel();
 		PROGRESS_BAR_COUNT			+=	2.f;
-		LoadLevelScreen(GDevice, pld.level);
+		LoadLevelScreen(pld.level);
 		CURRENTLEVEL				=	pld.level;
 		ARX_CHANGELEVEL_DesiredTime	=	fPldTime;
 		ARX_CHANGELEVEL_PopLevel(pld.level, 0);

@@ -73,6 +73,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <string>
 
+using std::string;
+
+const string arxVersion = "0.1";
+
 /* ---------------------------------------------------------
 						Platforms
 ------------------------------------------------------------*/
@@ -164,6 +168,15 @@ typedef double              f64;    // 64 bits double float
 #define ARXCOMMON_BUFFERSIZE	512
 #define DEBUG_INSIDEAFILE       true
 
+#if ARX_COMPILER_MSVC
+	#define ARX_DEBUG_BREAK()	__debugbreak()
+#elif ARX_COMPILER == ARX_COMPILER_GCC
+	#define ARX_DEBUG_BREAK()	__builtin_trap()
+#else
+	#define ARX_DEBUG_BREAK()
+#endif
+
+
 /* ---------------------------------------------------------
 					  Maccro for assertion
 ------------------------------------------------------------*/
@@ -178,7 +191,7 @@ enum ARX_DEBUG_LOG_TYPE
 
 #ifdef _DEBUG
 #define	TEST						    __LINE__
-#define arx_assert(_Expression) (void)	( (_Expression) ||  (ArxDebug::Assert((#_Expression), (__FILE__), __LINE__),  DebugBreak() , 0) )
+#define arx_assert(_Expression) (void)	( (_Expression) ||  (ArxDebug::Assert((#_Expression), (__FILE__), __LINE__),  ARX_DEBUG_BREAK() , 0) )
 
 
 #else //DO_CHECK
@@ -273,11 +286,41 @@ enum ARX_DEBUG_LOG_TYPE
 #define ARXDEBUG_COLOR_WARNING	FOREGROUND_GREEN
 #define ARXDEBUG_COLOR_DEFAULT  FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED
 
-
 class ArxDebug
 {
 	public :
 		static void Assert(const char * _sMessage, const char * _sFile, unsigned _iLine);
 	
 };
+
+
+/* ---------------------------------------------------------
+					String utilities
+------------------------------------------------------------*/
+template <class STYPE>
+inline const char * safeGetString(const char * & pos, STYPE & size) {	
+	const char * begin = pos;
+	
+	for(size_t i = 0; i < size; i++) {
+		if(pos[i] == 0) {
+			size -= i + 1;
+			pos += i + 1;
+			return begin;
+		}
+	}
+	
+	return NULL;
+}
+
+template <class T, class STYPE>
+inline bool safeGet(T & data, const char * & pos, STYPE & size) {
+	if(size < sizeof(T)) {
+		return false;
+	}
+	data = *reinterpret_cast<const T *>(pos);
+	pos += sizeof(T);
+	size -= sizeof(T);
+	return true;
+}
+
 #endif // ARX_COMMON_H

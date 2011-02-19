@@ -89,21 +89,6 @@ bool DirectoryExist(const char * name) {
 #define MAKEHANDLE(x) (FileHandle)((ULONG_PTR)(handle) + 1)
 const FileHandle INVALID_FILE_HANDLE = (FileHandle)NULL;
 
-FileHandle FileOpenRead(const char * name) {
-	
-	HANDLE handle = CreateFile(name, GENERIC_READ, 0, NULL, OPEN_EXISTING, 0, 0);
-
-	if(handle == INVALID_HANDLE_VALUE) {
-		LogError <<"Can't open "<< name;
-		return INVALID_FILE_HANDLE;
-	}
-	LogInfo <<"Opened "<< name;
-	
-	assert(MAKEHANDLE(handle) != INVALID_FILE_HANDLE);
-	
-	return MAKEHANDLE(handle);
-}
-
 bool FileExist(const char * name) {
 	
 	FileHandle handle = FileOpenRead(name);
@@ -112,7 +97,7 @@ bool FileExist(const char * name) {
 		return false;
 	}
 	
-	FileCloseRead(handle);
+	FileClose(handle);
 	LogInfo <<"Found "<< name;
 	return true;
 }
@@ -121,42 +106,52 @@ long FileTell(FileHandle handle) {
 	return (SetFilePointer(GETHANDLE(handle), 0, NULL, FILE_CURRENT));
 }
 
-FileHandle FileOpenWrite(const char * name) {
+static FileHandle FileOpen(const char * name, DWORD mode, DWORD opt, DWORD opt2) {
 	
-	printf("FileOpenWrite(%s)\n", name);
-	HANDLE handle;
-	
-	handle = CreateFile(name, GENERIC_READ | GENERIC_WRITE, TRUNCATE_EXISTING, NULL, 0, 0, 0);
+	HANDLE handle = CreateFile(name, mode, opt, NULL, opt2, 0, 0);
+
 	if(handle == INVALID_HANDLE_VALUE) {
+		LogError << "Can't open "<< name;
 		return INVALID_FILE_HANDLE;
 	}
-	
-	CloseHandle(handle);
-	handle = CreateFile(name, GENERIC_WRITE, 0, NULL, 0, 0, 0);
-	if(handle == INVALID_HANDLE_VALUE) {
-		return INVALID_FILE_HANDLE;
-	}
+	LogInfo << "Opened "<< name;
 	
 	assert(MAKEHANDLE(handle) != INVALID_FILE_HANDLE);
 	
 	return MAKEHANDLE(handle);
 }
 
-long FileCloseRead(FileHandle handle) {
+FileHandle FileOpenRead(const char * name) {
+	return FileOpen(name, GENERIC_READ, 0, OPEN_EXISTING);
+}
+
+FileHandle FileOpenWrite(const char * name) {
+	return FileOpen(name, GENERIC_WRITE, TRUNCATE_EXISTING, 0);
+}
+
+FileHandle FileOpenReadWrite(const char * name) {
+	return FileOpen(name, GENERIC_READ|GENERIC_WRITE, TRUNCATE_EXISTING, 0);
+}
+
+bool FileDelete(const std::string & file) {
+	return DeleteFile(file.c_str());
+}
+
+bool FileMove(const std::string & oldname, const std::string & newname) {
+	return MoveFile(oldname.c_str(), newname.c_str());
+}
+
+long FileClose(FileHandle handle) {
 	return CloseHandle(GETHANDLE(handle));
 }
 
-long FileCloseWrite(FileHandle handle) {
-	return CloseHandle(GETHANDLE(handle));
-}
-
-long FileRead(FileHandle handle, void * adr, long size) {
+long FileRead(FileHandle handle, void * adr, size_t size) {
 	DWORD ret;
 	ReadFile(GETHANDLE(handle), adr, size, &ret, NULL);
 	return ret;
 }
 
-long FileWrite(FileHandle handle, const void * adr, long size) {
+long FileWrite(FileHandle handle, const void * adr, size_t size) {
 	DWORD ret;
 	WriteFile(GETHANDLE(handle), adr, size, &ret, NULL);
 	return ret;
@@ -188,7 +183,7 @@ void	* FileLoadMallocZero(const char * name, size_t * SizeLoadMalloc)
 
 	if (!adr)
 	{
-				FileCloseRead(handle);
+				FileClose(handle);
 
 				if (SizeLoadMalloc != NULL) *SizeLoadMalloc = 0;
 
@@ -197,7 +192,7 @@ void	* FileLoadMallocZero(const char * name, size_t * SizeLoadMalloc)
 
 	FileSeek(handle, 0, FILE_SEEK_START);
 	size2 = FileRead(handle, adr, size1 - 2);
-	FileCloseRead(handle);
+	FileClose(handle);
 
 	if (size1 != size2 + 2)
 	{
@@ -215,7 +210,7 @@ void	* FileLoadMallocZero(const char * name, size_t * SizeLoadMalloc)
 	return(adr);
 }
 
-void	* FileLoadMalloc(const char * name, size_t * SizeLoadMalloc)
+void * FileLoadMalloc(const char * name, size_t * SizeLoadMalloc)
 {
 	FileHandle handle;
 	long	size1, size2;
@@ -236,7 +231,7 @@ void	* FileLoadMalloc(const char * name, size_t * SizeLoadMalloc)
 
 	if (!adr)
 	{
-				FileCloseRead(handle);
+				FileClose(handle);
 
 				if (SizeLoadMalloc != NULL) *SizeLoadMalloc = 0;
 
@@ -245,7 +240,7 @@ void	* FileLoadMalloc(const char * name, size_t * SizeLoadMalloc)
 	
 	FileSeek(handle, 0, FILE_SEEK_START);
 	size2 = FileRead(handle, adr, size1);
-	FileCloseRead(handle);
+	FileClose(handle);
 	
 	if (size1 != size2)
 	{

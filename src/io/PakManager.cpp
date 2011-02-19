@@ -90,10 +90,10 @@ void PAK_Close() {
 	pPakManager = NULL;
 }
 
-void * _PAK_FileLoadMallocZero(const std::string& name, size_t& sizeRead) {
+void * _PAK_FileLoadMallocZero(const string & name, size_t & sizeRead) {
 	
 	size_t size = pPakManager->GetSize(name);
-	if(size == 0) {
+	if(size == (size_t)-1) {
 		sizeRead = size;
 		return NULL;
 	}
@@ -101,13 +101,14 @@ void * _PAK_FileLoadMallocZero(const std::string& name, size_t& sizeRead) {
 	char * mem = (char *)malloc(size + 2);
 	
 	if(!pPakManager->Read(name, mem)) {
-		delete mem;
+		free(mem);
 		sizeRead = 0;
 		return NULL;
 	}
 	
-	mem[size] = 0;
-	mem[size + 1] = 0;
+	// TODO why use two nullbytes?
+	mem[size] = '\0';
+	mem[size + 1] = '\0';
 	
 	sizeRead = size + 2;
 	
@@ -226,7 +227,7 @@ int PAK_fclose(PakFileHandle * pfh) {
 		return pfh->reader->fClose(pfh);
 	}
 	
-	int ret = FileCloseRead(pfh->truefile);
+	int ret = FileClose(pfh->truefile);
 	
 	pfh->active = false;
 	delete pfh;
@@ -366,7 +367,7 @@ size_t PakManager::GetSize(const std::string& _filename) {
 	
 	for (vector<PakReader *>::iterator i = loadedPaks.begin(); i != loadedPaks.end(); i++) {
 		int size;
-		if((size = (*i)->GetSize(filename)) > 0) {
+		if((size = (*i)->GetSize(filename)) >= 0) {
 			LogInfo << "Got size in PAK "<< filename << " "<<size;
 			return size;
 		}

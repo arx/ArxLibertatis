@@ -57,10 +57,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef EERIEPATHFINDER_H
 #define EERIEPATHFINDER_H
 
-#include "graphics/data/Mesh.h"
+struct INTERACTIVE_OBJ;
+struct EERIE_BACKGROUND;
 
-typedef struct
-{
+struct PATHFINDER_REQUEST {
 	bool isvalid;
 	long from;
 	long to;
@@ -69,7 +69,7 @@ typedef struct
 	// Pathfinding is considered finished
 	INTERACTIVE_OBJ * ioid;
 	unsigned short ** returnlist;	//must be NULL
-} PATHFINDER_REQUEST;
+};
 
 extern long PATHFINDER_WORKING;
 extern PATHFINDER_REQUEST pr;

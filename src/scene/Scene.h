@@ -80,7 +80,8 @@ bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_3D 
 void ComputeFogVertex(D3DTLVERTEX * v);
 void ComputeSingleFogVertex(D3DTLVERTEX * v);
 
-bool	EEVisibleSphere(EERIE_3D * pos, float radius);
+bool EEVisibleSphere(EERIE_3D * pos, float radius);
 bool VisibleSphere(float x, float y, float z, float radius);
+void ClearTileLights();
 
 #endif

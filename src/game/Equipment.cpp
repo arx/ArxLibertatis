@@ -198,7 +198,6 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 	io->obj = TheoToEerie_Fast(OBJECT_HUMAN_BASE, texpath, TTE_NO_PHYSICS_BOX | TTE_NPC);
 	
 	long sel_ = -1;
-	long i;
 	char pathh[256];
 
 	if ((player.equiped[EQUIP_SLOT_HELMET] != 0)
@@ -225,7 +224,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				long mapidx = ObjectAddMap(io->obj, temp);
 
 				// retreives head sel
-				for (i = 0; i < io->obj->selections.size(); i++)
+				for (size_t i = 0; i < io->obj->selections.size(); i++)
 				{ // TODO iterator
 					if (!strcasecmp(io->obj->selections[i].name.c_str(), "head"))
 					{
@@ -236,14 +235,14 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				long textochange = -1;
 
-				for (i = 0; i < io->obj->nbmaps; i++)
+				for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 				{
 					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName).c_str()))
 						textochange = i;
 				}
 
 				if ((sel_ != -1) && (textochange != -1))
-					for (i = 0; i < io->obj->nbfaces; i++)
+					for (size_t i = 0; i < io->obj->facelist.size(); i++)
 					{
 						if ((IsInSelection(io->obj, io->obj->facelist[i].vid[0], sel_) != -1)
 						        &&	(IsInSelection(io->obj, io->obj->facelist[i].vid[1], sel_) != -1)
@@ -281,7 +280,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				long mapidx = ObjectAddMap(io->obj, temp);
 
 				// retreives head sel
-				for (i = 0; i < io->obj->selections.size(); i++)
+				for (size_t i = 0; i < io->obj->selections.size(); i++)
 				{ // TODO iterator
 					if (!strcasecmp(io->obj->selections[i].name.c_str(), "chest"))
 					{
@@ -292,14 +291,14 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				long textochange = -1;
 
-				for (i = 0; i < io->obj->nbmaps; i++)
+				for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 				{
 					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName).c_str()))
 						textochange = i;
 				}
 
 				if ((sel_ != -1) && (textochange != -1))
-					for (i = 0; i < io->obj->nbfaces; i++)
+					for (size_t i = 0; i < io->obj->facelist.size(); i++)
 					{
 						if ((IsInSelection(io->obj, io->obj->facelist[i].vid[0], sel_) != -1)
 						        &&	(IsInSelection(io->obj, io->obj->facelist[i].vid[1], sel_) != -1)
@@ -337,7 +336,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				long mapidx = ObjectAddMap(io->obj, temp);
 
 				// retreives head sel
-				for (i = 0; i < io->obj->selections.size(); i++)
+				for (size_t i = 0; i < io->obj->selections.size(); i++)
 				{ // TODO iterator
 					if (!strcasecmp(io->obj->selections[i].name.c_str(), "leggings"))
 					{
@@ -348,14 +347,14 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 				long textochange = -1;
 
-				for (i = 0; i < io->obj->nbmaps; i++)
+				for (size_t i = 0; i < io->obj->texturecontainer.size(); i++)
 				{
 					if (!strcasecmp(tweaker->tweakerinfo->skintochange, GetName(io->obj->texturecontainer[i]->m_strName).c_str()))
 						textochange = i;
 				}
 
 				if ((sel_ != -1) && (textochange != -1))
-					for (i = 0; i < io->obj->nbfaces; i++)
+					for (size_t i = 0; i < io->obj->facelist.size(); i++)
 					{
 						if ((IsInSelection(io->obj, io->obj->facelist[i].vid[0], sel_) != -1)
 						        &&	(IsInSelection(io->obj, io->obj->facelist[i].vid[1], sel_) != -1)
@@ -375,7 +374,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 
 	if (!target) return;
 
-	for (i = 0; i < MAX_EQUIPED; i++)
+	for (long i = 0; i < MAX_EQUIPED; i++)
 	{
 		if ((player.equiped[i] != 0)
 		        &&	ValidIONum(player.equiped[i]))
@@ -983,7 +982,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 					vector.y *= t;
 					vector.z *= t;
 
-					for (long ii = 0; ii < target->obj->nbfaces; ii++)
+					for (size_t ii = 0; ii < target->obj->facelist.size(); ii++)
 					{
 						if (target->obj->facelist[ii].facetype & POLY_HIDE) continue;
 

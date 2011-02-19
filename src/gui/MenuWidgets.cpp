@@ -37,6 +37,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Localization.h"
 #include "gui/Text.h"
 #include "gui/Interface.h"
+#include "gui/Credits.h"
 #include "core/Time.h"
 
 #include "graphics/data/Texture.h"
@@ -152,9 +153,9 @@ static TextureContainer *pTextureLoadRender=NULL;
 
 int iTimeToDrawD7=-3000;
 
-std::string pStringMod( 256, '\0' );
-std::string pStringModSfx( 256, '\0' );
-std::string pStringModSpeech( 256, '\0' );
+std::string pStringMod;
+std::string pStringModSfx;
+std::string pStringModSpeech;
 
 //-----------------------------------------------------------------------------
 
@@ -408,7 +409,7 @@ bool ARX_QuickLoad()
 		PROGRESS_BAR_TOTAL        =    238;
 		OLD_PROGRESS_BAR_COUNT    =    PROGRESS_BAR_COUNT=0;
 		PROGRESS_BAR_COUNT        +=    1.f;
-		LoadLevelScreen( GDevice, save_l[iSave].level );
+		LoadLevelScreen( save_l[iSave].level );
 		DanaeClearLevel();
 		ARX_CHANGELEVEL_Load( save_l[iSave].num );
 		REFUSE_GAME_RETURN        =    0;
@@ -423,7 +424,7 @@ bool ARX_QuickLoad()
 		PROGRESS_BAR_TOTAL        =    238;
 		OLD_PROGRESS_BAR_COUNT    =    PROGRESS_BAR_COUNT=0;
 		PROGRESS_BAR_COUNT        +=    1.f;
-		LoadLevelScreen( GDevice, save_l[iNbSave0].level );
+		LoadLevelScreen( save_l[iNbSave0].level );
 		DanaeClearLevel();
 		ARX_CHANGELEVEL_Load( save_l[iNbSave0].num );
 		REFUSE_GAME_RETURN        =    0;
@@ -438,7 +439,7 @@ bool ARX_QuickLoad()
 		PROGRESS_BAR_TOTAL        =    238;
 		OLD_PROGRESS_BAR_COUNT    =    PROGRESS_BAR_COUNT=0;
 		PROGRESS_BAR_COUNT        +=    1.f;
-		LoadLevelScreen( GDevice, save_l[iNbSave1].level );
+		LoadLevelScreen( save_l[iNbSave1].level );
 		DanaeClearLevel();
 		ARX_CHANGELEVEL_Load( save_l[iNbSave1].num );
 		REFUSE_GAME_RETURN        =    0;
@@ -501,13 +502,6 @@ void FontRenderText(HFONT _hFont, EERIE_3D pos, const std::string& _pText, COLOR
 		rRect.left    =    ARX_CLEAN_WARN_CAST_LONG( pos.x );
 		rRect.right    =    ARX_CLEAN_WARN_CAST_LONG( pos.x + 999 );
 		rRect.bottom=    ARX_CLEAN_WARN_CAST_LONG( pos.y + 999 );
-
-
-		ARX_TEXT pText;
-		ARX_Text_Init(&pText);
-		pText.lpszUText = _pText;
-		pText.lCol = _c;
-		pText.rRect = rRect;
 
 		pTextManage->AddText( _hFont,
 		                      _pText,
@@ -681,6 +675,19 @@ CMenuConfig::CMenuConfig( const std::string& _pName)
 	{
 		pcName = _pName;
 	}
+	
+	// TODO GetPrivateProfileString needs an absolute path
+	if(pcName.length() > 2 && pcName[1] != ':') {
+		
+		char cwd[512];
+		GetCurrentDirectory(512, cwd);
+		if(cwd[strlen(cwd)-1] != '\\' && pcName[0] != '\\') {
+			pcName = cwd + ('\\' + pcName);
+		} else {
+			pcName = cwd + pcName;
+		}
+		
+	}
 
 	First();
 }
@@ -841,18 +848,15 @@ int CMenuConfig::GetDIKWithASCII( const std::string& _pcTouch)
 }
 
 //-----------------------------------------------------------------------------
+std::string CMenuConfig::ReadConfig( const std::string& _section, const std::string& _key) {
+	
+	// TODO unify with localisation loading (and make platform-independent)
+	char text[256];
+	int iI = GetPrivateProfileString( _section.c_str(), _key.c_str(), "", text, 256, pcName.c_str());
+	
+	LogDebug << "Read section: " << _section << " key: " << _key << " from " << pcName << " as:" << text;
 
-std::string CMenuConfig::ReadConfig( const std::string& _pcSection, const std::string& _pcKey)
-{
-	char tcText[256];
-
-	int iI = GetPrivateProfileString( _pcSection.c_str(), _pcKey.c_str(), "", tcText, 256, pcName.c_str() );
-
-	if(iI<=0) return "";
-
-	std::string prof_str = tcText;
-
-	return prof_str;
+	return std::string( text );
 }
 
 //-----------------------------------------------------------------------------
@@ -1921,229 +1925,6 @@ bool CMenuConfig::ReadAll()
 	return bOk;
 }
 
-//-----------------------------------------------------------------------------
-static void CalculTextPosition( HDC& _hDC, wstring& phrase, CreditsTextInformations &infomations, float& drawpos )
-{
-	//Center the text on the screen
-	GetTextExtentPoint32W(_hDC, phrase.c_str(), phrase.length(), &(infomations.sPos));
-
-	if (infomations.sPos.cx < DANAESIZX) 
-		infomations.sPos.cx = ARX_CLEAN_WARN_CAST_INT((DANAESIZX - infomations.sPos.cx) * ( 1.0f / 2 ));
-
-	//Calcul height position (must be calculate after GetTextExtendPoint32 because sPos is writted)
-	infomations.sPos.cy = ARX_CLEAN_WARN_CAST_INT(drawpos) ;
-	drawpos += CreditsData.iFontAverageHeight ;
-}
-
-static void ExtractPhraseColor( wstring &phrase, CreditsTextInformations &infomations )
-{
-	//Get the good color
-	if (phrase[0] == _T('~'))
-	{
-		phrase[0] = _T(' ');
-		infomations.fColors = RGB(255,255,255);
-	} 
-	else //print in gold color
-	{
-		infomations.fColors = RGB(232,204,143);
-	}
-}
-
-	//Use to calculate an Average height for text fonts
-static void CalculAverageWidth( HDC& _hDC )
-{
-	SelectObject(_hDC, hFontCredits);
-	SIZE size;
-
-		//calculate the average value
-		GetTextExtentPoint32(_hDC, "aA(",3, &size);
-		CreditsData.iFontAverageHeight = size.cy;
-}
-
-
-//Use to extract string info from src buffer
-static void ExtractAllCreditsTextInformations(HDC& _hDC)
-{
-	// Retrieve the rows to display
-	std::wstring temp;
-	std::copy( ARXmenu.mda->str_cre_credits.begin(),
-				ARXmenu.mda->str_cre_credits.end(),
-				temp.begin() );
-	wistringstream iss( temp );
-	wstring phrase;
-
-	//Use to calculate the positions
-	float drawpos    = ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY);
-	bool firstLine = true ;
-
-	while ( std::getline( iss, phrase) )
-	{
-		//Remove the first tild
-		if (firstLine)
-		{
-			firstLine = false ;
-			phrase[1] = ' ';
-		}
-
-		//Case of separator line
-		if (phrase.length() == 0)
-		{
-			drawpos += CreditsData.iFontAverageHeight >> 3;
-			continue ;
-		}
-
-		//Create a data containers
-		CreditsTextInformations infomations ;
-
-		ExtractPhraseColor(phrase, infomations);
-		CalculTextPosition(_hDC, phrase, infomations, drawpos);
-
-		//Assign the text modified by ExtractPhase Color
-		infomations.sText = phrase;
-
-		//Bufferize it
-		CreditsData.aCreditsInformations.push_back(infomations);
-	}
-}
-
-static void InitCredits( void )
-{
-	HDC hDC;
-
-	if( SUCCEEDED( danaeApp.m_pddsRenderTarget->GetDC(&hDC) ) )
-	{
-		CalculAverageWidth(hDC);
-		ExtractAllCreditsTextInformations(hDC);
-		
-		danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-	}
-}
-
-
-static void DrawCredits(void)
-{
-	int drawn = 0 ;
-
-	//We initialize the datas
-	if (CreditsData.iFontAverageHeight == -1)
-	{
-		InitCredits();
-	}
-
-	int iSize = CreditsData.aCreditsInformations.size() ;
-
-	//We display them
-	if (CreditsData.iFontAverageHeight != -1)
-	{
-		HDC hDC;
-		COLORREF oldRef  = RGB(0,0,0);
-
-		//Set the device
-		if(!danaeApp.DANAEStartRender()) return;
-
-		SETALPHABLEND(GDevice,false);
-		GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
-		SETZWRITE(GDevice,true);
-		GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE,false);
-
-		//Draw Background
-		if(ARXmenu.mda->pTexCredits)
-		{
-			EERIEDrawBitmap2(GDevice, 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY + 1), .999f, ARXmenu.mda->pTexCredits, 0xFFFFFFFF);
-		}    
-
-		danaeApp.DANAEEndRender();
-
-		//Use time passed between frame to create scroll effect
-		//ARX_LOG("CreditStart %f, CreditGet ARX_TIME_Get %f  ", ARXmenu.mda->creditstart,ARX_TIME_Get( false ));
-		ARXmenu.mda->creditspos-=0.025f*(float)(ARX_TIME_Get( false )-ARXmenu.mda->creditstart);
-		ARXmenu.mda->creditstart=ARX_TIME_Get( false );
-		
-		if( SUCCEEDED( danaeApp.m_pddsRenderTarget->GetDC(&hDC) ) )
-		{
-			SetBkMode(hDC,TRANSPARENT);    
-		
-
-			std::vector<CreditsTextInformations>::const_iterator it = CreditsData.aCreditsInformations.begin() + CreditsData.iFirstLine ;
-
-			for (;
-				it != CreditsData.aCreditsInformations.end();
-				++it)
-			{
-				//Update the Y word display
-				float yy = it->sPos.cy + ARXmenu.mda->creditspos;
-
-				//Display the text only if he is on the viewport
-				if ((yy >= -CreditsData.iFontAverageHeight) && (yy <= DANAESIZY)) 
-				{
-					if (oldRef != it->fColors) //Little optimization
-					{
-						SetTextColor(hDC, it->fColors);
-						oldRef = it->fColors;
-					}
-
-					SelectObject(hDC, hFontCredits);
-
-					//Display the text on the screen
-					TextOutW( hDC,
-						it->sPos.cx,
-						ARX_CLEAN_WARN_CAST_INT(yy),
-						it->sText.c_str(),
-						it->sText.length()	);
-
-					++drawn;
-				}
-				
-				if (yy <= -CreditsData.iFontAverageHeight)
-				{
-					++CreditsData.iFirstLine;
-				}
-				
-				if ( yy >= DANAESIZY )
-					break ; //it's useless to continue because next phrase will not be inside the viewport
-
-
-			}
-			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-		}
-	}
-
-
-
-	if ( (iSize <= CreditsData.iFirstLine) && ( iFadeAction != AMCM_MAIN ) )
-	{
-		ARXmenu.mda->creditspos = 0;
-		ARXmenu.mda->creditstart = 0 ;
-		CreditsData.iFirstLine = 0 ;
-
-		bFadeInOut = true;
-		bFade = true;
-		iFadeAction=AMCM_MAIN;
-
-		ARX_MENU_LaunchAmb(AMB_MENU);
-	}
-
-	danaeApp.DANAEStartRender();
-
-	if(ProcessFadeInOut(bFadeInOut,0.1f))
-	{
-		switch(iFadeAction)
-		{
-		case AMCM_MAIN:
-			ARXmenu.currentmode=AMCM_MAIN;
-			iFadeAction=-1;
-			bFadeInOut=false;
-			bFade=true;
-			break;
-		}
-	}
-
-	danaeApp.DANAEEndRender();
-
-	SETZWRITE(GDevice,true);
-	danaeApp.EnableZBuffer();    
-	}
-	//-----------------------------------------------------------------------------
 
 	void Check_Apply()
 	{
@@ -2282,12 +2063,9 @@ bool Menu2_Render()
 			pMenu=NULL;
 		}
 
-		switch(ARXmenu.currentmode)
-		{
-		case AMCM_CREDITS:
-			DrawCredits();
+		if(ARXmenu.currentmode == AMCM_CREDITS){
+			Credits::render();
 			return true;
-			break;
 		}
 
 		return false;
@@ -2383,13 +2161,7 @@ bool Menu2_Render()
 	MACRO_MENU_PRINCIPALE(BUTTON_MENUMAIN_CREDITS,CREDITS,"system_menus_main_credits",0);
 	MACRO_MENU_PRINCIPALE(-1,QUIT,"system_menus_main_quit",0);
 #undef MACRO_MENU_PRINCIPALE
-
-		//version
-		_TCHAR twVersion[32];
-		// TODO Find replacement
-		MultiByteToWideChar(CP_ACP, 0, GetVersionString()+3, -1, (wchar_t*)twVersion, 32 );
-
-		me = new CMenuElementText( -1, hFontControls, twVersion, RATIO_X(580), RATIO_Y(65), lColor, 1.0f, NOP );
+		me = new CMenuElementText( -1, hFontControls, arxVersion, RATIO_X(580), RATIO_Y(65), lColor, 1.0f, NOP );
 		me->SetCheckOff();
 		me->lColor=RGB(127,127,127);
 		pMenu->AddMenuElement(me);
@@ -2638,7 +2410,7 @@ bool Menu2_Render()
 										tex3,
 										256);
 									tex4 +=  tex3;
-									GetTimeFormat(    LOCALE_SYSTEM_DEFAULT,
+									GetTimeFormatA(    LOCALE_SYSTEM_DEFAULT,
 										0,
 										&save_l[iI].stime,
 										"   HH:mm",
@@ -2674,7 +2446,7 @@ bool Menu2_Render()
 										tex3,
 										256);
 									strcat(tex4,tex3);
-									GetTimeFormat(    LOCALE_SYSTEM_DEFAULT,
+									GetTimeFormatA(    LOCALE_SYSTEM_DEFAULT,
 										0,
 										&save_l[iI].stime,
 										"   HH:mm",
@@ -2787,7 +2559,7 @@ bool Menu2_Render()
 										tex3,
 										256);
 									strcat(tex4,tex3);
-									GetTimeFormat(    LOCALE_SYSTEM_DEFAULT,
+									GetTimeFormatA(    LOCALE_SYSTEM_DEFAULT,
 										0,
 										&save_l[iI].stime,
 										"   HH:mm",
@@ -2825,7 +2597,7 @@ bool Menu2_Render()
 										tex3,
 										256);
 									strcat(tex4,tex3);
-									GetTimeFormat(    LOCALE_SYSTEM_DEFAULT,
+									GetTimeFormatA(    LOCALE_SYSTEM_DEFAULT,
 										0,
 										&save_l[iI].stime,
 										"   HH:mm",
@@ -2915,18 +2687,6 @@ bool Menu2_Render()
 					
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 					}
-				break;
-			//------------------ END SAVE_QUEST
-			case MULTIPLAYER:
-				{
-				}
-				break;
-			//------------------ START OPTIONS
-			case OPTIONS_INPUT:
-				{
-					MessageBox(0, "", "", 0);
-
-				}
 				break;
 			case OPTIONS:
 				{
@@ -8082,7 +7842,7 @@ void CDirectInput::DrawCursor()
 	if(!bDrawCursor) return;
 
 	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  true);
-	DrawLine2D(iOldCoord,iMaxOldCoord,10.f,.725f,.619f,0.56f);
+	DrawLine2D(iOldCoord,iNbOldCoord + 1,10.f,.725f,.619f,0.56f);
 
 	if(pTex[iNumCursor]) SETTC(GDevice, pTex[iNumCursor]);
 	else SETTC(GDevice,NULL);
