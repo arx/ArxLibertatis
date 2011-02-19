@@ -318,7 +318,7 @@ void PopOneTriangleListClipp(D3DTLVERTEX *_pVertex,int *_piNbVertex)
  *	CMY_DYNAMIC_VERTEXBUFFER*	_pDynamicVB	: mandatory : dynamicVertexBuffer to use for rendering.
  *	
  *	@return S_OK if function exit correctly.
-/************************************************************************/
+ ************************************************************************/
 template<class _LPVERTEX_>
 HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevice,
 													D3DPRIMITIVETYPE			_dptPrimitiveType, 
@@ -398,7 +398,7 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevice,
  *	DWORD				_dwFlags )          : optionally flag for DrawPrimitiveVB.
  *	
  *	@return S_OK if function exit correctly.
-/************************************************************************/
+ ************************************************************************/
 HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7	_d3dDevice, 
 								D3DPRIMITIVETYPE	_dptPrimitiveType, 
 								DWORD				_dwVertexTypeDesc,
