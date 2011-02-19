@@ -62,23 +62,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //-----------------------------------------------------------------------------
 #define INPUT_STATE_ADD	(512)
 
-/*-------------------------------------------------------------*/
-/*static void * DXI_malloc(int t)
-{ 
-	return malloc(t);
-}
-*/
-/*-------------------------------------------------------------*/
-/*static void * DXI_Realloc(void *mem,int t)
-{
-	return realloc(mem,t);
-}*/
-/*-------------------------------------------------------------*/
-/*static void DXI_free(void *mem)
-{
-	free(mem);
-}*/
-/*-------------------------------------------------------------*/
 // must be BOOL to be passed to DX
 BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef)
 {
@@ -117,18 +100,11 @@ int	nb;
 	DI_DInput7=NULL;
 
 	memcpy((void*)&DI_Init,(void*)i,sizeof(DXI_INIT));
-/*	if(!DI_Init.malloc||!DI_Init.realloc||!DI_Init.free)
-	{
-//		DI_Init.malloc=DXI_malloc;
-//		DI_Init.realloc=DXI_Realloc;
-//		DI_Init.free=DXI_free;
-	}
-*/
-	//Old : if(FAILED(DI_Hr=DirectInputCreateEx(h,DIRECTINPUT_VERSION,&IID_IDirectInput7,&DI_DInput7,NULL))) return DXI_FAIL;
+	
 	if(FAILED(DI_Hr=DirectInputCreateEx(h,DIRECTINPUT_VERSION,IID_IDirectInput7,(void**)&DI_DInput7,NULL))) return DXI_FAIL;
 
 	DI_NbInputInfo=0;
-	//Old : if(FAILED(DI_Hr=DI_DInput7->lpVtbl->EnumDevices(DI_DInput7,0,DIEnumDevicesCallback,NULL,DIEDFL_ATTACHEDONLY))) return DXI_FAIL;
+	
 	if(FAILED(DI_Hr=DI_DInput7->EnumDevices(0,DIEnumDevicesCallback,NULL,DIEDFL_ATTACHEDONLY))) return DXI_FAIL;
 
 	nb=MAXKEYBOARD;
