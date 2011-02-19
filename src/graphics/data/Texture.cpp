@@ -693,11 +693,11 @@ void CopySurfaceToBumpMap(LPDIRECTDRAWSURFACE7 sSurface, LPDIRECTDRAWSURFACE7 dS
 		sSurface->Lock(NULL, &ddesc , DDLOCK_WAIT, NULL);
 		dSurface->Lock(NULL, &ddesc2, DDLOCK_WAIT, NULL);
 
-		if ((32 != ddesc.ddpfPixelFormat.dwRGBBitCount)
-				&&	(16 != ddesc.ddpfPixelFormat.dwRGBBitCount)
+		if (((32 != ddesc.ddpfPixelFormat.dwRGBBitCount)
+				&&	(16 != ddesc.ddpfPixelFormat.dwRGBBitCount))
 				||
-				(32 != ddesc2.ddpfPixelFormat.dwRGBBitCount)
-				&&	(16 != ddesc2.ddpfPixelFormat.dwRGBBitCount))
+				((32 != ddesc2.ddpfPixelFormat.dwRGBBitCount)
+				&&	(16 != ddesc2.ddpfPixelFormat.dwRGBBitCount)))
 		{
 			dSurface->Unlock(NULL);
 			sSurface->Unlock(NULL);
