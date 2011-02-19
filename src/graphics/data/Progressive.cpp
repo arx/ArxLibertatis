@@ -128,7 +128,7 @@ void CreateNeighbours(EERIE_3DOBJ * obj)
 	}
 	else memset(obj->ndata, 0, sizeof(NEIGHBOURS_DATA)*obj->vertexlist.size());
 
-	for (long i = 0; i < obj->vertexlist.size(); i++)
+	for (size_t i = 0; i < obj->vertexlist.size(); i++)
 	{
 		obj->ndata[i].Nvertex = NULL;
 		obj->ndata[i].Nfaces = NULL;
