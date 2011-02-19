@@ -1633,7 +1633,6 @@ extern long IN_BOOK_DRAW;
 /* Render object */
 void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, EERIE_3D * pos, EERIE_3D & ftr, float invisibility)
 {
-	int			i;
 	float		MAX_ZEDE = 0.f;
 
 	// Sets IO BBox to calculated BBox :)
@@ -1741,7 +1740,7 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 
 		bBumpOnIO		= ( bALLOW_BUMP ) && ( io ) && ( io->ioflags & IO_BUMP ) && ( fDist < min( max( 0.f, ( ACTIVECAM->cdepth * fZFogStart ) - 200.f ), 600.f ) ) ? true : false ;
 
-		for (i = 0 ; i < eobj->facelist.size() ; i++)
+		for (size_t i = 0 ; i < eobj->facelist.size() ; i++)
 		{
 			D3DTLVERTEX		tv_static[3];
 			ARX_D3DVERTEX	* tv			= NULL;
