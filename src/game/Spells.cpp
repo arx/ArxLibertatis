@@ -3080,7 +3080,7 @@ void ARX_SPELLS_Precast_Launch(const long &num)
 }
 void ARX_SPELLS_Precast_Check()
 {
-	for (long i = 0; i < MAX_PRECAST; i++)
+	for (size_t i = 0; i < MAX_PRECAST; i++)
 	{
 		if ((Precast[i].typ>=0) && (Precast[i].launch_time>0) &&(ARXTime>=Precast[i].launch_time))
 		{
@@ -3107,7 +3107,7 @@ void ARX_SPELLS_Precast_Check()
 										Precast[i].duration);
 					Precast[i].typ = -1;
 
-					for (long li=i; li < MAX_PRECAST - 1; li++)
+					for (size_t li=i; li < MAX_PRECAST - 1; li++)
 					{
 						if (Precast[li + 1].typ != -1)
 						{
