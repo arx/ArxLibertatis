@@ -2564,19 +2564,17 @@ long CanPayMana(long num,float cost, bool _bSound = true)
 
 //-----------------------------------------------------------------------------
 // Resets Spell Recognition
-void ARX_SPELLS_ResetRecognition()
-{
-	for (int i = 0; i<MAX_SPELL_SYMBOLS; i++)
-	{
+void ARX_SPELLS_ResetRecognition() {
+	
+	for(size_t i = 0; i < MAX_SPELL_SYMBOLS; i++) {
 		SpellSymbol[i] = SYMBOL_NONE;
 	}
-
-	for (int i=0;i<6;i++)
-	{
+	
+	for(size_t i = 0; i < 6; i++) {
 		player.SpellToMemorize.iSpellSymbols[i] = 255;
 	}
-
-	CurrSpellSymbol=0;
+	
+	CurrSpellSymbol = 0;
 }
 
 //-----------------------------------------------------------------------------
