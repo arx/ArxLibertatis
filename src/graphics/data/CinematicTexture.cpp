@@ -479,7 +479,7 @@ HBITMAP LoadTargaFile( const char * strPathname)
 		else
 			dwOffset = (m_dwHeight - y - 1) * m_dwWidth;
 
-		for (DWORD x = 0; x < m_dwWidth; x)
+		for (DWORD x = 0; x < m_dwWidth; x++)
 		{
 			BYTE b;
 			BYTE g;
@@ -515,7 +515,6 @@ HBITMAP LoadTargaFile( const char * strPathname)
 			}
 
 			m_pRGBAData[dwOffset+x] = RGBA_MAKE(r, g, b, 255);
-			x++;
 		}
 	}
 
