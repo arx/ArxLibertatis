@@ -1114,7 +1114,7 @@ void SPELLCAST_Notify(long num)
 {
 	if (num < 0) return;
 
-	if (num >= MAX_SPELLS) return;
+	if ((size_t)num >= MAX_SPELLS) return;
 
 	char spell[128];
 	long source = spells[num].caster;
