@@ -2917,7 +2917,7 @@ long ARX_SPELLS_GetFree() {
 bool ARX_SPELLS_ExistAnyInstance(const long &typ) {
 	
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		if(spells[i].exist && (spells[i].type == typ)) {
+		if(spells[i].exist && spells[i].type == typ) {
 			return true;
 		}
 	}
@@ -2925,11 +2925,14 @@ bool ARX_SPELLS_ExistAnyInstance(const long &typ) {
 	return false;
 }
 
-long ARX_SPELLS_GetInstance(const long &typ)
-{
-	for (long i = 0; i < MAX_SPELLS; i++)
-		if (spells[i].exist && (spells[i].type==typ)) return i;
-
+long ARX_SPELLS_GetInstance(const long &typ) {
+	
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		if(spells[i].exist && spells[i].type==typ) {
+			return i;
+		}
+	}
+	
 	return -1;
 }
 
