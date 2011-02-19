@@ -2534,7 +2534,7 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 					lfr = ffr;
 					lfg = ffg;
 					lfb = ffb;
-					tv[o].color = (0xFF000000L | (((lfr) & 255) << 16) |	(((lfg) & 255) << 8) | (lfb) & 255);
+					tv[o].color = 0xFF000000L | (((lfr) & 255) << 16) | (((lfg) & 255) << 8) | ((lfb) & 255);
 				}
 
 				if (tot > 260.f)
