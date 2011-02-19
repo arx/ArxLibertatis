@@ -3571,14 +3571,12 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 			}
 		}
 
-		if (special_color_flag & 1)
-		{
-			for (long j=0;j<3;j++)
-			{	
-				vert_list[j].color=(0xFF000000L 
-					| ( ((long)((float)((long)((vert_list[j].color>>16) & 255))*(special_color.r))&255) << 16) 
-					|  (((long)((float)((long)((vert_list[j].color>>8) & 255))*special_color.g)&255) << 8) 
-					|    (long)((float)((long) (vert_list[j].color & 255))*(special_color.b))&255);
+		if(special_color_flag & 1) {
+			for(long j = 0; j < 3; j++) {
+				long r = (long)((float)((long)((vert_list[j].color >> 16) & 255)) * special_color.r);
+				long g = (long)((float)((long)((vert_list[j].color >> 8) & 255)) * special_color.g);
+				long b = (long)((float)((long) (vert_list[j].color & 255))*(special_color.b));
+				vert_list[j].color = 0xFF000000L | ((r&255) << 16) | ((g&255) << 8) | (b&255);
 			}
 		}
 	}
