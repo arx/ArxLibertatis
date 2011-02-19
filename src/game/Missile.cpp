@@ -94,9 +94,10 @@ void ARX_MISSILES_Kill(long i)
 
 //-----------------------------------------------------------------------------
 // Clear all missiles
-void ARX_MISSILES_ClearAll()
-{
-	for (long i(0); i < MAX_MISSILES; i++) ARX_MISSILES_Kill(i);
+void ARX_MISSILES_ClearAll() {
+	for(size_t i = 0; i < MAX_MISSILES; i++) {
+		ARX_MISSILES_Kill(i);
+	}
 }
 
 //-----------------------------------------------------------------------------
