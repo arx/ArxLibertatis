@@ -3651,13 +3651,12 @@ void FinishAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * eanim)
 
 bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj, long idx, long grs)
 {
-	long ii;
-
+	
 	if (eobj == NULL) return false;
 
-	for (long i = 0; i < eobj->grouplist[grs].indexes.size(); i++)
+	for (size_t i = 0; i < eobj->grouplist[grs].indexes.size(); i++)
 	{
-		ii = (long)eobj->grouplist[grs].indexes[i];
+		long ii = eobj->grouplist[grs].indexes[i];
 
 		if (ii == idx) return true;
 	}
