@@ -64,6 +64,7 @@ enum ARX_SPELLS_SYMBOL {
 	SYMBOL_AKBAA,       // Akbaa
 	SYMBOL_NONE = 255
 };
+const size_t ARX_SPELLS_SYMBOL_COUNT = 21;
 
 #define RUNE_AAM			SYMBOL_AAM
 #define RUNE_CETRIUS		SYMBOL_CETRIUS
@@ -214,6 +215,8 @@ enum ARX_SPELLS_SPELLS
 
 	// LEVEL ZOB
 	SPELL_TELEPORT				,
+	
+	SPELL_NONE
 };
 
 extern float TELEPORT;

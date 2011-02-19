@@ -2152,599 +2152,153 @@ void ARX_SPELLS_AnalyseSYMBOL()
 	}
 }
 
-//*************************************************************************************
-// 
-//*************************************************************************************
-bool ARX_SPELLS_AnalyseSPELL()
-{
-	long caster = 0; // Local Player
-	long PRE_CAST=0;
-
-	if ( ARX_IMPULSE_Pressed(CONTROLS_CUST_STEALTHMODE) || bPrecastSpell)
-		PRE_CAST = SPELLCAST_FLAG_PRECAST;
-
-	bPrecastSpell = false;
-
-	if (	(SpellSymbol[0]==SYMBOL_MEGA)
-		&&	(SpellSymbol[1]==SYMBOL_MEGA)
-		&&	(SpellSymbol[2]==SYMBOL_MEGA)
-		&&	(SpellSymbol[3]==SYMBOL_AAM)
-		&&	(SpellSymbol[4]==SYMBOL_VITAE)
-		&&	(SpellSymbol[5]==SYMBOL_TERA)		)
-	{
-		cur_mega=10;
-		return ARX_SPELLS_Launch(SPELL_SUMMON_CREATURE,caster,PRE_CAST);
+struct SpellDefinition {
+	SpellDefinition * next[ARX_SPELLS_SYMBOL_COUNT];
+	ARX_SPELLS_SPELLS spell;
+	SpellDefinition() : spell(SPELL_NONE) {
+		for(size_t i = 0; i < ARX_SPELLS_SYMBOL_COUNT; i++) {
+			next[i] = NULL;
+		}
 	}
+};
 
-	switch (SpellSymbol[0])
-	{
-		case SYMBOL_RHAA :
+static SpellDefinition definedSpells;
 
-			switch (SpellSymbol[1])
-			{
-				case SYMBOL_STREGUM :
-
-					switch (SpellSymbol[2])
-					{
-						case SYMBOL_VITAE :// CURSE Level 4
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_CURSE,caster,PRE_CAST);							
-
-						break;
-					}
-
-					break;
-				case SYMBOL_TEMPUS: // FREEZE TIME Level 10
-
-					if (SpellSymbol[2]==255)
-						return ARX_SPELLS_Launch(SPELL_FREEZE_TIME,caster,PRE_CAST);
-
-					break;
-
-				case SYMBOL_KAOM : // LOWER ARMOR Level 2
-
-					if (SpellSymbol[2]==255)
-						return ARX_SPELLS_Launch(SPELL_LOWER_ARMOR,caster,PRE_CAST);
-
-					break;
-
-				case SYMBOL_MOVIS : // SLOW DOWN Level 6
-
-					if (SpellSymbol[2]==255)
-						return ARX_SPELLS_Launch(SPELL_SLOW_DOWN,caster,PRE_CAST);
-
-					break;
-
-				case SYMBOL_VITAE : // HARM Level 2
-
-					if (SpellSymbol[2]==255)
-						return ARX_SPELLS_Launch(SPELL_HARM,caster,PRE_CAST);
-
-					break;
-				case SYMBOL_VISTA: // CONFUSE Level 7
-
-					if (SpellSymbol[2]==255)
-						return ARX_SPELLS_Launch(SPELL_CONFUSE,caster,PRE_CAST);
-
-					break;
-			}
-
+static void addSpell(const ARX_SPELLS_SYMBOL symbols[MAX_SPELL_SYMBOLS], ARX_SPELLS_SPELLS spell) {
+	
+	SpellDefinition * def = &definedSpells;
+	
+	for(size_t i = 0; i < MAX_SPELL_SYMBOLS; i++) {
+		if(symbols[i] == SYMBOL_NONE) {
 			break;
-		case SYMBOL_MEGA :			
-
-			switch (SpellSymbol[1])
-			{
-				case SYMBOL_NHI:
-
-					switch (SpellSymbol[2])
-					{
-						case SYMBOL_MOVIS: // MASS PARALYSIS Level 9
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_MASS_PARALYSE,caster,PRE_CAST);								
-
-						break;
-					}
-
-					break;
-
-				case SYMBOL_KAOM: //ARMOR Level 2
-
-					if (SpellSymbol[2]==255)					
-						return ARX_SPELLS_Launch(SPELL_ARMOR,caster,PRE_CAST);						
-
-				break;
-
-				case SYMBOL_VISTA: // MAGIC SIGHT Level 1
-
-					if (SpellSymbol[2]==255)
-						return ARX_SPELLS_Launch(SPELL_MAGIC_SIGHT,caster,PRE_CAST);
-
-				break;
-
-				case SYMBOL_VITAE: // HEAL Level 2
-
-					if (SpellSymbol[2]==255)
-						return ARX_SPELLS_Launch(SPELL_HEAL,caster,PRE_CAST);
-
-				break;
-
-				case SYMBOL_MOVIS: // SPEED Level 3
-
-					if (SpellSymbol[2]==255)
-						return ARX_SPELLS_Launch(SPELL_SPEED,caster,PRE_CAST);
-
-				break;
-
-				case SYMBOL_STREGUM:
-
-					switch (SpellSymbol[2])
-					{
-						case SYMBOL_VITAE:// SANCTIFY OBJECT Level 4
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_BLESS,caster,PRE_CAST);
-
-							break;
-
-						case SYMBOL_COSUM: // ENCHANT WEAPON Level 8
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_ENCHANT_WEAPON,caster,PRE_CAST);
-
-							break;
-					}
-
-					break;
-
-					case SYMBOL_AAM:
-
-						switch (SpellSymbol[2])
-						{
-							case SYMBOL_MEGA:
-
-								switch (SpellSymbol[3])
-								{
-									case SYMBOL_YOK: // MASS INCINERATE Level 10
-
-										if (SpellSymbol[4]==255)
-											return ARX_SPELLS_Launch(SPELL_MASS_INCINERATE,caster,PRE_CAST);
-
-									break;
-								}
-
-							break;
-						}
-
-					break;
-
-					case SYMBOL_SPACIUM:
-
-						switch (SpellSymbol[2])
-						{
-							case SYMBOL_NONE  :
-
-								if (SpellSymbol[3]==255)
-									return ARX_SPELLS_Launch(SPELL_ACTIVATE_PORTAL,caster,PRE_CAST);
-
-							break;
-
-							case SYMBOL_MOVIS : // LEVITATE Level 5
-
-								if (SpellSymbol[3]==255)
-									return ARX_SPELLS_Launch(SPELL_LEVITATE,caster,PRE_CAST);
-
-							break;
-						}
-
-						break;
-			}
-
-			break;
-
-		case SYMBOL_NHI:
-
-			switch (SpellSymbol[1])
-			{
-				case SYMBOL_MOVIS: // PARALYSE Level 6
-
-					if (SpellSymbol[2]==255)
-						return ARX_SPELLS_Launch(SPELL_PARALYSE,caster,PRE_CAST);
-
-				break;
-
-				case SYMBOL_CETRIUS: // Cure POISON Level 5
-
-					if (SpellSymbol[2]==255)
-						return ARX_SPELLS_Launch(SPELL_CURE_POISON,caster,PRE_CAST);
-
-				break;
-
-				case SYMBOL_YOK: // DOUSE Level 1 Spell
-
-					if (SpellSymbol[2]==255)
-						return ARX_SPELLS_Launch(SPELL_DOUSE,caster,PRE_CAST);
-
-				break;
-				
-				case SYMBOL_STREGUM: 
-
-					switch (SpellSymbol[2])
-					{
-						case SYMBOL_VISTA: // DISPELL ILLUSION Level 3
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_DISPELL_ILLUSION,caster,PRE_CAST);
-
-							break;
-
-						case SYMBOL_SPACIUM: // NEGATE MAGIC Level 9
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_NEGATE_MAGIC,caster,PRE_CAST);
-
-							break;
-					}
-
-					break;
-
-				case SYMBOL_SPACIUM: // DISPEL FIELD Level 4
-
-					if (SpellSymbol[2]==255)
-						return ARX_SPELLS_Launch(SPELL_DISPELL_FIELD,caster,PRE_CAST);							
-
-				break;
-				
-				case SYMBOL_MORTE: 
-
-					switch (SpellSymbol[2])
-					{
-						case SYMBOL_COSUM: // DISARM TRAP Level 6
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_DISARM_TRAP,caster,PRE_CAST);
-
-						break;
-					}
-
-					break;
-
-				case SYMBOL_VISTA: 
-
-					switch (SpellSymbol[2])
-					{
-						case SYMBOL_NONE :
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_INVISIBILITY,caster,PRE_CAST);
-
-						break;
-					}
-
-					break;
-			}
-
-			break;
-			
-		case SYMBOL_VISTA:
-
-			switch (SpellSymbol[1])
-			{
-				case SYMBOL_MOVIS: // FLYING EYE Level 7
-
-					if (SpellSymbol[2]==255)
-						return ARX_SPELLS_Launch(SPELL_FLYING_EYE,caster,PRE_CAST);
-
-				break;
-			}
-
-			break;
-
-		case SYMBOL_MORTE:
-
-			switch (SpellSymbol[1])
-			{
-				case SYMBOL_KAOM: // REPEL UNDEAD Level 5
-
-					if (SpellSymbol[2]==255)
-						return ARX_SPELLS_Launch(SPELL_REPEL_UNDEAD,caster,PRE_CAST);
-
-				break;
-					
-				case SYMBOL_COSUM:
-
-					switch (SpellSymbol[2])
-					{
-						case SYMBOL_VISTA:	//DETECT_TRAP Level 2
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_DETECT_TRAP,caster,PRE_CAST);
-
-						break;
-					}
-
-					break;
-			}
-
-			break;
-
-		case SYMBOL_MOVIS:
-
-			switch (SpellSymbol[1])
-			{
-				case SYMBOL_COMUNICATUM: // CONTROL TARGET Level 10
-
-					if (SpellSymbol[2]==255)
-						return ARX_SPELLS_Launch(SPELL_CONTROL_TARGET,caster,PRE_CAST);
-
-				break;					
-			}
-
-			break;
-
-		case SYMBOL_STREGUM:
-
-			switch (SpellSymbol[1])
-			{
-				case SYMBOL_MOVIS: // MANA_DRAIN Level 8
-
-					if (SpellSymbol[2]==255)
-						return ARX_SPELLS_Launch(SPELL_MANA_DRAIN,caster,PRE_CAST);
-
-				break;					
-			}
-
-			break;
-
-		case SYMBOL_AAM:
-
-			switch (SpellSymbol[1])
-			{
-				case SYMBOL_MEGA :
-
-					switch (SpellSymbol[2])
-					{
-						case SYMBOL_YOK: // INCINERATE Level 9
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_INCINERATE,caster,PRE_CAST);
-
-						break;
-						case SYMBOL_MORTE: // EXPLOSION Level 8
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_EXPLOSION,caster,PRE_CAST);
-
-						break;
-					}
-
-					break;
-
-				case SYMBOL_KAOM:
-
-					switch (SpellSymbol[2])
-					{
-						case SYMBOL_SPACIUM: // CREATE FIELD Level 6
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_CREATE_FIELD,caster,PRE_CAST);
-
-						break;
-					}
-
-					break;
-
-				case SYMBOL_MORTE:
-
-					switch (SpellSymbol[2])
-					{
-						case SYMBOL_VITAE: // RISE DEAD Level 6
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_RISE_DEAD,caster,PRE_CAST);
-
-						break;
-
-						case SYMBOL_COSUM: // RUNE OF GUARDING Level 5
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_RUNE_OF_GUARDING,caster,PRE_CAST);
-
-						break;
-					}
-
-					break;
-
-				case SYMBOL_VITAE:
-
-					switch (SpellSymbol[2])
-					{
-						case SYMBOL_TERA: // SUMMON CREATURE Level 9
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_SUMMON_CREATURE,caster,PRE_CAST);
-
-						break;
-
-						case SYMBOL_COSUM: // CREATE_FOOD Level 3
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_CREATE_FOOD,caster,PRE_CAST);
-
-						break;
-					}
-
-					break;
-
-				case SYMBOL_FOLGORA:
-
-					switch (SpellSymbol[2])
-					{
-						case SYMBOL_TAAR: // LIGHTNING STRIKE Level 7
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_LIGHTNING_STRIKE,caster,PRE_CAST);
-
-						break;
-
-						case SYMBOL_SPACIUM: // MASS LIGHTNING Level 10
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_MASS_LIGHTNING_STRIKE,caster,PRE_CAST);
-
-						break;
-					}
-
-					break;
-
-				case SYMBOL_YOK:
-
-					switch (SpellSymbol[2])
-					{
-						case SYMBOL_NONE : // IGNIT Level 1
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_IGNIT,caster,PRE_CAST);
-
-						break;
-
-						case SYMBOL_SPACIUM: // FIRE FIELD Level 7
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_FIRE_FIELD,caster,PRE_CAST);
-
-						break;							
-
-						case SYMBOL_TAAR: // FIREBALL Level 3
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_FIREBALL,caster,PRE_CAST);
-
-						break;
-					}
-
-					break;
-
-				case SYMBOL_FRIDD:
-
-					switch (SpellSymbol[2])
-					{
-						case SYMBOL_SPACIUM: // ICE FIELD Level 7
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_ICE_FIELD,caster,PRE_CAST);
-
-						break;							
-
-						case SYMBOL_TAAR: // ICE PROJECTILE Level 3
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_ICE_PROJECTILE,caster,PRE_CAST);
-
-						break;
-					}
-
-					break;
-
-				case SYMBOL_CETRIUS:
-
-					switch (SpellSymbol[2])
-					{
-						case SYMBOL_TAAR: // POISON PROJECTILE Level 5
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_POISON_PROJECTILE,caster,PRE_CAST);
-
-						break;
-					}
-
-					break;
-
-				case SYMBOL_TAAR: 
-
-					switch (SpellSymbol[2])
-					{
-						case SYMBOL_NONE :// MAGIC MISSILE Level 1
-
-							if (SpellSymbol[3]==255)
-								return ARX_SPELLS_Launch(SPELL_MAGIC_MISSILE,caster,PRE_CAST);
-
-						break;
-					}
-
-					break;
-			}
-
-			break;
-
-		case SYMBOL_YOK:
-
-			switch (SpellSymbol[1])
-			{
-				case SYMBOL_KAOM: // FIRE PROTECTION Level 4
-
-					if (SpellSymbol[2]==255)
-						return ARX_SPELLS_Launch(SPELL_FIRE_PROTECTION,caster,PRE_CAST);
-
-				break;
-			}
-
-			break;
-
-		case SYMBOL_FRIDD:
-
-			switch (SpellSymbol[1])
-			{
-				case SYMBOL_KAOM: // ICE PROTECTION Level 4
-
-					if (SpellSymbol[2]==255)
-						return ARX_SPELLS_Launch(SPELL_COLD_PROTECTION,caster,PRE_CAST);
-
-				break;
-			}
-
-			break;
-
-		case SYMBOL_VITAE:
-
-			switch (SpellSymbol[1])
-			{
-				case SYMBOL_MOVIS: // LIFE_DRAIN Level 8 Spell
-
-					if (SpellSymbol[2]==255)
-						return ARX_SPELLS_Launch(SPELL_LIFE_DRAIN,caster,PRE_CAST);
-
-				break;
-			}
-
-			break;
-
-		case SYMBOL_SPACIUM:
-
-			switch (SpellSymbol[1])
-			{
-				case SYMBOL_COMUNICATUM: // TELEKINESIS Level 4
-
-					if (SpellSymbol[2]==255)
-						return ARX_SPELLS_Launch(SPELL_TELEKINESIS,caster,PRE_CAST);
-
-				break;
-			}
-
-			break;
+		}
+		assert(symbols[i] >= 0 && symbols[i] < ARX_SPELLS_SYMBOL_COUNT);
+		if(def->next[symbols[i]] == NULL) {
+			def->next[symbols[i]] = new SpellDefinition();
+		}
+		def = def->next[symbols[i]];
 	}
-
-	ARX_SPELLS_Fizzle(-1);
-
-	if (player.SpellToMemorize.bSpell)
-	{
-		CurrSpellSymbol=0;
-		player.SpellToMemorize.bSpell = false;
-	}
-
-	return false;
+	
+	assert(def->spell == SPELL_NONE);
+	
+	def->spell = spell;
 }
+
+static ARX_SPELLS_SPELLS getSpell(const ARX_SPELLS_SYMBOL symbols[MAX_SPELL_SYMBOLS]) {
+	
+	const SpellDefinition * def = &definedSpells;
+	
+	for(size_t i = 0; i < MAX_SPELL_SYMBOLS; i++) {
+		if(symbols[i] == SYMBOL_NONE) {
+			break;
+		}
+		assert(symbols[i] >= 0 && symbols[i] < ARX_SPELLS_SYMBOL_COUNT);
+		if(def->next[symbols[i]] == NULL) {
+			return SPELL_NONE;
+		}
+		def = def->next[symbols[i]];
+	}
+	
+	return def->spell;
+}
+
+struct RawSpellDefinition {
+	ARX_SPELLS_SYMBOL symbols[MAX_SPELL_SYMBOLS];
+	ARX_SPELLS_SPELLS spell;
+};
+
+// TODO move to external file
+static const RawSpellDefinition allSpells[] = {
+	{{SYMBOL_RHAA, SYMBOL_STREGUM, SYMBOL_VITAE, SYMBOL_NONE}, SPELL_CURSE}, // level 4
+	{{SYMBOL_RHAA, SYMBOL_TEMPUS, SYMBOL_NONE}, SPELL_FREEZE_TIME}, // level 10
+	{{SYMBOL_RHAA, SYMBOL_KAOM, SYMBOL_NONE}, SPELL_LOWER_ARMOR}, // level 2
+	{{SYMBOL_RHAA, SYMBOL_MOVIS, SYMBOL_NONE}, SPELL_SLOW_DOWN}, // level 6
+	{{SYMBOL_RHAA, SYMBOL_VITAE, SYMBOL_NONE}, SPELL_HARM}, // level 2
+	{{SYMBOL_RHAA, SYMBOL_VISTA, SYMBOL_NONE}, SPELL_CONFUSE}, // level 7
+	{{SYMBOL_MEGA, SYMBOL_NHI, SYMBOL_MOVIS, SYMBOL_NONE}, SPELL_MASS_PARALYSE}, // level 9
+	{{SYMBOL_MEGA, SYMBOL_KAOM, SYMBOL_NONE}, SPELL_ARMOR}, // level 2
+	{{SYMBOL_MEGA, SYMBOL_VISTA, SYMBOL_NONE}, SPELL_MAGIC_SIGHT}, // level 1
+	{{SYMBOL_MEGA, SYMBOL_VITAE, SYMBOL_NONE}, SPELL_HEAL}, // level 2
+	{{SYMBOL_MEGA, SYMBOL_MOVIS, SYMBOL_NONE}, SPELL_SPEED}, // level 3
+	{{SYMBOL_MEGA, SYMBOL_STREGUM, SYMBOL_VITAE, SYMBOL_NONE}, SPELL_BLESS}, // level 4
+	{{SYMBOL_MEGA, SYMBOL_STREGUM, SYMBOL_COSUM, SYMBOL_NONE}, SPELL_ENCHANT_WEAPON}, // level 8
+	{{SYMBOL_MEGA, SYMBOL_AAM, SYMBOL_MEGA, SYMBOL_YOK, SYMBOL_NONE}, SPELL_MASS_INCINERATE}, // level 10
+	{{SYMBOL_MEGA, SYMBOL_SPACIUM, SYMBOL_NONE}, SPELL_ACTIVATE_PORTAL}, // level ?
+	{{SYMBOL_MEGA, SYMBOL_SPACIUM, SYMBOL_MOVIS, SYMBOL_NONE}, SPELL_LEVITATE}, // level 5
+	{{SYMBOL_NHI, SYMBOL_MOVIS, SYMBOL_NONE}, SPELL_PARALYSE}, // level 6
+	{{SYMBOL_NHI, SYMBOL_CETRIUS, SYMBOL_NONE}, SPELL_CURE_POISON}, // level 5
+	{{SYMBOL_NHI, SYMBOL_YOK, SYMBOL_NONE}, SPELL_DOUSE}, // level 1
+	{{SYMBOL_NHI, SYMBOL_STREGUM, SYMBOL_VISTA, SYMBOL_NONE}, SPELL_DISPELL_ILLUSION}, // level 3
+	{{SYMBOL_NHI, SYMBOL_STREGUM, SYMBOL_SPACIUM, SYMBOL_NONE}, SPELL_NEGATE_MAGIC}, // level 9
+	{{SYMBOL_NHI, SYMBOL_SPACIUM, SYMBOL_NONE}, SPELL_DISPELL_FIELD}, // level 4
+	{{SYMBOL_NHI, SYMBOL_MORTE, SYMBOL_COSUM, SYMBOL_NONE}, SPELL_DISARM_TRAP}, // level 6
+	{{SYMBOL_NHI, SYMBOL_VISTA, SYMBOL_NONE}, SPELL_INVISIBILITY}, // level ?
+	{{SYMBOL_VISTA, SYMBOL_MOVIS, SYMBOL_NONE}, SPELL_FLYING_EYE}, // level 7
+	{{SYMBOL_MORTE, SYMBOL_KAOM, SYMBOL_NONE}, SPELL_REPEL_UNDEAD}, // level 5
+	{{SYMBOL_MORTE, SYMBOL_COSUM, SYMBOL_VISTA, SYMBOL_NONE}, SPELL_DETECT_TRAP}, // level 2
+	{{SYMBOL_MOVIS, SYMBOL_COMUNICATUM, SYMBOL_NONE}, SPELL_CONTROL_TARGET}, // level 10
+	{{SYMBOL_STREGUM, SYMBOL_MOVIS, SYMBOL_NONE}, SPELL_MANA_DRAIN}, // level 8
+	{{SYMBOL_AAM, SYMBOL_MEGA, SYMBOL_YOK, SYMBOL_NONE}, SPELL_INCINERATE}, // level 9
+	{{SYMBOL_AAM, SYMBOL_MEGA, SYMBOL_MORTE, SYMBOL_NONE}, SPELL_EXPLOSION}, // level 8
+	{{SYMBOL_AAM, SYMBOL_KAOM, SYMBOL_SPACIUM, SYMBOL_NONE}, SPELL_CREATE_FIELD}, // level 6
+	{{SYMBOL_AAM, SYMBOL_MORTE, SYMBOL_VITAE, SYMBOL_NONE}, SPELL_RISE_DEAD}, // level 6
+	{{SYMBOL_AAM, SYMBOL_MORTE, SYMBOL_COSUM, SYMBOL_NONE}, SPELL_RUNE_OF_GUARDING}, // level 5
+	{{SYMBOL_AAM, SYMBOL_VITAE, SYMBOL_TERA, SYMBOL_NONE}, SPELL_SUMMON_CREATURE}, // level 9
+	{{SYMBOL_AAM, SYMBOL_VITAE, SYMBOL_COSUM, SYMBOL_NONE}, SPELL_CREATE_FOOD}, // level 3
+	{{SYMBOL_AAM, SYMBOL_FOLGORA, SYMBOL_TAAR, SYMBOL_NONE}, SPELL_LIGHTNING_STRIKE}, // level 7
+	{{SYMBOL_AAM, SYMBOL_FOLGORA, SYMBOL_SPACIUM, SYMBOL_NONE}, SPELL_MASS_LIGHTNING_STRIKE}, // level 10
+	{{SYMBOL_AAM, SYMBOL_YOK, SYMBOL_NONE}, SPELL_IGNIT}, // level 1
+	{{SYMBOL_AAM, SYMBOL_YOK, SYMBOL_SPACIUM, SYMBOL_NONE}, SPELL_FIRE_FIELD}, // level 7
+	{{SYMBOL_AAM, SYMBOL_YOK, SYMBOL_TAAR, SYMBOL_NONE}, SPELL_FIREBALL}, // level 3
+	{{SYMBOL_AAM, SYMBOL_FRIDD, SYMBOL_SPACIUM, SYMBOL_NONE}, SPELL_ICE_FIELD}, // level 7
+	{{SYMBOL_AAM, SYMBOL_FRIDD, SYMBOL_TAAR, SYMBOL_NONE}, SPELL_ICE_PROJECTILE}, // level 3
+	{{SYMBOL_AAM, SYMBOL_CETRIUS, SYMBOL_TAAR, SYMBOL_NONE}, SPELL_POISON_PROJECTILE}, // level 5
+	{{SYMBOL_AAM, SYMBOL_TAAR, SYMBOL_NONE}, SPELL_MAGIC_MISSILE}, // level 1
+	{{SYMBOL_YOK, SYMBOL_KAOM, SYMBOL_NONE}, SPELL_FIRE_PROTECTION}, // level 4
+	{{SYMBOL_FRIDD, SYMBOL_KAOM, SYMBOL_NONE}, SPELL_COLD_PROTECTION}, // level 4
+	{{SYMBOL_VITAE, SYMBOL_MOVIS, SYMBOL_NONE}, SPELL_LIFE_DRAIN}, // level 8
+	{{SYMBOL_SPACIUM, SYMBOL_COMUNICATUM, SYMBOL_NONE}, SPELL_TELEKINESIS}, // level 4
+};
+
+bool ARX_SPELLS_AnalyseSPELL() {
+	
+	long caster = 0; // Local Player
+	long flags = 0;
+	
+	if(ARX_IMPULSE_Pressed(CONTROLS_CUST_STEALTHMODE) || bPrecastSpell) {
+		flags |= SPELLCAST_FLAG_PRECAST;
+	}
+	
+	bPrecastSpell = false;
+	
+	ARX_SPELLS_SPELLS spell;
+	
+	if(SpellSymbol[0] == SYMBOL_MEGA && SpellSymbol[0] == SYMBOL_MEGA
+	   && SpellSymbol[0] == SYMBOL_MEGA && SpellSymbol[0] == SYMBOL_AAM
+	   && SpellSymbol[0] == SYMBOL_VITAE && SpellSymbol[0] == SYMBOL_TERA) {
+		cur_mega = 10;
+		spell = SPELL_SUMMON_CREATURE;
+	} else {
+		spell = getSpell(SpellSymbol);
+	}
+	
+	if(spell == SPELL_NONE) {
+		
+		ARX_SPELLS_Fizzle(-1);
+		
+		if(player.SpellToMemorize.bSpell) {
+			CurrSpellSymbol = 0;
+			player.SpellToMemorize.bSpell = false;
+		}
+		
+		return false;
+	}
+	
+	return ARX_SPELLS_Launch(spell, caster, flags);
+	
+}
+
+
 bool No_MagicAllowed()
 {
 	ARX_SOUND_PlaySFX(SND_MAGIC_FIZZLE);
@@ -3297,16 +2851,19 @@ void ARX_SPELLS_Init(LPDIRECT3DDEVICE7 m_pd3dDevice)
 }
 
 //-----------------------------------------------------------------------------
-void ARX_SPELLS_Init() 
-{
-	long i;
-
-	for (i = 0; i < MAX_SPELLS; i++)
-	{
+void ARX_SPELLS_Init() {
+	
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
 		spells[i].tolive = 0;
 		spells[i].exist = false;
 		spells[i].pSpellFx = NULL;
 	}
+	
+	size_t nspells = sizeof(allSpells)/sizeof(*allSpells);
+	for(size_t i = 0; i < nspells; i++) {
+		addSpell(allSpells[i].symbols, allSpells[i].spell);
+	}
+	
 }
 void ARX_SPELLS_CancelAll() 
 {
