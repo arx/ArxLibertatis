@@ -1507,15 +1507,15 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 		delete nouvo;
 	}
 
-	for (int k = 0 ; k < from->vertexlist.size() ; k++)
+	for(size_t k = 0; k < from->vertexlist.size(); k++) {
 		equival[k] = -1;
+	}
 
 	ARX_CHECK(0 < from->selections[num].selected.size());
 
-	for (int k = 0 ; k < from->selections[num].selected.size() ; k++)
-	{
-		inpos						=	from->selections[num].selected[k];
-		equival[from->selections[num].selected[k]]	=	k;
+	for(size_t k = 0; k < from->selections[num].selected.size(); k++) {
+		inpos = from->selections[num].selected[k];
+		equival[from->selections[num].selected[k]] = k;
 		
 		
 		
