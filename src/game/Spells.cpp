@@ -6612,8 +6612,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if (!GLOBAL_MAGIC_MODE)
 				return No_MagicAllowed();
 			
-			for (long ii=0;ii<MAX_SPELLS;ii++) 
-			{
+			for(size_t ii = 0; ii < MAX_SPELLS; ii++) {
 				if ((spells[ii].exist) && (spells[ii].type==typ))
 				{
 					if (spells[ii].longinfo!=-1) 
