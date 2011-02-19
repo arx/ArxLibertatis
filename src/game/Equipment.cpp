@@ -1172,9 +1172,8 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 		}
 
 
-		EERIEPOLY * ep;
-
-		if (ep = CheckBackgroundInSphere(&sphere))
+		EERIEPOLY * ep = CheckBackgroundInSphere(&sphere);
+		if (ep)
 		{
 			if (io_source == inter.iobj[0])
 			{
