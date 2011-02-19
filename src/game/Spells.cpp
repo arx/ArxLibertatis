@@ -1141,7 +1141,7 @@ void SPELLCAST_NotifyOnlyTarget(long num)
 {
 	if (num < 0) return;
 
-	if (num >= MAX_SPELLS) return;
+	if ((size_t)num >= MAX_SPELLS) return;
 
 	if(spells[num].target<0) return;
 
