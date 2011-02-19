@@ -2900,18 +2900,16 @@ void ARX_SPELLS_ClearAll() {
 }
 
 // Obtains a Free Spell slot
-long ARX_SPELLS_GetFree() 
-{
-	for (long i = 0; i < MAX_SPELLS; i++) 
-	{
-		if (spells[i].exist == false) 
-		{
+long ARX_SPELLS_GetFree() {
+	
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		if(spells[i].exist == false) {
 			spells[i].longinfo = spells[i].longinfo2 = -1;
-			spells[i].misc=NULL;
+			spells[i].misc = NULL;
 			return i;
 		}
 	}
-
+	
 	return -1;
 }
 
