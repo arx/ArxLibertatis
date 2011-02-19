@@ -212,27 +212,22 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-// Remove if no longer needed
-/*#include <algorithm>
-#include <fstream>
-#include <sstream>
-#include <vector>
-*/
-#include "core/Core.h"
 #include "graphics/effects/SpellEffects.h"
+
+#include "core/Core.h"
 #include "graphics/Draw.h"
 
-//-----------------------------------------------------------------------------
+
 CSpellFx::CSpellFx() :
-	lLightId(-1),
+	fBeta(0),
 	fManaCostToLaunch(10),
 	fManaCostPerSecond(10),
-	fBeta(0)
+	lLightId(-1),
+	lSrc(-1),
+	spellinstance(-1)
 {
 	SetDuration(1000);
 	SetAngle(fBeta);
-	lSrc = -1;
-	spellinstance = -1;
 };
 
 //-----------------------------------------------------------------------------
