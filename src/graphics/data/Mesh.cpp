@@ -286,7 +286,6 @@ long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest, unsigned int dest
 	EERIE_3D boxmin;
 	EERIE_3D boxmax;
 	const int tempSize = 128 ;
-	long i;
 
 	if (io == NULL) return -1;
 
@@ -297,7 +296,7 @@ long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest, unsigned int dest
 	boxmax.y = -999999999.f;
 	boxmax.z = -999999999.f;
 
-	for (i = 0; i < io->obj->vertexlist.size(); i++)
+	for (size_t i = 0; i < io->obj->vertexlist.size(); i++)
 	{
 		boxmin.x = std::min(boxmin.x, io->obj->vertexlist3[i].v.x);
 		boxmin.y = std::min(boxmin.y, io->obj->vertexlist3[i].v.y);
@@ -323,7 +322,7 @@ long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest, unsigned int dest
 		}
 	}
 
-	for (i = 0; i < inter.nbmax; i++)
+	for (long i = 0; i < inter.nbmax; i++)
 	{
 		if (inter.iobj[i] != NULL)
 		{
