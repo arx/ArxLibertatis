@@ -488,11 +488,10 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 
 void LaunchAntiMagicField(EERIE_3D * pos,long ident)
 {
-	for (long n=0;n<MAX_SPELLS;n++)
-	{
+	for(size_t n = 0 ; n < MAX_SPELLS; n++) {
 		if (	(spells[n].exist) 
 			&&	(spells[ident].caster_level >= spells[n].caster_level)
-			&&	(n!=ident)	)
+			&&	((long)n != ident))
 		{
 			EERIE_3D pos; 
 			GetSpellPosition(&pos,n);
