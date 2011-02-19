@@ -936,9 +936,9 @@ float ARX_DAMAGES_DamageNPC(INTERACTIVE_OBJ * io, float dmg, long source, long f
 				{
 					pio = inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]];
 
-					if ((pio) && ((pio->poisonous == 0) || (pio->poisonous_count == 0))
-					        || (flags & 1))
+					if((pio && (pio->poisonous == 0 || pio->poisonous_count == 0)) || (flags & 1)) {
 						pio = NULL;
+					}
 				}
 			}
 			else
