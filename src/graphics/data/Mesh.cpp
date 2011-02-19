@@ -3548,7 +3548,7 @@ void DrawEERIEObjExEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	Zcos = (float)EEcos(Zsin);
 	Zsin = (float)EEsin(Zsin);
 
-	for (long i = 0; i < eobj->vertexlist.size(); i++)
+	for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 	{
 		v.sx = eobj->vertexlist[i].v.x * scale->x; 
 		v.sy = eobj->vertexlist[i].v.y * scale->y; 
