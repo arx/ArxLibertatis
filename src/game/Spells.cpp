@@ -1162,9 +1162,9 @@ void SPELLCAST_NotifyOnlyTarget(long num)
 //-----------------------------------------------------------------------------
 void SPELLEND_Notify(long num)
 {
-	if	(	(num<0) 
-		||	(num>=MAX_SPELLS)	)
+	if(num < 0 || (size_t)num >= MAX_SPELLS) {
 		return;
+	}
 
 	char spell[128];
 	long source=spells[num].caster;
