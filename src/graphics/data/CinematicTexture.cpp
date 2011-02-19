@@ -620,7 +620,6 @@ HBITMAP LoadBMPImage( const char * strPathname)
 int CreateAllMapsForBitmap(const string & path, Cinematic * c) {
 	
 	int n = -1;
-	int pos = 0;
 	
 	int nbx, nby, w, h, num, id;
 	CinematicBitmap	* bi;
