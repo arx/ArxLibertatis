@@ -459,7 +459,7 @@ void AddDiffKey(Cinematic * c, C_KEY * key, bool writecolor, bool writecolord, b
 
 	if (!k) return;
 
-	ksuiv = (num == CKTrack->nbkey) ? ksuiv = k : ksuiv = k + 1;
+	ksuiv = (num == CKTrack->nbkey) ? k : k + 1;
 
 	if (DiffKey(k, key))
 	{
