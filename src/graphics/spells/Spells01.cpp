@@ -720,7 +720,7 @@ void CMultiMagicMissile::Create(EERIE_3D aePos, EERIE_3D angles)
 }
 
 //-----------------------------------------------------------------------------
-void CMultiMagicMissile::CheckCollision(float _fPlayer_Magic_Level)
+void CMultiMagicMissile::CheckCollision()
 {
 	if (pTab)
 	{

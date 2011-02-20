@@ -7553,7 +7553,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 					if (pCSpellFX)
 					{
 						CMultiMagicMissile *pMMM = (CMultiMagicMissile *) pCSpellFX;
-							pMMM->CheckCollision(1.f);
+							pMMM->CheckCollision();
 						
 						// Update
 						pCSpellFX->Update(FrameDiff);

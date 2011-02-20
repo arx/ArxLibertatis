@@ -118,7 +118,7 @@ class CMultiMagicMissile: public CSpellFx
 		~CMultiMagicMissile();
 
 	public:
-		void	CheckCollision(float);
+		void	CheckCollision();
 
 	public:
 		void	Create(EERIE_3D, EERIE_3D);
