@@ -1282,8 +1282,10 @@ void LaunchSnapShotParamApp(HWND hwnd)
 //*************************************************************************************
 //*************************************************************************************
 
-INT_PTR CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	char temp[256];
 	HWND thWnd;
 
