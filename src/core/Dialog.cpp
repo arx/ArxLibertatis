@@ -3337,11 +3337,10 @@ FOG_DEF fogcopy;
 extern HWND CDP_FogOptions;
 extern FOG_DEF * CDP_EditFog;
 
-//*************************************************************************************
-//*************************************************************************************
-
-INT_PTR CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HWND thWnd;
 	float t;
 
@@ -3607,8 +3606,10 @@ INTERACTIVE_OBJ * edit_io = NULL;
 //*************************************************************************************
 //*************************************************************************************
 
-INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HWND thWnd;
 
 	switch (uMsg)
