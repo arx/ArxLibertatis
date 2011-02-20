@@ -5463,7 +5463,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 
 			ARX_SOUND_PlaySFX(SND_SPELL_CREATE_FIELD, &target);
 
-			CSpellFx * pCSpellFx  = new CCreateField(GDevice);
+			CSpellFx * pCSpellFx  = new CCreateField();
 
 			if (pCSpellFx != NULL)
 			{

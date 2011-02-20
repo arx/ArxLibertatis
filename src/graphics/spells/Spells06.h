@@ -58,7 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CSPELLFX_LVL06_H
 #define ARX_CSPELLFX_LVL06_H
 
-class CSpellFx;
+#include "graphics/effects/SpellEffects.h"
 
 //-----------------------------------------------------------------------------
 // Done By : seb
@@ -169,7 +169,7 @@ class CCreateField: public CSpellFx
 
 	public:
 		float	falpha;
-		CCreateField(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CCreateField();
 
 	private:
 		void RenderQuad(LPDIRECT3DDEVICE7 m_pd3dDevice, D3DTLVERTEX p1, D3DTLVERTEX p2, D3DTLVERTEX p3, D3DTLVERTEX p4,  int rec, EERIE_3D);

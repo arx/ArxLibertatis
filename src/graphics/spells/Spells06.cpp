@@ -54,6 +54,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include "graphics/spells/Spells06.h"
+
 #include "graphics/Draw.h"
 #include "scene/Light.h"
 #include "graphics/Math.h"
@@ -63,7 +65,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Spells.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/spells/Spells05.h"
-#include "graphics/spells/Spells06.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
 #include "core/Time.h"
@@ -71,15 +72,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-//#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
-
 extern CParticleManager * pParticleManager;
 
 //-----------------------------------------------------------------------------
 // CREATE FIELD
 //-----------------------------------------------------------------------------
-CCreateField::CCreateField(LPDIRECT3DDEVICE7 m_pd3dDevice)
-{
+CCreateField::CCreateField() {
+	
 	eSrc.x = 0;
 	eSrc.y = 0;
 	eSrc.z = 0;
