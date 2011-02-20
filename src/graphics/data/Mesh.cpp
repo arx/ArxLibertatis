@@ -4746,7 +4746,7 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms)
 
 //*************************************************************************************
 //*************************************************************************************
-void EERIEAddPolyToBackground(D3DTLVERTEX * vert, D3DTLVERTEX * vert2, TextureContainer * tex, long render, float transval, EERIE_3DOBJ * eobj)
+static void EERIEAddPolyToBackground(D3DTLVERTEX * vert2, TextureContainer * tex, long render, float transval, EERIE_3DOBJ * eobj)
 {
 	EERIEPOLY ep;
 
@@ -4914,14 +4914,14 @@ void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 			vlist[2].tv = eobj->facelist[i].v[2];
 
 			if (eobj->facelist[i].texid >= 0)
-				EERIEAddPolyToBackground(NULL,vlist,eobj->texturecontainer[eobj->facelist[i].texid],eobj->facelist[i].facetype,eobj->facelist[i].transval,eobj);
+				EERIEAddPolyToBackground(vlist,eobj->texturecontainer[eobj->facelist[i].texid],eobj->facelist[i].facetype,eobj->facelist[i].transval,eobj);
 		}
 		else
 		{
 			vlist[0].color = 0xFFFFFFFF;
 			vlist[1].color = 0xFFFFFFFF;
 			vlist[2].color = 0xFFFFFFFF;
-			EERIEAddPolyToBackground(NULL, vlist, NULL, eobj->facelist[i].facetype, eobj->facelist[i].transval, eobj);
+			EERIEAddPolyToBackground(vlist, NULL, eobj->facelist[i].facetype, eobj->facelist[i].transval, eobj);
 		}
 	}
 }

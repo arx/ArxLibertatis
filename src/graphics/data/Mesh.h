@@ -860,7 +860,6 @@ void ClearBackground(EERIE_BACKGROUND * eb);
 int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv);
 int BkgAddPoly(EERIEPOLY * ep);
 
-void EERIEAddPolyToBackground(D3DTLVERTEX *vert,D3DTLVERTEX *vert2,TextureContainer * tex, long render,float transval);
 void EERIEAddPoly(D3DTLVERTEX * vert, D3DTLVERTEX * vert2, TextureContainer * tex, long render, float transval);
 // BACKGROUND MANAGEMENT FUNCTIONS END
 //****************************************************************************
