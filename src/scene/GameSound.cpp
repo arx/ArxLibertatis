@@ -103,12 +103,11 @@ enum ParseIniFileEnum
 
 typedef unsigned long(* ParseIniFileCallback)(const char * lpszText);
 
-enum PlayingAmbianceType
-{
+enum PlayingAmbianceType {
 	PLAYING_AMBIANCE_MENU,
 	PLAYING_AMBIANCE_SCRIPT,
 	PLAYING_AMBIANCE_ZONE
-}playingAmbianceType;
+};
 
 typedef struct
 {
