@@ -2065,8 +2065,8 @@ long Strippable(EERIE_PFACE * epf, EERIE_FACE * ef)
 	return -1;
 }
 
-bool EERIEOBJECT_AddFaceToPFace(EERIE_3DOBJ * eobj, EERIE_FACE * face, long faceidx)
-{
+static bool EERIEOBJECT_AddFaceToPFace(EERIE_3DOBJ * eobj, EERIE_FACE * face) {
+	
 	for (long i = 0; i < eobj->nbpfaces; i++)
 	{
 		// TODO pfacelist is never really used
@@ -2096,7 +2096,7 @@ bool EERIEOBJECT_AddFaceToPFace(EERIE_3DOBJ * eobj, EERIE_FACE * face, long face
 
 void EERIEOBJECT_AddFace(EERIE_3DOBJ * eobj, EERIE_FACE * face, long faceidx)
 {
-	if (EERIEOBJECT_AddFaceToPFace(eobj, face, faceidx)) return;
+	if (EERIEOBJECT_AddFaceToPFace(eobj, face)) return;
 
 	eobj->pfacelist = (EERIE_PFACE *)realloc(eobj->pfacelist, sizeof(EERIE_PFACE) * (eobj->nbpfaces + 1));
 	EERIE_PFACE * epf = &eobj->pfacelist[eobj->nbpfaces];
@@ -2106,7 +2106,7 @@ void EERIEOBJECT_AddFace(EERIE_3DOBJ * eobj, EERIE_FACE * face, long faceidx)
 	epf->transval = face->transval;
 
 	ARX_CHECK_SHORT(faceidx);
-	short sfaceIdx = ARX_CLEAN_WARN_CAST_SHORT(faceidx);
+	short sfaceIdx = static_cast<short>(faceidx);
 
 	for (long i = 0; i < 3; i++)
 	{
