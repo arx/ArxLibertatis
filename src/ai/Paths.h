@@ -243,7 +243,7 @@ class CRuban
 		CRuban() {};
 		void	AddRubanDef(int origin, float size, int dec, float r, float g, float b, float r2, float g2, float b2);
 		void	Create(int numinteractive, int duration);
-		void	Update(unsigned long);
+		void	Update();
 		float	Render(LPDIRECT3DDEVICE7);
  
 };

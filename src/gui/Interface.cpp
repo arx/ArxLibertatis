@@ -42,6 +42,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "ai/Paths.h"
 #include "graphics/effects/DrawEffects.h"
+#include "graphics/effects/Fog.h"
 #include "game/Equipment.h"
 #include "scene/GameSound.h"
 #include "scene/ChangeLevel.h"

@@ -1597,11 +1597,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 			if (Thrown[i].pRuban)
 			{
 
-
-				ARX_CHECK_ULONG(FrameDiff);
-
-				Thrown[i].pRuban->Update(ARX_CLEAN_WARN_CAST_ULONG(FrameDiff));
-
+				Thrown[i].pRuban->Update();
 
 				Thrown[i].pRuban->Render(GDevice);
 			}
@@ -1933,8 +1929,8 @@ void CRuban::AddRuban(int * f, int dec)
 }
 
 //-----------------------------------------------------------------------------
-void CRuban::Update(unsigned long _ulTime)
-{
+void CRuban::Update() {
+	
 	int	nb, num;
 
 	if (ARXPausedTimer) return;
