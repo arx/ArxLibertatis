@@ -1158,7 +1158,8 @@ EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const char * dirr)
 				path2 = dirr + et->name;
 				size_t SizeAlloc = 0;
 
-				if (adr = (unsigned char *)PAK_FileLoadMalloc(path2, SizeAlloc))
+				adr = (unsigned char *)PAK_FileLoadMalloc(path2, SizeAlloc);
+				if (adr)
 				{
 					es->scenes[es->nb_scenes] = (EERIE_3DSCENE *)ScnToEerie(adr, SizeAlloc, path.c_str(), TTE_NO_NDATA | TTE_NO_PDATA);
 					es->nb_scenes++;
