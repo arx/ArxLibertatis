@@ -131,8 +131,10 @@ static HRESULT WINAPI ModeEnumCallback(DDSURFACEDESC2 * pddsd,
 static HRESULT WINAPI DeviceEnumCallback(TCHAR		*	strDesc,
         TCHAR		*	strName,
         D3DDEVICEDESC7	* pDesc,
-        VOID		*		pParentInfo)
-{
+        VOID		*		pParentInfo) {
+	
+	(void)strDesc;
+	
 	// Keep track of # of devices that were enumerated
 	g_dwNumDevicesEnumerated++;
 
