@@ -116,7 +116,7 @@ void ARX_SPEECH_MoveUp()
 //-----------------------------------------------------------------------------
 void ARX_SPEECH_ClearAll()
 {
-	for (long i = 0; i < MAX_SPEECH; i++)
+	for (size_t i = 0; i < MAX_SPEECH; i++)
 	{
 		if (speech[i].timecreation != 0) {
 			speech[i].clear();
