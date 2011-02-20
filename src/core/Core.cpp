@@ -2277,7 +2277,7 @@ void LoadSysTextures()
 
 	blood_splat=_GetTexture_NoRefinement("Graph\\Particles\\new_blood2.bmp");
 
-	EERIE_DRAW_SetTextureZMAP(0,Z_map);
+	EERIE_DRAW_SetTextureZMAP(Z_map);
 	EERIE_DRAW_sphere_particle=sphere_particle;
 	EERIE_DRAW_square_particle=_GetTexture_NoRefinement("Graph\\particles\\square.bmp");
 

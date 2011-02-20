@@ -349,7 +349,7 @@ void DRAWLATER_ReInit()
 	curdrawlater=0;
 }
 
-void EERIE_DRAW_SetTextureZMAP(long num,TextureContainer * Z_map)
+void EERIE_DRAW_SetTextureZMAP(TextureContainer * Z_map)
 {
 	Zmap=Z_map;
 }
