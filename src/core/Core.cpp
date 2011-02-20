@@ -5844,7 +5844,7 @@ static float _AvgFrameDiff = 150.f;
 					&inter.iobj[0]->angle,&inter.iobj[0]->pos, 
 					ARX_CLEAN_WARN_CAST_ULONG(iCalc) 
 
-									  , inter.iobj[0], 0, 4);
+									  , inter.iobj[0], 4);
 
 					if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
 				ManageCombatModeAnimations();
@@ -5884,7 +5884,7 @@ static float _AvgFrameDiff = 150.f;
 					&inter.iobj[0]->pos, 
 					ARX_CLEAN_WARN_CAST_ULONG(val),
 					inter.iobj[0],
-					0,4);
+					4);
 
 
 				if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
@@ -6581,7 +6581,7 @@ static float _AvgFrameDiff = 150.f;
 		assert(inter.iobj[0]->obj != NULL);
 		EERIEDrawAnimQuat(	m_pd3dDevice,	inter.iobj[0]->obj,
 				&inter.iobj[0]->animlayer[0],
-				&inter.iobj[0]->angle,&inter.iobj[0]->pos, 0,inter.iobj[0],0,8);		
+				&inter.iobj[0]->angle,&inter.iobj[0]->pos, 0,inter.iobj[0],8);		
 		ACTIVECAM->use_focal=restore;
 		FORCE_FRONT_DRAW=0;
 	}	

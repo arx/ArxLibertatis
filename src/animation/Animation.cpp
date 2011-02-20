@@ -649,7 +649,6 @@ void EERIEDrawAnimQuat(		LPDIRECT3DDEVICE7 pd3dDevice,
 							EERIE_3D  * pos,
 							unsigned long time,
 							INTERACTIVE_OBJ * io,
-							D3DCOLOR col,
 							long typ
 						)
 {

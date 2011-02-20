@@ -853,25 +853,6 @@ void DrawEERIEInterMatrix(	LPDIRECT3DDEVICE7 pd3dDevice,
 							EERIE_3D * angle,
 							EERIE_MOD_INFO * modinfo=NULL
 						);
-void EERIEDrawAnimQuat(		LPDIRECT3DDEVICE7 pd3dDevice,
-							EERIE_3DOBJ * eobj,
-							ANIM_USE * eanim,
-							EERIE_3D * angle,
-							EERIE_3D  * pos,
-							unsigned long time,
-							INTERACTIVE_OBJ * io,
-							D3DCOLOR col,
-							long typ=0
-						);
-void EERIEDrawAnimQuatPos(	LPDIRECT3DDEVICE7 pd3dDevice,
-							EERIE_3DOBJ * eobj,
-							ANIM_USE * eanim,
-							EERIE_3D * angle,
-							EERIE_3D  * pos,
-							INTERACTIVE_OBJ * io,
-							D3DCOLOR col,
-							long typ=0
-						);
 // DRAWING FUNCTIONS END
 //****************************************************************************
 

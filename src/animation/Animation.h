@@ -85,4 +85,16 @@ ARX_D3DVERTEX * PushVertexInTableCull_TMetalH(TextureContainer *);
 void PushInterBump(TextureContainer *, D3DTLVERTEX *);
 void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd, TextureContainer * _pTex, D3DTLVERTEX * _pD3DVertex);
 void EERIE_ANIMMANAGER_ReloadAll();
+
+
+void EERIEDrawAnimQuat(		LPDIRECT3DDEVICE7 pd3dDevice,
+							EERIE_3DOBJ * eobj,
+							ANIM_USE * eanim,
+							EERIE_3D * angle,
+							EERIE_3D  * pos,
+							unsigned long time,
+							INTERACTIVE_OBJ * io,
+							long typ=0
+						);
+
 #endif // EERIEANIM_H

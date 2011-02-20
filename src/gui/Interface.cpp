@@ -8739,7 +8739,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			ARX_CHECK_ULONG(Original_framedelay);
 			EERIEDrawAnimQuat(GDevice,inter.iobj[0]->obj, &player.useanim,&ePlayerAngle,&pos,
 				ARX_CLEAN_WARN_CAST_ULONG(Original_framedelay),
-				NULL,D3DCOLORWHITE, 0);
+				NULL, 0);
 
 		}
 		else
