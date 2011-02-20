@@ -6765,7 +6765,6 @@ void StdDraw(float posx,float posy,D3DCOLOR color,TextureContainer * tcc,long fl
 void ManageSpellIcon(long i,float rrr,long flag)
 {
 	float POSX = DANAESIZX-INTERFACE_RATIO(35);
-	long lPOSX = POSX;
 	D3DCOLOR color;
 	float posx = POSX+lSLID_VALUE;
 	float posy = (float)currpos;
