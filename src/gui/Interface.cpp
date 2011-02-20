@@ -8043,7 +8043,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 		
 		if (!INTERNATIONAL_MODE)
 		{
-			for (long i=0;i<MAX_SPEECH;i++)
+			for (size_t i=0;i<MAX_SPEECH;i++)
 			{
 				if (speech[i].timecreation > 0)
 					FLYING_OVER = 0;
