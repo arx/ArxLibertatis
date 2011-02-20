@@ -58,11 +58,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CSPELLFX_LVL09_H
 #define ARX_CSPELLFX_LVL09_H
 
-#include "graphics/particle/ParticleManager.h"
+#include "graphics/effects/SpellEffects.h"
+#include "graphics/particle/ParticleSystem.h"
 
-class CParticleSystem;
-
-class CSpellFx;
 class CParalyse;
 
 //-----------------------------------------------------------------------------
@@ -102,8 +100,7 @@ class CSummonCreature: public CSpellFx
 		D3DTLVERTEX v1b[40];
 
 	public:
-		CSummonCreature(LPDIRECT3DDEVICE7 m_pd3dDevice);
-		//~CSummon();
+		CSummonCreature();
 
 	private:
 		void Split(D3DTLVERTEX * v, int a, int b, float yo);
@@ -150,7 +147,7 @@ class CNegateMagic: public CSpellFx
 		float fSize;
 
 	public:
-		CNegateMagic(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CNegateMagic();
 		~CNegateMagic();
 
 		// accesseurs

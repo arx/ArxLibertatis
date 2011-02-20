@@ -6373,7 +6373,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				spells[i].fdata=0.f;
 
 			Vector_Copy(&spells[i].target_pos,&target);
-			CSpellFx *pCSpellFx = new CSummonCreature(GDevice);
+			CSpellFx *pCSpellFx = new CSummonCreature();
 
 			if (pCSpellFx != NULL)
 			{
@@ -6448,7 +6448,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			
 			
 			Vector_Copy(&spells[i].target_pos,&target);
-			CSpellFx *pCSpellFx = new CSummonCreature(GDevice);
+			CSpellFx *pCSpellFx = new CSummonCreature();
 
 			if (pCSpellFx != NULL)
 			{
@@ -6506,7 +6506,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			else
 				spells[i].tolive = 1000000;
 
-			CSpellFx *pCSpellFx = new CNegateMagic(GDevice);
+			CSpellFx *pCSpellFx = new CNegateMagic();
 			
 			if (pCSpellFx != NULL)
 			{

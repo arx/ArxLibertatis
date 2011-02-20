@@ -53,6 +53,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+
+#include "graphics/spells/Spells09.h"
+
 #include <iostream>
 #include <vector>
 #include <sstream>
@@ -65,16 +68,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Core.h"
 #include "game/Spells.h"
 #include "graphics/effects/SpellEffects.h"
-#include "graphics/spells/Spells09.h"
 #include "graphics/spells/Spells06.h"
 #include "graphics/spells/Spells05.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/particle/ParticleParams.h"
 #include "core/Time.h"
 
-//#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
-
-//-----------------------------------------------------------------------------
-CSummonCreature::CSummonCreature(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CSummonCreature::CSummonCreature()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;
@@ -100,8 +100,6 @@ CSummonCreature::CSummonCreature(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	tex_light = MakeTCFromFile("Graph\\Obj3D\\textures\\(Fx)_tsu4.bmp");
 }
-
-//-----------------------------------------------------------------------------
 
 void CSummonCreature::SetDuration(const unsigned long alDuration)
 {
@@ -896,7 +894,7 @@ CNegateMagic::~CNegateMagic()
 		ssol = NULL;
 	}
 }
-CNegateMagic::CNegateMagic(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CNegateMagic::CNegateMagic()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;
