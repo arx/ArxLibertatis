@@ -5137,8 +5137,7 @@ MENUSTATE CWindowMenu::Render()
 			if(eCurrentMenuState==(*i)->eMenuState)
 			{
 				eMS=(*i)->Update(iPosX,iPosY,
-					0,
-					iARXDiffTimeMenu);
+					0);
 
 				if(eMS!=NOP)
 				{
@@ -5667,7 +5666,7 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool _bValidateTest)
 
 //-----------------------------------------------------------------------------
 
-MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY,int _FrameDiff)
+MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 {
 	bFrameOdd=!bFrameOdd;
 

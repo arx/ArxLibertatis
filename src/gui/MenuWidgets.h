@@ -696,7 +696,7 @@ class CWindowMenuConsole
 		void AddMenuCenter(CMenuElement *);
 		void AddMenuCenterY(CMenuElement *);
 		void AlignElementCenter(CMenuElement *);
-		MENUSTATE Update(int, int, int, int);
+		MENUSTATE Update(int, int, int);
 		int Render();
  
 		CMenuElement * GetTouch(bool _bValidateTest = false);
