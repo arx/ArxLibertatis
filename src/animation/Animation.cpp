@@ -1910,7 +1910,7 @@ void DrawEERIEInter2(EERIE_3DOBJ * eobj,
 		)
 		goto finish;
 
-	if ((!modinfo) && (ARX_SCENE_PORTAL_ClipIO(io,eobj,&pos,&BBOXMIN,&BBOXMAX)))
+	if ((!modinfo) && (ARX_SCENE_PORTAL_ClipIO(io,&pos)))
 		return;
 	
 	
@@ -2949,7 +2949,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 		)
 		goto finish;
 
-	if (ARX_SCENE_PORTAL_ClipIO(io,eobj,&pos,&BBOXMIN,&BBOXMAX))
+	if (ARX_SCENE_PORTAL_ClipIO(io,&pos))
 		return;
 
 	// Precalc local lights for this object then interpolate

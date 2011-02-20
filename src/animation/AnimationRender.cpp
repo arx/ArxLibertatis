@@ -587,7 +587,7 @@ int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA
 		return false;
 	}
 
-	if (ARX_SCENE_PORTAL_ClipIO(io, eobj, pos, &BBOXMIN, &BBOXMAX))
+	if (ARX_SCENE_PORTAL_ClipIO(io, pos))
 		return false;
 
 	return true;

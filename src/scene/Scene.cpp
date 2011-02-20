@@ -887,8 +887,8 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io)
 //   Implement all Portal Methods
 //   Return a reduced clipbox which can be used for polys clipping in the case of partial visibility
 //*********************************************************************************************************************
-bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io,EERIE_3DOBJ * eobj,EERIE_3D * position,EERIE_3D * bboxmin,EERIE_3D * bboxmax)
-{
+bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io, EERIE_3D * position) {
+	
 	if (EDITMODE) return false;
 
 	if (io==inter.iobj[0]) return false;
