@@ -2795,8 +2795,7 @@ void Cedric_BlendAnimation(EERIE_3DOBJ * eobj, float timm) {
 	}
 }
 
-void Cedric_SaveBlendData(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_3D * angle)
-{
+void Cedric_SaveBlendData(INTERACTIVE_OBJ * io) {
 	if (io->obj->c_data)
 	{
 		for (long i = 0; i < io->obj->c_data->nb_bones; i++)
@@ -2935,10 +2934,10 @@ void	Cedric_AnimateDrawEntity(LPDIRECT3DDEVICE7 pd3dDevice,
 			if (timm > 0.f)
 			{
 				Cedric_BlendAnimation(eobj, timm);
-				Cedric_SaveBlendData(io, eobj, angle);
+				Cedric_SaveBlendData(io);
 			}
 			else
-				Cedric_SaveBlendData(io, eobj, angle);
+				Cedric_SaveBlendData(io);
 		}
 
 		// Build skeleton in Object Space
