@@ -1433,7 +1433,7 @@ int main(int, char**)
 	LogDebug << "Application Creation";
 	g_pD3DApp = &danaeApp;
 
-	if( FAILED( danaeApp.Create( hInstance, strCmdLine ) ) )
+	if( FAILED( danaeApp.Create( hInstance ) ) )
 		return 0;
 
 	LogInfo << "Application Creation Success";
