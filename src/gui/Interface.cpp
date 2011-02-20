@@ -2112,6 +2112,8 @@ bool DANAE::ManageEditorControls()
 			}
 
 			break;
+			
+		case NOTE_TYPE_UNDEFINED: break; // Cannot handle notes of undefined type.
 		}
 		
 		px = NotePosX * Xratio;
