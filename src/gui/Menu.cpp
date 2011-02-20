@@ -804,7 +804,6 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 					player.skin = ARX_CLEAN_WARN_CAST_CHAR(iSkin);
 
 				}
-				else;
 
 				Color = RGB(255, 255, 255);
 			}
@@ -851,9 +850,6 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 					ARX_PLAYER_Restore_Skin();
 				}
-
-				if (EERIEMouseButton & 1) ;
-				else ;
 
 				Color = RGB(255, 255, 255);
 			}
@@ -976,7 +972,6 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				ARX_MENU_CLICKSOUND();
 
 			}
-			else;
 
 			Color = RGB(255, 255, 255);
 		}
@@ -1001,7 +996,6 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				ARX_MENU_CLICKSOUND();
 
 			}
-			else;
 
 			Color = RGB(255, 255, 255);
 		}
