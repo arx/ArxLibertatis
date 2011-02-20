@@ -530,7 +530,7 @@ long ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 		return -1;
 	}
 
-	if (ARX_CHANGELEVEL_Push_AllIO(num) != 1)
+	if (ARX_CHANGELEVEL_Push_AllIO() != 1)
 	{
 		LogError << "Error Saving IOs...";
 		ARX_TIME_UnPause();
@@ -1030,10 +1030,8 @@ retry:
 	return 1;
 }
 
-
-//-----------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Push_AllIO(long num)
-{
+long ARX_CHANGELEVEL_Push_AllIO() {
+	
 	for (long i = 1; i < inter.nbmax; i++)
 	{
 

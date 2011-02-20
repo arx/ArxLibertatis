@@ -495,7 +495,7 @@ long ARX_CHANGELEVEL_Push_Globals();
 long ARX_CHANGELEVEL_Pop_Globals();
 long ARX_CHANGELEVEL_Push_Player();
 void ARX_CHANGELEVEL_Change( const std::string& level, const std::string& target, long angle, long confirm);
-long ARX_CHANGELEVEL_Push_AllIO(long num);
+long ARX_CHANGELEVEL_Push_AllIO();
 long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io);
 long ARX_CHANGELEVEL_Pop_IO( const std::string& ident);
 void ARX_CHANGELEVEL_TestLoad( const std::string& level, std::string& target);
