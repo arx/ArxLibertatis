@@ -1152,8 +1152,8 @@ if (ulCurrentTime >= ulDuration)
 //ARX_END: jycorbel (2010-07-20)
 	{
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
-	ARX_CHECK_LONG(ulCalc);
-	long ff = 	ARX_CLEAN_WARN_CAST_LONG(ulCalc);
+	assert(ulCalc <= LONG_MAX);
+	long ff =  static_cast<long>(ulCalc);
 
 
 
