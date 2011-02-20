@@ -156,8 +156,8 @@ void ARX_MINIMAP_GetData(long SHOWLEVEL)
 }
 extern long Book_MapPage;
 //-----------------------------------------------------------------------------
-void ARX_MINIMAP_ValidatePos(EERIE_3D * pos)
-{
+void ARX_MINIMAP_ValidatePos() {
+	
 	long SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL); 
 
 	if ((SHOWLEVEL >= 0) && (SHOWLEVEL < 32))
@@ -196,7 +196,7 @@ void ARX_MINIMAP_ValidatePlayerPos()
 	{
 		AM_LASTPOS_x = player.pos.x;
 		AM_LASTPOS_z = player.pos.z;
-		ARX_MINIMAP_ValidatePos(&player.pos);
+		ARX_MINIMAP_ValidatePos();
 	}
 }
 
