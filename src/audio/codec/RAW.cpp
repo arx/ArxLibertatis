@@ -24,6 +24,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 
 #include "audio/codec/RAW.h"
+
 #include "io/PakManager.h"
 
 namespace ATHENA
@@ -35,8 +36,8 @@ namespace ATHENA
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 	CodecRAW::CodecRAW() :
-		stream(NULL),
 		header(NULL),
+		stream(NULL),
 		cursor(0)
 	{
 	}
