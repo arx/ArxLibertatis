@@ -1058,7 +1058,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 
 							if (!(flags & 1))
 							{
-								ARX_PARTICLES_Spawn_Splat(&pos, dmgs, color, hitpoint, target);
+								ARX_PARTICLES_Spawn_Splat(&pos, dmgs, color, target);
 
 								EERIE_SPHERE sp;
 								float power;

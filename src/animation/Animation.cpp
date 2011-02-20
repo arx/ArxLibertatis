@@ -2102,9 +2102,9 @@ void DrawEERIEInter2(EERIE_3DOBJ * eobj,
 								sp.origin.y-=rnd()*150.f;
 
 								if (count==0)
-									ARX_PARTICLES_Spawn_Splat(&sp.origin,200,io->_npcdata->blood_color,0,io,1);
+									ARX_PARTICLES_Spawn_Splat(&sp.origin,200,io->_npcdata->blood_color,io,1);
 								else
-									ARX_PARTICLES_Spawn_Splat(&sp.origin,200,io->_npcdata->blood_color,0,io,0);
+									ARX_PARTICLES_Spawn_Splat(&sp.origin,200,io->_npcdata->blood_color,io,0);
 
 								sp.origin.x=io->pos.x+rnd()*200.f-100.f;
 								sp.origin.y=io->pos.y+rnd()*20.f-10.f;
@@ -3281,9 +3281,9 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 								sp.origin.y-=rnd()*150.f;
 
 								if (count==0)
-									ARX_PARTICLES_Spawn_Splat(&sp.origin,200,io->_npcdata->blood_color,0,io,1);
+									ARX_PARTICLES_Spawn_Splat(&sp.origin,200,io->_npcdata->blood_color,io,1);
 								else
-									ARX_PARTICLES_Spawn_Splat(&sp.origin,200,io->_npcdata->blood_color,0,io,0);
+									ARX_PARTICLES_Spawn_Splat(&sp.origin,200,io->_npcdata->blood_color,io,0);
 
 								sp.origin.x=io->pos.x+rnd()*200.f-100.f;
 								sp.origin.y=io->pos.y+rnd()*20.f-10.f;

@@ -1019,7 +1019,6 @@ void ARX_NPC_ManagePoison(INTERACTIVE_OBJ * io)
 //*************************************************************************************
 //*************************************************************************************
  
-extern void ARX_PARTICLES_Spawn_Splat(EERIE_3D * pos, float dmgs, D3DCOLOR col, long vert, INTERACTIVE_OBJ * io, long flags);
 extern float MAX_ALLOWED_PER_SECOND;
 long REACTIVATION_COUNT = 0;
 void ARX_PHYSICS_Apply()
@@ -1069,7 +1068,7 @@ void ARX_PHYSICS_Apply()
 
 				if (idx >= io->obj->vertexlist.size()) idx = io->obj->vertexlist.size() - 1;
 
-				ARX_PARTICLES_Spawn_Splat(&io->obj->vertexlist3[idx].v, 20, 0xFFFF0000, idx, io, 1);
+				ARX_PARTICLES_Spawn_Splat(&io->obj->vertexlist3[idx].v, 20, 0xFFFF0000, io, 1);
 				ARX_PARTICLES_Spawn_Blood(&io->obj->vertexlist3[idx].v, 20, GetInterNum(io));
 				needkill = 1;
 			}

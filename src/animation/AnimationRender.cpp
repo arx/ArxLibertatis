@@ -774,9 +774,9 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 								sp.origin.y -= rnd() * 150.f;
 
 								if (count == 0)
-									ARX_PARTICLES_Spawn_Splat(&sp.origin, 200, io->_npcdata->blood_color, 0, io, 1);
+									ARX_PARTICLES_Spawn_Splat(&sp.origin, 200, io->_npcdata->blood_color, io, 1);
 								else
-									ARX_PARTICLES_Spawn_Splat(&sp.origin, 200, io->_npcdata->blood_color, 0, io, 0);
+									ARX_PARTICLES_Spawn_Splat(&sp.origin, 200, io->_npcdata->blood_color, io, 0);
 
 								sp.origin.x = io->pos.x + rnd() * 200.f - 100.f;
 								sp.origin.y = io->pos.y + rnd() * 20.f - 10.f;
