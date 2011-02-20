@@ -6119,7 +6119,7 @@ void DANAE::ManageKeyMouse()
 							{
 								if (Project.improvespeed) 
 								{
-									for (long i=0;i<MAX_SPELLS;i++)
+									for (size_t i=0;i<MAX_SPELLS;i++)
 									{
 										if ((spells[i].exist) && (spells[i].type==SPELL_SPEED)) spells[i].tolive=0;
 									}
