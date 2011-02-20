@@ -2568,11 +2568,10 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 long WATERFX = 0;
 long REFLECTFX = 0;
 
-//*************************************************************************************
-//*************************************************************************************
-
-INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HRESULT hr;
 
 	if (WM_COMMAND == uMsg)
@@ -2736,8 +2735,10 @@ INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 }
 extern long CHANGE_LEVEL_PROC_RESULT;
 
-INT_PTR CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	if (WM_COMMAND == uMsg)
 	{
 		if (IDC_GOTOPOLY == LOWORD(wParam))
@@ -2914,11 +2915,10 @@ void LightApply(HWND hWnd)
 
 long INITT = 0;
 
-//*************************************************************************************
-//*************************************************************************************
-
-INT_PTR CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HWND thWnd;
 	long l;
 
