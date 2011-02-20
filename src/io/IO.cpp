@@ -90,9 +90,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using namespace std;
 
-
-char HermesBufferWork[MAX_PATH];    // Used by FileStandardize (avoid malloc/free per call)
-
 UINT GaiaWM = 0;
 HWND MAIN_PROGRAM_HANDLE = NULL;
 long DEBUGG = 1;
@@ -122,12 +119,12 @@ bool IsIn(const std::string& strin, const std::string& str)
 	return ( strin.find( str ) != std::string::npos );
 }
 
-void File_Standardize(const std::string& from, std::string& to)
-{
+void File_Standardize(const std::string& from, std::string& to) {
 	long pos = 0;
 	//long pos2 = 0;
 	long size = from.length();
 	std::string temp = from; /*HermesBufferWork;	
+	char HermesBufferWork[MAX_PATH];    // Used by FileStandardize (avoid malloc/free per call)
 
 	while (pos < size)
 	{
