@@ -1253,7 +1253,6 @@ void KillInterTreeView()
 	}
 }
 
-char rett[128];
 extern long FINAL_COMMERCIAL_DEMO;
 
 //*************************************************************************************
