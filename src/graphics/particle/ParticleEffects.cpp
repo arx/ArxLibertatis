@@ -327,9 +327,9 @@ void ARX_PARTICLES_Spawn_Rogue_Blood(EERIE_3D * pos,float dmgs,D3DCOLOR col)
 	}
 	
 }
-//-----------------------------------------------------------------------------
-void ARX_PARTICLES_Spawn_Blood3(EERIE_3D * pos,float dmgs,D3DCOLOR col,long vert,INTERACTIVE_OBJ * io,long flags)
-{
+
+void ARX_PARTICLES_Spawn_Blood3(EERIE_3D * pos,float dmgs,D3DCOLOR col, long flags) {
+	
 	long j = ARX_PARTICLES_GetFree();
 	
 		if (	(j!=-1)
@@ -699,10 +699,10 @@ void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos,float dmgs,D3DCOLOR col,long vert
 
 			if (io->_npcdata->SPLAT_TOT_NB>MAX_GROUND_SPLATS)
 			{
-				ARX_PARTICLES_Spawn_Blood3(&posi,io->_npcdata->SPLAT_DAMAGES,col,vert,io,1);	
+				ARX_PARTICLES_Spawn_Blood3(&posi,io->_npcdata->SPLAT_DAMAGES,col,1);	
 				io->_npcdata->SPLAT_TOT_NB=1;
 			}
-			else ARX_PARTICLES_Spawn_Blood3(&posi,io->_npcdata->SPLAT_DAMAGES,col,vert,io,0);	
+			else ARX_PARTICLES_Spawn_Blood3(&posi,io->_npcdata->SPLAT_DAMAGES,col,0);	
 		}
 	}
 	else 
@@ -711,7 +711,7 @@ void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos,float dmgs,D3DCOLOR col,long vert
 			&&	(io->ioflags & IO_NPC)	)
 			io->_npcdata->SPLAT_DAMAGES=(short)dmgs;
 
-		ARX_PARTICLES_Spawn_Blood3(pos,dmgs,col,vert,io,1);			
+		ARX_PARTICLES_Spawn_Blood3(pos,dmgs,col,1);			
 
 		if (	(io)
 			&&	(io->ioflags & IO_NPC)	)

@@ -1020,7 +1020,6 @@ void ARX_NPC_ManagePoison(INTERACTIVE_OBJ * io)
 //*************************************************************************************
  
 extern void ARX_PARTICLES_Spawn_Splat(EERIE_3D * pos, float dmgs, D3DCOLOR col, long vert, INTERACTIVE_OBJ * io, long flags);
-extern void ARX_PARTICLES_Spawn_Blood3(EERIE_3D * pos, float dmgs, D3DCOLOR col, long vert, INTERACTIVE_OBJ * io, long flags);
 extern float MAX_ALLOWED_PER_SECOND;
 long REACTIVATION_COUNT = 0;
 void ARX_PHYSICS_Apply()
