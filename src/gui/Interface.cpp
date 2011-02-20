@@ -375,7 +375,7 @@ void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, cons
 		float divideX = 1.f/((float) inventory_font->m_dwWidth);
 		float divideY = 1.f/((float) inventory_font->m_dwHeight);
 
-		sprintf(tx, "%*d", _iNb, num);
+		sprintf(tx, "%*ld", _iNb, num);
 		long removezero=1;
 
 		for (long i=0;i<6;i++)
