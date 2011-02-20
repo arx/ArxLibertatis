@@ -9097,7 +9097,7 @@ void DANAE::DrawAllInterfaceFinish()
 	SETALPHABLEND(GDevice,true);
 	PRECAST_NUM=0;
 
-	for (long i=0;i<MAX_SPELLS;i++) 
+	for (size_t i=0;i<MAX_SPELLS;i++) 
 	{
 		if ((spells[i].exist) && (spells[i].caster==0))
 			if (spellicons[spells[i].type].bDuration)
