@@ -251,8 +251,9 @@ typedef struct
 ZBUFFER_INFO zbiZBufferInfo;
 
 static HRESULT WINAPI EnumZBufferFormatsCallback(DDPIXELFORMAT * pddpf,
-        VOID * pContext)
-{
+        VOID * pContext) {
+	
+	(void)pContext;
 
 	if (pddpf->dwFlags == DDPF_ZBUFFER)
 	{
