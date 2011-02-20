@@ -729,8 +729,8 @@ bool CylinderAboveInvalidZone(EERIE_CYLINDER * cyl)
 //*************************************************************************************
 #define MUST_BE_BIG 1
 
-bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, EERIE_3D * pos, long flags)
-{
+static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, EERIE_3D * pos) {
+	
 	long found = 0;
 	long best = 0;
 	long stop_radius = 0;
@@ -1260,7 +1260,7 @@ void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb)
 								if (ep2->type & POLY_NOPATH)
 									continue;
 
-								if (DirectAddAnchor_Original_Method(eb, eg, &currcyl.origin, 0))
+								if (DirectAddAnchor_Original_Method(eb, eg, &currcyl.origin))
 								{
 									added = 1;
 								}
