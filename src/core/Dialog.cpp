@@ -1570,11 +1570,10 @@ void LaunchLightThread(long minx, long minz, long maxx, long maxz)
 
 long SYNTAXCHECKING = 0;
 
-//*************************************************************************************
-//*************************************************************************************
-
-INT_PTR CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HWND thWnd;
 
 	switch (uMsg)
@@ -1745,11 +1744,10 @@ INT_PTR CALLBACK GaiaTextEdit(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 
 void ExitProc();
 
-//*************************************************************************************
-//*************************************************************************************
-
-INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	long val;
 	HWND thWnd;
 
@@ -2064,11 +2062,10 @@ extern float BIGLIGHTPOWER;
 extern long DEBUGCODE;
 extern long TRUEFIGHT;
 
-//*************************************************************************************
-//*************************************************************************************
-
-INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HWND thWnd;
 	static long wuz;
 
