@@ -1714,7 +1714,7 @@ SMY_ZMAPPINFO sZMappInfo;
 extern D3DMATRIX ProjectionMatrix;
 extern long FORCE_FRONT_DRAW;
 //-----------------------------------------------------------------------------
-void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
+void DrawEERIEInter2(EERIE_3DOBJ * eobj,
 					EERIE_3D * angle, EERIE_3D  * poss, INTERACTIVE_OBJ * io, EERIE_MOD_INFO * modinfo )
 {
 	if ( !eobj ) return;
@@ -2769,8 +2769,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 
 	if(bRenderInterList)
 	{
-		DrawEERIEInter2(	pd3dDevice,
-							eobj,
+		DrawEERIEInter2(eobj,
 							angle,
 							poss,
 							io,
