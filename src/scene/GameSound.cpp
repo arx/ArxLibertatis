@@ -2109,8 +2109,10 @@ static void ARX_SOUND_CreateMaterials()
 	ARX_SOUND_LoadCollision(MATERIAL_STONE,  MATERIAL_STONE,        "STONE_on_STONE");
 }
 
-unsigned long PresenceSectionCallback(const char * lpszText)
-{
+unsigned long PresenceSectionCallback(const char * lpszText) {
+	
+	(void)lpszText;
+	
 	return PARSE_INI_FILE_CONTINUE;
 }
 
