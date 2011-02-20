@@ -496,7 +496,7 @@ float ARX_DAMAGES_DrainMana(INTERACTIVE_OBJ * io, float dmg)
 }
 //*************************************************************************************
 //*************************************************************************************
-void ARX_DAMAGES_DamageFIX(INTERACTIVE_OBJ * io, float dmg, long source, long flags, EERIE_3D * pos)
+void ARX_DAMAGES_DamageFIX(INTERACTIVE_OBJ * io, float dmg, long source, long flags)
 {
 	if ((!io)
 	        ||	(!io->show)
