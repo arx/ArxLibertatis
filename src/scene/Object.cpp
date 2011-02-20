@@ -123,11 +123,9 @@ long GetActionPointGroup(EERIE_3DOBJ * eobj, long idx)
 {
 	if (!eobj) return -1;
 
-	long i, j;
-
-	for (i = eobj->nbgroups - 1; i >= 0; i--)
+	for (long i = eobj->nbgroups - 1; i >= 0; i--)
 	{
-		for (j = 0; j < eobj->grouplist[i].indexes.size(); j++)
+		for (size_t j = 0; j < eobj->grouplist[i].indexes.size(); j++)
 		{
 			if (((long)eobj->grouplist[i].indexes[j]) == idx) return i;
 		}
