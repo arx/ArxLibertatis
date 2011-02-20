@@ -58,10 +58,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CSPELLFX_LVL03_H
 #define ARX_CSPELLFX_LVL03_H
 
-#include "graphics/particle/ParticleManager.h"
+#include "graphics/effects/SpellEffects.h"
+#include "graphics/particle/ParticleSystem.h"
 
-class CParticleSystem;
-class CSpellFx;
 
 //-----------------------------------------------------------------------------
 // Done By : Didier Pédreno

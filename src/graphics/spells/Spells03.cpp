@@ -54,6 +54,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include "graphics/spells/Spells03.h"
+
+#include <cassert>
+#include <climits>
+
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "scene/Light.h"
@@ -64,7 +69,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Spells.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/spells/Spells05.h"
-#include "graphics/spells/Spells03.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleManager.h"
@@ -109,8 +113,8 @@ void CFireBall::SetTTL(unsigned long aulTTL)
 
 
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
-	ARX_CHECK_LONG(ulCalc);
-	long ff = 	ARX_CLEAN_WARN_CAST_LONG(ulCalc);
+	assert(ulCalc <= LONG_MAX);
+	long ff = static_cast<long>(ulCalc);
 
 
 	for (i = pPSSmoke.listParticle.begin(); i != pPSSmoke.listParticle.end(); ++i)
