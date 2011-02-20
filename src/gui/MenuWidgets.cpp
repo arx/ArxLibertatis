@@ -5150,9 +5150,9 @@ MENUSTATE CWindowMenu::Render()
 	{
 		if(eCurrentMenuState==(*i)->eMenuState)
 		{
-			int iNbHide;
+			int iNbHide = (*i)->Render();
 
-			if(iNbHide=((*i)->Render()))
+			if(iNbHide)
 			{
 				SETALPHABLEND(GDevice,false);
 			}
