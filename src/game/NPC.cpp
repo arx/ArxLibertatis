@@ -4386,15 +4386,14 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 				while (notok-- > 0)
 				{
 					num = rnd() * io->obj->facelist.size();
+					assert(num < io->obj->facelist.size());
 
-					if ((num >= 0) && (num < io->obj->facelist.size()))
-					{
-						if (io->obj->facelist[num].facetype & POLY_HIDE) continue;
+					if (io->obj->facelist[num].facetype & POLY_HIDE) continue;
 
-						notok = -1;
-					}
+					notok = -1;
 				}
 
+				// TODO how can this not be true?
 				if (notok < 0)
 				{
 					Vector_Copy(&pos, &io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v);
