@@ -292,8 +292,10 @@ unsigned long SCRIPT_DEBUGGER_GetVersion()
 }
 
 //-----------------------------------------------------------------------------
-void SCRIPT_DEBUGGER_CreateDialog(HWND _hWindow, ScriptDebuggerInfos & _s)
-{
+void SCRIPT_DEBUGGER_CreateDialog(HWND _hWindow) {
+	
+	(void)_hWindow;
+	
 	if (!gbDialog)
 	{
 		ZeroMemory(&iInfo, sizeof(info));
