@@ -59,8 +59,6 @@ char LocalName[128];
 
 bool gbDialog = false;
 
-bool CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
 ScriptDebuggerUpdate sdu;
 
 //
@@ -123,9 +121,12 @@ void InsertItem(HWND _hwnd, char * _name, char * _value)
 	ListView_SetItemText(_hwnd, r, 1, _value);
 }
 
-//-----------------------------------------------------------------------------
-bool CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+static BOOL CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	(void)wParam;
+	
+	
+	
 	switch (uMsg)
 	{
 		case WM_CREATE:
@@ -270,12 +271,12 @@ bool CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 		}
 		break;
 		default:
-			return false;
+			return FALSE;
 			//DefWindowProc(hWnd, uMsg, wParam, lParam);
 			break;
 	}
 
-	return true;
+	return TRUE;
 }
 
 
@@ -319,7 +320,7 @@ void SCRIPT_DEBUGGER_CreateDialog(HWND _hWindow, ScriptDebuggerInfos & _s)
 
 		long dw = GetLastError();
 //		todo: debugger
-//		ghDialog = CreateDialog(ghInstance, MAKEINTRESOURCE(IDD_SCRIPT_DEBUGGER), _hWindow, (DLGPROC) SCRIPT_DEBUGGER_Proc);
+//		ghDialog = CreateDialog(ghInstance, MAKEINTRESOURCE(IDD_SCRIPT_DEBUGGER), _hWindow,  SCRIPT_DEBUGGER_Proc);
 		dw = GetLastError();
 		ShowWindow(ghDialog, SW_SHOW);
 
