@@ -171,7 +171,7 @@ class CIceProjectile: public CSpellFx
 		D3DTLVERTEX tv1a[MAX_ICE];
 
 	public:
-		CIceProjectile(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CIceProjectile();
 		~CIceProjectile();
 
 		// accesseurs

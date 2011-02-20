@@ -481,7 +481,7 @@ CIceProjectile::~CIceProjectile()
 		smotte = NULL;
 	}
 }
-CIceProjectile::CIceProjectile(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CIceProjectile::CIceProjectile()
 {
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;

@@ -4571,7 +4571,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				
 			CSpellFx *pCSpellFx = NULL;
 				
-			pCSpellFx = new CIceProjectile(GDevice);
+			pCSpellFx = new CIceProjectile();
 				
 			if (pCSpellFx != NULL)
 			{
