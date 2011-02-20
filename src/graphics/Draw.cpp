@@ -1156,7 +1156,7 @@ void EERIEDraw3DLine(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3D * orgn, EERIE_3D * de
 
 void EERIEDrawSprite(LPDIRECT3DDEVICE7 pd3dDevice,D3DTLVERTEX *in,float siz,TextureContainer * tex,D3DCOLOR col,float Zpos)
 {
-	register D3DTLVERTEX out;
+	D3DTLVERTEX out;
 	
 	EERIETreatPoint2(in,&out);
 
@@ -1212,7 +1212,7 @@ void EERIEDrawSprite(LPDIRECT3DDEVICE7 pd3dDevice,D3DTLVERTEX *in,float siz,Text
 
 void EERIEDrawRotatedSprite(LPDIRECT3DDEVICE7 pd3dDevice,D3DTLVERTEX *in,float siz,TextureContainer * tex,D3DCOLOR col,float Zpos,float rot)
 {
-	register D3DTLVERTEX out;
+	D3DTLVERTEX out;
 	register float tt;
 		
 	EERIETreatPoint2(in, &out);
