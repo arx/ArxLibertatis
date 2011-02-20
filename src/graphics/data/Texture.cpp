@@ -783,8 +783,8 @@ void CopySurfaceToBumpMap(LPDIRECTDRAWSURFACE7 sSurface, LPDIRECTDRAWSURFACE7 dS
 
 			for (ULONG x = 0 ; x < ddesc2.dwWidth ; x++)
 			{		
-				ARX_CHECK_LONG(x);
-				ARX_CHECK_LONG(y  * LineOffset);
+				assert(x <= LONG_MAX);
+				assert(y  * LineOffset <= LONG_MAX);
 				posx = x;
 				posy = y * LineOffset;
 
