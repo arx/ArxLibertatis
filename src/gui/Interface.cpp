@@ -6105,7 +6105,7 @@ void DANAE::ManageKeyMouse()
 							{
 								if (Project.telekinesis) 
 								{
-									for (long i=0;i<MAX_SPELLS;i++)
+									for (size_t i=0;i<MAX_SPELLS;i++)
 									{
 										if ((spells[i].exist) && (spells[i].type==SPELL_TELEKINESIS)) spells[i].tolive=0;
 									}
