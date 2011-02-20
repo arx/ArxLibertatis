@@ -53,10 +53,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+
+#include "graphics/spells/Spells02.h"
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <cassert>
+#include <climits>
 
 #include "graphics/Math.h"
 #include "scene/Light.h"
@@ -64,19 +69,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Core.h"
 #include "game/Spells.h"
 #include "graphics/effects/SpellEffects.h"
-#include "graphics/spells/Spells02.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleParams.h"
 #include "core/Time.h"
 
-//#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
 extern CParticleManager * pParticleManager;
 
-//-----------------------------------------------------------------------------
-CHeal::CHeal(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CHeal::CHeal()
 {
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
@@ -228,8 +230,8 @@ void CHeal::Update(unsigned long aulTime)
 	}
 
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
-	ARX_CHECK_LONG(ulCalc);
-	long ff = 	ARX_CLEAN_WARN_CAST_LONG(ulCalc);
+	assert(ulCalc <= LONG_MAX);
+	long ff = static_cast<long>(ulCalc);
 
 	if (ff < 1500)
 	{
