@@ -1974,8 +1974,8 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 	FORCE_TIME_RESTORE = ARX_CHANGELEVEL_DesiredTime;
 	return 1;
 }
-//-----------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVEL_PLAYER * asp) {
+
+long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_PLAYER * asp) {
 	
 	const string & loadfile = "player.sav";
 	
@@ -3617,7 +3617,7 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 	LoadLevelScreen(instance);
 	LogDebug << "Before ARX_CHANGELEVEL_Pop_Player";
 
-	if (ARX_CHANGELEVEL_Pop_Player(&asi, &asp) != 1)
+	if (ARX_CHANGELEVEL_Pop_Player(&asp) != 1)
 	{
 
 		LogError << "Cannot Load Player data";
