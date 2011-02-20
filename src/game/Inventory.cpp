@@ -148,14 +148,7 @@ void ARX_INVENTORY_Declare_InventoryIn(INTERACTIVE_OBJ * io)
 		EVENT_SENDER = NULL;
 	}
 }
-//*************************************************************************************
-// void ARX_INVENTORY_Declare_InventoryOut(INTERACTIVE_OBJ * io)
-//-------------------------------------------------------------------------------------
-// NOT USED Right Now
-//*************************************************************************************
-void ARX_INVENTORY_Declare_InventoryOut(INTERACTIVE_OBJ * io)
-{
-}
+
 //*************************************************************************************
 // void ARX_INVENTORY_Declare_Inventory_2_Out(INTERACTIVE_OBJ * io)
 //-------------------------------------------------------------------------------------
@@ -2090,7 +2083,6 @@ bool TakeFromInventory(EERIE_S2D * pos)
 
 
 						SendInitScriptEvent(ioo);
-						ARX_INVENTORY_Declare_InventoryOut(ioo);
 						ARX_INVENTORY_IdentifyIO(ioo);
 						return true;
 					}
@@ -2123,7 +2115,6 @@ bool TakeFromInventory(EERIE_S2D * pos)
 
 	Set_DragInter(io);
 
-	ARX_INVENTORY_Declare_InventoryOut(io);
 	RemoveFromAllInventories(io);
 	ARX_INVENTORY_IdentifyIO(io);
 	return true;
