@@ -232,15 +232,15 @@ void ARX_QuickSave()
 	bool        bFound0        =    false;
 	bool        bFound1        =    false;
 
-	int            iNbSave0    =    0; // will be used if >0 (0 will so mean NOTFOUND)
-	int            iNbSave1    =    0; // will be used if >0 (0 will so mean NOTFOUND)
+	size_t            iNbSave0    =    0; // will be used if >0 (0 will so mean NOTFOUND)
+	size_t            iNbSave1    =    0; // will be used if >0 (0 will so mean NOTFOUND)
 	SYSTEMTIME    sTime0;
 	SYSTEMTIME    sTime1;
 	ZeroMemory( &sTime0, sizeof(SYSTEMTIME) );// will be used if iNbSave0>0 (iNbSave0==0 will so mean NOTFOUND and sTime0 will not be used)
 	ZeroMemory( &sTime1, sizeof(SYSTEMTIME) );// will be used if iNbSave0>0 (iNbSave1==0 will so mean NOTFOUND and sTime1 will not be used)
 
 
-	for( int iI = 1 ; iI < (save_l.size()) ; iI++ )
+	for( size_t iI = 1 ; iI < save_l.size() ; iI++ )
 	{
 		std::string tex2 = save_l[iI].name;
 		MakeUpcase( tex2 );
@@ -263,7 +263,7 @@ void ARX_QuickSave()
 		( iNbSave0 > 0 ) && ( iNbSave0 < save_l.size() ) &&
 		( iNbSave1 > 0 ) && ( iNbSave1 < save_l.size() ) )
 	{
-		int    iSave;
+		size_t    iSave;
 		
 		if ( isTimeBefore( sTime0, sTime1 ) )
 			iSave = iNbSave0;
