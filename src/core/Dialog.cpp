@@ -1472,8 +1472,10 @@ long LIGHT_THREAD_STATUS = 0; // 0=not created EXITED_LIGHT_THREAD=0;
 // 1=working
 // 2=finished exited
 // 3=immediate exit !
-LPTHREAD_START_ROUTINE EERIE_LIGHT_LightProc(char * ts)
-{
+LPTHREAD_START_ROUTINE EERIE_LIGHT_LightProc(char * ts) {
+	
+	(void)ts;
+	
 	LIGHT_THREAD_STATUS = 1;
 	EERIEPrecalcLights(THREAD_MINX, THREAD_MINZ, THREAD_MAXX, THREAD_MAXZ);
 	LIGHT_THREAD_STATUS = 2;
