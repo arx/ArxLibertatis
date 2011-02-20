@@ -55,13 +55,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdlib.h>
+#include "game/NPC.h"
+
+#include <cstdlib>
 #include <cstdio>
 #include <iostream>
 #include <sstream>
 #include <algorithm>
 #include <fstream>
 #include <vector>
+#include <cassert>
 
 #include "io/IO.h"
 
@@ -75,7 +78,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/CollisionShapes.h"
 #include "graphics/data/MeshManipulation.h"
 
-#include "game/NPC.h"
 #include "scripting/Script.h"
 #include "physics/Collisions.h"
 #include "game/Damage.h"
@@ -4246,15 +4248,15 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 				while (notok-- > 0)
 				{
 					num = rnd() * io->obj->facelist.size();
-
-					if ((num >= 0) && (num < io->obj->facelist.size()))
-					{
-						if (io->obj->facelist[num].facetype & POLY_HIDE) continue;
-
-						notok = -1;
-					}
+					
+					assert(num < io->obj->facelist.size());
+					
+					if (io->obj->facelist[num].facetype & POLY_HIDE) continue;
+					
+					notok = -1;
 				}
 
+				// TODO when is this no true?
 				if (notok < 0)
 				{
 					Vector_Copy(&pos, &io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v);
