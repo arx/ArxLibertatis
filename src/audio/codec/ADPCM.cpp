@@ -349,8 +349,8 @@ namespace ATHENA
 		{
 			if (predictor[i] >= header->wNumCoef) return AAL_ERROR_FORMAT;
 
-			coef1[i] = header->aCoef[predictor[i]].iCoef1;
-			coef2[i] = header->aCoef[predictor[i]].iCoef2;
+			coef1[i] = header->aCoef[(size_t)predictor[i]].iCoef1;
+			coef2[i] = header->aCoef[(size_t)predictor[i]].iCoef2;
 
 			((aalSWord *)cache_l)[i] = samp2[i];
 		}
