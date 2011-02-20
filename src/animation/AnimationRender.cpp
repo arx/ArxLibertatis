@@ -1281,7 +1281,6 @@ D3DTLVERTEX * GetNewVertexList(EERIE_FACE * _pFace, float _fInvisibility, Textur
 	}
 }
 
-//-----------------------------------------------------------------------------
 int ARX_SoftClippZ(EERIE_VERTEX * _pVertex1, EERIE_VERTEX * _pVertex2, EERIE_VERTEX * _pVertex3, D3DTLVERTEX ** _ptV, EERIE_FACE * _pFace, float _fInvibility, TextureContainer * _pTex, bool _bBump, bool _bZMapp, EERIE_3DOBJ * _pObj, int _iNumFace, long * _pInd, INTERACTIVE_OBJ * _pioInteractive, bool _bNPC, long _lSpecialColorFlag, EERIE_RGB * _pRGB) {
 	int iPointAdd = 3;
 	int iClipp = 0;
@@ -1629,8 +1628,7 @@ long FORCE_FRONT_DRAW = 0;
 //-----------------------------------------------------------------------------
 extern long IN_BOOK_DRAW;
 /* Render object */
-void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, EERIE_3D * pos, EERIE_3D & ftr, float invisibility)
-{
+void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, EERIE_3D * pos, EERIE_3D & ftr, float invisibility) {
 	float		MAX_ZEDE = 0.f;
 
 	// Sets IO BBox to calculated BBox :)
@@ -1930,8 +1928,7 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 			                                   NULL,
 			                                   true,
 			                                   special_color_flag,
-			                                   &special_color,
-			                                   bPassInTANDL)))
+			                                   &special_color)))
 			{
 				*pNb -= 3;
 				continue;
@@ -2402,8 +2399,7 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 {
 	if (bRenderInterList)
 	{
-		Cedric_RenderObject2(pd3dDevice,
-		                     eobj,
+		Cedric_RenderObject2(eobj,
 		                     obj,
 		                     io,
 		                     pos,
