@@ -875,10 +875,10 @@ bool IsColorKeyInSurface(LPDIRECTDRAWSURFACE7 _pSurface)
 		{
 			for (ULONG x = 0 ; x < ddesc.dwWidth ; x++)
 			{
-				ARX_CHECK_LONG(x);
-				ARX_CHECK_LONG(y * LineOffset);
-				posx = ARX_CLEAN_WARN_CAST_LONG(x);
-				posy = ARX_CLEAN_WARN_CAST_LONG(y * LineOffset);
+				assert(x <= LONG_MAX);
+				assert(y * LineOffset <= LONG_MAX);
+				posx = static_cast<long>(x);
+				posy = static_cast<long>(y * LineOffset);
 
 				// Original Pixel
 				if (32 == ddesc.ddpfPixelFormat.dwRGBBitCount)
