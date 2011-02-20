@@ -1010,9 +1010,11 @@ void CDoze::AddLightDoze(int aiLight)
 }
 
 //-----------------------------------------------------------------------------
-float CIgnit::Render(LPDIRECT3DDEVICE7 device)
-{
-	int		nb;
+float CIgnit::Render(LPDIRECT3DDEVICE7 device) {
+	
+	(void)device;
+	
+	int nb;
 
 	switch (this->key)
 	{
