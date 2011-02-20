@@ -448,7 +448,6 @@ long PROCESS_ALL_THEO	= 1;
 long PROCESS_LEVELS		= 1;
 long PROCESS_NO_POPUP	= 0;
 long PROCESS_ONLY_ONE_LEVEL=-1;
-long DONT_CHANGE_WORKINGDIR=0;
 
 //-----------------------------------------------------------------------------
 // EDITOR FLAGS/Vars
