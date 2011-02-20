@@ -137,7 +137,7 @@ long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, const std::string& _name, long duratio
 	if (speech[MAX_SPEECH-1].timecreation != 0)
 		ARX_SPEECH_MoveUp();
 
-	for (long i = 0; i < MAX_SPEECH; i++)
+	for (size_t i = 0; i < MAX_SPEECH; i++)
 	{
 		if (speech[i].timecreation == 0)
 		{
