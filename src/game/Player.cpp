@@ -1877,7 +1877,6 @@ extern long ON_PLATFORM;
 long LAST_ON_PLATFORM = 0;
 extern long MOVE_PRECEDENCE;
 extern long EXTERNALVIEW;
-long NOT_MOVED_AT_ALL = 0;
 //*************************************************************************************
 // void ARX_PLAYER_Manage_Visual()
 //-------------------------------------------------------------------------------------
