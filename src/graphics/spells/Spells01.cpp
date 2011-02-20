@@ -920,8 +920,6 @@ void CIgnit::AddLight(int aiLight)
 {
 	if (ARXPausedTimer)  return;
 
-	if (this->nblight > 255) return;
-
 	this->tablight[this->nblight].actif = 1;
 	this->tablight[this->nblight].iLightNum = aiLight;
 	this->tablight[this->nblight].poslight.x = GLight[aiLight]->pos.x;
