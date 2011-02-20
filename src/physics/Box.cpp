@@ -815,69 +815,7 @@ bool IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long
 
  
 EERIEPOLY * LAST_COLLISION_POLY = NULL;
-bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long source, long * validd)
-{
-	bool ret = true;
-	long px, pz;
-	float x = obj->pbox->vert[0].pos.x;
-	px = x * ACTIVEBKG->Xmul;
-	float z = obj->pbox->vert[0].pos.z;
-	pz = z * ACTIVEBKG->Zmul;
-	long ix, iz, ax, az;
-	long n = obj->pbox->radius * ( 1.0f / 100 );
-	n = min(2L, n + 1);
-	ix = max(px - n, 0L);
-	ax = min(px + n, ACTIVEBKG->Xsize - 1L);
-	iz = max(pz - n, 0L);
-	az = min(pz + n, ACTIVEBKG->Zsize - 1L);
-	LAST_COLLISION_POLY = NULL;
-	EERIEPOLY * ep;
-	EERIE_BKG_INFO * eg;
 
-
-	for (pz = iz; pz <= az; pz++)
-		for (px = ix; px <= ax; px++)
-		{
-			eg = &ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
-
-			for (long k = 0; k < eg->nbpoly; k++)
-			{
-				ep = &eg->polydata[k];
-
-				if ( (ep->area > 190.f)
-				    &&	(!(ep->type & (POLY_WATER)))
-				    &&	(!(ep->type & (POLY_TRANS)))
-				    &&	(!(ep->type & (POLY_NOCOL)))
-				)
-				{
-					if ((EEDistance3D(&ep->center, &obj->pbox->vert[0].pos) > obj->pbox->radius + 75.f)
-					        &&	(EEDistance3D((EERIE_3D *)&ep->v[0], &obj->pbox->vert[0].pos) > obj->pbox->radius + 55.f)
-					        &&	(EEDistance3D((EERIE_3D *)&ep->v[1], &obj->pbox->vert[0].pos) > obj->pbox->radius + 55.f)
-					        &&	(EEDistance3D((EERIE_3D *)&ep->v[2], &obj->pbox->vert[0].pos) > obj->pbox->radius + 55.f))
-						continue;
-
-					if (IsObjectVertexCollidingPoly(obj, ep, -1, NULL)) 
-					{
-						LAST_COLLISION_POLY = ep;
-
-						if (ep->type & POLY_METAL) CUR_COLLISION_MATERIAL = MATERIAL_METAL;
-						else if (ep->type & POLY_WOOD) CUR_COLLISION_MATERIAL = MATERIAL_WOOD;
-						else if (ep->type & POLY_STONE) CUR_COLLISION_MATERIAL = MATERIAL_STONE;
-						else if (ep->type & POLY_GRAVEL) CUR_COLLISION_MATERIAL = MATERIAL_GRAVEL;
-						else if (ep->type & POLY_WATER) CUR_COLLISION_MATERIAL = MATERIAL_WATER;
-						else if (ep->type & POLY_EARTH) CUR_COLLISION_MATERIAL = MATERIAL_EARTH;
-						else CUR_COLLISION_MATERIAL = MATERIAL_STONE;
-
-						ret = false;
-						return false;
-					}
-				}
-			}
-		}
-
-	return ret;
-}
- 
 //*************************************************************************************
 //*************************************************************************************
 bool IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long source)

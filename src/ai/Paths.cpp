@@ -2013,7 +2013,6 @@ extern bool IsValidPos3(EERIE_3D * pos);
 extern long PHYS_COLLIDER;
 extern EERIEPOLY * LAST_COLLISION_POLY;
 extern long CUR_COLLISION_MATERIAL;
-extern bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long source, long * validd);
 extern bool IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long source);
  
 extern float VELOCITY_THRESHOLD;
