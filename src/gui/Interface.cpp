@@ -8502,11 +8502,11 @@ void ARX_INTERFACE_ManageOpenedBook()
 				lLenght -= lLengthDraw;
 				lLenghtCurr += lLengthDraw;
 
-				if (lCurPage + 1 < MAX_PAGES)
+				if ((unsigned long)(lCurPage + 1) < MAX_PAGES)
 					QuestBook.pages[lCurPage++] = lLenghtCurr;
 			}
 
-			if (lCurPage + 1 < MAX_PAGES)
+			if ((unsigned long)(lCurPage + 1) < MAX_PAGES)
 				QuestBook.pages[lCurPage++] = -1;
 			else
 				QuestBook.pages[MAX_PAGES-1] = -1;
