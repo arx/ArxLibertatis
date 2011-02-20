@@ -2540,11 +2540,9 @@ long GetNextWord( EERIE_SCRIPT * es, long i, std::string& temp, long flags )
 				// Found A tilded string...
 				if (end > start)
 				{
-					std::string tildedd;
+					std::string tildedd(&temp[start], &temp[end - start]);
 					char interp[256];
 					char result[512];
-					tildedd.assign( temp.substr( start, end - start + 1) );
-					tildedd[end-start+1] = 0;
 
 					if (es->master)
 						strcpy(interp, GetVarValueInterpretedAsText(tildedd, (EERIE_SCRIPT *)es->master, _CURIO).c_str());

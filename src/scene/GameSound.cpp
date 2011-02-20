@@ -426,13 +426,13 @@ long ARX_SOUND_Init(HWND hwnd)
 
 	if(FINAL_RELEASE) {
 		
-		if(pStringModSfx[0]) {
+		if(!pStringModSfx.empty()) {
 			if(!PAK_AddPak(pStringModSfx.c_str())) {
 				printf("Unable to Find Mod SFX Data File\n");
 			}
 		}
 		
-		if (pStringModSpeech[0]) {
+		if (!pStringModSpeech.empty()) {
 			if(!PAK_AddPak(pStringModSpeech.c_str())) {
 				printf("Unable to Find Mod Speech Data File\n");
 			}

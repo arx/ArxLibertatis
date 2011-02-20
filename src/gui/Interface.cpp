@@ -5751,7 +5751,7 @@ void DANAE::ManageKeyMouse()
 																		2000+WILLADDSPEECH.length()*60);
 								}
 
-								WILLADDSPEECH[0]=0;
+								WILLADDSPEECH.clear();
 							}
 						}
 					}
@@ -5837,19 +5837,19 @@ void DANAE::ManageKeyMouse()
 																		0x00FF00FF );
 									}
 
-									WILLADDSPEECH[0]=0;
+									WILLADDSPEECH.clear();
 								}
 							}
 					}
 			}
 
-			if ((EERIEMouseButton & 4) || (LastMouseClick & 4)) WILLADDSPEECH[0]=0;
+			if ((EERIEMouseButton & 4) || (LastMouseClick & 4)) WILLADDSPEECH.clear();
 
-			if (WILLADDSPEECH[0]!=0)
+			if (!WILLADDSPEECH.empty())
 				if (WILLADDSPEECHTIME+300<FrameTime)
 				{
 					ARX_SPEECH_Add(NULL, WILLADDSPEECH);
-					WILLADDSPEECH[0]=0;
+					WILLADDSPEECH.clear();
 				}
 
 				///////

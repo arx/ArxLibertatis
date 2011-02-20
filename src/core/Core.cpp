@@ -1218,7 +1218,7 @@ int main(int, char**)
 		
 		LogInfo << "FINAL RELEASE";
 		
-		if(pStringMod[0]) {
+		if(!pStringMod.empty()) {
 			LogDebug << pStringMod;
 			if(PAK_AddPak(pStringMod.c_str())) {
 				LogDebug << "LoadMode OK";
@@ -2972,7 +2972,7 @@ void FirstTimeThings(HWND m_hWnd,LPDIRECT3DDEVICE7 m_pd3dDevice)
 	long i;
 	eyeball.exist=0;
 	WILLADDSPEECHTIME=0;
-	WILLADDSPEECH[0]=0;
+	WILLADDSPEECH.clear();
 
 	if (!LOADEDD)
 	{

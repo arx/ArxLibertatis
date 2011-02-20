@@ -4465,7 +4465,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				break;
 			case 'I':
 
-				if ((word[1] == 'F') && (word[2] == 0))
+				if ((word[1] == 'F') && (word.size() == 2))
 				{
 					const unsigned int tvSize = 256 ;
 					std::string temp3;

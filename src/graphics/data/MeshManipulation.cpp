@@ -238,7 +238,7 @@ long ObjectAddFace(EERIE_3DOBJ * obj, EERIE_FACE * face, EERIE_3DOBJ * srcobj)
 
 	for (size_t i = 0; i < obj->texturecontainer.size(); i++)
 	{
-		if (obj->texturecontainer[i] == srcobj->texturecontainer[face->texid])
+		if (0 <= face->texid && face->texid < srcobj->texturecontainer.size() && obj->texturecontainer[i] == srcobj->texturecontainer[face->texid])
 		{
 			obj->facelist.back().texid = (short)i;
 			break;
@@ -494,7 +494,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	for (size_t i = 0; i < obj1->actionlist.size(); i++)
 	{
 		if ((IsInSelection(obj1, obj1->actionlist[i].idx, iw1) != -1)
-		        ||	(IsInSelection(obj1, obj1->actionlist[i].idx, jw1) != -1)
+		        || (IsInSelection(obj1, obj1->actionlist[i].idx, jw1) != -1)
 		        || (!strcasecmp(obj1->actionlist[i].name.c_str(), "head2chest"))
 		        || (!strcasecmp(obj1->actionlist[i].name.c_str(), "chest2leggings"))
 		   )
@@ -508,8 +508,8 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	for (size_t i = 0; i < obj2->actionlist.size(); i++)
 	{
 		if ((IsInSelection(obj2, obj2->actionlist[i].idx, tw2) != -1)
-		        || (!strcasecmp(obj1->actionlist[i].name.c_str(), "head2chest"))
-		        || (!strcasecmp(obj1->actionlist[i].name.c_str(), "chest2leggings"))
+		        || (!strcasecmp(obj2->actionlist[i].name.c_str(), "head2chest"))
+		        || (!strcasecmp(obj2->actionlist[i].name.c_str(), "chest2leggings"))
 		   )
 		{
 			ObjectAddAction(work, obj2->actionlist[i].name.c_str(), obj2->actionlist[i].act,

@@ -280,7 +280,7 @@ void Localisation_Init()
 		std::string szMenuText;
 		PAK_UNICODE_GetPrivateProfileString( "system_menus_main_cdnotfound", "", szMenuText );
 
-		if (!szMenuText[0]) //warez
+		if (szMenuText.empty()) //warez
 		{
 			Localisation_Init();
 		}
@@ -291,7 +291,7 @@ void Localisation_Init()
 		std::string szMenuText;
 		PAK_UNICODE_GetPrivateProfileString( "unicode", "", szMenuText );
 
-		if (szMenuText[0]) //warez
+		if (!szMenuText.empty()) //warez
 		{
 			if (!szMenuText.compare( "chinese" ) )
 			{
