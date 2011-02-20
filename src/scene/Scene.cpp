@@ -4753,7 +4753,7 @@ else
 		else
 		{
 			if (TRANSPOLYSPOS)
-				ARXDRAW_DrawAllTransPolysPos(pd3dDevice,MODIF);
+				ARXDRAW_DrawAllTransPolysPos(pd3dDevice);
 		}
 	}
 

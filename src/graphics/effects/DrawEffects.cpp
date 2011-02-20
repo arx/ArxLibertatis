@@ -748,8 +748,8 @@ void ARXDRAW_DrawAllInterTransPolyPos(LPDIRECT3DDEVICE7 pd3dDevice)
 
 extern TextureContainer * enviro;
 
-void ARXDRAW_DrawAllTransPolysPos( LPDIRECT3DDEVICE7 pd3dDevice, long MODIF )
-{
+void ARXDRAW_DrawAllTransPolysPos(LPDIRECT3DDEVICE7 pd3dDevice) {
+	
 	int flg_NOCOUNT_USEVB = EERIE_NOCOUNT | (bSoftRender?EERIE_USEVB:0);
 	SetZBias( pd3dDevice, 1 );
 
