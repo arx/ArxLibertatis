@@ -44,9 +44,9 @@ namespace ATHENA
 	///////////////////////////////////////////////////////////////////////////////
 	Sample::Sample() : ResourceHandle(),
 		name(NULL),
+		length(0),
 		data(NULL),
-		callb_c(0), callb(NULL),
-		length(0)
+		callb_c(0), callb(NULL)
 	{
 	}
 
