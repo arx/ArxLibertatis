@@ -551,7 +551,7 @@ void ARX_PATHS_ChangeName(ARX_PATH * ap, char * newname)
 {
 	if (ap == NULL) return;
 
-	InterTreeViewItemRemove(NULL, ap->name, IOTVTYPE_PATH);
+	InterTreeViewItemRemove(NULL, ap->name);
 	strcpy(ap->name, newname);
 	InterTreeViewItemAdd(NULL, ap->name, IOTVTYPE_PATH);
 }
@@ -581,7 +581,7 @@ void ARX_PATH_ReleaseAllPath()
 	{
 		if (ARXpaths[i])
 		{
-			InterTreeViewItemRemove(NULL, ARXpaths[i]->name, IOTVTYPE_PATH);
+			InterTreeViewItemRemove(NULL, ARXpaths[i]->name);
 
 			if (ARXpaths[i]->pathways) free(ARXpaths[i]->pathways);
 
@@ -618,7 +618,7 @@ void ARX_PATHS_Delete(ARX_PATH * ap)
 
 	if (ap == NULL) return;
 
-	InterTreeViewItemRemove(NULL, ap->name, IOTVTYPE_PATH);
+	InterTreeViewItemRemove(NULL, ap->name);
 
 	for (long i = 0; i < nbARXpaths; i++)
 	{

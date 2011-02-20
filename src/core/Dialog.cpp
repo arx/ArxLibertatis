@@ -174,8 +174,10 @@ void SetClick(HWND hWnd, int id)
 
 float FORCED_REDUCTION_VALUE = 0.f;
 INT_PTR CALLBACK MeshReductionProc(HWND hWnd, UINT uMsg, WPARAM wParam,
-                                LPARAM lParam)
-{
+                                LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HWND thWnd;
 	long t;
 
@@ -238,8 +240,10 @@ HWND ShowErrorPopup(char * title, char * tex)
 	return hdl;
 }
 INT_PTR CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam,
-                              LPARAM lParam)
-{
+                              LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HWND thWnd;
 
 	switch (uMsg)
@@ -270,8 +274,10 @@ INT_PTR CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 extern long ARX_PATHS_HIERARCHYMOVE;
 
 INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
-                                 LPARAM lParam)
-{
+                                 LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HWND thWnd;
 
 	switch (uMsg)
@@ -810,8 +816,10 @@ void InterTreeSelectObject(HTREEITEM hitem)
 }
 
 INT_PTR CALLBACK InteractiveObjDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
-                                    LPARAM lParam)
-{
+                                    LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HTREEITEM hitem;
 
 	switch (uMsg)
@@ -947,8 +955,8 @@ LONG CALLBACK InterTreeViewSubClassFunc(HWND hWnd,
 }
 
 
-void RemoveIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, const char * name, long type)
-{
+void RemoveIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, const char * name) {
+	
 	if (TVVcount != 0) {
 		if (io != NULL)
 		{
@@ -1198,9 +1206,9 @@ void FillInterTreeView(HWND tvhwnd)
  
  
  
-void InterTreeViewItemRemove(INTERACTIVE_OBJ * io, const char * name, long type)
+void InterTreeViewItemRemove(INTERACTIVE_OBJ * io, const char * name)
 {
-	if (InterObjDlg) RemoveIOTVItem(dlgTreeViewhWnd, io, name, type);
+	if (InterObjDlg) RemoveIOTVItem(dlgTreeViewhWnd, io, name);
 }
 void InterTreeViewItemAdd(INTERACTIVE_OBJ * io, const char * name, long type)
 {
