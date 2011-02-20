@@ -3043,8 +3043,8 @@ long NO_GMOD_RESET=0;
 
 //*************************************************************************************
 
-LPTHREAD_START_ROUTINE FirstFrameProc(char *pipo)
-{
+void FirstFrameProc() {
+	
 	if (pParticleManager == NULL)
 	{
 		pParticleManager = new CParticleManager();
@@ -3125,7 +3125,6 @@ LPTHREAD_START_ROUTINE FirstFrameProc(char *pipo)
 	}
 
 	InitSnapShot(NULL,"snapshot");
-	return 0;
 }
 EERIE_3D LastValidPlayerPos;
 EERIE_3D	WILL_RESTORE_PLAYER_POSITION;
@@ -3147,7 +3146,7 @@ long FirstFrameHandling(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	PROGRESS_BAR_COUNT+=2.f;
 	LoadLevelScreen();
 	
-	FirstFrameProc(NULL);
+	FirstFrameProc();
 
 	if (FASTmse)
 	{
