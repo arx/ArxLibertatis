@@ -79,7 +79,7 @@ extern long TOTIOPDL;
 //-----------------------------------------------------------------------------
 void PrecalcIOLighting(EERIE_3D * pos, float radius, long flags = 0);
 
-void EERIE_LIGHT_Apply(EERIEPOLY * ep, EERIEPOLY * father);
+void EERIE_LIGHT_Apply(EERIEPOLY * ep);
 void EERIE_LIGHT_TranslateSelected(EERIE_3D * trans);
 void EERIE_LIGHT_UnselectAll();
 void EERIE_LIGHT_ClearAll();

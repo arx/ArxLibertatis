@@ -135,10 +135,8 @@ void PrecalcIOLighting(EERIE_3D * pos, float radius, long flags)
 	}
 }
 
-//*************************************************************************************
-//*************************************************************************************
-void EERIE_LIGHT_Apply(EERIEPOLY * ep, EERIEPOLY * father)
-{
+void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
+	
 	if (ep->type & POLY_IGNORE)  return;
 
 	long i;
@@ -875,7 +873,7 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 					ep = &eg->polydata[k];
 					ep->type &= ~POLY_IGNORE;
 
-					if (ep)	EERIE_LIGHT_Apply(ep, NULL);
+					if (ep)	EERIE_LIGHT_Apply(ep);
 				}
 			}
 
