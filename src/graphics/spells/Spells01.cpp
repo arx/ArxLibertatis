@@ -468,7 +468,7 @@ float CMagicMissile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 				float fs = fsize * 6 + rnd() * 0.3f;
 				float fe = fsize * 6 + rnd() * 0.3f;
-				Draw3DLineTex(m_pd3dDevice, lastpos, newpos, color, fs, fe);
+				Draw3DLineTex(lastpos, newpos, color, fs, fe);
 			}
 
 			EERIE_3D temp_vector;

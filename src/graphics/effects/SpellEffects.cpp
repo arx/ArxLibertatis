@@ -273,8 +273,8 @@ void CSpellFx::Update(float _fParam)
 }
 
 //-----------------------------------------------------------------------------
-void Draw3DLineTex(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D s, EERIE_3D e, int color, float fStartSize, float fEndSize)
-{
+void Draw3DLineTex(EERIE_3D s, EERIE_3D e, int color, float fStartSize, float fEndSize) {
+	
 	float fBeta = MAKEANGLE(player.angle.b);
 	float xxs = (float)(fStartSize * cos(radians(fBeta)));
 	float xxe = (float)(fEndSize * cos(radians(fBeta)));
