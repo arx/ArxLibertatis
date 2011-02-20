@@ -3159,7 +3159,7 @@ long FirstFrameHandling(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	FirstFrame=-1;
 		
 	ARX_PARTICLES_FirstInit();
-	ARX_SPELLS_Init(m_pd3dDevice);
+	ARX_SPELLS_Init_Rects();
 	ARX_FOGS_TimeReset();
 
 	PROGRESS_BAR_COUNT+=2.f;

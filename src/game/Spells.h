@@ -305,7 +305,7 @@ void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ * io, const char * name, const
 void ARX_SPELLS_UpdateSymbolDraw();
 void ARX_SPELLS_ClearAllSymbolDraw();
 
-void ARX_SPELLS_Init(LPDIRECT3DDEVICE7 m_pd3dDevice);
+void ARX_SPELLS_Init_Rects();
 
 bool ARX_SPELLS_ExistAnyInstance(const long & typ);
 void ARX_SPELLS_RemoveAllSpellsOn(INTERACTIVE_OBJ * io);
