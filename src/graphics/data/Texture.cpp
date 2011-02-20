@@ -3182,8 +3182,8 @@ TextureContainer * TextureContainer::AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _i
 							 ((((unsigned int)(255.f - _fG)) >> dwGShiftL) << dwGShiftR) |
 							 ((((unsigned int)(255.f - _fB)) >> dwBShiftL) << dwBShiftR) |
 							 (0x8000);
-		ARX_CHECK_USHORT(uiDec);
-		usColorMask =	ARX_CLEAN_WARN_CAST_USHORT(uiDec);
+		assert(uiDec <= USHRT_MAX);
+		usColorMask = static_cast<unsigned short>(uiDec);
 
 		unsigned short * pusMem = (unsigned short *)ddsdSurfaceDesc.lpSurface;
 
