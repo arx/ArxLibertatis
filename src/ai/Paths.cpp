@@ -58,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ai/Paths.h"
 
 #include <cstdio>
+#include <cassert>
 
 #include "graphics/GraphicsModes.h"
 #include "scene/GameSound.h"
@@ -1546,13 +1547,11 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 						while (notok-- > 0)
 						{
 							num = (rnd() *(float)Thrown[i].obj->facelist.size());
+							assert(num < Thrown[i].obj->facelist.size());
 
-							if ((num >= 0) && (num < Thrown[i].obj->facelist.size()))
-							{
-								if (Thrown[i].obj->facelist[num].facetype & POLY_HIDE) continue;
+							if (Thrown[i].obj->facelist[num].facetype & POLY_HIDE) continue;
 
-								notok = -1;
-							}
+							notok = -1;
 						}
 
 						if (notok < 0)
