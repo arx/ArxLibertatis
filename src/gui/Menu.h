@@ -129,7 +129,7 @@ extern char LOCAL_SAVENAME[64];
 
 //-----------------------------------------------------------------------------
 void ARX_Menu_Manage();
-bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice);
+bool ARX_Menu_Render();
 void ARX_MENU_Launch();
 void ARX_MENU_Clicked_QUIT_GAME();
 void ARX_Menu_Resources_Create();

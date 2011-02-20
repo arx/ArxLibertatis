@@ -5670,7 +5670,7 @@ static float _AvgFrameDiff = 150.f;
 	
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
 
-	if (ARX_Menu_Render(m_pd3dDevice)) 
+	if (ARX_Menu_Render()) 
 	{
 		goto norenderend;
 	}

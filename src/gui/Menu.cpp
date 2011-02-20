@@ -557,7 +557,7 @@ long NEED_INTRO_LAUNCH = 0;
 // ARX Menu Rendering Func
 // returns false if no menu needs to be displayed
 //-----------------------------------------------------------------------------
-bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+bool ARX_Menu_Render()
 {
 	// Auto-Launch Demo after 60 sec idle on Main Menu
 	if ((ARXmenu.currentmode == AMCM_MAIN) && CAN_REPLAY_INTRO)
