@@ -725,7 +725,7 @@ void TransformInverseVertexQuat(const EERIE_QUAT * quat, const EERIE_3D * vertex
 {
 	EERIE_QUAT rev_quat;
 
-	Quat_Copy(&rev_quat, (EERIE_QUAT *) quat);
+	Quat_Copy(&rev_quat, quat);
 	Quat_Reverse(&rev_quat);
 
 	register float x = vertexin->x;

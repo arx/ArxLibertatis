@@ -88,10 +88,10 @@ ELSE (MSVC)
 	set(CMAKE_CXX_FLAGS "-m32")
 	
 	# Warning level
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat=2 -Winit-self -Wundef -Wpointer-arith -Wlogical-op")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat=2 -Winit-self -Wundef -Wpointer-arith -Wlogical-op -Wcast-qual")
 	
-	# Consider also: -Wcast-qual -Wcast-align -Wconversion -Wsign-conversion -Wmissing-declarations
-	#                -Wredundant-decls -Wunreachable-code
+	# Consider also: -Wcast-qual -Wconversion -Wsign-conversion -Wmissing-declarations
+	#                -Wredundant-decls
 
 	#Debug
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3")
