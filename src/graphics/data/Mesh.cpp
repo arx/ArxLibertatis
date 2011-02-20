@@ -4695,11 +4695,6 @@ error:
 	return false;
 }
 
-void WriteMSEData(char * path, EERIE_MULTI3DSCENE * ms)
-{
-	return;
-}
-
 //*************************************************************************************
 //*************************************************************************************
 void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms) 
@@ -4739,7 +4734,6 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms)
 
 		if (NEED_ANCHORS)	AnchorData_Create(ACTIVEBKG);
 
-		WriteMSEData(fic, ms);
 		FastSceneSave(ftemp.c_str(), ms);
 		ComputePortalVertexBuffer();
 		ComputeRoomDistance();
