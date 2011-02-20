@@ -279,25 +279,6 @@ static BOOL CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 	return TRUE;
 }
 
-
-//-----------------------------------------------------------------------------
-bool WINAPI DllMain(HINSTANCE _hModule, DWORD _fdwreason, LPVOID _lpReserved)
-//-----------------------------------------------------------------------------
-{
-	switch (_fdwreason)
-	{
-		case DLL_PROCESS_ATTACH:
-		{
-			// R�cup�ration du handle d'Instance du Module
-			InitCommonControls();
-			ghInstance = _hModule;
-			break;
-		}
-	}
-
-	return true;
-}
-
 //-----------------------------------------------------------------------------
 const char * SCRIPT_DEBUGGER_GetName()
 {
