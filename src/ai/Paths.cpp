@@ -2396,7 +2396,7 @@ static bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj)
 	return ret;
 }
 
-bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, long flags, long source) {
+bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, long source) {
 	
 	PHYSVERT * pv;
 	long validd[32];
@@ -2568,7 +2568,7 @@ long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber
 
 			ComputeForces(obj->pbox->vert, obj->pbox->nb_physvert);
 
-			if (!ARX_EERIE_PHYSICS_BOX_Compute(obj, std::min(0.11f, timing * 10), flags, source))
+			if (!ARX_EERIE_PHYSICS_BOX_Compute(obj, std::min(0.11f, timing * 10), source))
 				ret = 1;
 
 			timing -= t_threshold; 

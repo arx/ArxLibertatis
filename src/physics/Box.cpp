@@ -946,7 +946,7 @@ long EERIE_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubb
 	{
 		EERIE_PHYSICS_BOX_ComputeForces(obj);
 
-		if (!ARX_EERIE_PHYSICS_BOX_Compute(obj, min(0.08f, timing), flags, source))
+		if (!ARX_EERIE_PHYSICS_BOX_Compute(obj, min(0.08f, timing), source))
 			ret = 1;
 
 		timing -= 0.08f;
