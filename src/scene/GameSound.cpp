@@ -2182,11 +2182,9 @@ static void ARX_SOUND_DeletePresenceMap()
 	free(presence_l), presence_l = NULL, presence_c = 0;
 }
 
-static float GetSamplePresenceFactor(const char * name)
-{
-//	todo: string stuff
-//	for (unsigned long i(0); i < presence_c; i++)
-//		if (!strnicmp(presence_l[i].name, name, presence_l[i].name_size)) return presence_l[i].factor;
+static float GetSamplePresenceFactor(const char * name) {
+	for (unsigned long i(0); i < presence_c; i++)
+		if (!strncasecmp(presence_l[i].name, name, presence_l[i].name_size)) return presence_l[i].factor;
 
 	return 1.0F;
 }
