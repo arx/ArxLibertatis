@@ -2452,7 +2452,7 @@ void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret)
 	LogWarning << "NOT CENTERED " << ret->file;
 
 
-	for (long i = 0; i < ret->vertexlist.size(); i++)
+	for (size_t i = 0; i < ret->vertexlist.size(); i++)
 	{
 		ret->vertexlist[i].v.x -= offset.x;
 		ret->vertexlist[i].v.y -= offset.y;
