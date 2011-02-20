@@ -93,7 +93,7 @@ STRUCT_SPEECH speech[MAX_SPEECH];
 //-----------------------------------------------------------------------------
 void ARX_SPEECH_Init()
 {
-	for ( int i = 0 ; i < MAX_SPEECH ; i++ )
+	for (size_t i = 0 ; i < MAX_SPEECH ; i++ )
 		speech[i].clear();
 }
 
@@ -105,7 +105,7 @@ void ARX_SPEECH_MoveUp()
 			speech[0].lpszUText.clear();
 	}
 
-	for (long j = 0; j < MAX_SPEECH - 1; j++)
+	for (size_t j = 0; j < MAX_SPEECH - 1; j++)
 	{
 		speech[j] = speech[j+1];
 	}
@@ -118,12 +118,8 @@ void ARX_SPEECH_ClearAll()
 {
 	for (long i = 0; i < MAX_SPEECH; i++)
 	{
-		if (speech[i].timecreation != 0)
-		{
+		if (speech[i].timecreation != 0) {
 			speech[i].clear();
-			//speech[i].lpszUText.clear();
-
-			//speech[i].timecreation = 0;
 		}
 	}
 }
