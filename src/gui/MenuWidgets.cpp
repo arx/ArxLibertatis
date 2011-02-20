@@ -5172,12 +5172,10 @@ MENUSTATE CWindowMenu::Render()
 	return eMS;
 }
 
-//-----------------------------------------------------------------------------
-
 CWindowMenuConsole::CWindowMenuConsole(int _iPosX,int _iPosY,int _iWidth,int _iHeight,MENUSTATE _eMenuState) :
 	bMouseListen (true),
-	bEdit (false),
 	iInterligne (10),
+	bEdit (false),
 	lData(0),
 	pData(NULL)
 {
