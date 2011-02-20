@@ -1105,7 +1105,7 @@ void ARX_PHYSICS_Apply()
 
 				if (io->GameFlags & GFLAG_NO_PHYS_IO_COL) flags = 1;
 
-				if (EERIE_PHYSICS_BOX_ApplyModel(io->obj, (float)FrameDiff, io->rubber, flags, treatio[i].num))
+				if (ARX_PHYSICS_BOX_ApplyModel(io->obj, (float)FrameDiff, io->rubber, treatio[i].num))
 				{
 					if (io->damagedata >= 0)
 					{

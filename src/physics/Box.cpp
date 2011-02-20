@@ -852,55 +852,6 @@ bool IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long 
 
 	return true;
 }
- 
-extern long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long source);
-
-long EERIE_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source)
-{
-	return ARX_PHYSICS_BOX_ApplyModel(obj, framediff, rubber, source);
-	long ret = 0;
-
-	if (obj->pbox->active == 2) return ret;
-
-	if (framediff == 0.f) return ret;
-
-	PHYSVERT * pv;
-
-	// Memorizes initpos
-	for (long k = 0; k < obj->pbox->nb_physvert; k++)
-	{
-		pv = &obj->pbox->vert[k];
-		pv->temp.x = pv->pos.x;
-		pv->temp.y = pv->pos.y;
-		pv->temp.z = pv->pos.z;
-	}
-
-	float timing = framediff * rubber * ( 1.0f / 50 );
-
-	while (timing > 0.f)
-	{
-		EERIE_PHYSICS_BOX_ComputeForces(obj);
-
-		if (!ARX_EERIE_PHYSICS_BOX_Compute(obj, min(0.08f, timing), source))
-			ret = 1;
-
-		timing -= 0.08f;
-	}
-
-
-	if (obj->pbox->stopcount < 16) return ret;
-
-	obj->pbox->active = 2;
-	obj->pbox->stopcount = 0;
-
-	if (ValidIONum(source))
-	{
-		inter.iobj[source]->soundcount = 0;
-		inter.iobj[source]->ioflags &= ~IO_NO_NPC_COLLIDE;
-	}
-
-	return ret;
-}
 
 // Debug function used to show the physical box of an object
 void EERIE_PHYSICS_BOX_Show(EERIE_3DOBJ * obj, EERIE_3D * pos)
