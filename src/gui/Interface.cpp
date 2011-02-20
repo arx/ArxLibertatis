@@ -1700,7 +1700,7 @@ bool DANAE::ManageEditorControls()
 		}
 		else
 		{
-			if ((abs(DANAEMouse.x-STARTDRAG.x)>2) && (abs(DANAEMouse.y-STARTDRAG.y)>2)
+			if (((abs(DANAEMouse.x-STARTDRAG.x)>2) && (abs(DANAEMouse.y-STARTDRAG.y)>2))
 			   || ((pMenuConfig->bAutoReadyWeapon == false) && ((abs(MouseDragX) > 2) || (abs(MouseDragY) > 2))))
 			{
 				DRAGGING=1;
