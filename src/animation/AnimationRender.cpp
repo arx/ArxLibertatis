@@ -3518,9 +3518,9 @@ void ApplyDynLight_VertexBuffer(EERIEPOLY * ep, SMY_D3DVERTEX * _pVertex, unsign
 
 	long j;
 	register float d;
-	register float epr[4];
-	register float epg[4];
-	register float epb[4];
+	float epr[4];
+	float epg[4];
+	float epb[4];
 	
 	// To keep...
 	//	register float DVAL;
