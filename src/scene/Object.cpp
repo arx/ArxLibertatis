@@ -1080,7 +1080,7 @@ EERIE_MULTI3DSCENE * MultiSceneToEerie(const char * dirr)
 //					unsigned char * adr;
 //					if (adr = (unsigned char *)PAK_FileLoadMalloc(path, &SizeAlloc))
 //					{
-//						es->scenes[es->nb_scenes] = (EERIE_3DSCENE *)ScnToEerie(adr, SizeAlloc, path, TTE_NO_NDATA | TTE_NO_PDATA);
+//						es->scenes[es->nb_scenes] = (EERIE_3DSCENE *)ScnToEerie(adr, SizeAlloc, path);
 //						es->nb_scenes++;
 //						free(adr);
 //					}
@@ -1170,7 +1170,7 @@ EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const char * dirr)
 				adr = (unsigned char *)PAK_FileLoadMalloc(path2, SizeAlloc);
 				if (adr)
 				{
-					es->scenes[es->nb_scenes] = (EERIE_3DSCENE *)ScnToEerie(adr, SizeAlloc, path.c_str(), TTE_NO_NDATA | TTE_NO_PDATA);
+					es->scenes[es->nb_scenes] = (EERIE_3DSCENE *)ScnToEerie(adr, SizeAlloc, path.c_str());
 					es->nb_scenes++;
 					free(adr);
 				}
@@ -1241,8 +1241,7 @@ EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const char * dirr)
 	return em;
 }
 //-----------------------------------------------------------------------------------------------------
-EERIE_3DSCENE * ScnToEerie(unsigned char * adr, long size, const std::string& fic, long flags)
-{
+EERIE_3DSCENE * ScnToEerie(unsigned char * adr, size_t size, const std::string& fic) {
 	
 	(void)size; // TODO use size
 	
