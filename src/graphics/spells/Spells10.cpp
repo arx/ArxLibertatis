@@ -86,8 +86,10 @@ CMassLightning::CMassLightning(long nbmissiles)
 }
 
 //-----------------------------------------------------------------------------
-void CMassLightning::Create(EERIE_3D aePos, float afBeta = 0)
-{
+void CMassLightning::Create(EERIE_3D aePos, float afBeta = 0) {
+	
+	(void)afBeta;
+	
 	long lMax = 0;
 	EERIE_3D eTarget;
 	float ft = 360.0f / (float)number;
