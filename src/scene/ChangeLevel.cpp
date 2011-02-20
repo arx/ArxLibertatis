@@ -885,7 +885,7 @@ retry:
 
 	memcpy(asp->minimap, minimap, sizeof(MINI_MAP_DATA)*MAX_MINIMAPS);
 
-	for (long i = 0; i < MAX_MINIMAPS; i++)
+	for (size_t i = 0; i < MAX_MINIMAPS; i++)
 		asp->minimap[i].tc = 0;
 
 	asp->falling				= player.falling;
