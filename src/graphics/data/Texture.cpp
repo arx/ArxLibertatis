@@ -61,7 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 #include <cassert>
-
+#include <limits>
 #include <iomanip>
 #include <map>
 
@@ -2118,8 +2118,8 @@ HRESULT TextureContainer::CopyBitmapToSurface(HBITMAP hbitmap, int depx, int dep
 		DWORD pe[256];
 
 		UINT uiRes = GetDIBColorTable(hdcBitmap, 0, 256, (RGBQUAD *)pe);
-		ARX_CHECK_WORD(uiRes);
-		WORD  wNumColors     = ARX_CLEAN_WARN_CAST_WORD(uiRes);
+		assert(uiRes <= std::numeric_limits<WORD>::max());
+		WORD  wNumColors = static_cast<WORD>(uiRes);
 
 		// Create the color table
 		for (WORD i = 0; i < wNumColors; i++)
