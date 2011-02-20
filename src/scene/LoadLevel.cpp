@@ -109,8 +109,6 @@ extern QUAKE_FX_STRUCT QuakeFx;
 extern bool bGToggleCombatModeWithKey;
 extern bool bGCroucheToggle;
 
-long SPECIALPOLYSNB = 0;
-
 bool CanPurge(EERIE_3D * pos)
 {
 	long px, pz;
