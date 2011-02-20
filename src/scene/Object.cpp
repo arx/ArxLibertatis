@@ -1863,7 +1863,6 @@ void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj)
 void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 {
 	char * temp = NULL;
-	long i;
 	eobj->c_data = new EERIE_C_DATA();
 	memset(eobj->c_data, 0, sizeof(EERIE_C_DATA));
 
@@ -1899,7 +1898,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 		bool * temp = new bool[eobj->vertexlist.size()];
 		memset(temp, 0, eobj->vertexlist.size());
 
-		for (i = eobj->nbgroups - 1; i >= 0; i--)
+		for (long i = eobj->nbgroups - 1; i >= 0; i--)
 		{
 			EERIE_VERTEX * v_origin = &eobj->vertexlist[eobj->grouplist[i].origin];
 
@@ -1925,7 +1924,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 		delete[] temp;
 
 		// Try to correct lonely vertex
-		for (i = 0; i < eobj->vertexlist.size(); i++)
+		for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 		{
 			long ok = 0;
 
@@ -1950,7 +1949,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 			}
 		}
 
-		for (i = eobj->nbgroups - 1; i >= 0; i--)
+		for (long i = eobj->nbgroups - 1; i >= 0; i--)
 		{
 			if (eobj->c_data->bones[i].father >= 0)
 			{
@@ -1967,11 +1966,10 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 #if CEDRIC
 	/* Build proper mesh */
 	{
-		int i;
 		EERIE_C_DATA* obj = eobj->c_data;
 
 
-		for (i = 0; i != obj->nb_bones; i++)
+		for (long i = 0; i != obj->nb_bones; i++)
 		{
 			EERIE_QUAT	qt1;
 
@@ -2001,7 +1999,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 		// TODO constructor is better than memset
 		memset(eobj->vertexlocal, 0, sizeof(EERIE_3DPAD)*eobj->vertexlist.size());
 
-		for (i = 0; i != obj->nb_bones; i++)
+		for (long i = 0; i != obj->nb_bones; i++)
 		{
 			EERIE_3D	vector;
 			EERIE_VERTEX * inVert;
