@@ -1583,7 +1583,6 @@ void ARX_PORTALS_Frustrum_RenderRooms(long prec,long tim)
 	NbRoomDrawList=0;
 }
 
-void ARX_PORTALS_Frustrum_RenderRoom_TransparencyT(long room_num);
 void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num);
 void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 {
@@ -1602,7 +1601,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 		}
 		else
 		{
-			ARX_PORTALS_Frustrum_RenderRoom_TransparencyT(RoomDrawList[i]);
+			LogWarning << "unimplemented";
 		}
 	}
 
@@ -2685,11 +2684,6 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 
 void ApplyDynLight_VertexBuffer(EERIEPOLY *ep,SMY_D3DVERTEX *_pVertex,unsigned short _usInd0,unsigned short _usInd1,unsigned short _usInd2,unsigned short _usInd3);
 void ApplyDynLight_VertexBuffer_2(EERIEPOLY *ep,short x,short y,SMY_D3DVERTEX *_pVertex,unsigned short _usInd0,unsigned short _usInd1,unsigned short _usInd2,unsigned short _usInd3);
-
-void ARX_PORTALS_Frustrum_RenderRoom_TransparencyT(long room_num)
-{
-
-}
 
 TILE_LIGHTS tilelights[MAX_BKGX][MAX_BKGZ];
 
