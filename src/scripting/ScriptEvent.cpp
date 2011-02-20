@@ -4461,7 +4461,6 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 				if ((word[1] == 'F') && (word[2] == 0))
 				{
-					const unsigned int tvSize = 256 ;
 					std::string temp3;
 					short oper = 0;
 					short failed = 0;
