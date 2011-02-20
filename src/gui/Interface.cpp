@@ -6149,7 +6149,7 @@ void DANAE::ManageKeyMouse()
 							if (this->kbd.inkey[INKEY_PAD1])
 							{
 								extern long TSU_TEST;
-								TSU_TEST = TSU_TEST ++;
+								TSU_TEST++;
 
 								if (TSU_TEST>2) TSU_TEST = 0;
 
