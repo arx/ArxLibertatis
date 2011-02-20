@@ -5607,7 +5607,7 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool _bValidateTest)
 				}
 				else
 				{
-					for(int iI=DIK_BUTTON1;iI<=DIK_BUTTON32;iI++)
+					for(int iI=DIK_BUTTON1;iI<=(int)DIK_BUTTON32;iI++)
 					{
 						if(pGetInfoDirectInput->iKeyId==iI)
 						{
