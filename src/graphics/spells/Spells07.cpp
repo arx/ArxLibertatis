@@ -816,7 +816,7 @@ CConfuse::~CConfuse()
 		spapi = NULL;
 	}
 }
-CConfuse::CConfuse(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CConfuse::CConfuse()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;

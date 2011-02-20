@@ -5989,7 +5989,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 
 			if (duration>-1) spells[i].tolive=duration;	
 
-			CSpellFx *pCSpellFx = new CConfuse(GDevice);			
+			CSpellFx *pCSpellFx = new CConfuse();
 
 			if (pCSpellFx)
 			{

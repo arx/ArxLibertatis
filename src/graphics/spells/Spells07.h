@@ -192,7 +192,7 @@ class CConfuse: public CSpellFx
 		float fTrail;
 
 	public:
-		CConfuse(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CConfuse();
 		~CConfuse();
 		// accesseurs
 	public:
