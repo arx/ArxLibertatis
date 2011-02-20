@@ -571,7 +571,6 @@ EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * file, long fla
 	        &&	(!(flag & TTE_NO_PDATA)))
 	{
 		CreateNeighbours(ret);
-		EERIEOBJECT_AddProgressiveData(ret);
 		EERIEOBJECT_AddClothesData(ret);
 		KillNeighbours(ret);
 

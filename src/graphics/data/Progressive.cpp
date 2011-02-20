@@ -167,15 +167,6 @@ void KillNeighbours(EERIE_3DOBJ * obj)
 	free(obj->ndata);
 	obj->ndata = NULL;
 }
-//*************************************************************************************
-// Creates Progressive Data Structure for an object.
-// The progressive system folds smoothly polygons onto their nearest/most appropriate
-// neighbors.
-//*************************************************************************************
-void EERIEOBJECT_AddProgressiveData(EERIE_3DOBJ * obj)
-{
-	return; 
-}
 
 void KillProgressiveData(EERIE_3DOBJ * obj)
 {
