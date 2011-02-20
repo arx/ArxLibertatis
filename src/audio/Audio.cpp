@@ -520,7 +520,6 @@ namespace ATHENA
 	// Global control                                                            //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	long MXpos = 0;
 
 
 	aalError aalUpdate()
