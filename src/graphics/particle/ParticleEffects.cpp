@@ -382,7 +382,7 @@ void ARX_PARTICLES_Spawn_Blood3(EERIE_3D * pos,float dmgs,D3DCOLOR col, long fla
 #define SPLAT_MULTIPLY 1.f
 
 //-----------------------------------------------------------------------------
-void ARX_POLYSPLAT_Add(EERIE_3D * poss,long type,EERIE_RGB * col,float size,long flags)
+void ARX_POLYSPLAT_Add(EERIE_3D * poss,EERIE_RGB * col,float size,long flags)
 {
 	if (BoomCount > (MAX_POLYBOOM >> 2) - 30) return;
 
@@ -641,7 +641,7 @@ void ARX_POLYSPLAT_Add(EERIE_3D * poss,long type,EERIE_RGB * col,float size,long
 //-----------------------------------------------------------------------------
 void SpawnGroundSplat(EERIE_SPHERE * sp,EERIE_RGB * rgb,float size,long flags)
 {
-		ARX_POLYSPLAT_Add(&sp->origin,0,rgb,size,flags);
+		ARX_POLYSPLAT_Add(&sp->origin,rgb,size,flags);
 }
 
 

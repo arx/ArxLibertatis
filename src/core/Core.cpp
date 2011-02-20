@@ -2578,8 +2578,6 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 	}
 }
 
-extern void ARX_POLYSPLAT_Add(EERIE_3D * poss,long type,EERIE_RGB * col,float size,long flags);
-
 //*************************************************************************************
 // FrameMove()
 //  Called once per frame.
