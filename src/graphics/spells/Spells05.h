@@ -237,7 +237,7 @@ class CPoisonProjectile: public CSpellFx
 		CParticleSystem pPSStream;
 
 	public:
-		CPoisonProjectile(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CPoisonProjectile();
 
 		// accesseurs
 	public:

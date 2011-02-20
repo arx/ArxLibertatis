@@ -600,7 +600,7 @@ void LaunchPoisonExplosion(EERIE_3D * aePos)
 
 
 //-----------------------------------------------------------------------------
-CPoisonProjectile::CPoisonProjectile(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CPoisonProjectile::CPoisonProjectile()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;
@@ -1013,7 +1013,7 @@ CMultiPoisonProjectile::CMultiPoisonProjectile(LPDIRECT3DDEVICE7 m_pd3dDevice, l
 
 	for (UINT i = 0 ; i < uiNumber ; i++)
 	{
-		pTab[i] = new CPoisonProjectile(m_pd3dDevice);
+		pTab[i] = new CPoisonProjectile();
 		pTab[i]->spellinstance = this->spellinstance;
 	}
 }
