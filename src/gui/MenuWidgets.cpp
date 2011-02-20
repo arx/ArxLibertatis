@@ -3690,8 +3690,8 @@ void CMenuElementText::SetText( const std::string& _pText )
 
 //-----------------------------------------------------------------------------
 
-void CMenuElementText::Update(int _iDTime)
-{
+void CMenuElementText::Update(int _iDTime) {
+	(void)_iDTime;
 }
 
 //-----------------------------------------------------------------------------
