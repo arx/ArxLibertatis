@@ -131,7 +131,7 @@ bool SaveBlock::BeginRead() {
 	while(hashMapSize < files.size()) {
 		hashMapSize <<= 1;
 	}
-	int iNbHacheTroisQuart = (hashMapSize * 3) / 4;
+	size_t iNbHacheTroisQuart = (hashMapSize * 3) / 4;
 	if(files.size() > iNbHacheTroisQuart) {
 		hashMapSize <<= 1;
 	}
@@ -150,7 +150,7 @@ bool SaveBlock::loadFileTable() {
 	if(FileRead(handle, &fatOffset, 4) != 4) {
 		return false;
 	}
-	if(FileSeek(handle, fatOffset + 4, SEEK_SET) != fatOffset + 4) {
+	if((size_t)FileSeek(handle, fatOffset + 4, SEEK_SET) != fatOffset + 4) {
 		LogError << "cannot seek to FAT";
 		return false;
 	}
