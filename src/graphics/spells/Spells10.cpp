@@ -53,6 +53,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+
+#include "graphics/spells/Spells10.h"
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -66,7 +69,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/spells/Spells07.h"
 #include "graphics/spells/Spells09.h"
-#include "graphics/spells/Spells10.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "core/Time.h"
 
@@ -133,7 +135,7 @@ float CMassLightning::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-CControlTarget::CControlTarget(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CControlTarget::CControlTarget()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;

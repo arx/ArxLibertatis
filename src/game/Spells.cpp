@@ -6738,7 +6738,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			spells[i].tolive = 1000;
 			
 			CSpellFx *pCSpellFx = NULL;
-			pCSpellFx = new CControlTarget(GDevice);
+			pCSpellFx = new CControlTarget();
 
 			if (pCSpellFx != NULL)
 			{
