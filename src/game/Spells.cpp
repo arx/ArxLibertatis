@@ -1509,8 +1509,6 @@ void ARX_SPELLS_AnalyseSYMBOL()
 {
 	long csymb = -1;
 	long sm = atoi(SpellMoves.c_str());
-
-	assert(CurrSpellSymbol >= 0);
 	
 	switch (sm)
 	{
