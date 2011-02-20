@@ -9116,7 +9116,7 @@ void DANAE::DrawAllInterfaceFinish()
 
 	if (!(player.Interface & INTER_INVENTORYALL) && !(player.Interface & INTER_MAP))
 	{
-		for (int i=0;i<MAX_PRECAST;i++) 
+		for (size_t i=0;i<MAX_PRECAST;i++) 
 		{
 			PRECAST_NUM=i;
 
