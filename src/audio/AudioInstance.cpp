@@ -71,7 +71,7 @@ namespace ATHENA
 		sample(NULL),
 		status(0),
 		loop(0), time(0),
-		stream(NULL), size(0), read(0), write(0),
+		stream(NULL), read(0), write(0), size(0),
 		lpdsb(NULL), lpds3db(NULL), lpeax(NULL)
 	{
 	}
