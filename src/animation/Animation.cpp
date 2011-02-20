@@ -696,7 +696,7 @@ suite:
 	DESTROYED_DURING_RENDERING=NULL;
 
 	if (USE_CEDRIC_ANIM)
-		Cedric_AnimateDrawEntity(pd3dDevice, eobj, eanim, angle, pos, io, col, typ);
+		Cedric_AnimateDrawEntity(pd3dDevice, eobj, eanim, angle, pos, io, typ);
 }
 
 #define ANIMQUATTYPE_FIRST_PERSON	2

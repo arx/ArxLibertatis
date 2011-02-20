@@ -2882,7 +2882,6 @@ void	Cedric_AnimateDrawEntity(LPDIRECT3DDEVICE7 pd3dDevice,
                                  EERIE_3D * angle,
                                  EERIE_3D * pos,
                                  INTERACTIVE_OBJ * io,
-                                 D3DCOLOR col,
                                  long typ)
 {
 	float 				invisibility;
