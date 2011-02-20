@@ -486,7 +486,7 @@ bool GetSpellPosition(EERIE_3D * pos,long i)
 	return false;
 }
 
-void LaunchAntiMagicField(EERIE_3D * pos,long ident)
+void LaunchAntiMagicField(long ident)
 {
 	for(size_t n = 0 ; n < MAX_SPELLS; n++) {
 		if (	(spells[n].exist) 
@@ -6529,7 +6529,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				spells[i].target=0;
 
 			if (ValidIONum(spells[i].target))
-				LaunchAntiMagicField(&inter.iobj[spells[i].target]->pos,i);
+				LaunchAntiMagicField(i);
 
 			SPELLCAST_Notify(i);
 		}	
@@ -8627,7 +8627,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			case SPELL_NEGATE_MAGIC:
 			{
 				if (ValidIONum(spells[i].target))
-					LaunchAntiMagicField(&inter.iobj[spells[i].target]->pos,i);
+					LaunchAntiMagicField(i);
 
 				CSpellFx *pCSpellFX = spells[i].pSpellFx;
 
