@@ -121,7 +121,7 @@ class CLowerArmor: public CSpellFx
 
 		// surcharge
 	public:
-		void	Create(long, int);
+		void	Create(long);
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render(LPDIRECT3DDEVICE7);

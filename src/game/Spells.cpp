@@ -4258,7 +4258,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			{
 				pCSpellFx->spellinstance=i;
 				CLowerArmor *pLowerArmor=(CLowerArmor *)pCSpellFx;
-				pLowerArmor->Create(spells[i].tolive, spells[i].target);
+				pLowerArmor->Create(spells[i].tolive);
 				spells[i].pSpellFx = pCSpellFx;
 				spells[i].tolive = pCSpellFx->GetDuration();
 			}

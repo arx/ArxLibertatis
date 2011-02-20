@@ -350,7 +350,7 @@ CLowerArmor::~CLowerArmor()
 }
 
 //-----------------------------------------------------------------------------
-void CLowerArmor::Create(long _ulDuration, int _iNpc) {
+void CLowerArmor::Create(long _ulDuration) {
 	
 	SetDuration(_ulDuration);
 
