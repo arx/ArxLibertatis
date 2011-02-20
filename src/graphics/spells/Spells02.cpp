@@ -299,8 +299,10 @@ CArmor::~CArmor()
 }
 
 //-----------------------------------------------------------------------------
-void CArmor::Create(long _ulDuration, int _iNpc)
-{
+void CArmor::Create(long _ulDuration, int _iNpc) {
+	
+	(void)_iNpc;
+	
 	SetDuration(_ulDuration);
 
 	if (spellinstance != -1)
