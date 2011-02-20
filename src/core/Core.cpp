@@ -6606,13 +6606,13 @@ static float _AvgFrameDiff = 150.f;
 		{
 			float val=10.f;	
 			m_pd3dDevice->SetTextureStageState( 0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD) (&val))  );
-			ARX_SCENE_Render(m_pd3dDevice,1);
+			ARX_SCENE_Render(m_pd3dDevice);
 			val=-0.3f;
 			m_pd3dDevice->SetTextureStageState( 0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD) (&val))  );
 		}
 		else
 		{
-			ARX_SCENE_Render(m_pd3dDevice,1);
+			ARX_SCENE_Render(m_pd3dDevice);
 		}			
 
 		BENCH_RENDER=EndBench();

@@ -1873,7 +1873,7 @@ finish:
 //	if (dat) free(dat);
 //
 //	LOADEDD = 1;
-//	ARX_SCENE_Render(NULL, 3);
+//	ARX_SCENE_Render(NULL);
 //	return -1;
 }
 extern void MCache_ClearAll();

@@ -4193,8 +4193,8 @@ long MAX_FRAME_COUNT=0;
 // ie: Big Mess
 //*************************************************************************************
 ///////////////////////////////////////////////////////////
-void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag, long param) 
-{
+void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag) {
+	
 	FrameCount++;
 
 	FRAME_COUNT++;

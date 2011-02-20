@@ -69,7 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //-----------------------------------------------------------------------------
 long ARX_PORTALS_GetRoomNumForPosition(EERIE_3D * pos, long flag = 0);
 
-void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag, long param = 0);
+void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag);
 void ApplyLavaGlowToVertex(EERIE_3D * odtv, D3DTLVERTEX * dtv, float power);
 bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io, EERIE_3D * position);
 void RoomDrawRelease();
