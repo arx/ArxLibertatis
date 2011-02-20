@@ -1648,7 +1648,7 @@ INT_PTR CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			if (ID_AROUND == LOWORD(wParam))
 			{
-				RecalcLightZone(player.pos.x, player.pos.y, player.pos.z, 2);
+				RecalcLightZone(player.pos.x, player.pos.z, 2);
 			}
 
 			break;
@@ -2898,7 +2898,7 @@ void LightApply(HWND hWnd)
 		if (!(lightparam.extras & EXTRAS_SEMIDYNAMIC))
 		{
 			RecalcLight(CDP_EditLight);
-			RecalcLightZone(CDP_EditLight->pos.x, CDP_EditLight->pos.y, CDP_EditLight->pos.z, (long)(CDP_EditLight->fallend * ACTIVEBKG->Xmul) + 1);
+			RecalcLightZone(CDP_EditLight->pos.x, CDP_EditLight->pos.z, (long)(CDP_EditLight->fallend * ACTIVEBKG->Xmul) + 1);
 		}
 	}
 	}

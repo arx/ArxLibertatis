@@ -93,6 +93,7 @@ void EERIE_LIGHT_MoveAll(EERIE_3D * trans);
 long EERIE_LIGHT_Create();
 
 void _RecalcLightZone(float x, float z, long siz);
+void RecalcLightZone(float x, float z, long siz);
  
 bool ValidDynLight(long num);
 #endif

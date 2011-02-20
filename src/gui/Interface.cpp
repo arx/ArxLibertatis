@@ -3009,7 +3009,7 @@ bool DANAE::ManageEditorControls()
 
 					EERIE_LIGHT_ClearSelected();
 					LastSelectedLight=-1;
-					RecalcLightZone(player.pos.x,player.pos.y,player.pos.z,12);
+					RecalcLightZone(player.pos.x, player.pos.z,12);
 				}
 
 				this->kbd.inkey[INKEY_DEL]=0;
@@ -3068,7 +3068,7 @@ bool DANAE::ManageEditorControls()
 					}
 					
 					GLight[num]->treat = 1;
-					RecalcLightZone(GLight[LastSelectedLight]->pos.x,GLight[LastSelectedLight]->pos.y,GLight[LastSelectedLight]->pos.z,(long)(GLight[LastSelectedLight]->fallend*ACTIVEBKG->Xmul)+1);
+					RecalcLightZone(GLight[LastSelectedLight]->pos.x, GLight[LastSelectedLight]->pos.z,(long)(GLight[LastSelectedLight]->fallend*ACTIVEBKG->Xmul)+1);
 				}
 				
 				this->kbd.inkey[INKEY_SPACE]=0;
@@ -6057,7 +6057,7 @@ void DANAE::ManageKeyMouse()
 							if (this->kbd.inkey[INKEY_7]) 
 							{
 								unsigned long tim = ARX_TIME_GetUL();//treat warning C4244 conversion from 'float' to 'unsigned long'
-								RecalcLightZone(player.pos.x,player.pos.y,player.pos.z,12);
+								RecalcLightZone(player.pos.x, player.pos.z,12);
 								tim=ARX_TIME_GetUL() - tim;//treat warning C4244 conversion from 'float' to 'unsigned long'
 								this->kbd.inkey[INKEY_7]=0;
 							}			

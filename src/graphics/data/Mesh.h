@@ -876,7 +876,6 @@ void SETCULL(LPDIRECT3DDEVICE7 pd3dDevice,DWORD state);
 
 //****************************************************************************
 // LIGHT FUNCTIONS START
-void RecalcLightZone(float x,float y,float z,long siz);
 void EERIEPrecalcLights(long minx=0,long minz=0,long maxx=99999,long maxz=99999);
 void EERIERemovePrecalcLights();
 void PrecalcDynamicLighting(long x0,long x1,long z0,long z1);
