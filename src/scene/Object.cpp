@@ -1862,7 +1862,6 @@ void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj)
 //-----------------------------------------------------------------------------------------------------
 void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 {
-	char * temp = NULL;
 	eobj->c_data = new EERIE_C_DATA();
 	memset(eobj->c_data, 0, sizeof(EERIE_C_DATA));
 
