@@ -1461,7 +1461,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fic)
 				{
 					memcpy(&dlv, dat + pos, sizeof(DANAE_LS_VLIGHTING));
 					pos += sizeof(DANAE_LS_VLIGHTING);
-					*ll = (0xff000000L | (((long)(dlv.r) & 255) << 16) |	(((long)(dlv.g) & 255) << 8) | (long)(dlv.b) & 255);
+					*ll = 0xff000000L | ((dlv.r & 255) << 16) | ((dlv.g & 255) << 8) | (dlv.b & 255);
 					ll++;
 					bcount--;
 				}
