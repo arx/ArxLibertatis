@@ -954,7 +954,6 @@ void EE_RTP3(EERIE_3D * in, EERIE_3D * out, EERIE_CAMERA * cam);
 void ReleaseAnimFromIO(INTERACTIVE_OBJ * io,long num);
 
 void ShadowPolys_ClearZone(EERIE_BACKGROUND * eb,long x0, long y0, long x1, long y1);
-void HALO_IO_DynLight_Update(INTERACTIVE_OBJ * io);
 short ANIM_GetAltIdx(ANIM_HANDLE * ah,long old);
 void ANIM_Set(ANIM_USE * au,ANIM_HANDLE * anim);
 void WriteMSEData(char * path,EERIE_MULTI3DSCENE * ms);

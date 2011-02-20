@@ -1712,9 +1712,6 @@ void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 
 			else if (ddist > 0.9f) ddist = 0.9f;
 
-			if ((use_io) && (use_io->halo.flags & HALO_DYNLIGHT))     
-				HALO_IO_DynLight_Update(io);
-
 			Cedric_PrepareHalo(eobj, obj);
 			need_halo	= 1;
 			MAX_ZEDE	= 0.f;
@@ -2444,11 +2441,6 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 		{
 			ddist = 1.f;
 		}
-
-
-
-		if ((io) && (io->halo.flags & HALO_DYNLIGHT))//(io->halo.flags & HALO_ACTIVE)
-			HALO_IO_DynLight_Update(io);
 
 		if ((io) && (io->halo.flags & HALO_ACTIVE) && (ddist > 0.01f))
 		{

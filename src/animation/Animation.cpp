@@ -702,13 +702,7 @@ suite:
 #define ANIMQUATTYPE_NO_RENDER		4
 #define ANIMQUATTYPE_NO_COMPUTATIONS	8
 extern float GLOBAL_LIGHT_FACTOR;
-//-----------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-void HALO_IO_DynLight_Update(INTERACTIVE_OBJ * io) 
-{
-	return; 
-		}
 
 //*************************************************************************************
 // Procedure for drawing Interactive Objects (Not Animated)
@@ -3119,10 +3113,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 	{
 		ddist=500.f-Distance3D(pos.x,pos.y,pos.z,ACTIVECAM->pos.x,ACTIVECAM->pos.y,ACTIVECAM->pos.z);
 
-		if (ddist>0.f) ddist=(ddist*( 1.0f / 500 ));
-
-		if ((io) && (io->halo.flags & HALO_DYNLIGHT))
-			HALO_IO_DynLight_Update(io);	
+		if (ddist>0.f) ddist=(ddist*( 1.0f / 500 ));	
 
 		if ((io) && (io->halo.flags & HALO_ACTIVE) && (ddist>0.01f) )
 			need_halo=1;
