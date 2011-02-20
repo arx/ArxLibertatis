@@ -388,7 +388,7 @@ long ARX_TEXT_DrawRect(HFONT ef,
 
 
 //-----------------------------------------------------------------------------
-float DrawBookTextInRect(float x, float y, float maxx, float maxy, const std::string& text, COLORREF col, COLORREF col2, HFONT font)
+float DrawBookTextInRect(float x, float y, float maxx, const std::string& text, COLORREF col, COLORREF col2, HFONT font)
 {
 	return (float)ARX_TEXT_DrawRect(font,
 									(BOOKDECX + x) * Xratio, (BOOKDECY + y) * Yratio, (BOOKDECX + maxx) * Xratio, text, col, NULL, col2);

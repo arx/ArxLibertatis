@@ -992,7 +992,7 @@ void ARX_INTERFACE_NoteManage()
 						Page_Buffer = Note.text.substr( Note.pages[Note.curpage], Note.pages[Note.curpage+1] - Note.pages[Note.curpage] );
 
 						danaeApp.DANAEEndRender();
-						DrawBookTextInRect(NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY+NoteTextMaxy,Page_Buffer,0,0x00FF00FF, hFontInGameNote);
+						DrawBookTextInRect(NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer,0,0x00FF00FF, hFontInGameNote);
 
 						danaeApp.DANAEStartRender();
 						
@@ -1001,7 +1001,7 @@ void ARX_INTERFACE_NoteManage()
 							Page_Buffer = Note.text.substr( Note.pages[Note.curpage+1], Note.pages[Note.curpage+2] - Note.pages[Note.curpage+1] );
 
 							danaeApp.DANAEEndRender();
-							DrawBookTextInRect(NotePosX+NoteTextMinx + (NoteTextMaxx-NoteTextMinx) +20, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx + (NoteTextMaxx-NoteTextMinx) +20, NotePosY+NoteTextMaxy,Page_Buffer,0,0x00FF00FF, hFontInGameNote);
+							DrawBookTextInRect(NotePosX+NoteTextMinx + (NoteTextMaxx-NoteTextMinx) +20, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx + (NoteTextMaxx-NoteTextMinx) +20, Page_Buffer,0,0x00FF00FF, hFontInGameNote);
 
 							danaeApp.DANAEStartRender();
 						}
@@ -1013,7 +1013,7 @@ void ARX_INTERFACE_NoteManage()
 							Page_Buffer = Note.text.substr(Note.pages[Note.curpage]);
 
 							danaeApp.DANAEEndRender();
-							DrawBookTextInRect( NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY+NoteTextMaxy,Page_Buffer,0,0x00FF00FF, hFontInGameNote);
+							DrawBookTextInRect( NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer,0,0x00FF00FF, hFontInGameNote);
 
 							danaeApp.DANAEStartRender();
 						}
@@ -1026,7 +1026,7 @@ void ARX_INTERFACE_NoteManage()
 			else
 			{
 				danaeApp.DANAEEndRender();
-				DrawBookTextInRect( NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY+NoteTextMaxy,Note.text,0,0x00FF00FF, hFontInGameNote);
+				DrawBookTextInRect( NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Note.text,0,0x00FF00FF, hFontInGameNote);
 				danaeApp.DANAEStartRender();
 			}
 		}
@@ -8561,12 +8561,12 @@ void ARX_INTERFACE_ManageOpenedBook()
 				if(QuestBook.pages[QuestBook.curpage+1]>0)
 				{
 					Page_Buffer = std::string( lpszQuests + QuestBook.pages[QuestBook.curpage], QuestBook.pages[QuestBook.curpage+1] - QuestBook.pages[QuestBook.curpage] );
-					DrawBookTextInRect( NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx, NotePosY + NoteTextMaxy, Page_Buffer, 0, 0x00FF00FF, hFontInGameNote);
+					DrawBookTextInRect( NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx, Page_Buffer, 0, 0x00FF00FF, hFontInGameNote);
 					
 					if(QuestBook.pages[QuestBook.curpage+2]>0)
 					{
 						Page_Buffer = std::string( lpszQuests + QuestBook.pages[QuestBook.curpage+1], QuestBook.pages[QuestBook.curpage+2] - QuestBook.pages[QuestBook.curpage+1] );
-						DrawBookTextInRect( NotePosX + NoteTextMinx + (NoteTextMaxx - NoteTextMinx) +20, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx + (NoteTextMaxx - NoteTextMinx) +20, NotePosY + NoteTextMaxy, Page_Buffer, 0, 0x00FF00FF, hFontInGameNote);
+						DrawBookTextInRect( NotePosX + NoteTextMinx + (NoteTextMaxx - NoteTextMinx) +20, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx + (NoteTextMaxx - NoteTextMinx) +20, Page_Buffer, 0, 0x00FF00FF, hFontInGameNote);
 					}
 				}
 				else
@@ -8574,7 +8574,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 					if(QuestBook.pages[QuestBook.curpage]>=0)
 					{
 						Page_Buffer = std::string( lpszQuests + QuestBook.pages[QuestBook.curpage] );
-						DrawBookTextInRect( NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX+NoteTextMaxx, NotePosY + NoteTextMaxy, Page_Buffer, 0, 0x00FF00FF, hFontInGameNote);
+						DrawBookTextInRect( NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer, 0, 0x00FF00FF, hFontInGameNote);
 					}
 				}
 			}

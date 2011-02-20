@@ -931,7 +931,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 							Page_Buffer[lLengthDraw] = '\0';
 
 							DrawBookTextInRect(ARX_CLEAN_WARN_CAST_FLOAT(bRect.left), ARX_CLEAN_WARN_CAST_FLOAT(bRect.top),
-											   ARX_CLEAN_WARN_CAST_FLOAT(bRect.right), ARX_CLEAN_WARN_CAST_FLOAT(bRect.bottom),
+											   ARX_CLEAN_WARN_CAST_FLOAT(bRect.right),
 											   Page_Buffer, 0, 0x00FF00FF,
 											   hFontInGameNote);
 
