@@ -2495,8 +2495,7 @@ bool Menu2_Render()
 					{
 						if(save_l.size()!=1)
 						{
-							for(int iI=1;iI<(save_l.size());iI++)
-							{
+							for(size_t iI = 1; iI < save_l.size(); iI++) {
 								std::string tex = save_l[iI].name;
 								std::string tex2;
 								tex2.resize(tex.size());
