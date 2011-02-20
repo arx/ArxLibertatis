@@ -668,7 +668,7 @@ void Danae_Registry_ReadValue(const char * string, long * value, long defaultval
 
 		if (DanaeKey!=NULL)
 		{
-			ReadRegKeyValue( DanaeKey, string, value, defaultvalue);
+			ReadRegKeyValue( DanaeKey, string, value);
 			Danae_Registry_Close();
 		}
 		else *value = defaultvalue;

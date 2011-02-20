@@ -92,13 +92,11 @@ HRESULT ReadRegKey( HKEY hKey, const char * strName, TCHAR* strValue,
 
     return S_OK;
 }
-HRESULT ReadRegKeyValue( HKEY hKey, const char * strName, long * val, long defaultt )
-{
+HRESULT ReadRegKeyValue( HKEY hKey, const char * strName, long * val) {
+	
 	u32 dwType;
 	u32 dwLength=4;
-	LONG bResult;
-
-	bResult = RegQueryValueEx( hKey, strName, 0, &dwType, 
-							 (LPBYTE) val, &dwLength );
-    return S_OK;
+	
+	RegQueryValueEx( hKey, strName, 0, &dwType, (LPBYTE) val, &dwLength );
+  return S_OK;
 }
