@@ -200,11 +200,11 @@ namespace ATHENA
 	{
 		if (mutex) WaitForSingleObject(mutex, MUTEX_TIMEOUT);
 
-		_mixer.Clean(false);
-		_amb.Clean(false);
-		_inst.Clean(true);
-		_sample.Clean(false);
-		_env.Clean(false);
+		_mixer.Clean();
+		_amb.Clean();
+		_inst.Clean();
+		_sample.Clean();
+		_env.Clean();
 
 		if (environment) environment->Release(), environment = NULL;
 

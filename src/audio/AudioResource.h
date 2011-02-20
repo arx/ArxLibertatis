@@ -90,7 +90,7 @@ namespace ATHENA
 			}
 			inline aalSLong Add(T * element);
 			inline aalVoid Delete(const aalSLong & index);
-			inline aalVoid Clean(bool bOk);
+			inline aalVoid Clean();
 		private:
 			//Data
 			aalULong size;
@@ -169,7 +169,7 @@ namespace ATHENA
 	}
 
 	template <class T>
-	inline aalVoid ResourceList<T>::Clean(bool bOk)
+	inline aalVoid ResourceList<T>::Clean()
 	{
 
 		for (aalULong i(0); i < size; i++)
