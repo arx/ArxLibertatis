@@ -253,16 +253,6 @@ void MakePlayerAppearsFX(INTERACTIVE_OBJ * io);
 void MakeCoolFx(EERIE_3D * pos);
 void SpawnGroundSplat(EERIE_SPHERE * sp, EERIE_RGB * rgb, float size, long flags);
 
-void ARX_FOGS_FirstInit();
-long ARX_FOGS_Count();
-void ARX_FOGS_Clear();
-void ARX_FOGS_TranslateSelected(EERIE_3D * trans);
-void ARX_FOGS_UnselectAll();
-void ARX_FOGS_Select(long n);
-long ARX_FOGS_GetFree();
-void ARX_FOGS_KillSelected();
-void ARX_FOGS_Render(long init);
-
 void ARX_PARTICLES_FirstInit();
 void ARX_PARTICLES_ClearAll();
 long ARX_PARTICLES_GetFree();

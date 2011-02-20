@@ -3953,7 +3953,7 @@ void ARX_GAME_Reset(long type)
 
 	// Fogs
 	ARX_FOGS_TimeReset();
-	ARX_FOGS_Render(1);
+	ARX_FOGS_Render();
 
 	// Anchors
 	ANCHOR_BLOCK_Clear();

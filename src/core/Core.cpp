@@ -3115,7 +3115,7 @@ LPTHREAD_START_ROUTINE FirstFrameProc(char *pipo)
 
 	SecondaryInventory=NULL;
 	TSecondaryInventory=NULL;
-	ARX_FOGS_Render(1);
+	ARX_FOGS_Render();
 
 	if (!LOAD_N_DONT_ERASE)
 	{
@@ -6641,7 +6641,7 @@ static float _AvgFrameDiff = 150.f;
 		m_pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );			
 		SETZWRITE(m_pd3dDevice, false );
 		SETALPHABLEND(m_pd3dDevice,true);
-		ARX_FOGS_Render(0);
+		ARX_FOGS_Render();
 
 		bool bNoVB	=	false;
 		if( bSoftRender )

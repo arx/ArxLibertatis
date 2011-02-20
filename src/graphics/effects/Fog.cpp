@@ -228,8 +228,8 @@ void AddPoisonFog(EERIE_3D * pos, float power)
 }
 //*************************************************************************************
 //*************************************************************************************
-void ARX_FOGS_Render(long init)
-{
+void ARX_FOGS_Render() {
+	
 	if (ARXPausedTimer) return;
 
 	int iDiv = 2;
