@@ -121,7 +121,7 @@ void InsertItem(HWND _hwnd, char * _name, char * _value)
 	ListView_SetItemText(_hwnd, r, 1, _value);
 }
 
-static BOOL CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+BOOL CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	
 	(void)wParam;
 	
@@ -302,8 +302,8 @@ void SCRIPT_DEBUGGER_CreateDialog(HWND _hWindow) {
 
 
 		long dw = GetLastError();
-//		todo: debugger
-//		ghDialog = CreateDialog(ghInstance, MAKEINTRESOURCE(IDD_SCRIPT_DEBUGGER), _hWindow,  SCRIPT_DEBUGGER_Proc);
+		// TODO script debugger
+		// ghDialog = CreateDialog(ghInstance, MAKEINTRESOURCE(IDD_SCRIPT_DEBUGGER), _hWindow,  SCRIPT_DEBUGGER_Proc);
 		dw = GetLastError();
 		ShowWindow(ghDialog, SW_SHOW);
 
@@ -320,8 +320,10 @@ void SCRIPT_DEBUGGER_CreateDialog(HWND _hWindow) {
 }
 
 //-----------------------------------------------------------------------------
-int CALLBACK MyCompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
-{
+int CALLBACK MyCompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort) {
+	
+	(void)lParamSort;
+	
 	char * a = (char *) lParam1;
 	char * b = (char *) lParam2;
 	return strcmp(a, b);
