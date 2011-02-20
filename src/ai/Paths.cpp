@@ -2206,8 +2206,9 @@ bool IsPointInField(EERIE_3D * pos)
 
 	return false;
 }
-bool IsObjectInField(EERIE_3DOBJ * obj, long source)
-{
+
+bool IsObjectInField(EERIE_3DOBJ * obj) {
+	
 	for (size_t i = 0; i < MAX_SPELLS; i++)
 	{
 		if ((spells[i].exist)
@@ -2455,7 +2456,7 @@ bool ARX_EERIE_PHYSICS_BOX_Compute_Simple(EERIE_3DOBJ * obj, float framediff, fl
 	if ((!_IsFULLObjectVertexInValidPosition(obj, flags, source, validd))
 	    ||	ARX_INTERACTIVE_CheckFULLCollision(obj, source)
 	    || colidd
-	    || (IsObjectInField(obj, source))
+	    || (IsObjectInField(obj))
 	)
 	{
 		colidd = 1;
