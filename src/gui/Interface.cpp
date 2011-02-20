@@ -839,6 +839,7 @@ void ARX_INTERFACE_NoteClose()
 			case NOTE_TYPE_NOTE   :
 				ARX_SOUND_PlayInterface(SND_SCROLL_CLOSE, 0.9F + 0.2F * rnd());
 				break;
+			default: break; // No sound.
 		}
 		
 		ARX_INTERFACE_NoteClear();
@@ -913,6 +914,8 @@ void ARX_INTERFACE_NoteManage()
 				}					
 
 				break;
+				
+			case NOTE_TYPE_UNDEFINED: break; // Cannot handle notes of undefined type.
 			}
 		}
 
