@@ -72,6 +72,8 @@ long PROGRESS_TOTAL = 0;
 EERIE_LIGHT * IO_PDL[MAX_DYNLIGHTS];
 long TOTIOPDL = 0;
 
+static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float * epb, EERIE_LIGHT * light);
+
 bool ValidDynLight(long num)
 {
 	if (	(num >= 0)
@@ -157,7 +159,7 @@ void EERIE_LIGHT_Apply(EERIEPOLY * ep, EERIEPOLY * father)
 		{
 			if (Distance3D(el->pos.x, el->pos.y, el->pos.z,
 			               ep->center.x, ep->center.y, ep->center.z) < el->fallend + 100.f)
-				EERIE_LIGHT_Make(ep, epr, epg, epb, el, father);
+				ARX_EERIE_LIGHT_Make(ep, epr, epg, epb, el);
 		}
 	}
 
@@ -167,7 +169,7 @@ void EERIE_LIGHT_Apply(EERIEPOLY * ep, EERIEPOLY * father)
 		{
 			if (Distance3D(actions[i].light.pos.x, actions[i].light.pos.y, actions[i].light.pos.z,
 			               ep->center.x, ep->center.y, ep->center.z) < actions[i].light.fallend + 100.f)
-				EERIE_LIGHT_Make(ep, epr, epg, epb, &actions[i].light, father);
+				ARX_EERIE_LIGHT_Make(ep, epr, epg, epb, &actions[i].light);
 		}
 	}
 
@@ -447,7 +449,7 @@ float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT 
 	return nb_shadowvertexinpoly / nb_totalvertexinpoly;
 }
 
-void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float * epb, EERIE_LIGHT * light)
+static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float * epb, EERIE_LIGHT * light)
 {
 	int		i;				// iterator
 	int		nbvert;			// number or vertices per face (3 or 4)
@@ -539,98 +541,6 @@ void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float * epb,
 }
 
 //*************************************************************************************
-void EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float * epb, EERIE_LIGHT * light, EERIEPOLY * father)
-{
-	ARX_EERIE_LIGHT_Make(ep, epr, epg, epb, light);
-	return;
-	int		i;				// iterator
-	int		nbvert;			// number or vertices per face (3 or 4)
-	float	distance[4];	// distance from light to each vertex
-	float	fRes;			// value of light intensity for a given vertex
-	EERIE_3D vLight;		// vector (light to vertex)
-	EERIE_3D vNorm;			// vector (interpolated normal of vertex)
-
-	if (ep->type & POLY_IGNORE)
-		return;
-
-	(ep->type & POLY_QUAD) ? nbvert = 4 : nbvert = 3;
-
-	// compute light - vertex distance
-	for (i = 0; i < nbvert; i++)
-	{
-		distance[i] = TRUEEEDistance3D(&light->pos, (EERIE_3D *)&ep->v[i]);
-	}
-
-	for (i = 0; i < nbvert; i++)
-	{
-		fRes = 1.0f;
-
-		if (distance[i] < light->fallend)
-		{
-			//---------------------- start MODE_NORMALS
-			if (ModeLight & MODE_NORMALS)
-			{
-				vLight.x = light->pos.x - ep->v[i].sx;
-				vLight.y = light->pos.y - ep->v[i].sy;
-				vLight.z = light->pos.z - ep->v[i].sz;
-				TRUEVector_Normalize(&vLight);
-				vNorm.x = ep->nrml[i].x;
-				vNorm.y = ep->nrml[i].y;
-				vNorm.z = ep->nrml[i].z;
-
-				fRes = Vector_DotProduct(&vLight, &vNorm);
-
-				if (fRes < 0.0f)
-				{
-					fRes = 0.0f;
-				}
-			}
-
-			//---------------------- end MODE_NORMALS
-
-			//---------------------- start MODE_RAYLAUNCH
-			if ((ModeLight & MODE_RAYLAUNCH) && !(light->extras & EXTRAS_NOCASTED))
-			{
-				EERIE_3D orgn, dest, hit;
-				orgn.x = light->pos.x;
-				orgn.y = light->pos.y;
-				orgn.z = light->pos.z;
-				dest.x = ep->v[i].sx;
-				dest.y = ep->v[i].sy;
-				dest.z = ep->v[i].sz;
-
-				if (ModeLight & MODE_SMOOTH)
-					fRes *= my_CheckInPoly(ep->v[i].sx, ep->v[i].sy, ep->v[i].sz, ep, light);
-				else
-					fRes *= Visible(&orgn, &dest, ep, &hit);
-			}
-
-			//---------------------- fin MODE_RAYLAUNCH
-
-			float fTemp1 = light->intensity * fRes * GLOBAL_LIGHT_FACTOR;
-			float fr, fg, fb;
-
-			if (distance[i] <= light->fallstart)
-			{
-				fr = light->rgb.r * fTemp1;
-				fg = light->rgb.g * fTemp1;
-				fb = light->rgb.b * fTemp1;
-			}
-			else
-			{
-				float intensity = (light->falldiff - (distance[i] - light->fallstart)) * light->falldiffmul;
-				float fTemp2 = fTemp1 * intensity;
-				fr = light->rgb.r * fTemp2;
-				fg = light->rgb.g * fTemp2;
-				fb = light->rgb.b * fTemp2;
-			}
-
-			epr[i] += fr; 
-			epg[i] += fg; 
-			epb[i] += fb; 
-		}
-	}
-}
 extern float GLOBAL_LIGHT_FACTOR;
 //*************************************************************************************
 long	DYNAMIC_NORMALS = 1;
