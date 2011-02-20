@@ -2430,9 +2430,9 @@ INTERACTIVE_OBJ * AddInteractive(LPDIRECT3DDEVICE7 pd3dDevice, const char * file
 	else if (IsIn(ficc, "FIX"))
 		io = AddFix(pd3dDevice, file, flags);
 	else if (IsIn(ficc, "CAMERA"))
-		io = AddCamera(pd3dDevice, file);
+		io = AddCamera(file);
 	else if (IsIn(ficc, "MARKER"))
-		io = AddMarker(pd3dDevice, file);
+		io = AddMarker(file);
 
 	if (io)
 	{
@@ -2688,7 +2688,7 @@ INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
 // AddCamera
 // Adds a CAMERA INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
+INTERACTIVE_OBJ * AddCamera(const char * file)
 {
 	std::string tex1 = file;;
 	std::string texscript = file;
@@ -2758,7 +2758,7 @@ INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
 // AddMarker
 // Adds a MARKER INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddMarker(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
+INTERACTIVE_OBJ * AddMarker(const char * file)
 {
 	std::string tex1 = file;
 	std::string texscript = file;

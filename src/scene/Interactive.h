@@ -235,8 +235,8 @@ INTERACTIVE_OBJ * AddInteractive(LPDIRECT3DDEVICE7 pd3dDevice, const char * file
 INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags = 0);
 INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags = 0);
 INTERACTIVE_OBJ  * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& file, long flags = 0);
-INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, const char * file);
-INTERACTIVE_OBJ * AddMarker(LPDIRECT3DDEVICE7 pd3dDevice, const char * file);
+INTERACTIVE_OBJ * AddCamera(const char * file);
+INTERACTIVE_OBJ * AddMarker(const char * file);
 
 void InitInter(long nb);
 INTERACTIVE_OBJ * CreateFreeInter(long num = -1);
