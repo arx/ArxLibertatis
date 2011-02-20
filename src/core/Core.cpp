@@ -6668,7 +6668,7 @@ static float _AvgFrameDiff = 150.f;
 		{
 			if (EERIEMouseButton & 1)
 			{
-				if ((ARX_FLARES_Block==0) && (CurrSlot<MAX_SLOT)) 
+				if ((ARX_FLARES_Block==0) && ((unsigned long)CurrSlot<MAX_SLOT)) 
 					ARX_SPELLS_AddPoint(&DANAEMouse);
 				else
 				{
