@@ -123,7 +123,7 @@ extern INTERACTIVE_OBJ * CURPATHFINDIO;
 
 HRESULT DANAEFinalCleanup();
 void ClearGame();
-void ShowInfoText(long COR);
+static void ShowInfoText();
 
 //-----------------------------------------------------------------------------
 
@@ -6884,7 +6884,7 @@ m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 		{
 			if (ViewMode & VIEWMODE_INFOTEXT)
 			{
-				ShowInfoText(0);
+				ShowInfoText();
 			}
 			else if ((FORCE_SHOW_FPS) || CYRIL_VERSION)
 			{
@@ -7237,8 +7237,8 @@ extern long TSU_TEST;
 long TSU_TEST_NB = 0;
 long TSU_TEST_NB_LIGHT = 0;
 
-void ShowInfoText(long COR)
-{
+static void ShowInfoText() {
+	
 	unsigned long uGAT = ARXTimeUL() / 1000;
 	long GAT=(long)uGAT;
 	char tex[256];
