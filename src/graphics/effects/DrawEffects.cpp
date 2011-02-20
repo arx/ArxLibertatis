@@ -360,13 +360,7 @@ void ARXDRAW_DrawAllLights(LPDIRECT3DDEVICE7 pd3dDevice,long x0,long z0,long x1,
 }
 extern INTERACTIVE_OBJ * CAMERACONTROLLER;
 extern long ARX_CONVERSATION;
-//*************************************************************************************
-//*************************************************************************************
-void ARXDRAW_DrawExternalView(LPDIRECT3DDEVICE7 pd3dDevice)
-{
-}
-//*************************************************************************************
-//*************************************************************************************
+
 void ARXDRAW_DrawEyeBall(LPDIRECT3DDEVICE7 pd3dDevice)
 {
 	EERIE_3D angle;

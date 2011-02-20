@@ -66,7 +66,6 @@ void ARXDRAW_DrawInterShadows(LPDIRECT3DDEVICE7 pd3dDevice);
 void ARXDRAW_DrawPolyBoom(LPDIRECT3DDEVICE7 pd3dDevice);
 void ARXDRAW_DrawAllLights(LPDIRECT3DDEVICE7 pd3dDevice, long x0, long z0, long x1, long z1);
 void ARXDRAW_DrawEyeBall(LPDIRECT3DDEVICE7 pd3dDevice);
-void ARXDRAW_DrawExternalView(LPDIRECT3DDEVICE7 pd3dDevice);
 void ARXDRAW_DrawAllInterTransPolyPos(LPDIRECT3DDEVICE7 pd3dDevice);
 void ARXDRAW_DrawAllTransPolysPos(LPDIRECT3DDEVICE7 pd3dDevice, long MODIF);
 

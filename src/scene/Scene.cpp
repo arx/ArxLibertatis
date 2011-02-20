@@ -4722,10 +4722,6 @@ else
 	PopAllTriangleList(true);
 	
 					}
-					
-	
-	if (EXTERNALVIEW)
-		ARXDRAW_DrawExternalView(pd3dDevice);
 
 
 	DRAWLATER_Render(pd3dDevice);
