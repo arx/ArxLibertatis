@@ -299,9 +299,7 @@ CArmor::~CArmor()
 }
 
 //-----------------------------------------------------------------------------
-void CArmor::Create(long _ulDuration, int _iNpc) {
-	
-	(void)_iNpc;
+void CArmor::Create(long _ulDuration) {
 	
 	SetDuration(_ulDuration);
 
@@ -352,8 +350,8 @@ CLowerArmor::~CLowerArmor()
 }
 
 //-----------------------------------------------------------------------------
-void CLowerArmor::Create(long _ulDuration, int _iNpc)
-{
+void CLowerArmor::Create(long _ulDuration, int _iNpc) {
+	
 	SetDuration(_ulDuration);
 
 	if (spellinstance != -1)
