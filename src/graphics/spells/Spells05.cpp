@@ -1037,8 +1037,9 @@ CMultiPoisonProjectile::~CMultiPoisonProjectile()
 }
 
 //-----------------------------------------------------------------------------
-void CMultiPoisonProjectile::Create(EERIE_3D _eSrc, float _afBeta = 0)
-{
+void CMultiPoisonProjectile::Create(EERIE_3D _eSrc, float _afBeta = 0) {
+	
+	(void)_afBeta;
 
 	float afAlpha = 0.f;
 	float afBeta = 0.f;
