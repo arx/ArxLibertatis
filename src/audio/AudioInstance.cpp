@@ -374,7 +374,7 @@ namespace ATHENA
 		for (int i = 0; i < buffers.size(); i++) {
 			alDeleteBuffers(1, buffers[i]);
 		}
-		fflush(stdout);
+		buffers.resize(0);
 		if (alIsBuffer(buffer[0]))
 			alDeleteBuffers(1, buffer);
 
