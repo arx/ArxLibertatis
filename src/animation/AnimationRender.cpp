@@ -2779,8 +2779,7 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 
 
 
-void Cedric_BlendAnimation(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, float timm, EERIE_3D * angle)
-{
+void Cedric_BlendAnimation(EERIE_3DOBJ * eobj, float timm) {
 	for (long i = 0; i < eobj->c_data->nb_bones; i++)
 	{
 		EERIE_QUAT tquat;
@@ -2935,7 +2934,7 @@ void	Cedric_AnimateDrawEntity(LPDIRECT3DDEVICE7 pd3dDevice,
 		{
 			if (timm > 0.f)
 			{
-				Cedric_BlendAnimation(io, eobj, timm, angle);
+				Cedric_BlendAnimation(eobj, timm);
 				Cedric_SaveBlendData(io, eobj, angle);
 			}
 			else
