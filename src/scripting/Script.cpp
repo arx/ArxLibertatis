@@ -643,7 +643,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 			{
 				txtcontent = "NONE";
 
-				if (io)	MakeTopObjString(io,txtcontent,txtcontentSize);//ARX: xrichter (2010-08-04) - Fix corrupted stack
+				if (io)	MakeTopObjString(io,txtcontent);
 
 				return TYPE_TEXT;
 			}

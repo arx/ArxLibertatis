@@ -281,10 +281,8 @@ bool IntersectLinePlane(EERIE_3D * l1, EERIE_3D * l2, EERIEPOLY * ep, EERIE_3D *
 	return false;
 }
  
-//*************************************************************************************
-//*************************************************************************************
-long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest, unsigned int destSize)
-{
+long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest) {
+	
 	EERIE_3D boxmin;
 	EERIE_3D boxmax;
 
