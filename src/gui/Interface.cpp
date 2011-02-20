@@ -808,6 +808,7 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex
 		case NOTE_TYPE_NOTE   :
 			ARX_SOUND_PlayInterface(SND_SCROLL_OPEN, 0.9F + 0.2F * rnd());
 			break;
+		default: break; // No sound
 	}
 	
 	if (TRUE_PLAYER_MOUSELOOK_ON && (Note.type == NOTE_TYPE_BOOK))
