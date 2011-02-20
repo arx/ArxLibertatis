@@ -379,7 +379,9 @@ void CLowerArmor::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-float CLowerArmor::Render(LPDIRECT3DDEVICE7 _pD3DDevice)
-{
+float CLowerArmor::Render(LPDIRECT3DDEVICE7 _pD3DDevice) {
+	
+	(void)_pD3DDevice;
+	
 	return 0;
 }
