@@ -7123,7 +7123,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							FLYING_OVER = i;
 							DrawBookTextCenter( 208, 90, spellicons[i].name,0,0x00FF00FF,InBookFont);
 							
-							for (long li=0;li<MAX_SPEECH;li++)
+							for (size_t li=0;li<MAX_SPEECH;li++)
 							{
 								if (speech[li].timecreation>0) FLYING_OVER=0;
 							}
