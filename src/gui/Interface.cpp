@@ -1035,7 +1035,7 @@ void ARX_INTERFACE_NoteManage()
 		if (NoteTexture)
 		if (MouseInBookRect(NotePosX, NotePosY, NotePosX+NoteTexture->m_dwWidth, NotePosY+NoteTexture->m_dwHeight))
 		{
-			if (((EERIEMouseButton & 1) && !(LastMouseClick & 1) && TRUE_PLAYER_MOUSELOOK_ON )||((EERIEMouseButton & 2) && !(LastMouseClick & 2)) && clicknotmanaged)
+			if ((((EERIEMouseButton & 1) && !(LastMouseClick & 1) && TRUE_PLAYER_MOUSELOOK_ON )||((EERIEMouseButton & 2) && !(LastMouseClick & 2))) && clicknotmanaged)
 			{
 				ARX_INTERFACE_NoteClose();
 				EERIEMouseButton &= ~2;
