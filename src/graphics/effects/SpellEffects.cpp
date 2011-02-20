@@ -355,8 +355,8 @@ void Draw3DLineTex(EERIE_3D s, EERIE_3D e, int color, float fStartSize, float fE
 }
 
 //-----------------------------------------------------------------------------
-void Draw3DLineTex2(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D s, EERIE_3D e, float fSize, int color, int color2)
-{
+void Draw3DLineTex2(EERIE_3D s, EERIE_3D e, float fSize, int color, int color2) {
+	
 	float fBeta = MAKEANGLE(player.angle.b);
 	float zz = fSize; 
 	float xx = (float)(fSize * cos(radians(fBeta)));

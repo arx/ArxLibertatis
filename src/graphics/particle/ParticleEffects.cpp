@@ -2537,7 +2537,7 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 						end.x=pos.x-(pos.x-op.x)*2.5f;
 						end.y=pos.y-(pos.y-op.y)*2.5f;
 						end.z=pos.z-(pos.z-op.z)*2.5f;
-						Draw3DLineTex2(pd3dDevice,end,pos,2.f,color1 & part->mask,color1);
+						Draw3DLineTex2(end,pos,2.f,color1 & part->mask,color1);
 						
 						EERIEDrawSprite(pd3dDevice,&in,.7f,tc,color1,2.f);				
 						
