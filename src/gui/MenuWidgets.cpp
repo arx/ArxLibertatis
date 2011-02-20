@@ -3732,8 +3732,10 @@ bool CMenuElementText::OnMouseDoubleClick(int _iMouseButton)
 
 //-----------------------------------------------------------------------------
 // true: block les zones de checks
-bool CMenuElementText::OnMouseClick(int _iMouseButton)
-{
+bool CMenuElementText::OnMouseClick(int _iMouseButton) {
+	
+	(void)_iMouseButton;
+	
 	switch(eState)
 	{
 	case EDIT:
@@ -4761,8 +4763,8 @@ CMenuCheckButton::~CMenuCheckButton()
 
 //-----------------------------------------------------------------------------
 
-void CMenuCheckButton::Update(int _iDTime)
-{
+void CMenuCheckButton::Update(int _iDTime) {
+	(void)_iDTime;
 }
 
 //-----------------------------------------------------------------------------
@@ -4779,8 +4781,10 @@ void CMenuCheckButton::Move(int _iX, int _iY)
 
 //-----------------------------------------------------------------------------
 
-bool CMenuCheckButton::OnMouseClick(int _iMouseButton)
-{
+bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
+	
+	(void)_iMouseButton;
+	
 	if(iOldState<0)
 		iOldState=iState;
 
