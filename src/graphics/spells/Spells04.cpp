@@ -54,13 +54,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include "graphics/spells/Spells04.h"
+
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "scene/Object.h"
 #include "core/Core.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/spells/Spells05.h"
-#include "graphics/spells/Spells04.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
 #include "game/Spells.h"
@@ -68,7 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 
 //-----------------------------------------------------------------------------
-CBless::CBless(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CBless::CBless()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;
