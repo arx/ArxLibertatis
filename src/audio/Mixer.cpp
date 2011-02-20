@@ -34,10 +34,7 @@ using namespace std;
 namespace ATHENA
 {
 
-	static enum MixerFlag
-	{
-		MIXER_PAUSED = 0x00000001
-	} mixerFlag;
+	const aalULong MIXER_PAUSED = 0x00000001;
 
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //
