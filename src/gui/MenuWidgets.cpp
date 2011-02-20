@@ -5127,11 +5127,6 @@ MENUSTATE CWindowMenu::Render()
 	{
 		vector<CWindowMenuConsole*>::iterator i;
 
-
-		ARX_CHECK_INT(ARXDiffTimeMenu);
-		int iARXDiffTimeMenu    = ARX_CLEAN_WARN_CAST_INT(ARXDiffTimeMenu) ;
-
-
 		for (i = vWindowConsoleElement.begin(); i != vWindowConsoleElement.end(); ++i)
 		{
 			if(eCurrentMenuState==(*i)->eMenuState)
