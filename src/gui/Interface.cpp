@@ -365,10 +365,6 @@ void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, cons
 	v[2]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.f ), 1.f, 1, 1, 1.f, 1.f);
 	v[3]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.f ), 1.f, 1, 1, 0.f, 1.f);
 	
-	char format[32];
-
-	sprintf(format, "%%0%dd", _iNb);
-
 	v[0].sz = v[1].sz = v[2].sz = v[3].sz = 0.0000001f;
 
 	if (inventory_font)
@@ -379,7 +375,7 @@ void ARX_INTERFACE_DrawNumber(const float x, const float y, const long num, cons
 		float divideX = 1.f/((float) inventory_font->m_dwWidth);
 		float divideY = 1.f/((float) inventory_font->m_dwHeight);
 
-		sprintf(tx, format, num);
+		sprintf(tx, "%*d", _iNb, num);
 		long removezero=1;
 
 		for (long i=0;i<6;i++)

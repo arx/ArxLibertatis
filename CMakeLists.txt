@@ -88,7 +88,7 @@ ELSE (MSVC)
 	set(CMAKE_CXX_FLAGS "-m32")
 	
 	# Warning level
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat=2 -Winit-self")
 
 	#Debug
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3")
