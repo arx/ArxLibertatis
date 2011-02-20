@@ -1042,22 +1042,6 @@ void InitializeDanae()
 
 }
 
-//*************************************************************************************
-// DANAEApp EntryPoint
-//*************************************************************************************
-int HandlerMemory(size_t stSize)
-{
-	if(	danaeApp.m_hWnd)
-	{
-		ShowWindow(danaeApp.m_hWnd,SW_MINIMIZE|SW_HIDE);
-	}
-
-	LogError << "Fatal memory error!!!";
-	exit(-1);
-}
-
-//-----------------------------------------------------------------------------
-
 bool IsNoGore( void ) {
 	return GERMAN_VERSION? true : false;
 }
