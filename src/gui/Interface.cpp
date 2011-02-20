@@ -2716,7 +2716,7 @@ bool DANAE::ManageEditorControls()
 
 	// Save Level Command
 	if (EDITMODE)
-		if ((this->kbd.inkey[INKEY_S]) && ((this->kbd.inkey[INKEY_LEFTSHIFT]) || (this->kbd.inkey[INKEY_RIGHTSHIFT])) || WILLSAVELEVEL)
+		if (((this->kbd.inkey[INKEY_S]) && ((this->kbd.inkey[INKEY_LEFTSHIFT]) || (this->kbd.inkey[INKEY_RIGHTSHIFT]))) || WILLSAVELEVEL)
 		{
 			WILLSAVELEVEL=0;
 
