@@ -819,7 +819,7 @@ int CMenuConfig::GetDIKWithASCII( const std::string& _pcTouch)
 			return iI|(DIK_RALT<<16);
 	}
 
-	for(int iI=DIK_BUTTON1;iI<=DIK_BUTTON32;iI++)
+	for(int iI=DIK_BUTTON1;iI<=(int)DIK_BUTTON32;iI++)
 	{
 		std::string pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI);
 
