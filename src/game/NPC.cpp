@@ -1091,7 +1091,7 @@ void ARX_PHYSICS_Apply()
 		        &&	(ep->type & POLY_LAVA)
 		        &&	(EEfabs(ep->center.y - io->pos.y) < 40))
 		{
-			ARX_PARTICLES_Spawn_Lava_Burn(&io->pos, 0.6f, io);
+			ARX_PARTICLES_Spawn_Lava_Burn(&io->pos, io);
 
 			if (io->ioflags & IO_NPC)
 			{

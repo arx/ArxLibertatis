@@ -3313,7 +3313,7 @@ void PlayerMovementIterate(float DeltaTime)
 					pos.x = player.pos.x;
 					pos.y = player.pos.y - PLAYER_BASE_HEIGHT;
 					pos.z = player.pos.z;
-					ARX_PARTICLES_Spawn_Lava_Burn(&pos, 1.f, inter.iobj[0]);
+					ARX_PARTICLES_Spawn_Lava_Burn(&pos, inter.iobj[0]);
 				}
 			}
 

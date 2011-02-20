@@ -216,8 +216,8 @@ void LaunchDummyParticle()
 }
 
 //-----------------------------------------------------------------------------
-void ARX_PARTICLES_Spawn_Lava_Burn(EERIE_3D * poss,float power,INTERACTIVE_OBJ * io)
-{
+void ARX_PARTICLES_Spawn_Lava_Burn(EERIE_3D * poss, INTERACTIVE_OBJ * io) {
+	
 	EERIE_3D pos;
 	pos.x=poss->x;
 	pos.y=poss->y;
