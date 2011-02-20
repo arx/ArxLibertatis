@@ -22,9 +22,12 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+
+#include "audio/Sample.h"
+
 #include <cstdlib>
 #include <cstring>
-#include "audio/Sample.h"
+
 #include "audio/AudioGlobal.h"
 #include "audio/Stream.h"
 #include "io/Logger.h"

@@ -23,9 +23,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
+#include "audio/codec/ADPCM.h"
+
 #include "io/PakManager.h"
 #include "audio/AudioTypes.h"
-#include "audio/codec/ADPCM.h"
 
 namespace ATHENA
 {
@@ -43,8 +44,8 @@ namespace ATHENA
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 	CodecADPCM::CodecADPCM() :
-		header(NULL),
 		stream(NULL),
+		header(NULL),
 		padding(0),
 		shift(0),
 		sample_i(0xffffffff),
@@ -52,7 +53,7 @@ namespace ATHENA
 		delta(NULL),
 		samp1(NULL), samp2(NULL),
 		coef1(NULL), coef2(NULL),
-		nybble_c(0), nybble_i(0), nybble_l(NULL),
+		nybble_l(NULL), nybble_c(0), nybble_i(0),
 		nybble(0),
 		odd(0),
 		cache_c(0), cache_i(0), cache_l(NULL),
