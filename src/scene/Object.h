@@ -108,7 +108,7 @@ long EERIE_OBJECT_GetSelection(EERIE_3DOBJ * obj, const char * selname);
  
 void GlobalInitLight();
 void MoveAllLights(EERIE_3D * trans);
-void ReCreateUVs(EERIE_3DOBJ * eerie, long flag = 0);
+void ReCreateUVs(EERIE_3DOBJ * eerie);
 long GetGroupOriginByName(EERIE_3DOBJ * eobj, const char * text);
 long GetActionPointIdx(EERIE_3DOBJ * eobj, const char * text);
 long GetActionPointGroup(EERIE_3DOBJ * eobj, long idx);

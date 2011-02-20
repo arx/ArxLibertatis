@@ -942,7 +942,7 @@ void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, long * poss, long ver
 
 	memcpy(poss, &pos, sizeof(long));
 	memcpy(eerie->vertexlist3, eerie->vertexlist, eerie->nbvertex * sizeof(EERIE_VERTEX));
-	ReCreateUVs(eerie, TTE_SLOWLOAD);
+	ReCreateUVs(eerie);
 	EERIE_Object_Precompute_Fast_Access(eerie);*/
 }
 //-----------------------------------------------------------------------------------------------------
@@ -1678,9 +1678,9 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 
 	delete eerie;
 }
-//-----------------------------------------------------------------------------------------------------
-void ReCreateUVs(EERIE_3DOBJ * eerie, long flag)
-{
+
+void ReCreateUVs(EERIE_3DOBJ * eerie) {
+	
 	if(eerie->texturecontainer.empty()) return;
 
 	float sxx, syy;
