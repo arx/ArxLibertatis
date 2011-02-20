@@ -2355,15 +2355,13 @@ bool Menu2_Render()
 						std::string szMenuText1 = QUICK_SAVE_ID1;
 
 						//LOAD
-						int iI;
 						int iFirst=2;
 						bool b1 = false;
 						bool b2 = false;
 
 						while(iFirst>=0)
 						{
-							for(iI=1; iI<(save_l.size()); iI++)
-							{
+							for(size_t iI = 1; iI < save_l.size(); iI++) {
 								std::string tex = save_l[iI].name;
 
 								CMenuElementText *me02;
