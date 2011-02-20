@@ -97,4 +97,12 @@ void EERIEDrawAnimQuat(		LPDIRECT3DDEVICE7 pd3dDevice,
 							long typ=0
 						);
 
+void DrawEERIEInterMatrix(	LPDIRECT3DDEVICE7 pd3dDevice,
+							EERIE_3DOBJ * eobj,
+							EERIEMATRIX * mat,
+							EERIE_3D  * pos,
+							INTERACTIVE_OBJ * io,
+							EERIE_MOD_INFO * modinfo=NULL
+						);
+
 #endif // EERIEANIM_H

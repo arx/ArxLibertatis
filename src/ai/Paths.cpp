@@ -72,6 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Damage.h"
 #include "game/Equipment.h"
 #include "core/Dialog.h"
+#include "animation/Animation.h"
 
 #include "scene/Light.h"
 #include "graphics/Draw.h"
@@ -1504,7 +1505,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 			MatrixFromQuat(&mat, &Thrown[i].quat);
 			long ccount = FRAME_COUNT;
 			FRAME_COUNT = 0;
-			DrawEERIEInterMatrix(GDevice, Thrown[i].obj, &mat, &Thrown[i].position, NULL, NULL);
+			DrawEERIEInterMatrix(GDevice, Thrown[i].obj, &mat, &Thrown[i].position, NULL);
 
 			if ((Thrown[i].flags & ATO_FIERY)
 			        &&	(Thrown[i].flags & ATO_MOVING)

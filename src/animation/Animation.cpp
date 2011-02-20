@@ -709,7 +709,7 @@ extern float GLOBAL_LIGHT_FACTOR;
 //*************************************************************************************
 
 void DrawEERIEInterMatrix(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
-					EERIEMATRIX * mat,EERIE_3D  * poss,INTERACTIVE_OBJ * io,EERIE_3D * angle,EERIE_MOD_INFO * modinfo)
+					EERIEMATRIX * mat,EERIE_3D  * poss,INTERACTIVE_OBJ * io,EERIE_MOD_INFO * modinfo)
 {
 	BIGQUAT=NULL;
 	BIGMAT=mat;

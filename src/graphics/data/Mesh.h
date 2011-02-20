@@ -844,15 +844,6 @@ void DrawEERIEInter(		LPDIRECT3DDEVICE7 pd3dDevice,
 							INTERACTIVE_OBJ * io,
 							EERIE_MOD_INFO * modinfo=NULL
 						);
- 
-void DrawEERIEInterMatrix(	LPDIRECT3DDEVICE7 pd3dDevice,
-							EERIE_3DOBJ * eobj,
-							EERIEMATRIX * mat,
-							EERIE_3D  * pos,
-							INTERACTIVE_OBJ * io,
-							EERIE_3D * angle,
-							EERIE_MOD_INFO * modinfo=NULL
-						);
 // DRAWING FUNCTIONS END
 //****************************************************************************
 

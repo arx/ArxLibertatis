@@ -4618,7 +4618,7 @@ void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to, long flags)
 						if ((io->obj->pbox)
 						        &&	(io->obj->pbox->active))
 						{
-							DrawEERIEInterMatrix(pd3dDevice, io->obj, &mat, &io->pos, io, NULL);
+							DrawEERIEInterMatrix(pd3dDevice, io->obj, &mat, &io->pos, io);
 						}
 						else
 						{
