@@ -484,7 +484,7 @@ namespace ATHENA
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_UFALSE;
 
-		aalUBool status(AAL_UFALSE);
+		aalUBool status;
 
 		switch (flag)
 		{
@@ -505,6 +505,9 @@ namespace ATHENA
 			case AAL_FLAG_OBSTRUCTION   :
 				status = environment ? AAL_UTRUE : AAL_UFALSE;
 				break;
+			default:
+				// cannot query for this flag
+				status = AAL_UFALSE;
 		}
 
 		if (mutex) ReleaseMutex(mutex);
