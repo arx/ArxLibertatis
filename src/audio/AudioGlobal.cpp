@@ -102,7 +102,7 @@ namespace ATHENA
 			case AAL_UNIT_SAMPLES:
 				return v * _format.channels * (_format.quality >> 3);
 			
-			case AAL_UNIT_BYTES:
+			default:
 				return v;
 		}
 	}
@@ -117,9 +117,10 @@ namespace ATHENA
 
 			case AAL_UNIT_SAMPLES :
 				return v / (_format.frequency * _format.channels * (_format.quality >> 3));
+			
+			default:
+				return v;
 		}
-
-		return v;
 	}
 
 }//ATHENA::
