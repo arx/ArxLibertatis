@@ -625,12 +625,6 @@ char* MCache_Pop( const std::string& file, size_t& size)
 	return meshCache[num].data;
 }
 
-void EERIE_OBJECT_MakeBH(EERIE_3DOBJ * obj)
-{
-}
-
-long BH_MODE = 0;
-
 //***********************************************************************************************
 // Uses Fast Object Load if FTL file exists
 //-----------------------------------------------------------------------------------------------
@@ -970,9 +964,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 
 	// Free the loaded file memory
 	free(dat);
-
-	if (BH_MODE)
-		EERIE_OBJECT_MakeBH(obj);
 
 	EERIE_OBJECT_CenterObjectCoordinates(obj);
 	EERIE_CreateCedricData(obj);

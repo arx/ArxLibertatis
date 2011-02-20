@@ -106,8 +106,6 @@ short uw_mode_pos=0;
 extern long MAGICMODE;
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern float GLOBAL_SLOWDOWN;
-extern long BH_MODE;
-extern void EERIE_OBJECT_MakeBH(EERIE_3DOBJ * obj);
 extern void ARX_SPSound();
 extern float sp_max_y[64];
 extern COLORREF sp_max_col[64];
@@ -123,6 +121,7 @@ extern bool bRenderInCursorMode;
 bool bOldLookToggle;
 extern float SLID_START;
 
+long BH_MODE = 0;
 void EERIE_OBJECT_SetBHMode()
 {
 	if (BH_MODE)
