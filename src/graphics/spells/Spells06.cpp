@@ -363,7 +363,7 @@ float CCreateField::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 //-----------------------------------------------------------------------------
 // SLOW DOWN
 //-----------------------------------------------------------------------------
-CSlowDown::CSlowDown(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CSlowDown::CSlowDown()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;

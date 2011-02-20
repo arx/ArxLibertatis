@@ -5627,7 +5627,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				spells[i].bDuration = true;
 				spells[i].fManaCostPerSecond = 1.2f;
 				
-				CSpellFx *pCSpellFx = new CSlowDown(GDevice);
+				CSpellFx *pCSpellFx = new CSlowDown();
 				
 				if (pCSpellFx != NULL)
 				{

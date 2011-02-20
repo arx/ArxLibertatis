@@ -237,7 +237,7 @@ class CSlowDown: public CSpellFx
 		float fSize;
 
 	public:
-		CSlowDown(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CSlowDown();
 		~CSlowDown();
 
 		// accesseurs
