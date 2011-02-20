@@ -197,7 +197,7 @@ void ARX_CONVERSATION_Reset();
 
 void ARX_SPEECH_FirstInit();
 void ARX_SPEECH_Reset();
-void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice);
+void ARX_SPEECH_Update();
 void ARX_SPEECH_Init();
 void ARX_SPEECH_Check(LPDIRECT3DDEVICE7 pd3dDevice);
 long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, const std::string& _lpszUText, long duration = -1);

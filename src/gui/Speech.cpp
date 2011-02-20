@@ -540,11 +540,8 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long mood, lo
 	return num;
 }
 
-
-//*************************************************************************************
-//*************************************************************************************
-void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
-{
+void ARX_SPEECH_Update() {
+	
 	unsigned long	tim		= ARXTimeUL(); 	
  
 
@@ -666,12 +663,9 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 
 						danaeApp.DANAEEndRender();
 						float iTaille = (float)ARX_TEXT_DrawRect(
-											pd3dDevice,
 											InBookFont,
 											10.f,
 											fDepY + fZoneClippHeight,
-											-3,
-											0,
 											-10.f + (float)DANAESIZX,
 											0,		//taille recalcul�e
 											speech->text,

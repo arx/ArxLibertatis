@@ -6809,7 +6809,7 @@ m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 	{
 		StartBench();
 		ARX_SPEECH_Check(danaeApp.m_pd3dDevice);
-		ARX_SPEECH_Update(danaeApp.m_pd3dDevice);
+		ARX_SPEECH_Update();
 		BENCH_SPEECH=EndBench();	
 	}
 	
