@@ -273,7 +273,7 @@ void ARX_MINIMAP_FirstInit()
 //-----------------------------------------------------------------------------
 void ARX_MINIMAP_Reset()
 {
-	for (long i = 0; i < MAX_MINIMAPS; i++)
+	for (size_t i = 0; i < MAX_MINIMAPS; i++)
 	{
 		if (minimap[i].tc)
 		{
@@ -288,7 +288,7 @@ void ARX_MINIMAP_Reset()
 //-----------------------------------------------------------------------------
 void ARX_MINIMAP_PurgeTC()
 {
-	for (long i = 0; i < MAX_MINIMAPS; i++)
+	for (size_t i = 0; i < MAX_MINIMAPS; i++)
 	{
 		if (minimap[i].tc)
 		{
