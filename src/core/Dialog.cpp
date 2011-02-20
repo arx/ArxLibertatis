@@ -949,7 +949,7 @@ LONG CALLBACK InterTreeViewSubClassFunc(HWND hWnd,
 
 void RemoveIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, const char * name, long type)
 {
-	if (TVVcount != 0)
+	if (TVVcount != 0) {
 		if (io != NULL)
 		{
 			for (long i = 0; i < TVVcount; i++)
@@ -999,6 +999,7 @@ void RemoveIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, const char * name, long t
 			}
 
 		}
+	}
 }
 
 void AddIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, const char * name, long type)
