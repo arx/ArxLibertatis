@@ -883,8 +883,10 @@ void CFireProtection::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-float CFireProtection::Render(LPDIRECT3DDEVICE7 _pD3DDevice)
-{
+float CFireProtection::Render(LPDIRECT3DDEVICE7 _pD3DDevice) {
+	
+	(void)_pD3DDevice;
+	
 	return 0;
 }
 
