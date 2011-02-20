@@ -240,8 +240,10 @@ static HRESULT WINAPI DeviceEnumCallback(TCHAR		*	strDesc,
 // Callback function for enumerating drivers.
 //************************************************************************************
 static BOOL WINAPI DriverEnumCallback(GUID * pGUID, TCHAR * strDesc,
-                                      TCHAR * strName, VOID *, HMONITOR)
-{
+                                      TCHAR * strName, VOID *, HMONITOR) {
+	
+	(void)strName;
+	
 	D3DEnum_DeviceInfo d3dDeviceInfo;
 	LPDIRECTDRAW7      pDD;
 	LPDIRECT3D7        pD3D;
