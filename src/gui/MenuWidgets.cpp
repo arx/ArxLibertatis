@@ -2398,7 +2398,7 @@ bool Menu2_Render()
 										tex3,
 										256);
 									tex +=  tex3;
-									GetTimeFormat(    LOCALE_SYSTEM_DEFAULT,
+									GetTimeFormatA(    LOCALE_SYSTEM_DEFAULT,
 										0,
 										&save_l[iI].stime,
 										"   HH:mm",
