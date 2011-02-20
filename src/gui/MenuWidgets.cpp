@@ -843,7 +843,7 @@ std::string CMenuConfig::ReadConfig( const std::string& _section, const std::str
 	
 	// TODO unify with localisation loading (and make platform-independent)
 	char text[256];
-	int iI = GetPrivateProfileString( _section.c_str(), _key.c_str(), "", text, 256, pcName.c_str());
+	GetPrivateProfileString( _section.c_str(), _key.c_str(), "", text, 256, pcName.c_str());
 	
 	LogDebug << "Read section: " << _section << " key: " << _key << " from " << pcName << " as:" << text;
 
