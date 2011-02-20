@@ -311,7 +311,6 @@ void PopOneTriangleListClipp(D3DTLVERTEX *_pVertex,int *_piNbVertex)
 /*  HRESULT ARX_DrawPrimitiveVB(	
  *	LPDIRECT3DDEVICE7	_d3dDevice,			: pointer to the DX7 device
  *	D3DPRIMITIVETYPE	_dptPrimitiveType,	: primitive type to draw
- *	DWORD				_dwVertexTypeDesc	: vertex format.
  *	_LPVERTEX_			_pVertex,			: pointer to the first vertex to render
  *	int*				_piNbVertex,		: number of vertices to render (must be positive)
  *	DWORD				_dwFlags            : optionally flag for DrawPrimitiveVB.
@@ -322,7 +321,6 @@ void PopOneTriangleListClipp(D3DTLVERTEX *_pVertex,int *_piNbVertex)
 template<class _LPVERTEX_>
 HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevice,
 													D3DPRIMITIVETYPE			_dptPrimitiveType, 
-													DWORD						_dwVertexTypeDesc,
 													_LPVERTEX_					_pVertex, 
 													int*						_piNbVertex, 
 													DWORD						_dwFlags,
@@ -415,7 +413,6 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7	_d3dDevice,
 		case FVF_D3DVERTEX:
 			h_result	=	ARX_DrawPrimitiveVB(	_d3dDevice,
 													_dptPrimitiveType,
-													_dwVertexTypeDesc,
 													(SMY_D3DVERTEX*) _pVertex,
 													_piNbVertex,
 													_dwFlags,
@@ -424,7 +421,6 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7	_d3dDevice,
 		case D3DFVF_TLVERTEX:
 			h_result	=	ARX_DrawPrimitiveVB(	_d3dDevice,
 													_dptPrimitiveType,
-													_dwVertexTypeDesc,
 													(D3DTLVERTEX*) _pVertex,
 													_piNbVertex,
 													_dwFlags,
@@ -433,7 +429,6 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7	_d3dDevice,
 		case FVF_D3DVERTEX3:
 			h_result	=	ARX_DrawPrimitiveVB(	_d3dDevice,
 													_dptPrimitiveType,
-													_dwVertexTypeDesc,
 													(SMY_D3DVERTEX3*) _pVertex,
 													_piNbVertex,
 													_dwFlags,
@@ -442,7 +437,6 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7	_d3dDevice,
 		case FVF_D3DVERTEX3_T:
 			h_result	=	ARX_DrawPrimitiveVB(	_d3dDevice,
 													_dptPrimitiveType,
-													_dwVertexTypeDesc,
 													(SMY_D3DVERTEX3_T*) _pVertex,
 													_piNbVertex,
 													_dwFlags,
