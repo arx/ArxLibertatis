@@ -44,10 +44,10 @@ extern HWND HwndPere;
 extern char DirectoryChoose[];
 
 
-/*-----------------------------------------------------------*/
 void FreeGrille(CinematicGrid * grille);
-void ReajustUV(LPDIRECT3DDEVICE7 device, int id);
-/*-----------------------------------------------------------*/
+
+static void ReajustUV(int id);
+
 void InitMapLoad() {
 	
 	CinematicBitmap	* tb;
@@ -798,7 +798,7 @@ int CreateAllMapsForBitmap(const string & path, Cinematic * c) {
 	}
 
 	c->ActiveTexture(id);
-	ReajustUV(GDevice, id);
+	ReajustUV(id);
 
 	return id;
 }
@@ -872,7 +872,7 @@ bool ReCreateAllMapsForBitmap(int id, int nmax, Cinematic * c) {
 		nby--;
 	}
 
-	ReajustUV(GDevice, id);
+	ReajustUV(id);
 
 	return true;
 }
@@ -911,9 +911,9 @@ bool Cinematic::ActiveTexture(int id)
 
 	return true;
 }
-/*-----------------------------------------------------------*/
-void ReajustUV(LPDIRECT3DDEVICE7 device, int id)
-{
+
+static void ReajustUV(int id) {
+	
 	TextureContainer	* tc;
 	CinematicBitmap		*	cb;
 	int					nb;
