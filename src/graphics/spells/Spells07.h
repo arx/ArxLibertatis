@@ -60,13 +60,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CSPELLFX_LVL07_H
 #define ARX_CSPELLFX_LVL07_H
 
-#include "graphics/particle/ParticleManager.h"
+#include "graphics/effects/SpellEffects.h"
+#include "graphics/particle/ParticleSystem.h"
 #include "graphics/GraphicsTypes.h"
-#include "graphics/data/Mesh.h"
-
-class CParticleSystem;
-
-class CSpellFx;
 
 //-----------------------------------------------------------------------------
 // Done By : Didier P�dreno
@@ -146,11 +142,7 @@ class CLightning: public CSpellFx
 	public:
 		float	falpha;
 		float	fDamage;
-		//CLightning();
-		CLightning(TextureContainer * aTC = NULL);
-
-		//CLightning(LPDIRECT3DDEVICE7);
-		//~CLightning();
+		CLightning();
 
 		// accesseurs
 	public:
@@ -162,16 +154,6 @@ class CLightning: public CSpellFx
 
 		void SetColor1(float, float, float);
 		void SetColor2(float, float, float);
-
- 
- 
-
- 
- 
- 
- 
- 
- 
 
 		// surcharge
 	public:

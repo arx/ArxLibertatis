@@ -53,6 +53,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+
+#include "graphics/spells/Spells07.h"
+
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "scene/Object.h"
@@ -62,8 +65,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/SpellEffects.h"
 #include "game/Damage.h"
 #include "graphics/particle/ParticleEffects.h"
+#include "graphics/particle/ParticleParams.h"
 #include "graphics/spells/Spells05.h"
-#include "graphics/spells/Spells07.h"
 #include "game/Spells.h"
 #include "core/Time.h"
 
@@ -71,7 +74,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern float _framedelay;
 
 //------------------------------------------------------------------------------
-CLightning::CLightning(TextureContainer * aTC) :
+CLightning::CLightning() :
 	nbtotal(0),
 	lNbSegments(40),
 	invNbSegments(1.0f / 40.0f),
