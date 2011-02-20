@@ -1243,6 +1243,9 @@ EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const char * dirr)
 //-----------------------------------------------------------------------------------------------------
 EERIE_3DSCENE * ScnToEerie(unsigned char * adr, long size, const std::string& fic, long flags)
 {
+	
+	(void)size; // TODO use size
+	
 	LogInfo << "Loading Scene " << fic;
 	
 	if (adr == NULL) return NULL;
