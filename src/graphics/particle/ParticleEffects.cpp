@@ -724,7 +724,7 @@ void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos,float dmgs,D3DCOLOR col,INTERACTI
 }
 
 //-----------------------------------------------------------------------------
-void ARX_PARTICLES_Spawn_Blood(EERIE_3D * pos,EERIE_3D * vect,float dmgs,long source)
+void ARX_PARTICLES_Spawn_Blood(EERIE_3D * pos,float dmgs,long source)
 {
 	if (source<0) return;
 

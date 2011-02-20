@@ -1069,14 +1069,8 @@ void ARX_PHYSICS_Apply()
 
 				if (idx >= io->obj->vertexlist.size()) idx = io->obj->vertexlist.size() - 1;
 
-				EERIE_3D vector;
-				vector.x = io->obj->vertexlist3[idx].v.x - io->obj->vertexlist3[0].v.x + (rnd() - rnd()) * 3.f;
-				vector.y = io->obj->vertexlist3[idx].v.y - io->obj->vertexlist3[0].v.y + (rnd() - rnd()) * 3.f;
-				vector.z = io->obj->vertexlist3[idx].v.z - io->obj->vertexlist3[0].v.z + (rnd() - rnd()) * 3.f;
-				TRUEVector_Normalize(&vector);
-
 				ARX_PARTICLES_Spawn_Splat(&io->obj->vertexlist3[idx].v, 20, 0xFFFF0000, idx, io, 1);
-				ARX_PARTICLES_Spawn_Blood(&io->obj->vertexlist3[idx].v, &vector, 20, GetInterNum(io));
+				ARX_PARTICLES_Spawn_Blood(&io->obj->vertexlist3[idx].v, 20, GetInterNum(io));
 				needkill = 1;
 			}
 

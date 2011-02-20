@@ -1440,15 +1440,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 
 								if ((damagesdone > 0) && (damages[j].flags & DAMAGE_SPAWN_BLOOD))
 								{
-									EERIE_3D vector;
-									vector.x = damages[j].pos.x - inter.iobj[i]->pos.x;
-									vector.y = (damages[j].pos.y - inter.iobj[i]->pos.y) * ( 1.0f / 2 );
-									vector.z = damages[j].pos.z - inter.iobj[i]->pos.z;
-									float t = 1.f / TRUEVector_Magnitude(&vector);
-									vector.x *= t;
-									vector.y *= t;
-									vector.z *= t;
-									ARX_PARTICLES_Spawn_Blood(&damages[j].pos, &vector, damagesdone, damages[j].source);
+									ARX_PARTICLES_Spawn_Blood(&damages[j].pos, damagesdone, damages[j].source);
 								}
 							}
 
