@@ -295,8 +295,8 @@ __inline float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, lon
 //-----------------------------------------------------------------------------
 // Returns 0 if nothing in cyl
 // Else returns Y Offset to put cylinder in a proper place
-float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * ioo, long flags)
-{
+static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl, long flags) {
+	
 	long rad = (cyl->radius + 230) * ACTIVEBKG->Xmul;
 
 	long px, pz;
@@ -370,7 +370,7 @@ float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * ioo
 extern long MOVING_CYLINDER;
 bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, long flags)
 {
-	float anything = ANCHOR_CheckAnythingInCylinder(cyl, io, flags);
+	float anything = ANCHOR_CheckAnythingInCylinder(cyl, flags);
 
 	if ((flags & CFLAG_LEVITATE) && (anything == 0.f)) return true;
 
@@ -392,7 +392,7 @@ bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, 
 		while (anything < 0.f)
 		{
 			tmp.origin.y += anything;
-			anything = ANCHOR_CheckAnythingInCylinder(&tmp, io, flags);
+			anything = ANCHOR_CheckAnythingInCylinder(&tmp, flags);
 		}
 
 		anything = tmp.origin.y - cyl->origin.y;
@@ -456,7 +456,7 @@ bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, 
 
 	memcpy(&tmp, cyl, sizeof(EERIE_CYLINDER));
 	tmp.origin.y += anything;
-	anything = ANCHOR_CheckAnythingInCylinder(&tmp, io, flags); 
+	anything = ANCHOR_CheckAnythingInCylinder(&tmp, flags); 
 
 	if (anything < 0.f)
 	{
@@ -465,7 +465,7 @@ bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, 
 			while (anything < 0.f)
 			{
 				tmp.origin.y += anything;
-				anything = ANCHOR_CheckAnythingInCylinder(&tmp, io, flags);
+				anything = ANCHOR_CheckAnythingInCylinder(&tmp, flags);
 			}
 
 			cyl->origin.y = tmp.origin.y; 
