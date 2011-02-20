@@ -1115,7 +1115,7 @@ void EE_RTP(D3DTLVERTEX * in, D3DTLVERTEX * out)
 //*************************************************************************************
 __inline void camEE_RTP(D3DTLVERTEX * in, D3DTLVERTEX * out, EERIE_CAMERA * cam)
 {
-	register D3DTLVERTEX tout;
+	D3DTLVERTEX tout;
 	out->sx = in->sx - cam->pos.x;
 	out->sy = in->sy - cam->pos.y;
 	out->sz = in->sz - cam->pos.z;
