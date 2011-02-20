@@ -7130,7 +7130,6 @@ void DANAE::GoFor2DFX()
 						lv.sz-=vector.z;
 						specialEE_RTP(&lv,&ltvv2);
 
-						float fZFire=ltvv2.sz*(float)danaeApp.zbuffer_max;
 						float fZFar=ProjectionMatrix._33*(1.f/(ACTIVECAM->cdepth*fZFogEnd))+ProjectionMatrix._43;
 
 						EERIE_3D	hit;
