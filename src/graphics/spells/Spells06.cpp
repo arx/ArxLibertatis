@@ -2114,7 +2114,7 @@ float CParalyse::Render(LPDIRECT3DDEVICE7 pD3DDevice)
 //-----------------------------------------------------------------------------
 // DISARM TRAP
 //-----------------------------------------------------------------------------
-CDisarmTrap::CDisarmTrap(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CDisarmTrap::CDisarmTrap()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;

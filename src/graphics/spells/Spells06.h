@@ -205,7 +205,7 @@ class CDisarmTrap: public CSpellFx
 		float fSize;
 
 	public:
-		CDisarmTrap(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CDisarmTrap();
 		~CDisarmTrap();
 
 	public:
