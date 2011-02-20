@@ -802,9 +802,9 @@ int CreateAllMapsForBitmap(const string & path, Cinematic * c) {
 
 	return id;
 }
-/*-----------------------------------------------------------*/
-bool ReCreateAllMapsForBitmap(int id, int nmax, Cinematic * c, LPDIRECT3DDEVICE7 device)
-{
+
+bool ReCreateAllMapsForBitmap(int id, int nmax, Cinematic * c) {
+	
 	int			nbx, nby, w, h, num;
 	CinematicBitmap	* bi;
 

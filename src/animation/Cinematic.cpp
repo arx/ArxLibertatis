@@ -143,7 +143,7 @@ void Cinematic::ReInitMapp(int id)
 
 	if (TabBitmap[id].actif)
 	{
-		ReCreateAllMapsForBitmap(id, TabBitmap[id].grid.echelle, this, GDevice);
+		ReCreateAllMapsForBitmap(id, TabBitmap[id].grid.echelle, this);
 	}
 }
 

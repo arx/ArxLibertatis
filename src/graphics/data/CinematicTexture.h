@@ -4,7 +4,6 @@
 
 #include <windows.h> // TODO for HBITMAP
 
-#include "graphics/d3dwrapper.h" // for LPDIRECT3DDEVICE7
 #include "graphics/GraphicsTypes.h" // for EERIE_2D and EERIE_3D
 
 
@@ -79,6 +78,6 @@ bool DeleteFreeBitmap(int num);
 int CreateAllMapsForBitmap(const std::string & path, Cinematic * c);
 bool ActiveAllTexture(Cinematic * c);
 
-bool ReCreateAllMapsForBitmap(int id, int nmax, Cinematic * c, LPDIRECT3DDEVICE7 device);
+bool ReCreateAllMapsForBitmap(int id, int nmax, Cinematic * c);
 
 #endif // ARX_GRAPHICS_DATA_CINEMATICTEXTURE_H
