@@ -4533,21 +4533,21 @@ void DANAE::ManagePlayerControls()
 
 	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_PRECAST1))
 	  {
-		  if ((player.Interface & INTER_COMBATMODE) && !bIsAiming || !player.doingmagic)
+		  if (((player.Interface & INTER_COMBATMODE) && !bIsAiming) || !player.doingmagic)
 			  if (Precast[0].typ != -1)
 				  ARX_SPELLS_Precast_Launch(0);
 	  }
 
 	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_PRECAST2))
 	  {
-		  if ((player.Interface & INTER_COMBATMODE) && !bIsAiming || !player.doingmagic)
+		  if (((player.Interface & INTER_COMBATMODE) && !bIsAiming) || !player.doingmagic)
 			  if (Precast[1].typ != -1)
 				  ARX_SPELLS_Precast_Launch(1);
 	  }
 
 	  if (ARX_IMPULSE_NowPressed(CONTROLS_CUST_PRECAST3))
 	  {
-		  if ((player.Interface & INTER_COMBATMODE) && !bIsAiming || !player.doingmagic)
+		  if (((player.Interface & INTER_COMBATMODE) && !bIsAiming) || !player.doingmagic)
 			  if (Precast[2].typ != -1)
 				  ARX_SPELLS_Precast_Launch(2);
 	  }
