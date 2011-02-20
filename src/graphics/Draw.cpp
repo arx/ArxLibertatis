@@ -474,10 +474,8 @@ HRESULT EERIEDRAWPRIM(	LPDIRECT3DDEVICE7 pd3dDevice,
 						LPVOID lpvVertices,                 
 						DWORD  dwVertexCount,               
 						DWORD  dwFlags,
-						long flags,
-						EERIEPOLY * ep
-					)
-{
+						long flags) {
+	
 	if( !( EERIE_NOCOUNT & flags ) )
 	{
 	EERIEDrawnPolys++;

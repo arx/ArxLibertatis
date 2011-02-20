@@ -75,8 +75,7 @@ HRESULT EERIEDRAWPRIM(LPDIRECT3DDEVICE7 pd3dDevice,
                       LPVOID lpvVertices,
                       DWORD  dwVertexCount,
                       DWORD  dwFlags,					//d3d flag
-                      long flags = 0,					//eerie flag
-                      EERIEPOLY * ep = NULL
+                      long flags = 0					//eerie flag
                      );
 
 void EERIE_DrawPolyBump(LPDIRECT3DDEVICE7 pd3dDevice, EERIEPOLY * ep, float alpha);
