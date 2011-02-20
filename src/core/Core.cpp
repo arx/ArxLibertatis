@@ -3594,7 +3594,7 @@ void ManageCombatModeAnimations()
 
 						if (str[0]!=0)
 						{
-							ARX_SPEECH_AddSpeech(io,str,PARAM_LOCALISED,ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
+							ARX_SPEECH_AddSpeech(io,str,ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
 						}
 					}	
 
@@ -3757,7 +3757,7 @@ void ManageCombatModeAnimations()
 
 						if (str[0]!=0)
 						{
-							ARX_SPEECH_AddSpeech(io,str,PARAM_LOCALISED,ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
+							ARX_SPEECH_AddSpeech(io,str,ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
 						}
 					}	
 
@@ -3845,7 +3845,7 @@ void ManageCombatModeAnimations()
 
 						if (str[0]!=0)
 						{
-							ARX_SPEECH_AddSpeech(io,str,PARAM_LOCALISED,ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
+							ARX_SPEECH_AddSpeech(io,str,ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
 						}
 					}	
 
@@ -3936,7 +3936,7 @@ void ManageCombatModeAnimations()
 
 						if (str[0]!=0)
 						{
-							ARX_SPEECH_AddSpeech(io,str,PARAM_LOCALISED,ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
+							ARX_SPEECH_AddSpeech(io,str,ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
 						}
 					}	
 

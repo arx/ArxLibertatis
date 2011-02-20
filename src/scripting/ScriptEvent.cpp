@@ -1923,10 +1923,10 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 							if (player)
 							{
-								speechnum = ARX_SPEECH_AddSpeech(inter.iobj[0], temp1.c_str(), PARAM_LOCALISED, mood, voixoff);
+								speechnum = ARX_SPEECH_AddSpeech(inter.iobj[0], temp1.c_str(), mood, voixoff);
 							}
 							else
-								speechnum = ARX_SPEECH_AddSpeech(io, temp1.c_str(), PARAM_LOCALISED, mood, voixoff);
+								speechnum = ARX_SPEECH_AddSpeech(io, temp1.c_str(), mood, voixoff);
 
 							ttt = GetNextWord(es, pos, temp2);
 							LogDebug <<  temp2;

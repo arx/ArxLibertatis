@@ -210,7 +210,7 @@ void ARX_SPEECH_ClearAll();
 // a localised string will be used to look for the duration of the sample
 // & will play the sample.
 // param can be 0 (plain text) or PARAM_LOCALISED (localised string)
-long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long param, long mood, long flags = 0);
+long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long mood, long flags = 0);
 void ARX_SPEECH_ReleaseIOSpeech(INTERACTIVE_OBJ * io);
 void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io);
 void ARX_SPEECH_Launch_No_Unicode_Seek(const char * string, INTERACTIVE_OBJ * io_source, long mood = 0);

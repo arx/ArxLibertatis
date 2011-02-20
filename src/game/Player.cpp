@@ -1586,7 +1586,7 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 					}
 
 					if (bOk)
-						ARX_SPEECH_AddSpeech(inter.iobj[0], "[Player_Off_Hungry]", PARAM_LOCALISED, ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
+						ARX_SPEECH_AddSpeech(inter.iobj[0], "[Player_Off_Hungry]", ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
 				}
 			}
 

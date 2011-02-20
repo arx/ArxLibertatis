@@ -2530,7 +2530,6 @@ long CanPayMana(long num,float cost, bool _bSound = true)
 				ARX_SPEECH_AddLocalised(NULL, "[player_cantcast]");
 				ARX_SPEECH_AddSpeech(	inter.iobj[0],
 					"[player_cantcast]",
-					PARAM_LOCALISED,
 					ANIM_TALK_NEUTRAL);
 			}
 
@@ -3046,7 +3045,6 @@ long PrecastCheckCanPayMana(long num, float cost, bool _bSound = true)
 		ARX_SPEECH_AddLocalised(NULL, "[player_cantcast]");
 		ARX_SPEECH_AddSpeech(	inter.iobj[0],
 			"[player_cantcast]",
-			PARAM_LOCALISED,
 			ANIM_TALK_NEUTRAL);
 	}
 
@@ -4771,7 +4769,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 
 			if (valid>dispelled)
 			{
-				ARX_SPEECH_AddSpeech(inter.iobj[0],"[player_not_skilled_enough]",PARAM_LOCALISED,ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
+				ARX_SPEECH_AddSpeech(inter.iobj[0],"[player_not_skilled_enough]",ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
 
 				if (dispelled>0)
 				{
