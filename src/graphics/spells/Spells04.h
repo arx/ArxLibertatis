@@ -143,7 +143,7 @@ class CFireProtection: public CSpellFx
 		~CFireProtection();
 
 		// surcharge
-		void	Create(long, int);
+		void	Create(long);
 		void	Update(unsigned long);
 		float	Render(LPDIRECT3DDEVICE7);
  

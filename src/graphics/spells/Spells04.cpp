@@ -843,7 +843,7 @@ CFireProtection::~CFireProtection()
 }
 
 //-----------------------------------------------------------------------------
-void CFireProtection::Create(long _ulDuration, int _iNpc)
+void CFireProtection::Create(long _ulDuration)
 {
 	SetDuration(_ulDuration);
 

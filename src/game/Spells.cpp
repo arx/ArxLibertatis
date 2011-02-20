@@ -4847,7 +4847,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			{
 				pCSpellFx->spellinstance=i;		
 				CFireProtection *pFP=(CFireProtection *)pCSpellFx;
-				pFP->Create(spells[i].tolive, spells[i].target);
+				pFP->Create(spells[i].tolive);
 
 				spells[i].pSpellFx = pCSpellFx;
 				spells[i].tolive = pCSpellFx->GetDuration();
