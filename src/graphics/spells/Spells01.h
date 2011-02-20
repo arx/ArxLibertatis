@@ -89,7 +89,6 @@ class CMagicMissile: public CSpellFx
 		ArxSound snd_loop;
 	public:
 		CMagicMissile();
-		CMagicMissile(LPDIRECT3DDEVICE7);
 		~CMagicMissile();
 
 		// accesseurs

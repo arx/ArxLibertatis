@@ -199,16 +199,7 @@ void LaunchMagicMissileExplosion(EERIE_3D & _ePos, int t = 0, long spellinstance
 	ARX_SOUND_PlaySFX(SND_SPELL_MM_HIT, &_ePos);
 }
 
-//-----------------------------------------------------------------------------
 CMagicMissile::CMagicMissile() : CSpellFx()
-{
-	tex_mm = NULL;
-	bExplo = false;
-	bMove = true;
-}
-
-//-----------------------------------------------------------------------------
-CMagicMissile::CMagicMissile(LPDIRECT3DDEVICE7 m_pd3dDevice) : CSpellFx()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;
@@ -548,7 +539,7 @@ CMultiMagicMissile::CMultiMagicMissile(LPDIRECT3DDEVICE7 m_pd3dDevice, long nbmi
 		for (UINT i = 0 ; i < uiNumber ; i++)
 		{
 			pTab[i] = NULL;
-			pTab[i] = new CMagicMissile(m_pd3dDevice);
+			pTab[i] = new CMagicMissile();
 			pTab[i]->spellinstance = this->spellinstance;
 		}
 	}
