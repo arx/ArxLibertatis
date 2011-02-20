@@ -262,7 +262,7 @@ void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos, float dmgs, D3DCOLOR col, INTERA
 void ARX_PARTICLES_Spawn_Lava_Burn(EERIE_3D * pos, INTERACTIVE_OBJ * io = NULL);
 void ARX_PARTICLES_Add_Smoke(EERIE_3D * pos, long flags, long amount, EERIE_RGB * rgb = NULL); // flag 1 = randomize pos
 void ARX_PARTICLES_Spawn_Spark(EERIE_3D * pos, float dmgs, long flags);
-void ARX_PARTICLES_Spawn_Splat(EERIE_3D * pos, float dmgs, D3DCOLOR col, INTERACTIVE_OBJ * io, long flags = 1);
+void ARX_PARTICLES_Spawn_Splat(EERIE_3D * pos, float dmgs, D3DCOLOR col);
 void ARX_PARTICLES_SpawnWaterSplash(EERIE_3D *);
 
 void ARX_BOOMS_ClearAllPolyBooms();

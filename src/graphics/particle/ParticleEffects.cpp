@@ -1849,8 +1849,8 @@ void ARX_GenereSpheriqueEtincelles(EERIE_3D *pos,float r,TextureContainer *tc,fl
 
 //-----------------------------------------------------------------------------
 // flags & 1 = spawn_body_chunk
-void ARX_PARTICLES_Spawn_Splat(EERIE_3D * pos,float dmgs,D3DCOLOR col,INTERACTIVE_OBJ * io,long flags)
-{
+void ARX_PARTICLES_Spawn_Splat(EERIE_3D * pos,float dmgs,D3DCOLOR col) {
+	
 	float power;
 	power=(dmgs*( 1.0f / 60 ))+0.9f;
 
