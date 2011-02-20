@@ -854,8 +854,8 @@ bool IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long 
 }
 
 // Debug function used to show the physical box of an object
-void EERIE_PHYSICS_BOX_Show(EERIE_3DOBJ * obj, EERIE_3D * pos)
-{
+void EERIE_PHYSICS_BOX_Show(EERIE_3DOBJ * obj) {
+	
 	if (DEBUGNPCMOVE)
 	{
 

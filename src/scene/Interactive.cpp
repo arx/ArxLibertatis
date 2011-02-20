@@ -4462,7 +4462,7 @@ void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to, long flags)
 
 			if ((io->obj)
 			        &&	(io->obj->pbox))
-				EERIE_PHYSICS_BOX_Show(io->obj, &io->pos);
+				EERIE_PHYSICS_BOX_Show(io->obj);
 
 			if (
 			    (io->obj)
