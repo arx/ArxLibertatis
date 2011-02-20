@@ -266,7 +266,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io)
 
 	if (ValidIONum(n))
 	{
-		for (long i = 0; i < MAX_SPELLS; i++)
+		for (size_t i = 0; i < MAX_SPELLS; i++)
 		{
 			if ((spells[i].exist) && (spells[i].caster == n))
 			{
