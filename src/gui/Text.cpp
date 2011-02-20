@@ -373,7 +373,7 @@ long ARX_TEXT_Draw(HFONT ef,
 
 long ARX_TEXT_DrawRect(HFONT ef,
 					   float x, float y,
-					   float maxx, float maxy,
+					   float maxx,
 					   const std::string& car,
 					   COLORREF colo,
 					   HRGN _hRgn,
@@ -391,7 +391,7 @@ long ARX_TEXT_DrawRect(HFONT ef,
 float DrawBookTextInRect(float x, float y, float maxx, float maxy, const std::string& text, COLORREF col, COLORREF col2, HFONT font)
 {
 	return (float)ARX_TEXT_DrawRect(font,
-									(BOOKDECX + x) * Xratio, (BOOKDECY + y) * Yratio, (BOOKDECX + maxx) * Xratio, (BOOKDECY + maxy) * Yratio, text, col, NULL, col2);
+									(BOOKDECX + x) * Xratio, (BOOKDECY + y) * Yratio, (BOOKDECX + maxx) * Xratio, text, col, NULL, col2);
 }
 
 //-----------------------------------------------------------------------------

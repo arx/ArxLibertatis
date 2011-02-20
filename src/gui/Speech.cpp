@@ -246,7 +246,7 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 
 				igrec += ARX_TEXT_DrawRect(InBookFont,
 										   120.f * Xratio, (float)igrec,
-										   500 * Xratio, 200 * Yratio, temp, speech[i].color, NULL, 0x00FF00FF);
+										   500 * Xratio, temp, speech[i].color, NULL, 0x00FF00FF);
 				if ((igrec > iEnd) &&
 						!CheckLastSpeech(i))
 				{
@@ -667,7 +667,6 @@ void ARX_SPEECH_Update() {
 											10.f,
 											fDepY + fZoneClippHeight,
 											-10.f + (float)DANAESIZX,
-											0,		//taille recalcul�e
 											speech->text,
 											RGB(255, 255, 255),
 											hRgn);
