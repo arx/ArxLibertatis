@@ -1214,9 +1214,9 @@ void ClearCurLoadInfo()
 extern long FASTmse;
 long DONT_LOAD_INTERS = 0;
 long FAKE_DIR = 0;
-long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fic)
-{
-//	char _error[512];
+
+long DanaeLoadLevel(const std::string& fic) {
+	
 	DANAE_LS_HEADER				dlh;
 	DANAE_LS_SCENE		*		dls;
 	DANAE_LS_INTER		*		dli;

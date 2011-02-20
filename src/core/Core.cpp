@@ -4688,7 +4688,7 @@ void LaunchMoulinex()
 				CDP_FogOptions=NULL;
 				SetEditMode(1);
 				DanaeClearLevel();
-				DanaeLoadLevel(GDevice,loadfrom);
+				DanaeLoadLevel(loadfrom);
 				FORBID_SAVE=0;
 				FirstFrame=1;
 			}
@@ -4715,7 +4715,7 @@ void DANAE_StartNewQuest()
 	DanaeClearAll();
 	PROGRESS_BAR_COUNT+=2.f;
 	LoadLevelScreen();
-	DanaeLoadLevel(GDevice,loadfrom);
+	DanaeLoadLevel(loadfrom);
 	FORBID_SAVE=0;
 	FirstFrame=1;
 	START_NEW_QUEST=0;
@@ -4872,7 +4872,7 @@ bool DANAE_ManageSplashThings()
 				LoadLevelScreen(10);	
 			}
 
-			DanaeLoadLevel(GDevice,loadfrom);
+			DanaeLoadLevel(loadfrom);
 			FORBID_SAVE=0;
 			FirstFrame=1;
 			SPLASH_THINGS_STAGE=0;
@@ -5523,7 +5523,7 @@ static float _AvgFrameDiff = 150.f;
 		OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
 		PROGRESS_BAR_TOTAL = 108;
 		LoadLevelScreen(10);	
-		DanaeLoadLevel(GDevice,RESOURCE_LEVEL_10);
+		DanaeLoadLevel(RESOURCE_LEVEL_10);
 		FORBID_SAVE=0;
 		FirstFrame=1;
 		SPLASH_THINGS_STAGE=0;

@@ -1935,7 +1935,7 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 		LogWarning << "Cannot Load Globals data";
 	}
 
-	DanaeLoadLevel(GDevice, ftemp);
+	DanaeLoadLevel(ftemp);
 	CleanScriptLoadedIO();
 
 	FirstFrame = 1;

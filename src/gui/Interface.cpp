@@ -2696,7 +2696,7 @@ bool DANAE::ManageEditorControls()
 					PROGRESS_BAR_TOTAL = 108;
 					OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
 					LoadLevelScreen();
-					DanaeLoadLevel(m_pd3dDevice,loadfrom);
+					DanaeLoadLevel(loadfrom);
 					FORBID_SAVE=0;
 
 					FirstFrame=1;
