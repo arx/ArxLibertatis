@@ -73,10 +73,9 @@ struct CinematicBitmap {
 
 void DeleteAllBitmap(LPDIRECT3DDEVICE7 device);
 
-void InitMapLoad(Cinematic * c);
+void InitMapLoad();
 CinematicBitmap * GetFreeBitmap(int * num);
 bool DeleteFreeBitmap(int num);
-bool KillTexture(LPDIRECT3DDEVICE7 device, int num);
 int CreateAllMapsForBitmap(const std::string & path, Cinematic * c);
 bool ActiveAllTexture(Cinematic * c);
 

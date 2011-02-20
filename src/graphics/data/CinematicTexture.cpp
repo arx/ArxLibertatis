@@ -48,8 +48,8 @@ extern char DirectoryChoose[];
 void FreeGrille(CinematicGrid * grille);
 void ReajustUV(LPDIRECT3DDEVICE7 device, int id);
 /*-----------------------------------------------------------*/
-void InitMapLoad(Cinematic * c)
-{
+void InitMapLoad() {
+	
 	CinematicBitmap	* tb;
 	int			nb;
 
@@ -116,7 +116,7 @@ bool DeleteFreeBitmap(int num)
 	return true;
 }
 /*-----------------------------------------------------------*/
-bool KillTexture(LPDIRECT3DDEVICE7 device, int num)
+static bool KillTexture(int num)
 {
 	CinematicBitmap	* cb;
 
@@ -142,7 +142,7 @@ void DeleteAllBitmap(LPDIRECT3DDEVICE7 device)
 
 	while (nb)
 	{
-		KillTexture(device, MAX_BITMAP - nb);
+		KillTexture(MAX_BITMAP - nb);
 		DeleteFreeBitmap(MAX_BITMAP - nb);
 		nb--;
 	}
@@ -642,7 +642,7 @@ int CreateAllMapsForBitmap(const string & path, Cinematic * c) {
 		if (bi->dir) free((void *)bi->dir);
 
 		DeleteObject(bi->hbitmap);
-		KillTexture(GDevice, n);
+		KillTexture(n);
 		FreeGrille(&bi->grid);
 		NbBitmap--;
 

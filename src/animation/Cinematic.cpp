@@ -192,7 +192,7 @@ HRESULT Cinematic::OneTimeSceneReInit()
 	DeleteAllBitmap(GDevice);
 	DeleteAllSound();
 
-	InitMapLoad(this);
+	InitMapLoad();
 	InitSound(this);
 	DeleteTrack();
 
@@ -228,7 +228,7 @@ HRESULT Cinematic::New()
 	AddKey(&KeyTemp, true, true, true);
 	this->lightd = this->lightchoose = this->light;
 
-	InitMapLoad(this);
+	InitMapLoad();
 	InitSound(this);
 	InitUndo();
 
