@@ -2377,7 +2377,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 							if (FORBID_SCRIPT_IO_CREATION == 0)
 							{
-								ioo = AddNPC(GDevice, tmptext.c_str(), IO_IMMEDIATELOAD);
+								ioo = AddNPC(tmptext.c_str(), IO_IMMEDIATELOAD);
 
 								if (ioo)
 								{

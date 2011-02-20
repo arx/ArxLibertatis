@@ -2426,7 +2426,7 @@ INTERACTIVE_OBJ * AddInteractive(LPDIRECT3DDEVICE7 pd3dDevice, const char * file
 	if (IsIn(ficc, "ITEMS"))
 		io = AddItem(pd3dDevice, file, flags);
 	else if (IsIn(ficc, "NPC"))
-		io = AddNPC(pd3dDevice, file, flags);
+		io = AddNPC(file, flags);
 	else if (IsIn(ficc, "FIX"))
 		io = AddFix(pd3dDevice, file, flags);
 	else if (IsIn(ficc, "CAMERA"))
@@ -3028,7 +3028,7 @@ void GroundSnapSelectedIO()
 // AddNPC
 // Adds a NPC INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags)
+INTERACTIVE_OBJ * AddNPC(const char * file, long flags)
 {
     // creates script filename
     std::string texscript = file;;

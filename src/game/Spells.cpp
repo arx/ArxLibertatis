@@ -8062,7 +8062,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 							{
 								strcpy(tmptext,"Graph\\Obj3D\\Interactive\\NPC\\Undead_base\\Undead_base.asl");
 								INTERACTIVE_OBJ * io;
-								io=AddNPC(m_pd3dDevice,tmptext,IO_IMMEDIATELOAD);
+								io=AddNPC(tmptext,IO_IMMEDIATELOAD);
 
 								if (io)
 								{
@@ -8513,13 +8513,13 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 							}
 
 							INTERACTIVE_OBJ * io;
-							io=AddNPC(m_pd3dDevice,tmptext,IO_IMMEDIATELOAD);
+							io=AddNPC(tmptext,IO_IMMEDIATELOAD);
 
 							if (!io)
 							{
 								strcpy(tmptext,"Graph\\Obj3D\\Interactive\\NPC\\Chicken_Base\\Chicken_Base.asl");
 								tokeep=0;
-								io=AddNPC(m_pd3dDevice,tmptext,IO_IMMEDIATELOAD);
+								io=AddNPC(tmptext,IO_IMMEDIATELOAD);
 							}
 
 							if (io)

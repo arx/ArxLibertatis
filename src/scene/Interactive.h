@@ -233,7 +233,7 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag = 0, EERIE_3D * 
  
 INTERACTIVE_OBJ * AddInteractive(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long id, long flags = 0);
 INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags = 0);
-INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags = 0);
+INTERACTIVE_OBJ * AddNPC(const char * file, long flags = 0);
 INTERACTIVE_OBJ  * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& file, long flags = 0);
 INTERACTIVE_OBJ * AddCamera(const char * file);
 INTERACTIVE_OBJ * AddMarker(const char * file);
