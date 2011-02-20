@@ -5332,7 +5332,7 @@ void DANAE::ManageKeyMouse()
 		
 	}
 
-	ARX_Menu_Manage(this->m_pd3dDevice);
+	ARX_Menu_Manage();
 	EERIE_3D tm;
 	tm.x=tm.y=tm.z=0.f;
 	INTERACTIVE_OBJ * t;

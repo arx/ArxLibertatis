@@ -500,11 +500,8 @@ void ARX_MENU_Launch() {
 	ARX_Menu_Resources_Create();
 }
 
-//-----------------------------------------------------------------------------
-// ARX Menu Management Func
-//-----------------------------------------------------------------------------
-void ARX_Menu_Manage(LPDIRECT3DDEVICE7 m_pd3dDevice)
-{
+void ARX_Menu_Manage() {
+	
 	// looks for keys for each mode.
 	switch (ARXmenu.currentmode)
 	{
