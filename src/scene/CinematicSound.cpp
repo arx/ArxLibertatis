@@ -161,7 +161,6 @@ int ExistSound(const string & dir, const string & name) {
 
 int AddSoundToList(const std::string & path) {
 	int id = -1;
-	int pos = 0;
 	
 	CinematicSound * cs;
 	
