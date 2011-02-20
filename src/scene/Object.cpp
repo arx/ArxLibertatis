@@ -556,6 +556,13 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file) {
 void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, long * poss, long version, long flag, long flag2)
 {
 	
+	(void)eerie;
+	(void)adr;
+	(void)poss;
+	(void)version;
+	(void)flag;
+	(void)flag2;
+	
 	LogError << "Broken _THEObjLoad";
 	/*
 	THEO_OFFSETS		*	to;
