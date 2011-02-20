@@ -311,7 +311,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 
 	if (ToolBar != NULL)
 	{
-		ToolBar->hWnd = CreateToolBar(m_hWnd, ToolBar->CreationToolBar, hInst);
+		ToolBar->hWnd = CreateToolBar(m_hWnd, hInst);
 	}
 
 	this->m_pFramework->ShowFrame();
@@ -321,8 +321,8 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 
 //*************************************************************************************
 //*************************************************************************************
-HWND CD3DApplication::CreateToolBar(HWND hWndParent, long tbb, HINSTANCE hInst)
-{
+HWND CD3DApplication::CreateToolBar(HWND hWndParent, HINSTANCE hInst) {
+	
 	HWND hWndToolbar;
 	long flags;
 
@@ -1096,8 +1096,10 @@ VOID CD3DApplication::Pause(bool bPause)
 // save any data for open network connections, files, etc.., and prepare
 // to go into a suspended mode.
 //*************************************************************************************
-LRESULT CD3DApplication::OnQuerySuspend(DWORD dwFlags)
-{
+LRESULT CD3DApplication::OnQuerySuspend(DWORD dwFlags) {
+	
+	(void)dwFlags;
+	
 	Pause(true);
 	return true;
 }
@@ -1109,8 +1111,10 @@ LRESULT CD3DApplication::OnQuerySuspend(DWORD dwFlags)
 // the app should recover any data, network connections, files, etc..,
 // and resume running from when the app was suspended.
 //*************************************************************************************
-LRESULT CD3DApplication::OnResumeSuspend(DWORD dwData)
-{
+LRESULT CD3DApplication::OnResumeSuspend(DWORD dwData) {
+	
+	(void)dwData;
+	
 	Pause(false);
 	return true;
 }

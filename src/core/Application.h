@@ -295,7 +295,7 @@ protected:
 		bool			m_bAppUseStereo;
 		bool			m_bShowStats;
 		HRESULT(*m_fnConfirmDevice)(DDCAPS *, D3DDEVICEDESC7 *);
-		HWND				 CreateToolBar(HWND hWndParent, long tbb, HINSTANCE hInst);
+		HWND				 CreateToolBar(HWND hWndParent, HINSTANCE hInst);
 
 		// Overridable functions for the 3D scene created by the app
 		virtual HRESULT OneTimeSceneInit()
