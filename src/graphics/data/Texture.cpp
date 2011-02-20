@@ -2013,13 +2013,10 @@ void TextureContainer::RemoveFakeBlack()
 	DWORD dwAMask		= 0xFF000000;
 	DWORD * pSrcData32	= (DWORD *)sBytes;
 
-	ARX_CHECK_NOT_NEG(m_dwHeight);
-
-	for (DWORD y = 0 ; y < ARX_CAST_ULONG(m_dwHeight) ; y++)
+	for (DWORD y = 0 ; y < static_cast<unsigned long>(m_dwHeight) ; y++)
 	{
-		ARX_CHECK_NOT_NEG(m_dwWidth);
 
-		for (DWORD x = 0 ; x < ARX_CAST_ULONG(m_dwWidth) ; x++)
+		for (DWORD x = 0 ; x < static_cast<unsigned long>(m_dwWidth) ; x++)
 		{
 			// Original Pixel
 			DWORD dwPixel;
