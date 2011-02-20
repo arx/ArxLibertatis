@@ -596,8 +596,8 @@ void ReleaseHalo()
 }
 
 //-----------------------------------------------------------------------------
-void ARX_INTERFACE_HALO_Flush(LPDIRECT3DDEVICE7 m_pd3dDevice)
-{
+void ARX_INTERFACE_HALO_Flush() {
+	
 	for (long i=0;i<INTERFACE_HALO_NB;i++)
 		ARX_INTERFACE_HALO_Render(
 		aiHalo[i].io->halo.color.r, aiHalo[i].io->halo.color.g, aiHalo[i].io->halo.color.b,

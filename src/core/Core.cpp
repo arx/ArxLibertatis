@@ -6851,11 +6851,11 @@ m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 			SETALPHABLEND(GDevice,false);
 		}
 
-		ARX_INTERFACE_HALO_Flush(m_pd3dDevice);
+		ARX_INTERFACE_HALO_Flush();
 	}
 	else
 	{
-		ARX_INTERFACE_HALO_Flush(m_pd3dDevice);
+		ARX_INTERFACE_HALO_Flush();
 		ARX_INTERFACE_RenderCursor();		
 	}
 

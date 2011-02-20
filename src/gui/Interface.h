@@ -248,7 +248,7 @@ void ARX_INTERFACE_ShowARKANE(LPDIRECT3DDEVICE7 pd3dDevice);
 void ARX_INTERFACE_KillFISHTANK();
 void ARX_INTERFACE_KillARKANE();
 void ARX_INTERFACE_EndIntro();
-void ARX_INTERFACE_HALO_Flush(LPDIRECT3DDEVICE7 m_pd3dDevice);
+void ARX_INTERFACE_HALO_Flush();
 void ARX_INTERFACE_DrawItem(TextureContainer * tc, const float x, const float y, const float z = 0.001f, const D3DCOLOR col = D3DRGB(1, 1, 1));
 void LoadScreen(LPDIRECT3DDEVICE7 pd3dDevice);
 void LoadLevelScreen();
