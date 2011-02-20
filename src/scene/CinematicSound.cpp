@@ -41,7 +41,7 @@ extern char DirectoryChoose[];
 extern int	LSoundChoose;
 
 /*-----------------------------------------------------------*/
-void InitSound(Cinematic * c)
+void InitSound()
 {
 	CinematicSound	*	ts;
 	int			nb;

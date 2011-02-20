@@ -193,7 +193,7 @@ HRESULT Cinematic::OneTimeSceneReInit()
 	DeleteAllSound();
 
 	InitMapLoad();
-	InitSound(this);
+	InitSound();
 	DeleteTrack();
 
 	FlashBlancEnCours = false;
@@ -229,7 +229,7 @@ HRESULT Cinematic::New()
 	this->lightd = this->lightchoose = this->light;
 
 	InitMapLoad();
-	InitSound(this);
+	InitSound();
 	InitUndo();
 
 	SetCurrFrame(GetStartFrame());

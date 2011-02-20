@@ -245,7 +245,7 @@ bool LoadProject(Cinematic * c, const char * dir, const char * name) {
 	LogInfo << "loading cinematic " << dir << name;
 	
 	InitMapLoad();
-	InitSound(c);
+	InitSound();
 	
 	string projectfile = dir;
 	projectfile += name;
