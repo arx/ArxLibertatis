@@ -43,7 +43,7 @@ class ViewImage
 		TextureContainer	* pTexCurr;
 
 	public:
-		ViewImage(const char *, const char *);
+		ViewImage(const char *);
 		~ViewImage();
 
 		void DrawAllImage();

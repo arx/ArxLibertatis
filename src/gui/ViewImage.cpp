@@ -55,7 +55,7 @@ extern PakManager * pPakManager;
  
 
 //-----------------------------------------------------------------------------
-ViewImage::ViewImage(const char * _pcDir, const char * _pExt)
+ViewImage::ViewImage(const char * _pcDir)
 {
 	vListImage.clear();
 
@@ -268,7 +268,7 @@ void ViewImage::DrawAllImage()
 //-----------------------------------------------------------------------------
 void StartImageDemo()
 {
-	ViewImage * pViewImage = new ViewImage("graph\\interface\\misc\\", "*.bmp");
+	ViewImage * pViewImage = new ViewImage("graph\\interface\\misc\\");
 
 	if (!pViewImage) return;
 
