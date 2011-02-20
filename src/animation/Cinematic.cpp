@@ -189,7 +189,7 @@ HRESULT Cinematic::OneTimeSceneReInit()
 
 	LeftButton = RightButton = false;
 
-	DeleteAllBitmap(GDevice);
+	DeleteAllBitmap();
 	DeleteAllSound();
 
 	InitMapLoad();
@@ -218,7 +218,7 @@ HRESULT Cinematic::New()
 	LeftButton = RightButton = false;
 
 	DeleteTrack();
-	DeleteAllBitmap(GDevice);
+	DeleteAllBitmap();
 	DeleteAllSound();
 
 	AllocTrack(0, 100, 30.f);

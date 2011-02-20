@@ -71,7 +71,7 @@ struct CinematicBitmap {
 };
 
 
-void DeleteAllBitmap(LPDIRECT3DDEVICE7 device);
+void DeleteAllBitmap();
 
 void InitMapLoad();
 CinematicBitmap * GetFreeBitmap(int * num);

@@ -134,7 +134,7 @@ static bool KillTexture(int num)
 	return true;
 }
 /*-----------------------------------------------------------*/
-void DeleteAllBitmap(LPDIRECT3DDEVICE7 device)
+void DeleteAllBitmap()
 {
 	int			nb;
 
