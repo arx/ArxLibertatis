@@ -5678,7 +5678,7 @@ void DANAE::ManageKeyMouse()
 		////////
 		else if ((!BLOCK_PLAYER_CONTROLS) && !(player.Interface & INTER_COMBATMODE)) 
 			{
-				if (DRAGINTER == NULL)
+				if (DRAGINTER == NULL) {
 					if ((LastMouseClick & 1) && !(EERIEMouseButton & 1) && !(EERIEMouseButton & 4) && !(LastMouseClick & 4))
 					{
 						INTERACTIVE_OBJ * temp;
@@ -5849,6 +5849,7 @@ void DANAE::ManageKeyMouse()
 								}
 							}
 					}
+				}
 			}
 			
 			if ((EERIEMouseButton & 4) || (LastMouseClick & 4)) WILLADDSPEECH[0]=0;
