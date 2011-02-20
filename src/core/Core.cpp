@@ -2566,7 +2566,7 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 // FrameMove()
 //  Called once per frame.
 //*************************************************************************************
-HRESULT DANAE::FrameMove( float fTimeKey )
+HRESULT DANAE::FrameMove()
 {
 	// To disable for demo
 	if (	!FINAL_COMMERCIAL_DEMO

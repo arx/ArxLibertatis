@@ -1002,7 +1002,7 @@ HRESULT CD3DApplication::Render3DEnvironment()
 	// Get the relative time, in seconds
 	if (m_bFrameMoving || m_bSingleStep)
 	{
-		if (FAILED(hr = FrameMove(0.f)))
+		if (FAILED(hr = FrameMove()))
 			return hr;
 
 		m_bSingleStep = false;

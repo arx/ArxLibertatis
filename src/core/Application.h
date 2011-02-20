@@ -306,7 +306,7 @@ protected:
 		{
 			return S_OK;
 		}
-		virtual HRESULT FrameMove(float)
+		virtual HRESULT FrameMove()
 		{
 			return S_OK;
 		}
