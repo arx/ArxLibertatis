@@ -1047,7 +1047,7 @@ void EERIEDraw3DCylinder(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CYLINDER * cyl, D3D
 
 void EERIEDraw3DCylinderBase(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CYLINDER * cyl, D3DCOLOR col)
 {
-	register EERIE_3D from,to;
+	EERIE_3D from,to;
 	#define STEPCYL 16
 
 	for (long i=0;i<360-STEPCYL;i+=STEPCYL)
