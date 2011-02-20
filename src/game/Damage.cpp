@@ -272,8 +272,7 @@ void ARX_DAMAGE_Show_Hit_Blood(LPDIRECT3DDEVICE7 pd3dDevice)
 
 //*************************************************************************************
 //*************************************************************************************
-float ARX_DAMAGES_DamagePlayer(float dmg, long type, long source, EERIE_3D * pos)
-{
+float ARX_DAMAGES_DamagePlayer(float dmg, long type, long source) {
 	if (player.playerflags & PLAYERFLAGS_INVULNERABILITY)
 		return 0;
 
@@ -762,7 +761,7 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, long flags, E
 		else
 		{
 			ARX_DAMAGES_DamagePlayerEquipment(dmg);
-			damagesdone = ARX_DAMAGES_DamagePlayer(dmg, flags, source, pos);
+			damagesdone = ARX_DAMAGES_DamagePlayer(dmg, flags, source);
 		}
 
 	dodamage:
@@ -1398,7 +1397,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 										dmg = ARX_SPELLS_ApplyColdProtection(inter.iobj[0], dmg);
 									}
 
-									damagesdone = ARX_DAMAGES_DamagePlayer(dmg, damages[j].type, damages[j].source, &damages[j].pos);
+									damagesdone = ARX_DAMAGES_DamagePlayer(dmg, damages[j].type, damages[j].source);
 								}
 							}
 							else
@@ -1756,7 +1755,7 @@ bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long t
 							dmg = ARX_SPELLS_ApplyColdProtection(ioo, dmg);
 						}
 
-						ARX_DAMAGES_DamagePlayer(dmg, typ, numsource, pos);
+						ARX_DAMAGES_DamagePlayer(dmg, typ, numsource);
 						ARX_DAMAGES_DamagePlayerEquipment(dmg);
 						EERIE_3D vector;
 						float div = 1.f / dist;

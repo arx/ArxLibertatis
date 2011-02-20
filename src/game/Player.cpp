@@ -1623,7 +1623,7 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 				{
 					float dmg = cp * ( 1.0f / 3 );
 
-					if (player.life - dmg <= 0.f) ARX_DAMAGES_DamagePlayer(dmg, DAMAGE_TYPE_POISON, -1, NULL);
+					if (player.life - dmg <= 0.f) ARX_DAMAGES_DamagePlayer(dmg, DAMAGE_TYPE_POISON, -1);
 					else player.life -= dmg;
 
 					player.poison -= cp * ( 1.0f / 10 );
@@ -3131,7 +3131,7 @@ void PlayerMovementIterate(float DeltaTime)
 						Falling_Height = player.pos.y;
 						FALLING_TIME = 0;
 
-						ARX_DAMAGES_DamagePlayer(dmg, 0, -1, &player.pos);
+						ARX_DAMAGES_DamagePlayer(dmg, 0, -1);
 						ARX_DAMAGES_DamagePlayerEquipment(dmg);
 					}
 				}
@@ -3307,7 +3307,7 @@ void PlayerMovementIterate(float DeltaTime)
 					float damages = LAVA_DAMAGE * FrameDiff * ( 1.0f / 100 ) * mul;
 					damages = ARX_SPELLS_ApplyFireProtection(inter.iobj[0], damages);
 
-					ARX_DAMAGES_DamagePlayer(damages, DAMAGE_TYPE_FIRE, 0, NULL);
+					ARX_DAMAGES_DamagePlayer(damages, DAMAGE_TYPE_FIRE, 0);
 					ARX_DAMAGES_DamagePlayerEquipment(damages);
 					EERIE_3D pos;
 					pos.x = player.pos.x;
@@ -3472,7 +3472,7 @@ void PlayerMovementIterate(float DeltaTime)
 							if (dmg > 0.f)
 							{
 								Falling_Height = (player.pos.y + Falling_Height * 2) * ( 1.0f / 3 );
-								ARX_DAMAGES_DamagePlayer(dmg, 0, -1, &player.pos);
+								ARX_DAMAGES_DamagePlayer(dmg, 0, -1);
 								ARX_DAMAGES_DamagePlayerEquipment(dmg);
 							}
 						}

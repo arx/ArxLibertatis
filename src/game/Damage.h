@@ -129,7 +129,7 @@ void	ARX_DAMAGES_Reset();
 long	ARX_DAMAGES_GetFree();
  
 void	ARX_DAMAGES_UpdateAll();
-float	ARX_DAMAGES_DamagePlayer(float dmg, long type, long source = -1, EERIE_3D * pos = NULL); 
+float	ARX_DAMAGES_DamagePlayer(float dmg, long type, long source = -1); 
 void	ARX_DAMAGES_DamageFIX(INTERACTIVE_OBJ * io, float dmg, long source = -1, long flags = 0, EERIE_3D * pos = NULL);
 float	ARX_DAMAGES_DamageNPC(INTERACTIVE_OBJ * io, float dmg, long source = -1, long flags = 0, EERIE_3D * pos = NULL); 
 bool	ARX_DAMAGES_TryToDoDamage(EERIE_3D * pos, float dmg, float radius, long source); 

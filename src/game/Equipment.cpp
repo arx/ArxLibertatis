@@ -874,7 +874,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 				ppos.y += ACTIVECAM->pos.y;
 				ppos.z += ACTIVECAM->pos.z;
 				ARX_DAMAGES_SCREEN_SPLATS_Add(&ppos, dmgs);
-				ARX_DAMAGES_DamagePlayer(dmgs, 0, GetInterNum(io_source), &io_target->pos);
+				ARX_DAMAGES_DamagePlayer(dmgs, 0, GetInterNum(io_source));
 				ARX_DAMAGES_DamagePlayerEquipment(dmgs);
 			}
 			else
