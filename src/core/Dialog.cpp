@@ -3596,10 +3596,11 @@ long IOScript_YY = -1;
 #if _ARX_CEDITOR_
 CEditor * edit1 = NULL;
 CEditor * edit2 = NULL;
-#endif
 
 long edit_lin1 = 0;
 long edit_lin2 = 0;
+#endif // _ARX_CEDITOR_
+
 INTERACTIVE_OBJ * edit_io = NULL;
 
 //*************************************************************************************
