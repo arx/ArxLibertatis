@@ -4543,7 +4543,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			if ((spells[i].caster==0) || (spells[i].target==0))
 				player.hunger=100;
 		
-			pCSpellFx = new CCreateFood(GDevice);
+			pCSpellFx = new CCreateFood();
 
 			if (pCSpellFx != NULL)
 			{

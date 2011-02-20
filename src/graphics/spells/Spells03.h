@@ -202,7 +202,7 @@ class CCreateFood: public CSpellFx
 		TextureContainer * tex_heal;
 
 	public:
-		CCreateFood(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CCreateFood();
 		~CCreateFood();
 
 	public:

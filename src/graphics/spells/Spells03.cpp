@@ -1060,7 +1060,7 @@ float CSpeed::Render(LPDIRECT3DDEVICE7 device)
 }
 
 //-----------------------------------------------------------------------------
-CCreateFood::CCreateFood(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CCreateFood::CCreateFood()
 {
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
