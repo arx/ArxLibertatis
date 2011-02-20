@@ -1648,10 +1648,6 @@ void CheckForIgnition(EERIE_3D * pos, float radius, long mode, long flag)
 	}
 }
 
-void PushPlayer(EERIE_3D * pos, float intensity)
-{
-	
-}
 //*************************************************************************************
 //*************************************************************************************
 bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long typ, long numsource)
@@ -1757,12 +1753,6 @@ bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long t
 
 						ARX_DAMAGES_DamagePlayer(dmg, typ, numsource);
 						ARX_DAMAGES_DamagePlayerEquipment(dmg);
-						EERIE_3D vector;
-						float div = 1.f / dist;
-						vector.x = (sub.x - pos->x) * div;
-						vector.y = (sub.y - pos->y) * div;
-						vector.z = (sub.z - pos->z) * div;
-						PushPlayer(&vector, (radius - dist) / radius);
 					}
 					else
 					{
