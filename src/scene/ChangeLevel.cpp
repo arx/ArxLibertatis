@@ -613,7 +613,6 @@ long ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 					 + sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter
 					 + sizeof(ARX_CHANGELEVEL_PATH) * asi->nb_paths
 					 + sizeof(ARX_CHANGELEVEL_LIGHT) * asi->nb_lights;
-	+48000;
 
 	void * playlist = NULL;
 	unsigned long asize = 0;
