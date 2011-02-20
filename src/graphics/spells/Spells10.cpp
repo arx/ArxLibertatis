@@ -449,8 +449,10 @@ CMassIncinerate::~CMassIncinerate()
 }
 
 //---------------------------------------------------------------------
-void CMassIncinerate::Create(EERIE_3D aePos, float afBeta = 0)
-{
+void CMassIncinerate::Create(EERIE_3D aePos, float afBeta = 0) {
+	
+	(void)afBeta;
+	
 	aePos.y += 150.0f;
 
 	for (int i = 0; i < 10; i++)
