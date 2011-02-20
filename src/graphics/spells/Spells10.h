@@ -77,7 +77,7 @@ class CMassLightning: public CSpellFx
 		CLightning ** pTab;
 
 	public:
-		CMassLightning(LPDIRECT3DDEVICE7 m_pd3dDevice, long nb);
+		CMassLightning(long nb);
 		~CMassLightning() {};
 
 	public:

@@ -6644,7 +6644,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 					
 
 			ARX_CHECK_LONG(spells[i].caster_level);   
-			pCSpellFx = new CMassLightning( GDevice, std::max( ARX_CLEAN_WARN_CAST_LONG( spells[i].caster_level ), 1L ) );
+			pCSpellFx = new CMassLightning(std::max(static_cast<long>(spells[i].caster_level), 1L));
 
 		
 			if (pCSpellFx != NULL)

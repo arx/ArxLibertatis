@@ -72,7 +72,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-CMassLightning::CMassLightning(LPDIRECT3DDEVICE7 m_pd3dDevice, long nbmissiles)
+CMassLightning::CMassLightning(long nbmissiles)
 {
 	SetDuration(2000);
 	pTab = new CLightning*[10];
