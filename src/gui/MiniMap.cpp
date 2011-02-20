@@ -247,10 +247,10 @@ void ARX_MINIMAP_Load_Offsets()
 
 void ARX_MINIMAP_Reveal()
 {
-	for (long ii = 0; ii < MAX_MINIMAPS; ii++)
+	for (size_t ii = 0; ii < MAX_MINIMAPS; ii++)
 	{
-		for (long j = 0; j < MINIMAP_MAX_Z; j++)
-			for (long i = 0; i < MINIMAP_MAX_X; i++)
+		for (size_t j = 0; j < MINIMAP_MAX_Z; j++)
+			for (size_t i = 0; i < MINIMAP_MAX_X; i++)
 			{
 				minimap[ii].revealed[i][j] = 255;
 			}
@@ -261,7 +261,7 @@ void ARX_MINIMAP_FirstInit()
 {
 	memset(minimap, 0, sizeof(MINI_MAP_DATA)*MAX_MINIMAPS);
 
-	for (long i = 0; i < MAX_MINIMAPS; i++)
+	for (size_t i = 0; i < MAX_MINIMAPS; i++)
 	{
 		mini_offset_x[i] = 0;
 		mini_offset_y[i] = 0;
