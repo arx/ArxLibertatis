@@ -938,7 +938,7 @@ int			nb;
 
 void EERIEDrawLine(float x,float y,float x1,float y1,float z,D3DCOLOR col)
 {
-	register D3DTLVERTEX tv[2];
+	D3DTLVERTEX tv[2];
 	tv[0].sx=x;
 	tv[0].sy=y;
 	tv[1].sz=tv[0].sz=z;
@@ -956,7 +956,7 @@ void EERIEDrawLine(float x,float y,float x1,float y1,float z,D3DCOLOR col)
 
 void EERIEDraw2DLine(LPDIRECT3DDEVICE7 pd3dDevice, float x0,float y0,float x1,float y1,float z, D3DCOLOR col)
 {
-	register D3DTLVERTEX v[2];
+	D3DTLVERTEX v[2];
 
 	SETTC(pd3dDevice,NULL);
 	v[0].sx=x0;
@@ -974,7 +974,7 @@ void EERIEDraw2DLine(LPDIRECT3DDEVICE7 pd3dDevice, float x0,float y0,float x1,fl
 
 void EERIEDraw2DRect(LPDIRECT3DDEVICE7 pd3dDevice, float x0,float y0,float x1,float y1,float z, D3DCOLOR col)
 {
-	register D3DTLVERTEX v[5];
+	D3DTLVERTEX v[5];
 
 	SETTC(pd3dDevice,NULL);
 	v[4].sx=v[3].sx=v[0].sx=x0;
