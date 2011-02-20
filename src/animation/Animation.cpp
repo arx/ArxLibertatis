@@ -1350,8 +1350,8 @@ void PopOneInterBumpTANDL(LPDIRECT3DDEVICE7 _pDevice,TextureContainer *_pTex)
 		SMY_D3DVERTEX3 *pVertex;
 	
 		unsigned int uiCalc 		=	pDVB->ussNbVertex + _pTex->vPolyInterBumpTANDL.size() / 2 ;	//@TODO : Is DIV_2 justified ?
-		ARX_CHECK_USHORT(uiCalc);
-		pDVB->ussNbVertex			=	ARX_CLEAN_WARN_CAST_USHORT(uiCalc);
+		assert(uiCalc <= USHRT_MAX);
+		pDVB->ussNbVertex = static_cast<unsigned short>(uiCalc);
 		
 		if( pDVB->ussNbVertex > pDVB->ussMaxVertex )
 		{
@@ -1360,8 +1360,8 @@ void PopOneInterBumpTANDL(LPDIRECT3DDEVICE7 _pDevice,TextureContainer *_pTex)
 			pVertex					=	(SMY_D3DVERTEX3*)pDVB->Lock(DDLOCK_DISCARDCONTENTS);
 			
 			uiCalc					=	_pTex->vPolyInterBumpTANDL.size() / 2 ;					//@TODO : Is DIV_2 justified ?
-			ARX_CHECK_USHORT( uiCalc );
-			pDVB->ussNbVertex		=	ARX_CLEAN_WARN_CAST_USHORT( uiCalc );
+			assert(uiCalc <= USHRT_MAX);
+			pDVB->ussNbVertex = static_cast<unsigned short>(uiCalc);
 			iOldNbVertex			=	0;
 
 			//Keep this to check in debug if buffer can eventually be overflooded
