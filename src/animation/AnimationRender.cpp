@@ -498,8 +498,8 @@ void EE_P(EERIE_3D * in, D3DTLVERTEX * out);
 extern long INTERPOLATE_BETWEEN_BONES;
 
 /* Transform object vertices  */
-int		Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, EERIE_3D * pos, EERIE_3D * angle)
-{
+int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj,
+                          EERIE_3D * pos) {
 	int v;
 
 	EERIE_3DPAD * inVert;
@@ -2958,7 +2958,7 @@ void	Cedric_AnimateDrawEntity(LPDIRECT3DDEVICE7 pd3dDevice,
 			return;
 
 
-		if ((Cedric_TransformVerts(io, eobj, obj, pos, angle)) && (!(typ & ANIMQUATTYPE_NO_RENDER)))
+		if ((Cedric_TransformVerts(io, eobj, obj, pos)) && (!(typ & ANIMQUATTYPE_NO_RENDER)))
 		{
 			INTER_DRAW++;
 
