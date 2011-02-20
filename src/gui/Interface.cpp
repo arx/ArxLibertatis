@@ -10811,7 +10811,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 						danaeApp.DANAEEndRender();	
 						std::stringstream ss;
 						ss << std::setw(3) << lCursorRedistValue;
-						ARX_TEXT_Draw(GDevice, InBookFont, DANAEMouse.x + 6* Xratio, DANAEMouse.y + 11* Yratio, 999, 999, ss.str(), D3DCOLORBLACK, 0x00FF00FF);
+						ARX_TEXT_Draw(InBookFont, DANAEMouse.x + 6* Xratio, DANAEMouse.y + 11* Yratio, 999, ss.str(), D3DCOLORBLACK, 0x00FF00FF);
 						danaeApp.DANAEStartRender();
 					}
 					else

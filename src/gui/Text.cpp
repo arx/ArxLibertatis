@@ -356,11 +356,9 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 	return 0;
 }
 
-//-----------------------------------------------------------------------------
-long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice,
-                   HFONT ef,
+long ARX_TEXT_Draw(HFONT ef,
                    float x, float y,
-                   long spacingx, long spacingy,
+                   long spacingy,
                    const std::string& car,
                    COLORREF colo, COLORREF bcol)
 {
@@ -373,16 +371,13 @@ long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice,
 	return 15 + spacingy;
 }
 
-long ARX_TEXT_DrawRect(LPDIRECT3DDEVICE7 pd3dDevice,
-					   HFONT ef,
+long ARX_TEXT_DrawRect(HFONT ef,
 					   float x, float y,
-					   long spacingx, long spacingy,
 					   float maxx, float maxy,
 					   const std::string& car,
 					   COLORREF colo,
 					   HRGN _hRgn,
-					   COLORREF bcol,
-					   long flags)
+					   COLORREF bcol)
 {
 
 	bcol = RGB((bcol >> 16) & 255, (bcol >> 8) & 255, (bcol) & 255);
@@ -395,9 +390,8 @@ long ARX_TEXT_DrawRect(LPDIRECT3DDEVICE7 pd3dDevice,
 //-----------------------------------------------------------------------------
 float DrawBookTextInRect(float x, float y, float maxx, float maxy, const std::string& text, COLORREF col, COLORREF col2, HFONT font)
 {
-	return (float)ARX_TEXT_DrawRect(GDevice, font,
-									(BOOKDECX + x) * Xratio, (BOOKDECY + y) * Yratio, -3, 0,
-									(BOOKDECX + maxx) * Xratio, (BOOKDECY + maxy) * Yratio, text, col, NULL, col2);
+	return (float)ARX_TEXT_DrawRect(font,
+									(BOOKDECX + x) * Xratio, (BOOKDECY + y) * Yratio, (BOOKDECX + maxx) * Xratio, (BOOKDECY + maxy) * Yratio, text, col, NULL, col2);
 }
 
 //-----------------------------------------------------------------------------

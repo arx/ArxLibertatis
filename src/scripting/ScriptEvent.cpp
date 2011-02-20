@@ -266,7 +266,7 @@ bool HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 	if ((aa < ab + 90.f) && (aa > ab - 90.f))
 	{
 		//font
-		ARX_TEXT_Draw(GDevice, InBookFont, 300, 320, 0, 0, "VISIBLE", D3DRGB(1.f, 0.f, 0.f));
+		ARX_TEXT_Draw(InBookFont, 300, 320, 0, "VISIBLE", D3DRGB(1.f, 0.f, 0.f));
 		return true;
 	}
 
