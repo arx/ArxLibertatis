@@ -3773,7 +3773,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				else	number=5;
 			}
 
-			pCSpellFx = new CMultiMagicMissile(GDevice,number);			
+			pCSpellFx = new CMultiMagicMissile(number);			
 
 			if (pCSpellFx != NULL)
 			{

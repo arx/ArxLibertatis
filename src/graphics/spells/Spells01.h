@@ -114,7 +114,7 @@ class CMultiMagicMissile: public CSpellFx
 		unsigned int uiNumber;
 		bool bExplo;
 	public:
-		CMultiMagicMissile(LPDIRECT3DDEVICE7 m_pd3dDevice, long nb);
+		CMultiMagicMissile(long nb);
 		~CMultiMagicMissile();
 
 	public:

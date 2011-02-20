@@ -526,7 +526,7 @@ float CMagicMissile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-CMultiMagicMissile::CMultiMagicMissile(LPDIRECT3DDEVICE7 m_pd3dDevice, long nbmissiles) : CSpellFx()
+CMultiMagicMissile::CMultiMagicMissile(long nbmissiles) : CSpellFx()
 {
 	SetDuration(2000);
 	uiNumber = nbmissiles;
