@@ -150,16 +150,6 @@ void ARX_INVENTORY_Declare_InventoryIn(INTERACTIVE_OBJ * io)
 }
 
 //*************************************************************************************
-// void ARX_INVENTORY_Declare_Inventory_2_Out(INTERACTIVE_OBJ * io)
-//-------------------------------------------------------------------------------------
-// NOT USED Right Now
-//*************************************************************************************
-void ARX_INVENTORY_Declare_Inventory_2_Out(INTERACTIVE_OBJ * io)
-{
-
-}
-
-//*************************************************************************************
 // void CleanInventory()
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
@@ -1978,7 +1968,6 @@ bool TakeFromInventory(EERIE_S2D * pos)
 							io->_itemdata->count--;
 							ARX_SOUND_PlayInterface(SND_INVSTD);
 							Set_DragInter(ioo);
-							ARX_INVENTORY_Declare_Inventory_2_Out(ioo);
 							return true;
 						}
 					}
@@ -2010,7 +1999,6 @@ bool TakeFromInventory(EERIE_S2D * pos)
 
 					//ARX_INVENTORY_Object_Out(SecondaryInventory->io, ioo);
 
-					ARX_INVENTORY_Declare_Inventory_2_Out(ioo);
 					ARX_INVENTORY_IdentifyIO(ioo);
 					return true;
 				}
