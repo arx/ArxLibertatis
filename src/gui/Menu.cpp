@@ -287,8 +287,8 @@ void ARX_MENU_LaunchAmb(char * _lpszAmb)
 }
 
 //-----------------------------------------------------------------------------
-void ARX_Menu_Resources_Create(LPDIRECT3DDEVICE7 m_pd3dDevice)
-{
+void ARX_Menu_Resources_Create() {
+	
 	if (ARXmenu.mda)
 	{
 		delete ARXmenu.mda;
@@ -486,8 +486,8 @@ void ARX_MENU_Clicked_QUIT_GAME()
 }
 
 //-----------------------------------------------------------------------------
-void ARX_MENU_Launch(LPDIRECT3DDEVICE7 m_pd3dDevice)
-{
+void ARX_MENU_Launch() {
+	
 	ARX_TIME_Pause();
 
 	//Synchronize menu mixers with game mixers and switch between them
@@ -497,7 +497,7 @@ void ARX_MENU_Launch(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	ARX_MENU_CLICKSOUND();
 
 	ARXmenu.currentmode = AMCM_MAIN;
-	ARX_Menu_Resources_Create(m_pd3dDevice);
+	ARX_Menu_Resources_Create();
 }
 
 //-----------------------------------------------------------------------------
@@ -635,7 +635,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		if (ITC.Get("questbook") == NULL)
 		{
 			ARX_Menu_Resources_Release(false);
-			ARX_Menu_Resources_Create(m_pd3dDevice);
+			ARX_Menu_Resources_Create();
 
 			ITC.Set("playerbook", "Graph\\Interface\\book\\character_sheet\\char_sheet_book.bmp");
 			ITC.Set("ic_casting", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_casting.bmp");

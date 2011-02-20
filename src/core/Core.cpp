@@ -4736,7 +4736,7 @@ bool DANAE_ManageSplashThings()
 					SPLASH_THINGS_STAGE=0;
 					INTRO_NOT_LOADED=0;
 					ARXmenu.currentmode=AMCM_MAIN;
-					ARX_MENU_Launch(GDevice);
+					ARX_MENU_Launch();
 				}
 			}
 
@@ -4785,7 +4785,7 @@ bool DANAE_ManageSplashThings()
 					SPLASH_THINGS_STAGE=0;
 					INTRO_NOT_LOADED=0;
 					ARXmenu.currentmode=AMCM_MAIN;
-					ARX_MENU_Launch(GDevice);
+					ARX_MENU_Launch();
 				}
 					
 				SPLASH_START=0;
@@ -5453,7 +5453,7 @@ static float _AvgFrameDiff = 150.f;
 
 				ARX_TIME_Pause();
 				ARXTimeMenu=ARXOldTimeMenu=ARX_TIME_Get();
-				ARX_MENU_Launch(m_pd3dDevice);
+				ARX_MENU_Launch();
 				bFadeInOut=false;	//fade out
 				bFade=true;			//active le fade
 				pGetInfoDirectInput->iOneTouch[DIK_ESCAPE] = 0;

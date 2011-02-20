@@ -6289,7 +6289,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					else
 					{
 						ARX_SOUND_MixerStop(ARX_SOUND_MixerGame);
-						ARX_MENU_Launch(GDevice);
+						ARX_MENU_Launch();
 						ARX_MENU_Clicked_CREDITS();
 					}
 				}
