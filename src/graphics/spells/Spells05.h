@@ -203,7 +203,7 @@ class CCurePoison: public CSpellFx
 		TextureContainer * tex_heal;
 
 	public:
-		CCurePoison(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CCurePoison();
 		~CCurePoison();
 
 	public:

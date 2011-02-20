@@ -99,7 +99,7 @@ long sfirewave_count = 0;
 EERIE_3DOBJ * svoodoo = NULL;
 long svoodoo_count = 0;
 //-----------------------------------------------------------------------------
-CCurePoison::CCurePoison(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CCurePoison::CCurePoison()
 {
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;

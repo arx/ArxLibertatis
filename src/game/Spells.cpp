@@ -5138,7 +5138,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			spells[i].lastupdate = spells[i].timcreation = ARXTimeUL();
 			spells[i].tolive = 3500;
 					
-			CSpellFx *pCSpellFx = new CCurePoison(GDevice);
+			CSpellFx *pCSpellFx = new CCurePoison();
 							
 			if (pCSpellFx != NULL)
 			{
