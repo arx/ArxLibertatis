@@ -101,7 +101,7 @@ long COMPUTE_PORTALS = 1;
 
 bool IntersectLinePlane(EERIE_3D * l1, EERIE_3D * l2, EERIEPOLY * ep, EERIE_3D * intersect);
  
-int RayIn3DPolyNoCull(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY * epp);
+static int RayIn3DPolyNoCull(EERIE_3D * orgn, EERIE_3D * dest, EERIEPOLY * epp);
 
 D3DMATRIX ProjectionMatrix;
 
@@ -245,7 +245,7 @@ bool RayCollidingPoly(EERIE_3D * orgn, EERIE_3D * dest, EERIEPOLY * ep, EERIE_3D
 {
 	if (IntersectLinePlane(orgn, dest, ep, hit))
 	{
-		if (RayIn3DPolyNoCull(orgn, dest, hit, ep)) return true;
+		if (RayIn3DPolyNoCull(orgn, dest, ep)) return true;
 	}
 
 	return false;
@@ -1448,8 +1448,7 @@ extern EERIE_CAMERA raycam;
 //*************************************************************************************
 //*************************************************************************************
 
-int RayIn3DPolyNoCull(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY * epp)
-{
+static int RayIn3DPolyNoCull(EERIE_3D * orgn, EERIE_3D * dest, EERIEPOLY * epp) {
 
 	EERIEPOLY ep;
 	memcpy(&ep, epp, sizeof(EERIEPOLY));
@@ -1679,7 +1678,7 @@ int EERIELaunchRay3(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY
 							{
 								voidlast = 0;
 
-								if (RayIn3DPolyNoCull(orgn, dest, hit, ep))
+								if (RayIn3DPolyNoCull(orgn, dest, ep))
 								{
 									hit->x = x; 
 									hit->y = y; 
