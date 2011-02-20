@@ -279,8 +279,10 @@ float CHeal::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-float CHarm::Render(LPDIRECT3DDEVICE7 device)
-{
+float CHarm::Render(LPDIRECT3DDEVICE7 device) {
+	
+	(void)device;
+	
 	return 0;
 }
 
