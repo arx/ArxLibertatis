@@ -3416,6 +3416,8 @@ bool Menu2_Render()
 
 				}
 				break;
+				
+			default: break; // Unhandled menu state.
 			}
 
 		}
