@@ -9576,11 +9576,11 @@ void DANAE::DrawAllInterface()
 	
 	
 	
-	if ((FlyingOverIO) && !(PLAYER_MOUSELOOK_ON) && !(player.Interface & INTER_COMBATMODE)
-		&& (!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE))
-		        || 
-		((FlyingOverIO) && (pMenuConfig->bAutoReadyWeapon == false) && !(player.Interface & INTER_COMBATMODE)
+	if (((FlyingOverIO) && !(PLAYER_MOUSELOOK_ON) && !(player.Interface & INTER_COMBATMODE)
 		&& (!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE)))
+		        || 
+		(((FlyingOverIO) && (pMenuConfig->bAutoReadyWeapon == false) && !(player.Interface & INTER_COMBATMODE)
+		&& (!ARX_IMPULSE_Pressed(CONTROLS_CUST_MAGICMODE))))
 		)
 	{
 		if ((FlyingOverIO->ioflags & IO_ITEM) && (!DRAGINTER))
