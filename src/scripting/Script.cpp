@@ -5702,8 +5702,10 @@ void InitScript(EERIE_SCRIPT * es)
 	ARX_SCRIPT_ComputeShortcuts(*es);
 }
 
-LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
+LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HWND thWnd;
 
 	switch (message)
@@ -5735,8 +5737,11 @@ LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 
 	return false;
 }
-LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
+
+LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HWND thWnd;
 
 	switch (message)
