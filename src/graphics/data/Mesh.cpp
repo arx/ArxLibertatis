@@ -3448,8 +3448,8 @@ void DrawEERIEObjEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	if (eobj == NULL) return;
 
 	float    Xcos, Ycos, Zcos, Xsin, Ysin, Zsin;
-	register D3DTLVERTEX v;
-	register D3DTLVERTEX rv;
+	D3DTLVERTEX v;
+	D3DTLVERTEX rv;
 	D3DTLVERTEX vert_list[4];
 
 
