@@ -137,7 +137,7 @@ void TextManager::Render() {
 		long height = ARX_UNICODE_DrawTextInRect(static_cast<float>(pArxText->rRect.left),
 		                                         pArxText->rRect.top - pArxText->fDeltaY,
 		                                         static_cast<float>(pArxText->rRect.right),
-		                                         0, pArxText->lpszUText, pArxText->lCol,
+		                                         pArxText->lpszUText, pArxText->lCol,
 		                                         pArxText->lBkgCol, pArxText->hFont, hRgn, hDC);
 		
 		pArxText->rRect.bottom = pArxText->rRect.top + height;

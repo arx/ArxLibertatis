@@ -80,7 +80,7 @@ long UNICODE_ARXDrawTextCenter(float x, float y, const std::string& str, COLORRE
 long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, const std::string& str, COLORREF col, COLORREF bcol, HFONT font, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut = INT_MAX);
 long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, const std::string& _lpszUText, int _iSpacingY, RECT _rRect);
 long ARX_UNICODE_DrawTextInRect(float x, float y,
-								float maxx, float maxy,
+								float maxx,
 								const std::string& _lpszUText,
 								COLORREF col, COLORREF bcol,
 								HFONT font,

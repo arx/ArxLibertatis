@@ -291,7 +291,7 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, std::string& text, int _iSpacingY, R
 
 //-----------------------------------------------------------------------------
 long ARX_UNICODE_DrawTextInRect(float x, float y,
-                                float maxx, float maxy,
+                                float maxx,
                                 const std::string& _text,
                                 COLORREF col,
                                 COLORREF bcol,
@@ -369,7 +369,7 @@ long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice,
 	if (car[0] == 0) return 0;
 
 	//ArxFont
-	ARX_UNICODE_DrawTextInRect(x, y, 9999.f, 999.f, car, colo, bcol, ef);
+	ARX_UNICODE_DrawTextInRect(x, y, 9999.f, car, colo, bcol, ef);
 	return 15 + spacingy;
 }
 
@@ -388,7 +388,7 @@ long ARX_TEXT_DrawRect(LPDIRECT3DDEVICE7 pd3dDevice,
 	bcol = RGB((bcol >> 16) & 255, (bcol >> 8) & 255, (bcol) & 255);
 
 	colo = RGB((colo >> 16) & 255, (colo >> 8) & 255, (colo) & 255);
-	return ARX_UNICODE_DrawTextInRect(x, y, maxx, maxy, car, colo, bcol, ef, _hRgn);
+	return ARX_UNICODE_DrawTextInRect(x, y, maxx, car, colo, bcol, ef, _hRgn);
 }
 
 
