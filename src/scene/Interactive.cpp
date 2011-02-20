@@ -4227,16 +4227,15 @@ void UpdateCameras()
 						{
 							bool Touched = false;
 
-							for (long ri = 0; ri < io->obj->vertexlist.size(); ri += 3)
+							for (size_t ri = 0; ri < io->obj->vertexlist.size(); ri += 3)
 							{
-								for (long rii = 0; rii < ioo->obj->vertexlist.size(); rii += 3)
+								for (size_t rii = 0; rii < ioo->obj->vertexlist.size(); rii += 3)
 								{
 									if (EEDistance3D(&io->obj->vertexlist3[ri].v,
 									                 &ioo->obj->vertexlist3[rii].v) < 20.f)
 									{
 										Touched = true;
-										ri = 999999;
-										rii = 999999;
+										ri = io->obj->vertexlist.size();
 										break;
 									}
 								}
