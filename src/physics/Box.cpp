@@ -915,14 +915,11 @@ bool IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long 
 	return true;
 }
  
-extern long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source);
-
-//*************************************************************************************
-//*************************************************************************************
+extern long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long source);
 
 long EERIE_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source)
 {
-	return ARX_PHYSICS_BOX_ApplyModel(obj, framediff, rubber, flags, source);
+	return ARX_PHYSICS_BOX_ApplyModel(obj, framediff, rubber, source);
 	long ret = 0;
 
 	if (obj->pbox->active == 2) return ret;

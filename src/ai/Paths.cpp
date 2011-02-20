@@ -2528,10 +2528,8 @@ bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, long sour
 	return true;//ret;
 }
 
-extern void EERIE_PHYSICS_BOX_ComputeForces(EERIE_3DOBJ * obj);
-
-long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source)
-{
+long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long source) {
+	
 	VELOCITY_THRESHOLD = 400.f; 
 	long ret = 0;
 
