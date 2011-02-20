@@ -297,7 +297,7 @@ static T * copyStruct(const T * src, const char * desc, size_t n = 1) {
 
 
 
-EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, long flags) {
+EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file) {
 	
 	(void)size; // TODO use size
 	

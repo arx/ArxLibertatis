@@ -322,7 +322,7 @@ long EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah, char * path) {
 		return 0;
 	}
 	
-	EERIE_ANIM * temp = TheaToEerie(adr,FileSize,path,TEA_PLAYER_SAMPLES);
+	EERIE_ANIM * temp = TheaToEerie(adr,FileSize,path);
 	free(adr);
 	if(!temp) {
 		return 0;
@@ -363,7 +363,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load( const std::string& _path)
 				animations[i].anims=(EERIE_ANIM **)malloc(sizeof(EERIE_ANIM *));
 				animations[i].sizes=(long *)malloc(sizeof(long));
 
-				animations[i].anims[0]=TheaToEerie(adr,FileSize,path.c_str(),TEA_PLAYER_SAMPLES);
+				animations[i].anims[0]=TheaToEerie(adr,FileSize,path.c_str());
 				animations[i].sizes[0]=FileSize;
 				animations[i].alt_nb=1;
 				free(adr);
