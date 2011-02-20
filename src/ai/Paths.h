@@ -237,7 +237,7 @@ class CRuban
 		T_RUBAN_DEF trubandef[256];
 
 		int GetFreeRuban(void);
-		void AddRuban(int * f, int id, int dec);
+		void AddRuban(int * f, int dec);
 		void DrawRuban(LPDIRECT3DDEVICE7 device, int num, float size, int dec, float r, float g, float b, float r2, float g2, float b2);
 	public:
 		CRuban() {};

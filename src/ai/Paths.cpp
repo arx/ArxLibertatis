@@ -1881,7 +1881,7 @@ int CRuban::GetFreeRuban()
 }
 
 //-----------------------------------------------------------------------------
-void CRuban::AddRuban(int * f, int id, int dec)
+void CRuban::AddRuban(int * f, int dec)
 {
 	int	num;
 
@@ -1944,7 +1944,7 @@ void CRuban::Update(unsigned long _ulTime)
 
 	while (nb--)
 	{
-		AddRuban(&trubandef[num].first, trubandef[num].origin, trubandef[num].dec);
+		AddRuban(&trubandef[num].first, trubandef[num].dec);
 		num++;
 	}
 }
