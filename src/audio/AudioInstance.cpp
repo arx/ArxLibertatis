@@ -76,7 +76,6 @@ namespace ATHENA
 	{
 	}
 
-	extern  long NBREVERB;
 	extern char szT[1024];
 	extern bool bLog;
 

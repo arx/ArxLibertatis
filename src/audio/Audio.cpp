@@ -515,8 +515,6 @@ namespace ATHENA
 		return status;
 	}
 
-	long NBREVERB = 0;
-
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //
 	// Global control                                                            //
@@ -582,7 +580,7 @@ namespace ATHENA
 
 			if (sample && sample->IsHandled() < 1)
 			{
-				//Console_Log("- %03d %s", NBREVERB, sample->name);
+				//Console_Log("- %s", sample->name);
 				_sample.Delete(i);
 			}
 		}
