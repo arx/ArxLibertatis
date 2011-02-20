@@ -648,7 +648,7 @@ void SpawnGroundSplat(EERIE_SPHERE * sp,EERIE_RGB * rgb,float size,long flags)
 long TOTAL_BODY_CHUNKS_COUNT=0;
 	
 //-----------------------------------------------------------------------------
-void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos,float dmgs,D3DCOLOR col,long vert,INTERACTIVE_OBJ * io)
+void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos,float dmgs,D3DCOLOR col,INTERACTIVE_OBJ * io)
 {
 	if (	(io)
 		&&	(io->ioflags & IO_NPC)
