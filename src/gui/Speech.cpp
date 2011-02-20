@@ -224,7 +224,7 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 
 	int iEnd = igrec + sSize.cy;
 
-	for (long i = 0; i < MAX_SPEECH; i++)
+	for (size_t i = 0; i < MAX_SPEECH; i++)
 	{
 		if (speech[i].timecreation != 0)
 		{
@@ -266,7 +266,7 @@ void ARX_SPEECH_Check(LPDIRECT3DDEVICE7 pd3dDevice)
 	bool bClear = false;
 	long exist = 0;
 
-	for (long i = 0; i < MAX_SPEECH; i++)
+	for (size_t i = 0; i < MAX_SPEECH; i++)
 	{
 		if (speech[i].timecreation != 0)
 		{
