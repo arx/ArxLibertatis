@@ -4327,6 +4327,8 @@ bool FastSceneLoad(const char * partial_path)
 
 bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms) {
 	
+	(void)ms; // TODO why is this never used?
+	
 	std::string path;
 	path = "Game\\";
 	path += partial_path;
