@@ -103,7 +103,7 @@ class CRuneOfGuarding: public CSpellFx
 		float fSize;
 
 	public:
-		CRuneOfGuarding(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CRuneOfGuarding();
 		~CRuneOfGuarding();
 		// accesseurs
 	public:

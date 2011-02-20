@@ -288,7 +288,7 @@ float CCurePoison::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 }
 
 //-----------------------------------------------------------------------------
-CRuneOfGuarding::CRuneOfGuarding(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CRuneOfGuarding::CRuneOfGuarding()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;

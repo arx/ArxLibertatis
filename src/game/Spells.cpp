@@ -5020,7 +5020,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 
 			if (duration>-1) spells[i].tolive=duration;
 
-			CSpellFx *pCSpellFx  = new CRuneOfGuarding(GDevice);
+			CSpellFx *pCSpellFx  = new CRuneOfGuarding();
 					
 			if (pCSpellFx != NULL)
 			{
