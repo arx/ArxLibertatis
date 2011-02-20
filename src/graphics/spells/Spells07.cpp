@@ -1221,7 +1221,7 @@ CIceField::~CIceField()
 	}
 }
 
-CIceField::CIceField(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CIceField::CIceField()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;

@@ -5867,7 +5867,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				spells[i].tolive = duration;
 			}
 
-			CSpellFx *pCSpellFx = new CIceField( GDevice );
+			CSpellFx *pCSpellFx = new CIceField();
 					
 			if ( pCSpellFx != NULL )
 			{

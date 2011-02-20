@@ -257,7 +257,7 @@ class CIceField: public CSpellFx
 		EERIE_3D tSizeMax[50];
 
 	public:
-		CIceField(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CIceField();
 		~CIceField();
 
 		// accesseurs
