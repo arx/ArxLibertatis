@@ -51,7 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stdio.h>
 
 
-HINSTANCE ghInstance;
 HWND ghDialog;
 
 char GlobalName[128];
@@ -303,6 +302,7 @@ void SCRIPT_DEBUGGER_CreateDialog(HWND _hWindow) {
 
 		long dw = GetLastError();
 		// TODO script debugger
+		// HINSTANCE ghInstance;
 		// ghDialog = CreateDialog(ghInstance, MAKEINTRESOURCE(IDD_SCRIPT_DEBUGGER), _hWindow,  SCRIPT_DEBUGGER_Proc);
 		dw = GetLastError();
 		ShowWindow(ghDialog, SW_SHOW);
