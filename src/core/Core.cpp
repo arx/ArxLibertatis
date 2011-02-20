@@ -6649,7 +6649,7 @@ static float _AvgFrameDiff = 150.f;
 		}
 
 		ARX_PARTICLES_Render(m_pd3dDevice,&subj);		
-		UpdateObjFx(m_pd3dDevice,&subj);
+		UpdateObjFx(m_pd3dDevice);
 		if( bSoftRender ) SET_FORCE_NO_VB( bNoVB );
 		
 		SETALPHABLEND(m_pd3dDevice,false);

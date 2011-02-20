@@ -1501,8 +1501,7 @@ void Add3DBoom(EERIE_3D * position) {
 }
 
 //-----------------------------------------------------------------------------
-void UpdateObjFx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CAMERA * cam)
-		{
+void UpdateObjFx(LPDIRECT3DDEVICE7 pd3dDevice) {
 
 	unsigned long framediff;
 	float val,aa,bb;
