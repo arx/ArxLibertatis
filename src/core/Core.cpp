@@ -2970,8 +2970,8 @@ HRESULT DANAE::BeforeRun()
 
 //*************************************************************************************
 
-void FirstTimeThings(HWND m_hWnd,LPDIRECT3DDEVICE7 m_pd3dDevice)
-{
+void FirstTimeThings() {
+	
 	static long done = 0;
 	long i;
 	eyeball.exist=0;		
@@ -3084,7 +3084,7 @@ LPTHREAD_START_ROUTINE FirstFrameProc(char *pipo)
 	if (DEBUGCODE) 
 		ForceSendConsole("...NEXT...",1,0,(HWND)1);
 	
-	FirstTimeThings(danaeApp.m_hWnd,NULL);		
+	FirstTimeThings();
 
 	if (!LOAD_N_DONT_ERASE)
 	{
