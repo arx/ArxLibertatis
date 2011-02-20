@@ -3389,9 +3389,9 @@ void ApplyDynLight(EERIEPOLY * ep)
 	EERIE_RGB rgb;
 	long j;
 
-	register float epr[4];
-	register float epg[4];
-	register float epb[4];
+	float epr[4];
+	float epg[4];
+	float epb[4];
 
 	for (i = 0; i < nbvert; i++)
 	{
