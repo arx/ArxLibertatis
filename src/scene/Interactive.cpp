@@ -536,9 +536,9 @@ EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * file, long fla
 	alternateway:
 		;
 		size_t FileSize = 0;
-		unsigned char * adr;
+		unsigned char * adr = (unsigned char *)PAK_FileLoadMalloc(file, FileSize);
 
-		if (adr = (unsigned char *)PAK_FileLoadMalloc(file, FileSize))
+		if (adr)
 		{
 			ret = TheoToEerie(adr, FileSize, texpath, file, flag, pd3dDevice, flag | TTE_NO_RESTORE); //SLOWLOAD));
 
