@@ -73,7 +73,7 @@ float GetTrackFPS();
 C_KEY * GetKey(int f, int * num);
 C_KEY * SearchKey(int f, int * num);
 
-float GetTimeKeyFramer(Cinematic * c);
+float GetTimeKeyFramer();
 void InitUndo();
 void UpDateAllKeyLight();
 

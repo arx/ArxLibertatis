@@ -729,7 +729,7 @@ consequences on light :
 	}
 
 	c->flTime += fpscurr;
-	CKTrack->currframe = (((float)(c->flTime)) / 1000.f) * ((float)(GetEndFrame() - GetStartFrame())) / (float)GetTimeKeyFramer(c);
+	CKTrack->currframe = (((float)(c->flTime)) / 1000.f) * ((float)(GetEndFrame() - GetStartFrame())) / (float)GetTimeKeyFramer();
 
 	if (CKTrack->currframe > (float)CKTrack->endframe)
 	{
@@ -981,7 +981,7 @@ int GetCurrentFrame(void)
 	return (int)CKTrack->currframe;
 }
 /*----------------------------------------------------------------------*/
-float GetTimeKeyFramer(Cinematic * c)
+float GetTimeKeyFramer()
 {
 	if (!CKTrack) return 0.f;
 

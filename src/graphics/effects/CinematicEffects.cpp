@@ -112,9 +112,9 @@ bool FX_Blur(Cinematic * c, LPDIRECT3DDEVICE7 device, CinematicBitmap * tb)
 		memmove(OldAz, OldAz + 1, TotOldPos * 4);
 	}
 
-	if ((GetTimeKeyFramer(c) - LastTime) < 0.40f)
+	if ((GetTimeKeyFramer() - LastTime) < 0.40f)
 	{
-		LastTime = GetTimeKeyFramer(c);
+		LastTime = GetTimeKeyFramer();
 		OldPos[TotOldPos] = c->pos;
 		OldAz[TotOldPos] = c->angz;
 		TotOldPos++;
