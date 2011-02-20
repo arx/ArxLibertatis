@@ -1932,7 +1932,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 			{
 				for (size_t k = 0; k < eobj->grouplist[j].indexes.size(); k++)
 				{
-					if (eobj->grouplist[j].indexes[k] == i)
+					if ((size_t)eobj->grouplist[j].indexes[k] == i)
 					{
 						ok = 1;
 						break;
