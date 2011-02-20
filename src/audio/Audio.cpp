@@ -104,7 +104,7 @@ namespace ATHENA
 		pthread_mutex_lock(&_mutex);
 		_mutex_used = false;
 		pthread_cond_signal(&cond);
-		pthread_mutex_unlock(&_mutex);
+		return !pthread_mutex_unlock(&_mutex);
 	}
 #undef CreateMutex
 #define CreateMutex(x, y, z) (void *)1
