@@ -139,8 +139,6 @@ extern "C" {
 	int DXI_SetMouseRelative(int id);
 	int DXI_SetRangeJoy(int id, int axe, int range);
 	bool DXI_GetJoyButtonPressed(int id, int numb);
-	bool DXI_OldKeyPressed(int id, int dikkey);
-	bool DXI_OldGetJoyButtonPressed(int id, int numb);
  
 	/*-----------------------------------------------------------*/
 

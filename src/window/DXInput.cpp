@@ -63,8 +63,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define INPUT_STATE_ADD	(512)
 
 // must be BOOL to be passed to DX
-BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef)
-{
+BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef) {
+	
+	(void)pvRef;
+	
 	INPUT_INFO	*info;
 
 	info=&DI_InputInfo[DI_NbInputInfo];
@@ -882,13 +884,7 @@ bool DXI_KeyPressed(int id,int dikkey)
 	if(DI_KeyBoardBuffer[id]->bufferstate[dikkey]&0x80) return true;
 	return false;
 }
-bool DXI_OldKeyPressed(int id,int dikkey)
-{
-	//if(DI_InputInfo->old_bufferstate[id*dikkey]&0x80) return true;
-//	if(DI_KeyBoardBuffer[id]->old_bufferstate[dikkey]&0x80) return true;
-	return false;
-}
-/*-------------------------------------------------------------*/
+
 int DXI_GetKeyIDPressed(int id)
 {
 int		nb;
@@ -1936,31 +1932,7 @@ INPUT_INFO	*io;
 	}
 	return false;
 }
-bool DXI_OldGetJoyButtonPressed(int id,int numb)
-{
-INPUT_INFO	*io;
 
-return false;
-	io=DI_JoyState[id];
-	if(io->datasid==DFDIJOYSTICK2)
-	{
-		{
-			DIJOYSTATE2	*js;
-//			js=io->old_joystate2;
-			if(js->rgbButtons[numb]&0x80) return true;
-		}
-	}
-	else
-	{
-		{
-			DIJOYSTATE	*js;
-//			js=io->old_joystate;
-			if(js->rgbButtons[numb]&0x80) return true;
-		}
-	}
-	return false;
-}
-/*-------------------------------------------------------------*/
 int DXI_GetIDJoyButtonPressed(int id)
 {
 INPUT_INFO	*io;
