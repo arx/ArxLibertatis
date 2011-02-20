@@ -525,7 +525,8 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 						HDC dc;
 						InvalidateRect(thWnd, NULL, true);
 
-						if (dc = GetDC(thWnd))
+						dc = GetDC(thWnd);
+						if (dc)
 						{
 							RECT rect;
 							GetClientRect(thWnd, &rect);
