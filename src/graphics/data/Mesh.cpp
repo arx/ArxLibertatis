@@ -4304,12 +4304,10 @@ bool FastSceneLoad(const char * partial_path)
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
 
-	EERIE_BACKGROUND * eb;
 	EERIEPOLY_Compute_PolyIn();
 	PROGRESS_BAR_COUNT += 3.f;
 	LoadLevelScreen();
-	eb = ACTIVEBKG;
-	EERIE_PATHFINDER_Create(eb);
+	EERIE_PATHFINDER_Create();
 	EERIE_PORTAL_Blend_Portals_And_Rooms();
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();

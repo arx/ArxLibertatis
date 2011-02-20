@@ -1161,7 +1161,7 @@ void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb)
 			}
 		}
 
-	EERIE_PATHFINDER_Create(eb);
+	EERIE_PATHFINDER_Create();
 }
 
 void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb)
