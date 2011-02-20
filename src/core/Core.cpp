@@ -5187,9 +5187,10 @@ unsigned long oBENCH_SOUND=0;
 long WILL_QUICKLOAD=0;
 long WILL_QUICKSAVE=0;
 
+// TODO what is the point of this function?
 void CorrectValue(unsigned long * cur,unsigned long * dest)
 {
-	if (*cur=*dest)
+	if ((*cur=*dest))
 		return;
 
 	if (*cur<*dest)
