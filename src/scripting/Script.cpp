@@ -612,7 +612,7 @@ long specialstrcmp( const std::string& text, const std::string& seek)
 
 //*************************************************************************************
 //*************************************************************************************
-long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _name, std::string& txtcontent,unsigned int txtcontentSize,float * fcontent,long * lcontent)
+long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _name, std::string& txtcontent, float * fcontent,long * lcontent)
 {
 	std::string name = _name;
 	MakeUpcase(name);
@@ -1900,12 +1900,11 @@ std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * ess
 
 	if (temp1[0] == '^')
 	{
-		const unsigned int tvSize = 64 ;
 		long lv;
 		float fv;
 		std::string tv;
 
-		switch (GetSystemVar(esss,io,temp1,tv,tvSize,&fv,&lv))//Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
+		switch (GetSystemVar(esss,io,temp1,tv,&fv,&lv))//Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
 		{
 			case TYPE_TEXT:
 				strcpy(var_text, tv.c_str());
@@ -1970,12 +1969,11 @@ float GetVarValueInterpretedAsFloat( std::string& temp1, EERIE_SCRIPT * esss, IN
 {
 	if (temp1[0] == '^')
 	{
-		const unsigned int tvSize = 64 ;
 		long lv;
 		float fv;
 		std::string tv; 
 
-		switch (GetSystemVar(esss,io,temp1,tv,tvSize,&fv,&lv)) //Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
+		switch (GetSystemVar(esss,io,temp1,tv,&fv,&lv)) //Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
 		{
 			case TYPE_TEXT:
 				return (float)atof(tv.c_str());
@@ -2583,12 +2581,11 @@ long GetNextWord_Interpreted( INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, s
 	long pos=GetNextWord(es,i,temp);
 	std::stringstream ss;
 	if	(temp[0]=='^') {
-		const unsigned int tvSize = 64 ;
 		long lv;
 		float fv;
 		std::string tv;
 
-		switch (GetSystemVar(es,io,temp,tv,tvSize,&fv,&lv)) //Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
+		switch (GetSystemVar(es,io,temp,tv,&fv,&lv)) //Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
 		{
 			case TYPE_TEXT:
 				temp = tv;

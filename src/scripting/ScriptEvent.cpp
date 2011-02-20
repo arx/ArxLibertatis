@@ -4529,7 +4529,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						{
 
 							long lv; float fv; std::string tv;	//Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
-							switch ( GetSystemVar( esss, io, word, tv,tvSize, &fv, &lv ) )
+							switch ( GetSystemVar( esss, io, word, tv, &fv, &lv ) )
 							{
 								case TYPE_TEXT:
 									typ1	=	TYPE_TEXT;
@@ -4602,7 +4602,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						{
 
 							long lv; float fv; std::string tv;
-							switch ( GetSystemVar( esss, io, temp3, tv,tvSize, &fv, &lv ) )
+							switch ( GetSystemVar( esss, io, temp3, tv, &fv, &lv ) )
 							{
 								case TYPE_TEXT:
 									typ2	=	TYPE_TEXT;
