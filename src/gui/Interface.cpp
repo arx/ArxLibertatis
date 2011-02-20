@@ -6091,7 +6091,7 @@ void DANAE::ManageKeyMouse()
 							{
 								if (inter.iobj[0]->invisibility>0.f)
 								{
-									for (long i=0;i<MAX_SPELLS;i++)
+									for (size_t i=0;i<MAX_SPELLS;i++)
 									{
 										if ((spells[i].exist) && (spells[i].type==SPELL_INVISIBILITY)) spells[i].tolive=0;
 									}
