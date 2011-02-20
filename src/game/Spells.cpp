@@ -4972,7 +4972,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			spells[i].bDuration = true;
 			spells[i].fManaCostPerSecond = 0.5f*spells[i].caster_level;
 					
-			pCSpellFx = new CCurse(GDevice);
+			pCSpellFx = new CCurse();
 			
 			if (pCSpellFx != NULL)
 			{

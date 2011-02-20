@@ -660,7 +660,7 @@ CCurse::~CCurse()
 		svoodoo = NULL;
 	}
 }
-CCurse::CCurse(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CCurse::CCurse()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;

@@ -215,7 +215,7 @@ class CCurse: public CSpellFx
 		float fRotPerMSec;
 
 	public:
-		CCurse(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CCurse();
 		~CCurse();
 		// accesseurs
 	public:
