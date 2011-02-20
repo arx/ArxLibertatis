@@ -516,14 +516,14 @@ long ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 		return -1;
 	}
 
-	if (ARX_CHANGELEVEL_Push_Globals(num) != 1)
+	if (ARX_CHANGELEVEL_Push_Globals() != 1)
 	{
 		LogError << "Error Saving Globals...";
 		ARX_TIME_UnPause();
 		return -1;
 	}
 
-	if (ARX_CHANGELEVEL_Push_Player(num) != 1)
+	if (ARX_CHANGELEVEL_Push_Player() != 1)
 	{
 		LogError << "Error Saving Player...";
 		ARX_TIME_UnPause();
@@ -693,8 +693,7 @@ retry:
 	return ret ? 1 : -1;
 }
 //--------------------------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Push_Globals(long num)
-{
+long ARX_CHANGELEVEL_Push_Globals() {
 	ARX_CHANGELEVEL_SAVE_GLOBALS acsg;
 	long pos = 0;
 
@@ -811,8 +810,8 @@ extern long cur_pom;
 extern long sp_wep;
 extern long sp_arm;
 //--------------------------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Push_Player(long num)
-{
+long ARX_CHANGELEVEL_Push_Player() {
+	
 	ARX_CHANGELEVEL_PLAYER * asp;
 
 	long allocsize = sizeof(ARX_CHANGELEVEL_PLAYER) + Keyring_Number * sizeof(KEYRING_SLOT) + 48000;
