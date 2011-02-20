@@ -567,9 +567,7 @@ void ARX_INTERFACE_HALO_Render(float _fR, float _fG, float _fB,
 	SETALPHABLEND(GDevice,false);
 }
 
-//-----------------------------------------------------------------------------
-void ARX_INTERFACE_HALO_Draw(INTERACTIVE_OBJ * io,LPDIRECT3DDEVICE7 m_pd3dDevice,TextureContainer * tc,TextureContainer * tc2,float POSX,float POSY, float _fRatioX = 1, float _fRatioY = 1)
-{
+void ARX_INTERFACE_HALO_Draw(INTERACTIVE_OBJ * io, TextureContainer * tc,TextureContainer * tc2,float POSX,float POSY, float _fRatioX = 1, float _fRatioY = 1) {
 	INTERFACE_HALO_NB++; 
 
 	if (INTERFACE_HALO_NB>INTERFACE_HALO_MAX_NB)
@@ -6291,7 +6289,7 @@ void ARX_INTERFACE_DrawSecondaryInventory(bool _bSteal)
 						
 						if (tc2!=NULL) 
 						{
-							ARX_INTERFACE_HALO_Draw(io, GDevice,tc,tc2,
+							ARX_INTERFACE_HALO_Draw(io,tc,tc2,
 								px,
 								py, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
 						}
@@ -8943,7 +8941,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 					if (tc2!=NULL)
 					{
-						ARX_INTERFACE_HALO_Draw(todraw,GDevice,tc,tc2,todraw->bbox1.x*Xratio,todraw->bbox1.y*Yratio, Xratio, Yratio);
+						ARX_INTERFACE_HALO_Draw(todraw,tc,tc2,todraw->bbox1.x*Xratio,todraw->bbox1.y*Yratio, Xratio, Yratio);
 					}
 
 
@@ -9008,7 +9006,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 					if (tc2!=NULL) 
 					{
-						ARX_INTERFACE_HALO_Draw(todraw,GDevice,tc,tc2,todraw->bbox1.x*Xratio,todraw->bbox1.y*Yratio, Xratio, Yratio);
+						ARX_INTERFACE_HALO_Draw(todraw,tc,tc2,todraw->bbox1.x*Xratio,todraw->bbox1.y*Yratio, Xratio, Yratio);
 					}
 					
 
@@ -10958,7 +10956,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 						
 						if (tc2)
 						{
-							ARX_INTERFACE_HALO_Draw(DRAGINTER,GDevice,tc,tc2,mx,my, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
+							ARX_INTERFACE_HALO_Draw(DRAGINTER,tc,tc2,mx,my, INTERFACE_RATIO(1), INTERFACE_RATIO(1));
 						}
 					}
 					else 
