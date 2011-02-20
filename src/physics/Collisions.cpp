@@ -1785,7 +1785,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 
 			DIRECT_PATH=false;
 			// Must Attempt To Slide along collisions
-			register EERIE_3D vecatt;
+			EERIE_3D vecatt;
 			EERIE_3D rpos;
 			EERIE_3D lpos;
 			long RFOUND=0;
