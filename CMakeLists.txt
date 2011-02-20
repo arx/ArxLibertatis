@@ -106,6 +106,10 @@ ELSE (MSVC)
 	# Linux specific libs
   set(ARX_LIBS IL)
 	
+	if(ARX_USE_UNITYBUILD)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fwhole-program")
+	endif(ARX_USE_UNITYBUILD)
+	
 ENDIF (MSVC)
 
 if(ARX_MINGW)
@@ -123,7 +127,7 @@ file(GLOB_RECURSE ALL_SOURCES ${SRC_DIR}/*.cpp)
 #enable unity build if requested
 if(ARX_USE_UNITYBUILD)
   enable_unity_build(arx ALL_SOURCES)
-ENDIF()
+endif()
 
 #build
 add_executable(arx ${ALL_SOURCES} ${ALL_INCLUDES})
