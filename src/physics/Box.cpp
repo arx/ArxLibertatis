@@ -62,6 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 #include "game/NPC.h"
 #include "physics/Collisions.h"
+#include "ai/Paths.h"
 
 using std::min;
 using std::max;
@@ -914,7 +915,6 @@ bool IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long 
 	return true;
 }
  
-extern bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source);
 extern long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source);
 
 //*************************************************************************************
@@ -946,7 +946,7 @@ long EERIE_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubb
 	{
 		EERIE_PHYSICS_BOX_ComputeForces(obj);
 
-		if (!ARX_EERIE_PHYSICS_BOX_Compute(obj, min(0.08f, timing), rubber, flags, source))
+		if (!ARX_EERIE_PHYSICS_BOX_Compute(obj, min(0.08f, timing), flags, source))
 			ret = 1;
 
 		timing -= 0.08f;

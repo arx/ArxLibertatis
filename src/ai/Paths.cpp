@@ -2207,7 +2207,7 @@ bool IsPointInField(EERIE_3D * pos)
 	return false;
 }
 
-bool IsObjectInField(EERIE_3DOBJ * obj) {
+static bool IsObjectInField(EERIE_3DOBJ * obj) {
 	
 	for (size_t i = 0; i < MAX_SPELLS; i++)
 	{
@@ -2263,7 +2263,7 @@ bool _IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, lon
 	return false;
 }
 
-bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long source, long * validd)
+static bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj)
 {
 	bool ret = true;
 	long px, pz;
@@ -2396,8 +2396,8 @@ bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long sour
 	return ret;
 }
 
-bool ARX_EERIE_PHYSICS_BOX_Compute_Simple(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source)
-{
+bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, long flags, long source) {
+	
 	PHYSVERT * pv;
 	long validd[32];
 	EERIE_3D oldpos[32];
@@ -2453,7 +2453,7 @@ bool ARX_EERIE_PHYSICS_BOX_Compute_Simple(EERIE_3DOBJ * obj, float framediff, fl
 		}
 	}
 
-	if ((!_IsFULLObjectVertexInValidPosition(obj, flags, source, validd))
+	if ((!_IsFULLObjectVertexInValidPosition(obj))
 	    ||	ARX_INTERACTIVE_CheckFULLCollision(obj, source)
 	    || colidd
 	    || (IsObjectInField(obj))
@@ -2528,12 +2528,6 @@ bool ARX_EERIE_PHYSICS_BOX_Compute_Simple(EERIE_3DOBJ * obj, float framediff, fl
 	return true;//ret;
 }
 
-bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source)
-{
-	
-	return ARX_EERIE_PHYSICS_BOX_Compute_Simple(obj, framediff, rubber, flags, source);
-}
-
 extern void EERIE_PHYSICS_BOX_ComputeForces(EERIE_3DOBJ * obj);
 
 long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source)
@@ -2574,7 +2568,7 @@ long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber
 
 			ComputeForces(obj->pbox->vert, obj->pbox->nb_physvert);
 
-			if (!ARX_EERIE_PHYSICS_BOX_Compute(obj, std::min(0.11f, timing * 10), rubber, flags, source))
+			if (!ARX_EERIE_PHYSICS_BOX_Compute(obj, std::min(0.11f, timing * 10), flags, source))
 				ret = 1;
 
 			timing -= t_threshold; 
