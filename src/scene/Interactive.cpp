@@ -524,7 +524,8 @@ EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * file, long fla
 	
 	// TODO the actual .teo files are not shipped with Arx, only the compressed?/preprocessed?/optimized? .ftl files, so if the ARX_FTL_Load call fails we can give up anyway
 
-	if (ret = GetExistingEerie(file))
+	ret = GetExistingEerie(file);
+	if (ret)
 	{
 		ret = Eerie_Copy(ret);
 
