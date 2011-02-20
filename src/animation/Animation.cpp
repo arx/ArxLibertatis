@@ -63,6 +63,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <cassert>
+#include <climits>
 using std::sprintf;
 
 #include "physics/Clothes.h"
@@ -1159,16 +1161,16 @@ void PopOneInterZMapp(TextureContainer *_pTex)
 		SMY_D3DVERTEX *pVertex;
 	
 		unsigned int uiCalc = pDynamicVertexBufferTransform->ussNbVertex + _pTex->TextureRefinement->vPolyInterZMapTANDL.size()*3;
-		ARX_CHECK_USHORT(uiCalc);
-		pDynamicVertexBufferTransform->ussNbVertex =ARX_CLEAN_WARN_CAST_USHORT(uiCalc);
+		assert(uiCalc <= USHRT_MAX);
+		pDynamicVertexBufferTransform->ussNbVertex = static_cast<unsigned short>(uiCalc);
 		
 		if(pDynamicVertexBufferTransform->ussNbVertex > pDynamicVertexBufferTransform->ussMaxVertex)
 		{
 			pVertex=(SMY_D3DVERTEX*)pDynamicVertexBufferTransform->Lock(DDLOCK_DISCARDCONTENTS);
 
 			uiCalc = _pTex->TextureRefinement->vPolyInterZMapTANDL.size()*3;
-			ARX_CHECK_USHORT(uiCalc);
-			pDynamicVertexBufferTransform->ussNbVertex = ARX_CLEAN_WARN_CAST_USHORT(uiCalc);
+			assert(uiCalc <= USHRT_MAX);
+			pDynamicVertexBufferTransform->ussNbVertex = static_cast<unsigned short>(uiCalc);
 			iOldNbVertex=0;
 
 			//Keep this to check in debug if buffer can eventually be overflooded
