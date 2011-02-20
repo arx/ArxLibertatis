@@ -52,6 +52,10 @@ extern long CHANGE_LEVEL_ICON;
 extern long FRAME_COUNT;
 extern float g_TimeStartCinemascope;
 
+#ifdef NEEDING_DEBUG
+long NEED_DEBUG = 0;
+#endif // NEEDING_DEBUG
+
 SCRIPT_EVENT AS_EVENT[] =
 {
 	std::string("ON NULL"),

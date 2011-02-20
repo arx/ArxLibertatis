@@ -5505,7 +5505,7 @@ INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events_Sent()
 
 	return NULL;
 }
-long NEED_DEBUG = 0;
+
 long BIG_DEBUG_POS = 0;
 
 void ManageCasseDArme(INTERACTIVE_OBJ * io)
