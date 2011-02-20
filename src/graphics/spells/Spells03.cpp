@@ -996,7 +996,7 @@ void CSpeed::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-void CSpeed::DrawRuban(LPDIRECT3DDEVICE7 device, int num, float size, int dec, float r, float g, float b, float r2, float g2, float b2)
+void CSpeed::DrawRuban(int num, float size, int dec, float r, float g, float b, float r2, float g2, float b2)
 {
 	int numsuiv;
 
@@ -1045,7 +1045,7 @@ float CSpeed::Render(LPDIRECT3DDEVICE7 device)
 	
 	for (int i = 0; i < nbrubandef; i++)
 	{
-		this->DrawRuban(device, trubandef[i].first,
+		this->DrawRuban(trubandef[i].first,
 		                trubandef[i].size,
 		                trubandef[i].dec,
 		                trubandef[i].r, trubandef[i].g, trubandef[i].b,
