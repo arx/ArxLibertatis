@@ -3743,6 +3743,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 		eState=GETTOUCH_TIME;
 		lOldColor=lColorHighlight;
 		return true;
+	default: break;
 	}
 
 	if (iID != BUTTON_MENUMAIN_RESUMEGAME)
