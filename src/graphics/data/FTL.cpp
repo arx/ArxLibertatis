@@ -202,6 +202,9 @@ extern long NOCHECKSUM;
 //***********************************************************************************************
 bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 {
+	(void)file;
+	(void)obj;
+	
 	LogError << "Broken ARX_FTL_Save";
     // Need an object to be saved !
     /*if (obj == NULL) return false;
