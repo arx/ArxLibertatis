@@ -6473,8 +6473,8 @@ bool CMenuButton::OnMouseClick(int _iMouseButton) {
 
 //-----------------------------------------------------------------------------
 
-void CMenuButton::Update(int _iDTime)
-{
+void CMenuButton::Update(int _iDTime) {
+	(void)_iDTime;
 }
 
 //-----------------------------------------------------------------------------
@@ -7627,8 +7627,8 @@ bool CDirectInput::IsVirtualKeyPressedNowUnPressed(int _iVirtualKey)
 
 //-----------------------------------------------------------------------------
 
-void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY,int _iColor)
-{
+void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY) {
+	
 	GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_POINT );
 	GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_POINT );
 	SETTEXTUREWRAPMODE(GDevice,D3DTADDRESS_CLAMP);
@@ -7766,7 +7766,7 @@ void CDirectInput::DrawCursor()
 	SETALPHABLEND(GDevice,false);
 
 	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
-	DrawOneCursor(iMouseAX,iMouseAY,-1);
+	DrawOneCursor(iMouseAX,iMouseAY);
 
 	danaeApp.EnableZBuffer();
 

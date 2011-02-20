@@ -790,7 +790,7 @@ class CDirectInput
 
 		int					iWheelSens;
 	private:
-		void DrawOneCursor(int, int, int);
+		void DrawOneCursor(int, int);
  
 	public:
 		CDirectInput();
