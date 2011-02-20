@@ -109,8 +109,6 @@ class CSpellFx
 //-----------------------------------------------------------------------------
 #define frand2() (1.0f - (2.0f * rnd()))
 
-//-----------------------------------------------------------------------------
-void Draw3DLineTex(LPDIRECT3DDEVICE7, EERIE_3D, EERIE_3D, float, int);
 void Draw3DLineTex2(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D s, EERIE_3D e, float fSize, int color, int color2);
 void Draw3DLineTex(LPDIRECT3DDEVICE7, EERIE_3D, EERIE_3D, int, float, float);
 
