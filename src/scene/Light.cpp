@@ -957,11 +957,8 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 	}
 }
 
-
-//*************************************************************************************
-//*************************************************************************************
-void _RecalcLightZone(float x, float y, float z, long siz)
-{
+void _RecalcLightZone(float x, float z, long siz) {
+	
 	long i, j, x0, x1, z0, z1;
 
 	i = x * ACTIVEBKG->Xmul;
