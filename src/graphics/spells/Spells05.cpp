@@ -1195,7 +1195,7 @@ float CMultiPoisonProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 }
 
 //-----------------------------------------------------------------------------
-CRepelUndead::CRepelUndead(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CRepelUndead::CRepelUndead()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;

@@ -292,7 +292,7 @@ class CRepelUndead: public CSpellFx
 		float fSize;
 
 	public:
-		CRepelUndead(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CRepelUndead();
 		~CRepelUndead();
 
 	public:

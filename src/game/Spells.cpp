@@ -5184,7 +5184,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 
 			if (duration>-1) spells[i].tolive=duration;
 
-			CSpellFx *pCSpellFx =  new CRepelUndead(GDevice);
+			CSpellFx *pCSpellFx =  new CRepelUndead();
 			
 			if (pCSpellFx != NULL)
 			{
