@@ -518,7 +518,7 @@ int strcmp( const std::string& str1, const std::string& str2 );
 //-----------------------------------------------------------------------------
 
 // TODO why is this in ARX_Script?
-long MakeLocalised( const std::string& text, std::string& output, long lastspeechflag = 0);
+long MakeLocalised( const std::string& text, std::string& output);
 
 //-----------------------------------------------------------------------------
 long specialstrcmp( const std::string& text, const std::string& seek);

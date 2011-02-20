@@ -3028,8 +3028,9 @@ void MakeStandard( std::string& str)
 //*************************************************************************************
 //*************************************************************************************
 
-long MakeLocalised( const std::string& text, std::string& output, long lastspeechflag)
-{
+// TODO why is this in Script?
+long MakeLocalised( const std::string& text, std::string& output) {
+	
 	if ( text.empty() )
 	{
 		output = "ERROR";
