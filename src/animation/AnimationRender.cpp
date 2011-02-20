@@ -1139,8 +1139,7 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 	return true;
 }
 
-void Cedric_PrepareHalo(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, EERIE_3D * pos, EERIE_3D & ftr)
-{
+void Cedric_PrepareHalo(LEERIE_3DOBJ * eobj, EERIE_C_DATA * obj) {
 	EERIE_3D cam_vector, t_vector;
 	cam_vector.x = -EEsin(radians(ACTIVECAM->angle.b)) * EEcos(radians(ACTIVECAM->angle.a));
 	cam_vector.y = EEsin(radians(ACTIVECAM->angle.a));
@@ -1719,7 +1718,7 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 			if ((use_io) && (use_io->halo.flags & HALO_DYNLIGHT))     
 				HALO_IO_DynLight_Update(io);
 
-			Cedric_PrepareHalo(pd3dDevice, eobj, obj, use_io, pos, ftr);
+			Cedric_PrepareHalo(eobj, obj);
 			need_halo	= 1;
 			MAX_ZEDE	= 0.f;
 
@@ -2458,7 +2457,7 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 
 		if ((io) && (io->halo.flags & HALO_ACTIVE) && (ddist > 0.01f))
 		{
-			Cedric_PrepareHalo(pd3dDevice, eobj, obj, io, pos, ftr);
+			Cedric_PrepareHalo(eobj, obj);
 			need_halo = 1;
 		}
 	}
