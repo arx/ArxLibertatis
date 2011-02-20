@@ -249,7 +249,7 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 		ep2->tv[3].color=ep2->v[3].color=EERIECOLOR_WHITE;
 		ep2->tv[3].rhw=ep2->v[3].rhw=1.f;
 
-	DeclareEGInfo(ep->v[3].sx,ep->v[3].sy,ep->v[3].sz);
+	DeclareEGInfo(ep->v[3].sx, ep->v[3].sz);
 
 	ep2->center.x=(ep2->v[0].sx+ep2->v[1].sx+ep2->v[2].sx+ep2->v[3].sx)*( 1.0f / 4 );
 	ep2->center.y=(ep2->v[0].sy+ep2->v[1].sy+ep2->v[2].sy+ep2->v[3].sy)*( 1.0f / 4 );

@@ -929,7 +929,7 @@ __inline void AddToBBox3D(INTERACTIVE_OBJ * io,EERIE_3D * pos)
 
 void ApplyLight(EERIEPOLY *ep);
 long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest);
-void DeclareEGInfo(float x,float y,float z);
+void DeclareEGInfo(float x, float z);
 bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj);
 void ApplyWaterFXToVertex(EERIE_3D * odtv,D3DTLVERTEX * dtv,float power);
 int BackFaceCull2D(D3DTLVERTEX * tv);

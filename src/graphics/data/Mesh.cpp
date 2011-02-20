@@ -2592,7 +2592,7 @@ void PrepareBackgroundNRMLs()
 //*************************************************************************************
 //*************************************************************************************
 
-void DeclareEGInfo(float x, float y, float z)
+void DeclareEGInfo(float x, float z)
 {
 	long posx = x * ACTIVEBKG->Xmul;
 
@@ -3074,10 +3074,10 @@ int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj)
 
 	eg = &ACTIVEBKG->Backg[posx+posz*ACTIVEBKG->Xsize];
 
-	DeclareEGInfo(cx * ( 1.0f / 3 ), cy * ( 1.0f / 3 ), cz * ( 1.0f / 3 ));
-	DeclareEGInfo(ep->v[0].sx, ep->v[0].sy, ep->v[0].sz);
-	DeclareEGInfo(ep->v[1].sx, ep->v[1].sy, ep->v[1].sz);
-	DeclareEGInfo(ep->v[2].sx, ep->v[2].sy, ep->v[2].sz);
+	DeclareEGInfo(cx * ( 1.0f / 3 ), cz * ( 1.0f / 3 ));
+	DeclareEGInfo(ep->v[0].sx, ep->v[0].sz);
+	DeclareEGInfo(ep->v[1].sx, ep->v[1].sz);
+	DeclareEGInfo(ep->v[2].sx, ep->v[2].sz);
 
 	cx *= ( 1.0f / 3 );
 	cy *= ( 1.0f / 3 );
@@ -3450,7 +3450,7 @@ void DrawEERIEObjEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	float    Xcos, Ycos, Zcos, Xsin, Ysin, Zsin;
 	register D3DTLVERTEX v;
 	register D3DTLVERTEX rv;
-	register D3DTLVERTEX vert_list[4];
+	D3DTLVERTEX vert_list[4];
 
 
 	Zsin = radians(angle->a);
@@ -4115,13 +4115,13 @@ bool FastSceneLoad(const char * partial_path)
 				}
 
 				ep2->v[0].rhw = dist;
-				DeclareEGInfo(ep2->center.x, ep2->center.y, ep2->center.z);
-				DeclareEGInfo(ep2->v[0].sx, ep2->v[0].sy, ep2->v[0].sz);
-				DeclareEGInfo(ep2->v[1].sx, ep2->v[1].sy, ep2->v[1].sz);
-				DeclareEGInfo(ep2->v[2].sx, ep2->v[2].sy, ep2->v[2].sz);
+				DeclareEGInfo(ep2->center.x, ep2->center.z);
+				DeclareEGInfo(ep2->v[0].sx, ep2->v[0].sz);
+				DeclareEGInfo(ep2->v[1].sx, ep2->v[1].sz);
+				DeclareEGInfo(ep2->v[2].sx, ep2->v[2].sz);
 
 				if (ep->type & POLY_QUAD)
-					DeclareEGInfo(ep2->v[3].sx, ep2->v[3].sy, ep2->v[3].sz);
+					DeclareEGInfo(ep2->v[3].sx, ep2->v[3].sz);
 			}
 
 			if (fsi->nbianchors <= 0)
