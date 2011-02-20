@@ -325,6 +325,9 @@ float fMySize = 2;
 //-----------------------------------------------------------------------------
 void CLightning::Create(EERIE_3D aeFrom, EERIE_3D aeTo, float beta)
 {
+	
+	(void)beta; // TODO removing this parameter makes the signature clash with method from superclass
+	
 	float fAlpha = 1.f;
 	float fBeta = 0.f;
 	
