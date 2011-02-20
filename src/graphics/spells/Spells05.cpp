@@ -1004,7 +1004,7 @@ float CPoisonProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-CMultiPoisonProjectile::CMultiPoisonProjectile(LPDIRECT3DDEVICE7 m_pd3dDevice, long nbmissiles)
+CMultiPoisonProjectile::CMultiPoisonProjectile(long nbmissiles)
 {
 	SetDuration(2000);
 	uiNumber = min(5L, nbmissiles);

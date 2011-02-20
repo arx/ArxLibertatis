@@ -263,7 +263,7 @@ class CMultiPoisonProjectile: public CSpellFx
 		CSpellFx ** pTab;
 
 	public:
-		CMultiPoisonProjectile(LPDIRECT3DDEVICE7 m_pd3dDevice, long nb);
+		CMultiPoisonProjectile(long nb);
 		~CMultiPoisonProjectile();
 
 		// surcharge
