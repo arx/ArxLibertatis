@@ -2817,7 +2817,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 	
 
 	float					Xcos = 0, Ycos = 0, Zcos = 0, Xsin = 0, Ysin = 0, Zsin = 0;
-	register D3DTLVERTEX	vert_list[4]; 	
+	D3DTLVERTEX vert_list[4];
 	long k;
 	
 	long					lfr, lfg, lfb;		
