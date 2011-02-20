@@ -6684,7 +6684,7 @@ static float _AvgFrameDiff = 150.f;
 
 		ARX_SPELLS_Precast_Check();
 		ARX_SPELLS_ManageMagic();
-		ARX_SPELLS_UpdateSymbolDraw(m_pd3dDevice);
+		ARX_SPELLS_UpdateSymbolDraw();
 
 		ManageTorch();
 

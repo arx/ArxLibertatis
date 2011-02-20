@@ -1229,8 +1229,7 @@ void ReCenterSequence(char *_pcSequence,int &_iMinX,int &_iMinY,int &_iMaxX,int 
 }
 
 //-----------------------------------------------------------------------------
-void ARX_SPELLS_UpdateSymbolDraw(LPDIRECT3DDEVICE7 pd3dDevice)
-{
+void ARX_SPELLS_UpdateSymbolDraw() {
 	unsigned long curtime = ARXTimeUL();
 
 	//1

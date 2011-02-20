@@ -302,7 +302,7 @@ void ClearParticles();
 
 void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ * io, const char * name, const float & duration);
 
-void ARX_SPELLS_UpdateSymbolDraw(LPDIRECT3DDEVICE7 pd3dDevice);
+void ARX_SPELLS_UpdateSymbolDraw();
 void ARX_SPELLS_ClearAllSymbolDraw();
 
 void ARX_SPELLS_Init(LPDIRECT3DDEVICE7 m_pd3dDevice);
