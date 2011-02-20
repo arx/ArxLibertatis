@@ -1616,7 +1616,7 @@ INTERACTIVE_OBJ * FlyingOverObject(EERIE_S2D * pos,long flag)
 			return NULL;
 		}
 
-		if ((io=InterClick(pos,flag))!=NULL)		
+		if ((io=InterClick(pos))!=NULL)		
 		{
 			danaeApp.Unlock();
 			return io;	
@@ -1635,7 +1635,7 @@ INTERACTIVE_OBJ * FlyingOverObject(EERIE_S2D * pos,long flag)
 		if (InInventoryPos(pos)) 
 			return NULL;
 
-		if ((io=InterClick(pos,flag))!=NULL)		
+		if ((io=InterClick(pos))!=NULL)		
 			return io;	
 
 		return NULL;
