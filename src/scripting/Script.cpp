@@ -2992,7 +2992,7 @@ void CheckHit(INTERACTIVE_OBJ * io, float ratioaim)
 
 									if (mindist <= dist_limit)
 									{
-										ARX_EQUIPMENT_ComputeDamages(io, NULL, ioo, ratioaim);
+										ARX_EQUIPMENT_ComputeDamages(io, ioo, ratioaim);
 									}
 
 								}

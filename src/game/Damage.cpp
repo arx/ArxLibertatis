@@ -1543,7 +1543,7 @@ bool ARX_DAMAGES_TryToDoDamage(EERIE_3D * pos, float dmg, float radius, long sou
 								if (io->ioflags & IO_NPC)
 								{
 									if (ValidIONum(source))
-										ARX_EQUIPMENT_ComputeDamages(inter.iobj[source], NULL, io, 1.f);
+										ARX_EQUIPMENT_ComputeDamages(inter.iobj[source], io, 1.f);
 
 									ret = true;
 								}

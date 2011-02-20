@@ -655,7 +655,7 @@ void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon()
 }
 //***********************************************************************************************
 //***********************************************************************************************
-float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * io_weapon, INTERACTIVE_OBJ * io_target, float ratioaim, EERIE_3D * position)
+float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * io_target, float ratioaim, EERIE_3D * position)
 {
 	EVENT_SENDER = io_source;
 	SendIOScriptEvent(io_target, SM_AGGRESSION);
@@ -1013,12 +1013,12 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 						if (hitpoint >= 0)
 						{
 							Vector_Copy(&posi, &target->obj->vertexlist3[hitpoint].v);
-							dmgs = ARX_EQUIPMENT_ComputeDamages(io_source, io_weapon, target, ratioaim, &posi);
+							dmgs = ARX_EQUIPMENT_ComputeDamages(io_source, target, ratioaim, &posi);
 
 						}
 						else
 						{
-							dmgs = ARX_EQUIPMENT_ComputeDamages(io_source, io_weapon, target, ratioaim);
+							dmgs = ARX_EQUIPMENT_ComputeDamages(io_source, target, ratioaim);
 
 						}
 
