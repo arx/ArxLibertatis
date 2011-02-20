@@ -3064,7 +3064,7 @@ long ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi)
 }
 extern void GetIOCyl(INTERACTIVE_OBJ * io, EERIE_CYLINDER * cyl);
 //-----------------------------------------------------------------------------
-long ARX_CHANGELEVEL_PopAllIO_FINISH(ARX_CHANGELEVEL_INDEX * asi, long reloadflag)
+long ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag)
 {
 	unsigned char * treated = (unsigned char *) malloc(sizeof(unsigned char) * MAX_IO_SAVELOAD);
 
@@ -3680,7 +3680,7 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 
 	LogDebug << "Before ARX_CHANGELEVEL_PopAllIO_FINISH";
 	// Restoring all Missing Objects required by other objects...
-	ARX_CHANGELEVEL_PopAllIO_FINISH(&asi, reloadflag);
+	ARX_CHANGELEVEL_PopAllIO_FINISH(reloadflag);
 	LogDebug << "After  ARX_CHANGELEVEL_PopAllIO_FINISH";
 	PROGRESS_BAR_COUNT += 15.f;
 	LoadLevelScreen();
