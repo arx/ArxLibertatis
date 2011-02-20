@@ -723,7 +723,7 @@ void Quat_Divide(EERIE_QUAT * dest, const EERIE_QUAT * q1, const EERIE_QUAT * q2
 //*************************************************************************************
 void TransformInverseVertexQuat(const EERIE_QUAT * quat, const EERIE_3D * vertexin, EERIE_3D * vertexout)
 {
-	register EERIE_QUAT rev_quat;
+	EERIE_QUAT rev_quat;
 
 	Quat_Copy(&rev_quat, (EERIE_QUAT *) quat);
 	Quat_Reverse(&rev_quat);
