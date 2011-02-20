@@ -58,10 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CSPELLFX_LVL05_H
 #define ARX_CSPELLFX_LVL05_H
 
-#include "graphics/particle/ParticleManager.h"
-
-class CParticleSystem;
-class CSpellFx;
+#include "graphics/effects/SpellEffects.h"
+#include "graphics/particle/ParticleSystem.h"
 
 // Cyril = Global Resources
 extern EERIE_3DOBJ * ssol;
