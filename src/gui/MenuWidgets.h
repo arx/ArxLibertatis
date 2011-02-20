@@ -534,7 +534,7 @@ class CMenuButton: public CMenuElement
 		float               fSize;
 
 	public:
-		CMenuButton(int, HFONT, MENUSTATE, int, int, const std::string&, float _fSize = 1.f, TextureContainer * _pTex = NULL, TextureContainer * _pTexOver = NULL, int _iColor = -1, int _iTailleX = 0, int _iTailleY = 0);
+		CMenuButton(int, HFONT, MENUSTATE, int, int, const std::string&, float _fSize = 1.f, TextureContainer * _pTex = NULL, TextureContainer * _pTexOver = NULL, int _iColor = -1);
 		~CMenuButton();
 
 	public:

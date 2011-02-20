@@ -6311,7 +6311,7 @@ long CMenuPanel::IsMouseOver(int _iX, int _iY)
 
 //-----------------------------------------------------------------------------
 
-CMenuButton::CMenuButton(int _iID, HFONT _pHFont,MENUSTATE _eMenuState,int _iPosX,int _iPosY, const std::string& _pText,float _fSize,TextureContainer *_pTex,TextureContainer *_pTexOver,int _iColor,int _iTailleX,int _iTailleY)
+CMenuButton::CMenuButton(int _iID, HFONT _pHFont,MENUSTATE _eMenuState,int _iPosX,int _iPosY, const std::string& _pText,float _fSize,TextureContainer *_pTex,TextureContainer *_pTexOver,int _iColor)
 	: CMenuElement(_eMenuState)
 {
 	iID = _iID;
@@ -6578,9 +6578,9 @@ CMenuSliderText::CMenuSliderText(int _iID, int _iPosX, int _iPosY)
 {
 	iID = _iID;
 	TextureContainer *pTex = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_button_left.bmp");
-	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTex, pTex, -1, pTex?pTex->m_dwWidth:0, pTex->m_dwHeight);
+	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTex, pTex, -1);
 	pTex = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_button_right.bmp");
-	pRightButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTex, pTex, -1, pTex?pTex->m_dwWidth:0, pTex->m_dwHeight);
+	pRightButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTex, pTex, -1);
 
 	vText.clear();
 
@@ -6893,8 +6893,8 @@ CMenuSlider::CMenuSlider(int _iID, int _iPosX, int _iPosY)
 
 	TextureContainer *pTexL = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_button_left.bmp");
 	TextureContainer *pTexR = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_button_right.bmp");
-	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTexL, pTexR, -1, pTexL->m_dwWidth, pTexL->m_dwHeight);
-	pRightButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTexR, pTexL, -1, pTexR->m_dwWidth, pTexR->m_dwHeight);
+	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTexL, pTexR, -1);
+	pRightButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTexR, pTexL, -1);
 	pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_on.bmp");
 	pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_off.bmp");
 
