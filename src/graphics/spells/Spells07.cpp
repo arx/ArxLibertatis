@@ -1188,8 +1188,8 @@ float CFireField::Render(LPDIRECT3DDEVICE7 _pD3DDevice)
 	SETZWRITE(_pD3DDevice, false);
 	SETALPHABLEND(_pD3DDevice, true);
 
-	pPSStream.Render(_pD3DDevice, D3DBLEND_ONE, D3DBLEND_ONE);
-	pPSStream1.Render(_pD3DDevice, D3DBLEND_ONE, D3DBLEND_ONE);
+	pPSStream.Render(_pD3DDevice);
+	pPSStream1.Render(_pD3DDevice);
 
 	_pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	_pD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);

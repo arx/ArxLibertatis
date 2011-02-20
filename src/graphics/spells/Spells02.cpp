@@ -271,7 +271,7 @@ float CHeal::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		return 0.f;
 	}
 
-	pPS->Render(m_pd3dDevice, D3DBLEND_ONE, D3DBLEND_ONE);
+	pPS->Render(m_pd3dDevice);
 
 	return 1;
 }

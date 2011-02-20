@@ -877,7 +877,7 @@ float CIncinerate::Render(LPDIRECT3DDEVICE7 _pD3DDevice)
 	SETZWRITE(_pD3DDevice, false);
 	SETALPHABLEND(_pD3DDevice, true);
 
-	pPSStream.Render(_pD3DDevice, D3DBLEND_ONE, D3DBLEND_ONE);
+	pPSStream.Render(_pD3DDevice);
 
 	return 1;
 }

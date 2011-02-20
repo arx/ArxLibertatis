@@ -127,7 +127,7 @@ class CParticleSystem
 
 
 	public:
-		void	Render(LPDIRECT3DDEVICE7 _pD3DDevice, int _iSRCBLEND = D3DBLEND_SRCALPHA, int _iDESTBLEND = D3DBLEND_ONE/*flag post prod/genre filtre*/);
+		void	Render(LPDIRECT3DDEVICE7 _pD3DDevice);
 		bool	IsAlive();
 		void	Update(long);
 		void	RecomputeDirection();

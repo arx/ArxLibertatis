@@ -555,8 +555,8 @@ void CParticleSystem::Update(long _lTime)
 }
 
 //-----------------------------------------------------------------------------
-void CParticleSystem::Render(LPDIRECT3DDEVICE7 _lpD3DDevice, int _iSRCBLEND, int _iDESTBLEND)
-{
+void CParticleSystem::Render(LPDIRECT3DDEVICE7 _lpD3DDevice) {
+	
 	SETCULL(_lpD3DDevice, D3DCULL_NONE);
 	SETZWRITE(_lpD3DDevice, false);
 

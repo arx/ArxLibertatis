@@ -453,9 +453,9 @@ float CFireBall::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	SETZWRITE(m_pd3dDevice, false);
 	SETALPHABLEND(m_pd3dDevice, true);
 
-	pPSFire.Render(m_pd3dDevice, D3DBLEND_ONE, D3DBLEND_ONE);
-	pPSFire2.Render(m_pd3dDevice, D3DBLEND_ONE, D3DBLEND_ONE);
-	pPSSmoke.Render(m_pd3dDevice, D3DBLEND_ONE, D3DBLEND_ONE);
+	pPSFire.Render(m_pd3dDevice);
+	pPSFire2.Render(m_pd3dDevice);
+	pPSSmoke.Render(m_pd3dDevice);
 
 	return 1 - 0.5f * rnd();
 }
@@ -1191,7 +1191,7 @@ if (ulCurrentTime >= ulDuration)
 //---------------------------------------------------------------------
 float CCreateFood::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 {
-	pPS->Render(m_pd3dDevice, D3DBLEND_ONE, D3DBLEND_ONE);
+	pPS->Render(m_pd3dDevice);
 
 	return 1;
 }
