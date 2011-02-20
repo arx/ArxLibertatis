@@ -125,7 +125,7 @@ bool IsIn(const std::string& strin, const std::string& str)
 void File_Standardize(const std::string& from, std::string& to)
 {
 	long pos = 0;
-	long pos2 = 0;
+	//long pos2 = 0;
 	long size = from.length();
 	std::string temp = from; /*HermesBufferWork;	
 
