@@ -183,7 +183,7 @@ long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, const std::string& _name, long duratio
 //-----------------------------------------------------------------------------
 bool CheckLastSpeech(int _iI)
 {
-	for (long i = _iI + 1; i < MAX_SPEECH; i++)
+	for (size_t i = _iI + 1; i < MAX_SPEECH; i++)
 	{
 		if ((speech[i].timecreation != 0) &&
 				(!speech[i].lpszUText.empty()))
