@@ -6451,8 +6451,10 @@ void CMenuButton::AddText( const std::string& _pText)
 
 //-----------------------------------------------------------------------------
 
-bool CMenuButton::OnMouseClick(int _iMouseButton)
-{
+bool CMenuButton::OnMouseClick(int _iMouseButton) {
+	
+	(void)_iMouseButton;
+	
 	iPos++;
 
 	ARX_CHECK_NOT_NEG( iPos );
