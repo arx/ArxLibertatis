@@ -311,7 +311,7 @@ class CRiseDead: public CSpellFx
 		void AddStone(EERIE_3D * pos);
 		void DrawStone(LPDIRECT3DDEVICE7 device);
 	public:
-		CRiseDead(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CRiseDead();
 		~CRiseDead();
 
 	private:

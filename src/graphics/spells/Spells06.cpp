@@ -565,7 +565,8 @@ CRiseDead::~CRiseDead()
 		stone1 = NULL;
 	}
 }
-CRiseDead::CRiseDead(LPDIRECT3DDEVICE7 m_pd3dDevice)
+
+CRiseDead::CRiseDead()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;
