@@ -1445,8 +1445,8 @@ void ARX_BOOMS_Add(EERIE_3D * poss,long type)
 }
 
 //-----------------------------------------------------------------------------
-void Add3DBoom(EERIE_3D * position, EERIE_3DOBJ *pObj3DSphere)
-{
+void Add3DBoom(EERIE_3D * position) {
+	
 	float dist=Distance3D(player.pos.x,player.pos.y-160.f,player.pos.z,position->x,position->y,position->z);
 	EERIE_3D poss;
 	Vector_Copy(&poss,position);

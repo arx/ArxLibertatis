@@ -239,7 +239,7 @@ void TreatBackgroundActions();
 void TreatBackgroundDynlights();
 void MakeBookFX(float posx, float posy, float posz);
 void UpdateObjFx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CAMERA * cam) ;
-void Add3DBoom(EERIE_3D * position, EERIE_3DOBJ * obj = NULL);
+void Add3DBoom(EERIE_3D * position);
 void AddRandomSmoke(INTERACTIVE_OBJ * io, long amount = 1);
 void AddFlare(EERIE_S2D * pos, float sm, short typ, INTERACTIVE_OBJ * io = NULL);
 void AddFlare2(EERIE_S2D * pos, float sm, short typ, INTERACTIVE_OBJ * io);
