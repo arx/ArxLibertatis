@@ -955,9 +955,9 @@ void CColdProtection::Update(unsigned long _ulTime)
 	}
 }
 
-//-----------------------------------------------------------------------------
-float CColdProtection::Render(LPDIRECT3DDEVICE7 _pD3DDevice)
-{
+float CColdProtection::Render(LPDIRECT3DDEVICE7 _pD3DDevice) {
+	
+	(void)_pD3DDevice;
+	
 	return 0;
 }
-
