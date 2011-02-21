@@ -33,10 +33,10 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
 endfunction(enable_unity_build) 
 ##############################################################################
 
-option(ARX_BUILD_TESTS ON)
-option(ARX_BUILD_TOOLS ON)
-option(ARX_MINGW OFF)
-option(ARX_USE_UNITYBUILD OFF)
+option(ARX_BUILD_TESTS "Build tests" ON)
+option(ARX_BUILD_TOOLS "Build tools" ON)
+option(ARX_MINGW "Build on MinGW" OFF)
+option(ARX_USE_UNITYBUILD "Unity build" OFF)
 option(ARX_DEBUG_EXTRA "Expensive debug options" OFF)
 
 
