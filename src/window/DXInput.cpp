@@ -286,17 +286,17 @@ BOOL CALLBACK DIEnumDeviceObjectsCallback(LPCDIDEVICEOBJECTINSTANCE lpddoi,LPVOI
 INPUT_INFO			*info;
 
 	info=(INPUT_INFO *)pvRef;
-	if(CompareGUID((GUID*)&lpddoi->guidType,(GUID*)&GUID_XAxis)) info->info|=DXI_XAxis;
-	if(CompareGUID((GUID*)&lpddoi->guidType,(GUID*)&GUID_YAxis)) info->info|=DXI_YAxis;
-	if(CompareGUID((GUID*)&lpddoi->guidType,(GUID*)&GUID_ZAxis)) info->info|=DXI_ZAxis;
-	if(CompareGUID((GUID*)&lpddoi->guidType,(GUID*)&GUID_RxAxis)) info->info|=DXI_RxAxis;
-	if(CompareGUID((GUID*)&lpddoi->guidType,(GUID*)&GUID_RyAxis)) info->info|=DXI_RyAxis;
-	if(CompareGUID((GUID*)&lpddoi->guidType,(GUID*)&GUID_RzAxis)) info->info|=DXI_RzAxis;
-	if(CompareGUID((GUID*)&lpddoi->guidType,(GUID*)&GUID_Slider)) info->info|=DXI_Slider;
-	if(CompareGUID((GUID*)&lpddoi->guidType,(GUID*)&GUID_Button)) info->info|=DXI_Button;
-	if(CompareGUID((GUID*)&lpddoi->guidType,(GUID*)&GUID_Key)) info->info|=DXI_Key;
-	if(CompareGUID((GUID*)&lpddoi->guidType,(GUID*)&GUID_POV)) info->info|=DXI_POV;
-	if(CompareGUID((GUID*)&lpddoi->guidType,(GUID*)&GUID_Unknown)) info->info|=DXI_Unknown;
+	if(CompareGUID(&lpddoi->guidType,&GUID_XAxis)) info->info|=DXI_XAxis;
+	if(CompareGUID(&lpddoi->guidType,&GUID_YAxis)) info->info|=DXI_YAxis;
+	if(CompareGUID(&lpddoi->guidType,&GUID_ZAxis)) info->info|=DXI_ZAxis;
+	if(CompareGUID(&lpddoi->guidType,&GUID_RxAxis)) info->info|=DXI_RxAxis;
+	if(CompareGUID(&lpddoi->guidType,&GUID_RyAxis)) info->info|=DXI_RyAxis;
+	if(CompareGUID(&lpddoi->guidType,&GUID_RzAxis)) info->info|=DXI_RzAxis;
+	if(CompareGUID(&lpddoi->guidType,&GUID_Slider)) info->info|=DXI_Slider;
+	if(CompareGUID(&lpddoi->guidType,&GUID_Button)) info->info|=DXI_Button;
+	if(CompareGUID(&lpddoi->guidType,&GUID_Key)) info->info|=DXI_Key;
+	if(CompareGUID(&lpddoi->guidType,&GUID_POV)) info->info|=DXI_POV;
+	if(CompareGUID(&lpddoi->guidType,&GUID_Unknown)) info->info|=DXI_Unknown;
 
 	return DIENUM_CONTINUE;
 }
