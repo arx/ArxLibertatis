@@ -54,7 +54,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <stdio.h>
+
+#include "io/Screenshot.h"
+
+#include <cstdio>
 
 // TODO Remove some headers
 /*#include <fstream>
@@ -63,11 +66,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 #include <string>
 
-#include "io/Screenshot.h"
-
 #include "core/Core.h"
-#include "io/Screenshot.h"
-
 #include "io/Filesystem.h"
 
 
@@ -129,6 +128,8 @@ long InitMemorySnaps()
 	MAXSNAPS = number;
 	return number;
 }
+
+// TODO replace with DevIL code
 void FlushMemorySnaps(long flag)
 {
 	if (flag == 0)
@@ -197,8 +198,7 @@ void FlushMemorySnaps(long flag)
 
 	for (long i = 0; i < CURRENTSNAPNUM; i++)
 	{
-		FILE * file;
-		file = fopen(snaps[i].name, "wb");
+		FILE * file = fopen(snaps[i].name, "wb");
 
 		if (NULL == file)
 		{
@@ -206,11 +206,11 @@ void FlushMemorySnaps(long flag)
 		}
 
  
-		fwrite(&tga, sizeof(TargaHeader), 1, file);
+		(void)fwrite(&tga, sizeof(TargaHeader), 1, file);
 		long n;
 		unsigned short col;
 		unsigned char * v = (unsigned char *)snaps[i].buffer;
-		fwrite(&tga, 1, 20, file);
+		(void)fwrite(&tga, 1, 20, file);
 		DWORD dwOffset;
 		DWORD x;
 
@@ -233,7 +233,7 @@ void FlushMemorySnaps(long flag)
 				pos += 2;
 			}
 
-			fwrite(buff, pos, 1, file);
+			(void)fwrite(buff, pos, 1, file);
 		}
 
 		fclose(file);
@@ -435,6 +435,7 @@ bool SnapShot::GetSnapShot()
 
 	ulNum++;
 
+	// TODO replace with DevIL code
 	BITMAPFILEHEADER bfhBitmapFileHeader;
 	bfhBitmapFileHeader.bfType = ('M' << 8) | ('B');
 	bfhBitmapFileHeader.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + ((ddsd2.dwWidth * ddsd2.dwHeight) << 2);
