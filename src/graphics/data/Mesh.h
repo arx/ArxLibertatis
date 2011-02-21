@@ -806,8 +806,7 @@ int EERIELaunchRay3(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY
 float GetGroundY(EERIE_3D * pos);
 void EE_IRTP(D3DTLVERTEX *in,D3DTLVERTEX *out);
 void EE_RTT(D3DTLVERTEX *in,D3DTLVERTEX *out);
-//todo: is this needed?
-//void _EERIERTPPoly(EERIEPOLY *ep);
+
 void extEE_RTP(D3DTLVERTEX *in,D3DTLVERTEX *out);
 void MakeColorz(INTERACTIVE_OBJ * io);
 
