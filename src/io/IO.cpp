@@ -626,11 +626,11 @@ bool HERMES_CreateFileCheck(const char * name, char * scheck, size_t size, const
 	}
 	
 		// from http://acmlm.kafuka.org/board/thread.php?id=3930
-	static void makepath(char *path, char *drive, char *dir, char *fName, const char *ext)
+	static void makepath(char *path, const char *drive, const char *dir, const char *fName, const char *ext)
 	{
 		char separator = '\\';
 		const char * lastChar = NULL;
-		char *pos = NULL;
+		const char *pos = NULL;
 
 		unsigned int i = 0,
 						unixStyle = 0,
@@ -650,7 +650,7 @@ bool HERMES_CreateFileCheck(const char * name, char * scheck, size_t size, const
 		}
 
 		sepCount = 0;
-		pos = (char*) drive;
+		pos = drive;
 		lastChar = GetLastChar(drive);
 
 		if(lastChar == pos)
@@ -677,7 +677,7 @@ directory:
 	if(dir)
 	{
 		sepCount = 0;
-		pos = (char*) dir;
+		pos = dir;
 		lastChar = GetLastChar(dir);
 	
 		if(pos == lastChar)
@@ -710,7 +710,7 @@ fileName:
 	
 	if(fName)
 	{
-		pos = (char*) fName;
+		pos = fName;
 		lastChar = GetLastChar(fName);
 		
 		if(lastChar == pos)
@@ -733,7 +733,7 @@ extension:
 	if(ext)
 	{
 		sepCount = 0;
-		pos = (char*) ext;
+		pos = ext;
 		lastChar = GetLastChar(ext);
 
 		if(lastChar == pos)
