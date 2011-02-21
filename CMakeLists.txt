@@ -64,7 +64,7 @@ if(MSVC)
 	set(SFML_LIBS sfml-system-s)	
 	
 	# Windows specific libs
-  set(ARX_LIBS DevIL)
+  set(DevIL_LIBS DevIL)
 	
 	# Source groups
 	set(SOURCE_GROUPS
@@ -100,7 +100,7 @@ else(MSVC)
 	
 	if(ARX_DEBUG_EXTRA)
 		add_definitions(-D_GLIBCXX_DEBUG) # Runtime checks for STL containers.
-	endif
+	endif()
 	
 	#use posix threads
 	add_definitions(-DHAVE_PTHREADS)
@@ -110,7 +110,7 @@ else(MSVC)
 	set(SFML_LIBS sfml-system)
 	
 	# Linux specific libs
-  set(ARX_LIBS IL)
+  set(DevIL_LIBS IL)
 	
 	if(ARX_USE_UNITYBUILD)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fwhole-program")
@@ -139,7 +139,10 @@ endif()
 add_executable(arx ${ALL_SOURCES} ${ALL_INCLUDES})
 
 #link
-target_link_libraries(arx dsound dxguid gdi32 shell32 dinput comdlg32 ole32 comctl32 ddraw z ${ARX_LIBS} ${SFML_LIBS} ${THREAD_LIBS})
+set(ARX_WINDOWS_LIBS gdi32 shell32 comdlg32 ole32 comctl32)
+set(ARX_GRAPHICS_LIBS dxguid dinput ddraw)
+set(ARX_SOUND_LIBS dsound)
+target_link_libraries(arx ${ARX_SOUND_LIBS} ${ARX_GRAPHICS_LIBS} ${ARX_WINDOWS_LIBS} z ${DevIL_LIBS} ${SFML_LIBS} ${THREAD_LIBS})
 
 add_custom_target(remake
 	#clean and compile with 1 thread per core
