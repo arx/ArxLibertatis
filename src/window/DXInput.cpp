@@ -251,26 +251,27 @@ INPUT_INFO	*info;
 	RELEASE(DI_DInput7);
 	DI_DInput7 = NULL;
 }
-/*-------------------------------------------------------------*/
-bool CompareGUID(GUID *g1,GUID *g2)
+
+bool CompareGUID(const GUID * g1, const GUID * g2)
 {
-int		i,j,*m1,*m2;
-char	*mm1,*mm2;
+int		i,j;
+const int *m1, *m2;
+const char	*mm1,*mm2;
 
 	i=sizeof(GUID);
 	j=i&3;
 	i>>=2;
 
-	m1=(int*)g1;
-	m2=(int*)g2;
+	m1=(const int*)g1;
+	m2=(const int*)g2;
 	while(i)
 	{
 		if(*m1++!=*m2++) return false;
 		i--;
 	}
 
-	mm1=(char*)m1;
-	mm2=(char*)m2;
+	mm1=(const char*)m1;
+	mm2=(const char*)m2;
 	while(j)
 	{
 		if(*mm1++!=*mm2++) return false;
@@ -521,7 +522,7 @@ int DXI_ChooseInputDevice( HWND hwnd, int id, int num, int mode )
 DIDEVCAPS		devcaps;
 INPUT_INFO*		info;
 int				flag;
-DIDATAFORMAT*	dformat;
+const DIDATAFORMAT*	dformat;
 
 	if( num >= DI_NbInputInfo ) return DXI_FAIL;
 	info = &DI_InputInfo[num];
@@ -589,12 +590,12 @@ DIDATAFORMAT*	dformat;
 			if(info->nbbuttons>4)
 			{
 				info->datasid=DFDIMOUSE2;
-				dformat=(DIDATAFORMAT*)&c_dfDIMouse2;
+				dformat=&c_dfDIMouse2;
 			}
 			else
 			{
 				info->datasid=DFDIMOUSE;
-				dformat=(DIDATAFORMAT*)&c_dfDIMouse;
+				dformat=&c_dfDIMouse;
 			}
 			//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->SetProperty(info->inputdevice7,DIPROP_BUFFERSIZE,&dipdw.diph))) return DXI_FAIL;
 			if(FAILED(DI_Hr=info->inputdevice7->SetProperty(DIPROP_BUFFERSIZE,&dipdw.diph))) return DXI_FAIL;
@@ -608,7 +609,7 @@ DIDATAFORMAT*	dformat;
 //		memset(info->old_bufferstate,0,256);
 		DI_KeyBoardBuffer[id]=info;//->bufferstate;
 		//DI_OldKeyBoardBuffer[id]=info->old_bufferstate;
-		dformat=(DIDATAFORMAT*)&c_dfDIKeyboard;
+		dformat=&c_dfDIKeyboard;
 		break;
 	case DIDEVTYPE_JOYSTICK:
 		DI_JoyState[id]=info;
@@ -619,7 +620,7 @@ DIDATAFORMAT*	dformat;
 //			info->old_joystate2=(DIJOYSTATE2*)malloc(sizeof(DIJOYSTATE2));
 //			memset(info->old_joystate2,0,sizeof(DIJOYSTATE2));
 			info->datasid=DFDIJOYSTICK2;
-			dformat=(DIDATAFORMAT*)&c_dfDIJoystick2;
+			dformat=&c_dfDIJoystick2;
 		}
 		else
 		{
@@ -628,7 +629,7 @@ DIDATAFORMAT*	dformat;
 //			info->old_joystate=(DIJOYSTATE*)malloc(sizeof(DIJOYSTATE));
 //			memset(info->old_joystate,0,sizeof(DIJOYSTATE));
 			info->datasid=DFDIJOYSTICK;
-			dformat=(DIDATAFORMAT*)&c_dfDIJoystick;
+			dformat=&c_dfDIJoystick;
 		}
 		break;
 	default:
@@ -643,7 +644,7 @@ DIDATAFORMAT*	dformat;
 //				info->old_joystate2=(DIJOYSTATE2*)malloc(sizeof(DIJOYSTATE2));
 //				memset(info->old_joystate2,0,sizeof(DIJOYSTATE2));
 				info->datasid=DFDIJOYSTICK2;
-				dformat=(DIDATAFORMAT*)&c_dfDIJoystick2;
+				dformat=&c_dfDIJoystick2;
 			}
 			else
 			{
@@ -652,7 +653,7 @@ DIDATAFORMAT*	dformat;
 //				info->old_joystate=(DIJOYSTATE*)malloc(sizeof(DIJOYSTATE));
 //				memset(info->old_joystate,0,sizeof(DIJOYSTATE));
 				info->datasid=DFDIJOYSTICK;
-				dformat=(DIDATAFORMAT*)&c_dfDIJoystick;
+				dformat=&c_dfDIJoystick;
 			}
 		
 			/*
