@@ -778,13 +778,13 @@ EERIEPOLY * EECheckInPoly(EERIE_3D * pos,float * needY=NULL);
 EERIEPOLY * CheckInPolyIn(float x,float y,float z);
 EERIEPOLY * CheckInPolyPrecis(float x,float y,float z,float * needY=NULL);
 
-EERIEPOLY * EEIsUnderWater(EERIE_3D * pos);
+EERIEPOLY * EEIsUnderWater(const EERIE_3D * pos);
 bool GetTruePolyY(const EERIEPOLY * ep, const EERIE_3D * pos,float * ret);
-EERIEPOLY * EEIsUnderWaterFast(EERIE_3D * pos);
+EERIEPOLY * EEIsUnderWaterFast(const EERIE_3D * pos);
 bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj,long idx,long grs);
  
 D3DCOLOR GetColorz(float x,float y,float z);
-int PointIn2DPolyXZ(EERIEPOLY * ep, float x, float z);
+int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z);
 
 float Distance2D(float x0, float y0, float x1, float y1);
 float Distance3D(float x0, float y0, float z0, float x1, float y1, float z1);

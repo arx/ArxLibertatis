@@ -4097,7 +4097,7 @@ void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, EERIE_3D * pos, const float vol
 	char step_material[64] = "Foot_bare";
 	char floor_material[64] = "EARTH";
 
-	if (IsUnderWater(pos->x, pos->y, pos->z))
+	if (EEIsUnderWater(pos))
 		strcpy(floor_material, "WATER");
 	else
 	{

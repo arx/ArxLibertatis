@@ -794,47 +794,8 @@ EERIEPOLY * GetMaxPoly(float x, float y, float z)
 
 	return found;
 }
-//*************************************************************************************
-//*************************************************************************************
-EERIEPOLY * IsUnderWater(float x, float y, float z)
-{
-	long px, pz;
-	px = x * ACTIVEBKG->Xmul;
 
-	if (px >= ACTIVEBKG->Xsize)		return NULL;
-
-	if (px < 0)						return NULL;
-
-	pz = z * ACTIVEBKG->Zmul;
-
-	if (pz >= ACTIVEBKG->Zsize)		return NULL;
-
-	if (pz < 0)						return NULL;
-
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
-	EERIEPOLY * found = NULL;
-	feg = &ACTIVEBKG->fastdata[px][pz];
-
-	for (long k = 0; k < feg->nbpolyin; k++)
-	{
-		ep = feg->polyin[k];
-
-		if (ep->type & POLY_WATER)
-		{
-			if (ep->max.y < y)
-				if (PointIn2DPolyXZ(ep, x, z))
-				{
-					if ((found == NULL) || ((found != NULL) && (ep->max.y < found->max.y)))
-						found = ep;
-				}
-		}
-	}
-
-	return found;
-}
-EERIEPOLY * EEIsUnderWater(EERIE_3D * pos)
-{
+EERIEPOLY * EEIsUnderWater(const EERIE_3D * pos) {
 	long px, pz;
 	px = pos->x * ACTIVEBKG->Xmul;
 
@@ -872,7 +833,7 @@ EERIEPOLY * EEIsUnderWater(EERIE_3D * pos)
 
 extern bool bSoftRender;
 
-EERIEPOLY* EEIsUnderWaterFast(EERIE_3D * pos)
+EERIEPOLY* EEIsUnderWaterFast(const EERIE_3D * pos)
 {
 	long		px, pz;
 	EERIEPOLY * found		=	NULL;
@@ -1384,7 +1345,7 @@ float CEDRIC_PtIn2DPolyProjV2(EERIE_3DOBJ * obj, EERIE_FACE * ef, float x, float
 
 //*************************************************************************************
 //*************************************************************************************
-int PointIn2DPolyXZ(EERIEPOLY * ep, float x, float z)
+int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z)
 {
 	register int i, j, c = 0, d = 0;
 
