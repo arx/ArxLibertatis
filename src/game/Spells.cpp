@@ -2269,9 +2269,9 @@ bool ARX_SPELLS_AnalyseSPELL() {
 	
 	ARX_SPELLS_SPELLS spell;
 	
-	if(SpellSymbol[0] == SYMBOL_MEGA && SpellSymbol[0] == SYMBOL_MEGA
-	   && SpellSymbol[0] == SYMBOL_MEGA && SpellSymbol[0] == SYMBOL_AAM
-	   && SpellSymbol[0] == SYMBOL_VITAE && SpellSymbol[0] == SYMBOL_TERA) {
+	if(SpellSymbol[0] == SYMBOL_MEGA && SpellSymbol[1] == SYMBOL_MEGA
+	   && SpellSymbol[2] == SYMBOL_MEGA && SpellSymbol[3] == SYMBOL_AAM
+	   && SpellSymbol[4] == SYMBOL_VITAE && SpellSymbol[5] == SYMBOL_TERA) {
 		cur_mega = 10;
 		spell = SPELL_SUMMON_CREATURE;
 	} else {
