@@ -773,10 +773,10 @@ void DebugSphere(float x,float y,float z,float siz,long tim,D3DCOLOR color);
 
 EERIEPOLY * CheckTopPoly(float x,float y,float z);
 EERIEPOLY * CheckPolyOnTop(float x,float y,float z);
-EERIEPOLY * CheckInPoly(float x,float y,float z,float * needY=NULL);
-EERIEPOLY * EECheckInPoly(EERIE_3D * pos,float * needY=NULL);
+EERIEPOLY * CheckInPoly(float x,float y,float z,float * needY = NULL);
+EERIEPOLY * EECheckInPoly(const EERIE_3D * pos,float * needY = NULL);
 EERIEPOLY * CheckInPolyIn(float x,float y,float z);
-EERIEPOLY * CheckInPolyPrecis(float x,float y,float z,float * needY=NULL);
+EERIEPOLY * CheckInPolyPrecis(float x,float y,float z,float * needY = NULL);
 
 /**
  * Check if the given condition is under water.

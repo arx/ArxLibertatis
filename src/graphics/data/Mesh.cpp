@@ -589,103 +589,77 @@ EERIEPOLY * CheckInPolyPrecis(float x, float y, float z, float * needY)
 	return found;
 }
 
-EERIEPOLY * EECheckInPoly(EERIE_3D * pos, float * needY)
-{
+EERIEPOLY * EECheckInPoly(const EERIE_3D * pos, float * needY) {
 	return CheckInPoly(pos->x, pos->y, pos->z, needY);
 }
-//*************************************************************************************
-//*************************************************************************************
 
-EERIEPOLY * CheckTopPoly(float x, float y, float z)
-{
-	long px, pz;
-	px = x * ACTIVEBKG->Xmul;
-
-	if (px >= ACTIVEBKG->Xsize)
-	{
+static FAST_BKG_DATA * getFastBackgroundData(float x, float z) {
+	
+	long px = x * ACTIVEBKG->Xmul;
+	if(px < 0 || px >= ACTIVEBKG->Xsize) {
 		return NULL;
 	}
-
-	if (px < 0)
-	{
+	
+	long pz = z * ACTIVEBKG->Zmul;
+	if(pz < 0 || pz >= ACTIVEBKG->Zsize) {
 		return NULL;
 	}
+	
+	return &ACTIVEBKG->fastdata[px][pz];
+}
 
-	pz = z * ACTIVEBKG->Zmul;
-
-	if (pz >= ACTIVEBKG->Zsize)
-	{
-		return NULL;
+EERIEPOLY * CheckTopPoly(float x, float y, float z) {
+	
+	FAST_BKG_DATA * feg = getFastBackgroundData(x, z);
+	if(!feg) {
+		return false;
 	}
-
-	if (pz < 0)
-	{
-		return NULL;
-	}
-
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
+	
 	EERIEPOLY * found = NULL;
-
-	feg = &ACTIVEBKG->fastdata[px][pz];
-
-	for (long k = 0; k < feg->nbpolyin; k++)
-	{
-		ep = feg->polyin[k];
-		ep = feg->polyin[k];
-
-		if ((!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)))
-				&&	(ep->min.y < y)
-				&&	(x >= ep->min.x) && (x <= ep->max.x)
-				&&	(z >= ep->min.z) && (z <= ep->max.z)
-				&&	(PointIn2DPolyXZ(ep, x, z)))
-		{
-			if ((EEfabs(ep->max.y - ep->min.y) > 50.f) &&	(y - ep->center.y < 60.f)) continue;
-
-			if (ep->tex != NULL) {
-				if (found == NULL || ep->min.y > found->min.y) {
+	for (long k = 0; k < feg->nbpolyin; k++) {
+		
+		EERIEPOLY * ep = feg->polyin[k];
+		
+		if((!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)))
+		   && (ep->min.y < y)
+		   && (x >= ep->min.x) && (x <= ep->max.x)
+		   && (z >= ep->min.z) && (z <= ep->max.z)
+		   && (PointIn2DPolyXZ(ep, x, z))) {
+			
+			if((EEfabs(ep->max.y - ep->min.y) > 50.f) && (y - ep->center.y < 60.f)) {
+				continue;
+			}
+			
+			if(ep->tex != NULL) {
+				if(found == NULL || ep->min.y > found->min.y) {
 					found = ep;
 				}
 			}
 		}
 	}
-
+	
 	return found;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-
-bool IsAnyPolyThere(float x, float z)
-{
-	long px, pz;
-	px = x * ACTIVEBKG->Xmul;
-
-	if (px >= ACTIVEBKG->Xsize)			return false;
-
-	if (px < 0)							return false;
-
-	pz = z * ACTIVEBKG->Zmul;
-
-	if (pz >= ACTIVEBKG->Zsize)			return false;
-
-	if (pz < 0)							return false;
-
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
-	feg = &ACTIVEBKG->fastdata[px][pz];
-
-	for (long k = 0; k < feg->nbpolyin; k++)
-	{
-		ep = feg->polyin[k];
-
-		if (PointIn2DPolyXZ(ep, x, z)) return true;
+bool IsAnyPolyThere(float x, float z) {
+	
+	FAST_BKG_DATA * feg = getFastBackgroundData(x, z);
+	if(!feg) {
+		return false;
 	}
-
+	
+	for(long k = 0; k < feg->nbpolyin; k++) {
+		
+		EERIEPOLY * ep = feg->polyin[k];
+		
+		if(PointIn2DPolyXZ(ep, x, z)) {
+			return true;
+		}
+	}
+	
 	return false;
 }
-//*************************************************************************************
-//*************************************************************************************
+
 float FirstPolyPosY(float x, float z)
 {
 	EERIEPOLY * ep = GetMinPoly(x, 0.f, z);
@@ -694,44 +668,32 @@ float FirstPolyPosY(float x, float z)
 
 	return ep->max.y;
 }
-//*************************************************************************************
-//*************************************************************************************
-EERIEPOLY * GetMinPoly(float x, float y, float z)
-{
-	long px, pz;
-	px = x * ACTIVEBKG->Xmul;
 
-	if (px >= ACTIVEBKG->Xsize)			return NULL;
-
-	if (px < 0)							return NULL;
-
-	pz = z * ACTIVEBKG->Zmul;
-
-	if (pz >= ACTIVEBKG->Zsize)			return NULL;
-
-	if (pz < 0)							return NULL;
-
-	EERIEPOLY * found = NULL;
-	float foundy = foundy; // Suppress warnings about foundy being uninitialized.
+EERIEPOLY * GetMinPoly(float x, float y, float z) {
+	
+	FAST_BKG_DATA * feg = getFastBackgroundData(x, z);
+	if(!feg) {
+		return NULL;
+	}
+	
 	EERIE_3D pos;
 	pos.x = x;
 	pos.y = y;
 	pos.z = z;
-
-	FAST_BKG_DATA * feg = &ACTIVEBKG->fastdata[px][pz];
-
-	for (long k = 0; k < feg->nbpolyin; k++)
-	{
+	
+	EERIEPOLY * found = NULL;
+	float foundy = foundy; // Suppress warnings about foundy being uninitialized.
+	for (long k = 0; k < feg->nbpolyin; k++) {
+		
 		EERIEPOLY * ep = feg->polyin[k];
-
-		if (ep->type & POLY_WATER) continue;
-
-		if (ep->type & POLY_TRANS) continue;
-
-		if (ep->type & POLY_NOCOL) continue;
-
-		if (PointIn2DPolyXZ(ep, x, z))
-		{
+		
+		if(ep->type & POLY_WATER) continue;
+		
+		if(ep->type & POLY_TRANS) continue;
+		
+		if(ep->type & POLY_NOCOL) continue;
+		
+		if(PointIn2DPolyXZ(ep, x, z)) {
 			float ret;
 			if(GetTruePolyY(ep, &pos, &ret)) {
 				if(found == NULL || ret > foundy) {
@@ -741,30 +703,21 @@ EERIEPOLY * GetMinPoly(float x, float y, float z)
 			}
 		}
 	}
-
+	
 	return found;
 }
 
 EERIEPOLY * GetMaxPoly(float x, float y, float z) {
 	
-	long px = x * ACTIVEBKG->Xmul;
-	
-	if(px >= ACTIVEBKG->Xsize) return NULL;
-	
-	if(px < 0) return NULL;
-	
-	long pz = z * ACTIVEBKG->Zmul;
-	
-	if(pz >= ACTIVEBKG->Zsize) return NULL;
-	
-	if(pz < 0) return NULL;
+	FAST_BKG_DATA * feg = getFastBackgroundData(x, z);
+	if(!feg) {
+		return NULL;
+	}
 	
 	EERIE_3D pos;
 	pos.x = x;
 	pos.y = y;
 	pos.z = z;
-	
-	FAST_BKG_DATA * feg = &ACTIVEBKG->fastdata[px][pz];
 	
 	EERIEPOLY * found = NULL;
 	float foundy = foundy; // Suppress warnings about foundy being uninitialized.
@@ -781,7 +734,7 @@ EERIEPOLY * GetMaxPoly(float x, float y, float z) {
 		if(PointIn2DPolyXZ(ep, x, z)) {
 			float ret;
 			if(GetTruePolyY(ep, &pos, &ret)) {
-				if (found == NULL || ret < foundy) {
+				if(found == NULL || ret < foundy) {
 					found = ep;
 					foundy = ret;
 				}
@@ -792,24 +745,9 @@ EERIEPOLY * GetMaxPoly(float x, float y, float z) {
 	return found;
 }
 
-static FAST_BKG_DATA * getFastBackgroundData(const EERIE_3D * pos) {
-	
-	long px = pos->x * ACTIVEBKG->Xmul;
-	if(px < 0 || px >= ACTIVEBKG->Xsize) {
-		return NULL;
-	}
-	
-	long pz = pos->z * ACTIVEBKG->Zmul;
-	if(pz < 0 || pz >= ACTIVEBKG->Zsize) {
-		return NULL;
-	}
-	
-	return &ACTIVEBKG->fastdata[px][pz];
-}
-
 EERIEPOLY * EEIsUnderWater(const EERIE_3D * pos) {
 	
-	FAST_BKG_DATA * feg = getFastBackgroundData(pos);
+	FAST_BKG_DATA * feg = getFastBackgroundData(pos->x, pos->z);
 	if(!feg) {
 		return NULL;
 	}
@@ -838,7 +776,7 @@ EERIEPOLY * EEIsUnderWaterFast(const EERIE_3D * pos) {
 		return EEIsUnderWater(pos);
 	}
 	
-	FAST_BKG_DATA * feg = getFastBackgroundData(pos);
+	FAST_BKG_DATA * feg = getFastBackgroundData(pos->x, pos->z);
 	if(!feg) {
 		return NULL;
 	}

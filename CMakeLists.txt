@@ -95,7 +95,7 @@ else(MSVC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wlogical-op -Wcast-qual")
 	
 	# Consider also: -Wconversion -Wsign-conversion -Wmissing-declarations
-	#                -Wredundant-decls
+	#                -Wredundant-decls -Wsuggest-attribute=const
 	
 	if(ARX_DEBUG)
 		#Debug
