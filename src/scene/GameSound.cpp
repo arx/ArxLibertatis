@@ -888,7 +888,7 @@ long ARX_SOUND_PlayScript(const char * name, const INTERACTIVE_OBJ * io, const f
 
 	if (io)
 	{
-		GetItemWorldPositionSound((INTERACTIVE_OBJ *)io, (EERIE_3D *)&channel.position);
+		GetItemWorldPositionSound(io, (EERIE_3D *)&channel.position); // TODO this cast is wrong
 
 		if (loop != ARX_SOUND_PLAY_LOOPED)
 		{

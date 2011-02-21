@@ -1716,7 +1716,7 @@ bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 // FUNCTION:
 //   Gets real world position for an IO to spawn a sound
 //*************************************************************************************
-bool GetItemWorldPositionSound(INTERACTIVE_OBJ * io, EERIE_3D * pos)
+bool GetItemWorldPositionSound(const INTERACTIVE_OBJ * io, EERIE_3D * pos)
 {
 	if (!io) return false;
 

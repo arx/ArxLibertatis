@@ -3687,7 +3687,7 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag, EERIE_3D * _pRe
 
 	return foundBB;
 }
-bool IsEquipedByPlayer(INTERACTIVE_OBJ * io)
+bool IsEquipedByPlayer(const INTERACTIVE_OBJ * io)
 {
 	if (!io)
 		return false;
