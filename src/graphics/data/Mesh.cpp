@@ -711,20 +711,18 @@ EERIEPOLY * GetMinPoly(float x, float y, float z)
 
 	if (pz < 0)							return NULL;
 
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
 	EERIEPOLY * found = NULL;
-	float foundy;
+	float foundy = foundy; // Suppress warnings about foundy being uninitialized.
 	EERIE_3D pos;
 	pos.x = x;
 	pos.y = y;
 	pos.z = z;
 
-	feg = &ACTIVEBKG->fastdata[px][pz];
+	FAST_BKG_DATA * feg = &ACTIVEBKG->fastdata[px][pz];
 
 	for (long k = 0; k < feg->nbpolyin; k++)
 	{
-		ep = feg->polyin[k];
+		EERIEPOLY * ep = feg->polyin[k];
 
 		if (ep->type & POLY_WATER) continue;
 
@@ -735,7 +733,7 @@ EERIEPOLY * GetMinPoly(float x, float y, float z)
 		if (PointIn2DPolyXZ(ep, x, z))
 		{
 			float ret;
-			if (GetTruePolyY(ep, &pos, &ret)) {
+			if(GetTruePolyY(ep, &pos, &ret)) {
 				if(found == NULL || ret > foundy) {
 					found = ep;
 					foundy = ret;
@@ -763,21 +761,18 @@ EERIEPOLY * GetMaxPoly(float x, float y, float z)
 
 	if (pz < 0)							return NULL;
 
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
 	EERIEPOLY * found = NULL;
-	float foundy;
-	float ret;
+	float foundy = foundy; // Suppress warnings about foundy being uninitialized.
 	EERIE_3D pos;
 	pos.x = x;
 	pos.y = y;
 	pos.z = z;
 
-	feg = &ACTIVEBKG->fastdata[px][pz];
+	FAST_BKG_DATA * feg = &ACTIVEBKG->fastdata[px][pz];
 
 	for (long k = 0; k < feg->nbpolyin; k++)
 	{
-		ep = feg->polyin[k];
+		EERIEPOLY * ep = feg->polyin[k];
 
 		if (ep->type & POLY_WATER) continue;
 
@@ -787,11 +782,9 @@ EERIEPOLY * GetMaxPoly(float x, float y, float z)
 
 		if (PointIn2DPolyXZ(ep, x, z))
 		{
-			if (GetTruePolyY(ep, &pos, &ret))
-			{
-				if (((found != NULL) && (ret < foundy))
-						|| (found == NULL))
-				{
+			float ret;
+			if(GetTruePolyY(ep, &pos, &ret)) {
+				if (found == NULL || ret < foundy) {
 					found = ep;
 					foundy = ret;
 				}
