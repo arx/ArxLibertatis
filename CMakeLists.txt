@@ -37,6 +37,7 @@ option(ARX_BUILD_TESTS "Build tests" OFF)
 option(ARX_BUILD_TOOLS "Build tools" ON)
 option(ARX_MINGW "Build on MinGW" OFF)
 option(ARX_USE_UNITYBUILD "Unity build" OFF)
+option(ARX_DEBUG "Normal debug options" ON)
 option(ARX_DEBUG_EXTRA "Expensive debug options" OFF)
 
 
@@ -54,8 +55,9 @@ if(MSVC)
 	add_definitions(-D_SCL_SECURE_NO_WARNINGS)
 	add_definitions(/wd4995)
 	
-	# Should be defined in debug only
-	add_definitions(-D_CRTDBG_MAP_ALLOC)
+	if(ARX_DEBUG)
+		add_definitions(-D_CRTDBG_MAP_ALLOC)
+	endif()
 	
 	# TEMP - disable warning caused by the F2L removal
 	add_definitions(/wd4244)    # conversion from 'float' to 'long', possible loss of data
@@ -94,9 +96,14 @@ else(MSVC)
 	
 	# Consider also: -Wconversion -Wsign-conversion -Wmissing-declarations
 	#                -Wredundant-decls
-
-	#Debug
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3")
+	
+	if(ARX_DEBUG)
+		#Debug
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3")
+	else()
+		#Release
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3") # TODO enable optimizations
+	endif()
 	
 	if(ARX_DEBUG_EXTRA)
 		add_definitions(-D_GLIBCXX_DEBUG) # Runtime checks for STL containers.
@@ -114,7 +121,7 @@ else(MSVC)
 	
 	if(ARX_USE_UNITYBUILD)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fwhole-program")
-	endif(ARX_USE_UNITYBUILD)
+	endif()
 	
 endif(MSVC)
 
