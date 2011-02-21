@@ -813,7 +813,7 @@ void MakeColorz(INTERACTIVE_OBJ * io);
 void EE_RotateX(D3DTLVERTEX *in,D3DTLVERTEX *out,float c, float s);
 void EE_RotateY(D3DTLVERTEX *in,D3DTLVERTEX *out,float c, float s);
 void EE_RotateZ(D3DTLVERTEX *in,D3DTLVERTEX *out,float c, float s);
-extern void EE_RTP(D3DTLVERTEX *in,D3DTLVERTEX *out);
+void EE_RTP(D3DTLVERTEX *in,D3DTLVERTEX *out);
 
 void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,EERIE_3D * pos);
 
