@@ -1868,7 +1868,7 @@ INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					//}
 					//else strcpy(Project_workingdir, "\\\\ARKANESERVER\\Public\\Arx\\");
 
-					chdir("GRAPH\\LEVELS\\");
+					//chdir("GRAPH\\LEVELS\\");
 
 					thWnd = GetDlgItem(hWnd, IDC_TEXTUREPRECISION);
 					val = SendMessage(thWnd, TBM_GETPOS, true, 0);

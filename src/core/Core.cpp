@@ -8190,9 +8190,10 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				}
 				break;
 				case DANAE_MENU_PROJECTPATH:
+					LogWarning << "not implemented";
 					//HERMESFolderSelector("","Choose Working Folder"); first param receives folder
-					SetWindowTitle(hWnd,"DANAE Project");
-					chdir("GRAPH\\LEVELS\\");
+					//SetWindowTitle(hWnd,"DANAE Project");
+					//chdir("GRAPH\\LEVELS\\");
 					break;
 				case DANAE_MENU_NEWLEVEL:
 					ARX_TIME_Pause();
