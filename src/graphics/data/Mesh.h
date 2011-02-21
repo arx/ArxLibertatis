@@ -778,9 +778,21 @@ EERIEPOLY * EECheckInPoly(EERIE_3D * pos,float * needY=NULL);
 EERIEPOLY * CheckInPolyIn(float x,float y,float z);
 EERIEPOLY * CheckInPolyPrecis(float x,float y,float z,float * needY=NULL);
 
+/**
+ * Check if the given condition is under water.
+ * 
+ * @return The lowest water polygon pos is under, or NULL if pos is not under water.
+ **/
 EERIEPOLY * EEIsUnderWater(const EERIE_3D * pos);
-bool GetTruePolyY(const EERIEPOLY * ep, const EERIE_3D * pos,float * ret);
+
+/**
+ * Check if the given condition is under water.
+ * 
+ * @return Any water polygon pos is under, or NULL if pos is not under water.
+ **/
 EERIEPOLY * EEIsUnderWaterFast(const EERIE_3D * pos);
+
+bool GetTruePolyY(const EERIEPOLY * ep, const EERIE_3D * pos,float * ret);
 bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj,long idx,long grs);
  
 D3DCOLOR GetColorz(float x,float y,float z);

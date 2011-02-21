@@ -744,44 +744,41 @@ EERIEPOLY * GetMinPoly(float x, float y, float z)
 
 	return found;
 }
-//*************************************************************************************
-//*************************************************************************************
-EERIEPOLY * GetMaxPoly(float x, float y, float z)
-{
-	long px, pz;
-	px = x * ACTIVEBKG->Xmul;
 
-	if (px >= ACTIVEBKG->Xsize)			return NULL;
-
-	if (px < 0)							return NULL;
-
-	pz = z * ACTIVEBKG->Zmul;
-
-	if (pz >= ACTIVEBKG->Zsize)			return NULL;
-
-	if (pz < 0)							return NULL;
-
-	EERIEPOLY * found = NULL;
-	float foundy = foundy; // Suppress warnings about foundy being uninitialized.
+EERIEPOLY * GetMaxPoly(float x, float y, float z) {
+	
+	long px = x * ACTIVEBKG->Xmul;
+	
+	if(px >= ACTIVEBKG->Xsize) return NULL;
+	
+	if(px < 0) return NULL;
+	
+	long pz = z * ACTIVEBKG->Zmul;
+	
+	if(pz >= ACTIVEBKG->Zsize) return NULL;
+	
+	if(pz < 0) return NULL;
+	
 	EERIE_3D pos;
 	pos.x = x;
 	pos.y = y;
 	pos.z = z;
-
+	
 	FAST_BKG_DATA * feg = &ACTIVEBKG->fastdata[px][pz];
-
-	for (long k = 0; k < feg->nbpolyin; k++)
-	{
+	
+	EERIEPOLY * found = NULL;
+	float foundy = foundy; // Suppress warnings about foundy being uninitialized.
+	for(long k = 0; k < feg->nbpolyin; k++) {
+		
 		EERIEPOLY * ep = feg->polyin[k];
-
-		if (ep->type & POLY_WATER) continue;
-
-		if (ep->type & POLY_TRANS) continue;
-
-		if (ep->type & POLY_NOCOL) continue;
-
-		if (PointIn2DPolyXZ(ep, x, z))
-		{
+		
+		if(ep->type & POLY_WATER) continue;
+		
+		if(ep->type & POLY_TRANS) continue;
+		
+		if(ep->type & POLY_NOCOL) continue;
+		
+		if(PointIn2DPolyXZ(ep, x, z)) {
 			float ret;
 			if(GetTruePolyY(ep, &pos, &ret)) {
 				if (found == NULL || ret < foundy) {
@@ -791,41 +788,43 @@ EERIEPOLY * GetMaxPoly(float x, float y, float z)
 			}
 		}
 	}
-
+	
 	return found;
 }
 
+static FAST_BKG_DATA * getFastBackgroundData(const EERIE_3D * pos) {
+	
+	long px = pos->x * ACTIVEBKG->Xmul;
+	if(px < 0 || px >= ACTIVEBKG->Xsize) {
+		return NULL;
+	}
+	
+	long pz = pos->z * ACTIVEBKG->Zmul;
+	if(pz < 0 || pz >= ACTIVEBKG->Zsize) {
+		return NULL;
+	}
+	
+	return &ACTIVEBKG->fastdata[px][pz];
+}
+
 EERIEPOLY * EEIsUnderWater(const EERIE_3D * pos) {
-	long px, pz;
-	px = pos->x * ACTIVEBKG->Xmul;
-
-	if (px >= ACTIVEBKG->Xsize)		return NULL;
-
-	if (px < 0)						return NULL;
-
-	pz = pos->z * ACTIVEBKG->Zmul;
-
-	if (pz >= ACTIVEBKG->Zsize)		return NULL;
-
-	if (pz < 0)						return NULL;
-
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
+	
+	FAST_BKG_DATA * feg = getFastBackgroundData(pos);
+	if(!feg) {
+		return NULL;
+	}
+	
 	EERIEPOLY * found = NULL;
-	feg = &ACTIVEBKG->fastdata[px][pz];
-
-	for (long k = 0; k < feg->nbpolyin; k++)
-	{
-		ep = feg->polyin[k];
-
-		if (ep->type & POLY_WATER)
-		{
-			if (ep->max.y < pos->y)
-				if (PointIn2DPolyXZ(ep, pos->x, pos->z))
-				{
-					if ((found == NULL) || ((found != NULL) && (ep->max.y < found->max.y)))
-						found = ep;
+	for(short k = 0; k < feg->nbpolyin; k++) {
+		
+		EERIEPOLY * ep = feg->polyin[k];
+		
+		if(ep->type & POLY_WATER) {
+			if(ep->max.y < pos->y && PointIn2DPolyXZ(ep, pos->x, pos->z)) {
+				if(!found || ep->max.y < found->max.y) {
+					found = ep;
 				}
+			}
 		}
 	}
 	return found;	
@@ -833,39 +832,29 @@ EERIEPOLY * EEIsUnderWater(const EERIE_3D * pos) {
 
 extern bool bSoftRender;
 
-EERIEPOLY* EEIsUnderWaterFast(const EERIE_3D * pos)
-{
-	long		px, pz;
-	EERIEPOLY * found		=	NULL;
-
-	if ( !bSoftRender )
-	{
-		found = EEIsUnderWater(pos);
+EERIEPOLY * EEIsUnderWaterFast(const EERIE_3D * pos) {
+	
+	if(!bSoftRender) {
+		return EEIsUnderWater(pos);
 	}
-	else
-	{
-		px = pos->x * ACTIVEBKG->Xmul;
-		if ( px >= ACTIVEBKG->Xsize )		return NULL;
-		if ( px < 0 )						return NULL;
-		pz = pos->z * ACTIVEBKG->Zmul;
-		if ( pz >= ACTIVEBKG->Zsize )		return NULL;
-		if ( pz < 0 )						return NULL;
-
-		EERIEPOLY*		ep;
-		FAST_BKG_DATA*	feg	=	&ACTIVEBKG->fastdata[px][pz];
-
-		for ( short k = 0 ; k < feg->nbpolyin ; k++ )
-		{
-			ep				=	feg->polyin[k];	
-			if ( ( ep->type & POLY_WATER ) && ( ep->max.y < pos->y ) && PointIn2DPolyXZ( ep, pos->x, pos->z ) ) 
-			{
-				found	=	ep;
-				break;
+	
+	FAST_BKG_DATA * feg = getFastBackgroundData(pos);
+	if(!feg) {
+		return NULL;
+	}
+	
+	for(short k = 0; k < feg->nbpolyin; k++) {
+		
+		EERIEPOLY * ep = feg->polyin[k];
+		
+		if(ep->type & POLY_WATER) {
+			if(ep->max.y < pos->y && PointIn2DPolyXZ(ep, pos->x, pos->z)) {
+				return ep;
 			}
 		}
 	}
-
-	return found;
+	
+	return NULL;
 }
 
 bool GetTruePolyY(const EERIEPOLY * ep, const EERIE_3D * pos, float * ret)
