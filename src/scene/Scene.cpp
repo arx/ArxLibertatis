@@ -2766,7 +2766,7 @@ SMY_D3DVERTEX *pMyVertex;
 
 		float fDistBump=min(max(0.f,(ACTIVECAM->cdepth*fZFogStart)-200.f),MAX_DIST_BUMP);
 
-		for (long  lll=0; lll<portals->room[room_num].nb_polys; lll++, *pEPDATA++)
+		for (long  lll=0; lll<portals->room[room_num].nb_polys; lll++, pEPDATA++)
 		{
 
 			feg = &ACTIVEBKG->fastdata[pEPDATA->px][pEPDATA->py];
