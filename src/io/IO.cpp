@@ -488,7 +488,7 @@ bool HERMES_CreateFileCheck(const char * name, char * scheck, size_t size, const
 		char separator = '\\';
 		
 		const char    *endPoint = NULL,
-				*pos = (char*) path,
+				*pos = path,
 				*temp = NULL,
 				*lastChar = NULL;
  
