@@ -715,7 +715,6 @@ EERIEPOLY * GetMinPoly(float x, float y, float z)
 	FAST_BKG_DATA * feg;
 	EERIEPOLY * found = NULL;
 	float foundy;
-	float ret;
 	EERIE_3D pos;
 	pos.x = x;
 	pos.y = y;
@@ -735,11 +734,9 @@ EERIEPOLY * GetMinPoly(float x, float y, float z)
 
 		if (PointIn2DPolyXZ(ep, x, z))
 		{
-			if (GetTruePolyY(ep, &pos, &ret))
-			{
-				if (((found != NULL) && (ret > foundy))
-						|| (found == NULL))
-				{
+			float ret;
+			if (GetTruePolyY(ep, &pos, &ret)) {
+				if(found == NULL || ret > foundy) {
 					found = ep;
 					foundy = ret;
 				}
@@ -917,7 +914,7 @@ EERIEPOLY* EEIsUnderWaterFast(EERIE_3D * pos)
 	return found;
 }
 
-bool GetTruePolyY(EERIEPOLY * ep, EERIE_3D * pos, float * ret)
+bool GetTruePolyY(const EERIEPOLY * ep, const EERIE_3D * pos, float * ret)
 {
 	register EERIE_3D	n, s21, s31;
 

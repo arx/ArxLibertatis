@@ -779,7 +779,7 @@ EERIEPOLY * CheckInPolyIn(float x,float y,float z);
 EERIEPOLY * CheckInPolyPrecis(float x,float y,float z,float * needY=NULL);
 
 EERIEPOLY * EEIsUnderWater(EERIE_3D * pos);
-bool GetTruePolyY(EERIEPOLY * ep,EERIE_3D * pos,float * ret);
+bool GetTruePolyY(const EERIEPOLY * ep, const EERIE_3D * pos,float * ret);
 EERIEPOLY * EEIsUnderWaterFast(EERIE_3D * pos);
 bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj,long idx,long grs);
  
