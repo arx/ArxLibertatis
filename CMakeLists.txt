@@ -90,7 +90,7 @@ ELSE (MSVC)
 	# Warning level
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat=2 -Winit-self -Wundef -Wpointer-arith -Wlogical-op -Wcast-qual")
 	
-	# Consider also: -Wcast-qual -Wconversion -Wsign-conversion -Wmissing-declarations
+	# Consider also: -Wconversion -Wsign-conversion -Wmissing-declarations
 	#                -Wredundant-decls
 
 	#Debug
