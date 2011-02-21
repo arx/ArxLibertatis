@@ -203,6 +203,7 @@ void ComputeACSPos(ARX_CINEMATIC_SPEECH * acs, INTERACTIVE_OBJ * io, long ionum)
 	}
 }
 
+/* TODO broken and not really used
 void RemoveNumerics(char * tx)
 {
 	char dest[512];
@@ -221,7 +222,7 @@ void RemoveNumerics(char * tx)
 	}
 
 	tx[pos] = 0;
-}
+}*/
 
 bool IsElement( const char * seek, const char * text)
 {
@@ -3028,13 +3029,16 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					long ival;
 					float fval;
 					SCRIPT_VAR * sv = NULL;
-					long a = 0;
+					//long a = 0;
 					pos = GetNextWord(es, pos, word, 1);
 					LogDebug <<  "SET "<< word;
 
 					if (word[0] == '-')
 					{
-						if (iCharIn(word, 'A')) a = 1;
+						if (iCharIn(word, 'A')) {
+							LogWarning << "Broken 'set -a' script command used.";
+							//a = 1;
+						}
 
 						pos = GetNextWord(es, pos, word, 1);
 						LogDebug <<  word;
@@ -3047,7 +3051,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						case '$': // GLOBAL TEXT
 							strcpy(tempp, GetVarValueInterpretedAsText(temp2, esss, io).c_str());
 
-							if (a) RemoveNumerics(tempp);
+							//if (a) RemoveNumerics(tempp);
 
 							sv = SETVarValueText(svar, NB_GLOBALS, word, tempp);
 
@@ -3061,7 +3065,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						case '\xA3': // LOCAL TEXT
 							strcpy(tempp, GetVarValueInterpretedAsText(temp2, esss, io).c_str());
 
-							if (a) RemoveNumerics(tempp);
+							//if (a) RemoveNumerics(tempp);
 
 							sv = SETVarValueText(esss->lvar, esss->nblvar, word, tempp);
 
