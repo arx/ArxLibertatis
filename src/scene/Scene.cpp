@@ -4338,7 +4338,7 @@ void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag) {
 		{
 			feg=&ACTIVEBKG->fastdata[0][j];
 
-			for (i=0; i<ACTIVEBKG->Xsize; i++, *feg++)
+			for (i=0; i<ACTIVEBKG->Xsize; i++, feg++)
 			{
 				if (feg->treat)
 					feg->treat=0;			
