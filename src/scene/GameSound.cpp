@@ -1399,7 +1399,7 @@ static void ARX_SOUND_CreateEnvironments()
 
 		if (!pPakManager->AddPak(PAK_SFX)) return;
 
-		pvDirectory = pPakManager->ExistDirectory((char *)ARX_SOUND_PATH_ENVIRONMENT);
+		pvDirectory = pPakManager->ExistDirectory(ARX_SOUND_PATH_ENVIRONMENT);
 
 		if (!pvDirectory)
 		{
