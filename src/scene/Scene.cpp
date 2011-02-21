@@ -1209,7 +1209,7 @@ void ARX_PORTALS_InitDrawnRooms()
 	for (long i=0;i<portals->nb_total;i++)
 	{
 		ep->useportal=0;
-		*ep++;
+		ep++;
 	}
 
 
