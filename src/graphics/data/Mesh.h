@@ -830,10 +830,6 @@ bool CreateUniqueIdent(char * pathh);
 //****************************************************************************
 // DRAWING FUNCTIONS START
 
-void DrawLinkedObj(			LPDIRECT3DDEVICE7 pd3dDevice,
-							EERIE_LINKED * el,
-							D3DCOLOR col,
-							long typ );
 void DrawEERIEObjEx(		LPDIRECT3DDEVICE7 pd3dDevice,
 							EERIE_3DOBJ * eobj,
 							EERIE_3D * angle,
