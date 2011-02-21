@@ -682,7 +682,7 @@ EERIEPOLY * GetMinPoly(float x, float y, float z) {
 	pos.z = z;
 	
 	EERIEPOLY * found = NULL;
-	float foundy = foundy; // Suppress warnings about foundy being uninitialized.
+	float foundy = FLT_MAX;
 	for (long k = 0; k < feg->nbpolyin; k++) {
 		
 		EERIEPOLY * ep = feg->polyin[k];
@@ -696,7 +696,7 @@ EERIEPOLY * GetMinPoly(float x, float y, float z) {
 		if(PointIn2DPolyXZ(ep, x, z)) {
 			float ret;
 			if(GetTruePolyY(ep, &pos, &ret)) {
-				if(found == NULL || ret > foundy) {
+				if(!found || ret > foundy) {
 					found = ep;
 					foundy = ret;
 				}
@@ -720,7 +720,7 @@ EERIEPOLY * GetMaxPoly(float x, float y, float z) {
 	pos.z = z;
 	
 	EERIEPOLY * found = NULL;
-	float foundy = foundy; // Suppress warnings about foundy being uninitialized.
+	float foundy = FLT_MIN;
 	for(long k = 0; k < feg->nbpolyin; k++) {
 		
 		EERIEPOLY * ep = feg->polyin[k];
@@ -734,7 +734,7 @@ EERIEPOLY * GetMaxPoly(float x, float y, float z) {
 		if(PointIn2DPolyXZ(ep, x, z)) {
 			float ret;
 			if(GetTruePolyY(ep, &pos, &ret)) {
-				if(found == NULL || ret < foundy) {
+				if(!found || ret < foundy) {
 					found = ep;
 					foundy = ret;
 				}
