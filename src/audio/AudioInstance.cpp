@@ -227,6 +227,9 @@ namespace ATHENA
 			if (stream->SetPosition(0)) return AAL_ERROR_SYSTEM;
 
 			ptr0 = malloc(size);
+			if (ptr0 == NULL) {
+				return AAL_ERROR_MEMORY;
+			}
 
 			stream->Read(ptr0, size, write);
 
@@ -306,7 +309,7 @@ namespace ATHENA
 			}
 			free(buffer_data);
 		} else {
-			return AAL_ERROR_SYSTEM;
+			return AAL_ERROR_MEMORY;
 		}
 		DeleteStream(stream);
 		stream = NULL;
@@ -369,10 +372,19 @@ namespace ATHENA
 	{
 		alSourceStop(source[0]);
 
+		alGetError();
 		if (alIsSource(source[0]))
 			alDeleteSources(1, source);
+		int error;
+		if ((error = alGetError()) != AL_NO_ERROR) {
+			// Should we really do anything here?
+		}
 		for (int i = 0; i < buffers.size(); i++) {
 			alDeleteBuffers(1, buffers[i]);
+			free(buffers[i]);
+		}
+		if ((error = alGetError()) != AL_NO_ERROR) {
+			// or here?
 		}
 		buffers.resize(0);
 		if (alIsBuffer(buffer[0]))
@@ -696,6 +708,10 @@ namespace ATHENA
 
 			ptr0 = malloc(size);
 
+			if (ptr0 == NULL) {
+				return AAL_ERROR_MEMORY;
+			}
+
 			stream->Read(ptr0, size, write);
 
 			switch (sample->format.quality) {
@@ -706,9 +722,9 @@ namespace ATHENA
 				alformat = sample->format.channels == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
 				break;
 			default:
-				exit(0);
+				return AAL_ERROR;
 			}
-			ALuint new_buffer[1];
+			ALuint *new_buffer = (ALuint *)malloc(sizeof(ALuint));
 			alGenBuffers(1, new_buffer);
 			alBufferData(new_buffer[0], alformat, ptr0, size, sample->format.frequency);
 			alSourceQueueBuffers(source[0], 1, new_buffer);
@@ -717,7 +733,6 @@ namespace ATHENA
 			if ((error = alGetError()) != AL_NO_ERROR) {
 				return AAL_ERROR_SYSTEM;
 			}
-			// FIXME -- does the above cause a memleak?
 			free(ptr0);
 
 			if (write != size) {
@@ -862,7 +877,7 @@ namespace ATHENA
 		aalULong to_fill, count;
 
 		InstanceDebugLog(this, "STREAMED");
-		ALuint new_buffers[1];
+		ALuint *new_buffers = (ALuint *)malloc(sizeof(ALuint));
 
 		to_fill = write >= read ? read + size - write : read - write;
 
@@ -886,6 +901,7 @@ namespace ATHENA
 		alSourceQueueBuffers(source[0], 1, new_buffers);
 		int error;
 		if ((error = alGetError()) != AL_NO_ERROR) {
+			buffers.pop_back();
 			return;
 		}
 
