@@ -37,6 +37,7 @@ option(ARX_BUILD_TESTS ON)
 option(ARX_BUILD_TOOLS ON)
 option(ARX_MINGW OFF)
 option(ARX_USE_UNITYBUILD OFF)
+option(ARX_DEBUG_EXTRA "Expensive debug options" OFF)
 
 
 set(SRC_DIR src)
@@ -96,6 +97,10 @@ else(MSVC)
 
 	#Debug
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3")
+	
+	if(ARX_DEBUG_EXTRA)
+		add_definitions(-D_GLIBCXX_DEBUG) # Runtime checks for STL containers.
+	endif
 	
 	#use posix threads
 	add_definitions(-DHAVE_PTHREADS)
