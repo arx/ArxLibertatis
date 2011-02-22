@@ -102,7 +102,7 @@ else(MSVC)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g3")
 	else()
 		#Release
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O1 -g3") # TODO enable optimizations
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -fno-strict-aliasing -g3") # TODO enable optimizations
 	endif()
 	
 	if(ARX_DEBUG_EXTRA)
