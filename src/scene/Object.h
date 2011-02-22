@@ -104,7 +104,7 @@ void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms);
 void ReleaseScene(EERIE_3DSCENE	*	scene);
 void MakeUserFlag(TextureContainer	* tc);
 long EERIE_OBJECT_GetGroup(EERIE_3DOBJ * obj, const char * groupname);
-long EERIE_OBJECT_GetSelection(EERIE_3DOBJ * obj, const char * selname);
+long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const char * selname);
  
 void GlobalInitLight();
 void MoveAllLights(EERIE_3D * trans);
