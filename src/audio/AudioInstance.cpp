@@ -234,6 +234,8 @@ namespace ATHENA
 			stream->Read(ptr0, size, write);
 
 			alGetError();
+			if (write != size)
+				return AAL_ERROR_SYSTEM;
 
 			switch (sample->format.quality) {
 			case 8:
@@ -248,7 +250,7 @@ namespace ATHENA
 
 			alGetError();
 			
-			alBufferData(buffer[0], alformat, ptr0, size, sample->format.frequency);
+			alBufferData(buffer[0], alformat, ptr0, write, sample->format.frequency);
 			free(ptr0);
 			// FIXME -- does the above cause a memleak?
 			int error = alGetError();
@@ -263,12 +265,8 @@ namespace ATHENA
 				return AAL_ERROR_SYSTEM;
 			}
 
-			
-
-			if (write != size)
-				return AAL_ERROR_SYSTEM;
-
 			DeleteStream(stream);
+			stream = NULL;
 		}
 
 		return AAL_OK;
@@ -311,7 +309,8 @@ namespace ATHENA
 		} else {
 			return AAL_ERROR_MEMORY;
 		}
-		DeleteStream(stream);
+		if (stream)
+			DeleteStream(stream);
 		stream = NULL;
 		alGenSources(1, source);
 		alSourceQueueBuffers(source[0], 1, buffer);
@@ -391,6 +390,7 @@ namespace ATHENA
 			alDeleteBuffers(1, buffer);
 
 		if (stream) DeleteStream(stream);
+		stream = NULL;
 
 		if (sample) sample->Release(), sample = NULL;
 
@@ -879,7 +879,8 @@ namespace ATHENA
 		InstanceDebugLog(this, "STREAMED");
 		ALuint *new_buffers = (ALuint *)malloc(sizeof(ALuint));
 
-		to_fill = write >= read ? read + size - write : read - write;
+		//to_fill = write >= read ? read + size - write : read - write;
+		to_fill = size;
 
 		ptr0 = malloc(to_fill);
 		if (ptr0  == NULL) {
