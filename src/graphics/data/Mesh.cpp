@@ -682,7 +682,7 @@ EERIEPOLY * GetMinPoly(float x, float y, float z) {
 	pos.z = z;
 	
 	EERIEPOLY * found = NULL;
-	float foundy = FLT_MAX;
+	float foundy;
 	for (long k = 0; k < feg->nbpolyin; k++) {
 		
 		EERIEPOLY * ep = feg->polyin[k];
@@ -720,7 +720,7 @@ EERIEPOLY * GetMaxPoly(float x, float y, float z) {
 	pos.z = z;
 	
 	EERIEPOLY * found = NULL;
-	float foundy = FLT_MIN;
+	float foundy;
 	for(long k = 0; k < feg->nbpolyin; k++) {
 		
 		EERIEPOLY * ep = feg->polyin[k];

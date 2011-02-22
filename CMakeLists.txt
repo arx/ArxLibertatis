@@ -109,6 +109,12 @@ else(MSVC)
 		add_definitions(-D_GLIBCXX_DEBUG) # Runtime checks for STL containers.
 	endif()
 	
+	if(NOT ARX_DEBUG_EXTRA)
+		# -Wuninitialized causes too many false positives
+		# TODO Disable for now untill we find a way to suppress individual warnings.
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-uninitialized")
+	endif()
+	
 	#use posix threads
 	add_definitions(-DHAVE_PTHREADS)
 	set(THREAD_LIBS pthread rt)
