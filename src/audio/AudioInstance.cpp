@@ -475,15 +475,10 @@ namespace ATHENA
 
 		channel.position = position;
 
-		ALfloat pos[3];
-		pos[0] = position.x;
-		pos[1] = position.y;
-		pos[2] = position.z;
-
 		int error;
 		alGetError();
 
-		alSourcefv(source[0], AL_POSITION, pos);
+		alSource3f(source[0], AL_POSITION, position.x, position.y, position.z);
 
 		if ((error = alGetError()) != AL_NO_ERROR) {
 			return AAL_ERROR_SYSTEM;
