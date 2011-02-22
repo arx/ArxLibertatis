@@ -7609,12 +7609,9 @@ void ARX_INTERFACE_ManageOpenedBook()
 					long j = 0;
 					bool bOk = true;
 
-					for (long j = 0; j < 4 && spellicons[i].symbols[j] != 255; ++j)
-					{
-						if (!(player.rune_flags & (1<<spellicons[i].symbols[j])))
+					for(long j = 0; j < 4 && spellicons[i].symbols[j] != 255; ++j) {
+						if(!(player.rune_flags & (1<<spellicons[i].symbols[j])))
 							bOk = false;
-
-						j++;
 					}
 
 					if (bOk)
