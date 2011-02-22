@@ -80,6 +80,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
+#include "io/Logger.h"
 
 extern long		USE_NEW_SKILLS;
 extern long		ARX_CONVERSATION;
@@ -2361,6 +2362,8 @@ void ARX_PLAYER_Manage_Visual()
 					}
 					else
 					{
+						LogWarning << "Maximum number of dynamic lights exceeded.";
+						/*
 						EERIE_LIGHT * el = &DynLight[special[pouet]];
 						el->intensity = 1.3f + rnd() * 0.2f;
 						el->fallend = 175.f + rnd() * 10.f;
@@ -2370,6 +2373,7 @@ void ARX_PLAYER_Manage_Visual()
 							el->fallstart *= 2.f;
 							el->fallend *= 3.f;
 						}
+						*/
 					}
 
 					for (long kk = 0; kk < 2; kk++)
