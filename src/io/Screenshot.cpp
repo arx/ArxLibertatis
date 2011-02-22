@@ -58,13 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Screenshot.h"
 
 #include <cstdio>
-
-// TODO Remove some headers
-/*#include <fstream>
-#include <sstream>
-#include <vector>
-*/
 #include <string>
+#include <cassert>
 
 #include "core/Core.h"
 #include "io/Filesystem.h"
@@ -74,8 +69,7 @@ SnapShot * pSnapShot;
 SNAPSHOTINFO snapshotdata;
 long CURRENTSNAPNUM = 0;
  
-struct TargaHeader
-{
+struct TargaHeader {
 	BYTE IDLength;
 	BYTE ColormapType;
 	BYTE ImageType;
@@ -86,7 +80,7 @@ struct TargaHeader
 	WORD ImageHeight;
 	BYTE PixelDepth;
 	BYTE ImageDescriptor;
-} tga;
+};
 
 typedef struct
 {
@@ -143,6 +137,8 @@ void FlushMemorySnaps(long flag)
 
 	static char buff[640*2];
  
+	TargaHeader tga;
+	
 	long targetsizeX = snapshotdata.xsize;
 	long targetsizeY = snapshotdata.ysize;
 	float xratio = 640.f / (float)targetsizeX;
@@ -206,11 +202,13 @@ void FlushMemorySnaps(long flag)
 		}
 
  
-		(void)fwrite(&tga, sizeof(TargaHeader), 1, file);
+		size_t written = fwrite(&tga, sizeof(TargaHeader), 1, file);
+		assert(written == sizeof(TargaHeader));
 		long n;
 		unsigned short col;
 		unsigned char * v = (unsigned char *)snaps[i].buffer;
-		(void)fwrite(&tga, 1, 20, file);
+		written = fwrite(&tga, 1, 20, file);
+		assert(written == 20);
 		DWORD dwOffset;
 		DWORD x;
 
@@ -233,7 +231,8 @@ void FlushMemorySnaps(long flag)
 				pos += 2;
 			}
 
-			(void)fwrite(buff, pos, 1, file);
+			written = fwrite(buff, pos, 1, file);
+			assert(written == (size_t)pos);
 		}
 
 		fclose(file);
