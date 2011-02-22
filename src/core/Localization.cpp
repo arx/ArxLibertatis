@@ -25,8 +25,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Localization.h"
 
 #include <list>
-#include <SFML/System/Unicode.hpp>
 
+#include "core/Common.h"
 #include "core/LocalizationHash.h"
 #include "gui/MenuWidgets.h"
 #include "io/PakManager.h"
@@ -45,7 +45,6 @@ bool isKey( const std::string& str );
 bool isSection( const std::string& str );
 std::string CleanKey( std::string str );
 std::string CleanSection( std::string str );
-
 
 /*****************************************************************
  * Checks a str for square brackets and makes sure they appear
@@ -258,11 +257,11 @@ void Localisation_Init()
 	loc_file_size *= ( 1.0 * sizeof(char)/sizeof(*Localisation) );
 
 	LogDebug << "Loaded localisation file: " << tx << " of size " << loc_file_size;
-	size_t nchars = sf::Unicode::GetUTF16Length( Localisation, &Localisation[loc_file_size] );
+	size_t nchars = GetUTF16Length( Localisation, &Localisation[loc_file_size] );
 	LogDebug << "UTF-16 size is " << nchars;
 	std::string out;
 	out.reserve(loc_file_size);
-	sf::Unicode::UTF16ToUTF8( Localisation, &Localisation[loc_file_size], std::back_inserter(out) );
+	UTF16ToUTF8( Localisation, &Localisation[loc_file_size], std::back_inserter(out) );
 	LogDebug << "Converted to UTF8 string of length " << out.size();
 
 	if ( Localisation && loc_file_size)

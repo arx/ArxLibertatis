@@ -1332,7 +1332,7 @@ void ARX_INTERACTIVE_APPLY_TWEAK_INFO(INTERACTIVE_OBJ * io)
 	for (long ii = 0; ii < io->Tweak_nb; ii++)
 	{
 		if (io->Tweaks[ii].type == TWEAK_REMOVE)
-			EERIE_MESH_TWEAK_Do(io, TWEAK_REMOVE, NULL);
+			EERIE_MESH_TWEAK_Do(io, TWEAK_REMOVE, string());
 		else if (io->Tweaks[ii].type == TWEAK_TYPE_SKIN)
 			EERIE_MESH_TWEAK_Skin(io->obj, io->Tweaks[ii].param1, io->Tweaks[ii].param2);
 		else if (io->Tweaks[ii].type == TWEAK_TYPE_ICON)

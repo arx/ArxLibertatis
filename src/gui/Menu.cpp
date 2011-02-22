@@ -61,8 +61,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 #include <fstream>
 
-#include <SFML/System/Unicode.hpp>
-
 #include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
 #include "graphics/particle/Particle.h"
@@ -360,7 +358,7 @@ void ARX_Menu_Resources_Create()
 		
 		ARXmenu.mda->str_cre_credits.reserve(creditsSize);
 		
-		sf::Unicode::UTF16ToUTF8(credits, &credits[creditsSize],
+		UTF16ToUTF8(credits, &credits[creditsSize],
 		                         std::back_inserter(ARXmenu.mda->str_cre_credits));
 		LogDebug << "Converted to UTF8 string of length " << ARXmenu.mda->str_cre_credits.size();
 		
