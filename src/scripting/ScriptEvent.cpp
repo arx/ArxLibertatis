@@ -133,7 +133,7 @@ SCRIPT_EVENT AS_EVENT[] =
 	std::string("ON COLLIDE_FIELD"),
 	std::string("ON CURSORMODE"),
 	std::string("ON EXPLORATIONMODE"),
-	std::string("")
+	std::string("") // TODO is this really needed?
 };
 
 void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT& es)
@@ -501,13 +501,16 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 			if (msg < MAX_SHORTCUT) {
 				pos = es->shortcut[msg];
 			} else {
-				if (((msg >= SM_MAXCMD))
-						&& (msg != SM_EXECUTELINE) && (evname.empty()))
-				{
+				
+				assert(msg != SM_EXECUTELINE && evname.empty());
+				
+				if(msg >= SM_MAXCMD) {
 					LogDebug << "unknown message " << msg;
 					return ACCEPT;
 				}
-
+				
+				// TODO will never be reached as MAX_SHORTCUT > SM_MAXCMD
+				
 				pos = FindScriptPos(es, AS_EVENT[msg].name);
 			}
 		}
