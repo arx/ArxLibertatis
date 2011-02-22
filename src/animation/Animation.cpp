@@ -3875,4 +3875,4 @@ void EERIE_ANIMMANAGER_ReloadAll()
 			EERIE_ANIMMANAGER_Load(pathhh);			
 		}
 	}
-}	
+}

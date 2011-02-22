@@ -1428,11 +1428,7 @@ void SmoothSurface(LPDIRECTDRAWSURFACE7 sSurface)
 				bb += b[n];
 
 				if ((r[n] == 0) && (g[n] == 0) && (b[n] == 0))
-				{
 					nbincrust++;
-				}
-
-
 			}
 
 			rr += r[0] * 7;
@@ -1445,7 +1441,8 @@ void SmoothSurface(LPDIRECTDRAWSURFACE7 sSurface)
 
 			long aa = 255 - nbincrust * 28;
 
-			if (aa < 30) aa = 0;
+			if (aa < 30)
+				aa = 0;
 
 			dr = ((rr >> (dwRShiftL)) << dwRShiftR) & dwRMask;
 			dg = ((gg >> (dwGShiftL)) << dwGShiftR) & dwGMask;
@@ -1455,7 +1452,8 @@ void SmoothSurface(LPDIRECTDRAWSURFACE7 sSurface)
 
 			if (32 == ddesc.ddpfPixelFormat.dwRGBBitCount)
 				pSrcData32[offset] = (DWORD)(dr + dg + db + da);
-			else pSrcData16[offset] = (WORD)(dr + dg + db + da);
+			else
+				pSrcData16[offset] = (WORD)(dr + dg + db + da);
 
 		}
 	}
@@ -1729,7 +1727,7 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 
 			if ((ddsd.dwWidth > 128) || (ddsd.dwHeight > 128))
 			{
-				float fVal = ARX_CLEAN_WARN_CAST_FLOAT(std::max(ddsd.dwWidth, ddsd.dwHeight));
+				float fVal = ARX_CLEAN_WARN_CAST_FLOAT(max(ddsd.dwWidth, ddsd.dwHeight));
 				fRatio = 128.0f / fVal;
 			}
 

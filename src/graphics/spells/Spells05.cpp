@@ -1093,7 +1093,7 @@ void CMultiPoisonProjectile::Create(EERIE_3D _eSrc, float _afBeta = 0)
 		pTab[i]->Create(_eSrc, afBeta + frand2() * 10.0f);
 		long lTime = ulDuration + (long) rnd() * 5000;
 		pTab[i]->SetDuration(lTime);
-		lMax = std::max(lMax, lTime);
+		lMax = max(lMax, lTime);
 
 		CPoisonProjectile * pPP = (CPoisonProjectile *) pTab[i];
 

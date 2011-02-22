@@ -702,8 +702,6 @@ struct EERIE_FRAME
 	ArxSound	sample;
 }; // Aligned 1 2 4
 
-
-
 struct EERIE_GROUP
 {
 	int		key;

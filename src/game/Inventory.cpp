@@ -351,7 +351,6 @@ void PutInFrontOfPlayer(INTERACTIVE_OBJ * io)
 		pos.x = io->pos.x;
 		pos.y = io->pos.y;
 		pos.z = io->pos.z;
-
 		io->soundtime = 0;
 		io->soundcount = 0;
 		EERIE_PHYSICS_BOX_Launch(io->obj, &pos, &vector);
@@ -388,7 +387,6 @@ void IO_Drop_Item(INTERACTIVE_OBJ * io_src, INTERACTIVE_OBJ * io)
 		pos.x = io->pos.x;
 		pos.y = io->pos.y;
 		pos.z = io->pos.z;
-
 		io->soundtime = 0;
 		io->soundcount = 0;
 		EERIE_PHYSICS_BOX_Launch_NOCOL(io, io->obj, &pos, &vector);
@@ -1507,8 +1505,8 @@ bool InPlayerInventoryPos(EERIE_S2D * pos)
 	else if (player.Interface & INTER_INVENTORYALL)
 	{
 		float fBag	= (player.bag - 1) * INTERFACE_RATIO(-121);
-
 		ARX_CHECK_SHORT(fBag);
+
 		short iY = ARX_CLEAN_WARN_CAST_SHORT(fBag);
 
 		if ((
@@ -1533,8 +1531,8 @@ bool InPlayerInventoryPos(EERIE_S2D * pos)
 			}
 
 			float fRatio	= INTERFACE_RATIO(121);
-
 			ARX_CHECK_SHORT(iY + fRatio);
+
 			iY	+= ARX_CLEAN_WARN_CAST_SHORT(fRatio);
 		}
 	}

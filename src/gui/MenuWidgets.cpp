@@ -28,6 +28,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstring>
 
 #include <algorithm>
+#include <map>
+#include <utility>
 
 #include "core/Core.h"
 #include "gui/Menu.h"
@@ -50,6 +52,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::wistringstream;
 using std::min;
 using std::max;
+
+typedef std::pair<HFONT, const char*> textsize_key;
+typedef std::pair<int, int> textsize_value;
+typedef std::map<textsize_key, textsize_value> textsize_map;
+static textsize_map cache;
 
 extern char* GetVersionString();
 
@@ -454,13 +461,6 @@ bool GetTextSizeNoCache(HFONT font, const char* text, int *width_out, int *heigh
 	}
 	return false;
 }
-
-#include <map>
-#include <utility>
-typedef std::pair<HFONT, const char*> textsize_key;
-typedef std::pair<int, int> textsize_value;
-typedef std::map<textsize_key, textsize_value> textsize_map;
-static textsize_map cache;
 
 void GetTextSizeCached(HFONT font, const char* text, int& width_out, int& height_out)
 {
@@ -2018,7 +2018,7 @@ bool Menu2_Render()
 	ARXTimeMenu = ARX_TIME_Get( false );
 	ARXDiffTimeMenu = ARXTimeMenu-ARXOldTimeMenu;
 
-	if (ARXDiffTimeMenu < 0) //this mean ArxTimeMenu is reseted
+	if (ARXDiffTimeMenu < 0) //this mean ArxTimeMenu is reset
 		ARXDiffTimeMenu = 0 ;
 
 	GDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTFP_LINEAR);
@@ -2282,7 +2282,6 @@ bool Menu2_Render()
 
 					pPanel->Move(0,
 								ARX_CLEAN_WARN_CAST_INT(fPosBDAY)    );
-
 
 					pWindowMenuConsole->AddMenu(pPanel);
 					pWindowMenu->AddConsole(pWindowMenuConsole);
@@ -3395,10 +3394,7 @@ bool Menu2_Render()
 
 
 					ARX_CHECK_INT(fPosBDAY);
-
 					pPanel->Move(0,ARX_CLEAN_WARN_CAST_INT(fPosBDAY));
-
-
 					pWindowMenuConsole->AddMenu(pPanel);
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 					pWindowMenu->eCurrentMenuState=QUIT;
@@ -3419,11 +3415,8 @@ bool Menu2_Render()
 			pWindowMenu->eCurrentMenuState=pMenu->eOldMenuWindowState;
 		}
 
-
 		ARX_CHECK_INT(ARXDiffTimeMenu);
-
 		pWindowMenu->Update(ARX_CLEAN_WARN_CAST_INT(ARXDiffTimeMenu));
-
 
 		if (pWindowMenu)
 		{
@@ -7075,7 +7068,6 @@ void CMenuSlider::RenderMouseOver()
 				(iY <= pRightButton->rZone.bottom))
 		{
 			pRightButton->Render();
-
 		}
 	}
 
@@ -7385,7 +7377,6 @@ void CDirectInput::GetInput()
 			fDY=( (float)iMouseRY ) * fSens * ( ( (float)DANAESIZY ) / 480.f );
 			fMouseAXTemp += fDX;
 			fMouseAYTemp += fDY;
-
 
 			ARX_CHECK_INT(fMouseAXTemp);
 			ARX_CHECK_INT(fMouseAYTemp);

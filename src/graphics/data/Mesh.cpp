@@ -399,7 +399,6 @@ EERIEPOLY * CheckInPoly(float x, float y, float z, float * needY)
 		pzi = sPz - 1;
 		pza = sPz - 1;
 	}
-
 	else if (rz < 40.f)
 	{
 		pzi = sPz - 1;
@@ -908,6 +907,7 @@ EERIEPOLY* EEIsUnderWaterFast(EERIE_3D * pos)
 		for ( short k = 0 ; k < feg->nbpolyin ; k++ )
 		{
 			ep				=	feg->polyin[k];
+
 			if ( ( ep->type & POLY_WATER ) && ( ep->max.y < pos->y ) && PointIn2DPolyXZ( ep, pos->x, pos->z ) )
 			{
 				found	=	ep;
@@ -1221,8 +1221,10 @@ D3DCOLOR GetColorz(float x, float y, float z)
 				{
 					p = ((el->fallend - dd) * el->falldiffmul);
 
-					if (p <= 0.f) dc = 0.f;
-					else dc = p * el->intensity * GLOBAL_LIGHT_FACTOR;
+					if (p <= 0.f)
+						dc = 0.f;
+					else
+						dc = p * el->intensity * GLOBAL_LIGHT_FACTOR;
 				}
 
 				dc *= 0.4f * 255.f; 
@@ -3737,7 +3739,7 @@ struct FAST_SCENE_HEADER
 #pragma pack(push,1)
 struct FAST_TEXTURE_CONTAINER
 {
-	TextureContainer * tc;
+	TextureContainer * tc; // TODO pointer in struct used for saving/loading - ugh
 	TextureContainer * temp;
 	char		fic[256];
 };

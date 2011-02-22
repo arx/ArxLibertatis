@@ -9541,9 +9541,7 @@ void ApplySPWep()
 			ioo->show=SHOW_FLAG_IN_INVENTORY;									
 
 			if (!CanBePutInInventory(ioo))
-			{
 				PutInFrontOfPlayer(ioo);
-			}
 
 			MakeSpCol();
 			strcpy(sp_max_ch,"!!!_Grosbillite_!!!");
@@ -9620,9 +9618,7 @@ void ApplySPBow()
 			ioo->show=SHOW_FLAG_IN_INVENTORY;									
 
 			if (!CanBePutInInventory(ioo))
-			{
 				PutInFrontOfPlayer(ioo);
-			}
 
 			MakeSpCol();
 			strcpy(sp_max_ch,"!!!_Bow to Samy & Anne_!!!");
@@ -9667,9 +9663,7 @@ void ApplySPArm()
 		ioo->show=SHOW_FLAG_IN_INVENTORY;									
 
 		if (!CanBePutInInventory(ioo))
-		{
 			PutInFrontOfPlayer(ioo);
-		}
 
 		MakeSpCol();
 		strcpy(sp_max_ch,"!! Toi aussi cherches les Cheats !!");

@@ -636,7 +636,7 @@ namespace ATHENA
 		{
 			delete sample;
 			
-			LogError << "Sample " << name << " not found";
+			LogWarning << "Sample " << name << " not found";
 
 			if (mutex) ReleaseMutex(mutex);
 

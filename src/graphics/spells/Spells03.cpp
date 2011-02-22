@@ -101,7 +101,7 @@ CFireBall::~CFireBall()
 void CFireBall::SetTTL(unsigned long aulTTL)
 {
 	unsigned long t = ulCurrentTime;
-	ulDuration = std::min(ulCurrentTime + aulTTL, ulDuration);
+	ulDuration = min(ulCurrentTime + aulTTL, ulDuration);
 	SetDuration(ulDuration);
 	ulCurrentTime = t;
 

@@ -67,23 +67,23 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct INTERACTIVE_OBJECTS
 {
-	long			init;
-	long			nbmax;
-	INTERACTIVE_OBJ ** iobj;
+	long              init;
+	long              nbmax;
+	INTERACTIVE_OBJ** iobj;
 };
 
 struct INVENTORY_SLOT
 {
-	INTERACTIVE_OBJ * io;
-	long			show;
+	INTERACTIVE_OBJ* io;
+	long             show;
 };
 
 struct INVENTORY_DATA
 {
 	INTERACTIVE_OBJ * io;
-	long			sizex;
-	long			sizey;
-	INVENTORY_SLOT	slot[20][20];
+	long              sizex;
+	long              sizey;
+	INVENTORY_SLOT    slot[20][20];
 };
 
 struct ARX_NODE

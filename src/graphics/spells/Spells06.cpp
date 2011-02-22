@@ -251,12 +251,12 @@ float CCreateField::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		}
 	}
 
-	ysize = std::min(1.0f, ulCurrentTime * 0.001f);
+	ysize = min(1.0f, ulCurrentTime * 0.001f);
 
 	if (ysize >= 1.0f)
 	{
-		size = std::min(1.0f, (ulCurrentTime - 1000) * 0.001f);
-		size = std::max(size, 0.1f);
+		size = min(1.0f, (ulCurrentTime - 1000) * 0.001f);
+		size = max(size, 0.1f);
 	}
 
 	// ondulation
@@ -732,7 +732,6 @@ void CRiseDead::Create(EERIE_3D aeSrc, float afBeta)
 	this->Split(v1b, 0, end, -80);
 
 	// check de la conformité du split
-
 	// sinon recalc de l'un de l'autre ou des deux
 	// espace min
 	if (0)
@@ -955,7 +954,6 @@ void CRiseDead::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 		vb[i].sx   = v1b[i].sx   - sizeF * fTempCos;
 		vb[i].sy   = v1b[i].sy;
-
 		vb[i].sz   = v1b[i].sz   - sizeF * fTempSin;
 
 		va[i].sx += rnd() * 0.5f * fTempCos;
@@ -2044,7 +2042,7 @@ float CParalyse::Render(LPDIRECT3DDEVICE7 pD3DDevice)
 				particle[j].siz = 20.f;
 
 
-				float fMin = std::min(2000 + (rnd() * 2000.f), duration - currduration + 500.0f * rnd());
+				float fMin = min(2000 + (rnd() * 2000.f), duration - currduration + 500.0f * rnd());
 				ARX_CHECK_ULONG(fMin);
 
 				particle[j].tolive = ARX_CLEAN_WARN_CAST_ULONG(fMin);
@@ -2085,7 +2083,7 @@ float CParalyse::Render(LPDIRECT3DDEVICE7 pD3DDevice)
 				particle[j].siz = 0.5f;
 
 
-				float fMin = std::min(2000 + (rnd() * 2000.f), duration - currduration + 500.0f * rnd());
+				float fMin = min(2000 + (rnd() * 2000.f), duration - currduration + 500.0f * rnd());
 				ARX_CHECK_ULONG(fMin);
 
 				particle[j].tolive = ARX_CLEAN_WARN_CAST_ULONG(fMin);

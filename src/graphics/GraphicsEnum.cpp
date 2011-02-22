@@ -104,7 +104,7 @@ int SortModesCallback(const VOID * arg1, const VOID * arg2)
 // Callback function for enumerating display modes.
 //************************************************************************************
 static HRESULT WINAPI ModeEnumCallback(DDSURFACEDESC2 * pddsd,
-									   VOID * pParentInfo)
+                                       VOID * pParentInfo)
 {
 	D3DEnum_DeviceInfo * pDevice = (D3DEnum_DeviceInfo *)pParentInfo;
 
@@ -193,8 +193,8 @@ static HRESULT WINAPI DeviceEnumCallback(TCHAR		*	strDesc,
 
 		// Accept modes that are compatable with the device
 		if (((dwDepth == 32) && (dwRenderDepths & DDBD_32)) ||
-				((dwDepth == 24) && (dwRenderDepths & DDBD_24)) ||
-				((dwDepth == 16) && (dwRenderDepths & DDBD_16)))
+		        ((dwDepth == 24) && (dwRenderDepths & DDBD_24)) ||
+		        ((dwDepth == 16) && (dwRenderDepths & DDBD_16)))
 		{
 			// Copy compatible modes to the list of device-supported modes
 			pDeviceInfo->pddsdModes[pDeviceInfo->dwNumModes++] = ddsdMode;
@@ -215,8 +215,8 @@ static HRESULT WINAPI DeviceEnumCallback(TCHAR		*	strDesc,
 	for (UINT i = 0 ; i < pDeviceInfo->dwNumModes ; i++)
 	{
 		if ((pDeviceInfo->pddsdModes[i].dwWidth  == 640) &&
-				(pDeviceInfo->pddsdModes[i].dwHeight == 480) &&
-				(pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == 16))
+		        (pDeviceInfo->pddsdModes[i].dwHeight == 480) &&
+		        (pDeviceInfo->pddsdModes[i].ddpfPixelFormat.dwRGBBitCount == 16))
 		{
 			pDeviceInfo->ddsdFullscreenMode = pDeviceInfo->pddsdModes[i];
 			pDeviceInfo->dwCurrentMode      = i;
@@ -287,7 +287,7 @@ static BOOL WINAPI DriverEnumCallback(GUID * pGUID, TCHAR * strDesc,
 
 	// Sort list of display modes
 	qsort(d3dDeviceInfo.pddsdModes, d3dDeviceInfo.dwNumModes,
-		  sizeof(DDSURFACEDESC2), SortModesCallback);
+	      sizeof(DDSURFACEDESC2), SortModesCallback);
 
 	// Now, enumerate all the 3D devices
 	pD3D->EnumDevices(DeviceEnumCallback, &d3dDeviceInfo);
@@ -319,9 +319,9 @@ HRESULT D3DEnum_EnumerateDevices(HRESULT(*AppConfirmFn)(DDCAPS *, D3DDEVICEDESC7
 
 	// Enumerate drivers, devices, and modes
 	DirectDrawEnumerateEx(DriverEnumCallback, NULL,
-						  DDENUM_ATTACHEDSECONDARYDEVICES |
-						  DDENUM_DETACHEDSECONDARYDEVICES |
-						  DDENUM_NONDISPLAYDEVICES);
+	                      DDENUM_ATTACHEDSECONDARYDEVICES |
+	                      DDENUM_DETACHEDSECONDARYDEVICES |
+	                      DDENUM_NONDISPLAYDEVICES);
 
 	// Make sure devices were actually enumerated
 	if (0 == g_dwNumDevicesEnumerated)
@@ -447,8 +447,8 @@ static VOID UpdateDialogControls(HWND hDlg, D3DEnum_DeviceInfo * pCurrentDevice,
 
 				TCHAR strMode[80];
 				wsprintf(strMode, _T("%ld x %ld x %ld"),
-						 pddsdMode->dwWidth, pddsdMode->dwHeight,
-						 pddsdMode->ddpfPixelFormat.dwRGBBitCount);
+				         pddsdMode->dwWidth, pddsdMode->dwHeight,
+				         pddsdMode->ddpfPixelFormat.dwRGBBitCount);
 
 				// Add mode desc to the combo box
 				DWORD dwItem = ComboBox_AddString(hwndMode, strMode);
@@ -506,7 +506,7 @@ static INT_PTR CALLBACK ChangeDeviceProc(HWND hDlg, UINT uiMsg, WPARAM wParam,
 		bCurrentStereo   = pCurrentDevice->bStereo;
 
 		UpdateDialogControls(hDlg, pCurrentDevice, dwCurrentMode,
-							 bCurrentWindowed, bCurrentStereo);
+		                     bCurrentWindowed, bCurrentStereo);
 
 		return true;
 	}
@@ -531,7 +531,7 @@ static INT_PTR CALLBACK ChangeDeviceProc(HWND hDlg, UINT uiMsg, WPARAM wParam,
 			// Handle the case when the user hits the OK button. Check if any
 			// of the options were changed
 			if (pDevice != pCurrentDevice || dwMode != dwCurrentMode ||
-					bWindowed != bCurrentWindowed || bStereo != bCurrentStereo)
+			        bWindowed != bCurrentWindowed || bStereo != bCurrentStereo)
 			{
 				// Return the newly selected device and its new properties
 				(*ppDeviceArg)              = pDevice;
@@ -582,9 +582,9 @@ static INT_PTR CALLBACK ChangeDeviceProc(HWND hDlg, UINT uiMsg, WPARAM wParam,
 HRESULT D3DEnum_UserChangeDevice(D3DEnum_DeviceInfo ** ppDevice)
 {
 	if (IDOK == DialogBoxParam((HINSTANCE)GetModuleHandle(NULL),
-							   MAKEINTRESOURCE(IDD_CHANGEDEVICE),
-							   GetForegroundWindow(),
-							   ChangeDeviceProc, (LPARAM)ppDevice))
+	                           MAKEINTRESOURCE(IDD_CHANGEDEVICE),
+	                           GetForegroundWindow(),
+	                           ChangeDeviceProc, (LPARAM)ppDevice))
 		return S_OK;
 
 	return E_FAIL;
@@ -595,7 +595,7 @@ HRESULT D3DEnum_UserChangeDevice(D3DEnum_DeviceInfo ** ppDevice)
 // Pick a default device, preferably hardware and desktop compatible.
 //************************************************************************************
 HRESULT D3DEnum_SelectDefaultDevice(D3DEnum_DeviceInfo ** ppDevice,
-									DWORD dwFlags)
+                                    DWORD dwFlags)
 {
 	// Check arguments
 	if (NULL == ppDevice)

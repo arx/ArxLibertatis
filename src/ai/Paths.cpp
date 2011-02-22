@@ -1942,11 +1942,10 @@ void CRuban::Update(unsigned long _ulTime)
 	num = 0;
 	nb = nbrubandef;
 
-	{
 	while (nb--)
+	{
 		AddRuban(&trubandef[num].first, trubandef[num].origin, trubandef[num].dec);
 		num++;
-
 	}
 }
 

@@ -124,7 +124,6 @@ extern TextureContainer * pTextureLoad;
 
 bool MENU_NoActiveWindow();
 void ClearGameDEVICE();
-
 void GetTextSize(HFONT _hFont, const _TCHAR * _lpszUText, int * _iWidth, int * _iHeight);
 
 //-----------------------------------------------------------------------------

@@ -1384,7 +1384,7 @@ void SetZBias(const LPDIRECT3DDEVICE7 _pd3dDevice, int _iZBias)
 	if (_iZBias < 0)
 	{
 		_iZBias = 0;
-		_iZBias = std::max(iCurrZBias, -_iZBias);
+		_iZBias = max(iCurrZBias, -_iZBias);
 	}
 
 	if (_iZBias == iCurrZBias) return;

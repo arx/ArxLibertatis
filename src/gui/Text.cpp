@@ -615,12 +615,10 @@ std::string GetFontName( const std::string& _lpszFileName)
 						SetFilePointer(hFile, 0, NULL, FILE_CURRENT);
 						SetFilePointer(hFile, FTH.ulOffset + FNH.usOffsetStorage + FNN.usStringOffset, NULL, FILE_BEGIN);
 
-
 						u16 szName[256];
 
 						ZeroMemory(szName, 256);
 						assert(FNN.usStringLength < 256);
-
 						iResult = ReadFile(hFile, szName, FNN.usStringLength, &dwRead, NULL);
 
 						if (iResult == 0)

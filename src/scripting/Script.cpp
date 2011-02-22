@@ -1091,8 +1091,8 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 					}
 
 					// Nuky - unreachable code
-					//*fcontent = 99999999999.f;
-					//return TYPE_FLOAT;
+					*fcontent = 99999999999.f;
+					return TYPE_FLOAT;
 				}
 
 				*lcontent = 0;

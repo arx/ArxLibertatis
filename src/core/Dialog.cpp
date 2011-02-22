@@ -2716,8 +2716,8 @@ INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 	}
 
 	return false;
-	// Nuky - unreachable code
-	//return WM_INITDIALOG == uMsg ? true : false;
+	// TODO Nuky - unreachable code
+	return WM_INITDIALOG == uMsg ? true : false;
 }
 extern long CHANGE_LEVEL_PROC_RESULT;
 
@@ -2798,7 +2798,7 @@ INT_PTR CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 	}
 
 	return false;
-	// Nuky - unreachable code
+	// TODO Nuky - unreachable code
 	return WM_INITDIALOG == uMsg ? true : false;
 }
 

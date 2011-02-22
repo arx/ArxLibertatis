@@ -140,14 +140,9 @@ long sp_max = 0;
 //-----------------------------------------------------------------------------
 // Player Anims FLAGS/Vars
 //-----------------------------------------------------------------------------
-
-
 ANIM_HANDLE * herowaitbook = NULL;
-
 ANIM_HANDLE * herowait2 = NULL;
 ANIM_HANDLE * herowait_2h = NULL;
-
-
 
 ARX_NECKLACE necklace;
 
@@ -215,7 +210,7 @@ bool ARX_PLAYER_IsInFightMode() {
 void ARX_KEYRING_Init()
 {
 	if (Keyring)
-	free((void *)Keyring);
+		free((void *)Keyring);
 
 	Keyring = NULL;
 	Keyring_Number = 0;
@@ -1990,8 +1985,8 @@ void ARX_PLAYER_Manage_Visual()
 
 		ANIM_USE * ause0 = &io->animlayer[0];
 		ANIM_USE * ause1 = &io->animlayer[1];
-
 		ANIM_USE * ause3 = &io->animlayer[3];
+
 		ause0->next_anim = NULL;
 		inter.iobj[0]->animlayer[1].next_anim = NULL;
 		inter.iobj[0]->animlayer[2].next_anim = NULL;
@@ -2392,7 +2387,6 @@ void ARX_PLAYER_Manage_Visual()
 							particle[j].exist = true;
 							particle[j].zdec = 0;
 
-
 							particle[j].ov.x	=	target.x + 1.f - rnd() * 2.f;
 							particle[j].ov.y	=	target.y + 1.f - rnd() * 2.f;
 							particle[j].ov.z	=	target.z + 1.f - rnd() * 2.f;
@@ -2759,7 +2753,6 @@ void ARX_PLAYER_Frame_Update()
 
 	PLAYER_ARMS_FOCAL = ARX_CLEAN_WARN_CAST_FLOAT(CURRENT_BASE_FOCAL);
 
-
 	ARX_PLAYER_ComputePlayerFullStats();
 
 	ARX_CHECK_LONG(player.Full_Skill_Mecanism);
@@ -3122,7 +3115,6 @@ void PlayerMovementIterate(float DeltaTime)
 				player.physics.velocity.z = 0.f;
 				player.physics.forces.x = 0.f;
 				player.physics.forces.z = 0.f;
-
 				player.falling = 0;
 
 				float fh = player.pos.y - Falling_Height;
@@ -3219,7 +3211,6 @@ void PlayerMovementIterate(float DeltaTime)
 		}
 
 		TheoricalMove *= jump_mul;
-
 		float mval = TheoricalMove / time * DeltaTime;
 
 		if (player.jumpphase == 2)
@@ -3290,7 +3281,6 @@ void PlayerMovementIterate(float DeltaTime)
 				player.physics.forces.y += JUMP_GRAVITY;
 			else
 				player.physics.forces.y += WORLD_GRAVITY;
-
 
 			float dist;
 			EERIE_3D mod_vect;
@@ -3386,11 +3376,8 @@ void PlayerMovementIterate(float DeltaTime)
 			player.physics.velocity.y = 0;
 		}
 		else if (!player.climbing)
-		{
-
-			if (player.pos.y >= posy) player.physics.velocity.y = 0;
-
-		}
+			if (player.pos.y >= posy)
+				player.physics.velocity.y = 0;
 
 		// Reset Forces
 		memset(&player.physics.forces, 0, sizeof(EERIE_3D));
@@ -3455,7 +3442,6 @@ void PlayerMovementIterate(float DeltaTime)
 			}
 			else
 			{
-
 				test = ARX_COLLISION_Move_Cylinder(&player.physics, inter.iobj[0], PLAYER_CYLINDER_STEP, levitate | CFLAG_EASY_SLIDING | CFLAG_PLAYER);
 
 				if ((!test)
@@ -3532,13 +3518,11 @@ void PlayerMovementIterate(float DeltaTime)
 			moveto.x = player.physics.cyl.origin.x;
 			moveto.y = player.physics.cyl.origin.y + PLAYER_BASE_HEIGHT;
 			moveto.z = player.physics.cyl.origin.z;
-
 			d = (float)(TRUEEEDistance3D(&player.pos, &moveto));
 		}
 	}
 	else
 	{
-
 		if (!EDITMODE)
 		{
 			EERIE_3D vect;
@@ -3778,7 +3762,6 @@ void ARX_PLAYER_Start_New_Quest()
 	KillAllDirectory(CurGamePath);
 	CreateDirectory(CurGamePath, NULL);
 	inter.iobj[0]->halo.flags = 0;
-
 }
 
 //-----------------------------------------------------------------------------
@@ -3793,7 +3776,6 @@ void ARX_PLAYER_AddBag()
 //-----------------------------------------------------------------------------
 bool ARX_PLAYER_CanStealItem(INTERACTIVE_OBJ * _io)
 {
-
 	if (_io->_itemdata->stealvalue > 0)
 		if ((player.Full_Skill_Stealth >= _io->_itemdata->stealvalue)
 		        &&	(_io->_itemdata->stealvalue < 100.f))

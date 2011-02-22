@@ -548,7 +548,6 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 {
 	unsigned long	tim		= ARXTimeUL();
 
-
 	if (CINEMASCOPE || BLOCK_PLAYER_CONTROLS) ARX_CONVERSATION_CheckAcceleratedSpeech();
 
 	for (long i = 0 ; i < MAX_ASPEECH ; i++)
@@ -730,7 +729,6 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 								if (((float)speech->iTimeScroll) >= fTimeOneLine)
 								{
 									float fResteLine	 = (float)sSize.cy - speech->fPixelScroll;
-
 									float fTimePlus		 = ((float)fResteLine * (float)FrameDiff) / (float)ARX_SOUND_GetDuration(speech->sample);
 									fDTime				-= fTimePlus;
 									speech->fPixelScroll = 0.f;

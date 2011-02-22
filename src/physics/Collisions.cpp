@@ -74,7 +74,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-
 //-----------------------------------------------------------------------------
 #define MAX_IN_SPHERE 20
 

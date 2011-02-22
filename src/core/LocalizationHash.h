@@ -58,11 +58,11 @@ class CLocalisation
 //-----------------------------------------------------------------------------
 class CLocalisationHash
 {
-public:
-		unsigned long	iSize;
-		long			iMask;
-		unsigned long	iFill;
-		CLocalisation	** pTab;
+	public:
+		unsigned long   iSize;
+		long            iMask;
+		unsigned long   iFill;
+		CLocalisation** pTab;
 	public:
 		unsigned long   iNbCollisions;
 		unsigned long   iNbNoInsert;
@@ -74,7 +74,7 @@ public:
 
 	public:
 		CLocalisationHash(int _iSize = 1024);
-	~CLocalisationHash();
+		~CLocalisationHash();
 
 		void ReHash();
 		bool AddElement(CLocalisation * _pLoc);

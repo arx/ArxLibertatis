@@ -5671,7 +5671,7 @@ static float _AvgFrameDiff = 150.f;
 
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
 
-	if (ARX_Menu_Render())
+	if ( ARX_Menu_Render() )
 	{
 		goto norenderend;
 	}
@@ -5855,9 +5855,8 @@ static float _AvgFrameDiff = 150.f;
 			if (inter.iobj[0]->ioflags & IO_FREEZESCRIPT) val=0;
 
 			// TODO remove
-			if(!inter.iobj[0]->obj) {
+			if(!inter.iobj[0]->obj)
 				LogError << "missing " << inter.iobj[0]->filename;
-			}
 
 			assert(inter.iobj[0]->obj != NULL);
 			EERIEDrawAnimQuat(	m_pd3dDevice,	

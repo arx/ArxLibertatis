@@ -100,6 +100,7 @@ struct ARX_CHANGELEVEL_INDEX
 	long	padd[256];
 
 };
+
 struct ARX_CHANGELEVEL_LIGHT
 {
 	short	status;
