@@ -94,8 +94,10 @@ else(MSVC)
 	# Warning level
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat=2 -Wundef -Wpointer-arith -Wlogical-op -Wcast-qual")
 	
-	# Consider also: -Wconversion -Wsign-conversion -Wmissing-declarations
-	#                -Wredundant-decls -Wsuggest-attribute=const
+	# Consider also: -Wconversion -Wsign-conversion
+	#                -Wmissing-declarations     to catch functions that should be marked as static
+	#                -Wredundant-decls          to catch extern definitions in .cpp files (with UNITYBUILD)
+	#                -Wsuggest-attribute=const  to add missing const qualifiers
 	
 	if(ARX_DEBUG)
 		#Debug
