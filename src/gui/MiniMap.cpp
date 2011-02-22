@@ -88,9 +88,7 @@ TextureContainer * pTexDetect = NULL;
 
 extern long FOR_EXTERNAL_PEOPLE;
 
-MAPMARKER_DATA * Mapmarkers = NULL;
-long Nb_Mapmarkers = 0;
-
+std::vector<MAPMARKER_DATA> Mapmarkers;
 
 //-----------------------------------------------------------------------------
 void ARX_MINIMAP_GetData(long SHOWLEVEL)
@@ -854,7 +852,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 		}
 
 		if (flag == 0)
-			for (long i = 0; i < Nb_Mapmarkers; i++)
+			for (long i = 0; i < Mapmarkers.size(); i++)
 			{
 				if (Mapmarkers[i].lvl == SHOWLEVEL + 1)
 				{
@@ -967,26 +965,12 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 void ARX_MAPMARKER_Init()
 {
-	if (Mapmarkers)
-	{
-		for (long i = 0; i < Nb_Mapmarkers; i++)
-		{
-			if (!Mapmarkers[i].tstring.empty())
-				//free(Mapmarkers[i].tstring);
-				Mapmarkers[i].tstring.clear();
-
-			//Mapmarkers[i].tstring = NULL;
-		}
-
-		free(Mapmarkers);
-	}
-
-	Mapmarkers = NULL;
-	Nb_Mapmarkers = 0;
+	Mapmarkers.clear();
 }
+
 long ARX_MAPMARKER_Get( const std::string& str)
 {
-	for (long i = 0; i < Nb_Mapmarkers; i++)
+	for (long i = 0; i < Mapmarkers.size(); i++)
 	{
 		if (!strcasecmp(Mapmarkers[i].string, str.c_str()))
 			return i;
@@ -994,6 +978,7 @@ long ARX_MAPMARKER_Get( const std::string& str)
 
 	return -1;
 }
+
 void ARX_MAPMARKER_Add(float x, float y, long lvl, const std::string& temp)
 {
 	long num = ARX_MAPMARKER_Get(temp);
@@ -1003,31 +988,18 @@ void ARX_MAPMARKER_Add(float x, float y, long lvl, const std::string& temp)
 		Mapmarkers[num].lvl = lvl;
 		Mapmarkers[num].x = x;
 		Mapmarkers[num].y = y;
-
-		if (!Mapmarkers[num].tstring.empty())
-			//free(Mapmarkers[num].tstring);
-			Mapmarkers[num].tstring.clear();
-
-		//Mapmarkers[num].tstring = NULL;
-		strcpy(Mapmarkers[num].string, temp.c_str());
+		Mapmarkers[num].tstring.clear();
+		Mapmarkers[num].string = temp;
 		return;
 	}
 
-	Mapmarkers = (MAPMARKER_DATA *)realloc(Mapmarkers, sizeof(MAPMARKER_DATA) * (Nb_Mapmarkers + 1));
+	MAPMARKER_DATA marker;
+	marker.lvl = lvl;
+	marker.x = x;
+	marker.y = y;
+	marker.string = temp;
 
-	// Memory Error Handling
-	if (!Mapmarkers)
-	{
-		Nb_Mapmarkers = 0;
-		return;
-	}
-
-	Mapmarkers[Nb_Mapmarkers].lvl = lvl;
-	Mapmarkers[Nb_Mapmarkers].x = x;
-	Mapmarkers[Nb_Mapmarkers].y = y;
-	Mapmarkers[Nb_Mapmarkers].tstring.clear();
-	strcpy(Mapmarkers[Nb_Mapmarkers].string, temp.c_str());
-	Nb_Mapmarkers++;
+	Mapmarkers.push_back( marker );
 }
 
 void ARX_MAPMARKER_Remove( const std::string& temp)
@@ -1036,23 +1008,5 @@ void ARX_MAPMARKER_Remove( const std::string& temp)
 
 	if (num < 0) return; // Doesn't exists
 
-	if (Nb_Mapmarkers <= 1)
-	{
-		ARX_MAPMARKER_Init();
-		return;
-	}
-
-	if (!Mapmarkers[num].tstring.empty())
-		//free(Mapmarkers[num].tstring);
-		Mapmarkers[num].tstring.clear();
-
-	//Mapmarkers[num].tstring = NULL;
-
-	for (long i = num; i < Nb_Mapmarkers - 1; i++)
-	{
-		memcpy(&Mapmarkers[i], &Mapmarkers[i+1], sizeof(MAPMARKER_DATA));
-	}
-
-	Mapmarkers = (MAPMARKER_DATA *)realloc(Mapmarkers, sizeof(MAPMARKER_DATA) * (Nb_Mapmarkers - 1));
-	Nb_Mapmarkers--;
+	Mapmarkers.erase( Mapmarkers.begin() + num );
 }

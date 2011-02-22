@@ -65,14 +65,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 typedef struct
 {
-    TextureContainer*   tc;
-    float               offsetx; // start of scene pos x
-    float               offsety;
-    float               xratio; // multiply x by xratio to obtain real-world pos
-    float               yratio;
-    float               width; // bitmap width/height
-    float               height;
-    unsigned char       revealed[MINIMAP_MAX_X][MINIMAP_MAX_Z];
+	TextureContainer*   tc;
+	float               offsetx; // start of scene pos x
+	float               offsety;
+	float               xratio; // multiply x by xratio to obtain real-world pos
+	float               yratio;
+	float               width; // bitmap width/height
+	float               height;
+	unsigned char       revealed[MINIMAP_MAX_X][MINIMAP_MAX_Z];
 } MINI_MAP_DATA;
 
 
@@ -85,7 +85,7 @@ void ARX_MINIMAP_Load_Offsets();
 void ARX_MINIMAP_FirstInit();
 void ARX_MINIMAP_Reset();
 void ARX_MINIMAP_PurgeTC();
- 
+
 void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag, long fl2 = 0);
 void ARX_MINIMAP_FirstInit();
 void ARX_MINIMAP_PurgeTC();
@@ -95,14 +95,14 @@ void ARX_MINIMAP_Reveal();
 
 typedef struct
 {
-    float   x;
-    float   y;
-    long    lvl;
-    char    string[64];
-    std::string tstring;
+	float   x;
+	float   y;
+	long    lvl;
+	std::string string;
+	std::string tstring;
 } MAPMARKER_DATA;
-extern MAPMARKER_DATA * Mapmarkers;
-extern long Nb_Mapmarkers;
+
+extern std::vector<MAPMARKER_DATA> Mapmarkers;
 
 void ARX_MAPMARKER_Remove( const std::string& temp);
 void ARX_MAPMARKER_Add(float x, float y, long lvl, const std::string& temp);

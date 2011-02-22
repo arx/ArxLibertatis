@@ -818,7 +818,7 @@ long ARX_CHANGELEVEL_Push_Player(long num)
 
 	long allocsize = sizeof(ARX_CHANGELEVEL_PLAYER) + Keyring_Number * sizeof(KEYRING_SLOT) + 48000;
 	allocsize += 80 * nb_PlayerQuest;
-	allocsize += sizeof(ARX_CHANGELEVEL_MAPMARKER_DATA) * Nb_Mapmarkers;
+	allocsize += sizeof(ARX_CHANGELEVEL_MAPMARKER_DATA) * Mapmarkers.size();
 
 
 retry:
@@ -970,7 +970,7 @@ retry:
 	asp->nb_PlayerQuest			= nb_PlayerQuest;
 	asp->keyring_nb				= Keyring_Number;
 	asp->Global_Magic_Mode		= GLOBAL_MAGIC_MODE;
-	asp->Nb_Mapmarkers			= Nb_Mapmarkers;
+	asp->Nb_Mapmarkers			= Mapmarkers.size();
 
 	asp->LAST_VALID_POS.x = LastValidPlayerPos.x;
 	asp->LAST_VALID_POS.y = LastValidPlayerPos.y;
@@ -1008,9 +1008,16 @@ retry:
 		pos += sizeof(KEYRING_SLOT);
 	}
 
+	// Copy all the mapmarkers into the savefile buffer
 	for (int i = 0; i < asp->Nb_Mapmarkers; i++)
 	{
-		memcpy((char *)(dat + pos), &Mapmarkers[i], sizeof(ARX_CHANGELEVEL_MAPMARKER_DATA));
+		ARX_CHANGELEVEL_MAPMARKER_DATA* dat = static_cast<ARX_CHANGELEVEL_MAPMARKER_DATA*>(dat+pos);
+		dat->x = Mapmarkers[i].x;
+		dat->y = Mapmarkers[i].y = dat->y;
+		dat->lvl = Mapmarkers[i].lvl = dat->lvl;
+		strncpy( dat->string, Mapmarkers[i].string.c_str(), 63 );
+		dat->string[63] = '\0';
+
 		pos += sizeof(ARX_CHANGELEVEL_MAPMARKER_DATA);
 	}
 
@@ -2205,8 +2212,6 @@ long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVEL_PLA
 		ARX_CHANGELEVEL_MAPMARKER_DATA * acmd = (ARX_CHANGELEVEL_MAPMARKER_DATA *)(dat + pos);
 		ARX_MAPMARKER_Add(acmd->x, acmd->y, acmd->lvl, acmd->string);
 		
-		// TODO this looks fishy
-		memcpy((char *)(dat + pos), &Mapmarkers[i], sizeof(ARX_CHANGELEVEL_MAPMARKER_DATA));
 		pos += sizeof(ARX_CHANGELEVEL_MAPMARKER_DATA);
 	}
 
