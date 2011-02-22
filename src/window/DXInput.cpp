@@ -1952,10 +1952,10 @@ INPUT_INFO	*io;
 		{
 			DIJOYSTATE	*js;
 			js=io->joystate;
-			if(js->rgbButtons[numb]&0x80) return TRUE;
+			if(js->rgbButtons[numb]&0x80) return true;
 		}
 	}
-	return FALSE;
+	return false;
 }
 /*-------------------------------------------------------------*/
 int DXI_GetIDJoyButtonPressed(int id)
