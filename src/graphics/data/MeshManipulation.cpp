@@ -69,7 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using std::max;
 
-void EERIE_MESH_ReleaseTransPolys(EERIE_3DOBJ * obj)
+void EERIE_MESH_ReleaseTransPolys(const EERIE_3DOBJ * obj)
 {
 	if (!obj) return;
 
@@ -140,9 +140,7 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const std::string& s1, const std::
 	}
 }
 
-//**************************************************************************************************************
-//**************************************************************************************************************
-long IsInSelection(EERIE_3DOBJ * obj, long vert, long tw)
+long IsInSelection(const EERIE_3DOBJ * obj, long vert, long tw)
 {
 	if (obj == NULL) return -1;
 
@@ -158,7 +156,7 @@ long IsInSelection(EERIE_3DOBJ * obj, long vert, long tw)
 
 	return -1;
 }
-long GetEquivalentVertex(EERIE_3DOBJ * obj, EERIE_VERTEX * vert)
+static long GetEquivalentVertex(const EERIE_3DOBJ * obj, const EERIE_VERTEX * vert)
 {
 	for (size_t i = 0; i < obj->vertexlist.size(); i++)
 	{
@@ -443,7 +441,7 @@ EERIE_3DOBJ * CreateIntermediaryMesh(EERIE_3DOBJ * obj1, EERIE_3DOBJ * obj2, lon
 	vector<EERIE_VERTEX> obj2vertexlist2 = obj2->vertexlist;
 
 	// Work will contain the Tweaked object
-	EERIE_3DOBJ * work = new EERIE_3DOBJ;
+	EERIE_3DOBJ * work = new EERIE_3DOBJ();
 	// TODO string breaker
 	memcpy(&work->pos, &obj1->pos, sizeof(EERIE_3D));
 	memcpy(&work->angle, &obj1->angle, sizeof(EERIE_3D));

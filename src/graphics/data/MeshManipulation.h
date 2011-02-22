@@ -62,13 +62,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define TWEAK_TYPE_MESH	64
 
 void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const std::string& path);
-void TweakMesh(INTERACTIVE_OBJ * io, long tw, char * temp);
-long IsInSelection(EERIE_3DOBJ * obj, long vert, long tw);
+long IsInSelection(const EERIE_3DOBJ * obj, long vert, long tw);
 void AddVertexIdxToGroup(EERIE_3DOBJ * obj, long group, long val);
 void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const std::string& skintochange, const std::string& skinname);
-void MESH_CACHE_Init();
 long ObjectAddMap(EERIE_3DOBJ * obj, TextureContainer * tc);
-long GetEquivalentVertex(EERIE_3DOBJ * obj, EERIE_VERTEX * vert);
-void EERIE_MESH_ReleaseTransPolys(EERIE_3DOBJ * obj);
+void EERIE_MESH_ReleaseTransPolys(const EERIE_3DOBJ * obj);
 
 #endif
