@@ -2540,7 +2540,7 @@ long GetNextWord( EERIE_SCRIPT * es, long i, std::string& temp, long flags )
 				// Found A tilded string...
 				if (end > start)
 				{
-					std::string tildedd(&temp[start], &temp[end - start]);
+					std::string tildedd(temp, start, end - start + 1);
 					char interp[256];
 					char result[512];
 
