@@ -62,9 +62,6 @@ if(MSVC)
 	# TEMP - disable warning caused by the F2L removal
 	add_definitions(/wd4244)    # conversion from 'float' to 'long', possible loss of data
 	
-	# SFML libraries
-	set(SFML_LIBS sfml-system-s)	
-	
 	# Windows specific libs
   set(DevIL_LIBS DevIL)
 	
@@ -121,9 +118,6 @@ else(MSVC)
 	add_definitions(-DHAVE_PTHREADS)
 	set(THREAD_LIBS pthread rt)
 	
-	#SFML libraries
-	set(SFML_LIBS sfml-system)
-	
 	# Linux specific libs
   set(DevIL_LIBS IL)
 	
@@ -157,7 +151,7 @@ add_executable(arx ${ALL_SOURCES} ${ALL_INCLUDES})
 set(ARX_WINDOWS_LIBS gdi32 shell32 comdlg32 ole32 comctl32)
 set(ARX_GRAPHICS_LIBS dxguid dinput ddraw)
 set(ARX_SOUND_LIBS dsound)
-target_link_libraries(arx ${ARX_SOUND_LIBS} ${ARX_GRAPHICS_LIBS} ${ARX_WINDOWS_LIBS} z ${DevIL_LIBS} ${SFML_LIBS} ${THREAD_LIBS})
+target_link_libraries(arx ${ARX_SOUND_LIBS} ${ARX_GRAPHICS_LIBS} ${ARX_WINDOWS_LIBS} z ${DevIL_LIBS} ${THREAD_LIBS})
 
 add_custom_target(remake
 	#clean and compile with 1 thread per core

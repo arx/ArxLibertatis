@@ -1795,7 +1795,7 @@ EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj)
 	return nouvo;
 }
 //-----------------------------------------------------------------------------------------------------
-long EERIE_OBJECT_GetSelection(EERIE_3DOBJ * obj, const char * selname)
+long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const char * selname)
 {
 	if (!obj) return -1;
 

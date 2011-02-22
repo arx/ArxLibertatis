@@ -57,8 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <assert.h>
 
-#include <SFML/System/Unicode.hpp>
-
 #include "core/Localization.h"
 #include "core/Core.h"
 #include "graphics/Draw.h"
@@ -631,7 +629,7 @@ std::string GetFontName( const std::string& _lpszFileName)
 						
 						string result;
 						result.reserve(len);
-						sf::Unicode::UTF16ToUTF8(szName, &szName[len], std::back_inserter(result));
+						UTF16ToUTF8(szName, &szName[len], std::back_inserter(result));
 						
 						CloseHandle(hFile);
 						return result;
