@@ -490,9 +490,9 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	for (size_t i = 0; i < obj2->actionlist.size(); i++)
 	{
 		if ((IsInSelection(obj2, obj2->actionlist[i].idx, tw2) != -1)
-		        || (!strcasecmp(obj1->actionlist[i].name.c_str(), "head2chest"))
-		        || (!strcasecmp(obj1->actionlist[i].name.c_str(), "chest2leggings"))
-		   ) // TODO should this be obj2 instead of obj1?
+		        || (!strcasecmp(obj2->actionlist[i].name.c_str(), "head2chest"))
+		        || (!strcasecmp(obj2->actionlist[i].name.c_str(), "chest2leggings"))
+		   ) // Was obj1 in both strcasecmp calls
 		{
 			ObjectAddAction(work, obj2->actionlist[i].name.c_str(), obj2->actionlist[i].act,
 			                obj2->actionlist[i].sfx, &obj2vertexlist2[obj2->actionlist[i].idx]);
