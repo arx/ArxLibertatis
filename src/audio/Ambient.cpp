@@ -1236,11 +1236,15 @@ namespace ATHENA
 		}
 		else inst = _inst[i_id];
 
-
-		if (!key.delay_min && !key.delay_max)
+		if (!key.delay_min && !key.delay_max) {
 			inst->Play(key.loopc + 1);
-		else
+		} else {
+			// FIXME: I'm not quite sure why this test works
+			if (track.name == NULL)
+				return;
+
 			inst->Play();
+		}
 
 		key.n_start = KEY_CONTINUE;
 	}
