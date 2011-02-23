@@ -5,7 +5,7 @@ Port to x64_86 / GCC / OpenGL / Unix
 
 ## Dependencies
 
-Currently wine and libjpeg 32bit, and maybe some other headers like zlib.h.
+Currently wine, DevIL (libil.so), zlib (libz.so). All of these must be available as 32bit libraries.
 Wine and 32bit is only a temporary solution.
 
 ## Compile
@@ -37,6 +37,10 @@ Run this form the root directory:
 ## Chat
 
 \#arxfatalis on irc.freenode.net
+
+## Wiki
+
+http://arx.parpg.net/
 
 ## Reddit
 
