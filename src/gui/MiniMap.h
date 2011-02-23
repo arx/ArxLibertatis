@@ -102,7 +102,6 @@ struct MAPMARKER_DATA {
 };
 
 extern std::vector<MAPMARKER_DATA> Mapmarkers;
-extern long Nb_Mapmarkers;
 
 void ARX_MAPMARKER_Remove( const std::string& temp);
 void ARX_MAPMARKER_Add(float x, float y, long lvl, const std::string& temp);

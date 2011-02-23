@@ -818,7 +818,7 @@ long ARX_CHANGELEVEL_Push_Player(long num)
 
 	long allocsize = sizeof(ARX_CHANGELEVEL_PLAYER) + Keyring_Number * sizeof(KEYRING_SLOT) + 48000;
 	allocsize += 80 * nb_PlayerQuest;
-	allocsize += sizeof(ARX_CHANGELEVEL_MAPMARKER_DATA) * Nb_Mapmarkers;
+	allocsize += sizeof(ARX_CHANGELEVEL_MAPMARKER_DATA) * Mapmarkers.size();
 
 
 retry:
@@ -970,7 +970,7 @@ retry:
 	asp->nb_PlayerQuest			= nb_PlayerQuest;
 	asp->keyring_nb				= Keyring_Number;
 	asp->Global_Magic_Mode		= GLOBAL_MAGIC_MODE;
-	asp->Nb_Mapmarkers			= Nb_Mapmarkers;
+	asp->Nb_Mapmarkers			= Mapmarkers.size();
 
 	asp->LAST_VALID_POS.x = LastValidPlayerPos.x;
 	asp->LAST_VALID_POS.y = LastValidPlayerPos.y;

@@ -89,7 +89,6 @@ TextureContainer * pTexDetect = NULL;
 extern long FOR_EXTERNAL_PEOPLE;
 
 std::vector<MAPMARKER_DATA> Mapmarkers;
-long Nb_Mapmarkers = 0;
 
 
 //-----------------------------------------------------------------------------
@@ -866,7 +865,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 		}
 
 		if (flag == 0)
-			for (long i = 0; i < Nb_Mapmarkers; i++)
+			for (size_t i = 0; i < Mapmarkers.size(); i++)
 			{
 				if (Mapmarkers[i].lvl == SHOWLEVEL + 1)
 				{
@@ -973,18 +972,18 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 	}
 }
 
-void ARX_MAPMARKER_Init()
-{
+void ARX_MAPMARKER_Init() {
 	Mapmarkers.clear();
 }
-long ARX_MAPMARKER_Get( const std::string& str)
-{
-	for (long i = 0; i < Nb_Mapmarkers; i++)
-		if (!strcasecmp(Mapmarkers[i].string, str.c_str()))
-			return i;
 
+long ARX_MAPMARKER_Get( const std::string& str) {
+	for(size_t i = 0; i < Mapmarkers.size(); i++) {
+		if(!strcasecmp(Mapmarkers[i].string, str.c_str()))
+			return i;
+	}
 	return -1;
 }
+
 void ARX_MAPMARKER_Add(float x, float y, long lvl, const std::string& temp)
 {
 	long num = ARX_MAPMARKER_Get(temp);
@@ -1001,15 +1000,14 @@ void ARX_MAPMARKER_Add(float x, float y, long lvl, const std::string& temp)
 		strcpy(Mapmarkers[num].string, temp.c_str());
 		return;
 	}
-
+	
 	Mapmarkers.push_back(MAPMARKER_DATA());
-
-	Mapmarkers[Nb_Mapmarkers].lvl = lvl;
-	Mapmarkers[Nb_Mapmarkers].x = x;
-	Mapmarkers[Nb_Mapmarkers].y = y;
-	Mapmarkers[Nb_Mapmarkers].tstring.clear();
-	strcpy(Mapmarkers[Nb_Mapmarkers].string, temp.c_str());
-	Nb_Mapmarkers++;
+	
+	Mapmarkers.back().lvl = lvl;
+	Mapmarkers.back().x = x;
+	Mapmarkers.back().y = y;
+	Mapmarkers.back().tstring.clear();
+	strcpy(Mapmarkers.back().string, temp.c_str());
 }
 
 void ARX_MAPMARKER_Remove( const std::string& temp)
@@ -1019,6 +1017,4 @@ void ARX_MAPMARKER_Remove( const std::string& temp)
 	if (num < 0) return; // Doesn't exists
 
 	Mapmarkers.erase( Mapmarkers.begin() + num );
-	Nb_Mapmarkers--;
-
 }
