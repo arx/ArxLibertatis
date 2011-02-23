@@ -7605,7 +7605,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 			{
 				if (spellicons[i].bSecret == false)
 				{
-					long j = 0;
 					bool bOk = true;
 
 					for(long j = 0; j < 4 && spellicons[i].symbols[j] != 255; ++j) {
