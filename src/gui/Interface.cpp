@@ -7233,11 +7233,11 @@ void QuestBook_Update()
 		lLenght -= lLengthDraw;
 		lLenghtCurr += lLengthDraw;
 
-		if (lCurPage + 1 < MAX_PAGES)
+		if (lCurPage + 1 < (long)MAX_PAGES)
 			QuestBook.pages[lCurPage++] = lLenghtCurr;
 	}
 
-	if (lCurPage + 1 < MAX_PAGES)
+	if (lCurPage + 1 < (long)MAX_PAGES)
 		QuestBook.pages[lCurPage++] = -1;
 	else
 		QuestBook.pages[MAX_PAGES-1] = -1;
