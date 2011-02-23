@@ -58,8 +58,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ai/PathFinderManager.h"
 
 #include "ai/PathFinder.h"
+#include "graphics/Math.h"
 #include "io/IO.h"
 #include "scene/Light.h"
+#include "scene/Interactive.h"
 
 
 static const float PATHFINDER_HEURISTIC_MIN(0.2F);

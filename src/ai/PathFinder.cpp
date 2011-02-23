@@ -27,10 +27,26 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <ctime>
 
-const Float MIN_RADIUS(110.F);
+#include "graphics/Math.h"
+#include "graphics/data/Mesh.h"
 
-Float fac3(300.0F);
-Float fac5(130.0F);
+#include "scene/Interactive.h"
+
+struct PathFinder::Node {
+	
+	long data;
+	float g_cost;
+	float f_cost;
+	Node * parent;
+	
+	Node(long _data, Node * _parent) : data(_data), parent(_parent) { }
+	
+};
+
+const float MIN_RADIUS(110.F);
+
+float fac3(300.0F);
+float fac5(130.0F);
 
 static const unsigned long SEED = 43;
 static const unsigned long MODULO = 2147483647;
@@ -44,17 +60,17 @@ static unsigned long Random()
 	return __current = (__current * FACTOR + SHIFT) % MODULO;
 }
 
-ULong InitSeed()
+unsigned long InitSeed()
 {
-	__current = (ULong)time(NULL);
+	__current = (unsigned long)time(NULL);
 	return Random();
 }
 
 #define frnd() (1.0F - 2 * rnd())
 
-PathFinder::PathFinder(const ULong & map_size, _ANCHOR_DATA * map_data,
-                       const ULong & slight_count, EERIE_LIGHT ** slight_list,
-                       const ULong & dlight_count, EERIE_LIGHT ** dlight_list) :
+PathFinder::PathFinder(unsigned long map_size, _ANCHOR_DATA * map_data,
+                       unsigned long slight_count, EERIE_LIGHT ** slight_list,
+                       unsigned long dlight_count, EERIE_LIGHT ** dlight_list) :
 	radius(MINOS_DEFAULT_RADIUS),
 	height(MINOS_DEFAULT_HEIGHT),
 	heuristic(MINOS_DEFAULT_HEURISTIC),
@@ -79,12 +95,12 @@ PathFinder::~PathFinder()
 // Setup                                                                     //
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
-void PathFinder::SetHeuristic(const Float & _heuristic)
+void PathFinder::SetHeuristic(float _heuristic)
 {
 	heuristic = _heuristic >= MINOS_HEURISTIC_MAX ? 0.5F : _heuristic < 0.0F ? MINOS_HEURISTIC_MIN : _heuristic;
 }
 
-void PathFinder::SetCylinder(const Float & _radius, const Float & _height)
+void PathFinder::SetCylinder(float _radius, float _height)
 {
 	radius = _radius;
 	height = _height;
@@ -95,33 +111,33 @@ void PathFinder::SetCylinder(const Float & _radius, const Float & _height)
 // Methods                                                                   //
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
-UBool PathFinder::Move(const ULong & flags, const ULong & f, const ULong & t, SLong * rstep, UWord ** rlist)
+bool PathFinder::Move(unsigned long flags, unsigned long f, unsigned long t, long * rstep, unsigned short ** rlist)
 {
 
-	MINOSNode * node, *child;
+	Node * node, *child;
 	long _from, _to;
 
 	//Init open and close lists
 	Clean();
 
-	if (!rlist || !rstep)	return UFALSE;
+	if (!rlist || !rstep)	return false;
 
 	if (f == t)
 	{
-		*rlist = (UWord *)malloc(sizeof(UWord));
-		** rlist = (UWord)t;
+		*rlist = (unsigned short *)malloc(sizeof(unsigned short));
+		** rlist = (unsigned short)t;
 		*rstep = 1;
-		return UTRUE;
+		return true;
 	}
 
 	_from = f, _to = t;
 
 	//Create start node and put it on open list
-	if (!(node = CreateNode(_from, NULL)))
+	if (!(node = new Node(_from, NULL)))
 	{
 		Clean(); // Cyril
 		*rstep = 0;
-		return UFALSE;
+		return false;
 	}
 
 	node->g_cost = 0;
@@ -134,7 +150,7 @@ UBool PathFinder::Move(const ULong & flags, const ULong & f, const ULong & t, SL
 	//	free(node);
 	//	Clean(); // Cyril
 	//	*rstep = 0;
-	//	return UFALSE;
+	//	return false;
 	//}
 
 	//A* main loop
@@ -148,39 +164,39 @@ UBool PathFinder::Move(const ULong & flags, const ULong & f, const ULong & t, SL
 			//	free(node);
 			//	Clean(); 
 			//	*rstep = 0;
-			//	return UFALSE;
+			//	return false;
 			//}
 
 			if (BuildPath(rlist, rstep))
 			{
 				Clean(); 
 				*rstep = 0;
-				return UFALSE;
+				return false;
 			}
 
 			Clean(); // Cyril
-			return UTRUE;
+			return true;
 		}
 
 		//Otherwise, generate child from current node
 		long _pipo(node->data);
 
-		for (SWord i(0); i < map_d[_pipo].nblinked; i++)
+		for (short i(0); i < map_d[_pipo].nblinked; i++)
 		{
 			//Create new child
-			child = CreateNode(map_d[_pipo].linked[i], node);
+			child = new Node(map_d[_pipo].linked[i], node);
 
 			if (!child)
 			{
-				free(node);
+				delete node;
 				Clean(); // Cyril
 				*rstep = 0;
-				return UFALSE;
+				return false;
 			}
 
 			//Cost to reach this node
 			if ((map_d[child->data].flags & ANCHOR_FLAG_BLOCKED) || map_d[child->data].height > height || map_d[child->data].radius < radius)
-				free(child);
+				delete child;
 			else
 			{
 				child->g_cost = node->g_cost + Distance(map_d[child->data].pos, map_d[node->data].pos);
@@ -194,13 +210,15 @@ UBool PathFinder::Move(const ULong & flags, const ULong & f, const ULong & t, SL
 					//	free(node);
 					//	free(child);
 					//	*rstep = 0;
-					//	return UFALSE;
+					//	return false;
 					//}
 
 					//Get total cost for this node
 					child->f_cost = heuristic * child->g_cost + (1.0F - heuristic) * Distance(map_d[child->data].pos, map_d[_to].pos);
 				}
-				else free(child);
+				else {
+					delete child;
+				}
 			}
 		}
 
@@ -210,43 +228,43 @@ UBool PathFinder::Move(const ULong & flags, const ULong & f, const ULong & t, SL
 		//	free(node);
 		//	Clean(); // Cyril
 		//	*rstep = 0;
-		//	return UFALSE;
+		//	return false;
 		//}
 	}
 
 	//No path found!!!
 	Clean(); 
 	*rstep = 0;
-	return UFALSE;
+	return false;
 }
 
-UBool PathFinder::Flee(const ULong & flags, const ULong & f, const EERIE_3D & danger, const Float & safe_dist, SLong * rstep, UWord ** rlist)
+bool PathFinder::Flee(unsigned long flags, unsigned long f, const EERIE_3D & danger, float safe_dist, long * rstep, unsigned short ** rlist)
 {
-	MINOSNode * node, *child;
+	Node * node, *child;
 	long _from;
 
 	//Init open and close lists
 	Clean();
 
 	if (!rlist || !rstep)
-		return UFALSE;
+		return false;
 
 	if (Distance(map_d[f].pos, danger) >= safe_dist)
 	{
-		*rlist = (UWord *)malloc(sizeof(UWord));
-		** rlist = (UWord)f;
+		*rlist = (unsigned short *)malloc(sizeof(unsigned short));
+		** rlist = (unsigned short)f;
 		*rstep = 1;
-		return UTRUE;
+		return true;
 	}
 
 	_from = f;
 
 	//Create start node and put it on open list
-	if (!(node = CreateNode(_from, NULL)))
+	if (!(node = new Node(_from, NULL)))
 	{
 		Clean(); 
 		*rstep = 0;
-		return UFALSE;
+		return false;
 	}
 
 	node->g_cost = 0;
@@ -266,7 +284,7 @@ UBool PathFinder::Flee(const ULong & flags, const ULong & f, const EERIE_3D & da
 	//	free(node);
 	//	Clean(); 
 	//	*rstep = 0;
-	//	return UFALSE;
+	//	return false;
 	//}
 
 	//A* main loop
@@ -279,39 +297,38 @@ UBool PathFinder::Flee(const ULong & flags, const ULong & f, const EERIE_3D & da
 			// TODO on error {
 			//	free(node);
 			//	*rstep = 0;
-			//	return UFALSE;
+			//	return false;
 			//}
 
-			//BuildPath(rlist, rstep);
-			if (BuildPath(rlist, rstep))
+			if (!BuildPath(rlist, rstep))
 			{
 				Clean(); 
 				*rstep = 0;
-				return UFALSE;
+				return false;
 			}
 
 			Clean(); 
-			return UTRUE;
+			return true;
 		}
 
 		//Otherwise, generate child from current node
 		long _pipo = node->data;
 
-		for (SWord i(0); i < map_d[_pipo].nblinked; i++)
+		for (short i(0); i < map_d[_pipo].nblinked; i++)
 		{
-			child = CreateNode(map_d[_pipo].linked[i], node);
+			child = new Node(map_d[_pipo].linked[i], node);
 
 			if (!child)
 			{
-				free(node);
+				delete node;
 				Clean(); 
 				*rstep = 0;
-				return UFALSE;
+				return false;
 			}
 
 			//Cost to reach this node
 			if ((map_d[child->data].flags & ANCHOR_FLAG_BLOCKED) || map_d[child->data].height > height || map_d[child->data].radius < radius)
-				free(child);
+				delete child;
 			else
 			{
 				child->g_cost = node->g_cost + Distance(map_d[child->data].pos, map_d[node->data].pos);
@@ -321,14 +338,14 @@ UBool PathFinder::Flee(const ULong & flags, const ULong & f, const EERIE_3D & da
 
 				if (Check(child))
 				{
-					Float dist;
+					float dist;
 
 					open.push_back(child);
 					// TODO on error {
 					//	free(node);
 					//	free(child);
 					//	*rstep = 0;
-					//	return UFALSE;
+					//	return false;
 					//}
 
 					//Get total cost for this node
@@ -338,7 +355,9 @@ UBool PathFinder::Flee(const ULong & flags, const ULong & f, const EERIE_3D & da
 					if ((dist = safe_dist - dist) > 0.0F)
 						child->f_cost += fac5 * dist;
 				}
-				else free(child);
+				else {
+					delete child;
+				}
 			}
 		}
 
@@ -348,7 +367,7 @@ UBool PathFinder::Flee(const ULong & flags, const ULong & f, const EERIE_3D & da
 		//	free(node);
 		//	Clean(); 
 		//	*rstep = 0;
-		//	return UFALSE;
+		//	return false;
 		//}
 	}
 
@@ -356,42 +375,42 @@ UBool PathFinder::Flee(const ULong & flags, const ULong & f, const EERIE_3D & da
 	*rstep = 0;
 	
 	//No path found!!!
-	return UFALSE;
+	return false;
 }
 
-UBool PathFinder::WanderAround(const ULong & flags, const ULong & f, const Float & rad, SLong * rstep, UWord ** rlist)
+bool PathFinder::WanderAround(unsigned long flags, unsigned long f, float rad, long * rstep, unsigned short ** rlist)
 {
 	
-	Void * ptr;
-	ULong step_c, last, next;
-	SLong temp_c(0), path_c(0);
-	UWord * temp_d = NULL, *path_d = NULL;
+	void * ptr;
+	unsigned long step_c, last, next;
+	long temp_c(0), path_c(0);
+	unsigned short * temp_d = NULL, *path_d = NULL;
 
 	Clean(); 
 	//Check if params are valid
-	if (!rlist || !rstep) return UFALSE;
+	if (!rlist || !rstep) return false;
 
 	if (!map_d[f].nblinked)
 	{
 		*rstep = 0;
-		return UFALSE;
+		return false;
 	}
 
 	if (rad <= MIN_RADIUS)
 	{
-		*rlist = (UWord *)malloc(sizeof(UWord));
-		** rlist = (UWord)f;
+		*rlist = (unsigned short *)malloc(sizeof(unsigned short));
+		** rlist = (unsigned short)f;
 		*rstep = 1;
-		return UTRUE;
+		return true;
 	}
 
 	last = f;
 
 	step_c = Random() % 5 + 5;
 
-	for (ULong i(0); i < step_c; i++)
+	for (unsigned long i(0); i < step_c; i++)
 	{
-		ULong nb = ULong(rad * rnd() * ( 1.0f / 50 ));
+		unsigned long nb = (unsigned long)(rad * rnd() * ( 1.0f / 50 ));
 		long _current = f;
 
 		while (nb)
@@ -404,10 +423,10 @@ UBool PathFinder::WanderAround(const ULong & flags, const ULong & f, const Float
 
 				while (notfinished--)
 				{
-					ULong r = ULong(rnd() * (Float)map_d[_current].nblinked);
+					unsigned long r = (unsigned long)(rnd() * (float)map_d[_current].nblinked);
 
-					if (r >= (ULong)map_d[_current].nblinked)
-						r = ULong(map_d[_current].nblinked - 1);
+					if (r >= (unsigned long)map_d[_current].nblinked)
+						r = (unsigned long)(map_d[_current].nblinked - 1);
 
 					if ((!(map_d[map_d[_current].linked[r]].flags & ANCHOR_FLAG_BLOCKED))
 					        &&	(map_d[map_d[_current].linked[r]].nblinked)
@@ -429,18 +448,18 @@ UBool PathFinder::WanderAround(const ULong & flags, const ULong & f, const Float
 
 		if (Move(flags, last, next, &temp_c, &temp_d) && temp_c)
 		{
-			if (!(ptr = realloc(path_d, sizeof(UWord) * (path_c + temp_c))))
+			if (!(ptr = realloc(path_d, sizeof(unsigned short) * (path_c + temp_c))))
 			{
 				free(temp_d);
 				free(path_d);
 				Clean(); 
 				*rstep = 0;
-				return UFALSE;
+				return false;
 			}
 
 			//Add temp path to wander around path
-			path_d = (UWord *)ptr;
-			memcpy(&path_d[path_c], temp_d, sizeof(UWord) * temp_c);
+			path_d = (unsigned short *)ptr;
+			memcpy(&path_d[path_c], temp_d, sizeof(unsigned short) * temp_c);
 			path_c += temp_c;
 
 			//Free temp path
@@ -455,21 +474,21 @@ UBool PathFinder::WanderAround(const ULong & flags, const ULong & f, const Float
 	if (!path_c || !Move(flags, last, f, &temp_c, &temp_d))
 	{
 		*rstep = 0;
-		return UFALSE;
+		return false;
 	}
 
-	if (!(ptr = realloc(path_d, sizeof(UWord) * (path_c + temp_c))))
+	if (!(ptr = realloc(path_d, sizeof(unsigned short) * (path_c + temp_c))))
 	{
 		free(temp_d);
 		free(path_d);
 		Clean(); 
 		*rstep = 0;
-		return UFALSE;
+		return false;
 	}
 
 	//Add temp path to wander around path
-	path_d = (UWord *)ptr;
-	memcpy(&path_d[path_c], temp_d, sizeof(UWord) * temp_c);
+	path_d = (unsigned short *)ptr;
+	memcpy(&path_d[path_c], temp_d, sizeof(unsigned short) * temp_c);
 	path_c += temp_c;
 
 	free(temp_d);
@@ -477,15 +496,15 @@ UBool PathFinder::WanderAround(const ULong & flags, const ULong & f, const Float
 	*rlist = path_d;
 	*rstep = path_c;
 	Clean(); 
-	return UTRUE;
+	return true;
 }
 
-ULong PathFinder::GetNearestNode(const EERIE_3D & pos) const
+unsigned long PathFinder::GetNearestNode(const EERIE_3D & pos) const
 {
-	ULong best(0);
-	Float dist, b_dist(FLT_MAX);
+	unsigned long best(0);
+	float dist, b_dist(FLT_MAX);
 
-	for (ULong i(0); i < map_s; i++)
+	for (unsigned long i(0); i < map_s; i++)
 	{
 		dist = Distance(map_d[i].pos, pos);
 
@@ -495,12 +514,12 @@ ULong PathFinder::GetNearestNode(const EERIE_3D & pos) const
 	return best;
 }
 
-UBool PathFinder::LookFor(const ULong & flags, const ULong & f, const EERIE_3D & pos, const Float & radius, SLong * rstep, UWord ** rlist)
+bool PathFinder::LookFor(unsigned long flags, unsigned long f, const EERIE_3D & pos, float radius, long * rstep, unsigned short ** rlist)
 {
-	Void * ptr;
-	ULong step_c, to, last, next;
-	SLong temp_c(0), path_c(0);
-	UWord * temp_d = NULL, *path_d = NULL;
+	void * ptr;
+	unsigned long step_c, to, last, next;
+	long temp_c(0), path_c(0);
+	unsigned short * temp_d = NULL, *path_d = NULL;
 
 	Clean(); 
 	//Check if params are valid
@@ -508,16 +527,16 @@ UBool PathFinder::LookFor(const ULong & flags, const ULong & f, const EERIE_3D &
 	{
 		Clean();
 		*rstep = 0;
-		return UFALSE;
+		return false;
 	}
 
 	if (radius <= MIN_RADIUS)
 	{
-		*rlist = (UWord *)malloc(sizeof(UWord));
-		** rlist = (UWord)f;
+		*rlist = (unsigned short *)malloc(sizeof(unsigned short));
+		** rlist = (unsigned short)f;
 		*rstep = 1;
 		Clean();
-		return UTRUE;
+		return true;
 	}
 
 	to = GetNearestNode(pos);
@@ -526,7 +545,7 @@ UBool PathFinder::LookFor(const ULong & flags, const ULong & f, const EERIE_3D &
 
 	step_c = Random() % 5 + 5;
 
-	for (ULong i(0); i < step_c; i++)
+	for (unsigned long i(0); i < step_c; i++)
 	{
 		EERIE_3D pos;
 
@@ -553,10 +572,10 @@ UBool PathFinder::LookFor(const ULong & flags, const ULong & f, const EERIE_3D &
 
 				Clean(); 
 				*rstep = 0;
-				return UFALSE;
+				return false;
 			}
 
-			if (!(ptr = realloc(path_d, sizeof(UWord) * (path_c + temp_c - 1))))
+			if (!(ptr = realloc(path_d, sizeof(unsigned short) * (path_c + temp_c - 1))))
 			{
 				if (temp_d) 
 				{
@@ -566,12 +585,12 @@ UBool PathFinder::LookFor(const ULong & flags, const ULong & f, const EERIE_3D &
 
 				Clean(); 
 				*rstep = 0;
-				return UFALSE;
+				return false;
 			}
 
 			//Add temp path to wander around path
-			path_d = (UWord *)ptr;
-			memcpy(&path_d[path_c], temp_d, sizeof(UWord) *(temp_c - 1));
+			path_d = (unsigned short *)ptr;
+			memcpy(&path_d[path_c], temp_d, sizeof(unsigned short) *(temp_c - 1));
 			path_c += temp_c - 1;
 
 			//Free temp path
@@ -587,34 +606,36 @@ UBool PathFinder::LookFor(const ULong & flags, const ULong & f, const EERIE_3D &
 	{
 		Clean(); // Cyril
 		*rstep = 0;
-		return UFALSE;
+		return false;
 	}
 
 	*rlist = path_d;
 	*rstep = path_c;
 	Clean(); // Cyril
-	return UTRUE;
+	return true;
 }
 
-Void PathFinder::Clean()
-{
-	ULong i;
-
-	for (i = 0; i < close.size(); i++) free(close[i]);
-
+void PathFinder::Clean() {
+	
+	unsigned long i;
+	
+	for (i = 0; i < close.size(); i++) {
+		delete close[i];
+	}
 	close.clear();
-
-	for (i = 0; i < open.size(); i++) free(open[i]);
-
+	
+	for(i = 0; i < open.size(); i++) {
+		delete open[i];
+	}
 	open.clear();
 }
 
 // Return best node (lower cost) from open list or NULL if list is empty
-MINOSNode * PathFinder::GetBestNode()
+PathFinder::Node * PathFinder::GetBestNode()
 {
-	MINOSNode * node;
+	Node * node;
 	nodelist::iterator best = open.begin();
-	Float cost(FLT_MAX);
+	float cost(FLT_MAX);
 
 	if (!open.size()) return NULL;
 
@@ -631,90 +652,78 @@ MINOSNode * PathFinder::GetBestNode()
 	return node;
 }
 
-UBool PathFinder::Check(MINOSNode * node) {
+bool PathFinder::Check(Node * node) {
 	
 	// TODO use set/map instead of vector?
 	
 	//Check if node is already in close list
 	for(nodelist::const_iterator i = close.begin(); i != close.end(); ++i) {
-		if((*i)->data == node->data) return UFALSE;
+		if((*i)->data == node->data) return false;
 	}
 	
 	//Check if node is already in open list
 	for(nodelist::iterator i = open.begin(); i != open.end();) {
 		if((*i)->data == node->data) {
 			if((*i)->g_cost < node->g_cost) {
-				return UFALSE;
+				return false;
 			}
 			
-			free(*i);
+			delete *i;
 			i = open.erase(i);
 		} else {
 			++i;
 		}
 	}
 
-	return UTRUE;
+	return true;
 }
 
-SBool PathFinder::BuildPath(UWord ** rlist, SLong * rstep)
-{
-	Void * ptr;
-	MINOSNode * next;
-	UWord path_c(0);
-	UWord * path_d = NULL;
+bool PathFinder::BuildPath(unsigned short ** rlist, long * rstep) {
+	
+	void * ptr;
+	Node * next;
+	unsigned short path_c(0);
+	unsigned short * path_d = NULL;
 
 	next = close[close.size() - 1];
 
 	while (next)
 	{
-		if (!(ptr = realloc(path_d, (path_c + 1) << 1))) return SFALSE;
+		if (!(ptr = realloc(path_d, (path_c + 1) << 1))) return false;
 
-		path_d = (UWord *)ptr;
-		path_d[path_c++] = (UWord)next->data;
+		path_d = (unsigned short *)ptr;
+		path_d[path_c++] = (unsigned short)next->data;
 		next = next->parent;
 	}
 
-	if (!rlist || !(*rlist = (UWord *)malloc(sizeof(UWord) * path_c)))
+	if (!rlist || !(*rlist = (unsigned short *)malloc(sizeof(unsigned short) * path_c)))
 	{
 		free(path_d);
-		return SFALSE;
+		return false;
 	}
 
-	for (ULong i(0); i < path_c; i++)(*rlist)[i] = path_d[path_c - i - 1];
+	for (unsigned long i(0); i < path_c; i++)(*rlist)[i] = path_d[path_c - i - 1];
 
 	free(path_d);
 
 	if (rstep) *rstep = path_c;
 
-	return STRUE;
+	return true;
 }
 
-MINOSNode * PathFinder::CreateNode(long data, MINOSNode * parent)
+
+
+void PathFinder::AddEnlightmentCost(Node * node)
 {
-	MINOSNode * node;
-
-	node = (MINOSNode *)malloc(sizeof(MINOSNode));
-
-	if (!node) return NULL;
-
-	node->data = data;
-	node->parent = parent;
-
-	return node;
-}
-
-Void PathFinder::AddEnlightmentCost(MINOSNode * node)
-{
-	for (ULong i(0); i < slight_c; i++)
+	for (unsigned long i(0); i < slight_c; i++)
 	{
 		if (!slight_l[i] || !slight_l[i]->exist || !slight_l[i]->status) continue;
 
-		Float dist = Distance(slight_l[i]->pos, map_d[node->data].pos);
+		float dist = Distance(slight_l[i]->pos, map_d[node->data].pos);
 
 		if (slight_l[i]->fallend >= dist)
 		{
-			Float l_cost(fac3);
+			float l_cost(fac3);
 
 			l_cost *= slight_l[i]->intensity * (slight_l[i]->rgb.r + slight_l[i]->rgb.g + slight_l[i]->rgb.b) * ( 1.0f / 3 );
 
@@ -726,13 +735,13 @@ Void PathFinder::AddEnlightmentCost(MINOSNode * node)
 	}
 }
 
-inline Float PathFinder::Distance(const EERIE_3D & from, const EERIE_3D & to) const
+inline float PathFinder::Distance(const EERIE_3D & from, const EERIE_3D & to) const
 {
-	Float x, y, z;
+	float x, y, z;
 
 	x = from.x - to.x;
 	y = from.y - to.y;
 	z = from.z - to.z;
 
-	return Float(EEsqrt(x * x + y * y + z * z));
+	return EEsqrt(x * x + y * y + z * z);
 }
