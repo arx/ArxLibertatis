@@ -1859,6 +1859,8 @@ INTERACTIVE_OBJ * CreateFreeInter(long num)
 
 		memset(inter.iobj[i], 0, sizeof(INTERACTIVE_OBJ));
 		io = inter.iobj[i];
+		// Nuky - added num which caches the index position in global ios table
+		io->num = i;
 		io->room_flags = 1;
 		io->room = -1;
 		io->no_collide = -1;
@@ -3339,7 +3341,7 @@ void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io)
 	// TODO do we really need to open this every time?
 	if (LAST_CHINSTANCE != -1) ARX_Changelevel_CurGame_Open();
 
-	while (1)
+	for (;;)
 	{
 		if (!ExistTemporaryIdent(io, t))
 		{
@@ -3599,7 +3601,7 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag, EERIE_3D * _pRe
 		    || (io->GameFlags & GFLAG_ISINTREATZONE))
 
 			// Is Object Displayed on screen ???
-			if ((io->show == SHOW_FLAG_IN_SCENE) || (bPlayerEquiped && flag) || (bPlayerEquiped  && (player.Interface & INTER_MAP) && (Book_Mode == 0))) //((io->show==9) && (player.Interface & INTER_MAP)) )
+			if ((io->show == SHOW_FLAG_IN_SCENE) || (bPlayerEquiped && flag) || (bPlayerEquiped  && (player.Interface & INTER_MAP) && (Book_Mode == BOOKMODE_STATS))) //((io->show==9) && (player.Interface & INTER_MAP)) )
 			{
 				if ((flag == 2) && _pTable && _pnNbInTable && ((*_pnNbInTable) < 256))
 				{
@@ -3705,7 +3707,7 @@ bool IsEquipedByPlayer(INTERACTIVE_OBJ * io)
 }
 
 extern long LOOKING_FOR_SPELL_TARGET;
-INTERACTIVE_OBJ * InterClick(EERIE_S2D * pos, long flag)
+INTERACTIVE_OBJ * InterClick(EERIE_S2D * pos)
 {
 	LASTINTERCLICKNB = -1;
 
@@ -4414,7 +4416,7 @@ void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to, long flags)
 		        &&	(io->GameFlags & GFLAG_ISINTREATZONE))
 		{
 			if ((i == 0) && ((player.Interface & INTER_MAP) && (!(player.Interface & INTER_COMBATMODE)))
-			        && (Book_Mode == 0)) continue;
+			        && (Book_Mode == BOOKMODE_STATS)) continue;
 
 			if (io->show != SHOW_FLAG_IN_SCENE) continue;
 
@@ -4780,6 +4782,27 @@ bool HaveCommonGroup(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 	return false;
 }
 
+//***********************************************************************************************
+// Retreives IO Number with its address
+//-----------------------------------------------------------------------------------------------
+// VERIFIED (Cyril 2001/10/16)
+//***********************************************************************************************
+// Nuky - modified to use cached value first. For now it's safe and will use former method if
+//        the cached value is incorrect, but I think it never happens
+long GetInterNum(INTERACTIVE_OBJ * io)
+{
+	if (io == NULL) return -1;
+
+	if (io->num < inter.nbmax && inter.iobj[io->num] == io)
+		return io->num;
+
+	for (long i = 0; i < inter.nbmax; i++)
+		if (inter.iobj[i] == io) return i;
+
+	return -1;
+}
+
+
 float ARX_INTERACTIVE_GetArmorClass(INTERACTIVE_OBJ * io)
 {
 	if (!io) return -1;
@@ -4846,7 +4869,6 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 		io->soundtime = 0;
 		io->soundcount = 0;
 		EERIE_PHYSICS_BOX_Launch(io->obj, &pos, &fallvector);
-
 	}
 }
 

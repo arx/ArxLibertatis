@@ -46,7 +46,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Time.h"
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct ARX_MISSILE
 {
 	long	type;
 	EERIE_3D startpos;
@@ -57,7 +57,7 @@ typedef struct
 	unsigned long tolive;
 	long		longinfo;
 	long		owner;
-} ARX_MISSILE;
+};
 
 //-----------------------------------------------------------------------------
 const unsigned long MAX_MISSILES(100);

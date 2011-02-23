@@ -302,7 +302,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define DIK_WHEELUP		(0x40000000|0)
 #define DIK_WHEELDOWN	(0x40000000|1)
 
-typedef enum _MENUSTATE
+enum MENUSTATE
 {
 	MAIN,
 	RESUME_GAME,
@@ -342,7 +342,7 @@ typedef enum _MENUSTATE
 	OPTIONS_VIDEO_RESOLUTION_0 = 200,
 	OPTIONS_AUDIO_VOLUME = 300,
 	OPTIONS_INPUT_KEY_0 = 400
-} MENUSTATE;
+};
 
 //-----------------------------------------------------------------------------
 class CMenuZone
@@ -371,7 +371,7 @@ class CMenuZone
 			return (rZone.bottom - rZone.top);
 		}
 		virtual void Move(int, int);
-		virtual void SetPos(float, float); 
+		virtual void SetPos(float, float);
  
 		void SetCheckOff()
 		{
@@ -404,7 +404,7 @@ class CMenuAllZone
 		int GetNbZone();
 };
 
-typedef enum _ELEMSTATE
+enum ELEMSTATE
 {
 	TNOP,
 	//Element Text
@@ -412,14 +412,14 @@ typedef enum _ELEMSTATE
 	GETTOUCH,
 	EDIT_TIME,      //etat en cours
 	GETTOUCH_TIME
-} ELEMSTATE;
+};
 
-typedef enum _ELEMPOS
+enum ELEMPOS
 {
 	NOCENTER,
 	CENTER,
 	CENTERY
-} ELEMPOS;
+};
 
 //-----------------------------------------------------------------------------
 class CMenuElement : public CMenuZone
@@ -581,6 +581,7 @@ class CMenuSliderText: public CMenuElement
 };
 
 //-----------------------------------------------------------------------------
+/// Slider with value in the range [0..10]
 class CMenuSlider: public CMenuElement
 {
 	public:
@@ -589,6 +590,9 @@ class CMenuSlider: public CMenuElement
 		TextureContainer	* pTex1;
 		TextureContainer	* pTex2;
 		int					iPos;
+
+		void setValue(int value) { iPos = value; }
+		int getValue() const { return iPos; }
 
 	public:
 		CMenuSlider(int, int, int);//, CMenuButton*, CMenuButton*, TextureContainer*, TextureContainer*);
@@ -610,6 +614,8 @@ class CMenuSlider: public CMenuElement
 //-----------------------------------------------------------------------------
 class CMenuCheckButton : public CMenuElement
 {
+	void ComputeTexturesPosition();
+
 	public:
 		int					iState;
 		int					iOldState;
@@ -691,7 +697,6 @@ class CWindowMenuConsole
 	public:
 		CWindowMenuConsole(int, int, int, int, MENUSTATE);
  
-
 		void AddMenu(CMenuElement *);
 		void AddMenuCenter(CMenuElement *);
 		void AddMenuCenterY(CMenuElement *);
@@ -735,18 +740,18 @@ class CWindowMenu
 };
 
 //-----------------------------------------------------------------------------
-typedef enum _CURSORSTATE
+enum CURSORSTATE
 {
 	CURSOR_OFF,
 	CURSOR_ON,
-} CURSORSTATE;
+};
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct EERIE_2DI
 {
 	int	x;
 	int	y;
-} EERIE_2DI;
+};
 
 //-----------------------------------------------------------------------------
 class CDirectInput
@@ -820,11 +825,11 @@ class CDirectInput
 };
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct SACTION_KEY
 {
 	int	iKey[2];
 	int iPage;
-} SACTION_KEY;
+};
 
 class CMenuConfig
 {
@@ -869,7 +874,6 @@ class CMenuConfig
 		int			iMouseSensitivity;
 		SACTION_KEY sakActionKey[MAX_ACTION_KEY];
 		SACTION_KEY sakActionDefaultKey[MAX_ACTION_KEY];
-
 		bool		bLinkMouseLookToUse;
 		//MISC
 		bool		bATI;

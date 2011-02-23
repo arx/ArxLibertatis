@@ -689,7 +689,7 @@ void CPoisonProjectile::Create(EERIE_3D _eSrc, float _fBeta)
 	fTrail = -1;
 
 	//-------------------------------------------------------------------------
-	// syst�me de partoches
+	// système de partoches
 	CParticleParams cp;
 	cp.iNbMax = 5;
 	cp.fLife = 2000;

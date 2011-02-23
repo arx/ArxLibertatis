@@ -266,7 +266,7 @@ bool HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 	if ((aa < ab + 90.f) && (aa > ab - 90.f))
 	{
 		//font
-		ARX_TEXT_Draw(GDevice, InBookFont, 300, 320, 0, 0, "VISIBLE", D3DRGB(1.f, 0.f, 0.f));
+		ARX_TEXT_Draw(hFontInBook, 300, 320, 0, 0, "VISIBLE", D3DRGB(1.f, 0.f, 0.f));
 		return true;
 	}
 
@@ -711,13 +711,13 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					if (word[0] == '-')
 					{
 						if (iCharIn(word, 'A')) //MAGIC
-							Book_Mode = 2;
+							Book_Mode = BOOKMODE_MINIMAP;
 
 						if (iCharIn(word, 'E')) //Equip
-							Book_Mode = 1;
+							Book_Mode = BOOKMODE_SPELLS;
 
 						if (iCharIn(word, 'M')) //Map
-							Book_Mode = 3;
+							Book_Mode = BOOKMODE_QUESTS;
 
 						pos = GetNextWord(es, pos, word);
 					}
@@ -4465,7 +4465,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 				break;
 			case 'I':
 
-				if ((word[1] == 'F') && (word[2] == 0))
+				if ((word[1] == 'F') && (word.size() == 2))
 				{
 					const unsigned int tvSize = 256 ;
 					std::string temp3;
@@ -5171,7 +5171,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 									if (!CanBePutInInventory(inter.iobj[t]))
 									{
-										PutInFrontOfPlayer(inter.iobj[t], 1);
+										PutInFrontOfPlayer(inter.iobj[t]);
 									}
 								}
 							}
@@ -5251,7 +5251,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 											if (!CanBePutInInventory(ioo))
 											{
-												PutInFrontOfPlayer(ioo, 1);
+												PutInFrontOfPlayer(ioo);
 											}
 										}
 									}
@@ -5301,7 +5301,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 									if (!CanBePutInSecondaryInventory((INVENTORY_DATA *)inter.iobj[ion]->inventory, inter.iobj[t], &xx, &yy))
 									{
-										PutInFrontOfPlayer(inter.iobj[t], 1);
+										PutInFrontOfPlayer(inter.iobj[t]);
 									}
 								}
 							}
@@ -5390,7 +5390,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 											if (!CanBePutInSecondaryInventory((INVENTORY_DATA *)inter.iobj[ion]->inventory, ioo, &xx, &yy))
 											{
-												PutInFrontOfPlayer(ioo, 1);
+												PutInFrontOfPlayer(ioo);
 											}
 										}
 									}
@@ -6295,7 +6295,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					else
 					{
 						ARX_SOUND_MixerStop(ARX_SOUND_MixerGame);
-						ARX_MENU_Launch(GDevice);
+						ARX_MENU_Launch();
 						ARX_MENU_Clicked_CREDITS();
 					}
 				}

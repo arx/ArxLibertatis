@@ -89,13 +89,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //***********************************************************************************************
 // FTL File Structures Definitions
 //
-typedef struct
+struct ARX_FTL_PRIMARY_HEADER
 {
 	char			ident[4]; // FTL
 	float			version; // starting with version 1.0f
-} ARX_FTL_PRIMARY_HEADER;
+};
 
-typedef struct
+struct ARX_FTL_SECONDARY_HEADER
 {
 	long	offset_3Ddata;				// -1 = no
 	long	offset_cylinder;			// -1 = no
@@ -103,25 +103,25 @@ typedef struct
 	long	offset_clothes_data;		// -1 = no
 	long	offset_collision_spheres;	// -1 = no
 	long	offset_physics_box;			// -1 = no
-} ARX_FTL_SECONDARY_HEADER;
+};
 
-typedef struct
+struct ARX_FTL_PROGRESSIVE_DATA_HEADER
 {
 	long	nb_vertex;
-} ARX_FTL_PROGRESSIVE_DATA_HEADER;
+};
 
-typedef struct
+struct ARX_FTL_CLOTHES_DATA_HEADER
 {
 	long	nb_cvert;
 	long	nb_springs;
-} ARX_FTL_CLOTHES_DATA_HEADER;
+};
 
-typedef struct
+struct ARX_FTL_COLLISION_SPHERES_DATA_HEADER
 {
 	long	nb_spheres;
-} ARX_FTL_COLLISION_SPHERES_DATA_HEADER;
+};
 
-typedef struct
+struct ARX_FTL_3D_DATA_HEADER
 {
 	long	nb_vertex;			// ...
 	long	nb_faces;			// ...
@@ -131,14 +131,14 @@ typedef struct
 	long	nb_selections;		// data will follow this order
 	long	origin;
 	char	name[256];
-} ARX_FTL_3D_DATA_HEADER;
+};
 
 struct Texture_Container_FTL
 {
 	char name[256];
 };
 
-typedef struct
+struct EERIE_FACE_FTL
 {
 	long		facetype;	// 0 = flat  1 = text
 							// 2 = Double-Side
@@ -155,38 +155,38 @@ typedef struct
 	EERIE_3D	nrmls[IOPOLYVERT];
 	float		temp;
 
-} EERIE_FACE_FTL; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
-typedef struct
+struct EERIE_GROUPLIST_FTL
 {
 	char name[256];
 	long		origin;
 	long		nb_index;
 	long 	*	indexes;
 	float		siz;
-} EERIE_GROUPLIST_FTL; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
-typedef struct
+struct EERIE_ACTIONLIST_FTL
 {
 	char name[256];
 	long			idx; //index vertex;
 	long			act; //action
 	long			sfx; //sfx
-} EERIE_ACTIONLIST_FTL; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
-typedef struct
+struct EERIE_SELECTIONS_FTL
 {
 	char	name[64];
 	long	nb_selected;
 	long *	selected;
-} EERIE_SELECTIONS_FTL; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
-typedef struct
+struct COLLISION_SPHERE_FTL
 {
 	short			idx;
 	short			flags;
 	float			radius;
-} COLLISION_SPHERE_FTL; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
 // End of Structures definitions
 //***********************************************************************************************
@@ -532,14 +532,14 @@ error:
 //***********************************************************************************************
 // MESH cache structure definition & Globals
 //***********************************************************************************************
-typedef struct
+struct MCACHE_DATA
 {
 	std::string name;
 	char* data;
 	size_t size;
-} MeshData;
+};
 
-vector<MeshData> meshCache;
+vector<MCACHE_DATA> meshCache;
 
 long MCache_GetSize()
 //Calculate size of all meshes
@@ -589,7 +589,7 @@ bool MCache_Push( const std::string& file, char * data, size_t size)
 //	MCache[MCache_Number].data = data;
 //	MCache[MCache_Number].name = fic;
 //	MCache_Number++;
-	MeshData newMesh;
+	MCACHE_DATA newMesh;
 	newMesh.size = size;
 	newMesh.data = data;
 	newMesh.name = fic;

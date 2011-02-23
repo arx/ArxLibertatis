@@ -38,7 +38,7 @@ using namespace std;
 class ViewImage
 {
 	public:
-		vector<char *>		vListImage;
+		std::vector<char *>	vListImage;
 		WIN32_FIND_DATA		w32fdata;
 		TextureContainer	* pTexCurr;
 

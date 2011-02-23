@@ -63,7 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define MINIMAP_MAX_X 50
 #define MINIMAP_MAX_Z 50
 
-typedef struct
+struct MINI_MAP_DATA
 {
     TextureContainer*   tc;
     float               offsetx; // start of scene pos x
@@ -73,7 +73,7 @@ typedef struct
     float               width; // bitmap width/height
     float               height;
     unsigned char       revealed[MINIMAP_MAX_X][MINIMAP_MAX_Z];
-} MINI_MAP_DATA;
+};
 
 
 const unsigned long MAX_MINIMAPS(32);
@@ -93,8 +93,7 @@ void ARX_MINIMAP_ValidatePos(EERIE_3D * pos);
 void ARX_MINIMAP_ValidatePlayerPos();
 void ARX_MINIMAP_Reveal();
 
-struct MAPMARKER_DATA
-{
+struct MAPMARKER_DATA {
 	float   x;
 	float   y;
 	long    lvl;
@@ -103,7 +102,6 @@ struct MAPMARKER_DATA
 };
 
 extern std::vector<MAPMARKER_DATA> Mapmarkers;
-extern long Nb_Mapmarkers;
 
 void ARX_MAPMARKER_Remove( const std::string& temp);
 void ARX_MAPMARKER_Add(float x, float y, long lvl, const std::string& temp);

@@ -88,12 +88,12 @@ class CParalyse : public CSpellFx
 
 		TextureContainer	* tex_p, *tex_p1, *tex_p2;
 
-		typedef struct
+		struct T_PRISM
 		{
 			EERIE_3D	pos;
 			EERIE_3D	offset;
 			EERIE_3D	* vertex;
-		} T_PRISM;
+		};
 
 		T_PRISM		tabprism[100];
 
@@ -290,7 +290,7 @@ class CRiseDead: public CSpellFx
 
 		EERIE_3DOBJ	*	stone[2];
 
-		typedef struct
+		struct T_STONE
 		{
 			short		actif;
 			short		numstone;
@@ -301,7 +301,7 @@ class CRiseDead: public CSpellFx
 			EERIE_3D	scale;
 			int			time;
 			int			currtime;
-		} T_STONE;
+		};
 
 		int				currframetime;
 		int				timestone;

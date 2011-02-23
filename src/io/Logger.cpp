@@ -57,15 +57,16 @@ Logger::~Logger() {
 }
 
 void Logger::writeInfo(const char* longFile, int line, Logger::LogLevel level) {
-  const char* file = std::strrchr(longFile, '/')+1;
+  const char* file = std::strrchr(longFile, '/');
   if(file == 0)
-    file = std::strrchr(longFile, '\\')+1;
+    file = std::strrchr(longFile, '\\');
+  ++file;
 
   fatal = false;
-	LogLevel curLevel = getLogLevel(file);
+  LogLevel curLevel = getLogLevel(file);
   if(level < curLevel || curLevel == None) {
-    print = false;
-    return;
+	  print = false;
+	  return;
   }
   
   print = true;

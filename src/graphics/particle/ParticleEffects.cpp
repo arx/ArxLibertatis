@@ -85,7 +85,7 @@ extern unsigned long ulBKGColor;
 extern bool bSoftRender;
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct OBJFX
 {
 	EERIE_3D	pos;
 	EERIE_3D	move;
@@ -99,7 +99,7 @@ typedef struct
 	unsigned long	duration;
 	bool		exist;
 	long		dynlight;
-} OBJFX;
+};
 
 FLARETC			flaretc;
 PARTICLE_DEF	particle[MAX_PARTICLES];
