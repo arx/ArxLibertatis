@@ -83,10 +83,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-typedef struct
+struct EQUIP_INFO
 {
 	char name[64];
-} EQUIP_INFO;
+};
 
 #define SP_SPARKING 1
 #define SP_BLOODY	2
@@ -499,7 +499,7 @@ void ARX_EQUIPMENT_UnEquip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * tounequip
 				}
 				else if (!CanBePutInInventory(tounequip))
 				{
-					PutInFrontOfPlayer(tounequip, 1); 
+					PutInFrontOfPlayer(tounequip);
 				}
 			}
 

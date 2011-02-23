@@ -3,22 +3,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -54,7 +54,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-
+// Nuky - 25/01/11 - uninlined and modified GetInterNum to use a new cache value I added (+6% perfs)
 #ifndef ARX_INTERACTIVE_H
 #define ARX_INTERACTIVE_H
 
@@ -65,28 +65,28 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //-----------------------------------------------------------------------------
 #define MAX_LINKS 12
 
-typedef struct
+struct INTERACTIVE_OBJECTS
 {
-	long                init;
-	long                nbmax;
-	INTERACTIVE_OBJ**   iobj;
-} INTERACTIVE_OBJECTS;
+	long              init;
+	long              nbmax;
+	INTERACTIVE_OBJ** iobj;
+};
 
-typedef struct
+struct INVENTORY_SLOT
 {
-	INTERACTIVE_OBJ*    io;
-	long                show;
-} INVENTORY_SLOT;
+	INTERACTIVE_OBJ* io;
+	long             show;
+};
 
-typedef struct
+struct INVENTORY_DATA
 {
-	INTERACTIVE_OBJ*    io;
-	long                sizex;
-	long                sizey;
-	INVENTORY_SLOT      slot[20][20];
-} INVENTORY_DATA;
+	INTERACTIVE_OBJ * io;
+	long              sizex;
+	long              sizey;
+	INVENTORY_SLOT    slot[20][20];
+};
 
-typedef struct
+struct ARX_NODE
 {
 	short       exist;
 	short       selected;
@@ -97,14 +97,14 @@ typedef struct
 	EERIE_3D    pos;
 	EERIE_S2D   bboxmin;
 	EERIE_S2D   bboxmax;
-} ARX_NODE;
+};
 
-typedef struct
+struct ARX_NODES
 {
 	long        init;
 	long        nbmax;
 	ARX_NODE*   nodes;
-} ARX_NODES;
+};
 
 //-----------------------------------------------------------------------------
 #define INVENTORY_X         16
@@ -147,7 +147,7 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, long flag = 0);
 bool ARX_INTERACTIVE_Attach(long n_source, long n_target, const char * ap_source, const char * ap_target);
 void ARX_INTERACTIVE_Detach(long n_source, long n_target);
 void ARX_INTERACTIVE_Show_Hide_1st(INTERACTIVE_OBJ * io, long state);
- 
+
 void ARX_INTERACTIVE_RemoveGoreOnIO(INTERACTIVE_OBJ * io);
 bool ARX_INTERACTIVE_ConvertToValidPosForIO(INTERACTIVE_OBJ * io, EERIE_3D * target);
 void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io);
@@ -165,7 +165,7 @@ void PrepareIOTreatZone(long flag = 0);
  
 void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const char * attach);
  
-void PutInFrontOfPlayer(INTERACTIVE_OBJ * io, long flag = 0);
+void PutInFrontOfPlayer(INTERACTIVE_OBJ * io);
 bool CanBePutInInventory(INTERACTIVE_OBJ * io);
 void SetShield(char * temp);
 void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io);
@@ -176,9 +176,9 @@ bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos);
 bool GetItemWorldPositionSound(const INTERACTIVE_OBJ * io, EERIE_3D * pos);
 long GetTargetByNameTarget(const std::string& name);
 void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io);
- 
+
 void SetWeapon_Back(INTERACTIVE_OBJ * io);
- 
+
 void ReloadAllScripts();
 bool ForceNPC_Above_Ground(INTERACTIVE_OBJ * io);
 
@@ -206,7 +206,7 @@ long GetInterNum(const INTERACTIVE_OBJ * io);
 // io from 0 TO 10000
 INTERACTIVE_OBJ * GetInventoryObj_INVENTORYUSE(EERIE_S2D * pos);
 void CheckForInventoryReplaceMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * old);
- 
+
 void SelectIO(INTERACTIVE_OBJ * io);
 void UnSelectIO(INTERACTIVE_OBJ * io);
 void RotateSelectedIO(EERIE_3D * op);
@@ -214,14 +214,14 @@ void TranslateSelectedIO(EERIE_3D * op);
 void GroundSnapSelectedIO();
 void DeleteSelectedIO();
 void ResetSelectedIORot();
- 
+
 long GetNumberInterWithOutScriptLoadForLevel(long level);
 long IsCollidingAnyFIXInter(float x, float y, float z, EERIE_3D * size);
 bool InSecondaryInventoryPos(EERIE_S2D * pos);
 bool InPlayerInventoryPos(EERIE_S2D * pos);
 bool CanBePutInSecondaryInventory(INVENTORY_DATA * id, INTERACTIVE_OBJ * io, long * xx, long * yy);
 void FreeAllInter();
- 
+
 void SetRightHand(char * temp);
 void SetLeftHand(char * temp);
 void UnlinkAllLinkedObjects();
@@ -244,12 +244,12 @@ void ReleaseInter(INTERACTIVE_OBJ * io);
 void ExecuteObjectAction(INTERACTIVE_OBJ * io);
 void AddRandomObj(LPDIRECT3DDEVICE7 pd3dDevice);
 void UpdateCameras();
- 
+
 void PlayObjectSound(INTERACTIVE_OBJ * io);
 INTERACTIVE_OBJ * InterClick(EERIE_S2D * pos);
  
 void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to);
-INTERACTIVE_OBJ * FlyingOverObject(EERIE_S2D * pos, long flag = 0);
+INTERACTIVE_OBJ * FlyingOverObject(EERIE_S2D * pos, bool mustlock = false);
 void MakeIOIdent(INTERACTIVE_OBJ * io);
 void SelectIO(INTERACTIVE_OBJ * io);
 void ForcePlayerLookAtIO(INTERACTIVE_OBJ * io);
@@ -280,33 +280,20 @@ void ARX_INVENTORY_IdentifyAll();
 void ARX_INVENTORY_OpenClose(INTERACTIVE_OBJ *);
 void ARX_INVENTORY_TakeAllFromSecondaryInventory();
 
-//***********************************************************************************************
-// Retreives IO Number with its address
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/16)
-//***********************************************************************************************
-__inline long GetInterNum(const INTERACTIVE_OBJ * io)
-{
-	if (io == NULL) return -1;
-
-	for (long i = 0; i < inter.nbmax; i++)
-		if (inter.iobj[i] == io) return i;
-
-	return -1;
-}
 float ARX_INTERACTIVE_GetArmorClass(INTERACTIVE_OBJ * io);
 float ARX_INTERACTIVE_fGetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop);
 long  ARX_INTERACTIVE_GetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop);
 void IO_UnlinkAllLinkedObjects(INTERACTIVE_OBJ * io);
 void IO_Drop_Item(INTERACTIVE_OBJ * io_src, INTERACTIVE_OBJ * io);
 
-typedef struct
+struct TREATZONE_IO
 {
 	long				num;
 	INTERACTIVE_OBJ *	io;
 	long				ioflags;
 	long				show;
-} TREATZONE_IO;
+};
+
 extern TREATZONE_IO * treatio;
 extern long TREATZONE_CUR;
 extern long TREATZONE_MAX;
@@ -326,5 +313,5 @@ void ARX_HALO_SetToNative(INTERACTIVE_OBJ * io);
 void ARX_INTERACTIVE_ForceIOLeaveZone(INTERACTIVE_OBJ * io, long flags = 0);
 void ARX_INTERACTIVE_ActivatePhysics(long t);
 void ResetVVPos(INTERACTIVE_OBJ * io);
- 
+
 #endif

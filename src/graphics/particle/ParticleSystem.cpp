@@ -35,6 +35,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 using namespace std;
 
+
 void CParticleSystem::RecomputeDirection()
 {
 	EERIE_3D eVect;
@@ -654,4 +655,3 @@ void CParticleSystem::Render(LPDIRECT3DDEVICE7 _lpD3DDevice) {
 		}
 	}
 }
-

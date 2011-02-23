@@ -238,7 +238,7 @@ struct PROJECT
 	std::string     localisationpath;
 };
 
-typedef struct
+struct EERIETOOLBAR
 {
 	HWND		hWnd;
 	long		CreationToolBar;
@@ -247,15 +247,15 @@ typedef struct
 	long		Bitmap;
 	char*		String;
 	long		Type;
-} EERIETOOLBAR;
+};
 
-typedef struct
+struct KEYBOARD_MNG
 {
 	short			nbkeydown;
 	unsigned char	inkey[255];
 	char			_CAPS;
 	short			lastkey;
-} KEYBOARD_MNG;
+};
 
 
 //-----------------------------------------------------------------------------
@@ -410,6 +410,22 @@ protected:
 };
 
 extern CD3DApplication * g_pD3DApp;
+
+// Nuky - 01-02-11
+/// RAII for Lock() Unlock() on CD3DApplication class
+/// Can be used in conditions to test whether the lock was successfully acquired
+class CD3DApplicationScopedLock
+{
+public:
+	explicit CD3DApplicationScopedLock(CD3DApplication& app) : instance_(&app) { if (!instance_->Lock()) instance_ = NULL; }
+	~CD3DApplicationScopedLock() { if (instance_) instance_->Unlock(); }
+	operator void*() const { return instance_; }
+private:
+	CD3DApplication* instance_;
+	// No copy
+	CD3DApplicationScopedLock(const CD3DApplicationScopedLock&);
+	CD3DApplicationScopedLock& operator=(const CD3DApplicationScopedLock&);
+};
 
 //******************************************************************************
 // MESSAGE BOXES

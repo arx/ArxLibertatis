@@ -89,7 +89,7 @@ extern CDirectInput * pGetInfoDirectInput;
 extern CMenuConfig * pMenuConfig;
 extern EERIE_3D ePlayerAngle;
 extern float Xratio, Yratio;
-extern long Book_Mode;
+extern ARX_INTERFACE_BOOK_MODE Book_Mode;
 extern long GAME_EDITOR;
 extern long START_NEW_QUEST;
 extern long INTRO_NOT_LOADED;
@@ -120,6 +120,12 @@ extern float ARXDiffTimeMenu;
 
 extern TextureContainer * pTextureLoad;
 
+bool MENU_NoActiveWindow();
+void ClearGameDEVICE();
+void GetTextSize(HFONT _hFont, const _TCHAR * _lpszUText, int * _iWidth, int * _iHeight);
+
+//-----------------------------------------------------------------------------
+// Exported global variables
 
 bool bQuickGenFirstClick = true;
 ARX_MENU_DATA ARXmenu;
@@ -242,14 +248,12 @@ void FreeSaveGameList() {
 //-----------------------------------------------------------------------------
 void UpdateSaveGame(const long & i)
 {
-
 	//i == 0 -> new save game
 	//i >  0 -> erase old savegame save_l[i].name
-	if (i <= 0) ARX_CHANGELEVEL_Save(i, save_l[0].name);
+	if (i <= 0)
+		ARX_CHANGELEVEL_Save(i, save_l[0].name);
 	else
-	{
 		ARX_CHANGELEVEL_Save(save_l[i].num, save_l[i].name);
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -284,7 +288,6 @@ void ARX_MENU_LaunchAmb(char * _lpszAmb)
 	ARX_SOUND_PlayMenuAmbiance(_lpszAmb);
 }
 
-//-----------------------------------------------------------------------------
 void ARX_Menu_Resources_Create() {
 	
 	if (ARXmenu.mda)
@@ -433,7 +436,7 @@ void ARX_MENU_Clicked_NEWQUEST()
 	}
 
 	ARX_PLAYER_Start_New_Quest();
-	Book_Mode = 0;
+	Book_Mode = BOOKMODE_STATS;
 	player.skin = 0;
 	ePlayerAngle.b = -25.f;
 	ARX_PLAYER_Restore_Skin();
@@ -483,7 +486,6 @@ void ARX_MENU_Clicked_QUIT_GAME()
 	}
 }
 
-//-----------------------------------------------------------------------------
 void ARX_MENU_Launch() {
 	
 	ARX_TIME_Pause();
@@ -745,16 +747,16 @@ bool ARX_Menu_Render()
 
 					pTextManage->Clear();
 					OLD_FLYING_OVER = FLYING_OVER;
-					UNICODE_ARXDrawTextCenteredScroll((DANAESIZX * 0.5f),
-													  12,
-													  (DANAECENTERX) * 0.82f,
-													  ARXmenu.mda->flyover[FLYING_OVER],
-													  RGB(232 + t, 204 + t, 143 + t),
-													  0x00FF00FF,
-													  hFontInGame,
-													  1000,
-													  0.01f,
-													  2);
+					UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
+						(DANAESIZX * 0.5f),
+						12,
+						(DANAECENTERX) * 0.82f,
+						ARXmenu.mda->flyover[FLYING_OVER],
+						RGB(232 + t, 204 + t, 143 + t),
+						0x00FF00FF,
+						1000,
+						0.01f,
+						2);
 				}
 			}
 			else
@@ -768,7 +770,6 @@ bool ARX_Menu_Render()
 			float fSizeX = 100 * Xratio;
 			float fSizeY = 100 * Yratio;
 
-			EERIE_3D ePos;
 			COLORREF Color = 0;
 
 			//---------------------------------------------------------------------
@@ -808,9 +809,7 @@ bool ARX_Menu_Render()
 			else
 				Color = RGB(232, 204, 143);
 
-			ePos.x = fPosX;
-			ePos.y = fPosY;
-			FontRenderText(hFontMenu, ePos, ARXmenu.mda->str_button_quickgen, Color);
+			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_quickgen, static_cast<long>(fPosX), static_cast<long>(fPosY), Color);
 
 			//---------------------------------------------------------------------
 			// Button SKIN
@@ -854,9 +853,7 @@ bool ARX_Menu_Render()
 			else
 				Color = RGB(232, 204, 143);
 
-			ePos.x = fPosX;
-			ePos.y = fPosY;
-			FontRenderText(hFontMenu, ePos, ARXmenu.mda->str_button_skin, Color);
+			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_skin, static_cast<long>(fPosX), static_cast<long>(fPosY), Color);
 
 			//---------------------------------------------------------------------
 			// Button DONE
@@ -893,7 +890,7 @@ bool ARX_Menu_Render()
 
 						ARX_MENU_CLICKSOUND();
 
-						bFadeInOut = true;	//fade out
+						bFadeInOut = true;		//fade out
 						bFade = true;			//active le fade
 						iFadeAction = AMCM_OFF;
 					}
@@ -918,9 +915,7 @@ bool ARX_Menu_Render()
 			if (SKIN_MOD < 0)
 				Color = RGB(255, 0, 255);
 
-			ePos.x = fPosX;
-			ePos.y = fPosY;
-			FontRenderText(hFontMenu, ePos, ARXmenu.mda->str_button_done, Color);
+			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_done, static_cast<long>(fPosX), static_cast<long>(fPosY), Color);
 		}
 	}
 
@@ -951,7 +946,7 @@ bool ARX_Menu_Render()
 		GetTextSize(hFontMenu, szText, iW, iH);
 		ePos.x = (DANAESIZX - iW) * 0.5f;
 		ePos.y = DANAESIZY * 0.4f;
-		FontRenderText(hFontMenu, ePos, szText, Color);
+		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.y), Color);
 
 		PAK_UNICODE_GetPrivateProfileString("system_yes", "", szText);
 		iW = 0;
@@ -960,23 +955,19 @@ bool ARX_Menu_Render()
 		ePos.x = (DANAESIZX * 0.5f - iW) * 0.5f;
 		ePos.y = DANAESIZY * 0.5f;
 
-		if (MouseInRect(ePos.x, ePos.y, ePos.x + iW, ePos.y + iH))
-		{
+		if(MouseInRect(ePos.x, ePos.y, ePos.x + iW, ePos.y + iH)) {
 			SpecialCursor = CURSOR_INTERACTION_ON;
-
-			if (EERIEMouseButton & 1) ;
-			else if ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1))
-			{
+			
+			if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
 				ARX_MENU_CLICKSOUND();
-
 			}
-
+			
 			Color = RGB(255, 255, 255);
-		}
-		else
+		} else {
 			Color = RGB(232, 204, 143);
+		}
 
-		FontRenderText(hFontMenu, ePos, szText, Color);
+		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), Color);
 
 		PAK_UNICODE_GetPrivateProfileString("system_no", "", szText);
 		iW = 0;
@@ -984,23 +975,19 @@ bool ARX_Menu_Render()
 		GetTextSize(hFontMenu, szText, iW, iH);
 		ePos.x = DANAESIZX * 0.5f + (DANAESIZX * 0.5f - iW) * 0.5f;
 
-		if (MouseInRect(ePos.x, ePos.y, ePos.x + iW, ePos.y + iH))
-		{
+		if(MouseInRect(ePos.x, ePos.y, ePos.x + iW, ePos.y + iH)) {
 			SpecialCursor = CURSOR_INTERACTION_ON;
-
-			if (EERIEMouseButton & 1) ;
-			else if ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1))
-			{
+			
+			if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
 				ARX_MENU_CLICKSOUND();
-
 			}
-
+			
 			Color = RGB(255, 255, 255);
-		}
-		else
+		} else {
 			Color = RGB(232, 204, 143);
+		}
 
-		FontRenderText(hFontMenu, ePos, szText, Color);
+		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), Color);
 	}
 
 	
@@ -1035,9 +1022,7 @@ bool ARX_Menu_Render()
 					fFadeInOut = 0.f;
 
 					if (pTextManage)
-					{
 						pTextManage->Clear();
-					}
 
 					break;
 			}

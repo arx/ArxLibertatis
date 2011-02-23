@@ -102,14 +102,14 @@ enum ARX_SPELLS_SPELLCAST_FLAG
 
 const size_t MAX_PRECAST = 3;
 
-typedef struct
+struct PRECAST_STRUCT
 {
 	long typ;
 	long level;
 	unsigned long launch_time;
 	long flags;
 	long duration;
-} PRECAST_STRUCT;
+};
 
 extern PRECAST_STRUCT Precast[MAX_PRECAST];
 
@@ -122,14 +122,13 @@ bool MakeSpellName(char * spell, const long & num);
 void TryToCastSpell(INTERACTIVE_OBJ * io, const long & spellid, const long & level, const long & target, const long & flags, const long & duration);
 void ARX_SPELLS_Precast_Check();
 void ARX_SPELLS_Precast_Launch2();
-typedef struct
-{
-	long	exist;
+struct EYEBALL_DEF {
+	long exist;
 	EERIE_3D pos;
 	EERIE_3D angle;
 	EERIE_3D size;
 	float floating;
-} EYEBALL_DEF;
+};
 
 extern EYEBALL_DEF eyeball;
 
@@ -225,7 +224,7 @@ extern float LASTTELEPORT;
 const size_t MAX_LINFO = 20;
 const size_t MAX_SPELLS = 20;
 
-typedef struct
+struct SPELL
 {
 	bool		exist;
 	long		caster;         // Number of the source interactive obj (0==player)
@@ -266,7 +265,7 @@ typedef struct
 	ArxSound snd_loop;
 	CSpellFx	* pSpellFx;
 	void 	*	misc;
-} SPELL;
+};
 
 extern SPELL spells[MAX_SPELLS];
 

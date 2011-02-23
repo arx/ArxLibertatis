@@ -82,11 +82,11 @@ struct TargaHeader {
 	BYTE ImageDescriptor;
 };
 
-typedef struct
+struct MEMORYSNAP
 {
 	char name[256];
 	unsigned char buffer[640*480*2];
-} MEMORYSNAP;
+};
 MEMORYSNAP * snaps = NULL;
 long MAXSNAPS = 0;
 long InitMemorySnaps()
@@ -164,9 +164,9 @@ void FlushMemorySnaps(long flag)
 	DWORD dwGMask = danaeApp.ddsd.ddpfPixelFormat.dwGBitMask;
 	DWORD dwBMask = danaeApp.ddsd.ddpfPixelFormat.dwBBitMask;
 	DWORD dwAMask = danaeApp.ddsd.ddpfPixelFormat.dwRGBAlphaBitMask;
- 
 	long pitch = danaeApp.ddsd.lPitch ;
 	danaeApp.Unlock();
+
 	pitch = 640;
 	DWORD dwRShiftL = 8, dwRShiftR = 0;
 	DWORD dwGShiftL = 8, dwGShiftR = 0;

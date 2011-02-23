@@ -245,7 +245,7 @@ INTERACTIVE_OBJ * GetInventoryObj(EERIE_S2D * pos)
 			if ((tx >= 0) && (tx < INVENTORY_X) && (ty >= 0) && (ty < INVENTORY_Y))
 			{
 				if ((inventory[i][tx][ty].io)
-				        &&	(inventory[i][tx][ty].io->GameFlags & GFLAG_INTERACTIVITY))
+					&&	(inventory[i][tx][ty].io->GameFlags & GFLAG_INTERACTIVITY))
 				{
 					HERO_OR_SECONDARY = 1;
 					return (inventory[i][tx][ty].io);
@@ -259,9 +259,7 @@ INTERACTIVE_OBJ * GetInventoryObj(EERIE_S2D * pos)
 			ARX_CHECK_INT(iY + fRatio);
 
 			iY	+= ARX_CLEAN_WARN_CAST_INT(fRatio);
-
 		}
-
 	}
 
 	return NULL;
@@ -309,16 +307,15 @@ INTERACTIVE_OBJ * GetInventoryObj_INVENTORYUSE(EERIE_S2D * pos)
 //-------------------------------------------------------------------------------------
 // FUNCTION/RESULT:
 //   Puts an IO in front of the player
-//   flag=1 don't apply physics
 //*************************************************************************************
-void PutInFrontOfPlayer(INTERACTIVE_OBJ * io, long flag)
+void PutInFrontOfPlayer(INTERACTIVE_OBJ * io)
 {
 	if (io == NULL) return;
 
 	float t = radians(player.angle.b);
 	io->pos.x = player.pos.x - (float)EEsin(t) * 80.f;
-	io->pos.z = player.pos.z + (float)EEcos(t) * 80.f;
 	io->pos.y = player.pos.y + 20.f; 
+	io->pos.z = player.pos.z + (float)EEcos(t) * 80.f;
 	io->velocity.y = 0.3f;
 	io->velocity.x = 0; 
 	io->velocity.z = 0; 
@@ -327,16 +324,16 @@ void PutInFrontOfPlayer(INTERACTIVE_OBJ * io, long flag)
 	io->angle.g = 0.f;
 	io->stopped = 0;
 	io->show = SHOW_FLAG_IN_SCENE;
-	EERIE_3D pos, vector;
-	vector.x = 0.f; 
-	vector.y = 100.f;
-	vector.z = 0.f;
-	pos.x = io->pos.x;
-	pos.y = io->pos.y;
-	pos.z = io->pos.z;
 
-	if ((flag) && (io) && (io->obj) && (io->obj->pbox))
+	if (io->obj && io->obj->pbox)
 	{
+		EERIE_3D pos, vector;
+		vector.x = 0.f; 
+		vector.y = 100.f;
+		vector.z = 0.f;
+		pos.x = io->pos.x;
+		pos.y = io->pos.y;
+		pos.z = io->pos.z;
 		io->soundtime = 0;
 		io->soundcount = 0;
 		EERIE_PHYSICS_BOX_Launch(io->obj, &pos, &vector);
@@ -355,24 +352,24 @@ void IO_Drop_Item(INTERACTIVE_OBJ * io_src, INTERACTIVE_OBJ * io)
 	if ((!io) || (!io_src)) return;
 
 	float t = radians(io_src->angle.b);
-	io->velocity.y = 0.3f;
 	io->velocity.x = -(float)EEsin(t) * 50.f;
+	io->velocity.y = 0.3f;
 	io->velocity.z = (float)EEcos(t) * 50.f;
 	io->angle.a = 0.f;
 	io->angle.b = 0; 
 	io->angle.g = 0.f;
 	io->stopped = 0;
 	io->show = SHOW_FLAG_IN_SCENE;
-	EERIE_3D pos, vector;
-	vector.x = 0.f; 
-	vector.y = 100.f;
-	vector.z = 0.f;
-	pos.x = io->pos.x;
-	pos.y = io->pos.y;
-	pos.z = io->pos.z;
 
-	if ((io) && (io->obj) && (io->obj->pbox))
+	if (io->obj && io->obj->pbox)
 	{
+		EERIE_3D pos, vector;
+		vector.x = 0.f; 
+		vector.y = 100.f;
+		vector.z = 0.f;
+		pos.x = io->pos.x;
+		pos.y = io->pos.y;
+		pos.z = io->pos.z;
 		io->soundtime = 0;
 		io->soundcount = 0;
 		EERIE_PHYSICS_BOX_Launch_NOCOL(io, io->obj, &pos, &vector);
@@ -395,13 +392,13 @@ void ForcePlayerInventoryObjectLevel(long level)
 
 //-----------------------------------------------------------------------------
 
-typedef struct _ATRIMAXSIZE: public greater<INTERACTIVE_OBJ *>
+struct ATRIMAXSIZE : public std::greater<INTERACTIVE_OBJ *>
 {
 
 	bool operator()(const INTERACTIVE_OBJ * x, const INTERACTIVE_OBJ * y) const;
 
 
-} ATRIMAXSIZE;
+};
 
 bool ATRIMAXSIZE::operator()(const INTERACTIVE_OBJ * x, const INTERACTIVE_OBJ * y) const
 
@@ -1469,7 +1466,6 @@ bool InPlayerInventoryPos(EERIE_S2D * pos)
 	short iPosX = ARX_CLEAN_WARN_CAST_SHORT(fCenterX);
 	short iPosY = ARX_CLEAN_WARN_CAST_SHORT(fSizY);
 
-
 	short tx, ty;
 
 	if (player.Interface & INTER_INVENTORY)
@@ -1479,10 +1475,8 @@ bool InPlayerInventoryPos(EERIE_S2D * pos)
 
 		if ((tx >= 0) && (ty >= 0))
 		{
-
 			tx = tx / SHORT_INTERFACE_RATIO(32);
 			ty = ty / SHORT_INTERFACE_RATIO(32);
-
 
 			if ((tx >= 0) && (tx <= INVENTORY_X) && (ty >= 0) && (ty < INVENTORY_Y))
 				return true;
@@ -1493,12 +1487,10 @@ bool InPlayerInventoryPos(EERIE_S2D * pos)
 	
 	else if (player.Interface & INTER_INVENTORYALL)
 	{
-
 		float fBag	= (player.bag - 1) * INTERFACE_RATIO(-121);
 		ARX_CHECK_SHORT(fBag);
 
 		short iY = ARX_CLEAN_WARN_CAST_SHORT(fBag);
-
 
 		if ((
 		            (pos->x >= iPosX) &&
@@ -1514,22 +1506,17 @@ bool InPlayerInventoryPos(EERIE_S2D * pos)
 
 			if ((tx >= 0) && (ty >= 0))
 			{
-
 				tx = tx / SHORT_INTERFACE_RATIO(32);
 				ty = ty / SHORT_INTERFACE_RATIO(32);
-
 
 				if ((tx >= 0) && (tx <= INVENTORY_X) && (ty >= 0) && (ty < INVENTORY_Y))
 					return true;
 			}
 
-
 			float fRatio	= INTERFACE_RATIO(121);
 			ARX_CHECK_SHORT(iY + fRatio);
 
 			iY	+= ARX_CLEAN_WARN_CAST_SHORT(fRatio);
-
-
 		}
 	}
 
@@ -1596,8 +1583,6 @@ INTERACTIVE_OBJ * GetFromInventory(EERIE_S2D * pos)
 
 	if (SecondaryInventory != NULL)
 	{
-
-
 		ARX_CHECK_SHORT(InventoryX);
 		tx = pos->x + ARX_CLEAN_WARN_CAST_SHORT(InventoryX) - SHORT_INTERFACE_RATIO(2);
 		ty = pos->y - SHORT_INTERFACE_RATIO(13);
@@ -1606,7 +1591,6 @@ INTERACTIVE_OBJ * GetFromInventory(EERIE_S2D * pos)
 		{
 			tx = tx / SHORT_INTERFACE_RATIO(32); 
 			ty = ty / SHORT_INTERFACE_RATIO(32); 
-
 
 			if ((tx >= 0) && (tx <= SecondaryInventory->sizex)
 			        && (ty >= 0) && (ty <= SecondaryInventory->sizey))
@@ -1844,7 +1828,7 @@ void CheckForInventoryReplaceMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * old)
 					{
 						if (CanBePutInInventory(io)) return;
 
-						PutInFrontOfPlayer(io, 1); 
+						PutInFrontOfPlayer(io);
 						return;
 					}
 				}
@@ -1866,7 +1850,7 @@ void CheckForInventoryReplaceMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * old)
 
 							if (CanBePutInSecondaryInventory(id, io, &xx, &yy)) return;
 
-							PutInFrontOfPlayer(io, 1); 
+							PutInFrontOfPlayer(io); 
 							return;
 						}
 					}

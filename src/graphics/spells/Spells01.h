@@ -145,14 +145,14 @@ class CIgnit: public CSpellFx
 		float				r, g, b;
 		int					mask;
 
-		typedef struct
+		struct T_LINKLIGHTTOFX
 		{
 			EERIE_3D	poslight;
 			EERIE_3D	posfx;
 			int			actif;
 			int			idl;
 			int			iLightNum;
-		} T_LINKLIGHTTOFX;
+		};
 
 	public:
 		unsigned char		nblight;
@@ -220,14 +220,14 @@ class CPortal: public CSpellFx
 		float		r;
 		TextureContainer	* tp, *te;
 
-		typedef struct
+		struct T_ECLAIR
 		{
 			short			actif, nbseg;
 			int				duration;
 			int				currduration;
 			int				numpt;
 			EERIE_3D	*	seg;
-		} T_ECLAIR;
+		};
 
 		int			timeneweclair;
 		int			nbeclair;				//eclair

@@ -136,20 +136,20 @@ class CLevitate: public CSpellFx
 		int			currframetime;
 		TextureContainer * tsouffle;
 
-		typedef struct
+		struct T_CONE
 		{
 			int				conenbvertex;
 			int				conenbfaces;
 			EERIE_3D	*	conevertex;
 			D3DTLVERTEX	*	coned3d;
 			unsigned short	* coneind;
-		} T_CONE;
+		};
 
 		T_CONE		cone[2];
 
 		EERIE_3DOBJ	*	stone[2];
 
-		typedef struct
+		struct T_STONE
 		{
 			short		actif;
 			short		numstone;
@@ -160,7 +160,7 @@ class CLevitate: public CSpellFx
 			EERIE_3D	scale;
 			int			time;
 			int			currtime;
-		} T_STONE;
+		};
 
 		int				timestone;
 		int				nbstone;

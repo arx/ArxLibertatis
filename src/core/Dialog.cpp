@@ -311,12 +311,9 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 				                     | ((col >> 8 & 255) << 8)
 				                     | ((col & 255) << 16);
 				thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);
-				HDC dc;
 				InvalidateRect(thWnd, NULL, true);
 
-				dc = GetDC(thWnd);
-				if (dc)
-				{
+				if(HDC dc = GetDC(thWnd)) {
 					RECT rect;
 					GetClientRect(thWnd, &rect);
 					HBRUSH brush = CreateSolidBrush(rgbResult);
@@ -372,12 +369,9 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 				                     | ((col >> 8 & 255) << 8)
 				                     | ((col & 255) << 16);
 				thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);
-				HDC dc;
 				InvalidateRect(thWnd, NULL, true);
 
-				dc = GetDC(thWnd);
-				if (dc)
-				{
+				if(HDC dc = GetDC(thWnd)) {
 					RECT rect;
 					GetClientRect(thWnd, &rect);
 					HBRUSH brush = CreateSolidBrush(rgbResult);
@@ -528,12 +522,9 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 						ARX_PATHS_SelectedAP->rgb.g = (float)((long)((cc.rgbResult >> 8) & 255)) * ( 1.0f / 255 );
 						ARX_PATHS_SelectedAP->rgb.b = (float)((long)((cc.rgbResult >> 16) & 255)) * ( 1.0f / 255 );
 						thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);
-						HDC dc;
 						InvalidateRect(thWnd, NULL, true);
 
-						dc = GetDC(thWnd);
-						if (dc)
-						{
+						if(HDC dc = GetDC(thWnd)) {
 							RECT rect;
 							GetClientRect(thWnd, &rect);
 							HBRUSH brush = CreateSolidBrush(cc.rgbResult);
@@ -699,12 +690,12 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 HWND InterObjDlg = NULL;
 HWND dlgTreeViewhWnd = NULL;
 WNDPROC lpfnOldWndProc;
-typedef struct
+struct TVINFO
 {
 	HTREEITEM hti;
 	char text[260];
 	INTERACTIVE_OBJ * io;
-} TVINFO;
+};
 
 #define MAXTVV 5000
 TVINFO * tvv[MAXTVV];
@@ -2730,6 +2721,7 @@ INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 	}
 
 	return false;
+	// TODO Nuky - unreachable code
 	return WM_INITDIALOG == uMsg ? true : false;
 }
 extern long CHANGE_LEVEL_PROC_RESULT;
@@ -2813,6 +2805,7 @@ INT_PTR CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 	}
 
 	return false;
+	// TODO Nuky - unreachable code
 	return WM_INITDIALOG == uMsg ? true : false;
 }
 

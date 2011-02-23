@@ -136,12 +136,12 @@ void EERIE_OBJECT_SetBHMode()
 		sp_max_start=ARX_TIME_Get();
 			}
 }
-typedef struct
+struct Scan
 {
 	short SlotDir; 
-} Scan;
+};
 
-typedef struct
+struct SYMBOL_DRAW
 {
 	unsigned long	starttime;
 	EERIE_3D		lastpos;
@@ -151,7 +151,8 @@ typedef struct
 	char			sequence[32];
 	char			cPosStartX;
 	char			cPosStartY;
-} SYMBOL_DRAW;
+};
+
 extern long NO_TEXT_AT_ALL;
 
 extern bool FrustrumsClipSphere(EERIE_FRUSTRUM_DATA * frustrums,EERIE_SPHERE * sphere);
@@ -3121,7 +3122,7 @@ void ARX_SPELLS_Precast_Launch2() {
 	FinishAnim(inter.iobj[0], ause1->cur_anim);
 	ANIM_Set(ause1, inter.iobj[0]->anims[ANIM_CAST]);	
 }
-typedef struct
+struct TARGETING_SPELL
 {
 	long typ;
 	long source;
@@ -3129,7 +3130,7 @@ typedef struct
 	long level;
 	long target;
 	long duration;
-} TARGETING_SPELL;
+};
 TARGETING_SPELL t_spell;
 
 long LOOKING_FOR_SPELL_TARGET=0;
@@ -9101,9 +9102,7 @@ void ApplySPWep()
 			ioo->show=SHOW_FLAG_IN_INVENTORY;									
 
 			if (!CanBePutInInventory(ioo))
-			{
-				PutInFrontOfPlayer(ioo,1);
-			}
+				PutInFrontOfPlayer(ioo);
 
 			MakeSpCol();
 			strcpy(sp_max_ch,"!!!_Grosbillite_!!!");
@@ -9180,9 +9179,7 @@ void ApplySPBow()
 			ioo->show=SHOW_FLAG_IN_INVENTORY;									
 
 			if (!CanBePutInInventory(ioo))
-			{
-				PutInFrontOfPlayer(ioo,1);
-			}
+				PutInFrontOfPlayer(ioo);
 
 			MakeSpCol();
 			strcpy(sp_max_ch,"!!!_Bow to Samy & Anne_!!!");
@@ -9227,9 +9224,7 @@ void ApplySPArm()
 		ioo->show=SHOW_FLAG_IN_INVENTORY;									
 
 		if (!CanBePutInInventory(ioo))
-		{
-			PutInFrontOfPlayer(ioo,1);
-		}
+			PutInFrontOfPlayer(ioo);
 
 		MakeSpCol();
 		strcpy(sp_max_ch,"!! Toi aussi cherches les Cheats !!");

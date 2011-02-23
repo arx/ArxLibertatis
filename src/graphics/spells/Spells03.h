@@ -108,15 +108,15 @@ class CSpeed: public CSpellFx
 
 		TextureContainer * tp;
 
-		typedef struct ST_RUBAN
+		struct T_RUBAN
 		{
 			int				actif;
 			EERIE_3D		pos;
 			int				next;
-		} T_RUBAN;
+		};
 		T_RUBAN truban[2048];
 
-		typedef struct
+		struct T_RUBAN_DEF
 		{
 			int		first;
 			int		origin;
@@ -124,7 +124,7 @@ class CSpeed: public CSpellFx
 			int		dec;
 			float	r, g, b;
 			float	r2, g2, b2;
-		} T_RUBAN_DEF;
+		};
 
 		int			nbrubandef;
 		T_RUBAN_DEF trubandef[256];

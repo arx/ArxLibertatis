@@ -705,8 +705,8 @@ const DIDATAFORMAT*	dformat;
 /*-------------------------------------------------------------*/
 DXI_INPUT_INFO * DXI_GetInfoDevice(int num)
 {
-DXI_INPUT_INFO	*dinf;
-INPUT_INFO		*info;
+	DXI_INPUT_INFO	*dinf;
+	INPUT_INFO		*info;
 
 	if(num>=DI_NbInputInfo) return NULL;
 	dinf=(DXI_INPUT_INFO*)malloc(sizeof(DXI_INPUT_INFO));
@@ -1353,54 +1353,6 @@ int					state,nb;
 	return false;
 }
 
-bool DXI_OldMouseButtonPressed(int id,int numb)
-{
-DIDEVICEOBJECTDATA	*od;
-int					state,nb;
-
-return false;
-	nb=DI_MouseState[id]->nbele;
-	if(!nb) return false;
-//	od=DI_MouseState[id]->old_mousestate;
-	while(nb)
-	{
-		state=0;
-		switch(numb)
-		{
-		case DXI_BUTTON0:
-			if(od->dwOfs==(DWORD)DIMOFS_BUTTON0) state=od->dwData;
-			break;
-		case DXI_BUTTON1:
-			if(od->dwOfs==(DWORD)DIMOFS_BUTTON1) state=od->dwData;
-			break;
-		case DXI_BUTTON2:
-			if(od->dwOfs==(DWORD)DIMOFS_BUTTON2) state=od->dwData;
-			break;
-		case DXI_BUTTON3:
-			if(od->dwOfs==(DWORD)DIMOFS_BUTTON3) state=od->dwData;
-			break;
-		case DXI_BUTTON4:
-			if(od->dwOfs==(DWORD)DIMOFS_BUTTON4) state=od->dwData;
-			break;
-		case DXI_BUTTON5:
-			if(od->dwOfs==(DWORD)DIMOFS_BUTTON5) state=od->dwData;
-			break;
-		case DXI_BUTTON6:
-			if(od->dwOfs==(DWORD)DIMOFS_BUTTON6) state=od->dwData;
-			break;
-		case DXI_BUTTON7:
-			if(od->dwOfs==(DWORD)DIMOFS_BUTTON7) state=od->dwData;
-			break;
-		default:
-			return false;
-		}
-		if(state&0x80) return true;
-		od++;
-		nb--;
-	}
-	return false;
-}
-
 int DXI_GetSCIDAxis(int id,int *jx,int *jy,int *jz)
 {
 INPUT_INFO	*io;
@@ -1933,6 +1885,7 @@ INPUT_INFO	*io;
 	}
 	return false;
 }
+
 
 int DXI_GetIDJoyButtonPressed(int id)
 {

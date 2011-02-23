@@ -139,10 +139,10 @@ extern int iTimeToDrawD7;
 extern EERIE_3D LastValidPlayerPos;
 #define MAX_IO_SAVELOAD	1500
 //-----------------------------------------------------------------------------
-typedef struct
+struct TEMP_IO
 {
   char ident[64];
-} TEMP_IO;
+};
 TEMP_IO * tio = NULL;
 
 long nb_tio = 0;
@@ -197,7 +197,7 @@ void ARX_GAMESAVE_CreateNewInstance()
 	long num = 1;
 	sprintf(basepath, "Save%s\\", LOCAL_SAVENAME);
 
-	while (1)
+	for (;;)
 	{
 		sprintf(testpath, "%sSave%04ld", basepath, num);
 
@@ -290,7 +290,7 @@ void ARX_CHANGELEVEL_CreateNewInstance()
 	long num = 1;
 	sprintf(basepath, "Save%s\\", LOCAL_SAVENAME);
 
-	while (1)
+	for (;;)
 	{
 		sprintf(testpath, "%sCur%04ld", basepath, num);
 
@@ -816,7 +816,7 @@ long ARX_CHANGELEVEL_Push_Player() {
 
 	long allocsize = sizeof(ARX_CHANGELEVEL_PLAYER) + Keyring_Number * sizeof(KEYRING_SLOT) + 48000;
 	allocsize += 80 * nb_PlayerQuest;
-	allocsize += sizeof(ARX_CHANGELEVEL_MAPMARKER_DATA) * Nb_Mapmarkers;
+	allocsize += sizeof(ARX_CHANGELEVEL_MAPMARKER_DATA) * Mapmarkers.size();
 
 
 retry:
@@ -968,7 +968,7 @@ retry:
 	asp->nb_PlayerQuest			= nb_PlayerQuest;
 	asp->keyring_nb				= Keyring_Number;
 	asp->Global_Magic_Mode		= GLOBAL_MAGIC_MODE;
-	asp->Nb_Mapmarkers			= Nb_Mapmarkers;
+	asp->Nb_Mapmarkers			= Mapmarkers.size();
 
 	asp->LAST_VALID_POS.x = LastValidPlayerPos.x;
 	asp->LAST_VALID_POS.y = LastValidPlayerPos.y;
@@ -2639,7 +2639,7 @@ long ARX_CHANGELEVEL_Pop_IO( const std::string& ident)
 						goto retry;
 					}
 
-					if ((avs->name[0] == '#') || (avs->name[0] == '\xA7'))
+		if ((avs->name[0] == '#') || (avs->name[0] == '\xA7'))
 					{
 						avs->type = TYPE_L_LONG;
 						goto retry;
@@ -2742,9 +2742,9 @@ long ARX_CHANGELEVEL_Pop_IO( const std::string& ident)
 					break;
 				default:
 
-					if ((avs->name[0] == '$') || (avs->name[0] == '\xA3'))
-					{
-						avs->type = TYPE_L_TEXT;
+				if ((avs->name[0] == '$') || (avs->name[0] == '\xA3'))
+				{
+					avs->type = TYPE_L_TEXT;
 						goto retry2;
 					}
 

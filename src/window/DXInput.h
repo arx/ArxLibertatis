@@ -100,14 +100,14 @@ extern "C" {
 #define DXI_JOYRIGHT	8
 	/*-----------------------------------------------------------*/
 
-	typedef struct
+	struct DXI_INIT
 	{
 		void *(*malloc)(int size);
 		void *(*realloc)(void * mem, int size);
 		void (*free)(void * buff);
-	} DXI_INIT;
+	};
 
-	typedef struct
+	struct DXI_INPUT_INFO
 	{
 		char			*		name;
 		int						type;
@@ -115,7 +115,7 @@ extern "C" {
 		int						nbaxes;
 		int						info;
 		int						numlist;
-	} DXI_INPUT_INFO;
+	};
 	/*-----------------------------------------------------------*/
 	int DXI_Init(HINSTANCE h, DXI_INIT * i);
 	void DXI_Release(void);

@@ -55,24 +55,15 @@ class CParticleManager
 		~CParticleManager();
 
 	public:
- 
- 
- 
- 
-
-	public:
 		bool	Init();
 		void	Shutdown();
 		void	Clear();
-
- 
 
 		void	AddSystem(CParticleSystem *);
  
 		bool	IsAlive(CParticleSystem);
 		void	Update(long alTime);
 		void	Render(LPDIRECT3DDEVICE7 _lpD3DDevice);
- 
 
 		//flag post prod/genre filtre
 };

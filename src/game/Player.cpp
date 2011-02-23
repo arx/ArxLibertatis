@@ -3,22 +3,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -141,14 +141,9 @@ long sp_max = 0;
 //-----------------------------------------------------------------------------
 // Player Anims FLAGS/Vars
 //-----------------------------------------------------------------------------
- 
- 
 ANIM_HANDLE * herowaitbook = NULL;
- 
 ANIM_HANDLE * herowait2 = NULL;
 ANIM_HANDLE * herowait_2h = NULL;
- 
- 
 
 ARX_NECKLACE necklace;
 
@@ -305,7 +300,7 @@ void ARX_PLAYER_KillTorch()
 	}
 	else
 	{
-		PutInFrontOfPlayer(CURRENT_TORCH, 1);	
+		PutInFrontOfPlayer(CURRENT_TORCH);
 	}
 
 	CURRENT_TORCH = NULL;
@@ -348,7 +343,7 @@ void ARX_PLAYER_ClickedOnTorch(INTERACTIVE_OBJ * io)
 			CURRENT_TORCH = io;
 			io->show = SHOW_FLAG_ON_PLAYER;
 
-			if (DRAGINTER == io)	
+			if (DRAGINTER == io)
 			{
 				DRAGINTER = NULL;
 			}
@@ -923,7 +918,7 @@ void ARX_PLAYER_ComputePlayerFullStats()
 	player.Mod_Critical_Hit = ARX_EQUIPMENT_Apply(
 	                              io, IO_EQUIPITEM_ELEMENT_Critical_Hit, player.Critical_Hit);
 	player.Mod_damages = ARX_EQUIPMENT_Apply(
-	                         io, IO_EQUIPITEM_ELEMENT_Damages, 0); 
+	                         io, IO_EQUIPITEM_ELEMENT_Damages, 0);
 
 
 	//CHECK OVERFLOW
@@ -1121,15 +1116,15 @@ void ARX_PLAYER_ComputePlayerFullStats()
 
 	if (player.Full_Attribute_Dexterity < 0) player.Full_Attribute_Dexterity = 0;
 
-	player.Full_Skill_Stealth = ARX_PLAYER_Get_Skill_Stealth(1); 
+	player.Full_Skill_Stealth = ARX_PLAYER_Get_Skill_Stealth(1);
 	player.Full_Skill_Mecanism = ARX_PLAYER_Get_Skill_Mecanism(1);
-	player.Full_Skill_Intuition = ARX_PLAYER_Get_Skill_Intuition(1); 
-	player.Full_Skill_Etheral_Link = ARX_PLAYER_Get_Skill_Etheral_Link(1); 
-	player.Full_Skill_Object_Knowledge = ARX_PLAYER_Get_Skill_Object_Knowledge(1); 
-	player.Full_Skill_Casting = ARX_PLAYER_Get_Skill_Casting(1); 
-	player.Full_Skill_Projectile = ARX_PLAYER_Get_Skill_Projectile(1); 
-	player.Full_Skill_Close_Combat = ARX_PLAYER_Get_Skill_Close_Combat(1); 
-	player.Full_Skill_Defense = ARX_PLAYER_Get_Skill_Defense(1); 
+	player.Full_Skill_Intuition = ARX_PLAYER_Get_Skill_Intuition(1);
+	player.Full_Skill_Etheral_Link = ARX_PLAYER_Get_Skill_Etheral_Link(1);
+	player.Full_Skill_Object_Knowledge = ARX_PLAYER_Get_Skill_Object_Knowledge(1);
+	player.Full_Skill_Casting = ARX_PLAYER_Get_Skill_Casting(1);
+	player.Full_Skill_Projectile = ARX_PLAYER_Get_Skill_Projectile(1);
+	player.Full_Skill_Close_Combat = ARX_PLAYER_Get_Skill_Close_Combat(1);
+	player.Full_Skill_Defense = ARX_PLAYER_Get_Skill_Defense(1);
 
 	player.Full_resist_magic = player.resist_magic + player.Mod_resist_magic;
 
@@ -1180,7 +1175,7 @@ void ARX_PLAYER_MakeFreshHero()
 	player.Old_Skill_Defense			=	player.Skill_Defense			= 0;
 
 	player.Attribute_Redistribute = 16;
-	player.Skill_Redistribute = 18; 
+	player.Skill_Redistribute = 18;
 
 	player.level = 0;
 	player.xp = 0;
@@ -1485,7 +1480,7 @@ void ARX_PLAYER_LEVEL_UP()
 {
 	ARX_SOUND_PlayInterface(SND_PLAYER_LEVEL_UP);
 	player.level++;
-	player.Skill_Redistribute += 15; 
+	player.Skill_Redistribute += 15;
 	player.Attribute_Redistribute++;
 	ARX_PLAYER_ComputePlayerStats();
 	player.life = player.maxlife;
@@ -1511,7 +1506,7 @@ void ARX_PLAYER_LEVEL_UP()
 void ARX_PLAYER_Modify_XP(long val)
 {
 
-	player.xp += val;				
+	player.xp += val;
 
 	for (long i = 1; i < 11; i++)
 	{
@@ -1763,7 +1758,7 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 	herowait_2h = EERIE_ANIMMANAGER_Load(ANIM_WAIT_TWOHANDED);
 
 	INTERACTIVE_OBJ * io = CreateFreeInter(0);
-	io->obj = hero; 
+	io->obj = hero;
 
 	player.skin = 0;
 	ARX_PLAYER_Restore_Skin();
@@ -1830,19 +1825,19 @@ void ARX_PLAYER_LoadHeroAnimsAndMesh()
 		}
 	}
 
-	ARX_INTERACTIVE_RemoveGoreOnIO(inter.iobj[0]); 
+	ARX_INTERACTIVE_RemoveGoreOnIO(inter.iobj[0]);
 }
 float Falling_Height = 0;
 void ARX_PLAYER_StartFall()
 {
-	FALLING_TIME = ARXTimeUL(); 
+	FALLING_TIME = ARXTimeUL();
 	Falling_Height = 50.f;
 	float yy;
 	EERIEPOLY * ep = CheckInPoly(player.pos.x, player.pos.y, player.pos.z, &yy);
 
 	if (ep)
 	{
-		Falling_Height = player.pos.y; 
+		Falling_Height = player.pos.y;
 	}
 }
 
@@ -1965,7 +1960,7 @@ void ARX_PLAYER_Manage_Visual()
 			player.physics.cyl.origin.x = player.pos.x;
 			player.physics.cyl.origin.y = player.pos.y - PLAYER_BASE_HEIGHT;
 			player.physics.cyl.origin.z = player.pos.z;
-			float anything = CheckAnythingInCylinder(&player.physics.cyl, inter.iobj[0]); 
+			float anything = CheckAnythingInCylinder(&player.physics.cyl, inter.iobj[0]);
 
 			if (anything < 0.f)
 			{
@@ -1985,8 +1980,8 @@ void ARX_PLAYER_Manage_Visual()
 
 		ANIM_USE * ause0 = &io->animlayer[0];
 		ANIM_USE * ause1 = &io->animlayer[1];
- 
 		ANIM_USE * ause3 = &io->animlayer[3];
+
 		ause0->next_anim = NULL;
 		inter.iobj[0]->animlayer[1].next_anim = NULL;
 		inter.iobj[0]->animlayer[2].next_anim = NULL;
@@ -2028,7 +2023,7 @@ void ARX_PLAYER_Manage_Visual()
 			io->animlayer[1].cur_anim = NULL;
 			ChangeMoveAnim = alist[ANIM_DIE];
 			ChangeMA_Loop = 0;
-			ChangeMA_Stopend = 1; 
+			ChangeMA_Stopend = 1;
 			goto makechanges;
 		}
 
@@ -2098,7 +2093,7 @@ void ARX_PLAYER_Manage_Visual()
 
 				if (io->frameloss < 0) io->frameloss = 0;
 
-				ause0->ctime += vv; 
+				ause0->ctime += vv;
 
 				if (ause0->ctime < 0)
 					ause0->ctime = 0;
@@ -2106,7 +2101,7 @@ void ARX_PLAYER_Manage_Visual()
 		}
 
 		LASTPLAYERA = player.angle.a;
-	
+
 		{
 			long tmove = player.Current_Movement;
 
@@ -2324,7 +2319,7 @@ void ARX_PLAYER_Manage_Visual()
 				if (pouet == 2)
 					id = io->obj->fastaccess.primary_attach;
 				else
-					id = GetActionPointIdx(io->obj, "LEFT_ATTACH"); 
+					id = GetActionPointIdx(io->obj, "LEFT_ATTACH");
 
 				pouet--;
 
@@ -2390,7 +2385,6 @@ void ARX_PLAYER_Manage_Visual()
 							particle[j].exist = true;
 							particle[j].zdec = 0;
 
- 
 							particle[j].ov.x	=	target.x + 1.f - rnd() * 2.f;
 							particle[j].ov.y	=	target.y + 1.f - rnd() * 2.f;
 							particle[j].ov.z	=	target.z + 1.f - rnd() * 2.f;
@@ -2615,7 +2609,7 @@ void ForcePlayerLookAtIO(INTERACTIVE_OBJ * io)
 	EERIE_CAMERA tcam;
 	EERIE_3D target;
 
-	long id = inter.iobj[0]->obj->fastaccess.view_attach; 
+	long id = inter.iobj[0]->obj->fastaccess.view_attach;
 
 	if (id != -1)
 	{
@@ -2630,7 +2624,7 @@ void ForcePlayerLookAtIO(INTERACTIVE_OBJ * io)
 		tcam.pos.z = player.pos.z;
 	}
 
-	id = io->obj->fastaccess.view_attach; 
+	id = io->obj->fastaccess.view_attach;
 
 	if (id != -1)
 	{
@@ -2682,7 +2676,7 @@ void ARX_PLAYER_Frame_Update()
 	}
 	else
 	{
-		inter.iobj[0]->ioflags &= ~IO_FREEZESCRIPT; 
+		inter.iobj[0]->ioflags &= ~IO_FREEZESCRIPT;
 		PLAYER_PARALYSED = 0;
 	}
 
@@ -2726,7 +2720,7 @@ void ARX_PLAYER_Frame_Update()
 				io->_npcdata->ex_rotate->group_rotate[2].a = 0; //chest
 				io->_npcdata->ex_rotate->group_rotate[3].a = v; //belt
 			}
-			else 
+			else
 			{
 				v *= ( 1.0f / 10 ); 
 				io->_npcdata->ex_rotate->group_rotate[0].a = v; //head
@@ -2751,13 +2745,12 @@ void ARX_PLAYER_Frame_Update()
 
 	// Changes player ARMS focal depending on alpha angle.
 	if (player.angle.a > 180)
-		PLAYER_ARMS_FOCAL = (float)CURRENT_BASE_FOCAL - 80.f; 
+		PLAYER_ARMS_FOCAL = (float)CURRENT_BASE_FOCAL - 80.f;
 	else
 		PLAYER_ARMS_FOCAL = (float)CURRENT_BASE_FOCAL - 80.f + player.angle.a;
 
 	PLAYER_ARMS_FOCAL = ARX_CLEAN_WARN_CAST_FLOAT(CURRENT_BASE_FOCAL);
 
-	
 	ARX_PLAYER_ComputePlayerFullStats();
 
 	ARX_CHECK_LONG(player.Full_Skill_Mecanism);
@@ -2867,7 +2860,7 @@ bool Valid_Jump_Pos()
 		return true;
 	}
 
-	if ((tmp > 50.f)) 
+	if ((tmp > 50.f))
 	{
 		return false;
 	}
@@ -2982,7 +2975,7 @@ void PlayerMovementIterate(float DeltaTime)
 
 	float d = 0;
 
-	if ((!EDITMODE) && (USE_PLAYERCOLLISIONS)) 
+	if ((!EDITMODE) && (USE_PLAYERCOLLISIONS))
 	{
 		long levitate = 0;
 
@@ -2998,7 +2991,7 @@ void PlayerMovementIterate(float DeltaTime)
 				player.physics.cyl.origin.x = player.pos.x;
 				player.physics.cyl.origin.y = player.pos.y - PLAYER_BASE_HEIGHT;
 				player.physics.cyl.origin.z = player.pos.z;
-				float anything = CheckAnythingInCylinder(&player.physics.cyl, inter.iobj[0]); 
+				float anything = CheckAnythingInCylinder(&player.physics.cyl, inter.iobj[0]);
 
 				if (anything < 0.f)
 				{
@@ -3120,12 +3113,11 @@ void PlayerMovementIterate(float DeltaTime)
 				player.physics.velocity.z = 0.f;
 				player.physics.forces.x = 0.f;
 				player.physics.forces.z = 0.f;
-
 				player.falling = 0;
-		
+
 				float fh = player.pos.y - Falling_Height;
 
-				if (fh > 400.f) 
+				if (fh > 400.f)
 				{
 					float dmg = (fh - 400.f) * ( 1.0f / 15 );
 
@@ -3194,15 +3186,15 @@ void PlayerMovementIterate(float DeltaTime)
 					TheoricalMove = 420;
 
 					if (player.Current_Movement & PLAYER_MOVE_STRAFE_LEFT)
-						TheoricalMove = 420; 
+						TheoricalMove = 420;
 
 					if (player.Current_Movement & PLAYER_MOVE_STRAFE_RIGHT)
-						TheoricalMove = 420; 
+						TheoricalMove = 420;
 				}
 				else if (player.Current_Movement & PLAYER_MOVE_STRAFE_LEFT)
-					TheoricalMove = 140.f; 
+					TheoricalMove = 140.f;
 				else if (player.Current_Movement & PLAYER_MOVE_STRAFE_RIGHT)
-					TheoricalMove = 140.f; 
+					TheoricalMove = 140.f;
 
 				if (player.Current_Movement & PLAYER_MOVE_WALK_BACKWARD)
 					TheoricalMove = 40;
@@ -3216,13 +3208,12 @@ void PlayerMovementIterate(float DeltaTime)
 			time = 1000;
 		}
 
-		TheoricalMove *= jump_mul; 
-		
-		float mval = TheoricalMove / time * DeltaTime; 
+		TheoricalMove *= jump_mul;
+		float mval = TheoricalMove / time * DeltaTime;
 
 		if (player.jumpphase == 2)
 		{
-			moveto.y = player.pos.y; 
+			moveto.y = player.pos.y;
 			player.physics.velocity.y = 0;
 		}
 
@@ -3289,7 +3280,6 @@ void PlayerMovementIterate(float DeltaTime)
 			else
 				player.physics.forces.y += WORLD_GRAVITY;
 
- 
 			float dist;
 			EERIE_3D mod_vect;
 			long mod_vect_count = -1;
@@ -3324,9 +3314,9 @@ void PlayerMovementIterate(float DeltaTime)
 		}
 
 		// Apply Velocity Damping (Natural Velocity Attenuation. Stands for friction)
-		float dampen = 1.f - (0.009f * DeltaTime); 
+		float dampen = 1.f - (0.009f * DeltaTime);
 
-		if (dampen < 0.001f) dampen = 0.f; 
+		if (dampen < 0.001f) dampen = 0.f;
 
 		player.physics.velocity.x *= dampen;
 		player.physics.velocity.z *= dampen;
@@ -3384,11 +3374,8 @@ void PlayerMovementIterate(float DeltaTime)
 			player.physics.velocity.y = 0;
 		}
 		else if (!player.climbing)
-		{
-			
-			if (player.pos.y >= posy) player.physics.velocity.y = 0;
-			
-		}
+			if (player.pos.y >= posy)
+				player.physics.velocity.y = 0;
 
 		// Reset Forces
 		memset(&player.physics.forces, 0, sizeof(EERIE_3D));
@@ -3418,11 +3405,11 @@ void PlayerMovementIterate(float DeltaTime)
 				if (player.jumplastposition == -1.f)
 				{
 					player.jumplastposition = 0;
-					player.jumpstarttime = ARXTimeUL(); 
+					player.jumpstarttime = ARXTimeUL();
 				}
 
 				float jump_up_time	=	200.f;
-				float jump_up_height =	130.f; 
+				float jump_up_height =	130.f;
 				long timee			=	lARXTime;
 				float offset_time	=	(float)timee - (float)player.jumpstarttime;
 				float divider		=	1.f / jump_up_time;
@@ -3453,7 +3440,6 @@ void PlayerMovementIterate(float DeltaTime)
 			}
 			else
 			{
- 
 				test = ARX_COLLISION_Move_Cylinder(&player.physics, inter.iobj[0], PLAYER_CYLINDER_STEP, levitate | CFLAG_EASY_SLIDING | CFLAG_PLAYER);
 
 				if ((!test)
@@ -3468,7 +3454,7 @@ void PlayerMovementIterate(float DeltaTime)
 					{
 						float fh = player.pos.y - Falling_Height;
 
-						if (fh > 400.f) 
+						if (fh > 400.f)
 						{
 							float dmg = (fh - 400.f) * ( 1.0f / 15 );
 
@@ -3530,13 +3516,11 @@ void PlayerMovementIterate(float DeltaTime)
 			moveto.x = player.physics.cyl.origin.x;
 			moveto.y = player.physics.cyl.origin.y + PLAYER_BASE_HEIGHT;
 			moveto.z = player.physics.cyl.origin.z;
-		
 			d = (float)(TRUEEEDistance3D(&player.pos, &moveto));
 		}
 	}
 	else
 	{
-	
 		if (!EDITMODE)
 		{
 			EERIE_3D vect;
@@ -3775,26 +3759,22 @@ void ARX_PLAYER_Start_New_Quest()
 	KillAllDirectory(CurGamePath);
 	CreateDirectory(CurGamePath, NULL);
 	inter.iobj[0]->halo.flags = 0;
-	
 }
 
 //-----------------------------------------------------------------------------
 void ARX_PLAYER_AddBag()
 {
-	player.bag ++;
+	++player.bag;
 
 	if (player.bag > 3)
-	{
 		player.bag = 3;
-	}
 }
 
 //-----------------------------------------------------------------------------
 bool ARX_PLAYER_CanStealItem(INTERACTIVE_OBJ * _io)
 {
-	
 	if (_io->_itemdata->stealvalue > 0)
-		if ((player.Full_Skill_Stealth >= _io->_itemdata->stealvalue)   
+		if ((player.Full_Skill_Stealth >= _io->_itemdata->stealvalue)
 		        &&	(_io->_itemdata->stealvalue < 100.f))
 		{
 			return true;
@@ -3833,7 +3813,7 @@ extern long WILL_QUICKLOAD, WILL_QUICKSAVE;
 extern long GLOBAL_Player_Room;
 extern long cur_mx, cur_pom;
 extern long sp_arm, cur_arm;
-extern float sp_max_start; 	
+extern float sp_max_start;
 
 void ARX_PLAYER_Invulnerability(long flag)
 {
@@ -3890,7 +3870,7 @@ void ARX_GAME_Reset(long type)
 	cur_mx = 0;
 	cur_pom = 0;
 	cur_rf = 0;
-	cur_mr = 0; 
+	cur_mr = 0;
 
 
 	if (inter.iobj[0]) inter.iobj[0]->spellcast_data.castingspell = -1;
@@ -4001,7 +3981,7 @@ void ARX_GAME_Reset(long type)
 		ARX_EQUIPMENT_ReleaseAll(inter.iobj[0]);
 
 		ARX_PLAYER_InitPlayer();
-		ARX_INTERACTIVE_RemoveGoreOnIO(inter.iobj[0]); 
+		ARX_INTERACTIVE_RemoveGoreOnIO(inter.iobj[0]);
 		TRUE_PLAYER_MOUSELOOK_ON = 0;
 		// Player Inventory
 		CleanInventory();
@@ -4104,10 +4084,10 @@ void Manage_sp_max()
 			float dy = py + sp_max_y[i];
 			sp_max_y[i] = EEsin(dx + (float)ARXTime * ( 1.0f / 100 )) * 30.f * modi;
 			std::string tex( 1, sp_max_ch[i] );
-			
-			UNICODE_ARXDrawTextCenter(dx - 1, dy - 1, tex, 0, 0x00FF00FF, InBookFont);
-			UNICODE_ARXDrawTextCenter(dx + 1, dy + 1, tex, 0, 0x00FF00FF, InBookFont);
-			UNICODE_ARXDrawTextCenter(dx, dy, tex, sp_max_col[i], 0x00FF00FF, InBookFont);
+
+			UNICODE_ARXDrawTextCenter( hFontInBook, dx - 1, dy - 1, tex, 0, 0x00FF00FF );
+			UNICODE_ARXDrawTextCenter( hFontInBook, dx + 1, dy + 1, tex, 0, 0x00FF00FF );
+			UNICODE_ARXDrawTextCenter( hFontInBook, dx, dy, tex, sp_max_col[i], 0x00FF00FF );
 
 		}
 	}

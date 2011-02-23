@@ -50,7 +50,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Updates: (date) (person) (update)
 //
 // Code:	Cyril Meynier
-//			SÃ©bastien Scieux	(Zbuffer)
+//			Sébastien Scieux	(Zbuffer)
 //			Didier Pedreno		(ScreenSaver Problem Fix)
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
@@ -286,9 +286,10 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 		m_bActive = true;
 	}
 
-	// ï¿½ supprimer au final
-	if (CreationFlags & WCF_ACCEPTFILES)
-		DragAcceptFiles(m_hWnd, true);
+	// Nuky - this isnt used for the game, and I can set WIN32_LEAN_AND_MEAN with it commented
+	//// à supprimer au final
+	//if (CreationFlags & WCF_ACCEPTFILES)
+	//	DragAcceptFiles(m_hWnd, true);
 
 	// Initialize the 3D environment for the app
 	if (FAILED(hr = Initialize3DEnvironment()))
@@ -473,7 +474,7 @@ void CD3DApplication::EERIEMouseUpdate(short x, short y)
 	}
 
 	if (!((ARXmenu.currentmode == AMCM_NEWQUEST)
-	        ||	(player.Interface & INTER_MAP && (Book_Mode != 2))))
+	        ||	(player.Interface & INTER_MAP && (Book_Mode != BOOKMODE_MINIMAP))))
 		if (mod)
 		{
 			EERIEMouseX = (long)pos.x;

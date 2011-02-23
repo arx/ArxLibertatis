@@ -3,22 +3,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -76,7 +76,7 @@ TextManager * pTextManage;
 TextManager * pTextManageFlyingOver;
 
 //-----------------------------------------------------------------------------
-HFONT InBookFont	= NULL;
+HFONT hFontInBook	= NULL;
 HFONT hFontRedist	= NULL;
 HFONT hFontMainMenu = NULL;
 HFONT hFontMenu		= NULL;
@@ -124,14 +124,14 @@ long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, const std::string& _lpszUTe
 			int		iOldTemp;
 			bool	bWrite;
 
-			sSize.cx = sSize.cy = 0 ;
+	sSize.cx = sSize.cy = 0;
 
 			SelectObject(hDC, _hFont);
 
-			while (1)
-			{
-				bWrite			= true;
-				int iLenghtCurr	= _rRect.left;
+	for (;;)
+	{
+		bWrite = true;
+		int iLenghtCurr = _rRect.left;
 				iOldTemp		= iTemp;
 
 				ARX_CHECK(iTemp < iLenght);
@@ -150,8 +150,8 @@ long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, const std::string& _lpszUTe
 							bWrite		 = false;
 							_rRect.top	+= _iSpacingY + sSize.cy;
 							iTemp++;
-							break;
-						}
+				break;
+			}
 					}
 
 
@@ -180,8 +180,8 @@ long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, const std::string& _lpszUTe
 				if ((iTemp == iLenght) ||
 						((_rRect.top + sSize.cy) > _rRect.bottom))
 				{
-					break;
-				}
+			break;
+	}
 
 			}
 
@@ -314,10 +314,7 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 			strcpy( tUText, _text.c_str() );
 
 			if (hRgn)
-			{
-				SelectClipRgn(hDC,
-							  hRgn);
-			}
+					SelectClipRgn(hDC, hRgn);
 
 			if (bcol == 0x00FF00FF) SetBkMode(hDC, TRANSPARENT);
 			else
@@ -328,7 +325,7 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 
 			SetTextColor(hDC, col);
 
-			SelectObject(hDC,  font);
+			SelectObject(hDC, font);
 
 			RECT rect;
 			rect.top	= (long)y;
@@ -339,13 +336,10 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 			rect.top	= (long)y;
 			rect.bottom	= ((long)y) + n;
 
-			SelectClipRgn(hDC,
-						  NULL);
+			SelectClipRgn(hDC, NULL);
 
 			if (!hHDC)
-			{
 				danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-			}
 
 			return n;
 		}
@@ -360,47 +354,43 @@ long ARX_TEXT_Draw(HFONT ef,
                    const std::string& car,
                    COLORREF colo, COLORREF bcol)
 {
+	
 	if (car.empty() ) return 0;
 
 	if (car[0] == 0) return 0;
 
 	//ArxFont
 	ARX_UNICODE_DrawTextInRect(x, y, 9999.f, car, colo, bcol, ef);
-	return 15 + spacingy;
+	return 15; // + spacingy; TODO why has this been removed?
 }
 
 long ARX_TEXT_DrawRect(HFONT ef,
-					   float x, float y,
-					   float maxx,
-					   const std::string& car,
-					   COLORREF colo,
-					   HRGN _hRgn,
-					   COLORREF bcol)
-{
-
+                       float x, float y,
+                       float maxx,
+                       const std::string& car,
+                       COLORREF colo,
+                       HRGN _hRgn,
+                       COLORREF bcol) {
+	
 	bcol = RGB((bcol >> 16) & 255, (bcol >> 8) & 255, (bcol) & 255);
 
 	colo = RGB((colo >> 16) & 255, (colo >> 8) & 255, (colo) & 255);
 	return ARX_UNICODE_DrawTextInRect(x, y, maxx, car, colo, bcol, ef, _hRgn);
 }
 
-
-//-----------------------------------------------------------------------------
-float DrawBookTextInRect(float x, float y, float maxx, const std::string& text, COLORREF col, COLORREF col2, HFONT font)
-{
-	return (float)ARX_TEXT_DrawRect(font,
-									(BOOKDECX + x) * Xratio, (BOOKDECY + y) * Yratio, (BOOKDECX + maxx) * Xratio, text, col, NULL, col2);
+float DrawBookTextInRect(HFONT font, float x, float y, float maxx, const std::string& text, COLORREF col, COLORREF col2) {
+	return (float)ARX_TEXT_DrawRect(font, (BOOKDECX + x) * Xratio, (BOOKDECY + y) * Yratio, (BOOKDECX + maxx) * Xratio, text, col, NULL, col2);
 }
 
 //-----------------------------------------------------------------------------
-void DrawBookTextCenter(float x, float y, const std::string& text, COLORREF col, COLORREF col2, HFONT font)
+void DrawBookTextCenter( HFONT font, float x, float y, const std::string& text, COLORREF col, COLORREF col2)
 {
-	UNICODE_ARXDrawTextCenter((BOOKDECX + x)*Xratio, (BOOKDECY + y)*Yratio, text, col, col2, font);
+	UNICODE_ARXDrawTextCenter(font, (BOOKDECX + x)*Xratio, (BOOKDECY + y)*Yratio, text, col, col2);
 }
 
 //-----------------------------------------------------------------------------
 
-long UNICODE_ARXDrawTextCenter(float x, float y, const std::string& str, COLORREF col, COLORREF bcol, HFONT font)
+long UNICODE_ARXDrawTextCenter( HFONT font, float x, float y, const std::string& str, COLORREF col, COLORREF bcol)
 {
 
 
@@ -442,13 +432,12 @@ long UNICODE_ARXDrawTextCenter(float x, float y, const std::string& str, COLORRE
 		}
 	}
 
-	return 0;
+		return 0;
 }
 
+long UNICODE_ARXDrawTextCenteredScroll( HFONT font, float x, float y, float x2, const std::string& str, COLORREF col, COLORREF bcol, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut)
+				{
 
-
-long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, const std::string& str, COLORREF col, COLORREF bcol, HFONT font, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut)
-{
 	RECT rRect;
 	ARX_CHECK_LONG(y);
 	ARX_CHECK_LONG(x + x2);   //IF OK, x - x2 cannot overflow
@@ -609,13 +598,11 @@ std::string GetFontName( const std::string& _lpszFileName)
 					{
 						SetFilePointer(hFile, 0, NULL, FILE_CURRENT);
 						SetFilePointer(hFile, FTH.ulOffset + FNH.usOffsetStorage + FNN.usStringOffset, NULL, FILE_BEGIN);
-						
 
 						u16 szName[256];
 
 						ZeroMemory(szName, 256);
 						assert(FNN.usStringLength < 256);
- 
 						iResult = ReadFile(hFile, szName, FNN.usStringLength, &dwRead, NULL);
 
 						if (iResult == 0)
@@ -643,7 +630,7 @@ std::string GetFontName( const std::string& _lpszFileName)
 	return ""; // Return empty font name
 }
 
-void _ShowText(char * text)
+void _ShowText(const char* text)
 {
 	if (GDevice)
 	{
@@ -983,7 +970,7 @@ void ARX_Text_Init()
 		}
 	}
 
-	if (!InBookFont)
+	if (!hFontInBook)
 	{
 		int iFontSize = 16;
 
@@ -993,7 +980,7 @@ void ARX_Text_Init()
 		ss >> iFontSize;
 		iFontSize = Traffic(iFontSize);
 
-		InBookFont = _CreateFont(
+		hFontInBook = _CreateFont(
 						 iFontSize,
 						 0, 0, 0, FW_NORMAL, false, false, false,
 						 DEFAULT_CHARSET,
@@ -1002,7 +989,7 @@ void ARX_Text_Init()
 						 ANTIALIASED_QUALITY,
 						 VARIABLE_PITCH,
 						 lpszFontIngame.c_str());
-		if(!InBookFont) {
+		if(!hFontInBook) {
 			LogError << "error loading book font";
 		}
 	}
@@ -1038,10 +1025,10 @@ void ARX_Text_Close() {
 		pTextManageFlyingOver = NULL;
 	}
 
-	if (InBookFont)
+	if (hFontInBook)
 	{
-		DeleteObject(InBookFont);
-		InBookFont = NULL;
+		DeleteObject(hFontInBook);
+		hFontInBook = NULL;
 	}
 
 	if (hFontRedist)

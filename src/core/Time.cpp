@@ -73,6 +73,7 @@ bool ARXPausedTimer = 0;
 
 //-----------------------------------------------------------------------------
 LARGE_INTEGER	liFrequency;
+LARGE_INTEGER   liInitPerfCounter;        // Nuky - added initial time
 bool			bTimerInit = false;
 float			startupTime = 0;
 
@@ -84,6 +85,7 @@ void _ARX_TIME_Init()
 	}
 
 	QueryPerformanceFrequency(&liFrequency);
+	QueryPerformanceCounter(&liInitPerfCounter);
 	bTimerInit = true;
 
 	ARX_TIME_Init();

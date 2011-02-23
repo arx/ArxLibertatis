@@ -1854,13 +1854,18 @@ void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 				tv[n].sy	= eobj->vertexlist3[paf[n]].vert.sy;
 				tv[n].sz	= eobj->vertexlist3[paf[n]].vert.sz;
 
-				if (FORCE_FRONT_DRAW)
-				{
-					if (IsInGroup(eobj, paf[n], 1) != -1)
-						tv[n].sz *= IN_FRONT_DIVIDER;
-					else
-						tv[n].sz *= IN_FRONT_DIVIDER_FEET;
-				}
+				// Nuky - this code takes 20% of the whole game performance O_O
+				//        AFAIK it allows to correctly display the blue magic effects
+				//        when one's hands are inside a wall. I've only managed to do that
+				//        while in combat mode, looking straight down, and touching a wall
+				//        So, for the greater good I think it's best to simply skip this test
+				//if (FORCE_FRONT_DRAW)
+				//{
+				//	if (IsInGroup(eobj, paf[n], 1) != -1)
+				//		tv[n].sz *= IN_FRONT_DIVIDER;
+				//	else
+				//		tv[n].sz *= IN_FRONT_DIVIDER_FEET;
+				//}
 
 				tv[n].rhw	= eobj->vertexlist3[paf[n]].vert.rhw;
 				tv[n].tu	= eface->u[n];
@@ -3611,28 +3616,31 @@ extern TILE_LIGHTS tilelights[MAX_BKGX][MAX_BKGZ];
 
 void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_D3DVERTEX * _pVertex, unsigned short _usInd0, unsigned short _usInd1, unsigned short _usInd2, unsigned short _usInd3)
 {
-	long nbvert, i;
-
-	if (ep->type & POLY_QUAD) nbvert = 4;
-	else nbvert = 3;
+	// Nuky - 25/01/11 - harmless refactor to understand what is slow.
+	//        MASSIVE speed up thanks to "harmless refactor", wtf ?
 
 	TILE_LIGHTS * tls = &tilelights[_x][_y];
+	long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
 
 	if (tls->num == 0)
 	{
-		ep->tv[0].color = _pVertex[_usInd0].color = ep->v[0].color;
-		ep->tv[1].color = _pVertex[_usInd1].color = ep->v[1].color;
-		ep->tv[2].color = _pVertex[_usInd2].color = ep->v[2].color;
+		_pVertex[_usInd0].color = ep->v[0].color;
+		ep->tv[0].color         = ep->v[0].color;
+		_pVertex[_usInd1].color = ep->v[1].color;
+		ep->tv[1].color         = ep->v[1].color;
+		_pVertex[_usInd2].color = ep->v[2].color;
+		ep->tv[2].color         = ep->v[2].color;
 
 		if (nbvert & 4)
 		{
-			ep->tv[3].color = _pVertex[_usInd3].color = ep->v[3].color;
+			_pVertex[_usInd3].color = ep->v[3].color;
+			ep->tv[3].color         = ep->v[3].color;
 		}
 
 		return;
 	}
 
-	long j;
+	long i, j;
 	register float d;
 	float epr[4];
 	float epg[4];

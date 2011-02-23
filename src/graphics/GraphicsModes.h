@@ -28,7 +28,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsTypes.h"
 
 //-----------------------------------------------------------------------------
-typedef struct // Warning !!! used for save
+struct GLOBAL_MODS // Warning !!! used for save
 {
 	long		flags;
 	EERIE_RGB	depthcolor;
@@ -36,7 +36,7 @@ typedef struct // Warning !!! used for save
 	char		ambiance[128];
 	float		ambiance_vol;
 	float		ambiance_maxvol;
-} GLOBAL_MODS;
+};
 
 //-----------------------------------------------------------------------------
 #define GMOD_DCOLOR		1

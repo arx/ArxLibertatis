@@ -44,13 +44,13 @@ enum MINOSFlags
 };
 
 // Internal MINOSNode structure                                                   //
-typedef struct _MINOSNode
+struct MINOSNode
 {
 	long data;
 	Float g_cost;
 	Float f_cost;
-	_MINOSNode * parent;
-} MINOSNode;
+	MINOSNode * parent;
+};
 
 // Constant and default values                                               //
 const Float MINOS_HEURISTIC_MIN(0.0F);

@@ -111,7 +111,6 @@ void CFireBall::SetTTL(unsigned long aulTTL)
 
 	std::list<CParticle *>::iterator i;
 
-
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
 	assert(ulCalc <= LONG_MAX);
 	long ff = static_cast<long>(ulCalc);
@@ -1012,7 +1011,7 @@ void CSpeed::DrawRuban(int num, float size, int dec, float r, float g, float b, 
 	int		dg = (gg2 - g1) / dec;
 	int		db = (bb2 - b1) / dec;
 
-	while (1)
+	for (;;)
 	{
 		numsuiv = this->truban[num].next;
 

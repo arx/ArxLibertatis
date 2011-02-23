@@ -59,7 +59,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct INTERACTIVE_OBJ;
 
-struct PATHFINDER_REQUEST {
+struct PATHFINDER_REQUEST
+{
 	bool isvalid;
 	long from;
 	long to;

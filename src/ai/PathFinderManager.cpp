@@ -76,12 +76,12 @@ static bool bExitPathfinderThread(false);
 PATHFINDER_REQUEST pr;
 long PATHFINDER_WORKING(0);
 
-typedef struct _PATHFINDER_QUEUE_ELEMENT
+struct PATHFINDER_QUEUE_ELEMENT
 {
 	PATHFINDER_REQUEST req;
-	_PATHFINDER_QUEUE_ELEMENT * next;
+	PATHFINDER_QUEUE_ELEMENT * next;
 	long valid;
-} PATHFINDER_QUEUE_ELEMENT;
+};
 
 PATHFINDER_QUEUE_ELEMENT * pathfinder_queue_start = NULL;
 

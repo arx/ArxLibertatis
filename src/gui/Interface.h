@@ -3,22 +3,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -91,7 +91,7 @@ enum ARX_INTERFACE_NOTE_TYPE
 	NOTE_TYPE_BOOK
 };
 
-typedef struct
+struct STRUCT_NOTE
 {
 	ARX_INTERFACE_NOTE_TYPE type;
 	std::string             text;
@@ -99,9 +99,9 @@ typedef struct
 	long                    pages[MAX_PAGES];
 	long                    curpage;
 	long                    totpages;
-} STRUCT_NOTE;
+};
 
-typedef enum _ARX_STATE_MOUSE
+enum E_ARX_STATE_MOUSE
 {
 	MOUSE_IN_WORLD,
 	MOUSE_IN_TORCH_ICON,
@@ -115,7 +115,7 @@ typedef enum _ARX_STATE_MOUSE
 	MOUSE_IN_STEAL_ICON,
 	MOUSE_IN_INVENTORY,
 	MOUSE_IN_NOTE
-} E_ARX_STATE_MOUSE;
+};
 
 //-----------------------------------------------------------------------------
 
@@ -161,8 +161,6 @@ enum ARX_INTERFACE_BOOK_ITEM
 
 };
 
-
-
 // long "EDITION" values (Danae.cpp)
 enum ARX_INTERFACE_EDITION_MODE
 {
@@ -199,17 +197,24 @@ enum ARX_INTERFACE_CURSOR_MODE
 	CURSOR_COMBINEOFF
 };
 
+enum ARX_INTERFACE_BOOK_MODE
+{
+	BOOKMODE_STATS = 0,
+	BOOKMODE_SPELLS,
+	BOOKMODE_MINIMAP,
+	BOOKMODE_QUESTS
+};
+
 //-----------------------------------------------------------------------------
 extern INTERFACE_TC ITC;
 extern EERIE_S2D MemoMouse;
 extern EERIE_S2D bookclick;
 
-
 extern SPELL_ICON spellicons[SPELL_COUNT];
 extern char LOADFROM[256];
 extern float CINEMA_DECAL;
 extern long CURRINVCOUNT;
-extern long Book_Mode;
+extern ARX_INTERFACE_BOOK_MODE Book_Mode;
 extern long SpecialCursor;
 
 extern long LastMouseClick;
@@ -222,7 +227,7 @@ extern long CONSTANTUPDATELIGHT;
 
 //-----------------------------------------------------------------------------
 float INTERFACE_RATIO(const float);
-float INTERFACE_RATIO_LONG(const long);	
+float INTERFACE_RATIO_LONG(const long);
 float INTERFACE_RATIO_DWORD(const DWORD);
 short SHORT_INTERFACE_RATIO(const float);
 

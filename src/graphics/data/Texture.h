@@ -76,10 +76,10 @@ void ReleaseAllTCWithFlag(long flag);
 #define EERIETEXTUREFLAG_PERMANENT			1
 #define EERIETEXTUREFLAG_LOADSCENE_RELEASE	2
 
-typedef struct
+struct DELAYED_PRIM
 {
 	EERIEPOLY * data;
-} DELAYED_PRIM;
+};
 
 //-----------------------------------------------------------------------------
 // Name: TextureContainer
@@ -124,12 +124,12 @@ class TextureContainer
 		long	delayed_nb;
 		long	delayed_max;
 
-		vector<EERIEPOLY *> vPolyZMap;
-		vector<EERIEPOLY *> vPolyBump;
-		vector<D3DTLVERTEX> vPolyInterBump;
-		vector<SMY_ZMAPPINFO> vPolyInterZMap;
-		vector<D3DTLVERTEX> vPolyInterBumpTANDL;
-		vector<SMY_ZMAPPINFO> vPolyInterZMapTANDL;
+		std::vector<EERIEPOLY *> vPolyZMap;
+		std::vector<EERIEPOLY *> vPolyBump;
+		std::vector<D3DTLVERTEX> vPolyInterBump;
+		std::vector<SMY_ZMAPPINFO> vPolyInterZMap;
+		std::vector<D3DTLVERTEX> vPolyInterBumpTANDL;
+		std::vector<SMY_ZMAPPINFO> vPolyInterZMapTANDL;
 
 		SMY_ARXMAT * tMatRoom;
 

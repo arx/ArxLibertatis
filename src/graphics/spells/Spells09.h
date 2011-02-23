@@ -211,11 +211,11 @@ class CMassParalyse: public CSpellFx
 		float		fRayon;
 		int			iNbParalyse;
 
-		typedef struct
+		struct T_PARALYSE
 		{
 			int	id;
 			CParalyse * paralyse;
-		} T_PARALYSE;
+		};
 
 		T_PARALYSE tabparalyse[256];
 

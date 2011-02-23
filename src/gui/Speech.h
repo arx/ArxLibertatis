@@ -67,7 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 const unsigned int MAX_SPEECH = 9;
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct ARX_CINEMATIC_SPEECH
 {
 	long				type;
 	EERIE_3D			startangle;
@@ -96,14 +96,14 @@ typedef struct
 		pos1.clear();
 		pos2.clear();
 	}
-} ARX_CINEMATIC_SPEECH;
+};
 
-typedef struct
+struct ARX_CONVERSATION_STRUCT
 {
 	long				actors_nb;
 	long				actors[MAX_ACTORS];
 	long				current;
-} ARX_CONVERSATION_STRUCT;
+};
 
 struct STRUCT_SPEECH
 {
