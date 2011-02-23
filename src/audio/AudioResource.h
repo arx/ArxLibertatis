@@ -26,6 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define __ATHENA_RESOURCE_H__
 
 #include "AudioTypes.h"
+#include <stdlib.h>
 
 struct PakFileHandle;
 

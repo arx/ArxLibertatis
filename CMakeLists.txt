@@ -90,6 +90,9 @@ ELSE (MSVC)
 	#use posix threads
 	add_definitions(-DHAVE_PTHREADS)
 	set(THREAD_LIBS pthread rt)
+
+	#use openal
+	set(AUDIO_LIBS openal)
 	
 	# Linux specific libs
   set(ARX_LIBS IL)
@@ -104,6 +107,7 @@ endif()
 # Preprocessor definitions
 add_definitions(-D_DEBUG)
 add_definitions(-DNOMINMAX)
+add_definitions(-DAL_ALEXT_PROTOTYPES)
 
 #glob sources
 file(GLOB_RECURSE ALL_SOURCES ${SRC_DIR}/*.cpp)
@@ -117,7 +121,7 @@ ENDIF()
 add_executable(arx ${ALL_SOURCES} ${ALL_INCLUDES})
 
 #link
-target_link_libraries(arx dsound dxguid gdi32 shell32 dinput comdlg32 ole32 comctl32 ddraw z ${ARX_LIBS} ${THREAD_LIBS})
+target_link_libraries(arx dsound dxguid gdi32 shell32 dinput comdlg32 ole32 comctl32 ddraw z ${ARX_LIBS} ${THREAD_LIBS} ${AUDIO_LIBS})
 
 add_custom_target(remake
 	#clean and compile with 1 thread per core

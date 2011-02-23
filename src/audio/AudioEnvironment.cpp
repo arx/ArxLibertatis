@@ -52,14 +52,15 @@ namespace ATHENA
 		reverb_delay(aalFloat(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DELAY)),
 		reverb_decay(aalFloat(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DECAY)),
 		reverb_hf_decay(aalFloat(AAL_DEFAULT_ENVIRONMENT_REVERBERATION_HFDECAY)),
-		callback(NULL),
-		lpksps(NULL)
+		callback(NULL)
 	{
+		alGenEffects(1, effect);
 	}
 
 	Environment::~Environment()
 	{
 		free(name);
+		alDeleteEffects(1, effect);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -121,14 +122,27 @@ namespace ATHENA
 	{
 		rolloff = _factor < 0.0F ? 0.0F  : _factor > 10.0F ? 10.0F : _factor;
 
-		if (lpksps)
+		if (is_reverb_present)
 		{
-			if (lpksps->Set(DSPROPSETID_EAX_ListenerProperties,
-			                DSPROPERTY_EAXLISTENER_ROOMROLLOFFFACTOR | DSPROPERTY_EAXLISTENER_DEFERRED,
-			                NULL, 0, &rolloff, sizeof(aalFloat)))
+			int error;
+			alGetError(); // Clear error
+			alEffectf(effect[0], AL_REVERB_ROOM_ROLLOFF_FACTOR, rolloff);
+			if ((error = alGetError()) != AL_NO_ERROR) {
 				return AAL_ERROR_SYSTEM;
+			}
 		}
 
+		return AAL_OK;
+	}
+
+	aalError Environment::SetEffect(const int type, const aalFloat val)
+	{
+		int error;
+		alGetError(); // Clear error
+		alEffectf(effect[0], type, val);
+		if ((error = alGetError()) != AL_NO_ERROR) {
+			return AAL_ERROR_SYSTEM;
+		}
 		return AAL_OK;
 	}
 
