@@ -72,7 +72,7 @@ extern HFONT hFontRedist;
 extern HFONT hFontInGame;
 extern HFONT hFontInGameNote;
 
-long ARX_TEXT_Draw(HFONT ef, float x, float y, long spacingy, const std::string& car, COLORREF colo, COLORREF bcol = 0x00FF00FF);
+void ARX_TEXT_Draw(HFONT ef, float x, float y, const std::string & car, COLORREF colo, COLORREF bcol = 0x00FF00FF);
 long ARX_TEXT_DrawRect(HFONT ef, float x, float y, float maxx, const std::string& car, COLORREF colo, HRGN hRgn = NULL, COLORREF bcol = 0x00FF00FF);
 float DrawBookTextInRect(HFONT font, float x, float y, float maxx, const std::string& text, COLORREF col, COLORREF col2);
 void DrawBookTextCenter(HFONT font, float x, float y, const std::string& text, COLORREF col, COLORREF col2);

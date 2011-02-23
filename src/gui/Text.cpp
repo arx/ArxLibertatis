@@ -348,26 +348,22 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
 	return 0;
 }
 
-long ARX_TEXT_Draw(HFONT ef,
+void ARX_TEXT_Draw(HFONT ef,
                    float x, float y,
-                   long spacingy,
-                   const std::string& car,
-                   COLORREF colo, COLORREF bcol)
-{
+                   const string & car,
+                   COLORREF colo, COLORREF bcol) {
 	
-	if (car.empty() ) return 0;
-
-	if (car[0] == 0) return 0;
-
-	//ArxFont
+	if(car.empty()) {
+		return;
+	}
+	
 	ARX_UNICODE_DrawTextInRect(x, y, 9999.f, car, colo, bcol, ef);
-	return 15; // + spacingy; TODO why has this been removed?
 }
 
 long ARX_TEXT_DrawRect(HFONT ef,
                        float x, float y,
                        float maxx,
-                       const std::string& car,
+                       const string & car,
                        COLORREF colo,
                        HRGN _hRgn,
                        COLORREF bcol) {
