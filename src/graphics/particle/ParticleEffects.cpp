@@ -57,24 +57,30 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/particle/ParticleEffects.h"
 
-#include <cstdio>
+#include <algorithm>
 
-#include "window/Input.h"
-#include "graphics/effects/SpellEffects.h"
-#include "scene/GameSound.h"
-#include "physics/Collisions.h"
+#include "ai/Paths.h"
+
+#include "core/Time.h"
+
+#include "game/Damage.h"
+
 #include "gui/Interface.h"
 #include "gui/MenuWidgets.h"
 #include "gui/MenuPublic.h"
-#include "ai/Paths.h"
-#include "core/Time.h"
-#include "game/Damage.h"
-#include "scene/Scene.h"
 
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
-#include "scene/Object.h"
+#include "graphics/effects/SpellEffects.h"
+
+#include "physics/Collisions.h"
 #include "physics/Box.h"
+
+#include "scene/GameSound.h"
+#include "scene/Scene.h"
+#include "scene/Object.h"
+
+#include "window/Input.h"
 
 using std::max;
 
