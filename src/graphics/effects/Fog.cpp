@@ -54,15 +54,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 ///////////////////////////////////////////////////////////////////////////////////////
-#include <stdio.h>
 
 #include "graphics/effects/Fog.h"
-#include "graphics/particle/ParticleEffects.h"
+
 #include "core/Time.h"
+
 #include "gui/MenuWidgets.h"
 
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
+#include "graphics/particle/ParticleEffects.h"
 
 EERIE_3DOBJ * fogobj = NULL;
 extern FOG_DEF fogcopy;

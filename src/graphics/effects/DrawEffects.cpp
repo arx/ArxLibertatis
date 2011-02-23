@@ -56,19 +56,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdio.h>
-
 #include "graphics/effects/DrawEffects.h"
-#include "scene/Interactive.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "game/Spells.h"
+
 #include "core/Time.h"
+#include "core/Application.h"
+
+#include "game/Spells.h"
 #include "gui/MenuWidgets.h"
 
 #include "graphics/Draw.h"
-#include "scene/Light.h"
 #include "graphics/data/Mesh.h"
-#include "core/Application.h"
+#include "graphics/particle/ParticleEffects.h"
+
+#include "scene/Light.h"
+#include "scene/Interactive.h"
 
 // Some external defs needing to be cleaned...
 extern long DANAESIZX;

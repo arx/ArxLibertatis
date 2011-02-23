@@ -28,9 +28,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "animation/Cinematic.h"
 #include "animation/CinematicKeyframer.h"
 
-#include "graphics/data/CinematicTexture.h"
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
+#include "graphics/data/CinematicTexture.h"
 
 /*---------------------------------------------------------------------------------*/
 extern HWND HwndPere;
