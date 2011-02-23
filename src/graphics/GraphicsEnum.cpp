@@ -53,15 +53,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <windowsx.h>
-#include <stdio.h>
-#include <tchar.h>
 
 #include "graphics/GraphicsEnum.h"
-#include "graphics/GraphicsUtility.h" // For DEBUG_MSG
-#include "core/Res.h"  // For dialog controls
-#include "io/Logger.h"
 
+#include <cstdio>
+
+#include <windowsx.h>
+
+#include "core/Res.h"  // For dialog controls
+
+#include "graphics/GraphicsUtility.h" // For DEBUG_MSG
+
+#include "io/Logger.h"
 
 //************************************************************************************
 // Global data
@@ -449,8 +452,8 @@ static VOID UpdateDialogControls(HWND hDlg, D3DEnum_DeviceInfo * pCurrentDevice,
 					if (bStereo)
 						continue;
 
-				TCHAR strMode[80];
-				wsprintf(strMode, _T("%ld x %ld x %ld"),
+				char strMode[80];
+				sprintf(strMode, "%d x %d x %d",
 				         pddsdMode->dwWidth, pddsdMode->dwHeight,
 				         pddsdMode->ddpfPixelFormat.dwRGBBitCount);
 

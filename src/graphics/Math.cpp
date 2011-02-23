@@ -56,19 +56,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Math.h"
 
-#define D3D_OVERLOADS
-
-#include <stdio.h>
 #include <algorithm>
-#include <math.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <cstdio>
 
 #include "core/Application.h"
-#include "graphics/data/Mesh.h"
+
 #include "graphics/GraphicsTypes.h"
+#include "graphics/data/Mesh.h"
 
 using std::min;
 using std::max;

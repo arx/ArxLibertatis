@@ -54,12 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-// Desc: Shortcut macros and functions for using DX objects
-#define D3D_OVERLOADS
-#include <math.h>
-#include <stdio.h>
-#include <tchar.h>
-
 #include "graphics/GraphicsUtility.h"
 
 //-----------------------------------------------------------------------------
