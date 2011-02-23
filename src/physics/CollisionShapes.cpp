@@ -57,8 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/CollisionShapes.h"
 
-#include <cmath>
-
 #include "graphics/Math.h"
 #include "graphics/data/MeshManipulation.h"
 

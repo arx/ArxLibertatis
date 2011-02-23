@@ -55,21 +55,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdlib.h>
-#include <math.h>
+#include "physics/Collisions.h"
 
-#include <iostream>
-#include <fstream>
 #include <sstream>
 #include <vector>
 
+#include "core/Time.h"
+#include "game/Damage.h"
+#include "game/NPC.h"
 #include "graphics/Math.h"
 #include "io/IO.h"
-#include "physics/Collisions.h"
-#include "game/Damage.h"
 #include "scene/Interactive.h"
-#include "game/NPC.h"
-#include "core/Time.h"
 
 using std::min;
 using std::max;

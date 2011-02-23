@@ -38,26 +38,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Anchors.h"
 
-#include "core/Application.h"
+#include <cstdio>
+
 #include "ai/PathFinderManager.h"
-#include "graphics/Math.h"
-
-#include "io/IO.h"
-
+#include "core/Application.h"
 #include "core/Core.h"
 #include "gui/Text.h"
+#include "graphics/Math.h"
+#include "io/IO.h"
 
 using std::min;
 using std::max;
+using std::sprintf;
 
 extern float MAX_ALLOWED_PER_SECOND;
 extern bool DIRECT_PATH;
-
-#include <cstdio>
-using std::printf;
-
-
-
 
 EERIEPOLY * ANCHOR_CheckInPolyPrecis(float x, float y, float z)
 {
