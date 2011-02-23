@@ -1027,7 +1027,7 @@ namespace ATHENA
 					fade_interval = 0.0F;
 				}
 
-				channel.volume = LinearToLogVolume(channel.volume);
+				//channel.volume = LinearToLogVolume(channel.volume);
 			}
 			else if (flags & IS_FADED_DOWN)
 			{
@@ -1039,7 +1039,7 @@ namespace ATHENA
 					return AAL_OK;
 				}
 
-				channel.volume = LinearToLogVolume(channel.volume);
+				//channel.volume = LinearToLogVolume(channel.volume);
 			}
 		}
 

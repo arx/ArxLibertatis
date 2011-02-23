@@ -937,7 +937,7 @@ namespace ATHENA
 
 		aalFloat reflect_volume = std::max(env->reflect_volume, 0.0f);
 		reflect_volume = std::min(env->reflect_volume, 1.0f);
-		env->SetEffect(AL_REVERB_REFLECTIONS_GAIN, LinearToLogVolume(reflect_volume));
+		env->SetEffect(AL_REVERB_REFLECTIONS_GAIN, reflect_volume);
 
 		if (env->reflect_delay >= 300.0F) env->SetEffect(AL_REVERB_REFLECTIONS_DELAY, 0.3F);
 		else env->SetEffect(AL_REVERB_REFLECTIONS_DELAY, aalFloat(env->reflect_delay) * 0.001F);
