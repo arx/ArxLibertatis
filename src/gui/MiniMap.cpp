@@ -57,24 +57,26 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/MiniMap.h"
 
-#include <iostream>
-#include <fstream>
 #include <sstream>
 #include <cstdio>
 #include <algorithm>
 
-#include "gui/Text.h"
-#include "game/Levels.h"
 #include "core/Core.h"
 
-#include "scene/Light.h"
-#include "physics/Box.h"
+#include "game/Levels.h"
+
+#include "gui/Text.h"
+
 #include "graphics/Draw.h"
-#include "scene/Object.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
+
+#include "physics/Box.h"
+
+#include "scene/Light.h"
+#include "scene/Object.h"
 
 using std::min;
 using std::max;

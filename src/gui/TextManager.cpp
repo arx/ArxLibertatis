@@ -5,12 +5,14 @@
  *      Author: bmonkey
  */
 
-#include "TextManager.h"
+#include "gui/TextManager.h"
 
 #include <cassert>
 
-#include "Text.h"
 #include "core/Core.h"
+
+#include "gui/Text.h"
+
 #include "io/Logger.h"
 
 using std::string;

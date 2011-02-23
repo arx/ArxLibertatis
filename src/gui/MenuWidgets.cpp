@@ -29,25 +29,26 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <algorithm>
 #include <map>
-#include <utility>
 
 #include "core/Core.h"
+#include "core/Time.h"
+#include "core/Localization.h"
+
 #include "gui/Menu.h"
 #include "gui/MenuPublic.h"
-#include "scene/GameSound.h"
-#include "core/Localization.h"
 #include "gui/Text.h"
 #include "gui/Interface.h"
 #include "gui/Credits.h"
-#include "core/Time.h"
 
 #include "graphics/data/Texture.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/Draw.h"
 
-#include "window/DXInput.h"
-
 #include "io/Logger.h"
+
+#include "scene/GameSound.h"
+
+#include "window/DXInput.h"
 
 using std::wistringstream;
 using std::min;

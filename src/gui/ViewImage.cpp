@@ -22,17 +22,18 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+
+#include "gui/ViewImage.h"
+
 #include <cstdio>
-#include <iostream>
-#include <fstream>
 #include <sstream>
 #include <algorithm>
 #include <vector>
 
 #include "core/Core.h"
-#include "gui/ViewImage.h"
-#include "gui/MenuWidgets.h"
 #include "core/Time.h"
+
+#include "gui/MenuWidgets.h"
 
 #include "graphics/d3dwrapper.h"
 #include "graphics/data/Texture.h"

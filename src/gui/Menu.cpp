@@ -59,31 +59,32 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <windows.h>
 #include <cstdlib>
-#include <fstream>
 
-#include "scene/ChangeLevel.h"
-#include "scene/GameSound.h"
+#include "core/Time.h"
+#include "core/Application.h"
+#include "core/Localization.h"
+
+#include "game/Equipment.h"
+
+#include "gui/MenuWidgets.h"
+#include "gui/Text.h"
+#include "gui/ViewImage.h"
+
+#include "graphics/Draw.h"
+#include "graphics/Math.h"
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/ParticleParams.h"
-#include "core/Localization.h"
-#include "gui/MenuWidgets.h"
-#include "gui/Text.h"
-#include "core/Time.h"
-#include "game/Equipment.h"
-#include "scene/LoadLevel.h"
-#include "gui/ViewImage.h"
-
-#include "core/Application.h"
-#include "graphics/Draw.h"
-#include "graphics/Math.h"
-#include "scene/Object.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
 
-//-----------------------------------------------------------------------------
+#include "scene/LoadLevel.h"
+#include "scene/Object.h"
+#include "scene/ChangeLevel.h"
+#include "scene/GameSound.h"
+
 extern TextManager * pTextManage;
 extern CDirectInput * pGetInfoDirectInput;
 extern CMenuConfig * pMenuConfig;

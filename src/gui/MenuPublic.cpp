@@ -27,23 +27,26 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 
+#include "animation/Cinematic.h"
+
 #include "core/Core.h"
-#include "gui/Menu.h"
-#include "gui/Interface.h"
-#include "scene/GameSound.h"
-#include "gui/Menu.h"
-#include "gui/MenuWidgets.h"
 #include "core/Localization.h"
 #include "core/Time.h"
-#include "animation/Cinematic.h"
-#include "graphics/data/CinematicTexture.h"
+
+#include "gui/Menu.h"
+#include "gui/Interface.h"
+#include "gui/Menu.h"
+#include "gui/MenuWidgets.h"
 
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
+#include "graphics/data/CinematicTexture.h"
 
 #include "io/IO.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
+
+#include "scene/GameSound.h"
 
 extern CMenuConfig * pMenuConfig;
 extern CDirectInput * pGetInfoDirectInput;

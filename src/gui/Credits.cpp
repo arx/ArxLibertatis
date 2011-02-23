@@ -5,17 +5,21 @@
 
 #include "core/Core.h"
 #include "core/Time.h"
-#include "graphics/Draw.h"
+
 #include "gui/Menu.h"
 #include "gui/Text.h"
 #include "gui/MenuWidgets.h"
+
+#include "graphics/Draw.h"
+
 #include "io/Logger.h"
+
 #include "scene/GameSound.h"
 
 using std::string;
 using std::vector;
 
-// TODO
+// TODO extern globals
 extern bool bFadeInOut;
 extern bool bFade;
 extern int iFadeAction;

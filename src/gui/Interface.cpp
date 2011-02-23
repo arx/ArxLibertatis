@@ -35,32 +35,39 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <iomanip>
 
-#include "animation/Animation.h"
-#include "scene/LinkedObject.h"
-#include "physics/Box.h"
-#include "scene/Object.h"
-
 #include "ai/Paths.h"
-#include "graphics/effects/DrawEffects.h"
-#include "graphics/effects/Fog.h"
-#include "game/Equipment.h"
-#include "scene/GameSound.h"
-#include "scene/ChangeLevel.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "game/Damage.h"
-#include "game/NPC.h"
-#include "gui/Menu.h"
-#include "gui/MenuWidgets.h"
-#include "gui/Speech.h"
+
+#include "animation/Animation.h"
+#include "animation/Cinematic.h"
+
 #include "core/Resource.h"
 #include "core/Time.h"
 #include "core/Dialog.h"
-#include "physics/Collisions.h"
-#include "animation/Cinematic.h"
-#include "io/IO.h"
+
+#include "game/Damage.h"
+#include "game/NPC.h"
+#include "game/Equipment.h"
+
+#include "gui/Menu.h"
+#include "gui/MenuWidgets.h"
+#include "gui/Speech.h"
+
 #include "graphics/Draw.h"
 #include "graphics/data/CinematicTexture.h"
+#include "graphics/effects/DrawEffects.h"
+#include "graphics/effects/Fog.h"
+#include "graphics/particle/ParticleEffects.h"
+
+#include "io/IO.h"
 #include "io/Logger.h"
+
+#include "physics/Box.h"
+#include "physics/Collisions.h"
+
+#include "scene/LinkedObject.h"
+#include "scene/Object.h"
+#include "scene/GameSound.h"
+#include "scene/ChangeLevel.h"
 
 using std::min;
 using std::max;

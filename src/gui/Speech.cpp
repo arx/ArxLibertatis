@@ -60,31 +60,32 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdlib>
 
 #include "core/Core.h"
-#include "gui/Interface.h"
-#include "gui/Text.h"
-#include "scripting/Script.h"
-#include "scripting/ScriptEvent.h"
-#include "scene/GameSound.h"
-#include "window/Input.h"
-#include "gui/Text.h"
 #include "core/Localization.h"
 #include "core/Time.h"
+
+#include "gui/Interface.h"
+#include "gui/Text.h"
 
 #include "graphics/Draw.h"
 
 #include "io/IO.h"
 #include "io/Logger.h"
 
+#include "scene/GameSound.h"
+
+#include "scripting/Script.h"
+#include "scripting/ScriptEvent.h"
+
+#include "window/Input.h"
+
 using std::min;
 using std::max;
 
-//-----------------------------------------------------------------------------
 extern TextureContainer *	arx_logo_tc;
 extern long ARX_CONVERSATION;
 extern long EXTERNALVIEW;
 extern long REQUEST_SPEECH_SKIP;
 
-//-----------------------------------------------------------------------------
 ARX_SPEECH aspeech[MAX_ASPEECH];
 long HIDESPEECH = 0;
 STRUCT_SPEECH speech[MAX_SPEECH];
