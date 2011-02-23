@@ -7,29 +7,36 @@
 
 #include "ScriptEvent.h"
 
+#include "ai/Paths.h"
+
 #include "core/Time.h"
 #include "core/Resource.h"
+
 #include "game/Damage.h"
 #include "game/Equipment.h"
 #include "game/Missile.h"
 #include "game/NPC.h"
+
 #include "gui/Speech.h"
 #include "gui/MiniMap.h"
-#include "ai/Paths.h"
-#include "scene/Scene.h"
-#include "scene/GameSound.h"
-#include "physics/Actors.h"
-#include "physics/CollisionShapes.h"
-#include "physics/Collisions.h"
 #include "gui/Text.h"
 #include "gui/Menu.h"
-#include "io/Logger.h"
-#include "io/IO.h"
-#include "io/PakManager.h"
+
 #include "graphics/GraphicsModes.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/Math.h"
 #include "graphics/data/MeshManipulation.h"
+
+#include "io/Logger.h"
+#include "io/IO.h"
+#include "io/PakManager.h"
+
+#include "physics/Actors.h"
+#include "physics/CollisionShapes.h"
+#include "physics/Collisions.h"
+
+#include "scene/Scene.h"
+#include "scene/GameSound.h"
 
 using std::max;
 using std::min;

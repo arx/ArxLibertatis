@@ -63,19 +63,25 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iomanip>
 
 #include "ai/Paths.h"
-#include "game/Damage.h"
-#include "game/Equipment.h"
-#include "game/NPC.h"
-#include "scene/Scene.h"
-#include "gui/Speech.h"
+
 #include "core/Time.h"
 #include "core/Localization.h"
 #include "core/Dialog.h"
 #include "core/Resource.h"
-#include "io/IO.h"
-#include "io/Logger.h"
+
+#include "game/Damage.h"
+#include "game/Equipment.h"
+#include "game/NPC.h"
+
+#include "gui/Speech.h"
+
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/Math.h"
+
+#include "io/IO.h"
+#include "io/Logger.h"
+
+#include "scene/Scene.h"
 
 #include "scripting/ScriptEvent.h"
 

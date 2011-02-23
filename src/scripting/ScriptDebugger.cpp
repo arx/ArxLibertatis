@@ -23,16 +23,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include <stdio.h>
-#include <string.h>
+#include "scripting/ScriptDebugger.h"
+
+#include <cstdio>
+#include <cstring>
+
 #include <windows.h>
 
-#include "scripting/ScriptDebuggerDialog.h"
-#include "scene/Interactive.h"
 #include "core/Time.h"
 #include "graphics/data/Mesh.h"
 #include "io/IO.h"
 #include "io/Logger.h"
+#include "scene/Interactive.h"
+#include "scripting/ScriptDebuggerDialog.h"
 
 typedef void (APIENTRY * CREATEDIALOG)(HWND);
 typedef void (APIENTRY * SETPARAMS)(ScriptDebuggerInfos &);
