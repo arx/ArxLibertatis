@@ -22,15 +22,13 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-/*-----------------------------------------------------------*/
+
 #ifndef MERCURY_DX_INPUT_H
 #define MERCURY_DX_INPUT_H
 
 #include "core/Common.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <windef.h>
 
 #define DXI_FAIL	0
 #define DXI_OK		1
@@ -142,7 +140,5 @@ extern "C" {
  
 	/*-----------------------------------------------------------*/
 
-#ifdef __cplusplus
-}
-#endif
+
 #endif

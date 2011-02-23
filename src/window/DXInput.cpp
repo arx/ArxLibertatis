@@ -56,7 +56,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2010 ARKANE Studios SA. All rights reserved
 /////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdlib.h>
+#include "window/DXInput.h"
+
+#include <cstdlib>
+
 #include "window/DXInputGlobal.h"
 
 //-----------------------------------------------------------------------------
