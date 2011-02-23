@@ -70,8 +70,6 @@ extern bool bALLOW_BUMP;
 extern long BH_MODE;
 extern int iHighLight;
 
-extern float IN_FRONT_DIVIDER;
-extern float IN_FRONT_DIVIDER_FEET;
 extern bool bRenderInterList;
 extern TextureContainer TexSpecialColor;
 
@@ -1859,6 +1857,8 @@ void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 				//        when one's hands are inside a wall. I've only managed to do that
 				//        while in combat mode, looking straight down, and touching a wall
 				//        So, for the greater good I think it's best to simply skip this test
+				//const float IN_FRONT_DIVIDER = 0.75f;
+				//const float IN_FRONT_DIVIDER_FEET = 0.998f;
 				//if (FORCE_FRONT_DRAW)
 				//{
 				//	if (IsInGroup(eobj, paf[n], 1) != -1)
