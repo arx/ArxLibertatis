@@ -410,7 +410,7 @@ namespace ATHENA
 
 		while (mixer) volume *= mixer->volume, mixer = mixer->parent;
 
-		if (volume) volume = LinearToLogVolume(volume) * channel.volume;
+		//if (volume) volume = LinearToLogVolume(volume) * channel.volume;
 
 		aalSLong value(aalSLong((volume - 1.0F) * 10000.0F));
 
