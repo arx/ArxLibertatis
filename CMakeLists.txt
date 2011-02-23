@@ -121,7 +121,7 @@ ENDIF()
 add_executable(arx ${ALL_SOURCES} ${ALL_INCLUDES})
 
 #link
-target_link_libraries(arx dsound dxguid gdi32 shell32 dinput comdlg32 ole32 comctl32 ddraw z ${ARX_LIBS} ${THREAD_LIBS} ${AUDIO_LIBS})
+target_link_libraries(arx dxguid gdi32 shell32 dinput comdlg32 ole32 comctl32 ddraw z ${ARX_LIBS} ${THREAD_LIBS} ${AUDIO_LIBS})
 
 add_custom_target(remake
 	#clean and compile with 1 thread per core
