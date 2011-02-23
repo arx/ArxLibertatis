@@ -22,17 +22,14 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <stdio.h>
-
-// TODO Remove some headers
-#include <algorithm>
-#include <fstream>
-#include <sstream>
-#include <vector>
 
 #include "game/Map.h"
 
+#include <sstream>
+#include <vector>
+
 #include "core/Core.h"
+
 #include "game/Levels.h"
 
 #include "graphics/GraphicsUtility.h"
@@ -43,7 +40,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
-
 
 extern long FINAL_RELEASE;
 extern long CURRENTLEVEL;

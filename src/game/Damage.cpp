@@ -60,31 +60,30 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <cstdlib>
 
-/*#include <algorithm>
-#include <fstream>
-#include <sstream>
-#include <vector>
-*/
+#include "ai/Paths.h"
 
-#include "io/IO.h"
-
-#include "graphics/data/Mesh.h"
-#include "scene/LinkedObject.h"
-#include "scene/Light.h"
-#include "graphics/Draw.h"
-#include "graphics/data/Mesh.h"
+#include "core/Time.h"
 
 #include "game/Player.h"
 #include "game/NPC.h"
-#include "scene/GameSound.h"
-#include "gui/Speech.h"
-#include "physics/Collisions.h"
-#include "graphics/particle/ParticleEffects.h"
 #include "game/Equipment.h"
+
+#include "gui/Speech.h"
 #include "gui/Interface.h"
-#include "ai/Paths.h"
+
+#include "graphics/Draw.h"
+#include "graphics/data/Mesh.h"
+#include "graphics/particle/ParticleEffects.h"
+
+#include "io/IO.h"
+
+#include "physics/Collisions.h"
+
+#include "scene/GameSound.h"
+#include "scene/LinkedObject.h"
+#include "scene/Light.h"
+
 #include "scripting/Script.h"
-#include "core/Time.h"
 
 using std::min;
 using std::max;

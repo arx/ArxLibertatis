@@ -54,8 +54,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-//------------------------------------------------------------------------------------
-#include <stdio.h>
+
+// TODO include file
+
+#include <cstdio>
 #include <vector>
 #include <algorithm>
 #include <functional>
@@ -63,25 +65,32 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <fstream>
 #include <sstream>
 
-#include "io/Perf.h"
+#include "ai/Paths.h"
 
 #include "core/Application.h"
-#include "scene/Light.h"
-#include "scene/LinkedObject.h"
+
+#include "game/Player.h"
+#include "game/Equipment.h"
+
+#include "gui/Interface.h"
+#include "gui/MenuWidgets.h"
+
 #include "graphics/Math.h"
-#include "physics/Box.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/data/Texture.h"
 
-#include "window/Input.h"
+#include "io/Perf.h"
+
+#include "physics/Box.h"
+
+#include "scene/Light.h"
+#include "scene/LinkedObject.h"
 #include "scene/Interactive.h"
-#include "gui/Interface.h"
-#include "game/Equipment.h"
-#include "gui/MenuWidgets.h"
-#include "ai/Paths.h"
-#include "game/Player.h"
-#include "scripting/Script.h"
 #include "scene/GameSound.h"
+
+#include "scripting/Script.h"
+
+#include "window/Input.h"
 
 using namespace std;
 

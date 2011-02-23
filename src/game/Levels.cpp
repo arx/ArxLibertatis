@@ -54,25 +54,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <stdio.h>
-#include <time.h>
-
-#include <vector>
-#include <iostream>
-#include <fstream>
-#include <sstream>
 
 #include "game/Levels.h"
-#include "scene/LoadLevel.h"
+
+#include <vector>
+#include <sstream>
+
+#include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
-#include "scene/Scene.h"
+
 #include "game/Spells.h"
 #include "gui/Speech.h"
-#include "scene/GameSound.h"
 
 #include "io/IO.h"
-#include "ai/PathFinderManager.h"
 #include "physics/CollisionShapes.h"
+
+#include "scene/LoadLevel.h"
+#include "scene/Scene.h"
+#include "scene/GameSound.h"
 
 extern long LOAD_N_DONT_ERASE;
 extern long DONT_LOAD_SCENE;

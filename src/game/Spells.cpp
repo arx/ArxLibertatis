@@ -33,32 +33,38 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "game/Spells.h"
 
-#include <cstdlib>
-using std::abs;
+#include <cmath>
 
-#include "io/IO.h"
+#include "core/Core.h"
+
+#include "game/Damage.h"
+#include "game/Equipment.h"
+#include "game/NPC.h"
+
+#include "gui/Speech.h"
+#include "gui/Menu.h"
+#include "gui/Interface.h"
+#include "gui/MenuWidgets.h"
+#include "gui/MiniMap.h"
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
+#include "graphics/effects/Fog.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "graphics/spells/SpellsGlobal.h"
+
+#include "io/IO.h"
+
+#include "physics/Collisions.h"
+
 #include "scene/Light.h"
 #include "scene/Object.h"
-
-#include "core/Core.h"
-#include "physics/Collisions.h"
-#include "game/Damage.h"
-#include "game/Equipment.h"
-#include "graphics/effects/Fog.h"
-#include "window/Input.h"
-#include "gui/Interface.h"
-#include "game/NPC.h"
-#include "gui/MenuWidgets.h"
-#include "gui/MiniMap.h"
 #include "scene/Scene.h"
-#include "graphics/particle/ParticleEffects.h"
 #include "scene/GameSound.h"
-#include "graphics/spells/SpellsGlobal.h"
-#include "gui/Speech.h"
-#include "gui/Menu.h"
+
+#include "window/Input.h"
+
+using std::abs;
 
 //TODO Remove this!
 int strcasecmp( const std::string& str1, const std::string& str2 );

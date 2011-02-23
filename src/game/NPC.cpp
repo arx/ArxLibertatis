@@ -58,40 +58,42 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/NPC.h"
 
 #include <cstdlib>
-#include <cstdio>
-#include <iostream>
 #include <sstream>
 #include <algorithm>
-#include <fstream>
 #include <vector>
 #include <cassert>
 
-#include "io/IO.h"
+#include "ai/Paths.h"
+#include "ai/PathFinderManager.h"
+
+#include "core/Time.h"
+
+#include "game/Damage.h"
+#include "game/Equipment.h"
+#include "game/Spells.h"
+
+#include "gui/Interface.h"
+#include "gui/Speech.h"
 
 #include "graphics/d3dwrapper.h"
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
-#include "scene/Object.h"
+#include "graphics/data/MeshManipulation.h"
+#include "graphics/particle/ParticleEffects.h"
+
+#include "io/IO.h"
+
 #include "physics/Box.h"
-#include "ai/PathFinderManager.h"
 #include "physics/Anchors.h"
 #include "physics/CollisionShapes.h"
-#include "graphics/data/MeshManipulation.h"
-
-#include "scripting/Script.h"
 #include "physics/Collisions.h"
-#include "game/Damage.h"
-#include "game/Equipment.h"
-#include "gui/Interface.h"
+
+#include "scene/Object.h"
 #include "scene/Interactive.h"
-#include "gui/Speech.h"
-#include "ai/Paths.h"
-#include "ai/Paths.h"
-#include "graphics/particle/ParticleEffects.h"
 #include "scene/Scene.h"
 #include "scene/GameSound.h"
-#include "game/Spells.h"
-#include "core/Time.h"
+
+#include "scripting/Script.h"
 
 using std::sprintf;
 using std::min;

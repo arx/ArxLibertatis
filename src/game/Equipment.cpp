@@ -55,29 +55,29 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
-/*#include <algorithm>
-#include <fstream>
-#include <sstream>
-#include <vector>
-*/
-
-#include "io/IO.h"
-#include "graphics/d3dwrapper.h"
-#include "graphics/Math.h"
-#include "scene/Object.h"
-#include "graphics/data/MeshManipulation.h"
-#include "scene/LinkedObject.h"
 #include "game/Equipment.h"
 #include "game/NPC.h"
-#include "scene/GameSound.h"
-#include "physics/Collisions.h"
-#include "graphics/particle/ParticleEffects.h"
 #include "game/Damage.h"
-#include "scene/Interactive.h"
+
 #include "gui/Interface.h"
+
+#include "graphics/d3dwrapper.h"
+#include "graphics/Math.h"
+#include "graphics/data/MeshManipulation.h"
+#include "graphics/particle/ParticleEffects.h"
+
+#include "io/IO.h"
+
+#include "physics/Collisions.h"
+
+#include "scene/Object.h"
+#include "scene/LinkedObject.h"
+#include "scene/GameSound.h"
+#include "scene/Interactive.h"
+
 #include "scripting/Script.h"
 
 using std::min;
