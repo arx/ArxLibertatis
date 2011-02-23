@@ -23,16 +23,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
+#include "audio/Ambient.h"
+
 #include <math.h>
 #include <cstdlib>
 #include <cstring>
 
 #include "audio/AudioGlobal.h"
 #include "audio/Sample.h"
-#include "audio/Ambient.h"
 
 #include "io/PakManager.h"
-
 
 using namespace std;
 

@@ -54,31 +54,39 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#define _ARX_CEDITOR_  0
-#include <stdio.h>
-#include <windows.h>
-#include <stdio.h>
 
+#include "core/Dialog.h"
+
+#include <windows.h>
+#include <commdlg.h>
+
+#include <cstdio>
+
+#include "ai/Paths.h"
+
+#include "core/Time.h"
 #include "core/Version.h"
 #include "core/Resource.h"
-#include "core/Dialog.h"
+
 #include "gui/Interface.h"
-#include "ai/Paths.h"
-#include "scene/GameSound.h"
-#include "graphics/GraphicsModes.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "io/Screenshot.h"
 #include "gui/Text.h"
-#include "core/Time.h"
 
-#include "io/IO.h"
-
-#include "graphics/GraphicsUtility.h"
-#include "physics/Clothes.h"
-#include "scene/Light.h"
-#include "graphics/data/Texture.h"
 #include "graphics/Math.h"
+#include "graphics/GraphicsUtility.h"
+#include "graphics/GraphicsModes.h"
+#include "graphics/data/Texture.h"
+#include "graphics/particle/ParticleEffects.h"
+
+#include "io/Screenshot.h"
+#include "io/IO.h"
 #include "io/Logger.h"
+
+#include "physics/Clothes.h"
+
+#include "scene/GameSound.h"
+#include "scene/Light.h"
+
+#define _ARX_CEDITOR_  0
 
 long FASTLOADS = 0;
 

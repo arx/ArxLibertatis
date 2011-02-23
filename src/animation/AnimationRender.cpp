@@ -27,26 +27,31 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <dinput.h>
 
-#include "io/IO.h"
-
 #include "animation/Animation.h"
-#include "physics/Clothes.h"
-#include "scene/Object.h"
-#include "graphics/Math.h"
-#include "scene/Light.h"
-#include "graphics/data/MeshManipulation.h"
-#include "graphics/Draw.h"
 
-#include "physics/Collisions.h"
-#include "scene/GameSound.h"
-#include "scene/Scene.h"
-#include "game/Equipment.h"
-#include "game/Damage.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "game/NPC.h"
 #include "core/Time.h"
 #include "core/Core.h"
+
+#include "game/Equipment.h"
+#include "game/Damage.h"
+#include "game/NPC.h"
+
+#include "graphics/Draw.h"
+#include "graphics/Math.h"
+#include "graphics/data/MeshManipulation.h"
+#include "graphics/particle/ParticleEffects.h"
+
 #include "gui/MenuWidgets.h"
+
+#include "physics/Clothes.h"
+#include "physics/Collisions.h"
+
+#include "io/IO.h"
+
+#include "scene/Object.h"
+#include "scene/Light.h"
+#include "scene/GameSound.h"
+#include "scene/Scene.h"
 
 using std::min;
 using std::max;

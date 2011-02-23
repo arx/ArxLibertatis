@@ -22,13 +22,15 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+
+#include "audio/codec/WAV.h"
+
 #include <windows.h>
 #include <mmreg.h>
 
 #include "io/PakManager.h"
 #include "io/Logger.h"
 
-#include "audio/codec/WAV.h"
 #include "audio/codec/RAW.h"
 #include "audio/codec/ADPCM.h"
 

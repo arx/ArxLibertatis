@@ -54,11 +54,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 ///////////////////////////////////////////////////////////////////////////////
+
 #include "ai/PathFinderManager.h"
+
+#include "ai/PathFinder.h"
+#include "io/IO.h"
 #include "scene/Light.h"
 
-#include "io/IO.h"
-#include "ai/PathFinder.h"
 
 static const float PATHFINDER_HEURISTIC_MIN(0.2F);
 static const float PATHFINDER_HEURISTIC_MAX(MINOS_HEURISTIC_MAX);

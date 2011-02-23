@@ -63,47 +63,54 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <windows.h>
 #include <shellapi.h>
 
+#include "ai/Paths.h"
+#include "ai/PathFinderManager.h"
+
+#include "animation/Animation.h"
+#include "animation/CinematicKeyframer.h"
+
+#include "core/Dialog.h"
+#include "core/Resource.h"
+#include "core/Version.h"
+#include "core/AVI.h"
+#include "core/Localization.h"
+#include "core/Time.h"
+
+#include "game/Missile.h"
+#include "game/Damage.h"
+#include "game/Equipment.h"
+#include "game/Map.h"
+
+#include "gui/MenuPublic.h"
+#include "gui/Menu.h"
+#include "gui/MenuWidgets.h"
+#include "gui/Speech.h"
+
+#include "graphics/GraphicsUtility.h"
+#include "graphics/Draw.h"
+#include "graphics/data/FTL.h"
+#include "graphics/data/CinematicTexture.h"
+#include "graphics/effects/Fog.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "graphics/particle/ParticleManager.h"
+
 #include "io/IO.h"
 #include "io/Registry.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
- 
-#include "graphics/GraphicsUtility.h"
-#include "graphics/Draw.h"
-#include "core/AVI.h"
-#include "animation/Animation.h"
-#include "ai/PathFinderManager.h"
-#include "scene/LinkedObject.h"
-
-#include "core/Dialog.h"
-#include "core/Resource.h"
-#include "core/Version.h"
-#include "animation/CinematicKeyframer.h"
-#include "scene/CinematicSound.h"
 #include "io/CinematicLoad.h"
-#include "graphics/data/CinematicTexture.h"
-#include "game/Map.h"
-#include "scene/ChangeLevel.h"
-#include "graphics/particle/ParticleManager.h"
+#include "io/Screenshot.h"
+ 
 #include "physics/Collisions.h"
-#include "game/Damage.h"
-#include "game/Equipment.h"
-#include "graphics/data/FTL.h"
-#include "graphics/effects/Fog.h"
-#include "core/Localization.h"
-#include "gui/Menu.h"
-#include "gui/MenuWidgets.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "ai/Paths.h"
+#include "physics/Actors.h"
+
+#include "scene/LinkedObject.h"
+#include "scene/CinematicSound.h"
+#include "scene/ChangeLevel.h"
 #include "scene/Scene.h"
 #include "scene/GameSound.h"
-#include "physics/Actors.h"
-#include "gui/Speech.h"
-#include "core/Time.h"
-#include "game/Missile.h"
-#include "gui/MenuPublic.h"
-#include "io/Screenshot.h"
+
 #include "scripting/ScriptEvent.h"
 
 using std::min;

@@ -22,13 +22,16 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+
 #include "core/Localization.h"
 
 #include <list>
 
 #include "core/Common.h"
 #include "core/LocalizationHash.h"
+
 #include "gui/MenuWidgets.h"
+
 #include "io/PakManager.h"
 #include "io/Logger.h"
 

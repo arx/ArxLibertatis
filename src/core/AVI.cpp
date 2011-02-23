@@ -23,18 +23,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
+#include "core/AVI.h"
 
 #include <windows.h>
 #include <amstream.h>
 #include <control.h>
 #include <uuids.h>
 #include <amvideo.h>
-#include <stdio.h>
-#include <tchar.h>
 #include <dshow.h>
 
-#include "gui/MenuWidgets.h"			// CDirectInput
+#include <cstdio>
 
+#include "gui/MenuWidgets.h"
 
 //-----------------------------------------------------------------------------
 #define CLASSNAME "VideoWindow"

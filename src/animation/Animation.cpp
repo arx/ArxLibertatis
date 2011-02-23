@@ -67,26 +67,30 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <climits>
 using std::sprintf;
 
-#include "physics/Clothes.h"
-#include "scene/Object.h"
-#include "graphics/Math.h"
-#include "scene/Light.h"
-#include "graphics/data/Mesh.h"
-#include "graphics/Draw.h"
+#include "animation/AnimationRender.h"
 
-#include "scene/GameSound.h"
-#include "game/Damage.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "game/NPC.h"
-#include "physics/Collisions.h"
-#include "scene/Scene.h"
 #include "core/Time.h"
 #include "core/Core.h"
-#include "animation/AnimationRender.h"
+
+#include "game/Damage.h"
+#include "game/NPC.h"
+
+#include "graphics/data/Mesh.h"
+#include "graphics/Draw.h"
+#include "graphics/Math.h"
+#include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
+
+#include "physics/Clothes.h"
+#include "physics/Collisions.h"
+
+#include "scene/Object.h"
+#include "scene/Light.h"
+#include "scene/GameSound.h"
+#include "scene/Scene.h"
 
 using std::min;
 using std::max;

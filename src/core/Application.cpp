@@ -55,19 +55,22 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <stdio.h>
-#include <tchar.h>
 
 #include "core/Application.h"
-#include "graphics/data/Mesh.h"
-#include "graphics/GraphicsUtility.h"
+
+#include <cstdio>
+
+#include "core/Time.h"
+#include "core/Resource.h"
+
+#include "game/Player.h"
 
 #include "gui/Menu.h"
-#include "game/Player.h"
 #include "gui/Interface.h"
-#include "core/Time.h"
 #include "gui/MenuWidgets.h"
-#include "core/Resource.h"
+
+#include "graphics/data/Mesh.h"
+#include "graphics/GraphicsUtility.h"
 
 #include "io/IO.h"
 #include "io/Registry.h"

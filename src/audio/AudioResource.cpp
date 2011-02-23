@@ -22,8 +22,11 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <cstring>
+
 #include "audio/AudioResource.h"
+
+#include <cstring>
+
 #include "io/PakManager.h"
 
 namespace ATHENA {

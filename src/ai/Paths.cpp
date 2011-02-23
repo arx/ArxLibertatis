@@ -60,26 +60,31 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <cassert>
 
-#include "graphics/GraphicsModes.h"
-#include "scene/GameSound.h"
-#include "physics/Collisions.h"
-#include "core/Time.h"
-#include "game/NPC.h"
-#include "graphics/effects/SpellEffects.h"
-#include "scene/Interactive.h"
-#include "game/Player.h"
-#include "scripting/Script.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "game/Damage.h"
-#include "game/Equipment.h"
-#include "core/Dialog.h"
 #include "animation/Animation.h"
 
-#include "scene/Light.h"
+#include "core/Dialog.h"
+#include "core/Time.h"
+
+#include "game/NPC.h"
+#include "game/Player.h"
+#include "game/Damage.h"
+#include "game/Equipment.h"
+
+#include "graphics/GraphicsModes.h"
 #include "graphics/Draw.h"
-#include "physics/Box.h"
+#include "graphics/effects/SpellEffects.h"
+#include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
+
+#include "physics/Box.h"
+#include "physics/Collisions.h"
+
+#include "scene/GameSound.h"
+#include "scene/Interactive.h"
+#include "scene/Light.h"
+
+#include "scripting/Script.h"
 
 using std::min;
 using std::max;
