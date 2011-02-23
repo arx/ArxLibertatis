@@ -58,10 +58,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "graphics/data/FTL.h"
+
+#include <cstdlib>
+
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"

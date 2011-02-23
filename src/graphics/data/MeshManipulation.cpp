@@ -59,12 +59,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstring>
 
-#include "scene/Object.h"
 #include "graphics/Math.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
+
+#include "scene/Object.h"
 
 using std::max;
 using std::string;

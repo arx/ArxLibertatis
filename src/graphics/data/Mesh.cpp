@@ -53,26 +53,26 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //																					//
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved						//
 //////////////////////////////////////////////////////////////////////////////////////
+
 #include "graphics/data/Mesh.h"
 
 #include <cstdlib>
 #include <sstream>
 #include <iomanip>
 
-#include "scene/Light.h"
-#include "scene/Object.h"
-#include "graphics/data/Texture.h"
-#include "graphics/Draw.h"
-#include "graphics/GraphicsUtility.h"
-#include "animation/Animation.h"
-#include "physics/Anchors.h"
+#include "ai/PathFinder.h"
 #include "ai/PathFinderManager.h"
 
-#include "graphics/particle/ParticleEffects.h"
+#include "animation/Animation.h"
+
 #include "core/Time.h"
-#include "scene/Scene.h"
+
 #include "gui/MenuWidgets.h"
-#include "ai/PathFinder.h"
+
+#include "graphics/Draw.h"
+#include "graphics/GraphicsUtility.h"
+#include "graphics/data/Texture.h"
+#include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
@@ -80,6 +80,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 #include "io/Blast.h"
 #include "io/Implode.h"
+
+#include "physics/Anchors.h"
+
+#include "scene/Scene.h"
+#include "scene/Light.h"
+#include "scene/Object.h"
 
 using std::min;
 using std::max;

@@ -65,21 +65,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iomanip>
 #include <map>
 
-#include <tchar.h>
 #include <zlib.h>
 
 #include <IL/il.h>
 
 #include "core/Common.h"
-
 #include "core/Application.h"
+
 #include "graphics/GraphicsUtility.h"
 #include "graphics/Math.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
-
 
 long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 
