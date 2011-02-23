@@ -28,14 +28,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <stddef.h>
 #include <algorithm>
 
-#include "core/Common.h"
 #include "animation/Cinematic.h"
 #include "animation/CinematicKeyframer.h"
+
+#include "core/Common.h"
 #include "core/Application.h"
+
 #include "graphics/data/CinematicTexture.h"
+
 #include "io/PakManager.h"
 #include "io/Logger.h"
 #include "io/IO.h"
+
 #include "scene/CinematicSound.h"
 
 using std::search;

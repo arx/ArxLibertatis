@@ -42,10 +42,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //            @@@ @@@                           @@             @@        STUDIOS    //
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdio.h>
 #include "io/Registry.h"
-#include "io/IO.h"
-#include "core/Common.h"
+
+#include <windows.h>
 
 //-----------------------------------------------------------------------------
 // Name: WriteRegKey()
@@ -94,8 +93,8 @@ HRESULT ReadRegKey( HKEY hKey, const char * strName, TCHAR* strValue,
 }
 HRESULT ReadRegKeyValue( HKEY hKey, const char * strName, long * val) {
 	
-	u32 dwType;
-	u32 dwLength=4;
+	DWORD dwType;
+	DWORD dwLength=4;
 	
 	RegQueryValueEx( hKey, strName, 0, &dwType, (LPBYTE) val, &dwLength );
   return S_OK;

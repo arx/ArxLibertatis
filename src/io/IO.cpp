@@ -55,40 +55,32 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-// Desc: HERMES main functionalities   //FILES MEMORY
+#include "io/IO.h"
+
 #include <cstring>
 #include <cstdio>
-
 #include <algorithm>
 #include <iostream>
 #include <algorithm>
 
-#include <time.h>
-#include "io/IO.h"
+#include <shlobj.h>
+#include <windows.h>
+
+#include "core/Common.h"
+
 #include "io/Registry.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
-#include "core/Common.h"
 
-#if ARX_COMPILER_MSVC
-    #include <shlobj.h>
-    #include <windows.h>
-#else
-    extern "C" {
-    #undef __cplusplus
-    #include <shlobj.h>
-    #include <windows.h>
-    #include <unistd.h>
-    }
+using namespace std;
 
 // TODO(lubosz): temporary include replacement
+#if !ARX_COMPILER_MSVC
     #define _MAX_EXT 3
     #define _MAX_FNAME 512
     #define _MAX_DRIVE 1
     #define _MAX_DIR _MAX_FNAME
 #endif
-
-using namespace std;
 
 UINT GaiaWM = 0;
 HWND MAIN_PROGRAM_HANDLE = NULL;

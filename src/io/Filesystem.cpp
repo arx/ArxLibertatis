@@ -23,10 +23,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include <windows.h>
+#include "io/Filesystem.h"
+
 #include <cstdio>
 #include <cassert>
-#include "io/Filesystem.h"
+
+#include <windows.h>
+
 #include "io/Logger.h"
 
 long KillAllDirectory(const char * path) {

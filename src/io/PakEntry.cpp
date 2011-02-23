@@ -22,12 +22,14 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <iostream>
+
+#include "io/PakEntry.h"
+
 #include <cstring>
 #include <cassert>
 
 #include "core/Common.h"
-#include "io/PakEntry.h"
+
 #include "io/HashMap.h"
 
 static char* GetFirstDir(const std::string& dir, size_t& l);
