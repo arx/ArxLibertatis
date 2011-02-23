@@ -232,7 +232,7 @@ static long ObjectAddFace(EERIE_3DOBJ * obj, const EERIE_FACE * face, const EERI
 
 	for (size_t i = 0; i < obj->texturecontainer.size(); i++)
 	{
-		if (0 <= face->texid && face->texid < srcobj->texturecontainer.size() && obj->texturecontainer[i] == srcobj->texturecontainer[face->texid])
+		if (0 <= face->texid && (size_t)face->texid < srcobj->texturecontainer.size() && obj->texturecontainer[i] == srcobj->texturecontainer[face->texid])
 		{
 			obj->facelist.back().texid = (short)i;
 			break;
