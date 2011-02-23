@@ -58,48 +58,51 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 
 #include <cstdlib>
-
-#ifndef DIRECTINPUT_VERSION
-	#define DIRECTINPUT_VERSION 0x0700
-#endif
-
 #include <iomanip>
 #include <algorithm>
-#include <iostream>
-#include <fstream>
 #include <string>
 #include <vector>
 #include <sstream>
 
+#ifndef DIRECTINPUT_VERSION
+	#define DIRECTINPUT_VERSION 0x0700
+#endif
 #include <dinput.h>
 
 #include "ai/Paths.h"
-#include "graphics/data/FTL.h"
-#include "game/Equipment.h"
-#include "scene/GameSound.h"
-#include "game/NPC.h"
-#include "physics/Collisions.h"
-#include "scene/ChangeLevel.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "game/Damage.h"
-#include "gui/Speech.h"
-#include "core/Time.h"
-#include "scene/Scene.h"
-#include "gui/MenuWidgets.h"
-#include "core/Dialog.h"
+
 #include "animation/Animation.h"
 
-#include "scene/LinkedObject.h"
-#include "physics/CollisionShapes.h"
-#include "physics/Box.h"
-#include "graphics/data/Progressive.h"
-#include "physics/Clothes.h"
+#include "core/Time.h"
+#include "core/Dialog.h"
+
+#include "game/Equipment.h"
+#include "game/NPC.h"
+#include "game/Damage.h"
+
+#include "gui/Speech.h"
+#include "gui/MenuWidgets.h"
+
 #include "graphics/Draw.h"
 #include "graphics/data/MeshManipulation.h"
+#include "graphics/data/FTL.h"
+#include "graphics/data/Progressive.h"
+#include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
+
+#include "physics/Collisions.h"
+#include "physics/CollisionShapes.h"
+#include "physics/Box.h"
+#include "physics/Clothes.h"
+
+#include "scene/ChangeLevel.h"
+#include "scene/GameSound.h"
+#include "scene/Scene.h"
+#include "scene/LinkedObject.h"
+
 #include "scripting/ScriptEvent.h"
 
 using std::min;

@@ -57,30 +57,31 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 
 #include <cstdio>
-#include <iostream>
 #include <algorithm>
-#include <fstream>
 #include <sstream>
 #include <vector>
 
+#include "animation/AnimationRender.h"
+
+#include "core/Application.h"
+#include "core/TheoData.h"
+
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
-#include "core/Application.h"
-#include "physics/Clothes.h"
 #include "graphics/data/Progressive.h"
-#include "physics/Box.h"
-#include "physics/CollisionShapes.h"
-#include "scene/LinkedObject.h"
-
-#include "core/TheoData.h"
-#include "scene/GameSound.h"
-#include "animation/AnimationRender.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/PakEntry.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
+
+#include "physics/Clothes.h"
+#include "physics/Box.h"
+#include "physics/CollisionShapes.h"
+
+#include "scene/LinkedObject.h"
+#include "scene/GameSound.h"
 
 using std::sprintf;
 using std::min;

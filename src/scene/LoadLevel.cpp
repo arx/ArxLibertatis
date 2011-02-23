@@ -59,37 +59,30 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/LoadLevel.h"
 
 #include <cstdio>
-//#include <sys/stat.h>
-//#include <fcntl.h>
 #include <ctime>
-
 #include <iomanip>
-#include <iostream>
-#include <fstream>
 #include <sstream>
 #include <vector>
 
-#include "graphics/Math.h"
 #include "ai/PathFinderManager.h"
-#include "scene/Object.h"
-#include "physics/CollisionShapes.h"
-#include "graphics/Draw.h"
-
-#include "game/Damage.h"
-#include "graphics/effects/Fog.h"
-#include "game/Levels.h"
-#include "core/Localization.h"
-#include "gui/MiniMap.h"
-#include "game/Missile.h"
-#include "graphics/particle/ParticleEffects.h"
 #include "ai/Paths.h"
-#include "scene/Scene.h"
-#include "scene/GameSound.h"
-#include "physics/Actors.h"
-#include "gui/Speech.h"
-#include "game/Spells.h"
+
 #include "core/Time.h"
 #include "core/Dialog.h"
+#include "core/Localization.h"
+
+#include "game/Damage.h"
+#include "game/Levels.h"
+#include "game/Missile.h"
+#include "game/Spells.h"
+
+#include "gui/MiniMap.h"
+#include "gui/Speech.h"
+
+#include "graphics/Math.h"
+#include "graphics/Draw.h"
+#include "graphics/effects/Fog.h"
+#include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
@@ -97,6 +90,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 #include "io/Blast.h"
 #include "io/Implode.h"
+
+#include "physics/CollisionShapes.h"
+#include "physics/Actors.h"
+
+#include "scene/Object.h"
+#include "scene/Scene.h"
+#include "scene/GameSound.h"
 
 using std::max;
 

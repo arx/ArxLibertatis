@@ -27,12 +27,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "animation/Cinematic.h"
 #include "core/Application.h"
-#include "scene/GameSound.h"
 #include "io/IO.h"
 #include "io/Logger.h"
+#include "scene/GameSound.h"
 
 
-/*-----------------------------------------------------------*/
 CinematicSound		TabSound[MAX_SOUND];
 int			NbSound;
 /*-----------------------------------------------------------*/

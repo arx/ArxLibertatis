@@ -34,14 +34,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 
 #include <algorithm>
-#include <stdio.h>
-#include <list>
 #include <vector>
 #include <string>
-#include <streambuf>
-#include <istream>
-#include <fstream>
 #include <sstream>
+
+#include "audio/Audio.h"
+
+#include "core/Application.h"
+
+#include "game/NPC.h"
+#include "game/Player.h"
+
+#include "gui/MenuWidgets.h"
+
+#include "graphics/Math.h"
+#include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
@@ -50,17 +57,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 
-#include "game/NPC.h"
 #include "scene/Interactive.h"
-#include "game/Player.h"
+
 #include "scripting/Script.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "gui/MenuWidgets.h"
-
-#include "graphics/Math.h"
-#include "core/Application.h"
-
-#include "audio/Audio.h"
 
 using namespace std;
 
@@ -2390,7 +2389,7 @@ static void ARX_SOUND_ParseIniFile(char * _lpszTextFile, const unsigned long _ul
 
 	//-------------------------------------------------------------------------
 	// get all lines into list
-	list<char *> lText;
+	vector<char *> lText;
 	char * pLine = strtok(pFile, "\r\n");
 
 	while (pLine)
@@ -2400,7 +2399,7 @@ static void ARX_SOUND_ParseIniFile(char * _lpszTextFile, const unsigned long _ul
 		pLine = strtok(NULL, "\r\n");
 	}
 
-	list<char *>::iterator it;
+	vector<char *>::iterator it;
 
 	//-------------------------------------------------------------------------
 	// look up for sections and associated keys

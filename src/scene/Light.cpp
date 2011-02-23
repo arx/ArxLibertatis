@@ -49,11 +49,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "scene/Light.h"
-#include "graphics/Math.h"
-#include "scene/Object.h"
-#include "graphics/Draw.h"
 
 #include "core/Time.h"
+#include "graphics/Math.h"
+#include "graphics/Draw.h"
+#include "scene/Object.h"
 #include "scene/GameSound.h"
 
 extern float GLOBAL_LIGHT_FACTOR;

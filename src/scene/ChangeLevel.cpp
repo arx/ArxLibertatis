@@ -70,18 +70,23 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iomanip>
 #include <cassert>
 
-#include "game/Damage.h"
-#include "game/Equipment.h"
-#include "scene/Interactive.h"
-#include "gui/MiniMap.h"
-#include "game/NPC.h"
-#include "graphics/particle/ParticleEffects.h"
 #include "ai/Paths.h"
-#include "scene/GameSound.h"
-#include "gui/Speech.h"
-#include "game/Spells.h"
+#include "ai/PathFinderManager.h"
+
 #include "core/Time.h"
 #include "core/Dialog.h"
+
+#include "game/Damage.h"
+#include "game/Equipment.h"
+#include "game/NPC.h"
+#include "game/Spells.h"
+
+#include "gui/MiniMap.h"
+#include "gui/Speech.h"
+
+#include "graphics/d3dwrapper.h"
+#include "graphics/Math.h"
+#include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
@@ -89,15 +94,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 #include "io/SaveBlock.h"
 
-#include "graphics/d3dwrapper.h"
-#include "graphics/Math.h"
-#include "scene/Object.h"
-#include "ai/PathFinderManager.h"
 #include "physics/CollisionShapes.h"
+
+#include "scene/Interactive.h"
+#include "scene/GameSound.h"
+#include "scene/Object.h"
+
 #include "scripting/ScriptEvent.h"
 
-
-//#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern long GLOBAL_MAGIC_MODE;

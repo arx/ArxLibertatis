@@ -55,34 +55,39 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef DIRECTINPUT_VERSION
-	#define DIRECTINPUT_VERSION 0x0700
-#endif
-
-#include <dinput.h>
-#include <stdio.h>
+#include "scene/Scene.h"
 
 #include <string>
 
-#include "scene/Scene.h"
-#include "game/Spells.h"
-#include "scene/GameSound.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "graphics/effects/DrawEffects.h"
-#include "game/Player.h"
+#ifndef DIRECTINPUT_VERSION
+	#define DIRECTINPUT_VERSION 0x0700
+#endif
+#include <dinput.h>
+
 #include "ai/Paths.h"
-#include "gui/Interface.h"
+
+#include "animation/Animation.h"
+
 #include "core/Time.h"
+
+#include "game/Spells.h"
+#include "game/Player.h"
+
+#include "gui/Interface.h"
 #include "gui/MenuWidgets.h"
+
+#include "graphics/Draw.h"
+#include "graphics/GraphicsUtility.h"
+#include "graphics/Math.h"
+#include "graphics/d3dwrapper.h"
+#include "graphics/effects/DrawEffects.h"
+#include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
 #include "io/Logger.h"
-#include "graphics/d3dwrapper.h"
+
+#include "scene/GameSound.h"
 #include "scene/Light.h"
-#include "graphics/Draw.h"
-#include "animation/Animation.h"
-#include "graphics/GraphicsUtility.h"
-#include "graphics/Math.h"
 
 using namespace std;
 
