@@ -93,15 +93,16 @@ void ARX_MINIMAP_ValidatePos(EERIE_3D * pos);
 void ARX_MINIMAP_ValidatePlayerPos();
 void ARX_MINIMAP_Reveal();
 
-typedef struct
+struct MAPMARKER_DATA
 {
-    float   x;
-    float   y;
-    long    lvl;
-    char    string[64];
-    std::string tstring;
-} MAPMARKER_DATA;
-extern MAPMARKER_DATA * Mapmarkers;
+	float   x;
+	float   y;
+	long    lvl;
+	char    string[64];
+	std::string tstring;
+};
+
+extern std::vector<MAPMARKER_DATA> Mapmarkers;
 extern long Nb_Mapmarkers;
 
 void ARX_MAPMARKER_Remove( const std::string& temp);
