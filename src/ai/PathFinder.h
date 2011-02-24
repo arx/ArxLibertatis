@@ -22,71 +22,118 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+
 #ifndef ARX_AI_PATHFINDER_H
 #define ARX_AI_PATHFINDER_H
 
 #include <vector>
 
+class OpenNodeList;
 class _ANCHOR_DATA;
 class EERIE_LIGHT;
 class EERIE_3D;
 
-enum PathFinderFlags {
-	MINOS_REGULAR = 0x0000,
-	MINOS_STEALTH = 0x0001,
-	MINOS_TACTIC  = 0x0002
-};
-
-
-const float MINOS_HEURISTIC_MIN(0.0F);
-const float MINOS_HEURISTIC_MAX(0.5F);
-
-const float MINOS_DEFAULT_HEURISTIC(MINOS_HEURISTIC_MAX);
-const float MINOS_DEFAULT_RADIUS(0.0F);
-const float MINOS_DEFAULT_HEIGHT(0.0F);
 
 class PathFinder {
 	
 public:
 	
-	PathFinder(unsigned long map_size, _ANCHOR_DATA * map_data,
-	           unsigned long light_count, EERIE_LIGHT ** light_list,
-	           unsigned long dynlight_count, EERIE_LIGHT ** dynlight_list);
-	~PathFinder();
+	static const float HEURISTIC_MIN = 0.0f;
+	static const float HEURISTIC_MAX = 0.5f;
 	
-	// Setup                                                                     //
-	void SetHeuristic(float heuristic);
-	void SetCylinder(float radius, float height);
+	static const float HEURISTIC_DEFAULT = 0.5f;
+	static const float RADIUS_DEFAULT = 0.0f;
+	static const float HEIGHT_DEFAULT = 0.0f;
 	
-	// Path creation                                                             //
-	bool Move(unsigned long flags, unsigned long from, unsigned long to, long * rstep, unsigned short ** rlist);
-	bool Flee(unsigned long flags, unsigned long from, const EERIE_3D & danger, float safe_distance, long * rstep, unsigned short ** rlist);
-	bool WanderAround(unsigned long flags, unsigned long from, float around_radius, long * rstep, unsigned short ** rlist);
-	bool LookFor(unsigned long flags, unsigned long from, const EERIE_3D & pos, float radius, long * rstep, unsigned short ** rlist);
-	void Clean();
+	/**
+	 * Create a PathFinder instance for the provided data.
+	 * The pathfinder instance does not copy the provided data and will not clean it up
+	 * The light data is only used when the stealth parameter is set to true.
+	 **/
+	PathFinder(size_t map_size, const _ANCHOR_DATA * map_data,
+	           size_t light_count, const EERIE_LIGHT * const * light_list);
+	
+	typedef unsigned long NodeId;
+	typedef std::vector<NodeId> Result;
+	
+	/**
+	 * Set a heuristic for selecting the best next node.
+	 * For 0.0f only the distance to the target will be considered.
+	 * For 0.5f the distance to target is weigted equaly to the already traversed distance + light costs.
+	 * This is not used for flee().
+	 * The default value is HEURISTIC_DEFAULT.
+	 **/
+	void setHeuristic(float heuristic);
+	
+	/**
+	 * Set a cylinder to constrain the search space.
+	 * The default values are RADIUS_DEFAULT and HEIGHT_DEFAULT.
+	 **/
+	void setCylinder(float radius, float height);
+	
+	/**
+	 * Find a path between two nodes.
+	 * @param from The index of the start node into the provided map_data.
+	 * @param to The index of the destination node into the provided map_data.
+	 * @param rlist A list to append the path to.
+	 * @param stealth True if the path should avoid light sources.
+	 * @return true if a path was found.
+	 */
+	bool move(NodeId from, NodeId to, Result & rlist, bool stealth = false) const;
+	
+	/**
+	 * Find a path away from a position.
+	 * @param from The index of the start node into the provided map_data.
+	 * @param danger The position to get away from.
+	 * @param safeDistance How far to get away from danger.
+	 * @param rlist A list to append the path to.
+	 * @param stealth True if the path should avoid light sources.
+	 * @return true if a path was found.
+	 */
+	bool flee(NodeId from, const EERIE_3D & danger, float safeDistance, Result & rlist, bool stealth = false) const;
+	
+	/**
+	 * Wander around and then return to the start node.
+	 * @param from The index of the start node into the provided map_data.
+	 * @param aroundRadius How far to wander.
+	 * @param rlist A list to append the path to.
+	 * @param stealth True if the path should avoid light sources.
+	 * @return true if a path was found.
+	 **/
+	bool wanderAround(NodeId from, float aroundRadius, Result & rlist, bool stealth = false) const;
+	
+	/**
+	 * Walk to and then to random offsets around the given position
+	 * @param from The index of the start node into the provided map_data.
+	 * @param danger The position to walk to.
+	 * @param radius How far to walk around the given position.
+	 * @param rlist A list to append the path to.
+	 * @param stealth True if the path should avoid light sources.
+	 * @return true if a path was found.
+	 **/
+	bool lookFor(NodeId from, const EERIE_3D & pos, float radius, Result & rlist, bool stealth = false) const;
 	
 private:
 	
 	class Node;
+	class OpenNodeList;
+	class ClosedNodeList;
 	
-	Node * GetBestNode();
-	bool Check(Node *);
-	bool BuildPath(unsigned short ** rlist, long * rnumber);
-	void AddEnlightmentCost(Node * node);
-	inline float Distance(const EERIE_3D & from, const EERIE_3D & to) const;
-	unsigned long GetNearestNode(const EERIE_3D & pos) const;
+	/**
+	 * @return the best node (lowest cost) from open list or NULL if the list is empty
+	 **/
+	static void buildPath(const Node & node, Result & rlist);
+	float getIlluminationCost(const EERIE_3D & pos) const;
+	NodeId getNearestNode(const EERIE_3D & pos) const;
 	
 	float radius;
 	float height;
 	float heuristic;
-	unsigned long map_s; // Map size
-	_ANCHOR_DATA * map_d; // Map data
-	unsigned long slight_c, dlight_c; // Static and dynamic lights count
-	EERIE_LIGHT ** slight_l, **dlight_l; // Static and dynamic lights data
 	
-	typedef std::vector<Node *> nodelist;
-	nodelist open;
-	nodelist close;
+	size_t map_s; // Map size
+	const _ANCHOR_DATA * map_d; // Map data
+	size_t slight_c; // Lights count
+	const EERIE_LIGHT * const * slight_l; // Light data
 	
 };
 

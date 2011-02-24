@@ -54,13 +54,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef EERIEPATHFINDER_H
-#define EERIEPATHFINDER_H
+
+#ifndef ARX_AI_PATHFINDERMANAGER_H
+#define ARX_AI_PATHFINDERMANAGER_H
 
 struct INTERACTIVE_OBJ;
 
-struct PATHFINDER_REQUEST
-{
+struct PATHFINDER_REQUEST {
 	bool isvalid;
 	long from;
 	long to;
@@ -80,4 +80,4 @@ void EERIE_PATHFINDER_Clear(long i = 0);
 void EERIE_PATHFINDER_Create();
 void EERIE_PATHFINDER_Release();
 
-#endif
+#endif // ARX_AI_PATHFINDERMANAGER_H

@@ -2102,11 +2102,8 @@ void ComputeRoomDistance()
 		}
 	}
 
-	PathFinder pathfinder(NbRoomDistance, ad, 0, NULL, 0, NULL);
+	PathFinder pathfinder(NbRoomDistance, ad, 0, NULL);
 
-	long retnum;
-	unsigned short * rl;
-	rl = NULL;
 	long BLOCKED;
 	BLOCKED = 0;
 
@@ -2119,17 +2116,16 @@ void ComputeRoomDistance()
 				SetRoomDistance(i, j, -1, NULL, NULL);
 				continue;
 			}
+			
+			PathFinder::Result rl;
 
-			unsigned char found(0);
-			found = pathfinder.Move(MINOS_REGULAR,
-									i, j,
-									&retnum, &rl);
+			bool found = pathfinder.move(i, j, rl);
 
 			if (found)
 			{
 				float dist = 0.f;
 
-				for (long id = 1; id < retnum - 1; id++)
+				for (size_t id = 1; id < rl.size() - 1; id++)
 				{
 					dist += TRUEEEDistance3D(&ad[rl[id-1]].pos, &ad[rl[id]].pos);
 				}
@@ -2138,12 +2134,10 @@ void ComputeRoomDistance()
 
 				float old = GetRoomDistance(i, j, NULL, NULL);
 
-				if (((dist < old) || (old < 0.f)) && retnum >= 2)
-					SetRoomDistance(i, j, dist, &ad[rl[1]].pos, &ad[rl[retnum-2]].pos);
+				if (((dist < old) || (old < 0.f)) && rl.size() >= 2)
+					SetRoomDistance(i, j, dist, &ad[rl[1]].pos, &ad[rl[rl.size()-2]].pos);
 			}
 
-			free(rl);
-			rl = NULL;
 		}
 
 	// Don't use this for contiguous rooms !
