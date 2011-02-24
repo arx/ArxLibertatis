@@ -3,22 +3,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -262,7 +262,7 @@ bool IntersectLinePlane(EERIE_3D * l1, EERIE_3D * l2, EERIEPOLY * ep, EERIE_3D *
 
 	d = ScalarProduct(&v, &ep->norm);
 
-	if (d != 0.0f)   
+	if (d != 0.0f)
 	{
 		v1.x = ep->center.x - l2->x;
 		v1.y = ep->center.y - l2->y;
@@ -278,7 +278,7 @@ bool IntersectLinePlane(EERIE_3D * l1, EERIE_3D * l2, EERIEPOLY * ep, EERIE_3D *
 
 	return false;
 }
- 
+
 //*************************************************************************************
 //*************************************************************************************
 long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest, unsigned int destSize)
@@ -399,7 +399,6 @@ EERIEPOLY * CheckInPoly(float x, float y, float z, float * needY)
 		pzi = sPz - 1;
 		pza = sPz - 1;
 	}
-	
 	else if (rz < 40.f)
 	{
 		pzi = sPz - 1;
@@ -879,7 +878,7 @@ EERIEPOLY * EEIsUnderWater(EERIE_3D * pos)
 				}
 		}
 	}
-	return found;	
+	return found;
 }
 
 extern bool bSoftRender;
@@ -907,8 +906,9 @@ EERIEPOLY* EEIsUnderWaterFast(EERIE_3D * pos)
 
 		for ( short k = 0 ; k < feg->nbpolyin ; k++ )
 		{
-			ep				=	feg->polyin[k];	
-			if ( ( ep->type & POLY_WATER ) && ( ep->max.y < pos->y ) && PointIn2DPolyXZ( ep, pos->x, pos->z ) ) 
+			ep				=	feg->polyin[k];
+
+			if ( ( ep->type & POLY_WATER ) && ( ep->max.y < pos->y ) && PointIn2DPolyXZ( ep, pos->x, pos->z ) )
 			{
 				found	=	ep;
 				break;
@@ -1108,7 +1108,7 @@ void EE_RTP(D3DTLVERTEX * in, D3DTLVERTEX * out)
 
 	float fZTemp;
 	fZTemp = 1.f / out->sz;
-	out->sz = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43; 
+	out->sz = fZTemp * ProjectionMatrix._33 + ProjectionMatrix._43;
 	out->sx = out->sx * ProjectionMatrix._11 * fZTemp + ACTIVECAM->posleft;
 	out->sy = out->sy * ProjectionMatrix._22 * fZTemp + ACTIVECAM->postop;
 	out->rhw = fZTemp;
@@ -1215,14 +1215,16 @@ D3DCOLOR GetColorz(float x, float y, float z)
 
 			if (dd < el->fallend)
 			{
-				if (dd <= el->fallstart) 
+				if (dd <= el->fallstart)
 					dc = el->intensity * GLOBAL_LIGHT_FACTOR;
 				else
 				{
 					p = ((el->fallend - dd) * el->falldiffmul);
 
-					if (p <= 0.f) dc = 0.f;
-					else dc = p * el->intensity * GLOBAL_LIGHT_FACTOR;
+					if (p <= 0.f)
+						dc = 0.f;
+					else
+						dc = p * el->intensity * GLOBAL_LIGHT_FACTOR;
 				}
 
 				dc *= 0.4f * 255.f; 
@@ -1261,7 +1263,7 @@ D3DCOLOR GetColorz(float x, float y, float z)
 
 		for (long i = 0; i < to; i++)
 		{
-			D3DCOLOR col = ep->tv[i].color; 
+			D3DCOLOR col = ep->tv[i].color;
 			_ffr += (float)(long)((col >> 16) & 255);
 			_ffg += (float)(long)((col >> 8) & 255);
 			_ffb += (float)(long)((col) & 255);
@@ -1311,7 +1313,7 @@ long GetVertexPos(INTERACTIVE_OBJ * io, long id, EERIE_3D * pos)
 	else
 	{
 		pos->x = io->pos.x;
-		pos->y = io->pos.y + GetIOHeight(io); 
+		pos->y = io->pos.y + GetIOHeight(io);
 		pos->z = io->pos.z;
 		return 2;
 	}
@@ -1467,7 +1469,7 @@ int RayIn3DPolyNoCull(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPO
 	return 0;
 }
 
-int EERIELaunchRay3(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY * epp, long flag) 
+int EERIELaunchRay3(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY * epp, long flag)
 {
 	float x, y, z; //current ray pos
 	float dx, dy, dz; // ray incs
@@ -1511,7 +1513,7 @@ int EERIELaunchRay3(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY
 		ix = dx / (ady / pas);
 		iz = dz / (ady / pas);
 	}
-	else 
+	else
 	{
 		if (adz != dz) iz = -1.f * pas;
 		else iz = 1.f * pas;
@@ -1520,7 +1522,7 @@ int EERIELaunchRay3(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY
 		iy = dy / (adz / pas);
 	}
 
-	while (1)
+	for (;;)
 	{
 		x += ix;
 		y += iy;
@@ -1631,7 +1633,7 @@ int EERIELaunchRay3(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY
 		{
 			lpx = px;
 			lpz = pz;
-			voidlast = !flag;	
+			voidlast = !flag;
 			long jx1 = px - 1;
 			long jx2 = px + 1;
 			long jz1 = pz - 1;
@@ -1683,9 +1685,9 @@ int EERIELaunchRay3(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY
 
 								if (RayIn3DPolyNoCull(orgn, dest, hit, ep))
 								{
-									hit->x = x; 
-									hit->y = y; 
-									hit->z = z; 
+									hit->x = x;
+									hit->y = y;
+									hit->z = z;
 
 									if (ep == epp) return 0;
 
@@ -1700,7 +1702,7 @@ int EERIELaunchRay3(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY
 		}
 	}
 }
- 
+
 //*************************************************************************************
 // Computes the visibility from a point to another... (sort of...)
 //*************************************************************************************
@@ -1887,7 +1889,7 @@ long BKG_CountIgnoredPolys(EERIE_BACKGROUND * eb)
 		for (long k = 0; k < eg->nbpoly; k++)
 		{
 			pol = &eg->polydata[k];
-			
+
 			if (pol->type & POLY_IGNORE)
 				count++;
 		}
@@ -1911,7 +1913,7 @@ void ReleaseBKG_INFO(EERIE_BKG_INFO * eg)
 	memset(eg, 0, sizeof(EERIE_BKG_INFO));
 }
 
-void ARX_PORTALS_SWAP_EPs(short px, short py, short ep_idx, short ep_idx2) 
+void ARX_PORTALS_SWAP_EPs(short px, short py, short ep_idx, short ep_idx2)
 {
 	if (!portals) return;
 
@@ -2040,7 +2042,7 @@ bool GetRoomCenter(long room_num, EERIE_3D * center)
 	Vector_Copy(&portals->room[room_num].center, center);
 	portals->room[room_num].radius = EEDistance3D(center, &bbox.max);
 	return true;
-} 
+}
 
 ROOM_DIST_DATA * RoomDistance = NULL;
 long NbRoomDistance = 0;
@@ -2282,7 +2284,7 @@ void ComputeRoomDistance()
 
 	free(ad);
 }
- 
+
 // Clears a background of its infos
 void ClearBackground(EERIE_BACKGROUND * eb)
 {
@@ -2318,7 +2320,7 @@ void ClearBackground(EERIE_BACKGROUND * eb)
 //*************************************************************************************
 int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv)
 {
- 
+
 	EERIE_BKG_INFO * eg;
 
 	if (eb == NULL) return 0;
@@ -2343,9 +2345,9 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv)
 	eb->Zdiv = Zdiv;
 	eb->Xmul = 1.f / (float)eb->Xdiv;
 	eb->Zmul = 1.f / (float)eb->Zdiv;
-	
+
 	//todo free
-	eb->Backg = (EERIE_BKG_INFO *)malloc(sizeof(EERIE_BKG_INFO) * sx * sz); 
+	eb->Backg = (EERIE_BKG_INFO *)malloc(sizeof(EERIE_BKG_INFO) * sx * sz);
 
 	if (!eb->Backg) HERMES_Memory_Emergency_Out();
 
@@ -2368,7 +2370,7 @@ int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv)
 		}
 
 	//todo free
-	eb->minmax = (EERIE_SMINMAX *)malloc(sizeof(EERIE_SMINMAX) * eb->Zsize); 
+	eb->minmax = (EERIE_SMINMAX *)malloc(sizeof(EERIE_SMINMAX) * eb->Zsize);
 
 	if (!eb->minmax) HERMES_Memory_Emergency_Out();
 
@@ -2665,7 +2667,7 @@ void EERIEPOLY_Compute_PolyIn()
 			aj = std::min(j + 2, ACTIVEBKG->Zsize - 1L);
 
 			EERIE_2D_BBOX bb;
-			bb.min.x = (float)i * ACTIVEBKG->Xdiv - 10; 
+			bb.min.x = (float)i * ACTIVEBKG->Xdiv - 10;
 			bb.max.x = (float)bb.min.x + ACTIVEBKG->Xdiv + 20;
 			bb.min.y = (float)j * ACTIVEBKG->Zdiv - 10;
 			bb.max.y = (float)bb.min.y + ACTIVEBKG->Zdiv + 20;
@@ -2897,7 +2899,7 @@ void EERIE_PORTAL_Blend_Portals_And_Rooms()
 		}
 	}
 }
- 
+
 void EERIE_PORTAL_Room_Poly_Add(EERIEPOLY * ep, long nr, long px, long py, long idx)
 {
 	ARX_CHECK_SHORT(idx);
@@ -2948,7 +2950,7 @@ void EERIE_PORTAL_Release()
 						free((void *)portals->room[nn].pussIndice);
 						portals->room[nn].pussIndice = NULL;
 					}
-			
+
 					if (portals->room[nn].ppTextureContainer)
 					{
 						free((void *)portals->room[nn].ppTextureContainer);
@@ -2985,7 +2987,7 @@ void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const char * name, long px, long py, 
 		portals->room = NULL;
 		portals->nb_total = 0;
 		portals->portals = NULL;
-		USE_PORTALS = 4; 
+		USE_PORTALS = 4;
 	}
 
 	if (type == TYPE_PORTAL) //portal_def
@@ -3026,7 +3028,7 @@ void EERIE_PORTAL_Poly_Add(EERIEPOLY * ep, const char * name, long px, long py, 
 
 		portals->nb_total++;
 	}
-	else if (type == TYPE_ROOM) 
+	else if (type == TYPE_ROOM)
 	{
 		if (val1 > portals->nb_rooms)
 		{
@@ -3090,7 +3092,7 @@ int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj)
 
 	if (eg->polydata == NULL)
 	{
-		eg->polydata = (EERIEPOLY *)malloc(sizeof(EERIEPOLY) * t); 
+		eg->polydata = (EERIEPOLY *)malloc(sizeof(EERIEPOLY) * t);
 
 		if (!eg->polydata) HERMES_Memory_Emergency_Out();
 	}
@@ -3391,7 +3393,7 @@ long GetFreeDynLight()
 {
 	long i;
 
-	for (i = 1; i < MAX_DYNLIGHTS; i++) 
+	for (i = 1; i < MAX_DYNLIGHTS; i++)
 	{
 		if (!(DynLight[i].exist))
 		{
@@ -3419,7 +3421,7 @@ long CountBkgVertex()
 	EERIEPOLY * ep;
 	EERIE_BKG_INFO * eg;
 	long count = 0;
-	
+
 	for (j = 0; j < ACTIVEBKG->Zsize; j++)
 		for (i = 0; i < ACTIVEBKG->Xsize; i++)
 		{
@@ -3468,14 +3470,14 @@ void DrawEERIEObjEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 
 	for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 	{
-		v.sx = eobj->vertexlist[i].v.x * scale->x; 
-		v.sy = eobj->vertexlist[i].v.y * scale->y; 
-		v.sz = eobj->vertexlist[i].v.z * scale->z; 
+		v.sx = eobj->vertexlist[i].v.x * scale->x;
+		v.sy = eobj->vertexlist[i].v.y * scale->y;
+		v.sz = eobj->vertexlist[i].v.z * scale->z;
 
 		_YRotatePoint((EERIE_3D *)&v, (EERIE_3D *)&rv, Ycos, Ysin);
 		_XRotatePoint((EERIE_3D *)&rv, (EERIE_3D *)&v, Xcos, Xsin);
 		_ZRotatePoint((EERIE_3D *)&v, (EERIE_3D *)&rv, Zcos, Zsin);
-		
+
 		eobj->vertexlist3[i].v.x = rv.sx += pos->x;
 		eobj->vertexlist3[i].v.y = rv.sy += pos->y;
 		eobj->vertexlist3[i].v.z = rv.sz += pos->z;
@@ -3550,18 +3552,18 @@ void DrawEERIEObjExEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 
 	for (long i = 0; i < eobj->vertexlist.size(); i++)
 	{
-		v.sx = eobj->vertexlist[i].v.x * scale->x; 
-		v.sy = eobj->vertexlist[i].v.y * scale->y; 
-		v.sz = eobj->vertexlist[i].v.z * scale->z; 
-		
+		v.sx = eobj->vertexlist[i].v.x * scale->x;
+		v.sy = eobj->vertexlist[i].v.y * scale->y;
+		v.sz = eobj->vertexlist[i].v.z * scale->z;
+
 		_YRotatePoint((EERIE_3D *)&v, (EERIE_3D *)&rv, Ycos, Ysin);
 		_XRotatePoint((EERIE_3D *)&rv, (EERIE_3D *)&v, Xcos, Xsin);
 		_ZRotatePoint((EERIE_3D *)&v, (EERIE_3D *)&rv, Zcos, Zsin);
-		
+
 		eobj->vertexlist3[i].v.x = rv.sx += pos->x;
 		eobj->vertexlist3[i].v.y = rv.sy += pos->y;
 		eobj->vertexlist3[i].v.z = rv.sz += pos->z;
-		
+
 		EE_RT(&rv, &eobj->vertexlist[i].vworld);
 		EE_P(&eobj->vertexlist[i].vworld, &eobj->vertexlist[i].vert);
 	}
@@ -3666,42 +3668,42 @@ bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj, long idx, long grs)
 }
 
 #define NON_PORTAL_VERSION 0.136f
-#define UNIQUE_VERSION 0.141f 
+#define UNIQUE_VERSION 0.141f
 
 #pragma pack(push,1)
-typedef struct
+struct UNIQUE_HEADER
 {
 	char path[256];
 	long count;
 	float version;
 	long	compressedsize;
 	long	pad[3];
-} UNIQUE_HEADER;
+};
 #pragma pack(pop)
 
 #pragma pack(push,1)
-typedef struct
+struct UNIQUE_HEADER2
 {
 	char path[256];
-} UNIQUE_HEADER2;
+};
 #pragma pack(pop)
 
 
 #define SIZ_WRK 10
 
 #pragma pack(push,1)
-typedef struct
+struct FAST_VERTEX
 {
 	float	sy;
 	float	ssx;
 	float	ssz;
 	float	stu;
 	float	stv;
-} FAST_VERTEX;
+};
 #pragma pack(pop)
 
 #pragma pack(push,1)
-typedef struct
+struct FAST_EERIEPOLY
 {
 	FAST_VERTEX		v[4];
 	TextureContainer * tex;
@@ -3713,11 +3715,11 @@ typedef struct
 	long			type;
 	short			room;
 	short			paddy;
-} FAST_EERIEPOLY;
+};
 #pragma pack(pop)
 
 #pragma pack(push,1)
-typedef struct
+struct FAST_SCENE_HEADER
 {
 	float	version;
 	long	sizex;
@@ -3731,20 +3733,20 @@ typedef struct
 	long	nb_portals;
 	long	nb_rooms;
 
-} FAST_SCENE_HEADER;
+};
 #pragma pack(pop)
 
 #pragma pack(push,1)
-typedef struct
+struct FAST_TEXTURE_CONTAINER
 {
 	TextureContainer * tc; // TODO pointer in struct used for saving/loading - ugh
 	TextureContainer * temp;
 	char		fic[256];
-} FAST_TEXTURE_CONTAINER;
+};
 #pragma pack(pop)
 
 #pragma pack(push,1)
-typedef struct FAST__ANCHOR_DATA
+struct FAST__ANCHOR_DATA
 {
 	EERIE_3D	pos;
 	float		radius;
@@ -3752,24 +3754,24 @@ typedef struct FAST__ANCHOR_DATA
 	short		nb_linked;
 	short		flags;
 
-} FAST__ANCHOR_DATA;
+};
 #pragma pack(pop)
 
 #pragma pack(push,1)
-typedef struct
+struct FAST_SCENE_INFO
 {
-	long	nbpoly; 
+	long	nbpoly;
 	long	nbianchors;
-} FAST_SCENE_INFO;
+};
 #pragma pack(pop)
 
 #pragma pack(push,1)
-typedef struct
+struct ROOM_DIST_DATA_SAVE
 {
 	float	distance; // -1 means use truedist
 	EERIE_3D startpos;
 	EERIE_3D endpos;
-} ROOM_DIST_DATA_SAVE;
+};
 #pragma pack(pop)
 
 extern void LoadLevelScreen();
@@ -4018,8 +4020,8 @@ bool FastSceneLoad(const char * partial_path)
 					for (kk = 0; kk < fsh->nb_textures; kk++)
 					{
 						if ((temp_tex->tc == ep->tex) && (temp_tex != NULL)
-								&& (temp_tex->temp) 
-								&& (temp_tex->temp->m_texName[0] != 0))
+						        && (temp_tex->temp)
+						        && (temp_tex->temp->m_texName[0] != 0))
 						{
 							ep->tex = temp_tex->temp;
 							goto oki;
@@ -4052,11 +4054,11 @@ bool FastSceneLoad(const char * partial_path)
 					ep2->v[kk].color = 0xFFFFFFFF;
 					ep2->v[kk].rhw = 1;
 					ep2->v[kk].specular = 1;
-					ep2->v[kk].sx = ep->v[kk].ssx; 
+					ep2->v[kk].sx = ep->v[kk].ssx;
 					ep2->v[kk].sy = ep->v[kk].sy;
-					ep2->v[kk].sz = ep->v[kk].ssz; 
-					ep2->v[kk].tu = ep->v[kk].stu; 
-					ep2->v[kk].tv = ep->v[kk].stv; 
+					ep2->v[kk].sz = ep->v[kk].ssz;
+					ep2->v[kk].tu = ep->v[kk].stu;
+					ep2->v[kk].tv = ep->v[kk].stv;
 				}
 
 				memcpy(ep2->tv, ep2->v, sizeof(D3DTLVERTEX) * 4);
@@ -4276,7 +4278,7 @@ bool FastSceneLoad(const char * partial_path)
 			USE_PORTALS = 0;
 		else
 		{
-			USE_PORTALS = 4; 
+			USE_PORTALS = 4;
 		}
 	}
 	else
@@ -4380,7 +4382,7 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms) {
 	long pos = 0;
 	dat = (unsigned char *)malloc(allocsize);
 
-	if (!dat) 
+	if (!dat)
 		HERMES_Memory_Emergency_Out();
 
 	memset(dat, 0, allocsize);
@@ -4485,7 +4487,7 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms) {
 						if (temp_tex->tc == ep->tex) goto already_stored;
 
 						temp_tex = (FAST_TEXTURE_CONTAINER *)
-								   (unsigned char *)(tex + (sizeof(FAST_TEXTURE_CONTAINER) * (kk + 1))); 
+						           (unsigned char *)(tex + (sizeof(FAST_TEXTURE_CONTAINER) * (kk + 1)));
 					}
 
 					FAST_TEXTURE_CONTAINER * ftc;
@@ -4514,8 +4516,8 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms) {
 
 			fsi->nbianchors = ACTIVEBKG->Backg[i+j*fsh->sizex].nbianchors;
 			fsi->nbpoly = ACTIVEBKG->Backg[i+j*fsh->sizex].nbpoly;
- 
- 
+
+
 
 			for (k = 0; k < fsi->nbpoly; k++)
 			{
@@ -4543,11 +4545,11 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms) {
 
 				for (kk = 0; kk < 4; kk++)
 				{
-					ep->v[kk].ssx = ep2->v[kk].sx; 
+					ep->v[kk].ssx = ep2->v[kk].sx;
 					ep->v[kk].sy = ep2->v[kk].sy;
-					ep->v[kk].ssz = ep2->v[kk].sz; 
-					ep->v[kk].stu = ep2->v[kk].tu; 
-					ep->v[kk].stv = ep2->v[kk].tv; 
+					ep->v[kk].ssz = ep2->v[kk].sz;
+					ep->v[kk].stu = ep2->v[kk].tu;
+					ep->v[kk].stv = ep2->v[kk].tv;
 				}
 			}
 
@@ -4704,7 +4706,7 @@ void WriteMSEData(char * path, EERIE_MULTI3DSCENE * ms)
 
 //*************************************************************************************
 //*************************************************************************************
-void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms) 
+void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms)
 {
 	char fic[256];
 	std::string ftemp = LastLoadedScene;
@@ -4808,7 +4810,7 @@ void EERIEPOLY_FillMissingVertex(EERIEPOLY * po, EERIEPOLY * ep)
 	}
 }
 
-typedef struct
+struct SINFO_TEXTURE_VERTEX
 {
 	int					iNbVertex;
 	int					iNbIndiceCull;
@@ -4823,8 +4825,8 @@ typedef struct
 	int					iNbIndiceNoCull_TSubstractive;
 	TextureContainer	* pTex;
 	int					iMin;
-	int					iMax; 
-} SINFO_TEXTURE_VERTEX;
+	int					iMax;
+};
 
 void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 {
@@ -4971,12 +4973,12 @@ void EERIE_PORTAL_ReleaseOnlyVertexBuffer()
 
 extern DANAE danaeApp;
 
-typedef struct
+struct COPY3D
 {
 	float	x, y, z;
 	int		color;
 	float	u, v;
-} COPY3D;
+};
 
 vector<COPY3D> vCopy3d;
 

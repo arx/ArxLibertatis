@@ -72,27 +72,27 @@ extern INTERACTIVE_OBJ * CAMERACONTROLLER;
 
 extern CMenuConfig * pMenuConfig;
 
-typedef struct
+struct ARX_SOUND_Material
 {
 	char * name;
 	unsigned long variant_i;
 	unsigned long variant_c;
 	long * variant_l;
-} ARX_SOUND_Material;
+};
 
-typedef struct
+struct ARX_SOUND_CollisionMap
 {
 	char * name;
 	unsigned long material_c;
 	ARX_SOUND_Material * material_l;
-} ARX_SOUND_CollisionMap;
+};
 
-typedef struct
+struct ARX_SOUND_Presence
 {
 	char * name;
 	long name_size;
 	float factor;
-} ARX_SOUND_Presence;
+};
 
 enum ParseIniFileEnum
 {
@@ -110,13 +110,13 @@ enum PlayingAmbianceType
 	PLAYING_AMBIANCE_ZONE
 }playingAmbianceType;
 
-typedef struct
+struct PlayingAmbiance
 {
 	char name[256];
 	float volume;
 	long loop;
 	long type;
-} PlayingAmbiance;
+};
 
 static const unsigned long ARX_SOUND_UPDATE_INTERVAL(100);  
 static const unsigned long ARX_SOUND_STREAMING_LIMIT(2000); 
@@ -426,13 +426,13 @@ long ARX_SOUND_Init(HWND hwnd)
 
 	if(FINAL_RELEASE) {
 		
-		if(pStringModSfx[0]) {
+		if(!pStringModSfx.empty()) {
 			if(!PAK_AddPak(pStringModSfx.c_str())) {
 				printf("Unable to Find Mod SFX Data File\n");
 			}
 		}
 		
-		if (pStringModSpeech[0]) {
+		if (!pStringModSpeech.empty()) {
 			if(!PAK_AddPak(pStringModSpeech.c_str())) {
 				printf("Unable to Find Mod Speech Data File\n");
 			}

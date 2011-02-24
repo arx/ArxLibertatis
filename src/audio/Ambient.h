@@ -31,16 +31,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 namespace ATHENA
 {
 
-	typedef struct
+	struct KeySetting
 	{
 		aalULong flags;                   //A set of KeySettingFlag
 		aalFloat min, max;                //Min and max setting values
 		aalFloat from, to, cur;           //Current min and max values
 		aalULong interval;                //Interval between updates (On Start = 0)
 		aalSLong update;                  //Last update time
-	} KeySetting;
+	};
 
-	typedef struct
+	struct TrackKey
 	{
 		aalULong flags;                   //Nothing (padding! ;)
 		aalULong start;                   //Start time (after last key)
@@ -52,9 +52,9 @@ namespace ATHENA
 		KeySetting pitch;              //Pitch settings
 		KeySetting pan;                //Pan settings
 		KeySetting x, y, z;            //Positon settings
-	} TrackKey;
+	};
 
-	typedef struct
+	struct Track
 	{
 		aalSLong s_id;                    //Sample id
 		aalSLong a_id;                    //Ambiance id
@@ -62,7 +62,7 @@ namespace ATHENA
 		aalULong flags;                   //A set of ATHENAAmbianceFlag
 		aalULong key_c, key_i;            //Key count and current index
 		TrackKey * key_l;              //Key list
-	} Track;
+	};
 
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //

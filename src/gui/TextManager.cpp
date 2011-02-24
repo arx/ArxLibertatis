@@ -85,6 +85,16 @@ bool TextManager::AddText(HFONT _hFont, const string & _lpszUText, const RECT & 
 	return true;
 }
 
+bool TextManager::AddText(HFONT font, const std::string& str, long x, long y, long fgcolor)
+{
+	RECT r;
+	r.left = x;
+	r.top = y;
+	r.right = 9999;
+	r.bottom = 9999;
+	return AddText(font, str, r, fgcolor, 0x00FF00FF);
+}
+
 void TextManager::Update(float _fDiffFrame) {
 	
 	ARX_CHECK_INT(_fDiffFrame);

@@ -726,8 +726,8 @@ DIDATAFORMAT*	dformat;
 /*-------------------------------------------------------------*/
 DXI_INPUT_INFO * DXI_GetInfoDevice(int num)
 {
-DXI_INPUT_INFO	*dinf;
-INPUT_INFO		*info;
+	DXI_INPUT_INFO	*dinf;
+	INPUT_INFO		*info;
 
 	if(num>=DI_NbInputInfo) return NULL;
 	dinf=(DXI_INPUT_INFO*)malloc(sizeof(DXI_INPUT_INFO));
@@ -956,12 +956,7 @@ bool DXI_KeyPressed(int id,int dikkey)
 	if(DI_KeyBoardBuffer[id]->bufferstate[dikkey]&0x80) return true;
 	return false;
 }
-bool DXI_OldKeyPressed(int id,int dikkey)
-{
-	//if(DI_InputInfo->old_bufferstate[id*dikkey]&0x80) return true;
-//	if(DI_KeyBoardBuffer[id]->old_bufferstate[dikkey]&0x80) return true;
-	return false;
-}
+
 /*-------------------------------------------------------------*/
 int DXI_GetKeyIDPressed(int id)
 {
@@ -1426,56 +1421,8 @@ int					state,nb;
 		od++;
 		nb--;
 	}
-	if(!(state&0x80)) return true;
-	return false;
-}
-
-bool DXI_OldMouseButtonPressed(int id,int numb)
-{
-DIDEVICEOBJECTDATA	*od;
-int					state,nb;
-
-return false;
-	nb=DI_MouseState[id]->nbele;
-	if(!nb) return false;
-//	od=DI_MouseState[id]->old_mousestate;
-	while(nb)
-	{
-		state=0;
-		switch(numb)
-		{
-		case DXI_BUTTON0:
-			if(od->dwOfs==DIMOFS_BUTTON0) state=od->dwData;
-			break;
-		case DXI_BUTTON1:
-			if(od->dwOfs==DIMOFS_BUTTON1) state=od->dwData;
-			break;
-		case DXI_BUTTON2:
-			if(od->dwOfs==DIMOFS_BUTTON2) state=od->dwData;
-			break;
-		case DXI_BUTTON3:
-			if(od->dwOfs==DIMOFS_BUTTON3) state=od->dwData;
-			break;
-		case DXI_BUTTON4:
-			if(od->dwOfs==DIMOFS_BUTTON4) state=od->dwData;
-			break;
-		case DXI_BUTTON5:
-			if(od->dwOfs==DIMOFS_BUTTON5) state=od->dwData;
-			break;
-		case DXI_BUTTON6:
-			if(od->dwOfs==DIMOFS_BUTTON6) state=od->dwData;
-			break;
-		case DXI_BUTTON7:
-			if(od->dwOfs==DIMOFS_BUTTON7) state=od->dwData;
-			break;
-		default:
-			return false;
-		}
-		if(state&0x80) return true;
-		od++;
-		nb--;
-	}
-	return false;
+	if(!(state&0x80)) return TRUE;
+	return FALSE;
 }
 
 int DXI_GetSCIDAxis(int id,int *jx,int *jy,int *jz)
@@ -2005,30 +1952,6 @@ INPUT_INFO	*io;
 		{
 			DIJOYSTATE	*js;
 			js=io->joystate;
-			if(js->rgbButtons[numb]&0x80) return true;
-		}
-	}
-	return false;
-}
-bool DXI_OldGetJoyButtonPressed(int id,int numb)
-{
-INPUT_INFO	*io;
-
-return false;
-	io=DI_JoyState[id];
-	if(io->datasid==DFDIJOYSTICK2)
-	{
-		{
-			DIJOYSTATE2	*js;
-//			js=io->old_joystate2;
-			if(js->rgbButtons[numb]&0x80) return true;
-		}
-	}
-	else
-	{
-		{
-			DIJOYSTATE	*js;
-//			js=io->old_joystate;
 			if(js->rgbButtons[numb]&0x80) return true;
 		}
 	}

@@ -3,22 +3,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -40,7 +40,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //@@@    @@@@ @@@@@@@   @@@@             @@      @@   @@@@    @@@@@       @@        //
 //@@@    @@@  @@@ @@@@@                          @@            @@@                  //
 //            @@@ @@@                           @@             @@        STUDIOS    //
-//////////////////////////////////////////////////////////////////////////////////////                                                                                     
+//////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 // EERIEPoly
 ///////////////////////////////////////////////////////////////////////////////
@@ -79,13 +79,13 @@ struct ANIM_HANDLE
 };
 
 //minimap special infos
-typedef struct
+struct EERIE_S2D
 {
 	short x;
 	short y;
-} EERIE_S2D;
+};
 
-typedef struct
+struct EERIE_TRANSFORM
 {
 	float posx;
 	float posy;
@@ -98,9 +98,10 @@ typedef struct
 	float xmod;
 	float ymod;
 	float zmod;
-} EERIE_TRANSFORM;
+};
 
-struct EERIE_CAMERA {
+struct EERIE_CAMERA
+{
 	EERIE_TRANSFORM transform;
 	EERIE_3D pos; // 0 4 8
 	float	Ycos; // 12
@@ -108,13 +109,13 @@ struct EERIE_CAMERA {
 	float	Xcos; // 20
 	float	Xsin; // 24
 	float	Zcos; // 28
-	float	Zsin; // 32	
+	float	Zsin; // 32
 	float	focal;// 36
 	float	use_focal;
 	float	Zmul; // 40
 	float posleft;// 44
 	float postop; // 48 do not move/insert before this point !!!
-	
+
 	float	xmod;
 	float	ymod;
 	EERIEMATRIX matrix;
@@ -133,14 +134,14 @@ struct EERIE_CAMERA {
 	float	clipz1;
 	long	centerx;
 	long	centery;
-	
+
 	float	smoothing;
 	float	AddX;
 	float	AddY;
 	long	Xsnap;
 	long	Zsnap;
 	float	Zdiv;
-	
+
 	long	clip3D;
 	long	type;
 	long	bkgcolor;
@@ -153,7 +154,7 @@ struct EERIE_CAMERA {
 #define ANCHOR_FLAG_GREEN_DRAW	1
 #define ANCHOR_FLAG_BLOCKED		8
 
-typedef struct _ANCHOR_DATA
+struct _ANCHOR_DATA
 {
 	EERIE_3D	pos;
 	short		nblinked;
@@ -161,9 +162,9 @@ typedef struct _ANCHOR_DATA
 	long	*	linked;
 	float		radius;
 	float		height;
-} _ANCHOR_DATA;
+};
 
-typedef struct
+struct EERIE_BKG_INFO
 {
 	char				treat;
 	char				nothing;
@@ -171,25 +172,25 @@ typedef struct
 	short				nbianchors;
 	short				nbpolyin;
 	float				frustrum_miny;
-	float				frustrum_maxy;	
+	float				frustrum_maxy;
 	EERIEPOLY *			polydata;
-	EERIEPOLY **		polyin;	
+	EERIEPOLY **		polyin;
 	long *				ianchors; // index on anchors list
 	long				flags;
 	float				tile_miny;
 	float				tile_maxy;
-} EERIE_BKG_INFO;
+};
 
-typedef struct
+struct EERIE_SMINMAX
 {
 	short min;
 	short max;
-} EERIE_SMINMAX;
+};
 
 #define FBD_TREAT		1
 #define FBD_NOTHING		2
 
-typedef struct
+struct FAST_BKG_DATA
 {
 	char				treat;
 	char				nothing;
@@ -198,18 +199,19 @@ typedef struct
 	short				nbpolyin;
 	long				flags;
 	float				frustrum_miny;
-	float				frustrum_maxy;	
+	float				frustrum_maxy;
 	EERIEPOLY *			polydata;
-	EERIEPOLY **		polyin;	
+	EERIEPOLY **		polyin;
 	long *				ianchors; // index on anchors list
-} FAST_BKG_DATA;
+};
 #define MAX_BKGX	160
 #define MAX_BKGZ	160
 #define BKG_SIZX	100
 #define BKG_SIZZ	100
 
 
-struct EERIE_BACKGROUND {
+struct EERIE_BACKGROUND
+{
 	FAST_BKG_DATA	fastdata[MAX_BKGX][MAX_BKGZ];
 	long		exist;
 	short		Xsize;
@@ -222,23 +224,23 @@ struct EERIE_BACKGROUND {
 	EERIE_RGB	ambient;
 	EERIE_RGB	ambient255;
 	EERIE_SMINMAX *	minmax;
-	long		  nbanchors;	
+	long		  nbanchors;
 	_ANCHOR_DATA * anchors;
 	char		name[256];
 };
 
-typedef struct
+struct IO_EQUIPITEM_ELEMENT
 {
 	float	value;
 	short	flags;
 	short	special;
-} IO_EQUIPITEM_ELEMENT;
+};
 
 #define IO_EQUIPITEM_ELEMENT_Number				29
-typedef struct
+struct IO_EQUIPITEM
 {
 	IO_EQUIPITEM_ELEMENT elements[IO_EQUIPITEM_ELEMENT_Number];
-} IO_EQUIPITEM;
+};
 
 struct ANIM_USE
 {
@@ -255,7 +257,7 @@ struct ANIM_USE
 };
 
 #define MAX_ANIM_LAYERS	4
-typedef struct
+struct IO_BEHAVIOR_DATA
 {
 	long			exist;
 	unsigned long	behavior;
@@ -264,10 +266,10 @@ typedef struct
 	long			target;
 	long			movemode;
 	ANIM_USE		animlayer[MAX_ANIM_LAYERS];
-} IO_BEHAVIOR_DATA;
+};
 
 
-typedef struct
+struct IO_SPELLCAST_DATA
 {
 	long		castingspell; // spell being casted...
 	unsigned char	symb[4]; // symbols to draw before casting...
@@ -275,42 +277,42 @@ typedef struct
 	short		spell_level;
 	long		target;
 	long		duration;
-} IO_SPELLCAST_DATA;
+};
 
-typedef struct
+struct IO_PATHFIND
 {
 	unsigned long flags;
-	long	listnb;	
-	unsigned short * list;	
+	long	listnb;
+	unsigned short * list;
 	unsigned short listpos;
 	short pathwait;
 	long	truetarget;
-} IO_PATHFIND;
+};
 
 #define MAX_EXTRA_ROTATE 4
 
-typedef struct
+struct EERIE_EXTRA_ROTATE
 {
 	long		flags;
 	short		group_number[MAX_EXTRA_ROTATE];
 	EERIE_3D	group_rotate[MAX_EXTRA_ROTATE];
-} EERIE_EXTRA_ROTATE;
+};
 
 #define MAX_STACKED_BEHAVIOR 5
 
-typedef struct
+struct IO_NPCDATA
 {
-	float		maxlife;		
-	float		life;			
-	float		maxmana;		
-	float		mana;			
-	unsigned long	reachedtime;	
+	float		maxlife;
+	float		life;
+	float		maxmana;
+	float		mana;
+	unsigned long	reachedtime;
 	long		reachedtarget;	//Is target in REACHZONE ?
 	void *		weapon;			//Linked Weapon (r-hand)
-	long		detect;			
-	long		movemode;		
+	long		detect;
+	long		movemode;
 	float		armor_class;
-	float		absorb;			
+	float		absorb;
 	float		damages;
 	float		tohit;
 	float		aimtime;
@@ -362,68 +364,68 @@ typedef struct
 	float fDetect;
 	short				cuts;
 	short				unused;
-} IO_NPCDATA;
+};
 
-typedef struct 
+struct IO_ITEMDATA
 {
 	IO_EQUIPITEM *		equipitem;			// Equipitem Datas
-	long				price;	
+	long				price;
 	short				maxcount;			// max number cumulable
-	short				count;				// current number	
-	char				food_value;			
+	short				count;				// current number
+	char				food_value;
 	char				stealvalue;
 	short				playerstacksize;
 	short				LightValue;
-} IO_ITEMDATA;
+};
 
-typedef struct 
+struct IO_FIXDATA
 {
 	char				trapvalue;
 	char				padd[3];
-} IO_FIXDATA;
+};
 
 
-typedef struct 
-{	
+struct IO_CAMDATA
+{
 	EERIE_CAMERA		cam;
-} IO_CAMDATA;
+};
 
-typedef struct
+struct IO_HALO
 {
 	EERIE_RGB		color;
 	float			radius;
 	unsigned long	flags;
 	long			dynlight;
 	EERIE_3D		offset;
-} IO_HALO;
+};
 
-typedef struct
+struct IO_PHYSICS
 {
 	EERIE_CYLINDER	cyl;
 	EERIE_3D		startpos;
 	EERIE_3D		targetpos;
 	EERIE_3D		velocity;
 	EERIE_3D		forces;
-} IO_PHYSICS;
+};
 
-typedef struct
+struct IO_TWEAKER_INFO
 {
 	 char			filename[256];
 	 char			skintochange[256];
 	 char			skinchangeto[256];
-} IO_TWEAKER_INFO;
+};
 
-typedef struct
+struct IO_GROUP_DATA
 {
 	 char			name[64];
-} IO_GROUP_DATA;
+};
 
-typedef struct
+struct TWEAK_INFO
 {
 	long type;
 	char param1[256];
 	char param2[256];
-} TWEAK_INFO;
+};
 
 #define IO_NPC_AFLAG_HIT_BACKGROUND			1
 #define IO_NPC_AFLAG_HIT_CLEAR				(1)
@@ -436,7 +438,9 @@ typedef struct
 typedef s32 ArxSound;
 struct INTERACTIVE_OBJ
 {
-	long				ioflags;			// IO type
+	long				num;		// Nuky - 25/01/11 - cache the InterNum to speed up GetInterNum()
+
+	long				ioflags;	// IO type
 	EERIE_3D			lastpos;	// IO last position
 	EERIE_3D			pos;		// IO position
 	EERIE_3D			move;
@@ -444,7 +448,7 @@ struct INTERACTIVE_OBJ
 	EERIE_3D			forcedmove;
 
 	EERIE_3D			angle;		// IO angle
-	IO_PHYSICS			physics;	// Movement Collision Data	
+	IO_PHYSICS			physics;	// Movement Collision Data
 	short				room;
 	short				room_flags; // 1==need_update
 	float				original_height;
@@ -465,29 +469,29 @@ struct INTERACTIVE_OBJ
 	ArxSound				sound;
 	unsigned long		type_flags;			// object type (weapon,goblin...)
 	long				scriptload;			// Is This object Loaded by Script ?
-	EERIE_3D			target;				// Target position	
+	EERIE_3D			target;				// Target position
 	long				targetinfo;			// Target Type/Ident
 
 	long				cstep;
-	union 
+	union
 	{
 		IO_ITEMDATA *		_itemdata;			// ITEM Datas
 		IO_FIXDATA	*		_fixdata;			// FIX Datas
 		IO_NPCDATA *		_npcdata;			// NPC Datas
 		IO_CAMDATA *		_camdata;			// Camera Datas
 	};
-	
+
 	void *				inventory;			// Inventory Data
 	short				show;				// Show Status (In Scene, In Inventory...)
 	short				collision;			// collision type
 	char 				mainevent[64];
 	EERIE_RGB			infracolor;			// Improve Vision Color (Heat)
-	long				changeanim;	
-	
+	long				changeanim;
+
 	long				ident;				// Ident num
 	float				weight;
 	char				locname[64];		//localisation
-	unsigned short		EditorFlags; // 1 NOTSAVED 2 selected 
+	unsigned short		EditorFlags; // 1 NOTSAVED 2 selected
 	unsigned short		GameFlags; // GFLAGS
 	EERIE_3D			velocity;			// velocity
 	float				fall;
@@ -497,7 +501,7 @@ struct INTERACTIVE_OBJ
 	EERIE_3D			initangle;			// Initial Angle
 	char				filename[256];
 	float				scale;
-	
+
 	void *				usepath;
 	void *				symboldraw;
 	short				dynlight;
@@ -505,16 +509,16 @@ struct INTERACTIVE_OBJ
 	void *				inzone;
 	IO_HALO				halo;
 	IO_HALO				halo_native;
-	
+
 	EERIE_SCRIPT		script;				// Primary Script
 	EERIE_SCRIPT		over_script;		// Overriding Script
 	short				stat_count;
 	short				stat_sent;
 	IO_TWEAKER_INFO *	tweakerinfo; // optional tweaker infos
 	long				material;
-	
 
-	IO_GROUP_DATA *		iogroups;	
+
+	IO_GROUP_DATA *		iogroups;
 	short				nb_iogroups;
 	char				sizex;		// Inventory Icon sizeX
 	char				sizey;		// Inventory Icon sizeY
@@ -551,19 +555,19 @@ struct INTERACTIVE_OBJ
 	long				ignit_light;
 	ArxSound				ignit_sound;
 	float				head_rot;
-	
+
 	short				damager_damages;
 	short				padding2;
 	long				damager_type;
 	char *				stepmaterial;
 	char *				armormaterial;
 	char *				weaponmaterial;
-	char *				strikespeech;	
+	char *				strikespeech;
 
 	short				sfx_flag;
 	short				Tweak_nb;
 	TWEAK_INFO	*		Tweaks;
-	char				secretvalue;	
+	char				secretvalue;
 	char				padddd[3];
 
 	char *				shop_category;
@@ -578,7 +582,7 @@ struct INTERACTIVE_OBJ
 //-----------------------------------------------------------------------------
 #define BEHAVIOUR_NONE			1		// no pathfind
 #define BEHAVIOUR_FRIENDLY		(1<<1)		// no pathfind
-#define BEHAVIOUR_MOVE_TO		(1<<2)	
+#define BEHAVIOUR_MOVE_TO		(1<<2)
 #define BEHAVIOUR_WANDER_AROUND	(1<<3)	//behavior_param = distance
 #define BEHAVIOUR_FLEE			(1<<4)	//behavior_param = distance
 #define BEHAVIOUR_HIDE			(1<<5)	//behavior_param = distance
@@ -627,7 +631,7 @@ extern long MAX_ANIMATIONS;
 #define CFLAG_NO_NPC_COLLIDE	(1<<13)
 #define CFLAG_NO_HEIGHT_MOD		(1<<14)
 
-#define IO_UNDERWATER			1	
+#define IO_UNDERWATER			1
 #define	IO_FREEZESCRIPT			(1<<1)
 #define IO_ITEM					(1<<2)
 #define IO_NPC					(1<<3)
@@ -665,7 +669,7 @@ extern long MAX_ANIMATIONS;
 #define SNEAKMODE	3
 
 //-----------------------------------------------------------------------------
-//	INTERACTIVE_OBJ Structs Start 
+//	INTERACTIVE_OBJ Structs Start
 //-----------------------------------------------------------------------------
 #define IO_EQUIPITEM_ELEMENT_STRENGTH			0
 #define IO_EQUIPITEM_ELEMENT_DEXTERITY			1
@@ -692,11 +696,11 @@ extern long MAX_ANIMATIONS;
 #define IO_EQUIPITEM_ELEMENT_Mana				22
 #define IO_EQUIPITEM_ELEMENT_MaxLife			23
 #define IO_EQUIPITEM_ELEMENT_MaxMana			24
-#define IO_EQUIPITEM_ELEMENT_SPECIAL_1			25	
+#define IO_EQUIPITEM_ELEMENT_SPECIAL_1			25
 #define IO_EQUIPITEM_ELEMENT_SPECIAL_2			26
 #define IO_EQUIPITEM_ELEMENT_SPECIAL_3			27
 #define IO_EQUIPITEM_ELEMENT_SPECIAL_4			28
-#define IO_SPECIAL_ELEM_NONE		0	
+#define IO_SPECIAL_ELEM_NONE		0
 #define IO_SPECIAL_ELEM_PARALYZE	1
 #define IO_SPECIAL_ELEM_DRAIN_LIFE	2
 #define IO_ELEMENT_FLAG_NONE		0
@@ -760,7 +764,7 @@ extern TextureContainer * InterTransTC[MAX_INTERTRANSPOL];
 float FirstPolyPosY(float x,float z);
 void SetActiveCamera(EERIE_CAMERA* cam);
 void SetNextAnim(INTERACTIVE_OBJ * io,ANIM_HANDLE * ea,long layer=0,long loop=0);
-//	INTERACTIVE_OBJ Struct End 
+//	INTERACTIVE_OBJ Struct End
 //****************************************************************************
 
 void AcquireLastAnim(INTERACTIVE_OBJ * io);
@@ -788,7 +792,7 @@ int PointIn2DPolyXZ(EERIEPOLY * ep, float x, float z);
 
 float Distance2D(float x0, float y0, float x1, float y1);
 float Distance3D(float x0, float y0, float z0, float x1, float y1, float z1);
- 
+
 int EERIELaunchRay2(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY * tp, long flag);
 int EERIELaunchRay3(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY * tp, long flag);
 float GetGroundY(EERIE_3D * pos);
@@ -844,7 +848,7 @@ void DrawEERIEInter(		LPDIRECT3DDEVICE7 pd3dDevice,
 							INTERACTIVE_OBJ * io,
 							EERIE_MOD_INFO * modinfo=NULL
 						);
- 
+
 void DrawEERIEInterMatrix(	LPDIRECT3DDEVICE7 pd3dDevice,
 							EERIE_3DOBJ * eobj,
 							EERIEMATRIX * mat,
@@ -969,7 +973,7 @@ void ResetAnim(ANIM_USE * eanim);
 long EERIERTPPoly(EERIEPOLY *ep);
 
 void EE_RTP3(EERIE_3D * in, EERIE_3D * out, EERIE_CAMERA * cam);
-		
+
 void ReleaseAnimFromIO(INTERACTIVE_OBJ * io,long num);
 
 void ShadowPolys_ClearZone(EERIE_BACKGROUND * eb,long x0, long y0, long x1, long y1);
@@ -987,7 +991,7 @@ float PtIn2DPolyProjV2(EERIE_3DOBJ * obj,EERIE_FACE * ef, float x, float z);
 
 void ResetWorlds();
 float GetSWorld(float x,float y,float z);
-  
+
 void LaunchLightThread(long minx=0,long minz=0,long maxx=99999,long maxz=99999);
 
 void EERIE_ANIMMANAGER_Init();
@@ -998,7 +1002,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load(const std::string& path);
 void BkgAddShadowPoly(EERIEPOLY * ep,EERIEPOLY * father);
 
 EERIEPOLY * GetMinNextPoly(long i,long j,EERIEPOLY * ep);
- 
+
 long GetVertexPos(INTERACTIVE_OBJ * io,long id,EERIE_3D * pos);
 void PrepareBackgroundNRMLs();
 void DrawInWorld(LPDIRECT3DDEVICE7 pd3dDevice);
@@ -1025,7 +1029,7 @@ float GetTileMaxY(long i,long j);
 #define SHOW_FLAG_LINKED				2
 #define SHOW_FLAG_IN_INVENTORY			4	// In Inventory
 #define SHOW_FLAG_HIDDEN				5	// In Inventory
-#define SHOW_FLAG_TELEPORTING			6	
+#define SHOW_FLAG_TELEPORTING			6
 #define SHOW_FLAG_KILLED				7	// Not Used Yet
 #define SHOW_FLAG_MEGAHIDE				8
 #define SHOW_FLAG_ON_PLAYER				9
@@ -1035,33 +1039,33 @@ float GetTileMaxY(long i,long j);
 
 #define MAX_FRUSTRUMS	32
 
-typedef struct
+struct EERIE_FRUSTRUM_PLANE
 {
 	float	a;
 	float	b;
 	float	c;
 	float	d; // dist to origin
-} EERIE_FRUSTRUM_PLANE;
+};
 
-typedef struct
+struct EERIE_FRUSTRUM
 {
 	EERIE_FRUSTRUM_PLANE plane[4];
-	long nb; 
-} EERIE_FRUSTRUM;
+	long nb;
+};
 
-typedef struct
+struct EERIE_FRUSTRUM_DATA
 {
 	long nb_frustrums;
 	EERIE_FRUSTRUM frustrums[MAX_FRUSTRUMS];
-} EERIE_FRUSTRUM_DATA;
+};
 
-typedef struct
+struct PORTAL_ROOM_DRAW
 {
 	short			count;
 	short			flags;
-	EERIE_2D_BBOX	bbox;	
+	EERIE_2D_BBOX	bbox;
 	EERIE_FRUSTRUM_DATA	frustrum;
-} PORTAL_ROOM_DRAW;
+};
 extern PORTAL_ROOM_DRAW * RoomDraw;
 extern long NbRoomDraw;
 
@@ -1071,12 +1075,12 @@ extern long NbRoomDraw;
 #define NPC_ITEMS__AMBIENT_VALUE_255	35
 #define NPC_ITEMS__AMBIENT_VALUE		0.1372549f
 
-typedef struct
+struct ROOM_DIST_DATA
 {
 	float	distance; // -1 means use truedist
 	EERIE_3D startpos;
 	EERIE_3D endpos;
-} ROOM_DIST_DATA;
+};
 
 extern ROOM_DIST_DATA * RoomDistance;
 extern long NbRoomDistance;
@@ -1089,12 +1093,12 @@ void ComputePortalVertexBuffer();
 float GetRoomDistance(long i,long j,EERIE_3D * p1,EERIE_3D * p2);
 bool GetNameInfo( const std::string& name1,long& type,long& val1,long& val2);
 
-typedef struct
+struct TILE_LIGHTS
 {
 	short			num;
 	short			max;
-	EERIE_LIGHT **	el;	
-} TILE_LIGHTS;
+	EERIE_LIGHT **	el;
+};
 
 //#pragma pack(pop)
 

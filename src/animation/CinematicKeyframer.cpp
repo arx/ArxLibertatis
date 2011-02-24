@@ -39,11 +39,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define PILE_DEL	2
 #define PILE_MOD	3
 
-typedef struct
+struct C_UNDOPILE
 {
 	int		action;
 	C_KEY	key;
-} C_UNDOPILE;
+};
 /*----------------------------------------------------------------------*/
 extern HWND HwndPere;
 extern bool ProjectModif;

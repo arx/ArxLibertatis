@@ -357,5 +357,4 @@ namespace ATHENA
 
 		return AAL_STRUE;
 	}
-
 }//ATHENA::

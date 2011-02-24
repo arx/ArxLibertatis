@@ -38,7 +38,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //-----------------------------------------------------------------------------
 typedef EERIE_3D Point3;
  
-
 class CParticle;
 class CParticleParams;
 

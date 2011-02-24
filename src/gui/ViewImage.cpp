@@ -62,7 +62,7 @@ ViewImage::ViewImage(const char * _pcDir, const char * _pExt)
 	char tTxt[256];
 	int iNum = 0;
 
-	while (1)
+	for (;;)
 	{
 		sprintf(tTxt, "%squit%d.bmp", _pcDir, iNum);
 

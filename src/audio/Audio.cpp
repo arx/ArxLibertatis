@@ -416,7 +416,6 @@ namespace ATHENA
 
 		switch (flag)
 		{
-
 			case AAL_FLAG_MULTITHREAD   :
 				status = mutex ? AAL_UTRUE : AAL_UFALSE;
 				break;

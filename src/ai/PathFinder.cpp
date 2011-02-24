@@ -29,7 +29,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 const Float MIN_RADIUS(110.F);
 
 Float fac3(300.0F);
-
 Float fac5(130.0F);
 
 static const unsigned long SEED = 43;

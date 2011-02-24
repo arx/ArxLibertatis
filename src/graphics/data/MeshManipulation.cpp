@@ -232,7 +232,7 @@ static long ObjectAddFace(EERIE_3DOBJ * obj, const EERIE_FACE * face, const EERI
 
 	for (size_t i = 0; i < obj->texturecontainer.size(); i++)
 	{
-		if (obj->texturecontainer[i] == srcobj->texturecontainer[face->texid])
+		if (0 <= face->texid && face->texid < srcobj->texturecontainer.size() && obj->texturecontainer[i] == srcobj->texturecontainer[face->texid])
 		{
 			obj->facelist.back().texid = (short)i;
 			break;
@@ -476,7 +476,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	for (size_t i = 0; i < obj1->actionlist.size(); i++)
 	{
 		if ((IsInSelection(obj1, obj1->actionlist[i].idx, iw1) != -1)
-		        ||	(IsInSelection(obj1, obj1->actionlist[i].idx, jw1) != -1)
+		        || (IsInSelection(obj1, obj1->actionlist[i].idx, jw1) != -1)
 		        || (!strcasecmp(obj1->actionlist[i].name.c_str(), "head2chest"))
 		        || (!strcasecmp(obj1->actionlist[i].name.c_str(), "chest2leggings"))
 		   )

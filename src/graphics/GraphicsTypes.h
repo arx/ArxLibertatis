@@ -3,22 +3,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -56,24 +56,24 @@ class TextureContainer;
 #pragma pack(push,1)
 
 #pragma pack(push,1)
-typedef struct
+struct EERIE_RGB
 {
 	float r;
 	float g;
 	float b;
-} EERIE_RGB; // Aligned 1 2 4
+}; // Aligned 1 2 4
 #pragma pack(pop)
 
 
-typedef struct
+struct EERIE_QUAT
 {
 	float	x;
 	float	y;
 	float	z;
 	float	w;
-} EERIE_QUAT; // Aligned 1 2 4 8
+}; // Aligned 1 2 4 8
 
-typedef struct
+struct EERIE_2D
 {
 	union
 	{
@@ -85,7 +85,7 @@ typedef struct
 		float		y;
 		float		b;
 	};
-} EERIE_2D; // Aligned 1 2 4 8
+}; // Aligned 1 2 4 8
 
 #pragma pack(push,1)
 struct EERIE_3D
@@ -118,26 +118,26 @@ struct EERIE_3D
 }; // Aligned 1 2 4
 #pragma pack(pop)
 
-typedef struct
+struct EERIE_TRI
 {
 	EERIE_3D v[3];
-} EERIE_TRI; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
-typedef struct
+struct EERIE_2D_BBOX
 {
 	EERIE_2D min;
 	EERIE_2D max;
-} EERIE_2D_BBOX; // Aligned 1 2 4 8
+}; // Aligned 1 2 4 8
 
-typedef struct
+struct EERIE_3D_BBOX
 {
 	EERIE_3D min;
 	EERIE_3D max;
-} EERIE_3D_BBOX; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
 typedef s32 ArxSound;
 
-typedef struct
+struct EERIE_LIGHT
 {
 	char		exist;
 	char		type;
@@ -169,7 +169,7 @@ typedef struct
 	unsigned long	time_creation;
 	long		duration; // will start to fade before the end of duration...
 	ArxSound sample;
-} EERIE_LIGHT; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
 enum EERIE_TYPES_EXTRAS_MODE
 {
@@ -194,28 +194,28 @@ enum EERIE_TYPES_EXTRAS_MODE
 // EERIE Types
 //*************************************************************************************
 
-typedef struct _EERIEMATRIX
+struct EERIEMATRIX
 {
 	D3DVALUE _11, _12, _13, _14;
 	D3DVALUE _21, _22, _23, _24;
 	D3DVALUE _31, _32, _33, _34;
 	D3DVALUE _41, _42, _43, _44;
-} EERIEMATRIX ; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
-typedef struct
+struct EERIE_CYLINDER
 {
 	EERIE_3D	origin;
 	float		radius;
 	float		height;
-} EERIE_CYLINDER; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
-typedef struct
+struct EERIE_SPHERE
 {
 	EERIE_3D	origin;
 	float		radius;
-} EERIE_SPHERE; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
-typedef struct
+struct EERIEPOLY
 {
 	long 			type;	// at least 16 bits
 	EERIE_3D		min;
@@ -233,7 +233,7 @@ typedef struct
 	short			misc;
 	float			distbump;
 	unsigned short	uslInd[4];
-} EERIEPOLY; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
 struct EERIE_OLD_VERTEX
 {
@@ -310,7 +310,7 @@ struct EERIE_FACE
 {
 	long		facetype;	// 0 = flat  1 = text
 							// 2 = Double-Side
-	short		texid;  
+	short		texid;
 	unsigned short		vid[IOPOLYVERT];
 	float		u[IOPOLYVERT];
 	float		v[IOPOLYVERT];
@@ -327,7 +327,7 @@ struct EERIE_FACE
 }; // Aligned 1 2 4
 
 #define MAX_PFACE 16
-typedef struct
+struct EERIE_PFACE
 {
 	short		faceidx[MAX_PFACE];
 	long		facetype;
@@ -338,21 +338,21 @@ typedef struct
 	float		u[MAX_PFACE];
 	float		v[MAX_PFACE];
 	D3DCOLOR	color[MAX_PFACE];
-} EERIE_PFACE;
+};
 
 
 //***********************************************************************
 //*		BEGIN EERIE OBJECT STRUCTURES									*
 //***********************************************************************
-typedef struct
+struct NEIGHBOURS_DATA
 {
 	short	nb_Nvertex;
 	short	nb_Nfaces;
 	short *	Nvertex;
 	short *	Nfaces;
-} NEIGHBOURS_DATA; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
-typedef struct
+struct PROGRESSIVE_DATA
 {
 	// ingame data
 	short	actual_collapse; // -1 = no collapse
@@ -362,9 +362,9 @@ typedef struct
 	float	collapse_cost;
 	short	collapse_candidate;
 	short	padd;
-} PROGRESSIVE_DATA; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
-typedef struct
+struct EERIE_SPRINGS
 {
 	short	startidx;
 	short	endidx;
@@ -372,13 +372,13 @@ typedef struct
 	float	constant;	// spring constant
 	float	damping;	// spring damping
 	long	type;
-} EERIE_SPRINGS; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
 #define CLOTHES_FLAG_NORMAL	0
 #define CLOTHES_FLAG_FIX	1
 #define CLOTHES_FLAG_NOCOL	2
 
-typedef struct
+struct CLOTHESVERTEX
 {
 	short		idx;
 	char		flags;
@@ -393,32 +393,32 @@ typedef struct
 	EERIE_3D	t_force;
 
 	EERIE_3D	lastpos;
-	
-} CLOTHESVERTEX; // Aligned 1 2 4
 
-typedef struct
+}; // Aligned 1 2 4
+
+struct CLOTHES_DATA
 {
 	CLOTHESVERTEX *	cvert;
 	CLOTHESVERTEX *	backup;
 	short			nb_cvert;
 	short			nb_springs;
 	EERIE_SPRINGS 	* springs;
-} CLOTHES_DATA; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
-typedef struct
+struct COLLISION_SPHERE
 {
 	short			idx;
 	short			flags;
 	float			radius;
-} COLLISION_SPHERE; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
-typedef struct
+struct COLLISION_SPHERES_DATA
 {
 	long				nb_spheres;
 	COLLISION_SPHERE *	spheres;
-} COLLISION_SPHERES_DATA; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
-typedef struct
+struct PHYSVERT
 {
 	EERIE_3D	initpos;
 	EERIE_3D	temp;
@@ -427,9 +427,9 @@ typedef struct
 	EERIE_3D	force;
 	EERIE_3D	inertia;
 	float		mass;
-} PHYSVERT; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
-typedef struct
+struct PHYSICS_BOX_DATA
 {
 	PHYSVERT * vert;
 	long	nb_physvert;
@@ -437,7 +437,7 @@ typedef struct
 	short	stopcount;
 	float	radius; //radius around vert[0].pos for spherical collision
 	float	storedtiming;
-} PHYSICS_BOX_DATA; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
 
 struct EERIE_GROUPLIST {
@@ -458,7 +458,7 @@ struct EERIE_ACTIONLIST {
 	EERIE_ACTIONLIST() : name(), idx(0), act(0), sfx(0) { };
 };
 
-typedef struct
+struct CUB3D
 {
 	float	xmin;
 	float	xmax;
@@ -466,18 +466,18 @@ typedef struct
 	float	ymax;
 	float	zmin;
 	float	zmax;
-} CUB3D; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
-typedef struct
+struct EERIE_MOD_INFO
 {
 	long			link_origin;
 	EERIE_3D		link_position;
 	EERIE_3D		scale;
 	EERIE_3D		rot;
 	unsigned long	flags;
-} EERIE_MOD_INFO; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
-typedef struct
+struct EERIE_LINKED
 {
 	long			lgroup; //linked to group n° if lgroup=-1 NOLINK
 	long			lidx;
@@ -485,7 +485,7 @@ typedef struct
 	void *	obj;
 	EERIE_MOD_INFO	modinfo;
 	void * io;
-} EERIE_LINKED; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
 
 struct EERIE_SELECTIONS {
@@ -495,7 +495,7 @@ struct EERIE_SELECTIONS {
 
 #define DRAWFLAG_HIGHLIGHT	1
 
-typedef struct
+struct EERIE_FASTACCESS
 {
 	short	view_attach;
 	short	primary_attach;
@@ -523,10 +523,10 @@ typedef struct
 
 	short	carry_attach;
 	short	__padd;
-} EERIE_FASTACCESS;
+};
 
 /////////////////////////////////////////////////////////////////////////////////
-typedef struct
+struct EERIE_BONE
 {
 	long				nb_idxvertices;
 	long 		*		idxvertices;
@@ -542,21 +542,21 @@ typedef struct
 	EERIE_3D			transinit;
 	EERIE_3D			scaleinit;
 	EERIE_3D			transinit_global;
-} EERIE_BONE;
+};
 
-typedef struct
+struct EERIE_C_DATA
 {
 	EERIE_BONE *	bones;
 	long			nb_bones;
-} EERIE_C_DATA;
+};
 //////////////////////////////////////////////////////////////////////////////////
-typedef struct
+struct EERIE_3DPAD
 {
 	float x;
 	float y;
 	float z;
 	float w;
-} EERIE_3DPAD ;
+};
 
 struct EERIE_3DOBJ
 {
@@ -680,17 +680,16 @@ struct EERIE_3DSCENE {
 
 
 #define MAX_SCENES 64
-typedef struct
+struct EERIE_MULTI3DSCENE
 {
 	long	nb_scenes;
 	EERIE_3DSCENE * scenes[MAX_SCENES];
 	CUB3D			cub;
 	EERIE_3D		pos;
 	EERIE_3D		point0;
-} EERIE_MULTI3DSCENE; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
-
-typedef struct
+struct EERIE_FRAME
 {
 	long		num_frame;
 	long		flag;
@@ -700,18 +699,16 @@ typedef struct
 	float		time;
 	EERIE_3D	translate;
 	EERIE_QUAT	quat;
-	ArxSound		sample;
-} EERIE_FRAME; // Aligned 1 2 4
+	ArxSound	sample;
+}; // Aligned 1 2 4
 
-
-
-typedef struct
+struct EERIE_GROUP
 {
 	int		key;
 	EERIE_3D	translate;
 	EERIE_QUAT	quat;
 	EERIE_3D	zoom;
-} EERIE_GROUP; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
 // Animation playing flags
 #define EA_LOOP			1	// Must be looped at end (indefinitely...)
@@ -722,7 +719,7 @@ typedef struct
 #define	EA_STOPEND		32	// Must Be Stopped at end.
 #define EA_FORCEPLAY	64	// User controlled... MUST be played...
 #define EA_EXCONTROL	128	// ctime externally set, no update.
-typedef struct
+struct EERIE_ANIM
 {
 	float		anim_time;
 	unsigned long	flag;
@@ -731,12 +728,12 @@ typedef struct
 	EERIE_FRAME *	frames;
 	EERIE_GROUP  *  groups;
 	unsigned char *	voidgroups;
-} EERIE_ANIM; // Aligned 1 2 4
+}; // Aligned 1 2 4
 
 //-------------------------------------------------------------------------
 //Portal Data;
 #pragma pack(push,1)
-typedef struct
+struct SAVE_EERIEPOLY
 {
 	long 			type;	// at least 16 bits
 	EERIE_3D		min;
@@ -752,40 +749,40 @@ typedef struct
 	float			area;
 	short			room;
 	short			misc;
-} SAVE_EERIEPOLY; // Aligned 1 2 4
+}; // Aligned 1 2 4
 #pragma pack(pop)
 
 #pragma pack(push,1)
-typedef struct
+struct EERIE_SAVE_PORTALS
 {
 	SAVE_EERIEPOLY	poly;
 	long		room_1; // facing normal
 	long		room_2;
 	short		useportal;
 	short		paddy;
-} EERIE_SAVE_PORTALS;
+};
 #pragma pack(pop)
 
-typedef struct
+struct EERIE_PORTALS
 {
 	EERIEPOLY	poly;
 	long		room_1; // facing normal
 	long		room_2;
 	short		useportal;
 	short		paddy;
-} EERIE_PORTALS;
+};
 
 #pragma pack(push,1)
-typedef struct
+struct EP_DATA
 {
 	short	px;
 	short	py;
 	short	idx;
 	short	padd;
-} EP_DATA;
+};
 #pragma pack(pop)
 
-typedef struct
+struct EERIE_ROOM_DATA
 {
 	long nb_portals;
 	long * portals;
@@ -797,24 +794,24 @@ typedef struct
 	LPDIRECT3DVERTEXBUFFER7		pVertexBuffer;
 	unsigned long				usNbTextures;
 	TextureContainer		**	ppTextureContainer;
-} EERIE_ROOM_DATA;
+};
 
 #pragma pack(push,1)
-typedef struct
+struct EERIE_SAVE_ROOM_DATA
 {
 	long nb_portals;
 	long nb_polys;
 	long padd[6];
-} EERIE_SAVE_ROOM_DATA;
+};
 #pragma pack(pop)
 
-typedef struct
+struct EERIE_PORTAL_DATA
 {
 	long nb_rooms;
 	EERIE_ROOM_DATA * room;
 	long nb_total;	// of portals
 	EERIE_PORTALS * portals;
-} EERIE_PORTAL_DATA;
+};
 
 #pragma pack(pop)
 
@@ -822,23 +819,23 @@ typedef struct
 #define ARX_D3DVERTEX D3DTLVERTEX
 
 
-typedef struct
+struct SMY_D3DVERTEX
 {
 	float	x, y, z;
 	int		color;
 	float	tu, tv;
-} SMY_D3DVERTEX;
+};
 
-typedef struct
+struct SMY_D3DVERTEX3
 {
 	float	x, y, z;
 	int		color;
 	float	tu, tv;
 	float	tu2, tv2;
 	float	tu3, tv3;
-} SMY_D3DVERTEX3;
+};
 
-typedef struct
+struct SMY_D3DVERTEX3_T
 {
 	float	x, y, z;
 	float	rhw;
@@ -846,16 +843,16 @@ typedef struct
 	float	tu, tv;
 	float	tu2, tv2;
 	float	tu3, tv3;
-} SMY_D3DVERTEX3_T;
+};
 
-typedef struct
+struct SMY_ZMAPPINFO
 {
 	D3DTLVERTEX pD3DVertex[3];
 	float		uv[6];
 	float		color[3];
-} SMY_ZMAPPINFO;
+};
 
-typedef struct
+struct SMY_ARXMAT
 {
 	unsigned long uslStartVertex;
 	unsigned long uslNbVertex;
@@ -884,7 +881,7 @@ typedef struct
 	unsigned long uslNbIndiceCull_TSubstractive;
 	unsigned long uslStartNoCull_TSubstractive;
 	unsigned long uslNbIndiceNoCull_TSubstractive;
-} SMY_ARXMAT;
+};
 
 class CMY_DYNAMIC_VERTEXBUFFER
 {

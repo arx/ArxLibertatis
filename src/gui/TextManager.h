@@ -21,6 +21,8 @@ public:
 	bool AddText(HFONT, const std::string &, const RECT &, long _lCol = -1,
 	             long _lBkgCol = 0, long _lTimeOut = 0, long _lTimeScroll = 0,
 	             float _fSpeedScroll = 0.f, int iNbLigneClipp = 0);
+
+	bool AddText(HFONT, const std::string&, long x, long y, long fgcolor );
 	void Update(float);
 	void Render();
 	void Clear();

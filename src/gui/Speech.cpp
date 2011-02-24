@@ -3,22 +3,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -134,7 +134,7 @@ long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, const std::string& _name, long duratio
 
 	if ( _name.empty() ) return -1;
 
-	unsigned long tim = ARXTimeUL(); 
+	unsigned long tim = ARXTimeUL();
 
 	if (tim == 0) tim = 1;
 
@@ -153,7 +153,7 @@ long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, const std::string& _name, long duratio
 			speech[i].timecreation = tim;
 
 			// Sets/computes speech duration
-			if (duration == -1) speech[i].duration = 2000 + length * 60; 
+			if (duration == -1) speech[i].duration = 2000 + length * 60;
 			else speech[i].duration = duration;
 
 			/*if (length > 4095)
@@ -209,7 +209,7 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 
 	if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 	{
-		SelectObject(hDC, InBookFont);
+		SelectObject(hDC, hFontInBook);
 
 		GetTextExtentPoint(hDC,_T("p"),1,&sSize);
 
@@ -247,13 +247,9 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 								arx_logo_tc,
 								D3DCOLORWHITE);
 
-
-				igrec += ARX_TEXT_DrawRect(pd3dDevice, InBookFont,
-										   120.f * Xratio, (float)igrec,
-										   -3, 0,
-										   500 * Xratio, 200 * Yratio, temp, speech[i].color, NULL, 0x00FF00FF, 1);
-				if ((igrec > iEnd) &&
-						!CheckLastSpeech(i))
+				igrec += ARX_TEXT_DrawRect(hFontInBook, 120.f * Xratio, (float)igrec, -3, 0, 500 * Xratio,
+										   200 * Yratio, temp, speech[i].color, NULL, 0x00FF00FF);
+				if (igrec > iEnd && !CheckLastSpeech(i))
 				{
 					ARX_SPEECH_MoveUp();
 					break;
@@ -329,7 +325,7 @@ void ARX_CONVERSATION_Reset()
 
 void ARX_CONVERSATION_CheckAcceleratedSpeech()
 {
-	if (REQUEST_SPEECH_SKIP) 
+	if (REQUEST_SPEECH_SKIP)
 	{
 		for (long i = 0; i < MAX_ASPEECH; i++)
 		{
@@ -550,8 +546,7 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long param, l
 //*************************************************************************************
 void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 {
-	unsigned long	tim		= ARXTimeUL(); 	
- 
+	unsigned long	tim		= ARXTimeUL();
 
 	if (CINEMASCOPE || BLOCK_PLAYER_CONTROLS) ARX_CONVERSATION_CheckAcceleratedSpeech();
 
@@ -637,7 +632,7 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 
 						if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
 						{
-							SelectObject(hDC, InBookFont);
+							SelectObject(hDC, hFontInBook);
 							GetTextExtentPoint( hDC,
 							                    speech->text.c_str(),
 							                    speech->text.length(),
@@ -671,17 +666,16 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 
 						danaeApp.DANAEEndRender();
 						float iTaille = (float)ARX_TEXT_DrawRect(
-											pd3dDevice,
-											InBookFont,
-											10.f,
-											fDepY + fZoneClippHeight,
-											-3,
-											0,
-											-10.f + (float)DANAESIZX,
-											0,		//taille recalcul�e
-											speech->text,
-											RGB(255, 255, 255),
-											hRgn);
+						                    hFontInBook,
+						                    10.f,
+						                    fDepY + fZoneClippHeight,
+						                    -3,
+						                    0,
+						                    -10.f + (float)DANAESIZX,
+						                    0,		//taille recalcul�e
+						                    speech->text,
+						                    RGB(255, 255, 255),
+						                    hRgn);
 
 						if (hRgn)
 						{
@@ -715,7 +709,7 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 
 						GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 						GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
-				
+
 						danaeApp.EnableZBuffer();
 						GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
 
@@ -735,7 +729,6 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 								if (((float)speech->iTimeScroll) >= fTimeOneLine)
 								{
 									float fResteLine	 = (float)sSize.cy - speech->fPixelScroll;
- 
 									float fTimePlus		 = ((float)fResteLine * (float)FrameDiff) / (float)ARX_SOUND_GetDuration(speech->sample);
 									fDTime				-= fTimePlus;
 									speech->fPixelScroll = 0.f;
@@ -758,8 +751,6 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 						}
 					}
 				}
-
-			
 			}
 
 		next:

@@ -2155,12 +2155,12 @@ plusloin:
 		}
 	}
 }
-typedef struct
+struct DLFCHECK
 {
 	char ident[256];
 	char nums[512];
 	long occurence;
-} DLFCHECK;
+};
 DLFCHECK * dlfcheck = NULL;
 long dlfcount = 0;
 void ARX_SAVELOAD_DLFCheckInit()
