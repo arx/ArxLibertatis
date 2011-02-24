@@ -94,6 +94,7 @@ public:
 	inline void newParent(const Node * _parent, float _distance) {
 		parent = _parent;
 		cost = cost - distance + _distance;
+		distance = _distance;
 	}
 	
 };
@@ -147,7 +148,7 @@ public:
 			}
 		}
 		
-		PathFinder::Node * node = *best;
+		Node * node = *best;
 		nodes.erase(best);
 		
 		return node;
@@ -470,19 +471,21 @@ float PathFinder::getIlluminationCost(const EERIE_3D & pos) const {
 			continue;
 		}
 		
-		float dist = EEDistance3D(slight_l[i]->pos, pos);
+		const EERIE_LIGHT & light = *slight_l[i];
 		
-		if(slight_l[i]->fallend >= dist) {
+		float dist = EEDistance3D(light.pos, pos);
+		
+		if(dist <= light.fallend) {
 			
 			float l_cost = STEALTH_LIGHT_COST;
 			
-			l_cost *= slight_l[i]->intensity * (slight_l[i]->rgb.r + slight_l[i]->rgb.g + slight_l[i]->rgb.b) * ( 1.0f / 3 );
+			l_cost *= light.intensity * (light.rgb.r + light.rgb.g + light.rgb.b) * ( 1.0f / 3 );
 			
-			if(slight_l[i]->fallstart >= dist) {
-				cost += l_cost;
-			} else {
-				cost += l_cost * ((dist - slight_l[i]->fallstart) / (slight_l[i]->fallend - slight_l[i]->fallstart));
+			if(dist > light.fallstart) {
+				l_cost *= ((dist - light.fallstart) / (light.fallend - light.fallstart));
 			}
+			
+			cost += l_cost;
 		}
 	}
 	

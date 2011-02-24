@@ -28,7 +28,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <vector>
 
-class OpenNodeList;
 class _ANCHOR_DATA;
 class EERIE_LIGHT;
 class EERIE_3D;
@@ -132,7 +131,7 @@ private:
 	
 	size_t map_s; // Map size
 	const _ANCHOR_DATA * map_d; // Map data
-	size_t slight_c; // Lights count
+	size_t slight_c; // Light count
 	const EERIE_LIGHT * const * slight_l; // Light data
 	
 };

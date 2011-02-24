@@ -58,7 +58,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_PATHS_H
 
 #include "graphics/GraphicsTypes.h"
-#include "graphics/data/Mesh.h"
+
+class INTERACTIVE_OBJ;
+class EERIE_CAMERA;
 
 class CRuban;
 
