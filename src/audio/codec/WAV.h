@@ -29,10 +29,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioTypes.h"
 #include "audio/Stream.h"
 
-class Codec;
 struct PakFileHandle;
 
 namespace ATHENA {
+	
+	class Codec;
 	
 	class StreamWAV : public Stream {
 		
