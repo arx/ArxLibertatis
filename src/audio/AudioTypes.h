@@ -22,174 +22,160 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef __ATHENA_TYPES_H__
-#define __ATHENA_TYPES_H__
+
+#ifndef ARX_AUDIO_AUDIOTYPES_H
+#define ARX_AUDIO_AUDIOTYPES_H
 
 #include "core/Common.h"
 
-#ifndef NULL
-#define NULL    0
-#endif
-
-namespace ATHENA
-{
+namespace ATHENA {
+	
+	// TODO remove
 	typedef void    aalVoid;
 	typedef u8      aalUBool;
 	typedef s8      aalSBool;
 	typedef u8      aalUByte;
 	typedef s8      aalSByte;
 	typedef u16     aalUWord;
-    typedef s16     aalSWord;
+	typedef s16     aalSWord;
 	typedef u32     aalULong;
 	typedef s32     aalSLong;
- 	typedef f32     aalFloat;
-
+	typedef f32     aalFloat;
+	
 	const aalUBool AAL_UFALSE(0);
 	const aalUBool AAL_UTRUE(1);
 	const aalSBool AAL_SFALSE(-1);
 	const aalSBool AAL_STRUE(0);
-
-	// Default values                                                            //
-	const aalULong AAL_DEFAULT_STREAMLIMIT(1000);                                //1 second
-
-	const aalULong AAL_DEFAULT_STRINGSIZE(0xff);                                 //256 characters
-
-	const aalFloat AAL_DEFAULT_LISTENER_UNIT_FACTOR(1.0F);                       //1 unit = 1 meter
-	const aalFloat AAL_DEFAULT_LISTENER_DOPPLER_FACTOR(1.0F);                    //Air-like doppler effect
-	const aalFloat AAL_DEFAULT_LISTENER_ROLLOFF_FACTOR(1.0F);                    //Air-like rolloff effect
-
-	const aalFloat AAL_DEFAULT_ENVIRONMENT_SIZE(7.5F);                           //
-	const aalFloat AAL_DEFAULT_ENVIRONMENT_DIFFUSION(1.0F);                      //High density echoes
-	const aalFloat AAL_DEFAULT_ENVIRONMENT_ABSORPTION(0.05F);                    //Air-like absorbtion
-	const aalFloat AAL_DEFAULT_ENVIRONMENT_REFLECTION_VOLUME(0.8F);              //
-	const aalFloat AAL_DEFAULT_ENVIRONMENT_REFLECTION_DELAY(7);                  //
-	const aalFloat AAL_DEFAULT_ENVIRONMENT_REVERBERATION_VOLUME(1.0F);           //
-	const aalFloat AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DELAY(10);              //
-	const aalFloat AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DECAY(1500);            //
-	const aalFloat AAL_DEFAULT_ENVIRONMENT_REVERBERATION_HFDECAY(1200);          //
-
-	const aalFloat AAL_DEFAULT_VOLUME(1.0F);                                     //Original gain
-	const aalFloat AAL_DEFAULT_AVERAGEVOLUME(0.0F);                              //No gain
-	const aalFloat AAL_DEFAULT_PITCH(1.0F);                                      //Original frequency
-	const aalFloat AAL_DEFAULT_PAN(1.0F);                                        //Centered panning
-	const aalFloat AAL_DEFAULT_FALLSTART(1.0F);                                  //Volume fallstart
-	const aalFloat AAL_DEFAULT_FALLEND(1000000000.0F);                           //Volume fallend
-	const aalFloat AAL_DEFAULT_CONE_INNERANGLE(360.0F);                          //All directions
-	const aalFloat AAL_DEFAULT_CONE_OUTERANGLE(360.0F);                          //All directions
-	const aalFloat AAL_DEFAULT_CONE_OUTERVOLUME(0.0F);                           //No gain
-
-	// Flags                                                                     //
-	enum aalFlag
-	{
-		AAL_FLAG_DUPLICATE       = 0x00000000,                                     //Duplicate sample if already playing
-		AAL_FLAG_RESTART         = 0x00000001,                                     //Force restart sample if already playing
-		AAL_FLAG_ENQUEUE         = 0x00000002,                                     //Enqueue sample if already playing
-		AAL_FLAG_VOLUME          = 0x00000004,                                     //Enable volume control
-		AAL_FLAG_PITCH           = 0x00000008,                                     //Enable pitch control
-		AAL_FLAG_PAN             = 0x00000010,                                     //Enable pan control
-		AAL_FLAG_POSITION        = 0x00000020,                                     //Enable position control
-		AAL_FLAG_VELOCITY        = 0x00000040,                                     //Enable velocity control
-		AAL_FLAG_DIRECTION       = 0x00000080,                                     //Enable orientation control
-		AAL_FLAG_CONE            = 0x00000100,                                     //Enable cone control
-		AAL_FLAG_FALLOFF         = 0x00000200,                                     //Enable intensity control
-		AAL_FLAG_REVERBERATION   = 0x00000400,                                     //Enable environment reverberation / reflection
-		AAL_FLAG_OBSTRUCTION     = 0x00000800,                                     //Enable environment obstruction
-		AAL_FLAG_RELATIVE        = 0x00001000,                                     //Compute position relative to the listener
-		AAL_FLAG_BACKGROUND      = 0x00002000,                                     //Continue playing even if app is in background
-		AAL_FLAG_PRELOAD         = 0x00004000,                                     //Preload sample if not streamed
-		AAL_FLAG_AUTOFREE        = 0x00008000,                                     //Free resource when playing is finished
-		AAL_FLAG_CALLBACK        = 0x00010000,                                     //Enable sample callback management
-		AAL_FLAG_MULTITHREAD     = 0x00020000,                                     //Enable multithreaded processing safety
+	
+	// Default values
+	const aalULong AAL_DEFAULT_STREAMLIMIT(1000); // 1 second
+	
+	const aalULong AAL_DEFAULT_STRINGSIZE(0xff); // 256 characters
+	
+	const aalFloat AAL_DEFAULT_LISTENER_UNIT_FACTOR(1.0F); // 1 unit = 1 meter
+	const aalFloat AAL_DEFAULT_LISTENER_DOPPLER_FACTOR(1.0F); // Air-like doppler effect
+	const aalFloat AAL_DEFAULT_LISTENER_ROLLOFF_FACTOR(1.0F); // Air-like rolloff effect
+	
+	const aalFloat AAL_DEFAULT_ENVIRONMENT_SIZE(7.5F);
+	const aalFloat AAL_DEFAULT_ENVIRONMENT_DIFFUSION(1.0F); // High density echoes
+	const aalFloat AAL_DEFAULT_ENVIRONMENT_ABSORPTION(0.05F); // Air-like absorbtion
+	const aalFloat AAL_DEFAULT_ENVIRONMENT_REFLECTION_VOLUME(0.8F);
+	const aalFloat AAL_DEFAULT_ENVIRONMENT_REFLECTION_DELAY(7);
+	const aalFloat AAL_DEFAULT_ENVIRONMENT_REVERBERATION_VOLUME(1.0F);
+	const aalFloat AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DELAY(10);
+	const aalFloat AAL_DEFAULT_ENVIRONMENT_REVERBERATION_DECAY(1500);
+	const aalFloat AAL_DEFAULT_ENVIRONMENT_REVERBERATION_HFDECAY(1200);
+	
+	const aalFloat AAL_DEFAULT_VOLUME(1.0F); // Original gain
+	const aalFloat AAL_DEFAULT_AVERAGEVOLUME(0.0F); // No gain
+	const aalFloat AAL_DEFAULT_PITCH(1.0F); // Original frequency
+	const aalFloat AAL_DEFAULT_PAN(1.0F); // Centered panning
+	const aalFloat AAL_DEFAULT_FALLSTART(1.0F); // Volume fallstart
+	const aalFloat AAL_DEFAULT_FALLEND(1000000000.0F); // Volume fallend
+	const aalFloat AAL_DEFAULT_CONE_INNERANGLE(360.0F); // All directions
+	const aalFloat AAL_DEFAULT_CONE_OUTERANGLE(360.0F); // All directions
+	const aalFloat AAL_DEFAULT_CONE_OUTERVOLUME(0.0F); // No gain
+	
+	// Flags
+	enum aalFlag {
+		AAL_FLAG_DUPLICATE       = 0x00000000, // Duplicate sample if already playing
+		AAL_FLAG_RESTART         = 0x00000001, // Force restart sample if already playing
+		AAL_FLAG_ENQUEUE         = 0x00000002, // Enqueue sample if already playing
+		AAL_FLAG_VOLUME          = 0x00000004, // Enable volume control
+		AAL_FLAG_PITCH           = 0x00000008, // Enable pitch control
+		AAL_FLAG_PAN             = 0x00000010, // Enable pan control
+		AAL_FLAG_POSITION        = 0x00000020, // Enable position control
+		AAL_FLAG_VELOCITY        = 0x00000040, // Enable velocity control
+		AAL_FLAG_DIRECTION       = 0x00000080, // Enable orientation control
+		AAL_FLAG_CONE            = 0x00000100, // Enable cone control
+		AAL_FLAG_FALLOFF         = 0x00000200, // Enable intensity control
+		AAL_FLAG_REVERBERATION   = 0x00000400, // Enable environment reverberation / reflection
+		AAL_FLAG_OBSTRUCTION     = 0x00000800, // Enable environment obstruction
+		AAL_FLAG_RELATIVE        = 0x00001000, // Compute position relative to the listener
+		AAL_FLAG_BACKGROUND      = 0x00002000, // Continue playing even if app is in background
+		AAL_FLAG_PRELOAD         = 0x00004000, // Preload sample if not streamed
+		AAL_FLAG_AUTOFREE        = 0x00008000, // Free resource when playing is finished
+		AAL_FLAG_CALLBACK        = 0x00010000, // Enable sample callback management
+		AAL_FLAG_MULTITHREAD     = 0x00020000, // Enable multithreaded processing safety
 	};
-
-	// Length units                                                              //
-	enum aalUnit
-	{
+	
+	// Length units
+	enum aalUnit {
 		AAL_UNIT_MS,
 		AAL_UNIT_SAMPLES,
 		AAL_UNIT_BYTES
 	};
-
-	// Errors                                                                    //
-	enum aalError
-	{
+	
+	// Errors
+	enum aalError {
 		AAL_OK,
-		AAL_ERROR,                                                                 //General error
-		AAL_ERROR_INIT,                                                            //Not initialized
-		AAL_ERROR_TIMEOUT,                                                         //Wait timeout
-		AAL_ERROR_MEMORY,                                                          //Not enough memory
-		AAL_ERROR_FILEIO,                                                          //File input/output error
-		AAL_ERROR_FORMAT,                                                          //Invalid or corrupted file format
-		AAL_ERROR_SYSTEM,                                                          //Internal system error
-		AAL_ERROR_HANDLE                                                           //Invalid resource handle
+		AAL_ERROR, // General error
+		AAL_ERROR_INIT, // Not initialized
+		AAL_ERROR_TIMEOUT, // Wait timeout
+		AAL_ERROR_MEMORY, // Not enough memory
+		AAL_ERROR_FILEIO, // File input/output error
+		AAL_ERROR_FORMAT, // Invalid or corrupted file format
+		AAL_ERROR_SYSTEM, // Internal system error
+		AAL_ERROR_HANDLE // Invalid resource handle
 	};
-
-	// Key settings flags                                                        //
-	enum aalKeySettingFlag
-	{
+	
+	// Key settings flags
+	enum aalKeySettingFlag {
 		AAL_KEY_SETTING_FLAG_RANDOM      = 0x00000001,
 		AAL_KEY_SETTING_FLAG_INTERPOLATE = 0x00000002
 	};
-
-	// Output format                                                             //
-	struct aalFormat
-	{
-		aalULong frequency;                                                        //Samples per second
-		aalULong quality;                                                          //Bits per sample
-		aalULong channels;                                                         //Output channels count
+	
+	// Output format
+	struct aalFormat {
+		aalULong frequency; // Samples per second
+		aalULong quality; // Bits per sample
+		aalULong channels; // Output channels count
 	};
-
-	// Vector                                                                    //
-	struct aalVector
-	{
+	
+	// Vector
+	struct aalVector {
 		aalFloat x, y, z;
 	};
-
-	// Source cone                                                               //
-	struct aalCone
-	{
+	
+	// Source cone
+	struct aalCone {
 		aalFloat inner_angle;
 		aalFloat outer_angle;
 		aalFloat outer_volume;
 	};
-
-	// Source falloff                                                            //
-	struct aalFalloff
-	{
+	
+	// Source falloff
+	struct aalFalloff {
 		aalFloat start;
 		aalFloat end;
 	};
-
-	// Environment obstruction                                                   //
-	struct aalObstruction
-	{
-		aalFloat direct;                                                           //Direct attenuation per unit
-		aalFloat direct_lf;                                                        //Direct low frequency attenuation per unit
-		aalFloat reverb;                                                           //Reverberation attenuation per unit
+	
+	// Environment obstruction
+	struct aalObstruction {
+		aalFloat direct; // Direct attenuation per unit
+		aalFloat direct_lf; // Direct low frequency attenuation per unit
+		aalFloat reverb; // Reverberation attenuation per unit
 	};
-
-	// Environment reflection                                                    //
-	struct aalReflection
-	{
+	
+	// Environment reflection
+	struct aalReflection {
 		aalFloat volume;
 		aalULong delay;
 	};
-
-	// Environment reverberation                                                 //
-	struct aalReverberation
-	{
+	
+	// Environment reverberation
+	struct aalReverberation {
 		aalFloat volume;
 		aalULong delay;
 		aalULong decay;
 		aalULong hf_decay;
 	};
-
-	// Play channel initialization parameters                                    //
-	struct aalChannel
-	{
-		aalULong flags;                                                            //A set of aalFlag
-		aalSLong mixer;                                                            //Mixer id
-		aalSLong environment;                                                      //Environment id
+	
+	// Play channel initialization parameters
+	struct aalChannel {
+		aalULong flags; // A set of aalFlag
+		aalSLong mixer; // Mixer id
+		aalSLong environment; // Environment id
 		aalFloat volume;
 		aalFloat pitch;
 		aalFloat pan;
@@ -199,11 +185,11 @@ namespace ATHENA
 		aalCone cone;
 		aalFalloff falloff;
 	};
-
-	// Callbacks prototype                                                       //
-	typedef aalVoid(* aalSampleCallback)(aalVoid * reserved, const aalSLong & sample_id, aalVoid * data);
-	typedef aalVoid(* aalEnvironmentCallback)(const aalVector & sample_position, const aalVector & listener_position, const aalObstruction & obstruction);
-
-}//ATHENA::
-
-#endif//__ATHENA_TYPES_H__
+	
+	// Callbacks prototype
+	typedef void(* aalSampleCallback)(void * reserved, const aalSLong & sample_id, void * data);
+	typedef void(* aalEnvironmentCallback)(const aalVector & sample_position, const aalVector & listener_position, const aalObstruction & obstruction);
+	
+} // namespace ATHENA::
+	
+#endif // ARX_AUDIO_AUDIOTYPES_H
