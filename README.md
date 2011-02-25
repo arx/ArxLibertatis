@@ -1,7 +1,17 @@
 # Arx Fatalis Port
 
-(Arx Libertatis?)
+                      _______________________
+                     /\                      \
+                     \_|         Arx         |
+                       |      Libertatis     |
+                       |   __________________|__
+                        \_/____________________/
+
+
 Port to x64_86 / GCC / OpenGL / Unix
+
+Arx Libertatis is based on the publicly released Arx Fatalis source code.
+GPLv3 - read ARX_PUBLIC_LICENSE.txt
 
 ## Dependencies
 
