@@ -31,10 +31,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/d3dwrapper.h" // for LPDIRECT3DDEVICE7
 #include "graphics/GraphicsTypes.h" // for EERIE_3D
 
-
 // TODO macros
 //fx
-#define FX_FADEIN 1
+#define FX_FADEIN  1
 #define FX_FADEOUT 2
 #define FX_BLUR    3
 //prefx
@@ -49,7 +48,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct C_KEY;
 struct CinematicGrid;
-
 
 // TODO used for loading
 #pragma pack(push,1)
@@ -78,7 +76,6 @@ public:
 	
 };
 #pragma pack(pop)
-
 
 class Cinematic {
 	
