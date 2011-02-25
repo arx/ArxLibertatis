@@ -22,52 +22,53 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef __ATHENA_STREAM_WAV_H__
-#define __ATHENA_STREAM_WAV_H__
+
+#ifndef ARX_AUDIO_CODEC_WAV_H
+#define ARX_AUDIO_CODEC_WAV_H
 
 #include "audio/AudioTypes.h"
 #include "audio/Stream.h"
 
+class Codec;
 struct PakFileHandle;
 
-namespace ATHENA
-{
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Class StreamWAV                                                           //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	class StreamWAV : public Stream
-	{
-		public:
-			// Constructor and destructor                                                //
-			StreamWAV();
-			~StreamWAV();
-			// Setup                                                                     //
-			aalError SetStream(PakFileHandle * stream);
-			aalError SetFormat(const aalFormat & format);
-			aalError SetLength(const aalULong & length);
-			aalError SetPosition(const aalULong & position);
-			// Status                                                                    //
-			aalError GetStream(PakFileHandle *&stream);
-			aalError GetFormat(aalFormat & format);
-			aalError GetLength(aalULong & length);
-			aalError GetPosition(aalULong & position);
-			// File I/O                                                                  //
-			aalError Read(aalVoid * buffer, const aalULong & to_read, aalULong & read);
-			aalError Write(aalVoid * buffer, const aalULong & to_write, aalULong & write);
-		private:
-			// Data                                                                      //
-			PakFileHandle * stream;
-			Codec * codec;
-			aalVoid * status;                 //Stream status
-			aalVoid * format;                 //File data format
-			aalULong size, outsize;           //Compressed and uncompessed data size
-			aalULong offset;                  //Offset of data in file
-			aalULong cursor;
+namespace ATHENA {
+	
+	class StreamWAV : public Stream {
+		
+	public:
+		
+		StreamWAV();
+		~StreamWAV();
+		
+		// Setup
+		aalError SetStream(PakFileHandle * stream);
+		aalError SetFormat(const aalFormat & format);
+		aalError SetLength(const aalULong & length);
+		aalError SetPosition(const aalULong & position);
+		
+		// Status
+		aalError GetStream(PakFileHandle *&stream);
+		aalError GetFormat(aalFormat & format);
+		aalError GetLength(aalULong & length);
+		aalError GetPosition(aalULong & position);
+		
+		// File I/O
+		aalError Read(void * buffer, const aalULong & to_read, aalULong & read);
+		aalError Write(void * buffer, const aalULong & to_write, aalULong & write);
+		
+	private:
+		
+		PakFileHandle * stream;
+		Codec * codec;
+		void * status; // Stream status
+		void * format; // File data format
+		aalULong size, outsize; // Compressed and uncompessed data size
+		aalULong offset; // Offset of data in file
+		aalULong cursor;
+		
 	};
+	
+} // namespace ATHENA
 
-}//ATHENA::
-
-#endif//__ATHENA_STREAM_WAV_H__
+#endif//ARX_AUDIO_CODEC_WAV_H

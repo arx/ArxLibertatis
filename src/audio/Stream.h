@@ -26,7 +26,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define __ATHENA_STREAM_H__
 
 #include "AudioTypes.h"
-#include "codec/Codec.h"
 
 namespace ATHENA
 {

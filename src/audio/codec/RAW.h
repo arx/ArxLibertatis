@@ -41,22 +41,22 @@ namespace ATHENA {
 		~CodecRAW();
 		
 		// Setup
-		aalError SetHeader(aalVoid * header);
+		aalError SetHeader(void * header);
 		aalError SetStream(PakFileHandle * stream);
 		aalError SetPosition(const aalULong & position);
 		
 		// Status
-		aalError GetHeader(aalVoid *& header);
+		aalError GetHeader(void *& header);
 		aalError GetStream(PakFileHandle *& stream);
 		aalError GetPosition(aalULong & position);
 		
 		// File I/O
-		aalError Read(aalVoid * buffer, const aalULong & to_read, aalULong & read);
-		aalError Write(aalVoid * buffer, const aalULong & to_write, aalULong & write);
+		aalError Read(void * buffer, const aalULong & to_read, aalULong & read);
+		aalError Write(void * buffer, const aalULong & to_write, aalULong & write);
 		
 	private:
 		
-		aalVoid * header;
+		void * header;
 		PakFileHandle * stream;
 		aalULong cursor;
 		

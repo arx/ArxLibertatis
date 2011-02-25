@@ -59,11 +59,9 @@ namespace ATHENA {
 		
 	private:
 		
-		// Macros!
 		void GetSample(const aalULong & channel_i, aalSByte nybble);
 		aalError GetNextBlock();
 		
-		// Data
 		PakFileHandle * stream;
 		ADPCMWAVEFORMAT * header;
 		aalULong padding;
