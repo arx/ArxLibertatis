@@ -31,7 +31,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 struct PakFileHandle;
 
-#include <windows.h>
+#include <windows.h> // needed by mmreg.h
 #include <mmreg.h> // for ADPCMWAVEFORMAT
 
 namespace ATHENA {
@@ -44,23 +44,23 @@ namespace ATHENA {
 		~CodecADPCM();
 		
 		// Setup
-		aalError SetHeader(aalVoid * header);
+		aalError SetHeader(void * header);
 		aalError SetStream(PakFileHandle * stream);
 		aalError SetPosition(const aalULong & position);
 		
 		// Status
-		aalError GetHeader(aalVoid *&header);
-		aalError GetStream(PakFileHandle *&stream);
+		aalError GetHeader(void *& header);
+		aalError GetStream(PakFileHandle *& stream);
 		aalError GetPosition(aalULong & position);
 		
 		// File I/O
-		aalError Read(aalVoid * buffer, const aalULong & to_read, aalULong & read);
-		aalError Write(aalVoid * buffer, const aalULong & to_write, aalULong & write);
+		aalError Read(void * buffer, const aalULong & to_read, aalULong & read);
+		aalError Write(void * buffer, const aalULong & to_write, aalULong & write);
 		
 	private:
 		
 		// Macros!
-		aalVoid GetSample(const aalULong & channel_i, aalSByte nybble);
+		void GetSample(const aalULong & channel_i, aalSByte nybble);
 		aalError GetNextBlock();
 		
 		// Data
@@ -80,7 +80,7 @@ namespace ATHENA {
 		aalSByte nybble;
 		aalUByte odd;
 		aalUByte cache_c, cache_i;
-		aalVoid * cache_l;
+		void * cache_l;
 		aalULong cursor;
 		
 	};

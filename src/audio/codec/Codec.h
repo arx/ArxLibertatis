@@ -22,39 +22,38 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef __ATHENA_CODEC_H__
-#define __ATHENA_CODEC_H__
+
+#ifndef ARX_AUDIO_CODEC_CODEC_H
+#define ARX_AUDIO_CODEC_CODEC_H
 
 #include "audio/AudioTypes.h"
 
 struct PakFileHandle;
 
-namespace ATHENA
-{
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Class ATHENA::Codec                                                       //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	class Codec
-	{
-		public:
-			// Destructor
-			virtual ~Codec() {};
-			// Setup
-			virtual aalError SetHeader(aalVoid * header) = 0;
-			virtual aalError SetStream(PakFileHandle * stream) = 0;
-			virtual aalError SetPosition(const aalULong & position) = 0;
-			// Status
-			virtual aalError GetHeader(aalVoid *&header) = 0;
-			virtual aalError GetStream(PakFileHandle *&stream) = 0;
-			virtual aalError GetPosition(aalULong & position) = 0;
-			// File I/O
-			virtual aalError Read(aalVoid * buffer, const aalULong & to_read, aalULong & read) = 0;
-			virtual aalError Write(aalVoid * buffer, const aalULong & to_write, aalULong & write) = 0;
+namespace ATHENA {
+	
+	class Codec {
+		
+	public:
+		
+		virtual ~Codec() {};
+		
+		// Setup
+		virtual aalError SetHeader(void * header) = 0;
+		virtual aalError SetStream(PakFileHandle * stream) = 0;
+		virtual aalError SetPosition(const aalULong & position) = 0;
+		
+		// Status
+		virtual aalError GetHeader(void *& header) = 0;
+		virtual aalError GetStream(PakFileHandle *& stream) = 0;
+		virtual aalError GetPosition(aalULong & position) = 0;
+		
+		// File I/O
+		virtual aalError Read(void * buffer, const aalULong & to_read, aalULong & read) = 0;
+		virtual aalError Write(void * buffer, const aalULong & to_write, aalULong & write) = 0;
+		
 	};
-
+	
 }//ATHENA::
 
-#endif//__ATHENA_CODEC_H__
+#endif // ARX_AUDIO_CODEC_CODEC_H
