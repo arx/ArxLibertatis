@@ -22,8 +22,9 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef __ATHENA_GLOBAL_H__
-#define __ATHENA_GLOBAL_H__
+
+#ifndef ARX_AUDIO_AUDIOGLOBAL_H
+#define ARX_AUDIO_AUDIOGLOBAL_H
 
 #include <cmath>
 
@@ -37,40 +38,31 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "AudioInstance.h"
 #include "dsoundfwd.h"
 
-
-namespace ATHENA
-{
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Common resource memory management                                         //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Internal globals                                                          //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
+namespace ATHENA {
+	
+	// Common resource memory management
+	
+	// Internal globals
+	
 	const aalULong FLAG_ANY_ENV_FX(AAL_FLAG_OBSTRUCTION |
 	                               AAL_FLAG_REVERBERATION);
-
-	// Constant                                                                  //
+	
 	const aalULong FLAG_ANY_3D_FX(AAL_FLAG_POSITION |
 	                              AAL_FLAG_VELOCITY |
 	                              AAL_FLAG_DIRECTION |
 	                              AAL_FLAG_CONE |
 	                              AAL_FLAG_FALLOFF |
 	                              FLAG_ANY_ENV_FX);
-
-	// Audio device interface                                                    //
+	
+	// Audio device interface
 	extern LPDIRECTSOUND device;
 	extern LPDIRECTSOUNDBUFFER primary;
 	extern LPDIRECTSOUND3DLISTENER listener;
 	extern LPKSPROPERTYSET environment;
 	extern aalUBool is_reverb_present;
 	extern aalSLong environment_id;
-
-	// Global settings                                                           //
+	
+	// Global settings
 	extern char * sample_path;
 	extern char * ambiance_path;
 	extern char * environment_path;
@@ -80,69 +72,60 @@ namespace ATHENA
 	extern aalULong session_time;
 	extern aalULong global_status;
 	extern aalFormat global_format;
-
-	// Resources                                                                 //
+	
+	// Resources
 	extern ResourceList<Mixer> _mixer;
 	extern ResourceList<Sample> _sample;
 	extern ResourceList<Ambiance> _amb;
 	extern ResourceList<Environment> _env;
 	extern ResourceList<Instance> _inst;
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Internal functions                                                        //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	// Random number generator                                                   //
+	
+	// Internal functions
+	
+	// Random number generator
 	aalULong Random();
 	aalFloat FRandom();
 	aalULong InitSeed();
-
-	// Conversion                                                                //
+	
+	// Conversion
 	aalULong UnitsToBytes(const aalULong & v, const aalFormat & format, const aalUnit & unit = AAL_UNIT_MS);
 	aalULong BytesToUnits(const aalULong & v, const aalFormat & format, const aalUnit & unit = AAL_UNIT_MS);
-
-	inline aalFloat LinearToLogVolume(const aalFloat & volume)
-	{
+	
+	inline aalFloat LinearToLogVolume(const aalFloat & volume) {
 		return 0.2F * (float)log10(volume) + 1.0F;
 	}
-
-	// Validity                                                                  //
-	inline aalSLong GetSampleID(const aalSLong & id)
-	{
+	
+	// Validity
+	inline aalSLong GetSampleID(const aalSLong & id) {
 		return id & 0x0000ffff;
 	}
-
-	inline aalSLong GetInstanceID(const aalSLong & id)
-	{
+	
+	inline aalSLong GetInstanceID(const aalSLong & id) {
 		return ((id >> 16) & 0x0000ffff);
 	}
-
-	// Vector operators                                                          //
-	inline aalVector & operator+=(aalVector & dst, const aalVector & src)
-	{
+	
+	// Vector operators
+	inline aalVector & operator+=(aalVector & dst, const aalVector & src) {
 		dst.x += src.x;
 		dst.y += src.y;
 		dst.z += src.z;
 		return dst;
 	}
-
-	inline aalVector & operator*=(aalVector & dst, const aalVector & src)
-	{
+	
+	inline aalVector & operator*=(aalVector & dst, const aalVector & src) {
 		dst.x *= src.x;
 		dst.y *= src.y;
 		dst.z *= src.z;
 		return dst;
 	}
-
-	inline aalVector & operator*=(aalVector & dst, const aalFloat & factor)
-	{
+	
+	inline aalVector & operator*=(aalVector & dst, const aalFloat & factor) {
 		dst.x *= factor;
 		dst.y *= factor;
 		dst.z *= factor;
 		return dst;
 	}
+	
+} // namespace ATHENA
 
-}//ATHENA::
-
-#endif//__ATHENA_GLOBAL_H__
+#endif // ARX_AUDIO_AUDIOGLOBAL_H
