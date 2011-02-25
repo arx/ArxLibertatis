@@ -71,7 +71,7 @@ namespace ATHENA {
 		aalError Pause();
 		aalError Resume();
 		aalError Update();
-		aalVoid UpdateStreaming();
+		void UpdateStreaming();
 		aalUBool IsTooFar();
 		
 		// Data

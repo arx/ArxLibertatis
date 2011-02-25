@@ -77,7 +77,7 @@ namespace ATHENA
 		stream->GetLength(length);
 		DeleteStream(stream);
 
-		aalVoid * ptr = realloc(name, strlen(_name) + 1);
+		void * ptr = realloc(name, strlen(_name) + 1);
 
 		if (!ptr) return AAL_ERROR_MEMORY;
 
@@ -93,9 +93,9 @@ namespace ATHENA
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 
-	aalError Sample::SetCallback(aalSampleCallback func, aalVoid * _data, const aalULong & time, const aalUnit & unit)
+	aalError Sample::SetCallback(aalSampleCallback func, void * _data, const aalULong & time, const aalUnit & unit)
 	{
-		aalVoid * ptr;
+		void * ptr;
 
 		ptr = realloc(callb, sizeof(Callback) * (callb_c + 1));
 

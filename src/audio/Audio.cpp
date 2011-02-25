@@ -117,7 +117,7 @@ namespace ATHENA
 	// Global setup                                                              //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError aalInit(aalVoid * param)
+	aalError aalInit(void * param)
 	{
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
@@ -131,9 +131,9 @@ namespace ATHENA
 		InitSeed();
 
 		//Create DirectSound device interface
-		if (CoCreateInstance(CLSID_EAXDirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (aalVoid **)&device))
+		if (CoCreateInstance(CLSID_EAXDirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (void **)&device))
 		{
-			if (CoCreateInstance(CLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (aalVoid **)&device))
+			if (CoCreateInstance(CLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (void **)&device))
 			{
 				if (mutex) ReleaseMutex(mutex);
 
@@ -159,7 +159,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError aalInitForceNoEAX(aalVoid * param)
+	aalError aalInitForceNoEAX(void * param)
 	{
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
@@ -174,7 +174,7 @@ namespace ATHENA
 
 		//Create DirectSound device interface
 
-		if (CoCreateInstance(CLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (aalVoid **)&device))
+		if (CoCreateInstance(CLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (void **)&device))
 		{
 			if (mutex) ReleaseMutex(mutex);
 
@@ -302,7 +302,7 @@ namespace ATHENA
 
 		if (_path)
 		{
-			aalVoid * ptr;
+			void * ptr;
 			const char * temp = _path;
 			aalULong len(strlen(_path) + 1);
 
@@ -339,7 +339,7 @@ namespace ATHENA
 
 		if (_path)
 		{
-			aalVoid * ptr;
+			void * ptr;
 			const char * temp = _path;
 			aalULong len(strlen(_path) + 1);
 
@@ -376,7 +376,7 @@ namespace ATHENA
 
 		if (_path)
 		{
-			aalVoid * ptr;
+			void * ptr;
 			const char * temp = _path;
 			aalULong len(strlen(_path) + 1);
 
@@ -427,7 +427,7 @@ namespace ATHENA
 
 		if (flags & FLAG_ANY_3D_FX && !listener)
 		{
-			if (primary->QueryInterface(IID_IDirectSound3DListener, (aalVoid **)&listener))
+			if (primary->QueryInterface(IID_IDirectSound3DListener, (void **)&listener))
 			{
 				if (mutex) ReleaseMutex(mutex);
 
@@ -1493,7 +1493,7 @@ namespace ATHENA
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 
-	aalError aalSetAmbianceUserData(const aalSLong & a_id, aalVoid * data)
+	aalError aalSetAmbianceUserData(const aalSLong & a_id, void * data)
 	{
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
@@ -1561,7 +1561,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError aalGetAmbianceUserData(const aalSLong & a_id, aalVoid ** data)
+	aalError aalGetAmbianceUserData(const aalSLong & a_id, void ** data)
 	{
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
@@ -1718,8 +1718,8 @@ namespace ATHENA
 		desc.lpwfxFormat = &formatex;
 
 		if (device->CreateSoundBuffer(&desc, &lpdsbtmp, NULL) ||
-		        lpdsbtmp->QueryInterface(IID_IDirectSound3DBuffer, (aalVoid **)&lpds3dbtmp) ||
-		        lpds3dbtmp->QueryInterface(IID_IKsPropertySet, (aalVoid **)&environment))
+		        lpdsbtmp->QueryInterface(IID_IDirectSound3DBuffer, (void **)&lpds3dbtmp) ||
+		        lpds3dbtmp->QueryInterface(IID_IKsPropertySet, (void **)&environment))
 		{
 			if (lpdsbtmp) lpdsbtmp->Release();
 

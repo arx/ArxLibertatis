@@ -49,7 +49,7 @@ namespace ATHENA
 		ATHENA_TOOFAR    = 0x00000004
 	};
 
-	static aalVoid InstanceDebugLog(Instance * instance, const char * _text)
+	static void InstanceDebugLog(Instance * instance, const char * _text)
 	{
 		char text[256];
 		aalULong _time(BytesToUnits(instance->time, instance->sample->format, AAL_UNIT_MS));
@@ -161,7 +161,7 @@ namespace ATHENA
 		// Create 3D interface if required
 		if (channel.flags & FLAG_ANY_3D_FX)
 		{
-			if (lpdsb->QueryInterface(IID_IDirectSound3DBuffer, (aalVoid **)&lpds3db))
+			if (lpdsb->QueryInterface(IID_IDirectSound3DBuffer, (void **)&lpds3db))
 				return AAL_ERROR_SYSTEM;
 
 			if (channel.flags & AAL_FLAG_RELATIVE &&
@@ -176,7 +176,7 @@ namespace ATHENA
 
 			if (is_reverb_present)
 			{
-				lpds3db->QueryInterface(IID_IKsPropertySet, (aalVoid **)&lpeax);
+				lpds3db->QueryInterface(IID_IKsPropertySet, (void **)&lpeax);
 
 				aalSLong value(0);
 				lpeax->Set(DSPROPSETID_EAX_BufferProperties,
@@ -206,7 +206,7 @@ namespace ATHENA
 		if (!streaming)
 		{
 			aalULong cur0, cur1;
-			aalVoid * ptr0, *ptr1;
+			void * ptr0, *ptr1;
 
 			if (stream->SetPosition(0)) return AAL_ERROR_SYSTEM;
 
@@ -246,7 +246,7 @@ namespace ATHENA
 		//Create 3D interface if required
 		if (channel.flags & FLAG_ANY_3D_FX)
 		{
-			if (lpdsb->QueryInterface(IID_IDirectSound3DBuffer, (aalVoid **)&lpds3db))
+			if (lpdsb->QueryInterface(IID_IDirectSound3DBuffer, (void **)&lpds3db))
 				return AAL_ERROR_SYSTEM;
 
 			if (channel.flags & AAL_FLAG_RELATIVE &&
@@ -261,7 +261,7 @@ namespace ATHENA
 
 			if (is_reverb_present)
 			{
-				lpds3db->QueryInterface(IID_IKsPropertySet, (aalVoid **)&lpeax);
+				lpds3db->QueryInterface(IID_IKsPropertySet, (void **)&lpeax);
 
 				aalSLong value(0);
 				lpeax->Set(DSPROPSETID_EAX_BufferProperties,
@@ -445,7 +445,7 @@ namespace ATHENA
 	{
 		aalULong pos, length(0);
 		aalULong cur0, cur1;
-		aalVoid * ptr0, *ptr1;
+		void * ptr0, *ptr1;
 
 		av_vol = av_dev = 0.0F;
 
@@ -577,7 +577,7 @@ namespace ATHENA
 		if (stream)
 		{
 			aalULong cur0, cur1;
-			aalVoid * ptr0, *ptr1;
+			void * ptr0, *ptr1;
 
 			if (stream->SetPosition(0)) return AAL_ERROR;
 
@@ -693,9 +693,9 @@ namespace ATHENA
 		return AAL_UTRUE;
 	}
 
-	aalVoid Instance::UpdateStreaming()
+	void Instance::UpdateStreaming()
 	{
-		aalVoid * ptr0, *ptr1;
+		void * ptr0, *ptr1;
 		aalULong cur0, cur1;
 		aalULong to_fill, count;
 

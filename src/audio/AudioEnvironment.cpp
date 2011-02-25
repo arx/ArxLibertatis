@@ -107,7 +107,7 @@ namespace ATHENA
 		if (_name)
 		{
 			aalULong length(strlen(_name) + 1);
-			aalVoid * ptr = realloc(name, length);
+			void * ptr = realloc(name, length);
 
 			if (!ptr) return AAL_ERROR_MEMORY;
 

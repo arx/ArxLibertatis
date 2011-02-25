@@ -78,7 +78,7 @@ namespace ATHENA
 	// Setup                                                                     //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError CodecADPCM::SetHeader(aalVoid * _header)
+	aalError CodecADPCM::SetHeader(void * _header)
 	{
 		header = (ADPCMWAVEFORMAT *)_header;
 
@@ -89,7 +89,7 @@ namespace ATHENA
 		padding = 0;
 		sample_i = 0xffffffff;
 
-		aalVoid * ptr;
+		void * ptr;
 
 		ptr = realloc(predictor, sizeof(char) << shift);
 
@@ -206,7 +206,7 @@ namespace ATHENA
 	// Status                                                                    //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError CodecADPCM::GetHeader(aalVoid *&_header)
+	aalError CodecADPCM::GetHeader(void *&_header)
 	{
 		_header = header;
 
@@ -231,7 +231,7 @@ namespace ATHENA
 	// Macros!                                                                   //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalVoid CodecADPCM::GetSample(const aalULong & i, aalSByte adpcm_sample)
+	void CodecADPCM::GetSample(const aalULong & i, aalSByte adpcm_sample)
 	{
 		aalSLong predict, pcm_sample, old_delta;
 
@@ -264,7 +264,7 @@ namespace ATHENA
 	// File I/O                                                                  //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError CodecADPCM::Read(aalVoid * buffer, const aalULong & to_read, aalULong & read)
+	aalError CodecADPCM::Read(void * buffer, const aalULong & to_read, aalULong & read)
 	{
 		read = 0;
 
@@ -322,7 +322,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError CodecADPCM::Write(aalVoid *, const aalULong &, aalULong & write)
+	aalError CodecADPCM::Write(void *, const aalULong &, aalULong & write)
 	{
 		write = 0;
 

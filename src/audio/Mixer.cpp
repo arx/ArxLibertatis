@@ -85,7 +85,7 @@ namespace ATHENA
 	///////////////////////////////////////////////////////////////////////////////
 	aalError Mixer::SetName(const char * _name)
 	{
-		aalVoid * ptr;
+		void * ptr;
 
 		if (!_name)
 		{

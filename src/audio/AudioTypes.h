@@ -31,7 +31,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 namespace ATHENA {
 	
 	// TODO remove
-	typedef void    aalVoid;
 	typedef u8      aalUBool;
 	typedef s8      aalSBool;
 	typedef u8      aalUByte;
