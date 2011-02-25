@@ -22,45 +22,46 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef __ATHENA_CODEC_RAW_H__
-#define __ATHENA_CODEC_RAW_H__
+
+#ifndef ARX_AUDIO_CODEC_RAW_H
+#define ARX_AUDIO_CODEC_RAW_H
 
 #include "audio/AudioTypes.h"
 #include "audio/codec/Codec.h"
 
 struct PakFileHandle;
 
-namespace ATHENA
-{
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Class CodecRAW                                                            //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	class CodecRAW : public Codec
-	{
-		public:
-			// Constructor Destructor                                                    //
-			CodecRAW();
-			~CodecRAW();
-			// Setup                                                                     //
-			aalError SetHeader(aalVoid * header);
-			aalError SetStream(PakFileHandle * stream);
-			aalError SetPosition(const aalULong & position);
-			// Status                                                                    //
-			aalError GetHeader(aalVoid *&header);
-			aalError GetStream(PakFileHandle *&stream);
-			aalError GetPosition(aalULong & position);
-			// File I/O                                                                  //
-			aalError Read(aalVoid * buffer, const aalULong & to_read, aalULong & read);
-			aalError Write(aalVoid * buffer, const aalULong & to_write, aalULong & write);
-		private:
-			// Data                                                                      //
-			aalVoid * header;
-			PakFileHandle * stream;
-			aalULong cursor;
+namespace ATHENA {
+	
+	class CodecRAW : public Codec {
+		
+	public:
+		
+		CodecRAW();
+		~CodecRAW();
+		
+		// Setup
+		aalError SetHeader(aalVoid * header);
+		aalError SetStream(PakFileHandle * stream);
+		aalError SetPosition(const aalULong & position);
+		
+		// Status
+		aalError GetHeader(aalVoid *& header);
+		aalError GetStream(PakFileHandle *& stream);
+		aalError GetPosition(aalULong & position);
+		
+		// File I/O
+		aalError Read(aalVoid * buffer, const aalULong & to_read, aalULong & read);
+		aalError Write(aalVoid * buffer, const aalULong & to_write, aalULong & write);
+		
+	private:
+		
+		aalVoid * header;
+		PakFileHandle * stream;
+		aalULong cursor;
+		
 	};
+	
+} // namespace ATHENA
 
-}//ATHENA::
-#endif//__ATHENA_CODEC_RAW_H__
+#endif // ARX_AUDIO_CODEC_RAW_H

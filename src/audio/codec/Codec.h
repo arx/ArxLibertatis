@@ -54,6 +54,6 @@ namespace ATHENA {
 		
 	};
 	
-}//ATHENA::
+} // namespace ATHENA
 
 #endif // ARX_AUDIO_CODEC_CODEC_H
