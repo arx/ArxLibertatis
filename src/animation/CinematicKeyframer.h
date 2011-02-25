@@ -5,14 +5,11 @@
 #include "animation/Cinematic.h" // for CinematicLight
 #include "graphics/GraphicsTypes.h" // for EERIE_3D
 
-
-#define INTERP_NO -1
+#define INTERP_NO     -1
 #define INTERP_BEZIER 0
 #define INTERP_LINEAR 1
 
-
 // TODO used for loading
-// Mainly in CinematicKeyframer
 #pragma pack(push,1)
 struct C_KEY {
 	
@@ -53,7 +50,6 @@ struct CinematicTrack {
 	C_KEY * key;
 };
 #pragma pack(pop)
-
 
 bool DeleteTrack();
 bool AllocTrack(int sf, int ef, float fps);
