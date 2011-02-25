@@ -54,8 +54,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#ifndef ARX_PATHS_H
-#define ARX_PATHS_H
+
+#ifndef ARX_AI_PATHS_H
+#define ARX_AI_PATHS_H
 
 #include "graphics/GraphicsTypes.h"
 
@@ -64,85 +65,79 @@ class EERIE_CAMERA;
 
 class CRuban;
 
-//-----------------------------------------------------------------------------
-struct ARX_PATHWAY
-{
-	EERIE_3D		rpos; //relative pos
-	long			flag;
-	float			_time;
+
+struct ARX_PATHWAY {
+	EERIE_3D rpos; //relative pos
+	long flag;
+	float _time;
 };
 
-struct ARX_PATH
-{
-	char			name[64];
-	short			idx;
-	long			flags;
-	EERIE_3D		initpos;
-	EERIE_3D		pos;
-	long			nb_pathways;
-	ARX_PATHWAY	*	pathways;
-	long			height; // 0 NOT A ZONE
-	char 			controled[64];
-
-	char			ambiance[128];
-	EERIE_RGB		rgb;
-	float			farclip;
-	float			reverb;
-	float			amb_max_vol;
-	EERIE_3D		bbmin;
-	EERIE_3D		bbmax;
+struct ARX_PATH {
+	char name[64];
+	short idx;
+	long flags;
+	EERIE_3D initpos;
+	EERIE_3D pos;
+	long nb_pathways;
+	ARX_PATHWAY * pathways;
+	long height; // 0 NOT A ZONE
+	char controled[64];
+	
+	char ambiance[128];
+	EERIE_RGB rgb;
+	float farclip;
+	float reverb;
+	float amb_max_vol;
+	EERIE_3D bbmin;
+	EERIE_3D bbmax;
 };
 
-struct ARX_USE_PATH
-{
-	ARX_PATH	*	path;
-	float			_starttime;
-	float			_curtime;
-	long			aupflags;
-	EERIE_3D		initpos;
-	long			lastWP;
+struct ARX_USE_PATH {
+	ARX_PATH * path;
+	float _starttime;
+	float _curtime;
+	long aupflags;
+	EERIE_3D initpos;
+	long lastWP;
 };
 
-struct MASTER_CAMERA_STRUCT
-{
-	long				exist; // 2== want to change to want_vars...
-	INTERACTIVE_OBJ *	io;
-	ARX_USE_PATH	*	aup;
-	EERIE_CAMERA	*	cam;
-	INTERACTIVE_OBJ *	want_io;
-	ARX_USE_PATH	*	want_aup;
-	EERIE_CAMERA	*	want_cam;
+struct MASTER_CAMERA_STRUCT {
+	long exist; // 2== want to change to want_vars...
+	INTERACTIVE_OBJ * io;
+	ARX_USE_PATH * aup;
+	EERIE_CAMERA * cam;
+	INTERACTIVE_OBJ * want_io;
+	ARX_USE_PATH * want_aup;
+	EERIE_CAMERA * want_cam;
 };
 
-//-----------------------------------------------------------------------------
-#define PATHWAY_STANDARD				0
-#define PATHWAY_BEZIER					1
-#define PATHWAY_BEZIER_CONTROLPOINT		2
+#define PATHWAY_STANDARD            0
+#define PATHWAY_BEZIER              1
+#define PATHWAY_BEZIER_CONTROLPOINT 2
 
-#define ARX_PATH_MOD_NONE		0
-#define ARX_PATH_MOD_POSITION	1
-#define ARX_PATH_MOD_FLAGS		2
-#define ARX_PATH_MOD_TIME		4
-#define ARX_PATH_MOD_TRANSLATE	8
-#define ARX_PATH_MOD_ALL		ARX_PATH_MOD_POSITION | ARX_PATH_MOD_FLAGS | ARX_PATH_MOD_TIME
-#define ARX_PATH_HIERARCHY		16
+#define ARX_PATH_MOD_NONE      0
+#define ARX_PATH_MOD_POSITION  1
+#define ARX_PATH_MOD_FLAGS     2
+#define ARX_PATH_MOD_TIME      4
+#define ARX_PATH_MOD_TRANSLATE 8
+#define ARX_PATH_MOD_ALL       ARX_PATH_MOD_POSITION | ARX_PATH_MOD_FLAGS | ARX_PATH_MOD_TIME
+#define ARX_PATH_HIERARCHY     16
 
 // ARX_PATH@flags values
-#define PATH_LOOP		1
-#define PATH_AMBIANCE	2
-#define PATH_RGB		4
-#define PATH_FARCLIP	8
-#define PATH_REVERB		16
+#define PATH_LOOP     1
+#define PATH_AMBIANCE 2
+#define PATH_RGB      4
+#define PATH_FARCLIP  8
+#define PATH_REVERB   16
 
-#define ARX_USEPATH_FLAG_FINISHED		1
-#define ARX_USEPATH_WORM_SPECIFIC		2
-#define ARX_USEPATH_FOLLOW_DIRECTION	4
-#define ARX_USEPATH_FORWARD				8
-#define ARX_USEPATH_BACKWARD			16
-#define ARX_USEPATH_PAUSE				32
-#define	ARX_USEPATH_FLAG_ADDSTARTPOS	64
+#define ARX_USEPATH_FLAG_FINISHED    1
+#define ARX_USEPATH_WORM_SPECIFIC    2
+#define ARX_USEPATH_FOLLOW_DIRECTION 4
+#define ARX_USEPATH_FORWARD          8
+#define ARX_USEPATH_BACKWARD         16
+#define ARX_USEPATH_PAUSE            32
+#define	ARX_USEPATH_FLAG_ADDSTARTPOS 64
 
-//-----------------------------------------------------------------------------
 extern MASTER_CAMERA_STRUCT MasterCamera;
 extern ARX_USE_PATH USE_CINEMATICS_PATH;
 extern ARX_PATH ** ARXpaths;
@@ -154,7 +149,6 @@ extern long USE_CINEMATICS_CAMERA;
 extern long	nbARXpaths;
 extern long	ARX_PATHS_FlyingOverNum;
 
-//-----------------------------------------------------------------------------
 void ARX_PATH_UpdateAllZoneInOutInside();
 long ARX_PATH_IsPosInZone(ARX_PATH * ap, float x, float y, float z);
 void ARX_PATH_ClearAllUsePath();
@@ -176,78 +170,75 @@ void ARX_PATHS_DeletePathWay(ARX_PATH * ap, long del);
 void ARX_PATHS_DrawPath(ARX_PATH * ap, LPDIRECT3DDEVICE7 pd3dDevice);
 long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, EERIE_3D * pos);
 
+#define ATO_EXIST      1
+#define ATO_MOVING     2
+#define ATO_UNDERWATER 4
+#define ATO_FIERY      8
 
-//////////////////////////////////////////////////////////////////////
-#define ATO_EXIST		1
-#define ATO_MOVING		2
-#define ATO_UNDERWATER	4
-#define ATO_FIERY		8
+#define ATO_TYPE_ARROW 1
 
-#define ATO_TYPE_ARROW	1
-
-struct ARX_THROWN_OBJECT
-{
-	long		flags;
-	EERIE_3D	vector;
-	EERIE_3D	upvect;
-	EERIE_QUAT	quat;
-	EERIE_3D	initial_position;
-	float		velocity;
-	EERIE_3D	position;
-	float		damages;
-	EERIE_3DOBJ *	obj;
-	long		source;
+struct ARX_THROWN_OBJECT {
+	long flags;
+	EERIE_3D vector;
+	EERIE_3D upvect;
+	EERIE_QUAT quat;
+	EERIE_3D initial_position;
+	float velocity;
+	EERIE_3D position;
+	float damages;
+	EERIE_3DOBJ * obj;
+	long source;
 	unsigned long creation_time;
-	float		poisonous;
-	CRuban	*	pRuban;
-
+	float poisonous;
+	CRuban * pRuban;
 };
 
-#define MAX_THROWN_OBJECTS	100
+#define MAX_THROWN_OBJECTS 100
 
 extern ARX_THROWN_OBJECT Thrown[MAX_THROWN_OBJECTS];
 extern long Thrown_Count;
 
-class CRuban
-{
-	private:
-		short		key;
-		int			duration;
-		int			currduration;
-		int			num;
-		int			iNumThrow;
-
-		struct T_RUBAN
-		{
-			int				actif;
-			EERIE_3D		pos;
-			int				next;
-		};
-		T_RUBAN truban[2048];
-
-		struct T_RUBAN_DEF
-		{
-			int		first;
-			int		origin;
-			float	size;
-			int		dec;
-			float	r, g, b;
-			float	r2, g2, b2;
-		};
-
-		int			nbrubandef;
-		T_RUBAN_DEF trubandef[256];
-
-		int GetFreeRuban(void);
-		void AddRuban(int * f, int dec);
-		void DrawRuban(int num, float size, int dec, float r, float g, float b, float r2, float g2, float b2);
-	public:
-		CRuban() {};
-		void	AddRubanDef(int origin, float size, int dec, float r, float g, float b, float r2, float g2, float b2);
-		void	Create(int numinteractive, int duration);
-		void	Update();
-		float	Render(LPDIRECT3DDEVICE7);
- 
+class CRuban {
+	
+private:
+	
+	short key;
+	int duration;
+	int currduration;
+	int num;
+	int iNumThrow;
+	
+	struct T_RUBAN {
+		int actif;
+		EERIE_3D pos;
+		int next;
+	};
+	T_RUBAN truban[2048];
+	
+	struct T_RUBAN_DEF {
+		int first;
+		int origin;
+		float size;
+		int dec;
+		float r, g, b;
+		float r2, g2, b2;
+	};
+	
+	int nbrubandef;
+	T_RUBAN_DEF trubandef[256];
+	
+	int GetFreeRuban(void);
+	void AddRuban(int * f, int dec);
+	void DrawRuban(int num, float size, int dec, float r, float g, float b, float r2, float g2, float b2);
+	
+public:
+	
+	CRuban() {};
+	void AddRubanDef(int origin, float size, int dec, float r, float g, float b, float r2, float g2, float b2);
+	void Create(int numinteractive, int duration);
+	void Update();
+	float Render(LPDIRECT3DDEVICE7);
+	
 };
 
 long ARX_THROWN_OBJECT_GetFree();
@@ -260,4 +251,4 @@ bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, long sour
 
 long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long source);
 
-#endif
+#endif // ARX_AI_PATHS_H
