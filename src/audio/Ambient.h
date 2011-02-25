@@ -114,7 +114,7 @@ namespace ATHENA {
 		void * data; // User data
 		
 	};
-
+	
 } // namespace ATHENA
 
 #endif // ARX_AUDIO_AMBIENT_H

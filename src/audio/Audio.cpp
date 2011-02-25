@@ -814,7 +814,7 @@ namespace ATHENA
 	// Retrieve next resource by ID                                              //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	AAL_APIFUNC aalSLong aalGetNextAmbiance(const aalSLong & ambiance_id)
+	aalSLong aalGetNextAmbiance(const aalSLong & ambiance_id)
 	{
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_SFALSE;
@@ -1628,7 +1628,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	AAL_APIFUNC aalUBool aalIsAmbianceLooped(const aalSLong & a_id)
+	aalUBool aalIsAmbianceLooped(const aalSLong & a_id)
 	{
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_UFALSE;
