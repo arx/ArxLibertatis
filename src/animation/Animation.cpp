@@ -101,8 +101,6 @@ using std::max;
 void PushInterBump(TextureContainer *_pTex,D3DTLVERTEX *_pVertex);
 void PopOneInterBump(LPDIRECT3DDEVICE7 _pDevice,TextureContainer *_pTex);
 //-----------------------------------------------------------------------------
-#define MIPMESH_START 380.f
-#define MIPMESH_DIV	  ( 1.0f / 190 )
 
 #define MAX_DIST_BUMP_INTER (400.f)
 extern float IN_FRONT_DIVIDER_ITEMS;
