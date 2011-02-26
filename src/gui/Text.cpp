@@ -237,20 +237,15 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, std::string& text, int _iSpacingY, R
 
 				if (CHINESE_VERSION)
 				{
-					_TCHAR * ptexttemp = (_TCHAR *)malloc((iTemp - iOldTemp + 1) << 1);
-					_tcsncpy(ptexttemp, &text[iOldTemp], iTemp - iOldTemp);
-					ptexttemp[iTemp-iOldTemp] = _T('\0');
-
-					TextOutA(_hDC, _rRect.left, _rRect.top, ptexttemp, strlen(ptexttemp));
-					free((void *)ptexttemp);
-					ptexttemp = NULL;
+					std::string out( &text[iOldTemp], iTemp - iOldTemp );
+					TextOutA(_hDC, _rRect.left, _rRect.top, out.c_str(), out.length() );
 					iTemp--;
 				}
 				else
 				{
-					while ((text[iTemp] != _T(' ')) && (iTemp > 0)) iTemp--;
+					while ((text[iTemp] != ' ') && (iTemp > 0)) iTemp--;
 
-					text[iTemp] = _T('\0');
+					text[iTemp] = '\0';
 
 					if(!TextOutA(_hDC, _rRect.left, _rRect.top, &text[iOldTemp], strlen(&text[iOldTemp]))) {
 						LogError << FontError() << " while displaying " << &text[iOldTemp];
