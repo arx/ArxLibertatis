@@ -22,13 +22,12 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef EERIE_AVI_H
-#define EERIE_AVI_H
 
+#ifndef ARX_CORE_AVI_H
+#define ARX_CORE_AVI_H
 
 #include <windows.h>
-#include "core/Common.h"
 
 bool LaunchAVI(HWND hWnd, char * dest);
 
-#endif
+#endif // ARX_CORE_AVI_H

@@ -865,14 +865,6 @@ bool CreateFullPath( const std::string& path ) {
 	return false;
 }
 
-void ExitApp(int v)
-{
-	if (MAIN_PROGRAM_HANDLE != NULL)
-		SendMessage(MAIN_PROGRAM_HANDLE, WM_CLOSE, 0, 0);
-
-	exit(v);
-}
-
 //******************************************************************************
 // OPEN/SAVE FILES DIALOGS
 //******************************************************************************

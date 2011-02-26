@@ -419,7 +419,6 @@ private:
 
 bool OKBox(const char * text, const char * title);
 
-void ExitApp(int v);
 void CalcFPS(bool reset = false);
 
 void SetZBias(const LPDIRECT3DDEVICE7, int);
