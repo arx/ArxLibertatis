@@ -42,6 +42,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/IO.h"
 #include "io/PakManager.h"
+#include "io/Logger.h"
 
 using std::sprintf;
 
@@ -136,11 +137,11 @@ void ViewImage::DrawAllImage()
 					iAction++;
 					break;
 				case 1:
-					ARX_WARN("bSens set to false by default.");
+					LogWarning << "bSens set to false by default.";
 					iAction++;
 					break;
 				case 2:
-					ARX_WARN("bSens set to false by default.");
+					LogWarning << "bSens set to false by default.";
 
 					if (!bActiveFade)
 					{
@@ -181,12 +182,12 @@ void ViewImage::DrawAllImage()
 					}
 					else
 					{
-						ARX_WARN("bSens set to false by default.");
+						LogWarning << "bSens set to false by default.";
 					}
 				}
 				break;
 				case 4:
-					ARX_WARN("bSens set to false by default.");
+					LogWarning << "bSens set to false by default.";
 
 					if (!bActiveFade)
 					{

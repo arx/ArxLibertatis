@@ -27,6 +27,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <stddef.h>
 #include <algorithm>
+#include <climits>
 
 #include "animation/Cinematic.h"
 #include "animation/CinematicKeyframer.h"

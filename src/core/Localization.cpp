@@ -26,6 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Localization.h"
 
 #include <list>
+#include <sstream>
 
 #include "core/Common.h"
 #include "core/LocalizationHash.h"

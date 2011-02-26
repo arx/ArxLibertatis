@@ -53,9 +53,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+
 #ifndef ARX_TEXT_H
 #define ARX_TEXT_H
 
+#include <climits>
 #include <string>
 #include <vector>
 #include "gui/TextManager.h"

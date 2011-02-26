@@ -2,6 +2,7 @@
 #include "gui/Credits.h"
 
 #include <string>
+#include <sstream>
 
 #include "core/Core.h"
 #include "core/Time.h"
@@ -45,11 +46,11 @@ struct CreditsInformations {
 	CreditsInformations() {
 	iFontAverageHeight = -1;
 	iFirstLine = 0 ;
-  }
-
-  int iFirstLine ;
-  int iFontAverageHeight ;
-  vector<CreditsTextInformations> aCreditsInformations ;
+	}
+	
+	int iFirstLine;
+	int iFontAverageHeight;
+	vector<CreditsTextInformations> aCreditsInformations;
 };
 
 

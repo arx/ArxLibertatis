@@ -63,6 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <string>
 #include <vector>
 #include <sstream>
+#include <cstdio>
 
 #ifndef DIRECTINPUT_VERSION
 	#define DIRECTINPUT_VERSION 0x0700
@@ -106,6 +107,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scripting/ScriptEvent.h"
 
 using std::min;
+using std::string;
 
 extern EERIE_CAMERA TCAM[];
 extern long FRAME_COUNT;

@@ -60,6 +60,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Core.h"
 
+#include <fstream>
+#include <sstream>
+
 #include <windows.h>
 #include <shellapi.h>
 

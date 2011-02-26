@@ -67,11 +67,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/Logger.h"
 
-/*
-	Get the callstack informations and create the log file with CreateLogFile function
-*/
 
-void ArxDebug::Assert(const char * _sMessage, const char * _sFile, unsigned int _iLine)
+void assertionFailed(const char * _sMessage, const char * _sFile, unsigned int _iLine)
 {
 	char msgbuf[8192];
 	char fn[MAX_PATH + 1], msg[MAX_PATH + 1], iFile[MAX_PATH + 1];
