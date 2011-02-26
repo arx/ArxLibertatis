@@ -75,9 +75,10 @@ using std::sprintf;
 #include "game/Damage.h"
 #include "game/NPC.h"
 
-#include "graphics/data/Mesh.h"
+#include "graphics/GraphicsEnum.h"
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
+#include "graphics/data/Mesh.h"
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
