@@ -74,6 +74,7 @@ using std::sprintf;
 
 #include "game/Damage.h"
 #include "game/NPC.h"
+#include "game/Player.h"
 
 #include "graphics/GraphicsEnum.h"
 #include "graphics/Draw.h"
@@ -92,6 +93,7 @@ using std::sprintf;
 #include "scene/Light.h"
 #include "scene/GameSound.h"
 #include "scene/Scene.h"
+#include "scene/Interactive.h"
 
 using std::min;
 using std::max;

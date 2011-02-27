@@ -16,6 +16,7 @@
 #include "io/Logger.h"
 
 using std::string;
+using std::vector;
 
 struct TextManager::ManagedText {
 	HFONT hFont;

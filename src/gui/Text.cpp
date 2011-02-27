@@ -61,6 +61,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Localization.h"
 #include "core/Core.h"
 
+#include "gui/Interface.h"
+
 #include "graphics/Draw.h"
 #include "graphics/Frame.h"
 #include "graphics/effects/Fog.h"
@@ -147,8 +149,8 @@ long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, const std::string& _lpszUTe
 					                      1,
 					                      &sSize);
 					{
-						if ((_lpszUText[iTemp] == _T('\n')) ||
-								(_lpszUText[iTemp] == _T('*')))
+						if ((_lpszUText[iTemp] == '\n') ||
+								(_lpszUText[iTemp] == '*'))
 						{
 							iHeight		+= _iSpacingY + sSize.cy;
 							bWrite		 = false;
@@ -171,7 +173,7 @@ long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, const std::string& _lpszUTe
 						}
 						else
 						{
-							while ((_lpszUText[iTemp] != _T(' ')) && (iTemp > 0)) iTemp--;
+							while ((_lpszUText[iTemp] != ' ') && (iTemp > 0)) iTemp--;
 						}
 
 						bWrite		 = false;
@@ -225,7 +227,7 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, std::string& text, int _iSpacingY, R
 			        (text[iTemp] == '*'))
 			{
 				iHeight += _iSpacingY + sSize.cy;
-				text[iTemp] = _T('\0');
+				text[iTemp] = '\0';
 				bWrite = false;
 
 				TextOutA(_hDC, _rRect.left, _rRect.top, &text[iOldTemp], strlen(&text[iOldTemp]));
@@ -242,9 +244,9 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, std::string& text, int _iSpacingY, R
 
 				if (CHINESE_VERSION)
 				{
-					_TCHAR * ptexttemp = (_TCHAR *)malloc((iTemp - iOldTemp + 1) << 1);
-					_tcsncpy(ptexttemp, &text[iOldTemp], iTemp - iOldTemp);
-					ptexttemp[iTemp-iOldTemp] = _T('\0');
+					char * ptexttemp = (char *)malloc(iTemp - iOldTemp + 1);
+					strncpy(ptexttemp, &text[iOldTemp], iTemp - iOldTemp);
+					ptexttemp[iTemp-iOldTemp] = '\0';
 
 					TextOutA(_hDC, _rRect.left, _rRect.top, ptexttemp, strlen(ptexttemp));
 					free((void *)ptexttemp);
@@ -253,9 +255,9 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, std::string& text, int _iSpacingY, R
 				}
 				else
 				{
-					while ((text[iTemp] != _T(' ')) && (iTemp > 0)) iTemp--;
+					while ((text[iTemp] != ' ') && (iTemp > 0)) iTemp--;
 
-					text[iTemp] = _T('\0');
+					text[iTemp] = '\0';
 
 					if(!TextOutA(_hDC, _rRect.left, _rRect.top, &text[iOldTemp], strlen(&text[iOldTemp]))) {
 						LogError << FontError() << " while displaying " << &text[iOldTemp];

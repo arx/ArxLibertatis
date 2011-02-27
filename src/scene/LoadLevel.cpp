@@ -75,6 +75,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Levels.h"
 #include "game/Missile.h"
 #include "game/Spells.h"
+#include "game/Player.h"
 
 #include "gui/MiniMap.h"
 #include "gui/Speech.h"
@@ -97,6 +98,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/Scene.h"
 #include "scene/GameSound.h"
+#include "scene/Interactive.h"
 
 using std::max;
 

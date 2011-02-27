@@ -71,6 +71,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/GameSound.h"
 #include "scene/ChangeLevel.h"
+#include "scene/LoadLevel.h"
 
 using std::min;
 using std::max;

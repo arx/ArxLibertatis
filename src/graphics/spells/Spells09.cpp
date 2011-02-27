@@ -61,18 +61,23 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <fstream>
 
+#include "core/Core.h"
+#include "core/Time.h"
+
+#include "game/Spells.h"
+#include "game/Player.h"
+
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
-#include "scene/Object.h"
-
-#include "core/Core.h"
-#include "game/Spells.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/spells/Spells06.h"
 #include "graphics/spells/Spells05.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleParams.h"
-#include "core/Time.h"
+
+#include "scene/Object.h"
+#include "scene/LoadLevel.h"
+#include "scene/Interactive.h"
 
 CSummonCreature::CSummonCreature()
 {

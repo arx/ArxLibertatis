@@ -41,6 +41,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Mesh.h"
 #include "game/Spells.h"
 
+extern float BOOKDECX;
+extern float BOOKDECY;
+
 //-----------------------------------------------------------------------------
 class INTERFACE_TC
 {

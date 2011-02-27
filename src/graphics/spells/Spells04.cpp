@@ -56,17 +56,22 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/spells/Spells04.h"
 
+#include "core/Core.h"
+#include "core/Time.h"
+
+#include "game/Spells.h"
+#include "game/Player.h"
+
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
-#include "scene/Object.h"
-#include "core/Core.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/spells/Spells05.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
-#include "game/Spells.h"
-#include "core/Time.h"
 
+#include "scene/Object.h"
+#include "scene/Interactive.h"
+#include "scene/LoadLevel.h"
 
 //-----------------------------------------------------------------------------
 CBless::CBless()

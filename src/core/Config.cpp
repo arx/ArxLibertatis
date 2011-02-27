@@ -23,7 +23,7 @@
  ===========================================================================
  */
 
-// TODO include file
+// TODO header file
 
 #include "gui/MenuWidgets.h"
 

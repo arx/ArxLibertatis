@@ -109,14 +109,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
  
 #include "physics/Collisions.h"
 #include "physics/Actors.h"
+#include "physics/Physics.h"
 
 #include "scene/LinkedObject.h"
 #include "scene/CinematicSound.h"
 #include "scene/ChangeLevel.h"
 #include "scene/Scene.h"
 #include "scene/GameSound.h"
+#include "scene/LoadLevel.h"
 
 #include "scripting/ScriptEvent.h"
+#include "scripting/ScriptDebugger.h"
 
 using std::min;
 using std::max;
@@ -246,6 +249,9 @@ extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBuffer;
 extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBufferTransform;
 
 extern std::string pStringMod;
+
+static const float INC_FOCAL = 75.0f;
+
 //-----------------------------------------------------------------------------
 // Our Main Danae Application.& Instance and Project
 DANAE danaeApp;
@@ -284,7 +290,6 @@ TextureContainer *	arx_logo_tc=NULL;
 TextureContainer *	TC_fire2=NULL;
 TextureContainer *	TC_fire=NULL;
 TextureContainer *	TC_smoke=NULL;
-TextureContainer *	TC_missile=NULL;
 TextureContainer *	Z_map=NULL;
 TextureContainer *	Boom=NULL;
 //TextureContainer *	zbtex=NULL;
@@ -508,7 +513,6 @@ unsigned long FADESTART=0;
 float Original_framedelay=0.f;
 
 float PULSATE;
-float PULSS;
 long EXITING=0;
 
 long USE_PORTALS = 3;
@@ -1273,7 +1277,7 @@ int main(int, char**)
 	ARX_SPELLS_Precast_Reset();
 	LogDebug << "Spell Init";
 	
-	for (long t=0;t<MAX_GOLD_COINS_VISUALS;t++)	{
+	for(size_t t = 0; t < MAX_GOLD_COINS_VISUALS; t++) {
 		GoldCoinsObj[t]=NULL;
 		GoldCoinsTC[t]=NULL;
 	}
@@ -2228,7 +2232,7 @@ void LoadSysTextures()
 	TC_fire2=			_GetTexture_NoRefinement("Graph\\particles\\fire2.bmp");
 	TC_smoke=			_GetTexture_NoRefinement("Graph\\particles\\smoke.bmp");
 	//zbtex=				_GetTexture_NoRefinement("Graph\\particles\\zbtex.bmp");
-	TC_missile=			_GetTexture_NoRefinement("Graph\\particles\\missile.bmp");
+	_GetTexture_NoRefinement("Graph\\particles\\missile.bmp");
 	Z_map=				_GetTexture_NoRefinement("Graph\\interface\\misc\\z-map.bmp");
 	Boom=				_GetTexture_NoRefinement("Graph\\Particles\\boom.bmp");
 	lightsource_tc=		_GetTexture_NoRefinement("Graph\\Particles\\light.bmp");
@@ -2838,12 +2842,10 @@ void ReleaseDanaeBeforeRun()
 		arrowobj=NULL;
 	}
 
-	for (int i=0;i<MAX_GOLD_COINS_VISUALS;i++)
-	{
-		if(GoldCoinsObj[i])
-		{
+	for(size_t i = 0; i < MAX_GOLD_COINS_VISUALS; i++) {
+		if(GoldCoinsObj[i]) {
 			ReleaseEERIE3DObj(GoldCoinsObj[i]);
-			GoldCoinsObj[i]=NULL;
+			GoldCoinsObj[i] = NULL;
 		}
 	}
 
@@ -2853,7 +2855,6 @@ HRESULT DANAE::BeforeRun()
 {
 
 	LogDebug << "Before Run...";
-	long i;
 
 	GDevice=m_pd3dDevice;
 
@@ -2905,7 +2906,7 @@ HRESULT DANAE::BeforeRun()
 	necklace.pTexTab[RUNE_VITAE]		= MakeTCFromFile_NoRefinement("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_vitae[icon].BMP");
 	necklace.pTexTab[RUNE_YOK]			= MakeTCFromFile_NoRefinement("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_yok[icon].BMP");
 
-	for (i = 0; i<NB_RUNES-1; i++)
+	for (long i = 0; i<NB_RUNES-1; i++)
 	{
 		if (necklace.pTexTab[i])
 			necklace.pTexTab[i]->CreateHalo(GDevice);
@@ -2922,21 +2923,20 @@ HRESULT DANAE::BeforeRun()
 	markerobj=		_LoadTheObj("Graph\\Obj3D\\Interactive\\System\\Marker\\Marker.teo","..\\..\\..\\textures\\");
 	arrowobj=		_LoadTheObj("Graph\\Obj3D\\Interactive\\Items\\Weapons\\arrow\\arrow.teo","..\\..\\..\\..\\textures\\");
 
-	for (i=0;i<MAX_GOLD_COINS_VISUALS;i++)
-	{
+	for(size_t i = 0; i < MAX_GOLD_COINS_VISUALS; i++) {
 		char temp[256];
 
 		if (i==0)
 			strcpy(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin.teo");
 		else
-			sprintf(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin%ld.teo",i+1);
+			sprintf(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin%d.teo",i+1);
 
 		GoldCoinsObj[i]=	_LoadTheObj(temp,"..\\..\\..\\..\\textures\\");
 
 		if (i==0)
 			strcpy(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin[icon].bmp");
 		else
-			sprintf(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin%ld[icon].bmp",i+1);
+			sprintf(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin%d[icon].bmp",i+1);
 
 		GoldCoinsTC[i] =	MakeTCFromFile_NoRefinement(temp);
 	}
@@ -5546,7 +5546,6 @@ static float _AvgFrameDiff = 150.f;
 
 	PULSATE=EEsin(FrameTime / 800);
 	METALdecal=EEsin(FrameTime / 50) / 200 ;
-	PULSS=(EEsin(FrameTime / 200) / (4*PI) )+0.25f;
 	EERIEDrawnPolys=0;
 
 	// EditMode Specific code
@@ -8319,8 +8318,8 @@ void ReleaseSystemObjects() {
 		arrowobj=NULL;
 	}
 
-	for (long i=0;i<MAX_GOLD_COINS_VISUALS;i++) {
-		if (GoldCoinsObj[i]) {
+	for(size_t i = 0; i < MAX_GOLD_COINS_VISUALS; i++) {
+		if(GoldCoinsObj[i]) {
 			ReleaseEERIE3DObj(GoldCoinsObj[i]);
 			GoldCoinsObj[i]=NULL;
 		}

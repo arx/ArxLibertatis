@@ -55,6 +55,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Draw.h"
 #include "scene/Object.h"
 #include "scene/GameSound.h"
+#include "scene/Interactive.h"
 
 extern float GLOBAL_LIGHT_FACTOR;
 EERIE_LIGHT * GLight[MAX_LIGHTS];

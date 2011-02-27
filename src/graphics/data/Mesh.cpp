@@ -68,6 +68,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Time.h"
 
+#include "game/Player.h"
+
 #include "gui/MenuWidgets.h"
 
 #include "graphics/Draw.h"
@@ -84,10 +86,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Implode.h"
 
 #include "physics/Anchors.h"
+#include "physics/Physics.h"
 
 #include "scene/Scene.h"
 #include "scene/Light.h"
 #include "scene/Object.h"
+#include "scene/Interactive.h"
 
 using std::min;
 using std::max;

@@ -37,6 +37,7 @@
 
 #include "scene/Scene.h"
 #include "scene/GameSound.h"
+#include "scene/Interactive.h"
 
 using std::max;
 using std::min;

@@ -58,7 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define D3DRES_H
 
 
-#define IDI_MAIN_ICON          101 // Application Main icon
 #define IDR_MAIN_ACCEL         113 // Keyboard accelerator
 #define IDR_MENU               141 // Application menu
 #define IDR_POPUP              142 // Popup menu

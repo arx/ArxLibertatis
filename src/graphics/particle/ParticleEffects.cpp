@@ -64,6 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Time.h"
 
 #include "game/Damage.h"
+#include "game/Player.h"
 
 #include "gui/Interface.h"
 #include "gui/MenuWidgets.h"
@@ -79,6 +80,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "scene/Scene.h"
 #include "scene/Object.h"
+#include "scene/Interactive.h"
 
 #include "window/Input.h"
 

@@ -743,7 +743,6 @@ struct INTERACTIVE_OBJ
 //-----------------------------------------------------------------------------
 
 extern long EERIEDrawnPolys;
-extern float PULSS;
 extern long EERIEInit;
 extern long TRUECLIPPING;
 extern EERIE_3D BBOXMIN,BBOXMAX;

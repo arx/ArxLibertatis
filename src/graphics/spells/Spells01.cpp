@@ -54,24 +54,31 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include "graphics/spells/Spells01.h"
+
+#include "core/Time.h"
+
+#include "game/Spells.h"
+#include "game/NPC.h"
+#include "game/Damage.h"
+#include "game/Player.h"
+
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
-#include "scene/Light.h"
-#include "scene/Object.h"
 
-#include "graphics/spells/Spells01.h"
-#include "physics/Collisions.h"
+#include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleParams.h"
 #include "graphics/particle/ParticleManager.h"
-#include "graphics/effects/SpellEffects.h"
-#include "game/Damage.h"
 #include "graphics/particle/ParticleEffects.h"
-#include "scene/GameSound.h"
-#include "game/Spells.h"
-#include "core/Time.h"
-#include "game/NPC.h"
 #include "graphics/spells/Spells05.h"
+
+#include "physics/Collisions.h"
+
 #include "scene/LoadLevel.h"
+#include "scene/Light.h"
+#include "scene/GameSound.h"
+#include "scene/Object.h"
+#include "scene/Interactive.h"
 
 extern CParticleManager * pParticleManager;
  

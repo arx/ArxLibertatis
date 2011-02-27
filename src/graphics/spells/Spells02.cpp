@@ -63,18 +63,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cassert>
 #include <climits>
 
-#include "graphics/Math.h"
-#include "scene/Light.h"
-
 #include "core/Core.h"
+#include "core/Time.h"
+
 #include "game/Spells.h"
+#include "game/Player.h"
+
+#include "graphics/Math.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleParams.h"
-#include "core/Time.h"
 
+#include "scene/Light.h"
+#include "scene/Interactive.h"
 
 extern CParticleManager * pParticleManager;
 

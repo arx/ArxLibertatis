@@ -61,15 +61,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 
 #include "core/Core.h"
-#include "physics/Collisions.h"
-#include "graphics/effects/SpellEffects.h"
+#include "core/Time.h"
+
+#include "game/Spells.h"
 #include "game/Damage.h"
+#include "game/Player.h"
+
+#include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleParams.h"
 #include "graphics/spells/Spells05.h"
-#include "game/Spells.h"
-#include "core/Time.h"
 
+#include "physics/Collisions.h"
+
+#include "scene/Interactive.h"
+#include "scene/LoadLevel.h"
 
 extern float _framedelay;
 

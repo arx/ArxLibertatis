@@ -65,20 +65,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 
 #include "core/Core.h"
-#include "graphics/effects/SpellEffects.h"
-#include "game/Damage.h"
-#include "graphics/spells/Spells03.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "graphics/particle/Particle.h"
-#include "game/Spells.h"
-#include "graphics/particle/ParticleManager.h"
-#include "graphics/particle/ParticleParams.h"
-#include "graphics/effects/Fog.h"
 #include "core/Time.h"
 
+#include "game/Damage.h"
+#include "game/Spells.h"
+#include "game/Player.h"
+
+#include "graphics/effects/SpellEffects.h"
+#include "graphics/effects/Fog.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "graphics/particle/Particle.h"
+#include "graphics/particle/ParticleManager.h"
+#include "graphics/particle/ParticleParams.h"
+#include "graphics/spells/Spells03.h"
+
+#include "scene/LoadLevel.h"
+#include "scene/Interactive.h"
+
 #include <list>
-//todo what for?
-//#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
 extern CParticleManager * pParticleManager;
 

@@ -68,6 +68,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Version.h"
 #include "core/Resource.h"
 
+#include "game/Player.h"
+
 #include "gui/Interface.h"
 #include "gui/Text.h"
 
@@ -84,9 +86,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 
 #include "physics/Clothes.h"
+#include "physics/Physics.h"
 
 #include "scene/GameSound.h"
 #include "scene/Light.h"
+#include "scene/Interactive.h"
+#include "scene/LoadLevel.h"
 
 #define _ARX_CEDITOR_  0
 

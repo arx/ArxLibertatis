@@ -61,10 +61,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 #include "scene/Scene.h"
 #include "scene/GameSound.h"
+#include "scene/Interactive.h"
 
 #include "window/Input.h"
 
 using std::abs;
+
+static const float DEC_FOCAL = 50.0f;
+static const float IMPROVED_FOCAL = 320.0f;
 
 //TODO Remove this!
 int strcasecmp( const std::string& str1, const std::string& str2 );
