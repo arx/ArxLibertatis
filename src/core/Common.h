@@ -206,8 +206,10 @@ enum ARX_DEBUG_LOG_TYPE
 
 #if _MSC_VER  // MS compilers support noop which discards everything inside the parens
 #define arx_assert(_Expression)					__noop
+#define arx_assert_msg(_Expression, _Message)	__noop	
 #else
-#define arx_assert(_Expression)						{}
+#define arx_assert(_Expression)					{}
+#define arx_assert_msg(_Expression, _Message)	{}
 #endif
 #endif
 

@@ -169,10 +169,9 @@ public:
 	TextureContainer * TextureRefinement;
 	TextureContainer( const std::string& strName, DWORD dwStage, DWORD dwFlags);
 	~TextureContainer();
-	long	locks;
+
+	long locks;
 	long systemflags;
-	long mcachecount;
-	bool NoResize;
 
 	bool CreateHalo(LPDIRECT3DDEVICE7 _lpDevice);
 	TextureContainer * AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _iNbCouche, float _fR, float _fG, float _fB, float & _iDecalX, float & _iDecalY);

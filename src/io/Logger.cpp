@@ -55,9 +55,11 @@ Logger::~Logger() {
 }
 
 void Logger::writeInfo(const char* longFile, int line, Logger::LogLevel level) {
-  const char* file = std::strrchr(longFile, '/')+1;
+  const char* file = std::strrchr(longFile, '/');
   if(file == 0)
-    file = std::strrchr(longFile, '\\')+1;
+    file = std::strrchr(longFile, '\\');
+
+  file += 1; // skip "\" or "/"
 
   fatal = false;
 	LogLevel curLevel = getLogLevel(file);

@@ -462,51 +462,22 @@ bool MENU_NoActiveWindow()
 
 //-----------------------------------------------------------------------------
 
-void GetTextSize(HFONT _hFont, const std::string& _lpszUText, int& _iWidth, int& _iHeight)
-{
-	HDC hDC;
-
-	if (danaeApp.m_pddsRenderTarget)
-	{
-		if (SUCCEEDED( danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
-		{
-			SelectObject(hDC, _hFont);
-
-			SIZE sSize;
-
-			GetTextExtentPoint32(hDC, _lpszUText.c_str(), _lpszUText.length(), &sSize);
-			_iWidth = (int)sSize.cx;
-			_iHeight = (int)sSize.cy;
-
-			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-		}
-	}
-}
-
-//-----------------------------------------------------------------------------
-
-void FontRenderText(HFONT _hFont, EERIE_3D pos, const std::string& _pText, COLORREF _c)
+void FontRenderText(Font* _pFont, EERIE_3D pos, const std::string& _pText, COLORREF _c)
 {
 	if(pTextManage)
 	{
-		RECT rRect;
-
-
 		ARX_CHECK_LONG( pos.y );
 		ARX_CHECK_LONG( pos.x );
 		ARX_CHECK_LONG( pos.x + 999 );
 		ARX_CHECK_LONG( pos.y + 999 );
-		//------------
-		rRect.top    =    ARX_CLEAN_WARN_CAST_LONG( pos.y );
-		rRect.left    =    ARX_CLEAN_WARN_CAST_LONG( pos.x );
-		rRect.right    =    ARX_CLEAN_WARN_CAST_LONG( pos.x + 999 );
-		rRect.bottom=    ARX_CLEAN_WARN_CAST_LONG( pos.y + 999 );
+		
+		RECT rRect;
+		rRect.top	 = ARX_CLEAN_WARN_CAST_LONG( pos.y );
+		rRect.left   = ARX_CLEAN_WARN_CAST_LONG( pos.x );
+		rRect.right  = ARX_CLEAN_WARN_CAST_LONG( pos.x + 999 );
+		rRect.bottom = ARX_CLEAN_WARN_CAST_LONG( pos.y + 999 );
 
-		pTextManage->AddText( _hFont,
-		                      _pText,
-		                      rRect,
-		                      _c,
-		                      0x00FF00FF);
+		pTextManage->AddText( _pFont, _pText, rRect, _c, 0x00FF00FF);
 	}
 }
 
@@ -1935,21 +1906,20 @@ static void FadeInOut(float _fVal)
 	d3dvertex[0].rhw=0.999999f;
 	d3dvertex[0].color=iColor;
 
-
 	d3dvertex[1].sx=ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZX);
 	d3dvertex[1].sy=0;
 	d3dvertex[1].sz=0.f;
 	d3dvertex[1].rhw=0.999999f;
 	d3dvertex[1].color=iColor;
+
 	d3dvertex[2].sx=0;
 	d3dvertex[2].sy=ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZY);
 	d3dvertex[2].sz=0.f;
 	d3dvertex[2].rhw=0.999999f;
 	d3dvertex[2].color=iColor;
+
 	d3dvertex[3].sx=ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZX);
 	d3dvertex[3].sy=ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZY);
-
-
 	d3dvertex[3].sz=0.f;
 	d3dvertex[3].rhw=0.999999f;
 	d3dvertex[3].color=iColor;
@@ -3456,15 +3426,14 @@ bool Menu2_Render()
 
 	bNoMenu=false;
 
-	danaeApp.DANAEEndRender();
-
-	if(pTextManage)
+	// If the menu needs to be reinitialized, then the text in the TextManager is probably using bad fonts that were deleted already
+	// Skip one update in this case
+	if(pTextManage && !pMenu->bReInitAll)
 	{
 		pTextManage->Update(ARXDiffTimeMenu);
 		pTextManage->Render();
 	}
 
-	danaeApp.DANAEStartRender();
 	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP);
 
 	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
@@ -3636,11 +3605,11 @@ CMenuElement* CMenuElement::OnShortCut()
 
 //-----------------------------------------------------------------------------
 
-CMenuElementText::CMenuElementText(int _iID, HFONT _pHFont, const std::string& _pText,float _fPosX,float _fPosY,long _lColor,float _fSize,MENUSTATE _eMs) : CMenuElement(_eMs)
+CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _pText,float _fPosX,float _fPosY,long _lColor,float _fSize,MENUSTATE _eMs) : CMenuElement(_eMs)
 {
 	iID = _iID;
 
-	pHFont = _pHFont;
+	pFont = _pFont;
 
 	if( !_pText.compare( "---") )
 	{
@@ -3649,18 +3618,14 @@ CMenuElementText::CMenuElementText(int _iID, HFONT _pHFont, const std::string& _
 
 	lpszText= _pText;
 
-
 	ARX_CHECK_LONG(_fPosX);
 	ARX_CHECK_LONG(_fPosY);
 
+	Vector2i textSize = _pFont->GetTextSize(_pText);
 	rZone.left = ARX_CLEAN_WARN_CAST_LONG(_fPosX);
 	rZone.top = ARX_CLEAN_WARN_CAST_LONG(_fPosY);
-
-
-	GetTextSize(pHFont, _pText, (int&)rZone.right, (int&)rZone.bottom);
-
-	rZone.right+=rZone.left;
-	rZone.bottom+=rZone.top;
+	rZone.right  = rZone.left + textSize.x;
+	rZone.bottom = rZone.top + textSize.y;
 
 	lColor=_lColor;
 	lColorHighlight=lOldColor=RGB(255, 255, 255);
@@ -3685,10 +3650,10 @@ void CMenuElementText::SetText( const std::string& _pText )
 {
 	lpszText = _pText;
 
-	GetTextSize(pHFont, _pText, (int&)rZone.right, (int&)rZone.bottom);
+	Vector2i textSize = pFont->GetTextSize(_pText);
 
-	rZone.right+=rZone.left;
-	rZone.bottom+=rZone.top;
+	rZone.right  = textSize.x + rZone.left;
+	rZone.bottom = textSize.y + rZone.top;
 }
 
 //-----------------------------------------------------------------------------
@@ -4223,10 +4188,10 @@ void CMenuElementText::Render()
 	ePos.z = 1;
 
 	if (bSelected)
-		FontRenderText(pHFont, ePos, lpszText, lColorHighlight);
+		FontRenderText(pFont, ePos, lpszText, lColorHighlight);
 
 	else
-		FontRenderText(pHFont, ePos, lpszText, lColor);
+		FontRenderText(pFont, ePos, lpszText, lColor);
 
 }
 
@@ -4249,7 +4214,7 @@ void CMenuElementText::RenderMouseOver()
 	ePos.y = (float)rZone.top;
 	ePos.z = 1;
 
-	FontRenderText(pHFont, ePos, lpszText, lColorHighlight);
+	FontRenderText(pFont, ePos, lpszText, lColorHighlight);
 
 	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  false);
 
@@ -4313,6 +4278,13 @@ void CMenuElementText::RenderMouseOver()
 		pTextureLoadRender=NULL;
 		break;
 	}
+}
+
+//-----------------------------------------------------------------------------
+
+Vector2i CMenuElementText::GetTextSize() const
+{
+	return pFont->GetTextSize(lpszText);
 }
 
 //-----------------------------------------------------------------------------
@@ -4743,29 +4715,28 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 
 	}
 
-	int x = 0;
-	int y = 0;
+	Vector2i textSize(0,0);
 
 	if ( pText )
 	{
-		GetTextSize( pText->pHFont, pText->lpszText, x, y ); 
+		textSize = pText->pFont->GetTextSize(pText->lpszText); 
 
-		_iTaille = max (_iTaille, y);
-		x += pText->rZone.left;
-		pText->Move(iPosX, iPosY + (_iTaille - y) / 2);
+		_iTaille = max (_iTaille, textSize.y);
+		textSize.x += pText->rZone.left;
+		pText->Move(iPosX, iPosY + (_iTaille - textSize.y) / 2);
 	}
 
 
 
 	ARX_CHECK_LONG( _fPosX );
 	ARX_CHECK_LONG( _fPosY );
-	ARX_CHECK_LONG( _fPosX + _iTaille + x );
-	ARX_CHECK_LONG( _fPosY + max(_iTaille, y) );
+	ARX_CHECK_LONG( _fPosX + _iTaille + textSize.x );
+	ARX_CHECK_LONG( _fPosY + max(_iTaille, textSize.y) );
 	//CAST
 	rZone.left        = ARX_CLEAN_WARN_CAST_LONG( _fPosX );
 	rZone.top        = ARX_CLEAN_WARN_CAST_LONG( _fPosY );
-	rZone.right        = ARX_CLEAN_WARN_CAST_LONG( _fPosX + _iTaille + x );
-	rZone.bottom    = ARX_CLEAN_WARN_CAST_LONG( _fPosY + max(_iTaille, y) );
+	rZone.right        = ARX_CLEAN_WARN_CAST_LONG( _fPosX + _iTaille + textSize.x );
+	rZone.bottom    = ARX_CLEAN_WARN_CAST_LONG( _fPosY + max(_iTaille, textSize.y) );
 	iId=(int)this;
 
 	if (_pTex2)
@@ -5561,9 +5532,8 @@ void CWindowMenuConsole::UpdateText()
 
 	if (pZoneClick->rZone.top == pZoneClick->rZone.bottom)
 	{
-		int w,h;
-		GetTextSize(((CMenuElementText*)pZoneClick)->pHFont, "|", w, h);
-		pZoneClick->rZone.bottom += h;
+		Vector2i textSize = ((CMenuElementText*)pZoneClick)->pFont->GetTextSize("|");
+		pZoneClick->rZone.bottom += textSize.y;
 	}
 
 	//DRAW CURSOR
@@ -6351,11 +6321,11 @@ long CMenuPanel::IsMouseOver(int _iX, int _iY)
 
 //-----------------------------------------------------------------------------
 
-CMenuButton::CMenuButton(int _iID, HFONT _pHFont,MENUSTATE _eMenuState,int _iPosX,int _iPosY, const std::string& _pText,float _fSize,TextureContainer *_pTex,TextureContainer *_pTexOver,int _iColor,int _iTailleX,int _iTailleY)
+CMenuButton::CMenuButton(int _iID, Font* _pFont,MENUSTATE _eMenuState,int _iPosX,int _iPosY, const std::string& _pText,float _fSize,TextureContainer *_pTex,TextureContainer *_pTexOver,int _iColor,int _iTailleX,int _iTailleY)
 	: CMenuElement(_eMenuState)
 {
 	iID = _iID;
-	pHFont = _pHFont;
+	pFont = _pFont;
 	fSize=_fSize;
 
 	rZone.left=_iPosX;
@@ -6477,13 +6447,11 @@ void CMenuButton::AddText( const std::string& _pText)
 
 	int iSizeXButton=rZone.right-rZone.left;
 	int iSizeYButton=rZone.bottom-rZone.top;
-	int iSizeX=0;
-	int iSizeY=0;
-	GetTextSize(pHFont, _pText, iSizeX, iSizeY);
+	
+	Vector2i textSize = pFont->GetTextSize(_pText);
 
-	if(iSizeX>iSizeXButton) iSizeXButton=iSizeX;
-
-	if(iSizeY>iSizeYButton) iSizeYButton=iSizeY;
+	if(textSize.x>iSizeXButton) iSizeXButton=textSize.x;
+	if(textSize.y>iSizeYButton) iSizeYButton=textSize.y;
 
 	rZone.right=rZone.left+iSizeXButton;
 	rZone.bottom=rZone.top+iSizeYButton;
@@ -6548,7 +6516,7 @@ void CMenuButton::Render()
 		ePos.y = (float)rZone.top;
 		ePos.z = 1;
 		
-		FontRenderText(pHFont, ePos, &pText, RGB(232, 204, 142));
+		FontRenderText(pFont, ePos, &pText, RGB(232, 204, 142));
 
 		GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  false);
 	}
@@ -6605,7 +6573,7 @@ void CMenuButton::RenderMouseOver()
 		ePos.y = (float)rZone.top;
 		ePos.z = 1;
 		
-		FontRenderText(pHFont, ePos, &pText, RGB(255, 255, 255));
+		FontRenderText(pFont, ePos, &pText, RGB(255, 255, 255));
 		
 		GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  false);
 	}
@@ -6674,10 +6642,9 @@ void CMenuSliderText::SetWidth(int _iWidth)
 	for(it=vText.begin();it<vText.end();it++)
 	{
 		CMenuElementText *pMenuElementText=*it;
-		int x, y;
-		GetTextSize(pMenuElementText->pHFont, pMenuElementText->lpszText, x, y);
+		Vector2i textSize = pMenuElementText->GetTextSize();
 
-		int dxx=(dx-x)>>1;
+		int dxx=(dx-textSize.x)>>1;
 		pMenuElementText->SetPos(ARX_CLEAN_WARN_CAST_FLOAT(pLeftButton->rZone.right + dxx), ARX_CLEAN_WARN_CAST_FLOAT(rZone.top));
 	}
 }
@@ -6689,14 +6656,13 @@ void CMenuSliderText::AddText(CMenuElementText *_pText)
 	_pText->Move(rZone.left + pLeftButton->GetWidth(), rZone.top + 0);
 	vText.insert(vText.end(), _pText);
 
-	int x,y;
-	GetTextSize(_pText->pHFont, _pText->lpszText, x, y);
+	Vector2i textSize = _pText->GetTextSize();
 
-	rZone.right  = max(rZone.right, rZone.left + pLeftButton->GetWidth() + pRightButton->GetWidth() + x);
-	rZone.bottom = max(rZone.bottom, rZone.top + y);
+	rZone.right  = max(rZone.right, rZone.left + pLeftButton->GetWidth() + pRightButton->GetWidth() + textSize.x);
+	rZone.bottom = max(rZone.bottom, rZone.top + textSize.y);
 
-	pLeftButton->SetPos(rZone.left, rZone.top+(y>>2));
-	pRightButton->SetPos(rZone.right-pRightButton->GetWidth(), rZone.top+(y>>2));
+	pLeftButton->SetPos(rZone.left, rZone.top+(textSize.y>>2));
+	pRightButton->SetPos(rZone.right-pRightButton->GetWidth(), rZone.top+(textSize.y>>2));
 
 	int dx=rZone.right-rZone.left-pLeftButton->GetWidth()-pRightButton->GetWidth();
 	//on recentre tout
@@ -6705,12 +6671,12 @@ void CMenuSliderText::AddText(CMenuElementText *_pText)
 	for(it=vText.begin();it<vText.end();it++)
 	{
 		CMenuElementText *pMenuElementText=*it;
-		GetTextSize(pMenuElementText->pHFont, pMenuElementText->lpszText, x, y);
+		
+		textSize = pMenuElementText->GetTextSize();
 
-		int dxx=(dx-x)>>1;
+		int dxx=(dx-textSize.x)>>1;
 		pMenuElementText->SetPos(ARX_CLEAN_WARN_CAST_FLOAT(pLeftButton->rZone.right + dxx), ARX_CLEAN_WARN_CAST_FLOAT(rZone.top));
 	}
-
 }
 
 //-----------------------------------------------------------------------------

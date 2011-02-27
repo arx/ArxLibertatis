@@ -75,6 +75,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Application.h"
 #include "graphics/GraphicsUtility.h"
 #include "graphics/Math.h"
+#include "graphics/Renderer.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
@@ -448,9 +449,6 @@ TextureContainer::TextureContainer( const std::string& strName, DWORD dwStage,
 
 		locks = 0;
 		systemflags = 0;
-		mcachecount = 0;
-
-		NoResize = false;
 
 		halodecalX = 0.f;
 		halodecalY = 0.f;
@@ -1648,7 +1646,7 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 	DWORD dwMaxWidth  = ddDesc.dwMaxTextureWidth;
 	DWORD dwMaxHeight = ddDesc.dwMaxTextureHeight;
 
-	if ((Project.TextureSize) && bGlobalTextureStretch && (!NoResize))
+	if ((Project.TextureSize) && bGlobalTextureStretch)
 	{
 		// Max quality
 		if (Project.TextureSize == 0)
@@ -2668,6 +2666,8 @@ HRESULT D3DTextr_RestoreAllTextures(LPDIRECT3DDEVICE7 pd3dDevice)
 		ptcTexture = ptcTexture->m_pNext;
 	}
 
+	GRenderer->RestoreAllTextures();
+
 	return S_OK;
 }
 
@@ -2712,6 +2712,8 @@ HRESULT D3DTextr_InvalidateAllTextures()
 
 		ptcTexture = ptcTexture->m_pNext;
 	}
+
+	GRenderer->ReleaseAllTextures();
 
 	return S_OK;
 }

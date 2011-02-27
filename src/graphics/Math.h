@@ -554,5 +554,24 @@ inline void specialEE_P(EERIE_3D * in, D3DTLVERTEX * out)
 float radians(float x);
 float degrees(float x);
 
-#endif
+struct Rect
+{
+    Rect()
+    {
+    }
 
+    Rect( unsigned int pLeft, unsigned int pTop, unsigned int pRight, unsigned int pBottom )
+        : mLeft(pLeft)
+        , mRight(pRight)
+        , mTop(pTop)
+        , mBottom(pBottom)
+    {
+    }
+
+    unsigned int mLeft;
+    unsigned int mRight;
+    unsigned int mTop;
+    unsigned int mBottom;
+};
+
+#endif

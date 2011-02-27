@@ -908,28 +908,22 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 		EERIE_3D ePos;
 		COLORREF Color = 0;
-		int iW;
-		int iH;
 		std::string szText;
 
 		Color = RGB(232, 204, 143);
 
 		PAK_UNICODE_GetPrivateProfileString("system_menus_main_cdnotfound", "", szText);
-		iW = 0;
-		iH = 0;
-		GetTextSize(hFontMenu, szText, iW, iH);
-		ePos.x = (DANAESIZX - iW) * 0.5f;
+		Vector2i textSize = hFontMenu->GetTextSize(szText);
+		ePos.x = (DANAESIZX - textSize.x) * 0.5f;
 		ePos.y = DANAESIZY * 0.4f;
 		FontRenderText(hFontMenu, ePos, szText, Color);
 
 		PAK_UNICODE_GetPrivateProfileString("system_yes", "", szText);
-		iW = 0;
-		iH = 0;
-		GetTextSize(hFontMenu, szText, iW, iH);
-		ePos.x = (DANAESIZX * 0.5f - iW) * 0.5f;
+		textSize = hFontMenu->GetTextSize(szText);
+		ePos.x = (DANAESIZX * 0.5f - textSize.x) * 0.5f;
 		ePos.y = DANAESIZY * 0.5f;
 
-		if (MouseInRect(ePos.x, ePos.y, ePos.x + iW, ePos.y + iH))
+		if (MouseInRect(ePos.x, ePos.y, ePos.x + textSize.x, ePos.y + textSize.y))
 		{
 			SpecialCursor = CURSOR_INTERACTION_ON;
 
@@ -949,12 +943,10 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		FontRenderText(hFontMenu, ePos, szText, Color);
 
 		PAK_UNICODE_GetPrivateProfileString("system_no", "", szText);
-		iW = 0;
-		iH = 0;
-		GetTextSize(hFontMenu, szText, iW, iH);
-		ePos.x = DANAESIZX * 0.5f + (DANAESIZX * 0.5f - iW) * 0.5f;
+		textSize = hFontMenu->GetTextSize(szText);
+		ePos.x = DANAESIZX * 0.5f + (DANAESIZX * 0.5f - textSize.x) * 0.5f;
 
-		if (MouseInRect(ePos.x, ePos.y, ePos.x + iW, ePos.y + iH))
+		if (MouseInRect(ePos.x, ePos.y, ePos.x + textSize.x, ePos.y + textSize.y))
 		{
 			SpecialCursor = CURSOR_INTERACTION_ON;
 
@@ -979,15 +971,11 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	DynLight[0].pos.x = 0.f + EERIEMouseX - (DANAESIZX >> 1);
 	DynLight[0].pos.y = 0.f + EERIEMouseY - (DANAESIZY >> 1);
 
-	danaeApp.DANAEEndRender();
-
 	if (pTextManage)
 	{
 		pTextManage->Update(FrameDiff);
 		pTextManage->Render();
 	}
-
-	danaeApp.DANAEStartRender();
 
 	if (ARXmenu.currentmode != AMCM_CREDITS)
 		ARX_INTERFACE_RenderCursor(1);

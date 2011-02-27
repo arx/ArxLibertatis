@@ -66,25 +66,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::string;
 
 //-----------------------------------------------------------------------------
-std::string lpszFontMenu;
-std::string lpszFontIngame;;
-
-char tUText[8192];
-
 TextManager * pTextManage;
 TextManager * pTextManageFlyingOver;
 
 //-----------------------------------------------------------------------------
-HFONT InBookFont	= NULL;
-HFONT hFontRedist	= NULL;
-HFONT hFontMainMenu = NULL;
-HFONT hFontMenu		= NULL;
-HFONT hFontControls = NULL;
-HFONT hFontCredits	= NULL;
-
- 
-HFONT hFontInGame	= NULL;
-HFONT hFontInGameNote = NULL;
+Font* InBookFont	= NULL;
+Font* hFontRedist	= NULL;
+Font* hFontMainMenu = NULL;
+Font* hFontMenu		= NULL;
+Font* hFontControls = NULL;
+Font* hFontCredits	= NULL;
+Font* hFontInGame	= NULL;
+Font* hFontInGameNote = NULL;
  
 
 extern long CHINESE_VERSION;
@@ -107,84 +100,65 @@ string FontError() {
 }
 //-----------------------------------------------------------------------------
 
-long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, const std::string& _lpszUText, int _iSpacingY, RECT _rRect)
+
+long ARX_UNICODE_ForceFormattingInRect(Font* _pFont, const std::string& _lpszUText, int _iSpacingY, RECT _rRect)
 {
 	int iTemp = 0;
 
-	if (danaeApp.m_pddsRenderTarget)
+	int			iLenght	= _lpszUText.length();
+	int			iHeight	= 0;
+	Vector2i	sSize;
+	int			iOldTemp;
+	bool		bWrite;
+
+	sSize.x = sSize.y = 0 ;
+
+	while (1)
 	{
-		HDC hDC;
+		bWrite			= true;
+		int iLenghtCurr	= _rRect.left;
+		iOldTemp		= iTemp;
 
-		if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
+		ARX_CHECK(iTemp < iLenght);
+
+		for (; iTemp < iLenght ; iTemp++)
 		{
-			int		iLenght	= _lpszUText.length();
-			int		iHeight	= 0;
-			SIZE	sSize;
-			int		iOldTemp;
-			bool	bWrite;
+			sSize = _pFont->GetCharSize(_lpszUText[iTemp]);
 
-			sSize.cx = sSize.cy = 0 ;
-
-			SelectObject(hDC, _hFont);
-
-			while (1)
+			if ((_lpszUText[iTemp] == _T('\n')) || (_lpszUText[iTemp] == _T('*')))
 			{
-				bWrite			= true;
-				int iLenghtCurr	= _rRect.left;
-				iOldTemp		= iTemp;
-
-				ARX_CHECK(iTemp < iLenght);
-
-				for (; iTemp < iLenght ; iTemp++)
-				{
-					GetTextExtentPoint32(hDC,
-					                      &_lpszUText[iTemp],
-					                      1,
-					                      &sSize);
-					{
-						if ((_lpszUText[iTemp] == _T('\n')) ||
-								(_lpszUText[iTemp] == _T('*')))
-						{
-							iHeight		+= _iSpacingY + sSize.cy;
-							bWrite		 = false;
-							_rRect.top	+= _iSpacingY + sSize.cy;
-							iTemp++;
-							break;
-						}
-					}
-
-
-					iLenghtCurr	+= sSize.cx;
-
-					if (iLenghtCurr > _rRect.right)
-					{
-						iHeight += _iSpacingY + sSize.cy;
-
-						if (CHINESE_VERSION)
-						{
-							iTemp--;
-						}
-						else
-						{
-							while ((_lpszUText[iTemp] != _T(' ')) && (iTemp > 0)) iTemp--;
-						}
-
-						bWrite		 = false;
-						_rRect.top	+= _iSpacingY + sSize.cy;
-						iTemp++;
-						break;
-					}
-				}
-
-				if ((iTemp == iLenght) ||
-						((_rRect.top + sSize.cy) > _rRect.bottom))
-				{
-					break;
-				}
-
+				iHeight		+= _iSpacingY + sSize.y;
+				bWrite		 = false;
+				_rRect.top	+= _iSpacingY + sSize.y;
+				iTemp++;
+				break;
 			}
 
-			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
+			iLenghtCurr	+= sSize.x;
+
+			if (iLenghtCurr > _rRect.right)
+			{
+				iHeight += _iSpacingY + sSize.y;
+
+				if (CHINESE_VERSION)
+				{
+					iTemp--;
+				}
+				else
+				{
+					while ((_lpszUText[iTemp] != _T(' ')) && (iTemp > 0)) iTemp--;
+				}
+
+				bWrite		 = false;
+				_rRect.top	+= _iSpacingY + sSize.y;
+				iTemp++;
+				break;
+			}
+		}
+
+		if ((iTemp == iLenght) || ((_rRect.top + sSize.y) > _rRect.bottom))
+		{
+			break;
 		}
 	}
 
@@ -192,14 +166,15 @@ long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, const std::string& _lpszUTe
 }
 
 //-----------------------------------------------------------------------------
-long ARX_UNICODE_FormattingInRect(HDC _hDC, std::string& text, int _iSpacingY, RECT & _rRect)
+long ARX_UNICODE_FormattingInRect(Font* font, const std::string& text, int _iSpacingY, RECT & _rRect, COLORREF col)
 {
-	size_t	iLenght = text.length();
+	std::string txtOut = text;
+	size_t	iLenght = txtOut.length();
 	int iHeight = 0;
-	SIZE sSize;
+	Vector2i sSize;
 	size_t iOldTemp;
 	bool bWrite;
-	sSize.cx = sSize.cy = 0;
+	sSize.x = sSize.y = 0;
 
 	size_t iTemp = 0;
 
@@ -211,54 +186,48 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, std::string& text, int _iSpacingY, R
 
 		for (; iTemp < iLenght; iTemp++)
 		{
-			GetTextExtentPoint32(_hDC,
-			                      &text[iTemp],
-			                      1,
-			                      &sSize);
+			sSize = font->GetCharSize(txtOut[iTemp]);
 
-			if ((text[iTemp] == '\n') ||
-			        (text[iTemp] == '*'))
+			if ((txtOut[iTemp] == '\n') || (txtOut[iTemp] == '*'))
 			{
-				iHeight += _iSpacingY + sSize.cy;
-				text[iTemp] = _T('\0');
+				iHeight += _iSpacingY + sSize.y;
+				txtOut[iTemp] = _T('\0');
 				bWrite = false;
 
-				TextOutA(_hDC, _rRect.left, _rRect.top, &text[iOldTemp], strlen(&text[iOldTemp]));
-				_rRect.top += _iSpacingY + sSize.cy;
+				font->Draw(_rRect.left, _rRect.top, &txtOut[iOldTemp], col);
+				_rRect.top += _iSpacingY + sSize.y;
 				iTemp++;
 				break;
 			}
 			
-			iLenghtCurr += sSize.cx;
+			iLenghtCurr += sSize.x;
 
 			if (iLenghtCurr > _rRect.right)
 			{
-				iHeight += _iSpacingY + sSize.cy;
+				iHeight += _iSpacingY + sSize.y;
 
 				if (CHINESE_VERSION)
 				{
 					_TCHAR * ptexttemp = (_TCHAR *)malloc((iTemp - iOldTemp + 1) << 1);
-					_tcsncpy(ptexttemp, &text[iOldTemp], iTemp - iOldTemp);
+					_tcsncpy(ptexttemp, &txtOut[iOldTemp], iTemp - iOldTemp);
 					ptexttemp[iTemp-iOldTemp] = _T('\0');
 
-					TextOutA(_hDC, _rRect.left, _rRect.top, ptexttemp, strlen(ptexttemp));
+					font->Draw(_rRect.left, _rRect.top, ptexttemp, col);
 					free((void *)ptexttemp);
 					ptexttemp = NULL;
 					iTemp--;
 				}
 				else
 				{
-					while ((text[iTemp] != _T(' ')) && (iTemp > 0)) iTemp--;
+					while ((txtOut[iTemp] != _T(' ')) && (iTemp > 0)) iTemp--;
 
-					text[iTemp] = _T('\0');
+					txtOut[iTemp] = _T('\0');
 
-					if(!TextOutA(_hDC, _rRect.left, _rRect.top, &text[iOldTemp], strlen(&text[iOldTemp]))) {
-						LogError << FontError() << " while displaying " << &text[iOldTemp];
-					}
+					font->Draw(_rRect.left, _rRect.top, &txtOut[iOldTemp], col);					
 				}
 
 				bWrite = false;
-				_rRect.top += _iSpacingY + sSize.cy;
+				_rRect.top += _iSpacingY + sSize.y;
 				iTemp++;
 				break;
 			}
@@ -273,14 +242,8 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, std::string& text, int _iSpacingY, R
 
 	if (bWrite)
 	{
-		iHeight += _iSpacingY + sSize.cy;
-
-		if (!TextOutA(_hDC, _rRect.left, _rRect.top, &text[iOldTemp], strlen(&text[iOldTemp])))
-		{
-			LogError << FontError() << " while displaying " << &text[iOldTemp];
-		}
-
-		_rRect.top += _iSpacingY + sSize.cy;
+		iHeight += _iSpacingY + sSize.y;
+		font->Draw(_rRect.left, _rRect.top, &txtOut[iOldTemp], col);
 	}
 
 	return iHeight;
@@ -292,70 +255,42 @@ long ARX_UNICODE_DrawTextInRect(float x, float y,
                                 const std::string& _text,
                                 COLORREF col,
                                 COLORREF bcol,
-                                HFONT font,
-                                HRGN hRgn,
-                                HDC hHDC
+                                Font* font,
+                                HRGN hRgn
                                )
 {
-	HDC hDC = NULL;
-
-	// Get a DC for the surface. Then, write out the buffer
-	if (danaeApp.m_pddsRenderTarget)
+	if (hRgn)
 	{
-		if (hHDC)
-		{
-			hDC = hHDC;
-		}
-
-		if (hHDC || SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
-		{
-
-			strcpy( tUText, _text.c_str() );
-
-			if (hRgn)
-			{
-				SelectClipRgn(hDC,
-							  hRgn);
-			}
-
-			if (bcol == 0x00FF00FF) SetBkMode(hDC, TRANSPARENT);
-			else
-			{
-				SetBkMode(hDC, OPAQUE);
-				SetBkColor(hDC, bcol);
-			}
-
-			SetTextColor(hDC, col);
-
-			SelectObject(hDC,  font);
-
-			RECT rect;
-			rect.top	= (long)y;
-			rect.left	= (long)x;
-			rect.right	= (long)maxx;
-		std::string text( tUText );
-			long n = ARX_UNICODE_FormattingInRect(hDC, text, 0, rect);
-			rect.top	= (long)y;
-			rect.bottom	= ((long)y) + n;
-
-			SelectClipRgn(hDC,
-						  NULL);
-
-			if (!hHDC)
-			{
-				danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-			}
-
-			return n;
-		}
+		// TODO-FONT: glScissor / IDirect3DDevice7::SetClipStatus
+		//SelectClipRgn(hDC, hRgn);
 	}
 
-	return 0;
+	if (bcol != 0x00FF00FF) // TODO-FONT: Transparent!?
+	{
+		// TODO-FONT: Draw background
+		//SetBkMode(hDC, OPAQUE);
+		//SetBkColor(hDC, bcol);
+	}
+	
+	RECT rect;
+	rect.top	= (long)y;
+	rect.left	= (long)x;
+	rect.right	= (long)maxx;
+	// TODO-FONT: rect.bottom ?? maxy ??
+		
+	long n = ARX_UNICODE_FormattingInRect(font, _text, 0, rect, col);
+
+	if (hRgn)
+	{
+		// TODO-FONT: Undo glScissor / IDirect3DDevice7::SetClipStatus
+	}
+
+	return n;
 }
 
 //-----------------------------------------------------------------------------
 long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice,
-                   HFONT ef,
+                   Font* ef,
                    float x, float y,
                    long spacingx, long spacingy,
                    const std::string& car,
@@ -371,7 +306,7 @@ long ARX_TEXT_Draw(LPDIRECT3DDEVICE7 pd3dDevice,
 }
 
 long ARX_TEXT_DrawRect(LPDIRECT3DDEVICE7 pd3dDevice,
-					   HFONT ef,
+					   Font* ef,
 					   float x, float y,
 					   long spacingx, long spacingy,
 					   float maxx, float maxy,
@@ -390,7 +325,7 @@ long ARX_TEXT_DrawRect(LPDIRECT3DDEVICE7 pd3dDevice,
 
 
 //-----------------------------------------------------------------------------
-float DrawBookTextInRect(float x, float y, float maxx, float maxy, const std::string& text, COLORREF col, COLORREF col2, HFONT font)
+float DrawBookTextInRect(float x, float y, float maxx, float maxy, const std::string& text, COLORREF col, COLORREF col2, Font* font)
 {
 	return (float)ARX_TEXT_DrawRect(GDevice, font,
 									(BOOKDECX + x) * Xratio, (BOOKDECY + y) * Yratio, -3, 0,
@@ -398,61 +333,34 @@ float DrawBookTextInRect(float x, float y, float maxx, float maxy, const std::st
 }
 
 //-----------------------------------------------------------------------------
-void DrawBookTextCenter(float x, float y, const std::string& text, COLORREF col, COLORREF col2, HFONT font)
+void DrawBookTextCenter(float x, float y, const std::string& text, COLORREF col, COLORREF col2, Font* font)
 {
 	UNICODE_ARXDrawTextCenter((BOOKDECX + x)*Xratio, (BOOKDECY + y)*Yratio, text, col, col2, font);
 }
 
 //-----------------------------------------------------------------------------
 
-long UNICODE_ARXDrawTextCenter(float x, float y, const std::string& str, COLORREF col, COLORREF bcol, HFONT font)
+long UNICODE_ARXDrawTextCenter(float x, float y, const std::string& str, COLORREF col, COLORREF bcol, Font* font)
 {
-
-
-	HDC hDC;
-
-	// Get a DC for the surface. Then, write out the buffer
-	if (danaeApp.m_pddsRenderTarget)
+	if (bcol != 0x00FF00FF)
 	{
-		if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
-		{
-			if (bcol == 0x00FF00FF) SetBkMode(hDC, TRANSPARENT);
-			else
-			{
-				SetBkMode(hDC, OPAQUE);
-				SetBkColor(hDC, bcol);
-			}
-
-			SetTextColor(hDC, col);
-
-			SelectObject(hDC,  font);
-
-
-			SIZE siz;
-			GetTextExtentPoint32(hDC,         // handle to DC
-			                        str.c_str(),           // character string
-			                        str.length(),   // number of characters
-			                        &siz          // size
-			                       );
-			RECT rect;
-			rect.top = (long)y;
-			rect.bottom = (long)999;
-			rect.left = (long)x - (siz.cx >> 1);
-			rect.right = (long)999;
-
-			TextOut(hDC, rect.left, rect.top, str.c_str(), str.length());
-
-			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-			return siz.cx;
-		}
+		// TODO-FONT: Draw background
+		//SetBkMode(hDC, OPAQUE);
+		//SetBkColor(hDC, bcol);
 	}
 
-	return 0;
+	Vector2i size = font->GetTextSize(str);
+	int drawX = ((int)x) - (size.x / 2);
+	int drawY = (int)y;
+
+	font->Draw(drawX, drawY, str, col);
+
+	return size.x;
 }
 
 
 
-long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, const std::string& str, COLORREF col, COLORREF bcol, HFONT font, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut)
+long UNICODE_ARXDrawTextCenteredScroll(float x, float y, float x2, const std::string& str, COLORREF col, COLORREF bcol, Font* font, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut)
 {
 	RECT rRect;
 	ARX_CHECK_LONG(y);
@@ -537,116 +445,6 @@ USHORT LilEndianShort(USHORT ulValue) {
 	return MAKEWORD(HIBYTE(ulValue), LOBYTE(ulValue));
 }
 
-std::string GetFontName( const std::string& _lpszFileName)
-{
-	DWORD dwSize;
-	DWORD dwRead;
-	int   iResult;
-
-	HANDLE hFile = CreateFile(_lpszFileName.c_str(), GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-
-	if (hFile == INVALID_HANDLE_VALUE) {
-		LogError << "FontName :: File not Found - " << _lpszFileName;
-		return "";
-	}
-
-	dwSize = GetFileSize(hFile, NULL);
-
-	// Read the font header
-	SetFilePointer(hFile, 0, NULL, FILE_BEGIN);
-	_FONT_HEADER FH;
-	iResult = ReadFile(hFile, &FH, sizeof(FH), &dwRead, NULL);
-
-	if (iResult == 0)
-		LogWarning << "FontName :: Unable to read font header - " << _lpszFileName;
-
-	// Read the font table header
-	for (int i = 0; i < FH.usNumTables; i++)
-	{
-		_FONT_TABLE_HEADER FTH;
-		iResult = ReadFile(hFile, &FTH, sizeof(FTH), &dwRead, NULL);
-
-		if (iResult == 0)
-			LogWarning << "FontName :: Unable to read font table header - " << _lpszFileName;
-
-		char szName[5];
-		szName[0] = LOBYTE(LOWORD(FTH.ulTag));
-		szName[1] = HIBYTE(LOWORD(FTH.ulTag));
-		szName[2] = LOBYTE(HIWORD(FTH.ulTag));
-		szName[3] = HIBYTE(HIWORD(FTH.ulTag));
-		szName[4] = 0;
-
-
-		// Check for "name" in the extracted bytes
-		if (strcmp(szName, "name") == 0)
-		{
-			FTH.ulOffset = LilEndianLong(FTH.ulOffset);
-			SetFilePointer(hFile, FTH.ulOffset, NULL, FILE_BEGIN);
-
-			// Read font naming header
-			_FONT_NAMING_HEADER FNH;
-			iResult = ReadFile(hFile, &FNH, sizeof(FNH), &dwRead, NULL);
-
-			if (iResult == 0)
-			{
-				LogWarning << "FontName :: Unable to read font naming header - " << _lpszFileName;
-			}
-
-			FNH.usNbNameRecords = LilEndianShort(FNH.usNbNameRecords);
-			FNH.usOffsetStorage = LilEndianShort(FNH.usOffsetStorage);
-
-			for (int j = 0; j < FNH.usNbNameRecords; j++)
-			{
-				_FONT_NAMING_NAMERECORD FNN;
-				iResult = ReadFile(hFile, &FNN, sizeof(FNN), &dwRead, NULL);
-
-				if (iResult == 0)
-					LogWarning << "FontName :: Unable to read font naming namerecord - " << _lpszFileName;
-
-				FNN.usNameID = LilEndianShort(FNN.usNameID);
-				FNN.usPlatformID = LilEndianShort(FNN.usPlatformID);
-				FNN.usStringLength = LilEndianShort(FNN.usStringLength);
-				FNN.usStringOffset = LilEndianShort(FNN.usStringOffset);
-				FNN.usLanguageID = LilEndianShort(FNN.usLanguageID);
-
-				if (FNN.usLanguageID == 1033)
-					if (FNN.usNameID == 1)
-					{
-						SetFilePointer(hFile, 0, NULL, FILE_CURRENT);
-						SetFilePointer(hFile, FTH.ulOffset + FNH.usOffsetStorage + FNN.usStringOffset, NULL, FILE_BEGIN);
-						
-
-						u16 szName[256];
-
-						ZeroMemory(szName, 256);
-						assert(FNN.usStringLength < 256);
- 
-						iResult = ReadFile(hFile, szName, FNN.usStringLength, &dwRead, NULL);
-
-						if (iResult == 0)
-							LogWarning << "FontName :: Unable to read font name - " << _lpszFileName;
-
-						string result;
-						result.resize(FNN.usStringLength / 2);
-						for (int k = 0; k < FNN.usStringLength / 2; k++)
-						{
-							// TODO quick and dirty hack to convert from UTF-16
-							result[k] = (unsigned char)LilEndianShort(szName[k]);
-						}
-						
-
-						CloseHandle(hFile);
-						return result;
-					}
-			}
-		}
-	}
-
-	LogError << "FontName :: Unable to match \"name\" in any Font Table Header";
-	CloseHandle(hFile);
-	return ""; // Return empty font name
-}
-
 void _ShowText(char * text)
 {
 	if (GDevice)
@@ -699,73 +497,30 @@ int Traffic(int iFontSize)
 	return iFontSize;
 }
 
-HFONT _CreateFont(
-    int nHeight,               // height of font
-    int nWidth,                // average character width
-    int nEscapement,           // angle of escapement
-    int nOrientation,          // base-line orientation angle
-    int fnWeight,              // font weight
-    DWORD fdwItalic,           // italic attribute option
-    DWORD fdwUnderline,        // underline attribute option
-    DWORD fdwStrikeOut,        // strikeout attribute option
-    DWORD fdwCharSet,          // character set identifier
-    DWORD fdwOutputPrecision,  // output precision
-    DWORD fdwClipPrecision,    // clipping precision
-    DWORD fdwQuality,          // output quality
-    DWORD fdwPitchAndFamily,   // pitch and family
-    std::string lpszFace          // typeface name
-)
+Font* _CreateFont(std::string fontFace, std::string fontProfileName, unsigned int fontSize)
 {
+	std::stringstream ss;
 
-	/*
-	ANSI_CHARSET
-	BALTIC_CHARSET
-	CHINESEBIG5_CHARSET
-	DEFAULT_CHARSET
-	EASTEUROPE_CHARSET
-	GB2312_CHARSET
-	GREEK_CHARSET
-	HANGUL_CHARSET
-	MAC_CHARSET
-	OEM_CHARSET
-	RUSSIAN_CHARSET
-	SHIFTJIS_CHARSET
-	SYMBOL_CHARSET
-	TURKISH_CHARSET
-	VIETNAMESE_CHARSET
-	*/
+	std::string szFontSize;
+	ss << fontSize;
+	ss >> szFontSize;
+	ss.clear();
 
-	if (EAST_EUROPE)
-	{
-		fdwCharSet = CHINESEBIG5_CHARSET;
+	std::string szUT;
+	PAK_UNICODE_GetPrivateProfileString(fontProfileName, szFontSize, szUT);
+	ss << szUT;
+	ss >> fontSize;
+	ss.clear();
+
+	fontSize = Traffic(fontSize);
+
+	Font* newFont = FontCache::GetFont(fontFace, fontSize);
+	if(!newFont) {
+		LogError << "error loading font: " << fontFace << " of size " << fontSize;
 	}
-
-	//HFONT  ret = CreateFont(
-	HFONT ret = CreateFont(
-	                nHeight,               // height of font
-	                nWidth,                // average character width
-	                nEscapement,           // angle of escapement
-	                nOrientation,          // base-line orientation angle
-	                fnWeight,              // font weight
-	                fdwItalic,           // italic attribute option
-	                fdwUnderline,        // underline attribute option
-	                fdwStrikeOut,        // strikeout attribute option
-	                fdwCharSet,          // character set identifier
-	                fdwOutputPrecision,  // output precision
-	                fdwClipPrecision,    // clipping precision
-	                fdwQuality,          // output quality
-	                fdwPitchAndFamily,   // pitch and family
-	                lpszFace.c_str()     // typeface name
-	            );
-
-	if (!ret)
-	{
-		LogError << FontError() << " creating font " << lpszFace;
-	}
-
-	return ret;
+	
+	return newFont;
 }
-
 
 string getFontFile() {
 	string tx= "misc" PATH_SEPERATOR_STR "Arx.ttf";
@@ -777,180 +532,33 @@ string getFontFile() {
 
 //-----------------------------------------------------------------------------
 void ARX_Text_Init()
-{
-	
-	std::stringstream ss;
+{	
 	ARX_Text_Close();
 
 	Localisation_Init();
 	
-	string tx = getFontFile();
-
-	wchar_t wtx[256];
-	MultiByteToWideChar(CP_ACP, 0, tx.c_str() , -1, wtx, 256);		// XS : We need to pass a unicode string to AddFontResourceW
-
-	lpszFontIngame = GetFontName(tx.c_str());
-	
-	LogInfo << "Adding Font " << tx << ": " << lpszFontIngame;
-
-	if(AddFontResource(tx.c_str()) == 0) {
-		LogError << FontError();
-	}
-	
-
-
-//	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf");
-//
-//	if (!FileExist(tx))
-//	{
-//		sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
-//	}
-//
-//	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass an unicode string to AddFontResourceW
-
-	lpszFontMenu = lpszFontIngame; //GetFontName(tx.c_str());
-
-	//if (AddFontResourceW(wtx) == 0)
-	//{
-	//	LogError << FontError();
-	//}
-
+	std::string strInGameFont = getFontFile();
+	std::string strInMenuFont = strInGameFont;
 
 	pTextManage = new TextManager();
 	pTextManageFlyingOver = new TextManager();
 
+	FontCache::Initialize();
 
-	if (!hFontMainMenu)
-	{
-		int iFontSize = 48;//58;
+	hFontMainMenu = _CreateFont(strInMenuFont, "system_font_mainmenu_size", 58);
+	LogInfo << "Created hFontMainMenu, size " << hFontMainMenu->GetSize();
 
-		std::string szUT;
-		PAK_UNICODE_GetPrivateProfileString( "system_font_mainmenu_size", "58", szUT);
-		ss << szUT;
-		ss >> iFontSize;
-		iFontSize = Traffic(iFontSize);
+	hFontMenu	  = _CreateFont(strInMenuFont, "system_font_menu_size", 32);
+	LogInfo << "Created hFontMenu, size " << hFontMenu->GetSize();
 
-		if (!hFontMainMenu)
-		{
-			hFontMainMenu = _CreateFont(
-								iFontSize,
-								0, 0, 0, FW_NORMAL, false, false, false,
-								DEFAULT_CHARSET,
-								OUT_DEFAULT_PRECIS,
-								CLIP_DEFAULT_PRECIS,
-								ANTIALIASED_QUALITY,
-								VARIABLE_PITCH,
-								lpszFontMenu.c_str());
-			if(!hFontMainMenu) {
-				LogError << "error loading main menu font";
-			}
-		}
-	}
+	hFontControls = _CreateFont(strInMenuFont, "system_font_menucontrols_size", 22);
+	LogInfo << "Created hFontControls, size " << hFontControls->GetSize();
 
-	if (!hFontMenu)
-	{
-		int iFontSize = 32;
+	hFontCredits  = _CreateFont(strInMenuFont, "system_font_menucredits_size", 36);
+	LogInfo << "Created hFontCredits, size " << hFontCredits->GetSize();
 
-		std::string szUT;
-		PAK_UNICODE_GetPrivateProfileString( "system_font_menu_size", "32", szUT);
-		ss << szUT;
-		ss >> iFontSize;
-		iFontSize = Traffic(iFontSize);
-
-		if (!hFontMenu)
-		{
-			hFontMenu = _CreateFont(
-							iFontSize,
-							0, 0, 0, FW_NORMAL, false, false, false,
-							DEFAULT_CHARSET,
-							OUT_DEFAULT_PRECIS,
-							CLIP_DEFAULT_PRECIS,
-							ANTIALIASED_QUALITY,
-							VARIABLE_PITCH,
-							lpszFontMenu.c_str());
-			if(!hFontMenu) {
-				LogError << "error loading menu font";
-			}
-		}
-	}
-
-	if (!hFontControls)
-	{
-		int iFontSize = 16;
-
-		std::string szUT;
-		PAK_UNICODE_GetPrivateProfileString( "system_font_menucontrols_size", "22", szUT);
-		ss << szUT;
-		ss >> iFontSize;
-		iFontSize = Traffic(iFontSize);
-
-		if (!hFontControls)
-		{
-			hFontControls = _CreateFont(
-								iFontSize,
-								0, 0, 0, FW_NORMAL, false, false, false,
-								DEFAULT_CHARSET,
-								OUT_DEFAULT_PRECIS,
-								CLIP_DEFAULT_PRECIS,
-								ANTIALIASED_QUALITY,
-								VARIABLE_PITCH,
-								lpszFontMenu.c_str());
-			if(!hFontControls) {
-				LogError << "error loading controls font";
-			}
-		}
-	}
-
-	if (!hFontCredits)
-	{
-		int iFontSize = 32;
-
-		std::string szUT;
-		PAK_UNICODE_GetPrivateProfileString( "system_font_menucredits_size", "36", szUT);
-		ss << szUT;
-		ss >> iFontSize;
-		iFontSize = Traffic(iFontSize);
-
-		if (!hFontCredits)
-		{
-			hFontCredits = _CreateFont(
-							   iFontSize,
-							   0, 0, 0, FW_NORMAL, false, false, false,
-							   DEFAULT_CHARSET,
-							   OUT_DEFAULT_PRECIS,
-							   CLIP_DEFAULT_PRECIS,
-							   ANTIALIASED_QUALITY,
-							   VARIABLE_PITCH,
-							   lpszFontMenu.c_str());
-			if(!hFontCredits) {
-				LogError << "error loading credits font";
-			}
-		}
-	}
-
-	if (!hFontRedist)
-	{
-		int iFontSize = 16;
-
-		std::string szUT;
-		PAK_UNICODE_GetPrivateProfileString( "system_font_redist_size", "18", szUT );
-		ss << szUT;
-		ss >> iFontSize;
-		iFontSize = Traffic(iFontSize);
-
-		hFontRedist = _CreateFont(
-						  iFontSize,
-						  0, 0, 0, FW_NORMAL, false, false, false,
-						  DEFAULT_CHARSET,
-						  OUT_DEFAULT_PRECIS,
-						  CLIP_DEFAULT_PRECIS,
-						  ANTIALIASED_QUALITY,
-						  VARIABLE_PITCH,
-						  lpszFontIngame.c_str());
-		if(!hFontRedist) {
-			LogError << "error loading redist font";
-		}
-	}
+	hFontRedist   = _CreateFont(strInGameFont, "system_font_redist_size", 18);
+	LogInfo << "Created hFontRedist, size " << hFontRedist->GetSize();
 
 	// NEW QUEST
 	if (Yratio > 1.f)
@@ -958,190 +566,50 @@ void ARX_Text_Init()
 		Yratio *= .8f;
 	}
 
-	if (!hFontInGame)
-	{
-		int iFontSize = 16;
+	hFontInGame     = _CreateFont(strInGameFont, "system_font_book_size", 18);
+	LogInfo << "Created hFontInGame, size " << hFontInGame->GetSize();
 
-		std::string szUT;
-		PAK_UNICODE_GetPrivateProfileString( "system_font_book_size", "18", szUT );
-		ss << szUT;
-		ss >> iFontSize;
-		iFontSize = Traffic(iFontSize);
+	hFontInGameNote = _CreateFont(strInGameFont, "system_font_note_size", 18);
+	LogInfo << "Created hFontInGameNote, size " << hFontInGameNote->GetSize();
 
-		if (!hFontInGame)
-		{
-			hFontInGame = _CreateFont(
-							  iFontSize,
-							  0, 0, 0, FW_NORMAL, false, false, false,
-							  DEFAULT_CHARSET,
-							  OUT_DEFAULT_PRECIS,
-							  CLIP_DEFAULT_PRECIS,
-							  ANTIALIASED_QUALITY,
-							  VARIABLE_PITCH,
-							  lpszFontIngame.c_str());
-			if(!hFontInGame) {
-				LogError << "error loading ingame font";
-			}
-		}
-	}
-
-	if (!hFontInGameNote)
-	{
-		int iFontSize = 16;//18;
-
-		std::string szUT;
-		PAK_UNICODE_GetPrivateProfileString( "system_font_note_size", "18", szUT );
-		ss << szUT;
-		ss >> iFontSize;
-		iFontSize = Traffic(iFontSize);
-
-		hFontInGameNote = _CreateFont(
-							  iFontSize,
-							  0, 0, 0, FW_NORMAL, false, false, false,
-							  DEFAULT_CHARSET,
-							  OUT_DEFAULT_PRECIS,
-							  CLIP_DEFAULT_PRECIS,
-							  ANTIALIASED_QUALITY,
-							  VARIABLE_PITCH,
-							  lpszFontIngame.c_str());
-		if(!hFontInGameNote) {
-			LogError << "error loading ingame note font";
-		}
-	}
-
-	if (!InBookFont)
-	{
-		int iFontSize = 16;
-
-		std::string szUT;
-		PAK_UNICODE_GetPrivateProfileString( "system_font_book_size", "18", szUT );
-		ss << szUT;
-		ss >> iFontSize;
-		iFontSize = Traffic(iFontSize);
-
-		InBookFont = _CreateFont(
-						 iFontSize,
-						 0, 0, 0, FW_NORMAL, false, false, false,
-						 DEFAULT_CHARSET,
-						 OUT_DEFAULT_PRECIS,
-						 CLIP_DEFAULT_PRECIS,
-						 ANTIALIASED_QUALITY,
-						 VARIABLE_PITCH,
-						 lpszFontIngame.c_str());
-		if(!InBookFont) {
-			LogError << "error loading book font";
-		}
-	}
+	InBookFont		= _CreateFont(strInGameFont, "system_font_book_size", 18);
+	LogInfo << "Created InBookFont, size " << InBookFont->GetSize();
 }
 
 //-----------------------------------------------------------------------------
 void ARX_Text_Close()
 {
-
-	/*if (!lpszFontIngame.empty())
-	{
-		delete [] lpszFontIngame;
-		lpszFontIngame = NULL;
-	}*/
-lpszFontIngame.clear();
-
-/*
-	if (lpszFontMenu)
-	{
-		delete [] lpszFontMenu;
-		lpszFontMenu = NULL;
-	}
-*/
-lpszFontMenu.clear();
-
-	string tx = getFontFile();
-
-	LogDebug << "Removing font " << tx;
-	
-	//MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
-
-	lpszFontIngame = GetFontName(tx.c_str());
-
-
-	if(!RemoveFontResource(tx.c_str())) {
-			 LogError << FontError() << " while removing font " << tx; // XS : Annoying popup, uncomment if you really want to track something down.
-	}
-/*
-	sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "Arx.ttf"); // Full path
-
-	if (!FileExist(tx))
-	{
-		sprintf(tx, "misc" PATH_SEPERATOR_STR "%s", "ARX_default.ttf"); // Full path
-	}
-
-	MultiByteToWideChar(CP_ACP, 0, tx , -1, (WCHAR*)wtx, 256);		// XS : We need to pass a unicode string to RemoveRessourceW
-	lpszFontMenu = GetFontName(tx);
-
-	if (RemoveFontResource(wtx) == 0)
-	{
-			 LogError << FontError();// XS : Annoying popup, uncomment if you really want to track something down.
-	}
-*/
 	Localisation_Close();
 
-	if (pTextManage)
-	{
-		delete pTextManage;
-		pTextManage = NULL;
-	}
+	delete pTextManage;
+	pTextManage = NULL;
 
-	if (pTextManageFlyingOver)
-	{
-		delete pTextManageFlyingOver;
-		pTextManageFlyingOver = NULL;
-	}
+	delete pTextManageFlyingOver;
+	pTextManageFlyingOver = NULL;
 
-	if (InBookFont)
-	{
-		DeleteObject(InBookFont);
-		InBookFont = NULL;
-	}
+	FontCache::ReleaseFont(InBookFont);
+	InBookFont = NULL;
+	
+	FontCache::ReleaseFont(hFontRedist);
+	hFontRedist = NULL;
+	
+	FontCache::ReleaseFont(hFontMainMenu);
+	hFontMainMenu = NULL;
 
-	if (hFontRedist)
-	{
-		DeleteObject(hFontRedist);
-		hFontRedist = NULL;
-	}
+	FontCache::ReleaseFont(hFontMenu);
+	hFontMenu = NULL;
+	
+	FontCache::ReleaseFont(hFontControls);
+	hFontControls = NULL;
+	
+	FontCache::ReleaseFont(hFontCredits);
+	hFontCredits = NULL;
+	
+	FontCache::ReleaseFont(hFontInGame);
+	hFontInGame = NULL;
+	
+	FontCache::ReleaseFont(hFontInGameNote);
+	hFontInGameNote = NULL;
 
-	if (hFontMainMenu)
-	{
-		DeleteObject(hFontMainMenu);
-		hFontMainMenu = NULL;
-	}
-
-	if (hFontMenu)
-	{
-		DeleteObject(hFontMenu);
-		hFontMenu = NULL;
-	}
-
-	if (hFontControls)
-	{
-		DeleteObject(hFontControls);
-		hFontControls = NULL;
-	}
-
-	if (hFontCredits)
-	{
-		DeleteObject(hFontCredits);
-		hFontCredits = NULL;
-	}
-
-	if (hFontInGame)
-	{
-		DeleteObject(hFontInGame);
-		hFontInGame = NULL;
-	}
-
-	if (hFontInGameNote)
-	{
-		DeleteObject(hFontInGameNote);
-		hFontInGameNote = NULL;
-	}
-
+	FontCache::Shutdown();
 }

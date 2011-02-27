@@ -670,8 +670,6 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 											 DANAESIZX,
 											 ARX_CLEAN_WARN_CAST_INT(fAdd));
 
-
-						danaeApp.DANAEEndRender();
 						float iTaille = (float)ARX_TEXT_DrawRect(
 											pd3dDevice,
 											InBookFont,
@@ -689,8 +687,6 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 						{
 							DeleteObject(hRgn);
 						}
-
-						danaeApp.DANAEStartRender();
 
 						SETTC(GDevice, NULL);
 						GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ZERO);
