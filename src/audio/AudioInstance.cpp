@@ -32,11 +32,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 
 
-// TODO find right library
-// const GUID DSPROPSETID_EAX20_BufferProperties = { 0x306a6a7, 0xb224, 0x11d2, { 0x99, 0xe5, 0x0, 0x0, 0xe8, 0xd8, 0xc7, 0x22 } };
-// const GUID DSPROPSETID_EAX20_ListenerProperties = { 0x306a6a8, 0xb224, 0x11d2, { 0x99, 0xe5, 0x0, 0x0, 0xe8, 0xd8, 0xc7, 0x22 } };
-// const GUID CLSID_EAXDirectSound = { 0x4ff53b81, 0x1ce0, 0x11d3, { 0xaa, 0xb8, 0x0, 0xa0, 0xc9, 0x59, 0x49, 0xd5 } };
-
 namespace ATHENA
 {
 
@@ -544,7 +539,7 @@ namespace ATHENA
 		channel.falloff = falloff;
 
 		alSourcef(source[0], AL_MAX_DISTANCE, falloff.end);
-		// FIXME -- OpenAL doesn't have a AL_MIN_DISTANCE
+		alSourcef(source[0], AL_REFERENCE_DISTANCE, falloff.start);
 		if (alGetError() != AL_NO_ERROR)
 			return AAL_ERROR_SYSTEM;
 
@@ -639,11 +634,7 @@ namespace ATHENA
 	{
 		if (!alIsSource(source[0]) || !(channel.flags & AAL_FLAG_POSITION)) return AAL_ERROR_INIT;
 
-		ALfloat pos[3];
-		alGetSourcefv(source[0], AL_POSITION, pos);
-		position.x = pos[0];
-		position.y = pos[1];
-		position.z = pos[2];
+		alGetSource3f(source[0], AL_POSITION, &position.x, &position.y, &position.z);
 
 		return AAL_OK;
 	}
@@ -815,7 +806,6 @@ namespace ATHENA
 	aalUBool Instance::IsTooFar()
 	{
 		aalFloat dist, max;
-		ALfloat _listener_pos[3];
 		aalVector listener_pos;
 
 		int error;
@@ -827,16 +817,13 @@ namespace ATHENA
 		}
 
 		if (channel.flags & AAL_FLAG_RELATIVE)
-			_listener_pos[0] = _listener_pos[1] = _listener_pos[2] = 0.0F;
+			listener_pos.x = listener_pos.y = listener_pos.z = 0.0F;
 		else
-			alGetListenerfv(AL_POSITION, _listener_pos);
+			alGetListener3f(AL_POSITION, &listener_pos.x, &listener_pos.y, &listener_pos.z);
 
 		if ((error = alGetError()) != AL_NO_ERROR) {
 			return AAL_ERROR_SYSTEM;
 		}
-		listener_pos.x = _listener_pos[0];
-		listener_pos.y = _listener_pos[1];
-		listener_pos.z = _listener_pos[2];
 
 		dist = Distance(listener_pos, channel.position);
 
