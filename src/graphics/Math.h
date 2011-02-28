@@ -551,8 +551,26 @@ inline void specialEE_P(EERIE_3D * in, D3DTLVERTEX * out)
 	out->rhw = fZTemp; 
 }
 
-float radians(float x);
-float degrees(float x);
+inline float radians(float degrees){
+	return degrees*2*PI/360;
+}
+
+inline float degrees(float radians){
+	return radians*360/(2*PI);
+}
+
+/**
+ *  Compute a random T value between fMin and fMax.
+ *  @brief  Random for T, given a range.
+ *  @param  fMin    a T, minimum value wanted.
+ *  @param  fMax    a T, maximum value wanted.
+ *  @return A random real value between fMin and fMax.
+ */
+template <class T>
+inline T Rand( const T& pMin, const T& pMax )
+{
+    return pMin + (pMax - pMin) * rand() / (T)RAND_MAX;
+}
 
 struct Rect
 {

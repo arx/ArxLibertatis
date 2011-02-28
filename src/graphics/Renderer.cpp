@@ -169,6 +169,10 @@ HRESULT CALLBACK DX7Texture2D::TextureSearchCallback( DDPIXELFORMAT* pddpf, VOID
 
 	TextureSearchInfo * ptsi = (TextureSearchInfo *)param;
 
+	const unsigned int DXT1_FOURCC = 0x31545844;
+	const unsigned int DXT3_FOURCC = 0x33545844;
+	const unsigned int DXT5_FOURCC = 0x35545844;
+
 	switch( ptsi->imageformat )
 	{
 		case Image::Format_L8:
@@ -211,19 +215,19 @@ HRESULT CALLBACK DX7Texture2D::TextureSearchCallback( DDPIXELFORMAT* pddpf, VOID
 
 		case Image::Format_DXT1:
 		{
-			if(pddpf->dwFourCC != FOURCC_DXT1)
+			if(pddpf->dwFourCC != DXT1_FOURCC)
 				return DDENUMRET_OK;
 		} break;
 
 		case Image::Format_DXT3:
 		{
-			if(pddpf->dwFourCC != FOURCC_DXT3)
+			if(pddpf->dwFourCC != DXT3_FOURCC)
 				return DDENUMRET_OK;
 		} break;
 
 		case Image::Format_DXT5:
 		{
-			if(pddpf->dwFourCC != FOURCC_DXT5)
+			if(pddpf->dwFourCC != DXT5_FOURCC)
 				return DDENUMRET_OK;
 		} break;
 	}
