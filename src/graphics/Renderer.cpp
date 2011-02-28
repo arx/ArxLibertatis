@@ -1,7 +1,7 @@
 #include "graphics/Renderer.h"
 
 #include <list>
-#include <d3dx.h>
+#include <d3d.h>
 
 
 // TEMP: needed until all D3D code is isolated...
@@ -11,17 +11,6 @@ extern LPDIRECT3DDEVICE7 GDevice;
 ///////////////////////////////////////////////////////////////////////////////
 // ARXToDX7 mapping tables - MOVE THAT SOMEWHERE ELSE!
 ///////////////////////////////////////////////////////////////////////////////
-const D3DX_SURFACEFORMAT ARXToDX7TexFormat[] = {
-						D3DX_SF_L8,							// Format_L8,
-						D3DX_SF_A8,							// Format_A8,
-						D3DX_SF_A8L8 ,						// Format_L8A8, 
-						D3DX_SF_R8G8B8,						// Format_R8G8B8,
-						D3DX_SF_A8R8G8B8,					// Format_R8G8B8A8,
-						D3DX_SF_DXT1,						// Format_DXT1
-						D3DX_SF_DXT3,						// Format_DXT3
-						D3DX_SF_DXT5						// Format_DXT5
-									 };
-
 const D3DTEXTUREOP ARXToDX7TextureOp[] = {
 						D3DTOP_SELECTARG1,					// TexOpSelectArg1,
 						D3DTOP_SELECTARG2,					// TexOpSelectArg2,
@@ -122,6 +111,11 @@ private:
     virtual void Init();
     virtual void Kill();
 
+	LPDIRECTDRAWSURFACE7 CreateTexture();
+	void LoadTextureFromImage();
+
+	static HRESULT CALLBACK TextureSearchCallback( DDPIXELFORMAT* pddpf, VOID* param );
+
 private:
     LPDIRECTDRAWSURFACE7 m_pddsSurface;
 };
@@ -145,15 +139,10 @@ void DX7Texture2D::Init()
 {
 	if(m_pddsSurface == 0)
 	{
-		DWORD flags = mHasMipmaps ? 0 : D3DX_TEXTURE_NOMIPMAP;
-		D3DX_SURFACEFORMAT surfaceFormat = ARXToDX7TexFormat[mFormat];
-
-		HRESULT result;
-		DWORD width = mWidth;
-		DWORD height = mHeight;
-		DWORD numMipmap = mHasMipmaps ? D3DX_DEFAULT : 1;
-		result = D3DXCreateTexture(GDevice, &flags, &width, &height, &surfaceFormat, 0, &m_pddsSurface, &numMipmap);
-		result = D3DXLoadTextureFromMemory(GDevice, m_pddsSurface, 0, mImage.GetData(), 0, ARXToDX7TexFormat[mFormat], 0, 0, D3DX_FT_LINEAR);
+		m_pddsSurface = CreateTexture();
+		
+		if(m_pddsSurface)
+			LoadTextureFromImage();
 	}
 }
 
@@ -166,6 +155,329 @@ void DX7Texture2D::Kill()
 	}
 }
 
+struct TextureSearchInfo
+{
+	Image::Format	imageformat;
+	unsigned int	bpp;
+	DDPIXELFORMAT * pddpf;
+};
+
+HRESULT CALLBACK DX7Texture2D::TextureSearchCallback( DDPIXELFORMAT* pddpf, VOID* param )
+{
+    if (NULL == pddpf || NULL == param)
+		return DDENUMRET_OK;
+
+	TextureSearchInfo * ptsi = (TextureSearchInfo *)param;
+
+	switch( ptsi->imageformat )
+	{
+		case Image::Format_L8:
+		{
+			if((pddpf->dwFlags & DDPF_LUMINANCE) == 0 ||	// Look for luminance format
+			   (pddpf->dwFlags & DDPF_ALPHAPIXELS) != 0)	// But with no alpha channel
+				return DDENUMRET_OK;
+		} break;
+
+		case Image::Format_A8:
+		{
+			if((pddpf->dwFlags & DDPF_ALPHA) == 0)
+				return DDENUMRET_OK;
+		} break;
+
+		case Image::Format_L8A8:
+		{
+			if((pddpf->dwFlags & DDPF_LUMINANCE) == 0 ||	// Look for luminance format
+			   (pddpf->dwFlags & DDPF_ALPHAPIXELS) == 0)	// With an alpha channel
+				return DDENUMRET_OK;
+		} break;
+
+		case Image::Format_R8G8B8:
+		{
+			if((pddpf->dwFlags & DDPF_RGB) == 0 ||			// Look for RGB format
+			   (pddpf->dwFlags & DDPF_ALPHAPIXELS) != 0)	// But with no alpha channel
+				return DDENUMRET_OK;
+			else if(pddpf->dwRGBBitCount != 32)
+				return DDENUMRET_OK;
+		} break;
+
+		case Image::Format_R8G8B8A8:
+		{
+			if((pddpf->dwFlags & DDPF_RGB) == 0 ||			// Look for RGB format
+			   (pddpf->dwFlags & DDPF_ALPHAPIXELS) == 0)	// With an alpha channel
+				return DDENUMRET_OK;
+			else if(pddpf->dwRGBBitCount != 32)
+				return DDENUMRET_OK;
+		} break;
+
+		case Image::Format_DXT1:
+		{
+			if(pddpf->dwFourCC != FOURCC_DXT1)
+				return DDENUMRET_OK;
+		} break;
+
+		case Image::Format_DXT3:
+		{
+			if(pddpf->dwFourCC != FOURCC_DXT3)
+				return DDENUMRET_OK;
+		} break;
+
+		case Image::Format_DXT5:
+		{
+			if(pddpf->dwFourCC != FOURCC_DXT5)
+				return DDENUMRET_OK;
+		} break;
+	}
+
+	// We found a good match. Copy the current pixel format to our output parameter
+	memcpy( ptsi->pddpf, pddpf, sizeof(DDPIXELFORMAT) );
+
+	// Return with DDENUMRET_CANCEL to end enumeration.
+	return DDENUMRET_CANCEL;
+}
+
+LPDIRECTDRAWSURFACE7 DX7Texture2D::CreateTexture()
+{
+    LPDIRECTDRAWSURFACE7 pddsTexture;
+    HRESULT hr;
+
+    // Get the device caps so we can check if the device has any constraints
+    // when using textures
+    D3DDEVICEDESC7 ddDesc;
+    if( FAILED( GDevice->GetCaps( &ddDesc ) ) )
+        return NULL;
+
+    // Setup the new surface desc for the texture. Note how we are using the
+    // texture manage attribute, so Direct3D does alot of dirty work for us
+    DDSURFACEDESC2 ddsd;
+    ZeroMemory( &ddsd, sizeof(DDSURFACEDESC2) );
+    ddsd.dwSize          = sizeof(DDSURFACEDESC2);
+    ddsd.dwFlags         = DDSD_CAPS|DDSD_HEIGHT|DDSD_WIDTH|DDSD_PIXELFORMAT|DDSD_TEXTURESTAGE;
+    ddsd.ddsCaps.dwCaps  = DDSCAPS_TEXTURE;
+    ddsd.dwWidth         = mWidth;
+    ddsd.dwHeight        = mHeight;
+
+	if(mHasMipmaps)
+	{
+		ddsd.dwFlags        |= DDSD_MIPMAPCOUNT;
+		ddsd.ddsCaps.dwCaps |= DDSCAPS_MIPMAP | DDSCAPS_COMPLEX;
+	}
+
+    // Turn on texture management for hardware devices
+    if( ddDesc.deviceGUID == IID_IDirect3DHALDevice )
+        ddsd.ddsCaps.dwCaps2 = DDSCAPS2_TEXTUREMANAGE;
+    else if( ddDesc.deviceGUID == IID_IDirect3DTnLHalDevice )
+        ddsd.ddsCaps.dwCaps2 = DDSCAPS2_TEXTUREMANAGE;
+    else
+        ddsd.ddsCaps.dwCaps |= DDSCAPS_SYSTEMMEMORY;
+
+    // Adjust width and height, if the driver requires it
+    if( ddDesc.dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_POW2 )
+    {
+        for( ddsd.dwWidth=1;  mWidth>ddsd.dwWidth;   ddsd.dwWidth<<=1 );
+        for( ddsd.dwHeight=1; mHeight>ddsd.dwHeight; ddsd.dwHeight<<=1 );
+    }
+    if( ddDesc.dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_SQUAREONLY )
+    {
+        if( ddsd.dwWidth > ddsd.dwHeight ) ddsd.dwHeight = ddsd.dwWidth;
+        else                               ddsd.dwWidth  = ddsd.dwHeight;
+    }
+
+	// Limit max texture sizes, if the driver can't handle large textures
+	DWORD dwMaxWidth  = ddDesc.dwMaxTextureWidth;
+	DWORD dwMaxHeight = ddDesc.dwMaxTextureHeight;
+
+	if (ddsd.dwWidth > dwMaxWidth)
+		ddsd.dwWidth = dwMaxWidth;
+
+	if (ddsd.dwHeight > dwMaxHeight)
+		ddsd.dwHeight = dwMaxHeight;
+
+	TextureSearchInfo tsi;
+	tsi.imageformat	= mFormat;
+	tsi.pddpf       = &ddsd.ddpfPixelFormat;
+		
+    // Enumerate the texture formats, and find the closest device-supported
+    // texture pixel format. The TextureSearchCallback function for this
+    // tutorial is simply looking for a 16-bit texture. Real apps may be
+    // interested in other formats, for alpha textures, bumpmaps, etc..
+    GDevice->EnumTextureFormats( TextureSearchCallback, &tsi );
+    if( 0L == ddsd.ddpfPixelFormat.dwRGBBitCount )
+        return NULL;
+
+    // Get the device's render target, so we can then use the render target to
+    // get a ptr to a DDraw object. We need the DirectDraw interface for
+    // creating surfaces.
+    LPDIRECTDRAWSURFACE7 pddsRender;
+    LPDIRECTDRAW7        pDD;
+    GDevice->GetRenderTarget( &pddsRender );
+    pddsRender->GetDDInterface( (VOID**)&pDD );
+    pddsRender->Release();
+
+    // Create a new surface for the texture
+    if( FAILED( hr = pDD->CreateSurface( &ddsd, &pddsTexture, NULL ) ) )
+    {
+        pDD->Release();
+        return NULL;
+    }
+
+    // Done with DDraw
+    pDD->Release();
+
+	return pddsTexture;
+}
+
+void DX7Texture2D::LoadTextureFromImage()
+{
+	DDSURFACEDESC2 ddsd;
+    ZeroMemory( &ddsd, sizeof(DDSURFACEDESC2) );
+
+	while (m_pddsSurface->Lock(NULL, &ddsd, 0, 0) == DDERR_WASSTILLDRAWING);
+
+	BYTE * pDst = (BYTE *)ddsd.lpSurface;
+
+	if (mFormat == Image::Format_R8G8B8A8)
+	{
+		DWORD* pSrc = (DWORD*)mImage.GetData();
+
+		DWORD dwRMask = ddsd.ddpfPixelFormat.dwRBitMask;
+		DWORD dwGMask = ddsd.ddpfPixelFormat.dwGBitMask;
+		DWORD dwBMask = ddsd.ddpfPixelFormat.dwBBitMask;
+		DWORD dwAMask = ddsd.ddpfPixelFormat.dwRGBAlphaBitMask;
+
+		DWORD dwRShiftL = 8, dwRShiftR = 0;
+		DWORD dwGShiftL = 8, dwGShiftR = 0;
+		DWORD dwBShiftL = 8, dwBShiftR = 0;
+		DWORD dwAShiftL = 8, dwAShiftR = 0;
+
+		DWORD dwMask;
+
+		for (dwMask = dwRMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwRShiftR++;
+
+		for (; dwMask; dwMask >>= 1) dwRShiftL--;
+
+		for (dwMask = dwGMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwGShiftR++;
+
+		for (; dwMask; dwMask >>= 1) dwGShiftL--;
+
+		for (dwMask = dwBMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwBShiftR++;
+
+		for (; dwMask; dwMask >>= 1) dwBShiftL--;
+
+		for (dwMask = dwAMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwAShiftR++;
+
+		for (; dwMask; dwMask >>= 1) dwAShiftL--;
+
+		for (DWORD y = 0; y < ddsd.dwHeight; y++)
+		{
+			DWORD * pDstData32 = (DWORD *)pDst;
+			WORD * pDstData16 = (WORD *)pDst;
+
+			for (DWORD x = 0; x < ddsd.dwWidth; x++)
+			{
+				DWORD dwPixel = pSrc[y*ddsd.dwWidth+x];
+
+				BYTE r = (BYTE)((dwPixel >> 0)  & 0x000000ff);
+				BYTE g = (BYTE)((dwPixel >> 8)  & 0x000000ff);
+				BYTE b = (BYTE)((dwPixel >> 16) & 0x000000ff);
+				BYTE a = (BYTE)((dwPixel >> 24) & 0x000000ff);
+
+				DWORD dr = ((r >> (dwRShiftL)) << dwRShiftR)&dwRMask;
+				DWORD dg = ((g >> (dwGShiftL)) << dwGShiftR)&dwGMask;
+				DWORD db = ((b >> (dwBShiftL)) << dwBShiftR)&dwBMask;
+				DWORD da = ((a >> (dwAShiftL)) << dwAShiftR)&dwAMask;
+
+				if (32 == ddsd.ddpfPixelFormat.dwRGBBitCount)
+					pDstData32[x] = (DWORD)(dr + dg + db + da);
+				else
+					pDstData16[x] = (WORD)(dr + dg + db + da);
+			}
+
+			pDst += ddsd.lPitch;
+		}
+	}
+	else if(mFormat == Image::Format_R8G8B8)
+	{
+		BYTE* pSrc = mImage.GetData();
+
+		DWORD dwRMask = ddsd.ddpfPixelFormat.dwRBitMask;
+		DWORD dwGMask = ddsd.ddpfPixelFormat.dwGBitMask;
+		DWORD dwBMask = ddsd.ddpfPixelFormat.dwBBitMask;
+		DWORD dwAMask = ddsd.ddpfPixelFormat.dwRGBAlphaBitMask;
+
+		DWORD dwRShiftL = 8, dwRShiftR = 0;
+		DWORD dwGShiftL = 8, dwGShiftR = 0;
+		DWORD dwBShiftL = 8, dwBShiftR = 0;
+		DWORD dwAShiftL = 8, dwAShiftR = 0;
+
+		DWORD dwMask;
+
+		for (dwMask = dwRMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwRShiftR++;
+
+		for (; dwMask; dwMask >>= 1) dwRShiftL--;
+
+		for (dwMask = dwGMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwGShiftR++;
+
+		for (; dwMask; dwMask >>= 1) dwGShiftL--;
+
+		for (dwMask = dwBMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwBShiftR++;
+
+		for (; dwMask; dwMask >>= 1) dwBShiftL--;
+
+		for (dwMask = dwAMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwAShiftR++;
+
+		for (; dwMask; dwMask >>= 1) dwAShiftL--;
+
+		for (DWORD y = 0; y < ddsd.dwHeight; y++)
+		{
+			DWORD * pDstData32 = (DWORD *)pDst;
+			WORD * pDstData16 = (WORD *)pDst;
+
+			for (DWORD x = 0; x < ddsd.dwWidth; x++)
+			{
+				BYTE r = pSrc[0];
+				BYTE g = pSrc[1];
+				BYTE b = pSrc[2];
+				BYTE a = 0xFF;
+
+				DWORD dr = ((r >> (dwRShiftL)) << dwRShiftR)&dwRMask;
+				DWORD dg = ((g >> (dwGShiftL)) << dwGShiftR)&dwGMask;
+				DWORD db = ((b >> (dwBShiftL)) << dwBShiftR)&dwBMask;
+				DWORD da = ((a >> (dwAShiftL)) << dwAShiftR)&dwAMask;
+
+				if (32 == ddsd.ddpfPixelFormat.dwRGBBitCount)
+					pDstData32[x] = (DWORD)(dr + dg + db + da);
+				else
+					pDstData16[x] = (WORD)(dr + dg + db + da);
+
+				pSrc += 3;
+			}
+
+			pDst += ddsd.lPitch;
+		}
+	}
+	else if(mFormat == Image::Format_A8 || mFormat == Image::Format_L8)
+	{
+		BYTE* pSrc = mImage.GetData();
+
+		for (DWORD y = 0; y < ddsd.dwHeight; y++)
+		{
+			for (DWORD x = 0; x < ddsd.dwWidth; x++)
+			{
+				*pDst = *pSrc;
+				pSrc++;
+				pDst++;
+			}
+
+			pDst += ddsd.lPitch - ddsd.dwWidth;
+		}
+	}
+	else
+	{
+		arx_assert(0);	// Unsupported
+	}
+
+	m_pddsSurface->Unlock(0);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // DX7TextureStage - MOVE THAT SOMEWHERE ELSE!
@@ -250,7 +562,6 @@ Renderer  RendererInstance;
 
 Renderer::Renderer()
 {
-	HRESULT res = D3DXInitialize();
 	GRenderer = this;
 
 	// TODO-DX7: Hardcoded... number of textures stages available for DX7
@@ -271,7 +582,6 @@ Renderer::~Renderer()
 	}
 
 	GRenderer = 0;
-	HRESULT res = D3DXUninitialize();
 }
 
 void Renderer::ReleaseAllTextures()
@@ -351,6 +661,37 @@ void Renderer::SetCulling(CullingMode mode)
 	GDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, ARXToDXCullMode[mode]);
 }
 
+void DX7MatrixIdentity(D3DMATRIX *pout)
+{
+	pout->_11 = 1;
+	pout->_12 = 0;
+	pout->_13 = 0;
+	pout->_14 = 0;
+	pout->_21 = 0;
+	pout->_22 = 1;
+	pout->_23 = 0;
+	pout->_24 = 0;
+	pout->_31 = 0;
+	pout->_32 = 0;
+	pout->_33 = 1;
+	pout->_34 = 0;
+	pout->_41 = 0;
+	pout->_42 = 0;
+	pout->_43 = 0;
+	pout->_44 = 1;
+}
+
+D3DMATRIX* DX7MatrixOrthoOffCenterLH(D3DMATRIX *pout, float l, float r, float b, float t, float zn, float zf)
+{
+    DX7MatrixIdentity(pout);
+    pout->_11 = 2.0f / (r - l);
+    pout->_22 = 2.0f / (t - b);
+    pout->_33 = 1.0f / (zf -zn);
+    pout->_41 = -1.0f -2.0f *l / (r - l);
+    pout->_42 = 1.0f + 2.0f * t / (b - t);
+    pout->_43 = zn / (zn -zf);
+    return pout;
+}
 
 D3DMATRIX matProj;
 D3DMATRIX matWorld;
@@ -361,15 +702,15 @@ void Renderer::Begin2DProjection(float left, float right, float bottom, float to
 	GDevice->GetTransform(D3DTRANSFORMSTATE_WORLD, &matWorld);
 	GDevice->GetTransform(D3DTRANSFORMSTATE_VIEW, &matView);
 	
-	D3DXMATRIX matOrtho;
-	D3DXMatrixOrthoOffCenterLH(&matOrtho, left, right, bottom, top, zNear, zFar);
+	D3DMATRIX matOrtho;
+	DX7MatrixOrthoOffCenterLH(&matOrtho, left, right, bottom, top, zNear, zFar);
 
-	D3DXMATRIX matIdentity;
-	D3DXMatrixIdentity(&matIdentity);
+	D3DMATRIX matIdentity;
+	DX7MatrixIdentity(&matIdentity);
 
-	GDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, (D3DMATRIX*)&matOrtho);
-	GDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, (D3DMATRIX*)&matIdentity);
-	GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, (D3DMATRIX*)&matIdentity);
+	GDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &matOrtho);
+	GDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &matIdentity);
+	GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &matIdentity);
 }
 
 void Renderer::End2DProjection()

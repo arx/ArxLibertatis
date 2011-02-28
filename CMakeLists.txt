@@ -63,7 +63,7 @@ IF (MSVC)
 	set(SFML_LIBS sfml-system-s)	
 	
 	# Windows specific libs
-  set(ARX_LIBS DevIL freetype244MT d3dx)
+  set(ARX_LIBS DevIL freetype244MT)
 	
 	# Source groups
 	set(SOURCE_GROUPS
@@ -98,7 +98,7 @@ ELSE (MSVC)
 	set(SFML_LIBS sfml-system)
 	
 	# Linux specific libs
-  set(ARX_LIBS IL freetype d3dx)
+  set(ARX_LIBS IL freetype)
 	
 ENDIF (MSVC)
 
