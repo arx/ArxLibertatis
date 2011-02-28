@@ -4793,7 +4793,7 @@ long GetInterNum(INTERACTIVE_OBJ * io)
 {
 	if (io == NULL) return -1;
 
-	if (io->num < inter.nbmax && inter.iobj[io->num] == io)
+	if ( io->num > -1 && io->num < inter.nbmax && inter.iobj[io->num] == io)
 		return io->num;
 
 	for (long i = 0; i < inter.nbmax; i++)
