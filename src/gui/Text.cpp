@@ -142,8 +142,8 @@ long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, const std::string& _lpszUTe
 					                      1,
 					                      &sSize);
 					{
-						if ((_lpszUText[iTemp] == _T('\n')) ||
-								(_lpszUText[iTemp] == _T('*')))
+						if ((_lpszUText[iTemp] == '\n') ||
+								(_lpszUText[iTemp] == '*'))
 						{
 							iHeight		+= _iSpacingY + sSize.cy;
 							bWrite		 = false;
@@ -166,7 +166,7 @@ long ARX_UNICODE_ForceFormattingInRect(HFONT _hFont, const std::string& _lpszUTe
 						}
 						else
 						{
-							while ((_lpszUText[iTemp] != _T(' ')) && (iTemp > 0)) iTemp--;
+							while ((_lpszUText[iTemp] != ' ') && (iTemp > 0)) iTemp--;
 						}
 
 						bWrite		 = false;
@@ -220,7 +220,7 @@ long ARX_UNICODE_FormattingInRect(HDC _hDC, std::string& text, int _iSpacingY, R
 			        (text[iTemp] == '*'))
 			{
 				iHeight += _iSpacingY + sSize.cy;
-				text[iTemp] = _T('\0');
+				text[iTemp] = '\0';
 				bWrite = false;
 
 				TextOutA(_hDC, _rRect.left, _rRect.top, &text[iOldTemp], strlen(&text[iOldTemp]));
