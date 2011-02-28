@@ -1,6 +1,10 @@
 #ifndef     _VECTOR2_H_
 #define     _VECTOR2_H_
 
+
+#include "graphics/Math.h"
+
+
 /**
  *  Representation of a vector in 2d space.
  *  @brief  2x1 Vector class.

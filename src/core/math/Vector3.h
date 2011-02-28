@@ -1,8 +1,13 @@
 #ifndef     _VECTOR3_H_
 #define     _VECTOR3_H_
 
+
+#include "graphics/Math.h"
+
+
 #define cross   ^
 #define dot     |
+
 
 /**
  *  Representation of a vector in 3d space.
