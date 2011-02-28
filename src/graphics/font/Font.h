@@ -1,7 +1,7 @@
 #ifndef _FONT_H_
 #define _FONT_H_
 
-#include "core/Math/Vector2.h"
+#include "core/math/Vector2.h"
 
 #include <windows.h>	// TEMP... needed for COLORREF
 #include <string>
