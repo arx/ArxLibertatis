@@ -295,11 +295,11 @@ public:
      */
     const Vector3& Randomize()
     {
-        z = Maths::Rand( -1.0f, 1.0f );
-        T a = Maths::Rand( 0.0f, Maths::PI_2 );
-        T r = Maths::Sqrt( 1.0f - z*z );
-        x = r * Maths::Cos(a);
-        y = r * Maths::Sin(a);
+        z = rand( -1.0f, 1.0f );
+        T a = rand( 0.0f, PI * 2.0f );
+        T r = sqrt( 1.0f - z*z );
+        x = r * cos(a);
+        y = r * sin(a);
 
         return *this;
     }
@@ -310,10 +310,10 @@ public:
      */
     static Vector3 GetRandomVector()
     {
-        T z = Maths::Rand( -1.0, 1.0 );
-        T a = Maths::Rand( 0.0f, Maths::PI_2 );
-        T r = Maths::Sqrt(1.0f - z*z);
-        return Vector3(r * Maths::Cos(a), r * Maths::Sin(a), z);
+        T z = rand( -1.0, 1.0 );
+        T a = rand( 0.0f, PI * 2.0f );
+        T r = sqrt(1.0f - z*z);
+        return Vector3(r * cos(a), r * sin(a), z);
     }
 
     /**
@@ -324,9 +324,9 @@ public:
      */
     const Vector3& FromAngle( T pAngleX, T pAngleY )
     {
-        x = Maths::Cos(Maths::ToRadians(pAngleY));
-        y = Maths::Sin(Maths::ToRadians(pAngleX));
-        z = Maths::Sin(Maths::ToRadians(pAngleY));
+        x = cos(radians(pAngleY));
+        y = sin(radians(pAngleX));
+        z = sin(radians(pAngleY));
 
         return Normalize();
     }
@@ -337,7 +337,7 @@ public:
      */
     T GetLength() const
     {
-        return Maths::Sqrt( x*x + y*y + z*z );
+        return sqrt( x*x + y*y + z*z );
     }
 
     /**
@@ -366,7 +366,7 @@ public:
      */
     T GetAngleBetween( const Vector3& pOther ) const
     {
-        return Maths::ACos( (*this dot pOther ) / (GetLength()*pOther.GetLength()) );
+        return acos( (*this dot pOther ) / (GetLength()*pOther.GetLength()) );
     }
 
     /**
@@ -375,7 +375,7 @@ public:
      *  @param  pEps    The epsilon value.
      *  @return \bTrue if the vectors values fit in the epsilon range.
      */
-    bool EqualEps( const Vector3& pOther, T pEps = Maths::EPSILON ) const
+    bool EqualEps( const Vector3& pOther, T pEps = EEdef_EPSILON ) const
     {
         return  x > (pOther.x - pEps) && x < (pOther.x + pEps) &&
                 y > (pOther.y - pEps) && y < (pOther.y + pEps) &&

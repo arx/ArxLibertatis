@@ -239,7 +239,7 @@ public:
      */
     T GetLength() const
     {
-        return Maths::Sqrt( x*x + y*y );
+        return sqrt( x*x + y*y );
     }
 
     /**

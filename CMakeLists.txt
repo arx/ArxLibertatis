@@ -63,8 +63,11 @@ IF (MSVC)
 	set(SFML_LIBS sfml-system-s)	
 	
 	# Windows specific libs
-  set(ARX_LIBS DevIL freetype244MT d3dx)
-	
+	set(ARX_LIBS DevIL)
+
+	# Freetype
+	set(FREETYPE_LIBS freetype244MT)
+  	
 	# Source groups
 	set(SOURCE_GROUPS
 		ai animation audio core game graphics gui io physics scene scripting window
@@ -98,8 +101,13 @@ ELSE (MSVC)
 	set(SFML_LIBS sfml-system)
 	
 	# Linux specific libs
-  set(ARX_LIBS IL freetype d3dx)
-	
+	set(ARX_LIBS IL freetype)
+  
+	# Freetype...
+	execute_process(COMMAND freetype-config --cflags OUTPUT_VARIABLE FREETYPE_CXX_FLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
+	execute_process(COMMAND freetype-config --libs OUTPUT_VARIABLE FREETYPE_LIBS OUTPUT_STRIP_TRAILING_WHITESPACE)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FREETYPE_CXX_FLAGS}")
+
 ENDIF (MSVC)
 
 if(ARX_MINGW)
@@ -123,7 +131,7 @@ ENDIF()
 add_executable(arx ${ALL_SOURCES} ${ALL_INCLUDES})
 
 #link
-target_link_libraries(arx dsound dxguid gdi32 shell32 dinput comdlg32 ole32 comctl32 ddraw z ${ARX_LIBS} ${SFML_LIBS} ${THREAD_LIBS})
+target_link_libraries(arx dsound dxguid gdi32 shell32 dinput comdlg32 ole32 comctl32 ddraw z ${ARX_LIBS} ${SFML_LIBS} ${THREAD_LIBS} ${FREETYPE_LIBS})
 
 add_custom_target(remake
 	#clean and compile with 1 thread per core
