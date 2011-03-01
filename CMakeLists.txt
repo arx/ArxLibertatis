@@ -61,6 +61,9 @@ option(ARX_USE_UNITYBUILD "Unity build" OFF)
 option(ARX_DEBUG "Normal debug options" ON)
 option(ARX_DEBUG_EXTRA "Expensive debug options" OFF)
 
+# For custom cmake modules.
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/")
+
 find_package(DevIL REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(Threads REQUIRED)
@@ -107,13 +110,13 @@ if(MSVC)
 	source_group("inc" FILES ${ALL_INCLUDES})
 	
 else(MSVC)
-	
-	#set(CMAKE_TOOLCHAIN_FILE ToolchainWine.cmake)
-	
 	# Set optimal options for gcc:
+	
+	find_package(Wine REQUIRED)
+	
 	#wine compiler
-	set(CMAKE_CXX_COMPILER wineg++)
-	set(CMAKE_C_COMPILER winegcc)
+	set(CMAKE_CXX_COMPILER ${Wine_GXX})
+	set(CMAKE_C_COMPILER ${Wine_GCC})
 	
 	#set 32bit
 	set(CMAKE_CXX_FLAGS "-m32")
