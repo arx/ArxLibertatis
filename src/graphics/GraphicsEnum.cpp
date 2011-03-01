@@ -445,7 +445,7 @@ static VOID UpdateDialogControls(HWND hDlg, D3DEnum_DeviceInfo * pCurrentDevice,
 						continue;
 
 				char strMode[80];
-				sprintf(strMode, "%ld x %ld x %ld",
+				sprintf(strMode, "%d x %d x %d",
 				         pddsdMode->dwWidth, pddsdMode->dwHeight,
 				         pddsdMode->ddpfPixelFormat.dwRGBBitCount);
 
