@@ -1437,7 +1437,7 @@ int main(int, char**)
 		danaeApp.ToolBar->Buttons=tbButtons;
 		danaeApp.ToolBar->ToolBarNb=23;
 		danaeApp.ToolBar->Type=EERIE_TOOLBAR_TOP;
-		danaeApp.ToolBar->String=NULL;
+		danaeApp.ToolBar->String.clear();
 	}
 	else
 	{

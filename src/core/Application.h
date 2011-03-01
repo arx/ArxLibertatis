@@ -245,7 +245,7 @@ struct EERIETOOLBAR
 	long		ToolBarNb;
 	LPCTBBUTTON Buttons;
 	long		Bitmap;
-	char*		String;
+	std::string		String;
 	long		Type;
 };
 
@@ -290,7 +290,7 @@ public:
 		float			fMouseSensibility;
 protected:
 		// Overridable variables for the app
-		const char * m_strWindowTitle;
+		std::string m_strWindowTitle;
 		bool			m_bAppUseZBuffer;
 		bool			m_bAppUseStereo;
 		bool			m_bShowStats;
@@ -348,7 +348,7 @@ protected:
 		{
 			return S_OK;
 		}
-		VOID					OutputText( DWORD x, DWORD y, const char * str );
+		VOID					OutputText( DWORD x, DWORD y, const std::string& str );
  
 		HRESULT	SetClipping( float x1, float y1, float x2, float y2 );
  
@@ -367,7 +367,7 @@ protected:
 		void					EERIEMouseUpdate(short x, short y);
 
 		// Functions to create, run, pause, and clean up the application
-		virtual HRESULT			Create(HINSTANCE, const char* );
+		virtual HRESULT			Create(HINSTANCE, const std::string& );
 		virtual INT				Run();
 		virtual LRESULT			MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 		virtual VOID			Pause(bool bPause);
@@ -430,8 +430,7 @@ private:
 //******************************************************************************
 // MESSAGE BOXES
 //******************************************************************************
-bool	OKBox(const char * text, const char * title);
-//int		ShowError(const char * funcname, const char * message, long fatality);
+bool	OKBox(const std::string& text, const std::string& title);
 
 void	ExitApp(int v);
 void	CalcFPS(bool reset = false);

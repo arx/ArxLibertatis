@@ -169,7 +169,7 @@ extern long FINAL_COMMERCIAL_GAME;
 //*************************************************************************************
 // Create()
 //*************************************************************************************
-HRESULT CD3DApplication::Create(HINSTANCE hInst, const char* strCmdLine)
+HRESULT CD3DApplication::Create(HINSTANCE hInst, const std::string& strCmdLine)
 {
 	HRESULT hr;
 	long menu;
@@ -266,7 +266,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst, const char* strCmdLine)
 		else
 			menu = CreationMenu;
 
-		MSGhwnd = m_hWnd = CreateWindow("D3D Window", m_strWindowTitle,
+		MSGhwnd = m_hWnd = CreateWindow("D3D Window", m_strWindowTitle.c_str(),
 		                                flags,
 		                                CW_USEDEFAULT, CW_USEDEFAULT, CreationSizeX, CreationSizeY, owner,
 		                                LoadMenu(hInst, MAKEINTRESOURCE(menu)),
@@ -1167,7 +1167,7 @@ HRESULT CD3DApplication::SetClipping(float x1, float y1, float x2, float y2)
 // OutputText()
 // Draws text on the window.
 //*************************************************************************************
-VOID CD3DApplication::OutputText(DWORD x, DWORD y, const char * str)
+VOID CD3DApplication::OutputText(DWORD x, DWORD y, const std::string& str)
 {
 	HDC hDC;
 
@@ -1178,7 +1178,7 @@ VOID CD3DApplication::OutputText(DWORD x, DWORD y, const char * str)
 		{
 			SetTextColor(hDC, RGB(255, 255, 0));
 			SetBkMode(hDC, TRANSPARENT);
-			ExtTextOut(hDC, x, y, 0, NULL, str, lstrlen(str), NULL);
+			ExtTextOut(hDC, x, y, 0, NULL, str.c_str(), str.length(), NULL);
 			m_pddsRenderTarget->ReleaseDC(hDC);
 		}
 	}
@@ -1191,7 +1191,7 @@ VOID CD3DApplication::OutputText(DWORD x, DWORD y, const char * str)
 			// Use a different color to help distinguish left eye view
 			SetTextColor(hDC, RGB(255, 0, 255));
 			SetBkMode(hDC, TRANSPARENT);
-			ExtTextOut(hDC, x, y, 0, NULL, str, lstrlen(str), NULL);
+			ExtTextOut(hDC, x, y, 0, NULL, str.c_str(), str.length(), NULL);
 			m_pddsRenderTargetLeft->ReleaseDC(hDC);
 		}
 	}
@@ -1362,12 +1362,12 @@ void CD3DApplication::EnableZBuffer()
 //*************************************************************************************
 //*************************************************************************************
 //TODO(lubosz): is this needed in the game? replace
-bool OKBox(const char * text, const char * title)
+bool OKBox(const std::string& text, const std::string& title)
 
 {
 	int i;
 	g_pD3DApp->Pause(true);
-	i = MessageBox(g_pD3DApp->m_hWnd, text, title, MB_ICONQUESTION | MB_OKCANCEL);
+	i = MessageBox(g_pD3DApp->m_hWnd, text.c_str(), title.c_str(), MB_ICONQUESTION | MB_OKCANCEL);
 	g_pD3DApp->Pause(false);
 
 	if (i == IDCANCEL) return false;
