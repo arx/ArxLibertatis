@@ -51,6 +51,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 HRESULT WriteRegKey( HKEY hKey, const char * strName, const char * strValue );
 HRESULT WriteRegKeyValue( HKEY hKey, const char * strName, DWORD val );
 HRESULT ReadRegKeyValue( HKEY hKey, const char * strName, long * val, long defaultt );
-HRESULT ReadRegKey( HKEY hKey, const char * strName, TCHAR* strValue, DWORD dwLength, const char * strDefault );
+HRESULT ReadRegKey( HKEY hKey, const char * strName, char* strValue, DWORD dwLength, const char * strDefault );
 
 #endif

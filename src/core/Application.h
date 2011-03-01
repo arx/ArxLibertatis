@@ -367,7 +367,7 @@ protected:
 		void					EERIEMouseUpdate(short x, short y);
 
 		// Functions to create, run, pause, and clean up the application
-		virtual HRESULT			Create(HINSTANCE, TCHAR *);
+		virtual HRESULT			Create(HINSTANCE, const char* );
 		virtual INT				Run();
 		virtual LRESULT			MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 		virtual VOID			Pause(bool bPause);

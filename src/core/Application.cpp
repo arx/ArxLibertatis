@@ -169,7 +169,7 @@ extern long FINAL_COMMERCIAL_GAME;
 //*************************************************************************************
 // Create()
 //*************************************************************************************
-HRESULT CD3DApplication::Create(HINSTANCE hInst, TCHAR * strCmdLine)
+HRESULT CD3DApplication::Create(HINSTANCE hInst, const char* strCmdLine)
 {
 	HRESULT hr;
 	long menu;
