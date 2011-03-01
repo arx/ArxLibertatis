@@ -291,12 +291,12 @@ long HERMES_KEEP_MEMORY_TRACE = 0;
 long HERMES_KEEP_MEMORY_TRACE = 0;
 #endif
 #define SIZE_STRING_MEMO_TRACE 24
-typedef struct
+struct MEMO_TRACE
 {
 	void 	*		ptr;
 	char			string1[SIZE_STRING_MEMO_TRACE];
 	unsigned long	size;
-} MEMO_TRACE;
+};
 
 MEMO_TRACE * MemoTraces = NULL;
 long nb_MemoTraces = 0;

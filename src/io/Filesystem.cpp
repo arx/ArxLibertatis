@@ -67,11 +67,17 @@ long KillAllDirectory(const char * path) {
 	return 1;
 }
 
-bool DirectoryExist(const char * name) {
+bool DirectoryExist(const string & _name) {
+	
+	// FindFirstFile does not expect a slash at the end
+	string name = _name;
+	if(!name.empty() && *name.rbegin() == '\\') {
+		name.resize(name.length() - 1);
+	}
 	
 	HANDLE idx;
 	WIN32_FIND_DATA fd;
-	if ((idx = FindFirstFile(name, &fd)) != INVALID_HANDLE_VALUE) {
+	if ((idx = FindFirstFile(name.c_str(), &fd)) != INVALID_HANDLE_VALUE) {
 		FindClose(idx);
 		char initial[256];
 		GetCurrentDirectory(255, initial);
@@ -93,12 +99,12 @@ bool FileExist(const char * name) {
 	
 	FileHandle handle = FileOpenRead(name);
 	if(!handle) {
-		LogError <<"Didn't find "<< name;
+		LogError << "Didn't find " << name;
 		return false;
 	}
 	
 	FileClose(handle);
-	LogInfo <<"Found "<< name;
+	LogInfo << "Found " << name;
 	return true;
 }
 
@@ -106,12 +112,12 @@ long FileTell(FileHandle handle) {
 	return (SetFilePointer(GETHANDLE(handle), 0, NULL, FILE_CURRENT));
 }
 
-static FileHandle FileOpen(const char * name, DWORD mode, DWORD opt, DWORD opt2) {
+static FileHandle FileOpen(const char * name, DWORD mode, DWORD opt) {
 	
-	HANDLE handle = CreateFile(name, mode, opt, NULL, opt2, 0, 0);
+	HANDLE handle = CreateFile(name, mode, 0, NULL, opt, 0, 0);
 
 	if(handle == INVALID_HANDLE_VALUE) {
-		LogError << "Can't open "<< name;
+		LogError << "Can't open " << name;
 		return INVALID_FILE_HANDLE;
 	}
 	LogInfo << "Opened "<< name;
@@ -122,15 +128,15 @@ static FileHandle FileOpen(const char * name, DWORD mode, DWORD opt, DWORD opt2)
 }
 
 FileHandle FileOpenRead(const char * name) {
-	return FileOpen(name, GENERIC_READ, 0, OPEN_EXISTING);
+	return FileOpen(name, GENERIC_READ, OPEN_EXISTING);
 }
 
 FileHandle FileOpenWrite(const char * name) {
-	return FileOpen(name, GENERIC_WRITE, TRUNCATE_EXISTING, 0);
+	return FileOpen(name, GENERIC_WRITE, CREATE_ALWAYS);
 }
 
 FileHandle FileOpenReadWrite(const char * name) {
-	return FileOpen(name, GENERIC_READ|GENERIC_WRITE, TRUNCATE_EXISTING, 0);
+	return FileOpen(name, GENERIC_READ|GENERIC_WRITE, OPEN_ALWAYS);
 }
 
 bool FileDelete(const std::string & file) {

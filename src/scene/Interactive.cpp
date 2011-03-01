@@ -1332,7 +1332,7 @@ void ARX_INTERACTIVE_APPLY_TWEAK_INFO(INTERACTIVE_OBJ * io)
 	for (long ii = 0; ii < io->Tweak_nb; ii++)
 	{
 		if (io->Tweaks[ii].type == TWEAK_REMOVE)
-			EERIE_MESH_TWEAK_Do(io, TWEAK_REMOVE, NULL);
+			EERIE_MESH_TWEAK_Do(io, TWEAK_REMOVE, string());
 		else if (io->Tweaks[ii].type == TWEAK_TYPE_SKIN)
 			EERIE_MESH_TWEAK_Skin(io->obj, io->Tweaks[ii].param1, io->Tweaks[ii].param2);
 		else if (io->Tweaks[ii].type == TWEAK_TYPE_ICON)
@@ -1859,6 +1859,8 @@ INTERACTIVE_OBJ * CreateFreeInter(long num)
 
 		memset(inter.iobj[i], 0, sizeof(INTERACTIVE_OBJ));
 		io = inter.iobj[i];
+		// Nuky - added num which caches the index position in global ios table
+		io->num = i;
 		io->room_flags = 1;
 		io->room = -1;
 		io->no_collide = -1;
@@ -2949,7 +2951,8 @@ void ARX_INTERACTIVE_DeleteByIndex(long i, long flag)
 				strcpy(temp2, GetName(temp).c_str());
 				RemoveName(temp);
 				std::stringstream ss;
-				ss << temp << temp2 << '_' << std::setfill('0') << std::setw(4) << inter.iobj[i]->ident << '.';
+				ss << temp << temp2 << '_' << std::setfill('0') << std::setw(4) << inter.iobj[i]->ident 
+				   << std::setw(0) << '.';
 				temp = ss.str();
 				//sprintf(temp, "%s%s_%04d.", temp, temp2, inter.iobj[i]->ident)
 
@@ -3151,7 +3154,6 @@ INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
 void ReloadScript(INTERACTIVE_OBJ * io)
 {
 	std::string texscript = io->filename;
-	char tmp2[HERMES_PATH_SIZE];
 	SetExt(texscript, "asl");
 	ARX_SCRIPT_Timer_Clear_For_IO(io);
 	ReleaseScript(&io->over_script);
@@ -3175,18 +3177,11 @@ void ReloadScript(INTERACTIVE_OBJ * io)
 	}
 
 	texscript = io->filename;
-	strcpy(tmp2, GetName(texscript).c_str());
+	string tmp2 = GetName(texscript);
 	RemoveName(texscript);
 	std::stringstream ss;
-	ss << texscript << tmp2 << '_';
-
-	char fill = ss.fill('0');
-	std::streamsize width = ss.width(4);
-	ss << io->ident;
-	ss.width(width);
-	ss.fill(fill);
-
-	ss << '\\' << tmp2 << ".asl";
+	ss << texscript << tmp2 << '_' << std::setfill('0') << std::setw(4) << io->ident;
+	ss << std::setw(0) << '\\' << tmp2 << ".asl";
 	texscript = ss.str();
 
 	if (PAK_FileExist(texscript.c_str()))
@@ -3270,7 +3265,7 @@ void MakeIOIdent(INTERACTIVE_OBJ * io)
 		strcpy(temp2, GetName(temp).c_str());
 		RemoveName(temp);
 		std::stringstream ss;
-		ss << temp << temp2 << '_' << std::setfill('0') << std::setw(4) << t << '.';
+		ss << temp << temp2 << '_' << std::setfill('0') << std::setw(4) << t << std::setw(0) << '.';
 		//(temp, "%s%s_%04d.", temp, temp2, t);
 
 		if (!DirectoryExist(temp.c_str()))
@@ -3343,9 +3338,10 @@ void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io)
 
 	if (!io) return;
 
+	// TODO do we really need to open this every time?
 	if (LAST_CHINSTANCE != -1) ARX_Changelevel_CurGame_Open();
 
-	while (1)
+	for (;;)
 	{
 		if (!ExistTemporaryIdent(io, t))
 		{
@@ -3605,7 +3601,7 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag, EERIE_3D * _pRe
 		    || (io->GameFlags & GFLAG_ISINTREATZONE))
 
 			// Is Object Displayed on screen ???
-			if ((io->show == SHOW_FLAG_IN_SCENE) || (bPlayerEquiped && flag) || (bPlayerEquiped  && (player.Interface & INTER_MAP) && (Book_Mode == 0))) //((io->show==9) && (player.Interface & INTER_MAP)) )
+			if ((io->show == SHOW_FLAG_IN_SCENE) || (bPlayerEquiped && flag) || (bPlayerEquiped  && (player.Interface & INTER_MAP) && (Book_Mode == BOOKMODE_STATS))) //((io->show==9) && (player.Interface & INTER_MAP)) )
 			{
 				if ((flag == 2) && _pTable && _pnNbInTable && ((*_pnNbInTable) < 256))
 				{
@@ -3711,7 +3707,7 @@ bool IsEquipedByPlayer(INTERACTIVE_OBJ * io)
 }
 
 extern long LOOKING_FOR_SPELL_TARGET;
-INTERACTIVE_OBJ * InterClick(EERIE_S2D * pos, long flag)
+INTERACTIVE_OBJ * InterClick(EERIE_S2D * pos)
 {
 	LASTINTERCLICKNB = -1;
 
@@ -4420,7 +4416,7 @@ void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to, long flags)
 		        &&	(io->GameFlags & GFLAG_ISINTREATZONE))
 		{
 			if ((i == 0) && ((player.Interface & INTER_MAP) && (!(player.Interface & INTER_COMBATMODE)))
-			        && (Book_Mode == 0)) continue;
+			        && (Book_Mode == BOOKMODE_STATS)) continue;
 
 			if (io->show != SHOW_FLAG_IN_SCENE) continue;
 
@@ -4786,6 +4782,27 @@ bool HaveCommonGroup(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 	return false;
 }
 
+//***********************************************************************************************
+// Retreives IO Number with its address
+//-----------------------------------------------------------------------------------------------
+// VERIFIED (Cyril 2001/10/16)
+//***********************************************************************************************
+// Nuky - modified to use cached value first. For now it's safe and will use former method if
+//        the cached value is incorrect, but I think it never happens
+long GetInterNum(INTERACTIVE_OBJ * io)
+{
+	if (io == NULL) return -1;
+
+	if ( io->num > -1 && io->num < inter.nbmax && inter.iobj[io->num] == io)
+		return io->num;
+
+	for (long i = 0; i < inter.nbmax; i++)
+		if (inter.iobj[i] == io) return i;
+
+	return -1;
+}
+
+
 float ARX_INTERACTIVE_GetArmorClass(INTERACTIVE_OBJ * io)
 {
 	if (!io) return -1;
@@ -4852,7 +4869,6 @@ void ARX_INTERACTIVE_ActivatePhysics(long t)
 		io->soundtime = 0;
 		io->soundcount = 0;
 		EERIE_PHYSICS_BOX_Launch(io->obj, &pos, &fallvector);
-
 	}
 }
 

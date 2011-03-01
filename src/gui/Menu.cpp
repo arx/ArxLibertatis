@@ -55,13 +55,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include "gui/Menu.h"
+
 #include <windows.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include <fstream>
 
-#include <SFML/System/Unicode.hpp>
-
-#include "gui/Menu.h"
 #include "scene/ChangeLevel.h"
 #include "scene/GameSound.h"
 #include "graphics/particle/Particle.h"
@@ -90,7 +89,7 @@ extern CDirectInput * pGetInfoDirectInput;
 extern CMenuConfig * pMenuConfig;
 extern EERIE_3D ePlayerAngle;
 extern float Xratio, Yratio;
-extern long Book_Mode;
+extern ARX_INTERFACE_BOOK_MODE Book_Mode;
 extern long GAME_EDITOR;
 extern long START_NEW_QUEST;
 extern long INTRO_NOT_LOADED;
@@ -121,6 +120,12 @@ extern float ARXDiffTimeMenu;
 
 extern TextureContainer * pTextureLoad;
 
+bool MENU_NoActiveWindow();
+void ClearGameDEVICE();
+void GetTextSize(HFONT _hFont, const _TCHAR * _lpszUText, int * _iWidth, int * _iHeight);
+
+//-----------------------------------------------------------------------------
+// Exported global variables
 
 bool bQuickGenFirstClick = true;
 ARX_MENU_DATA ARXmenu;
@@ -139,79 +144,116 @@ void ClearGameDEVICE();
 #define ARX_MENU_SIZE_Y 24
 
  
-long save_c(0), save_p(0);
 std::vector<SaveGame> save_l;
+
+int saveTimeCompare(const SaveGame & a, const SaveGame & b) {
+	if(a.stime.wYear != b.stime.wYear) {
+		return (a.stime.wYear > b.stime.wYear);
+	} else 	if(a.stime.wMonth != b.stime.wMonth) {
+		return (a.stime.wMonth > b.stime.wMonth);
+	} else 	if(a.stime.wDay != b.stime.wDay) {
+		return (a.stime.wDay > b.stime.wDay);
+	} else 	if(a.stime.wHour != b.stime.wHour) {
+		return (a.stime.wHour > b.stime.wHour);
+	} else 	if(a.stime.wMinute != b.stime.wMinute) {
+		return (a.stime.wMinute > b.stime.wMinute);
+	} else 	if(a.stime.wSecond != b.stime.wSecond) {
+		return (a.stime.wSecond > b.stime.wSecond);
+	}
+	return (a.stime.wMilliseconds > b.stime.wMilliseconds);
+}
 
 //-----------------------------------------------------------------------------
 void CreateSaveGameList()
 {
+	LogDebug << "CreateSaveGameList";
+	
 	char path[512] = "";
 	HANDLE h;
 
 	sprintf(path, "save%s\\save*", LOCAL_SAVENAME);
-
-	save_l.resize( save_l.size() + 1 );
+	
+	save_l.resize(1);
 
 	save_l[0].name = "New";
-	save_c = 1;
 
 	char tTemp[sizeof(WIN32_FIND_DATA)+2];
 	WIN32_FIND_DATA * fdata = (WIN32_FIND_DATA *)tTemp;
 
+	LogDebug << "looking for " << path;
+	
 	if ((h = FindFirstFile(path, fdata)) != INVALID_HANDLE_VALUE)
 	{
 		do
 		{
 			if (fdata->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY && fdata->cFileName[0] != '.')
 			{
-				// Make another save game slot at the end
-				save_l.resize( save_l.size() +1 );
-
-				std::string text = fdata->cFileName + 4;
-				save_l[save_c].num = atoi(text.c_str());
+				
+				
 				std::stringstream ss;
 				ss << "save" << LOCAL_SAVENAME << "\\" << fdata->cFileName << "\\";
-				text = ss.str();
-				//sprintf(text, "%ssave%s\\%s\\", Project.workingdir, LOCAL_SAVENAME, fdata->cFileName);
-				unsigned long pouet;
-
-				if (ARX_CHANGELEVEL_GetInfo(text, save_l[save_c].name, save_l[save_c].version, save_l[save_c].level, pouet) != -1)
-				{
+				
+				string name;
+				float version;
+				long level;
+				
+				unsigned long ignored;
+				if(ARX_CHANGELEVEL_GetInfo(ss.str(), name, version, level, ignored) != -1) {
+					
+					// Make another save game slot at the end
+					save_l.resize(save_l.size() + 1);
+					
+					save_l.back().name = name;
+					save_l.back().version = version;
+					save_l.back().level = level;
+					
+					istringstream num(fdata->cFileName + 4);
+					num >> save_l.back().num;
+					
 					SYSTEMTIME stime;
 					FILETIME fTime;
 					FileTimeToLocalFileTime(&fdata->ftLastWriteTime, &fTime);
 					FileTimeToSystemTime(&fTime, &stime);
-					save_l[save_c].stime = stime;
-
-					save_c++;
+					save_l.back().stime = stime;
+					
+					LogInfo << "found " << fdata->cFileName << ": \""
+					        << name << "\"   v" << version
+					        << "   " << stime.wYear << "-" << stime.wMonth << "-" << stime.wDay
+					        << " " << stime.wHour << ":" << stime.wMinute << ":" << stime.wSecond
+					        << ":" << stime.wMilliseconds;
+					
+				} else {
+					LogWarning << "unable to get save file info for " << ss.str();
 				}
 			}
 		}
 		while (FindNextFile(h, fdata));
+		
+		if(save_l.size() > 1) {
+			std::sort(save_l.begin() + 1, save_l.end(), saveTimeCompare);
+		}
 
+		LogDebug << "found " << (save_l.size()-1) << " savegames";
 		FindClose(h);
+	} else {
+		LogInfo << "no save files found";
 	}
 }
 
 //-----------------------------------------------------------------------------
-void FreeSaveGameList()
-{
+void FreeSaveGameList() {
 	save_l.clear();
-	save_c = 0;
-	save_p = 0;
 }
 
 //-----------------------------------------------------------------------------
 void UpdateSaveGame(const long & i)
 {
-
 	//i == 0 -> new save game
 	//i >  0 -> erase old savegame save_l[i].name
-	if (i <= 0) ARX_CHANGELEVEL_Save(i, save_l[0].name);
+	if (i <= 0)
+		ARX_CHANGELEVEL_Save(i, save_l[0].name);
 	else
-	{
 		ARX_CHANGELEVEL_Save(save_l[i].num, save_l[i].name);
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -247,7 +289,7 @@ void ARX_MENU_LaunchAmb(char * _lpszAmb)
 }
 
 //-----------------------------------------------------------------------------
-void ARX_Menu_Resources_Create(LPDIRECT3DDEVICE7 m_pd3dDevice)
+void ARX_Menu_Resources_Create()
 {
 	if (ARXmenu.mda)
 	{
@@ -316,7 +358,7 @@ void ARX_Menu_Resources_Create(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		
 		ARXmenu.mda->str_cre_credits.reserve(creditsSize);
 		
-		sf::Unicode::UTF16ToUTF8(credits, &credits[creditsSize],
+		UTF16ToUTF8(credits, &credits[creditsSize],
 		                         std::back_inserter(ARXmenu.mda->str_cre_credits));
 		LogDebug << "Converted to UTF8 string of length " << ARXmenu.mda->str_cre_credits.size();
 		
@@ -395,7 +437,7 @@ void ARX_MENU_Clicked_NEWQUEST()
 	}
 
 	ARX_PLAYER_Start_New_Quest();
-	Book_Mode = 0;
+	Book_Mode = BOOKMODE_STATS;
 	player.skin = 0;
 	ePlayerAngle.b = -25.f;
 	ARX_PLAYER_Restore_Skin();
@@ -446,7 +488,7 @@ void ARX_MENU_Clicked_QUIT_GAME()
 }
 
 //-----------------------------------------------------------------------------
-void ARX_MENU_Launch(LPDIRECT3DDEVICE7 m_pd3dDevice)
+void ARX_MENU_Launch()
 {
 	ARX_TIME_Pause();
 
@@ -457,13 +499,13 @@ void ARX_MENU_Launch(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	ARX_MENU_CLICKSOUND();
 
 	ARXmenu.currentmode = AMCM_MAIN;
-	ARX_Menu_Resources_Create(m_pd3dDevice);
+	ARX_Menu_Resources_Create();
 }
 
 //-----------------------------------------------------------------------------
 // ARX Menu Management Func
 //-----------------------------------------------------------------------------
-void ARX_Menu_Manage(LPDIRECT3DDEVICE7 m_pd3dDevice)
+void ARX_Menu_Manage()
 {
 	// looks for keys for each mode.
 	switch (ARXmenu.currentmode)
@@ -520,7 +562,7 @@ long NEED_INTRO_LAUNCH = 0;
 // ARX Menu Rendering Func
 // returns false if no menu needs to be displayed
 //-----------------------------------------------------------------------------
-bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+bool ARX_Menu_Render()
 {
 	// Auto-Launch Demo after 60 sec idle on Main Menu
 	if ((ARXmenu.currentmode == AMCM_MAIN) && CAN_REPLAY_INTRO)
@@ -595,7 +637,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		if (ITC.Get("questbook") == NULL)
 		{
 			ARX_Menu_Resources_Release(false);
-			ARX_Menu_Resources_Create(m_pd3dDevice);
+			ARX_Menu_Resources_Create();
 
 			ITC.Set("playerbook", "Graph\\Interface\\book\\character_sheet\\char_sheet_book.bmp");
 			ITC.Set("ic_casting", "Graph\\Interface\\book\\character_sheet\\buttons_carac\\icone_casting.bmp");
@@ -710,16 +752,16 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 					pTextManage->Clear();
 					OLD_FLYING_OVER = FLYING_OVER;
-					UNICODE_ARXDrawTextCenteredScroll((DANAESIZX * 0.5f),
-													  12,
-													  (DANAECENTERX) * 0.82f,
-													  ARXmenu.mda->flyover[FLYING_OVER],
-													  RGB(232 + t, 204 + t, 143 + t),
-													  0x00FF00FF,
-													  hFontInGame,
-													  1000,
-													  0.01f,
-													  2);
+					UNICODE_ARXDrawTextCenteredScroll(hFontInGame,
+						(DANAESIZX * 0.5f),
+						12,
+						(DANAECENTERX) * 0.82f,
+						ARXmenu.mda->flyover[FLYING_OVER],
+						RGB(232 + t, 204 + t, 143 + t),
+						0x00FF00FF,
+						1000,
+						0.01f,
+						2);
 				}
 			}
 			else
@@ -733,7 +775,6 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			float fSizeX = 100 * Xratio;
 			float fSizeY = 100 * Yratio;
 
-			EERIE_3D ePos;
 			COLORREF Color = 0;
 
 			//---------------------------------------------------------------------
@@ -774,9 +815,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			else
 				Color = RGB(232, 204, 143);
 
-			ePos.x = fPosX;
-			ePos.y = fPosY;
-			FontRenderText(hFontMenu, ePos, ARXmenu.mda->str_button_quickgen, Color);
+			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_quickgen, static_cast<long>(fPosX), static_cast<long>(fPosY), Color);
 
 			//---------------------------------------------------------------------
 			// Button SKIN
@@ -823,9 +862,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			else
 				Color = RGB(232, 204, 143);
 
-			ePos.x = fPosX;
-			ePos.y = fPosY;
-			FontRenderText(hFontMenu, ePos, ARXmenu.mda->str_button_skin, Color);
+			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_skin, static_cast<long>(fPosX), static_cast<long>(fPosY), Color);
 
 			//---------------------------------------------------------------------
 			// Button DONE
@@ -862,7 +899,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 						ARX_MENU_CLICKSOUND();
 
-						bFadeInOut = true;	//fade out
+						bFadeInOut = true;		//fade out
 						bFade = true;			//active le fade
 						iFadeAction = AMCM_OFF;
 					}
@@ -887,9 +924,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			if (SKIN_MOD < 0)
 				Color = RGB(255, 0, 255);
 
-			ePos.x = fPosX;
-			ePos.y = fPosY;
-			FontRenderText(hFontMenu, ePos, ARXmenu.mda->str_button_done, Color);
+			pTextManage->AddText(hFontMenu, ARXmenu.mda->str_button_done, static_cast<long>(fPosX), static_cast<long>(fPosY), Color);
 		}
 	}
 
@@ -916,7 +951,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		Vector2i textSize = hFontMenu->GetTextSize(szText);
 		ePos.x = (DANAESIZX - textSize.x) * 0.5f;
 		ePos.y = DANAESIZY * 0.4f;
-		FontRenderText(hFontMenu, ePos, szText, Color);
+		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.y), Color);
 
 		PAK_UNICODE_GetPrivateProfileString("system_yes", "", szText);
 		textSize = hFontMenu->GetTextSize(szText);
@@ -927,20 +962,15 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		{
 			SpecialCursor = CURSOR_INTERACTION_ON;
 
-			if (EERIEMouseButton & 1) ;
-			else if ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1))
-			{
+			if ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1))
 				ARX_MENU_CLICKSOUND();
-
-			}
-			else;
 
 			Color = RGB(255, 255, 255);
 		}
 		else
 			Color = RGB(232, 204, 143);
 
-		FontRenderText(hFontMenu, ePos, szText, Color);
+		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), Color);
 
 		PAK_UNICODE_GetPrivateProfileString("system_no", "", szText);
 		textSize = hFontMenu->GetTextSize(szText);
@@ -950,20 +980,15 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		{
 			SpecialCursor = CURSOR_INTERACTION_ON;
 
-			if (EERIEMouseButton & 1) ;
-			else if ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1))
-			{
+			if ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1))
 				ARX_MENU_CLICKSOUND();
-
-			}
-			else;
 
 			Color = RGB(255, 255, 255);
 		}
 		else
 			Color = RGB(232, 204, 143);
 
-		FontRenderText(hFontMenu, ePos, szText, Color);
+		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), Color);
 	}
 
 	
@@ -994,9 +1019,7 @@ bool ARX_Menu_Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 					fFadeInOut = 0.f;
 
 					if (pTextManage)
-					{
 						pTextManage->Clear();
-					}
 
 					break;
 			}

@@ -3,22 +3,22 @@
 ARX FATALIS GPL Source Code
 Copyright (C) 1999-2010 Arkane Studios SA, a ZeniMax Media company.
 
-This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code'). 
+This file is part of the Arx Fatalis GPL Source Code ('Arx Fatalis Source Code').
 
-Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public 
+Arx Fatalis Source Code is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+Arx Fatalis Source Code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
 warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see 
+You should have received a copy of the GNU General Public License along with Arx Fatalis Source Code.  If not, see
 <http://www.gnu.org/licenses/>.
 
-In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these 
-additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx 
+In addition, the Arx Fatalis Source Code is also subject to certain additional terms. You should have received a copy of these
+additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Arx
 Fatalis Source Code. If not, please request a copy in writing from Arkane Studios at the address below.
 
-If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o 
+If you have questions concerning this license or the applicable additional terms, you may contact in writing Arkane Studios, c/o
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
@@ -26,9 +26,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuWidgets.h"
 
 #include <cstring>
-#include <tchar.h>
 
 #include <algorithm>
+#include <map>
+#include <utility>
 
 #include "core/Core.h"
 #include "gui/Menu.h"
@@ -52,7 +53,12 @@ using std::wistringstream;
 using std::min;
 using std::max;
 
-extern char * GetVersionString();
+typedef std::pair<HFONT, const char*> textsize_key;
+typedef std::pair<int, int> textsize_value;
+typedef std::map<textsize_key, textsize_value> textsize_map;
+static textsize_map cache;
+
+extern char* GetVersionString();
 
 #define NODEBUGZONE
 
@@ -61,8 +67,9 @@ extern char * GetVersionString();
 #define RATIO_X(a)    (((float)a)*Xratio)
 #define RATIO_Y(a)    (((float)a)*Yratio)
 
-//-----------------------------------------------------------------------------
 
+//-----------------------------------------------------------------------------
+// Imported global variables and functions
 extern ARX_MENU_DATA ARXmenu;
 extern TextureContainer * scursor[];
 extern bool bGameNotFirstLaunch;
@@ -157,59 +164,31 @@ std::string pStringModSfx;
 std::string pStringModSpeech;
 
 //-----------------------------------------------------------------------------
+// Local functions
 
-bool isTimeBefore(SYSTEMTIME s1, SYSTEMTIME s2)
+namespace
+{
+
+bool isTimeBefore(const SYSTEMTIME& s1, const SYSTEMTIME& s2)
 {
 	if (s1.wYear < s2.wYear) return true;
-
 	if (s1.wYear > s2.wYear) return false;
-
-	if (s1.wYear == s2.wYear)
-	{
-		if (s1.wMonth < s2.wMonth) return true;
-
-		if (s1.wMonth > s2.wMonth) return false;
-
-		if (s1.wMonth == s2.wMonth)
-		{
-			if (s1.wDay < s2.wDay) return true;
-
-			if (s1.wDay > s2.wDay) return false;
-
-			if (s1.wDay == s2.wDay)
-			{
-				if (s1.wHour < s2.wHour) return true;
-
-				if (s1.wHour > s2.wHour) return false;
-				
-				if (s1.wHour == s2.wHour)
-				{
-					if (s1.wMinute < s2.wMinute) return true;
-
-					if (s1.wMinute > s2.wMinute) return false;
-
-					if (s1.wMinute == s2.wMinute)
-					{
-						if (s1.wSecond < s2.wSecond) return true;
-
-						if (s1.wSecond > s2.wSecond) return false;
-
-						if (s1.wSecond == s2.wSecond)
-						{
-							if (s1.wMilliseconds < s2.wMilliseconds) return true;
-
-							if (s1.wMilliseconds > s2.wMilliseconds) return false;
-
-							if (s1.wMilliseconds == s2.wMilliseconds) return true;
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	return false;
+	if (s1.wMonth < s2.wMonth) return true;
+	if (s1.wMonth > s2.wMonth) return false;
+	if (s1.wDay < s2.wDay) return true;
+	if (s1.wDay > s2.wDay) return false;
+	if (s1.wHour < s2.wHour) return true;
+	if (s1.wHour > s2.wHour) return false;
+	if (s1.wMinute < s2.wMinute) return true;
+	if (s1.wMinute > s2.wMinute) return false;
+	if (s1.wSecond < s2.wSecond) return true;
+	if (s1.wSecond > s2.wSecond) return false;
+	if (s1.wMilliseconds < s2.wMilliseconds) return true;
+	if (s1.wMilliseconds > s2.wMilliseconds) return false;
+	return true;
 }
+
+} // \namespace
 
 //-----------------------------------------------------------------------------
 
@@ -217,7 +196,6 @@ void ARX_QuickSave()
 {
 	if( REFUSE_GAME_RETURN ) return;
 
-	FreeSaveGameList();
 	CreateSaveGameList();
 
 	std::string szMenuText = QUICK_SAVE_ID;
@@ -241,7 +219,7 @@ void ARX_QuickSave()
 	ZeroMemory( &sTime1, sizeof(SYSTEMTIME) );// will be used if iNbSave0>0 (iNbSave1==0 will so mean NOTFOUND and sTime1 will not be used)
 
 
-	for( int iI = 1 ; iI < (save_c) ; iI++ )
+	for( int iI = 1 ; iI < (save_l.size()) ; iI++ )
 	{
 		std::string tex2 = save_l[iI].name;
 		MakeUpcase( tex2 );
@@ -261,11 +239,11 @@ void ARX_QuickSave()
 	}
 
 	if ( bFound0 && bFound1 &&
-		( iNbSave0 > 0 ) && ( iNbSave0 < save_c ) &&
-		( iNbSave1 > 0 ) && ( iNbSave1 < save_c ) )
+		( iNbSave0 > 0 ) && ( iNbSave0 < save_l.size() ) &&
+		( iNbSave1 > 0 ) && ( iNbSave1 < save_l.size() ) )
 	{
-		int    iSave;
-		
+		int	iSave;
+
 		if ( isTimeBefore( sTime0, sTime1 ) )
 			iSave = iNbSave0;
 		else
@@ -308,7 +286,6 @@ void ARX_QuickSave()
 
 void ARX_DrawAfterQuickLoad()
 {
-
 	ARX_CHECK_INT(iTimeToDrawD7 - FrameDiff);
 	iTimeToDrawD7    -= ARX_CLEAN_WARN_CAST_INT(FrameDiff);
 
@@ -336,15 +313,13 @@ void ARX_DrawAfterQuickLoad()
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,D3DBLEND_ONE);
 
-	EERIEDrawBitmap2(    GDevice, 
-						0, 
-						0, 
-
+	EERIEDrawBitmap2(	GDevice,
+						0,
+						0,
 						INTERFACE_RATIO_DWORD(pTex->m_dwWidth),
 						INTERFACE_RATIO_DWORD(pTex->m_dwHeight),
-
-						0.f, 
-						pTex, 
+						0.f,
+						pTex,
 						D3DRGB(fColor,fColor,fColor) );
 
 	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,false);
@@ -354,7 +329,6 @@ void ARX_DrawAfterQuickLoad()
 
 bool ARX_QuickLoad()
 {
-	FreeSaveGameList();
 	CreateSaveGameList();
 
 	std::string szMenuText = QUICK_SAVE_ID;
@@ -368,10 +342,9 @@ bool ARX_QuickLoad()
 	SYSTEMTIME sTime0;
 	SYSTEMTIME sTime1;
 	ZeroMemory( &sTime0, sizeof(SYSTEMTIME) );// will be used if iNbSave0>0 (iNbSave0==0 will so mean NOTFOUND and sTime0 will not be used)
-	ZeroMemory( &sTime1, sizeof(SYSTEMTIME) );// will be used if iNbSave0>0 (iNbSave1==0 will so mean NOTFOUND ans sTime1 will not be used)
+	ZeroMemory( &sTime1, sizeof(SYSTEMTIME) );// will be used if iNbSave1>0 (iNbSave1==0 will so mean NOTFOUND ans sTime1 will not be used)
 
-
-	for( int iI = 1 ; iI < (save_c) ; iI++ )
+	for( int iI = 1 ; iI < save_l.size() ; iI++ )
 	{
 		std::string tex2 = save_l[iI].name;
 		MakeUpcase( tex2 );
@@ -393,8 +366,8 @@ bool ARX_QuickLoad()
 	ARX_SOUND_MixerPause( ARX_SOUND_MixerGame );
 
 	if ( bFound0 && bFound1 &&
-		( iNbSave0 > 0 ) && ( iNbSave0 < save_c ) &&
-		( iNbSave1 > 0 ) && ( iNbSave1 < save_c ) )
+		( iNbSave0 > 0 ) && ( iNbSave0 < save_l.size() ) &&
+		( iNbSave1 > 0 ) && ( iNbSave1 < save_l.size() ) )
 	{
 		int iSave;
 
@@ -481,8 +454,6 @@ void FontRenderText(Font* _pFont, EERIE_3D pos, const std::string& _pText, COLOR
 	}
 }
 
-//-----------------------------------------------------------------------------
-
 CMenuConfig::CMenuConfig()
 {
 	First();
@@ -528,18 +499,8 @@ void CMenuConfig::First()
 
 	sakActionDefaultKey[CONTROLS_CUST_ACTION].iKey[0]=DIK_BUTTON1;
 	sakActionDefaultKey[CONTROLS_CUST_ACTION].iKey[1]=-1;
-
-	if (INTERNATIONAL_MODE)
-	{
-		sakActionDefaultKey[CONTROLS_CUST_INVENTORY].iKey[0] = DIK_I;
-		sakActionDefaultKey[CONTROLS_CUST_INVENTORY].iKey[1]=-1;
-	}
-	else
-	{
-		sakActionDefaultKey[CONTROLS_CUST_INVENTORY].iKey[0] = DIK_I;
-		sakActionDefaultKey[CONTROLS_CUST_INVENTORY].iKey[1]=-1;
-	}
-
+	sakActionDefaultKey[CONTROLS_CUST_INVENTORY].iKey[0] = DIK_I;
+	sakActionDefaultKey[CONTROLS_CUST_INVENTORY].iKey[1]=-1;
 	sakActionDefaultKey[CONTROLS_CUST_INVENTORY].iPage=1;
 	sakActionDefaultKey[CONTROLS_CUST_BOOK].iKey[0]=DIK_BACKSPACE;
 	sakActionDefaultKey[CONTROLS_CUST_BOOK].iKey[1]=-1;
@@ -727,7 +688,7 @@ void CMenuConfig::SetDefaultKey()
 		sakActionKey[iI].iKey[1]=sakActionDefaultKey[iI].iKey[1];
 		sakActionKey[iI].iPage=sakActionDefaultKey[iI].iPage;
 	}
-	
+
 	if (!INTERNATIONAL_MODE)
 	{
 		bLinkMouseLookToUse=true;
@@ -738,10 +699,8 @@ void CMenuConfig::SetDefaultKey()
 	}
 }
 
-std::string& to_lower( std::string& str )
-{
+void to_lower(std::string & str) {
 	std::transform( str.begin(), str.end(), str.begin(), ::tolower );
-	return str;
 }
 
 //-----------------------------------------------------------------------------
@@ -749,10 +708,7 @@ std::string& to_lower( std::string& str )
 int CMenuConfig::GetDIKWithASCII( const std::string& _pcTouch)
 {
 	std::string pcT = _pcTouch;
-	to_lower( pcT );
 	
-	// TODO replacement
-	//MultiByteToWideChar(CP_ACP, 0, _pcTouch, -1, (wchar_t*)pcT, strlen(_pcTouch)+1);
 
 	if( strcasecmp(pcT.c_str(), "---"  ) == 0 )
 	{
@@ -762,7 +718,6 @@ int CMenuConfig::GetDIKWithASCII( const std::string& _pcTouch)
 	for(int iI=0;iI<256;iI++)
 	{
 		std::string pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI);
-		to_lower( pcT1 );
 
 		if( !pcT.compare( pcT1 ) )
 			return iI;
@@ -860,9 +815,9 @@ std::string CMenuConfig::ReadConfigString( const std::string& _pcSection, const 
 
 bool CMenuConfig::WriteConfig( const std::string& _pcSection, const std::string& _pcKey, const std::string& _pcDatas)
 {
-int iErreur=0;
+	int iErreur=0;
 
-	char tcText[256];    
+	char tcText[256];
 
 	if(!GetPrivateProfileSection(_pcSection.c_str(),tcText,256,pcName.c_str()))
 	{
@@ -1111,7 +1066,7 @@ bool CMenuConfig::ReadConfigKey( const std::string& _pcKey, int _iAction )
 			SetActionKey( _iAction, 1, iDIK );
 		}
 	}
-	
+
 	return bOk;
 }
 
@@ -1143,7 +1098,7 @@ bool CMenuConfig::SaveAll()
 	bOk&=WriteConfigInt("VIDEO","contrast",iContrast);
 	bOk&=WriteConfigInt("VIDEO","show_crosshair",bShowCrossHair?1:0);
 	bOk&=WriteConfigInt("VIDEO","antialiasing",bAntiAliasing?1:0);
-	//audio 
+	//audio
 	bOk&=WriteConfigInt("AUDIO","master_volume",iMasterVolume);
 	bOk&=WriteConfigInt("AUDIO","effects_volume",iSFXVolume);
 	bOk&=WriteConfigInt("AUDIO","speech_volume",iSpeechVolume);
@@ -1161,25 +1116,25 @@ bool CMenuConfig::SaveAll()
 	bOk&=WriteConfigKey("magic_mode",CONTROLS_CUST_MAGICMODE);
 	bOk&=WriteConfigKey("stealth_mode",CONTROLS_CUST_STEALTHMODE);
 	bOk&=WriteConfigKey("walk_forward",CONTROLS_CUST_WALKFORWARD);
-	bOk&=WriteConfigKey("walk_backward",CONTROLS_CUST_WALKBACKWARD);    
+	bOk&=WriteConfigKey("walk_backward",CONTROLS_CUST_WALKBACKWARD);
 	bOk&=WriteConfigKey("strafe_left",CONTROLS_CUST_STRAFELEFT);
 	bOk&=WriteConfigKey("strafe_right",CONTROLS_CUST_STRAFERIGHT);
-	bOk&=WriteConfigKey("lean_left",CONTROLS_CUST_LEANLEFT);        
-	bOk&=WriteConfigKey("lean_right",CONTROLS_CUST_LEANRIGHT);        
-	bOk&=WriteConfigKey("crouch",CONTROLS_CUST_CROUCH);        
-	bOk&=WriteConfigKey("mouselook",CONTROLS_CUST_MOUSELOOK);        
+	bOk&=WriteConfigKey("lean_left",CONTROLS_CUST_LEANLEFT);
+	bOk&=WriteConfigKey("lean_right",CONTROLS_CUST_LEANRIGHT);
+	bOk&=WriteConfigKey("crouch",CONTROLS_CUST_CROUCH);
+	bOk&=WriteConfigKey("mouselook",CONTROLS_CUST_MOUSELOOK);
 	bOk&=WriteConfigInt("INPUT","link_mouse_look_to_use",(bLinkMouseLookToUse)?1:0);
-	bOk&=WriteConfigKey("action_combine",CONTROLS_CUST_ACTION);        
-	bOk&=WriteConfigKey("inventory",CONTROLS_CUST_INVENTORY);    
-	bOk&=WriteConfigKey("book",CONTROLS_CUST_BOOK);            
-	bOk&=WriteConfigKey("char_sheet",CONTROLS_CUST_BOOKCHARSHEET);            
-	bOk&=WriteConfigKey("magic_book",CONTROLS_CUST_BOOKSPELL);            
-	bOk&=WriteConfigKey("map",CONTROLS_CUST_BOOKMAP);            
-	bOk&=WriteConfigKey("quest_book",CONTROLS_CUST_BOOKQUEST);            
+	bOk&=WriteConfigKey("action_combine",CONTROLS_CUST_ACTION);
+	bOk&=WriteConfigKey("inventory",CONTROLS_CUST_INVENTORY);
+	bOk&=WriteConfigKey("book",CONTROLS_CUST_BOOK);
+	bOk&=WriteConfigKey("char_sheet",CONTROLS_CUST_BOOKCHARSHEET);
+	bOk&=WriteConfigKey("magic_book",CONTROLS_CUST_BOOKSPELL);
+	bOk&=WriteConfigKey("map",CONTROLS_CUST_BOOKMAP);
+	bOk&=WriteConfigKey("quest_book",CONTROLS_CUST_BOOKQUEST);
 	bOk&=WriteConfigKey("drink_potion_life",CONTROLS_CUST_DRINKPOTIONLIFE);
 	bOk&=WriteConfigKey("drink_potion_mana",CONTROLS_CUST_DRINKPOTIONMANA);
 	bOk&=WriteConfigKey("torch",CONTROLS_CUST_TORCH);
-	
+
 	bOk&=WriteConfigKey("cancel_current_spell",CONTROLS_CUST_CANCELCURSPELL);
 	bOk&=WriteConfigKey("precast_1",CONTROLS_CUST_PRECAST1);
 	bOk&=WriteConfigKey("precast_2",CONTROLS_CUST_PRECAST2);
@@ -1225,7 +1180,6 @@ extern bool IsNoGore( void );
 
 bool CMenuConfig::ReadAll()
 {
-	std::stringstream ss;
 	std::string pcText;
 	bool bOk = false; 
 	bool bOkTemp;
@@ -1596,13 +1550,13 @@ bool CMenuConfig::ReadAll()
 	bOk2&=ReadConfigKey("magic_mode",CONTROLS_CUST_MAGICMODE);
 	bOk2&=ReadConfigKey("stealth_mode",CONTROLS_CUST_STEALTHMODE);
 	bOk2&=ReadConfigKey("walk_forward",CONTROLS_CUST_WALKFORWARD);
-	bOk2&=ReadConfigKey("walk_backward",CONTROLS_CUST_WALKBACKWARD);    
+	bOk2&=ReadConfigKey("walk_backward",CONTROLS_CUST_WALKBACKWARD);
 	bOk2&=ReadConfigKey("strafe_left",CONTROLS_CUST_STRAFELEFT);
 	bOk2&=ReadConfigKey("strafe_right",CONTROLS_CUST_STRAFERIGHT);
-	bOk2&=ReadConfigKey("lean_left",CONTROLS_CUST_LEANLEFT);        
-	bOk2&=ReadConfigKey("lean_right",CONTROLS_CUST_LEANRIGHT);        
-	bOk2&=ReadConfigKey("crouch",CONTROLS_CUST_CROUCH);        
-	bOk2&=ReadConfigKey("mouselook",CONTROLS_CUST_MOUSELOOK);        
+	bOk2&=ReadConfigKey("lean_left",CONTROLS_CUST_LEANLEFT);
+	bOk2&=ReadConfigKey("lean_right",CONTROLS_CUST_LEANRIGHT);
+	bOk2&=ReadConfigKey("crouch",CONTROLS_CUST_CROUCH);
+	bOk2&=ReadConfigKey("mouselook",CONTROLS_CUST_MOUSELOOK);
 	iTemp=ReadConfigInt("INPUT","link_mouse_look_to_use",bOkTemp);
 
 	if(!bOkTemp)
@@ -1614,13 +1568,13 @@ bool CMenuConfig::ReadAll()
 		bLinkMouseLookToUse=(iTemp)?true:false;
 	}
 
-	bOk2&=ReadConfigKey("action_combine",CONTROLS_CUST_ACTION);        
-	bOk2&=ReadConfigKey("inventory",CONTROLS_CUST_INVENTORY);    
-	bOk2&=ReadConfigKey("book",CONTROLS_CUST_BOOK);            
-	bOk2&=ReadConfigKey("char_sheet",CONTROLS_CUST_BOOKCHARSHEET);            
-	bOk2&=ReadConfigKey("magic_book",CONTROLS_CUST_BOOKSPELL);            
-	bOk2&=ReadConfigKey("map",CONTROLS_CUST_BOOKMAP);            
-	bOk2&=ReadConfigKey("quest_book",CONTROLS_CUST_BOOKQUEST);            
+	bOk2&=ReadConfigKey("action_combine",CONTROLS_CUST_ACTION);
+	bOk2&=ReadConfigKey("inventory",CONTROLS_CUST_INVENTORY);
+	bOk2&=ReadConfigKey("book",CONTROLS_CUST_BOOK);
+	bOk2&=ReadConfigKey("char_sheet",CONTROLS_CUST_BOOKCHARSHEET);
+	bOk2&=ReadConfigKey("magic_book",CONTROLS_CUST_BOOKSPELL);
+	bOk2&=ReadConfigKey("map",CONTROLS_CUST_BOOKMAP);
+	bOk2&=ReadConfigKey("quest_book",CONTROLS_CUST_BOOKQUEST);
 	bOk2&=ReadConfigKey("drink_potion_life",CONTROLS_CUST_DRINKPOTIONLIFE);
 	bOk2&=ReadConfigKey("drink_potion_mana",CONTROLS_CUST_DRINKPOTIONMANA);
 	bOk2&=ReadConfigKey("torch",CONTROLS_CUST_TORCH);
@@ -1982,7 +1936,7 @@ bool Menu2_Render()
 	ARXTimeMenu = ARX_TIME_Get( false );
 	ARXDiffTimeMenu = ARXTimeMenu-ARXOldTimeMenu;
 
-	if (ARXDiffTimeMenu < 0) //this mean ArxTimeMenu is reseted 
+	if (ARXDiffTimeMenu < 0) //this mean ArxTimeMenu is reset
 		ARXDiffTimeMenu = 0 ;
 
 	GDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTFP_LINEAR);
@@ -1994,8 +1948,8 @@ bool Menu2_Render()
 	{
 		if(pWindowMenu)
 		{
-			delete pWindowMenu;
-			pWindowMenu=NULL;
+		delete pWindowMenu;
+		pWindowMenu=NULL;
 		}
 
 		if(pMenu)
@@ -2243,11 +2197,10 @@ bool Menu2_Render()
 
 
 					ARX_CHECK_INT(fPosBDAY);
-					
+
 					pPanel->Move(0,
 								ARX_CLEAN_WARN_CAST_INT(fPosBDAY)    );
 
-					
 					pWindowMenuConsole->AddMenu(pPanel);
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 					pWindowMenu->eCurrentMenuState=NEW_QUEST;
@@ -2313,15 +2266,15 @@ bool Menu2_Render()
 
 						while(iFirst>=0)
 						{
-							for(iI=1; iI<(save_c); iI++)
+							for(iI=1; iI<(save_l.size()); iI++)
 							{
 								std::string tex = save_l[iI].name;
 
 								CMenuElementText *me02;
 
-								std::string tex2 = tex;
-
-								std::transform( tex.begin(), tex2.end(), tex.begin(), ::toupper );
+								std::string tex2;
+								tex2.resize(tex.size());
+								std::transform(tex.begin(), tex.end(), tex2.begin(), ::toupper);
 
 								if( !szMenuText.compare( tex2 ) || !szMenuText1.compare( tex2 ) )
 								{
@@ -2343,29 +2296,21 @@ bool Menu2_Render()
 									}
 
 									char tex3[256];
-									std::string tex4 = "  ";
+									tex += "  ";
 									GetDateFormat(    LOCALE_SYSTEM_DEFAULT,
 										0,
 										&save_l[iI].stime,
 										"MMM dd yyyy",
 										tex3,
 										256);
-									tex4 +=  tex3;
-									GetTimeFormatA(    LOCALE_SYSTEM_DEFAULT,
+									tex +=  tex3;
+									GetTimeFormat(    LOCALE_SYSTEM_DEFAULT,
 										0,
 										&save_l[iI].stime,
 										"   HH:mm",
 										tex3,
 										256);
-									tex4 += tex3;
-// TODO Find replacement
-/*									MultiByteToWideChar(	CP_ACP,
-										0,
-										tex4,
-										-1,
-										(wchar_t*)tex2,
-										256);*/
-									tex += tex2;
+									tex += tex3;
 									
 									me02 = new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls, tex, fPosX1, 0.f, lColor, 0.8f, NOP);
 
@@ -2394,15 +2339,7 @@ bool Menu2_Render()
 										tex3,
 										256);
 									strcat(tex4,tex3);
-
-// TODO Find replacement
-/*									MultiByteToWideChar(	CP_ACP,
-										0,
-										tex4,
-										-1,
-										(wchar_t*)tex2,
-										256);*/
-									tex += tex2;
+									tex += tex4;
 									
 									me02=new CMenuElementText(BUTTON_MENUEDITQUEST_LOAD, hFontControls,tex, fPosX1,0.f,lColor, 0.8f, NOP);
 								}
@@ -2462,14 +2399,14 @@ bool Menu2_Render()
 
 					while(iFirst>=0)
 					{
-						if(save_c!=1)
+						if(save_l.size()!=1)
 						{
-							for(int iI=1;iI<(save_c);iI++)
+							for(int iI=1;iI<(save_l.size());iI++)
 							{
 								std::string tex = save_l[iI].name;
-								std::string tex2 = tex;
-
-								std::transform( tex2.begin(), tex2.end(), tex2.begin(), ::toupper );
+								std::string tex2;
+								tex2.resize(tex.size());
+								std::transform(tex.begin(), tex.end(), tex2.begin(), ::toupper);
 
 								if(!szMenuText.compare( tex2 ) || !szMenuText1.compare( tex2 ) )
 								{
@@ -2507,15 +2444,8 @@ bool Menu2_Render()
 										tex3,
 										256);
 									strcat(tex4,tex3);
-
-// TODO Find replacement
-									MultiByteToWideChar(	CP_ACP,
-										0,
-										tex4,
-										-1,
-										(wchar_t*)tex2.c_str(),
-										256);
-									tex += tex2;
+									
+									tex += tex4;
 									
 									me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, tex, fPosX1, 0.f, RGB(127, 127, 127), 0.8f, EDIT_QUEST_SAVE_CONFIRM);
 									me->SetCheckOff();
@@ -2545,13 +2475,7 @@ bool Menu2_Render()
 										tex3,
 										256);
 									strcat(tex4,tex3);
-/*									MultiByteToWideChar(	CP_ACP,
-										0,
-										tex4,
-										-1,
-										(wchar_t*)tex2,
-										256);*/
-									tex += tex2;
+									tex += tex4;
 									
 									me = new CMenuElementText(BUTTON_MENUEDITQUEST_SAVEINFO, hFontControls, tex, fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
 								}
@@ -2566,7 +2490,7 @@ bool Menu2_Render()
 
 					pTex = MakeTCFromFile("\\Graph\\interface\\Icons\\Arx_logo_08.bmp");
 
-					for(int iI=save_c; iI<=15; iI++)
+					for(int iI=save_l.size(); iI<=15; iI++)
 					{
 						_TCHAR tex[256];
 						_stprintf(tex, _T("-%04d-")
@@ -2608,7 +2532,7 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenuCenter(me);
 					me->eState=EDIT;
 					me->ePlace=CENTER;
-					
+
 					pPanel = new CMenuPanel();
 
 					PAK_UNICODE_GetPrivateProfileString("system_menus_main_editquest_save", "", szMenuText);
@@ -2625,7 +2549,7 @@ bool Menu2_Render()
 					pPanel->AddElementNoCenterIn(me);
 
 					pWindowMenuConsole->AddMenu(pPanel);
-					
+
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 					}
 				break;
@@ -2649,16 +2573,16 @@ bool Menu2_Render()
 					PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input", "", szMenuText);
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0,lColor,1.f,OPTIONS_INPUT);
 					pWindowMenuConsole->AddMenuCenter(me);
-					
+
 					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
 					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = MAIN;
 					me->SetShortCut(DIK_ESCAPE);
 					pWindowMenuConsole->AddMenu(me);
-				
+
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 				//------------------ END OPTIONS
-					
+
 				//------------------ START VIDEO
 					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY - (40),iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_VIDEO);
 
@@ -2674,7 +2598,7 @@ bool Menu2_Render()
 					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_RESOLUTION, 0, 0);
 					pMenuSliderResol =(CMenuSliderText*)me;
 					int nb=danaeApp.m_pDeviceInfo->dwNumModes;
-					vector<int> vBpp;
+					std::vector<int> vBpp;
 					vBpp.clear();
 					int i=0;
 
@@ -2704,10 +2628,10 @@ bool Menu2_Render()
 									danaeApp.m_pDeviceInfo->dwCurrentMode=i;
 								}
 							}
-							
+
 							//bpp
 							bool bExist=false;
-							vector<int>::iterator ii;
+							std::vector<int>::iterator ii;
 
 							for(ii=vBpp.begin();ii!=vBpp.end();ii++)
 							{
@@ -2774,13 +2698,13 @@ bool Menu2_Render()
 					me = new CMenuSliderText(BUTTON_MENUOPTIONSVIDEO_BPP, 0, 0);
 					pMenuSliderBpp = (CMenuSliderText*)me;
 
-					vector<int>::iterator ii;
+					std::vector<int>::iterator ii;
 
 					for(ii=vBpp.begin();ii!=vBpp.end();ii++)
 					{
-	//                        todo: string
-	//                        _itot(*ii,szMenuText,10);
-						((CMenuSliderText*)me)->AddText(new CMenuElementText(-1, hFontMenu, szMenuText, 0, 0, lColor, 1.f, (MENUSTATE)(BUTTON_MENUOPTIONSVIDEO_BPP+i)));
+						std::stringstream bpp;
+						bpp << *ii;
+						((CMenuSliderText*)me)->AddText(new CMenuElementText(-1, hFontMenu, bpp.str(), 0, 0, lColor, 1.f, (MENUSTATE)(BUTTON_MENUOPTIONSVIDEO_BPP+i)));
 
 						if(*ii==iModeBpp)
 						{
@@ -2860,7 +2784,7 @@ bool Menu2_Render()
 					me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_FOG, iPosX2, 0);
 					int iFog = 5;
 					ARXMenu_Options_Video_GetFogDistance(iFog);
-					((CMenuSlider *)me)->iPos = iFog;
+					((CMenuSlider *)me)->setValue(iFog);
 					pc->AddElement(me);
 
 					pWindowMenuConsole->AddMenuCenterY(pc);
@@ -2873,7 +2797,7 @@ bool Menu2_Render()
 					me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_GAMMA, iPosX2, 0);
 					int iGamma = 0;
 					ARXMenu_Options_Video_GetGamma(iGamma);
-					((CMenuSlider*)me)->iPos = iGamma;
+					((CMenuSlider*)me)->setValue(iGamma);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
@@ -2885,7 +2809,7 @@ bool Menu2_Render()
 					me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_LUMINOSITY, iPosX2, 0);
 					int iLum = 0;
 					ARXMenu_Options_Video_GetLuminosity(iLum);
-					((CMenuSlider*)me)->iPos = iLum;
+					((CMenuSlider*)me)->setValue(iLum);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
@@ -2897,7 +2821,7 @@ bool Menu2_Render()
 					me = new CMenuSlider(BUTTON_MENUOPTIONSVIDEO_CONTRAST, iPosX2, 0);
 					int iContrast = 0;
 					ARXMenu_Options_Video_GetContrast(iContrast);
-					((CMenuSlider*)me)->iPos = iContrast;
+					((CMenuSlider*)me)->setValue(iContrast);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
@@ -2958,10 +2882,10 @@ bool Menu2_Render()
 
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 					//------------------ END VIDEO
-					
+
 					//------------------ START AUDIO
 					pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_AUDIO);
-					
+
 					pc = new CMenuPanel();
 					PAK_UNICODE_GetPrivateProfileString("system_menus_options_audio_master_volume", "", szMenuText);
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO_VOLUME);
@@ -2970,10 +2894,10 @@ bool Menu2_Render()
 					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_MASTER, iPosX2, 0);
 					int iMaster = 0;
 					ARXMenu_Options_Audio_GetMasterVolume(iMaster);
-					((CMenuSlider *)me)->iPos = iMaster;
+					((CMenuSlider *)me)->setValue(iMaster);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
-					
+
 					pc = new CMenuPanel();
 					PAK_UNICODE_GetPrivateProfileString("system_menus_options_audio_effects_volume", "", szMenuText);
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
@@ -2982,10 +2906,10 @@ bool Menu2_Render()
 					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SFX, iPosX2, 0);
 					int iSfx = 0;
 					ARXMenu_Options_Audio_GetSfxVolume(iSfx);
-					((CMenuSlider *)me)->iPos = iSfx;
+					((CMenuSlider *)me)->setValue(iSfx);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
-					
+
 					pc = new CMenuPanel();
 					PAK_UNICODE_GetPrivateProfileString("system_menus_options_audio_speech_volume", "", szMenuText);
 					me = new CMenuElementText(-1, hFontMenu, szMenuText, fPosX1, 0.f, lColor, 1.f, OPTIONS_AUDIO);
@@ -2994,7 +2918,7 @@ bool Menu2_Render()
 					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_SPEECH, iPosX2, 0);
 					int iSpeech = 0;
 					ARXMenu_Options_Audio_GetSpeechVolume(iSpeech);
-					((CMenuSlider *)me)->iPos = iSpeech;
+					((CMenuSlider *)me)->setValue(iSpeech);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
@@ -3006,7 +2930,7 @@ bool Menu2_Render()
 					me = new CMenuSlider(BUTTON_MENUOPTIONSAUDIO_AMBIANCE, iPosX2, 0);
 					int iAmbiance = 0;
 					ARXMenu_Options_Audio_GetAmbianceVolume(iAmbiance);
-					((CMenuSlider *)me)->iPos = iAmbiance;
+					((CMenuSlider *)me)->setValue(iAmbiance);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
@@ -3029,7 +2953,7 @@ bool Menu2_Render()
 					}
 
 					pWindowMenuConsole->AddMenuCenterY(me);
-					
+
 					pTex = MakeTCFromFile("\\Graph\\interface\\menus\\back.bmp");
 					me = new CMenuCheckButton(-1, fPosBack, fPosBackY, pTex?pTex->m_dwWidth:0, pTex, NULL, NULL);
 					me->eMenuState = OPTIONS;
@@ -3038,7 +2962,7 @@ bool Menu2_Render()
 
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 					//------------------ END AUDIO
-					
+
 					//------------------ START INPUT
 					pWindowMenuConsole = new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight, OPTIONS_INPUT);
 					
@@ -3111,7 +3035,7 @@ bool Menu2_Render()
 					me = new CMenuSlider(BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY, iPosX2, 0);
 					int iSensitivity = 0;
 					ARXMenu_Options_Control_GetMouseSensitivity(iSensitivity);
-					((CMenuSlider*)me)->iPos = iSensitivity;
+					((CMenuSlider*)me)->setValue(iSensitivity);
 					pc->AddElement(me);
 					pWindowMenuConsole->AddMenuCenterY(pc);
 
@@ -3230,7 +3154,7 @@ bool Menu2_Render()
 
 
 					pWindowMenuConsole=new CWindowMenuConsole(iWindowConsoleOffsetX,iWindowConsoleOffsetY,iWindowConsoleWidth,iWindowConsoleHeight,OPTIONS_INPUT_CUSTOMIZE_KEYS_1);
-					
+
 					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_mouselook",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK1, BUTTON_MENUOPTIONS_CONTROLS_CUST_MOUSELOOK2);
 
 					if (!INTERNATIONAL_MODE)
@@ -3243,14 +3167,13 @@ bool Menu2_Render()
 				me = new CMenuCheckButton(BUTTON_MENUOPTIONS_CONTROLS_LINK, 0, 0, pTex1->m_dwWidth>>1, pTex1, pTex2, pElementText);
 				me->Move(0,fControlPosY);
 						pWindowMenuConsole->AddMenu(me);
-						\
-							fControlPosY += ARX_CLEAN_WARN_CAST_LONG(me->GetHeight() + RATIO_Y(3.f));
+						fControlPosY += ARX_CLEAN_WARN_CAST_LONG(me->GetHeight() + RATIO_Y(3.f));
 
-				if(pMenuConfig->bLinkMouseLookToUse)
-				{
-					((CMenuCheckButton*)me)->iState=1;
-				}
-				}
+						if(pMenuConfig->bLinkMouseLookToUse)
+						{
+							((CMenuCheckButton*)me)->iState=1;
+						}
+					}
 
 					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_action_combine",1, BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE1, BUTTON_MENUOPTIONS_CONTROLS_CUST_ACTIONCOMBINE2);
 					CUSTOM_CTRL_FUNC("system_menus_options_input_customize_controls_jump",1,BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP1, BUTTON_MENUOPTIONS_CONTROLS_CUST_JUMP2);
@@ -3381,10 +3304,7 @@ bool Menu2_Render()
 
 
 					ARX_CHECK_INT(fPosBDAY);
-					
 					pPanel->Move(0,ARX_CLEAN_WARN_CAST_INT(fPosBDAY));
-
-					
 					pWindowMenuConsole->AddMenu(pPanel);
 					pWindowMenu->AddConsole(pWindowMenuConsole);
 					pWindowMenu->eCurrentMenuState=QUIT;
@@ -3405,11 +3325,8 @@ bool Menu2_Render()
 			pWindowMenu->eCurrentMenuState=pMenu->eOldMenuWindowState;
 		}
 
-
 		ARX_CHECK_INT(ARXDiffTimeMenu);
-		
 		pWindowMenu->Update(ARX_CLEAN_WARN_CAST_INT(ARXDiffTimeMenu));
-
 
 		if (pWindowMenu)
 		{
@@ -3426,6 +3343,7 @@ bool Menu2_Render()
 
 	bNoMenu=false;
 
+	danaeApp.DANAEEndRender();
 	// If the menu needs to be reinitialized, then the text in the TextManager is probably using bad fonts that were deleted already
 	// Skip one update in this case
 	if(pTextManage && !pMenu->bReInitAll)
@@ -3434,6 +3352,7 @@ bool Menu2_Render()
 		pTextManage->Render();
 	}
 
+	danaeApp.DANAEStartRender();
 	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP);
 
 	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
@@ -3479,7 +3398,7 @@ bool Menu2_Render()
 
 							0.001f,
 							pTextureLoad,
-			ARX_OPAQUE_WHITE); 
+			ARX_OPAQUE_WHITE);
 
 		SETTC(GDevice,NULL);
 		EERIEDraw2DRect(    GDevice,
@@ -3490,7 +3409,7 @@ bool Menu2_Render()
 							DANAEMouse.y+iOffsetY+(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
 
 							0.01f,
-			ARX_OPAQUE_WHITE); 
+			ARX_OPAQUE_WHITE);
 
 		pTextureLoadRender=NULL;
 	}
@@ -3853,27 +3772,14 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 
 					if ( lData )
 					{
-						{
-							/* TODO Does this do nothing?
-							_TCHAR szT[256];
-							_stprintf(szT, _T("%lu - %S"), lData, lpszText);
-							char ml[256];
-							memset( ml, 0, 256 );
-							*/
-
-							eMenuState = MAIN;
-							GDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
-							ARXMenu_LoadQuest( lData );
-
-							bNoMenu=true;
-
-							if( pTextManage )
-							{
-								pTextManage->Clear();
-							}
-
-							break;
+						eMenuState = MAIN;
+						GDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
+						ARXMenu_LoadQuest( lData );
+						bNoMenu=true;
+						if(pTextManage) {
+							pTextManage->Clear();
 						}
+						break;
 					}
 				}
 			}
@@ -3900,18 +3806,8 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 					pWindowMenu->vWindowConsoleElement[i]->lData = lData;
 					CMenuElementText * me = (CMenuElementText *) p->MenuAllZone.vMenuZone[1];
 
-					if ( me )
-					{
-						std::string szT;
-						std::stringstream ss;
-						ss << me->lData << me->lpszText;
-						std::string ml = ss.str();
-// TODO Find replacement
-/*						WideCharToMultiByte( CP_ACP, 0, (wchar_t*)me->lpszText, _tcslen( me->lpszText ),
-							ml,  _tcslen( me->lpszText ) + 1,
-							"_", NULL );
-*/
-						save_l[me->lData].name = ml;
+					if(me) {
+						save_l[me->lData].name = me->lpszText;
 						eMenuState = MAIN;
 						ARXMenu_SaveQuest( me->lData );
 						break;
@@ -3932,27 +3828,17 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 					pWindowMenu->vWindowConsoleElement[i]->lData = lData;
 					CMenuElementText * me = (CMenuElementText *) p->MenuAllZone.vMenuZone[1];
 
-					if ( me )
-					{
-						std::stringstream ss;
-						ss << me->lData << me->lpszText;
-						std::string ml = ss.str();
-// TODO Find replacement
-/*						WideCharToMultiByte( CP_ACP, 0, (wchar_t*)me->lpszText, _tcslen( me->lpszText ),
-							ml,  _tcslen( me->lpszText ) + 1,
-							"_", NULL );
-*/
-						save_l[me->lData].name = ml;
+					if(me) {
+						save_l[me->lData].name = me->lpszText;
 						eMenuState = MAIN;
 						ARXMenu_DeleteQuest( me->lData );
-						FreeSaveGameList();
 						CreateSaveGameList();
-							break;
-							}
-								}
-							}
-						}
 						break;
+					}
+				}
+			}
+		}
+		break;
 	case BUTTON_MENUOPTIONSVIDEO_APPLY:
 		{
 			//----------BUMP
@@ -4177,8 +4063,7 @@ CMenuElement* CMenuElementText::OnShortCut()
 
 void CMenuElementText::Render()
 {
-
-	if(WILL_RELOAD_ALL_TEXTURES) return;
+	if (WILL_RELOAD_ALL_TEXTURES) return;
 
 	if(bNoMenu) return;
 
@@ -4497,7 +4382,8 @@ long CMenuZone::IsMouseOver(int _iX, int _iY)
 		(_iX >= rZone.left) &&
 		(_iY >= (rZone.top-iYDouble)) &&
 		(_iX <= rZone.right) &&
-		(_iY <= (rZone.bottom+iYDouble)) )
+		(_iY <= (rZone.bottom+iYDouble))
+		)
 		return iId;
 
 	return -1;
@@ -4522,29 +4408,22 @@ CMenuAllZone::CMenuAllZone()
 
 CMenuAllZone::~CMenuAllZone()
 {
-	vector<CMenuZone*>::iterator i;
-
-	for(i=vMenuZone.begin();i!=vMenuZone.end();i++)
-	{
-		CMenuZone *zone=*i;
-		delete zone;
-	}
-
-	vMenuZone.clear();
+	for(std::vector<CMenuZone*>::iterator it = vMenuZone.begin(), it_end = vMenuZone.end(); it != it_end; ++it)
+		delete *it;
 }
 
 //-----------------------------------------------------------------------------
 
 void CMenuAllZone::AddZone(CMenuZone *_pMenuZone)
 {
-	vMenuZone.insert(vMenuZone.end(),_pMenuZone);
+	vMenuZone.push_back(_pMenuZone);
 }
 
 //-----------------------------------------------------------------------------
 
 int CMenuAllZone::CheckZone(int _iPosX,int _iPosY)
 {
-	vector<CMenuZone*>::iterator i;
+	std::vector<CMenuZone*>::iterator i;
 
 	for(i=vMenuZone.begin();i!=vMenuZone.end();i++)
 	{
@@ -4585,16 +4464,9 @@ CMenuZone * CMenuAllZone::GetZoneNum(int _iNum)
 
 CMenuZone * CMenuAllZone::GetZoneWithID(int _iID)
 {
-	vector<CMenuZone*>::iterator i;
-
-	for(i=vMenuZone.begin();i!=vMenuZone.end();i++)
-	{
-		CMenuZone *zone;
-		CMenuElement *me=(CMenuElement*)(*i);
-		zone=me->GetZoneWithID(_iID);
-
-		if(zone) return zone;
-	}
+	for (std::vector<CMenuZone*>::iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i)
+		if (CMenuZone *zone = ((CMenuElement*)(*i))->GetZoneWithID(_iID))
+			return zone;
 
 	return NULL;
 }
@@ -4603,12 +4475,8 @@ CMenuZone * CMenuAllZone::GetZoneWithID(int _iID)
 
 void CMenuAllZone::Move(int _iPosX,int _iPosY)
 {
-	vector<CMenuZone*>::iterator i;
-
-	for(i=vMenuZone.begin();i!=vMenuZone.end();i++)
-	{
+	for (std::vector<CMenuZone*>::iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i)
 		(*i)->Move(_iPosX, _iPosY);
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -4634,7 +4502,7 @@ void CMenuAllZone::DrawZone()
 
 	SETTC(GDevice,NULL);
 
-	for(i=vMenuZone.begin();i!=vMenuZone.end();i++)
+	for(std::vector<CMenuZone*>::const_iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i)
 	{
 		CMenuZone *zone=*i;
 
@@ -4647,7 +4515,7 @@ void CMenuAllZone::DrawZone()
 			v1[1].sy = (float)zone->rZone.bottom;
 			v1[2].sx = (float)zone->rZone.right;
 			v1[2].sy = (float)zone->rZone.bottom;
-			
+
 			v2[0].sx = (float)zone->rZone.left;
 			v2[0].sy = (float)zone->rZone.top;
 			v2[1].sx = (float)zone->rZone.right;
@@ -4689,16 +4557,14 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 
 	if (_pTex1)
 	{
-
 		float fRatioX = RATIO_X(_pTex1->m_dwWidth) ;
 		float fRatioY = RATIO_Y(_pTex1->m_dwHeight);
 		ARX_CHECK_INT(fRatioX);
 		ARX_CHECK_INT(fRatioY);
 
-		vTex.insert(vTex.end(), _pTex1);
-		_iTaille = max (_iTaille, ARX_CLEAN_WARN_CAST_INT(fRatioX) );
-		_iTaille = max (_iTaille, ARX_CLEAN_WARN_CAST_INT(fRatioY) );
-
+		vTex.push_back(_pTex1);
+		_iTaille = std::max(_iTaille, ARX_CLEAN_WARN_CAST_INT(fRatioX));
+		_iTaille = std::max(_iTaille, ARX_CLEAN_WARN_CAST_INT(fRatioY));
 	}
 
 	if (_pTex2)
@@ -4709,10 +4575,9 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 		ARX_CHECK_INT(fRatioX);
 		ARX_CHECK_INT(fRatioY);
 
-		vTex.insert(vTex.end(), _pTex2);
-		_iTaille = max (_iTaille, ARX_CLEAN_WARN_CAST_INT(fRatioX));
-		_iTaille = max (_iTaille, ARX_CLEAN_WARN_CAST_INT(fRatioY));
-
+		vTex.push_back(_pTex2);
+		_iTaille = std::max(_iTaille, ARX_CLEAN_WARN_CAST_INT(fRatioX));
+		_iTaille = std::max(_iTaille, ARX_CLEAN_WARN_CAST_INT(fRatioY));
 	}
 
 	Vector2i textSize(0,0);
@@ -4767,20 +4632,14 @@ CMenuCheckButton::~CMenuCheckButton()
 
 //-----------------------------------------------------------------------------
 
-void CMenuCheckButton::Update(int _iDTime)
-{
-}
-
-//-----------------------------------------------------------------------------
-
 void CMenuCheckButton::Move(int _iX, int _iY)
 {
 	CMenuElement::Move(_iX, _iY);
 
 	if (pText)
-	{
 		pText->Move(_iX, _iY);
-	}
+
+	ComputeTexturesPosition();
 }
 
 //-----------------------------------------------------------------------------
@@ -4913,6 +4772,12 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton)
 
 //-----------------------------------------------------------------------------
 
+void CMenuCheckButton::Update(int /*_iDTime*/)
+{
+}
+
+//-----------------------------------------------------------------------------
+
 void CMenuCheckButton::Render()
 {
 	if(WILL_RELOAD_ALL_TEXTURES) return;
@@ -4951,9 +4816,7 @@ void CMenuCheckButton::Render()
 	}
 
 	if (pText)
-	{
 		pText->Render();
-	}
 
 	//DEBUG
 	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
@@ -4995,12 +4858,34 @@ void CMenuCheckButton::RenderMouseOver()
 
 	//tick
 	if (pText)
-	{
 		pText->RenderMouseOver();
-	}
 
 	//DEBUG
 	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
+}
+
+//-----------------------------------------------------------------------------
+
+// Nuky - merges common code of Render() and RenderMouseOver()
+/// Compute members fTexX, fTexY, fTexSX and fTexSY according to rZone and iTaille
+void CMenuCheckButton::ComputeTexturesPosition()
+{
+	// Nuky - for now I split into 2 cases, because I don't know yet how to fix position with text
+	// TODO Merge with master
+	/*if (!pText)
+	{
+		fTexX_ = ARX_CLEAN_WARN_CAST_FLOAT(rZone.left);
+		fTexY_ = ARX_CLEAN_WARN_CAST_FLOAT(rZone.top);
+		fTexSX_ = RATIO_X(iTaille);
+		fTexSY_ = RATIO_Y(iTaille);
+	}
+	else
+	{
+		fTexX_ = ARX_CLEAN_WARN_CAST_FLOAT(rZone.right - iTaille);
+		fTexY_ = rZone.top + (ARX_CLEAN_WARN_CAST_FLOAT(rZone.bottom - rZone.top) - iTaille) * 0.5f;
+		fTexSX_ = RATIO_X(iTaille);
+		fTexSY_ = RATIO_Y(iTaille);
+	}*/
 }
 
 //-----------------------------------------------------------------------------
@@ -5045,30 +4930,19 @@ CWindowMenu::CWindowMenu(int _iPosX,int _iPosY,int _iTailleX,int _iTailleY,int _
 
 CWindowMenu::~CWindowMenu()
 {
-	vector<CWindowMenuConsole*>::iterator i;
-
-	for(i=vWindowConsoleElement.begin();i<vWindowConsoleElement.end();i++)
-	{
-		if( *i )
-		{
-			delete *i;
-			*i = NULL;
-		}
-	}
-
-	vWindowConsoleElement.clear();
-
+	for (std::vector<CWindowMenuConsole*>::iterator it = vWindowConsoleElement.begin(), it_end = vWindowConsoleElement.end(); it < it_end; ++it)
+		delete *it;
 }
 
 //-----------------------------------------------------------------------------
 
 void CWindowMenu::AddConsole(CWindowMenuConsole *_pMenuConsoleElement)
 {
-	vWindowConsoleElement.insert(vWindowConsoleElement.end(),_pMenuConsoleElement);
-	_pMenuConsoleElement->iOldPosX=0;
-	_pMenuConsoleElement->iOldPosY=0;
-	_pMenuConsoleElement->iPosX=iPosX;
-	_pMenuConsoleElement->iPosY=iPosY;
+	vWindowConsoleElement.push_back(_pMenuConsoleElement);
+	_pMenuConsoleElement->iOldPosX = 0;
+	_pMenuConsoleElement->iOldPosY = 0;
+	_pMenuConsoleElement->iPosX = iPosX;
+	_pMenuConsoleElement->iPosY = iPosY;
 }
 
 //-----------------------------------------------------------------------------
@@ -5085,7 +4959,7 @@ void CWindowMenu::Update(int _iDTime)
 
 	fAngle += _iDTime * 0.08f;
 
-	if(fAngle>90.f) fAngle=90.f;
+	if (fAngle>90.f) fAngle=90.f;
 }
 
 //-----------------------------------------------------------------------------
@@ -5103,7 +4977,7 @@ MENUSTATE CWindowMenu::Render()
 		bChangeConsole=false;
 	}
 
-	SETALPHABLEND(GDevice,false);
+	SETALPHABLEND(GDevice, false);
 
 	D3DTLVERTEX v[4];
 	v[0].color = v[1].color = v[2].color = v[3].color = ARX_OPAQUE_WHITE;
@@ -5111,15 +4985,14 @@ MENUSTATE CWindowMenu::Render()
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
 	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, false);
-		GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-		GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
+	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 
 	MENUSTATE eMS=NOP;
 
 	if (bMouseListen)
 	{
-		vector<CWindowMenuConsole*>::iterator i;
-
+		std::vector<CWindowMenuConsole*>::iterator i;
 
 		ARX_CHECK_INT(ARXDiffTimeMenu);
 		int iARXDiffTimeMenu    = ARX_CLEAN_WARN_CAST_INT(ARXDiffTimeMenu) ;
@@ -5129,30 +5002,20 @@ MENUSTATE CWindowMenu::Render()
 		{
 			if(eCurrentMenuState==(*i)->eMenuState)
 			{
-				eMS=(*i)->Update(iPosX,iPosY,
-					0,
-					iARXDiffTimeMenu);
+				eMS=(*i)->Update(iPosX,iPosY, 0, iARXDiffTimeMenu);
 
-				if(eMS!=NOP)
-				{
+				if (eMS != NOP)
 					break;
-				}
 			}
 		}
 	}
 
-	vector<CWindowMenuConsole*>::iterator i;
-
-	for (i = vWindowConsoleElement.begin(); i != vWindowConsoleElement.end(); ++i)
+	for (std::vector<CWindowMenuConsole*>::iterator i = vWindowConsoleElement.begin(); i != vWindowConsoleElement.end(); ++i)
 	{
 		if(eCurrentMenuState==(*i)->eMenuState)
 		{
-			int iNbHide;
-
-			if(iNbHide=((*i)->Render()))
-			{
+			if (int iNbHide = (*i)->Render())
 				SETALPHABLEND(GDevice,false);
-			}
 
 			break;
 		}
@@ -5160,7 +5023,7 @@ MENUSTATE CWindowMenu::Render()
 
 	SETALPHABLEND(GDevice,false);
 
-	if(eMS!=NOP)
+	if (eMS != NOP)
 	{
 		eCurrentMenuState=eMS;
 		bChangeConsole=true;
@@ -5239,12 +5102,10 @@ void CWindowMenuConsole::AddMenuCenterY( CMenuElement * _pMenuElement )
 	}
 
 	//We can't go inside the for-loop
-	else 
-	{ 
+	else
+	{
 		ARX_CHECK( !( 0 < iI ) );
 	}
-
-
 
 	for( int iJ = 0 ; iJ < iI ; iJ++ )
 	{
@@ -5401,7 +5262,7 @@ void CWindowMenuConsole::UpdateText()
 			bEdit=false;
 			return;
 		}
-		
+
 		bool bKey=false;
 		std::string tText;
 		
@@ -5413,7 +5274,7 @@ void CWindowMenuConsole::UpdateText()
 
 			if( !tText.empty() )
 			{
-				tText[tText.length()-1] = '\0';
+				tText.resize(tText.size() - 1);
 				bKey=true;
 			}
 		}
@@ -5424,7 +5285,7 @@ void CWindowMenuConsole::UpdateText()
 				tText = pZoneText->lpszText;
 
 				unsigned short tusOutPut[2];
-				std::string tCat;
+				char tCat;
 
 				int iKey = pGetInfoDirectInput->iKeyId;
 				int iR = scan2ascii(iKey, tusOutPut);
@@ -5437,52 +5298,40 @@ void CWindowMenuConsole::UpdateText()
 					switch(iKey)
 					{
 					case DIK_NUMPAD0:
-						tCat[0]=_T('0');
-						tCat[1]=0;
+						tCat = '0';
 						break;
 					case DIK_NUMPAD1:
-						tCat[0]=_T('1');
-						tCat[1]=0;
+						tCat = '1';
 						break;
 					case DIK_NUMPAD2:
-						tCat[0]=_T('2');
-						tCat[1]=0;
+						tCat = '2';
 						break;
 					case DIK_NUMPAD3:
-						tCat[0]=_T('3');
-						tCat[1]=0;
+						tCat = '3';
 						break;
 					case DIK_NUMPAD4:
-						tCat[0]=_T('4');
-						tCat[1]=0;
+						tCat = '4';
 						break;
 					case DIK_NUMPAD5:
-						tCat[0]=_T('5');
-						tCat[1]=0;
+						tCat = '5';
 						break;
 					case DIK_NUMPAD6:
-						tCat[0]=_T('6');
-						tCat[1]=0;
+						tCat = '6';
 						break;
 					case DIK_NUMPAD7:
-						tCat[0]=_T('7');
-						tCat[1]=0;
+						tCat = '7';
 						break;
 					case DIK_NUMPAD8:
-						tCat[0]=_T('8');
-						tCat[1]=0;
+						tCat = '8';
 						break;
 					case DIK_NUMPAD9:
-						tCat[0]=_T('9');
-						tCat[1]=0;
+						tCat = '9';
 						break;
 					case DIK_DECIMAL:     
-						tCat[0]=_T('.');
-						tCat[1]=0;
+						tCat = '.';
 						break;
 					case DIK_DIVIDE:      
-						tCat[0]=_T('/');
-						tCat[1]=0;
+						tCat = '/';
 						break;
 					default:
 						bKey=false;
@@ -5491,14 +5340,14 @@ void CWindowMenuConsole::UpdateText()
 				}
 				else
 				{
-					tCat[0]= (_TCHAR)(tusOutPut[0]);
-					tCat[1]=0;
+					// TODO handle non-ASCII characters
+					tCat= (char)(tusOutPut[0]);
 					bKey=true;
 				}
 
 				if(bKey)
 				{
-					if ((isalnum(tCat[0]) || _istspace(tCat[0]) || _istpunct(tCat[0])) && (tCat[0]!=_T('\t')) && (tCat[0]!=_T('*')))
+					if ((isalnum(tCat) || _istspace(tCat) || _istpunct(tCat)) && (tCat != '\t') && (tCat != '*'))
 						tText += tCat;
 				}
 			}
@@ -5510,10 +5359,12 @@ void CWindowMenuConsole::UpdateText()
 
 			if(    (pZoneText->rZone.right-pZoneText->rZone.left)>(iWidth-RATIO_X(64)) )
 			{
-				tText[tText.length()-1]=0;
-				pZoneText->SetText(tText);
+				if(!tText.empty()) {
+					tText.resize(tText.size() - 1);
+					pZoneText->SetText(tText);
+				}
 			}
-			
+
 			int iDx=pZoneClick->rZone.right-pZoneClick->rZone.left;
 
 			if(pZoneClick->ePlace)
@@ -5756,7 +5607,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY,int _Fr
 				if(iR!=-1)
 				{
 					pZoneClick=(CMenuElement*)iR;
-					
+
 					if( pGetInfoDirectInput->GetMouseButtonDoubleClick(DXI_BUTTON0,300) )
 					{
 						bEdit = pZoneClick->OnMouseDoubleClick(0);
@@ -5777,9 +5628,9 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY,int _Fr
 		for(int iJ=0;iJ<iI;++iJ)
 		{
 			CMenuElement *pMenuElement=(CMenuElement*)MenuAllZone.GetZoneNum(iJ);
-			CMenuElement *CMenuElementShortCut;
+			CMenuElement *CMenuElementShortCut = pMenuElement->OnShortCut();
 
-			if((CMenuElementShortCut=pMenuElement->OnShortCut()))
+			if(CMenuElementShortCut)
 			{
 				pZoneClick=CMenuElementShortCut;
 				MENUSTATE e = pZoneClick->eMenuState;
@@ -6142,7 +5993,8 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 
 //-----------------------------------------------------------------------------
 
-CMenuPanel::CMenuPanel() : CMenuElement(NOP)
+CMenuPanel::CMenuPanel()
+: CMenuElement(NOP)
 {
 	vElement.clear();
 
@@ -6153,15 +6005,8 @@ CMenuPanel::CMenuPanel() : CMenuElement(NOP)
 
 CMenuPanel::~CMenuPanel()
 {
-	vector<CMenuElement*>::iterator i;
-
-	for(i=vElement.begin();i<vElement.end();++i)
-	{
-		delete (*i);
-		*i = NULL;
-	}
-
-	vElement.clear();
+	for (std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
+		delete (*it);
 }
 
 //-----------------------------------------------------------------------------
@@ -6173,33 +6018,27 @@ void CMenuPanel::Move(int _iX, int _iY)
 	rZone.right += _iX;
 	rZone.bottom += _iY;
 
-	vector<CMenuElement*>::iterator i;
-
-	for(i=vElement.begin();i!=vElement.end();++i)
-	{
-		(*i)->Move(_iX, _iY);
-	}
+	for (std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
+		(*it)->Move(_iX, _iY);
 }
 
 //-----------------------------------------------------------------------------
-// patch on ajoute ï¿½ droite en ligne
+// patch on ajoute à droite en ligne
 void CMenuPanel::AddElement(CMenuElement* _pElem)
 {
-	vElement.insert(vElement.end(), _pElem);
+	vElement.push_back(_pElem);
 
-	if(vElement.size()==1)
-	{
-		rZone=_pElem->rZone;
-	}
+	if (vElement.size() == 1)
+		rZone = _pElem->rZone;
 	else
 	{
-		rZone.left = min(rZone.left, _pElem->rZone.left);
-		rZone.top = min(rZone.top, _pElem->rZone.top);
+		rZone.left = std::min(rZone.left, _pElem->rZone.left);
+		rZone.top = std::min(rZone.top, _pElem->rZone.top);
 	}
 
 	// + taille elem
-	rZone.right = max(rZone.right, _pElem->rZone.right);
-	rZone.bottom = max(rZone.bottom, _pElem->rZone.bottom);
+	rZone.right = std::max(rZone.right, _pElem->rZone.right);
+	rZone.bottom = std::max(rZone.bottom, _pElem->rZone.bottom);
 
 	_pElem->Move(0, ((GetHeight() - _pElem->rZone.bottom) / 2));
 }
@@ -6208,21 +6047,19 @@ void CMenuPanel::AddElement(CMenuElement* _pElem)
 // patch on ajoute ï¿½ droite en ligne
 void CMenuPanel::AddElementNoCenterIn(CMenuElement* _pElem)
 {
-	vElement.insert(vElement.end(), _pElem);
+	vElement.push_back(_pElem);
 
-	if(vElement.size()==1)
-	{
+	if (vElement.size() == 1)
 		rZone=_pElem->rZone;
-	}
 	else
 	{
-		rZone.left = min(rZone.left, _pElem->rZone.left);
-		rZone.top = min(rZone.top, _pElem->rZone.top);
+		rZone.left = std::min(rZone.left, _pElem->rZone.left);
+		rZone.top = std::min(rZone.top, _pElem->rZone.top);
 	}
 
 	// + taille elem
-	rZone.right = max(rZone.right, _pElem->rZone.right);
-	rZone.bottom = max(rZone.bottom, _pElem->rZone.bottom);
+	rZone.right = std::max(rZone.right, _pElem->rZone.right);
+	rZone.bottom = std::max(rZone.bottom, _pElem->rZone.bottom);
 
 }
 
@@ -6230,15 +6067,9 @@ void CMenuPanel::AddElementNoCenterIn(CMenuElement* _pElem)
 
 CMenuElement* CMenuPanel::OnShortCut()
 {
-	vector<CMenuElement*>::iterator i;
-
-	for(i=vElement.begin();i!=vElement.end();++i)
-	{
-		if((*i)->OnShortCut())
-		{
-			return *i;
-		}
-	}
+	for (std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
+		if ((*it)->OnShortCut())
+			return *it;
 
 	return NULL;
 }
@@ -6250,13 +6081,13 @@ void CMenuPanel::Update(int _iTime)
 	rZone.right = rZone.left;
 	rZone.bottom = rZone.top;
 
-	vector<CMenuElement*>::iterator i;
+	;
 
-	for(i=vElement.begin();i!=vElement.end();++i)
+	for (std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
 	{
-		(*i)->Update(_iTime);
-		rZone.right = max(rZone.right, (*i)->rZone.right);
-		rZone.bottom = max(rZone.bottom, (*i)->rZone.bottom);
+		(*it)->Update(_iTime);
+		rZone.right = std::max(rZone.right, (*it)->rZone.right);
+		rZone.bottom = std::max(rZone.bottom, (*it)->rZone.bottom);
 	}
 }
 
@@ -6268,27 +6099,17 @@ void CMenuPanel::Render()
 
 	if(bNoMenu) return;
 
-	vector<CMenuElement*>::iterator i;
-
-	for(i=vElement.begin();i!=vElement.end();++i)
-	{
-		(*i)->Render();
-	}
+	for (std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
+		(*it)->Render();
 }
 
 //-----------------------------------------------------------------------------
 
 CMenuZone * CMenuPanel::GetZoneWithID(int _iID)
 {
-	vector<CMenuElement*>::iterator i;
-
-	for(i=vElement.begin();i!=vElement.end();++i)
-	{
-		CMenuZone *pZone;
-		pZone=(*i)->GetZoneWithID(_iID);
-
-		if(pZone) return pZone;
-	}
+	for (std::vector<CMenuElement*>::iterator it = vElement.begin(), it_end = vElement.end(); it != it_end; ++it)
+		if (CMenuZone* pZone = (*it)->GetZoneWithID(_iID))
+			return pZone;
 
 	return NULL;
 }
@@ -6461,16 +6282,12 @@ void CMenuButton::AddText( const std::string& _pText)
 
 bool CMenuButton::OnMouseClick(int _iMouseButton)
 {
-	iPos++;
+	++iPos;
 
 	ARX_CHECK_NOT_NEG( iPos );
 
 	if( ARX_CAST_UINT( iPos ) >= vText.size() )
-	{
 		iPos = 0;
-	}
-
-
 
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
@@ -6492,7 +6309,7 @@ void CMenuButton::Render()
 	if(bNoMenu) return;
 
 	//affichage de la texture
-	if(pTex)
+	if (pTex)
 	{
 		EERIEDrawBitmap2(GDevice, ARX_CLEAN_WARN_CAST_FLOAT(rZone.left), ARX_CLEAN_WARN_CAST_FLOAT(rZone.top),
 			RATIO_X(pTex->m_dwWidth),
@@ -6537,7 +6354,7 @@ void CMenuButton::RenderMouseOver()
 	{
 		D3DTLVERTEX v[4];
 		v[0].color = v[1].color = v[2].color = v[3].color = ARX_OPAQUE_WHITE;
-		v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
+		v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;
 		v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
 		SETTC(GDevice,pTexOver);
@@ -6688,12 +6505,8 @@ void CMenuSliderText::Move(int _iX, int _iY)
 	pLeftButton->Move(_iX, _iY);
 	pRightButton->Move(_iX, _iY);
 
-	vector<CMenuElementText*>::iterator i;
-
-	for(i=vText.begin();i!=vText.end();++i)
-	{
+	for (std::vector<CMenuElementText*>::const_iterator i = vText.begin(), i_end = vText.end(); i != i_end; ++i)
 		(*i)->Move(_iX, _iY);
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -6726,7 +6539,6 @@ void CMenuSliderText::EmptyFunction()
 
 bool CMenuSliderText::OnMouseClick(int)
 {
-
 	ARX_SOUND_PlayMenu(SND_MENU_CLICK);
 
 	if(iOldPos<0)
@@ -6830,23 +6642,17 @@ void CMenuSliderText::Update(int _iTime)
 void CMenuSliderText::Render()
 {
 	if(WILL_RELOAD_ALL_TEXTURES) return;
-
 	if(bNoMenu) return;
 
 	pLeftButton->Render();
-
 	pRightButton->Render();
 
-	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, false);
-
-	if(vText[iPos])
+	if (vText[iPos])
 	{
+		GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
 		vText[iPos]->Render();
-
+		GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
 	}
-
-	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, false);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -6862,7 +6668,7 @@ void CMenuSliderText::RenderMouseOver()
 	int iX = pGetInfoDirectInput->iMouseAX;
 	int iY = pGetInfoDirectInput->iMouseAY;
 
-	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, true);
+	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 
@@ -6890,6 +6696,9 @@ void CMenuSliderText::RenderMouseOver()
 	}
 }
 
+
+//-----------------------------------------------------------------------------
+// CMenuSlider
 //-----------------------------------------------------------------------------
 
 CMenuSlider::CMenuSlider(int _iID, int _iPosX, int _iPosY)
@@ -6920,8 +6729,6 @@ CMenuSlider::CMenuSlider(int _iID, int _iPosX, int _iPosY)
 	iId = (int) this;
 }
 
-//-----------------------------------------------------------------------------
-
 CMenuSlider::~CMenuSlider()
 {
 	if (pLeftButton)
@@ -6936,8 +6743,6 @@ CMenuSlider::~CMenuSlider()
 		pRightButton = NULL;
 	}
 }
-
-//-----------------------------------------------------------------------------
 
 void CMenuSlider::Move(int _iX, int _iY)
 {
@@ -7008,51 +6813,33 @@ bool CMenuSlider::OnMouseClick(int)
 	{
 	// MENUOPTIONS_VIDEO
 	case BUTTON_MENUOPTIONSVIDEO_FOG:
-		{
-			ARXMenu_Options_Video_SetFogDistance(iPos);
-		}
+		ARXMenu_Options_Video_SetFogDistance(iPos);
 		break;
 	case BUTTON_MENUOPTIONSVIDEO_GAMMA:
-		{
-			ARXMenu_Options_Video_SetGamma(iPos);
-		}
+		ARXMenu_Options_Video_SetGamma(iPos);
 		break;
 	case BUTTON_MENUOPTIONSVIDEO_LUMINOSITY:
-		{
-			ARXMenu_Options_Video_SetLuminosity(iPos);
-		}
+		ARXMenu_Options_Video_SetLuminosity(iPos);
 		break;
 	case BUTTON_MENUOPTIONSVIDEO_CONTRAST:
-		{
-			ARXMenu_Options_Video_SetContrast(iPos);
-		}
+		ARXMenu_Options_Video_SetContrast(iPos);
 		break;
 	// MENUOPTIONS_AUDIO
 	case BUTTON_MENUOPTIONSAUDIO_MASTER:
-		{
-			ARXMenu_Options_Audio_SetMasterVolume(iPos);
-		}
+		ARXMenu_Options_Audio_SetMasterVolume(iPos);
 		break;
 	case BUTTON_MENUOPTIONSAUDIO_SFX:
-		{
-			ARXMenu_Options_Audio_SetSfxVolume(iPos);
-		}
+		ARXMenu_Options_Audio_SetSfxVolume(iPos);
 		break;
 	case BUTTON_MENUOPTIONSAUDIO_SPEECH:
-		{
-			ARXMenu_Options_Audio_SetSpeechVolume(iPos);
-		}
+		ARXMenu_Options_Audio_SetSpeechVolume(iPos);
 		break;
 	case BUTTON_MENUOPTIONSAUDIO_AMBIANCE:
-		{
-			ARXMenu_Options_Audio_SetAmbianceVolume(iPos);
-		}
+		ARXMenu_Options_Audio_SetAmbianceVolume(iPos);
 		break;
 	// MENUOPTIONS_CONTROLS
 	case BUTTON_MENUOPTIONS_CONTROLS_MOUSESENSITIVITY:
-		{
-			ARXMenu_Options_Control_SetMouseSensitivity(iPos);
-		}
+		ARXMenu_Options_Control_SetMouseSensitivity(iPos);
 		break;
 	}
 
@@ -7073,16 +6860,12 @@ void CMenuSlider::Update(int _iTime)
 
 	pRightButton->Move(    ARX_CLEAN_WARN_CAST_INT(fWidth), 0);
 
+	ARX_CHECK_LONG( rZone.left + pLeftButton->GetWidth() + pRightButton->GetWidth() + RATIO_X(10*std::max(pTex1->m_dwWidth, pTex2->m_dwWidth)) );
+	rZone.right  = ARX_CLEAN_WARN_CAST_LONG( rZone.left + pLeftButton->GetWidth() + pRightButton->GetWidth() + RATIO_X(10*std::max(pTex1->m_dwWidth, pTex2->m_dwWidth)) );
 
-
-	ARX_CHECK_LONG( rZone.left + pLeftButton->GetWidth() + pRightButton->GetWidth() + RATIO_X(10*max(pTex1->m_dwWidth, pTex2->m_dwWidth)) );
-	rZone.right  = ARX_CLEAN_WARN_CAST_LONG( rZone.left + pLeftButton->GetWidth() + pRightButton->GetWidth() + RATIO_X(10*max(pTex1->m_dwWidth, pTex2->m_dwWidth)) );
-
-	rZone.bottom = rZone.top + max(pLeftButton->GetHeight(), pRightButton->GetHeight());
+	rZone.bottom = rZone.top + std::max(pLeftButton->GetHeight(), pRightButton->GetHeight());
 
 }
-
-//-----------------------------------------------------------------------------
 
 void CMenuSlider::Render()
 {
@@ -7145,10 +6928,8 @@ void CMenuSlider::Render()
 		iX += iTexW;
 	}
 
-	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, false);
+	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
 }
-
-//-----------------------------------------------------------------------------
 
 void CMenuSlider::RenderMouseOver()
 {
@@ -7182,13 +6963,12 @@ void CMenuSlider::RenderMouseOver()
 				(iY >= pRightButton->rZone.top) &&
 				(iX <= pRightButton->rZone.right) &&
 				(iY <= pRightButton->rZone.bottom))
-			{
-				pRightButton->Render();
-
-			}
+		{
+			pRightButton->Render();
 		}
+	}
 
-	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, false);
+	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
 }
 
 //-----------------------------------------------------------------------------
@@ -7357,7 +7137,7 @@ void CDirectInput::GetInput()
 		}
 	}
 
-	if(bTouch)    //prioritï¿½ des touches
+	if(bTouch)    //prioritê des touches
 	{
 		switch(iKeyId)
 		{
@@ -7494,7 +7274,6 @@ void CDirectInput::GetInput()
 			fDY=( (float)iMouseRY ) * fSens * ( ( (float)DANAESIZY ) / 480.f );
 			fMouseAXTemp += fDX;
 			fMouseAYTemp += fDY;
-			
 
 			ARX_CHECK_INT(fMouseAXTemp);
 			ARX_CHECK_INT(fMouseAYTemp);
@@ -7729,7 +7508,7 @@ static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,
 		{
 			v[1].color=v[3].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);    
 			EERIEDRAWPRIM(GDevice,D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
-			
+
 			v[0].sx=v[1].sx;
 			v[0].sy=v[1].sy;
 			v[0].color=v[1].color;
@@ -7794,7 +7573,7 @@ void CDirectInput::DrawCursor()
 					iNumCursor--;
 				}
 			}
-			
+
 			SetCursorOff();
 			bMouseOver=false;
 		}
@@ -7847,45 +7626,38 @@ bool CDirectInput::GetMouseButtonNowUnPressed(int _iNumButton)
 
 //-----------------------------------------------------------------------------
 
-std::string CDirectInput::GetFullNameTouch(int _iVirtualKey)
-{
+std::string CDirectInput::GetFullNameTouch(int _iVirtualKey) {
+	
 	std::string pText;
-
+	
 	long lParam;
-
+	
 	std::string pText2;
-
-	if( ( _iVirtualKey != -1 ) && ( _iVirtualKey & ~0xC000FFFF ) ) //COMBINAISON
-	{
-		pText2=GetFullNameTouch((_iVirtualKey>>16)&0x3FFF);
+	
+	if( _iVirtualKey != -1 && (_iVirtualKey&~0xC000FFFF)) {
+		// key combination
+		pText2 = GetFullNameTouch((_iVirtualKey>>16)&0x3FFF);
 	}
-
+	
 	lParam=((_iVirtualKey)&0x7F)<<16;
-
-	switch(_iVirtualKey)
-	{
+	
+	switch(_iVirtualKey) {
 	case DIK_HOME:
-
 		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_home", "---", pText );
 		break;
 	case DIK_NEXT:
-
 		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_pagedown", "---", pText );
 		break;
 	case DIK_END:
-
 		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_end", "---", pText );
 		break;
 	case DIK_INSERT:
-
 		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_insert", "---", pText );
 		break;
 	case DIK_DELETE:
-
 		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_delete", "---", pText );
 		break;
 	case DIK_NUMLOCK:
-
 		PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_numlock", "---", pText );
 		break;
 	case DIK_DIVIDE:
@@ -7898,23 +7670,18 @@ std::string CDirectInput::GetFullNameTouch(int _iVirtualKey)
 		pText = "?";
 		break;
 	case DIK_UP:                  // UpArrow on arrow keypad
-
 		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_up", "---", pText);
 		break;
 	case DIK_PRIOR:               // PgUp on arrow keypad
-
 		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_pageup", "---", pText);
 		break;
 	case DIK_LEFT:                // LeftArrow on arrow keypad
-
 		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_left", "---", pText);
 		break;
 	case DIK_RIGHT:               // RightArrow on arrow keypad
-
 		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_right", "---", pText);
 		break;
 	case DIK_DOWN:                // DownArrow on arrow keypad
-
 		PAK_UNICODE_GetPrivateProfileString("system_menus_options_input_customize_controls_down", "---", pText);
 		break;
 	case DIK_BUTTON1:
@@ -8025,89 +7792,57 @@ std::string CDirectInput::GetFullNameTouch(int _iVirtualKey)
 	default:
 		{
 		char tAnsiText[256];
-		GetKeyNameText(lParam,tAnsiText,256);
-		int i=strlen(tAnsiText);
-
-		if(!i)
-		{
+		GetKeyNameText(lParam, tAnsiText, 256);
+		
+		if(tAnsiText[0] == '\0') {
 			std::stringstream ss;
 			ss << "Key_" << _iVirtualKey;
 			pText = ss.str();
 		}
-		else
-		{
-			// TODO Find replacement
-			//MultiByteToWideChar(CP_ACP, 0, tAnsiText, -1, (wchar_t*)pText.c_str(), 256);
-
-			if(_iVirtualKey==DIK_LSHIFT)
-			{
+		else {
+			
+			pText = tAnsiText;
+			
+			if(_iVirtualKey == DIK_LSHIFT) {
 				std::string tText2;
-				std::string pText3;
 				PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_left", "---", tText2);
-				tText2[1] = 0;
-				pText3 = tText2;
-				pText3 += pText;
-				pText = pText3;
+				pText = tText2.substr(0, min((size_t)1, tText2.size())) + pText;
 			}
-
-			if(_iVirtualKey==DIK_LCONTROL)
-			{
+			
+			if(_iVirtualKey == DIK_LCONTROL) {
 				std::string tText2;
-				std::string pText3;
 				PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_left", "---", tText2);
-				tText2[1]=0;
-				pText3 = tText2;
-				pText3 += pText;
-				pText = pText3;
+				pText = tText2.substr(0, min((size_t)1, tText2.size())) + pText;
 			}
-
-			if(_iVirtualKey==DIK_LALT)
-			{
+			
+			if(_iVirtualKey == DIK_LALT) {
 				std::string tText2;
-				std::string pText3;
 				PAK_UNICODE_GetPrivateProfileString( "system_menus_options_input_customize_controls_left", "---", tText2);
-				tText2[1]=0;
-				pText3 = tText2;
-				pText3 += pText;
-				pText=pText3;
+				pText = tText2.substr(0, min((size_t)1, tText2.size())) + pText;
 			}
-
-			if (_iVirtualKey == DIK_NUMPADENTER)
-			{
-				std::string pText3;
-				pText3 = pText;
-				pText3 += "0";
-				pText = pText3;
+			
+			if(_iVirtualKey == DIK_NUMPADENTER) {
+				pText += "0";
 			}
-
-			if( pText.length() > 8 )
-			{
-				pText[8]=0;
-				int iI=8;
-
-				while(iI--)
-				{
-					if( pText[iI] == ' ' )
-					{
-						pText[iI] = 0;
+			
+			if(pText.length() > 8) {
+				size_t size = 8;
+				for(; size != 0; size--) {
+					if(pText[size - 1] != ' ') {
+						break;
 					}
-					else break;
 				}
+				pText.resize(size);
 			}
 		}
 		}
 		break;
 	}
-
-	if( !pText2.empty() )
-	{
-		std::string pText3 = pText2;
-		pText3 += "+";
-		pText3 += pText;
-		pText = pText3;
-
+	
+	if(!pText2.empty()) {
+		pText = pText2 + "+" + pText;
 	}
-
+	
 	return pText;
 }
 
@@ -8131,4 +7866,3 @@ void Menu2_Close()
 		pWindowMenu=NULL;
 	}
 }
-

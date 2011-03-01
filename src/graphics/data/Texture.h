@@ -76,10 +76,10 @@ void ReleaseAllTCWithFlag(long flag);
 #define EERIETEXTUREFLAG_PERMANENT			1
 #define EERIETEXTUREFLAG_LOADSCENE_RELEASE	2
 
-typedef struct
+struct DELAYED_PRIM
 {
 	EERIEPOLY * data;
-} DELAYED_PRIM;
+};
 
 //-----------------------------------------------------------------------------
 // Name: TextureContainer
@@ -93,7 +93,6 @@ public:
 
 	std::string m_strName;              // Image filename
 	std::string m_texName;              // Name of texture
-
 	DWORD   m_dwWidth;
 	DWORD   m_dwHeight;
 	DWORD	m_dwOriginalWidth;

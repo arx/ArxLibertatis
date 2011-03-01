@@ -3329,5 +3329,5 @@ void EERIE_ANIMMANAGER_ReloadAll()
 			EERIE_ANIMMANAGER_Clear(i);
 			EERIE_ANIMMANAGER_Load(pathhh);			
 		}
-	}	
+	}
 }

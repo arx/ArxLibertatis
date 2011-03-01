@@ -83,10 +83,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-typedef struct
+struct EQUIP_INFO
 {
 	char name[64];
-} EQUIP_INFO;
+};
 
 #define SP_SPARKING 1
 #define SP_BLOODY	2
@@ -195,7 +195,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 	const char texpath[] = "Graph\\Obj3D\\Textures\\";
 	const char OBJECT_HUMAN_BASE[] = "graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo";
 	// TODO wrong order of parameters?
-	io->obj = TheoToEerie_Fast(OBJECT_HUMAN_BASE, texpath, TTE_NO_PHYSICS_BOX | TTE_NPC);
+	io->obj = TheoToEerie_Fast(texpath, OBJECT_HUMAN_BASE, TTE_NO_PHYSICS_BOX | TTE_NPC);
 	
 	long sel_ = -1;
 	char pathh[256];
@@ -499,7 +499,7 @@ void ARX_EQUIPMENT_UnEquip(INTERACTIVE_OBJ * target, INTERACTIVE_OBJ * tounequip
 				}
 				else if (!CanBePutInInventory(tounequip))
 				{
-					PutInFrontOfPlayer(tounequip, 1); 
+					PutInFrontOfPlayer(tounequip);
 				}
 			}
 

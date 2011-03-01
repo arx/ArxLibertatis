@@ -76,6 +76,16 @@ bool TextManager::AddText(Font* _pFont, const string & _lpszUText, const RECT & 
 	return true;
 }
 
+bool TextManager::AddText( Font* font, const std::string& str, long x, long y, long fgcolor)
+{
+	RECT r;
+	r.left = x;
+	r.top = y;
+	r.right = 9999;
+	r.bottom = 9999;
+	return AddText(font, str, r, fgcolor, 0x00FF00FF);
+}
+
 void TextManager::Update(float _fDiffFrame) {
 	
 	ARX_CHECK_INT(_fDiffFrame);
@@ -123,11 +133,11 @@ void TextManager::Render() {
 		HRGN hRgn = CreateRectRgn(pArxText->rRectClipp.left, pArxText->rRectClipp.top,
 		                          pArxText->rRectClipp.right, pArxText->rRectClipp.bottom);
 		
-		long height = ARX_UNICODE_DrawTextInRect(static_cast<float>(pArxText->rRect.left),
+		long height = ARX_UNICODE_DrawTextInRect( pArxText->pFont, static_cast<float>(pArxText->rRect.left),
 		                                         pArxText->rRect.top - pArxText->fDeltaY,
 		                                         static_cast<float>(pArxText->rRect.right),
 		                                         0, pArxText->lpszUText, pArxText->lCol,
-		                                         pArxText->lBkgCol, pArxText->pFont, hRgn);
+		                                         pArxText->lBkgCol, hRgn);
 		
 		pArxText->rRect.bottom = pArxText->rRect.top + height;
 		

@@ -58,12 +58,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef HERMESPERF_H
 #define HERMESPERF_H
 
-typedef struct {
+struct HPERF_STAT
+{
 	unsigned long	chrono;
 	unsigned long	max_chrono;
 	char			text[256];
 	unsigned long	color;
-} HPERF_STAT;
+};
 
 #define MAX_PERF 50
 extern HPERF_STAT HermesPerf[MAX_PERF];

@@ -1,11 +1,21 @@
 # Arx Fatalis Port
 
-(Arx Libertatis?)
+                      _______________________
+                     /\                      \
+                     \_|         Arx         |
+                       |      Libertatis     |
+                       |   __________________|__
+                        \_/____________________/
+
+
 Port to x64_86 / GCC / OpenGL / Unix
+
+Arx Libertatis is based on the publicly released Arx Fatalis source code.
+GPLv3 - read ARX_PUBLIC_LICENSE.txt
 
 ## Dependencies
 
-Currently wine and libjpeg 32bit, and maybe some other headers like zlib.h.
+Currently wine, DevIL (libil.so), zlib (libz.so). All of these must be available as 32bit libraries.
 Wine and 32bit is only a temporary solution.
 
 ## Compile
@@ -37,6 +47,10 @@ Run this form the root directory:
 ## Chat
 
 \#arxfatalis on irc.freenode.net
+
+## Wiki
+
+http://arx.parpg.net/
 
 ## Reddit
 

@@ -63,14 +63,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 class CRuban;
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct ARX_PATHWAY
 {
 	EERIE_3D		rpos; //relative pos
 	long			flag;
 	float			_time;
-} ARX_PATHWAY;
+};
 
-typedef struct
+struct ARX_PATH
 {
 	char			name[64];
 	short			idx;
@@ -89,9 +89,9 @@ typedef struct
 	float			amb_max_vol;
 	EERIE_3D		bbmin;
 	EERIE_3D		bbmax;
-} ARX_PATH;
+};
 
-typedef struct
+struct ARX_USE_PATH
 {
 	ARX_PATH	*	path;
 	float			_starttime;
@@ -99,9 +99,9 @@ typedef struct
 	long			aupflags;
 	EERIE_3D		initpos;
 	long			lastWP;
-} ARX_USE_PATH;
+};
 
-typedef struct
+struct MASTER_CAMERA_STRUCT
 {
 	long				exist; // 2== want to change to want_vars...
 	INTERACTIVE_OBJ *	io;
@@ -110,7 +110,7 @@ typedef struct
 	INTERACTIVE_OBJ *	want_io;
 	ARX_USE_PATH	*	want_aup;
 	EERIE_CAMERA	*	want_cam;
-} MASTER_CAMERA_STRUCT;
+};
 
 //-----------------------------------------------------------------------------
 #define PATHWAY_STANDARD				0
@@ -183,7 +183,7 @@ long ARX_PATHS_Interpolate(ARX_USE_PATH * aup, EERIE_3D * pos);
 
 #define ATO_TYPE_ARROW	1
 
-typedef struct
+struct ARX_THROWN_OBJECT
 {
 	long		flags;
 	EERIE_3D	vector;
@@ -199,7 +199,7 @@ typedef struct
 	float		poisonous;
 	CRuban	*	pRuban;
 
-} ARX_THROWN_OBJECT;
+};
 
 #define MAX_THROWN_OBJECTS	100
 
@@ -215,15 +215,15 @@ class CRuban
 		int			num;
 		int			iNumThrow;
 
-		typedef struct ST_RUBAN
+		struct T_RUBAN
 		{
 			int				actif;
 			EERIE_3D		pos;
 			int				next;
-		} T_RUBAN;
+		};
 		T_RUBAN truban[2048];
 
-		typedef struct
+		struct T_RUBAN_DEF
 		{
 			int		first;
 			int		origin;
@@ -231,7 +231,7 @@ class CRuban
 			int		dec;
 			float	r, g, b;
 			float	r2, g2, b2;
-		} T_RUBAN_DEF;
+		};
 
 		int			nbrubandef;
 		T_RUBAN_DEF trubandef[256];
@@ -248,12 +248,10 @@ class CRuban
  
 };
 
-
 long ARX_THROWN_OBJECT_GetFree();
 long ARX_THROWN_OBJECT_Throw(long type, long source, EERIE_3D * position, EERIE_3D * vect, EERIE_3D * upvect, EERIE_QUAT * quat, float velocity, float damages, float poisonous);
 void ARX_THROWN_OBJECT_KillAll();
 void ARX_THROWN_OBJECT_Manage(unsigned long time_offset);
 void EERIE_PHYSICS_BOX_Launch_NOCOL(INTERACTIVE_OBJ * io, EERIE_3DOBJ * obj, EERIE_3D * pos, EERIE_3D * vect, long flags = 0, EERIE_3D * angle = NULL);
-
 
 #endif

@@ -184,7 +184,7 @@ typedef double              f64;    // 64 bits double float
 enum ARX_DEBUG_LOG_TYPE
 {
 	eLog,
-	eLogError ,
+	eLogError,
 	eLogWarning
 };
 

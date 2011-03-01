@@ -61,12 +61,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "physics/Actors.h"
 #include "scene/Interactive.h"
 
-typedef struct
+struct ARX_SPECIAL_ATTRACTOR
 {
 	long	ionum;  // -1 == not defined
 	float	power;
 	float	radius;
-} ARX_SPECIAL_ATTRACTOR;
+};
 #define MAX_ATTRACTORS 16
 
 ARX_SPECIAL_ATTRACTOR attractors[MAX_ATTRACTORS];

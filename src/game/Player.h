@@ -67,14 +67,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::vector;
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct ARX_NECKLACE
 {
 	EERIE_3DOBJ		*		lacet;
 	EERIE_3DOBJ		*		runes[NB_RUNES];
 	TextureContainer	*	pTexTab[NB_RUNES];
-} ARX_NECKLACE;
+};
 
-typedef struct
+struct ARX_INTERFACE_MEMORIZE_SPELL
 {
 	bool			bSpell;
 	unsigned long	lTimeCreation;
@@ -82,9 +82,9 @@ typedef struct
 	int				iSpellSymbols[6];
 	float			fPosX;
 	float			fPosY;
-} ARX_INTERFACE_MEMORIZE_SPELL;
+};
 
-typedef struct
+struct ARXCHARACTER
 {
 	EERIE_3D		pos;
 	EERIE_3D		angle;
@@ -235,7 +235,7 @@ typedef struct
 	short			bag;
 	short			sp_flags;
 	ARX_INTERFACE_MEMORIZE_SPELL SpellToMemorize;
-} ARXCHARACTER;
+};
 
 #define SP_MAX		1
 #define SP_RF		4
@@ -247,11 +247,10 @@ typedef struct
 #define SP_SP		256
 #define SP_SP2		512
 
-
-typedef struct
+struct KEYRING_SLOT
 {
 	char slot[64];
-} KEYRING_SLOT;
+};
 
 //////////////////////////////////////////////
 // Quests Management (QuestLogBook)
@@ -383,7 +382,6 @@ void	ARX_Player_Rune_Remove(unsigned long);
 void	ARX_PLAYER_AddGold(long);
 void	ARX_PLAYER_AddBag();
 bool	ARX_PLAYER_CanStealItem(INTERACTIVE_OBJ *);
-
 
 void	ARX_KEYRING_Init();
 void	ARX_KEYRING_Add( const char* key);

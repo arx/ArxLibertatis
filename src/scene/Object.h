@@ -63,14 +63,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Texture.h"
 
 //-----------------------------------------------------------------------------
-typedef struct
+struct ACTIONSTRUCT
 {
     EERIE_LIGHT	light;
     EERIE_3D	pos;
     long		dl;
     short		type;
     short		exist;
-} ACTIONSTRUCT;
+};
 
 //-----------------------------------------------------------------------------
 #define ACT_FIRE			1
@@ -104,7 +104,7 @@ void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms);
 void ReleaseScene(EERIE_3DSCENE	*	scene);
 void MakeUserFlag(TextureContainer	* tc);
 long EERIE_OBJECT_GetGroup(EERIE_3DOBJ * obj, const char * groupname);
-long EERIE_OBJECT_GetSelection(EERIE_3DOBJ * obj, const char * selname);
+long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const char * selname);
  
 void GlobalInitLight();
 void MoveAllLights(EERIE_3D * trans);

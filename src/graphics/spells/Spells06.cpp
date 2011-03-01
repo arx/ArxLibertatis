@@ -731,7 +731,7 @@ void CRiseDead::Create(EERIE_3D aeSrc, float afBeta)
 	this->Split(v1a, 0, end, 80);
 	this->Split(v1b, 0, end, -80);
 
-	// check de la conformitï¿½ du split
+	// check de la conformité du split
 	// sinon recalc de l'un de l'autre ou des deux
 	// espace min
 	if (0)
@@ -1049,7 +1049,7 @@ void CRiseDead::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	//-------------------------------------------------------------------------
 	// rendu des faisceaux
 	// blend additif ou mul
-	// smooth sur les cotï¿½s ou pas ..
+	// smooth sur les cotés ou pas ..
 	// texture sympa avec glow au milieu ou uv wrap
 	SETALPHABLEND(m_pd3dDevice, true);
 
@@ -1221,7 +1221,7 @@ void CRiseDead::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-// rendu de la dï¿½chirure spatio temporelle
+// rendu de la déchirure spatio temporelle
 float CRiseDead::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 {
 	if (ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro)) return 0.f;
@@ -1541,7 +1541,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 	}
 
 
-	// systï¿½me de partoches pour la poussiï¿½re
+	// système de partoches pour la poussière
 	CParticleSystem * pPS = new CParticleSystem();
 	CParticleParams cp;
 	cp.iNbMax = 200;
@@ -1603,7 +1603,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 		pParticleManager->AddSystem(pPS);
 	}
 
-	// systï¿½me de partoches pour la poussiï¿½re au sol
+	// système de partoches pour la poussière au sol
 	pPS = new CParticleSystem();
 	cp;
 	cp.iNbMax = 20;

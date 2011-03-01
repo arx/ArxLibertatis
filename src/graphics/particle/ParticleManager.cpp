@@ -24,16 +24,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 /*
   vendredi 23 novembre
-    m�j update (check if size > 0)
+    màj update (check if size > 0)
   vendredi 15 juin 2001
-	am�lorations, rajouts de trucs genre blend (nouvel alpha pour blood par ex)
-	insertion dans l'�diteur de Danae
-	affichage dans l'�diteur
-	mise � jour avec la dll
+	amélorations, rajouts de trucs genre blend (nouvel alpha pour blood par ex)
+	insertion dans l'éditeur de Danae
+	affichage dans l'éditeur
+	mise à jour avec la dll
 	calcul du point pour selection souris
   jeudi 31 mai code cosmetics + optims
-  mercredi 30 mai nettoyage + pr�parations des VB + optims draw sprite + rotated
-			-> passage de trianglefan � loop
+  mercredi 30 mai nettoyage + préparations des VB + optims draw sprite + rotated
+			-> passage de trianglefan à loop
   mardi 29 mai optims diverses + fix spawn
   lundi 28 mai fix des upates par la dll + random color lock + fix speed (slider -> edit)
 			+ fix set params deg2rad angle � faire en amont
@@ -48,12 +48,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
   lundi 21 mai 2001 code cosmetics + fire and forget particles + texture loop on/off
 			  + interface revue
   semaine e3 sens rotation + cone revu
-  lundi 07 mai 2001 time textures anim�es + spray cone plus ou moins + alpha
+  lundi 07 mai 2001 time textures animées + spray cone plus ou moins + alpha
 			  + rotation
-  04 mai 2001 textures anim�es + fix random velocity
+  04 mai 2001 textures animées + fix random velocity
 				base size
-  03 mai 2001 interface (random) + int�gration danae ok
-  02 mai 2001 classes + interface (base) + d�but int�gration danae
+  03 mai 2001 interface (random) + intégration danae ok
+  02 mai 2001 classes + interface (base) + début intégration danae
   30 avril 2001 classes
 
 todo:
