@@ -60,7 +60,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 #include <vector>
-#include <tchar.h>
 #include "graphics/data/Mesh.h"
 #include "game/Spells.h"
 

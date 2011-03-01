@@ -122,7 +122,7 @@ extern TextureContainer * pTextureLoad;
 
 bool MENU_NoActiveWindow();
 void ClearGameDEVICE();
-void GetTextSize(HFONT _hFont, const _TCHAR * _lpszUText, int * _iWidth, int * _iHeight);
+void GetTextSize(HFONT _hFont, const char* _lpszUText, int * _iWidth, int * _iHeight);
 
 //-----------------------------------------------------------------------------
 // Exported global variables
@@ -695,8 +695,8 @@ bool ARX_Menu_Render()
 			ITC.Set("pTexCornerLeft", "Graph\\Interface\\book\\Left_corner_original.bmp");
 			ITC.Set("pTexCornerRight", "Graph\\Interface\\book\\Right_corner_original.bmp");
 
-			ARX_Allocate_Text(ITC.Level, _T("system_charsheet_player_lvl"));
-			ARX_Allocate_Text(ITC.Xp, _T("system_charsheet_player_xp"));
+			ARX_Allocate_Text(ITC.Level, "system_charsheet_player_lvl");
+			ARX_Allocate_Text(ITC.Xp, "system_charsheet_player_xp");
 
 			ANIM_Set(&player.useanim, herowaitbook);
 

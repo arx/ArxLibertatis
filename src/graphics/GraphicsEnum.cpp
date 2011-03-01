@@ -55,7 +55,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //////////////////////////////////////////////////////////////////////////////////////
 #include <windowsx.h>
 #include <stdio.h>
-#include <tchar.h>
 
 #include "graphics/GraphicsEnum.h"
 #include "graphics/GraphicsUtility.h" // For DEBUG_MSG
@@ -445,8 +444,8 @@ static VOID UpdateDialogControls(HWND hDlg, D3DEnum_DeviceInfo * pCurrentDevice,
 					if (bStereo)
 						continue;
 
-				TCHAR strMode[80];
-				wsprintf(strMode, _T("%ld x %ld x %ld"),
+				char strMode[80];
+				sprintf(strMode, "%ld x %ld x %ld",
 				         pddsdMode->dwWidth, pddsdMode->dwHeight,
 				         pddsdMode->ddpfPixelFormat.dwRGBBitCount);
 

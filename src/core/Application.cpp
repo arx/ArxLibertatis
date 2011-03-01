@@ -56,7 +56,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 #include <stdio.h>
-#include <tchar.h>
 
 #include "core/Application.h"
 #include "graphics/data/Mesh.h"
@@ -232,7 +231,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst, TCHAR * strCmdLine)
 	                      LoadIcon(hInst, MAKEINTRESOURCE(IDI_MAIN)),
 	                      LoadCursor(NULL, IDC_ARROW),
 	                      (HBRUSH)GetStockObject(BLACK_BRUSH),
-	                      NULL, _T("D3D Window")
+	                      NULL, "D3D Window"
 	                    };
 	RegisterClass(&wndClass);
 
@@ -267,7 +266,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst, TCHAR * strCmdLine)
 		else
 			menu = CreationMenu;
 
-		MSGhwnd = m_hWnd = CreateWindow(_T("D3D Window"), m_strWindowTitle,
+		MSGhwnd = m_hWnd = CreateWindow("D3D Window", m_strWindowTitle,
 		                                flags,
 		                                CW_USEDEFAULT, CW_USEDEFAULT, CreationSizeX, CreationSizeY, owner,
 		                                LoadMenu(hInst, MAKEINTRESOURCE(menu)),

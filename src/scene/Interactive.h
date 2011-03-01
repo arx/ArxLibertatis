@@ -59,7 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_INTERACTIVE_H
 
 #include <string>
-#include <tchar.h>
 #include "graphics/data/Mesh.h"
 
 //-----------------------------------------------------------------------------

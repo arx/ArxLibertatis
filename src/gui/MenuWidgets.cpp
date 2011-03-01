@@ -2433,7 +2433,7 @@ bool Menu2_Render()
 							iFirst--;
 						}
 
-						me01 = new CMenuElementText(-1, hFontControls, _T(" "), fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
+						me01 = new CMenuElementText(-1, hFontControls, " ", fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
 							me01->SetCheckOff();
 							pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me01);
 
@@ -2574,8 +2574,8 @@ bool Menu2_Render()
 
 					for(int iI=save_l.size(); iI<=15; iI++)
 					{
-						_TCHAR tex[256];
-						_stprintf(tex, _T("-%04d-")
+						char tex[256];
+						sprintf(tex, "-%04d-"
 
 							,iI);
 						CMenuElementText * me01 = new CMenuElementText(-1, hFontControls, tex, fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
@@ -2585,7 +2585,7 @@ bool Menu2_Render()
 						pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me01);
 					}
 
-					me01 = new CMenuElementText(-1, hFontControls, _T(" "), fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
+					me01 = new CMenuElementText(-1, hFontControls, " ", fPosX1, 0.f, lColor, 0.8f, EDIT_QUEST_SAVE_CONFIRM);
 					me01->SetCheckOff();
 					pWindowMenuConsole->AddMenuCenterY((CMenuElementText*)me01);
 
@@ -2946,7 +2946,7 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenuCenterY(me);
 					ARX_SetAntiAliasing();
 
-					metemp = new CMenuElementText(-1, hFontMenu, _T("Enable Rendering Fix"), fPosX1, 0.f, lColor, 1.f, NOP);
+					metemp = new CMenuElementText(-1, hFontMenu, "Enable Rendering Fix", fPosX1, 0.f, lColor, 1.f, NOP);
 					metemp->SetCheckOff();
 					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_DEBUGSETTING, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
 
@@ -3179,8 +3179,8 @@ bool Menu2_Render()
 				//------------------ END INPUT
 
 				//------------------ START CUSTOM CONTROLS
-				_TCHAR    pNoDef1[]=_T("---");
-				_TCHAR    pNoDef2[]=_T("---");
+				char pNoDef1[]="---";
+				char pNoDef2[]="---";
 
 				#define CUSTOM_CTRL_X0    RATIO_X(20)
 				#define CUSTOM_CTRL_X1    RATIO_X(150)
@@ -5446,7 +5446,7 @@ void CWindowMenuConsole::UpdateText()
 
 				if(bKey)
 				{
-					if ((isalnum(tCat) || _istspace(tCat) || _istpunct(tCat)) && (tCat != '\t') && (tCat != '*'))
+					if ((isalnum(tCat) || isspace(tCat) || ispunct(tCat)) && (tCat != '\t') && (tCat != '*'))
 						tText += tCat;
 				}
 			}

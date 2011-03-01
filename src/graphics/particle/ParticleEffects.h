@@ -57,7 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_PARTICLES_H
 #define ARX_PARTICLES_H
 
-#include <tchar.h>
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
 

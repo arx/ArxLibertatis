@@ -189,7 +189,7 @@ INTERACTIVE_OBJ *	STARTED_ACTION_ON_IO=NULL;
 INTERFACE_TC		ITC;
 STRUCT_NOTE			Note;
 STRUCT_NOTE			QuestBook;
-_TCHAR*				QuestBook_Cache_Text = NULL;		// Cache of screen text
+char*				QuestBook_Cache_Text = NULL;		// Cache of screen text
 long				QuestBook_Cache_nbQuests = -42;
 std::string Page_Buffer;
 bool				bBookHalo = false;
@@ -7214,14 +7214,14 @@ void QuestBook_Update()
 		if (PlayerQuest[i].localised.size())
 			lLenght += PlayerQuest[i].localised.length();
 
-	QuestBook_Cache_Text = new _TCHAR[lLenght+nb_PlayerQuest*2+1];
-	ZeroMemory(QuestBook_Cache_Text, (lLenght+nb_PlayerQuest*2+1)*sizeof(_TCHAR));
+	QuestBook_Cache_Text = new char[lLenght+nb_PlayerQuest*2+1];
+	ZeroMemory(QuestBook_Cache_Text, (lLenght+nb_PlayerQuest*2+1)*sizeof(char));
 
 	for (int i = 0; i < nb_PlayerQuest; ++i)
 		if ( PlayerQuest[i].localised.size() )
 		{
-			_tcscat(QuestBook_Cache_Text, PlayerQuest[i].localised.c_str());
-			_tcscat(QuestBook_Cache_Text, _T("\n\n"));
+			strcat(QuestBook_Cache_Text, PlayerQuest[i].localised.c_str());
+			strcat(QuestBook_Cache_Text, "\n\n");
 			lLenght += 2;
 		}
 
@@ -7387,8 +7387,8 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ITC.Set("pTexCornerLeft", "Graph\\Interface\\book\\Left_corner_original.bmp");
 		ITC.Set("pTexCornerRight", "Graph\\Interface\\book\\Right_corner_original.bmp");
 		
-		ARX_Allocate_Text(ITC.Level, _T("system_charsheet_player_lvl"));
-		ARX_Allocate_Text(ITC.Xp, _T("system_charsheet_player_xp"));
+		ARX_Allocate_Text(ITC.Level, "system_charsheet_player_lvl");
+		ARX_Allocate_Text(ITC.Xp, "system_charsheet_player_xp");
 		
 		ANIM_Set(&player.useanim,herowaitbook);
 

@@ -58,7 +58,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_SPEECH_H
 
 
-#include <tchar.h>
 #include "core/Application.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/GraphicsTypes.h"

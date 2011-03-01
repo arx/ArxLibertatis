@@ -201,7 +201,7 @@ bool CheckLastSpeech(int _iI)
 //-----------------------------------------------------------------------------
 void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 {
-	_TCHAR temp[4096];
+	char temp[4096];
 	long igrec = 14;
 
 	HDC	hDC;
@@ -211,7 +211,7 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 	{
 		SelectObject(hDC, hFontInBook);
 
-		GetTextExtentPoint(hDC,_T("p"),1,&sSize);
+		GetTextExtentPoint(hDC,"p",1,&sSize);
 
 		danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 
@@ -236,9 +236,9 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 			{
 
 				if ((speech[i].name) && (speech[i].name[0] != ' '))
-					_stprintf(temp, _T("%s > %s"), speech[i].name, speech[i].lpszUText.c_str());
+					sprintf(temp, "%s > %s", speech[i].name, speech[i].lpszUText.c_str());
 				else
-					_stprintf(temp, _T(" %s"), speech[i].lpszUText.c_str());//>
+					sprintf(temp, " %s", speech[i].lpszUText.c_str());//>
 
 				EERIEDrawBitmap(GDevice,
 								120 * Xratio - 16 * Xratio, ARX_CLEAN_WARN_CAST_FLOAT(igrec),
