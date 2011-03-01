@@ -2245,7 +2245,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					std::string temp2;
 					pos = GetNextWord(es, pos, word);
 					pos = GetNextWord(es, pos, temp2);
-					ARX_NPC_SetStat(io, word.c_str(), GetVarValueInterpretedAsFloat(temp2, esss, io));
+					ARX_NPC_SetStat( *io, word.c_str(), GetVarValueInterpretedAsFloat(temp2, esss, io));
 					LogDebug <<  "SET_NPC_STAT "<< word;
 				}
 				else if (!strcmp(word, "SETXPVALUE"))

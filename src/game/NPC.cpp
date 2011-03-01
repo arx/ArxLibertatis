@@ -786,97 +786,96 @@ failure:
 
 //***********************************************************************************************
 //***********************************************************************************************
-void ARX_NPC_SetStat(INTERACTIVE_OBJ * io, const char * statname, float value)
+void ARX_NPC_SetStat( INTERACTIVE_OBJ& io, const std::string& statname, float value )
 {
-	if ((!io)
-	        ||	(!(io->ioflags & IO_NPC)))
+	if ( !(io.ioflags & IO_NPC) )
 		return;
 
 	if (!strcasecmp(statname, "ARMOR_CLASS"))
 	{
 		if (value < 0) value = 0;
 
-		io->_npcdata->armor_class = value;
+		io._npcdata->armor_class = value;
 	}
 	else if (!strcasecmp(statname, "BACKSTAB_SKILL"))
 	{
 		if (value < 0) value = 0;
 
-		io->_npcdata->backstab_skill = value;
+		io._npcdata->backstab_skill = value;
 	}
 	else if (!strcasecmp(statname, "BACKSTAB"))
 	{
-		if (value == 0) io->_npcdata->npcflags &= ~NPCFLAG_BACKSTAB;
-		else io->_npcdata->npcflags |= NPCFLAG_BACKSTAB;
+		if (value == 0) io._npcdata->npcflags &= ~NPCFLAG_BACKSTAB;
+		else io._npcdata->npcflags |= NPCFLAG_BACKSTAB;
 	}
 	else if (!strcasecmp(statname, "REACH"))
 	{
 		if (value < 0) value = 0;
 
-		io->_npcdata->reach = value;
+		io._npcdata->reach = value;
 	}
 	else if (!strcasecmp(statname, "CRITICAL"))
 	{
 		if (value < 0) value = 0;
 
-		io->_npcdata->critical = value;
+		io._npcdata->critical = value;
 	}
 	else if (!strcasecmp(statname, "ABSORB"))
 	{
 		if (value < 0) value = 0;
 
-		io->_npcdata->absorb = value;
+		io._npcdata->absorb = value;
 	}
 	else if (!strcasecmp(statname, "DAMAGES"))
 	{
 		if (value < 0) value = 0;
 
-		io->_npcdata->damages = value;
+		io._npcdata->damages = value;
 	}
 	else if (!strcasecmp(statname, "TOHIT"))
 	{
 		if (value < 0) value = 0;
 
-		io->_npcdata->tohit = value;
+		io._npcdata->tohit = value;
 	}
 	else if (!strcasecmp(statname, "AIMTIME"))
 	{
 		if (value < 0) value = 0;
 
-		io->_npcdata->aimtime = value;
+		io._npcdata->aimtime = value;
 	}
 	else if (!strcasecmp(statname, "LIFE"))
 	{
 		if (value < 0) value = 0.0000001f;
 
-		io->_npcdata->maxlife = io->_npcdata->life = value;
+		io._npcdata->maxlife = io._npcdata->life = value;
 	}
 	else if (!strcasecmp(statname, "MANA"))
 	{
 		if (value < 0) value = 0;
 
-		io->_npcdata->maxmana = io->_npcdata->mana = value;
+		io._npcdata->maxmana = io._npcdata->mana = value;
 	}
 	else if (!strcasecmp(statname, "RESISTFIRE"))
 	{
 		if (value < 0) value = 0;
 		else if (value > 100) value = 100;
 
-		io->_npcdata->resist_fire = (unsigned char)value;
+		io._npcdata->resist_fire = (unsigned char)value;
 	}
 	else if (!strcasecmp(statname, "RESISTPOISON"))
 	{
 		if (value < 0) value = 0;
 		else if (value > 100) value = 100;
 
-		io->_npcdata->resist_poison = (unsigned char)value;
+		io._npcdata->resist_poison = (unsigned char)value;
 	}
 	else if (!strcasecmp(statname, "RESISTMAGIC"))
 	{
 		if (value < 0) value = 0;
 		else if (value > 100) value = 100;
 
-		io->_npcdata->resist_magic = (unsigned char)value;
+		io._npcdata->resist_magic = (unsigned char)value;
 	}
 }
 
