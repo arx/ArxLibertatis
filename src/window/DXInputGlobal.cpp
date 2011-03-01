@@ -57,8 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "window/DXInputGlobal.h"
 
-#include <dinput.h>
-
 /*-----------------------------------------------------*/
 HRESULT			DI_Hr;
 DXI_INIT		DI_Init;

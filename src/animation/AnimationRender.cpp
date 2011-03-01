@@ -25,8 +25,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "animation/AnimationRender.h"
 
-#include <dinput.h>
-
 #include "animation/Animation.h"
 
 #include "core/Time.h"

@@ -65,11 +65,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <cstdio>
 
-#ifndef DIRECTINPUT_VERSION
-	#define DIRECTINPUT_VERSION 0x0700
-#endif
-#include <dinput.h>
-
 #include "ai/Paths.h"
 
 #include "animation/Animation.h"

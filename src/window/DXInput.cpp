@@ -96,22 +96,28 @@ BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef) {
 	return DIENUM_CONTINUE;
 }
 /*-------------------------------------------------------------*/
-int DXI_Init(HINSTANCE h,DXI_INIT *i)
-{
-int	nb;
-
-	if(!h) return DXI_FAIL;
-
+int DXI_Init(HINSTANCE h,DXI_INIT *i) {
+	
+	if(!h) {
+		return DXI_FAIL;
+	}
+	
 	DI_DInput7=NULL;
-
+	
 	memcpy((void*)&DI_Init,(void*)i,sizeof(DXI_INIT));
 	
-	if(FAILED(DI_Hr=DirectInputCreateEx(h,DIRECTINPUT_VERSION,IID_IDirectInput7,(void**)&DI_DInput7,NULL))) return DXI_FAIL;
-
+	DI_Hr = DirectInputCreateEx(h, DIRECTINPUT_VERSION, IID_IDirectInput7, (void**)&DI_DInput7, NULL);
+	if(FAILED(DI_Hr)) {
+		return DXI_FAIL;
+	}
+	
 	DI_NbInputInfo=0;
 	
-	if(FAILED(DI_Hr=DI_DInput7->EnumDevices(0,DIEnumDevicesCallback,NULL,DIEDFL_ATTACHEDONLY))) return DXI_FAIL;
-
+	if(FAILED(DI_Hr = DI_DInput7->EnumDevices(0, DIEnumDevicesCallback, NULL, DIEDFL_ATTACHEDONLY))) {
+		return DXI_FAIL;
+	}
+	
+	int	nb;
 	nb=MAXKEYBOARD;
 	while(nb--) DI_KeyBoardBuffer[nb]=NULL;
 	nb=MAXMOUSE;
@@ -377,38 +383,38 @@ INPUT_INFO	*info;
 		nbdev--;
 	}
 }
-/*-------------------------------------------------------------*/
-int DXI_GetKeyboardInputDevice(HWND hwnd,int id,int mode)
-{
-int			nbdev,num=0;
-INPUT_INFO	*info;
 
-	if(id>=MAXKEYBOARD) 
+int DXI_GetKeyboardInputDevice(HWND hwnd, int id, int mode) {
+	
+	if(id >= MAXKEYBOARD) { 
 		return DXI_FAIL;
-	if(DI_KeyBoardBuffer[id])
-	{
-		info=DXI_GetInputInfoWithState(DI_KeyBoardBuffer[id],DIDEVTYPE_KEYBOARD);
-		if(info) DXI_ReleaseDevice(info);
-		DI_KeyBoardBuffer[id]=NULL;
 	}
-
-	info=DI_InputInfo;
-	nbdev=DI_NbInputInfo;
-	while(nbdev)
-	{
-		if((GET_DIDEVICE_TYPE(info->type)==DIDEVTYPE_KEYBOARD)&&(!info->actif))
-		{
-			if(DXI_ChooseInputDevice(hwnd,id,num,mode)==DXI_OK) 
-				return DXI_OK;
+	
+	if(DI_KeyBoardBuffer[id]) {
+		INPUT_INFO * info = DXI_GetInputInfoWithState(DI_KeyBoardBuffer[id], DIDEVTYPE_KEYBOARD);
+		if(info) {
+			DXI_ReleaseDevice(info);
 		}
-		num++;
-		info++;
-		nbdev--;
+		DI_KeyBoardBuffer[id] = NULL;
 	}
-
+	
+	for(int num = 0; num < DI_NbInputInfo; num++) {
+		
+		INPUT_INFO & info = DI_InputInfo[num];
+		
+		if(GET_DIDEVICE_TYPE(info.type) != DIDEVTYPE_KEYBOARD || info.actif) {
+			continue;
+		}
+		
+		if(DXI_ChooseInputDevice(hwnd, id, num, mode) == DXI_OK) {
+			return DXI_OK;
+		}
+		
+	}
+	
 	return DXI_FAIL;
 }
-/*-------------------------------------------------------------*/
+
 int DXI_GetMouseInputDevice(HWND hwnd,int id,int mode,int minbutton,int minaxe)
 {
 int			nbdev,num=0;
