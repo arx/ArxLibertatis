@@ -145,6 +145,11 @@ void Image::Create( unsigned int pWidth, unsigned int pHeight, Image::Format pFo
     mData = new unsigned char[mDataSize];
 }
 
+void Image::Clear()
+{
+	memset(mData, 0, mDataSize);
+}
+
 const unsigned char* Image::GetData() const
 {
     return mData;

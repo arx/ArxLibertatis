@@ -29,6 +29,8 @@ public:
     const Image& operator = ( const Image& pOther );
 
     void Create( unsigned int pWidth, unsigned int pHeight, Format pFormat, unsigned int pNumMipmaps = 1, unsigned int pDepth = 1 );
+	
+	void Clear();
 
     unsigned int GetWidth() const         { return mWidth;      }
     unsigned int GetHeight() const        { return mHeight;     }

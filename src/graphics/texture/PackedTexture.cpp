@@ -91,12 +91,15 @@ bool PackedTexture::InsertImage( const Image& pImg, int& pOffsetU, int& pOffsetV
     if( !node )
     {
         mTexTrees.push_back( new TextureTree(mTexSize) );
-        mImages.push_back( new Image() );
+
+		Image* newPage = new Image();
+		newPage->Create( mTexSize, mTexSize, mTexFormat );
+		newPage->Clear();
+
+        mImages.push_back( newPage );
 
         node = mTexTrees[mTexTrees.size()-1]->InsertImage( pImg );
         nodeTree = mTexTrees.size()-1;
-
-        mImages[mImages.size()-1]->Create( mTexSize, mTexSize, mTexFormat );
     }
 
     // A node must have been found.

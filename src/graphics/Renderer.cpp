@@ -155,88 +155,25 @@ void DX7Texture2D::Kill()
 	}
 }
 
-struct TextureSearchInfo
-{
-	Image::Format	imageformat;
-	unsigned int	bpp;
-	DDPIXELFORMAT * pddpf;
-};
-
 HRESULT CALLBACK DX7Texture2D::TextureSearchCallback( DDPIXELFORMAT* pddpf, VOID* param )
 {
     if (NULL == pddpf || NULL == param)
 		return DDENUMRET_OK;
 
-	TextureSearchInfo * ptsi = (TextureSearchInfo *)param;
-
-	const unsigned int DXT1_FOURCC = 0x31545844;
-	const unsigned int DXT3_FOURCC = 0x33545844;
-	const unsigned int DXT5_FOURCC = 0x35545844;
-
-	switch( ptsi->imageformat )
+	// Since we'll get rid of this DX7 renderer as soon as possible, I won't invest any more time figuring out the optimal texture matches
+	// Always use 32 bit RGBA (8-8-8-8)... with no support for DXT (arx doesn't use them yet anyway!
+	if(((pddpf->dwFlags & (DDPF_RGB|DDPF_ALPHAPIXELS)) == (DDPF_RGB|DDPF_ALPHAPIXELS)) && (pddpf->dwRGBBitCount == 32))
 	{
-		case Image::Format_L8:
-		{
-			if((pddpf->dwFlags & DDPF_LUMINANCE) == 0 ||	// Look for luminance format
-			   (pddpf->dwFlags & DDPF_ALPHAPIXELS) != 0)	// But with no alpha channel
-				return DDENUMRET_OK;
-		} break;
+		DDPIXELFORMAT * destDDPF = (DDPIXELFORMAT*)param;
 
-		case Image::Format_A8:
-		{
-			if((pddpf->dwFlags & DDPF_ALPHA) == 0)
-				return DDENUMRET_OK;
-		} break;
+		// We found a good match. Copy the current pixel format to our output parameter
+		memcpy( destDDPF, pddpf, sizeof(DDPIXELFORMAT) );
 
-		case Image::Format_L8A8:
-		{
-			if((pddpf->dwFlags & DDPF_LUMINANCE) == 0 ||	// Look for luminance format
-			   (pddpf->dwFlags & DDPF_ALPHAPIXELS) == 0)	// With an alpha channel
-				return DDENUMRET_OK;
-		} break;
+		// Return with DDENUMRET_CANCEL to end enumeration.
+		return DDENUMRET_CANCEL;
+	}	
 
-		case Image::Format_R8G8B8:
-		{
-			if((pddpf->dwFlags & DDPF_RGB) == 0 ||			// Look for RGB format
-			   (pddpf->dwFlags & DDPF_ALPHAPIXELS) != 0)	// But with no alpha channel
-				return DDENUMRET_OK;
-			else if(pddpf->dwRGBBitCount != 32)
-				return DDENUMRET_OK;
-		} break;
-
-		case Image::Format_R8G8B8A8:
-		{
-			if((pddpf->dwFlags & DDPF_RGB) == 0 ||			// Look for RGB format
-			   (pddpf->dwFlags & DDPF_ALPHAPIXELS) == 0)	// With an alpha channel
-				return DDENUMRET_OK;
-			else if(pddpf->dwRGBBitCount != 32)
-				return DDENUMRET_OK;
-		} break;
-
-		case Image::Format_DXT1:
-		{
-			if(pddpf->dwFourCC != DXT1_FOURCC)
-				return DDENUMRET_OK;
-		} break;
-
-		case Image::Format_DXT3:
-		{
-			if(pddpf->dwFourCC != DXT3_FOURCC)
-				return DDENUMRET_OK;
-		} break;
-
-		case Image::Format_DXT5:
-		{
-			if(pddpf->dwFourCC != DXT5_FOURCC)
-				return DDENUMRET_OK;
-		} break;
-	}
-
-	// We found a good match. Copy the current pixel format to our output parameter
-	memcpy( ptsi->pddpf, pddpf, sizeof(DDPIXELFORMAT) );
-
-	// Return with DDENUMRET_CANCEL to end enumeration.
-	return DDENUMRET_CANCEL;
+	return DDENUMRET_OK;
 }
 
 LPDIRECTDRAWSURFACE7 DX7Texture2D::CreateTexture()
@@ -296,15 +233,9 @@ LPDIRECTDRAWSURFACE7 DX7Texture2D::CreateTexture()
 	if (ddsd.dwHeight > dwMaxHeight)
 		ddsd.dwHeight = dwMaxHeight;
 
-	TextureSearchInfo tsi;
-	tsi.imageformat	= mFormat;
-	tsi.pddpf       = &ddsd.ddpfPixelFormat;
-		
     // Enumerate the texture formats, and find the closest device-supported
-    // texture pixel format. The TextureSearchCallback function for this
-    // tutorial is simply looking for a 16-bit texture. Real apps may be
-    // interested in other formats, for alpha textures, bumpmaps, etc..
-    GDevice->EnumTextureFormats( TextureSearchCallback, &tsi );
+    // texture pixel format.
+    GDevice->EnumTextureFormats( TextureSearchCallback, &ddsd.ddpfPixelFormat );
     if( 0L == ddsd.ddpfPixelFormat.dwRGBBitCount )
         return NULL;
 
@@ -337,149 +268,132 @@ void DX7Texture2D::LoadTextureFromImage()
 
 	while (m_pddsSurface->Lock(NULL, &ddsd, 0, 0) == DDERR_WASSTILLDRAWING);
 
-	BYTE * pDst = (BYTE *)ddsd.lpSurface;
+	DWORD * pDst = (DWORD *)ddsd.lpSurface;
 
-	if (mFormat == Image::Format_R8G8B8A8)
+	DWORD dwRMask = ddsd.ddpfPixelFormat.dwRBitMask;
+	DWORD dwGMask = ddsd.ddpfPixelFormat.dwGBitMask;
+	DWORD dwBMask = ddsd.ddpfPixelFormat.dwBBitMask;
+	DWORD dwAMask = ddsd.ddpfPixelFormat.dwRGBAlphaBitMask;
+
+	DWORD dwRShiftR = 0;
+	DWORD dwGShiftR = 0;
+	DWORD dwBShiftR = 0;
+	DWORD dwAShiftR = 0;
+
+	DWORD dwMask;
+	for (dwMask = dwRMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwRShiftR++;
+	for (dwMask = dwGMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwGShiftR++;
+	for (dwMask = dwBMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwBShiftR++;
+	for (dwMask = dwAMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwAShiftR++;
+
+	BYTE* pSrc = (BYTE*)mImage.GetData();
+	BYTE r, g, b, a;
+	DWORD pitchIncrement = (ddsd.lPitch >> 2) - ddsd.dwWidth;
+
+	if(mFormat == Image::Format_L8)
 	{
-		DWORD* pSrc = (DWORD*)mImage.GetData();
-
-		DWORD dwRMask = ddsd.ddpfPixelFormat.dwRBitMask;
-		DWORD dwGMask = ddsd.ddpfPixelFormat.dwGBitMask;
-		DWORD dwBMask = ddsd.ddpfPixelFormat.dwBBitMask;
-		DWORD dwAMask = ddsd.ddpfPixelFormat.dwRGBAlphaBitMask;
-
-		DWORD dwRShiftL = 8, dwRShiftR = 0;
-		DWORD dwGShiftL = 8, dwGShiftR = 0;
-		DWORD dwBShiftL = 8, dwBShiftR = 0;
-		DWORD dwAShiftL = 8, dwAShiftR = 0;
-
-		DWORD dwMask;
-
-		for (dwMask = dwRMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwRShiftR++;
-
-		for (; dwMask; dwMask >>= 1) dwRShiftL--;
-
-		for (dwMask = dwGMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwGShiftR++;
-
-		for (; dwMask; dwMask >>= 1) dwGShiftL--;
-
-		for (dwMask = dwBMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwBShiftR++;
-
-		for (; dwMask; dwMask >>= 1) dwBShiftL--;
-
-		for (dwMask = dwAMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwAShiftR++;
-
-		for (; dwMask; dwMask >>= 1) dwAShiftL--;
-
 		for (DWORD y = 0; y < ddsd.dwHeight; y++)
 		{
-			DWORD * pDstData32 = (DWORD *)pDst;
-			WORD * pDstData16 = (WORD *)pDst;
-
-			for (DWORD x = 0; x < ddsd.dwWidth; x++)
+			for (DWORD x = 0; x < ddsd.dwWidth; x++, pDst++)
 			{
-				DWORD dwPixel = pSrc[y*ddsd.dwWidth+x];
+				r = g = b = *pSrc;
+				a = 0xFF;
+				pSrc++;
 
-				BYTE r = (BYTE)((dwPixel >> 0)  & 0x000000ff);
-				BYTE g = (BYTE)((dwPixel >> 8)  & 0x000000ff);
-				BYTE b = (BYTE)((dwPixel >> 16) & 0x000000ff);
-				BYTE a = (BYTE)((dwPixel >> 24) & 0x000000ff);
-
-				DWORD dr = ((r >> (dwRShiftL)) << dwRShiftR)&dwRMask;
-				DWORD dg = ((g >> (dwGShiftL)) << dwGShiftR)&dwGMask;
-				DWORD db = ((b >> (dwBShiftL)) << dwBShiftR)&dwBMask;
-				DWORD da = ((a >> (dwAShiftL)) << dwAShiftR)&dwAMask;
-
-				if (32 == ddsd.ddpfPixelFormat.dwRGBBitCount)
-					pDstData32[x] = (DWORD)(dr + dg + db + da);
-				else
-					pDstData16[x] = (WORD)(dr + dg + db + da);
+				DWORD dr = (r << dwRShiftR)&dwRMask;
+				DWORD dg = (g << dwGShiftR)&dwGMask;
+				DWORD db = (b << dwBShiftR)&dwBMask;
+				DWORD da = (a << dwAShiftR)&dwAMask;
+				*pDst = (DWORD)(dr + dg + db + da);
 			}
+			pDst += pitchIncrement;
+		}
+	}
+	else if(mFormat == Image::Format_A8)
+	{
+		for (DWORD y = 0; y < ddsd.dwHeight; y++)
+		{
+			for (DWORD x = 0; x < ddsd.dwWidth; x++, pDst++)
+			{
+				r = g = b = 0xFF;
+				a = *pSrc;
+				pSrc++;
 
-			pDst += ddsd.lPitch;
+				DWORD dr = (r << dwRShiftR)&dwRMask;
+				DWORD dg = (g << dwGShiftR)&dwGMask;
+				DWORD db = (b << dwBShiftR)&dwBMask;
+				DWORD da = (a << dwAShiftR)&dwAMask;
+				*pDst = (DWORD)(dr + dg + db + da);
+			}
+			pDst += pitchIncrement;
+		}
+	}
+	else if(mFormat == Image::Format_L8A8)
+	{
+		for (DWORD y = 0; y < ddsd.dwHeight; y++)
+		{
+			for (DWORD x = 0; x < ddsd.dwWidth; x++, pDst++)
+			{
+				r = g = b = pSrc[0];
+				a = pSrc[1];
+				pSrc += 2;
+
+				DWORD dr = (r << dwRShiftR)&dwRMask;
+				DWORD dg = (g << dwGShiftR)&dwGMask;
+				DWORD db = (b << dwBShiftR)&dwBMask;
+				DWORD da = (a << dwAShiftR)&dwAMask;
+				*pDst = (DWORD)(dr + dg + db + da);
+			}
+			pDst += pitchIncrement;
 		}
 	}
 	else if(mFormat == Image::Format_R8G8B8)
 	{
-		BYTE* pSrc = mImage.GetData();
-
-		DWORD dwRMask = ddsd.ddpfPixelFormat.dwRBitMask;
-		DWORD dwGMask = ddsd.ddpfPixelFormat.dwGBitMask;
-		DWORD dwBMask = ddsd.ddpfPixelFormat.dwBBitMask;
-		DWORD dwAMask = ddsd.ddpfPixelFormat.dwRGBAlphaBitMask;
-
-		DWORD dwRShiftL = 8, dwRShiftR = 0;
-		DWORD dwGShiftL = 8, dwGShiftR = 0;
-		DWORD dwBShiftL = 8, dwBShiftR = 0;
-		DWORD dwAShiftL = 8, dwAShiftR = 0;
-
-		DWORD dwMask;
-
-		for (dwMask = dwRMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwRShiftR++;
-
-		for (; dwMask; dwMask >>= 1) dwRShiftL--;
-
-		for (dwMask = dwGMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwGShiftR++;
-
-		for (; dwMask; dwMask >>= 1) dwGShiftL--;
-
-		for (dwMask = dwBMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwBShiftR++;
-
-		for (; dwMask; dwMask >>= 1) dwBShiftL--;
-
-		for (dwMask = dwAMask; dwMask && !(dwMask & 0x1); dwMask >>= 1) dwAShiftR++;
-
-		for (; dwMask; dwMask >>= 1) dwAShiftL--;
-
 		for (DWORD y = 0; y < ddsd.dwHeight; y++)
 		{
-			DWORD * pDstData32 = (DWORD *)pDst;
-			WORD * pDstData16 = (WORD *)pDst;
-
-			for (DWORD x = 0; x < ddsd.dwWidth; x++)
+			for (DWORD x = 0; x < ddsd.dwWidth; x++, pDst++)
 			{
-				BYTE r = pSrc[0];
-				BYTE g = pSrc[1];
-				BYTE b = pSrc[2];
-				BYTE a = 0xFF;
-
-				DWORD dr = ((r >> (dwRShiftL)) << dwRShiftR)&dwRMask;
-				DWORD dg = ((g >> (dwGShiftL)) << dwGShiftR)&dwGMask;
-				DWORD db = ((b >> (dwBShiftL)) << dwBShiftR)&dwBMask;
-				DWORD da = ((a >> (dwAShiftL)) << dwAShiftR)&dwAMask;
-
-				if (32 == ddsd.ddpfPixelFormat.dwRGBBitCount)
-					pDstData32[x] = (DWORD)(dr + dg + db + da);
-				else
-					pDstData16[x] = (WORD)(dr + dg + db + da);
-
+				r = pSrc[0];
+				g = pSrc[1];
+				b = pSrc[2];
+				a = 0xFF;
 				pSrc += 3;
-			}
 
-			pDst += ddsd.lPitch;
+				DWORD dr = (r << dwRShiftR)&dwRMask;
+				DWORD dg = (g << dwGShiftR)&dwGMask;
+				DWORD db = (b << dwBShiftR)&dwBMask;
+				DWORD da = (a << dwAShiftR)&dwAMask;
+				*pDst = (DWORD)(dr + dg + db + da);
+			}
+			pDst += pitchIncrement;
 		}
 	}
-	else if(mFormat == Image::Format_A8 || mFormat == Image::Format_L8)
+	else if(mFormat == Image::Format_R8G8B8A8)
 	{
-		BYTE* pSrc = mImage.GetData();
-
 		for (DWORD y = 0; y < ddsd.dwHeight; y++)
 		{
-			for (DWORD x = 0; x < ddsd.dwWidth; x++)
+			for (DWORD x = 0; x < ddsd.dwWidth; x++, pDst++)
 			{
-				*pDst = *pSrc;
-				pSrc++;
-				pDst++;
-			}
+				r = pSrc[0];
+				g = pSrc[1];
+				b = pSrc[2];
+				a = pSrc[3];
+				pSrc += 4;
 
-			pDst += ddsd.lPitch - ddsd.dwWidth;
+				DWORD dr = (r << dwRShiftR)&dwRMask;
+				DWORD dg = (g << dwGShiftR)&dwGMask;
+				DWORD db = (b << dwBShiftR)&dwBMask;
+				DWORD da = (a << dwAShiftR)&dwAMask;
+				*pDst = (DWORD)(dr + dg + db + da);
+			}
+			pDst += pitchIncrement;
 		}
 	}
 	else
 	{
-		arx_assert(0);	// Unsupported
+		arx_assert_msg(false, "Unsupported image format");
 	}
-
+	
 	m_pddsSurface->Unlock(0);
 }
 
