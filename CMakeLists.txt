@@ -129,7 +129,7 @@ else(MSVC)
 	# Consider also: -Wconversion -Wsign-conversion
 	#                -Wmissing-declarations     to catch functions that should be marked as static
 	#                -Wredundant-decls          to catch extern definitions in .cpp files (with UNITYBUILD)
-	#                -Wsuggest-attribute=const  to add missing const qualifiers
+	#                -Wsuggest-attribute=const  to add missing const qualifiers (only in gcc 4.6)
 	
 	if(ARX_DEBUG)
 		#Debug
