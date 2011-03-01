@@ -258,10 +258,10 @@ HRESULT D3DTextr_CreateEmptyTexture(const std::string& strName, DWORD dwWidth,
 HRESULT D3DTextr_DestroyContainer(TextureContainer * ptcTexture);
 
 TextureContainer * GetAnyTexture();
-TextureContainer * MakeTCFromFile(const char * tex, long flag = 0);
-TextureContainer * MakeTCFromFile_NoRefinement(const char * tex, long flag = 0);
-TextureContainer * GetTextureFile(const char * tex, long flag = 0);
-TextureContainer * GetTextureFile_NoRefinement(const char * tex, long flag = 0);
+TextureContainer * MakeTCFromFile( const std::string& tex, long flag = 0);
+TextureContainer * MakeTCFromFile_NoRefinement( const std::string& tex, long flag = 0);
+TextureContainer * GetTextureFile( const std::string& tex, long flag = 0);
+TextureContainer * GetTextureFile_NoRefinement( const std::string& tex, long flag = 0);
 
 void EERIE_ActivateBump();
 void EERIE_DesactivateBump();

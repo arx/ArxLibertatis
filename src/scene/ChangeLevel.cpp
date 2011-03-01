@@ -998,7 +998,7 @@ retry:
 	for (int i = 0; i < nb_PlayerQuest; i++)
 	{
 		memset(dat + pos, 0, 80);
-		strcpy((char *)(dat + pos), PlayerQuest[i].ident);
+		strcpy((char *)(dat + pos), PlayerQuest[i].ident.c_str());
 		pos += 80;
 	}
 

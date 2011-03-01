@@ -29,15 +29,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 
-long KillAllDirectory(const char * path) {
+long KillAllDirectory(const std::string& path) {
 	LogInfo << "KillAllDirectory "<< path;
 	
 	HANDLE idx;
 	WIN32_FIND_DATA fl;
-	char pathh[512];
-	sprintf(pathh, "%s*.*", path);
+	std::string pathh;
+	pathh = path + "*.*";
 	
-	if ((idx = FindFirstFile(pathh, &fl)) != INVALID_HANDLE_VALUE)
+	if ((idx = FindFirstFile(pathh.c_str(), &fl)) != INVALID_HANDLE_VALUE)
 	{
 		do
 		{
@@ -46,14 +46,14 @@ long KillAllDirectory(const char * path) {
 			{
 				if (fl.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 				{
-					sprintf(pathh, "%s%s\\", path, fl.cFileName);
+					pathh = path + fl.cFileName + "\\";
 					KillAllDirectory(pathh);
-					RemoveDirectory(pathh);
+					RemoveDirectory(pathh.c_str());
 				}
 				else
 				{
-					sprintf(pathh, "%s%s", path, fl.cFileName);
-					DeleteFile(pathh);
+					pathh = path + fl.cFileName;
+					DeleteFile(pathh.c_str());
 				}
 			}
 
@@ -63,11 +63,11 @@ long KillAllDirectory(const char * path) {
 		FindClose(idx);
 	}
 
-	RemoveDirectory(path);
+	RemoveDirectory(path.c_str());
 	return 1;
 }
 
-bool DirectoryExist(const string & _name) {
+bool DirectoryExist(const string& _name) {
 	
 	// FindFirstFile does not expect a slash at the end
 	string name = _name;
@@ -95,7 +95,7 @@ bool DirectoryExist(const string & _name) {
 #define MAKEHANDLE(x) (FileHandle)((ULONG_PTR)(handle) + 1)
 const FileHandle INVALID_FILE_HANDLE = (FileHandle)NULL;
 
-bool FileExist(const char * name) {
+bool FileExist(const std::string& name) {
 	
 	FileHandle handle = FileOpenRead(name);
 	if(!handle) {
@@ -112,9 +112,9 @@ long FileTell(FileHandle handle) {
 	return (SetFilePointer(GETHANDLE(handle), 0, NULL, FILE_CURRENT));
 }
 
-static FileHandle FileOpen(const char * name, DWORD mode, DWORD opt) {
+static FileHandle FileOpen(const std::string& name, DWORD mode, DWORD opt) {
 	
-	HANDLE handle = CreateFile(name, mode, 0, NULL, opt, 0, 0);
+	HANDLE handle = CreateFile(name.c_str(), mode, 0, NULL, opt, 0, 0);
 
 	if(handle == INVALID_HANDLE_VALUE) {
 		LogError << "Can't open " << name;
@@ -127,15 +127,15 @@ static FileHandle FileOpen(const char * name, DWORD mode, DWORD opt) {
 	return MAKEHANDLE(handle);
 }
 
-FileHandle FileOpenRead(const char * name) {
+FileHandle FileOpenRead(const std::string& name) {
 	return FileOpen(name, GENERIC_READ, OPEN_EXISTING);
 }
 
-FileHandle FileOpenWrite(const char * name) {
+FileHandle FileOpenWrite(const std::string& name) {
 	return FileOpen(name, GENERIC_WRITE, CREATE_ALWAYS);
 }
 
-FileHandle FileOpenReadWrite(const char * name) {
+FileHandle FileOpenReadWrite(const std::string& name) {
 	return FileOpen(name, GENERIC_READ|GENERIC_WRITE, OPEN_ALWAYS);
 }
 
@@ -167,7 +167,7 @@ long FileSeek(FileHandle handle, int offset, long mode) {
 	return SetFilePointer(GETHANDLE(handle), offset, NULL, mode);
 }
 
-void	* FileLoadMallocZero(const char * name, size_t * SizeLoadMalloc)
+void	* FileLoadMallocZero(const std::string& name, size_t * SizeLoadMalloc)
 {
 	FileHandle handle;
 	long	size1, size2;
@@ -216,7 +216,7 @@ void	* FileLoadMallocZero(const char * name, size_t * SizeLoadMalloc)
 	return(adr);
 }
 
-void * FileLoadMalloc(const char * name, size_t * SizeLoadMalloc)
+void * FileLoadMalloc(const std::string& name, size_t * SizeLoadMalloc)
 {
 	FileHandle handle;
 	long	size1, size2;

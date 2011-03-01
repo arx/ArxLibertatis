@@ -114,7 +114,7 @@ public:
 } gDevilLib;
 
 
-TextureContainer * MakeTCFromFile(const char * tex, long flag)
+TextureContainer * MakeTCFromFile(const std::string& tex, long flag)
 {
 	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
@@ -131,7 +131,7 @@ TextureContainer * MakeTCFromFile(const char * tex, long flag)
 	return tc;
 }
 
-TextureContainer * MakeTCFromFile_NoRefinement(const char * tex, long flag)
+TextureContainer * MakeTCFromFile_NoRefinement(const std::string& tex, long flag)
 {
 	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
@@ -2416,7 +2416,7 @@ void ConvertData( std::string& dat)
 	dat = dat.substr(substrStart, substrLen);
 }
 
-void LoadRefinementMap(const char* fileName, std::map<string, string>& refinementMap)
+void LoadRefinementMap(const std::string& fileName, std::map<string, string>& refinementMap)
 {
 	char * fileContent = NULL;
 	size_t fileSize = 0;
@@ -2833,7 +2833,7 @@ TextureContainer * D3DTextr_GetSurfaceContainer( const std::string& _strName)
 
 //*************************************************************************************
 //*************************************************************************************
-TextureContainer * GetTextureFile(const char * tex, long flag)
+TextureContainer * GetTextureFile( const std::string& tex, long flag)
 {
 	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
@@ -2849,7 +2849,7 @@ TextureContainer * GetTextureFile(const char * tex, long flag)
 }
 //*************************************************************************************
 //*************************************************************************************
-TextureContainer * GetTextureFile_NoRefinement(const char * tex, long flag)
+TextureContainer * GetTextureFile_NoRefinement( const std::string& tex, long flag)
 {
 	long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;

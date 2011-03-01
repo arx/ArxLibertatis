@@ -39,18 +39,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 typedef void * FileHandle;
 
-long KillAllDirectory(const char * path);
+long KillAllDirectory(const std::string& path);
 
-bool FileExist(const char * name);
+bool FileExist(const std::string& name);
 bool DirectoryExist(const std::string & name);
-FileHandle FileOpenRead(const char * name);
-FileHandle FileOpenWrite(const char * name);
-FileHandle FileOpenReadWrite(const char * name);
+FileHandle FileOpenRead(const std::string& name);
+FileHandle FileOpenWrite(const std::string& name);
+FileHandle FileOpenReadWrite(const std::string& name);
 long FileClose(FileHandle h);
 long FileRead(FileHandle h, void * adr, size_t size);
 long FileWrite(FileHandle h, const void * adr, size_t size);
-void * FileLoadMalloc(const char * name, size_t * sizeLoaded = 0);
-void * FileLoadMallocZero(const char * name, size_t * sizeLoaded = 0);
+void * FileLoadMalloc(const std::string& name, size_t * sizeLoaded = 0);
+void * FileLoadMallocZero(const std::string& name, size_t * sizeLoaded = 0);
 long FileSeek(FileHandle handle, int offset, long mode);
 long FileTell(FileHandle handle);
 bool FileDelete(const std::string & file);

@@ -256,7 +256,7 @@ struct KEYRING_SLOT
 //////////////////////////////////////////////
 #define MAX_QUESTS 100
 struct STRUCT_QUEST {
-	char* ident;
+	std::string ident;
 	std::string localised;
 };
 
@@ -383,7 +383,7 @@ void	ARX_PLAYER_AddBag();
 bool	ARX_PLAYER_CanStealItem(INTERACTIVE_OBJ *);
 
 void	ARX_KEYRING_Init();
-void	ARX_KEYRING_Add( const char* key);
+void	ARX_KEYRING_Add( const std::string& key);
 void	ARX_KEYRING_Combine(INTERACTIVE_OBJ * io);
 
 void	ARX_PLAYER_Reset_Fall();

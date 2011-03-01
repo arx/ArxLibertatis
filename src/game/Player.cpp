@@ -221,11 +221,11 @@ void ARX_KEYRING_Init()
 // FUNCTION/RESULT:
 //   Add a key to Keyring
 //*************************************************************************************
-void ARX_KEYRING_Add( const char * key)
+void ARX_KEYRING_Add( const std::string& key)
 {
 	Keyring = (KEYRING_SLOT *)realloc(Keyring, sizeof(KEYRING_SLOT) * (Keyring_Number + 1));
 	memset(&Keyring[Keyring_Number], 0, sizeof(KEYRING_SLOT));
-	strcpy(Keyring[Keyring_Number].slot, key);
+	strcpy(Keyring[Keyring_Number].slot, key.c_str());
 	Keyring_Number++;
 }
 
@@ -542,11 +542,8 @@ void ARX_PLAYER_Quest_Add( const char * quest, bool _bLoad)
 
     if (output[0] == 0) return;
 
-//    PlayerQuest = (STRUCT_QUEST *)realloc(PlayerQuest, sizeof(STRUCT_QUEST) * (nb_PlayerQuest + 1));
     PlayerQuest.push_back(STRUCT_QUEST());
-    PlayerQuest[nb_PlayerQuest].ident = (char *)malloc(strlen(quest) + 1);
-    PlayerQuest[nb_PlayerQuest].localised.resize( output.length() );
-    strcpy(PlayerQuest[nb_PlayerQuest].ident, quest);
+    PlayerQuest[nb_PlayerQuest].ident = quest;
     PlayerQuest[nb_PlayerQuest].localised = output;
     PlayerQuest[nb_PlayerQuest].localised = output;
     nb_PlayerQuest++;
