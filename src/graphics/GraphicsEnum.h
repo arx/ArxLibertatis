@@ -59,7 +59,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct D3DEnum_DeviceInfo
 {
 	// D3D Device info
-	TCHAR          strDesc[40];
+	char           strDesc[40];
 	GUID     *     pDeviceGUID;
 	D3DDEVICEDESC7 ddDeviceDesc;
 	bool           bHardware;
