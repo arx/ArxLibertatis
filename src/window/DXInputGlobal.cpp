@@ -59,7 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 /*-----------------------------------------------------*/
 HRESULT			DI_Hr;
-DXI_INIT		DI_Init;
 int				DI_NbInputInfo;
 INPUT_INFO		DI_InputInfo[128];
 IDirectInput7A *DI_DInput7;

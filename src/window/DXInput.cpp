@@ -96,15 +96,13 @@ BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef) {
 	return DIENUM_CONTINUE;
 }
 /*-------------------------------------------------------------*/
-int DXI_Init(HINSTANCE h,DXI_INIT *i) {
+int DXI_Init(HINSTANCE h) {
 	
 	if(!h) {
 		return DXI_FAIL;
 	}
 	
 	DI_DInput7=NULL;
-	
-	memcpy((void*)&DI_Init,(void*)i,sizeof(DXI_INIT));
 	
 	DI_Hr = DirectInputCreateEx(h, DIRECTINPUT_VERSION, IID_IDirectInput7, (void**)&DI_DInput7, NULL);
 	if(FAILED(DI_Hr)) {
@@ -384,10 +382,10 @@ INPUT_INFO	*info;
 	}
 }
 
-int DXI_GetKeyboardInputDevice(HWND hwnd, int id, int mode) {
+bool DXI_GetKeyboardInputDevice(HWND hwnd, int id, int mode) {
 	
 	if(id >= MAXKEYBOARD) { 
-		return DXI_FAIL;
+		return false;
 	}
 	
 	if(DI_KeyBoardBuffer[id]) {
@@ -407,12 +405,12 @@ int DXI_GetKeyboardInputDevice(HWND hwnd, int id, int mode) {
 		}
 		
 		if(DXI_ChooseInputDevice(hwnd, id, num, mode) == DXI_OK) {
-			return DXI_OK;
+			return true;
 		}
 		
 	}
 	
-	return DXI_FAIL;
+	return false;
 }
 
 int DXI_GetMouseInputDevice(HWND hwnd,int id,int mode,int minbutton,int minaxe)
@@ -710,50 +708,6 @@ const DIDATAFORMAT*	dformat;
 	//else 
 	info->actif=DEVICEACTIF;
 	return DXI_OK;
-}
-/*-------------------------------------------------------------*/
-DXI_INPUT_INFO * DXI_GetInfoDevice(int num)
-{
-	DXI_INPUT_INFO	*dinf;
-	INPUT_INFO		*info;
-
-	if(num>=DI_NbInputInfo) return NULL;
-	dinf=(DXI_INPUT_INFO*)malloc(sizeof(DXI_INPUT_INFO));
-	if(!dinf) return NULL;
-
-	info=&DI_InputInfo[num];
-	dinf->name=(char*)malloc(strlen(info->name)+1);
-	if(!dinf)
-	{
-		free((void*)dinf);
-		return NULL;
-	}
-
-	strcpy(dinf->name,info->name);
-	dinf->type=info->type;
-	dinf->numlist=num;
-	if(info->inputdevice7)
-	{
-		dinf->nbbuttons=info->nbbuttons;
-		dinf->nbaxes=info->nbaxes;
-		dinf->info=info->info;
-	}
-	else
-	{
-		dinf->nbbuttons=-1;
-		dinf->nbaxes=-1;
-		dinf->info=-1;
-	}
-
-	return dinf;
-}
-
-/*-------------------------------------------------------------*/
-void DXI_freeInfoDevice(DXI_INPUT_INFO *dinf)
-{
-	if(!dinf) return;
-	if(dinf->name) free((void*)dinf->name);
-	free((void*)dinf);
 }
 
 /*-------------------------------------------------------------*/

@@ -41,9 +41,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "DXInput.h"
 
 /*---------------------------------------------------------*/
-#define MALLOC(a)		DI_Init.malloc(a)
-#define REALLOC(a,b)	DI_Init.realloc(a,b)
-#define FREE(a)			DI_Init.free(a)
 #define RELEASE(a){\
 	if(a)\
 	{\
@@ -100,7 +97,6 @@ struct INPUT_INFO
 };
 /*---------------------------------------------------------*/
 extern HRESULT			DI_Hr;
-extern DXI_INIT			DI_Init;
 extern int				DI_NbInputInfo;
 extern INPUT_INFO		DI_InputInfo[];
 //extern IDirectInput7	* DI_DInput7;

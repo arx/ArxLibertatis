@@ -62,7 +62,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuWidgets.h" //controls
 #include "io/Logger.h"
 
-DXI_INIT	InputInit;
 long ARX_SCID = 0;
 long ARX_XBOXPAD = 0;
 
@@ -77,10 +76,9 @@ bool ARX_INPUT_Init(HINSTANCE hInst, HWND hWnd) {
 #ifdef NO_DIRECT_INPUT
 	return true;
 #endif
-	memset((void *)&InputInit, 0, sizeof(DXI_INIT));
-	DXI_Init(hInst, &InputInit);
+	DXI_Init(hInst);
 	
-	if(DXI_FAIL == DXI_GetKeyboardInputDevice(hWnd, DXI_KEYBOARD1, DXI_MODE_NONEXCLUSIF_OURMSG)) {
+	if(!DXI_GetKeyboardInputDevice(hWnd, DXI_KEYBOARD1, DXI_MODE_NONEXCLUSIF_OURMSG)) {
 		LogWarning << "could not grab the keyboeard";
 		return false;
 	}
