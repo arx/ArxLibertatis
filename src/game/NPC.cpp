@@ -1023,7 +1023,62 @@ void ARX_NPC_ManagePoison(INTERACTIVE_OBJ * io)
 }
 //*************************************************************************************
 //*************************************************************************************
- 
+
+//***********************************************************************************************
+// void CheckUnderWaterIO(INTERACTIVE_OBJ * io)
+//-----------------------------------------------------------------------------------------------
+// FUNCTION:
+//   Checks if the bottom of an IO is underwater.
+// RESULT:
+//   Plays Water sounds
+//   Decrease/stops Ignition of this IO if necessary
+//-----------------------------------------------------------------------------------------------
+// WARNINGS:
+// io must be valid (no check !)
+//***********************************************************************************************
+static void CheckUnderWaterIO(INTERACTIVE_OBJ * io)
+{
+	EERIE_3D ppos;
+	ppos.x = io->pos.x;
+	ppos.y = io->pos.y;
+	ppos.z = io->pos.z;
+	EERIEPOLY * ep = EEIsUnderWater(&ppos);
+
+	if (io->ioflags & IO_UNDERWATER)
+	{
+		if (!ep)
+		{
+			io->ioflags &= ~IO_UNDERWATER;
+			ARX_SOUND_PlaySFX(SND_PLOUF, &ppos);
+			ARX_PARTICLES_SpawnWaterSplash(&ppos);
+		}
+	}
+	else if (ep)
+	{
+		io->ioflags |= IO_UNDERWATER;
+		ARX_SOUND_PlaySFX(SND_PLOUF, &ppos);
+		ARX_PARTICLES_SpawnWaterSplash(&ppos);
+
+		if (io->ignition > 0.f)
+		{
+			ARX_SOUND_PlaySFX(SND_TORCH_END, &ppos);
+
+			if (ValidDynLight(io->ignit_light))
+				DynLight[io->ignit_light].exist = 0;
+
+			io->ignit_light = -1;
+
+			if (io->ignit_sound != ARX_SOUND_INVALID_RESOURCE)
+			{
+				ARX_SOUND_Stop(io->ignit_sound);
+				io->ignit_sound = ARX_SOUND_INVALID_RESOURCE;
+			}
+
+			io->ignition = 0;
+		}
+	}
+}
+
 extern float MAX_ALLOWED_PER_SECOND;
 long REACTIVATION_COUNT = 0;
 void ARX_PHYSICS_Apply()
@@ -3931,60 +3986,6 @@ void CheckNPC(INTERACTIVE_OBJ * io)
 		io->animlayer[1].next_anim = NULL;
 		io->animlayer[2].next_anim = NULL;
 		io->animlayer[3].next_anim = NULL;
-	}
-}
-//***********************************************************************************************
-// void CheckUnderWaterIO(INTERACTIVE_OBJ * io)
-//-----------------------------------------------------------------------------------------------
-// FUNCTION:
-//   Checks if the bottom of an IO is underwater.
-// RESULT:
-//   Plays Water sounds
-//   Decrease/stops Ignition of this IO if necessary
-//-----------------------------------------------------------------------------------------------
-// WARNINGS:
-// io must be valid (no check !)
-//***********************************************************************************************
-void CheckUnderWaterIO(INTERACTIVE_OBJ * io)
-{
-	EERIE_3D ppos;
-	ppos.x = io->pos.x;
-	ppos.y = io->pos.y;
-	ppos.z = io->pos.z;
-	EERIEPOLY * ep = EEIsUnderWater(&ppos);
-
-	if (io->ioflags & IO_UNDERWATER)
-	{
-		if (!ep)
-		{
-			io->ioflags &= ~IO_UNDERWATER;
-			ARX_SOUND_PlaySFX(SND_PLOUF, &ppos);
-			ARX_PARTICLES_SpawnWaterSplash(&ppos);
-		}
-	}
-	else if (ep)
-	{
-		io->ioflags |= IO_UNDERWATER;
-		ARX_SOUND_PlaySFX(SND_PLOUF, &ppos);
-		ARX_PARTICLES_SpawnWaterSplash(&ppos);
-
-		if (io->ignition > 0.f)
-		{
-			ARX_SOUND_PlaySFX(SND_TORCH_END, &ppos);
-
-			if (ValidDynLight(io->ignit_light))
-				DynLight[io->ignit_light].exist = 0;
-
-			io->ignit_light = -1;
-
-			if (io->ignit_sound != ARX_SOUND_INVALID_RESOURCE)
-			{
-				ARX_SOUND_Stop(io->ignit_sound);
-				io->ignit_sound = ARX_SOUND_INVALID_RESOURCE;
-			}
-
-			io->ignition = 0;
-		}
 	}
 }
 extern long GLOBAL_Player_Room;
