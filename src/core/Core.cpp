@@ -60,51 +60,67 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Core.h"
 
+#include <fstream>
+#include <sstream>
+#include <cassert>
+
 #include <windows.h>
 #include <shellapi.h>
+
+#include "ai/Paths.h"
+#include "ai/PathFinderManager.h"
+
+#include "animation/Animation.h"
+#include "animation/CinematicKeyframer.h"
+
+#include "core/Dialog.h"
+#include "core/Resource.h"
+#include "core/Version.h"
+#include "core/AVI.h"
+#include "core/Localization.h"
+#include "core/Time.h"
+
+#include "game/Missile.h"
+#include "game/Damage.h"
+#include "game/Equipment.h"
+#include "game/Map.h"
+
+#include "gui/MenuPublic.h"
+#include "gui/Menu.h"
+#include "gui/MenuWidgets.h"
+#include "gui/Speech.h"
+
+#include "graphics/GraphicsUtility.h"
+#include "graphics/GraphicsEnum.h"
+#include "graphics/Frame.h"
+#include "graphics/Draw.h"
+#include "graphics/data/FTL.h"
+#include "graphics/data/CinematicTexture.h"
+#include "graphics/effects/Fog.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "graphics/particle/ParticleManager.h"
 
 #include "io/IO.h"
 #include "io/Registry.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
- 
-#include "graphics/GraphicsUtility.h"
-#include "graphics/Draw.h"
-#include "core/AVI.h"
-#include "animation/Animation.h"
-#include "ai/PathFinderManager.h"
-#include "scene/LinkedObject.h"
-
-#include "core/Dialog.h"
-#include "core/Resource.h"
-#include "core/Version.h"
-#include "animation/CinematicKeyframer.h"
-#include "scene/CinematicSound.h"
 #include "io/CinematicLoad.h"
-#include "graphics/data/CinematicTexture.h"
-#include "game/Map.h"
-#include "scene/ChangeLevel.h"
-#include "graphics/particle/ParticleManager.h"
+#include "io/Screenshot.h"
+ 
 #include "physics/Collisions.h"
-#include "game/Damage.h"
-#include "game/Equipment.h"
-#include "graphics/data/FTL.h"
-#include "graphics/effects/Fog.h"
-#include "core/Localization.h"
-#include "gui/Menu.h"
-#include "gui/MenuWidgets.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "ai/Paths.h"
+#include "physics/Actors.h"
+#include "physics/Physics.h"
+
+#include "scene/LinkedObject.h"
+#include "scene/CinematicSound.h"
+#include "scene/ChangeLevel.h"
 #include "scene/Scene.h"
 #include "scene/GameSound.h"
-#include "physics/Actors.h"
-#include "gui/Speech.h"
-#include "core/Time.h"
-#include "game/Missile.h"
-#include "gui/MenuPublic.h"
-#include "io/Screenshot.h"
+#include "scene/LoadLevel.h"
+
 #include "scripting/ScriptEvent.h"
+#include "scripting/ScriptDebugger.h"
 
 using std::min;
 using std::max;
@@ -123,7 +139,7 @@ extern INTERACTIVE_OBJ * CURPATHFINDIO;
 
 HRESULT DANAEFinalCleanup();
 void ClearGame();
-void ShowInfoText(long COR);
+static void ShowInfoText();
 
 //-----------------------------------------------------------------------------
 
@@ -233,6 +249,9 @@ extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBuffer;
 extern CMY_DYNAMIC_VERTEXBUFFER * pDynamicVertexBufferTransform;
 
 extern std::string pStringMod;
+
+static const float INC_FOCAL = 75.0f;
+
 //-----------------------------------------------------------------------------
 // Our Main Danae Application.& Instance and Project
 DANAE danaeApp;
@@ -271,7 +290,6 @@ TextureContainer *	arx_logo_tc=NULL;
 TextureContainer *	TC_fire2=NULL;
 TextureContainer *	TC_fire=NULL;
 TextureContainer *	TC_smoke=NULL;
-TextureContainer *	TC_missile=NULL;
 TextureContainer *	Z_map=NULL;
 TextureContainer *	Boom=NULL;
 //TextureContainer *	zbtex=NULL;
@@ -389,8 +407,6 @@ long FINAL_COMMERCIAL_DEMO =0;
 
 float GLOBAL_NPC_MIPMAP_BIAS	=-2.2f;
 float GLOBAL_MIPMAP_BIAS		= 0;
-float IN_FRONT_DIVIDER			= 0.75f;
-float IN_FRONT_DIVIDER_FEET		=0.998f;
 float IN_FRONT_DIVIDER_ITEMS	=0.7505f;
 long GLOBAL_FORCE_PLAYER_IN_FRONT	=1;
 long USE_NEW_SKILLS=1;
@@ -447,7 +463,6 @@ long PROCESS_ALL_THEO	= 1;
 long PROCESS_LEVELS		= 1;
 long PROCESS_NO_POPUP	= 0;
 long PROCESS_ONLY_ONE_LEVEL=-1;
-long DONT_CHANGE_WORKINGDIR=0;
 
 //-----------------------------------------------------------------------------
 // EDITOR FLAGS/Vars
@@ -498,7 +513,6 @@ unsigned long FADESTART=0;
 float Original_framedelay=0.f;
 
 float PULSATE;
-float PULSS;
 long EXITING=0;
 
 long USE_PORTALS = 3;
@@ -506,33 +520,36 @@ long USE_PORTALS = 3;
 //-----------------------------------------------------------------------------
 // Toolbar Buttons Def
 //-----------------------------------------------------------------------------
-TBBUTTON tbButtons [] =
-{
-{0, DANAE_B001, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0L, 0},
-{1, DANAE_B002, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0L, 1},
-{0, 0, TBSTATE_ENABLED | TBSTATE_WRAP   , TBSTYLE_SEP, 0L, 0},
-{8, DANAE_B009, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0L, 8},
-{12, DANAE_B013, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0L, 12},
 
-{0, 0, TBSTATE_ENABLED , TBSTYLE_SEP, 0L, 0},
+// TODO maybe this is a wine-specific bug?
+#define TBBUTTON_INIT {0,0} // was: 0L
 
-{13, DANAE_B003, TBSTATE_ENABLED, TBSTYLE_CHECK, 0L, 13},
-{16, DANAE_B005, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0L, 16},
-{0, 0, TBSTATE_ENABLED , TBSTYLE_SEP, 0L, 0},
-{5, DANAE_B006, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0L, 5},
-{14, DANAE_B004, TBSTATE_ENABLED, TBSTYLE_CHECK, 0L, 14},
-{2, DANAE_B007, TBSTATE_ENABLED, TBSTYLE_CHECK, 0L, 2},
-{3, DANAE_B008, TBSTATE_ENABLED, TBSTYLE_CHECK, 0L, 3},
-{17, DANAE_B010, TBSTATE_ENABLED, TBSTYLE_CHECK, 0L, 17},
-{18, DANAE_B011, TBSTATE_ENABLED, TBSTYLE_CHECK, 0L, 18},
-{11, DANAE_B014, TBSTATE_ENABLED, TBSTYLE_CHECK, 0L, 11}, // Particles Button
-{0, 0, TBSTATE_ENABLED , TBSTYLE_SEP, 0L, 0},
-{19, DANAE_B012, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0L, 19},
-{0, 0, TBSTATE_ENABLED , TBSTYLE_SEP, 0L, 0},
-{20, DANAE_B015, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0L, 20},
-{0, 0, TBSTATE_ENABLED , TBSTYLE_SEP, 0L, 0},
-{21, DANAE_B016, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0L, 21},
-{0, 0, TBSTATE_ENABLED , TBSTYLE_SEP, 0L, 0},
+TBBUTTON tbButtons [] = {
+{0, DANAE_B001, TBSTATE_ENABLED, TBSTYLE_BUTTON, TBBUTTON_INIT, 0, 0},
+{1, DANAE_B002, TBSTATE_ENABLED, TBSTYLE_BUTTON, TBBUTTON_INIT, 1, 0},
+{0, 0, TBSTATE_ENABLED | TBSTATE_WRAP   , TBSTYLE_SEP, TBBUTTON_INIT, 0, 0},
+{8, DANAE_B009, TBSTATE_ENABLED, TBSTYLE_BUTTON, TBBUTTON_INIT, 8, 0},
+{12, DANAE_B013, TBSTATE_ENABLED, TBSTYLE_BUTTON, TBBUTTON_INIT, 12, 0},
+
+{0, 0, TBSTATE_ENABLED , TBSTYLE_SEP, TBBUTTON_INIT, 0, 0},
+
+{13, DANAE_B003, TBSTATE_ENABLED, TBSTYLE_CHECK, TBBUTTON_INIT, 13, 0},
+{16, DANAE_B005, TBSTATE_ENABLED, TBSTYLE_BUTTON, TBBUTTON_INIT, 16, 0},
+{0, 0, TBSTATE_ENABLED , TBSTYLE_SEP, TBBUTTON_INIT, 0, 0},
+{5, DANAE_B006, TBSTATE_ENABLED, TBSTYLE_BUTTON, TBBUTTON_INIT, 5, 0},
+{14, DANAE_B004, TBSTATE_ENABLED, TBSTYLE_CHECK, TBBUTTON_INIT, 14, 0},
+{2, DANAE_B007, TBSTATE_ENABLED, TBSTYLE_CHECK, TBBUTTON_INIT, 2, 0},
+{3, DANAE_B008, TBSTATE_ENABLED, TBSTYLE_CHECK, TBBUTTON_INIT, 3, 0},
+{17, DANAE_B010, TBSTATE_ENABLED, TBSTYLE_CHECK, TBBUTTON_INIT, 17, 0},
+{18, DANAE_B011, TBSTATE_ENABLED, TBSTYLE_CHECK, TBBUTTON_INIT, 18, 0},
+{11, DANAE_B014, TBSTATE_ENABLED, TBSTYLE_CHECK, TBBUTTON_INIT, 11, 0}, // Particles Button
+{0, 0, TBSTATE_ENABLED , TBSTYLE_SEP, TBBUTTON_INIT, 0, 0},
+{19, DANAE_B012, TBSTATE_ENABLED, TBSTYLE_BUTTON, TBBUTTON_INIT, 19, 0},
+{0, 0, TBSTATE_ENABLED , TBSTYLE_SEP, TBBUTTON_INIT, 0, 0},
+{20, DANAE_B015, TBSTATE_ENABLED, TBSTYLE_BUTTON, TBBUTTON_INIT, 20, 0},
+{0, 0, TBSTATE_ENABLED , TBSTYLE_SEP, TBBUTTON_INIT, 0, 0},
+{21, DANAE_B016, TBSTATE_ENABLED, TBSTYLE_BUTTON, TBBUTTON_INIT, 21, 0},
+{0, 0, TBSTATE_ENABLED , TBSTYLE_SEP, TBBUTTON_INIT, 0, 0},
 };
 
 //-----------------------------------------------------------------------------
@@ -663,7 +680,7 @@ void Danae_Registry_ReadValue(const char * string, long * value, long defaultval
 
 		if (DanaeKey!=NULL)
 		{
-			ReadRegKeyValue( DanaeKey, string, value, defaultvalue);
+			ReadRegKeyValue( DanaeKey, string, value);
 			Danae_Registry_Close();
 		}
 		else *value = defaultvalue;
@@ -1037,22 +1054,6 @@ void InitializeDanae()
 
 }
 
-//*************************************************************************************
-// DANAEApp EntryPoint
-//*************************************************************************************
-int HandlerMemory(size_t stSize)
-{
-	if(	danaeApp.m_hWnd)
-	{
-		ShowWindow(danaeApp.m_hWnd,SW_MINIMIZE|SW_HIDE);
-	}
-
-	LogError << "Fatal memory error!!!";
-	exit(-1);
-}
-
-//-----------------------------------------------------------------------------
-
 bool IsNoGore( void ) {
 	return GERMAN_VERSION? true : false;
 }
@@ -1276,7 +1277,7 @@ int main(int, char**)
 	ARX_SPELLS_Precast_Reset();
 	LogDebug << "Spell Init";
 	
-	for (long t=0;t<MAX_GOLD_COINS_VISUALS;t++)	{
+	for(size_t t = 0; t < MAX_GOLD_COINS_VISUALS; t++) {
 		GoldCoinsObj[t]=NULL;
 		GoldCoinsTC[t]=NULL;
 	}
@@ -1447,7 +1448,7 @@ int main(int, char**)
 	LogDebug << "Application Creation";
 	g_pD3DApp = &danaeApp;
 
-	if( FAILED( danaeApp.Create( hInstance, strCmdLine ) ) )
+	if( FAILED( danaeApp.Create( hInstance ) ) )
 		return 0;
 
 	LogInfo << "Application Creation Success";
@@ -2231,7 +2232,7 @@ void LoadSysTextures()
 	TC_fire2=			_GetTexture_NoRefinement("Graph\\particles\\fire2.bmp");
 	TC_smoke=			_GetTexture_NoRefinement("Graph\\particles\\smoke.bmp");
 	//zbtex=				_GetTexture_NoRefinement("Graph\\particles\\zbtex.bmp");
-	TC_missile=			_GetTexture_NoRefinement("Graph\\particles\\missile.bmp");
+	_GetTexture_NoRefinement("Graph\\particles\\missile.bmp");
 	Z_map=				_GetTexture_NoRefinement("Graph\\interface\\misc\\z-map.bmp");
 	Boom=				_GetTexture_NoRefinement("Graph\\Particles\\boom.bmp");
 	lightsource_tc=		_GetTexture_NoRefinement("Graph\\Particles\\light.bmp");
@@ -2254,7 +2255,7 @@ void LoadSysTextures()
 
 	blood_splat=_GetTexture_NoRefinement("Graph\\Particles\\new_blood2.bmp");
 
-	EERIE_DRAW_SetTextureZMAP(0,Z_map);
+	EERIE_DRAW_SetTextureZMAP(Z_map);
 	EERIE_DRAW_sphere_particle=sphere_particle;
 	EERIE_DRAW_square_particle=_GetTexture_NoRefinement("Graph\\particles\\square.bmp");
 
@@ -2555,13 +2556,11 @@ void PlayerLaunchArrow(float aimratio,float poisonous)
 	}
 }
 
-extern void ARX_POLYSPLAT_Add(EERIE_3D * poss,long type,EERIE_RGB * col,float size,long flags);
-
 //*************************************************************************************
 // FrameMove()
 //  Called once per frame.
 //*************************************************************************************
-HRESULT DANAE::FrameMove( float fTimeKey )
+HRESULT DANAE::FrameMove()
 {
 	// To disable for demo
 	if (	!FINAL_COMMERCIAL_DEMO
@@ -2843,12 +2842,10 @@ void ReleaseDanaeBeforeRun()
 		arrowobj=NULL;
 	}
 
-	for (int i=0;i<MAX_GOLD_COINS_VISUALS;i++)
-	{
-		if(GoldCoinsObj[i])
-		{
+	for(size_t i = 0; i < MAX_GOLD_COINS_VISUALS; i++) {
+		if(GoldCoinsObj[i]) {
 			ReleaseEERIE3DObj(GoldCoinsObj[i]);
-			GoldCoinsObj[i]=NULL;
+			GoldCoinsObj[i] = NULL;
 		}
 	}
 
@@ -2858,7 +2855,6 @@ HRESULT DANAE::BeforeRun()
 {
 
 	LogDebug << "Before Run...";
-	long i;
 
 	GDevice=m_pd3dDevice;
 
@@ -2910,7 +2906,7 @@ HRESULT DANAE::BeforeRun()
 	necklace.pTexTab[RUNE_VITAE]		= MakeTCFromFile_NoRefinement("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_vitae[icon].BMP");
 	necklace.pTexTab[RUNE_YOK]			= MakeTCFromFile_NoRefinement("\\Graph\\Obj3D\\Interactive\\Items\\Magic\\Rune_aam\\rune_yok[icon].BMP");
 
-	for (i = 0; i<NB_RUNES-1; i++)
+	for (long i = 0; i<NB_RUNES-1; i++)
 	{
 		if (necklace.pTexTab[i])
 			necklace.pTexTab[i]->CreateHalo(GDevice);
@@ -2927,21 +2923,20 @@ HRESULT DANAE::BeforeRun()
 	markerobj=		_LoadTheObj("Graph\\Obj3D\\Interactive\\System\\Marker\\Marker.teo","..\\..\\..\\textures\\");
 	arrowobj=		_LoadTheObj("Graph\\Obj3D\\Interactive\\Items\\Weapons\\arrow\\arrow.teo","..\\..\\..\\..\\textures\\");
 
-	for (i=0;i<MAX_GOLD_COINS_VISUALS;i++)
-	{
+	for(size_t i = 0; i < MAX_GOLD_COINS_VISUALS; i++) {
 		char temp[256];
 
 		if (i==0)
 			strcpy(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin.teo");
 		else
-			sprintf(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin%ld.teo",i+1);
+			sprintf(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin%d.teo",i+1);
 
 		GoldCoinsObj[i]=	_LoadTheObj(temp,"..\\..\\..\\..\\textures\\");
 
 		if (i==0)
 			strcpy(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin[icon].bmp");
 		else
-			sprintf(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin%ld[icon].bmp",i+1);
+			sprintf(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin%d[icon].bmp",i+1);
 
 		GoldCoinsTC[i] =	MakeTCFromFile_NoRefinement(temp);
 	}
@@ -2965,8 +2960,8 @@ HRESULT DANAE::BeforeRun()
 
 //*************************************************************************************
 
-void FirstTimeThings(HWND m_hWnd,LPDIRECT3DDEVICE7 m_pd3dDevice)
-{
+void FirstTimeThings() {
+	
 	static long done = 0;
 	long i;
 	eyeball.exist=0;
@@ -3038,8 +3033,8 @@ long NO_GMOD_RESET=0;
 
 //*************************************************************************************
 
-LPTHREAD_START_ROUTINE FirstFrameProc(char *pipo)
-{
+void FirstFrameProc() {
+	
 	if (pParticleManager == NULL)
 	{
 		pParticleManager = new CParticleManager();
@@ -3078,8 +3073,8 @@ LPTHREAD_START_ROUTINE FirstFrameProc(char *pipo)
 
 	if (DEBUGCODE)
 		ForceSendConsole("...NEXT...",1,0,(HWND)1);
-
-	FirstTimeThings(danaeApp.m_hWnd,NULL);
+	
+	FirstTimeThings();
 
 	if (!LOAD_N_DONT_ERASE)
 	{
@@ -3092,7 +3087,7 @@ LPTHREAD_START_ROUTINE FirstFrameProc(char *pipo)
 
 	SecondaryInventory=NULL;
 	TSecondaryInventory=NULL;
-	ARX_FOGS_Render(1);
+	ARX_FOGS_Render();
 
 	if (!LOAD_N_DONT_ERASE)
 	{
@@ -3120,7 +3115,6 @@ LPTHREAD_START_ROUTINE FirstFrameProc(char *pipo)
 	}
 
 	InitSnapShot(NULL,"snapshot");
-	return 0;
 }
 EERIE_3D LastValidPlayerPos;
 EERIE_3D	WILL_RESTORE_PLAYER_POSITION;
@@ -3136,14 +3130,14 @@ long FirstFrameHandling(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	FirstFrame=-1;
 
 	ARX_PARTICLES_FirstInit();
-	ARX_SPELLS_Init(m_pd3dDevice);
+	ARX_SPELLS_Init_Rects();
 	ARX_FOGS_TimeReset();
 
 	PROGRESS_BAR_COUNT+=2.f;
 	LoadLevelScreen();
-
-	FirstFrameProc(NULL);
-
+	
+	FirstFrameProc();
+	
 	if (FASTmse)
 	{
 		FASTmse=0;
@@ -3590,7 +3584,7 @@ void ManageCombatModeAnimations()
 
 						if (str[0]!=0)
 						{
-							ARX_SPEECH_AddSpeech(io,str,PARAM_LOCALISED,ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
+							ARX_SPEECH_AddSpeech(io,str,ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
 						}
 					}
 
@@ -3753,7 +3747,7 @@ void ManageCombatModeAnimations()
 
 						if (str[0]!=0)
 						{
-							ARX_SPEECH_AddSpeech(io,str,PARAM_LOCALISED,ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
+							ARX_SPEECH_AddSpeech(io,str,ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
 						}
 					}
 
@@ -3841,7 +3835,7 @@ void ManageCombatModeAnimations()
 
 						if (str[0]!=0)
 						{
-							ARX_SPEECH_AddSpeech(io,str,PARAM_LOCALISED,ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
+							ARX_SPEECH_AddSpeech(io,str,ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
 						}
 					}
 
@@ -3932,7 +3926,7 @@ void ManageCombatModeAnimations()
 
 						if (str[0]!=0)
 						{
-							ARX_SPEECH_AddSpeech(io,str,PARAM_LOCALISED,ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
+							ARX_SPEECH_AddSpeech(io,str,ANIM_TALK_NEUTRAL,ARX_SPEECH_FLAG_NOTEXT);
 						}
 					}
 
@@ -4472,7 +4466,7 @@ void RenderAllNodes(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			{
 				xx=nodeobj->vertexlist[nodeobj->origin].vert.sx-40.f;
 				yy=nodeobj->vertexlist[nodeobj->origin].vert.sy-40.f;
-				ARX_TEXT_Draw(hFontInBook, xx, yy, 0, 0, nodes.nodes[i].UName, EERIECOLOR_YELLOW);	//font
+				ARX_TEXT_Draw(hFontInBook, xx, yy, nodes.nodes[i].UName, EERIECOLOR_YELLOW); //font
 			}
 
 			if (nodes.nodes[i].selected)
@@ -4667,7 +4661,7 @@ void LaunchMoulinex()
 				CDP_FogOptions=NULL;
 				SetEditMode(1);
 				DanaeClearLevel();
-				DanaeLoadLevel(GDevice,loadfrom);
+				DanaeLoadLevel(loadfrom);
 				FORBID_SAVE=0;
 				FirstFrame=1;
 			}
@@ -4694,7 +4688,7 @@ void DANAE_StartNewQuest()
 	DanaeClearAll();
 	PROGRESS_BAR_COUNT+=2.f;
 	LoadLevelScreen();
-	DanaeLoadLevel(GDevice,loadfrom);
+	DanaeLoadLevel(loadfrom);
 	FORBID_SAVE=0;
 	FirstFrame=1;
 	START_NEW_QUEST=0;
@@ -4851,7 +4845,7 @@ bool DANAE_ManageSplashThings()
 				LoadLevelScreen(10);	
 			}
 
-			DanaeLoadLevel(GDevice,loadfrom);
+			DanaeLoadLevel(loadfrom);
 			FORBID_SAVE=0;
 			FirstFrame=1;
 			SPLASH_THINGS_STAGE=0;
@@ -5164,9 +5158,10 @@ unsigned long oBENCH_SOUND=0;
 long WILL_QUICKLOAD=0;
 long WILL_QUICKSAVE=0;
 
+// TODO what is the point of this function?
 void CorrectValue(unsigned long * cur,unsigned long * dest)
 {
-	if (*cur=*dest)
+	if ((*cur=*dest))
 		return;
 
 	if (*cur<*dest)
@@ -5506,7 +5501,7 @@ static float _AvgFrameDiff = 150.f;
 		OLD_PROGRESS_BAR_COUNT=PROGRESS_BAR_COUNT=0;
 		PROGRESS_BAR_TOTAL = 108;
 		LoadLevelScreen(10);	
-		DanaeLoadLevel(GDevice,RESOURCE_LEVEL_10);
+		DanaeLoadLevel(RESOURCE_LEVEL_10);
 		FORBID_SAVE=0;
 		FirstFrame=1;
 		SPLASH_THINGS_STAGE=0;
@@ -5551,7 +5546,6 @@ static float _AvgFrameDiff = 150.f;
 
 	PULSATE=EEsin(FrameTime / 800);
 	METALdecal=EEsin(FrameTime / 50) / 200 ;
-	PULSS=(EEsin(FrameTime / 200) / (4*PI) )+0.25f;
 	EERIEDrawnPolys=0;
 
 	// EditMode Specific code
@@ -5670,8 +5664,7 @@ static float _AvgFrameDiff = 150.f;
 
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
 
-	if ( ARX_Menu_Render() )
-	{
+	if(ARX_Menu_Render()) {
 		goto norenderend;
 	}
 
@@ -5825,7 +5818,7 @@ static float _AvgFrameDiff = 150.f;
 					&inter.iobj[0]->angle,&inter.iobj[0]->pos,
 					ARX_CLEAN_WARN_CAST_ULONG(iCalc)
 
-									  , inter.iobj[0], 0, 4);
+									  , inter.iobj[0], 4);
 
 					if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
 				ManageCombatModeAnimations();
@@ -5865,7 +5858,7 @@ static float _AvgFrameDiff = 150.f;
 					&inter.iobj[0]->pos,
 					ARX_CLEAN_WARN_CAST_ULONG(val),
 					inter.iobj[0],
-					0,4);
+					4);
 
 
 				if ((player.Interface & INTER_COMBATMODE) && (inter.iobj[0]->animlayer[1].cur_anim != NULL))
@@ -6562,7 +6555,7 @@ static float _AvgFrameDiff = 150.f;
 		assert(inter.iobj[0]->obj != NULL);
 		EERIEDrawAnimQuat(	m_pd3dDevice,	inter.iobj[0]->obj,
 				&inter.iobj[0]->animlayer[0],
-				&inter.iobj[0]->angle,&inter.iobj[0]->pos, 0,inter.iobj[0],0,8);
+				&inter.iobj[0]->angle,&inter.iobj[0]->pos, 0,inter.iobj[0],8);
 		ACTIVECAM->use_focal=restore;
 		FORCE_FRONT_DRAW=0;
 	}
@@ -6589,13 +6582,12 @@ static float _AvgFrameDiff = 150.f;
 		{
 			float val=10.f;
 			m_pd3dDevice->SetTextureStageState( 0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD) (&val))  );
-			ARX_SCENE_Render(m_pd3dDevice,1);
+			ARX_SCENE_Render(m_pd3dDevice, 1);
 			val=-0.3f;
 			m_pd3dDevice->SetTextureStageState( 0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD) (&val))  );
 		}
-		else
-		{
-			ARX_SCENE_Render(m_pd3dDevice,1);
+		else {
+			ARX_SCENE_Render(m_pd3dDevice, 1);
 		}
 
 		BENCH_RENDER=EndBench();
@@ -6622,9 +6614,9 @@ static float _AvgFrameDiff = 150.f;
 		m_pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );			
 		SETZWRITE(m_pd3dDevice, false );
 		SETALPHABLEND(m_pd3dDevice,true);
-		ARX_FOGS_Render(0);
+		ARX_FOGS_Render();
 
-		ARX_PARTICLES_Render(m_pd3dDevice,&subj);		
+		ARX_PARTICLES_Render(m_pd3dDevice,&subj);
 		UpdateObjFx(m_pd3dDevice,&subj);
 		
 		SETALPHABLEND(m_pd3dDevice,false);
@@ -6641,7 +6633,7 @@ static float _AvgFrameDiff = 150.f;
 		{
 			if (EERIEMouseButton & 1)
 			{
-				if ((ARX_FLARES_Block==0) && (CurrSlot<MAX_SLOT))
+				if ((ARX_FLARES_Block==0) && (CurrSlot<(long)MAX_SLOT)) 
 					ARX_SPELLS_AddPoint(&DANAEMouse);
 				else
 				{
@@ -6657,7 +6649,7 @@ static float _AvgFrameDiff = 150.f;
 
 		ARX_SPELLS_Precast_Check();
 		ARX_SPELLS_ManageMagic();
-		ARX_SPELLS_UpdateSymbolDraw(m_pd3dDevice);
+		ARX_SPELLS_UpdateSymbolDraw();
 
 		ManageTorch();
 
@@ -6678,7 +6670,7 @@ static float _AvgFrameDiff = 150.f;
 
 		std::stringstream ss("EDIT MODE - Selected ");
 		ss <<  NbIOSelected;
-		ARX_TEXT_Draw(hFontInBook, 100,2, 0, 0, ss.str(),EERIECOLOR_YELLOW);
+		ARX_TEXT_Draw(hFontInBook, 100, 2, ss.str(), EERIECOLOR_YELLOW);
 	
 		if (EDITION==EDITION_FOGS)
 			ARX_FOGS_RenderAll( m_pd3dDevice);
@@ -6801,8 +6793,8 @@ m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 	{
 		StartBench();
 		ARX_SPEECH_Check(danaeApp.m_pd3dDevice);
-		ARX_SPEECH_Update(danaeApp.m_pd3dDevice);
-		BENCH_SPEECH=EndBench();
+		ARX_SPEECH_Update();
+		BENCH_SPEECH = EndBench();
 	}
 
 	SETTEXTUREWRAPMODE(m_pd3dDevice,D3DTADDRESS_WRAP);
@@ -6842,11 +6834,11 @@ m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 			SETALPHABLEND(GDevice,false);
 		}
 
-		ARX_INTERFACE_HALO_Flush(m_pd3dDevice);
+		ARX_INTERFACE_HALO_Flush();
 	}
 	else
 	{
-		ARX_INTERFACE_HALO_Flush(m_pd3dDevice);
+		ARX_INTERFACE_HALO_Flush();
 		ARX_INTERFACE_RenderCursor();
 	}
 
@@ -6875,7 +6867,7 @@ m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 		{
 			if (ViewMode & VIEWMODE_INFOTEXT)
 			{
-				ShowInfoText(0);
+				ShowInfoText();
 			}
 			else if ((FORCE_SHOW_FPS) || CYRIL_VERSION)
 			{
@@ -7102,7 +7094,6 @@ void DANAE::GoFor2DFX()
 						lv.sz-=vector.z;
 						specialEE_RTP(&lv,&ltvv2);
 
-						float fZFire=ltvv2.sz*(float)danaeApp.zbuffer_max;
 						float fZFar=ProjectionMatrix._33*(1.f/(ACTIVECAM->cdepth*fZFogEnd))+ProjectionMatrix._43;
 
 						EERIE_3D	hit;
@@ -7229,8 +7220,8 @@ extern long TSU_TEST;
 long TSU_TEST_NB = 0;
 long TSU_TEST_NB_LIGHT = 0;
 
-void ShowInfoText(long COR)
-{
+static void ShowInfoText() {
+	
 	unsigned long uGAT = ARXTimeUL() / 1000;
 	long GAT=(long)uGAT;
 	char tex[256];
@@ -7311,16 +7302,9 @@ void ShowInfoText(long COR)
 	TSU_TEST_NB = 0;
 	TSU_TEST_NB_LIGHT = 0;
 
-	long pos=DXI_GetKeyIDPressed(DXI_KEYBOARD1);
+	long pos=DXI_GetKeyIDPressed();
 	sprintf(tex,"%ld",pos);
 	danaeApp.OutputText( 70, 99, tex );
-	int jx,jy,jz;
-
-	if (ARX_INPUT_GetSCIDAxis(&jx,&jy,&jz))
-	{
-		sprintf(tex,"%d %d %d",jx,jy,jz);
-		danaeApp.OutputText( 70, 299, tex );
-	}
 
 	if ((!EDITMODE) && (ValidIONum(LastSelectedIONum)))
 	{
@@ -7393,7 +7377,6 @@ void ShowInfoText(long COR)
 //-----------------------------------------------------------------------------
 
 extern long POLYIN;
-extern long NOT_MOVED_AT_ALL;
 extern long LAST_LLIGHT_COUNT;
 extern float PLAYER_CLIMB_THRESHOLD, player_climb;
 extern float TOTAL_CHRONO;
@@ -7430,8 +7413,8 @@ void ShowFPS()
 
 	TOTAL_CHRONO=0;
 //	TODO(lubosz): Don't get this by extern global
-//	sprintf(tex,"%4.0f MCache %ld[%ld] NOT %ld FP %3.0f %3.0f Llights %ld/%ld TOTIOPDL %ld TOTPDL %ld"
-//		,inter.iobj[0]->pos.y, meshCache.size(),MCache_GetSize(),NOT_MOVED_AT_ALL,Original_framedelay,_framedelay,LAST_LLIGHT_COUNT,MAX_LLIGHTS,TOTIOPDL,TOTPDL);
+//	sprintf(tex,"%4.0f MCache %ld[%ld] FP %3.0f %3.0f Llights %ld/%ld TOTIOPDL %ld TOTPDL %ld"
+//		,inter.iobj[0]->pos.y, meshCache.size(),MCache_GetSize(),Original_framedelay,_framedelay,LAST_LLIGHT_COUNT,MAX_LLIGHTS,TOTIOPDL,TOTPDL);
 
 	if (LAST_LLIGHT_COUNT>MAX_LLIGHTS)
 		strcat(tex," EXCEEDING LIMIT !!!");
@@ -8184,9 +8167,10 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				}
 				break;
 				case DANAE_MENU_PROJECTPATH:
+					LogWarning << "not implemented";
 					//HERMESFolderSelector("","Choose Working Folder"); first param receives folder
-					SetWindowTitle(hWnd,"DANAE Project");
-					chdir("GRAPH\\LEVELS\\");
+					//SetWindowTitle(hWnd,"DANAE Project");
+					//chdir("GRAPH\\LEVELS\\");
 					break;
 				case DANAE_MENU_NEWLEVEL:
 					ARX_TIME_Pause();
@@ -8319,8 +8303,8 @@ void ReleaseSystemObjects() {
 		arrowobj=NULL;
 	}
 
-	for (long i=0;i<MAX_GOLD_COINS_VISUALS;i++) {
-		if (GoldCoinsObj[i]) {
+	for(size_t i = 0; i < MAX_GOLD_COINS_VISUALS; i++) {
+		if(GoldCoinsObj[i]) {
 			ReleaseEERIE3DObj(GoldCoinsObj[i]);
 			GoldCoinsObj[i]=NULL;
 		}

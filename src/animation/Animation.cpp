@@ -63,28 +63,37 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <cassert>
+#include <climits>
 using std::sprintf;
 
-#include "physics/Clothes.h"
-#include "scene/Object.h"
-#include "graphics/Math.h"
-#include "scene/Light.h"
-#include "graphics/data/Mesh.h"
-#include "graphics/Draw.h"
+#include "animation/AnimationRender.h"
 
-#include "scene/GameSound.h"
-#include "game/Damage.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "game/NPC.h"
-#include "physics/Collisions.h"
-#include "scene/Scene.h"
 #include "core/Time.h"
 #include "core/Core.h"
-#include "animation/AnimationRender.h"
+
+#include "game/Damage.h"
+#include "game/NPC.h"
+#include "game/Player.h"
+
+#include "graphics/GraphicsEnum.h"
+#include "graphics/Draw.h"
+#include "graphics/Math.h"
+#include "graphics/data/Mesh.h"
+#include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
+
+#include "physics/Clothes.h"
+#include "physics/Collisions.h"
+
+#include "scene/Object.h"
+#include "scene/Light.h"
+#include "scene/GameSound.h"
+#include "scene/Scene.h"
+#include "scene/Interactive.h"
 
 using std::min;
 using std::max;
@@ -93,8 +102,6 @@ using std::max;
 void PushInterBump(TextureContainer *_pTex,D3DTLVERTEX *_pVertex);
 void PopOneInterBump(LPDIRECT3DDEVICE7 _pDevice,TextureContainer *_pTex);
 //-----------------------------------------------------------------------------
-#define MIPMESH_START 380.f
-#define MIPMESH_DIV	  ( 1.0f / 190 )
 
 #define MAX_DIST_BUMP_INTER (400.f)
 extern float IN_FRONT_DIVIDER_ITEMS;
@@ -316,7 +323,7 @@ long EERIE_ANIMMANAGER_AddAltAnim(ANIM_HANDLE * ah, char * path) {
 		return 0;
 	}
 	
-	EERIE_ANIM * temp = TheaToEerie(adr,FileSize,path,TEA_PLAYER_SAMPLES);
+	EERIE_ANIM * temp = TheaToEerie(adr,FileSize,path);
 	free(adr);
 	if(!temp) {
 		return 0;
@@ -357,7 +364,7 @@ ANIM_HANDLE * EERIE_ANIMMANAGER_Load( const std::string& _path)
 				animations[i].anims=(EERIE_ANIM **)malloc(sizeof(EERIE_ANIM *));
 				animations[i].sizes=(long *)malloc(sizeof(long));
 
-				animations[i].anims[0]=TheaToEerie(adr,FileSize,path.c_str(),TEA_PLAYER_SAMPLES);
+				animations[i].anims[0]=TheaToEerie(adr,FileSize,path.c_str());
 				animations[i].sizes[0]=FileSize;
 				animations[i].alt_nb=1;
 				free(adr);
@@ -645,7 +652,6 @@ void EERIEDrawAnimQuat(		LPDIRECT3DDEVICE7 pd3dDevice,
 							EERIE_3D  * pos,
 							unsigned long time,
 							INTERACTIVE_OBJ * io,
-							D3DCOLOR col,
 							long typ
 						)
 {
@@ -692,27 +698,21 @@ suite:
 	DESTROYED_DURING_RENDERING=NULL;
 
 	if (USE_CEDRIC_ANIM)
-		Cedric_AnimateDrawEntity(pd3dDevice, eobj, eanim, angle, pos, io, col, typ);
+		Cedric_AnimateDrawEntity(pd3dDevice, eobj, eanim, angle, pos, io, typ);
 }
 
 #define ANIMQUATTYPE_FIRST_PERSON	2
 #define ANIMQUATTYPE_NO_RENDER		4
 #define ANIMQUATTYPE_NO_COMPUTATIONS	8
 extern float GLOBAL_LIGHT_FACTOR;
-//-----------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-void HALO_IO_DynLight_Update(INTERACTIVE_OBJ * io) 
-{
-	return; 
-		}
 
 //*************************************************************************************
 // Procedure for drawing Interactive Objects (Not Animated)
 //*************************************************************************************
 
 void DrawEERIEInterMatrix(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
-					EERIEMATRIX * mat,EERIE_3D  * poss,INTERACTIVE_OBJ * io,EERIE_3D * angle,EERIE_MOD_INFO * modinfo)
+					EERIEMATRIX * mat,EERIE_3D  * poss,INTERACTIVE_OBJ * io,EERIE_MOD_INFO * modinfo)
 {
 	BIGQUAT=NULL;
 	BIGMAT=mat;
@@ -1293,7 +1293,7 @@ int ARX_SoftClippZ(EERIE_VERTEX *_pVertex1,EERIE_VERTEX *_pVertex2,EERIE_VERTEX 
 extern D3DMATRIX ProjectionMatrix;
 extern long FORCE_FRONT_DRAW;
 //-----------------------------------------------------------------------------
-void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
+void DrawEERIEInter2(EERIE_3DOBJ * eobj,
 					EERIE_3D * angle, EERIE_3D  * poss, INTERACTIVE_OBJ * io, EERIE_MOD_INFO * modinfo )
 {
 	if ( !eobj ) return;
@@ -1344,8 +1344,8 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	}
 
 	float					Xcos = 0, Ycos = 0, Zcos = 0, Xsin = 0, Ysin = 0, Zsin = 0;
-	register D3DTLVERTEX	vert_list_static[4]; 	
-	long					i, k;
+	D3DTLVERTEX vert_list_static[4];
+	long					k;
 	
 	long			lfr, lfg, lfb;		
 	EERIE_3D		temporary3D;
@@ -1393,7 +1393,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	{
 		ResetBBox3D( io );
 
-		for( i = 0 ; i < eobj->vertexlist.size() ; i++ ) 
+		for(size_t i = 0 ; i < eobj->vertexlist.size() ; i++ ) 
 		{
 			if ( (modinfo) && !angle && BIGMAT )
 			{
@@ -1489,7 +1489,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 		)
 		goto finish;
 
-	if ((!modinfo) && (ARX_SCENE_PORTAL_ClipIO(io,eobj,&pos,&BBOXMIN,&BBOXMAX)))
+	if ((!modinfo) && (ARX_SCENE_PORTAL_ClipIO(io,&pos)))
 		return;
 	
 	
@@ -1680,10 +1680,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 								SpawnGroundSplat(&sp,&rgb,rnd()*30.f+30.f,1);
 								sp.origin.y-=rnd()*150.f;
 
-								if (count==0)
-									ARX_PARTICLES_Spawn_Splat(&sp.origin,200,io->_npcdata->blood_color,0,io,1);
-								else
-									ARX_PARTICLES_Spawn_Splat(&sp.origin,200,io->_npcdata->blood_color,0,io,0);
+								ARX_PARTICLES_Spawn_Splat(&sp.origin,200,io->_npcdata->blood_color);
 
 								sp.origin.x=io->pos.x+rnd()*200.f-100.f;
 								sp.origin.y=io->pos.y+rnd()*20.f-10.f;
@@ -1731,8 +1728,7 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	float prec;
 	prec=1.f/(ACTIVECAM->cdepth*ACTIVECAM->Zmul);
 
-	for(i=0;i<eobj->facelist.size();i++) 
-	{
+	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		long paf[3];
 		paf[0]=eobj->facelist[i].vid[0];
 		paf[1]=eobj->facelist[i].vid[1];
@@ -1952,10 +1948,10 @@ void DrawEERIEInter2( LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 		{
 			for ( long j = 0 ; j < 3 ; j++ )
 			{	
-				vert_list[j].color	=	(0xFF000000L 
-									|	( ( (long)( (float)( (long)( ( vert_list[j].color >> 16 ) & 255) ) * ( special_color.r ) ) & 255 ) << 16 ) 
-					|  (((long)((float)((long)((vert_list[j].color>>8) & 255))*special_color.g)&255) << 8) 
-					|    (long)((float)((long) (vert_list[j].color & 255))*(special_color.b))&255);
+				vert_list[j].color = 0xFF000000L 
+				                     | (((long)((float)((long)((vert_list[j].color >> 16) & 255)) * (special_color.r ) ) & 255 ) << 16 ) 
+				                     | (((long)((float)((long)((vert_list[j].color >> 8) & 255))*special_color.g)&255) << 8) 
+				                     | ((long)((float)((long) (vert_list[j].color & 255))*(special_color.b))&255);
 			}
 		}
 	}			
@@ -2233,8 +2229,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 
 	if(bRenderInterList)
 	{
-		DrawEERIEInter2(	pd3dDevice,
-							eobj,
+		DrawEERIEInter2(eobj,
 							angle,
 							poss,
 							io,
@@ -2281,8 +2276,8 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 	
 
 	float					Xcos = 0, Ycos = 0, Zcos = 0, Xsin = 0, Ysin = 0, Zsin = 0;
-	register D3DTLVERTEX	vert_list[4]; 	
-	long					i, k;
+	D3DTLVERTEX vert_list[4];
+	long k;
 	
 	long					lfr, lfg, lfb;		
 	float					dd, ffr, ffg, ffb;
@@ -2332,8 +2327,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 	ResetBBox3D(io);
 
 	// Transforms vertex
-	for(i=0;i<eobj->vertexlist.size();i++) 
-	{
+	for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 		if ((MIPM) && (!eobj->pdata[i].need_computing)) continue;
 
 		if ((modinfo) && !angle && BIGMAT)
@@ -2418,7 +2412,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 		)
 		goto finish;
 
-	if (ARX_SCENE_PORTAL_ClipIO(io,eobj,&pos,&BBOXMIN,&BBOXMAX))
+	if (ARX_SCENE_PORTAL_ClipIO(io,&pos))
 		return;
 
 	// Precalc local lights for this object then interpolate
@@ -2442,13 +2436,11 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 			}
 		}
 
-		for (i=0;i<TOTIOPDL;i++)
-		{
+		for(long i = 0; i < TOTIOPDL; i++) {
 			Insertllight(IO_PDL[i], EEDistance3D(&IO_PDL[i]->pos, &pos)); 
 		}
 
-		for (i=0;i<TOTPDL;i++)
-		{
+		for(long i = 0; i < TOTPDL; i++) {
 			Insertllight(PDL[i], EEDistance3D(&PDL[i]->pos, &pos)); 
 		}
 
@@ -2456,8 +2448,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 		Vector_Init(&l_pos,pos.x,pos.y-60.f,pos.z);
 		Preparellights(&l_pos);	
 
-		for(i=0;i<eobj->vertexlist.size();i++) 
-		{
+		for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 			if ((MIPM) && (!eobj->pdata[i].need_computing)) continue;
 			
 			if (BIGMAT!=NULL)
@@ -2538,9 +2529,10 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 					lfb=clipByte255(lfb);
 				}
 
-				eobj->vertexlist3[i].vert.color=(0xff000000L | ( ((lfr)&255) << 16) | 	(((lfg)&255) << 8) | (lfb)&255);				
+				eobj->vertexlist3[i].vert.color = 0xff000000L | (((lfr)&255) << 16)
+				                                  | (((lfg)&255) << 8) | ((lfb)&255);
 				
-			}						
+			}
 		}
 	}
 
@@ -2548,8 +2540,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 		{
 			float r1;
 
-			for(i=0;i<eobj->vertexlist.size();i++) 
-			{
+			for(size_t i = 0; i < eobj->vertexlist.size(); i++) {
 				if (eobj->pdata[i].collapse_ratio!=0.f)
 				{
 					// Full collapse
@@ -2583,10 +2574,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 	{
 		ddist=500.f-Distance3D(pos.x,pos.y,pos.z,ACTIVECAM->pos.x,ACTIVECAM->pos.y,ACTIVECAM->pos.z);
 
-		if (ddist>0.f) ddist=(ddist*( 1.0f / 500 ));
-
-		if ((io) && (io->halo.flags & HALO_DYNLIGHT))
-			HALO_IO_DynLight_Update(io);	
+		if (ddist>0.f) ddist=(ddist*( 1.0f / 500 ));	
 
 		if ((io) && (io->halo.flags & HALO_ACTIVE) && (ddist>0.01f) )
 			need_halo=1;
@@ -2752,10 +2740,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 								SpawnGroundSplat(&sp,&rgb,rnd()*30.f+30.f,1);
 								sp.origin.y-=rnd()*150.f;
 
-								if (count==0)
-									ARX_PARTICLES_Spawn_Splat(&sp.origin,200,io->_npcdata->blood_color,0,io,1);
-								else
-									ARX_PARTICLES_Spawn_Splat(&sp.origin,200,io->_npcdata->blood_color,0,io,0);
+								ARX_PARTICLES_Spawn_Splat(&sp.origin,200,io->_npcdata->blood_color);
 
 								sp.origin.x=io->pos.x+rnd()*200.f-100.f;
 								sp.origin.y=io->pos.y+rnd()*20.f-10.f;
@@ -2795,8 +2780,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 		}
 	}
 
-	for(i=0;i<eobj->facelist.size();i++) 
-	{
+	for(size_t i = 0; i < eobj->facelist.size(); i++) {
 		if (MIPM)
 		{
 			for (lm=0;lm<3;lm++)				
@@ -2871,7 +2855,8 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 					lfr = io->halo.color.r * power;
 					lfg = io->halo.color.g * power;
 					lfb = io->halo.color.b * power;
-					workon[o].color=(0xFF000000L | ( ((lfr)&255) << 16) | 	(((lfg)&255) << 8) | (lfb)&255);
+					workon[o].color = 0xFF000000L | (((lfr)&255) << 16)
+					                  | (((lfg)&255) << 8) | ((lfb)&255);
 				}
 
 				if ((tot>250.f) )
@@ -3031,17 +3016,15 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 			}
 		}
 
-		if (special_color_flag & 1)
-		{
-			for (long j=0;j<3;j++)
-			{	
-				vert_list[j].color=(0xFF000000L 
-					| ( ((long)((float)((long)((vert_list[j].color>>16) & 255))*(special_color.r))&255) << 16) 
-					|  (((long)((float)((long)((vert_list[j].color>>8) & 255))*special_color.g)&255) << 8) 
-					|    (long)((float)((long) (vert_list[j].color & 255))*(special_color.b))&255);
+		if(special_color_flag & 1) {
+			for(long j = 0; j < 3; j++) {
+				long r = (long)((float)((long)((vert_list[j].color >> 16) & 255)) * special_color.r);
+				long g = (long)((float)((long)((vert_list[j].color >> 8) & 255)) * special_color.g);
+				long b = (long)((float)((long) (vert_list[j].color & 255))*(special_color.b));
+				vert_list[j].color = 0xFF000000L | ((r&255) << 16) | ((g&255) << 8) | (b&255);
 			}
 		}
-	}			
+	}
 
 		// Treat WATER Polys (modify UVs)
 		if (eobj->facelist[i].facetype & POLY_WATER)

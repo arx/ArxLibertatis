@@ -57,11 +57,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Box.h"
 
-#include "graphics/Math.h"
-
-#include "scene/Interactive.h"
+#include "ai/Paths.h"
 #include "game/NPC.h"
+#include "graphics/Math.h"
 #include "physics/Collisions.h"
+#include "scene/Interactive.h"
 
 using std::min;
 using std::max;
@@ -94,7 +94,7 @@ void EERIE_PHYSICS_BOX_Launch(EERIE_3DOBJ * obj, EERIE_3D * pos, EERIE_3D * vect
 
 	float surface = 0.f;
 
-	for (int i = 0; i < obj->facelist.size(); i++)
+	for (size_t i = 0; i < obj->facelist.size(); i++)
 	{
 
 		D3DTLVERTEX * ev[3];
@@ -814,69 +814,7 @@ bool IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, long
 
  
 EERIEPOLY * LAST_COLLISION_POLY = NULL;
-bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long source, long * validd)
-{
-	bool ret = true;
-	long px, pz;
-	float x = obj->pbox->vert[0].pos.x;
-	px = x * ACTIVEBKG->Xmul;
-	float z = obj->pbox->vert[0].pos.z;
-	pz = z * ACTIVEBKG->Zmul;
-	long ix, iz, ax, az;
-	long n = obj->pbox->radius * ( 1.0f / 100 );
-	n = min(2L, n + 1);
-	ix = max(px - n, 0L);
-	ax = min(px + n, ACTIVEBKG->Xsize - 1L);
-	iz = max(pz - n, 0L);
-	az = min(pz + n, ACTIVEBKG->Zsize - 1L);
-	LAST_COLLISION_POLY = NULL;
-	EERIEPOLY * ep;
-	EERIE_BKG_INFO * eg;
 
-
-	for (pz = iz; pz <= az; pz++)
-		for (px = ix; px <= ax; px++)
-		{
-			eg = &ACTIVEBKG->Backg[px+pz*ACTIVEBKG->Xsize];
-
-			for (long k = 0; k < eg->nbpoly; k++)
-			{
-				ep = &eg->polydata[k];
-
-				if ( (ep->area > 190.f)
-				    &&	(!(ep->type & (POLY_WATER)))
-				    &&	(!(ep->type & (POLY_TRANS)))
-				    &&	(!(ep->type & (POLY_NOCOL)))
-				)
-				{
-					if ((EEDistance3D(&ep->center, &obj->pbox->vert[0].pos) > obj->pbox->radius + 75.f)
-					        &&	(EEDistance3D((EERIE_3D *)&ep->v[0], &obj->pbox->vert[0].pos) > obj->pbox->radius + 55.f)
-					        &&	(EEDistance3D((EERIE_3D *)&ep->v[1], &obj->pbox->vert[0].pos) > obj->pbox->radius + 55.f)
-					        &&	(EEDistance3D((EERIE_3D *)&ep->v[2], &obj->pbox->vert[0].pos) > obj->pbox->radius + 55.f))
-						continue;
-
-					if (IsObjectVertexCollidingPoly(obj, ep, -1, NULL)) 
-					{
-						LAST_COLLISION_POLY = ep;
-
-						if (ep->type & POLY_METAL) CUR_COLLISION_MATERIAL = MATERIAL_METAL;
-						else if (ep->type & POLY_WOOD) CUR_COLLISION_MATERIAL = MATERIAL_WOOD;
-						else if (ep->type & POLY_STONE) CUR_COLLISION_MATERIAL = MATERIAL_STONE;
-						else if (ep->type & POLY_GRAVEL) CUR_COLLISION_MATERIAL = MATERIAL_GRAVEL;
-						else if (ep->type & POLY_WATER) CUR_COLLISION_MATERIAL = MATERIAL_WATER;
-						else if (ep->type & POLY_EARTH) CUR_COLLISION_MATERIAL = MATERIAL_EARTH;
-						else CUR_COLLISION_MATERIAL = MATERIAL_STONE;
-
-						ret = false;
-						return false;
-					}
-				}
-			}
-		}
-
-	return ret;
-}
- 
 //*************************************************************************************
 //*************************************************************************************
 bool IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long source)
@@ -913,63 +851,10 @@ bool IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long 
 
 	return true;
 }
- 
-extern bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source);
-extern long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source);
-
-//*************************************************************************************
-//*************************************************************************************
-
-long EERIE_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source)
-{
-	return ARX_PHYSICS_BOX_ApplyModel(obj, framediff, rubber, flags, source);
-	long ret = 0;
-
-	if (obj->pbox->active == 2) return ret;
-
-	if (framediff == 0.f) return ret;
-
-	PHYSVERT * pv;
-
-	// Memorizes initpos
-	for (long k = 0; k < obj->pbox->nb_physvert; k++)
-	{
-		pv = &obj->pbox->vert[k];
-		pv->temp.x = pv->pos.x;
-		pv->temp.y = pv->pos.y;
-		pv->temp.z = pv->pos.z;
-	}
-
-	float timing = framediff * rubber * ( 1.0f / 50 );
-
-	while (timing > 0.f)
-	{
-		EERIE_PHYSICS_BOX_ComputeForces(obj);
-
-		if (!ARX_EERIE_PHYSICS_BOX_Compute(obj, min(0.08f, timing), rubber, flags, source))
-			ret = 1;
-
-		timing -= 0.08f;
-	}
-
-
-	if (obj->pbox->stopcount < 16) return ret;
-
-	obj->pbox->active = 2;
-	obj->pbox->stopcount = 0;
-
-	if (ValidIONum(source))
-	{
-		inter.iobj[source]->soundcount = 0;
-		inter.iobj[source]->ioflags &= ~IO_NO_NPC_COLLIDE;
-	}
-
-	return ret;
-}
 
 // Debug function used to show the physical box of an object
-void EERIE_PHYSICS_BOX_Show(EERIE_3DOBJ * obj, EERIE_3D * pos)
-{
+void EERIE_PHYSICS_BOX_Show(EERIE_3DOBJ * obj) {
+	
 	if (DEBUGNPCMOVE)
 	{
 
@@ -1054,7 +939,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 
 	for (size_t k = 0; k < obj->vertexlist.size(); k++)
 	{
-		if (k == obj->origin) continue;
+		if (k == (size_t)obj->origin) continue;
 
 		cubmin.x = min(cubmin.x, obj->vertexlist[k].v.x);
 		cubmin.y = min(cubmin.y, obj->vertexlist[k].v.y);
@@ -1110,7 +995,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 
 		for (size_t k = 0; k < obj->vertexlist.size(); k++)
 		{
-			if (k == obj->origin) continue;
+			if (k == (size_t)obj->origin) continue;
 
 			EERIE_3D curr;
 			memcpy(&curr, &obj->vertexlist[k].v, sizeof(EERIE_3D));
@@ -1163,7 +1048,7 @@ void EERIE_PHYSICS_BOX_Create(EERIE_3DOBJ * obj)
 
 		for (size_t k = 0; k < obj->vertexlist.size(); k++)
 		{
-			if (k == obj->origin) continue;
+			if (k == (size_t)obj->origin) continue;
 
 			EERIE_3D curr;
 			memcpy(&curr, &obj->vertexlist[k].v, sizeof(EERIE_3D));

@@ -53,24 +53,30 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //																					//
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved						//
 //////////////////////////////////////////////////////////////////////////////////////
+
 #include "graphics/data/Mesh.h"
 
 #include <cstdlib>
+#include <sstream>
+#include <iomanip>
+#include <cstdio>
 
-#include "scene/Light.h"
-#include "scene/Object.h"
-#include "graphics/data/Texture.h"
-#include "graphics/Draw.h"
-#include "graphics/GraphicsUtility.h"
-#include "animation/Animation.h"
-#include "physics/Anchors.h"
+#include "ai/PathFinder.h"
 #include "ai/PathFinderManager.h"
 
-#include "graphics/particle/ParticleEffects.h"
+#include "animation/Animation.h"
+
 #include "core/Time.h"
-#include "scene/Scene.h"
+
+#include "game/Player.h"
+
 #include "gui/MenuWidgets.h"
-#include "ai/PathFinder.h"
+
+#include "graphics/Draw.h"
+#include "graphics/GraphicsUtility.h"
+#include "graphics/GraphicsEnum.h"
+#include "graphics/data/Texture.h"
+#include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
@@ -78,6 +84,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 #include "io/Blast.h"
 #include "io/Implode.h"
+
+#include "physics/Anchors.h"
+#include "physics/Physics.h"
+
+#include "scene/Scene.h"
+#include "scene/Light.h"
+#include "scene/Object.h"
+#include "scene/Interactive.h"
 
 using std::min;
 using std::max;
@@ -99,7 +113,7 @@ long COMPUTE_PORTALS = 1;
 
 bool IntersectLinePlane(EERIE_3D * l1, EERIE_3D * l2, EERIEPOLY * ep, EERIE_3D * intersect);
  
-int RayIn3DPolyNoCull(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY * epp);
+static int RayIn3DPolyNoCull(EERIE_3D * orgn, EERIE_3D * dest, EERIEPOLY * epp);
 
 D3DMATRIX ProjectionMatrix;
 
@@ -243,7 +257,7 @@ bool RayCollidingPoly(EERIE_3D * orgn, EERIE_3D * dest, EERIEPOLY * ep, EERIE_3D
 {
 	if (IntersectLinePlane(orgn, dest, ep, hit))
 	{
-		if (RayIn3DPolyNoCull(orgn, dest, hit, ep)) return true;
+		if (RayIn3DPolyNoCull(orgn, dest, ep)) return true;
 	}
 
 	return false;
@@ -279,14 +293,10 @@ bool IntersectLinePlane(EERIE_3D * l1, EERIE_3D * l2, EERIEPOLY * ep, EERIE_3D *
 	return false;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest, unsigned int destSize)
-{
+long MakeTopObjString(INTERACTIVE_OBJ * io,  string & dest) {
+	
 	EERIE_3D boxmin;
 	EERIE_3D boxmax;
-	const int tempSize = 128 ;
-	long i;
 
 	if (io == NULL) return -1;
 
@@ -297,7 +307,7 @@ long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest, unsigned int dest
 	boxmax.y = -999999999.f;
 	boxmax.z = -999999999.f;
 
-	for (i = 0; i < io->obj->vertexlist.size(); i++)
+	for (size_t i = 0; i < io->obj->vertexlist.size(); i++)
 	{
 		boxmin.x = std::min(boxmin.x, io->obj->vertexlist3[i].v.x);
 		boxmin.y = std::min(boxmin.y, io->obj->vertexlist3[i].v.y);
@@ -323,7 +333,7 @@ long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest, unsigned int dest
 		}
 	}
 
-	for (i = 0; i < inter.nbmax; i++)
+	for (long i = 0; i < inter.nbmax; i++)
 	{
 		if (inter.iobj[i] != NULL)
 		{
@@ -338,17 +348,15 @@ long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest, unsigned int dest
 						{
 							if (EEfabs(inter.iobj[i]->pos.y - boxmin.y) < 40.f)
 							{
-//							todo: string stuff
-//							int iResult;
-//							char temp[tempSize];
-//							iResult = strcat_s(dest,destSize," ");
-//							assert (iResult == 0);
-//							iResult = strncpy_s(temp, tempSize, GetName(inter.iobj[i]->filename), strlen(GetName(inter.iobj[i]->filename)));
-//							assert (iResult == 0);
-//							iResult = sprintf_s(temp,tempSize,"%s_%04d",temp,inter.iobj[i]->ident) ;
-//							assert (iResult >= 0);
-//							iResult = strcat_s(dest,destSize,temp);
-//							assert (iResult == 0);
+								
+								dest += " ";
+								
+								std::stringstream ss;
+								ss << GetName(inter.iobj[i]->filename) << '_'
+								   << std::setfill('0') << std::setw(4) << inter.iobj[i]->ident;
+								
+								dest += ss.str();
+								
 							}
 						}
 
@@ -592,101 +600,77 @@ EERIEPOLY * CheckInPolyPrecis(float x, float y, float z, float * needY)
 	return found;
 }
 
-EERIEPOLY * EECheckInPoly(EERIE_3D * pos, float * needY)
-{
+EERIEPOLY * EECheckInPoly(const EERIE_3D * pos, float * needY) {
 	return CheckInPoly(pos->x, pos->y, pos->z, needY);
 }
-//*************************************************************************************
-//*************************************************************************************
 
-EERIEPOLY * CheckTopPoly(float x, float y, float z)
-{
-	long px, pz;
-	px = x * ACTIVEBKG->Xmul;
-
-	if (px >= ACTIVEBKG->Xsize)
-	{
+static FAST_BKG_DATA * getFastBackgroundData(float x, float z) {
+	
+	long px = x * ACTIVEBKG->Xmul;
+	if(px < 0 || px >= ACTIVEBKG->Xsize) {
 		return NULL;
 	}
-
-	if (px < 0)
-	{
+	
+	long pz = z * ACTIVEBKG->Zmul;
+	if(pz < 0 || pz >= ACTIVEBKG->Zsize) {
 		return NULL;
 	}
+	
+	return &ACTIVEBKG->fastdata[px][pz];
+}
 
-	pz = z * ACTIVEBKG->Zmul;
-
-	if (pz >= ACTIVEBKG->Zsize)
-	{
-		return NULL;
+EERIEPOLY * CheckTopPoly(float x, float y, float z) {
+	
+	FAST_BKG_DATA * feg = getFastBackgroundData(x, z);
+	if(!feg) {
+		return false;
 	}
-
-	if (pz < 0)
-	{
-		return NULL;
-	}
-
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
+	
 	EERIEPOLY * found = NULL;
-
-	feg = &ACTIVEBKG->fastdata[px][pz];
-
-	for (long k = 0; k < feg->nbpolyin; k++)
-	{
-		ep = feg->polyin[k];
-		ep = feg->polyin[k];
-
-		if ((!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)))
-				&&	(ep->min.y < y)
-				&&	(x >= ep->min.x) && (x <= ep->max.x)
-				&&	(z >= ep->min.z) && (z <= ep->max.z)
-				&&	(PointIn2DPolyXZ(ep, x, z)))
-		{
-			if ((EEfabs(ep->max.y - ep->min.y) > 50.f) &&	(y - ep->center.y < 60.f)) continue;
-
-			if (ep->tex != NULL)
-				if (found == NULL) found = ep;
-				else if (ep->min.y > found->min.y) found = ep;
+	for (long k = 0; k < feg->nbpolyin; k++) {
+		
+		EERIEPOLY * ep = feg->polyin[k];
+		
+		if((!(ep->type & (POLY_WATER | POLY_TRANS | POLY_NOCOL)))
+		   && (ep->min.y < y)
+		   && (x >= ep->min.x) && (x <= ep->max.x)
+		   && (z >= ep->min.z) && (z <= ep->max.z)
+		   && (PointIn2DPolyXZ(ep, x, z))) {
+			
+			if((EEfabs(ep->max.y - ep->min.y) > 50.f) && (y - ep->center.y < 60.f)) {
+				continue;
+			}
+			
+			if(ep->tex != NULL) {
+				if(found == NULL || ep->min.y > found->min.y) {
+					found = ep;
+				}
+			}
 		}
 	}
-
+	
 	return found;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-
-bool IsAnyPolyThere(float x, float z)
-{
-	long px, pz;
-	px = x * ACTIVEBKG->Xmul;
-
-	if (px >= ACTIVEBKG->Xsize)			return false;
-
-	if (px < 0)							return false;
-
-	pz = z * ACTIVEBKG->Zmul;
-
-	if (pz >= ACTIVEBKG->Zsize)			return false;
-
-	if (pz < 0)							return false;
-
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
-	feg = &ACTIVEBKG->fastdata[px][pz];
-
-	for (long k = 0; k < feg->nbpolyin; k++)
-	{
-		ep = feg->polyin[k];
-
-		if (PointIn2DPolyXZ(ep, x, z)) return true;
+bool IsAnyPolyThere(float x, float z) {
+	
+	FAST_BKG_DATA * feg = getFastBackgroundData(x, z);
+	if(!feg) {
+		return false;
 	}
-
+	
+	for(long k = 0; k < feg->nbpolyin; k++) {
+		
+		EERIEPOLY * ep = feg->polyin[k];
+		
+		if(PointIn2DPolyXZ(ep, x, z)) {
+			return true;
+		}
+	}
+	
 	return false;
 }
-//*************************************************************************************
-//*************************************************************************************
+
 float FirstPolyPosY(float x, float z)
 {
 	EERIEPOLY * ep = GetMinPoly(x, 0.f, z);
@@ -695,193 +679,107 @@ float FirstPolyPosY(float x, float z)
 
 	return ep->max.y;
 }
-//*************************************************************************************
-//*************************************************************************************
-EERIEPOLY * GetMinPoly(float x, float y, float z)
-{
-	long px, pz;
-	px = x * ACTIVEBKG->Xmul;
 
-	if (px >= ACTIVEBKG->Xsize)			return NULL;
-
-	if (px < 0)							return NULL;
-
-	pz = z * ACTIVEBKG->Zmul;
-
-	if (pz >= ACTIVEBKG->Zsize)			return NULL;
-
-	if (pz < 0)							return NULL;
-
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
-	EERIEPOLY * found = NULL;
-	float foundy;
-	float ret;
+EERIEPOLY * GetMinPoly(float x, float y, float z) {
+	
+	FAST_BKG_DATA * feg = getFastBackgroundData(x, z);
+	if(!feg) {
+		return NULL;
+	}
+	
 	EERIE_3D pos;
 	pos.x = x;
 	pos.y = y;
 	pos.z = z;
-
-	feg = &ACTIVEBKG->fastdata[px][pz];
-
-	for (long k = 0; k < feg->nbpolyin; k++)
-	{
-		ep = feg->polyin[k];
-
-		if (ep->type & POLY_WATER) continue;
-
-		if (ep->type & POLY_TRANS) continue;
-
-		if (ep->type & POLY_NOCOL) continue;
-
-		if (PointIn2DPolyXZ(ep, x, z))
-		{
-			if (GetTruePolyY(ep, &pos, &ret))
-			{
-				if (((found != NULL) && (ret > foundy))
-						|| (found == NULL))
-				{
+	
+	EERIEPOLY * found = NULL;
+	float foundy;
+	for (long k = 0; k < feg->nbpolyin; k++) {
+		
+		EERIEPOLY * ep = feg->polyin[k];
+		
+		if(ep->type & POLY_WATER) continue;
+		
+		if(ep->type & POLY_TRANS) continue;
+		
+		if(ep->type & POLY_NOCOL) continue;
+		
+		if(PointIn2DPolyXZ(ep, x, z)) {
+			float ret;
+			if(GetTruePolyY(ep, &pos, &ret)) {
+				if(!found || ret > foundy) {
 					found = ep;
 					foundy = ret;
 				}
 			}
 		}
 	}
-
+	
 	return found;
 }
-//*************************************************************************************
-//*************************************************************************************
-EERIEPOLY * GetMaxPoly(float x, float y, float z)
-{
-	long px, pz;
-	px = x * ACTIVEBKG->Xmul;
 
-	if (px >= ACTIVEBKG->Xsize)			return NULL;
-
-	if (px < 0)							return NULL;
-
-	pz = z * ACTIVEBKG->Zmul;
-
-	if (pz >= ACTIVEBKG->Zsize)			return NULL;
-
-	if (pz < 0)							return NULL;
-
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
-	EERIEPOLY * found = NULL;
-	float foundy;
-	float ret;
+EERIEPOLY * GetMaxPoly(float x, float y, float z) {
+	
+	FAST_BKG_DATA * feg = getFastBackgroundData(x, z);
+	if(!feg) {
+		return NULL;
+	}
+	
 	EERIE_3D pos;
 	pos.x = x;
 	pos.y = y;
 	pos.z = z;
-
-	feg = &ACTIVEBKG->fastdata[px][pz];
-
-	for (long k = 0; k < feg->nbpolyin; k++)
-	{
-		ep = feg->polyin[k];
-
-		if (ep->type & POLY_WATER) continue;
-
-		if (ep->type & POLY_TRANS) continue;
-
-		if (ep->type & POLY_NOCOL) continue;
-
-		if (PointIn2DPolyXZ(ep, x, z))
-		{
-			if (GetTruePolyY(ep, &pos, &ret))
-			{
-				if (((found != NULL) && (ret < foundy))
-						|| (found == NULL))
-				{
+	
+	EERIEPOLY * found = NULL;
+	float foundy;
+	for(long k = 0; k < feg->nbpolyin; k++) {
+		
+		EERIEPOLY * ep = feg->polyin[k];
+		
+		if(ep->type & POLY_WATER) continue;
+		
+		if(ep->type & POLY_TRANS) continue;
+		
+		if(ep->type & POLY_NOCOL) continue;
+		
+		if(PointIn2DPolyXZ(ep, x, z)) {
+			float ret;
+			if(GetTruePolyY(ep, &pos, &ret)) {
+				if(!found || ret < foundy) {
 					found = ep;
 					foundy = ret;
 				}
 			}
 		}
 	}
-
+	
 	return found;
 }
-//*************************************************************************************
-//*************************************************************************************
-EERIEPOLY * IsUnderWater(float x, float y, float z)
-{
-	long px, pz;
-	px = x * ACTIVEBKG->Xmul;
 
-	if (px >= ACTIVEBKG->Xsize)		return NULL;
-
-	if (px < 0)						return NULL;
-
-	pz = z * ACTIVEBKG->Zmul;
-
-	if (pz >= ACTIVEBKG->Zsize)		return NULL;
-
-	if (pz < 0)						return NULL;
-
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
-	EERIEPOLY * found = NULL;
-	feg = &ACTIVEBKG->fastdata[px][pz];
-
-	for (long k = 0; k < feg->nbpolyin; k++)
-	{
-		ep = feg->polyin[k];
-
-		if (ep->type & POLY_WATER)
-		{
-			if (ep->max.y < y)
-				if (PointIn2DPolyXZ(ep, x, z))
-				{
-					if ((found == NULL) || ((found != NULL) && (ep->max.y < found->max.y)))
-						found = ep;
-				}
-		}
+EERIEPOLY * EEIsUnderWater(const EERIE_3D * pos) {
+	
+	FAST_BKG_DATA * feg = getFastBackgroundData(pos->x, pos->z);
+	if(!feg) {
+		return NULL;
 	}
-
-	return found;
-}
-EERIEPOLY * EEIsUnderWater(EERIE_3D * pos)
-{
-	long px, pz;
-	px = pos->x * ACTIVEBKG->Xmul;
-
-	if (px >= ACTIVEBKG->Xsize)		return NULL;
-
-	if (px < 0)						return NULL;
-
-	pz = pos->z * ACTIVEBKG->Zmul;
-
-	if (pz >= ACTIVEBKG->Zsize)		return NULL;
-
-	if (pz < 0)						return NULL;
-
-	EERIEPOLY * ep;
-	FAST_BKG_DATA * feg;
+	
 	EERIEPOLY * found = NULL;
-	feg = &ACTIVEBKG->fastdata[px][pz];
-
-	for (long k = 0; k < feg->nbpolyin; k++)
-	{
-		ep = feg->polyin[k];
-
-		if (ep->type & POLY_WATER)
-		{
-			if (ep->max.y < pos->y)
-				if (PointIn2DPolyXZ(ep, pos->x, pos->z))
-				{
-					if ((found == NULL) || ((found != NULL) && (ep->max.y < found->max.y)))
-						found = ep;
+	for(short k = 0; k < feg->nbpolyin; k++) {
+		
+		EERIEPOLY * ep = feg->polyin[k];
+		
+		if(ep->type & POLY_WATER) {
+			if(ep->max.y < pos->y && PointIn2DPolyXZ(ep, pos->x, pos->z)) {
+				if(!found || ep->max.y < found->max.y) {
+					found = ep;
 				}
+			}
 		}
 	}
 	return found;
 }
 
-bool GetTruePolyY(EERIEPOLY * ep, EERIE_3D * pos, float * ret)
+bool GetTruePolyY(const EERIEPOLY * ep, const EERIE_3D * pos, float * ret)
 {
 	register EERIE_3D	n, s21, s31;
 
@@ -1079,7 +977,7 @@ void EE_RTP(D3DTLVERTEX * in, D3DTLVERTEX * out)
 //*************************************************************************************
 __inline void camEE_RTP(D3DTLVERTEX * in, D3DTLVERTEX * out, EERIE_CAMERA * cam)
 {
-	register D3DTLVERTEX tout;
+	D3DTLVERTEX tout;
 	out->sx = in->sx - cam->pos.x;
 	out->sy = in->sy - cam->pos.y;
 	out->sz = in->sz - cam->pos.z;
@@ -1360,7 +1258,7 @@ float CEDRIC_PtIn2DPolyProjV2(EERIE_3DOBJ * obj, EERIE_FACE * ef, float x, float
 
 //*************************************************************************************
 //*************************************************************************************
-int PointIn2DPolyXZ(EERIEPOLY * ep, float x, float z)
+int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z)
 {
 	register int i, j, c = 0, d = 0;
 
@@ -1414,8 +1312,7 @@ extern EERIE_CAMERA raycam;
 //*************************************************************************************
 //*************************************************************************************
 
-int RayIn3DPolyNoCull(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY * epp)
-{
+static int RayIn3DPolyNoCull(EERIE_3D * orgn, EERIE_3D * dest, EERIEPOLY * epp) {
 
 	EERIEPOLY ep;
 	memcpy(&ep, epp, sizeof(EERIEPOLY));
@@ -1645,7 +1542,7 @@ int EERIELaunchRay3(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY
 							{
 								voidlast = 0;
 
-								if (RayIn3DPolyNoCull(orgn, dest, hit, ep))
+								if (RayIn3DPolyNoCull(orgn, dest, ep))
 								{
 									hit->x = x;
 									hit->y = y;
@@ -2184,11 +2081,8 @@ void ComputeRoomDistance()
 		}
 	}
 
-	PathFinder pathfinder(NbRoomDistance, ad, 0, NULL, 0, NULL);
+	PathFinder pathfinder(NbRoomDistance, ad, 0, NULL);
 
-	long retnum;
-	unsigned short * rl;
-	rl = NULL;
 	long BLOCKED;
 	BLOCKED = 0;
 
@@ -2201,17 +2095,16 @@ void ComputeRoomDistance()
 				SetRoomDistance(i, j, -1, NULL, NULL);
 				continue;
 			}
+			
+			PathFinder::Result rl;
 
-			unsigned char found(0);
-			found = pathfinder.Move(MINOS_REGULAR,
-									i, j,
-									&retnum, &rl);
+			bool found = pathfinder.move(i, j, rl);
 
 			if (found)
 			{
 				float dist = 0.f;
 
-				for (long id = 1; id < retnum - 1; id++)
+				for (size_t id = 1; id < rl.size() - 1; id++)
 				{
 					dist += TRUEEEDistance3D(&ad[rl[id-1]].pos, &ad[rl[id]].pos);
 				}
@@ -2220,12 +2113,10 @@ void ComputeRoomDistance()
 
 				float old = GetRoomDistance(i, j, NULL, NULL);
 
-				if (((dist < old) || (old < 0.f)) && retnum >= 2)
-					SetRoomDistance(i, j, dist, &ad[rl[1]].pos, &ad[rl[retnum-2]].pos);
+				if (((dist < old) || (old < 0.f)) && rl.size() >= 2)
+					SetRoomDistance(i, j, dist, &ad[rl[1]].pos, &ad[rl[rl.size()-2]].pos);
 			}
 
-			free(rl);
-			rl = NULL;
 		}
 
 	// Don't use this for contiguous rooms !
@@ -2559,7 +2450,7 @@ void PrepareBackgroundNRMLs()
 //*************************************************************************************
 //*************************************************************************************
 
-void DeclareEGInfo(float x, float y, float z)
+void DeclareEGInfo(float x, float z)
 {
 	long posx = x * ACTIVEBKG->Xmul;
 
@@ -3041,10 +2932,10 @@ int BkgAddPoly(EERIEPOLY * ep, EERIE_3DOBJ * eobj)
 
 	eg = &ACTIVEBKG->Backg[posx+posz*ACTIVEBKG->Xsize];
 
-	DeclareEGInfo(cx * ( 1.0f / 3 ), cy * ( 1.0f / 3 ), cz * ( 1.0f / 3 ));
-	DeclareEGInfo(ep->v[0].sx, ep->v[0].sy, ep->v[0].sz);
-	DeclareEGInfo(ep->v[1].sx, ep->v[1].sy, ep->v[1].sz);
-	DeclareEGInfo(ep->v[2].sx, ep->v[2].sy, ep->v[2].sz);
+	DeclareEGInfo(cx * ( 1.0f / 3 ), cz * ( 1.0f / 3 ));
+	DeclareEGInfo(ep->v[0].sx, ep->v[0].sz);
+	DeclareEGInfo(ep->v[1].sx, ep->v[1].sz);
+	DeclareEGInfo(ep->v[2].sx, ep->v[2].sz);
 
 	cx *= ( 1.0f / 3 );
 	cy *= ( 1.0f / 3 );
@@ -3415,9 +3306,9 @@ void DrawEERIEObjEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	if (eobj == NULL) return;
 
 	float    Xcos, Ycos, Zcos, Xsin, Ysin, Zsin;
-	register D3DTLVERTEX v;
-	register D3DTLVERTEX rv;
-	register D3DTLVERTEX vert_list[4];
+	D3DTLVERTEX v;
+	D3DTLVERTEX rv;
+	D3DTLVERTEX vert_list[4];
 
 
 	Zsin = radians(angle->a);
@@ -3497,9 +3388,9 @@ void DrawEERIEObjExEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	if (eobj == NULL) return;
 
 	float    Xcos, Ycos, Zcos, Xsin, Ysin, Zsin;
-	register D3DTLVERTEX v;
-	register D3DTLVERTEX rv;
-	register D3DTLVERTEX vert_list[4];
+	D3DTLVERTEX v;
+	D3DTLVERTEX rv;
+	D3DTLVERTEX vert_list[4];
 
 
 	Zsin = radians(angle->a);
@@ -3512,7 +3403,7 @@ void DrawEERIEObjExEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 	Zcos = (float)EEcos(Zsin);
 	Zsin = (float)EEsin(Zsin);
 
-	for (long i = 0; i < eobj->vertexlist.size(); i++)
+	for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 	{
 		v.sx = eobj->vertexlist[i].v.x * scale->x;
 		v.sy = eobj->vertexlist[i].v.y * scale->y;
@@ -3615,13 +3506,12 @@ void FinishAnim(INTERACTIVE_OBJ * io, ANIM_HANDLE * eanim)
 
 bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj, long idx, long grs)
 {
-	long ii;
-
+	
 	if (eobj == NULL) return false;
 
-	for (long i = 0; i < eobj->grouplist[grs].indexes.size(); i++)
+	for (size_t i = 0; i < eobj->grouplist[grs].indexes.size(); i++)
 	{
-		ii = (long)eobj->grouplist[grs].indexes[i];
+		long ii = eobj->grouplist[grs].indexes[i];
 
 		if (ii == idx) return true;
 	}
@@ -4083,13 +3973,13 @@ bool FastSceneLoad(const char * partial_path)
 				}
 
 				ep2->v[0].rhw = dist;
-				DeclareEGInfo(ep2->center.x, ep2->center.y, ep2->center.z);
-				DeclareEGInfo(ep2->v[0].sx, ep2->v[0].sy, ep2->v[0].sz);
-				DeclareEGInfo(ep2->v[1].sx, ep2->v[1].sy, ep2->v[1].sz);
-				DeclareEGInfo(ep2->v[2].sx, ep2->v[2].sy, ep2->v[2].sz);
+				DeclareEGInfo(ep2->center.x, ep2->center.z);
+				DeclareEGInfo(ep2->v[0].sx, ep2->v[0].sz);
+				DeclareEGInfo(ep2->v[1].sx, ep2->v[1].sz);
+				DeclareEGInfo(ep2->v[2].sx, ep2->v[2].sz);
 
 				if (ep->type & POLY_QUAD)
-					DeclareEGInfo(ep2->v[3].sx, ep2->v[3].sy, ep2->v[3].sz);
+					DeclareEGInfo(ep2->v[3].sx, ep2->v[3].sz);
 			}
 
 			if (fsi->nbianchors <= 0)
@@ -4272,12 +4162,10 @@ bool FastSceneLoad(const char * partial_path)
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
 
-	EERIE_BACKGROUND * eb;
 	EERIEPOLY_Compute_PolyIn();
 	PROGRESS_BAR_COUNT += 3.f;
 	LoadLevelScreen();
-	eb = ACTIVEBKG;
-	EERIE_PATHFINDER_Create(eb);
+	EERIE_PATHFINDER_Create();
 	EERIE_PORTAL_Blend_Portals_And_Rooms();
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
@@ -4294,6 +4182,8 @@ bool FastSceneLoad(const char * partial_path)
 }
 
 bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms) {
+	
+	(void)ms; // TODO why is this never used?
 	
 	std::string path;
 	path = "Game\\";
@@ -4644,7 +4534,7 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms) {
 		return false;
 	}
 
-	if(FileWrite(handle, compressed, compressedSize) != compressedSize) {
+	if((size_t)FileWrite(handle, compressed, compressedSize) != compressedSize) {
 		FileClose(handle);
 		free(dat);
 		return false;
@@ -4659,11 +4549,6 @@ error:
 	LogError << ("FTL Memory Problem...");
 	free(dat);
 	return false;
-}
-
-void WriteMSEData(char * path, EERIE_MULTI3DSCENE * ms)
-{
-	return;
 }
 
 //*************************************************************************************
@@ -4705,7 +4590,6 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms)
 
 		if (NEED_ANCHORS)	AnchorData_Create(ACTIVEBKG);
 
-		WriteMSEData(fic, ms);
 		FastSceneSave(ftemp.c_str(), ms);
 		ComputePortalVertexBuffer();
 		ComputeRoomDistance();
@@ -4718,7 +4602,7 @@ void SceneAddMultiScnToBackground(EERIE_MULTI3DSCENE * ms)
 
 //*************************************************************************************
 //*************************************************************************************
-void EERIEAddPolyToBackground(D3DTLVERTEX * vert, D3DTLVERTEX * vert2, TextureContainer * tex, long render, float transval, EERIE_3DOBJ * eobj)
+static void EERIEAddPolyToBackground(D3DTLVERTEX * vert2, TextureContainer * tex, long render, float transval, EERIE_3DOBJ * eobj)
 {
 	EERIEPOLY ep;
 
@@ -4795,7 +4679,6 @@ void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 	float       Xcos, Ycos, Zcos, Xsin, Ysin, Zsin;
 	EERIE_3D      p, rp;
 
-	long i;
 	D3DTLVERTEX vlist[3];
 	Zsin = radians(eobj->angle.a);
 	Xcos = (float)EEcos(Zsin);
@@ -4807,7 +4690,7 @@ void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 	Zcos = (float)EEcos(Zsin);
 	Zsin = (float)EEsin(Zsin);
 
-	for (i = 0; i < eobj->vertexlist.size(); i++)
+	for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 	{
 		//Local Transform
 		p.x = eobj->vertexlist[i].v.x - eobj->point0.x;
@@ -4832,7 +4715,7 @@ void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 				EERIEPOLY ep;
 				EERIEPOLY epp;
 
-				for (i = 0; i < eobj->facelist.size(); i++)
+				for (size_t i = 0; i < eobj->facelist.size(); i++)
 				{
 					for (long kk = 0; kk < 3; kk++)
 					{
@@ -4851,7 +4734,9 @@ void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 					else break;
 				}
 
-				if (i > 0) EERIE_PORTAL_Poly_Add(&epp, eobj->name.c_str(), -1, -1, -1);
+				if(!eobj->facelist.empty()) {
+					EERIE_PORTAL_Poly_Add(&epp, eobj->name.c_str(), -1, -1, -1);
+				}
 
 				return;
 			}
@@ -4885,14 +4770,14 @@ void SceneAddObjToBackground(EERIE_3DOBJ * eobj)
 			vlist[2].tv = eobj->facelist[i].v[2];
 
 			if (eobj->facelist[i].texid >= 0)
-				EERIEAddPolyToBackground(NULL,vlist,eobj->texturecontainer[eobj->facelist[i].texid],eobj->facelist[i].facetype,eobj->facelist[i].transval,eobj);
+				EERIEAddPolyToBackground(vlist,eobj->texturecontainer[eobj->facelist[i].texid],eobj->facelist[i].facetype,eobj->facelist[i].transval,eobj);
 		}
 		else
 		{
 			vlist[0].color = 0xFFFFFFFF;
 			vlist[1].color = 0xFFFFFFFF;
 			vlist[2].color = 0xFFFFFFFF;
-			EERIEAddPolyToBackground(NULL, vlist, NULL, eobj->facelist[i].facetype, eobj->facelist[i].transval, eobj);
+			EERIEAddPolyToBackground(vlist, NULL, eobj->facelist[i].facetype, eobj->facelist[i].transval, eobj);
 		}
 	}
 }

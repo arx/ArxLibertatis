@@ -212,27 +212,25 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-// Remove if no longer needed
-/*#include <algorithm>
-#include <fstream>
-#include <sstream>
-#include <vector>
-*/
-#include "core/Core.h"
 #include "graphics/effects/SpellEffects.h"
+
+#include <climits>
+
+#include "core/Core.h"
+#include "game/Player.h"
 #include "graphics/Draw.h"
 
-//-----------------------------------------------------------------------------
+
 CSpellFx::CSpellFx() :
-	lLightId(-1),
+	fBeta(0),
 	fManaCostToLaunch(10),
 	fManaCostPerSecond(10),
-	fBeta(0)
+	lLightId(-1),
+	lSrc(-1),
+	spellinstance(-1)
 {
 	SetDuration(1000);
 	SetAngle(fBeta);
-	lSrc = -1;
-	spellinstance = -1;
 };
 
 //-----------------------------------------------------------------------------
@@ -277,89 +275,9 @@ void CSpellFx::Update(float _fParam)
 	Update(ARX_CLEAN_WARN_CAST_ULONG(_fParam));
 }
 
-
 //-----------------------------------------------------------------------------
-void Draw3DLineTex(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D s, EERIE_3D e, float fSize, int color)
-{
-	float fBeta = MAKEANGLE(player.angle.b);
-	float zz = fSize; // size
-	float xx = (float)(fSize * cos(radians(fBeta)));
-
-	D3DTLVERTEX v[4];
-	D3DTLVERTEX v2[4];
-
-	v2[0].color = v2[1].color = v2[2].color = v2[3].color = color;
-
-	// version 2 faces
-	v2[0].tu = 0;
-	v2[0].tv = 0;
-	v2[1].tu = 1;
-	v2[1].tv = 0;
-	v2[2].tu = 1;
-	v2[2].tv = 1;
-	v2[3].tu = 0;
-	v2[3].tv = 1;
-
-	v[0].sx = s.x;
-	v[0].sy = s.y + zz;
-	v[0].sz = s.z;
-
-	v[1].sx = s.x;
-	v[1].sy = s.y - zz;
-	v[1].sz = s.z;
-
-	v[2].sx = e.x;
-	v[2].sy = e.y - zz;
-	v[2].sz = e.z;
-
-	v[3].sx = e.x;
-	v[3].sy = e.y + zz;
-	v[3].sz = e.z;
+void Draw3DLineTex(EERIE_3D s, EERIE_3D e, int color, float fStartSize, float fEndSize) {
 	
-	EE_RT2(&v[0], &v2[0]);
-	EE_RT2(&v[1], &v2[1]);
-	EE_RT2(&v[2], &v2[2]);
-	EE_RT2(&v[3], &v2[3]);
-	ARX_DrawPrimitive_SoftClippZ(&v2[0],
-	                             &v2[1],
-	                             &v2[2]);
-	ARX_DrawPrimitive_SoftClippZ(&v2[0],
-	                             &v2[2],
-	                             &v2[3]);
-
-	zz *= (float) sin(radians(fBeta));
-
-	v[0].sx = s.x + xx;
-	v[0].sy = s.y;
-	v[0].sz = s.z + zz;
-
-	v[1].sx = s.x - xx;
-	v[1].sy = s.y;
-	v[1].sz = s.z - zz;
-
-	v[2].sx = e.x - xx;
-	v[2].sy = e.y;
-	v[2].sz = e.z - zz;
-
-	v[3].sx = e.x + xx;
-	v[3].sy = e.y;
-	v[3].sz = e.z + zz;
-	
-	EE_RT2(&v[0], &v2[0]);
-	EE_RT2(&v[1], &v2[1]);
-	EE_RT2(&v[2], &v2[2]);
-	EE_RT2(&v[3], &v2[3]);
-	ARX_DrawPrimitive_SoftClippZ(&v2[0],
-	                             &v2[1],
-	                             &v2[2]);
-	ARX_DrawPrimitive_SoftClippZ(&v2[0],
-	                             &v2[2],
-	                             &v2[3]);
-}
-
-//-----------------------------------------------------------------------------
-void Draw3DLineTex(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D s, EERIE_3D e, int color, float fStartSize, float fEndSize)
-{
 	float fBeta = MAKEANGLE(player.angle.b);
 	float xxs = (float)(fStartSize * cos(radians(fBeta)));
 	float xxe = (float)(fEndSize * cos(radians(fBeta)));
@@ -440,8 +358,8 @@ void Draw3DLineTex(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D s, EERIE_3D e, int c
 }
 
 //-----------------------------------------------------------------------------
-void Draw3DLineTex2(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D s, EERIE_3D e, float fSize, int color, int color2)
-{
+void Draw3DLineTex2(EERIE_3D s, EERIE_3D e, float fSize, int color, int color2) {
+	
 	float fBeta = MAKEANGLE(player.angle.b);
 	float zz = fSize; 
 	float xx = (float)(fSize * cos(radians(fBeta)));

@@ -25,7 +25,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef DANAE_DEBUGGER_H
 #define DANAE_DEBUGGER_H
 
-//#include <Common.h>
+#include <windef.h>
 
 void DANAE_DEBUGGER_Launch(HWND hWnd);
 void DANAE_DEBUGGER_Update();

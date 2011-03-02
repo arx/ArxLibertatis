@@ -55,64 +55,52 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2010 ARKANE Studios SA. All rights reserved
 /////////////////////////////////////////////////////////////////////////////////////
-#ifndef ARX_COMMON_H
-#define ARX_COMMON_H
 
-/* ---------------------------------------------------------
-						Include
-------------------------------------------------------------*/
+#ifndef ARX_CORE_COMMON_H
+#define ARX_CORE_COMMON_H
 
-// TODO remove these
-#include <climits>
-#include <cstdio>
-#include <cstdarg>
-#include <ctime>
-
-#include <iostream>
-#include <fstream>
-#include <sstream>
 #include <string>
 
-using std::string;
-
-const string arxVersion = "0.1";
+const std::string arxVersion = "0.1";
 
 /* ---------------------------------------------------------
-						Platforms
+                          Platforms
 ------------------------------------------------------------*/
+
 #define	ARX_PLATFORM_UNKNOWN	0
 #define	ARX_PLATFORM_WIN32		1
 #define	ARX_PLATFORM_PS3_PPU	2
 #define	ARX_PLATFORM_LINUX		3
 
 #if defined(__PPU__)
-	#define ARX_PLATFORM		ARX_PLATFORM_PS3_PPU
+	#define ARX_PLATFORM ARX_PLATFORM_PS3_PPU
 #elif defined(_WIN32)
-	#define	ARX_PLATFORM		ARX_PLATFORM_WIN32
+	#define ARX_PLATFORM ARX_PLATFORM_WIN32
 #elif defined(__linux)
-    #define	ARX_PLATFORM		ARX_PLATFORM_LINUX
+	#define ARX_PLATFORM ARX_PLATFORM_LINUX
 #endif
 
 #ifndef ARX_PLATFORM
 	#warning "Unknown target platform"
-	#define	ARX_PLATFORM		ARX_PLATFORM_UNKNOWN
+	#define ARX_PLATFORM ARX_PLATFORM_UNKNOWN
 #endif
 
 /* ---------------------------------------------------------
-						Compilers
+                          Compilers
 ------------------------------------------------------------*/
-#define	ARX_COMPILER_UNKNOWN	0
-#define	ARX_COMPILER_VC9		1
-#define	ARX_COMPILER_VC10		2
-#define	ARX_COMPILER_GCC		3
+
+#define ARX_COMPILER_UNKNOWN 0
+#define ARX_COMPILER_VC9     1
+#define ARX_COMPILER_VC10    2
+#define ARX_COMPILER_GCC     3
 
 #if defined(__GNUC__)
-	#define ARX_COMPILER		ARX_COMPILER_GCC
+	#define ARX_COMPILER ARX_COMPILER_GCC
 #elif defined(_MSC_VER)
 	#if _MSC_VER < 1600
-		#define	ARX_COMPILER	ARX_COMPILER_VC9
+		#define ARX_COMPILER ARX_COMPILER_VC9
 	#elif _MSC_VER < 1700
-		#define	ARX_COMPILER	ARX_COMPILER_VC10
+		#define ARX_COMPILER ARX_COMPILER_VC10
 	#endif
 #endif
 
@@ -137,10 +125,10 @@ const string arxVersion = "0.1";
 
 
 /* ---------------------------------------------------------
-					     Types
+                           Types
 ------------------------------------------------------------*/
 
-typedef signed char         s8;		//  8 bits integer
+typedef signed char         s8;     //  8 bits integer
 typedef unsigned char       u8;     //  8 bits unsigned integer
 
 typedef signed short        s16;    // 16 bits signed integer
@@ -162,34 +150,37 @@ typedef double              f64;    // 64 bits double float
 
 
 /* ---------------------------------------------------------
-						 Break
+                          Break
 ------------------------------------------------------------*/
 
-#define ARXCOMMON_BUFFERSIZE	512
-#define DEBUG_INSIDEAFILE       true
-
 #if ARX_COMPILER_MSVC
-	#define ARX_DEBUG_BREAK()	__debugbreak()
+	#define ARX_DEBUG_BREAK() __debugbreak()
 #elif ARX_COMPILER == ARX_COMPILER_GCC
-	#define ARX_DEBUG_BREAK()	__builtin_trap()
+	#define ARX_DEBUG_BREAK() __builtin_trap()
 #else
+	// TODO we should check for existence of these functions in CMakeLists.txt
 	#define ARX_DEBUG_BREAK()
 #endif
 
 
 /* ---------------------------------------------------------
-					  Maccro for assertion
+                     Maccro for assertion
 ------------------------------------------------------------*/
 
-enum ARX_DEBUG_LOG_TYPE
-{
-	eLog,
-	eLogError,
-	eLogWarning
-};
-
+void assertionFailed(const char * _sMessage, const char * _sFile, unsigned _iLine);
 
 #ifdef _DEBUG
+#define	TEST						    __LINE__
+#define arx_assert(_Expression) (void)	( (_Expression) ||  (ArxDebug::Assert((#_Expression), (__FILE__), __LINE__),  ARX_DEBUG_BREAK() , 0) )
+
+
+#else //DO_CHECK
+#ifndef NDEBUG
+	#define NDEBUG	//For suppress assert.
+#endif
+
+#define arx_assert(_Expression) (void) ((_Expression) ||  (assertionFailed((#_Expression), (__FILE__), __LINE__),  ARX_DEBUG_BREAK(), 0))
+#else // _DEBUG
 #define	TEST						    __LINE__
 
 #define arx_assert(_Expression)	\
@@ -205,65 +196,51 @@ enum ARX_DEBUG_LOG_TYPE
 #endif
 
 #if _MSC_VER  // MS compilers support noop which discards everything inside the parens
-#define arx_assert(_Expression)					__noop
-#define arx_assert_msg(_Expression, _Message)	__noop	
+#define arx_assert(_Expression)	              __noop
+#define arx_assert_msg(_Expression, _Message) __noop	
 #else
-#define arx_assert(_Expression)					{}
-#define arx_assert_msg(_Expression, _Message)	{}
+#define arx_assert(_Expression)               {}
+#define arx_assert_msg(_Expression, _Message) {}
 #endif
-#endif
+#endif // _DEBUG
 
 /* ---------------------------------------------------------
-						Define
+                            Define
 ------------------------------------------------------------*/
 
-//ARX_BEGIN: jycorbel (2010-06-23) - clear warning signed/unsigned mismatch : add macros + assert
-#define ARX_CHECK_NOT_NEG( _x )  ( arx_assert( ( _x ) >= 0 ) ) //ARX_BEGIN: jycorbel (2010-06-28) - Add description in assert
+#define ARX_CHECK_NOT_NEG( _x )  (arx_assert((_x) >= 0))
 
 #define ARX_CAST_LONG( _x )	( static_cast<long>( _x ) )
 #define ARX_CAST_ULONG( _x )( static_cast<unsigned long>( _x ) )
 #define ARX_CAST_UINT( _x ) ( static_cast<unsigned int>( _x ) )
 #define ARX_CAST_USHORT( _x ) ( static_cast<unsigned short>( _x ) )
 
-# define ARX_OPAQUE_WHITE 0xFFFFFFFF
-//ARX_END: jycorbel (2010-06-23)
+#define ARX_OPAQUE_WHITE 0xFFFFFFFF
 
-
-//ARX_BEGIN: jycorbel (2010-06-28) - clean warning 'variable used without having been initialized'.
-#define ARX_CHECK_NO_ENTRY( ) ( arx_assert( false ) )	//ARX: xrichter (2010-07-26) - Modified to use arx_assert
-#define ARX_CHECK( _expr ) ( arx_assert( _expr ) )		//ARX: xrichter (2010-07-26) - Modified to use arx_assert
-#define ARX_WARN( _str ) ( std::printf("WARN: %s=%s", #_str, ( _str ) ) )
-#define ARX_WARN_F( _f ) ( std::printf("WARN: %s=%f", #_f, ( _f ) ) )
-#define ARX_WARN_I( _i ) ( std::printf("WARN: %s=%d", #_i, ( _i ) ) )
-//ARX_END: jycorbel (2010-06-28)
-
-
+// TODO use assert directly
+#define ARX_CHECK_NO_ENTRY( ) (arx_assert(false))
+#define ARX_CHECK( _expr ) (arx_assert( _expr ))
 
 /* ---------------------------------------------------------
-						Pragma
+                           Pragma
 ------------------------------------------------------------*/
 
-//ARX_BEGIN: jycorbel (2010-07-02) - Assure compatibility with C code (Mercury).
-#define ARX_DEAD_CODE() {arx_assert( false );} //ARX: xrichter (2010-06-23) - treat warnings C4700  Disable warning "local variable % used without having been initialized"
-//ARX_END: jycorbel (2010-07-02)
+#define ARX_DEAD_CODE() {arx_assert( false );}
 
-//ARX_BEGIN: xrichter (2010-06-24) - Use to verify no overflow value by data type
-#define ARX_CHECK_UCHAR(_x)	{arx_assert( static_cast<short>(_x) <= UCHAR_MAX		&& _x >= 0 ) ;}
-#define ARX_CHECK_BYTE(_x)	ARX_CHECK_UCHAR(_x)
-#define ARX_CHECK_CHAR(_x)	{arx_assert( static_cast<short>(_x) <= CHAR_MAX			&& static_cast<short>(_x) >= CHAR_MIN ) ;}
-#define ARX_CHECK_SHORT(_x)	{arx_assert( static_cast<int>(_x) <= SHRT_MAX			&& static_cast<int>(_x) >= SHRT_MIN ) ;}
-#define ARX_CHECK_USHORT(_x){arx_assert( static_cast<int>(_x) <= USHRT_MAX			&& _x >= 0 ) ;}
-#define ARX_CHECK_WORD(_x)	ARX_CHECK_USHORT(_x)		//typedef unsigned short      WORD;
-#define ARX_CHECK_INT(_x)	{arx_assert( static_cast<long long>(_x) <= INT_MAX		&& static_cast<long long>(_x) >= INT_MIN ) ;}
-#define ARX_CHECK_UINT(_x)  {arx_assert( static_cast<long long>(_x) <= UINT_MAX		&& _x >= 0 ) ;}
+#define ARX_CHECK_UCHAR(_x) {arx_assert( static_cast<short>(_x) <= UCHAR_MAX && _x >= 0 ) ;}
+#define ARX_CHECK_BYTE(_x) ARX_CHECK_UCHAR(_x)
+#define ARX_CHECK_CHAR(_x) {arx_assert( static_cast<short>(_x) <= CHAR_MAX && static_cast<short>(_x) >= CHAR_MIN ) ;}
+#define ARX_CHECK_SHORT(_x) {arx_assert( static_cast<int>(_x) <= SHRT_MAX && static_cast<int>(_x) >= SHRT_MIN ) ;}
+#define ARX_CHECK_USHORT(_x) {arx_assert( static_cast<int>(_x) <= USHRT_MAX && _x >= 0 ) ;}
+#define ARX_CHECK_WORD(_x)	ARX_CHECK_USHORT(_x)
+#define ARX_CHECK_INT(_x) {arx_assert( static_cast<long long>(_x) <= INT_MAX && static_cast<long long>(_x) >= INT_MIN ) ;}
+#define ARX_CHECK_UINT(_x)  {arx_assert( static_cast<long long>(_x) <= UINT_MAX && _x >= 0 ) ;}
 #define ARX_CHECK_SIZET(_x) ARX_CHECK_UINT(_x)
-#define ARX_CHECK_LONG(_x)	{arx_assert( static_cast<long long>(_x) <= LONG_MAX		&& static_cast<long long>(_x) >= LONG_MIN ) ;}
-#define ARX_CHECK_ULONG(_x) {arx_assert( static_cast<long long>(_x) <= ULONG_MAX	&& _x >= 0	);}
+#define ARX_CHECK_LONG(_x)	{arx_assert( static_cast<long long>(_x) <= LONG_MAX && static_cast<long long>(_x) >= LONG_MIN ) ;}
+#define ARX_CHECK_ULONG(_x) {arx_assert( static_cast<long long>(_x) <= ULONG_MAX && _x >= 0	);}
 #define ARX_CHECK_DWORD(_x) ARX_CHECK_ULONG(_x)
-//ARX_END: xrichter (2010-06-24)
 
-
-//ARX_BEGIN: xrichter (2010-06-23) - treat warnings C4244 for convertion problem
+// TODO remove
 #define ARX_CLEAN_WARN_CAST_FLOAT(_x) (static_cast<float>( _x ))
 #define ARX_CLEAN_WARN_CAST_UCHAR(_x) (static_cast<unsigned char>( _x ))
 #define ARX_CLEAN_WARN_CAST_CHAR(_x) (static_cast<char>( _x ))
@@ -278,32 +255,13 @@ enum ARX_DEBUG_LOG_TYPE
 #define ARX_CLEAN_WARN_CAST_ULONG(_x) (static_cast<unsigned long>( _x ))
 #define ARX_CLEAN_WARN_CAST_DWORD(_x) (static_cast<DWORD>( _x ))
 #define ARX_CLEAN_WARN_CAST_D3DVALUE(_x) (static_cast<D3DVALUE>( _x ))
-//ARX_END: xrichter (2010-06-23)
-
-
 
 /* ---------------------------------------------------------
-						Arx Common class
+                      String utilities
 ------------------------------------------------------------*/
-// maximum mumber of lines the output console should have
-#define ARXCOMMON_MAX_CONSOLE_LINES  1500
-#define ARXCOMMON_MAX_CONSOLE_ROWS	 200
 
-#define ARXDEBUG_COLOR_ERROR	FOREGROUND_RED
-#define ARXDEBUG_COLOR_WARNING	FOREGROUND_GREEN
-#define ARXDEBUG_COLOR_DEFAULT  FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED
+// TODO move into a separate header
 
-class ArxDebug
-{
-	public :
-		static void Assert(const char * _sExpression, const char * _sFile, unsigned _iLine, const char * _sMessage = 0);
-	
-};
-
-
-/* ---------------------------------------------------------
-					String utilities
-------------------------------------------------------------*/
 template <class STYPE>
 inline const char * safeGetString(const char * & pos, STYPE & size) {	
 	const char * begin = pos;
@@ -330,4 +288,4 @@ inline bool safeGet(T & data, const char * & pos, STYPE & size) {
 	return true;
 }
 
-#endif // ARX_COMMON_H
+#endif // ARX_CORE_COMMON_H

@@ -55,11 +55,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Text.h"
 
-#include <assert.h>
+#include <cassert>
+#include <sstream>
 
 #include "core/Localization.h"
 #include "core/Core.h"
+
+#include "gui/Interface.h"
+
 #include "graphics/Draw.h"
+#include "graphics/Frame.h"
+#include "graphics/effects/Fog.h"
+
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 
@@ -125,7 +132,7 @@ long ARX_UNICODE_ForceFormattingInRect(Font* _pFont, const std::string& _lpszUTe
 		{
 			sSize = _pFont->GetCharSize(_lpszUText[iTemp]);
 
-			if ((_lpszUText[iTemp] == _T('\n')) || (_lpszUText[iTemp] == _T('*')))
+			if ((_lpszUText[iTemp] == '\n') || (_lpszUText[iTemp] == '*'))
 			{
 				iHeight		+= _iSpacingY + sSize.y;
 				bWrite		 = false;
@@ -147,7 +154,7 @@ long ARX_UNICODE_ForceFormattingInRect(Font* _pFont, const std::string& _lpszUTe
 						}
 						else
 						{
-							while ((_lpszUText[iTemp] != _T(' ')) && (iTemp > 0)) iTemp--;
+							while ((_lpszUText[iTemp] != ' ') && (iTemp > 0)) iTemp--;
 						}
 
 						bWrite		 = false;
@@ -192,7 +199,7 @@ long ARX_UNICODE_FormattingInRect(Font* font, const std::string& text, int _iSpa
 			if ((txtOut[iTemp] == '\n') || (txtOut[iTemp] == '*'))
 			{
 				iHeight += _iSpacingY + sSize.y;
-				txtOut[iTemp] = _T('\0');
+				txtOut[iTemp] = '\0';
 				bWrite = false;
 
 				font->Draw(_rRect.left, _rRect.top, &txtOut[iOldTemp], col);
@@ -209,9 +216,9 @@ long ARX_UNICODE_FormattingInRect(Font* font, const std::string& text, int _iSpa
 
 				if (CHINESE_VERSION)
 				{
-					_TCHAR * ptexttemp = (_TCHAR *)malloc((iTemp - iOldTemp + 1) << 1);
-					_tcsncpy(ptexttemp, &txtOut[iOldTemp], iTemp - iOldTemp);
-					ptexttemp[iTemp-iOldTemp] = _T('\0');
+					char * ptexttemp = (char *)malloc(iTemp - iOldTemp + 1);
+					strncpy(ptexttemp, &txtOut[iOldTemp], iTemp - iOldTemp);
+					ptexttemp[iTemp-iOldTemp] = '\0';
 
 					font->Draw(_rRect.left, _rRect.top, ptexttemp, col);
 					free((void *)ptexttemp);
@@ -220,9 +227,9 @@ long ARX_UNICODE_FormattingInRect(Font* font, const std::string& text, int _iSpa
 				}
 				else
 				{
-					while ((txtOut[iTemp] != _T(' ')) && (iTemp > 0)) iTemp--;
+					while ((txtOut[iTemp] != ' ') && (iTemp > 0)) iTemp--;
 
-					txtOut[iTemp] = _T('\0');
+					txtOut[iTemp] = '\0';
 
 					font->Draw(_rRect.left, _rRect.top, &txtOut[iOldTemp], col);					
 				}
@@ -253,7 +260,7 @@ long ARX_UNICODE_FormattingInRect(Font* font, const std::string& text, int _iSpa
 //-----------------------------------------------------------------------------
 long ARX_UNICODE_DrawTextInRect(Font* font,
                                 float x, float y,
-                                float maxx, float maxy,
+                                float maxx,
                                 const std::string& _text,
                                 COLORREF col,
                                 COLORREF bcol,
@@ -289,53 +296,34 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
 	return n;
 }
 
-//-----------------------------------------------------------------------------
 long ARX_TEXT_Draw(Font* ef,
                    float x, float y,
-                   long spacingx, long spacingy,
                    const std::string& car,
-                   COLORREF colo, COLORREF bcol)
-{
+                   COLORREF colo, COLORREF bcol) {
 	if (car.empty() ) return 0;
 
 	if (car[0] == 0) return 0;
 
-	//ArxFont
 	ARX_UNICODE_DrawTextInRect(ef, x, y, 9999.f, 999.f, car, colo, bcol);
 	return 15 + spacingy;
 }
 
 long ARX_TEXT_DrawRect(Font* ef,
-					   float x, float y,
-					   long spacingx, long spacingy,
-					   float maxx, float maxy,
-					   const std::string& car,
-					   COLORREF colo,
-					   HRGN _hRgn,
-					   COLORREF bcol )
-{
-
+                       float x, float y,
+                       float maxx,
+                       const string & car,
+                       COLORREF colo,
+                       HRGN _hRgn,
+                       COLORREF bcol) {
+	
 	bcol = RGB((bcol >> 16) & 255, (bcol >> 8) & 255, (bcol) & 255);
 
 	colo = RGB((colo >> 16) & 255, (colo >> 8) & 255, (colo) & 255);
-	return ARX_UNICODE_DrawTextInRect( ef, x, y, maxx, maxy, car, colo, bcol, _hRgn);
+	return ARX_UNICODE_DrawTextInRect(ef, x, y, maxx, car, colo, bcol, _hRgn);
 }
 
-
-//-----------------------------------------------------------------------------
-float DrawBookTextInRect( Font* font, float x, float y, float maxx, float maxy, const std::string& text, COLORREF col, COLORREF col2)
-{
-	return ARX_TEXT_DrawRect( font,
-	                   (BOOKDECX + x) * Xratio,
-	                   (BOOKDECY + y) * Yratio,
-	                   -3,
-	                   0,
-	                   (BOOKDECX + maxx) * Xratio,
-	                   (BOOKDECY + maxy) * Yratio,
-	                   text,
-	                   col,
-	                   NULL,
-	                   col2);
+float DrawBookTextInRect(Font* font, float x, float y, float maxx, const std::string& text, COLORREF col, COLORREF col2) {
+	return (float)ARX_TEXT_DrawRect(font, (BOOKDECX + x) * Xratio, (BOOKDECY + y) * Yratio, (BOOKDECX + maxx) * Xratio, text, col, NULL, col2);
 }
 
 //-----------------------------------------------------------------------------
@@ -451,7 +439,7 @@ USHORT LilEndianShort(USHORT ulValue) {
 	return MAKEWORD(HIBYTE(ulValue), LOBYTE(ulValue));
 }
 
-void _ShowText( const char * text)
+void _ShowText(const char * text)
 {
 	if (GDevice)
 	{

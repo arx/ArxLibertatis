@@ -53,9 +53,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+
 #ifndef ARX_TEXT_H
 #define ARX_TEXT_H
 
+#include <climits>
 #include <string>
 
 #include "gui/TextManager.h"
@@ -73,9 +75,9 @@ extern Font* hFontRedist;
 extern Font* hFontInGame;
 extern Font* hFontInGameNote;
 
-long ARX_TEXT_Draw(Font* ef, float x, float y, long spacingx, long spacingy, const std::string& car, COLORREF colo, COLORREF bcol = 0x00FF00FF);
-long ARX_TEXT_DrawRect(Font* ef, float x, float y, long spacingx, long spacingy, float maxx, float maxy, const std::string& car, COLORREF colo, HRGN hRgn = NULL, COLORREF bcol = 0x00FF00FF);
-float DrawBookTextInRect(Font* font, float x, float y, float maxx, float maxy, const std::string& text, COLORREF col, COLORREF col2);
+void ARX_TEXT_Draw(Font* ef, float x, float y, const std::string & car, COLORREF colo, COLORREF bcol = 0x00FF00FF);
+long ARX_TEXT_DrawRect(Font* ef, float x, float y, float maxx, const std::string& car, COLORREF colo, HRGN hRgn = NULL, COLORREF bcol = 0x00FF00FF);
+float DrawBookTextInRect(Font* font, float x, float y, float maxx, const std::string& text, COLORREF col, COLORREF col2);
 void DrawBookTextCenter(Font* font, float x, float y, const std::string& text, COLORREF col, COLORREF col2);
 long UNICODE_ARXDrawTextCenter(Font* font, float x, float y, const std::string& str, COLORREF col, COLORREF bcol);
  
@@ -83,7 +85,7 @@ long UNICODE_ARXDrawTextCenteredScroll(Font* font, float x, float y, float x2, c
 long ARX_UNICODE_ForceFormattingInRect(Font* _hFont, const std::string& _lpszUText, int _iSpacingY, RECT _rRect);
 long ARX_UNICODE_DrawTextInRect(Font* font,
                                 float x, float y,
-								float maxx, float maxy,
+								float maxx,
 								const std::string& _lpszUText,
 								COLORREF col, COLORREF bcol,
 								HRGN hRgn = NULL);

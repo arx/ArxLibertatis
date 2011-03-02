@@ -58,9 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CSPELLFX_LVL10_H
 #define ARX_CSPELLFX_LVL10_H
 
-//#include "graphics/effects/SpellEffects.h"
+#include "graphics/effects/SpellEffects.h"
 
-class CSpellFx;
 class CLightning;
 class CIncinerate;
 
@@ -77,7 +76,7 @@ class CMassLightning: public CSpellFx
 		CLightning ** pTab;
 
 	public:
-		CMassLightning(LPDIRECT3DDEVICE7 m_pd3dDevice, long nb);
+		CMassLightning(long nb);
 		~CMassLightning() {};
 
 	public:
@@ -112,7 +111,7 @@ class CControlTarget: public CSpellFx
 		float fTrail;
 
 	public:
-		CControlTarget(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CControlTarget();
 
 		// accesseurs
 	public:

@@ -467,16 +467,20 @@ inline float TRUEEEDistance3D(const EERIE_3D * from, const EERIE_3D * to)
 // Compute Distance between two 3D points
 // WARNING: EEsqrt may use an approximative way of computing sqrt !
 //*************************************************************************************
-inline float EEDistance3D(const EERIE_3D * from, const EERIE_3D * to)
-{
-	return (float)EEsqrt(((to->x - from->x) * (to->x - from->x)) + ((to->y - from->y) * (to->y - from->y)) + ((to->z - from->z) * (to->z - from->z)));
+inline float EEDistance3D(const EERIE_3D & from, const EERIE_3D & to) {
+	return (float)EEsqrt(((to.x - from.x) * (to.x - from.x)) + ((to.y - from.y) * (to.y - from.y)) + ((to.z - from.z) * (to.z - from.z)));
+}
+
+// TODO remove once callers are migrated to the reference version
+inline float EEDistance3D(const EERIE_3D * from, const EERIE_3D * to) {
+	return EEDistance3D(*from, *to);
 }
 
 inline bool PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)
 {
     using std::min;
     using std::max;
-	register float pos1 = cyl->origin.y + cyl->height;
+	float pos1 = cyl->origin.y + cyl->height;
 
 	if (pt->y < min(cyl->origin.y, pos1)) return false;
 
@@ -492,7 +496,7 @@ inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt
 {
     using std::min;
     using std::max;
-	register float pos1 = cyl->origin.y + cyl->height;
+	float pos1 = cyl->origin.y + cyl->height;
 	long ret = 2;
 
 	if (pt->y < min(cyl->origin.y, pos1)) return 0;

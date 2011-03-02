@@ -54,6 +54,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include "graphics/spells/Spells05.h"
+
+#include <cassert>
+#include <climits>
 
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
@@ -61,21 +65,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 
 #include "core/Core.h"
-#include "graphics/effects/SpellEffects.h"
-#include "game/Damage.h"
-#include "graphics/spells/Spells05.h"
-#include "graphics/spells/Spells03.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "graphics/particle/Particle.h"
-#include "game/Spells.h"
-#include "graphics/particle/ParticleManager.h"
-#include "graphics/particle/ParticleParams.h"
-#include "graphics/effects/Fog.h"
 #include "core/Time.h"
 
+#include "game/Damage.h"
+#include "game/Spells.h"
+#include "game/Player.h"
+
+#include "graphics/effects/SpellEffects.h"
+#include "graphics/effects/Fog.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "graphics/particle/Particle.h"
+#include "graphics/particle/ParticleManager.h"
+#include "graphics/particle/ParticleParams.h"
+#include "graphics/spells/Spells03.h"
+
+#include "scene/LoadLevel.h"
+#include "scene/Interactive.h"
+
 #include <list>
-//todo what for?
-//#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
 extern CParticleManager * pParticleManager;
 
@@ -99,7 +106,7 @@ long sfirewave_count = 0;
 EERIE_3DOBJ * svoodoo = NULL;
 long svoodoo_count = 0;
 //-----------------------------------------------------------------------------
-CCurePoison::CCurePoison(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CCurePoison::CCurePoison()
 {
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
@@ -215,8 +222,8 @@ void CCurePoison::Update(unsigned long aulTime)
 
 
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
-	ARX_CHECK_LONG(ulCalc);
-	long ff = 	ARX_CLEAN_WARN_CAST_LONG(ulCalc);
+	assert(ulCalc <= LONG_MAX);
+	long ff = 	static_cast<long>(ulCalc);
 
 
 
@@ -279,13 +286,13 @@ float CCurePoison::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		return 0.f;
 	}
 
-	pPS->Render(m_pd3dDevice, D3DBLEND_ONE, D3DBLEND_ONE);
+	pPS->Render(m_pd3dDevice);
 
 	return 1;
 }
 
 //-----------------------------------------------------------------------------
-CRuneOfGuarding::CRuneOfGuarding(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CRuneOfGuarding::CRuneOfGuarding()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;
@@ -597,7 +604,7 @@ void LaunchPoisonExplosion(EERIE_3D * aePos)
 
 
 //-----------------------------------------------------------------------------
-CPoisonProjectile::CPoisonProjectile(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CPoisonProjectile::CPoisonProjectile()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;
@@ -1001,7 +1008,7 @@ float CPoisonProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-CMultiPoisonProjectile::CMultiPoisonProjectile(LPDIRECT3DDEVICE7 m_pd3dDevice, long nbmissiles)
+CMultiPoisonProjectile::CMultiPoisonProjectile(long nbmissiles)
 {
 	SetDuration(2000);
 	uiNumber = min(5L, nbmissiles);
@@ -1010,7 +1017,7 @@ CMultiPoisonProjectile::CMultiPoisonProjectile(LPDIRECT3DDEVICE7 m_pd3dDevice, l
 
 	for (UINT i = 0 ; i < uiNumber ; i++)
 	{
-		pTab[i] = new CPoisonProjectile(m_pd3dDevice);
+		pTab[i] = new CPoisonProjectile();
 		pTab[i]->spellinstance = this->spellinstance;
 	}
 }
@@ -1034,8 +1041,9 @@ CMultiPoisonProjectile::~CMultiPoisonProjectile()
 }
 
 //-----------------------------------------------------------------------------
-void CMultiPoisonProjectile::Create(EERIE_3D _eSrc, float _afBeta = 0)
-{
+void CMultiPoisonProjectile::Create(EERIE_3D _eSrc, float _afBeta = 0) {
+	
+	(void)_afBeta;
 
 	float afAlpha = 0.f;
 	float afBeta = 0.f;
@@ -1191,7 +1199,7 @@ float CMultiPoisonProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 }
 
 //-----------------------------------------------------------------------------
-CRepelUndead::CRepelUndead(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CRepelUndead::CRepelUndead()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;

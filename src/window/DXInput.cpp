@@ -56,511 +56,151 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2010 ARKANE Studios SA. All rights reserved
 /////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdlib.h>
-#include "window/DXInputGlobal.h"
+#include "window/DXInput.h"
 
-//-----------------------------------------------------------------------------
-#define INPUT_STATE_ADD	(512)
+#include <cstdlib>
+#include <vector>
 
-/*-------------------------------------------------------------*/
-/*static void * DXI_malloc(int t)
-{ 
-	return malloc(t);
-}
-*/
-/*-------------------------------------------------------------*/
-/*static void * DXI_Realloc(void *mem,int t)
-{
-	return realloc(mem,t);
-}*/
-/*-------------------------------------------------------------*/
-/*static void DXI_free(void *mem)
-{
-	free(mem);
-}*/
-/*-------------------------------------------------------------*/
+#ifndef DIRECTINPUT_VERSION
+	#define DIRECTINPUT_VERSION 0x0700
+#endif
+#include <dinput.h>
+
+#include "core/Common.h"
+
+using std::vector;
+
+#define INPUT_STATE_ADD (512)
+
+struct INPUT_INFO {
+	bool active;
+	GUID guid;
+	int type;
+	int nbbuttons;
+	int nbaxes;
+	int nbele; // for mouse
+	LPDIRECTINPUTDEVICE7 inputdevice7;
+	union {
+		char * bufferstate;
+		DIDEVICEOBJECTDATA * mousestate;
+	};
+};
+
+typedef vector<INPUT_INFO> InputList;
+static InputList DI_InputInfo;
+static IDirectInput7A * DI_DInput7;
+
+static INPUT_INFO * DI_KeyBoardBuffer;
+static INPUT_INFO * DI_MouseState;
+
 // must be BOOL to be passed to DX
-BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef)
-{
-	INPUT_INFO	*info;
-
-	info=&DI_InputInfo[DI_NbInputInfo];
-	memset((void*)info,0,sizeof(INPUT_INFO));
-
-	//nom
-	info->name=(char *)malloc(strlen(lpddi->tszInstanceName)+1);
-	if(!info->name) return DIENUM_CONTINUE;
-	strcpy((char*)info->name,(const char*)lpddi->tszInstanceName);
-
+static BOOL CALLBACK DIEnumDevicesCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef) {
+	
+	(void)pvRef;
+	
+	DI_InputInfo.resize(DI_InputInfo.size() + 1);
+	
+	INPUT_INFO & info = DI_InputInfo.back();
+	memset(&info,0,sizeof(INPUT_INFO));
+	
 	//guid
-	info->guid=(GUID*)malloc(sizeof(GUID));
-	if(!info->guid)
-	{
-		free(info->name);
-		return DIENUM_CONTINUE;
-	}
-	memcpy((void*)info->guid,(void*)&lpddi->guidInstance,sizeof(GUID));
-
+	memcpy(&info.guid, &lpddi->guidInstance, sizeof(GUID));
+	
 	//type
-	info->type=lpddi->dwDevType;
-
-	DI_NbInputInfo++;
+	info.type = lpddi->dwDevType;
+	
 	return DIENUM_CONTINUE;
 }
-/*-------------------------------------------------------------*/
-int DXI_Init(HINSTANCE h,DXI_INIT *i)
-{
-int	nb;
 
-	if(!h) return DXI_FAIL;
-
-	DI_DInput7=NULL;
-
-	memcpy((void*)&DI_Init,(void*)i,sizeof(DXI_INIT));
-/*	if(!DI_Init.malloc||!DI_Init.realloc||!DI_Init.free)
-	{
-//		DI_Init.malloc=DXI_malloc;
-//		DI_Init.realloc=DXI_Realloc;
-//		DI_Init.free=DXI_free;
+bool DXI_Init(HINSTANCE h) {
+	
+	if(!h) {
+		return false;
 	}
-*/
-	//Old : if(FAILED(DI_Hr=DirectInputCreateEx(h,DIRECTINPUT_VERSION,&IID_IDirectInput7,&DI_DInput7,NULL))) return DXI_FAIL;
-	if(FAILED(DI_Hr=DirectInputCreateEx(h,DIRECTINPUT_VERSION,IID_IDirectInput7,(void**)&DI_DInput7,NULL))) return DXI_FAIL;
-
-	DI_NbInputInfo=0;
-	//Old : if(FAILED(DI_Hr=DI_DInput7->lpVtbl->EnumDevices(DI_DInput7,0,DIEnumDevicesCallback,NULL,DIEDFL_ATTACHEDONLY))) return DXI_FAIL;
-	if(FAILED(DI_Hr=DI_DInput7->EnumDevices(0,DIEnumDevicesCallback,NULL,DIEDFL_ATTACHEDONLY))) return DXI_FAIL;
-
-	nb=MAXKEYBOARD;
-	while(nb--) DI_KeyBoardBuffer[nb]=NULL;
-	nb=MAXMOUSE;
-	while(nb--) DI_MouseState[nb]=NULL;
-	nb=MAXJOY;
-	while(nb--) DI_JoyState[nb]=NULL;
-	nb=MAXSCID;
-	while(nb--) DI_SCIDState[nb]=NULL;
-
-	return DXI_OK;
-}
-/*-------------------------------------------------------------*/
-void DXI_ReleaseDevice(INPUT_INFO *info)
-{
-	if(!info->actif) return;
-
-	info->actif=DEVICENOACTIF;
-
-	//Old : if(info->inputdevice7) info->inputdevice7->lpVtbl->Unacquire(info->inputdevice7);
-	if(info->inputdevice7) info->inputdevice7->Unacquire();
-	RELEASE(info->inputdevice7);
-	info->inputdevice7=NULL;
-
-	switch(GET_DIDEVICE_TYPE(info->type))
-	{
-	case DIDEVTYPE_MOUSE:
-		if(info->mousestate)
-		{
-			free((void*)info->mousestate);
-//			free((void*)info->old_mousestate);
-			info->mousestate=NULL;
-//			info->old_mousestate=NULL;
-		}
-		break;
-	case DIDEVTYPE_KEYBOARD:
-		if(info->bufferstate)
-		{
-			free((void*)info->bufferstate);
-//			free((void*)info->old_bufferstate);
-			info->bufferstate=NULL;
-//			info->old_bufferstate=NULL;
-		}
-		break;
-	case DIDEVTYPE_JOYSTICK:
-		if(info->datasid==DFDIJOYSTICK)
-		{
-			if(info->joystate)
-			{
-				free((void*)info->joystate);
-//				free((void*)info->old_joystate);
-				info->joystate=NULL;
-//				info->old_joystate=NULL;
-			}
-		}
-		else
-		{
-			if(info->joystate2)
-			{
-				free((void*)info->joystate2);
-				info->joystate2=NULL;
-//				free((void*)info->old_joystate2);
-//				info->old_joystate2=NULL;
-			}
-		}
-		break;
-	default:
-	case DIDEVTYPE_DEVICE:
-		if(info->datasid==DFDIJOYSTICK)
-		{
-			if(info->joystate)
-			{
-				free((void*)info->joystate);
-//				free((void*)info->old_joystate);
-				info->joystate=NULL;
-//				info->old_joystate=NULL;
-			}
-		}
-		else
-		{
-			if(info->joystate2)
-			{
-				free((void*)info->joystate2);
-				info->joystate2=NULL;
-//				free((void*)info->old_joystate2);
-//				info->old_joystate2=NULL;
-			}
-		}
-		break;
-	}
-}
-/*-------------------------------------------------------------*/
-void DXI_ReleaseAllDevices(void)
-{
-INPUT_INFO	*info;
-int			nb;
-
-	info=DI_InputInfo;
-	nb=DI_NbInputInfo;
-	while(nb)
-	{
-		DXI_ReleaseDevice(info);
-		info++;
-		nb--;
-	}
-}
-/*-------------------------------------------------------------*/
-void DXI_DeleteAllDevices(void)
-{
-INPUT_INFO	*info;
-
-	info=DI_InputInfo;
-	while(DI_NbInputInfo)
-	{
-		free(info->guid);
-		info->guid=NULL;
-		free(info->name);
-		info->name=NULL;
-		DXI_ReleaseDevice(info);
-		info++;
-		DI_NbInputInfo--;
-	}
-}
-/*-------------------------------------------------------------*/
-void DXI_Release(void)
-{
-INPUT_INFO	*info;
-
-	info=DI_InputInfo;
-	while(DI_NbInputInfo)
-	{
-		free(info->guid);
-		info->guid=NULL;
-		free(info->name);
-		info->name=NULL;
-		DXI_ReleaseDevice(info);
-		info++;
-		DI_NbInputInfo--;
-	}
-
-	RELEASE(DI_DInput7);
+	
 	DI_DInput7 = NULL;
-}
-/*-------------------------------------------------------------*/
-bool CompareGUID(GUID *g1,GUID *g2)
-{
-int		i,j,*m1,*m2;
-char	*mm1,*mm2;
-
-	i=sizeof(GUID);
-	j=i&3;
-	i>>=2;
-
-	m1=(int*)g1;
-	m2=(int*)g2;
-	while(i)
-	{
-		if(*m1++!=*m2++) return false;
-		i--;
+	if(FAILED(DirectInputCreateEx(h, DIRECTINPUT_VERSION, IID_IDirectInput7, (void**)&DI_DInput7, NULL))) {
+		return false;
 	}
-
-	mm1=(char*)m1;
-	mm2=(char*)m2;
-	while(j)
-	{
-		if(*mm1++!=*mm2++) return false;
-		j--;
+	
+	DI_InputInfo.clear();
+	if(FAILED(DI_DInput7->EnumDevices(0, DIEnumDevicesCallback, NULL, DIEDFL_ATTACHEDONLY))) {
+		return false;
 	}
-
+	
+	DI_KeyBoardBuffer = NULL;
+	DI_MouseState = NULL;
+	
 	return true;
 }
-/*-------------------------------------------------------------*/
-// must be bool to be passed to DX
-BOOL CALLBACK DIEnumDeviceObjectsCallback(LPCDIDEVICEOBJECTINSTANCE lpddoi,LPVOID pvRef)
-{
-INPUT_INFO			*info;
 
-	info=(INPUT_INFO *)pvRef;
-	if(CompareGUID((GUID*)&lpddoi->guidType,(GUID*)&GUID_XAxis)) info->info|=DXI_XAxis;
-	if(CompareGUID((GUID*)&lpddoi->guidType,(GUID*)&GUID_YAxis)) info->info|=DXI_YAxis;
-	if(CompareGUID((GUID*)&lpddoi->guidType,(GUID*)&GUID_ZAxis)) info->info|=DXI_ZAxis;
-	if(CompareGUID((GUID*)&lpddoi->guidType,(GUID*)&GUID_RxAxis)) info->info|=DXI_RxAxis;
-	if(CompareGUID((GUID*)&lpddoi->guidType,(GUID*)&GUID_RyAxis)) info->info|=DXI_RyAxis;
-	if(CompareGUID((GUID*)&lpddoi->guidType,(GUID*)&GUID_RzAxis)) info->info|=DXI_RzAxis;
-	if(CompareGUID((GUID*)&lpddoi->guidType,(GUID*)&GUID_Slider)) info->info|=DXI_Slider;
-	if(CompareGUID((GUID*)&lpddoi->guidType,(GUID*)&GUID_Button)) info->info|=DXI_Button;
-	if(CompareGUID((GUID*)&lpddoi->guidType,(GUID*)&GUID_Key)) info->info|=DXI_Key;
-	if(CompareGUID((GUID*)&lpddoi->guidType,(GUID*)&GUID_POV)) info->info|=DXI_POV;
-	if(CompareGUID((GUID*)&lpddoi->guidType,(GUID*)&GUID_Unknown)) info->info|=DXI_Unknown;
-
-	return DIENUM_CONTINUE;
-}
-/*-------------------------------------------------------------*/
-static INPUT_INFO * DXI_GetInputInfoWithState(void *state,int type)
-{
-int			nbdev;
-INPUT_INFO	*info;
-
-	info=DI_InputInfo;
-	nbdev=DI_NbInputInfo;
-	while(nbdev)
-	{
-		if(GET_DIDEVICE_TYPE(info->type)==type)
-		{
-			switch(type)	
-			{
-			case DIDEVTYPE_MOUSE:
-//				if(info->mousestate==state) return info;
-				if(state==info) return info;
-				break;
-			case DIDEVTYPE_KEYBOARD:
-				if(info->bufferstate==state) return info;
-				break;
-			case DIDEVTYPE_JOYSTICK:
-				if(state==info) return info;
-				break;
-			default:
-			case DIDEVTYPE_DEVICE:
-				break;
-			}
-		}
-		info++;
-		nbdev--;
-	}
-
-	return NULL;
-}
-/*-------------------------------------------------------------*/
-void DXI_RestoreAllDevices(void)
-{
-int			nbdev;
-INPUT_INFO	*info;
-
-	info=DI_InputInfo;
-	nbdev=DI_NbInputInfo;
-	while(nbdev)
-	{
-		if(info->actif)
-		{
-			//Old : info->inputdevice7->lpVtbl->Acquire(info->inputdevice7);
-			info->inputdevice7->Acquire();
-		}
-		info++;
-		nbdev--;
-	}
-}
-/*-------------------------------------------------------------*/
-void DXI_SleepAllDevices(void)
-{
-int			nbdev;
-INPUT_INFO	*info;
-
-	info=DI_InputInfo;
-	nbdev=DI_NbInputInfo;
-	while(nbdev)
-	{
-		if(info->actif)
-		{
-			//Old : info->inputdevice7->lpVtbl->Unacquire(info->inputdevice7);
-			info->inputdevice7->Unacquire();
-		}
-		info++;
-		nbdev--;
-	}
-}
-/*-------------------------------------------------------------*/
-int DXI_GetKeyboardInputDevice(HWND hwnd,int id,int mode)
-{
-int			nbdev,num=0;
-INPUT_INFO	*info;
-
-	if(id>=MAXKEYBOARD) 
-		return DXI_FAIL;
-	if(DI_KeyBoardBuffer[id])
-	{
-		info=DXI_GetInputInfoWithState(DI_KeyBoardBuffer[id],DIDEVTYPE_KEYBOARD);
-		if(info) DXI_ReleaseDevice(info);
-		DI_KeyBoardBuffer[id]=NULL;
-	}
-
-	info=DI_InputInfo;
-	nbdev=DI_NbInputInfo;
-	while(nbdev)
-	{
-		if((GET_DIDEVICE_TYPE(info->type)==DIDEVTYPE_KEYBOARD)&&(!info->actif))
-		{
-			if(DXI_ChooseInputDevice(hwnd,id,num,mode)==DXI_OK) 
-				return DXI_OK;
-		}
-		num++;
-		info++;
-		nbdev--;
-	}
-
-	return DXI_FAIL;
-}
-/*-------------------------------------------------------------*/
-int DXI_GetMouseInputDevice(HWND hwnd,int id,int mode,int minbutton,int minaxe)
-{
-int			nbdev,num=0;
-INPUT_INFO	*info;
-
-	if(id>=MAXMOUSE) return DXI_FAIL;
-	if(DI_MouseState[id])
-	{
-		info=DXI_GetInputInfoWithState(DI_MouseState[id],DIDEVTYPE_MOUSE);
-		if(info) DXI_ReleaseDevice(info);
-		DI_MouseState[id]=NULL;
-	}
-
-	info=DI_InputInfo;
-	nbdev=DI_NbInputInfo;
-	while(nbdev)
-	{
-		if((GET_DIDEVICE_TYPE(info->type)==DIDEVTYPE_MOUSE)&&(!info->actif))
-		{
-			if(DXI_ChooseInputDevice(hwnd,id,num,mode)==DXI_OK)
-			{
-				if((info->nbbuttons>=minbutton)&&(info->nbaxes>=minaxe)) return DXI_OK;
-				else
-				{
-					DXI_ReleaseDevice(info);
-				}
-			}
-		}
-		num++;
-		info++;
-		nbdev--;
-	}
-
-	return DXI_FAIL;
-}
-/*-------------------------------------------------------------*/
-int DXI_GetJoyInputDevice(HWND hwnd,int id,int mode,int minbutton,int minaxe)
-{
-int			nbdev,num=0;
-INPUT_INFO	*info;
-
-	if(id>=MAXJOY) return DXI_FAIL;
-	if(DI_JoyState[id])
-	{
-		info=DXI_GetInputInfoWithState(DI_JoyState[id],DIDEVTYPE_JOYSTICK);
-		if(info) DXI_ReleaseDevice(info);
-		DI_JoyState[id]=NULL;
-	}
-
-	info=DI_InputInfo;
-	nbdev=DI_NbInputInfo;
-	while(nbdev)
-	{
-		if((GET_DIDEVICE_TYPE(info->type)==DIDEVTYPE_JOYSTICK)&&(!info->actif))
-		{
-			if(DXI_ChooseInputDevice(hwnd,id,num,mode)==DXI_OK)
-			{
-				if((info->nbbuttons>=minbutton)&&(info->nbaxes>=minaxe)) return DXI_OK;
-				else
-				{
-					DXI_ReleaseDevice(info);
-				}
-			}
-		}
+static void DXI_ReleaseDevice(INPUT_INFO & info) {
 	
-		num++;
-		info++;
-		nbdev--;
+	if(!info.active) {
+		return;
 	}
-
-	return DXI_FAIL;
-}
-int DXI_GetSCIDInputDevice(HWND hwnd,int id,int mode,int minbutton,int minaxe)
-{
-int			nbdev,num=0;
-INPUT_INFO	*info;
-
-/*	if(id>=MAXJOY) return DXI_FAIL;
-	if(DI_JoyState[id])
-	{
-		info=DXI_GetInputInfoWithState(DI_JoyState[id],DIDEVTYPE_JOYSTICK);
-		if(info) DXI_ReleaseDevice(info);
-		DI_JoyState[id]=NULL;
+	
+	info.active = false;
+	
+	if(info.inputdevice7) {
+		info.inputdevice7->Unacquire();
+		info.inputdevice7->Release();
 	}
-*/  // A checker....
-	info=DI_InputInfo;
-	nbdev=DI_NbInputInfo;
-	while(nbdev)
-	{
-		if((GET_DIDEVICE_TYPE(info->type)==DIDEVTYPE_DEVICE )&&(!info->actif))
-		{
-			if (!strcmp("Microsoft SideWinder Strategic Commander",info->name))
-			if(DXI_ChooseInputDevice(hwnd,id,num,mode)==DXI_OK)
-			{
-				if((info->nbbuttons>=minbutton)&&(info->nbaxes>=minaxe)) return DXI_OK;
-				else
-				{
-					DXI_ReleaseDevice(info);
-				}
+	info.inputdevice7=NULL;
+	
+	switch(GET_DIDEVICE_TYPE(info.type)) {
+		case DIDEVTYPE_MOUSE: {
+			if(info.mousestate) {
+				delete[] info.mousestate;
+				info.mousestate = NULL;
 			}
+			break;
 		}
-		
-		
-		num++;
-		info++;
-		nbdev--;
+		case DIDEVTYPE_KEYBOARD: {
+			if(info.bufferstate) {
+				delete[] info.bufferstate;
+				info.bufferstate = NULL;
+			}
+			break;
+		}
 	}
-
-	return DXI_FAIL;
 }
-/*-------------------------------------------------------------*/
-int DXI_ChooseInputDevice( HWND hwnd, int id, int num, int mode )
-{
-DIDEVCAPS		devcaps;
-INPUT_INFO*		info;
-int				flag;
-DIDATAFORMAT*	dformat;
 
-	if( num >= DI_NbInputInfo ) return DXI_FAIL;
-	info = &DI_InputInfo[num];
+void DXI_Release() {
+	
+	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); i++) {
+		DXI_ReleaseDevice(*i);
+	}
+	DI_InputInfo.clear();
+	
+	if(DI_DInput7) {
+		DI_DInput7->Release();
+	}
+	DI_DInput7 = NULL;
+}
 
-	DXI_ReleaseDevice( info );
-	//Old : if( FAILED( DI_Hr = DI_DInput7->lpVtbl->CreateDeviceEx( DI_DInput7, info->guid, &IID_IDirectInputDevice7, &info->inputdevice7, NULL ) ) ) return DXI_FAIL;
-	if( FAILED( DI_Hr = DI_DInput7->CreateDeviceEx(*(info->guid), IID_IDirectInputDevice7, (void**)&info->inputdevice7, NULL ) ) ) return DXI_FAIL;
+void DXI_RestoreAllDevices() {
+	
+	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); i++) {
+		if(i->active) {
+			i->inputdevice7->Acquire();
+		}
+	}
+}
 
-	INITSTRUCT( devcaps );
-	//Old : if( FAILED( DI_Hr = info->inputdevice7->lpVtbl->GetCapabilities( info->inputdevice7, &devcaps ) ) ) return DXI_FAIL;
-	if( FAILED( DI_Hr = info->inputdevice7->GetCapabilities(&devcaps ) ) ) return DXI_FAIL;
+void DXI_SleepAllDevices() {
+	
+	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); i++) {
+		if(i->active) {
+			i->inputdevice7->Unacquire();
+		}
+	}
+}
 
-	info->nbbuttons	=	devcaps.dwButtons;
-	info->nbaxes	=	devcaps.dwAxes;
-
-	switch( mode )
-	{
+static bool DXI_ChooseInputDevice(HWND hwnd, INPUT_INFO & info, DXIMode mode) {
+	
+	int flag;
+	switch(mode) {
 		case DXI_MODE_EXCLUSIF_ALLMSG:
 			flag = DISCL_EXCLUSIVE | DISCL_BACKGROUND;
 			break;
@@ -573,1422 +213,295 @@ DIDATAFORMAT*	dformat;
 		case DXI_MODE_NONEXCLUSIF_OURMSG:
 			flag = DISCL_NONEXCLUSIVE | DISCL_FOREGROUND;
 			break;
-		//ARX_BEGIN: jycorbel (2010-06-30) - clean warning on not-initialized variable
-		// flag should be always set unless 'mode' doesn't match any case which could resume on a fatal error
 		default:
 			ARX_CHECK_NO_ENTRY();
-			flag = 0; //clean warning
-		//ARX_END: jycorbel (2010-06-30)
+			return false;
 	}
-
-	//Old : 	if( FAILED( DI_Hr = info->inputdevice7->lpVtbl->SetCooperativeLevel( info->inputdevice7, hwnd, flag ) ) ) return DXI_FAIL;
-	if( FAILED( DI_Hr = info->inputdevice7->SetCooperativeLevel(hwnd, flag ) ) ) return DXI_FAIL;
-	//Old : 	if( FAILED( DI_Hr = info->inputdevice7->lpVtbl->EnumObjects( info->inputdevice7, DIEnumDeviceObjectsCallback, (void*)info, DIDFT_ALL ) ) ) return DXI_FAIL;
-	if( FAILED( DI_Hr = info->inputdevice7->EnumObjects(DIEnumDeviceObjectsCallback, (void*)info, DIDFT_ALL ) ) ) return DXI_FAIL;
-
-	switch( GET_DIDEVICE_TYPE( info->type ) )
-	{
-	case DIDEVTYPE_MOUSE:
-		{
-			DIPROPDWORD dipdw={
-				// the header
-				{
-					sizeof(DIPROPDWORD),        // diph.dwSize
-					sizeof(DIPROPHEADER),       // diph.dwHeaderSize
-					0,                          // diph.dwObj
-					DIPH_DEVICE,                // diph.dwHow
-				},
-		        // the data
-				128,              // dwData
-			};
-
-			info->mousestate=(DIDEVICEOBJECTDATA*)malloc(sizeof(DIDEVICEOBJECTDATA)*(info->nbbuttons+info->nbaxes+INPUT_STATE_ADD));
-			memset(info->mousestate,0,(sizeof(DIDEVICEOBJECTDATA)*(info->nbbuttons+info->nbaxes+INPUT_STATE_ADD)));
-//			info->old_mousestate=(DIDEVICEOBJECTDATA*)malloc(sizeof(DIDEVICEOBJECTDATA)*(info->nbbuttons+info->nbaxes));
-//			memset(info->old_mousestate,0,(sizeof(DIDEVICEOBJECTDATA)*(info->nbbuttons+info->nbaxes)));
-//			DI_MouseState[id]=info->mousestate;
-			DI_MouseState[id]=info;
-			if(info->nbbuttons>4)
-			{
-				info->datasid=DFDIMOUSE2;
-				dformat=(DIDATAFORMAT*)&c_dfDIMouse2;
-			}
-			else
-			{
-				info->datasid=DFDIMOUSE;
-				dformat=(DIDATAFORMAT*)&c_dfDIMouse;
-			}
-			//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->SetProperty(info->inputdevice7,DIPROP_BUFFERSIZE,&dipdw.diph))) return DXI_FAIL;
-			if(FAILED(DI_Hr=info->inputdevice7->SetProperty(DIPROP_BUFFERSIZE,&dipdw.diph))) return DXI_FAIL;
-		}
-		break;
-	case DIDEVTYPE_KEYBOARD:
-		info->datasid=DFDIKEYBOARD;
-		info->bufferstate=(char*)malloc(256);
-		memset(info->bufferstate,0,256);
-//		info->old_bufferstate=(char*)malloc(256);
-//		memset(info->old_bufferstate,0,256);
-		DI_KeyBoardBuffer[id]=info;//->bufferstate;
-		//DI_OldKeyBoardBuffer[id]=info->old_bufferstate;
-		dformat=(DIDATAFORMAT*)&c_dfDIKeyboard;
-		break;
-	case DIDEVTYPE_JOYSTICK:
-		DI_JoyState[id]=info;
-		if(info->nbaxes>2)
-		{
-			info->joystate2=(DIJOYSTATE2*)malloc(sizeof(DIJOYSTATE2));
-			memset(info->joystate2,0,sizeof(DIJOYSTATE2));
-//			info->old_joystate2=(DIJOYSTATE2*)malloc(sizeof(DIJOYSTATE2));
-//			memset(info->old_joystate2,0,sizeof(DIJOYSTATE2));
-			info->datasid=DFDIJOYSTICK2;
-			dformat=(DIDATAFORMAT*)&c_dfDIJoystick2;
-		}
-		else
-		{
-			info->joystate=(DIJOYSTATE*)malloc(sizeof(DIJOYSTATE));
-			memset(info->joystate,0,sizeof(DIJOYSTATE));
-//			info->old_joystate=(DIJOYSTATE*)malloc(sizeof(DIJOYSTATE));
-//			memset(info->old_joystate,0,sizeof(DIJOYSTATE));
-			info->datasid=DFDIJOYSTICK;
-			dformat=(DIDATAFORMAT*)&c_dfDIJoystick;
-		}
-		break;
-	default:
-	case DIDEVTYPE_DEVICE:
-		if (!strcmp("Microsoft SideWinder Strategic Commander",info->name))
-		{
-			DI_SCIDState[id]=info;
-			if(info->nbaxes>2)
-			{
-				info->joystate2=(DIJOYSTATE2*)malloc(sizeof(DIJOYSTATE2));
-				memset(info->joystate2,0,sizeof(DIJOYSTATE2));
-//				info->old_joystate2=(DIJOYSTATE2*)malloc(sizeof(DIJOYSTATE2));
-//				memset(info->old_joystate2,0,sizeof(DIJOYSTATE2));
-				info->datasid=DFDIJOYSTICK2;
-				dformat=(DIDATAFORMAT*)&c_dfDIJoystick2;
-			}
-			else
-			{
-				info->joystate=(DIJOYSTATE*)malloc(sizeof(DIJOYSTATE));
-				memset(info->joystate,0,sizeof(DIJOYSTATE));
-//				info->old_joystate=(DIJOYSTATE*)malloc(sizeof(DIJOYSTATE));
-//				memset(info->old_joystate,0,sizeof(DIJOYSTATE));
-				info->datasid=DFDIJOYSTICK;
-				dformat=(DIDATAFORMAT*)&c_dfDIJoystick;
-			}
+	
+	DXI_ReleaseDevice(info);
+	
+	if(FAILED(DI_DInput7->CreateDeviceEx(info.guid, IID_IDirectInputDevice7, (void**)&info.inputdevice7, NULL))) {
+		return false;
+	}
+	
+	DIDEVCAPS devcaps;
+	memset(&devcaps, 0, sizeof(devcaps));
+	devcaps.dwSize = sizeof(devcaps);
+	if(FAILED(info.inputdevice7->GetCapabilities(&devcaps))) {
+		return false;
+	}
+	
+	info.nbbuttons = devcaps.dwButtons;
+	info.nbaxes = devcaps.dwAxes;
+	
+	if(FAILED(info.inputdevice7->SetCooperativeLevel(hwnd, flag))) {
+		return false;
+	}
+	
+	const DIDATAFORMAT * dformat;
+	switch(GET_DIDEVICE_TYPE(info.type)) {
 		
-			/*
-			DIPROPDWORD dipdw={
-				// the header
-				{
-					sizeof(DIPROPDWORD),        // diph.dwSize
-					sizeof(DIPROPHEADER),       // diph.dwHeaderSize
-					0,                          // diph.dwObj
-					DIPH_DEVICE,                // diph.dwHow
-				},
-		        // the data
-				16,              // dwData
-			};
-
-			info->SCIDstate=(DIDEVICEOBJECTDATA*)malloc(sizeof(DIDEVICEOBJECTDATA)*(info->nbbuttons+info->nbaxes));
-			info->old_SCIDstate=(DIDEVICEOBJECTDATA*)malloc(sizeof(DIDEVICEOBJECTDATA)*(info->nbbuttons+info->nbaxes));
-//			DI_MouseState[id]=info->mousestate;
-			DI_SCIDState[id]=info;
-			if(info->nbbuttons>4)
-			{
-				info->datasid=DFDIMOUSE2;
-				dformat=(DIDATAFORMAT*)&c_dfDIMouse2;
-			}
-			else
-			{
-				info->datasid=DFDIMOUSE;
-				dformat=(DIDATAFORMAT*)&c_dfDIMouse;
+		case DIDEVTYPE_MOUSE: {
+			info.mousestate = new DIDEVICEOBJECTDATA[info.nbbuttons + info.nbaxes + INPUT_STATE_ADD];
+			memset(info.mousestate, 0, (sizeof(DIDEVICEOBJECTDATA) * (info.nbbuttons + info.nbaxes + INPUT_STATE_ADD)));
+			DI_MouseState = &info;
+			if(info.nbbuttons > 4) {
+				dformat = &c_dfDIMouse2;
+			} else {
+				dformat = &c_dfDIMouse;
 			}
 			
-			if(FAILED(DI_Hr=info->inputdevice7->SetProperty(info->inputdevice7,DIPROP_BUFFERSIZE,&dipdw.diph))) return DXI_FAIL;
-*/
-		}
-		else dformat=NULL;
-		break;
-	}
-	if(!dformat) return DXI_FAIL;
-	//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->SetDataFormat(info->inputdevice7,dformat))) return DXI_FAIL;
-	if(FAILED(DI_Hr=info->inputdevice7->SetDataFormat(dformat))) return DXI_FAIL;
-	//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->Acquire(info->inputdevice7))) 
-	if(FAILED(DI_Hr=info->inputdevice7->Acquire())) 
-	{}
-	//	info->actif=DEVICENOACTIF;
-	//	return DXI_FAIL;
-	//else 
-	info->actif=DEVICEACTIF;
-	return DXI_OK;
-}
-/*-------------------------------------------------------------*/
-DXI_INPUT_INFO * DXI_GetInfoDevice(int num)
-{
-	DXI_INPUT_INFO	*dinf;
-	INPUT_INFO		*info;
-
-	if(num>=DI_NbInputInfo) return NULL;
-	dinf=(DXI_INPUT_INFO*)malloc(sizeof(DXI_INPUT_INFO));
-	if(!dinf) return NULL;
-
-	info=&DI_InputInfo[num];
-	dinf->name=(char*)malloc(strlen(info->name)+1);
-	if(!dinf)
-	{
-		free((void*)dinf);
-		return NULL;
-	}
-
-	strcpy(dinf->name,info->name);
-	dinf->type=info->type;
-	dinf->numlist=num;
-	if(info->inputdevice7)
-	{
-		dinf->nbbuttons=info->nbbuttons;
-		dinf->nbaxes=info->nbaxes;
-		dinf->info=info->info;
-	}
-	else
-	{
-		dinf->nbbuttons=-1;
-		dinf->nbaxes=-1;
-		dinf->info=-1;
-	}
-
-	return dinf;
-}
-
-/*-------------------------------------------------------------*/
-void DXI_freeInfoDevice(DXI_INPUT_INFO *dinf)
-{
-	if(!dinf) return;
-	if(dinf->name) free((void*)dinf->name);
-	free((void*)dinf);
-}
-
-/*-------------------------------------------------------------*/
-bool DXI_ExecuteAllDevices(bool _bKeept)
-{
-int			nb,nbele;
-DWORD		dwNbele;//ARX: xrichter (2010-06-30) - treat warnings C4057 for 'LPDWORD' differs in indirection to slightly different base types from 'int *'
-INPUT_INFO	*info;
-bool		flg=true;
-void * temp;
-	
-//DIDEVICEOBJECTDATA	* od;
-//DIDEVICEOBJECTDATA	* odd;
-				
-
-	info=DI_InputInfo;
-	nb=DI_NbInputInfo;
-	
-	while(nb)
-	{
-		if(info->actif)
-		{
-			// union!!!
-			temp=info->mousestate;
-//			info->mousestate=info->old_mousestate;
-//			info->old_mousestate=temp;
-			switch(GET_DIDEVICE_TYPE(info->type))
-			{
-
-			//ARX_BEGIN: xrichter (2010-06-30) - treat warnings C4057 for 'LPDWORD' differs in indirection to slightly different base types from 'int *'
-			case DIDEVTYPE_MOUSE:
-				nbele=info->nbbuttons+info->nbaxes+INPUT_STATE_ADD;
-				dwNbele=(DWORD)nbele; 
-				//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->GetDeviceData(info->inputdevice7,sizeof(DIDEVICEOBJECTDATA),info->mousestate,&dwNbele,(_bKeept)?DIGDD_PEEK:0 ))) 
-				if(FAILED(DI_Hr=info->inputdevice7->GetDeviceData(sizeof(DIDEVICEOBJECTDATA),info->mousestate,&dwNbele,(_bKeept)?DIGDD_PEEK:0 ))) 
+			DIPROPDWORD dipdw = {
 				{
-					nbele=info->nbbuttons+info->nbaxes+INPUT_STATE_ADD;
-					dwNbele=(DWORD)nbele; 
-					//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->GetDeviceData(info->inputdevice7,sizeof(DIDEVICEOBJECTDATA),info->mousestate,&dwNbele,(_bKeept)?DIGDD_PEEK:0 ))) 
-					if(FAILED(DI_Hr=info->inputdevice7->GetDeviceData(sizeof(DIDEVICEOBJECTDATA),info->mousestate,&dwNbele,(_bKeept)?DIGDD_PEEK:0 ))) 
-					{
-						//Old : info->inputdevice7->lpVtbl->GetDeviceData(info->inputdevice7,sizeof(DIDEVICEOBJECTDATA),info->mousestate,&dwNbele,(_bKeept)?DIGDD_PEEK:0 );
-						info->inputdevice7->GetDeviceData(sizeof(DIDEVICEOBJECTDATA),info->mousestate,&dwNbele,(_bKeept)?DIGDD_PEEK:0 );
-			//ARX_END: xrichter (2010-06-30)	
-
-//					DXI_RestoreAllDevices();
-				//	info->actif=DEVICENOACTIF;
-					/*
-					if (DIERR_INPUTLOST == DI_Hr) 
-					{
-				//		DXI_RestoreAllDevices();
-					}
-					if (DIERR_NOTACQUIRED  == DI_Hr)
-					{
-				//		DXI_RestoreAllDevices();
-						//info->inputdevice7->Acquire
-					}
-				/*	if (DIERR_INVALIDPARAM  == DI_Hr) MessageBox(NULL,"DIERR_INVALIDPARAM ","",0);
-					if (DIERR_NOTACQUIRED  == DI_Hr) MessageBox(NULL,"DIERR_NOTACQUIRED ","",0);
-					if (DIERR_NOTINITIALIZED  == DI_Hr) MessageBox(NULL,"DIERR_NOTINITIALIZED ","",0);
-					if (E_PENDING  == DI_Hr) MessageBox(NULL,"E_PENDING ","",0);
-*/
-					flg=false;
-					}
-				}
-				
-			//	od=info->mousestate;
-			//	odd=info->old_mousestate;
-			//	od++;od++;
-			//	odd++;odd++;
-			//	od->dwData-=odd->dwData;
-				
-				nbele=(int)dwNbele; //ARX: xrichter (2010-06-30) - treat warnings C4057 for 'LPDWORD' differs in indirection to slightly different base types from 'int *'
-				info->nbele=nbele;
-				break;
-			case DIDEVTYPE_KEYBOARD: 
-				
-				//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->GetDeviceState(info->inputdevice7,256,(void*)info->bufferstate))) 
-				if(FAILED(DI_Hr=info->inputdevice7->GetDeviceState(256,(void*)info->bufferstate))) 
-				{
-					DXI_RestoreAllDevices(); 
-					
-					//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->GetDeviceState(info->inputdevice7,256,(void*)info->bufferstate))) 
-					if(FAILED(DI_Hr=info->inputdevice7->GetDeviceState(256,(void*)info->bufferstate))) 
-					{
-//					DXI_RestoreAllDevices();
-
-					/*
-					if (DIERR_INPUTLOST == DI_Hr) 
-					{
-						//DXI_RestoreAllDevices(); 
-						//Old : info->inputdevice7->lpVtbl->Acquire(info->inputdevice7);
-						info->inputdevice7->Acquire(info->inputdevice7);
-					}
-					if (DIERR_NOTACQUIRED  == DI_Hr)
-					{
-						//DXI_RestoreAllDevices(); 
-						//Old : info->inputdevice7->lpVtbl->Acquire(info->inputdevice7);
-						info->inputdevice7->Acquire(info->inputdevice7);
-					}
-					if (DIERR_NOTINITIALIZED  == DI_Hr) 
-					{	//Old : info->inputdevice7->lpVtbl->Acquire(info->inputdevice7);
-						info->inputdevice7->Acquire(info->inputdevice7);
-						//MessageBox(NULL,"DIERR_NOTINITIALIZED ","",0);
-					}
-					/*
-					if (DIERR_INVALIDPARAM  == DI_Hr) MessageBox(NULL,"DIERR_INVALIDPARAM ","",0);
-					if (DIERR_NOTACQUIRED  == DI_Hr) MessageBox(NULL,"DIERR_NOTACQUIRED ","",0);
-					if (DIERR_NOTINITIALIZED  == DI_Hr) MessageBox(NULL,"DIERR_NOTINITIALIZED ","",0);
-					if (E_PENDING  == DI_Hr) MessageBox(NULL,"E_PENDING ","",0);
-					*/		
-					//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->GetDeviceState(info->inputdevice7,256,(void*)info->bufferstate))) 
-//					if(FAILED(DI_Hr=info->inputdevice7->GetDeviceState(256,(void*)info->bufferstate))) 
-						memset(info->bufferstate,0,256); //seb 27/03/2002
-						flg=false;					
-					}
-					
-				}
-				break;
-			case DIDEVTYPE_JOYSTICK: 
-				//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->Poll(info->inputdevice7))) flg=false;
-				if(FAILED(DI_Hr=info->inputdevice7->Poll())) flg=false;
-
-				if(info->datasid==DFDIJOYSTICK2)
-				{	
-					//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->GetDeviceState(info->inputdevice7,sizeof(DIJOYSTATE2),(void*)info->joystate2))) 
-					if(FAILED(DI_Hr=info->inputdevice7->GetDeviceState(sizeof(DIJOYSTATE2),(void*)info->joystate2))) 
-						flg=false;
-				}
-				else
-				{	
-					//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->GetDeviceState(info->inputdevice7,sizeof(DIJOYSTATE),(void*)info->joystate))) 
-					if(FAILED(DI_Hr=info->inputdevice7->GetDeviceState(sizeof(DIJOYSTATE),(void*)info->joystate))) 
-						flg=false;						
-				}
-				break;
-			default:
-			case DIDEVTYPE_DEVICE: 
-				//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->Poll(info->inputdevice7))) 
-				if(FAILED(DI_Hr=info->inputdevice7->Poll())) 
-					flg=false;
-					
-				if(info->datasid==DFDIJOYSTICK2)
-				{	
-					//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->GetDeviceState(info->inputdevice7,sizeof(DIJOYSTATE2),(void*)info->joystate2))) 
-					if(FAILED(DI_Hr=info->inputdevice7->GetDeviceState(sizeof(DIJOYSTATE2),(void*)info->joystate2))) 
-						flg=false;
-				/*	else
-					{
-						long togo=sizeof(DIJOYSTATE2);
-						long ii=0;
-						char * dat1=(char *)info->joystate2;
-						char * dat2=(char *)info->old_joystate2;
-						while (ii<togo)
-						{							
-							if (dat1[ii]!=dat2[ii]) 
-								dat1[ii]=dat1[ii];
-							ii++;
-						}
-					}*/
-
-				}
-				else
-				{	
-					//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->GetDeviceState(info->inputdevice7,sizeof(DIJOYSTATE),(void*)info->SCIDstate))) 
-					if(FAILED(DI_Hr=info->inputdevice7->GetDeviceState(sizeof(DIJOYSTATE),(void*)info->SCIDstate))) 
-						flg=false;							
-				}
-				break;
-				/*
-				nbele=info->nbbuttons+info->nbaxes; 
-				// Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->GetDeviceData(info->inputdevice7,sizeof(DIDEVICEOBJECTDATA),info->SCIDstate,&nbele,0))) 
-				if(FAILED(DI_Hr=info->inputdevice7->GetDeviceData(sizeof(DIDEVICEOBJECTDATA),info->SCIDstate,&nbele,0))) 
-					flg=false;			
-				info->nbele=nbele;
-				break;*/
+					sizeof(DIPROPDWORD),  // diph.dwSize
+					sizeof(DIPROPHEADER), // diph.dwHeaderSize
+					0,                    // diph.dwObj
+					DIPH_DEVICE,          // diph.dwHow
+				},
+				128,                    // dwData
+			};
+			if(FAILED(info.inputdevice7->SetProperty(DIPROP_BUFFERSIZE, &dipdw.diph))) {
+				return false;
 			}
-		}
-		info++;
-		nb--;
-	}
-
-	return flg;
-}
-/*-------------------------------------------------------------*/
-bool DXI_KeyPressed(int id,int dikkey)
-{
-	if(DI_KeyBoardBuffer[id]->bufferstate[dikkey]&0x80) return true;
-	return false;
-}
-
-/*-------------------------------------------------------------*/
-int DXI_GetKeyIDPressed(int id)
-{
-int		nb;
-char	*buf;
-
-	buf=DI_KeyBoardBuffer[id]->bufferstate;
-	nb=256;
-	while(nb)
-	{
-		if((*buf)&0x80) 
-			return 256-nb;
-		buf++;
-		nb--;
-	}
-	return -1;
-}
-void DXI_ClearKeys(int id)
-{
-	memset(DI_KeyBoardBuffer[id],0,256);	
-}
-/*-------------------------------------------------------------*/
-bool DXI_GetAxeMouseXY(int id,int *mx,int *my)
-{
-DIDEVICEOBJECTDATA	*od;
-int					nb,flg=0;
-
-	nb=DI_MouseState[id]->nbele;
-	if(!nb) return false;
-	od=DI_MouseState[id]->mousestate;
-	while(nb)
-	{
-		if(od->dwOfs == DIMOFS_X)
-		{
-			*mx=od->dwData;
-			flg++;
-		}
-		else if(od->dwOfs == DIMOFS_Y)
-		{
-			*my=od->dwData;
-			flg++;
+			
+			break;
 		}
 		
-		od++;
-		nb--;
-	}
-	return(flg>0);
-}
-/*-------------------------------------------------------------*/
-bool DXI_GetAxeMouseXYZ(int id,int *mx,int *my,int *mz)
-{
-DIDEVICEOBJECTDATA	*od;
-int					nb,flg=0;
-
-	*mx=*my=*mz=0;
-
-	nb=DI_MouseState[id]->nbele;
-	if(!nb) return false;
-	od=DI_MouseState[id]->mousestate;
-	while(nb)
-	{
-		if(od->dwOfs == DIMOFS_X)
-		{
-			*mx+=od->dwData;
-			flg++;
+		case DIDEVTYPE_KEYBOARD: {
+			info.bufferstate = new char[256];
+			memset(info.bufferstate, 0, 256);
+			DI_KeyBoardBuffer = &info;
+			dformat = &c_dfDIKeyboard;
+			break;
 		}
-		else if(od->dwOfs == DIMOFS_Y)
-		{
-			*my+=od->dwData;
-			flg++;
-		}
-		else if(od->dwOfs == DIMOFS_Z)
-		{
-			*mz+=od->dwData;
-			flg++;
-		}
-
-		od++;
-		nb--;
-	}
-	return (flg>0);
-}
-
-/*-------------------------------------------------------------*/
-bool DXI_MouseButtonImage(int id,int numb)
-{
-DIDEVICEOBJECTDATA	*od;
-int					state,nb;
-static FILE *fTemp=NULL;
-
-	if(!fTemp)
-	{
-		fTemp=fopen("c:\\temp\\dinput.txt","wb");
-	}
-
-	nb=DI_MouseState[id]->nbele;
-	if(!nb) return false;
-	od=DI_MouseState[id]->mousestate;
-	while(nb)
-	{
-		switch(numb)
-		{
-		case DXI_BUTTON0:
-			if(od->dwOfs==DIMOFS_BUTTON0)
-			{
-				state=od->dwData;
-				if(state&0x80)
-				{
-					fprintf(fTemp,"1");
-				}
-				else
-				{
-					fprintf(fTemp,"0");
-				}
-			}
-			break;
-		case DXI_BUTTON1:
-			if(od->dwOfs==DIMOFS_BUTTON1)
-			{
-				state=od->dwData;
-				if(state&0x80)
-				{
-					fprintf(fTemp,"1");
-				}
-				else
-				{
-					fprintf(fTemp,"0");
-				}
-			}
-			break;
-		case DXI_BUTTON2:
-			break;
-		case DXI_BUTTON3:
-			break;
-		case DXI_BUTTON4:
-			break;
-		case DXI_BUTTON5:
-			break;
-		case DXI_BUTTON6:
-			break;
-		case DXI_BUTTON7:
-			break;
+		
 		default:
 			return false;
-		}
-
-		od++;
-		nb--;
 	}
-
-	fprintf(fTemp,"\r\n---------\r\n");
+	
+	if(FAILED(info.inputdevice7->SetDataFormat(dformat))) {
+		return false;
+	}
+	
+	(void)info.inputdevice7->Acquire();
+	
+	info.active = true;
 	return true;
 }
 
-/*-------------------------------------------------------------*/
-void DXI_MouseButtonCountClick(int id,int numb,int *_iNumClick,int *_iNumUnClick)
-{
-DIDEVICEOBJECTDATA	*od;
-int					state,nb;
-
-	*_iNumClick=0;
-	*_iNumUnClick=0;
-
-	nb=DI_MouseState[id]->nbele;
-	if(!nb) return;
-	od=DI_MouseState[id]->mousestate;
-	while(nb)
-	{
-		switch(numb)
-		{
-		case DXI_BUTTON0:
-			if(od->dwOfs==DIMOFS_BUTTON0)
-			{
-				state=od->dwData;
-				if(state&0x80)
-				{
-					*_iNumClick+=1;
-				}
-				else
-				{
-					*_iNumUnClick+=1;
-				}
-			}
-			break;
-		case DXI_BUTTON1:
-			if(od->dwOfs==DIMOFS_BUTTON1)
-			{
-				state=od->dwData;
-				if(state&0x80)
-				{
-					*_iNumClick+=1;
-				}
-				else
-				{
-					*_iNumUnClick+=1;
-				}
-			}
-			break;
-		case DXI_BUTTON2:
-			if(od->dwOfs==DIMOFS_BUTTON2)
-			{
-				state=od->dwData;
-				if(state&0x80)
-				{
-					*_iNumClick+=1;
-				}
-				else
-				{
-					*_iNumUnClick+=1;
-				}
-			}
-			break;
-		case DXI_BUTTON3:
-			if(od->dwOfs==DIMOFS_BUTTON3)
-			{
-				state=od->dwData;
-				if(state&0x80)
-				{
-					*_iNumClick+=1;
-				}
-				else
-				{
-					*_iNumUnClick+=1;
-				}
-			}
-			break;
-		case DXI_BUTTON4:
-			if(od->dwOfs==DIMOFS_BUTTON4)
-			{
-				state=od->dwData;
-				if(state&0x80)
-				{
-					*_iNumClick+=1;
-				}
-				else
-				{
-					*_iNumUnClick+=1;
-				}
-			}
-			break;
-		case DXI_BUTTON5:
-			if(od->dwOfs==DIMOFS_BUTTON5)
-			{
-				state=od->dwData;
-				if(state&0x80)
-				{
-					*_iNumClick+=1;
-				}
-				else
-				{
-					*_iNumUnClick+=1;
-				}
-			}
-			break;
-		case DXI_BUTTON6:
-			if(od->dwOfs==DIMOFS_BUTTON6)
-			{
-				state=od->dwData;
-				if(state&0x80)
-				{
-					*_iNumClick+=1;
-				}
-				else
-				{
-					*_iNumUnClick+=1;
-				}
-			}
-			break;
-		case DXI_BUTTON7:
-			if(od->dwOfs==DIMOFS_BUTTON7)
-			{
-				state=od->dwData;
-				if(state&0x80)
-				{
-					*_iNumClick+=1;
-				}
-				else
-				{
-					*_iNumUnClick+=1;
-				}
-			}
-			break;
-		default:
-			break;
-		}
-
-		od++;
-		nb--;
-	}
-}
-
-/*-------------------------------------------------------------*/
-bool DXI_MouseButtonPressed(int id,int numb,int *_iDeltaTime)
-{
-DIDEVICEOBJECTDATA	*od;
-int					state,iTime1,iTime2,nb;
-bool				bResult;
-
-	nb=DI_MouseState[id]->nbele;
-	if(!nb) return false;
-	od=DI_MouseState[id]->mousestate;
-	iTime1=iTime2=0;
-	while(nb)
-	{
-		bResult=false;
-		switch(numb)
-		{
-		case DXI_BUTTON0:
-			if(od->dwOfs==DIMOFS_BUTTON0)
-			{
-				state=od->dwData;
-				if(state&0x80)
-				{
-					bResult=true;
-				}
-			}
-			break;
-		case DXI_BUTTON1:
-			if(od->dwOfs==DIMOFS_BUTTON1)
-			{
-				state=od->dwData;
-				if(state&0x80)
-				{
-					bResult=true;
-				}
-			}
-			break;
-		case DXI_BUTTON2:
-			if(od->dwOfs==DIMOFS_BUTTON2)
-			{
-				state=od->dwData;
-				if(state&0x80)
-				{
-					bResult=true;
-				}
-			}
-			break;
-		case DXI_BUTTON3:
-			if(od->dwOfs==DIMOFS_BUTTON3)
-			{
-				state=od->dwData;
-				if(state&0x80)
-				{
-					bResult=true;
-				}
-			}
-			break;
-		case DXI_BUTTON4:
-			if(od->dwOfs==DIMOFS_BUTTON4)
-			{
-				state=od->dwData;
-				if(state&0x80)
-				{
-					bResult=true;
-				}
-			}
-			break;
-		case DXI_BUTTON5:
-			if(od->dwOfs==DIMOFS_BUTTON5)
-			{
-				state=od->dwData;
-				if(state&0x80)
-				{
-					bResult=true;
-				}
-			}
-			break;
-		case DXI_BUTTON6:
-			if(od->dwOfs==DIMOFS_BUTTON6)
-			{
-				state=od->dwData;
-				if(state&0x80)
-				{
-					bResult=true;
-				}
-			}
-			break;
-		case DXI_BUTTON7:
-			if(od->dwOfs==DIMOFS_BUTTON7)
-			{
-				state=od->dwData;
-				if(state&0x80)
-				{
-					bResult=true;
-				}
-			}
-			break;
-		default:
-			return false;
-		}
-
-		if(bResult)
-		{
-			if(!iTime1)
-			{
-				iTime1=od->dwTimeStamp;
-			}
-			else
-			{
-				iTime2=od->dwTimeStamp;
-			}
-		}
-
-		od++;
-		nb--;
-	}
-
-	if(!iTime2)
-	{
-		*_iDeltaTime=0;
-	}
-	else
-	{
-		*_iDeltaTime=iTime2-iTime1;
-	}
-
-	return (iTime1)?true:false;
-}
-/*-------------------------------------------------------------*/
-bool DXI_MouseButtonUnPressed(int id,int numb)
-{
-DIDEVICEOBJECTDATA	*od;
-int					state,nb;
-
-	nb=DI_MouseState[id]->nbele;
-	if(!nb) return false;
-	od=DI_MouseState[id]->mousestate;
-	state=0x80;
-	while(nb)
-	{
-//		state=0x80;
-		switch(numb)
-		{
-		case DXI_BUTTON0:
-			if(od->dwOfs==DIMOFS_BUTTON0) state=od->dwData;
-			break;
-		case DXI_BUTTON1:
-			if(od->dwOfs==DIMOFS_BUTTON1) state=od->dwData;
-			break;
-		case DXI_BUTTON2:
-			if(od->dwOfs==DIMOFS_BUTTON2) state=od->dwData;
-			break;
-		case DXI_BUTTON3:
-			if(od->dwOfs==DIMOFS_BUTTON3) state=od->dwData;
-			break;
-		case DXI_BUTTON4:
-			if(od->dwOfs==DIMOFS_BUTTON4) state=od->dwData;
-			break;
-		case DXI_BUTTON5:
-			if(od->dwOfs==DIMOFS_BUTTON5) state=od->dwData;
-			break;
-		case DXI_BUTTON6:
-			if(od->dwOfs==DIMOFS_BUTTON6) state=od->dwData;
-			break;
-		case DXI_BUTTON7:
-			if(od->dwOfs==DIMOFS_BUTTON7) state=od->dwData;
-			break;
-		default:
-			return false;
-		}
-//		if(!(state&0x80)) return true;
-		od++;
-		nb--;
-	}
-	if(!(state&0x80)) return TRUE;
-	return FALSE;
-}
-
-int DXI_GetSCIDAxis(int id,int *jx,int *jy,int *jz)
-{
-INPUT_INFO	*io;
-int			dir;
-
-	dir=DXI_JOYNONE;
-
-	io=DI_SCIDState[id];
-	if(io->datasid==DFDIJOYSTICK2)
-	{
-		{
-			DIJOYSTATE2	*js;
-			js=io->joystate2;
-			*jx=js->lX;
-			*jy=js->lY;
-			*jz=js->lRz;//>lZ;
-			if(js->lX>0)
-			{
-				dir|=DXI_JOYRIGHT;
-			}
-			else
-			{
-				if(js->lX<0)
-				{
-					dir|=DXI_JOYLEFT;
-				}
-			}
-
-			if(js->lY>0)
-			{
-				dir|=DXI_JOYDOWN;
-			}
-			else
-			{
-				if(js->lY<0)
-				{
-					dir|=DXI_JOYUP;
-				}
-			}
-		}
-	}
-	else
-	{
-		{
-			DIJOYSTATE	*js;
-			js=io->joystate;
-			*jx=js->lX;
-			*jy=js->lY;
-			*jz=js->lZ;
-			if(js->lX>0)
-			{
-				dir|=DXI_JOYRIGHT;
-			}
-			else
-			{
-				if(js->lX<0)
-				{
-					dir|=DXI_JOYLEFT;
-				}
-			}
-
-			if(js->lY>0)
-			{
-				dir|=DXI_JOYDOWN;
-			}
-			else
-			{
-				if(js->lY<0)
-				{
-					dir|=DXI_JOYUP;
-				}
-			}
-		}
-	}
-
-	return dir;
-}
-bool DXI_IsSCIDButtonPressed(int id,int numb)
-{
-INPUT_INFO	*io;
-
-	io=DI_SCIDState[id];
-	if(io->datasid==DFDIJOYSTICK2)
-	{
-		{
-			DIJOYSTATE2	*js;
-			js=io->joystate2;
-			if(js->rgbButtons[numb]&0x80) return true;
-		}
-	}
-	else
-	{
-		{
-			DIJOYSTATE	*js;
-			js=io->joystate;
-			if(js->rgbButtons[numb]&0x80) return true;
-		}
-	}
-	return false;
-}
-
-int DXI_GetSCIDButtonPressed(int id)
-{
-	INPUT_INFO	*io;
-	int			nb;
-
-	io=DI_SCIDState[id];
-	if(io->datasid==DFDIJOYSTICK2)
-	{
-		{
-			DIJOYSTATE2	*js;
-			js=io->joystate2;
-			nb=128;
-			while(nb--)
-			{
-				if (nb==9) 
-					nb=9;
-				if(js->rgbButtons[nb]&0x80) return nb;
-			}
-		}
-	}
-	else
-	{
-		{
-			DIJOYSTATE	*js;
-			js=io->joystate;
-			nb=32;
-			while(nb--)
-			{
-				if(js->rgbButtons[nb]&0x80) return nb;
-			}
-		}
-	}
-	return -1;
-}
-
-/*-------------------------------------------------------------*/
-int DXI_GetIDButtonPressed(int id)
-{
-DIDEVICEOBJECTDATA	*od;
-int					nb;
-
-	nb=DI_MouseState[id]->nbele;
-	if(!nb) return -1;
-	od=DI_MouseState[id]->mousestate;
-	while(nb)
-	{
-		if(od->dwData&0x80)
-		{
-			if(od->dwOfs == DIMOFS_BUTTON0)
-				return DXI_BUTTON0;
-			else if(od->dwOfs == DIMOFS_BUTTON1)
-				return DXI_BUTTON1;
-			else if(od->dwOfs == DIMOFS_BUTTON2)
-				return DXI_BUTTON2;
-			else if(od->dwOfs == DIMOFS_BUTTON3)
-				return DXI_BUTTON3;
-			else if(od->dwOfs == DIMOFS_BUTTON4)
-				return DXI_BUTTON4;
-			else if(od->dwOfs == DIMOFS_BUTTON5)
-				return DXI_BUTTON5;
-			else if(od->dwOfs == DIMOFS_BUTTON6)
-				return DXI_BUTTON6;
-			else if(od->dwOfs == DIMOFS_BUTTON7)
-				return DXI_BUTTON7;
-		}
-
-		od++;
-		nb--;
-	}
-
-	return -1;
-}
-/*-------------------------------------------------------------*/
-int DXI_SetMouseRelative(int id)
-{
-INPUT_INFO		*info;
-DIPROPDWORD		dipdw={
-				{
-					sizeof(DIPROPDWORD),        // diph.dwSize
-					sizeof(DIPROPHEADER),       // diph.dwHeaderSize
-					0,			                // diph.dwObj
-					DIPH_DEVICE,	            // diph.dwHow
-				},
-				DIPROPAXISMODE_REL,				// dwData
-				};
-
-	info=DXI_GetInputInfoWithState((void*)DI_MouseState[id],DIDEVTYPE_MOUSE);
-	//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->Unacquire(info->inputdevice7))) return DXI_FAIL;
-	if(FAILED(DI_Hr=info->inputdevice7->Unacquire())) return DXI_FAIL;
-	//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->SetProperty(info->inputdevice7,DIPROP_AXISMODE,&dipdw.diph))) return DXI_FAIL;
-	if(FAILED(DI_Hr=info->inputdevice7->SetProperty(DIPROP_AXISMODE,&dipdw.diph))) return DXI_FAIL;
-	//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->Acquire(info->inputdevice7))) return DXI_FAIL;
-	if(FAILED(DI_Hr=info->inputdevice7->Acquire())) return DXI_FAIL;
-	return DXI_OK;
-}
-/*-------------------------------------------------------------*/
-int DXI_SetMouseAbsolue(int id)
-{
-INPUT_INFO		*info;
-DIPROPDWORD		dipdw={
-				{
-					sizeof(DIPROPDWORD),        // diph.dwSize
-					sizeof(DIPROPHEADER),       // diph.dwHeaderSize
-					0,			                // diph.dwObj
-					DIPH_DEVICE,	            // diph.dwHow
-				},
-				DIPROPAXISMODE_ABS,				// dwData
-				};
-
-	info=DXI_GetInputInfoWithState((void*)DI_MouseState[id],DIDEVTYPE_MOUSE);
-	//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->Unacquire(info->inputdevice7))) return DXI_FAIL;
-	if(FAILED(DI_Hr=info->inputdevice7->Unacquire())) return DXI_FAIL;
-	//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->SetProperty(info->inputdevice7,DIPROP_AXISMODE,&dipdw.diph))) return DXI_FAIL;
-	if(FAILED(DI_Hr=info->inputdevice7->SetProperty(DIPROP_AXISMODE,&dipdw.diph))) return DXI_FAIL;
-	//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->Acquire(info->inputdevice7))) return DXI_FAIL;
-	if(FAILED(DI_Hr=info->inputdevice7->Acquire())) return DXI_FAIL;
-	return DXI_OK;
-}
-/*-------------------------------------------------------------*/
-int DXI_GetAxeJoyXY(int id,int *jx,int *jy)
-{
-INPUT_INFO	*io;
-int			dir;
-
-	dir=DXI_JOYNONE;
-
-	io=DI_JoyState[id];
-	if(io->datasid==DFDIJOYSTICK2)
-	{
-		{
-			DIJOYSTATE2	*js;
-			js=io->joystate2;
-			*jx=js->lX;
-			*jy=js->lY;
-			if(js->lX>0)
-			{
-				dir|=DXI_JOYRIGHT;
-			}
-			else
-			{
-				if(js->lX<0)
-				{
-					dir|=DXI_JOYLEFT;
-				}
-			}
-
-			if(js->lY>0)
-			{
-				dir|=DXI_JOYDOWN;
-			}
-			else
-			{
-				if(js->lY<0)
-				{
-					dir|=DXI_JOYUP;
-				}
-			}
-		}
-	}
-	else
-	{
-		{
-			DIJOYSTATE	*js;
-			js=io->joystate;
-			*jx=js->lX;
-			*jy=js->lY;
-			if(js->lX>0)
-			{
-				dir|=DXI_JOYRIGHT;
-			}
-			else
-			{
-				if(js->lX<0)
-				{
-					dir|=DXI_JOYLEFT;
-				}
-			}
-
-			if(js->lY>0)
-			{
-				dir|=DXI_JOYDOWN;
-			}
-			else
-			{
-				if(js->lY<0)
-				{
-					dir|=DXI_JOYUP;
-				}
-			}
-		}
-	}
-
-	return dir;
-}
-
-/*-------------------------------------------------------------*/
-int DXI_GetAxeJoyXYZ(int id,int *jx,int *jy,int *jz)
-{
-INPUT_INFO	*io;
-int			dir;
-
-	dir=DXI_JOYNONE;
-
-	io=DI_JoyState[id];
-	if(io->datasid==DFDIJOYSTICK2)
-	{
-		{
-			DIJOYSTATE2	*js;
-			js=io->joystate2;
-			*jx=js->lX;
-			*jy=js->lY;
-			*jz=js->lZ;
-			if(js->lX>0)
-			{
-				dir|=DXI_JOYRIGHT;
-			}
-			else
-			{
-				if(js->lX<0)
-				{
-					dir|=DXI_JOYLEFT;
-				}
-			}
-
-			if(js->lY>0)
-			{
-				dir|=DXI_JOYDOWN;
-			}
-			else
-			{
-				if(js->lY<0)
-				{
-					dir|=DXI_JOYUP;
-				}
-			}
-		}
-	}
-	else
-	{
-		{
-			DIJOYSTATE	*js;
-			js=io->joystate;
-			*jx=js->lX;
-			*jy=js->lY;
-			*jz=js->lZ;
-			if(js->lX>0)
-			{
-				dir|=DXI_JOYRIGHT;
-			}
-			else
-			{
-				if(js->lX<0)
-				{
-					dir|=DXI_JOYLEFT;
-				}
-			}
-
-			if(js->lY>0)
-			{
-				dir|=DXI_JOYDOWN;
-			}
-			else
-			{
-				if(js->lY<0)
-				{
-					dir|=DXI_JOYUP;
-				}
-			}
-		}
-	}
-
-	return dir;
-}
-/*-------------------------------------------------------------*/
-int DXI_GetAxeJoyXYZW(int id,int *jx,int *jy,int *jz,int * jw)
-{
-INPUT_INFO	*io;
-//int			dir;
-
-//	dir=DXI_JOYNONE;
-
-	io=DI_JoyState[id];
-	if(io->datasid==DFDIJOYSTICK2)
-	{
-		DIJOYSTATE2	*js;
-		js=io->joystate2;
-		*jx=js->lX;
-		*jy=js->lY;
-		*jz=js->lRz;
-		*jw=js->rglSlider[0];			
-	}
-	else
-	{
-		DIJOYSTATE	*js;
-		js=io->joystate;
-		*jx=js->lX;
-		*jy=js->lY;
-		*jz=js->lZ;		
-		*jw=0;//js->rglSlider;			
-	}
-
-	return 1;
-}
-
-/*-------------------------------------------------------------*/
-int DXI_SetJoyRelative(int id)
-{
-INPUT_INFO		*info;
-DIPROPDWORD		dipdw={
-				{
-					sizeof(DIPROPDWORD),        // diph.dwSize
-					sizeof(DIPROPHEADER),       // diph.dwHeaderSize
-					0,			                // diph.dwObj
-					DIPH_DEVICE,	            // diph.dwHow
-				},
-				DIPROPAXISMODE_REL,				// dwData
-				};
-
-	info=DXI_GetInputInfoWithState((void*)DI_JoyState[id],DIDEVTYPE_JOYSTICK);
-	//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->Unacquire(info->inputdevice7))) return DXI_FAIL;
-	if(FAILED(DI_Hr=info->inputdevice7->Unacquire())) return DXI_FAIL;
-	//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->SetProperty(info->inputdevice7,DIPROP_AXISMODE,&dipdw.diph))) return DXI_FAIL;
-	if(FAILED(DI_Hr=info->inputdevice7->SetProperty(DIPROP_AXISMODE,&dipdw.diph))) return DXI_FAIL;
-	//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->Acquire(info->inputdevice7))) return DXI_FAIL;
-	if(FAILED(DI_Hr=info->inputdevice7->Acquire())) return DXI_FAIL;
-	return DXI_OK;
-}
-/*-------------------------------------------------------------*/
-int DXI_SetJoyAbsolue(int id)
-{
-INPUT_INFO		*info;
-DIPROPDWORD		dipdw={
-				{
-					sizeof(DIPROPDWORD),        // diph.dwSize
-					sizeof(DIPROPHEADER),       // diph.dwHeaderSize
-					0,			                // diph.dwObj
-					DIPH_DEVICE,	            // diph.dwHow
-				},
-				DIPROPAXISMODE_ABS,				// dwData
-				};
-
-	info=DXI_GetInputInfoWithState((void*)DI_JoyState[id],DIDEVTYPE_JOYSTICK);
-	//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->Unacquire(info->inputdevice7))) return DXI_FAIL;
-	if(FAILED(DI_Hr=info->inputdevice7->Unacquire())) return DXI_FAIL;
-	//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->SetProperty(info->inputdevice7,DIPROP_AXISMODE,&dipdw.diph))) return DXI_FAIL;
-	if(FAILED(DI_Hr=info->inputdevice7->SetProperty(DIPROP_AXISMODE,&dipdw.diph))) return DXI_FAIL;
-	//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->Acquire(info->inputdevice7))) return DXI_FAIL;
-	if(FAILED(DI_Hr=info->inputdevice7->Acquire())) return DXI_FAIL;
-	return DXI_OK;
-}
-/*-------------------------------------------------------------*/
-int DXI_SetRangeJoy(int id,int axe,int range)
-{
-INPUT_INFO		*info;
-DIPROPRANGE		diprg; 
-DIPROPDWORD		dipdw={
-				{
-					sizeof(DIPROPDWORD),        // diph.dwSize
-					sizeof(DIPROPHEADER),       // diph.dwHeaderSize
-					0,			                // diph.dwObj
-					DIPH_BYOFFSET,	            // diph.dwHow
-				},
-				0,								// dwData
-				};
-
-	if(!range) return DXI_FAIL;
+bool DXI_GetKeyboardInputDevice(HWND hwnd, DXIMode mode) {
 	
-	info=DXI_GetInputInfoWithState((void*)DI_JoyState[id],DIDEVTYPE_JOYSTICK);
-
-	diprg.diph.dwSize=sizeof(diprg); 
-	diprg.diph.dwHeaderSize=sizeof(diprg.diph); 
-	switch(axe)
-	{
-	case DXI_XAxis:
-		diprg.diph.dwObj=DIJOFS_X; 
-		dipdw.diph.dwObj=DIJOFS_X;
-		break;
-	case DXI_YAxis:
-		diprg.diph.dwObj=DIJOFS_Y; 
-		dipdw.diph.dwObj=DIJOFS_Y;
-		break;
-	case DXI_ZAxis:
-		diprg.diph.dwObj=DIJOFS_Z; 
-		dipdw.diph.dwObj=DIJOFS_Z;
-		break;
-	case DXI_RzAxis:
-		diprg.diph.dwObj=DIJOFS_RZ; 
-		dipdw.diph.dwObj=DIJOFS_RZ;
-		break;
-	case DXI_Slider:
-		diprg.diph.dwObj=DIJOFS_SLIDER(0); 
-		dipdw.diph.dwObj=DIJOFS_SLIDER(0);
-		break;
-	default:
-		return DXI_FAIL;
+	if(DI_KeyBoardBuffer) {
+		DXI_ReleaseDevice(*DI_KeyBoardBuffer);
+		DI_KeyBoardBuffer = NULL;
 	}
-	diprg.diph.dwHow=DIPH_BYOFFSET; 
-	diprg.lMin=-range; 
-	diprg.lMax=range; 
-	dipdw.dwData=5000;
-	//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->SetProperty(info->inputdevice7,DIPROP_RANGE,&diprg.diph))) return DXI_FAIL;
-	if(FAILED(DI_Hr=info->inputdevice7->SetProperty(DIPROP_RANGE,&diprg.diph))) return DXI_FAIL;
-	//Old : if(FAILED(DI_Hr=info->inputdevice7->lpVtbl->SetProperty(info->inputdevice7,DIPROP_DEADZONE,&dipdw.diph))) return DXI_FAIL;
-	if(FAILED(DI_Hr=info->inputdevice7->SetProperty(DIPROP_DEADZONE,&dipdw.diph))) return DXI_FAIL;
-
-	return DXI_OK;
-}
-/*-------------------------------------------------------------*/
-bool DXI_GetJoyButtonPressed(int id,int numb)
-{
-INPUT_INFO	*io;
-
-	io=DI_JoyState[id];
-	if(io->datasid==DFDIJOYSTICK2)
-	{
-		{
-			DIJOYSTATE2	*js;
-			js=io->joystate2;
-			if(js->rgbButtons[numb]&0x80) return true;
+	
+	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); i++) {
+		
+		if(GET_DIDEVICE_TYPE(i->type) != DIDEVTYPE_KEYBOARD || i->active) {
+			continue;
 		}
-	}
-	else
-	{
-		{
-			DIJOYSTATE	*js;
-			js=io->joystate;
-			if(js->rgbButtons[numb]&0x80) return true;
+		
+		if(DXI_ChooseInputDevice(hwnd, *i, mode)) {
+			return true;
 		}
+		
 	}
+	
 	return false;
 }
-/*-------------------------------------------------------------*/
-int DXI_GetIDJoyButtonPressed(int id)
-{
-INPUT_INFO	*io;
-int			nb;
 
-	io=DI_JoyState[id];
-	if(io->datasid==DFDIJOYSTICK2)
-	{
-		{
-			DIJOYSTATE2	*js;
-			js=io->joystate2;
-			nb=128;
-			while(nb--)
-			{
-				if(js->rgbButtons[nb]&0x80) return nb;
+bool DXI_GetMouseInputDevice(HWND hwnd, DXIMode mode, int minbutton, int minaxe) {
+	
+	if(DI_MouseState) {
+		DXI_ReleaseDevice(*DI_MouseState);
+		DI_MouseState = NULL;
+	}
+	
+	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); i++) {
+		
+		if(GET_DIDEVICE_TYPE(i->type) != DIDEVTYPE_MOUSE || i->active) {
+			continue;
+		}
+		
+		if(DXI_ChooseInputDevice(hwnd, *i, mode)) {
+			if(i->nbbuttons >= minbutton && i->nbaxes >= minaxe) {
+				return true;
+			} else {
+				DXI_ReleaseDevice(*i);
 			}
 		}
+		
 	}
-	else
-	{
-		{
-			DIJOYSTATE	*js;
-			js=io->joystate;
-			nb=32;
-			while(nb--)
-			{
-				if(js->rgbButtons[nb]&0x80) return nb;
+	
+	return false;
+}
+
+bool DXI_ExecuteAllDevices() {
+	
+	bool success = true;
+	for(InputList::iterator i = DI_InputInfo.begin(); i != DI_InputInfo.end(); i++) {
+		
+		if(!i->active) {
+			continue;
+		}
+		
+		switch(GET_DIDEVICE_TYPE(i->type)) {
+			
+			case DIDEVTYPE_MOUSE: {
+				DWORD dwNbele = (DWORD)(i->nbbuttons + i->nbaxes + INPUT_STATE_ADD);
+				if(FAILED(i->inputdevice7->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), i->mousestate, &dwNbele, 0))) {
+					dwNbele = (DWORD)(i->nbbuttons + i->nbaxes + INPUT_STATE_ADD);
+					if(FAILED(i->inputdevice7->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), i->mousestate, &dwNbele, 0))) {
+						i->inputdevice7->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), i->mousestate, &dwNbele, 0);
+						success = false;
+					}
+				}
+				
+				i->nbele = (int)dwNbele;
+				break;
 			}
+			
+			case DIDEVTYPE_KEYBOARD: {
+				if(FAILED(i->inputdevice7->GetDeviceState(256, i->bufferstate))) {
+					DXI_RestoreAllDevices(); 
+					if(FAILED(i->inputdevice7->GetDeviceState(256, i->bufferstate)))  {
+						memset(i->bufferstate, 0, 256);
+						success = false;
+					}
+				}
+				break;
+			}
+			
+		}
+	}
+	
+	return success;
+}
+
+bool DXI_KeyPressed(int dikkey) {
+	return (DI_KeyBoardBuffer->bufferstate[dikkey] & 0x80);
+}
+
+int DXI_GetKeyIDPressed() {
+	
+	char * buf = DI_KeyBoardBuffer->bufferstate;
+	for(int i = 0; i < 256; i++) {
+		if(buf[i] & 0x80) {
+			return i;
 		}
 	}
 	return -1;
 }
-/*-------------------------------------------------------------*/
 
+bool DXI_GetAxeMouseXYZ(int & mx, int & my, int & mz) {
+	
+	mx = my = mz = 0;
+	
+	bool flg = false;
+	const DIDEVICEOBJECTDATA * od = DI_MouseState->mousestate;
+	for(int nb = DI_MouseState->nbele; nb; nb--, od++) {
+		if(od->dwOfs == (DWORD)DIMOFS_X) {
+			mx += od->dwData;
+			flg = true;
+		}
+		else if(od->dwOfs == (DWORD)DIMOFS_Y) {
+			my += od->dwData;
+			flg = true;
+		}
+		else if(od->dwOfs == (DWORD)DIMOFS_Z) {
+			mz += od->dwData;
+			flg = true;
+		}
+	}
+	
+	return flg;
+}
+
+static bool isMouseButton(int numb, DWORD dwOfs) {
+	switch(numb) {
+	case DXI_BUTTON0:
+		return (dwOfs == (DWORD)DIMOFS_BUTTON0);
+	case DXI_BUTTON1:
+		return (dwOfs == (DWORD)DIMOFS_BUTTON1);
+	case DXI_BUTTON2:
+		return (dwOfs == (DWORD)DIMOFS_BUTTON2);
+	case DXI_BUTTON3:
+		return (dwOfs == (DWORD)DIMOFS_BUTTON3);
+	case DXI_BUTTON4:
+		return (dwOfs == (DWORD)DIMOFS_BUTTON4);
+	case DXI_BUTTON5:
+		return (dwOfs == (DWORD)DIMOFS_BUTTON5);
+	case DXI_BUTTON6:
+		return (dwOfs == (DWORD)DIMOFS_BUTTON6);
+	case DXI_BUTTON7:
+		return (dwOfs == (DWORD)DIMOFS_BUTTON7);
+	default:
+		return false;
+	}
+}
+
+void DXI_MouseButtonCountClick(int numb, int & _iNumClick, int & _iNumUnClick) {
+	
+	_iNumClick = 0;
+	_iNumUnClick = 0;
+	
+	const DIDEVICEOBJECTDATA * od = DI_MouseState->mousestate;
+	for(int nb = DI_MouseState->nbele; nb; nb--, od++) {
+		if(isMouseButton(numb, od->dwOfs)) {
+			if(od->dwData & 0x80) {
+				_iNumClick += 1;
+			} else {
+				_iNumUnClick += 1;
+			}
+		}
+	}
+	
+}
+
+bool DXI_MouseButtonPressed(int numb, int & _iDeltaTime) {
+	
+	int iTime1 = 0;
+	int iTime2 = 0;
+	
+	const DIDEVICEOBJECTDATA * od = DI_MouseState->mousestate;
+	for(int nb = DI_MouseState->nbele; nb; nb--, od++) {
+		if(isMouseButton(numb, od->dwOfs) && od->dwData & 0x80) {
+			if(!iTime1) {
+				iTime1 = od->dwTimeStamp;
+			} else {
+				iTime2 = od->dwTimeStamp;
+			}
+		}
+	}
+	
+	if(!iTime2) {
+		_iDeltaTime = 0;
+	} else {
+		_iDeltaTime = iTime2 - iTime1;
+	}
+	
+	return (iTime1 != 0);
+}
+
+bool DXI_SetMouseRelative() {
+	
+	if(FAILED(DI_MouseState->inputdevice7->Unacquire())) {
+		return false;
+	}
+	
+	DIPROPDWORD dipdw = {
+		{
+			sizeof(DIPROPDWORD),  // diph.dwSize
+			sizeof(DIPROPHEADER), // diph.dwHeaderSize
+			0,                    // diph.dwObj
+			DIPH_DEVICE,          // diph.dwHow
+		},
+		DIPROPAXISMODE_REL,     // dwData
+	};
+	if(FAILED(DI_MouseState->inputdevice7->SetProperty(DIPROP_AXISMODE, &dipdw.diph))) {
+		return false;
+	}
+	
+	return !FAILED(DI_MouseState->inputdevice7->Acquire());
+}

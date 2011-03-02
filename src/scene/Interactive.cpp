@@ -58,50 +58,52 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Interactive.h"
 
 #include <cstdlib>
-
-#ifndef DIRECTINPUT_VERSION
-	#define DIRECTINPUT_VERSION 0x0700
-#endif
-
 #include <iomanip>
 #include <algorithm>
-#include <iostream>
-#include <fstream>
 #include <string>
 #include <vector>
 #include <sstream>
-
-#include <dinput.h>
+#include <cstdio>
 
 #include "ai/Paths.h"
-#include "graphics/data/FTL.h"
-#include "game/Equipment.h"
-#include "scene/GameSound.h"
-#include "game/NPC.h"
-#include "physics/Collisions.h"
-#include "scene/ChangeLevel.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "game/Damage.h"
-#include "gui/Speech.h"
+
+#include "animation/Animation.h"
+
 #include "core/Time.h"
-#include "scene/Scene.h"
-#include "gui/MenuWidgets.h"
 #include "core/Dialog.h"
 
-#include "scene/LinkedObject.h"
-#include "physics/CollisionShapes.h"
-#include "physics/Box.h"
-#include "graphics/data/Progressive.h"
-#include "physics/Clothes.h"
+#include "game/Equipment.h"
+#include "game/NPC.h"
+#include "game/Damage.h"
+
+#include "gui/Speech.h"
+#include "gui/MenuWidgets.h"
+
 #include "graphics/Draw.h"
 #include "graphics/data/MeshManipulation.h"
+#include "graphics/data/FTL.h"
+#include "graphics/data/Progressive.h"
+#include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
+
+#include "physics/Collisions.h"
+#include "physics/CollisionShapes.h"
+#include "physics/Box.h"
+#include "physics/Clothes.h"
+
+#include "scene/ChangeLevel.h"
+#include "scene/GameSound.h"
+#include "scene/Scene.h"
+#include "scene/LinkedObject.h"
+#include "scene/LoadLevel.h"
+
 #include "scripting/ScriptEvent.h"
 
 using std::min;
+using std::string;
 
 extern EERIE_CAMERA TCAM[];
 extern long FRAME_COUNT;
@@ -266,7 +268,7 @@ void ARX_INTERACTIVE_DestroyDynamicInfo(INTERACTIVE_OBJ * io)
 
 	if (ValidIONum(n))
 	{
-		for (long i = 0; i < MAX_SPELLS; i++)
+		for (size_t i = 0; i < MAX_SPELLS; i++)
 		{
 			if ((spells[i].exist) && (spells[i].caster == n))
 			{
@@ -524,7 +526,8 @@ EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * file, long fla
 	
 	// TODO the actual .teo files are not shipped with Arx, only the compressed?/preprocessed?/optimized? .ftl files, so if the ARX_FTL_Load call fails we can give up anyway
 
-	if (ret = GetExistingEerie(file))
+	ret = GetExistingEerie(file);
+	if (ret)
 	{
 		ret = Eerie_Copy(ret);
 
@@ -535,9 +538,9 @@ EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * file, long fla
 	alternateway:
 		;
 		size_t FileSize = 0;
-		unsigned char * adr;
+		unsigned char * adr = (unsigned char *)PAK_FileLoadMalloc(file, FileSize);
 
-		if (adr = (unsigned char *)PAK_FileLoadMalloc(file, FileSize))
+		if (adr)
 		{
 			ret = TheoToEerie(adr, FileSize, texpath, file, flag, pd3dDevice, flag | TTE_NO_RESTORE); //SLOWLOAD));
 
@@ -569,7 +572,6 @@ EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * file, long fla
 	        &&	(!(flag & TTE_NO_PDATA)))
 	{
 		CreateNeighbours(ret);
-		EERIEOBJECT_AddProgressiveData(ret);
 		EERIEOBJECT_AddClothesData(ret);
 		KillNeighbours(ret);
 
@@ -2427,13 +2429,13 @@ INTERACTIVE_OBJ * AddInteractive(LPDIRECT3DDEVICE7 pd3dDevice, const char * file
 	if (IsIn(ficc, "ITEMS"))
 		io = AddItem(pd3dDevice, file, flags);
 	else if (IsIn(ficc, "NPC"))
-		io = AddNPC(pd3dDevice, file, flags);
+		io = AddNPC(file, flags);
 	else if (IsIn(ficc, "FIX"))
 		io = AddFix(pd3dDevice, file, flags);
 	else if (IsIn(ficc, "CAMERA"))
-		io = AddCamera(pd3dDevice, file);
+		io = AddCamera(file);
 	else if (IsIn(ficc, "MARKER"))
-		io = AddMarker(pd3dDevice, file);
+		io = AddMarker(file);
 
 	if (io)
 	{
@@ -2689,7 +2691,7 @@ INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
 // AddCamera
 // Adds a CAMERA INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
+INTERACTIVE_OBJ * AddCamera(const char * file)
 {
 	std::string tex1 = file;;
 	std::string texscript = file;
@@ -2759,7 +2761,7 @@ INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
 // AddMarker
 // Adds a MARKER INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddMarker(LPDIRECT3DDEVICE7 pd3dDevice, const char * file)
+INTERACTIVE_OBJ * AddMarker(const char * file)
 {
 	std::string tex1 = file;
 	std::string texscript = file;
@@ -3029,7 +3031,7 @@ void GroundSnapSelectedIO()
 // AddNPC
 // Adds a NPC INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags)
+INTERACTIVE_OBJ * AddNPC(const char * file, long flags)
 {
     // creates script filename
     std::string texscript = file;;
@@ -3688,7 +3690,7 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag, EERIE_3D * _pRe
 
 	return foundBB;
 }
-bool IsEquipedByPlayer(INTERACTIVE_OBJ * io)
+bool IsEquipedByPlayer(const INTERACTIVE_OBJ * io)
 {
 	if (!io)
 		return false;
@@ -3707,8 +3709,8 @@ bool IsEquipedByPlayer(INTERACTIVE_OBJ * io)
 }
 
 extern long LOOKING_FOR_SPELL_TARGET;
-INTERACTIVE_OBJ * InterClick(EERIE_S2D * pos)
-{
+INTERACTIVE_OBJ * InterClick(EERIE_S2D * pos) {
+	
 	LASTINTERCLICKNB = -1;
 
 	if (IsFlyingOverInventory(pos))
@@ -4228,16 +4230,15 @@ void UpdateCameras()
 						{
 							bool Touched = false;
 
-							for (long ri = 0; ri < io->obj->vertexlist.size(); ri += 3)
+							for (size_t ri = 0; ri < io->obj->vertexlist.size(); ri += 3)
 							{
-								for (long rii = 0; rii < ioo->obj->vertexlist.size(); rii += 3)
+								for (size_t rii = 0; rii < ioo->obj->vertexlist.size(); rii += 3)
 								{
 									if (EEDistance3D(&io->obj->vertexlist3[ri].v,
 									                 &ioo->obj->vertexlist3[rii].v) < 20.f)
 									{
 										Touched = true;
-										ri = 999999;
-										rii = 999999;
+										ri = io->obj->vertexlist.size();
 										break;
 									}
 								}
@@ -4386,8 +4387,7 @@ extern CDirectInput * pGetInfoDirectInput;
 extern TextureContainer TexMetal;
 extern long FINAL_COMMERCIAL_DEMO;
 bool bRenderInterList = true; //false;
-void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to, long flags)
-{
+void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to) {
 
 	SETTEXTUREWRAPMODE(pd3dDevice, D3DTADDRESS_CLAMP);
 	float val = -0.6f;
@@ -4464,7 +4464,7 @@ void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to, long flags)
 
 			if ((io->obj)
 			        &&	(io->obj->pbox))
-				EERIE_PHYSICS_BOX_Show(io->obj, &io->pos);
+				EERIE_PHYSICS_BOX_Show(io->obj);
 
 			if (
 			    (io->obj)
@@ -4619,7 +4619,7 @@ void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to, long flags)
 						if ((io->obj->pbox)
 						        &&	(io->obj->pbox->active))
 						{
-							DrawEERIEInterMatrix(pd3dDevice, io->obj, &mat, &io->pos, io, NULL);
+							DrawEERIEInterMatrix(pd3dDevice, io->obj, &mat, &io->pos, io);
 						}
 						else
 						{
@@ -4789,7 +4789,7 @@ bool HaveCommonGroup(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 //***********************************************************************************************
 // Nuky - modified to use cached value first. For now it's safe and will use former method if
 //        the cached value is incorrect, but I think it never happens
-long GetInterNum(INTERACTIVE_OBJ * io)
+long GetInterNum(const INTERACTIVE_OBJ * io)
 {
 	if (io == NULL) return -1;
 

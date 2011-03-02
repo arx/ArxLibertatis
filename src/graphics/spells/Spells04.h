@@ -58,10 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CSPELLFX_LVL04_H
 #define ARX_CSPELLFX_LVL04_H
 
-#include "graphics/particle/ParticleManager.h"
-
-class CParticleSystem;
-class CSpellFx;
+#include "graphics/effects/SpellEffects.h"
+#include "graphics/particle/ParticleSystem.h"
 
 //-----------------------------------------------------------------------------
 // Done By : Didier Pédreno
@@ -89,7 +87,7 @@ class CBless: public CSpellFx
 		CParticleSystem		pPS;
 
 	public:
-		CBless(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CBless();
 
 		// accesseurs
 	public:
@@ -145,7 +143,7 @@ class CFireProtection: public CSpellFx
 		~CFireProtection();
 
 		// surcharge
-		void	Create(long, int);
+		void	Create(long);
 		void	Update(unsigned long);
 		float	Render(LPDIRECT3DDEVICE7);
  
@@ -217,7 +215,7 @@ class CCurse: public CSpellFx
 		float fRotPerMSec;
 
 	public:
-		CCurse(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CCurse();
 		~CCurse();
 		// accesseurs
 	public:

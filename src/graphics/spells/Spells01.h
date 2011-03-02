@@ -89,7 +89,6 @@ class CMagicMissile: public CSpellFx
 		ArxSound snd_loop;
 	public:
 		CMagicMissile();
-		CMagicMissile(LPDIRECT3DDEVICE7);
 		~CMagicMissile();
 
 		// accesseurs
@@ -115,11 +114,11 @@ class CMultiMagicMissile: public CSpellFx
 		unsigned int uiNumber;
 		bool bExplo;
 	public:
-		CMultiMagicMissile(LPDIRECT3DDEVICE7 m_pd3dDevice, long nb);
+		CMultiMagicMissile(long nb);
 		~CMultiMagicMissile();
 
 	public:
-		void	CheckCollision(float);
+		void	CheckCollision();
 
 	public:
 		void	Create(EERIE_3D, EERIE_3D);

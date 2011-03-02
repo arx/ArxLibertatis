@@ -56,19 +56,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Math.h"
 
-#define D3D_OVERLOADS
-
-#include <stdio.h>
 #include <algorithm>
-#include <math.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <cstdio>
 
 #include "core/Application.h"
-#include "graphics/data/Mesh.h"
+
 #include "graphics/GraphicsTypes.h"
+#include "graphics/data/Mesh.h"
 
 using std::min;
 using std::max;
@@ -723,9 +720,9 @@ void Quat_Divide(EERIE_QUAT * dest, const EERIE_QUAT * q1, const EERIE_QUAT * q2
 //*************************************************************************************
 void TransformInverseVertexQuat(const EERIE_QUAT * quat, const EERIE_3D * vertexin, EERIE_3D * vertexout)
 {
-	register EERIE_QUAT rev_quat;
+	EERIE_QUAT rev_quat;
 
-	Quat_Copy(&rev_quat, (EERIE_QUAT *) quat);
+	Quat_Copy(&rev_quat, quat);
 	Quat_Reverse(&rev_quat);
 
 	register float x = vertexin->x;

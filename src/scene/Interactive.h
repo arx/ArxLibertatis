@@ -159,7 +159,7 @@ void ARX_INTERACTIVE_APPLY_TWEAK_INFO(INTERACTIVE_OBJ * io);
 void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const std::string& temp);
 void ARX_INTERACTIVE_Teleport(INTERACTIVE_OBJ * io, EERIE_3D * target, long flags = 0);
 
-bool IsEquipedByPlayer(INTERACTIVE_OBJ * io);
+bool IsEquipedByPlayer(const INTERACTIVE_OBJ * io);
 void CleanScriptLoadedIO();
 void PrepareIOTreatZone(long flag = 0);
  
@@ -173,7 +173,7 @@ INTERACTIVE_OBJ * GetInventoryObj();
 long ValidIONum(long num);
 long ValidIOAddress(INTERACTIVE_OBJ * io);
 bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos);
-bool GetItemWorldPositionSound(INTERACTIVE_OBJ * io, EERIE_3D * pos);
+bool GetItemWorldPositionSound(const INTERACTIVE_OBJ * io, EERIE_3D * pos);
 long GetTargetByNameTarget(const std::string& name);
 void RestoreInitialIOStatusOfIO(INTERACTIVE_OBJ * io);
 
@@ -202,7 +202,7 @@ long GetNumNodeByName(char * name);
 void ReleaseNode();
 // END NODES DATA ******************************************************
 void RestoreInitialIOStatus();
-long GetInterNum(INTERACTIVE_OBJ * io);
+long GetInterNum(const INTERACTIVE_OBJ * io);
 // io from 0 TO 10000
 INTERACTIVE_OBJ * GetInventoryObj_INVENTORYUSE(EERIE_S2D * pos);
 void CheckForInventoryReplaceMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * old);
@@ -233,10 +233,10 @@ INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag = 0, EERIE_3D * 
  
 INTERACTIVE_OBJ * AddInteractive(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long id, long flags = 0);
 INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags = 0);
-INTERACTIVE_OBJ * AddNPC(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags = 0);
+INTERACTIVE_OBJ * AddNPC(const char * file, long flags = 0);
 INTERACTIVE_OBJ  * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& file, long flags = 0);
-INTERACTIVE_OBJ * AddCamera(LPDIRECT3DDEVICE7 pd3dDevice, const char * file);
-INTERACTIVE_OBJ * AddMarker(LPDIRECT3DDEVICE7 pd3dDevice, const char * file);
+INTERACTIVE_OBJ * AddCamera(const char * file);
+INTERACTIVE_OBJ * AddMarker(const char * file);
 
 void InitInter(long nb);
 INTERACTIVE_OBJ * CreateFreeInter(long num = -1);
@@ -247,8 +247,8 @@ void UpdateCameras();
 
 void PlayObjectSound(INTERACTIVE_OBJ * io);
 INTERACTIVE_OBJ * InterClick(EERIE_S2D * pos);
-
-void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to, long flags = 0);
+ 
+void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to);
 INTERACTIVE_OBJ * FlyingOverObject(EERIE_S2D * pos, bool mustlock = false);
 void MakeIOIdent(INTERACTIVE_OBJ * io);
 void SelectIO(INTERACTIVE_OBJ * io);
@@ -280,7 +280,6 @@ void ARX_INVENTORY_IdentifyAll();
 void ARX_INVENTORY_OpenClose(INTERACTIVE_OBJ *);
 void ARX_INVENTORY_TakeAllFromSecondaryInventory();
 
-long GetInterNum(INTERACTIVE_OBJ * io);
 float ARX_INTERACTIVE_GetArmorClass(INTERACTIVE_OBJ * io);
 float ARX_INTERACTIVE_fGetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop);
 long  ARX_INTERACTIVE_GetPrice(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * shop);

@@ -23,18 +23,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include <stdio.h>
-#include <string.h>
+#include "scripting/ScriptDebugger.h"
+
+#include <cstdio>
+#include <cstring>
+
 #include <windows.h>
 
-#include "scripting/ScriptDebuggerDialog.h"
-#include "scene/Interactive.h"
 #include "core/Time.h"
 #include "graphics/data/Mesh.h"
 #include "io/IO.h"
 #include "io/Logger.h"
+#include "scene/Interactive.h"
+#include "scripting/ScriptDebuggerDialog.h"
 
-typedef void (APIENTRY * CREATEDIALOG)(HWND, ScriptDebuggerInfos &);
+typedef void (APIENTRY * CREATEDIALOG)(HWND);
 typedef void (APIENTRY * SETPARAMS)(ScriptDebuggerInfos &);
 typedef bool (APIENTRY * DD_EXISTS)();
 typedef void (APIENTRY * DD_KILL)();
@@ -75,9 +78,7 @@ void DANAE_DEBUGGER_Launch(HWND hWnd)
 
 	if (DD_DebugDialog)
 	{
-		ScriptDebuggerInfos s;
-		memset(&s, 0, sizeof(ScriptDebuggerInfos));
-		DD_DebugDialog(hWnd, s);
+		DD_DebugDialog(hWnd);
 	}
 
 	return;

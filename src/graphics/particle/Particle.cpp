@@ -23,16 +23,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-//-----------------------------------------------------------------------------
+#include "graphics/particle/Particle.h"
+
 #include <vector>
-#include <iostream>
-#include <fstream>
 #include <sstream>
-#include <list>
+#include <climits>
 
 #include "graphics/Math.h"
 #include "graphics/effects/SpellEffects.h"
-#include "graphics/particle/Particle.h"
+
 
 using namespace std;
 

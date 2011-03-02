@@ -26,28 +26,34 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuWidgets.h"
 
 #include <cstring>
+#include <cstdio>
 
 #include <algorithm>
 #include <map>
-#include <utility>
+#include <sstream>
 
 #include "core/Core.h"
+#include "core/Time.h"
+#include "core/Localization.h"
+
 #include "gui/Menu.h"
 #include "gui/MenuPublic.h"
-#include "scene/GameSound.h"
-#include "core/Localization.h"
 #include "gui/Text.h"
 #include "gui/Interface.h"
 #include "gui/Credits.h"
-#include "core/Time.h"
 
+#include "graphics/Draw.h"
+#include "graphics/Frame.h"
+#include "graphics/GraphicsEnum.h"
 #include "graphics/data/Texture.h"
 #include "graphics/data/Mesh.h"
-#include "graphics/Draw.h"
-
-#include "window/DXInput.h"
 
 #include "io/Logger.h"
+
+#include "scene/GameSound.h"
+#include "scene/LoadLevel.h"
+
+#include "window/DXInput.h"
 
 using std::wistringstream;
 using std::min;
@@ -211,15 +217,15 @@ void ARX_QuickSave()
 	bool        bFound0        =    false;
 	bool        bFound1        =    false;
 
-	int            iNbSave0    =    0; // will be used if >0 (0 will so mean NOTFOUND)
-	int            iNbSave1    =    0; // will be used if >0 (0 will so mean NOTFOUND)
+	size_t            iNbSave0    =    0; // will be used if >0 (0 will so mean NOTFOUND)
+	size_t            iNbSave1    =    0; // will be used if >0 (0 will so mean NOTFOUND)
 	SYSTEMTIME    sTime0;
 	SYSTEMTIME    sTime1;
 	ZeroMemory( &sTime0, sizeof(SYSTEMTIME) );// will be used if iNbSave0>0 (iNbSave0==0 will so mean NOTFOUND and sTime0 will not be used)
 	ZeroMemory( &sTime1, sizeof(SYSTEMTIME) );// will be used if iNbSave0>0 (iNbSave1==0 will so mean NOTFOUND and sTime1 will not be used)
 
 
-	for( int iI = 1 ; iI < (save_l.size()) ; iI++ )
+	for( size_t iI = 1 ; iI < save_l.size() ; iI++ )
 	{
 		std::string tex2 = save_l[iI].name;
 		MakeUpcase( tex2 );
@@ -242,8 +248,8 @@ void ARX_QuickSave()
 		( iNbSave0 > 0 ) && ( iNbSave0 < save_l.size() ) &&
 		( iNbSave1 > 0 ) && ( iNbSave1 < save_l.size() ) )
 	{
-		int	iSave;
-
+		size_t iSave;
+		
 		if ( isTimeBefore( sTime0, sTime1 ) )
 			iSave = iNbSave0;
 		else
@@ -337,14 +343,14 @@ bool ARX_QuickLoad()
 	bool bFound0 = false;
 	bool bFound1 = false;
 
-	int iNbSave0    =    0; // will be used if >0 (0 will so mean NOTFOUND)
-	int iNbSave1    =    0; // will be used if >0 (0 will so mean NOTFOUND)
+	size_t iNbSave0    =    0; // will be used if >0 (0 will so mean NOTFOUND)
+	size_t iNbSave1    =    0; // will be used if >0 (0 will so mean NOTFOUND)
 	SYSTEMTIME sTime0;
 	SYSTEMTIME sTime1;
 	ZeroMemory( &sTime0, sizeof(SYSTEMTIME) );// will be used if iNbSave0>0 (iNbSave0==0 will so mean NOTFOUND and sTime0 will not be used)
 	ZeroMemory( &sTime1, sizeof(SYSTEMTIME) );// will be used if iNbSave1>0 (iNbSave1==0 will so mean NOTFOUND ans sTime1 will not be used)
 
-	for( int iI = 1 ; iI < save_l.size() ; iI++ )
+	for( size_t iI = 1 ; iI < save_l.size() ; iI++ )
 	{
 		std::string tex2 = save_l[iI].name;
 		MakeUpcase( tex2 );
@@ -369,7 +375,7 @@ bool ARX_QuickLoad()
 		( iNbSave0 > 0 ) && ( iNbSave0 < save_l.size() ) &&
 		( iNbSave1 > 0 ) && ( iNbSave1 < save_l.size() ) )
 	{
-		int iSave;
+		size_t iSave;
 
 		if ( isTimeBefore( sTime0, sTime1 ) )
 			iSave = iNbSave1;
@@ -753,7 +759,7 @@ int CMenuConfig::GetDIKWithASCII( const std::string& _pcTouch)
 			return iI|(DIK_RALT<<16);
 	}
 
-	for(int iI=DIK_BUTTON1;iI<=DIK_BUTTON32;iI++)
+	for(int iI=DIK_BUTTON1;iI<=(int)DIK_BUTTON32;iI++)
 	{
 		std::string pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI);
 
@@ -777,7 +783,7 @@ std::string CMenuConfig::ReadConfig( const std::string& _section, const std::str
 	
 	// TODO unify with localisation loading (and make platform-independent)
 	char text[256];
-	int iI = GetPrivateProfileString( _section.c_str(), _key.c_str(), "", text, 256, pcName.c_str());
+	GetPrivateProfileString( _section.c_str(), _key.c_str(), "", text, 256, pcName.c_str());
 	
 	LogDebug << "Read section: " << _section << " key: " << _key << " from " << pcName << " as:" << text;
 
@@ -2259,15 +2265,13 @@ bool Menu2_Render()
 						std::string szMenuText1 = QUICK_SAVE_ID1;
 
 						//LOAD
-						int iI;
 						int iFirst=2;
 						bool b1 = false;
 						bool b2 = false;
 
 						while(iFirst>=0)
 						{
-							for(iI=1; iI<(save_l.size()); iI++)
-							{
+							for(size_t iI = 1; iI < save_l.size(); iI++) {
 								std::string tex = save_l[iI].name;
 
 								CMenuElementText *me02;
@@ -2304,7 +2308,7 @@ bool Menu2_Render()
 										tex3,
 										256);
 									tex +=  tex3;
-									GetTimeFormat(    LOCALE_SYSTEM_DEFAULT,
+									GetTimeFormatA(    LOCALE_SYSTEM_DEFAULT,
 										0,
 										&save_l[iI].stime,
 										"   HH:mm",
@@ -2401,8 +2405,7 @@ bool Menu2_Render()
 					{
 						if(save_l.size()!=1)
 						{
-							for(int iI=1;iI<(save_l.size());iI++)
-							{
+							for(size_t iI = 1; iI < save_l.size(); iI++) {
 								std::string tex = save_l[iI].name;
 								std::string tex2;
 								tex2.resize(tex.size());
@@ -3311,6 +3314,8 @@ bool Menu2_Render()
 
 				}
 				break;
+				
+			default: break; // Unhandled menu state.
 			}
 
 		}
@@ -3577,8 +3582,8 @@ void CMenuElementText::SetText( const std::string& _pText )
 
 //-----------------------------------------------------------------------------
 
-void CMenuElementText::Update(int _iDTime)
-{
+void CMenuElementText::Update(int _iDTime) {
+	(void)_iDTime;
 }
 
 //-----------------------------------------------------------------------------
@@ -3619,8 +3624,10 @@ bool CMenuElementText::OnMouseDoubleClick(int _iMouseButton)
 
 //-----------------------------------------------------------------------------
 // true: block les zones de checks
-bool CMenuElementText::OnMouseClick(int _iMouseButton)
-{
+bool CMenuElementText::OnMouseClick(int _iMouseButton) {
+	
+	(void)_iMouseButton;
+	
 	switch(eState)
 	{
 	case EDIT:
@@ -3630,6 +3637,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 		eState=GETTOUCH_TIME;
 		lOldColor=lColorHighlight;
 		return true;
+	default: break;
 	}
 
 	if (iID != BUTTON_MENUMAIN_RESUMEGAME)
@@ -4630,8 +4638,6 @@ CMenuCheckButton::~CMenuCheckButton()
 	}
 }
 
-//-----------------------------------------------------------------------------
-
 void CMenuCheckButton::Move(int _iX, int _iY)
 {
 	CMenuElement::Move(_iX, _iY);
@@ -4644,8 +4650,10 @@ void CMenuCheckButton::Move(int _iX, int _iY)
 
 //-----------------------------------------------------------------------------
 
-bool CMenuCheckButton::OnMouseClick(int _iMouseButton)
-{
+bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
+	
+	(void)_iMouseButton;
+	
 	if(iOldState<0)
 		iOldState=iState;
 
@@ -4992,18 +5000,14 @@ MENUSTATE CWindowMenu::Render()
 
 	if (bMouseListen)
 	{
-		std::vector<CWindowMenuConsole*>::iterator i;
-
-		ARX_CHECK_INT(ARXDiffTimeMenu);
-		int iARXDiffTimeMenu    = ARX_CLEAN_WARN_CAST_INT(ARXDiffTimeMenu) ;
-
+		vector<CWindowMenuConsole*>::iterator i;
 
 		for (i = vWindowConsoleElement.begin(); i != vWindowConsoleElement.end(); ++i)
 		{
 			if(eCurrentMenuState==(*i)->eMenuState)
 			{
-				eMS=(*i)->Update(iPosX,iPosY, 0, iARXDiffTimeMenu);
-
+				eMS=(*i)->Update(iPosX, iPosY, 0);
+				
 				if (eMS != NOP)
 					break;
 			}
@@ -5014,7 +5018,7 @@ MENUSTATE CWindowMenu::Render()
 	{
 		if(eCurrentMenuState==(*i)->eMenuState)
 		{
-			if (int iNbHide = (*i)->Render())
+			if ((*i)->Render())
 				SETALPHABLEND(GDevice,false);
 
 			break;
@@ -5032,12 +5036,10 @@ MENUSTATE CWindowMenu::Render()
 	return eMS;
 }
 
-//-----------------------------------------------------------------------------
-
 CWindowMenuConsole::CWindowMenuConsole(int _iPosX,int _iPosY,int _iWidth,int _iHeight,MENUSTATE _eMenuState) :
 	bMouseListen (true),
-	bEdit (false),
 	iInterligne (10),
+	bEdit (false),
 	lData(0),
 	pData(NULL)
 {
@@ -5411,10 +5413,8 @@ void CWindowMenuConsole::UpdateText()
 int IsMouseButtonClick()
 {
 	//MouseButton
-	for(int i=DXI_BUTTON0;i<=DXI_BUTTON31;i++)
-	{
-		if(pGetInfoDirectInput->GetMouseButtonNowPressed(i))
-		{
+	for(size_t i = 0; i < CDirectInput::ARX_MAXBUTTON; i++) {
+		if(pGetInfoDirectInput->GetMouseButtonNowPressed(i)) {
 			return DIK_BUTTON1+i-DXI_BUTTON0;
 		}
 	}
@@ -5466,7 +5466,7 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool _bValidateTest)
 				}
 				else
 				{
-					for(int iI=DIK_BUTTON1;iI<=DIK_BUTTON32;iI++)
+					for(int iI=DIK_BUTTON1;iI<=(int)DIK_BUTTON32;iI++)
 					{
 						if(pGetInfoDirectInput->iKeyId==iI)
 						{
@@ -5522,7 +5522,7 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool _bValidateTest)
 
 //-----------------------------------------------------------------------------
 
-MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY,int _FrameDiff)
+MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 {
 	bFrameOdd=!bFrameOdd;
 
@@ -6142,7 +6142,7 @@ long CMenuPanel::IsMouseOver(int _iX, int _iY)
 
 //-----------------------------------------------------------------------------
 
-CMenuButton::CMenuButton(int _iID, Font* _pFont,MENUSTATE _eMenuState,int _iPosX,int _iPosY, const std::string& _pText,float _fSize,TextureContainer *_pTex,TextureContainer *_pTexOver,int _iColor,int _iTailleX,int _iTailleY)
+CMenuButton::CMenuButton(int _iID, Font* _pFont,MENUSTATE _eMenuState,int _iPosX,int _iPosY, const std::string& _pText,float _fSize,TextureContainer *_pTex,TextureContainer *_pTexOver,int _iColor)
 	: CMenuElement(_eMenuState)
 {
 	iID = _iID;
@@ -6278,11 +6278,11 @@ void CMenuButton::AddText( const std::string& _pText)
 	rZone.bottom=rZone.top+iSizeYButton;
 }
 
-//-----------------------------------------------------------------------------
-
-bool CMenuButton::OnMouseClick(int _iMouseButton)
-{
-	++iPos;
+bool CMenuButton::OnMouseClick(int _iMouseButton) {
+	
+	(void)_iMouseButton;
+	
+	iPos++;
 
 	ARX_CHECK_NOT_NEG( iPos );
 
@@ -6296,8 +6296,8 @@ bool CMenuButton::OnMouseClick(int _iMouseButton)
 
 //-----------------------------------------------------------------------------
 
-void CMenuButton::Update(int _iDTime)
-{
+void CMenuButton::Update(int _iDTime) {
+	(void)_iDTime;
 }
 
 //-----------------------------------------------------------------------------
@@ -6403,9 +6403,9 @@ CMenuSliderText::CMenuSliderText(int _iID, int _iPosX, int _iPosY)
 {
 	iID = _iID;
 	TextureContainer *pTex = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_button_left.bmp");
-	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTex, pTex, -1, pTex?pTex->m_dwWidth:0, pTex->m_dwHeight);
+	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTex, pTex, -1);
 	pTex = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_button_right.bmp");
-	pRightButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTex, pTex, -1, pTex?pTex->m_dwWidth:0, pTex->m_dwHeight);
+	pRightButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTex, pTex, -1);
 
 	vText.clear();
 
@@ -6708,8 +6708,8 @@ CMenuSlider::CMenuSlider(int _iID, int _iPosX, int _iPosY)
 
 	TextureContainer *pTexL = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_button_left.bmp");
 	TextureContainer *pTexR = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_button_right.bmp");
-	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTexL, pTexR, -1, pTexL->m_dwWidth, pTexL->m_dwHeight);
-	pRightButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTexR, pTexL, -1, pTexR->m_dwWidth, pTexR->m_dwHeight);
+	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTexL, pTexR, -1);
+	pRightButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTexR, pTexL, -1);
 	pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_on.bmp");
 	pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_off.bmp");
 
@@ -7008,13 +7008,12 @@ CDirectInput::CDirectInput()
 	iNumCursor=0;
 	lFrameDiff=0;
 
-	for(int i=DXI_BUTTON0;i<=DXI_BUTTON31;i++)
-	{
-		iOldMouseButton[i]=0;
-		iMouseTime[i]=0;
-		iMouseTimeSet[i]=0;
-		bMouseButton[i]=bOldMouseButton[i]=false;
-		iOldNumClick[i]=iOldNumUnClick[i]=0;
+	for(size_t i = 0; i < ARX_MAXBUTTON; i++) {
+		iOldMouseButton[i] = 0;
+		iMouseTime[i] = 0;
+		iMouseTimeSet[i] = 0;
+		bMouseButton[i] = bOldMouseButton[i] = false;
+		iOldNumClick[i] = iOldNumUnClick[i] = 0;
 	}
 
 	// PreCompute le ScanCode
@@ -7072,13 +7071,12 @@ void CDirectInput::SetSensibility(int _iSensibility)
 
 void CDirectInput::ResetAll()
 {
-	for(int i=DXI_BUTTON0;i<=DXI_BUTTON31;i++)
-	{
-		iOldMouseButton[i]=0;
-		iMouseTime[i]=0;
-		iMouseTimeSet[i]=0;
-		bMouseButton[i]=bOldMouseButton[i]=false;
-		iOldNumClick[i]=iOldNumUnClick[i]=0;
+	for(size_t i = 0; i < ARX_MAXBUTTON; i++) {
+		iOldMouseButton[i] = 0;
+		iMouseTime[i] = 0;
+		iMouseTimeSet[i] = 0;
+		bMouseButton[i] = bOldMouseButton[i] = false;
+		iOldNumClick[i] = iOldNumUnClick[i] = 0;
 	}
 
 	iKeyId=-1;
@@ -7100,8 +7098,8 @@ void CDirectInput::GetInput()
 {
 	int iDTime;
 
-	DXI_ExecuteAllDevices(false);
-	iKeyId=DXI_GetKeyIDPressed(DXI_KEYBOARD1);
+	DXI_ExecuteAllDevices();
+	iKeyId=DXI_GetKeyIDPressed();
 	bTouch=(iKeyId>=0)?true:false;
 
 	for(int i=0;i<256;i++)
@@ -7187,11 +7185,11 @@ void CDirectInput::GetInput()
 	const int iArxTime = ARX_CLEAN_WARN_CAST_INT(ARX_TIME_Get( false )) ;
 
 
-	for(int i=DXI_BUTTON0;i<=DXI_BUTTON31;i++)
+	for(size_t i = 0; i < ARX_MAXBUTTON; i++)
 	{
 		int iNumClick;
 		int iNumUnClick;
-		DXI_MouseButtonCountClick(DXI_MOUSE1,i,&iNumClick,&iNumUnClick);
+		DXI_MouseButtonCountClick(i, iNumClick, iNumUnClick);
 
 		iOldNumClick[i]+=iNumClick+iNumUnClick;
 
@@ -7219,8 +7217,7 @@ void CDirectInput::GetInput()
 
 		if(iOldNumClick[i]) iOldNumClick[i]--;
 
-		iDTime=0;
-		DXI_MouseButtonPressed(DXI_MOUSE1,i,&iDTime);
+		DXI_MouseButtonPressed(i,iDTime);
 
 		if(iDTime)
 		{
@@ -7254,7 +7251,7 @@ void CDirectInput::GetInput()
 		}
 		}
 
-	iWheelSens=pGetInfoDirectInput->GetWheelSens(DXI_MOUSE1);
+	iWheelSens=pGetInfoDirectInput->GetWheelSens();
 
 	if(    ( danaeApp.m_pFramework->m_bIsFullscreen ) &&
 		( bGLOBAL_DINPUT_MENU ) )
@@ -7263,8 +7260,7 @@ void CDirectInput::GetInput()
 		float fDY = 0.f;
 		iMouseRX = iMouseRY = iMouseRZ = 0;
 
-		if( DXI_GetAxeMouseXYZ(DXI_MOUSE1, &iMouseRX, &iMouseRY, &iMouseRZ) )
-		{
+		if(DXI_GetAxeMouseXYZ(iMouseRX, iMouseRY, iMouseRZ)) {
 			float fSensMax = 1.f / 6.f;
 			float fSensMin = 2.f;
 			float fSens = ( ( fSensMax - fSensMin ) * ( (float)iSensibility ) / 10.f ) + fSensMin;
@@ -7368,11 +7364,11 @@ void CDirectInput::GetInput()
 
 //-----------------------------------------------------------------------------
 
-int CDirectInput::GetWheelSens(int _iIDbutton)
-{
-	int iX,iY,iZ=0;
-	DXI_GetAxeMouseXYZ(_iIDbutton,&iX,&iY,&iZ);
-
+int CDirectInput::GetWheelSens() {
+	
+	int iX, iY, iZ = 0;
+	DXI_GetAxeMouseXYZ(iX, iY, iZ);
+	
 	return iZ;
 }
 
@@ -7380,7 +7376,7 @@ int CDirectInput::GetWheelSens(int _iIDbutton)
 
 bool CDirectInput::IsVirtualKeyPressed(int _iVirtualKey)
 {
-	return DXI_KeyPressed(DXI_KEYBOARD1,_iVirtualKey)?true:false;
+	return DXI_KeyPressed(_iVirtualKey)?true:false;
 }
 
 //-----------------------------------------------------------------------------
@@ -7388,7 +7384,7 @@ bool CDirectInput::IsVirtualKeyPressed(int _iVirtualKey)
 bool CDirectInput::IsVirtualKeyPressedOneTouch(int _iVirtualKey)
 {
 
-	return(    (DXI_KeyPressed(DXI_KEYBOARD1,_iVirtualKey))&&
+	return(    (DXI_KeyPressed(_iVirtualKey))&&
 			(iOneTouch[_iVirtualKey]==1) );
 }
 
@@ -7396,7 +7392,7 @@ bool CDirectInput::IsVirtualKeyPressedOneTouch(int _iVirtualKey)
 
 bool CDirectInput::IsVirtualKeyPressedNowPressed(int _iVirtualKey)
 {
-	return(    (DXI_KeyPressed(DXI_KEYBOARD1,_iVirtualKey))&&
+	return(    (DXI_KeyPressed(_iVirtualKey))&&
 			(iOneTouch[_iVirtualKey]==1) );
 }
 
@@ -7404,14 +7400,14 @@ bool CDirectInput::IsVirtualKeyPressedNowPressed(int _iVirtualKey)
 
 bool CDirectInput::IsVirtualKeyPressedNowUnPressed(int _iVirtualKey)
 {
-	return(    (!DXI_KeyPressed(DXI_KEYBOARD1,_iVirtualKey))&&
+	return(    (!DXI_KeyPressed(_iVirtualKey))&&
 			(iOneTouch[_iVirtualKey]==1) );
 }
 
 //-----------------------------------------------------------------------------
 
-void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY,int _iColor)
-{
+void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY) {
+	
 	GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_POINT );
 	GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_POINT );
 	SETTEXTUREWRAPMODE(GDevice,D3DTADDRESS_CLAMP);
@@ -7549,7 +7545,7 @@ void CDirectInput::DrawCursor()
 	SETALPHABLEND(GDevice,false);
 
 	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
-	DrawOneCursor(iMouseAX,iMouseAY,-1);
+	DrawOneCursor(iMouseAX,iMouseAY);
 
 	danaeApp.EnableZBuffer();
 

@@ -45,11 +45,7 @@ struct C_UNDOPILE
 	C_KEY	key;
 };
 /*----------------------------------------------------------------------*/
-extern HWND HwndPere;
 extern bool ProjectModif;
-/*----------------------------------------------------------------------*/
-static bool GereTrackNoPlay2(C_KEY * k, int frame);
-static bool DeleteKey2(Cinematic * c, int frame);
 /*----------------------------------------------------------------------*/
 CinematicTrack	* CKTrack;
 
@@ -459,7 +455,7 @@ void AddDiffKey(Cinematic * c, C_KEY * key, bool writecolor, bool writecolord, b
 
 	if (!k) return;
 
-	ksuiv = (num == CKTrack->nbkey) ? ksuiv = k : ksuiv = k + 1;
+	ksuiv = (num == CKTrack->nbkey) ? k : k + 1;
 
 	if (DiffKey(k, key))
 	{
@@ -527,7 +523,7 @@ bool GereTrack(Cinematic * c, float fpscurr)
 	if (CKTrack->pause) return true;
 
 	k = GetKey((int)CKTrack->currframe, &num);
-	ksuiv = (num == CKTrack->nbkey) ? ksuiv = k : ksuiv = k + 1;
+	ksuiv = (num == CKTrack->nbkey) ? k : k + 1;
 
 	if (ksuiv->frame != k->frame)
 		a = (CKTrack->currframe - (float)k->frame) / ((float)(ksuiv->frame - k->frame));
@@ -733,7 +729,7 @@ consequences on light :
 	}
 
 	c->flTime += fpscurr;
-	CKTrack->currframe = (((float)(c->flTime)) / 1000.f) * ((float)(GetEndFrame() - GetStartFrame())) / (float)GetTimeKeyFramer(c);
+	CKTrack->currframe = (((float)(c->flTime)) / 1000.f) * ((float)(GetEndFrame() - GetStartFrame())) / (float)GetTimeKeyFramer();
 
 	if (CKTrack->currframe > (float)CKTrack->endframe)
 	{
@@ -760,7 +756,7 @@ bool GereTrackNoPlay(Cinematic * c)
 
 	if (!k) return false;
 
-	ksuiv = (num == CKTrack->nbkey) ? ksuiv = k : ksuiv = k + 1;
+	ksuiv = (num == CKTrack->nbkey) ? k : k + 1;
 
 	if (ksuiv->frame != k->frame)
 		a = (CKTrack->currframe - (float)k->frame) / ((float)(ksuiv->frame - k->frame));
@@ -985,7 +981,7 @@ int GetCurrentFrame(void)
 	return (int)CKTrack->currframe;
 }
 /*----------------------------------------------------------------------*/
-float GetTimeKeyFramer(Cinematic * c)
+float GetTimeKeyFramer()
 {
 	if (!CKTrack) return 0.f;
 

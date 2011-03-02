@@ -57,24 +57,33 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/particle/ParticleEffects.h"
 
-#include <cstdio>
+#include <algorithm>
+#include <cassert>
 
-#include "window/Input.h"
-#include "graphics/effects/SpellEffects.h"
-#include "scene/GameSound.h"
-#include "physics/Collisions.h"
+#include "ai/Paths.h"
+
+#include "core/Time.h"
+
+#include "game/Damage.h"
+#include "game/Player.h"
+
 #include "gui/Interface.h"
 #include "gui/MenuWidgets.h"
 #include "gui/MenuPublic.h"
-#include "ai/Paths.h"
-#include "core/Time.h"
-#include "game/Damage.h"
-#include "scene/Scene.h"
 
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
-#include "scene/Object.h"
+#include "graphics/effects/SpellEffects.h"
+
+#include "physics/Collisions.h"
 #include "physics/Box.h"
+
+#include "scene/GameSound.h"
+#include "scene/Scene.h"
+#include "scene/Object.h"
+#include "scene/Interactive.h"
+
+#include "window/Input.h"
 
 using std::max;
 
@@ -215,8 +224,8 @@ void LaunchDummyParticle()
 }
 
 //-----------------------------------------------------------------------------
-void ARX_PARTICLES_Spawn_Lava_Burn(EERIE_3D * poss,float power,INTERACTIVE_OBJ * io)
-{
+void ARX_PARTICLES_Spawn_Lava_Burn(EERIE_3D * poss, INTERACTIVE_OBJ * io) {
+	
 	EERIE_3D pos;
 	pos.x=poss->x;
 	pos.y=poss->y;
@@ -227,21 +236,19 @@ void ARX_PARTICLES_Spawn_Lava_Burn(EERIE_3D * poss,float power,INTERACTIVE_OBJ *
 		&&	!io->obj->facelist.empty()	)
 	{
 		long notok	=	10;
-		long num	=	0;
+		size_t num	=	0;
 
 		while ( notok-- )
 		{
 			num = rnd() * io->obj->facelist.size();
+			assert(num < io->obj->facelist.size());
 
-			if ( ( num >= 0 ) && ( num < io->obj->facelist.size() ) )
-			{
-				if ( io->obj->facelist[num].facetype & POLY_HIDE ) continue;
+			if ( io->obj->facelist[num].facetype & POLY_HIDE ) continue;
 
-				if ( EEfabs( pos.y-io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v.y ) > 50.f )
-					continue;
+			if ( EEfabs( pos.y-io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v.y ) > 50.f )
+				continue;
 
-				notok = 0;
-			}
+			notok = 0;
 		}
 
 		if ((notok >= 0) && 
@@ -328,9 +335,9 @@ void ARX_PARTICLES_Spawn_Rogue_Blood(EERIE_3D * pos,float dmgs,D3DCOLOR col)
 	}
 	
 }
-//-----------------------------------------------------------------------------
-void ARX_PARTICLES_Spawn_Blood3(EERIE_3D * pos,float dmgs,D3DCOLOR col,long vert,INTERACTIVE_OBJ * io,long flags)
-{
+
+void ARX_PARTICLES_Spawn_Blood3(EERIE_3D * pos,float dmgs,D3DCOLOR col, long flags) {
+	
 	long j = ARX_PARTICLES_GetFree();
 	
 		if (	(j!=-1)
@@ -383,7 +390,7 @@ void ARX_PARTICLES_Spawn_Blood3(EERIE_3D * pos,float dmgs,D3DCOLOR col,long vert
 #define SPLAT_MULTIPLY 1.f
 
 //-----------------------------------------------------------------------------
-void ARX_POLYSPLAT_Add(EERIE_3D * poss,long type,EERIE_RGB * col,float size,long flags)
+void ARX_POLYSPLAT_Add(EERIE_3D * poss,EERIE_RGB * col,float size,long flags)
 {
 	if (BoomCount > (MAX_POLYBOOM >> 2) - 30) return;
 
@@ -642,14 +649,14 @@ void ARX_POLYSPLAT_Add(EERIE_3D * poss,long type,EERIE_RGB * col,float size,long
 //-----------------------------------------------------------------------------
 void SpawnGroundSplat(EERIE_SPHERE * sp,EERIE_RGB * rgb,float size,long flags)
 {
-		ARX_POLYSPLAT_Add(&sp->origin,0,rgb,size,flags);
+		ARX_POLYSPLAT_Add(&sp->origin,rgb,size,flags);
 }
 
 
 long TOTAL_BODY_CHUNKS_COUNT=0;
 	
 //-----------------------------------------------------------------------------
-void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos,float dmgs,D3DCOLOR col,long vert,INTERACTIVE_OBJ * io)
+void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos,float dmgs,D3DCOLOR col,INTERACTIVE_OBJ * io)
 {
 	if (	(io)
 		&&	(io->ioflags & IO_NPC)
@@ -700,10 +707,10 @@ void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos,float dmgs,D3DCOLOR col,long vert
 
 			if (io->_npcdata->SPLAT_TOT_NB>MAX_GROUND_SPLATS)
 			{
-				ARX_PARTICLES_Spawn_Blood3(&posi,io->_npcdata->SPLAT_DAMAGES,col,vert,io,1);	
+				ARX_PARTICLES_Spawn_Blood3(&posi,io->_npcdata->SPLAT_DAMAGES,col,1);	
 				io->_npcdata->SPLAT_TOT_NB=1;
 			}
-			else ARX_PARTICLES_Spawn_Blood3(&posi,io->_npcdata->SPLAT_DAMAGES,col,vert,io,0);	
+			else ARX_PARTICLES_Spawn_Blood3(&posi,io->_npcdata->SPLAT_DAMAGES,col,0);	
 		}
 	}
 	else 
@@ -712,7 +719,7 @@ void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos,float dmgs,D3DCOLOR col,long vert
 			&&	(io->ioflags & IO_NPC)	)
 			io->_npcdata->SPLAT_DAMAGES=(short)dmgs;
 
-		ARX_PARTICLES_Spawn_Blood3(pos,dmgs,col,vert,io,1);			
+		ARX_PARTICLES_Spawn_Blood3(pos,dmgs,col,1);			
 
 		if (	(io)
 			&&	(io->ioflags & IO_NPC)	)
@@ -725,7 +732,7 @@ void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos,float dmgs,D3DCOLOR col,long vert
 }
 
 //-----------------------------------------------------------------------------
-void ARX_PARTICLES_Spawn_Blood(EERIE_3D * pos,EERIE_3D * vect,float dmgs,long source)
+void ARX_PARTICLES_Spawn_Blood(EERIE_3D * pos,float dmgs,long source)
 {
 	if (source<0) return;
 
@@ -1444,8 +1451,8 @@ void ARX_BOOMS_Add(EERIE_3D * poss,long type)
 }
 
 //-----------------------------------------------------------------------------
-void Add3DBoom(EERIE_3D * position, EERIE_3DOBJ *pObj3DSphere)
-{
+void Add3DBoom(EERIE_3D * position) {
+	
 	float dist=Distance3D(player.pos.x,player.pos.y-160.f,player.pos.z,position->x,position->y,position->z);
 	EERIE_3D poss;
 	Vector_Copy(&poss,position);
@@ -1500,8 +1507,7 @@ void Add3DBoom(EERIE_3D * position, EERIE_3DOBJ *pObj3DSphere)
 }
 
 //-----------------------------------------------------------------------------
-void UpdateObjFx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CAMERA * cam)
-		{
+void UpdateObjFx(LPDIRECT3DDEVICE7 pd3dDevice) {
 
 	unsigned long framediff;
 	float val,aa,bb;
@@ -1677,7 +1683,7 @@ void ARX_PARTICLES_ClearAll()
 //-----------------------------------------------------------------------------
 long ARX_PARTICLES_GetFree()
 {	
-	for ( long i = 0 ; i < MAX_PARTICLES ; i++)
+	for ( size_t i = 0 ; i < MAX_PARTICLES ; i++)
 		if ( !particle[i].exist )
 		{
 			PARTICLE_DEF *pd	= &particle[i];
@@ -1849,8 +1855,8 @@ void ARX_GenereSpheriqueEtincelles(EERIE_3D *pos,float r,TextureContainer *tc,fl
 
 //-----------------------------------------------------------------------------
 // flags & 1 = spawn_body_chunk
-void ARX_PARTICLES_Spawn_Splat(EERIE_3D * pos,float dmgs,D3DCOLOR col,long vert,INTERACTIVE_OBJ * io,long flags)
-{
+void ARX_PARTICLES_Spawn_Splat(EERIE_3D * pos,float dmgs,D3DCOLOR col) {
+	
 	float power;
 	power=(dmgs*( 1.0f / 60 ))+0.9f;
 
@@ -2064,18 +2070,17 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 
 	if 	(ParticleCount==0) return;
 
-	register long i;
-	register long xx,yy;
-	register unsigned  long tim;
+	long xx,yy;
+	unsigned  long tim;
 	long framediff;
 	long framediff2;
 	long t;
-	register D3DTLVERTEX in,inn,out;
-	register D3DCOLOR color;
-	register float siz,siz2,r;
-	register float val;
-	register float fd;
-	register float rott;
+	D3DTLVERTEX in,inn,out;
+	D3DCOLOR color;
+	float siz,siz2,r;
+	float val;
+	float fd;
+	float rott;
 	
 	tim = ARXTimeUL();//treat warning C4244 conversion from 'float' to 'unsigned long'	
 	
@@ -2086,8 +2091,7 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 	TextureContainer * tc=NULL;
 	long pcc=ParticleCount;
 
-	for (i=0;i<MAX_PARTICLES;i++) 
-	{
+	for(size_t i = 0; i < MAX_PARTICLES; i++) {
 		PARTICLE_DEF * part=&particle[i];
 
 		if (part->exist) 
@@ -2536,7 +2540,7 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 						end.x=pos.x-(pos.x-op.x)*2.5f;
 						end.y=pos.y-(pos.y-op.y)*2.5f;
 						end.z=pos.z-(pos.z-op.z)*2.5f;
-						Draw3DLineTex2(pd3dDevice,end,pos,2.f,color1 & part->mask,color1);
+						Draw3DLineTex2(end,pos,2.f,color1 & part->mask,color1);
 						
 						EERIEDrawSprite(pd3dDevice,&in,.7f,tc,color1,2.f);				
 						

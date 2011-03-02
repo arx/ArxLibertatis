@@ -75,8 +75,7 @@ HRESULT EERIEDRAWPRIM(LPDIRECT3DDEVICE7 pd3dDevice,
                       LPVOID lpvVertices,
                       DWORD  dwVertexCount,
                       DWORD  dwFlags,					//d3d flag
-                      long flags = 0,					//eerie flag
-                      EERIEPOLY * ep = NULL
+                      long flags = 0					//eerie flag
                      );
 
 void EERIE_DrawPolyBump(LPDIRECT3DDEVICE7 pd3dDevice, EERIEPOLY * ep, float alpha);
@@ -97,7 +96,7 @@ void EERIEDraw3DLine(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3D * orgn, EERIE_3D * d
 void EERIEDrawBitmap2DecalY(LPDIRECT3DDEVICE7 pd3dDevice, float x, float y, float sx, float sy, float z, TextureContainer * tex, D3DCOLOR col, float _fDeltaY);
 
 void EERIEOBJECT_Quadify(EERIE_3DOBJ * obj);
-void EERIE_DRAW_SetTextureZMAP(long num, TextureContainer * Z_map);
+void EERIE_DRAW_SetTextureZMAP(TextureContainer * Z_map);
 
 void EERIEDrawSprite(LPDIRECT3DDEVICE7 pd3dDevice, D3DTLVERTEX * in, float siz, TextureContainer * tex, D3DCOLOR col, float Zpos);
 void EERIEDrawRotatedSprite(LPDIRECT3DDEVICE7 pd3dDevice, D3DTLVERTEX * in, float siz, TextureContainer * tex, D3DCOLOR col, float Zpos, float rot);

@@ -75,7 +75,6 @@ long PhysicsCorrectedMove(float ox, float oy, float oz,
 void CorrectMove(float ox, float oy, float oz,
                  float tx, float ty, float tz, EERIE_3D * mt);
 void ARX_PHYSICS_Apply();
-EERIEPOLY * IsUnderWater(float x, float y, float z);
 float GetTruePolyY(EERIEPOLY * ep, EERIE_3D * pos);
 bool IsAnyPolyThere(float x, float z);
 EERIEPOLY * BCCheckInPoly(float x, float y, float z);

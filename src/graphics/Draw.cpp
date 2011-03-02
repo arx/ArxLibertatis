@@ -45,6 +45,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Draw.h"
 
 #include "core/Application.h"
+
+#include "graphics/GraphicsEnum.h"
 #include "graphics/data/Mesh.h"
 
 #include "io/IO.h"
@@ -248,7 +250,7 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 		ep2->tv[3].color=ep2->v[3].color=EERIECOLOR_WHITE;
 		ep2->tv[3].rhw=ep2->v[3].rhw=1.f;
 
-	DeclareEGInfo(ep->v[3].sx,ep->v[3].sy,ep->v[3].sz);
+	DeclareEGInfo(ep->v[3].sx, ep->v[3].sz);
 
 	ep2->center.x=(ep2->v[0].sx+ep2->v[1].sx+ep2->v[2].sx+ep2->v[3].sx)*( 1.0f / 4 );
 	ep2->center.y=(ep2->v[0].sy+ep2->v[1].sy+ep2->v[2].sy+ep2->v[3].sy)*( 1.0f / 4 );
@@ -348,7 +350,7 @@ void DRAWLATER_ReInit()
 	curdrawlater=0;
 }
 
-void EERIE_DRAW_SetTextureZMAP(long num,TextureContainer * Z_map)
+void EERIE_DRAW_SetTextureZMAP(TextureContainer * Z_map)
 {
 	Zmap=Z_map;
 }
@@ -461,10 +463,8 @@ HRESULT EERIEDRAWPRIM(	LPDIRECT3DDEVICE7 pd3dDevice,
 						LPVOID lpvVertices,                 
 						DWORD  dwVertexCount,               
 						DWORD  dwFlags,
-						long flags,
-						EERIEPOLY * ep
-					)
-{
+						long flags) {
+	
 	if( !( EERIE_NOCOUNT & flags ) )
 		EERIEDrawnPolys++;
 
@@ -913,7 +913,7 @@ void EERIE_DrawPolyBump(LPDIRECT3DDEVICE7 pd3dDevice,EERIEPOLY *ep,float alpha)
 
 void EERIEDrawLine(float x,float y,float x1,float y1,float z,D3DCOLOR col)
 {
-	register D3DTLVERTEX tv[2];
+	D3DTLVERTEX tv[2];
 	tv[0].sx=x;
 	tv[0].sy=y;
 	tv[1].sz=tv[0].sz=z;
@@ -931,7 +931,7 @@ void EERIEDrawLine(float x,float y,float x1,float y1,float z,D3DCOLOR col)
 
 void EERIEDraw2DLine(LPDIRECT3DDEVICE7 pd3dDevice, float x0,float y0,float x1,float y1,float z, D3DCOLOR col)
 {
-	register D3DTLVERTEX v[2];
+	D3DTLVERTEX v[2];
 
 	SETTC(pd3dDevice,NULL);
 	v[0].sx=x0;
@@ -949,7 +949,7 @@ void EERIEDraw2DLine(LPDIRECT3DDEVICE7 pd3dDevice, float x0,float y0,float x1,fl
 
 void EERIEDraw2DRect(LPDIRECT3DDEVICE7 pd3dDevice, float x0,float y0,float x1,float y1,float z, D3DCOLOR col)
 {
-	register D3DTLVERTEX v[5];
+	D3DTLVERTEX v[5];
 
 	SETTC(pd3dDevice,NULL);
 	v[4].sx=v[3].sx=v[0].sx=x0;
@@ -983,7 +983,7 @@ void EERIEDrawFill2DRectDegrad(LPDIRECT3DDEVICE7 pd3dDevice, float x0,float y0,f
 
 void EERIEDraw3DCylinder(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CYLINDER * cyl, D3DCOLOR col)
 {
-	register EERIE_3D from,to;
+	EERIE_3D from,to;
 	#define STEPCYL 16
 
 	for (long i=0;i<360-STEPCYL;i+=STEPCYL)
@@ -1022,7 +1022,7 @@ void EERIEDraw3DCylinder(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CYLINDER * cyl, D3D
 
 void EERIEDraw3DCylinderBase(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CYLINDER * cyl, D3DCOLOR col)
 {
-	register EERIE_3D from,to;
+	EERIE_3D from,to;
 	#define STEPCYL 16
 
 	for (long i=0;i<360-STEPCYL;i+=STEPCYL)
@@ -1131,7 +1131,7 @@ void EERIEDraw3DLine(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3D * orgn, EERIE_3D * de
 
 void EERIEDrawSprite(LPDIRECT3DDEVICE7 pd3dDevice,D3DTLVERTEX *in,float siz,TextureContainer * tex,D3DCOLOR col,float Zpos)
 {
-	register D3DTLVERTEX out;
+	D3DTLVERTEX out;
 	
 	EERIETreatPoint2(in,&out);
 
@@ -1187,7 +1187,7 @@ void EERIEDrawSprite(LPDIRECT3DDEVICE7 pd3dDevice,D3DTLVERTEX *in,float siz,Text
 
 void EERIEDrawRotatedSprite(LPDIRECT3DDEVICE7 pd3dDevice,D3DTLVERTEX *in,float siz,TextureContainer * tex,D3DCOLOR col,float Zpos,float rot)
 {
-	register D3DTLVERTEX out;
+	D3DTLVERTEX out;
 	register float tt;
 		
 	EERIETreatPoint2(in, &out);

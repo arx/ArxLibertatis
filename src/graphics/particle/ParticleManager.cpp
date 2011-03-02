@@ -68,21 +68,20 @@ todo:
 */
 
 //TODO(lubosz): remove Version history
-//-----------------------------------------------------------------------------
-#include <list>
+
+#include "graphics/particle/ParticleManager.h"
+
 #include <algorithm>
-#include <iostream>
-#include <fstream>
 #include <sstream>
 #include <vector>
 
 #include "core/Core.h"
-#include "graphics/effects/SpellEffects.h"
-#include "graphics/particle/ParticleManager.h"
-#include "graphics/particle/ParticleParams.h"
 
 #include "graphics/Draw.h"
 #include "graphics/data/Mesh.h"
+
+#include "graphics/effects/SpellEffects.h"
+#include "graphics/particle/ParticleParams.h"
 
 using namespace std;
 

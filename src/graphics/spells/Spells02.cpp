@@ -53,30 +53,35 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+
+#include "graphics/spells/Spells02.h"
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <vector>
-
-#include "graphics/Math.h"
-#include "scene/Light.h"
+#include <cassert>
+#include <climits>
 
 #include "core/Core.h"
+#include "core/Time.h"
+
 #include "game/Spells.h"
+#include "game/Player.h"
+
+#include "graphics/Math.h"
 #include "graphics/effects/SpellEffects.h"
-#include "graphics/spells/Spells02.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleParams.h"
-#include "core/Time.h"
 
-//#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
+#include "scene/Light.h"
+#include "scene/Interactive.h"
 
 extern CParticleManager * pParticleManager;
 
-//-----------------------------------------------------------------------------
-CHeal::CHeal(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CHeal::CHeal()
 {
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
@@ -228,8 +233,8 @@ void CHeal::Update(unsigned long aulTime)
 	}
 
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
-	ARX_CHECK_LONG(ulCalc);
-	long ff = 	ARX_CLEAN_WARN_CAST_LONG(ulCalc);
+	assert(ulCalc <= LONG_MAX);
+	long ff = static_cast<long>(ulCalc);
 
 	if (ff < 1500)
 	{
@@ -269,7 +274,7 @@ float CHeal::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		return 0.f;
 	}
 
-	pPS->Render(m_pd3dDevice, D3DBLEND_ONE, D3DBLEND_ONE);
+	pPS->Render(m_pd3dDevice);
 
 	return 1;
 }
@@ -277,8 +282,10 @@ float CHeal::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-float CHarm::Render(LPDIRECT3DDEVICE7 device)
-{
+float CHarm::Render(LPDIRECT3DDEVICE7 device) {
+	
+	(void)device;
+	
 	return 0;
 }
 
@@ -295,8 +302,8 @@ CArmor::~CArmor()
 }
 
 //-----------------------------------------------------------------------------
-void CArmor::Create(long _ulDuration, int _iNpc)
-{
+void CArmor::Create(long _ulDuration) {
+	
 	SetDuration(_ulDuration);
 
 	if (spellinstance != -1)
@@ -325,8 +332,10 @@ void CArmor::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-float CArmor::Render(LPDIRECT3DDEVICE7 _pD3DDevice)
-{
+float CArmor::Render(LPDIRECT3DDEVICE7 _pD3DDevice) {
+	
+	(void)_pD3DDevice;
+	
 	return 0;
 }
 
@@ -344,8 +353,8 @@ CLowerArmor::~CLowerArmor()
 }
 
 //-----------------------------------------------------------------------------
-void CLowerArmor::Create(long _ulDuration, int _iNpc)
-{
+void CLowerArmor::Create(long _ulDuration) {
+	
 	SetDuration(_ulDuration);
 
 	if (spellinstance != -1)
@@ -373,7 +382,9 @@ void CLowerArmor::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-float CLowerArmor::Render(LPDIRECT3DDEVICE7 _pD3DDevice)
-{
+float CLowerArmor::Render(LPDIRECT3DDEVICE7 _pD3DDevice) {
+	
+	(void)_pD3DDevice;
+	
 	return 0;
 }

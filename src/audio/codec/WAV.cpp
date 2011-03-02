@@ -22,13 +22,15 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+
+#include "audio/codec/WAV.h"
+
 #include <windows.h>
 #include <mmreg.h>
 
 #include "io/PakManager.h"
 #include "io/Logger.h"
 
-#include "audio/codec/WAV.h"
 #include "audio/codec/RAW.h"
 #include "audio/codec/ADPCM.h"
 
@@ -50,7 +52,7 @@ namespace ATHENA
 			ChunkFile(PakFileHandle * file);
 			~ChunkFile();
 			//I/O
-			aalSBool Read(aalVoid *, const aalULong &);
+			aalSBool Read(void *, const aalULong &);
 			aalSBool Skip(const aalULong &);
 			aalSBool Find(const char *);
 			aalSBool Check(const char *);
@@ -126,7 +128,7 @@ namespace ATHENA
 		// Get codec specific infos from header for non-PCM format
 		if (AS_FORMAT_PCM(format)->wFormatTag != WAVE_FORMAT_PCM)
 		{
-			aalVoid * ptr;
+			void * ptr;
 
 			//Load extra bytes from header
 			if (wave.Read(&AS_FORMAT_PCM(format)->cbSize, 2)) return AAL_ERROR_FORMAT;
@@ -251,7 +253,7 @@ namespace ATHENA
 	// I/O                                                                       //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError StreamWAV::Read(aalVoid * buffer, const aalULong & to_read, aalULong & _read)
+	aalError StreamWAV::Read(void * buffer, const aalULong & to_read, aalULong & _read)
 	{
 		_read = 0;
 
@@ -270,7 +272,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError StreamWAV::Write(aalVoid *, const aalULong &, aalULong & write)
+	aalError StreamWAV::Write(void *, const aalULong &, aalULong & write)
 	{
 		write = 0;
 
@@ -297,7 +299,7 @@ namespace ATHENA
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 	// Read!                                                                     //
-	aalSBool ChunkFile::Read(aalVoid * buffer, const aalULong & size)
+	aalSBool ChunkFile::Read(void * buffer, const aalULong & size)
 	{
 		if (PAK_fread(buffer, 1, size, file) != size) return AAL_SFALSE;
 

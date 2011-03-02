@@ -22,91 +22,118 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef __MINOS_PATHFINDER_H__
-#define __MINOS_PATHFINDER_H__
 
-#define __MINOS_PATHFINDER_VERSION__ "0000"
+#ifndef ARX_AI_PATHFINDER_H
+#define ARX_AI_PATHFINDER_H
 
 #include <vector>
 
-#include "ai/PathCommon.h"
-#include "graphics/Math.h"
-#include "graphics/data/Mesh.h"
+class _ANCHOR_DATA;
+class EERIE_LIGHT;
+class EERIE_3D;
 
-using namespace MINOS;
 
-// Flags                                                                     //
-enum MINOSFlags
-{
-	MINOS_REGULAR = 0x0000,
-	MINOS_STEALTH = 0x0001,
-	MINOS_TACTIC  = 0x0002
+class PathFinder {
+	
+public:
+	
+	static const float HEURISTIC_MIN = 0.0f;
+	static const float HEURISTIC_MAX = 0.5f;
+	
+	static const float HEURISTIC_DEFAULT = 0.5f;
+	static const float RADIUS_DEFAULT = 0.0f;
+	static const float HEIGHT_DEFAULT = 0.0f;
+	
+	/**
+	 * Create a PathFinder instance for the provided data.
+	 * The pathfinder instance does not copy the provided data and will not clean it up
+	 * The light data is only used when the stealth parameter is set to true.
+	 **/
+	PathFinder(size_t map_size, const _ANCHOR_DATA * map_data,
+	           size_t light_count, const EERIE_LIGHT * const * light_list);
+	
+	typedef unsigned long NodeId;
+	typedef std::vector<NodeId> Result;
+	
+	/**
+	 * Set a heuristic for selecting the best next node.
+	 * For 0.0f only the distance to the target will be considered.
+	 * For 0.5f the distance to target is weigted equaly to the already traversed distance + light costs.
+	 * This is not used for flee().
+	 * The default value is HEURISTIC_DEFAULT.
+	 **/
+	void setHeuristic(float heuristic);
+	
+	/**
+	 * Set a cylinder to constrain the search space.
+	 * The default values are RADIUS_DEFAULT and HEIGHT_DEFAULT.
+	 **/
+	void setCylinder(float radius, float height);
+	
+	/**
+	 * Find a path between two nodes.
+	 * @param from The index of the start node into the provided map_data.
+	 * @param to The index of the destination node into the provided map_data.
+	 * @param rlist A list to append the path to.
+	 * @param stealth True if the path should avoid light sources.
+	 * @return true if a path was found.
+	 */
+	bool move(NodeId from, NodeId to, Result & rlist, bool stealth = false) const;
+	
+	/**
+	 * Find a path away from a position.
+	 * @param from The index of the start node into the provided map_data.
+	 * @param danger The position to get away from.
+	 * @param safeDistance How far to get away from danger.
+	 * @param rlist A list to append the path to.
+	 * @param stealth True if the path should avoid light sources.
+	 * @return true if a path was found.
+	 */
+	bool flee(NodeId from, const EERIE_3D & danger, float safeDistance, Result & rlist, bool stealth = false) const;
+	
+	/**
+	 * Wander around and then return to the start node.
+	 * @param from The index of the start node into the provided map_data.
+	 * @param aroundRadius How far to wander.
+	 * @param rlist A list to append the path to.
+	 * @param stealth True if the path should avoid light sources.
+	 * @return true if a path was found.
+	 **/
+	bool wanderAround(NodeId from, float aroundRadius, Result & rlist, bool stealth = false) const;
+	
+	/**
+	 * Walk to and then to random offsets around the given position
+	 * @param from The index of the start node into the provided map_data.
+	 * @param danger The position to walk to.
+	 * @param radius How far to walk around the given position.
+	 * @param rlist A list to append the path to.
+	 * @param stealth True if the path should avoid light sources.
+	 * @return true if a path was found.
+	 **/
+	bool lookFor(NodeId from, const EERIE_3D & pos, float radius, Result & rlist, bool stealth = false) const;
+	
+private:
+	
+	class Node;
+	class OpenNodeList;
+	class ClosedNodeList;
+	
+	/**
+	 * @return the best node (lowest cost) from open list or NULL if the list is empty
+	 **/
+	static void buildPath(const Node & node, Result & rlist);
+	float getIlluminationCost(const EERIE_3D & pos) const;
+	NodeId getNearestNode(const EERIE_3D & pos) const;
+	
+	float radius;
+	float height;
+	float heuristic;
+	
+	size_t map_s; // Map size
+	const _ANCHOR_DATA * map_d; // Map data
+	size_t slight_c; // Light count
+	const EERIE_LIGHT * const * slight_l; // Light data
+	
 };
 
-// Internal MINOSNode structure                                                   //
-struct MINOSNode
-{
-	long data;
-	Float g_cost;
-	Float f_cost;
-	MINOSNode * parent;
-};
-
-// Constant and default values                                               //
-const Float MINOS_HEURISTIC_MIN(0.0F);
-const Float MINOS_HEURISTIC_MAX(0.5F);
-
-const Float MINOS_DEFAULT_HEURISTIC(MINOS_HEURISTIC_MAX);
-const Float MINOS_DEFAULT_RADIUS(0.0F);
-const Float MINOS_DEFAULT_HEIGHT(0.0F);
-
-///////////////////////////////////////////////////////////////////////////////
-//                                                                           //
-// Class PathFinder                                                          //
-//                                                                           //
-///////////////////////////////////////////////////////////////////////////////
-class PathFinder
-{
-	public:
-		// Constructor and destructor                                                //
-		PathFinder(const ULong & map_size, _ANCHOR_DATA * map_data,
-		           const ULong & light_count, EERIE_LIGHT ** light_list,
-		           const ULong & dynlight_count, EERIE_LIGHT ** dynlight_list);
-		~PathFinder();
-		// Setup                                                                     //
-		void SetHeuristic(const Float & heuristic);
-		void SetCylinder(const Float & radius, const Float & height);
-		// Status                                                                    //
-		void GetHeuristic(Float & heuristic);
-		void GetCylinder(Float & radius, Float & height);
-		// Path creation                                                             //
-		UBool Move(const ULong & flags, const ULong & from, const ULong & to, SLong * rstep, UWord ** rlist);
-		UBool Flee(const ULong & flags, const ULong & from, const EERIE_3D & danger, const Float & safe_distance, SLong * rstep, UWord ** rlist);
-		UBool WanderAround(const ULong & flags, const ULong & from, const Float & around_radius, SLong * rstep, UWord ** rlist);
-		UBool LookFor(const ULong & flags, const ULong & from, const EERIE_3D & pos, const Float & radius, SLong * rstep, UWord ** rlist);
-		Void Clean();
-	private:
-		// Implementation                                                            //
-		MINOSNode * CreateNode(long data, MINOSNode * parent);
-		MINOSNode * GetBestNode();
-		UBool Check(MINOSNode *);
-		SBool BuildPath(UWord ** rlist, SLong * rnumber);
-		Void AddEnlightmentCost(MINOSNode * MINOSNode);
-		inline Float Distance(const EERIE_3D & from, const EERIE_3D & to) const;
-		ULong GetNearestNode(const EERIE_3D & pos) const;
-		// Data                                                                      //
-		Float radius;
-		Float height;
-		Float heuristic;
-		ULong map_s;                        //Map size
-		_ANCHOR_DATA * map_d;               //Map data
-		ULong slight_c, dlight_c;           //Static and dynamic lights count
-		EERIE_LIGHT ** slight_l, **dlight_l; //Static and dynamic lights data
-		
-		typedef std::vector<MINOSNode *> nodelist;
-		
-		nodelist open;
-		nodelist close;
-};
-
-#endif//__MINOS_PATHFINDER_H__
+#endif // ARX_AI_PATHFINDER_H

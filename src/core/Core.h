@@ -54,39 +54,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#define WIN32_LEAN_AND_MEAN
-#ifndef DANAE_H
-#define DANAE_H
+
+#ifndef ARX_CORE_CORE_H
+#define ARX_CORE_CORE_H
 
 #include "core/Application.h"
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
-#include "game/Player.h"
-#include "scripting/Script.h"
-#include "physics/Physics.h"
-#include "scene/Interactive.h"
-#include "scripting/ScriptDebugger.h"
-#include "scene/LoadLevel.h"
 
+const size_t MAX_GOLD_COINS_VISUALS = 7;
 
-//-----------------------------------------------------------------------------
-#define MAX_GOLD_COINS_VISUALS	7
-#define IMPROVED_FOCAL			320.f
-#define INC_FOCAL				75.f
-#define DEC_FOCAL				50.f
-#define IDR_MENU1				101
-#define IDI_MAIN_ICON			101
-
-//-----------------------------------------------------------------------------
-// Offsets for book & Ratio for drawing it
 extern EERIE_RGB	FADECOLOR;
 extern TextureContainer * TC_fire2;
 extern TextureContainer * TC_fire;
 extern TextureContainer * TC_smoke;
-extern TextureContainer * TC_missile;
 extern TextureContainer * GoldCoinsTC[MAX_GOLD_COINS_VISUALS];
-extern EERIE_3DOBJ * defaultobj;
-extern EERIE_3DOBJ * firesphere;
 extern EERIE_3DOBJ * cabal;
 extern EERIE_3DOBJ * cameraobj;
 extern EERIE_3DOBJ * markerobj;
@@ -103,20 +85,14 @@ extern EERIE_3DOBJ * nodeobj;
 extern EERIE_3D Mscenepos;
 extern EERIE_MULTI3DSCENE * mse;
 extern EERIE_CAMERA * Kam;
-extern EERIE_BACKGROUND * curbkg;
 extern EERIE_BACKGROUND DefaultBkg;
 extern INTERACTIVE_OBJ * COMBINE;
 extern char LastLoadedScene[256];
 extern char TELEPORT_TO_LEVEL[64];
 extern char TELEPORT_TO_POSITION[64];
 extern float PULSATE;
-extern float PULSS;
 extern float _framedelay;
-extern float PLAYER_BASE_RADIUS;
-extern float PLAYER_BASE_HEIGHT;
 extern float BASE_FOCAL;
-extern float BOOKDECX;
-extern float BOOKDECY;
 extern float Xratio;
 extern float Yratio;
 extern long Bilinear;
@@ -137,60 +113,55 @@ extern long DANAESIZX;
 extern long DANAESIZY;
 extern long DANAECENTERX;
 extern long DANAECENTERY;
-extern long NEED2DFX;
 extern short Cross;
-extern short broken;
 extern unsigned long FADESTART;
 extern unsigned long AimTime;
 extern bool ARXPausedTimer;
 extern float FrameTime, LastFrameTime;
-//-----------------------------------------------------------------------------
-struct QUAKE_FX_STRUCT
-{
+
+struct QUAKE_FX_STRUCT {
 	float intensity;
 	float frequency;
 	unsigned long start;
 	unsigned long duration;
 	long	flags;
 };
+extern QUAKE_FX_STRUCT QuakeFx;
 
-//-----------------------------------------------------------------------------
-// Class DANAE
-//-----------------------------------------------------------------------------
-class DANAE : public CD3DApplication
-{
-	protected:
-		HRESULT OneTimeSceneInit();
-		HRESULT DeleteDeviceObjects();
-		HRESULT Render();
-		HRESULT FrameMove(float fTimeKey);
-		void ManageKeyMouse();
-		bool ManageEditorControls();
-		void ManagePlayerControls();
-		void DrawAllInterface();
-		void DrawAllInterfaceFinish();
-		void GoFor2DFX();
-		HRESULT BeforeRun();
-	public:
-		HRESULT InitDeviceObjects();
-		HRESULT FinalCleanup();
- 
-		LRESULT MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-		DANAE();
-		long MustRefresh;
-
-		bool DANAEStartRender();
-		bool DANAEEndRender();
+class DANAE : public CD3DApplication {
+	
+protected:
+	
+	HRESULT OneTimeSceneInit();
+	HRESULT DeleteDeviceObjects();
+	HRESULT Render();
+	HRESULT FrameMove();
+	void ManageKeyMouse();
+	bool ManageEditorControls();
+	void ManagePlayerControls();
+	void DrawAllInterface();
+	void DrawAllInterfaceFinish();
+	void GoFor2DFX();
+	HRESULT BeforeRun();
+	
+public:
+	
+	HRESULT InitDeviceObjects();
+	HRESULT FinalCleanup();
+	
+	LRESULT MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	DANAE();
+	long MustRefresh;
+	
+	bool DANAEStartRender();
+	bool DANAEEndRender();
+	
 };
 
 extern DANAE danaeApp;
-extern LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-extern LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
-//-----------------------------------------------------------------------------
 void SetEditMode(long ed, const bool stop_sound = true);
 void AddQuakeFX(float intensity, float duration, float period, long flags);
-//-----------------------------------------------------------------------------
 void Danae_Registry_Read(const char * string, char * text, const char * defaultstr = "", long maxsize = 256);
 void Danae_Registry_ReadValue(const char * string, long * value, long defaultvalue = 0);
 void Danae_Registry_Write(const char * string, const char * text);
@@ -200,4 +171,8 @@ void SendGameReadyMsg();
 void DanaeSwitchFullScreen();
 void DANAE_KillCinematic();
 
-#endif
+// TODO move to Script.h?
+extern LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+extern LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+
+#endif // ARX_CORE_CORE_H

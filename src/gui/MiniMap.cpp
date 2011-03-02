@@ -57,24 +57,28 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/MiniMap.h"
 
-#include <iostream>
-#include <fstream>
 #include <sstream>
 #include <cstdio>
 #include <algorithm>
 
-#include "gui/Text.h"
-#include "game/Levels.h"
 #include "core/Core.h"
 
-#include "scene/Light.h"
-#include "physics/Box.h"
+#include "game/Levels.h"
+#include "game/Player.h"
+
+#include "gui/Text.h"
+
 #include "graphics/Draw.h"
-#include "scene/Object.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
+
+#include "physics/Box.h"
+
+#include "scene/Light.h"
+#include "scene/Object.h"
+#include "scene/Interactive.h"
 
 using std::min;
 using std::max;
@@ -155,8 +159,8 @@ void ARX_MINIMAP_GetData(long SHOWLEVEL)
 }
 extern long Book_MapPage;
 //-----------------------------------------------------------------------------
-void ARX_MINIMAP_ValidatePos(EERIE_3D * pos)
-{
+void ARX_MINIMAP_ValidatePos() {
+	
 	long SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL); 
 
 	if ((SHOWLEVEL >= 0) && (SHOWLEVEL < 32))
@@ -195,7 +199,7 @@ void ARX_MINIMAP_ValidatePlayerPos()
 	{
 		AM_LASTPOS_x = player.pos.x;
 		AM_LASTPOS_z = player.pos.z;
-		ARX_MINIMAP_ValidatePos(&player.pos);
+		ARX_MINIMAP_ValidatePos();
 	}
 }
 
@@ -246,10 +250,10 @@ void ARX_MINIMAP_Load_Offsets()
 
 void ARX_MINIMAP_Reveal()
 {
-	for (long ii = 0; ii < MAX_MINIMAPS; ii++)
+	for (size_t ii = 0; ii < MAX_MINIMAPS; ii++)
 	{
-		for (long j = 0; j < MINIMAP_MAX_Z; j++)
-			for (long i = 0; i < MINIMAP_MAX_X; i++)
+		for (size_t j = 0; j < MINIMAP_MAX_Z; j++)
+			for (size_t i = 0; i < MINIMAP_MAX_X; i++)
 			{
 				minimap[ii].revealed[i][j] = 255;
 			}
@@ -260,7 +264,7 @@ void ARX_MINIMAP_FirstInit()
 {
 	memset(minimap, 0, sizeof(MINI_MAP_DATA)*MAX_MINIMAPS);
 
-	for (long i = 0; i < MAX_MINIMAPS; i++)
+	for (size_t i = 0; i < MAX_MINIMAPS; i++)
 	{
 		mini_offset_x[i] = 0;
 		mini_offset_y[i] = 0;
@@ -272,7 +276,7 @@ void ARX_MINIMAP_FirstInit()
 //-----------------------------------------------------------------------------
 void ARX_MINIMAP_Reset()
 {
-	for (long i = 0; i < MAX_MINIMAPS; i++)
+	for (size_t i = 0; i < MAX_MINIMAPS; i++)
 	{
 		if (minimap[i].tc)
 		{
@@ -287,7 +291,7 @@ void ARX_MINIMAP_Reset()
 //-----------------------------------------------------------------------------
 void ARX_MINIMAP_PurgeTC()
 {
-	for (long i = 0; i < MAX_MINIMAPS; i++)
+	for (size_t i = 0; i < MAX_MINIMAPS; i++)
 	{
 		if (minimap[i].tc)
 		{
@@ -941,7 +945,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 							Page_Buffer[lLengthDraw] = '\0';
 
 							DrawBookTextInRect( hFontInGameNote, ARX_CLEAN_WARN_CAST_FLOAT(bRect.left), ARX_CLEAN_WARN_CAST_FLOAT(bRect.top),
-											   ARX_CLEAN_WARN_CAST_FLOAT(bRect.right), ARX_CLEAN_WARN_CAST_FLOAT(bRect.bottom),
+											   ARX_CLEAN_WARN_CAST_FLOAT(bRect.right),
 											   Page_Buffer, 0, 0x00FF00FF );
 
 

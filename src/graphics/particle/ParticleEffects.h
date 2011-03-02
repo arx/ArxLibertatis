@@ -238,8 +238,8 @@ void RestoreAllLightsInitialStatus();
 void TreatBackgroundActions();
 void TreatBackgroundDynlights();
 void MakeBookFX(float posx, float posy, float posz);
-void UpdateObjFx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CAMERA * cam) ;
-void Add3DBoom(EERIE_3D * position, EERIE_3DOBJ * obj = NULL);
+void UpdateObjFx(LPDIRECT3DDEVICE7 pd3dDevice) ;
+void Add3DBoom(EERIE_3D * position);
 void AddRandomSmoke(INTERACTIVE_OBJ * io, long amount = 1);
 void AddFlare(EERIE_S2D * pos, float sm, short typ, INTERACTIVE_OBJ * io = NULL);
 void AddFlare2(EERIE_S2D * pos, float sm, short typ, INTERACTIVE_OBJ * io);
@@ -253,26 +253,16 @@ void MakePlayerAppearsFX(INTERACTIVE_OBJ * io);
 void MakeCoolFx(EERIE_3D * pos);
 void SpawnGroundSplat(EERIE_SPHERE * sp, EERIE_RGB * rgb, float size, long flags);
 
-void ARX_FOGS_FirstInit();
-long ARX_FOGS_Count();
-void ARX_FOGS_Clear();
-void ARX_FOGS_TranslateSelected(EERIE_3D * trans);
-void ARX_FOGS_UnselectAll();
-void ARX_FOGS_Select(long n);
-long ARX_FOGS_GetFree();
-void ARX_FOGS_KillSelected();
-void ARX_FOGS_Render(long init);
-
 void ARX_PARTICLES_FirstInit();
 void ARX_PARTICLES_ClearAll();
 long ARX_PARTICLES_GetFree();
 void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CAMERA * cam);
-void ARX_PARTICLES_Spawn_Blood(EERIE_3D * pos, EERIE_3D * vect, float dmgs, long source);
-void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos, float dmgs, D3DCOLOR col, long vert, INTERACTIVE_OBJ * io);
-void ARX_PARTICLES_Spawn_Lava_Burn(EERIE_3D * pos, float power, INTERACTIVE_OBJ * io = NULL);
+void ARX_PARTICLES_Spawn_Blood(EERIE_3D * pos, float dmgs, long source);
+void ARX_PARTICLES_Spawn_Blood2(EERIE_3D * pos, float dmgs, D3DCOLOR col, INTERACTIVE_OBJ * io);
+void ARX_PARTICLES_Spawn_Lava_Burn(EERIE_3D * pos, INTERACTIVE_OBJ * io = NULL);
 void ARX_PARTICLES_Add_Smoke(EERIE_3D * pos, long flags, long amount, EERIE_RGB * rgb = NULL); // flag 1 = randomize pos
 void ARX_PARTICLES_Spawn_Spark(EERIE_3D * pos, float dmgs, long flags);
-void ARX_PARTICLES_Spawn_Splat(EERIE_3D * pos, float dmgs, D3DCOLOR col, long vert, INTERACTIVE_OBJ * io, long flags = 1);
+void ARX_PARTICLES_Spawn_Splat(EERIE_3D * pos, float dmgs, D3DCOLOR col);
 void ARX_PARTICLES_SpawnWaterSplash(EERIE_3D *);
 
 void ARX_BOOMS_ClearAllPolyBooms();

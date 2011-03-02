@@ -58,10 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CSPELLFX_LVL05_H
 #define ARX_CSPELLFX_LVL05_H
 
-#include "graphics/particle/ParticleManager.h"
-
-class CParticleSystem;
-class CSpellFx;
+#include "graphics/effects/SpellEffects.h"
+#include "graphics/particle/ParticleSystem.h"
 
 // Cyril = Global Resources
 extern EERIE_3DOBJ * ssol;
@@ -105,7 +103,7 @@ class CRuneOfGuarding: public CSpellFx
 		float fSize;
 
 	public:
-		CRuneOfGuarding(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CRuneOfGuarding();
 		~CRuneOfGuarding();
 		// accesseurs
 	public:
@@ -203,7 +201,7 @@ class CCurePoison: public CSpellFx
 		TextureContainer * tex_heal;
 
 	public:
-		CCurePoison(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CCurePoison();
 		~CCurePoison();
 
 	public:
@@ -239,7 +237,7 @@ class CPoisonProjectile: public CSpellFx
 		CParticleSystem pPSStream;
 
 	public:
-		CPoisonProjectile(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CPoisonProjectile();
 
 		// accesseurs
 	public:
@@ -265,7 +263,7 @@ class CMultiPoisonProjectile: public CSpellFx
 		CSpellFx ** pTab;
 
 	public:
-		CMultiPoisonProjectile(LPDIRECT3DDEVICE7 m_pd3dDevice, long nb);
+		CMultiPoisonProjectile(long nb);
 		~CMultiPoisonProjectile();
 
 		// surcharge
@@ -294,7 +292,7 @@ class CRepelUndead: public CSpellFx
 		float fSize;
 
 	public:
-		CRepelUndead(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CRepelUndead();
 		~CRepelUndead();
 
 	public:

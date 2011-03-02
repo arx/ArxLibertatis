@@ -34,14 +34,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 
 #include <algorithm>
-#include <stdio.h>
-#include <list>
 #include <vector>
 #include <string>
-#include <streambuf>
-#include <istream>
-#include <fstream>
 #include <sstream>
+
+#include "audio/Audio.h"
+
+#include "core/Application.h"
+
+#include "game/NPC.h"
+#include "game/Player.h"
+
+#include "gui/MenuWidgets.h"
+
+#include "graphics/Math.h"
+#include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
@@ -50,17 +57,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 
-#include "game/NPC.h"
 #include "scene/Interactive.h"
-#include "game/Player.h"
+
 #include "scripting/Script.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "gui/MenuWidgets.h"
-
-#include "graphics/Math.h"
-#include "core/Application.h"
-
-#include "audio/Audio.h"
 
 using namespace std;
 
@@ -103,12 +102,11 @@ enum ParseIniFileEnum
 
 typedef unsigned long(* ParseIniFileCallback)(const char * lpszText);
 
-enum PlayingAmbianceType
-{
+enum PlayingAmbianceType {
 	PLAYING_AMBIANCE_MENU,
 	PLAYING_AMBIANCE_SCRIPT,
 	PLAYING_AMBIANCE_ZONE
-}playingAmbianceType;
+};
 
 struct PlayingAmbiance
 {
@@ -326,12 +324,10 @@ ArxSound SND_SPELL_VISION_LOOP(AAL_SFALSE);
 
 bool bForceNoEAX = false;
 
-static void ARX_SOUND_CreateEnvironment();
 static void ARX_SOUND_CreateEnvironments();
 static void ARX_SOUND_CreateStaticSamples();
 static void ARX_SOUND_ReleaseStaticSamples();
 static void ARX_SOUND_LoadCollision(const long & mat1, const long & mat2, const char * name);
-static void ARX_SOUND_CreateCollisionMap(const char * file_name);
 static void ARX_SOUND_CreateCollisionMaps();
 static void ARX_SOUND_DeleteCollisionMaps();
 static void ARX_SOUND_CreateMaterials();
@@ -891,7 +887,7 @@ long ARX_SOUND_PlayScript(const char * name, const INTERACTIVE_OBJ * io, const f
 
 	if (io)
 	{
-		GetItemWorldPositionSound((INTERACTIVE_OBJ *)io, (EERIE_3D *)&channel.position);
+		GetItemWorldPositionSound(io, (EERIE_3D *)&channel.position); // TODO this cast is wrong
 
 		if (loop != ARX_SOUND_PLAY_LOOPED)
 		{
@@ -1402,7 +1398,7 @@ static void ARX_SOUND_CreateEnvironments()
 
 		if (!pPakManager->AddPak(PAK_SFX)) return;
 
-		pvDirectory = pPakManager->ExistDirectory((char *)ARX_SOUND_PATH_ENVIRONMENT);
+		pvDirectory = pPakManager->ExistDirectory(ARX_SOUND_PATH_ENVIRONMENT);
 
 		if (!pvDirectory)
 		{
@@ -1431,22 +1427,21 @@ static void ARX_SOUND_CreateEnvironments()
 	else
 	{
 		char path[512] = "";
-//		todo: find
-//		_finddata_t fdata;
-//		long fhandle;
-//
-//		sprintf(path, "sfx\\environment\\*.aef");
-//
-//		if ((fhandle = _findfirst(path, &fdata)) != -1)
-//		{
-//			do
-//			{
-//				aalCreateEnvironment(fdata.name);
-//			}
-//			while (_findnext(fhandle, &fdata));
-//
-//			_findclose(fhandle);
-//		}
+		WIN32_FIND_DATA fdata;
+		HANDLE fhandle;
+
+		sprintf(path, "sfx\\environment\\*.aef");
+
+		if ((fhandle = FindFirstFile(path, &fdata)) != INVALID_HANDLE_VALUE)
+		{
+			do
+			{
+				aalCreateEnvironment(fdata.cFileName);
+			}
+			while (FindNextFile(fhandle, &fdata));
+
+			CloseHandle(fhandle);
+		}
 	}
 }
 
@@ -1859,9 +1854,9 @@ static void ARX_SOUND_LoadCollision(const long & mat1, const long & mat2, const 
 {
 	char path[256];
 
-	for (long i(0); i < MAX_VARIANTS; i++)
+	for (size_t i = 0; i < MAX_VARIANTS; i++)
 	{
-		sprintf(path, "%s_%ld.wav", name, i + 1);
+		sprintf(path, "%s_%d.wav", name, i + 1);
 		Inter_Materials[mat1][mat2][i] = aalCreateSample(path);
 
 		if (mat1 != mat2)
@@ -2112,8 +2107,10 @@ static void ARX_SOUND_CreateMaterials()
 	ARX_SOUND_LoadCollision(MATERIAL_STONE,  MATERIAL_STONE,        "STONE_on_STONE");
 }
 
-unsigned long PresenceSectionCallback(const char * lpszText)
-{
+unsigned long PresenceSectionCallback(const char * lpszText) {
+	
+	(void)lpszText;
+	
 	return PARSE_INI_FILE_CONTINUE;
 }
 
@@ -2183,11 +2180,9 @@ static void ARX_SOUND_DeletePresenceMap()
 	free(presence_l), presence_l = NULL, presence_c = 0;
 }
 
-static float GetSamplePresenceFactor(const char * name)
-{
-//	todo: string stuff
-//	for (unsigned long i(0); i < presence_c; i++)
-//		if (!strnicmp(presence_l[i].name, name, presence_l[i].name_size)) return presence_l[i].factor;
+static float GetSamplePresenceFactor(const char * name) {
+	for (unsigned long i(0); i < presence_c; i++)
+		if (!strncasecmp(presence_l[i].name, name, presence_l[i].name_size)) return presence_l[i].factor;
 
 	return 1.0F;
 }
@@ -2394,7 +2389,7 @@ static void ARX_SOUND_ParseIniFile(char * _lpszTextFile, const unsigned long _ul
 
 	//-------------------------------------------------------------------------
 	// get all lines into list
-	list<char *> lText;
+	vector<char *> lText;
 	char * pLine = strtok(pFile, "\r\n");
 
 	while (pLine)
@@ -2404,7 +2399,7 @@ static void ARX_SOUND_ParseIniFile(char * _lpszTextFile, const unsigned long _ul
 		pLine = strtok(NULL, "\r\n");
 	}
 
-	list<char *>::iterator it;
+	vector<char *>::iterator it;
 
 	//-------------------------------------------------------------------------
 	// look up for sections and associated keys

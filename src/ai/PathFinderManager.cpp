@@ -54,14 +54,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 ///////////////////////////////////////////////////////////////////////////////
-#include "ai/PathFinderManager.h"
-#include "scene/Light.h"
 
-#include "io/IO.h"
+#include "ai/PathFinderManager.h"
+
 #include "ai/PathFinder.h"
+#include "graphics/Math.h"
+#include "io/IO.h"
+#include "scene/Light.h"
+#include "scene/Interactive.h"
+
 
 static const float PATHFINDER_HEURISTIC_MIN(0.2F);
-static const float PATHFINDER_HEURISTIC_MAX(MINOS_HEURISTIC_MAX);
+static const float PATHFINDER_HEURISTIC_MAX(PathFinder::HEURISTIC_MAX);
 static const float PATHFINDER_HEURISTIC_RANGE(PATHFINDER_HEURISTIC_MAX - PATHFINDER_HEURISTIC_MIN);
 static const float PATHFINDER_DISTANCE_MAX(5000.0F);
 
@@ -256,8 +260,7 @@ LPTHREAD_START_ROUTINE PATHFINDER_Proc(char *)
 {
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
 	PathFinder pathfinder(eb->nbanchors, eb->anchors,
-	                      MAX_LIGHTS, (EERIE_LIGHT **)GLight,
-	                      MAX_DYNLIGHTS, (EERIE_LIGHT **)PDL);
+	                      MAX_LIGHTS, (EERIE_LIGHT **)GLight);
 
 	bExitPathfinderThread = false;
 
@@ -283,18 +286,15 @@ LPTHREAD_START_ROUTINE PATHFINDER_Proc(char *)
 
 			if (curpr.ioid && curpr.ioid->_npcdata)
 			{
-				unsigned long flags(MINOS_REGULAR);
-				unsigned char found(0);
 				float heuristic(PATHFINDER_HEURISTIC_MAX);
 
-				pathfinder.SetCylinder(curpr.ioid->physics.cyl.radius, curpr.ioid->physics.cyl.height);
+				pathfinder.setCylinder(curpr.ioid->physics.cyl.radius, curpr.ioid->physics.cyl.height);
 
-				if (curpr.ioid->_npcdata->behavior & BEHAVIOUR_FIGHT)
-					flags |= MINOS_TACTIC;
+				bool stealth = (curpr.ioid->_npcdata->behavior & (BEHAVIOUR_SNEAK | BEHAVIOUR_HIDE));
 
-				if (curpr.ioid->_npcdata->behavior & (BEHAVIOUR_SNEAK | BEHAVIOUR_HIDE))
-					flags |= MINOS_STEALTH;
-
+				
+				PathFinder::Result result;
+				
 				if ((curpr.ioid->_npcdata->behavior & BEHAVIOUR_MOVE_TO)
 				        || (curpr.ioid->_npcdata->behavior & BEHAVIOUR_GO_HOME))
 				{
@@ -303,35 +303,26 @@ LPTHREAD_START_ROUTINE PATHFINDER_Proc(char *)
 					if (distance < PATHFINDER_DISTANCE_MAX)
 						heuristic = PATHFINDER_HEURISTIC_MIN + PATHFINDER_HEURISTIC_RANGE * (distance / PATHFINDER_DISTANCE_MAX);
 
-					pathfinder.SetHeuristic(heuristic);
-					found = pathfinder.Move(flags,
-					                        curpr.from, curpr.to,
-					                        curpr.returnnumber, curpr.returnlist);
+					pathfinder.setHeuristic(heuristic);
+					pathfinder.move(curpr.from, curpr.to, result, stealth);
 				}
 				else if (curpr.ioid->_npcdata->behavior & BEHAVIOUR_WANDER_AROUND)
 				{
 					if (curpr.ioid->_npcdata->behavior_param < PATHFINDER_DISTANCE_MAX)
 						heuristic = PATHFINDER_HEURISTIC_MIN + PATHFINDER_HEURISTIC_RANGE * (curpr.ioid->_npcdata->behavior_param / PATHFINDER_DISTANCE_MAX);
 
-					pathfinder.SetHeuristic(heuristic);
-					found = pathfinder.WanderAround(flags,
-					                                curpr.from, curpr.ioid->_npcdata->behavior_param,
-					                                curpr.returnnumber, curpr.returnlist);
+					pathfinder.setHeuristic(heuristic);
+					pathfinder.wanderAround(curpr.from, curpr.ioid->_npcdata->behavior_param, result, stealth);
 				}
 				else if (curpr.ioid->_npcdata->behavior & (BEHAVIOUR_FLEE | BEHAVIOUR_HIDE))
 				{
 					if (curpr.ioid->_npcdata->behavior_param < PATHFINDER_DISTANCE_MAX)
 						heuristic = PATHFINDER_HEURISTIC_MIN + PATHFINDER_HEURISTIC_RANGE * (curpr.ioid->_npcdata->behavior_param / PATHFINDER_DISTANCE_MAX);
 
-					pathfinder.SetHeuristic(heuristic);
+					pathfinder.setHeuristic(heuristic);
 					float safedist = curpr.ioid->_npcdata->behavior_param + EEDistance3D(&curpr.ioid->target, &curpr.ioid->pos);
 
-					found = pathfinder.Flee(flags,
-					                        curpr.from,
-					                        curpr.ioid->target,
-					                        safedist, 
-					                        curpr.returnnumber,
-					                        curpr.returnlist);
+					pathfinder.flee(curpr.from, curpr.ioid->target, safedist, result, stealth);
 				}
 				else if (curpr.ioid->_npcdata->behavior & BEHAVIOUR_LOOK_FOR)
 				{
@@ -340,11 +331,17 @@ LPTHREAD_START_ROUTINE PATHFINDER_Proc(char *)
 					if (distance < PATHFINDER_DISTANCE_MAX)
 						heuristic = PATHFINDER_HEURISTIC_MIN + PATHFINDER_HEURISTIC_RANGE * (distance / PATHFINDER_DISTANCE_MAX);
 
-					pathfinder.SetHeuristic(heuristic);
-					found = pathfinder.LookFor(flags, curpr.from,
-					                           curpr.ioid->target, curpr.ioid->_npcdata->behavior_param,
-					                           curpr.returnnumber, curpr.returnlist);
+					pathfinder.setHeuristic(heuristic);
+					pathfinder.lookFor(curpr.from, curpr.ioid->target, curpr.ioid->_npcdata->behavior_param, result, stealth);
 				}
+				
+				if(!result.empty()) {
+					unsigned short * list = (unsigned short*)malloc(result.size() * sizeof(unsigned short));
+					std::copy(result.begin(), result.end(), list);
+					*(curpr.returnlist) = list;
+				}
+				*(curpr.returnnumber) = result.size();
+				
 			}
 		}
 
@@ -388,8 +385,8 @@ void EERIE_PATHFINDER_Release()
 	ReleaseMutex(PATHFINDER_MUTEX), CloseHandle(PATHFINDER_MUTEX), PATHFINDER_MUTEX = NULL;
 }
 
-void EERIE_PATHFINDER_Create(EERIE_BACKGROUND * eb)
-{
+void EERIE_PATHFINDER_Create() {
+	
 	if (PATHFINDER) EERIE_PATHFINDER_Release();
 
 	if (PATHFINDER_MUTEX)

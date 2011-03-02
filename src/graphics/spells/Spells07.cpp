@@ -53,29 +53,37 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+
+#include "graphics/spells/Spells07.h"
+
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
 #include "scene/Object.h"
 
 #include "core/Core.h"
-#include "physics/Collisions.h"
-#include "graphics/effects/SpellEffects.h"
-#include "game/Damage.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "graphics/spells/Spells05.h"
-#include "graphics/spells/Spells07.h"
-#include "game/Spells.h"
 #include "core/Time.h"
 
+#include "game/Spells.h"
+#include "game/Damage.h"
+#include "game/Player.h"
+
+#include "graphics/effects/SpellEffects.h"
+#include "graphics/particle/ParticleEffects.h"
+#include "graphics/particle/ParticleParams.h"
+#include "graphics/spells/Spells05.h"
+
+#include "physics/Collisions.h"
+
+#include "scene/Interactive.h"
+#include "scene/LoadLevel.h"
 
 extern float _framedelay;
 
 //------------------------------------------------------------------------------
-CLightning::CLightning(TextureContainer * aTC) :
-	lNbSegments(40),  
-	invNbSegments(1.0f / 40.0f), 
+CLightning::CLightning() :
 	nbtotal(0),
-	falpha(1.0f),
+	lNbSegments(40),
+	invNbSegments(1.0f / 40.0f),
 	fSize(100.0f),
 	fLengthMin(5.0f),  
 	fLengthMax(40.0f),  
@@ -85,16 +93,15 @@ CLightning::CLightning(TextureContainer * aTC) :
 	fAngleYMax(32.0f),
 	fAngleZMin(5.0f),
 	fAngleZMax(32.0f),
+	falpha(1.0f),
 	fDamage(1)
 {
 	SetDuration(2000);
 	ulCurrentTime = ulDuration + 1;
-	SetColor1(1.0f, 0.0f, 0.0f);
-	SetColor2(1.0f, 0.5f, 0.5f);
-
+	
 	SetColor1(1.0f, 1.0f, 1.0f);
 	SetColor2(0.0f, 0.0f, 0.2f);
-
+	
 	tex_light = NULL;
 }
 
@@ -324,6 +331,9 @@ float fMySize = 2;
 //-----------------------------------------------------------------------------
 void CLightning::Create(EERIE_3D aeFrom, EERIE_3D aeTo, float beta)
 {
+	
+	(void)beta; // TODO removing this parameter makes the signature clash with method from superclass
+	
 	float fAlpha = 1.f;
 	float fBeta = 0.f;
 	
@@ -812,7 +822,7 @@ CConfuse::~CConfuse()
 		spapi = NULL;
 	}
 }
-CConfuse::CConfuse(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CConfuse::CConfuse()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;
@@ -1184,8 +1194,8 @@ float CFireField::Render(LPDIRECT3DDEVICE7 _pD3DDevice)
 	SETZWRITE(_pD3DDevice, false);
 	SETALPHABLEND(_pD3DDevice, true);
 
-	pPSStream.Render(_pD3DDevice, D3DBLEND_ONE, D3DBLEND_ONE);
-	pPSStream1.Render(_pD3DDevice, D3DBLEND_ONE, D3DBLEND_ONE);
+	pPSStream.Render(_pD3DDevice);
+	pPSStream1.Render(_pD3DDevice);
 
 	_pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	_pD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
@@ -1217,7 +1227,7 @@ CIceField::~CIceField()
 	}
 }
 
-CIceField::CIceField(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CIceField::CIceField()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;

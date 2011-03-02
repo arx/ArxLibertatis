@@ -22,24 +22,9 @@
  ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
  ===========================================================================
  */
-// test_dll.cpp : Defines the entry point for the DLL application.
-//
 
-#include <windows.h>
-#include <vector>
+// TODO header file
 
-#include "core/Resource.h"
-#include "core/Core.h" // pour danaeApp
 #include "gui/MenuWidgets.h"
 
-using namespace std;
-
 extern CMenuConfig * pMenuConfig;
-
-//-----------------------------------------------------------------------------
-
-//bool CALLBACK ARX_CONFIG_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
-//-----------------------------------------------------------------------------
-
-//HWND hButtonTab[8];

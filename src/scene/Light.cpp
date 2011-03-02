@@ -49,12 +49,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ///////////////////////////////////////////////////////////////////////////////
 
 #include "scene/Light.h"
-#include "graphics/Math.h"
-#include "scene/Object.h"
-#include "graphics/Draw.h"
 
 #include "core/Time.h"
+#include "graphics/Math.h"
+#include "graphics/Draw.h"
+#include "scene/Object.h"
 #include "scene/GameSound.h"
+#include "scene/Interactive.h"
 
 extern float GLOBAL_LIGHT_FACTOR;
 EERIE_LIGHT * GLight[MAX_LIGHTS];
@@ -71,6 +72,8 @@ long PROGRESS_TOTAL = 0;
 
 EERIE_LIGHT * IO_PDL[MAX_DYNLIGHTS];
 long TOTIOPDL = 0;
+
+static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float * epb, EERIE_LIGHT * light);
 
 bool ValidDynLight(long num)
 {
@@ -133,10 +136,8 @@ void PrecalcIOLighting(EERIE_3D * pos, float radius, long flags)
 	}
 }
 
-//*************************************************************************************
-//*************************************************************************************
-void EERIE_LIGHT_Apply(EERIEPOLY * ep, EERIEPOLY * father)
-{
+void EERIE_LIGHT_Apply(EERIEPOLY * ep) {
+	
 	if (ep->type & POLY_IGNORE)  return;
 
 	long i;
@@ -157,7 +158,7 @@ void EERIE_LIGHT_Apply(EERIEPOLY * ep, EERIEPOLY * father)
 		{
 			if (Distance3D(el->pos.x, el->pos.y, el->pos.z,
 			               ep->center.x, ep->center.y, ep->center.z) < el->fallend + 100.f)
-				EERIE_LIGHT_Make(ep, epr, epg, epb, el, father);
+				ARX_EERIE_LIGHT_Make(ep, epr, epg, epb, el);
 		}
 	}
 
@@ -167,7 +168,7 @@ void EERIE_LIGHT_Apply(EERIEPOLY * ep, EERIEPOLY * father)
 		{
 			if (Distance3D(actions[i].light.pos.x, actions[i].light.pos.y, actions[i].light.pos.z,
 			               ep->center.x, ep->center.y, ep->center.z) < actions[i].light.fallend + 100.f)
-				EERIE_LIGHT_Make(ep, epr, epg, epb, &actions[i].light, father);
+				ARX_EERIE_LIGHT_Make(ep, epr, epg, epb, &actions[i].light);
 		}
 	}
 
@@ -446,13 +447,9 @@ float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT 
 
 	return nb_shadowvertexinpoly / nb_totalvertexinpoly;
 }
-extern void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float * epb, EERIE_LIGHT * light, EERIEPOLY * father);
 
-//*************************************************************************************
-void EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float * epb, EERIE_LIGHT * light, EERIEPOLY * father)
+static void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float * epb, EERIE_LIGHT * light)
 {
-	ARX_EERIE_LIGHT_Make(ep, epr, epg, epb, light, father);
-	return;
 	int		i;				// iterator
 	int		nbvert;			// number or vertices per face (3 or 4)
 	float	distance[4];	// distance from light to each vertex
@@ -541,6 +538,8 @@ void EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float * epb, EER
 		}
 	}
 }
+
+//*************************************************************************************
 extern float GLOBAL_LIGHT_FACTOR;
 //*************************************************************************************
 long	DYNAMIC_NORMALS = 1;
@@ -875,7 +874,7 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 					ep = &eg->polydata[k];
 					ep->type &= ~POLY_IGNORE;
 
-					if (ep)	EERIE_LIGHT_Apply(ep, NULL);
+					if (ep)	EERIE_LIGHT_Apply(ep);
 				}
 			}
 
@@ -959,11 +958,8 @@ void EERIEPrecalcLights(long minx, long minz, long maxx, long maxz)
 	}
 }
 
-
-//*************************************************************************************
-//*************************************************************************************
-void _RecalcLightZone(float x, float y, float z, long siz)
-{
+void _RecalcLightZone(float x, float z, long siz) {
+	
 	long i, j, x0, x1, z0, z1;
 
 	i = x * ACTIVEBKG->Xmul;
@@ -992,10 +988,8 @@ void _RecalcLightZone(float x, float y, float z, long siz)
 	ModeLight = oldml;
 }
 
-//*************************************************************************************
-//*************************************************************************************
-void RecalcLightZone(float x, float y, float z, long siz)
-{
+void RecalcLightZone(float x, float z, long siz) {
+	
 	long i, j, x0, x1, z0, z1;
 
 	i = x * ACTIVEBKG->Xmul;

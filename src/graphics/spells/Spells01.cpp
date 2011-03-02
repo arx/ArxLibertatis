@@ -54,24 +54,31 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include "graphics/spells/Spells01.h"
+
+#include "core/Time.h"
+
+#include "game/Spells.h"
+#include "game/NPC.h"
+#include "game/Damage.h"
+#include "game/Player.h"
+
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
-#include "scene/Light.h"
-#include "scene/Object.h"
 
-#include "graphics/spells/Spells01.h"
-#include "physics/Collisions.h"
+#include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleParams.h"
 #include "graphics/particle/ParticleManager.h"
-#include "graphics/effects/SpellEffects.h"
-#include "game/Damage.h"
 #include "graphics/particle/ParticleEffects.h"
-#include "scene/GameSound.h"
-#include "game/Spells.h"
-#include "core/Time.h"
-#include "game/NPC.h"
 #include "graphics/spells/Spells05.h"
+
+#include "physics/Collisions.h"
+
 #include "scene/LoadLevel.h"
+#include "scene/Light.h"
+#include "scene/GameSound.h"
+#include "scene/Object.h"
+#include "scene/Interactive.h"
 
 extern CParticleManager * pParticleManager;
  
@@ -199,16 +206,7 @@ void LaunchMagicMissileExplosion(EERIE_3D & _ePos, int t = 0, long spellinstance
 	ARX_SOUND_PlaySFX(SND_SPELL_MM_HIT, &_ePos);
 }
 
-//-----------------------------------------------------------------------------
 CMagicMissile::CMagicMissile() : CSpellFx()
-{
-	tex_mm = NULL;
-	bExplo = false;
-	bMove = true;
-}
-
-//-----------------------------------------------------------------------------
-CMagicMissile::CMagicMissile(LPDIRECT3DDEVICE7 m_pd3dDevice) : CSpellFx()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;
@@ -477,7 +475,7 @@ float CMagicMissile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 				float fs = fsize * 6 + rnd() * 0.3f;
 				float fe = fsize * 6 + rnd() * 0.3f;
-				Draw3DLineTex(m_pd3dDevice, lastpos, newpos, color, fs, fe);
+				Draw3DLineTex(lastpos, newpos, color, fs, fe);
 			}
 
 			EERIE_3D temp_vector;
@@ -535,7 +533,7 @@ float CMagicMissile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-CMultiMagicMissile::CMultiMagicMissile(LPDIRECT3DDEVICE7 m_pd3dDevice, long nbmissiles) : CSpellFx()
+CMultiMagicMissile::CMultiMagicMissile(long nbmissiles) : CSpellFx()
 {
 	SetDuration(2000);
 	uiNumber = nbmissiles;
@@ -548,7 +546,7 @@ CMultiMagicMissile::CMultiMagicMissile(LPDIRECT3DDEVICE7 m_pd3dDevice, long nbmi
 		for (UINT i = 0 ; i < uiNumber ; i++)
 		{
 			pTab[i] = NULL;
-			pTab[i] = new CMagicMissile(m_pd3dDevice);
+			pTab[i] = new CMagicMissile();
 			pTab[i]->spellinstance = this->spellinstance;
 		}
 	}
@@ -729,7 +727,7 @@ void CMultiMagicMissile::Create(EERIE_3D aePos, EERIE_3D angles)
 }
 
 //-----------------------------------------------------------------------------
-void CMultiMagicMissile::CheckCollision(float _fPlayer_Magic_Level)
+void CMultiMagicMissile::CheckCollision()
 {
 	if (pTab)
 	{
@@ -929,8 +927,6 @@ void CIgnit::AddLight(int aiLight)
 {
 	if (ARXPausedTimer)  return;
 
-	if (this->nblight > 255) return;
-
 	this->tablight[this->nblight].actif = 1;
 	this->tablight[this->nblight].iLightNum = aiLight;
 	this->tablight[this->nblight].poslight.x = GLight[aiLight]->pos.x;
@@ -1010,8 +1006,6 @@ void CDoze::AddLightDoze(int aiLight)
 {
 	if (ARXPausedTimer)  return;
 
-	if (this->nblight > 255) return;
-
 	this->tablight[this->nblight].actif = 1;
 	this->tablight[this->nblight].iLightNum = aiLight;
 	this->tablight[this->nblight].poslight.x = GLight[aiLight]->pos.x;
@@ -1023,9 +1017,11 @@ void CDoze::AddLightDoze(int aiLight)
 }
 
 //-----------------------------------------------------------------------------
-float CIgnit::Render(LPDIRECT3DDEVICE7 device)
-{
-	int		nb;
+float CIgnit::Render(LPDIRECT3DDEVICE7 device) {
+	
+	(void)device;
+	
+	int nb;
 
 	switch (this->key)
 	{

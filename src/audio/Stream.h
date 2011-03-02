@@ -22,44 +22,44 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef __ATHENA_STREAM_H__
-#define __ATHENA_STREAM_H__
+
+#ifndef ARX_AUDIO_STREAM_H
+#define ARX_AUDIO_STREAM_H
 
 #include "AudioTypes.h"
-#include "codec/Codec.h"
 
-namespace ATHENA
-{
+class PakFileHandle;
 
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Class ATHENA::Stream                                                      //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	class Stream
-	{
-		public:
-			// Destructor                                                                //
-			virtual ~Stream() {};
-			// Setup                                                                     //
-			virtual aalError SetStream(PakFileHandle * stream) = 0;
-			virtual aalError SetFormat(const aalFormat & format) = 0;
-			virtual aalError SetLength(const aalULong & length) = 0;
-			virtual aalError SetPosition(const aalULong & position) = 0;
-			// Status                                                                    //
-			virtual aalError GetStream(PakFileHandle *&stream) = 0;
-			virtual aalError GetFormat(aalFormat & format) = 0;
-			virtual aalError GetLength(aalULong & length) = 0;
-			virtual aalError GetPosition(aalULong & position) = 0;
-			// File I/O                                                                  //
-			virtual aalError Read(aalVoid * buffer, const aalULong & to_read, aalULong & read) = 0;
-			virtual aalError Write(aalVoid * buffer, const aalULong & to_write, aalULong & write) = 0;
+namespace ATHENA {
+	
+	class Stream {
+		
+	public:
+		
+		virtual ~Stream() {};
+		
+		// Setup
+		virtual aalError SetStream(PakFileHandle * stream) = 0;
+		virtual aalError SetFormat(const aalFormat & format) = 0;
+		virtual aalError SetLength(const aalULong & length) = 0;
+		virtual aalError SetPosition(const aalULong & position) = 0;
+		
+		// Status
+		virtual aalError GetStream(PakFileHandle *&stream) = 0;
+		virtual aalError GetFormat(aalFormat & format) = 0;
+		virtual aalError GetLength(aalULong & length) = 0;
+		virtual aalError GetPosition(aalULong & position) = 0;
+		
+		// File I/O
+		virtual aalError Read(void * buffer, const aalULong & to_read, aalULong & read) = 0;
+		virtual aalError Write(void * buffer, const aalULong & to_write, aalULong & write) = 0;
+		
 	};
-
-	// Utilities                                                                 //
+	
+	// Utilities
 	Stream * CreateStream(const char * name);
 	aalError DeleteStream(Stream *&stream);
+	
+} // namespace ATHENA
 
-}//ATHENA::
-
-#endif//__ATHENA_STREAM_H__
+#endif // ARX_AUDIO_STREAM_H

@@ -23,11 +23,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 ///////////////////////////////////////////////////////////////////////////////
-// EERIEAnim
-///////////////////////////////////////////////////////////////////////////////
 //
 // Description:
-//		Animation funcs
+//  Animation functions
 //
 // Updates: (date) (person) (update)
 //
@@ -35,47 +33,54 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef  EERIEANIM_H
-#define  EERIEANIM_H
+
+#ifndef  ARX_ANIMATION_ANIMATION_H
+#define  ARX_ANIMATION_ANIMATION_H
 
 #include <string>
 
-#include "graphics/GraphicsTypes.h"
-#include "graphics/data/Mesh.h"
+#include "graphics/d3dwrapper.h"
 
-//-----------------------------------------------------------------------------
+class TextureContainer;
+class INTERACTIVE_OBJ;
+class EERIE_3D;
+class EERIE_3DOBJ;
+class EERIE_LIGHT;
+class ANIM_USE;
+class EERIEMATRIX;
+class EERIE_MOD_INFO;
+
 #define HALOMAX 2000
 extern long MAX_LLIGHTS;
 #define MAX_ANIMATIONS 900
 
-//-----------------------------------------------------------------------------
-extern long HALOCUR ;
+extern long HALOCUR;
 extern D3DTLVERTEX LATERDRAWHALO[HALOMAX*4];
 extern EERIE_LIGHT * llights[32];
 
-//-----------------------------------------------------------------------------
-long EERIE_ANIMMANAGER_Count( std::string& tex, long * memsize);
+long EERIE_ANIMMANAGER_Count(std::string & tex, long * memsize);
 void EERIE_ANIMMANAGER_ClearAll();
 void llightsInit();
 void Preparellights(EERIE_3D * pos);
 void Insertllight(EERIE_LIGHT * el, float dist);
 
-//-----------------------------------------------------------------------------
-void ManageObjectClothes(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj);
 void PopAllTriangleList(bool);
 void PopOneTriangleList(TextureContainer * _pTex, bool _bNoUpdate = true);
 void PopAllTriangleListTransparency();
 
-//-----------------------------------------------------------------------------
-ARX_D3DVERTEX * PushVertexInTableCull(TextureContainer *);
-ARX_D3DVERTEX * PushVertexInTableCull_TNormalTrans(TextureContainer *);
-ARX_D3DVERTEX * PushVertexInTableCull_TAdditive(TextureContainer *);
-ARX_D3DVERTEX * PushVertexInTableCull_TSubstractive(TextureContainer *);
-ARX_D3DVERTEX * PushVertexInTableCull_TMultiplicative(TextureContainer *);
-ARX_D3DVERTEX * PushVertexInTableCull_TMetal(TextureContainer *);
+D3DTLVERTEX * PushVertexInTableCull(TextureContainer *);
+D3DTLVERTEX * PushVertexInTableCull_TNormalTrans(TextureContainer *);
+D3DTLVERTEX * PushVertexInTableCull_TAdditive(TextureContainer *);
+D3DTLVERTEX * PushVertexInTableCull_TSubstractive(TextureContainer *);
+D3DTLVERTEX * PushVertexInTableCull_TMultiplicative(TextureContainer *);
+D3DTLVERTEX * PushVertexInTableCull_TMetal(TextureContainer *);
 
-//-----------------------------------------------------------------------------
 void PushInterBump(TextureContainer *, D3DTLVERTEX *);
 void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd, TextureContainer * _pTex, D3DTLVERTEX * _pD3DVertex);
 void EERIE_ANIMMANAGER_ReloadAll();
-#endif // EERIEANIM_H
+
+void EERIEDrawAnimQuat(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, ANIM_USE * eanim, EERIE_3D * angle, EERIE_3D  * pos, unsigned long time, INTERACTIVE_OBJ * io, long typ = 0);
+
+void DrawEERIEInterMatrix(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIEMATRIX * mat, EERIE_3D  * pos, INTERACTIVE_OBJ * io, EERIE_MOD_INFO * modinfo = NULL);
+
+#endif // ARX_ANIMATION_ANIMATION_H

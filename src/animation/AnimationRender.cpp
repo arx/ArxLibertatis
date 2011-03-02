@@ -25,28 +25,32 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "animation/AnimationRender.h"
 
-#include <dinput.h>
+#include "animation/Animation.h"
+
+#include "core/Time.h"
+#include "core/Core.h"
+
+#include "game/Equipment.h"
+#include "game/Damage.h"
+#include "game/NPC.h"
+
+#include "graphics/Draw.h"
+#include "graphics/Math.h"
+#include "graphics/data/MeshManipulation.h"
+#include "graphics/particle/ParticleEffects.h"
+
+#include "gui/MenuWidgets.h"
+
+#include "physics/Clothes.h"
+#include "physics/Collisions.h"
 
 #include "io/IO.h"
 
-#include "animation/Animation.h"
-#include "physics/Clothes.h"
 #include "scene/Object.h"
-#include "graphics/Math.h"
 #include "scene/Light.h"
-#include "graphics/data/MeshManipulation.h"
-#include "graphics/Draw.h"
-
-#include "physics/Collisions.h"
 #include "scene/GameSound.h"
 #include "scene/Scene.h"
-#include "game/Equipment.h"
-#include "game/Damage.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "game/NPC.h"
-#include "core/Time.h"
-#include "core/Core.h"
-#include "gui/MenuWidgets.h"
+#include "scene/Interactive.h"
 
 using std::min;
 using std::max;
@@ -68,8 +72,6 @@ extern bool bALLOW_BUMP;
 extern long BH_MODE;
 extern int iHighLight;
 
-extern float IN_FRONT_DIVIDER;
-extern float IN_FRONT_DIVIDER_FEET;
 extern bool bRenderInterList;
 extern TextureContainer TexSpecialColor;
 
@@ -492,8 +494,8 @@ void EE_P(EERIE_3D * in, D3DTLVERTEX * out);
 extern long INTERPOLATE_BETWEEN_BONES;
 
 /* Transform object vertices  */
-int		Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, EERIE_3D * pos, EERIE_3D * angle)
-{
+int Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj,
+                          EERIE_3D * pos) {
 	int v;
 
 	EERIE_3DPAD * inVert;
@@ -581,7 +583,7 @@ int		Cedric_TransformVerts(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_C_DAT
 		return false;
 	}
 
-	if (ARX_SCENE_PORTAL_ClipIO(io, eobj, pos, &BBOXMIN, &BBOXMAX))
+	if (ARX_SCENE_PORTAL_ClipIO(io, pos))
 		return false;
 
 	return true;
@@ -767,10 +769,7 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 								SpawnGroundSplat(&sp, &rgb, rnd() * 30.f + 30.f, 1);
 								sp.origin.y -= rnd() * 150.f;
 
-								if (count == 0)
-									ARX_PARTICLES_Spawn_Splat(&sp.origin, 200, io->_npcdata->blood_color, 0, io, 1);
-								else
-									ARX_PARTICLES_Spawn_Splat(&sp.origin, 200, io->_npcdata->blood_color, 0, io, 0);
+								ARX_PARTICLES_Spawn_Splat(&sp.origin, 200, io->_npcdata->blood_color);
 
 								sp.origin.x = io->pos.x + rnd() * 200.f - 100.f;
 								sp.origin.y = io->pos.y + rnd() * 20.f - 10.f;
@@ -1133,8 +1132,7 @@ bool	Cedric_ApplyLighting(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 	return true;
 }
 
-void Cedric_PrepareHalo(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, EERIE_3D * pos, EERIE_3D & ftr)
-{
+void Cedric_PrepareHalo(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj) {
 	EERIE_3D cam_vector, t_vector;
 	cam_vector.x = -EEsin(radians(ACTIVECAM->angle.b)) * EEcos(radians(ACTIVECAM->angle.a));
 	cam_vector.y = EEsin(radians(ACTIVECAM->angle.a));
@@ -1276,7 +1274,6 @@ D3DTLVERTEX * GetNewVertexList(EERIE_FACE * _pFace, float _fInvisibility, Textur
 	}
 }
 
-//-----------------------------------------------------------------------------
 int ARX_SoftClippZ(EERIE_VERTEX * _pVertex1, EERIE_VERTEX * _pVertex2, EERIE_VERTEX * _pVertex3, D3DTLVERTEX ** _ptV, EERIE_FACE * _pFace, float _fInvibility, TextureContainer * _pTex, bool _bBump, bool _bZMapp, EERIE_3DOBJ * _pObj, int _iNumFace, long * _pInd, INTERACTIVE_OBJ * _pioInteractive, bool _bNPC, long _lSpecialColorFlag, EERIE_RGB * _pRGB)
 {
 	int iPointAdd = 3;
@@ -1625,9 +1622,7 @@ long FORCE_FRONT_DRAW = 0;
 //-----------------------------------------------------------------------------
 extern long IN_BOOK_DRAW;
 /* Render object */
-void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, EERIE_3D * pos, EERIE_3D & ftr, float invisibility)
-{
-	int			i;
+void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, EERIE_3D * pos, EERIE_3D & ftr, float invisibility) {
 	float		MAX_ZEDE = 0.f;
 
 	// Sets IO BBox to calculated BBox :)
@@ -1711,10 +1706,7 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 
 			else if (ddist > 0.9f) ddist = 0.9f;
 
-			if ((use_io) && (use_io->halo.flags & HALO_DYNLIGHT))     
-				HALO_IO_DynLight_Update(io);
-
-			Cedric_PrepareHalo(pd3dDevice, eobj, obj, use_io, pos, ftr);
+			Cedric_PrepareHalo(eobj, obj);
 			need_halo	= 1;
 			MAX_ZEDE	= 0.f;
 
@@ -1732,7 +1724,7 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 		float fDist		= EEDistance3D(pos, &ACTIVECAM->pos);
 		bBumpOnIO		= ( bALLOW_BUMP ) && ( io ) && ( io->ioflags & IO_BUMP ) && ( fDist < min( max( 0.f, ( ACTIVECAM->cdepth * fZFogStart ) - 200.f ), 600.f ) ) ? true : false ;
 
-		for (i = 0 ; i < eobj->facelist.size() ; i++)
+		for (size_t i = 0 ; i < eobj->facelist.size() ; i++)
 		{
 			D3DTLVERTEX		tv_static[3];
 			ARX_D3DVERTEX	* tv			= NULL;
@@ -1841,6 +1833,8 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 				//        when one's hands are inside a wall. I've only managed to do that
 				//        while in combat mode, looking straight down, and touching a wall
 				//        So, for the greater good I think it's best to simply skip this test
+				//const float IN_FRONT_DIVIDER = 0.75f;
+				//const float IN_FRONT_DIVIDER_FEET = 0.998f;
 				//if (FORCE_FRONT_DRAW)
 				//{
 				//	if (IsInGroup(eobj, paf[n], 1) != -1)
@@ -1861,10 +1855,10 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 				{
 					for (long j = 0 ; j < 3 ; j++)
 					{
-						tv[j].color = (0xFF000000L
+						tv[j].color = 0xFF000000L
 						               | (((long)((float)((long)((tv[j].color >> 16) & 255)) * (special_color.r)) & 255) << 16)
 						               | (((long)((float)((long)((tv[j].color >> 8) & 255)) * special_color.g) & 255) << 8)
-						               | (long)((float)((long)(tv[j].color & 255)) * (special_color.b)) & 255);
+						               | ((long)((float)((long)(tv[j].color & 255)) * (special_color.b)) & 255);
 					}
 				}
 				else if (special_color_flag & 2)
@@ -2020,7 +2014,7 @@ void	Cedric_RenderObject2(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERI
 						lfr = ffr;
 						lfg = ffg;
 						lfb = ffb;
-						tv[o].color = (0xFF000000L | (((lfr) & 255) << 16) |	(((lfg) & 255) << 8) | (lfb) & 255);
+						tv[o].color = 0xFF000000L | (((lfr) & 255) << 16) |	(((lfg) & 255) << 8) | ((lfb) & 255);
 					}
 
 					//SETCULL(pd3dDevice,D3DCULL_NONE);
@@ -2229,8 +2223,7 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 {
 	if (bRenderInterList)
 	{
-		Cedric_RenderObject2(pd3dDevice,
-		                     eobj,
+		Cedric_RenderObject2(eobj,
 		                     obj,
 		                     io,
 		                     pos,
@@ -2238,8 +2231,6 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 		                     invisibility);
 		return;
 	}
-
-	int			i;
 
 	// Finally we can draw polys !!!
 	SETCULL(pd3dDevice, D3DCULL_NONE);
@@ -2278,21 +2269,16 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 			ddist = 1.f;
 		}
 
-
-
-		if ((io) && (io->halo.flags & HALO_DYNLIGHT))//(io->halo.flags & HALO_ACTIVE)
-			HALO_IO_DynLight_Update(io);
-
 		if ((io) && (io->halo.flags & HALO_ACTIVE) && (ddist > 0.01f))
 		{
-			Cedric_PrepareHalo(pd3dDevice, eobj, obj, io, pos, ftr);
+			Cedric_PrepareHalo(eobj, obj);
 			need_halo = 1;
 		}
 	}
 
 
 	{
-		for (i = 0; i < eobj->facelist.size(); i++)
+		for (size_t i = 0; i < eobj->facelist.size(); i++)
 		{
 			D3DTLVERTEX tv[3];
  
@@ -2361,7 +2347,7 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 					lfr = ffr;
 					lfg = ffg;
 					lfb = ffb;
-					tv[o].color = (0xFF000000L | (((lfr) & 255) << 16) |	(((lfg) & 255) << 8) | (lfb) & 255);
+					tv[o].color = 0xFF000000L | (((lfr) & 255) << 16) | (((lfg) & 255) << 8) | ((lfb) & 255);
 				}
 
 				if (tot > 260.f)
@@ -2481,10 +2467,10 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 				{
 					for (long j = 0; j < 3; j++)
 					{
-						tv[j].color = (0xFF000000L
+						tv[j].color = 0xFF000000L
 						               | (((long)((float)((long)((tv[j].color >> 16) & 255)) * (special_color.r)) & 255) << 16)
 						               | (((long)((float)((long)((tv[j].color >> 8) & 255)) * special_color.g) & 255) << 8)
-						               | (long)((float)((long)(tv[j].color & 255)) * (special_color.b)) & 255);
+						               | ((long)((float)((long)(tv[j].color & 255)) * (special_color.b)) & 255);
 					}
 				}
 				else if (special_color_flag & 2)
@@ -2611,8 +2597,7 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 
 
 
-void Cedric_BlendAnimation(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, float timm, EERIE_3D * angle)
-{
+void Cedric_BlendAnimation(EERIE_3DOBJ * eobj, float timm) {
 	for (long i = 0; i < eobj->c_data->nb_bones; i++)
 	{
 		EERIE_QUAT tquat;
@@ -2628,8 +2613,7 @@ void Cedric_BlendAnimation(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, float timm,
 	}
 }
 
-void Cedric_SaveBlendData(INTERACTIVE_OBJ * io, EERIE_3DOBJ * eobj, EERIE_3D * angle)
-{
+void Cedric_SaveBlendData(INTERACTIVE_OBJ * io) {
 	if (io->obj->c_data)
 	{
 		for (long i = 0; i < io->obj->c_data->nb_bones; i++)
@@ -2716,7 +2700,6 @@ void	Cedric_AnimateDrawEntity(LPDIRECT3DDEVICE7 pd3dDevice,
                                  EERIE_3D * angle,
                                  EERIE_3D * pos,
                                  INTERACTIVE_OBJ * io,
-                                 D3DCOLOR col,
                                  long typ)
 {
 	float 				invisibility;
@@ -2767,11 +2750,11 @@ void	Cedric_AnimateDrawEntity(LPDIRECT3DDEVICE7 pd3dDevice,
 		{
 			if (timm > 0.f)
 			{
-				Cedric_BlendAnimation(io, eobj, timm, angle);
-				Cedric_SaveBlendData(io, eobj, angle);
+				Cedric_BlendAnimation(eobj, timm);
+				Cedric_SaveBlendData(io);
 			}
 			else
-				Cedric_SaveBlendData(io, eobj, angle);
+				Cedric_SaveBlendData(io);
 		}
 
 		// Build skeleton in Object Space
@@ -2784,7 +2767,7 @@ void	Cedric_AnimateDrawEntity(LPDIRECT3DDEVICE7 pd3dDevice,
 			return;
 
 
-		if ((Cedric_TransformVerts(io, eobj, obj, pos, angle)) && (!(typ & ANIMQUATTYPE_NO_RENDER)))
+		if ((Cedric_TransformVerts(io, eobj, obj, pos)) && (!(typ & ANIMQUATTYPE_NO_RENDER)))
 		{
 			INTER_DRAW++;
 
@@ -2868,7 +2851,7 @@ void	Cedric_AnimateDrawEntity(LPDIRECT3DDEVICE7 pd3dDevice,
 					
 					EERIEMATRIX	 matrix;
 					MatrixFromQuat(&matrix, &quat);
-					DrawEERIEInterMatrix(pd3dDevice, obj, &matrix, posi, ioo, NULL, &eobj->linked[k].modinfo);
+					DrawEERIEInterMatrix(pd3dDevice, obj, &matrix, posi, ioo, &eobj->linked[k].modinfo);
 					INVISIBILITY_OVERRIDE = 0.f;
 
 					// Restore item invisibility flag
@@ -3047,7 +3030,7 @@ void MakeCLight(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERIE
 			ir = clipByte255(r);
 			ig = clipByte255(g);
 			ib = clipByte255(b);
-			eobj->vertexlist3[i].vert.color = (0xff000000L | (((ir) & 255) << 16) |	(((ig) & 255) << 8) | (ib) & 255);
+			eobj->vertexlist3[i].vert.color = 0xff000000L | (((ir) & 255) << 16) | (((ig) & 255) << 8) | ((ib) & 255);
 		}
 }
 
@@ -3199,7 +3182,7 @@ void MakeCLight2(INTERACTIVE_OBJ * io, EERIE_RGB * infra, EERIE_3D * angle, EERI
 		ir = clipByte255(r);
 		ig = clipByte255(g);
 		ib = clipByte255(b);
-		eobj->vertexlist3[paf[i]].vert.color = (0xff000000L | (((ir) & 255) << 16) |	(((ig) & 255) << 8) | (ib) & 255);
+		eobj->vertexlist3[paf[i]].vert.color = 0xff000000L | (((ir) & 255) << 16) | (((ig) & 255) << 8) | ((ib) & 255);
 	}
 }
 
@@ -3224,9 +3207,9 @@ void ApplyDynLight(EERIEPOLY * ep)
 	EERIE_RGB rgb;
 	long j;
 
-	register float epr[4];
-	register float epg[4];
-	register float epb[4];
+	float epr[4];
+	float epg[4];
+	float epb[4];
 
 	for (i = 0; i < nbvert; i++)
 	{
@@ -3353,9 +3336,9 @@ void ApplyDynLight_VertexBuffer(EERIEPOLY * ep, SMY_D3DVERTEX * _pVertex, unsign
 
 	long j;
 	register float d;
-	register float epr[4];
-	register float epg[4];
-	register float epb[4];
+	float epr[4];
+	float epg[4];
+	float epb[4];
 	
 	// To keep...
 	//	register float DVAL;
@@ -3483,9 +3466,9 @@ void ApplyDynLight_VertexBuffer_2(EERIEPOLY * ep, short _x, short _y, SMY_D3DVER
 
 	long i, j;
 	register float d;
-	register float epr[4];
-	register float epg[4];
-	register float epb[4];
+	float epr[4];
+	float epg[4];
+	float epb[4];
 	
 	// To keep...
 	//	register float DVAL;

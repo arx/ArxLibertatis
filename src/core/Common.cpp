@@ -56,22 +56,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2010 ARKANE Studios SA. All rights reserved
 /////////////////////////////////////////////////////////////////////////////////////
 
+#include "core/Common.h"
 
-//-----------------------------------------------------------------------------------//
 #include <windows.h>
-#include <cstdio>
 #include <signal.h>
-#include <time.h>
 #include <fcntl.h>
 
-#include "core/Common.h"
+#include <cstdio>
+#include <ctime>
+
 #include "io/Logger.h"
 
-/*
-	Get the callstack informations and create the log file with CreateLogFile function
-*/
 
-void ArxDebug::Assert(const char * _sExpression, const char * _sFile, unsigned int _iLine, const char * _sMessage)
+void assertionFailed(const char * _sExpression, const char * _sFile, unsigned int _iLine, const char * _sMessage)
 {
 	char msgbuf[8192];
 	char fn[MAX_PATH + 1], expr[MAX_PATH + 1], iFile[MAX_PATH + 1];

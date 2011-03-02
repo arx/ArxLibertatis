@@ -23,15 +23,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-//-----------------------------------------------------------------------------
+#include "graphics/particle/ParticleSystem.h"
+
+#include <cstdio>
+
+#include "core/Time.h"
+#include "core/Common.h"
 
 #include "graphics/GraphicsTypes.h"
-#include "scene/Light.h"
-#include "core/Time.h"
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/Particle.h"
-#include "core/Common.h"
+
+#include "scene/Light.h"
 
 using namespace std;
 
@@ -556,8 +560,8 @@ void CParticleSystem::Update(long _lTime)
 }
 
 //-----------------------------------------------------------------------------
-void CParticleSystem::Render(LPDIRECT3DDEVICE7 _lpD3DDevice, int _iSRCBLEND, int _iDESTBLEND)
-{
+void CParticleSystem::Render(LPDIRECT3DDEVICE7 _lpD3DDevice) {
+	
 	SETCULL(_lpD3DDevice, D3DCULL_NONE);
 	SETZWRITE(_lpD3DDevice, false);
 

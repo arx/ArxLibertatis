@@ -25,14 +25,15 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/CinematicSound.h"
 
+#include <climits>
+
 #include "animation/Cinematic.h"
 #include "core/Application.h"
-#include "scene/GameSound.h"
 #include "io/IO.h"
 #include "io/Logger.h"
+#include "scene/GameSound.h"
 
 
-/*-----------------------------------------------------------*/
 CinematicSound		TabSound[MAX_SOUND];
 int			NbSound;
 /*-----------------------------------------------------------*/
@@ -41,7 +42,7 @@ extern char DirectoryChoose[];
 extern int	LSoundChoose;
 
 /*-----------------------------------------------------------*/
-void InitSound(Cinematic * c)
+void InitSound()
 {
 	CinematicSound	*	ts;
 	int			nb;
@@ -161,7 +162,6 @@ int ExistSound(const string & dir, const string & name) {
 
 int AddSoundToList(const std::string & path) {
 	int id = -1;
-	int pos = 0;
 	
 	CinematicSound * cs;
 	
