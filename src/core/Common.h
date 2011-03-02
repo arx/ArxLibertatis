@@ -167,41 +167,14 @@ typedef double              f64;    // 64 bits double float
                      Maccro for assertion
 ------------------------------------------------------------*/
 
-void assertionFailed(const char * _sMessage, const char * _sFile, unsigned _iLine);
+void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _iLine, const char * _sMessage = 0);
 
 #ifdef _DEBUG
-#define	TEST						    __LINE__
-#define arx_assert(_Expression) (void)	( (_Expression) ||  (ArxDebug::Assert((#_Expression), (__FILE__), __LINE__),  ARX_DEBUG_BREAK() , 0) )
-
-
-#else //DO_CHECK
-#ifndef NDEBUG
-	#define NDEBUG	//For suppress assert.
-#endif
-
-#define arx_assert(_Expression) (void) ((_Expression) ||  (assertionFailed((#_Expression), (__FILE__), __LINE__),  ARX_DEBUG_BREAK(), 0))
+#define arx_assert(_Expression)				  (void) ((_Expression) ||  (assertionFailed((#_Expression), (__FILE__), __LINE__),  ARX_DEBUG_BREAK(), 0))
+#define arx_assert_msg(_Expression, _Message) (void) ((_Expression) ||  (assertionFailed((#_Expression), (__FILE__), __LINE__, _Message),  ARX_DEBUG_BREAK(), 0))
 #else // _DEBUG
-#define	TEST						    __LINE__
-
-#define arx_assert(_Expression)	\
-	(void)( (_Expression) || (ArxDebug::Assert((#_Expression), (__FILE__), __LINE__),  ARX_DEBUG_BREAK() , 0) )
-
-#define arx_assert_msg(_Expression, _Message) \
-	(void)( (_Expression) || (ArxDebug::Assert((#_Expression), (__FILE__), __LINE__, _Message),  ARX_DEBUG_BREAK() , 0) )
-
-
-#else //DO_CHECK
-#ifndef NDEBUG
-	#define NDEBUG	//For suppress assert.
-#endif
-
-#if _MSC_VER  // MS compilers support noop which discards everything inside the parens
-#define arx_assert(_Expression)	              __noop
-#define arx_assert_msg(_Expression, _Message) __noop	
-#else
-#define arx_assert(_Expression)               {}
+#define arx_assert(_Expression)				  {}
 #define arx_assert_msg(_Expression, _Message) {}
-#endif
 #endif // _DEBUG
 
 /* ---------------------------------------------------------

@@ -296,16 +296,15 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
 	return n;
 }
 
-long ARX_TEXT_Draw(Font* ef,
+void ARX_TEXT_Draw(Font* ef,
                    float x, float y,
                    const std::string& car,
                    COLORREF colo, COLORREF bcol) {
-	if (car.empty() ) return 0;
+	
+	if (car.empty() || car[0] == 0)
+		return;
 
-	if (car[0] == 0) return 0;
-
-	ARX_UNICODE_DrawTextInRect(ef, x, y, 9999.f, 999.f, car, colo, bcol);
-	return 15 + spacingy;
+	ARX_UNICODE_DrawTextInRect(ef, x, y, 9999.f, car, colo, bcol);
 }
 
 long ARX_TEXT_DrawRect(Font* ef,

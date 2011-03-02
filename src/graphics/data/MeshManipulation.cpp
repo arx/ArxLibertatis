@@ -240,7 +240,6 @@ static long ObjectAddFace(EERIE_3DOBJ * obj, const EERIE_FACE * face, const EERI
 		}
 	}
 
-	re
 	return (obj->facelist.size() - 1);
 }
 

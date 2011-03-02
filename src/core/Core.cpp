@@ -6617,7 +6617,7 @@ static float _AvgFrameDiff = 150.f;
 		ARX_FOGS_Render();
 
 		ARX_PARTICLES_Render(m_pd3dDevice,&subj);
-		UpdateObjFx(m_pd3dDevice,&subj);
+		UpdateObjFx(m_pd3dDevice);
 		
 		SETALPHABLEND(m_pd3dDevice,false);
 		BENCH_PARTICLES=EndBench();
