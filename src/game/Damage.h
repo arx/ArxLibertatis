@@ -85,7 +85,7 @@ struct DAMAGE_INFO {
 enum DamageArea {
 	DAMAGE_AREA = 0,
 	DAMAGE_FULL = 1,
-	DAMAGE_AREAHALF  = 2
+	DAMAGE_AREAHALF = 2
 };
 
 #define DAMAGE_TYPE_GENERIC    0

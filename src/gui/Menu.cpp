@@ -69,6 +69,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Unicode.hpp"
 
 #include "game/Equipment.h"
+#include "game/Player.h"
 
 #include "gui/MenuWidgets.h"
 #include "gui/Text.h"

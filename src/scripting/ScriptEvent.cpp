@@ -20,6 +20,7 @@
 #include "game/Equipment.h"
 #include "game/Missile.h"
 #include "game/NPC.h"
+#include "game/Player.h"
 
 #include "gui/Speech.h"
 #include "gui/MiniMap.h"
