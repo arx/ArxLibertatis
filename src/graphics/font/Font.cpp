@@ -4,6 +4,7 @@
 #include "graphics/texture/Texture.h"
 #include "graphics/texture/PackedTexture.h"
 
+#include <sstream>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
