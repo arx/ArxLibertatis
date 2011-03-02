@@ -263,10 +263,29 @@ LPDIRECTDRAWSURFACE7 DX7Texture2D::CreateTexture()
 
 void DX7Texture2D::LoadTextureFromImage()
 {
-	DDSURFACEDESC2 ddsd;
-    ZeroMemory( &ddsd, sizeof(DDSURFACEDESC2) );
+	// Get a DDraw object to create a temporary surface
+	LPDIRECTDRAW7 pDD;
+	m_pddsSurface->GetDDInterface((VOID **)&pDD);
 
-	while (m_pddsSurface->Lock(NULL, &ddsd, 0, 0) == DDERR_WASSTILLDRAWING);
+	// Setup the new surface desc
+	DDSURFACEDESC2 ddsd;
+	ddsd.dwSize = sizeof(ddsd);
+	m_pddsSurface->GetSurfaceDesc(&ddsd);
+	ddsd.dwFlags         = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT | DDSD_TEXTURESTAGE;
+	ddsd.ddsCaps.dwCaps  = DDSCAPS_TEXTURE | DDSCAPS_SYSTEMMEMORY;
+	ddsd.ddsCaps.dwCaps2 = 0L;
+
+	// Create a new surface for the texture
+	LPDIRECTDRAWSURFACE7 pddsTempSurface;
+	HRESULT hr;
+
+	if (FAILED(hr = pDD->CreateSurface(&ddsd, &pddsTempSurface, NULL)))
+	{
+		pDD->Release();
+		return;
+	}
+
+	while (pddsTempSurface->Lock(NULL, &ddsd, 0, 0) == DDERR_WASSTILLDRAWING);
 
 	DWORD * pDst = (DWORD *)ddsd.lpSurface;
 
@@ -394,7 +413,13 @@ void DX7Texture2D::LoadTextureFromImage()
 		arx_assert_msg(false, "Unsupported image format");
 	}
 	
-	m_pddsSurface->Unlock(0);
+	pddsTempSurface->Unlock(0);
+
+	m_pddsSurface->Blt(NULL, pddsTempSurface, NULL, DDBLT_WAIT, NULL);
+
+	// Done with the temp objects
+	pddsTempSurface->Release();
+	pDD->Release();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
