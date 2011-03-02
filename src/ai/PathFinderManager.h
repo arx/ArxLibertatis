@@ -42,11 +42,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //            @@@ @@@                           @@             @@        STUDIOS    //
 //////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-// EERIEPathfinder
-///////////////////////////////////////////////////////////////////////////////
 //
 // Description:
-//	Interface betweed EERIE & MINOS
+//  Interface betweed EERIE & MINOS
 //
 // Updates: (date) (person) (update)
 //
@@ -54,14 +52,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef EERIEPATHFINDER_H
-#define EERIEPATHFINDER_H
+
+#ifndef ARX_AI_PATHFINDERMANAGER_H
+#define ARX_AI_PATHFINDERMANAGER_H
 
 struct INTERACTIVE_OBJ;
-struct EERIE_BACKGROUND;
 
-struct PATHFINDER_REQUEST
-{
+struct PATHFINDER_REQUEST {
 	bool isvalid;
 	long from;
 	long to;
@@ -78,8 +75,7 @@ extern PATHFINDER_REQUEST pr;
 bool EERIE_PATHFINDER_Add_To_Queue(PATHFINDER_REQUEST * request);
 long EERIE_PATHFINDER_Get_Queued_Number();
 void EERIE_PATHFINDER_Clear(long i = 0);
-void EERIE_PATHFINDER_Create(EERIE_BACKGROUND * eb);
+void EERIE_PATHFINDER_Create();
 void EERIE_PATHFINDER_Release();
 
-#endif
-
+#endif // ARX_AI_PATHFINDERMANAGER_H

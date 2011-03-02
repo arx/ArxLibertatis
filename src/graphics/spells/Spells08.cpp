@@ -162,7 +162,7 @@ void CExplosion::ExplosionAddParticule(int num, D3DTLVERTEX * v, TextureContaine
 		DynLight[tactif[num]].exist = 0;
 		tactif[num] = -1;
 		ARX_BOOMS_Add(&hit);
-		Add3DBoom(&hit, NULL); 
+		Add3DBoom(&hit); 
 	}
 
 	if (rnd() > .25f)
@@ -208,7 +208,7 @@ void CExplosion::Collision(int num, EERIE_3D * v, EERIE_3D * dir)
 		DynLight[tactif[num]].exist = 0;
 		tactif[num] = -1;
 		ARX_BOOMS_Add(&hit);
-		Add3DBoom(&hit, NULL); 
+		Add3DBoom(&hit); 
 	}
 }
 

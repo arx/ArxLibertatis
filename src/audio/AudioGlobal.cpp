@@ -23,10 +23,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include <time.h>
+#include "audio/AudioGlobal.h"
+
 #include <AL/al.h>
 #include <AL/alc.h>
-#include "audio/AudioGlobal.h"
+
+#include <ctime>
 
 namespace ATHENA
 {
@@ -98,14 +100,15 @@ namespace ATHENA
 	{
 		switch (unit)
 		{
-			case AAL_UNIT_MS      :
+			case AAL_UNIT_MS:
 				return aalULong(aalFloat(v) * 0.001F * _format.frequency * _format.channels * (_format.quality >> 3));
 
-			case AAL_UNIT_SAMPLES :
+			case AAL_UNIT_SAMPLES:
 				return v * _format.channels * (_format.quality >> 3);
+			
+			default:
+				return v;
 		}
-
-		return v;
 	}
 
 	// Convert a value from bytes to time units                                  //
@@ -118,9 +121,10 @@ namespace ATHENA
 
 			case AAL_UNIT_SAMPLES :
 				return v / (_format.frequency * _format.channels * (_format.quality >> 3));
+			
+			default:
+				return v;
 		}
-
-		return v;
 	}
 
 }//ATHENA::

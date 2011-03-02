@@ -56,13 +56,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 /////////////////////////////////////////////////////////////////////////////////////
 
 #include "scene/LinkedObject.h"
+
 #include "scene/Object.h"
 
 
-
-
-//*************************************************************************************
-//*************************************************************************************
 // Releases Data for linked objects
 void EERIE_LINKEDOBJ_ReleaseData(EERIE_3DOBJ * obj)
 {

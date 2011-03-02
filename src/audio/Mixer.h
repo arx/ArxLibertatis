@@ -22,53 +22,47 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef __ATHENA_MIXER_H__
-#define __ATHENA_MIXER_H__
+
+#ifndef ARX_AUDIO_MIXER_H
+#define ARX_AUDIO_MIXER_H
 
 #include "AudioTypes.h"
 #include "AudioResource.h"
 
-namespace ATHENA
-{
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Class ATHENA::Mixer                                                       //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	class Mixer
-	{
+namespace ATHENA {
+	
+	class Mixer {
+		
 		public:
-
-			//Constructor and destructor
-			Mixer();
-			~Mixer();
-
-			//Setup
-			aalError SetName(const char * name);
-			aalError SetVolume(const aalFloat & volume);
-			aalError SetParent(const Mixer * mixer);
-
-			//Status
-			aalError GetVolume(aalFloat & volume) const;
-			aalError GetParent(Mixer *&mixer) const;
-			aalUBool IsPaused() const;
-
-			//Control
-			aalError Stop();
-			aalError Pause();
-			aalError Resume();
-
-			//Data
-			char * name;
-			aalULong status;
-			aalULong flags;
-			aalFloat volume;
-			aalFloat pitch;
-			aalFloat pan;
-			const Mixer * parent;
+		
+		Mixer();
+		~Mixer();
+		
+		// Setup
+		aalError SetName(const char * name);
+		aalError SetVolume(const aalFloat & volume);
+		aalError SetParent(const Mixer * mixer);
+		
+		// Status
+		aalError GetVolume(aalFloat & volume) const;
+		aalError GetParent(Mixer *&mixer) const;
+		aalUBool IsPaused() const;
+		
+		// Control
+		aalError Stop();
+		aalError Pause();
+		aalError Resume();
+		
+		char * name;
+		aalULong status;
+		aalULong flags;
+		aalFloat volume;
+		aalFloat pitch;
+		aalFloat pan;
+		const Mixer * parent;
+		
 	};
+	
+} // namespace ATHENA
 
-}//ATHENA::
-
-#endif//__ATHENA_MIXER_H__
+#endif // ARX_AUDIO_MIXER_H

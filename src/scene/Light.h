@@ -79,8 +79,7 @@ extern long TOTIOPDL;
 //-----------------------------------------------------------------------------
 void PrecalcIOLighting(EERIE_3D * pos, float radius, long flags = 0);
 
-void EERIE_LIGHT_Apply(EERIEPOLY * ep, EERIEPOLY * father);
-void EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float * epb, EERIE_LIGHT * light, EERIEPOLY * father);
+void EERIE_LIGHT_Apply(EERIEPOLY * ep);
 void EERIE_LIGHT_TranslateSelected(EERIE_3D * trans);
 void EERIE_LIGHT_UnselectAll();
 void EERIE_LIGHT_ClearAll();
@@ -92,6 +91,9 @@ long EERIE_LIGHT_Count();
 void EERIE_LIGHT_GlobalAdd(EERIE_LIGHT * el);
 void EERIE_LIGHT_MoveAll(EERIE_3D * trans);
 long EERIE_LIGHT_Create();
+
+void _RecalcLightZone(float x, float z, long siz);
+void RecalcLightZone(float x, float z, long siz);
  
 bool ValidDynLight(long num);
 #endif

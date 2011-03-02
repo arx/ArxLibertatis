@@ -46,40 +46,30 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 */
 
-#define PAK_READ_BUF_SIZE 1024
+#include "io/PakReader.h"
 
 #include <cstring>
 #include <algorithm>
 #include <cassert>
+
+#include "core/Common.h"
+
+#include "io/Blast.h"
+#include "io/PakEntry.h"
+#include "io/HashMap.h"
+#include "io/Logger.h"
 
 using std::min;
 using std::max;
 using std::size_t;
 using std::strlen;
 
-#include "core/Common.h"
-#if ARX_COMPILER == ARX_COMPILER_VC9
-    typedef u32 uint32_t;
-#else
-    #include <stdint.h>
-#endif
+#define PAK_READ_BUF_SIZE 1024
 
-#include "io/Blast.h"
-#include "io/PakReader.h"
-#include "io/PakEntry.h"
-#include "io/HashMap.h"
-#include "io/Logger.h"
+static const char PAK_KEY_DEMO[] = "NSIARKPRQPHBTE50GRIH3AYXJP2AMF3FCEYAVQO5QGA0JGIIH2AYXKVOA1VOGGU5GSQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRI";
+static const char PAK_KEY_FULL[] = "AVQF3FCKE50GRIAYXJP2AMEYO5QGA0JGIIH2NHBTVOA1VOGGU5H3GSSIARKPRQPQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRIAYX";
 
-#if ARX_COMPILER == ARX_COMPILER_VC9
-    typedef u32 uint32_t;
-#else
-    #include <stdint.h>
-#endif
-
-const char PAK_KEY_DEMO[] = "NSIARKPRQPHBTE50GRIH3AYXJP2AMF3FCEYAVQO5QGA0JGIIH2AYXKVOA1VOGGU5GSQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRI";
-const char PAK_KEY_FULL[] = "AVQF3FCKE50GRIAYXJP2AMEYO5QGA0JGIIH2NHBTVOA1VOGGU5H3GSSIARKPRQPQKKYEOIAQG1XRX0J4F5OEAEFI4DD3LL45VJTVOA1VOGGUKE50GRIAYX";
-
-static const char * selectKey(uint32_t first_bytes) {
+static const char * selectKey(u32 first_bytes) {
 	switch(first_bytes) {
 		case 0x46515641:
 			return PAK_KEY_FULL;
@@ -129,8 +119,8 @@ bool PakReader::Open(const std::string& name) {
 	}
 	
 	// Read fat location and size.
-	uint32_t fat_offset;
-	uint32_t fat_size;
+	u32 fat_offset;
+	u32 fat_size;
 	if(fread(&fat_offset, sizeof(fat_offset), 1, newfile) != 1) {
 		printf("error reading FAT offset\n");
 		fclose(newfile);
@@ -156,11 +146,11 @@ bool PakReader::Open(const std::string& name) {
 	}
 	
 	// Decrypt the FAT.
-	const char * key = selectKey(*(uint32_t*)newfat);
+	const char * key = selectKey(*(u32*)newfat);
 	if(key) {
 		pakDecrypt(newfat, fat_size, key);
 	} else {
-		printf("WARNING: unknown PAK key ID 0x%08x, assuming no key\n", *(uint32_t*)newfat);
+		printf("WARNING: unknown PAK key ID 0x%08x, assuming no key\n", *(u32*)newfat);
 	}
 	
 	PakDirectory * newroot = new PakDirectory();
@@ -182,7 +172,7 @@ bool PakReader::Open(const std::string& name) {
 			dir = newroot;
 		}
 		
-		uint32_t nfiles;
+		u32 nfiles;
 		if(!safeGet(nfiles, pos, fat_size)) {
 			printf("error reading file count from FAT, wrong key?\n");
 			goto error;
@@ -214,10 +204,10 @@ bool PakReader::Open(const std::string& name) {
 				goto error;
 			}
 			
-			uint32_t offset;
-			uint32_t flags;
-			uint32_t uncompressedSize;
-			uint32_t size;
+			u32 offset;
+			u32 flags;
+			u32 uncompressedSize;
+			u32 size;
 			
 			if(!safeGet(offset, pos, fat_size) || !safeGet(flags, pos, fat_size)
 			   || !safeGet(uncompressedSize, pos, fat_size) || !safeGet(size, pos, fat_size)) {

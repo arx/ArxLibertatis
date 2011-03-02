@@ -26,10 +26,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioEnvironment.h"
 
 #include <cmath>
+
 #include <cstring>
-//#include "audio/eax.h"
 
 #include "audio/AudioGlobal.h"
+
 #include "io/PakManager.h"
 
 namespace ATHENA
@@ -108,7 +109,7 @@ namespace ATHENA
 		if (_name)
 		{
 			aalULong length(strlen(_name) + 1);
-			aalVoid * ptr = realloc(name, length);
+			void * ptr = realloc(name, length);
 
 			if (!ptr) return AAL_ERROR_MEMORY;
 

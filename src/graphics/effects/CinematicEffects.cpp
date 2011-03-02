@@ -28,9 +28,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "animation/Cinematic.h"
 #include "animation/CinematicKeyframer.h"
 
-#include "graphics/data/CinematicTexture.h"
 #include "graphics/Math.h"
 #include "graphics/Draw.h"
+#include "graphics/data/CinematicTexture.h"
 
 /*---------------------------------------------------------------------------------*/
 extern HWND HwndPere;
@@ -112,9 +112,9 @@ bool FX_Blur(Cinematic * c, LPDIRECT3DDEVICE7 device, CinematicBitmap * tb)
 		memmove(OldAz, OldAz + 1, TotOldPos * 4);
 	}
 
-	if ((GetTimeKeyFramer(c) - LastTime) < 0.40f)
+	if ((GetTimeKeyFramer() - LastTime) < 0.40f)
 	{
-		LastTime = GetTimeKeyFramer(c);
+		LastTime = GetTimeKeyFramer();
 		OldPos[TotOldPos] = c->pos;
 		OldAz[TotOldPos] = c->angz;
 		TotOldPos++;

@@ -53,15 +53,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <windowsx.h>
-#include <stdio.h>
-#include <tchar.h>
 
 #include "graphics/GraphicsEnum.h"
-#include "graphics/GraphicsUtility.h" // For DEBUG_MSG
-#include "core/Res.h"  // For dialog controls
-#include "io/Logger.h"
 
+#include <cstdio>
+
+#include <windowsx.h>
+
+#include "core/Res.h"  // For dialog controls
+
+#include "graphics/GraphicsUtility.h" // For DEBUG_MSG
+
+#include "io/Logger.h"
 
 //************************************************************************************
 // Global data
@@ -131,8 +134,10 @@ static HRESULT WINAPI ModeEnumCallback(DDSURFACEDESC2 * pddsd,
 static HRESULT WINAPI DeviceEnumCallback(TCHAR		*	strDesc,
         TCHAR		*	strName,
         D3DDEVICEDESC7	* pDesc,
-        VOID		*		pParentInfo)
-{
+        VOID		*		pParentInfo) {
+	
+	(void)strDesc;
+	
 	// Keep track of # of devices that were enumerated
 	g_dwNumDevicesEnumerated++;
 
@@ -238,8 +243,10 @@ static HRESULT WINAPI DeviceEnumCallback(TCHAR		*	strDesc,
 // Callback function for enumerating drivers.
 //************************************************************************************
 static BOOL WINAPI DriverEnumCallback(GUID * pGUID, TCHAR * strDesc,
-                                      TCHAR * strName, VOID *, HMONITOR)
-{
+                                      TCHAR * strName, VOID *, HMONITOR) {
+	
+	(void)strName;
+	
 	D3DEnum_DeviceInfo d3dDeviceInfo;
 	LPDIRECTDRAW7      pDD;
 	LPDIRECT3D7        pD3D;
@@ -445,8 +452,8 @@ static VOID UpdateDialogControls(HWND hDlg, D3DEnum_DeviceInfo * pCurrentDevice,
 					if (bStereo)
 						continue;
 
-				TCHAR strMode[80];
-				wsprintf(strMode, _T("%ld x %ld x %ld"),
+				char strMode[80];
+				sprintf(strMode, "%d x %d x %d",
 				         pddsdMode->dwWidth, pddsdMode->dwHeight,
 				         pddsdMode->ddpfPixelFormat.dwRGBBitCount);
 

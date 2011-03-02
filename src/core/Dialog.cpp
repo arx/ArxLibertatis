@@ -54,31 +54,46 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#define _ARX_CEDITOR_  0
-#include <stdio.h>
-#include <windows.h>
-#include <stdio.h>
 
+#include "core/Dialog.h"
+
+#include <windows.h>
+#include <commdlg.h>
+
+#include <cstdio>
+
+#include "ai/Paths.h"
+
+#include "core/Time.h"
 #include "core/Version.h"
 #include "core/Resource.h"
-#include "core/Dialog.h"
+
+#include "game/Player.h"
+
 #include "gui/Interface.h"
-#include "ai/Paths.h"
-#include "scene/GameSound.h"
-#include "graphics/GraphicsModes.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "io/Screenshot.h"
 #include "gui/Text.h"
-#include "core/Time.h"
 
-#include "io/IO.h"
-
-#include "graphics/GraphicsUtility.h"
-#include "physics/Clothes.h"
-#include "scene/Light.h"
-#include "graphics/data/Texture.h"
 #include "graphics/Math.h"
+#include "graphics/GraphicsUtility.h"
+#include "graphics/GraphicsModes.h"
+#include "graphics/GraphicsEnum.h"
+#include "graphics/Frame.h"
+#include "graphics/data/Texture.h"
+#include "graphics/particle/ParticleEffects.h"
+
+#include "io/Screenshot.h"
+#include "io/IO.h"
 #include "io/Logger.h"
+
+#include "physics/Clothes.h"
+#include "physics/Physics.h"
+
+#include "scene/GameSound.h"
+#include "scene/Light.h"
+#include "scene/Interactive.h"
+#include "scene/LoadLevel.h"
+
+#define _ARX_CEDITOR_  0
 
 long FASTLOADS = 0;
 
@@ -174,8 +189,10 @@ void SetClick(HWND hWnd, int id)
 
 float FORCED_REDUCTION_VALUE = 0.f;
 INT_PTR CALLBACK MeshReductionProc(HWND hWnd, UINT uMsg, WPARAM wParam,
-                                LPARAM lParam)
-{
+                                LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HWND thWnd;
 	long t;
 
@@ -238,8 +255,10 @@ HWND ShowErrorPopup(char * title, char * tex)
 	return hdl;
 }
 INT_PTR CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam,
-                              LPARAM lParam)
-{
+                              LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HWND thWnd;
 
 	switch (uMsg)
@@ -270,8 +289,10 @@ INT_PTR CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 extern long ARX_PATHS_HIERARCHYMOVE;
 
 INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
-                                 LPARAM lParam)
-{
+                                 LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HWND thWnd;
 
 	switch (uMsg)
@@ -307,8 +328,7 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 				thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);
 				InvalidateRect(thWnd, NULL, true);
 
-				if (HDC dc = GetDC(thWnd))
-				{
+				if(HDC dc = GetDC(thWnd)) {
 					RECT rect;
 					GetClientRect(thWnd, &rect);
 					HBRUSH brush = CreateSolidBrush(rgbResult);
@@ -366,8 +386,7 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 				thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);
 				InvalidateRect(thWnd, NULL, true);
 
-				if (HDC dc = GetDC(thWnd))
-				{
+				if(HDC dc = GetDC(thWnd)) {
 					RECT rect;
 					GetClientRect(thWnd, &rect);
 					HBRUSH brush = CreateSolidBrush(rgbResult);
@@ -520,8 +539,7 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 						thWnd = GetDlgItem(hWnd, IDC_SHOWCOLOR);
 						InvalidateRect(thWnd, NULL, true);
 
-						if (HDC dc = GetDC(thWnd))
-						{
+						if(HDC dc = GetDC(thWnd)) {
 							RECT rect;
 							GetClientRect(thWnd, &rect);
 							HBRUSH brush = CreateSolidBrush(cc.rgbResult);
@@ -804,8 +822,10 @@ void InterTreeSelectObject(HTREEITEM hitem)
 }
 
 INT_PTR CALLBACK InteractiveObjDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam,
-                                    LPARAM lParam)
-{
+                                    LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HTREEITEM hitem;
 
 	switch (uMsg)
@@ -941,9 +961,9 @@ LONG CALLBACK InterTreeViewSubClassFunc(HWND hWnd,
 }
 
 
-void RemoveIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, const char * name, long type)
-{
-	if (TVVcount != 0)
+void RemoveIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, const char * name) {
+	
+	if (TVVcount != 0) {
 		if (io != NULL)
 		{
 			for (long i = 0; i < TVVcount; i++)
@@ -993,6 +1013,7 @@ void RemoveIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, const char * name, long t
 			}
 
 		}
+	}
 }
 
 void AddIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, const char * name, long type)
@@ -1191,9 +1212,9 @@ void FillInterTreeView(HWND tvhwnd)
  
  
  
-void InterTreeViewItemRemove(INTERACTIVE_OBJ * io, const char * name, long type)
+void InterTreeViewItemRemove(INTERACTIVE_OBJ * io, const char * name)
 {
-	if (InterObjDlg) RemoveIOTVItem(dlgTreeViewhWnd, io, name, type);
+	if (InterObjDlg) RemoveIOTVItem(dlgTreeViewhWnd, io, name);
 }
 void InterTreeViewItemAdd(INTERACTIVE_OBJ * io, const char * name, long type)
 {
@@ -1238,7 +1259,6 @@ void KillInterTreeView()
 	}
 }
 
-char rett[128];
 extern long FINAL_COMMERCIAL_DEMO;
 
 //*************************************************************************************
@@ -1267,8 +1287,10 @@ void LaunchSnapShotParamApp(HWND hwnd)
 //*************************************************************************************
 //*************************************************************************************
 
-INT_PTR CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	char temp[256];
 	HWND thWnd;
 
@@ -1455,8 +1477,10 @@ long LIGHT_THREAD_STATUS = 0; // 0=not created EXITED_LIGHT_THREAD=0;
 // 1=working
 // 2=finished exited
 // 3=immediate exit !
-LPTHREAD_START_ROUTINE EERIE_LIGHT_LightProc(char * ts)
-{
+LPTHREAD_START_ROUTINE EERIE_LIGHT_LightProc(char * ts) {
+	
+	(void)ts;
+	
 	LIGHT_THREAD_STATUS = 1;
 	EERIEPrecalcLights(THREAD_MINX, THREAD_MINZ, THREAD_MAXX, THREAD_MAXZ);
 	LIGHT_THREAD_STATUS = 2;
@@ -1551,11 +1575,10 @@ void LaunchLightThread(long minx, long minz, long maxx, long maxz)
 
 long SYNTAXCHECKING = 0;
 
-//*************************************************************************************
-//*************************************************************************************
-
-INT_PTR CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HWND thWnd;
 
 	switch (uMsg)
@@ -1641,7 +1664,7 @@ INT_PTR CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			if (ID_AROUND == LOWORD(wParam))
 			{
-				RecalcLightZone(player.pos.x, player.pos.y, player.pos.z, 2);
+				RecalcLightZone(player.pos.x, player.pos.z, 2);
 			}
 
 			break;
@@ -1726,11 +1749,10 @@ INT_PTR CALLBACK GaiaTextEdit(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 
 void ExitProc();
 
-//*************************************************************************************
-//*************************************************************************************
-
-INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	long val;
 	HWND thWnd;
 
@@ -1852,7 +1874,7 @@ INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					//}
 					//else strcpy(Project_workingdir, "\\\\ARKANESERVER\\Public\\Arx\\");
 
-					chdir("GRAPH\\LEVELS\\");
+					//chdir("GRAPH\\LEVELS\\");
 
 					thWnd = GetDlgItem(hWnd, IDC_TEXTUREPRECISION);
 					val = SendMessage(thWnd, TBM_GETPOS, true, 0);
@@ -2045,11 +2067,10 @@ extern float BIGLIGHTPOWER;
 extern long DEBUGCODE;
 extern long TRUEFIGHT;
 
-//*************************************************************************************
-//*************************************************************************************
-
-INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HWND thWnd;
 	static long wuz;
 
@@ -2552,11 +2573,10 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 long WATERFX = 0;
 long REFLECTFX = 0;
 
-//*************************************************************************************
-//*************************************************************************************
-
-INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HRESULT hr;
 
 	if (WM_COMMAND == uMsg)
@@ -2721,8 +2741,10 @@ INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 }
 extern long CHANGE_LEVEL_PROC_RESULT;
 
-INT_PTR CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	if (WM_COMMAND == uMsg)
 	{
 		if (IDC_GOTOPOLY == LOWORD(wParam))
@@ -2893,18 +2915,17 @@ void LightApply(HWND hWnd)
 		if (!(lightparam.extras & EXTRAS_SEMIDYNAMIC))
 		{
 			RecalcLight(CDP_EditLight);
-			RecalcLightZone(CDP_EditLight->pos.x, CDP_EditLight->pos.y, CDP_EditLight->pos.z, (long)(CDP_EditLight->fallend * ACTIVEBKG->Xmul) + 1);
+			RecalcLightZone(CDP_EditLight->pos.x, CDP_EditLight->pos.z, (long)(CDP_EditLight->fallend * ACTIVEBKG->Xmul) + 1);
 		}
 	}
 	}
 
 long INITT = 0;
 
-//*************************************************************************************
-//*************************************************************************************
-
-INT_PTR CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HWND thWnd;
 	long l;
 
@@ -3323,11 +3344,10 @@ FOG_DEF fogcopy;
 extern HWND CDP_FogOptions;
 extern FOG_DEF * CDP_EditFog;
 
-//*************************************************************************************
-//*************************************************************************************
-
-INT_PTR CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HWND thWnd;
 	float t;
 
@@ -3584,17 +3604,20 @@ long IOScript_YY = -1;
 #if _ARX_CEDITOR_
 CEditor * edit1 = NULL;
 CEditor * edit2 = NULL;
-#endif
 
 long edit_lin1 = 0;
 long edit_lin2 = 0;
+#endif // _ARX_CEDITOR_
+
 INTERACTIVE_OBJ * edit_io = NULL;
 
 //*************************************************************************************
 //*************************************************************************************
 
-INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HWND thWnd;
 
 	switch (uMsg)

@@ -27,7 +27,6 @@
 #include "io/Blast.h"
 
 #include <csetjmp> /* for setjmp(), longjmp(), and jmp_buf */
-
 #include <cstring>
 #include <cstdlib>
 

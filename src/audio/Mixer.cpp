@@ -22,10 +22,13 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <math.h>
+
+#include "audio/Mixer.h"
+
+#include <cmath>
 #include <cstdlib>
 #include <cstring>
-#include "audio/Mixer.h"
+
 #include "audio/AudioGlobal.h"
 #include "audio/AudioInstance.h"
 
@@ -34,10 +37,7 @@ using namespace std;
 namespace ATHENA
 {
 
-	static enum MixerFlag
-	{
-		MIXER_PAUSED = 0x00000001
-	} mixerFlag;
+	const aalULong MIXER_PAUSED = 0x00000001;
 
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //
@@ -85,7 +85,7 @@ namespace ATHENA
 	///////////////////////////////////////////////////////////////////////////////
 	aalError Mixer::SetName(const char * _name)
 	{
-		aalVoid * ptr;
+		void * ptr;
 
 		if (!_name)
 		{

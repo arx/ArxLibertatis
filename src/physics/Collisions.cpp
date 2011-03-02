@@ -55,21 +55,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdlib.h>
-#include <math.h>
+#include "physics/Collisions.h"
 
-#include <iostream>
-#include <fstream>
 #include <sstream>
 #include <vector>
 
+#include "core/Time.h"
+#include "game/Damage.h"
+#include "game/NPC.h"
+#include "game/Player.h"
 #include "graphics/Math.h"
 #include "io/IO.h"
-#include "physics/Collisions.h"
-#include "game/Damage.h"
 #include "scene/Interactive.h"
-#include "game/NPC.h"
-#include "core/Time.h"
 
 using std::min;
 using std::max;
@@ -991,9 +988,9 @@ float CheckAnythingInCylinder(EERIE_CYLINDER * cyl,INTERACTIVE_OBJ * ioo,long fl
 							else if (nbv<1200) step=4;
 							else step=6;
 
-							for (long ii=1;ii<nbv;ii+=step)
+							for (size_t ii=1;ii<nbv;ii+=step)
 							{
-								if (ii!=io->obj->origin)
+								if (ii != (size_t)io->obj->origin)
 								{
 									sp.origin.x=vlist[ii].v.x;
 									sp.origin.y=vlist[ii].v.y;
@@ -1785,7 +1782,7 @@ bool ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip,INTERACTIVE_OBJ * io,float MOVE
 
 			DIRECT_PATH=false;
 			// Must Attempt To Slide along collisions
-			register EERIE_3D vecatt;
+			EERIE_3D vecatt;
 			EERIE_3D rpos;
 			EERIE_3D lpos;
 			long RFOUND=0;

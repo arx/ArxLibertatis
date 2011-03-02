@@ -58,7 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CSPELLFX_LVL02_H
 #define ARX_CSPELLFX_LVL02_H
 
-class CSpellFx;
+#include "graphics/effects/SpellEffects.h"
+
 class CParticleSystem;
 
 //-----------------------------------------------------------------------------
@@ -75,7 +76,7 @@ class CHeal: public CSpellFx
 		TextureContainer * tex_heal;
 
 	public:
-		CHeal(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CHeal();
 		~CHeal();
 
 	public:
@@ -120,7 +121,7 @@ class CLowerArmor: public CSpellFx
 
 		// surcharge
 	public:
-		void	Create(long, int);
+		void	Create(long);
 		void	Kill();
 		void	Update(unsigned long);
 		float	Render(LPDIRECT3DDEVICE7);
@@ -141,7 +142,7 @@ class CArmor: public CSpellFx
 		~CArmor();
 
 		// surcharge
-		void	Create(long, int);
+		void	Create(long);
 		void	Update(unsigned long);
 		float	Render(LPDIRECT3DDEVICE7);
  

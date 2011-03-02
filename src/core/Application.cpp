@@ -55,19 +55,24 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <stdio.h>
-#include <tchar.h>
 
 #include "core/Application.h"
-#include "graphics/data/Mesh.h"
-#include "graphics/GraphicsUtility.h"
+
+#include <cstdio>
+
+#include "core/Time.h"
+#include "core/Resource.h"
+
+#include "game/Player.h"
 
 #include "gui/Menu.h"
-#include "game/Player.h"
 #include "gui/Interface.h"
-#include "core/Time.h"
 #include "gui/MenuWidgets.h"
-#include "core/Resource.h"
+
+#include "graphics/Frame.h"
+#include "graphics/GraphicsEnum.h"
+#include "graphics/data/Mesh.h"
+#include "graphics/GraphicsUtility.h"
 
 #include "io/IO.h"
 #include "io/Registry.h"
@@ -170,8 +175,8 @@ extern long FINAL_COMMERCIAL_GAME;
 //*************************************************************************************
 // Create()
 //*************************************************************************************
-HRESULT CD3DApplication::Create(HINSTANCE hInst, TCHAR * strCmdLine)
-{
+HRESULT CD3DApplication::Create(HINSTANCE hInst) {
+	
 	HRESULT hr;
 	long menu;
 	DWORD flags;
@@ -312,7 +317,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst, TCHAR * strCmdLine)
 
 	if (ToolBar != NULL)
 	{
-		ToolBar->hWnd = CreateToolBar(m_hWnd, ToolBar->CreationToolBar, hInst);
+		ToolBar->hWnd = CreateToolBar(m_hWnd, hInst);
 	}
 
 	this->m_pFramework->ShowFrame();
@@ -322,8 +327,8 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst, TCHAR * strCmdLine)
 
 //*************************************************************************************
 //*************************************************************************************
-HWND CD3DApplication::CreateToolBar(HWND hWndParent, long tbb, HINSTANCE hInst)
-{
+HWND CD3DApplication::CreateToolBar(HWND hWndParent, HINSTANCE hInst) {
+	
 	HWND hWndToolbar;
 	long flags;
 
@@ -1003,7 +1008,7 @@ HRESULT CD3DApplication::Render3DEnvironment()
 	// Get the relative time, in seconds
 	if (m_bFrameMoving || m_bSingleStep)
 	{
-		if (FAILED(hr = FrameMove(0.f)))
+		if (FAILED(hr = FrameMove()))
 			return hr;
 
 		m_bSingleStep = false;
@@ -1097,8 +1102,10 @@ VOID CD3DApplication::Pause(bool bPause)
 // save any data for open network connections, files, etc.., and prepare
 // to go into a suspended mode.
 //*************************************************************************************
-LRESULT CD3DApplication::OnQuerySuspend(DWORD dwFlags)
-{
+LRESULT CD3DApplication::OnQuerySuspend(DWORD dwFlags) {
+	
+	(void)dwFlags;
+	
 	Pause(true);
 	return true;
 }
@@ -1110,8 +1117,10 @@ LRESULT CD3DApplication::OnQuerySuspend(DWORD dwFlags)
 // the app should recover any data, network connections, files, etc..,
 // and resume running from when the app was suspended.
 //*************************************************************************************
-LRESULT CD3DApplication::OnResumeSuspend(DWORD dwData)
-{
+LRESULT CD3DApplication::OnResumeSuspend(DWORD dwData) {
+	
+	(void)dwData;
+	
 	Pause(false);
 	return true;
 }

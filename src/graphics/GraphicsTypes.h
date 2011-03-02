@@ -816,7 +816,7 @@ struct EERIE_PORTAL_DATA
 #pragma pack(pop)
 
 
-#define ARX_D3DVERTEX D3DTLVERTEX
+typedef D3DTLVERTEX ARX_D3DVERTEX;
 
 
 struct SMY_D3DVERTEX

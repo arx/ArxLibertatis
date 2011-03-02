@@ -57,8 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/CollisionShapes.h"
 
-#include <cmath>
-
 #include "graphics/Math.h"
 #include "graphics/data/MeshManipulation.h"
 
@@ -86,7 +84,7 @@ void EERIE_COLLISION_Cylinder_Create(INTERACTIVE_OBJ * io)
 
 	for (size_t i = 0; i < obj->vertexlist.size(); i++)
 	{
-		if ((i != obj->origin) && (EEfabs(io->physics.cyl.origin.y - obj->vertexlist[i].v.y) < 20.f))
+		if ((i != (size_t)obj->origin) && (EEfabs(io->physics.cyl.origin.y - obj->vertexlist[i].v.y) < 20.f))
 		{
 			dist = max(dist, TRUEDistance3D(io->physics.cyl.origin.x, io->physics.cyl.origin.y, io->physics.cyl.origin.z,
 											  obj->vertexlist[i].v.x, obj->vertexlist[i].v.y, obj->vertexlist[i].v.z));
@@ -177,7 +175,7 @@ long GetFirstChildGroup(EERIE_3DOBJ * obj, long group)
 
 	for (long k = group + 1; k < obj->nbgroups; k++)
 	{
-		for (long i = 0; i < obj->grouplist[group].indexes.size(); i++)
+		for (size_t i = 0; i < obj->grouplist[group].indexes.size(); i++)
 		{
 			if (obj->grouplist[group].indexes[i] == obj->grouplist[k].origin)
 			{
@@ -192,21 +190,18 @@ long GetFirstChildGroup(EERIE_3DOBJ * obj, long group)
 bool IsExclusiveGroupMember(EERIE_3DOBJ * obj, long idx, long group)
 {
 
-	long exclusive = 1;
-
 	for (long i = group + 1; i < obj->nbgroups; i++)
 	{
-		for (long j = 0; j < obj->grouplist[i].indexes.size(); j++)
+		for (size_t j = 0; j < obj->grouplist[i].indexes.size(); j++)
 		{
 			if (idx == obj->grouplist[i].indexes[j])
 			{
-				exclusive = 0;
+				return false;
 			}
 		}
 	}
 
-	if (exclusive) return true;
-	else return false;
+	return true;
 }
 
 float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, EERIE_3D * center, EERIE_3D * dirvect, long group, float maxi)
@@ -225,7 +220,7 @@ float GetSphereRadiusForGroup(EERIE_3DOBJ * obj, EERIE_3D * center, EERIE_3D * d
 		}
 	}
 
-	for (int i = 0; i < obj->grouplist[group].indexes.size(); i++)
+	for (size_t i = 0; i < obj->grouplist[group].indexes.size(); i++)
 	{
 		if (!IsExclusiveGroupMember(obj, obj->grouplist[group].indexes[i], group)) continue;
 
@@ -275,7 +270,7 @@ long AddVertexToVertexList(EERIE_3DOBJ * obj, EERIE_3D * center, long group)
 {
 	if (obj->vertexlist.empty()) return -1;
 
-	for (long i = 0; i < obj->vertexlist.size(); i++)
+	for (size_t i = 0; i < obj->vertexlist.size(); i++)
 	{
 		if ((center->x == obj->vertexlist[i].v.x)
 				&&	(center->y == obj->vertexlist[i].v.y)

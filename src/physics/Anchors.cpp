@@ -38,26 +38,23 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "physics/Anchors.h"
 
-#include "core/Application.h"
+#include <cstdio>
+
 #include "ai/PathFinderManager.h"
-#include "graphics/Math.h"
-
-#include "io/IO.h"
-
+#include "core/Application.h"
 #include "core/Core.h"
+#include "game/Player.h"
 #include "gui/Text.h"
+#include "graphics/Math.h"
+#include "io/IO.h"
+#include "physics/Physics.h"
 
 using std::min;
 using std::max;
+using std::sprintf;
 
 extern float MAX_ALLOWED_PER_SECOND;
 extern bool DIRECT_PATH;
-
-#include <cstdio>
-using std::printf;
-
-
-
 
 EERIEPOLY * ANCHOR_CheckInPolyPrecis(float x, float y, float z)
 {
@@ -295,8 +292,8 @@ __inline float ANCHOR_IsPolyInCylinder(EERIEPOLY * ep, EERIE_CYLINDER * cyl, lon
 //-----------------------------------------------------------------------------
 // Returns 0 if nothing in cyl
 // Else returns Y Offset to put cylinder in a proper place
-float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * ioo, long flags)
-{
+static float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl, long flags) {
+	
 	long rad = (cyl->radius + 230) * ACTIVEBKG->Xmul;
 
 	long px, pz;
@@ -370,7 +367,7 @@ float ANCHOR_CheckAnythingInCylinder(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * ioo
 extern long MOVING_CYLINDER;
 bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, long flags)
 {
-	float anything = ANCHOR_CheckAnythingInCylinder(cyl, io, flags);
+	float anything = ANCHOR_CheckAnythingInCylinder(cyl, flags);
 
 	if ((flags & CFLAG_LEVITATE) && (anything == 0.f)) return true;
 
@@ -392,7 +389,7 @@ bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, 
 		while (anything < 0.f)
 		{
 			tmp.origin.y += anything;
-			anything = ANCHOR_CheckAnythingInCylinder(&tmp, io, flags);
+			anything = ANCHOR_CheckAnythingInCylinder(&tmp, flags);
 		}
 
 		anything = tmp.origin.y - cyl->origin.y;
@@ -456,7 +453,7 @@ bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, 
 
 	memcpy(&tmp, cyl, sizeof(EERIE_CYLINDER));
 	tmp.origin.y += anything;
-	anything = ANCHOR_CheckAnythingInCylinder(&tmp, io, flags); 
+	anything = ANCHOR_CheckAnythingInCylinder(&tmp, flags); 
 
 	if (anything < 0.f)
 	{
@@ -465,7 +462,7 @@ bool ANCHOR_AttemptValidCylinderPos(EERIE_CYLINDER * cyl, INTERACTIVE_OBJ * io, 
 			while (anything < 0.f)
 			{
 				tmp.origin.y += anything;
-				anything = ANCHOR_CheckAnythingInCylinder(&tmp, io, flags);
+				anything = ANCHOR_CheckAnythingInCylinder(&tmp, flags);
 			}
 
 			cyl->origin.y = tmp.origin.y; 
@@ -550,9 +547,9 @@ bool ANCHOR_ARX_COLLISION_Move_Cylinder(IO_PHYSICS * ip, INTERACTIVE_OBJ * io, f
 
 			DIRECT_PATH = false;
 			// Must Attempt To Slide along collisions
-			register EERIE_3D	vecatt;
-			EERIE_3D			rpos		= { 0, 0, 0 };
-			EERIE_3D			lpos		= { 0, 0, 0 };
+			EERIE_3D	vecatt;
+			EERIE_3D			rpos		= {{0},{0},{0}};
+			EERIE_3D			lpos		= {{0},{0},{0}};
 			long				RFOUND		=	0;
 			long				LFOUND		=	0;
 			long				maxRANGLE	=	90;
@@ -729,8 +726,8 @@ bool CylinderAboveInvalidZone(EERIE_CYLINDER * cyl)
 //*************************************************************************************
 #define MUST_BE_BIG 1
 
-bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, EERIE_3D * pos, long flags)
-{
+static bool DirectAddAnchor_Original_Method(EERIE_BACKGROUND * eb, EERIE_BKG_INFO * eg, EERIE_3D * pos) {
+	
 	long found = 0;
 	long best = 0;
 	long stop_radius = 0;
@@ -1161,7 +1158,7 @@ void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb)
 			}
 		}
 
-	EERIE_PATHFINDER_Create(eb);
+	EERIE_PATHFINDER_Create();
 }
 
 void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb)
@@ -1260,7 +1257,7 @@ void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb)
 								if (ep2->type & POLY_NOPATH)
 									continue;
 
-								if (DirectAddAnchor_Original_Method(eb, eg, &currcyl.origin, 0))
+								if (DirectAddAnchor_Original_Method(eb, eg, &currcyl.origin))
 								{
 									added = 1;
 								}

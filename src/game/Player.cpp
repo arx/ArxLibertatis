@@ -59,27 +59,35 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
-#include "gui/Menu.h"
-#include "gui/Text.h"
-#include "gui/Speech.h"
-#include "graphics/Draw.h"
-#include "graphics/effects/Fog.h"
-#include "graphics/particle/ParticleManager.h"
-#include "graphics/particle/ParticleEffects.h"
+
+#include "core/Localization.h"
+#include "core/Time.h"
+
 #include "game/Damage.h"
 #include "game/Equipment.h"
 #include "game/Missile.h"
 #include "game/NPC.h"
-#include "scene/ChangeLevel.h"
-#include "scene/Scene.h"
-#include "scene/GameSound.h"
-#include "physics/Collisions.h"
-#include "physics/Actors.h"
-#include "core/Localization.h"
-#include "core/Time.h"
+
+#include "gui/Menu.h"
+#include "gui/Text.h"
+#include "gui/Speech.h"
+
+#include "graphics/Draw.h"
+#include "graphics/effects/Fog.h"
+#include "graphics/particle/ParticleManager.h"
+#include "graphics/particle/ParticleEffects.h"
+
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
+#include "io/Logger.h"
+
+#include "physics/Collisions.h"
+#include "physics/Actors.h"
+
+#include "scene/ChangeLevel.h"
+#include "scene/Scene.h"
+#include "scene/GameSound.h"
 
 extern long		USE_NEW_SKILLS;
 extern long		ARX_CONVERSATION;
@@ -560,14 +568,11 @@ void ARX_PLAYER_Quest_Add( const char * quest, bool _bLoad)
 // FUNCTION/RESULT:
 //   Removes player invisibility by killing Invisibility spells on him
 //*************************************************************************************
-void ARX_PLAYER_Remove_Invisibility()
-{
-	for (long i = 0; i < MAX_SPELLS; i++)
-	{
-		if ((spells[i].exist)
-		        &&	(spells[i].type == SPELL_INVISIBILITY)
-		        && (spells[i].caster == 0))
+void ARX_PLAYER_Remove_Invisibility() {
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		if(spells[i].exist && spells[i].type == SPELL_INVISIBILITY && spells[i].caster == 0) {
 			spells[i].tolive = 0;
+		}
 	}
 }
 
@@ -1584,7 +1589,7 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 					}
 
 					if (bOk)
-						ARX_SPEECH_AddSpeech(inter.iobj[0], "[Player_Off_Hungry]", PARAM_LOCALISED, ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
+						ARX_SPEECH_AddSpeech(inter.iobj[0], "[Player_Off_Hungry]", ANIM_TALK_NEUTRAL, ARX_SPEECH_FLAG_NOTEXT);
 				}
 			}
 
@@ -1621,7 +1626,7 @@ void ARX_PLAYER_FrameCheck(float Framedelay)
 				{
 					float dmg = cp * ( 1.0f / 3 );
 
-					if (player.life - dmg <= 0.f) ARX_DAMAGES_DamagePlayer(dmg, DAMAGE_TYPE_POISON, -1, NULL);
+					if (player.life - dmg <= 0.f) ARX_DAMAGES_DamagePlayer(dmg, DAMAGE_TYPE_POISON, -1);
 					else player.life -= dmg;
 
 					player.poison -= cp * ( 1.0f / 10 );
@@ -1863,21 +1868,18 @@ void ARX_PLAYER_BecomesDead()
 		DeadTime = 0;
 	}
 
-	for (long i = 0; i < MAX_SPELLS; i++)
-	{
-		if ((spells[i].exist)
-		        &&	(spells[i].caster == 0))
-		{
+	for(size_t i = 0; i < MAX_SPELLS; i++) {
+		if(spells[i].exist && spells[i].caster == 0) {
 			spells[i].tolive = 0;
 		}
 	}
 }
+
 float LASTPLAYERA = 0;
 extern long ON_PLATFORM;
 long LAST_ON_PLATFORM = 0;
 extern long MOVE_PRECEDENCE;
 extern long EXTERNALVIEW;
-long NOT_MOVED_AT_ALL = 0;
 //*************************************************************************************
 // void ARX_PLAYER_Manage_Visual()
 //-------------------------------------------------------------------------------------
@@ -2362,6 +2364,8 @@ void ARX_PLAYER_Manage_Visual()
 					}
 					else
 					{
+						LogWarning << "Maximum number of dynamic lights exceeded.";
+						/*
 						EERIE_LIGHT * el = &DynLight[special[pouet]];
 						el->intensity = 1.3f + rnd() * 0.2f;
 						el->fallend = 175.f + rnd() * 10.f;
@@ -2371,6 +2375,7 @@ void ARX_PLAYER_Manage_Visual()
 							el->fallstart *= 2.f;
 							el->fallend *= 3.f;
 						}
+						*/
 					}
 
 					for (long kk = 0; kk < 2; kk++)
@@ -3128,7 +3133,7 @@ void PlayerMovementIterate(float DeltaTime)
 						Falling_Height = player.pos.y;
 						FALLING_TIME = 0;
 
-						ARX_DAMAGES_DamagePlayer(dmg, 0, -1, &player.pos);
+						ARX_DAMAGES_DamagePlayer(dmg, 0, -1);
 						ARX_DAMAGES_DamagePlayerEquipment(dmg);
 					}
 				}
@@ -3302,13 +3307,13 @@ void PlayerMovementIterate(float DeltaTime)
 					float damages = LAVA_DAMAGE * FrameDiff * ( 1.0f / 100 ) * mul;
 					damages = ARX_SPELLS_ApplyFireProtection(inter.iobj[0], damages);
 
-					ARX_DAMAGES_DamagePlayer(damages, DAMAGE_TYPE_FIRE, 0, NULL);
+					ARX_DAMAGES_DamagePlayer(damages, DAMAGE_TYPE_FIRE, 0);
 					ARX_DAMAGES_DamagePlayerEquipment(damages);
 					EERIE_3D pos;
 					pos.x = player.pos.x;
 					pos.y = player.pos.y - PLAYER_BASE_HEIGHT;
 					pos.z = player.pos.z;
-					ARX_PARTICLES_Spawn_Lava_Burn(&pos, 1.f, inter.iobj[0]);
+					ARX_PARTICLES_Spawn_Lava_Burn(&pos, inter.iobj[0]);
 				}
 			}
 
@@ -3463,7 +3468,7 @@ void PlayerMovementIterate(float DeltaTime)
 							if (dmg > 0.f)
 							{
 								Falling_Height = (player.pos.y + Falling_Height * 2) * ( 1.0f / 3 );
-								ARX_DAMAGES_DamagePlayer(dmg, 0, -1, &player.pos);
+								ARX_DAMAGES_DamagePlayer(dmg, 0, -1);
 								ARX_DAMAGES_DamagePlayerEquipment(dmg);
 							}
 						}
@@ -3715,8 +3720,7 @@ void ARX_PLAYER_PutPlayerInNormalStance(long val)
 	ARX_SOUND_Stop(SND_MAGIC_DRAW);
 
 	if (!val)
-		for (long i = 0; i < MAX_SPELLS; i++)
-		{
+		for(size_t i = 0; i < MAX_SPELLS; i++) {
 			if ((spells[i].exist)
 			        && ((spells[i].caster == 0) || (spells[i].target == 0)))
 			{
@@ -3939,7 +3943,7 @@ void ARX_GAME_Reset(long type)
 
 	// Fogs
 	ARX_FOGS_TimeReset();
-	ARX_FOGS_Render(1);
+	ARX_FOGS_Render();
 
 	// Anchors
 	ANCHOR_BLOCK_Clear();

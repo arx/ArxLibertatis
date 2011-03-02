@@ -56,19 +56,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdio.h>
-
 #include "graphics/effects/DrawEffects.h"
-#include "scene/Interactive.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "game/Spells.h"
+
 #include "core/Time.h"
+#include "core/Application.h"
+
+#include "game/Spells.h"
 #include "gui/MenuWidgets.h"
 
 #include "graphics/Draw.h"
-#include "scene/Light.h"
 #include "graphics/data/Mesh.h"
-#include "core/Application.h"
+#include "graphics/particle/ParticleEffects.h"
+
+#include "scene/Light.h"
+#include "scene/Interactive.h"
 
 // Some external defs needing to be cleaned...
 extern long DANAESIZX;
@@ -110,7 +111,6 @@ void ARXDRAW_DrawInterShadows(LPDIRECT3DDEVICE7 pd3dDevice)
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,0);
 	SetZBias(pd3dDevice,1);
 
-	long k;
 	long first=1;
 	
 	for (long i=0;i<TREATZONE_CUR;i++) 
@@ -160,7 +160,7 @@ void ARXDRAW_DrawInterShadows(LPDIRECT3DDEVICE7 pd3dDevice)
 
 				if (io->obj->nbgroups<=1)
 				{
-					for (k=0;k<io->obj->vertexlist.size();k+=9)
+					for (size_t k=0;k<io->obj->vertexlist.size();k+=9)
 					{
 						ep=EECheckInPoly(&io->obj->vertexlist3[k].v);
 
@@ -213,7 +213,7 @@ void ARXDRAW_DrawInterShadows(LPDIRECT3DDEVICE7 pd3dDevice)
 				}
 				else 
 				{
-					for (k=0;k<io->obj->nbgroups;k++)
+					for (long k=0;k<io->obj->nbgroups;k++)
 					{
 						long origin=io->obj->grouplist[k].origin;
 						ep=EECheckInPoly(	&io->obj->vertexlist3[origin].v );
@@ -361,13 +361,7 @@ void ARXDRAW_DrawAllLights(LPDIRECT3DDEVICE7 pd3dDevice,long x0,long z0,long x1,
 }
 extern INTERACTIVE_OBJ * CAMERACONTROLLER;
 extern long ARX_CONVERSATION;
-//*************************************************************************************
-//*************************************************************************************
-void ARXDRAW_DrawExternalView(LPDIRECT3DDEVICE7 pd3dDevice)
-{
-}
-//*************************************************************************************
-//*************************************************************************************
+
 void ARXDRAW_DrawEyeBall(LPDIRECT3DDEVICE7 pd3dDevice)
 {
 	EERIE_3D angle;
@@ -755,8 +749,8 @@ void ARXDRAW_DrawAllInterTransPolyPos(LPDIRECT3DDEVICE7 pd3dDevice)
 
 extern TextureContainer * enviro;
 
-void ARXDRAW_DrawAllTransPolysPos( LPDIRECT3DDEVICE7 pd3dDevice, long MODIF )
-{
+void ARXDRAW_DrawAllTransPolysPos(LPDIRECT3DDEVICE7 pd3dDevice) {
+	
 	int flg_NOCOUNT_USEVB = EERIE_NOCOUNT | (bSoftRender?EERIE_USEVB:0);
 	SetZBias( pd3dDevice, 1 );
 

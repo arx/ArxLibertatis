@@ -61,21 +61,30 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cassert>
 #include <iomanip>
+#include <sstream>
+#include <cstdio>
 
 #include "ai/Paths.h"
-#include "game/Damage.h"
-#include "game/Equipment.h"
-#include "game/NPC.h"
-#include "scene/Scene.h"
-#include "gui/Speech.h"
+
 #include "core/Time.h"
 #include "core/Localization.h"
 #include "core/Dialog.h"
 #include "core/Resource.h"
-#include "io/IO.h"
-#include "io/Logger.h"
+
+#include "game/Damage.h"
+#include "game/Equipment.h"
+#include "game/NPC.h"
+
+#include "gui/Speech.h"
+
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/Math.h"
+
+#include "io/IO.h"
+#include "io/Logger.h"
+
+#include "scene/Scene.h"
+#include "scene/Interactive.h"
 
 #include "scripting/ScriptEvent.h"
 
@@ -612,7 +621,7 @@ long specialstrcmp( const std::string& text, const std::string& seek)
 
 //*************************************************************************************
 //*************************************************************************************
-long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _name, std::string& txtcontent,unsigned int txtcontentSize,float * fcontent,long * lcontent)
+long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _name, std::string& txtcontent, float * fcontent,long * lcontent)
 {
 	std::string name = _name;
 	MakeUpcase(name);
@@ -643,7 +652,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 			{
 				txtcontent = "NONE";
 
-				if (io)	MakeTopObjString(io,txtcontent,txtcontentSize);//ARX: xrichter (2010-08-04) - Fix corrupted stack
+				if (io)	MakeTopObjString(io,txtcontent);
 
 				return TYPE_TEXT;
 			}
@@ -1304,7 +1313,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 
 				if (id >= 0)
 				{
-					for (long i = 0; i < MAX_SPELLS; i++)
+					for (size_t i = 0; i < MAX_SPELLS; i++)
 					{
 						if (spells[i].exist)
 						{
@@ -1613,7 +1622,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 
 			if (!specialstrcmp(name, "^PLAYERCASTING"))
 			{
-				for (long i = 0; i < MAX_SPELLS; i++)
+				for (size_t i = 0; i < MAX_SPELLS; i++)
 				{
 					if (spells[i].exist)
 					{
@@ -1645,7 +1654,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 
 				if (id >= 0)
 				{
-					for (long i = 0; i < MAX_SPELLS; i++)
+					for (size_t i = 0; i < MAX_SPELLS; i++)
 					{
 						if (spells[i].exist)
 						{
@@ -1901,12 +1910,11 @@ std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * ess
 
 	if (temp1[0] == '^')
 	{
-		const unsigned int tvSize = 64 ;
 		long lv;
 		float fv;
 		std::string tv;
 
-		switch (GetSystemVar(esss,io,temp1,tv,tvSize,&fv,&lv))//Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
+		switch (GetSystemVar(esss,io,temp1,tv,&fv,&lv))//Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
 		{
 			case TYPE_TEXT:
 				strcpy(var_text, tv.c_str());
@@ -1971,12 +1979,11 @@ float GetVarValueInterpretedAsFloat( std::string& temp1, EERIE_SCRIPT * esss, IN
 {
 	if (temp1[0] == '^')
 	{
-		const unsigned int tvSize = 64 ;
 		long lv;
 		float fv;
 		std::string tv; 
 
-		switch (GetSystemVar(esss,io,temp1,tv,tvSize,&fv,&lv)) //Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
+		switch (GetSystemVar(esss,io,temp1,tv,&fv,&lv)) //Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
 		{
 			case TYPE_TEXT:
 				return (float)atof(tv.c_str());
@@ -2583,12 +2590,11 @@ long GetNextWord_Interpreted( INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, s
 	long pos=GetNextWord(es,i,temp);
 	std::stringstream ss;
 	if	(temp[0]=='^') {
-		const unsigned int tvSize = 64 ;
 		long lv;
 		float fv;
 		std::string tv;
 
-		switch (GetSystemVar(es,io,temp,tv,tvSize,&fv,&lv)) //Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
+		switch (GetSystemVar(es,io,temp,tv,&fv,&lv)) //Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
 		{
 			case TYPE_TEXT:
 				temp = tv;
@@ -2992,7 +2998,7 @@ void CheckHit(INTERACTIVE_OBJ * io, float ratioaim)
 
 									if (mindist <= dist_limit)
 									{
-										ARX_EQUIPMENT_ComputeDamages(io, NULL, ioo, ratioaim);
+										ARX_EQUIPMENT_ComputeDamages(io, ioo, ratioaim);
 									}
 
 								}
@@ -3031,8 +3037,9 @@ void MakeStandard( std::string& str)
 //*************************************************************************************
 //*************************************************************************************
 
-long MakeLocalised( const std::string& text, std::string& output, long lastspeechflag)
-{
+// TODO why is this in Script?
+long MakeLocalised( const std::string& text, std::string& output) {
+	
 	if ( text.empty() )
 	{
 		output = "ERROR";
@@ -5507,7 +5514,7 @@ INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events_Sent()
 
 	return NULL;
 }
-long NEED_DEBUG = 0;
+
 long BIG_DEBUG_POS = 0;
 
 void ManageCasseDArme(INTERACTIVE_OBJ * io)
@@ -5704,8 +5711,10 @@ void InitScript(EERIE_SCRIPT * es)
 	ARX_SCRIPT_ComputeShortcuts(*es);
 }
 
-LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
+LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HWND thWnd;
 
 	switch (message)
@@ -5737,8 +5746,11 @@ LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 
 	return false;
 }
-LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
+
+LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HWND thWnd;
 
 	switch (message)

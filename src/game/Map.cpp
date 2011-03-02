@@ -22,28 +22,27 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <stdio.h>
-
-// TODO Remove some headers
-#include <algorithm>
-#include <fstream>
-#include <sstream>
-#include <vector>
 
 #include "game/Map.h"
 
+#include <sstream>
+#include <vector>
+#include <cstdio>
+
 #include "core/Core.h"
+
 #include "game/Levels.h"
 
 #include "graphics/GraphicsUtility.h"
-#include "graphics/data/Texture.h"
+#include "graphics/GraphicsEnum.h"
 #include "graphics/Draw.h"
+#include "graphics/Frame.h"
+#include "graphics/data/Texture.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
-
 
 extern long FINAL_RELEASE;
 extern long CURRENTLEVEL;
@@ -438,19 +437,19 @@ float oldposx,oldposz;
 
 	for( dwMask=dwRMask; dwMask && !(dwMask&0x1); dwMask>>=1 ) dwRShiftR++;
 
-	for( ; dwMask && 1; dwMask>>=1 ) dwRShiftL--;
+	for( ; dwMask & 1; dwMask>>=1 ) dwRShiftL--;
 
 	for( dwMask=dwGMask; dwMask && !(dwMask&0x1); dwMask>>=1 ) dwGShiftR++;
 
-	for( ; dwMask && 1; dwMask>>=1 ) dwGShiftL--;
+	for( ; dwMask & 1; dwMask>>=1 ) dwGShiftL--;
 
 	for( dwMask=dwBMask; dwMask && !(dwMask&0x1); dwMask>>=1 ) dwBShiftR++;
 
-	for( ; dwMask && 1; dwMask>>=1 ) dwBShiftL--;
+	for( ; dwMask & 1; dwMask>>=1 ) dwBShiftL--;
 
 	for( dwMask=dwAMask; dwMask && !(dwMask&0x1); dwMask>>=1 ) dwAShiftR++;
 
-	for( ; dwMask && 1; dwMask>>=1 ) dwAShiftL--;
+	for( ; dwMask & 1; dwMask>>=1 ) dwAShiftL--;
 
 	nby=ddsd.dwHeight;
 

@@ -1,5 +1,6 @@
+
 #include <cppunit/TestCase.h>
-#include "renderer/EERIEMath.h"
+#include "graphics/Math.h"
 
 class VectorTest : public CppUnit::TestCase {
 public:

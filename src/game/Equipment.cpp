@@ -55,29 +55,29 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
-/*#include <algorithm>
-#include <fstream>
-#include <sstream>
-#include <vector>
-*/
-
-#include "io/IO.h"
-#include "graphics/d3dwrapper.h"
-#include "graphics/Math.h"
-#include "scene/Object.h"
-#include "graphics/data/MeshManipulation.h"
-#include "scene/LinkedObject.h"
 #include "game/Equipment.h"
 #include "game/NPC.h"
-#include "scene/GameSound.h"
-#include "physics/Collisions.h"
-#include "graphics/particle/ParticleEffects.h"
 #include "game/Damage.h"
-#include "scene/Interactive.h"
+
 #include "gui/Interface.h"
+
+#include "graphics/d3dwrapper.h"
+#include "graphics/Math.h"
+#include "graphics/data/MeshManipulation.h"
+#include "graphics/particle/ParticleEffects.h"
+
+#include "io/IO.h"
+
+#include "physics/Collisions.h"
+
+#include "scene/Object.h"
+#include "scene/LinkedObject.h"
+#include "scene/GameSound.h"
+#include "scene/Interactive.h"
+
 #include "scripting/Script.h"
 
 using std::min;
@@ -655,7 +655,7 @@ void ARX_EQUIPMENT_LaunchPlayerUnReadyWeapon()
 }
 //***********************************************************************************************
 //***********************************************************************************************
-float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * io_weapon, INTERACTIVE_OBJ * io_target, float ratioaim, EERIE_3D * position)
+float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * io_target, float ratioaim, EERIE_3D * position)
 {
 	EVENT_SENDER = io_source;
 	SendIOScriptEvent(io_target, SM_AGGRESSION);
@@ -874,7 +874,7 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 				ppos.y += ACTIVECAM->pos.y;
 				ppos.z += ACTIVECAM->pos.z;
 				ARX_DAMAGES_SCREEN_SPLATS_Add(&ppos, dmgs);
-				ARX_DAMAGES_DamagePlayer(dmgs, 0, GetInterNum(io_source), &io_target->pos);
+				ARX_DAMAGES_DamagePlayer(dmgs, 0, GetInterNum(io_source));
 				ARX_DAMAGES_DamagePlayerEquipment(dmgs);
 			}
 			else
@@ -1013,12 +1013,12 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 						if (hitpoint >= 0)
 						{
 							Vector_Copy(&posi, &target->obj->vertexlist3[hitpoint].v);
-							dmgs = ARX_EQUIPMENT_ComputeDamages(io_source, io_weapon, target, ratioaim, &posi);
+							dmgs = ARX_EQUIPMENT_ComputeDamages(io_source, target, ratioaim, &posi);
 
 						}
 						else
 						{
-							dmgs = ARX_EQUIPMENT_ComputeDamages(io_source, io_weapon, target, ratioaim);
+							dmgs = ARX_EQUIPMENT_ComputeDamages(io_source, target, ratioaim);
 
 						}
 
@@ -1058,7 +1058,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 
 							if (!(flags & 1))
 							{
-								ARX_PARTICLES_Spawn_Splat(&pos, dmgs, color, hitpoint, target);
+								ARX_PARTICLES_Spawn_Splat(&pos, dmgs, color);
 
 								EERIE_SPHERE sp;
 								float power;
@@ -1086,7 +1086,7 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 							if (target == inter.iobj[0])
 								ARX_DAMAGES_SCREEN_SPLATS_Add(&pos, dmgs);
 
-							ARX_PARTICLES_Spawn_Blood2(&pos, dmgs, color, hitpoint, target);
+							ARX_PARTICLES_Spawn_Blood2(&pos, dmgs, color, target);
 
 							if (!ValidIONum(weapon)) io_weapon = NULL;
 						}
@@ -1172,9 +1172,8 @@ bool ARX_EQUIPMENT_Strike_Check(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ * i
 		}
 
 
-		EERIEPOLY * ep;
-
-		if (ep = CheckBackgroundInSphere(&sphere))
+		EERIEPOLY * ep = CheckBackgroundInSphere(&sphere);
+		if (ep)
 		{
 			if (io_source == inter.iobj[0])
 			{

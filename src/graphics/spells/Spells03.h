@@ -58,10 +58,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CSPELLFX_LVL03_H
 #define ARX_CSPELLFX_LVL03_H
 
-#include "graphics/particle/ParticleManager.h"
+#include "graphics/effects/SpellEffects.h"
+#include "graphics/particle/ParticleSystem.h"
 
-class CParticleSystem;
-class CSpellFx;
 
 //-----------------------------------------------------------------------------
 // Done By : Didier Pédreno
@@ -132,7 +131,7 @@ class CSpeed: public CSpellFx
 
 		int GetFreeRuban(void);
 		void AddRuban(int * f, int id, int dec);
-		void DrawRuban(LPDIRECT3DDEVICE7 device, int num, float size, int dec, float r, float g, float b, float r2, float g2, float b2);
+		void DrawRuban(int num, float size, int dec, float r, float g, float b, float r2, float g2, float b2);
 	public:
 		CSpeed() {};
 		~CSpeed() {};
@@ -172,7 +171,7 @@ class CIceProjectile: public CSpellFx
 		D3DTLVERTEX tv1a[MAX_ICE];
 
 	public:
-		CIceProjectile(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CIceProjectile();
 		~CIceProjectile();
 
 		// accesseurs
@@ -203,7 +202,7 @@ class CCreateFood: public CSpellFx
 		TextureContainer * tex_heal;
 
 	public:
-		CCreateFood(LPDIRECT3DDEVICE7 m_pd3dDevice);
+		CCreateFood();
 		~CCreateFood();
 
 	public:

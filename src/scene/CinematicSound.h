@@ -22,7 +22,7 @@ struct CinematicSound {
 
 void DeleteAllSound();
 
-void InitSound(Cinematic * c);
+void InitSound();
 CinematicSound * GetFreeSound(int * num);
 bool DeleteFreeSound(int num);
 int AddSoundToList(const std::string & path);

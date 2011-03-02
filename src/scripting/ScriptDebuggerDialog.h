@@ -84,7 +84,7 @@ unsigned long	SCRIPT_DEBUGGER_GetVersion();
 
 //-----------------------------------------------------------------------------
 // Cr�ation de la boite de dialogue
-void			SCRIPT_DEBUGGER_CreateDialog(HWND, ScriptDebuggerInfos &);
+void			SCRIPT_DEBUGGER_CreateDialog(HWND);
 
 //-----------------------------------------------------------------------------
 void			SCRIPT_DEBUGGER_SetParams(ScriptDebuggerInfos &);

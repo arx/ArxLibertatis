@@ -133,7 +133,7 @@ ImplodeResult implode(pkstream * pStr) {
 	int nMaxCopyLen; // Length of longest duplicate data in the dictionary
 	unsigned char * pMaxCopyOffs; // Offset to longest duplicate data in the dictionary
 	int nCopyLen; // Length of duplicate data in the dictionary
-	int nCopyOffs; // Offset used in actual compressed data
+	int nCopyOffs = 0; // Offset used in actual compressed data
 	unsigned char * pCopyOffs; // Offset to duplicate data in the dictionary
 	unsigned char * pOldCopyOffs; // Temporarily holds previous value of pCopyOffs
 	const unsigned char * pNewInPos; // Secondary offset into input buffer

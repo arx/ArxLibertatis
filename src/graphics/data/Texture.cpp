@@ -61,25 +61,25 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 #include <cassert>
-
+#include <limits>
 #include <iomanip>
 #include <map>
+#include <sstream>
 
-#include <tchar.h>
 #include <zlib.h>
 
 #include <IL/il.h>
 
 #include "core/Common.h"
-
 #include "core/Application.h"
+
 #include "graphics/GraphicsUtility.h"
+#include "graphics/GraphicsEnum.h"
 #include "graphics/Math.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
-
 
 long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 
@@ -654,8 +654,10 @@ HRESULT TextureContainer::LoadFile(const std::string& strPathname)
 
 	ILenum imageType = ilTypeFromExt(strPathname.c_str());
 	ILboolean bLoaded = ilLoadL(imageType, dat, size);
-
-	ILint imgFormat = ilGetInteger( IL_IMAGE_FORMAT );
+	if(!bLoaded) {
+		free(dat);
+		return E_FAIL;
+	}
 	
 	m_dwWidth   = ilGetInteger( IL_IMAGE_WIDTH );
 	m_dwHeight  = ilGetInteger( IL_IMAGE_HEIGHT );
@@ -691,11 +693,11 @@ void CopySurfaceToBumpMap(LPDIRECTDRAWSURFACE7 sSurface, LPDIRECTDRAWSURFACE7 dS
 		sSurface->Lock(NULL, &ddesc , DDLOCK_WAIT, NULL);
 		dSurface->Lock(NULL, &ddesc2, DDLOCK_WAIT, NULL);
 
-		if ((32 != ddesc.ddpfPixelFormat.dwRGBBitCount)
-				&&	(16 != ddesc.ddpfPixelFormat.dwRGBBitCount)
+		if (((32 != ddesc.ddpfPixelFormat.dwRGBBitCount)
+				&&	(16 != ddesc.ddpfPixelFormat.dwRGBBitCount))
 				||
-				(32 != ddesc2.ddpfPixelFormat.dwRGBBitCount)
-				&&	(16 != ddesc2.ddpfPixelFormat.dwRGBBitCount))
+				((32 != ddesc2.ddpfPixelFormat.dwRGBBitCount)
+				&&	(16 != ddesc2.ddpfPixelFormat.dwRGBBitCount)))
 		{
 			dSurface->Unlock(NULL);
 			sSurface->Unlock(NULL);
@@ -781,8 +783,8 @@ void CopySurfaceToBumpMap(LPDIRECTDRAWSURFACE7 sSurface, LPDIRECTDRAWSURFACE7 dS
 
 			for (ULONG x = 0 ; x < ddesc2.dwWidth ; x++)
 			{		
-				ARX_CHECK_LONG(x);
-				ARX_CHECK_LONG(y  * LineOffset);
+				assert(x <= LONG_MAX);
+				assert(y  * LineOffset <= LONG_MAX);
 				posx = x;
 				posy = y * LineOffset;
 
@@ -873,10 +875,10 @@ bool IsColorKeyInSurface(LPDIRECTDRAWSURFACE7 _pSurface)
 		{
 			for (ULONG x = 0 ; x < ddesc.dwWidth ; x++)
 			{
-				ARX_CHECK_LONG(x);
-				ARX_CHECK_LONG(y * LineOffset);
-				posx = ARX_CLEAN_WARN_CAST_LONG(x);
-				posy = ARX_CLEAN_WARN_CAST_LONG(y * LineOffset);
+				assert(x <= LONG_MAX);
+				assert(y * LineOffset <= LONG_MAX);
+				posx = static_cast<long>(x);
+				posy = static_cast<long>(y * LineOffset);
 
 				// Original Pixel
 				if (32 == ddesc.ddpfPixelFormat.dwRGBBitCount)
@@ -913,11 +915,11 @@ void StretchCopySurfaceToSurface(LPDIRECTDRAWSURFACE7 sSurface, LPDIRECTDRAWSURF
 		sSurface->Lock(NULL, &ddesc , DDLOCK_WAIT, NULL);
 		dSurface->Lock(NULL, &ddesc2, DDLOCK_WAIT, NULL);
 
-		if ((32 != ddesc.ddpfPixelFormat.dwRGBBitCount)
-				&& (16 != ddesc.ddpfPixelFormat.dwRGBBitCount)
+		if (((32 != ddesc.ddpfPixelFormat.dwRGBBitCount)
+				&& (16 != ddesc.ddpfPixelFormat.dwRGBBitCount))
 				||
-				(32 != ddesc2.ddpfPixelFormat.dwRGBBitCount)
-				&& (16 != ddesc2.ddpfPixelFormat.dwRGBBitCount))
+				((32 != ddesc2.ddpfPixelFormat.dwRGBBitCount)
+				&& (16 != ddesc2.ddpfPixelFormat.dwRGBBitCount)))
 		{
 			dSurface->Unlock(NULL);
 			sSurface->Unlock(NULL);
@@ -2009,13 +2011,10 @@ void TextureContainer::RemoveFakeBlack()
 	DWORD dwAMask		= 0xFF000000;
 	DWORD * pSrcData32	= (DWORD *)sBytes;
 
-	ARX_CHECK_NOT_NEG(m_dwHeight);
-
-	for (DWORD y = 0 ; y < ARX_CAST_ULONG(m_dwHeight) ; y++)
+	for (DWORD y = 0 ; y < static_cast<unsigned long>(m_dwHeight) ; y++)
 	{
-		ARX_CHECK_NOT_NEG(m_dwWidth);
 
-		for (DWORD x = 0 ; x < ARX_CAST_ULONG(m_dwWidth) ; x++)
+		for (DWORD x = 0 ; x < static_cast<unsigned long>(m_dwWidth) ; x++)
 		{
 			// Original Pixel
 			DWORD dwPixel;
@@ -2117,8 +2116,8 @@ HRESULT TextureContainer::CopyBitmapToSurface(HBITMAP hbitmap, int depx, int dep
 		DWORD pe[256];
 
 		UINT uiRes = GetDIBColorTable(hdcBitmap, 0, 256, (RGBQUAD *)pe);
-		ARX_CHECK_WORD(uiRes);
-		WORD  wNumColors     = ARX_CLEAN_WARN_CAST_WORD(uiRes);
+		assert(uiRes <= std::numeric_limits<WORD>::max());
+		WORD  wNumColors = static_cast<WORD>(uiRes);
 
 		// Create the color table
 		for (WORD i = 0; i < wNumColors; i++)
@@ -2481,7 +2480,6 @@ RefinementMap g_Refine;
 
 void LookForRefinementMap(TextureContainer * tc)
 {
-	long count = 0;
 	std::string str1;
 	std::string str2;
 	tc->TextureRefinement = NULL;
@@ -3182,8 +3180,8 @@ TextureContainer * TextureContainer::AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _i
 							 ((((unsigned int)(255.f - _fG)) >> dwGShiftL) << dwGShiftR) |
 							 ((((unsigned int)(255.f - _fB)) >> dwBShiftL) << dwBShiftR) |
 							 (0x8000);
-		ARX_CHECK_USHORT(uiDec);
-		usColorMask =	ARX_CLEAN_WARN_CAST_USHORT(uiDec);
+		assert(uiDec <= USHRT_MAX);
+		usColorMask = static_cast<unsigned short>(uiDec);
 
 		unsigned short * pusMem = (unsigned short *)ddsdSurfaceDesc.lpSurface;
 

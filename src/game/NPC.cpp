@@ -55,41 +55,46 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdlib.h>
-#include <cstdio>
-#include <iostream>
+#include "game/NPC.h"
+
+#include <cstdlib>
 #include <sstream>
 #include <algorithm>
-#include <fstream>
 #include <vector>
+#include <cassert>
+#include <cstdio>
 
-#include "io/IO.h"
+#include "ai/Paths.h"
+#include "ai/PathFinderManager.h"
+
+#include "core/Time.h"
+
+#include "game/Damage.h"
+#include "game/Equipment.h"
+#include "game/Spells.h"
+
+#include "gui/Interface.h"
+#include "gui/Speech.h"
 
 #include "graphics/d3dwrapper.h"
 #include "graphics/Draw.h"
 #include "graphics/Math.h"
-#include "scene/Object.h"
+#include "graphics/data/MeshManipulation.h"
+#include "graphics/particle/ParticleEffects.h"
+
+#include "io/IO.h"
+
 #include "physics/Box.h"
-#include "ai/PathFinderManager.h"
 #include "physics/Anchors.h"
 #include "physics/CollisionShapes.h"
-#include "graphics/data/MeshManipulation.h"
-
-#include "game/NPC.h"
-#include "scripting/Script.h"
 #include "physics/Collisions.h"
-#include "game/Damage.h"
-#include "game/Equipment.h"
-#include "gui/Interface.h"
+
+#include "scene/Object.h"
 #include "scene/Interactive.h"
-#include "gui/Speech.h"
-#include "ai/Paths.h"
-#include "ai/Paths.h"
-#include "graphics/particle/ParticleEffects.h"
 #include "scene/Scene.h"
 #include "scene/GameSound.h"
-#include "game/Spells.h"
-#include "core/Time.h"
+
+#include "scripting/Script.h"
 
 using std::sprintf;
 using std::min;
@@ -1017,8 +1022,6 @@ void ARX_NPC_ManagePoison(INTERACTIVE_OBJ * io)
 //*************************************************************************************
 //*************************************************************************************
  
-extern void ARX_PARTICLES_Spawn_Splat(EERIE_3D * pos, float dmgs, D3DCOLOR col, long vert, INTERACTIVE_OBJ * io, long flags);
-extern void ARX_PARTICLES_Spawn_Blood3(EERIE_3D * pos, float dmgs, D3DCOLOR col, long vert, INTERACTIVE_OBJ * io, long flags);
 extern float MAX_ALLOWED_PER_SECOND;
 long REACTIVATION_COUNT = 0;
 void ARX_PHYSICS_Apply()
@@ -1056,7 +1059,6 @@ void ARX_PHYSICS_Apply()
 		             &&	!io->obj->vertexlist.empty())
 		   )
 		{
-			long idx;
 			long cnt = (io->obj->vertexlist.size() << 12) + 1;
 
 			if (cnt < 2) cnt = 2;
@@ -1065,18 +1067,12 @@ void ARX_PHYSICS_Apply()
 
 			for (long nn = 0; nn < cnt; nn++)
 			{
-				idx = rnd()*io->obj->vertexlist.size();
+				size_t idx = rnd() * io->obj->vertexlist.size();
 
 				if (idx >= io->obj->vertexlist.size()) idx = io->obj->vertexlist.size() - 1;
 
-				EERIE_3D vector;
-				vector.x = io->obj->vertexlist3[idx].v.x - io->obj->vertexlist3[0].v.x + (rnd() - rnd()) * 3.f;
-				vector.y = io->obj->vertexlist3[idx].v.y - io->obj->vertexlist3[0].v.y + (rnd() - rnd()) * 3.f;
-				vector.z = io->obj->vertexlist3[idx].v.z - io->obj->vertexlist3[0].v.z + (rnd() - rnd()) * 3.f;
-				TRUEVector_Normalize(&vector);
-
-				ARX_PARTICLES_Spawn_Splat(&io->obj->vertexlist3[idx].v, 20, 0xFFFF0000, idx, io, 1);
-				ARX_PARTICLES_Spawn_Blood(&io->obj->vertexlist3[idx].v, &vector, 20, GetInterNum(io));
+				ARX_PARTICLES_Spawn_Splat(&io->obj->vertexlist3[idx].v, 20, 0xFFFF0000);
+				ARX_PARTICLES_Spawn_Blood(&io->obj->vertexlist3[idx].v, 20, GetInterNum(io));
 				needkill = 1;
 			}
 
@@ -1090,7 +1086,7 @@ void ARX_PHYSICS_Apply()
 		        &&	(ep->type & POLY_LAVA)
 		        &&	(EEfabs(ep->center.y - io->pos.y) < 40))
 		{
-			ARX_PARTICLES_Spawn_Lava_Burn(&io->pos, 0.6f, io);
+			ARX_PARTICLES_Spawn_Lava_Burn(&io->pos, io);
 
 			if (io->ioflags & IO_NPC)
 			{
@@ -1112,7 +1108,7 @@ void ARX_PHYSICS_Apply()
 
 				if (io->GameFlags & GFLAG_NO_PHYS_IO_COL) flags = 1;
 
-				if (EERIE_PHYSICS_BOX_ApplyModel(io->obj, (float)FrameDiff, io->rubber, flags, treatio[i].num))
+				if (ARX_PHYSICS_BOX_ApplyModel(io->obj, (float)FrameDiff, io->rubber, treatio[i].num))
 				{
 					if (io->damagedata >= 0)
 					{
@@ -1445,7 +1441,7 @@ long IsNearSelection(EERIE_3DOBJ * obj, long vert, long tw)
 
 	if (vert < 0) return -1;
 
-	for (long i = 0; i < obj->selections[tw].selected.size(); i++)
+	for (size_t i = 0; i < obj->selections[tw].selected.size(); i++)
 	{
 		float d = TRUEEEDistance3D(&obj->vertexlist[obj->selections[tw].selected[i]].v,
 		                           &obj->vertexlist[vert].v);
@@ -1508,15 +1504,15 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 		delete nouvo;
 	}
 
-	for (int k = 0 ; k < from->vertexlist.size() ; k++)
+	for(size_t k = 0; k < from->vertexlist.size(); k++) {
 		equival[k] = -1;
+	}
 
 	ARX_CHECK(0 < from->selections[num].selected.size());
 
-	for (int k = 0 ; k < from->selections[num].selected.size() ; k++)
-	{
-		inpos						=	from->selections[num].selected[k];
-		equival[from->selections[num].selected[k]]	=	k;
+	for(size_t k = 0; k < from->selections[num].selected.size(); k++) {
+		inpos = from->selections[num].selected[k];
+		equival[from->selections[num].selected[k]] = k;
 		
 		
 		
@@ -1532,9 +1528,9 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 		nouvo->vertexlist3[k] = nouvo->vertexlist[k];
 	}
 
-	long count = from->selections[num].selected.size();
+	size_t count = from->selections[num].selected.size();
 
-	for (size_t k = 0; k < from->facelist.size(); k++)
+	for(size_t k = 0; k < from->facelist.size(); k++)
 	{
 		if (from->facelist[k].texid == gore)
 		{
@@ -1566,8 +1562,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	float min = nouvo->vertexlist[0].vert.sy;
 	long nummm = 0;
 
-	for (int k = 1; k < nouvo->vertexlist.size(); k++)
-	{
+	for(size_t k = 1; k < nouvo->vertexlist.size(); k++) {
 		if (nouvo->vertexlist[k].vert.sy > min)
 		{
 			min = nouvo->vertexlist[k].vert.sy;
@@ -1581,8 +1576,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	nouvo->point0.y = nouvo->vertexlist[nouvo->origin].v.y;
 	nouvo->point0.z = nouvo->vertexlist[nouvo->origin].v.z;
 
-	for (int k = 0; k < nouvo->vertexlist.size(); k++)
-	{
+	for(size_t k = 0; k < nouvo->vertexlist.size(); k++) {
 		nouvo->vertexlist[k].vert.sx = nouvo->vertexlist[k].v.x -= nouvo->point0.x;
 		nouvo->vertexlist[k].vert.sy = nouvo->vertexlist[k].v.y -= nouvo->point0.y;
 		nouvo->vertexlist[k].vert.sz = nouvo->vertexlist[k].v.z -= nouvo->point0.z;
@@ -1631,8 +1625,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 		long gore = -1;
 
-		for (size_t k = 0; k < from->texturecontainer.size(); k++)
-		{
+		for(size_t k = 0; k < from->texturecontainer.size(); k++) {
 			if (from->texturecontainer[k]
 			        && (IsIn(from->texturecontainer[k]->m_strName, "GORE")))
 			{
@@ -1641,8 +1634,7 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 			}
 		}
 
-		for (int k = 0; k < nouvo->facelist.size(); k++)
-		{
+		for(size_t k = 0; k < nouvo->facelist.size(); k++) {
 			nouvo->facelist[k].facetype &= ~POLY_HIDE;
 
 			if (nouvo->facelist[k].texid == gore)
@@ -4108,7 +4100,7 @@ void ARX_NPC_NeedStepSound(INTERACTIVE_OBJ * io, EERIE_3D * pos, const float vol
 	char step_material[64] = "Foot_bare";
 	char floor_material[64] = "EARTH";
 
-	if (IsUnderWater(pos->x, pos->y, pos->z))
+	if (EEIsUnderWater(pos))
 		strcpy(floor_material, "WATER");
 	else
 	{
@@ -4246,20 +4238,20 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 			{
 				EERIE_3D	pos;
 				long		notok	=	10;
-				long		num		=	0;
+				size_t num = 0;
 
 				while (notok-- > 0)
 				{
 					num = rnd() * io->obj->facelist.size();
-
-					if ((num >= 0) && (num < io->obj->facelist.size()))
-					{
-						if (io->obj->facelist[num].facetype & POLY_HIDE) continue;
-
-						notok = -1;
-					}
+					
+					assert(num < io->obj->facelist.size());
+					
+					if (io->obj->facelist[num].facetype & POLY_HIDE) continue;
+					
+					notok = -1;
 				}
 
+				// TODO when is this no true?
 				if (notok < 0)
 				{
 					Vector_Copy(&pos, &io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v);
@@ -4384,20 +4376,19 @@ void ManageIgnition(INTERACTIVE_OBJ * io)
 			{
 				EERIE_3D	pos;
 				long		notok	=	10;
-				long		num		=	0;
+				size_t num = 0;
 
 				while (notok-- > 0)
 				{
 					num = rnd() * io->obj->facelist.size();
+					assert(num < io->obj->facelist.size());
 
-					if ((num >= 0) && (num < io->obj->facelist.size()))
-					{
-						if (io->obj->facelist[num].facetype & POLY_HIDE) continue;
+					if (io->obj->facelist[num].facetype & POLY_HIDE) continue;
 
-						notok = -1;
-					}
+					notok = -1;
 				}
 
+				// TODO how can this not be true?
 				if (notok < 0)
 				{
 					Vector_Copy(&pos, &io->obj->vertexlist3[io->obj->facelist[num].vid[0]].v);

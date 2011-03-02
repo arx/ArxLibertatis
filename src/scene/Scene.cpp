@@ -55,34 +55,45 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include "scene/Scene.h"
+
+#include <string>
+#include <cstdio>
+
 #ifndef DIRECTINPUT_VERSION
 	#define DIRECTINPUT_VERSION 0x0700
 #endif
-
 #include <dinput.h>
-#include <stdio.h>
 
-#include <string>
-
-#include "scene/Scene.h"
-#include "game/Spells.h"
-#include "scene/GameSound.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "graphics/effects/DrawEffects.h"
-#include "game/Player.h"
 #include "ai/Paths.h"
-#include "gui/Interface.h"
+
+#include "animation/Animation.h"
+
 #include "core/Time.h"
+
+#include "game/Spells.h"
+#include "game/Player.h"
+
+#include "gui/Interface.h"
 #include "gui/MenuWidgets.h"
+
+#include "graphics/Frame.h"
+#include "graphics/Draw.h"
+#include "graphics/GraphicsUtility.h"
+#include "graphics/Math.h"
+#include "graphics/d3dwrapper.h"
+#include "graphics/GraphicsEnum.h"
+#include "graphics/effects/DrawEffects.h"
+#include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
 #include "io/Logger.h"
-#include "graphics/d3dwrapper.h"
+
+#include "physics/Physics.h"
+
+#include "scene/GameSound.h"
 #include "scene/Light.h"
-#include "graphics/Draw.h"
-#include "animation/Animation.h"
-#include "graphics/GraphicsUtility.h"
-#include "graphics/Math.h"
+#include "scene/Interactive.h"
 
 using namespace std;
 
@@ -311,18 +322,16 @@ void PopOneTriangleListClipp(D3DTLVERTEX *_pVertex,int *_piNbVertex)
 /*  HRESULT ARX_DrawPrimitiveVB(	
  *	LPDIRECT3DDEVICE7	_d3dDevice,			: pointer to the DX7 device
  *	D3DPRIMITIVETYPE	_dptPrimitiveType,	: primitive type to draw
- *	DWORD				_dwVertexTypeDesc	: vertex format.
  *	_LPVERTEX_			_pVertex,			: pointer to the first vertex to render
  *	int*				_piNbVertex,		: number of vertices to render (must be positive)
  *	DWORD				_dwFlags            : optionally flag for DrawPrimitiveVB.
  *	CMY_DYNAMIC_VERTEXBUFFER*	_pDynamicVB	: mandatory : dynamicVertexBuffer to use for rendering.
  *	
  *	@return S_OK if function exit correctly.
-/************************************************************************/
+ ************************************************************************/
 template<class _LPVERTEX_>
 HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevice,
 													D3DPRIMITIVETYPE			_dptPrimitiveType, 
-													DWORD						_dwVertexTypeDesc,
 													_LPVERTEX_					_pVertex, 
 													int*						_piNbVertex, 
 													DWORD						_dwFlags,
@@ -398,7 +407,7 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevice,
  *	DWORD				_dwFlags )          : optionally flag for DrawPrimitiveVB.
  *	
  *	@return S_OK if function exit correctly.
-/************************************************************************/
+ ************************************************************************/
 HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7	_d3dDevice, 
 								D3DPRIMITIVETYPE	_dptPrimitiveType, 
 								DWORD				_dwVertexTypeDesc,
@@ -415,7 +424,6 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7	_d3dDevice,
 		case FVF_D3DVERTEX:
 			h_result	=	ARX_DrawPrimitiveVB(	_d3dDevice,
 													_dptPrimitiveType,
-													_dwVertexTypeDesc,
 													(SMY_D3DVERTEX*) _pVertex,
 													_piNbVertex,
 													_dwFlags,
@@ -424,7 +432,6 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7	_d3dDevice,
 		case D3DFVF_TLVERTEX:
 			h_result	=	ARX_DrawPrimitiveVB(	_d3dDevice,
 													_dptPrimitiveType,
-													_dwVertexTypeDesc,
 													(D3DTLVERTEX*) _pVertex,
 													_piNbVertex,
 													_dwFlags,
@@ -433,7 +440,6 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7	_d3dDevice,
 		case FVF_D3DVERTEX3:
 			h_result	=	ARX_DrawPrimitiveVB(	_d3dDevice,
 													_dptPrimitiveType,
-													_dwVertexTypeDesc,
 													(SMY_D3DVERTEX3*) _pVertex,
 													_piNbVertex,
 													_dwFlags,
@@ -442,7 +448,6 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7	_d3dDevice,
 		case FVF_D3DVERTEX3_T:
 			h_result	=	ARX_DrawPrimitiveVB(	_d3dDevice,
 													_dptPrimitiveType,
-													_dwVertexTypeDesc,
 													(SMY_D3DVERTEX3_T*) _pVertex,
 													_piNbVertex,
 													_dwFlags,
@@ -887,8 +892,8 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io)
 //   Implement all Portal Methods
 //   Return a reduced clipbox which can be used for polys clipping in the case of partial visibility
 //*********************************************************************************************************************
-bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io,EERIE_3DOBJ * eobj,EERIE_3D * position,EERIE_3D * bboxmin,EERIE_3D * bboxmax)
-{
+bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io, EERIE_3D * position) {
+	
 	if (EDITMODE) return false;
 
 	if (io==inter.iobj[0]) return false;
@@ -1215,7 +1220,7 @@ void ARX_PORTALS_InitDrawnRooms()
 	for (long i=0;i<portals->nb_total;i++)
 	{
 		ep->useportal=0;
-		*ep++;
+		ep++;
 	}
 
 
@@ -1583,15 +1588,6 @@ void ARX_PORTALS_Frustrum_RenderRooms(long prec,long tim)
 	NbRoomDrawList=0;
 }
 
-void ARX_PORTALS_Frustrum_RenderRoomT(long room_num,EERIE_FRUSTRUM_DATA * frustrums,long prec,long tim);
-void ARX_PORTALS_Frustrum_RenderRoomsT(long prec,long tim)
-{
-	for (long i=0;i<NbRoomDrawList;i++)
-	{
-		ARX_PORTALS_Frustrum_RenderRoomT(RoomDrawList[i],&RoomDraw[RoomDrawList[i]].frustrum,prec,tim);
-	}
-}
-void ARX_PORTALS_Frustrum_RenderRoom_TransparencyT(long room_num);
 void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num);
 void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 {
@@ -1610,7 +1606,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 		}
 		else
 		{
-			ARX_PORTALS_Frustrum_RenderRoom_TransparencyT(RoomDrawList[i]);
+			LogWarning << "unimplemented";
 		}
 	}
 
@@ -2693,18 +2689,6 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 
 void ApplyDynLight_VertexBuffer(EERIEPOLY *ep,SMY_D3DVERTEX *_pVertex,unsigned short _usInd0,unsigned short _usInd1,unsigned short _usInd2,unsigned short _usInd3);
 void ApplyDynLight_VertexBuffer_2(EERIEPOLY *ep,short x,short y,SMY_D3DVERTEX *_pVertex,unsigned short _usInd0,unsigned short _usInd1,unsigned short _usInd2,unsigned short _usInd3);
-//-----------------------------------------------------------------------------
-//TODO(lubosz): unimplemented
-void ARX_PORTALS_Frustrum_RenderRoomT(long room_num,EERIE_FRUSTRUM_DATA * frustrums,long prec,long tim)
-{
-
-					}
-				
-//-----------------------------------------------------------------------------
-void ARX_PORTALS_Frustrum_RenderRoom_TransparencyT(long room_num)
-{
-
-}
 
 TILE_LIGHTS tilelights[MAX_BKGX][MAX_BKGZ];
 
@@ -2793,7 +2777,7 @@ SMY_D3DVERTEX *pMyVertex;
 
 		float fDistBump=min(max(0.f,(ACTIVECAM->cdepth*fZFogStart)-200.f),MAX_DIST_BUMP);
 
-		for (long  lll=0; lll<portals->room[room_num].nb_polys; lll++, *pEPDATA++)
+		for (long  lll=0; lll<portals->room[room_num].nb_polys; lll++, pEPDATA++)
 		{
 
 			feg = &ACTIVEBKG->fastdata[pEPDATA->px][pEPDATA->py];
@@ -4214,8 +4198,8 @@ long MAX_FRAME_COUNT=0;
 // ie: Big Mess
 //*************************************************************************************
 ///////////////////////////////////////////////////////////
-void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag, long param) 
-{
+void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag) {
+	
 	FrameCount++;
 
 	FRAME_COUNT++;
@@ -4365,7 +4349,7 @@ void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag, long param)
 		{
 			feg=&ACTIVEBKG->fastdata[0][j];
 
-			for (i=0; i<ACTIVEBKG->Xsize; i++, *feg++)
+			for (i=0; i<ACTIVEBKG->Xsize; i++, feg++)
 			{
 				if (feg->treat)
 					feg->treat=0;			
@@ -4500,7 +4484,7 @@ if (USE_PORTALS && portals)
 			case 3:
 				CreateScreenFrustrum(&frustrum);
 				LAST_PORTALS_COUNT=ARX_PORTALS_Frustrum_ComputeRoom(room_num,&frustrum,lprec,tim);
-				ARX_PORTALS_Frustrum_RenderRoomsT(lprec,tim);
+				LogWarning << "unimplemented";
 				break;
 			case 4:
 				CreateScreenFrustrum(&frustrum);
@@ -4722,10 +4706,6 @@ else
 	PopAllTriangleList(true);
 	
 					}
-					
-	
-	if (EXTERNALVIEW)
-		ARXDRAW_DrawExternalView(pd3dDevice);
 
 
 	DRAWLATER_Render(pd3dDevice);
@@ -4757,7 +4737,7 @@ else
 		else
 		{
 			if (TRANSPOLYSPOS)
-				ARXDRAW_DrawAllTransPolysPos(pd3dDevice,MODIF);
+				ARXDRAW_DrawAllTransPolysPos(pd3dDevice);
 		}
 	}
 

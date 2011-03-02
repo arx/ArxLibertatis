@@ -297,7 +297,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define DIK_BUTTON30	(0x80000000|DXI_BUTTON29)
 #define DIK_BUTTON31	(0x80000000|DXI_BUTTON30)
 #define DIK_BUTTON32	(0x80000000|DXI_BUTTON31)
-#define ARX_MAXBUTTON	32
+
 
 #define DIK_WHEELUP		(0x40000000|0)
 #define DIK_WHEELDOWN	(0x40000000|1)
@@ -534,7 +534,7 @@ class CMenuButton: public CMenuElement
 		float               fSize;
 
 	public:
-		CMenuButton(int, HFONT, MENUSTATE, int, int, const std::string&, float _fSize = 1.f, TextureContainer * _pTex = NULL, TextureContainer * _pTexOver = NULL, int _iColor = -1, int _iTailleX = 0, int _iTailleY = 0);
+		CMenuButton(int, HFONT, MENUSTATE, int, int, const std::string&, float _fSize = 1.f, TextureContainer * _pTex = NULL, TextureContainer * _pTexOver = NULL, int _iColor = -1);
 		~CMenuButton();
 
 	public:
@@ -701,7 +701,7 @@ class CWindowMenuConsole
 		void AddMenuCenter(CMenuElement *);
 		void AddMenuCenterY(CMenuElement *);
 		void AlignElementCenter(CMenuElement *);
-		MENUSTATE Update(int, int, int, int);
+		MENUSTATE Update(int, int, int);
 		int Render();
  
 		CMenuElement * GetTouch(bool _bValidateTest = false);
@@ -754,9 +754,12 @@ struct EERIE_2DI
 };
 
 //-----------------------------------------------------------------------------
-class CDirectInput
-{
-	public:
+class CDirectInput {
+	
+public:
+	
+	static const size_t ARX_MAXBUTTON = 8;
+	
 		bool				bActive;
 		bool				bTouch;
 		int					iKeyId;
@@ -795,7 +798,7 @@ class CDirectInput
 
 		int					iWheelSens;
 	private:
-		void DrawOneCursor(int, int, int);
+		void DrawOneCursor(int, int);
  
 	public:
 		CDirectInput();
@@ -821,7 +824,7 @@ class CDirectInput
  
  
 		void ResetAll();
-		int GetWheelSens(int);
+		int GetWheelSens();
 };
 
 //-----------------------------------------------------------------------------

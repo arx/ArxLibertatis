@@ -25,16 +25,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/HashMap.h"
 
-#include <cstring>
 #include <cassert>
-
 #include <algorithm>
-using std::transform;
-
 #include <string>
-using std::string;
 
 #include "io/Logger.h"
+
+using std::transform;
+using std::string;
 
 
 HashMap::HashMap(size_t sz) {
@@ -113,7 +111,7 @@ void * HashMap::get(const std::string& name) {
 		h1 &= mask;
 		
 		if( !data[h1].name.empty() ) {
-			if(!strcmp(lname.c_str(), data[h1].name.c_str())) {
+			if(lname == data[h1].name) {
 				return data[h1].value;
 			}
 		}

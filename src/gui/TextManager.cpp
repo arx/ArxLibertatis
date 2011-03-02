@@ -5,15 +5,18 @@
  *      Author: bmonkey
  */
 
-#include "TextManager.h"
+#include "gui/TextManager.h"
 
 #include <cassert>
 
-#include "Text.h"
 #include "core/Core.h"
+
+#include "gui/Text.h"
+
 #include "io/Logger.h"
 
 using std::string;
+using std::vector;
 
 struct TextManager::ManagedText {
 	HFONT hFont;
@@ -147,7 +150,7 @@ void TextManager::Render() {
 		long height = ARX_UNICODE_DrawTextInRect(static_cast<float>(pArxText->rRect.left),
 		                                         pArxText->rRect.top - pArxText->fDeltaY,
 		                                         static_cast<float>(pArxText->rRect.right),
-		                                         0, pArxText->lpszUText, pArxText->lCol,
+		                                         pArxText->lpszUText, pArxText->lCol,
 		                                         pArxText->lBkgCol, pArxText->hFont, hRgn, hDC);
 		
 		pArxText->rRect.bottom = pArxText->rRect.top + height;

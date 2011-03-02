@@ -59,12 +59,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstring>
 
-#include "scene/Object.h"
 #include "graphics/Math.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
+
+#include "scene/Object.h"
 
 using std::max;
 using std::string;
@@ -148,7 +149,7 @@ long IsInSelection(const EERIE_3DOBJ * obj, long vert, long tw) {
 
 	if (vert < 0) return -1;
 
-	for (long i = 0; i < obj->selections[tw].selected.size(); i++)
+	for (size_t i = 0; i < obj->selections[tw].selected.size(); i++)
 	{
 		if (obj->selections[tw].selected[i] == vert)
 			return i;
@@ -232,7 +233,7 @@ static long ObjectAddFace(EERIE_3DOBJ * obj, const EERIE_FACE * face, const EERI
 
 	for (size_t i = 0; i < obj->texturecontainer.size(); i++)
 	{
-		if (0 <= face->texid && face->texid < srcobj->texturecontainer.size() && obj->texturecontainer[i] == srcobj->texturecontainer[face->texid])
+		if (0 <= face->texid && (size_t)face->texid < srcobj->texturecontainer.size() && obj->texturecontainer[i] == srcobj->texturecontainer[face->texid])
 		{
 			obj->facelist.back().texid = (short)i;
 			break;
@@ -300,7 +301,7 @@ static void AddVertexToGroup(EERIE_3DOBJ * obj, long group, const EERIE_VERTEX *
 
 void AddVertexIdxToGroup(EERIE_3DOBJ * obj, long group, long val) {
 	
-	for(long i = 0; i < obj->grouplist[group].indexes.size(); i++) {
+	for(size_t i = 0; i < obj->grouplist[group].indexes.size(); i++) {
 		if(obj->grouplist[group].indexes[i] == val) {
 			return;
 		}
@@ -311,7 +312,7 @@ void AddVertexIdxToGroup(EERIE_3DOBJ * obj, long group, long val) {
 
 static void ObjectAddSelection(EERIE_3DOBJ * obj, long numsel, long vidx) {
 	
-	for (long i = 0; i < obj->selections[numsel].selected.size(); i++)
+	for (size_t i = 0; i < obj->selections[numsel].selected.size(); i++)
 	{
 		if (obj->selections[numsel].selected[i] == vidx) return;
 	}
@@ -611,7 +612,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	// Re-Creating sel_head
 	if (tw == TWEAK_HEAD)
 	{
-		for (long l = 0; l < obj2->selections[sel_head2].selected.size(); l++)
+		for (size_t l = 0; l < obj2->selections[sel_head2].selected.size(); l++)
 		{
 			EERIE_VERTEX temp;
 			temp.v.x = obj2vertexlist2[obj2->selections[sel_head2].selected[l]].v.x;
@@ -625,7 +626,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 			}
 		}
 	}
-	else for (long l = 0; l < obj1->selections[sel_head1].selected.size(); l++)
+	else for (size_t l = 0; l < obj1->selections[sel_head1].selected.size(); l++)
 		{
 			EERIE_VERTEX temp;
 			temp.v.x = obj1vertexlist2[obj1->selections[sel_head1].selected[l]].v.x;
@@ -642,7 +643,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	// Re-Create sel_torso
 	if (tw == TWEAK_TORSO)
 	{
-		for (long l = 0; l < obj2->selections[sel_torso2].selected.size(); l++)
+		for (size_t l = 0; l < obj2->selections[sel_torso2].selected.size(); l++)
 		{
 			EERIE_VERTEX temp;
 			temp.v.x = obj2vertexlist2[obj2->selections[sel_torso2].selected[l]].v.x;
@@ -656,7 +657,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 			}
 		}
 	}
-	else for (long l = 0; l < obj1->selections[sel_torso1].selected.size(); l++)
+	else for (size_t l = 0; l < obj1->selections[sel_torso1].selected.size(); l++)
 		{
 			EERIE_VERTEX temp;
 			temp.v.x = obj1vertexlist2[obj1->selections[sel_torso1].selected[l]].v.x;
@@ -673,7 +674,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	// Re-Create sel_legs
 	if (tw == TWEAK_LEGS)
 	{
-		for (long l = 0; l < obj2->selections[sel_legs2].selected.size(); l++)
+		for (size_t l = 0; l < obj2->selections[sel_legs2].selected.size(); l++)
 		{
 			EERIE_VERTEX temp;
 			temp.v.x = obj2vertexlist2[obj2->selections[sel_legs2].selected[l]].v.x;
@@ -687,7 +688,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 			}
 		}
 	}
-	else for (long l = 0; l < obj1->selections[sel_legs1].selected.size(); l++)
+	else for (size_t l = 0; l < obj1->selections[sel_legs1].selected.size(); l++)
 		{
 			EERIE_VERTEX temp;
 			temp.v.x = obj1vertexlist2[obj1->selections[sel_legs1].selected[l]].v.x;
@@ -710,7 +711,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 			work->selections.resize(num + 1);
 			work->selections[num].name = obj1->selections[i].name;
 
-			for (long l = 0; l < obj1->selections[i].selected.size(); l++)
+			for (size_t l = 0; l < obj1->selections[i].selected.size(); l++)
 			{
 				EERIE_VERTEX temp;
 				temp.v.x = obj1vertexlist2[obj1->selections[i].selected[l]].v.x;
@@ -727,7 +728,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 			long ii = EERIE_OBJECT_GetSelection(obj2, obj1->selections[i].name.c_str());
 
 			if (ii != -1)
-				for (long l = 0; l < obj2->selections[ii].selected.size(); l++)
+				for (size_t l = 0; l < obj2->selections[ii].selected.size(); l++)
 				{
 					EERIE_VERTEX temp;
 					temp.v.x = obj2vertexlist2[obj2->selections[ii].selected[l]].v.x;
@@ -751,7 +752,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 			work->selections.resize(num + 1);
 			work->selections[num].name = obj2->selections[i].name;
 
-			for (long l = 0; l < obj2->selections[i].selected.size(); l++)
+			for (size_t l = 0; l < obj2->selections[i].selected.size(); l++)
 			{
 				EERIE_VERTEX temp;
 				temp.v.x = obj2vertexlist2[obj2->selections[i].selected[l]].v.x;
@@ -770,7 +771,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	// Recreate Animation-groups vertex
 	for (long i = 0; i < obj1->nbgroups; i++)
 	{
-		for (long j = 0; j < obj1->grouplist[i].indexes.size(); j++)
+		for (size_t j = 0; j < obj1->grouplist[i].indexes.size(); j++)
 		{
 			AddVertexToGroup(work, i, &obj1vertexlist2[obj1->grouplist[i].indexes[j]]);
 		}
@@ -778,7 +779,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 
 	for (long i = 0; i < obj2->nbgroups; i++)
 	{
-		for (long j = 0; j < obj2->grouplist[i].indexes.size(); j++)
+		for (size_t j = 0; j < obj2->grouplist[i].indexes.size(); j++)
 		{
 			AddVertexToGroup(work, i, &obj2vertexlist2[obj2->grouplist[i].indexes[j]]);
 		}
@@ -858,16 +859,12 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
 				if (io->tweaky == NULL) io->tweaky = io->obj;
 				else ReleaseEERIE3DObj(io->obj);
 
-				long i;
-				TextureContainer * tc;
-				tc = NULL;
-
-				for (i = 0; i < tobj->facelist.size(); i++)
+				for (size_t i = 0; i < tobj->facelist.size(); i++)
 				{
 					if ((tobj->facelist[i].texid >= 0)
 					        &&	(tobj->texturecontainer[tobj->facelist[i].texid]))
 					{
-						tc = tobj->texturecontainer[tobj->facelist[i].texid];
+						TextureContainer * tc = tobj->texturecontainer[tobj->facelist[i].texid];
 
 						if (!tc->m_pddsSurface)
 							tc->Restore(GDevice);

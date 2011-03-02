@@ -31,21 +31,23 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <stdio.h>
-
-#include "scene/Light.h"
-#include "graphics/Math.h"
-#include "graphics/data/Texture.h"
-
 #include "game/Missile.h"
-#include "game/Damage.h"
-#include "scene/Interactive.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "physics/Physics.h"
-#include "scene/GameSound.h"
+
 #include "core/Time.h"
 
-//-----------------------------------------------------------------------------
+#include "game/Damage.h"
+#include "game/Player.h"
+
+#include "graphics/Math.h"
+#include "graphics/data/Texture.h"
+#include "graphics/particle/ParticleEffects.h"
+
+#include "physics/Physics.h"
+
+#include "scene/Light.h"
+#include "scene/Interactive.h"
+#include "scene/GameSound.h"
+
 struct ARX_MISSILE
 {
 	long	type;
@@ -59,21 +61,21 @@ struct ARX_MISSILE
 	long		owner;
 };
 
-//-----------------------------------------------------------------------------
-const unsigned long MAX_MISSILES(100);
+const size_t MAX_MISSILES = 100;
 ARX_MISSILE missiles[MAX_MISSILES];
 
-//-----------------------------------------------------------------------------
 // Gets a Free Projectile Slot
-long ARX_MISSILES_GetFree()
-{
-	for (long i(0); i < MAX_MISSILES; i++)
-		if (missiles[i].type == MISSILE_NONE) return i;
-
+long ARX_MISSILES_GetFree() {
+	
+	for(size_t i = 0; i < MAX_MISSILES; i++) {
+		if(missiles[i].type == MISSILE_NONE) {
+			return i;
+		}
+	}
+	
 	return -1;
 }
 
-//-----------------------------------------------------------------------------
 // Kills a missile
 void ARX_MISSILES_Kill(long i)
 {
@@ -94,9 +96,10 @@ void ARX_MISSILES_Kill(long i)
 
 //-----------------------------------------------------------------------------
 // Clear all missiles
-void ARX_MISSILES_ClearAll()
-{
-	for (long i(0); i < MAX_MISSILES; i++) ARX_MISSILES_Kill(i);
+void ARX_MISSILES_ClearAll() {
+	for(size_t i = 0; i < MAX_MISSILES; i++) {
+		ARX_MISSILES_Kill(i);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -217,7 +220,7 @@ void ARX_MISSILES_Update()
 					{
 						ARX_MISSILES_Kill(i);
 						ARX_BOOMS_Add(&pos);
-						Add3DBoom(&pos, NULL);
+						Add3DBoom(&pos);
 						DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
 						break;
 					}
@@ -226,7 +229,7 @@ void ARX_MISSILES_Update()
 					{
 						ARX_MISSILES_Kill(i);
 						ARX_BOOMS_Add(&dest);
-						Add3DBoom(&dest, NULL);
+						Add3DBoom(&dest);
 						DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
 						break;
 					}
@@ -235,7 +238,7 @@ void ARX_MISSILES_Update()
 					{
 						ARX_MISSILES_Kill(i);
 						ARX_BOOMS_Add(&dest);
-						Add3DBoom(&dest, NULL);
+						Add3DBoom(&dest);
 						DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
 						break;
 					}
@@ -244,7 +247,7 @@ void ARX_MISSILES_Update()
 					{
 						ARX_MISSILES_Kill(i);
 						ARX_BOOMS_Add(&hit);
-						Add3DBoom(&hit, NULL);
+						Add3DBoom(&hit);
 						DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
 						break;
 					}
@@ -253,7 +256,7 @@ void ARX_MISSILES_Update()
 					{
 						ARX_MISSILES_Kill(i);
 						ARX_BOOMS_Add(&dest);
-						Add3DBoom(&dest, NULL);
+						Add3DBoom(&dest);
 						DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
 						break;
 					}
@@ -264,7 +267,7 @@ void ARX_MISSILES_Update()
 					{
 						ARX_MISSILES_Kill(i);
 						ARX_BOOMS_Add(&dest);
-						Add3DBoom(&dest, NULL);
+						Add3DBoom(&dest);
 						DoSphericDamage(&dest, 180.0F, 200.0F, DAMAGE_AREAHALF, DAMAGE_TYPE_FIRE | DAMAGE_TYPE_MAGICAL);
 						break;
 					}

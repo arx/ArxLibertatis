@@ -55,43 +55,32 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-// Desc: HERMES main functionalities   //FILES MEMORY
+#include "io/IO.h"
+
 #include <cstring>
 #include <cstdio>
-
 #include <algorithm>
 #include <iostream>
 #include <algorithm>
 
-#include <time.h>
-#include "io/IO.h"
+#include <shlobj.h>
+#include <windows.h>
+
+#include "core/Common.h"
+
 #include "io/Registry.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
-#include "core/Common.h"
 
-#if ARX_COMPILER_MSVC
-    #include <shlobj.h>
-    #include <windows.h>
-#else
-    extern "C" {
-    #undef __cplusplus
-    #include <shlobj.h>
-    #include <windows.h>
-    #include <unistd.h>
-    }
+using namespace std;
 
 // TODO(lubosz): temporary include replacement
+#if !ARX_COMPILER_MSVC
     #define _MAX_EXT 3
     #define _MAX_FNAME 512
     #define _MAX_DRIVE 1
     #define _MAX_DIR _MAX_FNAME
 #endif
-
-using namespace std;
-
-
-char HermesBufferWork[MAX_PATH];    // Used by FileStandardize (avoid malloc/free per call)
 
 UINT GaiaWM = 0;
 HWND MAIN_PROGRAM_HANDLE = NULL;
@@ -122,12 +111,12 @@ bool IsIn(const std::string& strin, const std::string& str)
 	return ( strin.find( str ) != std::string::npos );
 }
 
-void File_Standardize(const std::string& from, std::string& to)
-{
+void File_Standardize(const std::string& from, std::string& to) {
 	long pos = 0;
-	long pos2 = 0;
+	//long pos2 = 0;
 	long size = from.length();
 	std::string temp = from; /*HermesBufferWork;	
+	char HermesBufferWork[MAX_PATH];    // Used by FileStandardize (avoid malloc/free per call)
 
 	while (pos < size)
 	{
@@ -491,7 +480,7 @@ bool HERMES_CreateFileCheck(const char * name, char * scheck, size_t size, const
 		char separator = '\\';
 		
 		const char    *endPoint = NULL,
-				*pos = (char*) path,
+				*pos = path,
 				*temp = NULL,
 				*lastChar = NULL;
  
@@ -629,11 +618,11 @@ bool HERMES_CreateFileCheck(const char * name, char * scheck, size_t size, const
 	}
 	
 		// from http://acmlm.kafuka.org/board/thread.php?id=3930
-	static void makepath(char *path, char *drive, char *dir, char *fName, const char *ext)
+	static void makepath(char *path, const char *drive, const char *dir, const char *fName, const char *ext)
 	{
 		char separator = '\\';
 		const char * lastChar = NULL;
-		char *pos = NULL;
+		const char *pos = NULL;
 
 		unsigned int i = 0,
 						unixStyle = 0,
@@ -653,7 +642,7 @@ bool HERMES_CreateFileCheck(const char * name, char * scheck, size_t size, const
 		}
 
 		sepCount = 0;
-		pos = (char*) drive;
+		pos = drive;
 		lastChar = GetLastChar(drive);
 
 		if(lastChar == pos)
@@ -680,7 +669,7 @@ directory:
 	if(dir)
 	{
 		sepCount = 0;
-		pos = (char*) dir;
+		pos = dir;
 		lastChar = GetLastChar(dir);
 	
 		if(pos == lastChar)
@@ -713,7 +702,7 @@ fileName:
 	
 	if(fName)
 	{
-		pos = (char*) fName;
+		pos = fName;
 		lastChar = GetLastChar(fName);
 		
 		if(lastChar == pos)
@@ -736,7 +725,7 @@ extension:
 	if(ext)
 	{
 		sepCount = 0;
-		pos = (char*) ext;
+		pos = ext;
 		lastChar = GetLastChar(ext);
 
 		if(lastChar == pos)
@@ -874,14 +863,6 @@ bool CreateFullPath( const std::string& path ) {
 	if (DirectoryExist(temp)) return true;
 
 	return false;
-}
-
-void ExitApp(int v)
-{
-	if (MAIN_PROGRAM_HANDLE != NULL)
-		SendMessage(MAIN_PROGRAM_HANDLE, WM_CLOSE, 0, 0);
-
-	exit(v);
 }
 
 //******************************************************************************

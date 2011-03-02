@@ -598,7 +598,6 @@ struct INTERACTIVE_OBJ
 #define MAX_EQUIPED 12
 #define MORE_COMPATIBILITY
 
-extern long MAX_ANIMATIONS;
 #define MAX_TRANSPOL 512
 #define MAX_INTERTRANSPOL 512
 
@@ -744,7 +743,6 @@ extern long MAX_ANIMATIONS;
 //-----------------------------------------------------------------------------
 
 extern long EERIEDrawnPolys;
-extern float PULSS;
 extern long EERIEInit;
 extern long TRUECLIPPING;
 extern EERIE_3D BBOXMIN,BBOXMAX;
@@ -777,18 +775,30 @@ void DebugSphere(float x,float y,float z,float siz,long tim,D3DCOLOR color);
 
 EERIEPOLY * CheckTopPoly(float x,float y,float z);
 EERIEPOLY * CheckPolyOnTop(float x,float y,float z);
-EERIEPOLY * CheckInPoly(float x,float y,float z,float * needY=NULL);
-EERIEPOLY * EECheckInPoly(EERIE_3D * pos,float * needY=NULL);
+EERIEPOLY * CheckInPoly(float x,float y,float z,float * needY = NULL);
+EERIEPOLY * EECheckInPoly(const EERIE_3D * pos,float * needY = NULL);
 EERIEPOLY * CheckInPolyIn(float x,float y,float z);
-EERIEPOLY * CheckInPolyPrecis(float x,float y,float z,float * needY=NULL);
+EERIEPOLY * CheckInPolyPrecis(float x,float y,float z,float * needY = NULL);
 
-EERIEPOLY * EEIsUnderWater(EERIE_3D * pos);
-bool GetTruePolyY(EERIEPOLY * ep,EERIE_3D * pos,float * ret);
-EERIEPOLY * EEIsUnderWaterFast(EERIE_3D * pos);
+/**
+ * Check if the given condition is under water.
+ * 
+ * @return The lowest water polygon pos is under, or NULL if pos is not under water.
+ **/
+EERIEPOLY * EEIsUnderWater(const EERIE_3D * pos);
+
+/**
+ * Check if the given condition is under water.
+ * 
+ * @return Any water polygon pos is under, or NULL if pos is not under water.
+ **/
+EERIEPOLY * EEIsUnderWaterFast(const EERIE_3D * pos);
+
+bool GetTruePolyY(const EERIEPOLY * ep, const EERIE_3D * pos,float * ret);
 bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj,long idx,long grs);
  
 D3DCOLOR GetColorz(float x,float y,float z);
-int PointIn2DPolyXZ(EERIEPOLY * ep, float x, float z);
+int PointIn2DPolyXZ(const EERIEPOLY * ep, float x, float z);
 
 float Distance2D(float x0, float y0, float x1, float y1);
 float Distance3D(float x0, float y0, float z0, float x1, float y1, float z1);
@@ -798,15 +808,14 @@ int EERIELaunchRay3(EERIE_3D * orgn, EERIE_3D * dest,  EERIE_3D * hit, EERIEPOLY
 float GetGroundY(EERIE_3D * pos);
 void EE_IRTP(D3DTLVERTEX *in,D3DTLVERTEX *out);
 void EE_RTT(D3DTLVERTEX *in,D3DTLVERTEX *out);
-//todo: is this needed?
-//void _EERIERTPPoly(EERIEPOLY *ep);
+
 void extEE_RTP(D3DTLVERTEX *in,D3DTLVERTEX *out);
 void MakeColorz(INTERACTIVE_OBJ * io);
 
 void EE_RotateX(D3DTLVERTEX *in,D3DTLVERTEX *out,float c, float s);
 void EE_RotateY(D3DTLVERTEX *in,D3DTLVERTEX *out,float c, float s);
 void EE_RotateZ(D3DTLVERTEX *in,D3DTLVERTEX *out,float c, float s);
-extern void EE_RTP(D3DTLVERTEX *in,D3DTLVERTEX *out);
+void EE_RTP(D3DTLVERTEX *in,D3DTLVERTEX *out);
 
 void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,EERIE_3D * pos);
 
@@ -823,10 +832,6 @@ bool CreateUniqueIdent(char * pathh);
 //****************************************************************************
 // DRAWING FUNCTIONS START
 
-void DrawLinkedObj(			LPDIRECT3DDEVICE7 pd3dDevice,
-							EERIE_LINKED * el,
-							D3DCOLOR col,
-							long typ );
 void DrawEERIEObjEx(		LPDIRECT3DDEVICE7 pd3dDevice,
 							EERIE_3DOBJ * eobj,
 							EERIE_3D * angle,
@@ -848,34 +853,6 @@ void DrawEERIEInter(		LPDIRECT3DDEVICE7 pd3dDevice,
 							INTERACTIVE_OBJ * io,
 							EERIE_MOD_INFO * modinfo=NULL
 						);
-
-void DrawEERIEInterMatrix(	LPDIRECT3DDEVICE7 pd3dDevice,
-							EERIE_3DOBJ * eobj,
-							EERIEMATRIX * mat,
-							EERIE_3D  * pos,
-							INTERACTIVE_OBJ * io,
-							EERIE_3D * angle,
-							EERIE_MOD_INFO * modinfo=NULL
-						);
-void EERIEDrawAnimQuat(		LPDIRECT3DDEVICE7 pd3dDevice,
-							EERIE_3DOBJ * eobj,
-							ANIM_USE * eanim,
-							EERIE_3D * angle,
-							EERIE_3D  * pos,
-							unsigned long time,
-							INTERACTIVE_OBJ * io,
-							D3DCOLOR col,
-							long typ=0
-						);
-void EERIEDrawAnimQuatPos(	LPDIRECT3DDEVICE7 pd3dDevice,
-							EERIE_3DOBJ * eobj,
-							ANIM_USE * eanim,
-							EERIE_3D * angle,
-							EERIE_3D  * pos,
-							INTERACTIVE_OBJ * io,
-							D3DCOLOR col,
-							long typ=0
-						);
 // DRAWING FUNCTIONS END
 //****************************************************************************
 
@@ -892,7 +869,6 @@ void ClearBackground(EERIE_BACKGROUND * eb);
 int InitBkg(EERIE_BACKGROUND * eb, short sx, short sz, short Xdiv, short Zdiv);
 int BkgAddPoly(EERIEPOLY * ep);
 
-void EERIEAddPolyToBackground(D3DTLVERTEX *vert,D3DTLVERTEX *vert2,TextureContainer * tex, long render,float transval);
 void EERIEAddPoly(D3DTLVERTEX * vert, D3DTLVERTEX * vert2, TextureContainer * tex, long render, float transval);
 // BACKGROUND MANAGEMENT FUNCTIONS END
 //****************************************************************************
@@ -909,8 +885,6 @@ void SETCULL(LPDIRECT3DDEVICE7 pd3dDevice,DWORD state);
 
 //****************************************************************************
 // LIGHT FUNCTIONS START
-void _RecalcLightZone(float x,float y,float z,long siz);
-void RecalcLightZone(float x,float y,float z,long siz);
 void EERIEPrecalcLights(long minx=0,long minz=0,long maxx=99999,long maxz=99999);
 void EERIERemovePrecalcLights();
 void PrecalcDynamicLighting(long x0,long x1,long z0,long z1);
@@ -960,8 +934,8 @@ __inline void AddToBBox3D(INTERACTIVE_OBJ * io,EERIE_3D * pos)
 //****************************************************************************
 
 void ApplyLight(EERIEPOLY *ep);
-long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest, unsigned int destSize);
-void DeclareEGInfo(float x,float y,float z);
+long MakeTopObjString(INTERACTIVE_OBJ * io, std::string& dest);
+void DeclareEGInfo(float x, float z);
 bool TryToQuadify(EERIEPOLY * ep,EERIE_3DOBJ * eobj);
 void ApplyWaterFXToVertex(EERIE_3D * odtv,D3DTLVERTEX * dtv,float power);
 int BackFaceCull2D(D3DTLVERTEX * tv);
@@ -977,7 +951,6 @@ void EE_RTP3(EERIE_3D * in, EERIE_3D * out, EERIE_CAMERA * cam);
 void ReleaseAnimFromIO(INTERACTIVE_OBJ * io,long num);
 
 void ShadowPolys_ClearZone(EERIE_BACKGROUND * eb,long x0, long y0, long x1, long y1);
-void HALO_IO_DynLight_Update(INTERACTIVE_OBJ * io);
 short ANIM_GetAltIdx(ANIM_HANDLE * ah,long old);
 void ANIM_Set(ANIM_USE * au,ANIM_HANDLE * anim);
 void WriteMSEData(char * path,EERIE_MULTI3DSCENE * ms);

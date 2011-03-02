@@ -59,7 +59,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsTypes.h"
 
-void EERIEOBJECT_AddProgressiveData(EERIE_3DOBJ * obj);
 void CreateNeighbours(EERIE_3DOBJ * obj);
 void KillNeighbours(EERIE_3DOBJ * obj);
 void KillProgressiveData(EERIE_3DOBJ * obj);

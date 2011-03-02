@@ -25,7 +25,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/AudioInstance.h"
 
-//#include "audio/eax.h"
+#include <cstdio>
+
 #include "audio/AudioGlobal.h"
 #include "audio/Stream.h"
 
@@ -72,7 +73,7 @@ namespace ATHENA
 			
 	}
 
-	static aalVoid InstanceDebugLog(Instance * instance, const char * _text)
+	static void InstanceDebugLog(Instance * instance, const char * _text)
 	{
 		char text[256];
 		aalULong _time(BytesToUnits(instance->time, instance->sample->format, AAL_UNIT_MS));
@@ -100,7 +101,6 @@ namespace ATHENA
 		buffer[0] = 0;
 	}
 
-	extern  long NBREVERB;
 	extern char szT[1024];
 	extern bool bLog;
 
@@ -187,24 +187,26 @@ namespace ATHENA
 
 			if (is_reverb_present)
 			{
-				// lpds3db->QueryInterface(IID_IKsPropertySet, (aalVoid **)&lpeax);
+				/*
+				lpds3db->QueryInterface(IID_IKsPropertySet, (void **)&lpeax);
 
-				// aalSLong value(0);
-				// lpeax->Set(DSPROPSETID_EAX_BufferProperties,
-				//            DSPROPERTY_EAXBUFFER_FLAGS | DSPROPERTY_EAXBUFFER_DEFERRED,
-				//            NULL, 0, &value, sizeof(aalSLong));
+				aalSLong value(0);
+				lpeax->Set(DSPROPSETID_EAX_BufferProperties,
+				           DSPROPERTY_EAXBUFFER_FLAGS | DSPROPERTY_EAXBUFFER_DEFERRED,
+				           NULL, 0, &value, sizeof(aalSLong));
 
-				// if (!environment || !(channel.flags & AAL_FLAG_REVERBERATION))
-				// {
-				// 	value = -10000;
-				// 	lpeax->Set(DSPROPSETID_EAX_BufferProperties,
-				// 	           DSPROPERTY_EAXBUFFER_ROOM | DSPROPERTY_EAXBUFFER_DEFERRED,
-				// 	           NULL, 0, &value, sizeof(aalSLong));
+				if (!environment || !(channel.flags & AAL_FLAG_REVERBERATION))
+				{
+					value = -10000;
+					lpeax->Set(DSPROPSETID_EAX_BufferProperties,
+					           DSPROPERTY_EAXBUFFER_ROOM | DSPROPERTY_EAXBUFFER_DEFERRED,
+					           NULL, 0, &value, sizeof(aalSLong));
 
-				// 	lpeax->Set(DSPROPSETID_EAX_BufferProperties,
-				// 	           DSPROPERTY_EAXBUFFER_ROOMHF | DSPROPERTY_EAXBUFFER_DEFERRED,
-				// 	           NULL, 0, &value, sizeof(aalSLong));
-				// }
+					lpeax->Set(DSPROPSETID_EAX_BufferProperties,
+					           DSPROPERTY_EAXBUFFER_ROOMHF | DSPROPERTY_EAXBUFFER_DEFERRED,
+					           NULL, 0, &value, sizeof(aalSLong));
+				}
+				*/
 			}
 		}
 		else SetPan(channel.pan);
@@ -217,7 +219,7 @@ namespace ATHENA
 		if (!streaming)
 		{
 			aalULong cur0, cur1;
-			aalVoid * ptr0, *ptr1;
+			void * ptr0, *ptr1;
 
 			if (stream->SetPosition(0)) return AAL_ERROR_SYSTEM;
 
@@ -336,25 +338,26 @@ namespace ATHENA
 
 			if (is_reverb_present)
 			{
-				// FIXME
-				// lpds3db->QueryInterface(IID_IKsPropertySet, (aalVoid **)&lpeax);
+				/*
+				lpds3db->QueryInterface(IID_IKsPropertySet, (void **)&lpeax);
 
-				// aalSLong value(0);
-				// lpeax->Set(DSPROPSETID_EAX_BufferProperties,
-				//            DSPROPERTY_EAXBUFFER_FLAGS | DSPROPERTY_EAXBUFFER_DEFERRED,
-				//            NULL, 0, &value, sizeof(aalSLong));
+				aalSLong value(0);
+				lpeax->Set(DSPROPSETID_EAX_BufferProperties,
+				           DSPROPERTY_EAXBUFFER_FLAGS | DSPROPERTY_EAXBUFFER_DEFERRED,
+				           NULL, 0, &value, sizeof(aalSLong));
 
-				// if (!environment || !(channel.flags & AAL_FLAG_REVERBERATION))
-				// {
-				// 	value = -10000;
-				// 	lpeax->Set(DSPROPSETID_EAX_BufferProperties,
-				// 	           DSPROPERTY_EAXBUFFER_ROOM | DSPROPERTY_EAXBUFFER_DEFERRED,
-				// 	           NULL, 0, &value, sizeof(aalSLong));
+				if (!environment || !(channel.flags & AAL_FLAG_REVERBERATION))
+				{
+					value = -10000;
+					lpeax->Set(DSPROPSETID_EAX_BufferProperties,
+					           DSPROPERTY_EAXBUFFER_ROOM | DSPROPERTY_EAXBUFFER_DEFERRED,
+					           NULL, 0, &value, sizeof(aalSLong));
 
-				// 	lpeax->Set(DSPROPSETID_EAX_BufferProperties,
-				// 	           DSPROPERTY_EAXBUFFER_ROOMHF | DSPROPERTY_EAXBUFFER_DEFERRED,
-				// 	           NULL, 0, &value, sizeof(aalSLong));
-				// }
+					lpeax->Set(DSPROPSETID_EAX_BufferProperties,
+					           DSPROPERTY_EAXBUFFER_ROOMHF | DSPROPERTY_EAXBUFFER_DEFERRED,
+					           NULL, 0, &value, sizeof(aalSLong));
+				}
+				*/
 			}
 		}
 		else SetPan(channel.pan);
@@ -552,84 +555,6 @@ namespace ATHENA
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 
-	aalError Instance::GetStatistics(aalFloat & av_vol, aalFloat & av_dev) const
-	{
-		// aalULong pos, length(0);
-		// aalULong cur0, cur1;
-		// aalVoid * ptr0, *ptr1;
-
-		// av_vol = av_dev = 0.0F;
-
-		// if (lpdsb->GetCurrentPosition(&pos, NULL)) return AAL_ERROR_SYSTEM;
-
-		// if (pos > 150) pos -= 150;
-
-		// if (stream) length = write < pos ? write + size : write;
-		// else length = sample->length;
-
-		// length -= pos;
-
-		// aalULong sec(256);
-
-		// if (length > sec) length = sec;
-
-		// if (lpdsb->Lock(pos, length, &ptr0, &cur0, &ptr1, &cur1, 0)) return AAL_ERROR_SYSTEM;
-
-		// length >>= 1;
-
-		// if (ptr0)
-		// {
-		// 	aalUWord * ptr = (aalUWord *)ptr0 + (cur0 >> 1);
-
-		// 	while (ptr > ptr0) av_vol += *(--ptr);
-		// }
-
-		// if (ptr1)
-		// {
-		// 	aalUWord * ptr = (aalUWord *)ptr1 + (cur1 >> 1);
-
-		// 	while (ptr > ptr1) av_vol += *(--ptr);
-		// }
-
-		// av_vol /= length;
-		// av_vol /= 65535.0F;
-
-		// if (ptr0)
-		// {
-		// 	aalFloat dev;
-		// 	aalUWord * ptr = (aalUWord *)ptr0 + (cur0 >> 1);
-
-		// 	while (ptr > ptr0)
-		// 	{
-		// 		dev = aalFloat(*(--ptr)) / 65535.0F - av_vol;
-		// 		dev *= dev;
-		// 		av_dev += dev;
-		// 	}
-		// }
-
-		// if (ptr1)
-		// {
-		// 	aalFloat dev;
-		// 	aalUWord * ptr = (aalUWord *)ptr1 + (cur1 >> 1);
-
-		// 	while (ptr > ptr1)
-		// 	{
-		// 		dev = aalFloat(*(--ptr)) / 65535.0F - av_vol;
-		// 		dev *= dev;
-		// 		av_dev += dev;
-		// 	}
-		// }
-
-		// av_dev /= length;
-		// av_dev = (aalFloat)sqrt(av_dev);
-
-		// lpdsb->Unlock(ptr0, cur0, ptr1, cur1);
-
-		// LogDebug << "AVV[" << av_vol << "] - AVD[" << av_dev << "f]";
-
-		return AAL_OK;
-	}
-
 	aalError Instance::GetPosition(aalVector & position) const
 	{
 		if (!alIsSource(source[0]) || !(channel.flags & AAL_FLAG_POSITION)) return AAL_ERROR_INIT;
@@ -688,7 +613,7 @@ namespace ATHENA
 		if (stream)
 		{
 			aalULong cur0, cur1;
-			aalVoid * ptr0, *ptr1;
+			void * ptr0, *ptr1;
 
 			if (stream->SetPosition(0)) return AAL_ERROR;
 
@@ -852,9 +777,9 @@ namespace ATHENA
 		return AAL_UTRUE;
 	}
 
-	aalVoid Instance::UpdateStreaming()
+	void Instance::UpdateStreaming()
 	{
-		aalVoid * ptr0, *ptr1;
+		void * ptr0, *ptr1;
 		aalULong cur0, cur1;
 		aalULong to_fill, count;
 

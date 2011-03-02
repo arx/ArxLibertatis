@@ -24,6 +24,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 
 #include "audio/codec/RAW.h"
+
 #include "io/PakManager.h"
 
 namespace ATHENA
@@ -35,8 +36,8 @@ namespace ATHENA
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 	CodecRAW::CodecRAW() :
-		stream(NULL),
 		header(NULL),
+		stream(NULL),
 		cursor(0)
 	{
 	}
@@ -50,7 +51,7 @@ namespace ATHENA
 	// Setup                                                                     //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError CodecRAW::SetHeader(aalVoid * _header)
+	aalError CodecRAW::SetHeader(void * _header)
 	{
 		header = _header;
 
@@ -78,7 +79,7 @@ namespace ATHENA
 	// Status                                                                    //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError CodecRAW::GetHeader(aalVoid *&_header)
+	aalError CodecRAW::GetHeader(void *&_header)
 	{
 		_header = header;
 
@@ -104,14 +105,14 @@ namespace ATHENA
 	// File I/O                                                                  //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError CodecRAW::Read(aalVoid * buffer, const aalULong & to_read, aalULong & read)
+	aalError CodecRAW::Read(void * buffer, const aalULong & to_read, aalULong & read)
 	{
 		read = PAK_fread(buffer, 1, to_read, stream);
 
 		return AAL_OK;
 	}
 
-	aalError CodecRAW::Write(aalVoid *, const aalULong &, aalULong & write)
+	aalError CodecRAW::Write(void *, const aalULong &, aalULong & write)
 	{
 		write = 0;
 

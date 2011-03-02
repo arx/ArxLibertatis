@@ -57,30 +57,32 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Object.h"
 
 #include <cstdio>
-#include <iostream>
 #include <algorithm>
-#include <fstream>
 #include <sstream>
 #include <vector>
+#include <climits>
+
+#include "animation/AnimationRender.h"
+
+#include "core/Application.h"
+#include "core/TheoData.h"
 
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
-#include "core/Application.h"
-#include "physics/Clothes.h"
 #include "graphics/data/Progressive.h"
-#include "physics/Box.h"
-#include "physics/CollisionShapes.h"
-#include "scene/LinkedObject.h"
-
-#include "core/TheoData.h"
-#include "scene/GameSound.h"
-#include "animation/AnimationRender.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/PakEntry.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
+
+#include "physics/Clothes.h"
+#include "physics/Box.h"
+#include "physics/CollisionShapes.h"
+
+#include "scene/LinkedObject.h"
+#include "scene/GameSound.h"
 
 using std::sprintf;
 using std::min;
@@ -123,11 +125,9 @@ long GetActionPointGroup(EERIE_3DOBJ * eobj, long idx)
 {
 	if (!eobj) return -1;
 
-	long i, j;
-
-	for (i = eobj->nbgroups - 1; i >= 0; i--)
+	for (long i = eobj->nbgroups - 1; i >= 0; i--)
 	{
-		for (j = 0; j < eobj->grouplist[i].indexes.size(); j++)
+		for (size_t j = 0; j < eobj->grouplist[i].indexes.size(); j++)
 		{
 			if (((long)eobj->grouplist[i].indexes[j]) == idx) return i;
 		}
@@ -299,7 +299,9 @@ static T * copyStruct(const T * src, const char * desc, size_t n = 1) {
 
 
 
-EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, long flags) {
+EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file) {
+	
+	(void)size; // TODO use size
 	
 	LogInfo << "Loading animation file " << file;
 	
@@ -555,6 +557,13 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file, lo
 //-----------------------------------------------------------------------------------------------------
 void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, long * poss, long version, long flag, long flag2)
 {
+	
+	(void)eerie;
+	(void)adr;
+	(void)poss;
+	(void)version;
+	(void)flag;
+	(void)flag2;
 	
 	LogError << "Broken _THEObjLoad";
 	/*
@@ -935,7 +944,7 @@ void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, long * poss, long ver
 
 	memcpy(poss, &pos, sizeof(long));
 	memcpy(eerie->vertexlist3, eerie->vertexlist, eerie->nbvertex * sizeof(EERIE_VERTEX));
-	ReCreateUVs(eerie, TTE_SLOWLOAD);
+	ReCreateUVs(eerie);
 	EERIE_Object_Precompute_Fast_Access(eerie);*/
 }
 //-----------------------------------------------------------------------------------------------------
@@ -1073,7 +1082,7 @@ EERIE_MULTI3DSCENE * MultiSceneToEerie(const char * dirr)
 //					unsigned char * adr;
 //					if (adr = (unsigned char *)PAK_FileLoadMalloc(path, &SizeAlloc))
 //					{
-//						es->scenes[es->nb_scenes] = (EERIE_3DSCENE *)ScnToEerie(adr, SizeAlloc, path, TTE_NO_NDATA | TTE_NO_PDATA);
+//						es->scenes[es->nb_scenes] = (EERIE_3DSCENE *)ScnToEerie(adr, SizeAlloc, path);
 //						es->nb_scenes++;
 //						free(adr);
 //					}
@@ -1160,9 +1169,10 @@ EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const char * dirr)
 				path2 = dirr + et->name;
 				size_t SizeAlloc = 0;
 
-				if (adr = (unsigned char *)PAK_FileLoadMalloc(path2, SizeAlloc))
+				adr = (unsigned char *)PAK_FileLoadMalloc(path2, SizeAlloc);
+				if (adr)
 				{
-					es->scenes[es->nb_scenes] = (EERIE_3DSCENE *)ScnToEerie(adr, SizeAlloc, path.c_str(), TTE_NO_NDATA | TTE_NO_PDATA);
+					es->scenes[es->nb_scenes] = (EERIE_3DSCENE *)ScnToEerie(adr, SizeAlloc, path.c_str());
 					es->nb_scenes++;
 					free(adr);
 				}
@@ -1233,8 +1243,10 @@ EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const char * dirr)
 	return em;
 }
 //-----------------------------------------------------------------------------------------------------
-EERIE_3DSCENE * ScnToEerie(unsigned char * adr, long size, const std::string& fic, long flags)
-{
+EERIE_3DSCENE * ScnToEerie(unsigned char * adr, size_t size, const std::string& fic) {
+	
+	(void)size; // TODO use size
+	
 	LogInfo << "Loading Scene " << fic;
 	
 	if (adr == NULL) return NULL;
@@ -1668,9 +1680,9 @@ void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
 
 	delete eerie;
 }
-//-----------------------------------------------------------------------------------------------------
-void ReCreateUVs(EERIE_3DOBJ * eerie, long flag)
-{
+
+void ReCreateUVs(EERIE_3DOBJ * eerie) {
+	
 	if(eerie->texturecontainer.empty()) return;
 
 	float sxx, syy;
@@ -1863,8 +1875,6 @@ void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj)
 //-----------------------------------------------------------------------------------------------------
 void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 {
-	char * temp = NULL;
-	long i;
 	eobj->c_data = new EERIE_C_DATA();
 	memset(eobj->c_data, 0, sizeof(EERIE_C_DATA));
 
@@ -1900,7 +1910,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 		bool * temp = new bool[eobj->vertexlist.size()];
 		memset(temp, 0, eobj->vertexlist.size());
 
-		for (i = eobj->nbgroups - 1; i >= 0; i--)
+		for (long i = eobj->nbgroups - 1; i >= 0; i--)
 		{
 			EERIE_VERTEX * v_origin = &eobj->vertexlist[eobj->grouplist[i].origin];
 
@@ -1926,7 +1936,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 		delete[] temp;
 
 		// Try to correct lonely vertex
-		for (i = 0; i < eobj->vertexlist.size(); i++)
+		for (size_t i = 0; i < eobj->vertexlist.size(); i++)
 		{
 			long ok = 0;
 
@@ -1934,7 +1944,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 			{
 				for (size_t k = 0; k < eobj->grouplist[j].indexes.size(); k++)
 				{
-					if (eobj->grouplist[j].indexes[k] == i)
+					if ((size_t)eobj->grouplist[j].indexes[k] == i)
 					{
 						ok = 1;
 						break;
@@ -1951,7 +1961,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 			}
 		}
 
-		for (i = eobj->nbgroups - 1; i >= 0; i--)
+		for (long i = eobj->nbgroups - 1; i >= 0; i--)
 		{
 			if (eobj->c_data->bones[i].father >= 0)
 			{
@@ -1968,11 +1978,10 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 #if CEDRIC
 	/* Build proper mesh */
 	{
-		int i;
 		EERIE_C_DATA* obj = eobj->c_data;
 
 
-		for (i = 0; i != obj->nb_bones; i++)
+		for (long i = 0; i != obj->nb_bones; i++)
 		{
 			EERIE_QUAT	qt1;
 
@@ -2002,7 +2011,7 @@ void EERIE_CreateCedricData(EERIE_3DOBJ * eobj)
 		// TODO constructor is better than memset
 		memset(eobj->vertexlocal, 0, sizeof(EERIE_3DPAD)*eobj->vertexlist.size());
 
-		for (i = 0; i != obj->nb_bones; i++)
+		for (long i = 0; i != obj->nb_bones; i++)
 		{
 			EERIE_3D	vector;
 			EERIE_VERTEX * inVert;
@@ -2058,8 +2067,8 @@ long Strippable(EERIE_PFACE * epf, EERIE_FACE * ef)
 	return -1;
 }
 
-bool EERIEOBJECT_AddFaceToPFace(EERIE_3DOBJ * eobj, EERIE_FACE * face, long faceidx)
-{
+static bool EERIEOBJECT_AddFaceToPFace(EERIE_3DOBJ * eobj, EERIE_FACE * face) {
+	
 	for (long i = 0; i < eobj->nbpfaces; i++)
 	{
 		// TODO pfacelist is never really used
@@ -2089,7 +2098,7 @@ bool EERIEOBJECT_AddFaceToPFace(EERIE_3DOBJ * eobj, EERIE_FACE * face, long face
 
 void EERIEOBJECT_AddFace(EERIE_3DOBJ * eobj, EERIE_FACE * face, long faceidx)
 {
-	if (EERIEOBJECT_AddFaceToPFace(eobj, face, faceidx)) return;
+	if (EERIEOBJECT_AddFaceToPFace(eobj, face)) return;
 
 	eobj->pfacelist = (EERIE_PFACE *)realloc(eobj->pfacelist, sizeof(EERIE_PFACE) * (eobj->nbpfaces + 1));
 	EERIE_PFACE * epf = &eobj->pfacelist[eobj->nbpfaces];
@@ -2099,7 +2108,7 @@ void EERIEOBJECT_AddFace(EERIE_3DOBJ * eobj, EERIE_FACE * face, long faceidx)
 	epf->transval = face->transval;
 
 	ARX_CHECK_SHORT(faceidx);
-	short sfaceIdx = ARX_CLEAN_WARN_CAST_SHORT(faceidx);
+	short sfaceIdx = static_cast<short>(faceidx);
 
 	for (long i = 0; i < 3; i++)
 	{
@@ -2456,7 +2465,7 @@ void EERIE_OBJECT_CenterObjectCoordinates(EERIE_3DOBJ * ret)
 	LogWarning << "NOT CENTERED " << ret->file;
 
 
-	for (long i = 0; i < ret->vertexlist.size(); i++)
+	for (size_t i = 0; i < ret->vertexlist.size(); i++)
 	{
 		ret->vertexlist[i].v.x -= offset.x;
 		ret->vertexlist[i].v.y -= offset.y;

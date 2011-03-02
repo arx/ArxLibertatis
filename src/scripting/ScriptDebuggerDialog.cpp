@@ -47,19 +47,18 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //-----------------------------------------------------------------------------
 
 #include "scripting/ScriptDebuggerDialog.h"
-#include <commctrl.h>
+
 #include <cstdio>
 
+#include <commctrl.h>
 
-HINSTANCE ghInstance;
+
 HWND ghDialog;
 
 char GlobalName[128];
 char LocalName[128];
 
 bool gbDialog = false;
-
-bool CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 ScriptDebuggerUpdate sdu;
 
@@ -123,9 +122,12 @@ void InsertItem(HWND _hwnd, char * _name, char * _value)
 	ListView_SetItemText(_hwnd, r, 1, _value);
 }
 
-//-----------------------------------------------------------------------------
-bool CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+BOOL CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	
+	(void)wParam;
+	
+	
+	
 	switch (uMsg)
 	{
 		case WM_CREATE:
@@ -270,31 +272,12 @@ bool CALLBACK SCRIPT_DEBUGGER_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 		}
 		break;
 		default:
-			return false;
+			return FALSE;
 			//DefWindowProc(hWnd, uMsg, wParam, lParam);
 			break;
 	}
 
-	return true;
-}
-
-
-//-----------------------------------------------------------------------------
-bool WINAPI DllMain(HINSTANCE _hModule, DWORD _fdwreason, LPVOID _lpReserved)
-//-----------------------------------------------------------------------------
-{
-	switch (_fdwreason)
-	{
-		case DLL_PROCESS_ATTACH:
-		{
-			// R�cup�ration du handle d'Instance du Module
-			InitCommonControls();
-			ghInstance = _hModule;
-			break;
-		}
-	}
-
-	return true;
+	return TRUE;
 }
 
 //-----------------------------------------------------------------------------
@@ -310,16 +293,19 @@ unsigned long SCRIPT_DEBUGGER_GetVersion()
 }
 
 //-----------------------------------------------------------------------------
-void SCRIPT_DEBUGGER_CreateDialog(HWND _hWindow, ScriptDebuggerInfos & _s)
-{
+void SCRIPT_DEBUGGER_CreateDialog(HWND _hWindow) {
+	
+	(void)_hWindow;
+	
 	if (!gbDialog)
 	{
 		ZeroMemory(&iInfo, sizeof(info));
 
 
 		long dw = GetLastError();
-//		todo: debugger
-//		ghDialog = CreateDialog(ghInstance, MAKEINTRESOURCE(IDD_SCRIPT_DEBUGGER), _hWindow, (DLGPROC) SCRIPT_DEBUGGER_Proc);
+		// TODO script debugger
+		// HINSTANCE ghInstance;
+		// ghDialog = CreateDialog(ghInstance, MAKEINTRESOURCE(IDD_SCRIPT_DEBUGGER), _hWindow,  SCRIPT_DEBUGGER_Proc);
 		dw = GetLastError();
 		ShowWindow(ghDialog, SW_SHOW);
 
@@ -336,8 +322,10 @@ void SCRIPT_DEBUGGER_CreateDialog(HWND _hWindow, ScriptDebuggerInfos & _s)
 }
 
 //-----------------------------------------------------------------------------
-int CALLBACK MyCompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
-{
+int CALLBACK MyCompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort) {
+	
+	(void)lParamSort;
+	
 	char * a = (char *) lParam1;
 	char * b = (char *) lParam2;
 	return strcmp(a, b);
@@ -484,14 +472,14 @@ void SCRIPT_DEBUGGER_GetParams(ScriptDebuggerUpdate & _pp)
 
 	char dest[256];
 
-	if (_pp.bUpdateGlobalVar = sdu.bUpdateGlobalVar)
+	if ((_pp.bUpdateGlobalVar = sdu.bUpdateGlobalVar))
 	{
 		GetWindowText(iInfo.hGlobalEdit, dest, 255);
 		strcpy(_pp.globalVar.lpszVarValue, dest);
 		strcpy(_pp.globalVar.lpszVarName, GlobalName);
 	}
 
-	if (_pp.bUpdateLocalVar = sdu.bUpdateLocalVar)
+	if ((_pp.bUpdateLocalVar = sdu.bUpdateLocalVar))
 	{
 		GetWindowText(iInfo.hLocalEdit, dest, 255);
 		strcpy(_pp.localVar.lpszVarValue, dest);

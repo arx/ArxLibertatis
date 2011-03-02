@@ -23,9 +23,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
-#include "io/PakManager.h"
-#include "audio/AudioTypes.h"
 #include "audio/codec/ADPCM.h"
+
+#include "audio/AudioTypes.h"
+#include "io/PakManager.h"
 
 namespace ATHENA
 {
@@ -43,8 +44,8 @@ namespace ATHENA
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 	CodecADPCM::CodecADPCM() :
-		header(NULL),
 		stream(NULL),
+		header(NULL),
 		padding(0),
 		shift(0),
 		sample_i(0xffffffff),
@@ -52,7 +53,7 @@ namespace ATHENA
 		delta(NULL),
 		samp1(NULL), samp2(NULL),
 		coef1(NULL), coef2(NULL),
-		nybble_c(0), nybble_i(0), nybble_l(NULL),
+		nybble_l(NULL), nybble_c(0), nybble_i(0),
 		nybble(0),
 		odd(0),
 		cache_c(0), cache_i(0), cache_l(NULL),
@@ -77,7 +78,7 @@ namespace ATHENA
 	// Setup                                                                     //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError CodecADPCM::SetHeader(aalVoid * _header)
+	aalError CodecADPCM::SetHeader(void * _header)
 	{
 		header = (ADPCMWAVEFORMAT *)_header;
 
@@ -88,7 +89,7 @@ namespace ATHENA
 		padding = 0;
 		sample_i = 0xffffffff;
 
-		aalVoid * ptr;
+		void * ptr;
 
 		ptr = realloc(predictor, sizeof(char) << shift);
 
@@ -205,7 +206,7 @@ namespace ATHENA
 	// Status                                                                    //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError CodecADPCM::GetHeader(aalVoid *&_header)
+	aalError CodecADPCM::GetHeader(void *&_header)
 	{
 		_header = header;
 
@@ -230,7 +231,7 @@ namespace ATHENA
 	// Macros!                                                                   //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalVoid CodecADPCM::GetSample(const aalULong & i, aalSByte adpcm_sample)
+	void CodecADPCM::GetSample(const aalULong & i, aalSByte adpcm_sample)
 	{
 		aalSLong predict, pcm_sample, old_delta;
 
@@ -263,7 +264,7 @@ namespace ATHENA
 	// File I/O                                                                  //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError CodecADPCM::Read(aalVoid * buffer, const aalULong & to_read, aalULong & read)
+	aalError CodecADPCM::Read(void * buffer, const aalULong & to_read, aalULong & read)
 	{
 		read = 0;
 
@@ -321,7 +322,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError CodecADPCM::Write(aalVoid *, const aalULong &, aalULong & write)
+	aalError CodecADPCM::Write(void *, const aalULong &, aalULong & write)
 	{
 		write = 0;
 
@@ -348,8 +349,8 @@ namespace ATHENA
 		{
 			if (predictor[i] >= header->wNumCoef) return AAL_ERROR_FORMAT;
 
-			coef1[i] = header->aCoef[predictor[i]].iCoef1;
-			coef2[i] = header->aCoef[predictor[i]].iCoef2;
+			coef1[i] = header->aCoef[(size_t)predictor[i]].iCoef1;
+			coef2[i] = header->aCoef[(size_t)predictor[i]].iCoef2;
 
 			((aalSWord *)cache_l)[i] = samp2[i];
 		}

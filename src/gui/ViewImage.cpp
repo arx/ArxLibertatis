@@ -22,24 +22,27 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+
+#include "gui/ViewImage.h"
+
 #include <cstdio>
-#include <iostream>
-#include <fstream>
 #include <sstream>
 #include <algorithm>
 #include <vector>
 
 #include "core/Core.h"
-#include "gui/ViewImage.h"
-#include "gui/MenuWidgets.h"
 #include "core/Time.h"
 
+#include "gui/MenuWidgets.h"
+
+#include "graphics/Frame.h"
 #include "graphics/d3dwrapper.h"
 #include "graphics/data/Texture.h"
 #include "graphics/Draw.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
+#include "io/Logger.h"
 
 using std::sprintf;
 
@@ -55,7 +58,7 @@ extern PakManager * pPakManager;
  
 
 //-----------------------------------------------------------------------------
-ViewImage::ViewImage(const char * _pcDir, const char * _pExt)
+ViewImage::ViewImage(const char * _pcDir)
 {
 	vListImage.clear();
 
@@ -134,11 +137,11 @@ void ViewImage::DrawAllImage()
 					iAction++;
 					break;
 				case 1:
-					ARX_WARN("bSens set to false by default.");
+					LogWarning << "bSens set to false by default.";
 					iAction++;
 					break;
 				case 2:
-					ARX_WARN("bSens set to false by default.");
+					LogWarning << "bSens set to false by default.";
 
 					if (!bActiveFade)
 					{
@@ -179,12 +182,12 @@ void ViewImage::DrawAllImage()
 					}
 					else
 					{
-						ARX_WARN("bSens set to false by default.");
+						LogWarning << "bSens set to false by default.";
 					}
 				}
 				break;
 				case 4:
-					ARX_WARN("bSens set to false by default.");
+					LogWarning << "bSens set to false by default.";
 
 					if (!bActiveFade)
 					{
@@ -268,7 +271,7 @@ void ViewImage::DrawAllImage()
 //-----------------------------------------------------------------------------
 void StartImageDemo()
 {
-	ViewImage * pViewImage = new ViewImage("graph\\interface\\misc\\", "*.bmp");
+	ViewImage * pViewImage = new ViewImage("graph\\interface\\misc\\");
 
 	if (!pViewImage) return;
 
