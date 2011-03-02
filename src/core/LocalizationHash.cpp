@@ -27,6 +27,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/LocalizationHash.h"
 
+#include <cstring>
+
 //-----------------------------------------------------------------------------
 CLocalisationHash::CLocalisationHash(int _iSize)
 {
@@ -209,7 +211,6 @@ std::string* CLocalisationHash::GetPtrWithString(const std::string& _lpszUText)
 	return NULL;
 }
 
-//-----------------------------------------------------------------------------
 unsigned long CLocalisationHash::GetKeyCount(const std::string& _lpszUText)
 {
 	int iKey = GetKey(_lpszUText);
