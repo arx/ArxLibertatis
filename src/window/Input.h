@@ -63,7 +63,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <dinput.h>
 
 #include "window/DXInput.h"
-#include "window/DXInputGlobal.h"
 
 //-----------------------------------------------------------------------------
 #define INTERNAL_MOUSE_1	257
@@ -114,14 +113,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_INPUT_IMPULSE_CROUCH			16
 
 //-----------------------------------------------------------------------------
-extern long ARX_XBOXPAD;
 extern long GameImpulses[MAX_IMPULSES][MAX_IMPULSES_NB];
 
 //-----------------------------------------------------------------------------
 void ARX_INPUT_Init_Game_Impulses();
 bool ARX_INPUT_Init(HINSTANCE hInst, HWND hWnd);
 void ARX_INPUT_Release();
-bool ARX_INPUT_GetSCIDAxis(int * jx, int * jy, int * jz);
  
 //-----------------------------------------------------------------------------
 bool ARX_IMPULSE_NowPressed(long ident);

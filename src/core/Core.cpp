@@ -62,6 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <fstream>
 #include <sstream>
+#include <cassert>
 
 #include <windows.h>
 #include <shellapi.h>
@@ -7310,16 +7311,9 @@ static void ShowInfoText() {
 	TSU_TEST_NB = 0;
 	TSU_TEST_NB_LIGHT = 0;
 
-	long pos=DXI_GetKeyIDPressed(DXI_KEYBOARD1);
+	long pos=DXI_GetKeyIDPressed();
 	sprintf(tex,"%ld",pos);
 	danaeApp.OutputText( 70, 99, tex );
-	int jx,jy,jz;
-
-	if (ARX_INPUT_GetSCIDAxis(&jx,&jy,&jz))
-	{
-		sprintf(tex,"%d %d %d",jx,jy,jz);
-		danaeApp.OutputText( 70, 299, tex );
-	}
 
 	if ((!EDITMODE) && (ValidIONum(LastSelectedIONum)))
 	{

@@ -7,6 +7,9 @@
 
 #include "ScriptEvent.h"
 
+#include <cstdio>
+#include <cassert>
+
 #include "ai/Paths.h"
 
 #include "core/Time.h"

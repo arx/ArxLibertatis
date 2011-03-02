@@ -34,6 +34,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Spells.h"
 
 #include <cmath>
+#include <cstdio>
+#include <cassert>
 
 #include "core/Core.h"
 

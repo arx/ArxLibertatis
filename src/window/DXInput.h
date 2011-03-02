@@ -26,16 +26,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_WINDOW_DXINPUT_H
 #define ARX_WINDOW_DXINPUT_H
 
-#include <windef.h>
+#include <windef.h> // for HINSTANCE
 
-// TODO replace with bool -> true/false
-#define DXI_FAIL 0
-#define DXI_OK   1
-
-#define DXI_MODE_EXCLUSIF_ALLMSG		0
-#define DXI_MODE_EXCLUSIF_OURMSG		1
-#define DXI_MODE_NONEXCLUSIF_ALLMSG		2
-#define DXI_MODE_NONEXCLUSIF_OURMSG		3
+enum DXIMode {
+	DXI_MODE_EXCLUSIF_ALLMSG = 0,
+	DXI_MODE_EXCLUSIF_OURMSG = 1,
+	DXI_MODE_NONEXCLUSIF_ALLMSG = 2,
+	DXI_MODE_NONEXCLUSIF_OURMSG = 3
+};
 
 #define DXI_XAxis   1
 #define DXI_YAxis   2
@@ -48,14 +46,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define DXI_Key     256
 #define DXI_POV     512
 #define DXI_Unknown 1024
-
-#define DXI_KEYBOARD1 0
-#define DXI_KEYBOARD2 1
-#define DXI_MOUSE1 0
-#define DXI_MOUSE2 1
-#define DXI_JOY1 0
-#define DXI_JOY2 1
-#define DXI_SCID 0
 
 enum DXIButton {
 	DXI_BUTTON0 = 0,
@@ -92,32 +82,18 @@ enum DXIButton {
 	DXI_BUTTON31 = 31
 };
 
-#define DXI_JOYNONE  0
-#define DXI_JOYUP    1
-#define DXI_JOYDOWN  2
-#define DXI_JOYLEFT  4
-#define DXI_JOYRIGHT 8
-
-int DXI_Init(HINSTANCE h);
-void DXI_Release(void);
-int DXI_ChooseInputDevice(HWND hwnd, int id, int num, int mode);
-bool DXI_GetAxeMouseXY(int id,int *mx,int *my);
-bool DXI_GetAxeMouseXYZ(int id, int * mx, int * my, int * mz);
-bool DXI_ExecuteAllDevices(bool _bKeept);
-int DXI_GetSCIDInputDevice(HWND hwnd, int id, int mode, int minbutton, int minaxe);
-bool DXI_GetKeyboardInputDevice(HWND hwnd, int id, int mode);
-int DXI_GetMouseInputDevice(HWND hwnd, int id, int mode, int minbutton, int minaxe);
-int DXI_GetJoyInputDevice(HWND hwnd, int id, int mode, int minbutton, int minaxe);
-bool DXI_KeyPressed(int id, int dikkey);
-int DXI_GetKeyIDPressed(int id);
-void DXI_RestoreAllDevices(void);
-void DXI_SleepAllDevices(void);
-bool DXI_MouseButtonPressed(int id, int numb, int * _iDeltaTime);
-void DXI_MouseButtonCountClick(int id, int numb, int * _iNumClick, int * _iNumUnClick);
-bool DXI_IsSCIDButtonPressed(int id, int numb);
-int DXI_GetSCIDAxis(int id, int * jx, int * jy, int * jz);
-int DXI_SetMouseRelative(int id);
-int DXI_SetRangeJoy(int id, int axe, int range);
-bool DXI_GetJoyButtonPressed(int id, int numb);
+bool DXI_Init(HINSTANCE h);
+void DXI_Release();
+bool DXI_GetAxeMouseXYZ(int & mx, int & my, int & mz);
+bool DXI_ExecuteAllDevices();
+bool DXI_GetKeyboardInputDevice(HWND hwnd, DXIMode mode);
+bool DXI_GetMouseInputDevice(HWND hwnd, DXIMode mode, int minbutton, int minaxe);
+bool DXI_KeyPressed(int dikkey);
+int DXI_GetKeyIDPressed();
+void DXI_RestoreAllDevices();
+void DXI_SleepAllDevices();
+bool DXI_MouseButtonPressed(int numb, int & _iDeltaTime);
+void DXI_MouseButtonCountClick(int numb, int & _iNumClick, int & _iNumUnClick);
+bool DXI_SetMouseRelative();
 
 #endif // ARX_WINDOW_DXINPUT_H

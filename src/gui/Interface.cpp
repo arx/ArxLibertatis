@@ -35,6 +35,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <iomanip>
 #include <sstream>
+#include <cstdio>
+#include <cassert>
 
 #include "ai/Paths.h"
 

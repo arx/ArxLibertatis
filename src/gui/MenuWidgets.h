@@ -821,7 +821,7 @@ class CDirectInput
  
  
 		void ResetAll();
-		int GetWheelSens(int);
+		int GetWheelSens();
 };
 
 //-----------------------------------------------------------------------------

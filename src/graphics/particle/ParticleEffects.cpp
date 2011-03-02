@@ -58,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include <algorithm>
+#include <cassert>
 
 #include "ai/Paths.h"
 

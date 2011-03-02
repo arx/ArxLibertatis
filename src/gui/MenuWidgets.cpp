@@ -26,6 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuWidgets.h"
 
 #include <cstring>
+#include <cstdio>
 
 #include <algorithm>
 #include <map>
@@ -7204,8 +7205,8 @@ void CDirectInput::GetInput()
 {
 	int iDTime;
 
-	DXI_ExecuteAllDevices(false);
-	iKeyId=DXI_GetKeyIDPressed(DXI_KEYBOARD1);
+	DXI_ExecuteAllDevices();
+	iKeyId=DXI_GetKeyIDPressed();
 	bTouch=(iKeyId>=0)?true:false;
 
 	for(int i=0;i<256;i++)
@@ -7295,7 +7296,7 @@ void CDirectInput::GetInput()
 	{
 		int iNumClick;
 		int iNumUnClick;
-		DXI_MouseButtonCountClick(DXI_MOUSE1,i,&iNumClick,&iNumUnClick);
+		DXI_MouseButtonCountClick(i, iNumClick, iNumUnClick);
 
 		iOldNumClick[i]+=iNumClick+iNumUnClick;
 
@@ -7323,8 +7324,7 @@ void CDirectInput::GetInput()
 
 		if(iOldNumClick[i]) iOldNumClick[i]--;
 
-		iDTime=0;
-		DXI_MouseButtonPressed(DXI_MOUSE1,i,&iDTime);
+		DXI_MouseButtonPressed(i,iDTime);
 
 		if(iDTime)
 		{
@@ -7358,7 +7358,7 @@ void CDirectInput::GetInput()
 		}
 		}
 
-	iWheelSens=pGetInfoDirectInput->GetWheelSens(DXI_MOUSE1);
+	iWheelSens=pGetInfoDirectInput->GetWheelSens();
 
 	if(    ( danaeApp.m_pFramework->m_bIsFullscreen ) &&
 		( bGLOBAL_DINPUT_MENU ) )
@@ -7367,8 +7367,7 @@ void CDirectInput::GetInput()
 		float fDY = 0.f;
 		iMouseRX = iMouseRY = iMouseRZ = 0;
 
-		if( DXI_GetAxeMouseXYZ(DXI_MOUSE1, &iMouseRX, &iMouseRY, &iMouseRZ) )
-		{
+		if(DXI_GetAxeMouseXYZ(iMouseRX, iMouseRY, iMouseRZ)) {
 			float fSensMax = 1.f / 6.f;
 			float fSensMin = 2.f;
 			float fSens = ( ( fSensMax - fSensMin ) * ( (float)iSensibility ) / 10.f ) + fSensMin;
@@ -7472,11 +7471,11 @@ void CDirectInput::GetInput()
 
 //-----------------------------------------------------------------------------
 
-int CDirectInput::GetWheelSens(int _iIDbutton)
-{
-	int iX,iY,iZ=0;
-	DXI_GetAxeMouseXYZ(_iIDbutton,&iX,&iY,&iZ);
-
+int CDirectInput::GetWheelSens() {
+	
+	int iX, iY, iZ = 0;
+	DXI_GetAxeMouseXYZ(iX, iY, iZ);
+	
 	return iZ;
 }
 
@@ -7484,7 +7483,7 @@ int CDirectInput::GetWheelSens(int _iIDbutton)
 
 bool CDirectInput::IsVirtualKeyPressed(int _iVirtualKey)
 {
-	return DXI_KeyPressed(DXI_KEYBOARD1,_iVirtualKey)?true:false;
+	return DXI_KeyPressed(_iVirtualKey)?true:false;
 }
 
 //-----------------------------------------------------------------------------
@@ -7492,7 +7491,7 @@ bool CDirectInput::IsVirtualKeyPressed(int _iVirtualKey)
 bool CDirectInput::IsVirtualKeyPressedOneTouch(int _iVirtualKey)
 {
 
-	return(    (DXI_KeyPressed(DXI_KEYBOARD1,_iVirtualKey))&&
+	return(    (DXI_KeyPressed(_iVirtualKey))&&
 			(iOneTouch[_iVirtualKey]==1) );
 }
 
@@ -7500,7 +7499,7 @@ bool CDirectInput::IsVirtualKeyPressedOneTouch(int _iVirtualKey)
 
 bool CDirectInput::IsVirtualKeyPressedNowPressed(int _iVirtualKey)
 {
-	return(    (DXI_KeyPressed(DXI_KEYBOARD1,_iVirtualKey))&&
+	return(    (DXI_KeyPressed(_iVirtualKey))&&
 			(iOneTouch[_iVirtualKey]==1) );
 }
 
@@ -7508,7 +7507,7 @@ bool CDirectInput::IsVirtualKeyPressedNowPressed(int _iVirtualKey)
 
 bool CDirectInput::IsVirtualKeyPressedNowUnPressed(int _iVirtualKey)
 {
-	return(    (!DXI_KeyPressed(DXI_KEYBOARD1,_iVirtualKey))&&
+	return(    (!DXI_KeyPressed(_iVirtualKey))&&
 			(iOneTouch[_iVirtualKey]==1) );
 }
 

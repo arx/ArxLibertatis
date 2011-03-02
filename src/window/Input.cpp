@@ -62,15 +62,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuWidgets.h" //controls
 #include "io/Logger.h"
 
-long ARX_SCID = 0;
-long ARX_XBOXPAD = 0;
-
-//-----------------------------------------------------------------------------
 extern CDirectInput * pGetInfoDirectInput;
 extern CMenuConfig * pMenuConfig;
 extern long STOP_KEYBOARD_INPUT;
 
-//-----------------------------------------------------------------------------
 bool ARX_INPUT_Init(HINSTANCE hInst, HWND hWnd) {
 	
 #ifdef NO_DIRECT_INPUT
@@ -78,36 +73,19 @@ bool ARX_INPUT_Init(HINSTANCE hInst, HWND hWnd) {
 #endif
 	DXI_Init(hInst);
 	
-	if(!DXI_GetKeyboardInputDevice(hWnd, DXI_KEYBOARD1, DXI_MODE_NONEXCLUSIF_OURMSG)) {
+	if(!DXI_GetKeyboardInputDevice(hWnd, DXI_MODE_NONEXCLUSIF_OURMSG)) {
 		LogWarning << "could not grab the keyboeard";
 		return false;
 	}
 	
-	if(DXI_FAIL == DXI_GetMouseInputDevice(hWnd, DXI_MOUSE1, DXI_MODE_NONEXCLUSIF_ALLMSG, 2, 2)) {
+	if(!DXI_GetMouseInputDevice(hWnd, DXI_MODE_NONEXCLUSIF_ALLMSG, 2, 2)) {
 		LogWarning << "could not grab the mouse";
 		return false;
 	}
 	
-	if(DXI_FAIL == DXI_GetSCIDInputDevice(hWnd, DXI_SCID, DXI_MODE_EXCLUSIF_OURMSG, 2, 2)) {
-		ARX_SCID = 0;
-	} else {
-		ARX_SCID = 1;
-	}
-	
-	if(DXI_FAIL == DXI_SetMouseRelative(DXI_MOUSE1)) {
+	if(!DXI_SetMouseRelative()) {
 		LogWarning << "could not set mouse relative mode";
 		return false;
-	}
-	
-	//"ThrustMaster FireStorm(TM) Dual Power Gamepad"
-	if(DXI_FAIL != DXI_GetJoyInputDevice(hWnd, DXI_JOY1, DXI_MODE_EXCLUSIF_ALLMSG, 13, 4)) {
-		ARX_XBOXPAD = 1;
-		DXI_SetRangeJoy(DXI_JOY1, DXI_XAxis, 100);
-		DXI_SetRangeJoy(DXI_JOY1, DXI_YAxis, 100);
-		DXI_SetRangeJoy(DXI_JOY1, DXI_RzAxis, 100);
-		DXI_SetRangeJoy(DXI_JOY1, DXI_Slider, 100);
-	} else {
-		ARX_XBOXPAD = 0;
 	}
 	
 	return true;
@@ -171,22 +149,6 @@ void ARX_INPUT_Init_Game_Impulses()
 
 	GameImpulses[ARX_INPUT_IMPULSE_CROUCH][0] = 83; //50;
 	GameImpulses[ARX_INPUT_IMPULSE_CROUCH][1] = INTERNAL_JOYSTICK_2;
-}
- 
-bool ARX_INPUT_GetSCIDAxis(int * jx, int * jy, int * jz)
-{
-	if (ARX_SCID)
-	{
-		DXI_GetSCIDAxis(DXI_SCID, jx, jy, jz);
-		return true;
-	}
-	else
-	{
-		*jx = 0;
-		*jy = 0;
-		*jz = 0;
-		return false;
-	}
 }
  
 //-----------------------------------------------------------------------------
