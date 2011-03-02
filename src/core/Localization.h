@@ -24,24 +24,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 // Code: Didier P�dreno
 
-#ifndef ARX_LOC_H
-#define ARX_LOC_H
+#ifndef ARX_CORE_LOCALIZATION_H
+#define ARX_CORE_LOCALIZATION_H
 
 #include <string>
-
-#include "core/Unicode.hpp"
 
 void Localisation_Init();
 void Localisation_Close();
 
+bool PAK_UNICODE_GetPrivateProfileString(const std::string & section, const std::string & default_return, std::string & buffer);
 
-bool PAK_UNICODE_GetPrivateProfileString( const std::string& section,
-                                          const std::string& default_return,
-                                          std::string& buffer);
+long HERMES_UNICODE_GetProfileSectionKeyCount(const std::string & sectionname);
+long HERMES_UNICODE_GetProfileString(const std::string & sectionname, const std::string & defaultstring, std::string & destination);
 
-long HERMES_UNICODE_GetProfileSectionKeyCount( const std::string& sectionname);
-long HERMES_UNICODE_GetProfileString( const std::string& sectionname,
-                                      const std::string& defaultstring,
-                                      std::string& destination );
-
-#endif // ARX_LOC_H
+#endif // ARX_CORE_LOCALIZATION_H
