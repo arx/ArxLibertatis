@@ -55,22 +55,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef DANAEDLG_H
-#define DANAEDLG_H
+#ifndef ARX_CORE_DIALOG_H
+#define ARX_CORE_DIALOG_H
 
-#include "core/Core.h"
+#include <windef.h>
+
+class INTERACTIVE_OBJ;
+
 #define IOTVTYPE_PATH 1
-#define IOTVTYPE_NODE 2
 #define IOTVTYPE_PLAYER 3
 
-extern short Cross;
-extern long Bilinear;
-extern long DEBUG1ST;
-extern long DEBUGNPCMOVE;
 extern long FASTLOADS;
-
-extern HWND CDP_PATHWAYS_Options;
-extern HWND CDP_IOOptions;
 
 void LaunchInteractiveObjectsApp(HWND hwnd);
 void InterTreeViewItemRemove(INTERACTIVE_OBJ * io, const char * name = NULL);
@@ -82,62 +77,52 @@ INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 INT_PTR CALLBACK StartProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM);
 INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK ChangeLevelProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-INT_PTR  CALLBACK AboutProc(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK AboutProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-INT_PTR CALLBACK GaiaTextEdit(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-extern COLORREF custcr[16];
 INT_PTR CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-INT_PTR CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK IOOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
- 
 INT_PTR CALLBACK LanguageOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-INT_PTR CALLBACK PassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-INT_PTR CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-INT_PTR CALLBACK MeshReductionProc(HWND hWnd, UINT uMsg, WPARAM wParam,
-                                LPARAM lParam);
-INT_PTR CALLBACK ScriptSearchProc(HWND hWnd, UINT uMsg, WPARAM wParam,
-                               LPARAM lParam);
+INT_PTR CALLBACK MeshReductionProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+INT_PTR CALLBACK ScriptSearchProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 void LaunchSnapShotParamApp(HWND hwnd);
 
-#define LEVEL0		0
-#define LEVEL1		1
-#define LEVEL2		2
-#define LEVEL3		3
-#define LEVEL4		4
-#define LEVEL5		5
-#define LEVEL6		6
-#define LEVEL7		7
-#define LEVEL8		8
-#define LEVEL9		9
-#define LEVEL10		10
-#define LEVEL11		11
-#define LEVEL12		12
-#define LEVEL13		13
-#define LEVEL14		14
-#define LEVEL15		15
-#define LEVEL16		16
-#define LEVEL17		17
-#define LEVEL18		18
-#define LEVEL19		19
-#define LEVEL20		20
-#define LEVEL21		21
-#define LEVEL22		22
-#define LEVEL23		23
-#define LEVEL24		24
-#define LEVEL25		25
-#define LEVEL26		26
-#define LEVEL27		27
-#define LEVELDEMO	28
-
-#define LEVELDEMO2	29
-#define LEVELDEMO3	30
-#define LEVELDEMO4	31
-#define NOLEVEL		32
-
+#define LEVEL0     0
+#define LEVEL1     1
+#define LEVEL2     2
+#define LEVEL3     3
+#define LEVEL4     4
+#define LEVEL5     5
+#define LEVEL6     6
+#define LEVEL7     7
+#define LEVEL8     8
+#define LEVEL9     9
+#define LEVEL10    10
+#define LEVEL11    11
+#define LEVEL12    12
+#define LEVEL13    13
+#define LEVEL14    14
+#define LEVEL15    15
+#define LEVEL16    16
+#define LEVEL17    17
+#define LEVEL18    18
+#define LEVEL19    19
+#define LEVEL20    20
+#define LEVEL21    21
+#define LEVEL22    22
+#define LEVEL23    23
+#define LEVEL24    24
+#define LEVEL25    25
+#define LEVEL26    26
+#define LEVEL27    27
+#define LEVELDEMO  28
+#define LEVELDEMO2 29
+#define LEVELDEMO3 30
+#define LEVELDEMO4 31
+#define NOLEVEL    32
  
 void TextBox(const char * title, char * text, long size);
 void launchlightdialog();
 
-#endif
+#endif // ARX_CORE_DIALOG_H

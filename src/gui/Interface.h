@@ -43,6 +43,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 extern float BOOKDECX;
 extern float BOOKDECY;
+extern HWND CDP_PATHWAYS_Options;
+extern HWND CDP_IOOptions;
 
 //-----------------------------------------------------------------------------
 class INTERFACE_TC

@@ -118,6 +118,7 @@ extern unsigned long FADESTART;
 extern unsigned long AimTime;
 extern bool ARXPausedTimer;
 extern float FrameTime, LastFrameTime;
+extern long DEBUG1ST;
 
 struct QUAKE_FX_STRUCT {
 	float intensity;
