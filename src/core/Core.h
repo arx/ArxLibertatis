@@ -62,6 +62,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/GraphicsTypes.h"
 #include "graphics/data/Mesh.h"
 
+const float DANAE_VERSION = 1.864f;
+
 const size_t MAX_GOLD_COINS_VISUALS = 7;
 
 extern EERIE_RGB	FADECOLOR;
