@@ -112,7 +112,7 @@ extern EERIE_3D PUSH_PLAYER_FORCE;
 float Blood_Pos = 0.f;
 long Blood_Duration = 0;
 SCREEN_SPLATS ssplat[MAX_SCREEN_SPLATS];
-void ARX_DAMAGES_IgnitIO(INTERACTIVE_OBJ * io, float dmg)
+static void ARX_DAMAGES_IgnitIO(INTERACTIVE_OBJ * io, float dmg)
 {
 	if ((!io)
 	        ||	(io->ioflags & IO_INVULNERABILITY))
@@ -1072,7 +1072,7 @@ void ARX_DAMAGES_Reset()
 //*************************************************************************************
 long ARX_DAMAGES_GetFree()
 {
-	for (long i = 0; i < MAX_DAMAGES; i++)
+	for (size_t i = 0; i < MAX_DAMAGES; i++)
 	{
 		if (!damages[i].exist)
 		{
@@ -1478,7 +1478,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 }
 void ARX_DAMAGES_UpdateAll()
 {
-	for (long j = 0; j < MAX_DAMAGES; j++)
+	for (size_t j = 0; j < MAX_DAMAGES; j++)
 		ARX_DAMAGES_UpdateDamage(j, ARXTime);
 }
 bool SphereInIO(INTERACTIVE_OBJ * io, EERIE_3D * pos, float radius)
