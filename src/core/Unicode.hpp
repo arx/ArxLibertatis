@@ -26,8 +26,8 @@
 //
 ////////////////////////////////////////////////////////////
 
-#ifndef UNICODE_HPP
-#define UNICODE_HPP
+#ifndef ARX_CORE_UNICODE_HPP
+#define ARX_CORE_UNICODE_HPP
 
 #include "core/Common.h"
 
@@ -114,9 +114,9 @@ inline Out UTF16ToUTF8(In Begin, In End, Out Output, u8 Replacement = '?' )
 /// Get the number of characters composing an UTF-16 string
 ////////////////////////////////////////////////////////////
 template <typename In>
-inline std::size_t GetUTF16Length(In Begin, In End)
+inline size_t GetUTF16Length(In Begin, In End)
 {
-    std::size_t Length = 0;
+    size_t Length = 0;
     while (Begin < End)
     {
         if ((*Begin >= 0xD800) && (*Begin <= 0xDBFF))
@@ -138,5 +138,4 @@ inline std::size_t GetUTF16Length(In Begin, In End)
     return Length;
 }
 
-#endif
-
+#endif // ARX_CORE_UNICODE_HPP
