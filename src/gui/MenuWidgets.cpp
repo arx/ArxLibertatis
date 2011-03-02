@@ -5513,10 +5513,8 @@ void CWindowMenuConsole::UpdateText()
 int IsMouseButtonClick()
 {
 	//MouseButton
-	for(int i=DXI_BUTTON0;i<=DXI_BUTTON31;i++)
-	{
-		if(pGetInfoDirectInput->GetMouseButtonNowPressed(i))
-		{
+	for(size_t i = 0; i < CDirectInput::ARX_MAXBUTTON; i++) {
+		if(pGetInfoDirectInput->GetMouseButtonNowPressed(i)) {
 			return DIK_BUTTON1+i-DXI_BUTTON0;
 		}
 	}
@@ -7113,13 +7111,12 @@ CDirectInput::CDirectInput()
 	iNumCursor=0;
 	lFrameDiff=0;
 
-	for(int i=DXI_BUTTON0;i<=DXI_BUTTON31;i++)
-	{
-		iOldMouseButton[i]=0;
-		iMouseTime[i]=0;
-		iMouseTimeSet[i]=0;
-		bMouseButton[i]=bOldMouseButton[i]=false;
-		iOldNumClick[i]=iOldNumUnClick[i]=0;
+	for(size_t i = 0; i < ARX_MAXBUTTON; i++) {
+		iOldMouseButton[i] = 0;
+		iMouseTime[i] = 0;
+		iMouseTimeSet[i] = 0;
+		bMouseButton[i] = bOldMouseButton[i] = false;
+		iOldNumClick[i] = iOldNumUnClick[i] = 0;
 	}
 
 	// PreCompute le ScanCode
@@ -7177,13 +7174,12 @@ void CDirectInput::SetSensibility(int _iSensibility)
 
 void CDirectInput::ResetAll()
 {
-	for(int i=DXI_BUTTON0;i<=DXI_BUTTON31;i++)
-	{
-		iOldMouseButton[i]=0;
-		iMouseTime[i]=0;
-		iMouseTimeSet[i]=0;
-		bMouseButton[i]=bOldMouseButton[i]=false;
-		iOldNumClick[i]=iOldNumUnClick[i]=0;
+	for(size_t i = 0; i < ARX_MAXBUTTON; i++) {
+		iOldMouseButton[i] = 0;
+		iMouseTime[i] = 0;
+		iMouseTimeSet[i] = 0;
+		bMouseButton[i] = bOldMouseButton[i] = false;
+		iOldNumClick[i] = iOldNumUnClick[i] = 0;
 	}
 
 	iKeyId=-1;
@@ -7292,7 +7288,7 @@ void CDirectInput::GetInput()
 	const int iArxTime = ARX_CLEAN_WARN_CAST_INT(ARX_TIME_Get( false )) ;
 
 
-	for(int i=DXI_BUTTON0;i<=DXI_BUTTON31;i++)
+	for(size_t i = 0; i < ARX_MAXBUTTON; i++)
 	{
 		int iNumClick;
 		int iNumUnClick;

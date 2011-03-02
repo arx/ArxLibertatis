@@ -297,7 +297,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define DIK_BUTTON30	(0x80000000|DXI_BUTTON29)
 #define DIK_BUTTON31	(0x80000000|DXI_BUTTON30)
 #define DIK_BUTTON32	(0x80000000|DXI_BUTTON31)
-#define ARX_MAXBUTTON	32
+
 
 #define DIK_WHEELUP		(0x40000000|0)
 #define DIK_WHEELDOWN	(0x40000000|1)
@@ -754,9 +754,12 @@ struct EERIE_2DI
 };
 
 //-----------------------------------------------------------------------------
-class CDirectInput
-{
-	public:
+class CDirectInput {
+	
+public:
+	
+	static const size_t ARX_MAXBUTTON = 8;
+	
 		bool				bActive;
 		bool				bTouch;
 		int					iKeyId;
