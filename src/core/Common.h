@@ -60,6 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define ARX_CORE_COMMON_H
 
 #include <string>
+#include <climits>
 
 const std::string arxVersion = "0.1";
 
