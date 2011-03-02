@@ -47,8 +47,41 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 extern long FINAL_RELEASE;
 extern long CURRENTLEVEL;
 int iCreateMap = 0; // used to create mini-map bitmap
-C_ARX_Carte *ARXCarte=NULL;
 char ThisLevelMap[256];
+
+class C_ARX_Carte {
+	
+private:
+	
+	LPDIRECT3DDEVICE7 device;
+	EERIE_BACKGROUND * background;
+	int width;
+	int height;
+	int nbpixels;
+	int widthrender;
+	int heightrender;
+	float posx;
+	float posz;
+	float minx, minz;
+	float maxx, maxz;
+	float ecx, ecz;
+	LPDIRECTDRAWSURFACE7 surfacetemp;
+	
+	bool BltOnSurfTemp(CD3DFramework7 * framework, int x, int y, int dw, int dh, int largs, int largh);
+	bool CreateSurfaceTemp(CD3DFramework7 * framework);
+	void IncMoveMap(float incx, float incz);
+	void MoveMap(float newposx, float newposy);
+	
+public:
+	
+	C_ARX_Carte(LPDIRECT3DDEVICE7 d = NULL, EERIE_BACKGROUND * bkg = NULL, int nbpixels = 10, int wrender = 640, int hrender = 480);
+	bool Render();
+	
+	bool BuildMap(CD3DFramework7 * framework, char * name);
+	
+};
+
+static C_ARX_Carte * ARXCarte = NULL;
 
 //#############################################################################################
 // Constructeur

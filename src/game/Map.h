@@ -22,49 +22,13 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef ARX_CARTE_H
-#define ARX_CARTE_H
 
-#include "graphics/data/Mesh.h"
-#include "core/Application.h"
+#ifndef ARX_GAME_MAP_H
+#define ARX_GAME_MAP_H
 
-class C_ARX_Carte
-{
-	private:
-		LPDIRECT3DDEVICE7	device;
-		EERIE_BACKGROUND	* background;
-		int					width;
-		int					height;
-		int					nbpixels;
-		int					widthrender;
-		int					heightrender;
-		float				posx;
-		float				posz;
-		float				minx, minz;
-		float				maxx, maxz;
-		float				ecx, ecz;
-
-		LPDIRECTDRAWSURFACE7	surfacetemp;
-
-	public:
-		C_ARX_Carte(LPDIRECT3DDEVICE7 d = NULL, EERIE_BACKGROUND * bkg = NULL, int nbpixels = 10, int wrender = 640, int hrender = 480);
-		~C_ARX_Carte() {};
-		bool Render(void);
-		void MoveMap(float newposx, float newposy);
-		void IncMoveMap(float incx, float incz);
- 
-		bool CreateSurfaceTemp(CD3DFramework7 * framework);
-		bool BltOnSurfTemp(CD3DFramework7 * framework, int x, int y, int dw, int dh, int largs, int largh);
-		bool BuildMap(CD3DFramework7 * framework, char * name);
- 
-};
-
-//-----------------------------------------------------------------------------
-extern C_ARX_Carte * ARXCarte;
 extern int iCreateMap;
 
-//-----------------------------------------------------------------------------
 bool NeedMapCreation();
 void DANAE_Manage_CreateMap();
 
-#endif
+#endif // ARX_GAME_MAP_H
