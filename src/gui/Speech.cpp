@@ -599,7 +599,7 @@ void ARX_SPEECH_Update() {
 
 		if (speech->exist)
 		{
-			if (!speech->text.c_str())
+			if (!speech->text.empty())
 			{
 				if ((ARX_CONVERSATION) && (speech->io))
 				{
