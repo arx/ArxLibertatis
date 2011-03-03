@@ -138,7 +138,7 @@ void Font::Draw( int x, int y, const std::string& str, COLORREF color ) const
     unsigned int penY = y;
 
 	// Substract one line height (since we flipped the Y origin to be like GDI)
-	penY += m_FTFace->size->metrics.height >> 6;	
+	penY += m_FTFace->size->metrics.ascender >> 6;
 
 	FT_UInt currentGlyph;
 	FT_UInt previousGlyph = 0;
