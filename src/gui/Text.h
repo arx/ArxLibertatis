@@ -92,7 +92,6 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
 
 void ARX_Allocate_Text( std::string& dest, const std::string& id_string);
 std::string GetFontName( const std::string& );
-void _ShowText( const char * text);
 void ARX_Text_Init();
 void ARX_Text_Close();
 void FontRenderText(Font* _pFont, EERIE_3D pos, const std::string& _pText, COLORREF _c);

@@ -146,7 +146,6 @@ CMenuCheckButton *pMenuCheckButtonBump=NULL;
 float ARXTimeMenu;
 float ARXOldTimeMenu;
 float ARXDiffTimeMenu;
-bool bForceGDI;
 
 bool bFade=false;
 bool bFadeInOut=false;
@@ -1171,7 +1170,6 @@ bool CMenuConfig::SaveAll()
 	//misc
 	bOk&=WriteConfigInt("MISC","softfog",(bATI)?1:0);
 	bOk&=WriteConfigInt("MISC","forcenoeax",(bForceNoEAX)?1:0);
-	bOk&=WriteConfigInt("MISC","forcegdi",(bForceGDI)?1:0);
 	bOk&=WriteConfigInt("MISC","forcemetaltwopass",(bForceMetalTwoPass)?1:0);
 	bOk&=WriteConfigInt("MISC","forcezbias",(bForceZBias)?1:0);
 	bOk&=WriteConfigInt("MISC","newcontrol",(INTERNATIONAL_MODE)?1:0);
@@ -1646,18 +1644,6 @@ bool CMenuConfig::ReadAll()
 	else
 	{
 		bForceNoEAX=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("MISC","forcegdi",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bForceGDI=false;
-	}
-	else
-	{
-		bForceGDI=(iTemp)?true:false;
 	}
 
 	iTemp=ReadConfigInt("MISC","forcemetaltwopass",bOkTemp);

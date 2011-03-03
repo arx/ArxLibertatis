@@ -438,37 +438,6 @@ USHORT LilEndianShort(USHORT ulValue) {
 	return MAKEWORD(HIBYTE(ulValue), LOBYTE(ulValue));
 }
 
-void _ShowText(const char * text)
-{
-	if (GDevice)
-	{
-		GDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0L);
-
-		if (danaeApp.DANAEStartRender())
-		{
-
-			HDC hDC;
-
-			if (danaeApp.m_pddsRenderTarget)
-			{
-				if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
-				{
-					SetTextColor(hDC, RGB(0, 255, 0));
-					SetBkMode(hDC, TRANSPARENT);
-					ExtTextOut(hDC, 0, 0, 0, NULL, text, lstrlen(text), NULL);
-					danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-				}
-			}
-
-			danaeApp.DANAEEndRender();
-
-			danaeApp.m_pFramework->ShowFrame();
-		}
-	}
-}
-
-//-----------------------------------------------------------------------------
-
 int Traffic(int iFontSize)
 {
 	iFontSize = (int)(float)(iFontSize * Yratio);

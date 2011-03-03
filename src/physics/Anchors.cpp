@@ -1003,7 +1003,6 @@ void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb)
 	EERIE_BKG_INFO * eg2;
 	long ii, ia, ji, ja;
 	EERIE_3D p1, p2; 
-	char text[256];
 	long count = 0;
 	long per;
 	long lastper = -1;
@@ -1016,9 +1015,8 @@ void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb)
 
 			if (per != lastper)
 			{
-				sprintf(text, "Anchor Links Generation: %ld%%", per);
+				LogInfo << "Anchor Links Generation: %" << per;
 				lastper = per;
-				_ShowText(text);
 			}
 
 			danaeApp.WinManageMess();
@@ -1163,12 +1161,10 @@ void AnchorData_Create_Links_Original_Method(EERIE_BACKGROUND * eb)
 
 void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb)
 {
-	char text[256];
 	EERIE_BKG_INFO * eg;
 	EERIE_3D pos;
 	long k;
 	float count = 0;
-
 
 	long lastper	=	-1;
 	long per;
@@ -1182,9 +1178,8 @@ void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb)
 
 			if (per != lastper)
 			{
-				sprintf(text, "Anchor Generation: %ld%% (Pass II)", per);
+				LogInfo << "Anchor Generation: %" << per << " (Pass II)";
 				lastper = per;
-				_ShowText(text);
 			}
 
 			count += 1.f;
@@ -1277,7 +1272,6 @@ void AnchorData_Create_Phase_II_Original_Method(EERIE_BACKGROUND * eb)
 
 void AnchorData_Create_Original_Method(EERIE_BACKGROUND * eb)
 {
-	char text[256];
 	AnchorData_ClearAll(eb);
 	EERIE_BKG_INFO * eg;
 	EERIEPOLY * ep;
@@ -1344,9 +1338,8 @@ void AnchorData_Create_Original_Method(EERIE_BACKGROUND * eb)
 
 				if (per != lastper)
 				{
-					sprintf(text, "Anchor Generation: %ld%%", per);
+					LogInfo << "Anchor Generation: %" << per;
 					lastper = per;
-					_ShowText(text);
 				}
 
 				count += 1.f;
@@ -1428,7 +1421,6 @@ void AnchorData_Create_Original_Method(EERIE_BACKGROUND * eb)
 //					ALTERNATIVE METHOD
 void AnchorData_Create_Alternative_Method_I(EERIE_BACKGROUND * eb)
 {
-	char text[256];
 	AnchorData_ClearAll(eb);
 	EERIE_BKG_INFO * eg;
 	EERIEPOLY * ep;
@@ -1474,9 +1466,8 @@ void AnchorData_Create_Alternative_Method_I(EERIE_BACKGROUND * eb)
 
 				if (per != lastper)
 				{
-					sprintf(text, "Anchor Generation: %ld%%", per);
+					LogInfo << "Anchor Generation: %" << per;
 					lastper = per;
-					_ShowText(text);
 				}
 
 				count += 1.f;
@@ -1571,9 +1562,8 @@ void AnchorData_Create_Alternative_Method_I(EERIE_BACKGROUND * eb)
 			F2L((float)count/(float)total*100.f,&per);
 			if (per!=lastper)
 			{
-				sprintf(text,"Anchor Generation Pass II: %d%% Suitable %d",per,usable);
+				LogInfo << "Anchor Generation Pass II: %" << per << " Suitable " << usable;
 				lastper=per;
-				_ShowText(text);
 			}
 			count++;
 			eg=&eb->Backg[i+j*eb->Xsize];

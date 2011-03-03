@@ -205,29 +205,14 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 	_TCHAR temp[4096];
 	long igrec = 14;
 
-	HDC	hDC;
-	SIZE sSize;
-
-	if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
-	{
-		SelectObject(hDC, hFontInBook);
-
-		GetTextExtentPoint(hDC,_T("p"),1,&sSize);
-
-		danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-
-		sSize.cy *= 3;
-	}
-	else
-	{
-		sSize.cy = DANAESIZY >> 1;
-	}
-
+	Vector2i sSize = hFontInBook->GetTextSize("p");
+	sSize.y *= 3;
+	
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 	SETALPHABLEND(pd3dDevice, true);
 
-	int iEnd = igrec + sSize.cy;
+	int iEnd = igrec + sSize.y;
 
 	for (size_t i = 0; i < MAX_SPEECH; i++)
 	{
@@ -235,7 +220,6 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 		{
 			if (!speech[i].lpszUText.empty())
 			{
-
 				if ((speech[i].name) && (speech[i].name[0] != ' '))
 					_stprintf(temp, _T("%s > %s"), speech[i].name, speech[i].lpszUText.c_str());
 				else
@@ -621,35 +605,14 @@ void ARX_SPEECH_Update() {
 				{
 					if (CINEMA_DECAL >= 100.f)
 					{
-						HRGN	hRgn;
-						HDC		hDC;
-						SIZE	sSize;
-
-						sSize.cx = sSize.cy = 0;
-
-						if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
-						{
-							SelectObject(hDC, hFontInBook);
-							GetTextExtentPoint( hDC,
-							                    speech->text.c_str(),
-							                    speech->text.length(),
-							                    &sSize);
-							danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-						}
-
-						else
-						{
-							ARX_CHECK_NO_ENTRY();
-						}
-
-
-
-						float fZoneClippHeight	=	ARX_CLEAN_WARN_CAST_FLOAT(sSize.cy * 3);
+						HRGN hRgn;
+						Vector2i sSize = hFontInBook->GetTextSize(speech->text);
+						
+						float fZoneClippHeight	=	ARX_CLEAN_WARN_CAST_FLOAT(sSize.y * 3);
 						float fStartYY			=	100 * Yratio;
 						float fStartY			=	ARX_CLEAN_WARN_CAST_FLOAT(((int)fStartYY - (int)fZoneClippHeight) >> 1);
-						float fDepY				=	((float)DANAESIZY) - fStartYY + fStartY - speech->fDeltaY + sSize.cy;
+						float fDepY				=	((float)DANAESIZY) - fStartYY + fStartY - speech->fDeltaY + sSize.y;
 						float fZoneClippY		=	fDepY + speech->fDeltaY;
-
 
 						float fAdd = fZoneClippY + fZoneClippHeight ;
 						ARX_CHECK_INT(fZoneClippY);
@@ -683,14 +646,14 @@ void ARX_SPEECH_Update() {
 												  0.f,
 												  fZoneClippY - 1.f, 
 												  ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX),
-												  fZoneClippY + (sSize.cy * 3 / 4),
+												  fZoneClippY + (sSize.y * 3 / 4),
 												  0.f,
 												  RGBA_MAKE(255, 255, 255, 255),
 												  RGBA_MAKE(0, 0, 0, 255));
 
 						EERIEDrawFill2DRectDegrad(GDevice,
 												  0.f,
-												  fZoneClippY + fZoneClippHeight - (sSize.cy * 3 / 4),
+												  fZoneClippY + fZoneClippHeight - (sSize.y * 3 / 4),
 												  ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX),
 												  fZoneClippY + fZoneClippHeight,
 												  0.f,
@@ -714,11 +677,11 @@ void ARX_SPEECH_Update() {
 							if (speech->sample)
 							{
 								fDTime				= ((float)iTaille * (float)FrameDiff) / (float)ARX_SOUND_GetDuration(speech->sample);    //speech->duration;
-								float fTimeOneLine	= ((float)sSize.cy) * fDTime;
+								float fTimeOneLine	= ((float)sSize.y) * fDTime;
 
 								if (((float)speech->iTimeScroll) >= fTimeOneLine)
 								{
-									float fResteLine	 = (float)sSize.cy - speech->fPixelScroll;
+									float fResteLine	 = (float)sSize.y - speech->fPixelScroll;
 									float fTimePlus		 = ((float)fResteLine * (float)FrameDiff) / (float)ARX_SOUND_GetDuration(speech->sample);
 									fDTime				-= fTimePlus;
 									speech->fPixelScroll = 0.f;

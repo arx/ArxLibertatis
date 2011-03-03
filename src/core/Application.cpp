@@ -1179,31 +1179,9 @@ HRESULT CD3DApplication::SetClipping(float x1, float y1, float x2, float y2)
 //*************************************************************************************
 VOID CD3DApplication::OutputText(DWORD x, DWORD y, const char * str)
 {
-	HDC hDC;
-
-	// Get a DC for the surface. Then, write out the buffer
 	if (m_pddsRenderTarget)
 	{
-		if (SUCCEEDED(m_pddsRenderTarget->GetDC(&hDC)))
-		{
-			SetTextColor(hDC, RGB(255, 255, 0));
-			SetBkMode(hDC, TRANSPARENT);
-			ExtTextOut(hDC, x, y, 0, NULL, str, lstrlen(str), NULL);
-			m_pddsRenderTarget->ReleaseDC(hDC);
-		}
-	}
-
-	// Do the same for the left surface (in case of stereoscopic viewing).
-	if (m_pddsRenderTargetLeft)
-	{
-		if (SUCCEEDED(m_pddsRenderTargetLeft->GetDC(&hDC)))
-		{
-			// Use a different color to help distinguish left eye view
-			SetTextColor(hDC, RGB(255, 0, 255));
-			SetBkMode(hDC, TRANSPARENT);
-			ExtTextOut(hDC, x, y, 0, NULL, str, lstrlen(str), NULL);
-			m_pddsRenderTargetLeft->ReleaseDC(hDC);
-		}
+		hFontInGame->Draw(x, y, str, RGB(255, 255, 0));
 	}
 }
 

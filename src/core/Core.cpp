@@ -206,7 +206,6 @@ extern long PLAYER_PARALYSED;
 extern float fZFogEnd;
 extern float fZFogStart;
 extern bool bOLD_CLIPP;
-extern bool bForceGDI;
 extern bool bGMergeVertex;
 extern float OLD_PROGRESS_BAR_COUNT;
 extern E_ARX_STATE_MOUSE	eMouseState;
@@ -4587,7 +4586,6 @@ void LaunchMoulinex()
 
 	sprintf(tx,"Moulinex Lvl %ld",lvl);
 	ForceSendConsole(tx,1,0,NULL);
-	_ShowText(tx);
 
 	if (LASTMOULINEX!=-1)
 	{
@@ -5251,7 +5249,6 @@ extern DWORD RenderStartTicks;
 extern long NEED_INTRO_LAUNCH;
 
 //-----------------------------------------------------------------------------
-
 HRESULT DANAE::Render()
 {
 	FrameTime = ARX_TIME_Get();
@@ -5326,16 +5323,6 @@ static float _AvgFrameDiff = 150.f;
 	StartBench();
 
 	RenderStartTicks	=	dwARX_TIME_Get();
-
-	if(bForceGDI)
-	{
-		HDC hDC;
-
-		if( SUCCEEDED( m_pddsRenderTarget->GetDC(&hDC) ) )
-		{
-			m_pddsRenderTarget->ReleaseDC(hDC);
-		}
-	}
 
 	if(	(pGetInfoDirectInput)&&
 		(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(DIK_F12)))
@@ -6858,9 +6845,7 @@ m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 	{
 		if ((NEED_TEST_TEXT) && (!FINAL_COMMERCIAL_DEMO))
 		{
-			danaeApp.DANAEEndRender();
 			ShowTestText();
-			danaeApp.DANAEStartRender();
 		}
 
 		if (!NO_TEXT_AT_ALL)
