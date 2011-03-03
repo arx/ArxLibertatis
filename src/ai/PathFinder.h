@@ -28,9 +28,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <vector>
 
-class _ANCHOR_DATA;
-class EERIE_LIGHT;
-class EERIE_3D;
+struct _ANCHOR_DATA;
+struct EERIE_LIGHT;
+struct EERIE_3D;
 
 
 class PathFinder {

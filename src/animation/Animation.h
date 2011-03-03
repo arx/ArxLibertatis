@@ -42,13 +42,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/d3dwrapper.h"
 
 class TextureContainer;
-class INTERACTIVE_OBJ;
-class EERIE_3D;
-class EERIE_3DOBJ;
-class EERIE_LIGHT;
-class ANIM_USE;
-class EERIEMATRIX;
-class EERIE_MOD_INFO;
+struct INTERACTIVE_OBJ;
+struct EERIE_3D;
+struct EERIE_3DOBJ;
+struct EERIE_LIGHT;
+struct ANIM_USE;
+struct EERIEMATRIX;
+struct EERIE_MOD_INFO;
 
 #define HALOMAX 2000
 extern long MAX_LLIGHTS;

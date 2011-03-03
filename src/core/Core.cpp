@@ -419,7 +419,6 @@ long FINAL_COMMERCIAL_GAME = 1;   // <--------------	fullgame
 long GERMAN_VERSION = 0;
 long FRENCH_VERSION = 0;
 long CHINESE_VERSION = 0;
-long EAST_EUROPE = 0;
 long ALLOW_CHEATS		 =1;
 long FOR_EXTERNAL_PEOPLE =0;
 long USE_OLD_MOUSE_SYSTEM=1;

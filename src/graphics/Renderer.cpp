@@ -461,7 +461,7 @@ void DX7TextureStage::SetAlphaOp(TextureOp textureOp, TextureArg texArg1, Textur
 	DWORD alphaArg1 = ARXToDX7TextureArg[texArg1];
 	DWORD alphaArg2 = ARXToDX7TextureArg[texArg2];
 
-	GDevice->SetTextureStageState(mStage, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1);
+	GDevice->SetTextureStageState(mStage, D3DTSS_ALPHAOP,   alphaOp);
 	GDevice->SetTextureStageState(mStage, D3DTSS_ALPHAARG1, alphaArg1);
 	GDevice->SetTextureStageState(mStage, D3DTSS_ALPHAARG2, alphaArg2);
 }
@@ -511,7 +511,7 @@ Renderer::Renderer()
 	const unsigned int DX7_TEXTURE_STAGE_COUNT = 8;
 	m_TextureStages.resize(DX7_TEXTURE_STAGE_COUNT, 0);
 
-	for(int i = 0; i < m_TextureStages.size(); ++i)
+	for(size_t i = 0; i < m_TextureStages.size(); ++i)
 	{
 		m_TextureStages[i] = new DX7TextureStage(i);
 	}
@@ -519,7 +519,7 @@ Renderer::Renderer()
 
 Renderer::~Renderer()
 {
-	for(int i = 0; i < m_TextureStages.size(); ++i)
+	for(size_t i = 0; i < m_TextureStages.size(); ++i)
 	{
 		delete m_TextureStages[i];
 	}
@@ -733,5 +733,5 @@ void Renderer::DrawTexturedRect( float pX, float pY, float pW, float pH, float p
 	rect[3].color = DIFFUSE;
 	rect[3].specular = SPECULAR;
 	
-	HRESULT ret = GDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_LVERTEX, &rect, 4, 0);
+	GDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_LVERTEX, &rect, 4, 0);
 }

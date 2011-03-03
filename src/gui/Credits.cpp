@@ -162,8 +162,6 @@ void Credits::render() {
 	//We display them
 	if(CreditsData.iFontAverageHeight != -1) {
 		
-		COLORREF oldRef  = RGB(0,0,0);
-		
 		//Set the device
 		if(!danaeApp.DANAEStartRender()) return;
 		

@@ -47,8 +47,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
-class INTERACTIVE_OBJ;
-class EERIE_3DOBJ;
+struct INTERACTIVE_OBJ;
+struct EERIE_3DOBJ;
 class TextureContainer;
 
 #define	TWEAK_ERROR	0

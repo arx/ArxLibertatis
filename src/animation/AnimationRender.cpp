@@ -1726,7 +1726,6 @@ void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 
 		for (size_t i = 0 ; i < eobj->facelist.size() ; i++)
 		{
-			D3DTLVERTEX		tv_static[3];
 			ARX_D3DVERTEX	* tv			= NULL;
 
  

@@ -88,7 +88,7 @@ Font* hFontInGameNote = NULL;
  
 
 extern long CHINESE_VERSION;
-extern long EAST_EUROPE;
+
 
 //-----------------------------------------------------------------------------
 string FontError() {

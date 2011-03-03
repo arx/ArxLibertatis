@@ -458,9 +458,10 @@ void Image::FlipY( unsigned char* pData, unsigned int pWidth, unsigned int pHeig
 		case Format_DXT5:
 			flipDXTn = &FlipDXT5;
 			break;
-		}
 
-		arx_assert(flipDXTn);
+		default:
+			arx_assert(flipDXTn);
+		}		
 
         for( unsigned int j = 0; j < (yBlocks >> 1); j++ )
         {

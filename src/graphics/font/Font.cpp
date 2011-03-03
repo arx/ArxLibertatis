@@ -12,8 +12,8 @@
 Font::Font( const std::string& fontFile, unsigned int fontSize, FT_Face face ) 
 	: m_Info(fontFile, fontSize)
 	, m_RefCount(0)
-	, m_Textures(0)
 	, m_FTFace(face)
+	, m_Textures(0)	
 {
 	// TODO-font: Compute optimal size using m_FTFace->bbox
 	const unsigned int TEXTURE_SIZE = 512;
