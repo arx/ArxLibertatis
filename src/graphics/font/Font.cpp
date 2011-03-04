@@ -43,7 +43,7 @@ bool Font::InsertGlyph( unsigned int character )
 	FT_Error error;
 	FT_UInt glyphIndex = FT_Get_Char_Index( m_FTFace, character );
 
-    error = FT_Load_Glyph( m_FTFace, glyphIndex, FT_LOAD_DEFAULT );
+    error = FT_Load_Glyph( m_FTFace, glyphIndex, FT_LOAD_FORCE_AUTOHINT );
     if( error )
 		return false;
 
