@@ -1408,7 +1408,7 @@ int main(int, char**)
 
 	if(LAST_CHINSTANCE != -1) {
 		ARX_CHANGELEVEL_MakePath();
-		LogWarning << "Clearing save game directory " << CurGamePath;
+		LogInfo << "Clearing current game directory " << CurGamePath;
 		KillAllDirectory(CurGamePath);
 		CreateDirectory(CurGamePath,NULL);
 	}
