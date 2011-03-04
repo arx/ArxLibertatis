@@ -75,9 +75,10 @@ Font* FontCache::Create( const std::string& fontFile, const unsigned int fontSiz
         // ... be opened or read, or simply that it is broken...
         return NULL;
     }
-
-	error = FT_Set_Char_Size( face, 0, fontSize*64, 0, 0 );
-//	error = FT_Set_Pixel_Sizes( face, 0, fontSize );
+	
+    // Windows default is 96dpi
+    // Freetype default is 72dpi
+	error = FT_Set_Char_Size( face, 0, fontSize*64, 64, 64 );
 	if( error )
 	{
 		return NULL;
