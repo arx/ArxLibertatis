@@ -161,14 +161,10 @@ else(MSVC)
 endif(MSVC)
 
 #use posix threads
+set(ARX_THREAD_LIBS "${CMAKE_THREAD_LIBS_INIT}")
 if(CMAKE_USE_PTHREADS_INIT)
 	add_definitions(-DHAVE_PTHREADS)
-	find_library(RT_LIBRARY rt PATH_SUFFIXES lib lib32)
-	mark_as_advanced(RT_LIBRARY)
-	if(NOT RT_LIBRARY)
-		message(SEND_ERROR "Neet the rt library for pthreads.")
-	endif()
-	set(CMAKE_THREAD_LIBS_INIT "${CMAKE_THREAD_LIBS_INIT} ${RT_LIBRARY}")
+	set(ARX_THREAD_LIBS "${ARX_THREAD_LIBS} -lrt")
 elseif(NOT CMAKE_USE_WIN32_THREADS_INIT)
 	message(SEND_ERROR "No supported thread libraries found.")
 endif()
@@ -197,7 +193,7 @@ add_executable(arx ${ALL_SOURCES} ${ALL_INCLUDES})
 set(ARX_WINDOWS_LIBS gdi32 shell32 comdlg32 ole32 comctl32)
 set(ARX_GRAPHICS_LIBS dxguid dinput ddraw)
 set(ARX_SOUND_LIBS dsound)
-target_link_libraries(arx ${ARX_SOUND_LIBS} ${ARX_GRAPHICS_LIBS} ${ARX_WINDOWS_LIBS} ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(arx ${ARX_SOUND_LIBS} ${ARX_GRAPHICS_LIBS} ${ARX_WINDOWS_LIBS} ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${ARX_THREAD_LIBS})
 
 add_custom_target(remake
 	#clean and compile with 1 thread per core
