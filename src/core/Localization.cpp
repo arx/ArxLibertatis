@@ -141,7 +141,7 @@ std::string CleanKey( std::string str )
 	str = str.substr( first_quot_mark + 1 );
 
 	// Find the next " mark that shows the end of the value
-	size_t last_quot_mark = str.find('"');
+	size_t last_quot_mark = str.find_last_of('"');
 
 	// Cut the string at the end of the value
 	str = str.substr( 0, last_quot_mark );
