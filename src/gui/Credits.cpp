@@ -115,21 +115,9 @@ static void ExtractAllCreditsTextInformations() {
 
 	//Use to calculate the positions
 	float drawpos = static_cast<float>(DANAESIZY);
-	bool firstLine = true ;
 
-	
 	while(std::getline(iss, phrase)) {
-		
-		if(!phrase.empty() && phrase[phrase.size() - 1] == '\r') {
-			phrase.resize(phrase.size() - 1);
-		}
-		
-		//Remove the first tild
-		if(firstLine) {
-			firstLine = false;
-			phrase[0] = ' ';
-		}
-		
+	
 		//Case of separator line
 		if(phrase.length() == 0) {
 			drawpos += CreditsData.iFontAverageHeight >> 3;
