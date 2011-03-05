@@ -22,6 +22,9 @@ Font::Font( const std::string& fontFile, unsigned int fontSize, FT_Face face )
 	m_Textures = new PackedTexture(TEXTURE_SIZE, Image::Format_A8);
 	m_Textures->BeginPacking();
 
+	// TODO-font: To support true unicode text, this class will need
+	// to be adapted to insert bitmap glyphs in the texture pages,
+	// on the fly from the text that is passed to it.
     for( unsigned int car = 32; car < 256; ++car )
     {
         InsertGlyph(car);
@@ -117,6 +120,11 @@ void Font::WriteToDisk()
 
 void Font::Draw( int x, int y, const std::string& str, COLORREF color ) const
 {
+	Draw( x, y, str.begin(), str.end(), color );
+}
+
+void Font::Draw( int x, int y, std::string::const_iterator itStart, std::string::const_iterator itEnd, COLORREF color ) const
+{
     GRenderer->SetRenderState( Renderer::Lighting, false );
     GRenderer->SetRenderState( Renderer::Blend, true );
     GRenderer->SetBlendFunc( Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha );
@@ -143,17 +151,17 @@ void Font::Draw( int x, int y, const std::string& str, COLORREF color ) const
 	FT_UInt currentGlyph;
 	FT_UInt previousGlyph = 0;
 
-    for( unsigned int car = 0; car < str.size(); ++car )
+    for( std::string::const_iterator it = itStart; it != itEnd; ++it )
     {
-        std::map<unsigned int, Glyph>::const_iterator it = m_Glyphs.find( str[car] );
-		if(it == m_Glyphs.end())
+        std::map<unsigned int, Glyph>::const_iterator itGlyph = m_Glyphs.find( *it );
+		if(itGlyph == m_Glyphs.end())
 			continue;
 
-		const Glyph& glyph = (*it).second;
+		const Glyph& glyph = (*itGlyph).second;
 
 		if( FT_HAS_KERNING(m_FTFace) )
 		{
-			currentGlyph = FT_Get_Char_Index( m_FTFace, str[car] );
+			currentGlyph = FT_Get_Char_Index( m_FTFace, *it );
 			if(previousGlyph != 0)
 			{
 				FT_Vector delta;
@@ -178,29 +186,34 @@ void Font::Draw( int x, int y, const std::string& str, COLORREF color ) const
     GRenderer->SetRenderState( Renderer::Blend, false );
 	GRenderer->SetRenderState( Renderer::DepthTest, true );
 	GRenderer->SetRenderState( Renderer::DepthMask, true );
-	GRenderer->SetCulling( Renderer::CullCW );
+	GRenderer->SetCulling( Renderer::CullCCW );
 }
 
 Vector2i Font::GetTextSize( const std::string& str ) const
 {
+	return GetTextSize(str.begin(), str.end());
+}
+
+Vector2i Font::GetTextSize( std::string::const_iterator itStart, std::string::const_iterator itEnd ) const
+{
 	FT_UInt currentGlyph;
 	FT_UInt previousGlyph = 0;
 
-    unsigned int penX = 0;
-    Vector2i size(0, m_FTFace->size->metrics.height >> 6);
-
-	unsigned int numCar = str.size();
-    for( unsigned int car = 0; car < numCar; ++car )
+	int startX = 0;
+	int endX = 0;
+	int penX = 0;
+	
+	for( std::string::const_iterator it = itStart; it != itEnd; ++it )
     {
-        std::map<unsigned int, Glyph>::const_iterator it = m_Glyphs.find( str[car] );
-		if(it == m_Glyphs.end())
+        std::map<unsigned int, Glyph>::const_iterator itGlyph = m_Glyphs.find( *it );
+		if(itGlyph == m_Glyphs.end())
 			continue;
 
-		const Glyph& glyph = (*it).second;
+		const Glyph& glyph = (*itGlyph).second;
 
 		if( FT_HAS_KERNING(m_FTFace) )
 		{
-			currentGlyph = FT_Get_Char_Index( m_FTFace, str[car] );
+			currentGlyph = FT_Get_Char_Index( m_FTFace, *it );
 			if(previousGlyph != 0)
 			{
 				FT_Vector delta;
@@ -210,21 +223,24 @@ Vector2i Font::GetTextSize( const std::string& str ) const
 			previousGlyph = currentGlyph;
 		}
 
-		if( car == 0 )
-            size.x = glyph.draw_offset.x;
+		// If this is the first drawn char, note the start position
+		if( startX == endX )
+            startX = glyph.draw_offset.x;
 
-        if( car == numCar - 1 )
-            size.x = (penX + glyph.draw_offset.x + glyph.size.x) - size.x;
+		endX = penX + glyph.draw_offset.x + glyph.size.x;
 		
         penX += glyph.advance.x;
     }
 
-    return size;
+	int sizeX = endX - startX;
+	int sizeY = m_FTFace->size->metrics.ascender >> 6;
+	
+    return Vector2i(sizeX, sizeY);
 }
 
 Vector2i Font::GetCharSize( unsigned int character ) const
 {	
-	unsigned int sizeY = m_FTFace->size->metrics.height >> 6;
+	unsigned int sizeY = m_FTFace->size->metrics.ascender >> 6;
 
 	std::map<unsigned int, Glyph>::const_iterator it = m_Glyphs.find( character );
 	if(it == m_Glyphs.end())
@@ -232,5 +248,10 @@ Vector2i Font::GetCharSize( unsigned int character ) const
 
 	const Glyph& glyph = (*it).second;
 	return Vector2i(glyph.draw_offset.x + glyph.size.x, glyph.draw_offset.y + sizeY);
+}
+
+int Font::GetLineHeight() const
+{
+	return m_FTFace->size->metrics.height >> 6;
 }
 

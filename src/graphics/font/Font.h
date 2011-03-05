@@ -44,8 +44,13 @@ public:
 	unsigned int GetSize() const { return m_Info.m_Size; }
 
 	void Draw( int pX, int pY, const std::string& str, COLORREF color ) const;
+	void Draw( int pX, int pY, std::string::const_iterator itStart, std::string::const_iterator itEnd, COLORREF color ) const;
+
 	Vector2i GetTextSize( const std::string& str ) const;
+	Vector2i GetTextSize( std::string::const_iterator itStart, std::string::const_iterator itEnd ) const;
+
 	Vector2i GetCharSize( unsigned int character ) const;
+	int		 GetLineHeight() const;
 
 	// For debugging purpose... will write one image file per page
 	// under "name_style_size_pagen.png"
