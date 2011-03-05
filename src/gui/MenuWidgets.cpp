@@ -1783,7 +1783,6 @@ bool CMenuConfig::ReadAll()
 	ARXMenu_Options_Video_SetDetailsQuality(iLevelOfDetails);
 	ARXMenu_Options_Video_SetGamma(iGamma);
 	ARX_SetAntiAliasing();
-	//ARXMenu_Options_Video_SetSoftRender();
 	ARXMenu_Options_Audio_SetMasterVolume(iMasterVolume);
 	ARXMenu_Options_Audio_SetSfxVolume(iSFXVolume);
 	ARXMenu_Options_Audio_SetSpeechVolume(iSpeechVolume);
@@ -1814,8 +1813,8 @@ bool CMenuConfig::ReadAll()
 }
 
 
-	void Check_Apply()
-	{
+void Check_Apply()
+{
 	if(pMenuElementApply)
 	{
 		if(    (pMenuConfig->bBumpMapping!=pMenuConfig->bNewBumpMapping)||
