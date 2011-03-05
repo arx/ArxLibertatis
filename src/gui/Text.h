@@ -82,16 +82,11 @@ void DrawBookTextCenter(Font* font, float x, float y, const std::string& text, C
 long UNICODE_ARXDrawTextCenter(Font* font, float x, float y, const std::string& str, COLORREF col, COLORREF bcol);
  
 long UNICODE_ARXDrawTextCenteredScroll(Font* font, float x, float y, float x2, const std::string& str, COLORREF col, COLORREF bcol, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut = INT_MAX);
-long ARX_UNICODE_ForceFormattingInRect(Font* _hFont, const std::string& _lpszUText, int _iSpacingY, RECT _rRect);
-long ARX_UNICODE_DrawTextInRect(Font* font,
-                                float x, float y,
-								float maxx,
-								const std::string& _lpszUText,
-								COLORREF col, COLORREF bcol,
-								HRGN hRgn = NULL);
+long ARX_UNICODE_ForceFormattingInRect(Font* font, const std::string& text, RECT _rRect);
+long ARX_UNICODE_DrawTextInRect(Font* font, float x, float y, float maxx, const std::string& text, COLORREF col, COLORREF bcol, HRGN hRgn = NULL);
 
-void ARX_Allocate_Text( std::string& dest, const std::string& id_string);
-std::string GetFontName( const std::string& );
+void ARX_Allocate_Text(std::string& dest, const std::string& id_string);
+
 void ARX_Text_Init();
 void ARX_Text_Close();
 void FontRenderText(Font* _pFont, EERIE_3D pos, const std::string& _pText, COLORREF _c);

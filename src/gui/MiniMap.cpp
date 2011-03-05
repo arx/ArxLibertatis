@@ -935,8 +935,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 									, ARX_CLEAN_WARN_CAST_INT(fBottom));
 
 
-							long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(
-												   hFontInGameNote, Mapmarkers[i].tstring.c_str(), 0, rRect);
+							long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, Mapmarkers[i].tstring, rRect);
 
 							danaeApp.DANAEEndRender();
 							char Page_Buffer[256];

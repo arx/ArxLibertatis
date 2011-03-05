@@ -782,7 +782,6 @@ void ARX_INTERFACE_NoteOpen(ARX_INTERFACE_NOTE_TYPE type, const std::string& tex
 		{
 			long lLengthDraw=ARX_UNICODE_ForceFormattingInRect(	hFontInGameNote,
 																Note.text.substr(lLenghtCurr),
-																0,
 																rRect);
 			length-=lLengthDraw;
 			lLenghtCurr+=lLengthDraw;
@@ -7226,10 +7225,8 @@ void QuestBook_Update()
 
 	while (lLenght > 0)
 	{
-		// Nuky - 05-02-11 - DANAE*Render not needed ? we do not render
-		//danaeApp.DANAEEndRender();
-		long lLengthDraw=ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, QuestBook_Cache_Text + lLenghtCurr, 0, rRect);
-		//danaeApp.DANAEStartRender();
+		long lLengthDraw=ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, QuestBook_Cache_Text + lLenghtCurr, rRect);
+
 		lLenght -= lLengthDraw;
 		lLenghtCurr += lLengthDraw;
 

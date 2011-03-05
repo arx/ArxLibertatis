@@ -105,156 +105,64 @@ string FontError() {
 	    NULL);
 	return string("Font Error: ") + (LPCSTR)lpMsgBuf;
 }
+
 //-----------------------------------------------------------------------------
-
-
-long ARX_UNICODE_ForceFormattingInRect(Font* _pFont, const std::string& _lpszUText, int _iSpacingY, RECT _rRect)
+long ARX_UNICODE_FormattingInRect(Font* pFont, const std::string& text, RECT & _rRect, COLORREF col, bool computeOnly = false)
 {
-	int iTemp = 0;
+	std::string::const_iterator itLastLineBreak = text.begin();
+	std::string::const_iterator itLastWordBreak = text.begin();
+	
+	int maxLineWidth = _rRect.right - _rRect.left;
+	int penY = _rRect.top;
 
-	int			iLenght	= _lpszUText.length();
-	int			iHeight	= 0;
-	Vector2i	sSize;
-	int			iOldTemp;
-	bool		bWrite;
-
-	sSize.x = sSize.y = 0 ;
-
-	while (1)
+	for(std::string::const_iterator it = text.begin(); it != text.end(); ++it)
 	{
-		bWrite			= true;
-		int iLenghtCurr	= _rRect.left;
-		iOldTemp		= iTemp;
+		bool bDrawLine = false;
 
-		ARX_CHECK(iTemp < iLenght);
-
-		for (; iTemp < iLenght ; iTemp++)
+		// Line break ?
+		if((*it == '\n') || (*it == '*'))
 		{
-			sSize = _pFont->GetCharSize(_lpszUText[iTemp]);
-
-			if ((_lpszUText[iTemp] == '\n') || (_lpszUText[iTemp] == '*'))
-			{
-				iHeight		+= _iSpacingY + sSize.y;
-				bWrite		 = false;
-				_rRect.top	+= _iSpacingY + sSize.y;
-				iTemp++;
-				break;
-			}
-
-
-					iLenghtCurr	+= sSize.x;
-
-					if (iLenghtCurr > _rRect.right)
-					{
-						iHeight += _iSpacingY + sSize.y;
-
-						if (CHINESE_VERSION)
-						{
-							iTemp--;
-						}
-						else
-						{
-							while ((_lpszUText[iTemp] != ' ') && (iTemp > 0)) iTemp--;
-						}
-
-						bWrite		 = false;
-				_rRect.top	+= _iSpacingY + sSize.y;
-				iTemp++;
-				break;
-			}
+			bDrawLine = true;
 		}
-
-		if ((iTemp == iLenght) || ((_rRect.top + sSize.y) > _rRect.bottom))
+		else
 		{
-			break;
+			// Word break ?
+			if((*it == ' ') || (*it == '\t'))
+			{
+				itLastWordBreak = it;
+			}
+
+			// Check length of string up to this point
+			Vector2i size = pFont->GetTextSize(itLastLineBreak, it+1);
+			if(size.x > maxLineWidth)	// Too long ?
+			{
+				bDrawLine = true;		// Draw a line from the last line break up to the last word break
+				it = itLastWordBreak;
+			}			
+		}
+		
+		// If we have to draw a line 
+		//  OR
+		// This is the last character of the string
+		if(bDrawLine || (it+1 == text.end()))
+		{
+			// Draw the line
+			if(!computeOnly)
+				pFont->Draw(_rRect.left, penY, itLastLineBreak, it+1, col);
+			
+			itLastLineBreak = it+1;
+
+			penY += pFont->GetLineHeight();
 		}
 	}
 
-	return iTemp;
+	return penY - _rRect.top;
 }
 
 //-----------------------------------------------------------------------------
-long ARX_UNICODE_FormattingInRect(Font* font, const std::string& text, int _iSpacingY, RECT & _rRect, COLORREF col)
+long ARX_UNICODE_ForceFormattingInRect(Font* pFont, const std::string& text, RECT _rRect)
 {
-	std::string txtOut = text;
-	size_t	iLenght = txtOut.length();
-	int iHeight = 0;
-	Vector2i sSize;
-	size_t iOldTemp;
-	bool bWrite;
-	sSize.x = sSize.y = 0;
-
-	size_t iTemp = 0;
-
-	while (1)
-	{
-		bWrite = true;
-		int iLenghtCurr = _rRect.left;
-		iOldTemp = iTemp;
-
-		for (; iTemp < iLenght; iTemp++)
-		{
-			sSize = font->GetCharSize(txtOut[iTemp]);
-
-			if ((txtOut[iTemp] == '\n') || (txtOut[iTemp] == '*'))
-			{
-				iHeight += _iSpacingY + sSize.y;
-				txtOut[iTemp] = '\0';
-				bWrite = false;
-
-				font->Draw(_rRect.left, _rRect.top, &txtOut[iOldTemp], col);
-				_rRect.top += _iSpacingY + sSize.y;
-				iTemp++;
-				break;
-			}
-			
-			iLenghtCurr += sSize.x;
-
-			if (iLenghtCurr > _rRect.right)
-			{
-				iHeight += _iSpacingY + sSize.y;
-
-				if (CHINESE_VERSION)
-				{
-					char * ptexttemp = (char *)malloc(iTemp - iOldTemp + 1);
-					strncpy(ptexttemp, &txtOut[iOldTemp], iTemp - iOldTemp);
-					ptexttemp[iTemp-iOldTemp] = '\0';
-
-					font->Draw(_rRect.left, _rRect.top, ptexttemp, col);
-					free((void *)ptexttemp);
-					ptexttemp = NULL;
-					iTemp--;
-				}
-				else
-				{
-					while ((txtOut[iTemp] != ' ') && (iTemp > 0)) iTemp--;
-
-					txtOut[iTemp] = '\0';
-
-					font->Draw(_rRect.left, _rRect.top, &txtOut[iOldTemp], col);					
-				}
-
-				bWrite = false;
-				_rRect.top += _iSpacingY + sSize.y;
-				iTemp++;
-				break;
-			}
-
-
-		}
-
-		if (iTemp == iLenght) break;
-
-		if (iTemp == iOldTemp) break;
-	}
-
-	if (bWrite)
-	{
-		iHeight += _iSpacingY + sSize.y;
-		font->Draw(_rRect.left, _rRect.top, &txtOut[iOldTemp], col);
-	}
-
-	return iHeight;
+	return ARX_UNICODE_FormattingInRect(pFont, text, _rRect, 0, true);
 }
 
 //-----------------------------------------------------------------------------
@@ -284,9 +192,8 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
 	rect.top	= (long)y;
 	rect.left	= (long)x;
 	rect.right	= (long)maxx;
-	// TODO-FONT: rect.bottom ?? maxy ??
 
-	long n = ARX_UNICODE_FormattingInRect(font, _text, 0, rect, col);
+	long n = ARX_UNICODE_FormattingInRect(font, _text, rect, col);
 
 	if (hRgn)
 	{
