@@ -111,8 +111,8 @@ bool isKey( const std::string& str )
 std::string CleanSection( std::string str )
 {
 	// Find the cutoff points for the line trimming
-	size_t first_bracket = str.find('[');
-	size_t last_bracket = str.find(']');
+	size_t first_bracket = str.find_first_of('[');
+	size_t last_bracket = str.find_last_of(']');
 
 	// Erase all characters up to but not including the '['
 	str.erase( 0, first_bracket );
