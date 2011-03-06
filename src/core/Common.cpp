@@ -100,21 +100,3 @@ void assertionFailed(const char * _sExpression, const char * _sFile, unsigned in
 
 	LogError << msgbuf;
 }
-
-
-#if ARX_COMPILER_MSVC
-char * strcasestr(const char *haystack, const char *needle)
-{
-	size_t hay_len = strlen(haystack);
-	size_t needle_len = strlen(needle);
-	while (hay_len >= needle_len) {
-		if (strncasecmp(haystack, needle, needle_len) == 0) 
-		    return (char *) haystack;
-
-		haystack++;
-		hay_len--;
-	}
-
-	return NULL;
-}
-#endif

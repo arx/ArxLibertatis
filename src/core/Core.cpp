@@ -101,6 +101,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleManager.h"
 
 #include "io/IO.h"
+#include "io/FilePath.h"
 #include "io/Registry.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
@@ -1405,7 +1406,7 @@ int main(int, char**)
 
 	if(LAST_CHINSTANCE != -1) {
 		ARX_CHANGELEVEL_MakePath();
-		LogWarning << "Clearing save game directory " << CurGamePath;
+		LogInfo << "Clearing current game directory " << CurGamePath;
 		KillAllDirectory(CurGamePath);
 		CreateDirectory(CurGamePath,NULL);
 	}

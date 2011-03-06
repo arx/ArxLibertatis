@@ -82,7 +82,7 @@ using std::sprintf;
 #include "graphics/data/Mesh.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/IO.h"
+#include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
 
