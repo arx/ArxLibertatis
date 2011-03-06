@@ -119,8 +119,6 @@ const std::string arxVersion = "0.1";
 	inline int strcasecmp(const char* str1, const char* str2) { return _stricmp(str1, str2); }
 	inline int strncasecmp(const char* str1, const char* str2, size_t maxCount) { return _strnicmp(str1, str2, maxCount); }
 	inline int chdir(const char* path) { return _chdir(path); }
-
-    char* strcasestr(const char *haystack, const char *needle);
 #endif
 
 

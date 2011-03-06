@@ -56,6 +56,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/spells/SpellsGlobal.h"
 
 #include "io/IO.h"
+#include "io/FilePath.h"
 
 #include "physics/Collisions.h"
 
@@ -71,9 +72,6 @@ using std::abs;
 
 static const float DEC_FOCAL = 50.0f;
 static const float IMPROVED_FOCAL = 320.0f;
-
-//TODO Remove this!
-int strcasecmp( const std::string& str1, const std::string& str2 );
 
 void MakeSpCol();
 extern long WILLRETURNTOCOMBATMODE;

@@ -32,6 +32,7 @@
 
 #include "io/Logger.h"
 #include "io/IO.h"
+#include "io/FilePath.h"
 #include "io/PakManager.h"
 
 #include "physics/Actors.h"
