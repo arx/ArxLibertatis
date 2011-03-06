@@ -107,15 +107,26 @@ string FontError() {
 }
 
 //-----------------------------------------------------------------------------
-long ARX_UNICODE_FormattingInRect(Font* pFont, const std::string& text, RECT & _rRect, COLORREF col, bool computeOnly = false)
+void ARX_UNICODE_FormattingInRect(Font* pFont, const std::string& text, RECT & _rRect, COLORREF col, long* textHeight = 0, long* numChars = 0, bool computeOnly = false)
 {
 	std::string::const_iterator itLastLineBreak = text.begin();
 	std::string::const_iterator itLastWordBreak = text.begin();
+	std::string::const_iterator it = text.begin();
 	
 	int maxLineWidth = _rRect.right - _rRect.left;
 	int penY = _rRect.top;
 
-	for(std::string::const_iterator it = text.begin(); it != text.end(); ++it)
+	if(textHeight)
+		*textHeight = 0;
+
+	if(numChars)
+		*numChars = 0;
+
+	// Ensure we can at least draw one line...
+	if(penY + pFont->GetLineHeight() > _rRect.bottom)
+		return;
+
+	for(it = text.begin(); it != text.end(); ++it)
 	{
 		bool bDrawLine = false;
 
@@ -153,16 +164,29 @@ long ARX_UNICODE_FormattingInRect(Font* pFont, const std::string& text, RECT & _
 			itLastLineBreak = it+1;
 
 			penY += pFont->GetLineHeight();
+
+			// Validate that the new line will fit inside the rect...
+			if(penY + pFont->GetLineHeight() > _rRect.bottom)
+				break;
 		}
 	}
 
-	return penY - _rRect.top;
+	// Return text height
+	if(textHeight)
+		*textHeight = penY - _rRect.top;
+
+	// Return num characters displayed
+	if(numChars)
+		*numChars = it - text.begin();
 }
 
 //-----------------------------------------------------------------------------
 long ARX_UNICODE_ForceFormattingInRect(Font* pFont, const std::string& text, RECT _rRect)
 {
-	return ARX_UNICODE_FormattingInRect(pFont, text, _rRect, 0, true);
+	long numChars;
+	ARX_UNICODE_FormattingInRect(pFont, text, _rRect, 0, 0, &numChars, true);
+
+	return numChars;
 }
 
 //-----------------------------------------------------------------------------
@@ -192,15 +216,17 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
 	rect.top	= (long)y;
 	rect.left	= (long)x;
 	rect.right	= (long)maxx;
+	rect.bottom	= LONG_MAX;
 
-	long n = ARX_UNICODE_FormattingInRect(font, _text, rect, col);
+	long height;
+	ARX_UNICODE_FormattingInRect(font, _text, rect, col, &height);
 
 	if (hRgn)
 	{
 		// TODO-FONT: Undo glScissor / IDirect3DDevice7::SetClipStatus
 	}
 
-	return n;
+	return height;
 }
 
 void ARX_TEXT_Draw(Font* ef,
@@ -296,77 +322,7 @@ void ARX_Allocate_Text( std::string& dest, const std::string& id_string) {
 	dest = output;
 }
 
-//-----------------------------------------------------------------------------
-struct _FONT_HEADER
-{
-	ULONG   ulVersion;
-	USHORT  usNumTables;
-	USHORT  usSearchRange;
-	USHORT  usEntrySelector;
-	USHORT  usRangeShift;
-};
-
-//-----------------------------------------------------------------------------
-struct _FONT_TABLE_HEADER
-{
-	ULONG	ulTag;
-	ULONG	ulCheckSum;
-	ULONG	ulOffset;
-	ULONG	ulLength;
-};
-
-//-----------------------------------------------------------------------------
-struct _FONT_NAMING_HEADER
-{
-	USHORT	usFormat;
-	USHORT	usNbNameRecords;
-	USHORT	usOffsetStorage;	//(from start of table)
-};
-
-//-----------------------------------------------------------------------------
-struct _FONT_NAMING_NAMERECORD
-{
-	USHORT	usPlatformID;
-	USHORT	usPlatformSpecificEncodingID;
-	USHORT	usLanguageID;
-	USHORT	usNameID;
-	USHORT	usStringLength;
-	USHORT	usStringOffset;		//from start of storage area (in bytes)
-};
-
-ULONG LilEndianLong(ULONG ulValue) {
-	return MAKELONG(
-			MAKEWORD(HIBYTE(HIWORD(ulValue)), LOBYTE(HIWORD(ulValue))),
-			MAKEWORD(HIBYTE(LOWORD(ulValue)), LOBYTE(LOWORD(ulValue)))
-	);
-}
-
-USHORT LilEndianShort(USHORT ulValue) {
-	return MAKEWORD(HIBYTE(ulValue), LOBYTE(ulValue));
-}
-
-int Traffic(int iFontSize)
-{
-	iFontSize = (int)(float)(iFontSize * Yratio);
-
-	if (CHINESE_VERSION)
-	{
-		if (iFontSize < 14)
-			iFontSize = 12;
-		else if (iFontSize < 15)
-			iFontSize = 14;
-		else if (iFontSize < 18)
-			iFontSize = 15;
-		else if (iFontSize <= 29)
-			iFontSize = 18;
-		else
-			iFontSize = 30;
-	}
-
-	return iFontSize;
-}
-
-Font* _CreateFont(std::string fontFace, std::string fontProfileName, unsigned int fontSize)
+Font* _CreateFont(std::string fontFace, std::string fontProfileName, unsigned int fontSize, float scaleFactor = Yratio)
 {
 	std::stringstream ss;
 
@@ -381,7 +337,7 @@ Font* _CreateFont(std::string fontFace, std::string fontProfileName, unsigned in
 	ss >> fontSize;
 	ss.clear();
 
-	fontSize = Traffic(fontSize);
+	fontSize *= scaleFactor;
 
 	Font* newFont = FontCache::GetFont(fontFace, fontSize);
 	if(!newFont) {
@@ -429,19 +385,13 @@ void ARX_Text_Init()
 	hFontRedist   = _CreateFont(strInGameFont, "system_font_redist_size", 18);
 	LogInfo << "Created hFontRedist, size " << hFontRedist->GetSize();
 
-	// NEW QUEST
-	if (Yratio > 1.f)
-	{
-		Yratio *= .8f;
-	}
-
-	hFontInGame     = _CreateFont(strInGameFont, "system_font_book_size", 18);
+	hFontInGame     = _CreateFont(strInGameFont, "system_font_book_size", 18, Yratio * 0.8);
 	LogInfo << "Created hFontInGame, size " << hFontInGame->GetSize();
 
-	hFontInGameNote = _CreateFont(strInGameFont, "system_font_note_size", 18);
+	hFontInGameNote = _CreateFont(strInGameFont, "system_font_note_size", 18, Yratio * 0.8);
 	LogInfo << "Created hFontInGameNote, size " << hFontInGameNote->GetSize();
 
-	hFontInBook		= _CreateFont(strInGameFont, "system_font_book_size", 18);
+	hFontInBook		= _CreateFont(strInGameFont, "system_font_book_size", 18, Yratio * 0.8);
 	LogInfo << "Created InBookFont, size " << hFontInBook->GetSize();
 }
 

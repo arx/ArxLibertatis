@@ -238,18 +238,6 @@ Vector2i Font::GetTextSize( std::string::const_iterator itStart, std::string::co
     return Vector2i(sizeX, sizeY);
 }
 
-Vector2i Font::GetCharSize( unsigned int character ) const
-{	
-	unsigned int sizeY = m_FTFace->size->metrics.ascender >> 6;
-
-	std::map<unsigned int, Glyph>::const_iterator it = m_Glyphs.find( character );
-	if(it == m_Glyphs.end())
-		return Vector2i(0, sizeY);
-
-	const Glyph& glyph = (*it).second;
-	return Vector2i(glyph.draw_offset.x + glyph.size.x, glyph.draw_offset.y + sizeY);
-}
-
 int Font::GetLineHeight() const
 {
 	return m_FTFace->size->metrics.height >> 6;
