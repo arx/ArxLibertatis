@@ -3333,7 +3333,6 @@ bool Menu2_Render()
 
 	bNoMenu=false;
 
-	danaeApp.DANAEEndRender();
 	// If the menu needs to be reinitialized, then the text in the TextManager is probably using bad fonts that were deleted already
 	// Skip one update in this case
 	if(pTextManage && !pMenu->bReInitAll)
@@ -3342,7 +3341,6 @@ bool Menu2_Render()
 		pTextManage->Render();
 	}
 
-	danaeApp.DANAEStartRender();
 	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP);
 
 	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);

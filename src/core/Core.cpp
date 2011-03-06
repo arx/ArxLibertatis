@@ -6787,10 +6787,8 @@ m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 
 	if(pTextManage && !pTextManage->Empty())
 	{
-		danaeApp.DANAEEndRender();
 		pTextManage->Update(FrameDiff);
 		pTextManage->Render();
-		danaeApp.DANAEStartRender();
 	}
 
 	if (SHOW_INGAME_MINIMAP && ((PLAY_LOADED_CINEMATIC == 0) && (!CINEMASCOPE) && (!BLOCK_PLAYER_CONTROLS) && (ARXmenu.currentmode == AMCM_OFF))

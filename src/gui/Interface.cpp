@@ -984,18 +984,12 @@ void ARX_INTERFACE_NoteManage()
 					if(Note.pages[Note.curpage+1]>0)
 					{
 						Page_Buffer = Note.text.substr( Note.pages[Note.curpage], Note.pages[Note.curpage+1] - Note.pages[Note.curpage] );
-
-						danaeApp.DANAEEndRender();
 						DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer, 0, 0x00FF00FF);
-						danaeApp.DANAEStartRender();
 
 						if(Note.pages[Note.curpage+2]>0)
 						{
 							Page_Buffer = Note.text.substr( Note.pages[Note.curpage+1], Note.pages[Note.curpage+2] - Note.pages[Note.curpage+1] );
-
-							danaeApp.DANAEEndRender();
 							DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx + (NoteTextMaxx-NoteTextMinx) +20, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx + (NoteTextMaxx-NoteTextMinx) +20, Page_Buffer, 0, 0x00FF00FF);
-							danaeApp.DANAEStartRender();
 						}
 					}
 					else
@@ -1003,11 +997,7 @@ void ARX_INTERFACE_NoteManage()
 						if(Note.pages[Note.curpage]>=0)
 						{
 							Page_Buffer = Note.text.substr(Note.pages[Note.curpage]);
-							
-							danaeApp.DANAEEndRender();
 							DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer,0,0x00FF00FF);
-							
-							danaeApp.DANAEStartRender();
 						}
 					}
 				}
@@ -1016,9 +1006,7 @@ void ARX_INTERFACE_NoteManage()
 			}
 			else
 			{
-				danaeApp.DANAEEndRender();
 				DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Note.text,0,0x00FF00FF);
-				danaeApp.DANAEStartRender();
 			}
 		}
 
@@ -7911,7 +7899,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		ARX_PLAYER_ComputePlayerFullStats();
 
-		danaeApp.DANAEEndRender();
 		std::stringstream ss;
 		ss << ITC.Level << " " << std::setw(3) << (int)player.level;
 		tex = ss.str();
@@ -7921,7 +7908,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 		ss2 << ITC.Xp << " " << std::setw(8) << player.xp;
 		tex = ss2.str();
 		DrawBookTextCenter( hFontInBook, 510, 74, tex, Color,0x00FF00FF );
-		danaeApp.DANAEStartRender();
 
 		if (MouseInBookRect(463, 74, 550, 94))
 			FLYING_OVER = WND_XP;
@@ -8139,7 +8125,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 		//------------------------------
 		
-		danaeApp.DANAEEndRender();
 		std::stringstream ss3;
 		ss3 << std::setw(3) << std::setprecision(0) << std::fixed << player.Full_Attribute_Strength;
 		tex = ss3.str();
@@ -8449,7 +8434,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 		else Color = 0;
 
 		DrawBookTextCenter(hFontInBook, 153, 278, tex, Color, 0x00FF00FF);
-		danaeApp.DANAEStartRender();
 	}
 	else if (Book_Mode == BOOKMODE_MINIMAP)
 	{
@@ -10650,11 +10634,9 @@ void ARX_INTERFACE_RenderCursor(long flag)
 							0.f,
 							surf,D3DCOLORWHITE);
 						
-						danaeApp.DANAEEndRender();	
 						std::stringstream ss;
 						ss << std::setw(3) << lCursorRedistValue;
 						ARX_TEXT_Draw(hFontInBook, DANAEMouse.x + 6* Xratio, DANAEMouse.y + 11* Yratio, ss.str(), D3DCOLORBLACK, 0x00FF00FF);
-						danaeApp.DANAEStartRender();
 					}
 					else
 					{
