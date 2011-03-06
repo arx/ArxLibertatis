@@ -31,6 +31,8 @@ public:
         Vector2i		size;           //!< Size of the glyph.
         Vector2i		draw_offset;    //!< Offset to use when drawing.
         Vector2f		advance;        //!< Pen advance after write this glyph.
+		int				lsb_delta;		//!< The difference between hinted and unhinted left side bearing while autohinting is active. Zero otherwise.
+		int				rsb_delta;		//!< The difference between hinted and unhinted right side bearing while autohinting is active. Zero otherwise.
 
         Vector2f		uv_start;       //!< UV coordinates.
         Vector2f		uv_end;         //!< UV coordinates.

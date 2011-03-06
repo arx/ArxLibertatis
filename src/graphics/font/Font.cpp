@@ -58,8 +58,10 @@ bool Font::InsertGlyph( unsigned int character )
 	Font::Glyph& glyph	 = m_Glyphs[character];
     glyph.size.x         = m_FTFace->glyph->bitmap.width;
     glyph.size.y         = m_FTFace->glyph->bitmap.rows;
-	glyph.advance.x      = m_FTFace->glyph->linearHoriAdvance / 65535.0f;
-	glyph.advance.y      = m_FTFace->glyph->linearVertAdvance / 65535.0f;
+	glyph.advance.x      = m_FTFace->glyph->linearHoriAdvance / 65536.0f;
+	glyph.advance.y      = m_FTFace->glyph->linearVertAdvance / 65536.0f;
+	glyph.lsb_delta		 = m_FTFace->glyph->lsb_delta;
+	glyph.rsb_delta		 = m_FTFace->glyph->rsb_delta;
     glyph.draw_offset.x  = m_FTFace->glyph->bitmap_left;
     glyph.draw_offset.y  = m_FTFace->glyph->bitmap_top - m_FTFace->glyph->bitmap.rows;
 	glyph.uv_start       = Vector2f(0,0);
@@ -142,38 +144,49 @@ void Font::Draw( int x, int y, std::string::const_iterator itStart, std::string:
 	GRenderer->GetTextureStage(0)->SetColorOp(TextureStage::TexOpSelectArg1, TextureStage::TexArgDiffuse, TextureStage::TexArgCurrent);
 	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::TexOpSelectArg1, TextureStage::TexArgTexture, TextureStage::TexArgCurrent);
 
-    unsigned int penX = x;
-    unsigned int penY = y;
+    float penX = x;
+    float penY = y;
 
 	// Substract one line height (since we flipped the Y origin to be like GDI)
 	penY += m_FTFace->size->metrics.ascender >> 6;
 
-	FT_UInt currentGlyph;
-	FT_UInt previousGlyph = 0;
+	FT_UInt currentGlyphIdx;
+	FT_UInt previousGlyphIdx = 0;
+	FT_Pos  prevRsbDelta = 0;
 
     for( std::string::const_iterator it = itStart; it != itEnd; ++it )
     {
+		// Get glyph in glyph map
         std::map<unsigned int, Glyph>::const_iterator itGlyph = m_Glyphs.find( *it );
 		if(itGlyph == m_Glyphs.end())
 			continue;
-
 		const Glyph& glyph = (*itGlyph).second;
 
+		// Kerning
 		if( FT_HAS_KERNING(m_FTFace) )
 		{
-			currentGlyph = FT_Get_Char_Index( m_FTFace, *it );
-			if(previousGlyph != 0)
+			currentGlyphIdx = FT_Get_Char_Index( m_FTFace, *it );
+			if(previousGlyphIdx != 0)
 			{
 				FT_Vector delta;
-				FT_Get_Kerning( m_FTFace, previousGlyph, currentGlyph, FT_KERNING_DEFAULT, &delta );
+				FT_Get_Kerning( m_FTFace, previousGlyphIdx, currentGlyphIdx, FT_KERNING_DEFAULT, &delta );
 				penX += delta.x >> 6;
 			}
-			previousGlyph = currentGlyph;
+			previousGlyphIdx = currentGlyphIdx;
 		}
 
-		GRenderer->SetTexture( 0, m_Textures->GetTexture(glyph.texture) );
-        GRenderer->DrawTexturedRect( penX + glyph.draw_offset.x, penY - glyph.draw_offset.y, glyph.size.x, -glyph.size.y, glyph.uv_start.x, glyph.uv_end.y, glyph.uv_end.x, glyph.uv_start.y, color );
+		// Auto hinting adjustments
+		if ( prevRsbDelta - glyph.lsb_delta >= 32 )
+			penX--;
+		else if ( prevRsbDelta - glyph.lsb_delta < -32 )
+			penX++;
+		prevRsbDelta = glyph.rsb_delta;        
 
+		// Draw
+		GRenderer->SetTexture( 0, m_Textures->GetTexture(glyph.texture) );
+        GRenderer->DrawTexturedRect( ((int)penX) + glyph.draw_offset.x, ((int)penY) - glyph.draw_offset.y, glyph.size.x, -glyph.size.y, glyph.uv_start.x, glyph.uv_end.y, glyph.uv_end.x, glyph.uv_start.y, color );
+
+		// Advance
         penX += glyph.advance.x;
     }
 
@@ -199,9 +212,10 @@ Vector2i Font::GetTextSize( std::string::const_iterator itStart, std::string::co
 	FT_UInt currentGlyph;
 	FT_UInt previousGlyph = 0;
 
-	int startX = 0;
-	int endX = 0;
-	int penX = 0;
+	int		startX = 0;
+	int		endX = 0;
+	float	penX = 0;
+	FT_Pos  prevRsbDelta = 0;
 	
 	for( std::string::const_iterator it = itStart; it != itEnd; ++it )
     {
@@ -211,6 +225,7 @@ Vector2i Font::GetTextSize( std::string::const_iterator itStart, std::string::co
 
 		const Glyph& glyph = (*itGlyph).second;
 
+		// Kerning
 		if( FT_HAS_KERNING(m_FTFace) )
 		{
 			currentGlyph = FT_Get_Char_Index( m_FTFace, *it );
@@ -222,6 +237,13 @@ Vector2i Font::GetTextSize( std::string::const_iterator itStart, std::string::co
 			}
 			previousGlyph = currentGlyph;
 		}
+
+		// Auto hinting adjustments
+		if ( prevRsbDelta - glyph.lsb_delta >= 32 )
+			penX--;
+		else if ( prevRsbDelta - glyph.lsb_delta < -32 )
+			penX++;
+		prevRsbDelta = glyph.rsb_delta;
 
 		// If this is the first drawn char, note the start position
 		if( startX == endX )
