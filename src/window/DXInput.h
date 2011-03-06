@@ -26,7 +26,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_WINDOW_DXINPUT_H
 #define ARX_WINDOW_DXINPUT_H
 
-#include <windef.h> // for HINSTANCE
+#include <windows.h> // for HINSTANCE
 
 enum DXIMode {
 	DXI_MODE_EXCLUSIF_ALLMSG = 0,
