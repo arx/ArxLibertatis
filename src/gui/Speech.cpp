@@ -233,7 +233,7 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 								D3DCOLORWHITE);
 
 				igrec += ARX_TEXT_DrawRect(hFontInBook, 120.f * Xratio, (float)igrec, 500 * Xratio,
-										   temp, speech[i].color, NULL, 0x00FF00FF);
+										   temp, speech[i].color, NULL);
 				if(igrec > iEnd && !CheckLastSpeech(i)) {
 					ARX_SPEECH_MoveUp();
 					break;

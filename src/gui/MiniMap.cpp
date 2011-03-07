@@ -944,7 +944,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 							DrawBookTextInRect( hFontInGameNote, ARX_CLEAN_WARN_CAST_FLOAT(bRect.left), ARX_CLEAN_WARN_CAST_FLOAT(bRect.top),
 											   ARX_CLEAN_WARN_CAST_FLOAT(bRect.right),
-											   Page_Buffer, 0, 0x00FF00FF );
+											   Page_Buffer, 0 );
 						}
 					}
 

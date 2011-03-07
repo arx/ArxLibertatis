@@ -75,15 +75,15 @@ extern Font* hFontRedist;
 extern Font* hFontInGame;
 extern Font* hFontInGameNote;
 
-void ARX_TEXT_Draw(Font* ef, float x, float y, const std::string & car, COLORREF colo, COLORREF bcol = 0x00FF00FF);
-long ARX_TEXT_DrawRect(Font* ef, float x, float y, float maxx, const std::string& car, COLORREF colo, RECT* pClipRect = NULL, COLORREF bcol = 0x00FF00FF);
-float DrawBookTextInRect(Font* font, float x, float y, float maxx, const std::string& text, COLORREF col, COLORREF col2);
-void DrawBookTextCenter(Font* font, float x, float y, const std::string& text, COLORREF col, COLORREF col2);
-long UNICODE_ARXDrawTextCenter(Font* font, float x, float y, const std::string& str, COLORREF col, COLORREF bcol);
+void ARX_TEXT_Draw(Font* ef, float x, float y, const std::string & car, COLORREF colo);
+long ARX_TEXT_DrawRect(Font* ef, float x, float y, float maxx, const std::string& car, COLORREF colo, RECT* pClipRect = NULL);
+float DrawBookTextInRect(Font* font, float x, float y, float maxx, const std::string& text, COLORREF col);
+void DrawBookTextCenter(Font* font, float x, float y, const std::string& text, COLORREF col);
+long UNICODE_ARXDrawTextCenter(Font* font, float x, float y, const std::string& str, COLORREF col);
  
-long UNICODE_ARXDrawTextCenteredScroll(Font* font, float x, float y, float x2, const std::string& str, COLORREF col, COLORREF bcol, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut = INT_MAX);
+long UNICODE_ARXDrawTextCenteredScroll(Font* font, float x, float y, float x2, const std::string& str, COLORREF col, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut = INT_MAX);
 long ARX_UNICODE_ForceFormattingInRect(Font* font, const std::string& text, RECT _rRect);
-long ARX_UNICODE_DrawTextInRect(Font* font, float x, float y, float maxx, const std::string& text, COLORREF col, COLORREF bcol, RECT* pClipRect = NULL);
+long ARX_UNICODE_DrawTextInRect(Font* font, float x, float y, float maxx, const std::string& text, COLORREF col, RECT* pClipRect = NULL);
 
 void ARX_Allocate_Text(std::string& dest, const std::string& id_string);
 

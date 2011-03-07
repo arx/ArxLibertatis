@@ -196,7 +196,6 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
                                 float maxx,
                                 const std::string& _text,
                                 COLORREF col,
-                                COLORREF bcol,
                                 RECT* pClipRect
                                )
 {
@@ -214,18 +213,11 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
 		GRenderer->SetViewport(clippedViewport); 
 	}
 
-	if (bcol != 0x00FF00FF) // TODO-FONT: Transparent!?
-	{
-		// TODO-FONT: Draw background
-		//SetBkMode(hDC, OPAQUE);
-		//SetBkColor(hDC, bcol);
-	}
-	
 	RECT rect;
 	rect.top	= (long)y;
 	rect.left	= (long)x;
 	rect.right	= (long)maxx;
-	rect.bottom	= LONG_MAX;
+	rect.bottom	= SHRT_MAX;
 
 	long height;
 	ARX_UNICODE_FormattingInRect(font, _text, rect, col, &height);
@@ -241,48 +233,39 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
 void ARX_TEXT_Draw(Font* ef,
                    float x, float y,
                    const std::string& car,
-                   COLORREF colo, COLORREF bcol) {
+                   COLORREF col) {
 	
 	if (car.empty() || car[0] == 0)
 		return;
 
-	ARX_UNICODE_DrawTextInRect(ef, x, y, 9999.f, car, colo, bcol);
+	ARX_UNICODE_DrawTextInRect(ef, x, y, 9999.f, car, col);
 }
 
 long ARX_TEXT_DrawRect(Font* ef,
                        float x, float y,
                        float maxx,
                        const string & car,
-                       COLORREF colo,
-                       RECT* pClipRect,
-                       COLORREF bcol) {
+                       COLORREF col,
+                       RECT* pClipRect) {
 	
-	bcol = RGB((bcol >> 16) & 255, (bcol >> 8) & 255, (bcol) & 255);
-	colo = RGB((colo >> 16) & 255, (colo >> 8) & 255, (colo) & 255);
-	return ARX_UNICODE_DrawTextInRect(ef, x, y, maxx, car, colo, bcol, pClipRect);
+	col = RGB((col >> 16) & 255, (col >> 8) & 255, (col) & 255);
+	return ARX_UNICODE_DrawTextInRect(ef, x, y, maxx, car, col, pClipRect);
 }
 
-float DrawBookTextInRect(Font* font, float x, float y, float maxx, const std::string& text, COLORREF col, COLORREF col2) {
-	return (float)ARX_TEXT_DrawRect(font, (BOOKDECX + x) * Xratio, (BOOKDECY + y) * Yratio, (BOOKDECX + maxx) * Xratio, text, col, NULL, col2);
-}
-
-//-----------------------------------------------------------------------------
-void DrawBookTextCenter( Font* font, float x, float y, const std::string& text, COLORREF col, COLORREF col2 )
-{
-	UNICODE_ARXDrawTextCenter(font, (BOOKDECX + x)*Xratio, (BOOKDECY + y)*Yratio, text, col, col2);
+float DrawBookTextInRect(Font* font, float x, float y, float maxx, const std::string& text, COLORREF col) {
+	return (float)ARX_TEXT_DrawRect(font, (BOOKDECX + x) * Xratio, (BOOKDECY + y) * Yratio, (BOOKDECX + maxx) * Xratio, text, col);
 }
 
 //-----------------------------------------------------------------------------
-
-long UNICODE_ARXDrawTextCenter( Font* font, float x, float y, const std::string& str, COLORREF col, COLORREF bcol)
+void DrawBookTextCenter( Font* font, float x, float y, const std::string& text, COLORREF col )
 {
-	if (bcol != 0x00FF00FF)
-	{
-		// TODO-FONT: Draw background
-		//SetBkMode(hDC, OPAQUE);
-		//SetBkColor(hDC, bcol);
-	}
+	UNICODE_ARXDrawTextCenter(font, (BOOKDECX + x)*Xratio, (BOOKDECY + y)*Yratio, text, col);
+}
 
+//-----------------------------------------------------------------------------
+
+long UNICODE_ARXDrawTextCenter( Font* font, float x, float y, const std::string& str, COLORREF col )
+{
 	Vector2i size = font->GetTextSize(str);
 	int drawX = ((int)x) - (size.x / 2);
 	int drawY = (int)y;
@@ -294,7 +277,7 @@ long UNICODE_ARXDrawTextCenter( Font* font, float x, float y, const std::string&
 
 
 
-long UNICODE_ARXDrawTextCenteredScroll( Font* font, float x, float y, float x2, const std::string& str, COLORREF col, COLORREF bcol, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut)
+long UNICODE_ARXDrawTextCenteredScroll( Font* font, float x, float y, float x2, const std::string& str, COLORREF col, int iTimeScroll, float fSpeed, int iNbLigne, int iTimeOut)
 {
 	RECT rRect;
 	ARX_CHECK_LONG(y);
@@ -303,14 +286,12 @@ long UNICODE_ARXDrawTextCenteredScroll( Font* font, float x, float y, float x2, 
 	rRect.top = ARX_CLEAN_WARN_CAST_LONG(y);
 	rRect.right = ARX_CLEAN_WARN_CAST_LONG(x + x2);
 
-
 	if (pTextManage)
 	{
 		pTextManage->AddText(font,
 							 str,
 							 rRect,
 							 col,
-							 bcol,
 							 iTimeOut,
 							 iTimeScroll,
 							 fSpeed,

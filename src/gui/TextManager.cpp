@@ -26,7 +26,6 @@ struct TextManager::ManagedText {
 	float fDeltaY;
 	float fSpeedScrollY;
 	long lCol;
-	long lBkgCol;
 	long lTimeScroll;
 	long lTimeOut;
 };
@@ -38,7 +37,7 @@ TextManager::~TextManager() {
 	Clear();
 }
 
-bool TextManager::AddText(Font* _pFont, const string & _lpszUText, const RECT & _rRect, long _lCol, long _lBkgCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp) {
+bool TextManager::AddText(Font* _pFont, const string & _lpszUText, const RECT & _rRect, long _lCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp) {
 	
 	if(_lpszUText.empty()) {
 		return false;
@@ -58,7 +57,6 @@ bool TextManager::AddText(Font* _pFont, const string & _lpszUText, const RECT & 
 	pArxText->lpszUText = _lpszUText;
 	pArxText->rRect = _rRect;
 	pArxText->lCol = _lCol;
-	pArxText->lBkgCol = _lBkgCol;
 	pArxText->lTimeScroll = _lTimeScroll;
 	pArxText->fDeltaY = 0.f;
 	pArxText->fSpeedScrollY = _fSpeedScroll;
@@ -83,9 +81,9 @@ bool TextManager::AddText( Font* font, const std::string& str, long x, long y, l
 	RECT r;
 	r.left = x;
 	r.top = y;
-	r.right = INT_MAX;
-	r.bottom = INT_MAX;
-	return AddText(font, str, r, fgcolor, 0x00FF00FF);
+	r.right = SHRT_MAX;
+	r.bottom = SHRT_MAX;
+	return AddText(font, str, r, fgcolor);
 }
 
 void TextManager::Update(float _fDiffFrame) {
@@ -133,14 +131,13 @@ void TextManager::Render() {
 		ManagedText * pArxText = *itManage;
 		
 		RECT* pRectClip = NULL;
-		if(pArxText->rRectClipp.right != INT_MAX || pArxText->rRectClipp.bottom != INT_MAX)
+		if(pArxText->rRectClipp.right != SHRT_MAX || pArxText->rRectClipp.bottom != SHRT_MAX)
 			pRectClip = &pArxText->rRectClipp;
 
 		long height = ARX_UNICODE_DrawTextInRect( pArxText->pFont, static_cast<float>(pArxText->rRect.left),
 		                                         pArxText->rRect.top - pArxText->fDeltaY,
 		                                         static_cast<float>(pArxText->rRect.right),
-		                                         pArxText->lpszUText, pArxText->lCol,
-		                                         pArxText->lBkgCol, pRectClip);
+		                                         pArxText->lpszUText, pArxText->lCol, pRectClip);
 		
 		pArxText->rRect.bottom = pArxText->rRect.top + height;
 	}

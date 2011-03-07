@@ -4093,9 +4093,9 @@ void Manage_sp_max()
 			sp_max_y[i] = EEsin(dx + (float)ARXTime * ( 1.0f / 100 )) * 30.f * modi;
 			std::string tex( 1, sp_max_ch[i] );
 
-			UNICODE_ARXDrawTextCenter( hFontInBook, dx - 1, dy - 1, tex, 0, 0x00FF00FF );
-			UNICODE_ARXDrawTextCenter( hFontInBook, dx + 1, dy + 1, tex, 0, 0x00FF00FF );
-			UNICODE_ARXDrawTextCenter( hFontInBook, dx, dy, tex, sp_max_col[i], 0x00FF00FF );
+			UNICODE_ARXDrawTextCenter( hFontInBook, dx - 1, dy - 1, tex, 0 );
+			UNICODE_ARXDrawTextCenter( hFontInBook, dx + 1, dy + 1, tex, 0 );
+			UNICODE_ARXDrawTextCenter( hFontInBook, dx, dy, tex, sp_max_col[i] );
 
 		}
 	}

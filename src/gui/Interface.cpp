@@ -985,12 +985,12 @@ void ARX_INTERFACE_NoteManage()
 					if(Note.pages[Note.curpage+1]>0)
 					{
 						Page_Buffer = Note.text.substr( Note.pages[Note.curpage], Note.pages[Note.curpage+1] - Note.pages[Note.curpage] );
-						DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer, 0, 0x00FF00FF);
+						DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer, 0);
 
 						if(Note.pages[Note.curpage+2]>0)
 						{
 							Page_Buffer = Note.text.substr( Note.pages[Note.curpage+1], Note.pages[Note.curpage+2] - Note.pages[Note.curpage+1] );
-							DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx + (NoteTextMaxx-NoteTextMinx) +20, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx + (NoteTextMaxx-NoteTextMinx) +20, Page_Buffer, 0, 0x00FF00FF);
+							DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx + (NoteTextMaxx-NoteTextMinx) +20, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx + (NoteTextMaxx-NoteTextMinx) +20, Page_Buffer, 0);
 						}
 					}
 					else
@@ -998,7 +998,7 @@ void ARX_INTERFACE_NoteManage()
 						if(Note.pages[Note.curpage]>=0)
 						{
 							Page_Buffer = Note.text.substr(Note.pages[Note.curpage]);
-							DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer,0,0x00FF00FF);
+							DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer,0);
 						}
 					}
 				}
@@ -1007,7 +1007,7 @@ void ARX_INTERFACE_NoteManage()
 			}
 			else
 			{
-				DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Note.text,0,0x00FF00FF);
+				DrawBookTextInRect(hFontInGameNote, NotePosX+NoteTextMinx, NotePosY+NoteTextMiny, NotePosX+NoteTextMaxx, Note.text,0);
 			}
 		}
 
@@ -5703,12 +5703,7 @@ void DANAE::ManageKeyMouse()
 								             };
 
 									pTextManage->Clear();
-								pTextManage->AddText(hFontInBook,
-																		WILLADDSPEECH,
-																	    rDraw,
-																		RGB(232,204,143),
-																		0x00FF00FF,
-																		2000+WILLADDSPEECH.length()*60);
+								pTextManage->AddText(hFontInBook,WILLADDSPEECH,rDraw,RGB(232,204,143),2000+WILLADDSPEECH.length()*60);
 								}
 
 								WILLADDSPEECH.clear();
@@ -5788,11 +5783,7 @@ void DANAE::ManageKeyMouse()
 								             };
 
 										pTextManage->Clear();
-								pTextManage->AddText(hFontInBook,
-																		WILLADDSPEECH,
-																	    rDraw,
-																		RGB(232,204,143),
-																		0x00FF00FF );
+										pTextManage->AddText(hFontInBook,WILLADDSPEECH,rDraw,RGB(232,204,143));
 									}
 
 									WILLADDSPEECH.clear();
@@ -7063,7 +7054,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 							flyingover = 1;
 
 							SpecialCursor=CURSOR_INTERACTION_ON;
-							DrawBookTextCenter(hFontInBook, 208, 90, spellicons[i].name, 0, 0x00FF00FF);
+							DrawBookTextCenter(hFontInBook, 208, 90, spellicons[i].name, 0);
 
 							for(size_t si = 0; si < MAX_SPEECH; si++) {
 								if(speech[si].timecreation > 0)
@@ -7080,7 +7071,6 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 									(DANAECENTERX)*0.82f,
 									spellicons[i].description,
 									RGB(232,204,143),
-									0x00FF00FF,
 									1000,
 									0.01f,
 									2,
@@ -7284,12 +7274,12 @@ void QuestBook_Render()
 		if (QuestBook.pages[QuestBook.curpage+1] > 0)
 		{
 			Page_Buffer = std::string( QuestBook_Cache_Text + QuestBook.pages[QuestBook.curpage], QuestBook.pages[QuestBook.curpage+1] - QuestBook.pages[QuestBook.curpage] );
-			DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx, Page_Buffer, 0, 0x00FF00FF);
+			DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx, Page_Buffer, 0);
 
 			if (QuestBook.pages[QuestBook.curpage+2]>0)
 			{
 				Page_Buffer = std::string( QuestBook_Cache_Text + QuestBook.pages[QuestBook.curpage+1], QuestBook.pages[QuestBook.curpage+2] - QuestBook.pages[QuestBook.curpage+1] );
-				DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx + (NoteTextMaxx - NoteTextMinx) +20, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx + (NoteTextMaxx - NoteTextMinx) +20, Page_Buffer, 0, 0x00FF00FF);
+				DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx + (NoteTextMaxx - NoteTextMinx) +20, NotePosY + NoteTextMiny, NotePosX + NoteTextMaxx + (NoteTextMaxx - NoteTextMinx) +20, Page_Buffer, 0);
 			}
 		}
 		else
@@ -7297,7 +7287,7 @@ void QuestBook_Render()
 			if (QuestBook.pages[QuestBook.curpage]>=0)
 			{
 				Page_Buffer = std::string( QuestBook_Cache_Text + QuestBook.pages[QuestBook.curpage] );
-				DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer, 0, 0x00FF00FF);
+				DrawBookTextInRect(hFontInGameNote, NotePosX + NoteTextMinx, NotePosY + NoteTextMiny, NotePosX+NoteTextMaxx, Page_Buffer, 0);
 			}
 		}
 	}
@@ -7903,12 +7893,12 @@ void ARX_INTERFACE_ManageOpenedBook()
 		std::stringstream ss;
 		ss << ITC.Level << " " << std::setw(3) << (int)player.level;
 		tex = ss.str();
-		DrawBookTextCenter( hFontInBook, 398, 74, tex,Color,0x00FF00FF );
+		DrawBookTextCenter( hFontInBook, 398, 74, tex,Color );
 
 		std::stringstream ss2;
 		ss2 << ITC.Xp << " " << std::setw(8) << player.xp;
 		tex = ss2.str();
-		DrawBookTextCenter( hFontInBook, 510, 74, tex, Color,0x00FF00FF );
+		DrawBookTextCenter( hFontInBook, 510, 74, tex, Color );
 
 		if (MouseInBookRect(463, 74, 550, 94))
 			FLYING_OVER = WND_XP;
@@ -8097,7 +8087,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 					                                   (DANAECENTERX)*0.82f,
 					                                   ss.str(),
 					                                   RGB(232+t,204+t,143+t),
-					                                   0x00FF00FF,
 					                                   1000,
 					                                   0.01f,
 					                                   3,
@@ -8111,7 +8100,6 @@ void ARX_INTERFACE_ManageOpenedBook()
 						(DANAECENTERX)*0.82f,
 						ARXmenu.mda->flyover[FLYING_OVER],
 						RGB(232+t,204+t,143+t),
-						0x00FF00FF,
 						1000,
 						0.01f,
 						3,
@@ -8142,7 +8130,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 391, 129, tex, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 391, 129, tex, Color);
 		
 		ss3.str(""); // clear the stream
 		ss3 << player.Full_Attribute_Mind;
@@ -8160,7 +8148,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 440, 129, tex, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 440, 129, tex, Color);
 		
 		ss3.str("");
 		ss3 << player.Full_Attribute_Dexterity;
@@ -8178,7 +8166,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 490, 129, tex, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 490, 129, tex, Color);
 		ss3.str("");
 		ss3 << player.Full_Attribute_Constitution;
 		tex = ss3.str();
@@ -8195,7 +8183,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 538, 129, tex, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 538, 129, tex, Color);
 
 		// Player Skills
 		ss3.str("");
@@ -8214,7 +8202,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 405, 210, tex, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 405, 210, tex, Color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Mecanism;
@@ -8232,7 +8220,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 469, 210, tex, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 469, 210, tex, Color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Intuition;
@@ -8250,7 +8238,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 533, 210, tex, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 533, 210, tex, Color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Etheral_Link;
@@ -8268,7 +8256,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 405, 265, tex, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 405, 265, tex, Color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Object_Knowledge;
@@ -8286,7 +8274,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 469, 265, tex, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 469, 265, tex, Color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Casting;
@@ -8304,7 +8292,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 533, 265, tex, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 533, 265, tex, Color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Close_Combat;
@@ -8322,7 +8310,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 405, 319, tex, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 405, 319, tex, Color);
 
 		
 		ss3.str("");
@@ -8341,7 +8329,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 469, 319, tex, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 469, 319, tex, Color);
 		
 		ss3.str("");
 		ss3 << player.Full_Skill_Defense;
@@ -8359,7 +8347,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				Color = 0x000000FF;
 		}
 
-		DrawBookTextCenter(hFontInBook, 533, 319, tex, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 533, 319, tex, Color);
 
 		// Secondary Attributes
 		std::stringstream ss4;
@@ -8373,7 +8361,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			Color = 0x00FF0000;
 		else Color = 0;
 
-		DrawBookTextCenter( hFontInBook, 324, 158, tex, Color,0x00FF00FF);
+		DrawBookTextCenter( hFontInBook, 324, 158, tex, Color );
 		
 		ss4.str("");
 		ss4 << F2L_RoundUp(player.Full_maxmana);
@@ -8385,7 +8373,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			Color = 0x00FF0000;
 		else Color = 0;
 
-		DrawBookTextCenter( hFontInBook, 324, 218, tex, Color, 0x00FF00FF);
+		DrawBookTextCenter( hFontInBook, 324, 218, tex, Color );
 		
 		ss4.str("");
 		ss4 << F2L_RoundUp(player.Full_damages);
@@ -8397,7 +8385,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			Color = 0x00FF0000;
 		else Color = 0;
 
-		DrawBookTextCenter(hFontInBook, 324, 278, tex, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 324, 278, tex, Color);
 
 		float ac = player.Full_armor_class;
 		ss4.str("");
@@ -8410,7 +8398,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			Color = 0x00FF0000;
 		else Color = 0;
 
-		DrawBookTextCenter(hFontInBook, 153, 158, tex, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 153, 158, tex, Color);
 
 		ss4.str("");
 		ss4 << std::setw(3) << std::setprecision(0) << F2L_RoundUp( player.Full_resist_magic );
@@ -8422,7 +8410,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			Color = 0x00FF0000;
 		else Color = 0;
 
-		DrawBookTextCenter(hFontInBook, 153, 218, tex, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 153, 218, tex, Color);
 		
 		ss4.str("");
 		ss4 << F2L_RoundUp( player.Full_resist_poison );
@@ -8434,7 +8422,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			Color = 0x00FF0000;
 		else Color = 0;
 
-		DrawBookTextCenter(hFontInBook, 153, 278, tex, Color, 0x00FF00FF);
+		DrawBookTextCenter(hFontInBook, 153, 278, tex, Color);
 	}
 	else if (Book_Mode == BOOKMODE_MINIMAP)
 	{
@@ -10637,7 +10625,7 @@ void ARX_INTERFACE_RenderCursor(long flag)
 						
 						std::stringstream ss;
 						ss << std::setw(3) << lCursorRedistValue;
-						ARX_TEXT_Draw(hFontInBook, DANAEMouse.x + 6* Xratio, DANAEMouse.y + 11* Yratio, ss.str(), D3DCOLORBLACK, 0x00FF00FF);
+						ARX_TEXT_Draw(hFontInBook, DANAEMouse.x + 6* Xratio, DANAEMouse.y + 11* Yratio, ss.str(), D3DCOLORBLACK);
 					}
 					else
 					{
