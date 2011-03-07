@@ -1607,7 +1607,6 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	if (nfaces)
 	{
 		nouvo->facelist.reserve(nfaces);
-		size_t pos = 0;
 
 		for (size_t k = 0; k < from->facelist.size(); k++)
 		{
@@ -1615,11 +1614,11 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 			        &&	(equival[from->facelist[k].vid[1]] != -1)
 			        &&	(equival[from->facelist[k].vid[2]] != -1))
 			{
-				nouvo->facelist[pos] = from->facelist[k];
-				nouvo->facelist[pos].vid[0] = (unsigned short)equival[from->facelist[k].vid[0]];
-				nouvo->facelist[pos].vid[1] = (unsigned short)equival[from->facelist[k].vid[1]];
-				nouvo->facelist[pos].vid[2] = (unsigned short)equival[from->facelist[k].vid[2]];
-				pos++;
+				EERIE_FACE newface = from->facelist[k];
+				newface.vid[0] = (unsigned short)equival[from->facelist[k].vid[0]];
+				newface.vid[1] = (unsigned short)equival[from->facelist[k].vid[1]];
+				newface.vid[2] = (unsigned short)equival[from->facelist[k].vid[2]];
+				nouvo->facelist.push_back(newface);
 			}
 		}
 
