@@ -62,7 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdlib>
 
-#include "io/IO.h"
+#include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
@@ -673,10 +673,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		return NULL;
 	}
 
-	long DontCheck = 0;
-
-	DontCheck = 1;
-
 	dat = (unsigned char *)blastMemAlloc(compressedData, compressedSize, allocsize);//pos,&cpr_pos);
 	// TODO size ignored
 
@@ -710,6 +706,8 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	}
 
 	// Verify Checksum
+	/*
+	long DontCheck = 1;
 	if ((!NOCHECKSUM || NoCheck) && !DontCheck)
 	{
 		char check[512];
@@ -726,6 +724,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 				return NULL;
 			}
 	}
+	*/
 
 	// Increases offset by checksum size
 	pos += 512;
