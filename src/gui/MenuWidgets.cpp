@@ -431,7 +431,7 @@ bool ARX_QuickLoad()
 
 bool MENU_NoActiveWindow()
 {
-	if(    (!pWindowMenu)||
+	if( (!pWindowMenu)||
 		((pWindowMenu)&&
 		(pWindowMenu->eCurrentMenuState==MAIN)) ) return true;
 
@@ -446,16 +446,7 @@ void FontRenderText(Font* _pFont, EERIE_3D pos, const std::string& _pText, COLOR
 	{
 		ARX_CHECK_LONG( pos.y );
 		ARX_CHECK_LONG( pos.x );
-		ARX_CHECK_LONG( pos.x + 999 );
-		ARX_CHECK_LONG( pos.y + 999 );
-		
-		RECT rRect;
-		rRect.top	 = ARX_CLEAN_WARN_CAST_LONG( pos.y );
-		rRect.left   = ARX_CLEAN_WARN_CAST_LONG( pos.x );
-		rRect.right  = ARX_CLEAN_WARN_CAST_LONG( pos.x + 999 );
-		rRect.bottom = ARX_CLEAN_WARN_CAST_LONG( pos.y + 999 );
-
-		pTextManage->AddText( _pFont, _pText, rRect, _c, 0x00FF00FF);
+		pTextManage->AddText( _pFont, _pText, pos.x, pos.y, _c);
 	}
 }
 

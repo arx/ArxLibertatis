@@ -605,7 +605,6 @@ void ARX_SPEECH_Update() {
 				{
 					if (CINEMA_DECAL >= 100.f)
 					{
-						HRGN hRgn;
 						Vector2i sSize = hFontInBook->GetTextSize(speech->text);
 						
 						float fZoneClippHeight	=	ARX_CLEAN_WARN_CAST_FLOAT(sSize.y * 3);
@@ -618,11 +617,7 @@ void ARX_SPEECH_Update() {
 						ARX_CHECK_INT(fZoneClippY);
 						ARX_CHECK_INT(fAdd);
 
-						hRgn = CreateRectRgn(0,
-											 ARX_CLEAN_WARN_CAST_INT(fZoneClippY),
-											 DANAESIZX,
-											 ARX_CLEAN_WARN_CAST_INT(fAdd));
-
+						RECT clippingRect = { 0, ARX_CLEAN_WARN_CAST_INT(fZoneClippY), DANAESIZX, ARX_CLEAN_WARN_CAST_INT(fAdd) };
 						float iTaille = (float)ARX_TEXT_DrawRect(
 						                    hFontInBook,
 						                    10.f,
@@ -630,12 +625,7 @@ void ARX_SPEECH_Update() {
 						                    -10.f + (float)DANAESIZX,
 						                    speech->text,
 						                    RGB(255, 255, 255),
-						                    hRgn);
-
-						if (hRgn)
-						{
-							DeleteObject(hRgn);
-						}
+						                    &clippingRect);
 
 						SETTC(GDevice, NULL);
 						GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ZERO);

@@ -57,6 +57,14 @@ public:
         CullCCW
     };
 
+	struct Viewport
+	{
+		int x;
+		int y;
+		int width;
+		int height;
+	};
+
 	Renderer();
 	~Renderer();
 
@@ -78,8 +86,8 @@ public:
     void SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFactor dstFactor);
 
 	// Viewport
-    void SetViewport(int x, int y, int width, int height);
-    void GetViewport(int viewport[4]);
+    void SetViewport(const Viewport& viewport);
+    Viewport GetViewport();
 
 	// Culling & Clipping
 	void SetCulling( CullingMode mode );

@@ -46,8 +46,7 @@ bool TextManager::AddText(Font* _pFont, const string & _lpszUText, const RECT & 
 	
 	if(!_pFont) {
 		LogWarning << "Adding text with NULL font.";
-		// TODO why is this commented out? ~dscharrer
-		//return false;
+		return false;
 	}
 	
 	ManagedText * pArxText = new ManagedText();
@@ -84,8 +83,8 @@ bool TextManager::AddText( Font* font, const std::string& str, long x, long y, l
 	RECT r;
 	r.left = x;
 	r.top = y;
-	r.right = 9999;
-	r.bottom = 9999;
+	r.right = INT_MAX;
+	r.bottom = INT_MAX;
 	return AddText(font, str, r, fgcolor, 0x00FF00FF);
 }
 
@@ -133,21 +132,17 @@ void TextManager::Render() {
 		
 		ManagedText * pArxText = *itManage;
 		
-		HRGN hRgn = CreateRectRgn(pArxText->rRectClipp.left, pArxText->rRectClipp.top,
-		                          pArxText->rRectClipp.right, pArxText->rRectClipp.bottom);
-		
+		RECT* pRectClip = NULL;
+		if(pArxText->rRectClipp.right != INT_MAX || pArxText->rRectClipp.bottom != INT_MAX)
+			pRectClip = &pArxText->rRectClipp;
+
 		long height = ARX_UNICODE_DrawTextInRect( pArxText->pFont, static_cast<float>(pArxText->rRect.left),
 		                                         pArxText->rRect.top - pArxText->fDeltaY,
 		                                         static_cast<float>(pArxText->rRect.right),
 		                                         pArxText->lpszUText, pArxText->lCol,
-		                                         pArxText->lBkgCol, hRgn);
+		                                         pArxText->lBkgCol, pRectClip);
 		
 		pArxText->rRect.bottom = pArxText->rRect.top + height;
-		
-		if(hRgn) {
-			DeleteObject(hRgn);
-		}
-		
 	}
 }
 

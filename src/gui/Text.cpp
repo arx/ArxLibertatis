@@ -65,6 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/Draw.h"
 #include "graphics/Frame.h"
+#include "graphics/Renderer.h"
 #include "graphics/effects/Fog.h"
 
 #include "io/Filesystem.h"
@@ -196,13 +197,21 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
                                 const std::string& _text,
                                 COLORREF col,
                                 COLORREF bcol,
-                                HRGN hRgn
+                                RECT* pClipRect
                                )
 {
-	if (hRgn)
+	Renderer::Viewport previousViewport;
+
+	if (pClipRect)
 	{
-		// TODO-FONT: glScissor / IDirect3DDevice7::SetClipStatus
-		//SelectClipRgn(hDC, hRgn);
+		previousViewport = GRenderer->GetViewport();
+
+		Renderer::Viewport clippedViewport;
+		clippedViewport.x = pClipRect->left;
+		clippedViewport.y = pClipRect->top;
+		clippedViewport.width = pClipRect->right - pClipRect->left;
+		clippedViewport.height = pClipRect->bottom - pClipRect->top;
+		GRenderer->SetViewport(clippedViewport); 
 	}
 
 	if (bcol != 0x00FF00FF) // TODO-FONT: Transparent!?
@@ -221,9 +230,9 @@ long ARX_UNICODE_DrawTextInRect(Font* font,
 	long height;
 	ARX_UNICODE_FormattingInRect(font, _text, rect, col, &height);
 
-	if (hRgn)
+	if (pClipRect)
 	{
-		// TODO-FONT: Undo glScissor / IDirect3DDevice7::SetClipStatus
+		GRenderer->SetViewport(previousViewport);
 	}
 
 	return height;
@@ -245,13 +254,12 @@ long ARX_TEXT_DrawRect(Font* ef,
                        float maxx,
                        const string & car,
                        COLORREF colo,
-                       HRGN _hRgn,
+                       RECT* pClipRect,
                        COLORREF bcol) {
 	
 	bcol = RGB((bcol >> 16) & 255, (bcol >> 8) & 255, (bcol) & 255);
-
 	colo = RGB((colo >> 16) & 255, (colo >> 8) & 255, (colo) & 255);
-	return ARX_UNICODE_DrawTextInRect(ef, x, y, maxx, car, colo, bcol, _hRgn);
+	return ARX_UNICODE_DrawTextInRect(ef, x, y, maxx, car, colo, bcol, pClipRect);
 }
 
 float DrawBookTextInRect(Font* font, float x, float y, float maxx, const std::string& text, COLORREF col, COLORREF col2) {
@@ -385,13 +393,16 @@ void ARX_Text_Init()
 	hFontRedist   = _CreateFont(strInGameFont, "system_font_redist_size", 18);
 	LogInfo << "Created hFontRedist, size " << hFontRedist->GetSize();
 
-	hFontInGame     = _CreateFont(strInGameFont, "system_font_book_size", 18, Yratio * 0.8);
+	// Keep small font small when increasing resolution
+	float smallFontRatio = Yratio > 1.0f ? Yratio * 0.8f : Yratio;
+
+	hFontInGame     = _CreateFont(strInGameFont, "system_font_book_size", 18, smallFontRatio);
 	LogInfo << "Created hFontInGame, size " << hFontInGame->GetSize();
 
-	hFontInGameNote = _CreateFont(strInGameFont, "system_font_note_size", 18, Yratio * 0.8);
+	hFontInGameNote = _CreateFont(strInGameFont, "system_font_note_size", 18, smallFontRatio);
 	LogInfo << "Created hFontInGameNote, size " << hFontInGameNote->GetSize();
 
-	hFontInBook		= _CreateFont(strInGameFont, "system_font_book_size", 18, Yratio * 0.8);
+	hFontInBook		= _CreateFont(strInGameFont, "system_font_book_size", 18, smallFontRatio);
 	LogInfo << "Created InBookFont, size " << hFontInBook->GetSize();
 }
 
