@@ -784,7 +784,6 @@ void CopySurfaceToBumpMap(LPDIRECTDRAWSURFACE7 sSurface, LPDIRECTDRAWSURFACE7 dS
 
 			for (ULONG x = 0 ; x < ddesc2.dwWidth ; x++)
 			{		
-				assert(x <= LONG_MAX);
 				assert(y  * LineOffset <= LONG_MAX);
 				posx = x;
 				posy = y * LineOffset;
@@ -876,7 +875,6 @@ bool IsColorKeyInSurface(LPDIRECTDRAWSURFACE7 _pSurface)
 		{
 			for (ULONG x = 0 ; x < ddesc.dwWidth ; x++)
 			{
-				assert(x <= LONG_MAX);
 				assert(y * LineOffset <= LONG_MAX);
 				posx = static_cast<long>(x);
 				posy = static_cast<long>(y * LineOffset);

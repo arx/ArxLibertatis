@@ -7,13 +7,13 @@
 #include <cmath>
 #include "core/Common.h"
 
-#if (ARX_COMPILER == ARX_COMPILER_GCC) || (ARX_COMPILER == ARX_COMPILER_GCC64)
+#if ARX_COMPILER == ARX_COMPILER_GCC
     #pragma GCC diagnostic ignored "-fpermissive"
 #endif
 
 #include <d3d.h>
 
-#if (ARX_COMPILER == ARX_COMPILER_GCC) || (ARX_COMPILER == ARX_COMPILER_GCC64)
+#if ARX_COMPILER == ARX_COMPILER_GCC
     #pragma GCC diagnostic error "-fpermissive"
 #endif
     

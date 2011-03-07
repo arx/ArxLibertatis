@@ -973,7 +973,7 @@ void RemoveIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, const char * name) {
 				{
 					if (tvv[i]->io == io)
 					{
-						TreeView_DeleteItem(tvhwnd, tvv[i]->hti);
+						(void)TreeView_DeleteItem(tvhwnd, tvv[i]->hti);
 						free(tvv[i]);
 						tvv[i] = NULL;
 						TVVcount--;
@@ -998,7 +998,7 @@ void RemoveIOTVItem(HWND tvhwnd, INTERACTIVE_OBJ * io, const char * name) {
 				{
 					if (!strcasecmp(name, tvv[i]->text))
 					{
-						TreeView_DeleteItem(tvhwnd, tvv[i]->hti);
+						(void)TreeView_DeleteItem(tvhwnd, tvv[i]->hti);
 						free(tvv[i]);
 
 						while (i < TVVcount - 1)
@@ -1073,9 +1073,9 @@ void FillInterTreeView(HWND tvhwnd)
  
 	HTREEITEM hti = NULL;
 
-	TreeView_DeleteAllItems(tvhwnd);
-	TreeView_SetBkColor(tvhwnd, 0x00000000);
-	TreeView_SetTextColor(tvhwnd, 0x00FFFFFF);
+	(void)TreeView_DeleteAllItems(tvhwnd);
+	(void)TreeView_SetBkColor(tvhwnd, 0x00000000);
+	(void)TreeView_SetTextColor(tvhwnd, 0x00FFFFFF);
 
 	if (TVVcount != 0)
 		for (i = 0; i < TVVcount; i++)
@@ -1207,7 +1207,7 @@ void FillInterTreeView(HWND tvhwnd)
 		}
 	}
 
-	TreeView_Expand(tvhwnd, hroot, TVE_EXPAND);
+	(void)TreeView_Expand(tvhwnd, hroot, TVE_EXPAND);
 }
  
  
