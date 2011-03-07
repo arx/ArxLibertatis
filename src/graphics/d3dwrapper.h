@@ -4,16 +4,16 @@
 
 #define D3D_OVERLOADS
 
-
 #include <cmath>
 #include "core/Common.h"
-#if ARX_COMPILER == ARX_COMPILER_GCC
+
+#if (ARX_COMPILER == ARX_COMPILER_GCC) || (ARX_COMPILER == ARX_COMPILER_GCC64)
     #pragma GCC diagnostic ignored "-fpermissive"
 #endif
 
 #include <d3d.h>
 
-#if ARX_COMPILER == ARX_COMPILER_GCC
+#if (ARX_COMPILER == ARX_COMPILER_GCC) || (ARX_COMPILER == ARX_COMPILER_GCC64)
     #pragma GCC diagnostic error "-fpermissive"
 #endif
     

@@ -244,14 +244,14 @@ HWND ShowErrorPopup(char * title, char * tex)
 	{
 		ARX_TIME_Pause();
 		danaeApp.Pause(true);
-		DialogBox((HINSTANCE)GetWindowLong(danaeApp.m_hWnd, GWL_HINSTANCE),
+		DialogBox((HINSTANCE)GetWindowLongPtr(danaeApp.m_hWnd, GWLP_HINSTANCE),
 		          MAKEINTRESOURCE(IDD_SCRIPTERROR), danaeApp.m_hWnd, IDDErrorLogProc);
 		danaeApp.Pause(false);
 		ARX_TIME_UnPause();
 		return NULL;
 	}
 
-	HWND hdl = CreateDialogParam((HINSTANCE)GetWindowLong(danaeApp.m_hWnd, GWL_HINSTANCE),
+	HWND hdl = CreateDialogParam((HINSTANCE)GetWindowLongPtr(danaeApp.m_hWnd, GWLP_HINSTANCE),
 	                             MAKEINTRESOURCE(IDD_SCRIPTERROR), danaeApp.m_hWnd, IDDErrorLogProc, 0);
 	return hdl;
 }
@@ -1230,14 +1230,14 @@ void LaunchInteractiveObjectsApp(HWND hwnd)
 	if (InterObjDlg) return;
 
 	InterObjDlg = CreateDialogParam(
-	                  (HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE),
+	                  (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE),
 	                  MAKEINTRESOURCE(IDD_INTERDLG),
 	                  hwnd,
 	                  InteractiveObjDlgProc, 0);
 
 	dlgTreeViewhWnd = GetDlgItem(InterObjDlg, IDC_INTERTREEVIEW);
-	lpfnOldWndProc = (WNDPROC)SetWindowLong(dlgTreeViewhWnd,
-	                                        GWL_WNDPROC, (DWORD)InterTreeViewSubClassFunc);
+	lpfnOldWndProc = (WNDPROC)SetWindowLongPtr(dlgTreeViewhWnd,
+	                                        GWLP_WNDPROC, (LONG_PTR)InterTreeViewSubClassFunc);
 	FillInterTreeView(dlgTreeViewhWnd);
 	ShowWindow(InterObjDlg, SW_SHOW);
 }
@@ -1278,7 +1278,7 @@ void LaunchSnapShotParamApp(HWND hwnd)
 	if (SnapShotDlg) return;
 
 	SnapShotDlg = CreateDialogParam(
-	                  (HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE),
+	                  (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE),
 	                  MAKEINTRESOURCE(IDD_SNAPSHOT),
 	                  hwnd,
 	                  SnapShotDlgProc, 0);
@@ -1548,13 +1548,13 @@ void LaunchLightThread(long minx, long minz, long maxx, long maxz)
 		{
 
 			ARX_TIME_Pause();
-			DialogBox((HINSTANCE)GetWindowLong(danaeApp.m_hWnd, GWL_HINSTANCE),
+			DialogBox((HINSTANCE)GetWindowLongPtr(danaeApp.m_hWnd, GWLP_HINSTANCE),
 			          MAKEINTRESOURCE(IDD_PRECALC), danaeApp.m_hWnd, PrecalcProc);
 			ARX_TIME_UnPause();
 		}
 
 		else
-			PRECALC = (CreateDialogParam((HINSTANCE)GetWindowLong(danaeApp.m_hWnd, GWL_HINSTANCE),
+			PRECALC = (CreateDialogParam((HINSTANCE)GetWindowLongPtr(danaeApp.m_hWnd, GWLP_HINSTANCE),
 			                             MAKEINTRESOURCE(IDD_PRECALC), danaeApp.m_hWnd, PrecalcProc, 0));
 	}
 
@@ -4092,7 +4092,7 @@ void TextBox(const char * title, char * text, long size)
 	GTE_TITLE = title;
 	GTE_TEXT = text;
 	GTE_SIZE = size;
-	DialogBox((HINSTANCE)GetWindowLong(danaeApp.m_hWnd, GWL_HINSTANCE),
+	DialogBox((HINSTANCE)GetWindowLongPtr(danaeApp.m_hWnd, GWLP_HINSTANCE),
 	          MAKEINTRESOURCE(IDD_GAIATEXTEDIT), danaeApp.m_hWnd, GaiaTextEdit);
 	ARX_TIME_UnPause();
 }
@@ -4116,13 +4116,13 @@ void launchlightdialog()
 			{
 				ARX_TIME_Pause();
 				danaeApp.Pause(true);
-				DialogBox((HINSTANCE)GetWindowLong(danaeApp.m_hWnd, GWL_HINSTANCE),
+				DialogBox((HINSTANCE)GetWindowLongPtr(danaeApp.m_hWnd, GWLP_HINSTANCE),
 				          MAKEINTRESOURCE(IDD_LIGHTDIALOG), danaeApp.m_hWnd, LightOptionsProc);
 				danaeApp.Pause(false);
 				ARX_TIME_UnPause();
 			}
 			else
-				CDP_LIGHTOptions = (CreateDialogParam((HINSTANCE)GetWindowLong(danaeApp.m_hWnd, GWL_HINSTANCE),
+				CDP_LIGHTOptions = (CreateDialogParam((HINSTANCE)GetWindowLongPtr(danaeApp.m_hWnd, GWLP_HINSTANCE),
 				                                      MAKEINTRESOURCE(IDD_LIGHTDIALOG), danaeApp.m_hWnd, LightOptionsProc, 0));
 		}
 	}

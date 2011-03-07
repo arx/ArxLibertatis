@@ -60,6 +60,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <sstream>
 #include <iomanip>
 #include <cstdio>
+#include <map>
 
 #include "ai/PathFinder.h"
 #include "ai/PathFinderManager.h"
@@ -3554,10 +3555,10 @@ bool IsVertexIdxInGroup(EERIE_3DOBJ * eobj, long idx, long grs)
 struct UNIQUE_HEADER
 {
 	char path[256];
-	long count;
-	float version;
-	long	compressedsize;
-	long	pad[3];
+	s32 count;
+	f32 version;
+	s32	compressedsize;
+	s32	pad[3];
 };
 #pragma pack(pop)
 
@@ -3574,11 +3575,11 @@ struct UNIQUE_HEADER2
 #pragma pack(push,1)
 struct FAST_VERTEX
 {
-	float	sy;
-	float	ssx;
-	float	ssz;
-	float	stu;
-	float	stv;
+	f32	sy;
+	f32	ssx;
+	f32	ssz;
+	f32	stu;
+	f32	stv;
 };
 #pragma pack(pop)
 
@@ -3586,41 +3587,39 @@ struct FAST_VERTEX
 struct FAST_EERIEPOLY
 {
 	FAST_VERTEX		v[4];
-	TextureContainer * tex;
+    s32 tex;
 	EERIE_3D		norm;
 	EERIE_3D		norm2;
 	EERIE_3D		nrml[4];
-	float			transval;
-	float			area;
-	long			type;
-	short			room;
-	short			paddy;
+	f32			transval;
+	f32			area;
+	s32			type;
+	s16			room;
+	s16			paddy;
 };
 #pragma pack(pop)
 
 #pragma pack(push,1)
 struct FAST_SCENE_HEADER
 {
-	float	version;
-	long	sizex;
-	long	sizez;
-	long	nb_textures;
-	long	nb_polys;
-	long	nb_anchors;
+	f32	version;
+	s32	sizex;
+	s32	sizez;
+	s32	nb_textures;
+	s32	nb_polys;
+	s32	nb_anchors;
 	EERIE_3D	playerpos;
 	EERIE_3D	Mscenepos;
-
-	long	nb_portals;
-	long	nb_rooms;
-
+	s32	nb_portals;
+	s32	nb_rooms;
 };
 #pragma pack(pop)
 
 #pragma pack(push,1)
 struct FAST_TEXTURE_CONTAINER
 {
-	TextureContainer * tc; // TODO pointer in struct used for saving/loading - ugh
-	TextureContainer * temp;
+    s32 tc;
+    s32 temp;
 	char		fic[256];
 };
 #pragma pack(pop)
@@ -3629,26 +3628,25 @@ struct FAST_TEXTURE_CONTAINER
 struct FAST__ANCHOR_DATA
 {
 	EERIE_3D	pos;
-	float		radius;
-	float		height;
-	short		nb_linked;
-	short		flags;
-
+	f32		radius;
+	f32		height;
+	s16		nb_linked;
+	s16		flags;
 };
 #pragma pack(pop)
 
 #pragma pack(push,1)
 struct FAST_SCENE_INFO
 {
-	long	nbpoly;
-	long	nbianchors;
+	s32	nbpoly;
+	s32	nbianchors;
 };
 #pragma pack(pop)
 
 #pragma pack(push,1)
 struct ROOM_DIST_DATA_SAVE
 {
-	float	distance; // -1 means use truedist
+	f32	distance; // -1 means use truedist
 	EERIE_3D startpos;
 	EERIE_3D endpos;
 };
@@ -3660,6 +3658,10 @@ extern void LoadLevelScreen(long lev);
 extern float PROGRESS_BAR_COUNT;
 long NOCHECKSUM = 0;
 long USE_FAST_SCENES = 1;
+
+typedef std::map<s32, TextureContainer *> TextureContainerMap;
+
+TextureContainerMap tcLookupTable;
 
 bool FastSceneLoad(const char * partial_path)
 {
@@ -3847,10 +3849,13 @@ bool FastSceneLoad(const char * partial_path)
 		FAST_TEXTURE_CONTAINER * ftc = (FAST_TEXTURE_CONTAINER *)(rawdata + pos);
 		char fic[256];
 		sprintf(fic, "%s", ftc->fic);
-		ftc->temp = D3DTextr_CreateTextureFromFile(fic, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
 
-		if ((ftc->temp) && (GDevice) && (ftc->temp->m_pddsSurface == NULL)) ftc->temp->Restore(GDevice);
-
+        TextureContainer * tmpTC = D3DTextr_CreateTextureFromFile(fic, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
+        if (tmpTC)
+        {
+            tcLookupTable[ftc->tc] = tmpTC;
+            if ((GDevice) && (tmpTC->m_pddsSurface == NULL)) tmpTC->Restore(GDevice);
+        }
 		pos += sizeof(FAST_TEXTURE_CONTAINER);
 	}
 
@@ -3893,25 +3898,30 @@ bool FastSceneLoad(const char * partial_path)
 				FAST_EERIEPOLY * ep = (FAST_EERIEPOLY *)(rawdata + pos);
 				pos += sizeof(FAST_EERIEPOLY);
 
-				if (ep->tex != NULL)
+                TextureContainer * tmpTC = 0;
+				if (ep->tex != 0)
 				{
-					FAST_TEXTURE_CONTAINER * temp_tex = (FAST_TEXTURE_CONTAINER *)tex;
-
-					for (kk = 0; kk < fsh->nb_textures; kk++)
+                    kk = 0;
+                    while ((tmpTC == 0) && (kk < fsh->nb_textures))
 					{
-						if ((temp_tex->tc == ep->tex) && (temp_tex != NULL)
-						        && (temp_tex->temp)
-						        && (temp_tex->temp->m_texName[0] != 0))
+                        FAST_TEXTURE_CONTAINER * tmpFTC = (FAST_TEXTURE_CONTAINER *)(tex + sizeof(FAST_TEXTURE_CONTAINER) * kk);
+                        if (tmpFTC->tc == ep->tex)
 						{
-							ep->tex = temp_tex->temp;
-							goto oki;
+                            TextureContainerMap::const_iterator cit = tcLookupTable.find(ep->tex);
+                            if (cit != tcLookupTable.end())
+					{
+                                tmpTC = cit->second;
+                            }
+                            else
+						{
+                                kk = fsh->nb_textures;
+                            }
 						}
-						else temp_tex = (FAST_TEXTURE_CONTAINER *)(tex + sizeof(FAST_TEXTURE_CONTAINER) * (kk + 1));
+						else
+                        {
+                            kk++;
+						}
 					}
-
-					ep->tex = NULL;
-				oki:
-					;
 				}
 
 				EERIEPOLY * ep2 = &ACTIVEBKG->Backg[i+j*fsh->sizex].polydata[k];
@@ -3925,7 +3935,7 @@ bool FastSceneLoad(const char * partial_path)
 				ep2->norm2.y = ep->norm2.y;
 				ep2->norm2.z = ep->norm2.z;
 				memcpy(ep2->nrml, ep->nrml, sizeof(EERIE_3D) * 4);
-				ep2->tex = ep->tex;
+				ep2->tex = tmpTC;
 				ep2->transval = ep->transval;
 				ep2->type = ep->type;
 
@@ -4025,8 +4035,8 @@ bool FastSceneLoad(const char * partial_path)
 
 			for (k = 0; k < fsi->nbianchors; k++)
 			{
-				long * ianch = (long *)(rawdata + pos);
-				pos += sizeof(long);
+				s32 * ianch = (s32 *)(rawdata + pos);
+				pos += sizeof(s32);
 				ACTIVEBKG->Backg[i+j * fsh->sizex].ianchors[k] = *ianch;
 			}
 		}
@@ -4069,8 +4079,8 @@ bool FastSceneLoad(const char * partial_path)
 
 		for (long kk = 0; kk < fad->nb_linked; kk++)
 		{
-			long * lng = (long *)(rawdata + pos);
-			pos += sizeof(long);
+			s32 * lng = (s32 *)(rawdata + pos);
+			pos += sizeof(s32);
 			ACTIVEBKG->anchors[i].linked[kk] = *lng;
 		}
 	}
@@ -4130,9 +4140,12 @@ bool FastSceneLoad(const char * partial_path)
 			{
 				portals->room[i].portals =	(long *)	malloc(sizeof(long) * portals->room[i].nb_portals);
 
-				long * lng = (long *)(rawdata + pos);
-				pos += sizeof(long) * portals->room[i].nb_portals;
-				memcpy(portals->room[i].portals, lng, sizeof(long)*portals->room[i].nb_portals);
+                for (long jj = 0; jj < portals->room[i].nb_portals; jj++)
+                {
+                    s32 * lng = (s32 *)(rawdata + pos);
+                    pos += sizeof(s32);
+                    portals->room[i].portals[jj] = *lng;
+                }
 			}
 			else
 			{
@@ -4241,7 +4254,7 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms) {
 		for (i = 0; i < portals->nb_rooms + 1; i++)
 		{
 			allocsize += sizeof(EERIE_ROOM_DATA);
-			allocsize += sizeof(long) * portals->room[i].nb_portals;
+			allocsize += sizeof(s32) * portals->room[i].nb_portals;
 			allocsize += sizeof(EP_DATA) * portals->room[i].nb_polys;
 		}
 
@@ -4351,6 +4364,7 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms) {
 	fsh->nb_polys = 0;
 
 	//Count textures...
+/*
 	for (j = 0; j < fsh->sizez; j++)
 		for (i = 0; i < fsh->sizex; i++)
 		{
@@ -4385,6 +4399,7 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms) {
 				}
 			}
 		}
+*/
 
 	for (j = 0; j < fsh->sizez; j++)
 		for (i = 0; i < fsh->sizex; i++)
@@ -4419,7 +4434,7 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms) {
 				ep->norm2.y = ep2->norm2.y;
 				ep->norm2.z = ep2->norm2.z;
 				memcpy(ep->nrml, ep2->nrml, sizeof(EERIE_3D) * 4);
-				ep->tex = ep2->tex;
+				ep->tex = 0; //ep2->tex; FIXME
 				ep->transval = ep2->transval;
 				ep->type = ep2->type;
 
@@ -4435,8 +4450,8 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms) {
 
 			for (k = 0; k < fsi->nbianchors; k++)
 			{
-				long * ianch = (long *)(dat + pos);
-				pos += sizeof(long);
+				s32 * ianch = (s32 *)(dat + pos);
+				pos += sizeof(s32);
 
 				if (pos >= allocsize - 100000) goto error;
 
@@ -4461,8 +4476,8 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms) {
 
 		for (long kk = 0; kk < fad->nb_linked; kk++)
 		{
-			long * lng = (long *)(dat + pos);
-			pos += sizeof(long);
+			s32 * lng = (s32 *)(dat + pos);
+			pos += sizeof(s32);
 
 			if (pos >= allocsize - 100000) goto error;
 
@@ -4509,11 +4524,11 @@ bool FastSceneSave(const char * partial_path, EERIE_MULTI3DSCENE * ms) {
 			erd->nb_polys = portals->room[i].nb_polys;
 			erd->nb_portals = portals->room[i].nb_portals;
 
-			if (portals->room[i].nb_portals)
+            for (long jj = 0; jj < portals->room[i].nb_portals; jj++)
 			{
-				long * lng = (long *)(dat + pos);
-				pos += sizeof(long) * portals->room[i].nb_portals;
-				memcpy(lng, portals->room[i].portals, sizeof(long)*portals->room[i].nb_portals);
+                s32 * lng = (s32 *)(dat + pos);
+                pos += sizeof(s32);
+                *lng = portals->room[i].portals[jj];
 			}
 
 			if (portals->room[i].nb_polys)
@@ -5079,7 +5094,7 @@ void ComputePortalVertexBuffer()
 				continue;
 			}
 
-			pRoom->pussIndice = (unsigned short *)malloc(2 * iNbIndiceForRoom);
+			pRoom->pussIndice = (unsigned short *)malloc(sizeof(unsigned short) * iNbIndiceForRoom);
 			int iFlag = D3DVBCAPS_WRITEONLY;
 
 			if (!(danaeApp.m_pDeviceInfo->ddDeviceDesc.dwDevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT))
@@ -5132,7 +5147,7 @@ void ComputePortalVertexBuffer()
 
 			int iStartVertex = 0;
 			int iStartCull = 0;
-			vector<SINFO_TEXTURE_VERTEX *>::iterator it;
+			std::vector<SINFO_TEXTURE_VERTEX *>::iterator it;
 
 			for (it = vTextureVertex.begin(); it < vTextureVertex.end(); it++)
 			{
@@ -5199,7 +5214,7 @@ void ComputePortalVertexBuffer()
 
 				//texturecontainer
 				pRoom->usNbTextures++;
-				pRoom->ppTextureContainer = (TextureContainer **)realloc(pRoom->ppTextureContainer, 4 * pRoom->usNbTextures);
+                pRoom->ppTextureContainer = (TextureContainer **)realloc(pRoom->ppTextureContainer, sizeof(TextureContainer *) * pRoom->usNbTextures);
 				pRoom->ppTextureContainer[pRoom->usNbTextures-1] = pTextureContainer;
 
 				pTextureContainer->tMatRoom[iNb].uslStartVertex = iStartVertex;

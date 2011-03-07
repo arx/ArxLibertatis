@@ -285,8 +285,8 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst) {
 	else
 	{
 		MSGhwnd = m_hWnd = m_dlghWnd;
-		m_OldProc = (WNDPROC)SetWindowLong(m_hWnd,
-		                                   GWL_WNDPROC, (DWORD)WndProc);
+		m_OldProc = (WNDPROC)SetWindowLongPtr(m_hWnd,
+		                                   GWLP_WNDPROC, (LONG_PTR)WndProc);
 		b_dlg = true;
 		m_bActive = true;
 	}

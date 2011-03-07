@@ -2863,13 +2863,13 @@ bool DANAE::ManageEditorControls()
 				{
 					ARX_TIME_Pause();
 					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+					DialogBox( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 						MAKEINTRESOURCE(IDD_PATHWAYDLG), this->m_hWnd, PathwayOptionsProc);
 					Pause(false);
 					ARX_TIME_UnPause();				
 				}
 				else
-					CDP_PATHWAYS_Options=(CreateDialogParam( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+					CDP_PATHWAYS_Options=(CreateDialogParam( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 					MAKEINTRESOURCE(IDD_PATHWAYDLG), this->m_hWnd, PathwayOptionsProc,0 ));
 
 				this->kbd.inkey[INKEY_RETURN]=0;
@@ -3469,13 +3469,13 @@ bool DANAE::ManageEditorControls()
 				{
 					ARX_TIME_Pause();
 					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+					DialogBox( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 						MAKEINTRESOURCE(IDD_FOGDIALOG), this->m_hWnd, FogOptionsProc);
 					Pause(false);
 					ARX_TIME_UnPause();				
 				}
 				else
-					CDP_FogOptions=(CreateDialogParam( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+					CDP_FogOptions=(CreateDialogParam( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 					MAKEINTRESOURCE(IDD_FOGDIALOG), this->m_hWnd, FogOptionsProc,0 ));
 			}
 
@@ -3777,13 +3777,13 @@ bool DANAE::ManageEditorControls()
 				{
 					ARX_TIME_Pause();
 					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+					DialogBox( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 						MAKEINTRESOURCE(IDD_SCRIPTDIALOG), this->m_hWnd, IOOptionsProc);
 					Pause(false);
 					ARX_TIME_UnPause();				
 				}
 				else
-					CDP_IOOptions=(CreateDialogParam( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+					CDP_IOOptions=(CreateDialogParam( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 					MAKEINTRESOURCE(IDD_SCRIPTDIALOG), this->m_hWnd, IOOptionsProc,0 ));
 			}
 
@@ -5853,13 +5853,13 @@ void DANAE::ManageKeyMouse()
 							{
 								ARX_TIME_Pause();
 								Pause(true);
-								DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+								DialogBox( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 									MAKEINTRESOURCE(IDD_SCRIPTDIALOG), this->m_hWnd, IOOptionsProc);
 								Pause(false);
 								ARX_TIME_UnPause();				
 							}
 							else
-								CDP_IOOptions=(CreateDialogParam( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+								CDP_IOOptions=(CreateDialogParam( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 								MAKEINTRESOURCE(IDD_SCRIPTDIALOG), this->m_hWnd, IOOptionsProc,0 ));
 						}
 					}

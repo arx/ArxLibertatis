@@ -435,10 +435,10 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file) {
 		}
 		
 		// Now Read Sound Data included in this frame
-		long num_sample;
-		memcpy(&num_sample, adr + pos, sizeof(long));
-		pos += sizeof(long);
-		LogDebug << " -> num_sample " << num_sample << " long:" << sizeof(long);
+		s32 num_sample;
+		memcpy(&num_sample, adr + pos, sizeof(s32));
+		pos += sizeof(s32);
+		LogDebug << " -> num_sample " << num_sample << " s32:" << sizeof(s32);
 		
 		eerie->frames[i].sample = -1;
 		if(num_sample != -1) {
@@ -454,7 +454,7 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file) {
 		
 		//long num_sfx;
 		//memcpy(&num_sfx, adr + pos, sizeof(long));
-		pos += sizeof(long);
+		pos += sizeof(s32);
 	}
 	
 	for(long i = 0; i < th.nb_key_frames; i++) {
@@ -1284,13 +1284,13 @@ EERIE_3DSCENE * ScnToEerie(unsigned char * adr, size_t size, const std::string& 
 		SendConsole(texx, 2, 0, (HWND)MSGhwnd);
 		sprintf(texx, "---------THEO SCN FILE---------");
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "Version %lu Nb Textures %ld", psth->version, psth->nb_maps);
+		sprintf(texx, "Version %u Nb Textures %d", psth->version, psth->nb_maps);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
 	}
 
 	if ((psth->version < 3008) || (psth->version > 3024))
 	{
-		sprintf(texx, "\nINVALID Theo Version !!!\nVersion Found    - %lu\nVersion Required - %d to %d\n\nPlease Update File\n%s", psth->version, 3008, 3024, fic.c_str());
+		sprintf(texx, "\nINVALID Theo Version !!!\nVersion Found    - %u\nVersion Required - %d to %d\n\nPlease Update File\n%s", psth->version, 3008, 3024, fic.c_str());
 		LogError << "ScnToEerie " << texx;
 		free(seerie);
 		seerie = NULL;
@@ -1362,8 +1362,8 @@ EERIE_3DSCENE * ScnToEerie(unsigned char * adr, size_t size, const std::string& 
 
 	// Objects read /////////////////////////////////////////////////
 	pos = psth->object_seek;
-	memcpy(&nbo, adr + pos, sizeof(long));
-	pos += sizeof(long);
+	memcpy(&nbo, adr + pos, sizeof(s32));
+	pos += sizeof(s32);
 
 	if (DEBUGG)
 	{
@@ -1515,7 +1515,7 @@ EERIE_3DSCENE * ScnToEerie(unsigned char * adr, size_t size, const std::string& 
 
 	if (DEBUGG)
 	{
-		sprintf(texx, "Version %ld Nb Textures %ld", psth->version, psth->nb_maps);
+		sprintf(texx, "Version %d Nb Textures %d", psth->version, psth->nb_maps);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
 	}
 
@@ -2171,19 +2171,19 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, 
 		SendConsole(texx, 2, 0, (HWND)MSGhwnd);
 		sprintf(texx, "-----------THEO FILE-----------");
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "----------THEO header---------- size %d", sizeof(THEO_HEADER));
+		sprintf(texx, "----------THEO header---------- size %ld", sizeof(THEO_HEADER));
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
 		sprintf(texx, "Identity----------------------- %s", pth->identity);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "Version------------------------ %lu", pth->version);
+		sprintf(texx, "Version------------------------ %u", pth->version);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "Maps Seek---------------------- %ld", pth->maps_seek);
+		sprintf(texx, "Maps Seek---------------------- %d", pth->maps_seek);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "Objects Seek------------------- %ld", pth->object_seek);
+		sprintf(texx, "Objects Seek------------------- %d", pth->object_seek);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "NB maps------------------------ %ld", pth->nb_maps);
+		sprintf(texx, "NB maps------------------------ %d", pth->nb_maps);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "Type_Write--------------------- %lu", pth->type_write);
+		sprintf(texx, "Type_Write--------------------- %u", pth->type_write);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
 	}
 
@@ -2191,7 +2191,7 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, 
 	{
 		if (!(flag & TTE_NOPOPUP))
 		{
-			sprintf(texx, "\nINVALID Theo Version !!!\nVersion Found    - %lu\nVersion Required - %d to %d\n\nPlease Update File\n%s", pth->version, 3004, 3011, fic);
+			sprintf(texx, "\nINVALID Theo Version !!!\nVersion Found    - %u\nVersion Required - %d to %d\n\nPlease Update File\n%s", pth->version, 3004, 3011, fic);
 			LogError << "TheoToEerie " << texx;
 		}
 

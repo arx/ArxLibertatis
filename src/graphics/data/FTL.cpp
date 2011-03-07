@@ -92,44 +92,44 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 struct ARX_FTL_PRIMARY_HEADER
 {
 	char			ident[4]; // FTL
-	float			version; // starting with version 1.0f
+	f32			version; // starting with version 1.0f
 };
 
 struct ARX_FTL_SECONDARY_HEADER
 {
-	long	offset_3Ddata;				// -1 = no
-	long	offset_cylinder;			// -1 = no
-	long	offset_progressive_data;	// -1 = no
-	long	offset_clothes_data;		// -1 = no
-	long	offset_collision_spheres;	// -1 = no
-	long	offset_physics_box;			// -1 = no
+	s32	offset_3Ddata;				// -1 = no
+	s32	offset_cylinder;			// -1 = no
+	s32	offset_progressive_data;	// -1 = no
+	s32	offset_clothes_data;		// -1 = no
+	s32	offset_collision_spheres;	// -1 = no
+	s32	offset_physics_box;			// -1 = no
 };
 
 struct ARX_FTL_PROGRESSIVE_DATA_HEADER
 {
-	long	nb_vertex;
+	s32	nb_vertex;
 };
 
 struct ARX_FTL_CLOTHES_DATA_HEADER
 {
-	long	nb_cvert;
-	long	nb_springs;
+	s32	nb_cvert;
+	s32	nb_springs;
 };
 
 struct ARX_FTL_COLLISION_SPHERES_DATA_HEADER
 {
-	long	nb_spheres;
+	s32	nb_spheres;
 };
 
 struct ARX_FTL_3D_DATA_HEADER
 {
-	long	nb_vertex;			// ...
-	long	nb_faces;			// ...
-	long	nb_maps;			// ...
-	long	nb_groups;			// ...
-	long	nb_action;			// ...
-	long	nb_selections;		// data will follow this order
-	long	origin;
+	s32	nb_vertex;			// ...
+	s32	nb_faces;			// ...
+	s32	nb_maps;			// ...
+	s32	nb_groups;			// ...
+	s32	nb_action;			// ...
+	s32	nb_selections;		// data will follow this order
+	s32	origin;
 	char	name[256];
 };
 
@@ -140,52 +140,52 @@ struct Texture_Container_FTL
 
 struct EERIE_FACE_FTL
 {
-	long		facetype;	// 0 = flat  1 = text
+	s32		facetype;	// 0 = flat  1 = text
 							// 2 = Double-Side
 	D3DCOLOR	rgb[IOPOLYVERT];
-	unsigned short		vid[IOPOLYVERT];
-	short		texid; 
-	float		u[IOPOLYVERT];
-	float		v[IOPOLYVERT];
-	short		ou[IOPOLYVERT];
-	short		ov[IOPOLYVERT];
+	u16		vid[IOPOLYVERT];
+	s16		texid;
+	f32		u[IOPOLYVERT];
+	f32		v[IOPOLYVERT];
+	s16		ou[IOPOLYVERT];
+	s16		ov[IOPOLYVERT];
 
-	float		transval;
+	f32		transval;
 	EERIE_3D	norm;
 	EERIE_3D	nrmls[IOPOLYVERT];
-	float		temp;
+	f32		temp;
 
 }; // Aligned 1 2 4
 
 struct EERIE_GROUPLIST_FTL
 {
 	char name[256];
-	long		origin;
-	long		nb_index;
-	long 	*	indexes;
-	float		siz;
+	s32		origin;
+	s32		nb_index;
+	s32 	indexes;
+	f32		siz;
 }; // Aligned 1 2 4
 
 struct EERIE_ACTIONLIST_FTL
 {
 	char name[256];
-	long			idx; //index vertex;
-	long			act; //action
-	long			sfx; //sfx
+	s32			idx; //index vertex;
+	s32			act; //action
+	s32			sfx; //sfx
 }; // Aligned 1 2 4
 
 struct EERIE_SELECTIONS_FTL
 {
 	char	name[64];
-	long	nb_selected;
-	long *	selected;
+	s32	nb_selected;
+	s32 selected;
 }; // Aligned 1 2 4
 
 struct COLLISION_SPHERE_FTL
 {
-	short			idx;
-	short			flags;
-	float			radius;
+	s16			idx;
+	s16			flags;
+	f32			radius;
 }; // Aligned 1 2 4
 
 // End of Structures definitions
@@ -858,8 +858,8 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 				if (!obj->grouplist[i].indexes.empty())
 				{
 					size_t oldpos = pos;
-					pos += sizeof(long) * obj->grouplist[i].indexes.size(); // Advance to the next index block
-					std::copy((long*)(dat+oldpos), (long*)(dat+pos), obj->grouplist[i].indexes.begin());
+					pos += sizeof(s32) * obj->grouplist[i].indexes.size(); // Advance to the next index block
+					std::copy((s32*)(dat+oldpos), (s32*)(dat+pos), obj->grouplist[i].indexes.begin());
 					
 				}
 		}
@@ -889,10 +889,10 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 			// Copy in the selections selected data
 			for (long i = 0; i < af3Ddh->nb_selections; i++)
 			{
-				std::copy( (long*)(dat+pos),
-				           (long*)(dat+pos + sizeof(long)*obj->selections[i].selected.size()),
+				std::copy( (s32*)(dat+pos),
+				           (s32*)(dat+pos + sizeof(s32)*obj->selections[i].selected.size()),
 				           obj->selections[i].selected.begin() );
-				pos += sizeof(long) * obj->selections[i].selected.size(); // Advance to the next selection data block
+				pos += sizeof(s32) * obj->selections[i].selected.size(); // Advance to the next selection data block
 			}
 
 		obj->pbox = NULL; // Reset physics

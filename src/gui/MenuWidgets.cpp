@@ -3648,7 +3648,7 @@ CMenuElementText::CMenuElementText(int _iID, HFONT _pHFont, const std::string& _
 	lColorHighlight=lOldColor=RGB(255, 255, 255);
 
 	fSize=_fSize;
-	iId=(int)this;
+	pRef=this;
 
 	bSelected = false;
 
@@ -4319,13 +4319,13 @@ MENUSTATE CMenuState::Update(int _iDTime)
 
 	pZoneClick=NULL;
 
-	int iR=pMenuAllZone->CheckZone(pGetInfoDirectInput->iMouseAX,pGetInfoDirectInput->iMouseAY);
+	CMenuZone * iR=pMenuAllZone->CheckZone(pGetInfoDirectInput->iMouseAX,pGetInfoDirectInput->iMouseAY);
 
 	bool bReturn=false;
 
 	if(pGetInfoDirectInput->GetMouseButton(DXI_BUTTON0))
 	{
-		if(iR!=-1)
+		if(iR != 0)
 		{
 			pZoneClick=(CMenuElement*)iR;
 
@@ -4335,7 +4335,7 @@ MENUSTATE CMenuState::Update(int _iDTime)
 	}
 	else
 	{
-		if(iR!=-1)
+		if(iR != 0)
 		{
 			pZoneClick=(CMenuElement*)iR;
 		}
@@ -4413,14 +4413,14 @@ CMenuZone::CMenuZone()
 
 //-----------------------------------------------------------------------------
 
-CMenuZone::CMenuZone(int _iX1,int _iY1,int _iX2,int _iY2,int _iId)
+CMenuZone::CMenuZone(int _iX1,int _iY1,int _iX2,int _iY2, CMenuZone * _pRef)
 {
 	bActif=true;
 	rZone.left=_iX1;
 	rZone.top=_iY1;
 	rZone.right=_iX2;
 	rZone.bottom=_iY2;
-	iId=_iId;
+	pRef=_pRef;
 
 	iID=-1;
 	lData=0;
@@ -4466,7 +4466,7 @@ void CMenuZone::SetPos(float _fX,float _fY)
 
 //-----------------------------------------------------------------------------
 
-long CMenuZone::IsMouseOver(int _iX, int _iY)
+CMenuZone * CMenuZone::IsMouseOver(int _iX, int _iY)
 {
 	int iYDouble=0;
 
@@ -4479,11 +4479,10 @@ long CMenuZone::IsMouseOver(int _iX, int _iY)
 		(_iX >= rZone.left) &&
 		(_iY >= (rZone.top-iYDouble)) &&
 		(_iX <= rZone.right) &&
-		(_iY <= (rZone.bottom+iYDouble))
-		)
-		return iId;
+		(_iY <= (rZone.bottom+iYDouble)) )
+		return pRef;
 
-	return -1;
+	return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -4518,7 +4517,7 @@ void CMenuAllZone::AddZone(CMenuZone *_pMenuZone)
 
 //-----------------------------------------------------------------------------
 
-int CMenuAllZone::CheckZone(int _iPosX,int _iPosY)
+CMenuZone * CMenuAllZone::CheckZone(int _iPosX,int _iPosY)
 {
 	std::vector<CMenuZone*>::iterator i;
 
@@ -4528,14 +4527,14 @@ int CMenuAllZone::CheckZone(int _iPosX,int _iPosY)
 
 		if(zone->bCheck && zone->bActif)
 		{
-			long iIndex = ((*i)->IsMouseOver(_iPosX, _iPosY));
+			CMenuZone * pRef = ((*i)->IsMouseOver(_iPosX, _iPosY));
 
-			if (iIndex != -1)
-				return iIndex;
+            if (pRef != 0)
+                return pRef;
 		}
 	}
 
-	return -1;
+	return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -4700,7 +4699,7 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 	rZone.top        = ARX_CLEAN_WARN_CAST_LONG( _fPosY );
 	rZone.right        = ARX_CLEAN_WARN_CAST_LONG( _fPosX + _iTaille + x );
 	rZone.bottom    = ARX_CLEAN_WARN_CAST_LONG( _fPosY + max(_iTaille, y) );
-	iId=(int)this;
+	pRef=this;
 
 	if (_pTex2)
 	{
@@ -5666,9 +5665,9 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 		if (!bEdit)
 		{
 			pZoneClick=NULL;
-			int iR = MenuAllZone.CheckZone(pGetInfoDirectInput->iMouseAX,pGetInfoDirectInput->iMouseAY);
+			CMenuZone * iR = MenuAllZone.CheckZone(pGetInfoDirectInput->iMouseAX,pGetInfoDirectInput->iMouseAY);
 
-			if(iR!=-1)
+			if(iR != 0)
 			{
 				pZoneClick=(CMenuElement*)iR;
 
@@ -5702,9 +5701,9 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 		{
 			if(!pZoneClick)
 			{
-				int iR = MenuAllZone.CheckZone(pGetInfoDirectInput->iMouseAX,pGetInfoDirectInput->iMouseAY);
+				CMenuZone * iR = MenuAllZone.CheckZone(pGetInfoDirectInput->iMouseAX,pGetInfoDirectInput->iMouseAY);
 
-				if(iR!=-1)
+				if(iR != 0)
 				{
 					pZoneClick=(CMenuElement*)iR;
 
@@ -6098,7 +6097,7 @@ CMenuPanel::CMenuPanel()
 {
 	vElement.clear();
 
-	iId = (int) this;
+	pRef = this;
 }
 
 //-----------------------------------------------------------------------------
@@ -6216,7 +6215,7 @@ CMenuZone * CMenuPanel::GetZoneWithID(int _iID)
 
 //-----------------------------------------------------------------------------
 
-long CMenuPanel::IsMouseOver(int _iX, int _iY)
+CMenuZone * CMenuPanel::IsMouseOver(int _iX, int _iY)
 {
 	if ((_iX >= rZone.left) &&
 		(_iY >= rZone.top) &&
@@ -6233,11 +6232,11 @@ long CMenuPanel::IsMouseOver(int _iX, int _iY)
 				(_iY >= (*i)->rZone.top) &&
 				(_iX <= (*i)->rZone.right) &&
 				(_iY <= (*i)->rZone.bottom))
-				return (*i)->iId;
+				return (*i)->pRef;
 		}
 	}
 
-	return -1;
+	return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -6294,7 +6293,7 @@ CMenuButton::CMenuButton(int _iID, HFONT _pHFont,MENUSTATE _eMenuState,int _iPos
 
 	iColor=_iColor;
 
-	iId=(int)this;
+	pRef=this;
 }
 
 //-----------------------------------------------------------------------------
@@ -6519,7 +6518,7 @@ CMenuSliderText::CMenuSliderText(int _iID, int _iPosX, int _iPosY)
 	rZone.right  = _iPosX + pLeftButton->GetWidth() + pRightButton->GetWidth();
 	rZone.bottom = _iPosY + max(pLeftButton->GetHeight(), pRightButton->GetHeight());
 
-	iId = (int) this;
+	pRef = this;
 }
 
 //-----------------------------------------------------------------------------
@@ -6829,7 +6828,7 @@ CMenuSlider::CMenuSlider(int _iID, int _iPosX, int _iPosY)
 
 	pRightButton->Move(pLeftButton->GetWidth() + 10*max(pTex1->m_dwWidth, pTex2->m_dwWidth), 0);
 
-	iId = (int) this;
+	pRef = this;
 }
 
 CMenuSlider::~CMenuSlider()

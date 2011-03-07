@@ -81,10 +81,10 @@ typedef struct
 	char        name[512];
 	EERIE_3D    pos;
 	EERIE_3D    angle;
-	long        ident; 
-	long        flags; 
-	long        pad[14];
-	float       fpad[16];
+	s32        ident;
+	s32        flags;
+	s32        pad[14];
+	f32       fpad[16];
 } DANAE_LS_INTER; // Aligned 1 2 4
 #pragma pack(pop)
 

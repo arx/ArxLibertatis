@@ -127,7 +127,7 @@ struct CinematicLight_1_72 {
 	float fallin;
 	float fallout;
 	float r, g, b;
-	float intensite;
+	float intensity;
 	float intensiternd;
 };
 
@@ -150,6 +150,17 @@ struct C_KEY_1_72 {
 
 // Version 1.74 structures
 
+struct CinematicLight_1_74 {
+	EERIE_3D pos;
+	float fallin;
+	float fallout;
+	float r, g, b;
+	float intensity;
+	float intensiternd;
+	int   prev;
+	int   next;
+};
+
 struct C_KEY_1_74 {
 	int frame;
 	int numbitmap;
@@ -162,7 +173,7 @@ struct C_KEY_1_74 {
 	int colorf;
 	int idsound;
 	float speed;
-	CinematicLight light;
+	CinematicLight_1_74 light;
 	EERIE_3D posgrille;
 	float angzgrille;
 };
@@ -181,10 +192,30 @@ struct C_KEY_1_75 {
 	int colorf;
 	int idsound;
 	float speed;
-	CinematicLight light;
+	CinematicLight_1_74 light;
 	EERIE_3D posgrille;
 	float angzgrille;
 	float speedtrack;
+};
+
+// Version 1.75 structures
+
+struct C_KEY_1_76 {
+	int frame;
+	int numbitmap;
+	int fx; // associated fx
+	short typeinterp, force;
+	EERIE_3D pos;
+	float angz;
+	int color;
+	int colord;
+	int colorf;
+	float speed;
+	CinematicLight_1_74 light;
+	EERIE_3D posgrille;
+	float angzgrille;
+	float speedtrack;
+	int idsound[16];
 };
 
 #pragma pack(pop)
@@ -398,10 +429,10 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 	AllocTrack(t.startframe, t.endframe, t.fps);
 	
 	// Hack: ignore the pointer at the end of the struct.
-	data -= 4;
-	size += 4;
+	data -= sizeof(void *);
+	size += sizeof(void *);
 	
-	LogDebug << "nkey " << t.nbkey << " " << size << " " << sizeof(C_KEY);
+	LogDebug << "nkey " << t.nbkey << " " << size << " " << sizeof(C_KEY_1_76);
 	for(int i = 0; i < t.nbkey; i++) {
 		
 		C_KEY k;
@@ -543,7 +574,7 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			k.light.r = k172.light.r;
 			k.light.g = k172.light.g;
 			k.light.b = k172.light.b;
-			k.light.intensity = k172.light.intensite;
+			k.light.intensity = k172.light.intensity;
 			k.light.intensiternd = k172.light.intensiternd;
 			k.posgrille.x = k172.posgrille.x;
 			k.posgrille.y = k172.posgrille.y;
@@ -624,10 +655,37 @@ bool parseCinematic(Cinematic * c, const char * data, size_t size) {
 			k.speedtrack = k175.speedtrack;
 			
 		} else {
-			if(!safeGet(k, data, size)) {
+			C_KEY_1_76 k176;
+			if(!safeGet(k176, data, size)) {
 				LogDebug << "error reading key v1.76";
 				return false;
 			}
+
+			k.angz = k176.angz;
+			k.color = k176.color;
+			k.colord = k176.colord;
+			k.colorf = k176.colorf;
+			k.frame = k176.frame;
+			k.fx = k176.fx;
+			k.numbitmap = k176.numbitmap;
+			k.pos = k176.pos;
+			k.speed = k176.speed;
+			k.typeinterp = k176.typeinterp;
+			k.force = k176.force;
+			k.light.pos = k176.light.pos;
+			k.light.fallin = k176.light.fallin;
+			k.light.fallout = k176.light.fallout;
+			k.light.r = k176.light.r;
+			k.light.g = k176.light.g;
+			k.light.b = k176.light.b;
+			k.light.intensity = k176.light.intensity;
+			k.light.intensiternd = k176.light.intensiternd;
+			k.posgrille.x = k176.posgrille.x;
+			k.posgrille.y = k176.posgrille.y;
+			k.posgrille.z = k176.posgrille.z;
+			k.angzgrille = k176.angzgrille;
+			k.speedtrack = k176.speedtrack;
+			memcpy(k.idsound, k176.idsound, sizeof(int) * 16);
 		}
 		
 		if(version <= ((1 << 16) | 67)) {

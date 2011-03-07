@@ -2573,7 +2573,7 @@ HRESULT DANAE::FrameMove()
 		{
 			this->kbd.inkey[INKEY_F4]=0;
 			ARX_TIME_Pause();
-			DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+			DialogBox( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 						   MAKEINTRESOURCE(IDD_LEVEL_SELECTOR), this->m_hWnd, ChangeLevelProc );
 
 			if (CHANGE_LEVEL_PROC_RESULT!=-1)
@@ -2601,7 +2601,7 @@ HRESULT DANAE::FrameMove()
 				this->kbd.inkey[INKEY_F2]=0;
 				ARX_TIME_Pause();
 				Pause(true);
-				DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+				DialogBox( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 					MAKEINTRESOURCE(IDD_OPTIONS), this->m_hWnd, OptionsProc );
 				EERIE_LIGHT_ChangeLighting();
 				Pause(false);
@@ -2612,7 +2612,7 @@ HRESULT DANAE::FrameMove()
 				this->kbd.inkey[INKEY_F3]=0;
 				ARX_TIME_Pause();
 				Pause(true);
-				DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+				DialogBox( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 							MAKEINTRESOURCE(IDD_OPTIONS2), this->m_hWnd, OptionsProc_2 );
 				Pause(false);
 				ARX_TIME_UnPause();
@@ -2931,14 +2931,14 @@ HRESULT DANAE::BeforeRun()
 		if (i==0)
 			strcpy(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin.teo");
 		else
-			sprintf(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin%d.teo",i+1);
+			sprintf(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin%ld.teo",i+1);
 
 		GoldCoinsObj[i]=	_LoadTheObj(temp,"..\\..\\..\\..\\textures\\");
 
 		if (i==0)
 			strcpy(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin[icon].bmp");
 		else
-			sprintf(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin%d[icon].bmp",i+1);
+			sprintf(temp,	"Graph\\Obj3D\\Interactive\\Items\\Jewelry\\Gold_coin\\Gold_coin%ld[icon].bmp",i+1);
 
 		GoldCoinsTC[i] =	MakeTCFromFile_NoRefinement(temp);
 	}
@@ -7724,7 +7724,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_B015:
 					ARX_TIME_Pause();
 					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLong( danaeApp.m_hWnd, GWL_HINSTANCE ),
+					DialogBox( (HINSTANCE)GetWindowLongPtr( danaeApp.m_hWnd, GWLP_HINSTANCE ),
 							MAKEINTRESOURCE(IDD_SEARCH), danaeApp.m_hWnd, ScriptSearchProc);
 
 					if (SCRIPT_SEARCH_TEXT[0])
@@ -7941,13 +7941,13 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						{
 							ARX_TIME_Pause();
 							Pause(true);
-							DialogBox( (HINSTANCE)GetWindowLong( danaeApp.m_hWnd, GWL_HINSTANCE ),
+							DialogBox( (HINSTANCE)GetWindowLongPtr( danaeApp.m_hWnd, GWLP_HINSTANCE ),
 								MAKEINTRESOURCE(IDD_MESHREDUCTION), danaeApp.m_hWnd, MeshReductionProc);
 							Pause(false);
 							ARX_TIME_UnPause();				
 						}
 						else
-						MESH_REDUCTION_WINDOW=(CreateDialogParam( (HINSTANCE)GetWindowLong( danaeApp.m_hWnd, GWL_HINSTANCE ),
+						MESH_REDUCTION_WINDOW=(CreateDialogParam( (HINSTANCE)GetWindowLongPtr( danaeApp.m_hWnd, GWLP_HINSTANCE ),
 							MAKEINTRESOURCE(IDD_MESHREDUCTION), danaeApp.m_hWnd, MeshReductionProc,0 ));
 					}
 
@@ -7973,7 +7973,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_B013:
 					ARX_TIME_Pause();
 					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLong( hWnd, GWL_HINSTANCE ),
+					DialogBox( (HINSTANCE)GetWindowLongPtr( hWnd, GWLP_HINSTANCE ),
 							   MAKEINTRESOURCE(IDD_OPTIONS), hWnd, OptionsProc );
 					EERIE_LIGHT_ChangeLighting();
 					Pause(false);
@@ -8009,13 +8009,13 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 						{
 							ARX_TIME_Pause();
 							Pause(true);
-							DialogBox( (HINSTANCE)GetWindowLong( danaeApp.m_hWnd, GWL_HINSTANCE ),
+							DialogBox( (HINSTANCE)GetWindowLongPtr( danaeApp.m_hWnd, GWLP_HINSTANCE ),
 								MAKEINTRESOURCE(IDD_PRECALC), danaeApp.m_hWnd, PrecalcProc);
 							Pause(false);
 							ARX_TIME_UnPause();				
 						}
 						else
-						PRECALC=(CreateDialogParam( (HINSTANCE)GetWindowLong( danaeApp.m_hWnd, GWL_HINSTANCE ),
+						PRECALC=(CreateDialogParam( (HINSTANCE)GetWindowLongPtr( danaeApp.m_hWnd, GWLP_HINSTANCE ),
 							MAKEINTRESOURCE(IDD_PRECALC), danaeApp.m_hWnd, PrecalcProc,0 ));
 					}
 
@@ -8048,7 +8048,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 					std::stringstream ss;
 					ss << "Allocated Memory " << msize << " bytes " << (msize>>10) << " Kb";
 					ShowTextWindowtext = ss.str();
-					CreateDialogParam( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+					CreateDialogParam( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 							MAKEINTRESOURCE(IDD_SHOWTEXT), this->m_hWnd, (DLGPROC)ShowTextDlg,0 );
 				}
 				break;
@@ -8064,7 +8064,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_MENU_LANGUAGE:
 					ARX_TIME_Pause();
 					Pause(true);			
-					DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+					DialogBox( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 							MAKEINTRESOURCE(IDD_LANGUAGEDIALOG), this->m_hWnd, LanguageOptionsProc);
 					Localisation_Init();
 					Pause(false);
@@ -8231,7 +8231,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_MENU_ABOUT:
 					ARX_TIME_Pause();
 					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLong( hWnd, GWL_HINSTANCE ),
+					DialogBox( (HINSTANCE)GetWindowLongPtr( hWnd, GWLP_HINSTANCE ),
 							   MAKEINTRESOURCE(IDD_DANAEABOUT), hWnd, AboutProc );
 					Pause(false);
 					ARX_TIME_UnPause();
@@ -8239,7 +8239,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_MENU_OPTIONS:
 					ARX_TIME_Pause();
 					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLong( hWnd, GWL_HINSTANCE ),
+					DialogBox( (HINSTANCE)GetWindowLongPtr( hWnd, GWLP_HINSTANCE ),
 							   MAKEINTRESOURCE(IDD_OPTIONS), hWnd, OptionsProc );
 					Pause(false);
 					ARX_TIME_UnPause();
@@ -8247,7 +8247,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_MENU_OPTIONS2:
 					ARX_TIME_Pause();
 					Pause(true);
-					DialogBox( (HINSTANCE)GetWindowLong( this->m_hWnd, GWL_HINSTANCE ),
+					DialogBox( (HINSTANCE)GetWindowLongPtr( this->m_hWnd, GWLP_HINSTANCE ),
 							   MAKEINTRESOURCE(IDD_OPTIONS2), this->m_hWnd, OptionsProc_2 );
 					Pause(false);
 					ARX_TIME_UnPause();

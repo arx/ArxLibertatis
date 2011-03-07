@@ -119,7 +119,7 @@ else(MSVC)
 	set(CMAKE_C_COMPILER ${Wine_GCC})
 	
 	#set 32bit
-	set(CMAKE_CXX_FLAGS "-m32")
+        #set(CMAKE_CXX_FLAGS "-m32")
 	
 	# Check the dependencies so there won't by cryptic link errors later on when 32-bit libraries are missing.
 	check_link_library(DevIL ${IL_LIBRARIES} IL)

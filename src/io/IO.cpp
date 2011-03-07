@@ -173,7 +173,7 @@ void ConsoleSend( const std::string& dat, long level, HWND source, long flag)
 				   REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL,
 				   &ConsoleKey, NULL);
 	WriteRegKey(ConsoleKey, "ConsInfo", dat.c_str() );
-	WriteRegKeyValue(ConsoleKey, "ConsHwnd", (DWORD)source);
+	WriteRegKeyValue(ConsoleKey, "ConsHwnd", (ULONG_PTR)source);
 	WriteRegKeyValue(ConsoleKey, "ConsLevel", (DWORD)level);
 	WriteRegKeyValue(ConsoleKey, "ConsFlag", (DWORD)flag);
 	RegCloseKey(ConsoleKey);

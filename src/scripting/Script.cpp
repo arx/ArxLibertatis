@@ -5335,7 +5335,7 @@ bool CheckScriptSyntax_Loading(INTERACTIVE_OBJ * io)
 
 			ARX_TIME_Pause();
 			danaeApp.Pause(true);
-			DialogBox((HINSTANCE)GetWindowLong(danaeApp.m_hWnd, GWL_HINSTANCE),
+			DialogBox((HINSTANCE)GetWindowLongPtr(danaeApp.m_hWnd, GWLP_HINSTANCE),
 					  MAKEINTRESOURCE(IDD_SCRIPTDIALOG), danaeApp.m_hWnd, IOOptionsProc);
 			danaeApp.Pause(false);
 			ARX_TIME_UnPause();

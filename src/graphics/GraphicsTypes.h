@@ -58,9 +58,9 @@ class TextureContainer;
 #pragma pack(push,1)
 struct EERIE_RGB
 {
-	float r;
-	float g;
-	float b;
+	f32 r;
+	f32 g;
+	f32 b;
 }; // Aligned 1 2 4
 #pragma pack(pop)
 
@@ -92,21 +92,21 @@ struct EERIE_3D
 {
 	union
 	{
-		float		x;
-		float		a;
-		float		yaw;
+		f32		x;
+		f32		a;
+		f32		yaw;
 	};
 	union
 	{
-		float		y;
-		float		b;
-		float		pitch;
+		f32		y;
+		f32		b;
+		f32		pitch;
 	};
 	union
 	{
-		float		z;
-		float		g;
-		float		roll;
+		f32		z;
+		f32		g;
+		f32		roll;
 	};
 
 	void clear()
@@ -355,23 +355,23 @@ struct NEIGHBOURS_DATA
 struct PROGRESSIVE_DATA
 {
 	// ingame data
-	short	actual_collapse; // -1 = no collapse
-	short	need_computing;
-	float	collapse_ratio;
+	s16	actual_collapse; // -1 = no collapse
+	s16	need_computing;
+	f32	collapse_ratio;
 	// static data
-	float	collapse_cost;
-	short	collapse_candidate;
-	short	padd;
+	f32	collapse_cost;
+	s16	collapse_candidate;
+	s16	padd;
 }; // Aligned 1 2 4
 
 struct EERIE_SPRINGS
 {
-	short	startidx;
-	short	endidx;
-	float	restlength;
-	float	constant;	// spring constant
-	float	damping;	// spring damping
-	long	type;
+	s16	startidx;
+	s16	endidx;
+	f32	restlength;
+	f32	constant;	// spring constant
+	f32	damping;	// spring damping
+	s32	type;
 }; // Aligned 1 2 4
 
 #define CLOTHES_FLAG_NORMAL	0
@@ -380,13 +380,13 @@ struct EERIE_SPRINGS
 
 struct CLOTHESVERTEX
 {
-	short		idx;
-	char		flags;
-	char		coll;
+	s16		idx;
+	u8		flags;
+	s8		coll;
 	EERIE_3D	pos;
 	EERIE_3D	velocity;
 	EERIE_3D	force;
-	float		mass; // 1.f/mass
+	f32		mass; // 1.f/mass
 
 	EERIE_3D	t_pos;
 	EERIE_3D	t_velocity;
@@ -407,9 +407,9 @@ struct CLOTHES_DATA
 
 struct COLLISION_SPHERE
 {
-	short			idx;
-	short			flags;
-	float			radius;
+	s16			idx;
+	s16			flags;
+	f32			radius;
 }; // Aligned 1 2 4
 
 struct COLLISION_SPHERES_DATA
@@ -735,7 +735,7 @@ struct EERIE_ANIM
 #pragma pack(push,1)
 struct SAVE_EERIEPOLY
 {
-	long 			type;	// at least 16 bits
+	s32 			type;	// at least 16 bits
 	EERIE_3D		min;
 	EERIE_3D		max;
 	EERIE_3D		norm;
@@ -743,12 +743,12 @@ struct SAVE_EERIEPOLY
 	D3DTLVERTEX		v[4];
 	D3DTLVERTEX		tv[4];
 	EERIE_3D		nrml[4];
-	TextureContainer * tex;
+	s32 tex;
 	EERIE_3D		center;
-	float			transval;
-	float			area;
-	short			room;
-	short			misc;
+	f32			transval;
+	f32			area;
+	s16			room;
+	s16			misc;
 }; // Aligned 1 2 4
 #pragma pack(pop)
 
@@ -756,10 +756,10 @@ struct SAVE_EERIEPOLY
 struct EERIE_SAVE_PORTALS
 {
 	SAVE_EERIEPOLY	poly;
-	long		room_1; // facing normal
-	long		room_2;
-	short		useportal;
-	short		paddy;
+	s32		room_1; // facing normal
+	s32		room_2;
+	s16		useportal;
+	s16		paddy;
 };
 #pragma pack(pop)
 
@@ -775,10 +775,10 @@ struct EERIE_PORTALS
 #pragma pack(push,1)
 struct EP_DATA
 {
-	short	px;
-	short	py;
-	short	idx;
-	short	padd;
+	s16	px;
+	s16	py;
+	s16	idx;
+	s16	padd;
 };
 #pragma pack(pop)
 
@@ -799,9 +799,9 @@ struct EERIE_ROOM_DATA
 #pragma pack(push,1)
 struct EERIE_SAVE_ROOM_DATA
 {
-	long nb_portals;
-	long nb_polys;
-	long padd[6];
+	s32 nb_portals;
+	s32 nb_polys;
+	s32 padd[6];
 };
 #pragma pack(pop)
 

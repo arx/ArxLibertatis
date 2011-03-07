@@ -88,14 +88,18 @@ const std::string arxVersion = "0.1";
 /* ---------------------------------------------------------
                           Compilers
 ------------------------------------------------------------*/
-
 #define ARX_COMPILER_UNKNOWN 0
 #define ARX_COMPILER_VC9     1
 #define ARX_COMPILER_VC10    2
 #define ARX_COMPILER_GCC     3
+#define ARX_COMPILER_GCC64      4
 
 #if defined(__GNUC__)
+    #if defined(__LP64__)
+        #define ARX_COMPILER    ARX_COMPILER_GCC64
+    #else
 	#define ARX_COMPILER ARX_COMPILER_GCC
+    #endif
 #elif defined(_MSC_VER)
 	#if _MSC_VER < 1600
 		#define ARX_COMPILER ARX_COMPILER_VC9
@@ -140,8 +144,13 @@ typedef unsigned short      u16;    // 16 bits unsigned integer
 	typedef unsigned int    u32;    // 32 bits unsigned integer
 #endif
 
+#if ARX_COMPILER_GCC64
+typedef signed long         s64;    // 64 bits signed integer
+typedef unsigned long       u64;    // 64 bits unsigned integer
+#else
 typedef signed long long    s64;    // 64 bits signed integer
 typedef unsigned long long  u64;    // 64 bits unsigned integer
+#endif
 
 typedef float               f32;    // 32 bits float
 typedef double              f64;    // 64 bits double float
@@ -153,7 +162,7 @@ typedef double              f64;    // 64 bits double float
 
 #if ARX_COMPILER_MSVC
 	#define ARX_DEBUG_BREAK() __debugbreak()
-#elif ARX_COMPILER == ARX_COMPILER_GCC
+#elif (ARX_COMPILER == ARX_COMPILER_GCC) || (ARX_COMPILER == ARX_COMPILER_GCC64)
 	#define ARX_DEBUG_BREAK() __builtin_trap()
 #else
 	// TODO we should check for existence of these functions in CMakeLists.txt
@@ -200,17 +209,17 @@ void assertionFailed(const char * _sMessage, const char * _sFile, unsigned _iLin
 
 #define ARX_DEAD_CODE() {arx_assert( false );}
 
-#define ARX_CHECK_UCHAR(_x) {arx_assert( static_cast<short>(_x) <= UCHAR_MAX && _x >= 0 ) ;}
+#define ARX_CHECK_UCHAR(_x)	{arx_assert( static_cast<u16>(_x) <= UCHAR_MAX	&& _x >= 0 ) ;}
 #define ARX_CHECK_BYTE(_x) ARX_CHECK_UCHAR(_x)
-#define ARX_CHECK_CHAR(_x) {arx_assert( static_cast<short>(_x) <= CHAR_MAX && static_cast<short>(_x) >= CHAR_MIN ) ;}
-#define ARX_CHECK_SHORT(_x) {arx_assert( static_cast<int>(_x) <= SHRT_MAX && static_cast<int>(_x) >= SHRT_MIN ) ;}
-#define ARX_CHECK_USHORT(_x) {arx_assert( static_cast<int>(_x) <= USHRT_MAX && _x >= 0 ) ;}
+#define ARX_CHECK_CHAR(_x)	{arx_assert( static_cast<s16>(_x) <= CHAR_MAX	&& static_cast<s16>(_x) >= CHAR_MIN ) ;}
+#define ARX_CHECK_SHORT(_x)	{arx_assert( static_cast<s32>(_x) <= SHRT_MAX	&& static_cast<s32>(_x) >= SHRT_MIN ) ;}
+#define ARX_CHECK_USHORT(_x){arx_assert( static_cast<u32>(_x) <= USHRT_MAX	&& _x >= 0 ) ;}
 #define ARX_CHECK_WORD(_x)	ARX_CHECK_USHORT(_x)
-#define ARX_CHECK_INT(_x) {arx_assert( static_cast<long long>(_x) <= INT_MAX && static_cast<long long>(_x) >= INT_MIN ) ;}
-#define ARX_CHECK_UINT(_x)  {arx_assert( static_cast<long long>(_x) <= UINT_MAX && _x >= 0 ) ;}
+#define ARX_CHECK_INT(_x)	{arx_assert( static_cast<s64>(_x) <= INT_MAX	&& static_cast<s64>(_x) >= INT_MIN ) ;}
+#define ARX_CHECK_UINT(_x)  {arx_assert( static_cast<u64>(_x) <= UINT_MAX	&& _x >= 0 ) ;}
 #define ARX_CHECK_SIZET(_x) ARX_CHECK_UINT(_x)
-#define ARX_CHECK_LONG(_x)	{arx_assert( static_cast<long long>(_x) <= LONG_MAX && static_cast<long long>(_x) >= LONG_MIN ) ;}
-#define ARX_CHECK_ULONG(_x) {arx_assert( static_cast<long long>(_x) <= ULONG_MAX && _x >= 0	);}
+#define ARX_CHECK_LONG(_x)	{arx_assert( static_cast<s64>(_x) <= LONG_MAX	&& static_cast<s64>(_x) >= LONG_MIN ) ;}
+#define ARX_CHECK_ULONG(_x) {arx_assert( static_cast<u64>(_x) <= ULONG_MAX	&& _x >= 0	);}
 #define ARX_CHECK_DWORD(_x) ARX_CHECK_ULONG(_x)
 
 // TODO remove

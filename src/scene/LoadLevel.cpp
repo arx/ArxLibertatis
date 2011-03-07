@@ -284,29 +284,29 @@ extern long ADDED_IO_NOT_SAVED;
 #pragma pack(push,1)
 typedef struct
 {
-	float	version;
+	f32	version;
 	char	ident[16];
 	char	lastuser[256];
-	long	time;
+	s32	time;
 	EERIE_3D pos_edit;
 	EERIE_3D angle_edit;
-	long	nb_scn;
-	long	nb_inter;
-	long	nb_nodes;
-	long	nb_nodeslinks;
-	long	nb_zones;
+	s32	nb_scn;
+	s32	nb_inter;
+	s32	nb_nodes;
+	s32	nb_nodeslinks;
+	s32	nb_zones;
 	BOOL	lighting;
 	BOOL    Bpad[256];
-	long	nb_lights; 
-	long	nb_fogs; 
+	s32	nb_lights;
+	s32	nb_fogs;
 
-	long	nb_bkgpolys;		
-	long	nb_ignoredpolys;	
-	long	nb_childpolys;		
-	long	nb_paths;			
-	long	pad[250];
+	s32	nb_bkgpolys;
+	s32	nb_ignoredpolys;
+	s32	nb_childpolys;
+	s32	nb_paths;
+	s32	pad[250];
 	EERIE_3D	offset;
-	float	fpad[253];
+	f32	fpad[253];
 	char	cpad[4096];
 	BOOL	bpad[256];
 } DANAE_LS_HEADER; // Aligned 1 2 4
@@ -316,27 +316,27 @@ typedef struct
 typedef struct
 {
 	char	name[512];
-	long	pad[16];
-	float	fpad[16];
+	s32	pad[16];
+	f32	fpad[16];
 } DANAE_LS_SCENE; // Aligned 1 2 4 8
 #pragma pack(pop)
 
 #pragma pack(push,1)
 typedef struct
 {
-	long		nb_values;
-	long		ViewMode;
-	long		ModeLight;
-	long		pad;
+	s32		nb_values;
+	s32		ViewMode;
+	s32		ModeLight;
+	s32		pad;
 } DANAE_LS_LIGHTINGHEADER; // Aligned 1 2 4 8
 #pragma pack(pop)
 
 #pragma pack(push,1)
 typedef struct
 {
-	long		r;
-	long		g;
-	long		b;
+	s32		r;
+	s32		g;
+	s32		b;
 } DANAE_LS_VLIGHTING; // Aligned 1 2 4
 #pragma pack(pop)
 
@@ -345,19 +345,19 @@ typedef struct
 {
 	EERIE_3D	pos;
 	EERIE_RGB	rgb;
-	float		fallstart;
-	float		fallend;
-	float		intensity;
-	float		i;
+	f32		fallstart;
+	f32		fallend;
+	f32		intensity;
+	f32		i;
 	EERIE_RGB	ex_flicker;
-	float		ex_radius;
-	float		ex_frequency;
-	float		ex_size;
-	float		ex_speed;
-	float		ex_flaresize;
-	float		fpadd[24];
-	long		extras;
-	long		lpadd[31];
+	f32		ex_radius;
+	f32		ex_frequency;
+	f32		ex_size;
+	f32		ex_speed;
+	f32		ex_flaresize;
+	f32		fpadd[24];
+	s32		extras;
+	s32		lpadd[31];
 } DANAE_LS_LIGHT; //ver 1.003f // Aligned 1 2 4
 #pragma pack(pop)
 
@@ -366,18 +366,18 @@ typedef struct
 {
 	EERIE_3D	pos;
 	EERIE_RGB	rgb;
-	float		size;
-	long		special;
-	float		scale;
+	f32		size;
+	s32		special;
+	f32		scale;
 	EERIE_3D	move;
 	EERIE_3D	angle;
-	float		speed;
-	float		rotatespeed;
-	long		tolive;
-	long		blend;
-	float		frequency;
-	float		fpadd[32];
-	long		lpadd[32];
+	f32		speed;
+	f32		rotatespeed;
+	s32		tolive;
+	s32		blend;
+	f32		frequency;
+	f32		fpadd[32];
+	s32		lpadd[32];
 	char		cpadd[256];
 } DANAE_LS_FOG; // Aligned 1 2 4
 #pragma pack(pop)
@@ -387,8 +387,8 @@ typedef struct
 {
 	char		name[64];
 	EERIE_3D	pos;
-	long		pad[16];
-	float		fpad[16];
+	s32		pad[16];
+	f32		fpad[16];
 } DANAE_LS_NODE; // Aligned 1 2 4
 #pragma pack(pop)
 
@@ -396,18 +396,18 @@ typedef struct
 typedef struct
 {
 	char		name[64];
-	short		idx;
-	short		flags;
+	s16		idx;
+	s16		flags;
 	EERIE_3D	initpos;
 	EERIE_3D	pos;
-	long		nb_pathways;
+	s32		nb_pathways;
 	EERIE_RGB	rgb; 
-	float		farclip; 
-	float		reverb;
-	float		amb_max_vol; 
-	float		fpadd[26];
-	long		height;
-	long		lpadd[31];
+	f32		farclip;
+	f32		reverb;
+	f32		amb_max_vol;
+	f32		fpadd[26];
+	s32		height;
+	s32		lpadd[31];
 	char		ambiance[128]; 
 	char		cpadd[128];
 } DANAE_LS_PATH; // Aligned 1 2 4
@@ -417,10 +417,10 @@ typedef struct
 typedef struct
 {
 	EERIE_3D		rpos;
-	long			flag;
-	unsigned long	time;
-	float		fpadd[2];
-	long		lpadd[2];
+	s32			flag;
+	u32	time;
+	f32		fpadd[2];
+	s32		lpadd[2];
 	char		cpadd[32];
 } DANAE_LS_PATHWAYS; // Aligned 1 2 4
 #pragma pack(pop)
@@ -429,17 +429,17 @@ typedef struct
 #pragma pack(push,1)
 typedef struct
 {
-	float	version;
+	f32	version;
 	char	ident[16];
 	char	lastuser[256];
-	long	time;
+	s32	time;
 
-	long	nb_lights;
-	long	nb_Shadow_Polys;
-	long	nb_IGNORED_Polys;
-	long	nb_bkgpolys;
-	long	pad[256];
-	float	fpad[256];
+	s32	nb_lights;
+	s32	nb_Shadow_Polys;
+	s32	nb_IGNORED_Polys;
+	s32	nb_bkgpolys;
+	s32	pad[256];
+	f32	fpad[256];
 	char	cpad[4096];
 	BOOL	bpad[256];
 } DANAE_LLF_HEADER; //Aligned 1 2 4
@@ -1084,7 +1084,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans)
 	char temp[512];
 	size_t FileSize;
 	INTERACTIVE_OBJ * io;
-	sprintf(nameident, "%s_%04ld", GetName(dli->name).c_str(), dli->ident);
+	sprintf(nameident, "%s_%04d", GetName(dli->name).c_str(), dli->ident);
 	long t;
 	t = GetTargetByNameTarget(nameident);
 
@@ -1094,7 +1094,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans)
 		goto suite;
 	}
 
-	sprintf(nameident, "%s_%04ld", GetName(dli->name).c_str(), dli->ident);
+	sprintf(nameident, "%s_%04d", GetName(dli->name).c_str(), dli->ident);
 
 	t = GetTargetByNameTarget(nameident);
 

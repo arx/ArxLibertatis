@@ -351,7 +351,7 @@ class CMenuZone
 		bool	bActif;
 		bool	bCheck;
 		bool	bTestYDouble;
-		int		iId;
+        CMenuZone *	pRef;
 		RECT	rZone;
 		int			iID;
 		long		lData;
@@ -359,7 +359,7 @@ class CMenuZone
 		long		lPosition;
 	public:
 		CMenuZone();
-		CMenuZone(int, int, int, int, int);
+		CMenuZone(int, int, int, int, CMenuZone *);
 		virtual ~CMenuZone();
 
 		int GetWidth()
@@ -382,7 +382,7 @@ class CMenuZone
 			bCheck = true;
 		};
  
-		virtual long IsMouseOver(int, int);
+		virtual CMenuZone * IsMouseOver(int, int);
 };
 
 //-----------------------------------------------------------------------------
@@ -395,7 +395,7 @@ class CMenuAllZone
 		virtual ~CMenuAllZone();
 
 		void AddZone(CMenuZone *);
-		int CheckZone(int, int);
+		CMenuZone * CheckZone(int, int);
  
 		CMenuZone * GetZoneNum(int);
 		CMenuZone * GetZoneWithID(int);
@@ -486,7 +486,7 @@ class CMenuPanel : public CMenuElement
 		};
 		CMenuElement * OnShortCut();
 		void RenderMouseOver() {};
-		long IsMouseOver(int, int);
+		CMenuZone * IsMouseOver(int, int);
 		CMenuZone * GetZoneWithID(int);
 };
 
