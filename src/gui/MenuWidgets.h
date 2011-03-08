@@ -90,8 +90,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define BUTTON_MENUOPTIONSVIDEO_CROSSHAIR	(1+BUTTON_MENUOPTIONSVIDEO_CONTRAST)
 #define BUTTON_MENUOPTIONSVIDEO_ANTIALIASING (1+BUTTON_MENUOPTIONSVIDEO_CROSSHAIR)
 #define BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS	(1+BUTTON_MENUOPTIONSVIDEO_ANTIALIASING)
-#define BUTTON_MENUOPTIONSVIDEO_DEBUGSETTING	(1+BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS)
-
 
 #define BUTTON_MENUOPTIONSAUDIO_MASTER		(1+BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS)
 #define BUTTON_MENUOPTIONSAUDIO_SFX			(1+BUTTON_MENUOPTIONSAUDIO_MASTER)
@@ -297,7 +295,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define DIK_BUTTON30	(0x80000000|DXI_BUTTON29)
 #define DIK_BUTTON31	(0x80000000|DXI_BUTTON30)
 #define DIK_BUTTON32	(0x80000000|DXI_BUTTON31)
-#define ARX_MAXBUTTON	32
+
 
 #define DIK_WHEELUP		(0x40000000|0)
 #define DIK_WHEELDOWN	(0x40000000|1)
@@ -495,7 +493,7 @@ class CMenuElementText: public CMenuElement
 {
 	public:
 		std::string lpszText;
-		HFONT	pHFont;
+		Font*	pFont;
 		long	lColor;
 		long	lOldColor;
 		long	lColorHighlight;
@@ -505,7 +503,7 @@ class CMenuElementText: public CMenuElement
 
 	public:
 
-		CMenuElementText(int, HFONT, const std::string&, float, float, long, float, MENUSTATE); 
+		CMenuElementText(int, Font*, const std::string&, float, float, long, float, MENUSTATE); 
 		virtual ~CMenuElementText();
 
 		CMenuElement * OnShortCut();
@@ -515,9 +513,8 @@ class CMenuElementText: public CMenuElement
 		void SetText( const std::string& _pText);
 		void RenderMouseOver();
  
- 
- 
- 
+		Vector2i GetTextSize() const;
+
 		bool OnMouseDoubleClick(int);
 };
 
@@ -529,12 +526,12 @@ class CMenuButton: public CMenuElement
 		int                 iPos;
 		TextureContainer*   pTex;
 		TextureContainer*   pTexOver;
-		HFONT               pHFont;
+		Font*               pFont;
 		int                 iColor;
 		float               fSize;
 
 	public:
-		CMenuButton(int, HFONT, MENUSTATE, int, int, const std::string&, float _fSize = 1.f, TextureContainer * _pTex = NULL, TextureContainer * _pTexOver = NULL, int _iColor = -1, int _iTailleX = 0, int _iTailleY = 0);
+		CMenuButton(int, Font*, MENUSTATE, int, int, const std::string&, float _fSize = 1.f, TextureContainer * _pTex = NULL, TextureContainer * _pTexOver = NULL, int _iColor = -1);
 		~CMenuButton();
 
 	public:
@@ -701,7 +698,7 @@ class CWindowMenuConsole
 		void AddMenuCenter(CMenuElement *);
 		void AddMenuCenterY(CMenuElement *);
 		void AlignElementCenter(CMenuElement *);
-		MENUSTATE Update(int, int, int, int);
+		MENUSTATE Update(int, int, int);
 		int Render();
  
 		CMenuElement * GetTouch(bool _bValidateTest = false);
@@ -754,9 +751,12 @@ struct EERIE_2DI
 };
 
 //-----------------------------------------------------------------------------
-class CDirectInput
-{
-	public:
+class CDirectInput {
+	
+public:
+	
+	static const size_t ARX_MAXBUTTON = 8;
+	
 		bool				bActive;
 		bool				bTouch;
 		int					iKeyId;
@@ -795,7 +795,7 @@ class CDirectInput
 
 		int					iWheelSens;
 	private:
-		void DrawOneCursor(int, int, int);
+		void DrawOneCursor(int, int);
  
 	public:
 		CDirectInput();
@@ -821,7 +821,7 @@ class CDirectInput
  
  
 		void ResetAll();
-		int GetWheelSens(int);
+		int GetWheelSens();
 };
 
 //-----------------------------------------------------------------------------
@@ -929,7 +929,5 @@ void ARX_MENU_Clicked_CREDITS();
 bool ARX_QuickLoad();
 void ARX_QuickSave();
 void ARX_DrawAfterQuickLoad();
-
-void GetTextSize(HFONT _hFont, const std::string& _lpszUText, int& _iWidth, int& _iHeight);
 
 #endif

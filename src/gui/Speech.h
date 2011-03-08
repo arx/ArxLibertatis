@@ -57,7 +57,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_SPEECH_H
 #define ARX_SPEECH_H
 
-
 #include "core/Application.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/GraphicsTypes.h"
@@ -187,10 +186,6 @@ enum ARX_SPEECH_FLAG
 	ARX_SPEECH_FLAG_DIRECT_TEXT	= 0x00000008
 };
 
-//-----------------------------------------------------------------------------
-#define PARAM_LOCALISED					1
-
-//-----------------------------------------------------------------------------
 extern ARX_SPEECH aspeech[MAX_ASPEECH];
 extern ARX_CONVERSATION_STRUCT main_conversation;
 
@@ -200,7 +195,7 @@ void ARX_CONVERSATION_Reset();
 
 void ARX_SPEECH_FirstInit();
 void ARX_SPEECH_Reset();
-void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice);
+void ARX_SPEECH_Update();
 void ARX_SPEECH_Init();
 void ARX_SPEECH_Check(LPDIRECT3DDEVICE7 pd3dDevice);
 long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, const std::string& _lpszUText, long duration = -1);
@@ -208,8 +203,7 @@ void ARX_SPEECH_ClearAll();
 // data can be either a direct text or a localised string
 // a localised string will be used to look for the duration of the sample
 // & will play the sample.
-// param can be 0 (plain text) or PARAM_LOCALISED (localised string)
-long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long param, long mood, long flags = 0);
+long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long mood, long flags = 0);
 void ARX_SPEECH_ReleaseIOSpeech(INTERACTIVE_OBJ * io);
 void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io);
 void ARX_SPEECH_Launch_No_Unicode_Seek(const char * string, INTERACTIVE_OBJ * io_source, long mood = 0);

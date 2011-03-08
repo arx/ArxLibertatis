@@ -22,34 +22,66 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#include <stdio.h>
-
-// TODO Remove some headers
-#include <algorithm>
-#include <fstream>
-#include <sstream>
-#include <vector>
 
 #include "game/Map.h"
 
+#include <sstream>
+#include <vector>
+#include <cstdio>
+
 #include "core/Core.h"
+
 #include "game/Levels.h"
 
 #include "graphics/GraphicsUtility.h"
-#include "graphics/data/Texture.h"
+#include "graphics/GraphicsEnum.h"
 #include "graphics/Draw.h"
+#include "graphics/Frame.h"
+#include "graphics/data/Texture.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 
-
 extern long FINAL_RELEASE;
 extern long CURRENTLEVEL;
 int iCreateMap = 0; // used to create mini-map bitmap
-C_ARX_Carte *ARXCarte=NULL;
 char ThisLevelMap[256];
+
+class C_ARX_Carte {
+	
+private:
+	
+	LPDIRECT3DDEVICE7 device;
+	EERIE_BACKGROUND * background;
+	int width;
+	int height;
+	int nbpixels;
+	int widthrender;
+	int heightrender;
+	float posx;
+	float posz;
+	float minx, minz;
+	float maxx, maxz;
+	float ecx, ecz;
+	LPDIRECTDRAWSURFACE7 surfacetemp;
+	
+	bool BltOnSurfTemp(CD3DFramework7 * framework, int x, int y, int dw, int dh, int largs, int largh);
+	bool CreateSurfaceTemp(CD3DFramework7 * framework);
+	void IncMoveMap(float incx, float incz);
+	void MoveMap(float newposx, float newposy);
+	
+public:
+	
+	C_ARX_Carte(LPDIRECT3DDEVICE7 d = NULL, EERIE_BACKGROUND * bkg = NULL, int nbpixels = 10, int wrender = 640, int hrender = 480);
+	bool Render();
+	
+	bool BuildMap(CD3DFramework7 * framework, char * name);
+	
+};
+
+static C_ARX_Carte * ARXCarte = NULL;
 
 //#############################################################################################
 // Constructeur
@@ -438,19 +470,19 @@ float oldposx,oldposz;
 
 	for( dwMask=dwRMask; dwMask && !(dwMask&0x1); dwMask>>=1 ) dwRShiftR++;
 
-	for( ; dwMask && 1; dwMask>>=1 ) dwRShiftL--;
+	for( ; dwMask & 1; dwMask>>=1 ) dwRShiftL--;
 
 	for( dwMask=dwGMask; dwMask && !(dwMask&0x1); dwMask>>=1 ) dwGShiftR++;
 
-	for( ; dwMask && 1; dwMask>>=1 ) dwGShiftL--;
+	for( ; dwMask & 1; dwMask>>=1 ) dwGShiftL--;
 
 	for( dwMask=dwBMask; dwMask && !(dwMask&0x1); dwMask>>=1 ) dwBShiftR++;
 
-	for( ; dwMask && 1; dwMask>>=1 ) dwBShiftL--;
+	for( ; dwMask & 1; dwMask>>=1 ) dwBShiftL--;
 
 	for( dwMask=dwAMask; dwMask && !(dwMask&0x1); dwMask>>=1 ) dwAShiftR++;
 
-	for( ; dwMask && 1; dwMask>>=1 ) dwAShiftL--;
+	for( ; dwMask & 1; dwMask>>=1 ) dwAShiftL--;
 
 	nby=ddsd.dwHeight;
 

@@ -55,34 +55,46 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include "scene/Scene.h"
+
+#include <string>
+#include <cstdio>
+
 #ifndef DIRECTINPUT_VERSION
 	#define DIRECTINPUT_VERSION 0x0700
 #endif
-
 #include <dinput.h>
-#include <stdio.h>
 
-#include <string>
-
-#include "scene/Scene.h"
-#include "game/Spells.h"
-#include "scene/GameSound.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "graphics/effects/DrawEffects.h"
-#include "game/Player.h"
 #include "ai/Paths.h"
-#include "gui/Interface.h"
+
+#include "animation/Animation.h"
+
 #include "core/Time.h"
+#include "core/Core.h"
+
+#include "game/Spells.h"
+#include "game/Player.h"
+
+#include "gui/Interface.h"
 #include "gui/MenuWidgets.h"
+
+#include "graphics/Frame.h"
+#include "graphics/Draw.h"
+#include "graphics/GraphicsUtility.h"
+#include "graphics/Math.h"
+#include "graphics/d3dwrapper.h"
+#include "graphics/GraphicsEnum.h"
+#include "graphics/effects/DrawEffects.h"
+#include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
 #include "io/Logger.h"
-#include "graphics/d3dwrapper.h"
+
+#include "physics/Physics.h"
+
+#include "scene/GameSound.h"
 #include "scene/Light.h"
-#include "graphics/Draw.h"
-#include "animation/Animation.h"
-#include "graphics/GraphicsUtility.h"
-#include "graphics/Math.h"
+#include "scene/Interactive.h"
 
 using namespace std;
 
@@ -166,8 +178,6 @@ bool bOLD_CLIPP=false;
 void PopAllTriangleListTransparency();
 
 extern long TSU_TEST;
-extern bool bGATI8500;
-extern bool bSoftRender;
 
 //-----------------------------------------------------------------------------
 CMY_DYNAMIC_VERTEXBUFFER::CMY_DYNAMIC_VERTEXBUFFER(unsigned short _ussMaxVertex,unsigned long _uslFormat)
@@ -229,106 +239,28 @@ bool CMY_DYNAMIC_VERTEXBUFFER::UnLock()
 	return true;
 }
 
- 
-//-----------------------------------------------------------------------------
-void PopOneTriangleListClipp(D3DTLVERTEX *_pVertex,int *_piNbVertex)
-{
-
-		D3DTLVERTEX *pD3DVertex=_pVertex;
-	
-	while(*_piNbVertex)
-	{
-		int iOldNbVertex=pDynamicVertexBufferTransform->ussNbVertex;
-		pDynamicVertexBufferTransform->ussNbIndice=0;
-
-		SMY_D3DVERTEX *pVertex;
-
-
-		int iMin  = min(*_piNbVertex,(int)pDynamicVertexBufferTransform->ussMaxVertex);
-		ARX_CHECK_USHORT(iMin);
-
-		unsigned short iNbVertex=ARX_CLEAN_WARN_CAST_USHORT(iMin); 	
-
-		
-		pDynamicVertexBufferTransform->ussNbVertex+=iNbVertex;
-
-		if(pDynamicVertexBufferTransform->ussNbVertex>=pDynamicVertexBufferTransform->ussMaxVertex)
-		{
-			pVertex=(SMY_D3DVERTEX*)pDynamicVertexBufferTransform->Lock(DDLOCK_DISCARDCONTENTS);
-			pDynamicVertexBufferTransform->ussNbVertex=iNbVertex;
-			iOldNbVertex=0;
-		} 
-		else
-		{
-			pVertex=(SMY_D3DVERTEX*)pDynamicVertexBufferTransform->Lock(DDLOCK_NOOVERWRITE);
-			pVertex+=iOldNbVertex;
-		}
-		
-		*_piNbVertex-=iNbVertex;
-		iNbVertex/=3;
-
-		while(iNbVertex--)
-		{
-			pVertex->x=pD3DVertex->sx;
-			pVertex->y=-pD3DVertex->sy;
-			pVertex->z=pD3DVertex->sz;
-			pVertex->color=pD3DVertex->color;
-			pVertex->tu=pD3DVertex->tu;
-			pVertex->tv=pD3DVertex->tv;
-			pVertex++;
-			pD3DVertex++;
-			pVertex->x=pD3DVertex->sx;
-			pVertex->y=-pD3DVertex->sy;
-			pVertex->z=pD3DVertex->sz;
-			pVertex->color=pD3DVertex->color;
-			pVertex->tu=pD3DVertex->tu;
-			pVertex->tv=pD3DVertex->tv;
-			pVertex++;
-			pD3DVertex++;
-			pVertex->x=pD3DVertex->sx;
-			pVertex->y=-pD3DVertex->sy;
-			pVertex->z=pD3DVertex->sz;
-			pVertex->color=pD3DVertex->color;
-			pVertex->tu=pD3DVertex->tu;
-			pVertex->tv=pD3DVertex->tv;
-			pVertex++;
-			pD3DVertex++;
-		}
-		
-		pDynamicVertexBufferTransform->UnLock();
-		
-		GDevice->DrawPrimitiveVB(	D3DPT_TRIANGLELIST,
-									pDynamicVertexBufferTransform->pVertexBuffer,
-									iOldNbVertex,
-									pDynamicVertexBufferTransform->ussNbVertex-iOldNbVertex,
-									0 );
-	}
-}
-
 //------------------------------------------------------------------------------
 //	This function will use appropriate VB depending on vertex format. (using template)
 /************************************************************************/
 /*  HRESULT ARX_DrawPrimitiveVB(	
  *	LPDIRECT3DDEVICE7	_d3dDevice,			: pointer to the DX7 device
  *	D3DPRIMITIVETYPE	_dptPrimitiveType,	: primitive type to draw
- *	DWORD				_dwVertexTypeDesc	: vertex format.
  *	_LPVERTEX_			_pVertex,			: pointer to the first vertex to render
  *	int*				_piNbVertex,		: number of vertices to render (must be positive)
  *	DWORD				_dwFlags            : optionally flag for DrawPrimitiveVB.
  *	CMY_DYNAMIC_VERTEXBUFFER*	_pDynamicVB	: mandatory : dynamicVertexBuffer to use for rendering.
  *	
  *	@return S_OK if function exit correctly.
-/************************************************************************/
-template<class _LPVERTEX_>
+ ************************************************************************/
+template<class VERTEX_TYPE>
 HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevice,
-													D3DPRIMITIVETYPE			_dptPrimitiveType, 
-													DWORD						_dwVertexTypeDesc,
-													_LPVERTEX_					_pVertex, 
-													int*						_piNbVertex, 
-													DWORD						_dwFlags,
-													CMY_DYNAMIC_VERTEXBUFFER*	_pDynamicVB)
+								D3DPRIMITIVETYPE			_dptPrimitiveType, 
+								VERTEX_TYPE*				_pVertex, 
+								int*						_piNbVertex, 
+								DWORD						_dwFlags,
+								CMY_DYNAMIC_VERTEXBUFFER*	_pDynamicVB)
 {
-	_LPVERTEX_					pD3DVertex	=	_pVertex;
+	VERTEX_TYPE*				pD3DVertex	=	_pVertex;
 	HRESULT						h_result	=	S_OK;
 	CMY_DYNAMIC_VERTEXBUFFER*	pDVB		=	_pDynamicVB;
 
@@ -336,7 +268,7 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevice,
 
 	while( *_piNbVertex )
 	{
-		_LPVERTEX_		pVertex			=	NULL;
+		VERTEX_TYPE*	pVertex			=	NULL;
 		int				iOldNbVertex	=	pDVB->ussNbVertex;
 		pDVB->ussNbIndice				=	0;
 		unsigned short iNbVertex		=	(unsigned short) min( *_piNbVertex, (int)pDVB->ussMaxVertex ); //don't overload VB
@@ -345,32 +277,19 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevice,
 
 		if( pDVB->ussNbVertex >= pDVB->ussMaxVertex )
 		{
-			pVertex						=	(_LPVERTEX_)pDVB->Lock( DDLOCK_DISCARDCONTENTS );
+			pVertex						=	(VERTEX_TYPE*)pDVB->Lock( DDLOCK_DISCARDCONTENTS );
 			pDVB->ussNbVertex			=	iNbVertex;
 			iOldNbVertex				=	0;
 		} 
 		else
 		{
-			pVertex						=	(_LPVERTEX_)pDVB->Lock( DDLOCK_NOOVERWRITE );
+			pVertex						=	(VERTEX_TYPE*)pDVB->Lock( DDLOCK_NOOVERWRITE );
 			pVertex						+=	iOldNbVertex;
 		}
 
 		*_piNbVertex					-=	iNbVertex;
 
-		if( D3DPT_TRIANGLELIST == _dptPrimitiveType )
-		{
-			iNbVertex		/=	3;
-			while( iNbVertex-- )
-			{
-				(*pVertex++)			=	(*pD3DVertex++); //structure copy (3 times)
-				(*pVertex++)			=	(*pD3DVertex++);
- 				(*pVertex++)			=	(*pD3DVertex++);
-			}
-		}
-		else
-		{
-			(*pVertex++)				=	(*pD3DVertex++); //structure copy
-		}
+		memcpy(pVertex, pD3DVertex, iNbVertex*sizeof(VERTEX_TYPE));
 
 		pDVB->UnLock();
 
@@ -398,7 +317,7 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevice,
  *	DWORD				_dwFlags )          : optionally flag for DrawPrimitiveVB.
  *	
  *	@return S_OK if function exit correctly.
-/************************************************************************/
+ ************************************************************************/
 HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7	_d3dDevice, 
 								D3DPRIMITIVETYPE	_dptPrimitiveType, 
 								DWORD				_dwVertexTypeDesc,
@@ -415,7 +334,6 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7	_d3dDevice,
 		case FVF_D3DVERTEX:
 			h_result	=	ARX_DrawPrimitiveVB(	_d3dDevice,
 													_dptPrimitiveType,
-													_dwVertexTypeDesc,
 													(SMY_D3DVERTEX*) _pVertex,
 													_piNbVertex,
 													_dwFlags,
@@ -424,7 +342,6 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7	_d3dDevice,
 		case D3DFVF_TLVERTEX:
 			h_result	=	ARX_DrawPrimitiveVB(	_d3dDevice,
 													_dptPrimitiveType,
-													_dwVertexTypeDesc,
 													(D3DTLVERTEX*) _pVertex,
 													_piNbVertex,
 													_dwFlags,
@@ -433,7 +350,6 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7	_d3dDevice,
 		case FVF_D3DVERTEX3:
 			h_result	=	ARX_DrawPrimitiveVB(	_d3dDevice,
 													_dptPrimitiveType,
-													_dwVertexTypeDesc,
 													(SMY_D3DVERTEX3*) _pVertex,
 													_piNbVertex,
 													_dwFlags,
@@ -442,7 +358,6 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7	_d3dDevice,
 		case FVF_D3DVERTEX3_T:
 			h_result	=	ARX_DrawPrimitiveVB(	_d3dDevice,
 													_dptPrimitiveType,
-													_dwVertexTypeDesc,
 													(SMY_D3DVERTEX3_T*) _pVertex,
 													_piNbVertex,
 													_dwFlags,
@@ -887,8 +802,8 @@ bool ARX_SCENE_PORTAL_Basic_ClipIO(INTERACTIVE_OBJ * io)
 //   Implement all Portal Methods
 //   Return a reduced clipbox which can be used for polys clipping in the case of partial visibility
 //*********************************************************************************************************************
-bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io,EERIE_3DOBJ * eobj,EERIE_3D * position,EERIE_3D * bboxmin,EERIE_3D * bboxmax)
-{
+bool ARX_SCENE_PORTAL_ClipIO(INTERACTIVE_OBJ * io, EERIE_3D * position) {
+	
 	if (EDITMODE) return false;
 
 	if (io==inter.iobj[0]) return false;
@@ -1215,7 +1130,7 @@ void ARX_PORTALS_InitDrawnRooms()
 	for (long i=0;i<portals->nb_total;i++)
 	{
 		ep->useportal=0;
-		*ep++;
+		ep++;
 	}
 
 
@@ -1583,15 +1498,6 @@ void ARX_PORTALS_Frustrum_RenderRooms(long prec,long tim)
 	NbRoomDrawList=0;
 }
 
-void ARX_PORTALS_Frustrum_RenderRoomT(long room_num,EERIE_FRUSTRUM_DATA * frustrums,long prec,long tim);
-void ARX_PORTALS_Frustrum_RenderRoomsT(long prec,long tim)
-{
-	for (long i=0;i<NbRoomDrawList;i++)
-	{
-		ARX_PORTALS_Frustrum_RenderRoomT(RoomDrawList[i],&RoomDraw[RoomDrawList[i]].frustrum,prec,tim);
-	}
-}
-void ARX_PORTALS_Frustrum_RenderRoom_TransparencyT(long room_num);
 void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num);
 void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 {
@@ -1610,7 +1516,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 		}
 		else
 		{
-			ARX_PORTALS_Frustrum_RenderRoom_TransparencyT(RoomDrawList[i]);
+			LogWarning << "unimplemented";
 		}
 	}
 
@@ -2693,18 +2599,6 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 
 void ApplyDynLight_VertexBuffer(EERIEPOLY *ep,SMY_D3DVERTEX *_pVertex,unsigned short _usInd0,unsigned short _usInd1,unsigned short _usInd2,unsigned short _usInd3);
 void ApplyDynLight_VertexBuffer_2(EERIEPOLY *ep,short x,short y,SMY_D3DVERTEX *_pVertex,unsigned short _usInd0,unsigned short _usInd1,unsigned short _usInd2,unsigned short _usInd3);
-//-----------------------------------------------------------------------------
-//TODO(lubosz): unimplemented
-void ARX_PORTALS_Frustrum_RenderRoomT(long room_num,EERIE_FRUSTRUM_DATA * frustrums,long prec,long tim)
-{
-
-					}
-				
-//-----------------------------------------------------------------------------
-void ARX_PORTALS_Frustrum_RenderRoom_TransparencyT(long room_num)
-{
-
-}
 
 TILE_LIGHTS tilelights[MAX_BKGX][MAX_BKGZ];
 
@@ -2793,7 +2687,7 @@ SMY_D3DVERTEX *pMyVertex;
 
 		float fDistBump=min(max(0.f,(ACTIVECAM->cdepth*fZFogStart)-200.f),MAX_DIST_BUMP);
 
-		for (long  lll=0; lll<portals->room[room_num].nb_polys; lll++, *pEPDATA++)
+		for (long  lll=0; lll<portals->room[room_num].nb_polys; lll++, pEPDATA++)
 		{
 
 			feg = &ACTIVEBKG->fastdata[pEPDATA->px][pEPDATA->py];
@@ -3180,98 +3074,12 @@ SMY_D3DVERTEX *pMyVertex;
 		iNbTex=portals->room[room_num].usNbTextures;
 		ppTexCurr=portals->room[room_num].ppTextureContainer;
 
-		if( bSoftRender )
+		while ( iNbTex-- ) //For each tex in portals->room[room_num]
 		{
-		while(iNbTex--)
-		{
-			TextureContainer *pTexCurr=*ppTexCurr;
-		
-			if(	(pTexCurr->TextureRefinement)&&
-				(pTexCurr->TextureRefinement->vPolyZMap.size()) )
+			TextureContainer * pTexCurr	= *ppTexCurr;
+
+			if ( pTexCurr->TextureRefinement && pTexCurr->TextureRefinement->vPolyZMap.size() )
 			{
-					SETTC( GDevice, pTexCurr->TextureRefinement );
-
-					SMY_D3DVERTEX3		pVertex[6];
-					vector<EERIEPOLY *>::iterator it=	pTexCurr->TextureRefinement->vPolyZMap.begin();
-
-					for ( ; it != pTexCurr->TextureRefinement->vPolyZMap.end() ; ++it )
-					{
-						EERIEPOLY *		ep			=	*it;
-						unsigned short	iNbVertex	= (ep->type & POLY_QUAD) ? 4 : 3;
-
-						//---------------------------------------------------------------------------
-						//																	   CALCUL
-						float			tu[4];
-						float			tv[4];
-						float			_fTransp[4];
-						unsigned short	nu,	nuu;
-						long			nrm			=	0;
-
-						if	(		(EEfabs( ep->nrml[0].y ) >= 0.9f )
-								||	(EEfabs( ep->nrml[1].y ) >= 0.9f )
-								||	(EEfabs( ep->nrml[2].y ) >= 0.9f ) )
-							nrm						=	1;
-
-						for ( nu = 0, nuu = iNbVertex - 1 ; nu < iNbVertex ; nuu = nu++ )
-						{
-							if ( nrm )
-							{
-								tu[nu]				=	(ep->v[nu].sx * ( 1.0f / 50 ));
-								tv[nu]				=	(ep->v[nu].sz * ( 1.0f / 50 ));
-							}
-							else
-							{
-								tu[nu]				=	ep->v[nu].tu * 4.f;
-								tv[nu]				=	ep->v[nu].tv * 4.f;
-							}
-
-							float			t		=	max( 10.0f, EEDistance3D(&ACTIVECAM->pos, (EERIE_3D *)&ep->v[nu]) - 80.f );
-
-							_fTransp[nu] = (150.f - t) * 0.006666666f;
-
-							if (_fTransp[nu] < 0.f)
-								_fTransp[nu]		=	0.f;
-							// t cannot be greater than 1.f (b should be negative for that)
-						}
-
-						//---------------------------------------------------------------------------
-						//																	FILL DATA
-						for ( int idx = 0  ; idx < iNbVertex ; ++idx )
-						{
-							pVertex[idx].x				=	ep->v[idx].sx;
-							pVertex[idx].y				=	- ep->v[idx].sy;
-							pVertex[idx].z				=	ep->v[idx].sz;
-							pVertex[idx].color			=	D3DRGB( _fTransp[idx], _fTransp[idx], _fTransp[idx]);
-							pVertex[idx].tu				=	tu[idx]; 
-							pVertex[idx].tv				=	tv[idx]; 
-						}
-						if ( iNbVertex & 4 )
-						{
-							pVertex[4]					=	pVertex[2];
-							pVertex[5]					=	pVertex[1];
-						}
-
-						//Draw current prim
-						EERIEDRAWPRIM(GDevice, D3DPT_TRIANGLELIST, FVF_D3DVERTEX3, pVertex, (iNbVertex&4)?6:3,  0, EERIE_NOCOUNT );
-					}
-
-					//---------------------------------------------------------------------------
-					//														   CLEAR CURRENT ZMAP
-					pTexCurr->TextureRefinement->vPolyZMap.clear();
-				}
-				//MAJ POINTER -------------------------------------------------------------------
-				ppTexCurr++;
-			}//END  while ( iNbTex-- ) ----------------------------------------------------------
-		}
-		else
-		{
-			while ( iNbTex-- ) //For each tex in portals->room[room_num]
-			{
-				TextureContainer * pTexCurr					=	*ppTexCurr;
-
-				if (	( pTexCurr->TextureRefinement ) &&
-						( pTexCurr->TextureRefinement->vPolyZMap.size() ) )
-				{
 					//---------------------------------------------------------------------------
 					//																		 INIT
 				int iOldNbVertex=pDynamicVertexBuffer->ussNbVertex;
@@ -3285,7 +3093,7 @@ SMY_D3DVERTEX *pMyVertex;
 				unsigned short *pussInd=pDynamicVertexBuffer->pussIndice;
 				unsigned short iNbIndice = 0;
 
-					vector<EERIEPOLY *>::iterator it		=	pTexCurr->TextureRefinement->vPolyZMap.begin();
+				vector<EERIEPOLY *>::iterator it		=	pTexCurr->TextureRefinement->vPolyZMap.begin();
 				
 					//---------------------------------------------------------------------------
 					//																		 LOOP
@@ -3400,11 +3208,10 @@ SMY_D3DVERTEX *pMyVertex;
 						0 );
 				}	
 			}
-				//MAJ POINTER -------------------------------------------------------------------
+			
 			ppTexCurr++;
-			}//END  while ( iNbTex-- ) ----------------------------------------------------------
-		}
-
+		} //END  while ( iNbTex-- ) ----------------------------------------------------------
+		
 		//METAL(Voodoo grand gourou)
 		if(vPolyVoodooMetal.size())
 		{
@@ -3564,17 +3371,9 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 						GDevice->SetTexture( 1, pTexCurr->m_pddsBumpMap );
 						GDevice->SetTextureStageState( 1, D3DTSS_TEXCOORDINDEX, 1 );
 
-						if( bGATI8500 && !bSoftRender )
-	 					{
-	 						GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE | D3DTA_COMPLEMENT );
-							GDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-	 					}
-	 					else
-						{
-							GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-							GDevice->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_TEXTURE | D3DTA_COMPLEMENT );
-						}
-
+						GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+						GDevice->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_TEXTURE | D3DTA_COMPLEMENT );
+						
 						GDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
 						GDevice->SetTextureStageState( 1, D3DTSS_COLORARG2, D3DTA_CURRENT );
 						GDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_ADDSIGNED );
@@ -4214,8 +4013,8 @@ long MAX_FRAME_COUNT=0;
 // ie: Big Mess
 //*************************************************************************************
 ///////////////////////////////////////////////////////////
-void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag, long param) 
-{
+void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag) {
+	
 	FrameCount++;
 
 	FRAME_COUNT++;
@@ -4365,7 +4164,7 @@ void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag, long param)
 		{
 			feg=&ACTIVEBKG->fastdata[0][j];
 
-			for (i=0; i<ACTIVEBKG->Xsize; i++, *feg++)
+			for (i=0; i<ACTIVEBKG->Xsize; i++, feg++)
 			{
 				if (feg->treat)
 					feg->treat=0;			
@@ -4500,7 +4299,7 @@ if (USE_PORTALS && portals)
 			case 3:
 				CreateScreenFrustrum(&frustrum);
 				LAST_PORTALS_COUNT=ARX_PORTALS_Frustrum_ComputeRoom(room_num,&frustrum,lprec,tim);
-				ARX_PORTALS_Frustrum_RenderRoomsT(lprec,tim);
+				LogWarning << "unimplemented";
 				break;
 			case 4:
 				CreateScreenFrustrum(&frustrum);
@@ -4722,10 +4521,6 @@ else
 	PopAllTriangleList(true);
 	
 					}
-					
-	
-	if (EXTERNALVIEW)
-		ARXDRAW_DrawExternalView(pd3dDevice);
 
 
 	DRAWLATER_Render(pd3dDevice);
@@ -4757,7 +4552,7 @@ else
 		else
 		{
 			if (TRANSPOLYSPOS)
-				ARXDRAW_DrawAllTransPolysPos(pd3dDevice,MODIF);
+				ARXDRAW_DrawAllTransPolysPos(pd3dDevice);
 		}
 	}
 

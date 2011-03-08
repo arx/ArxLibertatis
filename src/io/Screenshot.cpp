@@ -54,19 +54,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <stdio.h>
-
-// TODO Remove some headers
-/*#include <fstream>
-#include <sstream>
-#include <vector>
-*/
-#include <string>
 
 #include "io/Screenshot.h"
+
+#include <cstdio>
+#include <string>
+#include <cassert>
+#include <climits>
 
 #include "core/Core.h"
-#include "io/Screenshot.h"
+
+#include "graphics/Frame.h"
 
 #include "io/Filesystem.h"
 
@@ -75,8 +73,7 @@ SnapShot * pSnapShot;
 SNAPSHOTINFO snapshotdata;
 long CURRENTSNAPNUM = 0;
  
-struct TargaHeader
-{
+struct TargaHeader {
 	BYTE IDLength;
 	BYTE ColormapType;
 	BYTE ImageType;
@@ -87,7 +84,7 @@ struct TargaHeader
 	WORD ImageHeight;
 	BYTE PixelDepth;
 	BYTE ImageDescriptor;
-} tga;
+};
 
 struct MEMORYSNAP
 {
@@ -129,6 +126,8 @@ long InitMemorySnaps()
 	MAXSNAPS = number;
 	return number;
 }
+
+// TODO replace with DevIL code
 void FlushMemorySnaps(long flag)
 {
 	if (flag == 0)
@@ -142,6 +141,8 @@ void FlushMemorySnaps(long flag)
 
 	static char buff[640*2];
  
+	TargaHeader tga;
+	
 	long targetsizeX = snapshotdata.xsize;
 	long targetsizeY = snapshotdata.ysize;
 	float xratio = 640.f / (float)targetsizeX;
@@ -197,8 +198,7 @@ void FlushMemorySnaps(long flag)
 
 	for (long i = 0; i < CURRENTSNAPNUM; i++)
 	{
-		FILE * file;
-		file = fopen(snaps[i].name, "wb");
+		FILE * file = fopen(snaps[i].name, "wb");
 
 		if (NULL == file)
 		{
@@ -206,11 +206,13 @@ void FlushMemorySnaps(long flag)
 		}
 
  
-		fwrite(&tga, sizeof(TargaHeader), 1, file);
+		size_t written = fwrite(&tga, sizeof(TargaHeader), 1, file);
+		assert(written == sizeof(TargaHeader));
 		long n;
 		unsigned short col;
 		unsigned char * v = (unsigned char *)snaps[i].buffer;
-		fwrite(&tga, 1, 20, file);
+		written = fwrite(&tga, 1, 20, file);
+		assert(written == 20);
 		DWORD dwOffset;
 		DWORD x;
 
@@ -233,7 +235,8 @@ void FlushMemorySnaps(long flag)
 				pos += 2;
 			}
 
-			fwrite(buff, pos, 1, file);
+			written = fwrite(buff, pos, 1, file);
+			assert(written == (size_t)pos);
 		}
 
 		fclose(file);
@@ -435,6 +438,7 @@ bool SnapShot::GetSnapShot()
 
 	ulNum++;
 
+	// TODO replace with DevIL code
 	BITMAPFILEHEADER bfhBitmapFileHeader;
 	bfhBitmapFileHeader.bfType = ('M' << 8) | ('B');
 	bfhBitmapFileHeader.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + ((ddsd2.dwWidth * ddsd2.dwHeight) << 2);

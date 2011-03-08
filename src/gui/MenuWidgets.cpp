@@ -26,28 +26,34 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/MenuWidgets.h"
 
 #include <cstring>
+#include <cstdio>
 
 #include <algorithm>
 #include <map>
-#include <utility>
+#include <sstream>
 
 #include "core/Core.h"
+#include "core/Time.h"
+#include "core/Localization.h"
+
 #include "gui/Menu.h"
 #include "gui/MenuPublic.h"
-#include "scene/GameSound.h"
-#include "core/Localization.h"
 #include "gui/Text.h"
 #include "gui/Interface.h"
 #include "gui/Credits.h"
-#include "core/Time.h"
 
+#include "graphics/Draw.h"
+#include "graphics/Frame.h"
+#include "graphics/GraphicsEnum.h"
 #include "graphics/data/Texture.h"
 #include "graphics/data/Mesh.h"
-#include "graphics/Draw.h"
-
-#include "window/DXInput.h"
 
 #include "io/Logger.h"
+
+#include "scene/GameSound.h"
+#include "scene/LoadLevel.h"
+
+#include "window/DXInput.h"
 
 using std::wistringstream;
 using std::min;
@@ -90,7 +96,6 @@ extern long ARX_DEMO;
 extern long INTRO_NOT_LOADED;
 extern long REFUSE_GAME_RETURN;
 
-extern bool bGATI8500;
 extern bool bForceNoEAX;
 
 extern long _EERIEMouseXdep;
@@ -141,7 +146,6 @@ CMenuCheckButton *pMenuCheckButtonBump=NULL;
 float ARXTimeMenu;
 float ARXOldTimeMenu;
 float ARXDiffTimeMenu;
-bool bForceGDI;
 
 bool bFade=false;
 bool bFadeInOut=false;
@@ -212,15 +216,15 @@ void ARX_QuickSave()
 	bool        bFound0        =    false;
 	bool        bFound1        =    false;
 
-	int            iNbSave0    =    0; // will be used if >0 (0 will so mean NOTFOUND)
-	int            iNbSave1    =    0; // will be used if >0 (0 will so mean NOTFOUND)
+	size_t            iNbSave0    =    0; // will be used if >0 (0 will so mean NOTFOUND)
+	size_t            iNbSave1    =    0; // will be used if >0 (0 will so mean NOTFOUND)
 	SYSTEMTIME    sTime0;
 	SYSTEMTIME    sTime1;
 	ZeroMemory( &sTime0, sizeof(SYSTEMTIME) );// will be used if iNbSave0>0 (iNbSave0==0 will so mean NOTFOUND and sTime0 will not be used)
 	ZeroMemory( &sTime1, sizeof(SYSTEMTIME) );// will be used if iNbSave0>0 (iNbSave1==0 will so mean NOTFOUND and sTime1 will not be used)
 
 
-	for( int iI = 1 ; iI < (save_l.size()) ; iI++ )
+	for( size_t iI = 1 ; iI < save_l.size() ; iI++ )
 	{
 		std::string tex2 = save_l[iI].name;
 		MakeUpcase( tex2 );
@@ -243,8 +247,8 @@ void ARX_QuickSave()
 		( iNbSave0 > 0 ) && ( iNbSave0 < save_l.size() ) &&
 		( iNbSave1 > 0 ) && ( iNbSave1 < save_l.size() ) )
 	{
-		int	iSave;
-
+		size_t iSave;
+		
 		if ( isTimeBefore( sTime0, sTime1 ) )
 			iSave = iNbSave0;
 		else
@@ -338,14 +342,14 @@ bool ARX_QuickLoad()
 	bool bFound0 = false;
 	bool bFound1 = false;
 
-	int iNbSave0    =    0; // will be used if >0 (0 will so mean NOTFOUND)
-	int iNbSave1    =    0; // will be used if >0 (0 will so mean NOTFOUND)
+	size_t iNbSave0    =    0; // will be used if >0 (0 will so mean NOTFOUND)
+	size_t iNbSave1    =    0; // will be used if >0 (0 will so mean NOTFOUND)
 	SYSTEMTIME sTime0;
 	SYSTEMTIME sTime1;
 	ZeroMemory( &sTime0, sizeof(SYSTEMTIME) );// will be used if iNbSave0>0 (iNbSave0==0 will so mean NOTFOUND and sTime0 will not be used)
 	ZeroMemory( &sTime1, sizeof(SYSTEMTIME) );// will be used if iNbSave1>0 (iNbSave1==0 will so mean NOTFOUND ans sTime1 will not be used)
 
-	for( int iI = 1 ; iI < save_l.size() ; iI++ )
+	for( size_t iI = 1 ; iI < save_l.size() ; iI++ )
 	{
 		std::string tex2 = save_l[iI].name;
 		MakeUpcase( tex2 );
@@ -370,7 +374,7 @@ bool ARX_QuickLoad()
 		( iNbSave0 > 0 ) && ( iNbSave0 < save_l.size() ) &&
 		( iNbSave1 > 0 ) && ( iNbSave1 < save_l.size() ) )
 	{
-		int iSave;
+		size_t iSave;
 
 		if ( isTimeBefore( sTime0, sTime1 ) )
 			iSave = iNbSave1;
@@ -427,7 +431,7 @@ bool ARX_QuickLoad()
 
 bool MENU_NoActiveWindow()
 {
-	if(    (!pWindowMenu)||
+	if( (!pWindowMenu)||
 		((pWindowMenu)&&
 		(pWindowMenu->eCurrentMenuState==MAIN)) ) return true;
 
@@ -435,75 +439,14 @@ bool MENU_NoActiveWindow()
 }
 
 //-----------------------------------------------------------------------------
-// Nuky - 01-02-11 - Cache the values returned by the original GetTextSize()
-//                   possible problem: it does not check for the hDC, but does it matter?
-//                   code cleaning: this needs to be somewhere else. local? global?
-//                   effects: faster main menu creation (ie: Options)
-bool GetTextSizeNoCache(HFONT font, const char* text, int *width_out, int *height_out)
-{
-	HDC hDC;
 
-	if (danaeApp.m_pddsRenderTarget)
-	{
-		if (SUCCEEDED( danaeApp.m_pddsRenderTarget->GetDC(&hDC) ))
-		{
-			SelectObject(hDC, font);
-
-			SIZE sSize;
-
-			GetTextExtentPoint32(hDC, text, strlen(text), &sSize);
-			*width_out = sSize.cx;
-			*height_out = sSize.cy;
-
-			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-			return true;
-		}
-	}
-	return false;
-}
-
-void GetTextSizeCached(HFONT font, const char* text, int& width_out, int& height_out)
-{
-	textsize_key key(font, text);
-
-	// search or insert
-	textsize_map::iterator lb = cache.lower_bound(key);
-	if (lb != cache.end() && !(cache.key_comp()(key, lb->first)))
-	{
-		width_out = lb->second.first;
-		height_out = lb->second.second;
-	}
-	else if (GetTextSizeNoCache(font, text, &width_out, &height_out))
-		cache.insert(lb, textsize_map::value_type(key, textsize_map::mapped_type(width_out, height_out)));
-}
-
-void GetTextSize(HFONT _hFont, const std::string& _lpszUText, int& _iWidth, int& _iHeight)
-{
-	GetTextSizeCached(_hFont, _lpszUText.c_str(), _iWidth, _iHeight);
-}
-
-void FontRenderText(HFONT _hFont, EERIE_3D pos, const std::string& _pText, COLORREF _c)
+void FontRenderText(Font* _pFont, EERIE_3D pos, const std::string& _pText, COLORREF _c)
 {
 	if(pTextManage)
 	{
-		RECT rRect;
-
-
 		ARX_CHECK_LONG( pos.y );
 		ARX_CHECK_LONG( pos.x );
-		ARX_CHECK_LONG( pos.x + 999 );
-		ARX_CHECK_LONG( pos.y + 999 );
-		//------------
-		rRect.top    =    ARX_CLEAN_WARN_CAST_LONG( pos.y );
-		rRect.left    =    ARX_CLEAN_WARN_CAST_LONG( pos.x );
-		rRect.right    =    ARX_CLEAN_WARN_CAST_LONG( pos.x + 999 );
-		rRect.bottom=    ARX_CLEAN_WARN_CAST_LONG( pos.y + 999 );
-		
-		pTextManage->AddText( _hFont,
-		                      _pText,
-		                      rRect,
-		                      _c,
-		                      0x00FF00FF);
+		pTextManage->AddText( _pFont, _pText, pos.x, pos.y, _c);
 	}
 }
 
@@ -806,7 +749,7 @@ int CMenuConfig::GetDIKWithASCII( const std::string& _pcTouch)
 			return iI|(DIK_RALT<<16);
 	}
 
-	for(int iI=DIK_BUTTON1;iI<=DIK_BUTTON32;iI++)
+	for(int iI=DIK_BUTTON1;iI<=(int)DIK_BUTTON32;iI++)
 	{
 		std::string pcT1 = pGetInfoDirectInput->GetFullNameTouch(iI);
 
@@ -830,7 +773,7 @@ std::string CMenuConfig::ReadConfig( const std::string& _section, const std::str
 	
 	// TODO unify with localisation loading (and make platform-independent)
 	char text[256];
-	int iI = GetPrivateProfileString( _section.c_str(), _key.c_str(), "", text, 256, pcName.c_str());
+	GetPrivateProfileString( _section.c_str(), _key.c_str(), "", text, 256, pcName.c_str());
 	
 	LogDebug << "Read section: " << _section << " key: " << _key << " from " << pcName << " as:" << text;
 
@@ -1217,10 +1160,7 @@ bool CMenuConfig::SaveAll()
 
 	//misc
 	bOk&=WriteConfigInt("MISC","softfog",(bATI)?1:0);
-	bOk&=WriteConfigInt("MISC","clearnearcorrection",(bGATI8500)?1:0);
-	bOk&=WriteConfigInt("MISC","forcesoftrender",(bDebugSetting)?1:0);
 	bOk&=WriteConfigInt("MISC","forcenoeax",(bForceNoEAX)?1:0);
-	bOk&=WriteConfigInt("MISC","forcegdi",(bForceGDI)?1:0);
 	bOk&=WriteConfigInt("MISC","forcemetaltwopass",(bForceMetalTwoPass)?1:0);
 	bOk&=WriteConfigInt("MISC","forcezbias",(bForceZBias)?1:0);
 	bOk&=WriteConfigInt("MISC","newcontrol",(INTERNATIONAL_MODE)?1:0);
@@ -1478,14 +1418,6 @@ bool CMenuConfig::ReadAll()
 
 	bAntiAliasing=iTemp?true:false;
 
-	iTemp=ReadConfigInt("MISC","forcesoftrender",bOkTemp);
-	if(!bOkTemp)
-	{
-		iTemp=0;
-	}
-
-	bDebugSetting=iTemp?true:false;
-
 	//audio
 	iTemp=ReadConfigInt("AUDIO","master_volume",bOkTemp);
 	bOk&=bOkTemp;
@@ -1693,24 +1625,6 @@ bool CMenuConfig::ReadAll()
 		bATI=(iTemp)?true:false;
 	}
 
-	iTemp=ReadConfigInt("MISC","clearnearcorrection",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bGATI8500=false;
-	}
-	else
-	{
-		bGATI8500=(iTemp)?true:false;
-	}
-
-
-	if(bGATI8500)
-	{
-		SOFTNEARCLIPPZ    =    5.f;
-	}
-
 	iTemp=ReadConfigInt("MISC","forcenoeax",bOkTemp);
 	bOk&=bOkTemp;
 
@@ -1721,18 +1635,6 @@ bool CMenuConfig::ReadAll()
 	else
 	{
 		bForceNoEAX=(iTemp)?true:false;
-	}
-
-	iTemp=ReadConfigInt("MISC","forcegdi",bOkTemp);
-	bOk&=bOkTemp;
-
-	if(!bOkTemp)
-	{
-		bForceGDI=false;
-	}
-	else
-	{
-		bForceGDI=(iTemp)?true:false;
 	}
 
 	iTemp=ReadConfigInt("MISC","forcemetaltwopass",bOkTemp);
@@ -1872,7 +1774,6 @@ bool CMenuConfig::ReadAll()
 	ARXMenu_Options_Video_SetDetailsQuality(iLevelOfDetails);
 	ARXMenu_Options_Video_SetGamma(iGamma);
 	ARX_SetAntiAliasing();
-	ARXMenu_Options_Video_SetSoftRender();
 	ARXMenu_Options_Audio_SetMasterVolume(iMasterVolume);
 	ARXMenu_Options_Audio_SetSfxVolume(iSFXVolume);
 	ARXMenu_Options_Audio_SetSpeechVolume(iSpeechVolume);
@@ -1903,8 +1804,8 @@ bool CMenuConfig::ReadAll()
 }
 
 
-	void Check_Apply()
-	{
+void Check_Apply()
+{
 	if(pMenuElementApply)
 	{
 		if(    (pMenuConfig->bBumpMapping!=pMenuConfig->bNewBumpMapping)||
@@ -1941,21 +1842,20 @@ static void FadeInOut(float _fVal)
 	d3dvertex[0].rhw=0.999999f;
 	d3dvertex[0].color=iColor;
 
-
 	d3dvertex[1].sx=ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZX);
 	d3dvertex[1].sy=0;
 	d3dvertex[1].sz=0.f;
 	d3dvertex[1].rhw=0.999999f;
 	d3dvertex[1].color=iColor;
+
 	d3dvertex[2].sx=0;
 	d3dvertex[2].sy=ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZY);
 	d3dvertex[2].sz=0.f;
 	d3dvertex[2].rhw=0.999999f;
 	d3dvertex[2].color=iColor;
+
 	d3dvertex[3].sx=ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZX);
 	d3dvertex[3].sy=ARX_CLEAN_WARN_CAST_D3DVALUE(DANAESIZY);
-
-
 	d3dvertex[3].sz=0.f;
 	d3dvertex[3].rhw=0.999999f;
 	d3dvertex[3].color=iColor;
@@ -2341,15 +2241,13 @@ bool Menu2_Render()
 						std::string szMenuText1 = QUICK_SAVE_ID1;
 
 						//LOAD
-						int iI;
 						int iFirst=2;
 						bool b1 = false;
 						bool b2 = false;
 
 						while(iFirst>=0)
 						{
-							for(iI=1; iI<(save_l.size()); iI++)
-							{
+							for(size_t iI = 1; iI < save_l.size(); iI++) {
 								std::string tex = save_l[iI].name;
 
 								CMenuElementText *me02;
@@ -2386,7 +2284,7 @@ bool Menu2_Render()
 										tex3,
 										256);
 									tex +=  tex3;
-									GetTimeFormat(    LOCALE_SYSTEM_DEFAULT,
+									GetTimeFormatA(    LOCALE_SYSTEM_DEFAULT,
 										0,
 										&save_l[iI].stime,
 										"   HH:mm",
@@ -2483,8 +2381,7 @@ bool Menu2_Render()
 					{
 						if(save_l.size()!=1)
 						{
-							for(int iI=1;iI<(save_l.size());iI++)
-							{
+							for(size_t iI = 1; iI < save_l.size(); iI++) {
 								std::string tex = save_l[iI].name;
 								std::string tex2;
 								tex2.resize(tex.size());
@@ -2946,14 +2843,6 @@ bool Menu2_Render()
 					pWindowMenuConsole->AddMenuCenterY(me);
 					ARX_SetAntiAliasing();
 
-					metemp = new CMenuElementText(-1, hFontMenu, "Enable Rendering Fix", fPosX1, 0.f, lColor, 1.f, NOP);
-					metemp->SetCheckOff();
-					me = new CMenuCheckButton(BUTTON_MENUOPTIONSVIDEO_DEBUGSETTING, 0, 0, pTex1->m_dwWidth, pTex1, pTex2, metemp);
-
-					((CMenuCheckButton*)me)->iState=ARXMenu_Options_Video_SetSoftRender();
-
-					pWindowMenuConsole->AddMenuCenterY(me);
-
 					pc = new CMenuPanel();
 					PAK_UNICODE_GetPrivateProfileString("system_menus_video_apply", "", szMenuText);
 					szMenuText += "   ";
@@ -3401,6 +3290,8 @@ bool Menu2_Render()
 
 				}
 				break;
+				
+			default: break; // Unhandled menu state.
 			}
 
 		}
@@ -3433,15 +3324,14 @@ bool Menu2_Render()
 
 	bNoMenu=false;
 
-	danaeApp.DANAEEndRender();
-
-	if(pTextManage)
+	// If the menu needs to be reinitialized, then the text in the TextManager is probably using bad fonts that were deleted already
+	// Skip one update in this case
+	if(pTextManage && !pMenu->bReInitAll)
 	{
 		pTextManage->Update(ARXDiffTimeMenu);
 		pTextManage->Render();
 	}
 
-	danaeApp.DANAEStartRender();
 	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP);
 
 	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
@@ -3613,11 +3503,11 @@ CMenuElement* CMenuElement::OnShortCut()
 
 //-----------------------------------------------------------------------------
 
-CMenuElementText::CMenuElementText(int _iID, HFONT _pHFont, const std::string& _pText,float _fPosX,float _fPosY,long _lColor,float _fSize,MENUSTATE _eMs) : CMenuElement(_eMs)
+CMenuElementText::CMenuElementText(int _iID, Font* _pFont, const std::string& _pText,float _fPosX,float _fPosY,long _lColor,float _fSize,MENUSTATE _eMs) : CMenuElement(_eMs)
 {
 	iID = _iID;
 
-	pHFont = _pHFont;
+	pFont = _pFont;
 
 	if( !_pText.compare( "---") )
 	{
@@ -3626,18 +3516,14 @@ CMenuElementText::CMenuElementText(int _iID, HFONT _pHFont, const std::string& _
 
 	lpszText= _pText;
 
-
 	ARX_CHECK_LONG(_fPosX);
 	ARX_CHECK_LONG(_fPosY);
 
+	Vector2i textSize = _pFont->GetTextSize(_pText);
 	rZone.left = ARX_CLEAN_WARN_CAST_LONG(_fPosX);
 	rZone.top = ARX_CLEAN_WARN_CAST_LONG(_fPosY);
-
-
-	GetTextSize(pHFont, _pText, (int&)rZone.right, (int&)rZone.bottom);
-
-	rZone.right+=rZone.left;
-	rZone.bottom+=rZone.top;
+	rZone.right  = rZone.left + textSize.x;
+	rZone.bottom = rZone.top + textSize.y;
 
 	lColor=_lColor;
 	lColorHighlight=lOldColor=RGB(255, 255, 255);
@@ -3662,16 +3548,16 @@ void CMenuElementText::SetText( const std::string& _pText )
 {
 	lpszText = _pText;
 
-	GetTextSize(pHFont, _pText, (int&)rZone.right, (int&)rZone.bottom);
+	Vector2i textSize = pFont->GetTextSize(_pText);
 
-	rZone.right+=rZone.left;
-	rZone.bottom+=rZone.top;
+	rZone.right  = textSize.x + rZone.left;
+	rZone.bottom = textSize.y + rZone.top;
 }
 
 //-----------------------------------------------------------------------------
 
-void CMenuElementText::Update(int _iDTime)
-{
+void CMenuElementText::Update(int _iDTime) {
+	(void)_iDTime;
 }
 
 //-----------------------------------------------------------------------------
@@ -3712,8 +3598,10 @@ bool CMenuElementText::OnMouseDoubleClick(int _iMouseButton)
 
 //-----------------------------------------------------------------------------
 // true: block les zones de checks
-bool CMenuElementText::OnMouseClick(int _iMouseButton)
-{
+bool CMenuElementText::OnMouseClick(int _iMouseButton) {
+	
+	(void)_iMouseButton;
+	
 	switch(eState)
 	{
 	case EDIT:
@@ -3723,6 +3611,7 @@ bool CMenuElementText::OnMouseClick(int _iMouseButton)
 		eState=GETTOUCH_TIME;
 		lOldColor=lColorHighlight;
 		return true;
+	default: break;
 	}
 
 	if (iID != BUTTON_MENUMAIN_RESUMEGAME)
@@ -4160,18 +4049,17 @@ void CMenuElementText::Render()
 
 	if(bNoMenu) return;
 
-	/*EERIE_3D ePos;
+	EERIE_3D ePos;
 	ePos.x = (float) rZone.left;
 	ePos.y = (float) rZone.top;
 	ePos.z = 1;
 
 	if (bSelected)
-		FontRenderText(pHFont, ePos, lpszText, lColorHighlight);
+		FontRenderText(pFont, ePos, lpszText, lColorHighlight);
 
 	else
-		FontRenderText(pHFont, ePos, lpszText, lColor);
-*/
-	pTextManage->AddText(pHFont, lpszText, rZone.left, rZone.top, bSelected ? lColorHighlight : lColor);
+		FontRenderText(pFont, ePos, lpszText, lColor);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -4188,14 +4076,12 @@ void CMenuElementText::RenderMouseOver()
 	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
 
-	/*EERIE_3D ePos;
+	EERIE_3D ePos;
 	ePos.x = (float)rZone.left;
 	ePos.y = (float)rZone.top;
 	ePos.z = 1;
 
-	FontRenderText(pHFont, ePos, lpszText, lColorHighlight);
-	*/
-	pTextManage->AddText(pHFont, lpszText, rZone.left, rZone.top, lColorHighlight);
+	FontRenderText(pFont, ePos, lpszText, lColorHighlight);
 
 	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  false);
 
@@ -4259,6 +4145,13 @@ void CMenuElementText::RenderMouseOver()
 		pTextureLoadRender=NULL;
 		break;
 	}
+}
+
+//-----------------------------------------------------------------------------
+
+Vector2i CMenuElementText::GetTextSize() const
+{
+	return pFont->GetTextSize(lpszText);
 }
 
 //-----------------------------------------------------------------------------
@@ -4669,29 +4562,28 @@ CMenuCheckButton::CMenuCheckButton(int _iID, float _fPosX,float _fPosY,int _iTai
 		_iTaille = std::max(_iTaille, ARX_CLEAN_WARN_CAST_INT(fRatioY));
 	}
 
-	int x = 0;
-	int y = 0;
+	Vector2i textSize(0,0);
 
 	if ( pText )
 	{
-		GetTextSize( pText->pHFont, pText->lpszText, x, y ); 
+		textSize = pText->pFont->GetTextSize(pText->lpszText); 
 
-		_iTaille = max (_iTaille, y);
-		x += pText->rZone.left;
-		pText->Move(iPosX, iPosY + (_iTaille - y) / 2);
+		_iTaille = max (_iTaille, textSize.y);
+		textSize.x += pText->rZone.left;
+		pText->Move(iPosX, iPosY + (_iTaille - textSize.y) / 2);
 	}
 
 
 
 	ARX_CHECK_LONG( _fPosX );
 	ARX_CHECK_LONG( _fPosY );
-	ARX_CHECK_LONG( _fPosX + _iTaille + x );
-	ARX_CHECK_LONG( _fPosY + max(_iTaille, y) );
+	ARX_CHECK_LONG( _fPosX + _iTaille + textSize.x );
+	ARX_CHECK_LONG( _fPosY + max(_iTaille, textSize.y) );
 	//CAST
 	rZone.left        = ARX_CLEAN_WARN_CAST_LONG( _fPosX );
 	rZone.top        = ARX_CLEAN_WARN_CAST_LONG( _fPosY );
-	rZone.right        = ARX_CLEAN_WARN_CAST_LONG( _fPosX + _iTaille + x );
-	rZone.bottom    = ARX_CLEAN_WARN_CAST_LONG( _fPosY + max(_iTaille, y) );
+	rZone.right        = ARX_CLEAN_WARN_CAST_LONG( _fPosX + _iTaille + textSize.x );
+	rZone.bottom    = ARX_CLEAN_WARN_CAST_LONG( _fPosY + max(_iTaille, textSize.y) );
 	iId=(int)this;
 
 	if (_pTex2)
@@ -4720,8 +4612,6 @@ CMenuCheckButton::~CMenuCheckButton()
 	}
 }
 
-//-----------------------------------------------------------------------------
-
 void CMenuCheckButton::Move(int _iX, int _iY)
 {
 	CMenuElement::Move(_iX, _iY);
@@ -4734,8 +4624,10 @@ void CMenuCheckButton::Move(int _iX, int _iY)
 
 //-----------------------------------------------------------------------------
 
-bool CMenuCheckButton::OnMouseClick(int _iMouseButton)
-{
+bool CMenuCheckButton::OnMouseClick(int _iMouseButton) {
+	
+	(void)_iMouseButton;
+	
 	if(iOldState<0)
 		iOldState=iState;
 
@@ -4775,15 +4667,6 @@ bool CMenuCheckButton::OnMouseClick(int _iMouseButton)
 			if(pMenuConfig) pMenuConfig->bAntiAliasing=(iState)?true:false;
 
 			ARX_SetAntiAliasing();
-		}
-		break;
-	case BUTTON_MENUOPTIONSVIDEO_DEBUGSETTING:
-		{
-			if(pMenuConfig)
-			{
-				pMenuConfig->bDebugSetting=(iState)?true:false;
-				pMenuConfig->bDebugSetting=ARXMenu_Options_Video_SetSoftRender()?1:0;
-			}
 		}
 		break;
 	case BUTTON_MENUOPTIONSAUDIO_EAX:
@@ -5091,18 +4974,14 @@ MENUSTATE CWindowMenu::Render()
 
 	if (bMouseListen)
 	{
-		std::vector<CWindowMenuConsole*>::iterator i;
-
-		ARX_CHECK_INT(ARXDiffTimeMenu);
-		int iARXDiffTimeMenu    = ARX_CLEAN_WARN_CAST_INT(ARXDiffTimeMenu) ;
-
+		vector<CWindowMenuConsole*>::iterator i;
 
 		for (i = vWindowConsoleElement.begin(); i != vWindowConsoleElement.end(); ++i)
 		{
 			if(eCurrentMenuState==(*i)->eMenuState)
 			{
-				eMS=(*i)->Update(iPosX,iPosY, 0, iARXDiffTimeMenu);
-
+				eMS=(*i)->Update(iPosX, iPosY, 0);
+				
 				if (eMS != NOP)
 					break;
 			}
@@ -5113,7 +4992,7 @@ MENUSTATE CWindowMenu::Render()
 	{
 		if(eCurrentMenuState==(*i)->eMenuState)
 		{
-			if (int iNbHide = (*i)->Render())
+			if ((*i)->Render())
 				SETALPHABLEND(GDevice,false);
 
 			break;
@@ -5131,12 +5010,10 @@ MENUSTATE CWindowMenu::Render()
 	return eMS;
 }
 
-//-----------------------------------------------------------------------------
-
 CWindowMenuConsole::CWindowMenuConsole(int _iPosX,int _iPosY,int _iWidth,int _iHeight,MENUSTATE _eMenuState) :
 	bMouseListen (true),
-	bEdit (false),
 	iInterligne (10),
+	bEdit (false),
 	lData(0),
 	pData(NULL)
 {
@@ -5482,9 +5359,8 @@ void CWindowMenuConsole::UpdateText()
 
 	if (pZoneClick->rZone.top == pZoneClick->rZone.bottom)
 	{
-		int w,h;
-		GetTextSize(((CMenuElementText*)pZoneClick)->pHFont, "|", w, h);
-		pZoneClick->rZone.bottom += h;
+		Vector2i textSize = ((CMenuElementText*)pZoneClick)->pFont->GetTextSize("|");
+		pZoneClick->rZone.bottom += textSize.y;
 	}
 
 	//DRAW CURSOR
@@ -5511,10 +5387,8 @@ void CWindowMenuConsole::UpdateText()
 int IsMouseButtonClick()
 {
 	//MouseButton
-	for(int i=DXI_BUTTON0;i<=DXI_BUTTON31;i++)
-	{
-		if(pGetInfoDirectInput->GetMouseButtonNowPressed(i))
-		{
+	for(size_t i = 0; i < CDirectInput::ARX_MAXBUTTON; i++) {
+		if(pGetInfoDirectInput->GetMouseButtonNowPressed(i)) {
 			return DIK_BUTTON1+i-DXI_BUTTON0;
 		}
 	}
@@ -5566,7 +5440,7 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool _bValidateTest)
 				}
 				else
 				{
-					for(int iI=DIK_BUTTON1;iI<=DIK_BUTTON32;iI++)
+					for(int iI=DIK_BUTTON1;iI<=(int)DIK_BUTTON32;iI++)
 					{
 						if(pGetInfoDirectInput->iKeyId==iI)
 						{
@@ -5622,7 +5496,7 @@ CMenuElement * CWindowMenuConsole::GetTouch(bool _bValidateTest)
 
 //-----------------------------------------------------------------------------
 
-MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY,int _FrameDiff)
+MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 {
 	bFrameOdd=!bFrameOdd;
 
@@ -6242,11 +6116,11 @@ long CMenuPanel::IsMouseOver(int _iX, int _iY)
 
 //-----------------------------------------------------------------------------
 
-CMenuButton::CMenuButton(int _iID, HFONT _pHFont,MENUSTATE _eMenuState,int _iPosX,int _iPosY, const std::string& _pText,float _fSize,TextureContainer *_pTex,TextureContainer *_pTexOver,int _iColor,int _iTailleX,int _iTailleY)
+CMenuButton::CMenuButton(int _iID, Font* _pFont,MENUSTATE _eMenuState,int _iPosX,int _iPosY, const std::string& _pText,float _fSize,TextureContainer *_pTex,TextureContainer *_pTexOver,int _iColor)
 	: CMenuElement(_eMenuState)
 {
 	iID = _iID;
-	pHFont = _pHFont;
+	pFont = _pFont;
 	fSize=_fSize;
 
 	rZone.left=_iPosX;
@@ -6368,23 +6242,21 @@ void CMenuButton::AddText( const std::string& _pText)
 
 	int iSizeXButton=rZone.right-rZone.left;
 	int iSizeYButton=rZone.bottom-rZone.top;
-	int iSizeX=0;
-	int iSizeY=0;
-	GetTextSize(pHFont, _pText, iSizeX, iSizeY);
+	
+	Vector2i textSize = pFont->GetTextSize(_pText);
 
-	if(iSizeX>iSizeXButton) iSizeXButton=iSizeX;
-
-	if(iSizeY>iSizeYButton) iSizeYButton=iSizeY;
+	if(textSize.x>iSizeXButton) iSizeXButton=textSize.x;
+	if(textSize.y>iSizeYButton) iSizeYButton=textSize.y;
 
 	rZone.right=rZone.left+iSizeXButton;
 	rZone.bottom=rZone.top+iSizeYButton;
 }
 
-//-----------------------------------------------------------------------------
-
-bool CMenuButton::OnMouseClick(int _iMouseButton)
-{
-	++iPos;
+bool CMenuButton::OnMouseClick(int _iMouseButton) {
+	
+	(void)_iMouseButton;
+	
+	iPos++;
 
 	ARX_CHECK_NOT_NEG( iPos );
 
@@ -6398,8 +6270,8 @@ bool CMenuButton::OnMouseClick(int _iMouseButton)
 
 //-----------------------------------------------------------------------------
 
-void CMenuButton::Update(int _iDTime)
-{
+void CMenuButton::Update(int _iDTime) {
+	(void)_iDTime;
 }
 
 //-----------------------------------------------------------------------------
@@ -6435,7 +6307,7 @@ void CMenuButton::Render()
 		ePos.y = (float)rZone.top;
 		ePos.z = 1;
 		
-		FontRenderText(pHFont, ePos, &pText, RGB(232, 204, 142));
+		FontRenderText(pFont, ePos, &pText, RGB(232, 204, 142));
 
 		GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  false);
 	}
@@ -6492,7 +6364,7 @@ void CMenuButton::RenderMouseOver()
 		ePos.y = (float)rZone.top;
 		ePos.z = 1;
 		
-		FontRenderText(pHFont, ePos, &pText, RGB(255, 255, 255));
+		FontRenderText(pFont, ePos, &pText, RGB(255, 255, 255));
 		
 		GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  false);
 	}
@@ -6505,9 +6377,9 @@ CMenuSliderText::CMenuSliderText(int _iID, int _iPosX, int _iPosY)
 {
 	iID = _iID;
 	TextureContainer *pTex = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_button_left.bmp");
-	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTex, pTex, -1, pTex?pTex->m_dwWidth:0, pTex->m_dwHeight);
+	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTex, pTex, -1);
 	pTex = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_button_right.bmp");
-	pRightButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTex, pTex, -1, pTex?pTex->m_dwWidth:0, pTex->m_dwHeight);
+	pRightButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTex, pTex, -1);
 
 	vText.clear();
 
@@ -6561,10 +6433,9 @@ void CMenuSliderText::SetWidth(int _iWidth)
 	for(it=vText.begin();it<vText.end();it++)
 	{
 		CMenuElementText *pMenuElementText=*it;
-		int x, y;
-		GetTextSize(pMenuElementText->pHFont, pMenuElementText->lpszText, x, y);
+		Vector2i textSize = pMenuElementText->GetTextSize();
 
-		int dxx=(dx-x)>>1;
+		int dxx=(dx-textSize.x)>>1;
 		pMenuElementText->SetPos(ARX_CLEAN_WARN_CAST_FLOAT(pLeftButton->rZone.right + dxx), ARX_CLEAN_WARN_CAST_FLOAT(rZone.top));
 	}
 }
@@ -6576,14 +6447,13 @@ void CMenuSliderText::AddText(CMenuElementText *_pText)
 	_pText->Move(rZone.left + pLeftButton->GetWidth(), rZone.top + 0);
 	vText.insert(vText.end(), _pText);
 
-	int x,y;
-	GetTextSize(_pText->pHFont, _pText->lpszText, x, y);
+	Vector2i textSize = _pText->GetTextSize();
 
-	rZone.right  = max(rZone.right, rZone.left + pLeftButton->GetWidth() + pRightButton->GetWidth() + x);
-	rZone.bottom = max(rZone.bottom, rZone.top + y);
+	rZone.right  = max(rZone.right, rZone.left + pLeftButton->GetWidth() + pRightButton->GetWidth() + textSize.x);
+	rZone.bottom = max(rZone.bottom, rZone.top + textSize.y);
 
-	pLeftButton->SetPos(rZone.left, rZone.top+(y>>2));
-	pRightButton->SetPos(rZone.right-pRightButton->GetWidth(), rZone.top+(y>>2));
+	pLeftButton->SetPos(rZone.left, rZone.top+(textSize.y>>2));
+	pRightButton->SetPos(rZone.right-pRightButton->GetWidth(), rZone.top+(textSize.y>>2));
 
 	int dx=rZone.right-rZone.left-pLeftButton->GetWidth()-pRightButton->GetWidth();
 	//on recentre tout
@@ -6592,9 +6462,10 @@ void CMenuSliderText::AddText(CMenuElementText *_pText)
 	for(it=vText.begin();it<vText.end();it++)
 	{
 		CMenuElementText *pMenuElementText=*it;
-		GetTextSize(pMenuElementText->pHFont, pMenuElementText->lpszText, x, y);
+		
+		textSize = pMenuElementText->GetTextSize();
 
-		int dxx=(dx-x)>>1;
+		int dxx=(dx-textSize.x)>>1;
 		pMenuElementText->SetPos(ARX_CLEAN_WARN_CAST_FLOAT(pLeftButton->rZone.right + dxx), ARX_CLEAN_WARN_CAST_FLOAT(rZone.top));
 	}
 }
@@ -6811,8 +6682,8 @@ CMenuSlider::CMenuSlider(int _iID, int _iPosX, int _iPosY)
 
 	TextureContainer *pTexL = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_button_left.bmp");
 	TextureContainer *pTexR = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_button_right.bmp");
-	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTexL, pTexR, -1, pTexL->m_dwWidth, pTexL->m_dwHeight);
-	pRightButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTexR, pTexL, -1, pTexR->m_dwWidth, pTexR->m_dwHeight);
+	pLeftButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTexL, pTexR, -1);
+	pRightButton = new CMenuButton(-1, hFontMenu, NOP, _iPosX, _iPosY, string(), 1, pTexR, pTexL, -1);
 	pTex1 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_on.bmp");
 	pTex2 = MakeTCFromFile("\\Graph\\interface\\menus\\menu_slider_off.bmp");
 
@@ -7111,13 +6982,12 @@ CDirectInput::CDirectInput()
 	iNumCursor=0;
 	lFrameDiff=0;
 
-	for(int i=DXI_BUTTON0;i<=DXI_BUTTON31;i++)
-	{
-		iOldMouseButton[i]=0;
-		iMouseTime[i]=0;
-		iMouseTimeSet[i]=0;
-		bMouseButton[i]=bOldMouseButton[i]=false;
-		iOldNumClick[i]=iOldNumUnClick[i]=0;
+	for(size_t i = 0; i < ARX_MAXBUTTON; i++) {
+		iOldMouseButton[i] = 0;
+		iMouseTime[i] = 0;
+		iMouseTimeSet[i] = 0;
+		bMouseButton[i] = bOldMouseButton[i] = false;
+		iOldNumClick[i] = iOldNumUnClick[i] = 0;
 	}
 
 	// PreCompute le ScanCode
@@ -7175,13 +7045,12 @@ void CDirectInput::SetSensibility(int _iSensibility)
 
 void CDirectInput::ResetAll()
 {
-	for(int i=DXI_BUTTON0;i<=DXI_BUTTON31;i++)
-	{
-		iOldMouseButton[i]=0;
-		iMouseTime[i]=0;
-		iMouseTimeSet[i]=0;
-		bMouseButton[i]=bOldMouseButton[i]=false;
-		iOldNumClick[i]=iOldNumUnClick[i]=0;
+	for(size_t i = 0; i < ARX_MAXBUTTON; i++) {
+		iOldMouseButton[i] = 0;
+		iMouseTime[i] = 0;
+		iMouseTimeSet[i] = 0;
+		bMouseButton[i] = bOldMouseButton[i] = false;
+		iOldNumClick[i] = iOldNumUnClick[i] = 0;
 	}
 
 	iKeyId=-1;
@@ -7203,8 +7072,8 @@ void CDirectInput::GetInput()
 {
 	int iDTime;
 
-	DXI_ExecuteAllDevices(false);
-	iKeyId=DXI_GetKeyIDPressed(DXI_KEYBOARD1);
+	DXI_ExecuteAllDevices();
+	iKeyId=DXI_GetKeyIDPressed();
 	bTouch=(iKeyId>=0)?true:false;
 
 	for(int i=0;i<256;i++)
@@ -7290,11 +7159,11 @@ void CDirectInput::GetInput()
 	const int iArxTime = ARX_CLEAN_WARN_CAST_INT(ARX_TIME_Get( false )) ;
 
 
-	for(int i=DXI_BUTTON0;i<=DXI_BUTTON31;i++)
+	for(size_t i = 0; i < ARX_MAXBUTTON; i++)
 	{
 		int iNumClick;
 		int iNumUnClick;
-		DXI_MouseButtonCountClick(DXI_MOUSE1,i,&iNumClick,&iNumUnClick);
+		DXI_MouseButtonCountClick(i, iNumClick, iNumUnClick);
 
 		iOldNumClick[i]+=iNumClick+iNumUnClick;
 
@@ -7322,8 +7191,7 @@ void CDirectInput::GetInput()
 
 		if(iOldNumClick[i]) iOldNumClick[i]--;
 
-		iDTime=0;
-		DXI_MouseButtonPressed(DXI_MOUSE1,i,&iDTime);
+		DXI_MouseButtonPressed(i,iDTime);
 
 		if(iDTime)
 		{
@@ -7357,7 +7225,7 @@ void CDirectInput::GetInput()
 		}
 		}
 
-	iWheelSens=pGetInfoDirectInput->GetWheelSens(DXI_MOUSE1);
+	iWheelSens=pGetInfoDirectInput->GetWheelSens();
 
 	if(    ( danaeApp.m_pFramework->m_bIsFullscreen ) &&
 		( bGLOBAL_DINPUT_MENU ) )
@@ -7366,8 +7234,7 @@ void CDirectInput::GetInput()
 		float fDY = 0.f;
 		iMouseRX = iMouseRY = iMouseRZ = 0;
 
-		if( DXI_GetAxeMouseXYZ(DXI_MOUSE1, &iMouseRX, &iMouseRY, &iMouseRZ) )
-		{
+		if(DXI_GetAxeMouseXYZ(iMouseRX, iMouseRY, iMouseRZ)) {
 			float fSensMax = 1.f / 6.f;
 			float fSensMin = 2.f;
 			float fSens = ( ( fSensMax - fSensMin ) * ( (float)iSensibility ) / 10.f ) + fSensMin;
@@ -7471,11 +7338,11 @@ void CDirectInput::GetInput()
 
 //-----------------------------------------------------------------------------
 
-int CDirectInput::GetWheelSens(int _iIDbutton)
-{
-	int iX,iY,iZ=0;
-	DXI_GetAxeMouseXYZ(_iIDbutton,&iX,&iY,&iZ);
-
+int CDirectInput::GetWheelSens() {
+	
+	int iX, iY, iZ = 0;
+	DXI_GetAxeMouseXYZ(iX, iY, iZ);
+	
 	return iZ;
 }
 
@@ -7483,7 +7350,7 @@ int CDirectInput::GetWheelSens(int _iIDbutton)
 
 bool CDirectInput::IsVirtualKeyPressed(int _iVirtualKey)
 {
-	return DXI_KeyPressed(DXI_KEYBOARD1,_iVirtualKey)?true:false;
+	return DXI_KeyPressed(_iVirtualKey)?true:false;
 }
 
 //-----------------------------------------------------------------------------
@@ -7491,7 +7358,7 @@ bool CDirectInput::IsVirtualKeyPressed(int _iVirtualKey)
 bool CDirectInput::IsVirtualKeyPressedOneTouch(int _iVirtualKey)
 {
 
-	return(    (DXI_KeyPressed(DXI_KEYBOARD1,_iVirtualKey))&&
+	return(    (DXI_KeyPressed(_iVirtualKey))&&
 			(iOneTouch[_iVirtualKey]==1) );
 }
 
@@ -7499,7 +7366,7 @@ bool CDirectInput::IsVirtualKeyPressedOneTouch(int _iVirtualKey)
 
 bool CDirectInput::IsVirtualKeyPressedNowPressed(int _iVirtualKey)
 {
-	return(    (DXI_KeyPressed(DXI_KEYBOARD1,_iVirtualKey))&&
+	return(    (DXI_KeyPressed(_iVirtualKey))&&
 			(iOneTouch[_iVirtualKey]==1) );
 }
 
@@ -7507,14 +7374,14 @@ bool CDirectInput::IsVirtualKeyPressedNowPressed(int _iVirtualKey)
 
 bool CDirectInput::IsVirtualKeyPressedNowUnPressed(int _iVirtualKey)
 {
-	return(    (!DXI_KeyPressed(DXI_KEYBOARD1,_iVirtualKey))&&
+	return(    (!DXI_KeyPressed(_iVirtualKey))&&
 			(iOneTouch[_iVirtualKey]==1) );
 }
 
 //-----------------------------------------------------------------------------
 
-void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY,int _iColor)
-{
+void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY) {
+	
 	GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_POINT );
 	GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_POINT );
 	SETTEXTUREWRAPMODE(GDevice,D3DTADDRESS_CLAMP);
@@ -7652,7 +7519,7 @@ void CDirectInput::DrawCursor()
 	SETALPHABLEND(GDevice,false);
 
 	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
-	DrawOneCursor(iMouseAX,iMouseAY,-1);
+	DrawOneCursor(iMouseAX,iMouseAY);
 
 	danaeApp.EnableZBuffer();
 

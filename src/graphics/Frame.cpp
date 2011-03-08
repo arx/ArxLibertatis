@@ -54,12 +54,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+
+#include "graphics/Frame.h"
+
 #include <windows.h>
 
 #include "core/Time.h"
 #include "core/Application.h"
-#include "graphics/Frame.h"
+
 #include "graphics/GraphicsUtility.h"
+
 #include "io/IO.h"
 
 //-----------------------------------------------------------------------------
@@ -250,8 +254,9 @@ struct ZBUFFER_INFO
 ZBUFFER_INFO zbiZBufferInfo;
 
 static HRESULT WINAPI EnumZBufferFormatsCallback(DDPIXELFORMAT * pddpf,
-        VOID * pContext)
-{
+        VOID * pContext) {
+	
+	(void)pContext;
 
 	if (pddpf->dwFlags == DDPF_ZBUFFER)
 	{

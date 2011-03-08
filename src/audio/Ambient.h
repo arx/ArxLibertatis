@@ -22,107 +22,99 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef __ATHENA_AMBIANCE_H__
-#define __ATHENA_AMBIANCE_H__
+
+#ifndef ARX_AUDIO_AMBIENT_H
+#define ARX_AUDIO_AMBIENT_H
 
 #include "AudioTypes.h"
 #include "AudioResource.h"
 
-namespace ATHENA
-{
-
-	struct KeySetting
-	{
-		aalULong flags;                   //A set of KeySettingFlag
-		aalFloat min, max;                //Min and max setting values
-		aalFloat from, to, cur;           //Current min and max values
-		aalULong interval;                //Interval between updates (On Start = 0)
-		aalSLong update;                  //Last update time
+namespace ATHENA {
+	
+	struct KeySetting {
+		aalULong flags; // A set of KeySettingFlag
+		aalFloat min, max; // Min and max setting values
+		aalFloat from, to, cur; // Current min and max values
+		aalULong interval; // Interval between updates (On Start = 0)
+		aalSLong update; // Last update time
 	};
-
-	struct TrackKey
-	{
-		aalULong flags;                   //Nothing (padding! ;)
-		aalULong start;                   //Start time (after last key)
-		aalULong n_start;                 //Next time to play sample (when delayed)
-		aalULong loop, loopc;             //Loop count
-		aalULong delay_min, delay_max;    //Min and max delay before each sample loop
-		aalULong delay;                   //Current delay
-		KeySetting volume;             //Volume settings
-		KeySetting pitch;              //Pitch settings
-		KeySetting pan;                //Pan settings
-		KeySetting x, y, z;            //Positon settings
+	
+	struct TrackKey {
+		aalULong flags; // Nothing (padding! ;)
+		aalULong start; // Start time (after last key)
+		aalULong n_start; // Next time to play sample (when delayed)
+		aalULong loop, loopc; // Loop count
+		aalULong delay_min, delay_max; // Min and max delay before each sample loop
+		aalULong delay; // Current delay
+		KeySetting volume; // Volume settings
+		KeySetting pitch; // Pitch settings
+		KeySetting pan; // Pan settings
+		KeySetting x, y, z; // Positon settings
 	};
-
-	struct Track
-	{
-		aalSLong s_id;                    //Sample id
-		aalSLong a_id;                    //Ambiance id
-		char * name;                   //Track name (if NULL use sample name instead)
-		aalULong flags;                   //A set of ATHENAAmbianceFlag
-		aalULong key_c, key_i;            //Key count and current index
-		TrackKey * key_l;              //Key list
+	
+	struct Track {
+		aalSLong s_id; // Sample id
+		aalSLong a_id; // Ambiance id
+		char * name; // Track name (if NULL use sample name instead)
+		aalULong flags; // A set of ATHENAAmbianceFlag
+		aalULong key_c, key_i; // Key count and current index
+		TrackKey * key_l; // Key list
 	};
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Class ATHENA::Ambiance                                                    //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	class Ambiance
-	{
-		public:
-			// Constructor and destructor                                                //
-			Ambiance();
-			~Ambiance();
-
-			// File input/output                                                         //
-			aalError Load(const char * name);
-
-			// Setup                                                                     //
-			aalError SetUserData(aalVoid * data);
-			aalError SetVolume(const aalFloat & volume);
-
-			// Status                                                                    //
-			aalError GetName(char * name, const aalULong & max_char = AAL_DEFAULT_STRINGSIZE);
-			aalError GetUserData(aalVoid ** data);
-			aalError GetTrackID(const char * name, aalSLong & track_id);
-			aalError GetVolume(aalFloat & volume);
-			aalUBool IsPaused();
-			aalUBool IsPlaying();
-			aalUBool IsLooped();
-
-			// Control                                                                   //
-			aalError Play(const aalChannel & channel, const aalULong & loop = 0, const aalULong & fade_interval = 0.0F);
-			aalError Stop(const aalULong & volume_interval = 0.0F);
-			aalError Pause();
-			aalError Resume();
-			aalError Update();
-
-			// Key status                                                                //
-			aalError GetTrackKeyLength(const aalSLong & track_id, const aalSLong & key_id, aalULong & length);
-
-			// Track setup                                                               //
-			aalError MuteTrack(const aalSLong & track_id, const aalUBool & mute);
-
-			// Track status                                                              //
-			aalError GetTrackLength(const aalSLong & track_id, aalULong & length);
-
-			// Macros
-			inline aalUBool IsNotTrack(const aalSLong & track_id);
-			inline aalUBool IsNotTrackKey(const aalSLong & t_id, const aalSLong & k_id);
-
-			// Data                                                                      //
-			aalChannel channel;
-			aalFloat fade_time, fade_interval, fade_max;
-			aalULong flags;
-			aalULong start, time;
-			aalULong track_c;
-			Track * track_l;
-			char name[256];
-			aalVoid * data;                               //User data
+	
+	class Ambiance {
+		
+	public:
+		
+		Ambiance();
+		~Ambiance();
+		
+		// File input/output                                                         //
+		aalError Load(const char * name);
+		
+		// Setup                                                                     //
+		aalError SetUserData(void * data);
+		aalError SetVolume(const aalFloat & volume);
+		
+		// Status                                                                    //
+		aalError GetName(char * name, const aalULong & max_char = AAL_DEFAULT_STRINGSIZE);
+		aalError GetUserData(void ** data);
+		aalError GetTrackID(const char * name, aalSLong & track_id);
+		aalError GetVolume(aalFloat & volume);
+		aalUBool IsPaused();
+		aalUBool IsPlaying();
+		aalUBool IsLooped();
+		
+		// Control                                                                   //
+		aalError Play(const aalChannel & channel, const aalULong & loop = 0, const aalULong & fade_interval = 0.0F);
+		aalError Stop(const aalULong & volume_interval = 0.0F);
+		aalError Pause();
+		aalError Resume();
+		aalError Update();
+		
+		// Key status                                                                //
+		aalError GetTrackKeyLength(const aalSLong & track_id, const aalSLong & key_id, aalULong & length);
+		
+		// Track setup                                                               //
+		aalError MuteTrack(const aalSLong & track_id, const aalUBool & mute);
+		
+		// Track status                                                              //
+		aalError GetTrackLength(const aalSLong & track_id, aalULong & length);
+		
+		// Macros
+		inline aalUBool IsNotTrack(const aalSLong & track_id);
+		inline aalUBool IsNotTrackKey(const aalSLong & t_id, const aalSLong & k_id);
+		
+		aalChannel channel;
+		aalFloat fade_time, fade_interval, fade_max;
+		aalULong flags;
+		aalULong start, time;
+		aalULong track_c;
+		Track * track_l;
+		char name[256];
+		void * data; // User data
+		
 	};
+	
+} // namespace ATHENA
 
-}//ATHENA::
-
-#endif//__ATHENA_AMBIANCE_H__
+#endif // ARX_AUDIO_AMBIENT_H

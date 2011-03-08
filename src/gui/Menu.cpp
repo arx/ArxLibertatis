@@ -57,33 +57,39 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "gui/Menu.h"
 
-#include <windows.h>
 #include <cstdlib>
-#include <fstream>
+#include <sstream>
+#include <cstdio>
 
-#include "scene/ChangeLevel.h"
-#include "scene/GameSound.h"
+#include <windows.h>
+
+#include "core/Time.h"
+#include "core/Application.h"
+#include "core/Localization.h"
+#include "core/Unicode.hpp"
+
+#include "game/Equipment.h"
+#include "game/Player.h"
+
+#include "gui/MenuWidgets.h"
+#include "gui/Text.h"
+#include "gui/ViewImage.h"
+
+#include "graphics/Draw.h"
+#include "graphics/Math.h"
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/ParticleParams.h"
-#include "core/Localization.h"
-#include "gui/MenuWidgets.h"
-#include "gui/Text.h"
-#include "core/Time.h"
-#include "game/Equipment.h"
-#include "scene/LoadLevel.h"
-#include "gui/ViewImage.h"
-
-#include "core/Application.h"
-#include "graphics/Draw.h"
-#include "graphics/Math.h"
-#include "scene/Object.h"
 
 #include "io/IO.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
 
-//-----------------------------------------------------------------------------
+#include "scene/LoadLevel.h"
+#include "scene/Object.h"
+#include "scene/ChangeLevel.h"
+#include "scene/GameSound.h"
+
 extern TextManager * pTextManage;
 extern CDirectInput * pGetInfoDirectInput;
 extern CMenuConfig * pMenuConfig;
@@ -288,9 +294,8 @@ void ARX_MENU_LaunchAmb(char * _lpszAmb)
 	ARX_SOUND_PlayMenuAmbiance(_lpszAmb);
 }
 
-//-----------------------------------------------------------------------------
-void ARX_Menu_Resources_Create()
-{
+void ARX_Menu_Resources_Create() {
+	
 	if (ARXmenu.mda)
 	{
 		delete ARXmenu.mda;
@@ -487,9 +492,8 @@ void ARX_MENU_Clicked_QUIT_GAME()
 	}
 }
 
-//-----------------------------------------------------------------------------
-void ARX_MENU_Launch()
-{
+void ARX_MENU_Launch() {
+	
 	ARX_TIME_Pause();
 
 	//Synchronize menu mixers with game mixers and switch between them
@@ -502,11 +506,8 @@ void ARX_MENU_Launch()
 	ARX_Menu_Resources_Create();
 }
 
-//-----------------------------------------------------------------------------
-// ARX Menu Management Func
-//-----------------------------------------------------------------------------
-void ARX_Menu_Manage()
-{
+void ARX_Menu_Manage() {
+	
 	// looks for keys for each mode.
 	switch (ARXmenu.currentmode)
 	{
@@ -808,7 +809,6 @@ bool ARX_Menu_Render()
 					player.skin = ARX_CLEAN_WARN_CAST_CHAR(iSkin);
 
 				}
-				else;
 
 				Color = RGB(255, 255, 255);
 			}
@@ -853,9 +853,6 @@ bool ARX_Menu_Render()
 
 					ARX_PLAYER_Restore_Skin();
 				}
-
-				if (EERIEMouseButton & 1) ;
-				else ;
 
 				Color = RGB(255, 255, 255);
 			}
@@ -943,58 +940,50 @@ bool ARX_Menu_Render()
 
 		EERIE_3D ePos;
 		COLORREF Color = 0;
-		int iW;
-		int iH;
 		std::string szText;
 
 		Color = RGB(232, 204, 143);
 
 		PAK_UNICODE_GetPrivateProfileString("system_menus_main_cdnotfound", "", szText);
-		iW = 0;
-		iH = 0;
-		GetTextSize(hFontMenu, szText, iW, iH);
-		ePos.x = (DANAESIZX - iW) * 0.5f;
+		Vector2i textSize = hFontMenu->GetTextSize(szText);
+		ePos.x = (DANAESIZX - textSize.x) * 0.5f;
 		ePos.y = DANAESIZY * 0.4f;
 		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.y), Color);
 
 		PAK_UNICODE_GetPrivateProfileString("system_yes", "", szText);
-		iW = 0;
-		iH = 0;
-		GetTextSize(hFontMenu, szText, iW, iH);
-		ePos.x = (DANAESIZX * 0.5f - iW) * 0.5f;
+		textSize = hFontMenu->GetTextSize(szText);
+		ePos.x = (DANAESIZX * 0.5f - textSize.x) * 0.5f;
 		ePos.y = DANAESIZY * 0.5f;
 
-		if (MouseInRect(ePos.x, ePos.y, ePos.x + iW, ePos.y + iH))
-		{
+		if(MouseInRect(ePos.x, ePos.y, ePos.x + textSize.x, ePos.y + textSize.y)) {
 			SpecialCursor = CURSOR_INTERACTION_ON;
-
-			if ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1))
+			
+			if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
 				ARX_MENU_CLICKSOUND();
-
+			}
+			
 			Color = RGB(255, 255, 255);
-		}
-		else
+		} else {
 			Color = RGB(232, 204, 143);
+		}
 
 		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), Color);
 
 		PAK_UNICODE_GetPrivateProfileString("system_no", "", szText);
-		iW = 0;
-		iH = 0;
-		GetTextSize(hFontMenu, szText, iW, iH);
-		ePos.x = DANAESIZX * 0.5f + (DANAESIZX * 0.5f - iW) * 0.5f;
+		textSize = hFontMenu->GetTextSize(szText);
+		ePos.x = DANAESIZX * 0.5f + (DANAESIZX * 0.5f - textSize.x) * 0.5f;
 
-		if (MouseInRect(ePos.x, ePos.y, ePos.x + iW, ePos.y + iH))
-		{
+		if(MouseInRect(ePos.x, ePos.y, ePos.x + textSize.x, ePos.y + textSize.y)){
 			SpecialCursor = CURSOR_INTERACTION_ON;
-
-			if ((!(EERIEMouseButton & 1)) && (LastMouseClick & 1))
+			
+			if(!(EERIEMouseButton & 1) && (LastMouseClick & 1)) {
 				ARX_MENU_CLICKSOUND();
-
+			}
+			
 			Color = RGB(255, 255, 255);
-		}
-		else
+		} else {
 			Color = RGB(232, 204, 143);
+		}
 
 		pTextManage->AddText(hFontMenu, szText, static_cast<long>(ePos.x), static_cast<long>(ePos.x), Color);
 	}
@@ -1004,15 +993,11 @@ bool ARX_Menu_Render()
 	DynLight[0].pos.x = 0.f + EERIEMouseX - (DANAESIZX >> 1);
 	DynLight[0].pos.y = 0.f + EERIEMouseY - (DANAESIZY >> 1);
 
-	danaeApp.DANAEEndRender();
-
 	if (pTextManage)
 	{
 		pTextManage->Update(FrameDiff);
 		pTextManage->Render();
 	}
-
-	danaeApp.DANAEStartRender();
 
 	if (ARXmenu.currentmode != AMCM_CREDITS)
 		ARX_INTERFACE_RenderCursor(1);

@@ -23,16 +23,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
 
+#include "audio/Ambient.h"
+
 #include <math.h>
 #include <cstdlib>
 #include <cstring>
 
 #include "audio/AudioGlobal.h"
 #include "audio/Sample.h"
-#include "audio/Ambient.h"
 
 #include "io/PakManager.h"
-
 
 using namespace std;
 
@@ -68,13 +68,13 @@ namespace ATHENA
 		IS_FADED_DOWN    = 0x00000010
 	};
 
-	static aalVoid FreeTrack(Track & track);
-	static aalVoid ResetSetting(KeySetting & setting);
+	static void FreeTrack(Track & track);
+	static void ResetSetting(KeySetting & setting);
 	static aalFloat UpdateSetting(KeySetting & setting, const aalSLong & timez = 0);
-	static aalVoid UpdateKeySynch(TrackKey & key);
-	static aalVoid KeyPlay(Track & track, TrackKey & key);
-	static aalVoid OnAmbianceSampleStart(aalVoid * inst, const aalSLong &, aalVoid * data);
-	static aalVoid OnAmbianceSampleStop(aalVoid *, const aalSLong &, aalVoid * data);
+	static void UpdateKeySynch(TrackKey & key);
+	static void KeyPlay(Track & track, TrackKey & key);
+	static void OnAmbianceSampleStart(void * inst, const aalSLong &, void * data);
+	static void OnAmbianceSampleStop(void *, const aalSLong &, void * data);
 
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //
@@ -675,7 +675,7 @@ namespace ATHENA
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 
-	aalError Ambiance::SetUserData(aalVoid * _data)
+	aalError Ambiance::SetUserData(void * _data)
 	{
 		data = _data;
 
@@ -754,7 +754,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError Ambiance::GetUserData(aalVoid ** _data)
+	aalError Ambiance::GetUserData(void ** _data)
 	{
 		*_data = data;
 
@@ -1122,14 +1122,14 @@ namespace ATHENA
 	// Static                                                                    //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	static aalVoid FreeTrack(Track & track)
+	static void FreeTrack(Track & track)
 	{
 		_sample.Delete(GetSampleID(track.s_id));
 		free(track.name);
 		free(track.key_l);
 	}
 
-	static aalVoid ResetSetting(KeySetting & setting)
+	static void ResetSetting(KeySetting & setting)
 	{
 		setting.update = 0;
 
@@ -1175,7 +1175,7 @@ namespace ATHENA
 		return setting.cur;
 	}
 
-	static aalVoid UpdateKeySynch(TrackKey & key)
+	static void UpdateKeySynch(TrackKey & key)
 	{
 		if (key.delay_min != key.delay_max)
 		{
@@ -1185,7 +1185,7 @@ namespace ATHENA
 		else key.delay = key.delay_min;
 	}
 
-	static aalVoid KeyPlay(Track & track, TrackKey & key)
+	static void KeyPlay(Track & track, TrackKey & key)
 	{
 		aalSLong s_id(GetSampleID(track.s_id));
 		aalSLong i_id(GetInstanceID(track.s_id));
@@ -1245,7 +1245,7 @@ namespace ATHENA
 		key.n_start = KEY_CONTINUE;
 	}
 
-	static aalVoid OnAmbianceSampleStart(aalVoid * inst, const aalSLong &, aalVoid * data)
+	static void OnAmbianceSampleStart(void * inst, const aalSLong &, void * data)
 	{
 		Instance * instance = (Instance *)inst;
 		Track * track = (Track *)data;
@@ -1303,7 +1303,7 @@ namespace ATHENA
 		else instance->SetPan(UpdateSetting(key->pan));
 	}
 
-	static aalVoid OnAmbianceSampleStop(aalVoid *, const aalSLong &, aalVoid * data)
+	static void OnAmbianceSampleStop(void *, const aalSLong &, void * data)
 	{
 		Track * track = (Track *)data;
 		Ambiance * ambiance = _amb[track->a_id];

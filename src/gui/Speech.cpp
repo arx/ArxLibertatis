@@ -58,33 +58,38 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Speech.h"
 
 #include <cstdlib>
+#include <cstdio>
 
 #include "core/Core.h"
-#include "gui/Interface.h"
-#include "gui/Text.h"
-#include "scripting/Script.h"
-#include "scripting/ScriptEvent.h"
-#include "scene/GameSound.h"
-#include "window/Input.h"
-#include "gui/Text.h"
 #include "core/Localization.h"
 #include "core/Time.h"
 
+#include "game/Player.h"
+
+#include "gui/Interface.h"
+#include "gui/Text.h"
+
 #include "graphics/Draw.h"
 
-#include "io/IO.h"
+#include "io/FilePath.h"
 #include "io/Logger.h"
+
+#include "scene/GameSound.h"
+#include "scene/Interactive.h"
+
+#include "scripting/Script.h"
+#include "scripting/ScriptEvent.h"
+
+#include "window/Input.h"
 
 using std::min;
 using std::max;
 
-//-----------------------------------------------------------------------------
 extern TextureContainer *	arx_logo_tc;
 extern long ARX_CONVERSATION;
 extern long EXTERNALVIEW;
 extern long REQUEST_SPEECH_SKIP;
 
-//-----------------------------------------------------------------------------
 ARX_SPEECH aspeech[MAX_ASPEECH];
 long HIDESPEECH = 0;
 STRUCT_SPEECH speech[MAX_SPEECH];
@@ -93,7 +98,7 @@ STRUCT_SPEECH speech[MAX_SPEECH];
 //-----------------------------------------------------------------------------
 void ARX_SPEECH_Init()
 {
-	for ( int i = 0 ; i < MAX_SPEECH ; i++ )
+	for (size_t i = 0 ; i < MAX_SPEECH ; i++ )
 		speech[i].clear();
 }
 
@@ -105,7 +110,7 @@ void ARX_SPEECH_MoveUp()
 			speech[0].lpszUText.clear();
 	}
 
-	for (long j = 0; j < MAX_SPEECH - 1; j++)
+	for (size_t j = 0; j < MAX_SPEECH - 1; j++)
 	{
 		speech[j] = speech[j+1];
 	}
@@ -116,14 +121,10 @@ void ARX_SPEECH_MoveUp()
 //-----------------------------------------------------------------------------
 void ARX_SPEECH_ClearAll()
 {
-	for (long i = 0; i < MAX_SPEECH; i++)
+	for (size_t i = 0; i < MAX_SPEECH; i++)
 	{
-		if (speech[i].timecreation != 0)
-		{
+		if (speech[i].timecreation != 0) {
 			speech[i].clear();
-			//speech[i].lpszUText.clear();
-
-			//speech[i].timecreation = 0;
 		}
 	}
 }
@@ -141,7 +142,7 @@ long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, const std::string& _name, long duratio
 	if (speech[MAX_SPEECH-1].timecreation != 0)
 		ARX_SPEECH_MoveUp();
 
-	for (long i = 0; i < MAX_SPEECH; i++)
+	for (size_t i = 0; i < MAX_SPEECH; i++)
 	{
 		if (speech[i].timecreation == 0)
 		{
@@ -187,7 +188,7 @@ long ARX_SPEECH_Add(INTERACTIVE_OBJ * io, const std::string& _name, long duratio
 //-----------------------------------------------------------------------------
 bool CheckLastSpeech(int _iI)
 {
-	for (long i = _iI + 1; i < MAX_SPEECH; i++)
+	for (size_t i = _iI + 1; i < MAX_SPEECH; i++)
 	{
 		if ((speech[i].timecreation != 0) &&
 				(!speech[i].lpszUText.empty()))
@@ -204,37 +205,21 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 	char temp[4096];
 	long igrec = 14;
 
-	HDC	hDC;
-	SIZE sSize;
-
-	if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
-	{
-		SelectObject(hDC, hFontInBook);
-
-		GetTextExtentPoint(hDC,"p",1,&sSize);
-
-		danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-
-		sSize.cy *= 3;
-	}
-	else
-	{
-		sSize.cy = DANAESIZY >> 1;
-	}
-
+	Vector2i sSize = hFontInBook->GetTextSize("p");
+	sSize.y *= 3;
+	
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 	SETALPHABLEND(pd3dDevice, true);
 
-	int iEnd = igrec + sSize.cy;
+	int iEnd = igrec + sSize.y;
 
-	for (long i = 0; i < MAX_SPEECH; i++)
+	for (size_t i = 0; i < MAX_SPEECH; i++)
 	{
 		if (speech[i].timecreation != 0)
 		{
 			if (!speech[i].lpszUText.empty())
 			{
-
 				if ((speech[i].name) && (speech[i].name[0] != ' '))
 					sprintf(temp, "%s > %s", speech[i].name, speech[i].lpszUText.c_str());
 				else
@@ -247,10 +232,9 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 								arx_logo_tc,
 								D3DCOLORWHITE);
 
-				igrec += ARX_TEXT_DrawRect(hFontInBook, 120.f * Xratio, (float)igrec, -3, 0, 500 * Xratio,
-										   200 * Yratio, temp, speech[i].color, NULL, 0x00FF00FF);
-				if (igrec > iEnd && !CheckLastSpeech(i))
-				{
+				igrec += ARX_TEXT_DrawRect(hFontInBook, 120.f * Xratio, (float)igrec, 500 * Xratio,
+										   temp, speech[i].color, NULL);
+				if(igrec > iEnd && !CheckLastSpeech(i)) {
 					ARX_SPEECH_MoveUp();
 					break;
 				}
@@ -266,7 +250,7 @@ void ARX_SPEECH_Check(LPDIRECT3DDEVICE7 pd3dDevice)
 	bool bClear = false;
 	long exist = 0;
 
-	for (long i = 0; i < MAX_SPEECH; i++)
+	for (size_t i = 0; i < MAX_SPEECH; i++)
 	{
 		if (speech[i].timecreation != 0)
 		{
@@ -296,7 +280,7 @@ void ARX_SPEECH_Check(LPDIRECT3DDEVICE7 pd3dDevice)
 void ARX_SPEECH_Launch_No_Unicode_Seek(const char * string, INTERACTIVE_OBJ * io_source, long mood)
 {
 	mood = ANIM_TALK_NEUTRAL;
-	long speechnum = ARX_SPEECH_AddSpeech(io_source, string, PARAM_LOCALISED, mood, 4);
+	long speechnum = ARX_SPEECH_AddSpeech(io_source, string, mood, 4);
 
 	if (speechnum >= 0)
 	{
@@ -435,8 +419,8 @@ void ARX_SPEECH_ClearIOSpeech(INTERACTIVE_OBJ * io)
 }
 
 
-long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long param, long mood, long flags)
-{
+long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long mood, long flags) {
+	
 	if (!data || !data[0]) return -1;
 
 	long num = ARX_SPEECH_GetFree();
@@ -541,12 +525,9 @@ long ARX_SPEECH_AddSpeech(INTERACTIVE_OBJ * io, const char * data, long param, l
 	return num;
 }
 
-
-//*************************************************************************************
-//*************************************************************************************
-void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
-{
-	unsigned long	tim		= ARXTimeUL();
+void ARX_SPEECH_Update() {
+	
+	unsigned long tim = ARXTimeUL();
 
 	if (CINEMASCOPE || BLOCK_PLAYER_CONTROLS) ARX_CONVERSATION_CheckAcceleratedSpeech();
 
@@ -602,7 +583,7 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 
 		if (speech->exist)
 		{
-			if (!speech->text.c_str())
+			if (!speech->text.empty())
 			{
 				if ((ARX_CONVERSATION) && (speech->io))
 				{
@@ -624,65 +605,27 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 				{
 					if (CINEMA_DECAL >= 100.f)
 					{
-						HRGN	hRgn;
-						HDC		hDC;
-						SIZE	sSize;
-
-						sSize.cx = sSize.cy = 0;
-
-						if (SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC)))
-						{
-							SelectObject(hDC, hFontInBook);
-							GetTextExtentPoint( hDC,
-							                    speech->text.c_str(),
-							                    speech->text.length(),
-							                    &sSize);
-							danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-						}
-
-						else
-						{
-							ARX_CHECK_NO_ENTRY();
-						}
-
-
-
-						float fZoneClippHeight	=	ARX_CLEAN_WARN_CAST_FLOAT(sSize.cy * 3);
+						Vector2i sSize = hFontInBook->GetTextSize(speech->text);
+						
+						float fZoneClippHeight	=	ARX_CLEAN_WARN_CAST_FLOAT(sSize.y * 3);
 						float fStartYY			=	100 * Yratio;
 						float fStartY			=	ARX_CLEAN_WARN_CAST_FLOAT(((int)fStartYY - (int)fZoneClippHeight) >> 1);
-						float fDepY				=	((float)DANAESIZY) - fStartYY + fStartY - speech->fDeltaY + sSize.cy;
+						float fDepY				=	((float)DANAESIZY) - fStartYY + fStartY - speech->fDeltaY + sSize.y;
 						float fZoneClippY		=	fDepY + speech->fDeltaY;
-
 
 						float fAdd = fZoneClippY + fZoneClippHeight ;
 						ARX_CHECK_INT(fZoneClippY);
 						ARX_CHECK_INT(fAdd);
 
-						hRgn = CreateRectRgn(0,
-											 ARX_CLEAN_WARN_CAST_INT(fZoneClippY),
-											 DANAESIZX,
-											 ARX_CLEAN_WARN_CAST_INT(fAdd));
-
-
-						danaeApp.DANAEEndRender();
+						RECT clippingRect = { 0, ARX_CLEAN_WARN_CAST_INT(fZoneClippY), DANAESIZX, ARX_CLEAN_WARN_CAST_INT(fAdd) };
 						float iTaille = (float)ARX_TEXT_DrawRect(
 						                    hFontInBook,
 						                    10.f,
 						                    fDepY + fZoneClippHeight,
-						                    -3,
-						                    0,
 						                    -10.f + (float)DANAESIZX,
-						                    0,		//taille recalcul�e
 						                    speech->text,
 						                    RGB(255, 255, 255),
-						                    hRgn);
-
-						if (hRgn)
-						{
-							DeleteObject(hRgn);
-						}
-
-						danaeApp.DANAEStartRender();
+						                    &clippingRect);
 
 						SETTC(GDevice, NULL);
 						GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ZERO);
@@ -693,14 +636,14 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 												  0.f,
 												  fZoneClippY - 1.f, 
 												  ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX),
-												  fZoneClippY + (sSize.cy * 3 / 4),
+												  fZoneClippY + (sSize.y * 3 / 4),
 												  0.f,
 												  RGBA_MAKE(255, 255, 255, 255),
 												  RGBA_MAKE(0, 0, 0, 255));
 
 						EERIEDrawFill2DRectDegrad(GDevice,
 												  0.f,
-												  fZoneClippY + fZoneClippHeight - (sSize.cy * 3 / 4),
+												  fZoneClippY + fZoneClippHeight - (sSize.y * 3 / 4),
 												  ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX),
 												  fZoneClippY + fZoneClippHeight,
 												  0.f,
@@ -723,16 +666,22 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 
 							if (speech->sample)
 							{
-								fDTime				= ((float)iTaille * (float)FrameDiff) / (float)ARX_SOUND_GetDuration(speech->sample);    //speech->duration;
-								float fTimeOneLine	= ((float)sSize.cy) * fDTime;
+								
+								float duration = ARX_SOUND_GetDuration(speech->sample);
+								if(duration == 0.0f) {
+									duration = 4000.0f;
+								}
+								
+								fDTime = ((float)iTaille * (float)FrameDiff) / duration; //speech->duration;
+								float fTimeOneLine = ((float)sSize.y) * fDTime;
 
 								if (((float)speech->iTimeScroll) >= fTimeOneLine)
 								{
-									float fResteLine	 = (float)sSize.cy - speech->fPixelScroll;
-									float fTimePlus		 = ((float)fResteLine * (float)FrameDiff) / (float)ARX_SOUND_GetDuration(speech->sample);
-									fDTime				-= fTimePlus;
+									float fResteLine = (float)sSize.y - speech->fPixelScroll;
+									float fTimePlus = ((float)fResteLine * (float)FrameDiff) / duration;
+									fDTime -= fTimePlus;
 									speech->fPixelScroll = 0.f;
-									speech->iTimeScroll	 = 0;
+									speech->iTimeScroll = 0;
 								}
 
 
@@ -743,7 +692,7 @@ void ARX_SPEECH_Update(LPDIRECT3DDEVICE7 pd3dDevice)
 							}
 							else
 							{
-								fDTime = ((float)iTaille * (float)FrameDiff) / 4000.f;
+								fDTime = ((float)iTaille * (float)FrameDiff) / 4000.0f;
 							}
 
 							speech->fDeltaY			+= fDTime;

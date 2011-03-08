@@ -26,13 +26,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "animation/Cinematic.h"
 
 #include "animation/CinematicKeyframer.h"
+
 #include "core/Core.h"
+
+#include "graphics/Math.h"
+#include "graphics/Draw.h"
 #include "graphics/GraphicsUtility.h"
 #include "graphics/data/CinematicTexture.h"
 #include "graphics/effects/CinematicEffects.h"
+
 #include "scene/CinematicSound.h"
-#include "graphics/Math.h"
-#include "graphics/Draw.h"
 
 #define WIDTHS 512
 #define HEIGHTS 384
@@ -143,7 +146,7 @@ void Cinematic::ReInitMapp(int id)
 
 	if (TabBitmap[id].actif)
 	{
-		ReCreateAllMapsForBitmap(id, TabBitmap[id].grid.echelle, this, GDevice);
+		ReCreateAllMapsForBitmap(id, TabBitmap[id].grid.echelle, this);
 	}
 }
 
@@ -189,11 +192,11 @@ HRESULT Cinematic::OneTimeSceneReInit()
 
 	LeftButton = RightButton = false;
 
-	DeleteAllBitmap(GDevice);
+	DeleteAllBitmap();
 	DeleteAllSound();
 
-	InitMapLoad(this);
-	InitSound(this);
+	InitMapLoad();
+	InitSound();
 	DeleteTrack();
 
 	FlashBlancEnCours = false;
@@ -218,7 +221,7 @@ HRESULT Cinematic::New()
 	LeftButton = RightButton = false;
 
 	DeleteTrack();
-	DeleteAllBitmap(GDevice);
+	DeleteAllBitmap();
 	DeleteAllSound();
 
 	AllocTrack(0, 100, 30.f);
@@ -228,8 +231,8 @@ HRESULT Cinematic::New()
 	AddKey(&KeyTemp, true, true, true);
 	this->lightd = this->lightchoose = this->light;
 
-	InitMapLoad(this);
-	InitSound(this);
+	InitMapLoad();
+	InitSound();
 	InitUndo();
 
 	SetCurrFrame(GetStartFrame());

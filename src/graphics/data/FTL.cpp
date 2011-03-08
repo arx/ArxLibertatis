@@ -58,11 +58,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "graphics/data/FTL.h"
-#include "io/IO.h"
+
+#include <cstdlib>
+
+#include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
@@ -202,6 +202,9 @@ extern long NOCHECKSUM;
 //***********************************************************************************************
 bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj)
 {
+	(void)file;
+	(void)obj;
+	
 	LogError << "Broken ARX_FTL_Save";
     // Need an object to be saved !
     /*if (obj == NULL) return false;
@@ -622,12 +625,6 @@ char* MCache_Pop( const std::string& file, size_t& size)
 	return meshCache[num].data;
 }
 
-void EERIE_OBJECT_MakeBH(EERIE_3DOBJ * obj)
-{
-}
-
-long BH_MODE = 0;
-
 //***********************************************************************************************
 // Uses Fast Object Load if FTL file exists
 //-----------------------------------------------------------------------------------------------
@@ -676,10 +673,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		return NULL;
 	}
 
-	long DontCheck = 0;
-
-	DontCheck = 1;
-
 	dat = (unsigned char *)blastMemAlloc(compressedData, compressedSize, allocsize);//pos,&cpr_pos);
 	// TODO size ignored
 
@@ -713,6 +706,8 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	}
 
 	// Verify Checksum
+	/*
+	long DontCheck = 1;
 	if ((!NOCHECKSUM || NoCheck) && !DontCheck)
 	{
 		char check[512];
@@ -729,6 +724,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 				return NULL;
 			}
 	}
+	*/
 
 	// Increases offset by checksum size
 	pos += 512;
@@ -792,7 +788,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		{
 
 			// Copy the face data in
-			for (size_t ii = 0; ii < af3Ddh->nb_faces; ii++)
+			for (long ii = 0; ii < af3Ddh->nb_faces; ii++)
 			{
 				EERIE_FACE_FTL* eff = reinterpret_cast<EERIE_FACE_FTL*>(dat + pos);
 				obj->facelist[ii].facetype = eff->facetype;
@@ -967,9 +963,6 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 
 	// Free the loaded file memory
 	free(dat);
-
-	if (BH_MODE)
-		EERIE_OBJECT_MakeBH(obj);
 
 	EERIE_OBJECT_CenterObjectCoordinates(obj);
 	EERIE_CreateCedricData(obj);

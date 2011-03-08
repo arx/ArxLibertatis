@@ -54,7 +54,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
+
 #include "graphics/data/Progressive.h"
+
 #include "graphics/Math.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/data/MeshManipulation.h"
@@ -128,7 +130,7 @@ void CreateNeighbours(EERIE_3DOBJ * obj)
 	}
 	else memset(obj->ndata, 0, sizeof(NEIGHBOURS_DATA)*obj->vertexlist.size());
 
-	for (long i = 0; i < obj->vertexlist.size(); i++)
+	for (size_t i = 0; i < obj->vertexlist.size(); i++)
 	{
 		obj->ndata[i].Nvertex = NULL;
 		obj->ndata[i].Nfaces = NULL;
@@ -154,7 +156,7 @@ void KillNeighbours(EERIE_3DOBJ * obj)
 {
 	if (!obj->ndata) return;
 
-	for (long i = 0; i < obj->vertexlist.size(); i++)
+	for (size_t i = 0; i < obj->vertexlist.size(); i++)
 	{
 		if (obj->ndata[i].Nfaces) free(obj->ndata[i].Nfaces);
 
@@ -166,15 +168,6 @@ void KillNeighbours(EERIE_3DOBJ * obj)
 
 	free(obj->ndata);
 	obj->ndata = NULL;
-}
-//*************************************************************************************
-// Creates Progressive Data Structure for an object.
-// The progressive system folds smoothly polygons onto their nearest/most appropriate
-// neighbors.
-//*************************************************************************************
-void EERIEOBJECT_AddProgressiveData(EERIE_3DOBJ * obj)
-{
-	return; 
 }
 
 void KillProgressiveData(EERIE_3DOBJ * obj)

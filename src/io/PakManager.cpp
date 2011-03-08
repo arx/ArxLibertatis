@@ -55,12 +55,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include "io/PakManager.h"
+
 #include <cassert>
 #include <cstring>
 #include <cstdlib>
 
 #include "core/Common.h"
-#include "io/PakManager.h"
+
 #include "io/PakReader.h"
 #include "io/PakEntry.h"
 #include "io/Filesystem.h"

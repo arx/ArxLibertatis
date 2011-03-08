@@ -8,12 +8,12 @@ set(ENABLE_TESTING TRUE)
 #set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -Woverloaded-virtual")
 
 include_directories(
-	../include
+	../src
 )
 
 add_executable(math 
 	math/vectors.cpp 
-	../src/renderer/EERIEMath.cpp 
+	../src/graphics/Math.cpp 
 )
 
 target_link_libraries(math cppunit)

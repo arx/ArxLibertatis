@@ -35,17 +35,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 #include "io/Blast.h"
 
-const u32 SAV_VERSION_OLD = (1<<16) | 0;
-const u32 SAV_VERSION_RELEASE = (1<<16) | 1;
-const u32 SAV_VERSION_CURRENT = (2<<16) | 0;
-
-const u32 SAV_COMP_NONE = 0;
-const u32 SAV_COMP_IMPLODE = 1;
-const u32 SAV_COMP_DEFLATE = 2;
-
 using std::string;
 using std::vector;
 using std::min;
+
+static const u32 SAV_VERSION_OLD = (1<<16) | 0;
+static const u32 SAV_VERSION_RELEASE = (1<<16) | 1;
+static const u32 SAV_VERSION_CURRENT = (2<<16) | 0;
+
+static const u32 SAV_COMP_NONE = 0;
+static const u32 SAV_COMP_IMPLODE = 1;
+static const u32 SAV_COMP_DEFLATE = 2;
 
 struct FileChunk {
 	
@@ -131,7 +131,7 @@ bool SaveBlock::BeginRead() {
 	while(hashMapSize < files.size()) {
 		hashMapSize <<= 1;
 	}
-	int iNbHacheTroisQuart = (hashMapSize * 3) / 4;
+	size_t iNbHacheTroisQuart = (hashMapSize * 3) / 4;
 	if(files.size() > iNbHacheTroisQuart) {
 		hashMapSize <<= 1;
 	}
@@ -150,7 +150,7 @@ bool SaveBlock::loadFileTable() {
 	if(FileRead(handle, &fatOffset, 4) != 4) {
 		return false;
 	}
-	if(FileSeek(handle, fatOffset + 4, SEEK_SET) != fatOffset + 4) {
+	if((size_t)FileSeek(handle, fatOffset + 4, SEEK_SET) != fatOffset + 4) {
 		LogError << "cannot seek to FAT";
 		return false;
 	}

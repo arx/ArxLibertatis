@@ -60,31 +60,32 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <cstdio>
 #include <cstdlib>
 
-/*#include <algorithm>
-#include <fstream>
-#include <sstream>
-#include <vector>
-*/
+#include "ai/Paths.h"
 
-#include "io/IO.h"
-
-#include "graphics/data/Mesh.h"
-#include "scene/LinkedObject.h"
-#include "scene/Light.h"
-#include "graphics/Draw.h"
-#include "graphics/data/Mesh.h"
+#include "core/Time.h"
+#include "core/Core.h"
 
 #include "game/Player.h"
 #include "game/NPC.h"
-#include "scene/GameSound.h"
-#include "gui/Speech.h"
-#include "physics/Collisions.h"
-#include "graphics/particle/ParticleEffects.h"
 #include "game/Equipment.h"
+
+#include "gui/Speech.h"
 #include "gui/Interface.h"
-#include "ai/Paths.h"
+
+#include "graphics/Draw.h"
+#include "graphics/data/Mesh.h"
+#include "graphics/particle/ParticleEffects.h"
+
+#include "io/FilePath.h"
+
+#include "physics/Collisions.h"
+
+#include "scene/GameSound.h"
+#include "scene/LinkedObject.h"
+#include "scene/Light.h"
+#include "scene/Interactive.h"
+
 #include "scripting/Script.h"
-#include "core/Time.h"
 
 using std::min;
 using std::max;
@@ -111,7 +112,7 @@ extern EERIE_3D PUSH_PLAYER_FORCE;
 float Blood_Pos = 0.f;
 long Blood_Duration = 0;
 SCREEN_SPLATS ssplat[MAX_SCREEN_SPLATS];
-void ARX_DAMAGES_IgnitIO(INTERACTIVE_OBJ * io, float dmg)
+static void ARX_DAMAGES_IgnitIO(INTERACTIVE_OBJ * io, float dmg)
 {
 	if ((!io)
 	        ||	(io->ioflags & IO_INVULNERABILITY))
@@ -272,8 +273,7 @@ void ARX_DAMAGE_Show_Hit_Blood(LPDIRECT3DDEVICE7 pd3dDevice)
 
 //*************************************************************************************
 //*************************************************************************************
-float ARX_DAMAGES_DamagePlayer(float dmg, long type, long source, EERIE_3D * pos)
-{
+float ARX_DAMAGES_DamagePlayer(float dmg, long type, long source) {
 	if (player.playerflags & PLAYERFLAGS_INVULNERABILITY)
 		return 0;
 
@@ -497,7 +497,7 @@ float ARX_DAMAGES_DrainMana(INTERACTIVE_OBJ * io, float dmg)
 }
 //*************************************************************************************
 //*************************************************************************************
-void ARX_DAMAGES_DamageFIX(INTERACTIVE_OBJ * io, float dmg, long source, long flags, EERIE_3D * pos)
+void ARX_DAMAGES_DamageFIX(INTERACTIVE_OBJ * io, float dmg, long source, long flags)
 {
 	if ((!io)
 	        ||	(!io->show)
@@ -762,7 +762,7 @@ float ARX_DAMAGES_DealDamages(long target, float dmg, long source, long flags, E
 		else
 		{
 			ARX_DAMAGES_DamagePlayerEquipment(dmg);
-			damagesdone = ARX_DAMAGES_DamagePlayer(dmg, flags, source, pos);
+			damagesdone = ARX_DAMAGES_DamagePlayer(dmg, flags, source);
 		}
 
 	dodamage:
@@ -936,9 +936,9 @@ float ARX_DAMAGES_DamageNPC(INTERACTIVE_OBJ * io, float dmg, long source, long f
 				{
 					pio = inter.iobj[player.equiped[EQUIP_SLOT_WEAPON]];
 
-					if ((pio) && ((pio->poisonous == 0) || (pio->poisonous_count == 0))
-					        || (flags & 1))
+					if((pio && (pio->poisonous == 0 || pio->poisonous_count == 0)) || (flags & 1)) {
 						pio = NULL;
+					}
 				}
 			}
 			else
@@ -1072,7 +1072,7 @@ void ARX_DAMAGES_Reset()
 //*************************************************************************************
 long ARX_DAMAGES_GetFree()
 {
-	for (long i = 0; i < MAX_DAMAGES; i++)
+	for (size_t i = 0; i < MAX_DAMAGES; i++)
 	{
 		if (!damages[i].exist)
 		{
@@ -1398,7 +1398,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 										dmg = ARX_SPELLS_ApplyColdProtection(inter.iobj[0], dmg);
 									}
 
-									damagesdone = ARX_DAMAGES_DamagePlayer(dmg, damages[j].type, damages[j].source, &damages[j].pos);
+									damagesdone = ARX_DAMAGES_DamagePlayer(dmg, damages[j].type, damages[j].source);
 								}
 							}
 							else
@@ -1441,15 +1441,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 
 								if ((damagesdone > 0) && (damages[j].flags & DAMAGE_SPAWN_BLOOD))
 								{
-									EERIE_3D vector;
-									vector.x = damages[j].pos.x - inter.iobj[i]->pos.x;
-									vector.y = (damages[j].pos.y - inter.iobj[i]->pos.y) * ( 1.0f / 2 );
-									vector.z = damages[j].pos.z - inter.iobj[i]->pos.z;
-									float t = 1.f / TRUEVector_Magnitude(&vector);
-									vector.x *= t;
-									vector.y *= t;
-									vector.z *= t;
-									ARX_PARTICLES_Spawn_Blood(&damages[j].pos, &vector, damagesdone, damages[j].source);
+									ARX_PARTICLES_Spawn_Blood(&damages[j].pos, damagesdone, damages[j].source);
 								}
 							}
 
@@ -1486,7 +1478,7 @@ void ARX_DAMAGES_UpdateDamage(long j, float tim)
 }
 void ARX_DAMAGES_UpdateAll()
 {
-	for (long j = 0; j < MAX_DAMAGES; j++)
+	for (size_t j = 0; j < MAX_DAMAGES; j++)
 		ARX_DAMAGES_UpdateDamage(j, ARXTime);
 }
 bool SphereInIO(INTERACTIVE_OBJ * io, EERIE_3D * pos, float radius)
@@ -1503,14 +1495,12 @@ bool SphereInIO(INTERACTIVE_OBJ * io, EERIE_3D * pos, float radius)
 	else if (io->obj->vertexlist.size() < 1200) step = 6;
 	else step = 7;
 
-	for (long i = 0; i < io->obj->vertexlist.size(); i += step)
-	{
-		if (EEDistance3D(pos, &io->obj->vertexlist3[i].v) <= radius)
-		{
+	for(size_t i = 0; i < io->obj->vertexlist.size(); i += step) {
+		if(EEDistance3D(pos, &io->obj->vertexlist3[i].v) <= radius) {
 			return true;
 		}
 	}
-
+	
 	return false;
 }
 bool ARX_DAMAGES_TryToDoDamage(EERIE_3D * pos, float dmg, float radius, long source)
@@ -1545,7 +1535,7 @@ bool ARX_DAMAGES_TryToDoDamage(EERIE_3D * pos, float dmg, float radius, long sou
 								if (io->ioflags & IO_NPC)
 								{
 									if (ValidIONum(source))
-										ARX_EQUIPMENT_ComputeDamages(inter.iobj[source], NULL, io, 1.f);
+										ARX_EQUIPMENT_ComputeDamages(inter.iobj[source], io, 1.f);
 
 									ret = true;
 								}
@@ -1651,10 +1641,6 @@ void CheckForIgnition(EERIE_3D * pos, float radius, long mode, long flag)
 	}
 }
 
-void PushPlayer(EERIE_3D * pos, float intensity)
-{
-	
-}
 //*************************************************************************************
 //*************************************************************************************
 bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long typ, long numsource)
@@ -1688,11 +1674,11 @@ bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long t
 			long count2 = 0;
 			float mindist = FLT_MAX;
 
-			for (long k = 0; k < ioo->obj->vertexlist.size(); k += 1)
+			for (size_t k = 0; k < ioo->obj->vertexlist.size(); k += 1)
 			{
 				if (ioo->obj->vertexlist.size() < 120)
 				{
-					for (long kk = 0; kk < ioo->obj->vertexlist.size(); kk += 1)
+					for (size_t kk = 0; kk < ioo->obj->vertexlist.size(); kk += 1)
 					{
 						if (kk != k)
 						{
@@ -1758,14 +1744,8 @@ bool DoSphericDamage(EERIE_3D * pos, float dmg, float radius, long flags, long t
 							dmg = ARX_SPELLS_ApplyColdProtection(ioo, dmg);
 						}
 
-						ARX_DAMAGES_DamagePlayer(dmg, typ, numsource, pos);
+						ARX_DAMAGES_DamagePlayer(dmg, typ, numsource);
 						ARX_DAMAGES_DamagePlayerEquipment(dmg);
-						EERIE_3D vector;
-						float div = 1.f / dist;
-						vector.x = (sub.x - pos->x) * div;
-						vector.y = (sub.y - pos->y) * div;
-						vector.z = (sub.z - pos->z) * div;
-						PushPlayer(&vector, (radius - dist) / radius);
 					}
 					else
 					{

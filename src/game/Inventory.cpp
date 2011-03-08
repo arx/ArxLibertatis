@@ -54,8 +54,10 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-//------------------------------------------------------------------------------------
-#include <stdio.h>
+
+// TODO include file
+
+#include <cstdio>
 #include <vector>
 #include <algorithm>
 #include <functional>
@@ -63,25 +65,32 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <fstream>
 #include <sstream>
 
-#include "io/Perf.h"
+#include "ai/Paths.h"
 
 #include "core/Application.h"
-#include "scene/Light.h"
-#include "scene/LinkedObject.h"
+
+#include "game/Player.h"
+#include "game/Equipment.h"
+
+#include "gui/Interface.h"
+#include "gui/MenuWidgets.h"
+
 #include "graphics/Math.h"
-#include "physics/Box.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/data/Texture.h"
 
-#include "window/Input.h"
+#include "io/Perf.h"
+
+#include "physics/Box.h"
+
+#include "scene/Light.h"
+#include "scene/LinkedObject.h"
 #include "scene/Interactive.h"
-#include "gui/Interface.h"
-#include "game/Equipment.h"
-#include "gui/MenuWidgets.h"
-#include "ai/Paths.h"
-#include "game/Player.h"
-#include "scripting/Script.h"
 #include "scene/GameSound.h"
+
+#include "scripting/Script.h"
+
+#include "window/Input.h"
 
 using namespace std;
 
@@ -147,23 +156,6 @@ void ARX_INVENTORY_Declare_InventoryIn(INTERACTIVE_OBJ * io)
 		SendIOScriptEvent(io, SM_INVENTORYIN);
 		EVENT_SENDER = NULL;
 	}
-}
-//*************************************************************************************
-// void ARX_INVENTORY_Declare_InventoryOut(INTERACTIVE_OBJ * io)
-//-------------------------------------------------------------------------------------
-// NOT USED Right Now
-//*************************************************************************************
-void ARX_INVENTORY_Declare_InventoryOut(INTERACTIVE_OBJ * io)
-{
-}
-//*************************************************************************************
-// void ARX_INVENTORY_Declare_Inventory_2_Out(INTERACTIVE_OBJ * io)
-//-------------------------------------------------------------------------------------
-// NOT USED Right Now
-//*************************************************************************************
-void ARX_INVENTORY_Declare_Inventory_2_Out(INTERACTIVE_OBJ * io)
-{
-
 }
 
 //*************************************************************************************
@@ -1717,7 +1709,7 @@ bool GetItemWorldPosition(INTERACTIVE_OBJ * io, EERIE_3D * pos)
 // FUNCTION:
 //   Gets real world position for an IO to spawn a sound
 //*************************************************************************************
-bool GetItemWorldPositionSound(INTERACTIVE_OBJ * io, EERIE_3D * pos)
+bool GetItemWorldPositionSound(const INTERACTIVE_OBJ * io, EERIE_3D * pos)
 {
 	if (!io) return false;
 
@@ -1969,7 +1961,6 @@ bool TakeFromInventory(EERIE_S2D * pos)
 							io->_itemdata->count--;
 							ARX_SOUND_PlayInterface(SND_INVSTD);
 							Set_DragInter(ioo);
-							ARX_INVENTORY_Declare_Inventory_2_Out(ioo);
 							return true;
 						}
 					}
@@ -2001,7 +1992,6 @@ bool TakeFromInventory(EERIE_S2D * pos)
 
 					//ARX_INVENTORY_Object_Out(SecondaryInventory->io, ioo);
 
-					ARX_INVENTORY_Declare_Inventory_2_Out(ioo);
 					ARX_INVENTORY_IdentifyIO(ioo);
 					return true;
 				}
@@ -2074,7 +2064,6 @@ bool TakeFromInventory(EERIE_S2D * pos)
 
 
 						SendInitScriptEvent(ioo);
-						ARX_INVENTORY_Declare_InventoryOut(ioo);
 						ARX_INVENTORY_IdentifyIO(ioo);
 						return true;
 					}
@@ -2107,7 +2096,6 @@ bool TakeFromInventory(EERIE_S2D * pos)
 
 	Set_DragInter(io);
 
-	ARX_INVENTORY_Declare_InventoryOut(io);
 	RemoveFromAllInventories(io);
 	ARX_INVENTORY_IdentifyIO(io);
 	return true;

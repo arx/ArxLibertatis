@@ -54,32 +54,37 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
+#include "graphics/spells/Spells06.h"
+
 #include "graphics/Draw.h"
 #include "scene/Light.h"
 #include "graphics/Math.h"
 #include "scene/Object.h"
 
 #include "core/Core.h"
+#include "core/Time.h"
+
 #include "game/Spells.h"
+#include "game/Player.h"
+
 #include "graphics/effects/SpellEffects.h"
 #include "graphics/spells/Spells05.h"
-#include "graphics/spells/Spells06.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/ParticleManager.h"
-#include "core/Time.h"
+
+#include "scene/LoadLevel.h"
+#include "scene/Interactive.h"
 
 using std::min;
 using std::max;
-
-//#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
 extern CParticleManager * pParticleManager;
 
 //-----------------------------------------------------------------------------
 // CREATE FIELD
 //-----------------------------------------------------------------------------
-CCreateField::CCreateField(LPDIRECT3DDEVICE7 m_pd3dDevice)
-{
+CCreateField::CCreateField() {
+	
 	eSrc.x = 0;
 	eSrc.y = 0;
 	eSrc.z = 0;
@@ -364,7 +369,7 @@ float CCreateField::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 //-----------------------------------------------------------------------------
 // SLOW DOWN
 //-----------------------------------------------------------------------------
-CSlowDown::CSlowDown(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CSlowDown::CSlowDown()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;
@@ -566,7 +571,8 @@ CRiseDead::~CRiseDead()
 		stone1 = NULL;
 	}
 }
-CRiseDead::CRiseDead(LPDIRECT3DDEVICE7 m_pd3dDevice)
+
+CRiseDead::CRiseDead()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;
@@ -1605,7 +1611,7 @@ void CParalyse::Create(int adef, float arayon, float ahcapuchon, float ahauteur,
 
 	// système de partoches pour la poussière au sol
 	pPS = new CParticleSystem();
-	cp;
+	
 	cp.iNbMax = 20;
 	cp.fLife = 1000; //2000
 	cp.fLifeRandom = 2000;
@@ -2114,7 +2120,7 @@ float CParalyse::Render(LPDIRECT3DDEVICE7 pD3DDevice)
 //-----------------------------------------------------------------------------
 // DISARM TRAP
 //-----------------------------------------------------------------------------
-CDisarmTrap::CDisarmTrap(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CDisarmTrap::CDisarmTrap()
 {
 	eSrc.x = 0;
 	eSrc.y = 0;

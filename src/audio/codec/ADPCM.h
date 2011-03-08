@@ -22,68 +22,67 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef __ATHENA_CODEC_ADPCM_H__
-#define __ATHENA_CODEC_ADPCM_H__
+
+#ifndef ARX_AUDIO_CODEC_ADPCM_H
+#define ARX_AUDIO_CODEC_ADPCM_H
 
 #include "audio/AudioTypes.h"
 #include "audio/codec/Codec.h"
 
 struct PakFileHandle;
 
-
-#include <windows.h>
+#include <windows.h> // needed by mmreg.h
 #include <mmreg.h> // for ADPCMWAVEFORMAT
 
-namespace ATHENA
-{
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Class CodecADPCM                                                          //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	class CodecADPCM : public Codec
-	{
-		public:
-			// Constructor Destructor                                                    //
-			CodecADPCM();
-			~CodecADPCM();
-			// Setup                                                                     //
-			aalError SetHeader(aalVoid * header);
-			aalError SetStream(PakFileHandle * stream);
-			aalError SetPosition(const aalULong & position);
-			// Status                                                                    //
-			aalError GetHeader(aalVoid *&header);
-			aalError GetStream(PakFileHandle *&stream);
-			aalError GetPosition(aalULong & position);
-			// File I/O                                                                  //
-			aalError Read(aalVoid * buffer, const aalULong & to_read, aalULong & read);
-			aalError Write(aalVoid * buffer, const aalULong & to_write, aalULong & write);
-		private:
-			// Macros!                                                                   //
-			aalVoid GetSample(const aalULong & channel_i, aalSByte nybble);
-			aalError GetNextBlock();
-			// Data                                                                      //
-			PakFileHandle * stream;
-			ADPCMWAVEFORMAT * header;
-			aalULong padding;
-			aalULong shift;
-			aalULong sample_i;
-			char * predictor;
-			aalSWord * delta;
-			aalSWord * samp1;
-			aalSWord * samp2;
-			aalSWord * coef1;
-			aalSWord * coef2;
-			aalSByte * nybble_l;
-			aalULong nybble_c, nybble_i;
-			aalSByte nybble;
-			aalUByte odd;
-			aalUByte cache_c, cache_i;
-			aalVoid * cache_l;
-			aalULong cursor;
+namespace ATHENA {
+	
+	class CodecADPCM : public Codec {
+		
+	public:
+		
+		CodecADPCM();
+		~CodecADPCM();
+		
+		// Setup
+		aalError SetHeader(void * header);
+		aalError SetStream(PakFileHandle * stream);
+		aalError SetPosition(const aalULong & position);
+		
+		// Status
+		aalError GetHeader(void *& header);
+		aalError GetStream(PakFileHandle *& stream);
+		aalError GetPosition(aalULong & position);
+		
+		// File I/O
+		aalError Read(void * buffer, const aalULong & to_read, aalULong & read);
+		aalError Write(void * buffer, const aalULong & to_write, aalULong & write);
+		
+	private:
+		
+		void GetSample(const aalULong & channel_i, aalSByte nybble);
+		aalError GetNextBlock();
+		
+		PakFileHandle * stream;
+		ADPCMWAVEFORMAT * header;
+		aalULong padding;
+		aalULong shift;
+		aalULong sample_i;
+		char * predictor;
+		aalSWord * delta;
+		aalSWord * samp1;
+		aalSWord * samp2;
+		aalSWord * coef1;
+		aalSWord * coef2;
+		aalSByte * nybble_l;
+		aalULong nybble_c, nybble_i;
+		aalSByte nybble;
+		aalUByte odd;
+		aalUByte cache_c, cache_i;
+		void * cache_l;
+		aalULong cursor;
+		
 	};
 
-}//ATHENA::
+} // namespace ATHENA
 
-#endif//__ATHENA_CODEC_ADPCM_H__
+#endif // ARX_AUDIO_CODEC_ADPCM_H

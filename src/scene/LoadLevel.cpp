@@ -59,44 +59,47 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/LoadLevel.h"
 
 #include <cstdio>
-//#include <sys/stat.h>
-//#include <fcntl.h>
 #include <ctime>
-
 #include <iomanip>
-#include <iostream>
-#include <fstream>
 #include <sstream>
 #include <vector>
 
-#include "graphics/Math.h"
 #include "ai/PathFinderManager.h"
-#include "scene/Object.h"
-#include "physics/CollisionShapes.h"
-#include "graphics/Draw.h"
-
-#include "game/Damage.h"
-#include "graphics/effects/Fog.h"
-#include "game/Levels.h"
-#include "core/Localization.h"
-#include "gui/MiniMap.h"
-#include "game/Missile.h"
-#include "graphics/particle/ParticleEffects.h"
 #include "ai/Paths.h"
-#include "scene/Scene.h"
-#include "scene/GameSound.h"
-#include "physics/Actors.h"
-#include "gui/Speech.h"
-#include "game/Spells.h"
+
 #include "core/Time.h"
 #include "core/Dialog.h"
+#include "core/Localization.h"
+
+#include "game/Damage.h"
+#include "game/Levels.h"
+#include "game/Missile.h"
+#include "game/Spells.h"
+#include "game/Player.h"
+
+#include "gui/MiniMap.h"
+#include "gui/Speech.h"
+
+#include "graphics/Math.h"
+#include "graphics/Draw.h"
+#include "graphics/effects/Fog.h"
+#include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
+#include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "io/Blast.h"
 #include "io/Implode.h"
+
+#include "physics/CollisionShapes.h"
+#include "physics/Actors.h"
+
+#include "scene/Object.h"
+#include "scene/Scene.h"
+#include "scene/GameSound.h"
+#include "scene/Interactive.h"
 
 using std::max;
 
@@ -108,8 +111,6 @@ extern EERIE_BACKGROUND bkrgnd;
 extern QUAKE_FX_STRUCT QuakeFx;
 extern bool bGToggleCombatModeWithKey;
 extern bool bGCroucheToggle;
-
-long SPECIALPOLYSNB = 0;
 
 bool CanPurge(EERIE_3D * pos)
 {
@@ -756,7 +757,7 @@ long DanaeSaveLevel( const std::string& _fic )
 	cpr_pos = 0;
 	compressed = implodeAlloc((char *)(dat + sizeof(DANAE_LS_HEADER)), pos - sizeof(DANAE_LS_HEADER), cpr_pos);
 
-	long sizeWritten;
+	size_t sizeWritten;
 	sizeWritten = FileWrite(handle, compressed, cpr_pos);
 	
 	delete[] compressed;
@@ -877,7 +878,7 @@ long DanaeSaveLevel( const std::string& _fic )
 	cpr_pos = 0;
 	compressed = implodeAlloc((char *)dat, pos, cpr_pos);
 
-	long sizeWritten2;
+	size_t sizeWritten2;
 	sizeWritten2 = FileWrite(handle, compressed, cpr_pos);
 	
 	delete[] compressed;
@@ -1214,9 +1215,9 @@ void ClearCurLoadInfo()
 extern long FASTmse;
 long DONT_LOAD_INTERS = 0;
 long FAKE_DIR = 0;
-long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fic)
-{
-//	char _error[512];
+
+long DanaeLoadLevel(const std::string& fic) {
+	
 	DANAE_LS_HEADER				dlh;
 	DANAE_LS_SCENE		*		dls;
 	DANAE_LS_INTER		*		dli;
@@ -1461,7 +1462,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fic)
 				{
 					memcpy(&dlv, dat + pos, sizeof(DANAE_LS_VLIGHTING));
 					pos += sizeof(DANAE_LS_VLIGHTING);
-					*ll = (0xff000000L | (((long)(dlv.r) & 255) << 16) |	(((long)(dlv.g) & 255) << 8) | (long)(dlv.b) & 255);
+					*ll = 0xff000000L | ((dlv.r & 255) << 16) | ((dlv.g & 255) << 8) | (dlv.b & 255);
 					ll++;
 					bcount--;
 				}
@@ -1841,7 +1842,7 @@ long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fic)
 		{
 			memcpy(&dlv, dat + pos, sizeof(DANAE_LS_VLIGHTING));
 			pos += sizeof(DANAE_LS_VLIGHTING);
-			*ll = (0xff000000L | (((long)(dlv.r) & 255) << 16) |	(((long)(dlv.g) & 255) << 8) | (long)(dlv.b) & 255);
+			*ll = 0xff000000L | ((dlv.r & 255) << 16) | ((dlv.g & 255) << 8) | (dlv.b & 255);
 			ll++;
 			bcount--;
 		}
@@ -1873,7 +1874,7 @@ finish:
 //	if (dat) free(dat);
 //
 //	LOADEDD = 1;
-//	ARX_SCENE_Render(NULL, 3);
+//	ARX_SCENE_Render(NULL,3);
 //	return -1;
 }
 extern void MCache_ClearAll();
@@ -2151,7 +2152,7 @@ plusloin:
 					break;
 			}
 
-			if (modd) _RecalcLightZone(actions[i].pos.x, actions[i].pos.y, actions[i].pos.z, (long)((float)(DynLight[actions[i].dl].fallend * ACTIVEBKG->Xmul) + 5.f));
+			if (modd) _RecalcLightZone(actions[i].pos.x, actions[i].pos.z, (long)((float)(DynLight[actions[i].dl].fallend * ACTIVEBKG->Xmul) + 5.f));
 		}
 	}
 }

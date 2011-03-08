@@ -55,214 +55,210 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#ifndef  EERIEAPP_H
-#define  EERIEAPP_H
+#ifndef  ARX_CORE_APPLICATION_H
+#define  ARX_CORE_APPLICATION_H
 
 #include <string>
-
 
 #include <windows.h>
 #include <commctrl.h>
 
-#include "graphics/Frame.h"
-#include "graphics/GraphicsEnum.h"
 #include "graphics/d3dwrapper.h"
 
+struct D3DEnum_DeviceInfo;
+class CD3DFramework7;
 
-//-----------------------------------------------------------------------------
 #define HIDE_BACKGROUND 1
-#define HIDE_NPC		2
-#define HIDE_FIXINTER	4
-#define HIDE_ITEMS		8
-#define HIDE_PARTICLES	16
-#define HIDE_INTERFACE	32
-#define HIDE_NODES		64
-#define HIDE_CAMERAS	128
+#define HIDE_NPC        2
+#define HIDE_FIXINTER   4
+#define HIDE_ITEMS      8
+#define HIDE_PARTICLES  16
+#define HIDE_INTERFACE  32
+#define HIDE_NODES      64
+#define HIDE_CAMERAS    128
 
-#define VIEWMODE_WIRE			1
-#define VIEWMODE_NORMALS		2
-#define VIEWMODE_FLAT			4
+#define VIEWMODE_WIRE           1
+#define VIEWMODE_NORMALS        2
+#define VIEWMODE_FLAT           4
 #define VIEWMODE_NOLIGHTSOURCES 8
-#define VIEWMODE_INFOTEXT		16
+#define VIEWMODE_INFOTEXT       16
 
-#define MODE_STATICLIGHT	1
-#define MODE_DEPTHCUEING	2
-#define MODE_DYNAMICLIGHT	4
-#define MODE_NORMALS		8
-#define MODE_RAYLAUNCH		16
-#define MODE_SMOOTH			32
+#define MODE_STATICLIGHT  1
+#define MODE_DEPTHCUEING  2
+#define MODE_DYNAMICLIGHT 4
+#define MODE_NORMALS      8
+#define MODE_RAYLAUNCH    16
+#define MODE_SMOOTH       32
 
-#define WCF_NORESIZE		1
-#define WCF_NOFRAMEINFOS	(1<<1)
-#define WCF_NOSTDPOPUP		(1<<2)
-#define	WCF_CHILD			(1<<3)
-#define WCF_ACCEPTFILES		(1<<4)
+#define WCF_NORESIZE     1
+#define WCF_NOFRAMEINFOS (1<<1)
+#define WCF_NOSTDPOPUP   (1<<2)
+#define	WCF_CHILD        (1<<3)
+#define WCF_ACCEPTFILES  (1<<4)
 
-#define EERIE_TOOLBAR_TOP	0
-#define EERIE_TOOLBAR_LEFT	1
+enum ToolbarPosition {
+	EERIE_TOOLBAR_TOP,
+	EERIE_TOOLBAR_LEFT
+};
 
-#define	INKEY_ESCAPE		1
-#define INKEY_ARROW_UP		172
-#define INKEY_ARROW_LEFT	175
-#define INKEY_ARROW_RIGHT	177
-#define INKEY_ARROW_DOWN	180
+enum InputKey {
+	
+	INKEY_ESCAPE = 1,
+	INKEY_ARROW_UP = 172,
+	INKEY_ARROW_LEFT = 175,
+	INKEY_ARROW_RIGHT = 177,
+	INKEY_ARROW_DOWN = 180,
+	
+	INKEY_PAD0 = 82,
+	INKEY_PAD1 = 79,
+	INKEY_PAD2 = 80,
+	INKEY_PAD3 = 81,
+	INKEY_PAD4 = 75,
+	INKEY_PAD5 = 76,
+	INKEY_PAD6 = 77,
+	INKEY_PAD7 = 71,
+	INKEY_PAD8 = 72,
+	INKEY_PAD9 = 73,
+	INKEY_PADMINUS = 74,
+	INKEY_PADADD = 78,
+	INKEY_PADMULTIPLY = 55,
+	INKEY_PADDIVIDE = 153,
+	INKEY_PADENTER = 128,
+	INKEY_PADNUMLOCK = 169,
+	
+	INKEY_F1 = 59,
+	INKEY_F2 = 60,
+	INKEY_F3 = 61,
+	INKEY_F4 = 62,
+	INKEY_F5 = 63,
+	INKEY_F6 = 64,
+	INKEY_F7 = 65,
+	INKEY_F8 = 66,
+	INKEY_F9 = 67,
+	INKEY_F10 = 68,
+	
+	INKEY_RETURN = 28,
+	INKEY_SPACE = 57,
+	INKEY_LEFTCTRL = 29,
+	INKEY_RIGHTCTRL = 129,
+	INKEY_LEFTSHIFT = 42,
+	INKEY_RIGHTSHIFT = 54,
+	INKEY_DEL = 183,
+	INKEY_INSERT = 182,
+	INKEY_PAGEUP = 173,
+	INKEY_PAGEDOWN = 181,
+	INKEY_HOME = 171,
+	INKEY_END = 179,
+	INKEY_BACKSPACE = 14,
+	
+	INKEY_CAPSLOCK = 58,
+	INKEY_TAB = 15,
+	INKEY_EXPONENT = 41,
+	INKEY_1 = 2,
+	INKEY_2 = 3,
+	INKEY_3 = 4,
+	INKEY_4 = 5,
+	INKEY_5 = 6,
+	INKEY_6 = 7,
+	INKEY_7 = 8,
+	INKEY_8 = 9,
+	INKEY_9 = 10,
+	INKEY_0 = 11,
+	INKEY_CLOSEBRACKET = 12,
+	INKEY_ADD = 13,
+	
+	INKEY_A = 16,
+	INKEY_Z = 17,
+	INKEY_E = 18,
+	INKEY_R = 19,
+	INKEY_T = 20,
+	INKEY_Y = 21,
+	INKEY_U = 22,
+	INKEY_I = 23,
+	INKEY_O = 24,
+	INKEY_P = 25,
+	INKEY_Q = 30,
+	INKEY_S = 31,
+	INKEY_D = 32,
+	INKEY_F = 33,
+	INKEY_G = 34,
+	INKEY_H = 35,
+	INKEY_J = 36,
+	INKEY_K = 37,
+	INKEY_L = 38,
+	INKEY_M = 39,
+	INKEY_W = 44,
+	INKEY_X = 45,
+	INKEY_C = 46,
+	INKEY_V = 47,
+	INKEY_B = 48,
+	INKEY_N = 49
+	
+};
 
-#define INKEY_PAD0			82
-#define INKEY_PAD1			79
-#define INKEY_PAD2			80
-#define INKEY_PAD3			81
-#define INKEY_PAD4			75
-#define INKEY_PAD5			76
-#define INKEY_PAD6			77
-#define INKEY_PAD7			71
-#define INKEY_PAD8			72
-#define INKEY_PAD9			73
-#define INKEY_PADMINUS		74
-#define INKEY_PADADD		78
-#define INKEY_PADMULTIPLY	55
-#define INKEY_PADDIVIDE		153
-#define INKEY_PADENTER		128
-#define INKEY_PADNUMLOCK	169
-
-#define INKEY_F1			59
-#define INKEY_F2			60
-#define INKEY_F3			61
-#define INKEY_F4			62
-#define INKEY_F5			63
-#define INKEY_F6			64
-#define INKEY_F7			65
-#define INKEY_F8			66
-#define INKEY_F9			67
-#define INKEY_F10			68
-
-#define INKEY_RETURN		28
-#define INKEY_SPACE			57
-#define INKEY_LEFTCTRL		29
-#define INKEY_RIGHTCTRL		129
-#define INKEY_LEFTSHIFT		42
-#define INKEY_RIGHTSHIFT	54
-#define INKEY_DEL			183
-#define INKEY_INSERT		182
-#define INKEY_PAGEUP		173
-#define INKEY_PAGEDOWN		181
-#define INKEY_HOME			171
-#define INKEY_END			179
-#define INKEY_BACKSPACE		14
-
-#define INKEY_CAPSLOCK		58
-#define INKEY_TAB			15
-#define INKEY_EXPONENT		41
-#define INKEY_1				2
-#define INKEY_2				3
-#define INKEY_3				4
-#define INKEY_4				5
-#define INKEY_5				6
-#define INKEY_6				7
-#define INKEY_7				8
-#define INKEY_8				9
-#define INKEY_9				10
-#define INKEY_0				11
-#define INKEY_CLOSEBRACKET	12
-#define INKEY_ADD			13
-
-#define INKEY_A				16
-#define INKEY_Z				17
-#define INKEY_E				18
-#define INKEY_R				19
-#define INKEY_T				20
-#define INKEY_Y				21
-#define INKEY_U				22
-#define INKEY_I				23
-#define INKEY_O				24
-#define INKEY_P				25
-#define INKEY_Q				30
-#define INKEY_S				31
-#define INKEY_D				32
-#define INKEY_F				33
-#define INKEY_G				34
-#define INKEY_H				35
-#define INKEY_J				36
-#define INKEY_K				37
-#define INKEY_L				38
-#define INKEY_M				39
-#define INKEY_W				44
-#define INKEY_X				45
-#define INKEY_C				46
-#define INKEY_V				47
-#define INKEY_B				48
-#define INKEY_N				49
-
-//-----------------------------------------------------------------------------
-struct EERIE_RGBB
-{
-	EERIE_RGBB()
-	{
+struct EERIE_RGBB {
+	
+	EERIE_RGBB() {
 		r = g = b = 0;
 	}
-
+	
 	float r;
 	float g;
 	float b;
 };
 
-struct PROJECT
-{
+struct PROJECT {
+	
 	PROJECT()
 		:
 		  soundmode(0), compatibility(0), ambient(0),
 		  improve(0), detectliving(0), improvespeed(0),
 		  telekinesis(0), multiplayer(0), demo(0),
 		  bits(0), hide(0), TextureSize(0), TextureBits(0), 
-		  interpolatemouse(0), vsync(0)
-	{
-		localisationpath = "";
+		  interpolatemouse(0), vsync(0) {
 	}
 
-	long            soundmode;
-	long            compatibility;
-	long            ambient;
-	long            improve;
-	long            detectliving;
-	long            improvespeed;
-	long            telekinesis;
-	long            multiplayer;
-	long            demo;
-	long            bits;
-	long            hide;
-	long            TextureSize;
-	long            TextureBits;
-	EERIE_RGBB      interfacergb;
-	EERIE_RGBB      torch;
-	long            interpolatemouse;
-	long            vsync;
-	std::string     localisationpath;
+	long soundmode;
+	long compatibility;
+	long ambient;
+	long improve;
+	long detectliving;
+	long improvespeed;
+	long telekinesis;
+	long multiplayer;
+	long demo;
+	long bits;
+	long hide;
+	long TextureSize;
+	long TextureBits;
+	EERIE_RGBB interfacergb;
+	EERIE_RGBB torch;
+	long interpolatemouse;
+	long vsync;
+	std::string localisationpath;
 };
 
-struct EERIETOOLBAR
-{
-	HWND		hWnd;
-	long		CreationToolBar;
-	long		ToolBarNb;
+struct EERIETOOLBAR {
+	HWND hWnd;
+	long CreationToolBar;
+	long ToolBarNb;
 	LPCTBBUTTON Buttons;
 	long		Bitmap;
 	std::string		String;
-	long		Type;
+	long Type;
 };
 
-struct KEYBOARD_MNG
-{
-	short			nbkeydown;
-	unsigned char	inkey[255];
-	char			_CAPS;
-	short			lastkey;
+struct KEYBOARD_MNG {
+	short nbkeydown;
+	unsigned char inkey[255];
+	char _CAPS;
+	short lastkey;
 };
 
-
-//-----------------------------------------------------------------------------
-extern PROJECT			Project;
-extern float			FPS;
+extern PROJECT Project;
+extern float FPS;
 extern LPDIRECT3DDEVICE7 GDevice;
-extern int				ModeLight;
+extern int ModeLight;
 
 extern short WINDOWCREATIONSIZEX;
 extern short WINDOWCREATIONSIZEY;
@@ -272,169 +268,159 @@ extern long EERIEMouseXdep, EERIEMouseYdep, EERIEMouseX, EERIEMouseY, EERIEWheel
 extern long EERIEMouseButton, EERIEMouseGrab;
 extern HWND MSGhwnd;
 
-//-----------------------------------------------------------------------------
-// Name: class CD3DApplication
-// Desc:
-//-----------------------------------------------------------------------------
-class CD3DApplication
-{
-		// Internal variables and member functions
-		bool            m_bSingleStep;
-		DWORD           m_dwBaseTime;
-		DWORD           m_dwStopTime;
-
-		HRESULT Render3DEnvironment();
-		VOID    DisplayFrameworkError(HRESULT, DWORD);
-
+class CD3DApplication {
+	
+	// Internal variables and member functions
+	bool m_bSingleStep;
+	DWORD m_dwBaseTime;
+	DWORD m_dwStopTime;
+	
+	HRESULT Render3DEnvironment();
+	void DisplayFrameworkError(HRESULT, DWORD);
+	
 public:
-		float			fMouseSensibility;
+	
+	float fMouseSensibility;
+	
 protected:
-		// Overridable variables for the app
+	
+	// Overridable variables for the app
 		std::string m_strWindowTitle;
-		bool			m_bAppUseZBuffer;
-		bool			m_bAppUseStereo;
-		bool			m_bShowStats;
-		HRESULT(*m_fnConfirmDevice)(DDCAPS *, D3DDEVICEDESC7 *);
-		HWND				 CreateToolBar(HWND hWndParent, long tbb, HINSTANCE hInst);
-
-		// Overridable functions for the 3D scene created by the app
-		virtual HRESULT OneTimeSceneInit()
-		{
-			return S_OK;
-		}
-		virtual HRESULT DeleteDeviceObjects()
-		{
-			return S_OK;
-		}
-		virtual HRESULT FrameMove(float)
-		{
-			return S_OK;
-		}
-		virtual HRESULT RestoreSurfaces()
-		{
-			return S_OK;
-		}
-		virtual HRESULT FinalCleanup()
-		{
-			return S_OK;
-		}
-
-		// Overridable power management (APM) functions
-		virtual LRESULT OnQuerySuspend(DWORD dwFlags);
-		virtual LRESULT OnResumeSuspend(DWORD dwData);
-		virtual HRESULT BeforeRun()
-		{
-			return S_OK;
-		}
-
-		//zbuffer
-		short			w_zdecal;
-		long			dw_zmask;
-		float			f_zmul;
-		long			dw_zXmodulo;
-
-	public:
-		LPDIRECTDRAW7			m_pDD;
-		LPDIRECT3DDEVICE7		m_pd3dDevice;
-		LPDIRECTDRAWSURFACE7	m_pddsRenderTarget;
-		LPDIRECTDRAWSURFACE7	m_pddsRenderTargetLeft;	// For stereo modes
-		DDSURFACEDESC2			m_ddsdRenderTarget;
-		int						WinManageMess();
-		VOID					Cleanup3DEnvironment();
-		LPDIRECT3D7				m_pD3D;
-		void					EvictManagedTextures();
-		virtual HRESULT Render() = 0;
-		virtual HRESULT InitDeviceObjects()
-		{
-			return S_OK;
-		}
-		VOID					OutputText( DWORD x, DWORD y, const std::string& str );
- 
-		HRESULT	SetClipping( float x1, float y1, float x2, float y2 );
- 
-		bool					m_bFrameMoving;
-		bool					m_bActive;
-		HRESULT					Change3DEnvironment();
-		HRESULT					Initialize3DEnvironment();
-		bool					m_bReady;
-		D3DEnum_DeviceInfo*		m_pDeviceInfo;
-		HWND					m_hWnd;
-		HWND					m_hWndRender;
-		WNDPROC					m_OldProc;
-		HWND					m_dlghWnd;
-		bool					b_dlg;
-		long					d_dlgframe;
-		void					EERIEMouseUpdate(short x, short y);
-
-		// Functions to create, run, pause, and clean up the application
-		virtual HRESULT			Create(HINSTANCE, const std::string& );
-		virtual INT				Run();
-		virtual LRESULT			MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-		virtual VOID			Pause(bool bPause);
-		LRESULT					SwitchFullScreen() ;
-
-		CD3DFramework7*			m_pFramework;
-		KEYBOARD_MNG			kbd;
-
-		char					StatusText[512];
-		short					CreationSizeX;
-		short					CreationSizeY;
-		long					CreationFlags;
-		long					CreationMenu;
-		EERIETOOLBAR*			ToolBar;
-		HWND					owner;
- 
-		void*					logical;
-		void*					zbuf;
-		long					zbits;
-		long					nbbits;
- 
-		void*					Lock();
-		bool					Unlock();
-		DDSURFACEDESC2			ddsd;
-		DDSURFACEDESC2			ddsd2;
-
-		void					EnableZBuffer();
-
-		LPDIRECTDRAWGAMMACONTROL lpDDGammaControl;	//gamma control
-		DDGAMMARAMP				DDGammaRamp;		//modified ramp value
-		DDGAMMARAMP				DDGammaOld;			//backup gamma values
-		HRESULT					UpdateGamma();
- 
-		float					GetZBufferMax();
-		float					zbuffer_max;
-		float					zbuffer_max_div;
-
-		// Class constructor
-		CD3DApplication();
+	bool m_bAppUseZBuffer;
+	bool m_bAppUseStereo;
+	bool m_bShowStats;
+	HRESULT(*m_fnConfirmDevice)(DDCAPS *, D3DDEVICEDESC7 *);
+	HWND CreateToolBar(HWND hWndParent, HINSTANCE hInst);
+	
+	// Overridable functions for the 3D scene created by the app
+	virtual HRESULT OneTimeSceneInit() {
+		return S_OK;
+	}
+	virtual HRESULT DeleteDeviceObjects() {
+		return S_OK;
+	}
+	virtual HRESULT FrameMove() {
+		return S_OK;
+	}
+	virtual HRESULT RestoreSurfaces() {
+		return S_OK;
+	}
+	virtual HRESULT FinalCleanup() {
+		return S_OK;
+	}
+	
+	// Overridable power management (APM) functions
+	virtual LRESULT OnQuerySuspend(DWORD dwFlags);
+	virtual LRESULT OnResumeSuspend(DWORD dwData);
+	virtual HRESULT BeforeRun() {
+		return S_OK;
+	}
+	
+	//zbuffer
+	short w_zdecal;
+	long dw_zmask;
+	float f_zmul;
+	long dw_zXmodulo;
+	
+public:
+	
+	LPDIRECTDRAW7 m_pDD;
+	LPDIRECT3DDEVICE7 m_pd3dDevice;
+	LPDIRECTDRAWSURFACE7 m_pddsRenderTarget;
+	LPDIRECTDRAWSURFACE7 m_pddsRenderTargetLeft;	// For stereo modes
+	DDSURFACEDESC2 m_ddsdRenderTarget;
+	int WinManageMess();
+	void Cleanup3DEnvironment();
+	LPDIRECT3D7 m_pD3D;
+	void EvictManagedTextures();
+	virtual HRESULT Render() = 0;
+	virtual HRESULT InitDeviceObjects() {
+		return S_OK;
+	}
+	void OutputText(DWORD x, DWORD y, const std::string& str);
+	
+	HRESULT SetClipping(float x1, float y1, float x2, float y2);
+	
+	bool m_bFrameMoving;
+	bool m_bActive;
+	HRESULT Change3DEnvironment();
+	HRESULT Initialize3DEnvironment();
+	bool m_bReady;
+	D3DEnum_DeviceInfo * m_pDeviceInfo;
+	HWND m_hWnd;
+	HWND m_hWndRender;
+	WNDPROC m_OldProc;
+	HWND m_dlghWnd;
+	bool b_dlg;
+	long d_dlgframe;
+	void EERIEMouseUpdate(short x, short y);
+	
+	// Functions to create, run, pause, and clean up the application
+	virtual HRESULT Create(HINSTANCE);
+	virtual INT Run();
+	virtual LRESULT MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	virtual void Pause(bool bPause);
+	LRESULT SwitchFullScreen() ;
+	
+	CD3DFramework7 * m_pFramework;
+	KEYBOARD_MNG kbd;
+	
+	char StatusText[512];
+	short CreationSizeX;
+	short CreationSizeY;
+	long CreationFlags;
+	long CreationMenu;
+	EERIETOOLBAR * ToolBar;
+	HWND owner;
+	
+	void * logical;
+	void * zbuf;
+	long zbits;
+	long nbbits;
+	
+	void * Lock();
+	bool Unlock();
+	DDSURFACEDESC2 ddsd;
+	DDSURFACEDESC2 ddsd2;
+	
+	void EnableZBuffer();
+	
+	LPDIRECTDRAWGAMMACONTROL lpDDGammaControl; // gamma control
+	DDGAMMARAMP DDGammaRamp; // modified ramp value
+	DDGAMMARAMP DDGammaOld; // backup gamma values
+	HRESULT UpdateGamma();
+	
+	float GetZBufferMax();
+	float zbuffer_max;
+	float zbuffer_max_div;
+	
+	// Class constructor
+	CD3DApplication();
+	
 };
 
 extern CD3DApplication * g_pD3DApp;
 
-// Nuky - 01-02-11
-/// RAII for Lock() Unlock() on CD3DApplication class
-/// Can be used in conditions to test whether the lock was successfully acquired
-class CD3DApplicationScopedLock
-{
+/**
+ * RAII for Lock() Unlock() on CD3DApplication class
+ * Can be used in conditions to test whether the lock was successfully acquired
+ **/
+class CD3DApplicationScopedLock {
 public:
 	explicit CD3DApplicationScopedLock(CD3DApplication& app) : instance_(&app) { if (!instance_->Lock()) instance_ = NULL; }
 	~CD3DApplicationScopedLock() { if (instance_) instance_->Unlock(); }
 	operator void*() const { return instance_; }
 private:
 	CD3DApplication* instance_;
-	// No copy
+	// Prevent instances from being copied.
 	CD3DApplicationScopedLock(const CD3DApplicationScopedLock&);
 	CD3DApplicationScopedLock& operator=(const CD3DApplicationScopedLock&);
 };
 
-//******************************************************************************
-// MESSAGE BOXES
-//******************************************************************************
-bool	OKBox(const std::string& text, const std::string& title);
+bool OKBox(const std::string& text, const std::string& title);
 
-void	ExitApp(int v);
-void	CalcFPS(bool reset = false);
+void CalcFPS(bool reset = false);
 
-void	SetZBias(const LPDIRECT3DDEVICE7, int);
+void SetZBias(const LPDIRECT3DDEVICE7, int);
 
-#endif // D3DAPP_H
+#endif // ARX_CORE_APPLICATION_H

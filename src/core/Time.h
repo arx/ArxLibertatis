@@ -54,59 +54,49 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#ifndef ARX_TIME_H
-#define ARX_TIME_H
 
-#include "core/Core.h"
+#ifndef ARX_CORE_TIME_H
+#define ARX_CORE_TIME_H
 
-//-----------------------------------------------------------------------------
+#include "core/Common.h"
+
 extern float ARXPausedTime;
 extern float ARXTotalPausedTime;
 extern float ARXTime;
 extern bool ARXPausedTimer;
 
-#define lARXTime ( ARX_CLEAN_WARN_CAST_LONG( ARXTime ) )
-#define dwARX_TIME_Get() ( ARX_CLEAN_WARN_CAST_DWORD( ARX_TIME_Get() ) )
+#define lARXTime (static_cast<long>( ARXTime ))
+#define dwARX_TIME_Get() (static_cast<DWORD>(ARX_TIME_Get()))
 
-//-----------------------------------------------------------------------------
 void ARX_TIME_Pause();
 void ARX_TIME_UnPause();
 void ARX_TIME_Init();
 void ARX_TIME_Force_Time_Restore(float time);
 
-// Get time (in seconds) since application started
-float ARX_TIME_GetAppTime();
-
 float _ARX_TIME_GetTime();
 
-//-----------------------------------------------------------------------------
-__inline float ARX_TIME_Get(bool _bUsePause = true)
-{
+inline float ARX_TIME_Get(bool _bUsePause = true) {
+	
 	float tim = _ARX_TIME_GetTime();
-
-	if (ARXPausedTimer && _bUsePause)
-	{
+	
+	if(ARXPausedTimer && _bUsePause) {
 		ARXTime = tim - ARXTotalPausedTime - (tim - ARXPausedTime);
+	} else {
+		ARXTime = tim - ARXTotalPausedTime;
 	}
-	else ARXTime = tim - ARXTotalPausedTime;
-
+	
 	return ARXTime;
 }
 
-
-
-__inline unsigned long ARX_TIME_GetUL(bool _bUsePause = true)
-{
+inline unsigned long ARX_TIME_GetUL(bool _bUsePause = true) {
 	float time = ARX_TIME_Get(_bUsePause);
 	ARX_CHECK_ULONG(time);
-	return ARX_CLEAN_WARN_CAST_ULONG(time);;
+	return static_cast<unsigned long>(time);
 }
-__inline unsigned long ARXTimeUL()
-{
+
+inline unsigned long ARXTimeUL() {
 	ARX_CHECK_ULONG(ARXTime);
-	return ARX_CLEAN_WARN_CAST_ULONG(ARXTime);
+	return static_cast<unsigned long>(ARXTime);
 }
 
-
-
-#endif
+#endif // ARX_CORE_TIME_H

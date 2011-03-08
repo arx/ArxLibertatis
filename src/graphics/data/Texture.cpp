@@ -61,24 +61,27 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cstdio>
 #include <cassert>
-
+#include <limits>
 #include <iomanip>
 #include <map>
+#include <sstream>
 
 #include <zlib.h>
 
 #include <IL/il.h>
 
 #include "core/Common.h"
-
 #include "core/Application.h"
+
 #include "graphics/GraphicsUtility.h"
+#include "graphics/GraphicsEnum.h"
 #include "graphics/Math.h"
+#include "graphics/Renderer.h"
 
 #include "io/IO.h"
+#include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
-
 
 long GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = 0;
 
@@ -307,6 +310,68 @@ long CountTextures( std::string& tex, long * memsize, long * memmip)
 
 		return count;
 }
+
+void ResetVertexLists(TextureContainer * ptcTexture)
+{
+	if(!ptcTexture)
+		return;
+
+	ptcTexture->ulNbVertexListCull = 0;
+	ptcTexture->ulNbVertexListCull_TNormalTrans = 0;
+	ptcTexture->ulNbVertexListCull_TAdditive = 0;
+	ptcTexture->ulNbVertexListCull_TSubstractive = 0;
+	ptcTexture->ulNbVertexListCull_TMultiplicative = 0;
+	ptcTexture->ulNbVertexListCull_TMetal = 0;
+
+	ptcTexture->ulMaxVertexListCull = 0;
+	ptcTexture->ulMaxVertexListCull_TNormalTrans = 0;
+	ptcTexture->ulMaxVertexListCull_TAdditive = 0;
+	ptcTexture->ulMaxVertexListCull_TSubstractive = 0;
+	ptcTexture->ulMaxVertexListCull_TMultiplicative = 0;
+	ptcTexture->ulMaxVertexListCull_TMetal = 0;
+
+	ptcTexture->vPolyBump.clear();
+	ptcTexture->vPolyInterBump.clear();
+	ptcTexture->vPolyInterZMap.clear();
+	ptcTexture->vPolyZMap.clear();
+
+	if (ptcTexture->pVertexListCull)
+	{
+		free((void *)ptcTexture->pVertexListCull);
+		ptcTexture->pVertexListCull = NULL;
+	}
+
+	if (ptcTexture->pVertexListCull_TNormalTrans)
+	{
+		free((void *)ptcTexture->pVertexListCull_TNormalTrans);
+		ptcTexture->pVertexListCull_TNormalTrans = NULL;
+	}
+
+	if (ptcTexture->pVertexListCull_TAdditive)
+	{
+		free((void *)ptcTexture->pVertexListCull_TAdditive);
+		ptcTexture->pVertexListCull_TAdditive = NULL;
+	}
+
+	if (ptcTexture->pVertexListCull_TSubstractive)
+	{
+		free((void *)ptcTexture->pVertexListCull_TSubstractive);
+		ptcTexture->pVertexListCull_TSubstractive = NULL;
+	}
+
+	if (ptcTexture->pVertexListCull_TMultiplicative)
+	{
+		free((void *)ptcTexture->pVertexListCull_TMultiplicative);
+		ptcTexture->pVertexListCull_TMultiplicative = NULL;
+	}
+
+	if (ptcTexture->pVertexListCull_TMetal)
+	{
+		free((void *)ptcTexture->pVertexListCull_TMetal);
+		ptcTexture->pVertexListCull_TMetal = NULL;
+	}
+}
+
 void ReloadTexture(TextureContainer * ptcTexture)
 {
 	if (ptcTexture)
@@ -325,92 +390,10 @@ void ReloadTexture(TextureContainer * ptcTexture)
 
 		ptcTexture->LoadImageData();
 
-		ptcTexture->ulNbVertexListCull = 0;
-		ptcTexture->ulNbVertexListCull_TNormalTrans = 0;
-		ptcTexture->ulNbVertexListCull_TAdditive = 0;
-		ptcTexture->ulNbVertexListCull_TSubstractive = 0;
-		ptcTexture->ulNbVertexListCull_TMultiplicative = 0;
-		ptcTexture->ulNbVertexListCull_TMetal = 0;
-
-		ptcTexture->ulMaxVertexListCull = 0;
-		ptcTexture->ulMaxVertexListCull_TNormalTrans = 0;
-		ptcTexture->ulMaxVertexListCull_TAdditive = 0;
-		ptcTexture->ulMaxVertexListCull_TSubstractive = 0;
-		ptcTexture->ulMaxVertexListCull_TMultiplicative = 0;
-		ptcTexture->ulMaxVertexListCull_TMetal = 0;
-
-		ptcTexture->vPolyBump.clear();
-		ptcTexture->vPolyInterBump.clear();
-		ptcTexture->vPolyInterZMap.clear();
-		ptcTexture->vPolyInterBumpTANDL.clear();
-		ptcTexture->vPolyInterZMapTANDL.clear();
-		ptcTexture->vPolyZMap.clear();
-
-		if (ptcTexture->pVertexListCull) free((void *)ptcTexture->pVertexListCull);
-
-		ptcTexture->pVertexListCull = NULL;
-
-		if (ptcTexture->pVertexListCull_TNormalTrans) free((void *)ptcTexture->pVertexListCull_TNormalTrans);
-
-		ptcTexture->pVertexListCull_TNormalTrans = NULL;
-
-		if (ptcTexture->pVertexListCull_TAdditive) free((void *)ptcTexture->pVertexListCull_TAdditive);
-
-		ptcTexture->pVertexListCull_TAdditive = NULL;
-
-		if (ptcTexture->pVertexListCull_TSubstractive) free((void *)ptcTexture->pVertexListCull_TSubstractive);
-
-		ptcTexture->pVertexListCull_TSubstractive = NULL;
-
-		if (ptcTexture->pVertexListCull_TMultiplicative) free((void *)ptcTexture->pVertexListCull_TMultiplicative);
-
-		ptcTexture->pVertexListCull_TMultiplicative = NULL;
-
-		if (ptcTexture->pVertexListCull_TMetal) free((void *)ptcTexture->pVertexListCull_TMetal);
-
-		ptcTexture->pVertexListCull_TMetal = NULL;
-
-
-		//Hybride T&L
-		ptcTexture->ulNbVertexListCullH = 0;
-		ptcTexture->ulNbVertexListCull_TNormalTransH = 0;
-		ptcTexture->ulNbVertexListCull_TAdditiveH = 0;
-		ptcTexture->ulNbVertexListCull_TSubstractiveH = 0;
-		ptcTexture->ulNbVertexListCull_TMultiplicativeH = 0;
-		ptcTexture->ulNbVertexListCull_TMetalH = 0;
-		ptcTexture->ulMaxVertexListCullH = 0;
-		ptcTexture->ulMaxVertexListCull_TNormalTransH = 0;
-		ptcTexture->ulMaxVertexListCull_TAdditiveH = 0;
-		ptcTexture->ulMaxVertexListCull_TSubstractiveH = 0;
-		ptcTexture->ulMaxVertexListCull_TMultiplicativeH = 0;
-		ptcTexture->ulMaxVertexListCull_TMetalH = 0;
-
-		if (ptcTexture->pVertexListCullH) free((void *)ptcTexture->pVertexListCullH);
-
-		ptcTexture->pVertexListCullH = NULL;
-
-		if (ptcTexture->pVertexListCull_TNormalTransH) free((void *)ptcTexture->pVertexListCull_TNormalTransH);
-
-		ptcTexture->pVertexListCull_TNormalTransH = NULL;
-
-		if (ptcTexture->pVertexListCull_TAdditiveH) free((void *)ptcTexture->pVertexListCull_TAdditiveH);
-
-		ptcTexture->pVertexListCull_TAdditiveH = NULL;
-
-		if (ptcTexture->pVertexListCull_TSubstractiveH) free((void *)ptcTexture->pVertexListCull_TSubstractiveH);
-
-		ptcTexture->pVertexListCull_TSubstractiveH = NULL;
-
-		if (ptcTexture->pVertexListCull_TMultiplicativeH) free((void *)ptcTexture->pVertexListCull_TMultiplicativeH);
-
-		ptcTexture->pVertexListCull_TMultiplicativeH = NULL;
-
-		if (ptcTexture->pVertexListCull_TMetalH) free((void *)ptcTexture->pVertexListCull_TMetalH);
-
-		ptcTexture->pVertexListCull_TMetalH = NULL;
-
+		ResetVertexLists(ptcTexture);
 	}
 }
+
 void ReloadAllTextures(LPDIRECT3DDEVICE7 pd3dDevice)
 {
 	TextureContainer * ptcTexture = g_ptcTextureList;
@@ -424,6 +407,7 @@ void ReloadAllTextures(LPDIRECT3DDEVICE7 pd3dDevice)
 
 	D3DTextr_RestoreAllTextures(pd3dDevice);
 }
+
 
 //-----------------------------------------------------------------------------
 // Name: TextureContainer()
@@ -463,13 +447,9 @@ TextureContainer::TextureContainer( const std::string& strName, DWORD dwStage,
 		delayed = NULL;
 		delayed_nb = 0;
 		delayed_max = 0;
-		vertexbuffer = NULL;
+
 		locks = 0;
 		systemflags = 0;
-		mcachecount = 0;
-		vbuf = NULL;
-		vbuf_max = 0;
-		NoResize = false;
 
 		halodecalX = 0.f;
 		halodecalY = 0.f;
@@ -504,23 +484,7 @@ TextureContainer::TextureContainer( const std::string& strName, DWORD dwStage,
 		vPolyBump.clear();
 		vPolyInterBump.clear();
 		vPolyInterZMap.clear();
-		vPolyInterBumpTANDL.clear();
-		vPolyInterZMapTANDL.clear();
 		vPolyZMap.clear();
-
-		//Hybride T&L
-		ulMaxVertexListCullH = ulNbVertexListCullH = 0;
-		pVertexListCullH = NULL;
-		ulMaxVertexListCull_TNormalTransH = ulNbVertexListCull_TNormalTransH = 0;
-		pVertexListCull_TNormalTransH = NULL;
-		ulMaxVertexListCull_TAdditiveH = ulNbVertexListCull_TAdditiveH = 0;
-		pVertexListCull_TAdditiveH = NULL;
-		ulMaxVertexListCull_TSubstractiveH = ulNbVertexListCull_TSubstractiveH = 0;
-		pVertexListCull_TSubstractiveH = NULL;
-		ulMaxVertexListCull_TMultiplicativeH = ulNbVertexListCull_TMultiplicativeH = 0;
-		pVertexListCull_TMultiplicativeH = NULL;
-		ulMaxVertexListCull_TMetalH = ulNbVertexListCull_TMetalH = 0;
-		pVertexListCull_TMetalH = NULL;
 }
 
 bool TextureContainer_Exist(TextureContainer * tc)
@@ -545,62 +509,31 @@ bool TextureContainer_Exist(TextureContainer * tc)
 //-----------------------------------------------------------------------------
 TextureContainer::~TextureContainer()
 {
-		if (!TextureContainer_Exist(this))
-			return;
+	if (!TextureContainer_Exist(this))
+		return;
 
-		SAFE_RELEASE(m_pddsSurface);
-		SAFE_RELEASE(m_pddsBumpMap);
+	SAFE_RELEASE(m_pddsSurface);
+	SAFE_RELEASE(m_pddsBumpMap);
 
-		SAFE_DELETE_TAB(m_pRGBAData);
+	SAFE_DELETE_TAB(m_pRGBAData);
 
-		if (vertexbuffer)
-		{
-			free(vertexbuffer);
-			vertexbuffer = NULL;
-		}
+	if (delayed)
+	{
+		free(delayed);
+		delayed = NULL;
+	}
 
-		if (vbuf)
-		{
-			free(vbuf);
-			vbuf = NULL;
-		}
+	// Remove the texture container from the global list
+	if (g_ptcTextureList == this)
+		g_ptcTextureList = m_pNext;
+	else
+	{
+		for (TextureContainer * ptc = g_ptcTextureList; ptc; ptc = ptc->m_pNext)
+			if (ptc->m_pNext == this)
+				ptc->m_pNext = m_pNext;
+	}
 
-		if (delayed)
-		{
-			free(delayed);
-			delayed = NULL;
-		}
-
-		// Remove the texture container from the global list
-		if (g_ptcTextureList == this)
-			g_ptcTextureList = m_pNext;
-		else
-		{
-			for (TextureContainer * ptc = g_ptcTextureList; ptc; ptc = ptc->m_pNext)
-				if (ptc->m_pNext == this)
-					ptc->m_pNext = m_pNext;
-		}
-
-		if (pVertexListCull) free((void *)pVertexListCull);
-
-		if (pVertexListCull_TNormalTrans) free((void *)pVertexListCull_TNormalTrans);
-
-		if (pVertexListCull_TAdditive) free((void *)pVertexListCull_TAdditive);
-
-		if (pVertexListCull_TSubstractive) free((void *)pVertexListCull_TSubstractive);
-
-		if (pVertexListCull_TMultiplicative) free((void *)pVertexListCull_TMultiplicative);
-
-		if (pVertexListCull_TMetal) free((void *)pVertexListCull_TMetal);
-
-		if (tMatRoom) free((void *)tMatRoom);
-
-		vPolyBump.clear();
-		vPolyInterBump.clear();
-		vPolyInterZMap.clear();
-		vPolyInterBumpTANDL.clear();
-		vPolyInterZMapTANDL.clear();
-		vPolyZMap.clear();
+	ResetVertexLists(this);
 }
 
 //-----------------------------------------------------------------------------
@@ -653,8 +586,10 @@ HRESULT TextureContainer::LoadFile(const std::string& strPathname)
 
 	ILenum imageType = ilTypeFromExt(strPathname.c_str());
 	ILboolean bLoaded = ilLoadL(imageType, dat, size);
-
-	ILint imgFormat = ilGetInteger( IL_IMAGE_FORMAT );
+	if(!bLoaded) {
+		free(dat);
+		return E_FAIL;
+	}
 	
 	m_dwWidth   = ilGetInteger( IL_IMAGE_WIDTH );
 	m_dwHeight  = ilGetInteger( IL_IMAGE_HEIGHT );
@@ -690,11 +625,11 @@ void CopySurfaceToBumpMap(LPDIRECTDRAWSURFACE7 sSurface, LPDIRECTDRAWSURFACE7 dS
 		sSurface->Lock(NULL, &ddesc , DDLOCK_WAIT, NULL);
 		dSurface->Lock(NULL, &ddesc2, DDLOCK_WAIT, NULL);
 
-		if ((32 != ddesc.ddpfPixelFormat.dwRGBBitCount)
-				&&	(16 != ddesc.ddpfPixelFormat.dwRGBBitCount)
+		if (((32 != ddesc.ddpfPixelFormat.dwRGBBitCount)
+				&&	(16 != ddesc.ddpfPixelFormat.dwRGBBitCount))
 				||
-				(32 != ddesc2.ddpfPixelFormat.dwRGBBitCount)
-				&&	(16 != ddesc2.ddpfPixelFormat.dwRGBBitCount))
+				((32 != ddesc2.ddpfPixelFormat.dwRGBBitCount)
+				&&	(16 != ddesc2.ddpfPixelFormat.dwRGBBitCount)))
 		{
 			dSurface->Unlock(NULL);
 			sSurface->Unlock(NULL);
@@ -780,8 +715,8 @@ void CopySurfaceToBumpMap(LPDIRECTDRAWSURFACE7 sSurface, LPDIRECTDRAWSURFACE7 dS
 
 			for (ULONG x = 0 ; x < ddesc2.dwWidth ; x++)
 			{		
-				ARX_CHECK_LONG(x);
-				ARX_CHECK_LONG(y  * LineOffset);
+				assert(x <= LONG_MAX);
+				assert(y  * LineOffset <= LONG_MAX);
 				posx = x;
 				posy = y * LineOffset;
 
@@ -872,10 +807,10 @@ bool IsColorKeyInSurface(LPDIRECTDRAWSURFACE7 _pSurface)
 		{
 			for (ULONG x = 0 ; x < ddesc.dwWidth ; x++)
 			{
-				ARX_CHECK_LONG(x);
-				ARX_CHECK_LONG(y * LineOffset);
-				posx = ARX_CLEAN_WARN_CAST_LONG(x);
-				posy = ARX_CLEAN_WARN_CAST_LONG(y * LineOffset);
+				assert(x <= LONG_MAX);
+				assert(y * LineOffset <= LONG_MAX);
+				posx = static_cast<long>(x);
+				posy = static_cast<long>(y * LineOffset);
 
 				// Original Pixel
 				if (32 == ddesc.ddpfPixelFormat.dwRGBBitCount)
@@ -912,11 +847,11 @@ void StretchCopySurfaceToSurface(LPDIRECTDRAWSURFACE7 sSurface, LPDIRECTDRAWSURF
 		sSurface->Lock(NULL, &ddesc , DDLOCK_WAIT, NULL);
 		dSurface->Lock(NULL, &ddesc2, DDLOCK_WAIT, NULL);
 
-		if ((32 != ddesc.ddpfPixelFormat.dwRGBBitCount)
-				&& (16 != ddesc.ddpfPixelFormat.dwRGBBitCount)
+		if (((32 != ddesc.ddpfPixelFormat.dwRGBBitCount)
+				&& (16 != ddesc.ddpfPixelFormat.dwRGBBitCount))
 				||
-				(32 != ddesc2.ddpfPixelFormat.dwRGBBitCount)
-				&& (16 != ddesc2.ddpfPixelFormat.dwRGBBitCount))
+				((32 != ddesc2.ddpfPixelFormat.dwRGBBitCount)
+				&& (16 != ddesc2.ddpfPixelFormat.dwRGBBitCount)))
 		{
 			dSurface->Unlock(NULL);
 			sSurface->Unlock(NULL);
@@ -1712,7 +1647,7 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 	DWORD dwMaxWidth  = ddDesc.dwMaxTextureWidth;
 	DWORD dwMaxHeight = ddDesc.dwMaxTextureHeight;
 
-	if ((Project.TextureSize) && bGlobalTextureStretch && (!NoResize))
+	if ((Project.TextureSize) && bGlobalTextureStretch)
 	{
 		// Max quality
 		if (Project.TextureSize == 0)
@@ -2008,13 +1943,10 @@ void TextureContainer::RemoveFakeBlack()
 	DWORD dwAMask		= 0xFF000000;
 	DWORD * pSrcData32	= (DWORD *)sBytes;
 
-	ARX_CHECK_NOT_NEG(m_dwHeight);
-
-	for (DWORD y = 0 ; y < ARX_CAST_ULONG(m_dwHeight) ; y++)
+	for (DWORD y = 0 ; y < static_cast<unsigned long>(m_dwHeight) ; y++)
 	{
-		ARX_CHECK_NOT_NEG(m_dwWidth);
 
-		for (DWORD x = 0 ; x < ARX_CAST_ULONG(m_dwWidth) ; x++)
+		for (DWORD x = 0 ; x < static_cast<unsigned long>(m_dwWidth) ; x++)
 		{
 			// Original Pixel
 			DWORD dwPixel;
@@ -2116,8 +2048,8 @@ HRESULT TextureContainer::CopyBitmapToSurface(HBITMAP hbitmap, int depx, int dep
 		DWORD pe[256];
 
 		UINT uiRes = GetDIBColorTable(hdcBitmap, 0, 256, (RGBQUAD *)pe);
-		ARX_CHECK_WORD(uiRes);
-		WORD  wNumColors     = ARX_CLEAN_WARN_CAST_WORD(uiRes);
+		assert(uiRes <= std::numeric_limits<WORD>::max());
+		WORD  wNumColors = static_cast<WORD>(uiRes);
 
 		// Create the color table
 		for (WORD i = 0; i < wNumColors; i++)
@@ -2480,7 +2412,6 @@ RefinementMap g_Refine;
 
 void LookForRefinementMap(TextureContainer * tc)
 {
-	long count = 0;
 	std::string str1;
 	std::string str2;
 	tc->TextureRefinement = NULL;
@@ -2732,6 +2663,8 @@ HRESULT D3DTextr_RestoreAllTextures(LPDIRECT3DDEVICE7 pd3dDevice)
 		ptcTexture = ptcTexture->m_pNext;
 	}
 
+	GRenderer->RestoreAllTextures();
+
 	return S_OK;
 }
 
@@ -2776,6 +2709,8 @@ HRESULT D3DTextr_InvalidateAllTextures()
 
 		ptcTexture = ptcTexture->m_pNext;
 	}
+
+	GRenderer->ReleaseAllTextures();
 
 	return S_OK;
 }
@@ -3181,8 +3116,8 @@ TextureContainer * TextureContainer::AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _i
 							 ((((unsigned int)(255.f - _fG)) >> dwGShiftL) << dwGShiftR) |
 							 ((((unsigned int)(255.f - _fB)) >> dwBShiftL) << dwBShiftR) |
 							 (0x8000);
-		ARX_CHECK_USHORT(uiDec);
-		usColorMask =	ARX_CLEAN_WARN_CAST_USHORT(uiDec);
+		assert(uiDec <= USHRT_MAX);
+		usColorMask = static_cast<unsigned short>(uiDec);
 
 		unsigned short * pusMem = (unsigned short *)ddsdSurfaceDesc.lpSurface;
 

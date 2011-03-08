@@ -69,35 +69,44 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <algorithm>
 #include <iomanip>
 #include <cassert>
+#include <sstream>
+#include <cstdio>
 
-#include "game/Damage.h"
-#include "game/Equipment.h"
-#include "scene/Interactive.h"
-#include "gui/MiniMap.h"
-#include "game/NPC.h"
-#include "graphics/particle/ParticleEffects.h"
 #include "ai/Paths.h"
-#include "scene/GameSound.h"
-#include "gui/Speech.h"
-#include "game/Spells.h"
+#include "ai/PathFinderManager.h"
+
 #include "core/Time.h"
 #include "core/Dialog.h"
 
+#include "game/Damage.h"
+#include "game/Equipment.h"
+#include "game/NPC.h"
+#include "game/Spells.h"
+#include "game/Player.h"
+
+#include "gui/MiniMap.h"
+#include "gui/Speech.h"
+
+#include "graphics/d3dwrapper.h"
+#include "graphics/Math.h"
+#include "graphics/particle/ParticleEffects.h"
+
 #include "io/IO.h"
+#include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
 #include "io/SaveBlock.h"
 
-#include "graphics/d3dwrapper.h"
-#include "graphics/Math.h"
-#include "scene/Object.h"
-#include "ai/PathFinderManager.h"
 #include "physics/CollisionShapes.h"
+
+#include "scene/Interactive.h"
+#include "scene/GameSound.h"
+#include "scene/Object.h"
+#include "scene/LoadLevel.h"
+
 #include "scripting/ScriptEvent.h"
 
-
-//#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
 
 extern INTERACTIVE_OBJ * CURRENT_TORCH;
 extern long GLOBAL_MAGIC_MODE;
@@ -516,21 +525,21 @@ long ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 		return -1;
 	}
 
-	if (ARX_CHANGELEVEL_Push_Globals(num) != 1)
+	if (ARX_CHANGELEVEL_Push_Globals() != 1)
 	{
 		LogError << "Error Saving Globals...";
 		ARX_TIME_UnPause();
 		return -1;
 	}
 
-	if (ARX_CHANGELEVEL_Push_Player(num) != 1)
+	if (ARX_CHANGELEVEL_Push_Player() != 1)
 	{
 		LogError << "Error Saving Player...";
 		ARX_TIME_UnPause();
 		return -1;
 	}
 
-	if (ARX_CHANGELEVEL_Push_AllIO(num) != 1)
+	if (ARX_CHANGELEVEL_Push_AllIO() != 1)
 	{
 		LogError << "Error Saving IOs...";
 		ARX_TIME_UnPause();
@@ -613,7 +622,6 @@ long ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
 					 + sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi->nb_inter
 					 + sizeof(ARX_CHANGELEVEL_PATH) * asi->nb_paths
 					 + sizeof(ARX_CHANGELEVEL_LIGHT) * asi->nb_lights;
-	+48000;
 
 	void * playlist = NULL;
 	unsigned long asize = 0;
@@ -694,8 +702,7 @@ retry:
 	return ret ? 1 : -1;
 }
 //--------------------------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Push_Globals(long num)
-{
+long ARX_CHANGELEVEL_Push_Globals() {
 	ARX_CHANGELEVEL_SAVE_GLOBALS acsg;
 	long pos = 0;
 
@@ -812,8 +819,8 @@ extern long cur_pom;
 extern long sp_wep;
 extern long sp_arm;
 //--------------------------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Push_Player(long num)
-{
+long ARX_CHANGELEVEL_Push_Player() {
+	
 	ARX_CHANGELEVEL_PLAYER * asp;
 
 	long allocsize = sizeof(ARX_CHANGELEVEL_PLAYER) + Keyring_Number * sizeof(KEYRING_SLOT) + 48000;
@@ -886,7 +893,7 @@ retry:
 
 	memcpy(asp->minimap, minimap, sizeof(MINI_MAP_DATA)*MAX_MINIMAPS);
 
-	for (long i = 0; i < MAX_MINIMAPS; i++)
+	for (size_t i = 0; i < MAX_MINIMAPS; i++)
 		asp->minimap[i].tc = 0;
 
 	asp->falling				= player.falling;
@@ -1032,10 +1039,8 @@ retry:
 	return 1;
 }
 
-
-//-----------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Push_AllIO(long num)
-{
+long ARX_CHANGELEVEL_Push_AllIO() {
+	
 	for (long i = 1; i < inter.nbmax; i++)
 	{
 
@@ -1936,7 +1941,7 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 		LogWarning << "Cannot Load Globals data";
 	}
 
-	DanaeLoadLevel(GDevice, ftemp);
+	DanaeLoadLevel(ftemp);
 	CleanScriptLoadedIO();
 
 	FirstFrame = 1;
@@ -1978,8 +1983,8 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 	FORCE_TIME_RESTORE = ARX_CHANGELEVEL_DesiredTime;
 	return 1;
 }
-//-----------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_INDEX * asi, ARX_CHANGELEVEL_PLAYER * asp) {
+
+long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_PLAYER * asp) {
 	
 	const string & loadfile = "player.sav";
 	
@@ -2476,9 +2481,9 @@ long ARX_CHANGELEVEL_Pop_IO( const std::string& ident)
 				if (io->anims[i] == NULL)
 				{
 					if (io->ioflags & IO_NPC)
-						sprintf(tex, "GRAPH\\OBJ3D\\ANIMS\\NPC\\%s%s", GetName(ais->anims[i]).c_str(), GetExt(ais->anims[i]));
+						sprintf(tex, "GRAPH\\OBJ3D\\ANIMS\\NPC\\%s%s", GetName(ais->anims[i]).c_str(), GetExt(ais->anims[i]).c_str());
 					else
-						sprintf(tex, "GRAPH\\OBJ3D\\ANIMS\\FIX_Inter\\%s%s", GetName(ais->anims[i]).c_str(), GetExt(ais->anims[i]));
+						sprintf(tex, "GRAPH\\OBJ3D\\ANIMS\\FIX_Inter\\%s%s", GetName(ais->anims[i]).c_str(), GetExt(ais->anims[i]).c_str());
 
 					io->anims[i] = EERIE_ANIMMANAGER_Load(tex);
 				}
@@ -3068,7 +3073,7 @@ long ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi)
 }
 extern void GetIOCyl(INTERACTIVE_OBJ * io, EERIE_CYLINDER * cyl);
 //-----------------------------------------------------------------------------
-long ARX_CHANGELEVEL_PopAllIO_FINISH(ARX_CHANGELEVEL_INDEX * asi, long reloadflag)
+long ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag)
 {
 	unsigned char * treated = (unsigned char *) malloc(sizeof(unsigned char) * MAX_IO_SAVELOAD);
 
@@ -3621,7 +3626,7 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 	LoadLevelScreen(instance);
 	LogDebug << "Before ARX_CHANGELEVEL_Pop_Player";
 
-	if (ARX_CHANGELEVEL_Pop_Player(&asi, &asp) != 1)
+	if (ARX_CHANGELEVEL_Pop_Player(&asp) != 1)
 	{
 
 		LogError << "Cannot Load Player data";
@@ -3684,7 +3689,7 @@ long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
 
 	LogDebug << "Before ARX_CHANGELEVEL_PopAllIO_FINISH";
 	// Restoring all Missing Objects required by other objects...
-	ARX_CHANGELEVEL_PopAllIO_FINISH(&asi, reloadflag);
+	ARX_CHANGELEVEL_PopAllIO_FINISH(reloadflag);
 	LogDebug << "After  ARX_CHANGELEVEL_PopAllIO_FINISH";
 	PROGRESS_BAR_COUNT += 15.f;
 	LoadLevelScreen();

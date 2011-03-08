@@ -26,15 +26,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/CinematicTexture.h"
 
 #include <iomanip>
+#include <climits>
+#include <sstream>
 
 #include "animation/Cinematic.h"
+
 #include "core/Application.h"
+
 #include "graphics/data/Texture.h"
+
 #include "io/IO.h"
+#include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
 
-/*-----------------------------------------------------------*/
 CinematicBitmap	TabBitmap[MAX_BITMAP];
 int			MaxW, MaxH;
 int			NbBitmap;
@@ -44,12 +49,12 @@ extern HWND HwndPere;
 extern char DirectoryChoose[];
 
 
-/*-----------------------------------------------------------*/
 void FreeGrille(CinematicGrid * grille);
-void ReajustUV(LPDIRECT3DDEVICE7 device, int id);
-/*-----------------------------------------------------------*/
-void InitMapLoad(Cinematic * c)
-{
+
+static void ReajustUV(int id);
+
+void InitMapLoad() {
+	
 	CinematicBitmap	* tb;
 	int			nb;
 
@@ -116,7 +121,7 @@ bool DeleteFreeBitmap(int num)
 	return true;
 }
 /*-----------------------------------------------------------*/
-bool KillTexture(LPDIRECT3DDEVICE7 device, int num)
+static bool KillTexture(int num)
 {
 	CinematicBitmap	* cb;
 
@@ -134,7 +139,7 @@ bool KillTexture(LPDIRECT3DDEVICE7 device, int num)
 	return true;
 }
 /*-----------------------------------------------------------*/
-void DeleteAllBitmap(LPDIRECT3DDEVICE7 device)
+void DeleteAllBitmap()
 {
 	int			nb;
 
@@ -142,7 +147,7 @@ void DeleteAllBitmap(LPDIRECT3DDEVICE7 device)
 
 	while (nb)
 	{
-		KillTexture(device, MAX_BITMAP - nb);
+		KillTexture(MAX_BITMAP - nb);
 		DeleteFreeBitmap(MAX_BITMAP - nb);
 		nb--;
 	}
@@ -479,7 +484,7 @@ HBITMAP LoadTargaFile( const char * strPathname)
 		else
 			dwOffset = (m_dwHeight - y - 1) * m_dwWidth;
 
-		for (DWORD x = 0; x < m_dwWidth; x)
+		for (DWORD x = 0; x < m_dwWidth; x++)
 		{
 			BYTE b;
 			BYTE g;
@@ -515,7 +520,6 @@ HBITMAP LoadTargaFile( const char * strPathname)
 			}
 
 			m_pRGBAData[dwOffset+x] = RGBA_MAKE(r, g, b, 255);
-			x++;
 		}
 	}
 
@@ -621,7 +625,6 @@ HBITMAP LoadBMPImage( const char * strPathname)
 int CreateAllMapsForBitmap(const string & path, Cinematic * c) {
 	
 	int n = -1;
-	int pos = 0;
 	
 	int nbx, nby, w, h, num, id;
 	CinematicBitmap	* bi;
@@ -644,7 +647,7 @@ int CreateAllMapsForBitmap(const string & path, Cinematic * c) {
 		if (bi->dir) free((void *)bi->dir);
 
 		DeleteObject(bi->hbitmap);
-		KillTexture(GDevice, n);
+		KillTexture(n);
 		FreeGrille(&bi->grid);
 		NbBitmap--;
 
@@ -800,13 +803,13 @@ int CreateAllMapsForBitmap(const string & path, Cinematic * c) {
 	}
 
 	c->ActiveTexture(id);
-	ReajustUV(GDevice, id);
+	ReajustUV(id);
 
 	return id;
 }
-/*-----------------------------------------------------------*/
-bool ReCreateAllMapsForBitmap(int id, int nmax, Cinematic * c, LPDIRECT3DDEVICE7 device)
-{
+
+bool ReCreateAllMapsForBitmap(int id, int nmax, Cinematic * c) {
+	
 	int			nbx, nby, w, h, num;
 	CinematicBitmap	* bi;
 
@@ -874,7 +877,7 @@ bool ReCreateAllMapsForBitmap(int id, int nmax, Cinematic * c, LPDIRECT3DDEVICE7
 		nby--;
 	}
 
-	ReajustUV(GDevice, id);
+	ReajustUV(id);
 
 	return true;
 }
@@ -913,9 +916,9 @@ bool Cinematic::ActiveTexture(int id)
 
 	return true;
 }
-/*-----------------------------------------------------------*/
-void ReajustUV(LPDIRECT3DDEVICE7 device, int id)
-{
+
+static void ReajustUV(int id) {
+	
 	TextureContainer	* tc;
 	CinematicBitmap		*	cb;
 	int					nb;

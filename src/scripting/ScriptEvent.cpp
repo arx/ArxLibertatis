@@ -7,29 +7,43 @@
 
 #include "ScriptEvent.h"
 
+#include <cstdio>
+#include <cassert>
+
+#include "ai/Paths.h"
+
 #include "core/Time.h"
 #include "core/Resource.h"
+#include "core/Core.h"
+
 #include "game/Damage.h"
 #include "game/Equipment.h"
 #include "game/Missile.h"
 #include "game/NPC.h"
+#include "game/Player.h"
+
 #include "gui/Speech.h"
 #include "gui/MiniMap.h"
-#include "ai/Paths.h"
-#include "scene/Scene.h"
-#include "scene/GameSound.h"
-#include "physics/Actors.h"
-#include "physics/CollisionShapes.h"
-#include "physics/Collisions.h"
 #include "gui/Text.h"
 #include "gui/Menu.h"
-#include "io/Logger.h"
-#include "io/IO.h"
-#include "io/PakManager.h"
+
 #include "graphics/GraphicsModes.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/Math.h"
 #include "graphics/data/MeshManipulation.h"
+
+#include "io/Logger.h"
+#include "io/IO.h"
+#include "io/FilePath.h"
+#include "io/PakManager.h"
+
+#include "physics/Actors.h"
+#include "physics/CollisionShapes.h"
+#include "physics/Collisions.h"
+
+#include "scene/Scene.h"
+#include "scene/GameSound.h"
+#include "scene/Interactive.h"
 
 using std::max;
 using std::min;
@@ -51,6 +65,10 @@ extern long ARX_CONVERSATION;
 extern long CHANGE_LEVEL_ICON;
 extern long FRAME_COUNT;
 extern float g_TimeStartCinemascope;
+
+#ifdef NEEDING_DEBUG
+long NEED_DEBUG = 0;
+#endif // NEEDING_DEBUG
 
 SCRIPT_EVENT AS_EVENT[] =
 {
@@ -129,7 +147,7 @@ SCRIPT_EVENT AS_EVENT[] =
 	std::string("ON COLLIDE_FIELD"),
 	std::string("ON CURSORMODE"),
 	std::string("ON EXPLORATIONMODE"),
-	std::string("")
+	std::string("") // TODO is this really needed?
 };
 
 void ARX_SCRIPT_ComputeShortcuts(EERIE_SCRIPT& es)
@@ -199,6 +217,7 @@ void ComputeACSPos(ARX_CINEMATIC_SPEECH * acs, INTERACTIVE_OBJ * io, long ionum)
 	}
 }
 
+/* TODO broken and not really used
 void RemoveNumerics(char * tx)
 {
 	char dest[512];
@@ -217,7 +236,7 @@ void RemoveNumerics(char * tx)
 	}
 
 	tx[pos] = 0;
-}
+}*/
 
 bool IsElement( const char * seek, const char * text)
 {
@@ -266,7 +285,7 @@ bool HasVisibility(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * ioo)
 	if ((aa < ab + 90.f) && (aa > ab - 90.f))
 	{
 		//font
-		ARX_TEXT_Draw(hFontInBook, 300, 320, 0, 0, "VISIBLE", D3DRGB(1.f, 0.f, 0.f));
+		ARX_TEXT_Draw(hFontInBook, 300, 320, "VISIBLE", D3DRGB(1.f, 0.f, 0.f));
 		return true;
 	}
 
@@ -496,13 +515,16 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 			if (msg < MAX_SHORTCUT) {
 				pos = es->shortcut[msg];
 			} else {
-				if (((msg >= SM_MAXCMD))
-						&& (msg != SM_EXECUTELINE) && (evname.empty()))
-				{
+				
+				assert(msg != SM_EXECUTELINE && evname.empty());
+				
+				if(msg >= SM_MAXCMD) {
 					LogDebug << "unknown message " << msg;
 					return ACCEPT;
 				}
-
+				
+				// TODO will never be reached as MAX_SHORTCUT > SM_MAXCMD
+				
 				pos = FindScriptPos(es, AS_EVENT[msg].name);
 			}
 		}
@@ -515,7 +537,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 	
 	
 	LogDebug << "SendScriptEvent msg=" << msg << " ("
-	         << ((msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1) ? AS_EVENT[msg].name : "unknown")
+	         << (((size_t)msg < sizeof(AS_EVENT)/sizeof(*AS_EVENT) - 1) ? AS_EVENT[msg].name : "unknown")
 	         << ")" << " params=\"" << params << "\""
 	         << " evame=\"" << evname << "\" info=" << info;
 	LogDebug << " io=" << Logger::nullstr(io ? io->filename : NULL)
@@ -1065,7 +1087,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 							finishit:
 								;
 
-								for (long i = 0; i < MAX_SPELLS; i++)
+								for (size_t i = 0; i < MAX_SPELLS; i++)
 								{
 									if ((spells[i].exist) && (spells[i].caster == oldd))
 									{
@@ -1130,7 +1152,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						io->angle.b += t2;
 						io->angle.g += t3;
 
-						if (io->nb_lastanimvertex != io->obj->vertexlist.size())
+						if ((size_t)io->nb_lastanimvertex != io->obj->vertexlist.size())
 						{
 							free(io->lastanimvertex);
 							io->lastanimvertex = NULL;
@@ -1923,10 +1945,10 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 							if (player)
 							{
-								speechnum = ARX_SPEECH_AddSpeech(inter.iobj[0], temp1.c_str(), PARAM_LOCALISED, mood, voixoff);
+								speechnum = ARX_SPEECH_AddSpeech(inter.iobj[0], temp1.c_str(), mood, voixoff);
 							}
 							else
-								speechnum = ARX_SPEECH_AddSpeech(io, temp1.c_str(), PARAM_LOCALISED, mood, voixoff);
+								speechnum = ARX_SPEECH_AddSpeech(io, temp1.c_str(), mood, voixoff);
 
 							ttt = GetNextWord(es, pos, temp2);
 							LogDebug <<  temp2;
@@ -2377,7 +2399,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 							if (FORBID_SCRIPT_IO_CREATION == 0)
 							{
-								ioo = AddNPC(GDevice, tmptext.c_str(), IO_IMMEDIATELOAD);
+								ioo = AddNPC(tmptext.c_str(), IO_IMMEDIATELOAD);
 
 								if (ioo)
 								{
@@ -3024,13 +3046,16 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					long ival;
 					float fval;
 					SCRIPT_VAR * sv = NULL;
-					long a = 0;
+					//long a = 0;
 					pos = GetNextWord(es, pos, word, 1);
 					LogDebug <<  "SET "<< word;
 
 					if (word[0] == '-')
 					{
-						if (iCharIn(word, 'A')) a = 1;
+						if (iCharIn(word, 'A')) {
+							LogWarning << "Broken 'set -a' script command used.";
+							//a = 1;
+						}
 
 						pos = GetNextWord(es, pos, word, 1);
 						LogDebug <<  word;
@@ -3043,7 +3068,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						case '$': // GLOBAL TEXT
 							strcpy(tempp, GetVarValueInterpretedAsText(temp2, esss, io).c_str());
 
-							if (a) RemoveNumerics(tempp);
+							//if (a) RemoveNumerics(tempp);
 
 							sv = SETVarValueText(svar, NB_GLOBALS, word, tempp);
 
@@ -3057,7 +3082,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						case '\xA3': // LOCAL TEXT
 							strcpy(tempp, GetVarValueInterpretedAsText(temp2, esss, io).c_str());
 
-							if (a) RemoveNumerics(tempp);
+							//if (a) RemoveNumerics(tempp);
 
 							sv = SETVarValueText(esss->lvar, esss->nblvar, word, tempp);
 
@@ -4273,17 +4298,11 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 					long num = ARX_SOUND_PlaySpeech(temp2.c_str(), io && io->show == 1 ? io : NULL);
 
-#ifdef NEEDING_DEBUG
-
-					if (NEED_DEBUG)
-					{
-						if (num == ARX_SOUND_INVALID_RESOURCE)
-							sprintf(cmd, "PLAYSPEECH %s - UNABLE TO LOAD FILE", temp2);
-						else
-							sprintf(cmd, "PLAYSPEECH %s - Success DanaePlaySample", temp2);
-					}
-
-#endif
+					if (num == ARX_SOUND_INVALID_RESOURCE)
+						sprintf(cmd, "PLAYSPEECH %s - UNABLE TO LOAD FILE", temp2.c_str());
+					else
+						sprintf(cmd, "PLAYSPEECH %s - Success DanaePlaySample", temp2.c_str());
+					
 				}
 				else if (!strcmp(word, "POPUP"))
 				{
@@ -4467,7 +4486,6 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 				if ((word[1] == 'F') && (word.size() == 2))
 				{
-					const unsigned int tvSize = 256 ;
 					std::string temp3;
 					short oper = 0;
 					short failed = 0;
@@ -4535,7 +4553,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						{
 
 							long lv; float fv; std::string tv;	//Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
-							switch ( GetSystemVar( esss, io, word, tv,tvSize, &fv, &lv ) )
+							switch ( GetSystemVar( esss, io, word, tv, &fv, &lv ) )
 							{
 								case TYPE_TEXT:
 									typ1	=	TYPE_TEXT;
@@ -4608,7 +4626,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						{
 
 							long lv; float fv; std::string tv;
-							switch ( GetSystemVar( esss, io, temp3, tv,tvSize, &fv, &lv ) )
+							switch ( GetSystemVar( esss, io, temp3, tv, &fv, &lv ) )
 							{
 								case TYPE_TEXT:
 									typ2	=	TYPE_TEXT;
@@ -5089,7 +5107,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 					long ion;
 					ion = GetInterNum(io);
 
-					if ((io != NULL) && (ion != -1))
+					if ((io != NULL) && (ion != -1)) {
 						if (!strcasecmp(word, "CREATE"))
 						{
 							if (inter.iobj[ion]->inventory != NULL)
@@ -5429,6 +5447,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 								ARX_SOUND_PlayInterface(SND_BACKPACK);
 							}
 						}
+					}
 				}
 
 				break;

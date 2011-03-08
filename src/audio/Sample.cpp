@@ -22,9 +22,12 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
+
+#include "audio/Sample.h"
+
 #include <cstdlib>
 #include <cstring>
-#include "audio/Sample.h"
+
 #include "audio/AudioGlobal.h"
 #include "audio/Stream.h"
 #include "io/Logger.h"
@@ -41,9 +44,9 @@ namespace ATHENA
 	///////////////////////////////////////////////////////////////////////////////
 	Sample::Sample() : ResourceHandle(),
 		name(NULL),
+		length(0),
 		data(NULL),
-		callb_c(0), callb(NULL),
-		length(0)
+		callb_c(0), callb(NULL)
 	{
 	}
 
@@ -74,7 +77,7 @@ namespace ATHENA
 		stream->GetLength(length);
 		DeleteStream(stream);
 
-		aalVoid * ptr = realloc(name, strlen(_name) + 1);
+		void * ptr = realloc(name, strlen(_name) + 1);
 
 		if (!ptr) return AAL_ERROR_MEMORY;
 
@@ -90,9 +93,9 @@ namespace ATHENA
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 
-	aalError Sample::SetCallback(aalSampleCallback func, aalVoid * _data, const aalULong & time, const aalUnit & unit)
+	aalError Sample::SetCallback(aalSampleCallback func, void * _data, const aalULong & time, const aalUnit & unit)
 	{
-		aalVoid * ptr;
+		void * ptr;
 
 		ptr = realloc(callb, sizeof(Callback) * (callb_c + 1));
 

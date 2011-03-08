@@ -61,21 +61,33 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <cassert>
 #include <iomanip>
+#include <sstream>
+#include <cstdio>
 
 #include "ai/Paths.h"
-#include "game/Damage.h"
-#include "game/Equipment.h"
-#include "game/NPC.h"
-#include "scene/Scene.h"
-#include "gui/Speech.h"
+
 #include "core/Time.h"
 #include "core/Localization.h"
 #include "core/Dialog.h"
 #include "core/Resource.h"
-#include "io/IO.h"
-#include "io/Logger.h"
+#include "core/Core.h"
+
+#include "game/Damage.h"
+#include "game/Equipment.h"
+#include "game/NPC.h"
+#include "game/Player.h"
+
+#include "gui/Speech.h"
+
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/Math.h"
+
+#include "io/IO.h"
+#include "io/FilePath.h"
+#include "io/Logger.h"
+
+#include "scene/Scene.h"
+#include "scene/Interactive.h"
 
 #include "scripting/ScriptEvent.h"
 
@@ -103,16 +115,6 @@ long RELOADING = 0;
 long NB_GLOBALS = 0;
 SCR_TIMER * scr_timer = NULL;
 long ActiveTimers = 0;
-
-int strcasecmp( const std::string& str1, const std::string& str2 )
-{
-	return strcasecmp( str1.c_str(), str2.c_str() );
-}
-
-int strcmp( const std::string& str1, const std::string& str2 )
-{
-	return str1.compare( str2 );
-}
 
 //*************************************************************************************
 // FindScriptPos																	//
@@ -588,31 +590,13 @@ void ReleaseScript(EERIE_SCRIPT * es)
 // returns 0 if "seek" is at the start of "text"
 // else returns 1
 //*************************************************************************************
-long specialstrcmp( const std::string& text, const std::string& seek)
-{
-	
-	if ( text.compare( 0, seek.length(), seek ) == 0 )
-		return 0;
-
-	return 1;
-/*
-
-	long len = strlen(seek);
-	long len2 = strlen(text);
-
-	if (len2 < len) return 1;
-
-	for (long i = 0; i < len; i++)
-	{
-		if (text[i] != seek[i]) return 1;
-	}
-
-	return 0;*/
+long specialstrcmp( const std::string& text, const std::string& seek) {
+	return text.compare(0, seek.length(), seek) ? 1 : 0;
 }
 
 //*************************************************************************************
 //*************************************************************************************
-long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _name, std::string& txtcontent,unsigned int txtcontentSize,float * fcontent,long * lcontent)
+long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _name, std::string& txtcontent, float * fcontent,long * lcontent)
 {
 	std::string name = _name;
 	MakeUpcase(name);
@@ -643,7 +627,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 			{
 				txtcontent = "NONE";
 
-				if (io)	MakeTopObjString(io,txtcontent,txtcontentSize);//ARX: xrichter (2010-08-04) - Fix corrupted stack
+				if (io)	MakeTopObjString(io,txtcontent);
 
 				return TYPE_TEXT;
 			}
@@ -1304,7 +1288,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 
 				if (id >= 0)
 				{
-					for (long i = 0; i < MAX_SPELLS; i++)
+					for (size_t i = 0; i < MAX_SPELLS; i++)
 					{
 						if (spells[i].exist)
 						{
@@ -1613,7 +1597,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 
 			if (!specialstrcmp(name, "^PLAYERCASTING"))
 			{
-				for (long i = 0; i < MAX_SPELLS; i++)
+				for (size_t i = 0; i < MAX_SPELLS; i++)
 				{
 					if (spells[i].exist)
 					{
@@ -1645,7 +1629,7 @@ long GetSystemVar(EERIE_SCRIPT * es,INTERACTIVE_OBJ * io, const std::string& _na
 
 				if (id >= 0)
 				{
-					for (long i = 0; i < MAX_SPELLS; i++)
+					for (size_t i = 0; i < MAX_SPELLS; i++)
 					{
 						if (spells[i].exist)
 						{
@@ -1901,12 +1885,11 @@ std::string GetVarValueInterpretedAsText( std::string& temp1, EERIE_SCRIPT * ess
 
 	if (temp1[0] == '^')
 	{
-		const unsigned int tvSize = 64 ;
 		long lv;
 		float fv;
 		std::string tv;
 
-		switch (GetSystemVar(esss,io,temp1,tv,tvSize,&fv,&lv))//Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
+		switch (GetSystemVar(esss,io,temp1,tv,&fv,&lv))//Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
 		{
 			case TYPE_TEXT:
 				strcpy(var_text, tv.c_str());
@@ -1971,12 +1954,11 @@ float GetVarValueInterpretedAsFloat( std::string& temp1, EERIE_SCRIPT * esss, IN
 {
 	if (temp1[0] == '^')
 	{
-		const unsigned int tvSize = 64 ;
 		long lv;
 		float fv;
 		std::string tv; 
 
-		switch (GetSystemVar(esss,io,temp1,tv,tvSize,&fv,&lv)) //Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
+		switch (GetSystemVar(esss,io,temp1,tv,&fv,&lv)) //Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
 		{
 			case TYPE_TEXT:
 				return (float)atof(tv.c_str());
@@ -2583,12 +2565,11 @@ long GetNextWord_Interpreted( INTERACTIVE_OBJ * io, EERIE_SCRIPT * es, long i, s
 	long pos=GetNextWord(es,i,temp);
 	std::stringstream ss;
 	if	(temp[0]=='^') {
-		const unsigned int tvSize = 64 ;
 		long lv;
 		float fv;
 		std::string tv;
 
-		switch (GetSystemVar(es,io,temp,tv,tvSize,&fv,&lv)) //Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
+		switch (GetSystemVar(es,io,temp,tv,&fv,&lv)) //Arx: xrichter (2010-08-04) - fix a crash when $OBJONTOP return to many object name inside tv
 		{
 			case TYPE_TEXT:
 				temp = tv;
@@ -2992,7 +2973,7 @@ void CheckHit(INTERACTIVE_OBJ * io, float ratioaim)
 
 									if (mindist <= dist_limit)
 									{
-										ARX_EQUIPMENT_ComputeDamages(io, NULL, ioo, ratioaim);
+										ARX_EQUIPMENT_ComputeDamages(io, ioo, ratioaim);
 									}
 
 								}
@@ -3031,8 +3012,9 @@ void MakeStandard( std::string& str)
 //*************************************************************************************
 //*************************************************************************************
 
-long MakeLocalised( const std::string& text, std::string& output, long lastspeechflag)
-{
+// TODO why is this in Script?
+long MakeLocalised( const std::string& text, std::string& output) {
+	
 	if ( text.empty() )
 	{
 		output = "ERROR";
@@ -5507,7 +5489,7 @@ INTERACTIVE_OBJ * ARX_SCRIPT_Get_IO_Max_Events_Sent()
 
 	return NULL;
 }
-long NEED_DEBUG = 0;
+
 long BIG_DEBUG_POS = 0;
 
 void ManageCasseDArme(INTERACTIVE_OBJ * io)
@@ -5704,8 +5686,10 @@ void InitScript(EERIE_SCRIPT * es)
 	ARX_SCRIPT_ComputeShortcuts(*es);
 }
 
-LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
+LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HWND thWnd;
 
 	switch (message)
@@ -5737,8 +5721,11 @@ LRESULT CALLBACK ShowTextDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 
 	return false;
 }
-LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
+
+LRESULT CALLBACK ShowVarsDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+	
+	(void)lParam;
+	
 	HWND thWnd;
 
 	switch (message)

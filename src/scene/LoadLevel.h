@@ -90,7 +90,7 @@ typedef struct
 
 extern EERIE_3D loddpos;
 long DanaeSaveLevel( const std::string& fic);
-long DanaeLoadLevel(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& file);
+long DanaeLoadLevel(const std::string& file);
 void DanaeClearLevel(long flags = 0);
 void DanaeClearAll();
 void RestoreLastLoadedLightning();

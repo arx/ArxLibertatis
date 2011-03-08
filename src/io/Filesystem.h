@@ -55,5 +55,6 @@ long FileSeek(FileHandle handle, int offset, long mode);
 long FileTell(FileHandle handle);
 bool FileDelete(const std::string & file);
 bool FileMove(const std::string & oldname, const std::string & newname);
+bool CreateFullPath(const std::string & path);
 
 #endif // ARX_HERMES_FILESYSTEM_H

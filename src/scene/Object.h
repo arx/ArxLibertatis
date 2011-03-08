@@ -108,7 +108,7 @@ long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const char * selname);
  
 void GlobalInitLight();
 void MoveAllLights(EERIE_3D * trans);
-void ReCreateUVs(EERIE_3DOBJ * eerie, long flag = 0);
+void ReCreateUVs(EERIE_3DOBJ * eerie);
 long GetGroupOriginByName(EERIE_3DOBJ * eobj, const char * text);
 long GetActionPointIdx(EERIE_3DOBJ * eobj, const char * text);
 long GetActionPointGroup(EERIE_3DOBJ * eobj, long idx);
@@ -119,9 +119,9 @@ void ZRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s);
 EERIE_3DOBJ * TheoToEerie(unsigned char * adr,long size, const char * texpath, const char * fic,long flag,LPDIRECT3DDEVICE7 pd3dDevice=NULL,long flag2=0);
 void _THEObjLoad(EERIE_3DOBJ *eerie,unsigned char * adr,long * poss,long version,long flag=0,long flag2=0);
 EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * fic,long flag,LPDIRECT3DDEVICE7 pd3dDevice=NULL);
-EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size,const char * fic,long flags);
+EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size,const char * fic);
 
-EERIE_3DSCENE * ScnToEerie(unsigned char * adr,  long		  size, const std::string& fic,	long flags = 0);
+EERIE_3DSCENE * ScnToEerie(unsigned char * adr, size_t size, const std::string& fic);
 
 void Clear3DScene(EERIE_3DSCENE	* eerie);
 void DrawEERIEObj(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, float Xrot, float Yrot, float Zrot, int Xoffs, int Yoffs, float Zoffs, IDirectDrawSurface7 * envir);

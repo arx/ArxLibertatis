@@ -22,22 +22,34 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef ARX_CEDRIC_H
-#define ARX_CEDRIC_H
-#include "core/Core.h"
 
+#ifndef ARX_ANIMATION_ANIMATIONRENDER_H
+#define ARX_ANIMATION_ANIMATIONRENDER_H
 
-#define		CEDRIC				1
-#define		REFERENCE_FPS		(20.0f)
-#define 	ANIMQUATTYPE_FIRST_PERSON	2
-#define 	ANIMQUATTYPE_NO_RENDER		4
-#define 	MIPMESH_START 				380.f
-#define 	MIPMESH_DIV	  				( 1.0f / 190 )
+#include "graphics/d3dwrapper.h"
+
+struct EERIE_3DOBJ;
+struct EERIE_3D;
+struct ANIM_USE;
+struct INTERACTIVE_OBJ;
+struct EERIE_VERTEX;
+struct EERIE_FACE;
+struct EERIE_RGB;
+class TextureContainer;
+
+#define CEDRIC 1
+#define REFERENCE_FPS (20.0f)
+#define ANIMQUATTYPE_FIRST_PERSON 2
+#define ANIMQUATTYPE_NO_RENDER 4
+#define MIPMESH_START 380.f
+#define MIPMESH_DIV (1.0f / 190)
 
 #if CEDRIC
-extern	void	Cedric_AnimateDrawEntity(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
-        ANIM_USE * animuse, EERIE_3D * angle, EERIE_3D * pos,
-        INTERACTIVE_OBJ * io, D3DCOLOR col, long typ);
 
-#endif
-#endif
+void Cedric_AnimateDrawEntity(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, ANIM_USE * animuse, EERIE_3D * angle, EERIE_3D * pos, INTERACTIVE_OBJ * io, long typ);
+
+int ARX_SoftClippZ(EERIE_VERTEX * _pVertex1, EERIE_VERTEX * _pVertex2, EERIE_VERTEX * _pVertex3, D3DTLVERTEX ** _ptV, EERIE_FACE * _pFace, float _fInvibility, TextureContainer * _pTex, bool _bBump, bool _bZMapp, EERIE_3DOBJ * _pObj, int _iNumFace, long * _pInd, INTERACTIVE_OBJ * _pioInteractive, bool _bNPC, long _lSpecialColorFlag, EERIE_RGB * _pRGB);
+
+#endif // CEDRIC
+
+#endif // ARX_ANIMATION_ANIMATIONRENDER_H

@@ -56,19 +56,21 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include <stdio.h>
-
 #include "graphics/effects/DrawEffects.h"
-#include "scene/Interactive.h"
-#include "graphics/particle/ParticleEffects.h"
-#include "game/Spells.h"
+
 #include "core/Time.h"
+#include "core/Application.h"
+#include "core/Core.h"
+
+#include "game/Spells.h"
 #include "gui/MenuWidgets.h"
 
 #include "graphics/Draw.h"
-#include "scene/Light.h"
 #include "graphics/data/Mesh.h"
-#include "core/Application.h"
+#include "graphics/particle/ParticleEffects.h"
+
+#include "scene/Light.h"
+#include "scene/Interactive.h"
 
 // Some external defs needing to be cleaned...
 extern long DANAESIZX;
@@ -86,7 +88,6 @@ POLYBOOM polyboom[MAX_POLYBOOM];
 
 extern unsigned long ulBKGColor;
 extern CMenuConfig *pMenuConfig;
-extern bool bSoftRender;
 
 void EE_RT2(D3DTLVERTEX*,D3DTLVERTEX*);
 
@@ -100,17 +101,9 @@ bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX*,D3DTLVERTEX*,D3DTLVERTEX*,float _
 //***********************************************************************************************
 void ARXDRAW_DrawInterShadows(LPDIRECT3DDEVICE7 pd3dDevice)
 {	
-	bool bNoVB						=	false;
-	if( bSoftRender )
-	{
-		bNoVB						=	GET_FORCE_NO_VB();
-		SET_FORCE_NO_VB( true );
-	}
-
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,0);
 	SetZBias(pd3dDevice,1);
 
-	long k;
 	long first=1;
 	
 	for (long i=0;i<TREATZONE_CUR;i++) 
@@ -160,7 +153,7 @@ void ARXDRAW_DrawInterShadows(LPDIRECT3DDEVICE7 pd3dDevice)
 
 				if (io->obj->nbgroups<=1)
 				{
-					for (k=0;k<io->obj->vertexlist.size();k+=9)
+					for (size_t k=0;k<io->obj->vertexlist.size();k+=9)
 					{
 						ep=EECheckInPoly(&io->obj->vertexlist3[k].v);
 
@@ -213,7 +206,7 @@ void ARXDRAW_DrawInterShadows(LPDIRECT3DDEVICE7 pd3dDevice)
 				}
 				else 
 				{
-					for (k=0;k<io->obj->nbgroups;k++)
+					for (long k=0;k<io->obj->nbgroups;k++)
 					{
 						long origin=io->obj->grouplist[k].origin;
 						ep=EECheckInPoly(	&io->obj->vertexlist3[origin].v );
@@ -271,8 +264,6 @@ void ARXDRAW_DrawInterShadows(LPDIRECT3DDEVICE7 pd3dDevice)
 	SETZWRITE(pd3dDevice, true );
 	SetZBias(pd3dDevice,0);
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
-	
-	if( bSoftRender ) SET_FORCE_NO_VB( bNoVB );
 }
 
 //***********************************************************************************************
@@ -361,13 +352,7 @@ void ARXDRAW_DrawAllLights(LPDIRECT3DDEVICE7 pd3dDevice,long x0,long z0,long x1,
 }
 extern INTERACTIVE_OBJ * CAMERACONTROLLER;
 extern long ARX_CONVERSATION;
-//*************************************************************************************
-//*************************************************************************************
-void ARXDRAW_DrawExternalView(LPDIRECT3DDEVICE7 pd3dDevice)
-{
-}
-//*************************************************************************************
-//*************************************************************************************
+
 void ARXDRAW_DrawEyeBall(LPDIRECT3DDEVICE7 pd3dDevice)
 {
 	EERIE_3D angle;
@@ -747,7 +732,7 @@ void ARXDRAW_DrawAllInterTransPolyPos(LPDIRECT3DDEVICE7 pd3dDevice)
 			InterTransPol[i][2].color=InterTransPol[i][1].color=InterTransPol[i][0].color=_EERIERGB(ttt);
 		}
 
-		EERIEDRAWPRIM(pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , InterTransPol[i], 3,  0, EERIE_NOCOUNT | (bSoftRender?EERIE_USEVB:0) );
+		EERIEDRAWPRIM(pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , InterTransPol[i], 3,  0, EERIE_NOCOUNT );
 	}
 
 	INTERTRANSPOLYSPOS=0;
@@ -755,9 +740,8 @@ void ARXDRAW_DrawAllInterTransPolyPos(LPDIRECT3DDEVICE7 pd3dDevice)
 
 extern TextureContainer * enviro;
 
-void ARXDRAW_DrawAllTransPolysPos( LPDIRECT3DDEVICE7 pd3dDevice, long MODIF )
-{
-	int flg_NOCOUNT_USEVB = EERIE_NOCOUNT | (bSoftRender?EERIE_USEVB:0);
+void ARXDRAW_DrawAllTransPolysPos(LPDIRECT3DDEVICE7 pd3dDevice) {
+	
 	SetZBias( pd3dDevice, 1 );
 
 	SETALPHABLEND( pd3dDevice, true );
@@ -809,7 +793,7 @@ void ARXDRAW_DrawAllTransPolysPos( LPDIRECT3DDEVICE7 pd3dDevice, long MODIF )
 				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = _EERIERGB( ttt );
 			}
 
-			EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE , ep->tv, to,  0, bSoftRender?EERIE_USEVB:0  );
+			EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE , ep->tv, to,  0, 0  );
 
 				if (ep->type & POLY_LAVA)
 				{
@@ -832,14 +816,14 @@ void ARXDRAW_DrawAllTransPolysPos( LPDIRECT3DDEVICE7 pd3dDevice, long MODIF )
 						verts[j].tv		= ep->v[j].sz * ( 1.0f / 1000 ) + EEcos( (ep->v[j].sz) * ( 1.0f / 200 ) + (float) FrameTime * ( 1.0f / 2000 ) ) * ( 1.0f / 20 );
 					}	
 
-					EERIEDRAWPRIM(pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
+					EERIEDRAWPRIM(pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, to, 0, EERIE_NOCOUNT );
 
 					for ( i = 0 ; i < to ; i++ )
 					{
 						verts[i].tu = ep->v[i].sx * ( 1.0f / 1000 ) + EEsin( ( ep->v[i].sx ) * ( 1.0f / 100 ) + (float)FrameTime * ( 1.0f / 2000 ) ) * ( 1.0f / 10 );
 						verts[i].tv = ep->v[i].sz * ( 1.0f / 1000 ) + EEcos( ( ep->v[i].sz ) * ( 1.0f / 100 ) + (float)FrameTime * ( 1.0f / 2000 ) ) * ( 1.0f / 10 );
 					}	
-					EERIEDRAWPRIM(pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
+					EERIEDRAWPRIM(pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, to, 0, EERIE_NOCOUNT );
 					
 					for ( i = 0 ; i < to ; i++ )
 					{
@@ -850,7 +834,7 @@ void ARXDRAW_DrawAllTransPolysPos( LPDIRECT3DDEVICE7 pd3dDevice, long MODIF )
 
 					pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
 					pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );
-					EERIEDRAWPRIM(pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
+					EERIEDRAWPRIM(pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, to, 0, EERIE_NOCOUNT );
 				}
 			}
 
@@ -881,7 +865,7 @@ void ARXDRAW_DrawAllTransPolysPos( LPDIRECT3DDEVICE7 pd3dDevice, long MODIF )
 					if ( ep->type & POLY_FALL ) verts[j].tv += (float)FrameTime * ( 1.0f / 4000 );
 				}
 
-				EERIEDRAWPRIM(pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
+				EERIEDRAWPRIM(pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, to, 0, EERIE_NOCOUNT );
 
 				for ( i = 0 ; i < to ; i++ )
 				{
@@ -891,7 +875,7 @@ void ARXDRAW_DrawAllTransPolysPos( LPDIRECT3DDEVICE7 pd3dDevice, long MODIF )
 					if ( ep->type & POLY_FALL ) verts[i].tv += (float)FrameTime * ( 1.0f / 4000 );
 				}
 
-				EERIEDRAWPRIM(pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
+				EERIEDRAWPRIM(pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, to, 0, EERIE_NOCOUNT );
 
 				for ( i = 0 ; i < to ; i++ )
 				{
@@ -900,7 +884,7 @@ void ARXDRAW_DrawAllTransPolysPos( LPDIRECT3DDEVICE7 pd3dDevice, long MODIF )
 
 					if ( ep->type & POLY_FALL ) verts[i].tv += (float)FrameTime * ( 1.0f / 4000 );
 				}	
-				EERIEDRAWPRIM(pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
+				EERIEDRAWPRIM(pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, to, 0, EERIE_NOCOUNT );
 		}
 	}
 

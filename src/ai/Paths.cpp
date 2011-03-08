@@ -58,26 +58,35 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ai/Paths.h"
 
 #include <cstdio>
+#include <cassert>
 
-#include "graphics/GraphicsModes.h"
-#include "scene/GameSound.h"
-#include "physics/Collisions.h"
+#include "animation/Animation.h"
+
+#include "core/Dialog.h"
 #include "core/Time.h"
+#include "core/Core.h"
+
 #include "game/NPC.h"
-#include "graphics/effects/SpellEffects.h"
-#include "scene/Interactive.h"
 #include "game/Player.h"
-#include "scripting/Script.h"
-#include "graphics/particle/ParticleEffects.h"
 #include "game/Damage.h"
 #include "game/Equipment.h"
-#include "core/Dialog.h"
 
-#include "scene/Light.h"
+#include "graphics/GraphicsModes.h"
 #include "graphics/Draw.h"
-#include "physics/Box.h"
+#include "graphics/effects/SpellEffects.h"
+#include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
+#include "io/FilePath.h"
+
+#include "physics/Box.h"
+#include "physics/Collisions.h"
+
+#include "scene/GameSound.h"
+#include "scene/Interactive.h"
+#include "scene/Light.h"
+
+#include "scripting/Script.h"
 
 using std::min;
 using std::max;
@@ -549,7 +558,7 @@ void ARX_PATHS_ChangeName(ARX_PATH * ap, char * newname)
 {
 	if (ap == NULL) return;
 
-	InterTreeViewItemRemove(NULL, ap->name, IOTVTYPE_PATH);
+	InterTreeViewItemRemove(NULL, ap->name);
 	strcpy(ap->name, newname);
 	InterTreeViewItemAdd(NULL, ap->name, IOTVTYPE_PATH);
 }
@@ -579,7 +588,7 @@ void ARX_PATH_ReleaseAllPath()
 	{
 		if (ARXpaths[i])
 		{
-			InterTreeViewItemRemove(NULL, ARXpaths[i]->name, IOTVTYPE_PATH);
+			InterTreeViewItemRemove(NULL, ARXpaths[i]->name);
 
 			if (ARXpaths[i]->pathways) free(ARXpaths[i]->pathways);
 
@@ -616,7 +625,7 @@ void ARX_PATHS_Delete(ARX_PATH * ap)
 
 	if (ap == NULL) return;
 
-	InterTreeViewItemRemove(NULL, ap->name, IOTVTYPE_PATH);
+	InterTreeViewItemRemove(NULL, ap->name);
 
 	for (long i = 0; i < nbARXpaths; i++)
 	{
@@ -1504,7 +1513,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 			MatrixFromQuat(&mat, &Thrown[i].quat);
 			long ccount = FRAME_COUNT;
 			FRAME_COUNT = 0;
-			DrawEERIEInterMatrix(GDevice, Thrown[i].obj, &mat, &Thrown[i].position, NULL, NULL);
+			DrawEERIEInterMatrix(GDevice, Thrown[i].obj, &mat, &Thrown[i].position, NULL);
 
 			if ((Thrown[i].flags & ATO_FIERY)
 			        &&	(Thrown[i].flags & ATO_MOVING)
@@ -1540,18 +1549,16 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 					{
 						EERIE_3D	pos;
 						long		notok	=	10;
-						long		num		=	0;
+						size_t num = 0;
 
 						while (notok-- > 0)
 						{
 							num = (rnd() *(float)Thrown[i].obj->facelist.size());
+							assert(num < Thrown[i].obj->facelist.size());
 
-							if ((num >= 0) && (num < Thrown[i].obj->facelist.size()))
-							{
-								if (Thrown[i].obj->facelist[num].facetype & POLY_HIDE) continue;
+							if (Thrown[i].obj->facelist[num].facetype & POLY_HIDE) continue;
 
-								notok = -1;
-							}
+							notok = -1;
 						}
 
 						if (notok < 0)
@@ -1597,11 +1604,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 			if (Thrown[i].pRuban)
 			{
 
-
-				ARX_CHECK_ULONG(FrameDiff);
-
-				Thrown[i].pRuban->Update(ARX_CLEAN_WARN_CAST_ULONG(FrameDiff));
-
+				Thrown[i].pRuban->Update();
 
 				Thrown[i].pRuban->Render(GDevice);
 			}
@@ -1768,10 +1771,10 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 													if (target->ioflags & IO_NPC)
 													{
 														target->_npcdata->SPLAT_TOT_NB = 0;
-														ARX_PARTICLES_Spawn_Blood2(&original_pos, damages, color, hitpoint, target);
+														ARX_PARTICLES_Spawn_Blood2(&original_pos, damages, color, target);
 													}
 
-													ARX_PARTICLES_Spawn_Blood2(&pos, damages, color, hitpoint, target);
+													ARX_PARTICLES_Spawn_Blood2(&pos, damages, color, target);
 													ARX_DAMAGES_DamageNPC(target, damages, Thrown[i].source, 0, &pos);
 
 													if (rnd() * 100.f > target->_npcdata->resist_poison)
@@ -1881,7 +1884,7 @@ int CRuban::GetFreeRuban()
 }
 
 //-----------------------------------------------------------------------------
-void CRuban::AddRuban(int * f, int id, int dec)
+void CRuban::AddRuban(int * f, int dec)
 {
 	int	num;
 
@@ -1933,8 +1936,8 @@ void CRuban::AddRuban(int * f, int id, int dec)
 }
 
 //-----------------------------------------------------------------------------
-void CRuban::Update(unsigned long _ulTime)
-{
+void CRuban::Update() {
+	
 	int	nb, num;
 
 	if (ARXPausedTimer) return;
@@ -1944,13 +1947,13 @@ void CRuban::Update(unsigned long _ulTime)
 
 	while (nb--)
 	{
-		AddRuban(&trubandef[num].first, trubandef[num].origin, trubandef[num].dec);
+		AddRuban(&trubandef[num].first, trubandef[num].dec);
 		num++;
 	}
 }
 
 //-----------------------------------------------------------------------------
-void CRuban::DrawRuban(LPDIRECT3DDEVICE7 device, int num, float size, int dec, float r, float g, float b, float r2, float g2, float b2)
+void CRuban::DrawRuban(int num, float size, int dec, float r, float g, float b, float r2, float g2, float b2)
 {
 	int numsuiv;
 
@@ -1971,7 +1974,7 @@ void CRuban::DrawRuban(LPDIRECT3DDEVICE7 device, int num, float size, int dec, f
 
 		if ((num >= 0) && (numsuiv >= 0))
 		{
-			Draw3DLineTex2(device, truban[num].pos, truban[numsuiv].pos, size, RGBA_MAKE(r1 >> 16, g1 >> 16, b1 >> 16, 0), RGBA_MAKE((r1 + dr) >> 16, (g1 + dg) >> 16, (b1 + db) >> 16, 0));
+			Draw3DLineTex2(truban[num].pos, truban[numsuiv].pos, size, RGBA_MAKE(r1 >> 16, g1 >> 16, b1 >> 16, 0), RGBA_MAKE((r1 + dr) >> 16, (g1 + dg) >> 16, (b1 + db) >> 16, 0));
 			r1 += dr;
 			g1 += dg;
 			b1 += db;
@@ -1998,7 +2001,7 @@ float CRuban::Render(LPDIRECT3DDEVICE7 device)
 
 	for (int i = 0; i < nbrubandef; i++)
 	{
-		this->DrawRuban(device, trubandef[i].first,
+		this->DrawRuban(trubandef[i].first,
 		                trubandef[i].size,
 		                trubandef[i].dec,
 		                trubandef[i].r, trubandef[i].g, trubandef[i].b,
@@ -2017,7 +2020,6 @@ extern bool IsValidPos3(EERIE_3D * pos);
 extern long PHYS_COLLIDER;
 extern EERIEPOLY * LAST_COLLISION_POLY;
 extern long CUR_COLLISION_MATERIAL;
-extern bool IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long source, long * validd);
 extern bool IsObjectVertexInValidPosition(EERIE_3DOBJ * obj, long kk, long flags, long source);
  
 extern float VELOCITY_THRESHOLD;
@@ -2188,7 +2190,7 @@ void RK4Integrate(EERIE_3DOBJ * obj, float DeltaTime)
 }
 bool IsPointInField(EERIE_3D * pos)
 {
-	for (long i = 0; i < MAX_SPELLS; i++)
+	for (size_t i = 0; i < MAX_SPELLS; i++)
 	{
 		if ((spells[i].exist)
 		        &&	(spells[i].type == SPELL_CREATE_FIELD))
@@ -2210,9 +2212,10 @@ bool IsPointInField(EERIE_3D * pos)
 
 	return false;
 }
-bool IsObjectInField(EERIE_3DOBJ * obj, long source)
-{
-	for (long i = 0; i < MAX_SPELLS; i++)
+
+static bool IsObjectInField(EERIE_3DOBJ * obj) {
+	
+	for (size_t i = 0; i < MAX_SPELLS; i++)
 	{
 		if ((spells[i].exist)
 		        &&	(spells[i].type == SPELL_CREATE_FIELD))
@@ -2266,7 +2269,7 @@ bool _IsObjectVertexCollidingPoly(EERIE_3DOBJ * obj, EERIEPOLY * ep, long k, lon
 	return false;
 }
 
-bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long source, long * validd)
+static bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj)
 {
 	bool ret = true;
 	long px, pz;
@@ -2399,8 +2402,8 @@ bool _IsFULLObjectVertexInValidPosition(EERIE_3DOBJ * obj, long flags, long sour
 	return ret;
 }
 
-bool ARX_EERIE_PHYSICS_BOX_Compute_Simple(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source)
-{
+bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, long source) {
+	
 	PHYSVERT * pv;
 	long validd[32];
 	EERIE_3D oldpos[32];
@@ -2456,10 +2459,10 @@ bool ARX_EERIE_PHYSICS_BOX_Compute_Simple(EERIE_3DOBJ * obj, float framediff, fl
 		}
 	}
 
-	if ((!_IsFULLObjectVertexInValidPosition(obj, flags, source, validd))
+	if ((!_IsFULLObjectVertexInValidPosition(obj))
 	    ||	ARX_INTERACTIVE_CheckFULLCollision(obj, source)
 	    || colidd
-	    || (IsObjectInField(obj, source))
+	    || (IsObjectInField(obj))
 	)
 	{
 		colidd = 1;
@@ -2531,16 +2534,8 @@ bool ARX_EERIE_PHYSICS_BOX_Compute_Simple(EERIE_3DOBJ * obj, float framediff, fl
 	return true;//ret;
 }
 
-bool ARX_EERIE_PHYSICS_BOX_Compute(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source)
-{
+long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long source) {
 	
-	return ARX_EERIE_PHYSICS_BOX_Compute_Simple(obj, framediff, rubber, flags, source);
-}
-
-extern void EERIE_PHYSICS_BOX_ComputeForces(EERIE_3DOBJ * obj);
-
-long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber, long flags, long source)
-{
 	VELOCITY_THRESHOLD = 400.f; 
 	long ret = 0;
 
@@ -2577,7 +2572,7 @@ long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber
 
 			ComputeForces(obj->pbox->vert, obj->pbox->nb_physvert);
 
-			if (!ARX_EERIE_PHYSICS_BOX_Compute(obj, std::min(0.11f, timing * 10), rubber, flags, source))
+			if (!ARX_EERIE_PHYSICS_BOX_Compute(obj, std::min(0.11f, timing * 10), source))
 				ret = 1;
 
 			timing -= t_threshold; 
@@ -2599,101 +2594,6 @@ long ARX_PHYSICS_BOX_ApplyModel(EERIE_3DOBJ * obj, float framediff, float rubber
 	}
 
 	return ret;
-}
-
-
-
-extern float my_CheckInPoly(float x, float y, float z, EERIEPOLY * mon_ep, EERIE_LIGHT * light);
-extern float GLOBAL_LIGHT_FACTOR;
-void ARX_EERIE_LIGHT_Make(EERIEPOLY * ep, float * epr, float * epg, float * epb, EERIE_LIGHT * light, EERIEPOLY * father)
-{
-	int		i;				// iterator
-	int		nbvert;			// number or vertices per face (3 or 4)
-	float	distance[4];	// distance from light to each vertex
-	float	fRes;			// value of light intensity for a given vertex
-	EERIE_3D vLight;		// vector (light to vertex)
-	EERIE_3D vNorm;			// vector (interpolated normal of vertex)
-
-	if (ep->type & POLY_IGNORE)
-		return;
-
-	(ep->type & POLY_QUAD) ? nbvert = 4 : nbvert = 3;
-
-	// compute light - vertex distance
-	for (i = 0; i < nbvert; i++)
-	{
-		distance[i] = TRUEEEDistance3D(&light->pos, (EERIE_3D *)&ep->v[i]);
-	}
-
-	for (i = 0; i < nbvert; i++)
-	{
-		fRes = 1.0f;
-
-		if (distance[i] < light->fallend)
-		{
-			//---------------------- start MODE_NORMALS
-			if (ModeLight & MODE_NORMALS)
-			{
-				vLight.x = light->pos.x - ep->v[i].sx;
-				vLight.y = light->pos.y - ep->v[i].sy;
-				vLight.z = light->pos.z - ep->v[i].sz;
-				TRUEVector_Normalize(&vLight);
-				vNorm.x = ep->nrml[i].x;
-				vNorm.y = ep->nrml[i].y;
-				vNorm.z = ep->nrml[i].z;
-
-				fRes = Vector_DotProduct(&vLight, &vNorm);
-
-				if (fRes < 0.0f)
-				{
-					fRes = 0.0f;
-				}
-			}
-
-			//---------------------- end MODE_NORMALS
-
-			//---------------------- start MODE_RAYLAUNCH
-			if ((ModeLight & MODE_RAYLAUNCH) && !(light->extras & EXTRAS_NOCASTED))
-			{
-				EERIE_3D orgn, dest, hit;
-				orgn.x = light->pos.x;
-				orgn.y = light->pos.y;
-				orgn.z = light->pos.z;
-				dest.x = ep->v[i].sx;
-				dest.y = ep->v[i].sy;
-				dest.z = ep->v[i].sz;
-
-				if (ModeLight & MODE_SMOOTH)
-					fRes *= my_CheckInPoly(ep->v[i].sx, ep->v[i].sy, ep->v[i].sz, ep, light);
-				else
-					fRes *= Visible(&orgn, &dest, ep, &hit);
-			}
-
-			//---------------------- fin MODE_RAYLAUNCH
-
-			float fTemp1 = light->intensity * fRes * GLOBAL_LIGHT_FACTOR;
-			float fr, fg, fb;
-
-			if (distance[i] <= light->fallstart)
-			{
-				fr = light->rgb.r * fTemp1;
-				fg = light->rgb.g * fTemp1;
-				fb = light->rgb.b * fTemp1;
-			}
-			else
-			{
-				float intensity = (light->falldiff - (distance[i] - light->fallstart)) * light->falldiffmul;
-				float fTemp2 = fTemp1 * intensity;
-				fr = light->rgb.r * fTemp2;
-				fg = light->rgb.g * fTemp2;
-				fb = light->rgb.b * fTemp2;
-			}
-
-			epr[i] += fr; 
-			epg[i] += fg; 
-			epb[i] += fb; 
-		}
-	}
 }
 
 void ARX_PrepareBackgroundNRMLs()

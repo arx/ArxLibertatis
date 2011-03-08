@@ -55,20 +55,26 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <stdio.h>
 
 #include "core/Application.h"
+
+#include <cstdio>
+
+#include "core/Time.h"
+#include "core/Resource.h"
+
+#include "game/Player.h"
+
+#include "gui/Menu.h"
+#include "gui/Interface.h"
+#include "gui/MenuWidgets.h"
+
+#include "graphics/Frame.h"
+#include "graphics/GraphicsEnum.h"
 #include "graphics/data/Mesh.h"
 #include "graphics/GraphicsUtility.h"
 
-#include "gui/Menu.h"
-#include "game/Player.h"
-#include "gui/Interface.h"
-#include "core/Time.h"
-#include "gui/MenuWidgets.h"
-#include "core/Resource.h"
-
-#include "io/IO.h"
+#include "io/FilePath.h"
 #include "io/Registry.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
@@ -169,8 +175,8 @@ extern long FINAL_COMMERCIAL_GAME;
 //*************************************************************************************
 // Create()
 //*************************************************************************************
-HRESULT CD3DApplication::Create(HINSTANCE hInst, const std::string& strCmdLine)
-{
+HRESULT CD3DApplication::Create(HINSTANCE hInst) {
+	
 	HRESULT hr;
 	long menu;
 	DWORD flags;
@@ -311,7 +317,7 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst, const std::string& strCmdLine)
 
 	if (ToolBar != NULL)
 	{
-		ToolBar->hWnd = CreateToolBar(m_hWnd, ToolBar->CreationToolBar, hInst);
+		ToolBar->hWnd = CreateToolBar(m_hWnd, hInst);
 	}
 
 	this->m_pFramework->ShowFrame();
@@ -321,8 +327,8 @@ HRESULT CD3DApplication::Create(HINSTANCE hInst, const std::string& strCmdLine)
 
 //*************************************************************************************
 //*************************************************************************************
-HWND CD3DApplication::CreateToolBar(HWND hWndParent, long tbb, HINSTANCE hInst)
-{
+HWND CD3DApplication::CreateToolBar(HWND hWndParent, HINSTANCE hInst) {
+	
 	HWND hWndToolbar;
 	long flags;
 
@@ -1002,7 +1008,7 @@ HRESULT CD3DApplication::Render3DEnvironment()
 	// Get the relative time, in seconds
 	if (m_bFrameMoving || m_bSingleStep)
 	{
-		if (FAILED(hr = FrameMove(0.f)))
+		if (FAILED(hr = FrameMove()))
 			return hr;
 
 		m_bSingleStep = false;
@@ -1096,8 +1102,10 @@ VOID CD3DApplication::Pause(bool bPause)
 // save any data for open network connections, files, etc.., and prepare
 // to go into a suspended mode.
 //*************************************************************************************
-LRESULT CD3DApplication::OnQuerySuspend(DWORD dwFlags)
-{
+LRESULT CD3DApplication::OnQuerySuspend(DWORD dwFlags) {
+	
+	(void)dwFlags;
+	
 	Pause(true);
 	return true;
 }
@@ -1109,8 +1117,10 @@ LRESULT CD3DApplication::OnQuerySuspend(DWORD dwFlags)
 // the app should recover any data, network connections, files, etc..,
 // and resume running from when the app was suspended.
 //*************************************************************************************
-LRESULT CD3DApplication::OnResumeSuspend(DWORD dwData)
-{
+LRESULT CD3DApplication::OnResumeSuspend(DWORD dwData) {
+	
+	(void)dwData;
+	
 	Pause(false);
 	return true;
 }
@@ -1169,31 +1179,9 @@ HRESULT CD3DApplication::SetClipping(float x1, float y1, float x2, float y2)
 //*************************************************************************************
 VOID CD3DApplication::OutputText(DWORD x, DWORD y, const std::string& str)
 {
-	HDC hDC;
-
-	// Get a DC for the surface. Then, write out the buffer
 	if (m_pddsRenderTarget)
 	{
-		if (SUCCEEDED(m_pddsRenderTarget->GetDC(&hDC)))
-		{
-			SetTextColor(hDC, RGB(255, 255, 0));
-			SetBkMode(hDC, TRANSPARENT);
-			ExtTextOut(hDC, x, y, 0, NULL, str.c_str(), str.length(), NULL);
-			m_pddsRenderTarget->ReleaseDC(hDC);
-		}
-	}
-
-	// Do the same for the left surface (in case of stereoscopic viewing).
-	if (m_pddsRenderTargetLeft)
-	{
-		if (SUCCEEDED(m_pddsRenderTargetLeft->GetDC(&hDC)))
-		{
-			// Use a different color to help distinguish left eye view
-			SetTextColor(hDC, RGB(255, 0, 255));
-			SetBkMode(hDC, TRANSPARENT);
-			ExtTextOut(hDC, x, y, 0, NULL, str.c_str(), str.length(), NULL);
-			m_pddsRenderTargetLeft->ReleaseDC(hDC);
-		}
+		hFontInGame->Draw(x, y, str, RGB(255, 255, 0));
 	}
 }
 

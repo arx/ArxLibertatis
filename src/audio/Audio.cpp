@@ -36,11 +36,19 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <dsound.h>
-#include <math.h>
+#include "audio/Audio.h"
+
+#include <cmath>
 #include <cstring>
 
-#include "audio/Audio.h"
+#include <dsound.h>
+
+#ifdef HAVE_PTHREADS
+#include <pthread.h>
+#include <time.h>
+#include <errno.h>
+#endif
+
 #include "audio/AudioResource.h"
 #include "audio/Mixer.h"
 #include "audio/Sample.h"
@@ -49,65 +57,84 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "audio/AudioGlobal.h"
 #include "audio/Stream.h"
 #include "audio/eax.h"
+
 #include "io/Logger.h"
-
-#ifdef HAVE_PTHREADS
-#include <pthread.h>
-#include <time.h>
-#include <errno.h>
-#endif
-
-using namespace std;
 
 namespace ATHENA
 {
 
-	//Multithread data
-#ifdef HAVE_PTHREADS	
-	static pthread_mutex_t _mutex = PTHREAD_MUTEX_INITIALIZER;
-	static void *mutex = (void *)1; // just for compilation.  real mutex is above
-	static pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
-	static bool _mutex_used = false;
-#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
-	static HANDLE mutex(NULL);
-#endif	
+//Multithread data
+
+// TODO move to external file
+#ifdef HAVE_PTHREADS
 	
-	static const aalULong MUTEX_TIMEOUT(500);
-	static const aalULong MUTEX_ONUPDATE_TIMEOUT(200);
-	static aalError EnableEnvironmentalAudio();
-	HWND hwnd = NULL;
+	struct _Lock {
+		
+		pthread_mutex_t mutex;
+		pthread_cond_t cond;
+		bool locked;
+		
+		_Lock() : locked(false) {
+			const pthread_mutex_t mutex_init = PTHREAD_MUTEX_INITIALIZER;
+			mutex = mutex_init;
+			const pthread_cond_t cond_init = PTHREAD_COND_INITIALIZER;
+			cond = cond_init;
+		}
+		
+		int lock(u32 timeout) {
+			
+			pthread_mutex_lock(&mutex);
+			
+			if(locked) {
+				struct timespec time;
+				clock_gettime(CLOCK_REALTIME, &time);
+				time.tv_nsec += timeout * 1000;
+				int rc;
+				do {
+					rc = pthread_cond_timedwait(&cond, &mutex, &time);
+				} while(rc == 0 && locked);
+				if(rc == ETIMEDOUT) {
+					pthread_mutex_unlock(&mutex);
+					return WAIT_TIMEOUT;
+				}
+			}
+			
+			locked = true;
+			pthread_mutex_unlock(&mutex);
+			return 0;
+		}
+		
+		int unlock() {
+			pthread_mutex_lock(&mutex);
+			locked = false;
+			pthread_cond_signal(&cond);
+			return !pthread_mutex_unlock(&mutex);
+		}
+		
+	};
+	
+	typedef _Lock * Lock;
+	
+#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
+	typedef HANDLE Lock;
+#else
+	#warning "locking not supported"
+#endif
+
+Lock mutex = NULL;
+
+static const aalULong MUTEX_TIMEOUT(500);
+static aalError EnableEnvironmentalAudio();
+HWND hwnd = NULL;
 
 #ifdef HAVE_PTHREADS
-#define WaitForSingleObject(x, y) __mutex_wait(y)
-	int __mutex_wait(aalULong time)
-	{
-		pthread_mutex_lock(&_mutex);
-		if (_mutex_used) {
-			struct timespec timeout;
-			struct timespec now;
-			clock_gettime(CLOCK_REALTIME, &now);
-			timeout.tv_sec = now.tv_sec;
-			timeout.tv_nsec = now.tv_nsec + (time * 1000);
-			if (pthread_cond_timedwait(&cond, &_mutex, &timeout) == ETIMEDOUT) {
-				pthread_mutex_unlock(&_mutex);
-				return WAIT_TIMEOUT;
-			}
-		}
-		_mutex_used = true;
-		pthread_mutex_unlock(&_mutex);
-		return 0;
-	}
-
-#define ReleaseMutex(x)	__mutex_release()
-	int __mutex_release()
-	{
-		pthread_mutex_lock(&_mutex);
-		_mutex_used = false;
-		pthread_cond_signal(&cond);
-		pthread_mutex_unlock(&_mutex);
-	}
+#define WaitForSingleObject(mutex, timeout) ((mutex)->lock(timeout))
+#define ReleaseMutex(mutex) ((mutex)->unlock())
 #undef CreateMutex
-#define CreateMutex(x, y, z) (void *)1
+#define CreateMutex(x, y, z) (new _Lock())
+#define DestroyMutex(mutex) (delete (mutex))
+#else
+#define DestroyMutex(mutex) CloseHandle(mutex)
 #endif
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -115,7 +142,7 @@ namespace ATHENA
 	// Global setup                                                              //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	aalError aalInit(aalVoid * param)
+	aalError aalInit(void * param)
 	{
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
@@ -129,9 +156,9 @@ namespace ATHENA
 		InitSeed();
 
 		//Create DirectSound device interface
-		if (CoCreateInstance(CLSID_EAXDirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (aalVoid **)&device))
+		if (CoCreateInstance(CLSID_EAXDirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (void **)&device))
 		{
-			if (CoCreateInstance(CLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (aalVoid **)&device))
+			if (CoCreateInstance(CLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (void **)&device))
 			{
 				if (mutex) ReleaseMutex(mutex);
 
@@ -157,7 +184,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError aalInitForceNoEAX(aalVoid * param)
+	aalError aalInitForceNoEAX(void * param)
 	{
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
@@ -172,7 +199,7 @@ namespace ATHENA
 
 		//Create DirectSound device interface
 
-		if (CoCreateInstance(CLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (aalVoid **)&device))
+		if (CoCreateInstance(CLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER, IID_IDirectSound, (void **)&device))
 		{
 			if (mutex) ReleaseMutex(mutex);
 
@@ -200,11 +227,11 @@ namespace ATHENA
 	{
 		if (mutex) WaitForSingleObject(mutex, MUTEX_TIMEOUT);
 
-		_mixer.Clean(false);
-		_amb.Clean(false);
-		_inst.Clean(true);
-		_sample.Clean(false);
-		_env.Clean(false);
+		_mixer.Clean();
+		_amb.Clean();
+		_inst.Clean();
+		_sample.Clean();
+		_env.Clean();
 
 		if (environment) environment->Release(), environment = NULL;
 
@@ -222,7 +249,7 @@ namespace ATHENA
 		session_time = 0;
 		is_reverb_present = AAL_UFALSE;
 
-		if (mutex) ReleaseMutex(mutex), CloseHandle(mutex), mutex = NULL;
+		if (mutex) ReleaseMutex(mutex), DestroyMutex(mutex), mutex = NULL;
 
 		CoUninitialize();
 
@@ -300,7 +327,7 @@ namespace ATHENA
 
 		if (_path)
 		{
-			aalVoid * ptr;
+			void * ptr;
 			const char * temp = _path;
 			aalULong len(strlen(_path) + 1);
 
@@ -337,7 +364,7 @@ namespace ATHENA
 
 		if (_path)
 		{
-			aalVoid * ptr;
+			void * ptr;
 			const char * temp = _path;
 			aalULong len(strlen(_path) + 1);
 
@@ -374,7 +401,7 @@ namespace ATHENA
 
 		if (_path)
 		{
-			aalVoid * ptr;
+			void * ptr;
 			const char * temp = _path;
 			aalULong len(strlen(_path) + 1);
 
@@ -425,7 +452,7 @@ namespace ATHENA
 
 		if (flags & FLAG_ANY_3D_FX && !listener)
 		{
-			if (primary->QueryInterface(IID_IDirectSound3DListener, (aalVoid **)&listener))
+			if (primary->QueryInterface(IID_IDirectSound3DListener, (void **)&listener))
 			{
 				if (mutex) ReleaseMutex(mutex);
 
@@ -460,7 +487,7 @@ namespace ATHENA
 			return AAL_ERROR_TIMEOUT;
 
 		if (flags & AAL_FLAG_MULTITHREAD && mutex)
-			ReleaseMutex(mutex), CloseHandle(mutex), mutex = NULL;
+			ReleaseMutex(mutex), DestroyMutex(mutex), mutex = NULL;
 
 		if (flags & FLAG_ANY_ENV_FX && environment)
 			environment->Release(), environment = NULL, global_status &= ~FLAG_ANY_ENV_FX;
@@ -484,7 +511,7 @@ namespace ATHENA
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_UFALSE;
 
-		aalUBool status(AAL_UFALSE);
+		aalUBool status;
 
 		switch (flag)
 		{
@@ -504,6 +531,9 @@ namespace ATHENA
 			case AAL_FLAG_OBSTRUCTION   :
 				status = environment ? AAL_UTRUE : AAL_UFALSE;
 				break;
+			default:
+				// cannot query for this flag
+				status = AAL_UFALSE;
 		}
 
 		if (mutex) ReleaseMutex(mutex);
@@ -511,15 +541,11 @@ namespace ATHENA
 		return status;
 	}
 
-	long NBREVERB = 0;
-
 	///////////////////////////////////////////////////////////////////////////////
 	//                                                                           //
 	// Global control                                                            //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	long MXupdate = 0;
-	long MXpos = 0;
 
 
 	aalError aalUpdate()
@@ -578,7 +604,7 @@ namespace ATHENA
 
 			if (sample && sample->IsHandled() < 1)
 			{
-				//Console_Log("- %03d %s", NBREVERB, sample->name);
+				//Console_Log("- %s", sample->name);
 				_sample.Delete(i);
 			}
 		}
@@ -813,7 +839,7 @@ namespace ATHENA
 	// Retrieve next resource by ID                                              //
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
-	AAL_APIFUNC aalSLong aalGetNextAmbiance(const aalSLong & ambiance_id)
+	aalSLong aalGetNextAmbiance(const aalSLong & ambiance_id)
 	{
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_SFALSE;
@@ -1492,7 +1518,7 @@ namespace ATHENA
 	//                                                                           //
 	///////////////////////////////////////////////////////////////////////////////
 
-	aalError aalSetAmbianceUserData(const aalSLong & a_id, aalVoid * data)
+	aalError aalSetAmbianceUserData(const aalSLong & a_id, void * data)
 	{
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
@@ -1560,7 +1586,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	aalError aalGetAmbianceUserData(const aalSLong & a_id, aalVoid ** data)
+	aalError aalGetAmbianceUserData(const aalSLong & a_id, void ** data)
 	{
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_ERROR_TIMEOUT;
@@ -1627,7 +1653,7 @@ namespace ATHENA
 		return AAL_OK;
 	}
 
-	AAL_APIFUNC aalUBool aalIsAmbianceLooped(const aalSLong & a_id)
+	aalUBool aalIsAmbianceLooped(const aalSLong & a_id)
 	{
 		if (mutex && WaitForSingleObject(mutex, MUTEX_TIMEOUT) == WAIT_TIMEOUT)
 			return AAL_UFALSE;
@@ -1717,8 +1743,8 @@ namespace ATHENA
 		desc.lpwfxFormat = &formatex;
 
 		if (device->CreateSoundBuffer(&desc, &lpdsbtmp, NULL) ||
-		        lpdsbtmp->QueryInterface(IID_IDirectSound3DBuffer, (aalVoid **)&lpds3dbtmp) ||
-		        lpds3dbtmp->QueryInterface(IID_IKsPropertySet, (aalVoid **)&environment))
+		        lpdsbtmp->QueryInterface(IID_IDirectSound3DBuffer, (void **)&lpds3dbtmp) ||
+		        lpds3dbtmp->QueryInterface(IID_IKsPropertySet, (void **)&environment))
 		{
 			if (lpdsbtmp) lpdsbtmp->Release();
 

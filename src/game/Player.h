@@ -348,6 +348,8 @@ extern long Keyring_Number;
 extern long BLOCK_PLAYER_CONTROLS;
 extern long USE_PLAYERCOLLISIONS;
 extern long WILLRETURNTOCOMBATMODE;
+extern float PLAYER_BASE_RADIUS;
+extern float PLAYER_BASE_HEIGHT;
 
 //-----------------------------------------------------------------------------
 void	ARX_PLAYER_MakeSpHero();

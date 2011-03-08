@@ -166,6 +166,32 @@ inline float ffsqrt(float f)
 	return (float &)y;
 }
 
+/**
+ *  Obtain the approximated inverse of the square root of a float.
+ *  @brief  This code compute a fast 1 / sqrtf(v) approximation.
+ *  @note   Originaly from Matthew Jones (Infogrames).
+ *  @param  pValue  a float, the number we want the square root.
+ *  @return The square root of \a fValue, as a float.
+ */
+inline float FastRSqrt( float pValue )    
+{  
+	// Avoid issues with strict aliasing - use a union!
+    union FloatInt
+    {
+        float f;
+        int   i;
+    };
+    FloatInt floatInt;
+    floatInt.f = pValue;
+    
+    const int MAGIC_NUMBER = 0x5f3759df;
+        
+    float v_half = pValue * 0.5f;
+    floatInt.i = MAGIC_NUMBER - (floatInt.i >> 1);
+    pValue = floatInt.f;
+    return pValue * (1.5f - v_half * pValue * pValue);
+}
+
 #define FORCERANGE(a,b,c)	if (a<b) a=b; \
 	if (a>c) a=c;
 
@@ -441,16 +467,20 @@ inline float TRUEEEDistance3D(const EERIE_3D * from, const EERIE_3D * to)
 // Compute Distance between two 3D points
 // WARNING: EEsqrt may use an approximative way of computing sqrt !
 //*************************************************************************************
-inline float EEDistance3D(const EERIE_3D * from, const EERIE_3D * to)
-{
-	return (float)EEsqrt(((to->x - from->x) * (to->x - from->x)) + ((to->y - from->y) * (to->y - from->y)) + ((to->z - from->z) * (to->z - from->z)));
+inline float EEDistance3D(const EERIE_3D & from, const EERIE_3D & to) {
+	return (float)EEsqrt(((to.x - from.x) * (to.x - from.x)) + ((to.y - from.y) * (to.y - from.y)) + ((to.z - from.z) * (to.z - from.z)));
+}
+
+// TODO remove once callers are migrated to the reference version
+inline float EEDistance3D(const EERIE_3D * from, const EERIE_3D * to) {
+	return EEDistance3D(*from, *to);
 }
 
 inline bool PointInCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt)
 {
     using std::min;
     using std::max;
-	register float pos1 = cyl->origin.y + cyl->height;
+	float pos1 = cyl->origin.y + cyl->height;
 
 	if (pt->y < min(cyl->origin.y, pos1)) return false;
 
@@ -466,7 +496,7 @@ inline long PointInUnderCylinder(const EERIE_CYLINDER * cyl, const EERIE_3D * pt
 {
     using std::min;
     using std::max;
-	register float pos1 = cyl->origin.y + cyl->height;
+	float pos1 = cyl->origin.y + cyl->height;
 	long ret = 2;
 
 	if (pt->y < min(cyl->origin.y, pos1)) return 0;
@@ -525,8 +555,45 @@ inline void specialEE_P(EERIE_3D * in, D3DTLVERTEX * out)
 	out->rhw = fZTemp; 
 }
 
-float radians(float x);
-float degrees(float x);
+inline float radians(float degrees){
+	return degrees*2*PI/360;
+}
+
+inline float degrees(float radians){
+	return radians*360/(2*PI);
+}
+
+/**
+ *  Compute a random T value between fMin and fMax.
+ *  @brief  Random for T, given a range.
+ *  @param  fMin    a T, minimum value wanted.
+ *  @param  fMax    a T, maximum value wanted.
+ *  @return A random real value between fMin and fMax.
+ */
+template <class T>
+inline T Rand( const T& pMin, const T& pMax )
+{
+    return pMin + (pMax - pMin) * rand() / (T)RAND_MAX;
+}
+
+struct Rect
+{
+    Rect()
+    {
+    }
+
+    Rect( unsigned int pLeft, unsigned int pTop, unsigned int pRight, unsigned int pBottom )
+        : mLeft(pLeft)
+        , mRight(pRight)
+        , mTop(pTop)
+        , mBottom(pBottom)
+    {
+    }
+
+    unsigned int mLeft;
+    unsigned int mRight;
+    unsigned int mTop;
+    unsigned int mBottom;
+};
 
 #endif
-

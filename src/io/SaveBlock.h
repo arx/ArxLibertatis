@@ -40,7 +40,7 @@ class SaveBlock {
 	
 private:
 	
-	class File;
+	struct File;
 	typedef std::vector<File> FileList;
 	
 	FileHandle handle;

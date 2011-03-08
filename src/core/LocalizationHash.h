@@ -24,63 +24,57 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 */
 // Code: Didier Pédreno
 
-#ifndef LOC_HASH_H
-#define LOC_HASH_H
+#ifndef ARX_CORE_LOCALIZATIONHASH_H
+#define ARX_CORE_LOCALIZATIONHASH_H
 
-#include <cstdio>
-#include <cstdlib>
 #include <string>
 #include <vector>
-#include <cstring>
-#include "core/Common.h"
 
-using namespace std;
-
-//-----------------------------------------------------------------------------
-class CLocalisation
-{
-	public:
-		std::string lpszUSection;
-		vector< std::string > vUKeys;
+class CLocalisation {
 	
-	public:
-		void SetSection( const std::string& _lpszUSection )
-		{
-			lpszUSection = _lpszUSection;
-		};
-
-		void AddKey( const std::string& _lpszUText )
-		{
-			vUKeys.push_back( _lpszUText );
-		};
+public:
+	
+	std::string lpszUSection;
+	std::vector<std::string> vUKeys;
+	
+public:
+	
+	inline void SetSection(const std::string & _lpszUSection ) {
+		lpszUSection = _lpszUSection;
+	};
+	
+	inline void AddKey(const std::string & _lpszUText) {
+		vUKeys.push_back(_lpszUText);
+	};
+	
 };
 
-//-----------------------------------------------------------------------------
-class CLocalisationHash
-{
-	public:
-		unsigned long   iSize;
-		long            iMask;
-		unsigned long   iFill;
-		CLocalisation** pTab;
-	public:
-		unsigned long   iNbCollisions;
-		unsigned long   iNbNoInsert;
-
-	private:
-		int FuncH1(int);
-		int FuncH2(int);
-		int GetKey( const std::string& );
-
-	public:
-		CLocalisationHash(int _iSize = 1024);
-		~CLocalisationHash();
-
-		void ReHash();
-		bool AddElement(CLocalisation * _pLoc);
- 
-		std::string* GetPtrWithString( const std::string& );
-		unsigned long GetKeyCount(const std::string& );
+class CLocalisationHash {
+	
+private:
+	
+	unsigned long iSize;
+	long iMask;
+	unsigned long iFill;
+	CLocalisation ** pTab;
+	unsigned long iNbCollisions;
+	unsigned long iNbNoInsert;
+	
+	int FuncH1(int);
+	int FuncH2(int);
+	int GetKey(const std::string &);
+	void ReHash();
+	
+public:
+	
+	CLocalisationHash(int _iSize = 1024);
+	~CLocalisationHash();
+	
+	bool AddElement(CLocalisation * _pLoc);
+	
+	std::string * GetPtrWithString(const std::string &);
+	unsigned long GetKeyCount(const std::string &);
+	
 };
 
-#endif
+#endif // ARX_CORE_LOCALIZATIONHASH_H

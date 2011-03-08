@@ -22,55 +22,48 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-#ifndef __ATHENA_SAMPLE_H__
-#define __ATHENA_SAMPLE_H__
+
+#ifndef ARX_AUDIO_SAMPLE_H
+#define ARX_AUDIO_SAMPLE_H
 
 #include "AudioTypes.h"
 #include "AudioResource.h"
 
-namespace ATHENA
-{
-
-	struct Callback
-	{
+namespace ATHENA {
+	
+	struct Callback {
 		aalSampleCallback func;
-		aalVoid * data;
+		void * data;
 		aalULong time;
 		aalULong done;
 	};
-
-	///////////////////////////////////////////////////////////////////////////////
-	//                                                                           //
-	// Class ATHENA::Sample                                                      //
-	//                                                                           //
-	///////////////////////////////////////////////////////////////////////////////
-	class Sample : public ResourceHandle
-	{
-		public:
-			//Constructor and destructor
-			Sample();
-			~Sample();
-
-			//File I/O
-			aalError Load(const char * name);
-
-			//Setup
-			aalError SetCallback(aalSampleCallback func, aalVoid * data, const aalULong & time, const aalUnit & unit = AAL_UNIT_MS);
-
-			//Status
-			aalError GetName(char * name, const aalULong & max_char = AAL_DEFAULT_STRINGSIZE);
-			aalError GetLength(aalULong & length, const aalUnit & unit = AAL_UNIT_MS);
-
-			//Data
-			char * name;
-			aalULong length;
-			aalFormat format;
-			aalVoid * data;           //User data
-			aalULong callb_c;         //User callback count
-			Callback * callb;         //User callback list
-			//	long			loaded;
+	
+	class Sample : public ResourceHandle {
+		
+	public:
+		
+		Sample();
+		~Sample();
+		
+		// File I/O
+		aalError Load(const char * name);
+		
+		// Setup
+		aalError SetCallback(aalSampleCallback func, void * data, const aalULong & time, const aalUnit & unit = AAL_UNIT_MS);
+		
+		// Status
+		aalError GetName(char * name, const aalULong & max_char = AAL_DEFAULT_STRINGSIZE);
+		aalError GetLength(aalULong & length, const aalUnit & unit = AAL_UNIT_MS);
+		
+		char * name;
+		aalULong length;
+		aalFormat format;
+		void * data; // User data
+		aalULong callb_c; // User callback count
+		Callback * callb; // User callback list
+		
 	};
+	
+} // namespace ATHENA
 
-}//ATHENA::
-
-#endif//__ATHENA_SAMPLE_H__
+#endif // ARX_AUDIO_SAMPLE_H

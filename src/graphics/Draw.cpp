@@ -45,6 +45,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Draw.h"
 
 #include "core/Application.h"
+
+#include "graphics/GraphicsEnum.h"
 #include "graphics/data/Mesh.h"
 
 #include "io/IO.h"
@@ -80,7 +82,6 @@ extern TextureContainer * enviro;
 extern float FrameTime;
 extern EERIE_3D e3dPosBump;
 extern bool bALLOW_BUMP;
-extern bool bSoftRender;
 extern bool bZBUFFER;
 
 /*---------------------------------------------------------------------------------------------------------*/
@@ -249,7 +250,7 @@ bool Quadable(EERIEPOLY * ep, EERIEPOLY * ep2, float tolerance)
 		ep2->tv[3].color=ep2->v[3].color=EERIECOLOR_WHITE;
 		ep2->tv[3].rhw=ep2->v[3].rhw=1.f;
 
-	DeclareEGInfo(ep->v[3].sx,ep->v[3].sy,ep->v[3].sz);
+	DeclareEGInfo(ep->v[3].sx, ep->v[3].sz);
 
 	ep2->center.x=(ep2->v[0].sx+ep2->v[1].sx+ep2->v[2].sx+ep2->v[3].sx)*( 1.0f / 4 );
 	ep2->center.y=(ep2->v[0].sy+ep2->v[1].sy+ep2->v[2].sy+ep2->v[3].sy)*( 1.0f / 4 );
@@ -349,7 +350,7 @@ void DRAWLATER_ReInit()
 	curdrawlater=0;
 }
 
-void EERIE_DRAW_SetTextureZMAP(long num,TextureContainer * Z_map)
+void EERIE_DRAW_SetTextureZMAP(TextureContainer * Z_map)
 {
 	Zmap=Z_map;
 }
@@ -426,7 +427,7 @@ void DRAWLATER_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 			tdl[j].ep->tv[i].sz-=0.001f;
 
 			SETTC(pd3dDevice,tdl[j].ep->tex->TextureRefinement);
-			EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, tdl[j].ep, to, 0, EERIE_NOCOUNT | (bSoftRender?EERIE_USEVB:0) );
+			EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, tdl[j].ep, to, 0, EERIE_NOCOUNT );
 
 			for (int i=0;i<to;i++)
 			{
@@ -456,46 +457,19 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7	_d3dDevice,
 
 //------------------------------------------------------------------------------
 
-bool bForce_NoVB = false;
-void SET_FORCE_NO_VB( const bool& _NoVB )
-{
-	bForce_NoVB = _NoVB;
-}
-bool GET_FORCE_NO_VB( void )
-{
-	return bForce_NoVB;
-}
-
-//------------------------------------------------------------------------------
-
 HRESULT EERIEDRAWPRIM(	LPDIRECT3DDEVICE7 pd3dDevice,
 						D3DPRIMITIVETYPE dptPrimitiveType,  
 						DWORD  dwVertexTypeDesc,            
 						LPVOID lpvVertices,                 
 						DWORD  dwVertexCount,               
 						DWORD  dwFlags,
-						long flags,
-						EERIEPOLY * ep
-					)
-{
+						long flags) {
+	
 	if( !( EERIE_NOCOUNT & flags ) )
-	{
-	EERIEDrawnPolys++;
-	}
+		EERIEDrawnPolys++;
 
-	if(	!bForce_NoVB &&	flags&EERIE_USEVB )
-	{
-		return ARX_DrawPrimitiveVB(	pd3dDevice,
-									dptPrimitiveType,
-									dwVertexTypeDesc, 		//FVF
-									lpvVertices,			//No type specified
-									(int*)&dwVertexCount,
-									dwFlags);				//Same thing throught DrawPrimitiveVB
-	}
-	else
-	{
-		return (pd3dDevice->DrawPrimitive(dptPrimitiveType,dwVertexTypeDesc,lpvVertices,dwVertexCount,dwFlags));	
-	}
+	return ARX_DrawPrimitiveVB(pd3dDevice,dptPrimitiveType,dwVertexTypeDesc,lpvVertices,(int*)&dwVertexCount,dwFlags);
+	//return pd3dDevice->DrawPrimitive(dptPrimitiveType,dwVertexTypeDesc,lpvVertices,dwVertexCount,dwFlags);	
 }
 		
 void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice)
@@ -824,9 +798,8 @@ float duab,duac,dvab,dvac,s1,s2,s3;
 /*---------------------------------------------------------------------------------------------------------*/
 void EERIE_DrawPolyBump(LPDIRECT3DDEVICE7 pd3dDevice,EERIEPOLY *ep,float alpha)
 {
-	int			flg_NOCOUNT_USEVB	=	EERIE_NOCOUNT | (bSoftRender?EERIE_USEVB:0);
-float		du,dv;
-int			nb;
+	float		du,dv;
+	int			nb;
 
 	if(	(!ep->tv[0].color)&&
 		(!ep->tv[1].color)&&
@@ -872,13 +845,13 @@ int			nb;
 			(v+3)->tu2=ep->tv[3].tu+du;
 			(v+3)->tv2=ep->tv[3].tv+dv;
 		
-				EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2, v, 4, 0, flg_NOCOUNT_USEVB );
+				EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2, v, 4, 0, EERIE_NOCOUNT );
 
 		}
 		else
 		{
 			
-				EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2, v, 3, 0, flg_NOCOUNT_USEVB );
+				EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX2, v, 3, 0, EERIE_NOCOUNT );
 		}
 
 		pd3dDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
@@ -896,7 +869,7 @@ int			nb;
 		{
 			v[3]=ep->tv[3];
 
-				EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, v, 4, 0, flg_NOCOUNT_USEVB );
+				EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, v, 4, 0, EERIE_NOCOUNT );
 			
 			v[3].tu+=du;
 			v[3].tv+=dv;
@@ -904,7 +877,7 @@ int			nb;
 		}
 		else
 		{
-				EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, ep->tv, 3, 0, flg_NOCOUNT_USEVB );
+				EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, ep->tv, 3, 0, EERIE_NOCOUNT );
 			nb=3;
 		}
 
@@ -919,7 +892,7 @@ int			nb;
 		pd3dDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_SELECTARG1);
 		pd3dDevice->SetTextureStageState(0,D3DTSS_ALPHAOP,D3DTOP_DISABLE);
 				
-			EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX|D3DFVF_DIFFUSE, v, nb, 0, flg_NOCOUNT_USEVB );
+			EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX|D3DFVF_DIFFUSE, v, nb, 0, EERIE_NOCOUNT );
 	}
 
 	pd3dDevice->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
@@ -940,7 +913,7 @@ int			nb;
 
 void EERIEDrawLine(float x,float y,float x1,float y1,float z,D3DCOLOR col)
 {
-	register D3DTLVERTEX tv[2];
+	D3DTLVERTEX tv[2];
 	tv[0].sx=x;
 	tv[0].sy=y;
 	tv[1].sz=tv[0].sz=z;
@@ -958,7 +931,7 @@ void EERIEDrawLine(float x,float y,float x1,float y1,float z,D3DCOLOR col)
 
 void EERIEDraw2DLine(LPDIRECT3DDEVICE7 pd3dDevice, float x0,float y0,float x1,float y1,float z, D3DCOLOR col)
 {
-	register D3DTLVERTEX v[2];
+	D3DTLVERTEX v[2];
 
 	SETTC(pd3dDevice,NULL);
 	v[0].sx=x0;
@@ -976,7 +949,7 @@ void EERIEDraw2DLine(LPDIRECT3DDEVICE7 pd3dDevice, float x0,float y0,float x1,fl
 
 void EERIEDraw2DRect(LPDIRECT3DDEVICE7 pd3dDevice, float x0,float y0,float x1,float y1,float z, D3DCOLOR col)
 {
-	register D3DTLVERTEX v[5];
+	D3DTLVERTEX v[5];
 
 	SETTC(pd3dDevice,NULL);
 	v[4].sx=v[3].sx=v[0].sx=x0;
@@ -1010,7 +983,7 @@ void EERIEDrawFill2DRectDegrad(LPDIRECT3DDEVICE7 pd3dDevice, float x0,float y0,f
 
 void EERIEDraw3DCylinder(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CYLINDER * cyl, D3DCOLOR col)
 {
-	register EERIE_3D from,to;
+	EERIE_3D from,to;
 	#define STEPCYL 16
 
 	for (long i=0;i<360-STEPCYL;i+=STEPCYL)
@@ -1049,7 +1022,7 @@ void EERIEDraw3DCylinder(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CYLINDER * cyl, D3D
 
 void EERIEDraw3DCylinderBase(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CYLINDER * cyl, D3DCOLOR col)
 {
-	register EERIE_3D from,to;
+	EERIE_3D from,to;
 	#define STEPCYL 16
 
 	for (long i=0;i<360-STEPCYL;i+=STEPCYL)
@@ -1158,7 +1131,7 @@ void EERIEDraw3DLine(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3D * orgn, EERIE_3D * de
 
 void EERIEDrawSprite(LPDIRECT3DDEVICE7 pd3dDevice,D3DTLVERTEX *in,float siz,TextureContainer * tex,D3DCOLOR col,float Zpos)
 {
-	register D3DTLVERTEX out;
+	D3DTLVERTEX out;
 	
 	EERIETreatPoint2(in,&out);
 
@@ -1214,7 +1187,7 @@ void EERIEDrawSprite(LPDIRECT3DDEVICE7 pd3dDevice,D3DTLVERTEX *in,float siz,Text
 
 void EERIEDrawRotatedSprite(LPDIRECT3DDEVICE7 pd3dDevice,D3DTLVERTEX *in,float siz,TextureContainer * tex,D3DCOLOR col,float Zpos,float rot)
 {
-	register D3DTLVERTEX out;
+	D3DTLVERTEX out;
 	register float tt;
 		
 	EERIETreatPoint2(in, &out);

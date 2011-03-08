@@ -40,9 +40,8 @@ class CSpellFx;
 void ARX_SPELLS_CancelAll();
 
 // Spells symbol list
-enum ARX_SPELLS_SYMBOL
-{
-	SYMBOL_AAM,         // Create
+enum ARX_SPELLS_SYMBOL {
+	SYMBOL_AAM = 0,     // Create
 	SYMBOL_NHI,         // Negate
 	SYMBOL_MEGA,        // Improve
 	SYMBOL_YOK,         // Fire
@@ -65,6 +64,7 @@ enum ARX_SPELLS_SYMBOL
 	SYMBOL_AKBAA,       // Akbaa
 	SYMBOL_NONE = 255
 };
+const size_t ARX_SPELLS_SYMBOL_COUNT = 21;
 
 #define RUNE_AAM			SYMBOL_AAM
 #define RUNE_CETRIUS		SYMBOL_CETRIUS
@@ -100,7 +100,7 @@ enum ARX_SPELLS_SPELLCAST_FLAG
 	SPELLCAST_FLAG_RESTORE			= (1 << 7),
 };
 
-const unsigned long MAX_PRECAST = 3;
+const size_t MAX_PRECAST = 3;
 
 struct PRECAST_STRUCT
 {
@@ -114,17 +114,16 @@ struct PRECAST_STRUCT
 extern PRECAST_STRUCT Precast[MAX_PRECAST];
 
 void ARX_SPELLS_Precast_Reset();
-void ARX_SPELLS_Precast_Add(const long & typ, long level = 1, long flags = 0);
+void ARX_SPELLS_Precast_Add(long typ, long level = 1, long flags = 0);
 void ARX_SPELLS_Precast_Launch(const long & num);
 
 long GetSpellId(const std::string& spell);
 bool MakeSpellName(char * spell, const long & num);
 void TryToCastSpell(INTERACTIVE_OBJ * io, const long & spellid, const long & level, const long & target, const long & flags, const long & duration);
 void ARX_SPELLS_Precast_Check();
-void ARX_SPELLS_Precast_Launch2(const long & num);
-struct EYEBALL_DEF
-{
-	long	exist;
+void ARX_SPELLS_Precast_Launch2();
+struct EYEBALL_DEF {
+	long exist;
 	EERIE_3D pos;
 	EERIE_3D angle;
 	EERIE_3D size;
@@ -133,9 +132,9 @@ struct EYEBALL_DEF
 
 extern EYEBALL_DEF eyeball;
 
-const unsigned long MAX_SPELL_SYMBOLS = 6;
-extern long SpellSymbol[MAX_SPELL_SYMBOLS];
-extern long CurrSpellSymbol;
+const size_t MAX_SPELL_SYMBOLS = 6;
+extern ARX_SPELLS_SYMBOL SpellSymbol[MAX_SPELL_SYMBOLS];
+extern size_t CurrSpellSymbol;
 
 
 // Spell list
@@ -215,13 +214,15 @@ enum ARX_SPELLS_SPELLS
 
 	// LEVEL ZOB
 	SPELL_TELEPORT				,
+	
+	SPELL_NONE
 };
 
 extern float TELEPORT;
 extern float LASTTELEPORT;
 
-const unsigned long MAX_LINFO(20);
-const unsigned long MAX_SPELLS(20);
+const size_t MAX_LINFO = 20;
+const size_t MAX_SPELLS = 20;
 
 struct SPELL
 {
@@ -286,6 +287,10 @@ void ARX_SPELLS_Init();
 void ARX_SPELLS_ClearAll();
 void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice);
 void ARX_SPELLS_Fizzle(const long & num);
+
+/**
+ * Plays the sound of Fizzling spell plus "NO MANA" speech
+ **/
 void ARX_SPELLS_FizzleNoMana(const long & num);
 void ARX_SPELLS_Kill(const long & i);
 void ARX_SPELLS_ManageMagic();
@@ -296,10 +301,10 @@ void ClearParticles();
 
 void ARX_SPELLS_RequestSymbolDraw(INTERACTIVE_OBJ * io, const char * name, const float & duration);
 
-void ARX_SPELLS_UpdateSymbolDraw(LPDIRECT3DDEVICE7 pd3dDevice);
+void ARX_SPELLS_UpdateSymbolDraw();
 void ARX_SPELLS_ClearAllSymbolDraw();
 
-void ARX_SPELLS_Init(LPDIRECT3DDEVICE7 m_pd3dDevice);
+void ARX_SPELLS_Init_Rects();
 
 bool ARX_SPELLS_ExistAnyInstance(const long & typ);
 void ARX_SPELLS_RemoveAllSpellsOn(INTERACTIVE_OBJ * io);

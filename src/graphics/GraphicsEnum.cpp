@@ -53,14 +53,23 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#include <windowsx.h>
-#include <stdio.h>
 
 #include "graphics/GraphicsEnum.h"
+
+#include <cstdio>
+
+#include <windowsx.h>
+
 #include "graphics/GraphicsUtility.h" // For DEBUG_MSG
-#include "core/Res.h"  // For dialog controls
 #include "io/Logger.h"
 
+#define IDD_CHANGEDEVICE       144 // "Change Device" dialog box
+
+#define IDC_DEVICE_COMBO      1000 // Device combobox for "Change Device" dlg
+#define IDC_MODE_COMBO        1001 // Mode combobox for "Change Device" dlg
+#define IDC_WINDOWED_CHECKBOX 1012 // Checkbox for windowed-mode
+#define IDC_STEREO_CHECKBOX   1013 // Checkbox for stereo modes
+#define IDC_FULLSCREEN_TEXT   1014 // Group box text label
 
 //************************************************************************************
 // Global data
@@ -127,11 +136,14 @@ static HRESULT WINAPI ModeEnumCallback(DDSURFACEDESC2 * pddsd,
 // DeviceEnumCallback()
 // Callback function for enumerating devices
 //************************************************************************************
-static HRESULT WINAPI DeviceEnumCallback(char* strDesc,
-        char* strName,
-        D3DDEVICEDESC7* pDesc,
-        VOID* pParentInfo)
+static HRESULT WINAPI DeviceEnumCallback( char*	strDesc,
+                                          char* strName,
+                                          D3DDEVICEDESC7* pDesc,
+                                          VOID* pParentInfo)
 {
+	
+	(void)strDesc;
+	
 	// Keep track of # of devices that were enumerated
 	g_dwNumDevicesEnumerated++;
 
@@ -239,6 +251,9 @@ static HRESULT WINAPI DeviceEnumCallback(char* strDesc,
 static BOOL WINAPI DriverEnumCallback(GUID * pGUID, char* strDesc,
                                       char* strName, VOID *, HMONITOR)
 {
+	
+	(void)strName;
+	
 	D3DEnum_DeviceInfo d3dDeviceInfo;
 	LPDIRECTDRAW7      pDD;
 	LPDIRECT3D7        pD3D;

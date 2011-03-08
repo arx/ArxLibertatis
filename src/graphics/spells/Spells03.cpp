@@ -54,27 +54,32 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
 
-#include "graphics/Draw.h"
-#include "graphics/Math.h"
-#include "scene/Light.h"
-#include "scene/Object.h"
-#include "scene/Object.h"
+#include "graphics/spells/Spells03.h"
+
+#include <cassert>
+#include <climits>
+#include <list>
 
 #include "core/Core.h"
+#include "core/Time.h"
+
 #include "game/Spells.h"
+#include "game/Damage.h"
+#include "game/Player.h"
+
+#include "graphics/Draw.h"
+#include "graphics/Math.h"
 #include "graphics/effects/SpellEffects.h"
-#include "graphics/spells/Spells05.h"
-#include "graphics/spells/Spells03.h"
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/particle/Particle.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/ParticleParams.h"
-#include "game/Damage.h"
-#include "core/Time.h"
+#include "graphics/spells/Spells05.h"
 
-#include <list>
-
-//#define new new(_NORMAL_BLOCK,__FILE__, __LINE__)
+#include "scene/Light.h"
+#include "scene/Object.h"
+#include "scene/Interactive.h"
+#include "scene/LoadLevel.h"
 
 extern CParticleManager * pParticleManager;
 
@@ -108,8 +113,8 @@ void CFireBall::SetTTL(unsigned long aulTTL)
 	std::list<CParticle *>::iterator i;
 
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
-	ARX_CHECK_LONG(ulCalc);
-	long ff = 	ARX_CLEAN_WARN_CAST_LONG(ulCalc);
+	assert(ulCalc <= LONG_MAX);
+	long ff = static_cast<long>(ulCalc);
 
 
 	for (i = pPSSmoke.listParticle.begin(); i != pPSSmoke.listParticle.end(); ++i)
@@ -448,9 +453,9 @@ float CFireBall::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	SETZWRITE(m_pd3dDevice, false);
 	SETALPHABLEND(m_pd3dDevice, true);
 
-	pPSFire.Render(m_pd3dDevice, D3DBLEND_ONE, D3DBLEND_ONE);
-	pPSFire2.Render(m_pd3dDevice, D3DBLEND_ONE, D3DBLEND_ONE);
-	pPSSmoke.Render(m_pd3dDevice, D3DBLEND_ONE, D3DBLEND_ONE);
+	pPSFire.Render(m_pd3dDevice);
+	pPSFire2.Render(m_pd3dDevice);
+	pPSSmoke.Render(m_pd3dDevice);
 
 	return 1 - 0.5f * rnd();
 }
@@ -476,7 +481,7 @@ CIceProjectile::~CIceProjectile()
 		smotte = NULL;
 	}
 }
-CIceProjectile::CIceProjectile(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CIceProjectile::CIceProjectile()
 {
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
@@ -991,7 +996,7 @@ void CSpeed::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-void CSpeed::DrawRuban(LPDIRECT3DDEVICE7 device, int num, float size, int dec, float r, float g, float b, float r2, float g2, float b2)
+void CSpeed::DrawRuban(int num, float size, int dec, float r, float g, float b, float r2, float g2, float b2)
 {
 	int numsuiv;
 
@@ -1013,7 +1018,7 @@ void CSpeed::DrawRuban(LPDIRECT3DDEVICE7 device, int num, float size, int dec, f
 
 		if ((num >= 0) && (numsuiv >= 0))
 		{
-			Draw3DLineTex2(device, this->truban[num].pos, this->truban[numsuiv].pos, size, RGBA_MAKE(r1 >> 16, g1 >> 16, b1 >> 16, 0), RGBA_MAKE((r1 + dr) >> 16, (g1 + dg) >> 16, (b1 + db) >> 16, 0));
+			Draw3DLineTex2(this->truban[num].pos, this->truban[numsuiv].pos, size, RGBA_MAKE(r1 >> 16, g1 >> 16, b1 >> 16, 0), RGBA_MAKE((r1 + dr) >> 16, (g1 + dg) >> 16, (b1 + db) >> 16, 0));
 			r1 += dr;
 			g1 += dg;
 			b1 += db;
@@ -1040,7 +1045,7 @@ float CSpeed::Render(LPDIRECT3DDEVICE7 device)
 	
 	for (int i = 0; i < nbrubandef; i++)
 	{
-		this->DrawRuban(device, trubandef[i].first,
+		this->DrawRuban(trubandef[i].first,
 		                trubandef[i].size,
 		                trubandef[i].dec,
 		                trubandef[i].r, trubandef[i].g, trubandef[i].b,
@@ -1055,7 +1060,7 @@ float CSpeed::Render(LPDIRECT3DDEVICE7 device)
 }
 
 //-----------------------------------------------------------------------------
-CCreateFood::CCreateFood(LPDIRECT3DDEVICE7 m_pd3dDevice)
+CCreateFood::CCreateFood()
 {
 	SetDuration(1000);
 	ulCurrentTime = ulDuration + 1;
@@ -1147,8 +1152,8 @@ if (ulCurrentTime >= ulDuration)
 //ARX_END: jycorbel (2010-07-20)
 	{
 	unsigned long ulCalc = ulDuration - ulCurrentTime ;
-	ARX_CHECK_LONG(ulCalc);
-	long ff = 	ARX_CLEAN_WARN_CAST_LONG(ulCalc);
+	assert(ulCalc <= LONG_MAX);
+	long ff =  static_cast<long>(ulCalc);
 
 
 
@@ -1186,7 +1191,7 @@ if (ulCurrentTime >= ulDuration)
 //---------------------------------------------------------------------
 float CCreateFood::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 {
-	pPS->Render(m_pd3dDevice, D3DBLEND_ONE, D3DBLEND_ONE);
+	pPS->Render(m_pd3dDevice);
 
 	return 1;
 }
