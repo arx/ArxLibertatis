@@ -65,7 +65,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ai/Paths.h"
 
 #include "core/Time.h"
-#include "core/Version.h"
 #include "core/Resource.h"
 
 #include "game/Player.h"
@@ -83,6 +82,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/Screenshot.h"
 #include "io/IO.h"
+#include "io/FilePath.h"
 #include "io/Logger.h"
 
 #include "physics/Clothes.h"
@@ -139,7 +139,7 @@ extern long PROGRESS_COUNT;
 extern long PROGRESS_TOTAL;
 extern long PAUSED_PRECALC;
 
-COLORREF custcr[16];
+static COLORREF custcr[16];
 
  
 INT_PTR CALLBACK SnapShotDlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -234,27 +234,8 @@ INT_PTR CALLBACK MeshReductionProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 
 char ERRORSTRING[65535];
 char ERRORTITLE[512];
-HWND ShowErrorPopup(char * title, char * tex)
-{
-	strcpy(ERRORTITLE, title);
-	strcpy(ERRORSTRING, tex);
 
-	if (danaeApp.m_pFramework->m_bIsFullscreen)
-	{
-		ARX_TIME_Pause();
-		danaeApp.Pause(true);
-		DialogBox((HINSTANCE)GetWindowLong(danaeApp.m_hWnd, GWL_HINSTANCE),
-		          MAKEINTRESOURCE(IDD_SCRIPTERROR), danaeApp.m_hWnd, IDDErrorLogProc);
-		danaeApp.Pause(false);
-		ARX_TIME_UnPause();
-		return NULL;
-	}
-
-	HWND hdl = CreateDialogParam((HINSTANCE)GetWindowLong(danaeApp.m_hWnd, GWL_HINSTANCE),
-	                             MAKEINTRESOURCE(IDD_SCRIPTERROR), danaeApp.m_hWnd, IDDErrorLogProc, 0);
-	return hdl;
-}
-INT_PTR CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam,
+static INT_PTR CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam,
                               LPARAM lParam) {
 	
 	(void)lParam;
@@ -286,6 +267,28 @@ INT_PTR CALLBACK IDDErrorLogProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 
 	return false;
 }
+
+HWND ShowErrorPopup(char * title, char * tex)
+{
+	strcpy(ERRORTITLE, title);
+	strcpy(ERRORSTRING, tex);
+
+	if (danaeApp.m_pFramework->m_bIsFullscreen)
+	{
+		ARX_TIME_Pause();
+		danaeApp.Pause(true);
+		DialogBox((HINSTANCE)GetWindowLong(danaeApp.m_hWnd, GWL_HINSTANCE),
+		          MAKEINTRESOURCE(IDD_SCRIPTERROR), danaeApp.m_hWnd, IDDErrorLogProc);
+		danaeApp.Pause(false);
+		ARX_TIME_UnPause();
+		return NULL;
+	}
+
+	HWND hdl = CreateDialogParam((HINSTANCE)GetWindowLong(danaeApp.m_hWnd, GWL_HINSTANCE),
+	                             MAKEINTRESOURCE(IDD_SCRIPTERROR), danaeApp.m_hWnd, IDDErrorLogProc, 0);
+	return hdl;
+}
+
 extern long ARX_PATHS_HIERARCHYMOVE;
 
 INT_PTR CALLBACK PathwayOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam,
@@ -1719,7 +1722,7 @@ INT_PTR CALLBACK PrecalcProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 //*************************************************************************************
 //*************************************************************************************
 
-INT_PTR CALLBACK GaiaTextEdit(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
+static INT_PTR CALLBACK GaiaTextEdit(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM)
 {
 	HWND thWnd;
 
@@ -2922,7 +2925,7 @@ void LightApply(HWND hWnd)
 
 long INITT = 0;
 
-INT_PTR CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+static INT_PTR CALLBACK LightOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	
 	(void)lParam;
 	
@@ -3582,7 +3585,6 @@ INT_PTR CALLBACK FogOptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 	return false;
 }
 long SHOWWARNINGS = 0;
-extern HWND CDP_IOOptions;
 extern INTERACTIVE_OBJ * CDP_EditIO;
 #define MAX_SCRIPT_SIZE 128000
 char text1[MAX_SCRIPT_SIZE+1];

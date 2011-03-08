@@ -67,6 +67,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "animation/Animation.h"
 
 #include "core/Time.h"
+#include "core/Core.h"
 
 #include "game/Player.h"
 
@@ -79,6 +80,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
+#include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
 #include "io/Logger.h"
@@ -777,33 +779,6 @@ EERIEPOLY * EEIsUnderWater(const EERIE_3D * pos) {
 		}
 	}
 	return found;
-}
-
-extern bool bSoftRender;
-
-EERIEPOLY * EEIsUnderWaterFast(const EERIE_3D * pos) {
-	
-	if(!bSoftRender) {
-		return EEIsUnderWater(pos);
-	}
-	
-	FAST_BKG_DATA * feg = getFastBackgroundData(pos->x, pos->z);
-	if(!feg) {
-		return NULL;
-	}
-	
-	for(short k = 0; k < feg->nbpolyin; k++) {
-		
-		EERIEPOLY * ep = feg->polyin[k];
-		
-		if(ep->type & POLY_WATER) {
-			if(ep->max.y < pos->y && PointIn2DPolyXZ(ep, pos->x, pos->z)) {
-				return ep;
-			}
-		}
-	}
-	
-	return NULL;
 }
 
 bool GetTruePolyY(const EERIEPOLY * ep, const EERIE_3D * pos, float * ret)

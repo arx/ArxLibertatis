@@ -42,6 +42,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Damage.h"
 #include "game/Equipment.h"
 #include "game/NPC.h"
+#include "game/Player.h"
 
 #include "gui/Speech.h"
 #include "gui/Menu.h"
@@ -56,6 +57,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/spells/SpellsGlobal.h"
 
 #include "io/IO.h"
+#include "io/FilePath.h"
 
 #include "physics/Collisions.h"
 
@@ -71,9 +73,6 @@ using std::abs;
 
 static const float DEC_FOCAL = 50.0f;
 static const float IMPROVED_FOCAL = 320.0f;
-
-//TODO Remove this!
-int strcasecmp( const std::string& str1, const std::string& str2 );
 
 void MakeSpCol();
 extern long WILLRETURNTOCOMBATMODE;
@@ -7170,15 +7169,8 @@ float ARX_SPELLS_ApplyColdProtection(INTERACTIVE_OBJ * io,float damages)
 //*************************************************************************************
 // Updates all currently working spells.
 //*************************************************************************************
-extern bool bSoftRender;
 void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 {
-	bool bNoVB	=	false;
-	if( bSoftRender )
-	{
-		bNoVB	=	GET_FORCE_NO_VB();
-		SET_FORCE_NO_VB( true );
-	}
 	
 	unsigned long tim;
 	long framediff,framediff2,framediff3;
@@ -9027,7 +9019,6 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			}		
 		}
 	}
-	if( bSoftRender ) SET_FORCE_NO_VB( bNoVB );
 }
 
 ////////////////////////////////////////////////////////////////////////////

@@ -57,7 +57,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Time.h"
 
-#include <stdio.h>
+#include <cstdio>
+
+#include <windows.h>
 
 extern float FrameTime, LastFrameTime;	//ARX: jycorbel (2010-07-19) - Add external vars for resetting them on ARX_TIME_Init call.
 
@@ -97,11 +99,6 @@ float _ARX_TIME_GetTime()
 
 	QueryPerformanceCounter(&liPerfCounter);
 	return ARX_CLEAN_WARN_CAST_FLOAT((liPerfCounter.QuadPart / (double)liFrequency.QuadPart) * 1000);
-}
-
-float ARX_TIME_GetAppTime()
-{
-	return (_ARX_TIME_GetTime() - startupTime) / 1000.0f;
 }
 
 //-----------------------------------------------------------------------------

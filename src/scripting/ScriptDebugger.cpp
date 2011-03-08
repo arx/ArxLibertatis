@@ -32,7 +32,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Time.h"
 #include "graphics/data/Mesh.h"
-#include "io/IO.h"
+#include "io/FilePath.h"
 #include "io/Logger.h"
 #include "scene/Interactive.h"
 #include "scripting/ScriptDebuggerDialog.h"

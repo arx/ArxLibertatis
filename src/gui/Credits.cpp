@@ -30,14 +30,14 @@ void ARX_MENU_LaunchAmb(char *_lpszAmb);
 struct CreditsTextInformations {
 	
 	CreditsTextInformations() {
-		sPos.cx = 0;
-		sPos.cy = 0;
+		sPos.x = 0;
+		sPos.y = 0;
 		fColors = 0;
 	}
 	
 	string  sText;
 	COLORREF fColors;
-	SIZE sPos;
+	Vector2i sPos;
 };
 
 
@@ -57,36 +57,32 @@ struct CreditsInformations {
 static CreditsInformations CreditsData;
 
 static void InitCredits();
-static void CalculAverageWidth(HDC _hDC);
-static void ExtractAllCreditsTextInformations(HDC _hDC);
+static void CalculAverageWidth();
+static void ExtractAllCreditsTextInformations();
 static void ExtractPhraseColor(string & phrase, CreditsTextInformations & infomations);
-static void CalculTextPosition(HDC _hDC, const string & phrase, CreditsTextInformations & infomations, float & drawpos);
+static void CalculTextPosition(const string & phrase, CreditsTextInformations & infomations, float & drawpos);
 
 static void InitCredits() {
-	HDC hDC;
-	
+
 	LogDebug << "InitCredits";
 	
-	if(SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC))) {
-		CalculAverageWidth(hDC);
-		ExtractAllCreditsTextInformations(hDC);
-		danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-	}
+	CalculAverageWidth();
+	ExtractAllCreditsTextInformations();
 	
 	LogDebug << "Credits lines " << CreditsData.aCreditsInformations.size();
 	
 }
 
-static void CalculTextPosition(HDC _hDC, const string & phrase, CreditsTextInformations & infomations, float & drawpos) {
+static void CalculTextPosition(const string & phrase, CreditsTextInformations & infomations, float & drawpos) {
+	
 	//Center the text on the screen
-	GetTextExtentPoint32(_hDC, phrase.c_str(), phrase.length(), &(infomations.sPos));
+	infomations.sPos = hFontCredits->GetTextSize(phrase);
+	if(infomations.sPos.x < DANAESIZX) 
+		infomations.sPos.x = static_cast<int>((DANAESIZX - infomations.sPos.x) * ( 1.0f / 2 ));
 	
-	if(infomations.sPos.cx < DANAESIZX) 
-		infomations.sPos.cx = static_cast<int>((DANAESIZX - infomations.sPos.cx) * ( 1.0f / 2 ));
-	
-	//Calcul height position (must be calculate after GetTextExtendPoint32 because sPos is writted)
-	infomations.sPos.cy = static_cast<int>(drawpos) ;
-	drawpos += CreditsData.iFontAverageHeight ;
+	//Calcul height position (must be calculate after GetTextSize because sPos is writted)
+	infomations.sPos.y = static_cast<int>(drawpos) ;
+	drawpos += CreditsData.iFontAverageHeight;
 }
 
 static void ExtractPhraseColor(string & phrase, CreditsTextInformations &infomations )
@@ -101,20 +97,17 @@ static void ExtractPhraseColor(string & phrase, CreditsTextInformations &infomat
 	}
 }
 
-	//Use to calculate an Average height for text fonts
-static void CalculAverageWidth(HDC _hDC) {
+//Use to calculate an Average height for text fonts
+static void CalculAverageWidth() {
 	
-	SelectObject(_hDC, hFontCredits);
-	SIZE size;
-	
-	//calculate the average value
-	GetTextExtentPoint32(_hDC, "aA(",3, &size);
-	CreditsData.iFontAverageHeight = size.cy;
+	// Calculate the average value
+	Vector2i size = hFontCredits->GetTextSize("aA(");
+	CreditsData.iFontAverageHeight = size.y;
 }
 
 
 //Use to extract string info from src buffer
-static void ExtractAllCreditsTextInformations(HDC _hDC) {
+static void ExtractAllCreditsTextInformations() {
 	
 	// Retrieve the rows to display
 	std::istringstream iss(ARXmenu.mda->str_cre_credits);
@@ -122,21 +115,9 @@ static void ExtractAllCreditsTextInformations(HDC _hDC) {
 
 	//Use to calculate the positions
 	float drawpos = static_cast<float>(DANAESIZY);
-	bool firstLine = true ;
 
-	
 	while(std::getline(iss, phrase)) {
-		
-		if(!phrase.empty() && phrase[phrase.size() - 1] == '\r') {
-			phrase.resize(phrase.size() - 1);
-		}
-		
-		//Remove the first tild
-		if(firstLine) {
-			firstLine = false;
-			phrase[0] = ' ';
-		}
-		
+	
 		//Case of separator line
 		if(phrase.length() == 0) {
 			drawpos += CreditsData.iFontAverageHeight >> 3;
@@ -147,7 +128,7 @@ static void ExtractAllCreditsTextInformations(HDC _hDC) {
 		CreditsTextInformations infomations ;
 		
 		ExtractPhraseColor(phrase, infomations);
-		CalculTextPosition(_hDC, phrase, infomations, drawpos);
+		CalculTextPosition(phrase, infomations, drawpos);
 		
 		//Assign the text modified by ExtractPhase Color
 		infomations.sText = phrase;
@@ -158,8 +139,7 @@ static void ExtractAllCreditsTextInformations(HDC _hDC) {
 }
 
 void Credits::render() {
-	int drawn = 0 ;
-	
+
 	//We initialize the datas
 	if(CreditsData.iFontAverageHeight == -1) {
 		InitCredits();
@@ -169,9 +149,6 @@ void Credits::render() {
 	
 	//We display them
 	if(CreditsData.iFontAverageHeight != -1) {
-		
-		HDC hDC;
-		COLORREF oldRef  = RGB(0,0,0);
 		
 		//Set the device
 		if(!danaeApp.DANAEStartRender()) return;
@@ -187,59 +164,30 @@ void Credits::render() {
 			EERIEDrawBitmap2(GDevice, 0, 0, static_cast<float>(DANAESIZX), static_cast<float>(DANAESIZY + 1), .999f, ARXmenu.mda->pTexCredits, 0xFFFFFFFF);
 		}    
 
-		danaeApp.DANAEEndRender();
-
 		//Use time passed between frame to create scroll effect
 		//ARX_LOG("CreditStart %f, CreditGet ARX_TIME_Get %f  ", ARXmenu.mda->creditstart,ARX_TIME_Get( false ));
 		ARXmenu.mda->creditspos-=0.025f*(float)(ARX_TIME_Get( false )-ARXmenu.mda->creditstart);
 		ARXmenu.mda->creditstart=ARX_TIME_Get( false );
 		
-		if( SUCCEEDED( danaeApp.m_pddsRenderTarget->GetDC(&hDC) ) )
+		std::vector<CreditsTextInformations>::const_iterator it = CreditsData.aCreditsInformations.begin() + CreditsData.iFirstLine ;
+		for (; it != CreditsData.aCreditsInformations.end(); ++it)
 		{
-			SetBkMode(hDC,TRANSPARENT);    
-		
+			//Update the Y word display
+			float yy = it->sPos.y + ARXmenu.mda->creditspos;
 
-			std::vector<CreditsTextInformations>::const_iterator it = CreditsData.aCreditsInformations.begin() + CreditsData.iFirstLine ;
-
-			for (;
-				it != CreditsData.aCreditsInformations.end();
-				++it)
+			//Display the text only if he is on the viewport
+			if ((yy >= -CreditsData.iFontAverageHeight) && (yy <= DANAESIZY)) 
 			{
-				//Update the Y word display
-				float yy = it->sPos.cy + ARXmenu.mda->creditspos;
-
-				//Display the text only if he is on the viewport
-				if ((yy >= -CreditsData.iFontAverageHeight) && (yy <= DANAESIZY)) 
-				{
-					if (oldRef != it->fColors) //Little optimization
-					{
-						SetTextColor(hDC, it->fColors);
-						oldRef = it->fColors;
-					}
-
-					SelectObject(hDC, hFontCredits);
-
-					//Display the text on the screen
-					TextOut( hDC,
-						it->sPos.cx,
-						ARX_CLEAN_WARN_CAST_INT(yy),
-						it->sText.c_str(),
-						it->sText.length()	);
-
-					++drawn;
-				}
-				
-				if (yy <= -CreditsData.iFontAverageHeight)
-				{
-					++CreditsData.iFirstLine;
-				}
-				
-				if ( yy >= DANAESIZY )
-					break ; //it's useless to continue because next phrase will not be inside the viewport
-
-
+				hFontCredits->Draw(it->sPos.x, ARX_CLEAN_WARN_CAST_INT(yy), it->sText, it->fColors);
 			}
-			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
+			
+			if (yy <= -CreditsData.iFontAverageHeight)
+			{
+				++CreditsData.iFirstLine;
+			}
+			
+			if ( yy >= DANAESIZY )
+				break ; //it's useless to continue because next phrase will not be inside the viewport
 		}
 	} else {
 		LogWarning << "error initializing credits";
@@ -259,8 +207,6 @@ void Credits::render() {
 
 		ARX_MENU_LaunchAmb(AMB_MENU);
 	}
-
-	danaeApp.DANAEStartRender();
 
 	if(ProcessFadeInOut(bFadeInOut,0.1f))
 	{

@@ -58,6 +58,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/effects/Fog.h"
 
 #include "core/Time.h"
+#include "core/Core.h"
 
 #include "gui/MenuWidgets.h"
 

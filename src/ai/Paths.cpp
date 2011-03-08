@@ -64,6 +64,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Dialog.h"
 #include "core/Time.h"
+#include "core/Core.h"
 
 #include "game/NPC.h"
 #include "game/Player.h"
@@ -76,6 +77,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
+#include "io/FilePath.h"
 
 #include "physics/Box.h"
 #include "physics/Collisions.h"

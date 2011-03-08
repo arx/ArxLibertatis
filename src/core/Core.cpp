@@ -75,7 +75,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "core/Dialog.h"
 #include "core/Resource.h"
-#include "core/Version.h"
 #include "core/AVI.h"
 #include "core/Localization.h"
 #include "core/Time.h"
@@ -84,6 +83,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Damage.h"
 #include "game/Equipment.h"
 #include "game/Map.h"
+#include "game/Player.h"
 
 #include "gui/MenuPublic.h"
 #include "gui/Menu.h"
@@ -101,6 +101,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleManager.h"
 
 #include "io/IO.h"
+#include "io/FilePath.h"
 #include "io/Registry.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
@@ -206,8 +207,6 @@ extern long PLAYER_PARALYSED;
 extern float fZFogEnd;
 extern float fZFogStart;
 extern bool bOLD_CLIPP;
-extern bool bForceGDI;
-extern bool bSoftRender;
 extern bool bGMergeVertex;
 extern float OLD_PROGRESS_BAR_COUNT;
 extern E_ARX_STATE_MOUSE	eMouseState;
@@ -421,7 +420,6 @@ long FINAL_COMMERCIAL_GAME = 1;   // <--------------	fullgame
 long GERMAN_VERSION = 0;
 long FRENCH_VERSION = 0;
 long CHINESE_VERSION = 0;
-long EAST_EUROPE = 0;
 long ALLOW_CHEATS		 =1;
 long FOR_EXTERNAL_PEOPLE =0;
 long USE_OLD_MOUSE_SYSTEM=1;
@@ -1408,7 +1406,7 @@ int main(int, char**)
 
 	if(LAST_CHINSTANCE != -1) {
 		ARX_CHANGELEVEL_MakePath();
-		LogWarning << "Clearing save game directory " << CurGamePath;
+		LogInfo << "Clearing current game directory " << CurGamePath;
 		KillAllDirectory(CurGamePath);
 		CreateDirectory(CurGamePath,NULL);
 	}
@@ -4588,7 +4586,6 @@ void LaunchMoulinex()
 
 	sprintf(tx,"Moulinex Lvl %ld",lvl);
 	ForceSendConsole(tx,1,0,NULL);
-	_ShowText(tx);
 
 	if (LASTMOULINEX!=-1)
 	{
@@ -5252,7 +5249,6 @@ extern DWORD RenderStartTicks;
 extern long NEED_INTRO_LAUNCH;
 
 //-----------------------------------------------------------------------------
-
 HRESULT DANAE::Render()
 {
 	FrameTime = ARX_TIME_Get();
@@ -5327,16 +5323,6 @@ static float _AvgFrameDiff = 150.f;
 	StartBench();
 
 	RenderStartTicks	=	dwARX_TIME_Get();
-
-	if(bForceGDI)
-	{
-		HDC hDC;
-
-		if( SUCCEEDED( m_pddsRenderTarget->GetDC(&hDC) ) )
-		{
-			m_pddsRenderTarget->ReleaseDC(hDC);
-		}
-	}
 
 	if(	(pGetInfoDirectInput)&&
 		(pGetInfoDirectInput->IsVirtualKeyPressedNowPressed(DIK_F12)))
@@ -6617,16 +6603,8 @@ static float _AvgFrameDiff = 150.f;
 		SETALPHABLEND(m_pd3dDevice,true);
 		ARX_FOGS_Render();
 
-		bool bNoVB	=	false;
-		if( bSoftRender )
-		{
-			bNoVB = GET_FORCE_NO_VB();
-			SET_FORCE_NO_VB( true );
-		}
-
 		ARX_PARTICLES_Render(m_pd3dDevice,&subj);
 		UpdateObjFx(m_pd3dDevice);
-		if( bSoftRender ) SET_FORCE_NO_VB( bNoVB );
 		
 		SETALPHABLEND(m_pd3dDevice,false);
 		BENCH_PARTICLES=EndBench();
@@ -6808,12 +6786,10 @@ m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 
 	SETTEXTUREWRAPMODE(m_pd3dDevice,D3DTADDRESS_WRAP);
 
-	if(pTextManage && !pTextManage->empty())
+	if(pTextManage && !pTextManage->Empty())
 	{
-		danaeApp.DANAEEndRender();
 		pTextManage->Update(FrameDiff);
 		pTextManage->Render();
-		danaeApp.DANAEStartRender();
 	}
 
 	if (SHOW_INGAME_MINIMAP && ((PLAY_LOADED_CINEMATIC == 0) && (!CINEMASCOPE) && (!BLOCK_PLAYER_CONTROLS) && (ARXmenu.currentmode == AMCM_OFF))
@@ -6867,9 +6843,7 @@ m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 	{
 		if ((NEED_TEST_TEXT) && (!FINAL_COMMERCIAL_DEMO))
 		{
-			danaeApp.DANAEEndRender();
 			ShowTestText();
-			danaeApp.DANAEStartRender();
 		}
 
 		if (!NO_TEXT_AT_ALL)

@@ -100,7 +100,6 @@ extern long DEBUGG;
 extern long DebugLvl[6];
 extern unsigned int			GaiaWM;
 
-void File_Standardize( const std::string& from, std::string& to );
 char * HERMES_GaiaCOM_Receive();
 
 void HERMES_InitDebug();
@@ -111,6 +110,8 @@ void SAFEstrcpy(char * dest, const char * src, unsigned long max);
 void MakeUpcase( std::string& str);
 bool IsIn( const std::string& strin, const std::string& str );
 bool NC_IsIn( std::string strin, std::string str);
+int strcasecmp( const std::string& str1, const std::string& str2 );
+int strcmp( const std::string& str1, const std::string& str2 );
 
 void GetDate(HERMES_DATE_TIME * hdt);
 void SendConsole( const std::string& dat,long level,long flag,HWND source);
@@ -118,15 +119,10 @@ void ForceSendConsole( const std::string& dat,long level,long flag,HWND source);
 
 void MemFree(void * adr);
 unsigned long MakeMemoryText(char * text);
-bool CreateFullPath( const std::string& path );
 
 // Strings Funcs
 bool HERMESFolderSelector(char * file_name, const char * title);
-void RemoveName( std::string& str );
-std::string GetName( const std::string& str);
-void SetExt( std::string& str, const std::string& new_ext );
-char* GetExt(const std::string& str);
-void AddToName( std::string& str, const std::string& cat);
+
 int HERMESFileSelectorOpen(const char * pstrFileName, const char * pstrTitleName,const char *filter,HWND hWnd);
 int HERMESFileSelectorSave(const char * pstrFileName, const char * pstrTitleName,const char *filter,HWND hWnd);
 

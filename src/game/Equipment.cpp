@@ -61,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Equipment.h"
 #include "game/NPC.h"
 #include "game/Damage.h"
+#include "game/Player.h"
 
 #include "gui/Interface.h"
 
@@ -69,7 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/MeshManipulation.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/IO.h"
+#include "io/FilePath.h"
 
 #include "physics/Collisions.h"
 
@@ -162,6 +163,24 @@ void ARX_EQUIPMENT_Release(long id)
 				player.equiped[i] = 0;
 			}
 		}
+	}
+}
+
+//***********************************************************************************************
+// Releases Equipment Structure
+//-----------------------------------------------------------------------------------------------
+// VERIFIED (Cyril 2001/10/29)
+//***********************************************************************************************
+static void ARX_EQUIPMENT_ReleaseEquipItem(INTERACTIVE_OBJ * io)
+{
+	if (!io) return;
+
+	if (!(io->ioflags & IO_ITEM)) return;
+
+	if (io->_itemdata->equipitem)
+	{
+		free(io->_itemdata->equipitem);
+		io->_itemdata->equipitem = NULL;
 	}
 }
 
@@ -913,6 +932,22 @@ float ARX_EQUIPMENT_ComputeDamages(INTERACTIVE_OBJ * io_source, INTERACTIVE_OBJ 
 
 	return 0.f;
 }
+
+static float ARX_EQUIPMENT_GetSpecialValue(INTERACTIVE_OBJ * io, long val) {
+	
+	if ((!io) || !(io->ioflags & IO_ITEM) || !io->_itemdata->equipitem) return -1;
+
+	for (long i = IO_EQUIPITEM_ELEMENT_SPECIAL_1; i <= IO_EQUIPITEM_ELEMENT_SPECIAL_4; i++)
+	{
+		if (io->_itemdata->equipitem->elements[i].special == val)
+		{
+			return (io->_itemdata->equipitem->elements[i].value);
+		}
+	}
+
+	return -1;
+}
+
 //***********************************************************************************************
 // flags & 1 = blood spawn only
 //-----------------------------------------------------------------------------------------------
@@ -1488,23 +1523,7 @@ void ARX_EQUIPMENT_Init()
 	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_SPECIAL_3].name, "special3");
 	strcpy(equipinfo[IO_EQUIPITEM_ELEMENT_SPECIAL_4].name, "special4");
 }
-//***********************************************************************************************
-// Releases Equipment Structure
-//-----------------------------------------------------------------------------------------------
-// VERIFIED (Cyril 2001/10/29)
-//***********************************************************************************************
-void ARX_EQUIPMENT_ReleaseEquipItem(INTERACTIVE_OBJ * io)
-{
-	if (!io) return;
 
-	if (!(io->ioflags & IO_ITEM)) return;
-
-	if (io->_itemdata->equipitem)
-	{
-		free(io->_itemdata->equipitem);
-		io->_itemdata->equipitem = NULL;
-	}
-}
 //***********************************************************************************************
 // Removes All special equipement properties
 //-----------------------------------------------------------------------------------------------
@@ -1582,25 +1601,7 @@ float ARX_EQUIPMENT_ApplyPercent(INTERACTIVE_OBJ * io, long ident, float trueval
 
 	return (toadd * trueval * ( 1.0f / 100 ));
 }
- 
-//***********************************************************************************************
-//-----------------------------------------------------------------------------------------------
-//***********************************************************************************************
 
-float ARX_EQUIPMENT_GetSpecialValue(INTERACTIVE_OBJ * io, long val)
-{
-	if ((!io) || !(io->ioflags & IO_ITEM) || !io->_itemdata->equipitem) return -1;
-
-	for (long i = IO_EQUIPITEM_ELEMENT_SPECIAL_1; i <= IO_EQUIPITEM_ELEMENT_SPECIAL_4; i++)
-	{
-		if (io->_itemdata->equipitem->elements[i].special == val)
-		{
-			return (io->_itemdata->equipitem->elements[i].value);
-		}
-	}
-
-	return -1;
-}
 void ARX_EQUIPMENT_SetEquip(INTERACTIVE_OBJ * io, const char * param1, const char * param2, float val, short flags)
 {
 	if (io == NULL) return;

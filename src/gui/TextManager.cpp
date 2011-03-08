@@ -19,14 +19,13 @@ using std::string;
 using std::vector;
 
 struct TextManager::ManagedText {
-	HFONT hFont;
+	Font* pFont;
 	RECT rRect;
 	RECT rRectClipp;
 	string lpszUText;
 	float fDeltaY;
 	float fSpeedScrollY;
 	long lCol;
-	long lBkgCol;
 	long lTimeScroll;
 	long lTimeOut;
 };
@@ -38,16 +37,15 @@ TextManager::~TextManager() {
 	Clear();
 }
 
-bool TextManager::AddText(HFONT _hFont, const string & _lpszUText, const RECT & _rRect, long _lCol, long _lBkgCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp) {
+bool TextManager::AddText(Font* _pFont, const string & _lpszUText, const RECT & _rRect, long _lCol, long _lTimeOut, long _lTimeScroll, float _fSpeedScroll, int iNbLigneClipp) {
 	
 	if(_lpszUText.empty()) {
 		return false;
 	}
 	
-	if(!_hFont) {
+	if(!_pFont) {
 		LogWarning << "Adding text with NULL font.";
-		// TODO why is this commented out? ~dscharrer
-		//return false;
+		return false;
 	}
 	
 	ManagedText * pArxText = new ManagedText();
@@ -55,32 +53,22 @@ bool TextManager::AddText(HFONT _hFont, const string & _lpszUText, const RECT & 
 		return false;
 	}
 	
-	pArxText->hFont = _hFont;
+	pArxText->pFont = _pFont;
 	pArxText->lpszUText = _lpszUText;
 	pArxText->rRect = _rRect;
 	pArxText->lCol = _lCol;
-	pArxText->lBkgCol = _lBkgCol;
 	pArxText->lTimeScroll = _lTimeScroll;
 	pArxText->fDeltaY = 0.f;
 	pArxText->fSpeedScrollY = _fSpeedScroll;
 	pArxText->lTimeOut = _lTimeOut;
 	pArxText->rRectClipp = pArxText->rRect;
 	
-	if(iNbLigneClipp) {
-		HDC hDC;
-		SIZE sSize;
-		
-		if(SUCCEEDED(danaeApp.m_pddsRenderTarget->GetDC(&hDC))) {
-			SelectObject(hDC, pArxText->hFont);
-			GetTextExtentPoint(hDC, pArxText->lpszUText.c_str(),
-			                   pArxText->lpszUText.length(), &sSize);
-			danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
-			sSize.cy *= iNbLigneClipp;
-		} else {
-			sSize.cy = _rRect.bottom - _rRect.top;
-		}
-		
-		pArxText->rRectClipp.bottom = pArxText->rRect.top + sSize.cy;
+	if(iNbLigneClipp) 
+	{
+		Vector2i sSize = _pFont->GetTextSize(pArxText->lpszUText);
+		sSize.y *= iNbLigneClipp;
+	
+		pArxText->rRectClipp.bottom = pArxText->rRect.top + sSize.y;
 	}
 	
 	entries.push_back(pArxText);
@@ -88,20 +76,24 @@ bool TextManager::AddText(HFONT _hFont, const string & _lpszUText, const RECT & 
 	return true;
 }
 
-bool TextManager::AddText(HFONT font, const std::string& str, long x, long y, long fgcolor)
+bool TextManager::AddText( Font* font, const std::string& str, long x, long y, long fgcolor)
 {
 	RECT r;
 	r.left = x;
 	r.top = y;
-	r.right = 9999;
-	r.bottom = 9999;
-	return AddText(font, str, r, fgcolor, 0x00FF00FF);
+	r.right = SHRT_MAX;
+	r.bottom = SHRT_MAX;
+	return AddText(font, str, r, fgcolor);
 }
 
 void TextManager::Update(float _fDiffFrame) {
 	
 	ARX_CHECK_INT(_fDiffFrame);
 	int _iDiffFrame = ARX_CLEAN_WARN_CAST_INT(_fDiffFrame);
+	
+	// TODO-slussier: Until we fix the ARX_TIME_Get() mess, it's easy to have a FrameDiff of 0...
+	if(_iDiffFrame == 0)
+		_iDiffFrame = 1;
 	
 	vector<ManagedText *>::iterator itManage;
 	for(itManage = entries.begin(); itManage != entries.end();) {
@@ -133,36 +125,21 @@ void TextManager::Update(float _fDiffFrame) {
 }
 
 void TextManager::Render() {
-	
-	HDC hDC = NULL;
-	if(danaeApp.m_pddsRenderTarget && !entries.empty()) {
-		danaeApp.m_pddsRenderTarget->GetDC(&hDC);
-	}
-	
 	vector<ManagedText *>::const_iterator itManage = entries.begin();
 	for(; itManage != entries.end(); itManage++) {
 		
 		ManagedText * pArxText = *itManage;
 		
-		HRGN hRgn = CreateRectRgn(pArxText->rRectClipp.left, pArxText->rRectClipp.top,
-		                          pArxText->rRectClipp.right, pArxText->rRectClipp.bottom);
-		
-		long height = ARX_UNICODE_DrawTextInRect(static_cast<float>(pArxText->rRect.left),
+		RECT* pRectClip = NULL;
+		if(pArxText->rRectClipp.right != SHRT_MAX || pArxText->rRectClipp.bottom != SHRT_MAX)
+			pRectClip = &pArxText->rRectClipp;
+
+		long height = ARX_UNICODE_DrawTextInRect( pArxText->pFont, static_cast<float>(pArxText->rRect.left),
 		                                         pArxText->rRect.top - pArxText->fDeltaY,
 		                                         static_cast<float>(pArxText->rRect.right),
-		                                         pArxText->lpszUText, pArxText->lCol,
-		                                         pArxText->lBkgCol, pArxText->hFont, hRgn, hDC);
+		                                         pArxText->lpszUText, pArxText->lCol, pRectClip);
 		
 		pArxText->rRect.bottom = pArxText->rRect.top + height;
-		
-		if(hRgn) {
-			DeleteObject(hRgn);
-		}
-		
-	}
-	
-	if (hDC) {
-		danaeApp.m_pddsRenderTarget->ReleaseDC(hDC);
 	}
 }
 
@@ -176,6 +153,7 @@ void TextManager::Clear() {
 	entries.clear();
 }
 
-bool TextManager::empty() const {
+bool TextManager::Empty() const 
+{
 	return entries.empty();
 }

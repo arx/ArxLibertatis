@@ -60,11 +60,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <windowsx.h>
 
-#include "core/Res.h"  // For dialog controls
-
 #include "graphics/GraphicsUtility.h" // For DEBUG_MSG
-
 #include "io/Logger.h"
+
+#define IDD_CHANGEDEVICE       144 // "Change Device" dialog box
+
+#define IDC_DEVICE_COMBO      1000 // Device combobox for "Change Device" dlg
+#define IDC_MODE_COMBO        1001 // Mode combobox for "Change Device" dlg
+#define IDC_WINDOWED_CHECKBOX 1012 // Checkbox for windowed-mode
+#define IDC_STEREO_CHECKBOX   1013 // Checkbox for stereo modes
+#define IDC_FULLSCREEN_TEXT   1014 // Group box text label
 
 //************************************************************************************
 // Global data

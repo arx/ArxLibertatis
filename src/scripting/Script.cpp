@@ -70,10 +70,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "core/Localization.h"
 #include "core/Dialog.h"
 #include "core/Resource.h"
+#include "core/Core.h"
 
 #include "game/Damage.h"
 #include "game/Equipment.h"
 #include "game/NPC.h"
+#include "game/Player.h"
 
 #include "gui/Speech.h"
 
@@ -81,6 +83,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/Math.h"
 
 #include "io/IO.h"
+#include "io/FilePath.h"
 #include "io/Logger.h"
 
 #include "scene/Scene.h"
@@ -112,16 +115,6 @@ long RELOADING = 0;
 long NB_GLOBALS = 0;
 SCR_TIMER * scr_timer = NULL;
 long ActiveTimers = 0;
-
-int strcasecmp( const std::string& str1, const std::string& str2 )
-{
-	return strcasecmp( str1.c_str(), str2.c_str() );
-}
-
-int strcmp( const std::string& str1, const std::string& str2 )
-{
-	return str1.compare( str2 );
-}
 
 //*************************************************************************************
 // FindScriptPos																	//
@@ -597,26 +590,8 @@ void ReleaseScript(EERIE_SCRIPT * es)
 // returns 0 if "seek" is at the start of "text"
 // else returns 1
 //*************************************************************************************
-long specialstrcmp( const std::string& text, const std::string& seek)
-{
-	
-	if ( text.compare( 0, seek.length(), seek ) == 0 )
-		return 0;
-
-	return 1;
-/*
-
-	long len = strlen(seek);
-	long len2 = strlen(text);
-
-	if (len2 < len) return 1;
-
-	for (long i = 0; i < len; i++)
-	{
-		if (text[i] != seek[i]) return 1;
-	}
-
-	return 0;*/
+long specialstrcmp( const std::string& text, const std::string& seek) {
+	return text.compare(0, seek.length(), seek) ? 1 : 0;
 }
 
 //*************************************************************************************

@@ -82,7 +82,7 @@ using std::sprintf;
 #include "graphics/data/Mesh.h"
 #include "graphics/particle/ParticleEffects.h"
 
-#include "io/IO.h"
+#include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Logger.h"
 
@@ -97,8 +97,6 @@ using std::sprintf;
 
 using std::min;
 using std::max;
-
-#define SOFTNEARCLIPPTANDLZ (60.f)
 
 //-----------------------------------------------------------------------------
 void PushInterBump(TextureContainer *_pTex,D3DTLVERTEX *_pVertex);
@@ -160,8 +158,6 @@ long USEINTERNORM=1;
 long HALOCUR=0;
 long anim_power[] = { 100, 20, 15, 12, 8, 6, 5, 4, 3, 2, 2, 1, 1, 1, 1 };
 
-bool bGATI8500=false;
-bool bSoftRender=false;
 //-----------------------------------------------------------------------------
 int iNbD3DTLVERTEXTab;
 SMY_D3DVERTEX3_T tD3DTLVERTEXTab[4000];
@@ -745,19 +741,6 @@ ARX_D3DVERTEX * PushVertexInTableCull(TextureContainer *pTex)
 }
 
 //-----------------------------------------------------------------------------
-ARX_D3DVERTEX * PushVertexInTableCullH(TextureContainer *pTex)
-{
-	if((pTex->ulNbVertexListCullH+3)>pTex->ulMaxVertexListCullH)
-	{
-		pTex->ulMaxVertexListCullH+=100*3;
-		pTex->pVertexListCullH=(ARX_D3DVERTEX*)realloc(pTex->pVertexListCullH,pTex->ulMaxVertexListCullH*sizeof(ARX_D3DVERTEX));
-	}
-
-	pTex->ulNbVertexListCullH+=3;
-	return &pTex->pVertexListCullH[pTex->ulNbVertexListCullH-3];
-}
-
-//-----------------------------------------------------------------------------
 ARX_D3DVERTEX * PushVertexInTableCull_TNormalTrans(TextureContainer *pTex)
 {
 	if((pTex->ulNbVertexListCull_TNormalTrans+3)>pTex->ulMaxVertexListCull_TNormalTrans)
@@ -775,19 +758,6 @@ ARX_D3DVERTEX * PushVertexInTableCull_TNormalTrans(TextureContainer *pTex)
 
 	pTex->ulNbVertexListCull_TNormalTrans+=3;
 	return &pTex->pVertexListCull_TNormalTrans[pTex->ulNbVertexListCull_TNormalTrans-3];
-}
-
-//-----------------------------------------------------------------------------
-ARX_D3DVERTEX * PushVertexInTableCull_TNormalTransH(TextureContainer *pTex)
-{
-	if((pTex->ulNbVertexListCull_TNormalTransH+3)>pTex->ulMaxVertexListCull_TNormalTransH)
-	{
-		pTex->ulMaxVertexListCull_TNormalTransH+=20*3;
-		pTex->pVertexListCull_TNormalTransH=(ARX_D3DVERTEX*)realloc(pTex->pVertexListCull_TNormalTransH,pTex->ulMaxVertexListCull_TNormalTransH*sizeof(ARX_D3DVERTEX));
-	}
-
-	pTex->ulNbVertexListCull_TNormalTransH+=3;
-	return &pTex->pVertexListCull_TNormalTransH[pTex->ulNbVertexListCull_TNormalTransH-3];
 }
 
 //-----------------------------------------------------------------------------
@@ -811,20 +781,6 @@ ARX_D3DVERTEX * PushVertexInTableCull_TAdditive(TextureContainer *pTex)
 }
 
 //-----------------------------------------------------------------------------
-ARX_D3DVERTEX * PushVertexInTableCull_TAdditiveH(TextureContainer *pTex)
-{
-
-	if((pTex->ulNbVertexListCull_TAdditiveH+3)>pTex->ulMaxVertexListCull_TAdditiveH)
-	{
-		pTex->ulMaxVertexListCull_TAdditiveH+=20*3;
-		pTex->pVertexListCull_TAdditiveH=(ARX_D3DVERTEX*)realloc(pTex->pVertexListCull_TAdditiveH,pTex->ulMaxVertexListCull_TAdditiveH*sizeof(ARX_D3DVERTEX));
-	}
-
-	pTex->ulNbVertexListCull_TAdditiveH+=3;
-	return &pTex->pVertexListCull_TAdditiveH[pTex->ulNbVertexListCull_TAdditiveH-3];
-}
-
-//-----------------------------------------------------------------------------
 ARX_D3DVERTEX * PushVertexInTableCull_TSubstractive(TextureContainer *pTex)
 {
 	if((pTex->ulNbVertexListCull_TSubstractive+3)>pTex->ulMaxVertexListCull_TSubstractive)
@@ -842,19 +798,6 @@ ARX_D3DVERTEX * PushVertexInTableCull_TSubstractive(TextureContainer *pTex)
 
 	pTex->ulNbVertexListCull_TSubstractive+=3;
 	return &pTex->pVertexListCull_TSubstractive[pTex->ulNbVertexListCull_TSubstractive-3];
-}
-
-//-----------------------------------------------------------------------------
-ARX_D3DVERTEX * PushVertexInTableCull_TSubstractiveH(TextureContainer *pTex)
-{
-	if((pTex->ulNbVertexListCull_TSubstractiveH+3)>pTex->ulMaxVertexListCull_TSubstractiveH)
-	{
-		pTex->ulMaxVertexListCull_TSubstractiveH+=20*3;
-		pTex->pVertexListCull_TSubstractiveH=(ARX_D3DVERTEX*)realloc(pTex->pVertexListCull_TSubstractiveH,pTex->ulMaxVertexListCull_TSubstractiveH*sizeof(ARX_D3DVERTEX));
-	}
-
-	pTex->ulNbVertexListCull_TSubstractiveH+=3;
-	return &pTex->pVertexListCull_TSubstractiveH[pTex->ulNbVertexListCull_TSubstractiveH-3];
 }
 
 //-----------------------------------------------------------------------------
@@ -878,19 +821,6 @@ ARX_D3DVERTEX * PushVertexInTableCull_TMultiplicative(TextureContainer *pTex)
 }
 
 //-----------------------------------------------------------------------------
-ARX_D3DVERTEX * PushVertexInTableCull_TMultiplicativeH(TextureContainer *pTex)
-{
-	if((pTex->ulNbVertexListCull_TMultiplicativeH+3)>pTex->ulMaxVertexListCull_TMultiplicativeH)
-	{
-		pTex->ulMaxVertexListCull_TMultiplicativeH+=20*3;
-		pTex->pVertexListCull_TMultiplicativeH=(ARX_D3DVERTEX*)realloc(pTex->pVertexListCull_TMultiplicativeH,pTex->ulMaxVertexListCull_TMultiplicativeH*sizeof(ARX_D3DVERTEX));
-	}
-
-	pTex->ulNbVertexListCull_TMultiplicativeH+=3;
-	return &pTex->pVertexListCull_TMultiplicativeH[pTex->ulNbVertexListCull_TMultiplicativeH-3];
-}
-
-//-----------------------------------------------------------------------------
 ARX_D3DVERTEX * PushVertexInTableCull_TMetal(TextureContainer *pTex)
 {
 	if((pTex->ulNbVertexListCull_TMetal+3)>pTex->ulMaxVertexListCull_TMetal)
@@ -903,27 +833,13 @@ ARX_D3DVERTEX * PushVertexInTableCull_TMetal(TextureContainer *pTex)
 	return &pTex->pVertexListCull_TMetal[pTex->ulNbVertexListCull_TMetal-3];
 }
 
-//-----------------------------------------------------------------------------
-ARX_D3DVERTEX * PushVertexInTableCull_TMetalH(TextureContainer *pTex)
-{
-	if((pTex->ulNbVertexListCull_TMetalH+3)>pTex->ulMaxVertexListCull_TMetalH)
-	{
-		pTex->ulMaxVertexListCull_TMetalH+=20*3;
-		pTex->pVertexListCull_TMetalH=(ARX_D3DVERTEX*)realloc(pTex->pVertexListCull_TMetalH,pTex->ulMaxVertexListCull_TMetalH*sizeof(ARX_D3DVERTEX));
-	}
-
-	pTex->ulNbVertexListCull_TMetalH+=3;
-	return &pTex->pVertexListCull_TMetalH[pTex->ulNbVertexListCull_TMetalH-3];
-}
-
 void PopOneTriangleListClipp(D3DTLVERTEX *_pVertex,int *_piNbVertex);
 extern float GLOBAL_NPC_MIPMAP_BIAS;
 extern float GLOBAL_MIPMAP_BIAS;
 //-----------------------------------------------------------------------------
 void PopOneTriangleList(TextureContainer *_pTex,bool _bUpdate)
 {
-	if(	!(_pTex->ulNbVertexListCull)&&
-		!(_pTex->ulNbVertexListCullH) )
+	if(	!_pTex->ulNbVertexListCull )
 	{
 		return;
 	}
@@ -945,17 +861,16 @@ void PopOneTriangleList(TextureContainer *_pTex,bool _bUpdate)
 
 	if( _pTex->ulNbVertexListCull )
 	{
-		//use bSoftRender with allow or not fix for bGATI8500 flag with VB.
 		EERIEDRAWPRIM(	GDevice,
 						D3DPT_TRIANGLELIST,
 						D3DFVF_TLVERTEX,
 						_pTex->pVertexListCull,
 						_pTex->ulNbVertexListCull,
-						0, (bSoftRender?EERIE_USEVB:0) );
+						0, 
+						0 );
 		if(_bUpdate) _pTex->ulNbVertexListCull = 0;
 	}
 	
-	PopOneTriangleListClipp(_pTex->pVertexListCullH,(int*)&_pTex->ulNbVertexListCullH);
 	val=GLOBAL_MIPMAP_BIAS;
 	GDevice->SetTextureStageState( 0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD) (&val))  );
 }
@@ -964,29 +879,19 @@ void PopOneTriangleList(TextureContainer *_pTex,bool _bUpdate)
 void PopOneTriangleListTransparency(TextureContainer *_pTex)
 {
 	if(	!_pTex->ulNbVertexListCull_TNormalTrans&&
-		!_pTex->ulNbVertexListCull_TNormalTransH&&
 		!_pTex->ulNbVertexListCull_TAdditive&&
-		!_pTex->ulNbVertexListCull_TAdditiveH&&
 		!_pTex->ulNbVertexListCull_TSubstractive&&
-		!_pTex->ulNbVertexListCull_TSubstractiveH&&
 		!_pTex->ulNbVertexListCull_TMultiplicative&&
-		!_pTex->ulNbVertexListCull_TMultiplicativeH&&
-		!_pTex->ulNbVertexListCull_TMetal&&
-		!_pTex->ulNbVertexListCull_TMetalH
+		!_pTex->ulNbVertexListCull_TMetal
 		) return;
-
-	bool bUseVertexBuffer = bSoftRender; //use bSoftRender with allow or not fix for bGATI8500 flag with VB.
 
 	SETCULL(GDevice,D3DCULL_NONE);
 	SETTC(GDevice,_pTex);
 
-	if(	_pTex->ulNbVertexListCull_TNormalTrans||
-		_pTex->ulNbVertexListCull_TNormalTransH)
+	if(	_pTex->ulNbVertexListCull_TNormalTrans )
 	{
 		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR);
 		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_SRCCOLOR);
-
-		PopOneTriangleListClipp(_pTex->pVertexListCull_TNormalTransH,(int*)&_pTex->ulNbVertexListCull_TNormalTransH);
 
 		if(_pTex->ulNbVertexListCull_TNormalTrans)
 		{
@@ -995,18 +900,15 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 				D3DFVF_TLVERTEX,
 				_pTex->pVertexListCull_TNormalTrans,
 				_pTex->ulNbVertexListCull_TNormalTrans,
-				0, (bUseVertexBuffer?EERIE_USEVB:0) );
+				0, 0 );
 			_pTex->ulNbVertexListCull_TNormalTrans=0;
 		}
 	}
 	
-	if(	_pTex->ulNbVertexListCull_TAdditive||
-		_pTex->ulNbVertexListCull_TAdditiveH)
+	if(	_pTex->ulNbVertexListCull_TAdditive )
 	{
 		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
-
-		PopOneTriangleListClipp(_pTex->pVertexListCull_TAdditiveH,(int*)&_pTex->ulNbVertexListCull_TAdditiveH);
 
 		if(_pTex->ulNbVertexListCull_TAdditive)
 		{
@@ -1015,7 +917,7 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 				D3DFVF_TLVERTEX,
 				_pTex->pVertexListCull_TAdditive,
 				_pTex->ulNbVertexListCull_TAdditive,
-				0, (bUseVertexBuffer?EERIE_USEVB:0) );
+				0, 0 );
 			_pTex->ulNbVertexListCull_TAdditive=0;
 		}
 	}
@@ -1025,8 +927,6 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
 		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_INVSRCCOLOR);	
 
-		PopOneTriangleListClipp(_pTex->pVertexListCull_TSubstractiveH,(int*)&_pTex->ulNbVertexListCull_TSubstractiveH);
-
 		if(_pTex->ulNbVertexListCull_TSubstractive)
 		{
 			EERIEDRAWPRIM(	GDevice,
@@ -1034,7 +934,7 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 				D3DFVF_TLVERTEX,
 				_pTex->pVertexListCull_TSubstractive,
 				_pTex->ulNbVertexListCull_TSubstractive,
-				0, (bUseVertexBuffer?EERIE_USEVB:0) );
+				0, 0 );
 			_pTex->ulNbVertexListCull_TSubstractive=0;
 		}
 	}
@@ -1044,8 +944,6 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
 
-		PopOneTriangleListClipp(_pTex->pVertexListCull_TMultiplicativeH,(int*)&_pTex->ulNbVertexListCull_TMultiplicativeH);
-	
 		if(_pTex->ulNbVertexListCull_TMultiplicative)
 		{
 			EERIEDRAWPRIM(	GDevice,
@@ -1053,19 +951,16 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 				D3DFVF_TLVERTEX,
 				_pTex->pVertexListCull_TMultiplicative,
 				_pTex->ulNbVertexListCull_TMultiplicative,
-				0, (bUseVertexBuffer?EERIE_USEVB:0) );
+				0, 0 );
 			_pTex->ulNbVertexListCull_TMultiplicative=0;
 		}
 	}
 
-	if(	_pTex->ulNbVertexListCull_TMetal||
-		_pTex->ulNbVertexListCull_TMetalH)
+	if(	_pTex->ulNbVertexListCull_TMetal )
 	{
 		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR);
 		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
 
-		PopOneTriangleListClipp(_pTex->pVertexListCull_TMetalH,(int*)&_pTex->ulNbVertexListCull_TMetalH);
-		
 		if(_pTex->ulNbVertexListCull_TMetal)
 		{
 			EERIEDRAWPRIM(	GDevice,
@@ -1073,7 +968,7 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 				D3DFVF_TLVERTEX,
 				_pTex->pVertexListCull_TMetal,
 				_pTex->ulNbVertexListCull_TMetal,
-				0, (bUseVertexBuffer?EERIE_USEVB:0) );
+				0, 0 );
 			_pTex->ulNbVertexListCull_TMetal=0;
 		}
 	}
@@ -1084,25 +979,11 @@ void PopAllTriangleList(bool _bUpdate)
 {
 	D3DMATRIX matbase;
 
-	if(bGATI8500)
-	{
-		GDevice->GetTransform(D3DTRANSFORMSTATE_PROJECTION,&matbase);
-		D3DMATRIX matt=matbase;
-		matt._43*=8.f;
-		GDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION,&matt);
-	}
-
-TextureContainer *pTex=GetTextureList();
-
+	TextureContainer *pTex=GetTextureList();
 	while(pTex)
 	{
 		PopOneTriangleList(pTex,_bUpdate);
 		pTex=pTex->m_pNext;
-	}
-
-	if(bGATI8500)
-	{
-		GDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION,&matbase);
 	}
 }
 
@@ -1146,111 +1027,23 @@ void PopOneInterZMapp(TextureContainer *_pTex)
 			tD3DTLVERTEXTab2[iPos++].tv		= pSMY->uv[5];
 		}
 
-		bool bUseVertexBuffer = bSoftRender; //use bSoftRender with allow or not fix for bGATI8500 flag with VB.
-
 		EERIEDRAWPRIM(	GDevice,
 						D3DPT_TRIANGLELIST, 
 						D3DFVF_TLVERTEX,
 						tD3DTLVERTEXTab2,
 						iPos,
-						0, (bUseVertexBuffer?EERIE_USEVB:0) );
+						0, 0 );
 
 		_pTex->TextureRefinement->vPolyInterZMap.clear();
-	}
-
-	if(_pTex->TextureRefinement->vPolyInterZMapTANDL.size())
-	{
-		int iOldNbVertex=pDynamicVertexBufferTransform->ussNbVertex;
-		pDynamicVertexBufferTransform->ussNbIndice=0;
-
-		SMY_D3DVERTEX *pVertex;
-	
-		unsigned int uiCalc = pDynamicVertexBufferTransform->ussNbVertex + _pTex->TextureRefinement->vPolyInterZMapTANDL.size()*3;
-		assert(uiCalc <= USHRT_MAX);
-		pDynamicVertexBufferTransform->ussNbVertex = static_cast<unsigned short>(uiCalc);
-		
-		if(pDynamicVertexBufferTransform->ussNbVertex > pDynamicVertexBufferTransform->ussMaxVertex)
-		{
-			pVertex=(SMY_D3DVERTEX*)pDynamicVertexBufferTransform->Lock(DDLOCK_DISCARDCONTENTS);
-
-			uiCalc = _pTex->TextureRefinement->vPolyInterZMapTANDL.size()*3;
-			assert(uiCalc <= USHRT_MAX);
-			pDynamicVertexBufferTransform->ussNbVertex = static_cast<unsigned short>(uiCalc);
-			iOldNbVertex=0;
-
-			//Keep this to check in debug if buffer can eventually be overflooded
-			ARX_CHECK( pDynamicVertexBufferTransform->ussNbVertex <= pDynamicVertexBufferTransform->ussMaxVertex );
-		} 
-		else
-		{
-			pVertex=(SMY_D3DVERTEX*)pDynamicVertexBufferTransform->Lock(DDLOCK_NOOVERWRITE);
-			pVertex+=iOldNbVertex;
-		}
-
-		SETTC(GDevice,_pTex->TextureRefinement);
-
- 
-		vector<SMY_ZMAPPINFO>::iterator it;
-
-		for (it = _pTex->TextureRefinement->vPolyInterZMapTANDL.begin();
-			it != _pTex->TextureRefinement->vPolyInterZMapTANDL.end();
-			++it)
-		{
-			SMY_ZMAPPINFO *pSMY = &(*it);
-			float fColor;
-			
-			pVertex->x=pSMY->pD3DVertex[0].sx;
-			pVertex->y=-pSMY->pD3DVertex[0].sy;
-			pVertex->z=pSMY->pD3DVertex[0].sz;
-			fColor=pSMY->color[0];
-			pVertex->color=D3DRGB(fColor,fColor,fColor);
-			pVertex->tu=pSMY->uv[0];
-			pVertex->tv=pSMY->uv[1];
-			pVertex++;
-			pVertex->x=pSMY->pD3DVertex[1].sx;
-			pVertex->y=-pSMY->pD3DVertex[1].sy;
-			pVertex->z=pSMY->pD3DVertex[1].sz;
-			fColor=pSMY->color[1];
-			pVertex->color=D3DRGB(fColor,fColor,fColor);
-			pVertex->tu=pSMY->uv[2];
-			pVertex->tv=pSMY->uv[3];
-			pVertex++;
-			pVertex->x=pSMY->pD3DVertex[2].sx;
-			pVertex->y=-pSMY->pD3DVertex[2].sy;
-			pVertex->z=pSMY->pD3DVertex[2].sz;
-			fColor=pSMY->color[2];
-			pVertex->color=D3DRGB(fColor,fColor,fColor);
-			pVertex->tu=pSMY->uv[4];
-			pVertex->tv=pSMY->uv[5];
-			pVertex++;
-		}
-		
-		pDynamicVertexBufferTransform->UnLock();
-
-		GDevice->DrawPrimitiveVB(	D3DPT_TRIANGLELIST,
-									pDynamicVertexBufferTransform->pVertexBuffer,
-									iOldNbVertex,
-									pDynamicVertexBufferTransform->ussNbVertex-iOldNbVertex,
-									0 );
-
-		_pTex->TextureRefinement->vPolyInterZMapTANDL.clear();
 	}
 }
 
 //-----------------------------------------------------------------------------
 void PopAllTriangleListTransparency()
 {
-TextureContainer *pTex=GetTextureList();
+	TextureContainer *pTex=GetTextureList();
 
 	D3DMATRIX matbase;
-
-	if(bGATI8500)
-	{
-		GDevice->GetTransform(D3DTRANSFORMSTATE_PROJECTION,&matbase);
-		D3DMATRIX matt=matbase;
-		matt._43*=8.f;
-		GDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION,&matt);
-	}
 
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,0);
 	SETALPHABLEND(GDevice,true);
@@ -1279,11 +1072,6 @@ TextureContainer *pTex=GetTextureList();
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
 	SETALPHABLEND(GDevice,false);
 	SETZWRITE(GDevice,true);
-
-	if(bGATI8500)
-	{
-		GDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION,&matbase);
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1295,166 +1083,6 @@ void PushInterBump(TextureContainer *_pTex,D3DTLVERTEX *_pVertex)
 }
 
 //-----------------------------------------------------------------------------
-void PushInterBumpTANDL(TextureContainer *_pTex,D3DTLVERTEX *_pVertex,EERIE_3D *_pee3d0,EERIE_3D *_pee3d1,EERIE_3D *_pee3d2)
-{
-	D3DTLVERTEX vertex[3];
-	memcpy(vertex,_pVertex,sizeof(D3DTLVERTEX)*3);
-	vertex[0].sx=_pee3d0->x;
-	vertex[0].sy=_pee3d0->y;
-	vertex[0].sz=_pee3d0->z;
-	vertex[1].sx=_pee3d1->x;
-	vertex[1].sy=_pee3d1->y;
-	vertex[1].sz=_pee3d1->z;
-	vertex[2].sx=_pee3d2->x;
-	vertex[2].sy=_pee3d2->y;
-	vertex[2].sz=_pee3d2->z;
-
-	_pTex->vPolyInterBumpTANDL.push_back(vertex[0]);
-	_pTex->vPolyInterBumpTANDL.push_back(vertex[1]);
-	_pTex->vPolyInterBumpTANDL.push_back(vertex[2]);
-}
-
-//-----------------------------------------------------------------------------
-void PopOneInterBumpTANDL(LPDIRECT3DDEVICE7 _pDevice,TextureContainer *_pTex)
-{
-	//BUMP
-	if( _pTex->vPolyInterBumpTANDL.size() )
-	{
-		//----------------------------------------------------------------------------------
-		//																		Initializing
-		CMY_DYNAMIC_VERTEXBUFFER* pDVB	=	pDynamicVertexBufferBump; //Fixing bump issue : using pDynamicVertexBuffer may result on fatal error on some GC.
-
-		_pDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND , D3DBLEND_DESTCOLOR );
-		_pDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR );	
-		
-		_pDevice->SetTexture( 0, _pTex->m_pddsBumpMap );
-
-		switch( danaeApp.m_pDeviceInfo->wNbTextureSimultaneous )
-		{
-		default:
-			_pDevice->SetTexture( 1, _pTex->m_pddsBumpMap );
-			_pDevice->SetTextureStageState( 1, D3DTSS_TEXCOORDINDEX, 1 );
-			_pDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-			_pDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
-			_pDevice->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_TEXTURE | D3DTA_COMPLEMENT );
-			_pDevice->SetTextureStageState( 1, D3DTSS_COLORARG2, D3DTA_CURRENT );
-			_pDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_ADDSIGNED );
-			_pDevice->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-			_pDevice->SetTextureStageState( 2, D3DTSS_COLOROP, D3DTOP_DISABLE );
-			break;
-		case 1:
-			_pDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
-			_pDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-			_pDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
-			break;
-		}
-
-		int iOldNbVertex			=	pDVB->ussNbVertex;
-		pDVB->ussNbIndice			=	0;
-
-		SMY_D3DVERTEX3 *pVertex;
-	
-		unsigned int uiCalc 		=	pDVB->ussNbVertex + _pTex->vPolyInterBumpTANDL.size() / 2 ;	//@TODO : Is DIV_2 justified ?
-		assert(uiCalc <= USHRT_MAX);
-		pDVB->ussNbVertex = static_cast<unsigned short>(uiCalc);
-		
-		if( pDVB->ussNbVertex > pDVB->ussMaxVertex )
-		{
-			//----------------------------------------------------------------------------------
-			//																			Clearing
-			pVertex					=	(SMY_D3DVERTEX3*)pDVB->Lock(DDLOCK_DISCARDCONTENTS);
-			
-			uiCalc					=	_pTex->vPolyInterBumpTANDL.size() / 2 ;					//@TODO : Is DIV_2 justified ?
-			assert(uiCalc <= USHRT_MAX);
-			pDVB->ussNbVertex = static_cast<unsigned short>(uiCalc);
-			iOldNbVertex			=	0;
-
-			//Keep this to check in debug if buffer can eventually be overflooded
-			ARX_CHECK( pDVB->ussNbVertex <= pDVB->ussMaxVertex );
-		} 
-		else
-		{
-			//----------------------------------------------------------------------------------
-			//																		 No clearing
-			pVertex					=	(SMY_D3DVERTEX3*)pDVB->Lock(DDLOCK_NOOVERWRITE);
-			pVertex					+=	iOldNbVertex;
-		}
-
-		//----------------------------------------------------------------------------------
-		//																				Loop
-		for( vector<D3DTLVERTEX>::iterator iT = _pTex->vPolyInterBumpTANDL.begin() ; iT < _pTex->vPolyInterBumpTANDL.end() ;  )
-		{
-			D3DTLVERTEX pVertexS[3];
-
-			pVertexS[0] = *iT;
-			iT++;
-			pVertexS[1] = *iT;
-			iT++;
-			pVertexS[2] = *iT;
-			iT++;
-			
-			if(	!pVertexS[0].color&&
-				!pVertexS[1].color&&
-				!pVertexS[2].color) continue;
-
-			float fDu,fDv;
-			CalculTriangleBump( pVertexS[0], pVertexS[1], pVertexS[2], &fDu, &fDv );
-			fDu						*=	.8f;
-			fDv						*=	.8f;
-			
-			for (short idx = 0 ; idx < 3 ; ++idx )
-			{
-				pVertex->x			=	pVertexS[idx].sx;
-				pVertex->y			=	pVertexS[idx].sy;
-				pVertex->z			=	pVertexS[idx].sz;
-				pVertex->color		=	pVertexS[idx].color;
-				pVertex->tu			=	pVertexS[idx].tu;
-				pVertex->tv			=	pVertexS[idx].tv;
-				pVertex->tu2		=	pVertexS[idx].tu + fDu;
-				pVertex->tv2		=	pVertexS[idx].tv + fDv;
-				pVertex++;
-			}
-		}
-
-		pDVB->UnLock();
-
-		//----------------------------------------------------------------------------------
-		//																			 Drawing
-		switch( danaeApp.m_pDeviceInfo->wNbTextureSimultaneous )
-		{
-		case 1:
-			_pDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 0 );
-			_pDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-
-			GDevice->DrawPrimitiveVB(	D3DPT_TRIANGLELIST,
-										pDVB->pVertexBuffer,
-										iOldNbVertex,
-										pDVB->ussNbVertex - iOldNbVertex,
-										0 );
-			
-			_pDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 1 );
-			_pDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE | D3DTA_COMPLEMENT );
-		default:
-			GDevice->DrawPrimitiveVB(	D3DPT_TRIANGLELIST,
-										pDVB->pVertexBuffer,
-										iOldNbVertex,
-										pDVB->ussNbVertex - iOldNbVertex,
-										0 );
-			break;
-		}
-
-		//----------------------------------------------------------------------------------
-		//																			  Ending
-		_pDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-		_pDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-		_pDevice->SetTextureStageState( 0, D3DTSS_COLOROP  , D3DTOP_MODULATE );
-		_pDevice->SetTextureStageState( 1, D3DTSS_COLOROP  , D3DTOP_DISABLE );
-		_pDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 0 );
-		_pTex->vPolyInterBumpTANDL.clear();
-	}
-}
-
-//-----------------------------------------------------------------------------
 void PopOneInterBump(LPDIRECT3DDEVICE7 _pDevice,TextureContainer *_pTex)
 {
 	//BUMP
@@ -1462,8 +1090,6 @@ void PopOneInterBump(LPDIRECT3DDEVICE7 _pDevice,TextureContainer *_pTex)
 	{
 		//----------------------------------------------------------------------------------
 		//																		Initializing
-		bool bUseVertexBuffer = bSoftRender;	//Fix Bump issues on some GC when bGATI8500 : use VB instead of DrawPrimitive.
-
 		_pDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND , D3DBLEND_DESTCOLOR );
 		_pDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR );	
 		
@@ -1532,7 +1158,7 @@ void PopOneInterBump(LPDIRECT3DDEVICE7 _pDevice,TextureContainer *_pTex)
 									FVF_D3DVERTEX3_T,
 									tD3DTLVERTEXTab,
 									iNbD3DTLVERTEXTab,
-									0, bUseVertexBuffer?EERIE_USEVB:0 );
+									0, 0 );
 			
 					_pDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 1 );
 					_pDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE | D3DTA_COMPLEMENT );
@@ -1542,7 +1168,7 @@ void PopOneInterBump(LPDIRECT3DDEVICE7 _pDevice,TextureContainer *_pTex)
 									FVF_D3DVERTEX3_T,
 									tD3DTLVERTEXTab,
 									iNbD3DTLVERTEXTab,
-									0, bUseVertexBuffer?EERIE_USEVB:0 );
+									0, 0 );
 					break;
 				}
 
@@ -1580,7 +1206,7 @@ void PopOneInterBump(LPDIRECT3DDEVICE7 _pDevice,TextureContainer *_pTex)
 								FVF_D3DVERTEX3_T,
 								tD3DTLVERTEXTab,
 								iNbD3DTLVERTEXTab,
-								0, bUseVertexBuffer?EERIE_USEVB:0 );
+								0, 0 );
 				
 				_pDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 1);
 				_pDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE | D3DTA_COMPLEMENT );
@@ -1590,7 +1216,7 @@ void PopOneInterBump(LPDIRECT3DDEVICE7 _pDevice,TextureContainer *_pTex)
 								FVF_D3DVERTEX3_T,
 								tD3DTLVERTEXTab,
 								iNbD3DTLVERTEXTab,
-								0, bUseVertexBuffer?EERIE_USEVB:0 );
+								0, 0 );
 				break;
 			}
 
@@ -1606,8 +1232,6 @@ void PopOneInterBump(LPDIRECT3DDEVICE7 _pDevice,TextureContainer *_pTex)
 		_pDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 0 );
 		_pTex->vPolyInterBump.clear();
 	}
-
-	PopOneInterBumpTANDL(GDevice,_pTex);
 }
 
 float INVISIBILITY_OVERRIDE=0.f;
@@ -1617,7 +1241,7 @@ extern void MakeCLight2(INTERACTIVE_OBJ * io,EERIE_RGB * infra,EERIE_3D * angle,
 //-----------------------------------------------------------------------------
 void CalculateInterZMapp(EERIE_3DOBJ *_pobj3dObj,long lIdList,long *_piInd,TextureContainer *_pTex,D3DTLVERTEX *_pD3DVertex)
 {
-SMY_ZMAPPINFO sZMappInfo;
+    SMY_ZMAPPINFO sZMappInfo;
 
 	if( (!ZMAPMODE)||
 		(!_pTex->TextureRefinement) ) return;
@@ -1665,57 +1289,7 @@ SMY_ZMAPPINFO sZMappInfo;
 }
 
 //-----------------------------------------------------------------------------
-void CalculateInterZMappTANDL(EERIE_3DOBJ *_pobj3dObj,long lIdList,long *_piInd,TextureContainer *_pTex)
-{
-SMY_ZMAPPINFO sZMappInfo;
-
-	if( (!ZMAPMODE)||
-		(!_pTex->TextureRefinement) ) return;
-
-	bool bUp=false;
-
-	if(	(fabs(_pobj3dObj->vertexlist[_piInd[0]].norm.y)>=.9f)||
-		(fabs(_pobj3dObj->vertexlist[_piInd[1]].norm.y)>=.9f)||
-		(fabs(_pobj3dObj->vertexlist[_piInd[2]].norm.y)>=.9f) )
-	{
-		bUp=true;
-	}
-
-	for(int iI=0;iI<3;iI++)
-	{
-		if(bUp)
-		{
-			sZMappInfo.uv[iI<<1]=(_pobj3dObj->vertexlist3[_piInd[iI]].v.x*( 1.0f / 50 ));
-			sZMappInfo.uv[(iI<<1)+1]=(_pobj3dObj->vertexlist3[_piInd[iI]].v.z*( 1.0f / 50 ));
-		}
-		else
-		{
-			sZMappInfo.uv[iI<<1]=(_pobj3dObj->facelist[lIdList].u[iI]*4.f);
-			sZMappInfo.uv[(iI<<1)+1]=(_pobj3dObj->facelist[lIdList].v[iI]*4.f);
-		}
-
-		float fDist=EEDistance3D(&ACTIVECAM->pos,(EERIE_3D *)&_pobj3dObj->vertexlist3[_piInd[iI]].v)-80.f;
-
-		if (fDist<10.f) fDist=10.f;
-
-		sZMappInfo.color[iI] = (150.f - fDist) * 0.006666666f;
-
-		if (sZMappInfo.color[iI]<0.f) sZMappInfo.color[iI]=0.f;
-	
-		sZMappInfo.pD3DVertex[iI].sx=_pobj3dObj->vertexlist3[_piInd[iI]].v.x;
-		sZMappInfo.pD3DVertex[iI].sy=_pobj3dObj->vertexlist3[_piInd[iI]].v.y;
-		sZMappInfo.pD3DVertex[iI].sz=_pobj3dObj->vertexlist3[_piInd[iI]].v.z;
-	}
-
-	//optim
-	if(	(sZMappInfo.color[0]!=0.f)||
-		(sZMappInfo.color[1]!=0.f)||
-		(sZMappInfo.color[2]!=0.f) )
-	{
-		_pTex->TextureRefinement->vPolyInterZMapTANDL.push_back(sZMappInfo);
-	}
-}
-
+int ARX_SoftClippZ(EERIE_VERTEX *_pVertex1,EERIE_VERTEX *_pVertex2,EERIE_VERTEX *_pVertex3,D3DTLVERTEX **_ptV,EERIE_FACE *_pFace,float _fInvibility,TextureContainer *_pTex,bool _bBump,bool _bZMapp,EERIE_3DOBJ *_pObj,int _iNumFace,long *_pInd,INTERACTIVE_OBJ *_pioInteractive,bool _bNPC,long _lSpecialColorFlag,EERIE_RGB *_pRGB);
 extern D3DMATRIX ProjectionMatrix;
 extern long FORCE_FRONT_DRAW;
 //-----------------------------------------------------------------------------
@@ -2146,11 +1720,9 @@ void DrawEERIEInter2(EERIE_3DOBJ * eobj,
 		}
 	}
 
-	bool bPassInTANDL;
 	bool bBumpOnIO;
 	float fDist;
 	fDist=EEDistance3D(&pos,&ACTIVECAM->pos);
-	bPassInTANDL=false;
 	bBumpOnIO=(bALLOW_BUMP)&&(io)&&(io->ioflags&IO_BUMP)&&(fDist<min(max(0.f,(ACTIVECAM->cdepth*fZFogStart)-200.f),600.f))?true:false;
 
 	float prec;
@@ -2161,26 +1733,6 @@ void DrawEERIEInter2(EERIE_3DOBJ * eobj,
 		paf[0]=eobj->facelist[i].vid[0];
 		paf[1]=eobj->facelist[i].vid[1];
 		paf[2]=eobj->facelist[i].vid[2];
-
-		if(bGATI8500)
-		{
-			long lClipp=0;
-
-			if(eobj->vertexlist[paf[0]].vworld.z<SOFTNEARCLIPPTANDLZ) lClipp++;
-
-			if(eobj->vertexlist[paf[1]].vworld.z<SOFTNEARCLIPPTANDLZ) lClipp++;
-
-			if(eobj->vertexlist[paf[2]].vworld.z<SOFTNEARCLIPPTANDLZ) lClipp++;
-
-			if(lClipp)
-			{
-				bPassInTANDL=true;
-			}
-			else
-			{
-				bPassInTANDL=false;
-			}
-		}
 
 		//CULL3D
 		EERIE_3D nrm;
@@ -2404,353 +1956,258 @@ void DrawEERIEInter2(EERIE_3DOBJ * eobj,
 		}
 	}			
 
-		if (FRAME_COUNT!=0)
-		for (long j=0;j<3;j++)		
-			vert_list[j].color=eobj->facelist[i].color[j];		
-		else 
-		for (long j=0;j<3;j++)		
-			eobj->facelist[i].color[j]=vert_list[j].color;		
+	if (FRAME_COUNT!=0)
+	for (long j=0;j<3;j++)		
+		vert_list[j].color=eobj->facelist[i].color[j];		
+	else 
+	for (long j=0;j<3;j++)		
+		eobj->facelist[i].color[j]=vert_list[j].color;		
 
-		// Transparent poly: storing info to draw later
-		if ((eobj->facelist[i].facetype & POLY_TRANS) 
-			|| (invisibility>0.f))
+	// Transparent poly: storing info to draw later
+	if ((eobj->facelist[i].facetype & POLY_TRANS) 
+		|| (invisibility>0.f))
+	{
+		vert_list[0].color	=	D3DRGB( fTransp, fTransp, fTransp );
+		vert_list[1].color	=	D3DRGB( fTransp, fTransp, fTransp );
+		vert_list[2].color	=	D3DRGB( fTransp, fTransp, fTransp );
+
+	}
+
+	ComputeFog(vert_list,3);
+
+	int iNbPointAdd;
+	if(!(iNbPointAdd=ARX_SoftClippZ(	&eobj->vertexlist[paf[0]],
+						&eobj->vertexlist[paf[1]],
+						&eobj->vertexlist[paf[2]],
+						&vert_list,
+						&eobj->facelist[i],
+						invisibility,
+						pTex,
+						bBumpOnIO,
+						(io)&&(io->ioflags&IO_ZMAP),
+						eobj,
+						i,
+						paf,
+						io,
+						false,
+						0,
+						NULL)))
+	{
+		*pNbVertexPush-=3;
+		continue;
+	}
+
+	if(bBumpOnIO)
+	{
+		PushInterBump(pTex,vert_list);
+	}
+
+	if((io)&&(io->ioflags&IO_ZMAP))
+	{
+		CalculateInterZMapp(eobj,i,paf,pTex,vert_list);
+	}
+
+	// Add some fake specular to Metallic polys
+	if ((eobj->facelist[i].facetype & POLY_METAL)
+		|| ((pTex) && (pTex->userflags & POLY_METAL)) )				
+	{
+		ARX_D3DVERTEX *vert_list_metal;
+
+		unsigned long *pulNbVertexList_TMetal;
 		{
-			vert_list[0].color	=	D3DRGB( fTransp, fTransp, fTransp );
-			vert_list[1].color	=	D3DRGB( fTransp, fTransp, fTransp );
-			vert_list[2].color	=	D3DRGB( fTransp, fTransp, fTransp );
-
+			vert_list_metal=PushVertexInTableCull_TMetal(pTex);
+			pulNbVertexList_TMetal=&pTex->ulNbVertexListCull_TMetal;
 		}
 
-		if(!bPassInTANDL)
+		memcpy((void*)vert_list_metal,(void*)vert_list,sizeof(D3DTLVERTEX)*3);
+		D3DTLVERTEX * tl=vert_list_metal;
+
+		long r = 0, g = 0, b = 0;
+		long todo	=	0;
+
+		for ( long j = 0 ; j < 3 ; j++ )
+		{ 
+			r	=	( tl->color >> 16 ) & 255;
+			g	=	( tl->color >> 8 ) & 255;
+			b	=	tl->color & 255;
+			
+			if ( r > 192 || g > 192 || b > 192 )
+			{
+				todo++;
+			}
+
+			r -= 192;
+
+			if ( r < 0.f ) r = 0;
+
+			g -= 192;
+
+			if ( g < 0.f ) g = 0;
+
+			b -= 192;
+
+			if ( b < 0.f ) b = 0;
+
+			tl->color = 0xFF000000 | ( r << 18 ) | ( g << 10 ) | ( b << 2 );
+			tl++;
+		}
+
+		if ( todo )
 		{
-			ComputeFog(vert_list,3);
+			if ( ( todo > 2 ) && ( rnd() > 0.997f ) )
+			{
+				if ( io )
+					SpawnMetalShine( (EERIE_3D *)&eobj->vertexlist3[eobj->facelist[i].vid[0]].vert, r, g, b, GetInterNum( io ) );
+			}
 		}
 		else
 		{
-			memcpy(vert_list_static,vert_list,sizeof(D3DTLVERTEX)*3);
+			*pulNbVertexList_TMetal -= 3;
+		}
+	}
+
+
+	////////////////////////////////////////////////////////////////////////
+	// HALO HANDLING START
+	if	(need_halo)			
+	{
+		Ncam.Xcos = 1.f;
+		Ncam.Xsin = 0.f;
+		Ncam.Zcos = 1.f;
+		Ncam.Zsin = 0.f;
+		float power=radians(MAKEANGLE(subj.angle.b));
+		Ncam.Ycos = (float)EEcos(power);	
+		Ncam.Ysin = (float)EEsin(power);
+		float tot=0;
+		float _ffr[3];
+			
+		ARX_D3DVERTEX * workon=vert_list;
+
+		for (long o=0;o<3;o++)
+		{
+			if (BIGMAT!=NULL)
+				VertexMatrixMultiply(&temporary3D, (EERIE_3D *)&eobj->vertexlist[paf[o]].norm, BIGMAT );
+			else 
+				_YXZRotatePoint(&eobj->vertexlist[paf[o]].norm,&temporary3D,&Ncam);
+	
+			power=255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
+
+			if (power>255.f) 
+			{
+				power=255.f;					
+			}
+			else if (power<0.f) 
+				power=0.f;
+
+			tot+=power;
+			
+			_ffr[o]=power;
+			lfr = io->halo.color.r * power;
+			lfg = io->halo.color.g * power;
+			lfb = io->halo.color.b * power;
+			workon[o].color = (0xFF << 24) | ((lfr & 0xFF) << 16) | ((lfg & 0xFF) << 8) | (lfb & 0xFF);
 		}
 
-		int iNbPointAdd;
-
-		if(!(iNbPointAdd=ARX_SoftClippZ(	&eobj->vertexlist[paf[0]],
-							&eobj->vertexlist[paf[1]],
-							&eobj->vertexlist[paf[2]],
-							&vert_list,
-							&eobj->facelist[i],
-							invisibility,
-							pTex,
-							bBumpOnIO,
-							(io)&&(io->ioflags&IO_ZMAP),
-							eobj,
-							i,
-							paf,
-							io,
-							false,
-							0,
-							NULL)))
-		{
-			*pNbVertexPush-=3;
-			continue;
-		}
-
-		if(bBumpOnIO)
-		{
-			if(bPassInTANDL)
+			if (tot>150.f)
 			{
-				PushInterBumpTANDL(pTex,vert_list_static,&eobj->vertexlist3[paf[0]].v,&eobj->vertexlist3[paf[1]].v,&eobj->vertexlist3[paf[2]].v);
-			}
-			else
+				long first;
+				long second;
+				long third;
+
+				if ( (_ffr[0]>=_ffr[1]) && (_ffr[1]>=_ffr[2]))
 			{
-				PushInterBump(pTex,vert_list);
+				first = 0;
+				second = 1;
+				third = 2;
 			}
-		}
-
-		if((io)&&(io->ioflags&IO_ZMAP))
-		{
-			if(bPassInTANDL)
+				else if ( (_ffr[0]>=_ffr[2]) && (_ffr[2]>=_ffr[1]))
 			{
-				CalculateInterZMappTANDL(eobj,i,paf,pTex);
+				first = 0;
+				second = 2;
+				third = 1;
 			}
-			else
+				else if ( (_ffr[1]>=_ffr[0]) && (_ffr[0]>=_ffr[2]))
 			{
-				CalculateInterZMapp(eobj,i,paf,pTex,vert_list);
+				first = 1;
+				second = 0;
+				third = 2;
 			}
-		}
-
-		// Add some fake specular to Metallic polys
-		if ((eobj->facelist[i].facetype & POLY_METAL)
-			|| ((pTex) && (pTex->userflags & POLY_METAL)) )				
-		{
-			ARX_D3DVERTEX *vert_list_metal;
-
-			unsigned long *pulNbVertexList_TMetal;
+				else if ( (_ffr[1]>=_ffr[2]) && (_ffr[2]>=_ffr[0]))
 			{
-				vert_list_metal=PushVertexInTableCull_TMetal(pTex);
-				pulNbVertexList_TMetal=&pTex->ulNbVertexListCull_TMetal;
+				first = 1;
+				second = 2;
+				third = 0;
 			}
-
-			memcpy((void*)vert_list_metal,(void*)vert_list,sizeof(D3DTLVERTEX)*3);
-			D3DTLVERTEX * tl=vert_list_metal;
-
-			long r = 0, g = 0, b = 0;
-			long todo	=	0;
-
-			for ( long j = 0 ; j < 3 ; j++ )
-			{ 
-				r	=	( tl->color >> 16 ) & 255;
-				g	=	( tl->color >> 8 ) & 255;
-				b	=	tl->color & 255;
-				
-				if ( r > 192 || g > 192 || b > 192 )
-				{
-					todo++;
-				}
-
-				r -= 192;
-
-				if ( r < 0.f ) r = 0;
-
-				g -= 192;
-
-				if ( g < 0.f ) g = 0;
-
-				b -= 192;
-
-				if ( b < 0.f ) b = 0;
-
-				tl->color = 0xFF000000 | ( r << 18 ) | ( g << 10 ) | ( b << 2 );
-				tl++;
-			}
-
-			if ( todo )
+				else if ( (_ffr[2]>=_ffr[0]) && (_ffr[0]>=_ffr[1]))
 			{
-				if ( ( todo > 2 ) && ( rnd() > 0.997f ) )
-				{
-					if ( io )
-						SpawnMetalShine( (EERIE_3D *)&eobj->vertexlist3[eobj->facelist[i].vid[0]].vert, r, g, b, GetInterNum( io ) );
-				}
+				first = 2;
+				second = 0;
+				third = 1;
 			}
-			else
+				else
 			{
-				*pulNbVertexList_TMetal -= 3;
-			}
-		}
-
-
-		////////////////////////////////////////////////////////////////////////
-		// HALO HANDLING START
-		if	(need_halo)			
-		{
-			Ncam.Xcos = 1.f;
-			Ncam.Xsin = 0.f;
-			Ncam.Zcos = 1.f;
-			Ncam.Zsin = 0.f;
-			float power=radians(MAKEANGLE(subj.angle.b));
-			Ncam.Ycos = (float)EEcos(power);	
-			Ncam.Ysin = (float)EEsin(power);
-			float tot=0;
-			float _ffr[3];
-				
-			ARX_D3DVERTEX * workon=vert_list;
-
-			for (long o=0;o<3;o++)
-			{
-				if (BIGMAT!=NULL)
-					VertexMatrixMultiply(&temporary3D, (EERIE_3D *)&eobj->vertexlist[paf[o]].norm, BIGMAT );
-				else 
-					_YXZRotatePoint(&eobj->vertexlist[paf[o]].norm,&temporary3D,&Ncam);
-		
-				power=255.f-(float)EEfabs(255.f*(temporary3D.z)*( 1.0f / 2 ));
-
-				if (power>255.f) 
-				{
-					power=255.f;					
-				}
-				else if (power<0.f) 
-					power=0.f;
-
-				tot+=power;
-				
-				_ffr[o]=power;
-				lfr = io->halo.color.r * power;
-				lfg = io->halo.color.g * power;
-				lfb = io->halo.color.b * power;
-				workon[o].color = 0xFF000000L | (((lfr) & 255) << 16)
-				                  | (((lfg) & 255) << 8) | ((lfb) & 255);
+				first = 2;
+				second = 1;
+				third = 0;
 			}
 
-				if (tot>150.f)
+			if ((_ffr[first] > 70.f) && (_ffr[second] > 60.f)) 
 				{
-					long first;
-					long second;
-					long third;
+					EERIE_3D vect1,vect2;
+					D3DTLVERTEX * vert=&LATERDRAWHALO[(HALOCUR<<2)];						
 
-					if ( (_ffr[0]>=_ffr[1]) && (_ffr[1]>=_ffr[2]))
-				{
-					first = 0;
-					second = 1;
-					third = 2;
-				}
-					else if ( (_ffr[0]>=_ffr[2]) && (_ffr[2]>=_ffr[1]))
-				{
-					first = 0;
-					second = 2;
-					third = 1;
-				}
-					else if ( (_ffr[1]>=_ffr[0]) && (_ffr[0]>=_ffr[2]))
-				{
-					first = 1;
-					second = 0;
-					third = 2;
-				}
-					else if ( (_ffr[1]>=_ffr[2]) && (_ffr[2]>=_ffr[0]))
-				{
-					first = 1;
-					second = 2;
-					third = 0;
-				}
-					else if ( (_ffr[2]>=_ffr[0]) && (_ffr[0]>=_ffr[1]))
-				{
-					first = 2;
-					second = 0;
-					third = 1;
-				}
-					else
-				{
-					first = 2;
-					second = 1;
-					third = 0;
-				}
+					if (HALOCUR<(HALOMAX-1)) HALOCUR++;
 
-				if ((_ffr[first] > 70.f) && (_ffr[second] > 60.f)) 
+					memcpy(&vert[0],&workon[first],sizeof(D3DTLVERTEX));
+					memcpy(&vert[1],&workon[first],sizeof(D3DTLVERTEX));
+					memcpy(&vert[2],&workon[second],sizeof(D3DTLVERTEX));
+					memcpy(&vert[3],&workon[second],sizeof(D3DTLVERTEX));						
+
+					float siz=ddist*(io->halo.radius*1.5f*(EEsin((float)(FrameTime+i)*( 1.0f / 100 ))*( 1.0f / 10 )+0.7f))*0.6f;
+					vect1.x=workon[first].sx-workon[third].sx;
+					vect1.y=workon[first].sy-workon[third].sy;						
+					float len1=1.f/EEsqrt(vect1.x*vect1.x+vect1.y*vect1.y);
+
+					if (vect1.x<0.f) len1*=1.2f;
+
+					vect1.x*=len1;
+					vect1.y*=len1;
+					vect2.x=workon[second].sx-workon[third].sx;
+					vect2.y=workon[second].sy-workon[third].sy;
+					float len2=1.f/EEsqrt(vect2.x*vect2.x+vect2.y*vect2.y);
+
+					if (vect2.x<0.f) len2*=1.2f;
+
+					vect2.x*=len2;
+					vect2.y*=len2;
+				vert[1].sx += (vect1.x + 0.2f - rnd() * 0.1f) * siz; 
+				vert[1].sy += (vect1.y + 0.2f - rnd() * 0.1f) * siz; 
+					vert[1].color=0xFF000000;
+
+					if(bZBUFFER)
 					{
-						EERIE_3D vect1,vect2;
-						D3DTLVERTEX * vert=&LATERDRAWHALO[(HALOCUR<<2)];						
-
-						if (HALOCUR<(HALOMAX-1)) HALOCUR++;
-
-						memcpy(&vert[0],&workon[first],sizeof(D3DTLVERTEX));
-						memcpy(&vert[1],&workon[first],sizeof(D3DTLVERTEX));
-						memcpy(&vert[2],&workon[second],sizeof(D3DTLVERTEX));
-						memcpy(&vert[3],&workon[second],sizeof(D3DTLVERTEX));						
-
-						float siz=ddist*(io->halo.radius*1.5f*(EEsin((float)(FrameTime+i)*( 1.0f / 100 ))*( 1.0f / 10 )+0.7f))*0.6f;
-						vect1.x=workon[first].sx-workon[third].sx;
-						vect1.y=workon[first].sy-workon[third].sy;						
-						float len1=1.f/EEsqrt(vect1.x*vect1.x+vect1.y*vect1.y);
-
-						if (vect1.x<0.f) len1*=1.2f;
-
-						vect1.x*=len1;
-						vect1.y*=len1;
-						vect2.x=workon[second].sx-workon[third].sx;
-						vect2.y=workon[second].sy-workon[third].sy;
-						float len2=1.f/EEsqrt(vect2.x*vect2.x+vect2.y*vect2.y);
-
-						if (vect2.x<0.f) len2*=1.2f;
-
-						vect2.x*=len2;
-						vect2.y*=len2;
-					vert[1].sx += (vect1.x + 0.2f - rnd() * 0.1f) * siz; 
-					vert[1].sy += (vect1.y + 0.2f - rnd() * 0.1f) * siz; 
-						vert[1].color=0xFF000000;
-
-						if(bZBUFFER)
-						{
-						vert[0].sz+=0.0001f;
-						vert[3].sz += 0.0001f; 
-						}
-
-						vert[1].rhw*=.8f;
-						vert[2].rhw*=.8f;
-					vert[2].sx += (vect2.x + 0.2f - rnd() * 0.1f) * siz; 
-					vert[2].sy += (vect2.y + 0.2f - rnd() * 0.1f) * siz; 
-
-						if (io->halo.flags & HALO_NEGATIVE) 
-							vert[2].color=0x00000000;					
-						else 
-							vert[2].color=0xFF000000;
+					vert[0].sz+=0.0001f;
+					vert[3].sz += 0.0001f; 
 					}
+
+					vert[1].rhw*=.8f;
+					vert[2].rhw*=.8f;
+				vert[2].sx += (vect2.x + 0.2f - rnd() * 0.1f) * siz; 
+				vert[2].sy += (vect2.y + 0.2f - rnd() * 0.1f) * siz; 
+
+					if (io->halo.flags & HALO_NEGATIVE) 
+						vert[2].color=0x00000000;					
+					else 
+						vert[2].color=0xFF000000;
 				}
 			}
+		}
+	}
 
 // HALO HANDLING END
 ////////////////////////////////////////////////////////////////////////
 
-	if(bPassInTANDL)
-	{
-		D3DTLVERTEX *ptvTL;
-
-		if ((eobj->facelist[i].facetype & POLY_TRANS) 
-		|| (invisibility>0.f))
-		{
-			if(invisibility>0.f) 
-				fTransp=2.f-invisibility;
-			else
-				fTransp=eobj->facelist[i].transval;
-			
-			if (fTransp>=2.f)  //MULTIPLICATIVE
-			{
-				fTransp*=( 1.0f / 2 );
-				fTransp+=0.5f;
-				
-				ptvTL=PushVertexInTableCull_TMultiplicativeH(pTex);
-			}
-			else
-			{
-				if(fTransp>=1.f) //ADDITIVE
-				{	
-					fTransp-=1.f;
-					
-					ptvTL=PushVertexInTableCull_TAdditiveH(pTex);
-				}
-				else
-				{
-					if(fTransp>0.f)  //NORMAL TRANS
-					{
-						fTransp=1.f-fTransp;
-						
-						ptvTL=PushVertexInTableCull_TNormalTransH(pTex);
-					}
-					else  //SUBTRACTIVE
-					{
-						fTransp=1.f-fTransp;
-						
-						ptvTL=PushVertexInTableCull_TSubstractiveH(pTex);
-					}
-				}
-			}
-		}
-		else
-		{
-			ptvTL=PushVertexInTableCullH(pTex);
-		}
-
-		ptvTL[0].sx=eobj->vertexlist3[paf[0]].v.x;
-		ptvTL[0].sy=eobj->vertexlist3[paf[0]].v.y;
-		ptvTL[0].sz=eobj->vertexlist3[paf[0]].v.z;
-		ptvTL[0].color=vert_list_static[0].color;
-		ptvTL[0].tu=vert_list_static[0].tu;
-		ptvTL[0].tv=vert_list_static[0].tv;
-		ptvTL[1].sx=eobj->vertexlist3[paf[1]].v.x;
-		ptvTL[1].sy=eobj->vertexlist3[paf[1]].v.y;
-		ptvTL[1].sz=eobj->vertexlist3[paf[1]].v.z;
-		ptvTL[1].color=vert_list_static[1].color;
-		ptvTL[1].tu=vert_list_static[1].tu;
-		ptvTL[1].tv=vert_list_static[1].tv;
-		ptvTL[2].sx=eobj->vertexlist3[paf[2]].v.x;
-		ptvTL[2].sy=eobj->vertexlist3[paf[2]].v.y;
-		ptvTL[2].sz=eobj->vertexlist3[paf[2]].v.z;
-		ptvTL[2].color=vert_list_static[2].color;
-		ptvTL[2].tu=vert_list_static[2].tu;
-		ptvTL[2].tv=vert_list_static[2].tv;
-
-		*pNbVertexPush-=iNbPointAdd;
-		}
-	}	
-
 finish:
-	;
 
 	// storing 2D Bounding Box info
 	if (io) 
@@ -3617,7 +3074,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 			eobj->facelist[i].color[j]=vert_list[j].color;		
 
 		// Finally render our primitive			
-		EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE ,&vert_list, 3,  0, bSoftRender?EERIE_USEVB:0  );
+		EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE ,&vert_list, 3,  0, 0 );
 			
 
 		// Add some fake specular to Metallic polys
@@ -3667,7 +3124,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 					pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
 					SETALPHABLEND( pd3dDevice, true );			
 					SETZWRITE( pd3dDevice, false );
-					EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, &vert_list, 3, 0, bSoftRender?EERIE_USEVB:0);
+					EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, &vert_list, 3, 0, 0 );
 					SETALPHABLEND( pd3dDevice, false );			
 					SETZWRITE( pd3dDevice, true );
 				}				

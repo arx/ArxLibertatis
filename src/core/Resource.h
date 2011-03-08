@@ -22,10 +22,10 @@ If you have questions concerning this license or the applicable additional terms
 ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 ===========================================================================
 */
-//{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
-// Used by DANAE.rc
-//
+
+#ifndef ARX_CORE_RESOURCE_H
+#define ARX_CORE_RESOURCE_H
+
 #define IDSTARTSNAPSHOT                 2
 #define IDPASTE                         3
 #define IDCANCELSNAP                    3
@@ -480,14 +480,4 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define DANAE_MENU_UPDATEALLANIMS       40065
 #define IDM_DLF_CHECK                   40066
 
-// Next default values for new objects
-//
-#ifdef APSTUDIO_INVOKED
-#ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        218
-#define _APS_NEXT_COMMAND_VALUE         40067
-#define _APS_NEXT_CONTROL_VALUE         1229
-#define _APS_NEXT_SYMED_VALUE           102
-#endif
-#endif
+#endif // ARX_CORE_RESOURCE_H

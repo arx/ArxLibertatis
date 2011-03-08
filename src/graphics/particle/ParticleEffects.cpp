@@ -63,6 +63,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ai/Paths.h"
 
 #include "core/Time.h"
+#include "core/Core.h"
 
 #include "game/Damage.h"
 #include "game/Player.h"
@@ -91,7 +92,6 @@ using std::max;
 extern CMenuConfig *pMenuConfig;
 extern float fZFogEnd;
 extern unsigned long ulBKGColor;
-extern bool bSoftRender;
 
 //-----------------------------------------------------------------------------
 struct OBJFX
@@ -1381,74 +1381,72 @@ void ARX_BOOMS_Add(EERIE_3D * poss,long type)
 	ARX_CHECK_SHORT(z1);
 	ARX_CHECK_SHORT(x1);
 
-	if( !bSoftRender )
-	{	//We never add BOOMS particle with this flag to prevent any render issues. TO DO check for blending of DrawPrimitve and DrawPrimitiveVB
-		for (j=z0;j<=z1;j++) 		
-		for (i=x0;i<=x1;i++) 
+	//We never add BOOMS particle with this flag to prevent any render issues. TO DO check for blending of DrawPrimitve and DrawPrimitiveVB
+	for (j=z0;j<=z1;j++) 		
+	for (i=x0;i<=x1;i++) 
+	{
+		eg=(EERIE_BKG_INFO *)&ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+
+			for (long l = 0; l < eg->nbpoly; l++) 
 		{
-			eg=(EERIE_BKG_INFO *)&ACTIVEBKG->Backg[i+j*ACTIVEBKG->Xsize];
+			ep=&eg->polydata[l];
 
-				for (long l = 0; l < eg->nbpoly; l++) 
-			{
-				ep=&eg->polydata[l];
+			if (ep->type & POLY_QUAD) nbvert=4;
+			else nbvert=3;
 
-				if (ep->type & POLY_QUAD) nbvert=4;
-				else nbvert=3;
+			if ((ep->type & POLY_TRANS) && !(ep->type & POLY_WATER)) goto suite;
 
-				if ((ep->type & POLY_TRANS) && !(ep->type & POLY_WATER)) goto suite;
+			dod=1;
 
-				dod=1;
+			if ((ddd=Distance3D(ep->v[0].sx,ep->v[0].sy,ep->v[0].sz,poss->x,poss->y,poss->z))<BOOM_RADIUS)
+			{	
+				temp_u1[0]=(0.5f-((ddd/BOOM_RADIUS)*0.5f));
+				temp_v1[0]=(0.5f-((ddd/BOOM_RADIUS)*0.5f));
 
-				if ((ddd=Distance3D(ep->v[0].sx,ep->v[0].sy,ep->v[0].sz,poss->x,poss->y,poss->z))<BOOM_RADIUS)
-				{	
-					temp_u1[0]=(0.5f-((ddd/BOOM_RADIUS)*0.5f));
-					temp_v1[0]=(0.5f-((ddd/BOOM_RADIUS)*0.5f));
+				for (long k=1;k<nbvert;k++) 
+				{
+					ddd=Distance3D(ep->v[k].sx,ep->v[k].sy,ep->v[k].sz,poss->x,poss->y,poss->z);
 
-					for (long k=1;k<nbvert;k++) 
+					if (ddd>BOOM_RADIUS) dod=0;
+					else 
 					{
-						ddd=Distance3D(ep->v[k].sx,ep->v[k].sy,ep->v[k].sz,poss->x,poss->y,poss->z);
-
-						if (ddd>BOOM_RADIUS) dod=0;
-						else 
-						{
-							temp_u1[k]=0.5f-((ddd/BOOM_RADIUS)*0.5f);
-							temp_v1[k]=0.5f-((ddd/BOOM_RADIUS)*0.5f);						
-						}
-					}
-
-					if (dod) 
-					{
-						n=ARX_BOOMS_GetFree();
-
-						if (n>=0) 
-						{
-							BoomCount++;
-							POLYBOOM * pb=&polyboom[n];
-							pb->type=(short)typ;						
-							pb->exist=1;
-							pb->ep=ep;
-							pb->tc=tc2;
-							pb->tolive=10000;
-							pb->timecreation=tim;
-
-							pb->tx=ARX_CLEAN_WARN_CAST_SHORT(i);
-							pb->tz=ARX_CLEAN_WARN_CAST_SHORT(j);
-
-
-							for (int k=0;k<nbvert;k++) 
-							{
-								pb->u[k]=temp_u1[k];
-								pb->v[k]=temp_v1[k];
-							}
-
-							pb->nbvert=(short)nbvert;
-						}
+						temp_u1[k]=0.5f-((ddd/BOOM_RADIUS)*0.5f);
+						temp_v1[k]=0.5f-((ddd/BOOM_RADIUS)*0.5f);						
 					}
 				}
 
-				suite:
-					;
+				if (dod) 
+				{
+					n=ARX_BOOMS_GetFree();
+
+					if (n>=0) 
+					{
+						BoomCount++;
+						POLYBOOM * pb=&polyboom[n];
+						pb->type=(short)typ;						
+						pb->exist=1;
+						pb->ep=ep;
+						pb->tc=tc2;
+						pb->tolive=10000;
+						pb->timecreation=tim;
+
+						pb->tx=ARX_CLEAN_WARN_CAST_SHORT(i);
+						pb->tz=ARX_CLEAN_WARN_CAST_SHORT(j);
+
+
+						for (int k=0;k<nbvert;k++) 
+						{
+							pb->u[k]=temp_u1[k];
+							pb->v[k]=temp_v1[k];
+						}
+
+						pb->nbvert=(short)nbvert;
+					}
+				}
 			}
+
+			suite:
+				;
 		}
 	}
 }
@@ -1648,7 +1646,7 @@ void UpdateObjFx(LPDIRECT3DDEVICE7 pd3dDevice) {
 					}
 
 					SETTC(pd3dDevice,NULL);
-					EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , v2, 3,  0, bSoftRender?EERIE_USEVB:0  );
+					EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , v2, 3,  0, 0 );
 				}
 			}
 		}
@@ -2355,7 +2353,7 @@ void ARX_PARTICLES_Render(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_CAMERA * cam)
 					SETTC(pd3dDevice,NULL);
 					ComputeFogVertex(tv);
 
-					EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , tv, 3,  0, bSoftRender?EERIE_USEVB:0 );
+					EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , tv, 3, 0, 0);
 					if(!ARXPausedTimer)
 					{
 						part->oldpos.x=in.sx;

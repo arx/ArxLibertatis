@@ -425,14 +425,6 @@ void ARXMenu_Options_Video_SetLODQuality(int _iQuality)
 	FORCED_REDUCTION_VALUE = ARX_CLEAN_WARN_CAST_FLOAT(_iQuality * 5000);
 }
 
-//-----------------------------------------------------------------------------
-bool ARXMenu_Options_Video_SetSoftRender()
-{
-	extern bool	bSoftRender;	bSoftRender	=	( pMenuConfig && pMenuConfig->bDebugSetting ) ;
-	extern bool	bGATI8500;		bGATI8500	=	bSoftRender?true:bGATI8500;
-	return bSoftRender;
-}
-
 //OPTIONS AUDIO
 //-----------------------------------------------------------------------------
 void ARXMenu_Options_Audio_GetMasterVolume(int & _iVolume)
