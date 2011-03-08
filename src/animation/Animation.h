@@ -42,13 +42,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/d3dwrapper.h"
 
 class TextureContainer;
-class INTERACTIVE_OBJ;
-class EERIE_3D;
-class EERIE_3DOBJ;
-class EERIE_LIGHT;
-class ANIM_USE;
-class EERIEMATRIX;
-class EERIE_MOD_INFO;
+struct INTERACTIVE_OBJ;
+struct EERIE_3D;
+struct EERIE_3DOBJ;
+struct EERIE_LIGHT;
+struct ANIM_USE;
+struct EERIEMATRIX;
+struct EERIE_MOD_INFO;
 
 #define HALOMAX 2000
 extern long MAX_LLIGHTS;
@@ -74,13 +74,6 @@ D3DTLVERTEX * PushVertexInTableCull_TAdditive(TextureContainer *);
 D3DTLVERTEX * PushVertexInTableCull_TSubstractive(TextureContainer *);
 D3DTLVERTEX * PushVertexInTableCull_TMultiplicative(TextureContainer *);
 D3DTLVERTEX * PushVertexInTableCull_TMetal(TextureContainer *);
-
-D3DTLVERTEX * PushVertexInTableCullH(TextureContainer *);
-D3DTLVERTEX * PushVertexInTableCull_TNormalTransH(TextureContainer *);
-D3DTLVERTEX * PushVertexInTableCull_TAdditiveH(TextureContainer *);
-D3DTLVERTEX * PushVertexInTableCull_TSubstractiveH(TextureContainer *);
-D3DTLVERTEX * PushVertexInTableCull_TMultiplicativeH(TextureContainer *);
-D3DTLVERTEX * PushVertexInTableCull_TMetalH(TextureContainer *);
 
 void PushInterBump(TextureContainer *, D3DTLVERTEX *);
 void CalculateInterZMapp(EERIE_3DOBJ * _pobj3dObj, long lIdList, long * _piInd, TextureContainer * _pTex, D3DTLVERTEX * _pD3DVertex);

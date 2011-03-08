@@ -935,10 +935,8 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 									, ARX_CLEAN_WARN_CAST_INT(fBottom));
 
 
-							long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(
-												   hFontInGameNote, Mapmarkers[i].tstring.c_str(), 0, rRect);
+							long lLengthDraw = ARX_UNICODE_ForceFormattingInRect(hFontInGameNote, Mapmarkers[i].tstring, rRect);
 
-							danaeApp.DANAEEndRender();
 							char Page_Buffer[256];
 							//_tcsncpy(Page_Buffer, Mapmarkers[i].tstring, lLengthDraw);
 							strncpy( Page_Buffer, Mapmarkers[i].tstring.c_str(), lLengthDraw );
@@ -946,10 +944,7 @@ void ARX_MINIMAP_Show(LPDIRECT3DDEVICE7 m_pd3dDevice, long SHOWLEVEL, long flag,
 
 							DrawBookTextInRect( hFontInGameNote, ARX_CLEAN_WARN_CAST_FLOAT(bRect.left), ARX_CLEAN_WARN_CAST_FLOAT(bRect.top),
 											   ARX_CLEAN_WARN_CAST_FLOAT(bRect.right),
-											   Page_Buffer, 0, 0x00FF00FF );
-
-
-							danaeApp.DANAEStartRender();
+											   Page_Buffer, 0 );
 						}
 					}
 

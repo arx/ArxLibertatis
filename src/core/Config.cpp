@@ -28,4 +28,3 @@
 #include "gui/MenuWidgets.h"
 
 extern CMenuConfig * pMenuConfig;
-extern bool bGATI8500;

@@ -120,8 +120,6 @@ const std::string arxVersion = "0.1";
 	inline int strcasecmp(const char* str1, const char* str2) { return _stricmp(str1, str2); }
 	inline int strncasecmp(const char* str1, const char* str2, size_t maxCount) { return _strnicmp(str1, str2, maxCount); }
 	inline int chdir(const char* path) { return _chdir(path); }
-
-    char* strcasestr(const char *haystack, const char *needle);
 #endif
 
 
@@ -168,15 +166,18 @@ typedef double              f64;    // 64 bits double float
                      Maccro for assertion
 ------------------------------------------------------------*/
 
-void assertionFailed(const char * _sMessage, const char * _sFile, unsigned _iLine);
+void assertionFailed(const char * _sExpression, const char * _sFile, unsigned _iLine, const char * _sMessage = 0);
 
 #ifdef _DEBUG
-#define arx_assert(_Expression) (void) ((_Expression) ||  (assertionFailed((#_Expression), (__FILE__), __LINE__),  ARX_DEBUG_BREAK(), 0))
+#define arx_assert(_Expression)				  (void) ((_Expression) ||  (assertionFailed((#_Expression), (__FILE__), __LINE__),  ARX_DEBUG_BREAK(), 0))
+#define arx_assert_msg(_Expression, _Message) (void) ((_Expression) ||  (assertionFailed((#_Expression), (__FILE__), __LINE__, _Message),  ARX_DEBUG_BREAK(), 0))
 #else // _DEBUG
-#if _MSC_VER  // MS compilers support noop which discards everything inside the parens
-#define arx_assert(_Expression) __noop
+#if ARX_COMPILER_MSVC
+#define arx_assert(_Expression)				  __noop
+#define arx_assert_msg(_Expression, _Message) __noop
 #else
-#define arx_assert(_Expression) {}
+#define arx_assert(_Expression)				  {}
+#define arx_assert_msg(_Expression, _Message) {}
 #endif
 #endif // _DEBUG
 

@@ -143,11 +143,11 @@ FileHandle FileOpenReadWrite(const char * name) {
 }
 
 bool FileDelete(const std::string & file) {
-	return DeleteFile(file.c_str());
+	return DeleteFile(file.c_str()) == TRUE;
 }
 
 bool FileMove(const std::string & oldname, const std::string & newname) {
-	return MoveFile(oldname.c_str(), newname.c_str());
+	return MoveFile(oldname.c_str(), newname.c_str()) == TRUE;
 }
 
 long FileClose(FileHandle handle) {
@@ -262,5 +262,26 @@ void * FileLoadMalloc(const char * name, size_t * SizeLoadMalloc)
 	if (SizeLoadMalloc != NULL) *SizeLoadMalloc = size1;
 	
 	return(adr);
+}
+
+bool CreateFullPath(const string & path) {
+	
+	LogInfo << "CreateFullPath(" << path << ")";
+	
+	size_t last = 0;
+	
+	while(true) {
+		
+		size_t pos = path.find_first_of("/\\", last);
+		if(pos == string::npos) {
+			break;
+		}
+		
+		pos++;
+		CreateDirectory(path.substr(0, pos).c_str(), NULL);
+		last = pos;
+	}
+	
+	return DirectoryExist(path);
 }
 

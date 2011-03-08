@@ -290,7 +290,7 @@ LPTHREAD_START_ROUTINE PATHFINDER_Proc(char *)
 
 				pathfinder.setCylinder(curpr.ioid->physics.cyl.radius, curpr.ioid->physics.cyl.height);
 
-				bool stealth = (curpr.ioid->_npcdata->behavior & (BEHAVIOUR_SNEAK | BEHAVIOUR_HIDE));
+				bool stealth = (curpr.ioid->_npcdata->behavior & (BEHAVIOUR_SNEAK | BEHAVIOUR_HIDE)) == (BEHAVIOUR_SNEAK | BEHAVIOUR_HIDE);
 
 				
 				PathFinder::Result result;

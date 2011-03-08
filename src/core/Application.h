@@ -65,7 +65,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/d3dwrapper.h"
 
-class D3DEnum_DeviceInfo;
+struct D3DEnum_DeviceInfo;
 class CD3DFramework7;
 
 #define HIDE_BACKGROUND 1

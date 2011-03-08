@@ -58,8 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/GraphicsTypes.h"
 
-class INTERACTIVE_OBJ;
-class EERIE_CAMERA;
+struct INTERACTIVE_OBJ;
+struct EERIE_CAMERA;
 
 class CRuban;
 

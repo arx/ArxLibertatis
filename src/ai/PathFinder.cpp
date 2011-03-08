@@ -63,6 +63,13 @@ unsigned long Random::current;
 #define frnd() (1.0f - 2 * rnd())
 
 
+const float PathFinder::HEURISTIC_MIN = 0.0f;
+const float PathFinder::HEURISTIC_MAX = 0.5f;
+
+const float PathFinder::HEURISTIC_DEFAULT = 0.5f;
+const float PathFinder::RADIUS_DEFAULT = 0.0f;
+const float PathFinder::HEIGHT_DEFAULT = 0.0f;
+
 class PathFinder::Node {
 	
 	NodeId id;
