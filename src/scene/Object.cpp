@@ -65,7 +65,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "animation/AnimationRender.h"
 
 #include "core/Application.h"
-#include "core/TheoData.h"
 
 #include "graphics/GraphicsTypes.h"
 #include "graphics/Math.h"
@@ -84,6 +83,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "scene/LinkedObject.h"
 #include "scene/GameSound.h"
+#include "scene/ObjectFormat.h"
 
 using std::sprintf;
 using std::min;

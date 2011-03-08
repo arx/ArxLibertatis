@@ -30,21 +30,20 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //
 ///////////////////////////////////////////////////////////////////////////////
-#ifndef ARX_MISSILE_H
-#define ARX_MISSILE_H
 
-#include "graphics/data/Mesh.h"
+#ifndef ARX_GAME_MISSILE_H
+#define ARX_GAME_MISSILE_H
 
-//-----------------------------------------------------------------------------
-enum ARX_SPELLS_MISSILE_TYPE
-{
-	MISSILE_NONE     = 0,
+class INTERACTIVE_OBJ;
+class EERIE_3D;
+
+enum ARX_SPELLS_MISSILE_TYPE {
+	MISSILE_NONE = 0,
 	MISSILE_FIREBALL = 1
 };
 
-//-----------------------------------------------------------------------------
 void ARX_MISSILES_Spawn(INTERACTIVE_OBJ * io, const long & type, const EERIE_3D * startpos, const EERIE_3D * targetpos);
 void ARX_MISSILES_Update();
 void ARX_MISSILES_ClearAll();
 
-#endif//ARX_MISSILE_H
+#endif // ARX_GAME_MISSILE_H

@@ -3,8 +3,6 @@
 
 #include <algorithm>
 
-#include "io/Logger.h"
-
 using std::string;
 using std::copy;
 
@@ -156,8 +154,6 @@ void File_Standardize(const string & from, string & to) {
 			in++;
 		}
 	}
-	
-	LogDebug << "\"" << from << "\" -> \"" << temp << "\"";
 	
 	to = temp;
 }

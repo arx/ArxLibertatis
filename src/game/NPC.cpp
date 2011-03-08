@@ -68,10 +68,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "ai/PathFinderManager.h"
 
 #include "core/Time.h"
+#include "core/Core.h"
 
 #include "game/Damage.h"
 #include "game/Equipment.h"
 #include "game/Spells.h"
+#include "game/Player.h"
 
 #include "gui/Interface.h"
 #include "gui/Speech.h"
@@ -909,7 +911,7 @@ void ARX_TEMPORARY_TrySound(float volume)
 			if (PHYSICS_CURIO->soundcount < 5)
 			{
 
-				if ( EEIsUnderWaterFast( &PHYSICS_CURIO->pos ) ) material = MATERIAL_WATER; //ARX: jycorbel (2010-08-20) - rendering issues with bGATI8500: optimize time to render;
+				if ( EEIsUnderWater( &PHYSICS_CURIO->pos ) ) material = MATERIAL_WATER;
 				else if (PHYSICS_CURIO->material) material = PHYSICS_CURIO->material;
 				else material = MATERIAL_STONE;
 
@@ -1021,7 +1023,62 @@ void ARX_NPC_ManagePoison(INTERACTIVE_OBJ * io)
 }
 //*************************************************************************************
 //*************************************************************************************
- 
+
+//***********************************************************************************************
+// void CheckUnderWaterIO(INTERACTIVE_OBJ * io)
+//-----------------------------------------------------------------------------------------------
+// FUNCTION:
+//   Checks if the bottom of an IO is underwater.
+// RESULT:
+//   Plays Water sounds
+//   Decrease/stops Ignition of this IO if necessary
+//-----------------------------------------------------------------------------------------------
+// WARNINGS:
+// io must be valid (no check !)
+//***********************************************************************************************
+static void CheckUnderWaterIO(INTERACTIVE_OBJ * io)
+{
+	EERIE_3D ppos;
+	ppos.x = io->pos.x;
+	ppos.y = io->pos.y;
+	ppos.z = io->pos.z;
+	EERIEPOLY * ep = EEIsUnderWater(&ppos);
+
+	if (io->ioflags & IO_UNDERWATER)
+	{
+		if (!ep)
+		{
+			io->ioflags &= ~IO_UNDERWATER;
+			ARX_SOUND_PlaySFX(SND_PLOUF, &ppos);
+			ARX_PARTICLES_SpawnWaterSplash(&ppos);
+		}
+	}
+	else if (ep)
+	{
+		io->ioflags |= IO_UNDERWATER;
+		ARX_SOUND_PlaySFX(SND_PLOUF, &ppos);
+		ARX_PARTICLES_SpawnWaterSplash(&ppos);
+
+		if (io->ignition > 0.f)
+		{
+			ARX_SOUND_PlaySFX(SND_TORCH_END, &ppos);
+
+			if (ValidDynLight(io->ignit_light))
+				DynLight[io->ignit_light].exist = 0;
+
+			io->ignit_light = -1;
+
+			if (io->ignit_sound != ARX_SOUND_INVALID_RESOURCE)
+			{
+				ARX_SOUND_Stop(io->ignit_sound);
+				io->ignit_sound = ARX_SOUND_INVALID_RESOURCE;
+			}
+
+			io->ignition = 0;
+		}
+	}
+}
+
 extern float MAX_ALLOWED_PER_SECOND;
 long REACTIVATION_COUNT = 0;
 void ARX_PHYSICS_Apply()
@@ -1607,7 +1664,6 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	if (nfaces)
 	{
 		nouvo->facelist.reserve(nfaces);
-		size_t pos = 0;
 
 		for (size_t k = 0; k < from->facelist.size(); k++)
 		{
@@ -1615,11 +1671,11 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 			        &&	(equival[from->facelist[k].vid[1]] != -1)
 			        &&	(equival[from->facelist[k].vid[2]] != -1))
 			{
-				nouvo->facelist[pos] = from->facelist[k];
-				nouvo->facelist[pos].vid[0] = (unsigned short)equival[from->facelist[k].vid[0]];
-				nouvo->facelist[pos].vid[1] = (unsigned short)equival[from->facelist[k].vid[1]];
-				nouvo->facelist[pos].vid[2] = (unsigned short)equival[from->facelist[k].vid[2]];
-				pos++;
+				EERIE_FACE newface = from->facelist[k];
+				newface.vid[0] = (unsigned short)equival[from->facelist[k].vid[0]];
+				newface.vid[1] = (unsigned short)equival[from->facelist[k].vid[1]];
+				newface.vid[2] = (unsigned short)equival[from->facelist[k].vid[2]];
+				nouvo->facelist.push_back(newface);
 			}
 		}
 
@@ -3929,60 +3985,6 @@ void CheckNPC(INTERACTIVE_OBJ * io)
 		io->animlayer[1].next_anim = NULL;
 		io->animlayer[2].next_anim = NULL;
 		io->animlayer[3].next_anim = NULL;
-	}
-}
-//***********************************************************************************************
-// void CheckUnderWaterIO(INTERACTIVE_OBJ * io)
-//-----------------------------------------------------------------------------------------------
-// FUNCTION:
-//   Checks if the bottom of an IO is underwater.
-// RESULT:
-//   Plays Water sounds
-//   Decrease/stops Ignition of this IO if necessary
-//-----------------------------------------------------------------------------------------------
-// WARNINGS:
-// io must be valid (no check !)
-//***********************************************************************************************
-void CheckUnderWaterIO(INTERACTIVE_OBJ * io)
-{
-	EERIE_3D ppos;
-	ppos.x = io->pos.x;
-	ppos.y = io->pos.y;
-	ppos.z = io->pos.z;
-	EERIEPOLY * ep = EEIsUnderWater(&ppos);
-
-	if (io->ioflags & IO_UNDERWATER)
-	{
-		if (!ep)
-		{
-			io->ioflags &= ~IO_UNDERWATER;
-			ARX_SOUND_PlaySFX(SND_PLOUF, &ppos);
-			ARX_PARTICLES_SpawnWaterSplash(&ppos);
-		}
-	}
-	else if (ep)
-	{
-		io->ioflags |= IO_UNDERWATER;
-		ARX_SOUND_PlaySFX(SND_PLOUF, &ppos);
-		ARX_PARTICLES_SpawnWaterSplash(&ppos);
-
-		if (io->ignition > 0.f)
-		{
-			ARX_SOUND_PlaySFX(SND_TORCH_END, &ppos);
-
-			if (ValidDynLight(io->ignit_light))
-				DynLight[io->ignit_light].exist = 0;
-
-			io->ignit_light = -1;
-
-			if (io->ignit_sound != ARX_SOUND_INVALID_RESOURCE)
-			{
-				ARX_SOUND_Stop(io->ignit_sound);
-				io->ignit_sound = ARX_SOUND_INVALID_RESOURCE;
-			}
-
-			io->ignition = 0;
-		}
 	}
 }
 extern long GLOBAL_Player_Room;

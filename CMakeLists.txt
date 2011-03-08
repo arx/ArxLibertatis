@@ -64,6 +64,7 @@ option(ARX_DEBUG_EXTRA "Expensive debug options" OFF)
 # For custom cmake modules.
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/")
 
+find_package(Freetype REQUIRED)
 find_package(DevIL REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(Threads REQUIRED)
@@ -78,7 +79,7 @@ mark_as_advanced(IL_LIBRARIES)
 set(SRC_DIR src)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 
-include_directories(${SRC_DIR} ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR})
+include_directories(${SRC_DIR} ${ZLIB_INCLUDE_DIRS} ${IL_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIRS})
 
 if(MSVC)
 	# Set optimal options for msvc:
@@ -121,6 +122,7 @@ else(MSVC)
 	# Check the dependencies so there won't by cryptic link errors later on when found libraries have the wrong architecture (32- vs. 64-bit)
 	check_link_library(DevIL ${IL_LIBRARIES} IL)
 	check_link_library(ZLIB ${ZLIB_LIBRARIES})
+	check_link_library(Freetype ${FREETYPE_LIBRARIES})
 	check_link_library(Threads ${CMAKE_THREAD_LIBS_INIT})
 	
 	# Warning level
@@ -188,7 +190,7 @@ add_executable(arx ${ALL_SOURCES} ${ALL_INCLUDES})
 set(ARX_WINDOWS_LIBS gdi32 shell32 comdlg32 ole32 comctl32)
 set(ARX_GRAPHICS_LIBS dxguid dinput ddraw)
 set(ARX_SOUND_LIBS dsound)
-target_link_libraries(arx ${ARX_SOUND_LIBS} ${ARX_GRAPHICS_LIBS} ${ARX_WINDOWS_LIBS} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${ARX_THREAD_LIBS})
+target_link_libraries(arx ${ARX_SOUND_LIBS} ${ARX_GRAPHICS_LIBS} ${ARX_WINDOWS_LIBS} ${FREETYPE_LIBRARIES} ${ZLIB_LIBRARIES} ${IL_LIBRARIES} ${ARX_THREAD_LIBS})
 
 add_custom_target(remake
 	#clean and compile with 1 thread per core

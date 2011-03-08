@@ -14,11 +14,13 @@
 
 #include "core/Time.h"
 #include "core/Resource.h"
+#include "core/Core.h"
 
 #include "game/Damage.h"
 #include "game/Equipment.h"
 #include "game/Missile.h"
 #include "game/NPC.h"
+#include "game/Player.h"
 
 #include "gui/Speech.h"
 #include "gui/MiniMap.h"

@@ -143,11 +143,11 @@ FileHandle FileOpenReadWrite(const char * name) {
 }
 
 bool FileDelete(const std::string & file) {
-	return DeleteFile(file.c_str());
+	return DeleteFile(file.c_str()) == TRUE;
 }
 
 bool FileMove(const std::string & oldname, const std::string & newname) {
-	return MoveFile(oldname.c_str(), newname.c_str());
+	return MoveFile(oldname.c_str(), newname.c_str()) == TRUE;
 }
 
 long FileClose(FileHandle handle) {

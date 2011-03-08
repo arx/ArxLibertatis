@@ -90,8 +90,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #define BUTTON_MENUOPTIONSVIDEO_CROSSHAIR	(1+BUTTON_MENUOPTIONSVIDEO_CONTRAST)
 #define BUTTON_MENUOPTIONSVIDEO_ANTIALIASING (1+BUTTON_MENUOPTIONSVIDEO_CROSSHAIR)
 #define BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS	(1+BUTTON_MENUOPTIONSVIDEO_ANTIALIASING)
-#define BUTTON_MENUOPTIONSVIDEO_DEBUGSETTING	(1+BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS)
-
 
 #define BUTTON_MENUOPTIONSAUDIO_MASTER		(1+BUTTON_MENUOPTIONSVIDEO_OTHERSDETAILS)
 #define BUTTON_MENUOPTIONSAUDIO_SFX			(1+BUTTON_MENUOPTIONSAUDIO_MASTER)
@@ -495,7 +493,7 @@ class CMenuElementText: public CMenuElement
 {
 	public:
 		std::string lpszText;
-		HFONT	pHFont;
+		Font*	pFont;
 		long	lColor;
 		long	lOldColor;
 		long	lColorHighlight;
@@ -505,7 +503,7 @@ class CMenuElementText: public CMenuElement
 
 	public:
 
-		CMenuElementText(int, HFONT, const std::string&, float, float, long, float, MENUSTATE); 
+		CMenuElementText(int, Font*, const std::string&, float, float, long, float, MENUSTATE); 
 		virtual ~CMenuElementText();
 
 		CMenuElement * OnShortCut();
@@ -515,9 +513,8 @@ class CMenuElementText: public CMenuElement
 		void SetText( const std::string& _pText);
 		void RenderMouseOver();
  
- 
- 
- 
+		Vector2i GetTextSize() const;
+
 		bool OnMouseDoubleClick(int);
 };
 
@@ -529,12 +526,12 @@ class CMenuButton: public CMenuElement
 		int                 iPos;
 		TextureContainer*   pTex;
 		TextureContainer*   pTexOver;
-		HFONT               pHFont;
+		Font*               pFont;
 		int                 iColor;
 		float               fSize;
 
 	public:
-		CMenuButton(int, HFONT, MENUSTATE, int, int, const std::string&, float _fSize = 1.f, TextureContainer * _pTex = NULL, TextureContainer * _pTexOver = NULL, int _iColor = -1);
+		CMenuButton(int, Font*, MENUSTATE, int, int, const std::string&, float _fSize = 1.f, TextureContainer * _pTex = NULL, TextureContainer * _pTexOver = NULL, int _iColor = -1);
 		~CMenuButton();
 
 	public:
@@ -932,7 +929,5 @@ void ARX_MENU_Clicked_CREDITS();
 bool ARX_QuickLoad();
 void ARX_QuickSave();
 void ARX_DrawAfterQuickLoad();
-
-void GetTextSize(HFONT _hFont, const std::string& _lpszUText, int& _iWidth, int& _iHeight);
 
 #endif

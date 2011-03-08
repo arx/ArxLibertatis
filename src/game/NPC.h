@@ -54,13 +54,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2001 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-#ifndef ARX_NPC_H
-#define ARX_NPC_H
 
-#include "graphics/GraphicsTypes.h"
-#include "graphics/data/Mesh.h"
+#ifndef ARX_GAME_NPC_H
+#define ARX_GAME_NPC_H
 
-//-----------------------------------------------------------------------------
+class INTERACTIVE_OBJ;
+class EERIE_3D;
+
 const float ARX_NPC_AUDIBLE_VOLUME_MIN(0.94F);
 const float ARX_NPC_AUDIBLE_VOLUME_MAX(1.0F);
 const float ARX_NPC_AUDIBLE_VOLUME_DEFAULT(ARX_NPC_AUDIBLE_VOLUME_MAX);
@@ -96,7 +96,7 @@ INTERACTIVE_OBJ * ARX_NPC_GetFirstNPCInSight(INTERACTIVE_OBJ * ioo);
 void CheckNPC(INTERACTIVE_OBJ * io);
 void ManageIgnition(INTERACTIVE_OBJ * io);
 void ManageIgnition_2(INTERACTIVE_OBJ * io);
-void CheckUnderWaterIO(INTERACTIVE_OBJ * io);
-bool IsDeadNPC(INTERACTIVE_OBJ * io);
+
 void ARX_NPC_Kill_Spell_Launch(INTERACTIVE_OBJ * io);
-#endif
+
+#endif // ARX_GAME_NPC_H

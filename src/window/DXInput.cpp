@@ -380,7 +380,7 @@ bool DXI_ExecuteAllDevices() {
 }
 
 bool DXI_KeyPressed(int dikkey) {
-	return (DI_KeyBoardBuffer->bufferstate[dikkey] & 0x80);
+	return (DI_KeyBoardBuffer->bufferstate[dikkey] & 0x80) == 0x80;
 }
 
 int DXI_GetKeyIDPressed() {

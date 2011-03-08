@@ -126,7 +126,5 @@ void EERIEDrawBitmapUVs(LPDIRECT3DDEVICE7 pd3dDevice, float x, float y, float sx
 bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX *, D3DTLVERTEX *, D3DTLVERTEX *);
 bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX *, D3DTLVERTEX *, D3DTLVERTEX *, float _fAdd);
 
-void SET_FORCE_NO_VB( const bool& _NoVB );
-bool GET_FORCE_NO_VB( );
-
 #endif
+

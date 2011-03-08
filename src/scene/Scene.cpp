@@ -70,6 +70,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "animation/Animation.h"
 
 #include "core/Time.h"
+#include "core/Core.h"
 
 #include "game/Spells.h"
 #include "game/Player.h"
@@ -177,8 +178,6 @@ bool bOLD_CLIPP=false;
 void PopAllTriangleListTransparency();
 
 extern long TSU_TEST;
-extern bool bGATI8500;
-extern bool bSoftRender;
 
 //-----------------------------------------------------------------------------
 CMY_DYNAMIC_VERTEXBUFFER::CMY_DYNAMIC_VERTEXBUFFER(unsigned short _ussMaxVertex,unsigned long _uslFormat)
@@ -240,82 +239,6 @@ bool CMY_DYNAMIC_VERTEXBUFFER::UnLock()
 	return true;
 }
 
- 
-//-----------------------------------------------------------------------------
-void PopOneTriangleListClipp(D3DTLVERTEX *_pVertex,int *_piNbVertex)
-{
-
-		D3DTLVERTEX *pD3DVertex=_pVertex;
-	
-	while(*_piNbVertex)
-	{
-		int iOldNbVertex=pDynamicVertexBufferTransform->ussNbVertex;
-		pDynamicVertexBufferTransform->ussNbIndice=0;
-
-		SMY_D3DVERTEX *pVertex;
-
-
-		int iMin  = min(*_piNbVertex,(int)pDynamicVertexBufferTransform->ussMaxVertex);
-		ARX_CHECK_USHORT(iMin);
-
-		unsigned short iNbVertex=ARX_CLEAN_WARN_CAST_USHORT(iMin); 	
-
-		
-		pDynamicVertexBufferTransform->ussNbVertex+=iNbVertex;
-
-		if(pDynamicVertexBufferTransform->ussNbVertex>=pDynamicVertexBufferTransform->ussMaxVertex)
-		{
-			pVertex=(SMY_D3DVERTEX*)pDynamicVertexBufferTransform->Lock(DDLOCK_DISCARDCONTENTS);
-			pDynamicVertexBufferTransform->ussNbVertex=iNbVertex;
-			iOldNbVertex=0;
-		} 
-		else
-		{
-			pVertex=(SMY_D3DVERTEX*)pDynamicVertexBufferTransform->Lock(DDLOCK_NOOVERWRITE);
-			pVertex+=iOldNbVertex;
-		}
-		
-		*_piNbVertex-=iNbVertex;
-		iNbVertex/=3;
-
-		while(iNbVertex--)
-		{
-			pVertex->x=pD3DVertex->sx;
-			pVertex->y=-pD3DVertex->sy;
-			pVertex->z=pD3DVertex->sz;
-			pVertex->color=pD3DVertex->color;
-			pVertex->tu=pD3DVertex->tu;
-			pVertex->tv=pD3DVertex->tv;
-			pVertex++;
-			pD3DVertex++;
-			pVertex->x=pD3DVertex->sx;
-			pVertex->y=-pD3DVertex->sy;
-			pVertex->z=pD3DVertex->sz;
-			pVertex->color=pD3DVertex->color;
-			pVertex->tu=pD3DVertex->tu;
-			pVertex->tv=pD3DVertex->tv;
-			pVertex++;
-			pD3DVertex++;
-			pVertex->x=pD3DVertex->sx;
-			pVertex->y=-pD3DVertex->sy;
-			pVertex->z=pD3DVertex->sz;
-			pVertex->color=pD3DVertex->color;
-			pVertex->tu=pD3DVertex->tu;
-			pVertex->tv=pD3DVertex->tv;
-			pVertex++;
-			pD3DVertex++;
-		}
-		
-		pDynamicVertexBufferTransform->UnLock();
-		
-		GDevice->DrawPrimitiveVB(	D3DPT_TRIANGLELIST,
-									pDynamicVertexBufferTransform->pVertexBuffer,
-									iOldNbVertex,
-									pDynamicVertexBufferTransform->ussNbVertex-iOldNbVertex,
-									0 );
-	}
-}
-
 //------------------------------------------------------------------------------
 //	This function will use appropriate VB depending on vertex format. (using template)
 /************************************************************************/
@@ -329,15 +252,15 @@ void PopOneTriangleListClipp(D3DTLVERTEX *_pVertex,int *_piNbVertex)
  *	
  *	@return S_OK if function exit correctly.
  ************************************************************************/
-template<class _LPVERTEX_>
+template<class VERTEX_TYPE>
 HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevice,
-													D3DPRIMITIVETYPE			_dptPrimitiveType, 
-													_LPVERTEX_					_pVertex, 
-													int*						_piNbVertex, 
-													DWORD						_dwFlags,
-													CMY_DYNAMIC_VERTEXBUFFER*	_pDynamicVB)
+								D3DPRIMITIVETYPE			_dptPrimitiveType, 
+								VERTEX_TYPE*				_pVertex, 
+								int*						_piNbVertex, 
+								DWORD						_dwFlags,
+								CMY_DYNAMIC_VERTEXBUFFER*	_pDynamicVB)
 {
-	_LPVERTEX_					pD3DVertex	=	_pVertex;
+	VERTEX_TYPE*				pD3DVertex	=	_pVertex;
 	HRESULT						h_result	=	S_OK;
 	CMY_DYNAMIC_VERTEXBUFFER*	pDVB		=	_pDynamicVB;
 
@@ -345,7 +268,7 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevice,
 
 	while( *_piNbVertex )
 	{
-		_LPVERTEX_		pVertex			=	NULL;
+		VERTEX_TYPE*	pVertex			=	NULL;
 		int				iOldNbVertex	=	pDVB->ussNbVertex;
 		pDVB->ussNbIndice				=	0;
 		unsigned short iNbVertex		=	(unsigned short) min( *_piNbVertex, (int)pDVB->ussMaxVertex ); //don't overload VB
@@ -354,32 +277,19 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevice,
 
 		if( pDVB->ussNbVertex >= pDVB->ussMaxVertex )
 		{
-			pVertex						=	(_LPVERTEX_)pDVB->Lock( DDLOCK_DISCARDCONTENTS );
+			pVertex						=	(VERTEX_TYPE*)pDVB->Lock( DDLOCK_DISCARDCONTENTS );
 			pDVB->ussNbVertex			=	iNbVertex;
 			iOldNbVertex				=	0;
 		} 
 		else
 		{
-			pVertex						=	(_LPVERTEX_)pDVB->Lock( DDLOCK_NOOVERWRITE );
+			pVertex						=	(VERTEX_TYPE*)pDVB->Lock( DDLOCK_NOOVERWRITE );
 			pVertex						+=	iOldNbVertex;
 		}
 
 		*_piNbVertex					-=	iNbVertex;
 
-		if( D3DPT_TRIANGLELIST == _dptPrimitiveType )
-		{
-			iNbVertex		/=	3;
-			while( iNbVertex-- )
-			{
-				(*pVertex++)			=	(*pD3DVertex++); //structure copy (3 times)
-				(*pVertex++)			=	(*pD3DVertex++);
- 				(*pVertex++)			=	(*pD3DVertex++);
-			}
-		}
-		else
-		{
-			(*pVertex++)				=	(*pD3DVertex++); //structure copy
-		}
+		memcpy(pVertex, pD3DVertex, iNbVertex*sizeof(VERTEX_TYPE));
 
 		pDVB->UnLock();
 
@@ -3164,98 +3074,12 @@ SMY_D3DVERTEX *pMyVertex;
 		iNbTex=portals->room[room_num].usNbTextures;
 		ppTexCurr=portals->room[room_num].ppTextureContainer;
 
-		if( bSoftRender )
+		while ( iNbTex-- ) //For each tex in portals->room[room_num]
 		{
-		while(iNbTex--)
-		{
-			TextureContainer *pTexCurr=*ppTexCurr;
-		
-			if(	(pTexCurr->TextureRefinement)&&
-				(pTexCurr->TextureRefinement->vPolyZMap.size()) )
+			TextureContainer * pTexCurr	= *ppTexCurr;
+
+			if ( pTexCurr->TextureRefinement && pTexCurr->TextureRefinement->vPolyZMap.size() )
 			{
-					SETTC( GDevice, pTexCurr->TextureRefinement );
-
-					SMY_D3DVERTEX3		pVertex[6];
-					vector<EERIEPOLY *>::iterator it=	pTexCurr->TextureRefinement->vPolyZMap.begin();
-
-					for ( ; it != pTexCurr->TextureRefinement->vPolyZMap.end() ; ++it )
-					{
-						EERIEPOLY *		ep			=	*it;
-						unsigned short	iNbVertex	= (ep->type & POLY_QUAD) ? 4 : 3;
-
-						//---------------------------------------------------------------------------
-						//																	   CALCUL
-						float			tu[4];
-						float			tv[4];
-						float			_fTransp[4];
-						unsigned short	nu,	nuu;
-						long			nrm			=	0;
-
-						if	(		(EEfabs( ep->nrml[0].y ) >= 0.9f )
-								||	(EEfabs( ep->nrml[1].y ) >= 0.9f )
-								||	(EEfabs( ep->nrml[2].y ) >= 0.9f ) )
-							nrm						=	1;
-
-						for ( nu = 0, nuu = iNbVertex - 1 ; nu < iNbVertex ; nuu = nu++ )
-						{
-							if ( nrm )
-							{
-								tu[nu]				=	(ep->v[nu].sx * ( 1.0f / 50 ));
-								tv[nu]				=	(ep->v[nu].sz * ( 1.0f / 50 ));
-							}
-							else
-							{
-								tu[nu]				=	ep->v[nu].tu * 4.f;
-								tv[nu]				=	ep->v[nu].tv * 4.f;
-							}
-
-							float			t		=	max( 10.0f, EEDistance3D(&ACTIVECAM->pos, (EERIE_3D *)&ep->v[nu]) - 80.f );
-
-							_fTransp[nu] = (150.f - t) * 0.006666666f;
-
-							if (_fTransp[nu] < 0.f)
-								_fTransp[nu]		=	0.f;
-							// t cannot be greater than 1.f (b should be negative for that)
-						}
-
-						//---------------------------------------------------------------------------
-						//																	FILL DATA
-						for ( int idx = 0  ; idx < iNbVertex ; ++idx )
-						{
-							pVertex[idx].x				=	ep->v[idx].sx;
-							pVertex[idx].y				=	- ep->v[idx].sy;
-							pVertex[idx].z				=	ep->v[idx].sz;
-							pVertex[idx].color			=	D3DRGB( _fTransp[idx], _fTransp[idx], _fTransp[idx]);
-							pVertex[idx].tu				=	tu[idx]; 
-							pVertex[idx].tv				=	tv[idx]; 
-						}
-						if ( iNbVertex & 4 )
-						{
-							pVertex[4]					=	pVertex[2];
-							pVertex[5]					=	pVertex[1];
-						}
-
-						//Draw current prim
-						EERIEDRAWPRIM(GDevice, D3DPT_TRIANGLELIST, FVF_D3DVERTEX3, pVertex, (iNbVertex&4)?6:3,  0, EERIE_NOCOUNT );
-					}
-
-					//---------------------------------------------------------------------------
-					//														   CLEAR CURRENT ZMAP
-					pTexCurr->TextureRefinement->vPolyZMap.clear();
-				}
-				//MAJ POINTER -------------------------------------------------------------------
-				ppTexCurr++;
-			}//END  while ( iNbTex-- ) ----------------------------------------------------------
-		}
-		else
-		{
-			while ( iNbTex-- ) //For each tex in portals->room[room_num]
-			{
-				TextureContainer * pTexCurr					=	*ppTexCurr;
-
-				if (	( pTexCurr->TextureRefinement ) &&
-						( pTexCurr->TextureRefinement->vPolyZMap.size() ) )
-				{
 					//---------------------------------------------------------------------------
 					//																		 INIT
 				int iOldNbVertex=pDynamicVertexBuffer->ussNbVertex;
@@ -3269,7 +3093,7 @@ SMY_D3DVERTEX *pMyVertex;
 				unsigned short *pussInd=pDynamicVertexBuffer->pussIndice;
 				unsigned short iNbIndice = 0;
 
-					vector<EERIEPOLY *>::iterator it		=	pTexCurr->TextureRefinement->vPolyZMap.begin();
+				vector<EERIEPOLY *>::iterator it		=	pTexCurr->TextureRefinement->vPolyZMap.begin();
 				
 					//---------------------------------------------------------------------------
 					//																		 LOOP
@@ -3384,11 +3208,10 @@ SMY_D3DVERTEX *pMyVertex;
 						0 );
 				}	
 			}
-				//MAJ POINTER -------------------------------------------------------------------
+			
 			ppTexCurr++;
-			}//END  while ( iNbTex-- ) ----------------------------------------------------------
-		}
-
+		} //END  while ( iNbTex-- ) ----------------------------------------------------------
+		
 		//METAL(Voodoo grand gourou)
 		if(vPolyVoodooMetal.size())
 		{
@@ -3548,17 +3371,9 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 						GDevice->SetTexture( 1, pTexCurr->m_pddsBumpMap );
 						GDevice->SetTextureStageState( 1, D3DTSS_TEXCOORDINDEX, 1 );
 
-						if( bGATI8500 && !bSoftRender )
-	 					{
-	 						GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE | D3DTA_COMPLEMENT );
-							GDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-	 					}
-	 					else
-						{
-							GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-							GDevice->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_TEXTURE | D3DTA_COMPLEMENT );
-						}
-
+						GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+						GDevice->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_TEXTURE | D3DTA_COMPLEMENT );
+						
 						GDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
 						GDevice->SetTextureStageState( 1, D3DTSS_COLORARG2, D3DTA_CURRENT );
 						GDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_ADDSIGNED );

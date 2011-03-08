@@ -28,13 +28,13 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/d3dwrapper.h"
 
-class EERIE_3DOBJ;
-class EERIE_3D;
-class ANIM_USE;
-class INTERACTIVE_OBJ;
-class EERIE_VERTEX;
-class EERIE_FACE;
-class EERIE_RGB;
+struct EERIE_3DOBJ;
+struct EERIE_3D;
+struct ANIM_USE;
+struct INTERACTIVE_OBJ;
+struct EERIE_VERTEX;
+struct EERIE_FACE;
+struct EERIE_RGB;
 class TextureContainer;
 
 #define CEDRIC 1

@@ -38,9 +38,16 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "audio/Audio.h"
 
-#include <dsound.h>
 #include <cmath>
 #include <cstring>
+
+#include <dsound.h>
+
+#ifdef HAVE_PTHREADS
+#include <pthread.h>
+#include <time.h>
+#include <errno.h>
+#endif
 
 #include "audio/AudioResource.h"
 #include "audio/Mixer.h"
@@ -53,63 +60,81 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "io/Logger.h"
 
-#ifdef HAVE_PTHREADS
-#include <pthread.h>
-#include <time.h>
-#include <errno.h>
-#endif
-
-using namespace std;
-
 namespace ATHENA
 {
 
-	//Multithread data
-#ifdef HAVE_PTHREADS	
-	static pthread_mutex_t _mutex = PTHREAD_MUTEX_INITIALIZER;
-	static void *mutex = (void *)1; // just for compilation.  real mutex is above
-	static pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
-	static bool _mutex_used = false;
-#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
-	static HANDLE mutex(NULL);
-#endif	
+//Multithread data
+
+// TODO move to external file
+#ifdef HAVE_PTHREADS
 	
-	static const aalULong MUTEX_TIMEOUT(500);
-	static const aalULong MUTEX_ONUPDATE_TIMEOUT(200);
-	static aalError EnableEnvironmentalAudio();
-	HWND hwnd = NULL;
+	struct _Lock {
+		
+		pthread_mutex_t mutex;
+		pthread_cond_t cond;
+		bool locked;
+		
+		_Lock() : locked(false) {
+			const pthread_mutex_t mutex_init = PTHREAD_MUTEX_INITIALIZER;
+			mutex = mutex_init;
+			const pthread_cond_t cond_init = PTHREAD_COND_INITIALIZER;
+			cond = cond_init;
+		}
+		
+		int lock(u32 timeout) {
+			
+			pthread_mutex_lock(&mutex);
+			
+			if(locked) {
+				struct timespec time;
+				clock_gettime(CLOCK_REALTIME, &time);
+				time.tv_nsec += timeout * 1000;
+				int rc;
+				do {
+					rc = pthread_cond_timedwait(&cond, &mutex, &time);
+				} while(rc == 0 && locked);
+				if(rc == ETIMEDOUT) {
+					pthread_mutex_unlock(&mutex);
+					return WAIT_TIMEOUT;
+				}
+			}
+			
+			locked = true;
+			pthread_mutex_unlock(&mutex);
+			return 0;
+		}
+		
+		int unlock() {
+			pthread_mutex_lock(&mutex);
+			locked = false;
+			pthread_cond_signal(&cond);
+			return !pthread_mutex_unlock(&mutex);
+		}
+		
+	};
+	
+	typedef _Lock * Lock;
+	
+#elif ARX_PLATFORM == ARX_PLATFORM_WIN32
+	typedef HANDLE Lock;
+#else
+	#warning "locking not supported"
+#endif
+
+Lock mutex = NULL;
+
+static const aalULong MUTEX_TIMEOUT(500);
+static aalError EnableEnvironmentalAudio();
+HWND hwnd = NULL;
 
 #ifdef HAVE_PTHREADS
-#define WaitForSingleObject(x, y) __mutex_wait(y)
-	int __mutex_wait(aalULong time)
-	{
-		pthread_mutex_lock(&_mutex);
-		if (_mutex_used) {
-			struct timespec timeout;
-			struct timespec now;
-			clock_gettime(CLOCK_REALTIME, &now);
-			timeout.tv_sec = now.tv_sec;
-			timeout.tv_nsec = now.tv_nsec + (time * 1000);
-			if (pthread_cond_timedwait(&cond, &_mutex, &timeout) == ETIMEDOUT) {
-				pthread_mutex_unlock(&_mutex);
-				return WAIT_TIMEOUT;
-			}
-		}
-		_mutex_used = true;
-		pthread_mutex_unlock(&_mutex);
-		return 0;
-	}
-
-#define ReleaseMutex(x)	__mutex_release()
-	int __mutex_release()
-	{
-		pthread_mutex_lock(&_mutex);
-		_mutex_used = false;
-		pthread_cond_signal(&cond);
-		return !pthread_mutex_unlock(&_mutex);
-	}
+#define WaitForSingleObject(mutex, timeout) ((mutex)->lock(timeout))
+#define ReleaseMutex(mutex) ((mutex)->unlock())
 #undef CreateMutex
-#define CreateMutex(x, y, z) (void *)1
+#define CreateMutex(x, y, z) (new _Lock())
+#define DestroyMutex(mutex) (delete (mutex))
+#else
+#define DestroyMutex(mutex) CloseHandle(mutex)
 #endif
 
 	///////////////////////////////////////////////////////////////////////////////
@@ -224,7 +249,7 @@ namespace ATHENA
 		session_time = 0;
 		is_reverb_present = AAL_UFALSE;
 
-		if (mutex) ReleaseMutex(mutex), CloseHandle(mutex), mutex = NULL;
+		if (mutex) ReleaseMutex(mutex), DestroyMutex(mutex), mutex = NULL;
 
 		CoUninitialize();
 
@@ -462,7 +487,7 @@ namespace ATHENA
 			return AAL_ERROR_TIMEOUT;
 
 		if (flags & AAL_FLAG_MULTITHREAD && mutex)
-			ReleaseMutex(mutex), CloseHandle(mutex), mutex = NULL;
+			ReleaseMutex(mutex), DestroyMutex(mutex), mutex = NULL;
 
 		if (flags & FLAG_ANY_ENV_FX && environment)
 			environment->Release(), environment = NULL, global_status &= ~FLAG_ANY_ENV_FX;

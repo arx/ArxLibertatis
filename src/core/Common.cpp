@@ -68,13 +68,12 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "io/Logger.h"
 
 
-void assertionFailed(const char * _sMessage, const char * _sFile, unsigned int _iLine)
+void assertionFailed(const char * _sExpression, const char * _sFile, unsigned int _iLine, const char * _sMessage)
 {
 	char msgbuf[8192];
-	char fn[MAX_PATH + 1], msg[MAX_PATH + 1], iFile[MAX_PATH + 1];
+	char fn[MAX_PATH + 1], expr[MAX_PATH + 1], iFile[MAX_PATH + 1];
 
-
-	strcpy(msg, _sMessage);
+	strcpy(expr, _sExpression);
 	strcpy(iFile, _sFile);
 
 	if (iFile[0] == 0)
@@ -82,9 +81,9 @@ void assertionFailed(const char * _sMessage, const char * _sFile, unsigned int _
 		strcpy(iFile, "<unknown>");
 	}
 
-	if (msg[0] == 0)
+	if (expr[0] == 0)
 	{
-		strcpy(msg, "?");
+		strcpy(expr, "?");
 	}
 
 	fn[MAX_PATH] = 0;
@@ -94,8 +93,10 @@ void assertionFailed(const char * _sMessage, const char * _sFile, unsigned int _
 		strcpy(fn, "<unknown>");
 	}
 
-	sprintf(msgbuf, "Assertation failed!\n\nProgram: %s\nFile: %s, Line %u\n\nExpression: %s",
-	        fn, iFile, _iLine, msg);
+	if(_sMessage == 0)
+		sprintf(msgbuf, "Assertation failed!\n\nProgram: %s\nFile: %s, Line %u\n\nExpression: %s", fn, iFile, _iLine, expr);
+	else
+		sprintf(msgbuf, "Assertation failed!\n\nProgram: %s\nFile: %s, Line %u\n\nExpression: %s\nMessage: %s", fn, iFile, _iLine, expr, _sMessage);
 
 	LogError << msgbuf;
 }
