@@ -3361,6 +3361,7 @@ void MakeTemporaryIOIdent(INTERACTIVE_OBJ * io)
 }
 extern EERIE_3DOBJ	* arrowobj;
 extern long SP_DBG;
+
 //***********************************************************************************
 // AddItem
 // Adds an ITEM INTERACTIVE OBJECT to the Scene
@@ -3370,19 +3371,18 @@ INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fil, 
 	std::string tex1;
 	std::string tex2;
 	std::string texscript;
-	std::string file;
 	long type = IO_ITEM;
 
-	if (!specialstrcmp(GetName(fil), "GOLD_COIN"))
-	{
-		file = fil;
+	string file = fil;
+	MakeUpcase(file);
+	
+	if (!specialstrcmp(GetName(file), "GOLD_COIN")) {
 		RemoveName(file);
 		file += "GOLD_COIN.asl";
 		type = IO_ITEM | IO_GOLD;
 	}
-	else file = fil;
 
-	if (IsIn(fil, "MOVABLE"))
+	if (IsIn(file, "MOVABLE"))
 	{
 		type = IO_ITEM | IO_MOVABLE;
 	}
