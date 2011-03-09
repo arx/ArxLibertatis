@@ -103,7 +103,7 @@ public:
 	int fSeek(PakFileHandle * fh, int offset, long whence );
 	int fTell(PakFileHandle * fh);
 
-	bool GetDirectories( const std::string& name, vector<PakDirectory*>& directories );
+	bool GetDirectories( const std::string& name, std::vector<PakDirectory*>& directories );
 	bool ExistDirectory( const std::string& name );
 	bool ExistFile( const std::string& name );
 	
