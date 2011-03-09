@@ -102,7 +102,9 @@ public:
 	int fRead(void * buffer, size_t size, size_t count, PakFileHandle * fh);
 	int fSeek(PakFileHandle * fh, int offset, long whence );
 	int fTell(PakFileHandle * fh);
-	std::vector<PakDirectory*> * ExistDirectory( const std::string& name);
+
+	bool GetDirectories( const std::string& name, std::vector<PakDirectory*>& directories );
+	bool ExistDirectory( const std::string& name );
 	bool ExistFile( const std::string& name );
 	
 };

@@ -1145,22 +1145,15 @@ EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const char * dirr)
 	std::string path = dirr;
 	RemoveName(path);
 
-	vector<PakDirectory *> *pvRepertoire;
-	pvRepertoire = pPakManager->ExistDirectory(path);
+	vector<PakDirectory *> directories;
+	pPakManager->GetDirectories(path, directories);
 
-	if (!pvRepertoire->size())
+	vector<PakDirectory *>::iterator it;
+	for (it = directories.begin(); it < directories.end(); ++it)
 	{
-		pvRepertoire->clear();
-		delete pvRepertoire;
-	}
-
-	vector<PakDirectory *>::iterator iT;
-
-	for (iT = pvRepertoire->begin(); iT < pvRepertoire->end(); iT++)
-	{
-		int nb = (*iT)->nbfiles;
+		int nb = (*it)->nbfiles;
 		PakFile * et;
-		et = (*iT)->files;
+		et = (*it)->files;
 
 		while (nb--)
 		{
@@ -1182,10 +1175,6 @@ EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const char * dirr)
 			et = et->next;
 		}
 	}
-
-	pvRepertoire->clear();
-	delete pvRepertoire;
-
 
 	es->cub.xmax = -9999999999.f;
 	es->cub.xmin = 9999999999.f;

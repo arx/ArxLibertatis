@@ -102,13 +102,13 @@ if(MSVC)
 		ai animation audio core game graphics gui io physics scene scripting window
 	)
 	
+	file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
+	source_group("inc" FILES ${ALL_INCLUDES})
+	
 	foreach(SOURCE_GROUP ${SOURCE_GROUPS})
 		file(GLOB_RECURSE SOURCES ${SRC_DIR}/${SOURCE_GROUP}/*.*)
 		source_group("${SOURCE_GROUP}" FILES ${SOURCES})
 	endforeach(SOURCE_GROUP)
-	#glob includes
-	file(GLOB_RECURSE ALL_INCLUDES ${SRC_DIR}/*.h)
-	source_group("inc" FILES ${ALL_INCLUDES})
 	
 else(MSVC)
 	# Set optimal options for gcc:
