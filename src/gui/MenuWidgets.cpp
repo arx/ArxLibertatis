@@ -4208,21 +4208,15 @@ MENUSTATE CMenuState::Update(int _iDTime)
 
 	bool bReturn=false;
 
-	if(pGetInfoDirectInput->GetMouseButton(DXI_BUTTON0))
-	{
-		if(iR != 0)
-		{
-			pZoneClick=(CMenuElement*)iR;
-
+	if(pGetInfoDirectInput->GetMouseButton(DXI_BUTTON0)) {
+		if(iR) {
+			pZoneClick = (CMenuElement*)iR;
 			pZoneClick->OnMouseClick(1);
 			bReturn=true;
 		}
-	}
-	else
-	{
-		if(iR != 0)
-		{
-			pZoneClick=(CMenuElement*)iR;
+	} else {
+		if(iR) {
+			pZoneClick = (CMenuElement*)iR;
 		}
 	}
 
@@ -4367,7 +4361,7 @@ CMenuZone * CMenuZone::IsMouseOver(int _iX, int _iY)
 		(_iY <= (rZone.bottom+iYDouble)) )
 		return pRef;
 
-	return 0;
+	return NULL;
 }
 
 //-----------------------------------------------------------------------------
@@ -4414,12 +4408,12 @@ CMenuZone * CMenuAllZone::CheckZone(int _iPosX,int _iPosY)
 		{
 			CMenuZone * pRef = ((*i)->IsMouseOver(_iPosX, _iPosY));
 
-            if (pRef != 0)
+            if (pRef)
                 return pRef;
 		}
 	}
 
-	return 0;
+	return NULL;
 }
 
 //-----------------------------------------------------------------------------
@@ -5541,8 +5535,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 			pZoneClick=NULL;
 			CMenuZone * iR = MenuAllZone.CheckZone(pGetInfoDirectInput->iMouseAX,pGetInfoDirectInput->iMouseAY);
 
-			if(iR != 0)
-			{
+			if(iR) {
 				pZoneClick=(CMenuElement*)iR;
 
 				if( pGetInfoDirectInput->GetMouseButtonDoubleClick(DXI_BUTTON0,300) )
@@ -5577,8 +5570,7 @@ MENUSTATE CWindowMenuConsole::Update(int _iPosX,int _iPosY,int _iOffsetY)
 			{
 				CMenuZone * iR = MenuAllZone.CheckZone(pGetInfoDirectInput->iMouseAX,pGetInfoDirectInput->iMouseAY);
 
-				if(iR != 0)
-				{
+				if(iR) {
 					pZoneClick=(CMenuElement*)iR;
 
 					if( pGetInfoDirectInput->GetMouseButtonDoubleClick(DXI_BUTTON0,300) )
@@ -6110,7 +6102,7 @@ CMenuZone * CMenuPanel::IsMouseOver(int _iX, int _iY)
 		}
 	}
 
-	return 0;
+	return NULL;
 }
 
 //-----------------------------------------------------------------------------

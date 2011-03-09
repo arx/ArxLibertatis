@@ -4113,13 +4113,10 @@ bool FastSceneLoad(const char * partial_path)
 			if (portals->room[i].nb_portals)
 			{
 				portals->room[i].portals =	(long *)	malloc(sizeof(long) * portals->room[i].nb_portals);
-
-                for (long jj = 0; jj < portals->room[i].nb_portals; jj++)
-                {
-                    s32 * lng = (s32 *)(rawdata + pos);
-                    pos += sizeof(s32);
-                    portals->room[i].portals[jj] = *lng;
-                }
+				
+				s32 * start = (s32 *)(rawdata + pos);
+				pos += sizeof(s32) * portals->room[i].nb_portals;
+				std::copy(start, (s32 *)(rawdata + pos), portals->room[i].portals);
 			}
 			else
 			{

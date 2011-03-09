@@ -241,7 +241,7 @@ struct THEO_TEXTURE
 	s32			reflect_map;
 	f32			water_intensity;
 	s32			mipmap_level;
-	s32	color_mask;
+	u32	color_mask;
 	TBOOL			animated_map;
 }; // Aligned 1 2 4
 #pragma pack(pop)

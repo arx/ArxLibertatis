@@ -135,35 +135,35 @@ const std::string arxVersion = "0.1";
 ------------------------------------------------------------*/
 
 #if ARX_COMPILER_MSVC
-
-typedef signed char s8;     //  8 bits integer
-typedef unsigned char u8;     //  8 bits unsigned integer
-
-typedef signed short s16;    // 16 bits signed integer
-typedef unsigned short u16;    // 16 bits unsigned integer
-
-typedef signed long s32;    // 32 bits signed integer
-typedef unsigned long u32;    // 32 bits unsigned integer
-
-typedef signed long long s64;    // 64 bits signed integer
-typedef unsigned long long u64; // 64 bits unsigned integer
-
+	
+	typedef signed char s8;         //  8 bits integer
+	typedef unsigned char u8;       //  8 bits unsigned integer
+	
+	typedef signed short s16;       // 16 bits signed integer
+	typedef unsigned short u16;     // 16 bits unsigned integer
+	
+	typedef signed long s32;        // 32 bits signed integer
+	typedef unsigned long u32;      // 32 bits unsigned integer
+	
+	typedef signed long long s64;   // 64 bits signed integer
+	typedef unsigned long long u64; // 64 bits unsigned integer
+	
 #else // ARX_COMPILER_MSVC
-
-#include <stdint.h>
-
-typedef int8_t s8; //  8 bits integer
-typedef uint8_t u8; //  8 bits unsigned integer
-
-typedef int16_t s16; // 16 bits signed integer
-typedef uint16_t u16; // 16 bits unsigned integer
-
-typedef int32_t s32; // 32 bits signed integer
-typedef uint32_t u32; // 32 bits unsigned integer
-
-typedef int64_t s64; // 64 bits signed integer
-typedef uint64_t u64; // 64 bits unsigned integer
-
+	
+	#include <stdint.h>
+	
+	typedef int8_t s8;    //  8 bits integer
+	typedef uint8_t u8;   //  8 bits unsigned integer
+	
+	typedef int16_t s16;  // 16 bits signed integer
+	typedef uint16_t u16; // 16 bits unsigned integer
+	
+	typedef int32_t s32;  // 32 bits signed integer
+	typedef uint32_t u32; // 32 bits unsigned integer
+	
+	typedef int64_t s64;  // 64 bits signed integer
+	typedef uint64_t u64; // 64 bits unsigned integer
+	
 #endif // ARX_COMPILER_MSVC
 
 typedef float f32; // 32 bits float
