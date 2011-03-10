@@ -63,14 +63,13 @@ extern EERIE_3D SPRmins;
 extern EERIE_3D SPRmaxs;
 
 void MDL_AddMetalDrawLater(D3DTLVERTEX * tv);
-void MDL_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice);
+void MDL_FlushAll();
 
 
 void Delayed_EERIEDRAWPRIM(EERIEPOLY * ep);
-void Delayed_FlushAll(LPDIRECT3DDEVICE7 pd3dDevice);
+void Delayed_FlushAll();
 
-HRESULT EERIEDRAWPRIM(LPDIRECT3DDEVICE7 pd3dDevice,
-                      D3DPRIMITIVETYPE dptPrimitiveType,
+HRESULT EERIEDRAWPRIM(D3DPRIMITIVETYPE dptPrimitiveType,
                       DWORD  dwVertexTypeDesc,
                       LPVOID lpvVertices,
                       DWORD  dwVertexCount,
@@ -78,45 +77,45 @@ HRESULT EERIEDRAWPRIM(LPDIRECT3DDEVICE7 pd3dDevice,
                       long flags = 0					//eerie flag
                      );
 
-void EERIE_DrawPolyBump(LPDIRECT3DDEVICE7 pd3dDevice, EERIEPOLY * ep, float alpha);
+void EERIE_DrawPolyBump(EERIEPOLY * ep, float alpha);
 void EERIEDrawLine(float x, float y, float x1, float y1, float z, D3DCOLOR col);
 void EERIEDrawCircle(float x0, float y0, float r, D3DCOLOR col, float z);
-void EERIEDraw2DLine(LPDIRECT3DDEVICE7 pd3dDevice, float x0, float y0, float x1, float y1, float z, D3DCOLOR col);
-void EERIEDrawBitmap(LPDIRECT3DDEVICE7 pd3dDevice, float x, float y, float sx, float sy, float z, TextureContainer * tex, D3DCOLOR col);
-void EERIEDraw2DRect(LPDIRECT3DDEVICE7 pd3dDevice, float x0, float y0, float x1, float y1, float z, D3DCOLOR col);
-void EERIEDrawFill2DRectDegrad(LPDIRECT3DDEVICE7 pd3dDevice, float x0, float y0, float x1, float y1, float z, D3DCOLOR cold, D3DCOLOR cole);
+void EERIEDraw2DLine(float x0, float y0, float x1, float y1, float z, D3DCOLOR col);
+void EERIEDrawBitmap(float x, float y, float sx, float sy, float z, TextureContainer * tex, D3DCOLOR col);
+void EERIEDraw2DRect(float x0, float y0, float x1, float y1, float z, D3DCOLOR col);
+void EERIEDrawFill2DRectDegrad(float x0, float y0, float x1, float y1, float z, D3DCOLOR cold, D3DCOLOR cole);
 
 void DRAWLATER_ReInit();
-void DRAWLATER_Render(LPDIRECT3DDEVICE7 pd3dDevice);
+void DRAWLATER_Render();
 
-void EERIEDraw3DCylinder(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CYLINDER * cyl, D3DCOLOR col);
-void EERIEDraw3DCylinderBase(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_CYLINDER * cyl, D3DCOLOR col);
-void EERIEDrawTrue3DLine(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col);
-void EERIEDraw3DLine(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col);
-void EERIEDrawBitmap2DecalY(LPDIRECT3DDEVICE7 pd3dDevice, float x, float y, float sx, float sy, float z, TextureContainer * tex, D3DCOLOR col, float _fDeltaY);
+void EERIEDraw3DCylinder(EERIE_CYLINDER * cyl, D3DCOLOR col);
+void EERIEDraw3DCylinderBase(EERIE_CYLINDER * cyl, D3DCOLOR col);
+void EERIEDrawTrue3DLine(EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col);
+void EERIEDraw3DLine(EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col);
+void EERIEDrawBitmap2DecalY(float x, float y, float sx, float sy, float z, TextureContainer * tex, D3DCOLOR col, float _fDeltaY);
 
 void EERIEOBJECT_Quadify(EERIE_3DOBJ * obj);
 void EERIE_DRAW_SetTextureZMAP(TextureContainer * Z_map);
 
-void EERIEDrawSprite(LPDIRECT3DDEVICE7 pd3dDevice, D3DTLVERTEX * in, float siz, TextureContainer * tex, D3DCOLOR col, float Zpos);
-void EERIEDrawRotatedSprite(LPDIRECT3DDEVICE7 pd3dDevice, D3DTLVERTEX * in, float siz, TextureContainer * tex, D3DCOLOR col, float Zpos, float rot);
+void EERIEDrawSprite(D3DTLVERTEX * in, float siz, TextureContainer * tex, D3DCOLOR col, float Zpos);
+void EERIEDrawRotatedSprite(D3DTLVERTEX * in, float siz, TextureContainer * tex, D3DCOLOR col, float Zpos, float rot);
 
-void SETTEXTURE0(LPDIRECT3DDEVICE7 pd3dDevice, IDirectDrawSurface7 * tex);
-void SETTC(LPDIRECT3DDEVICE7 pd3dDevice, TextureContainer * tc);
-void SETCULL(LPDIRECT3DDEVICE7 pd3dDevice, DWORD state);
-void SETZWRITE(LPDIRECT3DDEVICE7 pd3dDevice, DWORD state);
-void SETALPHABLEND(LPDIRECT3DDEVICE7 pd3dDevice, DWORD state);
-void SETBLENDMODE(LPDIRECT3DDEVICE7 pd3dDevice, DWORD srcblend, DWORD destblend);
-void SETTEXTUREWRAPMODE(LPDIRECT3DDEVICE7 pd3dDevice, DWORD mode);
-void EERIEPOLY_DrawWired(LPDIRECT3DDEVICE7 pd3dDevice, EERIEPOLY * ep, long col = 0);
-void EERIEPOLY_DrawNormals(LPDIRECT3DDEVICE7 pd3dDevice, EERIEPOLY * ep);
+void SETTEXTURE0(IDirectDrawSurface7 * tex);
+void SETTC(TextureContainer * tc);
+void SETCULL(DWORD state);
+void SETZWRITE(DWORD state);
+void SETALPHABLEND(DWORD state);
+void SETBLENDMODE(DWORD srcblend, DWORD destblend);
+void SETTEXTUREWRAPMODE(DWORD mode);
+void EERIEPOLY_DrawWired(EERIEPOLY * ep, long col = 0);
+void EERIEPOLY_DrawNormals(EERIEPOLY * ep);
 
 extern TextureContainer * EERIE_DRAW_sphere_particle;
 extern TextureContainer * EERIE_DRAW_square_particle;
 
-void EERIEDrawBitmap2(LPDIRECT3DDEVICE7 pd3dDevice, float x, float y, float sx, float sy, float z, TextureContainer * tex, D3DCOLOR col);
-void EERIEDrawBitmap_uv(LPDIRECT3DDEVICE7 pd3dDevice, float x, float y, float sx, float sy, float z, TextureContainer * tex, D3DCOLOR col, float u0, float v0, float u1, float v1);
-void EERIEDrawBitmapUVs(LPDIRECT3DDEVICE7 pd3dDevice, float x, float y, float sx, float sy, float z, TextureContainer * tex, D3DCOLOR col
+void EERIEDrawBitmap2(float x, float y, float sx, float sy, float z, TextureContainer * tex, D3DCOLOR col);
+void EERIEDrawBitmap_uv(float x, float y, float sx, float sy, float z, TextureContainer * tex, D3DCOLOR col, float u0, float v0, float u1, float v1);
+void EERIEDrawBitmapUVs(float x, float y, float sx, float sy, float z, TextureContainer * tex, D3DCOLOR col
                         , float u0, float v0
                         , float u1, float v1
                         , float u2, float v2

@@ -116,20 +116,20 @@ void XRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s);
 void YRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s);
 void ZRotatePoint(EERIE_3D * in, EERIE_3D * out, float c, float s);
 
-EERIE_3DOBJ * TheoToEerie(unsigned char * adr,long size, const char * texpath, const char * fic,long flag,LPDIRECT3DDEVICE7 pd3dDevice=NULL,long flag2=0);
+EERIE_3DOBJ * TheoToEerie(unsigned char * adr,long size, const char * texpath, const char * fic,long flag,long flag2=0);
 void _THEObjLoad(EERIE_3DOBJ *eerie,unsigned char * adr,long * poss,long version,long flag=0,long flag2=0);
-EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * fic,long flag,LPDIRECT3DDEVICE7 pd3dDevice=NULL);
+EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * fic,long flag);
 EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size,const char * fic);
 
 EERIE_3DSCENE * ScnToEerie(unsigned char * adr, size_t size, const std::string& fic);
 
 void Clear3DScene(EERIE_3DSCENE	* eerie);
-void DrawEERIEObj(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, float Xrot, float Yrot, float Zrot, int Xoffs, int Yoffs, float Zoffs, IDirectDrawSurface7 * envir);
-void DrawEERIEAnim(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE_ANIM * eanim, float Xrot, float Yrot, float Zrot, int Xoffs, int Yoffs, float Zoffs, long fr, float pour, long flag);
-float DrawEERIEAnimT(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE_ANIM * eanim, float Xrot, float Yrot, float Zrot, int Xoffs, int Yoffs, float Zoffs, long tim, long flag);
-float DrawEERIEAnimTQuat(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE_ANIM * eanim, float Xrot, float Yrot, float Zrot, int Xoffs, int Yoffs, float Zoffs, long tim, long flag);
+void DrawEERIEObj(EERIE_3DOBJ * eobj, float Xrot, float Yrot, float Zrot, int Xoffs, int Yoffs, float Zoffs, IDirectDrawSurface7 * envir);
+void DrawEERIEAnim(EERIE_3DOBJ * eobj, EERIE_ANIM * eanim, float Xrot, float Yrot, float Zrot, int Xoffs, int Yoffs, float Zoffs, long fr, float pour, long flag);
+float DrawEERIEAnimT(EERIE_3DOBJ * eobj, EERIE_ANIM * eanim, float Xrot, float Yrot, float Zrot, int Xoffs, int Yoffs, float Zoffs, long tim, long flag);
+float DrawEERIEAnimTQuat(EERIE_3DOBJ * eobj, EERIE_ANIM * eanim, float Xrot, float Yrot, float Zrot, int Xoffs, int Yoffs, float Zoffs, long tim, long flag);
 
-void DrawEERIEAnimQuat(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE_ANIM * eanim, float Xrot, float Yrot, float Zrot, int Xoffs, int Yoffs, float Zoffs, long fr, float pour, long flag);
+void DrawEERIEAnimQuat(EERIE_3DOBJ * eobj, EERIE_ANIM * eanim, float Xrot, float Yrot, float Zrot, int Xoffs, int Yoffs, float Zoffs, long fr, float pour, long flag);
 void SceneAddObj(EERIE_3DOBJ * eobj);
 void SceneAddScn(EERIE_3DSCENE * escn);
 void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie);

@@ -243,7 +243,6 @@ bool CMY_DYNAMIC_VERTEXBUFFER::UnLock()
 //	This function will use appropriate VB depending on vertex format. (using template)
 /************************************************************************/
 /*  HRESULT ARX_DrawPrimitiveVB(	
- *	LPDIRECT3DDEVICE7	_d3dDevice,			: pointer to the DX7 device
  *	D3DPRIMITIVETYPE	_dptPrimitiveType,	: primitive type to draw
  *	_LPVERTEX_			_pVertex,			: pointer to the first vertex to render
  *	int*				_piNbVertex,		: number of vertices to render (must be positive)
@@ -253,8 +252,7 @@ bool CMY_DYNAMIC_VERTEXBUFFER::UnLock()
  *	@return S_OK if function exit correctly.
  ************************************************************************/
 template<class VERTEX_TYPE>
-HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevice,
-								D3DPRIMITIVETYPE			_dptPrimitiveType, 
+HRESULT ARX_DrawPrimitiveVB(	D3DPRIMITIVETYPE			_dptPrimitiveType, 
 								VERTEX_TYPE*				_pVertex, 
 								int*						_piNbVertex, 
 								DWORD						_dwFlags,
@@ -293,11 +291,11 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevice,
 
 		pDVB->UnLock();
 
-		HRESULT	h_resultDPVB = _d3dDevice->DrawPrimitiveVB(	_dptPrimitiveType,
-															pDVB->pVertexBuffer,
-															iOldNbVertex,
-															pDVB->ussNbVertex - iOldNbVertex,
-															_dwFlags );
+		HRESULT	h_resultDPVB = GDevice->DrawPrimitiveVB(_dptPrimitiveType,
+														pDVB->pVertexBuffer,
+														iOldNbVertex,
+														pDVB->ussNbVertex - iOldNbVertex,
+														_dwFlags );
 		if( h_resultDPVB != S_OK )
 			h_result = h_resultDPVB; //Getting last error for return in case of bad DrawPrimitiveVB result
 	}
@@ -309,7 +307,6 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevice,
 // Add function manager to call template-function.
 /************************************************************************/
 /*  HRESULT ARX_DrawPrimitiveVB(	
- *	LPDIRECT3DDEVICE7	_d3dDevice,			: pointer to the DX7 device
  *	D3DPRIMITIVETYPE	_dptPrimitiveType,	: primitive type to draw
  *	DWORD				_dwVertexTypeDesc	: vertex format.
  *	LPVOID				_pVertex,			: pointer to the first vertex to render
@@ -318,8 +315,7 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7			_d3dDevice,
  *	
  *	@return S_OK if function exit correctly.
  ************************************************************************/
-HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7	_d3dDevice, 
-								D3DPRIMITIVETYPE	_dptPrimitiveType, 
+HRESULT ARX_DrawPrimitiveVB(	D3DPRIMITIVETYPE	_dptPrimitiveType, 
 								DWORD				_dwVertexTypeDesc,
 								LPVOID				_pVertex, 
 								int*				_piNbVertex, 
@@ -332,32 +328,28 @@ HRESULT ARX_DrawPrimitiveVB(	LPDIRECT3DDEVICE7	_d3dDevice,
 		switch( _dwVertexTypeDesc )
 		{
 		case FVF_D3DVERTEX:
-			h_result	=	ARX_DrawPrimitiveVB(	_d3dDevice,
-													_dptPrimitiveType,
+			h_result	=	ARX_DrawPrimitiveVB(	_dptPrimitiveType,
 													(SMY_D3DVERTEX*) _pVertex,
 													_piNbVertex,
 													_dwFlags,
 													pDynamicVertexBufferTransform);
 			break;
 		case D3DFVF_TLVERTEX:
-			h_result	=	ARX_DrawPrimitiveVB(	_d3dDevice,
-													_dptPrimitiveType,
+			h_result	=	ARX_DrawPrimitiveVB(	_dptPrimitiveType,
 													(D3DTLVERTEX*) _pVertex,
 													_piNbVertex,
 													_dwFlags,
 													pDynamicVertexBuffer_TLVERTEX);
 			break;
 		case FVF_D3DVERTEX3:
-			h_result	=	ARX_DrawPrimitiveVB(	_d3dDevice,
-													_dptPrimitiveType,
+			h_result	=	ARX_DrawPrimitiveVB(	_dptPrimitiveType,
 													(SMY_D3DVERTEX3*) _pVertex,
 													_piNbVertex,
 													_dwFlags,
 													pDynamicVertexBuffer);
 			break;
 		case FVF_D3DVERTEX3_T:
-			h_result	=	ARX_DrawPrimitiveVB(	_d3dDevice,
-													_dptPrimitiveType,
+			h_result	=	ARX_DrawPrimitiveVB(	_dptPrimitiveType,
 													(SMY_D3DVERTEX3_T*) _pVertex,
 													_piNbVertex,
 													_dwFlags,
@@ -1505,8 +1497,8 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 
 	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,true);
 
-	SETCULL(GDevice,D3DCULL_NONE);
-	SETZWRITE(GDevice,false);
+	SETCULL(D3DCULL_NONE);
+	SETZWRITE(false);
 
 	for (long i=0;i<NbRoomDrawList;i++)
 	{
@@ -1523,12 +1515,12 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 	NbRoomDrawList=0;
 
 
-	SetZBias(GDevice,8);
+	SetZBias(8);
 
-	SETZWRITE(GDevice, false);
+	SETZWRITE(false);
 
 	//render all fx!!
-	SETCULL(GDevice,D3DCULL_CW);
+	SETCULL(D3DCULL_CW);
 
 	if(danaeApp.m_pDeviceInfo->wNbTextureSimultaneous>3) danaeApp.m_pDeviceInfo->wNbTextureSimultaneous=3;
 
@@ -1545,7 +1537,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 		
 		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
 		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );
-		SETTC(GDevice,enviro);
+		SETTC(enviro);
 
 		int iNbTextureSim=danaeApp.m_pDeviceInfo->wNbTextureSimultaneous;
 
@@ -1889,7 +1881,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 		
 		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
 		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );
-		SETTC(GDevice,enviro);
+		SETTC(enviro);
 
 		switch(danaeApp.m_pDeviceInfo->wNbTextureSimultaneous)
 		{
@@ -2262,10 +2254,10 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 	}
 
 
-	SetZBias(GDevice,0);
+	SetZBias(0);
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
 	GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
-	SETALPHABLEND(GDevice,false);
+	SETALPHABLEND(false);
 }
 
 void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA * frustrums,long prec,long tim);
@@ -2284,7 +2276,7 @@ void ARX_PORTALS_RenderRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long ti
 	
 	if (RoomDraw[room_num].count)
 	{
-		EERIEDraw2DRect(GDevice, bbox->min.x,bbox->min.y,bbox->max.x,bbox->max.y,0.0001f, 0xFF0000FF);
+		EERIEDraw2DRect( bbox->min.x,bbox->min.y,bbox->max.x,bbox->max.y,0.0001f, 0xFF0000FF);
 
 	for (long  lll=0;lll<portals->room[room_num].nb_polys;lll++)
 	{
@@ -2302,7 +2294,7 @@ void ARX_PORTALS_RenderRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long ti
 			
 			// GO for 3D Backface Culling
 			if (ep->type & POLY_DOUBLESIDED)
-				SETCULL( GDevice, D3DCULL_NONE );
+				SETCULL( D3DCULL_NONE );
 			else
 			{
 				EERIE_3D nrm;
@@ -2319,7 +2311,7 @@ void ARX_PORTALS_RenderRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long ti
 				else if ( DOTPRODUCT( ep->norm , nrm )>0.f)
 						continue;
 
-				SETCULL( GDevice, D3DCULL_CW );
+				SETCULL( D3DCULL_CW );
 			}
 			 
 			if (!EERIERTPPoly(ep)) // RotTransProject Vertices
@@ -2354,10 +2346,10 @@ void ARX_PORTALS_RenderRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long ti
 				if (ViewMode)
 				{
 					if (ViewMode & VIEWMODE_WIRE) 
-						EERIEPOLY_DrawWired(GDevice,ep);
+						EERIEPOLY_DrawWired(ep);
 					
 					if (ViewMode & VIEWMODE_NORMALS) 
-						EERIEPOLY_DrawNormals(GDevice,ep);
+						EERIEPOLY_DrawNormals(ep);
 				}	
 
 				continue;
@@ -2388,10 +2380,10 @@ void ARX_PORTALS_RenderRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long ti
 				if (ViewMode)
 				{
 					if (ViewMode & VIEWMODE_WIRE) 
-						EERIEPOLY_DrawWired(GDevice,ep);
+						EERIEPOLY_DrawWired(ep);
 					
 					if (ViewMode & VIEWMODE_NORMALS) 
-						EERIEPOLY_DrawNormals(GDevice,ep);
+						EERIEPOLY_DrawNormals(ep);
 				}	
 			}
 			else // Improve Vision Activated
@@ -2464,7 +2456,7 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 
 			// GO for 3D Backface Culling
 			if (ep->type & POLY_DOUBLESIDED)
-				SETCULL( GDevice, D3DCULL_NONE );
+				SETCULL( D3DCULL_NONE );
 			else
 			{
 				EERIE_3D nrm;
@@ -2481,7 +2473,7 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 				else if ( DOTPRODUCT( ep->norm , nrm )>0.f)
 						continue;
 
-				SETCULL( GDevice, D3DCULL_CW );
+				SETCULL( D3DCULL_CW );
 			}
 			 
 			if (!EERIERTPPoly(ep)) // RotTransProject Vertices
@@ -2512,10 +2504,10 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 				if (ViewMode)
 				{
 					if (ViewMode & VIEWMODE_WIRE) 
-						EERIEPOLY_DrawWired(GDevice,ep);
+						EERIEPOLY_DrawWired(ep);
 					
 					if (ViewMode & VIEWMODE_NORMALS) 
-						EERIEPOLY_DrawNormals(GDevice,ep);
+						EERIEPOLY_DrawNormals(ep);
 				}	
 
 				continue;
@@ -2545,10 +2537,10 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 				if (ViewMode)
 				{
 					if (ViewMode & VIEWMODE_WIRE) 
-						EERIEPOLY_DrawWired(GDevice,ep);
+						EERIEPOLY_DrawWired(ep);
 					
 					if (ViewMode & VIEWMODE_NORMALS) 
-						EERIEPOLY_DrawNormals(GDevice,ep);
+						EERIEPOLY_DrawNormals(ep);
 				}	
 			}
 			else // Improve Vision Activated
@@ -2946,7 +2938,7 @@ SMY_D3DVERTEX *pMyVertex;
 				if ((ViewMode & VIEWMODE_WIRE))
 				{
 					if (EERIERTPPoly(ep))
-						EERIEPOLY_DrawWired(GDevice,ep);
+						EERIEPOLY_DrawWired(ep);
 				}
 
 					}
@@ -3025,7 +3017,7 @@ SMY_D3DVERTEX *pMyVertex;
 		portals->room[room_num].pVertexBuffer->Unlock();
 	
 		//render opaque
-		SETCULL(GDevice,D3DCULL_NONE);
+		SETCULL(D3DCULL_NONE);
 		int iNbTex=portals->room[room_num].usNbTextures;
 		TextureContainer **ppTexCurr=portals->room[room_num].ppTextureContainer;
 
@@ -3034,9 +3026,9 @@ SMY_D3DVERTEX *pMyVertex;
 			TextureContainer *pTexCurr=*ppTexCurr;
 
 			if (ViewMode & VIEWMODE_FLAT) 
-				SETTC(GDevice,NULL);
+				SETTC(NULL);
 			else
-				SETTC(GDevice,pTexCurr);
+				SETTC(pTexCurr);
 
 			if(	(pTexCurr->userflags&POLY_METAL)&&
 				(!bNoModulate2X) )
@@ -3088,7 +3080,7 @@ SMY_D3DVERTEX *pMyVertex;
 				SMY_D3DVERTEX3 *pVertex=(SMY_D3DVERTEX3*)pDynamicVertexBuffer->Lock(DDLOCK_NOOVERWRITE);
 				pVertex+=iOldNbVertex;
 				
-				SETTC(GDevice,pTexCurr->TextureRefinement);
+				SETTC(pTexCurr->TextureRefinement);
 				
 				unsigned short *pussInd=pDynamicVertexBuffer->pussIndice;
 				unsigned short iNbIndice = 0;
@@ -3349,7 +3341,7 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 					//----------------------------------------------------------------------------------
 					//																		Initializing
 					CMY_DYNAMIC_VERTEXBUFFER* pDVB	=	pDynamicVertexBufferBump;
-					SetZBias( GDevice, 0 );
+					SetZBias( 0 );
 		
 					int				iOldNbVertex	=	pDVB->ussNbVertex;
 					pDVB->ussNbIndice				=	0;
@@ -3543,12 +3535,12 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 
 			} // END BUMP
 
-			SETTC(GDevice,pTexCurr);
+			SETTC(pTexCurr);
 
 			//NORMAL TRANS
 			if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans)
 			{
-				SetZBias(GDevice,2);
+				SetZBias(2);
 				GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_SRCCOLOR);
 				GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_DESTCOLOR);
 			
@@ -3566,7 +3558,7 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 			//MULTIPLICATIVE
 			if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative)
 			{
-				SetZBias(GDevice,2);
+				SetZBias(2);
 				GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 				GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
 				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
@@ -3583,7 +3575,7 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 			//ADDITIVE
 			if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TAdditive)
 			{
-				SetZBias(GDevice,2);
+				SetZBias(2);
 				GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 				GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
 				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
@@ -3601,9 +3593,9 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 			if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TSubstractive)
 			{
 				if(danaeApp.m_pFramework->bitdepth==16)
-					SetZBias(GDevice,1);
+					SetZBias(1);
 				else
-					SetZBias(GDevice,8);
+					SetZBias(8);
 
 				GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
 				GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_INVSRCCOLOR);	
@@ -3704,9 +3696,9 @@ void ARX_PORTALS_ComputeRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long t
 			continue;
 
 		if (Cull)
-			EERIEPOLY_DrawWired(GDevice,epp,0xFFFF0000);
+			EERIEPOLY_DrawWired(epp,0xFFFF0000);
 		else
-			EERIEPOLY_DrawWired(GDevice,epp,0xFF00FF00);
+			EERIEPOLY_DrawWired(epp,0xFF00FF00);
 		
 		n_bbox.min.x=max(n_bbox.min.x,bbox->min.x);
 		n_bbox.min.y=max(n_bbox.min.y,bbox->min.y);
@@ -3821,7 +3813,7 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 			EERIERTPPoly2(epp);
 
 			if (NEED_TEST_TEXT)
-				EERIEPOLY_DrawWired(GDevice,epp,0xFFFF00FF);
+				EERIEPOLY_DrawWired(epp,0xFFFF00FF);
 
 			continue;
 		}
@@ -3842,9 +3834,9 @@ long ARX_PORTALS_Frustrum_ComputeRoom(long room_num,EERIE_FRUSTRUM * frustrum,lo
 		if (NEED_TEST_TEXT)
 		{
 			if (Cull)
-				EERIEPOLY_DrawWired(GDevice,epp,0xFFFF0000);
+				EERIEPOLY_DrawWired(epp,0xFFFF0000);
 			else
-				EERIEPOLY_DrawWired(GDevice,epp,0xFF00FF00);
+				EERIEPOLY_DrawWired(epp,0xFF00FF00);
 		}
 		
 
@@ -4013,7 +4005,7 @@ long MAX_FRAME_COUNT=0;
 // ie: Big Mess
 //*************************************************************************************
 ///////////////////////////////////////////////////////////
-void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag) {
+void ARX_SCENE_Render(long flag) {
 	
 	FrameCount++;
 
@@ -4235,8 +4227,8 @@ void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag) {
 						ad2->pos.y-=10;
 
 						if ((ad->flags & 1) && (ad2->flags & 1))
-							EERIEDrawTrue3DLine(pd3dDevice,&ad->pos,&ad2->pos,0xFF00FF00);
-						else EERIEDrawTrue3DLine(pd3dDevice,&ad->pos,&ad2->pos,0xFFFF0000);
+							EERIEDrawTrue3DLine(&ad->pos,&ad2->pos,0xFF00FF00);
+						else EERIEDrawTrue3DLine(&ad->pos,&ad2->pos,0xFFFF0000);
 
 						ad2->pos.y+=10;
 					}
@@ -4251,7 +4243,7 @@ void ARX_SCENE_Render(LPDIRECT3DDEVICE7 pd3dDevice, long flag) {
 						cyl.origin.z=ad->pos.z;
 						cyl.radius=ad->radius;
 						cyl.height=ad->height;			
-						EERIEDraw3DCylinderBase(GDevice,&cyl,0xFFFFFF00);  
+						EERIEDraw3DCylinderBase(&cyl,0xFFFFFF00);  
 					}
 				}
 
@@ -4352,7 +4344,7 @@ else
 			
 			// GO for 3D Backface Culling
 			if (ep->type & POLY_DOUBLESIDED)
-				SETCULL( pd3dDevice, D3DCULL_NONE );
+				SETCULL( D3DCULL_NONE );
 			else
 			{
 				
@@ -4369,7 +4361,7 @@ else
 				else if ( DOTPRODUCT( ep->norm , nrm )>0.f)
 						continue;
 
-				SETCULL( pd3dDevice, D3DCULL_CW );
+				SETCULL( D3DCULL_CW );
 			}
 			 
 							if (!EERIERTPPoly(ep)) 
@@ -4399,10 +4391,10 @@ else
 				if (ViewMode)
 				{
 					if (ViewMode & VIEWMODE_WIRE) 
-						EERIEPOLY_DrawWired(pd3dDevice,ep);
+						EERIEPOLY_DrawWired(ep);
 					
 					if (ViewMode & VIEWMODE_NORMALS) 
-						EERIEPOLY_DrawNormals(pd3dDevice,ep);
+						EERIEPOLY_DrawNormals(ep);
 				}	
 
 				continue;
@@ -4434,10 +4426,10 @@ else
 				{
 		
 					if (ViewMode & VIEWMODE_WIRE) 
-						EERIEPOLY_DrawWired(pd3dDevice,ep);
+						EERIEPOLY_DrawWired(ep);
 					
 					if (ViewMode & VIEWMODE_NORMALS) 
-						EERIEPOLY_DrawNormals(pd3dDevice,ep);
+						EERIEPOLY_DrawNormals(ep);
 				}	
 			}
 			else // Improve Vision Activated
@@ -4490,19 +4482,19 @@ else
 		bOLD_CLIPP=!bOLD_CLIPP;
 
 	if ((SHOWSHADOWS) && (!Project.improve))
-		ARXDRAW_DrawInterShadows(pd3dDevice);
+		ARXDRAW_DrawInterShadows();
 
 	FRAME_COUNT=LAST_FC;
 
 	if(USE_PORTALS<3)
-			Delayed_FlushAll(pd3dDevice);
+			Delayed_FlushAll();
 
 		
 		ARX_CHECK_ULONG(FrameDiff);
 		ARX_THROWN_OBJECT_Manage(ARX_CLEAN_WARN_CAST_ULONG(FrameDiff));
 		
 		VF_CLIP_IO=1;
-		RenderInter(pd3dDevice, 0.f, 3200.f);
+		RenderInter(0.f, 3200.f);
 		
 		VF_CLIP_IO=0;
 		
@@ -4513,7 +4505,7 @@ else
 		ARX_INTERFACE_RenderCursor();
 
 		if(USE_PORTALS<3)
-			Delayed_FlushAll(pd3dDevice);
+			Delayed_FlushAll();
 
 		SPECIAL_DRAGINTER_RENDER=0;
 	}
@@ -4523,7 +4515,7 @@ else
 					}
 
 
-	DRAWLATER_Render(pd3dDevice);
+	DRAWLATER_Render();
 
 	if (DEBUGCODE) ForceSendConsole("RenderBackground - Boom",1,0,(HWND)1);	
 
@@ -4531,16 +4523,16 @@ else
 	{
 		
 		if ((eyeball.exist!=0) && eyeballobj)
-			ARXDRAW_DrawEyeBall(pd3dDevice);
+			ARXDRAW_DrawEyeBall();
 
 		
-		SETZWRITE(pd3dDevice, false );
+		SETZWRITE(false );
 
 		if (BoomCount) 
-			ARXDRAW_DrawPolyBoom(pd3dDevice);
+			ARXDRAW_DrawPolyBoom();
 
 		if (INTERTRANSPOLYSPOS&&(!bRenderInterList))
-			ARXDRAW_DrawAllInterTransPolyPos(pd3dDevice);
+			ARXDRAW_DrawAllInterTransPolyPos();
 
 		PopAllTriangleListTransparency();
 		
@@ -4552,18 +4544,18 @@ else
 		else
 		{
 			if (TRANSPOLYSPOS)
-				ARXDRAW_DrawAllTransPolysPos(pd3dDevice);
+				ARXDRAW_DrawAllTransPolysPos();
 		}
 	}
 
 if (HALOCUR>0)
 {
-	SETTC(pd3dDevice,NULL);
-	pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_SRCCOLOR );
-	pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
-	SETALPHABLEND(pd3dDevice,true);			
-	SETCULL(pd3dDevice,D3DCULL_NONE);
-	SETZWRITE(pd3dDevice,false);
+	SETTC(NULL);
+	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_SRCCOLOR );
+	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
+	SETALPHABLEND(true);			
+	SETCULL(D3DCULL_NONE);
+	SETZWRITE(false);
 
 	for (i=0;i<HALOCUR;i++)
 	{
@@ -4572,26 +4564,26 @@ if (HALOCUR>0)
 
 		if (vert[2].color == 0)
 		{
-			pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-			pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );									
+			GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
+			GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );									
 			vert[2].color =0xFF000000;
-			EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , vert, 4,  0, 0 );//>>> DO NOT USE EERIE_USEVB FOR HALO <<<
-			pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_SRCCOLOR );
-			pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
+			EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , vert, 4,  0, 0 );//>>> DO NOT USE EERIE_USEVB FOR HALO <<<
+			GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_SRCCOLOR );
+			GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
 		}
-		else EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , vert, 4,  0, 0 );//>>> DO NOT USE EERIE_USEVB FOR HALO <<<
+		else EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , vert, 4,  0, 0 );//>>> DO NOT USE EERIE_USEVB FOR HALO <<<
 	}
 
 		 HALOCUR = 0; 
-	SETALPHABLEND(pd3dDevice,false);			
+	SETALPHABLEND(false);			
 }
 
-	SETCULL(pd3dDevice,D3DCULL_CCW);
-	SETALPHABLEND(pd3dDevice,false);	
-	SETZWRITE(pd3dDevice, true );
+	SETCULL(D3DCULL_CCW);
+	SETALPHABLEND(false);	
+	SETZWRITE(true );
 
 	if (EDITION==EDITION_LIGHTS)
-		ARXDRAW_DrawAllLights(pd3dDevice,x0,z0,x1,z1);
+		ARXDRAW_DrawAllLights(x0,z0,x1,z1);
 
 	if (LIGHTTHREAD)
 		ResumeThread(LIGHTTHREAD);

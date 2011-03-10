@@ -130,7 +130,6 @@ CD3DApplication::CD3DApplication()
 	m_dlghWnd		= NULL;
 	m_pDD          = NULL;
 	m_pD3D         = NULL;
-	m_pd3dDevice   = NULL;
 
 	m_pddsRenderTarget     = NULL;
 	m_pddsRenderTargetLeft = NULL;
@@ -818,7 +817,6 @@ HRESULT CD3DApplication::Initialize3DEnvironment()
 	{
 		m_pDD        = m_pFramework->GetDirectDraw();
 		m_pD3D       = m_pFramework->GetDirect3D();
-		m_pd3dDevice = m_pFramework->GetD3DDevice();
 
 		m_pddsRenderTarget     = m_pFramework->GetRenderSurface();
 		m_pddsRenderTargetLeft = m_pFramework->GetRenderSurfaceLeft();
@@ -1168,7 +1166,7 @@ HRESULT CD3DApplication::SetClipping(float x1, float y1, float x2, float y2)
 {
 	D3DVIEWPORT7 vp = {(unsigned long)x1, (unsigned long)y1, (unsigned long)x2, (unsigned long)y2, 0.f, 1.f};
 
-	if (FAILED(m_pd3dDevice->SetViewport(&vp))) return D3DFWERR_NOVIEWPORT;
+	if (FAILED(GDevice->SetViewport(&vp))) return D3DFWERR_NOVIEWPORT;
 
 	return S_OK;
 }
@@ -1337,10 +1335,7 @@ bool CD3DApplication::Unlock()
 //-----------------------------------------------------------------------------
 void CD3DApplication::EnableZBuffer()
 {
-	if (m_pd3dDevice)
-	{
-		m_pd3dDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_TRUE);
-	}
+	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_TRUE);
 	bZBUFFER = true;
 }
 
@@ -1366,7 +1361,7 @@ bool OKBox(const char * text, const char * title)
 extern void ExitProc();
 
 
-void SetZBias(const LPDIRECT3DDEVICE7 _pd3dDevice, int _iZBias)
+void SetZBias(int _iZBias)
 {
 	if (_iZBias < 0)
 	{
@@ -1377,5 +1372,5 @@ void SetZBias(const LPDIRECT3DDEVICE7 _pd3dDevice, int _iZBias)
 	if (_iZBias == iCurrZBias) return;
 
 	iCurrZBias = _iZBias;
-	_pd3dDevice->SetRenderState(D3DRENDERSTATE_ZBIAS, iCurrZBias);
+	GDevice->SetRenderState(D3DRENDERSTATE_ZBIAS, iCurrZBias);
 }

@@ -442,20 +442,20 @@ void CFireBall::Update(unsigned long aulTime)
 }
 
 //-----------------------------------------------------------------------------
-float CFireBall::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CFireBall::Render()
 {
 	if (ulCurrentTime >= ulDuration)
 	{
 		return 0.f;
 	}
 
-	SETCULL(m_pd3dDevice, D3DCULL_NONE);
-	SETZWRITE(m_pd3dDevice, false);
-	SETALPHABLEND(m_pd3dDevice, true);
+	SETCULL(D3DCULL_NONE);
+	SETZWRITE(false);
+	SETALPHABLEND(true);
 
-	pPSFire.Render(m_pd3dDevice);
-	pPSFire2.Render(m_pd3dDevice);
-	pPSSmoke.Render(m_pd3dDevice);
+	pPSFire.Render();
+	pPSFire2.Render();
+	pPSSmoke.Render();
 
 	return 1 - 0.5f * rnd();
 }
@@ -672,18 +672,18 @@ void CIceProjectile::Update(unsigned long aulTime)
 }
 
 //---------------------------------------------------------------------
-float CIceProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CIceProjectile::Render()
 {
 	int i = 0;
 
 	if (ulCurrentTime >= ulDuration) return 0.f;
 
-	SETCULL(m_pd3dDevice, D3DCULL_CW);
-	SETZWRITE(m_pd3dDevice, false);
+	SETCULL(D3DCULL_CW);
+	SETZWRITE(false);
 
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_INVDESTCOLOR);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(m_pd3dDevice, true);
+	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_INVDESTCOLOR);
+	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	SETALPHABLEND(true);
 
 	iMax = (int)((iNumber * 2) * fOneOnDuration * ulCurrentTime);
 
@@ -740,9 +740,9 @@ float CIceProjectile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		stitescale.z = tSize[i].z;
 
 		if (tType[i] == 0)
-			DrawEERIEObjEx(m_pd3dDevice, smotte, &stiteangle, &stitepos, &stitescale, &stitecolor);
+			DrawEERIEObjEx(smotte, &stiteangle, &stitepos, &stitescale, &stitecolor);
 		else
-			DrawEERIEObjEx(m_pd3dDevice, stite, &stiteangle, &stitepos, &stitescale, &stitecolor);
+			DrawEERIEObjEx(stite, &stiteangle, &stitepos, &stitescale, &stitecolor);
 	}
 
 	float x, y, z;
@@ -1034,14 +1034,14 @@ void CSpeed::DrawRuban(int num, float size, int dec, float r, float g, float b, 
 }
 
 //-----------------------------------------------------------------------------
-float CSpeed::Render(LPDIRECT3DDEVICE7 device)
+float CSpeed::Render()
 {
-	SETCULL(device, D3DCULL_NONE);
-	SETALPHABLEND(device, true);
-	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	SETCULL(D3DCULL_NONE);
+	SETALPHABLEND(true);
+	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
+	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 
-	SETTC(device, NULL);
+	SETTC(NULL);
 	
 	for (int i = 0; i < nbrubandef; i++)
 	{
@@ -1052,9 +1052,9 @@ float CSpeed::Render(LPDIRECT3DDEVICE7 device)
 		                trubandef[i].r2, trubandef[i].g2, trubandef[i].b2) ;
 	}
 
-	SETALPHABLEND(device, false);
-	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
+	SETALPHABLEND(false);
+	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
+	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
 
 	return 0;
 }
@@ -1189,9 +1189,9 @@ if (ulCurrentTime >= ulDuration)
 }
 
 //---------------------------------------------------------------------
-float CCreateFood::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CCreateFood::Render()
 {
-	pPS->Render(m_pd3dDevice);
+	pPS->Render();
 
 	return 1;
 }

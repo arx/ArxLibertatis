@@ -560,14 +560,14 @@ void CParticleSystem::Update(long _lTime)
 }
 
 //-----------------------------------------------------------------------------
-void CParticleSystem::Render(LPDIRECT3DDEVICE7 _lpD3DDevice) {
+void CParticleSystem::Render() {
 	
-	SETCULL(_lpD3DDevice, D3DCULL_NONE);
-	SETZWRITE(_lpD3DDevice, false);
+	SETCULL(D3DCULL_NONE);
+	SETZWRITE(false);
 
-	_lpD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  iSrcBlend);
-	_lpD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, iDstBlend);
-	SETALPHABLEND(_lpD3DDevice, true);
+	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  iSrcBlend);
+	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, iDstBlend);
+	SETALPHABLEND(true);
 
 	int inumtex = 0;
 
@@ -649,12 +649,12 @@ void CParticleSystem::Render(LPDIRECT3DDEVICE7 _lpD3DDevice) {
 					fRot = (-fParticleRotation) * p->ulTime + p->fRotStart;
 
 				if ((tex_tab[inumtex] && tex_tab[inumtex]->m_pddsSurface))
-					EERIEDrawRotatedSprite(_lpD3DDevice, &p3pos, p->fSize, tex_tab[inumtex], p->ulColor, 2, fRot);
+					EERIEDrawRotatedSprite(&p3pos, p->fSize, tex_tab[inumtex], p->ulColor, 2, fRot);
 			}
 			else
 			{
 				if ((tex_tab[inumtex] && tex_tab[inumtex]->m_pddsSurface))
-					EERIEDrawSprite(_lpD3DDevice, &p3pos, p->fSize, tex_tab[inumtex], p->ulColor, 2);
+					EERIEDrawSprite(&p3pos, p->fSize, tex_tab[inumtex], p->ulColor, 2);
 			}
 		}
 	}

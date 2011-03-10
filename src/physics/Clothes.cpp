@@ -74,7 +74,7 @@ extern EERIE_3D SP_EC_POS;
  
  
 long DEBUG_MOLLESS = 0;
-long MOLLESS_ComputeCollisionsII(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * obj, float deltaTime);
+long MOLLESS_ComputeCollisionsII(EERIE_3DOBJ * obj, float deltaTime);
 
  
 

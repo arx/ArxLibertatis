@@ -206,7 +206,7 @@ void ARX_DAMAGE_Reset_Blood_Info()
 	Blood_Duration = 0;
 }
 
-void ARX_DAMAGE_Show_Hit_Blood(LPDIRECT3DDEVICE7 pd3dDevice)
+void ARX_DAMAGE_Show_Hit_Blood()
 {
 	D3DCOLOR color;
 	static float Last_Blood_Pos = 0.f;
@@ -219,35 +219,35 @@ void ARX_DAMAGE_Show_Hit_Blood(LPDIRECT3DDEVICE7 pd3dDevice)
 	}
 	else if (Blood_Pos > 1.f)
 	{
-		pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-		pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR);
-		SETALPHABLEND(pd3dDevice, true);
-		SETZWRITE(pd3dDevice, false);
+		GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
+		GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR);
+		SETALPHABLEND(true);
+		SETZWRITE(false);
 
 		if (player.poison > 1.f)
 			color = D3DRGB(Blood_Pos - 1.f, 1.f, Blood_Pos - 1.f);
 		else
 			color = D3DRGB(1.f, Blood_Pos - 1.f, Blood_Pos - 1.f);
 
-		EERIEDrawBitmap(pd3dDevice, 0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.00009f, NULL, color);
-		SETZWRITE(pd3dDevice, true);
-		SETALPHABLEND(pd3dDevice, false);
+		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.00009f, NULL, color);
+		SETZWRITE(true);
+		SETALPHABLEND(false);
 	}
 	else if (Blood_Pos > 0.f)
 	{
-		pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-		pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR);
-		SETALPHABLEND(pd3dDevice, true);
-		SETZWRITE(pd3dDevice, false);
+		GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
+		GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR);
+		SETALPHABLEND(true);
+		SETZWRITE(false);
 
 		if (player.poison > 1.f)
 			color = D3DRGB(1.f - Blood_Pos, 1.f, 1.f - Blood_Pos);
 		else
 			color = D3DRGB(1.f, 1.f - Blood_Pos, 1.f - Blood_Pos);
 
-		EERIEDrawBitmap(pd3dDevice, 0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.00009f, NULL, color);
-		SETALPHABLEND(pd3dDevice, false);
-		SETZWRITE(pd3dDevice, true);
+		EERIEDrawBitmap(0.f, 0.f, (float)DANAESIZX, (float)DANAESIZY, 0.00009f, NULL, color);
+		SETALPHABLEND(false);
+		SETZWRITE(true);
 	}
 
 	if (Blood_Pos > 0.f)

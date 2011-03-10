@@ -742,7 +742,6 @@ void DanaeSwitchFullScreen()
 		ARXMenu_Options_Video_SetGamma(pMenuConfig->iGamma);
 	}
 
-	GDevice=danaeApp.m_pFramework->GetD3DDevice();
 	DANAESIZX=danaeApp.m_pFramework->m_dwRenderWidth;
 	DANAESIZY=danaeApp.m_pFramework->m_dwRenderHeight;
 
@@ -760,7 +759,7 @@ void DanaeSwitchFullScreen()
 	extern float fInterfaceRatio;
 	fInterfaceRatio = 1;
 
-	LoadScreen(GDevice);
+	LoadScreen();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -783,7 +782,6 @@ void DanaeRestoreFullScreen()
 		ARXMenu_Options_Video_SetGamma(pMenuConfig->iGamma);
 	}
 
-	GDevice=danaeApp.m_pFramework->GetD3DDevice();
 	DANAESIZX=danaeApp.m_pFramework->m_dwRenderWidth;
 	DANAESIZY=danaeApp.m_pFramework->m_dwRenderHeight;
 	DANAECENTERX=DANAESIZX>>1;
@@ -794,7 +792,7 @@ void DanaeRestoreFullScreen()
 
 	ARX_Text_Init();
 
-	LoadScreen(GDevice);
+	LoadScreen();
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -2855,9 +2853,7 @@ HRESULT DANAE::BeforeRun()
 
 	LogDebug << "Before Run...";
 
-	GDevice=m_pd3dDevice;
-
-	ControlCinematique = new Cinematic(danaeApp.m_pFramework->GetD3DDevice(), danaeApp.m_pFramework->m_dwRenderWidth, danaeApp.m_pFramework->m_dwRenderHeight);
+	ControlCinematique = new Cinematic(danaeApp.m_pFramework->m_dwRenderWidth, danaeApp.m_pFramework->m_dwRenderHeight);
 	LogDebug << "Initializing ControlCinematique " << danaeApp.m_pFramework->m_dwRenderWidth << "x" << danaeApp.m_pFramework->m_dwRenderHeight;
 	memset(&necklace,0,sizeof(ARX_NECKLACE));
 	long old=GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
@@ -2908,7 +2904,7 @@ HRESULT DANAE::BeforeRun()
 	for (long i = 0; i<NB_RUNES-1; i++)
 	{
 		if (necklace.pTexTab[i])
-			necklace.pTexTab[i]->CreateHalo(GDevice);
+			necklace.pTexTab[i]->CreateHalo();
 	}
 
 	EERIE_3DOBJ * _fogobj;
@@ -2998,35 +2994,35 @@ void ExitProc()
 
 //*************************************************************************************
 
-void SetFilteringMode(LPDIRECT3DDEVICE7 m_pd3dDevice,long mode)
+void SetFilteringMode(long mode)
 {
 	if (POINTINTERPOLATION)
 	{
-		m_pd3dDevice->SetTextureStageState( 0, D3DTSS_MIPFILTER, D3DTFP_POINT  );
+		GDevice->SetTextureStageState( 0, D3DTSS_MIPFILTER, D3DTFP_POINT  );
 	}
 	else
 	{
-		m_pd3dDevice->SetTextureStageState( 0, D3DTSS_MIPFILTER, D3DTFP_LINEAR  );
+		GDevice->SetTextureStageState( 0, D3DTSS_MIPFILTER, D3DTFP_LINEAR  );
 	}
 
 	switch (mode)
 	{
 		case 1:
-			m_pd3dDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_LINEAR );
-			m_pd3dDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_LINEAR );
+			GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_LINEAR );
+			GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_LINEAR );
 		break;
 		case 2:
-			m_pd3dDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_ANISOTROPIC );
-			m_pd3dDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_ANISOTROPIC );
+			GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_ANISOTROPIC );
+			GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_ANISOTROPIC );
 		break;
 		default:
-			m_pd3dDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_POINT );
-			m_pd3dDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_POINT );
+			GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_POINT );
+			GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_POINT );
 		break;
 	}
 
 	float val=-0.3f;
-	m_pd3dDevice->SetTextureStageState( 0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD) (&val))  );
+	GDevice->SetTextureStageState( 0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD) (&val))  );
 }
 long NO_GMOD_RESET=0;
 
@@ -3122,7 +3118,7 @@ extern long FLAG_ALLOW_CLOTHES;
 
 //*************************************************************************************
 
-long FirstFrameHandling(LPDIRECT3DDEVICE7 m_pd3dDevice)
+long FirstFrameHandling()
 {	
 	LogDebug << "FirstFrameHandling";
 	EERIE_3D trans;
@@ -3252,7 +3248,7 @@ long FirstFrameHandling(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	LOAD_N_DONT_ERASE=0;
 	DONT_ERASE_PLAYER=0;
-	D3DTextr_TESTRestoreAllTextures( m_pd3dDevice );
+	D3DTextr_TESTRestoreAllTextures();
 
 	PROGRESS_BAR_COUNT+=1.f;
 	LoadLevelScreen();
@@ -4330,7 +4326,7 @@ void ManageCombatModeAnimationsEND()
 }
 
 float LAST_FADEVALUE=1.f;
-void ManageFade(LPDIRECT3DDEVICE7 m_pd3dDevice)
+void ManageFade()
 {
 	float tim=((float)ARX_TIME_Get()-(float)FADESTART);
 
@@ -4350,21 +4346,21 @@ void ManageFade(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	}
 
 	LAST_FADEVALUE=Visibility;
-	m_pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-	m_pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );										
-	SETZWRITE(m_pd3dDevice, false );
-	SETALPHABLEND(m_pd3dDevice,true);
+	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
+	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );										
+	SETZWRITE(false );
+	SETALPHABLEND(true);
 	
-	EERIEDrawBitmap(m_pd3dDevice,0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
+	EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
 			NULL,_EERIERGB(Visibility));
 
-	m_pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	m_pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
+	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 	float col=Visibility;
-	EERIEDrawBitmap(m_pd3dDevice,0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
+	EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
 			NULL,EERIERGB(col*FADECOLOR.r,col*FADECOLOR.g,col*FADECOLOR.b));		
-	SETALPHABLEND(m_pd3dDevice,false);
-	SETZWRITE(m_pd3dDevice, true );
+	SETALPHABLEND(false);
+	SETZWRITE(true );
 }
 
 extern long cur_mr;
@@ -4377,9 +4373,9 @@ void CheckMr()
 		if (GDevice && Mr_tc && TextureContainer_Exist(Mr_tc))
 		{
 			if (!Mr_tc->m_pddsSurface)
-				Mr_tc->Restore(GDevice);
+				Mr_tc->Restore();
 
-			EERIEDrawBitmap(GDevice,DANAESIZX-(128.f*Xratio),0.f,(float)128*Xratio,(float)128*Yratio,0.0001f,
+			EERIEDrawBitmap(DANAESIZX-(128.f*Xratio),0.f,(float)128*Xratio,(float)128*Yratio,0.0001f,
 				Mr_tc,_EERIERGB(0.5f+PULSATE*( 1.0f / 10 )));		
 		}
 		else
@@ -4388,24 +4384,24 @@ void CheckMr()
 		}
 	}
 }
-void DrawImproveVisionInterface(LPDIRECT3DDEVICE7 m_pd3dDevice)
+void DrawImproveVisionInterface()
 {
 	if (ombrignon->m_pddsSurface)
 	{
 		float mod = 0.6f + PULSATE * 0.35f;
-		EERIEDrawBitmap(m_pd3dDevice,0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
+		EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
 			ombrignon,EERIERGB((0.5f+PULSATE*( 1.0f / 10 ))*mod,0.f,0.f));		
 	}
 }
 float MagicSightFader=0.f;
-void DrawMagicSightInterface(LPDIRECT3DDEVICE7 m_pd3dDevice)
+void DrawMagicSightInterface()
 {
 	if (eyeball.exist==1) return;
 
 	if (Flying_Eye && Flying_Eye->m_pddsSurface)
 	{
-		m_pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-		m_pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );										
+		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
+		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );										
 		float col=(0.75f+PULSATE*( 1.0f / 20 ));
 
 		if (col>1.f) col=1.f;
@@ -4419,13 +4415,13 @@ void DrawMagicSightInterface(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			col = 1.f - eyeball.size.x;
 		}
 
-		EERIEDrawBitmap(m_pd3dDevice,0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
+		EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
 			Flying_Eye,_EERIERGB(col));
 
 		if (MagicSightFader>0.f)
 		{
 			col=MagicSightFader;
-			EERIEDrawBitmap(m_pd3dDevice,0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
+			EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
 				NULL,_EERIERGB(col));		
 			MagicSightFader-=Original_framedelay*( 1.0f / 400 );
 
@@ -4433,28 +4429,28 @@ void DrawMagicSightInterface(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				MagicSightFader=0.f;
 		}
 
-		m_pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-		m_pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
+		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 	}
 }
 
 //*************************************************************************************
 
-void RenderAllNodes(LPDIRECT3DDEVICE7 m_pd3dDevice)
+void RenderAllNodes()
 {
 	EERIE_3D angle;
 	float xx,yy;
 	long j;
 	Vector_Init(&angle);
 
-	SETALPHABLEND(m_pd3dDevice,false);
+	SETALPHABLEND(false);
 
 	for (long i=0;i<nodes.nbmax;i++)
 	{
 		if (nodes.nodes[i].exist)
 		{
 
-			DrawEERIEInter(m_pd3dDevice,nodeobj,
+			DrawEERIEInter(nodeobj,
 				&angle,&nodes.nodes[i].pos,NULL);
 			nodes.nodes[i].bboxmin.x=(short)BBOXMIN.x;
 			nodes.nodes[i].bboxmin.y=(short)BBOXMIN.y;
@@ -4470,17 +4466,17 @@ void RenderAllNodes(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 			if (nodes.nodes[i].selected)
 			{
-				EERIEDraw2DLine(m_pd3dDevice, nodes.nodes[i].bboxmin.x,nodes.nodes[i].bboxmin.y,nodes.nodes[i].bboxmax.x,nodes.nodes[i].bboxmin.y,0.01f, EERIECOLOR_YELLOW);
-				EERIEDraw2DLine(m_pd3dDevice, nodes.nodes[i].bboxmax.x,nodes.nodes[i].bboxmin.y,nodes.nodes[i].bboxmax.x,nodes.nodes[i].bboxmax.y,0.01f, EERIECOLOR_YELLOW);
-				EERIEDraw2DLine(m_pd3dDevice, nodes.nodes[i].bboxmax.x,nodes.nodes[i].bboxmax.y,nodes.nodes[i].bboxmin.x,nodes.nodes[i].bboxmax.y,0.01f, EERIECOLOR_YELLOW);
-				EERIEDraw2DLine(m_pd3dDevice, nodes.nodes[i].bboxmin.x,nodes.nodes[i].bboxmax.y,nodes.nodes[i].bboxmin.x,nodes.nodes[i].bboxmin.y,0.01f, EERIECOLOR_YELLOW);
+				EERIEDraw2DLine(nodes.nodes[i].bboxmin.x,nodes.nodes[i].bboxmin.y,nodes.nodes[i].bboxmax.x,nodes.nodes[i].bboxmin.y,0.01f, EERIECOLOR_YELLOW);
+				EERIEDraw2DLine(nodes.nodes[i].bboxmax.x,nodes.nodes[i].bboxmin.y,nodes.nodes[i].bboxmax.x,nodes.nodes[i].bboxmax.y,0.01f, EERIECOLOR_YELLOW);
+				EERIEDraw2DLine(nodes.nodes[i].bboxmax.x,nodes.nodes[i].bboxmax.y,nodes.nodes[i].bboxmin.x,nodes.nodes[i].bboxmax.y,0.01f, EERIECOLOR_YELLOW);
+				EERIEDraw2DLine(nodes.nodes[i].bboxmin.x,nodes.nodes[i].bboxmax.y,nodes.nodes[i].bboxmin.x,nodes.nodes[i].bboxmin.y,0.01f, EERIECOLOR_YELLOW);
 			}
 
 			for (j=0;j<MAX_LINKS;j++)
 			{
 				if (nodes.nodes[i].link[j]!=-1)
 				{
-					EERIEDrawTrue3DLine(m_pd3dDevice,&nodes.nodes[i].pos,&nodes.nodes[nodes.nodes[i].link[j]].pos,EERIECOLOR_GREEN);
+					EERIEDrawTrue3DLine(&nodes.nodes[i].pos,&nodes.nodes[nodes.nodes[i].link[j]].pos,EERIECOLOR_GREEN);
 				}
 			}
 		}
@@ -4701,7 +4697,7 @@ bool DANAE_ManageSplashThings()
 {
 	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP);
 
-	SetFilteringMode(GDevice,Bilinear);
+	SetFilteringMode(Bilinear);
 
 	if (SPLASH_THINGS_STAGE>10)
 	{
@@ -4785,7 +4781,7 @@ bool DANAE_ManageSplashThings()
 			if (SPLASH_START==0) //firsttime
 				SPLASH_START = ARX_TIME_GetUL();
 
-			ARX_INTERFACE_ShowFISHTANK(GDevice);
+			ARX_INTERFACE_ShowFISHTANK();
 
 			unsigned long tim = ARX_TIME_GetUL();
 			float pos=(float)tim-(float)SPLASH_START;
@@ -4809,7 +4805,7 @@ bool DANAE_ManageSplashThings()
 				ARX_SOUND_PlayInterface(SND_PLAYER_HEART_BEAT);
 			}
 
-			ARX_INTERFACE_ShowARKANE(GDevice);
+			ARX_INTERFACE_ShowARKANE();
 			unsigned long tim = ARX_TIME_GetUL();
 			float pos=(float)tim-(float)SPLASH_START;
 
@@ -4893,7 +4889,7 @@ long DANAE_Manage_Cinematic()
 
 	PlayTrack(ControlCinematique);
 	ControlCinematique->InitDeviceObjects();
-	danaeApp.m_pd3dDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, true);
+	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, true);
 
 	if(ControlCinematique->Render(FrameTicks-LastFrameTicks)==E_FAIL)
 		return 1;
@@ -4934,7 +4930,7 @@ long DANAE_Manage_Cinematic()
 }
 void DanaeItemAdd()
 {
-	INTERACTIVE_OBJ * tmp=AddInteractive(GDevice,ItemToBeAdded,0,IO_IMMEDIATELOAD);
+	INTERACTIVE_OBJ * tmp=AddInteractive(ItemToBeAdded,0,IO_IMMEDIATELOAD);
 
 	if (tmp!=NULL)
 	{
@@ -5240,7 +5236,7 @@ void ShowValue(unsigned long * cur,unsigned long * dest, const char * str)
 
 	col=EERIERGB(rgb.r,rgb.g,rgb.b);
 	float width=(float)(*cur)*( 1.0f / 500 );
-	EERIEDrawBitmap(danaeApp.m_pd3dDevice, 0, ARX_CLEAN_WARN_CAST_FLOAT(iVPOS * 16), width, 8, 0.000091f, NULL, col);
+	EERIEDrawBitmap(0, ARX_CLEAN_WARN_CAST_FLOAT(iVPOS * 16), width, 8, 0.000091f, NULL, col);
 	danaeApp.OutputText(ARX_CLEAN_WARN_CAST_DWORD(width), iVPOS * 16 - 2, str);
 
 }
@@ -5358,9 +5354,6 @@ static float _AvgFrameDiff = 150.f;
 		e3dPosBump=player.pos;
 	}
 
-	// Sets our Global Device to Current Device
-	GDevice=m_pd3dDevice;
-
 	if (this->m_pFramework->m_bHasMoved)
 	{
 		LogDebug << "has moved";
@@ -5450,11 +5443,10 @@ static float _AvgFrameDiff = 150.f;
 	if (WILL_RELOAD_ALL_TEXTURES)
 	{
 		LogDebug << "reload all textures";
-		ReloadAllTextures(GDevice);
+		ReloadAllTextures();
 
 		if(ControlCinematique)
 		{
-			ControlCinematique->m_pd3dDevice=GDevice;
 			ActiveAllTexture(ControlCinematique);
 		}
 
@@ -5607,7 +5599,7 @@ static float _AvgFrameDiff = 150.f;
 	{
 		LogDebug << "first frame";
 		ARX_TIME_Get();
-		long ffh=FirstFrameHandling( m_pd3dDevice);
+		long ffh=FirstFrameHandling();
 
 		if (ffh== FFH_S_OK) return S_OK;
 
@@ -5728,12 +5720,12 @@ static float _AvgFrameDiff = 150.f;
 		if (desired.flags & GMOD_DCOLOR)
 		{
 			long DCOLOR=EERIERGB(current.depthcolor.r,current.depthcolor.g,current.depthcolor.b);
-			m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER,DCOLOR, 1.0f, 0L );
+			GDevice->Clear( 0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER,DCOLOR, 1.0f, 0L );
 		}
 		else
 		{
 			subj.bkgcolor=ulBKGColor;
-			m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER,subj.bkgcolor, 1.0f, 0L );
+			GDevice->Clear( 0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER,subj.bkgcolor, 1.0f, 0L );
 		}
 
 		//-------------------------------------------------------------------------------
@@ -5750,7 +5742,7 @@ static float _AvgFrameDiff = 150.f;
 			rectz[0].y2 		= lMulResult;
 			rectz[1].y1 		= DANAESIZY - lMulResult;
 			rectz[1].y2 = DANAESIZY;
-			m_pd3dDevice->Clear( 2, rectz, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER,0x00000000, 0.f, 0L );
+			GDevice->Clear( 2, rectz, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER,0x00000000, 0.f, 0L );
 		}
 		//-------------------------------------------------------------------------------
 
@@ -5759,8 +5751,8 @@ static float _AvgFrameDiff = 150.f;
 			return E_FAIL;
 	}
 	
-	SETZWRITE(m_pd3dDevice, true );
-	SETALPHABLEND(m_pd3dDevice,false);
+	SETZWRITE(true );
+	SETALPHABLEND(false);
 
 	if ( (inter.iobj[0]) && (inter.iobj[0]->animlayer[0].cur_anim) )
 	{
@@ -5800,7 +5792,7 @@ static float _AvgFrameDiff = 150.f;
 				ARX_CHECK_ULONG(iCalc);
 
 				assert(inter.iobj[0]->obj != NULL);
-				EERIEDrawAnimQuat(	m_pd3dDevice,	inter.iobj[0]->obj,
+				EERIEDrawAnimQuat(inter.iobj[0]->obj,
 					&inter.iobj[0]->animlayer[0],
 					&inter.iobj[0]->angle,&inter.iobj[0]->pos,
 					ARX_CLEAN_WARN_CAST_ULONG(iCalc)
@@ -5838,8 +5830,7 @@ static float _AvgFrameDiff = 150.f;
 				LogError << "missing " << inter.iobj[0]->filename;
 
 			assert(inter.iobj[0]->obj != NULL);
-			EERIEDrawAnimQuat(	m_pd3dDevice,	
-				inter.iobj[0]->obj,
+			EERIEDrawAnimQuat(inter.iobj[0]->obj,
 					&inter.iobj[0]->animlayer[0],
 					&inter.iobj[0]->angle,
 					&inter.iobj[0]->pos,
@@ -6532,7 +6523,7 @@ static float _AvgFrameDiff = 150.f;
 			ACTIVECAM->use_focal=PLAYER_ARMS_FOCAL*Xratio;
 		}
 
-		SetFilteringMode(m_pd3dDevice,Bilinear);
+		SetFilteringMode(Bilinear);
 
 		if ((!EXTERNALVIEW) && GLOBAL_FORCE_PLAYER_IN_FRONT)
 			FORCE_FRONT_DRAW=1;
@@ -6540,7 +6531,7 @@ static float _AvgFrameDiff = 150.f;
 		if (inter.iobj[0]->invisibility>0.9f) inter.iobj[0]->invisibility=0.9f;
 
 		assert(inter.iobj[0]->obj != NULL);
-		EERIEDrawAnimQuat(	m_pd3dDevice,	inter.iobj[0]->obj,
+		EERIEDrawAnimQuat(inter.iobj[0]->obj,
 				&inter.iobj[0]->animlayer[0],
 				&inter.iobj[0]->angle,&inter.iobj[0]->pos, 0,inter.iobj[0],8);
 		ACTIVECAM->use_focal=restore;
@@ -6548,8 +6539,8 @@ static float _AvgFrameDiff = 150.f;
 	}
 
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
-	SetFilteringMode(m_pd3dDevice,Bilinear);		
-	SETZWRITE(m_pd3dDevice, true );
+	SetFilteringMode(Bilinear);		
+	SETZWRITE(true );
 	danaeApp.EnableZBuffer();
 
 	if (FirstFrame==0)
@@ -6568,13 +6559,13 @@ static float _AvgFrameDiff = 150.f;
 		if (uw_mode)
 		{
 			float val=10.f;
-			m_pd3dDevice->SetTextureStageState( 0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD) (&val))  );
-			ARX_SCENE_Render(m_pd3dDevice, 1);
+			GDevice->SetTextureStageState( 0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD) (&val))  );
+			ARX_SCENE_Render(1);
 			val=-0.3f;
-			m_pd3dDevice->SetTextureStageState( 0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD) (&val))  );
+			GDevice->SetTextureStageState( 0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD) (&val))  );
 		}
 		else {
-			ARX_SCENE_Render(m_pd3dDevice, 1);
+			ARX_SCENE_Render(1);
 		}
 
 		BENCH_RENDER=EndBench();
@@ -6583,7 +6574,7 @@ static float _AvgFrameDiff = 150.f;
 
 	if (EDITION==EDITION_PATHWAYS)
 	{
-		ARX_PATHS_RedrawAll(m_pd3dDevice);
+		ARX_PATHS_RedrawAll();
 	}
 
 	// Begin Particles ***************************************************************************
@@ -6594,19 +6585,19 @@ static float _AvgFrameDiff = 150.f;
 		if (pParticleManager)
 		{
 				pParticleManager->Update(ARX_CLEAN_WARN_CAST_LONG(FrameDiff));
-			pParticleManager->Render(m_pd3dDevice);
+			pParticleManager->Render();
 		}
 
-		m_pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
-		m_pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );			
-		SETZWRITE(m_pd3dDevice, false );
-		SETALPHABLEND(m_pd3dDevice,true);
+		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
+		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );			
+		SETZWRITE(false );
+		SETALPHABLEND(true);
 		ARX_FOGS_Render();
 
-		ARX_PARTICLES_Render(m_pd3dDevice,&subj);
-		UpdateObjFx(m_pd3dDevice);
+		ARX_PARTICLES_Render(&subj);
+		UpdateObjFx();
 		
-		SETALPHABLEND(m_pd3dDevice,false);
+		SETALPHABLEND(false);
 		BENCH_PARTICLES=EndBench();
 
 	}
@@ -6646,35 +6637,35 @@ static float _AvgFrameDiff = 150.f;
 			&&	flarenum
 			)
 		{
-			ARX_MAGICAL_FLARES_Draw(m_pd3dDevice,FRAMETICKS);
+			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
 				FRAMETICKS = ARXTimeUL();
 		}
 	}
 	else  // EDITMODE == true
 	{
 		if (!(Project.hide & HIDE_NODES))
-				RenderAllNodes(m_pd3dDevice);
+				RenderAllNodes();
 
 		std::stringstream ss("EDIT MODE - Selected ");
 		ss <<  NbIOSelected;
 		ARX_TEXT_Draw(hFontInBook, 100, 2, ss.str(), EERIECOLOR_YELLOW);
 	
 		if (EDITION==EDITION_FOGS)
-			ARX_FOGS_RenderAll( m_pd3dDevice);
+			ARX_FOGS_RenderAll();
 	}
 
 	// To remove for Final Release but needed until then !
 	if (ItemToBeAdded[0]!=0)
 		DanaeItemAdd();
 		
-	SETALPHABLEND(danaeApp.m_pd3dDevice,true);
-	SETZWRITE(danaeApp.m_pd3dDevice, false );
+	SETALPHABLEND(true);
+	SETZWRITE(false);
 
 	// Checks some specific spell FX
 	CheckMr();
 
 	if (Project.improve)
-		DrawImproveVisionInterface(danaeApp.m_pd3dDevice);
+		DrawImproveVisionInterface();
 	else
 	{
 		if ((subj.focal<BASE_FOCAL))
@@ -6688,35 +6679,35 @@ static float _AvgFrameDiff = 150.f;
 
 	if (eyeball.exist!=0)
 	{
-		DrawMagicSightInterface(danaeApp.m_pd3dDevice);
+		DrawMagicSightInterface();
 	}
 
 		if (PLAYER_PARALYSED)
 	{
-		SETZWRITE(m_pd3dDevice, false );
-		SETALPHABLEND(m_pd3dDevice,true);
-		m_pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-		m_pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+		SETZWRITE(false);
+		SETALPHABLEND(true);
+		GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
+		GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 
-		EERIEDrawBitmap(m_pd3dDevice,0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
+		EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
 				NULL,EERIERGB(0.2f,0.2f,1.f));		
-		SETALPHABLEND(m_pd3dDevice,false);
-		SETZWRITE(m_pd3dDevice, true );
+		SETALPHABLEND(false);
+		SETZWRITE(true );
 	}
 
 	if (FADEDIR)
 	{
-		ManageFade(danaeApp.m_pd3dDevice);
+		ManageFade();
 	}
 
-	SETALPHABLEND(danaeApp.m_pd3dDevice,false);
-	SETZWRITE(danaeApp.m_pd3dDevice, true );
+	SETALPHABLEND(false);
+	SETZWRITE(true);
 	
 	// Reset Last Key
 	danaeApp.kbd.lastkey=-1;
 
 	// Red screen fade for damages.
-	ARX_DAMAGE_Show_Hit_Blood(GDevice);
+	ARX_DAMAGE_Show_Hit_Blood();
 
 	// Manage Notes/Books opened on screen
 	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
@@ -6724,8 +6715,8 @@ static float _AvgFrameDiff = 150.f;
 
 	finish:; //----------------------------------------------------------------
 	// Update spells
-	ARX_SPELLS_Update(m_pd3dDevice);
-	SETCULL(GDevice,D3DCULL_NONE);
+	ARX_SPELLS_Update();
+	SETCULL(D3DCULL_NONE);
 	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, true);
 
 	// Manage Death visual & Launch menu...
@@ -6736,14 +6727,14 @@ static float _AvgFrameDiff = 150.f;
 
 	// INTERFACE
 		// Remove the Alphablend State if needed : NO Z Clear
-	SETALPHABLEND(m_pd3dDevice,false);
+	SETALPHABLEND(false);
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
 
 	// Draw game interface if needed
 	if (ARXmenu.currentmode == AMCM_OFF)
 	if (!(Project.hide & HIDE_INTERFACE) && !CINEMASCOPE)
 	{
-		SETTEXTUREWRAPMODE(GDevice,D3DTADDRESS_CLAMP);
+		SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
 		DrawAllInterface();
 		DrawAllInterfaceFinish();
 
@@ -6753,38 +6744,38 @@ static float _AvgFrameDiff = 150.f;
 			)
 		{
 			GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE, false);
-			ARX_MAGICAL_FLARES_Draw(m_pd3dDevice,FRAMETICKS);
+			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
 			EnableZBuffer();
 					FRAMETICKS = ARXTimeUL();
 		}
 	}
 
-	SETTEXTUREWRAPMODE(GDevice,D3DTADDRESS_WRAP);
+	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
 
 	if(bRenderInterList)
 	{
-		SETALPHABLEND(GDevice,false);
+		SETALPHABLEND(false);
 		PopAllTriangleList(true);
-		SETALPHABLEND(GDevice,true);
+		SETALPHABLEND(true);
 		PopAllTriangleListTransparency();
-		SETALPHABLEND(GDevice,false);
+		SETALPHABLEND(false);
 	}
 
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, true);
 		this->GoFor2DFX();
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
-m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
+GDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 
 	// Speech Management
 	if (!EDITMODE)
 	{
 		StartBench();
-		ARX_SPEECH_Check(danaeApp.m_pd3dDevice);
+		ARX_SPEECH_Check();
 		ARX_SPEECH_Update();
 		BENCH_SPEECH = EndBench();
 	}
 
-	SETTEXTUREWRAPMODE(m_pd3dDevice,D3DTADDRESS_WRAP);
+	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
 
 	if(pTextManage && !pTextManage->Empty())
 	{
@@ -6798,13 +6789,13 @@ m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 			long	SHOWLEVEL = ARX_LEVELS_GetRealNum(CURRENTLEVEL);
 
 		if ((SHOWLEVEL>=0) && (SHOWLEVEL<32))
-			ARX_MINIMAP_Show(GDevice,SHOWLEVEL,1,1);
+			ARX_MINIMAP_Show(SHOWLEVEL,1,1);
 	}
 
 		//-------------------------------------------------------------------------
 
 	// CURSOR Rendering
-	SETALPHABLEND(GDevice, false);
+	SETALPHABLEND( false);
 
 	if (DRAGINTER)
 	{
@@ -6812,11 +6803,11 @@ m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 
 		if(bRenderInterList)
 		{
-			SETALPHABLEND(GDevice,false);
+			SETALPHABLEND(false);
 			PopAllTriangleList(true);
-			SETALPHABLEND(GDevice,true);
+			SETALPHABLEND(true);
 			PopAllTriangleListTransparency();
-			SETALPHABLEND(GDevice,false);
+			SETALPHABLEND(false);
 		}
 
 		ARX_INTERFACE_HALO_Flush();
@@ -6972,8 +6963,8 @@ m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 	{
 		if(danaeApp.DANAEStartRender())
 		{
-			SETZWRITE(m_pd3dDevice, true );
-			SETALPHABLEND(m_pd3dDevice,false);
+			SETZWRITE(true );
+			SETALPHABLEND(false);
 			iVPOS=0;
 			ShowValue(&oBENCH_STARTUP,&BENCH_STARTUP,"Startup");
 			ShowValue(&oBENCH_PLAYER,&BENCH_PLAYER,"Player");
@@ -6996,8 +6987,6 @@ m_pd3dDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 void DANAE::GoFor2DFX()
 {
 	D3DTLVERTEX lv,ltvv;
-
-	GDevice=danaeApp.m_pd3dDevice;
 
 	long needed = 0;
 
@@ -7128,9 +7117,9 @@ void DANAE::GoFor2DFX()
 		{
 			GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE);
 			GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
-			SETALPHABLEND(GDevice,true);		
-			SETZWRITE(GDevice, false );
-			SETCULL(GDevice,D3DCULL_NONE);
+			SETALPHABLEND(true);		
+			SETZWRITE(false );
+			SETCULL(D3DCULL_NONE);
 			GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE, false);
 			GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,  0);
 
@@ -7163,7 +7152,7 @@ void DANAE::GoFor2DFX()
 						else
 							siz=-el->ex_flaresize;
 
-						EERIEDrawSprite(GDevice,&lv, siz ,tflare,EERIERGB(v*el->rgb.r,v*el->rgb.g,v*el->rgb.b),ltvv.sz);
+						EERIEDrawSprite(&lv, siz ,tflare,EERIERGB(v*el->rgb.r,v*el->rgb.g,v*el->rgb.b),ltvv.sz);
 
 					}
 				}
@@ -7173,7 +7162,7 @@ void DANAE::GoFor2DFX()
 		}
 	}
 
-	SETZWRITE(GDevice, true );
+	SETZWRITE(true );
 }
 
 void ShowTestText()
@@ -7441,61 +7430,59 @@ void ARX_SetAntiAliasing()
 
 HRESULT DANAE::InitDeviceObjects()
 {
-	GDevice=m_pd3dDevice;
-
 	// Setup Base Material
 	D3DMATERIAL7 mtrl;
 	D3DUtil_InitMaterial( mtrl, 1.f, 0.f, 0.f );
-	m_pd3dDevice->SetMaterial( &mtrl );
+	GDevice->SetMaterial( &mtrl );
 	// Enable texture perspective RenderState
-	m_pd3dDevice->SetRenderState( D3DRENDERSTATE_TEXTUREPERSPECTIVE , true );
+	GDevice->SetRenderState( D3DRENDERSTATE_TEXTUREPERSPECTIVE , true );
 	// Enable Z-buffering RenderState
 	EnableZBuffer();
 	// Setup Ambient Color RenderState
-	m_pd3dDevice->SetRenderState( D3DRENDERSTATE_AMBIENT,  0x0a0a0a0a );
+	GDevice->SetRenderState( D3DRENDERSTATE_AMBIENT,  0x0a0a0a0a );
 	// Restore All Textures RenderState
-	ReloadAllTextures(m_pd3dDevice);
+	ReloadAllTextures();
 	ARX_PLAYER_Restore_Skin();
 	// Setup Dither Mode
-	m_pd3dDevice->SetRenderState( D3DRENDERSTATE_DITHERENABLE, false );
+	GDevice->SetRenderState( D3DRENDERSTATE_DITHERENABLE, false );
 	// Setup Specular RenderState
-	m_pd3dDevice->SetRenderState( D3DRENDERSTATE_SPECULARENABLE, false );
+	GDevice->SetRenderState( D3DRENDERSTATE_SPECULARENABLE, false );
 	// Setup LastPixel RenderState
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_LASTPIXEL, true);
+	GDevice->SetRenderState(D3DRENDERSTATE_LASTPIXEL, true);
 	// Setup Clipping RenderState
-	m_pd3dDevice->SetRenderState( D3DRENDERSTATE_CLIPPING , true);	
+	GDevice->SetRenderState( D3DRENDERSTATE_CLIPPING , true);	
 	// Disable Lighting RenderState
-	m_pd3dDevice->SetRenderState( D3DRENDERSTATE_LIGHTING  , false);
+	GDevice->SetRenderState( D3DRENDERSTATE_LIGHTING  , false);
 	// Setup Texture Border RenderState
-	SETTEXTUREWRAPMODE(m_pd3dDevice, D3DTADDRESS_WRAP);
+	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
 	// Setup Color Key RenderState
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_STENCILENABLE,false);
-	m_pd3dDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
+	GDevice->SetRenderState(D3DRENDERSTATE_STENCILENABLE,false);
+	GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
 
 	if (USE_D3DFOG)
 	{
-		m_pd3dDevice->SetRenderState( D3DRENDERSTATE_FOGCOLOR, D3DRGB(current.depthcolor.r,current.depthcolor.g,current.depthcolor.b));
+		GDevice->SetRenderState( D3DRENDERSTATE_FOGCOLOR, D3DRGB(current.depthcolor.r,current.depthcolor.g,current.depthcolor.b));
 		float zval = 1.f;
-		m_pd3dDevice->SetRenderState( D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_LINEAR );
-		m_pd3dDevice->SetRenderState( D3DRENDERSTATE_FOGTABLEDENSITY, *((LPDWORD) (&zval)));
-		m_pd3dDevice->SetRenderState( D3DRENDERSTATE_FOGVERTEXMODE,  D3DFOG_NONE );
+		GDevice->SetRenderState( D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_LINEAR );
+		GDevice->SetRenderState( D3DRENDERSTATE_FOGTABLEDENSITY, *((LPDWORD) (&zval)));
+		GDevice->SetRenderState( D3DRENDERSTATE_FOGVERTEXMODE,  D3DFOG_NONE );
 		zval = 0.48f;
 		float zval2 = zval * 0.65f;
-		m_pd3dDevice->SetRenderState( D3DRENDERSTATE_FOGTABLESTART, *((LPDWORD) (&zval2)));
-		m_pd3dDevice->SetRenderState( D3DRENDERSTATE_FOGTABLEEND, *((LPDWORD) (&zval)));
-		m_pd3dDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, true);
+		GDevice->SetRenderState( D3DRENDERSTATE_FOGTABLESTART, *((LPDWORD) (&zval2)));
+		GDevice->SetRenderState( D3DRENDERSTATE_FOGTABLEEND, *((LPDWORD) (&zval)));
+		GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, true);
 	}
 
-	SetZBias(m_pd3dDevice,0);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
+	SetZBias(0);
+	GDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
 
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_LOCALVIEWER,false);
-	m_pd3dDevice->SetTextureStageState(1,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
-	m_pd3dDevice->SetTextureStageState(1,D3DTSS_MINFILTER,D3DTFN_LINEAR);
-	m_pd3dDevice->SetTextureStageState(1,D3DTSS_MAGFILTER,D3DTFN_LINEAR);
-	m_pd3dDevice->SetTextureStageState(2,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
-	m_pd3dDevice->SetTextureStageState(2,D3DTSS_MINFILTER,D3DTFN_LINEAR);
-	m_pd3dDevice->SetTextureStageState(2,D3DTSS_MAGFILTER,D3DTFN_LINEAR);
+	GDevice->SetRenderState(D3DRENDERSTATE_LOCALVIEWER,false);
+	GDevice->SetTextureStageState(1,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
+	GDevice->SetTextureStageState(1,D3DTSS_MINFILTER,D3DTFN_LINEAR);
+	GDevice->SetTextureStageState(1,D3DTSS_MAGFILTER,D3DTFN_LINEAR);
+	GDevice->SetTextureStageState(2,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
+	GDevice->SetTextureStageState(2,D3DTSS_MINFILTER,D3DTFN_LINEAR);
+	GDevice->SetTextureStageState(2,D3DTSS_MAGFILTER,D3DTFN_LINEAR);
 
 	ComputePortalVertexBuffer();
 	pDynamicVertexBuffer				=	new CMY_DYNAMIC_VERTEXBUFFER(4000,FVF_D3DVERTEX3);
@@ -8098,7 +8085,7 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 				case DANAE_MENU_UPDATEALLTEXTURES:
 					ARX_TIME_Pause();
 					Pause(true);
-					ReloadAllTextures(GDevice);
+					ReloadAllTextures();
 					Pause(false);
 					ARX_TIME_UnPause();
 				break;

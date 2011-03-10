@@ -52,8 +52,6 @@ char ThisLevelMap[256];
 class C_ARX_Carte {
 	
 private:
-	
-	LPDIRECT3DDEVICE7 device;
 	EERIE_BACKGROUND * background;
 	int width;
 	int height;
@@ -74,7 +72,7 @@ private:
 	
 public:
 	
-	C_ARX_Carte(LPDIRECT3DDEVICE7 d = NULL, EERIE_BACKGROUND * bkg = NULL, int nbpixels = 10, int wrender = 640, int hrender = 480);
+	C_ARX_Carte(EERIE_BACKGROUND * bkg = NULL, int nbpixels = 10, int wrender = 640, int hrender = 480);
 	bool Render();
 	
 	bool BuildMap(CD3DFramework7 * framework, char * name);
@@ -86,9 +84,8 @@ static C_ARX_Carte * ARXCarte = NULL;
 //#############################################################################################
 // Constructeur
 //#############################################################################################
-C_ARX_Carte::C_ARX_Carte(LPDIRECT3DDEVICE7 d,EERIE_BACKGROUND *bkg,int nbpix,int wrender,int hrender)
+C_ARX_Carte::C_ARX_Carte(EERIE_BACKGROUND *bkg,int nbpix,int wrender,int hrender)
 {
-	this->device=d;
 	this->background=bkg;
 	this->nbpixels=nbpix;
 	this->widthrender=wrender;
@@ -148,10 +145,10 @@ C_ARX_Carte::C_ARX_Carte(LPDIRECT3DDEVICE7 d,EERIE_BACKGROUND *bkg,int nbpix,int
 //#############################################################################################
 bool C_ARX_Carte::Render(void)
 {
-	if((!this->device)||(!this->background)) return false;
+	if(!this->background) return false;
 
 	CalcFPS();
-	device->Clear(0,NULL,D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER,0x00000000,1.0f,0L);
+	GDevice->Clear(0,NULL,D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER,0x00000000,1.0f,0L);
 
 	if(!danaeApp.DANAEStartRender()) return false;
 
@@ -222,15 +219,15 @@ bool C_ARX_Carte::Render(void)
 					}
 
 					if(ep->tex)
-						device->SetTexture(0,ep->tex->m_pddsSurface);
+						GDevice->SetTexture(0,ep->tex->m_pddsSurface);
 					else
-						device->SetTexture(0,NULL);
+						GDevice->SetTexture(0,NULL);
 
-					EERIEDRAWPRIM( device,	D3DPT_TRIANGLESTRIP,
-											D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,
-											ep->tv,
-											nb,
-											0, EERIE_NOCOUNT );
+					EERIEDRAWPRIM(	D3DPT_TRIANGLESTRIP,
+									D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,
+									ep->tv,
+									nb,
+									0, EERIE_NOCOUNT );
 				}
 
 			}
@@ -563,12 +560,12 @@ void DANAE_Manage_CreateMap()
 {
 	if (FINAL_RELEASE) return;
 
-	SETCULL(GDevice,D3DCULL_CCW);
+	SETCULL(D3DCULL_CCW);
 	iCreateMap++;
 
 	if (iCreateMap==1)
 	{			
-		ARXCarte=new C_ARX_Carte(danaeApp.m_pFramework->GetD3DDevice(),ACTIVEBKG,4,danaeApp.m_pFramework->m_dwRenderWidth,danaeApp.m_pFramework->m_dwRenderHeight);			
+		ARXCarte=new C_ARX_Carte(ACTIVEBKG,4,danaeApp.m_pFramework->m_dwRenderWidth,danaeApp.m_pFramework->m_dwRenderHeight);			
 	}
 
 	if (iCreateMap==2)

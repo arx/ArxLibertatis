@@ -1703,7 +1703,7 @@ void	ARX_PLAYER_Restore_Skin()
 			MakeUpcase(tx);
 			PLAYER_SKIN_TC->m_strName = tx;
 			ReloadTexture(PLAYER_SKIN_TC);
-			PLAYER_SKIN_TC->Restore(GDevice);
+			PLAYER_SKIN_TC->Restore();
 		}
 	}
 
@@ -1716,7 +1716,7 @@ void	ARX_PLAYER_Restore_Skin()
 		MakeUpcase(tx2);
 		tmpTC->m_strName = tx2;
 		ReloadTexture(tmpTC);
-		tmpTC->Restore(GDevice);
+		tmpTC->Restore();
 	}
 
 	tt = "Graph\\Obj3D\\Textures\\npc_human_chainmail_mithril_hero_head.bmp";
@@ -1728,7 +1728,7 @@ void	ARX_PLAYER_Restore_Skin()
 		MakeUpcase(tx3);
 		tmpTC->m_strName = tx3;
 		ReloadTexture(tmpTC);
-		tmpTC->Restore(GDevice);
+		tmpTC->Restore();
 	}
 
 	tt = "Graph\\Obj3D\\Textures\\npc_human_leather_hero_head.bmp";
@@ -1740,7 +1740,7 @@ void	ARX_PLAYER_Restore_Skin()
 		MakeUpcase(tx4);
 		tmpTC->m_strName = tx4;
 		ReloadTexture(tmpTC);
-		tmpTC->Restore(GDevice);
+		tmpTC->Restore();
 	}
 }
 extern void LaunchMoulinex();
@@ -3651,10 +3651,10 @@ void ARX_PLAYER_Manage_Death()
 	}
 
 	{
-		SETALPHABLEND(GDevice, true);
+		SETALPHABLEND( true);
 		GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
 		GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
-		EERIEDrawBitmap(GDevice, 0.f, 0.f, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.000091f,
+		EERIEDrawBitmap( 0.f, 0.f, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.000091f,
 		                NULL, _EERIERGB(ratio));
 
 	}

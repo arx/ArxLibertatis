@@ -59,17 +59,14 @@ TextureContainer	* FISHTANK_img = NULL;
 TextureContainer	* ARKANE_img = NULL;
 
 //-----------------------------------------------------------------------------
-void LoadScreen(LPDIRECT3DDEVICE7 pd3dDevice)
+void LoadScreen()
 {
-	if (pd3dDevice)
-	{
-		pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0L);
+	GDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0L);
 
-		if (danaeApp.DANAEStartRender())
-		{
-			danaeApp.DANAEEndRender();
-			danaeApp.m_pFramework->ShowFrame();
-		}
+	if (danaeApp.DANAEStartRender())
+	{
+		danaeApp.DANAEEndRender();
+		danaeApp.m_pFramework->ShowFrame();
 	}
 }
 
@@ -87,7 +84,7 @@ void ARX_INTERFACE_KillARKANE()
 	ARKANE_img = NULL;
 }
 //-----------------------------------------------------------------------------
-void DrawCenteredImage(LPDIRECT3DDEVICE7 pd3dDevice, TextureContainer * tc, bool _bRatio = true, float _fFade = 1.f)
+void DrawCenteredImage(TextureContainer * tc, bool _bRatio = true, float _fFade = 1.f)
 {
 	DANAESIZX = danaeApp.m_pFramework->m_dwRenderWidth;
 	DANAESIZY = danaeApp.m_pFramework->m_dwRenderHeight;
@@ -101,8 +98,7 @@ void DrawCenteredImage(LPDIRECT3DDEVICE7 pd3dDevice, TextureContainer * tc, bool
 
 	if (_bRatio)
 	{
-		EERIEDrawBitmap2(pd3dDevice,
-		                 DANAECENTERX - (tc->m_dwWidth * 0.5f)*Xratio,
+		EERIEDrawBitmap2(DANAECENTERX - (tc->m_dwWidth * 0.5f)*Xratio,
 		                 DANAECENTERY - (tc->m_dwHeight * 0.5f)*Yratio,
 		                 ARX_CLEAN_WARN_CAST_FLOAT((int)(tc->m_dwWidth * Xratio)),
 		                 ARX_CLEAN_WARN_CAST_FLOAT((int)(tc->m_dwHeight * Yratio)),
@@ -110,8 +106,7 @@ void DrawCenteredImage(LPDIRECT3DDEVICE7 pd3dDevice, TextureContainer * tc, bool
 	}
 	else
 	{
-		EERIEDrawBitmap2(pd3dDevice,
-		                 DANAECENTERX - (tc->m_dwWidth * 0.5f),
+		EERIEDrawBitmap2(DANAECENTERX - (tc->m_dwWidth * 0.5f),
 		                 DANAECENTERY - (tc->m_dwHeight * 0.5f),
 		                 ARX_CLEAN_WARN_CAST_FLOAT((int)(tc->m_dwWidth)),
 		                 ARX_CLEAN_WARN_CAST_FLOAT((int)(tc->m_dwHeight)),
@@ -122,81 +117,75 @@ void DrawCenteredImage(LPDIRECT3DDEVICE7 pd3dDevice, TextureContainer * tc, bool
 }
 
 //-----------------------------------------------------------------------------
-void ARX_INTERFACE_ShowFISHTANK(LPDIRECT3DDEVICE7 pd3dDevice)
+void ARX_INTERFACE_ShowFISHTANK()
 {
-	if (pd3dDevice)
+	Project.vsync = 0;
+	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_POINT);
+	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_POINT);
+	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP); 
+	GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, false);
+
+	GDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0L);
+
+	if (danaeApp.DANAEStartRender())
 	{
-		Project.vsync = 0;
-		pd3dDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_POINT);
-		pd3dDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_POINT);
-		pd3dDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP); 
-		pd3dDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, false);
+		if (FISHTANK_img == NULL) FISHTANK_img = MakeTCFromFile("misc\\logo.bmp");
 
-		pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0L);
-
-		if (danaeApp.DANAEStartRender())
+		if (FISHTANK_img != NULL)
 		{
-			if (FISHTANK_img == NULL) FISHTANK_img = MakeTCFromFile("misc\\logo.bmp");
-
-			if (FISHTANK_img != NULL)
-			{
-				pd3dDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
-				DrawCenteredImage(pd3dDevice, FISHTANK_img, false);
-			}
-
-			danaeApp.DANAEEndRender();
-			danaeApp.m_pFramework->ShowFrame();
+			GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
+			DrawCenteredImage(FISHTANK_img, false);
 		}
 
-		Project.vsync = 1;
-
-		pd3dDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);
-		pd3dDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, true);
-		pd3dDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_LINEAR);
-		pd3dDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_LINEAR);
+		danaeApp.DANAEEndRender();
+		danaeApp.m_pFramework->ShowFrame();
 	}
+
+	Project.vsync = 1;
+
+	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);
+	GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, true);
+	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_LINEAR);
+	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_LINEAR);
 }
 
 //-----------------------------------------------------------------------------
-void ARX_INTERFACE_ShowARKANE(LPDIRECT3DDEVICE7 pd3dDevice)
+void ARX_INTERFACE_ShowARKANE()
 {
-	if (pd3dDevice)
+	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_POINT);
+	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_POINT);
+	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP); 
+	GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, false);
+	SETZWRITE(true);
+
+	danaeApp.EnableZBuffer();
+
+	Project.vsync = 0;
+
+	GDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0L);
+
+	if (danaeApp.DANAEStartRender())
 	{
-		pd3dDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_POINT);
-		pd3dDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_POINT);
-		pd3dDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP); 
-		pd3dDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, false);
-		SETZWRITE(pd3dDevice, true);
+		if (ARKANE_img == NULL)
+			ARKANE_img = MakeTCFromFile("Graph\\Interface\\misc\\Arkane.bmp");
 
-		danaeApp.EnableZBuffer();
-
-		Project.vsync = 0;
-
-		pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0L);
-
-		if (danaeApp.DANAEStartRender())
+		if (ARKANE_img != NULL)
 		{
-			if (ARKANE_img == NULL)
-				ARKANE_img = MakeTCFromFile("Graph\\Interface\\misc\\Arkane.bmp");
-
-			if (ARKANE_img != NULL)
-			{
-				pd3dDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
-				DrawCenteredImage(GDevice, ARKANE_img, false);
-			}
-
-			danaeApp.DANAEEndRender();
-			danaeApp.m_pFramework->ShowFrame();
+			GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
+			DrawCenteredImage( ARKANE_img, false);
 		}
 
-		Project.vsync = 1;
-
-		SETZWRITE(pd3dDevice, true);
-		pd3dDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);
-		pd3dDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, true);
-		pd3dDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_LINEAR);
-		pd3dDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_LINEAR);
+		danaeApp.DANAEEndRender();
+		danaeApp.m_pFramework->ShowFrame();
 	}
+
+	Project.vsync = 1;
+
+	SETZWRITE(true);
+	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);
+	GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, true);
+	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_LINEAR);
+	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_LINEAR);
 }
 
 static long lastloadednum = -1;
@@ -218,13 +207,8 @@ void LoadLevelScreen(long num)
 {
 	Project.vsync = 0;
 
-	LPDIRECT3DDEVICE7 pd3dDevice = NULL;
-
-	if (GDevice)
-	{
-		GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_POINT);
-		GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_POINT);
-	}
+	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_POINT);
+	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_POINT);
 
 	if (num < -1) // resets status
 	{
@@ -243,8 +227,6 @@ void LoadLevelScreen(long num)
 
 	if (num == -1)
 		num = lastnum;
-
-	pd3dDevice = GDevice;
 
 	lastnum = num;
 
@@ -284,94 +266,91 @@ void LoadLevelScreen(long num)
 		if (ratio > 1.f) ratio = 1.f;
 		else if (ratio < 0.f) ratio = 0.f;
 
-		if (pd3dDevice)
+		GDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0L);
+
+		if (danaeApp.DANAEStartRender())
 		{
-			pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0L);
 
-			if (danaeApp.DANAEStartRender())
+			GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, false);
+
+			danaeApp.EnableZBuffer();
+			GDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE);
+			SETZWRITE(true);
+			GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
+			SETALPHABLEND( false);
+
+			long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
+			GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
+
+			if (num == 10)
+				pbar = MakeTCFromFile("Graph\\interface\\menus\\load_full.bmp");
+			else
+				pbar = MakeTCFromFile("Graph\\interface\\menus\\load_full_level.bmp");
+
+			nopbar = 1;
+			GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
+			
+			if (num != lastloadednum)
 			{
-
-				GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, false);
-
-				danaeApp.EnableZBuffer();
-				GDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE);
-				SETZWRITE(GDevice, true);
-				GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
-				SETALPHABLEND(GDevice, false);
-
 				long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 				GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
 
-				if (num == 10)
-					pbar = MakeTCFromFile("Graph\\interface\\menus\\load_full.bmp");
-				else
-					pbar = MakeTCFromFile("Graph\\interface\\menus\\load_full_level.bmp");
-
-				nopbar = 1;
-				GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
-				
-				if (num != lastloadednum)
-				{
-					long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
-					GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;
-
-					if (tc)
-					{
-						D3DTextr_KillTexture(tc);
-						tc = NULL;
-					}
-
-					lastloadednum = num;
-					char temp[256];
-					char tx[256];
-					GetLevelNameByNum(num, tx);
-					sprintf(temp, "Graph\\Levels\\Level%s\\loading.bmp", tx);
-					tc = MakeTCFromFile(temp);
-					GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
-				}
-
 				if (tc)
 				{
-					DrawCenteredImage(pd3dDevice, tc, true, fFadeColor);
+					D3DTextr_KillTexture(tc);
+					tc = NULL;
 				}
 
-				if (pbar)
-				{
-					GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, true);
-
-					if (num == 10)
-					{
-						float px, py, px2, py2;
-						int ipx = (640 - 200)	/ 2;
-						int ipy = 461;
-						px = ipx * Xratio;
-						py = ipy * Yratio;
-						px2 = (ratio * pbar->m_dwWidth) * Xratio;
-						py2 = pbar->m_dwHeight * Yratio;
-						EERIEDrawBitmap_uv(GDevice, px, py, px2, py2, 0.f, pbar, D3DRGB(fFadeColor, fFadeColor, fFadeColor), pbar->m_hdx, pbar->m_hdy, ratio, 1.f);
-					}
-					else
-					{
-						float px, py, px2, py2;
-
-
-						int ipx = ((640 - 320) / 2) + 60;
-						int ipy = ((480 - 390) / 2) + 230;
-
-
-						px = ipx * Xratio;
-						py = ipy * Yratio;
-						px2 = (ratio * pbar->m_dwWidth) * Xratio;
-						py2 = pbar->m_dwHeight * Yratio;
-						EERIEDrawBitmap_uv(GDevice, px, py, px2, py2, 0.f, pbar, D3DRGB(fFadeColor, fFadeColor, fFadeColor), pbar->m_hdx, pbar->m_hdy, ratio, 1);
-					}
-
-					GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, false);
-				}
-
-				danaeApp.DANAEEndRender();
-				danaeApp.m_pFramework->ShowFrame();
+				lastloadednum = num;
+				char temp[256];
+				char tx[256];
+				GetLevelNameByNum(num, tx);
+				sprintf(temp, "Graph\\Levels\\Level%s\\loading.bmp", tx);
+				tc = MakeTCFromFile(temp);
+				GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
 			}
+
+			if (tc)
+			{
+				DrawCenteredImage(tc, true, fFadeColor);
+			}
+
+			if (pbar)
+			{
+				GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, true);
+
+				if (num == 10)
+				{
+					float px, py, px2, py2;
+					int ipx = (640 - 200)	/ 2;
+					int ipy = 461;
+					px = ipx * Xratio;
+					py = ipy * Yratio;
+					px2 = (ratio * pbar->m_dwWidth) * Xratio;
+					py2 = pbar->m_dwHeight * Yratio;
+					EERIEDrawBitmap_uv( px, py, px2, py2, 0.f, pbar, D3DRGB(fFadeColor, fFadeColor, fFadeColor), pbar->m_hdx, pbar->m_hdy, ratio, 1.f);
+				}
+				else
+				{
+					float px, py, px2, py2;
+
+
+					int ipx = ((640 - 320) / 2) + 60;
+					int ipy = ((480 - 390) / 2) + 230;
+
+
+					px = ipx * Xratio;
+					py = ipy * Yratio;
+					px2 = (ratio * pbar->m_dwWidth) * Xratio;
+					py2 = pbar->m_dwHeight * Yratio;
+					EERIEDrawBitmap_uv( px, py, px2, py2, 0.f, pbar, D3DRGB(fFadeColor, fFadeColor, fFadeColor), pbar->m_hdx, pbar->m_hdy, ratio, 1);
+				}
+
+				GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, false);
+			}
+
+			danaeApp.DANAEEndRender();
+			danaeApp.m_pFramework->ShowFrame();
 		}
 
 		if (fFadeSens > 0.f)

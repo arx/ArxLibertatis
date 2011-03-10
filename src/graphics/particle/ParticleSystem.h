@@ -126,7 +126,7 @@ class CParticleSystem
 
 
 	public:
-		void	Render(LPDIRECT3DDEVICE7 _pD3DDevice);
+		void	Render();
 		bool	IsAlive();
 		void	Update(long);
 		void	RecomputeDirection();

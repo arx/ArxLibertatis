@@ -2878,7 +2878,7 @@ void ARX_SPELLS_CancelAll() {
 		}
 	}
 	
-	ARX_SPELLS_Update(NULL);
+	ARX_SPELLS_Update();
 	ARX_SPELLS_RemoveAllSpellsOn(inter.iobj[0]);
 	inter.iobj[0]->speed_modif = 0;
 }
@@ -5480,7 +5480,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 				char tmptext[256];
 				strcpy(tmptext,"Graph\\Obj3D\\Interactive\\Fix_inter\\blue_cube\\blue_cube.asl");
 				INTERACTIVE_OBJ * io;
-				io=AddFix(GDevice,tmptext,IO_IMMEDIATELOAD);
+				io=AddFix(tmptext,IO_IMMEDIATELOAD);
 
 				if (io)
 				{
@@ -6691,11 +6691,11 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			// Draws White Flash on Screen
 			GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 			GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);												
-			SETALPHABLEND(GDevice,true);
+			SETALPHABLEND(true);
 			float val = 1.f; 
 
-			EERIEDrawBitmap(GDevice,0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.00009f,NULL,D3DRGB(0.5f+val*( 1.0f / 2 ),val,val));
-			SETALPHABLEND(GDevice,false);
+			EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.00009f,NULL,D3DRGB(0.5f+val*( 1.0f / 2 ),val,val));
+			SETALPHABLEND(false);
 		}	
 		break;
 		//----------------------------------------------------------------------------
@@ -7169,7 +7169,7 @@ float ARX_SPELLS_ApplyColdProtection(INTERACTIVE_OBJ * io,float damages)
 //*************************************************************************************
 // Updates all currently working spells.
 //*************************************************************************************
-void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
+void ARX_SPELLS_Update()
 {
 	
 	unsigned long tim;
@@ -7180,7 +7180,6 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	tim = ARXTimeUL();
 
 	for(size_t i = 0; i < MAX_SPELLS; i++) {
-		if (!m_pd3dDevice) spells[i].exist=0;
 
 		if (!GLOBAL_MAGIC_MODE) spells[i].tolive=0;
 
@@ -7560,7 +7559,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 						// Update
 						pCSpellFX->Update(FrameDiff);
 
-						if (pCSpellFX->Render(m_pd3dDevice)==-1)
+						if (pCSpellFX->Render()==-1)
 							spells[i].tolive=0;
 					}
 				}
@@ -7592,7 +7591,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				if (pCSpellFX)
 				{
 					pCSpellFX->Update(FrameDiff);
-					pCSpellFX->Render(m_pd3dDevice);
+					pCSpellFX->Render();
 				}
 
 				CHeal * ch=(CHeal *)pCSpellFX;
@@ -7640,7 +7639,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				if (pCSpellFX)
 				{
 					pCSpellFX->Update(FrameDiff);
-					pCSpellFX->Render(m_pd3dDevice);
+					pCSpellFX->Render();
 				}
 			} 
 			break;
@@ -7653,7 +7652,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				if (pCSpellFX)
 				{
 					pCSpellFX->Update(FrameDiff);
-					pCSpellFX->Render(m_pd3dDevice);
+					pCSpellFX->Render();
 				}
 			} 
 			break;
@@ -7700,8 +7699,8 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 					GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
 					GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );
-					SETALPHABLEND(GDevice,true);
-					SETZWRITE(GDevice, false );
+					SETALPHABLEND(true);
+					SETZWRITE(false );
 					cabalangle.b=spells[i].fdata+(float)FrameDiff*0.1f;
 					spells[i].fdata=cabalangle.b;
 
@@ -7710,27 +7709,27 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 							cabalcolor.g = 0.4f;
 							cabalcolor.b = 0.f;
 					cabalscale.z=cabalscale.y=cabalscale.x=Es;				
-					DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
+					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 					mov=EEsin((float)(FrameTime-30.f)*( 1.0f / 800 ))*scaley;
 					cabalpos.y=refpos-mov;						
 							cabalcolor.b = 0.f;
 							cabalcolor.g = 3.f;
 							cabalcolor.r = 0.5f;
-					DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
+					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 					mov=EEsin((float)(FrameTime-60.f)*( 1.0f / 800 ))*scaley;
 					cabalpos.y=refpos-mov;
 							cabalcolor.b = 0.f;
 							cabalcolor.g = 0.1f;
 							cabalcolor.r = 0.25f;
-					DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
+					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 					mov=EEsin((float)(FrameTime-120.f)*( 1.0f / 800 ))*scaley;
 					cabalpos.y=refpos-mov;
 							cabalcolor.b = 0.f;
 							cabalcolor.g = 0.1f;
 							cabalcolor.r = 0.15f;
-					DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
-					SETALPHABLEND(GDevice,false);		
-					SETZWRITE(GDevice, true );	
+					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
+					SETALPHABLEND(false);		
+					SETZWRITE(true );	
 				}
 			}
 			break;				
@@ -7822,7 +7821,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			if (spells[i].pSpellFx)
 			{
 				spells[i].pSpellFx->Update(FrameDiff);
-				spells[i].pSpellFx->Render(m_pd3dDevice);
+				spells[i].pSpellFx->Render();
 
 				if (spells[i].caster == 0) ARX_SOUND_RefreshPosition(spells[i].snd_loop);
 			}
@@ -7836,7 +7835,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			if (spells[i].pSpellFx)
 			{
 				spells[i].pSpellFx->Update(FrameDiff);
-				spells[i].pSpellFx->Render(m_pd3dDevice);
+				spells[i].pSpellFx->Render();
 			}
 
 			break;
@@ -7867,7 +7866,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 					}
 
 					spells[i].pSpellFx->Update(FrameDiff);
-					spells[i].pSpellFx->Render(m_pd3dDevice);
+					spells[i].pSpellFx->Render();
 				}
 			}
 			break;
@@ -7896,20 +7895,20 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				curse->Update(ARX_CLEAN_WARN_CAST_ULONG(FrameDiff));
 
 				
-				curse->Render(m_pd3dDevice, &target);
-				SETCULL(GDevice,D3DCULL_NONE);
+				curse->Render(&target);
+				SETCULL(D3DCULL_NONE);
 			}
 
 			break;
 			//-----------------------------------------------------------------------------------------
 			case SPELL_FIRE_PROTECTION:
 				spells[i].pSpellFx->Update(FrameDiff);
-				spells[i].pSpellFx->Render(m_pd3dDevice);
+				spells[i].pSpellFx->Render();
 			break;
 			//-----------------------------------------------------------------------------------------
 			case SPELL_COLD_PROTECTION:
 				spells[i].pSpellFx->Update(FrameDiff);
-				spells[i].pSpellFx->Render(m_pd3dDevice);
+				spells[i].pSpellFx->Render();
 			break;
 			//-----------------------------------------------------------------------------------------
 			//*****************************************************************************************				
@@ -7920,7 +7919,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				if (spells[i].pSpellFx)
 				{
 					spells[i].pSpellFx->Update(FrameDiff);
-					spells[i].pSpellFx->Render(m_pd3dDevice);					
+					spells[i].pSpellFx->Render();					
 				}
 			}
 			break;
@@ -7930,7 +7929,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				if (spells[i].pSpellFx)
 				{
 					spells[i].pSpellFx->Update(FrameDiff);
-					spells[i].pSpellFx->Render(m_pd3dDevice);
+					spells[i].pSpellFx->Render();
 					CRuneOfGuarding * pCRG=(CRuneOfGuarding *)spells[i].pSpellFx;
 
 					if (pCRG)
@@ -7958,7 +7957,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				if (spells[i].pSpellFx)
 				{
 					spells[i].pSpellFx->Update(FrameDiff);
-					spells[i].pSpellFx->Render(m_pd3dDevice);					
+					spells[i].pSpellFx->Render();					
 
 					if (spells[i].target == 0)
 						ARX_SOUND_RefreshPosition(spells[i].snd_loop);
@@ -7971,7 +7970,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 			if (spells[i].pSpellFx)
 			{
 				spells[i].pSpellFx->Update(FrameDiff);
-				spells[i].pSpellFx->Render(m_pd3dDevice);
+				spells[i].pSpellFx->Render();
 						}
 
 			break;
@@ -8002,8 +8001,8 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				if (pCSpellFX)
 				{
 					pCSpellFX->Update(FrameDiff);
-					pCSpellFX->Render(m_pd3dDevice);
-					SETCULL(GDevice,D3DCULL_NONE);
+					pCSpellFX->Render();
+					SETCULL(D3DCULL_NONE);
 				}
 			}
 			break;
@@ -8025,7 +8024,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 					spells[i].tolive+=200;
 				
 					pCSpellFX->Update(FrameDiff);
-							pCSpellFX->Render(m_pd3dDevice);
+							pCSpellFX->Render();
 
 					if (pCSpellFX->lLightId > -1)
 					{
@@ -8137,7 +8136,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				if (pCSpellFX)
 				{
 					pCSpellFX->Update(FrameDiff);
-					pCSpellFX->Render(m_pd3dDevice);
+					pCSpellFX->Render();
 				}					
 			}
 			break;
@@ -8169,7 +8168,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 						pCSpellFX->Update(FrameDiff);
 
 						if (VisibleSphere(ccf->eSrc.x,ccf->eSrc.y-120.f,ccf->eSrc.z,400.f))					
-							pCSpellFX->Render(m_pd3dDevice);
+							pCSpellFX->Render();
 					}
 				}					
 			}
@@ -8185,7 +8184,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				if (pCSpellFX)
 				{
 					pCSpellFX->Update(FrameDiff);
-					pCSpellFX->Render(m_pd3dDevice);
+					pCSpellFX->Render();
 				}
 			}
 			break;
@@ -8223,7 +8222,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 					if (VisibleSphere(pf->pos.x,pf->pos.y-120.f,pf->pos.z,350.f))					
 					{
-						pCSpellFX->Render(m_pd3dDevice);
+						pCSpellFX->Render();
 
 
 						float fDiff = FrameDiff/8.f ;
@@ -8315,11 +8314,11 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 					if (VisibleSphere(pf->eSrc.x,pf->eSrc.y-120.f,pf->eSrc.z,350.f))
 					{
-						pCSpellFX->Render(m_pd3dDevice);
+						pCSpellFX->Render();
 					}
 				}
 
-				SETCULL(GDevice,D3DCULL_NONE);
+				SETCULL(D3DCULL_NONE);
 			}
 			break;
 			//-----------------------------------------------------------------------------------------
@@ -8330,7 +8329,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 					if (pCSpellFX)
 					{
 						pCSpellFX->Update(FrameDiff);
-						pCSpellFX->Render(m_pd3dDevice);
+						pCSpellFX->Render();
 					}
 						}
 			break;
@@ -8344,7 +8343,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				if (pCSpellFX)
 				{
 					pCSpellFX->Update(FrameDiff);
-					pCSpellFX->Render(m_pd3dDevice);
+					pCSpellFX->Render();
 				}
 			}
 			case SPELL_EXPLOSION:
@@ -8434,7 +8433,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 						if (pCSpellFX)
 						{
 							pCSpellFX->Update(FrameDiff);
-							pCSpellFX->Render(m_pd3dDevice);
+							pCSpellFX->Render();
 						}	
 
 						spells[i].longinfo=1;
@@ -8608,7 +8607,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				if (pCSpellFX)
 				{
 					pCSpellFX->Update(FrameDiff);
-					pCSpellFX->Render(m_pd3dDevice);
+					pCSpellFX->Render();
 				}					
 			}
 			break;
@@ -8632,7 +8631,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				if (pCSpellFX)
 				{
 					pCSpellFX->Update(FrameDiff);
-					pCSpellFX->Render(m_pd3dDevice);
+					pCSpellFX->Render();
 				}
 			}
 			break;
@@ -8653,7 +8652,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				if (pCSpellFX)
 				{
 					pCSpellFX->Update(FrameDiff);
-					pCSpellFX->Render(m_pd3dDevice);
+					pCSpellFX->Render();
 				}
 			}
 			break;
@@ -8673,7 +8672,7 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				if (pCSpellFX)
 				{
 					pCSpellFX->Update(FrameDiff);
-					pCSpellFX->Render(m_pd3dDevice);
+					pCSpellFX->Render();
 				}
 				
 						EERIE_3D _source;
@@ -8838,8 +8837,8 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 						GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
 						GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );
-						SETALPHABLEND(GDevice,true);
-						SETZWRITE(GDevice, false );
+						SETALPHABLEND(true);
+						SETZWRITE(false );
 						cabalangle.b=spells[i].fdata+(float)FrameDiff*0.1f;
 						spells[i].fdata=cabalangle.b;
 
@@ -8849,46 +8848,46 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 							cabalcolor.b = 0.8f;
 						
 						cabalscale.z=cabalscale.y=cabalscale.x=Es;				
-						DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
+						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						mov=EEsin((float)(FrameTime-30.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos-mov;						
 							cabalcolor.r = cabalcolor.g = 0.2f;
 							cabalcolor.b = 0.5f;
-						DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
+						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						mov=EEsin((float)(FrameTime-60.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos-mov;
 							cabalcolor.r = cabalcolor.g = 0.1f;
 							cabalcolor.b = 0.25f;
-						DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
+						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						mov=EEsin((float)(FrameTime-120.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos-mov;
 							cabalcolor.r = cabalcolor.g = 0.f;
 							cabalcolor.b = 0.15f;
-						DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
+						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						cabalangle.b=-cabalangle.b;
 						cabalpos.y=refpos-mov;
 						cabalscale.x=cabalscale.y=cabalscale.z=Es;
 							cabalcolor.r = cabalcolor.g = 0.f;
 							cabalcolor.b = 0.15f;
-						DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
+						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						mov=EEsin((float)(FrameTime+30.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 							cabalcolor.r = cabalcolor.g = 0.1f;
 							cabalcolor.b = 0.25f;
-						DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
+						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						mov=EEsin((float)(FrameTime+60.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 							cabalcolor.r = cabalcolor.g = 0.2f;
 							cabalcolor.b = 0.5f;
-						DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
+						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						mov=EEsin((float)(FrameTime+120.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 							cabalcolor.r = cabalcolor.g = 0.4f;
 							cabalcolor.b = 0.8f;
-						DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
+						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						cabalangle.b=-cabalangle.b;
-						SETALPHABLEND(GDevice,false);		
-						SETZWRITE(GDevice, true );	
+						SETALPHABLEND(false);		
+						SETZWRITE(true );	
 
 						ARX_SOUND_RefreshPosition(spells[i].snd_loop, &cabalpos);
 					}
@@ -8935,11 +8934,11 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 							DynLight[spells[i].longinfo2].fallstart=Es*1.5f;
 						}
 
-						SETCULL(GDevice,D3DCULL_NONE);
+						SETCULL(D3DCULL_NONE);
 						GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
 						GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );
-						SETALPHABLEND(GDevice,true);
-						SETZWRITE(GDevice, false );
+						SETALPHABLEND(true);
+						SETZWRITE(false );
 						cabalangle.b=spells[i].fdata+(float)FrameDiff*0.1f;
 						spells[i].fdata=cabalangle.b;
 							cabalangle.g = 0.f;
@@ -8947,46 +8946,46 @@ void ARX_SPELLS_Update(LPDIRECT3DDEVICE7 m_pd3dDevice)
 							cabalcolor.g = 0.f;
 							cabalcolor.b = 0.f;
 						cabalscale.z=cabalscale.y=cabalscale.x=Es;				
-						DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
+						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						mov=EEsin((float)(FrameTime-30.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos-mov;						
 							cabalcolor.b = cabalcolor.g = 0.f;
 							cabalcolor.r = 0.5f;
-						DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
+						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						mov=EEsin((float)(FrameTime-60.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos-mov;
 							cabalcolor.b = cabalcolor.g = 0.f;
 							cabalcolor.r = 0.25f;
-						DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
+						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						mov=EEsin((float)(FrameTime-120.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos-mov;
 							cabalcolor.b = cabalcolor.g = 0.f;
 							cabalcolor.r = 0.15f;
-						DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
+						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						cabalangle.b=-cabalangle.b;
 						cabalpos.y=refpos-mov;
 						cabalscale.x=cabalscale.y=cabalscale.z=Es;
 							cabalcolor.b = cabalcolor.g = 0.f;
 							cabalcolor.r = 0.15f;
-						DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
+						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						mov=EEsin((float)(FrameTime+30.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 							cabalcolor.b = cabalcolor.g = 0.f;
 							cabalcolor.r = 0.25f;
-						DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
+						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						mov=EEsin((float)(FrameTime+60.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 							cabalcolor.b = cabalcolor.g = 0.f;
 							cabalcolor.r = 0.5f;
-						DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
+						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						mov=EEsin((float)(FrameTime+120.f)*( 1.0f / 800 ))*scaley;
 						cabalpos.y=refpos+mov;
 							cabalcolor.b = cabalcolor.g = 0.f;
 							cabalcolor.r = 0.8f;
-						DrawEERIEObjEx(GDevice,cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
+						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						cabalangle.b=-cabalangle.b;
-						SETALPHABLEND(GDevice,false);		
-						SETZWRITE(GDevice, true );	
+						SETALPHABLEND(false);		
+						SETZWRITE(true );	
 
 						ARX_SOUND_RefreshPosition(spells[i].snd_loop, &cabalpos);
 						}
@@ -9092,7 +9091,7 @@ void ApplySPWep()
 		std::string tex2;
 		tex2 = "Graph\\Obj3D\\Interactive\\Items\\Weapons\\sword_mx\\sword_mx.teo";
 		File_Standardize(tex2,tex);
-		INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(GDevice,tex.c_str(),IO_IMMEDIATELOAD);
+		INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(tex.c_str(),IO_IMMEDIATELOAD);
 
 		if (ioo!=NULL)
 		{			
@@ -9170,7 +9169,7 @@ void ApplySPBow()
 	{		
 		ARX_SPSound();
 		const char OBJ_BOW[] = "Graph\\Obj3D\\Interactive\\Items\\Weapons\\bow_mx\\bow_mx.teo";
-		INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(GDevice,OBJ_BOW,IO_IMMEDIATELOAD);
+		INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(OBJ_BOW,IO_IMMEDIATELOAD);
 
 		if (ioo!=NULL)
 		{			
@@ -9214,7 +9213,7 @@ void ApplySPArm()
 	}
 
 	File_Standardize(tex2,tex);
-	INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(GDevice,tex.c_str(),IO_IMMEDIATELOAD);
+	INTERACTIVE_OBJ * ioo=(INTERACTIVE_OBJ *)AddItem(tex.c_str(),IO_IMMEDIATELOAD);
 
 	if (ioo!=NULL)
 	{			
@@ -9274,7 +9273,7 @@ void ApplyCurPNux()
 		}
 
 		D3DTextr_InvalidateAllTextures();
-		D3DTextr_RestoreAllTextures(GDevice);
+		D3DTextr_RestoreAllTextures();
 		ARX_PLAYER_Restore_Skin();
 		cur_pnux=0;
 		sp_max_start=ARX_TIME_Get();

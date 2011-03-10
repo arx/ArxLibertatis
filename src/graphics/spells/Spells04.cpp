@@ -125,7 +125,7 @@ void CBless::Update(unsigned long _ulTime)
 }
 
 //---------------------------------------------------------------------
-float CBless::Render(LPDIRECT3DDEVICE7 _pD3DDevice)
+float CBless::Render()
 {
 	int i = 0;
 
@@ -138,9 +138,9 @@ float CBless::Render(LPDIRECT3DDEVICE7 _pD3DDevice)
 		return 0.f;
 	}
 
-	SETCULL(_pD3DDevice, D3DCULL_NONE);
-	SETZWRITE(_pD3DDevice, false);
-	SETALPHABLEND(_pD3DDevice, true);
+	SETCULL(D3DCULL_NONE);
+	SETZWRITE(false);
+	SETALPHABLEND(true);
 
 	D3DTLVERTEX v[4];
 	D3DTLVERTEX v3[4];
@@ -171,7 +171,7 @@ float CBless::Render(LPDIRECT3DDEVICE7 _pD3DDevice)
 
 	if (tex_sol && tex_sol->m_pddsSurface)
 	{
-		SETTC(_pD3DDevice, tex_sol);
+		SETTC(tex_sol);
 	}
 
 	v3[0].tu = 0;
@@ -195,7 +195,7 @@ float CBless::Render(LPDIRECT3DDEVICE7 _pD3DDevice)
 	                             &v3[3]);
 	
 	//----------------------------
-	SETALPHABLEND(_pD3DDevice, false);
+	SETALPHABLEND(false);
 
 	for (i = 0; i < 12; i++)
 	{
@@ -228,9 +228,9 @@ float CBless::Render(LPDIRECT3DDEVICE7 _pD3DDevice)
 		}
 	}
 
-	SETCULL(_pD3DDevice, D3DCULL_NONE);
-	SETZWRITE(_pD3DDevice, false);
-	SETALPHABLEND(_pD3DDevice, true);
+	SETCULL(D3DCULL_NONE);
+	SETZWRITE(false);
+	SETALPHABLEND(true);
 
 	return 1;
 }
@@ -265,7 +265,7 @@ void CDispellField::Update(unsigned long _ulTime)
 }
 
 //---------------------------------------------------------------------
-float CDispellField::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CDispellField::Render()
 {
 	int i = 0;
 
@@ -279,8 +279,8 @@ float CDispellField::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		return 0.f;
 	}
 
-	SETZWRITE(m_pd3dDevice, false);
-	SETALPHABLEND(m_pd3dDevice, true);
+	SETZWRITE(false);
+	SETALPHABLEND(true);
 
 	for (i = 0; i < inter.nbmax; i++)
 	{
@@ -298,7 +298,7 @@ float CDispellField::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	if (tex_p2 && tex_p2->m_pddsSurface)
 	{
-		SETTC(m_pd3dDevice, tex_p2);
+		SETTC(tex_p2);
 	}
 
 	//----------------------------
@@ -320,7 +320,7 @@ float CDispellField::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	stitepos.y = y;
 	stitepos.z = z;
 
-	SETALPHABLEND(m_pd3dDevice, true);
+	SETALPHABLEND(true);
 
 	stiteangle.b = -stiteangle.b * 1.5f;
 	stitecolor.r = 0.7f;
@@ -337,8 +337,8 @@ float CDispellField::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	stitescale.x = 2;
 	stitescale.y = 2;
 	stitescale.z = 2;
-	SETALPHABLEND(m_pd3dDevice, true);
-	DrawEERIEObjEx(m_pd3dDevice, ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
+	SETALPHABLEND(true);
+	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
 
 	y = player.pos.y + 20;
 	stitepos.y = y;
@@ -348,7 +348,7 @@ float CDispellField::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	stitescale.z = 1.8f;
 	stitescale.y = 1.8f;
 	stitescale.x = 1.8f;
-	DrawEERIEObjEx(m_pd3dDevice, srune, &stiteangle, &stitepos, &stitescale, &stitecolor);
+	DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, &stitecolor);
 
 	return 1;
 }
@@ -463,7 +463,7 @@ void CTelekinesis::Update(unsigned long _ulTime)
 }
 
 //---------------------------------------------------------------------
-float CTelekinesis::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CTelekinesis::Render()
 {
 	int i = 0;
 
@@ -501,11 +501,11 @@ float CTelekinesis::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	//DumpMap();
 
-	//SETTC(m_pd3dDevice,NULL);
-	//SETCULL(m_pd3dDevice,D3DCULL_NONE);
-	SETZWRITE(m_pd3dDevice, false);
-	//SETALPHABLEND(m_pd3dDevice, false);
-	SETALPHABLEND(m_pd3dDevice, true);
+	//SETTC(NULL);
+	//SETCULL(D3DCULL_NONE);
+	SETZWRITE(false);
+	//SETALPHABLEND(false);
+	SETALPHABLEND(true);
 
 
 	//	register INTERACTIVE_OBJ * io;
@@ -523,7 +523,7 @@ float CTelekinesis::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	//----------------
 	//	if (tex_p2 && tex_p2->m_pddsSurface)
 	{
-		//		SETTC(m_pd3dDevice, tex_p2->m_pddsSurface);
+		//		SETTC(tex_p2->m_pddsSurface);
 	}
 	//for (long n=0; n<12; n++)
 
@@ -585,21 +585,21 @@ float CTelekinesis::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	if (tex_p2 && tex_p2->m_pddsSurface)
 	{
-		SETTC(m_pd3dDevice, tex_p2);
+		SETTC(tex_p2);
 	}
 
-	//SETTC(m_pd3dDevice, NULL);
+	//SETTC(NULL);
 
 
 	//----------------------------
 	y -= 40;
-	/*	DrawBillBoardPoly(m_pd3dDevice, x+frand2()*10, y+frand2()*10, z+frand2()*10, 40, tex_p2, D3DRGB(1,1,1));
-		DrawBillBoardPoly(m_pd3dDevice, x+frand2()*10, y+frand2()*10, z+frand2()*10, 40, tex_p2, D3DRGB(1,1,1));
-		DrawBillBoardPoly(m_pd3dDevice, x+frand2()*10, y+frand2()*10, z+frand2()*10, 40, tex_p2, D3DRGB(1,1,1));
-		DrawBillBoardPoly(m_pd3dDevice, x+frand2()*10, y+frand2()*10, z+frand2()*10, 40, tex_p2, D3DRGB(1,1,1));
-		DrawBillBoardPoly(m_pd3dDevice, x+frand2()*10, y+frand2()*10, z+frand2()*10, 40, tex_p2, D3DRGB(1,1,1));
-		DrawBillBoardPoly(m_pd3dDevice, x+frand2()*20, y+frand2()*20, z+frand2()*20, 60, tex_p2, D3DRGB(1,1,1));
-		DrawBillBoardPoly(m_pd3dDevice, x+frand2()*20, y+frand2()*20, z+frand2()*20, 60, tex_p2, D3DRGB(1,1,1));
+	/*	DrawBillBoardPoly(x+frand2()*10, y+frand2()*10, z+frand2()*10, 40, tex_p2, D3DRGB(1,1,1));
+		DrawBillBoardPoly(x+frand2()*10, y+frand2()*10, z+frand2()*10, 40, tex_p2, D3DRGB(1,1,1));
+		DrawBillBoardPoly(x+frand2()*10, y+frand2()*10, z+frand2()*10, 40, tex_p2, D3DRGB(1,1,1));
+		DrawBillBoardPoly(x+frand2()*10, y+frand2()*10, z+frand2()*10, 40, tex_p2, D3DRGB(1,1,1));
+		DrawBillBoardPoly(x+frand2()*10, y+frand2()*10, z+frand2()*10, 40, tex_p2, D3DRGB(1,1,1));
+		DrawBillBoardPoly(x+frand2()*20, y+frand2()*20, z+frand2()*20, 60, tex_p2, D3DRGB(1,1,1));
+		DrawBillBoardPoly(x+frand2()*20, y+frand2()*20, z+frand2()*20, 60, tex_p2, D3DRGB(1,1,1));
 	*/
 	EERIE_3D stiteangle;
 	EERIE_3D stitepos;
@@ -617,7 +617,7 @@ float CTelekinesis::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	stitepos.y = y;//player.pos.y+60.f-mov;
 	stitepos.z = z;//tPos[i].z;//player.pos.z;//+(float)EEcos(radians(player.angle.b))*(100.f) ;
 
-	SETALPHABLEND(m_pd3dDevice, true);
+	SETALPHABLEND(true);
 
 	stiteangle.b = -stiteangle.b * 1.5f;
 	stitecolor.r = 0.7f;
@@ -626,7 +626,7 @@ float CTelekinesis::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	stitescale.x = 1;
 	stitescale.y = -0.1f;
 	stitescale.z = 1;
-	//	DrawEERIEObjEx(m_pd3dDevice,slight,&stiteangle,&stitepos,&stitescale,&stitecolor);
+	//	DrawEERIEObjEx(slight,&stiteangle,&stitepos,&stitescale,&stitecolor);
 
 	stiteangle.b = -stiteangle.b;
 	stitecolor.r = 1;
@@ -635,8 +635,8 @@ float CTelekinesis::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	stitescale.x = 2;
 	stitescale.y = 2;
 	stitescale.z = 2;
-	SETALPHABLEND(m_pd3dDevice, true);
-	DrawEERIEObjEx(m_pd3dDevice, ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
+	SETALPHABLEND(true);
+	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
 
  
 
@@ -648,7 +648,7 @@ float CTelekinesis::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	stitescale.z = 1.8f;
 	stitescale.y = 1.8f;
 	stitescale.x = 1.8f;
-	DrawEERIEObjEx(m_pd3dDevice, srune, &stiteangle, &stitepos, &stitescale, &stitecolor);
+	DrawEERIEObjEx(srune, &stiteangle, &stitepos, &stitescale, &stitecolor);
 
 	return 1;
 }
@@ -721,7 +721,7 @@ void CCurse::Update(unsigned long _ulTime)
 }
 
 //---------------------------------------------------------------------
-float CCurse::Render(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D * pos)
+float CCurse::Render(EERIE_3D * pos)
 {
 	int i = 0;
 
@@ -756,8 +756,8 @@ float CCurse::Render(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D * pos)
 		*/
 	}
 
-	SETCULL(m_pd3dDevice, D3DCULL_CW);
-	SETZWRITE(m_pd3dDevice, true);
+	SETCULL(D3DCULL_CW);
+	SETZWRITE(true);
 
 	x = pos->x;
 	y = pos->y;
@@ -767,7 +767,7 @@ float CCurse::Render(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D * pos)
 	EERIE_3D stitepos;
 	EERIE_3D stitescale;
 	EERIE_RGB stitecolor;
-	SETALPHABLEND(m_pd3dDevice, false);
+	SETALPHABLEND(false);
 
 
 	stiteangle.b = fRot;
@@ -784,7 +784,7 @@ float CCurse::Render(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D * pos)
 	stitescale.z = 1;
 
 	if (svoodoo)
-		DrawEERIEObjEx(m_pd3dDevice, svoodoo , &stiteangle, &stitepos, &stitescale, &stitecolor);
+		DrawEERIEObjEx(svoodoo , &stiteangle, &stitepos, &stitescale, &stitecolor);
 
 	for (i = 0; i < 4; i++)
 	{
@@ -888,9 +888,7 @@ void CFireProtection::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-float CFireProtection::Render(LPDIRECT3DDEVICE7 _pD3DDevice) {
-	
-	(void)_pD3DDevice;
+float CFireProtection::Render() {
 	
 	return 0;
 }
@@ -960,9 +958,7 @@ void CColdProtection::Update(unsigned long _ulTime)
 	}
 }
 
-float CColdProtection::Render(LPDIRECT3DDEVICE7 _pD3DDevice) {
-	
-	(void)_pD3DDevice;
+float CColdProtection::Render() {
 	
 	return 0;
 }

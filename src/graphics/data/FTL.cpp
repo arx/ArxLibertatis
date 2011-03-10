@@ -829,7 +829,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 				obj->texturecontainer[i] = D3DTextr_CreateTextureFromFile( name, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
 
 				if (GDevice && obj->texturecontainer[i] && !obj->texturecontainer[i]->m_pddsSurface)
-					obj->texturecontainer[i]->Restore(GDevice);
+					obj->texturecontainer[i]->Restore();
 
 				MakeUserFlag(obj->texturecontainer[i]);
 				pos += sizeof(Texture_Container_FTL);

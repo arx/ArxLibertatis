@@ -708,16 +708,16 @@ bool ARX_Menu_Render()
 		}
 
 		GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
-		SETALPHABLEND(GDevice, false);
+		SETALPHABLEND( false);
 
 		if (ARXmenu.mda->BookBackground != NULL)
 		{
-			SETALPHABLEND(GDevice, false);
+			SETALPHABLEND( false);
 			GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
-			SETZWRITE(GDevice, false);
+			SETZWRITE(false);
 			GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_FALSE);
 
-			EERIEDrawBitmap2(GDevice, 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.9f, ARXmenu.mda->BookBackground, D3DCOLORWHITE);
+			EERIEDrawBitmap2( 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.9f, ARXmenu.mda->BookBackground, D3DCOLORWHITE);
 		}
 
 		BOOKZOOM = 1;
@@ -930,12 +930,12 @@ bool ARX_Menu_Render()
 	{
 		if (ARXmenu.mda->BookBackground != NULL)
 		{
-			SETALPHABLEND(GDevice, false);
+			SETALPHABLEND( false);
 			GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
-			SETZWRITE(GDevice, false);
+			SETZWRITE(false);
 			GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_FALSE);
 
-			EERIEDrawBitmap2(GDevice, 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.9f, ARXmenu.mda->BookBackground, D3DCOLORWHITE);
+			EERIEDrawBitmap2( 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.9f, ARXmenu.mda->BookBackground, D3DCOLORWHITE);
 		}
 
 		EERIE_3D ePos;

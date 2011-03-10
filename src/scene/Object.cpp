@@ -2124,7 +2124,7 @@ void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj)
 }
 
 // Converts a Theo Object to an EERIE object
-EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, const char * fic, long flag, LPDIRECT3DDEVICE7 pd3dDevice, long flag2) // flag 1 progressive alloc 2 SLOW
+EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, const char * fic, long flag, long flag2) // flag 1 progressive alloc 2 SLOW
 {
 	
 	LogWarning << "TheoToEerie " << fic;
@@ -2257,8 +2257,8 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, 
 
 				if (eerie->texturecontainer[i])
 				{
-					if ((!(flag & TTE_NO_RESTORE)) && (pd3dDevice))
-						eerie->texturecontainer[i]->Restore(pd3dDevice);
+					if (!(flag & TTE_NO_RESTORE))
+						eerie->texturecontainer[i]->Restore();
 				}
 			}
 		}
@@ -2436,7 +2436,7 @@ void EERIE_3DOBJ_RestoreTextures(EERIE_3DOBJ * eobj)
 		{
 			if (eobj->texturecontainer[i])
 			{
-				eobj->texturecontainer[i]->Restore(GDevice);
+				eobj->texturecontainer[i]->Restore();
 			}
 		}
 	}

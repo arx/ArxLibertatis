@@ -213,15 +213,15 @@ void CExplosion::Collision(int num, EERIE_3D * v, EERIE_3D * dir)
 }
 
 //-----------------------------------------------------------------------------
-float CExplosion::Render(LPDIRECT3DDEVICE7 device)
+float CExplosion::Render()
 {
 	if (this->key > 1) return 0;
 
-	SETALPHABLEND(device, true);
-	SETZWRITE(device, false);
+	SETALPHABLEND(true);
+	SETZWRITE(false);
 
-	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
+	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 
 	//calcul du disque
 	D3DTLVERTEX d3dvs, *d3dv;
@@ -416,14 +416,14 @@ float CExplosion::Render(LPDIRECT3DDEVICE7 device)
 	}
 
 	//trac� du disque
-	SETCULL(device, D3DCULL_NONE);
-	device->SetTexture(0, NULL);
-	device->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, disqued3d, disquenbvertex, (unsigned short *)disqueind, disquenbvertex + 2, 0);
+	SETCULL(D3DCULL_NONE);
+	GDevice->SetTexture(0, NULL);
+	GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX, disqued3d, disquenbvertex, (unsigned short *)disqueind, disquenbvertex + 2, 0);
 
-	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
-	SETALPHABLEND(device, false);
-	SETZWRITE(device, true);
+	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
+	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
+	SETALPHABLEND(false);
+	SETZWRITE(true);
 
 	return 0;
 }

@@ -58,8 +58,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_GAME_NPC_H
 #define ARX_GAME_NPC_H
 
-class INTERACTIVE_OBJ;
-class EERIE_3D;
+struct INTERACTIVE_OBJ;
+struct EERIE_3D;
 
 const float ARX_NPC_AUDIBLE_VOLUME_MIN(0.94F);
 const float ARX_NPC_AUDIBLE_VOLUME_MAX(1.0F);

@@ -124,11 +124,11 @@ void CMassLightning::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-float CMassLightning::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CMassLightning::Render()
 {
 	for (int i = 0; i < number; i++)
 	{
-		pTab[i]->Render(m_pd3dDevice);
+		pTab[i]->Render();
 	}
 
 	return 1;
@@ -251,22 +251,22 @@ void CControlTarget::Update(unsigned long _ulTime)
 }
 
 //---------------------------------------------------------------------
-float CControlTarget::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CControlTarget::Render()
 {
 	int i = 0;
 
-	SETCULL(m_pd3dDevice, D3DCULL_NONE);
-	SETZWRITE(m_pd3dDevice, false);
-	SETALPHABLEND(m_pd3dDevice, true);
+	SETCULL(D3DCULL_NONE);
+	SETZWRITE(false);
+	SETALPHABLEND(true);
 
 	//----------------------------
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(m_pd3dDevice, true);
+	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
+	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	SETALPHABLEND(true);
 
 	if (tex_mm && tex_mm->m_pddsSurface)
 	{
-		SETTC(m_pd3dDevice, tex_mm);
+		SETTC(tex_mm);
 	}
 
 	// -------------------
@@ -473,11 +473,11 @@ void CMassIncinerate::Update(unsigned long _ulTime)
 }
 
 //---------------------------------------------------------------------
-float CMassIncinerate::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CMassIncinerate::Render()
 {
 	for (int i = 0; i < 10; i++)
 	{
-		pTabIncinerate[i]->Render(m_pd3dDevice);
+		pTabIncinerate[i]->Render();
 	}
 
 	return 0;

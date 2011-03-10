@@ -3484,19 +3484,19 @@ void ManageNPCMovement(INTERACTIVE_OBJ * io)
 		cyll.origin.x = phys.startpos.x;
 		cyll.origin.y = phys.startpos.y;
 		cyll.origin.z = phys.startpos.z;
-		EERIEDraw3DCylinder(GDevice, &cyll, 0xFF00FF00);
+		EERIEDraw3DCylinder( &cyll, 0xFF00FF00);
 
 		if (!(AttemptValidCylinderPos(&cyll, io, levitate | CFLAG_NPC)))
 		{
 			cyll.height = -40.f;
-			EERIEDraw3DCylinder(GDevice, &cyll, 0xFF0000FF);
+			EERIEDraw3DCylinder( &cyll, 0xFF0000FF);
 			cyll.height = GetIOHeight(io); 
 		}
 
 		cyll.origin.x = io->physics.targetpos.x;
 		cyll.origin.y = io->physics.targetpos.y;
 		cyll.origin.z = io->physics.targetpos.z;
-		EERIEDraw3DCylinder(GDevice, &cyll, 0xFFFF0000);
+		EERIEDraw3DCylinder( &cyll, 0xFFFF0000);
 
 		if (!(AttemptValidCylinderPos(&cyll, io, levitate | CFLAG_NPC)))
 		{

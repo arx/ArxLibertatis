@@ -310,19 +310,19 @@ void ARX_FOGS_Render() {
 }
 //*************************************************************************************
 //*************************************************************************************
-void ARX_FOGS_RenderAll(LPDIRECT3DDEVICE7 m_pd3dDevice)
+void ARX_FOGS_RenderAll()
 {
 	EERIE_3D angle;
 	Vector_Init(&angle); 
 
-	SETALPHABLEND(m_pd3dDevice, false);
+	SETALPHABLEND(false);
 
 	for (long i = 0; i < MAX_FOG; i++)
 	{
 		if (fogs[i].exist)
 		{
 			if (fogobj)
-				DrawEERIEInter(m_pd3dDevice, fogobj, &angle, &fogs[i].pos, NULL);
+				DrawEERIEInter(fogobj, &angle, &fogs[i].pos, NULL);
 
 			Vector_Copy(&fogs[i].bboxmin, &BBOXMIN);
 			Vector_Copy(&fogs[i].bboxmax, &BBOXMAX);
@@ -336,15 +336,15 @@ void ARX_FOGS_RenderAll(LPDIRECT3DDEVICE7 m_pd3dDevice)
 				dest.x = orgn.x + fogs[i].move.x * 50.f;
 				dest.y = orgn.y + fogs[i].move.y * 50.f;
 				dest.z = orgn.z + fogs[i].move.z * 50.f;
-				EERIEDraw3DLine(m_pd3dDevice, &orgn, &dest, EERIECOLOR_WHITE); 
+				EERIEDraw3DLine(&orgn, &dest, EERIECOLOR_WHITE); 
 			}
 
 			if (fogs[i].selected)
 			{
-				EERIEDraw2DLine(m_pd3dDevice, fogs[i].bboxmin.x, fogs[i].bboxmin.y, fogs[i].bboxmax.x, fogs[i].bboxmin.y, 0.01f, EERIECOLOR_YELLOW);
-				EERIEDraw2DLine(m_pd3dDevice, fogs[i].bboxmax.x, fogs[i].bboxmin.y, fogs[i].bboxmax.x, fogs[i].bboxmax.y, 0.01f, EERIECOLOR_YELLOW);
-				EERIEDraw2DLine(m_pd3dDevice, fogs[i].bboxmax.x, fogs[i].bboxmax.y, fogs[i].bboxmin.x, fogs[i].bboxmax.y, 0.01f, EERIECOLOR_YELLOW);
-				EERIEDraw2DLine(m_pd3dDevice, fogs[i].bboxmin.x, fogs[i].bboxmax.y, fogs[i].bboxmin.x, fogs[i].bboxmin.y, 0.01f, EERIECOLOR_YELLOW);
+				EERIEDraw2DLine(fogs[i].bboxmin.x, fogs[i].bboxmin.y, fogs[i].bboxmax.x, fogs[i].bboxmin.y, 0.01f, EERIECOLOR_YELLOW);
+				EERIEDraw2DLine(fogs[i].bboxmax.x, fogs[i].bboxmin.y, fogs[i].bboxmax.x, fogs[i].bboxmax.y, 0.01f, EERIECOLOR_YELLOW);
+				EERIEDraw2DLine(fogs[i].bboxmax.x, fogs[i].bboxmax.y, fogs[i].bboxmin.x, fogs[i].bboxmax.y, 0.01f, EERIECOLOR_YELLOW);
+				EERIEDraw2DLine(fogs[i].bboxmin.x, fogs[i].bboxmax.y, fogs[i].bboxmin.x, fogs[i].bboxmin.y, 0.01f, EERIECOLOR_YELLOW);
 			}
 		}
 	}

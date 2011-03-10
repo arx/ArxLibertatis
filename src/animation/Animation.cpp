@@ -100,7 +100,7 @@ using std::max;
 
 //-----------------------------------------------------------------------------
 void PushInterBump(TextureContainer *_pTex,D3DTLVERTEX *_pVertex);
-void PopOneInterBump(LPDIRECT3DDEVICE7 _pDevice,TextureContainer *_pTex);
+void PopOneInterBump(TextureContainer *_pTex);
 //-----------------------------------------------------------------------------
 
 #define MAX_DIST_BUMP_INTER (400.f)
@@ -453,7 +453,6 @@ void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,EERIE_3D * pos)
 // Main Procedure to draw an animated object
 //------------------------------------------
 // Needs some update...
-//  LPDIRECT3DDEVICE7 pd3dDevice	3D device
 //  EERIE_3DOBJ * eobj				main object data
 //  EERIE_ANIM * eanim				Animation data
 //  EERIE_3D * angle				Object Angle
@@ -465,7 +464,7 @@ void GetAnimTotalTranslate( ANIM_HANDLE * eanim,long alt_idx,EERIE_3D * pos)
 //*************************************************************************************
 
 //-----------------------------------------------------------------------------
-void PrepareAnim(EERIE_3DOBJ * eobj,	ANIM_USE * eanim,unsigned long time,
+void PrepareAnim(EERIE_3DOBJ * eobj, ANIM_USE * eanim,unsigned long time,
 							INTERACTIVE_OBJ * io)
 {
 	long tcf,tnf;
@@ -645,14 +644,13 @@ suite:
 INTERACTIVE_OBJ * DESTROYED_DURING_RENDERING=NULL;							
 extern long USE_CEDRIC_ANIM;
 //-----------------------------------------------------------------------------
-void EERIEDrawAnimQuat(		LPDIRECT3DDEVICE7 pd3dDevice,
-							EERIE_3DOBJ * eobj,
-							ANIM_USE * eanim,
-							EERIE_3D * angle,
-							EERIE_3D  * pos,
-							unsigned long time,
-							INTERACTIVE_OBJ * io,
-							long typ
+void EERIEDrawAnimQuat(	EERIE_3DOBJ * eobj,
+						ANIM_USE * eanim,
+						EERIE_3D * angle,
+						EERIE_3D  * pos,
+						unsigned long time,
+						INTERACTIVE_OBJ * io,
+						long typ
 						)
 {
 	if (	(io)
@@ -698,7 +696,7 @@ suite:
 	DESTROYED_DURING_RENDERING=NULL;
 
 	if (USE_CEDRIC_ANIM)
-		Cedric_AnimateDrawEntity(pd3dDevice, eobj, eanim, angle, pos, io, typ);
+		Cedric_AnimateDrawEntity(eobj, eanim, angle, pos, io, typ);
 }
 
 #define ANIMQUATTYPE_FIRST_PERSON	2
@@ -711,7 +709,7 @@ extern float GLOBAL_LIGHT_FACTOR;
 // Procedure for drawing Interactive Objects (Not Animated)
 //*************************************************************************************
 
-void DrawEERIEInterMatrix(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
+void DrawEERIEInterMatrix(EERIE_3DOBJ * eobj,
 					EERIEMATRIX * mat,EERIE_3D  * poss,INTERACTIVE_OBJ * io,EERIE_MOD_INFO * modinfo)
 {
 	BIGQUAT=NULL;
@@ -719,7 +717,7 @@ void DrawEERIEInterMatrix(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 
 	if (BIGMAT==NULL) return;
 	
-	DrawEERIEInter(pd3dDevice,eobj,NULL,poss,io,modinfo);
+	DrawEERIEInter(eobj,NULL,poss,io,modinfo);
 	BIGMAT=NULL;
 }
 // List of TO-TREAT vertex for MIPMESHING
@@ -844,8 +842,8 @@ void PopOneTriangleList(TextureContainer *_pTex,bool _bUpdate)
 		return;
 	}
 
-	SETCULL(GDevice,D3DCULL_NONE);
-	SETTC(GDevice,_pTex);
+	SETCULL(D3DCULL_NONE);
+	SETTC(_pTex);
 	float val;
 
 	if (_pTex->userflags & POLY_LATE_MIP)
@@ -861,8 +859,7 @@ void PopOneTriangleList(TextureContainer *_pTex,bool _bUpdate)
 
 	if( _pTex->ulNbVertexListCull )
 	{
-		EERIEDRAWPRIM(	GDevice,
-						D3DPT_TRIANGLELIST,
+		EERIEDRAWPRIM(	D3DPT_TRIANGLELIST,
 						D3DFVF_TLVERTEX,
 						_pTex->pVertexListCull,
 						_pTex->ulNbVertexListCull,
@@ -885,8 +882,8 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 		!_pTex->ulNbVertexListCull_TMetal
 		) return;
 
-	SETCULL(GDevice,D3DCULL_NONE);
-	SETTC(GDevice,_pTex);
+	SETCULL(D3DCULL_NONE);
+	SETTC(_pTex);
 
 	if(	_pTex->ulNbVertexListCull_TNormalTrans )
 	{
@@ -895,8 +892,7 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 
 		if(_pTex->ulNbVertexListCull_TNormalTrans)
 		{
-			EERIEDRAWPRIM(	GDevice,
-				D3DPT_TRIANGLELIST, 
+			EERIEDRAWPRIM(D3DPT_TRIANGLELIST, 
 				D3DFVF_TLVERTEX,
 				_pTex->pVertexListCull_TNormalTrans,
 				_pTex->ulNbVertexListCull_TNormalTrans,
@@ -912,8 +908,7 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 
 		if(_pTex->ulNbVertexListCull_TAdditive)
 		{
-			EERIEDRAWPRIM(	GDevice,
-				D3DPT_TRIANGLELIST, 
+			EERIEDRAWPRIM(D3DPT_TRIANGLELIST, 
 				D3DFVF_TLVERTEX,
 				_pTex->pVertexListCull_TAdditive,
 				_pTex->ulNbVertexListCull_TAdditive,
@@ -929,8 +924,7 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 
 		if(_pTex->ulNbVertexListCull_TSubstractive)
 		{
-			EERIEDRAWPRIM(	GDevice,
-				D3DPT_TRIANGLELIST, 
+			EERIEDRAWPRIM(D3DPT_TRIANGLELIST, 
 				D3DFVF_TLVERTEX,
 				_pTex->pVertexListCull_TSubstractive,
 				_pTex->ulNbVertexListCull_TSubstractive,
@@ -946,8 +940,7 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 
 		if(_pTex->ulNbVertexListCull_TMultiplicative)
 		{
-			EERIEDRAWPRIM(	GDevice,
-				D3DPT_TRIANGLELIST, 
+			EERIEDRAWPRIM(D3DPT_TRIANGLELIST, 
 				D3DFVF_TLVERTEX,
 				_pTex->pVertexListCull_TMultiplicative,
 				_pTex->ulNbVertexListCull_TMultiplicative,
@@ -963,8 +956,7 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 
 		if(_pTex->ulNbVertexListCull_TMetal)
 		{
-			EERIEDRAWPRIM(	GDevice,
-				D3DPT_TRIANGLELIST, 
+			EERIEDRAWPRIM(D3DPT_TRIANGLELIST, 
 				D3DFVF_TLVERTEX,
 				_pTex->pVertexListCull_TMetal,
 				_pTex->ulNbVertexListCull_TMetal,
@@ -997,7 +989,7 @@ void PopOneInterZMapp(TextureContainer *_pTex)
 
 	if(_pTex->TextureRefinement->vPolyInterZMap.size())
 	{
-		SETTC(GDevice,_pTex->TextureRefinement);
+		SETTC(_pTex->TextureRefinement);
 
 		int iPos=0;
  
@@ -1027,8 +1019,7 @@ void PopOneInterZMapp(TextureContainer *_pTex)
 			tD3DTLVERTEXTab2[iPos++].tv		= pSMY->uv[5];
 		}
 
-		EERIEDRAWPRIM(	GDevice,
-						D3DPT_TRIANGLELIST, 
+		EERIEDRAWPRIM(	D3DPT_TRIANGLELIST, 
 						D3DFVF_TLVERTEX,
 						tD3DTLVERTEXTab2,
 						iPos,
@@ -1046,8 +1037,8 @@ void PopAllTriangleListTransparency()
 	D3DMATRIX matbase;
 
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,0);
-	SETALPHABLEND(GDevice,true);
-	SETZWRITE(GDevice, false); 
+	SETALPHABLEND(true);
+	SETZWRITE(false); 
 
 	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
 	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
@@ -1063,15 +1054,14 @@ void PopAllTriangleListTransparency()
 		PopOneInterZMapp(pTex);
 
 		//BUMP
-		PopOneInterBump(	GDevice,
-							pTex);
+		PopOneInterBump(pTex);
 
 		pTex=pTex->m_pNext;
 	}
 
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
-	SETALPHABLEND(GDevice,false);
-	SETZWRITE(GDevice,true);
+	SETALPHABLEND(false);
+	SETZWRITE(true);
 }
 
 //-----------------------------------------------------------------------------
@@ -1083,35 +1073,35 @@ void PushInterBump(TextureContainer *_pTex,D3DTLVERTEX *_pVertex)
 }
 
 //-----------------------------------------------------------------------------
-void PopOneInterBump(LPDIRECT3DDEVICE7 _pDevice,TextureContainer *_pTex)
+void PopOneInterBump(TextureContainer *_pTex)
 {
 	//BUMP
 	if( _pTex->vPolyInterBump.size() )
 	{
 		//----------------------------------------------------------------------------------
 		//																		Initializing
-		_pDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND , D3DBLEND_DESTCOLOR );
-		_pDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR );	
+		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND , D3DBLEND_DESTCOLOR );
+		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR );	
 		
-		_pDevice->SetTexture( 0, _pTex->m_pddsBumpMap );
+		GDevice->SetTexture( 0, _pTex->m_pddsBumpMap );
 
 		switch( danaeApp.m_pDeviceInfo->wNbTextureSimultaneous )
 		{
 		default:
-			_pDevice->SetTexture( 1, _pTex->m_pddsBumpMap );
-			_pDevice->SetTextureStageState( 1, D3DTSS_TEXCOORDINDEX, 1 );
-			_pDevice->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
-			_pDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
-			_pDevice->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TEXTURE|D3DTA_COMPLEMENT);
-			_pDevice->SetTextureStageState( 1, D3DTSS_COLORARG2, D3DTA_CURRENT );
-			_pDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_ADDSIGNED );
-			_pDevice->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-			_pDevice->SetTextureStageState( 2, D3DTSS_COLOROP, D3DTOP_DISABLE );
+			GDevice->SetTexture( 1, _pTex->m_pddsBumpMap );
+			GDevice->SetTextureStageState( 1, D3DTSS_TEXCOORDINDEX, 1 );
+			GDevice->SetTextureStageState(0,D3DTSS_COLORARG1,D3DTA_TEXTURE);
+			GDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
+			GDevice->SetTextureStageState(1,D3DTSS_COLORARG1,D3DTA_TEXTURE|D3DTA_COMPLEMENT);
+			GDevice->SetTextureStageState( 1, D3DTSS_COLORARG2, D3DTA_CURRENT );
+			GDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_ADDSIGNED );
+			GDevice->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
+			GDevice->SetTextureStageState( 2, D3DTSS_COLOROP, D3DTOP_DISABLE );
 			break;
 		case 1:
-			_pDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
-			_pDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-			_pDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
+			GDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 );
+			GDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
+			GDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
 			break;
 		}
 
@@ -1150,21 +1140,19 @@ void PopOneInterBump(LPDIRECT3DDEVICE7 _pDevice,TextureContainer *_pTex)
 				switch( danaeApp.m_pDeviceInfo->wNbTextureSimultaneous )
 				{
 				case 1:
-					_pDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 0 );
-					_pDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+					GDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 0 );
+					GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
 
-					EERIEDRAWPRIM(	_pDevice,
-									D3DPT_TRIANGLELIST, 
+					EERIEDRAWPRIM(	D3DPT_TRIANGLELIST, 
 									FVF_D3DVERTEX3_T,
 									tD3DTLVERTEXTab,
 									iNbD3DTLVERTEXTab,
 									0, 0 );
 			
-					_pDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 1 );
-					_pDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE | D3DTA_COMPLEMENT );
+					GDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 1 );
+					GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE | D3DTA_COMPLEMENT );
 				default:
-					EERIEDRAWPRIM(	_pDevice,
-									D3DPT_TRIANGLELIST, 
+					EERIEDRAWPRIM(	D3DPT_TRIANGLELIST, 
 									FVF_D3DVERTEX3_T,
 									tD3DTLVERTEXTab,
 									iNbD3DTLVERTEXTab,
@@ -1198,21 +1186,19 @@ void PopOneInterBump(LPDIRECT3DDEVICE7 _pDevice,TextureContainer *_pTex)
 			switch( danaeApp.m_pDeviceInfo->wNbTextureSimultaneous )
 			{
 			case 1:
-				_pDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 0 );
-				_pDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+				GDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 0 );
+				GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
 				
-				EERIEDRAWPRIM(	_pDevice,
-								D3DPT_TRIANGLELIST, 
+				EERIEDRAWPRIM(	D3DPT_TRIANGLELIST, 
 								FVF_D3DVERTEX3_T,
 								tD3DTLVERTEXTab,
 								iNbD3DTLVERTEXTab,
 								0, 0 );
 				
-				_pDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 1);
-				_pDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE | D3DTA_COMPLEMENT );
+				GDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 1);
+				GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE | D3DTA_COMPLEMENT );
 			default:
-				EERIEDRAWPRIM(	_pDevice,
-								D3DPT_TRIANGLELIST, 
+				EERIEDRAWPRIM(	D3DPT_TRIANGLELIST, 
 								FVF_D3DVERTEX3_T,
 								tD3DTLVERTEXTab,
 								iNbD3DTLVERTEXTab,
@@ -1225,11 +1211,11 @@ void PopOneInterBump(LPDIRECT3DDEVICE7 _pDevice,TextureContainer *_pTex)
 
 		//----------------------------------------------------------------------------------
 		//																			  Ending
-		_pDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-		_pDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-		_pDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
-		_pDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
-		_pDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 0 );
+		GDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+		GDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+		GDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
+		GDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
+		GDevice->SetTextureStageState( 0, D3DTSS_TEXCOORDINDEX, 0 );
 		_pTex->vPolyInterBump.clear();
 	}
 }
@@ -2221,7 +2207,7 @@ finish:
 
 extern bool bRenderInterList;
 //-----------------------------------------------------------------------------
-void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
+void DrawEERIEInter(EERIE_3DOBJ * eobj,
 					EERIE_3D * angle,EERIE_3D  * poss,INTERACTIVE_OBJ * io,EERIE_MOD_INFO * modinfo)
 {
 	DESTROYED_DURING_RENDERING=NULL;
@@ -2816,10 +2802,10 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 
 	
 		if (eobj->facelist[i].facetype & POLY_DOUBLESIDED)
-			SETCULL( pd3dDevice, D3DCULL_NONE );
+			SETCULL( D3DCULL_NONE );
 		else
 		{
-			SETCULL( pd3dDevice, D3DCULL_CW );
+			SETCULL( D3DCULL_CW );
 		}
 
 ////////////////////////////////////////////////////////////////////////
@@ -3062,9 +3048,9 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 		// Set Texture for Poly
 		if ((eobj->facelist[i].texid>=0) 
 			&& (eobj->texturecontainer[eobj->facelist[i].texid]!=NULL))
-				SETTC(pd3dDevice,eobj->texturecontainer[eobj->facelist[i].texid]);
+				SETTC(eobj->texturecontainer[eobj->facelist[i].texid]);
 		else  // Set to Flat if invalid
-				SETTC(pd3dDevice,NULL);
+				SETTC(NULL);
 
 		if (FRAME_COUNT!=0)
 		for (long j=0;j<3;j++)		
@@ -3074,7 +3060,7 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 			eobj->facelist[i].color[j]=vert_list[j].color;		
 
 		// Finally render our primitive			
-		EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE ,&vert_list, 3,  0, 0 );
+		EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE ,&vert_list, 3,  0, 0 );
 			
 
 		// Add some fake specular to Metallic polys
@@ -3120,13 +3106,13 @@ void DrawEERIEInter(LPDIRECT3DDEVICE7 pd3dDevice,EERIE_3DOBJ * eobj,
 							SpawnMetalShine( (EERIE_3D *)&eobj->vertexlist3[eobj->facelist[i].vid[0]].vert, r, g, b, GetInterNum( io ) );
 					}
 
-					pd3dDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
-					pd3dDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
-					SETALPHABLEND( pd3dDevice, true );			
-					SETZWRITE( pd3dDevice, false );
-					EERIEDRAWPRIM( pd3dDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, &vert_list, 3, 0, 0 );
-					SETALPHABLEND( pd3dDevice, false );			
-					SETZWRITE( pd3dDevice, true );
+					GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
+					GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
+					SETALPHABLEND(true );			
+					SETZWRITE( false );
+					EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, &vert_list, 3, 0, 0 );
+					SETALPHABLEND(false );			
+					SETZWRITE( true );
 				}				
 	}
 

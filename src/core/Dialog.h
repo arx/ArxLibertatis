@@ -58,9 +58,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_CORE_DIALOG_H
 #define ARX_CORE_DIALOG_H
 
-#include <windef.h>
+#include <windows.h>
 
-class INTERACTIVE_OBJ;
+struct INTERACTIVE_OBJ;
 
 #define IOTVTYPE_PATH 1
 #define IOTVTYPE_PLAYER 3

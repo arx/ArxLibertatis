@@ -127,7 +127,7 @@ TextureContainer * MakeTCFromFile(const char * tex, long flag)
 	if (tc)
 	{
 		if (tc->m_pddsSurface == NULL)
-			tc->Restore(GDevice);
+			tc->Restore();
 	}
 
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
@@ -144,7 +144,7 @@ TextureContainer * MakeTCFromFile_NoRefinement(const char * tex, long flag)
 	if (tc)
 	{
 		if (tc->m_pddsSurface == NULL)
-			tc->Restore(GDevice);
+			tc->Restore();
 	}
 
 	GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = old;
@@ -394,7 +394,7 @@ void ReloadTexture(TextureContainer * ptcTexture)
 	}
 }
 
-void ReloadAllTextures(LPDIRECT3DDEVICE7 pd3dDevice)
+void ReloadAllTextures()
 {
 	TextureContainer * ptcTexture = g_ptcTextureList;
 
@@ -405,7 +405,7 @@ void ReloadAllTextures(LPDIRECT3DDEVICE7 pd3dDevice)
 		ptcTexture = ptcTexture->m_pNext;
 	}
 
-	D3DTextr_RestoreAllTextures(pd3dDevice);
+	D3DTextr_RestoreAllTextures();
 }
 
 
@@ -1549,10 +1549,8 @@ extern long GORE_MODE;
 // Name: Restore()
 // Desc: Rebuilds the texture surface using the new device.
 //-----------------------------------------------------------------------------
-HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
+HRESULT TextureContainer::Restore()
 {
-	if (!pd3dDevice) return E_FAIL;
-
 	bGlobalTextureStretch = true;
 	bool bActivateBump = true;
 	std::string tTxt = m_strName;
@@ -1588,14 +1586,10 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 	SAFE_RELEASE(m_pddsSurface);
 	SAFE_RELEASE(m_pddsBumpMap);
 
-	// Check params
-	if (NULL == pd3dDevice)
-		return DDERR_INVALIDPARAMS;
-
 	// Get the device caps
 	D3DDEVICEDESC7 ddDesc;
 
-	if (FAILED(pd3dDevice->GetCaps(&ddDesc)))
+	if (FAILED(GDevice->GetCaps(&ddDesc)))
 		return E_FAIL;
 
 	// Setup the new surface desc
@@ -1746,14 +1740,14 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 	tsi.pddpf->dwRBitMask = 0x0000F800;
 	tsi.pddpf->dwGBitMask = 0x000007E0;
 	tsi.pddpf->dwBBitMask = 0x0000001F;
-	pd3dDevice->EnumTextureFormats(TextureSearchCallback, &tsi);
+	GDevice->EnumTextureFormats(TextureSearchCallback, &tsi);
 
 	if (! tsi.bFoundGoodFormat)
 	{
 		tsi.pddpf->dwRBitMask = 0x00007C00;
 		tsi.pddpf->dwGBitMask = 0x000003E0;
 		tsi.pddpf->dwBBitMask = 0x0000001F;
-		pd3dDevice->EnumTextureFormats(TextureSearchCallback, &tsi);
+		GDevice->EnumTextureFormats(TextureSearchCallback, &tsi);
 	}
 
 	// If we couldn't find a format, let's try a default format
@@ -1764,14 +1758,14 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 		tsi.pddpf->dwRBitMask = 0x0000F800;
 		tsi.pddpf->dwGBitMask = 0x000007E0;
 		tsi.pddpf->dwBBitMask = 0x0000001F;
-		pd3dDevice->EnumTextureFormats(TextureSearchCallback, &tsi);
+		GDevice->EnumTextureFormats(TextureSearchCallback, &tsi);
 
 		if (! tsi.bFoundGoodFormat)
 		{
 			tsi.pddpf->dwRBitMask = 0x00007C00;
 			tsi.pddpf->dwGBitMask = 0x000003E0;
 			tsi.pddpf->dwBBitMask = 0x0000001F;
-			pd3dDevice->EnumTextureFormats(TextureSearchCallback, &tsi);
+			GDevice->EnumTextureFormats(TextureSearchCallback, &tsi);
 		}
 
 		// If we still fail, we cannot create this texture
@@ -1782,7 +1776,7 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 	// Get the DirectDraw interface for creating surface
 	LPDIRECTDRAW7        pDD;
 	LPDIRECTDRAWSURFACE7 pddsRender;
-	pd3dDevice->GetRenderTarget(&pddsRender);
+	GDevice->GetRenderTarget(&pddsRender);
 	pddsRender->GetDDInterface((VOID **)&pDD);
 	pddsRender->Release();
 
@@ -1916,7 +1910,7 @@ HRESULT TextureContainer::Restore(LPDIRECT3DDEVICE7 pd3dDevice)
 	if (TextureHalo)
 	{
 		D3DTextr_KillTexture(TextureHalo);
-		TextureHalo = AddHalo(pd3dDevice, iHaloNbCouche, fHaloRed, fHaloGreen, fHaloBlue, halodecalX, halodecalY);
+		TextureHalo = AddHalo(iHaloNbCouche, fHaloRed, fHaloGreen, fHaloBlue, halodecalX, halodecalY);
 	}
 
 	if (m_dwFlags & D3DTEXTR_FAKE_BORDER)
@@ -2635,7 +2629,7 @@ HRESULT D3DTextr_CreateEmptyTexture( const std::string& _strName, DWORD dwWidth,
 // Desc: Invalidates the current texture objects and rebuilds new ones
 //       using the new device.
 //-----------------------------------------------------------------------------
-HRESULT D3DTextr_Restore( const std::string& strName, LPDIRECT3DDEVICE7 pd3dDevice)
+HRESULT D3DTextr_Restore( const std::string& strName)
 {
 	std::string temp = strName;
 	MakeUpcase(temp);
@@ -2645,7 +2639,7 @@ HRESULT D3DTextr_Restore( const std::string& strName, LPDIRECT3DDEVICE7 pd3dDevi
 		return DDERR_NOTFOUND;
 
 	// Restore the texture (this recreates the new surface for this device).
-	return ptcTexture->Restore(pd3dDevice);
+	return ptcTexture->Restore();
 }
 
 //-----------------------------------------------------------------------------
@@ -2653,13 +2647,13 @@ HRESULT D3DTextr_Restore( const std::string& strName, LPDIRECT3DDEVICE7 pd3dDevi
 // Desc: This function is called when a mode is changed. It updates all
 //       texture objects to be valid with the new device.
 //-----------------------------------------------------------------------------
-HRESULT D3DTextr_RestoreAllTextures(LPDIRECT3DDEVICE7 pd3dDevice)
+HRESULT D3DTextr_RestoreAllTextures()
 {
 	TextureContainer * ptcTexture = g_ptcTextureList;
 
 	while (ptcTexture)
 	{
-		D3DTextr_Restore(ptcTexture->m_strName, pd3dDevice);
+		D3DTextr_Restore(ptcTexture->m_strName);
 		ptcTexture = ptcTexture->m_pNext;
 	}
 
@@ -2668,14 +2662,14 @@ HRESULT D3DTextr_RestoreAllTextures(LPDIRECT3DDEVICE7 pd3dDevice)
 	return S_OK;
 }
 
-HRESULT D3DTextr_TESTRestoreAllTextures(LPDIRECT3DDEVICE7 pd3dDevice)
+HRESULT D3DTextr_TESTRestoreAllTextures()
 {
 	TextureContainer * ptcTexture = g_ptcTextureList;
 
 	while (ptcTexture)
 	{
 		if (!ptcTexture->m_pddsSurface)
-			D3DTextr_Restore(ptcTexture->m_strName, pd3dDevice);
+			D3DTextr_Restore(ptcTexture->m_strName);
 
 	ptcTexture = ptcTexture->m_pNext;
 }
@@ -2800,11 +2794,11 @@ TextureContainer * GetTextureFile_NoRefinement(const char * tex, long flag)
 }
 //*************************************************************************************
 //*************************************************************************************
-bool TextureContainer::CreateHalo(LPDIRECT3DDEVICE7 _lpDevice)
+bool TextureContainer::CreateHalo()
 {
 	if (this->TextureHalo) return true;
 
-	this->TextureHalo = this->AddHalo(_lpDevice, 8, 255.f, 255.f, 255.f, this->halodecalX, this->halodecalY);
+	this->TextureHalo = this->AddHalo(8, 255.f, 255.f, 255.f, this->halodecalX, this->halodecalY);
 
 	if (this->TextureHalo) return true;
 
@@ -2812,7 +2806,7 @@ bool TextureContainer::CreateHalo(LPDIRECT3DDEVICE7 _lpDevice)
 }
 
 //-----------------------------------------------------------------------------
-TextureContainer * TextureContainer::AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _iNbCouche, float _fR, float _fG, float _fB, float & _iDecalX, float & _iDecalY)
+TextureContainer * TextureContainer::AddHalo(int _iNbCouche, float _fR, float _fG, float _fB, float & _iDecalX, float & _iDecalY)
 {
 	if ((!m_pddsSurface) ||
 			(!_iNbCouche)) return NULL;
@@ -2824,7 +2818,7 @@ TextureContainer * TextureContainer::AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _i
 
 	D3DDEVICEDESC7 ddDesc;
 
-	if (FAILED(_lpDevice->GetCaps(&ddDesc))) return NULL;
+	if (FAILED(GDevice->GetCaps(&ddDesc))) return NULL;
 
 	LPDIRECTDRAW7 pDD;
 
@@ -3459,7 +3453,7 @@ TextureContainer * TextureContainer::AddHalo(LPDIRECT3DDEVICE7 _lpDevice, int _i
 	pddsTempSurface->Release();
 	pDD->Release();
 
-	pTex->Restore(_lpDevice);
+	pTex->Restore();
 	ddsdSurfaceDesc.dwSize = sizeof(ddsdSurfaceDesc);
 	pTex->m_pddsSurface->GetSurfaceDesc(&ddsdSurfaceDesc);
 	return pTex;

@@ -153,15 +153,15 @@ void Credits::render() {
 		//Set the device
 		if(!danaeApp.DANAEStartRender()) return;
 		
-		SETALPHABLEND(GDevice,false);
+		SETALPHABLEND(false);
 		GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
-		SETZWRITE(GDevice,true);
+		SETZWRITE(true);
 		GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE,false);
 		
 		//Draw Background
 		if(ARXmenu.mda->pTexCredits)
 		{
-			EERIEDrawBitmap2(GDevice, 0, 0, static_cast<float>(DANAESIZX), static_cast<float>(DANAESIZY + 1), .999f, ARXmenu.mda->pTexCredits, 0xFFFFFFFF);
+			EERIEDrawBitmap2( 0, 0, static_cast<float>(DANAESIZX), static_cast<float>(DANAESIZY + 1), .999f, ARXmenu.mda->pTexCredits, 0xFFFFFFFF);
 		}    
 
 		//Use time passed between frame to create scroll effect
@@ -223,7 +223,7 @@ void Credits::render() {
 	
 	danaeApp.DANAEEndRender();
 	
-	SETZWRITE(GDevice,true);
+	SETZWRITE(true);
 	danaeApp.EnableZBuffer();
 	
 }

@@ -60,8 +60,8 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <string>
 
-class INTERACTIVE_OBJ;
-class EERIE_3D;
+struct INTERACTIVE_OBJ;
+struct EERIE_3D;
 
 enum WeaponType {
 	WEAPON_BARE = 0,

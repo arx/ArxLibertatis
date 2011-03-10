@@ -1610,8 +1610,7 @@ bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX * _pVertex1, D3DTLVERTEX * _pVerte
 			return false;
 	}
 
-	EERIEDRAWPRIM(GDevice,
-	              D3DPT_TRIANGLELIST,
+	EERIEDRAWPRIM(D3DPT_TRIANGLELIST,
 	              D3DFVF_TLVERTEX,
 	              pD3DPointAdd,
 				  iNbTotVertex,
@@ -2017,7 +2016,7 @@ void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 						tv[o].color = 0xFF000000L | (((lfr) & 255) << 16) |	(((lfg) & 255) << 8) | ((lfb) & 255);
 					}
 
-					//SETCULL(pd3dDevice,D3DCULL_NONE);
+					//SETCULL(D3DCULL_NONE);
 					if (tot > 260)   //260.f)
 					{
 						long first;
@@ -2219,7 +2218,7 @@ void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 
 
 /* Render object */
-void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, EERIE_3D * pos, EERIE_3D & ftr, float invisibility)
+void	Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ * io, EERIE_3D * pos, EERIE_3D & ftr, float invisibility)
 {
 	if (bRenderInterList)
 	{
@@ -2233,7 +2232,7 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 	}
 
 	// Finally we can draw polys !!!
-	SETCULL(pd3dDevice, D3DCULL_NONE);
+	SETCULL(D3DCULL_NONE);
 
 	// Sets IO BBox to calculated BBox :)
 	if (io)
@@ -2487,9 +2486,9 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 
 			// Backface culling if required
 			if (eface->facetype & POLY_DOUBLESIDED)
-				SETCULL(pd3dDevice, D3DCULL_NONE);
+				SETCULL(D3DCULL_NONE);
 			else
-				SETCULL(pd3dDevice, D3DCULL_CW);
+				SETCULL(D3DCULL_CW);
 
 			// Is Transparent?
 			if (eface->facetype & POLY_TRANS)
@@ -2507,9 +2506,9 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 
 			// Set texture
 			if ((eface->texid == -1) || (eobj->texturecontainer[eface->texid] == NULL))
-				SETTC(pd3dDevice, NULL);
+				SETTC(NULL);
 			else
-				SETTC(pd3dDevice, eobj->texturecontainer[eface->texid]);
+				SETTC(eobj->texturecontainer[eface->texid]);
 
 			if (invisibility > 0.f)
 			{
@@ -2525,25 +2524,25 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 				continue;
 			}
 
-			EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE , &tv, 3,  0, 0 );
+			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE , &tv, 3,  0, 0 );
 
 			if (special_color_flag & 2)
 			{
-				pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR);
-				pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-				SETALPHABLEND(pd3dDevice, true);
-				SETZWRITE(pd3dDevice, false);
-				SETTC(pd3dDevice, NULL);
+				GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR);
+				GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+				SETALPHABLEND(true);
+				SETZWRITE(false);
+				SETTC(NULL);
 				unsigned long v = _EERIERGB(special_color.r);
 
 				for (long j = 0; j < 3; j++)
 				{
 					tv[j].color = v;
 				}
-				EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , &tv, 3,  0, 0 );
-				EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , &tv, 3,  0, 0 );//duplicate ???? @TBR ?
-				SETALPHABLEND(pd3dDevice, false);
-				SETZWRITE(pd3dDevice, true);
+				EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , &tv, 3,  0, 0 );
+				EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , &tv, 3,  0, 0 );//duplicate ???? @TBR ?
+				SETALPHABLEND(false);
+				SETZWRITE(true);
 			}
 
 		// Add a little bit of Fake Metal Specular if needed
@@ -2581,13 +2580,13 @@ void	Cedric_RenderObject(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj, EERIE
 
 				if (todo)
 				{
-					pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR);
-					pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-					SETALPHABLEND(pd3dDevice, true);
-					SETZWRITE(pd3dDevice, false);
-					EERIEDRAWPRIM(pd3dDevice,D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, &tv, 3, 0, 0 );
-					SETALPHABLEND(pd3dDevice, false);
-					SETZWRITE(pd3dDevice, true);
+					GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR);
+					GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+					SETALPHABLEND(true);
+					SETZWRITE(false);
+					EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, &tv, 3, 0, 0 );
+					SETALPHABLEND(false);
+					SETZWRITE(true);
 				}
 			}
 		}
@@ -2694,8 +2693,7 @@ extern long __MUST_DRAW;
 extern long EXTERNALVIEW;
 
 /* Apply animation and draw object */
-void	Cedric_AnimateDrawEntity(LPDIRECT3DDEVICE7 pd3dDevice,
-                                 EERIE_3DOBJ * eobj,
+void	Cedric_AnimateDrawEntity(EERIE_3DOBJ * eobj,
                                  ANIM_USE * animuse,
                                  EERIE_3D * angle,
                                  EERIE_3D * pos,
@@ -2773,7 +2771,7 @@ void	Cedric_AnimateDrawEntity(LPDIRECT3DDEVICE7 pd3dDevice,
 
 			if (!Cedric_ApplyLighting(eobj, obj, io, pos, typ)) return;
 
-			Cedric_RenderObject(pd3dDevice, eobj, obj, io, pos, ftr, invisibility);
+			Cedric_RenderObject(eobj, obj, io, pos, ftr, invisibility);
 
 			if (io)
 			{
@@ -2851,7 +2849,7 @@ void	Cedric_AnimateDrawEntity(LPDIRECT3DDEVICE7 pd3dDevice,
 					
 					EERIEMATRIX	 matrix;
 					MatrixFromQuat(&matrix, &quat);
-					DrawEERIEInterMatrix(pd3dDevice, obj, &matrix, posi, ioo, &eobj->linked[k].modinfo);
+					DrawEERIEInterMatrix(obj, &matrix, posi, ioo, &eobj->linked[k].modinfo);
 					INVISIBILITY_OVERRIDE = 0.f;
 
 					// Restore item invisibility flag

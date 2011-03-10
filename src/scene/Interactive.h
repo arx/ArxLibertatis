@@ -231,10 +231,10 @@ bool IsCollidingInter(INTERACTIVE_OBJ * io, EERIE_3D * pos);
 long IsCollidingAnyInter(float x, float y, float z, EERIE_3D * size);
 INTERACTIVE_OBJ * GetFirstInterAtPos(EERIE_S2D * pos, long flag = 0, EERIE_3D * _pRef = NULL, INTERACTIVE_OBJ ** _pTable = NULL, int * _pnNbInTable = NULL);
  
-INTERACTIVE_OBJ * AddInteractive(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long id, long flags = 0);
-INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags = 0);
+INTERACTIVE_OBJ * AddInteractive(const char * file, long id, long flags = 0);
+INTERACTIVE_OBJ * AddFix(const char * file, long flags = 0);
 INTERACTIVE_OBJ * AddNPC(const char * file, long flags = 0);
-INTERACTIVE_OBJ  * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& file, long flags = 0);
+INTERACTIVE_OBJ  * AddItem(const std::string& file, long flags = 0);
 INTERACTIVE_OBJ * AddCamera(const char * file);
 INTERACTIVE_OBJ * AddMarker(const char * file);
 
@@ -242,13 +242,13 @@ void InitInter(long nb);
 INTERACTIVE_OBJ * CreateFreeInter(long num = -1);
 void ReleaseInter(INTERACTIVE_OBJ * io);
 void ExecuteObjectAction(INTERACTIVE_OBJ * io);
-void AddRandomObj(LPDIRECT3DDEVICE7 pd3dDevice);
+void AddRandomObj();
 void UpdateCameras();
 
 void PlayObjectSound(INTERACTIVE_OBJ * io);
 INTERACTIVE_OBJ * InterClick(EERIE_S2D * pos);
  
-void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to);
+void RenderInter(float from, float to);
 INTERACTIVE_OBJ * FlyingOverObject(EERIE_S2D * pos, bool mustlock = false);
 void MakeIOIdent(INTERACTIVE_OBJ * io);
 void SelectIO(INTERACTIVE_OBJ * io);

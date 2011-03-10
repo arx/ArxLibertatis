@@ -200,7 +200,7 @@ bool CheckLastSpeech(int _iI)
 	return true;
 }
 //-----------------------------------------------------------------------------
-void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
+void ARX_SPEECH_Render()
 {
 	_TCHAR temp[4096];
 	long igrec = 14;
@@ -210,7 +210,7 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 	
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(pd3dDevice, true);
+	SETALPHABLEND(true);
 
 	int iEnd = igrec + sSize.y;
 
@@ -225,7 +225,7 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 				else
 					_stprintf(temp, _T(" %s"), speech[i].lpszUText.c_str());//>
 
-				EERIEDrawBitmap(GDevice,
+				EERIEDrawBitmap(
 								120 * Xratio - 16 * Xratio, ARX_CLEAN_WARN_CAST_FLOAT(igrec),
 								16 * Xratio, 16 * Xratio,
 								0.00001f,
@@ -242,10 +242,10 @@ void ARX_SPEECH_Render(LPDIRECT3DDEVICE7 pd3dDevice)
 		}
 	}
 
-	SETALPHABLEND(pd3dDevice, false);
+	SETALPHABLEND(false);
 }
 
-void ARX_SPEECH_Check(LPDIRECT3DDEVICE7 pd3dDevice)
+void ARX_SPEECH_Check()
 {
 	bool bClear = false;
 	long exist = 0;
@@ -273,7 +273,7 @@ void ARX_SPEECH_Check(LPDIRECT3DDEVICE7 pd3dDevice)
 		}
 	}
 
-	if (exist) ARX_SPEECH_Render(pd3dDevice);
+	if (exist) ARX_SPEECH_Render();
 }
 
 //-----------------------------------------------------------------------------
@@ -627,12 +627,12 @@ void ARX_SPEECH_Update() {
 						                    RGB(255, 255, 255),
 						                    &clippingRect);
 
-						SETTC(GDevice, NULL);
+						SETTC( NULL);
 						GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ZERO);
 						GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
 						GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
 						GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
-						EERIEDrawFill2DRectDegrad(GDevice,
+						EERIEDrawFill2DRectDegrad(
 												  0.f,
 												  fZoneClippY - 1.f, 
 												  ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX),
@@ -641,7 +641,7 @@ void ARX_SPEECH_Update() {
 												  RGBA_MAKE(255, 255, 255, 255),
 												  RGBA_MAKE(0, 0, 0, 255));
 
-						EERIEDrawFill2DRectDegrad(GDevice,
+						EERIEDrawFill2DRectDegrad(
 												  0.f,
 												  fZoneClippY + fZoneClippHeight - (sSize.y * 3 / 4),
 												  ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX),

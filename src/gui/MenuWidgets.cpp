@@ -318,8 +318,7 @@ void ARX_DrawAfterQuickLoad()
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,D3DBLEND_ONE);
 
-	EERIEDrawBitmap2(	GDevice,
-						0,
+	EERIEDrawBitmap2(	0,
 						0,
 						INTERFACE_RATIO_DWORD(pTex->m_dwWidth),
 						INTERFACE_RATIO_DWORD(pTex->m_dwHeight),
@@ -1860,19 +1859,19 @@ static void FadeInOut(float _fVal)
 	d3dvertex[3].rhw=0.999999f;
 	d3dvertex[3].color=iColor;
 
-	SETTC(GDevice,NULL);
-	SETALPHABLEND(GDevice,true);
+	SETTC(NULL);
+	SETALPHABLEND(true);
 
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
-	SETZWRITE(GDevice, false);
+	SETZWRITE(false);
 	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
 	GDevice->SetRenderState( D3DRENDERSTATE_CULLMODE,D3DCULL_NONE);
 
-	EERIEDRAWPRIM( GDevice, D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, d3dvertex, 4, 0, EERIE_NOCOUNT );
+	EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, d3dvertex, 4, 0, EERIE_NOCOUNT );
 
-	SETALPHABLEND(GDevice,false);
-	SETZWRITE(GDevice, true);
+	SETALPHABLEND(false);
+	SETZWRITE(true);
 
 	danaeApp.EnableZBuffer();
 	GDevice->SetRenderState( D3DRENDERSTATE_CULLMODE,D3DCULL_CCW);
@@ -1961,7 +1960,7 @@ bool Menu2_Render()
 	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP);
 
 	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
-	SETZWRITE(GDevice, false);
+	SETZWRITE(false);
 	GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE,false);
 	GDevice->SetRenderState( D3DRENDERSTATE_CULLMODE,D3DCULL_NONE);
 
@@ -2093,9 +2092,9 @@ bool Menu2_Render()
 				pMenu=NULL;
 			}
 
-			SETALPHABLEND(GDevice,false);
+			SETALPHABLEND(false);
 			GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
-			SETZWRITE(GDevice, true);
+			SETZWRITE(true);
 			danaeApp.EnableZBuffer();
 			danaeApp.DANAEEndRender();
 
@@ -3335,7 +3334,7 @@ bool Menu2_Render()
 	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP);
 
 	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
-	SETZWRITE(GDevice, false);
+	SETZWRITE(false);
 	GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE,false);
 	GDevice->SetRenderState( D3DRENDERSTATE_CULLMODE,D3DCULL_NONE);
 	pGetInfoDirectInput->DrawCursor();
@@ -3346,7 +3345,7 @@ bool Menu2_Render()
 
 		if(bForceReInitAllTexture)
 		{
-			D3DTextr_RestoreAllTextures(GDevice);
+			D3DTextr_RestoreAllTextures();
 			bForceReInitAllTexture=false;
 		}
 	}
@@ -3368,27 +3367,21 @@ bool Menu2_Render()
 
 		}
 
-		EERIEDrawBitmap(    GDevice,
-			ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.x + iOffsetX),
-			ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.y + iOffsetY),
+		EERIEDrawBitmap(ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.x + iOffsetX),
+						ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.y + iOffsetY),
+						(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
+						(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
+						0.001f,
+						pTextureLoad,
+						ARX_OPAQUE_WHITE);
 
-							(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
-							(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
-
-							0.001f,
-							pTextureLoad,
-			ARX_OPAQUE_WHITE);
-
-		SETTC(GDevice,NULL);
-		EERIEDraw2DRect(    GDevice,
-			ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.x + iOffsetX),
-			ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.y + iOffsetY),
-
-							DANAEMouse.x+iOffsetX+(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
-							DANAEMouse.y+iOffsetY+(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
-
-							0.01f,
-			ARX_OPAQUE_WHITE);
+		SETTC(NULL);
+		EERIEDraw2DRect(ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.x + iOffsetX),
+						ARX_CLEAN_WARN_CAST_FLOAT(DANAEMouse.y + iOffsetY),
+						DANAEMouse.x+iOffsetX+(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwWidth),
+						DANAEMouse.y+iOffsetY+(float)INTERFACE_RATIO_DWORD(pTextureLoad->m_dwHeight),
+						0.01f,
+						ARX_OPAQUE_WHITE);
 
 		pTextureLoadRender=NULL;
 	}
@@ -3421,12 +3414,12 @@ bool Menu2_Render()
 		}
 	}
 
-	SETALPHABLEND(GDevice,false);
+	SETALPHABLEND(false);
 	GDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTFP_LINEAR);
 	GDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTFP_LINEAR);
 	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
 
-	SETZWRITE(GDevice, true);
+	SETZWRITE(true);
 
 	danaeApp.EnableZBuffer();
 	GDevice->SetRenderState( D3DRENDERSTATE_CULLMODE,D3DCULL_CCW);
@@ -4106,7 +4099,7 @@ void CMenuElementText::RenderMouseOver()
 
 				if (pTextureLoad)
 				{
-					pTextureLoad->Restore(GDevice);
+					pTextureLoad->Restore();
 					pTextureLoad->bColorKey=false;
 				}
 			}
@@ -4133,7 +4126,7 @@ void CMenuElementText::RenderMouseOver()
 
 				if (pTextureLoad)
 				{
-					pTextureLoad->Restore(GDevice);
+					pTextureLoad->Restore();
 					pTextureLoad->bColorKey=false;
 				}
 			}
@@ -4247,7 +4240,7 @@ void CMenuState::Render()
 	{
 		if (pTexBackGround->m_pddsSurface)
 		{
-			EERIEDrawBitmap2(GDevice, 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.999f, pTexBackGround, D3DCOLORWHITE);
+			EERIEDrawBitmap2( 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.999f, pTexBackGround, D3DCOLORWHITE);
 	}
 		}
 
@@ -4274,7 +4267,7 @@ void CMenuState::Render()
 	}
 
 	//DEBUG ZONE
-	SETTC(GDevice,NULL);
+	SETTC(NULL);
 	pMenuAllZone->DrawZone();
 }
 
@@ -4478,11 +4471,11 @@ void CMenuAllZone::DrawZone()
 
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(GDevice,true);
+	SETALPHABLEND(true);
 
 	vector<CMenuZone*>::iterator i;
 
-	SETTC(GDevice,NULL);
+	SETTC(NULL);
 
 	for(std::vector<CMenuZone*>::const_iterator i = vMenuZone.begin(), i_end = vMenuZone.end(); i != i_end; ++i)
 	{
@@ -4509,12 +4502,12 @@ void CMenuAllZone::DrawZone()
 			v1[0].sz=v1[1].sz=v1[2].sz=v2[0].sz=v2[1].sz=v2[2].sz=0.f;    
 			v1[0].rhw=v1[1].rhw=v1[2].rhw=v2[0].rhw=v2[1].rhw=v2[2].rhw=0.999999f;    
 			
-			EERIEDRAWPRIM(GDevice,D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v1,3,0);
-			EERIEDRAWPRIM(GDevice,D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v2,3,0);
+			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v1,3,0);
+			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v2,3,0);
 		}
 	}
 
-	SETALPHABLEND(GDevice,false);
+	SETALPHABLEND(false);
 }
 
 //-----------------------------------------------------------------------------
@@ -4794,7 +4787,7 @@ void CMenuCheckButton::Render()
 		}
 		
 		//carre
-		EERIEDrawBitmap2(GDevice, ARX_CLEAN_WARN_CAST_FLOAT(rZone.right - iTaille), iY, RATIO_X(iTaille), RATIO_Y(iTaille), 0.f, pTex, color);
+		EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(rZone.right - iTaille), iY, RATIO_X(iTaille), RATIO_Y(iTaille), 0.f, pTex, color);
 	}
 
 	if (pText)
@@ -4820,8 +4813,8 @@ void CMenuCheckButton::RenderMouseOver()
 
 	TextureContainer *pTex = vTex[iState];
 
-	if(pTex) SETTC(GDevice, pTex);
-	else SETTC(GDevice,NULL);
+	if(pTex) SETTC( pTex);
+	else SETTC(NULL);
 
 	D3DTLVERTEX v[4];
 	v[0].color = v[1].color = v[2].color = v[3].color = ARX_OPAQUE_WHITE;
@@ -4835,7 +4828,7 @@ void CMenuCheckButton::RenderMouseOver()
 
 	//carre
 
-	EERIEDrawBitmap2(GDevice, ARX_CLEAN_WARN_CAST_FLOAT(rZone.right - iTaille), iY, RATIO_X(iTaille), RATIO_Y(iTaille), 0.f, pTex, ARX_OPAQUE_WHITE); 
+	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(rZone.right - iTaille), iY, RATIO_X(iTaille), RATIO_Y(iTaille), 0.f, pTex, ARX_OPAQUE_WHITE); 
 
 
 	//tick
@@ -4959,7 +4952,7 @@ MENUSTATE CWindowMenu::Render()
 		bChangeConsole=false;
 	}
 
-	SETALPHABLEND(GDevice, false);
+	SETALPHABLEND( false);
 
 	D3DTLVERTEX v[4];
 	v[0].color = v[1].color = v[2].color = v[3].color = ARX_OPAQUE_WHITE;
@@ -4993,13 +4986,13 @@ MENUSTATE CWindowMenu::Render()
 		if(eCurrentMenuState==(*i)->eMenuState)
 		{
 			if ((*i)->Render())
-				SETALPHABLEND(GDevice,false);
+				SETALPHABLEND(false);
 
 			break;
 		}
 	}
 
-	SETALPHABLEND(GDevice,false);
+	SETALPHABLEND(false);
 
 	if (eMS != NOP)
 	{
@@ -5365,7 +5358,7 @@ void CWindowMenuConsole::UpdateText()
 
 	//DRAW CURSOR
 	D3DTLVERTEX v[4];
-	SETTC(GDevice,NULL);
+	SETTC(NULL);
 	float col=.5f+rnd()*.5f;
 	v[0].color=v[1].color=v[2].color=v[3].color=D3DRGBA(col,col,col,1.f);
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
@@ -5379,7 +5372,7 @@ void CWindowMenuConsole::UpdateText()
 	v[2].sy = (float)pZoneClick->rZone.bottom;
 	v[3].sx = v[1].sx;
 	v[3].sy = v[2].sy;
-	EERIEDRAWPRIM(GDevice,D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
+	EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
 }
 
 //-----------------------------------------------------------------------------
@@ -5805,7 +5798,7 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 
 	int iSlider=0;
 
-	SETALPHABLEND(GDevice,true);
+	SETALPHABLEND(true);
 
 	//------------------------------------------------------------------------
 	//Affichage de la console
@@ -5814,7 +5807,7 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
 
 	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
-	EERIEDrawBitmap2(GDevice, ARX_CLEAN_WARN_CAST_FLOAT(iPosX), ARX_CLEAN_WARN_CAST_FLOAT(iSavePosY),
+	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(iPosX), ARX_CLEAN_WARN_CAST_FLOAT(iSavePosY),
 		RATIO_X(pTexBackground->m_dwWidth), RATIO_Y(pTexBackground->m_dwHeight),
 		0, pTexBackground, ARX_OPAQUE_WHITE);
 
@@ -5823,10 +5816,10 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 
-	SETALPHABLEND(GDevice, false);
+	SETALPHABLEND( false);
 
-	SETALPHABLEND(GDevice,false);
-	EERIEDrawBitmap2(GDevice, ARX_CLEAN_WARN_CAST_FLOAT(iPosX), ARX_CLEAN_WARN_CAST_FLOAT(iSavePosY),
+	SETALPHABLEND(false);
+	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(iPosX), ARX_CLEAN_WARN_CAST_FLOAT(iSavePosY),
 		RATIO_X(pTexBackgroundBorder->m_dwWidth), RATIO_Y(pTexBackgroundBorder->m_dwHeight),
 		0, pTexBackgroundBorder, ARX_OPAQUE_WHITE);
 
@@ -6285,7 +6278,7 @@ void CMenuButton::Render()
 	//affichage de la texture
 	if (pTex)
 	{
-		EERIEDrawBitmap2(GDevice, ARX_CLEAN_WARN_CAST_FLOAT(rZone.left), ARX_CLEAN_WARN_CAST_FLOAT(rZone.top),
+		EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(rZone.left), ARX_CLEAN_WARN_CAST_FLOAT(rZone.top),
 			RATIO_X(pTex->m_dwWidth),
 			RATIO_Y(pTex->m_dwHeight),
 			0,
@@ -6331,7 +6324,7 @@ void CMenuButton::RenderMouseOver()
 		v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;
 		v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
-		SETTC(GDevice,pTexOver);
+		SETTC(pTexOver);
 		v[0].sx = (float)rZone.left;
 		v[0].sy = (float)rZone.top;
 		v[0].tu = 0.f;
@@ -6348,7 +6341,7 @@ void CMenuButton::RenderMouseOver()
 		v[3].sy = v[2].sy;
 		v[3].tu = 0.999999f;
 		v[3].tv = 0.999999f;
-		EERIEDRAWPRIM(GDevice,D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
+		EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
 	}
 
 	if( vText.size() )
@@ -6892,7 +6885,7 @@ void CMenuSlider::Render()
 			}
 		}
 
-		EERIEDrawBitmap2(GDevice, iX, iY, 
+		EERIEDrawBitmap2( iX, iY, 
 			RATIO_X(pTex->m_dwWidth),
 			RATIO_Y(pTex->m_dwHeight),
 			0,
@@ -7384,9 +7377,9 @@ void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY) {
 	
 	GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_POINT );
 	GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_POINT );
-	SETTEXTUREWRAPMODE(GDevice,D3DTADDRESS_CLAMP);
+	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
 
-	EERIEDrawBitmap2(GDevice, ARX_CLEAN_WARN_CAST_FLOAT(_iPosX), ARX_CLEAN_WARN_CAST_FLOAT(_iPosY),
+	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(_iPosX), ARX_CLEAN_WARN_CAST_FLOAT(_iPosY),
 
 					INTERFACE_RATIO_DWORD(scursor[iNumCursor]->m_dwWidth),
 					INTERFACE_RATIO_DWORD(scursor[iNumCursor]->m_dwHeight),
@@ -7395,7 +7388,7 @@ void CDirectInput::DrawOneCursor(int _iPosX,int _iPosY) {
 					scursor[iNumCursor],D3DCOLORWHITE);
 	GDevice->SetTextureStageState(0,D3DTSS_MINFILTER,D3DTFP_LINEAR);
 	GDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTFP_LINEAR);
-	SETTEXTUREWRAPMODE(GDevice,D3DTADDRESS_WRAP);
+	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
 }
 
 //-----------------------------------------------------------------------------
@@ -7449,8 +7442,8 @@ static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,
 
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVDESTCOLOR);
-	SETTC(GDevice,NULL);
-	SETALPHABLEND(GDevice,true);
+	SETTC(NULL);
+	SETALPHABLEND(true);
 
 	D3DTLVERTEX v[4];
 	v[0].sz=v[1].sz=v[2].sz=v[3].sz=0.f;    
@@ -7477,7 +7470,7 @@ static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,
 		if(ComputePer(psOldPoint,_psPoint1+1,&v[1],&v[3],fTaille))
 		{
 			v[1].color=v[3].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);    
-			EERIEDRAWPRIM(GDevice,D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
+			EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
 
 			v[0].sx=v[1].sx;
 			v[0].sy=v[1].sy;
@@ -7498,10 +7491,10 @@ static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,
 	if(ComputePer(_psPoint1,psOldPoint,&v[1],&v[3],fTaille)) 
 	{
 		v[1].color=v[3].color=D3DRGBA(fColorRed,fColorGreen,fColorBlue,1.f);    
-		EERIEDRAWPRIM(GDevice,D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
+		EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP,D3DFVF_TLVERTEX|D3DFVF_DIFFUSE,v,4,0);
 	}
 
-	SETALPHABLEND(GDevice,false);
+	SETALPHABLEND(false);
 }
 
 //-----------------------------------------------------------------------------
@@ -7513,10 +7506,10 @@ void CDirectInput::DrawCursor()
 	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE,  true);
 	DrawLine2D(iOldCoord,iNbOldCoord + 1,10.f,.725f,.619f,0.56f);
 
-	if(pTex[iNumCursor]) SETTC(GDevice, pTex[iNumCursor]);
-	else SETTC(GDevice,NULL);
+	if(pTex[iNumCursor]) SETTC( pTex[iNumCursor]);
+	else SETTC(NULL);
 
-	SETALPHABLEND(GDevice,false);
+	SETALPHABLEND(false);
 
 	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
 	DrawOneCursor(iMouseAX,iMouseAY);

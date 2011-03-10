@@ -218,7 +218,7 @@ void ViewImage::DrawAllImage()
 
 			ARX_CHECK_NOT_NEG(DANAESIZX);
 			ARX_CHECK_NOT_NEG(DANAESIZY);
-			EERIEDrawBitmap(GDevice,
+			EERIEDrawBitmap(
 			                fDepX,
 			                fDepY,
 			                ARX_CLEAN_WARN_CAST_FLOAT(min((unsigned long)pTex->m_dwWidth, ARX_CAST_ULONG(DANAESIZX))),

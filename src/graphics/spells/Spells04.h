@@ -97,7 +97,7 @@ class CBless: public CSpellFx
 	public:
 		void	Create(EERIE_3D, float afBeta = 0);
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 		void	Kill();
 };
 
@@ -129,7 +129,7 @@ class CDispellField: public CSpellFx
 		void	Create(EERIE_3D, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 };
 
 //-----------------------------------------------------------------------------
@@ -145,7 +145,7 @@ class CFireProtection: public CSpellFx
 		// surcharge
 		void	Create(long);
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
  
 };
 //-----------------------------------------------------------------------------
@@ -161,7 +161,7 @@ class CColdProtection: public CSpellFx
 		// surcharge
 		void	Create(long, int);
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
  
 };
 
@@ -194,7 +194,7 @@ class CTelekinesis: public CSpellFx
 		void	Create(EERIE_3D, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 };
 //-----------------------------------------------------------------------------
 
@@ -226,7 +226,7 @@ class CCurse: public CSpellFx
 		void	Create(EERIE_3D, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7, EERIE_3D * pos);
+		float	Render(EERIE_3D * pos);
 };
 //-----------------------------------------------------------------------------
 

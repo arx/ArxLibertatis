@@ -91,7 +91,7 @@ class CExplosion: public CSpellFx
 
  
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 		void	Kill();
 };
 

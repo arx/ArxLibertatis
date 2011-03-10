@@ -2320,7 +2320,7 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 						restoretex = 1;
 					}
 
-					if (restoretex) D3DTextr_RestoreAllTextures(GDevice);
+					if (restoretex) D3DTextr_RestoreAllTextures();
 
 					if (IsChecked(hWnd, IDC_POINTINTERPOLATION)) POINTINTERPOLATION = 1;
 					else POINTINTERPOLATION = 0;
@@ -2599,7 +2599,6 @@ INT_PTR CALLBACK OptionsProc_2(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 						return 0;
 					}
 
-					GDevice = danaeApp.m_pd3dDevice;
 					ARX_Text_Init();
 				}
 				else LogError << ("Error Changing Device");

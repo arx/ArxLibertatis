@@ -63,7 +63,7 @@ extern long DEBUG_MOLLESS;
 extern long MOLLESS_Nb_Interpolations;
 
 void MOLLESS_Clear(EERIE_3DOBJ * obj, long flag = 0);
-long MOLLESS_ComputeCollisions(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * obj, float time);
+long MOLLESS_ComputeCollisions(EERIE_3DOBJ * obj, float time);
 void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj);
 void KillClothesData(EERIE_3DOBJ * obj);
 

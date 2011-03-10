@@ -82,7 +82,7 @@ class CMassLightning: public CSpellFx
 	public:
 		void	Create(EERIE_3D, float);
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
  
 };
 
@@ -122,7 +122,7 @@ class CControlTarget: public CSpellFx
 		void	Create(EERIE_3D, float afBeta = 0);
 		void	Kill();
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
 };
 
 
@@ -162,7 +162,7 @@ class CMassIncinerate: public CSpellFx
 	public:
 		void	Create(EERIE_3D, float);
 		void	Update(unsigned long);
-		float	Render(LPDIRECT3DDEVICE7);
+		float	Render();
  
 };
 

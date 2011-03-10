@@ -1090,7 +1090,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans)
 
 	if (FORCE_IO_INDEX != -1)
 	{
-		io = AddInteractive(GDevice, dli->name, dli->ident, NO_MESH | NO_ON_LOAD);
+		io = AddInteractive( dli->name, dli->ident, NO_MESH | NO_ON_LOAD);
 		goto suite;
 	}
 
@@ -1105,7 +1105,7 @@ INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans)
 
 	ReplaceSpecifics(dli->name);
 
-	io = AddInteractive(GDevice, dli->name, dli->ident, NO_MESH | NO_ON_LOAD);
+	io = AddInteractive( dli->name, dli->ident, NO_MESH | NO_ON_LOAD);
 suite:
 	;
 
@@ -1181,11 +1181,11 @@ suite:
 				const char dirpath[] = "Graph\\Obj3D\\Textures\\";
 
 				if (io->ioflags & IO_ITEM)
-					io->obj = TheoToEerie_Fast(dirpath, io->filename, 0, GDevice);
+					io->obj = TheoToEerie_Fast(dirpath, io->filename, 0);
 				else if (io->ioflags & IO_NPC)
-					io->obj = TheoToEerie_Fast(dirpath, io->filename, TTE_NO_PHYSICS_BOX | TTE_NPC, GDevice);
+					io->obj = TheoToEerie_Fast(dirpath, io->filename, TTE_NO_PHYSICS_BOX | TTE_NPC);
 				else
-					io->obj = TheoToEerie_Fast(dirpath, io->filename, TTE_NO_PHYSICS_BOX, GDevice);
+					io->obj = TheoToEerie_Fast(dirpath, io->filename, TTE_NO_PHYSICS_BOX);
 
 				if (io->ioflags & IO_NPC)
 					EERIE_COLLISION_Cylinder_Create(io);

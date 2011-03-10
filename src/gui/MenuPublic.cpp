@@ -167,7 +167,6 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int 
 		}
 		else
 		{
-			GDevice = danaeApp.m_pFramework->GetD3DDevice();
 			DANAESIZX = danaeApp.m_pFramework->m_dwRenderWidth;
 			DANAESIZY = danaeApp.m_pFramework->m_dwRenderHeight;
 
@@ -185,13 +184,10 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int 
 		}
 	}
 
-	GDevice = danaeApp.m_pd3dDevice;
-
 	ARX_Text_Init();
 
 	if (ControlCinematique)
 	{
-		ControlCinematique->m_pd3dDevice = GDevice;
 		ActiveAllTexture(ControlCinematique);
 	}
 
@@ -213,7 +209,6 @@ void ARXMenu_Options_Video_SetFullscreen(bool _bEnable)
 
 	if (ControlCinematique)
 	{
-		ControlCinematique->m_pd3dDevice = GDevice;
 		ActiveAllTexture(ControlCinematique);
 	}
 }

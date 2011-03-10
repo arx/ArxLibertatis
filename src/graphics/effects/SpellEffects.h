@@ -100,7 +100,7 @@ class CSpellFx
 		virtual void	Create(EERIE_3D, EERIE_3D) {};
 		virtual void	Update(unsigned long) {};
 		void			Update(float);
-		virtual float	Render(LPDIRECT3DDEVICE7)
+		virtual float	Render()
 		{
 			return 1;
 		};

@@ -2916,7 +2916,7 @@ void CheckHit(INTERACTIVE_OBJ * io, float ratioaim)
 		ppos.z = io->pos.z;
 		pos.z = ppos.z + to.z;
 
-		if (DEBUGNPCMOVE) EERIEDrawTrue3DLine(GDevice, &ppos, &pos, D3DRGB(1.f, 0.f, 0.f));
+		if (DEBUGNPCMOVE) EERIEDrawTrue3DLine( &ppos, &pos, D3DRGB(1.f, 0.f, 0.f));
 
 		float dmg;
 

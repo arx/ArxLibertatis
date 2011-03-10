@@ -1046,7 +1046,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						File_Standardize(tex2, tex);
 						EERIE_3D last_angle;
 						memcpy(&last_angle, &io->angle, sizeof(EERIE_3D));
-						INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddInteractive(GDevice, tex.c_str(), -1); //AddItem(GDevice,tex);
+						INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddInteractive( tex.c_str(), -1); //AddItem(tex);
 
 						if (ioo != NULL)
 						{
@@ -2450,7 +2450,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 							if (FORBID_SCRIPT_IO_CREATION == 0)
 							{
-								ioo = AddItem(GDevice, tmptext.c_str(), IO_IMMEDIATELOAD);
+								ioo = AddItem( tmptext.c_str(), IO_IMMEDIATELOAD);
 
 								if (ioo)
 								{
@@ -5234,7 +5234,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 
 									if (FORBID_SCRIPT_IO_CREATION == 0)
 									{
-										INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddItem(GDevice, tex.c_str(), IO_IMMEDIATELOAD);
+										INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddItem( tex.c_str(), IO_IMMEDIATELOAD);
 
 										if (ioo != NULL)
 										{
@@ -5374,7 +5374,7 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 											multi = atoi(temp2.c_str());
 										}
 
-										INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddItem(GDevice, tex.c_str(), IO_IMMEDIATELOAD);
+										INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)AddItem( tex.c_str(), IO_IMMEDIATELOAD);
 										long xx, yy;
 
 										if ((ioo != NULL)
@@ -6213,11 +6213,11 @@ long ScriptEvent::send(EERIE_SCRIPT * es, long msg, const std::string& params, I
 						const char texpath[] = "Graph\\Obj3D\\Textures\\";
 
 						if (io->ioflags & IO_FIX)
-							io->obj = TheoToEerie_Fast(texpath, tex.c_str(), TTE_NO_NDATA | TTE_NO_PHYSICS_BOX, GDevice);
+							io->obj = TheoToEerie_Fast(texpath, tex.c_str(), TTE_NO_NDATA | TTE_NO_PHYSICS_BOX);
 						else if (io->ioflags & IO_NPC)
-							io->obj = TheoToEerie_Fast(texpath, tex.c_str(), TTE_NO_PHYSICS_BOX | TTE_NPC, GDevice);
+							io->obj = TheoToEerie_Fast(texpath, tex.c_str(), TTE_NO_PHYSICS_BOX | TTE_NPC);
 						else
-							io->obj = TheoToEerie_Fast(texpath, tex.c_str(), 0, GDevice);
+							io->obj = TheoToEerie_Fast(texpath, tex.c_str(), 0);
 
 						EERIE_COLLISION_Cylinder_Create(io);
 					}

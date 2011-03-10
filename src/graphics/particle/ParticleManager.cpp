@@ -153,7 +153,7 @@ void CParticleManager::Update(long _lTime)
 
 //-----------------------------------------------------------------------------
 
-void CParticleManager::Render(LPDIRECT3DDEVICE7 _lpD3DDevice)
+void CParticleManager::Render()
 {
 	int ilekel = 0;
 	list<CParticleSystem *>::iterator i;
@@ -161,7 +161,7 @@ void CParticleManager::Render(LPDIRECT3DDEVICE7 _lpD3DDevice)
 	for (i = listParticleSystem.begin(); i != listParticleSystem.end(); ++i)
 	{
 		CParticleSystem * p = *i;
-		p->Render(_lpD3DDevice);
+		p->Render();
 		ilekel++;
 	}
 }

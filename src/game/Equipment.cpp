@@ -238,7 +238,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				sprintf(path, "Graph\\Obj3D\\Textures\\%s.bmp", tweaker->tweakerinfo->skinchangeto);
 				TextureContainer * temp = MakeTCFromFile(path, 1);
 
-				if (temp) temp->Restore(GDevice);
+				if (temp) temp->Restore();
 
 				long mapidx = ObjectAddMap(io->obj, temp);
 
@@ -294,7 +294,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				sprintf(path, "Graph\\Obj3D\\Textures\\%s.bmp", tweaker->tweakerinfo->skinchangeto);
 				TextureContainer * temp = MakeTCFromFile(path, 1);
 
-				if (temp) temp->Restore(GDevice);
+				if (temp) temp->Restore();
 
 				long mapidx = ObjectAddMap(io->obj, temp);
 
@@ -350,7 +350,7 @@ void ARX_EQUIPMENT_RecreatePlayerMesh()
 				sprintf(path, "Graph\\Obj3D\\Textures\\%s.bmp", tweaker->tweakerinfo->skinchangeto);
 				TextureContainer * temp = MakeTCFromFile(path, 1);
 
-				if (temp) temp->Restore(GDevice);
+				if (temp) temp->Restore();
 
 				long mapidx = ObjectAddMap(io->obj, temp);
 

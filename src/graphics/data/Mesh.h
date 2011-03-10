@@ -768,7 +768,7 @@ void SetNextAnim(INTERACTIVE_OBJ * io,ANIM_HANDLE * ea,long layer=0,long loop=0)
 void AcquireLastAnim(INTERACTIVE_OBJ * io);
 void FinishAnim(INTERACTIVE_OBJ * io,ANIM_HANDLE * eanim);
 bool Visible(EERIE_3D * orgn, EERIE_3D * dest,EERIEPOLY * epp,EERIE_3D * hit);
-void EERIEDrawTrue3DLine(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col);
+void EERIEDrawTrue3DLine(EERIE_3D * orgn, EERIE_3D * dest, D3DCOLOR col);
 void FaceTarget(INTERACTIVE_OBJ * io);
 
 void DebugSphere(float x,float y,float z,float siz,long tim,D3DCOLOR color);
@@ -832,22 +832,19 @@ bool CreateUniqueIdent(char * pathh);
 //****************************************************************************
 // DRAWING FUNCTIONS START
 
-void DrawEERIEObjEx(		LPDIRECT3DDEVICE7 pd3dDevice,
-							EERIE_3DOBJ * eobj,
+void DrawEERIEObjEx(		EERIE_3DOBJ * eobj,
 							EERIE_3D * angle,
 							EERIE_3D  * pos,
 							EERIE_3D * scale,
 							EERIE_RGB * col
 						);
-void DrawEERIEObjExEx(LPDIRECT3DDEVICE7 pd3dDevice,
-						EERIE_3DOBJ * eobj,
+void DrawEERIEObjExEx(	EERIE_3DOBJ * eobj,
 						EERIE_3D * angle,
 						EERIE_3D  * pos,
 						EERIE_3D * scale,
 						int coll
 						);
-void DrawEERIEInter(		LPDIRECT3DDEVICE7 pd3dDevice,
-							EERIE_3DOBJ * eobj,
+void DrawEERIEInter(		EERIE_3DOBJ * eobj,
 							EERIE_3D * angle,
 							EERIE_3D  * pos,
 							INTERACTIVE_OBJ * io,
@@ -876,9 +873,9 @@ void EERIEAddPoly(D3DTLVERTEX * vert, D3DTLVERTEX * vert2, TextureContainer * te
 
 //****************************************************************************
 // RENDERING FUNCTIONS START
-void SETALPHABLEND(LPDIRECT3DDEVICE7 pd3dDevice,DWORD state);
-void SETTEXTURE0(LPDIRECT3DDEVICE7 pd3dDevice,IDirectDrawSurface7 * tex);
-void SETCULL(LPDIRECT3DDEVICE7 pd3dDevice,DWORD state);
+void SETALPHABLEND(DWORD state);
+void SETTEXTURE0(IDirectDrawSurface7 * tex);
+void SETCULL(DWORD state);
 // RENDERING FUNCTIONS END
 //****************************************************************************
 
@@ -978,7 +975,7 @@ EERIEPOLY * GetMinNextPoly(long i,long j,EERIEPOLY * ep);
 
 long GetVertexPos(INTERACTIVE_OBJ * io,long id,EERIE_3D * pos);
 void PrepareBackgroundNRMLs();
-void DrawInWorld(LPDIRECT3DDEVICE7 pd3dDevice);
+void DrawInWorld();
 long CountBkgVertex();
 void CreateInWorld();
 void EERIE_LIGHT_ChangeLighting();

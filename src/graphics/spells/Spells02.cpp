@@ -267,14 +267,14 @@ void CHeal::Update(unsigned long aulTime)
 }
 
 //---------------------------------------------------------------------
-float CHeal::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CHeal::Render()
 {
 	if (ulCurrentTime >= ulDuration)
 	{
 		return 0.f;
 	}
 
-	pPS->Render(m_pd3dDevice);
+	pPS->Render();
 
 	return 1;
 }
@@ -282,9 +282,7 @@ float CHeal::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-float CHarm::Render(LPDIRECT3DDEVICE7 device) {
-	
-	(void)device;
+float CHarm::Render() {
 	
 	return 0;
 }
@@ -332,9 +330,7 @@ void CArmor::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-float CArmor::Render(LPDIRECT3DDEVICE7 _pD3DDevice) {
-	
-	(void)_pD3DDevice;
+float CArmor::Render() {
 	
 	return 0;
 }
@@ -382,9 +378,7 @@ void CLowerArmor::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-float CLowerArmor::Render(LPDIRECT3DDEVICE7 _pD3DDevice) {
-	
-	(void)_pD3DDevice;
+float CLowerArmor::Render() {
 	
 	return 0;
 }

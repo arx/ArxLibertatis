@@ -513,7 +513,7 @@ bool ForceNPC_Above_Ground(INTERACTIVE_OBJ * io)
 	return false;
 }
 
-EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * file, long flag, LPDIRECT3DDEVICE7 pd3dDevice)
+EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * file, long flag)
 {
 	EERIE_3DOBJ * ret = new EERIE_3DOBJ();
 
@@ -544,7 +544,7 @@ EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * file, long fla
 
 		if (adr)
 		{
-			ret = TheoToEerie(adr, FileSize, texpath, file, flag, pd3dDevice, flag | TTE_NO_RESTORE); //SLOWLOAD));
+			ret = TheoToEerie(adr, FileSize, texpath, file, flag, flag | TTE_NO_RESTORE); //SLOWLOAD));
 
 			if (!ret)
 			{
@@ -1302,11 +1302,11 @@ void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const std::string& temp)
         }
 
         if (io->ioflags & IO_FIX)
-            io->obj = TheoToEerie_Fast(tex1, tex.c_str(), TTE_NO_NDATA | TTE_NO_PHYSICS_BOX, GDevice);
+            io->obj = TheoToEerie_Fast(tex1, tex.c_str(), TTE_NO_NDATA | TTE_NO_PHYSICS_BOX);
         else if (io->ioflags & IO_NPC)
-            io->obj = TheoToEerie_Fast(tex1, tex.c_str(), TTE_NO_PHYSICS_BOX | TTE_NPC, GDevice);
+            io->obj = TheoToEerie_Fast(tex1, tex.c_str(), TTE_NO_PHYSICS_BOX | TTE_NPC);
         else
-            io->obj = TheoToEerie_Fast(tex1, tex.c_str(), 0, GDevice);
+            io->obj = TheoToEerie_Fast(tex1, tex.c_str(), 0);
 
         EERIE_COLLISION_Cylinder_Create(io);
     }
@@ -1737,8 +1737,7 @@ void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const std::string& s1)
 	SetExt(icontochange, ".bmp");
 
 	D3DTextr_CreateTextureFromFile(icontochange, 0, D3DTEXTR_NO_REFINEMENT, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
-
-	if (GDevice) D3DTextr_Restore(icontochange.c_str(), GDevice);
+	D3DTextr_Restore(icontochange.c_str());
 
 	TextureContainer * tc;
 	tc = D3DTextr_GetSurfaceContainer(icontochange.c_str());
@@ -1747,8 +1746,7 @@ void ARX_INTERACTIVE_TWEAK_Icon(INTERACTIVE_OBJ * io, const std::string& s1)
 	{
 		icontochange = "Graph\\Interface\\misc\\Default[Icon].bmp";
 		D3DTextr_CreateTextureFromFile(icontochange, 0, D3DTEXTR_NO_REFINEMENT);
-
-		if (GDevice) D3DTextr_Restore(icontochange.c_str(), GDevice);
+		D3DTextr_Restore(icontochange.c_str());
 
 		tc = D3DTextr_GetSurfaceContainer(icontochange.c_str());
 	}
@@ -1941,7 +1939,7 @@ INTERACTIVE_OBJ * CreateFreeInter(long num)
 INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src)
 {
 	INTERACTIVE_OBJ * dest;
-	dest = AddItem(GDevice, src->filename);
+	dest = AddItem( src->filename);
 
 	if (!dest) return NULL;
 
@@ -2421,7 +2419,7 @@ void ReleaseInter(INTERACTIVE_OBJ * io)
 // Creates an IO Ident for added object if necessary
 // flags can be IO_IMMEDIATELOAD (1) to FORCE loading
 //***********************************************************************************
-INTERACTIVE_OBJ * AddInteractive(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long id, long flags)
+INTERACTIVE_OBJ * AddInteractive(const char * file, long id, long flags)
 {
 	INTERACTIVE_OBJ * io = NULL;
 	std::string ficc;
@@ -2429,11 +2427,11 @@ INTERACTIVE_OBJ * AddInteractive(LPDIRECT3DDEVICE7 pd3dDevice, const char * file
 	MakeUpcase(ficc);
 
 	if (IsIn(ficc, "ITEMS"))
-		io = AddItem(pd3dDevice, file, flags);
+		io = AddItem(file, flags);
 	else if (IsIn(ficc, "NPC"))
 		io = AddNPC(file, flags);
 	else if (IsIn(ficc, "FIX"))
-		io = AddFix(pd3dDevice, file, flags);
+		io = AddFix(file, flags);
 	else if (IsIn(ficc, "CAMERA"))
 		io = AddCamera(file);
 	else if (IsIn(ficc, "MARKER"))
@@ -2521,7 +2519,7 @@ void Prepare_SetWeapon(INTERACTIVE_OBJ * io, const std::string& temp)
 	std::string tx = tex1 + '\\' + temp + '\\' + temp + ".teo";
 	File_Standardize(tx, tex);
 	
-	io->_npcdata->weapon = AddItem(GDevice, tex.c_str(), IO_IMMEDIATELOAD);
+	io->_npcdata->weapon = AddItem( tex.c_str(), IO_IMMEDIATELOAD);
 
 	INTERACTIVE_OBJ * ioo = (INTERACTIVE_OBJ *)io->_npcdata->weapon;
 
@@ -2575,7 +2573,7 @@ void LinkObjToMe(INTERACTIVE_OBJ * io, INTERACTIVE_OBJ * io2, const char * attac
 // AddFix
 // Adds a FIX INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long flags)
+INTERACTIVE_OBJ * AddFix(const char * file, long flags)
 {
 	std::string tex1 = file;
 	std::string texscript = file;
@@ -2650,7 +2648,7 @@ INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
 		else
 		{
 			const char texdir[] = "Graph\\Obj3D\\Textures\\";
-			io->obj = TheoToEerie_Fast(texdir, tex1.c_str(), TTE_NO_PHYSICS_BOX, GDevice);
+			io->obj = TheoToEerie_Fast(texdir, tex1.c_str(), TTE_NO_PHYSICS_BOX);
 		}
 	}
 
@@ -2662,7 +2660,7 @@ INTERACTIVE_OBJ * AddFix(LPDIRECT3DDEVICE7 pd3dDevice, const char * file, long f
 
 	if (tc)
 	{
-		if (!tc->m_pddsSurface) tc->Restore(pd3dDevice);
+		if (!tc->m_pddsSurface) tc->Restore();
 
 		unsigned long w = tc->m_dwWidth >> 5;
 		unsigned long h = tc->m_dwHeight >> 5;
@@ -3127,7 +3125,7 @@ INTERACTIVE_OBJ * AddNPC(const char * file, long flags)
 		else
 		{
 			const char texpath[] = "Graph\\Obj3D\\Textures\\";
-			io->obj = TheoToEerie_Fast(texpath, tex1.c_str(), TTE_NO_PHYSICS_BOX | TTE_NPC, GDevice);
+			io->obj = TheoToEerie_Fast(texpath, tex1.c_str(), TTE_NO_PHYSICS_BOX | TTE_NPC);
 		}
 	}
 
@@ -3367,7 +3365,7 @@ extern long SP_DBG;
 // AddItem
 // Adds an ITEM INTERACTIVE OBJECT to the Scene
 //***********************************************************************************
-INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fil, long flags)
+INTERACTIVE_OBJ * AddItem(const std::string& fil, long flags)
 {
 	std::string tex1;
 	std::string tex2;
@@ -3485,7 +3483,7 @@ INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fil, 
  
 			const char texdir[] = "Graph\\Obj3D\\Textures\\";
 
-			io->obj = TheoToEerie_Fast(texdir, tex1.c_str(), 0, GDevice);
+			io->obj = TheoToEerie_Fast(texdir, tex1.c_str(), 0);
 		}
 	}
 
@@ -3505,14 +3503,14 @@ INTERACTIVE_OBJ * AddItem(LPDIRECT3DDEVICE7 pd3dDevice, const std::string& fil, 
 	{
 		tex2 = "Graph\\Interface\\misc\\Default[Icon].bmp"; // TODO copy can be avoided
 		D3DTextr_CreateTextureFromFile(tex2, 0, D3DTEXTR_NO_REFINEMENT);
-		D3DTextr_Restore(tex2.c_str(), pd3dDevice);
+		D3DTextr_Restore(tex2.c_str());
 		tc = D3DTextr_GetSurfaceContainer(tex2.c_str());
 	}
 
 	if (tc)
 	{
 		if (!tc->m_pddsSurface)
-			tc->Restore(pd3dDevice);
+			tc->Restore();
 
 		unsigned long w = tc->m_dwWidth >> 5;
 		unsigned long h = tc->m_dwHeight >> 5;
@@ -4389,11 +4387,11 @@ extern CDirectInput * pGetInfoDirectInput;
 extern TextureContainer TexMetal;
 extern long FINAL_COMMERCIAL_DEMO;
 bool bRenderInterList = true; //false;
-void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to) {
+void RenderInter(float from, float to) {
 
-	SETTEXTUREWRAPMODE(pd3dDevice, D3DTADDRESS_CLAMP);
+	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
 	float val = -0.6f;
-	pd3dDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD)(&val)));
+	GDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD)(&val)));
 	EERIE_3D temp;
 	EERIEMATRIX mat;
 	INTER_DRAW = 0;
@@ -4553,7 +4551,7 @@ void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to) {
 					flgs = 4;
 				else flgs = 0;
 
-				EERIEDrawAnimQuat(pd3dDevice,	io->obj,
+				EERIEDrawAnimQuat(	io->obj,
 				                  &io->animlayer[0],
 				                  &temp, &pos, diff, io, flgs);
 				LOOK_AT_TARGET = 0;
@@ -4621,11 +4619,11 @@ void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to) {
 						if ((io->obj->pbox)
 						        &&	(io->obj->pbox->active))
 						{
-							DrawEERIEInterMatrix(pd3dDevice, io->obj, &mat, &io->pos, io);
+							DrawEERIEInterMatrix(io->obj, &mat, &io->pos, io);
 						}
 						else
 						{
-							DrawEERIEInter(pd3dDevice, io->obj, &temp, &io->pos, io);
+							DrawEERIEInter(io->obj, &temp, &io->pos, io);
 						}
 
 						if (DESTROYED_DURING_RENDERING)
@@ -4651,19 +4649,19 @@ void RenderInter(LPDIRECT3DDEVICE7 pd3dDevice, float from, float to) {
 
 				if ((io->bbox1.x != io->bbox2.x) && (io->bbox1.x < DANAESIZX))
 				{
-					EERIEDraw2DLine(pd3dDevice, io->bbox1.x, io->bbox1.y, io->bbox2.x, io->bbox1.y, 0.01f, color);
-					EERIEDraw2DLine(pd3dDevice, io->bbox2.x, io->bbox1.y, io->bbox2.x, io->bbox2.y, 0.01f, color);
-					EERIEDraw2DLine(pd3dDevice, io->bbox2.x, io->bbox2.y, io->bbox1.x, io->bbox2.y, 0.01f, color);
-					EERIEDraw2DLine(pd3dDevice, io->bbox1.x, io->bbox2.y, io->bbox1.x, io->bbox1.y, 0.01f, color);
+					EERIEDraw2DLine(io->bbox1.x, io->bbox1.y, io->bbox2.x, io->bbox1.y, 0.01f, color);
+					EERIEDraw2DLine(io->bbox2.x, io->bbox1.y, io->bbox2.x, io->bbox2.y, 0.01f, color);
+					EERIEDraw2DLine(io->bbox2.x, io->bbox2.y, io->bbox1.x, io->bbox2.y, 0.01f, color);
+					EERIEDraw2DLine(io->bbox1.x, io->bbox2.y, io->bbox1.x, io->bbox1.y, 0.01f, color);
 				}
 			}
 		}
 	}
 
 
-	SETTEXTUREWRAPMODE(pd3dDevice, D3DTADDRESS_WRAP);
+	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
 	val = -0.3f;
-	pd3dDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD)(&val)));
+	GDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, *((LPDWORD)(&val)));
 }
 
 void ARX_INTERACTIVE_DestroyIO(INTERACTIVE_OBJ * ioo)

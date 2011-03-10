@@ -131,7 +131,7 @@ void EERIE_MESH_TWEAK_Skin(EERIE_3DOBJ * obj, const string & s1, const string & 
 			}
 		}
 
-		tex->Restore(GDevice);
+		tex->Restore();
 		TextureContainer * tex2 = FindTexture(skintochange);
 
 		if (tex2)
@@ -789,7 +789,7 @@ static EERIE_3DOBJ * CreateIntermediaryMesh(const EERIE_3DOBJ * obj1, const EERI
 	// Look for Vertices Without Group...
 	for (size_t i = 0; i < work->texturecontainer.size(); i++)
 	{
-		work->texturecontainer[i]->Restore(GDevice);
+		work->texturecontainer[i]->Restore();
 	}
 
 	work->vertexlist3 = work->vertexlist;
@@ -868,7 +868,7 @@ void EERIE_MESH_TWEAK_Do(INTERACTIVE_OBJ * io, long tw, const string & _path)
 						TextureContainer * tc = tobj->texturecontainer[tobj->facelist[i].texid];
 
 						if (!tc->m_pddsSurface)
-							tc->Restore(GDevice);
+							tc->Restore();
 					}
 				}
 

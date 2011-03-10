@@ -907,7 +907,7 @@ bool Cinematic::ActiveTexture(int id)
 
 		if (!tc) return false;
 
-		if (tc->Restore(GDevice) != S_OK) return false;	
+		if (tc->Restore() != S_OK) return false;	
 
 		if (tc->CopyBitmapToSurface(cb->hbitmap, mat->bitmapdepx, mat->bitmapdepy, mat->bitmapw, mat->bitmaph) != S_OK) return false;
 

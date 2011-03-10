@@ -359,7 +359,7 @@ void CMagicMissile::Update(unsigned long aulTime)
 }
 
 //-----------------------------------------------------------------------------
-float CMagicMissile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CMagicMissile::Render()
 {
 	int i = 0;
  
@@ -377,19 +377,19 @@ float CMagicMissile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	}
 
 	// Set Appropriate Renderstates -------------------------------------------
-	SETCULL(m_pd3dDevice, D3DCULL_NONE);
-	SETZWRITE(m_pd3dDevice, false);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(m_pd3dDevice, true);
+	SETCULL(D3DCULL_NONE);
+	SETZWRITE(false);
+	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
+	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	SETALPHABLEND(true);
 
 	// Set Texture ------------------------------------------------------------
 	if (tex_mm && tex_mm->m_pddsSurface)
 	{
 		if ((spells[spellinstance].caster == 0) && (cur_mr == 3))
-			SETTC(m_pd3dDevice, NULL);
+			SETTC(NULL);
 		else
-			SETTC(m_pd3dDevice, tex_mm);
+			SETTC(tex_mm);
 	}
 
 	// ------------------------------------------------------------------------
@@ -523,7 +523,7 @@ float CMagicMissile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	Vector_Init(&stitescale, 1, 1, 1);
 	{
 		if ((smissile))
-			DrawEERIEObjEx(m_pd3dDevice, smissile, &stiteangle, &stitepos, &stitescale, &stitecolor);
+			DrawEERIEObjEx(smissile, &stiteangle, &stitepos, &stitescale, &stitecolor);
 	}
 
 	Vector_Copy(&eCurPos, &lastpos);
@@ -810,7 +810,7 @@ void CMultiMagicMissile::Update(unsigned long _ulTime)
 }
 
 //-----------------------------------------------------------------------------
-float CMultiMagicMissile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CMultiMagicMissile::Render()
 {
 	long nbmissiles	= 0;
  
@@ -821,7 +821,7 @@ float CMultiMagicMissile::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		{
 			if (pTab[i])
 			{
-				float fa = pTab[i]->Render(m_pd3dDevice);
+				float fa = pTab[i]->Render();
 
 				CMagicMissile * pMM = (CMagicMissile *) pTab[i];
 
@@ -1017,9 +1017,7 @@ void CDoze::AddLightDoze(int aiLight)
 }
 
 //-----------------------------------------------------------------------------
-float CIgnit::Render(LPDIRECT3DDEVICE7 device) {
-	
-	(void)device;
+float CIgnit::Render() {
 	
 	int nb;
 
@@ -1086,7 +1084,7 @@ void GenereArcElectrique(EERIE_3D * pos, EERIE_3D * end, EERIE_3D * tabdef, int 
 }
 
 //-----------------------------------------------------------------------------
-void DrawArcElectrique(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D * tabdef, int nbseg, TextureContainer * tex, float fBeta, int tsp)
+void DrawArcElectrique(EERIE_3D * tabdef, int nbseg, TextureContainer * tex, float fBeta, int tsp)
 {
 	D3DTLVERTEX v[4];
 	D3DTLVERTEX v2[4];
@@ -1095,12 +1093,12 @@ void DrawArcElectrique(LPDIRECT3DDEVICE7 m_pd3dDevice, EERIE_3D * tabdef, int nb
 
 	//-------------------------------------------------------------------------
 	// rendu
-	//	SETTC(m_pd3dDevice,NULL);
-	SETCULL(m_pd3dDevice, D3DCULL_NONE);
+	//	SETTC(NULL);
+	SETCULL(D3DCULL_NONE);
 
 	if (tex && tex->m_pddsSurface)
 	{
-		SETTC(m_pd3dDevice, tex);
+		SETTC(tex);
 	}
 
 	v2[0].color = v2[1].color = v2[2].color = v2[3].color = RGBA_MAKE(tsp, tsp, tsp, 255);
@@ -1240,7 +1238,7 @@ void CPortal::AddNewEclair(EERIE_3D * endpos, int nbseg, int duration, int numpt
 	}
 }
 /*--------------------------------------------------------------------------*/
-void CPortal::DrawAllEclair(LPDIRECT3DDEVICE7 device)
+void CPortal::DrawAllEclair()
 {
 	int nb = 256;
 
@@ -1254,7 +1252,7 @@ void CPortal::DrawAllEclair(LPDIRECT3DDEVICE7 device)
 
 			if (a < 0.f) a = 0.f;
 
-			DrawArcElectrique(device, this->tabeclair[nb].seg, this->tabeclair[nb].nbseg, this->te, rnd() * 360.f, (int)(255.f * a));
+			DrawArcElectrique(this->tabeclair[nb].seg, this->tabeclair[nb].nbseg, this->te, rnd() * 360.f, (int)(255.f * a));
 
 			if (!ARXPausedTimer) this->tabeclair[nb].currduration += this->currframe;
 
@@ -1327,13 +1325,13 @@ void CPortal::Update(unsigned long _ulTime)
 	}
 }
 /*--------------------------------------------------------------------------*/
-float CPortal::Render(LPDIRECT3DDEVICE7 device)
+float CPortal::Render()
 {
-	SETALPHABLEND(device, true);
-	SETZWRITE(device, false);
+	SETALPHABLEND(true);
+	SETZWRITE(false);
 
-	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
+	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 
 	//calcul sphere
 	int			nb = this->spherenbpt;
@@ -1390,12 +1388,12 @@ float CPortal::Render(LPDIRECT3DDEVICE7 device)
 
 
 	//affichage de la sphere back
-	SETCULL(device, D3DCULL_CW);
-	device->SetTexture(0, NULL);
-	device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->sphered3d, this->spherenbpt, (unsigned short *)this->sphereind, this->spherenbfaces * 3, 0);
+	SETCULL(D3DCULL_CW);
+	GDevice->SetTexture(0, NULL);
+	GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->sphered3d, this->spherenbpt, (unsigned short *)this->sphereind, this->spherenbfaces * 3, 0);
 
 	//affichage eclair
-	this->DrawAllEclair(device);
+	this->DrawAllEclair();
 
 	//affichage des particules � l'interieur
 	if (rnd() > .25f)
@@ -1434,15 +1432,15 @@ float CPortal::Render(LPDIRECT3DDEVICE7 device)
 	}
 
 	//affichage de la sphere front
-	SETCULL(device, D3DCULL_CCW);
-	device->SetTexture(0, NULL);
-	device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->sphered3d, this->spherenbpt, (unsigned short *)this->sphereind, this->spherenbfaces * 3, 0);
+	SETCULL(D3DCULL_CCW);
+	GDevice->SetTexture(0, NULL);
+	GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->sphered3d, this->spherenbpt, (unsigned short *)this->sphereind, this->spherenbfaces * 3, 0);
 
-	device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
-	SETALPHABLEND(device, false);
-	SETCULL(device, D3DCULL_NONE);
-	SETZWRITE(device, true);
+	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
+	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
+	SETALPHABLEND(false);
+	SETCULL(D3DCULL_NONE);
+	SETZWRITE(true);
 
 	return 0;
 }

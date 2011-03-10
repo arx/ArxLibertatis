@@ -303,7 +303,7 @@ void CSummonCreature::Split(D3DTLVERTEX * v, int a, int b, float yo)
 }
 
 //-----------------------------------------------------------------------------
-void CSummonCreature::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
+void CSummonCreature::RenderFissure()
 {
 	int i;
 	float ff;
@@ -350,7 +350,7 @@ void CSummonCreature::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	//-------------------------------------------------------------------------
 	// rendu de la fissure
-	SETALPHABLEND(m_pd3dDevice, false);
+	SETALPHABLEND(false);
 	vr[0].color = vr[1].color = vr[2].color = vr[3].color = D3DRGB(0, 0, 0);
 
 	if (bIntro)
@@ -388,7 +388,7 @@ void CSummonCreature::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 
 	//-------------------------------------------------------------------------
 	// rendu de la bordure
-	SETALPHABLEND(m_pd3dDevice, true);
+	SETALPHABLEND(true);
 	vr[0].color = vr[1].color = D3DRGB(0, 0, 0);
 	vr[2].color = vr[3].color = D3DRGB(fColorBorder[0], fColorBorder[1], fColorBorder[2]);
 
@@ -437,12 +437,12 @@ void CSummonCreature::RenderFissure(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	// blend additif ou mul
 	// smooth sur les cot�s ou pas ..
 	// texture sympa avec glow au milieu ou uv wrap
-	SETALPHABLEND(m_pd3dDevice, true);
+	SETALPHABLEND(true);
 
 	if (tex_light && tex_light->m_pddsSurface)
 	{
-		SETTEXTUREWRAPMODE(m_pd3dDevice, D3DTADDRESS_MIRROR);
-		SETTC(m_pd3dDevice, tex_light);
+		SETTEXTUREWRAPMODE(D3DTADDRESS_MIRROR);
+		SETTC(tex_light);
 	}
 
 	target.sx = eSrc.x + -fBetaRadSin * (1.5f * sizeF); 
@@ -541,18 +541,18 @@ void CSummonCreature::Update(unsigned long _ulTime)
 
 //-----------------------------------------------------------------------------
 // rendu de la d�chirure spatio temporelle
-float CSummonCreature::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CSummonCreature::Render()
 {
 	if (ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro)) return 0.f;
 
-	SETTC(m_pd3dDevice, NULL);
-	SETCULL(m_pd3dDevice, D3DCULL_NONE);
-	SETZWRITE(m_pd3dDevice, false);
+	SETTC(NULL);
+	SETCULL(D3DCULL_NONE);
+	SETZWRITE(false);
 
-	SETTEXTUREWRAPMODE(m_pd3dDevice, D3DTADDRESS_CLAMP);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(m_pd3dDevice, true);
+	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
+	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
+	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	SETALPHABLEND(true);
 
 	//-------------------------------------------------------------------------
 	fTexWrap += 0.02f;
@@ -592,12 +592,12 @@ float CSummonCreature::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		}
 	}
 
-	SETALPHABLEND(m_pd3dDevice, false);
-	RenderFissure(m_pd3dDevice);
+	SETALPHABLEND(false);
+	RenderFissure();
 
-	SETZWRITE(m_pd3dDevice, true);
-	SETALPHABLEND(m_pd3dDevice, false);
-	SETTEXTUREWRAPMODE(m_pd3dDevice, D3DTADDRESS_WRAP);
+	SETZWRITE(true);
+	SETALPHABLEND(false);
+	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
 
 	return (fSizeIntro / end);
 }
@@ -833,13 +833,13 @@ void CIncinerate::Update(unsigned long _ulTime)
 }
 
 //---------------------------------------------------------------------
-float CIncinerate::Render(LPDIRECT3DDEVICE7 _pD3DDevice)
+float CIncinerate::Render()
 {
 	int i = 0;
 
-	SETCULL(_pD3DDevice, D3DCULL_NONE);
-	SETZWRITE(_pD3DDevice, false);
-	SETALPHABLEND(_pD3DDevice, true);
+	SETCULL(D3DCULL_NONE);
+	SETZWRITE(false);
+	SETALPHABLEND(true);
 	
 	iMax ++;
 	float x = eSrc.x + (eTarget.x - eSrc.x) * (ulCurrentTime * fOneOnDuration);
@@ -855,10 +855,10 @@ float CIncinerate::Render(LPDIRECT3DDEVICE7 _pD3DDevice)
 		d.x = tv1a[i+1].sx;
 		d.y = tv1a[i+1].sy;
 		d.z = tv1a[i+1].sz;
-		EERIEDraw3DLine(_pD3DDevice, &s, &d, 0xFFFF0000);
+		EERIEDraw3DLine(&s, &d, 0xFFFF0000);
 	}
 
-	SETALPHABLEND(_pD3DDevice, true);
+	SETALPHABLEND(true);
 
 	EERIE_3D stiteangle;
 	EERIE_3D stitepos;
@@ -878,11 +878,11 @@ float CIncinerate::Render(LPDIRECT3DDEVICE7 _pD3DDevice)
 	stitecolor.g = 1;
 	stitecolor.b = 1;
 
-	SETCULL(_pD3DDevice, D3DCULL_NONE);
-	SETZWRITE(_pD3DDevice, false);
-	SETALPHABLEND(_pD3DDevice, true);
+	SETCULL(D3DCULL_NONE);
+	SETZWRITE(false);
+	SETALPHABLEND(true);
 
-	pPSStream.Render(_pD3DDevice);
+	pPSStream.Render();
 
 	return 1;
 }
@@ -954,7 +954,7 @@ void CNegateMagic::Update(unsigned long _ulTime)
 }
 
 //---------------------------------------------------------------------
-float CNegateMagic::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
+float CNegateMagic::Render()
 {
 	int i = 0;
 
@@ -980,17 +980,17 @@ float CNegateMagic::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 		return 0.f;
 	}
 
-	SETZWRITE(m_pd3dDevice, false);
-	SETALPHABLEND(m_pd3dDevice, true);
+	SETZWRITE(false);
+	SETALPHABLEND(true);
 
 	if (tex_sol && tex_sol->m_pddsSurface)
 	{
-		SETTC(m_pd3dDevice, tex_sol);
+		SETTC(tex_sol);
 	}
 
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(m_pd3dDevice, true);
+	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
+	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	SETALPHABLEND(true);
 
 	fSize = ulCurrentTime * fOneOnDuration * 200;
  
@@ -1051,7 +1051,7 @@ float CNegateMagic::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	stitepos.y = y;
 	stitepos.z = z;
 
-	SETALPHABLEND(m_pd3dDevice, true);
+	SETALPHABLEND(true);
 
 	stiteangle.b = -stiteangle.b;
 	stitecolor.r = 0.4f;
@@ -1060,16 +1060,16 @@ float CNegateMagic::Render(LPDIRECT3DDEVICE7 m_pd3dDevice)
 	stitescale.x = 3.f;
 	stitescale.y = 3.f;
 	stitescale.z = 3.f;
-	DrawEERIEObjEx(m_pd3dDevice, ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	m_pd3dDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
+	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
+	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 	stitecolor.r = 0.5f;
 	stitecolor.g = 0.f;
 	stitecolor.b = 0.5f;
 	stitescale.x = 3.1f;
 	stitescale.y = 3.1f;
 	stitescale.z = 3.1f;
-	DrawEERIEObjEx(m_pd3dDevice, ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
+	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
 
 	return 1;
 }
@@ -1123,7 +1123,7 @@ void CMassParalyse::Update(unsigned long _ulTime)
 }
 
 //----------------------------------------------------------------------
-float CMassParalyse::Render(LPDIRECT3DDEVICE7 device)
+float CMassParalyse::Render()
 {
 	if (ulCurrentTime > ulDuration) return 0;
 
@@ -1131,7 +1131,7 @@ float CMassParalyse::Render(LPDIRECT3DDEVICE7 device)
 
 	while (nb--)
 	{
-		(tabparalyse[nb].paralyse)->Render(device);
+		(tabparalyse[nb].paralyse)->Render();
 	}
 
 	return 0;

@@ -2041,7 +2041,7 @@ bool TakeFromInventory(EERIE_S2D * pos)
 				{
 					if (io->_itemdata->count - 1 > 0)
 					{
-						ioo = AddItem(GDevice, io->filename);
+						ioo = AddItem( io->filename);
 						MakeTemporaryIOIdent(ioo);
 						ioo->show = SHOW_FLAG_NOT_DRAWN;
 						ioo->_itemdata->count = 1;

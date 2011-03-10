@@ -325,7 +325,6 @@ protected:
 public:
 	
 	LPDIRECTDRAW7 m_pDD;
-	LPDIRECT3DDEVICE7 m_pd3dDevice;
 	LPDIRECTDRAWSURFACE7 m_pddsRenderTarget;
 	LPDIRECTDRAWSURFACE7 m_pddsRenderTargetLeft;	// For stereo modes
 	DDSURFACEDESC2 m_ddsdRenderTarget;
@@ -421,6 +420,6 @@ bool OKBox(const char * text, const char * title);
 
 void CalcFPS(bool reset = false);
 
-void SetZBias(const LPDIRECT3DDEVICE7, int);
+void SetZBias(int);
 
 #endif // ARX_CORE_APPLICATION_H

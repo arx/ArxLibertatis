@@ -194,29 +194,26 @@ void EERIE_CreateMatriceProj(float _fWidth, float _fHeight, float _fFOV, float _
 	ProjectionMatrix._43 = (-Q * fNearPlane);
 	ProjectionMatrix._34 = 1.f;
 
-	if (GDevice)
-	{
-		D3DMATRIX mat;
-		mat._11 = 1.f;
-		mat._12 = 0.f;
-		mat._13 = 0.f;
-		mat._14 = 0.f;
-		mat._21 = 0.f;
-		mat._22 = 1.f;
-		mat._23 = 0.f;
-		mat._24 = 0.f;
-		mat._31 = 0.f;
-		mat._32 = 0.f;
-		mat._33 = 1.f;
-		mat._34 = 0.f;
-		mat._41 = 0.f;
-		mat._42 = 0.f;
-		mat._43 = 0.f;
-		mat._44 = 1.f;
-		GDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
-		GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &mat);
-		GDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &ProjectionMatrix);
-	}
+	D3DMATRIX mat;
+	mat._11 = 1.f;
+	mat._12 = 0.f;
+	mat._13 = 0.f;
+	mat._14 = 0.f;
+	mat._21 = 0.f;
+	mat._22 = 1.f;
+	mat._23 = 0.f;
+	mat._24 = 0.f;
+	mat._31 = 0.f;
+	mat._32 = 0.f;
+	mat._33 = 1.f;
+	mat._34 = 0.f;
+	mat._41 = 0.f;
+	mat._42 = 0.f;
+	mat._43 = 0.f;
+	mat._44 = 1.f;
+	GDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+	GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &mat);
+	GDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &ProjectionMatrix);
 
 	ProjectionMatrix._11 *= _fWidth * .5f;
 	ProjectionMatrix._22 *= _fHeight * .5f;
@@ -1183,7 +1180,6 @@ long GetVertexPos(INTERACTIVE_OBJ * io, long id, EERIE_3D * pos)
 
 long EERIEDrawnPolys = 0;
 
-extern LPDIRECT3DDEVICE7 GDevice;
 extern EERIE_CAMERA * Kam;
 
 //*************************************************************************************
@@ -3302,7 +3298,7 @@ long CountBkgVertex()
 
 //*************************************************************************************
 //*************************************************************************************
-void DrawEERIEObjEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
+void DrawEERIEObjEx(EERIE_3DOBJ * eobj,
 					EERIE_3D * angle, EERIE_3D  * pos, EERIE_3D * scale, EERIE_RGB * col)
 {
 	if (eobj == NULL) return;
@@ -3365,16 +3361,16 @@ void DrawEERIEObjEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 		if ((eobj->facelist[i].facetype == 0)
 				|| (eobj->texturecontainer[eobj->facelist[i].texid] == NULL))
 		{
-			SETTC(pd3dDevice , NULL);
+			SETTC(NULL);
 		}
 		else
 		{
-			SETTC(pd3dDevice, eobj->texturecontainer[eobj->facelist[i].texid]);
+			SETTC(eobj->texturecontainer[eobj->facelist[i].texid]);
 		}
 
 		if (eobj->facelist[i].facetype & POLY_DOUBLESIDED)
-			SETCULL(pd3dDevice, D3DCULL_NONE);
-		else SETCULL(pd3dDevice, D3DCULL_CW);
+			SETCULL(D3DCULL_NONE);
+		else SETCULL(D3DCULL_CW);
 
 		ARX_DrawPrimitive_SoftClippZ(&vert_list[0],
 									 &vert_list[1],
@@ -3384,7 +3380,7 @@ void DrawEERIEObjEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 //*************************************************************************************
 //routine qui gere l'alpha au vertex SEB
 //*************************************************************************************
-void DrawEERIEObjExEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
+void DrawEERIEObjExEx(EERIE_3DOBJ * eobj,
 					  EERIE_3D * angle, EERIE_3D  * pos, EERIE_3D * scale, int coll)
 {
 	if (eobj == NULL) return;
@@ -3446,16 +3442,16 @@ void DrawEERIEObjExEx(LPDIRECT3DDEVICE7 pd3dDevice, EERIE_3DOBJ * eobj,
 		if ((eobj->facelist[i].facetype == 0)
 				|| (eobj->texturecontainer[eobj->facelist[i].texid] == NULL))
 		{
-			SETTC(pd3dDevice , NULL);
+			SETTC(NULL);
 		}
 		else
 		{
-			SETTC(pd3dDevice, eobj->texturecontainer[eobj->facelist[i].texid]);
+			SETTC(eobj->texturecontainer[eobj->facelist[i].texid]);
 		}
 
 		if (eobj->facelist[i].facetype & POLY_DOUBLESIDED)
-			SETCULL(pd3dDevice, D3DCULL_NONE);
-		else SETCULL(pd3dDevice, D3DCULL_CW);
+			SETCULL(D3DCULL_NONE);
+		else SETCULL(D3DCULL_CW);
 
 		ARX_DrawPrimitive_SoftClippZ(&vert_list[0],
 									 &vert_list[1],
@@ -3823,7 +3819,7 @@ bool FastSceneLoad(const char * partial_path)
 		sprintf(fic, "%s", ftc->fic);
 		ftc->temp = D3DTextr_CreateTextureFromFile(fic, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
 
-		if ((ftc->temp) && (GDevice) && (ftc->temp->m_pddsSurface == NULL)) ftc->temp->Restore(GDevice);
+		if ((ftc->temp) && (ftc->temp->m_pddsSurface == NULL)) ftc->temp->Restore();
 
 		pos += sizeof(FAST_TEXTURE_CONTAINER);
 	}
