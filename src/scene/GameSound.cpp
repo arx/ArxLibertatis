@@ -1390,25 +1390,17 @@ static void ARX_SOUND_CreateEnvironments()
 {
 	if (FINAL_RELEASE)
 	{
-		vector<PakDirectory *> *pvDirectory = NULL;
-		
 		const char PAK_SFX[] = "sfx.pak";
 		
 		if (!pPakManager) pPakManager = new PakManager;
 
 		if (!pPakManager->AddPak(PAK_SFX)) return;
 
-		pvDirectory = pPakManager->ExistDirectory(ARX_SOUND_PATH_ENVIRONMENT);
-
-		if (!pvDirectory)
-		{
-			//pPakManager->RemovePak(PAK_SFX);
-			return;
-		}
+		vector<PakDirectory*> directories;
+		pPakManager->GetDirectories(ARX_SOUND_PATH_ENVIRONMENT, directories);
 
 		vector<PakDirectory *>::iterator iv;
-
-		for (iv = pvDirectory->begin(); iv < pvDirectory->end(); iv++)
+		for (iv = directories.begin(); iv < directories.end(); ++iv)
 		{
 			int nb = (*iv)->nbfiles;
 			PakFile * et = (*iv)->files;
@@ -1419,10 +1411,6 @@ static void ARX_SOUND_CreateEnvironments()
 				et = et->next;
 			}
 		}
-
-		//pPakManager->RemovePak(PAK_SFX);
-		pvDirectory->clear();
-		delete pvDirectory;
 	}
 	else
 	{
@@ -1440,7 +1428,7 @@ static void ARX_SOUND_CreateEnvironments()
 			}
 			while (FindNextFile(fhandle, &fdata));
 
-			CloseHandle(fhandle);
+			FindClose(fhandle);
 		}
 	}
 }
@@ -2418,7 +2406,7 @@ static void ARX_SOUND_ParseIniFile(char * _lpszTextFile, const unsigned long _ul
 			if (lResult == PARSE_INI_FILE_SKIP) continue;
 			else if (lResult == PARSE_INI_FILE_STOP) break;
 
-			it++;
+			++it;
 
 			while ((it != lText.end()) && (!isSection(*it)))
 			{
@@ -2432,7 +2420,7 @@ static void ARX_SOUND_ParseIniFile(char * _lpszTextFile, const unsigned long _ul
 					if (lResult == PARSE_INI_FILE_SKIP) continue;
 					else if (lResult == PARSE_INI_FILE_STOP) break;
 
-					it++;
+					++it;
 				}
 				else break;
 			}
@@ -2440,7 +2428,7 @@ static void ARX_SOUND_ParseIniFile(char * _lpszTextFile, const unsigned long _ul
 			continue;
 		}
 
-		it++;
+		++it;
 	}
 
 	it = it;

@@ -1237,8 +1237,8 @@ bool CMenuConfig::ReadAll()
 
 	if( !pcText.empty() )
 	{
-		std::string width_string = pcText.substr( 0, pcText.find_first_of( 'x' ) );
-		std::string height_string = pcText.substr( pcText.find_first_of( 'x' ) );
+		std::string width_string = pcText.substr( 0, pcText.find( 'x' ) );
+		std::string height_string = pcText.substr( pcText.find('x') + 1 );
 
 		// If both width and height are specified
 		if( !( width_string.empty() || height_string.empty() ) )
