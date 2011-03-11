@@ -72,8 +72,6 @@ using std::vector;
 
 static const bool PREFER_LOCAL_FILES_OVER_PAK = true;
 
-// TODO prefer real files over those in PAK?
-
 PakManager * pPakManager = 0;
 
 bool PAK_AddPak(const char * pakfile) {
