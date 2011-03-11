@@ -105,8 +105,7 @@ struct EERIE_SCRIPT
 struct SCR_TIMER {
 	std::string         name;
 	short               exist;
-	short               flags; 
-	long                namelength;
+	short               flags;
 	long                times;
 	long                msecs;
 	long                pos;
@@ -115,14 +114,13 @@ struct SCR_TIMER {
 	INTERACTIVE_OBJ*    io;
 	EERIE_SCRIPT*       es;
 	
-	inline SCR_TIMER() : name(), exist(0), flags(0), namelength(0), times(0),
+	inline SCR_TIMER() : name(), exist(0), flags(0), times(0),
 	                     msecs(0), pos(0), longinfo(0), tim(0), io(NULL), es(NULL) { };
 	
 	inline void reset() {
 		name.clear();
 		exist = 0;
 		flags = 0;
-		namelength = 0;
 		times = 0;
 		msecs = 0;
 		pos = 0;

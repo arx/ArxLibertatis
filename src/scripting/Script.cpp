@@ -3414,7 +3414,6 @@ void ARX_SCRIPT_Timer_ClearByNum(long timer_idx)
 	{
 		scr_timer[timer_idx].name.clear();
 		ActiveTimers--;
-		scr_timer[timer_idx].namelength = 0;
 		scr_timer[timer_idx].exist = 0;
 	}
 }

@@ -2042,8 +2042,6 @@ void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io)
 			scr_timer[num].exist = 1;
 			scr_timer[num].io = io;
 			scr_timer[num].msecs = rnd() * 3000 + 3000;
-			scr_timer[num].namelength = 8;
-			scr_timer[num].name = (char *)malloc(8);
 			scr_timer[num].name = "_R_A_T_";
 			scr_timer[num].pos = -1; 
 			scr_timer[num].tim = ARXTimeUL();
