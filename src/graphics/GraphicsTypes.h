@@ -364,6 +364,7 @@ struct PROGRESSIVE_DATA
 	short	padd;
 }; // Aligned 1 2 4
 
+// TODO used for loading (FTL)
 struct EERIE_SPRINGS
 {
 	short	startidx;
@@ -396,14 +397,15 @@ struct CLOTHESVERTEX
 
 }; // Aligned 1 2 4
 
-struct CLOTHES_DATA
-{
-	CLOTHESVERTEX *	cvert;
-	CLOTHESVERTEX *	backup;
-	short			nb_cvert;
-	short			nb_springs;
-	EERIE_SPRINGS 	* springs;
-}; // Aligned 1 2 4
+struct CLOTHES_DATA {
+	
+	CLOTHESVERTEX * cvert;
+	CLOTHESVERTEX * backup;
+	short nb_cvert;
+	std::vector<EERIE_SPRINGS> springs;
+	
+	CLOTHES_DATA() : cvert(NULL), backup(NULL), nb_cvert(0) { }
+};
 
 struct COLLISION_SPHERE
 {

@@ -944,7 +944,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		ARX_FTL_CLOTHES_DATA_HEADER 	*	afcdh;
 		afcdh = reinterpret_cast<ARX_FTL_CLOTHES_DATA_HEADER*>(dat + afsh->offset_clothes_data);
 		obj->cdata->nb_cvert = (short)afcdh->nb_cvert;
-		obj->cdata->nb_springs = (short)afcdh->nb_springs;
+		obj->cdata->springs.resize(afcdh->nb_springs);
 		pos = afsh->offset_clothes_data;
 		pos += sizeof(ARX_FTL_CLOTHES_DATA_HEADER);
 
@@ -956,9 +956,10 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 		pos += sizeof(CLOTHESVERTEX) * obj->cdata->nb_cvert;
 
 		// now load springs
-		obj->cdata->springs = new EERIE_SPRINGS[obj->cdata->nb_springs];
-		memcpy(obj->cdata->springs, dat + pos, sizeof(EERIE_SPRINGS)*obj->cdata->nb_springs);
-		pos += sizeof(EERIE_SPRINGS) * obj->cdata->nb_springs;
+		EERIE_SPRINGS * begin = (EERIE_SPRINGS*)(dat + pos);
+		pos += sizeof(EERIE_SPRINGS) * obj->cdata->springs.size();
+		EERIE_SPRINGS * end = (EERIE_SPRINGS*)(dat + pos);
+		std::copy(begin, end, obj->cdata->springs.begin());
 	}
 
 	// Free the loaded file memory
