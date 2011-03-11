@@ -906,26 +906,25 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file)
 	}
 
 	// Alloc'n'Copy Collision Spheres Data
-	if (afsh->offset_collision_spheres != -1)
-	{
+	if (afsh->offset_collision_spheres != -1) {
+		
 		// Cast to header
 		ARX_FTL_COLLISION_SPHERES_DATA_HEADER * afcsdh;
-		afcsdh = reinterpret_cast<ARX_FTL_COLLISION_SPHERES_DATA_HEADER*>(dat + afsh->offset_collision_spheres);
 		pos = afsh->offset_collision_spheres;
+		afcsdh = reinterpret_cast<ARX_FTL_COLLISION_SPHERES_DATA_HEADER*>(dat + pos);
 		pos += sizeof(ARX_FTL_COLLISION_SPHERES_DATA_HEADER);
-
+		
 		// Alloc the collision sphere data object
 		obj->sdata = new COLLISION_SPHERES_DATA();
-		obj->sdata->nb_spheres = afcsdh->nb_spheres;
-
+		obj->sdata->spheres.resize(afcsdh->nb_spheres);
+		
 		// Alloc the collision speheres
-		obj->sdata->spheres = new COLLISION_SPHERE[obj->sdata->nb_spheres];
-
-		// TODO Replace with copy
-		memcpy(obj->sdata->spheres, dat + pos, sizeof(COLLISION_SPHERE)*obj->sdata->nb_spheres);
-		pos += sizeof(COLLISION_SPHERE) * obj->sdata->nb_spheres;
+		COLLISION_SPHERE * begin = (COLLISION_SPHERE*)(dat + pos);
+		pos += sizeof(COLLISION_SPHERE) * obj->sdata->spheres.size();
+		COLLISION_SPHERE * end = (COLLISION_SPHERE*)(dat + pos);
+		std::copy(begin, end, obj->sdata->spheres.begin());
 	}
-
+	
 	// Alloc'n'Copy Progressive DATA
 	if (afsh->offset_progressive_data != -1)
 	{
