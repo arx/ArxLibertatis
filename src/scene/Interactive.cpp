@@ -513,7 +513,7 @@ bool ForceNPC_Above_Ground(INTERACTIVE_OBJ * io)
 	return false;
 }
 
-EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * file, long flag, LPDIRECT3DDEVICE7 pd3dDevice)
+EERIE_3DOBJ * TheoToEerie_Fast(const std::string& texpath, const std::string& file, long flag, LPDIRECT3DDEVICE7 pd3dDevice)
 {
 	EERIE_3DOBJ * ret = new EERIE_3DOBJ();
 

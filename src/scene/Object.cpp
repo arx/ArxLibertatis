@@ -97,7 +97,7 @@ void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj);
 void EERIEOBJECT_DeletePFaces(EERIE_3DOBJ * eobj);
 
 //-----------------------------------------------------------------------------------------------------
-long GetGroupOriginByName(EERIE_3DOBJ * eobj, const char * text)
+long GetGroupOriginByName(EERIE_3DOBJ * eobj, const std::string& text)
 {
 	if (!eobj) return -1;
 
@@ -109,7 +109,7 @@ long GetGroupOriginByName(EERIE_3DOBJ * eobj, const char * text)
 	return -1;
 }
 //-----------------------------------------------------------------------------------------------------
-long GetActionPointIdx(EERIE_3DOBJ * eobj, const char * text)
+long GetActionPointIdx(EERIE_3DOBJ * eobj, const std::string& text)
 {
 	if (!eobj) return -1;
 
@@ -264,7 +264,7 @@ float GetTimeBetweenKeyFrames(EERIE_ANIM * ea, long f1, long f2)
 	return time;
 }
 
-static void * safeAlloc(size_t size, const char * desc) {
+static void * safeAlloc(size_t size, const std::string& desc) {
 	void * result;
 	do {
 		result = malloc(size); 
@@ -275,24 +275,24 @@ static void * safeAlloc(size_t size, const char * desc) {
 	return result;
 }
 
-static void * safeAllocZero(size_t size, const char * desc) {
+static void * safeAllocZero(size_t size, const std::string& desc) {
 	void * result = safeAlloc(size, desc);
 	memset(result, 0, size);
 	return result;
 }
 
 template <class T>
-static T * allocStruct(const char * desc, size_t n = 1) {
+static T * allocStruct(const std::string& desc, size_t n = 1) {
 	return (T*)safeAlloc(n * sizeof(T), desc);
 }
 
 template <class T>
-static T * allocStructZero(const char * desc, size_t n = 1) {
+static T * allocStructZero(const std::string& desc, size_t n = 1) {
 	return (T*)safeAllocZero(n * sizeof(T), desc);
 }
 
 template <class T>
-static T * copyStruct(const T * src, const char * desc, size_t n = 1) {
+static T * copyStruct(const T * src, const std::string& desc, size_t n = 1) {
 	T * result = allocStruct<T>(desc, n);
 	memcpy(result, src, sizeof(T) * n);
 	return result;
@@ -300,7 +300,7 @@ static T * copyStruct(const T * src, const char * desc, size_t n = 1) {
 
 
 
-EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file) {
+EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const std::string& file) {
 	
 	(void)size; // TODO use size
 	
@@ -1052,15 +1052,15 @@ void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms)
 	free(ms);
 }
 //-----------------------------------------------------------------------------------------------------
-EERIE_MULTI3DSCENE * MultiSceneToEerie(const char * dirr)
+EERIE_MULTI3DSCENE * MultiSceneToEerie(const std::string& dirr)
 {
 	EERIE_MULTI3DSCENE * es;
 	char pathh[512];
 
 	es = allocStructZero<EERIE_MULTI3DSCENE>("EEMultiScn");
 
-	strcpy(LastLoadedScene, dirr);
-	sprintf(pathh, "%s*.scn", dirr);
+	strcpy(LastLoadedScene, dirr.c_str());
+	sprintf(pathh, "%s*.scn", dirr.c_str());
 
 	LogWarning << "partially unimplemented MultiSceneToEerie";
 //	todo: finddata
@@ -1133,14 +1133,14 @@ EERIE_MULTI3DSCENE * MultiSceneToEerie(const char * dirr)
 	return es;
 }
 //-----------------------------------------------------------------------------------------------------
-EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const char * dirr)
+EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const std::string& dirr)
 {
 	EERIE_MULTI3DSCENE	* es;
 	unsigned char 	*	adr;
 
 	es = allocStructZero<EERIE_MULTI3DSCENE>("EEMulti3DScn");
 
-	strcpy(LastLoadedScene, dirr);
+	strcpy(LastLoadedScene, dirr.c_str());
 
 	std::string path = dirr;
 	RemoveName(path);
@@ -1214,7 +1214,7 @@ EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const char * dirr)
 	return es;
 }
 //-----------------------------------------------------------------------------------------------------
-EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const char * dirr)
+EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const std::string& dirr)
 {
 	LogInfo << "Loading Multiscene " << dirr;
 	
@@ -1787,7 +1787,7 @@ EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj)
 	return nouvo;
 }
 //-----------------------------------------------------------------------------------------------------
-long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const char * selname)
+long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const std::string& selname)
 {
 	if (!obj) return -1;
 
@@ -1799,7 +1799,7 @@ long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const char * selname)
 	return -1;
 }
 //-----------------------------------------------------------------------------------------------------
-long EERIE_OBJECT_GetGroup(EERIE_3DOBJ * obj, const char * groupname)
+long EERIE_OBJECT_GetGroup(EERIE_3DOBJ * obj, const std::string& groupname)
 {
 	if (!obj) return -1;
 
@@ -2124,7 +2124,7 @@ void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj)
 }
 
 // Converts a Theo Object to an EERIE object
-EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, const char * fic, long flag, LPDIRECT3DDEVICE7 pd3dDevice, long flag2) // flag 1 progressive alloc 2 SLOW
+EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const std::string& texpath, const std::string& fic, long flag, LPDIRECT3DDEVICE7 pd3dDevice, long flag2) // flag 1 progressive alloc 2 SLOW
 {
 	
 	LogWarning << "TheoToEerie " << fic;
@@ -2139,11 +2139,11 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, 
 	EERIE_3DOBJ 	*		eerie;
 	char mapsname[512];
 	char texx[512];
-	const char * txpath;
+	std::string txpath;
 	long pos2;
 	long pos = 0;
 
-	if ((texpath == NULL) || (texpath[0] == 0))
+	if ( texpath.empty() )
 	{
 		txpath = "Graph\\Obj3D\\Textures\\";
 	}
@@ -2156,7 +2156,7 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, 
 
 	if (DEBUGG)
 	{
-		sprintf(texx, "THEOtoEERIE %s", fic);
+		sprintf(texx, "THEOtoEERIE %s", fic.c_str());
 		SendConsole(texx, 2, 0, (HWND)MSGhwnd);
 		sprintf(texx, "-----------THEO FILE-----------");
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
@@ -2180,7 +2180,7 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, 
 	{
 		if (!(flag & TTE_NOPOPUP))
 		{
-			sprintf(texx, "\nINVALID Theo Version !!!\nVersion Found    - %lu\nVersion Required - %d to %d\n\nPlease Update File\n%s", pth->version, 3004, 3011, fic);
+			sprintf(texx, "\nINVALID Theo Version !!!\nVersion Found    - %lu\nVersion Required - %d to %d\n\nPlease Update File\n%s", pth->version, 3004, 3011, fic.c_str());
 			LogError << "TheoToEerie " << texx;
 		}
 
@@ -2197,7 +2197,7 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, 
 	{
 		// LECTURE DE TEXTURE THEO IN_OBJECT
 		char text[512];
-		sprintf(text, "WARNING object %s SAVE MAP IN OBJECT = INVALID... Using Dummy Textures...", fic);
+		sprintf(text, "WARNING object %s SAVE MAP IN OBJECT = INVALID... Using Dummy Textures...", fic.c_str());
 		LogError << (text);
 
 
@@ -2249,8 +2249,8 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, 
 					ptsmi3019 = &tsmi3019;
 				}
 
-				if (pth->type_write & SAVE_MAP_BMP) sprintf(mapsname, "%s%s.bmp", txpath, ptsmi3019->texture_name);
-				else sprintf(mapsname, "%s%s.tga", txpath, ptsmi3019->texture_name);
+				if (pth->type_write & SAVE_MAP_BMP) sprintf(mapsname, "%s%s.bmp", txpath.c_str(), ptsmi3019->texture_name);
+				else sprintf(mapsname, "%s%s.tga", txpath.c_str(), ptsmi3019->texture_name);
 
 				eerie->texturecontainer[i] = D3DTextr_CreateTextureFromFile(mapsname, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
 				MakeUserFlag(eerie->texturecontainer[i]);

@@ -1750,7 +1750,7 @@ extern HRESULT DANAEFinalCleanup();
 //*************************************************************************************
 void ARX_PLAYER_LoadHeroAnimsAndMesh()
 {
-	const char texpath[] = "Graph\\Obj3D\\Textures\\";
+	const std::string texpath = "Graph\\Obj3D\\Textures\\";
 	const char OBJECT_HUMAN_BASE[] = "graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo";
  
 	hero = TheoToEerie_Fast(texpath, OBJECT_HUMAN_BASE, TTE_NO_PHYSICS_BOX | TTE_NPC);
