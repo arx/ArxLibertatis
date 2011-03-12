@@ -586,3 +586,14 @@ bool SaveBlock::hasFile(const string & name) const {
 	}
 	
 }
+
+vector<string> SaveBlock::getFiles() const {
+	
+	vector<string> result;
+	
+	for(FileList::const_iterator file = files.begin(); file != files.end(); ++file) {
+		result.push_back(file->name);
+	}
+	
+	return result;
+}

@@ -68,6 +68,8 @@ public:
 	char * load(const std::string & name, size_t & size) const;
 	bool hasFile(const std::string & name) const;
 	
+	std::vector<std::string> getFiles() const;
+	
 };
 
 #endif // _CLUSTER_SAVE_H_
