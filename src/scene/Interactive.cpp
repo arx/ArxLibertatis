@@ -1258,13 +1258,12 @@ void CleanScriptLoadedIO()
 //*************************************************************************************
 void RestoreInitialIOStatus()
 {
-	long i = 0;
 	ARX_INTERACTIVE_HideGore(inter.iobj[0]);
 	ARX_NPC_Behaviour_ResetAll();
 
 	if (inter.iobj[0]) inter.iobj[0]->spellcast_data.castingspell = -1;
 
-	for (i = 1; i < inter.nbmax; i++)
+	for (long i = 1; i < inter.nbmax; i++)
 	{
 		RestoreInitialIOStatusOfIO(inter.iobj[i]);
 	}
