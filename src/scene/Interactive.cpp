@@ -1234,21 +1234,18 @@ void InitInter(long nb)
 //*************************************************************************************
 //	Removes an IO loaded by a script command
 //*************************************************************************************
-void CleanScriptLoadedIO()
-{
-	for (long i = 1; i < inter.nbmax; i++)
-	{
-		if (inter.iobj[i] != NULL)
-		{
-			INTERACTIVE_OBJ * io = inter.iobj[i];
-
-			if (io->scriptload)
-			{
+void CleanScriptLoadedIO() {
+	
+	for(long i = 1; i < inter.nbmax; i++) {
+		INTERACTIVE_OBJ * io = inter.iobj[i];
+		if(io) {
+			if(io->scriptload) {
 				RemoveFromAllInventories(io);
-				ReleaseInter(inter.iobj[i]);
+				ReleaseInter(io);
 				inter.iobj[i] = NULL;
+			} else {
+				io->show = SHOW_FLAG_IN_SCENE;
 			}
-			else inter.iobj[i]->show = SHOW_FLAG_IN_SCENE;
 		}
 	}
 }
@@ -2225,9 +2222,8 @@ extern long TOTAL_BODY_CHUNKS_COUNT;
 //*************************************************************************************
 // Releases An Interactive Object from memory
 //*************************************************************************************
-void ReleaseInter(INTERACTIVE_OBJ * io)
-{
-
+void ReleaseInter(INTERACTIVE_OBJ * io) {
+	
 	if (!io) return;
 
 	if (!FAST_RELEASE)
@@ -2270,8 +2266,7 @@ void ReleaseInter(INTERACTIVE_OBJ * io)
 	ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(io);
 	ARX_SCRIPT_Timer_Clear_For_IO(io);
 
-	if ((io->obj) && (!(io->ioflags & IO_CAMERA)) && (!(io->ioflags & IO_MARKER)) && (!(io->ioflags & IO_GOLD)))
-	{
+	if ((io->obj) && (!(io->ioflags & IO_CAMERA)) && (!(io->ioflags & IO_MARKER)) && (!(io->ioflags & IO_GOLD))) {
 		ReleaseEERIE3DObj(io->obj);
 		io->obj = NULL;
 	}
@@ -2284,8 +2279,7 @@ void ReleaseInter(INTERACTIVE_OBJ * io)
 		io->tweakerinfo = NULL;
 	}
 
-	if (io->tweaky)
-	{
+	if (io->tweaky) {
 		ReleaseEERIE3DObj(io->tweaky);
 		io->tweaky = NULL;
 	}
