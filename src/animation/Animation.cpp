@@ -121,7 +121,6 @@ extern long ForceIODraw;
 extern long INTER_DRAW;
 extern long INTER_COMPUTE;
 extern long FRAME_COUNT;
-extern bool bZBUFFER;
 extern unsigned long ulBKGColor;
 extern bool bALLOW_BUMP;
 extern CMY_DYNAMIC_VERTEXBUFFER *pDynamicVertexBuffer;
@@ -2161,11 +2160,8 @@ void DrawEERIEInter2(EERIE_3DOBJ * eobj,
 				vert[1].sy += (vect1.y + 0.2f - rnd() * 0.1f) * siz; 
 					vert[1].color=0xFF000000;
 
-					if(bZBUFFER)
-					{
-					vert[0].sz+=0.0001f;
+					vert[0].sz += 0.0001f;
 					vert[3].sz += 0.0001f; 
-					}
 
 					vert[1].rhw*=.8f;
 					vert[2].rhw*=.8f;
@@ -2905,26 +2901,13 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 						vert[1].sx+=(vect1.x+0.2f-rnd()*0.1f)*siz;
 						vert[1].sy+=(vect1.y+0.2f-rnd()*0.1f)*siz;
 						vert[1].color=0xFF000000;
-						float valll;
 
-						if(bZBUFFER)
-						{
-					
-							valll=0.005f+(EEfabs(workon[first].sz-workon[third].sz)
-										  + EEfabs(workon[second].sz - workon[third].sz)) ;
-
-							vert[1].sz+=valll;
-							vert[2].sz+=valll;
-						}
-						else
-						{
-							vert[1].rhw*=.8f;
-							vert[2].rhw*=.8f;
-						}
-
-				
-					vert[2].sx += (vect2.x + 0.2f - rnd() * 0.1f) * siz; 
-					vert[2].sy += (vect2.y + 0.2f - rnd() * 0.1f) * siz; 
+						float valll = 0.005f + (EEfabs(workon[first].sz-workon[third].sz) + EEfabs(workon[second].sz - workon[third].sz));
+						vert[1].sz+=valll;
+						vert[2].sz+=valll;
+						
+						vert[2].sx += (vect2.x + 0.2f - rnd() * 0.1f) * siz; 
+						vert[2].sy += (vect2.y + 0.2f - rnd() * 0.1f) * siz; 
 
 						if (io->halo.flags & HALO_NEGATIVE) vert[2].color=0x00000000;					
 						else vert[2].color=0xFF000000;

@@ -82,7 +82,6 @@ extern TextureContainer * enviro;
 extern float FrameTime;
 extern EERIE_3D e3dPosBump;
 extern bool bALLOW_BUMP;
-extern bool bZBUFFER;
 
 /*---------------------------------------------------------------------------------------------------------*/
 struct D3DTLVERTEX2UV
@@ -393,17 +392,7 @@ void DRAWLATER_Render()
 				tdl[j].ep->tv[i].tu*=4.f;
 				tdl[j].ep->tv[i].tv*=4.f;
 
-				float val;
-
-				if(bZBUFFER)
-				{
-				val = (0.048f - tdl[j].ep->tv[i].sz); 
-				}
-				else
-				{
-				val = (0.048f - tdl[j].ep->tv[i].rhw);
-				}
-				
+				float val = (0.048f - tdl[j].ep->tv[i].sz); 
 				if (val<=0.f) 
 				{
 					tdl[j].ep->tv[i].color=0xFF000000;

@@ -1473,7 +1473,7 @@ void ARX_THROWN_OBJECT_Manage(unsigned long time_offset)
 	if (Thrown_Count <= 0) return;
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, true);
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 	for (long i = 0; i < MAX_THROWN_OBJECTS; i++)
 	{

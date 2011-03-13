@@ -158,7 +158,7 @@ void ARX_INTERFACE_ShowARKANE()
 	GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
-	danaeApp.EnableZBuffer();
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 	Project.vsync = 0;
 
@@ -273,7 +273,7 @@ void LoadLevelScreen(long num)
 
 			GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, false);
 
-			danaeApp.EnableZBuffer();
+			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			GRenderer->SetCulling(Renderer::CullNone);
 			GRenderer->SetRenderState(Renderer::DepthWrite, true);
 			GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);

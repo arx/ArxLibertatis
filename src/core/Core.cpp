@@ -6537,7 +6537,7 @@ static float _AvgFrameDiff = 150.f;
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
 	SetFilteringMode(Bilinear);		
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	danaeApp.EnableZBuffer();
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 	if (FirstFrame==0)
 	{
@@ -6737,10 +6737,10 @@ static float _AvgFrameDiff = 150.f;
 			&&	flarenum
 			)
 		{
-			GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE, false);
+			GRenderer->SetRenderState(Renderer::DepthTest, false);
 			ARX_MAGICAL_FLARES_Draw(FRAMETICKS);
-			EnableZBuffer();
-					FRAMETICKS = ARXTimeUL();
+			GRenderer->SetRenderState(Renderer::DepthTest, true);
+			FRAMETICKS = ARXTimeUL();
 		}
 	}
 
@@ -7113,7 +7113,7 @@ void DANAE::GoFor2DFX()
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);		
 			GRenderer->SetRenderState(Renderer::DepthWrite, false);
 			GRenderer->SetCulling(Renderer::CullNone);
-			GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE, false);
+			GRenderer->SetRenderState(Renderer::DepthTest, false);
 			GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,  0);
 
 			for (int i=0;i<TOTPDL;i++)
@@ -7151,7 +7151,7 @@ void DANAE::GoFor2DFX()
 				}
 			}
 
-			GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE, true);
+			GRenderer->SetRenderState(Renderer::DepthTest, true);
 		}
 	}
 
@@ -7430,7 +7430,7 @@ HRESULT DANAE::InitDeviceObjects()
 	// Enable texture perspective RenderState
 	GDevice->SetRenderState( D3DRENDERSTATE_TEXTUREPERSPECTIVE , true );
 	// Enable Z-buffering RenderState
-	EnableZBuffer();
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	// Setup Ambient Color RenderState
 	GDevice->SetRenderState( D3DRENDERSTATE_AMBIENT,  0x0a0a0a0a );
 	// Restore All Textures RenderState

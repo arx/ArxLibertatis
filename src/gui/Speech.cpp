@@ -629,7 +629,7 @@ void ARX_SPEECH_Update() {
 						SETTC( NULL);
 						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
+						GRenderer->SetRenderState(Renderer::DepthTest, false);
 						EERIEDrawFill2DRectDegrad(
 												  0.f,
 												  fZoneClippY - 1.f, 
@@ -650,7 +650,7 @@ void ARX_SPEECH_Update() {
 
 						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
 
-						danaeApp.EnableZBuffer();
+						GRenderer->SetRenderState(Renderer::DepthTest, true);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 

@@ -6385,12 +6385,12 @@ void ARX_INTERFACE_Draw_Stealth_Gauge()
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-			GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE,false);
+			GRenderer->SetRenderState(Renderer::DepthTest, false);
 			EERIEDrawBitmap(
 			                px, py, INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwWidth), INTERFACE_RATIO_DWORD(stealth_gauge_tc->m_dwHeight), 0.01f,
 				stealth_gauge_tc,col);
 
-			danaeApp.EnableZBuffer();
+			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
 	}
@@ -6450,7 +6450,7 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
-		danaeApp.EnableZBuffer();
+		GRenderer->SetRenderState(Renderer::DepthTest, true);
 		GRenderer->SetCulling(Renderer::CullNone);
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
@@ -6759,7 +6759,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 {
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
-	danaeApp.EnableZBuffer();
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 	if ((player.Interface & INTER_MAP ) &&  (!(player.Interface & INTER_COMBATMODE)))
 	{
@@ -6810,7 +6810,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 			float n;
 			long xpos=0;
 			long ypos=0;
-			GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
+			GRenderer->SetRenderState(Renderer::DepthTest, false);
 
 			for (long i=0;i<NB_RUNES;i++)
 			{
@@ -7009,7 +7009,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 				}
 			}
 
-			GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, true);
+			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			GRenderer->SetCulling(Renderer::CullCCW);
 
 			if (!found2) LastRune=-1;
@@ -8447,7 +8447,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 	{
 
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
-		danaeApp.EnableZBuffer();
+		GRenderer->SetRenderState(Renderer::DepthTest, true);
 		SetFilteringMode(1);
 		D3DRECT rec;
 
@@ -8991,14 +8991,14 @@ void ARX_INTERFACE_DrawCurrentTorch()
 
 	py = DANAESIZY - INTERFACE_RATIO(158+32);
 
-	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
+	GRenderer->SetRenderState(Renderer::DepthTest, false);
 
 	EERIEDrawBitmap(
 		px, py,
 	                INTERFACE_RATIO_DWORD(CURRENT_TORCH->inv->m_dwWidth), INTERFACE_RATIO_DWORD(CURRENT_TORCH->inv->m_dwHeight),
 		0.001f,
 		CURRENT_TORCH->inv,D3DCOLORWHITE);
-	danaeApp.EnableZBuffer();
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 	if ( rnd() > 0.2f )
 	{
@@ -9633,14 +9633,14 @@ void DANAE::DrawAllInterface()
 			float px = DANAESIZX - INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth);
 		float py = 0;
 
-		GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
+		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		float vv = 0.9f - EEsin(FrameTime*( 1.0f / 50 ))*( 1.0f / 2 )+rnd()*( 1.0f / 10 );
 
 		if ( vv < 0.f ) vv = 0;
 		else if ( vv > 1.f ) vv = 1.f;
 
 		ARX_INTERFACE_DrawItem( ChangeLevel, px, py, 0.0001f, D3DRGB( vv, vv, vv ) );
-		danaeApp.EnableZBuffer();
+		GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 			if (MouseInRect(px, py, px + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwWidth), py + INTERFACE_RATIO_DWORD(ChangeLevel->m_dwHeight)))
 		{
@@ -9757,7 +9757,7 @@ void DANAE::DrawAllInterface()
 		v[2]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DCOLORWHITE, 1, 1.f, 1.f);
 		v[3]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DCOLORWHITE, 1, 0.f, 1.f);
 
-		GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
+		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		px = DANAESIZX - INTERFACE_RATIO(33) + INTERFACE_RATIO(1) + lSLID_VALUE;
 		py = DANAESIZY - INTERFACE_RATIO(81);
 		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_blue"), px, py, 0.f); //399
@@ -9808,7 +9808,7 @@ void DANAE::DrawAllInterface()
 		//---------------------------------------------------------------------
 		//END RED GAUGE
 
-		GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
+		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		px = 0.f-lSLID_VALUE;
 		py = DANAESIZY - INTERFACE_RATIO(78);
 		ARX_INTERFACE_DrawItem(ITC.Get("empty_gauge_red"), px, py, 0.001f);
@@ -9947,7 +9947,7 @@ void DANAE::DrawAllInterface()
 		}
 	}
 
-	danaeApp.EnableZBuffer();
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTFN_LINEAR );
 	GDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTFG_LINEAR );
 	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);

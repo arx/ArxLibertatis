@@ -101,7 +101,6 @@ CD3DApplication		* g_pD3DApp = NULL;
 EERIE_CAMERA		* Kam;
 LPDIRECT3DDEVICE7	GDevice;
 HWND				MSGhwnd = NULL;
-bool				bZBUFFER = true;
 float				FPS;
 int					ModeLight = 0;
 long				ViewMode = 0;
@@ -1330,13 +1329,6 @@ bool CD3DApplication::Unlock()
 	}
 
 	return true;
-}
-
-//-----------------------------------------------------------------------------
-void CD3DApplication::EnableZBuffer()
-{
-	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_TRUE);
-	bZBUFFER = true;
 }
 
 //******************************************************************************

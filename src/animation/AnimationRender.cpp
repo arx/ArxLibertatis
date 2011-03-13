@@ -68,7 +68,6 @@ extern		long		USEINTERNORM;
 extern 		long 		INTER_DRAW;
 
 extern		float		dists[];
-extern bool bZBUFFER;
 extern bool bALLOW_BUMP;
 extern long BH_MODE;
 extern int iHighLight;
@@ -2100,33 +2099,22 @@ void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 							vert[1].sx	+= (vect1.x + 0.2f - rnd() * 0.1f) * siz;  
 							vert[1].sy	+= (vect1.y + 0.2f - rnd() * 0.1f) * siz; 
 							vert[1].color = 0xFF000000;
+
 							float valll;
+							valll = 0.005f + (EEfabs(workon[first].sz) - EEfabs(workon[third].sz))
+							               + (EEfabs(workon[second].sz) - EEfabs(workon[third].sz));   
+							valll = 0.0001f + valll * ( 1.0f / 10 );
 
-							if (bZBUFFER)
-							{
-								valll = 0.005f + (EEfabs(workon[first].sz) - EEfabs(workon[third].sz)
-								                  + EEfabs(workon[second].sz) - EEfabs(workon[third].sz));   
+							if (valll < 0.f) valll = 0.f;
 
-								valll = 0.0001f + valll * ( 1.0f / 10 );
-
-								if (valll < 0.f) valll = 0.f;
-
-								vert[1].sz	+= valll;
-								vert[2].sz	+= valll;
-								vert[0].sz	+= 0.0001f;
-								vert[3].sz	+= 0.0001f;//*( 1.0f / 2 );
-								vert[1].rhw	*= .98f;
-								vert[2].rhw	*= .98f;
-								vert[0].rhw	*= .98f;
-								vert[3].rhw	*= .98f;
-							}
-							else
-							{
-								vert[1].rhw	*= .98f;
-								vert[2].rhw	*= .98f;
-								vert[0].rhw	*= .98f;
-								vert[3].rhw	*= .98f;
-							}
+							vert[1].sz	+= valll;
+							vert[2].sz	+= valll;
+							vert[0].sz	+= 0.0001f;
+							vert[3].sz	+= 0.0001f;//*( 1.0f / 2 );
+							vert[1].rhw	*= .98f;
+							vert[2].rhw	*= .98f;
+							vert[0].rhw	*= .98f;
+							vert[3].rhw	*= .98f;
 
 							vert[2].sx += (vect2.x + 0.2f - rnd() * 0.1f) * siz;  
 							vert[2].sy += (vect2.y + 0.2f - rnd() * 0.1f) * siz;  
@@ -2421,30 +2409,19 @@ void	Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 						vert[1].sx += (vect1.x + 0.2f - rnd() * 0.1f) * siz; //+len1;
 						vert[1].sy += (vect1.y + 0.2f - rnd() * 0.1f) * siz; //+len2;
 						vert[1].color = 0xFF000000;
+
 						float valll; 
+						valll = (EEfabs(workon[first].sz - workon[third].sz)
+						         + EEfabs(workon[second].sz - workon[third].sz)) * 1.8f;
+						valll = 0.01f + valll;
 
-						if (bZBUFFER)
-						{
-							valll = (EEfabs(workon[first].sz - workon[third].sz)
-							         + EEfabs(workon[second].sz - workon[third].sz)) * 1.8f;
+						if (valll < 0.f) valll = 0.f;
 
-							valll = 0.01f + valll;
-
-							if (valll < 0.f) valll = 0.f;
-
-							vert[1].sz += valll;
-							vert[2].sz += valll;
-							vert[0].sz += 0.0001f;
-							vert[3].sz += 0.0001f; //*( 1.0f / 2 );
-						}
-						else
-						{
-							vert[1].rhw *= .98f;
-							vert[2].rhw *= .98f;
-							vert[0].rhw *= .98f;
-							vert[3].rhw *= .98f; //*( 1.0f / 2 );
-						}
-
+						vert[1].sz += valll;
+						vert[2].sz += valll;
+						vert[0].sz += 0.0001f;
+						vert[3].sz += 0.0001f; //*( 1.0f / 2 );
+						
 						vert[2].sx += (vect2.x + 0.2f - rnd() * 0.1f) * siz; //+len2;
 						vert[2].sy += (vect2.y + 0.2f - rnd() * 0.1f) * siz; //+len1;
 

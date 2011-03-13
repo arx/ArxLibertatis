@@ -1225,11 +1225,11 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 
 						if (!flare[i].io) 
 						{
-							GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
+							GRenderer->SetRenderState(Renderer::DepthTest, false);
 						}
 						else
 						{
-							GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,true);
+							GRenderer->SetRenderState(Renderer::DepthTest, true);
 						}
 
 						if(flare[i].bDrawBitmap)
@@ -1256,7 +1256,7 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 	if (DynLight[0].rgb.b>1.f) DynLight[0].rgb.b=1.f;
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, true); 
+	GRenderer->SetRenderState(Renderer::DepthTest, true); 
 }
 
 //-----------------------------------------------------------------------------
@@ -2259,11 +2259,11 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 			
 			if (part->special & PARTICLE_NOZBUFFER) 
 			{
-				GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
+				GRenderer->SetRenderState(Renderer::DepthTest, false);
 			}
 			else
 			{
-				GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,true);
+				GRenderer->SetRenderState(Renderer::DepthTest, true);
 			}
 
 			if (part->special & FADE_IN_AND_OUT) 
@@ -2567,7 +2567,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 	}
 
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
-	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,true);
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
 }
 
 //-----------------------------------------------------------------------------

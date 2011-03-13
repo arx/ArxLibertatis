@@ -1863,7 +1863,7 @@ static void FadeInOut(float _fVal)
 
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
+	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetCulling(Renderer::CullNone);
 
 	EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, d3dvertex, 4, 0, EERIE_NOCOUNT );
@@ -1871,7 +1871,7 @@ static void FadeInOut(float _fVal)
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
-	danaeApp.EnableZBuffer();
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetCulling(Renderer::CullCCW);
 }
 
@@ -1959,7 +1959,7 @@ bool Menu2_Render()
 
 	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE,false);
+	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetCulling(Renderer::CullNone);
 
 	MENUSTATE eOldMenuState=NOP;
@@ -2093,7 +2093,7 @@ bool Menu2_Render()
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
 			GRenderer->SetRenderState(Renderer::DepthWrite, true);
-			danaeApp.EnableZBuffer();
+			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			danaeApp.DANAEEndRender();
 
 			return true;
@@ -3333,7 +3333,7 @@ bool Menu2_Render()
 
 	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE,false);
+	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetCulling(Renderer::CullNone);
 	pGetInfoDirectInput->DrawCursor();
 
@@ -3350,7 +3350,7 @@ bool Menu2_Render()
 
 	if (pTextureLoadRender)
 	{
-		GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
+		GRenderer->SetRenderState(Renderer::DepthTest, false);
 
 		int iOffsetX = 0;
 		int iOffsetY=0;
@@ -3419,7 +3419,7 @@ bool Menu2_Render()
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
-	danaeApp.EnableZBuffer();
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetCulling(Renderer::CullCCW);
 
 	danaeApp.DANAEEndRender();
@@ -5791,22 +5791,18 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 
 	int iSlider=0;
 
-	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
 	//------------------------------------------------------------------------
-	//Affichage de la console
-
+	// Console display
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
+	GRenderer->SetRenderState(Renderer::DepthTest, false);
 
-	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
 	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(iPosX), ARX_CLEAN_WARN_CAST_FLOAT(iSavePosY),
 		RATIO_X(pTexBackground->m_dwWidth), RATIO_Y(pTexBackground->m_dwHeight),
 		0, pTexBackground, ARX_OPAQUE_WHITE);
 
-	danaeApp.EnableZBuffer();
-
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
-
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -7496,10 +7492,10 @@ void CDirectInput::DrawCursor()
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
-	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
+	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	DrawOneCursor(iMouseAX,iMouseAY);
 
-	danaeApp.EnableZBuffer();
+	GRenderer->SetRenderState(Renderer::DepthTest, true);
 
 
 	ARX_CHECK_LONG( ARXDiffTimeMenu );

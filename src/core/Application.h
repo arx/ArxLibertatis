@@ -383,8 +383,6 @@ public:
 	DDSURFACEDESC2 ddsd;
 	DDSURFACEDESC2 ddsd2;
 	
-	void EnableZBuffer();
-	
 	LPDIRECTDRAWGAMMACONTROL lpDDGammaControl; // gamma control
 	DDGAMMARAMP DDGammaRamp; // modified ramp value
 	DDGAMMARAMP DDGammaOld; // backup gamma values
