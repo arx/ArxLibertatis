@@ -268,18 +268,18 @@ bool CreateFullPath(const string & path) {
 	
 	LogInfo << "CreateFullPath(" << path << ")";
 	
-	size_t last = 0;
+	size_t start = 0;
 	
 	while(true) {
 		
-		size_t pos = path.find_first_of("/\\", last);
+		size_t pos = path.find_first_of("/\\", start);
 		if(pos == string::npos) {
 			break;
 		}
 		
 		pos++;
 		CreateDirectory(path.substr(0, pos).c_str(), NULL);
-		last = pos;
+		start = pos + 1;
 	}
 	
 	return DirectoryExist(path);

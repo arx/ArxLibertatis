@@ -84,14 +84,17 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/Equipment.h"
 #include "game/Map.h"
 #include "game/Player.h"
+#include "game/Levels.h"
 
 #include "gui/MenuPublic.h"
 #include "gui/Menu.h"
 #include "gui/MenuWidgets.h"
 #include "gui/Speech.h"
+#include "gui/MiniMap.h"
 
 #include "graphics/GraphicsUtility.h"
 #include "graphics/GraphicsEnum.h"
+#include "graphics/GraphicsModes.h"
 #include "graphics/Frame.h"
 #include "graphics/Draw.h"
 #include "graphics/data/FTL.h"
@@ -119,6 +122,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Scene.h"
 #include "scene/GameSound.h"
 #include "scene/LoadLevel.h"
+#include "scene/Interactive.h"
 
 #include "scripting/ScriptEvent.h"
 #include "scripting/ScriptDebugger.h"

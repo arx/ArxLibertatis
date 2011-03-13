@@ -83,6 +83,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "game/NPC.h"
 #include "game/Spells.h"
 #include "game/Player.h"
+#include "game/Levels.h"
 
 #include "gui/MiniMap.h"
 #include "gui/Speech.h"
@@ -104,6 +105,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/GameSound.h"
 #include "scene/Object.h"
 #include "scene/LoadLevel.h"
+#include "scene/SaveFormat.h"
 
 #include "scripting/ScriptEvent.h"
 
@@ -148,6 +150,15 @@ extern int iTimeToDrawD7;
 extern EERIE_3D LastValidPlayerPos;
 #define MAX_IO_SAVELOAD	1500
 
+static long ARX_CHANGELEVEL_PushLevel(long num, long newnum);
+static long ARX_CHANGELEVEL_PopLevel(long num, long reloadflag = 0);
+static long ARX_CHANGELEVEL_Push_Globals();
+static long ARX_CHANGELEVEL_Pop_Globals();
+static long ARX_CHANGELEVEL_Push_Player();
+static long ARX_CHANGELEVEL_Push_AllIO();
+static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io);
+static long ARX_CHANGELEVEL_Pop_IO(const string & ident);
+
 //-----------------------------------------------------------------------------
 struct TEMP_IO
 {
@@ -181,27 +192,8 @@ extern EERIE_BACKGROUND bkrgnd;
 long CURRENT_GAME_INSTANCE = -1;
 char GameSavePath[256];
 extern char LOCAL_SAVENAME[64];
- 
 
-void ARX_GAMESAVE_MakePath()
-{
-	sprintf(GameSavePath, "Save%s\\", LOCAL_SAVENAME);
-
-	if (!DirectoryExist(GameSavePath))
-	{
-		CreateDirectory(GameSavePath, NULL);
-	}
-
-	sprintf(GameSavePath, "Save%s\\Save%04ld\\", LOCAL_SAVENAME, CURRENT_GAME_INSTANCE);
-
-	if (!DirectoryExist(GameSavePath))
-	{
-		CreateDirectory(GameSavePath, NULL);
-	}
-}
-
-void ARX_GAMESAVE_CreateNewInstance()
-{
+static void ARX_GAMESAVE_CreateNewInstance() {
 	char basepath[256];
 	char testpath[256];
 	long num = 1;
@@ -263,7 +255,7 @@ INTERACTIVE_OBJ * ConvertToValidIO(char * str)
 }
 
 //-----------------------------------------------------------------------------
-long GetIOAnimIdx2(INTERACTIVE_OBJ * io, ANIM_HANDLE * anim)
+long GetIOAnimIdx2(const INTERACTIVE_OBJ * io, ANIM_HANDLE * anim)
 {
 	if ((!io)
 			||	(!anim))
@@ -278,20 +270,16 @@ long GetIOAnimIdx2(INTERACTIVE_OBJ * io, ANIM_HANDLE * anim)
 	return -1;
 }
 //--------------------------------------------------------------------------------------------
-void ARX_CHANGELEVEL_MakePath()
-{
-	sprintf(CurGamePath, "Save%s\\", LOCAL_SAVENAME);
-
-	if (!DirectoryExist(CurGamePath))
-	{
-		CreateDirectory(CurGamePath, NULL);
-	}
-
+void ARX_CHANGELEVEL_MakePath() {
 	sprintf(CurGamePath, "Save%s\\Cur%04ld\\", LOCAL_SAVENAME, LAST_CHINSTANCE);
-
-	if (!DirectoryExist(CurGamePath))
-		CreateDirectory(CurGamePath, NULL);
+	CreateFullPath(CurGamePath);
 }
+
+void ARX_GAMESAVE_MakePath() {
+	sprintf(GameSavePath, "Save%s\\Save%04ld\\", LOCAL_SAVENAME, CURRENT_GAME_INSTANCE);
+	CreateFullPath(GameSavePath);
+}
+
 //--------------------------------------------------------------------------------------------
 void ARX_CHANGELEVEL_CreateNewInstance()
 {
@@ -477,16 +465,9 @@ void ARX_CHANGELEVEL_Change( const std::string& level, const std::string& target
 	LogDebug << "-----------------------------------";
 }
 
-//--------------------------------------------------------------------------------------------
-////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////
-////						SAVING 								////
-////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////
-//--------------------------------------------------------------------------------------------
-long ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
+static long ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num);
+
+static long ARX_CHANGELEVEL_PushLevel(long num, long newnum) {
 	
 	LogDebug << "ARX_CHANGELEVEL_PushLevel " << num << " " << newnum;
 	
@@ -582,8 +563,8 @@ extern GLOBAL_MODS stacked;
 extern GLOBAL_MODS current;
 extern GLOBAL_MODS desired;
 //--------------------------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
-{
+static long ARX_CHANGELEVEL_Push_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
+	
 	long pos = 0;
 
 	asi->version				= ARX_GAMESAVE_VERSION;
@@ -703,7 +684,8 @@ retry:
 	return ret ? 1 : -1;
 }
 //--------------------------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Push_Globals() {
+static long ARX_CHANGELEVEL_Push_Globals() {
+	
 	ARX_CHANGELEVEL_SAVE_GLOBALS acsg;
 	long pos = 0;
 
@@ -819,8 +801,8 @@ extern long cur_mr;
 extern long cur_pom;
 extern long sp_wep;
 extern long sp_arm;
-//--------------------------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Push_Player() {
+
+static long ARX_CHANGELEVEL_Push_Player() {
 	
 	ARX_CHANGELEVEL_PLAYER * asp;
 
@@ -1034,7 +1016,7 @@ retry:
 	return 1;
 }
 
-long ARX_CHANGELEVEL_Push_AllIO() {
+static long ARX_CHANGELEVEL_Push_AllIO() {
 	
 	for (long i = 1; i < inter.nbmax; i++)
 	{
@@ -1072,8 +1054,8 @@ INTERACTIVE_OBJ * GetObjIOSource(EERIE_3DOBJ * obj)
 
 // num = num in index file
 //-----------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
-{
+static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
+	
 	// Check Valid IO
 	if (!io)
 		return -1;
@@ -1738,8 +1720,8 @@ long ARX_CHANGELEVEL_Push_IO(INTERACTIVE_OBJ * io)
 	return 1;
 }
 
-long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num)
-{
+static long ARX_CHANGELEVEL_Pop_Index(ARX_CHANGELEVEL_INDEX * asi, long num) {
+	
 	long pos = 0;
 	std::string loadfile;
 	std::stringstream ss;
@@ -1945,7 +1927,7 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 	return 1;
 }
 
-long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_PLAYER * asp) {
+static long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_PLAYER * asp) {
 	
 	const string & loadfile = "player.sav";
 	
@@ -2193,8 +2175,8 @@ void ReleaseTio()
 extern long ARX_NPC_ApplyCuts(INTERACTIVE_OBJ * io);
 
 //-----------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Pop_IO( const std::string& ident)
-{
+static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
+	
 	if (!strcasecmp(ident.c_str(), "NONE")) return -1;
 
 	char loadfile[256];
@@ -3216,9 +3198,9 @@ long ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag)
 
 	return 1;
 }
-//-----------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Pop_Globals()
-{
+
+static long ARX_CHANGELEVEL_Pop_Globals() {
+	
 	ARX_CHANGELEVEL_SAVE_GLOBALS * acsg;
 	
 	long pos = 0;
@@ -3337,9 +3319,8 @@ extern long NODIRCREATION;
 
 void ReplaceSpecifics(char * text);
 
-//-----------------------------------------------------------------------------
-long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag)
-{
+static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
+	
 	DANAE_ReleaseAllDatasDynamic();
 
 	LogDebug << "Before ARX_CHANGELEVEL_PopLevel Alloc'n'Free";

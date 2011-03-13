@@ -72,8 +72,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "gui/Menu.h"
 #include "gui/Text.h"
 #include "gui/Speech.h"
+#include "gui/Interface.h"
+#include "gui/MiniMap.h"
 
 #include "graphics/Draw.h"
+#include "graphics/GraphicsModes.h"
 #include "graphics/effects/Fog.h"
 #include "graphics/particle/ParticleManager.h"
 #include "graphics/particle/ParticleEffects.h"
@@ -90,6 +93,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/ChangeLevel.h"
 #include "scene/Scene.h"
 #include "scene/GameSound.h"
+#include "scene/Interactive.h"
 
 extern long		USE_NEW_SKILLS;
 extern long		ARX_CONVERSATION;
