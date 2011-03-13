@@ -111,7 +111,6 @@ const std::string arxVersion = "0.1";
 
 #define ARX_COMPILER_MSVC ((ARX_COMPILER == ARX_COMPILER_VC9) || (ARX_COMPILER == ARX_COMPILER_VC10))
 
-
 // TODO: Move this in a platform specific file
 #if ARX_COMPILER_MSVC
 	#include <direct.h>
@@ -123,12 +122,11 @@ const std::string arxVersion = "0.1";
 
 #if ARX_COMPILER_MSVC
 	#define PRINT_SIZE_T "%Iu"
-#elseif ARX_COMPILER == ARX_COMPILER_GCC
+#elif ARX_COMPILER == ARX_COMPILER_GCC
 	#define PRINT_SIZE_T "%zu"
 #else
 	#define PRINT_SIZE_T "%lu"
 #endif
-
 
 /* ---------------------------------------------------------
                            Types

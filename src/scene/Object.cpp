@@ -2160,7 +2160,7 @@ EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, 
 		SendConsole(texx, 2, 0, (HWND)MSGhwnd);
 		sprintf(texx, "-----------THEO FILE-----------");
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "----------THEO header---------- size %ld", sizeof(THEO_HEADER));
+		sprintf(texx, "----------THEO header---------- size " PRINT_SIZE_T, sizeof(THEO_HEADER));
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
 		sprintf(texx, "Identity----------------------- %s", pth->identity);
 		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
