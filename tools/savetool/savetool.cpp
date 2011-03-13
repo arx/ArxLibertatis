@@ -238,6 +238,123 @@ struct ARX_CHANGELEVEL_IO_INDEX {
 	s32 padding[256];
 };
 
+const size_t SAVED_INVENTORY_X = 16;
+const size_t SAVED_INVENTORY_Y = 3;
+const size_t SAVED_MAX_MINIMAPS = 32;
+const size_t SAVED_MAX_PRECAST = 3;
+const size_t SAVED_MAX_EQUIPED = 12;
+
+struct SavedPrecast {
+	s32 typ;
+	s32 level;
+	u32 launch_time;
+	s32 flags;
+	s32 duration;
+};
+
+struct SavedMiniMap {
+	
+	static const size_t MAX_X = 50;
+	static const size_t MAX_Z = 50;
+	
+	u32 padding;
+	f32 offsetx;
+	f32 offsety;
+	f32 xratio;
+	f32 yratio;
+	f32 width;
+	f32 height;
+	u8 revealed[MAX_X][MAX_Z];
+	
+};
+
+struct ARX_CHANGELEVEL_PLAYER {
+	
+	f32 version;
+	s32 Current_Movement;
+	s32 Last_Movement;
+	s32 misc_flags;
+	// Player Values
+	f32 Attribute_Strength;
+	f32 Attribute_Dexterity;
+	f32 Attribute_Constitution;
+	f32 Attribute_Mind;
+	
+	f32 Skill_Stealth;
+	f32 Skill_Mecanism;
+	f32 Skill_Intuition;
+	
+	f32 Skill_Etheral_Link;
+	f32 Skill_Object_Knowledge;
+	f32 Skill_Casting;
+	
+	f32 Skill_Projectile;
+	f32 Skill_Close_Combat;
+	f32 Skill_Defense;
+	
+	f32 Critical_Hit;
+	s32 AimTime;
+	f32 life;
+	f32 maxlife;
+	f32 mana;
+	f32 maxmana;
+	s32 level;
+	s16 Attribute_Redistribute;
+	s16 Skill_Redistribute;
+	
+	f32 armor_class;
+	f32 resist_magic;
+	f32 resist_poison;
+	s32 xp;
+	s32 skin;
+	u32 rune_flags;
+	f32 damages;
+	f32 poison;
+	f32 hunger;
+	SavedVec3 pos;
+	SavedVec3 angle;
+	SavedVec3 size;
+	
+	char inzone[SIZE_ID];
+	char rightIO[SIZE_ID];
+	char leftIO[SIZE_ID];
+	char equipsecondaryIO[SIZE_ID];
+	char equipshieldIO[SIZE_ID];
+	char curtorch[SIZE_ID];
+	s32 gold;
+	s32 falling;
+	
+	s16	doingmagic;
+	s16	Interface;
+	f32 invisibility;
+	s8 useanim[36]; // padding
+	SavedIOPhysics physics;
+	// Jump Sub-data
+	u32 jumpstarttime;
+	s32 jumpphase;	// 0 no jump, 1 doing anticipation anim
+	
+	char id_inventory[3][SAVED_INVENTORY_X][SAVED_INVENTORY_Y][SIZE_ID];
+	s32 inventory_show[3][SAVED_INVENTORY_X][SAVED_INVENTORY_Y];
+	SavedMiniMap minimap[SAVED_MAX_MINIMAPS];
+	char equiped[SAVED_MAX_EQUIPED][SIZE_ID];
+	s32 nb_PlayerQuest;
+	char anims[SAVED_MAX_ANIMS][256];
+	s32 keyring_nb;
+	s32 playerflags;
+	char TELEPORT_TO_LEVEL[64];
+	char TELEPORT_TO_POSITION[64];
+	s32 TELEPORT_TO_ANGLE;
+	s32 CHANGE_LEVEL_ICON;
+	s16 bag;
+	s16 sp_flags; // padding;
+	SavedPrecast precast[SAVED_MAX_PRECAST];
+	s32 Global_Magic_Mode;
+	s32 Nb_Mapmarkers;
+	SavedVec3 LAST_VALID_POS;
+	s32 padding[253];
+	
+};
+
 #pragma pack(pop)
 
 
@@ -326,6 +443,10 @@ static int main_add(SaveBlock & save, int argc, char ** argv) {
 
 static void fix_io(SaveBlock & save, const string & name) {
 	
+	if(!strcasecmp(name, "none") || name.empty()) {
+		return;
+	}
+	
 	ARX_CHANGELEVEL_IO_SAVE ais;
 	
 	string savefile = name + ".sav";
@@ -358,7 +479,7 @@ static void fix_io(SaveBlock & save, const string & name) {
 		}
 		
 		if(flags != ais.ioflags) {
-			printf(" - %s: ioflags 0x%x -> 0x%x\n", name.c_str(), ais.ioflags, flags);
+			printf(" - fixing %s: ioflags 0x%x -> 0x%x\n", name.c_str(), ais.ioflags, flags);
 			ais.ioflags = flags;
 			changed = true;
 		}
@@ -373,6 +494,41 @@ static void fix_io(SaveBlock & save, const string & name) {
 	}
 	
 	free(dat);
+	
+}
+
+static void fix_player(SaveBlock & save) {
+	
+	printf("player\n");
+	
+	const string & loadfile = "player.sav";
+	
+	size_t size;
+	char * dat = save.load(loadfile, size);
+	if(!dat) {
+		return;
+	}
+	
+	ARX_CHANGELEVEL_PLAYER asp;
+	memcpy(&asp, dat, sizeof(ARX_CHANGELEVEL_PLAYER));
+	
+	for(size_t iNbBag = 0; iNbBag < 3; iNbBag++) {
+		for(size_t m = 0; m < SAVED_INVENTORY_Y; m++) {
+			for(size_t n = 0; n < SAVED_INVENTORY_X; n++) {
+				fix_io(save, asp.id_inventory[iNbBag][n][m]);
+			}
+		}
+	}
+	
+	fix_io(save, asp.equipsecondaryIO);
+	fix_io(save, asp.equipshieldIO);
+	fix_io(save, asp.leftIO);
+	fix_io(save, asp.rightIO);
+	fix_io(save, asp.curtorch);
+	
+	for(size_t k = 0; k < SAVED_MAX_EQUIPED; k++) {
+		fix_io(save, asp.equiped[k]);
+	}
 	
 }
 
@@ -391,7 +547,7 @@ static void fix_level(SaveBlock & save, long num) {
 		return;
 	}
 	
-	printf("fixing level %ld\n", num);
+	printf("level %ld\n", num);
 	
 	size_t pos = 0;
 	
@@ -428,6 +584,8 @@ static int main_fix(SaveBlock & save, int argc, char ** argv) {
 	if(!save.BeginSave()) {
 		return 2;
 	}
+	
+	fix_player(save);
 	
 	const long MAX_LEVEL = 24;
 	for(long i = 0; i <= MAX_LEVEL; i++) {
