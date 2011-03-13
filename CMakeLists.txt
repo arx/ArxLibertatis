@@ -52,6 +52,12 @@ function(check_link_library LIBRARY_NAME LIBRARY_FILE)
 	endif()
 endfunction(check_link_library)
 
+function(force_recheck_library LIBRARY_NAME)
+	unset(FIND_PACKAGE_MESSAGE_DETAILS_${ARGV1} CACHE)
+	unset(FIND_PACKAGE_MESSAGE_DETAILS_${LIBRARY_NAME} CACHE)
+	unset(CHECK_${LIBRARY_NAME}_LINK CACHE)
+endfunction()
+
 ##############################################################################
 
 option(ARX_BUILD_TESTS "Build tests" OFF)
@@ -60,6 +66,15 @@ option(ARX_MINGW "Build on MinGW" OFF)
 option(ARX_USE_UNITYBUILD "Unity build" OFF)
 option(ARX_DEBUG "Normal debug options" ON)
 option(ARX_DEBUG_EXTRA "Expensive debug options" OFF)
+option(ARX_FORCE_32BIT "Force a 32-bit build on 64-bit systems" OFF)
+
+if(NOT LAST_ARX_FORCE_32BIT EQUAL ARX_FORCE_32BIT)
+	force_recheck_library(DevIL IL)
+	force_recheck_library(ZLIB)
+	force_recheck_library(Freetype)
+	force_recheck_library(Threads)
+	set(LAST_ARX_FORCE_32BIT ${ARX_FORCE_32BIT} CACHE INTERNAL "The last ARX_FORCE_32BIT value")
+endif()
 
 # For custom cmake modules.
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/")
@@ -118,6 +133,11 @@ else(MSVC)
 	#wine compiler
 	set(CMAKE_CXX_COMPILER ${Wine_GXX})
 	set(CMAKE_C_COMPILER ${Wine_GCC})
+	
+	if(ARX_FORCE_32BIT)
+		set(CMAKE_C_FLAGS "-m32 ${CMAKE_C_FLAGS}")
+		set(CMAKE_CXX_FLAGS "-m32 ${CMAKE_CXX_FLAGS}")
+	endif()
 	
 	# Check the dependencies so there won't by cryptic link errors later on when found libraries have the wrong architecture (32- vs. 64-bit)
 	check_link_library(DevIL ${IL_LIBRARIES} IL)
