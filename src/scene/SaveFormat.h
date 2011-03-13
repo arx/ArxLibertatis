@@ -263,7 +263,7 @@ struct SavedMiniMap {
 		a.height = height;
 		assert(SavedMiniMap::MAX_X == MINIMAP_MAX_X);
 		assert(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z);
-		std::copy(&revealed[0][0], &revealed[SavedMiniMap::MAX_X][SavedMiniMap::MAX_Z], &a.revealed[0][0]);
+		std::copy(&revealed[0][0], &revealed[0][0] + (SavedMiniMap::MAX_X * SavedMiniMap::MAX_Z), &a.revealed[0][0]);
 		return a;
 	}
 	
@@ -277,7 +277,7 @@ struct SavedMiniMap {
 		height = b.height;
 		assert(SavedMiniMap::MAX_X == MINIMAP_MAX_X);
 		assert(SavedMiniMap::MAX_Z == MINIMAP_MAX_Z);
-		std::copy(&b.revealed[0][0], &b.revealed[SavedMiniMap::MAX_X][SavedMiniMap::MAX_Z], &revealed[0][0]);
+		std::copy(&b.revealed[0][0], &b.revealed[0][0] + (SavedMiniMap::MAX_X * SavedMiniMap::MAX_Z), &revealed[0][0]);
 		return *this;
 	}
 	

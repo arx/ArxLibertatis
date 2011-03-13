@@ -806,7 +806,8 @@ static long ARX_CHANGELEVEL_Push_Player() {
 	
 	ARX_CHANGELEVEL_PLAYER * asp;
 
-	long allocsize = sizeof(ARX_CHANGELEVEL_PLAYER) + Keyring_Number * sizeof(KEYRING_SLOT) + 48000;
+	long allocsize = sizeof(ARX_CHANGELEVEL_PLAYER) + 48000;
+	allocsize += Keyring_Number * 64;
 	allocsize += 80 * nb_PlayerQuest;
 	allocsize += sizeof(SavedMapMakerData) * Mapmarkers.size();
 
@@ -1927,7 +1928,9 @@ long ARX_CHANGELEVEL_Pop_Level(ARX_CHANGELEVEL_INDEX * asi, long num, long First
 	return 1;
 }
 
-static long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_PLAYER * asp) {
+static long ARX_CHANGELEVEL_Pop_Player(long instance) {
+	
+	ARX_CHANGELEVEL_PLAYER asp;
 	
 	const string & loadfile = "player.sav";
 	
@@ -1938,226 +1941,214 @@ static long ARX_CHANGELEVEL_Pop_Player(ARX_CHANGELEVEL_PLAYER * asp) {
 		return -1;
 	}
 	
-	memcpy(asp, dat, sizeof(ARX_CHANGELEVEL_PLAYER));
-
-	player.AimTime = asp->AimTime;
-	player.angle = asp->angle;
+	memcpy(&asp, dat, sizeof(ARX_CHANGELEVEL_PLAYER));
+	
+	player.AimTime = asp.AimTime;
+	player.angle = asp.angle;
 	player.desiredangle.a = player.angle.a;
 	player.desiredangle.b = player.angle.b;
 	
-
-	ARX_CHECK_UCHAR(asp->armor_class);
-	player.armor_class = ARX_CLEAN_WARN_CAST_UCHAR(asp->armor_class);
-
-
-	player.Attribute_Constitution = asp->Attribute_Constitution;
-	player.Attribute_Dexterity = asp->Attribute_Dexterity;
-	player.Attribute_Mind = asp->Attribute_Mind;
-	player.Attribute_Strength = asp->Attribute_Strength;
-	player.Critical_Hit = asp->Critical_Hit;
-	player.Current_Movement = asp->Current_Movement;
-	player.damages = asp->damages;
-	player.doingmagic = asp->doingmagic;
-	player.playerflags = asp->playerflags;
-
-	if (asp->TELEPORT_TO_LEVEL[0]) strcpy(TELEPORT_TO_LEVEL, asp->TELEPORT_TO_LEVEL);
-	else memset(TELEPORT_TO_LEVEL, 0, 64);
-
-	if (asp->TELEPORT_TO_POSITION[0]) strcpy(TELEPORT_TO_POSITION, asp->TELEPORT_TO_POSITION);
-	else memset(TELEPORT_TO_POSITION, 0, 64);
-
-	TELEPORT_TO_ANGLE = asp->TELEPORT_TO_ANGLE;
-	CHANGE_LEVEL_ICON = asp->CHANGE_LEVEL_ICON;
-	player.bag = asp->bag;
+	ARX_CHECK_UCHAR(asp.armor_class);
+	player.armor_class = static_cast<unsigned char>(asp.armor_class);
+	
+	player.Attribute_Constitution = asp.Attribute_Constitution;
+	player.Attribute_Dexterity = asp.Attribute_Dexterity;
+	player.Attribute_Mind = asp.Attribute_Mind;
+	player.Attribute_Strength = asp.Attribute_Strength;
+	player.Critical_Hit = asp.Critical_Hit;
+	player.Current_Movement = asp.Current_Movement;
+	player.damages = asp.damages;
+	player.doingmagic = asp.doingmagic;
+	player.playerflags = asp.playerflags;
+	
+	if(asp.TELEPORT_TO_LEVEL[0]) {
+		strcpy(TELEPORT_TO_LEVEL, asp.TELEPORT_TO_LEVEL);
+	} else {
+		memset(TELEPORT_TO_LEVEL, 0, 64);
+	}
+	
+	if(asp.TELEPORT_TO_POSITION[0]) {
+		strcpy(TELEPORT_TO_POSITION, asp.TELEPORT_TO_POSITION);
+	} else {
+		memset(TELEPORT_TO_POSITION, 0, 64);
+	}
+	
+	TELEPORT_TO_ANGLE = asp.TELEPORT_TO_ANGLE;
+	CHANGE_LEVEL_ICON = asp.CHANGE_LEVEL_ICON;
+	player.bag = asp.bag;
 	assert(SAVED_MAX_PRECAST == MAX_PRECAST);
-	std::copy(asp->precast, asp->precast + SAVED_MAX_PRECAST, Precast);
-	player.Interface = asp->Interface;
+	std::copy(asp.precast, asp.precast + SAVED_MAX_PRECAST, Precast);
+	player.Interface = asp.Interface;
 	player.Interface &= ~INTER_MAP;
-	player.falling = asp->falling;
-	player.gold = asp->gold;
-	inter.iobj[0]->invisibility = asp->invisibility;
-	ARX_PATH * ap = ARX_PATH_GetAddressByName(asp->inzone);
-	player.inzone = ap;
-	player.jumpphase = asp->jumpphase;
-	player.jumpstarttime = asp->jumpstarttime;
-	player.Last_Movement = asp->Last_Movement;
-
-
-	ARX_CHECK_UCHAR(asp->level);
-	player.level = ARX_CLEAN_WARN_CAST_UCHAR(asp->level);
-
-
-	player.life = asp->life;
-	player.mana = asp->mana;
-	player.maxlife = asp->maxlife;
-	player.maxmana = asp->maxmana;
-
-	if (asp->misc_flags & 1)
-		player.onfirmground = 1;
-	else
-		player.onfirmground = 0;
-
-	if (asp->misc_flags & 2)
-		WILLRETURNTOCOMBATMODE = 1;
-	else
-		WILLRETURNTOCOMBATMODE = 0;
-
-	player.physics = asp->physics;
-	player.poison = asp->poison;
-	player.hunger = asp->hunger;
-	player.pos = asp->pos;
-
-	if (asp->sp_flags & SP_ARM1)
+	player.falling = asp.falling;
+	player.gold = asp.gold;
+	inter.iobj[0]->invisibility = asp.invisibility;
+	player.inzone = ARX_PATH_GetAddressByName(asp.inzone);;
+	player.jumpphase = asp.jumpphase;
+	player.jumpstarttime = asp.jumpstarttime;
+	player.Last_Movement = asp.Last_Movement;
+	
+	ARX_CHECK_UCHAR(asp.level);
+	player.level = static_cast<unsigned char>(asp.level);
+	
+	player.life = asp.life;
+	player.mana = asp.mana;
+	player.maxlife = asp.maxlife;
+	player.maxmana = asp.maxmana;
+	
+	player.onfirmground = (asp.misc_flags & 1) ? 1 : 0;
+	WILLRETURNTOCOMBATMODE = (asp.misc_flags & 2) ? 1 : 0;
+	
+	player.physics = asp.physics;
+	player.poison = asp.poison;
+	player.hunger = asp.hunger;
+	player.pos = asp.pos;
+	
+	if(asp.sp_flags & SP_ARM1) {
 		sp_arm = 1;
-	else if (asp->sp_flags & SP_ARM2)
+	} else if(asp.sp_flags & SP_ARM2) {
 		sp_arm = 2;
-	else if (asp->sp_flags & SP_ARM3)
+	} else if(asp.sp_flags & SP_ARM3) {
 		sp_arm = 3;
-	else
+	} else {
 		sp_arm = 0;
-
-	if (asp->sp_flags & SP_MAX)
-	{
+	}
+	
+	if(asp.sp_flags & SP_MAX) {
 		cur_mx = 3;
 		sp_max = 1;
-	}
-	else
-	{
+	} else {
 		cur_mx = 0;
 		sp_max = 0;
 	}
-
-	if (asp->sp_flags & SP_MR)
-	{
-		cur_mr = 3;
-	}
-	else
-	{
-		cur_mr = 0;
-	}
-
-	if (asp->sp_flags & SP_RF)
-		cur_rf = 3;
-	else
-		cur_rf = 0;
-
-	if (asp->sp_flags & SP_WEP)
-	{
+	
+	cur_mr = (asp.sp_flags & SP_MR) ? 3 : 0;
+	cur_rf = (asp.sp_flags & SP_RF) ? 3 : 0;
+	
+	if(asp.sp_flags & SP_WEP) {
 		cur_pom = 3;
 		sp_wep = 1;
-	}
-	else
-	{
+	} else {
 		cur_pom = 0;
 		sp_wep = 0;
 	}
-
-
-
-	if (inter.iobj[0])
-	{
+	
+	if(inter.iobj[0]) {
 		inter.iobj[0]->pos = player.pos;
 		inter.iobj[0]->pos.y += 170.f;
 	}
-
-	WILL_RESTORE_PLAYER_POSITION = asp->pos;
+	
+	WILL_RESTORE_PLAYER_POSITION = asp.pos;
 	WILL_RESTORE_PLAYER_POSITION_FLAG = 1;
-
-
-	ARX_CHECK_UCHAR(asp->resist_magic);
-	ARX_CHECK_UCHAR(asp->resist_poison);
-	player.resist_magic = ARX_CLEAN_WARN_CAST_UCHAR(asp->resist_magic);
-	player.resist_poison = ARX_CLEAN_WARN_CAST_UCHAR(asp->resist_poison);
-
-
-
-	ARX_CHECK_UCHAR(asp->Attribute_Redistribute);
-	ARX_CHECK_UCHAR(asp->Skill_Redistribute);
-
-	player.Attribute_Redistribute = ARX_CLEAN_WARN_CAST_UCHAR(asp->Attribute_Redistribute);
-	player.Skill_Redistribute = ARX_CLEAN_WARN_CAST_UCHAR(asp->Skill_Redistribute);
-
-
-	player.rune_flags = asp->rune_flags;
-	player.size = asp->size;
-	player.Skill_Stealth = asp->Skill_Stealth;
-	player.Skill_Mecanism = asp->Skill_Mecanism;
-	player.Skill_Intuition = asp->Skill_Intuition;
-	player.Skill_Etheral_Link = asp->Skill_Etheral_Link;
-	player.Skill_Object_Knowledge = asp->Skill_Object_Knowledge;
-	player.Skill_Casting = asp->Skill_Casting;
-	player.Skill_Projectile = asp->Skill_Projectile;
-	player.Skill_Close_Combat = asp->Skill_Close_Combat;
-	player.Skill_Defense = asp->Skill_Defense;
-
-
-	ARX_CHECK_CHAR(asp->skin);
-	player.skin = ARX_CLEAN_WARN_CAST_CHAR(asp->skin);
-
-	player.xp = asp->xp;
-	GLOBAL_MAGIC_MODE = asp->Global_Magic_Mode;
-
+	
+	ARX_CHECK_UCHAR(asp.resist_magic);
+	ARX_CHECK_UCHAR(asp.resist_poison);
+	player.resist_magic = static_cast<unsigned char>(asp.resist_magic);
+	player.resist_poison = static_cast<unsigned char>(asp.resist_poison);
+	
+	ARX_CHECK_UCHAR(asp.Attribute_Redistribute);
+	ARX_CHECK_UCHAR(asp.Skill_Redistribute);
+	player.Attribute_Redistribute = static_cast<unsigned char>(asp.Attribute_Redistribute);
+	player.Skill_Redistribute = static_cast<unsigned char>(asp.Skill_Redistribute);
+	
+	player.rune_flags = asp.rune_flags;
+	player.size = asp.size;
+	player.Skill_Stealth = asp.Skill_Stealth;
+	player.Skill_Mecanism = asp.Skill_Mecanism;
+	player.Skill_Intuition = asp.Skill_Intuition;
+	player.Skill_Etheral_Link = asp.Skill_Etheral_Link;
+	player.Skill_Object_Knowledge = asp.Skill_Object_Knowledge;
+	player.Skill_Casting = asp.Skill_Casting;
+	player.Skill_Projectile = asp.Skill_Projectile;
+	player.Skill_Close_Combat = asp.Skill_Close_Combat;
+	player.Skill_Defense = asp.Skill_Defense;
+	
+	ARX_CHECK_CHAR(asp.skin);
+	player.skin = static_cast<char>(asp.skin);
+	
+	player.xp = asp.xp;
+	GLOBAL_MAGIC_MODE = asp.Global_Magic_Mode;
+	
 	ARX_MINIMAP_PurgeTC();
 	assert(SAVED_MAX_MINIMAPS == MAX_MINIMAPS);
-	std::copy(asp->minimap, asp->minimap + SAVED_MAX_MINIMAPS, minimap);
-
-	INTERACTIVE_OBJ * io = inter.iobj[0];
-
-	for (int i = 0; i < MAX_ANIMS; i++)
-	{
-		if (io->anims[i] != NULL)
-		{
-			ReleaseAnimFromIO(io, i);
+	std::copy(asp.minimap, asp.minimap + SAVED_MAX_MINIMAPS, minimap);
+	
+	INTERACTIVE_OBJ & io = *inter.iobj[0];
+	assert(SAVED_MAX_ANIMS == MAX_ANIMS);
+	for(size_t i = 0; i < SAVED_MAX_ANIMS; i++) {
+		if(io.anims[i] != NULL) {
+			ReleaseAnimFromIO(&io, i);
 		}
-
-		if (asp->anims[i][0])
-		{
-			io->anims[i] = EERIE_ANIMMANAGER_Load(asp->anims[i]);
+		if(asp.anims[i][0]) {
+			io.anims[i] = EERIE_ANIMMANAGER_Load(asp.anims[i]);
 		}
 	}
-
-	for (int iNbBag = 0; iNbBag < 3; iNbBag++)
-	{
-		for (long m = 0; m < INVENTORY_Y; m++)
-			for (long n = 0; n < INVENTORY_X; n++)
-			{
-				inventory[iNbBag][n][m].io = ConvertToValidIO(asp->id_inventory[iNbBag][n][m]);
+	
+	assert(SAVED_INVENTORY_Y == INVENTORY_Y);
+	assert(SAVED_INVENTORY_X == INVENTORY_X);
+	for(size_t iNbBag = 0; iNbBag < 3; iNbBag++) {
+		for(size_t m = 0; m < SAVED_INVENTORY_Y; m++) {
+			for (size_t n = 0; n < SAVED_INVENTORY_X; n++) {
+				inventory[iNbBag][n][m].io = ConvertToValidIO(asp.id_inventory[iNbBag][n][m]);
+				inventory[iNbBag][n][m].show = asp.inventory_show[iNbBag][n][m];
 			}
+		}
 	}
-
+	
+	size_t pos = sizeof(ARX_CHANGELEVEL_PLAYER);
+	
 	ARX_PLAYER_Quest_Init();
-	long pos = sizeof(ARX_CHANGELEVEL_PLAYER);
-
-	for (int i = 0; i < asp->nb_PlayerQuest; i++)
-	{
+	for(int i = 0; i < asp.nb_PlayerQuest; i++) {
 		ARX_PLAYER_Quest_Add((char *)(dat + pos), true);
 		pos += 80;
 	}
-
+	
 	ARX_KEYRING_Init();
-
-	for (int i = 0; i < asp->keyring_nb; i++)
-	{
-		char * key = (char *)(dat + pos);
-		pos += sizeof(KEYRING_SLOT);
-		ARX_KEYRING_Add(key);
+	for(int i = 0; i < asp.keyring_nb; i++) {
+		ARX_KEYRING_Add((char *)(dat + pos));
+		pos += 64;
 	}
-
+	
 	ARX_MAPMARKER_Init();
-
-	Mapmarkers.resize(asp->Nb_Mapmarkers);
-	for(int i = 0; i < asp->Nb_Mapmarkers; i++) {
+	Mapmarkers.resize(asp.Nb_Mapmarkers);
+	for(int i = 0; i < asp.Nb_Mapmarkers; i++) {
 		SavedMapMakerData acmd;
 		memcpy(&acmd, dat + pos, sizeof(SavedMapMakerData));
 		pos += sizeof(SavedMapMakerData);
 		ARX_MAPMARKER_Add(acmd.x, acmd.y, acmd.lvl, acmd.string);
 	}
-
+	
 	ARX_PLAYER_Restore_Skin();
-
+	
 	ARX_PLAYER_Modify_XP(0);	 
-
+	
 	free(dat);
+	
+	PROGRESS_BAR_COUNT += 10.f;
+	LoadLevelScreen();
+	
+	// Restoring Player equipment...
+	player.equipsecondaryIO = ConvertToValidIO(asp.equipsecondaryIO);
+	player.equipshieldIO = ConvertToValidIO(asp.equipshieldIO);
+	player.leftIO = ConvertToValidIO(asp.leftIO);
+	player.rightIO = ConvertToValidIO(asp.rightIO);
+	CURRENT_TORCH = ConvertToValidIO(asp.curtorch);
+	PROGRESS_BAR_COUNT += 1.f;
+	LoadLevelScreen();
+	
+	assert(SAVED_MAX_EQUIPED == MAX_EQUIPED);
+	for(size_t i = 0; i < SAVED_MAX_EQUIPED; i++) {
+		player.equiped[i] = (short)GetInterNum(ConvertToValidIO(asp.equiped[i]));
+		if(player.equiped[i] > 0 && ValidIONum(player.equiped[i])) {
+			inter.iobj[player.equiped[i]]->level = (short)instance;
+		} else {
+			player.equiped[i] = 0;
+		}
+	}
+	
+	PROGRESS_BAR_COUNT += 2.f;
+	LoadLevelScreen();
+	
 	return 1;
 }
 
@@ -3334,7 +3325,6 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	memset(_Gaids, 0, sizeof(ARX_CHANGELEVEL_INVENTORY_DATA_SAVE *)*MAX_IO_SAVELOAD);
 
 	ARX_CHANGELEVEL_INDEX asi;
-	ARX_CHANGELEVEL_PLAYER asp;
 
 	CURRENT_GAME_INSTANCE = instance;
 	ARX_CHANGELEVEL_MakePath();
@@ -3547,8 +3537,7 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	LoadLevelScreen(instance);
 	LogDebug << "Before ARX_CHANGELEVEL_Pop_Player";
 
-	if (ARX_CHANGELEVEL_Pop_Player(&asp) != 1)
-	{
+	if(ARX_CHANGELEVEL_Pop_Player(instance) != 1) {
 
 		LogError << "Cannot Load Player data";
 
@@ -3572,41 +3561,6 @@ static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	}
 
 	LogDebug << "After  ARX_CHANGELEVEL_Pop_Player";
-	PROGRESS_BAR_COUNT += 10.f;
-	LoadLevelScreen();
-	LogDebug << "Before Misc Code";
-
-	// Restoring Player equipment...
-	player.equipsecondaryIO = ConvertToValidIO(asp.equipsecondaryIO);
-	player.equipshieldIO = ConvertToValidIO(asp.equipshieldIO);
-	player.leftIO = ConvertToValidIO(asp.leftIO);
-	player.rightIO = ConvertToValidIO(asp.rightIO);
-	CURRENT_TORCH = ConvertToValidIO(asp.curtorch);
-	PROGRESS_BAR_COUNT += 1.f;
-	LoadLevelScreen();
-
-	for (int iNbBag = 0; iNbBag < 3; iNbBag++)
-	{
-		for (long m = 0; m < INVENTORY_Y; m++)
-			for (long n = 0; n < INVENTORY_X; n++)
-			{
-				inventory[iNbBag][n][m].io = ConvertToValidIO(asp.id_inventory[iNbBag][n][m]);
-				inventory[iNbBag][n][m].show = asp.inventory_show[iNbBag][n][m];
-			}
-	}
-
-	for (long i = 0; i < MAX_EQUIPED; i++)
-	{
-		player.equiped[i] = (short)GetInterNum(ConvertToValidIO(asp.equiped[i]));
-
-		if ((player.equiped[i] > 0) && (ValidIONum(player.equiped[i])))
-			inter.iobj[player.equiped[i]]->level = (short)instance;
-		else player.equiped[i] = 0;
-	}
-
-	PROGRESS_BAR_COUNT += 2.f;
-	LoadLevelScreen();
-	LogDebug << "After Misc Code";
 
 	LogDebug << "Before ARX_CHANGELEVEL_PopAllIO_FINISH";
 	// Restoring all Missing Objects required by other objects...
@@ -3908,55 +3862,51 @@ static bool ARX_CHANGELEVEL_Get_Player_LevelData(ARX_CHANGELEVEL_PLAYER_LEVEL_DA
 long DONT_CLEAR_SCENE;
 extern long STARTED_A_GAME;
 //------------------------------------------------------------------------------
-// ARX_CHANGELEVEL_Load: Load a GameSave
+// ARX_CHANGELEVEL_Load: 
 //------------------------------------------------------------------------------
-long ARX_CHANGELEVEL_Load(long instance)
-{
-	LogDebug << "-----------------------------------";
+long ARX_CHANGELEVEL_Load(long instance) {
+	
+	LogDebug << "begin ARX_CHANGELEVEL_Load";
+	
 	HERMES_DATE_TIME hdt;
 	GetDate(&hdt);
-
-	if (NEED_LOG)
-	{
+	
+	if(NEED_LOG) {
 		LogDebug << "ARX_CHANGELEVEL_Load";
 		char tex[256];
 		sprintf(tex, "Date: %02ld/%02ld/%ld  Time: %ldh%ld", hdt.days, hdt.months, hdt.years, hdt.hours, hdt.mins);
 		LogDebug << tex;
 	}
-
+	
 	iTimeToDrawD7 = -3000;
-
+	
 	PROGRESS_BAR_TOTAL = 238; 
 	OLD_PROGRESS_BAR_COUNT = PROGRESS_BAR_COUNT = 0;
-
+	
 	// Forbid Saving
 	FORBID_SAVE = 1;
 	ARX_TIME_Pause();
-
+	
 	// Checks Instance
-	if (instance <= -1)
-	{
+	if(instance <= -1) {
 		LogWarning << "Internal Non-Fatal Error";
-
 		return -1;
 	}
-
+	
 	// Checks/Create GameSavePath
 	CURRENT_GAME_INSTANCE = instance;
 	ARX_GAMESAVE_MakePath();
-
-	if (!DirectoryExist(GameSavePath))
-	{
+	
+	if(!DirectoryExist(GameSavePath)) {
 		LogError << "Unknown SavePath: " << GameSavePath;
-
 		return -1;
 	}
-
+	
 	// Empty Directory
 	ARX_CHANGELEVEL_MakePath();
 	KillAllDirectory(CurGamePath);
 	CreateDirectory(CurGamePath, NULL);
-
+	
 	// Copy SavePath to Current Game
 	CopyDirectory(GameSavePath, CurGamePath);
 	// Retrieves Player LevelData
@@ -3964,40 +3914,35 @@ long ARX_CHANGELEVEL_Load(long instance)
 	if(ARX_CHANGELEVEL_Get_Player_LevelData(pld, CurGamePath)) {
 		PROGRESS_BAR_COUNT += 2.f;
 		LoadLevelScreen(pld.level);
-
-		if (pld.level == CURRENTLEVEL)
-			DONT_CLEAR_SCENE = 1;
-		else
-			DONT_CLEAR_SCENE = 0;
-
-
+		
+		DONT_CLEAR_SCENE = (pld.level == CURRENTLEVEL) ? 1 : 0;
+		
 		float fPldTime = ARX_CLEAN_WARN_CAST_FLOAT(pld.time);
 		DanaeClearLevel();
-		PROGRESS_BAR_COUNT			+=	2.f;
+		PROGRESS_BAR_COUNT += 2.f;
 		LoadLevelScreen(pld.level);
-		CURRENTLEVEL				=	pld.level;
+		CURRENTLEVEL = pld.level;
 		ARX_CHANGELEVEL_DesiredTime	=	fPldTime;
 		ARX_CHANGELEVEL_PopLevel(pld.level, 0);
 		ARX_TIME_Force_Time_Restore(fPldTime);
-		NO_TIME_INIT				=	1;
-		FORCE_TIME_RESTORE			=	fPldTime;
-		DONT_CLEAR_SCENE			=	0;
-
-	}
-	else
-	{
+		NO_TIME_INIT = 1;
+		FORCE_TIME_RESTORE = fPldTime;
+		DONT_CLEAR_SCENE = 0;
+		
+	} else {
 		LogError << "Error Loading Level...";
-
 		return -1;
 	}
-
+	
 	STARTED_A_GAME = 1;
 	BLOCK_PLAYER_CONTROLS = 0;
 	player.Interface &= ~INTER_COMBATMODE;
-
+	
 	if (inter.iobj[0]) inter.iobj[0]->animlayer[1].cur_anim = NULL;
-
+	
 	JUST_RELOADED = 1;
+	
+	LogDebug << "success ARX_CHANGELEVEL_Load";
 	return 1;
 }
 //------------------------------------------------------------------------------

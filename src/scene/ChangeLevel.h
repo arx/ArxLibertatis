@@ -74,7 +74,12 @@ void ARX_CHANGELEVEL_MakePath();
 void ARX_CHANGELEVEL_Change(const std::string & level, const std::string & target, long angle, long confirm);
 
 long ARX_CHANGELEVEL_GetInfo(const std::string & path, std::string & name, float & version, long & level, unsigned long & time);
+
+/**
+ * Load a GameSave
+ **/
 long ARX_CHANGELEVEL_Load(long instance);
+
 long ARX_CHANGELEVEL_Save(long instance, const std::string & name);
 
 void ARX_Changelevel_CurGame_Open();
