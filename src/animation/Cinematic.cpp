@@ -258,7 +258,7 @@ HRESULT Cinematic::InitDeviceObjects()
 
 	GDevice->SetRenderState(D3DRENDERSTATE_TEXTUREPERSPECTIVE , true);
 	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GDevice->SetRenderState(D3DRENDERSTATE_AMBIENT,  0x0a0a0a0a);
 	GDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, true);
 	GDevice->SetRenderState(D3DRENDERSTATE_SPECULARENABLE, false);
@@ -335,7 +335,7 @@ HRESULT Cinematic::DeleteDeviceObjects()
 	GDevice->SetMaterial(&mtrl);
 	GDevice->SetRenderState(D3DRENDERSTATE_TEXTUREPERSPECTIVE , true);
 	danaeApp.EnableZBuffer();
-	SETZWRITE(true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GDevice->SetRenderState(D3DRENDERSTATE_AMBIENT,  0x0a0a0a0a);
 	// Setup Dither Mode
 	GDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, false);

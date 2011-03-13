@@ -229,7 +229,7 @@ float CCreateField::Render()
 	if (falpha > 1.f) falpha = 1.f;
 
 	GRenderer->SetCulling(Renderer::CullNone);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
@@ -345,7 +345,7 @@ float CCreateField::Render()
 	RenderSubDivFace(b, t, 0, 3, 3, 0);
 	RenderSubDivFace(b, t, 2, 1, 1, 2);
 
-	SETZWRITE(true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	if (lLightId != -1)
@@ -481,7 +481,7 @@ float CSlowDown::Render()
 		return 0.f;
 	}
 
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	for (i = 0; i < inter.nbmax; i++)
@@ -1234,7 +1234,7 @@ float CRiseDead::Render()
 
 	SETTC(NULL);
 	GRenderer->SetCulling(Renderer::CullNone);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
@@ -1293,14 +1293,14 @@ float CRiseDead::Render()
 		this->AddStone(&pos);
 	}
 
-	SETZWRITE(true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
 	this->DrawStone();
 	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	SETZWRITE(true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetCulling(Renderer::CullNone);
 	return (fSizeIntro / end);
 }
@@ -1733,7 +1733,7 @@ float CParalyse::Render()
 	if (key > 1) return 0;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
@@ -2112,7 +2112,7 @@ float CParalyse::Render()
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	SETZWRITE(true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
 	return 0;
 }
@@ -2232,7 +2232,7 @@ float CDisarmTrap::Render()
 	}
 
 
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 

@@ -7700,7 +7700,7 @@ void ARX_SPELLS_Update()
 					GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
 					GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					SETZWRITE(false );
+					GRenderer->SetRenderState(Renderer::DepthWrite, false);
 					cabalangle.b=spells[i].fdata+(float)FrameDiff*0.1f;
 					spells[i].fdata=cabalangle.b;
 
@@ -7729,7 +7729,7 @@ void ARX_SPELLS_Update()
 							cabalcolor.r = 0.15f;
 					DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
-					SETZWRITE(true );	
+					GRenderer->SetRenderState(Renderer::DepthWrite, true);	
 				}
 			}
 			break;				
@@ -8838,7 +8838,7 @@ void ARX_SPELLS_Update()
 						GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
 						GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						SETZWRITE(false );
+						GRenderer->SetRenderState(Renderer::DepthWrite, false);
 						cabalangle.b=spells[i].fdata+(float)FrameDiff*0.1f;
 						spells[i].fdata=cabalangle.b;
 
@@ -8887,7 +8887,7 @@ void ARX_SPELLS_Update()
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						cabalangle.b=-cabalangle.b;
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
-						SETZWRITE(true );	
+						GRenderer->SetRenderState(Renderer::DepthWrite, true);	
 
 						ARX_SOUND_RefreshPosition(spells[i].snd_loop, &cabalpos);
 					}
@@ -8938,7 +8938,7 @@ void ARX_SPELLS_Update()
 						GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
 						GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-						SETZWRITE(false );
+						GRenderer->SetRenderState(Renderer::DepthWrite, false);
 						cabalangle.b=spells[i].fdata+(float)FrameDiff*0.1f;
 						spells[i].fdata=cabalangle.b;
 							cabalangle.g = 0.f;
@@ -8985,7 +8985,7 @@ void ARX_SPELLS_Update()
 						DrawEERIEObjEx(cabal,&cabalangle,&cabalpos,&cabalscale,&cabalcolor);	
 						cabalangle.b=-cabalangle.b;
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);		
-						SETZWRITE(true );	
+						GRenderer->SetRenderState(Renderer::DepthWrite, true);	
 
 						ARX_SOUND_RefreshPosition(spells[i].snd_loop, &cabalpos);
 						}

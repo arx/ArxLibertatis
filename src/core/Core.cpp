@@ -4348,7 +4348,7 @@ void ManageFade()
 	LAST_FADEVALUE=Visibility;
 	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
 	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );										
-	SETZWRITE(false );
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
 	EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
@@ -4360,7 +4360,7 @@ void ManageFade()
 	EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
 			NULL,EERIERGB(col*FADECOLOR.r,col*FADECOLOR.g,col*FADECOLOR.b));		
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	SETZWRITE(true );
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 }
 
 extern long cur_mr;
@@ -5751,7 +5751,7 @@ static float _AvgFrameDiff = 150.f;
 			return E_FAIL;
 	}
 	
-	SETZWRITE(true );
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	if ( (inter.iobj[0]) && (inter.iobj[0]->animlayer[0].cur_anim) )
@@ -6540,7 +6540,7 @@ static float _AvgFrameDiff = 150.f;
 
 	// SUBJECTIVE VIEW UPDATE START  *********************************************************
 	SetFilteringMode(Bilinear);		
-	SETZWRITE(true );
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	danaeApp.EnableZBuffer();
 
 	if (FirstFrame==0)
@@ -6590,7 +6590,7 @@ static float _AvgFrameDiff = 150.f;
 
 		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
 		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );			
-		SETZWRITE(false );
+		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		ARX_FOGS_Render();
 
@@ -6659,7 +6659,7 @@ static float _AvgFrameDiff = 150.f;
 		DanaeItemAdd();
 		
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 	// Checks some specific spell FX
 	CheckMr();
@@ -6684,7 +6684,7 @@ static float _AvgFrameDiff = 150.f;
 
 		if (PLAYER_PARALYSED)
 	{
-		SETZWRITE(false);
+		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 		GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
@@ -6692,7 +6692,7 @@ static float _AvgFrameDiff = 150.f;
 		EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
 				NULL,EERIERGB(0.2f,0.2f,1.f));		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		SETZWRITE(true );
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	}
 
 	if (FADEDIR)
@@ -6701,7 +6701,7 @@ static float _AvgFrameDiff = 150.f;
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	SETZWRITE(true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	
 	// Reset Last Key
 	danaeApp.kbd.lastkey=-1;
@@ -6963,7 +6963,7 @@ static float _AvgFrameDiff = 150.f;
 	{
 		if(danaeApp.DANAEStartRender())
 		{
-			SETZWRITE(true );
+			GRenderer->SetRenderState(Renderer::DepthWrite, true);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			iVPOS=0;
 			ShowValue(&oBENCH_STARTUP,&BENCH_STARTUP,"Startup");
@@ -7118,7 +7118,7 @@ void DANAE::GoFor2DFX()
 			GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE);
 			GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);		
-			SETZWRITE(false );
+			GRenderer->SetRenderState(Renderer::DepthWrite, false);
 			GRenderer->SetCulling(Renderer::CullNone);
 			GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE, false);
 			GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,  0);
@@ -7162,7 +7162,7 @@ void DANAE::GoFor2DFX()
 		}
 	}
 
-	SETZWRITE(true );
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 }
 
 void ShowTestText()

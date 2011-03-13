@@ -218,7 +218,7 @@ float CExplosion::Render()
 	if (this->key > 1) return 0;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
@@ -423,7 +423,7 @@ float CExplosion::Render()
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	SETZWRITE(true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
 	return 0;
 }

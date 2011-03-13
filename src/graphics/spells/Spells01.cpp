@@ -378,7 +378,7 @@ float CMagicMissile::Render()
 
 	// Set Appropriate Renderstates -------------------------------------------
 	GRenderer->SetCulling(Renderer::CullNone);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -1328,7 +1328,7 @@ void CPortal::Update(unsigned long _ulTime)
 float CPortal::Render()
 {
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
@@ -1440,7 +1440,7 @@ float CPortal::Render()
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetCulling(Renderer::CullNone);
-	SETZWRITE(true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
 	return 0;
 }

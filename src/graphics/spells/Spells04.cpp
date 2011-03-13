@@ -139,7 +139,7 @@ float CBless::Render()
 	}
 
 	GRenderer->SetCulling(Renderer::CullNone);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	D3DTLVERTEX v[4];
@@ -229,7 +229,7 @@ float CBless::Render()
 	}
 
 	GRenderer->SetCulling(Renderer::CullNone);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	return 1;
@@ -279,7 +279,7 @@ float CDispellField::Render()
 		return 0.f;
 	}
 
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	for (i = 0; i < inter.nbmax; i++)
@@ -503,7 +503,7 @@ float CTelekinesis::Render()
 
 	//SETTC(NULL);
 	//GRenderer->SetCulling(Renderer::CullNone);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	//GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
@@ -757,7 +757,7 @@ float CCurse::Render(EERIE_3D * pos)
 	}
 
 	GRenderer->SetCulling(Renderer::CullCW);
-	SETZWRITE(true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
 	x = pos->x;
 	y = pos->y;

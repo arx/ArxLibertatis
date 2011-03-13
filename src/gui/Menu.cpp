@@ -714,7 +714,7 @@ bool ARX_Menu_Render()
 		{
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
-			SETZWRITE(false);
+			GRenderer->SetRenderState(Renderer::DepthWrite, false);
 			GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_FALSE);
 
 			EERIEDrawBitmap2( 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.9f, ARXmenu.mda->BookBackground, D3DCOLORWHITE);
@@ -932,7 +932,7 @@ bool ARX_Menu_Render()
 		{
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
-			SETZWRITE(false);
+			GRenderer->SetRenderState(Renderer::DepthWrite, false);
 			GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_FALSE);
 
 			EERIEDrawBitmap2( 0, 0, ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZX), ARX_CLEAN_WARN_CAST_FLOAT(DANAESIZY), 0.9f, ARXmenu.mda->BookBackground, D3DCOLORWHITE);

@@ -132,7 +132,7 @@ void Font::Draw( int x, int y, std::string::const_iterator itStart, std::string:
     GRenderer->SetBlendFunc( Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha );
 	
 	GRenderer->SetRenderState( Renderer::DepthTest, false );
-	GRenderer->SetRenderState( Renderer::DepthMask, false );
+	GRenderer->SetRenderState( Renderer::DepthWrite, false );
 	GRenderer->SetCulling( Renderer::CullNone );
 
 	// 2D projection setup... Put origin (0,0) in the top left corner like GDI... 
@@ -197,7 +197,7 @@ void Font::Draw( int x, int y, std::string::const_iterator itStart, std::string:
     GRenderer->End2DProjection();
     GRenderer->SetRenderState( Renderer::AlphaBlending, false );
 	GRenderer->SetRenderState( Renderer::DepthTest, true );
-	GRenderer->SetRenderState( Renderer::DepthMask, true );
+	GRenderer->SetRenderState( Renderer::DepthWrite, true );
 	GRenderer->SetCulling( Renderer::CullCCW );
 }
 

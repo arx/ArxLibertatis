@@ -176,7 +176,7 @@ void ARXDRAW_DrawInterShadows()
 							if (first)
 							{
 								first=0;
-								SETZWRITE(false );
+								GRenderer->SetRenderState(Renderer::DepthWrite, false);
 								SETBLENDMODE(D3DBLEND_ZERO,D3DBLEND_INVSRCCOLOR);
 								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 								SETTC(Boom);
@@ -232,7 +232,7 @@ void ARXDRAW_DrawInterShadows()
 							if (first)
 							{
 								first=0;
-								SETZWRITE(false );
+								GRenderer->SetRenderState(Renderer::DepthWrite, false);
 								SETBLENDMODE(D3DBLEND_ZERO,D3DBLEND_INVSRCCOLOR);
 								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 								SETTC(Boom);
@@ -261,7 +261,7 @@ void ARXDRAW_DrawInterShadows()
 		}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	SETZWRITE(true );
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	SetZBias(0);
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
 }

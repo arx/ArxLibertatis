@@ -156,7 +156,7 @@ void ARX_INTERFACE_ShowARKANE()
 	GDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFP_POINT);
 	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP); 
 	GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, false);
-	SETZWRITE(true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
 	danaeApp.EnableZBuffer();
 
@@ -181,7 +181,7 @@ void ARX_INTERFACE_ShowARKANE()
 
 	Project.vsync = 1;
 
-	SETZWRITE(true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);
 	GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, true);
 	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFP_LINEAR);
@@ -275,7 +275,7 @@ void LoadLevelScreen(long num)
 
 			danaeApp.EnableZBuffer();
 			GRenderer->SetCulling(Renderer::CullNone);
-			SETZWRITE(true);
+			GRenderer->SetRenderState(Renderer::DepthWrite, true);
 			GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 

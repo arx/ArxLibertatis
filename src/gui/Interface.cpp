@@ -6452,7 +6452,7 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 
 		danaeApp.EnableZBuffer();
 		GRenderer->SetCulling(Renderer::CullNone);
-		SETZWRITE(true);
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
 
 		float px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(10 + 32 + 100);
@@ -6757,7 +6757,7 @@ extern float GLOBAL_LIGHT_FACTOR;
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_ManageOpenedBook_Finish()
 {
-	SETZWRITE(true );
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
 	danaeApp.EnableZBuffer();
 
@@ -6855,7 +6855,7 @@ void ARX_INTERFACE_ManageOpenedBook_Finish()
 						angle.b-=20.f;
 
 						angle.b+=20.f;
-						SETZWRITE(true);
+						GRenderer->SetRenderState(Renderer::DepthWrite, true);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 						DynLight[0].exist=1;	
 						
@@ -8446,7 +8446,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 	if ((Book_Mode == BOOKMODE_STATS) && (inter.iobj[0]->obj != NULL))
 	{
 
-		SETZWRITE(true);
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		danaeApp.EnableZBuffer();
 		SetFilteringMode(1);
 		D3DRECT rec;
@@ -8898,7 +8898,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 				SETBLENDMODE(D3DBLEND_SRCCOLOR,D3DBLEND_ONE);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);			
 				GRenderer->SetCulling(Renderer::CullNone);
-				SETZWRITE(false);
+				GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 				for (int i=0;i<HALOCUR;i++)
 				{

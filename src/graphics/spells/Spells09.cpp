@@ -547,7 +547,7 @@ float CSummonCreature::Render()
 
 	SETTC(NULL);
 	GRenderer->SetCulling(Renderer::CullNone);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
@@ -595,7 +595,7 @@ float CSummonCreature::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	RenderFissure();
 
-	SETZWRITE(true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
 
@@ -838,7 +838,7 @@ float CIncinerate::Render()
 	int i = 0;
 
 	GRenderer->SetCulling(Renderer::CullNone);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
 	iMax ++;
@@ -879,7 +879,7 @@ float CIncinerate::Render()
 	stitecolor.b = 1;
 
 	GRenderer->SetCulling(Renderer::CullNone);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	pPSStream.Render();
@@ -980,7 +980,7 @@ float CNegateMagic::Render()
 		return 0.f;
 	}
 
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	if (tex_sol && tex_sol->m_pddsSurface)

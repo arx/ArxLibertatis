@@ -430,7 +430,7 @@ float CRuneOfGuarding::Render()
 	float y = eSrc.y - 20;
 	float z = eSrc.z;
 
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -873,7 +873,7 @@ float CPoisonProjectile::Render()
 	}
 
 	GRenderer->SetCulling(Renderer::CullNone);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	//-------------------------------------------------------------------------
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
@@ -1000,7 +1000,7 @@ float CPoisonProjectile::Render()
 	}
 
 	GRenderer->SetCulling(Renderer::CullNone);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	return 1;
@@ -1313,7 +1313,7 @@ float CRepelUndead::Render()
 		return 0.f;
 	}
 
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
@@ -1705,7 +1705,7 @@ float CLevitate::Render()
 	if (this->key > 1) return 0;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 	//calcul du cone
 	D3DTLVERTEX d3dvs, *d3dv;
@@ -1962,7 +1962,7 @@ float CLevitate::Render()
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	SETZWRITE(true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
 	return 0;
 }

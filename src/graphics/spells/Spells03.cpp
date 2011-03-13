@@ -450,7 +450,7 @@ float CFireBall::Render()
 	}
 
 	GRenderer->SetCulling(Renderer::CullNone);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	pPSFire.Render();
@@ -679,7 +679,7 @@ float CIceProjectile::Render()
 	if (ulCurrentTime >= ulDuration) return 0.f;
 
 	GRenderer->SetCulling(Renderer::CullCW);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_INVDESTCOLOR);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);

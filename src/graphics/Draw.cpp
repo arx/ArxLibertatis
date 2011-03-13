@@ -361,7 +361,7 @@ void DRAWLATER_Render()
 		D3DTLVERTEX verts[4];
 		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
 		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );	
-		SETZWRITE(false); 
+		GRenderer->SetRenderState(Renderer::DepthWrite, false); 
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);					
 		GRenderer->SetCulling(Renderer::CullNone);
 		long to;
@@ -440,7 +440,7 @@ void DRAWLATER_Render()
 
 		EERIEDrawnPolys+=curdrawlater;
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false); 
-		SETZWRITE(true); 
+		GRenderer->SetRenderState(Renderer::DepthWrite, true); 
 
 	SETTC(NULL);
 }
@@ -630,7 +630,7 @@ void Delayed_FlushAll()
 				{
 					GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
 					GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );	
-					SETZWRITE(false); 
+					GRenderer->SetRenderState(Renderer::DepthWrite, false); 
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);					
 					D3DTLVERTEX verts[4];
 					SETTC(ptcTexture->TextureRefinement); 
@@ -702,7 +702,7 @@ void Delayed_FlushAll()
 
 				EERIEDrawnPolys+=ptcTexture->delayed_nb;
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false); 
-				SETZWRITE(true);
+				GRenderer->SetRenderState(Renderer::DepthWrite, true);
 			}
 
 			EERIEDrawnPolys+=ptcTexture->delayed_nb;
@@ -903,7 +903,7 @@ void EERIE_DrawPolyBump(EERIEPOLY *ep,float alpha)
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,D3DBLEND_ZERO);	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false); 
-	SETZWRITE(true); 
+	GRenderer->SetRenderState(Renderer::DepthWrite, true); 
 }
 
 //*************************************************************************************
@@ -1246,13 +1246,6 @@ void SETTEXTUREWRAPMODE(DWORD mode)
 {
 	GDevice->SetTextureStageState( 0,D3DTSS_ADDRESS ,mode);
 }
-
-//*************************************************************************************
-
-void SETZWRITE(DWORD _dwState)
-{
-		GDevice->SetRenderState( D3DRENDERSTATE_ZWRITEENABLE , _dwState);
-}	
 
 //*************************************************************************************
 //*************************************************************************************

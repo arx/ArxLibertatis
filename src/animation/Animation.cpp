@@ -1038,7 +1038,7 @@ void PopAllTriangleListTransparency()
 
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	SETZWRITE(false); 
+	GRenderer->SetRenderState(Renderer::DepthWrite, false); 
 
 	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
 	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
@@ -1061,7 +1061,7 @@ void PopAllTriangleListTransparency()
 
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	SETZWRITE(true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 }
 
 //-----------------------------------------------------------------------------
@@ -3109,10 +3109,10 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 					GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
 					GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);			
-					SETZWRITE( false );
+					GRenderer->SetRenderState(Renderer::DepthWrite, false);
 					EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, &vert_list, 3, 0, 0 );
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);			
-					SETZWRITE( true );
+					GRenderer->SetRenderState(Renderer::DepthWrite, true);
 				}				
 	}
 

@@ -2531,7 +2531,7 @@ void	Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 				GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR);
 				GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-				SETZWRITE(false);
+				GRenderer->SetRenderState(Renderer::DepthWrite, false);
 				SETTC(NULL);
 				unsigned long v = _EERIERGB(special_color.r);
 
@@ -2542,7 +2542,7 @@ void	Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 				EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , &tv, 3,  0, 0 );
 				EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , &tv, 3,  0, 0 );//duplicate ???? @TBR ?
 				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-				SETZWRITE(true);
+				GRenderer->SetRenderState(Renderer::DepthWrite, true);
 			}
 
 		// Add a little bit of Fake Metal Specular if needed
@@ -2583,10 +2583,10 @@ void	Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 					GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR);
 					GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-					SETZWRITE(false);
+					GRenderer->SetRenderState(Renderer::DepthWrite, false);
 					EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, &tv, 3, 0, 0 );
 					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-					SETZWRITE(true);
+					GRenderer->SetRenderState(Renderer::DepthWrite, true);
 				}
 			}
 		}

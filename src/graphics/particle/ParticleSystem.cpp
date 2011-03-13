@@ -563,7 +563,7 @@ void CParticleSystem::Update(long _lTime)
 void CParticleSystem::Render() {
 	
 	GRenderer->SetCulling(Renderer::CullNone);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  iSrcBlend);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, iDstBlend);

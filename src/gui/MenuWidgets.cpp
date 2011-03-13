@@ -1864,14 +1864,14 @@ static void FadeInOut(float _fVal)
 
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
 	GRenderer->SetCulling(Renderer::CullNone);
 
 	EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, d3dvertex, 4, 0, EERIE_NOCOUNT );
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	SETZWRITE(true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
 	danaeApp.EnableZBuffer();
 	GRenderer->SetCulling(Renderer::CullCCW);
@@ -1960,7 +1960,7 @@ bool Menu2_Render()
 	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP);
 
 	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE,false);
 	GRenderer->SetCulling(Renderer::CullNone);
 
@@ -2094,7 +2094,7 @@ bool Menu2_Render()
 
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
-			SETZWRITE(true);
+			GRenderer->SetRenderState(Renderer::DepthWrite, true);
 			danaeApp.EnableZBuffer();
 			danaeApp.DANAEEndRender();
 
@@ -3334,7 +3334,7 @@ bool Menu2_Render()
 	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP);
 
 	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE,false);
 	GRenderer->SetCulling(Renderer::CullNone);
 	pGetInfoDirectInput->DrawCursor();
@@ -3419,7 +3419,7 @@ bool Menu2_Render()
 	GDevice->SetTextureStageState(0,D3DTSS_MAGFILTER,D3DTFP_LINEAR);
 	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
 
-	SETZWRITE(true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
 	danaeApp.EnableZBuffer();
 	GRenderer->SetCulling(Renderer::CullCCW);

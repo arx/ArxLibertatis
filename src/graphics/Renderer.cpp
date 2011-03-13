@@ -55,7 +55,7 @@ const D3DTEXTUREMIPFILTER ARXToDX7MipFilter[] = {
 const D3DRENDERSTATETYPE ARXToDXRenderState[] = {
 						D3DRENDERSTATE_ALPHABLENDENABLE,	// AlphaBlending,
 						D3DRENDERSTATE_ZENABLE,				// DepthTest
-						D3DRENDERSTATE_ZWRITEENABLE,		// DepthMask
+						D3DRENDERSTATE_ZWRITEENABLE,		// DepthWrite
 						D3DRENDERSTATE_LIGHTING,            // Lighting,
                                         };
                    

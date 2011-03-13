@@ -17,7 +17,7 @@ public:
     {
         AlphaBlending,
 		DepthTest,
-		DepthMask,
+		DepthWrite,
         Lighting,
     };
 

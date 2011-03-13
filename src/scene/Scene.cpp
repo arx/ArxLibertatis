@@ -1497,7 +1497,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetCulling(Renderer::CullNone);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 	for (long i=0;i<NbRoomDrawList;i++)
 	{
@@ -1516,7 +1516,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 
 	SetZBias(8);
 
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 	//render all fx!!
 	GRenderer->SetCulling(Renderer::CullCW);
@@ -3060,7 +3060,7 @@ SMY_D3DVERTEX *pMyVertex;
 		GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
 
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE,false);
+		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 		iNbTex=portals->room[room_num].usNbTextures;
 		ppTexCurr=portals->room[room_num].ppTextureContainer;
@@ -3313,7 +3313,7 @@ SMY_D3DVERTEX *pMyVertex;
 			vPolyVoodooMetal.clear();
 		}
 
-		GDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE,true);
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 }
@@ -4525,7 +4525,7 @@ else
 			ARXDRAW_DrawEyeBall();
 
 		
-		SETZWRITE(false );
+		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 		if (BoomCount) 
 			ARXDRAW_DrawPolyBoom();
@@ -4554,7 +4554,7 @@ if (HALOCUR>0)
 	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);			
 	GRenderer->SetCulling(Renderer::CullNone);
-	SETZWRITE(false);
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 	for (i=0;i<HALOCUR;i++)
 	{
@@ -4579,7 +4579,7 @@ if (HALOCUR>0)
 
 	GRenderer->SetCulling(Renderer::CullCCW);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);	
-	SETZWRITE(true );
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 
 	if (EDITION==EDITION_LIGHTS)
 		ARXDRAW_DrawAllLights(x0,z0,x1,z1);

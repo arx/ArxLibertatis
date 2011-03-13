@@ -155,7 +155,7 @@ void Credits::render() {
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
-		SETZWRITE(true);
+		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE,false);
 		
 		//Draw Background
@@ -223,7 +223,7 @@ void Credits::render() {
 	
 	danaeApp.DANAEEndRender();
 	
-	SETZWRITE(true);
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	danaeApp.EnableZBuffer();
 	
 }

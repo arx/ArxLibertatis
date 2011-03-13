@@ -1086,11 +1086,11 @@ void ManageTorch()
 void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 {
 	/////////FLARE
-	SETZWRITE(false );
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
 	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );
-
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+
 	shinum++;
 
 	if (shinum>=10) shinum=1;
@@ -1256,7 +1256,7 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 
 	if (DynLight[0].rgb.b>1.f) DynLight[0].rgb.b=1.f;
 
-	SETZWRITE(true );
+	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, true); 
 }
 
@@ -1530,9 +1530,7 @@ void UpdateObjFx() {
 	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
 	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-
-	SETZWRITE(false );
-	
+	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 	for (long i=0;i<MAX_OBJFX;i++)
 	{
