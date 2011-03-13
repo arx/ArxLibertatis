@@ -1234,21 +1234,18 @@ void InitInter(long nb)
 //*************************************************************************************
 //	Removes an IO loaded by a script command
 //*************************************************************************************
-void CleanScriptLoadedIO()
-{
-	for (long i = 1; i < inter.nbmax; i++)
-	{
-		if (inter.iobj[i] != NULL)
-		{
-			INTERACTIVE_OBJ * io = inter.iobj[i];
-
-			if (io->scriptload)
-			{
+void CleanScriptLoadedIO() {
+	
+	for(long i = 1; i < inter.nbmax; i++) {
+		INTERACTIVE_OBJ * io = inter.iobj[i];
+		if(io) {
+			if(io->scriptload) {
 				RemoveFromAllInventories(io);
-				ReleaseInter(inter.iobj[i]);
+				ReleaseInter(io);
 				inter.iobj[i] = NULL;
+			} else {
+				io->show = SHOW_FLAG_IN_SCENE;
 			}
-			else inter.iobj[i]->show = SHOW_FLAG_IN_SCENE;
 		}
 	}
 }
@@ -1258,13 +1255,12 @@ void CleanScriptLoadedIO()
 //*************************************************************************************
 void RestoreInitialIOStatus()
 {
-	long i = 0;
 	ARX_INTERACTIVE_HideGore(inter.iobj[0]);
 	ARX_NPC_Behaviour_ResetAll();
 
 	if (inter.iobj[0]) inter.iobj[0]->spellcast_data.castingspell = -1;
 
-	for (i = 1; i < inter.nbmax; i++)
+	for (long i = 1; i < inter.nbmax; i++)
 	{
 		RestoreInitialIOStatusOfIO(inter.iobj[i]);
 	}
@@ -2042,8 +2038,6 @@ void ARX_INTERACTIVE_TeleportBehindTarget(INTERACTIVE_OBJ * io)
 			scr_timer[num].exist = 1;
 			scr_timer[num].io = io;
 			scr_timer[num].msecs = rnd() * 3000 + 3000;
-			scr_timer[num].namelength = 8;
-			scr_timer[num].name = (char *)malloc(8);
 			scr_timer[num].name = "_R_A_T_";
 			scr_timer[num].pos = -1; 
 			scr_timer[num].tim = ARXTimeUL();
@@ -2228,9 +2222,8 @@ extern long TOTAL_BODY_CHUNKS_COUNT;
 //*************************************************************************************
 // Releases An Interactive Object from memory
 //*************************************************************************************
-void ReleaseInter(INTERACTIVE_OBJ * io)
-{
-
+void ReleaseInter(INTERACTIVE_OBJ * io) {
+	
 	if (!io) return;
 
 	if (!FAST_RELEASE)
@@ -2273,8 +2266,7 @@ void ReleaseInter(INTERACTIVE_OBJ * io)
 	ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(io);
 	ARX_SCRIPT_Timer_Clear_For_IO(io);
 
-	if ((io->obj) && (!(io->ioflags & IO_CAMERA)) && (!(io->ioflags & IO_MARKER)) && (!(io->ioflags & IO_GOLD)))
-	{
+	if ((io->obj) && (!(io->ioflags & IO_CAMERA)) && (!(io->ioflags & IO_MARKER)) && (!(io->ioflags & IO_GOLD))) {
 		ReleaseEERIE3DObj(io->obj);
 		io->obj = NULL;
 	}
@@ -2287,8 +2279,7 @@ void ReleaseInter(INTERACTIVE_OBJ * io)
 		io->tweakerinfo = NULL;
 	}
 
-	if (io->tweaky)
-	{
+	if (io->tweaky) {
 		ReleaseEERIE3DObj(io->tweaky);
 		io->tweaky = NULL;
 	}

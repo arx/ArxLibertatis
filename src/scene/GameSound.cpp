@@ -1347,8 +1347,9 @@ void ARX_SOUND_AmbianceSavePlayList(void ** _play_list, unsigned long * size)
 
 			play_list = (PlayingAmbiance *)ptr;
 			playing = &play_list[count];
-
-			aalGetAmbianceName(ambiance_id, playing->name);
+			
+			memset(playing->name, 0, sizeof(playing->name));
+			aalGetAmbianceName(ambiance_id, playing->name, sizeof(playing->name)/sizeof(*playing->name));
 			aalGetAmbianceVolume(ambiance_id, playing->volume);
 			playing->loop = aalIsAmbianceLooped(ambiance_id) ? ARX_SOUND_PLAY_LOOPED : ARX_SOUND_PLAY_ONCE;
 			playing->type = type;

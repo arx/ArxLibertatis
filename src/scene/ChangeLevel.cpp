@@ -2472,11 +2472,6 @@ long ARX_CHANGELEVEL_Pop_IO( const std::string& ident)
 				scr_timer[num].exist = 1;
 				scr_timer[num].io = io;
 				scr_timer[num].msecs = ats->msecs;
-				scr_timer[num].namelength = strlen(ats->name) + 1;
-				scr_timer[num].name = (char *) malloc(scr_timer[num].namelength);
-
-				//if (!scr_timer[num].name) HERMES_Memory_Emergency_Out();
-
 				scr_timer[num].name = ats->name;
 				scr_timer[num].pos = ats->pos;
 

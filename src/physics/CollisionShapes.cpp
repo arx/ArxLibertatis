@@ -61,6 +61,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/MeshManipulation.h"
 
 using std::max;
+using std::vector;
 
 void EERIE_COLLISION_Cylinder_Create(INTERACTIVE_OBJ * io)
 {
@@ -121,54 +122,39 @@ void EERIE_COLLISION_Cylinder_Create(INTERACTIVE_OBJ * io)
 	io->physics.cyl.height = io->original_height * io->scale;
 }
 
-void EERIE_COLLISION_SPHERES_Release(EERIE_3DOBJ * obj)
-{
-	if (obj == NULL) return;
-
-	if (obj->sdata == NULL) return;
-
-	obj->sdata->nb_spheres = 0;
-
-	if (obj->sdata->spheres)
-	{
-		free(obj->sdata->spheres);
-		obj->sdata->spheres = NULL;
+void EERIE_COLLISION_SPHERES_Release(EERIE_3DOBJ * obj) {
+	
+	if(!obj || !obj->sdata) {
+		return;
 	}
-
-	free(obj->sdata);
+	
+	delete obj->sdata;
 	obj->sdata = NULL;
 }
 
-void AddCollisionSphere(EERIE_3DOBJ * obj, long idx, float radius, long flags)
-{
-	if (radius < 1.f) return;
-
-	for (long i = 0; i < obj->sdata->nb_spheres; i++)
-	{
-		COLLISION_SPHERE * cs = &obj->sdata->spheres[i];
-
-		if (cs->idx == i)
-		{
-			if (radius < cs->radius) return;
-
-			cs->radius = radius;
+void AddCollisionSphere(EERIE_3DOBJ * obj, long idx, float radius) {
+	
+	if(radius < 1.f) {
+		return;
+	}
+	
+	for(vector<COLLISION_SPHERE>::iterator i = obj->sdata->spheres.begin(); i < obj->sdata->spheres.end(); ++i) {
+		
+		if(i->idx == idx) {
+			if(radius >= i->radius) {
+				i->radius = radius;
+			}
 			return;
 		}
 	}
-
-	if (obj->sdata->nb_spheres == 0)
-		obj->sdata->spheres = (COLLISION_SPHERE *)
-							  malloc(sizeof(COLLISION_SPHERE));
-
-	else obj->sdata->spheres = (COLLISION_SPHERE *)
-								   realloc(obj->sdata->spheres, sizeof(COLLISION_SPHERE) * (obj->sdata->nb_spheres + 1));
-
-	memset(&obj->sdata->spheres[obj->sdata->nb_spheres], 0, sizeof(COLLISION_SPHERE));
-	obj->sdata->spheres[obj->sdata->nb_spheres].idx = (short)idx;
-	obj->sdata->spheres[obj->sdata->nb_spheres].radius = radius;
-	obj->sdata->spheres[obj->sdata->nb_spheres].flags = (short)flags;
-	obj->sdata->nb_spheres++;
+	
+	COLLISION_SPHERE newSphere;
+	newSphere.idx = (short)idx;
+	newSphere.radius = radius;
+	newSphere.flags = 0;
+	obj->sdata->spheres.push_back(newSphere);
 }
+
 long GetFirstChildGroup(EERIE_3DOBJ * obj, long group)
 {
 	if (obj->nbgroups < group + 2) return -1;
@@ -324,10 +310,7 @@ void EERIE_COLLISION_SPHERES_Create(EERIE_3DOBJ * obj)
 	if (obj == NULL) return;
 
 	EERIE_COLLISION_SPHERES_Release(obj);
-	obj->sdata = (COLLISION_SPHERES_DATA *)
-				 malloc(sizeof(COLLISION_SPHERES_DATA));
-
-	memset(obj->sdata, 0, sizeof(COLLISION_SPHERES_DATA));
+	obj->sdata = new COLLISION_SPHERES_DATA();
 
 	for (long k = 1; k < obj->nbgroups; k++)
 	{
@@ -367,7 +350,7 @@ void EERIE_COLLISION_SPHERES_Create(EERIE_3DOBJ * obj)
 					long idx = AddVertexToVertexList(obj, &center, k);
 
 					if (idx > -1)
-						AddCollisionSphere(obj, idx, val, 0);
+						AddCollisionSphere(obj, idx, val);
 
 					val *= ( 1.0f / 2 );
 				}
@@ -381,10 +364,10 @@ void EERIE_COLLISION_SPHERES_Create(EERIE_3DOBJ * obj)
 				center.z += dirvect.z * inc;
 			}
 		}
-		else AddCollisionSphere(obj, obj->grouplist[k].origin, obj->grouplist[k].siz * 18.f, 0);
+		else AddCollisionSphere(obj, obj->grouplist[k].origin, obj->grouplist[k].siz * 18.f);
 	
 
 	}
 
-	if (obj->sdata->nb_spheres == 0) EERIE_COLLISION_SPHERES_Release(obj);
+	if (obj->sdata->spheres.empty() == 0) EERIE_COLLISION_SPHERES_Release(obj);
 }

@@ -94,8 +94,8 @@ bool DirectoryExist(const string & _name) {
 }
 
 // File handle 0 is reserved for error.
-#define GETHANDLE(x)  (HANDLE)((ULONG_PTR)(handle) - 1)
-#define MAKEHANDLE(x) (FileHandle)((ULONG_PTR)(handle) + 1)
+#define GETHANDLE(handle)  (HANDLE)((ULONG_PTR)(handle) - 1)
+#define MAKEHANDLE(handle) (FileHandle)((ULONG_PTR)(handle) + 1)
 const FileHandle INVALID_FILE_HANDLE = (FileHandle)NULL;
 
 bool FileExist(const char * name) {

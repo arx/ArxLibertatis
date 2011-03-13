@@ -364,6 +364,7 @@ struct PROGRESSIVE_DATA
 	s16	padd;
 }; // Aligned 1 2 4
 
+// TODO used for loading (FTL)
 struct EERIE_SPRINGS
 {
 	s16	startidx;
@@ -378,6 +379,7 @@ struct EERIE_SPRINGS
 #define CLOTHES_FLAG_FIX	1
 #define CLOTHES_FLAG_NOCOL	2
 
+// TODO used for loading (FTL)
 struct CLOTHESVERTEX
 {
 	s16		idx;
@@ -396,27 +398,26 @@ struct CLOTHESVERTEX
 
 }; // Aligned 1 2 4
 
-struct CLOTHES_DATA
-{
-	CLOTHESVERTEX *	cvert;
-	CLOTHESVERTEX *	backup;
-	short			nb_cvert;
-	short			nb_springs;
-	EERIE_SPRINGS 	* springs;
-}; // Aligned 1 2 4
+struct CLOTHES_DATA {
+	
+	CLOTHESVERTEX * cvert;
+	CLOTHESVERTEX * backup;
+	short nb_cvert;
+	std::vector<EERIE_SPRINGS> springs;
+	
+	CLOTHES_DATA() : cvert(NULL), backup(NULL), nb_cvert(0) { }
+};
 
-struct COLLISION_SPHERE
-{
-	s16			idx;
-	s16			flags;
-	f32			radius;
-}; // Aligned 1 2 4
+// TODO used for loading (FTL)
+struct COLLISION_SPHERE {
+	short idx;
+	short flags; // TODO not used?
+	float radius;
+};
 
-struct COLLISION_SPHERES_DATA
-{
-	long				nb_spheres;
-	COLLISION_SPHERE *	spheres;
-}; // Aligned 1 2 4
+struct COLLISION_SPHERES_DATA {
+	std::vector<COLLISION_SPHERE> spheres;
+};
 
 struct PHYSVERT
 {
@@ -594,11 +595,11 @@ struct EERIE_3DOBJ
 		quat.x = quat.y = quat.z = quat.w = 0;
 		nblinked = 0;
 
-		pbox = 0;
-		pdata = 0;
-		ndata = 0;
-		cdata = 0;
-		sdata = 0;
+		pbox = NULL;
+		pdata = NULL;
+		ndata = NULL;
+		cdata = NULL;
+		sdata = NULL;
 
 		fastaccess.view_attach = 0;
 		fastaccess.primary_attach = 0;

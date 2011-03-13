@@ -1646,11 +1646,14 @@ HWND hwnd = NULL;
 			return AAL_ERROR_HANDLE;
 		}
 
-		_amb[a_id]->GetVolume(_volume);
-
+		aalError ret = _amb[a_id]->GetVolume(_volume);
+		if(ret != AAL_OK) {
+			_volume = AAL_DEFAULT_VOLUME;
+		}
+		
 		if (mutex) ReleaseMutex(mutex);
 
-		return AAL_OK;
+		return ret;
 	}
 
 	aalUBool aalIsAmbianceLooped(const aalSLong & a_id)
