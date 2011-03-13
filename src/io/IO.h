@@ -104,15 +104,6 @@ char * HERMES_GaiaCOM_Receive();
 
 void HERMES_InitDebug();
 
-void SAFEstrcpy(char * dest, const char * src, unsigned long max);
-
-
-void MakeUpcase( std::string& str);
-bool IsIn( const std::string& strin, const std::string& str );
-bool NC_IsIn( std::string strin, std::string str);
-int strcasecmp( const std::string& str1, const std::string& str2 );
-int strcmp( const std::string& str1, const std::string& str2 );
-
 void GetDate(HERMES_DATE_TIME * hdt);
 void SendConsole( const std::string& dat,long level,long flag,HWND source);
 void ForceSendConsole( const std::string& dat,long level,long flag,HWND source);

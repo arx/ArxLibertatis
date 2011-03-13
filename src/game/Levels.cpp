@@ -59,19 +59,9 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include <vector>
 #include <sstream>
+#include <cstring>
 
-#include "ai/PathFinderManager.h"
-#include "ai/Paths.h"
-
-#include "game/Spells.h"
-#include "gui/Speech.h"
-
-#include "io/IO.h"
-#include "physics/CollisionShapes.h"
-
-#include "scene/LoadLevel.h"
-#include "scene/Scene.h"
-#include "scene/GameSound.h"
+#include "io/String.h"
 
 extern long LOAD_N_DONT_ERASE;
 extern long DONT_LOAD_SCENE;

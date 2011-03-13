@@ -74,7 +74,7 @@ FileHandle FileOpenWrite(const char * name) {
 }
 
 FileHandle FileOpenReadWrite(const char * name) {
-	return FileOpen(name, "a+");
+	return FileOpen(name, "r+");
 }
 
 bool FileDelete(const std::string & file) {

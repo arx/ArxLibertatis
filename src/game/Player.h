@@ -381,7 +381,8 @@ void	ARX_PLAYER_Manage_Visual();
 void	ARX_PLAYER_Remove_Invisibility();
 void	ARX_Player_Rune_Add(unsigned long);
 void	ARX_Player_Rune_Remove(unsigned long);
-void	ARX_PLAYER_AddGold(long);
+void ARX_PLAYER_AddGold(long value);
+void ARX_PLAYER_AddGold(INTERACTIVE_OBJ * gold);
 void	ARX_PLAYER_AddBag();
 bool	ARX_PLAYER_CanStealItem(INTERACTIVE_OBJ *);
 

@@ -89,36 +89,6 @@ UINT GaiaWM = 0;
 HWND MAIN_PROGRAM_HANDLE = NULL;
 long DEBUGG = 1;
 
-void SAFEstrcpy(char * dest, const char * src, unsigned long max)
-{
-	if (strlen(src) > max)
-	{
-		memcpy(dest, src, max);
-	}
-	else
-	{
-		strcpy(dest, src);
-	}
-}
-
-bool NC_IsIn(string t1, string t2) {
-	MakeUpcase(t1);
-	MakeUpcase(t2);
-	return (t1.find(t2) != string::npos);
-}
-
-bool IsIn(const string & strin, const string & str) {
-	return (strin.find( str ) != string::npos);
-}
-
-int strcasecmp(const string & str1, const string & str2) {
-	return strcasecmp(str1.c_str(), str2.c_str());
-}
-
-int strcmp(const string & str1, const string & str2) {
-	return str1.compare(str2);
-}
-
 void GetDate(HERMES_DATE_TIME * hdt)
 {
 	struct tm * newtime;
@@ -158,10 +128,6 @@ void HERMES_InitDebug()
 	DebugLvl[4] = 1;
 	DebugLvl[5] = 1;
 	DEBUGG = 0;
-}
-
-void MakeUpcase( std::string& str ) {
-	std::transform( str.begin(), str.end(), str.begin(), ::toupper );
 }
 
 HKEY    ConsoleKey = NULL;

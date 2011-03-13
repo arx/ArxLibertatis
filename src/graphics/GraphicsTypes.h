@@ -53,73 +53,11 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 class TextureContainer;
 
-#pragma pack(push,1)
+#include "graphics/BaseGraphicsTypes.h"
 
 #pragma pack(push,1)
-struct EERIE_RGB
-{
-	f32 r;
-	f32 g;
-	f32 b;
-}; // Aligned 1 2 4
-#pragma pack(pop)
 
-
-struct EERIE_QUAT
-{
-	float	x;
-	float	y;
-	float	z;
-	float	w;
-}; // Aligned 1 2 4 8
-
-struct EERIE_2D
-{
-	union
-	{
-		float		x;
-		float		a;
-	};
-	union
-	{
-		float		y;
-		float		b;
-	};
-}; // Aligned 1 2 4 8
-
-#pragma pack(push,1)
-struct EERIE_3D
-{
-	union
-	{
-		f32		x;
-		f32		a;
-		f32		yaw;
-	};
-	union
-	{
-		f32		y;
-		f32		b;
-		f32		pitch;
-	};
-	union
-	{
-		f32		z;
-		f32		g;
-		f32		roll;
-	};
-
-	void clear()
-	{
-		x = 0;
-		y = 0;
-		z = 0;
-	}
-}; // Aligned 1 2 4
-#pragma pack(pop)
-
-struct EERIE_TRI
-{
+struct EERIE_TRI {
 	EERIE_3D v[3];
 }; // Aligned 1 2 4
 
@@ -193,27 +131,6 @@ enum EERIE_TYPES_EXTRAS_MODE
 //*************************************************************************************
 // EERIE Types
 //*************************************************************************************
-
-struct EERIEMATRIX
-{
-	D3DVALUE _11, _12, _13, _14;
-	D3DVALUE _21, _22, _23, _24;
-	D3DVALUE _31, _32, _33, _34;
-	D3DVALUE _41, _42, _43, _44;
-}; // Aligned 1 2 4
-
-struct EERIE_CYLINDER
-{
-	EERIE_3D	origin;
-	float		radius;
-	float		height;
-}; // Aligned 1 2 4
-
-struct EERIE_SPHERE
-{
-	EERIE_3D	origin;
-	float		radius;
-}; // Aligned 1 2 4
 
 struct EERIEPOLY
 {
