@@ -1957,7 +1957,7 @@ bool Menu2_Render()
 
 	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP);
 
-	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
+	GRenderer->SetRenderState(Renderer::Fog, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetCulling(Renderer::CullNone);
@@ -3331,7 +3331,7 @@ bool Menu2_Render()
 
 	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_CLAMP);
 
-	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
+	GRenderer->SetRenderState(Renderer::Fog, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetCulling(Renderer::CullNone);

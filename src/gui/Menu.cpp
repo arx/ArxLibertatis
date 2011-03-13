@@ -707,13 +707,13 @@ bool ARX_Menu_Render()
 			ARXDiffTimeMenu = 0;
 		}
 
-		GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
+		GRenderer->SetRenderState(Renderer::Fog, false);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 		if (ARXmenu.mda->BookBackground != NULL)
 		{
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
+			GRenderer->SetRenderState(Renderer::Fog, false);
 			GRenderer->SetRenderState(Renderer::DepthWrite, false);
 			GRenderer->SetRenderState(Renderer::DepthTest, false);
 
@@ -931,7 +931,7 @@ bool ARX_Menu_Render()
 		if (ARXmenu.mda->BookBackground != NULL)
 		{
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-			GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
+			GRenderer->SetRenderState(Renderer::Fog, false);
 			GRenderer->SetRenderState(Renderer::DepthWrite, false);
 			GRenderer->SetRenderState(Renderer::DepthTest, false);
 

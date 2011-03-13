@@ -57,6 +57,7 @@ const D3DRENDERSTATETYPE ARXToDXRenderState[] = {
 						D3DRENDERSTATE_ZENABLE,				// DepthTest
 						D3DRENDERSTATE_ZWRITEENABLE,		// DepthWrite
 						D3DRENDERSTATE_LIGHTING,            // Lighting,
+						D3DRENDERSTATE_FOGENABLE			// Fog
                                         };
                    
 const unsigned int ARXToDXPixelCompareFunc[] = {

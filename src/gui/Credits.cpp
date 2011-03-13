@@ -154,7 +154,7 @@ void Credits::render() {
 		if(!danaeApp.DANAEStartRender()) return;
 		
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-		GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
+		GRenderer->SetRenderState(Renderer::Fog, false);
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
 		GRenderer->SetRenderState(Renderer::DepthTest, false);
 		

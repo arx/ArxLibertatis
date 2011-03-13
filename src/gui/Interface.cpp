@@ -6453,7 +6453,7 @@ void ARX_INTERFACE_DrawDamagedEquipment()
 		GRenderer->SetRenderState(Renderer::DepthTest, true);
 		GRenderer->SetCulling(Renderer::CullNone);
 		GRenderer->SetRenderState(Renderer::DepthWrite, true);
-		GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
+		GRenderer->SetRenderState(Renderer::Fog, false);
 
 		float px = INTERFACE_RATIO(InventoryX) + INTERFACE_RATIO(10 + 32 + 100);
 
@@ -7297,7 +7297,7 @@ void QuestBook_Render()
 //-----------------------------------------------------------------------------
 void ARX_INTERFACE_ManageOpenedBook()
 {
-	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false );
+	GRenderer->SetRenderState(Renderer::Fog, false);
 	
 	if (ITC.Get("questbook")==NULL)
 	{

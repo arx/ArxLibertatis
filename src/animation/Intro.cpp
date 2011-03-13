@@ -133,7 +133,7 @@ void ARX_INTERFACE_ShowFISHTANK()
 
 		if (FISHTANK_img != NULL)
 		{
-			GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
+			GRenderer->SetRenderState(Renderer::Fog, false);
 			DrawCenteredImage(FISHTANK_img, false);
 		}
 
@@ -171,7 +171,7 @@ void ARX_INTERFACE_ShowARKANE()
 
 		if (ARKANE_img != NULL)
 		{
-			GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
+			GRenderer->SetRenderState(Renderer::Fog, false);
 			DrawCenteredImage( ARKANE_img, false);
 		}
 
@@ -276,7 +276,7 @@ void LoadLevelScreen(long num)
 			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			GRenderer->SetCulling(Renderer::CullNone);
 			GRenderer->SetRenderState(Renderer::DepthWrite, true);
-			GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
+			GRenderer->SetRenderState(Renderer::Fog, false);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 			long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;

@@ -5637,7 +5637,7 @@ static float _AvgFrameDiff = 150.f;
 	if (EXTERNALVIEWING) EXTERNALVIEW=1;
 	else EXTERNALVIEW=0;
 
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
+	GRenderer->SetRenderState(Renderer::Fog, false);
 
 	if(ARX_Menu_Render()) {
 		goto norenderend;
@@ -5671,7 +5671,7 @@ static float _AvgFrameDiff = 150.f;
 		goto norenderend;
 	}
 
-	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, true);
+	GRenderer->SetRenderState(Renderer::Fog, true);
 	GDevice->SetTextureStageState(0,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
 
 	// Are we displaying a 2D cinematic ? Yes = manage it
@@ -6463,7 +6463,7 @@ static float _AvgFrameDiff = 150.f;
 
 	ARX_GLOBALMODS_Apply();
 
-	if (EDITMODE) GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false );
+	if (EDITMODE) GRenderer->SetRenderState(Renderer::Fog, false);
 
 		ManageQuakeFX();
 
@@ -6704,14 +6704,14 @@ static float _AvgFrameDiff = 150.f;
 	ARX_DAMAGE_Show_Hit_Blood();
 
 	// Manage Notes/Books opened on screen
-	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
+	GRenderer->SetRenderState(Renderer::Fog, false);
 	ARX_INTERFACE_NoteManage();
 
 	finish:; //----------------------------------------------------------------
 	// Update spells
 	ARX_SPELLS_Update();
 	GRenderer->SetCulling(Renderer::CullNone);
-	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, true);
+	GRenderer->SetRenderState(Renderer::Fog, true);
 
 	// Manage Death visual & Launch menu...
 	if (DeadTime>2000)
@@ -6722,7 +6722,7 @@ static float _AvgFrameDiff = 150.f;
 	// INTERFACE
 		// Remove the Alphablend State if needed : NO Z Clear
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
+	GRenderer->SetRenderState(Renderer::Fog, false);
 
 	// Draw game interface if needed
 	if (ARXmenu.currentmode == AMCM_OFF)
@@ -6755,9 +6755,9 @@ static float _AvgFrameDiff = 150.f;
 		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, true);
+	GRenderer->SetRenderState(Renderer::Fog, true);
 		this->GoFor2DFX();
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
+	GRenderer->SetRenderState(Renderer::Fog, false);
 	GRenderer->Clear(Renderer::DepthBuffer);
 
 	// Speech Management
@@ -6812,7 +6812,7 @@ static float _AvgFrameDiff = 150.f;
 		ARX_INTERFACE_RenderCursor();
 	}
 
-	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, true);
+	GRenderer->SetRenderState(Renderer::Fog, true);
 
 	//----------------RENDEREND------------------------------------------------
 	renderend:
@@ -7463,7 +7463,7 @@ HRESULT DANAE::InitDeviceObjects()
 		float zval2 = zval * 0.65f;
 		GDevice->SetRenderState( D3DRENDERSTATE_FOGTABLESTART, *((LPDWORD) (&zval2)));
 		GDevice->SetRenderState( D3DRENDERSTATE_FOGTABLEEND, *((LPDWORD) (&zval)));
-		GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, true);
+		GRenderer->SetRenderState(Renderer::Fog, true);
 	}
 
 	SetZBias(0);

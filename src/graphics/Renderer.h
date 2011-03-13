@@ -19,6 +19,7 @@ public:
 		DepthTest,
 		DepthWrite,
         Lighting,
+		Fog
     };
 
 	//! Pixel comparison functions

@@ -320,7 +320,7 @@ HRESULT Cinematic::InitDeviceObjects()
 	GDevice->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTFP_LINEAR);
 	GDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, (DWORD)(0));
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
+	GRenderer->SetRenderState(Renderer::Fog, false);
 
 	EditLight = false;
 
@@ -382,7 +382,7 @@ HRESULT Cinematic::DeleteDeviceObjects()
 	GDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, (DWORD)(0));
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, true);
+	GRenderer->SetRenderState(Renderer::Fog, true);
 
 	GDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
 	GDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
