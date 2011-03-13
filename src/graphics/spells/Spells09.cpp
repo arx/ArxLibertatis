@@ -350,7 +350,7 @@ void CSummonCreature::RenderFissure()
 
 	//-------------------------------------------------------------------------
 	// rendu de la fissure
-	SETALPHABLEND(false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	vr[0].color = vr[1].color = vr[2].color = vr[3].color = D3DRGB(0, 0, 0);
 
 	if (bIntro)
@@ -388,7 +388,7 @@ void CSummonCreature::RenderFissure()
 
 	//-------------------------------------------------------------------------
 	// rendu de la bordure
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	vr[0].color = vr[1].color = D3DRGB(0, 0, 0);
 	vr[2].color = vr[3].color = D3DRGB(fColorBorder[0], fColorBorder[1], fColorBorder[2]);
 
@@ -437,7 +437,7 @@ void CSummonCreature::RenderFissure()
 	// blend additif ou mul
 	// smooth sur les cot�s ou pas ..
 	// texture sympa avec glow au milieu ou uv wrap
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	if (tex_light && tex_light->m_pddsSurface)
 	{
@@ -546,13 +546,13 @@ float CSummonCreature::Render()
 	if (ulCurrentTime >= (ulDurationIntro + ulDurationRender + ulDurationOuttro)) return 0.f;
 
 	SETTC(NULL);
-	SETCULL(D3DCULL_NONE);
+	GRenderer->SetCulling(Renderer::CullNone);
 	SETZWRITE(false);
 
 	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	//-------------------------------------------------------------------------
 	fTexWrap += 0.02f;
@@ -592,11 +592,11 @@ float CSummonCreature::Render()
 		}
 	}
 
-	SETALPHABLEND(false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	RenderFissure();
 
 	SETZWRITE(true);
-	SETALPHABLEND(false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
 
 	return (fSizeIntro / end);
@@ -837,9 +837,9 @@ float CIncinerate::Render()
 {
 	int i = 0;
 
-	SETCULL(D3DCULL_NONE);
+	GRenderer->SetCulling(Renderer::CullNone);
 	SETZWRITE(false);
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
 	iMax ++;
 	float x = eSrc.x + (eTarget.x - eSrc.x) * (ulCurrentTime * fOneOnDuration);
@@ -858,7 +858,7 @@ float CIncinerate::Render()
 		EERIEDraw3DLine(&s, &d, 0xFFFF0000);
 	}
 
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	EERIE_3D stiteangle;
 	EERIE_3D stitepos;
@@ -878,9 +878,9 @@ float CIncinerate::Render()
 	stitecolor.g = 1;
 	stitecolor.b = 1;
 
-	SETCULL(D3DCULL_NONE);
+	GRenderer->SetCulling(Renderer::CullNone);
 	SETZWRITE(false);
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	pPSStream.Render();
 
@@ -981,7 +981,7 @@ float CNegateMagic::Render()
 	}
 
 	SETZWRITE(false);
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	if (tex_sol && tex_sol->m_pddsSurface)
 	{
@@ -990,7 +990,7 @@ float CNegateMagic::Render()
 
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	fSize = ulCurrentTime * fOneOnDuration * 200;
  
@@ -1051,7 +1051,7 @@ float CNegateMagic::Render()
 	stitepos.y = y;
 	stitepos.z = z;
 
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	stiteangle.b = -stiteangle.b;
 	stitecolor.r = 0.4f;

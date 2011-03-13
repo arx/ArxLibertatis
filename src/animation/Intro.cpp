@@ -61,7 +61,7 @@ TextureContainer	* ARKANE_img = NULL;
 //-----------------------------------------------------------------------------
 void LoadScreen()
 {
-	GDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0L);
+	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
 	if (danaeApp.DANAEStartRender())
 	{
@@ -125,7 +125,7 @@ void ARX_INTERFACE_ShowFISHTANK()
 	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP); 
 	GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, false);
 
-	GDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0L);
+	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
 	if (danaeApp.DANAEStartRender())
 	{
@@ -162,7 +162,7 @@ void ARX_INTERFACE_ShowARKANE()
 
 	Project.vsync = 0;
 
-	GDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0L);
+	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
 	if (danaeApp.DANAEStartRender())
 	{
@@ -266,7 +266,7 @@ void LoadLevelScreen(long num)
 		if (ratio > 1.f) ratio = 1.f;
 		else if (ratio < 0.f) ratio = 0.f;
 
-		GDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0L);
+		GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
 		if (danaeApp.DANAEStartRender())
 		{
@@ -274,10 +274,10 @@ void LoadLevelScreen(long num)
 			GDevice->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, false);
 
 			danaeApp.EnableZBuffer();
-			GDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_NONE);
+			GRenderer->SetCulling(Renderer::CullNone);
 			SETZWRITE(true);
 			GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
-			SETALPHABLEND( false);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 			long old = GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE;
 			GLOBAL_EERIETEXTUREFLAG_LOADSCENE_RELEASE = -1;

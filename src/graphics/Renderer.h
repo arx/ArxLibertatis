@@ -5,8 +5,9 @@
 #include "graphics/texture/Texture.h"
 #include "graphics/texture/TextureStage.h"
 
-#include <windows.h>	// TEMP: for COLORREF....
-
+// TEMP - move back to .cpp once types are all abstracted
+#include <windows.h>
+#include <d3d.h>
 
 class Renderer
 {
@@ -14,7 +15,7 @@ public:
 	//! Render states
 	enum RenderState
     {
-        Blend,
+        AlphaBlending,
 		DepthTest,
 		DepthMask,
         Lighting,
@@ -57,6 +58,14 @@ public:
         CullCCW
     };
 
+	//! Target surface
+	enum BufferType
+    {
+        ColorBuffer     = 0x00000001,
+        DepthBuffer     = 0x00000002,
+        StencilBuffer   = 0x00000004
+    };
+
 	struct Viewport
 	{
 		int x;
@@ -95,6 +104,9 @@ public:
 	// Projection
 	void Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar);
     void End2DProjection();
+
+	// Render Target
+	void Clear(int bufferFlags, COLORREF clearColor = 0, float clearDepth = 1.0f, unsigned int rectCount = 0, D3DRECT* pRects = 0);
 
 	// Texturing
 	unsigned int GetTextureStageCount() const;

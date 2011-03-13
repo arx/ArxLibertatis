@@ -315,7 +315,7 @@ void ARX_FOGS_RenderAll()
 	EERIE_3D angle;
 	Vector_Init(&angle); 
 
-	SETALPHABLEND(false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	for (long i = 0; i < MAX_FOG; i++)
 	{

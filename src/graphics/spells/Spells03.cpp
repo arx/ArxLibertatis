@@ -449,9 +449,9 @@ float CFireBall::Render()
 		return 0.f;
 	}
 
-	SETCULL(D3DCULL_NONE);
+	GRenderer->SetCulling(Renderer::CullNone);
 	SETZWRITE(false);
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	pPSFire.Render();
 	pPSFire2.Render();
@@ -678,12 +678,12 @@ float CIceProjectile::Render()
 
 	if (ulCurrentTime >= ulDuration) return 0.f;
 
-	SETCULL(D3DCULL_CW);
+	GRenderer->SetCulling(Renderer::CullCW);
 	SETZWRITE(false);
 
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_INVDESTCOLOR);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	iMax = (int)((iNumber * 2) * fOneOnDuration * ulCurrentTime);
 
@@ -1036,8 +1036,8 @@ void CSpeed::DrawRuban(int num, float size, int dec, float r, float g, float b, 
 //-----------------------------------------------------------------------------
 float CSpeed::Render()
 {
-	SETCULL(D3DCULL_NONE);
-	SETALPHABLEND(true);
+	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 
@@ -1052,7 +1052,7 @@ float CSpeed::Render()
 		                trubandef[i].r2, trubandef[i].g2, trubandef[i].b2) ;
 	}
 
-	SETALPHABLEND(false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
 

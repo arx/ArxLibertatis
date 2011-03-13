@@ -2016,7 +2016,7 @@ void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 						tv[o].color = 0xFF000000L | (((lfr) & 255) << 16) |	(((lfg) & 255) << 8) | ((lfb) & 255);
 					}
 
-					//SETCULL(D3DCULL_NONE);
+					//GRenderer->SetCulling(Renderer::CullNone);
 					if (tot > 260)   //260.f)
 					{
 						long first;
@@ -2232,7 +2232,7 @@ void	Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 	}
 
 	// Finally we can draw polys !!!
-	SETCULL(D3DCULL_NONE);
+	GRenderer->SetCulling(Renderer::CullNone);
 
 	// Sets IO BBox to calculated BBox :)
 	if (io)
@@ -2486,9 +2486,9 @@ void	Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 
 			// Backface culling if required
 			if (eface->facetype & POLY_DOUBLESIDED)
-				SETCULL(D3DCULL_NONE);
+				GRenderer->SetCulling(Renderer::CullNone);
 			else
-				SETCULL(D3DCULL_CW);
+				GRenderer->SetCulling(Renderer::CullCW);
 
 			// Is Transparent?
 			if (eface->facetype & POLY_TRANS)
@@ -2530,7 +2530,7 @@ void	Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 			{
 				GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR);
 				GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-				SETALPHABLEND(true);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 				SETZWRITE(false);
 				SETTC(NULL);
 				unsigned long v = _EERIERGB(special_color.r);
@@ -2541,7 +2541,7 @@ void	Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 				}
 				EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , &tv, 3,  0, 0 );
 				EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , &tv, 3,  0, 0 );//duplicate ???? @TBR ?
-				SETALPHABLEND(false);
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				SETZWRITE(true);
 			}
 
@@ -2582,10 +2582,10 @@ void	Cedric_RenderObject(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OBJ
 				{
 					GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR);
 					GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-					SETALPHABLEND(true);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					SETZWRITE(false);
 					EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, &tv, 3, 0, 0 );
-					SETALPHABLEND(false);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					SETZWRITE(true);
 				}
 			}

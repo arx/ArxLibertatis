@@ -1495,9 +1495,8 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 {
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,0);
 
-	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,true);
-
-	SETCULL(D3DCULL_NONE);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetCulling(Renderer::CullNone);
 	SETZWRITE(false);
 
 	for (long i=0;i<NbRoomDrawList;i++)
@@ -1520,7 +1519,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 	SETZWRITE(false);
 
 	//render all fx!!
-	SETCULL(D3DCULL_CW);
+	GRenderer->SetCulling(Renderer::CullCW);
 
 	if(danaeApp.m_pDeviceInfo->wNbTextureSimultaneous>3) danaeApp.m_pDeviceInfo->wNbTextureSimultaneous=3;
 
@@ -2257,7 +2256,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 	SetZBias(0);
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
 	GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
-	SETALPHABLEND(false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA * frustrums,long prec,long tim);
@@ -2294,7 +2293,7 @@ void ARX_PORTALS_RenderRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long ti
 			
 			// GO for 3D Backface Culling
 			if (ep->type & POLY_DOUBLESIDED)
-				SETCULL( D3DCULL_NONE );
+				GRenderer->SetCulling(Renderer::CullNone);
 			else
 			{
 				EERIE_3D nrm;
@@ -2311,7 +2310,7 @@ void ARX_PORTALS_RenderRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long ti
 				else if ( DOTPRODUCT( ep->norm , nrm )>0.f)
 						continue;
 
-				SETCULL( D3DCULL_CW );
+				GRenderer->SetCulling(Renderer::CullCW);
 			}
 			 
 			if (!EERIERTPPoly(ep)) // RotTransProject Vertices
@@ -2456,7 +2455,7 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 
 			// GO for 3D Backface Culling
 			if (ep->type & POLY_DOUBLESIDED)
-				SETCULL( D3DCULL_NONE );
+				GRenderer->SetCulling(Renderer::CullNone);
 			else
 			{
 				EERIE_3D nrm;
@@ -2473,7 +2472,7 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 				else if ( DOTPRODUCT( ep->norm , nrm )>0.f)
 						continue;
 
-				SETCULL( D3DCULL_CW );
+				GRenderer->SetCulling(Renderer::CullCW);
 			}
 			 
 			if (!EERIERTPPoly(ep)) // RotTransProject Vertices
@@ -3017,7 +3016,7 @@ SMY_D3DVERTEX *pMyVertex;
 		portals->room[room_num].pVertexBuffer->Unlock();
 	
 		//render opaque
-		SETCULL(D3DCULL_NONE);
+		GRenderer->SetCulling(Renderer::CullNone);
 		int iNbTex=portals->room[room_num].usNbTextures;
 		TextureContainer **ppTexCurr=portals->room[room_num].ppTextureContainer;
 
@@ -3060,7 +3059,7 @@ SMY_D3DVERTEX *pMyVertex;
 		//ZMapp
 		GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
 
-		GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,true);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE,false);
 
 		iNbTex=portals->room[room_num].usNbTextures;
@@ -3315,7 +3314,7 @@ SMY_D3DVERTEX *pMyVertex;
 		}
 
 		GDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE,true);
-		GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE,false);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 }
 
@@ -4344,7 +4343,7 @@ else
 			
 			// GO for 3D Backface Culling
 			if (ep->type & POLY_DOUBLESIDED)
-				SETCULL( D3DCULL_NONE );
+				GRenderer->SetCulling(Renderer::CullNone);
 			else
 			{
 				
@@ -4361,7 +4360,7 @@ else
 				else if ( DOTPRODUCT( ep->norm , nrm )>0.f)
 						continue;
 
-				SETCULL( D3DCULL_CW );
+				GRenderer->SetCulling(Renderer::CullCW);
 			}
 			 
 							if (!EERIERTPPoly(ep)) 
@@ -4553,8 +4552,8 @@ if (HALOCUR>0)
 	SETTC(NULL);
 	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_SRCCOLOR );
 	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
-	SETALPHABLEND(true);			
-	SETCULL(D3DCULL_NONE);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);			
+	GRenderer->SetCulling(Renderer::CullNone);
 	SETZWRITE(false);
 
 	for (i=0;i<HALOCUR;i++)
@@ -4575,11 +4574,11 @@ if (HALOCUR>0)
 	}
 
 		 HALOCUR = 0; 
-	SETALPHABLEND(false);			
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);			
 }
 
-	SETCULL(D3DCULL_CCW);
-	SETALPHABLEND(false);	
+	GRenderer->SetCulling(Renderer::CullCCW);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);	
 	SETZWRITE(true );
 
 	if (EDITION==EDITION_LIGHTS)

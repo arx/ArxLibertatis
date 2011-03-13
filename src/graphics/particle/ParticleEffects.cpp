@@ -1090,7 +1090,7 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
 	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );
 
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	shinum++;
 
 	if (shinum>=10) shinum=1;
@@ -1529,7 +1529,7 @@ void UpdateObjFx() {
 	
 	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
 	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	SETZWRITE(false );
 	
@@ -1598,7 +1598,7 @@ void UpdateObjFx() {
 			if (objfx[i].special & SPECIAL_RAYZ)
 			{
 
-				SETCULL(D3DCULL_NONE);
+				GRenderer->SetCulling(Renderer::CullNone);
 
 				for (long k=0;k<8;k++)
 				{
@@ -2085,7 +2085,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 	
 	tim = ARXTimeUL();//treat warning C4244 conversion from 'float' to 'unsigned long'	
 	
-	SETCULL(D3DCULL_NONE);
+	GRenderer->SetCulling(Renderer::CullNone);
 
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,0);
 
@@ -2308,11 +2308,11 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 				{
 					if (part->special & NO_TRANS)
 					{
-						SETALPHABLEND(false);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 					}
 					else
 					{
-						SETALPHABLEND(true);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 						if (part->special & SUBSTRACT) 
 						{
@@ -2326,7 +2326,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 						}
 					}
 
-					SETCULL(D3DCULL_NONE);
+					GRenderer->SetCulling(Renderer::CullNone);
 					EERIE_3D vect;
 					vect.x=part->oldpos.x-in.sx;
 					vect.y=part->oldpos.y-in.sy;
@@ -2418,11 +2418,11 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 			{
 				if (part->special & NO_TRANS)
 				{
-					SETALPHABLEND(false);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 				}
 				else
 				{
-					SETALPHABLEND(true);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 					if (part->special & SUBSTRACT) 
 					{

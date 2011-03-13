@@ -148,7 +148,7 @@ bool C_ARX_Carte::Render(void)
 	if(!this->background) return false;
 
 	CalcFPS();
-	GDevice->Clear(0,NULL,D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER,0x00000000,1.0f,0L);
+	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 
 	if(!danaeApp.DANAEStartRender()) return false;
 
@@ -560,7 +560,7 @@ void DANAE_Manage_CreateMap()
 {
 	if (FINAL_RELEASE) return;
 
-	SETCULL(D3DCULL_CCW);
+	GRenderer->SetCulling(Renderer::CullCCW);
 	iCreateMap++;
 
 	if (iCreateMap==1)

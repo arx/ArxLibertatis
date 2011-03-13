@@ -178,7 +178,7 @@ void ARXDRAW_DrawInterShadows()
 								first=0;
 								SETZWRITE(false );
 								SETBLENDMODE(D3DBLEND_ZERO,D3DBLEND_INVSRCCOLOR);
-								SETALPHABLEND(true);
+								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 								SETTC(Boom);
 							}
 
@@ -234,7 +234,7 @@ void ARXDRAW_DrawInterShadows()
 								first=0;
 								SETZWRITE(false );
 								SETBLENDMODE(D3DBLEND_ZERO,D3DBLEND_INVSRCCOLOR);
-								SETALPHABLEND(true);
+								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 								SETTC(Boom);
 							}
 
@@ -260,7 +260,7 @@ void ARXDRAW_DrawInterShadows()
 		
 		}
 
-	SETALPHABLEND(false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	SETZWRITE(true );
 	SetZBias(0);
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
@@ -277,7 +277,7 @@ void EERIEDrawLight(EERIE_LIGHT * el)
  
 	D3DTLVERTEX in;
 	D3DTLVERTEX center;
-	SETCULL(D3DCULL_NONE);
+	GRenderer->SetCulling(Renderer::CullNone);
 	
 	if (el!=NULL)
 	if (el->treat) 
@@ -386,7 +386,7 @@ void ARXDRAW_DrawEyeBall()
 	rgb.g=d;
 	rgb.b=d;
 	SETBLENDMODE(D3DBLEND_ONE,D3DBLEND_ONE);
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	DrawEERIEObjEx(eyeballobj,&angle,&pos,&scale,&rgb);	
 }
 //*************************************************************************************
@@ -451,7 +451,7 @@ void ARXDRAW_DrawPolyBoom()
 	SetZBias(8);
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,0);
 	unsigned long tim = ARXTimeUL(); 	
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	for ( i = 0 ; i < MAX_POLYBOOM ; i++ )
 	{
@@ -689,7 +689,7 @@ extern TextureContainer * InterTransTC[MAX_INTERTRANSPOL];
 
 void ARXDRAW_DrawAllInterTransPolyPos()
 {
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	EERIEDrawnPolys+=INTERTRANSPOLYSPOS;
 
 	for (long i=0;i<INTERTRANSPOLYSPOS;i++) 
@@ -699,8 +699,8 @@ void ARXDRAW_DrawAllInterTransPolyPos()
 		if (InterTransFace[i]->texid<0) continue;
 
 		if (InterTransFace[i]->facetype & POLY_DOUBLESIDED) 
-				SETCULL(D3DCULL_NONE);
-		else	SETCULL(D3DCULL_CW);
+				GRenderer->SetCulling(Renderer::CullNone);
+		else	GRenderer->SetCulling(Renderer::CullCW);
 
 		SETTC(InterTransTC[i]);
 		EERIE_FACE * ef=InterTransFace[i];
@@ -744,7 +744,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 	
 	SetZBias( 1 );
 
-	SETALPHABLEND(true );
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	long i, to = 0; 
 
@@ -756,8 +756,8 @@ void ARXDRAW_DrawAllTransPolysPos() {
 
 		if ( ( !( Project.hide & HIDE_BACKGROUND ) ) )
 		{
-			if ( ep->type & POLY_DOUBLESIDED ) SETCULL( D3DCULL_NONE );
-			else SETCULL( D3DCULL_CW );
+			if ( ep->type & POLY_DOUBLESIDED ) GRenderer->SetCulling(Renderer::CullNone);
+			else GRenderer->SetCulling(Renderer::CullCW);
 		
 			if ( ViewMode & VIEWMODE_FLAT ) SETTC( NULL );
 			else	SETTC( ep->tex );
@@ -799,7 +799,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 				{
 					GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
 					GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
-					SETALPHABLEND(true );	
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
 					D3DTLVERTEX verts[4];
 					SETTC( enviro );
 
@@ -844,7 +844,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 				GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
 				GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
 
-				SETALPHABLEND(true );	
+				GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
 				
 				D3DTLVERTEX verts[4];
 

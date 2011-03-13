@@ -873,9 +873,7 @@ void EERIEAddPoly(D3DTLVERTEX * vert, D3DTLVERTEX * vert2, TextureContainer * te
 
 //****************************************************************************
 // RENDERING FUNCTIONS START
-void SETALPHABLEND(DWORD state);
 void SETTEXTURE0(IDirectDrawSurface7 * tex);
-void SETCULL(DWORD state);
 // RENDERING FUNCTIONS END
 //****************************************************************************
 

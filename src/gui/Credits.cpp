@@ -153,7 +153,7 @@ void Credits::render() {
 		//Set the device
 		if(!danaeApp.DANAEStartRender()) return;
 		
-		SETALPHABLEND(false);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, false);
 		SETZWRITE(true);
 		GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE,false);

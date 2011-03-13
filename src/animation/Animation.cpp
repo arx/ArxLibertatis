@@ -842,7 +842,7 @@ void PopOneTriangleList(TextureContainer *_pTex,bool _bUpdate)
 		return;
 	}
 
-	SETCULL(D3DCULL_NONE);
+	GRenderer->SetCulling(Renderer::CullNone);
 	SETTC(_pTex);
 	float val;
 
@@ -882,7 +882,7 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 		!_pTex->ulNbVertexListCull_TMetal
 		) return;
 
-	SETCULL(D3DCULL_NONE);
+	GRenderer->SetCulling(Renderer::CullNone);
 	SETTC(_pTex);
 
 	if(	_pTex->ulNbVertexListCull_TNormalTrans )
@@ -1037,7 +1037,7 @@ void PopAllTriangleListTransparency()
 	D3DMATRIX matbase;
 
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,0);
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	SETZWRITE(false); 
 
 	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
@@ -1060,7 +1060,7 @@ void PopAllTriangleListTransparency()
 	}
 
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
-	SETALPHABLEND(false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	SETZWRITE(true);
 }
 
@@ -2802,10 +2802,10 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 
 	
 		if (eobj->facelist[i].facetype & POLY_DOUBLESIDED)
-			SETCULL( D3DCULL_NONE );
+			GRenderer->SetCulling(Renderer::CullNone);
 		else
 		{
-			SETCULL( D3DCULL_CW );
+			GRenderer->SetCulling(Renderer::CullCW);
 		}
 
 ////////////////////////////////////////////////////////////////////////
@@ -3108,10 +3108,10 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 
 					GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
 					GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
-					SETALPHABLEND(true );			
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);			
 					SETZWRITE( false );
 					EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, &vert_list, 3, 0, 0 );
-					SETALPHABLEND(false );			
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);			
 					SETZWRITE( true );
 				}				
 	}

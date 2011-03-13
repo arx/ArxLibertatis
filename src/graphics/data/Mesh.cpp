@@ -3369,8 +3369,8 @@ void DrawEERIEObjEx(EERIE_3DOBJ * eobj,
 		}
 
 		if (eobj->facelist[i].facetype & POLY_DOUBLESIDED)
-			SETCULL(D3DCULL_NONE);
-		else SETCULL(D3DCULL_CW);
+			GRenderer->SetCulling(Renderer::CullNone);
+		else GRenderer->SetCulling(Renderer::CullCW);
 
 		ARX_DrawPrimitive_SoftClippZ(&vert_list[0],
 									 &vert_list[1],
@@ -3450,8 +3450,8 @@ void DrawEERIEObjExEx(EERIE_3DOBJ * eobj,
 		}
 
 		if (eobj->facelist[i].facetype & POLY_DOUBLESIDED)
-			SETCULL(D3DCULL_NONE);
-		else SETCULL(D3DCULL_CW);
+			GRenderer->SetCulling(Renderer::CullNone);
+		else GRenderer->SetCulling(Renderer::CullCW);
 
 		ARX_DrawPrimitive_SoftClippZ(&vert_list[0],
 									 &vert_list[1],

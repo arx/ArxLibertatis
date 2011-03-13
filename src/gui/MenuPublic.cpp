@@ -104,7 +104,7 @@ void ARXMenu_Private_Options_Video_SetResolution(int _iWidth, int _iHeight, int 
 {
 	if (!GDevice) return;
 
-	GDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DRGBA(0, 0, 0, 0), 1.0f, 0L);
+	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 	danaeApp.DANAEEndRender();
 
 	danaeApp.m_pFramework->ShowFrame();

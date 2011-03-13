@@ -433,7 +433,7 @@ float CRuneOfGuarding::Render()
 	SETZWRITE(false);
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	//----------------------------
 	//	long color = D3DRGB(1,1,1);
@@ -872,12 +872,12 @@ float CPoisonProjectile::Render()
 		return 0.f;
 	}
 
-	SETCULL(D3DCULL_NONE);
+	GRenderer->SetCulling(Renderer::CullNone);
 	SETZWRITE(false);
 	//-------------------------------------------------------------------------
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	// ------------------------------------------------------------------------
 	int n = BEZIERPrecision;
@@ -999,9 +999,9 @@ float CPoisonProjectile::Render()
 		LaunchPoisonExplosion(&lastpos);
 	}
 
-	SETCULL(D3DCULL_NONE);
+	GRenderer->SetCulling(Renderer::CullNone);
 	SETZWRITE(false);
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	return 1;
 }
@@ -1316,7 +1316,7 @@ float CRepelUndead::Render()
 	SETZWRITE(false);
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	//----------------------------
 	EERIE_3D  eObjAngle;
@@ -1569,7 +1569,7 @@ void CLevitate::DrawStone()
 {
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_INVDESTCOLOR);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	int	nb = 256;
 
 	while (nb--)
@@ -1632,7 +1632,7 @@ void CLevitate::DrawStone()
 		}
 	}
 
-	SETALPHABLEND(false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -1704,7 +1704,7 @@ float CLevitate::Render()
 {
 	if (this->key > 1) return 0;
 
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	SETZWRITE(false);
 
 	//calcul du cone
@@ -1900,13 +1900,13 @@ float CLevitate::Render()
 	//trac� du cone back
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	SETTEXTUREWRAPMODE(D3DTADDRESS_MIRROR);
 
 	if (this->tsouffle) GDevice->SetTexture(0, this->tsouffle->m_pddsSurface);
 	else GDevice->SetTexture(0, NULL);
 
-	SETCULL(D3DCULL_CW);
+	GRenderer->SetCulling(Renderer::CullCW);
 	int i = cone[1].conenbfaces - 2;
 	int j = 0;
 
@@ -1930,7 +1930,7 @@ float CLevitate::Render()
 	}
 
 	//trac� du cone front
-	SETCULL(D3DCULL_CCW);
+	GRenderer->SetCulling(Renderer::CullCCW);
 	
 	i = cone[1].conenbfaces - 2;
 	j = 0;
@@ -1961,7 +1961,7 @@ float CLevitate::Render()
 
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
-	SETALPHABLEND(false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	SETZWRITE(true);
 
 	return 0;

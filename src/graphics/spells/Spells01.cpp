@@ -377,11 +377,11 @@ float CMagicMissile::Render()
 	}
 
 	// Set Appropriate Renderstates -------------------------------------------
-	SETCULL(D3DCULL_NONE);
+	GRenderer->SetCulling(Renderer::CullNone);
 	SETZWRITE(false);
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	// Set Texture ------------------------------------------------------------
 	if (tex_mm && tex_mm->m_pddsSurface)
@@ -1094,7 +1094,7 @@ void DrawArcElectrique(EERIE_3D * tabdef, int nbseg, TextureContainer * tex, flo
 	//-------------------------------------------------------------------------
 	// rendu
 	//	SETTC(NULL);
-	SETCULL(D3DCULL_NONE);
+	GRenderer->SetCulling(Renderer::CullNone);
 
 	if (tex && tex->m_pddsSurface)
 	{
@@ -1327,7 +1327,7 @@ void CPortal::Update(unsigned long _ulTime)
 /*--------------------------------------------------------------------------*/
 float CPortal::Render()
 {
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	SETZWRITE(false);
 
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
@@ -1388,7 +1388,7 @@ float CPortal::Render()
 
 
 	//affichage de la sphere back
-	SETCULL(D3DCULL_CW);
+	GRenderer->SetCulling(Renderer::CullCW);
 	GDevice->SetTexture(0, NULL);
 	GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->sphered3d, this->spherenbpt, (unsigned short *)this->sphereind, this->spherenbfaces * 3, 0);
 
@@ -1432,14 +1432,14 @@ float CPortal::Render()
 	}
 
 	//affichage de la sphere front
-	SETCULL(D3DCULL_CCW);
+	GRenderer->SetCulling(Renderer::CullCCW);
 	GDevice->SetTexture(0, NULL);
 	GDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, D3DFVF_TLVERTEX, this->sphered3d, this->spherenbpt, (unsigned short *)this->sphereind, this->spherenbfaces * 3, 0);
 
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
-	SETALPHABLEND(false);
-	SETCULL(D3DCULL_NONE);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	GRenderer->SetCulling(Renderer::CullNone);
 	SETZWRITE(true);
 
 	return 0;

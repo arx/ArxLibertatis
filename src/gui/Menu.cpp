@@ -624,7 +624,7 @@ bool ARX_Menu_Render()
 		return true;
 	}
 
-	GDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0L);
+	GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer);
 	long posx;
 	posx = DANAESIZX >> 1;
 
@@ -708,11 +708,11 @@ bool ARX_Menu_Render()
 		}
 
 		GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
-		SETALPHABLEND( false);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 		if (ARXmenu.mda->BookBackground != NULL)
 		{
-			SETALPHABLEND( false);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
 			SETZWRITE(false);
 			GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_FALSE);
@@ -930,7 +930,7 @@ bool ARX_Menu_Render()
 	{
 		if (ARXmenu.mda->BookBackground != NULL)
 		{
-			SETALPHABLEND( false);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
 			SETZWRITE(false);
 			GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_FALSE);

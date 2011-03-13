@@ -102,9 +102,7 @@ void EERIEDrawRotatedSprite(D3DTLVERTEX * in, float siz, TextureContainer * tex,
 
 void SETTEXTURE0(IDirectDrawSurface7 * tex);
 void SETTC(TextureContainer * tc);
-void SETCULL(DWORD state);
 void SETZWRITE(DWORD state);
-void SETALPHABLEND(DWORD state);
 void SETBLENDMODE(DWORD srcblend, DWORD destblend);
 void SETTEXTUREWRAPMODE(DWORD mode);
 void EERIEPOLY_DrawWired(EERIEPOLY * ep, long col = 0);

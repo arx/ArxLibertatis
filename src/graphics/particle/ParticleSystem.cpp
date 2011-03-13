@@ -562,12 +562,12 @@ void CParticleSystem::Update(long _lTime)
 //-----------------------------------------------------------------------------
 void CParticleSystem::Render() {
 	
-	SETCULL(D3DCULL_NONE);
+	GRenderer->SetCulling(Renderer::CullNone);
 	SETZWRITE(false);
 
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  iSrcBlend);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, iDstBlend);
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	int inumtex = 0;
 

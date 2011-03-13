@@ -128,7 +128,7 @@ void Font::Draw( int x, int y, const std::string& str, COLORREF color ) const
 void Font::Draw( int x, int y, std::string::const_iterator itStart, std::string::const_iterator itEnd, COLORREF color ) const
 {
     GRenderer->SetRenderState( Renderer::Lighting, false );
-    GRenderer->SetRenderState( Renderer::Blend, true );
+    GRenderer->SetRenderState( Renderer::AlphaBlending, true );
     GRenderer->SetBlendFunc( Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha );
 	
 	GRenderer->SetRenderState( Renderer::DepthTest, false );
@@ -195,7 +195,7 @@ void Font::Draw( int x, int y, std::string::const_iterator itStart, std::string:
 	GRenderer->GetTextureStage(0)->SetAlphaOp(TextureStage::TexOpSelectArg1, TextureStage::TexArgTexture, TextureStage::TexArgCurrent);
 	
     GRenderer->End2DProjection();
-    GRenderer->SetRenderState( Renderer::Blend, false );
+    GRenderer->SetRenderState( Renderer::AlphaBlending, false );
 	GRenderer->SetRenderState( Renderer::DepthTest, true );
 	GRenderer->SetRenderState( Renderer::DepthMask, true );
 	GRenderer->SetCulling( Renderer::CullCCW );

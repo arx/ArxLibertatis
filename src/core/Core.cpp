@@ -4349,7 +4349,7 @@ void ManageFade()
 	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
 	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );										
 	SETZWRITE(false );
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
 	EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
 			NULL,_EERIERGB(Visibility));
@@ -4359,7 +4359,7 @@ void ManageFade()
 	float col=Visibility;
 	EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
 			NULL,EERIERGB(col*FADECOLOR.r,col*FADECOLOR.g,col*FADECOLOR.b));		
-	SETALPHABLEND(false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	SETZWRITE(true );
 }
 
@@ -4443,7 +4443,7 @@ void RenderAllNodes()
 	long j;
 	Vector_Init(&angle);
 
-	SETALPHABLEND(false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	for (long i=0;i<nodes.nbmax;i++)
 	{
@@ -4889,7 +4889,7 @@ long DANAE_Manage_Cinematic()
 
 	PlayTrack(ControlCinematique);
 	ControlCinematique->InitDeviceObjects();
-	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	if(ControlCinematique->Render(FrameTicks-LastFrameTicks)==E_FAIL)
 		return 1;
@@ -5720,12 +5720,12 @@ static float _AvgFrameDiff = 150.f;
 		if (desired.flags & GMOD_DCOLOR)
 		{
 			long DCOLOR=EERIERGB(current.depthcolor.r,current.depthcolor.g,current.depthcolor.b);
-			GDevice->Clear( 0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER,DCOLOR, 1.0f, 0L );
+			GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, DCOLOR);
 		}
 		else
 		{
 			subj.bkgcolor=ulBKGColor;
-			GDevice->Clear( 0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER,subj.bkgcolor, 1.0f, 0L );
+			GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, subj.bkgcolor);
 		}
 
 		//-------------------------------------------------------------------------------
@@ -5742,7 +5742,7 @@ static float _AvgFrameDiff = 150.f;
 			rectz[0].y2 		= lMulResult;
 			rectz[1].y1 		= DANAESIZY - lMulResult;
 			rectz[1].y2 = DANAESIZY;
-			GDevice->Clear( 2, rectz, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER,0x00000000, 0.f, 0L );
+			GRenderer->Clear(Renderer::ColorBuffer | Renderer::DepthBuffer, 0, 0.0f, 2, rectz);
 		}
 		//-------------------------------------------------------------------------------
 
@@ -5752,7 +5752,7 @@ static float _AvgFrameDiff = 150.f;
 	}
 	
 	SETZWRITE(true );
-	SETALPHABLEND(false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	if ( (inter.iobj[0]) && (inter.iobj[0]->animlayer[0].cur_anim) )
 	{
@@ -6591,13 +6591,13 @@ static float _AvgFrameDiff = 150.f;
 		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
 		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );			
 		SETZWRITE(false );
-		SETALPHABLEND(true);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		ARX_FOGS_Render();
 
 		ARX_PARTICLES_Render(&subj);
 		UpdateObjFx();
 		
-		SETALPHABLEND(false);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		BENCH_PARTICLES=EndBench();
 
 	}
@@ -6658,7 +6658,7 @@ static float _AvgFrameDiff = 150.f;
 	if (ItemToBeAdded[0]!=0)
 		DanaeItemAdd();
 		
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	SETZWRITE(false);
 
 	// Checks some specific spell FX
@@ -6685,13 +6685,13 @@ static float _AvgFrameDiff = 150.f;
 		if (PLAYER_PARALYSED)
 	{
 		SETZWRITE(false);
-		SETALPHABLEND(true);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 		GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 
 		EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
 				NULL,EERIERGB(0.2f,0.2f,1.f));		
-		SETALPHABLEND(false);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		SETZWRITE(true );
 	}
 
@@ -6700,7 +6700,7 @@ static float _AvgFrameDiff = 150.f;
 		ManageFade();
 	}
 
-	SETALPHABLEND(false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	SETZWRITE(true);
 	
 	// Reset Last Key
@@ -6716,7 +6716,7 @@ static float _AvgFrameDiff = 150.f;
 	finish:; //----------------------------------------------------------------
 	// Update spells
 	ARX_SPELLS_Update();
-	SETCULL(D3DCULL_NONE);
+	GRenderer->SetCulling(Renderer::CullNone);
 	GDevice->SetRenderState( D3DRENDERSTATE_FOGENABLE, true);
 
 	// Manage Death visual & Launch menu...
@@ -6727,7 +6727,7 @@ static float _AvgFrameDiff = 150.f;
 
 	// INTERFACE
 		// Remove the Alphablend State if needed : NO Z Clear
-	SETALPHABLEND(false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
 
 	// Draw game interface if needed
@@ -6754,17 +6754,17 @@ static float _AvgFrameDiff = 150.f;
 
 	if(bRenderInterList)
 	{
-		SETALPHABLEND(false);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		PopAllTriangleList(true);
-		SETALPHABLEND(true);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		PopAllTriangleListTransparency();
-		SETALPHABLEND(false);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	}
 
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, true);
 		this->GoFor2DFX();
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
-GDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
+	GRenderer->Clear(Renderer::DepthBuffer);
 
 	// Speech Management
 	if (!EDITMODE)
@@ -6795,7 +6795,7 @@ GDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 		//-------------------------------------------------------------------------
 
 	// CURSOR Rendering
-	SETALPHABLEND( false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	if (DRAGINTER)
 	{
@@ -6803,11 +6803,11 @@ GDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 
 		if(bRenderInterList)
 		{
-			SETALPHABLEND(false);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			PopAllTriangleList(true);
-			SETALPHABLEND(true);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			PopAllTriangleListTransparency();
-			SETALPHABLEND(false);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 		}
 
 		ARX_INTERFACE_HALO_Flush();
@@ -6964,7 +6964,7 @@ GDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER,0, 1.0f, 0L );
 		if(danaeApp.DANAEStartRender())
 		{
 			SETZWRITE(true );
-			SETALPHABLEND(false);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			iVPOS=0;
 			ShowValue(&oBENCH_STARTUP,&BENCH_STARTUP,"Startup");
 			ShowValue(&oBENCH_PLAYER,&BENCH_PLAYER,"Player");
@@ -7117,9 +7117,9 @@ void DANAE::GoFor2DFX()
 		{
 			GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE);
 			GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
-			SETALPHABLEND(true);		
+			GRenderer->SetRenderState(Renderer::AlphaBlending, true);		
 			SETZWRITE(false );
-			SETCULL(D3DCULL_NONE);
+			GRenderer->SetCulling(Renderer::CullNone);
 			GDevice->SetRenderState( D3DRENDERSTATE_ZENABLE, false);
 			GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,  0);
 

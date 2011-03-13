@@ -210,7 +210,7 @@ void ARX_SPEECH_Render()
 	
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	int iEnd = igrec + sSize.y;
 
@@ -242,7 +242,7 @@ void ARX_SPEECH_Render()
 		}
 	}
 
-	SETALPHABLEND(false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
 
 void ARX_SPEECH_Check()
@@ -630,7 +630,7 @@ void ARX_SPEECH_Update() {
 						SETTC( NULL);
 						GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ZERO);
 						GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
-						GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
 						EERIEDrawFill2DRectDegrad(
 												  0.f,
@@ -654,7 +654,7 @@ void ARX_SPEECH_Update() {
 						GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
 
 						danaeApp.EnableZBuffer();
-						GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
+						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 
 						iTaille += (int)fZoneClippHeight;

@@ -1992,8 +1992,8 @@ void CRuban::DrawRuban(int num, float size, int dec, float r, float g, float b, 
 //-----------------------------------------------------------------------------
 float CRuban::Render()
 {
-	SETCULL(D3DCULL_NONE);
-	SETALPHABLEND(true);
+	GRenderer->SetCulling(Renderer::CullNone);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 
@@ -2008,7 +2008,7 @@ float CRuban::Render()
 		                trubandef[i].r2, trubandef[i].g2, trubandef[i].b2) ;
 	}
 
-	SETALPHABLEND(false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
 

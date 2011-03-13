@@ -468,7 +468,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 				}
 			}
 
-			SETALPHABLEND(true);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
 			GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
 			GDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_ALWAYS);
@@ -743,7 +743,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 			GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_WRAP);
 			GDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
 
-			SETALPHABLEND(false);
+			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 			if ((SHOWLEVEL == ARX_LEVELS_GetRealNum(CURRENTLEVEL)))
 			{
@@ -780,7 +780,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 				if (fl2)
 				{
-					SETALPHABLEND(TRUE);
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					verts[0].sx += DECALX * Xratio;
 					verts[0].sy += DECALY * Yratio;
 					verts[1].sx += DECALX * Xratio;
@@ -791,7 +791,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 				EERIEDRAWPRIM( D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, 3, 0);
 
-				if (fl2) SETALPHABLEND(false);
+				if (fl2) GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 			}
 		}
 
@@ -842,12 +842,12 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 										if (!fl2)
 										{
-											SETALPHABLEND(true);
+											GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 											GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
 											GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
 										}
 										else
-											SETALPHABLEND(true);
+											GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 										if (fl2)
 										{
@@ -861,7 +861,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 														5.f * ratiooo, 5.f * ratiooo, 0, pTexDetect, D3DRGB(col, 0, 0));
 
 										if (!fl2)
-											SETALPHABLEND(false);
+											GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 									}
 								}
 							}

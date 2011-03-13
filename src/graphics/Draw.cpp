@@ -362,8 +362,8 @@ void DRAWLATER_Render()
 		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
 		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );	
 		SETZWRITE(false); 
-		SETALPHABLEND(true);					
-		SETCULL(D3DCULL_NONE);
+		GRenderer->SetRenderState(Renderer::AlphaBlending, true);					
+		GRenderer->SetCulling(Renderer::CullNone);
 		long to;
 
 		for (long j=0;j<curdrawlater;j++)
@@ -439,7 +439,7 @@ void DRAWLATER_Render()
 		}
 
 		EERIEDrawnPolys+=curdrawlater;
-		SETALPHABLEND(false); 
+		GRenderer->SetRenderState(Renderer::AlphaBlending, false); 
 		SETZWRITE(true); 
 
 	SETTC(NULL);
@@ -494,9 +494,9 @@ void Delayed_FlushAll()
 				EERIEPOLY * ep=del[i].data;
 
 				if (!(ep->type & POLY_DOUBLESIDED))
-					SETCULL(D3DCULL_CW);
+					GRenderer->SetCulling(Renderer::CullCW);
 				else 
-					SETCULL(D3DCULL_NONE);
+					GRenderer->SetCulling(Renderer::CullNone);
 				
 				if (ep->type & POLY_QUAD)
 					to=4;
@@ -510,7 +510,7 @@ void Delayed_FlushAll()
 				{
 					GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
 					GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
-					SETALPHABLEND(true);	
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
 					SETTC(NULL); 
 
 					EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, ep->tv,	to,	0, flg_NOCOUNT_USEVB );
@@ -521,7 +521,7 @@ void Delayed_FlushAll()
 				{
 					GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
 					GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
-					SETALPHABLEND(true);	
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
 					D3DTLVERTEX verts[4];
 					SETTC(enviro);
 
@@ -613,7 +613,7 @@ void Delayed_FlushAll()
 					}
 
 					SETTC(ptcTexture);				
-					SETALPHABLEND(false);	
+					GRenderer->SetRenderState(Renderer::AlphaBlending, false);	
 			}				
 			
 			if (ZMAPMODE)
@@ -631,7 +631,7 @@ void Delayed_FlushAll()
 					GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
 					GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );	
 					SETZWRITE(false); 
-					SETALPHABLEND(true);					
+					GRenderer->SetRenderState(Renderer::AlphaBlending, true);					
 					D3DTLVERTEX verts[4];
 					SETTC(ptcTexture->TextureRefinement); 
 
@@ -659,8 +659,8 @@ void Delayed_FlushAll()
 						}					
 
 						if (!(ep->type & POLY_DOUBLESIDED))
-							SETCULL( D3DCULL_CW );			
-						else SETCULL( D3DCULL_NONE );
+							GRenderer->SetCulling(Renderer::CullCW);			
+						else GRenderer->SetCulling(Renderer::CullNone);
 						
 						
 						register long tmp;
@@ -701,7 +701,7 @@ void Delayed_FlushAll()
 				}
 
 				EERIEDrawnPolys+=ptcTexture->delayed_nb;
-				SETALPHABLEND(false); 
+				GRenderer->SetRenderState(Renderer::AlphaBlending, false); 
 				SETZWRITE(true);
 			}
 
@@ -747,7 +747,7 @@ void Delayed_EERIEDRAWPRIM( EERIEPOLY * ep)
 					{
 						GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
 						GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
-						SETALPHABLEND(true);	
+						GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
 						D3DTLVERTEX verts[4];
 						SETTC(enviro);
 						for (long i=0;i<to;i++)
@@ -805,7 +805,7 @@ void EERIE_DrawPolyBump(EERIEPOLY *ep,float alpha)
 
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,D3DBLEND_DESTCOLOR);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,D3DBLEND_SRCCOLOR);	
-	SETALPHABLEND(true);			
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);			
 	SETTC(ep->tex);
 
 	CalculTriangleBump( ep->tv[0], ep->tv[1], ep->tv[2], &du, &dv );
@@ -902,7 +902,7 @@ void EERIE_DrawPolyBump(EERIEPOLY *ep,float alpha)
 
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,D3DBLEND_ONE);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,D3DBLEND_ZERO);	
-	SETALPHABLEND(false); 
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false); 
 	SETZWRITE(true); 
 }
 
@@ -1248,14 +1248,6 @@ void SETTEXTUREWRAPMODE(DWORD mode)
 }
 
 //*************************************************************************************
-//*************************************************************************************
-
-void SETCULL(DWORD state)
-{
-	GDevice->SetRenderState( D3DRENDERSTATE_CULLMODE , state);
-}
-
-//*************************************************************************************
 
 void SETZWRITE(DWORD _dwState)
 {
@@ -1264,11 +1256,6 @@ void SETZWRITE(DWORD _dwState)
 
 //*************************************************************************************
 //*************************************************************************************
-
-void SETALPHABLEND(DWORD state)
-{
-	GDevice->SetRenderState( D3DRENDERSTATE_ALPHABLENDENABLE, state);
-}	
 
 void SETBLENDMODE(DWORD srcblend,DWORD destblend)
 {

@@ -265,7 +265,7 @@ HRESULT Cinematic::InitDeviceObjects()
 	GDevice->SetRenderState(D3DRENDERSTATE_LASTPIXEL, true); 
 	GDevice->SetRenderState(D3DRENDERSTATE_CLIPPING , true);
 	GDevice->SetRenderState(D3DRENDERSTATE_LIGHTING  , false);
-	GDevice->SetRenderState(D3DRENDERSTATE_CULLMODE , D3DCULL_NONE);
+	GRenderer->SetCulling(Renderer::CullNone);
 	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_CLAMP);
 
 	D3DDEVICEDESC7 devicedesc;
@@ -319,7 +319,7 @@ HRESULT Cinematic::InitDeviceObjects()
 	GDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFG_LINEAR);
 	GDevice->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTFP_LINEAR);
 	GDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, (DWORD)(0));
-	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
 
 	EditLight = false;
@@ -348,7 +348,7 @@ HRESULT Cinematic::DeleteDeviceObjects()
 	// Disable Lighting RenderState
 	GDevice->SetRenderState(D3DRENDERSTATE_LIGHTING  , false);
 
-	GDevice->SetRenderState(D3DRENDERSTATE_CULLMODE , D3DCULL_CCW);
+	GRenderer->SetCulling(Renderer::CullCCW);
 	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_WRAP);
 
 	D3DDEVICEDESC7 devicedesc;
@@ -381,7 +381,7 @@ HRESULT Cinematic::DeleteDeviceObjects()
 	GDevice->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTFP_LINEAR);
 	GDevice->SetTextureStageState(0, D3DTSS_MIPMAPLODBIAS, (DWORD)(0));
 
-	GDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, true);
 
 	GDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
@@ -595,7 +595,7 @@ HRESULT Cinematic::Render(float FDIFF)
 
 	if (projectload)
 	{
-		GDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0x00000000, 1.0f, 0L);
+		GRenderer->Clear(Renderer::ColorBuffer);
 		danaeApp.DANAEStartRender();
 		InRender = true;
 

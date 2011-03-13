@@ -53,7 +53,7 @@ const D3DTEXTUREMIPFILTER ARXToDX7MipFilter[] = {
 
 
 const D3DRENDERSTATETYPE ARXToDXRenderState[] = {
-						D3DRENDERSTATE_ALPHABLENDENABLE,	// Blend,
+						D3DRENDERSTATE_ALPHABLENDENABLE,	// AlphaBlending,
 						D3DRENDERSTATE_ZENABLE,				// DepthTest
 						D3DRENDERSTATE_ZWRITEENABLE,		// DepthMask
 						D3DRENDERSTATE_LIGHTING,            // Lighting,
@@ -664,6 +664,16 @@ void Renderer::End2DProjection()
 	GDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &matProj);
 	GDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &matWorld);
 	GDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &matView);
+}
+
+void Renderer::Clear(int bufferFlags, COLORREF clearColor, float clearDepth, unsigned int rectCount, D3DRECT* pRects)
+{
+	DWORD clearTargets = 0;
+	clearTargets |= (bufferFlags & ColorBuffer) ? D3DCLEAR_TARGET : 0;
+	clearTargets |= (bufferFlags & DepthBuffer) ?  D3DCLEAR_ZBUFFER : 0;
+	clearTargets |= (bufferFlags & StencilBuffer) ? D3DCLEAR_STENCIL : 0;
+
+	GDevice->Clear(rectCount, pRects, clearTargets, clearColor, clearDepth, 0);
 }
 
 unsigned int Renderer::GetTextureStageCount() const

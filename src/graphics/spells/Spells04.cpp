@@ -138,9 +138,9 @@ float CBless::Render()
 		return 0.f;
 	}
 
-	SETCULL(D3DCULL_NONE);
+	GRenderer->SetCulling(Renderer::CullNone);
 	SETZWRITE(false);
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	D3DTLVERTEX v[4];
 	D3DTLVERTEX v3[4];
@@ -195,7 +195,7 @@ float CBless::Render()
 	                             &v3[3]);
 	
 	//----------------------------
-	SETALPHABLEND(false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 	for (i = 0; i < 12; i++)
 	{
@@ -228,9 +228,9 @@ float CBless::Render()
 		}
 	}
 
-	SETCULL(D3DCULL_NONE);
+	GRenderer->SetCulling(Renderer::CullNone);
 	SETZWRITE(false);
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	return 1;
 }
@@ -280,7 +280,7 @@ float CDispellField::Render()
 	}
 
 	SETZWRITE(false);
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	for (i = 0; i < inter.nbmax; i++)
 	{
@@ -320,7 +320,7 @@ float CDispellField::Render()
 	stitepos.y = y;
 	stitepos.z = z;
 
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	stiteangle.b = -stiteangle.b * 1.5f;
 	stitecolor.r = 0.7f;
@@ -337,7 +337,7 @@ float CDispellField::Render()
 	stitescale.x = 2;
 	stitescale.y = 2;
 	stitescale.z = 2;
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
 
 	y = player.pos.y + 20;
@@ -502,10 +502,10 @@ float CTelekinesis::Render()
 	//DumpMap();
 
 	//SETTC(NULL);
-	//SETCULL(D3DCULL_NONE);
+	//GRenderer->SetCulling(Renderer::CullNone);
 	SETZWRITE(false);
-	//SETALPHABLEND(false);
-	SETALPHABLEND(true);
+	//GRenderer->SetRenderState(Renderer::AlphaBlending, false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 
 	//	register INTERACTIVE_OBJ * io;
@@ -617,7 +617,7 @@ float CTelekinesis::Render()
 	stitepos.y = y;//player.pos.y+60.f-mov;
 	stitepos.z = z;//tPos[i].z;//player.pos.z;//+(float)EEcos(radians(player.angle.b))*(100.f) ;
 
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	stiteangle.b = -stiteangle.b * 1.5f;
 	stitecolor.r = 0.7f;
@@ -635,7 +635,7 @@ float CTelekinesis::Render()
 	stitescale.x = 2;
 	stitescale.y = 2;
 	stitescale.z = 2;
-	SETALPHABLEND(true);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
 
  
@@ -756,7 +756,7 @@ float CCurse::Render(EERIE_3D * pos)
 		*/
 	}
 
-	SETCULL(D3DCULL_CW);
+	GRenderer->SetCulling(Renderer::CullCW);
 	SETZWRITE(true);
 
 	x = pos->x;
@@ -767,7 +767,7 @@ float CCurse::Render(EERIE_3D * pos)
 	EERIE_3D stitepos;
 	EERIE_3D stitescale;
 	EERIE_RGB stitecolor;
-	SETALPHABLEND(false);
+	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 
 	stiteangle.b = fRot;
