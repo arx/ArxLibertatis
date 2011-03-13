@@ -1534,8 +1534,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 		SMY_D3DVERTEX3 *pVertex=(SMY_D3DVERTEX3*)pDynamicVertexBuffer->Lock(DDLOCK_NOOVERWRITE);
 		pVertex+=iOldNbVertex;
 		
-		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
-		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );
+		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 		SETTC(enviro);
 
 		int iNbTextureSim=danaeApp.m_pDeviceInfo->wNbTextureSimultaneous;
@@ -1878,8 +1877,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 		SMY_D3DVERTEX3 *pVertex=(SMY_D3DVERTEX3*)pDynamicVertexBuffer->Lock(DDLOCK_NOOVERWRITE);
 		pVertex+=iOldNbVertex;
 		
-		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
-		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );
+		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 		SETTC(enviro);
 
 		switch(danaeApp.m_pDeviceInfo->wNbTextureSimultaneous)
@@ -1906,8 +1904,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 				pDynamicVertexBuffer->UnLock();
 				pDynamicVertexBuffer->ussNbVertex-=iNbVertex;
 
-				GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
-				GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );
+				GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 				GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE2X);
 
 				if(pDynamicVertexBuffer->ussNbIndice)
@@ -1941,8 +1938,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 							pDynamicVertexBuffer->ussNbIndice,
 							0 );
 						
-						GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-						GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 						GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
 						GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
 							pDynamicVertexBuffer->pVertexBuffer,
@@ -1978,8 +1974,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 							pDynamicVertexBuffer->ussNbIndice,
 							0 );
 						
-						GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-						GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 						GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
 						GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
 							pDynamicVertexBuffer->pVertexBuffer,
@@ -2011,8 +2006,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 							pDynamicVertexBuffer->ussNbIndice,
 							0 );
 						
-						GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-						GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 						GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
 						GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
 							pDynamicVertexBuffer->pVertexBuffer,
@@ -2129,8 +2123,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 
 		if(pDynamicVertexBuffer->ussNbIndice)
 		{
-			GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
-			GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );
+			GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 			GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE2X);
 
 			switch(danaeApp.m_pDeviceInfo->wNbTextureSimultaneous)
@@ -2162,8 +2155,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 													pDynamicVertexBuffer->ussNbIndice,
 													0 );
 
-				GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-				GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 				GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
 				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
 													pDynamicVertexBuffer->pVertexBuffer,
@@ -2199,8 +2191,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 													pDynamicVertexBuffer->ussNbIndice,
 													0 );
 
-				GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-				GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 				GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
 				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
 													pDynamicVertexBuffer->pVertexBuffer,
@@ -2232,8 +2223,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 													pDynamicVertexBuffer->ussNbIndice,
 													0 );
 
-				GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-				GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 				GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
 				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
 													pDynamicVertexBuffer->pVertexBuffer,
@@ -2262,8 +2252,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 void ARX_PORTALS_Frustrum_RenderRoomTCullSoft(long room_num,EERIE_FRUSTRUM_DATA * frustrums,long prec,long tim);
 void ARX_PORTALS_Frustrum_RenderRoomsTCullSoft(long prec,long tim)
 {
-	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );	
+	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);	
 
 	for (long i=0;i<NbRoomDrawList;i++)
 	{
@@ -3220,8 +3209,7 @@ SMY_D3DVERTEX *pMyVertex;
 			unsigned short *pussInd=pDynamicVertexBuffer->pussIndice;
 			unsigned short iNbIndice = 0;
 			
-			GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,D3DBLEND_ONE);
-			GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,D3DBLEND_ONE);	
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);	
 			
 			vector<EERIEPOLY*>::iterator iT;
 
@@ -3308,8 +3296,7 @@ SMY_D3DVERTEX *pMyVertex;
 			}
 			
 			GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
-			GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-			GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );	
+			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);	
 			vPolyVoodooMetal.clear();
 		}
 
@@ -3350,8 +3337,7 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 					unsigned short *pussInd			=	pDVB->pussIndice;
 				unsigned short iNbIndice = 0;
 					
-					GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND, D3DBLEND_DESTCOLOR );
-					GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR );	
+					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);	
 					
 					GDevice->SetTexture( 0, pTexCurr->m_pddsBumpMap );
 					int iSimultaneousTexture		=	danaeApp.m_pDeviceInfo->wNbTextureSimultaneous;
@@ -3540,8 +3526,7 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 			if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TNormalTrans)
 			{
 				SetZBias(2);
-				GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_SRCCOLOR);
-				GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_DESTCOLOR);
+				GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendDstColor);
 			
 				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
 													portals->room[room_num].pVertexBuffer,
@@ -3558,8 +3543,7 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 			if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TMultiplicative)
 			{
 				SetZBias(2);
-				GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-				GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
 													portals->room[room_num].pVertexBuffer,
 													pTexCurr->tMatRoom[room_num].uslStartVertex,
@@ -3575,8 +3559,7 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 			if(pTexCurr->tMatRoom[room_num].uslNbIndiceCull_TAdditive)
 			{
 				SetZBias(2);
-				GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-				GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
 													portals->room[room_num].pVertexBuffer,
 													pTexCurr->tMatRoom[room_num].uslStartVertex,
@@ -3596,8 +3579,7 @@ void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num)
 				else
 					SetZBias(8);
 
-				GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-				GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_INVSRCCOLOR);	
+				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);	
 				GDevice->DrawIndexedPrimitiveVB(	D3DPT_TRIANGLELIST,
 													portals->room[room_num].pVertexBuffer,
 													pTexCurr->tMatRoom[room_num].uslStartVertex,
@@ -4550,8 +4532,7 @@ else
 if (HALOCUR>0)
 {
 	SETTC(NULL);
-	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_SRCCOLOR );
-	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
+	GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);			
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
@@ -4563,12 +4544,10 @@ if (HALOCUR>0)
 
 		if (vert[2].color == 0)
 		{
-			GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-			GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );									
+			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);									
 			vert[2].color =0xFF000000;
 			EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , vert, 4,  0, 0 );//>>> DO NOT USE EERIE_USEVB FOR HALO <<<
-			GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_SRCCOLOR );
-			GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
+			GRenderer->SetBlendFunc(Renderer::BlendSrcColor, Renderer::BlendOne);	
 		}
 		else EERIEDRAWPRIM(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , vert, 4,  0, 0 );//>>> DO NOT USE EERIE_USEVB FOR HALO <<<
 	}

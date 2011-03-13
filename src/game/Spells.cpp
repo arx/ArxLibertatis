@@ -6689,8 +6689,7 @@ bool ARX_SPELLS_Launch( const long& typ, const long& source, const long& flagss,
 			ARX_SOUND_PlaySFX(SND_SPELL_LIGHTNING_START);
 			SPELLCAST_Notify(i);
 			// Draws White Flash on Screen
-			GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-			GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);												
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);												
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			float val = 1.f; 
 
@@ -7697,8 +7696,7 @@ void ARX_SPELLS_Update()
 						DynLight[spells[i].longinfo2].fallstart=Es*1.5f;
 					}
 
-					GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
-					GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );
+					GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 					GRenderer->SetRenderState(Renderer::DepthWrite, false);
 					cabalangle.b=spells[i].fdata+(float)FrameDiff*0.1f;
@@ -8835,8 +8833,7 @@ void ARX_SPELLS_Update()
 							DynLight[spells[i].longinfo2].fallstart=Es*1.5f;
 						}
 
-						GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
-						GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						GRenderer->SetRenderState(Renderer::DepthWrite, false);
 						cabalangle.b=spells[i].fdata+(float)FrameDiff*0.1f;
@@ -8935,8 +8932,7 @@ void ARX_SPELLS_Update()
 						}
 
 						GRenderer->SetCulling(Renderer::CullNone);
-						GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
-						GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						GRenderer->SetRenderState(Renderer::DepthWrite, false);
 						cabalangle.b=spells[i].fdata+(float)FrameDiff*0.1f;

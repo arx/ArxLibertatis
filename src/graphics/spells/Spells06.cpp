@@ -231,8 +231,7 @@ float CCreateField::Render()
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	//-------------------------------------------------------------------------
@@ -839,8 +838,7 @@ void CRiseDead::AddStone(EERIE_3D * pos)
 void CRiseDead::DrawStone()
 {
 	int	nb = 256;
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_INVDESTCOLOR);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	while (nb--)
@@ -1237,8 +1235,7 @@ float CRiseDead::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	//-------------------------------------------------------------------------
@@ -1295,8 +1292,7 @@ float CRiseDead::Render()
 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
+	GRenderer->SetBlendFunc(Renderer::BlendSrcAlpha, Renderer::BlendInvSrcAlpha);
 	this->DrawStone();
 	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
@@ -1735,8 +1731,7 @@ float CParalyse::Render()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	int			nb;
 	EERIE_3D	* vertex;
@@ -2109,8 +2104,7 @@ float CParalyse::Render()
 		}
 	}
 
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 

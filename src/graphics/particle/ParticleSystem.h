@@ -98,8 +98,8 @@ class CParticleSystem
 		float	fParticleEndColor[4];
 		float	fParticleEndColorRandom[4];
 
-		int		iSrcBlend;
-		int		iDstBlend;
+		Renderer::PixelBlendingFactor iSrcBlend;
+		Renderer::PixelBlendingFactor iDstBlend;
 
 		bool	bParticleFollow;
 

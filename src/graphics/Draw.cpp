@@ -359,8 +359,7 @@ void DRAWLATER_Render()
 	if (curdrawlater==0) return;
 
 		D3DTLVERTEX verts[4];
-		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );	
+		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);	
 		GRenderer->SetRenderState(Renderer::DepthWrite, false); 
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);					
 		GRenderer->SetCulling(Renderer::CullNone);
@@ -508,8 +507,7 @@ void Delayed_FlushAll()
 					
 				if ( ptcTexture->userflags & POLY_METAL)
 				{
-					GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
-					GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
+					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
 					SETTC(NULL); 
 
@@ -519,8 +517,7 @@ void Delayed_FlushAll()
 
 				if ( (ep->type & POLY_LAVA) || (ep->type & POLY_WATER) )
 				{
-					GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
-					GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
+					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
 					D3DTLVERTEX verts[4];
 					SETTC(enviro);
@@ -541,7 +538,7 @@ void Delayed_FlushAll()
 						}
 						else
 						{
-							GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE );
+							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 							verts[i].tu=ep->v[i].sx*( 1.0f / 800 )+EEsin((ep->v[i].sx)*( 1.0f / 600 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 9 );
 							verts[i].tv=ep->v[i].sz*( 1.0f / 800 )+EEcos((ep->v[i].sz)*( 1.0f / 600 )+(float)FrameTime*( 1.0f / 1000 ))*( 1.0f / 9 );
 
@@ -583,8 +580,7 @@ void Delayed_FlushAll()
 							verts[i].color=0xFF666666;
 						}	
 
-						GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-						GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 						EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE, verts, to, 0, flg_NOCOUNT_USEVB );
 						EERIEDrawnPolys+=2;
 					}
@@ -628,8 +624,7 @@ void Delayed_FlushAll()
 
 				if (ptcTexture->delayed_nb)
 				{
-					GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-					GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );	
+					GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);	
 					GRenderer->SetRenderState(Renderer::DepthWrite, false); 
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);					
 					D3DTLVERTEX verts[4];
@@ -745,8 +740,7 @@ void Delayed_EERIEDRAWPRIM( EERIEPOLY * ep)
 /* To Keep...
 					if ((REFLECTFX) && enviro)
 					{
-						GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
-						GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
+						GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
 						D3DTLVERTEX verts[4];
 						SETTC(enviro);
@@ -803,8 +797,7 @@ void EERIE_DrawPolyBump(EERIEPOLY *ep,float alpha)
 		(!ep->tv[1].color)&&
 		(!ep->tv[2].color) ) return;
 
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,D3DBLEND_DESTCOLOR);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,D3DBLEND_SRCCOLOR);	
+	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);			
 	SETTC(ep->tex);
 
@@ -900,8 +893,7 @@ void EERIE_DrawPolyBump(EERIEPOLY *ep,float alpha)
 	GDevice->SetTextureStageState(0,D3DTSS_ALPHAARG2,D3DTA_DIFFUSE);
 	GDevice->SetTextureStageState(0,D3DTSS_ALPHAOP,D3DTOP_MODULATE);
 
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,D3DBLEND_ZERO);	
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false); 
 	GRenderer->SetRenderState(Renderer::DepthWrite, true); 
 }
@@ -1249,13 +1241,6 @@ void SETTEXTUREWRAPMODE(DWORD mode)
 
 //*************************************************************************************
 //*************************************************************************************
-
-void SETBLENDMODE(DWORD srcblend,DWORD destblend)
-{
-	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  srcblend  );
-	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, destblend );
-	
-}
 
 void EERIEPOLY_DrawWired(EERIEPOLY *ep,long col)
 {

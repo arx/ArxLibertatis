@@ -315,8 +315,7 @@ void ARX_DrawAfterQuickLoad()
 	if(!pTex) return;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,D3DBLEND_ONE);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	EERIEDrawBitmap2(	0,
 						0,
@@ -1862,8 +1861,7 @@ static void FadeInOut(float _fVal)
 	SETTC(NULL);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE,false);
 	GRenderer->SetCulling(Renderer::CullNone);
@@ -4066,8 +4064,7 @@ void CMenuElementText::RenderMouseOver()
 	pGetInfoDirectInput->SetMouseOver();
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	EERIE_3D ePos;
 	ePos.x = (float)rZone.left;
@@ -4469,8 +4466,7 @@ void CMenuAllZone::DrawZone()
 	return;
 #endif
 
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	vector<CMenuZone*>::iterator i;
@@ -4760,8 +4756,7 @@ void CMenuCheckButton::Render()
 	if(bNoMenu) return;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	if (vTex.size())
 	{
@@ -4808,8 +4803,7 @@ void CMenuCheckButton::RenderMouseOver()
 	pGetInfoDirectInput->SetMouseOver();
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	TextureContainer *pTex = vTex[iState];
 
@@ -4960,8 +4954,7 @@ MENUSTATE CWindowMenu::Render()
 	v[0].rhw=v[1].rhw=v[2].rhw=v[3].rhw=0.999999f;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	MENUSTATE eMS=NOP;
 
@@ -5803,8 +5796,7 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 	//------------------------------------------------------------------------
 	//Affichage de la console
 
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 
 	GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
 	EERIEDrawBitmap2( ARX_CLEAN_WARN_CAST_FLOAT(iPosX), ARX_CLEAN_WARN_CAST_FLOAT(iSavePosY),
@@ -5813,8 +5805,7 @@ static bool UpdateGameKey(bool bEdit,CMenuElement *pmeElement)
 
 	danaeApp.EnableZBuffer();
 
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
@@ -6292,8 +6283,7 @@ void CMenuButton::Render()
 		char pText = vText[iPos];
 
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 		EERIE_3D ePos;
 		ePos.x = (float)rZone.left;
@@ -6349,8 +6339,7 @@ void CMenuButton::RenderMouseOver()
 		char pText=vText[iPos];
 
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 		
 		EERIE_3D ePos;
 		ePos.x = (float)rZone.left;
@@ -6636,8 +6625,7 @@ void CMenuSliderText::RenderMouseOver()
 	int iY = pGetInfoDirectInput->iMouseAY;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	if ((iX >= rZone.left) &&
 		(iY >= rZone.top) &&
@@ -6851,8 +6839,7 @@ void CMenuSlider::Render()
 	float iTexH = 0;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	D3DTLVERTEX v[4];
 	v[0].color = v[1].color = v[2].color = v[3].color = ARX_OPAQUE_WHITE;
@@ -6910,8 +6897,7 @@ void CMenuSlider::RenderMouseOver()
 	int iY = pGetInfoDirectInput->iMouseAY;
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 	if ((iX >= rZone.left) &&
 		(iY >= rZone.top) &&
@@ -7440,8 +7426,7 @@ static void DrawLine2D(EERIE_2DI *_psPoint1,int _iNbPt,float _fSize,float _fRed,
 	float fDColorBlue=_fBlue/_iNbPt;
 	float fColorBlue=fDColorBlue;
 
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVDESTCOLOR);
+	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendInvDstColor);
 	SETTC(NULL);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 

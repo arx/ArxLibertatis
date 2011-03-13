@@ -219,8 +219,7 @@ void ARX_DAMAGE_Show_Hit_Blood()
 	}
 	else if (Blood_Pos > 1.f)
 	{
-		GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-		GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR);
+		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendSrcColor);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
@@ -235,8 +234,7 @@ void ARX_DAMAGE_Show_Hit_Blood()
 	}
 	else if (Blood_Pos > 0.f)
 	{
-		GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-		GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR);
+		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendSrcColor);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 

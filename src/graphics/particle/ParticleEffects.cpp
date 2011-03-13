@@ -1087,8 +1087,7 @@ void ARX_MAGICAL_FLARES_Draw(long FRAMETICKS)
 {
 	/////////FLARE
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
-	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	shinum++;
@@ -1527,8 +1526,7 @@ void UpdateObjFx() {
 	v[1]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 1.f, 0.f);
 	v[2]= D3DTLVERTEX( D3DVECTOR( 0, 0, 0.001f ), 1.f, D3DRGB(1.f,1.f,1.f), 1, 1.f, 1.f);
 	
-	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
-	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
@@ -2314,13 +2312,11 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 
 						if (part->special & SUBSTRACT) 
 						{
-							GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-							GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 						}
 						else
 						{
-							GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-							GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						}
 					}
 
@@ -2424,13 +2420,11 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 
 					if (part->special & SUBSTRACT) 
 					{
-						GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-						GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 					}
 					else
 					{
-						GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-						GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 					}
 				}
 				
@@ -2498,11 +2492,9 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 						{
 							D3DTLVERTEX in2;
 							memcpy(&in2,&in,sizeof(D3DTLVERTEX));
-							GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-							GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);						
+							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);						
 							EERIEDrawRotatedSprite(&in,siz,tc,color,temp,rott);
-							GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-							GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);						
+							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);						
 							EERIEDrawRotatedSprite(&in2,siz,tc,0xFFFFFFFF,temp,rott);
 						}
 						else
@@ -2517,11 +2509,9 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 					{
 						D3DTLVERTEX in2;
 						memcpy(&in2,&in,sizeof(D3DTLVERTEX));
-						GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-						GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);						
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);						
 						EERIEDrawBitmap(in.sx,in.sy,siz,siz2,in.sz,tc,color);
-						GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-						GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);						
+						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);						
 						EERIEDrawBitmap(in2.sx,in.sy,siz,siz2,in.sz,tc,0xFFFFFFFF);
 					}
 					else
@@ -2555,11 +2545,9 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 						{
 							D3DTLVERTEX in2;
 							memcpy(&in2,&in,sizeof(D3DTLVERTEX));
-							GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-							GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 							EERIEDrawSprite(&in,siz,tc,color,temp);				
-							GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-							GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 							EERIEDrawSprite(&in2,siz,tc,0xFFFFFFFF,temp);				
 						}
 						else 

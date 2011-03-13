@@ -70,8 +70,8 @@ CParticleSystem::CParticleSystem()
 	fParticleRotation = 0;
 	
 	fParticleFreq = -1;
-	iSrcBlend = D3DBLEND_ONE;
-	iDstBlend = D3DBLEND_ONE;
+	iSrcBlend = Renderer::BlendOne;
+	iDstBlend = Renderer::BlendOne;
 	ulParticleSpawn = 0;
 
 	// default settings for EDITOR MODE only
@@ -129,10 +129,8 @@ CParticleSystem::CParticleSystem()
 	fParticleEndColorRandom[2] = 0.1f;
 	fParticleEndColorRandom[3] = 0.1f;
 
-	iSrcBlend = 0;
-	iDstBlend = 0;
-	iSrcBlend = D3DBLEND_ONE;
-	iDstBlend = D3DBLEND_ONE;
+	iSrcBlend = Renderer::BlendOne;
+	iDstBlend = Renderer::BlendOne;
 }
 
 //-----------------------------------------------------------------------------
@@ -253,32 +251,28 @@ void CParticleSystem::SetParams(CParticleParams & _pp)
 	switch (_pp.iBlendMode)
 	{
 		case 0:
-			iSrcBlend = D3DBLEND_ONE;
-			iDstBlend = D3DBLEND_ONE;
+			iSrcBlend = Renderer::BlendOne;
+			iDstBlend = Renderer::BlendOne;
 			break;
 		case 1:
-			iSrcBlend = D3DBLEND_ZERO;
-			iDstBlend = D3DBLEND_INVSRCCOLOR;
+			iSrcBlend = Renderer::BlendZero;
+			iDstBlend = Renderer::BlendInvSrcColor;
 			break;
 		case 2:
-			iSrcBlend = D3DBLEND_SRCCOLOR;
-			iDstBlend = D3DBLEND_DESTCOLOR;
+			iSrcBlend = Renderer::BlendSrcColor;
+			iDstBlend = Renderer::BlendDstColor;
 			break;
 		case 3:
-			iSrcBlend = D3DBLEND_SRCALPHA;
-			iDstBlend = D3DBLEND_ONE;
-			break;
-		case 4:
-			iSrcBlend = 0;
-			iDstBlend = 0;
+			iSrcBlend = Renderer::BlendSrcAlpha;
+			iDstBlend = Renderer::BlendOne;
 			break;
 		case 5:
-			iSrcBlend = D3DBLEND_INVDESTCOLOR;
-			iDstBlend = D3DBLEND_ONE;
+			iSrcBlend = Renderer::BlendInvDstColor;
+			iDstBlend = Renderer::BlendOne;
 			break;
 		default:
-			iSrcBlend = D3DBLEND_ONE;
-			iDstBlend = D3DBLEND_ONE;
+			iSrcBlend = Renderer::BlendOne;
+			iDstBlend = Renderer::BlendOne;
 			break;
 
 	}
@@ -564,10 +558,8 @@ void CParticleSystem::Render() {
 	
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  iSrcBlend);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, iDstBlend);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
+	GRenderer->SetBlendFunc(iSrcBlend, iDstBlend);
 
 	int inumtex = 0;
 

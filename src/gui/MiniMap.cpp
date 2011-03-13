@@ -469,15 +469,13 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 			}
 
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-			GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-			GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 			GDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_ALWAYS);
 			SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
 
 			if (fl2)
 			{
-				GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-				GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendInvSrcColor);
 			}
 		}
 		else
@@ -843,8 +841,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 										if (!fl2)
 										{
 											GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-											GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-											GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+											GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 										}
 										else
 											GRenderer->SetRenderState(Renderer::AlphaBlending, true);

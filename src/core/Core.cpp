@@ -4346,16 +4346,14 @@ void ManageFade()
 	}
 
 	LAST_FADEVALUE=Visibility;
-	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );										
+	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);										
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	
 	EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
 			NULL,_EERIERGB(Visibility));
 
-	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	float col=Visibility;
 	EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
 			NULL,EERIERGB(col*FADECOLOR.r,col*FADECOLOR.g,col*FADECOLOR.b));		
@@ -4400,8 +4398,7 @@ void DrawMagicSightInterface()
 
 	if (Flying_Eye && Flying_Eye->m_pddsSurface)
 	{
-		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );										
+		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);										
 		float col=(0.75f+PULSATE*( 1.0f / 20 ));
 
 		if (col>1.f) col=1.f;
@@ -4429,8 +4426,7 @@ void DrawMagicSightInterface()
 				MagicSightFader=0.f;
 		}
 
-		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	}
 }
 
@@ -6588,8 +6584,7 @@ static float _AvgFrameDiff = 150.f;
 			pParticleManager->Render();
 		}
 
-		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE );
-		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE );			
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);			
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 		ARX_FOGS_Render();
@@ -6686,8 +6681,7 @@ static float _AvgFrameDiff = 150.f;
 	{
 		GRenderer->SetRenderState(Renderer::DepthWrite, false);
 		GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-		GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-		GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 		EERIEDrawBitmap(0.f,0.f,(float)DANAESIZX,(float)DANAESIZY,0.0001f,
 				NULL,EERIERGB(0.2f,0.2f,1.f));		
@@ -7115,8 +7109,7 @@ void DANAE::GoFor2DFX()
 		// End 2D Pass ***************************************************************************
 
 		{
-			GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,   D3DBLEND_ONE);
-			GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);		
 			GRenderer->SetRenderState(Renderer::DepthWrite, false);
 			GRenderer->SetCulling(Renderer::CullNone);

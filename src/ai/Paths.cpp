@@ -1994,9 +1994,7 @@ float CRuban::Render()
 {
 	GRenderer->SetCulling(Renderer::CullNone);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	SETTC(NULL);
 
 	for (int i = 0; i < nbrubandef; i++)
@@ -2009,8 +2007,7 @@ float CRuban::Render()
 	}
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
 
 	return 0;
 }

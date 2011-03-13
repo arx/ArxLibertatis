@@ -177,7 +177,7 @@ void ARXDRAW_DrawInterShadows()
 							{
 								first=0;
 								GRenderer->SetRenderState(Renderer::DepthWrite, false);
-								SETBLENDMODE(D3DBLEND_ZERO,D3DBLEND_INVSRCCOLOR);
+								GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 								SETTC(Boom);
 							}
@@ -233,7 +233,7 @@ void ARXDRAW_DrawInterShadows()
 							{
 								first=0;
 								GRenderer->SetRenderState(Renderer::DepthWrite, false);
-								SETBLENDMODE(D3DBLEND_ZERO,D3DBLEND_INVSRCCOLOR);
+								GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 								GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 								SETTC(Boom);
 							}
@@ -385,7 +385,7 @@ void ARXDRAW_DrawEyeBall()
 	rgb.r=d;
 	rgb.g=d;
 	rgb.b=d;
-	SETBLENDMODE(D3DBLEND_ONE,D3DBLEND_ONE);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	DrawEERIEObjEx(eyeballobj,&angle,&pos,&scale,&rgb);	
 }
@@ -513,11 +513,11 @@ void ARXDRAW_DrawPolyBoom()
 
 						if (Project.improve) 
 						{
-							SETBLENDMODE(D3DBLEND_ONE,D3DBLEND_ONE);
+							GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 						}
 						else  
 						{
-							SETBLENDMODE(D3DBLEND_ZERO,D3DBLEND_INVSRCCOLOR);
+							GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 						}
 
 						SETTC(Boom);
@@ -566,7 +566,7 @@ void ARXDRAW_DrawPolyBoom()
 							{
 								
 								SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
-								SETBLENDMODE(D3DBLEND_ONE,D3DBLEND_ONE);
+								GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 							SETTC(polyboom[i].tc); 
 
  									ARX_DrawPrimitive_SoftClippZ(		&ltv[0],
@@ -584,7 +584,7 @@ void ARXDRAW_DrawPolyBoom()
 								col=_EERIERGB(tt);
 								ltv[0].color=ltv[1].color=ltv[2].color=ltv[3].color=col;								
 								
-								SETBLENDMODE(D3DBLEND_ZERO,D3DBLEND_INVSRCCOLOR);
+								GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 
 									ARX_DrawPrimitive_SoftClippZ(	&ltv[0],
 																	&ltv[1],
@@ -652,7 +652,7 @@ void ARXDRAW_DrawPolyBoom()
 							EE_RT2(&ltv[2],&ltv[2]);
 								
 								SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
-								SETBLENDMODE(D3DBLEND_INVDESTCOLOR,D3DBLEND_ONE);
+								GRenderer->SetBlendFunc(Renderer::BlendInvDstColor, Renderer::BlendOne);
 						SETTC(polyboom[i].tc); 
 				
 								ARX_DrawPrimitive_SoftClippZ(	&ltv[0],
@@ -708,7 +708,7 @@ void ARXDRAW_DrawAllInterTransPolyPos()
 
 		if (ttt>=2.f)  //MULTIPLICATIVE
 		{
-			SETBLENDMODE(D3DBLEND_ONE,D3DBLEND_ONE);
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			ttt*=( 1.0f / 2 );
 			ttt+=0.5f;
 			InterTransPol[i][2].color=InterTransPol[i][1].color=InterTransPol[i][0].color=_EERIERGB(ttt);
@@ -716,18 +716,18 @@ void ARXDRAW_DrawAllInterTransPolyPos()
 		else if (ttt>=1.f) //ADDITIVE
 		{	
 			ttt-=1.f;
-			SETBLENDMODE(D3DBLEND_ONE,D3DBLEND_ONE);
+			GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 			InterTransPol[i][2].color=InterTransPol[i][1].color=InterTransPol[i][0].color=_EERIERGB(ttt);
 		}
 		else if (ttt>0.f)  //NORMAL TRANS
 		{
 			ttt=1.f-ttt;
-			SETBLENDMODE(D3DBLEND_DESTCOLOR,D3DBLEND_SRCCOLOR);
+			GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);
 			InterTransPol[i][2].color=InterTransPol[i][1].color=InterTransPol[i][0].color=_EERIERGBA(ttt);//ttt);
 		}
 		else  //SUBTRACTIVE
 		{
-			SETBLENDMODE(D3DBLEND_ZERO,D3DBLEND_INVSRCCOLOR);
+			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 			ttt=1.f-ttt;
 			InterTransPol[i][2].color=InterTransPol[i][1].color=InterTransPol[i][0].color=_EERIERGB(ttt);
 		}
@@ -769,7 +769,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 
 			if ( ttt >= 2.f )  //MULTIPLICATIVE
 			{
-				SETBLENDMODE( D3DBLEND_ONE, D3DBLEND_ONE );
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				ttt	*= ( 1.0f / 2 );
 				ttt	+= 0.5f;
 				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = _EERIERGB( ttt );
@@ -777,18 +777,18 @@ void ARXDRAW_DrawAllTransPolysPos() {
 			else if ( ttt >= 1.f ) //ADDITIVE
 			{	
 				ttt -= 1.f;
-				SETBLENDMODE( D3DBLEND_ONE, D3DBLEND_ONE );
+				GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = _EERIERGB( ttt );
 			}
 			else if ( ttt > 0.f )  //NORMAL TRANS
 			{
 				ttt = 1.f - ttt;
-				SETBLENDMODE( D3DBLEND_DESTCOLOR, D3DBLEND_SRCCOLOR );
+				GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);
 				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = _EERIERGBA(ttt);  
 			}
 			else  //SUBTRACTIVE
 			{
-				SETBLENDMODE( D3DBLEND_ZERO, D3DBLEND_INVSRCCOLOR );
+				GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 				ttt = 1.f - ttt;
 				ep->tv[3].color = ep->tv[2].color = ep->tv[1].color = ep->tv[0].color = _EERIERGB( ttt );
 			}
@@ -797,8 +797,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 
 				if (ep->type & POLY_LAVA)
 				{
-					GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
-					GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
+					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
 					D3DTLVERTEX verts[4];
 					SETTC( enviro );
@@ -832,8 +831,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 							verts[i].color	= 0xFF666666;
 					}	
 
-					GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-					GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );
+					GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 					EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, verts, to, 0, EERIE_NOCOUNT );
 				}
 			}
@@ -841,9 +839,7 @@ void ARXDRAW_DrawAllTransPolysPos() {
 
 		if ( ep->type & POLY_WATER )
 		{
-				GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
-				GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
-
+				GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
 				GRenderer->SetRenderState(Renderer::AlphaBlending, true);	
 				
 				D3DTLVERTEX verts[4];

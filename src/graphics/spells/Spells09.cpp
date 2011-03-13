@@ -550,8 +550,7 @@ float CSummonCreature::Render()
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
 
 	SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	//-------------------------------------------------------------------------
@@ -988,8 +987,7 @@ float CNegateMagic::Render()
 		SETTC(tex_sol);
 	}
 
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	fSize = ulCurrentTime * fOneOnDuration * 200;
@@ -1061,8 +1059,7 @@ float CNegateMagic::Render()
 	stitescale.y = 3.f;
 	stitescale.z = 3.f;
 	DrawEERIEObjEx(ssol, &stiteangle, &stitepos, &stitescale, &stitecolor);
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	stitecolor.r = 0.5f;
 	stitecolor.g = 0.f;
 	stitecolor.b = 0.5f;

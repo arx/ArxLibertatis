@@ -887,8 +887,7 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 
 	if(	_pTex->ulNbVertexListCull_TNormalTrans )
 	{
-		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR);
-		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_SRCCOLOR);
+		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);
 
 		if(_pTex->ulNbVertexListCull_TNormalTrans)
 		{
@@ -903,8 +902,7 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 	
 	if(	_pTex->ulNbVertexListCull_TAdditive )
 	{
-		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 		if(_pTex->ulNbVertexListCull_TAdditive)
 		{
@@ -919,8 +917,7 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 
 	if (_pTex->ulNbVertexListCull_TSubstractive)
 	{
-		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO);
-		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_INVSRCCOLOR);	
+		GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);	
 
 		if(_pTex->ulNbVertexListCull_TSubstractive)
 		{
@@ -935,8 +932,7 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 
 	if (_pTex->ulNbVertexListCull_TMultiplicative)
 	{
-		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ONE);
-		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
+		GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 
 		if(_pTex->ulNbVertexListCull_TMultiplicative)
 		{
@@ -951,8 +947,7 @@ void PopOneTriangleListTransparency(TextureContainer *_pTex)
 
 	if(	_pTex->ulNbVertexListCull_TMetal )
 	{
-		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR);
-		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND,  D3DBLEND_ONE);
+		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);
 
 		if(_pTex->ulNbVertexListCull_TMetal)
 		{
@@ -984,8 +979,7 @@ void PopOneInterZMapp(TextureContainer *_pTex)
 {
 	if(!_pTex->TextureRefinement) return;
 
-	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_ZERO );
-	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR );	
+	GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);	
 
 	if(_pTex->TextureRefinement->vPolyInterZMap.size())
 	{
@@ -1039,9 +1033,8 @@ void PopAllTriangleListTransparency()
 	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false); 
+	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
 
-	GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
-	GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
 	PopOneTriangleList(&TexSpecialColor);
 
 	pTex=GetTextureList();
@@ -1080,9 +1073,7 @@ void PopOneInterBump(TextureContainer *_pTex)
 	{
 		//----------------------------------------------------------------------------------
 		//																		Initializing
-		GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND , D3DBLEND_DESTCOLOR );
-		GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR );	
-		
+		GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendSrcColor);	
 		GDevice->SetTexture( 0, _pTex->m_pddsBumpMap );
 
 		switch( danaeApp.m_pDeviceInfo->wNbTextureSimultaneous )
@@ -3106,8 +3097,7 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 							SpawnMetalShine( (EERIE_3D *)&eobj->vertexlist3[eobj->facelist[i].vid[0]].vert, r, g, b, GetInterNum( io ) );
 					}
 
-					GDevice->SetRenderState( D3DRENDERSTATE_SRCBLEND,  D3DBLEND_DESTCOLOR );
-					GDevice->SetRenderState( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE );	
+					GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
 					GRenderer->SetRenderState(Renderer::AlphaBlending, true);			
 					GRenderer->SetRenderState(Renderer::DepthWrite, false);
 					EERIEDRAWPRIM( D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX | D3DFVF_DIFFUSE, &vert_list, 3, 0, 0 );

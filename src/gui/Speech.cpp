@@ -208,8 +208,7 @@ void ARX_SPEECH_Render()
 	Vector2i sSize = hFontInBook->GetTextSize("p");
 	sSize.y *= 3;
 	
-	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
+	GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendOne);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
 	int iEnd = igrec + sSize.y;
@@ -628,8 +627,7 @@ void ARX_SPEECH_Update() {
 						                    &clippingRect);
 
 						SETTC( NULL);
-						GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ZERO);
-						GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+						GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
 						GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 						GDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
 						EERIEDrawFill2DRectDegrad(
@@ -650,8 +648,7 @@ void ARX_SPEECH_Update() {
 												  RGBA_MAKE(0, 0, 0, 255),
 												  RGBA_MAKE(255, 255, 255, 255));
 
-						GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
-						GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
+						GRenderer->SetBlendFunc(Renderer::BlendOne, Renderer::BlendZero);
 
 						danaeApp.EnableZBuffer();
 						GRenderer->SetRenderState(Renderer::AlphaBlending, false);
