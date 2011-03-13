@@ -105,8 +105,7 @@ struct EERIE_SCRIPT
 struct SCR_TIMER {
 	std::string         name;
 	short               exist;
-	short               flags; 
-	long                namelength;
+	short               flags;
 	long                times;
 	long                msecs;
 	long                pos;
@@ -115,14 +114,13 @@ struct SCR_TIMER {
 	INTERACTIVE_OBJ*    io;
 	EERIE_SCRIPT*       es;
 	
-	inline SCR_TIMER() : name(), exist(0), flags(0), namelength(0), times(0),
+	inline SCR_TIMER() : name(), exist(0), flags(0), times(0),
 	                     msecs(0), pos(0), longinfo(0), tim(0), io(NULL), es(NULL) { };
 	
 	inline void reset() {
 		name.clear();
 		exist = 0;
 		flags = 0;
-		namelength = 0;
 		times = 0;
 		msecs = 0;
 		pos = 0;
@@ -520,7 +518,6 @@ void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(char * timername, INTERACTIVE_OBJ * i
 long MakeLocalised( const std::string& text, std::string& output);
 
 //-----------------------------------------------------------------------------
-long specialstrcmp( const std::string& text, const std::string& seek);
 void CheckHit(INTERACTIVE_OBJ * io, float ratio);
 
 long NotifyIOEvent(INTERACTIVE_OBJ * io, long msg);

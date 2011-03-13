@@ -112,40 +112,29 @@ void MOLLESS_Clear(EERIE_3DOBJ * obj, long flag)
 	}
 }
 
-void AddSpring(EERIE_3DOBJ * obj, short vert1, short vert2, float constant, float damping, long type)
-{
-	if (vert1 == -1) return;
-
-	if (vert2 == -1) return;
-
-	if (vert1 == vert2) return;
-
-	for (long i = 0; i < obj->cdata->nb_springs; i++)
-	{
-		if (((obj->cdata->springs[i].startidx == vert1) && (obj->cdata->springs[i].endidx == vert2))
-		        || ((obj->cdata->springs[i].startidx == vert2) && (obj->cdata->springs[i].endidx == vert1)))
+void AddSpring(EERIE_3DOBJ * obj, short vert1, short vert2, float constant, float damping, long type) {
+	
+	if (vert1 == -1 || vert2 == -1 || vert1 == vert2) {
+		return;
+	}
+	
+	for(vector<EERIE_SPRINGS>::const_iterator i = obj->cdata->springs.begin(); i < obj->cdata->springs.end(); ++i) {
+		if((i->startidx == vert1 && i->endidx == vert2) || (i->startidx == vert2 && i->endidx == vert1)) {
 			return;
+		}
 	}
-
-	if (obj->cdata->springs == NULL)
-	{
-		obj->cdata->springs = (EERIE_SPRINGS *)malloc(sizeof(EERIE_SPRINGS)); 
-		obj->cdata->nb_springs = 1;
-	}
-	else
-	{
-		obj->cdata->nb_springs++;
-		obj->cdata->springs = (EERIE_SPRINGS *)realloc(obj->cdata->springs, sizeof(EERIE_SPRINGS) * obj->cdata->nb_springs);
-	}
-
-	obj->cdata->springs[obj->cdata->nb_springs-1].startidx = vert1;
-	obj->cdata->springs[obj->cdata->nb_springs-1].endidx = vert2;
-	obj->cdata->springs[obj->cdata->nb_springs-1].restlength =
+	
+	EERIE_SPRINGS newSpring;
+	newSpring.startidx = vert1;
+	newSpring.endidx = vert2;
+	newSpring.restlength =
 	    TRUEDistance3D(obj->cdata->cvert[vert1].pos.x, obj->cdata->cvert[vert1].pos.y, obj->cdata->cvert[vert1].pos.z,
 	                   obj->cdata->cvert[vert2].pos.x, obj->cdata->cvert[vert2].pos.y, obj->cdata->cvert[vert2].pos.z);
-	obj->cdata->springs[obj->cdata->nb_springs-1].constant = constant;
-	obj->cdata->springs[obj->cdata->nb_springs-1].damping = damping;
-	obj->cdata->springs[obj->cdata->nb_springs-1].type = type;
+	newSpring.constant = constant;
+	newSpring.damping = damping;
+	newSpring.type = type;
+	
+	obj->cdata->springs.push_back(newSpring);
 }
 
 short GetIDXVert(EERIE_3DOBJ * obj, short num)
@@ -188,14 +177,13 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
 
 	if (obj->selections[sel].selected.size() > 0)
 	{
-		obj->cdata = (CLOTHES_DATA *)malloc(sizeof(CLOTHES_DATA)); 
-		memset(obj->cdata, 0, sizeof(CLOTHES_DATA));
+		obj->cdata = new CLOTHES_DATA();
 
 		obj->cdata->nb_cvert = (short)obj->selections[sel].selected.size();
-		obj->cdata->cvert = (CLOTHESVERTEX *)malloc(sizeof(CLOTHESVERTEX) * obj->cdata->nb_cvert); 
+		obj->cdata->cvert = new CLOTHESVERTEX[obj->cdata->nb_cvert]; 
 		memset(obj->cdata->cvert, 0, sizeof(CLOTHESVERTEX)*obj->cdata->nb_cvert);
 
-		obj->cdata->backup = (CLOTHESVERTEX *)malloc(sizeof(CLOTHESVERTEX) * obj->cdata->nb_cvert); 
+		obj->cdata->backup = new CLOTHESVERTEX[obj->cdata->nb_cvert]; 
 		memset(obj->cdata->backup, 0, sizeof(CLOTHESVERTEX)*obj->cdata->nb_cvert);
 	}
 
@@ -327,24 +315,26 @@ void EERIEOBJECT_AddClothesData(EERIE_3DOBJ * obj)
 	}
 }
 
-void KillClothesData(EERIE_3DOBJ * obj)
-{
-	if (obj == NULL) return;
-
-	if (obj->cdata == NULL) return;
-
-	if (obj->cdata->cvert) free(obj->cdata->cvert);
-
-	obj->cdata->cvert = NULL;
-
-	if (obj->cdata->backup) free(obj->cdata->backup);
-
-	obj->cdata->backup = NULL;
-
-	if (obj->cdata->springs) free(obj->cdata->springs);
-
-	obj->cdata->springs = NULL;
-
-	free(obj->cdata);
+void KillClothesData(EERIE_3DOBJ * obj) {
+	
+	if(obj == NULL) {
+		return;
+	}
+	
+	if(obj->cdata == NULL) {
+		return;
+	}
+	
+	if(obj->cdata->cvert) {
+		delete[] obj->cdata->cvert;
+		obj->cdata->cvert = NULL;
+	}
+	
+	if(obj->cdata->backup) {
+		delete[] obj->cdata->backup;
+		obj->cdata->backup = NULL;
+	}
+	
+	delete obj->cdata;
 	obj->cdata = NULL;
 }

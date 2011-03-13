@@ -1,3 +1,4 @@
+
 #include <string>
 #include <cassert>
 using std::string;
@@ -101,17 +102,21 @@ void dump(PakReader & pak, const PakDirectory * dir, const string  & where = str
 
 int main(int argc, char ** argv) {
 	
-	if(argc != 2) {
-		printf("usage: unpak <pakfile>\n");
+	if(argc < 2) {
+		printf("usage: unpak <pakfile> [<pakfile>...]\n");
 		return 1;
 	}
 	
-	PakReader pak;
-	if(!pak.Open(argv[1])) {
-		printf("error opening PAK file\n");
-		return 1;
+	for(int i = 1; i < argc; i++) {
+		
+		PakReader pak;
+		if(!pak.Open(argv[i])) {
+			printf("error opening PAK file\n");
+			return 1;
+		}
+		
+		dump(pak, pak.root);
+		
 	}
-	
-	dump(pak, pak.root);
 	
 }

@@ -82,7 +82,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 #include "graphics/Math.h"
 
-#include "io/IO.h"
+#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/Logger.h"
 
@@ -583,15 +583,6 @@ void ReleaseScript(EERIE_SCRIPT * es)
 
 	ARX_SCRIPT_ReleaseLabels(es);
 	memset(es->shortcut, 0, sizeof(long)*MAX_SHORTCUT);
-}
-
-//*************************************************************************************
-// Checks if a string (seek) is at the start of another string (text)
-// returns 0 if "seek" is at the start of "text"
-// else returns 1
-//*************************************************************************************
-long specialstrcmp( const std::string& text, const std::string& seek) {
-	return text.compare(0, seek.length(), seek) ? 1 : 0;
 }
 
 //*************************************************************************************
@@ -3414,7 +3405,6 @@ void ARX_SCRIPT_Timer_ClearByNum(long timer_idx)
 	{
 		scr_timer[timer_idx].name.clear();
 		ActiveTimers--;
-		scr_timer[timer_idx].namelength = 0;
 		scr_timer[timer_idx].exist = 0;
 	}
 }

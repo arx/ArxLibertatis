@@ -86,6 +86,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/particle/ParticleEffects.h"
 
 #include "io/IO.h"
+#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/Filesystem.h"
@@ -1081,7 +1082,6 @@ INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans)
 	char nameident[256];
 	std::string tmp;
 	char tmp2[512];
-	char temp[512];
 	size_t FileSize;
 	INTERACTIVE_OBJ * io;
 	sprintf(nameident, "%s_%04ld", GetName(dli->name).c_str(), dli->ident);
@@ -1165,12 +1165,10 @@ suite:
 						io->over_script.master = &io->script;
 					else io->over_script.master = NULL;
 				}
-			}
-			else
-			{
-				CreateDirectory(tmp.c_str(), NULL);
-    			LogDirCreation(tmp.c_str());
-				WriteIOInfo(io, temp);
+			} else {
+				CreateFullPath(tmp);
+				LogDirCreation(tmp);
+				WriteIOInfo(io, tmp);
 			}
 		}
 
