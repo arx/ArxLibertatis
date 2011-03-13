@@ -71,6 +71,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "graphics/data/Progressive.h"
 
 #include "io/IO.h"
+#include "io/String.h"
 #include "io/FilePath.h"
 #include "io/PakManager.h"
 #include "io/PakEntry.h"

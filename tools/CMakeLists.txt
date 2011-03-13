@@ -27,6 +27,8 @@ add_executable(savetool
 	../src/io/Blast.cpp
 	../src/io/SaveBlock.cpp
 	../src/io/HashMap.cpp
+	../src/io/String.cpp
+	../src/io/FilePath.cpp
 )
 
 target_link_libraries(savetool ${ZLIB_LIBRARIES})

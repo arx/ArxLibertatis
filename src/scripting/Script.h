@@ -518,7 +518,6 @@ void ARX_SCRIPT_Timer_Clear_By_Name_And_IO(char * timername, INTERACTIVE_OBJ * i
 long MakeLocalised( const std::string& text, std::string& output);
 
 //-----------------------------------------------------------------------------
-long specialstrcmp( const std::string& text, const std::string& seek);
 void CheckHit(INTERACTIVE_OBJ * io, float ratio);
 
 long NotifyIOEvent(INTERACTIVE_OBJ * io, long msg);

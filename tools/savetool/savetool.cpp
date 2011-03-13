@@ -3,18 +3,250 @@
 #include <cassert>
 #include <vector>
 #include <cstdio>
+#include <sstream>
+#include <iomanip>
+#include <cstring>
+#include <cstdlib>
 using std::string;
 using std::vector;
 using std::printf;
+using std::stringstream;
+using std::setfill;
+using std::setw;
+using std::memcpy;
+using std::free;
 
 #include "io/SaveBlock.h"
 #include "io/Filesystem.h"
+#include "io/String.h"
+#include "io/FilePath.h"
+
+// TODO use structs form SaveFormat.h, but that pulls in d3d dependencies
+
+#pragma pack(push,1)
+
+const size_t SIZE_ID = 64;
+
+struct SavedVec3 {
+	f32 x;
+	f32 y;
+	f32 z;
+};
+
+struct SavedCylinder {
+	SavedVec3 origin;
+	f32 radius;
+	f32 height;
+};
+
+struct SavedIOPhysics {
+	SavedCylinder cyl;
+	SavedVec3 startpos;
+	SavedVec3 targetpos;
+	SavedVec3 velocity;
+	SavedVec3 forces;
+};
+
+struct SavedAnimUse {
+	s32 next_anim;
+	s32 cur_anim;
+	s16 altidx_next; // idx to alternate anims...
+	s16 altidx_cur; // idx to alternate anims...
+	s32 ctime;
+	u32 flags;
+	u32 nextflags;
+	s32 lastframe;
+	f32 pour;
+	s32 fr;
+};
+
+struct SavedSpellcastData {
+	
+	static const size_t SYMB_SIZE = 4;
+	
+	s32 castingspell; // spell being casted...
+	u8 symb[SYMB_SIZE]; // symbols to draw before casting...
+	s16 spell_flags;
+	s16 spell_level;
+	s32 target;
+	s32 duration;
+	
+};
+
+struct SavedModInfo {
+	s32 link_origin;
+	SavedVec3 link_position;
+	SavedVec3 scale;
+	SavedVec3 rot;
+	u32 flags;
+};
+
+struct IO_LINKED_DATA {
+	s32 lgroup; // linked to group n° if lgroup=-1 NOLINK
+	s32 lidx;
+	s32 lidx2;
+	SavedModInfo modinfo;
+	char linked_id[SIZE_ID];
+};
+
+struct SavedColor {
+	f32 r;
+	f32 g;
+	f32 b;
+};
+
+struct SavedHalo {
+	SavedColor color;
+	f32 radius;
+	u32 flags;
+	s32 dynlight;
+	SavedVec3 offset;
+};
+
+const size_t SAVED_MAX_ANIMS = 200;
+const size_t SAVED_MAX_ANIM_LAYERS = 4;
+const size_t MAX_LINKED_SAVE = 16;
+
+struct ARX_CHANGELEVEL_IO_SAVE {
+	
+	s32 savesystem_type;
+	s32 saveflags;
+	f32 version;
+	char filename[256];
+	s32 ident;
+	s32 ioflags;//type;
+	SavedVec3 pos;
+	SavedVec3 initpos;
+	SavedVec3 lastpos;
+	SavedVec3 move;
+	SavedVec3 lastmove;
+	SavedVec3 angle;
+	SavedVec3 initangle;
+	f32 scale;
+	u32 savetime;
+	f32 weight;
+	
+	char locname[64];
+	u16 EditorFlags;
+	u16 GameFlags;
+	s32 material;
+	s16 level;
+	s16 truelevel;
+	s32 nbtimers;
+	// Script data
+	s32 scriptload;
+	s16 show;
+	s16 collision;
+	char mainevent[64];
+	// Physics data
+	SavedVec3 velocity;
+	s32 stopped;
+	SavedIOPhysics physics;
+	f32 original_radius;
+	f32 original_height;
+	// Anims data
+	char anims[SAVED_MAX_ANIMS][256];
+	SavedAnimUse animlayer[SAVED_MAX_ANIM_LAYERS];
+	// Target Info
+	char id_targetinfo[SIZE_ID];
+	s32 inventory;
+	// Group Info
+	s32 system_flags;
+	f32 basespeed;
+	f32 speed_modif;
+	f32 frameloss;
+	SavedSpellcastData spellcast_data;
+	
+	f32 rubber;
+	f32 max_durability;
+	f32 durability;
+	s16 poisonous;
+	s16 poisonous_count;
+	
+	s32 nb_linked;
+	IO_LINKED_DATA linked_data[MAX_LINKED_SAVE];
+	
+	f32 head_rot;
+	
+	s16 damager_damages;
+	s16 nb_iogroups;
+	s32 damager_type;
+	
+	u32 type_flags;
+	char stepmaterial[128];
+	char armormaterial[128];
+	char weaponmaterial[128];
+	char strikespeech[128];
+	s16 Tweak_nb;
+	s16 padd;
+	SavedHalo halo;
+	char secretvalue;
+	char paddd[3];
+	char shop_category[128];
+	f32 shop_multiply;
+	s32 aflags;
+	f32 ignition;
+	char inventory_skin[128];
+	// TO ADD:
+	char usepath_name[SIZE_ID];
+	u32 usepath_starttime;
+	u32 usepath_curtime;
+	s32 usepath_aupflags;
+	SavedVec3 usepath_initpos;
+	s32 usepath_lastWP;
+	s32 padddd[64]; // new...
+	
+};
+
+#define IO_ITEM    (1<<2)
+#define IO_GOLD    (1<<10)
+#define IO_MOVABLE (1<<15)
+
+struct SavedGlobalMods {
+	
+	static const size_t AMBIANCE_SIZE = 128;
+	
+	s32 flags;
+	SavedColor depthcolor;
+	f32 zclip;
+	char ambiance[AMBIANCE_SIZE];
+	f32 ambiance_vol;
+	f32 ambiance_maxvol;
+	
+};
+
+struct ARX_CHANGELEVEL_INDEX {
+	f32 version;
+	u32 time;
+	s32 nb_inter;
+	s32 nb_paths;
+	s32 nb_lights;
+	s32 ambiances_data_size;
+	SavedGlobalMods gmods_stacked;
+	SavedGlobalMods gmods_current;
+	SavedGlobalMods gmods_desired;
+	s32 padding[256];
+};
+
+struct ARX_CHANGELEVEL_IO_INDEX {
+	char filename[256];
+	s32 ident;
+	s32 num;
+	s16 level;
+	s16 truelevel;
+	s32 unused;
+	s32 padding[256];
+};
+
+#pragma pack(pop)
+
 
 static void print_help() {
 	printf("usage: savetool <command> <savefile> [<options>...]\n"
 	       "commands are:\n"
 	       " - extract <savefile>\n"
 	       " - add <savefile> [<files>...]\n"
+				 " - fix <savefile>\n"
 	);
 }
 
@@ -28,7 +260,6 @@ static int main_extract(SaveBlock & save, int argc, char ** argv) {
 	}
 	
 	if(!save.BeginRead()) {
-		printf("error opening save for reading\n");
 		return 2;
 	}
 	
@@ -63,7 +294,6 @@ static int main_extract(SaveBlock & save, int argc, char ** argv) {
 static int main_add(SaveBlock & save, int argc, char ** argv) {
 	
 	if(!save.BeginSave()) {
-		printf("error opening save for writing\n");
 		return 2;
 	}
 	
@@ -94,6 +324,121 @@ static int main_add(SaveBlock & save, int argc, char ** argv) {
 	return 0;
 }
 
+static void fix_io(SaveBlock & save, const string & name) {
+	
+	ARX_CHANGELEVEL_IO_SAVE ais;
+	
+	string savefile = name + ".sav";
+	
+	size_t size = 0;
+	char * dat = save.load(savefile, size);
+	if(!dat) {
+		return;
+	}
+	
+	memcpy(&ais, dat, sizeof(ARX_CHANGELEVEL_IO_SAVE));
+	
+	bool changed = false;
+	
+	if(ais.ioflags & IO_ITEM) {
+		
+		string file = ais.filename;
+		MakeUpcase(file);
+		
+		s32 flags = ais.ioflags;
+		
+		if(!specialstrcmp(GetName(file), "GOLD_COIN")) {
+			RemoveName(file);
+			file += "GOLD_COIN.asl";
+			flags = ais.ioflags | IO_GOLD;
+		}
+		
+		if(IsIn(file, "MOVABLE")) {
+			flags = ais.ioflags | IO_MOVABLE;
+		}
+		
+		if(flags != ais.ioflags) {
+			printf(" - %s: ioflags 0x%x -> 0x%x\n", name.c_str(), ais.ioflags, flags);
+			ais.ioflags = flags;
+			changed = true;
+		}
+		
+	}
+	
+	if(changed) {
+		memcpy(dat, &ais, sizeof(ARX_CHANGELEVEL_IO_SAVE));
+		if(!save.save(savefile, dat, size)) {
+			printf("error saving %s\n", savefile.c_str());
+		}
+	}
+	
+	free(dat);
+	
+}
+
+static void fix_level(SaveBlock & save, long num) {
+	
+	stringstream ss;
+	ss << "lvl" << setfill('0') << setw(3) << num << ".sav";
+	
+	if(!save.hasFile(ss.str())) {
+		return;
+	}
+	
+	size_t size;
+	char * dat = save.load(ss.str(), size);
+	if(!dat) {
+		return;
+	}
+	
+	printf("fixing level %ld\n", num);
+	
+	size_t pos = 0;
+	
+	ARX_CHANGELEVEL_INDEX asi;
+	memcpy(&asi, dat + pos, sizeof(ARX_CHANGELEVEL_INDEX));
+	pos += sizeof(ARX_CHANGELEVEL_INDEX);
+	
+	ARX_CHANGELEVEL_IO_INDEX * idx_io = new ARX_CHANGELEVEL_IO_INDEX[asi.nb_inter];
+	memcpy(idx_io, dat + pos, sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi.nb_inter);
+	pos += sizeof(ARX_CHANGELEVEL_IO_INDEX) * asi.nb_inter;
+	
+	free(dat);
+	
+	for(long i = 0; i < asi.nb_inter; i++) {
+		stringstream name;
+		name << GetName(idx_io[i].filename) << "_" << setw(4) << setfill('0') << idx_io[i].ident;
+		fix_io(save, name.str());
+		fix_io(save, name.str());
+	}
+	
+	delete[] idx_io;
+	
+}
+
+static int main_fix(SaveBlock & save, int argc, char ** argv) {
+	
+	(void)argv;
+	
+	if(argc != 0) {
+		print_help();
+		return 1;
+	}
+	
+	if(!save.BeginSave()) {
+		return 2;
+	}
+	
+	const long MAX_LEVEL = 24;
+	for(long i = 0; i <= MAX_LEVEL; i++) {
+		fix_level(save, i);
+	}
+	
+	save.flush();
+	
+	return 0;
+}
+
 int main(int argc, char ** argv) {
 	
 	if(argc < 3) {
@@ -111,6 +456,8 @@ int main(int argc, char ** argv) {
 		return main_extract(save, argc, argv);
 	} else if(command == "a" || command == "add") {
 		return main_add(save, argc, argv);
+	} else if(command == "f" || command == "fix") {
+		return main_fix(save, argc, argv);
 	} else {
 		print_help();
 		return 1;

@@ -492,7 +492,18 @@ bool SaveBlock::save(const string & name, const char * data, size_t size) {
 
 char * SaveBlock::load(const string & name, size_t & size) const {
 	
-	const File * file = (const File *)hashMap->get(name);
+	const File * file;
+	if(hashMap) {
+		file = (File *)hashMap->get(name);
+	} else {
+		// TODO always create the hashMap
+		file = NULL;
+		for(FileList::const_iterator f = files.begin(); f != files.end(); ++f) {
+			if(!strcasecmp(f->name.c_str(), name.c_str())) {
+				file = &*f;
+			}
+		}
+	}
 	if(!file) {
 		LogWarning << "Could not load " << name << " from " << savefile;
 		size = 0;
