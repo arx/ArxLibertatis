@@ -108,6 +108,7 @@ enum PlayingAmbianceType {
 	PLAYING_AMBIANCE_ZONE
 };
 
+// TODO used for saving
 struct PlayingAmbiance
 {
 	char name[256];
