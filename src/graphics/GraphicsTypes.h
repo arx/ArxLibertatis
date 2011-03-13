@@ -650,36 +650,6 @@ struct EERIE_ANIM
 
 //-------------------------------------------------------------------------
 //Portal Data;
-#pragma pack(push,1)
-struct SAVE_EERIEPOLY
-{
-	s32 			type;	// at least 16 bits
-	EERIE_3D		min;
-	EERIE_3D		max;
-	EERIE_3D		norm;
-	EERIE_3D		norm2;
-	D3DTLVERTEX		v[4];
-	D3DTLVERTEX		tv[4];
-	EERIE_3D		nrml[4];
-	s32 tex;
-	EERIE_3D		center;
-	f32			transval;
-	f32			area;
-	s16			room;
-	s16			misc;
-}; // Aligned 1 2 4
-#pragma pack(pop)
-
-#pragma pack(push,1)
-struct EERIE_SAVE_PORTALS
-{
-	SAVE_EERIEPOLY	poly;
-	s32		room_1; // facing normal
-	s32		room_2;
-	s16		useportal;
-	s16		paddy;
-};
-#pragma pack(pop)
 
 struct EERIE_PORTALS
 {
