@@ -2299,27 +2299,10 @@ bool DANAE::ManageEditorControls()
 					SendIOScriptEvent(DRAGINTER,SM_INVENTORYUSE);
 					COMBINE=NULL;
 				}
-			}
-			else if (DRAGINTER->ioflags & IO_GOLD)
-			{
-					ARX_PLAYER_AddGold(DRAGINTER->_itemdata->price);
-					ARX_SOUND_PlayInterface(SND_GOLD);
-
-					if (DRAGINTER->scriptload)
-					{
-						RemoveFromAllInventories(DRAGINTER);
-
-						ReleaseInter(DRAGINTER);
-					}
-					else
-					{
-						DRAGINTER->show=SHOW_FLAG_IN_INVENTORY;
-						DRAGINTER->GameFlags&=~GFLAG_ISINTREATZONE;
-					}
-
-					Set_DragInter(NULL);
-				}
-			else if (DRAGINTER!=NULL)
+			} else if (DRAGINTER->ioflags & IO_GOLD) {
+				ARX_PLAYER_AddGold(DRAGINTER);
+				Set_DragInter(NULL);
+			} else if(DRAGINTER!=NULL)
 			{
 				if (!EDITMODE) // test for NPC & FIX
 				{
