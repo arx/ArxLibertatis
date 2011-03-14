@@ -4,6 +4,10 @@
 
 #include "graphics/GraphicsTypes.h"
 
+
+#pragma pack(push,1)
+
+
 struct SavedColor {
 	
 	f32 r;
@@ -41,5 +45,9 @@ struct SavedVec3 {
 	}
 	
 };
+
+
+#pragma pack(pop)
+
 
 #endif // ARX_GRAHPHICS_GRAPHICSFORMAT_H

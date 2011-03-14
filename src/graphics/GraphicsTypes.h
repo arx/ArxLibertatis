@@ -152,26 +152,12 @@ struct EERIEPOLY
 	unsigned short	uslInd[4];
 }; // Aligned 1 2 4
 
-struct EERIE_OLD_VERTEX
-{
+struct EERIE_VERTEX {
 	D3DTLVERTEX vert;
-	EERIE_3D	v;
-	EERIE_3D	norm;
-}; // Aligned 1 2 4
-
-struct EERIE_VERTEX
-{
-	EERIE_VERTEX() {}
-	EERIE_VERTEX( EERIE_OLD_VERTEX& rhs )
-	:
-		vert(rhs.vert), v(rhs.v), norm(rhs.norm)
-	{}
-
-	D3DTLVERTEX vert;
-	EERIE_3D	v;
-	EERIE_3D	norm;
-	EERIE_3D	vworld;
-}; // Aligned 1 2 4
+	EERIE_3D v;
+	EERIE_3D norm;
+	EERIE_3D vworld;
+};
 
 #define MATERIAL_NONE		0
 #define MATERIAL_WEAPON		1
@@ -281,22 +267,19 @@ struct PROGRESSIVE_DATA
 	s16	padd;
 }; // Aligned 1 2 4
 
-// TODO used for loading (FTL)
-struct EERIE_SPRINGS
-{
+struct EERIE_SPRINGS {
 	s16	startidx;
 	s16	endidx;
 	f32	restlength;
 	f32	constant;	// spring constant
 	f32	damping;	// spring damping
 	s32	type;
-}; // Aligned 1 2 4
+};
 
 #define CLOTHES_FLAG_NORMAL	0
 #define CLOTHES_FLAG_FIX	1
 #define CLOTHES_FLAG_NOCOL	2
 
-// TODO used for loading (FTL)
 struct CLOTHESVERTEX
 {
 	s16		idx;
@@ -325,7 +308,6 @@ struct CLOTHES_DATA {
 	CLOTHES_DATA() : cvert(NULL), backup(NULL), nb_cvert(0) { }
 };
 
-// TODO used for loading (FTL)
 struct COLLISION_SPHERE {
 	short idx;
 	short flags; // TODO not used?

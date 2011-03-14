@@ -24,7 +24,9 @@ inline size_t array_size(T(&)[N]) {
 	return N;
 }
 
+
 #pragma pack(push,1)
+
 
 const size_t MAX_LINKED_SAVE = 16;
 const size_t SIZE_ID = 64;
@@ -1175,6 +1177,8 @@ struct ARX_CHANGELEVEL_PLAYER_LEVEL_DATA {
 	s32 padd[32];
 };
 
+
 #pragma pack(pop)
+
 
 #endif // ARX_SCENE_SAVEFORMAT_H

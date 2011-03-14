@@ -53,10 +53,14 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #ifndef ARX_FTL_H
 #define ARX_FTL_H
 
-#include "scene/Object.h"
+struct EERIE_3DOBJ;
 
-// Save a FTL file
-bool ARX_FTL_Save(const char * file, EERIE_3DOBJ * obj);
+/**
+ * Saves an FTL File
+ * Must pass the original name of the theo file
+ */
+bool ARX_FTL_Save(const char * file, const EERIE_3DOBJ * obj);
+
 // Load a FTL file
 EERIE_3DOBJ * ARX_FTL_Load(const char * file);
 
