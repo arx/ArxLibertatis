@@ -54,7 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 //
 // Copyright (c) 1999-2000 ARKANE Studios SA. All rights reserved
 //////////////////////////////////////////////////////////////////////////////////////
-//TODO(lubosz): too many includes
 
 #include "scene/LoadLevel.h"
 
@@ -63,6 +62,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include <iomanip>
 #include <sstream>
 #include <vector>
+#include <cassert>
 
 #include "ai/PathFinderManager.h"
 #include "ai/Paths.h"
@@ -101,6 +101,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 #include "scene/Scene.h"
 #include "scene/GameSound.h"
 #include "scene/Interactive.h"
+#include "scene/LevelFormat.h"
 
 using std::max;
 
@@ -282,368 +283,165 @@ void ReplaceSpecifics( char* text )
 extern long NODIRCREATION;
 extern long ADDED_IO_NOT_SAVED;
 
-#pragma pack(push,1)
-typedef struct
-{
-	f32	version;
-	char	ident[16];
-	char	lastuser[256];
-	s32	time;
-	EERIE_3D pos_edit;
-	EERIE_3D angle_edit;
-	s32	nb_scn;
-	s32	nb_inter;
-	s32	nb_nodes;
-	s32	nb_nodeslinks;
-	s32	nb_zones;
-	BOOL	lighting;
-	BOOL    Bpad[256];
-	s32	nb_lights;
-	s32	nb_fogs;
 
-	s32	nb_bkgpolys;
-	s32	nb_ignoredpolys;
-	s32	nb_childpolys;
-	s32	nb_paths;
-	s32	pad[250];
-	EERIE_3D	offset;
-	f32	fpad[253];
-	char	cpad[4096];
-	BOOL	bpad[256];
-} DANAE_LS_HEADER; // Aligned 1 2 4
-#pragma pack(pop)
-
-#pragma pack(push,1)
-typedef struct
-{
-	char	name[512];
-	s32	pad[16];
-	f32	fpad[16];
-} DANAE_LS_SCENE; // Aligned 1 2 4 8
-#pragma pack(pop)
-
-#pragma pack(push,1)
-typedef struct
-{
-	s32		nb_values;
-	s32		ViewMode;
-	s32		ModeLight;
-	s32		pad;
-} DANAE_LS_LIGHTINGHEADER; // Aligned 1 2 4 8
-#pragma pack(pop)
-
-#pragma pack(push,1)
-typedef struct
-{
-	s32		r;
-	s32		g;
-	s32		b;
-} DANAE_LS_VLIGHTING; // Aligned 1 2 4
-#pragma pack(pop)
-
-#pragma pack(push,1)
-typedef struct
-{
-	EERIE_3D	pos;
-	EERIE_RGB	rgb;
-	f32		fallstart;
-	f32		fallend;
-	f32		intensity;
-	f32		i;
-	EERIE_RGB	ex_flicker;
-	f32		ex_radius;
-	f32		ex_frequency;
-	f32		ex_size;
-	f32		ex_speed;
-	f32		ex_flaresize;
-	f32		fpadd[24];
-	s32		extras;
-	s32		lpadd[31];
-} DANAE_LS_LIGHT; //ver 1.003f // Aligned 1 2 4
-#pragma pack(pop)
-
-#pragma pack(push,1)
-typedef struct
-{
-	EERIE_3D	pos;
-	EERIE_RGB	rgb;
-	f32		size;
-	s32		special;
-	f32		scale;
-	EERIE_3D	move;
-	EERIE_3D	angle;
-	f32		speed;
-	f32		rotatespeed;
-	s32		tolive;
-	s32		blend;
-	f32		frequency;
-	f32		fpadd[32];
-	s32		lpadd[32];
-	char		cpadd[256];
-} DANAE_LS_FOG; // Aligned 1 2 4
-#pragma pack(pop)
-
-#pragma pack(push,1)
-typedef struct
-{
-	char		name[64];
-	EERIE_3D	pos;
-	s32		pad[16];
-	f32		fpad[16];
-} DANAE_LS_NODE; // Aligned 1 2 4
-#pragma pack(pop)
-
-#pragma pack(push,1)
-typedef struct
-{
-	char		name[64];
-	s16		idx;
-	s16		flags;
-	EERIE_3D	initpos;
-	EERIE_3D	pos;
-	s32		nb_pathways;
-	EERIE_RGB	rgb; 
-	f32		farclip;
-	f32		reverb;
-	f32		amb_max_vol;
-	f32		fpadd[26];
-	s32		height;
-	s32		lpadd[31];
-	char		ambiance[128]; 
-	char		cpadd[128];
-} DANAE_LS_PATH; // Aligned 1 2 4
-#pragma pack(pop)
-
-#pragma pack(push,1)
-typedef struct
-{
-	EERIE_3D		rpos;
-	s32			flag;
-	u32	time;
-	f32		fpadd[2];
-	s32		lpadd[2];
-	char		cpadd[32];
-} DANAE_LS_PATHWAYS; // Aligned 1 2 4
-#pragma pack(pop)
-
-//Lighting File Header
-#pragma pack(push,1)
-typedef struct
-{
-	f32	version;
-	char	ident[16];
-	char	lastuser[256];
-	s32	time;
-
-	s32	nb_lights;
-	s32	nb_Shadow_Polys;
-	s32	nb_IGNORED_Polys;
-	s32	nb_bkgpolys;
-	s32	pad[256];
-	f32	fpad[256];
-	char	cpad[4096];
-	BOOL	bpad[256];
-} DANAE_LLF_HEADER; //Aligned 1 2 4
-#pragma pack(pop)
-
-//*************************************************************************************
-//*************************************************************************************
-
-long DanaeSaveLevel( const std::string& _fic )
-{
-	std::string fic = _fic;
-	std::string fic2;
-	std::string fic3;
-	char _error[512];
-	DANAE_LS_HEADER				dlh;
-	DANAE_LS_SCENE				dls;
-	DANAE_LS_INTER				dli;
-	DANAE_LS_LIGHTINGHEADER		dll;
-	DANAE_LS_LIGHT				dlight;
-	DANAE_LS_FOG				dlf;
-	DANAE_LS_NODE				dln;
-	char						name[64];
-	long nb_inter		=		GetNumberInterWithOutScriptLoadForLevel(CURRENTLEVEL); // Without Player
-	unsigned char * dat	=		NULL;
-	u32 siz				=		255;
-	long pos			=		0;
-	FileHandle handle;
-	long bcount;
-
+long DanaeSaveLevel(const string & _fic) {
+	
+	long nb_inter = GetNumberInterWithOutScriptLoadForLevel(CURRENTLEVEL); // Without Player
 	EERIE_BACKGROUND * eb = ACTIVEBKG;
-	long i, j;
-	EERIEPOLY * ep;
-	EERIE_BKG_INFO * eg;
-
-	memset(&dlh, 0, sizeof(DANAE_LS_HEADER));
-	memset(&dls, 0, sizeof(DANAE_LS_SCENE));
-	memset(&dli, 0, sizeof(DANAE_LS_INTER));
+	
 	// Initializing datas
 	HERMES_DATE_TIME hdt;
 	GetDate(&hdt);
 	char tx[128];
-	char newtext[128];
 	sprintf(tx, "_%02ld_%02ld_%ld__%ldh%ldmn", hdt.months, hdt.days, hdt.years, hdt.hours, hdt.mins);
+	
+	string fic = _fic;
 	SetExt(fic, ".DLF");
-
-	if (FileExist(fic.c_str()))
-	{
-		fic2 = fic;
+	if(FileExist(fic.c_str())) {
+		std::string fic2 = fic;
+		char newtext[128];
 		sprintf(newtext, "Backup_DLF_%s", tx);
 		SetExt(fic2, newtext);
-		rename(fic.c_str(), fic2.c_str());
+		FileMove(fic, fic2.c_str());
 	}
 
-	fic2 = fic;
+	std::string fic2 = fic;
 	SetExt(fic2, ".LLF");
-
-	if (FileExist(fic2.c_str()))
-	{
-		fic3 = fic;
+	if(FileExist(fic2.c_str())) {
+		std::string fic3 = fic;
+		char newtext[128];
 		sprintf(newtext, "Backup_LLF_%s", tx);
 		SetExt(fic3, newtext);
-		rename(fic2.c_str(), fic3.c_str());
+		FileMove(fic2, fic3);
 	}
-
-	SetExt(fic, ".DLF");
-	bcount = CountBkgVertex();
+	
+	DANAE_LS_HEADER dlh;
+	memset(&dlh, 0, sizeof(DANAE_LS_HEADER));
 	dlh.nb_nodes = CountNodes();
-	dlh.nb_nodeslinks = MAX_LINKS;
+	assert(SAVED_MAX_LINKS == MAX_LINKS);
+	dlh.nb_nodeslinks = SAVED_MAX_LINKS;
 	dlh.nb_lights = 0; // MUST BE 0 !!!!
 	dlh.nb_fogs = ARX_FOGS_Count();
 	dlh.nb_bkgpolys = BKG_CountPolys(ACTIVEBKG);
 	dlh.nb_childpolys = 0;
 	dlh.nb_ignoredpolys = BKG_CountIgnoredPolys(ACTIVEBKG);
 	dlh.nb_paths = nbARXpaths;
-	long allocsize = sizeof(DANAE_LS_HEADER) + sizeof(DANAE_LS_HEADER) * 1 + sizeof(DANAE_LS_INTER) * nb_inter + 512
-					 + sizeof(DANAE_LS_LIGHTINGHEADER) + (bcount + 1) * sizeof(D3DCOLOR)
-					 + dlh.nb_nodes * (sizeof(DANAE_LS_NODE) + 64 * MAX_LINKS)
+	
+	long bcount = CountBkgVertex();
+	size_t allocsize = sizeof(DANAE_LS_HEADER) + sizeof(DANAE_LS_HEADER) * 1 + sizeof(DANAE_LS_INTER) * nb_inter + 512
+					 + sizeof(DANAE_LS_LIGHTINGHEADER) + (bcount + 1) * sizeof(u32)
+					 + dlh.nb_nodes * (sizeof(DANAE_LS_NODE) + 64 * dlh.nb_nodeslinks)
 					 + dlh.nb_lights * sizeof(DANAE_LS_LIGHT)
 
 					 + 1000000
 					 + nbARXpaths * sizeof(DANAE_LS_PATH) + nbARXpaths * sizeof(DANAE_LS_PATHWAYS) * 30;
-	long tmpp = dlh.nb_bkgpolys * (sizeof(D3DCOLOR) + 2) + 1000000;
-	allocsize = max(tmpp, allocsize);
-	dat = (unsigned char *)malloc(allocsize);
-
-	if (dat == NULL)
-	{
-		strcpy(_error, "Unable to allocate Buffer for save...");
-		goto error;
+	allocsize = max(dlh.nb_bkgpolys * (sizeof(u32) + 2) + 1000000, allocsize);
+	
+	char * dat = new char[allocsize];
+	if(!dat) {
+		LogError << "Unable to allocate Buffer for save...";
+		return -1;
 	}
-
+	
 	memset(dat, 0, allocsize);
-
+	
 	// Preparing HEADER
 	dlh.version = CURRENT_VERSION;
-
-	if (NODIRCREATION) dlh.version = 1.004f;
-
+	if(NODIRCREATION) {
+		dlh.version = 1.004f;
+	}
+	
 	strcpy(dlh.ident, "DANAE_FILE");
 	dlh.nb_scn = 1;
-
-	if (LastLoadedScene[0] == 0) dlh.nb_scn = 0;
-
+	
+	if(LastLoadedScene[0] == 0) {
+		dlh.nb_scn = 0;
+	}
+	
 	dlh.nb_inter = nb_inter;
 	dlh.nb_zones = 0;
-
-	if (dlh.nb_scn != 0)
-	{
+	
+	if(dlh.nb_scn != 0) {
+		// TODO operator overloading
 		dlh.pos_edit.x = subj.pos.x - Mscenepos.x;
 		dlh.pos_edit.y = subj.pos.y - Mscenepos.y;
 		dlh.pos_edit.z = subj.pos.z - Mscenepos.z;
-	}
-	else
-	{
-		dlh.pos_edit.x = subj.pos.x;
-		dlh.pos_edit.y = subj.pos.y;
-		dlh.pos_edit.z = subj.pos.z;
+	} else {
+		dlh.pos_edit = subj.pos;
 	}
 
-	dlh.angle_edit.a = player.angle.a;
-	dlh.angle_edit.b = player.angle.b;
-	dlh.angle_edit.g = player.angle.g;
+	dlh.angle_edit = player.angle;
 	dlh.lighting = false; // MUST BE false !!!!
-
-//	todo w32 api
-//	_time32(&dlh.time);
-
+	
+	// TODO w32 api
+	// _time32(&dlh.time);
+	dlh.time = 0;
+	
+	u32 siz = 255;
 	GetUserName(dlh.lastuser, &siz);
-	memcpy(dat, &dlh, sizeof(DANAE_LS_HEADER));
+	
+	size_t pos = 0;
+	
+	memcpy(dat + pos, &dlh, sizeof(DANAE_LS_HEADER));
 	pos += sizeof(DANAE_LS_HEADER);
 
 	// Preparing SCENE DATA
-	if (dlh.nb_scn > 0)
-	{
+	if(dlh.nb_scn > 0) {
+		DANAE_LS_SCENE dls;
+		memset(&dls, 0, sizeof(DANAE_LS_SCENE));
 		strcpy(dls.name, LastLoadedScene);
 		memcpy(dat + pos, &dls, sizeof(DANAE_LS_SCENE));
 		pos += sizeof(DANAE_LS_SCENE);
 	}
-
-	//preparing INTER DATA
-	for (i = 1; i < inter.nbmax; i++) // Ignoring Player Data
-	{
-		if ((inter.iobj[i] != NULL)  && (!inter.iobj[i]->scriptload)
-				&& (inter.iobj[i]->truelevel == CURRENTLEVEL))
-		{
+	
+	// preparing INTER DATA, Ignoring Player Data
+	for(long i = 1; i < inter.nbmax; i++) {
+		if((inter.iobj[i] != NULL)  && (!inter.iobj[i]->scriptload)
+			&& (inter.iobj[i]->truelevel == CURRENTLEVEL)) {
+			
 			INTERACTIVE_OBJ * io = inter.iobj[i];
+			
+			DANAE_LS_INTER dli;
 			memset(&dli, 0, sizeof(DANAE_LS_INTER));
-
-			if (dlh.nb_scn != 0)
-			{
+			
+			if(dlh.nb_scn != 0) {
 				dli.pos.x = io->initpos.x - Mscenepos.x;
 				dli.pos.y = io->initpos.y - Mscenepos.y;
 				dli.pos.z = io->initpos.z - Mscenepos.z;
+			} else {
+				dli.pos = io->initpos;
 			}
-			else
-			{
-				dli.pos.x = io->initpos.x;
-				dli.pos.y = io->initpos.y;
-				dli.pos.z = io->initpos.z;
-			}
-
-			dli.angle.a = io->initangle.a;
-			dli.angle.b = io->initangle.b;
-			dli.angle.g = io->initangle.g;
+			
+			dli.angle = io->initangle;
 			strcpy( dli.name, io->filename);
-
-			if (io->ident == 0)
-			{
+			
+			if(io->ident == 0) {
 				MakeIOIdent(io);
 			}
-
 			dli.ident = io->ident;
-
-			if (io->ioflags & IO_FREEZESCRIPT)
+			
+			if(io->ioflags & IO_FREEZESCRIPT) {
 				dli.flags = IO_FREEZESCRIPT;
-
+			}
+			
 			inter.iobj[i]->EditorFlags &= ~EFLAG_NOTSAVED;
 			memcpy(dat + pos, &dli, sizeof(DANAE_LS_INTER));
 			pos += sizeof(DANAE_LS_INTER);
 		}
 	}
-
-	long nbvert;
-
-	for (i = 0; i < MAX_FOG; i++)
-	{
-		if (fogs[i].exist)
-		{
-			memset(&dlf, 0, sizeof(DANAE_LS_LIGHT));
-			dlf.rgb.r = fogs[i].rgb.r;
-			dlf.rgb.g = fogs[i].rgb.g;
-			dlf.rgb.b = fogs[i].rgb.b;
-			dlf.angle.a = fogs[i].angle.a;
-			dlf.angle.b = fogs[i].angle.b;
-			dlf.angle.g = fogs[i].angle.g;
+	
+	for(size_t i = 0; i < MAX_FOG; i++) {
+		if(fogs[i].exist) {
+			DANAE_LS_FOG dlf;
+			memset(&dlf, 0, sizeof(DANAE_LS_FOG));
+			dlf.rgb = fogs[i].rgb;
+			dlf.angle = fogs[i].angle;
 			dlf.pos.x = fogs[i].pos.x - Mscenepos.x;
 			dlf.pos.y = fogs[i].pos.y - Mscenepos.y;
 			dlf.pos.z = fogs[i].pos.z - Mscenepos.z;
 			dlf.blend = fogs[i].blend;
 			dlf.frequency = fogs[i].frequency;
-			dlf.move.x = fogs[i].move.x;
-			dlf.move.y = fogs[i].move.y;
-			dlf.move.z = fogs[i].move.z;
+			dlf.move = fogs[i].move;
 			dlf.rotatespeed = fogs[i].rotatespeed;
 			dlf.scale = fogs[i].scale;
 			dlf.size = fogs[i].size;
@@ -654,11 +452,11 @@ long DanaeSaveLevel( const std::string& _fic )
 			pos += sizeof(DANAE_LS_FOG);
 		}
 	}
-
-	for (i = 0; i < nodes.nbmax; i++)
-	{
-		if (nodes.nodes[i].exist)
-		{
+	
+	for(long i = 0; i < nodes.nbmax; i++) {
+		if(nodes.nodes[i].exist) {
+			
+			DANAE_LS_NODE dln;
 			memset(&dln, 0, sizeof(DANAE_LS_NODE));
 			strcpy(dln.name, nodes.nodes[i].name);
 			dln.pos.x = nodes.nodes[i].pos.x - Mscenepos.x;
@@ -666,28 +464,25 @@ long DanaeSaveLevel( const std::string& _fic )
 			dln.pos.z = nodes.nodes[i].pos.z - Mscenepos.z;
 			memcpy(dat + pos, &dln, sizeof(DANAE_LS_NODE));
 			pos += sizeof(DANAE_LS_NODE);
-
-			for (long j = 0; j < MAX_LINKS; j++)
-			{
+			
+			for(size_t j = 0; j < SAVED_MAX_LINKS; j++) {
+				
+				char name[64];
 				memset(name, 0, 64);
-
-				if (nodes.nodes[i].link[j] != -1)
-				{
-					if (nodes.nodes[nodes.nodes[i].link[j]].exist)
+				
+				if(nodes.nodes[i].link[j] != -1 && nodes.nodes[nodes.nodes[i].link[j]].exist) {
 						strcpy(name, nodes.nodes[nodes.nodes[i].link[j]].name);
 				}
-
+				
 				memcpy(dat + pos, name, 64);
 				pos += 64;
 			}
 		}
 	}
-
-	DANAE_LS_PATH dlp;
-	DANAE_LS_PATHWAYS dlpw;
-
-	for (i = 0; i < nbARXpaths; i++)
-	{
+	
+	for(long i = 0; i < nbARXpaths; i++) {
+		
+		DANAE_LS_PATH dlp;
 		memset(&dlp, 0, sizeof(DANAE_LS_PATH));
 		dlp.flags = (short)ARXpaths[i]->flags;
 		dlp.idx = ARXpaths[i]->idx;
@@ -704,60 +499,51 @@ long DanaeSaveLevel( const std::string& _fic )
 		dlp.amb_max_vol = ARXpaths[i]->amb_max_vol;
 		dlp.farclip = ARXpaths[i]->farclip;
 		dlp.reverb = ARXpaths[i]->reverb;
-		dlp.rgb.r = ARXpaths[i]->rgb.r;
-		dlp.rgb.g = ARXpaths[i]->rgb.g;
-		dlp.rgb.b = ARXpaths[i]->rgb.b;
-
+		dlp.rgb = ARXpaths[i]->rgb;
+		
 		memcpy(dat + pos, &dlp, sizeof(DANAE_LS_PATH));
 		pos += sizeof(DANAE_LS_PATH);
-
-		for (long j = 0; j < dlp.nb_pathways; j++)
-		{
+		
+		for(long j = 0; j < dlp.nb_pathways; j++) {
+			
+			DANAE_LS_PATHWAYS dlpw;
 			memset(&dlpw, 0, sizeof(DANAE_LS_PATHWAYS));
 			dlpw.flag = ARXpaths[i]->pathways[j].flag;
-			dlpw.rpos.x = ARXpaths[i]->pathways[j].rpos.x;
-			dlpw.rpos.y = ARXpaths[i]->pathways[j].rpos.y;
-			dlpw.rpos.z = ARXpaths[i]->pathways[j].rpos.z;
-
-
+			dlpw.rpos = ARXpaths[i]->pathways[j].rpos;
+			
 			float fValue = ARXpaths[i]->pathways[j]._time ;
 			ARX_CHECK_ULONG(fValue);
-
 			dlpw.time = ARX_CLEAN_WARN_CAST_ULONG(fValue);
-
-
+			
 			memcpy(dat + pos, &dlpw, sizeof(DANAE_LS_PATHWAYS));
 			pos += sizeof(DANAE_LS_PATHWAYS);
 		}
 	}
-
+	
 	//Saving Special Polys
-
-	if (pos > allocsize)
-	{
-		sprintf(_error, "Badly Allocated SaveBuffer...%s", fic.c_str());
-		goto error;
+	if(pos > allocsize) {
+		LogError << "Badly Allocated SaveBuffer..." << fic;
+		delete[] dat;
+		return -1;
 	}
-
+	
 	// Now Saving Whole Buffer
-	if (!(handle = FileOpenWrite(fic.c_str())))
-	{
-		sprintf(_error, "Unable to Open %s for Write...", fic.c_str());
-		goto error;
+	FileHandle handle;
+	if(!(handle = FileOpenWrite(fic.c_str()))) {
+		LogError << "Unable to Open " << fic << " for Write...";
+		delete[] dat;
+		return -1;
+	}
+	
+	if(FileWrite(handle, dat, sizeof(DANAE_LS_HEADER)) != sizeof(DANAE_LS_HEADER)) {
+		LogError << "Unable to Write to " << fic;
+		delete[] dat;
+		return -1;
 	}
 
-	if (FileWrite(handle, dat, sizeof(DANAE_LS_HEADER)) != sizeof(DANAE_LS_HEADER))
-	{
-		sprintf(_error, "Unable to Write to %s", fic.c_str());
-		goto error;
-	}
-
-	char * compressed;
-	compressed = NULL;
-	size_t cpr_pos;
-	cpr_pos = 0;
-	compressed = implodeAlloc((char *)(dat + sizeof(DANAE_LS_HEADER)), pos - sizeof(DANAE_LS_HEADER), cpr_pos);
-
+	size_t cpr_pos = 0;
+	char * compressed  = implodeAlloc(dat + sizeof(DANAE_LS_HEADER), pos - sizeof(DANAE_LS_HEADER), cpr_pos);
+	
 	size_t sizeWritten;
 	sizeWritten = FileWrite(handle, compressed, cpr_pos);
 	
@@ -765,119 +551,108 @@ long DanaeSaveLevel( const std::string& _fic )
 	FileClose(handle);
 	
 	if(sizeWritten != cpr_pos) {
-		free(dat);
+		delete[] dat;
 		return false;
 	}
-
-	//////////////////////////////////////////////////////////////////////////////
-	//Now Save Separate IO Ref Sheet
-
-	//////////////////////////////////////////////////////////////////////////////
+	
+	
 	//Now Save Separate LLF Lighting File
-	fic2 = fic;
-	SetExt(fic2, ".LLF");
+	
 	pos = 0;
+	
 	DANAE_LLF_HEADER llh;
 	memset(&llh, 0, sizeof(DANAE_LLF_HEADER));
-
+	
 	// Preparing HEADER
 	llh.version = CURRENT_VERSION;
 	llh.nb_lights = EERIE_LIGHT_Count();
 	llh.nb_bkgpolys = BKG_CountPolys(ACTIVEBKG);
 	strcpy(llh.ident, "DANAE_LLH_FILE");
-
-//	todo w32api
-//	_time32(&llh.time);
-
-	GetUserName(llh.lastuser, &siz);
-
+	
+	// todo w32api
+	// _time32(&llh.time);
+	
+	u32 siz2 = 255;
+	GetUserName(llh.lastuser, &siz2);
+	
 	memcpy(dat, &llh, sizeof(DANAE_LLF_HEADER));
 	pos += sizeof(DANAE_LLF_HEADER);
-
-	for (i = 0; i < MAX_LIGHTS; i++)
-	{
+	
+	for(size_t i = 0; i < MAX_LIGHTS; i++) {
+		
 		EERIE_LIGHT * el = GLight[i];
-
-		if (el != NULL)
-			if (!(el->type & TYP_SPECIAL1))
-			{
-				memset(&dlight, 0, sizeof(DANAE_LS_LIGHT));
-				dlight.fallend = el->fallend;
-				dlight.fallstart = el->fallstart;
-				dlight.intensity = el->intensity;
-				dlight.pos.x = el->pos.x - Mscenepos.x;
-				dlight.pos.y = el->pos.y - Mscenepos.y;
-				dlight.pos.z = el->pos.z - Mscenepos.z;
-				dlight.rgb.r = el->rgb.r;
-				dlight.rgb.g = el->rgb.g;
-				dlight.rgb.b = el->rgb.b;
-
-				dlight.extras = el->extras;
-				dlight.ex_flicker.r = el->ex_flicker.r;
-				dlight.ex_flicker.g = el->ex_flicker.g;
-				dlight.ex_flicker.b = el->ex_flicker.b;
-				dlight.ex_radius = el->ex_radius;
-				dlight.ex_frequency = el->ex_frequency;
-				dlight.ex_size = el->ex_size;
-				dlight.ex_speed = el->ex_speed;
-				dlight.ex_flaresize = el->ex_flaresize;
-
-				memcpy(dat + pos, &dlight, sizeof(DANAE_LS_LIGHT));
-				pos += sizeof(DANAE_LS_LIGHT);
-			}
+		
+		if(!el || (el->type & TYP_SPECIAL1)) {
+			continue;
+		}
+		
+		DANAE_LS_LIGHT dlight;
+		memset(&dlight, 0, sizeof(DANAE_LS_LIGHT));
+		dlight.fallend = el->fallend;
+		dlight.fallstart = el->fallstart;
+		dlight.intensity = el->intensity;
+		dlight.pos.x = el->pos.x - Mscenepos.x;
+		dlight.pos.y = el->pos.y - Mscenepos.y;
+		dlight.pos.z = el->pos.z - Mscenepos.z;
+		dlight.rgb = el->rgb;
+		
+		dlight.extras = el->extras;
+		dlight.ex_flicker = el->ex_flicker;
+		dlight.ex_radius = el->ex_radius;
+		dlight.ex_frequency = el->ex_frequency;
+		dlight.ex_size = el->ex_size;
+		dlight.ex_speed = el->ex_speed;
+		dlight.ex_flaresize = el->ex_flaresize;
+		
+		memcpy(dat + pos, &dlight, sizeof(DANAE_LS_LIGHT));
+		pos += sizeof(DANAE_LS_LIGHT);
 	}
-
+	
 	//Saving Special Polys
+	DANAE_LS_LIGHTINGHEADER dll;
 	memset(&dll, 0, sizeof(DANAE_LS_LIGHTINGHEADER));
 	dll.nb_values = bcount;
 	dll.ModeLight = ModeLight;
 	dll.ViewMode = ViewMode;
-
 	memcpy(dat + pos, &dll, sizeof(DANAE_LS_LIGHTINGHEADER));
 	pos += sizeof(DANAE_LS_LIGHTINGHEADER);
-
-	{
-		for (j = 0; j < eb->Zsize; j++)
-			for (i = 0; i < eb->Xsize; i++)
-			{
-				eg = (EERIE_BKG_INFO *)&eb->Backg[i+j*eb->Xsize];
-
-				for (long l = 0; l < eg->nbpoly; l++)
-				{
-					ep = &eg->polydata[l];
-
-					if (ep != NULL)
-					{
-						if (ep->type & POLY_QUAD) nbvert = 4;
-						else nbvert = 3;
-
-						for (long k = 0; k < nbvert; k++)
-						{
-							D3DCOLOR tmp = ep->v[k].color;
-							memcpy(dat + pos, &tmp, sizeof(D3DCOLOR));
-							pos += sizeof(D3DCOLOR);
-						}
+	
+	for(long j = 0; j < eb->Zsize; j++) {
+		for(long i = 0; i < eb->Xsize; i++) {
+			
+			EERIE_BKG_INFO * eg = (EERIE_BKG_INFO *)&eb->Backg[i + j*eb->Xsize];
+			for(long l = 0; l < eg->nbpoly; l++) {
+				
+				EERIEPOLY * ep = &eg->polydata[l];
+				if(ep) {
+					long nbvert = (ep->type & POLY_QUAD) ? 4 : 3;
+					for(long k = 0; k < nbvert; k++) {
+						u32 tmp = (u32)ep->v[k].color;
+						memcpy(dat + pos, &tmp, sizeof(u32));
+						pos += sizeof(u32);
 					}
 				}
 			}
+		}
 	}
-
-	if (pos > allocsize)
-	{
-		sprintf(_error, "Badly Allocated SaveBuffer...%s", fic2.c_str());
-		goto error;
+	
+	if(pos > allocsize) {
+		LogError << "Badly Allocated SaveBuffer..." << fic2;
+		delete[] dat;
+		return -1;
 	}
-
+	
 	// Now Saving Whole Buffer
-	if (!(handle = FileOpenWrite(fic2.c_str())))
-	{
-		sprintf(_error, "Unable to Open %s for Write...", fic2.c_str());
-		goto error;
+	if(!(handle = FileOpenWrite(fic2.c_str()))) {
+		LogError << "Unable to Open " << fic2 << " for Write...";
+		delete[] dat;
+		return -1;
 	}
-
+	
 	compressed = NULL;
 	cpr_pos = 0;
-	compressed = implodeAlloc((char *)dat, pos, cpr_pos);
+	compressed = implodeAlloc(dat, pos, cpr_pos);
+	delete[] dat;
 
 	size_t sizeWritten2;
 	sizeWritten2 = FileWrite(handle, compressed, cpr_pos);
@@ -885,27 +660,14 @@ long DanaeSaveLevel( const std::string& _fic )
 	delete[] compressed;
 	FileClose(handle);
 	
-	if (sizeWritten2 != cpr_pos)
-	{
-		sprintf(_error, "Unable to Write to %s", fic2.c_str());
-		goto error;
+	if(sizeWritten2 != cpr_pos) {
+		LogError << "Unable to Write to " << fic2;
+		return -1;
 	}
-
-
-	// End of LLF Save
-	//////////////////////////////////////////////////////////////////////////////
-
-	// Finish
-	free(dat);
+	
 	ADDED_IO_NOT_SAVED = 0;
+	
 	return 1;
-error:
-	;
-	LogError << (_error);
-
-	if (dat) free(dat);
-
-	return -1;
 }
 
 extern char LastLoadedDLF[512];
@@ -1077,24 +839,22 @@ void SaveIOScript(INTERACTIVE_OBJ * io, long fl)
 	}
 }
 extern long FORCE_IO_INDEX;
-INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans)
-{
+INTERACTIVE_OBJ * LoadInter_Ex(const string & name, long ident, const EERIE_3D & pos, const EERIE_3D & angle, const EERIE_3D & trans) {
 	char nameident[256];
 	std::string tmp;
 	char tmp2[512];
 	size_t FileSize;
 	INTERACTIVE_OBJ * io;
-	sprintf(nameident, "%s_%04d", GetName(dli->name).c_str(), dli->ident);
+	sprintf(nameident, "%s_%04ld", GetName(name).c_str(), ident);
 	long t;
 	t = GetTargetByNameTarget(nameident);
 
 	if (FORCE_IO_INDEX != -1)
 	{
-		io = AddInteractive(GDevice, dli->name, dli->ident, NO_MESH | NO_ON_LOAD);
-		goto suite;
-	}
+		io = AddInteractive(GDevice, name.c_str(), ident, NO_MESH | NO_ON_LOAD);
+	} else {
 
-	sprintf(nameident, "%s_%04d", GetName(dli->name).c_str(), dli->ident);
+	sprintf(nameident, "%s_%04ld", GetName(name).c_str(), ident);
 
 	t = GetTargetByNameTarget(nameident);
 
@@ -1103,28 +863,27 @@ INTERACTIVE_OBJ * LoadInter_Ex(DANAE_LS_INTER * dli, EERIE_3D * trans)
 		return inter.iobj[t];
 	}
 
-	ReplaceSpecifics(dli->name);
+	char * nname = strdup(name.c_str()); // TODO use string
+	ReplaceSpecifics(nname);
 
-	io = AddInteractive(GDevice, dli->name, dli->ident, NO_MESH | NO_ON_LOAD);
-suite:
-	;
+	io = AddInteractive(GDevice, nname, ident, NO_MESH | NO_ON_LOAD);
+	}
 
 	if (io)
 	{
 		RestoreInitialIOStatusOfIO(io);
 		ARX_INTERACTIVE_HideGore(io);
 
-		io->lastpos.x = io->initpos.x = io->pos.x = dli->pos.x + trans->x; // RELATIVE !!!!!!!!!
-		io->lastpos.y = io->initpos.y = io->pos.y = dli->pos.y + trans->y;
-		io->lastpos.z = io->initpos.z = io->pos.z = dli->pos.z + trans->z;
+		// TODO operator overloading
+		io->lastpos.x = io->initpos.x = io->pos.x = pos.x + trans.x; // RELATIVE !!!!!!!!!
+		io->lastpos.y = io->initpos.y = io->pos.y = pos.y + trans.y;
+		io->lastpos.z = io->initpos.z = io->pos.z = pos.z + trans.z;
 		io->move.x = io->move.y = io->move.z = 0.f;
-		io->initangle.a = io->angle.a = dli->angle.a;
-		io->initangle.b = io->angle.b = dli->angle.b;
-		io->initangle.g = io->angle.g = dli->angle.g;
+		io->initangle = io->angle = angle;
 
 		if (!NODIRCREATION)
 		{
-			io->ident = dli->ident;
+			io->ident = ident;
 			tmp = io->filename;
 			strcpy(tmp2, GetName(tmp).c_str());
 			RemoveName(tmp);
@@ -1214,160 +973,121 @@ extern long FASTmse;
 long DONT_LOAD_INTERS = 0;
 long FAKE_DIR = 0;
 
-long DanaeLoadLevel(const std::string& fic) {
+long DanaeLoadLevel(const string & fic) {
 	
-	DANAE_LS_HEADER				dlh;
-	DANAE_LS_SCENE		*		dls;
-	DANAE_LS_INTER		*		dli;
-	DANAE_LS_LIGHT		*		dlight;
-	DANAE_LS_FOG		*		dlf;
-	DANAE_LS_LIGHTINGHEADER	*	dll;
-	DANAE_LS_NODE		*		dln;
-	char name[64];
-	std::string temp;
-	EERIE_3D trans;
-	unsigned char * dat = NULL;
-	float increment = 0;
-
-	long pos = 0;
-	long i;
-	size_t FileSize = 0;
-	char tstr[128];
-	HERMES_DATE_TIME hdt;
 	LogInfo << "Loading Level " << fic;
+	
 	ClearCurLoadInfo();
 	CURRENTLEVEL = GetLevelNumByName(fic.c_str());
+	
+	HERMES_DATE_TIME hdt;
 	GetDate(&hdt);
+	char tstr[128];
 	sprintf(tstr, "%2ldh%02ldm%02ld LOADLEVEL start", hdt.hours, hdt.mins, hdt.secs);
 	ForceSendConsole(tstr, 1, 0, (HWND)1);
-	std::string fileDlf;
-	fileDlf = fic;
-//	SetExt(fileDlf, ".DLF");
-	std::string fic2;
-	fic2 = fic;
+	
+	string fileDlf = fic;
+	// SetExt(fileDlf, ".DLF");
+	string fic2 = fic;
 	SetExt(fic2, ".LLF");
 
 	LogDebug << "fic2 " << fic2;
 	LogDebug << "fileDlf " << fileDlf;
 
-	if (!PAK_FileExist(fileDlf.c_str())) {
+	if(!PAK_FileExist(fileDlf.c_str())) {
 		LogError <<"Unable to find "<< fileDlf;
 		return -1;
 	}
-
+	
 	strcpy(LastLoadedDLF, fic.c_str());
-
-	dat = (unsigned char *)PAK_FileLoadMalloc(fic, FileSize);
+	
+	size_t FileSize = 0;
+	char * dat = (char*)PAK_FileLoadMalloc(fic, FileSize);
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
-	memcpy(&dlh, dat, sizeof(DANAE_LS_HEADER));
+	
+	size_t pos = 0;
+	
+	DANAE_LS_HEADER dlh;
+	memcpy(&dlh, dat + pos, sizeof(DANAE_LS_HEADER));
 	pos += sizeof(DANAE_LS_HEADER);
-	// TODO copying directly into structs is not very portable
-
+	
 	LogDebug << "dlh.version " << dlh.version << " header size " << sizeof(DANAE_LS_HEADER);
-
-	if (dlh.version > CURRENT_VERSION) // using compression
-	{
-		LogError << ("DANAE Version too OLD to load this File... Please upgrade to a new DANAE Version...");
+	
+	if(dlh.version > CURRENT_VERSION) {
+		LogError << "DANAE Version too OLD to load this File... Please upgrade to a new DANAE Version...";
 		free(dat);
 		dat = NULL;
 		return -1;
 	}
-
-	if (dlh.version >= 1.44f) // using compression
-	{
-		char * torelease = (char *)dat;
-		char * compressed = (char *)(dat + pos);
+	
+	// using compression
+	if(dlh.version >= 1.44f) {
+		char * torelease = dat;
 		long cpr_pos;
 		cpr_pos = 0;
-		dat = (unsigned char *)blastMemAlloc(compressed, FileSize - pos, FileSize);
-
+		dat = blastMemAlloc(dat + pos, FileSize - pos, FileSize);
 		free(torelease);
-		compressed = NULL;
 		pos = 0;
-
-		if (dat == NULL) {
-			LogError << "STD_Explode did not return anything "<< fileDlf;
+		if(!dat) {
+			LogError << "STD_Explode did not return anything " << fileDlf;
 			return -1;
 		}
 	}
-
-	loddpos.x = subj.pos.x = dlh.pos_edit.x;
-	loddpos.y = subj.pos.y = dlh.pos_edit.y;
-	loddpos.z = subj.pos.z = dlh.pos_edit.z;
-	player.desiredangle.a = player.angle.a = subj.angle.a = dlh.angle_edit.a;
-	player.desiredangle.b = player.angle.b = subj.angle.b = dlh.angle_edit.b;
-	player.desiredangle.g = player.angle.g = subj.angle.g = dlh.angle_edit.g;
-
-	if (strcmp(dlh.ident, "DANAE_FILE"))
-	{
+	
+	loddpos = subj.pos = dlh.pos_edit;
+	player.desiredangle = player.angle = subj.angle = dlh.angle_edit;
+	
+	if(strcmp(dlh.ident, "DANAE_FILE")) {
 		LogError << "Not a valid file "<< fileDlf;
 		return -1;
 	}
-
-	if (dlh.version < 1.001f)
-	{
+	
+	if(dlh.version < 1.001f) {
 		dlh.nb_nodes = 0;
 	}
-
+	
 	LogDebug << "Loading Scene";
-
+	
 	// Loading Scene
-	if (dlh.nb_scn >= 1)
-	{
-		dls = (DANAE_LS_SCENE *)(dat + pos);
+	if(dlh.nb_scn >= 1) {
+		
+		DANAE_LS_SCENE * dls = (DANAE_LS_SCENE*)(dat + pos);
 		pos += sizeof(DANAE_LS_SCENE);
-		std::string ftemp;
-
-		if (FAKE_DIR)
-		{
+		
+		string ftemp;
+		if(FAKE_DIR) {
 			ftemp = fic;
 			RemoveName(ftemp);
-			temp = fic;
-			RemoveName(temp);
 			FAKE_DIR = 0;
-		}
-		else // normal load
-		{
+		} else {
 			ftemp = dls->name;
 			RemoveName(ftemp);
-			temp = dls->name;
-			RemoveName(temp);
 		}
-
-		if (FastSceneLoad(ftemp.c_str()))
-		{
+		
+		if(FastSceneLoad(ftemp.c_str())) {
 			LogDebug << "done loading scene";
 			FASTmse = 1;
-			goto suite;
+		} else {
+			LogDebug << "fast loading scene failed";
+			ARX_SOUND_PlayCinematic("Editor_Humiliation.wav");
+			mse = PAK_MultiSceneToEerie(ftemp.c_str());
+			PROGRESS_BAR_COUNT += 20.f;
+			LoadLevelScreen();
 		}
-		LogDebug << "loading scene failed";
-
-		ARX_SOUND_PlayCinematic("Editor_Humiliation.wav");
-		mse = PAK_MultiSceneToEerie(temp.c_str());
-		PROGRESS_BAR_COUNT += 20.f;
-		LoadLevelScreen();
-	suite:
-		;
+		
 		EERIEPOLY_Compute_PolyIn();
 		strcpy(LastLoadedScene, ftemp.c_str());
-		std::string str_LastLoadedScene = LastLoadedScene;
-		RemoveName(str_LastLoadedScene);
 	}
-
-	if (FASTmse)
-	{
-		trans.x = Mscenepos.x;
-		trans.y = Mscenepos.y;
-		trans.z = Mscenepos.z;
+	
+	EERIE_3D trans;
+	if(FASTmse) {
+		trans = Mscenepos;
 		player.pos.x = loddpos.x + trans.x;
 		player.pos.y = loddpos.y + trans.y;
 		player.pos.z = loddpos.z + trans.z;
-	}
-	else if (mse != NULL)
-	{
+	} else if(mse != NULL) {
 		Mscenepos.x = -mse->cub.xmin - (mse->cub.xmax - mse->cub.xmin) * ( 1.0f / 2 ) + ((float)ACTIVEBKG->Xsize * (float)ACTIVEBKG->Xdiv) * ( 1.0f / 2 );
-
 		Mscenepos.z = -mse->cub.zmin - (mse->cub.zmax - mse->cub.zmin) * ( 1.0f / 2 ) + ((float)ACTIVEBKG->Zsize * (float)ACTIVEBKG->Zdiv) * ( 1.0f / 2 );
 		float t1 = (float)(long)(mse->point0.x / BKG_SIZX);
 		float t2 = (float)(long)(mse->point0.z / BKG_SIZZ);
@@ -1380,84 +1100,67 @@ long DanaeLoadLevel(const std::string& fic) {
 		Mscenepos.y = mse->pos.y = -mse->cub.ymin - 100.f - mse->point0.y;
 		lastteleport.x = mapcam.pos.x = player.pos.x = subj.pos.x = moveto.x = mse->pos.x + mse->point0.x;
 		lastteleport.z = mapcam.pos.z = player.pos.z = subj.pos.z = moveto.z = mse->pos.z + mse->point0.z;
-		lastteleport.y         = player.pos.y = subj.pos.y = moveto.y = mse->pos.y + mse->point0.y;
+		lastteleport.y                = player.pos.y = subj.pos.y = moveto.y = mse->pos.y + mse->point0.y;
 		lastteleport.y -= 180.f;
 		player.pos.y = subj.pos.y -= 180.f;
-		trans.x = mse->pos.x;
-		trans.y = mse->pos.y;
-		trans.z = mse->pos.z;
-	}
-	else
-	{
+		trans = mse->pos;
+	} else {
 		lastteleport.x = 0.f;
 		lastteleport.y = PLAYER_BASE_HEIGHT;
 		lastteleport.z = 0.f;
 		trans.x = 0;
 		trans.y = 0;
 		trans.z = 0;
-		Mscenepos.x = 0.f;
-		Mscenepos.z = 0.f;
-		Mscenepos.y = 0.f;
+		Mscenepos = trans;
 	}
-
-	MSP.x = trans.x;
-	MSP.y = trans.y;
-	MSP.z = trans.z;
-
+	
+	MSP = trans;
+	
 	ClearCurLoadInfo();
-
-	if (dlh.nb_inter > 0)
-	{
+	
+	float increment = 0;
+	if(dlh.nb_inter > 0) {
 		increment = (60.f / (float)dlh.nb_inter);
-	}
-	else
-	{
+	} else {
 		PROGRESS_BAR_COUNT += 60;
 		LoadLevelScreen();
 	}
-
-	for (i = 0 ; i < dlh.nb_inter ; i++)
-	{
+	
+	for(long i = 0 ; i < dlh.nb_inter ; i++) {
+		
 		PROGRESS_BAR_COUNT += increment;
 		LoadLevelScreen();
-		dli = (DANAE_LS_INTER *)(dat + pos);
+		
+		DANAE_LS_INTER * dli = (DANAE_LS_INTER *)(dat + pos);
 		pos += sizeof(DANAE_LS_INTER);
-
-		if (!DONT_LOAD_INTERS)
-		{
-			LoadInter_Ex(dli, &trans);
+		if(!DONT_LOAD_INTERS) {
+			LoadInter_Ex(dli->name, dli->ident, dli->pos, dli->angle, trans);
 		}
 	}
-
-	if (dlh.lighting)
-	{
-		if (!PAK_FileExist(fic2.c_str()))
-		{
-			dll = (DANAE_LS_LIGHTINGHEADER *)(dat + pos);
-			pos += sizeof(DANAE_LS_LIGHTINGHEADER);
-			long bcount = dll->nb_values;
+	
+	if(dlh.lighting) {
+		
+		DANAE_LS_LIGHTINGHEADER * dll = (DANAE_LS_LIGHTINGHEADER *)(dat + pos);
+		pos += sizeof(DANAE_LS_LIGHTINGHEADER);
+		long bcount = dll->nb_values;
+		
+		if(!PAK_FileExist(fic2.c_str())) {
+			
 			LastLoadedLightningNb = bcount;
-
-			if (LastLoadedLightning != NULL)
-			{
+			if(LastLoadedLightning != NULL) {
 				free(LastLoadedLightning);
 				LastLoadedLightning = NULL;
 			}
-
+			
 			//DANAE_LS_VLIGHTING
 			D3DCOLOR * ll = LastLoadedLightning = (D3DCOLOR *)malloc(sizeof(D3DCOLOR) * bcount);
-
-			if (dlh.version > 1.001f)
-			{
-				memcpy(LastLoadedLightning, dat + pos, sizeof(D3DCOLOR)*bcount);
-				pos += sizeof(D3DCOLOR) * bcount;
-			}
-			else
-			{
-				DANAE_LS_VLIGHTING dlv;
-
-				while (bcount)
-				{
+			
+			if(dlh.version > 1.001f) {
+				std::copy((u32*)(dat + pos), (u32*)(dat + pos) + bcount, LastLoadedLightning);
+				pos += sizeof(u32) * bcount;
+			} else {
+				while(bcount) {
+					DANAE_LS_VLIGHTING dlv;
 					memcpy(&dlv, dat + pos, sizeof(DANAE_LS_VLIGHTING));
 					pos += sizeof(DANAE_LS_VLIGHTING);
 					*ll = 0xff000000L | ((dlv.r & 255) << 16) | ((dlv.g & 255) << 8) | (dlv.b & 255);
@@ -1465,293 +1168,251 @@ long DanaeLoadLevel(const std::string& fic) {
 					bcount--;
 				}
 			}
-
-			ModeLight = dll->ModeLight;
-			ViewMode = dll->ViewMode;
-			ViewMode &= ~VIEWMODE_WIRE;
+			
+		} else {
+			pos += sizeof(u32) * bcount;
 		}
-		else
-		{
-			dll = (DANAE_LS_LIGHTINGHEADER *)(dat + pos);
-
-			pos += sizeof(DANAE_LS_LIGHTINGHEADER);
-			long bcount = dll->nb_values;
-			pos += sizeof(D3DCOLOR) * bcount;
-			ModeLight = dll->ModeLight;
-			ViewMode = dll->ViewMode;
-			ViewMode &= ~VIEWMODE_WIRE;
-		}
-
+		
+		ModeLight = dll->ModeLight;
+		ViewMode = dll->ViewMode;
+		ViewMode &= ~VIEWMODE_WIRE;
 	}
-
+	
 	PROGRESS_BAR_COUNT += 1;
 	LoadLevelScreen();
-
-	if (dlh.version < 1.003f) dlh.nb_lights = 0;
-
-	if (!PAK_FileExist(fic2.c_str()))
-	{
-		if (dlh.nb_lights != 0)
-		{
+	
+	if(dlh.version < 1.003f) {
+		dlh.nb_lights = 0;
+	}
+	
+	if(!PAK_FileExist(fic2.c_str())) {
+		
+		if(dlh.nb_lights != 0) {
 			EERIE_LIGHT_GlobalInit();
 		}
-
-		long j;
-
-		for (i = 0; i < dlh.nb_lights; i++)
-		{
-			dlight = (DANAE_LS_LIGHT *)(dat + pos);
-
+		
+		for(long i = 0; i < dlh.nb_lights; i++) {
+			
+			DANAE_LS_LIGHT * dlight = (DANAE_LS_LIGHT*)(dat + pos);
 			pos += sizeof(DANAE_LS_LIGHT);
-			j = EERIE_LIGHT_Create();
-
-			if (j >= 0)
-			{
+			
+			long j = EERIE_LIGHT_Create();
+			if(j >= 0) {
 				EERIE_LIGHT * el = GLight[j];
-
-				el->exist		= 1;
-				el->treat		= 1;
-				el->fallend		= dlight->fallend;
-				el->fallstart	= dlight->fallstart;
-				el->falldiff	= el->fallend - el->fallstart;
-				el->falldiffmul	= 1.f / el->falldiff;
-				el->intensity	= dlight->intensity;
-
-				el->pos.x		= dlight->pos.x;
-				el->pos.y		= dlight->pos.y;
-				el->pos.z		= dlight->pos.z;
-				el->rgb.r		= dlight->rgb.r;
-				el->rgb.g		= dlight->rgb.g;
-				el->rgb.b		= dlight->rgb.b;
-
-
+				
+				el->exist = 1;
+				el->treat = 1;
+				el->fallend = dlight->fallend;
+				el->fallstart = dlight->fallstart;
+				el->falldiff = el->fallend - el->fallstart;
+				el->falldiffmul = 1.f / el->falldiff;
+				el->intensity = dlight->intensity;
+				el->pos = dlight->pos;
+				el->rgb = dlight->rgb;
+				
 				ARX_CHECK_SHORT(dlight->extras);
-				el->extras		= ARX_CLEAN_WARN_CAST_SHORT(dlight->extras);
-
-				el->ex_flicker.r = dlight->ex_flicker.r;
-				el->ex_flicker.g = dlight->ex_flicker.g;
-				el->ex_flicker.b = dlight->ex_flicker.b;
-				el->ex_radius	= dlight->ex_radius;
+				el->extras = static_cast<short>(dlight->extras);
+				
+				el->ex_flicker = dlight->ex_flicker;
+				el->ex_radius = dlight->ex_radius;
 				el->ex_frequency = dlight->ex_frequency;
-				el->ex_size		= dlight->ex_size;
-				el->ex_speed	= dlight->ex_speed;
+				el->ex_size = dlight->ex_size;
+				el->ex_speed = dlight->ex_speed;
 				el->tl = -1;
 				el->sample = ARX_SOUND_INVALID_RESOURCE;
-
-				if ((el->extras & EXTRAS_SPAWNFIRE))
-				{
+				
+				if((el->extras & EXTRAS_SPAWNFIRE)) {
 					el->extras |= EXTRAS_FLARE;
-
-					if (el->extras & EXTRAS_FIREPLACE)
+					if(el->extras & EXTRAS_FIREPLACE) {
 						el->ex_flaresize = 95.f;
-					else
+					} else {
 						el->ex_flaresize = 40.f;
+					}
 				}
 			}
 		}
-	}
-	else
-	{
+		
+	} else {
 		pos += sizeof(DANAE_LS_LIGHT) * dlh.nb_lights;
 	}
-
+	
 	ClearCurLoadInfo();
 	LogDebug << "Loading FOGS";
 	ARX_FOGS_Clear();
-
-	for (i = 0; i < dlh.nb_fogs; i++)
-	{
-		dlf = (DANAE_LS_FOG *)(dat + pos);
+	
+	for(long i = 0; i < dlh.nb_fogs; i++) {
+		
+		DANAE_LS_FOG * dlf = (DANAE_LS_FOG *)(dat + pos);
 		pos += sizeof(DANAE_LS_FOG);
+		
 		long n = ARX_FOGS_GetFree();
-
-		if (n > -1)
-		{
+		if(n > -1) {
+			
 			FOG_DEF * fd = &fogs[n];
-			fd->exist	= 1;
-			fd->rgb.r	= dlf->rgb.r;
-			fd->rgb.g	= dlf->rgb.g;
-			fd->rgb.b	= dlf->rgb.b;
-			fd->angle.a	= dlf->angle.a;
-			fd->angle.b	= dlf->angle.b;
-			fd->angle.g	= dlf->angle.g;
-			fd->pos.x	= dlf->pos.x + trans.x;
-			fd->pos.y	= dlf->pos.y + trans.y;
-			fd->pos.z	= dlf->pos.z + trans.z;
-			fd->blend	= dlf->blend;
+			fd->exist = 1;
+			fd->rgb = dlf->rgb;
+			fd->angle = dlf->angle;
+			fd->pos.x = dlf->pos.x + trans.x;
+			fd->pos.y = dlf->pos.y + trans.y;
+			fd->pos.z = dlf->pos.z + trans.z;
+			fd->blend = dlf->blend;
 			fd->frequency = dlf->frequency;
-			fd->move.x	= dlf->move.x;
-			fd->move.y	= dlf->move.y;
-			fd->move.z	= dlf->move.z;
 			fd->rotatespeed = dlf->rotatespeed;
-			fd->scale	= dlf->scale;
-			fd->size	= dlf->size;
-			fd->special	= dlf->special;
-			fd->speed	= dlf->speed;
-			fd->tolive	= dlf->tolive;
-
+			fd->scale = dlf->scale;
+			fd->size = dlf->size;
+			fd->special = dlf->special;
+			fd->speed = dlf->speed;
+			fd->tolive = dlf->tolive;
 			fd->move.x = 1.f;
 			fd->move.y = 0.f;
 			fd->move.z = 0.f;
 			EERIE_3D out;
-			float t;
-			t = radians(MAKEANGLE(fd->angle.b));
-			_YRotatePoint(&fd->move, &out, EEcos(t), EEsin(t));
-			t = radians(MAKEANGLE(fd->angle.a));
-			_XRotatePoint(&out, &fd->move, EEcos(t), EEsin(t));
+			float ta = radians(MAKEANGLE(fd->angle.b));
+			_YRotatePoint(&fd->move, &out, EEcos(ta), EEsin(ta));
+			float tb = radians(MAKEANGLE(fd->angle.a));
+			_XRotatePoint(&out, &fd->move, EEcos(tb), EEsin(tb));
 		}
 	}
-
+	
 	PROGRESS_BAR_COUNT += 2.f;
 	LoadLevelScreen();
-
+	
 	ClearCurLoadInfo();
 	LogDebug << "Loading Nodes";
 	ClearNodes();
-
-	for (i = 0; i < dlh.nb_nodes; i++)
-	{
+	
+	for(long i = 0; i < dlh.nb_nodes; i++) {
+		
 		nodes.nodes[i].exist = 1;
 		nodes.nodes[i].selected = 0;
-		dln = (DANAE_LS_NODE *)(dat + pos);
+		DANAE_LS_NODE * dln = (DANAE_LS_NODE*)(dat + pos);
 		pos += sizeof(DANAE_LS_NODE);
-
+		
 		strcpy(nodes.nodes[i].name, dln->name);
 		nodes.nodes[i].pos.x = dln->pos.x + trans.x;
 		nodes.nodes[i].pos.y = dln->pos.y + trans.y;
 		nodes.nodes[i].pos.z = dln->pos.z + trans.z;
-
-		for (long j = 0; j < dlh.nb_nodeslinks; j++)
-		{
+		
+		for(long j = 0; j < dlh.nb_nodeslinks; j++) {
+			char name[64];
 			memcpy(name, dat + pos, 64);
 			pos += 64;
-
-			if (name[0] != 0)
-			{
+			if(name[0] != 0) {
 				strcpy(nodes.nodes[i].lnames[j], name);
 			}
 		}
 	}
-
+	
 	RestoreNodeNumbers();
-
+	
 	ClearCurLoadInfo();
 	LogDebug << "Loading Paths";
 	ARX_PATH_ReleaseAllPath();
-	DANAE_LS_PATH  * dlp;
-	DANAE_LS_PATHWAYS  * dlpw;
-
-	if (dlh.nb_paths)
-	{
+	
+	if(dlh.nb_paths) {
 		ARXpaths = (ARX_PATH **)malloc(sizeof(ARX_PATH *) * dlh.nb_paths);
 		nbARXpaths = dlh.nb_paths;
 	}
-
-	for (i = 0; i < dlh.nb_paths; i++)
-	{
+	
+	for(long i = 0; i < dlh.nb_paths; i++) {
+		
 		ARX_PATH * ap = ARXpaths[i] = (ARX_PATH *)malloc(sizeof(ARX_PATH));
 		memset(ap, 0, sizeof(ARX_PATH));
-		dlp = (DANAE_LS_PATH *)(dat + pos);
+		
+		DANAE_LS_PATH * dlp = (DANAE_LS_PATH *)(dat + pos);
 		pos += sizeof(DANAE_LS_PATH);
-		ap->flags		= dlp->flags;
-		ap->idx		= dlp->idx;
-		ap->initpos.x	= dlp->initpos.x + trans.x;
-		ap->initpos.y	= dlp->initpos.y + trans.y;
-		ap->initpos.z	= dlp->initpos.z + trans.z;
-		ap->pos.x		= dlp->pos.x + trans.x;
-		ap->pos.y		= dlp->pos.y + trans.y;
-		ap->pos.z		= dlp->pos.z + trans.z;
+		
+		ap->flags = dlp->flags;
+		ap->idx = dlp->idx;
+		ap->initpos.x = dlp->initpos.x + trans.x;
+		ap->initpos.y = dlp->initpos.y + trans.y;
+		ap->initpos.z = dlp->initpos.z + trans.z;
+		ap->pos.x = dlp->pos.x + trans.x;
+		ap->pos.y = dlp->pos.y + trans.y;
+		ap->pos.z = dlp->pos.z + trans.z;
 		strcpy(ap->name, dlp->name);
 		ap->nb_pathways = dlp->nb_pathways;
-		ap->height		= dlp->height;
+		ap->height = dlp->height;
 		strcpy(ap->ambiance, dlp->ambiance);
 		ap->amb_max_vol = dlp->amb_max_vol;
-
-		if (ap->amb_max_vol <= 1.f) ap->amb_max_vol = 100.f;
-
-		ap->farclip	= dlp->farclip;
-		ap->reverb		= dlp->reverb;
-		ap->rgb.r		= dlp->rgb.r;
-		ap->rgb.g		= dlp->rgb.g;
-		ap->rgb.b		= dlp->rgb.b;
-
+		
+		if(ap->amb_max_vol <= 1.f) {
+			ap->amb_max_vol = 100.f;
+		}
+		
+		ap->farclip = dlp->farclip;
+		ap->reverb = dlp->reverb;
+		ap->rgb = dlp->rgb;
+		
 		ARX_PATHWAY * app = ap->pathways = (ARX_PATHWAY *)malloc(sizeof(ARX_PATHWAY) * dlp->nb_pathways);
 		memset(app, 0, sizeof(ARX_PATHWAY)*dlp->nb_pathways);
-//
-		for (long j = 0; j < dlp->nb_pathways; j++)
-		{
-			dlpw = (DANAE_LS_PATHWAYS *)(dat + pos);
+		
+		for(long j = 0; j < dlp->nb_pathways; j++) {
+			
+			DANAE_LS_PATHWAYS  * dlpw = (DANAE_LS_PATHWAYS *)(dat + pos);
 			pos += sizeof(DANAE_LS_PATHWAYS);
-
-			app[j].flag		=	dlpw->flag;
-			app[j].rpos.x	=	dlpw->rpos.x;
-			app[j].rpos.y	=	dlpw->rpos.y;
-			app[j].rpos.z	=	dlpw->rpos.z;
-			app[j]._time	=	ARX_CLEAN_WARN_CAST_FLOAT(dlpw->time);
+			
+			app[j].flag = dlpw->flag;
+			app[j].rpos = dlpw->rpos;
+			app[j]._time = static_cast<float>(dlpw->time);
 		}
 	}
-
+	
 	ARX_PATH_ComputeAllBoundingBoxes();
 	PROGRESS_BAR_COUNT += 5.f;
 	LoadLevelScreen();
-
-	//////////////////////////////////////////////////////////////////////////////
+	
+	
 	//Now LOAD Separate LLF Lighting File
+	
 	free(dat);
 	pos = 0;
-	DANAE_LLF_HEADER * llh;
-
-	if (!PAK_FileExist(fic2.c_str()))
-	{
-		goto finish;
-	}
-
-	ClearCurLoadInfo();
-	LogDebug << "Loading LLF Info";
-
-	if (dlh.version >= 1.44f) // using compression
-	{
-		size_t size;
-		char * compressed = (char *)PAK_FileLoadMalloc(fic2, size);
-		dat = (unsigned char *)blastMemAlloc(compressed, size, FileSize);
-
-		if (dat == NULL)
-		{
+	dat = NULL;
+	
+	if(PAK_FileExist(fic2.c_str())) {
+		
+		ClearCurLoadInfo();
+		LogDebug << "Loading LLF Info";
+		
+		// using compression
+		if(dlh.version >= 1.44f) {
+			size_t size;
+			char * compressed = (char *)PAK_FileLoadMalloc(fic2, size);
+			dat = (char*)blastMemAlloc(compressed, size, FileSize);
 			free(compressed);
-			goto finish;
+		} else {
+			dat = (char*)PAK_FileLoadMalloc(fic2, FileSize);
 		}
-
-		free(compressed);
-		pos = 0;
 	}
-	else
-	{
-		dat = (unsigned char *)PAK_FileLoadMalloc(fic2, FileSize);
+	// TODO size ignored
+	
+	if(!dat) {
+		LOADEDD = 1;
+		FASTmse = 0;
+		USE_PLAYERCOLLISIONS = 1;
+		LogInfo << "Done loading level";
+		return 1;
 	}
-
-	llh = (DANAE_LLF_HEADER *)(dat);
+	
+	DANAE_LLF_HEADER * llh = (DANAE_LLF_HEADER *)(dat);
 	pos += sizeof(DANAE_LLF_HEADER);
+	
 	PROGRESS_BAR_COUNT += 4.f;
 	LoadLevelScreen();
-
-	if (llh->nb_lights != 0)
-	{
+	
+	if(llh->nb_lights != 0) {
 		EERIE_LIGHT_GlobalInit();
 	}
-
-	long j;
-
-	for (int i = 0; i < llh->nb_lights; i++)
-	{
-		dlight = (DANAE_LS_LIGHT *)(dat + pos);
+	
+	for(int i = 0; i < llh->nb_lights; i++) {
+		
+		DANAE_LS_LIGHT * dlight = (DANAE_LS_LIGHT *)(dat + pos);
 		pos += sizeof(DANAE_LS_LIGHT);
-
-		j = EERIE_LIGHT_Create();
-
-		if (j >= 0)
-		{
+		
+		long j = EERIE_LIGHT_Create();
+		if(j >= 0) {
 			EERIE_LIGHT * el = GLight[j];
-
+			
 			el->exist = 1;
 			el->treat = 1;
 			el->fallend = dlight->fallend;
@@ -1759,85 +1420,65 @@ long DanaeLoadLevel(const std::string& fic) {
 			el->falldiff = el->fallend - el->fallstart;
 			el->falldiffmul = 1.f / el->falldiff;
 			el->intensity = dlight->intensity;
-
-			if (FASTmse)
-			{
+			
+			if(FASTmse) {
 				el->pos.x = dlight->pos.x + trans.x;
 				el->pos.y = dlight->pos.y + trans.y;
 				el->pos.z = dlight->pos.z + trans.z;
+			} else {
+				el->pos = dlight->pos;
 			}
-			else
-			{
-				el->pos.x = dlight->pos.x;
-				el->pos.y = dlight->pos.y;
-				el->pos.z = dlight->pos.z;
-			}
-
-			el->rgb.r = dlight->rgb.r;
-			el->rgb.g = dlight->rgb.g;
-			el->rgb.b = dlight->rgb.b;
-
-
+			
+			el->rgb = dlight->rgb;
+			
 			ARX_CHECK_SHORT(dlight->extras);
-			el->extras		= ARX_CLEAN_WARN_CAST_SHORT(dlight->extras);
-
-			el->ex_flicker.r = dlight->ex_flicker.r;
-			el->ex_flicker.g = dlight->ex_flicker.g;
-			el->ex_flicker.b = dlight->ex_flicker.b;
+			el->extras = static_cast<short>(dlight->extras);
+			
+			el->ex_flicker = dlight->ex_flicker;
 			el->ex_radius = dlight->ex_radius;
 			el->ex_frequency = dlight->ex_frequency;
 			el->ex_size = dlight->ex_size;
 			el->ex_speed = dlight->ex_speed;
 			el->ex_flaresize = dlight->ex_flaresize;
-
-			if (el->extras & EXTRAS_STARTEXTINGUISHED)
-				el->status = 0;
-			else el->status = 1;
-
-			if ((el->extras & EXTRAS_SPAWNFIRE) && (!(el->extras & EXTRAS_FLARE)))
-			{
+			
+			el->status = (el->extras & EXTRAS_STARTEXTINGUISHED) ? 0 : 1;
+			
+			if((el->extras & EXTRAS_SPAWNFIRE) && (!(el->extras & EXTRAS_FLARE))) {
 				el->extras |= EXTRAS_FLARE;
-
-				if (el->extras & EXTRAS_FIREPLACE)
+				if(el->extras & EXTRAS_FIREPLACE) {
 					el->ex_flaresize = 95.f;
-				else
+				} else {
 					el->ex_flaresize = 80.f;
+				}
 			}
-
+			
 			el->tl = -1;
 			el->sample = ARX_SOUND_INVALID_RESOURCE;
 		}
 	}
-
+	
 	PROGRESS_BAR_COUNT += 2.f;
 	LoadLevelScreen();
-	dll = (DANAE_LS_LIGHTINGHEADER *)(dat + pos);
+	
+	DANAE_LS_LIGHTINGHEADER * dll = (DANAE_LS_LIGHTINGHEADER *)(dat + pos);
 	pos += sizeof(DANAE_LS_LIGHTINGHEADER);
-	long bcount;
-	bcount = dll->nb_values;
+	
+	long bcount = dll->nb_values;
 	LastLoadedLightningNb = bcount;
-
-	if (LastLoadedLightning != NULL)
-	{
+	if(LastLoadedLightning != NULL) {
 		free(LastLoadedLightning);
 		LastLoadedLightning = NULL;
 	}
-
+	
 	//DANAE_LS_VLIGHTING
 	D3DCOLOR * ll;
 	ll = LastLoadedLightning = (D3DCOLOR *)malloc(sizeof(D3DCOLOR) * bcount);
-
-	if (dlh.version > 1.001f)
-	{
-		memcpy(LastLoadedLightning, dat + pos, sizeof(D3DCOLOR)*bcount);
+	if(dlh.version > 1.001f) {
+		std::copy((u32*)(dat + pos), (u32*)(dat + pos) + bcount, LastLoadedLightning);
 		pos += sizeof(D3DCOLOR) * bcount;
-	}
-	else
-	{
-		DANAE_LS_VLIGHTING dlv;
-
-		while (bcount)
-		{
+	} else {
+		while(bcount) {
+			DANAE_LS_VLIGHTING dlv;
 			memcpy(&dlv, dat + pos, sizeof(DANAE_LS_VLIGHTING));
 			pos += sizeof(DANAE_LS_VLIGHTING);
 			*ll = 0xff000000L | ((dlv.r & 255) << 16) | ((dlv.g & 255) << 8) | (dlv.b & 255);
@@ -1845,17 +1486,15 @@ long DanaeLoadLevel(const std::string& fic) {
 			bcount--;
 		}
 	}
-
+	free(dat);
+	
 	ModeLight = dll->ModeLight;
 	ViewMode = dll->ViewMode;
 	ViewMode &= ~VIEWMODE_WIRE;
-	free(dat);
-
+	
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
-finish:
-	;
-
+	
 	LOADEDD = 1;
 	FASTmse = 0;
 	USE_PLAYERCOLLISIONS = 1;
@@ -1863,18 +1502,9 @@ finish:
 	LogInfo << "Done loading level";
 	
 	return 1;
-
-//loaderror:
-//	;
-//	FASTmse = 0;
-//	LogError << (_error);
-//
-//	if (dat) free(dat);
-//
-//	LOADEDD = 1;
-//	ARX_SCENE_Render(NULL,3);
-//	return -1;
+	
 }
+
 extern void MCache_ClearAll();
 extern TextureContainer * MapMarkerTc;
 extern HANDLE LIGHTTHREAD;
@@ -2185,8 +1815,9 @@ void AddIdent( std::string& ident, long num)
 		dlfcount++;
 	}
 }
-void ARX_SAVELOAD_DLFCheckAdd(char * path, long num)
-{
+
+static void ARX_SAVELOAD_DLFCheckAdd(char * path, long num) {
+	
 	std::string fic("Graph\\Levels\\Level");
 	fic += path;
 

@@ -2220,14 +2220,8 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 		LogDebug << "--> Phase2 ARX_CHANGELEVEL_Pop_IO(" << ident << ")";
 	}
 
-	DANAE_LS_INTER dli;
-	dli.angle = ais->angle;
-	long num = atoi(ident.c_str() + ident.length() - 4);
-
-	dli.ident = num;
-	strcpy( dli.name, ais->filename );
-	dli.pos = ais->pos;
-	INTERACTIVE_OBJ * tmp = LoadInter_Ex(&dli, &MSP);
+	long num = atoi(ident.c_str() + ident.length() - 4); // TODO this is ugly
+	INTERACTIVE_OBJ * tmp = LoadInter_Ex(ais->filename, num, ais->pos, ais->angle, MSP);
 	long idx = -1;
 	INTERACTIVE_OBJ * io = NULL;
 
@@ -3307,8 +3301,6 @@ void ReleaseGaids()
 }
 
 extern long NODIRCREATION;
-
-void ReplaceSpecifics(char * text);
 
 static long ARX_CHANGELEVEL_PopLevel(long instance, long reloadflag) {
 	

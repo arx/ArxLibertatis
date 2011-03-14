@@ -197,11 +197,11 @@ bool ARX_FTL_Save(const char * file, const EERIE_3DOBJ * obj) {
 			eff->texid = obj->facelist[ii].texid;
 			eff->transval = obj->facelist[ii].transval;
 			eff->temp = obj->facelist[ii].temp;
-			memcpy(&eff->norm, &obj->facelist[ii].norm, sizeof(EERIE_3D));
+			eff->norm = obj->facelist[ii].norm;
 
 			for (long kk = 0; kk < IOPOLYVERT; kk++)
 			{
-				memcpy(&eff->nrmls[kk], &obj->facelist[ii].nrmls[kk], sizeof(EERIE_3D));
+				eff->nrmls[kk] = obj->facelist[ii].nrmls[kk];
 				eff->vid[kk] = obj->facelist[ii].vid[kk];
 				eff->u[kk] = obj->facelist[ii].u[kk];
 				eff->v[kk] = obj->facelist[ii].v[kk];
@@ -332,30 +332,30 @@ bool ARX_FTL_Save(const char * file, const EERIE_3DOBJ * obj) {
 	
 	if(pos > allocsize) {
 		LogError << "Badly Allocated SaveBuffer... " << gamefic;
-		free(dat);
+		delete[] dat;
 		return false;
 	}
 	
 	size_t cpr_pos = 0;
 	char * compressed = implodeAlloc(dat, pos, cpr_pos);
+	delete[] dat;
 	
 	// Now Saving Whole Buffer
 	FileHandle handle;
 	if(!(handle = FileOpenWrite(gamefic.c_str()))) {
 		LogError << "Unable to Open " << gamefic << " for Write...";
-		free(dat);
 		return false;
 	}
 	
 	if((size_t)FileWrite(handle, compressed, cpr_pos) != cpr_pos) {
 		LogError <<  "Unable to Write to " << gamefic;
-		free(dat);
 		return false;
 	}
 	
 	FileClose(handle);
-	free(compressed);
-	free(dat);
+	
+	delete[] compressed;
+	
 	return true;
 	
 }
