@@ -1053,6 +1053,15 @@ INTERACTIVE_OBJ * GetObjIOSource(EERIE_3DOBJ * obj)
 	return NULL;
 }
 
+void FillTargetInfo(char * info, long numtarget) {
+	if(numtarget == -2) strcpy(info, "SELF");
+	else if(numtarget == -1) strcpy(info, "NONE");
+	else if(numtarget == 0) strcpy(info, "PLAYER");
+	else if(ValidIONum(numtarget))
+		FillIOIdent(info, (INTERACTIVE_OBJ *)inter.iobj[numtarget]);
+	else strcpy(info, "NONE");
+}
+
 // num = num in index file
 //-----------------------------------------------------------------------------
 static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
@@ -1301,12 +1310,7 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 		numtarget = io->_npcdata->pathfind.truetarget;
 	}
 
-	if (numtarget == -2) strcpy(ais.id_targetinfo, "SELF");
-	else if (numtarget == -1) strcpy(ais.id_targetinfo, "NONE");
-	else if (numtarget == 0) strcpy(ais.id_targetinfo, "PLAYER");
-	else if (ValidIONum(numtarget))
-		FillIOIdent(ais.id_targetinfo, (INTERACTIVE_OBJ *)inter.iobj[numtarget]);
-	else strcpy(ais.id_targetinfo, "NONE");
+	FillTargetInfo(ais.id_targetinfo, numtarget);
 
 	// Save Local Timers ?
 	long count = 0;
@@ -1580,22 +1584,12 @@ static long ARX_CHANGELEVEL_Push_IO(const INTERACTIVE_OBJ * io) {
 			assert(SAVED_MAX_STACKED_BEHAVIOR == MAX_STACKED_BEHAVIOR);
 			std::copy(io->_npcdata->stacked, io->_npcdata->stacked + SAVED_MAX_STACKED_BEHAVIOR, as->stacked);
 
-			for (size_t i = 0; i < SAVED_MAX_STACKED_BEHAVIOR; i++)
-			{
-				if ((io->_npcdata->stacked[i].exist)
-						&& (ValidIONum(io->_npcdata->stacked[i].target)
-							|| io->_npcdata->stacked[i].target == -2))
-				{
-					long trg = io->_npcdata->stacked[i].target;
-
-					if (trg < 0) trg = GetInterNum(io);
-
-					if (ValidIONum(trg))
-						FillIOIdent(as->stackedtarget[i], (INTERACTIVE_OBJ *)inter.iobj[trg]);
-					else
-						strcpy(as->stackedtarget[i], "NONE");
+			for (size_t i = 0; i < SAVED_MAX_STACKED_BEHAVIOR; i++) {
+				if(io->_npcdata->stacked[i].exist) {
+					FillTargetInfo(as->stackedtarget[i], io->_npcdata->stacked[i].target);
+				} else {
+					strcpy(as->stackedtarget[i], "NONE");
 				}
-				else strcpy(as->stackedtarget[i], "NONE");
 			}
 
 			as->critical = io->_npcdata->critical;
@@ -2190,8 +2184,12 @@ static long ARX_CHANGELEVEL_Pop_IO(const string & ident) {
 	char * dat = _pSaveBlock->load(loadfile, size);
 	if(!dat) {
 		LogError << "Unable to Open " << loadfile << " for Read...";
+		if(ident == "Player_-001") {
+			DebugBreak();
+		}
 		return -1;
 	}
+	
 	
 	// TODO size not used
 
@@ -2980,6 +2978,14 @@ long ARX_CHANGELEVEL_PopAllIO(ARX_CHANGELEVEL_INDEX * asi)
 }
 extern void GetIOCyl(INTERACTIVE_OBJ * io, EERIE_CYLINDER * cyl);
 //-----------------------------------------------------------------------------
+
+long ReadTargetInfo(char * info) {
+	if(!strcasecmp(info, "NONE")) return -1;
+	else if(!strcasecmp(info, "SELF")) return -2;
+	else if(!strcasecmp(info, "PLAYER")) return 0;
+	else return GetInterNum(ConvertToValidIO(info));
+}
+
 long ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag)
 {
 	unsigned char * treated = (unsigned char *) malloc(sizeof(unsigned char) * MAX_IO_SAVELOAD);
@@ -3064,21 +3070,12 @@ long ARX_CHANGELEVEL_PopAllIO_FINISH(long reloadflag)
 							else SetWeapon_Back(io);
 						}
 
-						if (!strcasecmp(aids->targetinfo, "NONE")) io->targetinfo = -1;
-						else if (!strcasecmp(aids->targetinfo, "SELF")) io->targetinfo = -2;
-						else if (!strcasecmp(aids->targetinfo, "PLAYER")) io->targetinfo = 0;
-						else
-							io->targetinfo = GetInterNum(ConvertToValidIO(aids->targetinfo));
+						io->targetinfo = ReadTargetInfo(aids->targetinfo);
 
 						if (io->ioflags & IO_NPC)
 						{
-							for (long iii = 0; iii < MAX_STACKED_BEHAVIOR; iii++)
-							{
-								if (!strcasecmp(aids->stackedtarget[iii], "NONE")) io->_npcdata->stacked[iii].target = -1;
-								else if (!strcasecmp(aids->stackedtarget[iii], "SELF")) io->_npcdata->stacked[iii].target = -2;
-								else if (!strcasecmp(aids->stackedtarget[iii], "PLAYER")) io->_npcdata->stacked[iii].target = 0;
-								else
-									io->_npcdata->stacked[iii].target = GetInterNum(ConvertToValidIO(aids->stackedtarget[iii]));
+							for (long iii = 0; iii < MAX_STACKED_BEHAVIOR; iii++) {
+								io->_npcdata->stacked[iii].target = ReadTargetInfo(aids->stackedtarget[iii]);
 							}
 						}
 
