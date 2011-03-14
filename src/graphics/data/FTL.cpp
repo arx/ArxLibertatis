@@ -465,7 +465,7 @@ EERIE_3DOBJ * ARX_FTL_Load(const char * file) {
 	pos += sizeof(ARX_FTL_PRIMARY_HEADER);
 	
 	// Verify FTL file Signature
-	if(afph->ident[0] != 'F' || afph->ident[1] != 'T' || afph->ident[2] != 'L' || afph->ident[3] != '0') {
+	if(afph->ident[0] != 'F' || afph->ident[1] != 'T' || afph->ident[2] != 'L') {
 		LogError << "ARX_FTL_Load: wrong magic number in " << filename;
 		free(dat);
 		return NULL;
