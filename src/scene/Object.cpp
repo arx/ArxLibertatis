@@ -97,50 +97,60 @@ void EERIE_RemoveCedricData(EERIE_3DOBJ * eobj);
 void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj);
 void EERIEOBJECT_DeletePFaces(EERIE_3DOBJ * eobj);
 
-//-----------------------------------------------------------------------------------------------------
-long GetGroupOriginByName(EERIE_3DOBJ * eobj, const char * text)
-{
-	if (!eobj) return -1;
-
-	for (long i = 0; i < eobj->nbgroups; i++)
-	{
-		if ( !strcasecmp(text, eobj->grouplist[i].name.c_str() )) return eobj->grouplist[i].origin;
+long GetGroupOriginByName(const EERIE_3DOBJ * eobj, const char * text) {
+	
+	if(!eobj) {
+		return -1;
 	}
-
-	return -1;
-}
-//-----------------------------------------------------------------------------------------------------
-long GetActionPointIdx(EERIE_3DOBJ * eobj, const char * text)
-{
-	if (!eobj) return -1;
-
-	for(vector<EERIE_ACTIONLIST>::iterator i = eobj->actionlist.begin();
-	    i != eobj->actionlist.end(); ++i) {
+	
+	for(long i = 0; i < eobj->nbgroups; i++) {
 		// TODO use string compare
-		if (!strcasecmp(text, i->name.c_str() )) return i->idx;
-	}
-
-	return -1;
-}
-//-----------------------------------------------------------------------------------------------------
-long GetActionPointGroup(EERIE_3DOBJ * eobj, long idx)
-{
-	if (!eobj) return -1;
-
-	for (long i = eobj->nbgroups - 1; i >= 0; i--)
-	{
-		for (size_t j = 0; j < eobj->grouplist[i].indexes.size(); j++)
-		{
-			if (((long)eobj->grouplist[i].indexes[j]) == idx) return i;
+		if(!strcasecmp(text, eobj->grouplist[i].name.c_str())) {
+			return eobj->grouplist[i].origin;
 		}
 	}
-
+	
 	return -1;
 }
-//-----------------------------------------------------------------------------------------------------
-void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * eerie)
-{
-	if (!eerie) return;
+
+long GetActionPointIdx(const EERIE_3DOBJ * eobj, const char * text) {
+	
+	if(!eobj) {
+		return -1;
+	}
+	
+	for(vector<EERIE_ACTIONLIST>::const_iterator i = eobj->actionlist.begin();
+	    i != eobj->actionlist.end(); ++i) {
+		// TODO use string compare
+		if(!strcasecmp(text, i->name.c_str())) {
+			return i->idx;
+		}
+	}
+	
+	return -1;
+}
+
+long GetActionPointGroup(const EERIE_3DOBJ * eobj, long idx) {
+	
+	if(!eobj) {
+		return -1;
+	}
+	
+	for(long i = eobj->nbgroups - 1; i >= 0; i--) {
+		const vector<long> & indices = eobj->grouplist[i].indexes;
+		for(size_t j = 0; j < indices.size(); j++){
+			if(indices[j] == idx) {
+				return i;
+			}
+		}
+	}
+	
+	return -1;
+}
+
+void EERIE_Object_Precompute_Fast_Access(EERIE_3DOBJ * eerie) {
+	
+	if(!eerie) return;
 
 	long lVRight		=	GetActionPointIdx(eerie, "V_RIGHT");
 	long lURight		=	GetActionPointIdx(eerie, "U_RIGHT");
@@ -299,8 +309,6 @@ static T * copyStruct(const T * src, const char * desc, size_t n = 1) {
 	return result;
 }
 
-
-
 EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file) {
 	
 	(void)size; // TODO use size
@@ -369,7 +377,7 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file) {
 		eerie->frames[i].f_rotate = ARX_CLEAN_WARN_CAST_SHORT(lKeyOrient);
 		eerie->frames[i].f_translate = ARX_CLEAN_WARN_CAST_SHORT(lKeyMove);
 		
-		tkf2015.time_frame = (tkf2015.num_frame) * 1000; // TODO this looks like a hack
+		tkf2015.time_frame = tkf2015.num_frame * 1000;
 		eerie->frames[i].time = tkf2015.time_frame * ( 1.0f / 24 );
 		eerie->anim_time += tkf2015.time_frame;
 		eerie->frames[i].flag = tkf2015.flag_frame;
@@ -381,30 +389,29 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file) {
 		
 		// Is There a Global translation ?
 		if(tkf2015.key_move != 0) {
-			THEA_KEYMOVE * tkm = (THEA_KEYMOVE *)(adr + pos);
+			
+			THEA_KEYMOVE tkm;
+			memcpy(&tkm, adr + pos, sizeof(THEA_KEYMOVE));
 			pos += sizeof(THEA_KEYMOVE);
 			
-			LogDebug << " -> move x " << tkm->x << " y " << tkm->y << " z " << tkm->z
+			LogDebug << " -> move x " << tkm.x << " y " << tkm.y << " z " << tkm.z
 			         << " THEA_KEYMOVE:" << sizeof(THEA_KEYMOVE);
 			
-			eerie->frames[i].translate.x = tkm->x;
-			eerie->frames[i].translate.y = tkm->y;
-			eerie->frames[i].translate.z = tkm->z;
+			eerie->frames[i].translate = tkm;
 		}
 		
 		// Is There a Global Rotation ?
 		if(tkf2015.key_orient != 0) {
 			pos += 8; // THEO_ANGLE
-			ArxQuat * quat = (ArxQuat *)(adr + pos);
+			
+			ArxQuat quat;
+			memcpy(&quat, adr + pos, sizeof(ArxQuat));
 			pos += sizeof(ArxQuat);
 			
-			LogDebug << " -> rotate x " << quat->x << " y " << quat->y << " z " << quat->z
-			         << " w " << quat->w << " ArxQuat:" << sizeof(ArxQuat);
+			LogDebug << " -> rotate x " << quat.x << " y " << quat.y << " z " << quat.z
+			         << " w " << quat.w << " ArxQuat:" << sizeof(ArxQuat);
 			
-			eerie->frames[i].quat.x = quat->x;
-			eerie->frames[i].quat.y = quat->y;
-			eerie->frames[i].quat.z = quat->z;
-			eerie->frames[i].quat.w = quat->w;
+			eerie->frames[i].quat = quat;
 		}
 		
 		// Is There a Global Morph ? (IGNORED!)
@@ -414,25 +421,16 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file) {
 		
 		// Now go for Group Rotations/Translations/scaling for each GROUP
 		for(long j = 0; j < th.nb_groups; j++) {
-			THEO_GROUPANIM * tga = (THEO_GROUPANIM *)(adr + pos);
+			
+			THEO_GROUPANIM tga;
+			memcpy(&tga, adr + pos, sizeof(THEO_GROUPANIM));
 			pos += sizeof(THEO_GROUPANIM);
 			
-			// LogDebug << " -> group anim " << j << " THEO_GROUPANIM:" << sizeof(THEO_GROUPANIM);
-			
 			EERIE_GROUP * eg = &eerie->groups[j + i * th.nb_groups];
-			eg->key = tga->key_group;
-			
-			eg->quat.x = tga->Quaternion.x;
-			eg->quat.y = tga->Quaternion.y;
-			eg->quat.z = tga->Quaternion.z;
-			eg->quat.w = tga->Quaternion.w;
-
-			eg->translate.x = tga->translate.x;
-			eg->translate.y = tga->translate.y;
-			eg->translate.z = tga->translate.z;
-			eg->zoom.x = tga->zoom.x;
-			eg->zoom.y = tga->zoom.y;
-			eg->zoom.z = tga->zoom.z;
+			eg->key = tga.key_group;
+			eg->quat = tga.Quaternion;
+			eg->translate = tga.translate;
+			eg->zoom = tga.zoom;
 		}
 		
 		// Now Read Sound Data included in this frame
@@ -443,19 +441,19 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file) {
 		
 		eerie->frames[i].sample = -1;
 		if(num_sample != -1) {
-			THEA_SAMPLE * ts = (THEA_SAMPLE *)(adr + pos);
-			pos += sizeof(THEA_SAMPLE);
-			pos += ts->sample_size;
 			
-			LogDebug << " -> sample " << ts->sample_name << " size " << ts->sample_size
+			THEA_SAMPLE ts;
+			memcpy(&ts, adr + pos, sizeof(THEA_SAMPLE));
+			pos += sizeof(THEA_SAMPLE);
+			pos += ts.sample_size;
+			
+			LogDebug << " -> sample " << ts.sample_name << " size " << ts.sample_size
 			         << " THEA_SAMPLE:" << sizeof(THEA_SAMPLE);
 			
-			eerie->frames[i].sample = ARX_SOUND_Load(ts->sample_name);
+			eerie->frames[i].sample = ARX_SOUND_Load(ts.sample_name);
 		}
 		
-		//long num_sfx;
-		//memcpy(&num_sfx, adr + pos, sizeof(long));
-		pos += sizeof(s32);
+		pos += 4; // num_sfx
 	}
 	
 	for(long i = 0; i < th.nb_key_frames; i++) {
@@ -478,6 +476,7 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file) {
 				float tot = 1.f / (r1 + r2);
 				r1 *= tot;
 				r2 *= tot;
+				// TODO use overloaded operators
 				eerie->frames[i].translate.x = eerie->frames[j].translate.x * r1 + eerie->frames[k].translate.x * r2;
 				eerie->frames[i].translate.y = eerie->frames[j].translate.y * r1 + eerie->frames[k].translate.y * r2;
 				eerie->frames[i].translate.z = eerie->frames[j].translate.z * r1 + eerie->frames[k].translate.z * r2;
@@ -502,6 +501,7 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file) {
 				float tot = 1.f / (r1 + r2);
 				r1 *= tot;
 				r2 *= tot;
+				// TODO use overloaded operators
 				eerie->frames[i].quat.w = eerie->frames[j].quat.w * r1 + eerie->frames[k].quat.w * r2;
 				eerie->frames[i].quat.x = eerie->frames[j].quat.x * r1 + eerie->frames[k].quat.x * r2;
 				eerie->frames[i].quat.y = eerie->frames[j].quat.y * r1 + eerie->frames[k].quat.y * r2;
@@ -531,8 +531,7 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file) {
 			   || (eerie->groups[pos].translate.z != 0.f)
 			   || (eerie->groups[pos].zoom.x != 0.f)
 			   || (eerie->groups[pos].zoom.y != 0.f)
-			   || (eerie->groups[pos].zoom.z != 0.f)
-			   ) {
+			   || (eerie->groups[pos].zoom.z != 0.f)) {
 				voidd = false;
 				break;
 			}
@@ -554,507 +553,432 @@ EERIE_ANIM * TheaToEerie(unsigned char * adr, size_t size, const char * file) {
 }
 
 // Magic conversion constant used for loading rotations in TEO files.
-#define THEO_ROTCONVERT 0.087890625f
+const float THEO_ROTCONVERT = 0.087890625f;
 
-//-----------------------------------------------------------------------------------------------------
-void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, long * poss, long version, long flag, long flag2)
-{
+// TODO is this actually used?
+void _THEObjLoad(EERIE_3DOBJ * eerie, unsigned char * adr, size_t * poss, long version) {
 	
-	(void)eerie;
-	(void)adr;
-	(void)poss;
-	(void)version;
-	(void)flag;
-	(void)flag2;
+	LogWarning << "_THEObjLoad";
 	
-	LogError << "Broken _THEObjLoad";
-	/*
-	THEO_OFFSETS		*	to;
-	THEO_NB					tn;
-	THEO_VERTEX 	*		ptv;
-	THEO_ACTION_POINT	*	ptap;
-	THEO_FACES 	*		ptf;
-	THEO_FACES_3006 	*	ptf3006;
-
-	THEO_GROUPS_3011	*	ptg3011;
-	THEO_EXTRA_DATA		*	pted;
-	THEO_EXTRA_DATA_3005 *	pted3005;
-
-	char groupname[256];
-	long pos;
-	long i;
-
-	pos = *poss;
-
-	to = (THEO_OFFSETS *)(adr + pos);
+	size_t pos = *poss;
+	
+	THEO_OFFSETS to;
+	memcpy(&to, adr + pos, sizeof(THEO_OFFSETS));
 	pos += sizeof(THEO_OFFSETS);
+	
+	THEO_NB tn;
 	memcpy(&tn, adr + pos, sizeof(THEO_NB));
 	pos += sizeof(THEO_NB);
-
+	
 	LogDebug << "Nb Vertex " << tn.nb_vertex << " Nb Action Points " << tn.nb_action_point
 	         << " Nb Lines " << tn.nb_lines;
 	LogDebug << "Nb Faces " << tn.nb_faces << " Nb Groups " << tn.nb_groups;
-
-	eerie->nbvertex = tn.nb_vertex;
-	eerie->nbfaces = tn.nb_faces;
+	
+	eerie->vertexlist.resize(tn.nb_vertex);
+	eerie->facelist.resize(tn.nb_faces);
 	eerie->nbgroups = tn.nb_groups;
-	// TODO eerie->nbaction = tn.nb_action_point;
-
-	eerie->vertexlist = allocStructZero<EERIE_VERTEX>("EEvertexlist", tn.nb_vertex);
-
+	eerie->actionlist.resize(tn.nb_action_point);
+	
 	eerie->ndata = NULL;
 	eerie->pdata = NULL;
 	eerie->cdata = NULL;
 	eerie->sdata = NULL;
-
-	eerie->vertexlist3 = allocStructZero<EERIE_VERTEX>("EEvertexlist3", tn.nb_vertex);
-
-	eerie->facelist = allocStructZero<EERIE_FACE>("EEfacelist", tn.nb_faces);
-
-	if (tn.nb_groups == 0) eerie->grouplist = NULL;
-	else {
+	
+	eerie->vertexlist3.resize(tn.nb_vertex);
+	
+	if(tn.nb_groups == 0) {
+		eerie->grouplist = NULL;
+	} else {
 		eerie->grouplist = new EERIE_GROUPLIST[tn.nb_groups]; 
 	}
-
-	if (tn.nb_action_point == 0) eerie->actionlist.clear();
-	else {
-		eerie->actionlist.resize(tn.nb_action_point); 
+	
+	// read vertices
+	
+	pos = to.vertex_seek;
+	
+	if(tn.nb_vertex > 65535) {
+		LogError << ("Warning Vertex Number Too High...");
 	}
-
-	// Lecture des VERTEX THEO
-	pos = to->vertex_seek;
-
-	if (tn.nb_vertex > 65535) LogError << ("Warning Vertex Number Too High...");
-
-	for (i = 0; i < tn.nb_vertex; i++)
-	{
-		ptv = (THEO_VERTEX *)(adr + pos);
+	
+	for(long i = 0; i < tn.nb_vertex; i++) {
+		THEO_VERTEX ptv;
+		memcpy(&ptv, adr + pos, sizeof(THEO_VERTEX));
 		pos += sizeof(THEO_VERTEX);
-		eerie->vertexlist[i].v.x = ptv->x;
-		eerie->vertexlist[i].v.y = ptv->y;
-		eerie->vertexlist[i].v.z = ptv->z;
-		eerie->cub.xmin = min(eerie->cub.xmin, ptv->x);
-		eerie->cub.xmax = max(eerie->cub.xmax, ptv->x);
-		eerie->cub.ymin = min(eerie->cub.ymin, ptv->y);
-		eerie->cub.ymax = max(eerie->cub.ymax, ptv->y);
-		eerie->cub.zmin = min(eerie->cub.zmin, ptv->z);
-		eerie->cub.zmax = max(eerie->cub.zmax, ptv->z);
+		eerie->vertexlist[i].v = ptv.pos;
+		eerie->cub.xmin = min(eerie->cub.xmin, ptv.pos.x);
+		eerie->cub.xmax = max(eerie->cub.xmax, ptv.pos.x);
+		eerie->cub.ymin = min(eerie->cub.ymin, ptv.pos.y);
+		eerie->cub.ymax = max(eerie->cub.ymax, ptv.pos.y);
+		eerie->cub.zmin = min(eerie->cub.zmin, ptv.pos.z);
+		eerie->cub.zmax = max(eerie->cub.zmax, ptv.pos.z);
 	}
 
 	// Lecture des FACES THEO
-	pos = to->faces_seek;
-	THEO_FACES_3006				ltf;
+	pos = to.faces_seek;
 
-	for (i = 0; i < tn.nb_faces; i++)
-	{
-		if (version >= 3006)
-		{
-			ptf3006 = (THEO_FACES_3006 *)(adr + pos);
+	for(long i = 0; i < tn.nb_faces; i++) {
+		
+		THEO_FACES_3006 ptf3006;
+		if(version >= 3006) {
+			mempcpy(&ptf3006, adr + pos, sizeof(THEO_FACES_3006));
 			pos += sizeof(THEO_FACES_3006);
-		}
-		else
-		{
-			memset(&ltf, 0, sizeof(THEO_FACES_3006));
-			ptf = (THEO_FACES *)(adr + pos);
-			ltf.color =		ptf->color;
-			ltf.index1 =		ptf->index1;
-			ltf.index2 =		ptf->index2;
-			ltf.index3 =		ptf->index3;
-			ltf.ismap =		ptf->ismap;
-			memcpy(&ltf.liste_uv, &ptf->liste_uv, sizeof(THEO_FACE_UV));
-			ltf.element_uv =	ptf->element_uv;
-			ltf.num_map =	ptf->num_map;
-			ltf.tile_x =		ptf->tile_x;
-			ltf.tile_y =		ptf->tile_y;
-			ltf.user_tile_x = ptf->user_tile_x;
-			ltf.user_tile_y = ptf->user_tile_y;
-			ltf.flag =		ptf->flag;
-			ltf.collision_type = ptf->collision_type;
-			ltf.rgb =		ptf->rgb;
-			memcpy(&ltf.rgb1, &ptf->rgb1, sizeof(THEO_FACE_RGB));
-			memcpy(&ltf.rgb2, &ptf->rgb2, sizeof(THEO_FACE_RGB));
-			memcpy(&ltf.rgb3, &ptf->rgb3, sizeof(THEO_FACE_RGB));
-			ltf.double_side = ptf->double_side;
-			ltf.transparency = ptf->transparency;
-			ltf.trans =		ptf->trans;
+		} else {
+			memset(&ptf3006, 0, sizeof(THEO_FACES_3006));
+			THEO_FACES ptf;
+			memcpy(&ptf, adr + pos, sizeof(THEO_FACES));
 			pos += sizeof(THEO_FACES);
-			ptf3006 = &ltf;
+			ptf3006.color = ptf.color;
+			ptf3006.index1 = ptf.index1;
+			ptf3006.index2 = ptf.index2;
+			ptf3006.index3 = ptf.index3;
+			ptf3006.ismap = ptf.ismap;
+			ptf3006.liste_uv = ptf.liste_uv;
+			ptf3006.element_uv = ptf.element_uv;
+			ptf3006.num_map = ptf.num_map;
+			ptf3006.tile_x = ptf.tile_x;
+			ptf3006.tile_y = ptf.tile_y;
+			ptf3006.user_tile_x = ptf.user_tile_x;
+			ptf3006.user_tile_y = ptf.user_tile_y;
+			ptf3006.flag = ptf.flag;
+			ptf3006.collision_type = ptf.collision_type;
+			ptf3006.rgb = ptf.rgb;
+			ptf3006.rgb1 = ptf.rgb1;
+			ptf3006.rgb2 = ptf.rgb2;
+			ptf3006.rgb3 = ptf.rgb3;
+			ptf3006.double_side = ptf.double_side;
+			ptf3006.transparency = ptf.transparency;
+			ptf3006.trans = ptf.trans;
 		}
-
-		eerie->facelist[i].vid[0] = (unsigned short)ptf3006->index1;
-		eerie->facelist[i].vid[1] = (unsigned short)ptf3006->index2;
-		eerie->facelist[i].vid[2] = (unsigned short)ptf3006->index3;
-
-		if (ptf3006->num_map >= eerie->nbmaps)
-			ptf3006->num_map = -1;
-
-		if (ptf3006->ismap)
-		{
-			eerie->facelist[i].texid = (short)ptf3006->num_map;
+		
+		eerie->facelist[i].vid[0] = (unsigned short)ptf3006.index1;
+		eerie->facelist[i].vid[1] = (unsigned short)ptf3006.index2;
+		eerie->facelist[i].vid[2] = (unsigned short)ptf3006.index3;
+		
+		if((size_t)ptf3006.num_map >= eerie->texturecontainer.size()) {
+			ptf3006.num_map = -1;
+		}
+		
+		if(ptf3006.ismap) {
+			eerie->facelist[i].texid = (short)ptf3006.num_map;
 			eerie->facelist[i].facetype = 1;
-
-			if ((ptf3006->num_map >= 0) && (eerie->texturecontainer[ptf3006->num_map]) && (eerie->texturecontainer[ptf3006->num_map]->userflags & POLY_NOCOL))
+			
+			if(ptf3006.num_map >= 0 && eerie->texturecontainer[ptf3006.num_map] && (eerie->texturecontainer[ptf3006.num_map]->userflags & POLY_NOCOL)) {
 				eerie->facelist[i].facetype |= POLY_NOCOL;
-		}
-		else if (ptf3006->rgb)
-		{
+			}
+		} else if(ptf3006.rgb) {
 			eerie->facelist[i].texid = -1;
-			// To Keep
-			//		eerie->facelist[i].rgb[0]=EERIELRGB255(ptf3006->rgb1.r,ptf3006->rgb1.g,ptf3006->rgb1.b);
-			//		eerie->facelist[i].rgb[1]=EERIELRGB255(ptf3006->rgb2.r,ptf3006->rgb2.g,ptf3006->rgb2.b);
-			//		eerie->facelist[i].rgb[2]=EERIELRGB255(ptf3006->rgb3.r,ptf3006->rgb3.g,ptf3006->rgb3.b);
-		}
-		else
-		{
+		} else {
 			eerie->facelist[i].texid = -1;
-			// To Keep
-			//	memcpy(trgb,&ptf3006->color,4);
-			//	r=(long)trgb[2];
-			//	g=(long)trgb[1];
-			//	b=(long)trgb[0];
-			//	dc=EERIELRGB255(r,g,b);
-			//	eerie->facelist[i].rgb[0]=eerie->facelist[i].rgb[1]=eerie->facelist[i].rgb[2]=dc;
 		}
-
-		if (ptf3006->flag != -1)
-		{
-			if (ptf3006->flag == 0)
+		
+		switch(ptf3006.flag) {
+			case 0:
 				eerie->facelist[i].facetype |= POLY_GLOW;
-
-			if (ptf3006->flag == 1)
+				break;
+			case 1:
 				eerie->facelist[i].facetype |= POLY_NO_SHADOW;
-
-			if (ptf3006->flag == 4)
+				break;
+			case 4:
 				eerie->facelist[i].facetype |= POLY_METAL;
-
-			if (ptf3006->flag == 10)
+				break;
+			case 10:
 				eerie->facelist[i].facetype |= POLY_NOPATH;
-
-			if (ptf3006->flag == 11)
+				break;
+			case 11:
 				eerie->facelist[i].facetype |= POLY_CLIMB;
-
-			if (ptf3006->flag == 12)
+				break;
+			case 12:
 				eerie->facelist[i].facetype |= POLY_NOCOL;
-
-			if (ptf3006->flag == 13)
+				break;
+			case 13:
 				eerie->facelist[i].facetype |= POLY_NODRAW;
-
-			if (ptf3006->flag == 14)
+				break;
+			case 14:
 				eerie->facelist[i].facetype |= POLY_PRECISE_PATH;
-
-			if (ptf3006->flag == 15)
-				ptf3006->flag = 15;
-
-			if (ptf3006->flag == 16)
+				break;
+			case 16:
 				eerie->facelist[i].facetype |= POLY_NO_CLIMB;
+				break;
 		}
-
-		eerie->facelist[i].ou[0] = (short)ptf3006->liste_uv.u1;
-		eerie->facelist[i].ov[0] = (short)ptf3006->liste_uv.v1;
-		eerie->facelist[i].ou[1] = (short)ptf3006->liste_uv.u2;
-		eerie->facelist[i].ov[1] = (short)ptf3006->liste_uv.v2;
-		eerie->facelist[i].ou[2] = (short)ptf3006->liste_uv.u3;
-		eerie->facelist[i].ov[2] = (short)ptf3006->liste_uv.v3;
-
-		if (ptf3006->double_side) eerie->facelist[i].facetype |= POLY_DOUBLESIDED;
-
-		if (ptf3006->transparency > 0) 
-		{
-			if (ptf3006->transparency == 2)
-			{
-				//NORMAL TRANS 0.00001 to 0.999999
-				if (ptf3006->trans < 1.f)
-				{
+		
+		eerie->facelist[i].ou[0] = (short)ptf3006.liste_uv.u1;
+		eerie->facelist[i].ov[0] = (short)ptf3006.liste_uv.v1;
+		eerie->facelist[i].ou[1] = (short)ptf3006.liste_uv.u2;
+		eerie->facelist[i].ov[1] = (short)ptf3006.liste_uv.v2;
+		eerie->facelist[i].ou[2] = (short)ptf3006.liste_uv.u3;
+		eerie->facelist[i].ov[2] = (short)ptf3006.liste_uv.v3;
+		
+		if(ptf3006.double_side) {
+			eerie->facelist[i].facetype |= POLY_DOUBLESIDED;
+		}
+		
+		if(ptf3006.transparency > 0) {
+			if(ptf3006.transparency == 2) {
+				// NORMAL TRANS 0.00001 to 0.999999
+				if(ptf3006.trans < 1.f) {
 					eerie->facelist[i].facetype |= POLY_TRANS;
-					eerie->facelist[i].transval = ptf3006->trans;
+					eerie->facelist[i].transval = ptf3006.trans;
 				}
 			}
-			else if (ptf3006->transparency == 1)
-			{
-				if (ptf3006->trans < 0.f)
-				{
-					//SUBTRACTIVE -0.000001 to -0.999999
+			else if (ptf3006.transparency == 1) {
+				if(ptf3006.trans < 0.f) {
+					// SUBTRACTIVE -0.000001 to -0.999999
 					eerie->facelist[i].facetype |= POLY_TRANS;
-					eerie->facelist[i].transval = ptf3006->trans;
-				}
-				else //ADDITIVE 1.000001 to 1.9999999
-				{
+					eerie->facelist[i].transval = ptf3006.trans;
+				} else {
+					// ADDITIVE 1.000001 to 1.9999999
 					eerie->facelist[i].facetype |= POLY_TRANS;
-					eerie->facelist[i].transval = ptf3006->trans + 1.f;
+					eerie->facelist[i].transval = ptf3006.trans + 1.f;
 				}
-			}
-			else //MULTIPLICATIVE 2.000001 to 2.9999999
-			{
+			} else {
+				// MULTIPLICATIVE 2.000001 to 2.9999999
 				eerie->facelist[i].facetype |= POLY_TRANS;
-				eerie->facelist[i].transval = ptf3006->trans + 2.f;
+				eerie->facelist[i].transval = ptf3006.trans + 2.f;
 			}
 		}
-
-		if ((eerie->facelist[i].texid != -1) && (eerie->nbmaps > 0) && (eerie->texturecontainer[eerie->facelist[i].texid] != NULL))
-		{
-			if (eerie->texturecontainer[eerie->facelist[i].texid]->userflags & POLY_TRANS)
-			{
-				if (!(eerie->facelist[i].facetype & POLY_TRANS))
-				{
+		
+		if(eerie->facelist[i].texid != -1 && !eerie->texturecontainer.empty() && eerie->texturecontainer[eerie->facelist[i].texid] != NULL) {
+			
+			if(eerie->texturecontainer[eerie->facelist[i].texid]->userflags & POLY_TRANS) {
+				if(!(eerie->facelist[i].facetype & POLY_TRANS)) {
 					eerie->facelist[i].facetype |= POLY_TRANS;
-					eerie->facelist[i].transval = ptf3006->trans;
+					eerie->facelist[i].transval = ptf3006.trans;
 				}
 			}
-
-			if (eerie->texturecontainer[eerie->facelist[i].texid]->userflags & POLY_WATER)
+			
+			if(eerie->texturecontainer[eerie->facelist[i].texid]->userflags & POLY_WATER) {
 				eerie->facelist[i].facetype |= POLY_WATER;
-
-			if (eerie->texturecontainer[eerie->facelist[i].texid]->userflags & POLY_LAVA)
+			}
+			
+			if(eerie->texturecontainer[eerie->facelist[i].texid]->userflags & POLY_LAVA) {
 				eerie->facelist[i].facetype |= POLY_LAVA;
-
-			if (eerie->texturecontainer[eerie->facelist[i].texid]->userflags & POLY_FALL)
+			}
+			
+			if(eerie->texturecontainer[eerie->facelist[i].texid]->userflags & POLY_FALL) {
 				eerie->facelist[i].facetype |= POLY_FALL;
+			}
 
-			if (eerie->texturecontainer[eerie->facelist[i].texid]->userflags & POLY_CLIMB)
+			if(eerie->texturecontainer[eerie->facelist[i].texid]->userflags & POLY_CLIMB) {
 				eerie->facelist[i].facetype |= POLY_CLIMB;
+			}
 		}
+		
 	}
-
+	
 	// Groups Data
-	pos = to->groups_seek;
-	THEO_GROUPS ltg;
-	THEO_GROUPS_3011 ltg3011;
-
-	for (i = 0; i < tn.nb_groups; i++)
-	{
-		if (version >= 3011)
-		{
-			ptg3011 = (THEO_GROUPS_3011 *)(adr + pos);
+	pos = to.groups_seek;
+	
+	for(long i = 0; i < tn.nb_groups; i++) {
+		
+		THEO_GROUPS_3011 ptg3011;
+		if(version >= 3011) {
+			memcpy(&ptg3011, adr + pos, sizeof(THEO_GROUPS_3011));
 			pos += sizeof(THEO_GROUPS_3011);
-		}
-		else
-		{
-			memset(&ltg3011, 0, sizeof(THEO_GROUPS_3011));
+		} else {
+			THEO_GROUPS ltg;
 			memcpy(&ltg, adr + pos, sizeof(THEO_GROUPS));
 			pos += sizeof(THEO_GROUPS);
-			ltg3011.origin = ltg.origin;
-			ltg3011.nb_index = ltg.nb_index;
-			ptg3011 = &ltg3011;
+			memset(&ptg3011, 0, sizeof(THEO_GROUPS_3011));
+			ptg3011.origin = ltg.origin;
+			ptg3011.nb_index = ltg.nb_index;
 		}
-
-		eerie->grouplist[i].origin = ptg3011->origin;
-		//eerie->grouplist[i].nb_index = ptg3011->nb_index;
 		
-		//eerie->grouplist[i].indexes = allocStructZero<long>("EEGlistIdx", ptg3011->nb_index + 1);
-
-		//memcpy(eerie->grouplist[i].indexes, adr + pos, ptg3011->nb_index * sizeof(long));
-		pos += ptg3011->nb_index * sizeof(long);
+		eerie->grouplist[i].origin = ptg3011.origin;
+		eerie->grouplist[i].indexes.resize(ptg3011.nb_index);
+		
+		std::copy((long*)(adr + pos), (long*)(adr + pos) + ptg3011.nb_index, eerie->grouplist[i].indexes.begin());
+		pos += ptg3011.nb_index * sizeof(long);
+		
+		char groupname[256];
 		memcpy(groupname, adr + pos, 256);
+		pos += 256;
+		
 		eerie->grouplist[i].name = groupname;
 		eerie->grouplist[i].siz = 0.f;
-
-		for (long o = 0; o < ptg3011->nb_index; o++)
-		{
+		
+		for(long o = 0; o < ptg3011.nb_index; o++) {
 			eerie->grouplist[i].siz = max(eerie->grouplist[i].siz,
-			                                EEDistance3D(&eerie->vertexlist[eerie->grouplist[i].origin].v,
-			                                        &eerie->vertexlist[eerie->grouplist[i].indexes[o]].v));
+			                              EEDistance3D(&eerie->vertexlist[eerie->grouplist[i].origin].v,
+			                                           &eerie->vertexlist[eerie->grouplist[i].indexes[o]].v));
 		}
-
+		
 		eerie->grouplist[i].siz = EEsqrt(eerie->grouplist[i].siz) * ( 1.0f / 16 );
-		pos += 256;
+		
 	}
 
 	// SELECTIONS
-	long	THEO_nb_selected;
-	THEO_SELECTED * pts;
-	memcpy(&THEO_nb_selected, adr + pos, sizeof(long));
-	pos += sizeof(long);
+	s32	THEO_nb_selected;
+	memcpy(&THEO_nb_selected, adr + pos, sizeof(s32));
+	pos += sizeof(s32);
+	
 	eerie->selections.resize(THEO_nb_selected);
-
-	for (i = 0; i < THEO_nb_selected; i++)
-	{
-		pts = (THEO_SELECTED *)(adr + pos);
+	for(long i = 0; i < THEO_nb_selected; i++) {
+		
+		THEO_SELECTED pts;
+		memcpy(&pts, adr + pos, sizeof(THEO_SELECTED));
 		pos += sizeof(THEO_SELECTED);
-
-		if (strlen(pts->name) > 63) pts->name[63] = 0;
-
-		eerie->selections[i].name = pts->name;
-		eerie->selections[i].selected.resize(pts->nb_index);
-
-		if(pts->nb_index > 0) {
-			long * indices = (long*)(adr + pos);
-			std::copy(indices, indices + pts->nb_index, eerie->selections[i].selected.begin());
-			pos += sizeof(long) * pts->nb_index;
+		
+		if(strlen(pts.name) > 63) {
+			pts.name[63] = 0;
+		}
+		
+		eerie->selections[i].name = pts.name;
+		eerie->selections[i].selected.resize(pts.nb_index);
+		
+		if(pts.nb_index > 0) {
+			std::copy((long*)(adr + pos), (long*)(adr + pos) + pts.nb_index, eerie->selections[i].selected.begin());
+			pos += sizeof(long) * pts.nb_index;
 		}
 	}
-
+	
 	// Theo Action Points Read
-	pos = to->action_point_seek;
+	pos = to.action_point_seek;
 
-	for (i = 0; i < tn.nb_action_point; i++)
-	{
-		ptap = (THEO_ACTION_POINT *)(adr + pos);
+	for(long i = 0; i < tn.nb_action_point; i++) {
+		
+		THEO_ACTION_POINT ptap;
+		memcpy(&ptap, adr + pos, sizeof(THEO_ACTION_POINT));
 		pos += sizeof(THEO_ACTION_POINT);
-		eerie->actionlist[i].act = ptap->action;
-		eerie->actionlist[i].sfx = ptap->num_sfx;
-		eerie->actionlist[i].idx = ptap->vert_index;
-		eerie->actionlist[i].name = ptap->name;
+		
+		eerie->actionlist[i].act = ptap.action;
+		eerie->actionlist[i].sfx = ptap.num_sfx;
+		eerie->actionlist[i].idx = ptap.vert_index;
+		eerie->actionlist[i].name = ptap.name;
 		MakeUpcase(eerie->actionlist[i].name);
 	}
-
+	
 	eerie->angle.g = eerie->angle.b = eerie->angle.a = 0.f;
 	eerie->pos.z = eerie->pos.y = eerie->pos.x = 0.f;
-
+	
 	// Now Interpret Extra Data chunk
-	pos = to->extras_seek + 4;
-
-	if (version >= 3005)
-	{
-		pted3005 = (THEO_EXTRA_DATA_3005 *)(adr + pos);
+	pos = to.extras_seek + 4;
+	
+	if(version >= 3005) {
+		
+		THEO_EXTRA_DATA_3005 pted3005;
+		memcpy(&pted3005, adr + pos, sizeof(THEO_EXTRA_DATA_3005));
 		pos += sizeof(THEO_EXTRA_DATA_3005);
-		eerie->pos.x = pted3005->posx;
-		eerie->pos.y = pted3005->posy;
-		eerie->pos.z = pted3005->posz;
-
-		eerie->angle.a = (float)(pted3005->alpha & 0xfff) * THEO_ROTCONVERT;
-		eerie->angle.b = (float)(pted3005->beta & 0xfff) * THEO_ROTCONVERT;
-		eerie->angle.g = (float)(pted3005->gamma & 0xfff) * THEO_ROTCONVERT;
-
-		eerie->point0.x = eerie->vertexlist[pted3005->origin_index].v.x;
-		eerie->point0.y = eerie->vertexlist[pted3005->origin_index].v.y;
-		eerie->point0.z = eerie->vertexlist[pted3005->origin_index].v.z;
-		eerie->origin = pted3005->origin_index;
-
-		eerie->quat.x = pted3005->quat.x;
-		eerie->quat.y = pted3005->quat.y;
-		eerie->quat.z = pted3005->quat.z;
-		eerie->quat.w = pted3005->quat.w;
-
-	}
-	else
-	{
-		pted = (THEO_EXTRA_DATA *)adr + pos;
+		
+		eerie->pos = pted3005.pos;
+		
+		eerie->angle.a = (float)(pted3005.angle.alpha & 0xfff) * THEO_ROTCONVERT;
+		eerie->angle.b = (float)(pted3005.angle.beta & 0xfff) * THEO_ROTCONVERT;
+		eerie->angle.g = (float)(pted3005.angle.gamma & 0xfff) * THEO_ROTCONVERT;
+		
+		eerie->point0 = eerie->vertexlist[pted3005.origin_index].v;
+		eerie->origin = pted3005.origin_index;
+		
+		eerie->quat = pted3005.quat;
+	
+	} else {
+		
+		THEO_EXTRA_DATA pted;
+		memcpy(&pted, adr + pos, sizeof(THEO_EXTRA_DATA));
 		pos += sizeof(THEO_EXTRA_DATA);
-		eerie->pos.x = pted->posx;
-		eerie->pos.y = pted->posy;
-		eerie->pos.z = pted->posz;
-
-		eerie->angle.a = (float)(pted->alpha & 0xfff) * THEO_ROTCONVERT;
-		eerie->angle.b = (float)(pted->beta & 0xfff) * THEO_ROTCONVERT;
-		eerie->angle.g = (float)(pted->gamma & 0xfff) * THEO_ROTCONVERT;
-
-		eerie->point0.x = eerie->vertexlist[pted->origin_index].v.x;
-		eerie->point0.y = eerie->vertexlist[pted->origin_index].v.y;
-		eerie->point0.z = eerie->vertexlist[pted->origin_index].v.z;
-		eerie->origin = pted->origin_index;
+		
+		eerie->pos = pted.pos;
+		
+		eerie->angle.a = (float)(pted.angle.alpha & 0xfff) * THEO_ROTCONVERT;
+		eerie->angle.b = (float)(pted.angle.beta & 0xfff) * THEO_ROTCONVERT;
+		eerie->angle.g = (float)(pted.angle.gamma & 0xfff) * THEO_ROTCONVERT;
+		
+		eerie->point0 = eerie->vertexlist[pted.origin_index].v;
+		eerie->origin = pted.origin_index;
+		
 	}
-
-	memcpy(poss, &pos, sizeof(long));
-	memcpy(eerie->vertexlist3, eerie->vertexlist, eerie->nbvertex * sizeof(EERIE_VERTEX));
+	
+	*poss = pos;
+	
+	eerie->vertexlist3 = eerie->vertexlist;
 	ReCreateUVs(eerie);
-	EERIE_Object_Precompute_Fast_Access(eerie);*/
+	EERIE_Object_Precompute_Fast_Access(eerie);
 }
-//-----------------------------------------------------------------------------------------------------
-void ReleaseScene(EERIE_3DSCENE * scene)
-{
-	long i;
 
-	if (scene->texturecontainer != NULL)
-	{
+void ReleaseScene(EERIE_3DSCENE * scene) {
+	
+	if(scene->texturecontainer != NULL) {
 		free(scene->texturecontainer);
 		scene->texturecontainer = NULL;
 	}
-
-	for (i = 0; i < scene->nbobj; i++)
-		ReleaseEERIE3DObjFromScene(scene->objs[i]);
-
-	if (scene->objs != NULL)
-	{
+	
+	for(long i = 0; i < scene->nbobj; i++) {
+		delete scene->objs[i];
+	}
+	
+	if(scene->objs != NULL) {
 		free(scene->objs);
 		scene->objs = NULL;
 	}
-
-	if (scene->texturecontainer != NULL)
-	{
+	
+	if(scene->texturecontainer != NULL) {
 		free(scene->texturecontainer);
 		scene->texturecontainer = NULL;
 	}
-
-	if (scene->light)
-	{
-		for (i = 0; i < scene->nblight; i++)
-		{
-			if (scene->light[i] != NULL)
-			{
+	
+	if(scene->light) {
+		for(long i = 0; i < scene->nblight; i++) {
+			if(scene->light[i] != NULL) {
 				free(scene->light[i]);
 				scene->light[i] = NULL;
 			}
 		}
-
+		
 		free(scene->light);
 		scene->light = NULL;
 	}
-
+	
 	free(scene);
-	scene = NULL;
 }
-//-----------------------------------------------------------------------------------------------------
-void MakeUserFlag(TextureContainer * tc)
-{
-	if (tc == NULL) return;
 
-	if (NC_IsIn(tc->m_texName, "NPC_"))
-	{
+void MakeUserFlag(TextureContainer * tc) {
+	
+	if(tc == NULL) {
+		return;
+	}
+	
+	if(NC_IsIn(tc->m_texName, "NPC_")) {
 		tc->userflags |= POLY_LATE_MIP;
 	}
-
-	if (NC_IsIn(tc->m_texName, "nocol"))
-	{
+	
+	if(NC_IsIn(tc->m_texName, "nocol")) {
 		tc->userflags |= POLY_NOCOL;
 	}
-
-	if (NC_IsIn(tc->m_texName, "climb")) // change string depending on GFX guys
-	{
+	
+	if(NC_IsIn(tc->m_texName, "climb")) {
 		tc->userflags |= POLY_CLIMB;
 	}
-
-	if (NC_IsIn(tc->m_texName, "fall"))
-	{
+	
+	if(NC_IsIn(tc->m_texName, "fall")) {
 		tc->userflags |= POLY_FALL;
 	}
-
-	if (NC_IsIn(tc->m_texName, "lava"))
-	{
+	
+	if(NC_IsIn(tc->m_texName, "lava")) {
 		tc->userflags |= POLY_LAVA;
 	}
-
-	if (NC_IsIn(tc->m_texName, "water"))
-	{
+	
+	if (NC_IsIn(tc->m_texName, "water") || NC_IsIn(tc->m_texName, "spider_web")) {
 		tc->userflags |= POLY_WATER;
 		tc->userflags |= POLY_TRANS;
-	}
-	else if (NC_IsIn(tc->m_texName, "spider_web"))
-	{
-		tc->userflags |= POLY_WATER;
-		tc->userflags |= POLY_TRANS;
-	}
-	else if (NC_IsIn(tc->m_texName, "[metal]"))
-	{
+	} else if(NC_IsIn(tc->m_texName, "[metal]")) {
 		tc->userflags |= POLY_METAL;
 	}
+	
 }
-//-----------------------------------------------------------------------------------------------------
-void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms)
-{
-	if (ms)
-	{
-		for (long i = 0; i < ms->nb_scenes; i++)
-		{
+
+void ReleaseMultiScene(EERIE_MULTI3DSCENE * ms) {
+	
+	if(ms) {
+		for(long i = 0; i < ms->nb_scenes; i++) {
 			ReleaseScene(ms->scenes[i]);
 			ms->scenes[i] = NULL;
 		}
 	}
-
+	
 	free(ms);
 }
-//-----------------------------------------------------------------------------------------------------
-EERIE_MULTI3DSCENE * MultiSceneToEerie(const char * dirr)
-{
+
+EERIE_MULTI3DSCENE * MultiSceneToEerie(const char * dirr) {
+	
 	EERIE_MULTI3DSCENE * es;
 	char pathh[512];
 
@@ -1064,7 +988,7 @@ EERIE_MULTI3DSCENE * MultiSceneToEerie(const char * dirr)
 	sprintf(pathh, "%s*.scn", dirr);
 
 	LogWarning << "partially unimplemented MultiSceneToEerie";
-//	todo: finddata
+//	TODO: finddata
 //	long idx;
 //	struct _finddata_t fd;
 //	if ((idx = _findfirst(pathh, &fd)) != -1)
@@ -1133,59 +1057,54 @@ EERIE_MULTI3DSCENE * MultiSceneToEerie(const char * dirr)
 
 	return es;
 }
-//-----------------------------------------------------------------------------------------------------
-EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const char * dirr)
-{
-	EERIE_MULTI3DSCENE	* es;
-	unsigned char 	*	adr;
 
+EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const char * dirr) {
+	
+	EERIE_MULTI3DSCENE * es;
+	
 	es = allocStructZero<EERIE_MULTI3DSCENE>("EEMulti3DScn");
 
 	strcpy(LastLoadedScene, dirr);
 
-	std::string path = dirr;
+	string path = dirr;
 	RemoveName(path);
 
 	vector<PakDirectory *> directories;
 	pPakManager->GetDirectories(path, directories);
 
 	vector<PakDirectory *>::iterator it;
-	for (it = directories.begin(); it < directories.end(); ++it)
-	{
+	for(it = directories.begin(); it < directories.end(); ++it) {
 		int nb = (*it)->nbfiles;
 		PakFile * et;
 		et = (*it)->files;
-
-		while (nb--)
-		{
-			if ( !strcasecmp( GetExt( et->name.c_str() ), ".scn") )
-			{
+		
+		while(nb--) {
+			if(!strcasecmp(GetExt( et->name), ".scn")) {
+				
 				std::string path2;
 				path2 = dirr + et->name;
 				size_t SizeAlloc = 0;
-
-				adr = (unsigned char *)PAK_FileLoadMalloc(path2, SizeAlloc);
-				if (adr)
-				{
-					es->scenes[es->nb_scenes] = (EERIE_3DSCENE *)ScnToEerie(adr, SizeAlloc, path.c_str());
+				
+				unsigned char * adr = (unsigned char*)PAK_FileLoadMalloc(path2, SizeAlloc);
+				if(adr) {
+					es->scenes[es->nb_scenes] = ScnToEerie(adr, SizeAlloc, path.c_str());
 					es->nb_scenes++;
 					free(adr);
 				}
 			}
-
+			
 			et = et->next;
 		}
 	}
-
+	
 	es->cub.xmax = -9999999999.f;
 	es->cub.xmin = 9999999999.f;
 	es->cub.ymax = -9999999999.f;
 	es->cub.ymin = 9999999999.f;
 	es->cub.zmax = -9999999999.f;
 	es->cub.zmin = 9999999999.f;
-
-	for (long i = 0; i < es->nb_scenes; i++)
-	{
+	
+	for(long i = 0; i < es->nb_scenes; i++) {
 		es->cub.xmax = max(es->cub.xmax, es->scenes[i]->cub.xmax);
 		es->cub.xmin = min(es->cub.xmin, es->scenes[i]->cub.xmin);
 		es->cub.ymax = max(es->cub.ymax, es->scenes[i]->cub.ymax);
@@ -1195,28 +1114,26 @@ EERIE_MULTI3DSCENE * _PAK_MultiSceneToEerie(const char * dirr)
 		es->pos.x = es->scenes[i]->pos.x;
 		es->pos.y = es->scenes[i]->pos.y;
 		es->pos.z = es->scenes[i]->pos.z;
-
-		if ((es->scenes[i]->point0.x != -999999999999.f) &&
-		        (es->scenes[i]->point0.y != -999999999999.f) &&
-		        (es->scenes[i]->point0.z != -999999999999.f))
-		{
+		
+		if((es->scenes[i]->point0.x != -999999999999.f) &&
+		   (es->scenes[i]->point0.y != -999999999999.f) &&
+		   (es->scenes[i]->point0.z != -999999999999.f)) {
 			es->point0.x = es->scenes[i]->point0.x;
 			es->point0.y = es->scenes[i]->point0.y;
 			es->point0.z = es->scenes[i]->point0.z;
 		}
 	}
-
-	if (es->nb_scenes == 0)
-	{
+	
+	if(es->nb_scenes == 0) {
 		free(es);
 		return NULL;
 	}
-
+	
 	return es;
 }
-//-----------------------------------------------------------------------------------------------------
-EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const char * dirr)
-{
+
+EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const char * dirr) {
+	
 	LogInfo << "Loading Multiscene " << dirr;
 	
 	EERIE_MULTI3DSCENE * em = NULL;
@@ -1233,282 +1150,228 @@ EERIE_MULTI3DSCENE * PAK_MultiSceneToEerie(const char * dirr)
 	EERIEPOLY_Compute_PolyIn();
 	return em;
 }
-//-----------------------------------------------------------------------------------------------------
-EERIE_3DSCENE * ScnToEerie(unsigned char * adr, size_t size, const std::string& fic) {
+
+EERIE_3DSCENE * ScnToEerie(unsigned char * adr, size_t size, const string & fic) {
 	
 	(void)size; // TODO use size
 	
 	LogInfo << "Loading Scene " << fic;
 	
-	if (adr == NULL) return NULL;
-
-	EERIE_3DSCENE 	*	seerie;
-	TSCN_OBJHEADER	*	ptoh;
-	TSCN_HEADER		*	psth;
-	TSCN_LIGHT			tsl;
-	TSCN_LIGHT_3019		tsl3019;
-	TSCN_LIGHT_3024		tsl3024;
-	THEO_TEXTURE		tt;
-	THEO_SAVE_MAPS_IN	tsmi;
-	THEO_SAVE_MAPS_IN_3019	tsmi3019;
-	THEO_SAVE_MAPS_IN_3019 *	ptsmi3019;
-	char mapsname[512];
-	const char * temp = "Graph\\Obj3D\\Textures\\";
-	long				nbo, nbl;
-	char texx[512];
-	long i;
-	long sizmap;
-
-	long pos = 0;
-
-	seerie = allocStructZero<EERIE_3DSCENE>("Scn2EE");
-
-	Clear3DScene(seerie);
-
-	psth = (TSCN_HEADER *)(adr + pos);
-	pos += sizeof(TSCN_HEADER);
-
-	if (DEBUGG)
-	{
-		sprintf(texx, "SCNtoEERIE %s", fic.c_str());
-		SendConsole(texx, 2, 0, (HWND)MSGhwnd);
-		sprintf(texx, "---------THEO SCN FILE---------");
-		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "Version %u Nb Textures %d", psth->version, psth->nb_maps);
-		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-	}
-
-	if ((psth->version < 3008) || (psth->version > 3024))
-	{
-		sprintf(texx, "\nINVALID Theo Version !!!\nVersion Found    - %u\nVersion Required - %d to %d\n\nPlease Update File\n%s", psth->version, 3008, 3024, fic.c_str());
-		LogError << "ScnToEerie " << texx;
-		free(seerie);
-		seerie = NULL;
+	if(!adr) {
 		return NULL;
 	}
-
-	seerie->nbtex = psth->nb_maps;
-
-	if (psth->type_write == 0)
-	{
-		// LECTURE DE TEXTURE THEO IN_OBJECT... NOT QUITE IMPLEMENTED !!!
-		if (DEBUGG) SendConsole("SAVE_MAP_IN_OBJECT = true", 3, 0, (HWND)MSGhwnd);
-
-		seerie->texturecontainer = allocStructZero<TextureContainer *>("SEETc", psth->nb_maps); 
-
-		for (i = 0; i < psth->nb_maps; i++)
-		{
+	
+	size_t pos = 0;
+	
+	EERIE_3DSCENE * seerie = allocStructZero<EERIE_3DSCENE>("Scn2EE");
+	Clear3DScene(seerie);
+	
+	TSCN_HEADER psth;
+	memcpy(&psth, adr + pos, sizeof(TSCN_HEADER));
+	pos += sizeof(TSCN_HEADER);
+	
+	LogDebug << "SCNtoEERIE " << fic << " Version " << psth.version << " Nb Textures " << psth.nb_maps;
+	
+	if(psth.version < 3008 || psth.version > 3024) {
+		LogError << "ScnToEerie: invalid version in " << fic << ": found " << psth.version
+		         << " expected 3008 to 3024";
+		free(seerie);
+		return NULL;
+	}
+	
+	seerie->nbtex = psth.nb_maps;
+	
+	const string temp = "Graph\\Obj3D\\Textures\\";
+	
+	if(psth.type_write == 0) {
+		
+		seerie->texturecontainer = allocStructZero<TextureContainer *>("SEETc", psth.nb_maps); 
+		
+		for(long i = 0; i < psth.nb_maps; i++) {
+			
+			THEO_TEXTURE tt;
 			memcpy(&tt, adr + pos, sizeof(THEO_TEXTURE));
 			pos += sizeof(THEO_TEXTURE);
-			sprintf(mapsname, "%s%s.bmp", temp, tt.texture_name);
+			
+			string mapsname = temp + tt.texture_name + ".bmp";
 			seerie->texturecontainer[i] = D3DTextr_CreateTextureFromFile(mapsname, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
 			MakeUserFlag(seerie->texturecontainer[i]);
-			sizmap = tt.dx * tt.dy * (tt.bpp / 8);
 		}
-	}
-	else
-	{
-		if (DEBUGG) SendConsole("SAVE_MAP_IN_OBJECT = false", 3, 0, (HWND)MSGhwnd);
-
-		if ((psth->type_write & SAVE_MAP_BMP) || (psth->type_write & SAVE_MAP_TGA))
-		{
-			if (DEBUGG) SendConsole("SAVE_MAP_BMP or TGA = true", 3, 0, (HWND)MSGhwnd);
-
-			seerie->texturecontainer = allocStructZero<TextureContainer *>("SEETc", psth->nb_maps);
-
-			for (i = 0; i < psth->nb_maps; i++)
-			{
-				if (psth->version >= 3019)
-				{
-					ptsmi3019 = (THEO_SAVE_MAPS_IN_3019 *)(adr + pos);
+		
+	} else {
+		
+		if((psth.type_write & SAVE_MAP_BMP) || (psth.type_write & SAVE_MAP_TGA)) {
+			
+			seerie->texturecontainer = allocStructZero<TextureContainer *>("SEETc", psth.nb_maps);
+			
+			for(long i = 0; i < psth.nb_maps; i++) {
+				
+				string name;
+				if(psth.version >= 3019) {
+					THEO_SAVE_MAPS_IN_3019 tsmi3019;
+					memcpy(&tsmi3019, adr + pos, sizeof(THEO_SAVE_MAPS_IN_3019));
 					pos += sizeof(THEO_SAVE_MAPS_IN_3019);
-				}
-				else
-				{
+					name = tsmi3019.texture_name;
+				} else {
+					THEO_SAVE_MAPS_IN tsmi;
 					memcpy(&tsmi, adr + pos, sizeof(THEO_SAVE_MAPS_IN));
 					pos += sizeof(THEO_SAVE_MAPS_IN);
-					tsmi3019.animated_map = tsmi.animated_map;
-					tsmi3019.color_mask = 0;
-					tsmi3019.map_type = tsmi.map_type;
-					tsmi3019.mipmap_level = tsmi.mipmap_level;
-					tsmi3019.reflect_map = tsmi.reflect_map;
-					strcpy(tsmi3019.texture_name, tsmi.texture_name);
-					tsmi3019.water_intensity = tsmi.water_intensity;
-					ptsmi3019 = &tsmi3019;
+					name = tsmi.texture_name;
 				}
-
-				if (ptsmi3019->texture_name[0] != 0)
-				{
-
-					if (psth->type_write & SAVE_MAP_BMP) sprintf(mapsname, "%s%s.bmp", temp, ptsmi3019->texture_name);
-					else sprintf(mapsname, "%s%s.tga", temp, ptsmi3019->texture_name);
-
+				
+				if(!name.empty()) {
+					
+					string mapsname = temp + name;
+					if(psth.type_write & SAVE_MAP_BMP) {
+						mapsname += ".bmp";
+					} else {
+						mapsname += ".tga";
+					}
+					
 					seerie->texturecontainer[i] = D3DTextr_CreateTextureFromFile(mapsname, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
 					MakeUserFlag(seerie->texturecontainer[i]);
 				}
 			}
 		}
 	}
-
-	// Objects read /////////////////////////////////////////////////
-	pos = psth->object_seek;
+	
+	// read objects
+	pos = psth.object_seek;
+	
+	s32 nbo;
 	memcpy(&nbo, adr + pos, sizeof(s32));
 	pos += sizeof(s32);
-
-	if (DEBUGG)
-	{
-		sprintf(texx, "Nb objects %ld", nbo);
-		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-	}
-
+	
 	seerie->nbobj = nbo;
 	seerie->objs = allocStructZero<EERIE_3DOBJ *>("SceneObjectList", nbo); 
-
+	
 	seerie->point0.x = -999999999999.f;
 	seerie->point0.y = -999999999999.f;
 	seerie->point0.z = -999999999999.f;
-
+	
 	long id = 0;
-
-	for (i = 0; i < nbo; i++)
-	{
-		ptoh = (TSCN_OBJHEADER *)(adr + pos);
+	
+	for(long i = 0; i < nbo; i++) {
+		// TODO is this even used?
+		
+		TSCN_OBJHEADER ptoh;
+		memcpy(&ptoh, adr + pos, sizeof(TSCN_OBJHEADER));
 		pos += sizeof(TSCN_OBJHEADER);
-
+		
 		seerie->objs[id] = new EERIE_3DOBJ(); 
-
 		// TODO most is done in the constructor already
-		if(seerie->objs[id]) seerie->objs[id]->clear();
-
+		seerie->objs[id]->clear();
+		
 		seerie->objs[id]->texturecontainer.resize(seerie->nbtex);
 		std::copy(seerie->texturecontainer, seerie->texturecontainer + seerie->nbtex, seerie->objs[id]->texturecontainer.begin());
-
-		if	(psth->version < 3013)	_THEObjLoad(seerie->objs[id], adr, &pos, 3004, TTE_NO_NDATA | TTE_NO_PDATA);
-		else if (psth->version < 3015)	_THEObjLoad(seerie->objs[id], adr, &pos, 3005, TTE_NO_NDATA | TTE_NO_PDATA);
-		else if (psth->version < 3019)	_THEObjLoad(seerie->objs[id], adr, &pos, 3006, TTE_NO_NDATA | TTE_NO_PDATA);
-		else if (psth->version < 3023)	_THEObjLoad(seerie->objs[id], adr, &pos, 3008, TTE_NO_NDATA | TTE_NO_PDATA);
-		else							_THEObjLoad(seerie->objs[id], adr, &pos, 3011, TTE_NO_NDATA | TTE_NO_PDATA);
-
+		
+		long objVersion;
+		if(psth.version < 3013) {
+			objVersion = 3004;
+		} else if(psth.version < 3015) {
+			objVersion = 3005;
+		} else if(psth.version < 3019) {
+			objVersion = 3006;
+		} else if(psth.version < 3023) {
+			objVersion = 3008;
+		} else {
+			objVersion = 3011;
+		}
+		_THEObjLoad(seerie->objs[id], adr, &pos, objVersion);
+		
 		seerie->cub.xmin = min(seerie->cub.xmin, seerie->objs[id]->cub.xmin + seerie->objs[id]->pos.x);
 		seerie->cub.xmax = max(seerie->cub.xmax, seerie->objs[id]->cub.xmax + seerie->objs[id]->pos.x);
 		seerie->cub.ymin = min(seerie->cub.ymin, seerie->objs[id]->cub.ymin + seerie->objs[id]->pos.y);
 		seerie->cub.ymax = max(seerie->cub.ymax, seerie->objs[id]->cub.ymax + seerie->objs[id]->pos.y);
 		seerie->cub.zmin = min(seerie->cub.zmin, seerie->objs[id]->cub.zmin + seerie->objs[id]->pos.z);
 		seerie->cub.zmax = max(seerie->cub.zmax, seerie->objs[id]->cub.zmax + seerie->objs[id]->pos.z);
-
-		if (!strcmp(ptoh->object_name, "map_origin"))
-		{
+		
+		if(!strcmp(ptoh.object_name, "map_origin")) {
 			seerie->point0.x = seerie->objs[id]->point0.x + seerie->objs[id]->pos.x;
 			seerie->point0.y = seerie->objs[id]->point0.y + seerie->objs[id]->pos.y;
 			seerie->point0.z = seerie->objs[id]->point0.z + seerie->objs[id]->pos.z;
-			ReleaseEERIE3DObjFromScene(seerie->objs[id]);
+			delete seerie->objs[id];
 			seerie->nbobj--;
 			id--;
+		} else {
+			seerie->objs[id]->name = ptoh.object_name;
 		}
-		else seerie->objs[id]->name = ptoh->object_name;
-
+		
 		id++;
-
-		if (i < nbo - 1) pos = ptoh->next_obj;
+		
+		pos = ptoh.next_obj;
 	}
-
-	pos = psth->light_seek; // ambient
-	memcpy(&seerie->ambient_r, adr + pos, sizeof(float));
-	pos += sizeof(float);
-	memcpy(&seerie->ambient_g, adr + pos, sizeof(float));
-	pos += sizeof(float);
-	memcpy(&seerie->ambient_b, adr + pos, sizeof(float));
-	pos += sizeof(float);
-
-	memcpy(&nbl, adr + pos, sizeof(long));
-	pos += sizeof(long);
-
-	if (DEBUGG)
-	{
-		sprintf(texx, "Nb Lights %ld", nbl);
-		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-	}
-
-	seerie->light = allocStructZero<EERIE_LIGHT *>("SceneLights", nbl); 
-
+	
+	pos = psth.light_seek; // ambient
+	memcpy(&seerie->ambient_r, adr + pos, sizeof(f32));
+	pos += sizeof(f32);
+	memcpy(&seerie->ambient_g, adr + pos, sizeof(f32));
+	pos += sizeof(f32);
+	memcpy(&seerie->ambient_b, adr + pos, sizeof(f32));
+	pos += sizeof(f32);
+	
+	s32 nbl;
+	memcpy(&nbl, adr + pos, sizeof(s32));
+	pos += sizeof(s32);
+	
+	seerie->light = NULL; 
 	seerie->nblight = nbl;
-
-	for (i = 0; i < nbl; i++) //lights
-	{
-		if (psth->version >= 3024)
-		{
+	
+	for(long i = 0; i < nbl; i++) {
+		
+		TSCN_LIGHT_3024 tsl3024;
+		
+		if(psth.version >= 3024) {
 			memcpy(&tsl3024, adr + pos, sizeof(TSCN_LIGHT_3024));
 			pos += sizeof(TSCN_LIGHT_3024);
-		}
-		else if (psth->version >= 3019)
-		{
+		} else if(psth.version >= 3019) {
+			TSCN_LIGHT_3019 tsl3019;
 			memcpy(&tsl3019, adr + pos, sizeof(TSCN_LIGHT_3019));
 			pos += sizeof(TSCN_LIGHT_3019);
 			memset(&tsl3024, 0, sizeof(TSCN_LIGHT_3024));
 			tsl3024.red = tsl3019.red;
 			tsl3024.green = tsl3019.green;
 			tsl3024.blue = tsl3019.blue;
-			tsl3024.pos.x = tsl3019.pos.x;
-			tsl3024.pos.y = tsl3019.pos.y;
-			tsl3024.pos.z = tsl3019.pos.z;
+			tsl3024.pos = tsl3019.pos;
 			tsl3024.hotspot = tsl3019.hotspot;
 			tsl3024.falloff = tsl3019.falloff;
 			tsl3024.intensity = tsl3019.intensity;
-		}
-		else
-		{
+		} else {
+			TSCN_LIGHT tsl;
 			memcpy(&tsl, adr + pos, sizeof(TSCN_LIGHT));
 			pos += sizeof(TSCN_LIGHT);
 			memset(&tsl3024, 0, sizeof(TSCN_LIGHT_3024));
 			tsl3024.red = tsl.red;
 			tsl3024.green = tsl.green;
 			tsl3024.blue = tsl.blue;
-			tsl3024.pos.x = tsl.pos.x;
-			tsl3024.pos.y = tsl.pos.y;
-			tsl3024.pos.z = tsl.pos.z;
+			tsl3024.pos = tsl.pos;
 			tsl3024.hotspot = tsl.hotspot;
 			tsl3024.falloff = tsl.falloff;
 			tsl3024.intensity = tsl.intensity;
 		}
-
-		seerie->light[i] = allocStructZero<EERIE_LIGHT>("SceneLightInfo"); 
-
-		seerie->light[i]->rgb.r = (float)tsl3024.red * ( 1.0f / 255 );
-		seerie->light[i]->rgb.g = (float)tsl3024.green * ( 1.0f / 255 );
-		seerie->light[i]->rgb.b = (float)tsl3024.blue * ( 1.0f / 255 );
-		seerie->light[i]->pos.x = (float)tsl3024.pos.x;
-		seerie->light[i]->pos.y = (float)tsl3024.pos.y;
-		seerie->light[i]->pos.z = (float)tsl3024.pos.z;
-		seerie->light[i]->fallstart = (float)tsl3024.hotspot;
-		seerie->light[i]->fallend = (float)tsl3024.falloff;
-
-		float t = seerie->light[i]->fallend - seerie->light[i]->fallstart;
-
-		if (t < 150.f)
-		{
-			seerie->light[i]->fallend += 150.f - t;
+		
+		EERIE_LIGHT light;
+		
+		light.rgb.r = (float)tsl3024.red * ( 1.0f / 255 );
+		light.rgb.g = (float)tsl3024.green * ( 1.0f / 255 );
+		light.rgb.b = (float)tsl3024.blue * ( 1.0f / 255 );
+		light.pos = tsl3024.pos;
+		light.fallstart = (float)tsl3024.hotspot;
+		light.fallend = (float)tsl3024.falloff;
+		
+		float t = light.fallend - light.fallstart;
+		if(t < 150.f) {
+			light.fallend += 150.f - t;
 		}
-
-		seerie->light[i]->intensity = (float)tsl3024.intensity;
-		seerie->light[i]->exist = 1;
-		seerie->light[i]->treat = 1;
-		seerie->light[i]->selected = 0;
-		seerie->light[i]->type = 0;
-		EERIE_LIGHT_GlobalAdd(seerie->light[i]);
-		free(seerie->light[i]);
-		seerie->light[i] = NULL;
+		
+		light.intensity = (float)tsl3024.intensity;
+		light.exist = 1;
+		light.treat = 1;
+		light.selected = 0;
+		light.type = 0;
+		EERIE_LIGHT_GlobalAdd(&light);
 	}
-
-	if (seerie->light) free(seerie->light);
-
-	seerie->light = NULL;
-
-	if (DEBUGG)
-	{
-		sprintf(texx, "Version %d Nb Textures %d", psth->version, psth->nb_maps);
-		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-	}
-
+	
 	return seerie;
 }
 //-----------------------------------------------------------------------------------------------------
@@ -1572,104 +1435,53 @@ void EERIE_3DOBJ::clear() {
 	cub.xmin = cub.ymin = cub.zmin = EEdef_MAXfloat;
 	cub.xmax = cub.ymax = cub.zmax = EEdef_MINfloat;
 }
-//-----------------------------------------------------------------------------------------------------
-void Clear3DScene(EERIE_3DSCENE * eerie)
-{
-	if (eerie == NULL) return;
 
+void Clear3DScene(EERIE_3DSCENE * eerie) {
+	
+	if(eerie == NULL) {
+		return;
+	}
+	
 	memset(eerie, 0, sizeof(EERIE_3DSCENE));
 	eerie->cub.xmin = eerie->cub.ymin = eerie->cub.zmin = EEdef_MAXfloat;
 	eerie->cub.xmax = eerie->cub.ymax = eerie->cub.zmax = EEdef_MINfloat;
 }
-//-----------------------------------------------------------------------------------------------------
-void ReleaseEERIE3DObjFromScene(EERIE_3DOBJ * eerie)
-{
-	if (!eerie) return;
 
-	if (eerie->ndata != NULL)
-	{
-		KillNeighbours(eerie);
+// TODO move to destructor?
+EERIE_3DOBJ::~EERIE_3DOBJ() {
+	
+	if(originaltextures) {
+		free(originaltextures);
+		originaltextures = NULL;
 	}
-
-	if (eerie->originaltextures != NULL) free(eerie->originaltextures);
-
-	eerie->originaltextures = NULL;
-
-	if (eerie->pdata != NULL)
-	{
-		KillProgressiveData(eerie);
+	
+	if(ndata) {
+		KillNeighbours(this);
 	}
-
-	if (eerie->cdata != NULL)
-	{
-		KillClothesData(eerie);
+	
+	if(pdata) {
+		KillProgressiveData(this);
 	}
-
-	EERIEOBJECT_DeletePFaces(eerie);
-	EERIE_RemoveCedricData(eerie);
-	EERIE_PHYSICS_BOX_Release(eerie);
-	EERIE_COLLISION_SPHERES_Release(eerie);
-
-	if (eerie->grouplist != NULL)
-	{
-		delete[] eerie->grouplist;
+	
+	if(cdata) {
+		KillClothesData(this);
 	}
-
-	eerie->grouplist = NULL;
-
-	if ((eerie->nblinked) &&
-	        (eerie->linked))
-	{
-		free((void *)eerie->linked);
+	
+	EERIEOBJECT_DeletePFaces(this);
+	EERIE_RemoveCedricData(this);
+	EERIE_PHYSICS_BOX_Release(this);
+	EERIE_COLLISION_SPHERES_Release(this);
+	
+	if(grouplist) {
+		delete[] grouplist;
+		grouplist = NULL;
 	}
-
-	delete eerie;
-}
-//-----------------------------------------------------------------------------------------------------
-void ReleaseEERIE3DObj(EERIE_3DOBJ * eerie)
-{
-	if (!eerie) return;
-
-	if (eerie->originaltextures != NULL)
-	{
-		free(eerie->originaltextures);
-		eerie->originaltextures = NULL;
+	
+	// TODO why check for nblinked?
+	if(nblinked && linked) {
+		free(linked);
+		linked = NULL;
 	}
-
-	if (eerie->ndata != NULL)
-	{
-		KillNeighbours(eerie);
-	}
-
-	if (eerie->pdata != NULL)
-	{
-		KillProgressiveData(eerie);
-	}
-
-	if (eerie->cdata != NULL)
-	{
-		KillClothesData(eerie);
-	}
-
-	EERIEOBJECT_DeletePFaces(eerie);
-	EERIE_RemoveCedricData(eerie);
-	EERIE_PHYSICS_BOX_Release(eerie);
-	EERIE_COLLISION_SPHERES_Release(eerie);
-
-	if (eerie->grouplist != NULL)
-	{
-		delete[] eerie->grouplist;
-	}
-
-	eerie->grouplist = NULL;
-
-	if ((eerie->nblinked) &&
-	        (eerie->linked))
-	{
-		free((void *)eerie->linked);
-	}
-
-	delete eerie;
 }
 
 void ReCreateUVs(EERIE_3DOBJ * eerie) {
@@ -1707,15 +1519,14 @@ void ReCreateUVs(EERIE_3DOBJ * eerie) {
 	}
 }
 
-//-----------------------------------------------------------------------------------------------------
-EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj)
-{
+EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj) {
+	
 	EERIE_3DOBJ * nouvo = new EERIE_3DOBJ(); 
-
+	
 	nouvo->vertexlist = obj->vertexlist;
-
+	
 	nouvo->vertexlist3 = obj->vertexlist3;
-
+	
 	nouvo->linked = NULL;
 	nouvo->ndata = NULL;
 	nouvo->pbox = NULL;
@@ -1724,7 +1535,7 @@ EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj)
 	nouvo->sdata = NULL;
 	nouvo->c_data = NULL;
 	nouvo->vertexlocal = NULL;
-
+	
 	Vector_Copy(&nouvo->angle, &obj->angle);
 	Vector_Copy(&nouvo->pos, &obj->pos);
 	nouvo->cub.xmax = obj->cub.xmax;
@@ -1734,10 +1545,10 @@ EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj)
 	nouvo->cub.zmax = obj->cub.zmax;
 	nouvo->cub.zmin = obj->cub.zmin;
 	nouvo->drawflags = obj->drawflags;
-
+	
 	if ( !obj->file.empty() )
 		nouvo->file = obj->file;
-
+	
 	nouvo->ident = obj->ident;
 
 	if ( !obj->name.empty() )
@@ -1787,9 +1598,9 @@ EERIE_3DOBJ * Eerie_Copy(EERIE_3DOBJ * obj)
 	nouvo->originaltextures = NULL;
 	return nouvo;
 }
-//-----------------------------------------------------------------------------------------------------
-long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const char * selname)
-{
+
+long EERIE_OBJECT_GetSelection(const EERIE_3DOBJ * obj, const char * selname) {
+	
 	if (!obj) return -1;
 
 	for (size_t i = 0; i < obj->selections.size(); i++)
@@ -2125,153 +1936,104 @@ void EERIEOBJECT_CreatePFaces(EERIE_3DOBJ * eobj)
 }
 
 // Converts a Theo Object to an EERIE object
-EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, const char * fic, long flag, LPDIRECT3DDEVICE7 pd3dDevice, long flag2) // flag 1 progressive alloc 2 SLOW
-{
+// flag 1 progressive alloc 2 SLOW
+EERIE_3DOBJ * TheoToEerie(unsigned char * adr, long size, const char * texpath, const char * fic, long flag, LPDIRECT3DDEVICE7 pd3dDevice) {
 	
 	LogWarning << "TheoToEerie " << fic;
 	
-	if (adr == NULL) 	return NULL;
-
-	THEO_HEADER		*		pth;
-	THEO_TEXTURE			tt;
-	THEO_SAVE_MAPS_IN		tsmi;
-	THEO_SAVE_MAPS_IN_3019  tsmi3019;
-	THEO_SAVE_MAPS_IN_3019  * ptsmi3019;
-	EERIE_3DOBJ 	*		eerie;
-	char mapsname[512];
-	char texx[512];
-	const char * txpath;
-	long pos2;
-	long pos = 0;
-
-	if ((texpath == NULL) || (texpath[0] == 0))
-	{
-		txpath = "Graph\\Obj3D\\Textures\\";
-	}
-	else txpath = texpath;
-
-	if (size < 10) return NULL;
-
-	pth = (THEO_HEADER *)(adr + pos);
-	pos += sizeof(THEO_HEADER);
-
-	if (DEBUGG)
-	{
-		sprintf(texx, "THEOtoEERIE %s", fic);
-		SendConsole(texx, 2, 0, (HWND)MSGhwnd);
-		sprintf(texx, "-----------THEO FILE-----------");
-		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "----------THEO header---------- size " PRINT_SIZE_T, sizeof(THEO_HEADER));
-		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "Identity----------------------- %s", pth->identity);
-		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "Version------------------------ %u", pth->version);
-		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "Maps Seek---------------------- %d", pth->maps_seek);
-		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "Objects Seek------------------- %d", pth->object_seek);
-		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "NB maps------------------------ %d", pth->nb_maps);
-		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-		sprintf(texx, "Type_Write--------------------- %u", pth->type_write);
-		SendConsole(texx, 3, 0, (HWND)MSGhwnd);
-	}
-
-	if ((pth->version < 3003) || (pth->version > 3011))
-	{
-		if (!(flag & TTE_NOPOPUP))
-		{
-			sprintf(texx, "\nINVALID Theo Version !!!\nVersion Found    - %u\nVersion Required - %d to %d\n\nPlease Update File\n%s", pth->version, 3004, 3011, fic);
-			LogError << "TheoToEerie " << texx;
-		}
-
-		eerie = NULL;
+	if(!adr) {
 		return NULL;
 	}
-
-	eerie = new EERIE_3DOBJ;
+	
+	const char * txpath;
+	if(!texpath || texpath[0] == 0) {
+		txpath = "Graph\\Obj3D\\Textures\\";
+	} else {
+		txpath = texpath;
+	}
+	
+	if(size < 10) {
+		return NULL;
+	}
+	
+	size_t pos = 0;
+	
+	THEO_HEADER pth;
+	memcpy(&pth, adr + pos, sizeof(THEO_HEADER));
+	pos += sizeof(THEO_HEADER);
+	
+	if (pth.version < 3003 || pth.version > 3011) {
+		LogError << "TheoToEerie: invalid version in " << fic << ": found " << pth.version
+		         << " expected 3004 to 3011";
+		return NULL;
+	}
+	
+	EERIE_3DOBJ * eerie = new EERIE_3DOBJ;
 	eerie->clear();
 	
 	eerie->file = fic;
-
-	if (pth->type_write == 0)
-	{
-		// LECTURE DE TEXTURE THEO IN_OBJECT
-		char text[512];
-		sprintf(text, "WARNING object %s SAVE MAP IN OBJECT = INVALID... Using Dummy Textures...", fic);
-		LogError << (text);
-
-
-		if (DEBUGG) SendConsole("SAVE_MAP_IN_OBJECT = true", 3, 0, (HWND)MSGhwnd);
-
-		eerie->texturecontainer.resize(pth->nb_maps);
-
-		if (pth->nb_maps > 0)
-		{
-			pos2 = pth->maps_seek;
-		}
-
-		for (long i = 0; i < pth->nb_maps; i++)
-		{
+	
+	if(pth.type_write == 0) {
+		// read the texture
+		
+		LogError <<  "WARNING object " << fic << " SAVE MAP IN OBJECT = INVALID... Using Dummy Textures...";
+		
+		eerie->texturecontainer.resize(pth.nb_maps);
+		for(long i = 0; i < pth.nb_maps; i++) {
+			THEO_TEXTURE tt;
 			memcpy(&tt, adr + pos, sizeof(THEO_TEXTURE));
 			pos += sizeof(THEO_TEXTURE);
 			eerie->texturecontainer[i] = GetAnyTexture();
 		}
-
-	}
-	else
-	{
-		if (DEBUGG) SendConsole("SAVE_MAP_IN_OBJECT = false", 3, 0, (HWND)MSGhwnd);
-
-		if ((pth->type_write & SAVE_MAP_BMP) || (pth->type_write & SAVE_MAP_TGA))
-		{
-			eerie->texturecontainer.resize(pth->nb_maps);
-
-			if (DEBUGG)	SendConsole("SAVE_MAP_BMP or TGA = true", 3, 0, (HWND)MSGhwnd);
-
-			for (long i = 0; i < pth->nb_maps; i++)
-			{
-				if (pth->version >= 3008)
-				{
-					ptsmi3019 = (THEO_SAVE_MAPS_IN_3019 *)(adr + pos);
+		
+	} else {
+		
+		if((pth.type_write & SAVE_MAP_BMP) || (pth.type_write & SAVE_MAP_TGA)) {
+			
+			eerie->texturecontainer.resize(pth.nb_maps);
+			for(long i = 0; i < pth.nb_maps; i++) {
+				
+				string name;
+				if(pth.version >= 3008) {
+					THEO_SAVE_MAPS_IN_3019 tsmi3019;
+					memcpy(&tsmi3019, adr + pos, sizeof(THEO_SAVE_MAPS_IN_3019));
 					pos += sizeof(THEO_SAVE_MAPS_IN_3019);
-				}
-				else
-				{
+					name = tsmi3019.texture_name;
+				} else {
+					THEO_SAVE_MAPS_IN tsmi;
 					memcpy(&tsmi, adr + pos, sizeof(THEO_SAVE_MAPS_IN));
 					pos += sizeof(THEO_SAVE_MAPS_IN);
-					tsmi3019.animated_map = tsmi.animated_map;
-					tsmi3019.color_mask = 0;
-					tsmi3019.map_type = tsmi.map_type;
-					tsmi3019.mipmap_level = tsmi.mipmap_level;
-					tsmi3019.reflect_map = tsmi.reflect_map;
-					strcpy(tsmi3019.texture_name, tsmi.texture_name);
-					tsmi3019.water_intensity = tsmi.water_intensity;
-					ptsmi3019 = &tsmi3019;
+					name = tsmi.texture_name;
 				}
-
-				if (pth->type_write & SAVE_MAP_BMP) sprintf(mapsname, "%s%s.bmp", txpath, ptsmi3019->texture_name);
-				else sprintf(mapsname, "%s%s.tga", txpath, ptsmi3019->texture_name);
-
-				eerie->texturecontainer[i] = D3DTextr_CreateTextureFromFile(mapsname, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
-				MakeUserFlag(eerie->texturecontainer[i]);
-
-				if (eerie->texturecontainer[i])
-				{
-					if ((!(flag & TTE_NO_RESTORE)) && (pd3dDevice))
-						eerie->texturecontainer[i]->Restore(pd3dDevice);
+				
+				if(!name.empty()) {
+					
+					string mapsname = txpath + name;
+					if(pth.type_write & SAVE_MAP_BMP) {
+						mapsname += ".bmp";
+					} else {
+						mapsname += ".tga";
+					}
+					
+					eerie->texturecontainer[i] = D3DTextr_CreateTextureFromFile(mapsname, 0, 0, EERIETEXTUREFLAG_LOADSCENE_RELEASE);
+					MakeUserFlag(eerie->texturecontainer[i]);
+					
+					if(eerie->texturecontainer[i]) {
+						if(!(flag & TTE_NO_RESTORE) && pd3dDevice) {
+							eerie->texturecontainer[i]->Restore(pd3dDevice);
+						}
+					}
 				}
 			}
 		}
 	}
+	
+	pos = pth.object_seek;
+	_THEObjLoad(eerie, adr, &pos, pth.version);
+	eerie->angle.a = eerie->angle.b = eerie->angle.g = 0.f;
+	eerie->pos.x = eerie->pos.y = eerie->pos.z = 0.f;
 
-	pos = pth->object_seek;
-	_THEObjLoad(eerie, adr, &pos, pth->version, flag2, flag);
-	eerie->angle.a = eerie->angle.b = eerie->angle.g	= 0.f;
-	eerie->pos.x = eerie->pos.y = eerie->pos.z			= 0.f;
-
-	//***********************************************************
-	// NORMALS CALCULATIONS START
+	// NORMALS CALCULATIONS
 	EERIE_3D nrml;
 	EERIE_3D nrrr;
 	float count;

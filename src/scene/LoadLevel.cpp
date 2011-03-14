@@ -1906,95 +1906,75 @@ extern EERIE_3DOBJ * sfirewave;
 extern long sfirewave_count;
 extern EERIE_3DOBJ * svoodoo;
 extern long svoodoo_count;
-void ReleaseAllSpellResources()
-{
-	smissile_count = 0;
 
-	if (smissile)
-	{
-		ReleaseEERIE3DObj(smissile);
+void ReleaseAllSpellResources() {
+	
+	smissile_count = 0;
+	if(smissile) {
+		delete smissile;
 		smissile = NULL;
 	}
-
+	
 	stite_count = 0;
-
-	if (stite)
-	{
-		ReleaseEERIE3DObj(stite);
+	if(stite) {
+		delete stite;
 		stite = NULL;
 	}
-
+	
 	smotte_count = 0;
-
-	if (smotte)
-	{
-		ReleaseEERIE3DObj(smotte);
+	if(smotte) {
+		delete smotte;
 		smotte = NULL;
 	}
-
+	
 	ssol_count = 0;
-
-	if (ssol)
-	{
-		ReleaseEERIE3DObj(ssol);
+	if(ssol) {
+		delete ssol;
 		ssol = NULL;
 	}
-
+	
 	slight_count = 0;
-
-	if (slight)
-	{
-		ReleaseEERIE3DObj(slight);
+	if(slight) {
+		delete slight;
 		slight = NULL;
 	}
-
+	
 	srune_count = 0;
-
-	if (srune)
-	{
-		ReleaseEERIE3DObj(srune);
+	if(srune) {
+		delete srune;
 		srune = NULL;
 	}
-
+	
 	svoodoo_count--;
-
-	if (svoodoo)
-	{
-		ReleaseEERIE3DObj(svoodoo);
+	if(svoodoo) {
+		delete svoodoo;
 		svoodoo = NULL;
 	}
-
+	
 	stone0_count = 0;
-
-	if (stone0)
-	{
-		ReleaseEERIE3DObj(stone0);
+	if(stone0) {
+		delete stone0;
 		stone0 = NULL;
 	}
-
+	
 	stone1_count = 0;
-
-	if (stone1)
-	{
-		ReleaseEERIE3DObj(stone1);
+	if(stone1) {
+		delete stone1;
 		stone1 = NULL;
 	}
-
+	
 	spapi_count = 0;
-
-	if (spapi)
-	{
-		ReleaseEERIE3DObj(spapi);
+	if(spapi) {
+		delete spapi;
 		spapi = NULL;
 	}
-
+	
 	sfirewave_count = 0;
-
-	if (sfirewave)
-	{
-		ReleaseEERIE3DObj(sfirewave);
+	if(sfirewave) {
+		delete sfirewave;
 		sfirewave = NULL;
 	}
+	
 }
 
 extern long JUST_RELOADED;

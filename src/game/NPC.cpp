@@ -1708,11 +1708,9 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 	nouvo->nblinked			=	0;
 	nouvo->originaltextures	=	NULL;
 
-	INTERACTIVE_OBJ * io	=	CreateFreeInter();
-
-	if (io == NULL)
-	{
-		ReleaseEERIE3DObj(nouvo);
+	INTERACTIVE_OBJ * io = CreateFreeInter();
+	if(!io) {
+		delete nouvo;
 		return;
 	}
 
@@ -1729,10 +1727,8 @@ void ARX_NPC_SpawnMember(INTERACTIVE_OBJ * ioo, long num)
 
 	EERIE_COLLISION_Cylinder_Create(io);
 	EERIE_PHYSICS_BOX_Create(nouvo);
-
-	if (nouvo->pbox == NULL)
-	{
-		ReleaseEERIE3DObj(nouvo);
+	if(!nouvo->pbox){
+		delete nouvo;
 		return;
 	}
 

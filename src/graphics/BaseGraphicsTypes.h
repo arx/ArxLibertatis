@@ -68,6 +68,6 @@ struct EERIE_CYLINDER {
 struct EERIE_SPHERE {
 	EERIE_3D origin;
 	float radius;
-}; // Aligned 1 2 4
+};
 
 #endif // ARX_GRAPHICS_BASEGRAPHICSTYPES_H

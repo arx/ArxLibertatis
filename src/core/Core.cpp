@@ -2717,63 +2717,63 @@ void DANAE_ReleaseAllDatasDynamic()
 
 	if(ssol)
 	{
-		ReleaseEERIE3DObj(ssol);
+		delete ssol;
 		ssol=NULL;
 		ssol_count=0;
 	}
 
 	if(slight)
 	{
-		ReleaseEERIE3DObj(slight);
+		delete slight;
 		slight=NULL;
 		slight_count=0;
 	}
 
 	if(srune)
 	{
-		ReleaseEERIE3DObj(srune);
+		delete srune;
 		srune=NULL;
 		srune_count=0;
 	}
 
 	if(smotte)
 	{
-		ReleaseEERIE3DObj(smotte);
+		delete smotte;
 		smotte=NULL;
 		smotte_count=0;
 	}
 
 	if(stite)
 	{
-		ReleaseEERIE3DObj(stite);
+		delete stite;
 		stite=NULL;
 		stite_count=0;
 	}
 
 	if(smissile)
 	{
-		ReleaseEERIE3DObj(smissile);
+		delete smissile;
 		smissile=NULL;
 		smissile_count=0;
 	}
 
 	if(spapi)
 	{
-		ReleaseEERIE3DObj(spapi);
+		delete spapi;
 		spapi=NULL;
 		spapi_count=0;
 	}
 
 	if(sfirewave)
 	{
-		ReleaseEERIE3DObj(sfirewave);
+		delete sfirewave;
 		sfirewave=NULL;
 		sfirewave_count=0;
 	}
 
 	if(svoodoo)
 	{
-		ReleaseEERIE3DObj(svoodoo);
+		delete svoodoo;
 		svoodoo=NULL;
 		svoodoo_count=0;
 	}
@@ -2785,70 +2785,62 @@ void ReleaseDanaeBeforeRun()
 {
 	if(necklace.lacet)
 	{
-		ReleaseEERIE3DObj(necklace.lacet);
+		delete necklace.lacet;
 		necklace.lacet=NULL;
 	}
 
 	for (long i=0; i<20; i++)
 	{
-		if(necklace.runes[i])
-		{
-			ReleaseEERIE3DObj(necklace.runes[i]);
-			necklace.runes[i]=NULL;
+		if(necklace.runes[i]) {
+			delete necklace.runes[i];
+			necklace.runes[i] = NULL;
 		}
 
 		if (necklace.pTexTab[i])
 		{
 
-			necklace.pTexTab[i]=NULL;
+			necklace.pTexTab[i] = NULL;
 		}
 	}
 
-	if(eyeballobj)
-	{
-		ReleaseEERIE3DObj(eyeballobj);
-		eyeballobj=NULL;
+	if(eyeballobj) {
+		delete eyeballobj;
+		eyeballobj = NULL;
 	}
 
-	if(cabal)
-	{
-		ReleaseEERIE3DObj(cabal);
-		cabal=NULL;
+	if(cabal) {
+		delete cabal;
+		cabal = NULL;
 	}
 
-	if(nodeobj)
-	{
-		ReleaseEERIE3DObj(nodeobj);
-		nodeobj=NULL;
+	if(nodeobj) {
+		delete nodeobj;
+		nodeobj = NULL;
 	}
 
-	if(fogobj)
-	{
-		ReleaseEERIE3DObj(fogobj);
-		fogobj=NULL;
+	if(fogobj) {
+		delete fogobj;
+		fogobj = NULL;
 	}
 
-	if(cameraobj)
-	{
-		ReleaseEERIE3DObj(cameraobj);
-		cameraobj=NULL;
+	if(cameraobj) {
+		delete cameraobj;
+		cameraobj = NULL;
 	}
 
-	if(markerobj)
-	{
-		ReleaseEERIE3DObj(markerobj);
-		markerobj=NULL;
+	if(markerobj) {
+		delete markerobj;
+		markerobj = NULL;
 	}
 
-	if(arrowobj)
-	{
-		ReleaseEERIE3DObj(arrowobj);
-		arrowobj=NULL;
+	if(arrowobj) {
+		delete arrowobj;
+		arrowobj = NULL;
 	}
 
 	for(size_t i = 0; i < MAX_GOLD_COINS_VISUALS; i++) {
 		if(GoldCoinsObj[i]) {
-			ReleaseEERIE3DObj(GoldCoinsObj[i]);
+			delete GoldCoinsObj[i];
 			GoldCoinsObj[i] = NULL;
 		}
 	}
@@ -8240,8 +8232,9 @@ LRESULT DANAE::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 }
 
 void ReleaseSystemObjects() {
-	if (hero) {
-		ReleaseEERIE3DObj(hero);
+	
+	if(hero) {
+		delete hero;
 		hero=NULL;
 	}
 
@@ -8256,45 +8249,45 @@ void ReleaseSystemObjects() {
 		}
 	}
 
-	if (eyeballobj)	{
-		ReleaseEERIE3DObj(eyeballobj);
-		eyeballobj=NULL;
+	if(eyeballobj) {
+		delete eyeballobj;
+		eyeballobj = NULL;
 	}
 
-	if (cabal) {
-		ReleaseEERIE3DObj(cabal);
-		cabal=NULL;
+	if(cabal) {
+		delete cabal;
+		cabal = NULL;
 	}
 
-	if (nodeobj) {
-		ReleaseEERIE3DObj(nodeobj);
-		nodeobj=NULL;
+	if(nodeobj) {
+		delete nodeobj;
+		nodeobj = NULL;
 	}
 
-	if (fogobj) {
-		ReleaseEERIE3DObj(fogobj);
-		fogobj=NULL;
+	if(fogobj) {
+		delete fogobj;
+		fogobj = NULL;
 	}
 
-	if (cameraobj) {
-		ReleaseEERIE3DObj(cameraobj);
-		cameraobj=NULL;
+	if(cameraobj) {
+		delete cameraobj;
+		cameraobj = NULL;
 	}
 
-	if (markerobj) {
-		ReleaseEERIE3DObj(markerobj);
-		markerobj=NULL;
+	if(markerobj) {
+		delete markerobj;
+		markerobj = NULL;
 	}
 
-	if (arrowobj) {
-		ReleaseEERIE3DObj(arrowobj);
-		arrowobj=NULL;
+	if(arrowobj) {
+		delete arrowobj;
+		arrowobj = NULL;
 	}
 
 	for(size_t i = 0; i < MAX_GOLD_COINS_VISUALS; i++) {
 		if(GoldCoinsObj[i]) {
-			ReleaseEERIE3DObj(GoldCoinsObj[i]);
-			GoldCoinsObj[i]=NULL;
+			delete GoldCoinsObj[i];
+			GoldCoinsObj[i] = NULL;
 		}
 	}
 }

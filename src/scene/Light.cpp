@@ -318,7 +318,7 @@ long EERIE_LIGHT_Count()
 	return count;
 }
 
-void EERIE_LIGHT_GlobalAdd(EERIE_LIGHT * el)
+void EERIE_LIGHT_GlobalAdd(const EERIE_LIGHT * el)
 {
 	long num = EERIE_LIGHT_GetFree();
 

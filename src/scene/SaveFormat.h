@@ -7,7 +7,7 @@
 
 #include "core/Common.h"
 #include "gui/MiniMap.h"
-#include "graphics/GraphicsTypes.h"
+#include "graphics/GraphicsFormat.h"
 #include "graphics/GraphicsModes.h"
 #include "graphics/data/Mesh.h"
 
@@ -40,25 +40,6 @@ struct ARX_SCRIPT_SAVE {
 	s32 nblvar;
 	u32 lastcall;
 	s32 allowevents;
-};
-
-struct SavedColor {
-	
-	f32 r;
-	f32 g;
-	f32 b;
-	
-	inline SavedColor & operator=(const EERIE_RGB & o) {
-		r = o.r, g = o.g, b = o.b;
-		return *this;
-	}
-	
-	inline operator EERIE_RGB() {
-		EERIE_RGB a;
-		a.r = r, a.g = g, a.b = b;
-		return a;
-	}
-	
 };
 
 struct SavedGlobalMods {
@@ -164,25 +145,6 @@ struct SavedMapMakerData {
 		a.lvl = lvl;
 		assert(array_size(a.string) == STRING_SIZE);
 		std::copy(string, string + STRING_SIZE, a.string);
-	}
-	
-};
-
-struct SavedVec3 {
-	
-	f32 x;
-	f32 y;
-	f32 z;
-	
-	inline operator EERIE_3D() {
-		EERIE_3D a;
-		a.x = x, a.y = y, a.z = z;
-		return a;
-	}
-	
-	inline SavedVec3 & operator=(const EERIE_3D & b) {
-		x = b.x, y = b.y, z = b.z;
-		return *this;
 	}
 	
 };

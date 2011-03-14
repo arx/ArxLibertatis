@@ -542,6 +542,8 @@ struct EERIE_3DOBJ
 	
 	void clear();
 	
+	~EERIE_3DOBJ();
+	
 	std::string name;
 	std::string file;
 	EERIE_3D pos;

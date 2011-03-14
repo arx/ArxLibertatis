@@ -547,7 +547,7 @@ EERIE_3DOBJ * TheoToEerie_Fast(const char * texpath, const char * file, long fla
 
 		if (adr)
 		{
-			ret = TheoToEerie(adr, FileSize, texpath, file, flag, pd3dDevice, flag | TTE_NO_RESTORE); //SLOWLOAD));
+			ret = TheoToEerie(adr, FileSize, texpath, file, flag, pd3dDevice);
 
 			if (!ret)
 			{
@@ -1294,9 +1294,8 @@ void ARX_INTERACTIVE_USEMESH(INTERACTIVE_OBJ * io, const std::string& temp)
 
         strcpy(io->usemesh, tex.c_str());
 
-        if (io->obj != NULL)
-        {
-            ReleaseEERIE3DObj(io->obj);
+        if(io->obj) {
+            delete io->obj;
             io->obj = NULL;
         }
 
@@ -1495,9 +1494,8 @@ void ARX_INTERACTIVE_ClearIODynData_II(INTERACTIVE_OBJ * io)
 		io->inventory = NULL;
 		io->GameFlags |= GFLAG_INTERACTIVITY;
 
-		if (io->tweaky)
-		{
-			ReleaseEERIE3DObj(io->obj);
+		if(io->tweaky) {
+			delete io->obj;
 			io->obj = io->tweaky;
 			io->tweaky = NULL;
 		}
@@ -1948,7 +1946,7 @@ INTERACTIVE_OBJ * CloneIOItem(INTERACTIVE_OBJ * src)
 	dest->inv = src->inv;
 	dest->sizex = src->sizex;
 	dest->sizey = src->sizey;
-	ReleaseEERIE3DObj(dest->obj);
+	delete dest->obj;
 	dest->obj = Eerie_Copy(src->obj);
 	CloneLocalVars(dest, src);
 	dest->_itemdata->price = src->_itemdata->price;
@@ -2269,21 +2267,20 @@ void ReleaseInter(INTERACTIVE_OBJ * io) {
 	ARX_INTERACTIVE_MEMO_TWEAK_CLEAR(io);
 	ARX_SCRIPT_Timer_Clear_For_IO(io);
 
-	if ((io->obj) && (!(io->ioflags & IO_CAMERA)) && (!(io->ioflags & IO_MARKER)) && (!(io->ioflags & IO_GOLD))) {
-		ReleaseEERIE3DObj(io->obj);
+	if(io->obj && !(io->ioflags & IO_CAMERA) && !(io->ioflags & IO_MARKER) && !(io->ioflags & IO_GOLD)) {
+		delete io->obj;
 		io->obj = NULL;
 	}
 
 	ARX_SPELLS_RemoveAllSpellsOn(io);
 
-	if (io->tweakerinfo != NULL)
-	{
+	if(io->tweakerinfo) {
 		free(io->tweakerinfo);
 		io->tweakerinfo = NULL;
 	}
 
-	if (io->tweaky) {
-		ReleaseEERIE3DObj(io->tweaky);
+	if(io->tweaky) {
+		delete io->tweaky;
 		io->tweaky = NULL;
 	}
 

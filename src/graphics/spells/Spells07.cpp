@@ -818,7 +818,7 @@ CConfuse::~CConfuse()
 	if (spapi && (spapi_count <= 0))
 	{
 		spapi_count = 0;
-		ReleaseEERIE3DObj(spapi);
+		delete spapi;
 		spapi = NULL;
 	}
 }
@@ -1213,7 +1213,7 @@ CIceField::~CIceField()
 	if (smotte && (smotte_count <= 0))
 	{
 		smotte_count = 0;
-		ReleaseEERIE3DObj(smotte);
+		delete smotte;
 		smotte = NULL;
 	}
 
@@ -1222,7 +1222,7 @@ CIceField::~CIceField()
 	if (stite && (stite_count <= 0))
 	{
 		stite_count = 0;
-		ReleaseEERIE3DObj(stite);
+		delete stite;
 		stite = NULL;
 	}
 }

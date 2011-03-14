@@ -612,7 +612,7 @@ CIncinerate::~CIncinerate()
 	if (sfirewave && (sfirewave_count <= 0))
 	{
 		sfirewave_count = 0;
-		ReleaseEERIE3DObj(sfirewave);
+		delete sfirewave;
 		sfirewave = NULL;
 	}
 }
@@ -895,7 +895,7 @@ CNegateMagic::~CNegateMagic()
 	if (ssol && (ssol_count <= 0))
 	{
 		ssol_count = 0;
-		ReleaseEERIE3DObj(ssol);
+		delete ssol;
 		ssol = NULL;
 	}
 }
