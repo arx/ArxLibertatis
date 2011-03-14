@@ -1486,11 +1486,12 @@ long DanaeLoadLevel(const string & fic) {
 			bcount--;
 		}
 	}
-	free(dat);
 	
 	ModeLight = dll->ModeLight;
 	ViewMode = dll->ViewMode;
 	ViewMode &= ~VIEWMODE_WIRE;
+	
+	free(dat);
 	
 	PROGRESS_BAR_COUNT += 1.f;
 	LoadLevelScreen();
