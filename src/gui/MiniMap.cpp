@@ -470,7 +470,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 
 			GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);
-			GDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_ALWAYS);
+			GRenderer->SetRenderState(Renderer::DepthTest, false);
 			SETTEXTUREWRAPMODE(D3DTADDRESS_CLAMP);
 
 			if (fl2)
@@ -739,8 +739,7 @@ void ARX_MINIMAP_Show(long SHOWLEVEL, long flag, long fl2)
 		if (flag != 2)
 		{
 			GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_WRAP);
-			GDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
-
+			GRenderer->SetRenderState(Renderer::DepthTest, true);
 			GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 
 			if ((SHOWLEVEL == ARX_LEVELS_GetRealNum(CURRENTLEVEL)))

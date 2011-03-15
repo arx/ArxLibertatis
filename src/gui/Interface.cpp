@@ -7374,7 +7374,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 
 	if (ARXmenu.currentmode != AMCM_NEWQUEST)
 	{
-		GDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_ALWAYS);
+		GRenderer->SetRenderState(Renderer::DepthTest, false);
 
 		if (Book_Mode == BOOKMODE_STATS)
 		{
@@ -7393,7 +7393,7 @@ void ARX_INTERFACE_ManageOpenedBook()
 			DrawBookInterfaceItem(ITC.Get("questbook"), 97, 64, 0.9999f);
 		}
 
-		GDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
+		GRenderer->SetRenderState(Renderer::DepthTest, true);
 	}
 	else
 	{

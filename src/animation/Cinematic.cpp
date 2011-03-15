@@ -256,15 +256,9 @@ HRESULT Cinematic::InitDeviceObjects()
 	D3DUtil_InitMaterial(mtrl, 1.f, 1.f, 1.f);
 	GDevice->SetMaterial(&mtrl);
 
-	GDevice->SetRenderState(D3DRENDERSTATE_TEXTUREPERSPECTIVE , true);
 	GRenderer->SetRenderState(Renderer::DepthTest, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false);
-	GDevice->SetRenderState(D3DRENDERSTATE_AMBIENT,  0x0a0a0a0a);
 	GDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, true);
-	GDevice->SetRenderState(D3DRENDERSTATE_SPECULARENABLE, false);
-	GDevice->SetRenderState(D3DRENDERSTATE_LASTPIXEL, true); 
-	GDevice->SetRenderState(D3DRENDERSTATE_CLIPPING , true);
-	GDevice->SetRenderState(D3DRENDERSTATE_LIGHTING  , false);
 	GRenderer->SetCulling(Renderer::CullNone);
 	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_CLAMP);
 
@@ -333,20 +327,10 @@ HRESULT Cinematic::DeleteDeviceObjects()
 	D3DMATERIAL7 mtrl;
 	D3DUtil_InitMaterial(mtrl, 1.f, 1.f, 1.f);
 	GDevice->SetMaterial(&mtrl);
-	GDevice->SetRenderState(D3DRENDERSTATE_TEXTUREPERSPECTIVE , true);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
-	GDevice->SetRenderState(D3DRENDERSTATE_AMBIENT,  0x0a0a0a0a);
 	// Setup Dither Mode
 	GDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE, false);
-	// Setup Specular RenderState
-	GDevice->SetRenderState(D3DRENDERSTATE_SPECULARENABLE, false);
-	// Setup LastPixel RenderState
-	GDevice->SetRenderState(D3DRENDERSTATE_LASTPIXEL, true); 
-	// Setup Clipping RenderState
-	GDevice->SetRenderState(D3DRENDERSTATE_CLIPPING , true);
-	// Disable Lighting RenderState
-	GDevice->SetRenderState(D3DRENDERSTATE_LIGHTING  , false);
 
 	GRenderer->SetCulling(Renderer::CullCCW);
 	GDevice->SetTextureStageState(0, D3DTSS_ADDRESS , D3DTADDRESS_WRAP);

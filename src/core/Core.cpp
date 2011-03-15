@@ -7423,29 +7423,25 @@ HRESULT DANAE::InitDeviceObjects()
 	D3DMATERIAL7 mtrl;
 	D3DUtil_InitMaterial( mtrl, 1.f, 0.f, 0.f );
 	GDevice->SetMaterial( &mtrl );
-	// Enable texture perspective RenderState
-	GDevice->SetRenderState( D3DRENDERSTATE_TEXTUREPERSPECTIVE , true );
+	
 	// Enable Z-buffering RenderState
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
+	
 	// Setup Ambient Color RenderState
 	GDevice->SetRenderState( D3DRENDERSTATE_AMBIENT,  0x0a0a0a0a );
+	
 	// Restore All Textures RenderState
 	ReloadAllTextures();
 	ARX_PLAYER_Restore_Skin();
-	// Setup Dither Mode
-	GDevice->SetRenderState( D3DRENDERSTATE_DITHERENABLE, false );
+	
 	// Setup Specular RenderState
 	GDevice->SetRenderState( D3DRENDERSTATE_SPECULARENABLE, false );
-	// Setup LastPixel RenderState
-	GDevice->SetRenderState(D3DRENDERSTATE_LASTPIXEL, true);
-	// Setup Clipping RenderState
-	GDevice->SetRenderState( D3DRENDERSTATE_CLIPPING , true);	
+
 	// Disable Lighting RenderState
-	GDevice->SetRenderState( D3DRENDERSTATE_LIGHTING  , false);
+	GRenderer->SetRenderState(Renderer::Lighting, false);
+
 	// Setup Texture Border RenderState
 	SETTEXTUREWRAPMODE(D3DTADDRESS_WRAP);
-	// Setup Color Key RenderState
-	GDevice->SetRenderState(D3DRENDERSTATE_STENCILENABLE,false);
 	GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
 
 	// Fog
@@ -7456,9 +7452,7 @@ HRESULT DANAE::InitDeviceObjects()
 	GRenderer->SetRenderState(Renderer::Fog, true);
 	
 	SetZBias(0);
-	GDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
 
-	GDevice->SetRenderState(D3DRENDERSTATE_LOCALVIEWER,false);
 	GDevice->SetTextureStageState(1,D3DTSS_ADDRESS,D3DTADDRESS_WRAP);
 	GDevice->SetTextureStageState(1,D3DTSS_MINFILTER,D3DTFN_LINEAR);
 	GDevice->SetTextureStageState(1,D3DTSS_MAGFILTER,D3DTFN_LINEAR);
