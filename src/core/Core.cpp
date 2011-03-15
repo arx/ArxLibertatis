@@ -205,7 +205,6 @@ extern 	bool bFade;			//active le fade
 extern long LastEERIEMouseButton;
 extern long PLAYER_PARALYSED;
 extern float fZFogEnd;
-extern float fZFogStart;
 extern bool bOLD_CLIPP;
 extern bool bGMergeVertex;
 extern float OLD_PROGRESS_BAR_COUNT;
@@ -214,7 +213,6 @@ extern E_ARX_STATE_MOUSE	eMouseState;
 void DanaeRestoreFullScreen();
 
 extern long FORCE_FRONT_DRAW;
-extern bool bUSE_D3DFOG_INTER;
 extern EERIE_3DOBJ * ssol;
 extern long ssol_count;
 extern EERIE_3DOBJ * slight;
@@ -432,7 +430,6 @@ long FINAL_RELEASE		= 0;
 long AUTO_FULL_SCREEN	= 0;
 long SHOW_INGAME_MINIMAP= 1;
 long DEBUG_FRUSTRUM		= 0;
-long USE_D3DFOG			= 1;
 long GAME_EDITOR		= 1;
 long NEED_EDITOR		= 1;
 long USE_CEDRIC_ANIM	= 1;
@@ -682,7 +679,8 @@ void Danae_Registry_ReadValue(const char * string, long * value, long defaultval
 			ReadRegKeyValue( DanaeKey, string, value);
 			Danae_Registry_Close();
 		}
-		else *value = defaultvalue;
+		else 
+			*value = defaultvalue;
 	} else {
 		*value = 0;
 	}
@@ -1173,7 +1171,6 @@ int main(int, char**)
 		AUTO_FULL_SCREEN	= 0;
 #endif
 		DEBUG_FRUSTRUM		= 0;
-		USE_D3DFOG			= 1; // <-------------------- FOG
 		GAME_EDITOR			= 0;
 		NEED_EDITOR			= 0;
 		TRUEFIGHT			= 0;
@@ -1184,7 +1181,6 @@ int main(int, char**)
 		FORCE_SHOW_FPS=1;
 		FINAL_RELEASE=1; // 1 with pack or 0 without pack
 		AUTO_FULL_SCREEN=0;
-		USE_D3DFOG=1;
 	}
 
 	CalcFPS(true);
@@ -7114,7 +7110,7 @@ void DANAE::GoFor2DFX()
 			GRenderer->SetRenderState(Renderer::DepthWrite, false);
 			GRenderer->SetCulling(Renderer::CullNone);
 			GRenderer->SetRenderState(Renderer::DepthTest, false);
-			GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,  0);
+			GRenderer->SetFogColor(0);
 
 			for (int i=0;i<TOTPDL;i++)
 			{
@@ -7452,20 +7448,13 @@ HRESULT DANAE::InitDeviceObjects()
 	GDevice->SetRenderState(D3DRENDERSTATE_STENCILENABLE,false);
 	GDevice->SetTextureStageState(1,D3DTSS_COLOROP,D3DTOP_DISABLE);
 
-	if (USE_D3DFOG)
-	{
-		GDevice->SetRenderState( D3DRENDERSTATE_FOGCOLOR, D3DRGB(current.depthcolor.r,current.depthcolor.g,current.depthcolor.b));
-		float zval = 1.f;
-		GDevice->SetRenderState( D3DRENDERSTATE_FOGTABLEMODE, D3DFOG_LINEAR );
-		GDevice->SetRenderState( D3DRENDERSTATE_FOGTABLEDENSITY, *((LPDWORD) (&zval)));
-		GDevice->SetRenderState( D3DRENDERSTATE_FOGVERTEXMODE,  D3DFOG_NONE );
-		zval = 0.48f;
-		float zval2 = zval * 0.65f;
-		GDevice->SetRenderState( D3DRENDERSTATE_FOGTABLESTART, *((LPDWORD) (&zval2)));
-		GDevice->SetRenderState( D3DRENDERSTATE_FOGTABLEEND, *((LPDWORD) (&zval)));
-		GRenderer->SetRenderState(Renderer::Fog, true);
-	}
-
+	// Fog
+	float fogEnd = 0.48f;
+	float fogStart = fogEnd * 0.65f;
+	GRenderer->SetFogParams(Renderer::FogLinear, fogStart, fogEnd);
+	GRenderer->SetFogColor(D3DRGB(current.depthcolor.r,current.depthcolor.g,current.depthcolor.b));
+	GRenderer->SetRenderState(Renderer::Fog, true);
+	
 	SetZBias(0);
 	GDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
 

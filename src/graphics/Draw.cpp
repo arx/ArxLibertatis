@@ -54,9 +54,6 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 using std::min;
 using std::max;
 
-extern void ComputeSingleFogVertex(D3DTLVERTEX*);
-
-
 TextureContainer * EERIE_DRAW_sphere_particle=NULL;
 TextureContainer * EERIE_DRAW_square_particle=NULL;
 
@@ -1142,8 +1139,6 @@ void EERIEDrawSprite(D3DTLVERTEX *in,float siz,TextureContainer * tex,D3DCOLOR c
 			out.rhw*=(1.f/3000.f);
 		}
 
-		ComputeSingleFogVertex(&out);
-
 		SPRmaxs.x=out.sx+t;
 		SPRmins.x=out.sx-t;
 		SPRmaxs.y=out.sy+t;			
@@ -1188,8 +1183,6 @@ void EERIEDrawRotatedSprite(D3DTLVERTEX *in,float siz,TextureContainer * tex,D3D
 		{
 			out.rhw*=(1.f/3000.f);
 		}
-
-		ComputeSingleFogVertex(&out);
 
 		D3DTLVERTEX v[4];
 		v[0]= D3DTLVERTEX( D3DVECTOR( 0, 0, out.sz ), out.rhw, col, out.specular, 0.f, 0.f);

@@ -18,8 +18,8 @@ public:
         AlphaBlending,
 		DepthTest,
 		DepthWrite,
-        Lighting,
-		Fog
+        Fog,
+		Lighting		
     };
 
 	//! Pixel comparison functions
@@ -58,6 +58,15 @@ public:
         CullCW,
         CullCCW
     };
+
+	//! Fog
+	enum FogMode
+	{
+		FogNone,
+		FogExp,
+		FogExp2,
+		FogLinear
+	};
 
 	//! Target surface
 	enum BufferType
@@ -100,7 +109,7 @@ public:
     Viewport GetViewport();
 
 	// Culling & Clipping
-	void SetCulling( CullingMode mode );
+	void SetCulling(CullingMode mode);
 	
 	// Projection
 	void Begin2DProjection(float left, float right, float bottom, float top, float zNear, float zFar);
@@ -108,6 +117,10 @@ public:
 
 	// Render Target
 	void Clear(int bufferFlags, COLORREF clearColor = 0, float clearDepth = 1.0f, unsigned int rectCount = 0, D3DRECT* pRects = 0);
+
+	// Fog
+	void SetFogColor(COLORREF color);
+	void SetFogParams(FogMode fogMode, float fogStart, float fogEnd, float fogDensity = 1.0f);
 
 	// Texturing
 	unsigned int GetTextureStageCount() const;
@@ -118,7 +131,7 @@ public:
 	float GetMaxAnisotropy() const;
 
 	// Utilities...
-	void DrawTexturedRect( float pX, float pY, float pW, float pH, float pUStart, float pVStart, float pUEnd, float pVEnd, COLORREF pColor );
+	void DrawTexturedRect( float x, float y, float w, float h, float uStart, float vStart, float uEnd, float vEnd, COLORREF color );
 
 private:
 	std::vector<TextureStage*>	m_TextureStages;

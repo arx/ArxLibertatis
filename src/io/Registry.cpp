@@ -97,5 +97,6 @@ HRESULT ReadRegKeyValue( HKEY hKey, const char * strName, long * val) {
 	DWORD dwLength=4;
 	
 	RegQueryValueEx( hKey, strName, 0, &dwType, (LPBYTE) val, &dwLength );
-  return S_OK;
+
+	return S_OK;
 }

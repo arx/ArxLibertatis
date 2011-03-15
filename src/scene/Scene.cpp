@@ -114,11 +114,9 @@ extern long VF_CLIP_IO;
 extern long DEBUG_FRUSTRUM;
 extern long HIDEANCHORS;
 extern long EXTERNALVIEW;
-extern long USE_D3DFOG;
 extern long WATERFX;
 extern long REFLECTFX;
 extern bool ARXPausedTimer;
-extern bool bUSE_D3DFOG_INTER;
 long LAST_PORTALS_COUNT=0;
 //-----------------------------------------------------------------------------
 extern TextureContainer *enviro;
@@ -126,8 +124,6 @@ extern long ZMAPMODE;
 extern bool bRenderInterList;
 extern bool bALLOW_BUMP;
 extern unsigned long ulBKGColor;
-extern float fZFogStartWorld;
-extern float fZFogEndWorld;
 extern CDirectInput *pGetInfoDirectInput;
 extern CMenuConfig *pMenuConfig;
 //-----------------------------------------------------------------------------
@@ -388,48 +384,6 @@ void ApplyLavaGlowToVertex(EERIE_3D * odtv,D3DTLVERTEX * dtv,float power)
 	lb = clipByte(f);
 
 	dtv->color=0xFF000000L | (lr << 16) | (lg << 8) | lb;
-}
-
-void ComputeFogVertex(D3DTLVERTEX *v)
-{
-	float VertexDist=1.f/v->rhw;
-
-	if(VertexDist<fZFogStartWorld)
-	{
-		v->specular=0xFF000000;
-	}
-	else
-	{
-		if(VertexDist>fZFogEndWorld)
-		{
-			v->specular=0;
-		}
-		else
-		{
-			//LINEAR
-			float fDist=(fZFogEndWorld-VertexDist)*255.f/(fZFogEndWorld-fZFogStartWorld);
-			long lAlpha = fDist;
-			v->specular=((lAlpha)<<24);
-		}
-	}
-}
-
-void ComputeSingleFogVertex(D3DTLVERTEX *v)
-{
-	if(bUSE_D3DFOG_INTER) return;
-
-	ComputeFogVertex(v);
-}
-
-void ComputeFog(D3DTLVERTEX * v, long to)
-{
-
-	if(bUSE_D3DFOG_INTER) return;
-
-	for (long k=0;k<to;k++) 
-	{
-		ComputeFogVertex(&v[k]);
-			}
 }
 
 void ManageLavaWater(EERIEPOLY * ep, const long to, const unsigned long tim)
@@ -1493,7 +1447,7 @@ void ARX_PORTALS_Frustrum_RenderRooms(long prec,long tim)
 void ARX_PORTALS_Frustrum_RenderRoom_TransparencyTSoftCull(long room_num);
 void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 {
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,0);
+	GRenderer->SetFogColor(0);
 
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetCulling(Renderer::CullNone);
@@ -2244,7 +2198,7 @@ void ARX_PORTALS_Frustrum_RenderRooms_TransparencyT()
 
 
 	SetZBias(0);
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
+	GRenderer->SetFogColor(ulBKGColor);
 	GDevice->SetTextureStageState(0,D3DTSS_COLOROP,D3DTOP_MODULATE);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 }
@@ -2318,11 +2272,6 @@ void ARX_PORTALS_RenderRoom(long room_num,EERIE_2D_BBOX * bbox,long prec,long ti
 				to=4;
 			}
 			else to=3;
-
-			if (FRAME_COUNT<=0)
-			{
-				if(!USE_D3DFOG) ComputeFog(ep->tv,to);							
-			}
 
 			if (ep->type & POLY_TRANS) 
 			{
@@ -2476,11 +2425,6 @@ void ARX_PORTALS_Frustrum_RenderRoom(long room_num,EERIE_FRUSTRUM_DATA * frustru
 				to=4;
 			}
 			else to=3;
-
-			if (FRAME_COUNT<=0)
-			{
-				if(!USE_D3DFOG) ComputeFog(ep->tv,to);							
-			}
 
 			if (ep->type & POLY_TRANS) 
 			{
@@ -3195,7 +3139,7 @@ SMY_D3DVERTEX *pMyVertex;
 		//METAL(Voodoo grand gourou)
 		if(vPolyVoodooMetal.size())
 		{
-			GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,0);
+			GRenderer->SetFogColor(0);
 
 			unsigned long ulMetalColor=0x00101010;
 			GDevice->SetTexture(0,NULL);
@@ -3295,7 +3239,7 @@ SMY_D3DVERTEX *pMyVertex;
 					0 );
 			}
 			
-			GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
+			GRenderer->SetFogColor(ulBKGColor);
 			GRenderer->SetBlendFunc(Renderer::BlendZero, Renderer::BlendInvSrcColor);	
 			vPolyVoodooMetal.clear();
 		}
@@ -4355,12 +4299,6 @@ else
 				to=4;
 			}
 			else to=3;
-
-	
-			if (FRAME_COUNT<=0)
-			{
-								if (!USE_D3DFOG) ComputeFog(ep->tv,to);
-			}
 
 			if (ep->type & POLY_TRANS) 
 			{

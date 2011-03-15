@@ -1877,8 +1877,6 @@ void Cedric_RenderObject2(EERIE_3DOBJ * eobj, EERIE_C_DATA * obj, INTERACTIVE_OB
 				tv[2].color = D3DRGB(fTransp, fTransp, fTransp);
 			}
 
-			ComputeFog(tv, 3);
-			
 			int iNbPointAdd;
 			if (!(iNbPointAdd = ARX_SoftClippZ(&eobj->vertexlist3[paf[0]],
 			                                   &eobj->vertexlist3[paf[1]],

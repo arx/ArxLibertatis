@@ -100,7 +100,7 @@ bool ARX_DrawPrimitive_SoftClippZ(D3DTLVERTEX*,D3DTLVERTEX*,D3DTLVERTEX*,float _
 //***********************************************************************************************
 void ARXDRAW_DrawInterShadows()
 {	
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,0);
+	GRenderer->SetFogColor(0);
 	SetZBias(1);
 
 	long first=1;
@@ -262,7 +262,7 @@ void ARXDRAW_DrawInterShadows()
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 	SetZBias(0);
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
+	GRenderer->SetFogColor(ulBKGColor);
 }
 
 //***********************************************************************************************
@@ -448,7 +448,7 @@ void ARXDRAW_DrawPolyBoom()
 	float tt;
 
 	SetZBias(8);
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,0);
+	GRenderer->SetFogColor(0);
 	unsigned long tim = ARXTimeUL(); 	
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 
@@ -676,7 +676,7 @@ void ARXDRAW_DrawPolyBoom()
 	}
 
 	SetZBias(0);
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
+	GRenderer->SetFogColor(ulBKGColor);
 }
 extern long TRANSPOLYSPOS;
 extern EERIEPOLY * TransPol[MAX_TRANSPOL];

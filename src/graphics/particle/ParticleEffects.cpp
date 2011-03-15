@@ -2083,7 +2083,7 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 	
 	GRenderer->SetCulling(Renderer::CullNone);
 
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,0);
+	GRenderer->SetFogColor(0);
 
 	TextureContainer * tc=NULL;
 	long pcc=ParticleCount;
@@ -2345,7 +2345,6 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 
 					EERIETreatPoint(&temp,&tv[2]);
 					SETTC(NULL);
-					ComputeFogVertex(tv);
 
 					EERIEDRAWPRIM(D3DPT_TRIANGLESTRIP, D3DFVF_TLVERTEX| D3DFVF_DIFFUSE , tv, 3, 0, 0);
 					if(!ARXPausedTimer)
@@ -2560,13 +2559,13 @@ void ARX_PARTICLES_Render(EERIE_CAMERA * cam)
 
 			if (pcc<=0)
 			{
-				GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
+				GRenderer->SetFogColor(ulBKGColor);
 				return;
 			}
 		}	
 	}
 
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
+	GRenderer->SetFogColor(ulBKGColor);
 	GRenderer->SetRenderState(Renderer::DepthTest, true);
 }
 

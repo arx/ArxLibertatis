@@ -1029,7 +1029,7 @@ void PopAllTriangleListTransparency()
 
 	D3DMATRIX matbase;
 
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,0);
+	GRenderer->SetFogColor(0);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, true);
 	GRenderer->SetRenderState(Renderer::DepthWrite, false); 
 	GRenderer->SetBlendFunc(Renderer::BlendDstColor, Renderer::BlendOne);	
@@ -1051,7 +1051,7 @@ void PopAllTriangleListTransparency()
 		pTex=pTex->m_pNext;
 	}
 
-	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR,ulBKGColor);
+	GRenderer->SetFogColor(ulBKGColor);
 	GRenderer->SetRenderState(Renderer::AlphaBlending, false);
 	GRenderer->SetRenderState(Renderer::DepthWrite, true);
 }
@@ -1948,8 +1948,6 @@ void DrawEERIEInter2(EERIE_3DOBJ * eobj,
 		vert_list[2].color	=	D3DRGB( fTransp, fTransp, fTransp );
 
 	}
-
-	ComputeFog(vert_list,3);
 
 	int iNbPointAdd;
 	if(!(iNbPointAdd=ARX_SoftClippZ(	&eobj->vertexlist[paf[0]],
@@ -2995,8 +2993,6 @@ void DrawEERIEInter(EERIE_3DOBJ * eobj,
 				ApplyWaterFXToVertex((EERIE_3D *)&eobj->vertexlist[eobj->facelist[i].vid[k]].v,&vert_list[k],0.3f);
 			}
 		}
-
-		ComputeFog(vert_list, 3); 
 
 		// Transparent poly: storing info to draw later
 		if ((eobj->facelist[i].facetype & POLY_TRANS) 

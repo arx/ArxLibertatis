@@ -56,8 +56,8 @@ const D3DRENDERSTATETYPE ARXToDXRenderState[] = {
 						D3DRENDERSTATE_ALPHABLENDENABLE,	// AlphaBlending,
 						D3DRENDERSTATE_ZENABLE,				// DepthTest
 						D3DRENDERSTATE_ZWRITEENABLE,		// DepthWrite
-						D3DRENDERSTATE_LIGHTING,            // Lighting,
-						D3DRENDERSTATE_FOGENABLE			// Fog
+						D3DRENDERSTATE_FOGENABLE,			// Fog
+						D3DRENDERSTATE_LIGHTING             // Lighting,
                                         };
                    
 const unsigned int ARXToDXPixelCompareFunc[] = {
@@ -90,6 +90,13 @@ const unsigned int ARXToDXCullMode[] = {
 						D3DCULL_CW,							// CullCW,
 						D3DCULL_CCW							// CullCCW,
 										};
+
+const D3DFOGMODE ARXToDXFogMode[] = {
+						D3DFOG_NONE,						// FogNone,
+						D3DFOG_EXP,							// FogExp,
+						D3DFOG_EXP2,						// FogExp2,
+						D3DFOG_LINEAR						// FogLinear
+									};
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -566,18 +573,18 @@ Cubemap* Renderer::CreateCubemap()
 	return 0;
 }
 
-void Renderer::SetRenderState(RenderState renderState, bool enable)
+void Renderer::SetRenderState(Renderer::RenderState renderState, bool enable)
 {
 	GDevice->SetRenderState(ARXToDXRenderState[renderState], enable ? TRUE : FALSE);
 }
 
-void Renderer::SetAlphaFunc(PixelCompareFunc func, float fef)
+void Renderer::SetAlphaFunc(Renderer::PixelCompareFunc func, float fef)
 {
 	GDevice->SetRenderState(D3DRENDERSTATE_ALPHAREF, (DWORD)fef*255);
 	GDevice->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, ARXToDXPixelCompareFunc[func]);
 }
 
-void Renderer::SetBlendFunc(PixelBlendingFactor srcFactor, PixelBlendingFactor dstFactor)
+void Renderer::SetBlendFunc(Renderer::PixelBlendingFactor srcFactor, Renderer::PixelBlendingFactor dstFactor)
 {
 	GDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  ARXToDXPixelBlendingFactor[srcFactor]);
 	GDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, ARXToDXPixelBlendingFactor[dstFactor]);
@@ -603,7 +610,7 @@ Renderer::Viewport Renderer::GetViewport()
 	return viewport;
 }
 
-void Renderer::SetCulling(CullingMode mode)
+void Renderer::SetCulling(Renderer::CullingMode mode)
 {
 	GDevice->SetRenderState(D3DRENDERSTATE_CULLMODE, ARXToDXCullMode[mode]);
 }
@@ -675,6 +682,19 @@ void Renderer::Clear(int bufferFlags, COLORREF clearColor, float clearDepth, uns
 	clearTargets |= (bufferFlags & StencilBuffer) ? D3DCLEAR_STENCIL : 0;
 
 	GDevice->Clear(rectCount, pRects, clearTargets, clearColor, clearDepth, 0);
+}
+
+void Renderer::SetFogColor(COLORREF color)
+{
+	GDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, color);
+}
+
+void Renderer::SetFogParams(Renderer::FogMode fogMode, float fogStart, float fogEnd, float fogDensity)
+{
+	GDevice->SetRenderState(D3DRENDERSTATE_FOGTABLEMODE, ARXToDXFogMode[fogMode]);
+	GDevice->SetRenderState(D3DRENDERSTATE_FOGSTART,	*((LPDWORD) (&fogStart)));
+	GDevice->SetRenderState(D3DRENDERSTATE_FOGEND,		*((LPDWORD) (&fogEnd)));
+	GDevice->SetRenderState(D3DRENDERSTATE_FOGDENSITY,  *((LPDWORD) (&fogDensity)));
 }
 
 unsigned int Renderer::GetTextureStageCount() const

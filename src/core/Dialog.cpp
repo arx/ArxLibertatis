@@ -100,7 +100,6 @@ long FASTLOADS = 0;
 extern long CURRENTSNAPNUM;
 extern long SnapShotMode;
 
-extern long USE_D3DFOG;
 extern long ARX_DEMO;
 extern long NOCHECKSUM;
 extern long ZMAPMODE;
@@ -2133,8 +2132,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			if (TRUEFIGHT)					SetClick(hWnd, IDC_TRUEFIGHT);
 
-			if (USE_D3DFOG)					SetClick(hWnd, IDC_USED3DFOG);
-
 			if (ModeLight & MODE_STATICLIGHT)
 			{
 				SetClick(hWnd, IDC_SHOWLIGHTSNSHADOWS);
@@ -2327,9 +2324,6 @@ INT_PTR CALLBACK OptionsProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 					if (IsChecked(hWnd, IDC_INTERPOLATEMOUSE)) Project.interpolatemouse = 1;
 					else Project.interpolatemouse = 0;
-
-					if (IsChecked(hWnd, IDC_USED3DFOG)) USE_D3DFOG = 1;
-					else USE_D3DFOG = 0;
 
 					if (IsChecked(hWnd, IDC_TRUEFIGHT)) TRUEFIGHT = 1;
 					else TRUEFIGHT = 0;
