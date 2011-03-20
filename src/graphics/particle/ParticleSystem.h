@@ -31,6 +31,7 @@ ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 #include "graphics/d3dwrapper.h"
 #include "graphics/GraphicsTypes.h"
+#include "graphics/Renderer.h"
 
 #define PARTICLE_CIRCULAR  1
 #define PARTICLE_BORDER	   2
